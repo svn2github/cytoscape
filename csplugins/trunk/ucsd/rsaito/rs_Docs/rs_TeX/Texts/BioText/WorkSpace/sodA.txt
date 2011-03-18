@@ -1,0 +1,38 @@
+-75 - +25
+GTTGACCAGGCTGGCCTGAGCGCTTCTGTAAACTAATGCCTTTACGTGGGCGGTGATTTTGTCTACAATCTTACC
+c
+CCACGTATAATGCTTAATGCAGACG
+
+SodA
+CTGCAAAACCATACCCTTACGAAAAGTACGGCATTGATAATCATTTTCAATATCATTTAATTAACTATAATGAAC
+c
+AACTGCTTACGCGGCATTAACAATC
+
+4098833..4099453
+/gene="sodA"
+                     /locus_tag="b3908"
+                     /EC_number="1.15.1.1"
+                     /function="enzyme; Detoxification"
+                     /note="superoxide dismutase, manganese;
+
+  4098721 ttacgaaaag tacggcattg ataatcattt tcaatatcat ttaattaact ataatgaacC
+  4098781 aactgcttac gcggcattaa caatcggccg cccgacaata ctggagatga atATGagcta
+  4098841 taccctgcca tccctgccgt atgcttacga tgccctggaa ccgcacttcg ataagcagac
+  4098901 catggaaatc caccacacca aacaccatca gacctacgta aacaacgcca acgcggcgct
+  4098961 ggaaagcctg ccagaatttg ccaacctgcc ggttgaagag ctgatcacca aactggacca
+  4099021 gctgccagca gacaagaaaa ccgtactgcg caacaacgct ggcggtcacg ctaaccacag
+  4099081 cctgttctgg aaaggtctga aaaaaggcac caccctgcag ggtgacctga aagcggctat
+  4099141 cgaacgtgac ttcggctccg ttgataactt caaagcagaa tttgaaaaag cggcagcttc
+  4099201 ccgctttggt tccggctggg catggctggt gctgaaaggc gataaactgg cggtggtttc
+  4099261 tactgctaac caggattctc cgctgatggg tgaagctatt tctggcgctt ccggcttccc
+  4099321 gattatgggc ctggatgtgt gggaacatgc ttactacctg aaattccaga accgccgtcc
+  4099381 ggactacatt aaagagttct ggaacgtggt gaactgggac gaagcagcgg cacgttttgc
+  4099441 ggcgaaaaaa TAAtcatttg ccgcctgctg caatgaggcg tataggccgc atatcagctt
+  4099501 aaaaaatgaa ccatcgccaa cggcggtggt ttttttgtga tcaatttcaa aataaaaaca
+  4099561 atgatccgat aaaaataaaa cagcgtttca attgatgtgg ttttgatcac ttttattgat
+
+ORIGIN      
+        1 msytlpslpy aydalephfd kqtmeihhtk hhqtyvnnan aaleslpefa nlpveelitk
+       61 ldqlpadkkt vlrnnaggha nhslfwkglk kgttlqgdlk aaierdfgsv dnfkaefeka
+      121 aasrfgsgwa wlvlkgdkla vvstanqdsp lmgeaisgas gfpimgldvw ehayylkfqn
+      181 rrpdyikefw nvvnwdeaaa rfaakk

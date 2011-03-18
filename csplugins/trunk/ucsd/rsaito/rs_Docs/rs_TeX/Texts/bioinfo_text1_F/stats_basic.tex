@@ -1,0 +1,863 @@
+
+\chapter{統計解析に関する補足}
+
+\section{標準正規分布}
+\label{stdfreq_proof}
+
+\(n\)本の塩基配列の中に、ある配列パターンが有意に出現するかを統計的に検
+証することを考えます。今\(p\)を与えられた一本の配列であるパターンが(偶然
+に)観測される確率とします。\(n\)本中、ちょうど\(x\)本の配列にそのパター
+ンが含まれる確率は二項分布を使って、
+
+\begin{equation}
+P(x) = {n\choose x}p^{x}(1-p)^{n-x} 
+\label{eq1}
+\end{equation}
+
+\noindent
+と表されます。\(n\)が大きくなると、\(P(x)\)はどのような分布になっていく
+のでしょうか。これを以下で説明してゆきます
+\cite{label_stats_1,label_stats_2}。
+
+\noindent
+まず\(x\)を以下の式で\(z\)に正規化します。
+
+\begin{equation}
+z = \frac{(x - np)}{\sqrt{np(1-p)}} 
+\label{zeq2}
+\end{equation}
+
+\noindent
+このとき\(z\)が従う分布を\(g(z)\)とし、\(g(z)\)を求めてゆきまし
+ょう。\(x\)は\(0,1,2,\cdots\)と離散的な値をとるので、\(x\)の変化量
+\(\Delta x\)の最小値は1です。このとき、\(z\)の変化量\(\Delta z\)は常に
+
+\begin{equation}
+\Delta z = \frac{1}{\sqrt{np(1-p)}}
+\label{zeq3}
+\end{equation}
+
+\noindent
+となります。式\ref{zeq2}を式\ref{zeq3}で割って変形すると、
+
+\begin{equation}
+x=np+\frac{z}{\Delta z}
+\label{zeq4}
+\end{equation}
+
+\noindent 
+が得られます。
+
+式\ref{eq1}の\(x\)に\(x+1\)を代入すると、
+
+\begin{equation}
+P(x+1) = {n\choose x+1}p^{x+1}(1-p)^{n-x-1} 
+\label{zeq5}
+\end{equation}
+
+ここで、
+
+\begin{displaymath}
+{n \choose x} = \frac{n!}{x!(n-x)!}
+\end{displaymath}
+
+\noindent
+を使って式\ref{zeq5}を式\ref{eq1}で割り、式\ref{zeq6}を代入すると、
+
+\begin{equation}
+\frac{P(x+1)}{P(x)}=\frac{(n-x)p}{(x+1)(1-p)}
+\label{zeq6}
+\end{equation}
+
+
+\noindent
+となります。さてここで\(P(x)\)と\(g(z)\)の関係を考えましょう。\(z\)と
+\(x\)は式\ref{zeq2}のような関係で結ばれています。さて一般的に離散的な値
+を取る確率変数\(X\)が確率密度関数\(P_{d}\)に従うとき、\(X=x\)である確率
+は\(P_{d}(x)\Delta x\)で求められます。但し、\(\Delta x\)は確率変数\(X\)
+が取り得る値の中で\(>x\)を満たす最小のものと\(x\)との差です\footnote{\(x 
+\leq X < x + \Delta x\)において、\(P_{d}(X)\)は一定と考える。}。従って
+\(g(z)\)が確率密度関数であるためには、\(g(z)\Delta z\)が確率\(P(x)\Delta 
+x=P(x)\)を表さなければなりません。すなわち、
+
+\begin{equation}
+g(z)=\frac{1}{\Delta z}P(x)
+\label{zeq7}
+\end{equation}
+
+\noindent
+および
+
+\begin{equation}
+g(z+\Delta z)=\frac{1}{\Delta z}P(x+1)
+\label{zeq8}
+\end{equation}
+
+\noindent
+が成立します。式\ref{zeq8}を式\ref{zeq7}で割り、式\ref{zeq6}を代入すると、
+
+\begin{equation}
+\frac{g(z+\Delta z)}{g(z)}=\frac{P(x+1)}{P(x)}=\frac{(n-x)p}{(x+1)(1-p)}
+\label{zeq9}
+\end{equation}
+
+\noindent
+式\ref{zeq9}に\ref{zeq4}を代入して\(x\)を消去すると、
+
+\begin{equation}
+\frac{g(z+\Delta z)}{g(z)}=\frac{(n-np-z/\Delta z)p}{(np+z/\Delta z + 1)(1-p)}
+=\frac{np(1-p)-pz/\Delta z}{np(1-p)+(1-p)(z/\Delta z + 1)}
+\end{equation}
+
+\noindent
+式\ref{zeq3}より\(np(1-p)=\frac{1}{\Delta z^{2}}\)なので、これを上の式に代入して、
+
+\begin{equation}
+\frac{g(z+\Delta z)}{g(z)}=\frac{\frac{1}{\Delta z^{2}}-p\frac{z}{\Delta z}}
+{\frac{1}{\Delta z^{2}}+(1-p)(\frac{z}{\Delta z} + 1)}
+=\frac{1-pz\Delta z}{1+(1-p)\{z\Delta z + \Delta z^{2}\}}
+\label{zeqn1}
+\end{equation}
+
+\noindent
+となります。式\ref{zeqn1}を使うと、
+
+\begin{displaymath}
+\frac{g(z+\Delta z)-g(z)}{\Delta z}=
+\left(\frac{g(z+\Delta z)}{g(z)}-1\right)\frac{g(z)}{\Delta z}
+\end{displaymath}
+
+\begin{displaymath}
+=\frac{1-pz\Delta z-1-(1-p)(z\Delta z+\Delta z^{2})}
+{1+(1-p)(z\Delta z+\Delta z^{2})}\frac{g(z)}{\Delta z}
+\end{displaymath}
+
+\begin{equation}
+=\frac{-z\Delta z-(1-p)\Delta z^{2}}{1+(1-p)(z\Delta z+\Delta z^{2})}
+\frac{g(z)}{\Delta z}
+=\frac{-z-(1-p)\Delta z}{1+(1-p)(z\Delta z+\Delta z^{2})}g(z)
+\label{eq10}
+\end{equation}
+
+\noindent
+が得られます。式\ref{zeq3}より\(n \to \infty\)のとき、\(\Delta z \to 0\)となります。
+このとき、式\ref{eq10}の極限は
+
+\begin{equation}
+\frac{dg(z)}{dz}=-zg(z)
+\end{equation}
+
+\noindent
+となります。これを解くと、
+
+\begin{displaymath}
+g(z)=Ce^{-\frac{1}{2}z^{2}}
+\end{displaymath}
+
+\noindent
+が得られます。但し\(C\)は定数です。以下、この\(C\)を定めましょう。
+\(g(z)\)は確率密度関数なので、
+
+\begin{equation}
+\int^{+\infty}_{-\infty}g(z)dz=\int^{+\infty}_{-\infty}Ce^{-\frac{1}{2}z^{2}}dz=1
+\end{equation}
+
+\noindent
+が成立します。\(I(t)=\int^{r}_{0}e^{-\frac{1}{2}z^{2}}dz\)とおくと、
+
+\begin{displaymath}
+I(t)^{2}=\left\{\int^{t}_{0}e^{-\frac{1}{2}z^{2}}dz\right\}^{2}
+=\int^{t}_{0}\int^{t}_{0}e^{-\frac{1}{2}(x^{2}+y^{2})}dxdy
+\end{displaymath}
+
+\begin{figure}
+\includegraphics[scale=0.4]{Figures_EPS/h_integra1.eps}
+\caption{積分を行う領域}
+\label{h_integra1}
+\begin{quotation}
+\(D\)が灰色の正方形の領域。\(D_{1}\)は内側の扇形、\(D_{2}\)は外側の扇形である。
+\(D_{1}{\rm の面積} < D{\rm の面積} < D_{2}{\rm の面積}\)となる。
+\end{quotation}
+\end{figure}
+
+\noindent
+ここで、積分を行う領域を図\ref{h_integra1}のように考えると、
+
+\begin{displaymath}
+I(t)^{2}=\int\int_{D}e^{-\frac{1}{2}(x^{2}+y^{2})}dxdy
+\end{displaymath}
+
+\noindent
+となります\cite{integra1}。
+
+\begin{displaymath}
+I_{1}(t)^{2}=\int\int_{D_{1}}e^{-\frac{1}{2}(x^{2}+y^{2})}dxdy,\quad
+I_{2}(t)^{2}=\int\int_{D_{2}}e^{-\frac{1}{2}(x^{2}+y^{2})}dxdy
+\end{displaymath}
+
+\noindent
+とすれば、
+
+\begin{displaymath}
+I_{1}(t)^{2} < I(t)^{2} < I_{2}(t)^{2}
+\end{displaymath}
+
+\noindent
+です。さて図\ref{h_integra1}のように、
+
+\begin{displaymath}
+\left\{
+\begin{array}{l}
+x=r\cos \theta \\
+y=r\sin \theta \\
+\end{array}\right.
+\end{displaymath}
+
+\noindent
+のような変数変換ができるので、
+
+\begin{displaymath}
+I_{1}(t)^{2}=\int\int_{D_{1}}e^{-\frac{1}{2}r^{2}}
+\left|
+\begin{array}{ll}
+\frac{\partial x}{\partial r} & \frac{\partial y}{\partial r}\\
+\frac{\partial x}{\partial \theta} & \frac{\partial y}{\partial \theta}\\
+\end{array}
+\right|
+drd\theta
+=\int^{\frac{\pi}{2}}_{0}\int^{t}_{0}e^{-\frac{1}{2}r^{2}}rdrd\theta
+\end{displaymath}
+\begin{displaymath}
+=\left[\left[-e^{-\frac{1}{2}r^{2}}\theta\right]^{r=t}_{r=0}\right]^{\theta=\frac{\pi}{2}}_{\theta=0}
+=\frac{\pi}{2}-\frac{\pi}{2}e^{-\frac{1}{2}t^{2}}
+\end{displaymath}
+
+\noindent
+同様にして、
+
+\begin{displaymath}
+I_{2}(t)^{2}
+=\int^{\frac{\pi}{2}}_{0}\int^{\sqrt{2}t}_{0}e^{-\frac{1}{2}r^{2}}rdrd\theta
+=\frac{\pi}{2}-\frac{\pi}{2}e^{-t^{2}}
+\end{displaymath}
+
+\noindent
+従って、\(\lim_{t \to \infty}I_{1}(t)^{2}=I_{2}(t)^{2}=\frac{\pi}{2}\)となるので、
+\(\lim_{t \to \infty}I(t)^{2}=\frac{\pi}{2}\)、
+\(\lim_{t \to \infty}I(t)=\sqrt{\frac{\pi}{2}}\)となります。よって、
+
+\begin{displaymath}
+\int^{+\infty}_{-\infty}e^{-\frac{1}{2}z^{2}}dz=\sqrt{2\pi}
+\end{displaymath}
+
+\noindent
+となり、\(C=\frac{1}{\sqrt{2\pi}}\)が導かれます。結局\(z\)の確率密度関数は、
+
+\begin{displaymath}
+g(z)=\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}z^{2}}
+\end{displaymath}
+
+\noindent
+になることが導かれました。この確率密度関数に従う分布を標準正規分布と呼びます。
+
+さて、正規分布\(N(\mu, \sigma^{2})\)の確率密度関数は、
+
+\begin{equation}
+f(x) = \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-\mu)^{2}}{2\sigma^{2}}}
+\label{gaussian}
+\end{equation}
+
+\noindent
+でなので、
+
+\begin{equation}
+z = \frac{x - np}{\sqrt{np(1-p)}} \quad \sim \quad N(0,1)
+\label{eq_sd}
+\end{equation}
+
+\noindent
+となります。
+
+\section{カイ自乗分布}
+\label{chi_discr}
+
+確率変数\(X\)が標準正規分布に従うとき、\(Y=X^{2}\)はどのような分布に従う
+のでしょうか？Yの分布関数\(G(y)=P(Y\leq y)\)を用いると、\(y \geq 0\)に対して、
+
+\begin{displaymath}
+G(y)=P(Y \leq y)=P(X^{2} \leq y)=P(-\sqrt{y}\leq X \leq \sqrt{y})
+\end{displaymath}
+
+\noindent
+になりますが、標準正規分布は原点に関して対称なので、
+
+\begin{displaymath}
+G(y)=2P(0\leq X \leq \sqrt{y})
+=2\int^{\sqrt{y}}_{0}(2\pi)^{\frac{1}{2}}e^{-\frac{x^{2}}{2}}dx
+\end{displaymath}
+
+\noindent
+となります。
+ここで、\(u=x^{2}\)となる変数変換を行うと、
+\(dx=\frac{1}{2}u^{-\frac{1}{2}}du\)より、
+
+\begin{equation}
+G(y)=\int^{y}_{0}\frac{1}{\sqrt{2\pi}}u^{-\frac{1}{2}}e^{-\frac{u}{2}}du
+\label{chi_deriv2}
+\end{equation}
+
+\noindent
+となります。
+従って確率密度関数は\ref{chi_deriv2}を微分して、
+
+\begin{equation}
+g(y)=\frac{1}{\Gamma(\frac{1}{2})2^{\frac{1}{2}}}y^{-\frac{1}{2}}e^{-\frac{y}{2}}
+\end{equation}
+
+\noindent
+となります。
+ここで\(\Gamma\)はガンマ関数で、
+\(\Gamma(s)=\int^{\infty}_{0}x^{s-1}e^{-x}dx\)、
+\(\Gamma(\frac{1}{2})=\frac{1}{\sqrt{\pi}}\)となることが知られています\cite{statistics1}。
+
+\(Y_{n}=X_{1}^{2}+X_{2}^{2}+\cdots +X_{n}^{2}\)の分布は、
+
+\begin{equation}
+f(x)=\frac{1}{\Gamma(\frac{n}{2})2^{\frac{n}{2}}}x^{\frac{n}{2}-1}e^{-\frac{x}{2}}, 0 < x < \infty
+\label{chi_dist}
+\end{equation}
+
+\noindent
+となることが知られています\cite{statistics1,econostats}。式\ref{chi_dist}に従う分布
+を\(\chi^{2}\)分布と呼び、\(n\)を自由度と呼びます。
+
+\section{エントロピーの期待値}
+\label{ic_detail}
+
+互いに独立な確率変数\(\xi_{1}, \xi_{2}, \xi_{3}, \cdots\)を考え、
+各々は、\(p_{i}\) の確率で値\(E_{i}\) (\(0 \leq p_{i} < 1, i = 
+1,2,\cdots, s, \:\: \sum_{i=1}^{s}p_{i} = 1 \))になるとします。
+\(n\)個の塩基を考える場合、例えば
+\(\xi_{t} \in \{E_{1},E_{2},E_{3},E_{4}\}, 1 \leq t \leq n,
+s=4,E_{1}={\rm a}, E_{2}={\rm c}, E_{3}={\rm g}, E_{4}={\rm t}
+\)となります。
+
+\noindent
+エントロピーは次の式で定義されました(節\ref{sig_entropy}参照)。
+
+\begin{equation}
+H = H(p_{1}, \cdots , p_{s}) = -\sum_{i=1}^{s}p_{i}\log_{2}p_{i} 
+\label{entropy}
+\end{equation}
+
+\noindent
+大きさ\(N\)の標本からの\ref{entropy}の\(H\)の推定量\(\hat H\)は次式で与えられます。
+
+\[
+\hat H = H(\hat p_{1}, \cdots , \hat p_{s}) = -\sum_{i=1}^{s}\hat
+p_{i}\log_{2}\hat p_{i} 
+\]
+
+\noindent
+そして期待値は
+
+\begin{equation}
+ \mbox{E}(\hat H) = H - \frac{s-1}{2N}\log_{2}e + O\left(\frac{1}{N^{2}}\right)
+\label{mean_entro}
+\end{equation}
+
+\noindent
+となるのです\cite{label1896}。
+そこで順を追って式\ref{mean_entro}を証明しましょう。まず\(H\)を以下のように再定義します。
+
+\begin{equation}
+H = H(p_{1}, \cdots , p_{s}) = -\sum_{i=1}^{s}p_{i}\log_{e} p_{i} 
+\label{entropy_e}
+\end{equation}
+
+\noindent
+次のテイラー展開\cite{integra1}
+
+\begin{displaymath}
+f(b) = f(a) + \frac{f'(a)}{1!}(b-a) + \frac{f''(a)}{2!}(b-a)^{2} + \cdots
+\end{displaymath}
+\begin{equation}
+\qquad \qquad \cdots + \frac{f^{(n-1)}(a)}{(n-1)!}(b-a)^{n-1} + \frac{f^{(n)}\{a + \theta(b-a)^{n}\}}{n!}
+\label{taylor}
+\end{equation}
+\[ 0 < \theta < 1\]
+
+\noindent
+と、
+
+\[ 
+\frac{d(-p_{i}\log_{e} p_{i})}{d p_{i}} = -1 - \log_{e} p_{i} , \quad
+\frac{d^{k}(-p_{i}\log_{e} p_{i})}{dp_{i}^{k}} = (-1)^{k-1}(k-2)!p_{i}^{-k+1}
+\]
+\[ i = 1,2,\cdots , s \quad k \geq 2 \]
+
+\noindent
+を使えば、以下が導かれます。
+
+\begin{displaymath}
+-\hat p_{i}\log_{e} \hat p_{i} = -p_{i}\log_{e} p_{i} - (\hat p_{i} - p_{i})(1 + \log_{e} p_{i})
+\end{displaymath}
+\begin{equation}
+\quad \quad - \frac{1}{2} \cdot \frac{(\hat p_{i} - p_{i})^{2}}{p_{i}}
++ \frac{1}{6} \cdot \frac{(\hat p_{i} - p_{i})^{3}}{p_{i}^{2}}
+- \frac{1}{12} \cdot \frac{(\hat p_{i} - p_{i})^{4}}{\{p_{i} + \theta(\hat p_{i} - p_{i})\}^{3}}
+\label{ice5}
+\end{equation}
+\[ 0 < \theta < 1\]
+
+\noindent
+式\ref{ice5}の両辺を\(i=1,2,\cdots, s\)について足すことにより、
+\[
+-\sum_{i=1}^{s}\hat p_{i}\log_{e} \hat p_{i} = \hat H = H(\hat p_{1}, \cdots , \hat p_{s})
+\]
+\begin{displaymath}
+= H(p_{1}, \cdots , p_{s})
+- \sum_{i=1}^{s}(\hat p_{i} - p_{i})(1 + \log_{e} p_{i})
+\end{displaymath}
+\begin{equation}
+\quad \quad - \sum_{i=1}^{s}\frac{1}{2} \cdot \frac{(\hat p_{i} - p_{i})^{2}}{p_{i}}
++ \sum_{i=1}^{s}\frac{1}{6} \cdot \frac{(\hat p_{i} - p_{i})^{3}}{p_{i}^{2}}
+- \sum_{i=1}^{s}\frac{1}{12} \cdot \frac{(\hat p_{i} - p_{i})^{4}}{\{p_{i} + \theta(\hat p_{i} - p_{i})\}^{3}}
+\label{entropy_taylor3}
+\end{equation}
+
+\noindent
+が導かれます。また一般に以下のような関係が成立します\cite{statistics1}
+
+\begin{equation}
+\mbox{E}(\hat p_{i}) = p_{i}
+\label{entropy_moment1}
+\end{equation}
+\begin{equation}
+\mbox{E}((\hat p_{i} - p_{i})^{2}) = \frac{p_{i}(1-p_{i})}{N}
+\label{entropy_moment2}
+\end{equation}
+
+\noindent
+式\ref{entropy_moment1}を式\ref{entropy_taylor3}の最も右の式の
+第2項に代入すると、
+
+\[
+\mbox{E}\left(\sum_{i=1}^{s}(\hat p_{i} - p_{i})(1 + \log_{e} p_{i}) \right)
+= \mbox{E}\left(\sum_{i=1}^{s}(p_{i} - p_{i})(1 + \log_{e} p_{i}) \right) = 0
+\]
+
+\noindent
+式\ref{entropy_moment2}を式\ref{entropy_taylor3}の最も右の式の
+第3項に代入すると、
+
+\[
+ \mbox{E}\left(\sum_{i=1}^{s}\frac{1}{2}\cdot \frac{(\hat p_{i} -
+ p_{i})^2}{p_{i}}\right)
+= \frac{1}{2}\sum_{i=1}^{s}\mbox{E}
+  \left(\frac{(\hat p_{i} - p_{i})^2}{p_{i}}\right)
+= \frac{1}{2}\sum_{i=1}^{s}\frac{p_{i}(1-p_{i})}{Np_{i}}
+= \frac{s-1}{2N}
+\]
+
+\noindent
+式\ref{entropy_taylor3}の最も右の式の
+第4項以降は、\(O(\frac{1}{N^{2}})\)となるので、
+
+\begin{equation}
+\mbox{E}(\hat H) = H - \frac{s-1}{2N} + O\left(\frac{1}{N^{2}}\right)
+\label{ice10}
+\end{equation}
+
+\noindent
+となります。結局式\ref{ice10}の両辺に\(\log_{2}e\)を掛けることにより
+\(\frac{\log_{2}p_{i}}{\log_{2}e}=\log_{e}p_{i}\)を使って
+\ref{mean_entro}が導かれます。
+
+\section{独立性の検定}
+\label{cor_test}
+
+\(n\)個の要素が種別Aでは\(r\)個のグループに分けることができ、また種別Bで
+は \(c\)個のグループに分けることができると仮定します。\(n_{i\cdot}\)を種
+別Aのグループ \(i\)に属する要素の数とし、\(n_{\cdot j}\)を種別Bのグルー
+プ\(j\)に属する要素の数とします。また\(n_{ij}\)を種別Aではグループ\(i\)
+に属し、種別Bではグループ\(j\)に属する要素の数とします。また、
+\(n_{i\cdot}\)、\(n_{\cdot j}\)、\(n\)を以下の式により定義します。
+
+\begin{displaymath}
+n_{i\cdot} = \sum_{j=1}^{c}n_{ij}\quad
+n_{\cdot j} = \sum_{i=1}^{r}n_{ij}
+\end{displaymath}
+
+\begin{equation}
+n = \sum_{i=1}^{r}n_{i\cdot} = \sum_{j=1}^{c}n_{\cdot j} 
+= \sum_{i=1}^{r}\sum_{j=1}^{c}n_{ij}
+\end{equation}
+
+同様にして、\(p_{i\cdot}\)をある要素が種別Aのグループ\(i\)に属する確率、
+\(p_{\cdot j}\)をある要素が種別Bのグループ\(j\)に属する確率とします。そ
+して\(p_{ij}\)をある要素が種別Aではグループ\(i\)に属し、種別Bではグルー
+プ\(j\)に属する確率とします。
+
+\[
+p_{i\cdot} = \sum_{j=1}^{c}p_{ij}\quad
+p_{\cdot j} = \sum_{i=1}^{r}p_{ij}
+\]
+
+\begin{equation}
+\sum_{i=1}^{r}p_{i\cdot} = \sum_{j=1}^{c}p_{\cdot j} 
+= \sum_{i=1}^{r}\sum_{j=1}^{c}p_{ij} = 1
+\label{prob_constr1}
+\end{equation}
+
+\noindent
+\(p\)の尤度関数\footnote{尤度関数や最尤推定量に関しては、節
+\ref{EM_algo_overview}参照}は、
+
+\begin{equation}
+f(N|p) = 
+{n\choose{n_{11} \cdots n_{rc}}}p_{11}^{n_{11}}\cdots p_{rc}^{n_{rc}}
+\label{fl1}
+\end{equation}
+
+\noindent
+ここで、帰無仮説
+
+\begin{equation}
+p_{ij} = p_{i\cdot}p_{\cdot j}
+\label{corr_hypo1}
+\end{equation}
+
+\noindent
+すなわち、ある要素が種別Aでグループ\(i\)に属する確率と
+その要素が種別Bでグループ\(j\)に属する確率は互いに独立であるかを検定する
+方法を考えます。
+
+式\ref{fl1}の最尤推定量を得るために、ラグランジュの乗数法を使います。まず
+式\ref{fl1}の対数をとり、それを関数\(g\)の中に以下のように取り入れます。
+
+\begin{equation}
+g(p,\lambda) = \log{n\choose{n_{11} \cdots n_{rc}}} 
+             + \sum_{i=1}^{r}\sum_{j=1}^{c}n_{ij}\log p_{ij}
+             + \lambda(p_{11} + \cdots + p_{rc} - 1)
+\label{log_likelihood2}
+\end{equation}
+
+\noindent
+但し、式\ref{log_likelihood2}の最後の項は\ref{prob_constr1}の制約を表します。
+そして式\ref{log_likelihood2}を\(p_{ij}\)と\(\lambda\)で偏微分し、以下の
+式を解いて極値を求めます。
+
+\begin{equation}
+\left\{
+\begin{array}{l}
+\frac{\partial g}{\partial p_{ij}} = \frac{n_{ij}}{p_{ij}} - \lambda = 0\\
+\frac{\partial g}{\partial \lambda} = p_{11} + \cdots + p_{rc} - 1 = 0
+\end{array}\right.
+\end{equation}
+
+ここで\(\frac{n_{ij}}{p_{ij}}=\lambda\)が全ての\(i\),\(j\)に対して成立するので、
+\(n_{ij}=\lambda p_{ij}\)の両辺を全ての\(i\),\(j\)について足して
+\(\lambda = n\)となり、\(p_{ij}=\frac{n_{ij}}{n}\)で式\ref{fl1}は極値となります。
+従って、式\ref{fl1}の最尤推定量\(\hat p_{ij}\)は
+
+\[
+\hat p_{ij} = \frac{n_{ij}}{n}
+\]
+
+\noindent
+となります。ここで帰無仮説
+
+\[
+p_{ij} = q_{ij}
+\]
+
+\noindent
+と対立仮説
+
+\[
+p_{ij} \neq q_{ij}
+\]
+
+\noindent
+を設定すると、対数尤度比統計量\(k\)は、
+
+\begin{displaymath}
+k = 2\log\frac{{\rm max}_{p}(f(N|p))}{{\rm max}_{q}(f(N|q))}
+ = 2\log\frac{{n\choose{n_{11} \cdots n_{rc}}}\left(\frac{n_{11}}{n}\right)^{n_{11}} \cdots \left(\frac{n_{rc}}{n}\right)^{n_{rc}}}
+{{n\choose{n_{11} \cdots n_{rc}}}q_{11}^{n_{11}} \cdots q_{rc}^{n_{rc}}}
+\end{displaymath}
+\begin{equation}
+\quad \quad = 2\sum_{i=1}^{r}\sum_{j=1}^{c}n_{ij}\log\frac{n_{ij}}{nq_{ij}}
+\label{fl2}
+\end{equation}
+
+\noindent
+と表され、\(k\)は自由度dim\((p)\)-dim\((q)\)の\(\chi^{2}\)分布に従うことが
+知られています\cite{label5050,statistics_v1,statistics_v2}。
+dim\((p) = (r - 1)(c - 1)\),dim\((q) = 0\)(\(q\)は固定)なので、\(k\)は
+自由度\((r - 1)(c - 1)\)の\(chi^{2}\)分布に従います。
+
+\[
+k \sim \chi^{2}
+\]
+
+ここで\(P_{i\cdot} = \frac{n_{i}}{n}, 
+P_{\cdot j} = \frac{n_{j}}{n}, 
+P_{ij} = \frac{n_{ij}}{n}\)とすると、式\ref{fl2}は以下のように書き換えられます。
+
+\begin{equation}
+k = 2n\sum_{i=1}^{r}\sum_{j=1}^{c}P_{ij}\log\frac{P_{ij}}{q_{ij}}
+\end{equation}
+
+結局、帰無仮説を式\ref{corr_hypo1}のようにすると、
+
+\begin{displaymath}
+k = 2n\sum_{i=1}^{r}\sum_{j=1}^{c}P_{ij}\log\frac{P_{ij}}{P_{i\cdot}P_{j\cdot}}
+\end{displaymath}
+
+\noindent
+となるので、種別Aにおいて所属するグループと、種別Bにおいて所属するグルー
+プが独立かを調べるには、\(k\)に対して\(\chi^{2}\)検定を行えばいいことに
+なります。
+
+
+\section{ラグランジュの未定乗数法}
+\label{lagrange}
+
+ラグランジュの未定乗数法はある制約条件のもとで、与えられた関数の極値を求
+める手法です。今、
+
+\begin{equation}
+g(x,y)=0
+\label{lag_cond1}
+\end{equation}
+
+\noindent
+という制約条件のもとで、\(f(x,y)\)の極値およびその極値を与える点
+\((x,y)=(x^{0},y^{0})\)を求めることを考えましょう。条件\(g(x,y)=0\)が陽関数
+の形で\(y=y(x)\)と書くことができれば、関数\(f(x,y(x))\)が\(x=x^{0}\)で極値を取る
+のでその点で、
+
+\begin{equation}
+\frac{df}{dx}=\frac{\partial f}{\partial x}\frac{dx}{dx}
++\frac{\partial f}{\partial y}\frac{dy}{dx}
+=\frac{\partial f}{\partial x}+\frac{\partial f}{\partial y}\frac{dy}{dx}
+=0
+\label{lag1}
+\end{equation}
+
+\noindent
+が成り立ちます\footnote{これを\(f\)の全微分と呼ぶ\cite{integra1}。}。一方条件\ref{lag_cond1}より、
+
+\begin{equation}
+dg(x,y)=\frac{\partial g}{\partial x}dx + \frac{\partial g}{\partial y}dy = 0
+\label{complete_deriv1}
+\end{equation}
+
+\noindent
+となるので、\(\frac{\partial g}{\partial y} \neq 0\)のとき、式\ref{complete_deriv1}を変形して
+\(\frac{dy}{dx}=
+-\frac{\partial g}{\partial x}/\frac{\partial g}{\partial y}\)と表されます。
+これを式\ref{lag1}に代入すると、\(x=x^{0}\)で
+\(\frac{\partial f}{\partial x}-\frac{\partial f}{\partial y}
+\frac{\partial g}{\partial x}/\frac{\partial g}{\partial y}=0\)が成立します。
+これを変形して
+\(\frac{\partial f}{\partial x}/\frac{\partial g}{\partial x}
+=\frac{\partial f}{\partial y}/\frac{\partial g}{\partial y}=\lambda\)
+とおけば、
+
+\begin{equation}
+\frac{\partial f}{\partial x}-\lambda\frac{\partial g}{\partial x}=0,\quad
+\frac{\partial f}{\partial y}-\lambda\frac{\partial g}{\partial y}=0
+\label{lag_deriv1}
+\end{equation}
+
+\noindent
+となります。つまり与えられた条件のもとで\(f\)が極値を持つとき、式
+\ref{lag_deriv1}が成立するので、式\ref{lag_deriv1}を満たす\((x,y)\)は
+\(f\)を極値にする点の候補となります。このようにして、\(f\)の極値およびそのと
+きの\((x^{0},y^{0})\)を求める方法を、ラグランジュの未定乗数法と呼びます。よ
+り一般化すると、以下が成立します\cite{info_theor1,integra11}。
+
+変数\(x_{1},x_{2},\cdots,x_{n}\)は次の\(m (<n)\)個の等式で制約されている
+ものとします。
+
+\begin{equation}
+g_{i}(x_{1},x_{2},\cdots,x_{n})=0 \quad (i = 1,2,\cdots, m)
+\end{equation}
+
+このとき、関数\(f(x_{1},x_{2},\cdots,x_{n})\)が点
+\((x_{1}^{0},x_{2}^{0},\cdots,x_{n}^{0})\)で最大（または最小）となるため
+の必要条件は、以下のようになります。
+
+\begin{equation}
+\frac{\partial f}{\partial x_{1}}+\sum_{i=1}^{m}\lambda_{i} \frac{\partial g_{i}}{\partial x_{1}} = 0,
+\frac{\partial f}{\partial x_{2}}+\sum_{i=1}^{m}\lambda_{i} \frac{\partial g_{i}}{\partial x_{2}} = 0,
+\cdots,
+\frac{\partial f}{\partial x_{n}}+\sum_{i=1}^{m}\lambda_{i} \frac{\partial g_{i}}{\partial x_{n}} = 0
+\end{equation}
+
+
+\section{対応分析と相関係数の最大化}
+\label{ca_corr}
+
+今、\(f_{\cdot\cdot}\)個の要素が種別Aでは\(m\)個のグループのうちの必ず1
+つに分類され、また同時に種別Bでは\(n\)個のグループのうちの必ず1つに分類
+されるとします。そして、種別Aではグループ\(i(1 \leq i \leq m)\)に属し、
+種別Bではグループ\(j(1 \leq j \leq n)\)に属する要素が\(f_{ij}\)個あると
+仮定します。ここで、節\ref{CA_basic1}と同様、行列\(F\)、\(S\)、\(C\)を定義
+します。すなわち、
+
+\begin{displaymath}
+F=(f_{ij}), \quad S = (s_{ij}), \quad C=(c_{ij})
+\end{displaymath}
+
+\begin{displaymath}
+s_{ij}=\left\{
+   \begin{array}{ll}
+   0 & {\rm if}\ i \ne j\\
+   f_{i\cdot} & {\rm if}\ i = j\\
+   \end{array}
+\right. ,\quad
+c_{ij}=\left\{
+   \begin{array}{ll}
+   0 & {\rm if}\ i \ne j\\
+   f_{\cdot j} & {\rm if}\ i = j\\
+   \end{array}
+\right.
+\end{displaymath}
+
+\begin{displaymath}
+f_{i\cdot}=\sum_{l=1}^{n}f_{il}, \quad f_{\cdot j}=\sum_{k=1}^{m}f_{kj}, \quad
+f_{\cdot \cdot} = \sum_{k=1}^{m}\sum_{l=1}^{n}f_{kl}
+\end{displaymath}
+
+\noindent
+とします。
+
+種別Aにおけるそれぞれのグループ\(i\)にはそれぞれ\(x_{i}\)を、種別Bにおけ
+る、それぞれのグループ\(j\)にはそれぞれ\(y_{j}\)という値を対応させることを考えましょう。
+ここで\(x_{i},y_{j}\)の平均を0、すなわち
+
+\begin{equation}
+\sum_{k=1}^{m}x_{k}f_{k\cdot}=0 \quad
+\sum_{l=1}^{n}y_{l}f_{\cdot l}=0
+\label{CA_constr1}
+\end{equation}
+
+\noindent
+とします。また\(x\)と\(y\)の分散を1、すなわち、
+
+\begin{equation}
+\frac{x^{t}Sx}{f_{\cdot \cdot}}=1\quad 
+\frac{y^{t}Cy}{f_{\cdot \cdot}}=1
+\label{CA_constr2}
+\end{equation}
+
+\noindent
+とします。式\ref{CA_constr1}、\ref{CA_constr2}の制約の中で\(x\)と\(y\)の
+相関係数\(r\)を最大にする\(x\)、\(y\)はどのようになるか、以下求めてゆき
+ましょう\cite{MA_tanoshi}。
+
+まず相関係数\(r\)は、
+
+\begin{displaymath}
+r=\frac{x^{t}Fy}{\sqrt{x^{t}Sxy^{t}Cy}}=\frac{x^{t}Fy}{f_{\cdot \cdot}}
+\end{displaymath}
+
+\noindent
+となりますが、分母は定数となるため、\(x^{t}Fy\)を最大にすればいいことに
+なります。するとラグランジュの未乗数法により\(r\)を最大にするには、
+
+\begin{equation}
+f(x,y)=x^{t}Fy-\frac{\lambda}{2}(x^{t}Sx-f_{\cdot \cdot})
+-\frac{\mu}{2}(y^{t}Cy-f_{\cdot \cdot})
+\label{CA_lag1}
+\end{equation}
+
+\noindent
+を最大にすればいいことになります。式\ref{CA_lag1}を\(x\)、\(y\)で偏微分して、
+
+\begin{equation}
+\label{ca_eq1}
+\frac{\partial f}{\partial x}=Fy-\lambda Sx = 0
+\end{equation}
+
+\begin{equation}
+\label{ca_eq2}
+\frac{\partial f}{\partial y}=F^{t}x-\mu Cy = 0
+\end{equation}
+
+\noindent
+を得ます。式\ref{ca_eq1}に左側から\(x^{t}\)を掛けると、
+
+\begin{equation}
+x^{t}Fy-\lambda x^{t}Sx=x^{t}Fy-f_{\cdot \cdot}\lambda=0
+\label{ca_eq3}
+\end{equation}
+
+\noindent
+となります。同様に式\ref{ca_eq2}の左側から\(y^{t}\)を掛けて、
+
+\begin{equation}
+y^{t}F^{t}x-\mu y^{t}Cy=y^{t}F^{t}-f_{\cdot \cdot}\mu=x^{t}Fy-f_{\cdot \cdot}\mu=0
+\label{ca_eq4}
+\end{equation}
+
+\noindent
+を得ます。すると式\ref{ca_eq3}と\ref{ca_eq4}より\(\lambda = \mu\)となり、
+かつ式\ref{ca_eq3}より\(\lambda = \frac{x^{t}Fy}{f_{\cdot \cdot}}\)となる。よって、
+\(\lambda\)が\(r\)の最大値となります。
+
+式\ref{ca_eq2}の\(\mu\)を\(\lambda\)に置き換え、移項することにより、
+\(\lambda y=C^{-1}F^{t}x\)となります。式\ref{ca_eq1}に\(\lambda\)を掛けた後
+にこれを代入して、
+
+\begin{equation}
+FC^{-1}F^{t}x-\lambda^{2}Sx=0
+\label{ca_eq5}
+\end{equation}
+
+\noindent
+となります。
+さらに式\ref{ca_eq5}に左側から\(S^{-\frac{1}{2}}\)を掛け、
+\(E=S^{-\frac{1}{2}}S^{\frac{1}{2}}\)を使うことにより、
+
+\begin{displaymath}
+S^{-\frac{1}{2}}FC^{-1}F^{t}S^{-\frac{1}{2}}(S^{\frac{1}{2}}x)
+-\lambda^{2}(S^{\frac{1}{2}}x)=0
+\end{displaymath}
+
+\noindent
+すなわち、
+
+\begin{equation}
+(S^{-\frac{1}{2}}FC^{-1}F^{t}S^{-\frac{1}{2}}
+-\lambda^{2}E)S^{\frac{1}{2}}x=0
+\label{ca_eq6}
+\end{equation}
+
+\noindent
+を満たすような\(x\)が\(r\)を極大にすることが分かりました。
+\(y\)は\(y=\frac{1}{\lambda}C^{-1}F^{t}x\)より求めることができます。
+
+式\ref{SVD_eq10}を式\ref{ca_eq_X}を用いて変形すると、
+
+\begin{equation}
+\frac{1}{\sqrt{f_{\cdot \cdot}}}(S^{-\frac{1}{2}}FC^{-1}F^{t}S^{-\frac{1}{2}}
+-d_{ii}^{2}E)S^{\frac{1}{2}}x_{i}=0
+\label{ca_eq7}
+\end{equation}
+
+\noindent
+となります。但し\(E\)は\(n\)次元の単位行列です。式\ref{ca_eq7}の両辺に
+\(\sqrt{f_{\cdot \cdot}}\)を掛ければ式\ref{ca_eq6}と\ref{ca_eq7}は同じ形
+の式になります。従って式\ref{ca_eq7}を満たす\(x\)および\(d_{ii}\)(式
+\ref{ca_eq6}では\(\lambda\))が式\ref{ca_eq6}も満たすことが分かります。
+結局対応分析は、種別Aの各グループと種別Bの各グループにA、B間の相関が最大に
+なるように数値を与える手法であることが分かります。
+
+なお、\(\lambda=1, x=1, y=1\)が式\ref{ca_eq1}、\ref{ca_eq2}の解となっており、
+対応分析をするとこれが次元の１つ(最初の次元)として出てくることが分かります。
+

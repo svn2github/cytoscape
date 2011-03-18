@@ -1,0 +1,149 @@
+\section{カイ自乗分布}
+\label{chi_discr}
+
+\subsection{ガンマ関数}
+
+以下の式で定義される\(\Gamma\)を{\bf ガンマ関数}\index{がんまかんすう@ガンマ関数}という。
+
+\begin{equation}
+\Gamma(s)=\int^{\infty}_{0}x^{s-1}e^{-x}dx
+\label{eq_gamma150}
+\end{equation}
+
+\(\Gamma(1)=1\)となることは容易に確かめられる。
+式\ref{integ10}に式\ref{eqn367}から導かれた\(C=\frac{1}{\sqrt{2\pi}}\)を代入すると、
+\(\int_{0}^{\infty}e^{-z^{2}}dz=\frac{\sqrt{\pi}}{2}\)であるが、\(y=\sqrt{x},\ dy=\frac{1}{2\sqrt{x}}\)なる変数変換をした
+上でこれを代入すると、
+
+\begin{equation}
+\Gamma(\frac{1}{2})=2\int_{0}^{\infty}e^{-y^{2}}dy=\sqrt{\pi}
+\end{equation}
+
+\noindent
+となる。また式\ref{eq_gamma150}を部分積分することによって、
+
+\begin{equation}
+\Gamma(s)=\left[-x^{s-1}e^{-x} \right]_{0}^{\infty} + (s-1)\int_{0}^{\infty}x^{s-2}e^{-x}dx
+=(s-1)\Gamma(s-1)
+\end{equation}
+
+\noindent
+となる。特に正の整数\(n\)に対して、
+
+\begin{equation}
+\Gamma(n)=(n-1)!
+\end{equation}
+
+\noindent
+が成立している。この意味でガンマ関数は階乗の定義を小数にまで拡張したものと考えることもできる。
+
+\subsection{ガンマ分布}
+\label{gamma_distr12}
+
+以下の確率密度関数に従う確率分布を{\bf ガンマ分布}\index{がんまぶんぷ@ガンマ分布}といい、\(G(\alpha, \beta)\)で表す。
+
+\begin{equation}
+f(x|\alpha, \beta)=\left\{\begin{array}{ll}
+\frac{1}{\Gamma(\alpha)\beta^{\alpha}}x^{\alpha-1}\exp(-\frac{x}{\beta}) & \mbox{for}\ x > 0\\
+0 & \mbox{for}\ x \leq 0
+\end{array}
+\right.
+\label{eq_gamma10}
+\end{equation}
+
+\noindent
+但し、\(\alpha > 0,\ \beta > 0\)である。式\ref{eq_gamma10}の\(x^{\alpha-1}\exp(-\frac{x}{\beta})\)の部分は、
+\(x=\beta y\)という変数変換を行うと、
+
+\begin{displaymath}
+\int_{0}^{\infty}x^{\alpha-1}\exp(-\frac{x}{\beta})dx=\beta^{\alpha}\int_{0}^{\infty}y^{\alpha-1}\exp(-y)dy=\Gamma(\alpha)\beta^{\alpha}
+\end{displaymath}
+
+\noindent
+となり、確率密度関数の性質の1つである\(\int_{0}^{\infty}f(x|\alpha, \beta)=0\)が成立することが分かる。
+
+次にガンマ分布の積率母関数を求めよう。まず、
+
+\begin{displaymath}
+E(e^{tX})=\int_{0}^{\infty}\exp(tx)\frac{\beta^{-\alpha}}{\Gamma(\alpha)}x^{\alpha-1}\exp(-\frac{x}{\beta})
+=\frac{\beta^{-\alpha}}{\Gamma(\alpha)}\int_{0}^{\infty}x^{\alpha-1}\exp\{-(1-\beta t)\frac{x}{\beta}\}dx
+\end{displaymath}
+
+\noindent
+となるが、ここで\(\frac{(1-\beta t)}{\beta}x=u\)とおくと、
+
+\begin{eqnarray}
+& & \frac{\beta^{-\alpha}}{\Gamma(\alpha)}\int_{0}^{\infty}x^{\alpha-1}\exp\{-(1-\beta t)\frac{x}{\beta}\}dx
+=\frac{\beta^{-\alpha}}{\Gamma(\alpha)}\int_{0}^{\infty}\left(\frac{\beta u}{1-\beta t}\right)^{\alpha-1}
+\exp(-u)\frac{\beta}{1-\beta t}du
+\nonumber\\
+& & =\frac{\beta^{-\alpha}}{\Gamma(\alpha)}\frac{\beta^{\alpha}}{(1-\beta t)^{\alpha}}\int_{0}^{\infty}
+u^{\alpha-1}\exp(-u)du=(1-\beta t)^{-\alpha}
+\nonumber
+\end{eqnarray}
+
+\noindent
+となり、ガンマ分布の積率母関数は\((1-\beta t)^{-\alpha}\)であることが分かる。
+
+\(X \sim G(\alpha_{1},\beta)\)、\(Y \sim G(\alpha_{2},\beta)\)となる2つの確率変数\(X\)、\(Y\)を
+考えると、\(X+Y\)の積率母関数は式\ref{eq_mgf_conv17}より
+\((1-\beta t)^{-\alpha_{1}}(1-\beta t)^{-\alpha_{2}}=(1-\beta t)^{-(\alpha_{1}+\alpha_{2})}\)
+となる。これは\(G(\alpha_{1}+\alpha_{2},\beta)\)の積率母関数に他ならない。
+従って\(G(\alpha_{1},\beta)\)に従う確率変数と\(G(\alpha_{2},\beta)\)に従う確率変数を
+足した値は\(G(\alpha_{1}+\alpha_{2},\beta)\)に従う。
+
+このようにある確率分布に従う確率変数\(X\)と、同じ性質をもった確率分布に従う確率変数\(Y\)の和が
+再び同じ性質を持った確率分布に従うとき、その確率分布は{\bf 再生性}(reproductive property)\index{さいせいせい@再生性}を持つという。
+
+
+\subsection{カイ自乗分布の確率密度関数}
+
+確率変数\(X\)が標準正規分布\(N(0,1)\)に従うとき、\(Y=X^{2}\)はどのような分布に従うのだろうか？
+\(Y\)の分布関数\(G(y)=P(Y\leq y)\)を用いると、\(y \geq 0\)に対して、
+
+\begin{displaymath}
+G(y)=P(Y \leq y)=P(X^{2} \leq y)=P(-\sqrt{y}\leq X \leq \sqrt{y})
+\end{displaymath}
+
+\noindent
+になる。標準正規分布は原点に関して対称なので、
+
+\begin{displaymath}
+G(y)=2P(0\leq X \leq \sqrt{y})
+=2\int^{\sqrt{y}}_{0}(2\pi)^{\frac{1}{2}}e^{-\frac{x^{2}}{2}}dx
+\end{displaymath}
+
+\noindent
+となる。
+ここで、\(u=x^{2}\)となる変数変換を行うと、
+\(dx=\frac{1}{2}u^{-\frac{1}{2}}du\)より、
+
+\begin{equation}
+G(y)=\int^{y}_{0}\frac{1}{\sqrt{2\pi}}u^{-\frac{1}{2}}e^{-\frac{u}{2}}du
+\label{chi_deriv2}
+\end{equation}
+
+\noindent
+となる。
+従って確率密度関数は\ref{chi_deriv2}を微分して、
+
+\begin{equation}
+g(y)=\frac{1}{\Gamma(\frac{1}{2})2^{\frac{1}{2}}}y^{-\frac{1}{2}}e^{-\frac{y}{2}}
+\end{equation}
+
+\noindent
+となる。これは実は\(G(\frac{1}{2},2)\)のガンマ分布に他ならない。
+小節\ref{gamma_distr12}で触れたようにガンマ分布は再生性を持っているから、
+\(Y_{n}=X_{1}^{2}+X_{2}^{2}+\cdots +X_{n}^{2}\)は\(G(\frac{n}{2},2)\)に従う。すなわち
+\(Y\)の確率密度関数は
+
+\begin{equation}
+f(x)=\frac{1}{\Gamma(\frac{n}{2})2^{\frac{n}{2}}}x^{\frac{n}{2}-1}e^{-\frac{x}{2}},\ \ \ \ \ 0 < x < \infty
+\label{chi_dist}
+\end{equation}
+
+\noindent
+となる。式\ref{chi_dist}に従う分布
+を\(\chi^{2}\)分布と呼び、この場合の\(n\)を自由度と呼ぶ。
+
+

@@ -1,0 +1,150 @@
+\section{テイラー展開}
+\label{taylor}
+\setcounter{exer}{0}
+\setcounter{preexer}{0}
+\setcounter{theorem}{0}
+
+\subsection{平均値の定理}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}: \index{ろるのていり@ロルの定理} \(f(x)\)が区間\([a,b]\)で連続、\((a,b)\)で微分可能であり、
+\(f(a)=f(b)=0\)なら、\(f'(c)=0\ \ \ (a < c < b)\)となる\(c\)が少なくとも
+1つ存在する。これを{\bf ロルの定理}(Rolle's theorem)という。
+
+\noindent
+{\bf 証明\thesection-\thetheorem}: \(f(x)\)が定数なら、\(f'(x)=0\)となり、定理は明らかである。それ以外に
+関しては、閉区間\([a,b]\)で\(f(x)\)には最大値\(M\)と最小値\(m\)が存在する。
+\(M\neq f(a)\)なら、最大値を与える点を\(x=c\)とすると、\(M=f(c)\)。十分
+小さい\(h\)に対し\(f(c+h)-f(c)\leq 0\)だから、
+
+\begin{eqnarray}
+\frac{f(c+h)-f(c)}{h}\leq 0 \ \ \ \ \ \ (h > 0)\nonumber\\
+\frac{f(c+h)-f(c)}{h}\geq 0 \ \ \ \ \ \ (h < 0)\nonumber
+\end{eqnarray}
+
+\noindent
+\(f(x)\)は微分可能だから、\(h\to 0\)の極限を取れば両者は\(f'(c)=0\)を与えるが、
+\(f'(c)\leq 0\)かつ\(f'(c)\geq 0\)でなければならないから、\(f'(c)=0\)。
+また\(M=f(a)\)のとき、\((a,b)\)に最小値\(m\)を与える\(x=c'\)が存在するから、
+上と同様にして、\(f'(c)\geq 0, f'(c) \leq 0\)でなければならず、\(f'(c')=0\)となる
+\(c'\)が\((a,b)\)内に存在する。
+
+\begin{flushright}
+□
+\end{flushright}
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}: \index{へいきんちのていり@平均値の定理} \(f(x)\)が区間\([a,b]\)で連続で区間\((a,b)\)で微分可能ならば、
+
+\begin{equation}
+f(b)-f(a)=f'(c)(b-a)
+\label{eqn_av10}
+\end{equation}
+
+\noindent
+となる\(c\ \ (a < c < b)\)が少なくとも1つ存在する。これを{\bf 平均値の定理}という。
+
+\noindent
+{\bf 証明\thesection-\thetheorem}:
+
+\begin{displaymath}
+F(x)=f(b)-f(x)-\frac{f(b)-f(a)}{b-a}(b-x)
+\end{displaymath}
+
+\noindent
+を考えれば、\(F(x)\)は\([a,b]\)で連続、\((a,b)\)で微分可能である。
+\(F(a)=F(b)\)だから、\(F(x)\)のロルの定義が適用できて、\(F'(c)=0\)となる\(c\)が
+少なくとも区間\((a,b)\)に1つは存在する。
+
+\begin{displaymath}
+F'(x)=-f'(x)+\frac{f(b)-f(a)}{b-a}
+\end{displaymath}
+
+\noindent
+より、\(F'(c)=0\)とおいて、
+
+\begin{displaymath}
+f'(c)=\frac{f(b)-f(a)}{b-a}
+\end{displaymath}
+
+\begin{flushright}
+□
+\end{flushright}
+
+\((a,b)\)内の点\(c\)は\(c=a+\theta(b-a)\ \ (0 < \theta < 1)\)と表すこともでき、
+式\ref{eqn_av10}は、
+
+\begin{equation}
+f(b)=f(a)+f'(a+\theta(b-a))(b-a)
+\end{equation}
+
+\noindent
+と書くことができる。
+
+
+\subsection{テイラーの定理}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}: \(f(x),f'(x),\cdots,f^{(n-1)}(x)\)は\([a,b]\)で連続で\((a,b)\)で\(f^{(n)}(x)\)が存在すれば、
+
+\begin{eqnarray}
+f(b)=f(a)+\frac{f'(a)}{1!}(b-a)+\frac{f''(a)}{2!}(b-a)^{2}+\nonumber\\
+\cdots +\frac{f^{(n-1)}(a)}{(n-1)!}(b-a)^{n-1}+\frac{f^{(n)}(c)}{n!}(b-a)^{n}\nonumber\\
+(a<c<b)
+\end{eqnarray}
+
+\noindent
+となるような\(c\)が存在する。これをテイラーの定理(Taylor's theorem)と呼
+び、上式の右辺を左辺の{\bf テイラー展開}\index{ていらーてんかい@テイラー展開}(Taylor expansion)という。
+
+\vspace{1em}
+
+\noindent
+{\bf 証明\thesection-\thetheorem}:
+
+\begin{eqnarray}
+f(b)=f(a)+\frac{f'(a)}{1!}(b-a)+\frac{f''(a)}{2!}(b-a)^{2}+\nonumber\\
+\cdots +\frac{f^{(n-1)}(a)}{(n-1)!}(b-a)^{n-1}+\frac{k}{n!}(b-a)^{n}
+\label{taylor_p1}
+\end{eqnarray}
+
+\noindent
+とおく。\(k\)以外の変数が固定されていても、\(k\)の値を調整すれば、式\ref{taylor_p1}を
+成立させることができる。右辺の\(a\)を\(x\)に置き換え、\(f(b)\)から引くと、
+
+\begin{eqnarray}
+F(x)=f(b)-f(x)-\frac{f'(x)}{1!}(b-x)-\frac{f''(x)}{2!}(b-x)^{2}-\nonumber\\
+\cdots -\frac{f^{(n-1)}(x)}{(n-1)!}(b-x)^{n-1}+\frac{k}{n!}(b-x)^{n}
+\end{eqnarray}
+
+\noindent
+\(F(a)=0, F(b)=0\)であり、Rolleの定理から\(F'(c)=0, a<c<b\)となる\(c\)が存在する。
+
+\begin{equation}
+F'(c)=-\frac{f^{(n)}(c)}{(n-1)!}(b-c)^{n-1}+\frac{k}{(n-1)!}(b-c)^{n-1}=0
+\end{equation}
+
+\noindent
+より\(k=f^{(n)}(c)\)を得る。
+
+\vspace{-1em}
+
+\begin{flushright}
+□
+\end{flushright}
+
+区間\([a,b]\)は任意だから、\(a=0\)、\(b=x\)とおけば次のマクローリン展開\index{まくろーりんてんかい@マクローリン展開}
+(Maclaurin expansion)と呼ばれる展開式が得られる。
+
+\begin{eqnarray}
+f(x) & = & f(0)+\frac{f'(0)}{1!}x+\frac{f''(0)}{2!}x^{2}+\cdots\nonumber\\
+     &   & +\frac{f^{n-1}(0)}{(n-1)!}x^{n-1}+\frac{f^{n}(\theta x)}{n!}x^{n}\ \ \ \ \ \ \ \ (0 < \theta < 1)
+\end{eqnarray}

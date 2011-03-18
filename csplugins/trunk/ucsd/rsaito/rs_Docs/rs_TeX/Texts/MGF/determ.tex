@@ -1,0 +1,986 @@
+
+\section{行列式}
+\setcounter{exer}{0}
+\setcounter{preexer}{0}
+\setcounter{theorem}{0}
+
+\label{determ}
+
+\subsection{置換}
+
+有限集合\(\omega\)から\(\omega\)自身への1対1の写像を\(\omega\)の置換とい
+う。特に\(M=\{1,2,\cdots,n\}\)とするとき、\(M\)の置換を\(n\)文字の置換という。
+置換\(\sigma:M\to M\)を
+
+\begin{equation}
+\sigma=\left(\Downarrow
+\begin{array}{cccc}
+1         & 2         & \cdots & n\\
+\sigma(1) & \sigma(2) & \cdots & \sigma(n)\\
+\end{array}
+\right)
+\end{equation}
+
+\noindent
+と表す。
+
+\begin{equation}
+I=\left(\Downarrow
+\begin{array}{cccc}
+1 & 2 & \cdots & n\\
+1 & 2 & \cdots & n\\
+\end{array}
+\right)
+\end{equation}
+
+\noindent
+を恒等置換という。また2つの置換
+
+\begin{equation}
+\sigma=\left(\Downarrow
+\begin{array}{cccc}
+1         & 2         & \cdots & n\\
+\sigma(1) & \sigma(2) & \cdots & \sigma(n)\\
+\end{array}
+\right),\quad
+\tau=\left(\Downarrow
+\begin{array}{cccc}
+1         & 2         & \cdots & n\\
+\tau(1) & \tau(2) & \cdots & \tau(n)\\
+\end{array}
+\right)
+\end{equation}
+
+\noindent
+に対し、\(\sigma\)と\(\tau\)の合成写像
+
+\begin{eqnarray}
+\tau\sigma=\left(\Downarrow
+\begin{array}{cccc}
+\sigma(1)       & \sigma(2)       & \cdots & \sigma(n)\\
+\tau(\sigma(1)) & \tau(\sigma(2)) & \cdots & \tau(\sigma(n))\\
+\end{array}
+\right)
+\left(\Downarrow
+\begin{array}{cccc}
+1         & 2         & \cdots & n\\
+\sigma(1) & \sigma(2) & \cdots & \sigma(n)\\
+\end{array}
+\right)\nonumber\\
+=\left(\Downarrow
+\begin{array}{cccc}
+1               & 2               & \cdots & n\\
+\tau(\sigma(1)) & \tau(\sigma(2)) & \cdots & \tau(\sigma(n))\\
+\end{array}
+\right)\mbox{\hspace{12.7em}}
+\end{eqnarray}
+
+\noindent
+を\(\sigma\)と\(\tau\)の積と呼ぶ。また
+置換\(\sigma=\left(\Downarrow
+\begin{array}{cccc}
+1         & 2         & \cdots & n\\
+\sigma(1) & \sigma(2) & \cdots & \sigma(n)\\
+\end{array}
+\right)\)に対して、
+
+\begin{equation}
+\sigma^{-1}=\left(\Downarrow
+\begin{array}{cccc}
+\sigma(1)       & \sigma(2)       & \cdots & \sigma(n)\\
+1               & 2               & \cdots & n\\
+\end{array}
+\right)
+=\left(\Downarrow
+\begin{array}{cccc}
+1         & 2         & \cdots & n\\
+\sigma^{-1}(1) & \sigma^{-1}(2) & \cdots & \sigma^{-1}(n)\\
+\end{array}
+\right)
+\end{equation}
+
+\noindent
+を\(\sigma\)の逆置換という。さらに\(i,j\)を異なる2つの文字とするとき、置換\(\sigma\)によって
+
+\begin{equation}
+\sigma(i)=j,\ \sigma(j)=i, \quad \mbox{その他の}M\mbox{の文字は動かない}
+\end{equation}
+
+\noindent
+のとき、すなわち、\(i\)と\(j\)だけが入れ替わるとき、\(\sigma\)は互換であるといい、
+
+\begin{equation}
+\sigma=(i,j)
+\end{equation}
+
+\noindent
+で表す。そして、\(i_{1},\cdots,i_{r}\)を\(M\)の互いに異なる文字とするとき、
+置換\(\sigma\)によって
+
+\begin{equation}
+\sigma(i_{1})=i_{2},\ \sigma(i_{2})=i_{3},\ \cdots, \ \sigma(i_{r})=i_{1}, \quad \mbox{その他の文字は動かない}
+\end{equation}
+
+\noindent
+とするとき、\(\sigma\)を\(r\)次の巡回置換といい、
+
+\begin{equation}
+\sigma=(i_{1},i_{2},\cdots,i_{r})
+\end{equation}
+
+\noindent
+で表す。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}: 任意の置換は互換の積で表せる。
+
+\noindent
+{\bf 証明\thesection-\thetheorem}: 置換\(\sigma\)が恒等置換\(I\)ならば、それは0個の互換の積と考えられるので、以下、\(\sigma \neq I\)について考える。まず\(\sigma\)が巡回
+置換の積で表されることを示す。\(\sigma(i_{1})\neq i_{1}\)となる\(i\)を1
+つとり、\(i,\ \sigma(i_{1}), \ \sigma^{2}(i_{1}), \ \cdots \)の中で最初
+に\(\sigma^{r_{1}}(i_{1})=i_{1}\)となる自然数\(r_{1}\)をとる。このとき、以下の巡回置換\(\sigma_{1}\)を考える。
+
+\begin{equation}
+\sigma_{1}=(i_{1},\ \sigma(i_{1}), \ \cdots, \sigma^{r_{1}-1}(i_{1}))
+\end{equation}
+
+このとき\(\sigma=\sigma_{1}\)ならば、\(\sigma\)が巡回置換1つの積と考えられる。
+\(\sigma \neq \sigma_{1}\)ならば、\(i_{1},\sigma(i_{1}),\cdots,\sigma{r_{1}-1}(i_{1})\)のどれとも
+異なる\(i_{2}\)で、\(\sigma(i_{2})\neq i_{2}\)を満たす文字\(i_{2}\)がある。上と同様にして、以下の巡回置換が得られる。
+
+\begin{equation}
+\sigma_{2}=(i_{2},\sigma(i_{2}),\cdots,\sigma^{r_{2}-1}(i_{2}))
+\end{equation}
+
+\noindent
+この操作を続けると巡回置換\(\sigma_{1},\sigma_{2},\cdots,\sigma_{k}\)が得られ、しかも\(\sigma\)は
+\(\sigma=\sigma_{1}\sigma_{2}\cdots\sigma_{k}\)と表せる。
+
+一方で任意の巡回置換\(\tau=(i_{1},i_{2},\cdots,i_{r}\))は、互換\((i_{1},i_{r}),(i_{1},i_{r-1}),\cdots,(i_{1},i_{2})\)
+によって、
+
+\begin{equation}
+\tau=(i_{1},i_{r})(i_{1},i_{r-1})\cdots (i_{1},i_{2})
+\end{equation}
+
+\noindent
+と表される。以上により、任意の置換\(\sigma\)は互換の積として表されることが分かる。
+
+\begin{flushright}
+□
+\end{flushright}
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}: 1つの置換を互換の積で表すとき使われる互換の個数が偶数であるか奇数であるかは、その表し方に
+よらないで定まる。
+
+\noindent
+{\bf 証明\thesection-\thetheorem}: 差積と呼ばれる以下の多項式を考える。
+
+\begin{eqnarray}
+\Delta(x_{1},\cdots,x_{n})=\Pi_{i<j}(x_{i}-x_{j})
+=(x_{1}-x_{2})(x_{1}-x_{3})\cdots(x_{1}-x_{n})\nonumber\\
+(x_{2}-x_{3})\cdots(x_{2}-x_{n})\nonumber\\
+\vdots\nonumber\\
+(x_{n-1}-x_{n})
+\end{eqnarray}
+
+\noindent
+\(\Delta\)の変数\(x_{1},\cdots,x_{n}\)を置換\(\sigma\)によって、\(x_{\sigma(1)},\cdots,x_{\sigma(n)}\)に
+置き換えた式を\(\sigma\Delta\)と書く。すなわち、
+
+\begin{equation}
+\sigma\Delta(x_{1},\cdots,x_{n})=\Delta(x_{\sigma(1)},\cdots,x_{\sigma(n)})
+\end{equation}
+
+\noindent
+と書く。このとき、互換\(\tau=(i,j) (i < j)\)によって、
+
+\begin{equation}
+\tau\Delta(x_{1},\cdots,x_{n})=-\Delta(x_{1},\cdots,x_{n})
+\end{equation}
+
+\noindent
+となることが分かる。実際、互換\(\tau=(i,j) (i < j)\)をほどこすと、
+
+\begin{enumerate}
+\item \(x_{i}-x_{j}\)の項は\(-(x_{i}-x_{j})\)
+\item \((x_{k}-x_{i})(x_{k}-x_{j})\)の項は\((x_{k}-x_{j})(x_{k}-x_{i})\quad (k < i)\)
+\item \((x_{i}-x_{k})(x_{k}-x_{j})\)の項は\((x_{j}-x_{k})(x_{k}-x_{i})\quad (i < k < j)\)
+\item \((x_{i}-x_{k})(x_{j}-x_{k})\)の項は\((x_{j}-x_{k})(x_{i}-x_{k})\quad (j < k)\)
+\item それ以外の部分で不変
+\end{enumerate}
+
+\noindent
+となる。最初の場合だけ符号が変化し、その他の場合は対になっている2つの因数の積は変わらない。
+今置換\(\sigma\)が互換\(\tau_{1},\cdots,\tau_{s}\)、\(\rho_{1},\cdots,\rho_{t}\)を使って
+
+\begin{equation}
+\rho=\tau_{1}\tau_{2}\cdots\tau_{k}=\rho_{1}\rho_{2}\cdots\rho_{t}
+\end{equation}
+
+\noindent
+の2通りに表せたとすると、
+
+\begin{eqnarray}
+\sigma\Delta(x_{1},x_{2},\cdots,x_{n})=(-1)^{s}\Delta(x_{1},\cdots,x_{n})\nonumber\\
+=(-1)^{t}\Delta(x_{1},\cdots,x_{n})\nonumber\\
+\end{eqnarray}
+
+\noindent
+が得られる。従って、\(s\)と\(t\)は共に奇数か偶数である。
+
+\begin{flushright}
+□
+\end{flushright}
+
+置換\(\sigma\)が偶数個の互換の積で表されるとき、\(\sigma\)を偶置換、奇数個の積で表されるとき
+奇置換という。さらに置換\(\sigma\)に対し、その符号を
+
+\begin{equation}
+\mbox{sgn}\ \sigma=\left\{
+\begin{array}{cc}
++1 & (\sigma\mbox{が偶置換のとき})\\
+-1 & (\sigma\mbox{が奇置換のとき})\\
+\end{array}\right.
+\end{equation}
+
+\noindent
+によって定義する。
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ 置換\(\sigma=\left(\Downarrow
+\begin{array}{cccc}
+1 & 2 & 3 & 4\\
+2 & 4 & 1 & 3\\
+\end{array}
+\right)\)に対し、\(\mbox{sgn}\ \sigma\)を求めよ。
+
+
+\subsection{行列式の定義}
+
+\(n\)次正方行列\(A=(a_{ij})\)に対し、以下の\(|A|\)を\(A\)の{\bf 行列式}\index{ぎょうれつしき@行列式}という。
+
+\begin{equation}
+|A|=\sum_{\sigma \in S_{n}} \mbox{sgn}\ \sigma\cdot a_{1\sigma(1)}a_{2\sigma(2)}\cdots a_{n\sigma(n)}
+\end{equation}
+
+\noindent
+但し\(S_{n}\)は\(n\)文字の置換全てを含む集合を表す。
+これは以下のようにも表される。
+
+\begin{equation}
+|A|=\mbox{det}\ A=\left|
+\begin{array}{cccc}
+a_{11} & a_{12} & \cdots & a_{1n} \\
+a_{21} & a_{22} & \cdots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} & a_{n2} & \cdots & a_{nn} \\
+\end{array}
+\right|
+\end{equation}
+
+\noindent
+\(A\)が\(n\)次正方行列のとき、\(|A|\)を\(n\)次の行列式という。例として2次の行列式を求めてみよう。
+
+\begin{eqnarray}
+\left|
+\begin{array}{cc}
+a_{11} & a_{12}\\
+a_{21} & a_{22}\\
+\end{array}\right|
+=\mbox{sgn}\left(\Downarrow
+\begin{array}{cc}
+1 & 2\\
+1 & 2\\
+\end{array}\right)a_{11}a_{22}
++\mbox{sgn}\left(\Downarrow
+\begin{array}{cc}
+1 & 2\\
+2 & 1\\
+\end{array}\right)a_{12}a_{21}
+=a_{11}a_{22}-a_{12}a_{21}
+\end{eqnarray}
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ 3次の行列式\(
+\left|
+\begin{array}{ccc}
+a_{11} & a_{12} & a_{13}\\
+a_{21} & a_{22} & a_{23}\\
+a_{31} & a_{32} & a_{33}\\
+\end{array}\right|\)を求めよ。
+
+\subsection{行列式の性質}
+
+ここではいくつか有用な行列式の性質について触れておこう。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}: 正方行列\(A\)の転置行列\(A^{t}\)の行列式は\(A\)の行列式に等しい。すなわち、
+
+\begin{equation}
+|A^{t}|=|A|
+\end{equation}
+
+\noindent
+{\bf 証明\thesection-\thetheorem}: \(A=(a_{ij})\)とし、\(A^{t}=(b_{ij})\)とすれば、\(b_{ij}=a_{ji}\)であるから、
+
+\begin{displaymath}
+|A^{t}| = \sum_{\sigma \in S_{n}}\mbox{sgn}\ \sigma b_{1\sigma(1)}b_{2\sigma(2)}\cdots b_{n\sigma(n)}
+        = \sum_{\sigma \in S_{n}}\mbox{sgn}\ \sigma a_{\sigma(1)1}a_{\sigma(2)2}\cdots a_{\sigma(n)n}
+\end{displaymath}
+
+\noindent
+\(\sigma^{-1}=\tau\)とおくと、
+
+\begin{displaymath}
+\sigma^{-1}=
+\left(\Downarrow
+\begin{array}{cccc}
+\sigma(1) & \sigma(2) & \cdots & \sigma(n)\\
+       1  &        2  & \cdots &        n \\
+\end{array}
+\right)
+=\tau=
+\left(\Downarrow
+\begin{array}{cccc}
+     1  &      2  & \cdots &      n \\
+\tau(1) & \tau(2) & \cdots & \tau(n) \\
+\end{array}
+\right)
+\end{displaymath}
+
+\noindent
+ところで、\(\mbox{sgn}\ \sigma=\mbox{sgn}\ \sigma^{-1}=\mbox{sgn}\ \tau\)。ここで\(\{\sigma^{-1}|\sigma \in S_{n}\}=S_{n}\)である
+ことに注意すれば、
+
+\begin{eqnarray}
+|A^{t}| & = & \sum_{\sigma\in S_{n}}\mbox{sgn}\ \sigma^{-1} a_{1\sigma^{-1}(1)}a_{2\sigma^{-1}(2)}\cdots a_{n\sigma^{-1}(n)}\nonumber\\
+        & = & \sum_{\tau\in S_{n}}\mbox{sgn}\ \tau a_{1\tau(1)}a_{2\tau(2)}\cdots a_{n\tau(n)}\nonumber\\
+        & = & |A|\nonumber
+\end{eqnarray}
+
+\begin{flushright}
+□
+\end{flushright}
+
+この定理により、行列式に関する性質で、行に関して成り立つことは全て列に関しても成り立ち、逆に列に関して
+成り立つことは全て行に対しても成り立つ(行と列の双対性)。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:\label{theorem_det_add10} 行列式において、ある行の足し算は以下のように分解される。
+\begin{eqnarray}
+& & \left|
+\begin{array}{ccccc}
+a_{11}  & a_{12}  & \cdots & \cdots & a_{1n} \\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{i1}+a_{i1}' & a_{i2}+a_{i2}' & \cdots & \cdots & a_{in}+a_{in}'\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & \cdots & a_{nn}\\
+\end{array}\right|\nonumber\\
+& & = \left|
+\begin{array}{ccccc}
+a_{11}  & a_{12}  & \cdots & \cdots & a_{1n} \\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{i1}  & a_{i2}  & \cdots & \cdots & a_{in}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & \cdots & a_{nn}\\
+\end{array}\right|+
+\left|
+\begin{array}{ccccc}
+a_{11}  & a_{12}  & \cdots & \cdots & a_{1n} \\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{i1}'  & a_{i2}'  & \cdots & \cdots & a_{in}'\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & \cdots & a_{nn}\\
+\end{array}\right|
+\label{eq_det19_0}
+\end{eqnarray}
+
+\noindent
+{\bf 証明\thesection-\thetheorem}: 
+
+\begin{eqnarray}
+\mbox{左辺} & = & \sum_{\sigma \in S_{n}}\mbox{sgn}\ \sigma \sigma_{1\sigma(1)}\sigma_{2\sigma(2)}\cdots(a_{i\sigma(i)}+a_{i\sigma(i)}')\cdots a_{n\sigma(n)}\nonumber\\
+            & = & \sum_{\sigma \in S_{n}}\mbox{sgn}\ \sigma \sigma_{1\sigma(1)}\sigma_{2\sigma(2)}\cdots a_{i\sigma(i)}\cdots a_{n\sigma(n)}\nonumber\\
+            &   & + \sum_{\sigma \in S_{n}}\mbox{sgn}\ \sigma \sigma_{1\sigma(1)}\sigma_{2\sigma(2)}\cdots a_{i\sigma(i)}'\cdots a_{n\sigma(n)}\nonumber\\
+            & = & \mbox{右辺}\nonumber
+\end{eqnarray}
+
+\vspace{1em}
+
+定理\thesection-\ref{theorem_det_add10}より次の定理\thesection-\ref{theorem_det_mult10}が導かれる。
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:\label{theorem_det_mult10} 行列式において、ある行を\(c\)倍したものは全体を\(c\)倍したものに等しい。すなわち、
+\begin{equation}
+\left|
+\begin{array}{ccccc}
+a_{11}  & a_{12}  & \cdots & \cdots & a_{1n} \\
+\vdots  & \vdots  &        &        & \vdots \\
+ca_{i1} & ca_{i2} & \cdots & \cdots & ca_{in}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & \cdots & a_{nn}\\
+\end{array}\right|=
+c\left|
+\begin{array}{ccccc}
+a_{11}  & a_{12}  & \cdots & \cdots & a_{1n} \\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{i1}  & a_{i2}  & \cdots & \cdots & a_{in}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & \cdots & a_{nn}\\
+\end{array}\right|
+\label{eq_det19}
+\end{equation}
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}: 行列式において、ある行と別の行を入れ替えると、行列式の符号が入れ替わる。
+すなわち、
+\begin{equation}
+\left|
+\begin{array}{ccccc}
+a_{11}  & a_{12}  & \cdots & \cdots & a_{1n} \\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{i1}  & a_{i2}  & \cdots & \cdots & a_{in}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{k1}  & a_{k2}  & \cdots & \cdots & a_{kn}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & \cdots & a_{nn}\\
+\end{array}\right|=
+-\left|
+\begin{array}{ccccc}
+a_{11}  & a_{12}  & \cdots & \cdots & a_{1n} \\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{k1}  & a_{k2}  & \cdots & \cdots & a_{kn}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{i1}  & a_{i2}  & \cdots & \cdots & a_{in}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & \cdots & a_{nn}\\
+\end{array}\right|
+\label{eq_detswap1}
+\end{equation}
+
+\noindent
+{\bf 証明\thesection-\thetheorem}:\label{theorem_deter_swap1}
+
+\begin{eqnarray}
+\mbox{左辺} & = & \sum_{\sigma}\mbox{sgn}\ \sigma a_{1\sigma(1)}\cdots a_{k\sigma(i)}\cdots a_{i\sigma(k)}\cdots a_{n\sigma(n)}\nonumber\\
+            & = & \sum_{\sigma}\mbox{sgn}\ \sigma a_{1\sigma(1)}\cdots a_{i\sigma(k)}\cdots a_{k\sigma(i)}\cdots a_{n\sigma(n)}\nonumber
+\end{eqnarray}
+
+\noindent
+ここで互換\(\tau=(i,k)\)に対し、\(\{\sigma\tau|\sigma \in S_{n}\}=S_{n}\)であることに注意すると、
+
+\begin{displaymath}
+左辺=\mbox{sgn}\ \tau\sum_{\sigma\tau}a_{1\sigma\tau(1)}\cdots a_{i\sigma\tau(i)}\cdots a_{k\sigma\tau(k)}\cdots a_{n\sigma\tau(n)}\cdot=\mbox{右辺}
+\end{displaymath}
+
+\begin{flushright}
+□
+\end{flushright}
+
+この定理\thesection-\ref{theorem_deter_swap1}から、次の定理\thesection-\ref{theorem_deter_zero10}が直ちに導かれる。
+
+\refstepcounter{theorem}
+
+\vspace{1em}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}: \label{theorem_deter_zero10} 正方行列\(A\)の2つの行が一致すれば、\(|A|=0\)となる。
+
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}: 行列式において、ある行の\(c\)倍を別の行に足したものはもとの行列式に等しい。すなわち、
+
+\begin{equation}
+\left|
+\begin{array}{ccccc}
+a_{11}  & a_{12}  & \cdots & \cdots & a_{1n} \\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{i1}  & a_{i2}  & \cdots & \cdots & a_{in}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{k1}+ca_{i1}  & a_{k2}+ca_{i2}  & \cdots & \cdots & a_{kn}+ca_{in}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & \cdots & a_{nn}\\
+\end{array}\right|=
+\left|
+\begin{array}{ccccc}
+a_{11}  & a_{12}  & \cdots & \cdots & a_{1n} \\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{i1}  & a_{i2}  & \cdots & \cdots & a_{in}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{k1}  & a_{k2}  & \cdots & \cdots & a_{kn}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & \cdots & a_{nn}\\
+\end{array}\right|
+\label{eq_det28}
+\end{equation}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}: 先頭を除いて一行目の要素が0の行列式は先頭の要素と先頭の行・列を削除した行列式との積に等しい。すなわち、
+\begin{equation}
+\left|
+\begin{array}{ccccc}
+a_{11}  & 0       & \cdots & 0 \\
+a_{21}  & a_{22}  & \cdots & a_{2n} \\
+\vdots  & \vdots  &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & a_{nn} \\
+\end{array}\right|=
+a_{11}\left|
+\begin{array}{cccc}
+a_{22}  & \cdots & a_{2n} \\
+\vdots  &        & \vdots \\
+a_{n2}  & \cdots & a_{nn} \\
+\end{array}
+\right|
+\end{equation}
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ \(
+\left|
+\begin{array}{cccc}
+-1 &  0 &  1 &  1\\ 
+ 2 & -1 &  0 &  2\\ 
+ 1 &  2 &  1 & -1\\ 
+-1 & -1 &  1 &  0\\ 
+\end{array}\right|\)の値を求めよ。
+
+\subsection{内積}
+\label{sec_inner_prod10}
+
+任意のベクトル\(a,b\)に対し、実数\(\left<a,b\right>\)が対応し、\(\left<a,b\right>\)が以下の条件を全て
+満たすとき、\(\left<a,b\right>\)を\(a\)と\(b\)の{\bf 内積}\index{ないせき@内積}という。
+
+\begin{enumerate}
+\item \(\left<a,b\right>=\left<b,a\right>\) \label{ip_cond1}
+\item \(\left<\lambda a,b\right>=\lambda\left<a,b\right>\) \label{ip_cond2} \hspace{1em} (\(\lambda\)は実数)
+\item \(\left<a+b,c\right>=\left<a,c\right>+\left<b,c\right>\) \label{ip_cond3} \hspace{1em} (\(c\)はベクトル)
+\item 常に\(\left<a,a\right> \geq 0\)。但し等号が成り立つのは、\(a=o\)のときに限る(必要十分条件)。\label{ip_cond4}
+\end{enumerate}
+
+任意のベクトル\(v\)に対し、
+
+\begin{equation}
+\|v\|=\sqrt{\left<v,v\right>}
+\end{equation}
+
+\noindent
+を\(v\)の長さ、または{\bf ノルム}\index{のるむ@ノルム}という。さらにベクトル\(u\)が
+
+\begin{equation}
+\left<u,u\right>=1
+\label{eq_unit_vector100}
+\end{equation}
+
+\noindent
+を満たすとき、\(u\)を単位ベクトルという。
+
+さて、ベクトル\(a,b\)に対して内積となる実数\(\left<a,b\right>\)は実際に
+はどのように計算すればよいだろうか。実は本小節の冒頭で述べた内積の4つの
+条件を満たす内積の定義は様々なものが考えられる。以下、2つのベクトル
+\(a=(a_{1},a_{2},\cdots,a_{n})^{t},\ b=(b_{1},b_{2},\cdots,b_{n})^{t}\)
+に対して式\ref{eq_inner_prod_std10}で定義される内積を標準内積と呼ぶ。
+
+\begin{equation}
+\left<a,b\right>=\sum_{i=1}^{n}a_{i}b_{i}
+\label{eq_inner_prod_std10}
+\end{equation}
+
+\noindent
+するとベクトル\(v=(v_{1},v_{2},\cdots,v_{n})^{t}\)の長さは
+
+\begin{equation}
+\|v\|=\sqrt{\left<v,v\right>}=\sqrt{v_{1}^2+v_{2}^{2}+\cdots+v_{n}^{2}}\nonumber\\
+\end{equation}
+
+\noindent
+となる。
+標準内積は内積の4つの条件を全て満たすことを確かめられたい。また式\ref{eq_inner_prod_std10}は以下のように
+書きなおすこともできる(問題\ref{determ}-\ref{inner_prod_cos102}参照)。
+
+\begin{equation}
+\left<a,b\right>=\|a\|\ \|b\|\cos \theta
+\label{eq_inner_prod_std11}
+\end{equation}
+
+\noindent
+但し\(\theta\)はベクトル\(a\)と\(b\)の
+なす角である。
+
+
+\(\left<a,b\right>=0\)のとき、\(a\)と\(b\)は{\bf 直交}するという。標準内積を表す式\ref{eq_inner_prod_std10}に当てはめて考えると、
+\(o\)でない2つのベクトルが直交するとき、
+\(\theta=\frac{\pi}{2}\)となり、2つのベクトルは直角を成すことが分かる。
+\(o\)でないベクトル\(a_{1},a_{2},\cdots,a_{n}\)はどの
+2つも直交するとき、直交系と呼ばれる。さらに単位ベクトルからなる直交系、すなわち、
+
+\begin{displaymath}
+\left<u_{i},u_{j}\right>=\delta_{ij}
+\end{displaymath}
+
+\noindent
+を満たすベクトル\(u_{1},u_{2},\cdots,u_{n}\)を{\bf 正規直交系}\index{せいきちょっこうけい@正規直交系}と呼ぶ。
+ここで\(\delta_{ij}\)は
+
+\begin{displaymath}
+\delta_{ij}=\left\{
+\begin{array}{cc}
+1 & (i=j)\\
+0 & (i\neq j)\\
+\end{array}\right.
+\end{displaymath}
+
+\noindent
+と定義され、クロネッカー(Kronecker)のデルタと呼ばれる。
+
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ 2つのベクトル\(a=(\sqrt{3},1)^{t},b=(2,2\sqrt{3})^{t}\)について
+標準内積および2つのベクトルが成す角度を求めよ。
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ \label{inner_prod_cos102} 2つのベクトル
+\(a=(a_{1},a_{2},\cdots,a_{n})^{t},\ b=(b_{1},b_{2},\cdots,b_{n})^{t}\)
+の内積が式\ref{eq_inner_prod_std10}、すなわち標準内積で定義されるとき、
+余弦定理(小節\ref{Law_of_cosines_II}参照)
+を使って式\ref{eq_inner_prod_std11}を導出せよ。
+
+
+\subsection{単位ベクトルへの分解}
+\label{unit_vector_dec}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.6]{Figures/vector_norm0}
+\end{center}
+\vspace{-2em}
+\caption{ベクトルの単位ベクトルへの分解}
+\label{vector_norm0}
+\end{figure}
+
+図\ref{vector_norm0}に示すように、
+互いに直交する2つの単位ベクトル\(u_{1},u_{2}\)およびベクトル\(x\)を考える。
+\(x\)は\(u_{1},u_{2}\)の一次結合で表される。すなわち、
+
+\begin{equation}
+x=a_{1}u_{1}+a_{2}u_{2}
+\label{eq_inner_prod_ossha1}
+\end{equation}
+
+\noindent
+となる
+実数\(a_{1},a_{2}\)が存在する。
+\(\left<x,u_{1}\right>\)はベクトル\(x\)を\(u_{1}\)の軸で考えたときの位置に相当し、
+\(\left<x,u_{1}\right>u_{1}\)は原点からその位置までのベクトルである。実際、\(\left<x,u_{1}\right>u_{1}\)
+から\(x\)の先端へ向かうベクトル\(x-\left<x,u_{1}\right>u_{1}\)と\(\left<x,u_{1}\right>u_{1}\)
+との内積は
+
+\begin{eqnarray}
+\left<x-\left<x,u_{1}\right>u_{1},\ \left<x,u_{1}\right>u_{1}\right> & = & \left<x,\ \left<x,u_{1}\right>u_{1}\right>-\left<\left<x,u_{1}\right>u_{1},\ \left<x,u_{1}\right>u_{1}\right>\ \ \ \mbox{(内積の\ref{ip_cond3}番目の条件)}\nonumber\\
+& = &\left<x,u_{1}\right>^{2}-\left<x,u_{1}\right>^{2}\left<u_{1},u_{1}\right>\ \ \ \mbox{(内積の\ref{ip_cond2}番目の条件)}\nonumber\\
+& = & 0\ \ \ \mbox{(式\ref{eq_unit_vector100})}\nonumber
+\end{eqnarray}
+
+\noindent
+であるから、\(x-\left<x,u_{1}\right>u_{1}\)と\(\left<x,u_{1}\right>u_{1}\)は直交する。
+同様にして、\(x-\left<x,u_{2}\right>u_{2}\)と\(\left<x,u_{2}\right>u_{2}\)も直交する。
+式\ref{eq_inner_prod_ossha1}の両辺に\(u_{1}\)を内積として掛けると、
+
+\begin{displaymath}
+\left<x, u_{1}\right>=a_{1}\left<u_{1},u_{1}\right> + a_{2}\left<u_{2},u_{1}\right>=a_{1}
+\end{displaymath}
+
+\noindent
+となる。同様にして、\(a_{2}=\left<x,u_{2}\right>\)が求まる。つまり、
+
+\begin{equation}
+x=\left<x, u_{1}\right>u_{1}+\left<x, u_{2}\right>u_{2}
+\end{equation}
+
+\noindent
+となる。
+
+これをもう少し一般化して考えよう。今ベクトル\(x\)が\(n\)個の互いに
+直交する単位ベクトル
+\(u_{1},u_{2},\cdots,u_{n}\)の一次結合、すなわち
+
+\begin{equation}
+x=\sum_{i=1}^{n}a_{i}u_{i}
+\label{eq_e198}
+\end{equation}
+
+\noindent
+と表わすことができるとする。このとき、単位ベクトル\(u_{i}\)を1つの軸にし
+たとき、その軸における\(x\)の座標\(a_{i}\)は\(\left<x,u_{i}\right>\)であ
+り、\(u_{i}\)方向のベクトルの成分は、\(\left<x,u_{i}\right>u_{i}\)となる。
+すなわち式\ref{eq_e198}は、
+
+\begin{equation}
+x=\sum_{i=1}^{n}\left<x,u_{i}\right>u_{i}
+\label{eq_e205}
+\end{equation}
+
+\noindent
+と表される。
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ ベクトル\(x=(11,5)^{t}\)を2つの互いに直交する
+単位ベクトル\(u_{1}=(\frac{\sqrt{2}}{2},\frac{\sqrt{2}}{2})^{t}, u_{2}=(-\frac{\sqrt{2}}{2},\frac{\sqrt{2}}{2})^{t}\)の一次結合で表せ。
+
+
+\subsection{グラム・シュミットの直交化法}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Figures/vector_norm2}
+\end{center}
+\vspace{-2em}
+\caption{2次元の場合のベクトル直交化}
+\label{vector_norm1}
+\begin{quotation}
+ベクトル\(x_{1}\)と\(x_{2}\)で張られる部分空間(すなわち、\(u_{1}\)と\(u_{2}\)の正規直交系で張られる部分空間)
+を灰色で示してある。この場合、部分空間は面である。図では部分空間があたかも有限の大きさのように見えるが、
+本来部分空間は無限の大きさであり、図では面の一部を分かりやすく切り取ったものである。また面は原点を通り、
+\(x_{1},x_{2},u_{1},u_{2}\)の全てのベクトルがこの面に含まれる。
+\end{quotation}
+\end{figure}
+
+図\ref{vector_norm1}に示すように、線形独立なベクトル\(x_{1},x_{2}\)を考える。
+\(x_{1}=v_{1}\)とし、\(u_{1}=\frac{v_{1}}{\|v_{1}\|}\)とすると、\(u_{1}\)は
+\(x_{1}\)と同じ向きの単位ベクトルとなる。
+\(v_{2}=x_{2}-\left<x_{2},u_{1}\right>u_{1}\)とすると、小節\ref{unit_vector_dec}で述べたように、
+\(v_{2}\)と\(x_{1}\)や\(u_{1}\)は直交する。従って\(u_{2}=\frac{v_{2}}{\|v_{2}\|}\)とすれば、
+\(u_{1}\)と\(u_{2}\)は\(x_{1}\)と\(x_{2}\)が張る部分空間の正規直交基底となる。これを一般化した
+定理を以下に紹介しよう。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}: 線形独立なベクトル\(x_{1},x_{2},\cdots,x_{n}\)に対し、
+\(u_{1},u_{2},\cdots,u_{n}\)を順次以下の手順で定めれば、
+\(u_{1},u_{2},\cdots,u_{n}\)は正規直交系である。
+
+\begin{center}
+\begin{tabular}{ll}
+\(v_{1}=x_{1}\) & \(u_{1}=\displaystyle \frac{v_{1}}{||v_{1}||}\)\\
+\vspace{-0.75em}\\
+\(v_{2}=x_{2}-\left<x_{2},u_{1}\right>u_{1}\) & \(u_{2}=\displaystyle \frac{v_{2}}{||v_{2}||}\)\\
+\vspace{-0.75em}\\
+\(v_{3}=x_{3}-\left<x_{3},u_{1}\right>u_{1}-\left<x_{3},u_{2}\right>u_{2}\) &
+\(u_{3}=\displaystyle \frac{v_{3}}{||v_{3}||}\)\\
+\(\vdots\) & \(\vdots\)\\
+\(v_{n}=x_{n}-\displaystyle \sum_{k=1}^{n-1}\left<x_{n},u_{k}\right>u_{k}\) &
+\(u_{n}=\displaystyle \frac{v_{n}}{||v_{n}||}\)
+\end{tabular}
+\end{center}
+
+\noindent
+これをグラム‐シュミット(Gram-Schmidt)の直交化法という。
+
+\noindent
+{\bf 証明\thesection-\thetheorem}:
+\(u_{1}=\displaystyle \frac{v_{1}}{||v_{1}||}\)、\(v_{2}=x_{2}-\left<x_{2},u_{1}\right>u_{1}\)とすると、
+\(x_{1}\)、\(x_{2}\)が線形独立であるから、\(v_{2}\neq o\)。さらに、
+
+\begin{eqnarray}
+\left<v_{2}, u_{1}\right> & = & \left<x_{2} - \left<x_{2},u_{1}\right>u_{1},u_{1}\right> = \left<u_{1}, x_{2}\right> - \left<x_{2}, u_{1}\right>\left<u_{1}, u_{1}\right>\nonumber\\
+                 & = & \left<x_{2}, u_{1}\right> - \left<x_{2}, u_{1}\right> = 0\nonumber
+\end{eqnarray}
+
+\noindent
+であるから、\(v_{2}\)と\(u_{2}\)は直交する。従って、\(u_{2}=\displaystyle \frac{v_{2}}{||v_{2}||}\)とおけば、\(u_{1}\)、\(u_{2}\)は
+正規直交系になる。同様なことを繰り返せば、\(v_{i}\neq o\)で\(v_{i}\)は\(u_{1},u_{2},\cdots, u_{i-1}\)の全てと直交するので、
+\(u_{1},u_{2},\cdots,u_{i-1},\displaystyle u_{i}=\frac{v_{1}}{||v_{i}||}\)が正規直交系をなすことが分かる。従って、正規直交系
+\(u_{1},u_{2},\cdots,u_{i}\)が得られる。
+
+\begin{flushright}
+□
+\end{flushright}
+
+\vspace{1em}
+
+\refstepcounter{preexer}
+
+\noindent
+{\bf 例題\thesection-\thepreexer}: 3次元ユークリッド空間\(R^{3}\)において、3つのベクトル
+\(a_{1}=(1,1,0)^{t}\)、
+\(a_{2}=(1,0,1)^{t}\)、
+\(a_{3}=(1,1,-1)^{t}\)からグラム-シュミットの直交化法により正規直交基底を作ろう。
+
+\begin{eqnarray}
+u_{1}&=&\displaystyle \frac{x_{1}}{\left\|x_{1}\right\|}=\frac{1}{\sqrt{2}}\left(\begin{array}{l}
+1\\
+1\\
+0
+\end{array}\right)\nonumber\\
+v_{2}&=&x_{2}-\displaystyle \left\langle x_{2},u_{1}\right\rangle u_{1}=\left(\begin{array}{l}
+1\\
+0\\
+1
+\end{array}\right)-\frac{1}{\sqrt{2}}\cdot\frac{1}{\sqrt{2}}\left(\begin{array}{l}
+1\\
+1\\
+0
+\end{array}\right)=\frac{1}{2}\left(\begin{array}{l}
+1\\
+-1\\
+2
+\end{array}\right)\nonumber\\
+u_{2}&=&\displaystyle \frac{v_{2}}{\left\|v_{2}\right\|}=\frac{1}{\sqrt{6}}\left(\begin{array}{l}
+1\\
+-1\\
+2
+\end{array}\right)\nonumber\\
+v_{3}&=&x_{3}-\left\langle x_{3},u_{1}\right\rangle u_{1}-\left\langle x_{3},u_{2}\right\rangle u_{2}
+=\displaystyle \left(\begin{array}{l}
+1\\
+1\\
+-1
+\end{array}\right)-\sqrt{2}\frac{1}{\sqrt{2}}\left(\begin{array}{l}
+1\\
+1\\
+0
+\end{array}\right)+\frac{2}{\sqrt{6}}\frac{1}{\sqrt{6}}\left(\begin{array}{l}
+1\\
+-1\\
+2
+\end{array}\right)=\frac{1}{3}\left(\begin{array}{l}
+1\\
+-1\\
+-1
+\end{array}\right)\nonumber\\
+u_{3}&=&\displaystyle \frac{b_{3}}{\left\|b_{3}\right\|}=\frac{1}{\sqrt{3}}\left(\begin{array}{l}
+1\\
+-1\\
+-1
+\end{array}\right)\nonumber
+\end{eqnarray}
+
+\noindent
+従って、求める正規直交系は、
+$\{u_{1},u_{2},u_{3}\}=\left\{\displaystyle \frac{1}{\sqrt{2}}\left(\begin{array}{l}
+1\\
+1\\
+0
+\end{array}\right),\frac{1}{\sqrt{6}}\left(\begin{array}{l}
+1\\
+-1\\
+2
+\end{array}\right),\frac{1}{\sqrt{3}}\left(\begin{array}{l}
+1\\
+-1\\
+-1
+\end{array}\right)\right\}$
+
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ \label{gramsch_exer1} \(x_{1}=(2,0,1)^{t}\), \(x_{2}=(-1,1,0)^{t}\), \(x_{3}=(0,1,-1)^{t}\)
+の3つのベクトルからグラム‐シュミットの直交化法により正規直交系\(\{u_{1},u_{2},u_{3}\}\)を作れ。
+
+
+\subsection{行列式と超平行面体の超体積との関係}
+
+図\ref{vector_norm1}の$v_{2}$に着目しよう。$v_{2}$は$x_{2}$から「$x_{2}$の$u_{1}$方向に平行な
+成分」を引いたベクトル、すなわち平行四辺形の面積を「底辺の長さ×高さ」と
+して$u_{1}$の絶対値を底辺の長さとすると、$v_{2}$の長さは高さに相当する。
+故に、$x_{1}$と$x_{2}$で構成される平行四辺形の面積(底辺の長さ×高さ)は、
+$v_{1}=x_{1}$と$v_{2}$で構成される長方形の面積と等しい。
+
+同様の議論を繰り返していくと、
+\((x_{1}\ x_{2}\ \cdots\ x_{n})\)
+で構成される平行$2n$面体の体積は、
+\((v_{1}\ v_{2}\ \cdots\ v_{n})\)
+で構成される超直方体の体積と等しくなることが分かる。超直方体の体積\(\||V|\|\)は、
+
+\begin{equation}
+\||V|\|=\prod_{k=1}^{n}||v_{k}||
+\end{equation}
+
+\noindent
+になる。
+
+さて、
+$(x_{1}\ x_{2}\ \cdots\ x_{n})$
+の行列式をグラム‐シュミットの方法と絡めながら求めよう。
+式\ref{eq_det19}と式\ref{eq_det28}に注意すれば、
+
+\begin{eqnarray}
+&& |x_{1}\ x_{2}\ \cdots\ x_{n}|\nonumber\\
+&& =\|x_{1}\|\left|\frac{x_{1}}{\|x_{1}\|}\ \ x_{2}\ \cdots\ x_{n}\right|\nonumber\\
+&& =\|x_{1}\|\ |u_{1}\ x_{2}\ \cdots\ x_{n}|\nonumber\\
+&& =\|x_{1}\|\ |u_{1}\ \ x_{2}-\left<x_{2}, u_{1}\right>u_{1}\ \cdots\ x_{n}|\nonumber\\
+&& =\|x_{1}\|\ \|x_{2}-\left<x_{2}, u_{1}\right>u_{1}\|\left|u_{1}\ \ \frac{x_{2}-\left<x_{2}, u_{1}\right>u_{1}}{\|x_{2}-\left<x_{2},u_{1}\right>u_{1}\|}\ \cdots \ x_{n}\right|\nonumber\\
+&& =\|x_{1}\|\ \left|\right|x_{2}-\left<x_{2}, u_{1}\right>u_{1}\|\ |u_{1}\ u_{2}\ \cdots\ x_{n}|\nonumber\\
+&& \vdots\nonumber\\
+&& =\|x_{1}\|\ \left|\right|x_{2}-\left<x_{2},u_{1}\right>\|\cdots\|x_{n}-\sum_{k=1}^{n-1}\left<x_{n},u_{k}\right>u_{k}\|\ |u_{1}\ u_{2}\ \cdots\ u_{n}|\nonumber\\
+&& =|u_{1}\ u_{2}\ \cdots\ u_{n}|\prod_{k=1}^{n}\|v_{k}\|=|u_{1}\ u_{2}\ \cdots\ u_{n}|\ \||V|\|
+\end{eqnarray}
+
+\noindent
+を得る。% 但しここでは行列\(X\)の行列式を\(|X|\)と表している。
+正規直交ベクトルで構成された行列
+$U=(u_{1}\ u_{2}\ \cdots\ u_{n})$
+は直交行列
+$U^{t}U=E$
+を成し、$|U|=\pm 1$
+である。よって
+\(\displaystyle \|\ |x_{1}\ x_{2}\ \cdots\ x_{n}|\ \|=\||V|\|\)
+を得る。すなわち、
+$(x_{1}\ x_{2}\ \cdots\ x_{n})$
+の行列式の絶対値は、これが成す平行$2n$面体の体積と等しい。
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ 2つのベクトル\(a=(a_{1},a_{2})^{t}\)と\(b=(b_{1},b_{2})^{t}\)が形成する平行四辺形の面積を求めよ。
+

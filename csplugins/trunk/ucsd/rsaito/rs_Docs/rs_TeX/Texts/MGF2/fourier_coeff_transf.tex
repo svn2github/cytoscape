@@ -1,0 +1,303 @@
+\section{複素系フーリエ級数とフーリエ変換の関係}
+
+\subsection{ポアソンの和公式}
+
+
+周期$T\text{の関数}f(t)$を考え、
+
+\begin{equation}
+\varphi_{T}(t)=\sum_{n=-\infty}^{\infty}f(t+nT)
+\label{eq_fourier_poisson20}
+\end{equation}
+
+\noindent
+とおくと、そのフーリエ係数\(c_{n}\)は
+
+\begin{eqnarray}
+c_{n} & = & \frac{1}{T}\int_{-\frac{T}{2}}^{\frac{T}{2}}\varphi_{T}(t)e^{-inw_{0}t}dt=\frac{1}{T}\int_{-\frac{T}{2}}^{\frac{T}{2}}\sum_{n=-\infty}^{\infty}f(t+nT)e^{-inw_{0}t}dt\nonumber\\
+      & = & \displaystyle \frac{1}{T}\sum_{n=-\infty}^{\infty}\int_{-\frac{T}{2}}^{\frac{T}{2}}f(t+nT)e^{-inw_{0}t}dt
+\label{eq_poisson_sum10}
+\end{eqnarray}
+
+\noindent
+ここで$u=t+nT$とおけば式\ref{eq_poisson_sum10}は
+
+\begin{equation}
+c_{n}=\frac{1}{T}\sum_{n=-\infty}^{\infty}\int_{-\frac{T}{2}+nT}^{\frac{T}{2}+nT}f(u)e^{-inw_{0}(u-nT)}du
+=\frac{1}{T}\sum_{n=-\infty}^{\infty}\int_{-\frac{T}{2}+nT}^{\frac{T}{2}+nT}f(u)e^{-inw_{0}u}e^{2i\pi n^{2}}du
+\end{equation}
+
+\noindent
+となる。
+オイラーの公式より整数\(n\)に対して$e^{2i\pi n^{2}}=1$だから、\(f(t)\)のフーリエ変換を\(F(w)\)とすれば、
+
+\begin{eqnarray}
+c_{n} & = & \frac{1}{T}\sum_{n=-\infty}^{\infty}\int_{-\frac{T}{2}+nT}^{\frac{T}{2}+nT}f(u)e^{-inw_{0}u}e^{2i\pi n^{2}}du=\frac{1}{T}\sum_{n=-\infty}^{\infty}\int_{-\frac{T}{2}+nT}^{\frac{T}{2}+nT}f(u)e^{-inw_{0}u}du\nonumber\\
+      & = & \frac{1}{T}\int_{-\infty}^{\infty}f(u)e^{-inw_{0}u}du=\frac{1}{T}F(nw_{0})\nonumber\\
+\end{eqnarray}
+
+\noindent
+式\ref{eqn_fourier160}より\(\varphi_{T}(t)=c_{n}e^{inw_{0}t}\)となり、従って以下の定理が成り立つ。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thechapter-\thetheorem}:~ 周期\(T\)の関数\(f(t)\)に対して
+以下の関係式が成り立つ。
+
+\begin{equation}
+\sum_{n=-\infty}^{\infty}f(t+nT)=\sum_{n=-\infty}^{\infty}\frac{1}{T}F(nw_{0})e^{inw_{0}t}
+\label{eqn_poisson_summation100}
+\end{equation}
+
+\noindent
+これをポアソンの和公式という。
+
+\vspace{1em}
+
+ここで式\ref{eqn_poisson_summation100}の左辺に式\ref{eq_fourier_reloc55}、右辺に式\ref{eqn_delta_fourier1114}を適用することによって両辺をフーリエ変換すると
+\footnote{式\ref{eqn_poisson_summation100}の\(F(nw_{0})\)の部分は変数\(t\)を含まないから、フーリエ変換のときは定数とみなせることに注意。}、
+
+\begin{equation}
+F(w)\sum_{n=-\infty}^{\infty}e^{-iwnT}
+\overset{\mathcal{F}}{\equiv} 
+\frac{2\pi}{T}\sum_{n=-\infty}^{\infty}\delta(w-nw_{0})F(nw_{0})
+\end{equation}
+
+\noindent
+となるが、\(\delta(w-nw_{0})\)は\(w\neq nw_{0}\)のときは0になることに注意すると、
+
+\begin{equation}
+F(w)\sum_{n=-\infty}^{\infty}e^{-iwnT}
+\overset{\mathcal{F}}{\equiv}
+F(w)\frac{2\pi}{T}\sum_{n=-\infty}^{\infty}\delta(w-nw_{0})
+\end{equation}
+
+\noindent
+より
+
+\begin{equation}
+\sum_{n=-\infty}^{\infty}e^{-iwnT}
+\overset{\mathcal{F}}{\equiv}
+\frac{2\pi}{T}\sum_{n=-\infty}^{\infty}\delta(w-nw_{0})
+\label{eqn_poisson_summation128}
+\end{equation}
+
+\noindent
+が成立する。
+
+\subsection{フーリエ変換を使ってフーリエ係数を求める方法}
+
+
+一般に孤立波を$f(t)$、$f(t)$を周期$T$で繰り返したときの周期波を$f_{T}(t)$とすれば、
+
+\begin{eqnarray}
+F(w)  & = & \displaystyle \int_{-\infty}^{\infty}f(t)e^{-iwt}dt=\int_{-\frac{T}{2}}^{\frac{T}{2}}f(t)e^{-iwt}dt\\
+c_{n} & = & \displaystyle \frac{1}{T}\int_{-\frac{T}{2}}^{\frac{T}{2}}f_{T}(t)e^{-inw_{0}t}dt=\frac{1}{T}\int_{-\frac{T}{2}}^{\frac{T}{2}}f(t)e^{-inw_{0}t}dt
+\end{eqnarray}
+
+\noindent
+より以下の定理を得る。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thechapter-\thetheorem}:~\label{fourier_coeff_transform10}
+孤立波を$f(t)$、そのフーリエ変換を\(F(w)\)、$f(t)$を周期$T$で繰り返したときの周期波を\(f_{T}(t)\)、そのフーリエ係数を\(c_{n}\)
+とし、$w=nw_{0}$とすれば、
+
+\begin{equation}
+Tc_{n}=F(w)
+\end{equation}
+
+\noindent
+の関係が成り立つ。
+
+\vspace{1em}
+
+上記定理では周期波\(f_{T}(t)\)のフーリエ係数\(c_{n}\)と孤立波\(f(t)\)のフーリエ変換\(F(w)\)との
+関係を考えたが、周期波を直接フーリエ変換することは無理なのだろうか。またそれとフーリエ係数との
+関係はどうなっているのだろうか。以下、
+\underline{周期$T$の周期波をあらためて$f(t)$とおいて}考察する。
+また1周期分のフーリエ変換を
+
+\begin{equation}
+F_{(T)}(w)=\int_{-\frac{T}{2}}^{\frac{T}{2}}f(t)e^{-iwt}dt
+\label{eq_fourier_ssec123}
+\end{equation}
+
+\noindent
+とする。積分範囲を拡大し、$M$周期分のフーリエ変換
+
+\begin{equation}
+F_{(MT)}(w)=\int_{-\frac{MT}{2}}^{\frac{MT}{2}}f(t)e^{-iwt}dt
+\label{eq_fourier_1021}
+\end{equation}
+
+\noindent
+を考えよう。\(f(t)\)のフーリエ変換\(F(w)\)が仮に存在するとすれば、
+
+\begin{equation}
+F(w)=\lim_{M\to\infty}F_{(MT)}(w)
+\label{eqn_fourier_1250}
+\end{equation}
+
+\noindent
+となる。なお計算を容易にするため、ここでは$M$を奇数とする。
+定積分する範囲を\(T\)ごとに区切ることによって式\ref{eq_fourier_1021}は
+
+\begin{equation}
+\int_{-\frac{MT}{2}}^{\frac{MT}{2}}f(t)e^{-iwt}dt=\sum_{n=-(M-1)/2}^{(M-1)/2}\int_{\frac{2n-1}{2}T}^{\frac{2n+1}{2}T}f(t-nT)e^{-iwt}dt
+\label{eq_fourier_1022}
+\end{equation}
+
+\noindent
+と直すことができる。積分の各区切り1つ1つは、
+
+
+%% =F_{(T)}(w)\sum_{n=-(M-1)/2}^{(M-1)/2}e^{-iwnT}
+%% 
+
+\begin{equation}
+\int_{\frac{2n-1}{2}T}^{\frac{2n+1}{2}T}f(t)e^{-iwt}dt=\int_{\frac{2n-1}{2}T}^{\frac{2n+1}{2}T}f(t-nT)e^{-iwt}dt
+\label{eq_fourier_1023}
+\end{equation}
+
+\noindent
+と表される。ここで$y=t-nT$、すなわち$t=y+nT$とすれば式\ref{eq_fourier_1023}は、
+
+\begin{equation}
+\int_{\frac{2n-1}{2}T}^{\frac{2n+1}{2}T}f(t-nT)e^{-iwt}dt=\int_{\frac{2n-1}{2}T}^{\frac{2n+1}{2}T}f(y)e^{-iw(y+nT)}dt
+=e^{-iwnT}\int_{-\frac{T}{2}}^{\frac{T}{2}}f(y)e^{-iwy}dy
+\label{eq_fourier_1024}
+\end{equation}
+
+\noindent
+ここで式\ref{eq_fourier_ssec123}を使うと式\ref{eq_fourier_1024}は
+
+\begin{equation}
+\int_{\frac{2n-1}{2}T}^{\frac{2n+1}{2}T}f(t-nT)e^{-iwt}dt=e^{-iwnT}\displaystyle \int_{-\frac{T}{2}}^{\frac{T}{2}}f(y)e^{-iwy}dy=e^{-iwnT}F_{(T)}(w)
+\label{eq_fourier_1025}
+\end{equation}
+
+\noindent
+のように変形できる。これを式\ref{eq_fourier_1022}に代入すると、
+
+\begin{equation}
+\int_{-\frac{MT}{2}}^{\frac{MT}{2}}f(t)e^{-iwt}dt=\sum_{n=-(M-1)/2}^{(M-1)/2}\int_{\frac{2n-1}{2}T}^{\frac{2n+1}{2}T}f(t-nT)e^{-iwt}dt=F_{(T)}(w)\sum_{n=-(M-1)/2}^{(M-1)/2}e^{-iwnT}
+\label{eq_fourier_1026}
+\end{equation}
+
+\noindent
+そして式\ref{eqn_poisson_summation128}、式\ref{eqn_fourier_1250}を使うと、\(M\to\infty\)のとき、
+
+\begin{equation}
+F(w)=
+\sum_{n=-\infty}^{\infty}e^{-iwnT}
+\overset{\mathcal{F}}{\equiv}
+\frac{2\pi}{T}F_{(T)}(w)\sum_{n=-\infty}^{\infty}\delta(w-nw_{0})
+\label{eq_fourier_delta130b}
+\end{equation}
+
+% 次に
+%
+% \begin{displaymath}
+% \int_{\frac{T}{2}}^{\frac{3T}{2}}f(t)e^{-iwt}dt=\int_{\frac{T}{2}}^{\frac{3T}{2}}f(t-T)e^{-iwt}dt=\int_{-\frac{T}{2}}^{\frac{T}{2}}f(y)e^{-iw(y+T)}dy=F_{(T)}(w)e^{iwT}
+% \end{displaymath}
+
+% \noindent
+% の関係を逐次使っていけば、$f(t)$のフーリエ変換$F(w)$は
+
+% \begin{eqnarray}
+% F(w) & = & \lim_{M\rightarrow\infty}F_{(MT)}(w)=F_{(T)}(w)\lim_{M\rightarrow\infty}\sum_{n=-(M-1)/2}^{(M-1)/2}e^{-iwnT}\nonumber\\
+%      & = & F_{(T)}(w)\displaystyle \sum_{n=-\infty}^{\infty}e^{-iwnT}=F_{(T)}(w)\sum_{n=-\infty}^{\infty}e^{iwnT}
+% \end{eqnarray}
+%
+% \noindent
+% となる。
+%
+% ところで、\(\sum_{n=-N}^{N}e^{-iwnT}\)は
+% 初項\(e^{iwNT}\)公比\(e^{-iwT}\)または初項\(e^{-iwNT}\)公比\(e^{iwT}\)の等比数列の和と
+% みなすことができるから、
+%
+% \begin{eqnarray}
+% \sum_{n=-N}^{N}e^{-iwnT} & = & \frac{e^{-iwNT}\left((e^{iwT})^{2N+1}-1\right)}{e^{iwT}-1}=\frac{e^{i(N+1)wt}-e^{-iNwT}}{e^{iwT}-1}\nonumber\\
+%                          & = & \frac{e^{-iwT/2}\left(e^{i(N+1)wT}-e^{-iNwT}\right)}{e^{iwT/2}-e^{-iwT/2}}=\frac{e^{i(2N+1)wT/2}-e^{i(2N+1)wT/2}}{e^{iwT/2}-e^{iwT/2}}\nonumber\\
+%                          & = & \frac{\sin\left(N+\frac{1}{2}\right)wT}{\sin\frac{wT}{2}}=\frac{\sin\left(N+\frac{1}{2}\right)wT}{w}\cdot\frac{w}{\sin\frac{wT}{2}}
+% \end{eqnarray}
+%
+% \noindent
+% となる。ここで式\ref{eq_fourier_delta_cos_strange159}を使えば、
+%
+% \begin{equation}
+% \lim_{N\rightarrow\infty}
+% \frac{\sin\left(N+\frac{1}{2}\right)wT}{w}\cdot\frac{w}{\sin\frac{wT}{2}}
+% \overset{\mathcal{F}}{\equiv} \pi\delta(w)\cdot\frac{w}{\sin\frac{wT}{2}}\ \ \ \ \ (-\frac{w_{0}}{2}<w<\frac{w_{0}}{2})
+% \end{equation}
+%
+% \noindent
+% となる。
+% $e^{-iwnT}$は周期$w_{0}=\displaystyle \frac{2\pi}{T}$の\(w\)の関数とみなせるから、
+% $(-\displaystyle \frac{w_{0}}{2},\frac{w_{0}}{2})$のみに注目すれば、
+% デルタ関数は$w\neq 0$のとき$\delta(w)$は0だから、
+%
+% \begin{equation}
+% \pi\delta(w)\cdot\frac{w}{\sin\frac{wT}{2}}=\pi\delta(w)\lim_{w\rightarrow 0}\frac{w}{\sin\frac{wT}{2}}=\frac{2\pi}{T}\delta(w)
+% \end{equation}
+%
+% \noindent
+% となる。これを$w$の全範囲に対して行えば、
+%
+% \begin{equation}
+% \sum_{n=-\infty}^{\infty}e^{iwnT}
+% \overset{\mathcal{F}}{\equiv}
+% \frac{2\pi}{T}\sum_{n=-\infty}^{\infty}\delta(w-nw_{0})
+% \end{equation}
+%
+% \noindent
+% となり、
+%
+% \begin{equation}
+% F(w)=F_{(T)}(w)\displaystyle \sum_{n=-\infty}^{\infty}e^{iwnT}
+% \overset{\mathcal{F}}{\equiv}
+% \frac{2\pi}{T}F_{(T)}(w)\sum_{n=-\infty}^{\infty}\delta(w-nw_{0})
+% \label{eq_fourier_delta130}
+% \end{equation}
+
+\noindent
+が示される。
+$f(t)$は周期関数であるから、複素形フーリエ係数$c_{n}$が存在し、定理\ref{chap_fourier}-\ref{fourier_coeff_transform10}より以下を満たす。
+
+\begin{equation}
+c_{n}=\displaystyle \frac{1}{T}F_{(T)}(nw_{0})
+\end{equation}
+
+\noindent
+そして式\ref{eq_fourier_delta130b}は実は$w_{0}$の整数倍以外の点では0である。これを考慮すると、
+
+\begin{equation}
+F(w)
+\overset{\mathcal{F}}{\equiv}
+\frac{2\pi}{T}\sum_{n=-\infty}^{\infty}F_{(T)}(nw_{0})\delta(w-nw_{0})=2\pi\sum_{n=-\infty}^{\infty}c_{n}\delta(w-nw_{0})
+\end{equation}
+
+\vspace{1em}
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thechapter-\thetheorem}:~
+周期波$f(t)$の複素形フーリエ係数$c_{n}$とフーリエ変換$F(w)$の間には
+
+\begin{equation}
+F(w)
+\overset{\mathcal{F}}{\equiv}
+2\pi\sum_{n=-\infty}^{\infty}c_{n}\delta(w-nw_{0})
+\end{equation}
+
+\noindent
+の関係が成立する(但し\(w_{0}=\frac{2\pi}{T}\))。
+

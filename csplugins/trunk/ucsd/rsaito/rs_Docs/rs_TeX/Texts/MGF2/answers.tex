@@ -1,0 +1,134 @@
+
+\noindent
+{\bf \ref{chap_prob_distr}-\ref{prob_conv_sample190}}:~ \(0 \leq x \leq \sqrt{2}\)のとき、\(1 \leq y \leq 7\)だから、
+\(y\)のこの範囲だけを考えればよい。
+\(x=\sqrt{\frac{y-1}{3}}\)より、\(\frac{dx}{dy}=\frac{1}{6}\sqrt{\frac{3}{y-1}}\)。従って、
+\(g(y)=\sqrt{\frac{y-1}{3}}\frac{1}{6}\sqrt{\frac{3}{y-1}}=\frac{1}{6}\)。
+
+\begin{displaymath}
+g(y)=
+\left\{
+\begin{array}{ll}
+\frac{1}{6} & \mbox{for} \ \ 1 \leq y \leq 7\\
+0 & \mbox{otherwise}
+\end{array}\right.
+\end{displaymath}
+
+
+\vspace{1em}
+
+\noindent
+{\bf \ref{chap_prob_distr}-\ref{exerx2}}:~
+式\ref{eqn329}を書き直すと、
+\(V(\bar{X})=E((\bar{X}-\mu)^{2})
+=E(\bar{X}^{2}-2\bar{X}\mu+\mu^{2})
+=E(\bar{X}^{2})-\mu^{2}
+=\frac{\sigma^{2}}{n}\)。従って、
+\(E(\bar{X}^{2})=\frac{\sigma^{2}}{n}+\mu^{2}\)。
+
+\vspace{1em}
+
+\noindent
+{\bf \ref{chap_prob_distr}-\ref{exerx3}}:~
+\ref{sample_distr1}-\ref{exerx2}の結果および\(E(X^{2})=\sigma^{2}+\mu^{2}\)を利用して、
+\begin{eqnarray}
+E\{\frac{1}{n}\sum_{i=1}^{n}(X_{i}-\bar{X})^{2}\}=\frac{1}{n}\sum E\left\{X_{i}^{2}-2X_{i}\bar{X}+\bar{X}^{2}\right\}
+=\frac{1}{n}\sum E(X_{i}^{2})-\frac{2}{n}E(\sum X_{i}\bar{X})+\frac{1}{n}E(\sum\bar{X}^{2})\nonumber\\
+=\frac{1}{n}n(\mu^{2}+\sigma^{2})-\frac{2}{n}E(n\bar{X}\bar{X})+\frac{1}{n}E(n\bar{X}^{2})
+=\mu^{2}+\sigma^{2}-E(\bar{X}^{2})=\mu^{2}+\sigma^{2}-\frac{\sigma^{2}}{n}-\mu^{2}=\left(1-\frac{1}{n}\right)\sigma^{2}\ \ \nonumber 
+\end{eqnarray}
+
+\vspace{1em}
+
+
+\noindent
+{\bf \ref{chap_prob_model}-\ref{exer56}}:~\(y=\tan x\)として、\(\frac{dy}{dx}=\frac{1}{\cos^{2}x}\)。従って、
+\(\frac{dx}{dy}=\frac{d\tan^{-1}y}{dy}=\cos^{2}x=\frac{1}{\tan^{2}x+1}=\frac{1}{y^{2}+1}\)。
+
+\vspace{1em}
+
+\noindent
+{\bf \ref{chap_cont_func}-\ref{exer_0log0}}~\(x\log_{a} x=\frac{\log_{a} x}{\frac{1}{x}}\)として考える。
+
+\begin{displaymath}
+\lim_{x\to 0}\frac{(\log_{a} x)'}{(\frac{1}{x})'}
+=\lim_{x\to 0}\frac{\frac{1}{x}}{-(\frac{1}{x^{2}})\log a}
+=-\lim_{x\to 0}\frac{x}{\log a}=0=\lim_{x\to 0}x\log_{a}x
+\end{displaymath}
+
+\vspace{1em}
+
+\noindent
+{\bf \ref{chap_linear_alge}-\ref{gramsch_exer1}}:~
+\(\{u_{1},u_{2},u_{3}\}=\{
+\frac{1}{\sqrt{5}}(2,0,1)^{t},
+\frac{1}{\sqrt{30}}(-1,5,2)^{t},
+\frac{1}{\sqrt{6}}(1,1,-2)^{t}\}\)
+
+\vspace{1em}
+
+\noindent
+{\bf \ref{chap_multivar_prob}-\ref{exer_nzmhard1}}:~サイコロルーレットを1回回したときに得られる数値\(x\)に関する確率密度関数\(f(x)\)は、\\
+\(
+f(x)=
+\left\{
+\begin{array}{l}
+\frac{1}{6} \ \ \ \ \ \mbox{for} \ \ 0 \leq x \leq 6\\
+0 \ \ \ \ \ \mbox{otherwise}
+\end{array}\right.\nonumber
+\)
+であり、2回回したときに得られる数値の合計値\(z\)に関する確率密度関数は畳み込み積分を行って、
+\(h(z)=\int_{-\infty}^{+\infty}f(z-y)g(y)dy\)である。\(y\)に関する積分を行う区間は\(f(z-y)g(y)>0\)、すなわち、\(f(z-y)>0\)かつ\(g(y)>0\)の範囲
+である。これを満たす\(y\)の範囲は、\(0 \leq z-y \leq 6\)かつ\(0 \leq y \leq 6\)、すなわち\(z-6 \leq y \leq z\)かつ\(0 \leq y \leq 6\)である。
+\(z<0\)または\(z>12\)のときはこの制約を満たすことができず、\(h(z)=0\)となる。\(0 \leq z \leq 6\)のときは、\(0 \leq y < z\)、\(6 \leq z \leq 12\)のときは、
+\(z-6\leq y \leq 6\)が積分する範囲となる。すなわち、
+
+\begin{displaymath}
+h(z)=
+\left\{
+\begin{array}{ll}
+\frac{1}{36}z & \mbox{for} \ \ 0 \leq z \leq 6\\
+-\frac{1}{36}z+\frac{1}{3} & \mbox{for} \ \ 6 \leq z \leq 12\\
+0 & \mbox{otherwise}
+\end{array}\right.
+\end{displaymath}
+
+\vspace{1em}
+
+\noindent
+{\bf \ref{chap_complex_number}-\ref{exer_euler1}}:~ 
+\(y=\cos x + i\sin x\)
+→ \(\frac{dy}{dx}=iy\) 
+→ \(\log y = ix + C_{1}\)
+→ \(e^{ix+C_{1}}=e^{ix}e^{C_{1}}=Ce^{ix}\)が成立する。ここで初期条件\(x=0,y=1\)を代入して\(C=1\)を
+導く。なお一般に微分方程式の2つの解は初期条件が同一なら、同じ解となる。線形微分方程式では
+特異解はない。
+
+\vspace{1em}
+
+\noindent
+{\bf \ref{chap_fourier}-\ref{exer_fourier1}}:~
+$f(t)=4\displaystyle \sin(3t-\frac{\pi}{4})=4\sin 3t\cos\frac{\pi}{4}-4\cos 3t\sin\frac{\pi}{4}=2\sqrt{2}\sin 3t-2\sqrt{2}\cos 3t$だから、
+
+\begin{eqnarray}
+c_{3} & = & \frac{1}{2\pi}\int_{-\pi}^{\pi}(2\sqrt{2}\sin 3t-2\sqrt{2}\cos 3t)\cos 3t-i\sin 3t)dt\nonumber\\
+      & = & \frac{1}{2\pi}\int_{-\pi}^{\pi}(-2\sqrt{2}\cos 3t\cos 3t-2\sqrt{2}i\sin 3t\sin 3t)dt=-\sqrt{2}-\sqrt{2}i\nonumber\\
+c_{-3} & = & -\sqrt{2}+\sqrt{2}i\nonumber
+\end{eqnarray}
+
+\noindent
+また、\(K_{3}=4,\ \ \ \theta_{3}=\frac{\pi}{4}\)より、
+$f(t)=4\displaystyle \cos(3t+\frac{\pi}{4})$。
+
+\vspace{1em}
+
+\noindent
+{\bf \ref{chap_moment_gen_func}-\ref{exer_eq496}}:~
+\(\lim_{n\to\infty}n\cdot h(n)=0\)なら、任意に小さい\(\epsilon > 0\)に対し、
+\(\exists_{n_{0}}\forall_{n>n_{0}}\{0 < n\cdot h(n) < \epsilon\}\)が成立するから、
+十分大きな\(n\)に対し、\(\frac{1}{n}<\frac{1}{n}+h(n)<\frac{1+\epsilon}{n}\)
+とすることができる。
+\((1+\frac{1}{n})^{n}<(1+\frac{1}{n}+h(n))^{n}<(1+\frac{1+\epsilon}{n})^{n}\)
+より、\(n\to\infty\)をとって、\(e < \lim_{n\to\infty}(1+\frac{1}{n}+h(n))^{n}<e^{1+\epsilon}\)。さらに\(n\to\infty\)
+のとき、\(e^{1+\epsilon}\)はいくらでも\(e\)に近づけるから、\(\lim_{n\to\infty}(1+\frac{1}{n}+h(n))^{n}=e\)。
+

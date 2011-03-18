@@ -1,0 +1,185 @@
+\section{三角関数の公式}
+
+\subsection{基本相互関係}
+
+
+\[
+\cos^2 \theta + \sin^2 \theta = 1
+\ \ \ \ \ \ \ \ \ \ 
+\frac{\sin \theta}{\cos \theta}=\tan \theta
+\]
+
+\subsection{周期性}
+
+\[
+\sin(\theta + 2\pi n)=\sin \theta
+\ \ \ \ \ \ \ \ \ \ 
+\cos(\theta + 2\pi n)=\cos \theta
+\ \ \ \ \ \ \ \ \ \ 
+\tan(\theta + \pi n)=\tan \theta
+\]
+
+
+\subsection{負角・余角・補角公式}
+
+\begin{center}
+\begin{tabular}{lll}
+\(\sin -t = -\sin t\) &
+\(\sin(t + \frac{1}{2}\pi)=\cos t\) &
+\(\sin(t + \pi) = -\sin t\)\\
+\(\cos -t = \cos t\) &
+\(\cos(t + \frac{1}{2}\pi)=-\sin t\) &
+\(\cos(t + \pi) = -\cos t\)\\
+\(\tan(-t) = -\tan t\) &
+\(\tan(t+\pi) = \tan t\) &
+\(\tan(t+\frac{\pi}{2}) = -\frac{1}{\tan t}\) \\
+\end{tabular}
+\end{center}
+
+
+\subsection{加法定理}
+
+\begin{eqnarray}
+\sin(\alpha \pm \beta)& = &\sin \alpha \cos \beta \pm \cos \alpha \sin \beta\nonumber\\
+\cos (\alpha \pm \beta)& = & \cos \alpha \cos \beta \mp \sin \alpha \sin \beta\nonumber\\
+\tan (\alpha \pm \beta)& = & \frac{\tan \alpha \pm \tan \beta}{1 \mp \tan \alpha \tan \beta}\nonumber
+\end{eqnarray}
+
+\begin{flushright}
+(全て複号同順)
+\end{flushright}
+
+
+\subsection{2倍角の公式}
+
+加法定理で $\alpha = \beta = \theta$ と置けば導出できる。
+
+\begin{eqnarray}
+\sin 2 \theta & = & 2 \sin \theta \cos \theta\nonumber\\
+\cos 2 \theta & = & 2 \cos^2 \theta -1 = 1- 2\sin^2 \theta = \cos^2 \theta - \sin^2 \theta\nonumber\\
+\tan 2 \theta & = & \frac{2 \tan \theta}{1- \tan^2 \theta}\nonumber
+\end{eqnarray}
+
+
+\noindent
+ここで $\tan {\theta}=t$ と置くと、次のようにも表せる。
+\[
+\sin 2 \theta = \frac{2t}{1+t^2}
+\ \ \ \ \ \ \ \ \ \ 
+\cos 2 \theta = \frac{1-t^2}{1+t^2}
+\ \ \ \ \ \ \ \ \ \ 
+\tan 2 \theta = \frac{2t}{1-t^2}
+\]
+
+
+\subsection{半角の公式}
+
+2倍角の公式から導出可能。
+
+\[
+\sin^2 \frac{ \theta}{2} = \frac{1-\cos \theta}{2}
+\ \ \ \ \ \ \ \ \ \ 
+\cos^2 \frac{ \theta}{2} = \frac{1+\cos \theta}{2}
+\ \ \ \ \ \ \ \ \ \ 
+\tan^2 \frac{ \theta}{2} = \frac{1-\cos \theta}{1+\cos \theta}
+\]
+
+\subsection{積和の公式}
+
+この公式は、加法定理で $\sin(\alpha \pm \beta)$ ,  $\cos(\alpha \pm \beta)$ を計算しておき、加減演算で導出する。
+
+\[
+\sin \alpha \cos \beta = \frac{1}{2}\Big(  \sin(\alpha + \beta) + \sin (\alpha - \beta)\Big)
+\]
+
+\[
+\cos \alpha \sin \beta = \frac{1}{2}\Big(  \sin(\alpha + \beta) - \sin (\alpha - \beta)\Big)
+\]
+
+\[
+\cos \alpha \cos \beta = \frac{1}{2}\Big(  \cos(\alpha + \beta) + \cos (\alpha - \beta)\Big)
+\]
+
+
+\[
+\sin \alpha \sin \beta = -\frac{1}{2}\Big(  \cos(\alpha + \beta) - \cos (\alpha - \beta)\Big)
+\]
+
+
+\subsection{和積の公式}
+
+積和の公式で $\alpha = \frac{A+B}{2}$ , $\beta = \frac{A-B}{2}$ と置けば導出できる。
+
+\[
+\sin A +\sin B = 2 \sin \frac{A+B}{2}\cos \frac{A-B}{2}
+\]
+
+\[
+\sin A -\sin B = 2 \cos \frac{A+B}{2}\sin \frac{A-B}{2}
+\]
+
+\[
+\cos A +\cos B = 2 \cos \frac{A+B}{2}\cos \frac{A-B}{2}
+\]
+
+\[
+\cos A -\cos B = -2 \sin \frac{A+B}{2}\sin \frac{A-B}{2}
+\]
+
+逆に、和積の公式で $\frac{A+B}{2}=\alpha$ ,  $\frac{A-B}{2}=\beta$ と置けば積和の公式が得られる。
+
+\subsection{三角関数の微分法}
+
+\begin{eqnarray}
+\frac{d\sin x}{dx}&=&\cos x\nonumber\\
+\frac{d\cos x}{dx}&=&-\sin x\nonumber\\
+\frac{d\tan x}{dx}&=&1+\tan^{2}x=\frac{1}{\cos^{2}x}\nonumber
+\end{eqnarray}
+
+三角関数の微分では
+
+\begin{displaymath}
+\lim_{x\to 0}\frac{\sin x}{x}=1
+\end{displaymath}
+
+\noindent
+の成立が基本となる。
+
+\subsection{正弦定理}
+
+三角形の内角を\(A,B,C\)、これと向き合う辺の長さをそれ
+ぞれ\(\alpha,\beta,\gamma\)とし、外接円の半径を\(R\)とすると、
+
+\begin{displaymath}
+\frac{\alpha}{\sin A}
+=\frac{\beta}{\sin B}
+=\frac{\gamma}{\sin C}
+=2R
+\end{displaymath}
+
+\noindent
+の関係が成立する。
+
+
+\subsection{余弦定理}
+\label{Law_of_cosines_II}
+
+三角形の内角を\(A,B,C\)、これと向き合う辺の長さをそれ
+ぞれ\(\alpha,\beta,\gamma\)とすると、
+
+\begin{displaymath}
+\gamma^{2}=\alpha^{2}+\beta^{2}-2\alpha\beta \cos C
+\end{displaymath}
+
+\noindent
+が成立する。
+
+\subsection{合成公式}
+
+\begin{displaymath}
+a\sin \theta + b \cos \theta = r\sin(\theta + \varphi)
+\end{displaymath}
+
+\noindent
+ここで\(r=\sqrt{a^{2}+b^{2}},\ \varphi=\tan^{-1}\frac{b}{a}\)である。
+

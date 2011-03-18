@@ -1,0 +1,427 @@
+\documentstyle[epsf]{koarticle}
+
+\title{遺伝子の翻訳開始領域のコンピュータ解析}
+\author{慶應義塾大学 大学院 政策・メディア研究科 斎藤輪太郎}
+\date{}
+
+\begin{document}
+\setcounter{page}{0}
+\maketitle
+\begin{center}
+{\large 冨田研究会ＡＴＧプロジェクト}
+
+\vspace{1ex}
+\begin{tabular}{|c|c|c|c|}
+\hline
+学籍番号 & 所属 &  名前  & ログイン名 \\
+\hline
+89531794 & 政策・メディア研究科修士２年 & 斎藤輪太郎 & rsaito \\
+79401975 &  総合政策学部３年 &         佐々木秀和 & s94197hs \\
+79452137 &  環境情報学部３年 &         清水由香里 & t94213ys \\
+79450924 & 環境情報学部３年  &         長田木綿子 & t94092yo \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{6ex}
+本研究は冨田勝助教授指導のもと、冨田研究会内のプロジェクト(通称ＡＴＧ
+プロジェクト)の一環として行われた。本研究はその成果をまとめたものであ
+る。役割分担を以下に記す(メンバーに了承済)。
+
+\begin{description}
+\item[指導教員] 冨田勝助教授
+\item[プロジェクトリーダ] 斎藤輪太郎
+\item[サーベイ] 斎藤輪太郎
+\item[解析プログラムの主要部分の作成] 斎藤輪太郎
+\item[開始コドンの周辺の塩基の分布の解析] 佐々木秀和(プログラムの作成と真核
+生物の解析)、長田木綿子(原核生物の解析)、清水由香里(ミトコンドリアの解
+析)、斎藤輪太郎(指導)
+\item[開始コドン周辺のエントロピーの解析] 長田木綿子
+\item[5'UTRのＧＣ/ＡＴ含量の解析] 斎藤輪太郎
+\item[開始コドン周辺のＡＵＧ配列の頻度の解析] 斎藤輪太郎
+\item[２つのＡＵＧ間の距離とleaky scanningの関係の解析] 斎藤輪太郎、佐々
+木秀和
+\item[２つのＡＵＧが近いときの傾向の解析] 斎藤輪太郎、佐々木秀和
+\item[翻訳開始メカニズムと進化の関係の解析] 斎藤輪太郎
+\item[読み飛ばされたＡＵＧの後のストップコドンの頻度の解析] 佐々木秀
+和
+\end{description}
+
+\newpage
+
+\begin{LARGE}
+\begin{center}
+{\Huge 概要}
+\end{center}
+
+\vspace{6ex}
+\begin{description}
+
+\item[研究目的] 
+生物は細胞の中のｍＲＮＡという分子上の翻訳開始領域をどのようにして正
+確に識別しているのか、その手ががりをつかむこと\\ \\
+
+\item[意義] 翻訳開始領域は合成されるタンパク質の性質を決める重要な箇所
+\ \ \ →\ \ \ 生物学に対する多大な貢献\\ \\
+
+\item[研究方法] 
+遺伝子データベースのコンピュータ解析\\ \\
+
+\item[研究成果] 
+翻訳開始領域の識別に重要と思われる傾向をいくつか発見す
+ることができた\\ \\
+
+\item[Originality] 
+研究手法の新しさ、新しい傾向の発見
+
+\end{description}
+\end{LARGE}
+
+\newpage
+
+\begin{LARGE}
+\begin{center}
+{\Huge 研究目的}
+\end{center}
+
+\vspace{6ex}
+遺伝子の翻訳開始領域の解析
+
+\begin{itemize}
+\item 遺伝子は生物個体の形質を決める因子\\
+\item 遺伝子の情報は細胞の中のＤＮＡという高分子に書かれている\\
+\item ＤＮＡの中で遺伝子として使われる領域はほんの一部\\
+\item 生物はどのようにして遺伝子とそうでない部分を見分けているのか\\
+\item ＤＮＡの中で遺伝子とそうでない部分の境界領域に鍵があるのではない
+か。\\
+\item 境界領域の中でもとくに翻訳開始領域と呼ばれる部分に注目\\
+
+
+\end{itemize}
+\end{LARGE}
+
+\newpage
+\begin{LARGE}
+\begin{center}
+{\Huge 研究方法}\\
+生命に対する情報からのアプローチ
+\end{center}
+
+\vspace{6ex}
+\noindent
+実験生物学の限界
+\begin{itemize}
+\item １つの結果を出すのに多大な時間がかかることが多い
+\item 分子レベルになると、直接観察することが難しい
+\end{itemize}
+
+\vspace{6ex}
+\noindent
+情報からのアプローチ\\
+データベースからの遺伝子データの抽出と解析
+\begin{itemize}
+\item 何万という遺伝子に関する情報をコンピュータで高速処理して分析
+\item 様々な角度からの分析を可能にするため、独自のＣ言語のプログラムを
+開発
+\item 実験では分からないような事実を発見することが可能  
+\end{itemize}
+
+
+\vspace{6ex}
+\noindent
+これからの生命の研究\\ 
+\begin{tabular}{|c|}
+\hline
+実験からのアプローチ ＋ 情報からのアプローチ\\
+\hline
+\end{tabular}
+
+\end{LARGE}
+
+%\begin{LARGE}
+%\begin{picture}(400,200)
+%\put(170,185){\framebox{\shortstack[c]{GenBank\\ database}}} 
+%\put(150,90){\framebox{\shortstack[c]{独自に開発した\\ Ｃプログラム}}}
+%\put(183,10){\framebox{結果}}
+
+%\put(205,175){\vector(0,-1){30}}
+%\put(205,70){\vector(0,-1){30}}
+%\end{picture}
+%\end{LARGE}
+
+
+
+\newpage
+
+\begin{LARGE}
+\begin{center}
+{\Huge 遺伝学の基礎}
+\end{center}
+
+\vspace{6ex}
+
+\begin{description}
+
+\item[遺伝子] 生物の形質を決める設計図。親から子に受け継がれる。\\
+\item[ＤＮＡ] 遺伝情報が書き込まれている高分子。構成される塩基の種類に
+より、Ａ、Ｔ、Ｃ、Ｇという４文字の配列で表される。\\
+\item[ｍＲＮＡ] タンパク質を合成するためにＤＮＡから写しとられた高分子。
+Ａ、Ｕ、Ｃ、Ｇ、の４文字の配列で表される。\\
+\item[タンパク質] 生体内において、器官をつくったり、化学反応を促進した
+りする高分子。\\
+\item[転写] ＤＮＡの情報をもとにｍＲＮＡが合成されるプロセス\\
+\item[翻訳] ｍＲＮＡの情報をもとにタンパク質が合成されるプロセス
+
+\end{description}
+
+
+\end{LARGE}
+
+
+
+\newpage
+\begin{LARGE}
+\begin{center}
+{\Huge 背景}\\
+翻訳開始領域に関して現在判明していること
+\end{center}
+
+\end{LARGE}
+
+\vspace{6ex}
+
+\begin{Large}
+\begin{itemize}
+
+\item 翻訳開始領域は多くの場合ＡＵＧで始まる
+
+\item ＡＵＧ周辺の配列も翻訳開始領域の決定に関与している\\
+\begin{normalsize}
+Kozak,M.(1987) An analysis of 5'-noncoding sequences from
+699 vertebrate messenger RNAs,
+Nucleic Acids Research Volume 15 pp.8125-8148
+\end{normalsize}
+
+\item 原核生物の場合、ＡＵＧ配列の直前にリボソームの結合部位がある。そ
+の部位にはある程度共通した配列が見られる。\\
+\begin{normalsize}
+Shine,J. and Dalgarno,L.(1974). The 3'-terminal sequence
+of Escherichia coli 16S ribosomal RNA:Complementarity to nonsense triplets
+and ribosome binding sites. Proc.Nat.Acad.Sci.USA Vol.71 pp1342-1346\\
+Barrick D. et al.(1994)
+Quantitative analysis of ribosome binding sites in E.coli.
+Nuc.Acid.Res. 22:1287-1295
+
+\end{normalsize}
+
+\item 真核生物の場合、ｍＲＮＡの末端にリボゾームが結合し、そこから移動
+しながら翻訳開始領域を探す。リボゾームは逆方向には動かない。\\
+\begin{normalsize}
+Kozak,M.(1989),The Scanning Model for Translation:An Update,
+J.Cell.Biol 108,pp.229-241\\
+Kozak,M.(1995),Adherence to the first-AUG rule when a 
+second AUG codon follows closely upon the first,
+Proc.Natl.Acad.Sci.USA Vol.92 pp.2662-2666
+\end{normalsize}
+
+
+\item 真核生物の場合、ｍＲＮＡの末端とＡＵＧとの距離が短い場合、そこは
+翻訳開始領域とならない\\
+\begin{normalsize}
+Kozak,M.(1991), A short leader sequence impairs the fidelity of
+initiation by eukaryotic ribosomes, Gene Expr, 2, pp.111-115
+\end{normalsize}
+
+\item 真核生物の場合、ＡＵＧの直後にストップコドンがあると、
+その次のＡＵＧも翻訳開始領域となる\\
+\begin{normalsize}
+Kozak,M.(1987),
+ Effects of intercistronic length on the efficiency of reinitiation
+by eucaryotic ribosomes,
+Mol.Cell.Biol.10,pp.3438-3445
+\end{normalsize}
+\end{itemize}
+\end{Large}
+
+
+
+\newpage
+\begin{LARGE}
+\begin{center}
+{\Huge 分析内容}\\
+翻訳開始ＡＵＧの上流に現れるＡＵＧの傾向(1)
+\end{center}
+
+\vspace{6ex}
+
+\begin{description}
+\item[仮説]２つのＡＵＧが接近しているとリボソームは翻訳開始ＡＵＧの区別がつ
+きにくくなるのではないか?\\ 
+
+\item[分析]翻訳開始領域の上流に現れるAUG配列の頻度の計算\\
+
+\item[結果]翻訳開始領域直前でＡＵＧ配列の頻度が下がる\\
+
+\item[考察] 翻訳開始領域直前のＡＵＧ配列は翻訳に大きな影響を与える\\
+\end{description}
+
+\end{LARGE}
+
+\newpage
+\begin{LARGE}
+\begin{center}
+{\Huge 分析内容}\\
+翻訳開始ＡＵＧの上流に現れるＡＵＧの傾向(2)
+\end{center}
+
+\vspace{6ex}
+
+\begin{description}
+\item[仮説]翻訳開始領域の認識能力と進化には関係がある\\
+
+
+\item[分析]翻訳開始ＡＴＧとそこからみて上流に最初に現れるＡＴＧとの距
+離の平均を計算\\
+
+\item[結果]高等な生物ほど平均距離が長くなっている\\
+
+\item[考察]下等な生物ほど翻訳開始領域の認識能力が高い\\
+
+\end{description}
+
+\end{LARGE}
+
+\newpage
+\begin{LARGE}
+\begin{center}
+{\Huge 分析内容}\\
+翻訳開始ＡＵＧの上流に現れるＡＵＧの傾向(3)
+\end{center}
+
+\vspace{6ex}
+
+\begin{description}
+\item[仮説] Leaky Scanningが起こる割合と２つのＡＵＧの距離との間には関
+係がある 
+
+
+\item[分析] ２つのＡＵＧの距離に応じたLeaky Scanningが起こる割合の計算
+
+
+\item[結果] ２つのＡＵＧの距離が\(3n+2\)のとき、Leaky Scanningが起こり
+易い
+
+\item[考察] ストップコドンが関係している：自然界では２つのＡＵＧが
+\(3n+2\)離れているとき、最初のＡＵＧから翻訳が開始されるものが少ない
+
+
+\end{description}
+
+
+\begin{picture}(400,120)
+\put(0,73){\line(1,0){50}}
+\put(50,70){AUG}
+\put(87,73){\line(1,0){200}}
+\put(287,70){\underline{taA}UG}
+\put(340,73){\line(1,0){50}}
+
+
+\put(0,43){\line(1,0){50}}
+\put(50,40){AUG}
+\put(87,43){\line(1,0){200}}
+\put(287,40){\underline{tgA}UG}
+\put(340,43){\line(1,0){50}}
+
+\put(0,13){\line(1,0){50}}
+\put(50,10){AUG}
+\put(87,13){\line(1,0){210}}
+\put(301,10){A\underline{UGa}}
+\put(348,13){\line(1,0){42}}
+
+\put(150,80){$3n+2$ bases}
+\put(254,87){\shortstack[c]{\normalsize Stop codons in\\ 
+\normalsize the reading frames}}
+\end{picture}
+
+\end{LARGE}
+
+\newpage
+\begin{LARGE}
+\begin{center}
+{\Huge 分析内容}\\
+翻訳開始ＡＵＧの上流に現れるＡＵＧの傾向(4)
+\end{center}
+
+\vspace{6ex}
+
+\begin{description}
+\item[仮説] ２つのＡＵＧが近くなると、ＡＵＧ周辺の配列のコンセンサスが
+高くなる\\
+
+
+\item[分析] AUGに対して-3の位置のエントロピーをＡＵＧ間の距離別に分けて
+計算\\
+
+
+\item[結果] 翻訳開始ＡＵＧの２塩基後にＡＵＧ配列が続く時、-3の位置のエ
+ントロピーが低くなる\\
+
+\item[考察] 翻訳開始ＡＵＧの２塩基後にＡＵＧ配列が続く時、Leaky
+Scanningが起こるのを防ぐために-3の位置に強いコンセンサスがあるのでは
+ないだろうか。
+
+
+
+\end{description}
+
+\end{LARGE}
+
+
+\newpage
+\begin{LARGE}
+\begin{center}
+{\Huge まとめ}
+\end{center}
+
+\vspace{6ex}
+
+研究成果：遺伝子の認識メカニズムに関連する傾向を発見できた
+
+\begin{itemize}
+\item 生物は翻訳開始ＡＵＧの上流近辺のＡＵＧ配列をなるべくなくそうとし
+ている\\
+
+Ding-Fang Yun et al.(1996)\\
+mRNA sequences influencing translation and the selection of AUG
+initiator codons in the yeast Saccharomyces cerevisiae.\\
+Mol.Microbiol.19:1225-1239\\
+
+
+\item この傾向は高等な生物ほど強い\\
+下等な生物ほど情報処理能力が優れている??\\
+ 高等な生物ほど冗長な情報が多い?? \\
+\verb+              →  エラーに対して強い??+\\
+
+
+\end{itemize}
+\end{LARGE}
+
+\newpage
+\begin{LARGE}
+\begin{center}
+{\Huge 今後の展望など}
+\end{center}
+\vspace{6ex}
+\begin{itemize}
+\item 遺伝子の認識メカニズムを完全に解明するにはさらに様々な角度からの
+分析が必要\\
+\item 今後はもっと様々な角度から分析するとともに
+、高度なアルゴリズムを使用して統計的な手法だけでは分からない
+傾向を発見したい\\
+\item 国際シンポジウム「情報の流れとしての生命」、ＩＳＭＢ、
+    Genome Informatics 1996でポスター発表済み\\ 
+\end{itemize}
+\end{LARGE}
+
+
+\end{document}

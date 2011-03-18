@@ -1,0 +1,23 @@
+This is pTeX, Version p2.1.5, based on TeX, Version 3.14159 (EUC) (Web2c 7.0) (format=jlplain 97.8.31)  4 OCT 1999 15:20
+**neg_atg.tex
+(neg_atg.tex
+LaTeX Version 2.09 <24 May 1989>
+! Undefined control sequence.
+l.3 \section
+            {Overview}
+? 
+! Emergency stop.
+l.3 \section
+            {Overview}
+End of file on the terminal!
+
+ 
+Here is how much of TeX's memory you used:
+ 3 strings out of 11797
+ 29 string characters out of 86694
+ 25263 words of memory out of 263001
+ 2076 multiletter control sequences out of 10000+0
+ 23946 words of font info for 90 fonts, out of 100000 for 500
+ 14 hyphenation exceptions out of 1000
+ 4i,0n,1p,32b,7s stack positions out of 300i,100n,500p,3000b,4000s
+No pages of output.

@@ -1,0 +1,592 @@
+%!
+%%BoundingBox: 0 0 539 539
+%%EndComments
+%
+% Xgraph postscript output
+% Rick Spickelmier and David Harrison
+% University of California, Berkeley
+%
+% Output produced for inclusion in another document.
+% This file will not work properly if sent directly to a printer.
+%
+% Rotation and centering are turned off for inclusion in a document
+% Set the scale
+0.06 0.06 scale
+% Font Handling Functions
+%
+% Function giving y-offset to center of font
+% Assumes font is set and uses numbers to gauge center
+%
+/choose-font	% stack: fontsize fontname => ---
+{
+   findfont 
+   exch scalefont 
+   setfont
+   newpath
+   0 0 moveto (0) true charpath flattenpath pathbbox
+   /top exch def pop
+   /bottom exch def pop
+   bottom top bottom top add 2 div
+   /center-font-val exch def 
+   /upper-font-val exch def 
+   /lower-font-val exch def
+} def
+%
+% Justfication offset routines
+%
+/center-x-just	% stack: (string) x y => (string) newx y
+{
+   exch 2 index stringwidth pop 2 div sub exch
+} def
+%
+/left-x-just	% stack: (string) x y => (string) newx y
+{ 
+} def
+%
+/right-x-just	% stack: (string) x y => (string) newx y
+{
+   exch 2 index stringwidth pop sub exch
+} def
+%
+/center-y-just	% stack: (string) x y => (string) x newy
+{
+   center-font-val sub
+} def
+%
+/lower-y-just	% stack: (string) x y => (string) x newy
+{
+   lower-font-val sub
+} def
+%
+/upper-y-just	% stack: (string) x y => (string) x newy
+{
+   upper-font-val sub
+} def
+%
+% Shows a string on the page subject to justification
+%   
+/just-string	% stack: (string) x y just => ---
+{
+   dup 0 eq { pop center-x-just center-y-just 		} if
+   dup 1 eq { pop left-x-just center-y-just		} if
+   dup 2 eq { pop left-x-just upper-y-just	 	} if
+   dup 3 eq { pop center-x-just upper-y-just 		} if
+   dup 4 eq { pop right-x-just upper-y-just	 	} if
+   dup 5 eq { pop right-x-just center-y-just 		} if
+   dup 6 eq { pop right-x-just lower-y-just	 	} if
+   dup 7 eq { pop center-x-just lower-y-just  		} if
+   dup 8 eq { pop left-x-just lower-y-just	 	} if
+   moveto show
+} def
+%
+% Marker definitions
+/mark0 {/size exch def /y exch def /x exch def
+newpath x size sub y size sub moveto
+size size add 0 rlineto 0 size size add rlineto
+0 size size add sub 0 rlineto closepath fill} def
+/mark1 {/size exch def /y exch def /x exch def
+newpath x size sub y size sub moveto
+size size add 0 rlineto 0 size size add rlineto
+0 size size add sub 0 rlineto closepath stroke} def
+/mark2 {/size exch def /y exch def /x exch def
+newpath x y moveto x y size 0 360 arc stroke} def
+/mark3 {/size exch def /y exch def /x exch def
+newpath x size sub y size sub moveto x size add y size add lineto
+x size sub y size add moveto x size add y size sub lineto stroke} def
+/mark4 {/size exch def /y exch def /x exch def
+newpath x size sub y moveto x y size add lineto
+x size add y lineto x y size sub lineto
+closepath stroke} def
+/mark5 {/size exch def /y exch def /x exch def
+x y size mark1
+newpath x size sub y moveto size size add 0 rlineto stroke} def
+/mark6 {/size exch def /y exch def /x exch def
+newpath x y moveto x y size 0 360 arc fill} def
+/mark7 {/size exch def /y exch def /x exch def
+newpath x y moveto x size sub y size sub lineto
+x size add y size sub lineto closepath fill
+newpath x y moveto x size add y size add lineto
+x size sub y size add lineto closepath fill} def
+%
+% Main body begins here
+%
+0 setgray
+300 /Times-Italic choose-font
+(Methanobacterium thermoautotrophicum  ) 8527 8856 4 just-string
+200 /Times-Roman choose-font
+(atg) 8096 8104 2 just-string
+14 setlinewidth
+[] 0 setdash
+newpath
+  8096 8136 moveto
+  8426 8136 lineto
+stroke
+(Frequency x 10) 1630 8396 5 just-string
+(-3) 1630 8396 8 just-string
+(Position) 8886 380 5 just-string
+(0.0) 860 731 5 just-string
+(2.0) 860 1370 5 just-string
+(4.0) 860 2008 5 just-string
+(6.0) 860 2647 5 just-string
+(8.0) 860 3285 5 just-string
+(10.0) 860 3924 5 just-string
+(12.0) 860 4562 5 just-string
+(14.0) 860 5201 5 just-string
+(16.0) 860 5839 5 just-string
+(18.0) 860 6478 5 just-string
+(20.0) 860 7116 5 just-string
+(22.0) 860 7755 5 just-string
+(-200) 1271 90 7 just-string
+(-100) 2874 90 7 just-string
+(0) 4478 90 7 just-string
+(100) 6082 90 7 just-string
+(200) 7685 90 7 just-string
+[] 0 setdash
+8 setlinewidth
+newpath
+  950 731 moveto
+  8006 731 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 1370 moveto
+  8006 1370 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 2008 moveto
+  8006 2008 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 2647 moveto
+  8006 2647 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 3285 moveto
+  8006 3285 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 3924 moveto
+  8006 3924 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 4562 moveto
+  8006 4562 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 5201 moveto
+  8006 5201 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 5839 moveto
+  8006 5839 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 6478 moveto
+  8006 6478 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 7116 moveto
+  8006 7116 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 7755 moveto
+  8006 7755 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  1271 8106 moveto
+  1271 380 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  2874 8106 moveto
+  2874 380 lineto
+stroke
+[] 0 setdash
+8 setlinewidth
+newpath
+  4478 8106 moveto
+  4478 380 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  6082 8106 moveto
+  6082 380 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  7685 8106 moveto
+  7685 380 lineto
+stroke
+14 setlinewidth
+newpath
+  1271 7169 moveto
+  1287 7511 lineto
+  1303 7795 lineto
+  1319 7567 lineto
+  1335 7340 lineto
+  1351 8080 lineto
+  1353 8106 lineto
+  1475 8106 moveto
+  1479 7966 lineto
+  1484 8106 lineto
+  1503 8106 moveto
+  1511 7795 lineto
+  1524 8106 lineto
+  1532 8106 moveto
+  1543 7909 lineto
+  1547 8106 lineto
+  1648 8106 moveto
+  1656 7511 lineto
+  1672 7112 lineto
+  1688 7681 lineto
+  1700 8106 lineto
+  1706 8106 moveto
+  1720 7395 lineto
+  1736 6996 lineto
+  1752 6482 lineto
+  1768 6824 lineto
+  1784 6482 lineto
+  1800 6368 lineto
+  1816 6881 lineto
+  1832 7792 lineto
+  1848 8019 lineto
+  1854 8106 lineto
+  1869 8106 moveto
+  1880 7792 lineto
+  1888 8106 lineto
+  1913 8106 moveto
+  1928 7678 lineto
+  1944 7165 lineto
+  1960 7621 lineto
+  1976 7507 lineto
+  1992 7735 lineto
+  2008 7564 lineto
+  2024 8019 lineto
+  2033 8106 lineto
+  2071 8106 moveto
+  2073 8019 lineto
+  2089 7792 lineto
+  2105 7621 lineto
+  2112 8106 lineto
+  2186 8106 moveto
+  2201 7279 lineto
+  2217 6938 lineto
+  2233 7108 lineto
+  2249 7165 lineto
+  2265 7849 lineto
+  2281 7108 lineto
+  2297 7564 lineto
+  2313 7507 lineto
+  2329 8019 lineto
+  2345 7336 lineto
+  2361 7393 lineto
+  2377 7450 lineto
+  2393 8076 lineto
+  2409 8019 lineto
+  2412 8106 lineto
+  2461 8106 moveto
+  2473 7507 lineto
+  2489 7735 lineto
+  2506 7222 lineto
+  2522 7792 lineto
+  2538 7906 lineto
+  2552 8106 lineto
+  2554 8106 moveto
+  2570 7507 lineto
+  2586 6994 lineto
+  2602 7051 lineto
+  2618 7279 lineto
+  2634 7336 lineto
+  2650 7165 lineto
+  2666 6824 lineto
+  2682 7108 lineto
+  2698 8076 lineto
+  2700 8106 lineto
+  2738 8106 moveto
+  2746 7678 lineto
+  2762 7564 lineto
+  2775 8106 lineto
+  2783 8106 moveto
+  2794 7792 lineto
+  2799 8106 lineto
+  2820 8106 moveto
+  2826 7735 lineto
+  2832 8106 lineto
+  2855 8106 moveto
+  2858 7906 lineto
+  2862 8106 lineto
+  2948 8106 moveto
+  2955 8019 lineto
+  2971 7906 lineto
+  2987 7108 lineto
+  3003 6881 lineto
+  3019 6653 lineto
+  3035 7507 lineto
+  3051 7792 lineto
+  3063 8106 lineto
+  3120 8106 moveto
+  3131 7621 lineto
+  3147 7279 lineto
+  3163 6824 lineto
+  3179 8106 lineto
+  3187 8106 moveto
+  3195 8076 lineto
+  3198 8106 lineto
+  3213 8106 moveto
+  3227 6653 lineto
+  3243 6539 lineto
+  3259 5799 lineto
+  3275 6425 lineto
+  3291 6767 lineto
+  3307 7393 lineto
+  3323 7507 lineto
+  3339 7108 lineto
+  3355 7393 lineto
+  3371 6881 lineto
+  3387 8106 lineto
+  3437 8106 moveto
+  3452 6994 lineto
+  3468 7564 lineto
+  3484 6881 lineto
+  3500 7222 lineto
+  3516 6881 lineto
+  3532 7564 lineto
+  3538 8106 lineto
+  3610 8106 moveto
+  3612 8019 lineto
+  3628 8019 lineto
+  3644 7735 lineto
+  3655 8106 lineto
+  3715 8106 moveto
+  3724 7735 lineto
+  3740 7393 lineto
+  3756 6994 lineto
+  3772 6539 lineto
+  3788 7336 lineto
+  3804 7906 lineto
+  3810 8106 lineto
+  3840 8106 moveto
+  3853 7336 lineto
+  3869 7222 lineto
+  3885 6994 lineto
+  3895 8106 lineto
+  3940 8106 moveto
+  3949 7735 lineto
+  3965 7621 lineto
+  3981 7336 lineto
+  3997 7735 lineto
+  4013 7678 lineto
+  4029 8019 lineto
+  4045 7906 lineto
+  4061 7507 lineto
+  4077 7906 lineto
+  4093 7279 lineto
+  4109 7849 lineto
+  4125 7393 lineto
+  4141 8076 lineto
+  4157 7621 lineto
+  4173 7678 lineto
+  4181 8106 lineto
+  4264 8106 moveto
+  4270 7735 lineto
+  4286 6767 lineto
+  4302 6425 lineto
+  4318 6140 lineto
+  4334 6425 lineto
+  4350 6368 lineto
+  4366 7279 lineto
+  4382 7450 lineto
+  4398 7165 lineto
+  4424 8106 lineto
+  4904 8106 moveto
+  4911 7962 lineto
+  4915 8106 lineto
+  4967 8106 moveto
+  4975 7450 lineto
+  4991 8076 lineto
+  5007 7906 lineto
+  5015 8106 lineto
+  5041 8106 moveto
+  5055 7906 lineto
+  5071 7279 lineto
+  5087 7222 lineto
+  5103 7621 lineto
+  5119 8076 lineto
+  5122 8106 lineto
+  5149 8106 moveto
+  5152 8076 lineto
+  5168 7792 lineto
+  5184 7336 lineto
+  5200 7051 lineto
+  5216 6881 lineto
+  5232 7336 lineto
+  5246 8106 lineto
+  5276 8106 moveto
+  5280 8019 lineto
+  5296 7336 lineto
+  5311 8106 lineto
+  5316 8106 moveto
+  5328 8019 lineto
+  5333 8106 lineto
+  5358 8106 moveto
+  5360 8076 lineto
+  5364 8106 lineto
+  5379 8106 moveto
+  5392 7792 lineto
+  5408 6767 lineto
+  5424 6994 lineto
+  5440 7165 lineto
+  5456 7564 lineto
+  5472 7450 lineto
+  5488 7507 lineto
+  5504 7962 lineto
+  5514 8106 lineto
+  5526 8106 moveto
+  5536 7962 lineto
+  5544 8106 lineto
+  5623 8106 moveto
+  5633 7906 lineto
+  5649 7792 lineto
+  5665 7735 lineto
+  5681 7792 lineto
+  5697 8076 lineto
+  5698 8106 lineto
+  5728 8106 moveto
+  5729 8076 lineto
+  5737 8106 lineto
+  5777 8106 moveto
+  5793 7165 lineto
+  5809 6710 lineto
+  5825 6824 lineto
+  5841 6653 lineto
+  5857 6767 lineto
+  5873 6767 lineto
+  5889 7108 lineto
+  5905 7621 lineto
+  5921 7678 lineto
+  5937 7678 lineto
+  5949 8106 lineto
+  6027 8106 moveto
+  6034 7678 lineto
+  6050 7393 lineto
+  6066 7108 lineto
+  6082 6938 lineto
+  6098 7336 lineto
+  6114 7450 lineto
+  6130 7906 lineto
+  6141 8106 lineto
+  6168 8106 moveto
+  6178 7962 lineto
+  6194 7564 lineto
+  6210 7621 lineto
+  6226 7621 lineto
+  6242 7450 lineto
+  6258 6994 lineto
+  6274 7279 lineto
+  6290 7222 lineto
+  6306 7336 lineto
+  6322 6710 lineto
+  6338 6368 lineto
+  6354 6368 lineto
+  6370 6824 lineto
+  6386 6767 lineto
+  6402 6881 lineto
+  6418 7393 lineto
+  6432 8106 lineto
+  6452 8106 moveto
+  6467 7792 lineto
+  6483 7564 lineto
+  6499 7564 lineto
+  6515 7621 lineto
+  6531 7507 lineto
+  6547 7962 lineto
+  6563 7792 lineto
+  6579 7678 lineto
+  6595 7222 lineto
+  6611 7393 lineto
+  6627 7051 lineto
+  6643 6938 lineto
+  6659 7279 lineto
+  6674 8106 lineto
+  6699 8106 moveto
+  6707 8019 lineto
+  6723 7849 lineto
+  6739 7962 lineto
+  6755 8019 lineto
+  6757 8106 lineto
+  6809 8106 moveto
+  6819 7336 lineto
+  6835 7564 lineto
+  6851 6539 lineto
+  6867 6368 lineto
+  6883 6596 lineto
+  6899 7678 lineto
+  6908 8106 lineto
+  6937 8106 moveto
+  6948 7564 lineto
+  6964 7051 lineto
+  6980 6710 lineto
+  6996 7336 lineto
+  7007 8106 lineto
+  7051 8106 moveto
+  7060 7507 lineto
+  7076 7051 lineto
+  7092 7051 lineto
+  7108 7507 lineto
+  7124 8019 lineto
+  7140 7108 lineto
+  7156 7336 lineto
+  7172 7165 lineto
+  7188 8106 lineto
+  7190 8106 moveto
+  7204 7849 lineto
+  7220 7450 lineto
+  7236 7279 lineto
+  7252 7792 lineto
+  7260 8106 lineto
+  7387 8106 moveto
+  7397 7678 lineto
+  7413 7393 lineto
+  7429 7735 lineto
+  7442 8106 lineto
+  7490 8106 moveto
+  7493 7962 lineto
+  7509 7792 lineto
+  7525 7564 lineto
+  7541 7279 lineto
+  7557 7336 lineto
+  7573 7792 lineto
+  7577 8106 lineto
+  7629 8106 moveto
+  7637 7735 lineto
+  7653 7393 lineto
+  7669 7621 lineto
+  7685 7792 lineto
+stroke
+% End of xgraph output

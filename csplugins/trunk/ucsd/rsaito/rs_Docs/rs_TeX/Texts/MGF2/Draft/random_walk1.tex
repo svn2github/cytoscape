@@ -1,0 +1,98 @@
+\documentclass[a4j,12pt]{jarticle}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{fancybox}
+\pagestyle{plain}
+
+\begin{document}
+
+酔っ払いは１回の跳躍でぴょんと距離$a$だけ動くと仮定しよう。但しそれが
+東か西かは同様に確からしいとする。
+
+さて$n$回($n$は十分大きな整数とする)の跳躍の後、粒子は(今後簡単に粒子にする)$ma$の位置にいたとする。$m$は正にも
+負にもなり得るが、$\left|m\right|\leq n$が成立する。
+
+右に跳んだ回数を$n_{+}$、左に跳んだ回数を$n_{-}$とすると、直ちに
+
+\begin{equation}
+n=n_{+}+n_{-}\ \ \ \ \ m=n_{+}-n_{-}
+\label{eq_rwalk10}
+\end{equation}
+
+\noindent
+であることが導かれる。但し$m$にたどり着くまで右$(n_{+})$と左$(n_{-})$をどのように組み合わせてもいい。
+組み合わせの数$W_{n}(m)$が多いほどその場所$(ma)$にたどり着く確率が多いことは分かるだろう。そこで
+$n$回の跳躍で$m$にたどり着く場合の数$W_{n}(m)$は
+
+\begin{equation}
+W_{n}(m)=\displaystyle \frac{n!}{n_{+}!n_{-}!}
+\label{eq_rwalk11}
+\end{equation}
+
+\noindent
+である。また式\ref{eq_rwalk10}から
+
+\begin{equation}
+n_{+}=\frac{n+m}{2}\ \ \ \ \ n_{-}=\frac{n-m}{2}
+\label{eq_rwalk12}
+\end{equation}
+
+\noindent
+となり、これを式\ref{eq_rwalk11}に代入すれば、$W_{n}(m)$を求めることができる。しかしこれはとても
+大きな数になるので、その対数をとって$\log W_{n}(m)$を計算しよう。
+
+\begin{equation}
+\log W_{n}(m)=\log\frac{n!}{\left(\frac{n+m}{2}\right)!\left(\frac{n-m}{2}\right)!}
+\label{eq_rwalk13}
+\end{equation}
+
+\noindent
+$n$が十分大きいので、$\log z!\simeq z\log z-z$をこの式に代入して、
+
+\begin{eqnarray}
+&   & \log\frac{n!}{\left(\frac{n+m}{2}\right)!\left(\frac{n-m}{2}\right)}!
+  =  n\log n-n-\left(\frac{n+m}{2}\right)\log\left(\frac{n+m}{2}\right)+\left(\frac{n+m}{2}\right)\nonumber\\
+&   & -\left(\frac{n-m}{2}\right)\log\left(\frac{n-m}{2}\right)+\left(\frac{n-m}{2}\right)\nonumber\\
+& = & n\left\{\log 2-\frac{1}{2}\left(1+\frac{m}{n}\right)\log\left(1+\frac{m}{n}\right)-\frac{1}{2}\left(1-\frac{m}{n}\right)\log\left(1-\frac{m}{n}\right)\right\}
+\end{eqnarray}
+
+\noindent
+となる。ここで\(x\ll 1\)を前提にテイラー展開
+$\displaystyle \log(1+x)\simeq x-\frac{x^{2}}{2}+\frac{x^{3}}{3}-\frac{x^{4}}{4}+\cdots  $
+を使って
+
+\begin{eqnarray}
+&   & n\left\{\log 2-\frac{1}{2}\left(1+\frac{m}{n}\right)\log\left(1+\frac{m}{n}\right)-\frac{1}{2}\left(1-\frac{m}{n}\right)\log\left(1-\frac{m}{n}\right)\right\}\nonumber\\
+& = & \log 2^{n}-\frac{n}{2}\left\{\left(1+\frac{m}{n}\right)\left(\frac{m}{n}-\frac{1}{2}\frac{m^{2}}{n^{2}}\right)+\left(1-\frac{m}{n}\right)\left(-\frac{m}{n}-\frac{1}{2}\frac{m^{2}}{n^{2}}\right)\right\}\nonumber\\
+& = & \log 2^{n}-\frac{1}{2}\frac{m^{2}}{n}
+\end{eqnarray}
+
+\noindent
+従って
+
+\begin{equation}
+W_{n}(m)=2^{n}\exp\left(-\frac{m^{2}}{2n}\right)=A\exp\left(-\frac{x^{2}}{2a^{2}n}\right)
+\end{equation}
+
+\noindent
+$W_{n}(\displaystyle \frac{x}{a})$を確率とみなして、係数$A$を決めよう。
+
+\begin{equation}
+\int_{-\infty}^{\infty}A\exp\left(-\frac{x^{2}}{2a^{2}n}\right)dx=1
+\end{equation}
+
+\noindent
+より、
+
+\begin{equation}
+W_{n}(m)=\displaystyle \frac{1}{\sqrt{2\pi n}a}\exp\left(-\frac{x^{2}}{2a^{2}n}\right)
+\end{equation}
+
+\noindent
+となる。
+
+\end{document}

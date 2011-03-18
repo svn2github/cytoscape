@@ -1,0 +1,204 @@
+\section{ティー分布}
+
+\subsection{ティー分布の導出}
+
+確率変数\(X,Y\)は独立な確率変数で、\(X\)は標準正規分布\(N(0,1)\)に従い、
+\(Y\)は自由度\(n\)の\(\chi^{2}\)分布\(\chi_{n}^{2}\)に従うとき、
+
+\begin{equation}
+T=\frac{X}{\sqrt{Y/n}}
+\end{equation}
+
+\noindent
+となる\(T\)が従う分布のことを自由度\(n\)の{\bf \(t\)分布}\index{てぃーぶんぷ@\(t\)分布}という。
+
+$(X,Y)$の同時密度関数は
+
+\begin{equation}
+f(x,y)=(2\pi)^{-\frac{1}{2}}\exp\left(-\frac{x^{2}}{2}\right)\left\{\Gamma\left(\frac{n}{2}\right)2^{\frac{n}{2}}\right\}^{-1}y^{\frac{n}{2}-1}\exp\left(-\frac{y}{2}\right)
+\end{equation}
+
+\noindent
+である。変数変換
+$\left\{\begin{array}{ll}
+t=\frac{x}{\sqrt{y/n}} & (-\infty<t<\infty)\\
+u=y & (0<u<\infty)
+\end{array}\right.$
+すなわち
+$\left\{\begin{array}{ll}
+x=t\sqrt{\frac{u}{n}} & (-\infty<x<\infty)\\
+y=u & (0<y<\infty)
+\end{array}\right.$
+を行うとき、そのヤコビアンは
+
+\begin{displaymath}
+J=\left|\begin{array}{cc}
+\sqrt{\frac{u}{n}} & t\left\{2n\sqrt{\frac{u}{n}}\right\}^{-1}\\
+0 & 1
+\end{array}\right|=\sqrt{\frac{u}{n}}\neq 0
+\end{displaymath}
+
+\noindent
+であるから、$(T,U)$の同時密度関数は
+
+\begin{equation}
+g(t,u)=(2\pi)^{-\frac{1}{2}}\exp\left(-\frac{t^{2}u}{2n}\right)\left\{\Gamma\left(\frac{n}{2}\right)2^{\frac{n}{2}}\right\}^{-1}u^{\frac{n}{2}-1}\exp\left(-\frac{u}{2}\right)\sqrt{\frac{u}{n}}
+\end{equation}
+
+\noindent
+ゆえに$T$の密度関数はこの同時密度関数の周辺密度関数として求まる。
+
+\begin{eqnarray}
+g_{1}(t) & = & \int_{0}^{\infty}g(t,u)du\nonumber\\
+         & = & \frac{1}{(2\pi n)^{\frac{1}{2}}\Gamma\left(\frac{n}{2}\right)2^{\frac{n}{2}}}\int_{0}^{\infty}u^{\frac{n+1}{2}-1}\exp\left\{-\frac{u\left(\frac{t^{2}}{n}+1\right)}{2}\right\}du\nonumber\\
+         & = & \frac{1}{(2\pi n)^{\frac{1}{2}}\Gamma\left(\frac{n}{2}\right)2^{\frac{n}{2}}}\Gamma\left(\frac{n+1}{2}\right)\left\{\frac{2}{\frac{t^{2}}{n}+1}\right\}^{\frac{n+1}{2}}
+\end{eqnarray}
+
+\noindent
+これを整理することにより、
+
+\begin{equation}
+g_{1}(t)=\frac{\Gamma\left(\frac{n+1}{2}\right)}{\sqrt{\pi n}\Gamma\left(\frac{n}{2}\right)}\left(\frac{t^{2}}{n}+1\right)^{-\frac{n+1}{2}}
+\end{equation}
+
+\subsection{正規標本における標本平均の分布}
+
+\(X_{1},X_{2},\cdots,X_{n}\)は正規分布\(N(\mu,\sigma^{2})\)に従う無作為標本とする(正規標本)。
+このとき、標本平均\(\overline{X_{n}}=\frac{1}{n}\sum_{i=1}^{n}X_{i}\)および
+標本分散\(S_{n}^{2}=\frac{1}{n}\sum_{i=1}^{n}(X_{i}-\overline{X_{n}})^{2}\)
+が従う分布について次の定義がある。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+\noindent
+{\bf 定理\thechapter-\thetheorem}:~
+正規標本における標本平均と標本分散は独立で
+
+\begin{eqnarray}
+\frac{\sqrt{n}(\overline{X_{n}}-\mu)}{\sigma}& \sim & N(0,1)\\
+\frac{nS_{n}^{2}}{\sigma^{2}} & \sim  & \chi^{2}_{n-1}
+\end{eqnarray}
+
+\noindent
+となる。
+
+\noindent
+{\bf 証明\thechapter-\thetheorem}:~
+\begin{equation}
+Y_{i}=\frac{X_{i}-\mu}{\sigma},\ \ \ \ \   i=1,\cdots,n
+\end{equation}
+
+\noindent
+と置くと、$Y_{1},Y_{2},\cdots,Y_{n}$は互いに独立で同一分布$N(0,1)$に従っている。
+すなわち、$Y=(Y_{1},Y_{2},\cdots,Y_{n})^{t}$の同時密度関数は、
+
+\begin{equation}
+f(y)=\displaystyle \prod_{i=1}^{n}2\pi^{-1/2}\exp\left(-\frac{y_{i}2}{2}\right)=2\pi^{-n/2}\exp\left(-\frac{1}{2}y^{t}y\right),\ \ \ \ \ y=(y_{1},y_{2},\cdots,y_{n})^{t}
+\end{equation}
+
+\noindent
+ここで次のような確率変数の直交変換を考える。
+
+\begin{equation}
+Z=\left(\begin{array}{l}
+Z_{1}\\
+Z_{2}\\
+\vdots\\
+ Z_{n}
+\end{array}\right)=\left(\begin{array}{llll}
+\frac{1}{\sqrt{n}} & \frac{1}{\sqrt{n}} & \cdots & \frac{1}{\sqrt{n}} \\
+\mbox{*} & \mbox{*}  & \cdots  & \mbox{*} \\
+\mbox{*} & \mbox{*}  & \cdots  & \mbox{*} \\
+\mbox{*} & \mbox{*}  & \cdots  & \mbox{*} \\
+\end{array}\right)\left(\begin{array}{l}
+Y_{1}\\
+Y_{2}\\
+\vdots\\
+ Y_{n}
+\end{array}\right)=\Gamma Y
+\end{equation}
+
+\noindent
+例えばこのような直交行列$\Gamma$の1つとして、次のようなものがある。
+
+\begin{equation}
+\left(\begin{array}{cccccc}
+\frac{1}{\sqrt{n}} & \frac{1}{\sqrt{n}} & \cdots & \cdots & \cdots & \frac{1}{\sqrt{n}}\\
+\frac{1}{\sqrt{2}} & -\frac{1}{\sqrt{2}} & 0 & \cdots & \cdots & 0\\
+\frac{1}{\sqrt{2\cdot 3}} & \frac{1}{\sqrt{2\cdot 3}} & -\frac{2}{\sqrt{2\cdot 3}} & 0 & \cdots & 0\\
+\frac{1}{\sqrt{(n-1)n}} & \frac{1}{\sqrt{(n-1)n}} & \cdots & \cdots & \cdots & -\frac{n-1}{\sqrt{(n-1)n}}
+\end{array}\right)
+\end{equation}
+
+\noindent
+このとき、$\Gamma\Gamma^{t}$=$\Gamma^{t}\Gamma=I$ ($n$次単位行列)が成立することに注意しよう。
+従って$Z$の同時密度関数$g(z)$は変数変換$y=\Gamma^{t}z$のヤコビアンが
+$J=|\Gamma^{t}|=\pm 1$
+であるから、
+
+\begin{equation}
+g(z)=f(\displaystyle \Gamma^{t}z)
+=(2\pi)^{-n/2}\exp\left\{-\frac{1}{2}(\Gamma^{t}z)^{t}(\Gamma^{t}z)\right\}
+=(2\pi)^{-n/2}\exp\left(-\frac{1}{2}z^{t}z\right)
+=\prod_{i=1}^{n}(2\pi)^{-1/2}\exp\left(-\frac{z_{i}^{2}}{2}\right)
+\end{equation}
+
+\noindent
+ゆえに$Z_{1},Z_{2},\cdots,Z_{n}$は互いに独立でそれぞれ標準正規分布$N(0,1)$に従うことが示された。ところが
+直交行列の第一行目を考えると、
+$Z_{1}=\displaystyle \frac{1}{\sqrt{n}}\sum_{i=1}^{n}Y_{i}=\frac{\sqrt{n}(\bar{X_{n}}-\mu)}{\sigma}\sim N(0,1)$
+であることが分かる。さらに、
+
+\begin{eqnarray}
+Z_{1}^{2}+Z_{2}^{2}+\cdots+Z_{n}^{2} & = & Y_{1}^{2}+Y_{2}^{2}+\cdots+Y_{n}^{2}\nonumber\\
+& = & \sum_{i=1}^{n}\frac{(X_{i}-\mu)^{2}}{\sigma^{2}}\nonumber\\
+& = & \sum_{i=1}^{n}\frac{\{(X_{i}-\bar{X_{n}})+(\bar{X_{n}}-\mu)\}^{2}}{\sigma^{2}}\nonumber\\
+& = & \sum_{i=1}^{n}\frac{(X_{i}-\bar{X_{n}})^{2}}{\sigma^{2}}+\frac{n(\bar{X_{n}}-\mu)^{2}}{\sigma^{2}}=\frac{nS_{n}^{2}}{\sigma^{2}}+Z_{1}^{2}\nonumber
+\end{eqnarray}
+
+\begin{equation}
+\therefore \frac{nS_{n}^{2}}{\sigma^{2}}=Z_{2}^{2}+Z_{3}^{2}+\cdots+Z_{n}^{2} \sim \chi_{n-1}^{2}
+\end{equation}
+
+\noindent
+従って標本平均は$Z_{1}$のみに関係し、標本分散は$Z_{2},\cdots,Z_{n}$のみに関係するので、
+これらは独立であることが示された。
+
+\begin{flushright}
+□
+\end{flushright}
+
+なお上記証明より標本分散は$n$で割るより、$n-1$で割った方が理にかなっていることが分かる。また同時に
+以下の定理が導かれる。
+
+\refstepcounter{theorem}
+\noindent
+{\bf 定理\thechapter-\thetheorem}:~
+標本平均\(\bar{X_{n}}\)の標準化は
+
+\begin{equation}
+Z=\displaystyle \frac{\sqrt{n}(\bar{X_{n}}-\mu)}{\sigma} \sim N(0,1)
+\end{equation}
+
+\noindent
+であるが、標本不偏分散$\hat{\sigma}_{n}^{2}$に基づく標本標準偏差
+
+\begin{equation}
+\hat{\sigma}_{n}=\left(\frac{1}{n-1}\sum_{i=1}^{n}(X_{i}-\bar{X_{n}})^{2}\right)^{\frac{1}{2}}
+\end{equation}
+
+\noindent
+で母標準偏差を置き換えれば、
+
+\begin{equation}
+T=\displaystyle \frac{\sqrt{n}(\bar{X_{n}}-\mu)}{\hat{\sigma_{n}}} \sim t_{n-1}
+\end{equation}
+
+\noindent
+となる。
+
+
+
+
+

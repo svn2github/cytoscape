@@ -1,0 +1,357 @@
+
+\section{複素関数の特異点に関する定理}
+
+
+\subsection{極と留数}
+
+点$a$が関数$f(x)$の特異点であるとする。特異点$a$を中心とする$f(z)$のローラン展開が
+
+\begin{equation}
+f(z)=\displaystyle \frac{b_{-k}}{(z-a)^{k}}+\cdots+\frac{b_{-1}}{z-a}+b_{0}+b_{1}(z-a)+b_{2}(z-a)^{2}+\cdots
+\end{equation}
+
+\noindent
+であって、$b_{-k}\neq 0$とする。すなわち、$b_{-k}\neq 0, b_{-(k+1)}=0=b_{-(k+2)}=\cdots=0$であるとする。
+このとき特異点$a$を関数$f(z)$の$k$位の極、または単に極という。点$a$が$f(z)$の$k$位の極であれば、
+
+\begin{equation}
+f(z)=\displaystyle \frac{g(z)}{(z-a)^{k}}\ \ \ \ \ (g(a)\neq 0)
+\end{equation}
+
+\noindent
+であって、$g(z)$は点$a$とその近傍で正則である。逆も成立する。
+これに対して、特異点$a$を中心とするローラン展開において、負のべきの項の
+係数$b_{-n}$のうちに$0$でないものが無限個あれば、特異点$a$を関数$f(z)$の真性特異点という。
+
+例えば、関数$f(z)=\frac{z-2}{(z^{2}+1)(z-1)^{3}}=\frac{z-2}{(z-i)(z+i)(z-1)^{3}}$の特異点
+は$i,-i,1$であって、点$i$と点$-i$は1位の極、点1は3位の極である。
+また、関数$f(z)=e^{\frac{1}{z}}$の特異点$z=0$を中心とするローラン展開は
+$f(z)=1+\frac{1}{z}+\frac{1}{2!z^{2}}+\cdots+\frac{1}{n!z}+\cdots$
+であるから、点$z$はこの関数$f(z)$の真性特異点である。
+
+点$a$が関数$f(z)$の極であるとする。点$a$をその内部に含む単一閉曲線$C$を考え、$C$の内部では
+点$a$以外の全ての点で$f(z)$が正則であるとすれば、
+
+\begin{equation}
+\mbox{Res}[f,a]=\frac{1}{2\pi i}\int_{C}f(z)dz
+\label{eq_residue_def101}
+\end{equation}
+
+\noindent
+を$f(z)$の極$a$における{\bf 留数}\index{りゅうすう@留数}という。$\mbox{Res}[f,a]$は誤解を招く恐れがないときは、$\mbox{Res}[a]$と略す。
+なお、この式の左辺の値はこのような単一閉曲線$C$の選び方は無関係である(定理\ref{chap_complex_number}-\ref{cauchy_ext_theorem2})。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thechapter-\thetheorem}:~
+特異点$a$を中心とする$f(z)$のローラン展開を
+
+\begin{equation}
+f(z)=\varphi(z)+\frac{b_{-1}}{z-a}+\frac{b_{-2}}{(z-a)^{2}}+\cdots+\frac{b_{-k}}{(z-a)^{k}}
+\label{eq_residue_104}
+\end{equation}
+
+\noindent
+とする。ここで$\varphi(z)$は点$a$とその近くで正則な関数である。このとき
+
+\begin{equation}
+\mbox{Res}[f,a]=b_{-1}
+\label{eq_residue_105}
+\end{equation}
+
+\noindent
+が成り立つ。
+
+\noindent
+{\bf 証明\thechapter-\thetheorem}:~
+式\ref{eq_residue_104}の両辺を閉曲線$C$に沿って積分すれば、
+
+\begin{equation}
+\int_{C}f(z)dz=2\pi ib_{-1}
+\end{equation}
+
+\noindent
+が得られる(定理\ref{chap_complex_number}-\ref{theorem_cauchy_main1}、例題\ref{chap_complex_number}-\ref{ex_cauchy_ext3_125})。両辺を$2\pi i$で割れば式\ref{eq_residue_105}が得られる
+\footnote{式\ref{eq_residue_105}は関数$f(z)$の真性特異点$a$についても成り立つことが知られている。}。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thechapter-\thetheorem}:~
+点$a$が関数$f(z)$の$1$位の極であれば、
+
+\begin{equation}
+\mbox{Res}[f,a]=\displaystyle \lim_{z\rightarrow a}[(z-a)/f(z)]
+\end{equation}
+
+\noindent
+{\bf 証明\thechapter-\thetheorem}:~
+まず点$a$が$f(z)$の1位の極であれば、式\ref{eq_residue_104}のローラン展開は
+
+\begin{equation}
+f(z)=\varphi(z)+\frac{b_{-1}}{z-a}
+\end{equation}
+
+\noindent
+となる。ゆえに、
+
+\begin{equation}
+\lim_{z\rightarrow a}[(z-a)f(z)]=b_{-1}=\mbox{Res}[f,a]
+\end{equation}
+
+\noindent
+次に点$a$が$f(z)$の2位の極であれば、ローラン展開は、
+
+\begin{equation}
+f(z)=\varphi(z)+\frac{b_{-1}}{z-a}+\frac{b_{-2}}{(z-a)^{2}}
+\end{equation}
+
+\noindent
+となる。ゆえに、
+
+\begin{equation}
+\lim_{z\rightarrow a}\frac{d}{dz}[(z-a)^{2}f(z)]=b_{-1}=\mbox{Res}[f,a]
+\end{equation}
+
+\begin{flushright}
+□
+\end{flushright}
+
+同様に、点$a$が$f(z)$の$k$位の極であるとき、
+
+\begin{equation}
+\mbox{Res}[f,a]=\frac{1}{(k-1)!}\lim_{z\rightarrow a}\frac{d^{k-1}}{dz^{k-1}}\{(z-a)^{k}f(z)\}
+\end{equation}
+
+\noindent
+が成立する。
+
+\subsection{留数定理}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thechapter-\thetheorem}:~ \label{theorem_residue1}
+関数$f(z)$が正則である領域内に描かれた単一閉曲線$C$があり、
+$C$の内部で$f(z)$はその極$a_{1},a_{2},\cdots,a_{m}$以外の点では正則であるとする。
+このとき、
+
+\begin{equation}
+\frac{1}{2\pi i}\int_{C}f(z)dz={\rm Res}[f,a_{1}]+{\rm Res}[f,a_{2}]+\cdots+{\rm Res}[f,a_{m}]
+\label{eq_residue_theorem1}
+\end{equation}
+
+\noindent
+これを{\bf 留数定理}\index{りゅうすうていり@留数定理}という。
+
+\vspace{1em}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{Figures/residue_theorem1}
+\end{center}
+\vspace{-2em}
+\caption{曲線\(C\)とその内部の円\(\Gamma_{1},\cdots,\Gamma_{m}\)}
+\label{residue_theorem1}
+\end{figure}
+
+\noindent
+{\bf 証明\thechapter-\thetheorem}:~
+図\ref{eq_residue_theorem1}に示すように、曲線$C$の内部に極$a_{1},a_{2},\cdots,a_{m}$を中心とする
+半径が十分小さい円を描き、それぞれ$\Gamma_{1},\Gamma_{2},\cdots,\Gamma_{m}$とすれば、$\Gamma_{1},\Gamma_{2},\cdots,\Gamma_{m}$は
+それぞれ内部に極を1つしか含まず、かつ互いに交わらないようにできる。
+$f(z)$は$C$と$\Gamma_{1},\Gamma_{2},\cdots,\Gamma_{m}$で囲まれた領域で正則であるから、
+定理\ref{chap_complex_number}-\ref{theorem_cauchy_ext4}によって、
+
+\begin{equation}
+\frac{1}{2\pi i}\int_{C}f(z)dz=\frac{1}{2\pi i}\int_{\Gamma_{1}}f(z)dz+\frac{1}{2\pi i}\int_{\Gamma_{2}}f(z)dz+\cdots+\frac{1}{2\pi i}\int_{\Gamma_{m}}f(z)dz
+\end{equation}
+
+\noindent
+従って式\ref{eq_residue_def101}によって、式\ref{eq_residue_theorem1}が成立する。
+
+\begin{flushright}
+□
+\end{flushright}
+
+\vspace{1em}
+
+\refstepcounter{preexer}
+
+\noindent
+{\bf 例題\thechapter-\thepreexer}:~ 以下の積分を求めよう。
+
+\begin{displaymath}
+\int_{C}\frac{z}{(z+2)(z-1)}dz,\ \ \ \ \ C:|z|=3
+\end{displaymath}
+
+\noindent
+\(f(z)=\frac{z}{(z+2)(z-1)}\)とする。2つの点\(z=-2,z=1\)はともに1位の極で
+あって円\(C\)の内部にある。ここで
+
+\begin{displaymath}
+\mbox{Res}[f,-2]=\lim_{z\to-2}(z+2)f(z)=\frac{2}{3}
+\end{displaymath}
+\begin{displaymath}
+\mbox{Res}[f,1]=\lim_{z\to 1}(z-1)f(z)=\frac{1}{3}
+\end{displaymath}
+
+\noindent
+ゆえに留数定理によって、
+
+\begin{eqnarray}
+\int_{C}\frac{z}{(z+2)(z-1)}dz & =& 2\pi i\{\mbox{Res}[f,-2]+\mbox{Res}[f,1]\}\nonumber\\
+& = & 2\pi i\left(\frac{2}{3}+\frac{1}{3}\right)=2\pi i\nonumber
+\end{eqnarray}
+
+\vspace{1em}
+
+\refstepcounter{preexer}
+
+\noindent
+{\bf 例題\thechapter-\thepreexer}:~
+次の等式を示そう\cite{fourier_sin_x_x}。
+
+\begin{equation}
+J=\int_{-\infty}^{\infty}\frac{\sin z}{z}dz=\pi
+\label{eq_complex_integ_sinx_x1}
+\end{equation}
+
+\noindent
+式\ref{eq_complex_integ_sinx_x1}を変形して、
+
+\begin{equation}
+J=\frac{1}{2i}\int_{-\infty}^{\infty}\frac{e^{iz}-e^{-iz}}{z}dz=\frac{1}{2i}\left(\int_{-\infty}^{\infty}\frac{e^{iz}}{z}dz+\int_{-\infty}^{\infty}\frac{e^{is}}{s}ds\right)=\frac{1}{i}\int_{-\infty}^{\infty}\frac{e^{iz}}{z}dz
+\label{eq_complex_integ_sinx_x1_2}
+\end{equation}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.9]{Figures/complex_integ_sinx_x1}
+\end{center}
+\vspace{-5em}
+\caption{積分経路\(C\)}
+\label{complex_integ_sinx_x1}
+\end{figure}
+
+\noindent
+ここで$I=\int_{-\infty}^{\infty}\frac{e^{iz}}{z}dz$とおいて、$z$を複素数に拡張して$I$を求めよう。まず図\ref{complex_integ_sinx_x1}のように
+閉曲線$C$(A→B→E→B'→A'→E'→A)を考えると、この閉曲線$C$に沿った積分$I_{C}$は
+
+\begin{equation}
+I_{C}=\int_{C}\frac{e^{iz}}{z}dz=I_{\mbox{\small AB}}+I_{\mbox{\small BEB}^{\prime}}+I_{\mbox{\small B}^{\prime}\mbox{\small A}^{\prime}}+I_{\mbox{\small A}^{\prime}\mbox{\small E}^{\prime}\mbox{\small A}}
+\label{eq_complex_integ_sinx_x1_deriv1} % (1)
+\end{equation}
+
+\noindent
+と表される。ここでさらに$I_{\mbox{\small AB}}+I_{\mbox{\small B}^{\prime}\mbox{\small A}^{\prime}}=I_{e,R}, I_{\mbox{\small BEB}^{\prime}}=I_{R}, I_{\mbox{\small A}^{\prime}\mbox{\small E}^{\prime}\mbox{\small A}}=I_{e}$とおく。$\epsilon\rightarrow 0, R\rightarrow\infty$の極限で
+$I_{e,R}=\int_{-R}^{-\epsilon}\frac{e^{iz}}{z}dz+\int_{\epsilon}^{R}\frac{e^{iz}}{z}dz$
+は求める積分$I$に近づくことを確かめよう。すなわち、$\lim_{\epsilon\rightarrow 0,R\rightarrow\infty}I_{\epsilon,R}=I$である。
+式\ref{eq_complex_integ_sinx_x1_deriv1}の被積分関数$\frac{e^{iz}}{z}$は$z=0$に1位の極を持ち、それ以外に特異点はない。$z=0$における
+留数は$e^{iz}|_{z=0}=1$だから、留数定理によって、
+
+\begin{equation}
+I_{C}=I_{\epsilon,R}+I_{R}+I_{\epsilon}=2\pi i\cdot 1=2\pi i
+\label{eq_complex_integ_sinx_x1_deriv2} % (2)
+\end{equation}
+
+\noindent
+また、下半円周上で$z=\epsilon e^{i\theta}$($\epsilon$=正の整数、$\theta=$角度変数), $ dz=i\epsilon e^{i\theta}d\theta$となるから、
+
+\begin{equation}
+I_{\epsilon}=\int_{\mbox{\small A}^{\prime}\mbox{\small E}^{\prime}\mbox{\small A}}\frac{e^{iz}}{z}dz=\int_{-\pi}^{0}\frac{e^{i\epsilon e^{i\theta}}}{\epsilon e^{i\theta}}i\epsilon e^{i\theta}d\theta
+\label{eq_complex_integ_sinx_x1_3}
+\end{equation}
+
+\noindent
+$\lim_{\epsilon\rightarrow 0}\exp(i\epsilon e^{i\theta})=1$を使えば、
+
+\begin{equation}
+\lim_{\epsilon\rightarrow 0}I_{\epsilon}=\lim_{\epsilon\rightarrow 0}\int_{-\pi}^{0}\frac{e^{i\epsilon e^{i\theta}}}{\epsilon e^{i\theta}}i\epsilon e^{i\theta}d\theta=i\int_{-\pi}^{0}d\theta=i\pi
+\label{eq_complex_integ_sinx_x1_4}
+\end{equation}
+
+\noindent
+を得る。上半円上で$z=Re^{i\theta}$($R=$正の定数、$\theta=$角度変数)、$ dz=iRe^{i\theta}d\theta$だから、
+
+\begin{equation}
+I_{R}=\int_{\mbox{\small BEB}^{\prime}}\frac{e^{iz}}{z}dz=\int_{0}^{\pi}\frac{e^{iRe^{i\theta}}}{Re^{i\theta}}iRe^{i\theta}d\theta=i\int_{0}^{\pi}e^{iR(\cos\theta+i\sin\theta)}d\theta
+\label{eq_complex_integ_sinx_x1_5}
+\end{equation}
+
+\noindent
+となり、この積分の大きさの上限は、
+
+\begin{equation}
+|I_{R}|\leq\int_{0}^{\pi}|e^{iR(\cos\theta+i\sin\theta)}|d\theta=\int_{0}^{\pi}e^{-R\sin\theta}|e^{iR\cos\theta}|d\theta=2\int_{0}^{\frac{\pi}{2}}e^{-R\sin\theta}d\theta
+\label{eq_complex_integ_sinx_x1_6}
+\end{equation}
+
+\noindent
+$0\leq\theta\leq\frac{\pi}{2}$では、$\frac{2}{\pi}\leq\frac{\sin\theta}{\theta}\leq$1であるから\footnote{
+$f(\theta)=\frac{\sin\theta}{\theta}$とおくと、
+$f^{\prime}(\theta)=\frac{\theta\cos\theta-\sin\theta}{\theta^{2}}$
+となるが、
+$0\leq\theta\leq\frac{\pi}{2}$
+の範囲で分子のさらなる微分は
+$\frac{d}{d\theta}\theta\cos\theta-\sin\theta=-\theta\sin\theta<0$
+なので、
+$0\leq\theta\leq\frac{\pi}{2}$
+の範囲で
+$f^{\prime}(\theta)$
+は減少関数であり、さらにこの区間における
+$f^{\prime}(\theta)$の最大値は$f^{\prime}(\frac{\pi}{2})=0$
+なので、
+$f^{\prime}(\theta)\leq 0$。
+従って、
+$0\leq\theta\leq\frac{\pi}{2}$
+の範囲で$f(\theta)$も減少関数である。よって
+$f(\theta)$の最小値は$f(\frac{\pi}{2})=\frac{2}{\pi},$ 最大値(厳密には$\theta\rightarrow 0$の極限)は$\lim_{\theta\rightarrow 0}f(\theta)=1$。
+直感的には、半径の長さ1の円を\(xy\)平面上に描くと分かりやすい。\(\frac{2}{\pi}\)は直径の長さと半円の長さの比、\(\frac{\sin \theta}{\theta}\)は第1象限の円上の点Pから\(x\)軸に
+向かって降ろした垂線の長さと\(x\)軸と点Pに挟まれた第1象限内の弧の長さの比である。
+}、$\alpha$=$\frac{2}{\pi}$として、$\sin\theta\geq\alpha\theta$だから、
+
+\begin{equation}
+\int_{0}^{\frac{\pi}{2}}e^{-R\sin\theta}d\theta\leq\int_{0}^{\frac{\pi}{2}}e^{-R\alpha\theta}d\theta=-\frac{1}{R\alpha}\left[e^{-R\alpha\theta}\right]_{0}^{\frac{\pi}{2}}=\frac{1}{R\alpha}(1-e^{-\frac{R\alpha\pi}{2}})
+\label{eq_complex_integ_sinx_x1_7}
+\end{equation}
+
+\noindent
+この値は$ R\rightarrow$∞で0に近づくから、$\lim_{R\rightarrow\infty}I_{\mbox{\small BEB}^{\prime}}=0$となることが分かった。従って、$ R\rightarrow\infty$、$\epsilon\rightarrow$0の極限で、
+$ I_{C}=I_{\epsilon,R}+I_{R}+I_{\epsilon}\rightarrow I+0+i\pi$
+となる。この値が式\ref{eq_complex_integ_sinx_x1_deriv2}により、$I_{C}=2\pi i$だから$I=\pi i$が得られ、これにより$ J=I/i=\pi$となって
+式\ref{eq_complex_integ_sinx_x1}が示された。
+
+また、
+\(J_{t}=\int_{-\infty}^{\infty}\frac{\sin tx}{x}dx\)
+は\(tx=x_{*}\)、すなわち\(x=\frac{x_{*}}{t}\)と変数変換を行って、
+
+\begin{displaymath}
+J_{t}=\int_{x=-\infty}^{x=\infty}\frac{\sin x_{*}}{\frac{1}{t}x_{*}}\frac{1}{t}dx_{*}
+=\int_{x=-\infty}^{x=\infty}\frac{\sin x_{*}}{x_{*}}dx_{*}
+\end{displaymath}
+
+\noindent
+となる。ここで\(t > 0\)のとき、
+\(x\to\infty\)は\(x_{*}\to\infty\)に対応し、
+\(x\to-\infty\)は\(x_{*}\to-\infty\)に対応するが、
+\(t < 0\)のときは、
+\(x\to\infty\)は\(x_{*}\to-\infty\)に対応し、
+\(x\to-\infty\)は\(x_{*}\to\infty\)に対応するので、結局
+
+\begin{equation}
+\int_{-\infty}^{\infty}\frac{\sin tx}{x}dx=\left\{\begin{array}{ll}
+-\pi & (\mbox{for}\ \ \ t < 0)\\
+0    & (\mbox{for}\ \ \ t = 0)\\
+\pi  & (\mbox{for}\ \ \ t > 0)\\
+\end{array}\right.
+\label{eq_sinax_x_integ}
+\end{equation}
+
+\noindent
+が得られる。

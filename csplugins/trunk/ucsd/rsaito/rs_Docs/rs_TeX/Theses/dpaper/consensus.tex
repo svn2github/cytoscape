@@ -1,0 +1,1153 @@
+
+\section{Overview}
+
+Comprehensive analyses of consensus patterns surrounding translation
+initiation sites were conducted to confirm that they are consistent
+with hypotheses of Shine-Dalgarno and Kozak. Analyses of procaryotes
+have revealed that in most species, consensus patterns observed
+upstream of start codons are complement to 3' terminal of 16S rRNA in
+each organism. This also holds for archaebacteria. However, {\it
+R.prowazekii} and {\it Synechocystis} had only weak Shine-Dalgarno
+sequences and {\it M.genitalium} did not seem to have Shine-Dalgarno
+sequences.  Instead, they had other sequence patterns that were
+observed frequently in the upstream regions of start codons.
+Shine-Dalgarno sequences seem to be required even when the previous
+genes are very close.
+
+Analyses of some vertebrates have revealed that consensus sequences
+are identical to Kozak's consensus sequences. Most of other eucaryotes
+had AAA as consensus sequence.
+
+\section{Introduction}
+
+In most species, there are signal sequences for translation
+initiation. For example, many procaryotes use Shine-Dalgarno
+sequences\cite{label7} and many vertebrates use Kozak's consensus
+sequences\cite{label3} to recognize translation initiation
+sites. However, usually those sequences are not perfectly
+conserved. Examples of sequences surrounding translation initiation
+sites are given in figure \ref{ex_start5}. And there is some
+questions. Do all bacteria use Shine-Dalgarno sequences to initiate
+translation? Is Shine-Dalgarno sequence indispensable even when the
+ribosome can reinitiate translation? Do some bacteria use signals other
+than Shine-Dalgarno sequence to initiate translation? How about in case
+of eucaryotes? To answer these questions, comprehensive analyses of
+signals in translation initiation sites were conducted.
+
+\begin{figure}
+\begin{tt}
+\begin{center}
+1. aagagacAAGGAcccaaacc ATG agccagcaag\\
+2. ttatgaaacataaactacaa ATG atgaaaatgc
+\end{center}
+\end{tt}
+\caption{Experimentally identified start codons and their surrounding sequences in {\it E.coli}}
+\label{ex_start5}
+\begin{quotation}
+\begin{small}
+1.2-isopropylmalate synthase, 2.periplasmic glucans biosynthesis
+protein.  Core sequence of Shine-Dalgarno sequence is
+``AGGAGG''. However, in sequence 1, only part of it is used, and it is
+often the case with {\it E.coli}. In sequence 2, there is no obvious
+Shine-Dalgarno sequence. Sequences are obtained from work by Link et al.\cite{lts14}
+\end{small}
+\end{quotation}
+\end{figure}
+
+There are some previous works on comprehensive analyses of translation
+initiation sites. Stormo et al.\cite{arclabel5} have analyzed
+translation initiation sites of {\it E.coli} using 124 genes. Rudd et
+al.\cite{label659} have compiled 1055 {\it E.coli} ribosome binding
+sites.  Sazuka et al.\cite{lsaz1,label515} have analysed sequence
+features surrounding experimentally identified translation initiation
+sites in Synechocystis. Kozak\cite{label3} have analysed 699
+vertebrate mRNAs. Dalphin et al.\cite{mglabel11} have constructed
+database of translation initiation signals which shows profile around
+start codons in many organisms.
+
+Comparing with those works, comprehensive analyses of translation
+initiation sites of various species were conducted using GenBank
+database which contain huge amount of data. And unlike sequence
+profile analysis, the method used in this work can extract
+translational initiation signals even if those signals are not fixed
+in specific position. Unlike regular expression or hidden markov
+models, they are very easy to understand.
+
+
+\section{Materials and methods}
+
+Sequences used in this work were extracted from GenBank database(For
+further description, see \ref{method_compseq}, table \ref{exclu}).
+% For procaryotes and
+%{\it S.cerevisiae}, complete genomes were used. For eucaryotes, mRNA
+%data were used and data redundancies were reduced by CLEANUP,
+%developed by Grillo et al.\cite{label875}. 
+Then sequence patterns that
+appear significantly were extracted from translation initiation sites
+in each species. There are several ways to extract those patterns from
+set of sequences. Pesole et al.\cite{label601} proposed to compute
+occurrence of all patterns in set of sequences, and compare with the
+expected occurrence using
+\(\chi^{2}\) statistics. In this method, sequences are expected to be
+formed according to first order stationary Markov chain, and
+occurrences of each pattern are expected to follow Poisson
+distribution. Furthermore, this method avoids from picking up non
+significant patterns in the case where its subsequences are
+significant. Wolfertstetter et al.\cite{label603} proposed to search
+for n-tuples which occur at least in a minimum percentage of the
+sequences with no or one mismatch, and eliminate random tuples.
+Extracted patterns in these methods contain no gaps or no regular
+expressions. On the other hand, several methods have been proposed to extract
+patterns with wild-cards\cite{label615,label605} or to express
+patterns in Hidden Markov Model\cite{label515}.
+
+Hertz et al.\cite{label625} proposed to extract and express consensus
+patterns in matrix form. In this way, frequency of each bases at each
+position in consensus patterns can be expressed. The criteria is based
+on calculation of information content, and it has been modified to
+incorporate gaps using large deviation
+statistics\cite{label635,label629}.
+
+In this paper, very simple method was adopted, i.e. calculate
+significance of all the patterns of specific length in each
+position. This may be the most objective way and easy to understand.
+To describe it in detail, frequencies of all patterns within 500 bases
+upstream from start codons are computed. Then Z Score of each triplet
+at each position with respect to start codons were calculated
+according to the following formula,
+
+\begin{quotation}
+\begin{center}
+\[
+\mbox{Z Score} = \frac{n_{o} - np}{\sqrt{np(1-p)}} \sim N(0,1)
+\]
+\end{center}
+\end{quotation}
+
+\noindent
+where \(n\) is the number of sequences to analyze, \(p\) is frequency
+of specific triplets that appear in the sequences, and \(n_{o}\) is
+the number of the specific triplets that were observed at specific
+position. Z Score will follow standard normal distribution(as
+discussed in \ref{stdfreq_proof}) if \(np > 5\) and \(n(1-p) > 5\). If
+length of the pattern is long, then \(p\) will get low, and those
+formula will not be satisfied. Thus, the pattern length was mainly set
+up to 4, and Z Score was calculated for all
+\(4^{4} = 256\) possible patterns. And for each pattern, the 
+best five Z Scores and their positions were extracted.
+
+
+\section{Result and discussion}
+
+\subsection{Consensus patterns in procaryotes}
+\label{bct_consensus}
+
+Results for procaryotes are shown below. In each section, 3' terminal
+sequence of 16S rRNA of each species is shown, as well as its
+complement sequences, which shows the expected Shine-Dalgarno sequence
+for that species. Because predicted 3' terminal is not always true,
+several bases downstream of predicted terminal are shown at the right
+hand side of number '3', and its complement sequence is shown at the
+left hand site of number '5'. And left hand side of the following
+table shows remarkable patterns that appear upstream of start codons
+with their Z scores and positions. Right hand side shows remarkable
+patterns that appear downstream.
+
+\vspace{1em}
+\noindent
+{\it Aeropyrum pernix }
+\begin{verbatim}
+16S rRNA 3- terminal: ttattattt3 attattattt
+Expected SD Sequence: aaataataat 5aaataataa
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+ggtg & 35.87 & -11 &  & ttgg & 13.29 & 9 \\
+gggt & 20.36 & -12 &  & gcta & 7.87 & 3 \\
+gtga & 15.27 & -10 &  & gtga & 7.56 & 9 \\
+gtgg & 12.24 & -10 &  & gtgg & 7.11 & 3 \\
+gggg & 12.20 & -14 &  & gttg & 7.03 & 24 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Archaeoglobus fulgidus    }
+\begin{verbatim}
+16S rRNA 3- terminal: ctgcggctggatcacctcct3 aaaggtgcat
+Expected SD Sequence: atgcaccttt 5aggaggtgatccagccgcag
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+ggtg & 71.62 & -9 &  & aggt & 12.41 & 4 \\
+aggt & 44.44 & -10 &  & gttg & 12.07 & 18 \\
+gtga & 44.31 & -8 &  & aagg & 11.81 & 3 \\
+ttaa & 33.23 & -28 &  & ttgt & 11.58 & 10 \\
+gagg & 33.14 & -11 &  & aaat & 11.33 & 7 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Aquifex aeolicus    }
+\begin{verbatim}
+16S rRNA 3- terminal: cggctggatcacctccttta3 taacggagac
+Expected SD Sequence: gtctccgtta 5taaaggaggtgatccagccg
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+gagg & 42.22 & -11 &  & taat & 13.39 & 13 \\
+ggag & 36.83 & -12 &  & tagt & 12.20 & 13 \\
+aggt & 30.93 & -10 &  & aaaa & 11.05 & 3 \\
+agga & 18.68 & -13 &  & aaag & 10.41 & 5 \\
+taaa & 18.59 & -13 &  & gcta & 10.08 & 3 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Borrelia burgdorferi    }
+\begin{verbatim}
+16S rRNA 3- terminal: gatcaaactcttcgttattt3 tattttttta
+Expected SD Sequence: taaaaaaata 5aaataacgaagagtttgatc
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+gagg & 26.53 & -11 &  & aaaa & 10.42 & 6 \\
+ggag & 24.98 & -12 &  & ataa & 7.84 & 4 \\
+agga & 24.11 & -11 &  & taaa & 6.76 & 5 \\
+aagg & 22.33 & -11 &  & gaaa & 6.69 & 12 \\
+tagg & 15.33 & -12 &  & aata & 6.40 & 3 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Bacillus subtilis    }
+\begin{verbatim}
+16S rRNA 3- terminal: ggctggatcacctcctttct3 aaggatattt
+Expected SD Sequence: aaatatcctt 5agaaaggaggtgatccagcc
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+ggag & 132.85 & -12 &  & aaaa & 27.03 & 3 \\
+gagg & 111.09 & -12 &  & aata & 18.52 & 3 \\
+agga & 95.56 & -13 &  & taaa & 16.46 & 5 \\
+gggg & 84.60 & -12 &  & ctaa & 14.54 & 4 \\
+aagg & 82.83 & -14 &  & aaac & 14.31 & 6 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Chlamydia pneumoniae    }
+\begin{verbatim}
+16S rRNA 3- terminal: ggctggatcacctccttttt3 aaggacaagg
+Expected SD Sequence: ccttgtcctt 5aaaaaggaggtgatccagcc
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+tagg & 16.80 & -12 &  & aaac & 8.52 & 6 \\
+agga & 14.63 & -11 &  & taaa & 7.44 & 5 \\
+ggag & 13.05 & -9 &  & ttag & 7.24 & 24 \\
+aggt & 12.32 & -9 &  & ttta & 7.18 & 29 \\
+gagg & 12.19 & -9 &  & aaaa & 7.18 & 3 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Chlamydia trachomatis    }
+\begin{verbatim}
+16S rRNA 3- terminal: gggctggatcacctcctttt3 aaggataagg
+Expected SD Sequence: ccttatcctt 5aaaaggaggtgatccagccc
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+aagg & 15.78 & -11 &  & atag & 8.34 & 21 \\
+agga & 15.19 & -11 &  & ataa & 8.25 & 16 \\
+gagg & 12.58 & -11 &  & gata & 7.35 & 15 \\
+ggag & 11.53 & -10 &  & aaaa & 6.74 & 3 \\
+aggt & 10.68 & -10 &  & agta & 6.60 & 3 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Escherichia coli    }
+\begin{verbatim}
+16S rRNA 3- terminal: gcggttggatcacctcctta3 ccttaaagaa
+Expected SD Sequence: ttctttaagg 5taaggaggtgatccaaccgc
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+agga & 94.97 & -11 &  & aaaa & 29.46 & 3 \\
+ggag & 82.94 & -10 &  & aata & 19.28 & 3 \\
+aagg & 58.15 & -11 &  & agta & 18.28 & 3 \\
+gagg & 53.08 & -11 &  & ctaa & 16.76 & 4 \\
+gaga & 42.23 & -9 &  & attg & 15.29 & 15 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Haemophilus influenzae Rd   }
+\begin{verbatim}
+16S rRNA 3- terminal: gcggttggatcacctcctta3 ctgaagacga
+Expected SD Sequence: tcgtcttcag 5taaggaggtgatccaaccgc
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+agga & 97.66 & -10 &  & aaaa & 17.66 & 3 \\
+aagg & 63.85 & -11 &  & caga & 13.55 & 4 \\
+ggag & 58.17 & -10 &  & acaa & 10.81 & 8 \\
+taag & 49.58 & -12 &  & ctga & 10.09 & 4 \\
+ggaa & 44.25 & -9 &  & taaa & 9.98 & 5 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Helicobacter pylori 26695   }
+\begin{verbatim}
+16S rRNA 3- terminal: ctgcggttggatcacctcct3 ttctagagaa
+Expected SD Sequence: ttctctagaa 5aggaggtgatccaaccgcag
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+agga & 86.80 & -10 &  & aaaa & 14.03 & 3 \\
+aagg & 80.87 & -11 &  & agaa & 12.86 & 5 \\
+ggag & 36.38 & -9 &  & ttag & 11.49 & 21 \\
+taag & 31.74 & -12 &  & caag & 11.07 & 3 \\
+aaag & 30.15 & -12 &  & aaga & 10.33 & 4 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Mycoplasma genitalium    }
+\begin{verbatim}
+16S rRNA 3- terminal: acgtgggggtggatcacctc3 ctttcaaatg
+Expected SD Sequence: catttgaaag 5gaggtgatccacccccacgt
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+ttaa & 9.07 & -7 &  & gcta & 8.13 & 3 \\
+gccg & 7.89 & -21 &  & attg & 7.63 & 18 \\
+aata & 7.59 & -4 &  & taaa & 7.54 & 14 \\
+agta & 6.75 & -4 &  & ataa & 7.16 & 4 \\
+taac & 6.35 & -5 &  & aata & 7.11 & 9 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Methanococcus jannaschii    }
+\begin{verbatim}
+16S rRNA 3- terminal: actgcggctggatcacctcc3 tgagaaaaaa
+Expected SD Sequence: ttttttctca 5ggaggtgatccagccgcagt
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+ggtg & 189.61 & -9 &  & gtga & 29.17 & 3 \\
+gtga & 172.77 & -8 &  & tatg & 20.94 & 8 \\
+aggt & 67.18 & -10 &  & atgg & 19.99 & 9 \\
+tggt & 53.57 & -10 &  & atga & 18.60 & 9 \\
+tgat & 46.59 & -7 &  & aatg & 12.63 & 8 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Mycoplasma pneumoniae    }
+\begin{verbatim}
+16S rRNA 3- terminal: ggtggatcacctcctttcta3 atggagtttt
+Expected SD Sequence: aaaactccat 5tagaaaggaggtgatccacc
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+ggag & 17.31 & -14 &  & cgaa & 11.42 & 26 \\
+agga & 14.65 & -15 &  & agag & 9.06 & 5 \\
+gagg & 13.53 & -13 &  & aaaa & 8.99 & 6 \\
+aagg & 10.52 & -16 &  & ataa & 8.71 & 4 \\
+agta & 9.68 & -4 &  & aatt & 8.59 & 11 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Methanobacterium thermoautotrophicum    }
+\begin{verbatim}
+16S rRNA 3- terminal: ctgcggctggatcacctcct3 tacacaaaaa
+Expected SD Sequence: tttttgtgta 5aggaggtgatccagccgcag
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+ggtg & 58.55 & -9 &  & atga & 17.33 & 9 \\
+gtga & 48.66 & -8 &  & aaga & 16.38 & 3 \\
+aggt & 42.41 & -10 &  & atgg & 13.08 & 9 \\
+tgat & 39.18 & -7 &  & aatg & 12.42 & 8 \\
+gagg & 30.01 & -11 &  & catg & 12.21 & 8 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Mycobacterium tuberculosis    }
+\begin{verbatim}
+16S rRNA 3- terminal: ggctggatcacctcctttct3 aaggagcacc
+Expected SD Sequence: ggtgctcctt 5agaaaggaggtgatccagcc
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+agga & 46.27 & -11 &  & accg & 19.56 & 3 \\
+ggag & 37.90 & -11 &  & agcg & 18.49 & 3 \\
+tagg & 33.24 & -12 &  & ttgt & 16.84 & 7 \\
+gagg & 24.63 & -11 &  & cgga & 15.48 & 22 \\
+aagg & 24.26 & -12 &  & tttg & 15.36 & 6 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Pyrococcus abyssi    }
+\begin{verbatim}
+16S rRNA 3- terminal: gggaacctacggctcgatca3 cctcctatcg
+Expected SD Sequence: cgataggagg 5tgatcgagccgtaggttccc
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+ggtg & 82.86 & -9 &  & taat & 11.32 & 10 \\
+gtga & 51.53 & -8 &  & gata & 10.42 & 11 \\
+gagg & 42.84 & -11 &  & atag & 10.19 & 18 \\
+aggt & 40.14 & -10 &  & gtga & 10.03 & 3 \\
+gggg & 35.00 & -11 &  & atgg & 10.00 & 9 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Pyrococcus horikoshii    }
+\begin{verbatim}
+16S rRNA not annotated
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+ggtg & 69.22 & -9 &  & atga & 26.82 & 9 \\
+gtga & 50.91 & -10 &  & aatg & 23.32 & 8 \\
+gagg & 38.52 & -11 &  & atgg & 20.89 & 9 \\
+gggg & 33.72 & -11 &  & gatg & 16.39 & 8 \\
+aggt & 32.28 & -10 &  & gtga & 14.11 & 3 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Rhizobium sp. NGR234   }
+\begin{verbatim}
+16S rRNA not annotated
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+agga & 27.28 & -11 &  & acag & 7.22 & 3 \\
+ggag & 21.27 & -11 &  & taag & 6.58 & 8 \\
+aagg & 12.32 & -12 &  & accc & 6.56 & 25 \\
+gagg & 10.64 & -12 &  & attt & 6.10 & 28 \\
+tagg & 10.35 & -12 &  & tcgt & 5.95 & 13 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Rickettsia prowazekii    }
+\begin{verbatim}
+16S rRNA not annotated
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+aatt & 9.51 & -4 &  & acta & 10.51 & 3 \\
+aaat & 9.23 & -5 &  & aaaa & 10.48 & 5 \\
+attt & 9.05 & -4 &  & ctaa & 9.97 & 4 \\
+ttaa & 8.71 & -19 &  & aata & 9.57 & 3 \\
+gagg & 8.19 & -9 &  & ttaa & 8.41 & 9 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Synechocystis PCC6803    }
+\begin{verbatim}
+16S rRNA 3- terminal: gtggctggatcacctccttt3 aagggagacc
+Expected SD Sequence: ggtctccctt 5aaaggaggtgatccagccac
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+aacc & 18.94 & -4 &  & ctaa & 15.51 & 4 \\
+taac & 17.52 & -5 &  & acta & 13.40 & 3 \\
+cacc & 16.49 & -4 &  & ttcc & 12.18 & 8 \\
+aaac & 16.45 & -5 &  & ctga & 12.10 & 4 \\
+agga & 15.49 & -13 &  & acca & 11.51 & 3 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Thermotoga maritima    }
+\begin{verbatim}
+16S rRNA 3- terminal: cggctggatcacctcctttc3 taggagatga
+Expected SD Sequence: tcatctccta 5gaaaggaggtgatccagccg
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+gagg & 97.52 & -11 &  & aaga & 16.47 & 3 \\
+ggag & 84.00 & -12 &  & aaaa & 15.87 & 3 \\
+ggtg & 71.75 & -9 &  & tgat & 12.73 & 13 \\
+aggt & 69.37 & -10 &  & ataa & 12.38 & 15 \\
+gtga & 53.56 & -8 &  & ctga & 11.02 & 24 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Treponema pallidum    }
+\begin{verbatim}
+16S rRNA 3- terminal: atcacctcctttctaagaga3 aagggtatgg
+Expected SD Sequence: ccataccctt 5tctcttagaaaggaggtgat
+\end{verbatim}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+ggag & 26.35 & -10 &  & aata & 11.83 & 3 \\
+agga & 21.88 & -11 &  & taat & 8.72 & 5 \\
+gagg & 18.89 & -12 &  & agta & 8.13 & 3 \\
+aagg & 14.25 & -13 &  & catg & 7.00 & 8 \\
+aggg & 11.80 & -11 &  & aaaa & 6.98 & 3 \\
+    &     \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+
+In most species, remarkable patterns upstream are very similar to each
+predicted Shine-Dalgarno sequences, which indicates that translation
+initiations in most bacteria are consistent with Shine-Dalgarno's
+hypothesis. Figure \ref{bct_coreSD} shows frequency of most remarkable
+patterns in some species. Notice that frequencies of core Shine-Dalgarno
+sequences rises sharply. However, there are some bacteria whose
+remarkable patterns are not similar to their predicted Shine-Dalgarno
+sequences, i.e., {\it A.pernix}, {\it B.burgdorferi} and {\it
+M.genitalium}. This suggests that Shine-Dalgarno's hypothesis does not
+hold for all the procaryotes. However for {\it A.pernix} and {\it
+B.burgdorferi}, there are remarkable sequence patterns located upstream
+that are very similar to Shine-Dalgarno sequence of {\it E.coli}. Thus,
+one should suspect that their 16S rRNA data in GenBank is incorrect. As
+some previous research has pointed out\cite{myco_taa,label509}, {\it
+M.genitalium} does not seem to have Shine-Dalgarno sequences, and it
+will be discussed in \ref{trans_myco}. For {\it M.pneumoniae}, it is
+already known that many genes of this organism do not have
+Shine-Dalgarno like sequences, since whole genome of this organism is
+sequenced\cite{label503}, although analysis in this work found slightly
+significant Shine-Dalgarno sequences.
+
+In {\it M.genitalium}, {\it R.prowazekii} and {\it Synechocystis},
+sequence patterns other than Shine-Dalgarno sequences were observed
+more frequently.  Highly expressed {\it Synechocystis} genes are known
+to have both Shine-Dalgarno sequence and special consensus,
+i.e. ``cc'' before start codons, and observation of ``cc'' and
+``agga'' as remarkable patterns in {\it Synechocystis} is consistent
+with that previous work by Sazuka et al\cite{lsaz1}. Biological role
+of this ``cc'' on translation initiation is not known. It is known
+that many mRNAs of {\it Synechocystis} are monocistronic and this may
+have some effect on translation initiation signals.  In {\it
+R.prowazekii}, ``aatt'' is observed more frequently than
+``gagg''(Shine-Dalgarno sequence). This organism is evolutionary close
+to mitochondria\cite{label7009}. Mitochondria is known to initiate
+translation in a different way. Thus {\it R.prowazekii} may have
+alternative mechanism to initiate translation.
+
+Signal strengths of ribosome binding sites are different in each
+species. For example, {\it B.subtilis} has very strong consensus
+sequences than other bacteria\cite{arclabel10,label1502}(Figure
+\ref{pro_ic}).  
+
+\begin{figure}
+\begin{center}
+\epsfile{file=bct_coreSD.eps}
+\end{center}
+\caption{Frequency of most remarkable patterns in some species}
+\label{bct_coreSD}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\epsfile{file=pro_ic.eps}
+\end{center}
+\caption{Information content in ribosome binding sites in several bacteria}
+\label{pro_ic}
+\begin{small}
+\begin{quotation}
+Information content indicates how base at the specific position is
+conserved in bit(s). 
+\end{quotation}
+\end{small}
+\end{figure}
+
+Unlike consensus sequences upstream, consensus sequences downstream
+are likely to be different in each species, suggesting that molecules,
+or part of molecules, or complement sequence patterns(such as that of
+16S rRNA) that recognize downstream consensus are different in each
+species. However, many bacteria such as {\it E.coli} and {\it
+H.influenzae} had ``aaaa'' consensus at position +3, as previously
+reported in {\it E.coli}\cite{label25}.
+
+Usually Shine-Dalgarno sequences may be required to initiate
+translations. However, obvious Shine-Dalgarno sequences do not seem to
+be absolute signals for translation initiation. According to the
+experimentally identified and unbiased translation initiation sites by
+Link et al.\cite{lts14}, there are not always obvious Shine-Dalgarno
+sequences. Even if we derived efficient consensus patterns for
+prediction of translation initiation sites(Figure
+\ref{derived_rule}) by machine learning(PROGOL\cite{label1910,label1939}), its
+accuracy is about 82\%. The accuracy may improve if one uses another
+method. However, even popular methods such as Hidden Markov Models
+cannot make accuracy of 100\%. Thus prediction method that are based
+on extracting consensus patterns(non regular expression) may not
+improve very much. This suggests that obvious Shine-Dalgarno sequence
+may not be the absolute requirement for ribosomes.
+
+\begin{figure}
+\begin{tt}
+\begin{verbatim}
+trans_start(A) :- up_seq(A,B), sd4_apatloc([a,g,g,t],B,17).
+trans_start(A) :- up_seq(A,B), sd4_apatloc([g,a,g,g],B,16).
+trans_start(A) :- up_seq(A,B), sd4_apatloc([g,a,g,g],B,18).
+trans_start(A) :- up_seq(A,B), sd4_apatloc([g,g,a,g],B,17).
+trans_start(A) :- up_seq(A,B), triplet_apatloc([c,t,a],B,22).
+trans_start(A) :- up_seq(A,B), triplet_apatloc([t,c,g],B,22).
+trans_start(A) :- up_seq(A,B), triplet_apatloc([g,g,g],B,16).
+trans_start(A) :- up_seq(A,B), sd3_apatloc([a,a,g],B,16), triplet_apatloc([a,
+        a,a],B,16).
+trans_start(A) :- up_seq(A,B), sd3_apatloc([a,g,g],B,18), triplet_apatloc([g,
+        g,a],B,18).
+trans_start(A) :- up_seq(A,B), sd3_apatloc([t,a,a],B,19), triplet_apatloc([c,
+        a,a],B,22).
+trans_start(A) :- up_seq(A,B), triplet_apatloc([a,t,a],B,22),
+        triplet_apatloc([g,a,a],B,20).
+\end{verbatim}
+\end{tt}
+\caption{Selection rule of translation initiation sites in {\it
+ E.coli}, derived by machine learning}
+\label{derived_rule}
+\begin{small}
+\begin{quotation}
+Output rules are expressed in horn clauses.  XXX\verb+_+apatloc(PAT, B,
+NN) indicates that sequence pattern PAT is observed around position (NN -
+ 26) in 5'UTR of sequence B.
+\end{quotation}
+\end{small}
+\end{figure}
+
+\subsection{Translation initiation signal in {\it Mycoplasma genitalium}}
+\label{trans_myco}
+
+ Although the Shine-Dalgarno sequence is widely accepted as the signal
+sequence for ribosome-mRNA binding in procaryotic translation
+initiation, this sequence is not well conserved among genes within or
+among species.  This is especially striking in {\it Mycoplasma
+genitalium}\cite{mglabel10}, where no obvious Shine-Dalgarno sequence can
+be observed upstream of start codons as shown in \ref{bct_consensus}.
+To investigate the possibility of an alternative sequence pattern to
+account for the lack of Shine-Dalgarno sequences, computer analyses of
+translation initiation sites(ORF start sites) in the complete genome
+sequence of {\it M.genitalium}\cite{mglabel14} were conducted.
+
+Frequency of all possible 64 triplets were computed in translation
+initiation sites. As {\it M.genitalium} have only 480 ORFs,
+approximations of p-values of patterns longer than 3 bases tend to
+give bad estimations in the further analyses.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|llr|llr|}
+\hline
+Pat. & Z-Sc & Pos. & Pat. & Z-Sc & Pos. \\
+\hline
+taa & 10.66 & -6 & aaa & 8.33 & 3 \\
+ata & 7.04 & -6 & taa & 7.36 & 5 \\
+tta & 6.52 & -7 & gca & 7.30 & 3 \\
+gta & 5.49 & -3 & gat & 6.82 & 3 \\
+aaa & 5.05 & -11 & gct & 6.30 & 3 \\
+agt & 5.00 & -4 & ttg & 6.27 & 19 \\
+aat & 4.96 & -14 & ata & 6.05 & 4 \\
+aag & 4.65 & -3 & gaa & 5.66 & 27 \\
+att & 4.33 & -8 & att & 5.31 & 18 \\
+gag & 4.09 & -14 & tga & 5.08 & 26 \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Statistically significant observed upstream(left) and downstream(right) of start codons in {\it M.genitalium}}
+\label{mgen_sig}
+\end{table}
+
+Triplets with significant frequencies are listed in table
+\ref{mgen_sig}.  Frequency of triplet ``TAA'' was the most significant
+one.  Frequencies of ``TAA'' around start codons were plotted(Figure
+\ref{mg_taa}).  An outstanding peak in the frequency of the triplet
+``TAA'' was observed between positions -27 to -4.
+
+The similar peak was still observed even when stop codons(TAA) of the
+preceding genes were eliminated from this analysis by only counting
+translation initiation sites with their preceding genes oppositely
+oriented(head-on genes)(Figure \ref{mg_taa_op}).  The estimated
+Shine-Dalgarno sequence ``GAG'', ``AGG'',''GTG''did not appear
+significantly(Figure \ref{mg_16Scomp_tri}).
+
+The fact that the complementary triplet ``TTA'' does not exist in the
+3'-terminus of 16S rRNA of {\it M.genitalium}\footnote{The 3'-terminal
+sequence of {\it M.genitalium} 16S rRNA is ``gggggtggatcacctc''. Thus
+the predicted ribosome binding sequence would be
+``gaggtgatccaccccc''.} leads us to suspect the existence of an
+alternative mechanism for translation initiation in {\it
+M.genitalium}. For example, Loechel et al.\cite{mglabel12} inserted
+sequences surrounding translation initiation sites of {\it
+M.genitalium} to {\it E.coli} {\it lacZ} gene and showed that although
+this sequence did not contain Shine-Dalgarno sequence, it was
+recognized by the translation initiation machinery of {\it
+E.coli}. They proposed that the sequence ``TTAACAACAT'' functions as
+ribosome binding sites, part of which is our ``TAA''. And they
+suggested that nucleotides 1082 - 1093 of 16S rRNA in {\it E.coli}
+anneal with this sequences. Thus, one possibility is that central
+part, rather than terminal, of 16S rRNA recognizes TAA placed in front
+of {\it M.genitalium} genes to initiate translation.
+
+\begin{figure}
+\begin{center}
+\epsfile{file=mg_taas3.eps,scale=0.7}
+\end{center}
+\caption{Frequency of TAA triplets around start codons in {\it
+M.genitalium}(Smoothed)}
+\label{mg_taa}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\epsfile{file=mg_taas6_op.eps,scale=0.7}
+\end{center}
+\caption{Frequency of TAA triplets around start codons of
+head-on genes in {\it M.genitalium}(Smoothed)}
+\label{mg_taa_op}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\epsfile{file=mg_gags3.ps,scale=0.3}
+\epsfile{file=mg_aggs3.ps,scale=0.3}
+\epsfile{file=mg_gtgs3.ps,scale=0.3}
+\end{center}
+\caption{Frequency of triplet complement to 16S rRNA 3'-terminal in {\it M.genitalium}}
+\label{mg_16Scomp_tri}
+\end{figure}
+
+
+One might argue that estimated Shine-Dalgarno sequences did not appear
+upstream of start codons in {\it M.genitalium}, because annotated
+start codons in this organism is wrong. Frishman et
+al.\cite{label1005} point out that annotations of start codons in {\it
+Mycoplasma} and {\it Synechocystis} seems to be incorrect, causing to
+lack Shine-Dalgarno sequences in front of them. It might be true
+that there are a lot of incorrect annotations in GenBank
+database. However, it seems that if there is, indeed, Shine-Dalgarno
+sequences upstream of true start codons, it should appear
+significantly, even if there are a lot of annotational errors. Figure
+\ref{ec_mgen_lorf_agg} shows frequencies of ``AGG'' triplets around
+ORF start sites in {\it E.coli} and {\it M.genitalium}. Only ORFs with
+1000 bases or longer were considered, and farthest possible ATGs were
+taken as start codons. Obviously, there is no peak of ``AGG'' in {\it
+M.genitalium}, whereas there is a peak in {\it E.coli}, suggesting that
+reason of lack of Shine-Dalgarno sequences in {\it
+M.genitalium} does not seem to be annotational errors.
+
+\begin{figure}
+\begin{center}
+\epsfile{file=ec_mgen_lorf_agg.eps}
+\end{center}
+\caption{Frequency of ``AGG'' triplets around assigned ORFs of {\it E.coli} and {\it M.genitalium}}
+\label{ec_mgen_lorf_agg}
+\begin{small}
+\begin{quotation}
+``Leftmost ATGs'' were taken as start codons of assigned ORFs. Only ORFs with \(\geq 1000\) bases are considered. 
+\end{quotation}
+\end{small}
+\end{figure}
+
+
+\subsection{Reinitiation and Shine-Dalgarno sequence}
+
+Most procaryotic mRNAs are polycistronic, i.e. there are more than one
+coding region in one mRNA, and genes on mRNA may be close to each
+other. In this case, do many ribosomes bind to each gene, or does
+single ribosome terminate translation of one gene, and directly
+reinitiate translation at the next gene(Figure \ref{reinit_figure})? 
+According to the biological experiments, models of translational
+reinitiation in procaryotes are presented in some previous
+works\cite{label891}. According to some of these models, ribosome may
+initiate translation at the next gene without dissociation from
+mRNA. However, contribution of Shine-Dalgarno sequence to reinitiation
+is not completely understood.
+
+Here, analyses are conducted to find whether translation reinitiation
+requires Shine-Dalgarno sequence or not. Reinitiation at one translation
+initiation site may occur when the stop codon of the previous gene is
+close. Translation initiation sites were classified into 3
+classes(Figure \ref{reinit_inv}). One class has previous gene 200 bases
+apart or farther. One has previous gene 20 to 30 bases apart. The other
+has previous gene 1 to 3 bases apart. The positions for classification
+were set up so that positions of stop codons of previous genes hardly
+overlaps Shine-Dalgarno sequence in all 3 classes. The frequencies of
+core Shine-Dalgarno sequence pattern, ``AGG'' in each class were
+calculated separately.
+
+\begin{figure}
+\begin{center}
+(a)\epsfile{file=reinit1.eps}\\
+
+\vspace{2em}
+
+(b)\epsfile{file=reinit2.eps}\\
+
+\vspace{2em}
+
+(c)\epsfile{file=reinit3.eps}
+\end{center}
+\caption{Translation of polycistronic mRNA}
+\label{reinit_figure}
+\begin{small}
+\begin{quotation}
+\noindent
+(a) No reinitiation. Different ribosomes translate each gene.\\
+(b) After translation termination of one gene, ribosome reinitiate translation at the next gene.\\
+(c)  After translation termination of one gene, ribosome reinitiate translation at the next gene without disassociation.
+\end{quotation}
+\end{small}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\epsfile{file=reinit_inv.eps}
+\end{center}
+\caption{Investigation of frequency of core Shine-Dalgarno sequence ``AGG'' with distance from previous gene}
+\label{reinit_inv}
+\end{figure}
+
+The result for {\it E.coli} is shown in figure
+\ref{ec_agg_dist}. There is not much difference of frequencies. This
+implies that in many cases, Shine-Dalgarno sequences are required even
+when the ribosomes can reinitiate translations. Analysis of other
+procaryotes also showed that except for procaryotes with no obvious
+Shine-Dalgarno sequences regardless of distances from previous genes,
+there were Shine-Dalgarno sequences even when previous genes were
+close. Interestingly, in all archaebacteria which were analysed so far,
+Shine-Dalgarno sequences were most frequent when distances from
+previous genes were 1 to 3 bases(Data not shown).
+
+Figure \ref{ec_agg_stopeli1_20} shows frequency of AGG triplets around
+start codons in {\it E.coli} which are 1 to 20 bases apart from previous
+genes. Two kinds of plots are drawn one with stop codons
+eliminated. From this figure, we notice that more than 1/3 of
+Shine-Dalgarno sequences use stop codons as parts of their sequence
+patterns. This seems to be efficient for reducing redundancies of
+information coded in translation initiation sites. And there is some
+probability that stop codon itself may be part of the recognition
+signals for translation initiation as proposed by Atkins\cite{label898}.
+
+\begin{figure}
+\begin{center}
+\epsfile{file=ec_agg_dist.eps}
+\end{center}
+\caption{Frequency of ``AGG'' triplets with distance(d) from previous gene in {\it E.coli}}
+\label{ec_agg_dist}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\epsfile{file=ec_agg_stopeli1_20.eps}
+\end{center}
+\caption{Frequency of ``AGG'' triplets around start codons which are 1-20 bases apart from previous genes with/without stop codons in {\it E.coli}}
+\label{ec_agg_stopeli1_20}
+\end{figure}
+
+
+\subsection{Consensus patterns in eucaryotes}
+
+Simultaneous analyses on translation initiation sites of 6 eucaryotes
+were conducted. The results are shown below.
+
+\vspace{1em}
+\noindent
+{\it Homo sapiens}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+cacc & 73.37 & -4 & & gcgg & 36.00 & 3 \\
+cgcc & 47.88 & -4 & & tgct & 23.72 & 25 \\
+gcca & 40.26 & -6 & & cgga & 22.70 & 4 \\
+ccac & 39.69 & -5 & & gctg & 21.26 & 29 \\
+agcc & 35.43 & -4 & & tcct & 20.95 & 28 \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Mus musclus}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+cacc & 60.44 & -4 & & gcgg & 27.98 & 3 \\
+cgcc & 35.78 & -4 & & tgct & 23.55 & 28 \\
+gcca & 31.42 & -6 & & tcct & 19.63 & 28 \\
+ccac & 29.80 & -5 & & gctg & 19.04 & 29 \\
+agcc & 29.22 & -4 & & cgga & 16.92 & 4 \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Drosophila melanogaster}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+caaa & 36.22 & -4 & & ccga & 14.05 & 4 \\
+tcaa & 19.70 & -5 & & gccg & 10.74 & 3 \\
+ccaa & 18.63 & -5 & & acga & 10.10 & 7 \\
+acaa & 18.57 & -5 & & gacg & 9.90 & 6 \\
+caag & 16.22 & -4 & & cgac & 9.55 & 5 \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it  Caenorhabditis elegans}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+aaaa & 53.55 & -4 & & gacg & 29.46 & 6 \\
+caaa & 48.17 & -4 & & ccga & 25.32 & 4 \\
+caga & 47.63 & -4 & & cgac & 23.59 & 8 \\
+gaaa & 36.60 & -4 & & acga & 23.28 & 7 \\
+ttca & 35.78 & -6 & & cgga & 22.81 & 4 \\
+\end{tabular}
+\end{center}
+
+
+\vspace{1em}
+\noindent
+{\it Arabidopsis thaliana}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+aaaa & 33.12 & -4 & & gcga & 21.45 & 3 \\
+aaca & 14.85 & -4 & & gcgg & 19.92 & 3 \\
+aaag & 14.79 & -4 & & gctt & 14.59 & 3 \\
+gaaa & 14.55 & -4 & & cgga & 14.26 & 4 \\
+agaa & 12.76 & -5 & & gcag & 12.13 & 3 \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\noindent
+{\it Saccharomyces cerevisiae}
+
+\noindent
+\begin{center}
+\begin{tabular}{clrcclr}
+Pat. & Z-Sc. & Pos. & \verb+   + & Pat. & Z-Sc & Pos. \\
+\hline
+aaaa & 35.47 & -4 & & tctg & 40.48 & 3 \\
+aaca & 26.56 & -4 & & ctga & 32.44 & 4 \\
+taaa & 22.88 & -5 & & tcta & 21.84 & 3 \\
+caaa & 21.91 & -5 & & agtg & 21.48 & 3 \\
+ataa & 21.77 & -6 & & ctag & 21.28 & 4 \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+
+In {\it H.sapiens} and {\it M.musclus}, Kozak's consensus sequences
+i.e. GCC$^{\rm A}_{\rm G}$CC\underline{ATG}G were observed. In fact,
+profile analysis of {\it H.sapiens} also shows this consensus(Table
+\ref{hsap_prof}), and these results are consistent with Kozak's
+result\cite{label3}. For both {\it H.sapiens} and {\it M.musclus},
+remarkable pattern GCGGA at position +3(+0 being first base of start
+codon) were observed. However, there is possibility that this pattern
+is signal at the N-terminal when it is translated to protein, and may
+not be the translation initiation signal.
+
+
+\begin{table}
+\begin{center}
+\epsfile{file=hsap_prof.eps}
+\end{center}
+\caption{Profile around start codons in {\it H.sapiens}}
+\label{hsap_prof}
+\begin{small}
+\begin{quotation}
+Note that +1 is the position of first base of start codon in this table.
+\end{quotation}
+\end{small}
+\end{table}
+
+In {\it D.melanogaster}, {\it C.elegans}, {\it A.thaliana} and {\it
+S.cerevisiae}, preferred context may be AAA at position -3. Joshi et
+al.\cite{label701} have investigated context sequences of plants, and
+proposed several consensus sequences. In those context, there were A
+at position -3 and -2. Thus this is consistent with results above. Yun
+et al.\cite{label30} have conducted experiments on translation
+initiation sites of {\it S.cerevisiae}, and shown that A at position -
+3 contributes to the translation initiation with high
+efficiency. However, from the results above, AAA triplet at position -
+3 may be more efficient.
+
+\section{Summary}
+
+In this work, comprehensive analysis of consensus patterns in various
+species were conducted. For procaryotes, most of their consensus
+sequences were complement to 3' terminal of 16S rRNA. This observation
+implies that Shine-Dalgarno's hypothesis holds for most
+procaryotes. However, {\it R.prowazekii} and {\it Synechocystis} did not
+have as much complement sequence patterns as other procaryotes
+do. Instead, they had other consensus patterns.  {\it M.genitalium} did
+not seem to have sequences that were complement to the terminal sequence
+of its 16S rRNA.  For {\it M.genitalium}, ``TAA'' seems to be
+translation initiation signal.
+
+Shine-Dalgarno sequences seem to be required even when the ribosomes
+can reinitiate translation from the previous genes.
+
+For eucaryotes, consensus sequences appeared in {\it H.sapiens} and
+{\it M.musclus} seems to be identical to Kozak's consensus
+sequences. In other eucaryotes, AAA with some other patterns seem to
+be major translation initiation signals.
+

@@ -1,0 +1,844 @@
+\chapter{アラインメントアルゴリズム}
+
+\begin{abstract}
+アラインメントは複数の塩基配列またはアミノ酸配列から類似性の高い領域を探
+して揃える手法です。塩基やアミノ酸配列を解析する上でアラインメント
+は基本となる手法であり、その応用範囲は、遺伝子およびタンパク質の機能予測、
+モチーフの抽出、系統樹作成とかなり広く、バイオインフォマティクスの分野で
+は非常に重要な位置を占めています。そこで本章では、アラインメントの基本的
+理論および実装方法について論じます。
+\end{abstract}
+
+\section{アラインメントとは？}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=1.0]{Figures_EPS/align_samp1.eps}
+\end{center}
+\caption{簡単なアラインメントの例}
+\label{align_samp1}
+\begin{quotation}
+左側にアラインメント前の塩基配列、右側にアラインメント後の塩基配列を載せた。
+"-"はギャップ。上下で塩基が同一になった箇所を"*"で示した。
+\end{quotation}
+\end{figure}
+
+アラインメントとは核酸配列やアミノ酸配列の似ている部分を揃えることです。
+図\ref{align_samp1}をご覧下さい。左側に2本の配列があり、配列を上下で比較
+すると、同一の塩基となっている部分は先頭の1塩基だけです。ところが上の配
+列の最初と2番目の塩基の間にギャップ(gap, "-"で表します)を入れると、同一
+となっている塩基は3つに増えます。このようにアラインメントは、ギャップ
+を入れることによって複数の配列の類似性を高める手法だと言えます。アライン
+メントを使うと、複数の配列において保存されている部分を特定したり、配列同
+士の進化関係を推定したりすることができます。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures_EPS/align_homol.eps}
+\end{center}
+\caption{アラインメントの塩基の一致・不一致とギャップ}
+\label{align_homol}
+\begin{quotation}
+上下で塩基が一致している箇所を"*"、一致していない箇所を"-"で表した。
+\end{quotation}
+\end{figure}
+
+ギャップは一般に塩基の挿入または欠損を表します。例えば図\ref{align_homol}
+では、配列2の6の位置の塩基が欠損して配列1になったと考えるか、あるいは配列1
+の5番目の次の位置にAが挿入されて配列2になったと考えます。また塩基の不一致
+は塩基置換を表します。図\ref{align_homol}では、配列1の3番目の塩基Tが塩基
+置換を起こして配列2の3番目の塩基Cになったと考えるか、あるいは、配列2の3番
+目の塩基Cが塩基置換を起こして配列1の3番目の塩基Tになったと考えます。
+
+2本の配列のアラインメントをペアワイズアラインメント(pairwise alignment)、
+3本以上の配列のアラインメントをマルチプルアラインメント(multiple 
+alignment)と呼びます。本章ではペアワイズアラインメントを扱います。
+
+また配列全体をそろえるようなアラインメントをグローバルアラインメント
+(global alignment、大域的アラインメント)、一部分だけをそろえるようなアラ
+インメントをローカルアラインメント(local alignment, 局所的アラインメント)
+といいます。
+
+では2本の配列が与えられたとき、類似性が最大になるようにアラインメントす
+るにはどうすればいいでしょうか？これがまさに本章の目的であり、２つの部分
+に分けて考えることができます。
+
+\vspace{1em}
+
+\begin{enumerate}
+\item \label{align_problem1} アラインメントによる類似性の高さをどのように評価するか？
+\item その評価基準で類似性を最大にするにはどうすればいいか？
+\end{enumerate}
+
+\vspace{1em}
+
+まずは\ref{align_problem1}について考えてゆきましょう。
+
+
+\section{アラインメントの評価方法}
+
+良いアラインメントとは何でしょうか？アラインメントの類似性の高さをどのように
+評価すればいいでしょうか？単純な評価体系はアラインメントを行って２つの塩基配列を
+比較したとき、位置ごとに
+
+\vspace{1em}
+
+\begin{enumerate}
+\item \label{align_match} ２つの塩基が一致しているときの点（正の値）
+\item \label{align_mismatch} ２つの塩基が一致していないときのペナルティー（負の値）
+\item \label{align_gap} ギャップを入れたときのペナルティー（負の値）
+\end{enumerate}
+
+\vspace{1em}
+
+\noindent
+を定義することです。そして、各アラインメント位置の評価が独立である(つま
+り、ある位置の評価が、他の位置の評価に影響されない)と考え、これらの点を
+全ての位置で合計したものをスコアとして考えます。
+
+例えば塩基が一致したときの点を+10点、一致していないときのペナルティーを-7点、
+ギャップのペナルティーを-5点と定義します。図\ref{align_homol}に示すよう
+なアラインメントを得た場合、アラインメントの点は1の位置の点＋2の位置の点
+＋\(\cdots\)+9の位置の点になります。２つの塩基が一致しているところは7箇
+所、一致していないところは1箇所、ギャップが1箇所なので、このアラインメン
+トのスコアは、\(10\times 7+(-7)\times 1+(-5)\times 1=58\)となります。 
+
+さてアラインメントのスコア体系がこのように定義できたので、いよいよ最適な
+アラインメントを求める方法について少しずつ触れていきたいと思います。
+
+
+\section{アラインメントのグラフ表現}
+
+アラインメントをグラフで表現すると、最適なアラインメントを求める方法を比較的容易に
+理解することができるでしょう。実は全てのアラインメントの状態は図
+\ref{align_graph_samp1}のように左上から右下に向かう経路で表すことができ
+るのです。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures_EPS/align_graph_samp1.eps}
+\end{center}
+\caption{アラインメントのグラフ表現}
+\label{align_graph_samp1}
+\begin{quotation}
+左側にノードを通過する経路、右側にその経路に対応するアラインメントを示した。
+一番左上のノードから１つ右下のノードに移動するときは、配列１の最初の塩基Aを
+縦方向に通過し、配列2の最初の塩基Aを横方向に通過するので、A同士がアラインメントされる。
+その次に右方向に１つ移動するときは、配列2の次の塩基Tのみを横方向に通過するため、
+ギャップとTがアラインメントされる。
+\end{quotation}
+\end{figure}
+
+アラインメントしたい2本の配列を図\ref{align_graph_samp1}の左のように縦と
+横に並べます。そしてノード(○)を塩基配列の先頭と最後、そして塩基配列の間
+に長方形の平面を敷き詰めるように並べます。長さ3と4の塩基配列の場合、
+\((3+1)\times (4+1)=20\)個のノードを敷き詰めます。するとアラインメントは、
+一番左上のノードから一番右下のノードまでの経路で表すことができます。このとき、
+１つ右斜め下、１つ右、１つ下の3方向の移動しか許されません。
+
+すなわち2本の配列は、
+
+\begin{enumerate}
+\item 右斜め下のノードに移動するときは、移動のときに縦方向および横方向の
+位置で通過する配列1と2の両方の塩基がアラインメントされる。
+\item 右方向のノードに移動するときは、ギャップと配列2の横方向で通過する塩基がア
+ラインメントされる
+\item 下方向のノードに移動するときは、配列1の縦方向で通過する塩基とギャップがア
+ラインメントされる
+\end{enumerate}
+
+\noindent
+という規則でアラインメントされます。
+
+すると最適なアラインメントを見つけるという問題は、最適な経路を見つける
+という問題に帰着することができるのです。
+
+
+\section{最適アラインメントの数式化}
+
+ここで最適アラインメントとは何かを再確認しておきましょう。最適アラインメ
+ントは最大のスコアを持つアラインメントと考えます。グラフを使って言いかえ
+ると、「右下のノードに至る最適の経路」となります。では、右下の
+ノードに至る最適の経路をどのように求めればいいでしょうか？
+
+今長さ\(m\)の配列と、長さ\(n\)の配列をアラインメントすることを考えます。
+ノードは全部で\((m + 1) \times (n + 1)\)個並ぶことになります。一番上の行
+を0行目、一番左の列を0列目と数え、\(i\)行目、\(j\)列目の位置にあるノード
+を\(i,j\)と表します。一番右下のノードは\(m,n\)と表されることになります。
+ノード\(i, j\)に至る直前のノードは必ず左\((i,j-1)\)、上\((i-1,j)\)、斜め
+上\((i-1,j-1)\)の３つのうちのどれかになることに注意してください。また各
+アラインメント位置の評価が独立であるというスコア体系を使用するため(塩基
+の一致や不一致、ギャップに対して決まったスコア・ペナルティーが付けられる)、
+\((i,j-1)\)、\((i-1,j)\)もしくは\((i-1,j-1)\)から\((i,j)\)にいくときの追加スコ
+アやギャップペナルティはそれより前の経路に関係なく一定です。すると、右下
+のノードに至る最大スコアは
+
+\vspace{1em}
+
+\begin{itemize}
+\item \((i,j-1)\)までの最大スコアにギャップペナルティを足したもの
+\item \((i-1,j)\) までの最大スコアにギャップペナルティを足したもの
+\item \((i-1,j-1)\) までの最大スコアにアラインメントスコア(塩基が一致し
+たときの点・不一致のときのペナルティー)を足したもの
+\end{itemize}
+
+\vspace{1em}
+
+\noindent
+の３つのうち、最大のものになります(図\ref{align_max_score})。実はこれは
+\(i > 0, j > 0\)となる任意のノードに当てはまることです。ただし、一番左端
+および上端の最大スコアは0点と定義しておきます。このようにすると、アライ
+ンメントの左端で最初に現れるギャップ領域のペナルティーは0になります
+\footnote{このままではアラインメントの右端のギャップは0にはならない。
+演習問題\ref{prac_rightgap}参照。}。
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures_EPS/align_max_score.eps}
+\end{center}
+\caption{最大スコアの求め方}
+\label{align_max_score}
+\begin{quotation}
+ノード\((i,j)\)に至るまでの最大スコアMaxScore\((i,j)\)の求め方を示した。
+ノード\((i,j)\)に至るまでの経路は左、上、左斜め上と３つあるため、これら
+３方向について最大スコアはいくつになるか比較すればよい。MaxScoreはMS,GapPenaltyはGP, ScoreはSCとそれ
+ぞれ略記。
+\end{quotation}
+\end{figure}
+
+数式で表現すると、
+
+\begin{equation}
+\mbox{MaxScore}(i, j) = 
+\left\{
+\begin{array}{l}
+0\ \mbox{if}\ i=0\ \mbox{or}\ j = 0\\
+   \mbox{max} \left\{
+   \begin{array}{l}
+   \mbox{MaxScore}(i-1,j) + \mbox{GapPenalty}\\
+   \mbox{MaxScore}(i,j-1) + \mbox{GapPenalty}\\
+   \mbox{MaxScore}(i-1,j-1)\\
+   \ \ \ \ \ \ \ + \mbox{score}(\mbox{seq1}(i-1), \mbox{seq2}(j-1))
+   \end{array}\right.
+\end{array}\right.
+\label{max_score}
+\end{equation}
+
+\noindent
+となります。但し、MaxScore\((i,j)\)は\((i,j)\)に至るときの最大スコア、
+GapPenaltyはギャップに対して与えられるペナルティー(\(<0\))、
+Score(\(b_{1},b_{2}\))は塩基\(b_{1},b_{2}\)がマッチ・ミスマッチしたときのスコア・ペナルティー、
+seq(\(i\))は配列seqの\(i\)番目の塩基を表します。但しここでは最初の塩基を
+seq(0)から数えます。2本の配列をアラインメントしたときの最大スコアは
+\(\mbox{MaxScore}(m,n)\)と表されます。
+
+
+\section{アラインメントアルゴリズムの実装}
+\label{align_imple}
+
+アラインメントを行う上で中核となるのは式\ref{max_score}です。
+これを実際にプログラムとして実装する方法を説明してゆきます。
+
+
+\subsection{ノードを扱う構造体}
+
+まず、各ノードの持つべき情報は、
+
+\begin{enumerate}
+\item そのノードに到達したときの最大スコア
+\item 最大スコアになるときの直前のノードの方角
+\end{enumerate}
+
+\noindent
+の２つです。例えば図\ref{align_dir1}のノード(1,2)に注目してみましょう。
+このノードが持つべき情報は、ここに到達するときの最大スコア（例えば３点）
+と、ここに到達するときの直前のノードの方角（例えば左）です。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures_EPS/align_dir1.eps}
+\end{center}
+\caption{各ノードが持つべき情報}
+\label{align_dir1}
+\begin{quotation}
+ノードの座標を各ノードの下に示した。本文中で注目しているノード(1,2)に最
+大スコアと直前のノードの方向の情報を加えた。
+\end{quotation}
+\end{figure}
+
+各ノードの情報は以下のように構造体で表すといいでしょう。
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+struct {
+   int score; /* そのノードに至ったときの最大スコア */
+   int direction; /* そのノードに到達して最大スコアになったときの
+                     直前のノードの方角 */
+} score_path_matrix[MAX_SEQ_LEN][MAX_SEQ_LEN];
+  /* MAX_SEQ_LENは扱える最大の配列長さ */
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+\subsection{最大アラインメントスコアの関数}
+\label{align_score_prog1}
+
+では実際にノード\((i,j)\)に到達するときの最大スコアを計算する関数
+\verb+find_max_score(int i, int j)+を作成してみましょう。
+
+今変数\verb+max_score+に最大スコア、\verb+max_dir+に最大スコアになるとき
+の直前のノードの方向を入れることにします(上をV、左をH、斜め左上をDとしま
+す。V,H,Dは実際は\verb+#define+で定義された数値0,1,2です。)。
+
+まず上端は0なので、
+
+\noindent
+\underline{\hspace{10cm}}
+
+\begin{verbatim}
+   if(i == 0){ max_score = 0; max_dir = H;}
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+\noindent
+となります。そして左端も同様に
+
+\noindent
+\underline{\hspace{10cm}}
+
+\begin{verbatim}
+   else if(j == 0){ max_score = 0; max_dir = V; }
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+\noindent
+でしょう。
+
+さて、それ以外の場合は再帰を使うことになります。式\ref{max_score}のmaxの
+項を実装して、以下のようにします。
+
+
+\noindent
+\underline{\hspace{10cm}}
+
+\begin{verbatim}
+   else {
+     score_tmp[V] = find_max_score(i - 1, j) + Gap_Penalty;
+     /* (i-1,j)までの最大スコアにギャップペナルティを足したもの */
+     score_tmp[H] = find_max_score(i, j - 1) + Gap_Penalty;
+     /* (i,j-1)までの最大スコアにギャップペナルティを足したもの */
+     score_tmp[D] = find_max_score(i - 1, j - 1) + 
+       score(seq1[i - 1], seq2[j - 1]);
+     /* (i-1,j-1) までの最大スコアにアラインメントスコアを
+        足したもの */
+
+     max_dir = find_max_elem(score_tmp, NDIR);
+     /* score_tmp[V], score_tmp[H], score_tmp[D]のうちで最大の
+         方向(V,H,D)を求める */
+     max_score = score_tmp[max_dir];
+     /* 上記で求めた方向に対応する最大スコアを求める */
+   }
+   score_path_matrix[i][j].score     = max_score;
+     /* (i,j)における最大スコアを記録 */
+   score_path_matrix[i][j].direction = max_dir;
+     /* (i,j)が最大スコアになるときの直前のノードの方向 */
+   return max_score;
+     /* 最大スコアを返す */
+}
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+但し、上のプログラムでscoreは塩基がマッチしたときのスコアを求める関数(演
+習問題\ref{align_prac1})、\verb+find_max_elem+はスコアが最大になる方向を
+求める関数です(演習問題\ref{align_prac2})。そしてプログラムの先頭の方で
+次のいくつかの定数の定義を行います。
+
+\noindent
+\underline{\hspace{10cm}}
+
+\begin{verbatim}
+#define H 0   /* 横方向 */
+#define V 1   /* 縦方向 */
+#define D 2   /* 斜め方向 */
+#define NDIR 3 /* 方向数 */
+#define Gap_Penalty -5 /* ギャップペナルティ */
+#define MAX_SEQ_LEN 100 /* プログラムで扱える最大の配列の長さ */
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+
+\subsection{プログラムの実行}
+
+プログラムを実際に実行するには、配列seq1とseq2に実際の核酸配列を入れて、
+\verb+find_max_score+を呼び出すだけです。これで最大スコアを求めることが
+できます(演習問題\ref{align_prac3})。
+
+\noindent
+\underline{\hspace{10cm}}
+
+\begin{verbatim}
+#include <string.h>
+
+main(){
+  int i,j;
+  strcpy(seq1, "acg");
+  strcpy(seq2, "aacg");
+　printf("%d\n", find_max_score(3, 4));
+}
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+\subsection{各ノードの情報}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Figures_EPS/align_spm1.eps}
+\end{center}
+\caption{各ノードに含まれる最大スコアおよび直前のノードの情報}
+\label{align_spm1}
+\begin{quotation}
+本文\ref{align_imple}のプログラムを実装したときに、最終的にできる
+score\verb+_+path\verb+_+matrix[][].score (上段)および
+score\verb+_+path\verb+_+matrix[][].direction (中段)の
+情報。下段に上段と中段の情報を統合したものを示した。なお、中段の(0,0)の位置が
+Hになっているが、これはプログラムの実装上の問題で、本質的な意味はない。
+\end{quotation}
+\end{figure}
+
+プログラムを実行させると、score\verb+_+path\verb+_+matrix[][].scoreおよ
+びscore\verb+_+path\verb+_+matrix[][].directionの中味は最終的に図
+\ref{align_spm1}の上段および中段に示すような内容になるはずです。また上段
+と中段の情報をもとに、下段には各ノードが持つ最大スコアおよびその最大スコ
+アを与える直前のノードの方向を各ノードに対して示しておきました。２つの配
+列"acg"と"atcg"のアラインメントのスコアは一番右下のノードの情報より
+25であることが分かります。また一番右下のノードから直前の方向を辿っていく
+と、アラインメントを求めることができます。
+
+
+\subsection{アラインメントの表示}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures_EPS/align_traceback1.eps}
+\end{center}
+\caption{通過した経路からアラインメントへ}
+\label{align_traceback1}
+\end{figure}
+
+それではいよいよアラインメント情報\verb+score_path_matrix+から実際のアラ
+インメントを得る部分のアルゴリズムを考えましょう(演習問題
+\ref{align_prac4})。簡単に言うと、一番右下のノードから
+\verb+score_path_matrix+のdirectionをたどって左上に到達するまでに通過し
+た経路でアラインメントを決めます(図\ref{align_traceback1})。詳細なアルゴ
+リズムは以下の通りです。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures_EPS/align_traceback2.eps}
+\end{center}
+\caption{通過した経路からアラインメントを求めるアルゴリズム}
+\label{align_traceback2}
+\end{figure}
+
+\begin{enumerate}
+\item 空の配列\verb+a_seq1[], a_seq2[]+を用意します。
+\item まず自分が見ているノード\((i,j)\)を一番右下のノードに設定します。
+\item \verb+score_path_matrix[i][j].direction+の値をみて(図\ref{align_traceback2}(a))、
+   \begin{enumerate}
+   \item Hなら、\verb+a_seq1+にGAP(-)を、\verb+a_seq2+にseq[j-1]を追加し
+ます(図\ref{align_traceback2}(b))。その後、jの値を１つ引きます。
+   \item Vなら\verb+a_seq1+にseq[i-1]を、\verb+a_seq2+にGAP(-)を追加しま
+す(図\ref{align_traceback2}(c))。その後、iの値を1つ引きます。
+   \item Dなら\verb+a_seq1+にseq[i-1]を、\verb+a_seq2+にseq[j-1]を追加し
+ます(図\ref{align_traceback2}(d))。その後、i,jの値を1つ引きます。
+   \end{enumerate}
+\item \(i > 0\) または \(j > 0\)なら3に戻り、現在のノード\((i,j)\)に対し
+て同じような操作をします。
+\item 現在のノードが(0,0)に到達した後、\verb+a_seq1とa_seq2+の中の文字列
+を反転させれば出来上がりです。
+\end{enumerate}
+
+\subsection{計算の重複の回避}
+
+扱う配列が長くなると、アラインメントにかかる時間は急激に増大します。そこ
+で節\ref{recur_fast}を参考にアラインメントを高速化する手法を考えましょう。
+関数\verb+find_max_score+では以下のように二次元配列に最大スコアとその経
+路を記録していました。
+
+\noindent
+\underline{\hspace{10cm}}
+
+\begin{verbatim}
+   score_path_matrix[i][j].score     = max_score;
+     /* (i,j)における最大スコアを記録 */
+   score_path_matrix[i][j].direction = max_dir;
+     /* (i,j)が最大スコアになるときの直前のノードの方向 */
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+一方で\verb+find_max_score+は同じ\((i,j)\)に対しても何回も呼ばれます。そ
+こで、\verb+score_path_matrix[i][j]+に値が記録されていれば、２回目の呼び
+出しからはそれを使うことにより計算時間を大幅に節約することができます(演
+習問題\ref{align_prac5})。
+
+\noindent
+\underline{\hspace{10cm}}
+
+\begin{verbatim}
+if(score_path_matrix[i][j].score != INVALID){
+   return score_path_matrix[i][j].score;
+}
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+このテクニックを使うためには、mainのところで最初に
+\verb+score_path_matrix+の値を初期化する必要があります。
+
+\noindent
+\underline{\hspace{10cm}}
+
+\begin{verbatim}
+#define INVALID 1000
+
+/* 初期化 */
+  for(i = 0;i < 30;i ++)
+    for(j = 0;j < 30;j ++)score_path_matrix[i][j].score = INVALID;
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+これまで見てきたように式\ref{max_score}をそのまま実装すると、関数は再帰
+関数となります。しかし、再帰関数を使わずにアラインメントを実装することも
+可能です。
+
+\(\mbox{MaxScore}(i, j)\)を求めるためには、\(\mbox{MaxScore}(i-1, j)\)、
+\(\mbox{MaxScore}(i, j-1)\)、\(\mbox{MaxScore}(i-1, j-1)\)の3つの値が必
+要です。再帰関数では、\(\mbox{MaxScore}(i, j)\)が呼び出された後、、
+\(\mbox{MaxScore}(i-1, j)\)、
+\(\mbox{MaxScore}(i, j-1)\)、\(\mbox{MaxScore}(i-1, j-1)\)が呼び出され、
+その後で\(\mbox{MaxScore}(i, j)\)を計算していました。この呼び出しのステップを
+省き、\(i,j\)の値が小さいほうから順に
+\(\mbox{MaxScore}(0, 0)\),
+\(\mbox{MaxScore}(0, 1)\),
+\(\mbox{MaxScore}(0, 2)\),
+\(\cdots\) \(\mbox{MaxScore}(i,j)\)を求めていけば、再帰計算を使わずに、かつ計算の重複を起こすことなく
+アラインメントを行うことができます。以下にその実装例を示します。
+
+\noindent
+\underline{\hspace{10cm}}
+
+\begin{verbatim}
+int make_score_path_matrix(int seq1_len, int seq2_len){
+  int score_tmp[NDIR];
+  int max_dir;
+  int max_score;
+  int i,j;
+  for(i = 0;i <= seq1_len;i ++){
+    for(j = 0;j <= seq2_len;j ++){
+      if(i == 0){ max_score = 0; max_dir = H; }
+      else if(j == 0){ max_score = 0; max_dir = V; }
+      else {
+        score_tmp[V] = find_max_score(i - 1, j) + Gap_Penalty;
+        score_tmp[H] = find_max_score(i, j - 1) + Gap_Penalty;
+        score_tmp[D] = find_max_score(i - 1, j - 1) + 
+          score(seq1[i - 1], seq2[j - 1]);
+        max_dir = find_max_elem(score_tmp, NDIR);
+        max_score = score_tmp[max_dir];
+      }
+      score_path_matrix[i][j].score     = max_score;
+      score_path_matrix[i][j].direction = max_dir;
+    }
+  }
+  return score_path_matrix[seq1_len][seq2_len].score;
+}
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+
+\section{ローカルアラインメント}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Figures_EPS/align_local_ovv}
+\end{center}
+\caption{ローカルアラインメントの概要}
+\label{align_local_ovv}
+\begin{quotation}
+配列の上下に、0から始まる塩基番号を示した。また２本の配列がクリアに
+一致している箇所を"\verb+|+"で示した。
+\end{quotation}
+\end{figure}
+
+グロバールアラインメントは配列全体の類似性を高くするアラインメントです。
+一方、ローカルアラインメントでは全体を揃えるのではなく、似ている部分のみを
+揃えるようにします\cite{align_SW}。基本的な概念を図\ref{align_local_ovv}に示します。こ
+の例では中央付近で２本の配列の相同性が非常に高くなっています。しかし、両
+端部分には相同性がほとんどありません。スコア体系にもよりますが、配列1の0
+～6番目の塩基配列と、配列2の0～3番目の塩基配列を無理にアラインメントして
+も、アラインメントが適切に行われたことを示すスコア(一般的には0より大きい
+スコア)が得られることが期待できません。また配列1の22～24番目と配列2の18
+～24番目に関しても同じことが言えます。そこで、ローカルアラインメントでは、
+スコアが高くなりそうもない部分ではアラインメントを打ち切ってしまいます。
+この例でいうと、(7,4)の位置のノードより先頭に戻ってもスコアが0より大きくならない場合、
+そこでアラインメントを打ち切ります。また、ノードが持つアラインメントのスコアが
+最も高くなる(22,18)からアラインメントを開始します。
+
+一般的な議論をすると基本的には、ある地点\((i,j)\)までアラインメントした
+最大スコアMaxScore\((i, j)\)が0以下の値になっているとき、そこまでのアラ
+ンメントは意味がないので、アラインメントを打ち切ります。アラインメントを
+しない状態のスコアを0として、それを選択肢の１つに組み込むのです。これを
+数式で表現すると、
+
+\begin{equation}
+\mbox{MaxScore}(i, j) = 
+\left\{
+\begin{array}{l}
+0\ \mbox{if}\ i=0\ \mbox{or}\ j = 0\\
+   \mbox{max} \left\{
+   \begin{array}{l}
+   0\\
+   \mbox{MaxScore}(i-1,j) + \mbox{GapPenalty}\\
+   \mbox{MaxScore}(i,j-1) + \mbox{GapPenalty}\\
+   \mbox{MaxScore}(i-1,j-1)\\
+   \ \ \ \ \ \ \ + \mbox{score}(\mbox{seq1}(i-1), \mbox{seq2}(j-1))
+   \end{array}\right.
+\end{array}\right.
+\label{align_local_eq}
+\end{equation}
+
+\noindent
+となります。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Figures_EPS/align_local_sample1}
+\end{center}
+\caption{ローカルアラインメントの例}
+\label{align_local_sample1}
+\begin{quotation}
+左に2本の配列"cag"と"tagc"をローカルアラインメントにかけた時の各ノードの
+最大スコアおよびそれを与える直前のノードの方向を示した。
+アラインメント開始ノード(最も大きなスコアを持つノード)を太い○で表し、
+またアラインメントされた経路を太い矢印で表した。
+右に実際に生成されるアラインメントを示した。
+\end{quotation}
+\end{figure}
+
+図\ref{align_local_sample1}に各ノードが持つ最大スコアと直前のノードの方
+向、およびそこから得られるアラインメントの例を示しておきます。最大スコア
+が0になっているノードでは直前のノードが示されておらず、アラインメントが
+打ち切られているのが分かると思います。またアラインメントがMaxScore\((i,j)\)
+が最も高い位置から始まっていることが分かります。
+
+
+
+\section{より高度なギャップペナルティーの計算}
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Figures_EPS/align_gap_oe}
+\end{center}
+\caption{ギャップ開始ペナルティーとギャップ伸長ペナルティー}
+\label{align_gap_oe}
+\begin{quotation}
+同一の配列の組に対して、2種類のアラインメント(a)(b)を示した。ギャップ開始
+ペナルティーの対象となる位置に"o"のラベルを、ギャップ伸長ペナルティーの
+対象となる位置に"e"のラベルを付けた。
+\end{quotation}
+\end{figure}
+
+DNA分子が進化するとき、挿入や欠損はまとまって起こることがよくあります。
+これを考慮に入れると、図\ref{align_gap_oe}(a)のようなアラインメントより、
+(b)のようなアラインメントに対して高いスコアをつけるべきでしょう。これを実現
+するのが、ギャップ開始ペナルティー(\(\mbox{GapPenalty}_{\rm open}\))と
+ギャップ伸長ペナルティー(\(\mbox{GapPenalty}_{\rm ext}\))
+を使ったアフィンギャップペナルティーと呼ばれるスコア体系です\cite{Bioinfo_eddy}。
+このスコア体系では、ギャップが連続しているとき、最初のギャップのペナルテ
+ィーがギャップ開始ペナルティーとなり、それ以降が
+ギャップ伸長ペナルティーとなります。
+\(\mbox{GapPenalty}_{\rm open}\) \(<\) \(\mbox{GapPenalty}_{\rm ext}\) \(<0\)と設定すれば、上記の
+例では下のほうがスコアが高くなります。例えば\(\mbox{GapPenalty}_{\rm open}=-5\),
+\(\mbox{GapPenalty}_{\rm ext}=-1\)にすれば、
+図\ref{align_gap_oe}(a)のアラインメントではギャップペナルティの
+合計は、\(\mbox{GapPenalty}_{\rm open}\) \(\times\) 6で-30、(b)のアラインメントでは、
+\(\mbox{GapPenalty}_{\rm open}\) \(\times\) 2 + 
+\(\mbox{GapPenalty}_{\rm ext}\) \(\times\) 4で-14になり、
+下の方がギャップペナルティーの合計が低くなり、スコアが高くなります。この
+スコア体系を使うと、ギャップペナルティーが一定ではなく経路に依存して変化するため、
+式\ref{max_score}を使うことはできなくなります。
+
+そこで、MaxScore\((i,j)\)を再帰式を使って定式化するために、以下の３つの
+式を定義します。
+
+\begin{description}
+\item[\(\mbox{MaxScore}_{\rm H}(i,j)\)] 直前のノードが左となるときの\((i,j)\)における最大スコア
+\item[\(\mbox{MaxScore}_{\rm V}(i,j)\)] 直前のノードが上となるときの\((i,j)\)における最大スコア
+\item[\(\mbox{MaxScore}_{\rm D}(i,j)\)] 直前のノードが左斜め上となるときの\((i,j)\)における最大スコア
+\end{description}
+
+こ
+れらの式を使うと
+
+\begin{displaymath}
+\mbox{MaxScore}(i, j) = 
+   \mbox{max} \left\{
+   \begin{array}{l}
+   \mbox{MaxScore}_{\rm H}(i,j) \\
+   \mbox{MaxScore}_{\rm V}(i,j) \\
+   \mbox{MaxScore}_{\rm D}(i,j) \\
+   \end{array}\right.
+\end{displaymath}
+
+\noindent
+と表すことができます。では\(\mbox{MaxScore}_{\rm H}(i,j)\)、 
+\(\mbox{MaxScore}_{\rm V}(i,j)\)、\(\mbox{MaxScore}_{\rm D}(i,j)\)はさらにどのよ
+うに表すことができるでしょうか？まず、\(\mbox{MaxScore}_{\rm H}(i,j)\)につい
+て考えましょう。アラインメントで挿入の直後に欠損が起こったり、欠損の直後
+に挿入が起こることはないと仮定すると(つまり全ての塩基\(b_{1}\),\( b_{2}\)
+に対して、\(\mbox{score}(b_{1},b_{2}) > \mbox{GapPenalty}_{\rm open} \times 
+2\))、ノード\((i,j)\)の直前に通るノードが\((i,j-1)\)のときに最大スコアに
+なる経路は、\(\mbox{MaxScore}_{\rm H}(i,j)\)は図\ref{align_max_score_H}に示
+すように２通りになります。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Figures_EPS/align_max_score_H}
+\end{center}
+\caption{より高度なGapPenaltyを用いたときの最大スコア\(\mbox{MaxScore}_{\rm H}(i,j)\)の計算}
+\label{align_max_score_H}
+\begin{quotation}
+\((i,j-1)\to (i,j)\)の経路を通って\((i,j)\)に到達するときの最大スコア
+\(\mbox{MaxScore}_{\rm H}(i,j)\)を
+求めるときは、矢印で示した２つの経路の最大スコアを比較すればよい。
+\(\mbox{MaxScore}_{\rm H}(i,j)\)、\(\mbox{MaxScore}_{\rm D}(i,j)\)、
+GapPenalty\(_{\rm open}\)、GapPenalty\(_{\rm ext}\)はそれぞれ
+\(\mbox{MS}_{\rm H}\)、\(\mbox{MS}_{\rm D}\)、GP\(_{\rm open}\)、
+GP\(_{\rm ext}\)と略記。
+\end{quotation}
+\end{figure}
+
+\((i-1,j-2) \to (i,j-1)\)を通ってくるときは、それ以前の経路に関わらず
+\((i,j-1) \to (i,j)\)のギャップペナルティーは必ずGapPenalty\(_{\rm open}\)に
+なります。従って\((i-1,j-2) \to (i,j-1)\)を通るときの\((i,j-1)\)までの
+最大スコアは\(\mbox{MaxScore}_{\rm D}(i,j-1)\)なので、\((i,j)\)までの最大
+のスコアは\(\mbox{MaxScore}_{\rm D}(i,j-1) + \mbox{GapPenalty}_{\rm open}\)で表
+されます。一方\((i,j-2) \to (i,j-1)\)を通ってくるときは、それ以前の経路
+に関わらず\((i,j-1) \to (i,j)\)のギャップペナルティーは必ず
+GapPenalty\(_{\rm ext}\)になります。従って\((i,j-2) \to (i,j-1)\)を通るとき
+の\((i,j-1)\)までの最大スコアは\(\mbox{MaxScore}_{\rm H}(i,j-1)\)なので、
+\((i,j)\)までの最大のスコアは\(\mbox{MaxScore}_{\rm H}(i,j-1) + 
+\mbox{GapPenalty}_{\rm ext}\)で表されます。最大スコア
+\(\mbox{MaxScore}_{\rm H}(i,j)\)は前者と後者のうち大きいほうなので、これを数
+式としてまとめると、
+
+\begin{displaymath}
+\mbox{MaxScore}_{\rm H}(i, j) = 
+\left\{
+\begin{array}{l}
+0\ \mbox{if}\ i=0\ \mbox{or}\ j = 0\\
+   \mbox{max} \left\{
+   \begin{array}{l}
+   \mbox{MaxScore}_{\rm H}(i,j-1) + \mbox{GapPenalty}_{\rm ext}\\
+   \mbox{MaxScore}_{\rm D}(i-1,j-1) + \mbox{GapPenalty}_{\rm open}\\
+   \end{array}\right.
+\end{array}\right.
+\end{displaymath}
+
+\noindent
+になります。同様にして、
+
+
+\begin{displaymath}
+\mbox{MaxScore}_{\rm V}(i, j) = 
+\left\{
+\begin{array}{l}
+0\ \mbox{if}\ i=0\ \mbox{or}\ j = 0\\
+   \mbox{max} \left\{
+   \begin{array}{l}
+   \mbox{MaxScore}_{\rm V}(i-1,j) + \mbox{GapPenalty}_{\rm ext}\\
+   \mbox{MaxScore}_{\rm D}(i-1,j-1) + \mbox{GapPenalty}_{\rm open}\\
+   \end{array}\right.
+\end{array}\right.
+\end{displaymath}
+
+% \[ \mbox{MaxScore}_{\rm D}(i, j) = 
+% \left\{
+% \begin{array}{l}
+% 0\ \mbox{if}\ i=0\ \mbox{or}\ j = 0\\
+%    \mbox{max} \left\{
+%    \begin{array}{l}
+%    \mbox{MaxScore}_{\rm H}(i-1,j-1) + \mbox{score}(\mbox{seq1}(i-1), \mbox{seq2}(j-1))\\
+%    \mbox{MaxScore}_{\rm V}(i-1,j-1) + \mbox{score}(\mbox{seq1}(i-1), \mbox{seq2}(j-1))\\
+%    \mbox{MaxScore}_{\rm D}(i-1,j-1) + \mbox{score}(\mbox{seq1}(i-1), \mbox{seq2}(j-1))
+%    \end{array}\right.
+% \end{array}\right.
+% \]
+
+\noindent
+が成立します。MaxScore\(_{\rm D}(i, j)\)の再帰式は演習問題
+\ref{prac_maxscoreD}で求めましょう。
+
+
+\begin{practice}
+\item \label{align_prac1} 本文中のプログラムで使われるint score(char a, char b)は核酸（またはアミノ
+酸）aとbのアラインメントスコアを計算する関数です。aとbが同一のとき10点、
+aとbが異なるとき-7点を返すようにこの関数を作りましょう。
+\item \label{align_prac2} 本文中のプログラムで使われる\verb+int find_max_elem(int score_tmp[], int n)+
+はn個の要素を持つ配列\verb+score_tmp+の中で最大の値を持つ要素が何番目
+か(0～n-1)を返す関数です。この関数を作りましょう。
+\item \label{align_prac3} 与えられた2本の配列より最大スコアを計算するプ
+ログラムを完成させましょう。
+\item \label{align_prac4} 本文中のプログラムで使われる構造体の配列\verb+score_path_matrix+とseq1、seq2の情報から
+\verb+a_seq1[]、a_seq2[]+にアラインメント結果を入れる関数\\
+\verb+void board_to_alignment(char a_seq1[], char a_seq2[], int m, int n);+\\
+を作りましょう。なお、m,nは\((i,j)\)の初期値、つまり一番右下のノードの位置を表
+します。
+\item \label{align_prac5} 最大スコアの記録による高速化を実際にアラインメ
+ントに組み込んでみましょう。
+\item ２本の配列"cct"と"ccgt"をアラインメントしたとき、各ノードが持つ
+最大スコアとそのスコアを与える直前のノードがどのようになるか、
+図\ref{align_spm1}を参考に表を書きましょう。
+\item \label{prac_rightgap} \ref{align_score_prog1}の実装では配列の左側
+のギャップのペナルティーは0になりますが、右側のギャップのペナルティーは0
+になりません。例えば
+\begin{verbatim}
+aaaatcgatgc
+---atcgatgc
+\end{verbatim}
+のギャップペナルティーは0ですが、
+\begin{verbatim}
+atcgatgcaaa
+atcgatgc---
+\end{verbatim}
+のギャップペナルティーは0になりません。右側のギャップのペナルティーも0になるように
+改良しましょう。
+\item 式\ref{align_local_eq}を参考にローカルアラインメントを実装しましょう。
+\item \label{prac_maxscoreD} MaxScore\(_{D}(i, j)\)の再帰式を導出しまし
+ょう。
+\item \ref{prac_maxscoreD}の結果を用いて、ギャップ開始ペナルティーとギャ
+ップ伸長ペナルティーを使ったスコア計算によるアラインメントを実装しましょ
+う。
+\end{practice}
+
+

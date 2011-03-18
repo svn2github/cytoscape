@@ -1,0 +1,375 @@
+
+Translation initiation is a process to begin a synthesis of the
+protein.  It is very important biological phenomenon, because this
+process is required to produce any kind of protein. There are many
+previous works on translation initiation. However, many questions
+about this process is still unanswered. In this paper, computer
+analyses of translation initiation sites in various species were
+conducted from various points of view. And hidden characteristics of 
+sequences surrounding translation initiation sites were discovered,
+some of which are biologically important that it may explain
+biological processes.
+
+In this chapter, foundation of translation initiation is introduced as
+well as some basics of molecular biology that are necessary to
+understand this paper. Then the purpose of this research and its
+methodology are described. Finally, composition of this paper is
+described.
+
+
+\section{Genes}
+
+Before discussing the molecular biology, we first have to refer to
+genes.  Why is a child similar to his or her parents? This is because
+the child receives the genes from his/her parents.  Genes are the
+factors that determine the hereditary characteristics of organisms. A
+lot of information on what the organisms would be like is written on
+genes. More precisely, proteins, which are the main factors that
+characterize organisms, are synthesized according to the information in
+the genes.  The gene is actually a region of the molecule called
+DNA. DNA exists in the cell and forms a chromosome. Cell is one of the
+most fundamental component of any organisms and it will be described
+further in the next section.
+
+\begin{figure}
+\begin{center}
+\epsfile{file=DNAhlx5.ps,scale=0.8}
+\end{center}
+\caption{DNA molecules}
+\label{dna}
+\end{figure}
+
+\section{Cells}
+\label{cell}
+
+All the organisms are made of a cell or cells. According to the type of
+the cell, some organisms are classified into procaryotes(bacteria), and
+some are classified into eucaryotes.  The composition of a cell is
+different between these two domains. Generally, as seen in figure
+\ref{cell_ap}, procaryotes have simpler cell compositions than that of
+eucaryotes. In eucaryotes, chromosomes exist in the nucleus of the cell.
+
+\begin{figure}
+\begin{center}
+\epsfile{file=pro_pic.eps}\ \ \ \ \ \ \ 
+\epsfile{file=euc_anim_pic.eps}
+\end{center}
+\caption{Procaryotic cell(left) and Eucaryotic cell(right)}
+\label{cell_ap}
+\end{figure}
+
+A cell consists of four kinds of molecules, i.e., sugar, fatty acid,
+nucleotide and amino acid. As shown in table \ref{basic_mol},
+sugar molecules form polysaccharide and
+fatty acid molecules form lipid. And the chain of nucleotides form
+nucleic acid.  And amino acids linked by peptide bonds form protein.
+Nucleic acid and protein are very large molecules and they play
+important roles for organisms in maintaining life and species.
+Details about amino acids and nucleotides are given in the following
+two sections.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+monomer & polymer\\
+\hline
+\hline
+sugar & polysaccharide \\
+fatty acid & lipid \\
+nucleotide & nucleic acid \\
+amino acid & protein \\
+\hline
+\end{tabular}
+
+\end{center}
+\caption{Basic molecules of a cell}
+\label{basic_mol}
+\end{table}
+
+\section{Amino acids and proteins}
+
+Most characteristics of organisms are determined by proteins. They form
+tissues, catalyze chemical activities in organisms, etc.. The function
+of a protein is determined by the kinds of amino acids of which the protein
+consists. There are 20 kinds of amino acid. Each amino acid has its
+characteristics such as hydrophilic/hydrophobic, acidic/basic,
+etc.. According to kinds of amino acids and their characteristics, they
+form three dimensional structures. Each protein functions in a different
+way. They may interact with other proteins.
+
+
+\section{Nucleotides and nucleic acids}
+
+Nucleotide consists of base, sugar, and phosphate. And there are 4
+kinds of bases. Those are adenine, thymine/uracil, cytosine, and
+guanine, which are abbreviated as A, T/U, C, G. When they are linked,
+they form nucleic acid. Nucleic acid has direction:One end is called
+5' terminal and the other is called 3' terminal.  Nucleic acid can be
+expressed by its sequence of nucleotides such as ``atcgatgcctga....'' 
+by writing each nucleotides included in nucleic acid from 5' terminal
+to 3' terminal.
+
+There are two kinds of nucleic acid. These are DNA(deoxyribonucleic
+acid) and RNA(ribonucleic acid).  Information about what kind of
+proteins will be synthesized is stored in DNA, which includes gene region, and
+it is passed to descendants.  DNA chains are double stranded, and A
+pairs with T, and C pairs with G. On the other hand, RNA is usually
+single stranded.  Nucleotides included in RNA can easily make pairs with
+other nucleotides included in RNA itself. The structure that an RNA
+chain forms by self pairings is called a secondary structure.  As RNA
+can form higher order structure, it can mediate some activities in the
+cell, whereas DNA usually works only as a template.  There are 3 kinds
+of RNA and each has different functions.  Base T is used in DNA and base
+U is used instead of T in RNA.  Types of nucleic acid as well as its
+main functions are summarized in table \ref{nuc_type}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+name of nucleic acid & main function\\
+\hline
+\hline
+DNA & carries information of genes\\
+\hline
+mRNA & copies of DNA and work as template in synthesis of protein\\
+\hline
+tRNA & links a group of three nucleotides(codon) with 
+amino acids \\
+\hline
+rRNA & helps to synthesize proteins in ribosomes\\
+\hline 
+\end{tabular}
+\end{center}
+\caption{Types of nucleic acid}
+\label{nuc_type}  
+\end{table}
+
+Protein is synthesized in two steps: Transcription of DNA to mRNA, and
+translation of mRNA to protein(Figure \ref{pathpro}). Details are
+given in the following two sections.
+
+\begin{figure}
+\begin{center}
+\epsfile{file=discr_exp1.eps}
+\end{center}
+\caption{A pathway from DNA to protein}
+\label{pathpro}
+\end{figure}
+
+
+
+\section{Transcription}
+
+Protein is not directly synthesized from DNA.  First, an enzyme called
+polymerase reads nucleotides on DNA chain and synthesizes a molecule
+called mRNA. This process is called {\bf transcription}.
+
+In the process of transcription, the nucleotide sequence written on DNA
+is copied to mRNA. More specifically, A is transcribed into U, T is
+transcribed into A, C is transcribed into G, and G is transcribed into
+C.
+
+Expression of genes are mostly modulated in the transcription level.
+Thus, the process of the transcription is investigated by many
+researchers. However, many mechanisms of transcriptions are not clearly
+understood, especially for eucaryotes.
+
+
+\section{Translation}
+\label{intr_trans}
+
+{\bf Translation} is a process that the molecule called ribosome reads
+nucleotides on transcribed mRNA and synthesizes a protein according to
+nucleotides on mRNA.
+
+In the process of translation, protein is synthesized according to the
+information written on mRNA. It is described in figure \ref{trans1}.  A
+group of three nucleotides(called a codon and there are \(4^{3}=64\) of
+them) corresponds to one of 20 kinds of amino acids. This correspondence
+is mainly determined by the RNA molecule called tRNA. And this
+correspondence is almost the same for all organisms. 
+
+\begin{figure}
+\begin{center}
+\epsfile{file=trans1.eps}
+\end{center}
+\caption{Simple model of translation process}
+\label{trans1}
+
+\begin{quotation}
+\begin{small}
+Appropriate tRNA with an amino acid can enter the ribosome and makes
+pair with mRNA. Each tRNA adds one amino acid to elogating chain to
+synthesize protein. The ribosome moves downstream to elongate the chain
+of amino acids.
+\end{small}
+\end{quotation}
+
+\end{figure}
+
+
+Note that not all part of DNA is transcribed and translated.  The
+region that will be transcribed and translated is called coding
+region. And the region that will not be transcribed or translated is
+called non coding region. Non coding regions do not code
+proteins. In many cases, they are just junk. However, sometimes they have
+regulatory information. Some regulatory information about translation
+is also coded in non coding regions.
+
+
+\section{Translation initiation}
+
+Now, translation initiation can be described in detail. Usually
+transcribed mRNA will be translated into protein. However, only part of
+mRNA is translated. There is a point on mRNA to initiate
+translation. That point is called {\bf start codon}. And the process
+that ribosomes initiate translation at a start codon is called {\bf
+translation initiation}. And regions associated with translation
+initiation, including start codon are called {\bf translation initiation
+sites}. Translation initiation is a very complex process and involves
+many molecules. Note that start codon is usually ``AUG''.
+
+
+\section{Purpose of this research}
+
+The greatest question about translation initiation is: how can ribosome
+recognize the start codon accurately? The ultimate goal of this research
+is to give complete answer to this question. However, the problem is too
+difficult to solve. The key is hidden in sequences surrounding
+translation initiation sites. Thus, before dealing with this problem, it
+is necessary to characterize tendencies hidden in these sequences. This
+is the purpose of this research:{\bf characterization of tendencies
+hidden in sequences surrounding translation initiation sites from
+various points of view}. The research is focused on not only coding
+regions but also non coding regions, because non coding regions seem to
+code much information about translation initiation.
+
+\section{Method: Computational sequence analysis}
+\label{method_compseq}
+
+In this paper, computational analyses of sequence patterns surrounding
+translation initiation sites were conducted to obtain more knowledge
+about translation initiation. To discover hidden tendencies in
+DNA/RNA, large number of sequences are required and sequences in
+GenBank\footnote{GenBank(Genetic Sequence DataBank), maintained by
+NIH(National Institute of Health), incorporates DNA/RNA sequences from
+all available public sources, primarily through the direct submission
+of sequence data from individual laboratories and from large-scale
+sequencing projects. It contains more than 1,000,000 different
+sequences and increasing rapidly, which is appropriate for the
+purpose of this work.}\cite{label1700} database were used for the
+analyses. Original programs were written to extract sequences from
+GenBank, and statistical analyses of these sequences were conducted.
+
+GenBank entries with certain keywords (listed in table \ref{exclu})
+were excluded from the analysis.  Furthermore, eucaryotic sequences
+that have a start codon other than ``AUG'' and sequences that have
+introns in 5'UTR were also excluded from the analysis.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+Field & Key Words\\
+\hline
+DEFINITION & Pseudo genes\\
+           & Immunoglobulin and receptor sequences\\
+           & Mitochondrial sequences\\
+           & Partial sequences\\
+           & No complete cds annotation(for mRNA)\\
+\hline
+CDS        & Putative sequences(for mRNA)\\
+           & Partial sequences\\
+           & No \verb+/codon_start=1+ annotation\\
+\hline
+\end{tabular}
+\end{center}
+\caption{GenBank entries excluded from the analysis}
+\label{exclu}
+\end{table}
+
+It is appropriate to use mRNA sequences rather than DNA sequences in
+this study because DNA sequences include untranscribed regions.  For
+those organisms in which mRNA sequence data are not abundantly
+available, or for those organisms whose chromosomes are completely
+sequenced, however, DNA sequence data was used instead as summarized
+in table \ref{ob_data}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+Data                & GenBank file name & Type \\
+\hline
+\hline
+{\it H.Sapiens}     & gbpri.seq         & mRNA \\
+{\it M.musculus}    & gbrod.seq         & mRNA \\
+{\it D.melanogaster} & gbinv.seq        & mRNA\\
+{\it C.elegans}     & complete chromosomes & DNA \\
+{\it S.cerevisiae}  & complete genome   & DNA \\
+{\it A.thaliana}    & gbpln.seq         & mRNA \\
+\hline
+{\it A.aeolicus}    & complete genome   & DNA \\
+{\it B.burgdorferi} & complete genome   & DNA \\
+{\it B.subtilis}    & complete genome   & DNA \\
+{\it C.pneumoniae}  & complete genome   & DNA \\
+{\it C.trachomatis} & complete genome   & DNA \\
+{\it E.coli}        & complete genome   & DNA \\
+{\it H.influenzae}  & complete genome   & DNA \\
+{\it H.pylori}      & complete genome   & DNA \\
+{\it M.genitalium}  & complete genome   & DNA \\
+{\it M.pneumoniae}  & complete genome   & DNA \\
+{\it M.tuberculosis} & complete genome   & DNA \\
+{\it Synechocystis} & complete genome   & DNA \\
+{\it T.pallidum}    & complete genome   & DNA \\
+\hline
+{\it A.fulgidus} & complete genome   & DNA \\
+{\it M.jannaschii} & complete genome   & DNA \\
+{\it M.thermoautotrophicum} & complete genome   & DNA \\
+{\it P.horikoshii} & complete genome   & DNA \\
+\hline
+\end{tabular}\\
+\end{center}
+\caption{Data used in this study}
+\label{ob_data}
+\end{table}
+
+When dealing with individual species, redundancies of data in GenBank
+were reduced by using program CLEANUP, developed by
+Grillo\cite{label875}.
+
+Notice that GenBank data have a lot of noisy data. Sometimes annotated
+translation initiation sites are incorrect. However, by using large data 
+sets or by reducing suspicious data, influence on results may reduced.
+
+\section{Composition of this paper}
+
+This paper describes discovered tendencies hidden in translation
+initiation sites as well as biological interpretation and significance
+of these discoveries. Chapter \ref{survey} describes known translation
+initiation mechanisms with survey on the research of this field. From
+chapter \ref{consensus} to \ref{neg_atg} are the results of the
+research. In chapter \ref{consensus}, comprehensive analyses of
+consensus patterns surrounding start codons are conducted to determine
+translation initiation signals other than start codons in various
+species. This is fundamental and important, because translation
+initiation signal is the main factor that has direct influence on
+translation initiation. In chapter \ref{chiyo}, correlations of start
+codons and signal strength of Shine-Dalgarno sequence are investigated
+to find out characteristics of alternative start codons(GUG) in
+procaryotes, mainly in {\it E.coli}. Since start codon is the most
+important translation initiation signal, it may be important to
+investigate what influence do alternative start codons have on
+translation initiation. In chapter \ref{correlation}, characteristics of
+base correlations surrounding start codons are described.  From this
+investigation, it is possible to infer whether rRNA binds to consensus
+sequence of mRNA or not.  In chapter \ref{neg_atg}, characteristic
+patterns of frequencies of ATG triplets in various species are
+investigated and scanning mechanisms of ribosomes are discussed. Since
+ribosome must bind to mRNA to initiate translation, it is very important
+to discuss how they do so. Conclusion for this research is given in
+chapter \ref{conclusion}.
+
+

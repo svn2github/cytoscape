@@ -1,0 +1,112 @@
+\appendix
+\chapter{パッケージ {\ttfamily msse-mac} の利用}
+\label{msse-mac}
+
+\begin{abstract}
+ パッケージとして {\ttfamily msse-mac} を指定した場合に
+ 利用できるコマンドや環境を説明します．必要に応じて使って下さい．
+\end{abstract}
+
+\section{{\ttfamily Kenumerate}，{\ttfamily Menumerate} 環境}
+
+{\ttfamily Kenumerate} 環境は
+\begin{verbatim}
+\begin{Kenumerate}
+\item
+一つ目の項目
+\item
+二つ目の項目
+\item
+三つ目の項目
+\end{Kenumerate}
+\end{verbatim}
+と記述すると，項目見出しがアイウエオ...となります．
+\begin{Kenumerate}
+\item
+一つ目の項目
+\item
+二つ目の項目
+\item
+三つ目の項目
+\end{Kenumerate}
+
+\onelineskip
+
+{\ttfamily Menumerate} 環境は
+\begin{verbatim}
+\begin{Menumerate}
+\item
+一つ目の項目
+\item
+二つ目の項目
+\item
+三つ目の項目
+\end{Menumerate}
+\end{verbatim}
+と記述すると，項目見出しが\MARU{1}，\MARU{2}，\MARU{3} ... となります．
+\begin{Menumerate}
+\item
+一つ目の項目
+\item
+二つ目の項目
+\item
+三つ目の項目
+\end{Menumerate}
+
+これらの環境は入れ子にはできません．
+
+\section{その他のコマンド}\label{sec:etc}
+
+\begin{itemize}
+\item 
+サンエンス社の書籍は，本文中のボールドを索引項目として
+拾うので，\verb/\keyword/ というコマンドを定義しています．
+\verb/\keyword{項目}{読み}/と記述してください．
+第1引数がボールドで出力され，同時に索引項目となります．
+
+「読み」に関しては，索引作成プログラムに mendex を
+使用する場合，濁音・拗音などはそのままでかまいませんが，
+makeindex を使用する場合は，例えば，「こんぴゅーた」を
+「こんひゆーた」と記述する必要があります．
+
+\item
+全角ダッシュよりも長い2倍ダッシュ（\ddash{}）を出力するために，
+\verb/\ddash/ というコマンドを定義しました．
+{\ttfamily ---} を二つ重ねると，---と---の間に若干のスペースが
+入ることがあり見苦しいからです．
+
+\item
+段落と段落の縦方向の間隔を開けたい場合は，
+\verb/\halflineskip/ ならびに \verb/\onelineskip/ というマクロを
+定義しています．その名のとおり，半行空け，1行空けに使用して下さい．
+
+\item
+「証明終」などを意味する記号を出力するマクロとして \verb/\QED/ を
+定義してあります\cite{texbook}．
+\verb/\hfill$\Box$/ では，この記号の直前の文字が行末にくる場合，
+この記号がその次の行の行頭にきてしまいますので使わないで下さい．
+この行か次の行の右端に出力されている記号です．\QED
+
+\item 
+\verb/\RN/，\verb/\FRAC/ というコマンドを
+定義しています\cite{texbook,Okumura}．
+
+\verb/\RN{113}/，\verb/\FRAC{1}{4}/ と記述すれば，
+\RN{113}，$\FRAC{1}{4}$ と出力されます．
+
+\item
+\verb/\MARU/，\verb/\kintou/，\verb/\ruby/ を組み込んでいます．
+
+\begin{tabbing}
+\verb/\ruby{情}{じょう}\ruby{報}{ほう}/ \= $\Rightarrow$ \= 
+  \ruby{情}{じょう}\ruby{報}{ほう} \kill
+\verb/\MARU{3}/ \> $\Rightarrow$ \> \MARU{3} \\
+\verb/\kintou{4zw}{情報}/ \> $\Rightarrow$ \> \kintou{4zw}{情報} \\
+\verb/\ruby{情}{じょう}\ruby{報}{ほう}/ \> $\Rightarrow$ \> 
+  \ruby{情}{じょう}\ruby{報}{ほう} 
+\end{tabbing}
+
+詳細については文献\Cite{Okumura}を参照して下さい．
+\end{itemize}
+
+\endinput

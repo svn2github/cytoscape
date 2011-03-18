@@ -1,0 +1,343 @@
+\section{汎関数}
+
+\subsection{汎関数の性質}
+
+関数を変数に取る関数はとくに{\bf 汎関数}(functional)\index{はんかんすう@汎用関数}と呼ばれる。
+フーリエ変換は時間領域の関数\(f(t)\)に高々1つの周波数領域の関数\(F(w)\)を対応させる。従って
+フーリエ変換も汎関数の1つと考えることができる。フーリエ変換のような汎関数は以下のような形式に
+一般化することができる。
+
+\begin{equation}
+\int_{-\infty}^{\infty}\phi(t)g(t,y)dt=\varphi(y)
+\end{equation}
+
+\noindent
+ここで\(\phi(t)\)は入力となる関数、\(\varphi(y)\)が\(\phi(t)\)に対応付けられた関数である。
+この汎関数の性質を決める\(g(t,y)\)も汎関数と呼ばれる。フーリエ変換は\(g(t,w)=e^{-iwt}\)の汎関数である。
+節\ref{delta_func}で紹介したデルタ関数も式\ref{delta_conv102}では関数\(f(x)\)に\(f(\tau)\)を
+対応させる汎関数となっている。
+
+今対象となる全ての\(\phi(t)\)に対し
+
+\begin{equation}
+\int_{-\infty}^{\infty}\phi(t)g(t,y)dt
+=\int_{-\infty}^{\infty}\phi(t)h(t,y)dt
+\end{equation}
+
+\noindent
+が成立するとき、
+
+\begin{equation}
+g(t,y)\overset{\mathcal{F}}{\equiv} h(t,y)
+\end{equation}
+
+\noindent
+と表すことにしよう。また全ての\(\phi(t)\)に対し、
+
+\begin{equation}
+\lim_{y\to \infty}\int_{-\infty}^{\infty}\phi(t)g(t,y)dt=\int_{-\infty}^{\infty}\phi(t)h(t)dt
+\label{eq_functional205}
+\end{equation}
+
+\noindent
+が成立すれば、
+
+\begin{equation}
+\lim_{y\to\infty}g(t,y)\overset{\mathcal{F}}{\equiv}h(t)
+\label{eq_functional206}
+\end{equation}
+
+\noindent
+と考え、これを汎関数の極限とする。
+
+なお\(\overset{\mathcal{F}}{\equiv}\)の意味するところはあくまで汎関数と
+して同じ入力関数に対して同じ出力を返す、ということであって、汎関数そのも
+のが通常の関数として同一ということではない。
+
+次に汎関数の極限を考える上で有用な定理を紹介しよう。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thechapter-\thetheorem}:~
+関数$\phi(t)$が区間$(a,b)$で微分可能かつ絶対積分可能なら、
+
+\begin{equation}
+\displaystyle \lim_{w\rightarrow\infty}\int_{a}^{b}\phi(t)e^{-iwt}dt=0
+\label{eq_Riemann-Lebesgue150}
+\end{equation}
+
+\noindent
+が成立する。これをリーマン・ルベーグの補助定理\index{りーまんるべーぐのほじょていり@リーマン・ルベーグの補助定理}という。
+
+\noindent
+{\bf 証明\thechapter-\thetheorem}:~式\ref{eq_Riemann-Lebesgue150}の左辺は部分積分を使って
+
+\begin{eqnarray}
+\int_{a}^{b}\phi(t)e^{-iwt}dt & = & \frac{1}{-iw}\left[\phi(t)e^{-iwt}\right]_{a}^{b}-\frac{1}{-iw}\int_{a}^{b}e^{-iwt}\phi^{\prime}(t)dt\nonumber\\
+                              & = & \displaystyle \frac{1}{iw}\left\{\phi(a)e^{-iwa}-\phi(b)e^{-iwb}+\int_{a}^{b}e^{-iwt}\phi^{\prime}(t)dt\right\}
+\end{eqnarray}
+
+\noindent
+のように変形できる。ここで$ w\rightarrow\infty$とすれば括弧の中は有限なので、式\ref{eq_Riemann-Lebesgue150}の右辺が得られる。
+
+\begin{flushright}
+□
+\end{flushright}
+
+上記定理より、\((a,b)\)を実数全体の範囲に広げれば、
+
+\begin{equation}
+\lim_{w\rightarrow\infty}\int_{-\infty}^{\infty}\phi(t)e^{-iwt}dt=0
+\end{equation}
+
+\noindent
+となる。一方、
+$\displaystyle \int_{-\infty}^{\infty}\phi(t)\cdot 0dt=0$
+であるから、式\ref{eq_functional205}、\ref{eq_functional206}より
+
+\begin{equation}
+\lim_{w\rightarrow\infty}\int_{-\infty}^{\infty}\phi(t)g(t,w)dt=\int_{-\infty}^{\infty}\phi(t)\cdot 0dt
+\end{equation}
+
+\noindent
+が成立し、
+
+\begin{equation}
+\displaystyle \lim_{w\rightarrow\infty}g(t,w) = \lim_{w\rightarrow\infty}e^{-iwt} \overset{\mathcal{F}}{\equiv} 0
+\end{equation}
+
+\noindent
+を得る。従ってオイラーの公式より、
+
+\begin{eqnarray}
+\lim_{w\rightarrow\infty}\cos wt & \overset{\mathcal{F}}{\equiv} & 0\label{eq_functional310}\\
+\lim_{w\rightarrow\infty}\sin wt & \overset{\mathcal{F}}{\equiv} & 0\label{eq_functional311}
+\end{eqnarray}
+
+\noindent
+が得られる。
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thechapter-\theexer}:~式\ref{eq_functional310}をリーマン・ルベーグの補助定理
+を直接使わずに、その導出過程を使って(つまり部分積分を使って)示せ。
+
+\subsection{デルタ関数のフーリエ変換}
+\label{delta_fourier_basic1}
+
+パルス波を表す式\ref{eq_pulse_sample2}は\(\tau\to 0\)のとき、式\ref{eq_delta_502}を満たす。すなわち、\(f(t)\)は\(\delta(t)\)に近づく。
+また式\ref{eq_pulse_inv_fourier20}において、\(\tau \to 0\)を計算すると、\(w\)が\(\frac{1}{\tau}\)に比べて十分に
+小さい範囲\((-w_{*} < w < w_{*})\)では、\(\lim_{x\to 0}\frac{\sin x}{x}=1\)を使えば、
+関数\(F(w)\)の極限は\(F(w)\to 1\)となる。そこで{\bf \(\delta(t)\)のフーリエ変換は1}、式\ref{eq_fourier_func891}の記法に従えば、
+
+\begin{equation}
+\mathcal{F}(\delta)=1
+\end{equation}
+
+\noindent
+と考えるのが妥当であろう。実際式\ref{delta_conv102}と式\ref{eqn_fourier557}を使えば、
+
+\begin{equation}
+\int_{-\infty}^{\infty}\delta(x)e^{-iwt}dt=e^{-i0t}=1
+\end{equation}
+
+\noindent
+となる。一方、例題\ref{chap_fourier}-\ref{ex_pulse_inv_fourier10}で示した通り、パルス波をフーリエ変換して
+得られた関数を逆フーリエ変換すると元のパルスを表す関数に戻る。従って、{\bf 1の逆フーリエ変換は\(\delta(t)\)}となる。
+% 式\ref{eqn_fourier558}を使えば形式的には
+%
+% \begin{equation}
+% \delta(t)=\frac{1}{2\pi}\int_{-\infty}^{\infty}e^{iwt}dw
+% \end{equation}
+%
+% \noindent
+% が導出される。
+なおここで式\ref{eq_fourier_reloc55}を使えば、
+
+\begin{equation}
+\mathcal{F}(\delta(t-t_{0}))=e^{-it_{0}w}
+\label{eqn_delta_fourier1112}
+\end{equation}
+
+\noindent
+となるし、式\ref{eq_fourier_inv_conv55}を使えば、
+
+\begin{equation}
+\mathcal{F}(1)=2\pi\delta
+\label{eqn_delta_fourier1113}
+\end{equation}
+
+\noindent
+となることを確かめよう。さらに式\ref{eqn_delta_fourier1112}に対して、式\ref{eq_fourier_inv_conv55}を適用すれば、
+
+\begin{equation}
+\mathcal{F}(e^{iw_{0}t})=2\pi\delta(w-w_{0})
+\label{eqn_delta_fourier1114}
+\end{equation}
+
+\noindent
+となる。
+
+% この場合の"1"は通常の実数の概念の1とは異なり、
+% 関数\(\frac{1}{\tau w}\sin\tau w\)の\(\tau \to 0\)となるときの極限の1である。
+
+さて\(\tau \to 0\)のとき、式\ref{eq_pulse_inv_fourier10}も\(\delta(t)\)に近づくが、
+\(\frac{1}{\tau w}\sin\tau w\)を"関数の極限の1"で置き換えれば、
+式\ref{eq_pulse_inv_fourier10}は
+形式的には
+
+\begin{equation}
+\delta(t)=\frac{1}{2\pi}\int_{-\infty}^{\infty}e^{iwt}dw=\frac{1}{2\pi}\int_{-\infty}^{\infty}\cos wtdw
+%=\frac{1}{\pi}\int_{0}^{\infty}\cos wtdw
+\label{eq_delta_strange105}
+\end{equation}
+
+\noindent
+と変形される\footnote{
+通常の積分や複素数の概念で考えるならば、十分0に近い\(\tau\)および
+\(w\)が\(\frac{1}{\tau}\)に比べて十分に小さい範囲\((-w_{*} < w < w_{*})\)を考え、
+\(\delta(t)
+=\frac{1}{2\pi}\int_{-\infty}^{\infty}\frac{1}{\tau w}\sin\tau w\cos wtdw
+\simeq \frac{1}{2\pi}\int_{-\infty}^{-w_{*}}\frac{1}{\tau w}\sin\tau w\cos wtdw
++\frac{1}{2\pi}\int_{-w_{*}}^{w_{*}}\cos wtdw
++\frac{1}{2\pi}\int_{w_{*}}^{\infty}\frac{1}{\tau w}\sin\tau w\cos wtdw
+\)である。
+}。また1の逆フーリエ変換が\(\delta(t)\)であることからも\(\delta(t)=\frac{1}{2\pi}\int_{-\infty}^{\infty}e^{iwt}dw\)が導かれる。
+もちろん式\ref{eq_delta_strange105}の右辺の積分は収束しないから、通常の関数や積分の枠組みでこの式を
+認めることは困難である。しかしこれを汎関数と考えるならば、その意味を見出すことができることを
+説明しよう。まず式\ref{eq_delta_strange105}を変形し
+
+\begin{displaymath}
+\frac{1}{\pi}\int_{0}^{\infty}\cos wtdw=\lim_{\tau\rightarrow\infty}\int_{0}^{\tau}\cos wtdw=\lim_{\tau\rightarrow\infty}\frac{\sin\tau t}{\pi t}
+\end{displaymath}
+
+\noindent
+とする\footnote{
+ここでは\(\frac{1}{2\pi}\int_{-\infty}^{\infty}\cos wtdw=\frac{1}{\pi}\int_{0}^{\infty}\cos wtdw\)
+として計算を進めているが、この場合、\(\frac{1}{2\pi}\int_{-\infty}^{\infty}\cos wtdw=\lim_{p\to\infty}\frac{1}{2\pi}\int_{-p}^{p}\cos wtdw\)を前提としなければ
+ならない。
+従って厳密には定積分を
+\(\frac{1}{2\pi}\int_{-\infty}^{\infty}\cos wtdw=\frac{1}{2\pi}\int_{-\infty}^{0}\cos wtdw+\frac{1}{2\pi}\int_{0}^{\infty}\cos wtdw\)
+と2つに分けて各々について計算を進める方が妥当。
+}。ここで
+
+\begin{equation}
+\displaystyle \int_{-\infty}^{\infty}\left[\lim_{\tau\rightarrow\infty}\frac{\sin\tau t}{\pi t}\right]\phi(t)dt=f_{1}+f_{2}+f_{3}
+\end{equation}
+
+\noindent
+を考える。但し、$\epsilon$は$\epsilon>0$の実数で、
+
+\begin{eqnarray}
+f_{1} & = & \lim_{\tau\rightarrow\infty}\int_{-\infty}^{-\epsilon}\frac{\sin\tau t}{\pi t}\phi(t)dt\\
+f_{2} & = & \lim_{\tau\rightarrow\infty}\int_{-\epsilon}^{\epsilon}\frac{\sin\tau t}{\pi t}\phi(t)dt\\
+f_{3} & = & \lim_{\tau\rightarrow\infty}\int_{\epsilon}^{\infty}\frac{\sin\tau t}{\pi t}\phi(t)dt
+\end{eqnarray}
+
+\noindent
+とする。\(f_{1},f_{3}\)は特異点を含まない積分であるから、
+式\ref{eq_functional311}より、\(f_{1}\overset{\mathcal{F}}{\equiv}0, f_{3}\overset{\mathcal{F}}{\equiv}0\)
+となる\footnote{
+\(f_{1}\)=\(\lim_{\tau\rightarrow\infty}\int_{-\infty}^{-\epsilon}\sin\tau t\frac{\phi(t)}{\pi t}dt\)
+のように\(\sin\tau t\)と\(t\)のみを入力とする関数との積と考えると分かりやすい。
+リーマン・ルベーグの補助定理(式\ref{eq_Riemann-Lebesgue150})は定積分の範囲が有限であっても成立することにも注意。
+\(f_{3}\)に関しても同様。}。
+また$\epsilon$が十分小さいと仮定すれば$\phi(t)$の値は$\phi(0)$で近似できる。すなわち、
+
+\begin{equation}
+f_{2}=\phi(0)\lim_{\tau\rightarrow\infty}\int_{-\epsilon\tau}^{\epsilon\tau}\frac{\sin x}{\pi x}dx=\phi(0)\int_{-\infty}^{\infty}\frac{\sin x}{\pi x}dx=\phi(0)
+\end{equation}
+
+\noindent
+となり、
+
+\begin{equation}
+\int_{-\infty}^{\infty}
+\left[\frac{1}{\pi}\int_{0}^{\infty}\cos wtdw\right]\phi(t)dt
+=\int_{-\infty}^{\infty}
+\left[
+\lim_{\tau\rightarrow\infty}\frac{\sin\tau t}{\pi t}
+\right]\phi(t)dt=\phi(0)
+\end{equation}
+
+\noindent
+が得られる。これと式\ref{delta_conv102}を比較すれば、
+
+\begin{equation}
+\frac{1}{2\pi}\int_{-\infty}^{\infty}e^{iwt}dw
+\overset{\mathcal{F}}{\equiv}
+\frac{1}{\pi}\int_{0}^{\infty}\cos wtdw
+\overset{\mathcal{F}}{\equiv}
+\lim_{\tau\rightarrow\infty}\frac{\sin\tau t}{\pi t}
+\overset{\mathcal{F}}{\equiv}
+\delta(t)
+\label{eq_fourier_delta_cos_strange159}
+\end{equation}
+
+\noindent
+が得られる。
+
+
+\subsection{フーリエの定理の証明}
+
+\label{fourier_theorem775}
+
+フーリエ解析をする上での大前提は節\ref{fourier_coeff}(p.\pageref{pg_fourier_theorem119})で述べた、フーリエの定理が
+成立するかどうか、つまり任意の周期波を三角関数の級数に展開できるかであった。言い換えれば、フーリエ変換された
+関数が逆フーリエ変換によって元に戻るかどうかである。本小節ではこれを確かめよう。
+
+フーリエ変換の式\ref{eqn_fourier557}の$t$を$u$に変え、
+式\ref{eqn_fourier558}の逆フーリエ変換の式に代入すると、
+
+\begin{equation}
+\frac{1}{2\pi}\int_{-\infty}^{\infty}\left(\int_{-\infty}^{\infty}f(u)e^{-iwu}du\right)e^{iwt}dt
+=\int_{-\infty}^{\infty}f(u)\left(\frac{1}{2\pi}\int_{-\infty}^{\infty}e^{iw(t-u)}dw\right)du
+\label{eqn_fourier_theorem801}
+\end{equation}
+
+\noindent
+となる。
+%ところで小節\ref{delta_fourier_basic1}で触れたように、1の逆フーリエ変換は\(\delta(t)\)であるから、
+%式\ref{eqn_fourier558}を使えば、
+%
+%\begin{equation}
+%\delta(t)
+%\overset{\mathcal{F}}{\equiv}
+%\frac{1}{2\pi}\int_{-\infty}^{\infty}e^{iwt}dw
+%\label{eqn_fourier_theorem802}
+%\end{equation}
+%
+%\noindent
+%式\ref{eqn_fourier_theorem802}を使えば、
+式\ref{eq_fourier_delta_cos_strange159}より
+式\ref{eqn_fourier_theorem801}は、
+
+\begin{equation}
+\int_{-\infty}^{\infty}f(u)\left(\frac{1}{2\pi}\int_{-\infty}^{\infty}e^{iw(t-u)}dw\right)du
+=\int_{-\infty}^{\infty}f(u)\delta(t-u)du
+\end{equation}
+
+\noindent
+従って定理\ref{chap_fourier}-\ref{delta_conv_theorem10}より、
+
+\begin{equation}
+\int_{-\infty}^{\infty}f(u)\delta(t-u)du=f(t)
+\end{equation}
+
+
+% \nonumber\\
+%  & = & \int_{-\infty}^{\infty}f(u)\delta(t-u)du=f(t)
+% \end{eqnarray}
+
+\noindent
+これで連続な関数$f(t)$のフーリエ変換$F(w)$を逆フーリエ変換すると、元の$f(t)$に戻ることが示された。
+さらに関数\(f(t)\)とそのフーリエ変換された関数\(F(w)\)は{\bf 1対1対応}になっていることも分かった
+\footnote{そうでないと、例えば\(f_{1}(t)\)と\(f_{2}(t)\)のフーリエ変換が\(F(w)\)だとして、
+\(F(w)\)の逆フーリエ変換をすると、2つの関数(\(f_{1}(t)\)と\(f_{2}(t)\))が出力されることになってしまう。}
+。
+

@@ -1,0 +1,23 @@
+This is pTeX, Version p2.1.8, based on TeX, Version 3.14159 (EUC) (Web2C 7.2) (format=jlplain 1999.1.6)  8 OCT 1999 19:51
+**correlation.tex
+(correlation.tex
+LaTeX Version 2.09 <7 Dec 1989>
+! Undefined control sequence.
+l.2 \section
+            {Introduction}
+? 
+! Emergency stop.
+l.2 \section
+            {Introduction}
+End of file on the terminal!
+
+ 
+Here is how much of TeX's memory you used:
+ 3 strings out of 11804
+ 41 string characters out of 86891
+ 25267 words of memory out of 263001
+ 2076 multiletter control sequences out of 10000+0
+ 23946 words of font info for 90 fonts, out of 200000 for 1000
+ 14 hyphenation exceptions out of 1000
+ 4i,0n,1p,40b,7s stack positions out of 300i,100n,500p,30000b,4000s
+No pages of output.

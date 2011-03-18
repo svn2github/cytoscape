@@ -1,0 +1,430 @@
+This is PTeX, C Version 2.99 j1.7e p1.0.9F (preloaded format=jlplain 95.9.7)  25 NOV 1997 18:41
+**&jlatex master.tex
+(master.tex
+LaTeX Version 2.09 <24 May 1989>
+(/usr/local/lib/tex/macros/report.sty
+Document Style `report' <26 Apr 88>.
+(/usr/local/lib/tex/macros/rep12.sty)
+\descriptionmargin=\dimen99
+\c@part=\count78
+\c@chapter=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+ (/usr/local/lib/tex/macros/titlepage.sty)) (/usr/local/lib/tex/macros/epsf.sty
+
+EPSF macro package for LaTeX. version 1.2 - Released July 16, 1990
+\@arga=\count87
+\@argb=\count88
+\@argc=\count89
+\@ctmpa=\count90
+\@ctmpb=\count91
+\@ctmpc=\count92
+\@ctmpd=\count93
+\@ctmpe=\count94
+\@darg=\dimen100
+\@bblen=\dimen101
+\ps@stream=\read0
+) (master.aux)
+Overfull \hbox (36.11653pt too wide) in paragraph at lines 46--46
+ [][] 
+
+\hbox(12.59995+114.60004)x455.24408
+.\glue(\leftskip) 0.0 plus 1.0fil
+.\hbox(0.0+0.0)x0.0
+.\hbox(12.59995+114.60004)x491.36061, yoko direction
+..\mathon
+..\vbox(12.59995+114.60004)x491.36061, yoko direction
+...\hbox(12.59995+5.40005)x491.36061, yoko direction []
+...\glue(\lineskip) 0.0
+...\hbox(49.19998+42.0)x491.36061, yoko direction []
+...\glue(\lineskip) 0.0
+...\hbox(12.59995+5.40005)x491.36061, yoko direction []
+..\mathoff
+.\penalty 10000
+.\glue(\parfillskip) 0.0
+.etc.
+
+[0
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 53--55
+
+
+\hbox(0.0+0.0)x455.24408
+.\glue(\rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 64--81
+
+
+\hbox(0.0+0.0)x455.24408
+.\glue(\rightskip) 0.0
+
+
+Overfull \hbox (2.62775pt too wide) in paragraph at lines 121--122
+[] []\elvrm R.Saito,H.Sasaki 
+
+\hbox(7.60416+2.12917)x425.86938
+.\hbox(0.0+0.0)x0.0
+.\glue 0.0
+.\hbox(7.60416+2.12917)x348.59242, yoko direction
+..\glue -29.3747
+..\glue 0.0
+..\glue -5.87494
+..\hbox(7.60416+2.12917)x377.96712, yoko direction
+...\glue 5.87494
+...\elvbf A
+...\elvbf n
+...\elvbf a
+...\elvbf l
+...etc.
+..\glue 5.87494
+.\penalty 0
+.\elvrm R
+.etc.
+
+
+Overfull \hbox (16.59317pt too wide) in paragraph at lines 128--129
+[] []\elvrm H.Sasaki 
+
+\hbox(7.60416+2.12917)x425.86938
+.\hbox(0.0+0.0)x0.0
+.\glue 0.0
+.\hbox(7.60416+2.12917)x401.03499, yoko direction
+..\glue -29.3747
+..\glue 0.0
+..\glue -5.87494
+..\hbox(7.60416+2.12917)x430.40968, yoko direction
+...\glue 5.87494
+...\elvbf A
+...\elvbf n
+...\elvbf a
+...\elvbf l
+...etc.
+..\glue 5.87494
+.\penalty 0
+.\elvrm H
+.etc.
+
+[1] (master.toc)
+\tf@toc=\write3
+ [2
+
+]
+Chapter 1.
+(mp3_intr.tex
+Underfull \hbox (badness 10000) in paragraph at lines 4--13
+
+
+\hbox(0.0+0.0)x455.24408
+.\glue(\rightskip) 0.0
+
+epsf:[gengrow.ps]
+BoundingBox: (20bp,241bp)--(576bp,609bp) =>(334bp,221bp) [3
+
+] [4]) [5]
+Chapter 2.
+(mp11_ovrv.tex [6
+
+] [7]) [8]
+Chapter 3.
+(mp8_fdation.tex
+epsf:[cell_pro.ps]
+BoundingBox: (198bp,371bp)--(398bp,471bp) =>(160bp,80bp)
+epsf:[cell_eu.ps]
+BoundingBox: (148bp,321bp)--(448bp,521bp) =>(240bp,160bp) [9
+
+] [10]
+epsf:[discr2gs2.ps]
+BoundingBox: (37bp,217bp)--(558bp,625bp) =>(418bp,327bp)) (mp1_sur.tex
+Overfull \hbox (17.06964pt too wide) in paragraph at lines 22--39
+\twlrm A trans-la-tion starts with me-thio-n-ine, whose codon is usu-ally AUG. 
+Ini-tia-tor tRNA(tRNA$[]$)
+
+\hbox(9.91026+3.0)x455.24408, glue set - 1.0
+.\twlrm A
+.\glue 3.91663 plus 1.95634 minus 1.30684
+.\twlrm t
+.\twlrm r
+.\twlrm a
+.etc.
+
+[11] [12] [13] [14]
+Underfull \hbox (badness 10000) in paragraph at lines 186--191
+
+
+\hbox(0.0+0.0)x425.86938
+.\glue(\rightskip) 0.0
+
+epsf:[transbct.eps]
+BoundingBox: (18bp,63bp)--(382bp,769bp) =>(292bp,566bp) [15] [16]
+Overfull \hbox (4.31256pt too wide) in paragraph at lines 261--276
+[][] 
+
+\hbox(76.09991+70.09991)x455.24408
+.\hbox(0.0+0.0)x0.0
+.\hbox(76.09991+70.09991)x459.55664, yoko direction
+..\mathon
+..\vbox(76.09991+70.09991)x459.55664, yoko direction
+...\rule(0.4+0.0)x459.55664
+...\hbox(10.14995+4.35004)x459.55664, yoko direction []
+...\rule(0.4+0.0)x459.55664
+...\hbox(10.14995+4.35004)x459.55664, yoko direction []
+...\glue(\lineskip) 0.0
+...etc.
+..\mathoff
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+epsf:[transeuc.eps]
+BoundingBox: (34bp,34bp)--(426bp,769bp) =>(314bp,590bp) [17] [18]
+epsf:[dscr4.ps]
+BoundingBox: (22bp,305bp)--(573bp,536bp) =>(414bp,173bp) [19]) [20]
+Chapter 4.
+(mp2_prof.tex
+epsf:[gbvrta.ps]
+BoundingBox: (33bp,264bp)--(563bp,578bp) =>(425bp,252bp)
+epsf:[gbinvrta.ps]
+BoundingBox: (33bp,264bp)--(562bp,577bp) =>(424bp,251bp)
+epsf:[bun_bct.ps]
+BoundingBox: (36bp,263bp)--(560bp,578bp) =>(420bp,252bp) [21
+
+] [22]
+epsf:[vrta_mit.ps]
+BoundingBox: (37bp,260bp)--(559bp,581bp) =>(419bp,257bp)
+epsf:[inv_mit.ps]
+BoundingBox: (34bp,263bp)--(562bp,578bp) =>(423bp,252bp)
+Underfull \hbox (badness 10000) in paragraph at lines 72--74
+
+
+\hbox(0.0+0.0)x455.24408
+.\penalty -10000
+.\glue(\rightskip) 0.0
+
+epsf:[lk_vrta.ps]
+BoundingBox: (0bp,243bp)--(598bp,599bp) =>(419bp,249bp)
+epsf:[lk_invrta.ps]
+BoundingBox: (0bp,239bp)--(597bp,599bp) =>(418bp,252bp) [23] [24] [25]
+Underfull \hbox (badness 10000) in paragraph at lines 158--162
+
+
+\hbox(0.0+0.0)x396.49469
+.\glue(\rightskip) 0.0
+
+
+Overfull \hbox (9.98581pt too wide) in paragraph at lines 164--168
+[]\twlrm The nor-mal-iza-tion was nec-es-sary, be-cause some species have a cha
+r-ac-ter-is-ti-cally low/high
+
+\hbox(9.0+3.0)x455.24408, glue set - 1.0
+.\hbox(0.0+0.0)x17.62482
+.\twlrm T
+.\twlrm h
+.\twlrm e
+.\glue 3.91663 plus 1.95831 minus 1.30554
+.etc.
+
+epsf:[euc_ent.ps]
+BoundingBox: (0bp,0bp)--(539bp,539bp) =>(270bp,270bp)
+epsf:[bct4ent2.ps]
+BoundingBox: (0bp,237bp)--(595bp,605bp) =>(417bp,258bp) [26] [27]
+epsf:[gc_vrta_5utr.ps]
+BoundingBox: (0bp,0bp)--(539bp,539bp) =>(270bp,270bp)
+epsf:[at_invrta_5utr.ps]
+BoundingBox: (0bp,0bp)--(539bp,539bp) =>(270bp,270bp)) [28] [29] [30]
+(mp7_atgfreq.tex
+epsf:[pri_atg.ps]
+BoundingBox: (0bp,0bp)--(539bp,539bp) =>(215bp,215bp)
+epsf:[rod_atg.ps]
+BoundingBox: (0bp,0bp)--(539bp,539bp) =>(215bp,215bp)
+epsf:[mam_atg.ps]
+BoundingBox: (0bp,0bp)--(539bp,539bp) =>(215bp,215bp)
+epsf:[vrt_atg.ps]
+BoundingBox: (0bp,0bp)--(539bp,539bp) =>(215bp,215bp)
+epsf:[inv_atg.ps]
+BoundingBox: (0bp,0bp)--(539bp,539bp) =>(215bp,215bp)
+epsf:[bct_atg.ps]
+BoundingBox: (0bp,0bp)--(539bp,539bp) =>(215bp,215bp) [31] [32]) (mp12_rlk.tex
+Overfull \hbox (54.52516pt too wide) detected at line 35
+\elvmi RLK[] \elvrm = []
+
+\hbox(15.0119+10.24864)x455.24408
+.\elvmi R
+.\kern0.0846
+.\elvmi L
+.\elvmi K
+.\hbox(3.44444+0.0)x5.65747, shifted 1.64249
+..\egtmi n
+.etc.
+
+epsf:[leak_bun.ps]
+BoundingBox: (0bp,0bp)--(539bp,539bp) =>(215bp,215bp)) (mp9_atgnatg.tex
+[33] [34]
+Underfull \hbox (badness 10000) in paragraph at lines 26--33
+
+
+\hbox(0.0+0.0)x455.24408
+.\penalty -10000
+.\glue(\rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 26--33
+
+
+\hbox(0.0+0.0)x455.24408
+.\glue(\rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--53
+
+
+\hbox(0.0+0.0)x455.24408
+.\penalty -10000
+.\glue(\rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--53
+
+
+\hbox(0.0+0.0)x455.24408
+.\glue(\rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 54--73
+
+
+\hbox(0.0+0.0)x455.24408
+.\penalty -10000
+.\glue(\rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 54--73
+
+
+\hbox(0.0+0.0)x455.24408
+.\glue(\rightskip) 0.0
+
+epsf:[m3entabcd.ps]
+BoundingBox: (0bp,0bp)--(539bp,539bp) =>(215bp,215bp) [35]
+epsf:[atg_2_atg.ps]
+BoundingBox: (-6bp,306bp)--(603bp,536bp) =>(427bp,161bp)) (mp6_avdist.tex
+[36]
+epsf:[atg_dod2.ps]
+BoundingBox: (83bp,257bp)--(513bp,594bp) =>(345bp,270bp)
+epsf:[atg_dist.ps]
+BoundingBox: (7bp,225bp)--(589bp,617bp) =>(408bp,275bp)
+epsf:[atg_disd.ps]
+BoundingBox: (7bp,226bp)--(589bp,616bp) =>(408bp,273bp) [37] [38])
+Overfull \hbox (11.56036pt too wide) in paragraph at lines 269--269
+[]\svtnbf Frequencies of Stop Codons Lo-cated Down-stream
+
+\hbox(12.0+3.36)x455.24408, glue set - 1.0
+.\hbox(11.13599+0.0)x45.26373, yoko direction
+..\glue 0.0
+..\svtnbf 4
+..\svtnbf .
+..\svtnbf 3
+..\glue 19.87189
+.\svtnbf F
+.\kern-1.656
+.\svtnbf r
+.\svtnbf e
+.etc.
+
+(mp10_stop.tex [39]
+epsf:[eu_stopf.ps]
+BoundingBox: (0bp,0bp)--(539bp,539bp) =>(215bp,215bp)
+epsf:[gbstop.ps]
+BoundingBox: (-41bp,265bp)--(638bp,585bp) =>(455bp,214bp)
+Overfull \hbox (0.71019pt too wide) in paragraph at lines 88--90
+[][] 
+
+\hbox(214.88269+0.0)x455.24408
+.\hbox(0.0+0.0)x0.0
+.\vbox(214.88269+0.0)x455.95427, glue set 214.88269fil, yoko direction
+..\hbox(0.0+0.0)x455.95427, glue set 455.95428fil, yoko direction
+...\special{epsfile=gbstop.ps vscale=0.67 hscale=0.67 }
+...\glue 0.0 plus 1.0fil
+..\glue 0.0 plus 1.0fil
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+epsf:[invstop.ps]
+BoundingBox: (-42bp,264bp)--(640bp,586bp) =>(457bp,216bp)
+Overfull \hbox (2.72472pt too wide) in paragraph at lines 95--97
+[][] 
+
+\hbox(216.22563+0.0)x455.24408
+.\hbox(0.0+0.0)x0.0
+.\vbox(216.22563+0.0)x457.9688, glue set 216.22563fil, yoko direction
+..\hbox(0.0+0.0)x457.9688, glue set 457.96881fil, yoko direction
+...\special{epsfile=invstop.ps vscale=0.67 hscale=0.67 }
+...\glue 0.0 plus 1.0fil
+..\glue 0.0 plus 1.0fil
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+epsf:[stop_reini.ps]
+BoundingBox: (0bp,0bp)--(539bp,539bp) =>(215bp,215bp) [40] [41] [42]) [43]
+Chapter 5.
+(mp5_concl.tex [44
+
+]) [45] [46
+
+]
+Underfull \hbox (badness 2932) in paragraph at lines 306--308
+[] []\twlrm Kozak,M.(1989),The Scan-ning Model for Trans-la-tion:An Up-date, J.
+Cell.Biol
+
+\hbox(9.0+3.0)x431.09155, glue set 3.08484
+.\hbox(0.0+0.0)x0.0
+.\glue 0.0
+.\hbox(9.0+3.0)x0.0, yoko direction
+..\glue 0.0
+..\glue -18.27759
+..\glue -5.87494
+..\hbox(9.0+3.0)x18.27759, glue set 5.87494fil, yoko direction
+...\glue 0.0 plus 1.0fil
+...\twlrm [
+...\twlrm 5
+...\twlrm ]
+..\glue 5.87494
+.\penalty 0
+.\twlrm K
+.etc.
+
+[47
+
+]
+Underfull \hbox (badness 3735) in paragraph at lines 401--405
+\twlrm se-lec-tion of AUG ini-tia-tor codons in the yeast Sac-cha-romyces cere-
+visiae.
+
+\hbox(8.33331+2.33331)x431.09155, glue set 3.34451
+.\twlrm s
+.\twlrm e
+.\discretionary
+..\twlrm -
+.\twlrm l
+.\twlrm e
+.etc.
+
+[48] (master.aux) 
+Here is how much of TeX's memory you used:
+ 437 strings out of 4314
+ 3768 string characters out of 62100
+ 47830 words of memory out of 262141
+ 2363 multiletter control sequences out of 9500
+ 24865 words of font info for 94 fonts, out of 72000 for 255
+ 14 hyphenation exceptions out of 607
+ 16i,12n,17p,274b,347s stack positions out of 300i,40n,60p,4096b,4000s
+
+Output written on master.dvi (49 pages, 113204 bytes).

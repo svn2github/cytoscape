@@ -1,0 +1,57 @@
+\section{ポアソン分布}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.72]{Figures/shootstars1}
+\end{center}
+\vspace{-2em}
+\caption{60分の間に流れ星が観測される回数の統計的考察}
+\label{shootstars1}
+\begin{small}
+\begin{quotation}
+60分を(a)5つの時間帯に分けた場合、(b)10個の時間帯分けた場合、(c)20個の時間帯に分けた場合を示した。 
+\end{quotation}
+\end{small}
+\end{figure}
+
+二項分布から正規分布が導かれる過程を節\ref{gaus_distr1}で示したが、条件を
+変えることによって他の分布も導かれる。
+身近な例でこれを説明しよう。今ある地方で深夜の1時間の間に流れ星が平均3個観測されるものとする。
+各流れ星は一瞬しか観測されないものとし、1時間のうちどの時間帯に観測されるかは全て同様に確からしいとする。また、流れ星の出現という事象は
+複数の流れ星に関して互いに独立であるとする。
+
+ここで図\ref{shootstars1}(a)に示すように、60分を5個(\(n=5)\)の時間帯、すなわち12分ずつに分けよう。ここで仮定をもうひとつ置く。
+各時間帯で流れ星が2つ以上観測されることはない、すなわち
+各時間帯で流れ星は全く観測されないか、1個だけ観測されるかのどちらかである。
+各時間帯で流れ星が観測される確率を\(p(n)\)とすれば、60分の間に流れ星が観測される個数は二項分布\(B(5, p(5))\)に
+従う。ここで平均を\(\lambda\)とおけば、\(\lambda=5\cdot p(5)=3\)である。
+
+分割数\(n\)を増やし、図\ref{shootstars1}(b,c)に示すように、\(n=10,20\)と増やしていったらどうだろうか。この
+場合も\(\lambda=n\cdot p(n)=3\)で一定となる。さらに\(n\)を増やしたとき、この二項分布はどのような分布に近づいて
+いくかを計算すると以下のようになる。60分の間に流れ星が観測される数を\(x\)、その確率を\(P(x)\)とおくと、
+\(n\to\infty\)のとき、
+
+\begin{eqnarray}
+P(x) & = & \lim_{n\to\infty}\,_{n}C_{x}p(n)^{x}(1-p(n))^{n-x}\nonumber\\
+     & = & \lim_{n\to\infty}\,\frac{n!}{x!(n-x)!}\cdot\left(\frac{\lambda}{n}\right)\left(1-\frac{\lambda}{n}\right)^{n-x}\nonumber\\
+     & = & \lim_{n\to\infty}\,\frac{1}{x!}\cdot\frac{n(n-1)\cdots(n-x-1)}{nn\cdots n}\cdot\lambda^{x}\left(1-\frac{\lambda}{n}\right)^{n}\left(1-\frac{\lambda}{n}\right)^{-x}\nonumber\\
+     & = & \lim_{n\to\infty}\,\frac{\lambda^{x}}{x!}\cdot \underbrace{1\cdot\left(1-\frac{1}{n}\right)\cdots\left(1-\frac{x-1}{n}\right)}_{\to 1}\underbrace{\left(1-\frac{\lambda}{n}\right)^{n}}_{\to e^{-\lambda}}\underbrace{\left(1-\frac{\lambda}{n}\right)^{-x}}_{\to 1}\nonumber\\
+     & = & \frac{\lambda^{x}}{x!}e^{-\lambda}
+\end{eqnarray}
+
+\noindent
+となる。このように確率関数\(P(x)=\frac{\lambda^{x}}{x!}e^{-\lambda}\)に従う確率分布を
+{\bf ポアソン分布(Poisson distribution)}\index{ぽあそんぶんぷ@ポアソン分布}という。
+
+さて、以上の過程で節\ref{gaus_distr1}のような正規分布が導出されなかった原因の1つは\(np=\lambda=\mbox{一定}\)としたまま
+\(n \to \infty\)としたことにある。この条件では式\ref{zeq3}は\(p\)が0に近づき\(\Delta z = \frac{1}{\sqrt{\lambda}}\)に収束してしまい、0には収束しない。
+従って、式\ref{eq10}から式\ref{eq_diff_z1}が導出できず、正規分布が導出されないのである。しかしながら、
+\(\lambda\)が大きくなってくると、\(\Delta z\)も0に近づく。すなわち、\(\lambda\)が大きくなると、ポアソン分布は正規分布に近づくことが分かる。
+
+ポアソン分布はある地区における交通事故の件数、機械の故障回数やめったに鳴
+らない電話の呼び出し数などのように、起こることが頻繁ではない事象の一定時
+間内の生起回数の確率分布として用いられることが多い。あるいは、一定の空間
+内に存在する細菌数、布地の傷の個数、ミスプリの数などの確率モデルとしても
+用いられる。
+
+

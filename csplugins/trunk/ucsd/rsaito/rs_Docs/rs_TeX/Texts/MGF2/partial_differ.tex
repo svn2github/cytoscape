@@ -1,0 +1,107 @@
+\section{偏微分}
+
+\noindent
+\(n\)個の独立変数を持つ関数\(f(x,x_{2},x_{3},\cdots,x_{n})\)に対して定義される
+
+\begin{equation}
+f_{x}(x,x_{2},\cdots,x_{n})=\frac{\partial f(x,x_{2},\cdots x_{n})}{\partial x}=\frac{\partial f}{\partial x}=\lim_{\Delta x\rightarrow 0}\frac{f(x+\Delta x,x_{2},\cdots,x_{n})-f(x,x_{2},\cdots x_{n})}{\Delta x}
+\label{eqn_part_deriv1}
+\end{equation}
+
+\noindent
+を$f$の$x$による偏微分と呼ぶ。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Figures/part_deriv1}
+\end{center}
+\vspace{-2em}
+\caption{\(z=f(x,y)\)の偏微分の幾何学的意味}
+\label{part_deriv1}
+\end{figure}
+
+
+今簡単のために、2変数の関数\(f(x,y)\)を考えよう。\(f(x,y)\)の\(x\)に関する偏微分は
+\(\frac{\partial f}{\partial x}\)だが、その幾何学的な意味を図\ref{part_deriv1}に示す。
+
+\begin{eqnarray}
+\Delta f & = & f(x+\Delta x,y+\Delta y)-f(x,y)\nonumber\\
+         & = & f(x+\Delta x,y+\Delta y)-f(x,y+\Delta y)+f(x,y+\Delta y)-f(x,y)
+\label{eqn_partial10}
+\end{eqnarray}
+
+\noindent
+ここで平均値の定理を用いれば、
+
+\begin{eqnarray}
+& & f(x+\Delta x,y+\Delta y)-f(x,y+\Delta y) = \Delta x\cdot f_{x}(x+\theta_{1}\Delta x,y+\Delta y)\nonumber\\
+& & f(x,y+\Delta y)-f(x,y)                   = \Delta y\cdot f_{y}(x,y+\theta_{2}\Delta y)\nonumber\\
+& &                                            \mbox{\hspace{20em}} (0<\theta_{1},\theta_{2}<1)\nonumber
+\end{eqnarray}
+
+\noindent
+と書けるから、式\ref{eqn_partial10}は
+
+\begin{equation}
+\Delta f=\Delta x\cdot f_{x}(x+\theta_{1}\Delta x,y+\Delta y)+\Delta y\cdot f_{y}(x,y+\theta_{2}\Delta y)
+\end{equation}
+
+\noindent
+ここで、
+
+\begin{displaymath}
+\lim_{\Delta x\rightarrow 0}\lim_{\Delta y\rightarrow 0}\frac{\partial f(x+\theta_{1}\Delta x,y+\Delta y)}{\partial x}=\frac{\partial f(x,y)}{\partial x}
+\end{displaymath}
+
+\begin{displaymath}
+\lim_{\Delta x\rightarrow 0}\lim_{\Delta y\rightarrow 0}\frac{\partial f(x,y+\theta_{2}\Delta y)}{\partial y}=\frac{\partial f(x,y)}{\partial x}
+\end{displaymath}
+
+\noindent
+を使って、
+
+\begin{eqnarray}
+\frac{\partial f(x+\theta_{1}\Delta x,y+\Delta y)}{\partial x}=\frac{\partial f(x,y)}{\partial x}+\epsilon_{1}\nonumber\\
+\frac{\partial f(x,y+\theta_{2}\Delta y)}{\partial y}=\frac{\partial f(x,y)}{\partial x}+\epsilon_{2}\nonumber\\
+\end{eqnarray}
+
+\noindent
+とおけば、$\Delta x\rightarrow 0,\Delta y\rightarrow 0$のとき、$\epsilon_{1}\rightarrow 0,\epsilon_{2}\rightarrow 0$。
+従って、
+
+\begin{equation}
+\Delta f\approx\frac{\partial f(x,y)}{\partial x}\Delta x+\frac{\partial f(x,y)}{\partial y}\Delta y+\epsilon_{1}\Delta x+\epsilon_{2}\Delta y
+\end{equation}
+
+\noindent
+\(\Delta x\to 0\)、\(\Delta y\to 0\)のとき、
+
+\begin{equation}
+df=\displaystyle \frac{\partial f(x,y)}{\partial x}dx+\frac{\partial f(x,y)}{\partial y}dy
+\label{eqn_total_deriv}
+\end{equation}
+
+\noindent
+これを$f$の全微分という。
+
+\(f(x,y)\)が\((a,b)\)の近傍で定義されており、\((a,b)\)の近くの任意の\((x,y)\)に対して常に
+\(f(x,y)<f(a,b)\)が成立するとき、\(f(x,y)\)は点\((a,b)\)で極大をとるといい、\(f(a,b)\)を
+極大値という。また逆に\(f(x,y)>f(a,b)\)であれば、\(f(x,y)\)は\(f(a,b)\)で極小ととるといい、
+\(f(a,b)\)を極小値という。極大値、極小値を総称して極値という。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thechapter-\thetheorem}: \(f(x,y),f_{x}(x,y),f_{y}(x,y)\)は\((a,b)\)近くで連続で\(f(x,y)\)が点\((a,b)\)で
+極値をとるならば、\(f_{x}(a,b)=0,f_{y}(a,b)=0\)である。
+
+\noindent
+{\bf 証明\thechapter-\thetheorem}: \(F(x)=f(x,b)\)とおけば、\(F(x)\)は\(x=a\)で極値を持つから、\(F'(a)=0\)、つまり
+\(f_{x}(a,b)=0\)。また\(G(y)=f(a,y)\)は\(y=b\)で極値を持つから、\(G'(b)=0\)。つまり、
+\(f_{y}(a,b)=0\)である。
+
+\begin{flushright}
+□
+\end{flushright}

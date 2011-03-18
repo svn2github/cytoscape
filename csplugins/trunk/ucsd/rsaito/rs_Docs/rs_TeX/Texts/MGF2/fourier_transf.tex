@@ -1,0 +1,193 @@
+\section{フーリエ変換}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.6]{Figures/periodic1}
+\end{center}
+\vspace{-2em}
+\caption{\(T\)が大きくなるときの関数\(f_{T}(t)\)の形状}
+\label{periodic1}
+\begin{small}
+\begin{quotation}
+(a) \(T=1\)、(b)\(T=2\)、(c)\(T\to\infty\)
+\end{quotation}
+\end{small}
+\end{figure}
+
+図\ref{periodic1}に示すように周期\(T\)の関数\(f_{T}(t)\)を考える。
+
+\begin{equation}
+f_{T}(t) = \left\{
+\begin{array}{ll}
+0    & -\frac{T}{2} \leq t \leq a\\
+f(t) & a < t < b\\
+0    & b \leq t \leq \frac{T}{2}\\
+\end{array}\right.\\
+\end{equation}
+
+\noindent
+ここで\(f(t)\)は\(t \leq a\)または\(t \geq b\)のとき、\(f(t)=0\)となる関数である。
+\(T\)の値が大きくなると、図\ref{periodic1}に示すように、\(f(t)\)の形状を持つ
+山なり同士がだんだん離れていく。\(T\to\infty\)のとき、\(f_{T}(t)\to f(t)\)となり、\(f_{T}\)は
+見かけ上、周期波から孤立波に近づく。
+
+\begin{equation}
+c_{T,n}=\frac{1}{T}\int_{-\frac{T}{2}}^{\frac{T}{2}}f_{T}(t)e^{-inw_{0}t}dt
+\end{equation}
+
+\noindent
+\(w=nw_{0}=\frac{2\pi n}{T},\ (n=0,\pm 1, \pm 2, \cdots, \pm\infty)\)とすれば、$w$は$T$が大きくなると、様々な小数を表すことができるようになる。
+またこの場合、\(
+w=0,\pm\frac{2\pi}{T},\pm\frac{4\pi}{T},\cdots, \pm\infty,\ \Delta w=\frac{2\pi}{T}\)になる。
+両辺を$T$倍すると、
+
+\begin{equation}
+F_{T}(w)=Tc_{T,n}=\int_{-\frac{T}{2}}^{\frac{T}{2}}f_{T}(t)e^{-iwt}dt
+\label{eqn_fourier555}
+\end{equation}
+
+\noindent
+また、
+
+\begin{equation}
+f_{T}(t)=\sum_{n=-\infty}^{\infty}\frac{1}{T}Tc_{T,n}e^{iwt}
+=\sum_{w}\frac{1}{T}F_{T}(w)e^{iwt}
+=\sum_{w}\frac{1}{T}\frac{1}{\Delta w}F_{T}(w)e^{iwt}\Delta w
+=\sum_{w}\frac{1}{2\pi}F_{T}(w)e^{iwt}\Delta w
+\label{eqn_fourier556}
+\end{equation}
+
+\noindent
+ここで\(T\to\infty\)とすると、\(\Delta w\to 0\)となり、式\ref{eqn_fourier555}は、
+
+\begin{equation}
+F(w)
+=\int_{-\infty}^{\infty}f(t)e^{-iwt}dt
+\label{eqn_fourier557}
+\end{equation}
+
+\noindent
+となり、また式\ref{eqn_fourier556}は、
+
+
+\begin{equation}
+f(t)
+=\frac{1}{2\pi}\int_{-\infty}^{\infty}F(w)e^{iwt}dw
+\label{eqn_fourier558}
+\end{equation}
+
+\noindent
+となる。式\ref{eqn_fourier557}の\(F(w)\)を\(f(t)\)の{\bf フーリエ変換(Fourier transform)}\index{ふーりえへんかん@フーリエ変換}、
+式\ref{eqn_fourier558}の\(f(t)\)を\(F(w)\)の{\bf 逆フーリエ変換(inverse Fourier transform)}\index{ぎゃくふーりえへんかん@逆フーリエ変換}
+という。
+フーリエ変換は入力となる関数\(f(t)\)から対となる関数\(F(w)\)を対応させる関数、すなわち関数自体を入力とする関数だと考えられる。これを
+
+\begin{eqnarray}
+F(w)  & = & \mathcal{F}(f(t))\label{eq_fourier_func891}\\
+f(t)  & = & \mathcal{F}^{-1}(F(w))\label{eq_fourier_func892}
+\end{eqnarray}
+
+\noindent
+と表す。式\ref{eq_fourier_func891}はフーリエ変換を、式\ref{eq_fourier_func892}は逆フーリエ変換を表す。
+式\ref{eq_fourier_func891}と式\ref{eq_fourier_func892}はそれぞれ
+\(F=\mathcal{F}(f)\)、\(f=\mathcal{F}^{-1}(F)\)のように省略してもよい。
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.85]{Figures/pulse_sample2}
+\end{center}
+\vspace{-2em}
+\caption{孤立したパルス}
+\label{pulse_sample2}
+\end{figure}
+
+\vspace{1em}
+
+\refstepcounter{preexer}
+
+\noindent
+{\bf 例題\thechapter-\thepreexer}:~\label{ex_pulse_inv_fourier10}
+図\ref{pulse_sample2}に示したような長さ$ 2\tau$、大きさ$\displaystyle \frac{1}{2\tau}$のパルス\(f(t)\)すなわち、
+
+\begin{equation}
+f(t) = \left\{
+\begin{array}{ll}
+0                  & t < \tau\\
+\frac{1}{2\tau}    &  -\tau \leq t < \tau\\
+0                  & \tau \leq t\\
+\end{array}\right.
+\label{eq_pulse_sample2}
+\end{equation}
+
+\noindent
+のフーリエ変換を求めてみよう。これは
+
+\begin{eqnarray}
+F(w) & = & \int_{-\infty}^{\infty}f(t)e^{-iwt}dt=\int_{-\tau}^{\tau}\frac{1}{2\tau}\left\{\cos wt-i\sin wt\right\}dt=\frac{1}{2\tau}\int_{-\tau}^{\tau}\cos wtdt-\frac{i}{2\tau}\int_{-\tau}^{\tau}\sin wtdt\nonumber\\
+     & = & \frac{1}{2w\tau}\left[\sin wt\right]_{-\tau}^{\tau}-\frac{i}{2w\tau}\left[\cos wt\right]_{-\tau}^{\tau}=\frac{1}{w\tau}\sin w\tau
+\label{eq_pulse_inv_fourier20}
+\end{eqnarray}
+
+\noindent
+となる。逆フーリエ変換は、
+
+\begin{eqnarray}
+f(t) & = & \frac{1}{2\pi}\int_{-\infty}^{\infty}\frac{1}{\tau w}\sin(\tau w)e^{iwt}dw \nonumber\\
+& = & \frac{1}{2\pi}\int_{-\infty}^{\infty}\frac{1}{\tau w}\sin(\tau w)\left\{\cos wt+i\sin wt\right\}dw\nonumber\\
+& = & \frac{1}{2\pi}\int_{-\infty}^{\infty}\frac{1}{\tau w}\sin\tau w\cos wtdw+\frac{i}{2\pi}\int_{-\infty}^{\infty}\frac{1}{\tau w}\sin\tau w\sin wtdw\nonumber\\
+& = & \frac{1}{2\pi}\int_{-\infty}^{\infty}\frac{1}{\tau w}\sin\tau w\cos wtdw\nonumber\\
+& = & \frac{1}{4\pi\tau}\int_{-\infty}^{\infty}\left\{\frac{\sin\left((\tau+t)w\right)}{w}+\frac{\sin\left((\tau-t)w\right)}{w}\right\}dw
+\label{eq_pulse_inv_fourier10}
+\end{eqnarray}
+
+\noindent
+となり、式\ref{eq_sinax_x_integ}に注意すれば、これは式\ref{eq_pulse_sample2}や図\ref{pulse_sample2}で示された
+関数に一致する。すなわち、図\ref{pulse_sample2}で示されたパルス波をフーリエ変換
+し、得られた関数を逆フーリエ変換すると、元のパルス波に戻ることが示された。
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thechapter-\theexer}:~ \label{exer_fourier5}
+関数\(f(t)\)が、
+
+\begin{displaymath}
+f(t) = \left\{
+\begin{array}{ll}
+0                                    & t < \tau\\
+\frac{1}{\tau}(1+\frac{1}{\tau}t)    &  -\tau \leq t < 0\\
+\frac{1}{\tau}(1-\frac{1}{\tau}t)    &      0 \leq t < \tau\\
+0                                    & \tau \leq t\\
+\end{array}\right.\\
+\end{displaymath}
+
+\noindent
+で与えられるとき、この関数のフーリエ変換\(F(w)\)を求めよ。
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thechapter-\theexer}:~ \label{exer_fourier6} \(f(t)\)のフーリエ変換を\(F(w)\)とするとき、
+\(a\)を定数として
+
+\begin{equation}
+\mathcal{F}(f(t-a))=F(w)e^{-iwa}
+\label{eq_fourier_reloc55}
+\end{equation}
+
+\noindent
+となることを示せ。
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thechapter-\theexer}:~ \label{exer_fourier7} \(f(t)\)のフーリエ変換を\(F(w)\)とするとき、
+\(F(t)\)のフーリエ変換は\(2\pi f(-w)\)、すなわち
+
+\begin{equation}
+\mathcal{F}(F(t))=2\pi f(-w)
+\label{eq_fourier_inv_conv55}
+\end{equation}
+
+\noindent
+となることを示せ。

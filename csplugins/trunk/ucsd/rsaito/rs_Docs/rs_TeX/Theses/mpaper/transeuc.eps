@@ -1,0 +1,4061 @@
+%!PS-Adobe-2.0 EPSF-1.2
+%%Title: traneuc.eps
+%%Creator: CLARIS EPSF Export Filter V1.0
+%%CreationDate:1/10/97  10:16:16 p.m.
+%%BoundingBox: 34 34 426 769                                                                           
+%%QDBoundingBox: 34.007 23.921 425.608 758.000                                                           
+%%DocumentFonts: Ryumin-Light-83pv-RKSJ-H
+%%DocumentProcessColors: Cyan Magenta Yellow Black
+%%ObjectsIncluded: tText=T tLine=T tRect=T tRRect=F tOval=T tArc=T tFree=F tPoly=F tBMap=F tNote=F tBez=F tPMap=F 
+%%AttributesIncluded: kBaWPattType=T kPixPattType=F kGradientType=F 
+%%EndComments
+/MAV 300 dict def
+MAV begin 
+/useClip true def 
+/top    0 def 
+/left   1 def 
+/bottom 2 def 
+/right  3 def 
+/CM     6 array def 
+/CTM    6 array def 
+/CTMR   6 array def 
+/MTC    6 array def 
+/blimit 1500 def 
+/bcnt   0 def 
+/rbox 8 array def 
+/segbox 8 array def 
+/bbox1 4 array def 
+/c1 3 array def 
+/c2 3 array def 
+/d 3 array def    
+/delta 3 array def 
+/mycurrentrgbcolor 3 array def 
+/ulx 0 def 
+/uly 1 def 
+/llx 2 def 
+/lly 3 def 
+/urx 4 def 
+/ury 5 def 
+/lrx 6 def 
+/lry 7 def 
+/sp [0 0] def 
+/ep [0 0] def 
+/bbox 4 array def 
+/pbox 4 array def 
+/scrnProc currentscreen 3 1 roll pop pop def
+/currentcolorscreen where {
+begin
+currentcolorscreen
+end
+3 1 roll pop pop 
+4 2 roll pop pop 
+5 -2 roll pop pop 
+6 -2 roll pop pop 
+/kProc exch def 
+/bProc exch def 
+/gProc exch def 
+/rProc exch def 
+} if 
+/Max {2 copy gt {pop}{exch pop} ifelse} bind def
+/Min {2 copy lt {pop}{exch pop} ifelse} bind def
+/cellPenW 72.0 /currentcolorscreen where
+{begin currentcolorscreen end pop pop
+10 1 roll pop pop 8 1 roll pop pop
+ 6 1 roll pop pop Max Max Max }
+{currentscreen pop pop} ifelse div 2.0 div def
+%%BeginProcSet : rect 
+/rect { 
+ /saveobj save def 
+ R PC PF LC SS 
+ saveobj restore 
+} bind def 
+%%EndProcSet 
+%%BeginProcSet : R 
+/R { 
+ newpath
+ pbox astore pop
+ 0 792 translate 1 -1 scale CTMR currentmatrix pop exch translate
+ /objectCord mstore def
+ pbox right get 2 div
+ dup pbox left get exch sub
+ pbox left 3 -1 roll put 
+ dup pbox right 3 -1 roll put
+ pbox bottom get 2 div 
+ dup pbox top get exch sub
+ pbox top 3 -1 roll put
+ dup pbox bottom 3 -1 roll put
+ translate 
+ CTM currentmatrix pop
+ 57.3 mul rotate
+ RT
+} bind def
+%%EndProcSet
+%%BeginProcSet : SaveScreenBW
+ /SaveScreenBW {
+ currentscreen
+ /scrnProc exch def
+ /scrnAngle exch def
+ /scrnFreq exch def
+ } bind def
+%%EndProcSet
+%%BeginProcSet : RestoreScreenBW
+ /RestoreScreenBW {
+ scrnFreq scrnAngle MAV /scrnProc get setscreen
+ } bind def
+%%EndProcSet
+%%BeginProcSet : SetFreqAngleBW
+ /SetFreqAngleBW {
+ currentscreen
+ 3 1 roll
+ pop pop
+ setscreen
+ } bind def
+%%EndProcSet
+%%BeginProcSet : SaveScreenColor 
+ /SaveScreenColor {
+ currentcolorscreen
+ /grayProc exch def
+ /grayAngle exch def
+ /grayFreq exch def
+ /bProc exch def
+ /bAngle exch def
+ /bFreq exch def
+ /gProc exch def
+ /gAngle exch def
+ /gFreq exch def
+ /rProc exch def
+ /rAngle exch def
+ /rFreq exch def
+ } bind def
+%%EndProcSet
+%%BeginProcSet : RestoreColorScreen
+ /RestoreColorScreen {
+ rFreq rAngle MAV /rProc get gFreq gAngle MAV /gProc get bFreq bAngle MAV /bProc get grayFreq grayAngle MAV /grayProc get setcolorscreen
+ } bind def
+%%EndProcSet
+%%BeginProcSet : SetFreqAngleColor
+ /SetFreqAngleColor { 
+ currentcolorscreen 
+ 3 1 roll pop pop
+ 4 2 roll pop pop
+ 5 -2 roll pop pop
+ 6 -2 roll pop pop
+ 4 1 roll 
+ 6 1 roll 
+ 8 1 roll 
+ 10 1 roll 
+ setcolorscreen 
+ } bind def 
+%%EndProcSet 
+/initmsaverestore { 
+userdict begin 
+/mdict 10 dict def 
+mdict begin 
+/mindex -1 def 
+/mstacksize 25 def 
+/mstack mstacksize array def 
+/incmindex { 
+/mindex mindex 1 add def 
+} bind def 
+/decmindex { 
+/mindex mindex 1 sub def 
+} bind def 
+/checkmindex { 
+mindex 0 lt { 
+(%ERROR: msave/mrestore stack underflow: Offending command 'mrestore'
+) print flush 
+stop 
+} 
+{ 
+mindex mstacksize ge { 
+(%ERROR: msave/mrestore stack overflow: Offending command 'msave'
+) print flush 
+stop 
+} if 
+} ifelse 
+} bind def 
+/mpush { 
+incmindex 
+checkmindex 
+mstack mindex 
+3 -1 roll put 
+} bind def 
+/mpop { 
+checkmindex 
+mstack mindex get 
+decmindex 
+} bind def 
+end 
+end 
+} bind def 
+/msave { 
+mdict begin 
+matrix currentmatrix mpush 
+end 
+} bind def 
+/mrestore { 
+mdict begin 
+mpop setmatrix 
+end 
+} bind def 
+/msavelevel { 
+mdict begin 
+mindex 1 add 
+end 
+} bind def 
+/mstore {
+matrix currentmatrix
+} bind def
+/AutoSizeY {
+0 0 pl
+dup 3 1 roll
+4 -1 roll  
+add
+pl exch pop
+exch sub
+} bind def
+/pl {  
+transform
+0.25 sub round 0.25 add exch
+0.25 sub round 0.25 add exch
+itransform
+} bind def
+/pll {
+transform
+round exch
+round exch
+itransform
+} bind def
+/pr { 
+dtransform
+round exch
+round exch
+idtransform
+} bind def
+/m { 
+pl  moveto
+} bind def
+/l { 
+pl lineto
+} bind def
+/c { 
+pl curveto
+} bind def
+/rm { 
+pr rmoveto
+} bind def
+/rl { 
+pr rlineto
+} bind def
+/ar { 
+5 -2 roll pl
+5 2 roll
+arc
+} bind def
+/an { 
+5 -2 roll pl
+5 2 roll
+arcn
+} bind def
+/MakePatternFont {
+/FontDict 20 dict def
+FontDict begin
+/FontName exch def
+/Encoding exch def
+/FontMatrix [1 0 0 1 0 0 ] def
+/FontType 3 def
+/FontBBox [ 0 0 1 1 ] def
+/PatternDict exch def
+/RenderPattern {
+patternDict exch get
+exec
+} bind def
+/BuildChar {
+exch begin
+1 0 0 0 1 1 setcachedevice
+Encoding exch get RenderPattern
+end
+} bind def
+FontName FontDict definefont pop
+end
+} bind def
+/SnapToPattenGrid
+	{
+	exch
+	dup 0 lt {
+		1 index sub
+	} if
+	1 index
+	div truncate
+	mul
+} bind def
+/FillPatternString {
+dup length
+1 sub
+0 1 3 -1 roll {
+2 index
+2 index
+3 -2 roll
+put
+} for
+pop pop
+} bind def
+/AutoSizeY {
+	0.0 exch dtransform
+	round
+	idtransform exch pop
+} bind def
+ /AutoSizeX {
+	0.0 dtransform
+	exch
+	round
+	exch
+	idtransform pop
+} bind def 
+/AutoCellSize {
+	AutoSizeY
+	exch
+	AutoSizeX
+	exch
+} bind def
+/CheckPath {
+	false
+	{ pop pop pop true exit}
+	{ pop pop pop true exit}
+	{ pop pop pop pop pop pop pop true exit}
+	{ pop true exit}
+	pathforall
+} bind def
+/PatternFill {					%		patternCharacter
+	/patternString 1 string def
+	/cm mstore def
+	patternMatrix setmatrix
+	1 1 AutoCellSize
+	dup 0 eq { pop 1} if
+	exch
+	dup 0 eq { pop 1} if
+	exch
+	/patternSize exch 24.0 mul def
+	/PatternSizeX exch 24.0 mul patternString length mul def
+	/flaterror 0 def
+	patternString FillPatternString
+	gsave
+		flaterror 1 add setflat
+		flattenpath
+		pathbbox
+	grestore
+	psy add flaterror add psy SnapToPattenGrid
+	exch psx add flaterror add psx SnapToPattenGrid
+	3 -1 roll flaterror sub psy SnapToPattenGrid
+	4 -1 roll flaterror sub psx SnapToPattenGrid
+	4 2 roll pll
+	4 2 roll pll
+	/llxsnap exch def
+	/llysnap exch def
+	/urxsnap exch def
+	/urysnap exch def
+	gsave
+		useClip true eq {clip}{eoclip} ifelse newpath
+		/PatternFont findfont [psx 0.0 0.0 psy 0.0 0.0] makefont setfont
+		llysnap patternSize urysnap {
+			llxsnap exch moveto
+			llxsnap PatternSizeX urxsnap {
+				pop
+				patternString show
+				%currentpoint am
+			} for
+		} bind for
+	grestore
+	cm setmatrix
+} bind def				%		End 'PatternFill'
+/DefaultPatternFont {
+	/cm mstore def
+	patternMatrix setmatrix
+	1 1 AutoCellSize
+	dup 0 eq { pop 1} if
+	exch
+	dup 0 eq { pop 1} if
+	exch
+	/psy exch iSizeY mul def
+	/psx exch iSizeX mul def
+	/patternDict 64 dict def
+	patternDict begin
+		/NotDef {} def
+		/LiteDiagLines {
+			iSizeX iSizeY false [iSizeX 0.0 0.0 iSizeY -1.0 mul  0.0 iSizeY]
+			{pat}
+			imagemask
+		} bind def
+	end
+	/CustEncoding 256 array def
+	0 255 1 {
+		CustEncoding exch /NotDef put
+	} bind for
+	CustEncoding 65 /LiteDiagLines put
+	patternDict CustEncoding /PatternFont MakePatternFont
+	/pathSegProc {
+		strokepath
+		CheckPath {
+			65 PatternFill newpath
+		} if
+	} bind def
+	cm setmatrix
+} bind def
+/XRound {
+	dup
+	3 -1 roll
+	exch mul round
+	exch div
+} bind def
+/RoundMatrix {
+	/i 0 def
+	dup {
+		100000.0 XRound
+		1 index
+		exch i exch put
+		/i i 1 add def
+	} forall
+} bind def
+/GetBoxesRatio {
+3 -1 roll sub
+7 1 roll
+exch sub
+6 1 roll
+3 -1 roll sub
+5 1 roll
+exch sub
+4 1 roll
+3 -1 roll div
+3 1 roll
+exch div
+exch
+} bind def
+%%BeginProcSet : Text Attributes Procs
+/T {792 exch sub} bind def
+/sx 0 def
+/sy 0 def
+/ex 0 def
+/ey 0 def
+/lw  0 def
+/siz 0 def
+/U {gsave 0 setlinecap
+/lw siz 0.078125 mul def  /ey exch neg def /ex exch def /sy exch neg def /sx exch def
+fontkind plain eq 
+ {
+  lw siz 0.0119444 mul sub setlinewidth sx sy moveto ex ey lineto stroke
+ }
+ {
+   currentdict /outlineFontSize known outlineFontSize 0 gt and
+     {
+       fontkind outline eq
+         {
+           /sy sy 0.0119444 siz mul sub def
+           /ey ey 0.0119444 siz mul sub def
+           gsave 
+           1 1 1 setrgbcolor lw siz 0.0119444 mul sub setlinewidth sx sy moveto ex ey lineto stroke
+           grestore
+           lw siz 0.0119444 mul sub setlinewidth sx sy moveto ex ey lineto
+           strokepath 0.0119444 siz mul setlinewidth stroke
+         } if
+       fontkind shadow eq fontkind outlineshadow eq or
+         {
+           /sy sy 0.0358332 siz mul sub def
+           /ey ey 0.0358332 siz mul sub def
+           lw setlinewidth
+           lw 2 div sx add sy
+           lw 2 div sub moveto
+           lw 2 div ex add ey
+           lw 2 div sub lineto stroke 
+           gsave
+           1 1 1 setrgbcolor lw siz 0.0119444 mul sub setlinewidth sx sy moveto ex ey lineto stroke
+           grestore
+           lw siz 0.0119444 mul sub setlinewidth sx sy moveto ex ey lineto
+           strokepath 0.0119444 siz mul setlinewidth stroke
+         } if
+      } if
+ } ifelse
+grestore} bind def
+/plain 1 def
+/outline 2 def
+/shadow 3 def
+/outlineshadow 4 def
+/fess {
+	currentdict /outlineFontSize known {
+		/outlineFontSize 2 index def
+	} if
+	findfont exch dup /siz exch def scalefont setfont
+} bind def
+/SHDW {gsave siz oldfontname fess siz 0.055 mul x add y siz 0.05 mul sub moveto c show grestore} def
+/NRML {gsave 1 1 1 setrgbcolor siz oldfontname fess x y moveto c show grestore siz /Outline fess  x y moveto c show} def
+/S {
+fontkind plain eq {neg moveto show} if
+fontkind outline eq {neg /y exch def /x exch def /c exch def NRML} if
+fontkind shadow eq {neg /y exch def /x exch def /c exch def SHDW NRML} if
+fontkind outlineshadow eq {neg /y exch def /x exch def /c exch def SHDW NRML} if
+} bind def
+/F {
+/fontkind exch def
+fontkind plain eq {fess} if
+fontkind outline eq {dup /oldfontname exch def exch dup /siz exch def exch OLF} if
+fontkind shadow eq {dup /oldfontname exch def exch dup /siz exch def exch OLF} if
+fontkind outlineshadow eq {dup /oldfontname exch def exch dup /siz exch def exch OLF} if
+} bind def
+/makeoutlinedict 15 dict def
+/makeoutlinefont
+ {
+  makeoutlinedict begin
+   /uniqueid exch def
+   /strokewidth exch def
+   /newfontname exch def
+   /basefontname exch def
+   FontDirectory basefontname known not {
+    /basefontname /Times-Roman def
+   } if
+   /basefontdict basefontname findfont def
+   /numentries basefontdict maxlength 1 add def
+   basefontdict /UniqueID known not
+   {/numentries numentries 1 add def} if
+   /outfontdict numentries dict def
+   basefontdict
+   {
+     exch dup /FID ne {exch outfontdict 3 1 roll put} {pop pop} ifelse
+	  }forall
+   outfontdict /FontName newfontname put
+   outfontdict /PaintType 2 put
+   outfontdict /StrokeWidth strokewidth put
+   outfontdict /UniqueID uniqueid put
+   newfontname outfontdict definefont pop
+  end
+  }def
+/UID {
+ findfont dup /UniqueID known
+  {/UniqueID get 1 add}
+  {pop 1}
+  ifelse
+} def
+/OLF {
+dup
+/Outline
+1000 62 div
+4 -1 roll
+UID
+/outlineFontSize 5 index def
+makeoutlinefont
+/Outline findfont exch scalefont setfont
+} def
+/CopyEncoding {
+findfont
+/Encoding get
+dup length array
+/tarrayz exch def
+tarrayz 0
+3 -1 roll
+putinterval
+tarrayz
+} bind def
+/Re-encode {
+dup length array copy
+/eap 0 def
+exch {
+dup type /integertype eq {
+/eap exch def
+} {
+1 index
+exch
+eap exch
+put
+/eap eap 1 add def
+} ifelse
+} forall
+} bind def
+/EncodeFont	{
+findfont dup
+length dict
+begin
+{	1 index /FID ne
+{ def }
+{ pop pop } ifelse
+} forall
+/FontName exch def
+/Encoding exch def
+FontName currentdict
+end
+definefont pop
+} bind def
+%%EndProcSet
+%%BeginProcSet : clip2pathbbox
+/clip2pathbbox {
+	/magicNum linewidth 2 div 1 2 sqrt div mul def
+	pathbbox
+	/urymn exch magicNum add def
+	/urxmn exch magicNum add def
+	/llymn exch magicNum sub def
+	/llxmn exch magicNum sub def
+	newpath llxmn llymn moveto llxmn urymn lineto urxmn urymn lineto urxmn llymn lineto
+	closepath clip newpath
+} bind def
+%%EndProcSet 
+%% Line takes the following arguments:
+%% linewidth xEnd yEnd xStart yStart
+%%BeginProcSet : Line
+/Line {
+MAV /LC get length 0 ne
+{
+	gsave
+			newpath
+			MAV /ArrowType get length 0 eq
+			MAV /SD get length 0 eq and
+			{2 setlinecap /UseClip {clip2pathbbox} def }
+			{0 setlinecap /UseClip {} def } ifelse
+			0 792 translate
+			1 -1 scale
+			CTM currentmatrix pop
+			/yStart exch def /xStart exch def /yEnd exch def /xEnd exch def /linewidth exch def
+			MAV /ArrowType get length 0 eq xStart xEnd ne yStart yEnd ne and and
+			{xStart yStart moveto xEnd yEnd lineto UseClip xStart yStart moveto xEnd yEnd lineto}
+			{xStart yStart moveto xEnd yEnd lineto} ifelse
+			linewidth setlinewidth SD strokepath
+			CheckPath {LC PF ArrowType} if
+	grestore
+}
+{pop pop pop pop pop} ifelse
+} bind def
+%% Line takes the following arguments:
+%% linewidth xEnd yEnd xStart yStart
+%%BeginProcSet : ZeroLine
+/ZeroLine {
+	gsave
+		newpath
+		MAV /ArrowType get length 0 ne {
+			/UseClip {} def
+			0 792 translate
+			1 -1 scale
+			pop pop pop pop pop
+			CTM currentmatrix pop
+			ArrowType
+		} if
+	grestore
+} bind def
+/CompensateForStroke {
+	sin currentlinewidth mul
+	exch
+	cos currentlinewidth mul
+	dup 0 translate
+	4 -1 roll exch 2.0 mul sub
+	3 1 roll
+	2.0 mul sub
+} bind def
+/arrowdict 10 dict def
+arrowdict begin
+	/SwallowTail {
+		newpath
+		0.0 0.0 moveto
+		1.0 -.5 lineto
+		.666 0.0 lineto
+		1.0 .5 lineto
+		closepath
+	} bind def
+	/Triangular {
+		newpath
+		0.0 0.0 moveto
+		1.0 -.5 lineto
+		1.0 .5 lineto
+		closepath
+	} bind def
+	/OpenTri {
+		newpath
+		1.0 0.5 moveto
+		0.0 0.0 lineto
+		1.0 -0.5 lineto
+	} bind def
+	/ClosedTri {
+		newpath
+		1.0 0.5 moveto
+		0.0 0.0 lineto
+		1.0 -0.5 lineto
+		closepath
+	} bind def
+	/SlashBar {
+		newpath
+		0.5 -.5 moveto
+		-.5 0.5 lineto
+	} bind def
+	/Dot {
+		newpath
+		0.5 0.0 moveto
+		0 0 1 0 360 arc
+		closepath
+	} bind def
+	/ExtSlashBar {
+		newpath
+		1.0 -.5 moveto
+		0.0 0.5 lineto
+	} bind def
+end
+/ScaleArrowHead {
+	0 0 4 -2 roll
+	0 0 1 1
+	8 -4 roll GetBoxesRatio
+	scale
+} bind def
+/DrawArrowHead {
+	gsave
+	[] 0 setdash
+	currentpoint translate rotate
+	{
+		4 copy
+		gsave
+			initmatrix
+			100 200 translate
+			msave
+				ScaleArrowHead pop
+				arrowdict exch get exec
+			mrestore
+			strokepath
+			0 0 3 index 3 index
+			pathbbox 8 4 roll
+			GetBoxesRatio
+			4 2 roll
+		grestore
+		3 index 1.0 exch sub
+		6 -1 roll
+		{
+			2 index mul
+			0 translate
+		}{
+			pop
+		} ifelse
+		msave
+			ScaleArrowHead scale
+			arrowdict exch get exec
+		mrestore
+		strokepath
+	} {
+		msave
+		ScaleArrowHead
+		arrowdict exch get exec
+		mrestore
+	} ifelse
+		CheckPath {
+			LC PF
+		} if
+	grestore
+} bind def
+%%EndProcSet 
+%%BeginProcSet : SR 
+/SR { 
+ pbox left get pbox top get moveto 
+ pbox right get pbox top get lineto 
+ pbox right get pbox bottom get lineto 
+ pbox left get pbox bottom get lineto 
+ closepath
+} bind def 
+%%EndProcSet 
+%%BeginProcSet : E
+/E {
+1.415 setmiterlimit
+CM currentmatrix pop
+pbox right get pbox left get sub abs dup
+pbox bottom get pbox top get sub abs dup 3 -1 roll
+lt {exch dup 3 -1 roll exch div 1 exch}
+{dup 3 -1 roll exch div 1} ifelse scale 
+0 0 3 -1 roll 2 div 0 360 arc closepath
+CM setmatrix
+} bind def
+%%EndProcSet
+%%BeginProcSet : A1
+/A1 {msave
+pbox right get pbox left get sub abs dup
+pbox bottom get pbox top get sub abs dup 3 -1 roll
+lt {exch dup 3 -1 roll exch div 1 exch}
+{dup 3 -1 roll exch div 1} ifelse scale 
+0 0 3 -1 roll 2 div 5 -1 roll -90 add 5 -1 roll -90 add arcn
+mrestore} bind def
+%%EndProcSet
+%%BeginProcSet : A2
+/A2 {msave 0 0 moveto A1 closepath mrestore} def
+%%EndProcSet
+/StripFromFront { 
+dup length
+2 index sub
+3 1 roll
+exch 3 -1 roll
+getinterval
+} bind def
+/MakePathArray { 
+ /k 0 def 
+ {/k k 1 add def pop pop}{/k k 1 add def pop pop}{/k k 1 add def pop pop pop pop pop pop}{/k k 1 add def }pathforall 
+ k array
+ /k 0 def 
+ {{moveto} 3 array astore 1 index k 3 -1 roll put /k k 1 add def} 
+ {{lineto} 3 array astore 1 index k 3 -1 roll put /k k 1 add def} 
+ {{curveto} 7 array astore 1 index k 3 -1 roll put /k k 1 add def} 
+ {{closepath} 1 array astore 1 index k 3 -1 roll put /k k 1 add def} 
+pathforall 
+}bind def 
+/MakeFlatPathArray { 
+/k 0 def 
+{/k k 1 add def pop pop}{/k k 1 add def pop pop}{pop pop pop pop pop pop}{}pathforall 
+k array
+/k 0 def 
+{{moveto} 3 array astore 1 index k 3 -1 roll put /k k 1 add def} 
+{{lineto} 3 array astore 1 index k 3 -1 roll put /k k 1 add def} 
+{ pop pop pop pop pop pop} 
+{} 
+pathforall 
+}bind def 
+/FractionalLine {
+2 index sub
+.00001 mul
+exch
+3 index sub
+.00001 mul
+4 -1 roll add
+3 1 roll
+add
+} bind def
+/calcLineLength {
+ exch
+ 4 -1 roll
+ sub
+ dup mul
+ 3 1 roll exch
+ sub
+ dup mul
+ add sqrt
+} bind def
+/InitTotalLineLength {
+ /oldY exch def
+ /oldX exch def
+ theDash aload pop currentLineLength add setdash
+} bind def
+/AccumeLineLength {
+ 3 copy pop
+ 2 copy
+ oldX oldY
+ 4 2 roll calcLineLength
+ /segmentLength exch def
+ /currentLineLength currentLineLength segmentLength add def
+ /oldY exch def
+ /oldX exch def
+} bind def
+/DecumeLastLineLength {
+ /currentLineLength currentLineLength segmentLength sub def
+} bind def
+/DrawFlattendSegment {
+ /pointCount 2 def
+ dup 0 lt { pop 0 } if
+ fpc
+ 3 1 roll
+ 2 index
+ 1 index
+ gt {
+ 2 copy get
+ dup length
+ dup 3 eq {
+ pop
+ dup 0 get
+ exch 1 get
+ 2 copy InitTotalLineLength  
+ m
+ } {
+ } ifelse
+ } {
+ pop 1 index
+ } ifelse
+ dup 1 add
+ 3 index
+ exch sub
+ dup 10 gt { pop 10} if
+ {
+ 1 add
+ 2 copy
+ get aload pop
+ AccumeLineLength
+ exec
+ } repeat
+ 3 1 roll pop pop
+ DecumeLastLineLength
+} bind def
+/IncFPC {
+ fpc add
+ /fpc exch def
+} bind def
+/DrawFlatPathArray {
+ fpc
+ 0 { 
+ dup 2 index
+ 1 sub
+ lt { 
+ flatPathArray exch
+ newpath
+ 1 sub DrawFlattendSegment
+ gsave
+ pathSegProc
+ grestore
+ newpath
+ }
+ {
+ pop pop
+ exit
+ } ifelse
+ } loop
+} bind def
+/RecordFirstSubSegment {
+ closepathArray 0 pathArray 0 get
+ put
+ closepathArray 1
+ pathArray 0 get aload pop pop
+ pathArray 1 get dup length 3 eq {
+ aload pop pop
+ } {
+ newpath
+ 0 0 moveto
+ aload pop exec
+ /segmentArray flattenpath MakeFlatPathArray def
+ segmentArray 1 get aload pop pop
+ } ifelse
+ FractionalLine {lineto} 3 array astore
+ put
+} bind def
+/AppendClosePath {
+ closepathArray 0 get 2 {lineto} put
+ flatPathArray fpc closepathArray 0 get put
+ 1 IncFPC
+ flatPathArray fpc closepathArray 1 get put
+ 1 IncFPC
+} bind def
+/RecordCurrentDash {
+ /theDash
+ currentdash 2 array astore def
+ /currentLineLength 0 def
+} bind def
+/PatternStroke {
+	0 setlinecap
+ RecordCurrentDash
+ /saveFlat currentflat def
+ .5 setflat
+ /pathArray MakePathArray def
+ /closepathArray 2 array def
+ /pathLength pathArray length def
+ /flatPathArray 513 array def
+ /currentLineLength 0 def
+ /fpc 0 def
+ pathArray pathLength 1 sub get
+ length 1 eq {
+ /usingClosepath true def
+ RecordFirstSubSegment
+ /pathLength pathLength 1 sub def
+ } {
+ /usingClosepath false def
+ } ifelse
+ 0 1 pathLength 1 sub {
+ pathArray exch get
+ dup length 3 eq {
+ fpc 1 add 512 ge {
+ DrawFlatPathArray
+ fpc 2 ge {
+ flatPathArray flatPathArray fpc 2 sub get 0 put
+ flatPathArray flatPathArray fpc 1 sub get 1 put
+ /fpc 2 def
+ }{
+ /fpc 0 def
+ } ifelse
+ } if
+ flatPathArray exch fpc exch put
+ 1 IncFPC
+ } {
+ dup length 7 eq {
+ newpath
+ /nToStrip 0 def
+ fpc 1 gt {
+ flatPathArray fpc 2 sub get aload pop pop m
+ flatPathArray fpc 1 sub get aload pop exec
+ /nToStrip 2 def
+ } {
+ fpc 1 eq {
+ flatPathArray fpc 1 sub get aload pop exec
+ /nToStrip 2 def
+ } if
+ } ifelse
+ aload pop exec
+ /segmentArray flattenpath MakeFlatPathArray def
+ /segmentArray nToStrip segmentArray StripFromFront def
+ segmentArray length fpc add 512 lt {
+ flatPathArray fpc segmentArray putinterval
+ segmentArray length IncFPC
+ } {
+ DrawFlatPathArray
+ fpc 1 gt {
+ flatPathArray flatPathArray fpc 2 sub get 0 exch put
+ flatPathArray flatPathArray fpc 1 sub get 1 exch put
+ /fpc 2 def
+ }{
+ /fpc 0 def
+ } ifelse
+ segmentArray length 512 lt {
+ flatPathArray fpc segmentArray putinterval
+ segmentArray length IncFPC
+ } {
+ segmentArray length
+ /exitLoop false def
+ 0 
+ {
+ 2 copy sub
+ dup 500 gt {
+ pop 500
+ } { 
+ /exitLoop true def
+ } ifelse 
+ segmentArray 2 index 2 index getinterval
+ flatPathArray fpc 3 -1 roll putinterval
+ dup IncFPC
+ add 
+ exitLoop {
+ exit 
+ } {
+ DrawFlatPathArray
+ fpc 1 gt {
+ flatPathArray flatPathArray fpc 2 sub get 0 exch put
+ flatPathArray flatPathArray fpc 1 sub get 1 exch put
+ /fpc 2 def
+ }{
+ /fpc 0 def
+ } ifelse
+ } ifelse
+ } loop
+ } ifelse
+ } ifelse
+ } if
+ } ifelse
+ } for
+ fpc 0 gt {
+ usingClosepath {
+ AppendClosePath
+ } if
+ DrawFlatPathArray
+ } if
+ saveFlat setflat
+} bind def
+
+%%EndProlog
+initmsaverestore
+/tctm matrix currentmatrix def
+tctm RoundMatrix setmatrix
+/patternMatrix mstore def
+10 setmiterlimit
+2 setlinecap
+newpath
+%
+%tLayer
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginOval
+/RT {E} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 0.000 setcmykcolor end} {1.000 1.000 1.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+0.850 0 644.881 216.850 0.000 0.000 76.535 76.535 rect
+%@EndOval
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginOval
+/RT {E} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 0.000 setcmykcolor end} {1.000 1.000 1.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+0.850 0 423.731 185.810 0.000 0.000 66.173 66.173 rect
+%@EndOval
+%
+%tfBegGrp
+%
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginOval
+/RT {E} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 0.000 setcmykcolor end} {1.000 1.000 1.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+0.850 0 413.448 196.716 0.000 0.000 22.677 45.354 rect
+%@EndOval
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 216.559 450.298 216.559 436.125 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 222.228 450.298 222.228 436.125 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 202.385 450.298 216.559 450.298 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 222.228 450.298 236.401 450.298 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 202.385 455.968 216.559 455.968 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 222.228 455.968 236.401 455.968 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 222.228 468.306 222.228 455.968 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 216.559 468.724 216.559 457.385 Line
+%@EndLine
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 180.000 90.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 451.243 193.881 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 270.000 180.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 447.464 193.881 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 90.000 0.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 447.464 193.881 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 360.000 270.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 447.464 193.881 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%
+%tfEndGrp
+%
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 270.000 180.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 451.243 239.236 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 180.000 90.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 447.464 239.236 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 360.000 270.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 447.464 239.236 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 90.000 0.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 447.464 239.236 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%
+%tfEndGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 180.000 90.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 469.251 208.858 0.000 0.000 8.000 22.000 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 270.000 180.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 469.251 208.858 0.000 0.000 8.000 20.000 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 360.000 270.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 468.251 208.858 0.000 0.000 8.000 18.000 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 90.000 0.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 468.251 214.858 0.000 0.000 10.000 16.000 rect
+setlinecap
+%@EndArc
+%
+%tfEndGrp
+%
+%@BeginText
+save
+%%IncludeFont: Ryumin-Light-83pv-RKSJ-H
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 418.251 210.858 0.000 0.000 14.000 19.327 rect
+%@EndRect
+gsave
+220.521 425.251 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) plain F
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(M) -9.641 4.000 S
+(e) 1.025 4.000 S
+(t) 6.351 4.000 S
+grestore
+%@EndText
+%
+%tfEndGrp
+%
+%
+%tfBegGrp
+%
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginOval
+/RT {E} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 0.000 setcmykcolor end} {1.000 1.000 1.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+0.850 0 24.346 201.385 0.000 0.000 22.677 45.354 rect
+%@EndOval
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 221.228 61.196 221.228 47.023 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 226.897 61.196 226.897 47.023 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 207.055 61.196 221.228 61.196 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 226.897 61.196 241.070 61.196 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 207.055 66.866 221.228 66.866 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 226.897 66.866 241.070 66.866 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 226.897 79.204 226.897 66.866 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 221.228 79.622 221.228 68.283 Line
+%@EndLine
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 180.000 90.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 62.141 198.551 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 270.000 180.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 58.362 198.551 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 90.000 0.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 58.362 198.551 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 360.000 270.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 58.362 198.551 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%
+%tfEndGrp
+%
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 270.000 180.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 62.141 243.905 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 180.000 90.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 58.362 243.905 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 360.000 270.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 58.362 243.905 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 90.000 0.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 58.362 243.905 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%
+%tfEndGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 180.000 90.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 80.149 213.527 0.000 0.000 8.000 22.000 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 270.000 180.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 80.149 213.527 0.000 0.000 8.000 20.000 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 360.000 270.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 79.149 213.527 0.000 0.000 8.000 18.000 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 90.000 0.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 79.149 219.527 0.000 0.000 10.000 16.000 rect
+setlinecap
+%@EndArc
+%
+%tfEndGrp
+%
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 29.149 215.527 0.000 0.000 14.000 19.327 rect
+%@EndRect
+gsave
+225.191 36.149 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(M) -8.972 4.000 S
+(e) 1.694 4.000 S
+(t) 7.020 4.000 S
+grestore
+%@EndText
+%
+%tfEndGrp
+%
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 103.338 312.031 0.000 0.000 13.000 19.487 rect
+%@EndRect
+gsave
+321.775 109.838 T translate
+0.0 rotate
+1 1 scale
+9.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(e) -9.468 2.000 S
+(-) -5.473 2.000 S
+(I) -2.479 2.000 S
+(F) 0.515 2.000 S
+(2) 5.518 2.000 S
+grestore
+%@EndText
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 114.834 314.527 0.000 0.000 13.000 16.998 rect
+%@EndRect
+gsave
+323.026 121.334 T translate
+0.0 rotate
+1 1 scale
+9.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(G) -7.972 3.000 S
+(T) -1.475 3.000 S
+(P) 4.022 3.000 S
+grestore
+%@EndText
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ 
+0.850 setlinewidth
+226.771 187.086 moveto
+/Triangular 13.695 6.847 false 270.019 DrawArrowHead
+} bind def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 226.771 185.385 226.771 104.881 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ 
+0.850 setlinewidth
+243.779 113.385 moveto
+/Triangular 13.695 6.847 false 360.025 DrawArrowHead
+} bind def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 245.480 113.385 300.472 113.385 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginOval
+/RT {E} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 0.000 setcmykcolor end} {1.000 1.000 1.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+0.850 0 83.133 111.480 0.000 0.000 66.173 66.173 rect
+%@EndOval
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 78.165 53.850 0.000 0.000 27.000 69.659 rect
+%@EndRect
+gsave
+88.679 91.665 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(4) -34.649 -3.000 S
+(0) -28.649 -3.000 S
+(S) -22.649 -3.000 S
+( ) -15.978 -3.000 S
+(r) -12.978 -3.000 S
+(i) -8.985 -3.000 S
+(b) -5.651 -3.000 S
+(o) 0.348 -3.000 S
+(s) 6.348 -3.000 S
+(o) 11.015 -3.000 S
+(m) 17.015 -3.000 S
+(a) 26.349 -3.000 S
+(l) 31.675 -3.000 S
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+( ) -34.649 10.000 S
+( ) -31.649 10.000 S
+( ) -28.649 10.000 S
+( ) -25.649 10.000 S
+( ) -22.649 10.000 S
+(s) -19.649 10.000 S
+(u) -14.982 10.000 S
+(b) -8.982 10.000 S
+(u) -2.982 10.000 S
+(n) 3.017 10.000 S
+(i) 9.017 10.000 S
+(t) 12.351 10.000 S
+grestore
+%@EndText
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ 
+0.850 setlinewidth
+215.432 119.055 moveto
+/Triangular 13.695 6.847 false 180.012 DrawArrowHead
+} bind def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 213.732 119.055 189.921 119.055 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ 
+0.850 setlinewidth
+215.432 155.905 moveto
+/Triangular 13.695 6.847 false 180.012 DrawArrowHead
+} bind def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 213.732 155.905 189.921 155.905 Line
+%@EndLine
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 150.000 165.354 0.000 0.000 13.000 19.487 rect
+%@EndRect
+gsave
+175.098 156.500 T translate
+0.0 rotate
+1 1 scale
+9.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(e) -9.145 2.000 S
+(-) -5.151 2.000 S
+(I) -2.156 2.000 S
+(F) 0.838 2.000 S
+(3) 5.841 2.000 S
+grestore
+%@EndText
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginOval
+/RT {E} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 0.000 setcmykcolor end} {1.000 1.000 1.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+0.850 0 211.133 191.480 0.000 0.000 66.173 66.173 rect
+%@EndOval
+%
+%tfBegGrp
+%
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginOval
+/RT {E} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 0.000 setcmykcolor end} {1.000 1.000 1.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+0.850 0 192.346 202.385 0.000 0.000 22.677 45.354 rect
+%@EndOval
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 222.228 229.196 222.228 215.023 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 227.897 229.196 227.897 215.023 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 208.055 229.196 222.228 229.196 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 227.897 229.196 242.070 229.196 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 208.055 234.866 222.228 234.866 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 227.897 234.866 242.070 234.866 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 227.897 247.204 227.897 234.866 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 222.228 247.622 222.228 236.283 Line
+%@EndLine
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 180.000 90.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 230.141 199.551 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 270.000 180.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 226.362 199.551 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 90.000 0.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 226.362 199.551 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 360.000 270.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 226.362 199.551 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%
+%tfEndGrp
+%
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 270.000 180.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 230.141 244.905 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 180.000 90.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 226.362 244.905 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 360.000 270.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 226.362 244.905 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 90.000 0.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 226.362 244.905 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%
+%tfEndGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 180.000 90.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 248.149 214.527 0.000 0.000 8.000 22.000 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 270.000 180.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 248.149 214.527 0.000 0.000 8.000 20.000 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 360.000 270.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 247.149 214.527 0.000 0.000 8.000 18.000 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 90.000 0.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 247.149 220.527 0.000 0.000 10.000 16.000 rect
+setlinecap
+%@EndArc
+%
+%tfEndGrp
+%
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 197.149 216.527 0.000 0.000 14.000 19.327 rect
+%@EndRect
+gsave
+226.191 204.149 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(M) -8.972 4.000 S
+(e) 1.694 4.000 S
+(t) 7.020 4.000 S
+grestore
+%@EndText
+%
+%tfEndGrp
+%
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 260.000 261.519 0.000 0.000 14.000 109.321 rect
+%@EndRect
+gsave
+316.180 267.000 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(4) -53.980 4.000 S
+(3) -47.980 4.000 S
+(S) -41.980 4.000 S
+( ) -35.309 4.000 S
+(i) -32.309 4.000 S
+(n) -28.975 4.000 S
+(i) -22.975 4.000 S
+(t) -19.641 4.000 S
+(i) -16.307 4.000 S
+(a) -12.973 4.000 S
+(t) -7.647 4.000 S
+(i) -4.313 4.000 S
+(o) -0.979 4.000 S
+(n) 5.020 4.000 S
+( ) 11.020 4.000 S
+(c) 14.020 4.000 S
+(o) 19.346 4.000 S
+(m) 25.346 4.000 S
+(p) 34.680 4.000 S
+(l) 40.680 4.000 S
+(e) 44.014 4.000 S
+(x) 49.340 4.000 S
+grestore
+%@EndText
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 335.374 35.531 0.000 0.000 13.000 6.119 rect
+%@EndRect
+gsave
+38.590 341.874 T translate
+0.0 rotate
+1 1 scale
+9.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(5) -2.968 2.000 S
+(') 1.531 2.000 S
+grestore
+%@EndText
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 335.208 159.861 0.000 0.000 13.000 6.119 rect
+%@EndRect
+gsave
+162.921 341.708 T translate
+0.0 rotate
+1 1 scale
+9.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(3) -2.638 2.000 S
+(') 1.861 2.000 S
+grestore
+%@EndText
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 335.208 66.861 0.000 0.000 13.000 19.491 rect
+%@EndRect
+gsave
+76.607 341.708 T translate
+0.0 rotate
+1 1 scale
+9.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(A) -9.638 2.000 S
+(U) -3.140 2.000 S
+(G) 3.356 2.000 S
+grestore
+%@EndText
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 354.208 84.861 0.000 0.000 14.000 34.664 rect
+%@EndRect
+gsave
+102.193 361.208 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(m) -16.638 4.000 S
+(R) -7.304 4.000 S
+(N) 0.699 4.000 S
+(A) 9.362 4.000 S
+grestore
+%@EndText
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 157.436 332.035 44.050 332.035 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 68.562 334.870 68.562 329.200 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 74.562 334.870 74.562 329.200 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 81.562 334.870 81.562 329.200 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginOval
+/RT {E} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 0.000 setcmykcolor end} {1.000 1.000 1.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+0.850 0 328.818 39.684 0.000 0.000 5.669 5.669 rect
+%@EndOval
+%
+%tfEndGrp
+%
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 313.157 34.007 0.000 0.000 13.000 17.503 rect
+%@EndRect
+gsave
+42.759 319.657 T translate
+0.0 rotate
+1 1 scale
+9.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(C) -8.492 2.000 S
+(A) -2.489 2.000 S
+(P) 4.008 2.000 S
+grestore
+%@EndText
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ 
+0.850 setlinewidth
+209.763 331.653 moveto
+/Triangular 13.695 6.847 false 180.012 DrawArrowHead
+} bind def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 208.062 331.653 187.086 331.653 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ 
+0.850 setlinewidth
+226.771 391.181 moveto
+/Triangular 13.695 6.847 false 270.019 DrawArrowHead
+} bind def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 226.771 389.480 226.771 294.803 Line
+%@EndLine
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 327.515 476.602 214.129 476.602 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 238.641 479.436 238.641 473.767 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 244.641 479.436 244.641 473.767 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 251.641 479.436 251.641 473.767 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginOval
+/RT {E} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 0.000 setcmykcolor end} {1.000 1.000 1.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+0.850 0 473.385 209.763 0.000 0.000 5.669 5.669 rect
+%@EndOval
+%
+%tfEndGrp
+%
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 492.000 261.000 0.000 0.000 14.000 109.321 rect
+%@EndRect
+gsave
+315.660 499.000 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(4) -54.500 4.000 S
+(8) -48.500 4.000 S
+(S) -42.500 4.000 S
+( ) -35.829 4.000 S
+(i) -32.829 4.000 S
+(n) -29.495 4.000 S
+(i) -23.495 4.000 S
+(t) -20.161 4.000 S
+(i) -16.827 4.000 S
+(a) -13.493 4.000 S
+(t) -8.166 4.000 S
+(i) -4.833 4.000 S
+(o) -1.499 4.000 S
+(n) 4.500 4.000 S
+( ) 10.500 4.000 S
+(c) 13.500 4.000 S
+(o) 18.827 4.000 S
+(m) 24.827 4.000 S
+(p) 34.161 4.000 S
+(l) 40.161 4.000 S
+(e) 43.495 4.000 S
+(x) 48.821 4.000 S
+grestore
+%@EndText
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ 
+0.850 setlinewidth
+226.771 634.960 moveto
+/Triangular 13.695 6.847 false 270.019 DrawArrowHead
+} bind def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 226.771 633.259 226.771 513.070 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginOval
+/RT {E} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 0.000 setcmykcolor end} {1.000 1.000 1.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+0.850 0 539.999 86.456 0.000 0.000 76.535 76.535 rect
+%@EndOval
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ 
+0.850 setlinewidth
+212.598 583.937 moveto
+/Triangular 13.695 6.847 false 180.012 DrawArrowHead
+} bind def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 210.897 583.937 170.078 583.937 Line
+%@EndLine
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 523.000 159.000 0.000 0.000 14.000 25.983 rect
+%@EndRect
+gsave
+171.991 530.000 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(e) -12.500 4.000 S
+(-) -7.173 4.000 S
+(I) -3.180 4.000 S
+(F) 0.812 4.000 S
+(5) 7.483 4.000 S
+grestore
+%@EndText
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ 
+0.850 setlinewidth
+212.598 530.078 moveto
+/Triangular 13.695 6.847 false 180.012 DrawArrowHead
+} bind def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 210.897 530.078 189.921 530.078 Line
+%@EndLine
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 622.000 79.157 0.000 0.000 14.000 107.994 rect
+%@EndRect
+gsave
+133.154 629.000 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(6) -53.342 4.000 S
+(0) -47.342 4.000 S
+(S) -41.342 4.000 S
+( ) -34.671 4.000 S
+(r) -31.671 4.000 S
+(i) -27.678 4.000 S
+(b) -24.344 4.000 S
+(o) -18.344 4.000 S
+(s) -12.344 4.000 S
+(o) -7.677 4.000 S
+(m) -1.677 4.000 S
+(a) 7.656 4.000 S
+(l) 12.982 4.000 S
+( ) 16.316 4.000 S
+(s) 19.316 4.000 S
+(u) 23.983 4.000 S
+(b) 29.983 4.000 S
+(u) 35.983 4.000 S
+(n) 41.983 4.000 S
+(i) 47.983 4.000 S
+(t) 51.317 4.000 S
+grestore
+%@EndText
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ 
+0.850 setlinewidth
+266.456 603.779 moveto
+/Triangular 13.695 6.847 false 180.012 DrawArrowHead
+} bind def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 264.755 603.779 238.110 603.779 Line
+%@EndLine
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 597.000 275.000 0.000 0.000 25.000 26.997 rect
+%@EndRect
+gsave
+288.498 609.500 T translate
+0.0 rotate
+1 1 scale
+9.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(e) -12.500 -4.000 S
+(-) -8.505 -4.000 S
+(I) -5.510 -4.000 S
+(F) -2.515 -4.000 S
+(2) 2.487 -4.000 S
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+( ) -12.500 8.000 S
+(G) -10.250 8.000 S
+(D) -3.752 8.000 S
+(P) 2.744 8.000 S
+grestore
+%@EndText
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 396.850 603.779 317.480 603.779 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 396.850 113.385 396.850 603.779 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ 
+0.850 setlinewidth
+351.496 113.385 moveto
+/Triangular 13.695 6.847 false 360.025 DrawArrowHead
+} bind def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 353.196 113.385 396.850 113.385 Line
+%@EndLine
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 616.000 349.000 0.000 0.000 14.000 76.608 rect
+%@EndRect
+gsave
+387.304 623.000 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(r) -37.500 4.000 S
+(e) -33.506 4.000 S
+(c) -28.180 4.000 S
+(y) -22.854 4.000 S
+(c) -16.854 4.000 S
+(l) -11.528 4.000 S
+(e) -8.194 4.000 S
+( ) -2.868 4.000 S
+(o) 0.131 4.000 S
+(f) 6.131 4.000 S
+( ) 10.125 4.000 S
+(e) 13.125 4.000 S
+(-) 18.451 4.000 S
+(I) 22.444 4.000 S
+(F) 26.437 4.000 S
+(2) 33.108 4.000 S
+grestore
+%@EndText
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginOval
+/RT {E} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 0.000 setcmykcolor end} {1.000 1.000 1.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+0.850 0 701.526 219.826 0.000 0.000 37.826 71.842 rect
+%@EndOval
+%
+%tfBegGrp
+%
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginOval
+/RT {E} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 0.000 setcmykcolor end} {1.000 1.000 1.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+0.850 0 658.392 222.228 0.000 0.000 22.677 45.354 rect
+%@EndOval
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 242.070 695.243 242.070 681.070 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 247.740 695.243 247.740 681.070 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 227.897 695.243 242.070 695.243 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 247.740 695.243 261.913 695.243 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 227.897 700.912 242.070 700.912 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 247.740 700.912 261.913 700.912 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 247.740 713.251 247.740 700.912 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 242.070 713.668 242.070 702.329 Line
+%@EndLine
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 180.000 90.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 696.188 219.393 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 270.000 180.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 692.408 219.393 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 90.000 0.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 692.408 219.393 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 360.000 270.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 692.408 219.393 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%
+%tfEndGrp
+%
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 270.000 180.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 696.188 264.747 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 180.000 90.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 692.408 264.747 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 360.000 270.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 692.408 264.747 0.000 0.000 7.559 8.503 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 90.000 0.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 692.408 264.747 0.000 0.000 11.338 8.503 rect
+setlinecap
+%@EndArc
+%
+%tfEndGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 180.000 90.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 714.196 234.370 0.000 0.000 8.000 22.000 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 270.000 180.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 714.196 234.370 0.000 0.000 8.000 20.000 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 360.000 270.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 713.196 234.370 0.000 0.000 8.000 18.000 rect
+setlinecap
+%@EndArc
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginArc
+currentlinecap
+0 setlinecap
+/RT { 90.000 0.000 A1 gsave} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC {} def
+/PF {} def
+0.850 0 713.196 240.370 0.000 0.000 10.000 16.000 rect
+setlinecap
+%@EndArc
+%
+%tfEndGrp
+%
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 663.196 236.370 0.000 0.000 14.000 19.327 rect
+%@EndRect
+gsave
+246.033 670.196 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(M) -9.129 4.000 S
+(e) 1.537 4.000 S
+(t) 6.863 4.000 S
+grestore
+%@EndText
+%
+%tfEndGrp
+%
+%
+%tfBegGrp
+%
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 327.515 723.215 214.129 723.215 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 238.641 726.050 238.641 720.381 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 244.641 726.050 244.641 720.381 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ } def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 251.641 726.050 251.641 720.381 Line
+%@EndLine
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginOval
+/RT {E} def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 0.000 setcmykcolor end} {1.000 1.000 1.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+0.850 0 719.999 209.763 0.000 0.000 5.669 5.669 rect
+%@EndOval
+%
+%tfEndGrp
+%
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 744.000 263.496 0.000 0.000 14.000 109.321 rect
+%@EndRect
+gsave
+318.156 751.000 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(8) -54.003 4.000 S
+(0) -48.003 4.000 S
+(S) -42.003 4.000 S
+( ) -35.333 4.000 S
+(i) -32.333 4.000 S
+(n) -28.999 4.000 S
+(i) -22.999 4.000 S
+(t) -19.665 4.000 S
+(i) -16.331 4.000 S
+(a) -12.997 4.000 S
+(t) -7.670 4.000 S
+(i) -4.336 4.000 S
+(o) -1.002 4.000 S
+(n) 4.997 4.000 S
+( ) 10.997 4.000 S
+(c) 13.997 4.000 S
+(o) 19.323 4.000 S
+(m) 25.323 4.000 S
+(p) 34.657 4.000 S
+(l) 40.657 4.000 S
+(e) 43.991 4.000 S
+(x) 49.317 4.000 S
+grestore
+%@EndText
+%@BeginRuler
+%@  2.8346456692913384320e+0 viewScale
+%@  3.5277777777777780120e-1 realScale
+%@ 10 realDivs
+%@ 0404 rulerFormat
+%@EndRuler
+%@BeginLine
+/ArrowType{ 
+0.850 setlinewidth
+297.637 453.543 moveto
+/Triangular 13.695 6.847 false 180.012 DrawArrowHead
+} bind def
+/SD {} def
+/SS {setlinewidth SD stroke} def
+/LC { /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+} def
+/PF {gsave fill grestore} def
+/SS {setlinewidth SD stroke} def
+0.850 295.936 453.543 263.622 453.543 Line
+%@EndLine
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 446.000 306.000 0.000 0.000 14.000 42.653 rect
+%@EndRect
+gsave
+327.326 453.000 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(s) -20.500 4.000 S
+(c) -15.833 4.000 S
+(a) -10.506 4.000 S
+(n) -5.180 4.000 S
+(n) 0.819 4.000 S
+(i) 6.819 4.000 S
+(n) 10.153 4.000 S
+(g) 16.153 4.000 S
+grestore
+%@EndText
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 619.165 266.000 0.000 0.000 14.000 45.966 rect
+%@EndRect
+gsave
+288.983 626.165 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(\() -22.500 4.000 S
+(i) -18.506 4.000 S
+(n) -15.172 4.000 S
+(a) -9.172 4.000 S
+(c) -3.846 4.000 S
+(t) 1.479 4.000 S
+(i) 4.813 4.000 S
+(v) 8.147 4.000 S
+(e) 14.147 4.000 S
+(\)) 19.473 4.000 S
+grestore
+%@EndText
+%@BeginText
+%@BeginRect
+/RT {SR} def
+/LC {} def
+/SS {pop} def
+/PF {} def
+/PC {} def
+0.000 0 124.496 304.669 0.000 0.000 14.000 36.632 rect
+%@EndRect
+gsave
+322.985 131.496 T translate
+0.0 rotate
+1 1 scale
+12.000 (Ryumin-Light-83pv-RKSJ-H) fess
+ /setcmykcolor where
+ {begin 0.000 0.000 0.000 1.000 setcmykcolor end} {0.000 0.000 0.000 setrgbcolor} ifelse 
+
+(\() -17.830 4.000 S
+(a) -13.837 4.000 S
+(c) -8.511 4.000 S
+(t) -3.185 4.000 S
+(i) 0.148 4.000 S
+(v) 3.482 4.000 S
+(e) 9.482 4.000 S
+(\)) 14.808 4.000 S
+grestore
+%@EndText
+restore
+%%Trailer
+end

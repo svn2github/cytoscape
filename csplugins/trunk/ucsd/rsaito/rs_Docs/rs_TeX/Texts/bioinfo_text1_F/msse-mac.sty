@@ -1,0 +1,417 @@
+%%%
+%% msse-mac.sty for 数理科学別冊用
+%%  by Motoaki Sato (ULS and Company)
+%%   E-mail: teppei@uls.co.jp, URL: http://www.uls.co.jp/
+\NeedsTeXFormat{pLaTeX2e}
+\ProvidesPackage{msse-mac}
+%%[1998/09/14 v1.0 for サイエンス社書籍用]
+%% [dt]frac を cameraready に bmi → boldsymbol へ
+%% based on scibkmac.sty [1999/02/06 v1.1 for サイエンス社書籍用]
+  [2001/05/25 v1.0 for 数理科学別冊用]
+
+\def\onelineskip{\par\vspace{1\baselineskip}\par}
+\def\halflineskip{\par\vspace{.5\baselineskip}\par}
+
+\def\ddash{\leavevmode\hbox to 2zw{---\hss ---}}
+\def\FRAC#1#2{\leavevmode\kern-.1em
+  \raise.5ex\hbox{\the\scriptfont0 #1}\kern-.1em
+  /\kern-.15em\lower.25ex\hbox{\the\scriptfont0 #2}}
+\def\RN#1{\uppercase\expandafter{\romannumeral#1}}
+
+\def\MARU#1{%
+ \leavevmode
+ \ifnum#1>9\relax
+  \raise0.15zh\hbox{\ooalign{\hfil\lower0ex
+   \hbox{\footnotesize\kern-.2ex\@overnine{#1}}\hfil\crcr\mathhexbox20D}}%
+ \else
+  \raise0.1zh\hbox{\leavevmode\ooalign{\hfil
+   \lower.168ex\hbox{#1}\hfil\crcr\mathhexbox20D}}%
+ \fi
+}
+\def\@overnine#1{{\@getnum#1\end}}
+\def\@getnum#1{\ifx#1\end \let\next\relax
+ \else #1\kern-.275ex\let\next\@getnum\fi\next}
+\def\maru#1{\raisebox{0.1zh}{{%
+ \leavevmode\ooalign{\hfil\lower.168ex\hbox{#1}\hfil\crcr\mathhexbox20D}}}}
+
+\def\ruby#1#2{%
+ \leavevmode \setbox0=\hbox{#1}\setbox1=\hbox{\tiny#2}%
+ \ifdim\wd0>\wd1\dimen0\wd0\else\dimen0\wd1\fi
+  \hbox{\kanjiskip=\fill
+   \vbox{\hbox to \dimen0{\tiny \hfil #2\hfil}%
+         \nointerlineskip
+         \hbox to \dimen0{\hfil #1\hfil}}%
+  }%
+}
+
+\def\QED{{\unskip\nobreak\hfil\penalty50
+ \hskip1zw\hbox{}\nobreak\hfil \hbox{□}
+ \parfillskip\z@ \finalhyphendemerits\z@\par}}
+ \def\SA{\leavevmode\raise.1zh\hbox to 1zw{\hss $\bullet$\hss}}
+
+\def\keyword{\@ifstar{\@keyword}{\i@keyword}}% {}
+\def\i@keyword#1#2{%
+ {\bfseries\mathversion{bold}#1}\index{#2@#1}\ignorespaces
+}
+\def\@keyword#1#2{%
+ {\bfseries\mathversion{bold}#1}\ignorespaces
+}
+
+\def\Kenumerate{%
+ \ifnum \@enumdepth >\@ne \@toodeep\else
+  \advance\@enumdepth \@ne
+  \edef\@Kenumctr{Kenum\romannumeral\the\@enumdepth}
+  \list{\csname label\@Kenumctr\endcsname}%
+   {\usecounter{\@Kenumctr}
+    \parsep\z@\topsep\z@\partopsep\z@\itemsep\z@
+    \listparindent1zw
+    \leftmargin2zw
+    \labelsep1zw
+    \labelwidth1zw
+    \itemindent1zw
+   \def\makelabel##1{\hss\llap{##1}}
+   }%
+ \fi}
+\let\endKenumerate=\endlist
+
+\def\labelKenumi{\theKenumi}
+\@definecounter{Kenumi}
+\def\theKenumi{\Ksyllable{Kenumi}}%
+\def\Ksyllable#1{\@Ksyllable{\@nameuse{c@#1}}}
+\def\@Ksyllable#1{\ifcase#1\or ア\or イ\or ウ\or エ\or オ\or 
+ カ\or キ\or ク\or ケ\or コ\or サ\or シ\or ス\or セ\or ソ
+ \else\@ctrerr\fi\relax}
+
+\def\Menumerate{%
+ \ifnum \@enumdepth >\@ne \@toodeep\else
+  \advance\@enumdepth \@ne
+  \edef\@Menumctr{Menum\romannumeral\the\@enumdepth}%
+   \list{\csname label\@Menumctr\endcsname}
+    {\usecounter{\@Menumctr}%
+    \parsep\z@\topsep\z@\partopsep\z@\itemsep\z@
+    \listparindent1zw
+    \leftmargin2zw
+    \labelsep1zw
+    \labelwidth1zw
+    \itemindent1zw
+    \def\makelabel##1{\hss\llap{##1}}}%
+ \fi}
+\let\endMenumerate =\endlist
+
+\def\labelMenumi{\MARU{\theMenumi}}
+\@definecounter{Menumi}
+\def\theMenumi{\arabic{Menumi}}%
+
+\newdimen\pralabel@wd
+ \pralabel@wd1.5zw
+
+\def\practice{%
+%%%
+ \renewenvironment{enumerate}
+  {\ifnum \@enumdepth >3\relax\@toodeep\else
+   \advance\@enumdepth\@ne
+   \edef\@enumctr{enum\romannumeral\the\@enumdepth}%
+   \list{\csname label\@enumctr\endcsname}{%
+         \topsep\z@\parsep\z@\partopsep\z@\itemsep\z@
+	 \ifnum \@enumdepth=\@ne
+	  \leftmargin\z@
+	 \else
+	  \leftmargin\pralabel@wd
+	  \advance\leftmargin 1zw
+	 \fi
+	 \labelsep 1zw
+	 \labelwidth \pralabel@wd
+	 \itemindent \pralabel@wd
+	 \advance \itemindent 1zw
+	 \listparindent 1zw
+         \usecounter{\@enumctr}%
+         \def\makelabel####1{\hss\llap{\bfseries ####1}}}%
+   \fi}{\endlist}%
+ \def\labelenumi{{\bf \theenumi}}%
+ \def\theenumi{\arabic{chapter}.\arabic{enumi}}%
+%%%
+ \small
+ \pagebreak[2]
+ \@tempskipa.5\baselineskip
+ \vskip-\prevdepth
+ \prevdepth\z@
+ \vskip\baselineskip
+ \advance\@tempskipa-\baselineskip
+ \vspace{\baselineskip}\par
+ \vspace*{\@tempskipa}\par
+ \hfil
+  {\practice@font 演習問題}\par
+ \nopagebreak[4]
+ \vskip.5\baselineskip
+ \markright{演習問題}%
+ \begin{enumerate}
+  \ignorespaces
+}
+
+\def\endpractice{%
+ \end{enumerate}\par
+}
+
+\def\practice@font{\usekanji{JY1}{gt}{m}{n}\fontsize{14\@JQ}{\z@}\selectfont}
+
+\if@cameraready
+ \@ifundefined{dfrac}{%
+  \def\dfrac#1#2{{\displaystyle\frac{#1}{#2}}}}{}
+ \@ifundefined{tfrac}{%
+  \def\tfrac#1#2{\frac{\textstyle #1}{\textstyle #2}}}{}
+ \def\bmi#1{\boldsymbol{#1}}
+
+ \def\SB{\rule[-1.5mm]{0mm}{5.2mm}}
+ \def\SO{\rule[0mm]{0mm}{3.7mm}}
+ \def\SU{\rule[-1.5mm]{0mm}{3.7mm}}
+\fi
+
+\endinput
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% the exercise and exbox, a custumized version of 
+%% "eclbkbox.sty by Hideki Isozaki". 
+\newbox\bk@bxb
+\newbox\bk@bxa
+\newif\if@bkcont 
+\newif\ifbkcount
+\newcount\bk@lcnt
+
+\newdimen\VruleTextSep
+\newdimen\BoxRule
+\newdimen\LVBoxRule
+\newdimen\RVBoxRule
+\BoxRule=.3mm
+\LVBoxRule=.3mm
+\RVBoxRule=.3mm
+\VruleTextSep=1zw
+
+\def\exbox#1{%
+ \def\ex@head{#1}%
+ \gdef\exercise@origin{}%
+ \setbox\bk@bxb\vbox\bgroup
+  \clubpenalty \z@
+  \advance\linewidth -2\BoxRule
+  \advance\linewidth -2\VruleTextSep
+  \hsize\linewidth\@parboxrestore
+%  \parindent1zw
+}
+
+% \@tempdimb: amount of vertical skip 
+% between the first line (\bk@bxa) and the rest (\bk@bxb)
+\def\bk@split{%
+\@tempdimb\ht\bk@bxb
+\setbox\bk@bxa\vsplit\bk@bxb to\z@
+\setbox\bk@bxa\vbox{\unvbox\bk@bxa}%
+\setbox\@tempboxa\vbox{\copy\bk@bxa\copy\bk@bxb}%
+\advance\@tempdimb-\ht\@tempboxa}
+
+\newdimen\@AddFirstLineHeight
+% \@tempdima: height of the first line (\bk@bxa) + VruleTextSep
+\def\bk@addfsepht{%
+ \@AddFirstLineHeight=\VruleTextSep
+ \advance \@AddFirstLineHeight by .75mm 
+     \setbox\bk@bxa\vbox{\vskip\@AddFirstLineHeight\box\bk@bxa}}
+
+\def\bk@addskipht{%
+     \setbox\bk@bxa\vbox{\vskip\@tempdimb\box\bk@bxa}}
+
+% \@tempdima: depth of the first line (\bk@bxa) + VruleTextSep
+\def\bk@addfsepdp{%
+     \@tempdima\dp\bk@bxa
+     \advance\@tempdima\VruleTextSep
+     \dp\bk@bxa\@tempdima}
+
+% \@tempdima: depth of the first line (\bk@bxa) + vertical skip
+\def\bk@addskipdp{%
+     \@tempdima\dp\bk@bxa
+     \advance\@tempdima\@tempdimb
+     \dp\bk@bxa\@tempdima}
+
+\def\bk@line{%
+    \hbox to \linewidth{\ifbkcount\smash{\llap{\the\bk@lcnt\ }}\fi
+    \vrule \@width\LVBoxRule\hskip\VruleTextSep
+    \box\bk@bxa\hfil
+    \hskip\VruleTextSep\vrule \@width\RVBoxRule}}
+
+\newdimen\@AfterSkip
+\newif\if@OneLine
+
+\def\endexbox{\egroup
+\ifhmode\par\fi{\noindent\bk@lcnt\@ne \clubpenalty\@M
+\@bkconttrue\baselineskip\z@\lineskiplimit\z@
+\lineskip\z@\vfuzz\maxdimen
+\bk@split\ifdim\wd\bk@bxa=\z@\ifdim\ht\bk@bxa=\z@\bk@split\fi\fi
+\bk@addfsepht\bk@addskipdp
+\ifvoid\bk@bxb      % Only one line
+\global\@OneLinetrue%
+\def\bk@fstln{\bk@addfsepdp
+\vbox{%
+%% \hrule\@height\BoxRule
+\vskip1.25mm
+\noindent\hbox to \hsize{%
+ \hbox to 2zw{\leaders\hrule height 1.3mm depth -1mm\hfil}\,%
+  \smash{\exercise@font \ex@head}\,%
+  \leaders\hrule height 1.3mm depth -1mm\hfil \smash{\exercise@origin}%
+  \hbox to 1zw{\leaders\hrule height 1.3mm depth -1mm\hfil}}\par
+ \nointerlineskip
+ \vskip-1mm
+\bk@line\hrule\@height\BoxRule}}%
+\else               % More than one line
+\global\@OneLinefalse%
+\def\bk@fstln{\vbox{% 
+%% \hrule\@height\BoxRule
+\vskip1.25mm
+\noindent\hbox to \hsize{%
+ \hbox to 2zw{\leaders\hrule height 1.3mm depth -1mm\hfil}\,%
+  \smash{\exercise@font \ex@head}\,%
+  \leaders\hrule height 1.3mm depth -1mm\hfil \smash{\exercise@origin}%
+  \hbox to 1zw{\leaders\hrule height 1.3mm depth -1mm\hfil}}\par
+ \nointerlineskip
+ \vskip-1mm
+\bk@line}\hfil
+\advance\bk@lcnt\@ne
+\loop
+ \bk@split\bk@addskipdp\leavevmode
+\ifvoid\bk@bxb      % The last line
+ \@bkcontfalse\bk@addfsepdp
+ \vtop{\bk@line\hrule\@height\BoxRule}%
+\else               % 2,...,(n-1)
+ \bk@line
+\fi
+ \hfil\advance\bk@lcnt\@ne
+\if@bkcont\repeat}%
+\fi
+\leavevmode\bk@fstln\par}%
+ \if@OneLine
+  \vskip 2mm
+ \else
+  \@AfterSkip=1\baselineskip
+  \advance \@AfterSkip by -1zh
+  \vskip \@AfterSkip
+  \vskip 1.5mm
+ \fi
+}
+
+\newcounter{exercise}[chapter]
+\def\exercise#1{%
+ \setcounter{equation}{0}%
+ \renewcommand{\theequation}{\@alph\c@equation}%
+ \renewcommand{\theenumi}{\@alph\c@enumi}
+ \renewcommand{\labelenumi}{(\hbox to 5.55pt{\hss\theenumi\hss})}
+ \renewenvironment{enumerate}
+  {\ifnum \@enumdepth >3\relax\@toodeep\else
+   \advance\@enumdepth\@ne
+   \edef\@enumctr{enum\romannumeral\the\@enumdepth}%
+   \list{\csname label\@enumctr\endcsname}{%
+         \topsep\z@\parsep\z@\itemsep\z@\partopsep\z@
+         \leftmargin2zw
+         \itemindent\labelwidth
+         \advance \itemindent 1zw
+         \labelsep 1zw
+         \listparindent 1zw
+         \usecounter{\@enumctr}%
+         \def\makelabel####1{\hss\llap{####1}}}%
+   \fi}{\endlist}%
+%%
+ \def\ex@head{例題\thechapter.\theexercise}%
+ \gdef\exercise@origin{#1}%
+ \ifx \exercise@origin\empty \else
+  \gdef\exercise@origin{\,{\bfseries #1}\,}\fi
+ \refstepcounter{exercise}%
+ \setbox\bk@bxb\vbox\bgroup
+ \clubpenalty \z@
+ \advance\linewidth -2\BoxRule
+ \advance\linewidth -2\VruleTextSep
+ \hsize\linewidth\@parboxrestore
+ \parindent1zw
+}
+
+\def\exercise@origin{}
+\def\exercise@font{\bfseries}
+\let\endexercise\endexbox
+\bkcountfalse
+
+
+\def\answer{\par
+ \setcounter{equation}{0}%
+ \renewcommand{\theequation}{\@alph\c@equation}%
+ \noindent
+ {\bfseries \hskip1zw\inhibitglue 【解\hskip1zw 答】\inhibitglue}\hskip1zw
+ \ignorespaces}
+\def\endanswer{%
+ \halflineskip
+ \ignorespaces}
+
+\def\Usecounter#1{\@nmbrlisttrue\def\@listctr{#1}}% \setcounter{#1}\z@
+\newcounter{question}[exercise]
+\def\question{%
+ \setcounter{equation}{0}%
+ \renewcommand{\theequation}{\@alph\c@equation}%
+%%
+ \renewenvironment{itemize}{%
+  \ifnum \@itemdepth >3 \@toodeep\else \advance\@itemdepth \@ne
+  \edef\@itemitem{labelitem\romannumeral\the\@itemdepth}%
+  \list{\csname\@itemitem\endcsname}
+   {\def\makelabel####1{\hss\llap{####1}}%
+    \labelsep1zw
+    \advance\leftmargin by .5zw
+    \itemsep\z@\topsep\z@\parsep\z@\partopsep\z@
+   }\fi
+ }{\endlist}%
+ \renewcommand{\theenumi}{\@alph\c@enumi}
+ \renewcommand{\labelenumi}{(\hbox to 5.55pt{\hss\theenumi\hss})}
+ \renewenvironment{enumerate}
+  {\ifnum \@enumdepth >3\relax\@toodeep\else
+   \advance\@enumdepth\@ne
+   \edef\@enumctr{enum\romannumeral\the\@enumdepth}%
+   \list{\csname label\@enumctr\endcsname}{%
+         \topsep\z@\parsep\z@\itemsep\z@\partopsep\z@
+         \leftmargin1zw % \z@
+         \itemindent\labelwidth
+         \advance \itemindent 1.25zw % 2.25zw
+         \labelsep 1zw
+         \listparindent 1zw
+         \usecounter{\@enumctr}%
+         \def\makelabel####1{\hss\llap{####1}}}%
+   \fi}{\endlist}%
+%%
+ \par
+ \vskip-\baselineskip
+ \vfill
+ \noindent
+ \hbox to \textwidth{%
+  \hbox to 3zw{\leaders\hbox to .5mm{%
+   \vrule height 2mm width .2mm\hss
+  }\hfil}\hskip.5zw
+  {\bfseries 問\hskip1zw 題}\hskip.5zw
+   \leaders\hbox to .5mm{\vrule height 2mm width .2mm\hss}\hfil
+  }\par
+ \bgroup
+ \list{{\bfseries \the\c@exercise.\thequestion}}
+  {\Usecounter{question}\def\makelabel##1{\rlap{##1}\hss}%
+   \leftmargin1zw
+   \itemindent\labelwidth
+   \advance \itemindent 1zw
+   \labelsep1zw
+   \listparindent1zw
+   \itemsep\z@\topsep\z@\parsep\z@\partopsep\z@
+ }%
+ \ignorespaces}
+
+\def\endquestion{\par\endlist\egroup
+ \ignorespaces}
+
+\endinput
+
+%% 奥付用
+\if@cameraready
+ \DeclareFixedFont{\KFlibname}{JY1}{gt}{m}{n}{12\@JQ}
+ \def\libname@font{\useroman{T1}{phv}{m}{n}\fontsize{12\@Q}{\z@}\selectfont
+  \KFlibname}
+ \DeclareFixedFont{\KFbookname}{JY1}{gt}{b}{n}{15\@JQ}
+ \def\bookname@font{\fontsize{10.95}{\z@}\selectfont\KFbookname}
+ \DeclareFixedFont{\KFscience}{JY1}{gt}{b}{n}{14\@JQ}
+\fi
+
+\endinput

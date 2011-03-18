@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Infty Editor document Version 2.5
+Masakazu Suzuki Laboratory
+Faculty of Mathematics
+Kyushu University
+   AND
+CAI SYSTEM Corporation
+-->
+<InftyDocument version="2.5">
+	
+	
+<head>
+		
+	<texsetting wysiwyg="0"><preamble>\documentclass[a4j,12pt]{jarticle}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{fancybox}
+\pagestyle{plain}
+</preamble></texsetting><paper pagenumber="1" margin="20,20,20,25">A4</paper></head><body fontsize="12pt" fontface="ＭＳ Ｐ明朝">
+<p><mblock><munit entity="1">underline</munit><munit italic="1">C<mlink type="lsub"><munit italic="1">n</munit></mlink><mlink type="rsub"><munit italic="1">x</munit></mlink></munit><munit italic="1">p<mlink type="rsup"><munit italic="1">x</munit></mlink></munit><munit>(</munit><munit>1</munit><munit entity="1">minus</munit><munit italic="1">p</munit><munit>)<mlink type="rsup"><munit italic="1">n</munit><munit entity="1">minus</munit><munit italic="1">x</munit></mlink></munit><munit>=</munit><munit entity="1">frac<mlink type="upper"><munit italic="1">n</munit><munit>!</munit></mlink><mlink type="under"><munit italic="1">x</munit><munit>!</munit><munit>(</munit><munit italic="1">n</munit><munit entity="1">minus</munit><munit italic="1">x</munit><munit>)</munit><munit>!</munit></mlink></munit><munit entity="1">cdot</munit><tex>\left(</tex><munit entity="1">frac<mlink type="upper"><munit entity="1" italic="1">lambda</munit></mlink><mlink type="under"><munit italic="1">n</munit></mlink></munit><tex>\right)\left(</tex><munit>1</munit><munit entity="1">minus</munit><munit entity="1">frac<mlink type="upper"><munit entity="1" italic="1">lambda</munit></mlink><mlink type="under"><munit italic="1">n</munit></mlink></munit><tex>\right)</tex><munit entity="1">hat</munit><munit italic="1">n</munit><munit entity="1">minus</munit><munit italic="1">x</munit></mblock></p>
+<p><mblock><munit>=</munit><munit entity="1">frac<mlink type="upper"><munit>1</munit></mlink><mlink type="under"><munit italic="1">x</munit><munit>!</munit></mlink></munit><munit entity="1">cdot</munit><munit entity="1">frac<mlink type="upper"><munit italic="1">n</munit><munit>(</munit><munit italic="1">n</munit><munit entity="1">minus</munit><munit>1</munit><munit>)</munit><munit entity="1">cdots</munit><munit>(</munit><munit italic="1">n</munit><munit entity="1">minus</munit><munit italic="1">x</munit><munit entity="1">minus</munit><munit>1</munit><munit>)</munit></mlink><mlink type="under"><munit italic="1">n</munit><munit italic="1">n</munit><munit entity="1">cdots</munit><munit italic="1">n</munit></mlink></munit><munit entity="1">cdot</munit><munit entity="1" italic="1">lambda<mlink type="rsup"><munit italic="1">x</munit></mlink></munit><tex>\left(</tex><munit>1</munit><munit entity="1">minus</munit><munit entity="1">frac<mlink type="upper"><munit entity="1" italic="1">lambda</munit></mlink><mlink type="under"><munit italic="1">n</munit></mlink></munit><tex>\right)</tex><munit entity="1">hat</munit><munit italic="1">n</munit><tex>\left(</tex><munit>1</munit><munit entity="1">minus</munit><munit entity="1">frac<mlink type="upper"><munit entity="1" italic="1">lambda</munit></mlink><mlink type="under"><munit italic="1">n</munit></mlink></munit><tex>\right)</tex><munit entity="1">hat</munit><munit entity="1">minus</munit><munit italic="1">x</munit></mblock></p>
+<p><mblock><munit>=</munit><munit entity="1">frac<mlink type="upper"><munit entity="1" italic="1">lambda<mlink type="rsup"><munit italic="1">x</munit></mlink></munit></mlink><mlink type="under"><munit italic="1">x</munit><munit>!</munit></mlink></munit><munit entity="1">cdot</munit><munit>1</munit><munit entity="1">cdot</munit><tex>\left(</tex><munit>1</munit><munit entity="1">minus</munit><munit entity="1">frac<mlink type="upper"><munit>1</munit></mlink><mlink type="under"><munit italic="1">n</munit></mlink></munit><tex>\right)</tex><munit entity="1">cdots</munit><tex>\left(</tex><munit>1</munit><munit entity="1">minus</munit><munit entity="1">frac<mlink type="upper"><munit italic="1">x</munit><munit entity="1">minus</munit><munit>1</munit></mlink><mlink type="under"><munit italic="1">n</munit></mlink></munit><tex>\right)\left(</tex><munit>1</munit><munit entity="1">minus</munit><munit entity="1">frac<mlink type="upper"><munit entity="1" italic="1">lambda</munit></mlink><mlink type="under"><munit italic="1">n</munit></mlink></munit><tex>\right)</tex><munit entity="1">hat</munit><munit italic="1">n</munit><tex>\left</tex><munit>(</munit><munit>1</munit><munit entity="1">minus</munit><munit entity="1">frac<mlink type="upper"><munit entity="1" italic="1">lambda</munit></mlink><mlink type="under"><munit italic="1">n</munit></mlink></munit><tex>\right)</tex><munit entity="1">hat</munit><munit entity="1">minus</munit><munit italic="1">x</munit></mblock></p></body></InftyDocument>

@@ -1,0 +1,322 @@
+\documentclass{jarticle}
+
+\usepackage[dvips]{graphicx}
+\usepackage{wrapfig}
+\usepackage{ascmac}
+\usepackage{makeidx}
+
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\evensidemargin}{0.5cm}
+\setlength{\textwidth}{423pt}
+\setlength{\topmargin}{0pt}
+
+\title{
+トランスクリプトーム，プロテオーム，メタボローム，フラクソームの統合によ
+る大腸菌の代謝解明\\
+{\normalsize Analysis of metabolic system of {\it Escherichia coli} by integration of\\
+\vspace{-1.0em} 
+transcriptomics, proteomics, metabolomics and fluxomics.}
+}
+
+\author{
+石井伸佳，曽我朋義，冨田勝 \\
+慶應義塾大学先端生命科学研究所\\
+{\normalsize Nobuyoshi Ishii, Tomoyoshi Soga, Masaru Tomita}\\
+{\normalsize Institute for Advanced Biosciences, Keio University}
+}
+
+\date{2008年1月}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+細胞システムは，細胞外の環境が変化したり，細胞内で異変が生じたときでも破
+綻せずに機能し続けるためのメカニズムを有していると考えられる．このような
+メカニズムは，細胞に対して各種の変動を与えたときの細胞内の様々な階層にお
+ける応答を観測することによって明らかにできる筈である．筆者らの研究所では，
+大腸菌K-12の野生株と一遺伝子欠損株を対象として，複数の網羅的測定技術を組
+み合わせた大規模な解析を行い，各種変動に対して細胞が応答する際の基本的な
+原理を明らかにした．
+
+\end{abstract}
+
+{\bf キーワード}：オミクス解析，大腸菌，代謝，遺伝子欠損株
+
+
+\section{はじめに}
+
+近年，分子生物学の世界では「網羅的解析」を意味するゲノミクス，プロテオミ
+クス等の「オミクス解析」が盛んに行われるようになってきた．中でも，21世紀
+に入って著しく発達したのは，本号でも特集されているメタボロミクス\cite{L1}であろ
+う．数百，数千種類にのぼる代謝物質を一斉に定量可能な技術は，細胞の機能解
+析に大きな可能性を開いた．また，やはり最近になって進歩した技術として代謝
+流束解析（Metabolic flux analysis）がある．代謝流束解析自体は比較的古く
+に開発された手法だが\cite{L2}，近年では安定同位体でラベルした基質を用いることで
+幾何学的に複雑な代謝系についても詳細な代謝流束が推定できるようになってき
+た\cite{L3}．多数の代謝経路を含む大規模な代謝流束解析で得られた結果は「フラクソ
+ーム」と呼ばれる\cite{L4}．今後，注目される「オミクス解析」の一つと言えるだろう．
+さて，以上のように各種の「オミクス解析」が試みられるようになってきたもの
+の，得られた網羅的データから何らかの有意義な生物学的知識を獲得するのは必
+ずしも容易ではないことが次第に認識されてきた．その理由の一つとしては，単
+一の「オミクス解析」は，結局，細胞機能のある特定の階層に関する極めて限定
+された情報を持つに過ぎず，細胞の活動の全体像を把握するには必ずしも十分で
+はないことが挙げられる．筆者らの研究所では，このような問題意識から，複数
+のオミクス解析を実施し，その結果を統合することで新たな知見を得ることを目
+指した\cite{L5}．
+
+
+\section{Keio collectionの連続培養}
+
+\begin{wrapfigure}[28]{r}{20zw}
+\begin{center}
+\vspace{-2zw}
+\includegraphics[scale=0.7]{fig1}
+\vspace{-1zw}
+\end{center}
+\caption{連続培養の模式図}
+\label{fig1}
+\begin{small}
+\begin{quotation}
+基質溶液を連続的に供給し，同時に同じ速度で培養液を抜き取る．基質流加速度
+を培養液体積で除算した数値は「希釈率」と呼ばれる．菌体の増殖速度は希釈率
+と等しい値で一定に保たれる．なお、一般によく行われる，フラスコ等に入れた
+培地に菌を接種し，培養液の流加も抜き取りも行わない方法は「バッチ培養」
+（もしくは回分培養）と呼ぶ．
+\end{quotation}
+\end{small}
+\end{wrapfigure}
+
+
+解析対象の生物種としては大腸菌K-12を選択し，連続培養\cite{L6}を行った．連続培養
+とは，培地溶液を一定速度で培養槽に供給しながら等量を同時に抜き取る培養法
+で，培養槽内の菌体濃度や制限基質濃度が一定に保たれる「定常状態」が実現さ
+れる(図\ref{fig1}）．定常状態が維持されている間も，菌体の増殖は続いており，その
+増殖速度は希釈率（基質流加速度を培養液体積で割った数値）に等しくなるよう，
+一定に制御される．定常状態の条件は代謝流束解析の計算を実施するために必要
+である．また，バッチ培養のように時々刻々と菌体の状態が変化している状況で
+はないため，サンプリングのタイミングなどに関わらず一定の細胞組成の菌体を
+取得できる利点がある．筆者らの研究所では，大腸菌K-12の全ての遺伝子に関す
+る一遺伝子欠損株のコレクション（Keio collection\cite{L7}）が作成済みであり，こ
+れを利用すれば様々な遺伝子欠損の影響を見ることができる．本研究では，Keio 
+collectionのうち中心炭素代謝系（解糖系，ペントースリン酸経路，クエン酸回
+路）遺伝子の欠損株24株を解析対象とした．
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{fig2}
+\end{center}
+\vspace{-2em}
+\caption{解析対象の大腸菌K-12中心炭素代謝経路}
+\label{fig2}
+\begin{small}
+\begin{quotation}
+解糖系・ペントースリン酸経路・クエン酸回路と，それらの周辺の幾つかの経路
+を含む．イタリック体で示したのが経路上の酵素をコードする遺伝子で，赤字が
+試験した一遺伝子欠損．太字は代謝物質． （文献\cite{L5}より転載・改変）
+\end{quotation}
+\end{small}
+\end{figure}
+
+図\ref{fig2}に中心炭素代謝系の代謝パスウ
+ェイと試験した欠損遺伝子の位置を示す．中心炭素代謝系は，エネルギー代謝お
+よび各種前駆体の生産を担っている重要な代謝系であり，そこに含まれる遺伝子
+の欠損は細胞に大きな変化をもたらすと予期された．遺伝子欠損は，いわば細胞
+の内部に与えられた変動であり，それによる細胞内物質のレベルの変化は内部変
+動に対する細胞の応答と捉えられる．これに対し，細胞の「外部」からの変動は，
+細胞の成育する環境条件の変更によって与えることが出来る．環境条件としては
+温度，pH，炭素／窒素源など，様々な要因が考えられるが，本研究では希釈率を
+変えることを以って外部変動とした．なお，希釈率変更は野生株についてのみ行
+った．
+
+\section{マルチオミクス解析}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{fig3}
+\end{center}
+\vspace{-2em}
+\caption{各種オミクス解析の結果}
+\label{fig3}
+\begin{small}
+\begin{quotation}
+A）Expression Index (EI)のヒートマップ図． GRではmRNA，タンパク質の発現
+に変化が見られるが，KOでは一部の株を除き大きな変化は見られない．代謝物質
+はKO・GRともに全般的にあまり変化していない．ヌクレオチドの一部に減少が見
+られるが，これは測定対象の安定性の低さなどに起因すると考えられる．
+B) Average Expression Index (AEI)．0に近いほど変化が小さいことを意味する．
+1： WT, 0.1 h\(^{-1}\)； 2： WT, 0.4 h\(^{-1}\)； 3：WT, 0.5 h\(^{-1}\)； 
+4：WT, 0.7 h\(^{-1}\)；5：
+{\it rpe}；6：{\it pgi}；7：{\it pgm}． mRNA， タンパク質のAEIは，GRにおける変化の幅の方が
+KOよりも大きい．一方，代謝物質はGRもKOも同様にあまり変化していない．なお，
+DNAマイクロアレイ，2D-DIGEのデータはここには示していないが，A) B)で観察さ
+れたのと同様の結果を示した． （文献\cite{L5}より転載・改変）
+\end{quotation}
+\end{small}
+\end{figure}
+
+一遺伝子欠損株，および種々の希釈率で培養した野生株について，複数の大規模
+な網羅的解析（マルチオミクス解析）を行った．すなわち，それぞれのサンプル
+について，トランスクリプトーム解析（DNAマイクロアレイおよび中心炭素代謝
+系の85遺伝子に関する定量PCR），プロテオーム解析（2次元ディファレンシャル
+ゲル電気泳動\footnote{Two dimensional differential gel electrophoresis：2D-DIGE.
+異なるサンプル間のタンパク質の発現比を調べる手法の一種。それぞれのサンプ
+ルを異なる蛍光色素でラベルした上で混合し、同じゲルで2次元ゲル電気泳動を
+行う。その後、各タンパク質スポットにおけるそれぞれの蛍光色素を検出するこ
+とで、そのタンパク質のサンプル間の比率を求める。}）
+および中心炭素代謝系の57タンパク質に関する液体クロマトグラフ-タンデム質
+量分析（Liquid chromatography/mass spectrometry/mass spectrometry： 
+LC-MS/MS）を利用した定量），メタボローム解析（キャピラリ電気泳動－飛行時
+間型質量分析（Capillary electrophoresis time-of-flight mass spectrometry： 
+CE-TOFMS）による579物質の定量），フラクソーム解析（菌体構成タンパク質の
+加水分解物の同位体分布をガスクロマトグラフ質量分析計で測定する手法）を同
+時に実施した．これらの分析手法のうち，LC-MS/MSによるタンパク質の定量法と
+CE-TOFMSによるメタボローム定量法は当研究所において独自に開発されたもので
+ある．測定結果は全てウェブサイト上で公開している（
+http://ecoli.iab.keio.ac.jp/）．得られた測定値については二段階の正規化\footnote{
+規格化ともいう。データを何らかのルールに沿って利用しやすい値に換算するこ
+と。ルールに特に決まりは無く、データを処理する者が任意に定めればよい。例
+えば、全測定値の中の最大値でそれぞれの測定値を割るという正規化を行えば、
+正規化された値は常に100％以内となり、測定値の相対的な大きさの評価が容易
+になる。
+}を
+行った．まず一段階目の正規化では，同日測定サンプルのうちのメディアンを分
+母として測定値を除算し，日間変動の影響を抑制した．次に，一段階目の正規化
+を施した測定値について，それぞれの物質におけるMedian absolute deviation 
+（MAD）\cite{L10}を用いて二段階目の正規化を行った．二段階目の正規化の目的は，
+mRNA，タンパク質，代謝物質という，一般に変動の幅が大きく異なる物質どうし
+で，値を比較できるように変動の幅を揃えることである（代謝物質濃度で5倍程
+度の変化が見られるのは稀ではないが，mRNAで発現量に5倍の差があれば大きな
+変化と言える）．最終的に得られた値を我々はExpression Index（EI）と呼んで
+いる．また，あるサンプルにおける特定のカテゴリーの物質の全EIの絶対値の平
+均値（Average Expression Index： AEI）も求め，細胞内の階層ごとの変動の相
+違を把握しやすいようにした．図\ref{fig3}にmRNA，タンパク質，代謝物質のEIおよびAEI
+を示す\cite{L5}．なお，AEIの有意差はGames-Howell法\cite{L11}で確認した．
+
+\section{代謝のロバスト性を実現するための大腸菌の戦略}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.55]{fig4_2}
+\end{center}
+\vspace{-2em}
+\caption{代謝流束解析の例（{\it zwf}欠損株）}
+\label{fig4}
+\begin{small}
+\begin{quotation}
+代謝物質，タンパク質の野生株に対する比をヒートマップで示した．無色は{\it zwf}
+欠損株か野生株の一方もしくは両方で検出できなかった物質．赤線が代謝流束解
+析において野生株とは逆方向に流れていると推定された経路．（文献\cite{L4}より転載・改変）
+\end{quotation}
+\end{small}
+\end{figure}
+
+図\ref{fig3}より読み取れるのは，「一遺伝子欠損株では，予想に反して，mRNA，タンパ
+ク質，代謝物質のいずれもあまり大きな変動は見られない」「野生株では，mRNA
+やタンパク質は希釈率の変化に追随して変動するが，代謝物質はやはりあまり大
+きく変動しない」という点である．ほとんどの一遺伝子欠損株でmRNA／タンパク
+質のレベルに大きな変化が見られなかったという結果は，大腸菌は基本的に一遺
+伝子欠損のような内部変動に対しては特に積極的な対応を行わないことを意味す
+る．それにも関わらず代謝物質レベルが安定に保たれるのは，欠損遺伝子のアイ
+ソザイムの存在や迂回／逆行経路の形成によって，必要な代謝物質の供給が維持
+されるためと考えられる．図\ref{fig4}に，逆行経路の形成が代謝流束解析によって推定
+された例を示す\cite{L5}．なお，{\it pfkA}欠損株と{\it rpiA}欠損株では，過去に文献で報告され
+たように\cite{L12,L13}，それぞれのアイソザイム（{\it pfkB}，{\it rpiB}）の発現量がきわめて
+増大するようなサプレッサー変異が生じたのが確認された\cite{L5}．これは，通常の発
+現量では必要な代謝流束を確保できない場合の対応であろう．一方，大腸菌は，
+環境変化（希釈率変更）に応じて増殖速度を変える場合，遺伝子発現を積極的に
+制御し，細胞内の代謝物質レベルを安定に保つと考えられる．このように，図\ref{fig3}
+の結果から，大腸菌は細胞内の代謝物質レベルを変動させないように様々な戦略
+を必要に応じて使い分けていると解釈することができる．
+
+\section{おわりに}
+
+生物の持つロバスト性\cite{L14,L15}については，主にシステム生物学の分野において，
+概念的な説明や小規模な数理モデルを用いての解析\cite{L16}が行われてきた．プロテ
+オーム測定による分析なども行われ始めているが\cite{L17}，これだけ広範にわたるオ
+ミクスデータによって実証的に検討されたのは本研究が史上初めてであろう．今
+後は，代謝のロバスト性が実現される具体的なメカニズムの解明に向けて，今回
+調べた代謝系の数理モデルを構築することが必要と考えられる．モデルによる解
+析が進めば，代謝のロバスト性を崩して有用物質を大量生産するための効率的な
+方法について検討できるようになると思われる．また，複数のオミクス解析を同
+時に実行する手法は，がん細胞の代謝システムの解明などの医学分野でも有効と
+考えられ，今後，多くの応用が期待される．
+
+\section*{謝辞}
+
+本研究は，経済産業省の産業科学技術プロジェクト「生物機能を活用した生産プ
+ロセスの基盤技術開発」の一環として，新エネルギー・産業技術総合開発機構
+（NEDO）から委託を受けて実施された．また，文部科学省の科研費・特定領域研
+究（２）「細菌細胞のコンピュータシミュレーション」，文部科学省の21世紀
+COEプログラム（生命科学分野）「システム生物学による生命機能の理解と制御」，
+山形県および鶴岡市の支援を受けた．
+
+\begin{thebibliography}{99}
+
+\bibitem{L1} Mashego M. R. et al.(2007) Microbial metabolomics: past, present and future methodologies.
+{\bf Biotechnol. Lett.} 29:1-16
+
+\bibitem{L2} Aiba S. et al(1979) Identification of metabolic model: citrate production from glucose by {\it Candida lipolytica}.
+{\bf Biotechnol. Bioeng.} 21:1373-1386
+
+\bibitem{L3} Shimizu K.(2004) Metabolic flux analysis based on 
+13C-labeling experiments and integration of the information with gene 
+and protein expression patterns. {\bf Adv. Biochem. Eng. Biotechnol.} 91:1-49
+
+\bibitem{L4} Wiechert W. et al.(2007) Fluxomics: mass spectrometry versus quantitative imaging.
+{\bf Curr. Opin. Plant Biol.} 10:323-330
+
+\bibitem{L5} Ishii N. et al.(2007) Multiple high-throughput analyses monitor 
+the response of {\it E. coli} to perturbations. {\bf Science} 316(5824):593-597
+
+\bibitem{L6} Hoskisson P. A. et al.(2005) Continuous culture--making a comeback? {\bf Microbiology} 151:3153-3159
+
+\bibitem{L7} Baba T. et al.(2006) Construction of {\it Escherichia coli} K-12 
+in-frame, single-gene knockout mutants: the Keio collection. {\bf Mol. Syst. 
+Biol.} 2:2006 0008
+
+\bibitem{L8} Soga T. et al.(2003) Quantitative metabolome analysis 
+using capillary electrophoresis mass spectrometry. {\bf J. Proteome. Res.} 
+2:488-494
+
+\bibitem{L9} Soga T. et al.(2006) Differential metabolomics reveals 
+ophthalmic acid as an oxidative stress biomarker indicating hepatic 
+glutathione consumption. {\bf J. Biol. Chem.} 281:16768-16776
+
+\bibitem{L10} Yang Y. H. et al.(2002) Normalization for cDNA microarray data: a robust composite method addressing single and multiple slide systematic variation.
+{\bf Nucleic Acids Res.} 30:e15
+\bibitem{L11} Games P. A. et al.(1976) Pairwise multiple comparison procedures with equal n's and/or variances: a Monte Carlo study. {\bf J. Educ. Stat.} 1:113-125
+\bibitem{L12} Daldal F.(1983) Molecular cloning of the gene for phosphofructokinase-2 of {\it Escherichia coli}
+ and the nature of a mutation, {\it pfkB}1, causing a high level of the enzyme. {\bf J. Mol. Biol.} 168:285-305
+\bibitem{L13} Skinner A. J. et al.(1974) Genetic studies on ribose 5-phosphate isomerase mutants of Escherichia coli K-12. {\bf J. Bacteriol.} 118:1183-1185
+\bibitem{L14} Kitano H.(2004) Biological robustness. {\bf Nat. Rev. Genet.} 5:826-837
+\bibitem{L15} Stelling J. et al.(2004) Robustness of cellular functions. {\bf Cell} 118:675-685
+\bibitem{L16} Stelling J. et al.(2004) Robustness properties of circadian clock architectures. {\bf Proc. Natl. Acad. Sci. U. S. A.} 101:13210-13215
+\bibitem{L17} Becker D. et al.(2006) Robust Salmonella metabolism limits possibilities for new antimicrobials. {\bf Nature} 440:303-307
+\bibitem{LJ1} 「メタボローム研究の最前線」（冨田勝，西岡孝明／編），シュプリンガーフェアラーク東京，2003
+\bibitem{LJ2} 「代謝工学 原理と方法論」（Stephanopoulos, G. N.ほか／著，清水 浩，塩谷 捨明／訳），東京電機大学出版局，2002
+\end{thebibliography}
+
+\vspace{1em}
+
+\section*{筆頭著者プロフィール}
+
+\begin{description}
+\item[石井伸佳] 1991年筑波大学農林学類卒業後，オリエンタル酵母工業，シムサイジ
+ャパン，日揮情報ソフトウェアを経て，2004年より慶應義塾大学先端生命科学研
+究所研究員．2007年に慶應義塾大学政策・メディア研究科にて博士（学術）取得．
+\end{description}
+
+\vspace{30em}
+
+\noindent
+\underline{\hspace{43em}}
+\begin{flushright}
+編集：斎藤輪太郎
+\end{flushright}
+\end{document}
+
+\end{document}
+

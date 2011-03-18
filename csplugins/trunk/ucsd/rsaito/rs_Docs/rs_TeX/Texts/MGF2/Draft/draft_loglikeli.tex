@@ -1,0 +1,53 @@
+\documentclass[a4j,12pt]{jarticle}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{fancybox}
+\pagestyle{plain}
+
+\begin{document}
+
+関数制約に関する以下の仮説を考える。
+
+\begin{equation}
+\left\{\begin{array}{l}
+H_{0}:\alpha(\theta_{0})=\alpha_{0}\\
+H_{1}:\text{その他}
+\end{array}\right.
+\end{equation}
+
+\noindent
+これに対する対数尤度比統計量は\(n\rightarrow\infty\)のとき、
+
+\begin{equation}
+k_{n}=2\displaystyle \log\frac{f_{n}(x|\Theta)}{f_{n}(X|\Theta_{0})}
+\stackrel{\cal L}{\rightarrow}
+\left\{\begin{array}{l}
+\chi_{r}^{2} \ \ \ (\mbox{For}\ H_{0})\\
+\infty       \ \ \ (\mbox{For}\ H_{1})
+\end{array}\right.
+\end{equation}
+
+\noindent
+なる漸近分布をする。ここで自由度\(r\)は以下のように与えられる。
+
+\begin{equation}
+r=\dim(\Theta)-\dim(\Theta_{0})
+\end{equation}
+
+\noindent
+すなわち自由度\(r\)は
+全母数空間$\Theta$と制限母数空間$\Theta_{0}$の自由な母数の
+個数の差、すなわち、推定すべき母数の個数の差に等しい。有意水準$\alpha$の棄却域は近似的に
+
+\begin{equation}
+W=\{k_{n}>\chi_{r,\alpha}^{2}\}
+\end{equation}
+
+\noindent
+として求まる。
+
+\end{document}

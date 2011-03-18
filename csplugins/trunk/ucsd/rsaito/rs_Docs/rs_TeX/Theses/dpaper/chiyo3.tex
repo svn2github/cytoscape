@@ -1,0 +1,504 @@
+
+\section{Overview}
+
+Two major signals on mRNA for translation initiation in {\it E.coli}
+are known, i.e. start codon, and Shine-Dalgarno sequence.  {\it
+E.coli} has several kinds of start codons, i.e. AUG, GUG, and UUG.
+However, when start codons are GUG or UUG, translational efficiency is
+much less. In this case, strong Shine-Dalgarno sequence may restore
+the translational efficiency.
+
+By using unbiased start codons in the whole genome of {\it E.coli},
+computational analysis of translation initiation sites were conducted
+to investigate whether Shine-Dalgarno sequences will be strong in case
+where the start codons are GTG. Information theory was applied for the
+accurate analysis. According to the results, Shine-Dalgarno sequences
+tend to be weak when start codons are GTG.
+
+\section{Introduction}
+
+It is widely accepted that in many bacteria, ribosome binds to
+ribosome binding sites on mRNA.  In this site, there are two major
+signals, i.e. start codon, and Shine-Dalgarno sequence\cite{label7}
+which is located several bases upstream of start codon. This sequence
+is thought to be a recognition signal for translation initiation, and
+makes complement base pair with 3' terminal of 16S rRNA,
+i.e.''acctcctta''. Thus optimal Shine-Dalgarno sequence would be
+``taAGGAGGt'', according to this model. Number of statistical analysis
+of this region was conducted\cite{label11,arclabel5}, and ``AGG''
+seems to be the core sequence. However, there are some cases where the
+ribosome initiate translation without Shine-Dalgarno
+sequences\cite{lts11}.
+
+Start codon is usually AUG, but sometimes it is GUG\cite{label20}, and
+GUG is less efficient for translation initiation. In this case,
+extensive Shine-Dalgarno sequence can restore efficiency of
+translation initiation\cite{arclabel12}.
+
+However, it is still unclear whether there is natural selection to
+extend Shine-Dalgarno sequence located before weak start codon,
+i.e. GTG. in the whole genome of {\it E.coli}. In fact, mRNA sequences
+used for the statistical analysis in many previous works tend to be
+biased toward highly expressed ones, and there may be difference of
+characteristics between those mRNA sequences and sequences that are
+actually transcribed in the whole genome\cite{lts14}. For example, in
+case of eucaryotes, Kozak\cite{label3} showed that most vertebrate
+mRNAs have A or G in -3 and G just after start codons. However,
+analysis of many regions of {\it H.sapiens} genome showed that there
+are many cases that do not fit into this rule\cite{lnis1}.
+
+In this work, computational analyses of the whole genome of {\it E.coli}
+were conducted to investigate the difference of sequence characteristics
+in cases where the start codons are ATG and GTG respectively, by
+calculating the frequencies of core Shine-Dalgarno sequence ``AGG'' for
+{\it E.coli}. When analyzing other procaryotes, most significant
+triplets were used to characterize sequences.  Information theory was
+applied for the analysis of {\it E.coli} sequences, proposed by
+Schneider et al.  \cite{label11,arclabelts200}. The results show that
+when the start codon is GTG, Shine-Dalgarno sequence tends to be also
+weak in {\it E.coli}.
+
+\section{Materials and methods}
+\subsection{Sequence data}
+
+The completely sequenced genome of {\it E.coli}\cite{label1065}
+downloaded from GenBank was used. Original computer program was used to
+extract sequences surrounding translation initiation sites by looking
+annotation keyword ``CDS''.
+
+Those sequences are ORFs and it is uncertain whether translation
+initiation really occurs at annotated position or not. In fact, ORFs
+usually code for proteins, but start positions tend to be wrong. Link
+et al.\cite{lts14} have experimentally confirmed that some of the
+annotated start codons really function as start codons.  As those
+confirmed start codons are not biased to highly expressed genes, using
+these data seems to be appropriate for the purpose of this
+work. However, these data contain only 17 GTG start codons, of 204
+start codons altogether, which is too few to evaluate statistical
+significance. Thus in addition to these confirmed start codons, those
+which are not experimentally confirmed yet were used. However from
+these non experimentally identified data, sequences which has ATG
+triplet in the same reading frame as start codons within 150 bases(50
+codons) from start codons(both upstream and downstream) were
+eliminated. In this way, wrong start codons can be reduced. 781
+sequences and 81 sequences altogether were obtained, whose start
+codons are ATG and GTG respectively. It is possible to extend this 150
+bases to longer range, but number of sequences which can be obtained
+will decrease, resulting the decrease of statistical significance.
+
+For other procaryotes, sequences which has ATG triplet in the same
+reading frame as start codons within 150 bases were also eliminated
+when the annotated start codons were ATG. However when the annotated
+start codons were GTG, sequences which has ATG triplets in the same
+reading frame as start codons within only 75 bases were eliminated to
+avoid the lack of sequence data sets.
+
+Those two groups(ATG, GTG) of sequences were characterized in
+various ways. How it was done is discussed in the following subsections.
+
+\subsection{Measurement of frequency of core Shine-Dalgarno sequence ``AGG''}
+
+According to the analysis of this work, ``AGG'' was the most
+statistically significant triplet of all 64 triplets for both ATG and
+GTG in {\it E.coli}. Also the core Shine-Dalgarno sequence is known to
+be ``AGG''\cite{arclabel5}.  Thus one of the primitive way to find the
+characteristics of Shine-Dalgarno sequences is to measure the frequency
+of AGG triplets around start codons. To absorb the fluctuation of the
+frequencies, the window size was set to 10 and the number of ``AGG''s in
+that window was counted. Thus for example, frequency 0.5 in position -20
+means that 50\% of the sequences which were analyzed has at least one
+``AGG'' between -20 and -11. For other procaryotes, frequencies of most
+significant triplets were measured. Window size was set up to 3 bases.
+
+
+\subsection{Calculation of information content}
+
+Because there are unbiased and experimentally identified start
+codons for {\it E.coli}, it is worth conducting further analyses in this 
+species.
+
+If there tends to be specific sequence(implies Shine-Dalgarno sequence
+in this paper) at the specific location, bases surrounding that
+location tends to be biased. Thus how much the bases are biased at
+specific location gives us information about how the sequences are
+conserved at that location. There are several ways to measure how the
+bases are biased, and using \(\chi^{2}\) value is traditional way to
+do so.  However, it is difficult to compare more than two kinds of
+biased sites(implies ATG and GTG in this paper) using \(\chi^{2}\)
+value. In fact, \(\chi^{2}\) value will increase with a lot of
+similarly biased sequences, because statistical significance will
+increase with a lot of data.
+
+Schneider et al.\cite{label11} showed that information content may be
+useful to analyze these kind of sequences recognized by one kind of
+molecule such as ribosome.
+
+Information content \(R_{sequence}\) at each position \(L\) is
+calculated by the following formula.
+
+\vspace{1em}
+
+\begin{math}
+R_{sequence}(L) = -\sum_{b=a,t,c,g}P(b)\log_{2}P(b)
++ \sum_{b=a,t,c,g}f(b,L)\log_{2}f(b,L)
+- \frac{3}{2n\log_{e}2} 
+\end{math}
+
+\vspace{1em}
+
+\noindent
+where \(P(b)\) is frequency of base \(b\) observed in the genome, and 
+\(f(b,L)\) is the frequency of base \(b\) at position \(L\) and \(n\)
+is the number of sequences to analyze. In {\it E.coli}, 
+\(-\sum_{b=a,t,c,g}P(b)\log_{2}P(b)\) is close to 2 and it can be shown
+that \(0 \leq -\sum_{b=a,t,c,g}f(b,L)\log_{2}f(b,L) \leq 2\) provided
+that \(\sum_{b=a,t,c,g}f(b,L) = 1\).
+Thus, \(R_{sequence}\) tend to be between 0 and 2, no matter how large 
+amount of sequences that are dealt with. The term \(- \frac{3}{2n\log_{e}2}\) 
+makes \({\rm E}(R_{sequence}(L)) = 0\) when bases at position \(L\) are
+unbiased(explained in \ref{ic_detail}), provided \(n > 50\). 
+
+\(R_{sequence}\) will get close to 0 as base bias gets weak, and it will
+get close to 2 as base bias becomes strong. Information content of
+translation initiation sites whose start codons are ATG, and whose start
+codons are GTG were calculated separately.
+
+
+\subsection{Individual information histogram}
+
+Individual information weight matrix can determine how much
+information content each sequence has according to the specific
+model\cite{arclabelts200}. Thus individual information weight 
+matrix which is built according to sequences surrounding start codons
+can determine whether given single sequence is likely to be
+translation initiation sites or not, considering how much information
+content that the sequence has. This is powerful method to determine
+whether the given sequence has specific molecule binding site or not,
+because the matrix contains information about frequency of bases at
+each location(Traditional ``consensus'' sequence will through away
+information about less frequent sequences). Furthermore, this matrix
+is highly related to thermodynamics, which is one of the important
+model for reaction of molecules.
+
+Value of \((B,L)\) in matrix \(R_{iw}\) is calculated by the following 
+formula.
+
+\vspace{1em}
+
+\begin{math}
+R_{iw}(B,L) = -\sum_{b=a,t,c,g}P(b)\log_{2}P(b)
++ \log_{2}f(B,L) 
+- \frac{3}{2n\log_{e}2}
+\end{math}
+
+\vspace{1em}
+
+By applying each sequence \(j\) to this matrix with the following
+formula, individual information \(R_{i}(j)\) can be obtained according
+the model of that matrix\footnote{When \(f(B,L) = 0\), it is replaced
+with \(\frac{1}{n+2}\).}.
+
+\vspace{1em}
+
+\begin{math}
+R_{i}(j) = \sum_{L}\sum_{b=a,t,c,g}s(b,L,j)R_{iw}(b,L)
+\end{math}
+
+\vspace{1em}
+
+\noindent
+where \(s(b,L,j) = 1\) if and only if there is base \(b\) at position
+\(L\) in the sequence \(j\), otherwise \(s(b,L,j) = 0\). 
+Since \(R_{i}\) is the sum of a number of small components, it tends
+to follow normal distribution, according to the central limit theorem.
+Average and variance can be calculated by the following formula.
+
+\vspace{1em}
+
+\begin{math}
+{\rm E}(R_{i}) = \sum_{L}R_{sequence}(L)\:\:\:\:\:\:\:\:\:{\rm V}(R_{i}) =
+\frac{1}{n - 1}\sum_{j}(R_{i}(j) - {\rm E}(R_{i}))^{2}
+\end{math}
+
+\vspace{1em}
+
+First, a matrix using all the sequences(both ATG, and GTG) was
+constructed. This matrix(in other words, sequence recognizer) can be
+assumed as a general ribosome. Then a matrix using only sequences whose
+start codons are ATG was constructed. This matrix can be assumed as
+ribosome that can recognize ATGs. Finally a matrix using only
+sequences whose start codons are GTG were constructed. This matrix can
+be assumed as ribosome that can recognize GTGs.
+
+Then each sequences were applied to those matrices and histograms of
+\(R_{i}\) were created to see how \(R_{i}\) will distribute. If the
+distributions of \(R_{i}\) of ATG and GTG are similar in all these three
+matrix, it means that there is few difference between ribosomes that can
+recognize ATG, and ribosomes that can recognize GTG.
+
+When calculating \(R_{i}\), A of ATG, and G of GTG were ignored, to
+eliminate the influence of start codons themselves.
+
+\section{Results and discussion}
+
+\subsection{Frequency of core Shine-Dalgarno sequence ``AGG''}
+
+Frequency of ``AGG'' triplets around ATG starts and GTG starts are
+shown in figure \ref{ecagg}. Obviously sequences before ATG starts
+have more core Shine-Dalgarno sequences than GTG starts do. In fact,
+60\% of ATG start sequences have ``AGG''s between -16 and -7, whereas
+only 40\% of GTG start sequences have them there. \(\chi^{2}\) test
+tells us that significance of this difference at corresponding
+position is \(P < 0.01\).
+
+\begin{figure}
+\begin{center}
+\epsfile{file=aggs10.ps,scale=0.4}
+\epsfile{file=agg_dif.ps,scale=0.4}
+\end{center}
+\caption{Frequency of ``AGG'' triplets around ATG start codons and GTG 
+start codons(left), and its statistical significance of difference in
+\(\chi^{2}\) with 1 degree of freedom(right)}
+\label{ecagg}
+\end{figure}
+
+Analysis of difference of frequencies were also conducted for other
+procaryotes, although annotations in GenBank database for other
+procaryotes may contain more errors. Table \ref{agtg_r} shows number
+of ATGs and GTGs used for the analysis, most significant triples and
+ratio of frequencies of that triplets when start codons are GTG and
+ATG. Also \(\chi^{2}\) values for that ratio are shown. According to
+this table, GTG sequences have less Shine-Dalgarno sequences at
+statistically significant level in {\it P.horikoshii}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|r|r|c|c|r|}
+\hline
+Species & Number  & Number  & Significant & GTG-SD 
+ & \(\chi^{2}\) \\
+        & of ATGs & of GTGs & triplet &  
+ : ATG-SD ratio &  \\
+\hline
+{\it A.pernix} & 1008 & 2982 & gtg & 1.47 & 3.46 \\
+{\it A.fulgidus} & 1419 & 552 & gtg & 0.56 & 6.40 \\
+{\it A.aeolicus} & 1635 & 264 & gag & 0.81 & 0.68 \\
+{\it B.burgdorferi} & 513 & 117 & agg & 1.72 & 3.86 \\
+{\it B.subtilis} & 1269 & 402 & agg & 0.86 & 1.03 \\
+{\it C.pneumoniae} & 771 & 195 & agg & 1.21 & 0.49 \\
+{\it C.trachomatis} & 717 & 129 & agg & 1.57 & 2.10 \\
+{\it E.coli} & 1902 & 549 & agg & 0.55 & 12.27 \\
+{\it H.influenzae} & 1194 & 171 & agg & 0.50 & 5.64 \\
+{\it H.pylori} & 906 & 222 & agg & 0.64 & 3.81 \\
+{\it M.genitalium} & 459 & 57 & taa & 1.50 & 1.12 \\
+{\it M.jannaschii} & 726 & 96 & gtg & 0.64 & 1.98 \\
+{\it M.pneumoniae} & 798 & 87 & agg & 0.92 & 0.01 \\
+{\it M.thermoautotrophicum} & 396 & 267 & gtg & 0.61 & 2.46 \\
+{\it M.tuberculosis} & 2127 & 2409 & agg & 1.00 & 0.00 \\
+{\it P.abyssi} & 867 & 291 & gtg & 0.61 & 4.93 \\
+{\it P.horikoshii} & 972 & 480 & gtg & 0.37 & 12.84 \\
+{\it R.prowazekii} & 546 & 78 & aat & 0.96 & 0.01 \\
+{\it Synechocystis PCC6803} & 2175 & 741 & acc & 0.58 & 5.04 \\
+{\it T.maritima} & 885 & 648 & agg & 0.88 & 0.90 \\
+{\it T.pallidum} & 501 & 519 & agg & 1.12 & 0.25 \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Difference of frequency of most significant triplets
+in ATG start sequences and GTG start sequences(Note that \(P < 0.01\) if \(\chi^{2} > 6.64\).)}
+\label{agtg_r}
+
+\end{table}
+
+\subsection{Calculation of information content}
+
+\(R_{sequence}\) around ATG starts and GTG starts are shown in figure 
+\ref{rentro}. There is a peak at start codons for both ATG and GTG.
+However, only ATG start sequence has obvious peak before start codons.
+\(\chi^{2}\) test tells us that significance of difference of base
+distributions in this region is \(P < 0.01\).
+Thus sequences before start ATGs are more conserved than those before
+start GTGs.
+
+\begin{figure}
+\begin{center}
+\epsfile{file=rseq_agtg.ps,scale=0.40}
+\epsfile{file=agtg_pchi.ps,scale=0.40}
+\end{center}
+\caption{\(R_{sequence}\) around ATG start codons and GTG start
+codons(left) and its statistical significance in \(\chi^{2}\) with 3
+degrees of freedom(Start codons are omitted).} 
+\label{rentro}
+\end{figure}
+
+
+\subsection{Distribution of individual information}
+
+As explained before, 3 kinds of matrices were constructed. They are
+shown in table \ref{magtg},\ref{matg} and \ref{mgtg}. Actually
+matrices from position -30 to position +30 were constructed, because
+in this region, \(R_{sequence}\) was apparently above 0. However, only
+positions from - 11 to 0 are shown in those tables. Then each
+sequences were applied to those matrices and histograms of \(R_{i}\)
+were created(Histograms of ATG and GTG were made separately).
+
+\begin{table}
+\begin{small}
+\begin{tabular}{l|rrrrrrrrrrrrrrrr}
+\hline
+pos  &-11  &-10  & -9  & -8  & -7  & -6  & -5  & -4  & -3  & -2  & -1
+& +0\\
+\hline
+ a &+0.48&+0.44&+0.25&+0.57&+0.62&+0.46&+0.49&+0.56&+0.77&+0.06&+0.19&+1.85\\
+ t &-1.28&-0.96&-1.34&-0.95&-0.42&-0.07&+0.05&-0.03&-0.58&+0.30&+0.26&-7.76\\
+ c &-1.00&-1.54&-1.58&-1.33&-0.93&-0.69&-0.50&-0.10&-0.40&+0.15&+0.12&-7.76\\
+ g &+0.75&+0.83&+1.05&+0.67&+0.25&+0.06&-0.24&-0.71&-0.22&-0.71&-0.81&-1.41\\
+\hline
+\end{tabular}
+\end{small}
+\caption{Individual information weight matrix derived from ATG and
+GTG start sequences} 
+\label{magtg}
+\end{table}
+\begin{table}
+\begin{small}
+\begin{tabular}{l|rrrrrrrrrrrrrrrr}
+\hline
+pos  &-11  &-10  & -9  & -8  & -7  & -6  & -5  & -4  & -3  & -2  & -1
+& +0\\
+\hline
+ a &+0.51&+0.46&+0.25&+0.58&+0.66&+0.51&+0.49&+0.56&+0.79&+0.08&+0.23&+2.00\\
+ t &-1.42&-1.03&-1.38&-1.00&-0.45&-0.11&+0.07&-0.05&-0.58&+0.31&+0.21&-7.62\\
+ c &-1.14&-1.73&-1.86&-1.40&-1.06&-0.75&-0.48&-0.11&-0.48&+0.16&+0.12&-7.62\\
+ g &+0.80&+0.86&+1.10&+0.70&+0.26&+0.07&-0.28&-0.67&-0.19&-0.79&-0.79&-7.62\\
+\hline
+\end{tabular}
+\end{small}
+\caption{Individual information weight matrix derived from ATG start
+sequences} 
+\label{matg}
+\end{table}
+\begin{table}
+\begin{small}
+\begin{tabular}{l|rrrrrrrrrrrrrrrr}
+\hline
+pos  &-11  &-10  & -9  & -8  & -7  & -6  & -5  & -4  & -3  & -2  & -1
+& +0\\
+\hline
+ a &+0.09&+0.09&+0.22&+0.49&+0.09&-0.20&+0.49&+0.54&+0.54&-0.20&-0.28&-4.40\\
+ t &-0.37&-0.46&-1.04&-0.56&-0.20&+0.28&-0.28&+0.09&-0.67&+0.22&+0.59&-4.40\\
+ c &-0.12&-0.46&-0.20&-0.78&-0.12&-0.20&-0.67&-0.04&+0.22&-0.04&+0.16&-4.40\\
+ g &+0.22&+0.49&+0.49&+0.33&+0.09&-0.04&+0.09&-1.20&-0.56&-0.12&-1.04&+1.97\\
+\hline
+\end{tabular}
+\end{small}
+\caption{Individual information weight matrix derived from GTG start
+sequences} 
+\label{mgtg}
+\end{table}
+
+Result of applying sequences to A/GTG model is shown in figure
+\ref{agtg_model}. \(R_{i}\) of most ATG lies between 0 and
+15 bits. However, \(R_{i}\) of GTG is spread to negative bits.
+This indicates that although many ribosome binding sites in GTG
+sequences are similar to that of ATG sequences, there are many GTG
+sequences that cannot be recognized by ribosomes in general, which
+implies that there are many sequences with weak Shine-Dalgarno
+sequences. 
+
+As there are more ATG sequences than GTG sequences, result shown in
+figure \ref{atg_model} is similar to the one shown in figure
+\ref{agtg_model}. 
+
+Result of applying sequences to GTG model is shown in figure
+\ref{gtg_model}. The distributions of both two look much similar.
+This indicates that most ATG start sequences can be recognized by ribosomes
+for GTG sequences(if such ribosome exists). In other words, 
+there are not much very common consensus sequences specific to GTG start
+sequences, at least from position -30 to +30. Once again, there are
+many GTG start sequences that do not have strong Shine-Dalgarno
+sequences. 
+
+\begin{figure}
+\begin{center}
+\epsfile{file=agtg_model2.ps,scale=0.45}
+\epsfile{file=g2agtg.ps,scale=0.3}
+\end{center}
+\caption{Distribution of \(R_{i}\) according to A/GTG model}
+\label{agtg_model}
+\begin{quotation}
+For ATG, \({\rm E}(R_{i}) = 7.87\), \({\rm V}(R_{i}) = 12.80\).
+For GTG, \({\rm E}(R_{i}) = 4.61\), \({\rm V}(R_{i}) = 33.84\).
+\end{quotation}
+\end{figure}
+\begin{figure}
+\begin{center}
+\epsfile{file=atg_model2.ps,scale=0.45}
+\epsfile{file=g2atg.ps,scale=0.3}
+\end{center}
+\caption{Distribution of \(R_{i}\) according to ATG model}
+\label{atg_model}
+\begin{quotation}
+For ATG, \({\rm E}(R_{i}) = 7.88\), \({\rm V}(R_{i}) = 14.12\).
+For GTG, \({\rm E}(R_{i}) = 4.12\), \({\rm V}(R_{i}) = 37.63\).
+\end{quotation}
+\end{figure}
+\begin{figure}
+\begin{center}
+\epsfile{file=gtg_model2.ps,scale=0.45}
+\epsfile{file=g2gtg.ps,scale=0.3}
+\end{center}
+\caption{Distribution of \(R_{i}\) according to GTG model}
+\label{gtg_model}
+\begin{quotation}
+For ATG, \({\rm E}(R_{i}) = 4.05\), \({\rm V}(R_{i}) = 9.00\).
+For GTG, \({\rm E}(R_{i}) = 5.16\), \({\rm V}(R_{i}) = 14.45\).
+\end{quotation}
+\end{figure}
+
+\subsection{Discussion}
+
+These mentioned results show that in case where the start codons are
+GTG, there are many sequences that do not have obvious Shine-Dalgarno
+sequences. Three possible explanations for this result are given in
+the following.
+
+First possibility is that translation initiation sites with GTG starts
+often use mechanisms other than Shine-Dalgarno model. Several 
+mechanisms other than Shine-Dalgarno model were proposed. For example,
+S1 protein can be used to recognize translation initiation sites without
+Shine-Dalgarno sequences\cite{lts11}. And as another example,
+downstream box is shown to be translation initiation signals, and it
+can interact with 16S rRNA\cite{ldbox3}.
+
+Second possibility is that negative selection pressure worked on both
+AUG and Shine-Dalgarno sequences to reduce expression of the genes in
+the translation regulation level. Or positive selection worked on both
+AUG and Shine-Dalgarno sequences to increase expression of the
+genes. Miyasaka\cite{label5551} showed that there is positive
+correlation between strength of consensus around start codons and
+codon usage in {\it S.cerevisiae}. He infers that it is because the
+translational selection on codon usage bias is working in {\it S.cerevisiae}.
+This may be also the case with {\it E.coli}.
+
+Third possibility is that even after the exclusion of untrustworthy
+start codons, there are still some wrong start codons.  Thus to
+confirm that the results are really correct, analysis of many
+trustworthy unbiased sequences surrounding translation initiation
+sites from the whole genome are needed.
+
+In this work, secondary structure of mRNA was not taken into
+account. However, secondary structures have great effect on
+translation initiation\cite{lsstr1}. Thus in the future work, it must
+be taken into account, although very difficult.  
+
+\section{Summary} 
+
+In this work, it turned out that by calculating frequencies of ``AGG''
+triplets and information contents, sequences before GTG starts have
+fewer Shine-Dalgarno sequences than those before ATG starts in {\it
+E.coli}. Assuming that the sequence data is trustworthy, this may be
+because alternative mechanisms are likely to be used when start codons
+are GTG. Or positive selection worked on both AUG and Shine-Dalgarno
+sequences to increase expression of the indispensable genes.
+

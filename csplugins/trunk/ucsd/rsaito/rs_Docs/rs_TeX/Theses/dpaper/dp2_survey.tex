@@ -1,0 +1,595 @@
+
+In this chapter, details known so far about translation initiation is
+described. And finally, existing methods to predict translation
+initiation sites are described.
+
+\section{Translation initiation mechanisms}
+
+In this section, mechanisms of translation initiation investigated by
+other researches are described.  The process of translation initiation
+in eucaryotes is different from that of procaryotes.  First
+the translation initiation process of procaryotes is discussed. And then
+that of eucaryotes is discussed.
+
+\subsection{Translation initiation in procaryotes}
+
+In procaryotes, a ribosome with tRNA which carries methionine binds to
+the specific region of mRNA and recognizes an AUG codon nearby and
+protein synthesis begins. In this process the main factors are
+ribosome, tRNA with methionine(fMet-tRNA$^{\rm Metf}$), and mRNA. In
+addition, at least initiation factors and GTP molecule are required to
+ensure the efficiency and fidelity of this process.
+
+The descriptions of each factor are given\cite{label20}.
+
+\subsubsection{fMet-tRNA$^{\rm Metf}$}
+A translation starts with methionine, whose codon is usually AUG.
+Initiator tRNA(tRNA$^{\rm Metf}$) with methionine(fMet-tRNA$^{\rm
+Metf}$) recognizes AUG codon and translates it to methionine.  AUG
+codon in the middle of the coding region is translated by
+Met-tRNA$^{\rm Met}$ which is used for elongation of
+protein. fMet-tRNA$^{\rm Metf}$, which is used for translation
+initiation, is different from Met-tRNA$^{\rm Met}$ in some aspects.
+One of the aspects is the presence of three consecutive GC base pairs in the
+anticodon stem which is important for the formation of anti-codon loop
+and binding to the ribosomal P-site\footnote{P-site is where the end
+of elongating amino acid with tRNA(peptidyl-tRNA) is located, waiting
+for the next amino acid with tRNA(aminoacyl tRNA)}.  Another
+difference is that \(\alpha\)NH2 group of the methionine in
+fMet-tRNA$^{\rm Metf}$ is blocked by formylation and it cannot form a
+peptide bond to work as elongation tRNA.
+
+\subsubsection{Ribosome}
+
+70S\footnote{S values indicate the rate of sedimentation in an
+ultracentrifuge} ribosome is used in bacterial translation initiation.
+It consists of 30S small subunit and 50S large subunit.  
+30S small subunit contains 16S rRNA and 21 proteins, and 50S large
+subunit contains 5S rRNA, 23S rRNA and 34 proteins.  After the
+small ribosomal subunit loaded with initiation factors finds the start
+codon, the large subunit can bind to small subunit.
+
+
+\subsubsection{mRNA}
+
+In bacterial mRNA, ribosome binding site and start codon play important
+roles for translation initiation. Ribosome binding site is where the 30S
+small subunit binds first on mRNA. This site contains
+purine\footnote{Adenine and guanine} rich sequence which is called
+Shine-Dalgarno sequence\cite{label7}. The 3' terminal of 16S rRNA in
+30S subunit binds to this sequence and helps 30S subunit to bind to mRNA.
+This phenomenon has been proven by some experiments in which 
+16S rRNA with altered terminal bases was shown to have ability to
+efficiently initiate translation if bases before start codons are
+complement to these altered bases\cite{label7011}. An interaction between 16S rRNA and
+Shine-Dalgarno sequence makes a major contribution to the efficiency of
+initiation and provides the bacterial cell with a simple way to regulate
+protein synthesis. Many translational control mechanisms in procaryotes
+involve blocking the Shine-Dalgarno sequence, either by covering it with
+a bound protein or by incorporating it into a base-paired region in the
+mRNA molecule.
+
+Most {\it E.coli} mRNAs are thought to have Shine-Dalgarno sequences
+located several bases upstream from start codons.  The sequence of 3'
+terminal of 16S rRNA in {\it E.coli} is
+"....acctgcggttggatcacctcctta". Shine-Dalgarno sequence should be
+complement to this sequence, i.e., "taaggaggtgatccaaccgcaggt...." .
+However, this sequence is not usually conserved, and only 3 to 9
+nucleotides will make pairs with the 16S rRNA 3'terminal sequence.  If
+the length of complementarity is too long, ribosome will bind to mRNA
+too tightly, disturbing the migration of the ribosome.  There are
+homology between {\it E.coli} 16S rRNA and that of other bacteria.
+
+Schneider et al.\cite{label11} has analyzed translation initiation
+sites of {\it E.coli} in terms of information theory. Schurr et
+al.\cite{label4700} have characterized ribosome binding sites of {\it
+E.coli} by calculating free energy between 3' terminal of 16S rRNA and
+mRNA.  Osada et al.\cite{arclabel_osada} conducted similar analyses
+with various species.  Barrick et al.\cite{label28} has quantitatively
+analyzed Shine-Dalgarno sequence by the experiments.  
+
+There is a possibility that 16S rRNA binds to multiple regions of
+mRNA. These regions may be upstream of AUG, the spacer region between
+Shine-Dalgarno sequence and AUG, or downstream of AUG\cite{label10}.
+But for downstream of AUG, the position +16 has been determined by
+experiments as being the limit of the downstream region in the mRNA
+which interacts strongly with the ribosome.
+
+Distance between the Shine-Dalgarno sequence and the start codon is
+known to affect efficiency of translation significantly. Optimal
+distance between the Shine-Dalgarno sequence and the start codon was
+estimated to be 4 to 9 base pairs\cite{label9}.  Three examples are
+listed below. The Shine-Dalgarno sequence and functional start
+codon are shown in larger type, and the underlined AUG and GUG
+triplets are not functional, presumably because they lie too close to
+the Shine-Dalgarno sequence\cite{label22}.
+
+
+\begin{description}
+\item[{\it E.coli} trpC]  {\large GAGG}GUA\underline{AUG}{\large AUG}
+\item[coliphage QB polymerase]
+{\large UAAGG\underline{A}}\underline{UG}AA\underline{AUG}C{\large AUG} 
+\item[{\it E.coli} lac I] 
+{\large G\underline{GUG}}\underline{GUG}A\underline{AU{\large G}}{\large UG}
+\end{description}
+
+
+Start codon is AUG in most of the time, but sometimes GUG(8\%) and
+UUG(1\%) work as start codon. Since AUG forms the most stable
+interaction with the CAU anticodon in fMet-tRNA$^{\rm Metf}$, the
+translational efficiency of AUG is greater than that of GUG or
+UUG. GUG and UUG are also recognized by same tRNA as AUG starts
+according to wobble hypothesis\cite{label1020}.
+
+In most cases, changing the rare initiation triplet
+into the more common AUG will cause the increase of expression and this
+may disturb the normal mechanism of gene expression. Thus one of the reasons
+that the bacteria use start codon like GUG or UUG is that they may be
+appropriate for the expression control of some specific genes. Notice that
+when GUG is read as a start codon, it is translated to formyl-methionine.
+If we change normal AUG to GUG, translation may not occur.
+
+
+AUG triplets preceded by appropriately spaced Shine-Dalgarno-like
+sequences appear randomly throughout the {\it E.coli} genome, which
+does not function as translation initiation site.  Thus, besides
+Shine-Dalgarno sequence and start codon and their distance, there are
+some factors that affect translations. The important one is a
+secondary structure. It may separate or hide Shine-Dalgarno sequence
+and/or AUG triplet.  Thus, an access of ribosome to non-initiation
+site of mRNA is restricted by the secondary structure of mRNA. But a
+good Shine-Dalgarno complementarity provides the ribosome with an
+increased affinity for its binding site, and thereby enhances its
+ability to compete against the secondary structure\cite{label26}.
+
+Another factors may be some consensus sequences. That are sequences 
+preceding Shine-Dalgarno sequence,
+sequences between Shine-Dalgarno sequence and start codon, and sequence
+following the start codon. Some examples are listed below.
+
+\begin{enumerate}
+\item Except for ribosome binding sites, there are not many  G's and there are
+many A's and U's.
+\item position -3 is likely to be A and position +4 through +7 is
+likely to be GCUA or AAAA. In one experiment, which changed AAA to AAG,
+the translational efficiency reduced by 70\%\cite{label25}.
+\item When the sequences preceding Shine-Dalgarno sequence is eliminated,
+sometimes translation does not occur.
+
+\end{enumerate}
+
+Bacterial mRNAs are commonly polycistronic. They encode multiple
+proteins that are separatedly translated from the same mRNA
+molecule. Sometimes coding regions overlap, but it may not effect the
+fidelity of translation. However, in some cases, it may interfere
+translation\cite{label1307}. Sometimes coding regions overlap by one
+base, which will be like [UG\underline{A]UG}. In polycistronic mRNAs,
+translation reinitiation(translational coupling) may
+occur\cite{label891,label1205}. In this case, ribosome may initiate
+translation at the next gene without dissociation from
+mRNA\cite{label4001}. In some case, ribosomes translating the first
+coding region melt secondary structure of mRNA so that second or third
+coding region can be translated without any interference. Reinitiation
+efficiency generally increases when the distance between the stop codon
+and the restart codon decreases\cite{label4003}. To recycle the ribosome
+which has just terminated translation, probably 50S subunit must be
+released from 30S subunit, and RRF(ribosome recycling factor) may be
+required in this process\cite{label1189}.
+
+ 
+\subsubsection{Initiation factors}
+The initiation process is complicated, involving a number of steps
+catalyzed by proteins called initiation factors, many of which are
+themselves composed of several polypeptide chains. In {\it E.coli},
+three initiation factors namely IF1, IF2 and IF3 seem to play
+important roles for translation initiation. 30S subunit has a single
+high-affinity site for each factor.  However IF1 and IF3 show little
+affinity for 50S subunit and for 70S monomers.  In fact, they are
+ejected from the 30S subunit when 30S and 50S subunit associate. On
+the other hand, IF2 has fairly high affinity for 50S subunit and 70S
+monomers.
+
+The main functions of these initiation factors are to control associations
+and dissociations of codons and anti-codons of tRNA in P-site of the
+ribosome and, ultimately, to influence how many 30S initiation 
+complexes enter the elongation cycle after association with the 50S subunit.
+Recently, it has been shown that IF3 is required for removal of
+deacylated tRNA from 30S-mRNA-tRNA posttermination complex\cite{label1189}.
+
+Overview of functions of each initiation factors are listed below.
+\begin{description}
+
+\item[IF1] Main functions are obscure. 
+It may be involved in some stabilization.
+
+\item[IF2] It binds to 30S subunits. It contains a binding site for fMet-tRNA.
+      It effects the formation of initiation complexes(which is an association
+of  ribosome, mRNA, and some other factors) kinetically. Upon subunit 
+interactions, it interacts with 50S subunit, activating enzyme for GTP.
+It positions fMet-tRNA in P-site.
+
+\item[IF3] It binds to 30S subunits and is ejected upon subunit association.
+  When it is binding to 30S subunit, 50S subunit cannot associate. It is
+  needed when 30S subunit binds to initiation site of mRNA. But it seems that
+  it is not involved in the decision of start codon.
+  IF3 crosslinks to two regions of 16S rRNA in one time.
+\end{description}
+
+These three initiation factors do not share any structural homology
+with each other. However, each factor appears to be evolutionarily
+conserved. For example, IF1 of {\it E.coli} shares 69\% of identical
+residues with IF1 of {\it B.subtilis}, while IF3 of {\it E.coli} is
+50\% identical with IF3 of {\it B.stearothermophilus}.
+
+\begin{figure}
+\begin{center}
+\epsfile{file=transbct.eps,scale=0.75}
+\end{center}
+\caption{Simplified mechanistic model of translation initiation in
+procaryotes}
+\begin{quotation}
+\begin{small}
+When the concentrations of mRNA and fMet-tRNA$^{\rm Meti}$ are high
+enough, they bind to the 30S subunit with three IFs to form
+preinitiation complex. Then codon-anticodon interaction at the ribosomal
+P-site is promoted by IFs and 16S rRNA terminal sequence makes pair with
+mRNA. After the binding of 50S subunit and ejection of IF1 and IF3, 70S
+initiation complex is formed.
+\end{small}
+\end{quotation}
+\end{figure}
+
+
+
+\subsection{Translation initiation in eucaryotes}
+In eucaryotes, small subunit of ribosome first binds to the 5' end of
+mRNA and then moves downward to the 3' direction by the hydrolysis of
+ATP, searching for translation initiation site instead of directly
+forming complexes around start codon like bacteria. In this process,
+the main factors are ribosome, tRNA with methionine(Met-tRNA$^{\rm
+Meti}$), and mRNA. In addition, many initiation factors are needed. In
+fact, the number of initiation factors required for translation
+initiation in eucaryotes is far more than that of procaryotes.
+
+\subsubsection{Met-tRNA$^{\rm Meti}$}
+Like bacteria, the translation start with methionine.
+In case of eucaryotes, tRNA$^{\rm Meti}$ is used for translation initiation.
+It binds to methionine to form Met-tRNA$^{\rm Meti}$. Unlike bacteria,
+this methionine is not formylated.
+
+\subsubsection{Ribosome}
+Eucaryotic ribosome which is used for translation is 80S. It consists
+of 40S small subunit and 60S large subunit. Furthermore,
+40S small subunit contains 18S rRNA and about 30 proteins,
+and 60S large subunit contains 28S rRNA, 5.8S rRNA, 5S rRNA and
+about 40 proteins. It is 40S subunit that binds to mRNA to scan for
+translation initiation site. There are homology between 18S rRNA and
+16S rRNA of procaryotes.
+
+\subsubsection{mRNA}
+Eucaryotic mRNA do not have Shine-Dalgarno sequences. Instead,
+it has CAP structure. The CAP structure is a structure in
+which phosphoric acid is attached to 5' terminal of mRNA
+and it plays an important role for translation initiation. 
+It is recognized by 40S subunit and 40S subunit binds to it.
+5'UTR(UnTranslated Region) of vertebrate mRNA is usually GC rich.
+It helps mRNA to form secondary structure by GC base pairings.
+Secondary structure may disturb translation as it will be
+described later. This means that expression of gene is controlled 
+at the level of translation by this feature. Those mRNAs that are 
+especially GC rich in 5'UTR are likely to be undertranslated when the general 
+translational capacity declines. The translation of most cellular 
+mRNAs is, in fact, inhibited by serum deprivation, or heat shock, or
+virus infection. Actual GC content in 5'UTR partly depends on the kind of
+protein that the mRNA synthesizes. But most mRNAs have GC content higher
+than 50\%. 
+
+Start codon is AUG most of the time, but some experiment showed
+that translation can be initiated from non-AUG codons, such as
+ACG, CUG, or GUG\cite{label6}\cite{label29}.
+
+Eucaryotic mRNAs also have 3'UTR with poly-A tails, and it is
+surprising that they may have influence on translation
+initiations\cite{label1920}.
+
+\subsubsection{Initiation factors}
+One of the main initiation factors in eucaryotes is eIF and there are
+many kinds of eIF. Nine initiation factors of reticulocyte and its
+functions are listed in table \ref{eif}.
+\begin{table}
+\begin{tabular}{|c|l|}
+\hline
+Factor & ~~~~~~~~~~~~~~~~~~Function\\
+\hline
+eIF3 & Binds to mRNA.\\
+CBPI,CBPII & Help ribosome to bind to CAP of mRNA and break secondary structure. \\
+eIF1,eIF4B & Help binding of mRNA.\\
+eIF4A & Helps binding of mRNA and binds to ATP.\\
+eIF6 & Disturbs associations of 40S and 60S ribosomal subunits.\\ 
+eIF5 & Separates eIF2 from eIF3.\\
+eIF4C & Binds to 60S ribosomal subunit.\\
+eIF2 & Binds to Met-tRNA$^{\rm Meti}$.\\
+eIF4D& Unknown \\
+\hline
+\end{tabular}
+\caption{Initiation factors in eucaryotes}
+\label{eif}
+\end{table}
+
+Pestova\cite{label1120} showed that eIF1 and eIF1A are both essential to
+locate start codons - without them, ribosomes can reach CAP structure,
+but unable to reach start codons.  Hannig\cite{label24} identified yeast
+GCD10 gene as the structural gene for the yeast eIF3 and analysis of
+mutant phenotypes has opened the door to the genetic dissection of the
+eIF3 protein complex. Dominguez et al.\cite{label1915} have shown that
+yeast eIF4G interacts with eIF4A both {\it in vivo} and {\it in vitro}.
+
+\begin{figure}
+\begin{center}
+\epsfile{file=euc_init_cyc2.eps,scale=1.25}
+\end{center}
+\caption{Simplified initiation cycle on ribosomes in eucaryotes}
+\begin{small}
+\begin{quotation}
+
+eIF2 forms a complex with GTP and binds to Met-tRNA$^{\rm Meti}$. Then
+eIF2 brings Met-tRNA$^{\rm Meti}$ onto the 40S subunit, generating 43S
+initiation complex. This complex will bind to the 5'-end of the
+mRNA(CAP) and scans down to the AUG codon. And eIF5 joins, inducing
+hydrolysis of the GTP. Then eIF2-GDP is ejected from the 40S subunit and
+60S subunit is able to bind to 40S to form a functional 80S ribosome
+subunit.
+
+\end{quotation}
+\end{small}
+\end{figure}
+
+\subsubsection{Recognition of translation initiation sites}
+
+In the "scanning model", ribosomal 40S subunit first binds to the CAP
+structure and then moves downward to the 3' direction.  It is proved by
+experiments that ribosome can not go back to 5'
+direction\cite{label1}. Most of the time, ribosome uses the first found
+AUG as a starting AUG for translation initiation.  Thus experimentally
+introducing AUG upstream of start codon usually reduce or inhibit
+translation level of the normal gene\cite{label1112}. However, it
+sometimes passes this first AUG and looks for another AUG for
+translation initiation.  This process is called "leaky scanning"(figure
+\ref{dscr4}).
+
+\begin{figure}
+\begin{center}
+\epsfile{file=lkdiscr8.eps}
+\end{center}
+\caption{Normal scanning and leaky scanning}
+\label{dscr4}
+\begin{small}
+\begin{quotation}
+In eucaryotic translation initiation, a ribosome binds to the CAP
+structure at the 5' terminal of mRNA and scans mRNA from left to
+right.  In normal scanning, ribosome initiates translation at the
+first encountered AUG on mRNA. In leaky scanning, ribosome skips the
+first AUG and initiates translation at AUG downstream.
+\end{quotation}
+\end{small}
+\end{figure}
+
+We can think of four possible causes in order for the leaky scanning to
+occur.
+
+\begin{itemize}
+\item Nucleotide sequences around the AUG are not suitable for
+initiation. \\
+The preferred sequence around a starting AUG in
+vertebrates is gccGCC$^{\rm A}_{\rm G}$CC[AUG]G\cite{label3}.
+
+Position -3\footnote{Traditionally 
+position +1 is defined as A-residue of the AUG initiation codon. The adjacent
+nucleotide 5' with respect to this A-residue is defined as position -1.
+ (Ex.C$^{-2}$
+C$^{-1}$$A^{+1}T^{+2}G^{+3}$G$^{+4}$). But in this paper,
+sometimes the position where A-residue of start ATG is located is defined as 0.}
+is often adenine or guanine\cite{label4};AUGs are likely to be skipped
+if its -3 position is cytosine or thymine. But if guanine is
+located in position +4 in this case, it may have some effect to
+prevent the leaky scanning. 
+It has also been shown that bases at position +5 and +6 have effect on
+translation initiation in some cases\cite{label7219}.
+
+\item The AUG trinucleotide is followed shortly by a stop codon.\\
+Earlier studies showed that ribosomes can reinitiate the translation
+from the second AUG if the first AUG is followed shortly by a stop
+codon in a frame. Initiation factors dissociate from the 40S ribosomal
+subunit upon the addition of a 60S ribosomal subunit and initiation of
+peptide bond formation. But if the 40S reaches stop codon right after
+the translation initiation, initiation factors are still on the 40S
+and it has an ability to reinitiate translation\cite{label4}. The
+efficiency of reinitiation increases when stop codons are located far
+upstream of the start codon\cite{label18}.
+
+\item Distance between the CAP structure and the AUG is too
+short.\\  It has been shown that the leaky scanning is likely to occur
+when the distance between the CAP structure and the AUG trinucleotide is too
+short\cite{label19}.  
+Some organisms take advantage of this characteristics to produce
+alternative proteins from a single gene by alternating
+the location of the CAP structure (i.e., transcription initiation site),
+resulting alternating selection of a start codon
+\cite{label5}.
+
+\item Secondary structure of mRNA affects translation initiation.\\
+Secondary structures such as hair pin loops in mRNA may disturb the 
+recognition of starting AUG\cite{label21}. Advancing on mRNA, 
+40S subunit breaks the secondary structure of mRNA if the stability
+of the secondary structure is below \(\Delta\)G = -30\footnote{Free
+energy}. But if it has 
+more stability, advancing subunit will slow down or stop, which may
+disturb the translation initiation.
+But in some cases, it may enhance the recognition of the 
+starting AUG\cite{label2}. For example, when the bases around AUG
+in mRNA are not in a favorable context, subunit is likely to pass by, 
+but if the mRNA has hairpin structure downstream of this AUG triplet,
+migrating ribosome may slow down, having more time to recognize AUG
+as a start codon.
+\end{itemize}
+
+\subsection{Translation initiation in mitochondria}
+Mitochondria are membrane-bounded organelles(organs that have specific
+functions in the cell) that carry out oxidative phosphorylation and
+produce most of the ATP in eucaryotic cells. They have their own
+genetic systems; They have their own DNA and produce some proteins
+of their own. 
+
+Translation often starts from the site close to the transcription 
+initiation site. 
+For the start codon of mitochondria, AUG is used frequently. In addition, AUA
+and AUU are also used.  
+
+\subsection{Alternative mechanisms}
+
+\subsubsection{Procaryotes}
+
+Most {\it E.coli} mRNAs were thought to contain Shine-Dalgarno sequences
+before start codons. However, especially after sequencing of {\it
+E.coli} genome were completed\cite{label1065}, it turned out that many
+regions before start codons lack Shine-Dalgarno sequences. It may be
+true that many annotated ORFs contain incorrect
+assignments\cite{label1005}.  Link et al.\cite{lts14} have
+experimentally identified 204 start codons corresponding to some of the
+ORFs determined by Blattner\cite{label1065}.  We notice that some
+regions before start codons contain no Shine-Dalgarno sequences.  The
+important characteristics of those genes were that they are not biased
+towards highly expressed genes.  Thus one of the possible interpretation
+is that mRNAs obtained in the laboratory works are often biased to
+highly expressed ones, and those mRNAs usually contain Shine-Dalgarno
+sequences.  However, when we look the whole genome, genes are unbiased
+and thus there may be some start codons without Shine-Dalgarno
+sequences. In addition, it is not obvious whether the mechanisms of
+translation initiation are universally conserved among
+prokaryotes\cite{label1005,label515}. Several alternative mechanism of
+translation initiation in procaryotes has been proposed. One of the major
+ones is bindings of rRNA to mRNA region other than Shine-Dalgarno
+sequences. I.G.Ivanov et al.\cite{label23} has found a second putative
+mRNA binding site on {\it E.coli} 16S rRNA. Binding site of 16S rRNA
+were localized between nucleotide 1340 and 1360. It was supposed to bind
+on 5'UTR. Thanaraj et al.\cite{label1091} have suggested that a
+subsequence of UGAUCC invariably exists in mRNA for highly expressed
+genes within position -55 from start codons. This sequence interacts
+with positions from 1529 of 16S rRNA. Those investigations are focused
+mainly on upstream region of the start codon. However there are some
+investigations on downstream. Sprengart et al. and some other
+researchers have proposed that there is region downstream of start codon
+that interact with 16S rRNA\cite{label1501,label1101,ldbox3}. This
+region is called downstream box. Optimal sequence pattern for downstream
+box were estimated to be ``CAUGAAUCACAAAG''. This region forms base pair
+with position from 1469 to 1483 of 16S rRNA. It was shown that
+downstream box has ability to initiate translation even in the absence
+of Shine-Dalgarno sequence.
+
+Some alternative translation initiation mechanisms other than
+alternative binding sites of mRNA(as described above) have been
+proposed.  For example in {\it E.coli}, ribosomal protein S1 appears
+to be a key recognition element when Shine-Dalgarno sequence is
+absent\cite{lts11}. An optimal binding site for one molecule of S1 is
+10-12 nucleotides, and it has a high affinity to polypyrimidines. {\it
+B.subtilis} may require strong Shine-Dalgarno
+sequences\cite{arclabel10}, presumably because they do not have S1
+protein.
+
+\subsubsection{Eucaryotes}
+
+Most of the time, eucaryotic ribosomes are believed to initiate
+translation at the first AUG\cite{label1020}.  It is possible that
+ribosome can initiate translation at the second AUG if the first AUG
+is not in a favorable context. However since huge amount of cDNA
+sequences became available, it turned out that there are many
+sequences with upstream AUGs in favorable context. It is difficult to
+explain how translation initiation from upstream AUG is avoided by
+available theory so far. Kozak suggests that these cDNAs do not
+correspond to functional mRNAs\cite{label1025}. Those cDNA are not
+full length, or there may be introns remained in 5'UTR(In other words,
+introns are not completely spliced out.). However, sometimes there are
+so many upstream ATGs in carefully examined set of
+sequences\cite{lnis1}. Thus, we can still suspect that there is
+alternative mechanism to distinguish true start codons.
+
+For example, a few eucaryotic mRNAs initiate translation by the different
+mechanism rather than scanning\cite{label1155,label1154}. These mRNAs
+contain complex nucleotide sequences called internal ribosome entry
+sites. Ribosomes bind here without the help of CAP and can start
+translation at the next AUG codon downstream\cite{label0}.  Also some
+discontinuous scannings are known\cite{label1920,label4807}. In
+discontinuous scanning, ribosome may hop a part of mRNA.
+
+Besides above, we must consider RNA editing\cite{label1098}, which may
+change bases on transcribed mRNA.
+
+\section{Existing methods to predict translation initiation sites}
+
+Modeling and prediction of translation initiation sites in DNA or mRNA
+is challenging area. Before going on, it must be mentioned that at least
+in {\it E.coli}, about 40 bases surrounding start codons probably have
+enough information to lead ribosomes to authentic start codons. Jacques
+et al.\cite{label7333} made DNA fragments, some of which had authentic
+start codons and others had false start codons in them, and inserted
+into another sequences of {\it E.coli}. They observed gene expressions
+at authentic start codons, provided that fragments included 30-40 bases
+surrounding authentic starts. However, they did not observe gene
+expression at false starts. These results suggest that usually 30-40
+bases surrounding start codons have enough information for the ribosomes
+to locate authentic starts. Thus, in many cases, start codons can be
+predicted just from sequence information.
+
+ Stormo et al.\cite{label800} have applied Perceptron algorithm to
+distinguish translation initiation sites in {\it E.coli}.  Bisant et
+al.\cite{label810} have used neural networks to identify translation
+initiation sites in {\it E.coli}. They have measured performance of the
+network, using criteria called ROC curve. They have succeeded to
+identify 75\% of the translation initiation sites, with 0.08\% false
+positives. Nair\cite{label905} also have applied neural network and
+found that initiation codon and the Shine-Dalgarno sequence which are
+known to be important for translation initiation are also important in
+offering knowledge to the network. Frishman et al.\cite{label1005} have
+applied weight matrix of Shine-Dalgarno sequence and incorporated its
+distance from start codon into criteria. By applying this method to
+various procaryotes, they also have found that reliability of computer
+predictions have correlation with amount of information content in the
+translation initiation sites.
+
+Hidden Markov Model may be efficient way to model translation initiation
+sites.  Yada et al.\cite{label515} have applied Hidden Markov Model to
+model sequence patterns surrounding translation initiation sites of
+Synechocystis.
+
+There are some works that use sequence patterns and other
+evidence. Hannenhalli et al.\cite{label921} have taken into account
+multiple features of a potential start site, i.e. ribosome binding site
+binding energy, distance of the ribosome binding site from the start
+codon, distance from the beginning of the maximal ORF to the start
+codon, the start codon itself and the coding/non-coding potential around
+the start site, to predict start codon. The coding/non-coding potentials
+were evaluated using one of the most famous gene prediction tool
+GenMark\cite{label993}. This method was applied to three major
+procaryotes, i.e. {\it E.coli}, {\it B.subtilis} and {\it P.furiosus},
+which are Gram-negative, Gram-positive and archaebacteria
+respectively. The accuracy was as much as 90\%.
+
+The perfect prediction of translation initiation sites in procaryotes
+seems to be still difficult, because secondary structure of mRNA has
+effects on translation initiation. Better performance may not be
+obtained until effects of secondary structure could be modeled
+properly\cite{label810}.
+
+There are also some work for predicting translation initiation sites in
+eucaryotes. For example, Guig\'o et al.\cite{label7008} used sequence
+context and distance from CAP structure to identify start codons and
+succeeded to predict start codons in transcription units, which they
+used as test sets, with accuracy of 97.63\%(true positives).
+Salzberg\cite{label7765} used conditional probability matrices to
+predict start codons. False positives were less than 1\%. Salamov et
+al.\cite{lnis1} applied weight matrix based on frequency of triplets,
+and used linear discriminant score to discriminate true start codons in
+cDNA of {\it H.sapiens}. If true start codon is included in cDNA, their
+method can predict it with accuracy of 93\%.
+
+

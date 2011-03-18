@@ -1,0 +1,14 @@
+\contentsline {section}{\numberline {1}膜の役割と基本構造}{4}
+\contentsline {section}{\numberline {2}脂質二重層の流動性と非対称性}{4}
+\contentsline {section}{\numberline {3}膜タンパクの構造と膜への結合}{8}
+\contentsline {section}{\numberline {4}膜と細胞表面}{8}
+\contentsline {section}{\numberline {5}膜輸送の原理}{10}
+\contentsline {section}{\numberline {6}イオンチャネルのイオン選択性}{16}
+\contentsline {section}{\numberline {7}神経細胞のイオンチャネルとシグナル伝達}{16}
+\contentsline {section}{\numberline {8}細胞の区画とタンパク質の輸送}{20}
+\contentsline {section}{\numberline {9}糖と脂肪の分解}{27}
+\contentsline {section}{\numberline {10}ミトコンドリアの４つの区画とその役割}{29}
+\contentsline {section}{\numberline {11}クエン酸回路と電子伝達系}{30}
+\contentsline {section}{\numberline {12}食物の備蓄と利用}{32}
+\contentsline {section}{\numberline {13}葉緑体の構造と機能}{34}
+\contentsline {section}{\numberline {14}光合成の仕組みとその進化}{36}

@@ -1,0 +1,1007 @@
+
+\chapter{隠れマルコフモデル}
+\begin{abstract}
+隠れマルコフモデルは核酸配列やアミノ酸配列の出現パターンを扱うことが可能
+な確率モデルで、DNA上のシグナル配列やタンパク質のモチーフ配列のモデル化
+に多く使われています。そして遺伝子領域予測やタンパク質の二次構造予測など
+の分野で大きな成果を挙げています。ここでは隠れマルコフモデルの基本概念と
+実装方法について学習しましょう。
+\end{abstract}
+
+
+\section{マルコフモデルとは？}
+
+多くの種のゲノム配列を眺めているとあたかもA,C,G,Tの塩基がランダムに出現
+するように見えます。しかし実際には例えばTの次にAが来ることが少なかったり、
+Cの次にGが来ることが少なかったりと、様々な傾向を見出すことができます。ま
+た、プロモータ領域やコード領域になると塩基の偏りが著しくなります。ではゲ
+ノム配列中の塩基の出現にはどのような法則があるのでしょうか？
+
+これを説明する１つのモデルが、マルコフモデルです。マルコフモデルとは、状
+態の変化を状態とその間の遷移確率で表したものです。各状態は１つの塩基を表
+し、塩基配列は、通過する状態によって決定されるものと考えます。
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures_EPS/hmm_markov1_2.eps}
+\end{center}
+\caption{マルコフモデル}
+\label{hmm_markov1}
+\begin{quotation}
+丸が状態、矢印が状態遷移を表す。本文中で解説している箇所
+を太めの矢印で表した。丸の中に状態番号を書き、その近傍にその状態が出力
+する塩基を書いた。また矢印の近傍に状態遷移確率を示した。
+\end{quotation}
+\end{figure}
+
+
+例えば図\ref{hmm_markov1}のモデルを見てみましょう。各状態がノード（丸）
+で、状態遷移が矢印で表されています。各状態1～5には塩基が一意に割り当てら
+れています。そしてマルコフモデルでは、各塩基はある状態に至ったときに、そ
+の状態に対応する塩基が出力されると考えます。また塩基配列パターンは状態間
+をある確率で遷移することによって出力されると考えます。するとこの図で、状
+態が一番左から一番右に向かって遷移すると考えると、このモデルから出力され
+る塩基配列パターンは、ATA, ACTA, ACGAの4つになります。では各塩基配列パタ
+ーンが出力される確率はどれくらいになるのでしょうか？今、塩基配列"ACGA"が
+出力される確率を考えましょう。先頭の2文字がACなので、まずA→Cと遷移する
+確率は0.4です。次にCの次にGが来る確率は、C→Gと遷移する確率なので、0.7と
+なります。同様にして最後にG→Aの遷移確率は1.0ですから、塩基配列”ACGA”
+の出現確率は、\(0.4 \times 0.7 \times 1.0 = 0.28\)になります。
+
+図\ref{hmm_markov1}では、Aのように１つの塩基を複数のノードが表しているケ
+ースがありました。しかし１つの塩基に対し、必ず１つだけノードを割り当てる
+ようなモデルを作ることも可能です。塩基はA,C,G,Tの4種類なので、4つのノー
+ドが存在することになります。さらに各ノードから他の全ノードへの状態遷移を
+全て考えれば、図\ref{hmm_markov2}のようなモデルができあがります。塩基の
+種類が決まれば、状態は一意に決まるので、ある塩基\(x_{i-1}\)から次の塩基
+\(x_{i}\)が出現する確率は状態を明示しなくても、\(P(x_{i}|x_{i-1})\)と塩
+基だけで表すことができます。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Figures_EPS/hmm_markov2.eps}
+\end{center}
+\caption{\(P(x_{i}|x_{i-1})\)を表すマルコフモデル}
+\label{hmm_markov2}
+\end{figure}
+
+図\ref{hmm_markov2}は以下のような行列として表現することも可能です。
+
+\[ M = \left(
+ \begin{array}{cccc}
+ P(A|A) &  P(C|A) &  P(G|A) &  P(T|A) \\ 
+ P(A|C) &  P(C|C) &  P(G|C) &  P(T|C) \\ 
+ P(A|G) &  P(C|G) &  P(G|G) &  P(T|G) \\ 
+ P(A|T) &  P(C|T) &  P(G|T) &  P(T|T) \\ 
+ \end{array}
+ \right) 
+\]
+
+多くの種のゲノム配列において、特に非コード領域の配列はマルコフモデルでよ
+く説明することができます。
+
+
+\section{隠れマルコフモデルとは？}
+
+隠れマルコフモデルも塩基配列パターンの出現を表すことができるモデルです。
+マルコフモデルでは、各状態は必ず１つの塩基を表していました。しかし隠れマ
+ルコフモデルでは、各状態において観測される塩基は確率的に決まります。図
+\ref{hmm_hmm2}ように、隠れマルコフモデルでは、各状態に塩基の出現確率が付
+けられるのです。このモデルから出力される塩基配列は、通過した状態と、そこ
+から確率的に出力される塩基の種類で決まります。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures_EPS/hmm_hmm2.eps}
+\end{center}
+\caption{隠れマルコフモデル}
+\label{hmm_hmm2}
+\begin{quotation}
+各状態における塩基の出力確率を四角の中に書いた。本文中で触れられている経
+路を通過するときの確率、および経路上の各状態で出力された記号に下線を付け
+た。
+\end{quotation}
+\end{figure}
+
+より形式的には隠れマルコフモデルは、状態を\(k, l\)、塩基を\(b\)と
+して、以下の２つで定義されます。
+
+\hspace{1em}
+
+\begin{tabular}{ll}
+\(e_{l}(b)\) & 状態\(l\)における塩基\(b\)の観測確率\\
+\(t(k \to l)\) & 状態\(k\)から状態\(l\)への遷移確率\\
+\end{tabular}
+
+\hspace{1em}
+
+例えば\(e_{1}(\mbox{T})\)は状態1において塩基Tが表される確率を表し、図
+\ref{hmm_hmm2}ではそれは0.2となっています。また、\(t(1 \to 3)\)は状態1か
+ら3への遷移確率を表し、図\ref{hmm_hmm2}ではそれは0.4になっています。
+
+定義された隠れマルコフモデルからある経路を通って塩基パターンが出力され
+る確率は、通過した各状態における各塩基の出力確率と、経路上の遷移確率と
+の積になります。より形式的には、状態\(\pi =
+(\pi_{1},\pi_{2},\cdots,\pi_{L})\)を通過し、長さ\(L\)の塩基配列
+\(x=(x_{1},x_{2},\cdots,x_{L})\)が出力される確率は、
+\(\left\{\prod_{i=1}^{L-1}e_{\pi_{i}}(x_{i})t(\pi_{i}\to \pi_{i+1})\right\} \times
+e_{k_{L}}(x_{L})\)となります。
+
+例えば、図
+\ref{hmm_hmm2}の太い矢印で示した経路を通り、T,A,C,Gという配列が観測され
+る確率は、
+
+\hspace{1em}
+
+\begin{math}
+e_{1}({\rm T})t(1 \to 3)
+e_{3}({\rm A})t(3 \to 4)
+e_{4}({\rm C})t(4 \to 5)
+e_{5}({\rm G})
+\end{math}
+\begin{math}
+=0.2 \times 0.4 \times 0.3 \times 0.7 \times 0.4 \times 1.0 \times 0.4 = 0.002688
+\end{math}
+
+\hspace{1em}
+
+\noindent
+となります。確率を掛けていくととても小さな値になるので、しばし
+ば対数が使われます。上記計算に関して自然対数をとると、
+
+\hspace{1em}
+
+\begin{math}
+\log(0.2 \times 0.4 \times 0.3 \times 0.7 \times 0.4 \times 1.0 \times 0.4) 
+= \log0.2 + \log0.4 + \log0.3 + \log0.7 + \log0.4 + \log1.0 + \log0.4 \simeq -5.92
+\end{math}
+
+\hspace{1em}
+
+\noindent
+となります。
+
+\section{隠れマルコフモデルの構築と未知の配列への適用}
+
+隠れマルコフモデルは実際の配列解析にどのように役立てることができるのでし
+ょうか？応用分野の１つがシグナル配列やタンパク質のモチーフ配列などの配列
+パターンの認識です。第\ref{entropy1}章で触れたように、シグナル配列などは
+一般的に揺らぎを持っています。そこでシグナル配列はどのような塩基配列パタ
+ーンなのかということを表現するときに、揺らぎを考慮したようなモデルが有効
+になります。隠れマルコフモデルでは塩基やアミノ酸の揺らぎを考慮し、例えば
+シグナル配列がAGGAになる可能性は50\%、GGAGになる可能性は25\%のように各々
+のパターンに対し、確率を割り当てることができます。
+
+このようなモデルを構築し、与えられた配列が出力される確率を求めるには図
+\ref{hmm_learn_overview1}に示すような手順が必要です。まず、隠れマルコフ
+モデルの構造を決定します。具体的にはシグナル配列の特性をうまく表現できる
+ように、どの状態とどの状態を接続するかを決めます。次に、与えられた既知の
+シグナル配列をもとに、モデル中の状態遷移確率および塩基出力確率を推定しま
+す。最後に与えられた未知の配列が、モデルに基づいてどれくらいの確率で出力
+されるかを計算します。
+
+ここで主に以下の４つが問題となります。
+
+\begin{enumerate}
+\item \label{hmm_issue1} 隠れマルコフモデルの構造をどうするか？
+\item \label{hmm_issue2} 状態遷移確率、記号出力確率をどう推定するか？
+\item \label{hmm_issue3} 与えられた配列の出力確率をどう求めるか？
+\item \label{hmm_issue4} 与えられた配列の通った経路をどう求めるか？
+\end{enumerate}
+
+\ref{hmm_issue1}と\ref{hmm_issue2}は隠れマルコフをどのように構築すればよ
+いかという問題になります。\ref{hmm_issue3}と\ref{hmm_issue4}は与えられた
+未知配列の配列に対して隠れマルコフモデルをどのように適用するかという問題
+ですが、\ref{hmm_issue2}を解く際にも重要な事柄になります。
+\ref{hmm_issue1}については、プロファイル隠れマルコフモデルというものを
+\ref{prof_HMM}で紹介します。\ref{hmm_issue2}は少々難しいので、まずは隠れ
+マルコフモデルの構造と状態遷移確率、記号出力確率が決まっていると仮定し、
+まず、\ref{hmm_issue3}と\ref{hmm_issue4}について考えてゆきましょう。
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Figures_EPS/hmm_learn_overview1.eps}
+\end{center}
+\caption{隠れマルコフモデルの構築と未知の配列への適用}
+\label{hmm_learn_overview1}
+\end{figure}
+
+\section{最も確率が高い経路の計算}
+\label{HMM_viterbi_sec}
+
+状態\(l\)までにおいて、塩基配列\(x_{1}, x_{2}, \cdots, x_{i}\)が観測され
+たとします。このとき、どのような状態を経てこのような配列が観測されたので
+しょうか？この経路も確率的に決まるため、様々な可能性が考えられます。ここ
+では、最大の確率を与える経路を求める方法を紹介します。まず最大の
+確率はいくつになるか、求める方法を考え、この確率を\(v(l, i)\)と
+します。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures_EPS/hmm_hmm3.eps}
+\end{center}
+\caption{通過した経路が最大確率を与えるときの状態\(l\)の直前の状態}
+\label{hmm_hmm3}
+\begin{quotation}
+状態\(l\)からは\(e_{l}(x_{i})\)の確率で\(i\)番目の塩基\(x_{i}\)が出力され
+る。この状態に対して、\(v(l,i)\)を計算することが可能。状態\(l\)の直前の
+状態\(k\)をいくつか例として示した。その中には必ず\(v(l,i)\)を与える直前
+の状態\(k_{max}\)およびその時点での確率\(p_{max}\)が存在するはずである。
+また\(p_{max}=v(k_{max}, i-1)\)が成立する。
+\end{quotation}
+\end{figure}
+
+最大確率を与える経路を通る場合の、状態\(l\)の直前の状態を\(k_{max}\)とし
+ます(図\ref{hmm_hmm3})。またこの状態に至る確率を\(p_{max}\)とします。す
+ると、
+
+\begin{equation}
+v(l, i)=p_{max}t(k_{max} \to l)e_{l}(x_{i})
+\label{hmm_eq1}
+\end{equation}
+
+\noindent
+となるはずです。
+
+では\(p_{max}\)の値はいくつでしょうか？\(p_{max}\)は塩基配列\(x_{1}, x_{2}, 
+\cdots, x_{i-1}\)が状態\(k_{max}\)に至るまでに観測された確率です。\(v(l, 
+i)\)が最大の確率であり、かつ\(t(k_{max} \to l)\)と\(e_{l}(x_{i})\)が一定
+である以上、\(k_{max}\)に至るまでの確率も最大になっているはずです。した
+がって、\(p_{max} = v(k_{max}, i - 1)\)となるはずです。これをもとに式
+\ref{hmm_eq1}を書き直すと、
+
+\begin{equation}
+v(l, i) = v(k_{max}, i-1) t(k_{max} \to l) e_{l}(x_{i})
+\end{equation}
+
+\noindent
+となります。では\(k_{max}\) はどの状態になるのでしょうか？観測\(x_{1}, x_{2}, 
+\cdots, x_{i-1}\)がある状態\(k\)に至るまでに観測される最大の確率は\(v(k, 
+i-1)\)です。さらにそこから状態\(l\)に遷移して塩基\(x_{i}\) を出力する確
+率\(P\)は\(v(k,i-1)t(k \to l)e_{l}(x_{i})\)です。\(k\)をいろいろ変えてみ
+て、\(P\)が最大になるときの(つまり\(P = v(l, i)\)となるときの)\(k\)の値
+が\(k_{max}\) です。
+
+すると\(l = 0\)を開始状態でまだ塩基が何も観測されていない(\(i=0\))とすると、以下
+の再帰式が成り立つはずです。
+\begin{equation}
+v(l, i) = 
+\left\{
+\begin{array}{l}
+0\ \mbox{if}\ i=0\ \mbox{and}\ l \neq 0\\
+1\ \mbox{if}\ i=0\ \mbox{and}\ l = 0\\
+e_{l}(x_{i})\mbox{max}_{k}(v(k,i-1)t(k \to l))
+\end{array}\right.
+\label{hmm_eq3}
+\end{equation}
+
+このようにして最大確率を与える経路を求めるアルゴリズムをViterbiのアルゴ
+リズムと呼びます\cite{Bioinfo_eddy}。
+
+\section{隠れマルコフモデルの実装}
+\subsection{Viterbiのアルゴリズムを使った最大確率の計算}
+
+隠れマルコフモデルは状態遷移確率と記号出力確率で決まります。今状態の数が
+\(K\)個あり、4種類の塩基を扱うとすると、状態遷移確率は\(K \times K\)の行
+列で表すことができ、また塩基の出力確率は、\(K \times 4\)の行列で表すこと
+ができます。これをC言語で表現できるように配列変数を実装します。
+
+\subsubsection{定数の用意}
+
+以下のように、状態の数を表す変数K、塩基配列の長さを表す変数L、塩基の種類
+数を表す変数NUM\verb+_+NUCを定義します。塩基配列を扱うときは
+NUM\verb+_+NUCを4に、アミノ酸配列を扱うときはNUM\verb+_+NUCを20にセット
+します。
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+#define K 5 /* Number of states */
+#define L 10 /* Length of sequence */
+#define NUC_NUM 4 /* Number of bases */
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+
+\subsubsection{遷移確率の行列}
+
+各状態に番号を付与します。下記の例では状態0から4までが定義されています。
+二次元配列tを用いて状態遷移確率を定義します。最初の添字が遷移元の状態、2
+番目の添字が遷移先の状態を表します。例えば、t[2][3]は状態2から3に遷移す
+る確率を表します。
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+static double t[K][K] = { 
+/*  0    1    2    3    4  */
+  0.0, 0.6, 0.4, 0.0, 0.0, /* 0 */
+  0.0, 0.0, 0.0, 1.0, 0.0, /* 1 */
+  0.0, 0.7, 0.0, 0.3, 0.0, /* 2 */
+  0.0, 0.0, 0.0, 0.3, 0.7, /* 3 */
+  0.0, 0.0, 0.0, 0.0, 0.0  /* 4 */
+};
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+\subsubsection{記号の出力確率の行列}
+
+各状態における各塩基の出力確率を二次元配列eを用いて定義します。最初の添
+字は状態番号を、2番目の添字は塩基番号を表します。例えば、a,c,g,tをそれぞ
+れ0,1,2,3という塩基番号と定義すると、e[2][1]は状態2において塩基cが出力さ
+れる確率になります。
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+static double e[K][NUC_NUM] = { 
+/*   a     c     g     t   */
+  0.40, 0.30, 0.20, 0.10, /* 0 */
+  0.40, 0.10, 0.30, 0.20, /* 1 */
+  0.30, 0.20, 0.10, 0.40, /* 2 */ 
+  0.25, 0.25, 0.30, 0.20, /* 3 */ 
+  0.40, 0.25, 0.25, 0.10  /* 4 */ 
+};
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+\subsubsection{塩基配列}
+
+塩基配列を格納する配列変数xを定義します。本文中では塩基番号は
+\(x_{1},x_{2},\cdots\)のように1番から始まりますが、メモリの有効利用のため、xに
+は0番目から塩基を格納します。
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+static char x[L];
+\end{verbatim}
+\noindent
+\underline{\hspace{10cm}}
+
+\subsubsection{状態のタイプ}
+
+各状態のタイプを配列type定義します。\verb+TYPE_S+は状態遷移系列の最初に
+該当する開始状態、\verb+TYPE_N+は通常の塩基を出力する状態、\verb+TYPE_D+
+は塩基の欠損を表す状態を表します(後述)。\verb+TYPE_S+と\verb+TYPE_D+は塩基を出
+力しません。添字は状態番号を表し、\verb+type[2] = TYPE_N+は2番目の状態が通常の
+塩基を出力する状態であることを表します。
+
+\verb+TYPE_S+、\verb+TYPE_N+、\verb+TYPE_D+などには\verb+#define+を使って
+値の異なる定数を割り当てます。
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+static int type[K] = { TYPE_S, TYPE_N, TYPE_N, TYPE_N, TYPE_N };
+\end{verbatim}
+\noindent
+\underline{\hspace{10cm}}
+
+
+\subsubsection{Viterbiのアルゴリズムの実装}
+\label{hmm_imple_vit}
+
+viterbiのアルゴリズムをプログラムとして実装すると以下のようになります。
+viterbi(l, i)で状態lにおいてi番目の塩基が観測される最大の確率が返ってき
+ます。
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+
+#define LOG0 -1000.0 /* 無限小の意味でLOG0を定義 */
+
+/* 状態lにおいてi番目の塩基が観測される最大の確率を計算する
+   確率のlogが返ってくる */
+double viterbi(int l, int i){
+
+  int k, k_max;
+  double p, p_max;
+  
+  switch(type[l]){ /* 状態lのタイプを判断 */
+  case TYPE_S:
+    if(i <= 0)return 0.0;
+    /* 開始状態で塩基が出力されていないなら、確率=1(対数をとると、0) */
+\end{verbatim}
+\verb+    /* これは、式+\ref{hmm_eq3}\verb+の右辺の2番目の式に該当する */+
+\begin{verbatim}
+
+    else return LOG0;
+\end{verbatim}
+\verb+    /* 開始状態なのに塩基が出力されているなら、+\\
+\verb+       確率=0 (対数をとると、+\(-\infty\)) \verb+*/+\\
+\verb+    /* これは、式+\ref{hmm_eq3}\verb+の右辺の最初の式に該当する */+
+\begin{verbatim}
+
+  case TYPE_N:
+    if(i <= 0)return LOG0;
+    for(p_max = LOG0 - 1, k = 0;k < K;k ++){
+    /* 最大の確率を与える状態k_maxおよびその確率p_maxを探す */
+\end{verbatim}
+\verb+    /* これは、式+\ref{hmm_eq3}\verb+の右辺の3番目の式に該当する */+
+\begin{verbatim}
+      if(t[k][l] > 0.0)p = viterbi(k, i - 1) + log(t[k][l]);
+      else p = LOG0;
+      if(p > p_max){ p_max = p; k_max = k; }
+    }
+    return p_max + log(e[l][ (int)cton(x[i - 1]) ]);
+       /* ctonは塩基a,c,g,tを0,1,2,3に変換する関数。
+          これは自分で作りましょう。 */
+  }
+}
+\end{verbatim}
+\noindent
+\underline{\hspace{10cm}}
+
+\subsection{計算の重複の回避}
+
+各状態\(l\)および\(i\)番目の塩基に対して、\(v(l,i)\)の計算をすることが可
+能です。\(v(l,i)\)を呼び出すと、状態\(l\)へつながっている各状態
+\(k_{1},k_{2}\cdots\)に対して\(v(k_{1},i-1),v(k_{2},i-1),\cdots\)が呼び
+出されます。関数vを呼び出すと、このようにl,iに様々な値が入ってvが再帰的
+に呼び出されます。同じl,iの値に対して\(v(l,i)\)の計算が複数回計算が行わ
+れることも多々あり、その分だけ計算時間が無駄になります。
+
+そこで配列double v[l][i]を用意し、計算の途中経過をv[l][i]に記録すること
+により高速化が可能です(課題\ref{hmm_prac3})。基本的には\ref{recur_fast}
+で学習した方法と一緒で、最初の呼び出しでは、計算を行ってその結果をv[l][i]
+に記録します。2度目からは、v[l][i]に記録した値を返すだけにします。
+
+\subsection{経路を求める}
+\label{hmm_imple_vit_path}
+
+ここまでViterbiのアルゴリズムを使って最大の確率を計算する手法を学びまし
+た。しかし毎回関数viterbiを呼び出すときに得られるのは、最大の確率とその確率を
+与える{\bf 直前}の状態だけです。そこで最大の確率を与える経路はどのような
+状態を通るかを求める方法を実装という面から紹介します(演習問題\ref{hmm_prac4}。
+
+まず配列int ptr[][]を用意します。ptr[l][i]には状態lで\(x_{1}\)～\(x_{i}\)
+が観測されるときの最適の経路の直前の状態を記録するのです。具体的には関数
+viterbiの適切な場所で、
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+ptr[l][i] = k_max;
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+\noindent
+を入れ、下のような関数\verb+ptr_to_path+を作ります。
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+int ptr_to_path(int l, int i){
+
+  int n = 0;
+  int new_l;
+
+  path[n ++] = l;
+  while(type[l] != TYPE_S){
+    new_l = ptr[l][i];
+    if(type[l] == TYPE_N)i --;
+    l = new_l;
+    path[n ++] = l;
+  }
+
+/* pathの中身を逆順にする処理をここに加えてもよい */
+
+  return n;
+
+}
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}
+
+この関数では、各状態の直前の状態を次々と開始状態まで辿っていくことにより、
+経路を配列pathに順次記録してゆきます。最終的にはpathには通ってきた状態が
+全て入ることになります。
+
+結局、各ノードには図\ref{hmm_rec1}に示すように、最大確率\(v(l,i)\)の情報
+と、その最大確率に至るときの直前のノードの情報ptr\((l,i)\)を持たせれば、
+高速な計算を行いつつ、通ってきた経路を辿ることができるようになります。
+図\ref{hmm_table1}に\(v(l,i)\)とptr\((l, i)\)の中味の
+例を示しておきましょう。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.45]{Figures_EPS/hmm_rec1.eps}
+\end{center}
+\caption{通過した経路が最大確率を与えるときの直前の状態\(l\)とその確率の記録}
+\label{hmm_rec1}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.45]{Figures_EPS/hmm_table1.eps}
+\end{center}
+\caption{"ATGA"をViterbiのアルゴリズムにかけたときの\(v(l,i)\), ptr\((l, i)\)の中味}
+\label{hmm_table1}
+\begin{quotation}
+一番上に隠れマルコフモデルの例を、中段に各状態における\(v(l,i)\)、下段に
+各状態におけるptr\((l,i)\)を示した。中段で値が0になるところは空欄にした。下段の表より、
+通過した状態を辿ることができる。
+\end{quotation}
+\end{figure}
+
+
+
+\section{欠損を表すノード}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures_EPS/hmm_del1.eps}
+\end{center}
+\caption{欠損を表す状態}
+\label{hmm_del1}
+\begin{quotation}
+これは通常4塩基を出力する隠れマルコフモデルである。状態3が塩基の欠損を表
+す。下の経路を通ると4塩基が出力されるが、上の経路を通ると状態2の塩基が欠
+損し、3塩基となる。
+\end{quotation}
+\end{figure}
+
+記号を出力しない状態を作ると、その状態は塩基の欠損を表します。例えば本来
+4塩基の配列パターンからなるシグナル配列の1塩基が欠損したというケースを表
+現したいときは、4つの普通の状態と、1つの欠損を表す状態で表現することがで
+きます(図\ref{hmm_del1})。\ref{hmm_imple_vit}に掲載したプログラムの場合、
+\verb+TYPE_D+をそれに該当させます(演習問題\ref{hmm_prac5})。
+
+欠損を表すノードに関してのViterbiの再帰式は、
+
+\begin{equation}
+v(l, i) = \mbox{max}_{k}(v(k, i)t(k \to l))
+\end{equation}
+
+\noindent
+となります。
+
+なお欠損を表す状態の場合、自分自身に遷移するような確率\(t(l \to l)\)は0
+にしておきます。
+
+\section{プロファイル隠れマルコフモデル}
+\label{prof_HMM}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.45]{Figures_EPS/prof_HMM2.eps}
+\end{center}
+\caption{プロファイル隠れマルコフモデル}
+\begin{quotation}
+一番下の状態の列が、塩基を出力する通常の状態で、シグナル配列のコンセンサ
+ス配列に該当する。中段の状態の列が塩基の挿入を表す。上段の状態の列は塩基
+の欠損を表す。本文中で議論している経路を太い矢印で示す。
+状態遷移確率、および中段の塩基出力確率は省略した。
+\end{quotation}
+\label{prof_HMM2}
+\end{figure}
+
+隠れマルコフモデルをどのような構造にすれば、効果的にシグナル配列をモデル
+化できるでしょうか？これはモデル化する配列の性質によるので、一概に論じる
+ことはできません。しかし汎用的に使うことが可能な構造の例として、プロファ
+イル隠れマルコフモデルがあります\cite{Bioinfo_eddy}。これは図
+\ref{prof_HMM2}に示すような構造になっています。まず下に通常の塩基を出力
+する状態の列が並んでいます。これはシグナル配列のコンセンサス配列に該当し
+ます。一番下の経路を通ると、揺らぎを含んだシグナル配列が出力されることに
+なります。中段の経路は塩基の挿入を表します。この状態に入ると1個またはそ
+れ以上の塩基が挿入されます。一番上は、塩基の欠損を表します。この状態は塩
+基を出力しません。
+
+例えば、図\ref{prof_HMM2}の場合、最も出力確率が高い塩基を見ればコンセン
+サス配列はACCTとなります。太い矢印で示したような経路を通って塩基が出力さ
+れた場合、2塩基目が欠損し、3塩基目のあとに2塩基以上の塩基の挿入が起こり、
+最後にコンセンサス配列の4番目の塩基が出力されます。すると例えば、ACggTの
+ような配列パターンが出力されます。ここで小文字は塩基の挿入を表します。
+
+
+
+\section{簡単なパラメータの学習}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.4]{Figures_EPS/hmm_viterbi_learn1.eps}
+\end{center}
+\caption{簡単な隠れマルコフモデルの学習}
+\label{hmm_viterbi_learn1}
+\begin{quotation}
+左の図の点線は、Viterbiのアルゴリズムで点線に重なる配列に対して求められた
+最大の確率を与える経路である。この経路を元に遷移確率および塩基出力確率を
+推定すると右のようになる。例えば\(1 \to 2\)は3回、\(1 \to 3\)は1回使われ
+ているので、\(1 \to 2\)の遷移が起こる確率は3/4=0.75となる。また2の状態で
+はTが2回、Cが1回出力されているので、状態2でTが出力される確率は2/3=0.67となる。
+\end{quotation}
+\end{figure}
+
+それでは、\(e_{l}(b)\)や、\(t(k \to l)\)などのパラメータはどのように決め
+ればいいのでしょうか？基本的にはモデリングしたい配列をなるべく多く用意し、
+それをもとにパラメータを決めることになります。例えば、へリックス・ループ・
+へリックスのタンパク質のモチーフを隠れマルコフモデルでモデリングする場合、
+へリックス・ループ・へリックスのモチーフを含むようなタンパク質の配列を沢
+山用意します。次に各配列がモデル上のどの経路を通ったか分かっている場合は、
+通った経路、および通った状態から出力された塩基を各経路、各状態ごとに集計
+します。そしてその集計結果をもとに、遷移確率および塩基の出力確率を推定し
+ます。しかし通常は通った経路は不明です。そこでViterbiのアルゴリズムを使
+って、最も通った確率が高くなる経路を求め、それを集計します(図
+\ref{hmm_viterbi_learn1})。
+
+今\(n\)本の配列が与えられているとして、上記をより形式的に表現します。
+
+\begin{enumerate}
+\item まず、\(e_{l}(b)\)や、\(t(k \to l)\)の値をランダ
+ムに割り振ります。但し、\(\sum_{b'}e_{l}(b')=1,\sum_{l'}t(k \to l')=1\)となるようにします。ここで\(b'\)は任意の塩基(a,c,g,t)、\(l'\)は
+\(k\)から1回で到達できる任意の状態（次の状態）を表します。
+\item \label{vit_learn_repeat} \(n\)本の配列についてViterbiのアルゴリズ
+ムを使って最適経路を求めます。このとき、使われた塩基と経路を記録しておき
+ます。
+\item そして以下の式により全ての\(e_{l}(b)\)、\(t(k \to l)\)を更新します。
+\begin{equation}
+e_{l}(b)=\frac{n(l,b)}{\sum_{b'}n(l,b')}
+\end{equation}
+\begin{equation}
+t(k \to l)=\frac{n(k \to l)}{\sum_{l'}n(k \to l')}
+\end{equation}
+但し、\(n(l,b)\)は状態\(l\)において塩基\(b\)が使われた回数、\(n(k \to 
+l)\)は状態\(k\)から状態\(l\)へ移る経路が使われた回数を表します。
+\item \(e_{l}(b)\)や、\(t(k \to l)\)の値が収束する（変化しなくなる）まで
+\ref{vit_learn_repeat}に戻って繰り返します。
+\end{enumerate}
+
+
+\section{配列が観測される確率の計算}
+
+\ref{HMM_viterbi_sec}では、塩基の観測確率および状態間の遷移確率が決まっ
+ているときに与えられた配列\(x=(x_{1},x_{2},\cdots,x_{L})\)が通った経路
+\(\pi\)から計算される確率が最大になるような経路およびその確率を求める手
+法Viterbiのアルゴリズムを解説しました。この手法はより形式的に以下のよう
+に表現することができます。
+
+状態の集合\(\Upsilon=\{k_{1},k_{2},\cdots,k_{K}\}\)および塩基の集合
+\(B=\rm{\{a,c,g,t\}}\)に対して、隠れマルコフモデルを決定する上でのパラ
+メータとなる、塩基の観測確率と状態間の遷移確率\(\theta = (e_{k}(b),
+k), k \in \Upsilon, b \in B\)が決まっているとします。Viterbiのアルゴリ
+ズムは与えられたパラメータ\(\theta\)のもとで、配列\(x\)が観測される確率
+が最大になるような経路\(\pi\)=\({\rm argmax}_{\pi}P(x, \pi|\theta)\)お
+よびその確率\({\rm max}_{\pi}P(x, \pi|\theta)\)を求めるアルゴリズムであ
+ると言えます。ここからさらに一歩進んで、最大確率だけでなく、与えられた
+配列\(x\)が隠れマルコフモデルから出力される確率\(P(x|\theta)\)を求める
+方法を考えましょう。一番簡単な方法は配列\(x\)が出力されるときに採りうる
+経路\(\pi\)を全て列挙し、以下のようにその経路を通るときの確率を全て合計
+する方法です。
+
+\begin{equation}
+P(x|\theta)=\sum_{\pi}P(x,\pi|\theta)
+\label{hmm_eq_P}
+\end{equation}
+
+しかしこの方法では状態の数が多くなると、計算すべき経路の数も爆発的に増え
+る可能性があります。そこでこれを効果的に計算する{\bf 前向きアルゴリズム}およ
+び{\bf 後向きアルゴリズム}を紹介しましょう\cite{Bioinfo_eddy}。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{Figures_EPS/hmm_simp_str1.eps}
+\end{center}
+\caption{単純な隠れマルコフモデルの構造}
+\label{hmm_simp_str}
+\begin{quotation}
+経路の最初はstartから始まり、endで終わる。各状態で必ず塩基が出力される。すなわち、
+経路上の状態の数と、配列に含まれる塩基の数が等しくなる。
+\end{quotation}
+\end{figure}
+
+まず説明を分かりやすくするために、図\ref{hmm_simp_str}のようにstartから
+始まって、endで終わるような単純な隠れマルコフモデルの構造を考えます
+(\ref{HMM_viterbi_sec}ではstartは状態0として扱われていました)。そして、
+欠損状態はないと仮定します(つまりstartからendに至る経路上途中で通過した
+状態の数と塩基配列の長さが等しいとします)。
+
+前向きアルゴリズムでは、以下の式\ref{hmm_fwd_def}のように状態\(k\)に到
+り、かつそのときに配列\(x_{1},x_{2},\cdots,x_{i}\)が観測されている確率
+\(F(k,i)\)を求めます。
+
+\begin{equation}
+F(k,i)=P(x_{1},\cdots,x_{i},\pi_{i}=k)
+\label{hmm_fwd_def}
+\end{equation}
+
+\(F\)を使うと、\(P(x)\)は式\ref{hmm_eq_P}より、
+
+\begin{displaymath}
+P(x|\theta)=\sum_{k}P(x_{1},\cdots,x_{L},\pi_{L}=k|\theta)t(k \to {\rm end})
+\end{displaymath}
+
+\begin{displaymath}
+=\sum_{k}F(k,L)t(k \to {\rm end})
+\end{displaymath}
+
+\noindent
+となります。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{Figures_EPS/hmm_fwd1.eps}
+\end{center}
+\caption{前向きアルゴリズム}
+\label{hmm_fwd1}
+\begin{quotation}
+\(F(l, i)\)は状態\(l\)の経路までにおいて、塩基\(x_{1}, \cdots, x_{i}\)が
+観測される確率を表す。状態\(l\)の直前の状態\(k\)から\(l\)に至り、\(x_{i}\)が
+出力される確率は、\(F(k,i-1)t(k\to l)e_{l}({x_{i}})\)となる。
+\end{quotation}
+\end{figure}
+
+それでは\(F\)を効率よく求める方法を考えましょう。まず、配列が何も観測さ
+れていなければ(\(i=0\))、必ず初期状態\({\rm start}\)です。従って、
+\(F({\rm start}, 0)=1\)となります。それ以外の場合については、図
+\ref{hmm_fwd1}を見ながら\(F(l,i)\)を求めることを考えてゆきます。\(l\)に到
+る直前の状態\(\pi_{i-1}\)として、\(k \in \Upsilon\)を考え
+ます。これらの\(k\)に対してさらに\(F(k,i-1)\)を考えることができ、\(k\)か
+ら\(l\)への遷移確率は\(t(k \to l)\)となります。従って\(F(k,i-1)t(k \to 
+l)\)は状態\(k\)までに配列\(x_{1},\cdots,x_{i-1}\)が観測され、そこから状
+態\(l\)に遷移する確率となります。これに\(l\)から記号\(x_{i}\)が出力され
+る確率\(e_{l}(x_{i})\)を掛ければ、状態\(k \to l\)の遷移が起こった段階で
+配列\(x_{1},\cdots,x_{i}\)が観測される確率となります。これを全ての\(k\)
+について計算して総和をとると、
+
+\begin{displaymath}
+F(l,i)=e_{l}(x_{i})\sum_{k}F(k,i-1)t(k \to l)
+\end{displaymath}
+
+\noindent
+となります。結局ここまでの議論を合わせると、以下の再帰式をたてることがで
+きます。
+
+\begin{equation}
+F(l,i) = 
+\left\{
+\begin{array}{l}
+0\ {\rm if}\ l \neq {\rm start} \ {\rm and}\ i=0\\
+1\ {\rm if}\ l = {\rm start}\ {\rm and}\ i=0\\
+e_{l}(x_{i})\sum_{k}F(k,i-1)t(k \to l)\ {\rm otherwise}
+\end{array}\right.
+\end{equation}
+
+一方後向きアルゴリズムでは、\(i\)番目の状態として\(k\)を通過したときに、
+配列\(x_{i+1}, \cdots, x_{L}\)が観測される確率\(B(k, i)\)を求めます。こ
+れを式で書くと、
+
+\begin{equation}
+B(k,i)=P(x_{i+1},\cdots,x_{L}|\pi_{i}=k)
+\end{equation}
+
+\noindent
+となります。すると、
+
+\begin{displaymath}
+P(x)=P(x_{1},\cdots,x_{L}|\pi_{0}={\rm start})=B({\rm start},0)
+\end{displaymath}
+
+\noindent
+となります。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{Figures_EPS/hmm_bwd1.eps}
+\end{center}
+\caption{後向きアルゴリズム}
+\label{hmm_bwd1}
+\begin{quotation}
+
+\(B(k,i)\)は\(i\)番目の塩基が状態\(k\)で観測されているとき、それ以降の経
+路で塩基配列\(x_{i+1},\cdots, x_{L}\)が観測される確率である。状態\(k\)か
+ら状態\(l\)に遷移し、塩基\(x_{i+1}\)が観測される確率は、
+\(t(k\to l)e_{l}(x_{i+1})B(l,i+1)\)となる。
+\end{quotation}
+\end{figure}
+
+では同様に\(B\)を効率よく求める方法を考えましょう。記号が全て出尽くした
+状態(\(\pi_{L}\))では、もう塩基が出力されませんので、あとは終了状態への
+遷移確率だけが問題となり、\(B(k,L)=t(k \to {\rm end})\)となります。それ
+以外の場合は、現在の状態\(k\)の直後の状態\(l \in \Upsilon\)を考えます(図\ref{hmm_bwd1})。これらの状態\(l\)に
+対しても\(B(l,i+1)\)を考えることができ、\(k\)から\(l\)への遷移確率は
+\(t(k \to l)\)です。従って、\(t(k \to l)B(l,i+1)\)は状態\(k\)から\(l\)に
+遷移し、そこからさらにどこかに遷移して配列\(x_{i+2},\cdots,x_{L}\)が出力
+される確率となります。これに状態\(l\)から塩基\(x_{i+1}\)が出力される確率
+\(e_{l}(x_{i+1})\)を掛ければ状態\(k\)から\(l\)への遷移が起こり、その後配
+列\(x_{i+1},\cdots,x_{L}\)が観測される確率となります。これを全ての\(l\)
+について計算して総和をとると、
+
+\begin{displaymath}
+B(k,i)=\sum_{l}t(k \to l)e_{l}(x_{i+1})B(l,i+1)
+\end{displaymath}
+
+\noindent
+となります。以上の議論をまとめると、以下のような再帰式をたてることができ
+ます。
+
+\begin{equation}
+B(k,i) = 
+\left\{
+\begin{array}{l}
+t(k \to {\rm end})\ {\rm if}\ i=L\\
+\sum_{l}t(k \to l)e_{l}(x_{i+1})B(l,i+1)
+\end{array}\right.
+\end{equation}
+
+
+\section{隠れマルコフモデルのパラメータ推定}
+
+それでは複数の配列が与えられたときに、隠れマルコフモデルのパラメータを
+どのように推定していけばよいか、最尤推定量を使った方法を紹介します。最
+尤推定量は与えられた観測データ\(x\)に対して、\(P(x|\theta)\)を最大にす
+るような\(\theta\)のことであり、パラメータ推定の方法として広く使われて
+います。これを数値的に決める方法について説明していきます(理論的背景については、
+\ref{EM_HMM}参照)。
+
+配列\(x\)と隠れマルコフモデルのパラメータ\(\theta\)が与えられたときに、
+状態\(k\)、\(l\)がそれぞれ\(i\)番目の経路および\(i+1\)番目の経路として使
+用される確率は
+
+\begin{displaymath}
+P(\pi_{i}=k,\pi_{i+1}=l|x,\theta)=
+\frac{P(x,\pi_{i}=k,\pi_{i+1}=l|\theta)}{P(x|\theta)}
+\end{displaymath}
+
+\begin{displaymath}
+=\frac{P(x_{1},\cdots,x_{i},\pi_{i}=k|\theta)P(\pi_{i}=l|\theta)P(x_{i+1}|\pi_{i+1}=l|\theta)}
+{P(x|\theta)}
+\end{displaymath}
+
+\begin{displaymath}
+\times P(x_{i+2},\cdots,x_{L}|\pi_{i+1}=l,\theta)
+\end{displaymath}
+
+\begin{equation}
+=\frac{F(k,i)_{|\theta}t(k \to l)_{|\theta}
+e_{l}(x_{i}+1)_{|\theta}B(l,i+1)_{|\theta}}{P(x|\theta)}
+\label{hmm_transit1}
+\end{equation}
+
+\noindent
+となります。但し、\(F_{|\theta}\)、\(B_{|\theta}\)はその計算がパラメータ
+\(\theta\)をもとに行われることを示し、\(t(k \to l)_{|\theta}\)や
+\(e_{k}(b)_{|\theta}\)などはパラメータ\(\theta\)の一部であることを表し
+ます。
+
+経路\(\pi\)上の任意の位置\(i,i'(i \neq i')\)について、\(i\)番目の状態から\(i+1\)番目の状態
+に遷移するときに\(k \to l\)の経路が使われる確率と、
+\(i'\)番目の状態から\(i'+1\)番目の状態に遷移するときに\(k \to l\)の経路が使われる確率が独立なら、何番目の経路かということに関係なく、経路\(k \to l\)が
+配列\(x\)を出力する上で使われる回数の期待値は式\ref{hmm_transit1}を塩基
+間の全ての状態遷移の箇所について足し合わせ\footnote{
+一般に確率変数\(X_{1},X_{2},\cdots,X_{n}\)が独立な場合、
+\(\sum_{k=1}^{n}X_{k}\)の期待値\(E(\sum_{k=1}^{n}X_{k})\)は
+\(\sum_{k=1}^{n}E(X_{k})\)となる。例えば''5''の目が出る確率が1/6のサイ
+コロを1回ふった場合、''5''の目が1回出るか0回かのどちらかである。この回
+数を\(X\)で表す。\(k\)回目にサイコロを{\bf １回}ふったとき、''5''が出た
+回数(0または1)を\(X_{k}\)で表すとして、その期待値は\(E(X_{k})=1 \times
+\frac{1}{6} + 0 \times \frac{1}{6}=\frac{1}{6}\) となる。
+各試行は独立なので、30回ふったときに''5''の目が出る回数は、
+\(E(\sum_{k=1}^{30}X_{k})=\sum_{k=1}^{30}E(X_{k})=\frac{1}{6}\times 30=5\)
+となる。
+}、
+
+\begin{displaymath}
+\sum_{i}P(\pi_{i}=k,\pi_{i+1}=l|x,\theta)
+\end{displaymath}
+
+\begin{equation}
+=\frac{1}{P(x|\theta)}\sum_{i}F(k,i)_{|\theta}t(k \to l)_{|\theta}
+e_{l}(x_{i}+1)_{|\theta}B(l,i+1)_{|\theta}
+\label{hmm_transit2}
+\end{equation}
+
+\noindent
+と表されます。すると複数本の配列\(x^{1},x^{2},\cdots\)が与えられたとき、
+経路\(k \to l\)が使われる回数の期待値\(N_{t(k \to l)}\)は式
+\ref{hmm_transit2}をそれらの配列\(x^{j}\)について足し合わせ、
+
+\begin{equation}
+N_{t(k \to l)|\theta}=\sum_{j}\frac{1}{P(x^{j}|\theta)}\sum_{i}F^{j}(k,i)_{|\theta}t(k \to l)_{|\theta}e_{l}(x_{i+1}^{j})_{|\theta}B^{j}(l,i+1)_{|\theta}
+\label{hmm_trans_exp}
+\end{equation}
+
+\noindent
+となります。
+
+
+一方、\(i\)番目の塩基が\(b(x_{i}=b)\)として、\(i\)番目の状態\(k\)が塩基
+\(b\)の出力に使われる確率\(P(\pi_{i}=k|x,\theta)\)は
+
+\begin{displaymath}
+P(\pi_{i}=k|x,\theta)=\frac{P(x,\pi_{i}=k|\theta)}{P(x|\theta)}
+\end{displaymath}
+
+\begin{displaymath}
+=P(x_{1},\cdots,x_{i},\pi_{i}=k|\theta)P(x_{i+1},\cdots,x_{L}|x_{1},\cdots,x_{i},\pi_{i}=k,\theta)
+\end{displaymath}
+
+\begin{displaymath}
+=\frac{P(x_{1},\cdots,x_{i},\pi_{i}=k|\theta)P(x_{i+1},\cdots,x_{L}|\pi_{i}=k,\theta)}{P(x|\theta)}
+\end{displaymath}
+
+\begin{equation}
+=\frac{F(k,i)_{|\theta}B(k,i)_{|\theta}}{P(x|\theta)}
+\label{hmm_emis1}
+\end{equation}
+
+\noindent
+
+となります。\(x_{i}=x_{i'}=b\)を満たす経路\(\pi\)上の任意の位置\(i,i'\)
+について\(i\)番目の状態\(k\)が塩基\(b\)の出力に使われる確率と、\(i'\)番
+目の状態\(k\)が塩基\(b\)の出力に使われる確率が独立の場合、状態\(k\)において
+記号\(b\)が出力される回数の期待値は、式
+\ref{hmm_emis1}を\(x_{i}=b\)となる\(i\)について足し合わせて
+
+\begin{equation}
+\frac{1}{P(x|\theta)}\sum_{\{i|x_{i}=b\}}F(k,i)_{|\theta}B(k,i)_{|\theta}
+\label{hmm_em_exp}
+\end{equation}
+
+\noindent
+となります。式\ref{hmm_em_exp}を複数本の配列\(x^{1},x^{2},\cdots\)が与
+えられたときの期待値に直すと、
+
+
+\begin{equation}
+N_{e_{k}(b)|\theta}=\sum_{j}\frac{1}{P(x^{j}|\theta)}\sum_{\{i|x_{i}^{j}=b\}}F^{j}(k,i)_{|\theta}B^{j}(k,i)_{|\theta}
+\label{hmm_em_exp2}
+\end{equation}
+
+\noindent
+となります。
+
+さて、式\ref{hmm_trans_exp}、\ref{hmm_em_exp2}を用いて以下の手順でパラメ
+ータ\(\theta\)を推定してゆきます。まず\(\theta\)の初期値を決めます。この
+決め方にはいくつか方法がありますが、とりあえずここではランダムに決めるこ
+とにしましょう。真の\(\theta\)と、とりあえず決めた\(\theta\)を区別するた
+めに、ある時点\(t\)における後者を\(\theta^{t}\)とします。そして現在の
+\(\theta^{t}\)に基づいて、式\ref{hmm_trans_exp}、\ref{hmm_em_exp2}を用い
+て、\(N_{t(k \to l)|\theta^{t}}\)および\(N_{e_{k}(b)|\theta^{t}}\)を計算
+します。次に\(\theta^{t+1}\)を以下の式により更新します。
+
+\begin{equation}
+t(k \to l)_{|\theta^{t+1}}=\frac{N_{t(k \to l)|\theta^{t}}}{\sum_{l'}N_{t(k \to l')|\theta^{t}}}
+\end{equation}
+
+\begin{equation}
+e_{k}(b)_{|\theta^{t+1}}=\frac{N_{e_{k}(b)|\theta^{t}}}{\sum_{b'}N_{e_{k}(b')|\theta^{t}}}
+\end{equation}
+
+次にまた\(N_{e_{k}(b)|\theta^{t+1}}\)および\(N_{t(k \to 
+l)|\theta^{t+1}}\)を計算する、ということを繰り返すうちに、\(\theta^{t}\)
+は\(P(x|\theta)\)を最大化するような\(\theta\)に近づいてゆきます。
+
+\begin{practice}
+\item logAB = logA + logBを使って式\ref{hmm_eq3}をlogを使うように直しま
+しょう。ただしlog0 = LOG0とします。
+\item \label{hmm_prac2} \ref{hmm_imple_vit}のプログラムを参考に状態\(l\)
+において塩基配列\(x_{1}\)～\(x_{i}\)が観測されるときの最大の確率を計算す
+る関数viterbiを完成させましょう。
+\item \label{hmm_prac3} 計算の途中経過をv[l][i]に記録することにより
+\ref{hmm_prac2}を高速化しましょう。
+\item \label{hmm_prac4} \ref{hmm_imple_vit_path}のプログラムを参考に、最
+も確率が高くなる経路を求めるプログラムを作成しましょう。
+\item \label{hmm_prac5} 欠損を表すノードをプログラムとして実装しましょう。
+\item 図\ref{hmm_table1}を参考に
+下記隠れマルコフモデルについて、"ATGA"が出力されたときの\(v(l,i)\), ptr\((l, i)\)を求め、
+表にしましょう。
+\begin{center}
+\includegraphics[scale=0.4]{Figures_EPS/hmm_prac1.eps}
+\end{center}
+\item Viterbiのアルゴリズムを使って遷移確率および塩基出力確率の学習アル
+ゴリズムを実装しましょう。
+\end{practice}
+

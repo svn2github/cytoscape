@@ -1,0 +1,372 @@
+\subsection{Profile analyses}
+\subsubsection{Nucleotide distributions around start codons}
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+Data analysis:\\
+\hline
+\end{tabular}
+
+We have analyzed
+ contextual nucleotide distributions of starting AUGs for all of vertebrates,
+invertebrates and bacteria in the GenBank Database.
+We also analyzed profile around start codons of mitochondria of
+vertebrates and invertebrates. Because mitochondrial mRNA data were
+less, we used 
+DNA data. And to get enough data of mitochondrial sequences, we did
+not exclude sequences with  
+ATG trinucleotide in the same frame upstream.
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+Result and discussion:\\
+\hline
+\end{tabular}
+
+\begin{table}
+\epsfile{file=gbvrta.ps,scale=0.80}
+\caption{Profile around start codons in vertebrate}
+\label{gbvrta}
+\end{table}
+
+\begin{table}
+\epsfile{file=gbinvrta.ps,scale=0.80}
+\caption{Profile around start codons in invertebrate}
+\label{gbinvrta}
+\end{table}
+
+\begin{table}
+\epsfile{file=bun_bct.ps,scale=0.80}
+\caption{Profile around start codons in bacteria}
+\label{bun_bct}
+\end{table}
+
+
+The results for vertebrates(table \ref{gbvrta})
+ show gccGCC$^{\rm A}_{\rm G}$CC[AUG]G as the consensus
+sequence and it supports Kozak's results\cite{label3}.
+Especially purine in position -3 and guanine in position +4 are frequent
+and they presumably play an important role in initiating translation.
+The consensus sequence for invertebrates is AAA[AUG](table
+\ref{gbinvrta}).  Position -3 in
+invertebrates seems to be important as in vertebrates.
+
+There are many Cs and Gs in positions more than 10 nucleotides upstream
+in vertebrates. It may be due to translation regulation by forming 
+secondary structure. But in invertebrate, this tendency is not observed.
+Instead, there are many As and Ts in the same region. This will be
+discussed later.
+
+The results for bacteria(table \ref{bun_bct}) show that there is purine rich
+region from  
+position -14 to position -7, which may be due to the Shine-Dalgarno 
+sequence. Unlike eucaryotes, there is no very strong consensus around
+start codons. However, there are many A's in position -3 and position 
++4, which is consistent with previous research.
+
+
+\begin{table}
+\epsfile{file=vrta_mit.ps,scale=0.80}\\ \\
+\epsfile{file=inv_mit.ps,scale=0.80}
+\caption{Profile around start codons of mitochondria DNA}
+\label{mit_prof}
+\end{table}
+
+Results for mitochondria in \ref{mit_prof} show that there are
+consensus in several 
+nucleotides upstream and much farther downstream. In mitochondria, only 15\%
+of the genome is guanine according to our analysis. Still we suggest that 
+guanine around start codons are especially less. The consensus
+sequence is different from nucleus mRNA of eucaryotes in general.
+
+\subsubsection{Nucleotide distributions around skipped AUGs}
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+Data analysis:\\
+\hline
+\end{tabular}
+
+We also analyzed nucleotide distributions around skipped AUGs to find
+whether there is any remarkable consensus to promote leaky scanning.
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+Result and discussion:\\
+\hline
+\end{tabular}
+
+\begin{table}
+\epsfile{file=lk_vrta.ps,scale=0.7}
+\caption{Profile around skipped AUGs in vertebrates}
+\label{lk_vrta}
+\end{table}
+\begin{table}
+\epsfile{file=lk_invrta.ps,scale=0.7}
+\caption{Profile around skipped AUGs in invertebrates}
+\label{lk_invrta}
+\end{table}
+
+The tendencies around skipped AUGs (table \ref{lk_vrta} and
+\ref{lk_invrta}) are different from ones
+observed around start codons. We could not find any remarkable
+patterns around skipped AUGs. This suggests that there is no consensus 
+sequence to promote leaky scanning.
+
+\subsection{Analyses of entropy value around start codons}
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+Data analysis:\\
+\hline
+\end{tabular}
+
+Entropy is known as a value which indicates the randomness.
+If this value in a specific position in the sequence is low, then it 
+means that the position has strong consensus sequence.
+We calculated the entropy at each position(Position where A-residue of 
+start AUG is located is defined 0.) for eucaryotes
+and procaryotes (bacteria).
+Bacteria data were further classified into {\it E.coli, Mycoplasma genitalium,
+Haemophilus influenzae, and Bacillus subtilis}.  DNA sequence data have
+been used for procaryotes and mRNA data for eucaryotes.  
+Profile of nucleotide distribution around the start codon 
+was constructed for each taxonomical group and procaryote species.
+Each profile was then
+normalized by total nucleotide frequencies.
+
+The entropy at each position is given as follows:
+
+\vspace{2ex}
+\noindent
+Let \( E_{i} \) be  the expected frequency of each
+nucleotide \(i\) at the position, and
+ \(O_{i} \) be the  observed frequency of each 
+nucleotide in the profile. 
+Let \( N_{i}\) be \(O_{i} / E_{i} \) .
+Entropy at each position can then be defined as in the following equation.
+\begin{quotation}
+\noindent
+\( \sum_{i = a,t,c,g} \frac{N_{i}}{N_{a} + N_{t} 
++ N_{c} + N_{g}} \log{ \frac{N_{i}} {N_{a} + N_{t} + N_{c} + N_{g}} }
+\)  \\
+\end{quotation}
+
+The normalization was necessary,
+because some species  have
+a characteristically low/high G+C content, which would make the whole
+entropy values of the species lower.
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+ Result and discussion:\\
+\hline
+\end{tabular}
+
+\begin{figure}
+\epsfile{file=euc_ent.ps,hscale=0.7,vscale=0.5}\\
+\epsfile{file=bct4ent2.ps,scale=0.7}
+\caption{Normalized entropy around start codons}
+\label{entro}
+\end{figure}
+
+The results are shown in figure \ref{entro}.
+For all the eucaryotes, the entropy values are very low at the
+positions -3 (3 base upstream from the start codon), which is
+consistent with the Kozak rule\cite{label3}.  The position +3 (one
+base downstream from the start codon, ATG) has modestly low entropy
+value, and for the position -4 and its upstream, the entropy values
+are relatively high, with small fluctuation.
+
+For procaryotes, the
+entropy value is considerably low at the position -11 in {\it bacillus
+subtilis} and position -9 in {\it E. coli} and {\it H. influenzae},
+respectively.  The sequences around the positions are presumably
+Shine-Dalgarno sequences.  The curve representing {\it Mycoplasma
+genitalium}, however, does not decrease at these positions.
+
+\subsection{GC and AT content in 5'UTR}
+
+Results for profile analyses showed that there is a GC-rich region in
+5'UTR in vertebrates, and AT-rich region in invertebrates, which are
+consistent with previous researches. The GC-richness in vertebrates
+is presumably due to translation regulation, and the GC-richness
+partly depends on what kind of proteins will be synthesized. For
+example, mRNA sequences that have GC-richness over 70\% will often
+produce growth factor, proto-oncogenes, receptor proteins,
+housekeeping genes,etc\cite{label12}. Approximately 20\% of vertebrate
+mRNA sequences have GC-richness over 70\%. But the exact reason for
+AT-richness in invertebrate mRNA sequences is unknown.
+Here, we first analyze distribution of GC content in vertebrates by
+using sequences from GenBank to make sure that the result is
+consistent with previous research and then we analyze distribution of
+AT content in invertebrates to compare with that of vertebrates.
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+ Data analysis:\\
+\hline
+\end{tabular}
+
+We used mRNA sequences whose 5'UTRs are longer than 30 bases for the 
+precise analysis. Then we made histograms that indicate the rate of
+mRNA sequences that have specific amount of GC/AT content.
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+ Result and discussion:\\
+\hline
+\end{tabular}
+
+\begin{figure}
+\begin{center}
+\epsfile{file=gc_vrta_5utr.ps,scale=0.5}\\
+\epsfile{file=at_invrta_5utr.ps,scale=0.5}
+\end{center}
+\caption{Rate of specific amount of GC/AT content in 5'UTR}
+\label{gc_at} 
+\end{figure}
+
+Although we analyzed GC content for vertebrates, and AT content for
+invertebrates, we discovered that the shape of the curve representing
+the distribution 
+of GC content in vertebrates is similar to the shape of the curve
+representing the distribution of AT content in invertebrates(figure
+\ref{gc_at}). 
+The reason is unknown, but AT richness in invertebrate 5'UTRs may have
+some roles as much as the roles of GC richness in vertebrates.
+The inevitable consequence is that such 5'UTR sequences in
+invertebrates lack extensive
+secondary structure. And according to previous researches, it seems
+that in lower eucaryotes, secondary 
+structure disturbs translation much more than in higher eucaryotes.
+Thus, AT richness in invertebrates may be the positive control of
+regulation of protein synthesis at translation level, whereas the
+GC richness in vertebrates are negative control. 
+Figure \ref{at_40} and \ref{at_80} show the examples of proteins
+that are synthesized
+from invertebrate mRNA whose AT content is below 40\% and above 80\%.  
+Further investigation on the common characteristics of these proteins
+must be done.
+
+\begin{table}
+\begin{tiny}
+\begin{center}
+\begin{tabular}{|l|}
+\hline
+ AT content: 22.86 \% : silk gland factor-1 (SGF-1)
+\\ AT content: 23.53 \% : apolipophorin-III
+\\ AT content: 23.89 \% : surface protease
+\\ AT content: 24.22 \% : surface protease
+\\ AT content: 24.43 \% : surface protease
+\\ AT content: 27.24 \% : homeotic protein
+\\ AT content: 27.50 \% : major surface glycoprotein
+\\ AT content: 28.81 \% : major surface glycoprotein
+\\ AT content: 30.66 \% : Lazarillo precursor
+\\ AT content: 33.33 \% : synaptotagmin, p65
+\\ AT content: 34.38 \% : red pigment-concentrating hormone
+\\ AT content: 34.62 \% : surface glycoprotein
+\\ AT content: 35.19 \% : blackjack
+\\ AT content: 35.76 \% : major surface glycoprotein
+\\ AT content: 36.11 \% : cocaine-sensitive serotonin transporter
+\\ AT content: 37.04 \% : Shaw potassium channel
+\\ AT content: 37.18 \% : surface glycoprotein
+\\ AT content: 37.18 \% : surface glycoprotein
+\\ AT content: 37.32 \% : major surface glycoprotein
+\\ AT content: 37.65 \% : insulin-like peptide
+\\ AT content: 37.80 \% : profilin II
+\\ AT content: 37.84 \% : profilin I
+\\ AT content: 38.27 \% : ADP/ATP carrier protein
+\\ AT content: 38.46 \% : molt-inhibiting hormone precursor
+\\ AT content: 38.46 \% : rac1 protein
+\\ AT content: 38.46 \% : rac1 protein
+\\ AT content: 38.71 \% : hemolysin
+\\ AT content: 39.32 \% : POU domain protein
+\\
+\hline
+\end{tabular}
+\end{center}
+\end{tiny}
+\caption{Invertebrate mRNAs that have AT content lower than 40\% in
+5'UTR, and proteins that will be synthesized}
+\label{at_40}
+\end{table}
+
+\begin{table}
+\begin{tiny}
+\begin{center}
+\begin{tabular}{|l|}
+\hline
+ AT content: 80.22 \% : telomerase component p80
+\\ AT content: 80.33 \% : Der p V allergen
+\\ AT content: 80.70 \% : peripheral membrane protein
+\\ AT content: 81.25 \% : BMP receptor
+\\ AT content: 81.48 \% : GDP dissociation inhibitor
+\\ AT content: 81.61 \% : Sarcophaga pro-cathepsin B
+\\ AT content: 81.90 \% : tropomyosin
+\\ AT content: 82.50 \% : myosin heavy chain
+\\ AT content: 82.98 \% : glucose-6-phosphate dehydrogenase
+\\ AT content: 83.58 \% : sapecin B
+\\ AT content: 83.72 \% : cytochrome c oxidase III
+\\ AT content: 84.00 \% : S-antigen
+\\ AT content: 84.09 \% : prophenoloxidase subunit 2
+\\ AT content: 84.31 \% : apocytochrome b
+\\ AT content: 84.38 \% : hyphancin IIID
+\\ AT content: 84.54 \% : beta-tubulin
+\\ AT content: 84.75 \% : glucose-6-phosphate dehydrogenase
+\\ AT content: 84.78 \% : paramyosin
+\\ AT content: 84.78 \% : telomerase component p95
+\\ AT content: 85.11 \% : hyphancin IIIG
+\\ AT content: 85.31 \% : S-adenosylhomocysteine hydrolase
+\\ AT content: 85.37 \% : fimbrin
+\\ AT content: 85.61 \% : vacuolar ATPase subunit DVA41
+\\ AT content: 86.02 \% : glycoprotein FP21
+\\ AT content: 86.23 \% : histone H1
+\\ AT content: 86.67 \% : opsin
+\\ AT content: 86.92 \% : actin
+\\ AT content: 86.99 \% : calcium binding protein
+\\ AT content: 87.14 \% : protein antigen
+\\ AT content: 87.45 \% : glycoprotein 185
+\\ AT content: 87.50 \% : hyphancin IIIE
+\\ AT content: 87.54 \% : ornithine aminotransferase
+\\ AT content: 87.73 \% : integral membrane protein
+\\ AT content: 88.35 \% : serine repeat protein
+\\ AT content: 88.89 \% : histone H3
+\\ AT content: 88.89 \% : triosephosphatee isomerase
+\\ AT content: 89.06 \% : NADH dehydrogenase subunit 8
+\\ AT content: 89.17 \% : major merozoite surface antigen
+\\ AT content: 89.74 \% : hyphancin IIIF
+\\ AT content: 90.32 \% : integral membrane protein
+\\ AT content: 90.43 \% : ribonucleotide reductase small subunit
+\\ AT content: 90.48 \% : cyclophilin
+\\ AT content: 90.54 \% : succinyl coenzyme A synthetase alpha subunit
+\\ AT content: 90.79 \% : circomsporozoite-related antigen
+\\ AT content: 90.91 \% : H(+)-transporting ATPase
+\\ AT content: 92.31 \% : WD40 repeat protein 2
+\\ AT content: 93.10 \% : calcineurin
+\\ AT content: 94.29 \% : cecropin A precursor
+\\ AT content: 95.24 \% : cyclase associated protein
+\\
+\hline
+\end{tabular}
+\end{center}
+\end{tiny}
+\caption{Invertebrate mRNAs that have AT content higher than 80\% in
+5'UTR, and proteins that will be synthesized}
+\label{at_80}
+\end{table}

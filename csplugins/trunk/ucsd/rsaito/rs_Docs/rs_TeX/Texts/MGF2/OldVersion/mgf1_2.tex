@@ -1,0 +1,2730 @@
+\documentclass{jarticle}
+
+\usepackage[dvips]{graphicx}
+\usepackage{wrapfig}
+\usepackage{ascmac}
+\usepackage{makeidx}
+
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\evensidemargin}{0.5cm}
+\setlength{\textwidth}{423pt}
+\setlength{\topmargin}{0pt}
+
+\newcounter{preexer}[section]
+\setcounter{preexer}{1}
+
+\newcounter{exer}[section]
+\setcounter{exer}{1}
+
+\title{{\normalsize バイオインフォマティクスのための}\\
+数理統計学入門\footnote{To my wife and Dr. Nozomu Yachie.}\\
+\vspace{3em}
+\includegraphics{Figures/dada1}\\
+\vspace{6em}
+}
+\author{慶應義塾大学先端生命科学研究所・環境情報学部\\
+専任講師 斎藤輪太郎}
+
+\makeindex
+
+\begin{document}
+\maketitle
+
+\thispagestyle{empty}
+
+\newpage
+
+\section*{序文}
+
+統計学は自然科学、社会科学、人文科学などあらゆる分野に応用できる可能性を
+秘めた学問分野であり、これを習得することには大変大きな意義がある。
+筆者の専門であるバイオインフォマティクスにとっても、統計学は非常に重要な
+学問である。
+
+最近は統計処理用言語Rなど統計処理ソフトがかなり充実し、原理をそれほど知
+らなくても複雑な処理を手軽に行えるようになってきた。それとともに、どの統
+計ソフトを使うと何ができるを幅広く知っていることが重要との考え方が徐々に
+支配的になりつつある。
+
+確かに重要なのは自然科学や社会科学の中で解決したい問題
+そのものであって、統計はその手段にしか過ぎない、という考え方もある。
+
+しかしながら、統計の数理的な側面を深く勉強すれば、データの見方が変わって
+くるし、独自の統計処理を設計できるようになるだろう。そこに待っているのは
+データの中に潜む新たな発見かも知れない。
+
+また純粋な興味として、乱雑に見える様々な現象の多くが実は統計学で扱われる
+正規分布という分布に従う、というだけでも驚くべき事ではないだろうか。いっ
+たいどうしてそのようなことが起こるのだろうか。
+
+本書では統計の原理を数学を用いてとことんまで追求することを目指した。統計
+学の素晴らしさ、面白さを少しでも感じて頂ければ幸いである。
+
+\vspace{2em}
+
+\begin{flushright}
+2010年3月19日~~~鶴岡タウンキャンパスにて\\
+著者
+\end{flushright}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{確率分布}
+\setcounter{exer}{0}
+\setcounter{preexer}{1}
+
+\subsection{度数分布}
+
+日常生活で我々は極めて多くの「数」に接している。気温、株価、通勤時間、経
+費、商品の売り上げ高、...と枚挙に暇がない。その中でも経費など我々の意思
+でかなりコントロールできる数と、気温のように我々の意思ではほとんどコント
+ロールができない数が存在する。商品の売り上げ高などは、一部我々の意思でコ
+ントロールできる微妙なものであろう。これから取り上げたいのは、我々の意思
+ではなかなか完全にコントロールできないような数がどのような法則に従ってい
+るかである。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{Figures/popu1}
+\end{center}
+\vspace{-2em}
+\caption{2008年の日本の年齢別人口(男女別)}
+\label{popu1}
+\end{figure}
+
+同じ性質を持った多数の数がどのような法則に従っているかを捉える第一歩は
+{\bf 度数分布}\index{どすうぶんぷ@度数分布}を調べることであろう。これは
+各値がどれくらいの頻度で観測されるかを表すものである。例えば図
+\ref{popu1}(a)は、日本人の各年齢別の人口を表したものである。横軸が年齢、
+縦軸はその年齢の人口を表している。度数分布をこのように縦軸に値、横軸にそ
+の値の頻度をとって各棒の位置と高さで各値とその頻度を表したものを{\bf ヒ
+ストグラム}\index{ヒストグラム}と呼ぶ。
+
+この例では、より人口が多い中国やインドで同様のヒストグラムを描くと、ヒス
+トグラム全体の高さも上昇する。人数そのものには関心がなく、日本の人口に対
+してどの年齢層にどれくらいの割合が分布しているかを知りたいときは、縦軸に
+人数そのものではなく、該当する年齢層の全体に対する割合をプロットするとい
+いだろう。このようにしたのが、図\ref{popu1}(b)である。分布の形状は変わっ
+ていないが、縦軸の目盛りが変わっているのが分かるだろう。人口の総数を\(N\)、
+年齢\(i\)に該当する人口を\(n_{i}\)で表すと、年齢\(i\)に該当する割合
+\(p_{i}\)は、
+
+\begin{equation}
+p_{i}=\frac{n_{i}}{N}
+\end{equation}
+
+\noindent
+となる。ここで、
+
+\begin{equation}
+\sum_{i}p_{i}=1
+\end{equation}
+
+\noindent
+が成立する。
+このように縦軸を割合にした分布は後ほど述べる確率分布で使われるので、ぜひ慣れて頂きたい。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{Figures/bread1}
+\end{center}
+\vspace{-2em}
+\caption{パン屋から受け取るパンの重量の分布}
+\label{bread1}
+\end{figure}
+
+度数分布に関しては次のような興味深い話がある\cite{Gakken1}。第二次大戦後のドイツでは食
+料が不足し、1人当たりのパンの配給量は200gと決められていた。ある学者はパ
+ン屋から毎日受け取るパンの重さに疑いをもち、毎日重さを量り、度数分布を作
+成した。すると、図\ref{bread1}(a)のように左右がほぼ対称釣り鐘状の分布に
+なったが、中心の位置が200gより低い位置にあることが分かった。
+
+そこで学者は「君はパンの目方をちゃんと量っていないぞ。」と伝えた。すると
+パン屋は「パンなんて重いものもあれば、軽いものもありますよ。」そこで学者
+はヒストグラムを見せ、「本気で200gにしようとしたならば、グラフは図
+\ref{bread1}(b)のようになるはずだ。ところが君が作るパンのグラフは
+\ref{bread1}(a)このようになっている。明らかに目方が不足しているじゃない
+か。」と告げた。パン屋は「これからは気をつけます。」と言った。
+
+そして次の日から学者に配給されるパンは目方が不足しなくなった。しかし、学
+者がまた目方のヒストグラムを描いてみたところ、図\ref{bread1}(c)のようなグラフになった。
+これでパン屋が量を多くしたのではなく、学者のところにだけ目方が足りている
+パンを選んで渡していることが分かってしまった。度数分布の威力を示す1つの
+例である。
+
+
+\subsection{離散確率分布}
+\label{sec_desc_prob}
+
+変数\(X\)が様々な値を取り、またどのような値を取るかが確率的に決まる時、
+\(X\)を確率変数\index{かくりつへんすう@確率変数}と呼ぶ。例えばサイコロを振ったときに出た目を\(X\)とすると、\(X\)
+は確率的に決まるため、確率変数である。\(X\)がある値\(x\)を取る確率を\(P(X=x)\)
+と表す。
+例えばXをサイコロを振ったときに出る目とすれば、サイコロの目が2になる確率
+は\(P(X=2)=1/6\)と表される。誤解を招く恐れがないときは、\(P(x)\)と省略する。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Figures/dice_plot1}
+\end{center}
+% x <- sapply(0:10, dbinom, size=10, prob=1.0/6)
+% names(x) <- 0:10
+% barplot(x)
+\vspace{-2em}
+\caption{サイコロを例にした確率分布の例}
+\label{dice_plot1}
+\begin{small}
+\begin{quotation}
+(a) サイコロの各目が出る確率 (b) サイコロを3回振ったときの目の合計とその確率。合計が9以上11以下の確率に
+該当する棒の色を濃く示した。
+\end{quotation}
+\end{small}
+\end{figure}
+
+\(X\)が取り得る値\(x_{1},x_{2},x_{3},\cdots\)を横軸に、その値を取る確率\(p_{1},p_{2},p_{3}\cdots\)を
+縦軸にしたヒストグラムを描くと、変数\(X\)の特性が分かる。例えば横軸にサイコロの目、縦軸にその目が出る確率をヒストグラムで表すと
+図\ref{dice_plot1}(a)のようになるし、またサイコロを3回振ったときの目の合計を横軸、その確率を縦軸にすると、
+図\ref{dice_plot1}(b)のようになる。このように変数\(X\)の確率的な分布を表したものを確率分布\index{かくりつぶんぷ@確率分布}と呼ぶ。
+
+図\ref{dice_plot1}の場合、ヒストグラムの各棒の幅を1とすれば、各棒の面積が確率変数が取り得る各値の確率となり、
+さらに以下の2つの重要な性質が得られる。
+
+\begin{enumerate}
+\label{pd_def1}
+\item \label{pd_def1_1} 棒の面積の合計が1となる
+\item \label{pd_def1_2} Xが\(a\)以上、\(b\)未満となる確率\(P(a \leq X < b)\)は、以下の式で与えられる。 %\footnote{\(P(X=x_{i})\)を\(P(x_{i})\)と略した。}。
+\begin{equation}
+P(a \leq X < b)=\sum_{a \leq x_{i} < b}P(X=x_{i})
+\end{equation}
+\end{enumerate}
+
+\noindent
+逆に必要条件として、確率分布は\(P(X=x_{i})\geq 0\)かつ上記2つの性質を満たすもの、と約束する。こうすることによって様々な確率分布に対して
+その特性の計算方法を統一できる。サイコロを3回振る例で、目の合計が9以上11以下になる
+確率は\(P(9)+P(10)+P(11)\)、すなわち図\ref{dice_plot1}の色の濃い棒の面積の和で表されることが分かる。
+
+上記の例では確率分布をヒストグラムで表したが、確率変数Xが値\(x\)を取る確
+率\(P(x)\)を数式で表現できれば最も客観的である。これを
+考えると、図\ref{dice_plot1}(a)の
+分布は\(P(x)=\frac{1}{6}\)と表されるし、図\ref{dice_plot1}(b)の分布は
+\(P(x)=\sum_{i=0}^{\lfloor \frac{1}{6}x-2 \rfloor} 
+\frac{3(x-6i-1)(x-6i-2)}{i!(3-i)!}(-1)^{i}\)である\footnote{より一般的に
+はサイコロの目の数を\(q\)(一般的なサイコロは\(q=6\))、振る回数を\(n\)と
+して、\begin{equation} P(x)=\sum_{i=0}^{\lfloor \frac{x - n}{q} \rfloor} 
+\frac{(x-qi-1)!}{(n-1)!(x-qi-n)!}\cdot 
+\frac{n!}{i!(n-i)!}(-1)^{i}\nonumber\end{equation}}。但し、\(\lfloor 
+\alpha \rfloor\)は\(\alpha\)以下の最大の整数を表す(小数以下を切捨てた整
+数)。このように確率変数\(X\)が各値\(x\)を取る確率を関数で表したものを確
+率関数と呼ぶ。
+
+確率分布と度数分布の間には密接な関係がある。\(N\)回の試行で\(X=x_{i}\)と
+なる現象が\(n_{i}\)回起こったとする。但し、その現象が起こる確率は
+\(P(X=x_{i})\)である。このとき、\(N\)が大きくなるにつれて、\(n_{i}/{N}\)
+は\(P(X=x_{i})\)に近づいてゆく。
+
+\vspace{1em}
+
+\stepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:各年に特定の都市Aで大地震が起きる確率は\(\frac{1}{60}\)であるとする。
+今年の始めから数えて\(x\)年の間に1回も地震が起ない確率を\(P(x)\)としたとき、\(P(x)\)の確率関数を求めよ。
+
+
+\subsection{連続確率分布}
+\setcounter{exer}{1}
+\setcounter{preexer}{1}
+\label{cont_dist1}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures/roulette2}
+\end{center}
+\vspace{-1em}
+\caption{サイコロルーレット}
+\label{roulette2}
+\end{figure}
+
+サイコロの例では確率変数\(X\)は離散値、すなわち1,2,3,4,5,6と整数値を取
+り、2.5など間の数を取ることはなかったし、1から6という範囲の中で取り得る
+値は6個と有限であった。確かに現実で起こる確率的と思われる現象の中には、
+気象を例に取ればある地域における年間の台風発生数、落雷数など離散的な数
+で表されるものもある。しかし、降水量や平均気温など取り得る値が実数で無
+限にある確率変数も存在する。これを連続量と呼ぶが、連続量に対しては確率
+分布や確率関数をどのように考えればよいだろうか。図\ref{roulette2}の"サ
+イコロルーレット"を例にとって説明しよう。この装置は円盤と自由に動く針で
+構成されている。円盤には0から5までの数が刻んである。針を力強く弾くと、
+針は何回転もした後、摩擦で停止する。停止したときに針が指し示す実数
+を\(X\)とすれば、針は0と1の間などどこにでも停止しうるため、\(X\)は連続
+値となる。確率変数が離散値を取るときと同じような論法で\(X\)が例えば3を
+取る確率を論じることはできない。針が寸分の狂いもなくちょうど3のところで
+停止することはあり得ないからである(確率は0)。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.6]{Figures/dice_plot_c_flat}
+\end{center}
+\vspace{-2em}
+\caption{連続分布の離散分布への変換}
+\label{dice_plot_c_flat}
+\begin{small}
+\begin{quotation}
+サイコロルーレットから得られる値\(X\)を離散確率分布に近似したもの。
+\(P(3\leq X < 5)\)となる面積を濃い色で表してある。
+(a) 区間の幅を1にした場合。(b) 区間の幅をさらに縮めて0.5にした場合。
+\end{quotation}
+\end{small}
+\end{figure}
+
+そこで連続値を離散値に直すことを考えてみよう。例えば、サイコロルーレッ
+トの針が差す数値が0以上1未満になる確率、1以上2未満になる確率、...という
+ように連続値を各範囲に小分けにして離散値として扱ってはどうだろうか。この場合、
+各区間の幅\(\Delta x\)は1である。
+すると図\ref{dice_plot_c_flat}(a)に示すように、\(X\)の取り得る範囲は6つの
+領域に分かれ、各範囲内に\(X\)が収まる確率は全て\(\frac{1}{6}\)となる。
+またこの確率関数は、p.\pageref{pd_def1}で述べた確率分布の2つの性質を満
+たす。すなわち、
+
+\begin{eqnarray}
+P(a \leq X < b)= \sum_{a \leq i < b}P(i \leq X < i + 1)
+\end{eqnarray}
+
+\noindent
+なので\ref{pd_def1_2}番目の性質は満たされている。但し、\(a,b,i\)は全て整数で、\(0 \leq a < 6, 0 < b \leq 6\)である。また、
+
+\begin{eqnarray}
+P(0 \leq X < 6)= \sum_{0 \leq i < 6}P(i \leq X < i + 1)=1
+\end{eqnarray}
+
+\noindent
+より、\ref{pd_def1_1}の性質も満たす。\(X\)が3以上5未満になる確率は濃い色の棒の面積の
+合計で表されることも確認されたい。
+
+
+区画をさらに細かくして\(\Delta x=0.5\)、すなわち0以上0.5未満、0.5以上1未
+満、\(\cdots\)という範囲に分ければ、図\ref{dice_plot_c_flat}(b) のような
+分布が出来上がる。区間が小さくなれば、\(X\)がその区画に入る確率は当然小
+さくなってゆく。このとき注意しなければならないのは、\(\Delta x=0.5\)とな
+っているため、区画\(x \leq X < x+\Delta x\)における棒の高さ=その範囲に\(X\)が収まる確率としてしまうと、
+棒の面積は棒の高さ\(\times 0.5\)により、実際の確率の半分になってしまう。
+そこで棒の面積がその棒の裾の範囲に\(X\)が収まる確率にするためには、
+\((X\mbox{が入る区画の確率}/\Delta x)\)という補正をかける必要がある。これによって
+
+\begin{equation}
+P(x \leq X < x+\Delta x)=\mbox{区画}x \leq X < x+\Delta x\mbox{における棒の高さ}\times \Delta x
+\label{eqn_bar10}
+\end{equation}
+
+\noindent
+という重要な関係が保たれる。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.6]{Figures/dice_plot2}
+\end{center}
+\vspace{-2em}
+\caption{サイコロルーレットを3回まわしたときの合計値の離散確率分布による近似}
+\label{dice_plot2}
+\begin{small}
+\begin{quotation}
+合計値が9以上12未満になる確率に相当する面積を濃い色で表示した。
+(a)区間を1刻みにして近似した分布。(b)区間を0.5刻みにして近似した分布。
+\end{quotation}
+\end{small}
+\end{figure}
+
+これをサイコロルーレットを3回回したときの合計値の分布で考えてみよう。区
+画幅を1にしたとき(\(\Delta x=1\))は図\ref{dice_plot2}(a)のような分布に
+なり、区間幅を0.5とより細かくしたとき(\(\Delta x = 0.5\))は、
+図\ref{dice_plot2}(b)のようによりスムーズな曲線に近づく。区間
+幅\(\Delta x\)を極限まで小さくしていったときに、幅が限りなく0に近い棒の
+高さが一定値に収束するならば、その高さの分布こそが合計値の従う連続確率を表す分布となる。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.6]{Figures/dice_plot_limit2}
+\end{center}
+\vspace{-2em}
+\caption{サイコロルーレットの合計値の連続分布}
+\label{dice_plot_limit2}
+\begin{small}
+\begin{quotation}
+(a) サイコロルーレットを1回回したときに出る値の連続確率分布。値が3以上5未満に
+なる確率を濃い部分の面積で表した。(b)サイコロルーレットを3回回したときに得られる
+値の合計値の連続確率分布。合計値が9以上12未満になる確率を濃い面積で表してある。
+\end{quotation}
+\end{small}
+\end{figure}
+
+例えば図\ref{dice_plot_c_flat}の分布は図\ref{dice_plot_limit2}(a)の分布
+に収束するし、図\ref{dice_plot2}の分布は、図\ref{dice_plot_limit2}(b)の
+分布に収束する\footnote{ 一様分布\(U(0,1)\)から得られる確率変
+数\(X\)を\(n\)回足した合計値が従う連続分布は\(
+f(x)=\frac{1}{2(n-1)!}\sum_{k=0}^{n}(-1)^k\frac{n!}{k!(n-k)!}(x-k)^{n-1}
+{\rm sgn}(x-k) \)で表される\cite{Hall,Irwin}。}。このように収束した分布
+において、横軸の位置が\(x\)のときの棒の高さを表す関数\(f(x)\)のこと
+を{\bf 確率密度関数}\index{かくりつみつどかんすう@確率密度関数}と呼ぶ。
+また確率変数\(X\)が確率密度関数\(f(x)\)に従うことを\(X \sim f(x)\)と表す。
+
+さてこれらの分布を幅\(\Delta x\)が限りなく0に近い棒の集合と考えるならば、式\ref{eqn_bar10}より、
+
+\begin{equation}
+P(x \leq X < x+\Delta x)=f(x)\Delta x
+\end{equation}
+
+\noindent
+となり、また離散確率分布のところで述べた\ref{pd_def1_2}番目の性質から、
+
+\begin{equation}
+P(a \leq X < b)=\sum_{a \leq x_{i} < b}P(x \leq X < x+\Delta x)=\sum_{a \leq x_{i} < b}f(x_{i})\Delta x
+\label{chopmany5}
+\end{equation}
+
+\noindent
+が成立する。
+式\ref{chopmany5}は\(\Delta x \to 0\)のとき、積分の定義から、
+
+\begin{equation}
+P(a \leq X < b)=\int_{a}^{b}f(x)dx
+\label{chopmany6}
+\end{equation}
+
+\noindent
+となる。つまり、確率変数がある範囲の値を取る確率は、確率密度関数の該当面
+積、すなわち積分で表されるということである。節\ref{sec_desc_prob}で述べた離散確率分布の
+2つの重要な性質を連続確率分布に当てはめると、確率密度関数を\(f(x)\)として、以下のようになる。
+
+\begin{enumerate}
+\item \label{pd_def2_1} 確率変数が取りうる全範囲の確率の合計は1となる。すなわち、
+\begin{equation}
+\int^{+\infty}_{-\infty}f(x)dx=1
+\end{equation}
+\item \label{pd_def2_2} Xが\(a\)以上、\(b\)未満となる確率\(P(a \leq X < b)\)は、以下の式で与えられる。 
+\begin{equation}
+P(a \leq X < b)=\int_{a}^{b}f(x)dx
+\label{prob_eqn14}
+\end{equation}
+\end{enumerate}
+
+式\ref{prob_eqn14}よりXが\(x\)未満となる確率\(P(X < x)\)は次のように表される。
+
+\begin{equation}
+F(x)=P(X < x)=\int_{-\infty}^{x}f(x)dx
+\label{prob_eqn15}
+\end{equation}
+
+\noindent
+この\(X\)が\(x\)未満となる確率を表す関数\(F(x)\)を{\bf 分布関数}\index{ぶんぷかんすう@分布関数}と呼ぶ。
+この分布関数を用いて式\ref{prob_eqn14}を書き直すと、以下のようになる。
+
+\begin{equation}
+P(a \leq X < b)=F(b)-F(a)
+\end{equation}
+
+\noindent
+\(F(x)\)が全ての\(x \in R\)において連続であれば\footnote{関数\(f(x)\)が\(x=a\)において
+以下の条件を満たすとき、\(f(x)\)が\(x=a\)において連続であるという。
+\begin{enumerate}
+\item \(f(a)\)が有限確定値。
+\item \(\lim_{x \to a}f(x)\)が有限確定値。
+\item \(f(a)=\lim_{x \to a}f(x)\)。
+\end{enumerate}
+
+\(\epsilon-\delta\)論法を使って説明すると、どんなに小さい正の数\(\epsilon>0\)を指定しても、
+\(|x-a|<\delta\)となる全ての\(x\)について常に\(|f(x)-f(a)|<\epsilon\)を成立させるような\(\delta\)が存在する。
+}、
+
+\begin{equation}
+\frac{dF(x)}{dx}=\lim_{\Delta x \to 0}\frac{F(x+\Delta x)-F(x)}{\Delta x}=\frac{1}{\Delta x}\int_{x}^{x+\Delta x}f(x_{*})dx_{*}
+\label{eqn188}
+\end{equation}
+
+\noindent
+\(\Delta x \to 0\)の極限において、\(f(x+\Delta x) \approx f(x)\)だから式\ref{eqn188}は、
+
+\begin{equation}
+\frac{dF(x)}{dx}=\frac{1}{\Delta x}f(x)\Delta x=f(x)
+\end{equation}
+
+\noindent
+となる。つまり、分布関数を微分したものが確率密度関数となる。
+
+\vspace{1em}
+
+\stepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~確率変数\(X\)の従う確率密度関数\(f(x)\)が
+
+\begin{equation}
+f(x)=
+\left\{
+\begin{array}{l}
+x \ \ \ \ \ \mbox{for} \ \ 0 \leq x \leq \sqrt{2}\\
+0 \ \ \ \ \ \mbox{otherwise}
+\end{array}\right.
+\end{equation}
+
+\noindent
+で与えられるとき、\(X\)が0以上1以下になる確率を求めよ。
+
+\subsection{確率密度関数の変数変換}
+
+今確率密度関数$f(x)$が与えられ、その分布関数は$F(x)$であるものとし、また
+$x$が$x=g(t)$となる関数$g$によって$t$に対して一意に決まるとする。
+このとき、$t$を変数とした確率密度関数を求めることを考えよう。
+
+\begin{displaymath}
+P(X\displaystyle \leq a)=F(a)=\int_{-\infty}^{x=a}f(x)dx=\lim_{\Delta x\rightarrow 0}\sum_{x_{i}=-\infty}^{x_{i}=a}f(x_{i})\Delta x=\lim_{\Delta x\rightarrow 0}\sum_{g(t_{i})=-\infty}^{g(t_{i})=a}f(g(t_{i}))\Delta x
+\end{displaymath}
+
+\noindent
+ところで$\Delta t>0$に対して$g^{\prime}(t)>0$の場合は$\Delta x=g(t+\Delta t)-g(t)$、$g^{\prime}(t)<0$の場合は、$\Delta x=-(g(t+\Delta t)-g(t))$だから、
+これらをまとめて、\(\Delta x=|g(t+\Delta t)-g(t)|\)と表せる。従って、
+
+\begin{eqnarray}
+& & \displaystyle \lim_{\Delta x\rightarrow 0}\sum_{g(t_{i})=-\infty}^{g(t_{i})=a}f(g(t_{i}))\Delta x=\lim_{\Delta x\rightarrow 0}\sum_{t_{i}=g^{-1}(-\infty)}^{t_{i}=g^{-1}(a)}f(g(t_{i}))|g(t+\Delta t)-g(t)|\nonumber\\
+& & =\displaystyle \lim_{\Delta x\rightarrow 0}\sum_{t_{i}=g^{-1}(-\infty)}^{t_{i}=g^{-1}(a)}f(g(t_{i}))\left|\frac{g(t+\Delta t)-g(t)}{\Delta t}\right|\Delta t=\int_{t=g^{-1}(-\infty)}^{t=g^{-1}(a)}f(g(t))\left|\frac{dg}{dt}\right|dt\nonumber
+\end{eqnarray}
+
+\noindent
+となる。
+
+
+\section{期待値}
+\setcounter{exer}{0}
+\setcounter{preexer}{1}
+\label{avvar1}
+
+\(n\)個の値の羅列\(x_{1},x_{2},\cdots,x_{n}\)の平均\(\mu\)は、
+
+\begin{equation}
+\mu=\frac{1}{n}(x_{1}+x_{2}+\cdots+x_{n})=\frac{1}{n}\sum_{i=1}^{n}x_{i}
+\end{equation}
+
+\noindent
+であり、また分散\(\sigma^{2}\)は、
+
+\begin{equation}
+\sigma^{2}=\frac{1}{n}\sum_{i=1}^{n}(x_{i}-\mu)^{2}
+\end{equation}
+
+\noindent
+と定義される。ちなみに標準偏差\(\sigma\)は分散\(\sigma^{2}\)の平方根、すなわち、
+
+\begin{equation}
+\sigma=\sqrt{\frac{1}{n}\sum_{i=1}^{n}(x_{i}-\mu)^{2}}
+\end{equation}
+
+\noindent
+で定義される。
+
+次に値が重複している場合を考慮に入れ、
+\(x_{1},x_{2},\cdots,x_{i}\)の値を持つ対象が\(それぞれN_{1},N_{2},\cdots,N_{n}\)個観測されたとする。但し、
+\(\sum_{i=1}^{n}N_{i}=N\)とする。これらの対象が持つ値の平均\(\mu\)は、\(P_{i}=\frac{N_{i}}{N}\)として、
+
+\begin{equation}
+\mu=\frac{1}{N}\sum_{i=1}^{n}x_{i}N_{i}=\sum_{i=1}^{n}x_{i}\frac{N_{i}}{N}=\sum_{i=1}^{n}x_{i}P_{i}
+\label{avn}
+\end{equation}
+
+\noindent
+である。但し、\(\sum_{i=1}^{n}P_{i}=1\)である。一方分散は、
+
+\begin{equation}
+\sigma^{2}=\frac{1}{N}\sum_{i=1}^{n}(x_{i}-\mu)^{2}N_{i}=\sum_{i=1}^{n}(x_{i}-\mu)^{2}\frac{N_{i}}{N}=\sum_{i=1}^{n}(x_{i}-\mu)^{2}P_{i}
+\end{equation}
+
+\noindent
+となる。
+
+これら平均、分散の定義を確率関数にまで拡張することを考えよう。
+Xが取り得る値\(x_{1},x_{2},x_{3},\cdots\)とその確率
+\(P(X=x_{1}),P(X=x_{2}),P(X=x_{3}),\cdots\)の積の総和をXの期待値\index{きたいち@期待値}と呼び、\(E_{X}(X)\)で表す。
+
+\begin{equation}
+E_{X}(X)=\sum_{i} x_{i}P(X=x_{i})
+\end{equation}
+
+\noindent
+これは式\ref{avn}の\(P_{i}\)を\(P(X=x_{i})\)に置き換えたものである。
+例えば先に出たサイコロの例では、期待値は3.5となる。
+\(E\)は確率変数の関数\(f\)に対して定義を拡張することが可能であり、\(f(X)\)の\(X\)に関する期待値\(E_{X}(f(X))\)は
+
+\begin{equation}
+E_{X}(f(X))=\sum_{i} f(x_{i})P(X=x_{i})
+\end{equation}
+
+\noindent
+と定義される。なお、どの確率変数に関する期待値であるかがはっきりしている場合は、\(E(X)\)、\(E(f(X))\)などと省略する。
+
+以上は\(X\)が離散値の場合だが、連続値の場合は、
+\(X\)の取りうる範囲を\(\Delta x\)の大きさに分割すると、
+
+\begin{equation}
+E(X)=\sum_{i} x_{i}f(x_{i})\Delta x
+\label{eq250}
+\end{equation}
+
+\noindent
+となる。\(\Delta x \to 0\)を取れば式\ref{eq250}は、
+
+\begin{equation}
+E(X)=\int_{-\infty}^{+\infty}xf(x)dx
+\end{equation}
+
+\noindent
+に収束する。\(E(X)\)を\(X\)の平均とも呼ぶ。特に\(X\)が密度関数\(f(x)\)に従うとき、\(E(X)\)を
+\(f(x)\)の平均という。
+
+分散\(\sigma^{2}\)は\(E((X-E(X))^{2})\)で定義され、離散確率の場合は平均を\(E(X)=\mu\)としたとき、、
+
+\begin{equation}
+\sigma^{2}=E((X-E(X))^{2})=\sum_{i} (x_{i}-\mu)^{2}P(X=x_{i})
+\end{equation}
+
+\noindent
+で表される。
+
+$X$が$X=X_{1}+X_{2}$と２つの確率変数の和で表されるとき、
+
+\begin{eqnarray}
+E(X) & = & \sum_{x}xP(X=x)=\sum_{x}x\sum_{\{(x_{1},x_{2})|x_{1}+x_{2}=x\}}P(X_{1}=x_{1},X_{2}=x_{2})\nonumber\\
+     & = & \sum_{x}\sum_{\{(x_{1},x_{2})|x_{1}+x_{2}=x\}}xP(X_{1}=x_{1},X_{2}=x_{2})\nonumber
+\end{eqnarray}
+
+\noindent
+$x$の取りうる値について$x_{1}+x_{2}=x$となる$(x_{1},x_{2})$の和集合は$(x_{1},x_{2})$の取りうる値の組み合わせの集合に一致するから
+
+\begin{eqnarray}
+& & \sum_{x}\sum_{\{(x_{1},x_{2})|x_{1}+x_{2}=x\}}xP(X_{1}=x_{1},X_{2}=x_{2})=\sum_{x_{1}}\sum_{x_{2}}(x_{1}+x_{2})P(X_{1}=x_{1},X_{2}=x_{2})\nonumber\\
+& & =\sum_{x_{1}}\sum_{x_{2}}x_{1}P(X_{1}=x_{1},X_{2}=x_{2})+\sum_{x_{1}}\sum_{x_{2}}x_{2}P(X_{1}=x_{1},X_{2}=x_{2})\nonumber
+\end{eqnarray}
+
+\(\sum_{x_{1}}P(X=x_{1},X=x_{2})=P(X=x_{2}),\ \ \sum_{x_{2}}P(X=x_{1},X=x_{2})=P(x_{1})\)に注意して、
+
+\begin{eqnarray}
+\sum_{x_{1}}\sum_{x_{2}}x_{1}P(X_{1}=x_{1},X_{2}=x_{2})+\sum_{x_{1}}\sum_{x_{2}}x_{2}P(X_{1}=x_{1},X_{2}=x_{2})\nonumber\\
+=\sum_{x_{1}}x_{1}P(X_{1}=x_{1})+\sum_{x_{2}}x_{2}P(X_{2}=x_{2})=E_{X_{1}}(X_{1})+E_{X_{2}}(X_{2})\nonumber
+\end{eqnarray}
+
+\noindent
+すなわち、\(X=X_{1}+X_{2}\)のとき、
+
+\begin{equation}
+E(X)=E(X_{1})+E(X_{2})
+\end{equation}
+
+\noindent
+となる。この論法を使えば、\(X=X_{\alpha}+X_{\beta}, X_{\alpha}=X_{1}+X_{2},X_{\beta}=X_{3}+X_{4}\)のとき、
+\(X=X_{1}+X_{2}+X_{3}+X_{4}\)であり、また
+\(E(X)=E(X_{\alpha})+E(X_{\beta})=E(X_{1})+E(X_{2})+E(X_{3})+E(X_{4})\)となる。
+確率変数\(X_{1},X_{2},\cdots,X_{n}\)について、一般に以下の数式が成立する。
+
+\begin{equation}
+E(X_{1}+X_{2}+\cdots+X_{n})=E(X_{1})+E(X_{2})+\cdots+E(X_{n})
+\label{eqn_E_sum1}
+\end{equation}
+
+\vspace{1em}
+
+\refstepcounter{exer}
+
+\noindent
+{\bf 問題\thesection-\theexer}:~連続確率について、分散を表す式を導け。
+
+\refstepcounter{exer}
+
+\noindent
+{\bf 問題\thesection-\theexer}:~以下の数式が成立することを示せ。
+
+\begin{equation}
+\sigma^{2}=E((X-E(X))^{2})=E(X^{2})-\left\{E(X)\right\}^{2}=E(X^{2})-\mu^{2}
+\label{eqn305}
+\end{equation}
+
+
+
+\section{標本分布}
+\setcounter{exer}{0}
+\setcounter{preexer}{1}
+\label{sample_distr1}
+
+ある確率変数\(X\)の性質を調べたいときに、\(X\)がどのような値を取るかを次々に見ていく方法がある。
+例えば\(X\)を日本人20歳男子の身長だとしよう。確実に分布を得るためには、日本人20歳男子全ての身長を
+測る方法があるだろう。しかしながらこれは時間・費用・労力の面から効率の良い方法とは言えないし、
+多くの場合現実的ではないだろう。そこで多くの場合、無作為に標本を取り、その標本の性質から全体の性質を
+推測することが行われる。標本のことから母数のことがどれほどのことがどれほどの精度で分かるだろうか?
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.6]{Figures/height_sample1}
+\end{center}
+\vspace{-2em}
+\caption{身長の平均の例}
+\label{height_sample1}
+\end{figure}
+
+まずは母数の身長の平均値\(\mu\)とその標本\(i\)の標本中の平均\(\bar{x_{i}}\)との関係を調べよう。例えば
+\(n\)人分の標本を採れば、その標本に対して標本平均\(\bar{x}\)と標本分散\(s^{2}\)を計算できる。
+この\(\bar{x}\)や\(s^{2}\)はどのような性質を持っているだろうか。
+まずは\(\bar{x}\)の方から見てみよう。\(\bar{x}\)の性質を調べるためには、\(\bar{x}\)自体の分布、すなわち
+図\ref{height_sample1}に示すように、\(n\)人の標本(この例では\(n=7\))を採るという操作を繰り返し行ったとき、\(\bar{x}\)がどのような分布に従うかを調べるのがよい。
+ある標本について\(n\)人分の身長を\(X_{1},X_{2},\cdots,X_{n}\)(但し\(X_{i}\)は確率変数とみなす)とすれば、その標本平均\(\bar{X}\)は、
+
+\begin{equation}
+\bar{X}=\frac{X_{1}+X_{2}+\cdots+X_{n}}{n}
+\end{equation}
+
+\noindent
+である。ここで\(\bar{X}\)もまた確率変数である。標本平均\(\bar{X}\)の平均\(E(\bar{X})\)は\(E(X_{i})=\mu\)の関係に注意しつつ、式\ref{eqn_E_sum1}の関係を使うと、
+
+\begin{eqnarray}
+E(\bar{X})=E\left(\frac{X_{1}+X_{2}+\cdots+X_{n}}{n}\right)=\frac{1}{n}\left(E(X_{1})+E(X_{2})+\cdots+E(X_{n})\right)=\frac{1}{n}(n\mu)=\mu
+% \nonumber\\
+\end{eqnarray}
+
+\noindent
+となり、標本平均\(\bar{X}\)の分布の平均\(E(\bar{X})\)は母集団の分布の平均\(E(X)\)に一致することが示された。
+
+標本平均の分散\(\sigma^{2}_{\bar{x}}\)は、
+
+\begin{eqnarray}
+& & \sigma^{2}_{\bar{x}}=E((\bar{X}-\mu)^{2})=E\left\{\left(\frac{1}{n}(X_{1}+X_{2}+\cdots+X_{n})-\mu\right)^{2}\right\}\nonumber\\
+& & =\frac{1}{n^{2}}E\left\{\left((X_{1}-\mu)+(X_{2}-\mu)+\cdots+(X_{n}-\mu)\right)^{2}\right\}\nonumber\\
+& & =\frac{1}{n^{2}}\left\{\sum_{i}E\{(X_{i}-\mu)^{2}\}\right\}+\frac{1}{n^{2}}\left\{\sum_{i\not=j}E\{(X_{i}-\mu)(X_{j}-\mu)\}\right\}
+\label{eqn328}
+\end{eqnarray}
+
+\noindent
+式\ref{eqn328}の最後の等号より後ろの部分の第2項は、
+
+\begin{eqnarray}
+& & E\{(X_{i}-\mu)(X_{j}-\mu)\}=\sum_{x_{i}}\sum_{x_{j}}(x_{i}-\mu)(x_{j}-\mu)P(X=x_{i})P(X=x_{j})\nonumber\\
+& & =\sum_{x_{i}}(x_{i}-\mu)P(X=x_{i})\sum_{x_{j}}(x_{j}-\mu)P(X=x_{j})=E(X-\mu)\cdot E(X-\mu)=0
+\end{eqnarray}
+
+\noindent
+また\(E{(X_{i}-\mu)^{2}}=\sigma^{2}\)より、式\ref{eqn328}は
+
+\begin{equation}
+\sigma^{2}_{\bar{x}}=E((\bar{X}-\mu)^{2})
+=\frac{1}{n^{2}}\left\{\sum_{i}E\{(X_{i}-\mu)^{2}\}\right\}
+=\frac{1}{n^{2}}\cdot n\sigma^{2}
+=\frac{\sigma^{2}}{n}
+\label{eqn329}
+\end{equation}
+
+\noindent
+となる。サンプル数\(n\)が多くなるに従って、標本平均の分散は小さくなっていくことが分かる。
+標本平均の標準偏差\(\sigma_{\bar{x}}\)は標本平均の標準誤差と呼ばれ、
+
+\begin{equation}
+\sigma_{\bar{x}}=\frac{\sigma}{\sqrt{n}}
+\end{equation}
+
+\noindent
+で表される。
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\label{exerx2}
+\noindent
+{\bf 問題\thesection-\theexer}:~式\ref{eqn329}の導出過程を参考に、\(E(\bar{X}^{2})\)を\(n,\mu,\sigma\)を用いて表せ。
+
+\refstepcounter{exer}
+\label{exerx3}
+\noindent
+{\bf 問題\thesection-\theexer}:~問題\ref{sample_distr1}-\ref{exerx2}の結果および式\ref{eqn305}を活用して、\(\frac{1}{n}\sum_{i=1}^{n}(x_{i}-\bar{x})^{2}\)の
+平均\(E\{\frac{1}{n}\sum_{i=1}^{n}(X_{i}-\bar{X})^{2}\}\)を\(n,\mu,\sigma\)を用いて表せ。
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~問題\ref{sample_distr1}-\ref{exerx2}の結
+果および式\ref{eqn305}を活用して、標本分散\(s^{2}\)の平均
+\(E(s^{2})=E\{\frac{1}{n-1}\sum_{i=1}^{n}(X_{i}-\bar{X})^{2}\}\)を
+\(n,\mu,\sigma\)を用いて表せ。
+
+\section{二項分布}
+\label{binom}
+
+サイコロの目について他の確率現象を考えてみよう。サイコロを3回振ったとき
+に5の目が2回出る確率はどれくらいだろうか。サイコロを1回目に振ったと
+き、2回目に振ったとき、そして3回目に振ったときの目をそれぞ
+れ\(X_{1},X_{2},X_{3}\)で表すと、
+サイコロを振る試行は毎回独立と考えれらるので(つまり1回目の結果が2回目に
+影響することはない)、
+
+\begin{equation}
+P(X_{1}\land X_{2}\land X_{3})=P(X_{1})P(X_{2})P(X_{3})
+\label{eqn_ind105}
+\end{equation}
+
+\noindent
+となる。これを元に以下のステップで3回中2回5が出る
+確率を考えることができる。
+
+\begin{enumerate}
+\item 5の目が出る確率は、\(P(X_{i}=5)=\frac{1}{6}\ (1 \leq i \leq 3)\)である。
+\item 5以外の目が出る確率は、\(P(X_{i}\neq 5)=\frac{5}{6}\ (1 \leq i \leq 3)\)である。
+\item サイコロの目が2回5になる組み合
+わせは、\(X_{1}=5,X_{2}=5,X_{3}\neq 5\)または\(X_{1}=5,X_{2}\neq
+5,X_{3}=5\)または\(X_{1}\neq 5,X_{2}=5,X_{3}=5\)の3通りである。
+\item いずれの場合も5が2回、5以外が1回なので、各確率
+は式\ref{eqn_ind105}より\((\frac{1}{6})^{2}\frac{5}{6}\)である。
+\item さらに各事象は排反なので、結
+局5の目が2回出る確率は\(3\times(\frac{1}{6})^{2}\frac{5}{6}\)となる。
+\end{enumerate}
+
+これを一般に拡張して考えよう。今事象\(a\)が起こる確率が\(p\)の試行を\(n\)回繰り返すことを
+考えよう。\(i\)回目\(1\leq i \leq n\)の試行結果を\(X_{i}\)とすると、各試行が
+独立であるとすれば、
+
+\begin{equation}
+P(X_{1} \land P_{2} \land \cdots \land P_{n})=
+P(X_{1})P(X_{2})\cdots P(X_{n})
+\end{equation}
+
+\noindent
+である。
+
+\begin{enumerate}
+\item 各試行において、事象\(a\)が起こる確率は\(P(X=a)=p\)である。
+\item 各試行において、事象\(a\)が起こらない確率は\(P(X\neq a)=1-p\)である。
+\item \(n\)回の試行の中で事象\(a\)が\(x\)回起きるときの\(X_{a:1}=a,X_{a:2}=a,\cdots,X_{a:x}=a\)の組合せの個数を\(_{n}C_{x}\)と表す
+\footnote{\(_{n}C_{x}\)を\({n \choose x}\)と記述している書籍も多数ある。}。
+\item いずれの場合も\(a\)が\(x\)回、\(a\)以外が\(n-x\)回なので、各確率は
+\(p^{x}(1-p)^{n-x}\)である。
+\item さらに各事象は排反なので、結局事象\(a\)が\(x\)回起こる確率は
+\(p^{x}(1-p)^{n-x}\ _{n}C_{x}\)である。
+\end{enumerate}
+
+次に\(n\)個の対象のなかから\(x\)個の対象を選ぶ組み合わせ
+の\(_{n}C_{x}\)がいくつになるかを考えよう。最初に\(n\)個の中からの最初
+の1個の選び方はもちろん\(n\)通りである。最初の選択肢のそれぞれについて、
+残りの\(n-1\)個からの次の2個目の選び方は\(n-1\)通りであるため、1個目
+と2個目の組み合わせの数は\(n(n-1)\)通りとなる。さらに1個目と2個目の選択
+肢のそれぞれについて、残りの中から\(n-2)\)通りの選び方があるため、1個
+目、2個目、3個目の選び方は\(n(n-1)(n-2)\)通りとなる。この考え方を進める
+と、\(1,2,3,\cdots x\)個目の選び方は全部で\(n(n-1)(n-2)\cdots
+(n-x+1)\)通りとなる。
+
+今\(n\)個の対象に\(1,2,\cdots,n\)と番号を振る。すると例え
+ば\(n=4\)で\(x=3\)のとき、選び方は、
+\((1,2,3)\), 
+\((1,2,4)\), 
+\((1,3,2)\), 
+\((1,3,4)\), 
+\((1,4,2)\), 
+\((1,4,3)\), 
+\((2,1,3)\), 
+\((2,1,4)\), 
+\((2,3,1)\), 
+\((2,3,4)\), 
+\((2,4,1)\), 
+\((2,4,3)\), 
+\((3,1,2)\), 
+\((3,1,4)\), 
+\((3,2,1)\), 
+\((3,2,4)\), 
+\((3,4,1)\), 
+\((3,4,2)\), 
+\((4,1,2)\), 
+\((4,1,3)\), 
+\((4,2,1)\), 
+\((4,2,3)\), 
+\((4,3,1)\), 
+\((4,3,2)\)
+の\(4 \times 3 \times 2=24\)通りとなる。ところがよく見てみると、実は\(1,2,3\)と\(1,3,2\)が別の選び方として
+数えられている。\(1,2,3\)を含む組み合わせは\(3 \times 2 \times 1=6\)通りある。
+これは全ての(互いに異なる)組み合わせについて成立するため、組み合わせで考えた
+場合、結局\(\frac{4\times 3\times 2}{3\times 2\times 1}=4\)通りである
+ことが分かる。これを一般化すると、\(1,2,3,\cdots x\)には全部で\(x(x-1)\cdots 2\cdot1
+=x!\)の並び方があるため、以下が成立する。
+
+\begin{equation}
+_{n}C_{x}=\frac{n(n-1)(n-2)\cdots (n-x+1)}{x!}
+=\frac{n!}{x!(n-x)!}
+\end{equation}
+
+\noindent
+以上により、事象\(a\)が起こる確率が\(p\)の試行を\(n\)回繰り返したとき、
+\(a\)が\(x\)回観測されるときの確率分布\(B(n, p)\)の関数\(P(x)\)は、
+
+\begin{equation}
+P(x)=p^{x}(1-p)^{n-x}\ _{n}C_{x}=p^{x}(1-p)^{n-x}\frac{n!}{x!(n-x)!}
+\label{eq_binom}
+\end{equation}
+
+\noindent
+となる。
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.72]{Figures/binom_hist1}
+\end{center}
+\vspace{-2em}
+\caption{サイコロを\(n\)回振ったときに5の目が出る回数が従う分布}
+\label{binom_hist1}
+\begin{small}
+\begin{quotation}
+(a)\(n=10\)、 (b) \(n=30\)、 (c) \(n=50\)のときの二項分布\(B(n,p)\)を示した。
+\end{quotation}
+\end{small}
+\end{figure}
+
+図\ref{binom_hist1}にこの分布の例を3つ示す。\(n\)が大きくなるにつれ、分布が
+全体的になめらかかつ左右対称に近付いてゆくことが分かる。
+
+平均\(\mu\)は以下のように計算される。
+
+\begin{eqnarray}
+\mu & = & \sigma\sum_{x=0}^{n}x\, _{n}C_{x}p^{x}(1-p)^{n-x}=\sum_{x=1}^{n}x\cdot\frac{n!}{x!(n-x)!}p^{x}(1-p)^{n-x}\nonumber\\
+    & = & np \sum_{x=1}\frac{(n-1)!}{(x-1)!(n-1-(x-1))!}p^{x-1}(1-p)^{n-1-(x-1)}\nonumber\\
+    & = & np \sum_{y=0}^{n-1}\frac{(n-1)!}{y!(n-1-y)!}p^{y}(1-p)^{n-1-y}=np\sum_{y=0}^{n-1}\, _{n-1}C_{y}p^{y}(1-p)^{n-1-y}\nonumber\\
+    & = & np(p+1-p)^{n-1}=np
+\end{eqnarray}
+
+また分散\(\sigma^{2}\)は以下のように計算される。
+
+\begin{eqnarray}
+\sigma^{2} & = & E(X^{2})-\{E(X)\}^{2}=E\{X(X-1)+X)-\mu^{2}\nonumber\\
+           & = & E\{X(X-1)\}+_{n}\mu-\mu^{2}
+\label{eqn_binom36}
+\end{eqnarray}
+
+\noindent
+ここで、
+
+\begin{eqnarray}
+E\{X(X-1)\} & = & \sum_{x=0}x(x-1)\, _{n}C_{x}p^{x}(1-p)^{n-x}\nonumber\\
+            & = & \displaystyle \sum_{x=2}^{n}x(x-1)\cdot\frac{n!}{x!(n-x)!}p^{x}(1-p)^{n-x}\nonumber\\
+            & = & n(n-1)p^{2}\displaystyle \sum_{x=2}^{n}\frac{(n-2)!}{(x-2)!(n-2-(x-2))!}p^{x-2}(1-p)^{n-2-(x-2)}\nonumber\\
+            & = & n(n-1)p^{2}\displaystyle \sum_{y=0}^{n-2}\frac{(n-2)!}{y!(n-2-y)!}p^{y}(1-p)^{n-2-y}\nonumber\\
+            & = & n(n-1)p^{2}\displaystyle \sum_{y=0}^{n-2}\, _{n-2}C_{y}p^{y}(1-p)^{n-2-y}=n(n-1)p^{2}(p+(1-p))^{n-2}\nonumber\\
+            & = & n(n-1)p^{2}\nonumber
+\end{eqnarray}
+
+\noindent
+であるから、これを式\ref{eqn_binom36}に代入して、
+
+\begin{equation}
+\sigma^{2}=n(n-1)p^{2}+np-n^{2}p^{2}=np-np^{2}=np(1-p)
+\end{equation}
+
+\noindent
+となる。
+
+
+\section{正規分布}
+\setcounter{exer}{0}
+\setcounter{preexer}{1}
+\label{gaus_distr1}
+
+節\ref{binom}で説明した二項分布において、
+\(n\)が大きくなると、\(P(x)\)はどのような分布になっていく
+のだろうか。これを以下で説明しよう。まず\(x\)を以下の式で\(z\)に正規化する。
+
+\begin{equation}
+z = \frac{(x - np)}{\sqrt{np(1-p)}} 
+\label{zeq2}
+\end{equation}
+
+\noindent
+このとき\(z\)が従う分布を\(g(z)\)とし、\(g(z)\)を求めよう。
+\(x\)は\(0,1,2,\cdots\)と離散的な値をとるので、\(x\)の変化量
+\(\Delta x\)の最小値は1である。このとき、\(z\)の変化量\(\Delta z\)は常に
+
+\begin{equation}
+\Delta z = \frac{1}{\sqrt{np(1-p)}}
+\label{zeq3}
+\end{equation}
+
+\noindent
+となる。式\ref{zeq2}を式\ref{zeq3}で割って変形すると、
+
+\begin{equation}
+x=np+\frac{z}{\Delta z}
+\label{zeq4}
+\end{equation}
+
+\noindent 
+が得られる。式\ref{eq_binom}の\(x\)に\(x+1\)を代入すると、
+
+\begin{equation}
+P(x+1) = \ _{n}C_{x+1}\cdot p^{x+1}(1-p)^{n-x-1} 
+\label{zeq5}
+\end{equation}
+
+\noindent
+ここで、
+
+\begin{displaymath}
+_{n}C_{x} = \frac{n!}{x!(n-x)!}
+\end{displaymath}
+
+\noindent
+を使って式\ref{zeq5}を式\ref{eq_binom}で割り、式\ref{zeq6}を代入すると、
+
+\begin{equation}
+\frac{P(x+1)}{P(x)}=\frac{(n-x)p}{(x+1)(1-p)}
+\label{zeq6}
+\end{equation}
+
+
+\noindent
+となる。さてここで\(P(x)\)と\(g(z)\)の関係を考えよう。\(z\)と
+\(x\)は式\ref{zeq2}のような関係で結ばれている。さて一般的に離散的な値
+を取る確率変数\(X\)が確率密度関数\(P_{d}\)に従うとき、\(X=x\)である確率
+は\(P_{d}(x)\Delta x\)で求められる。但し、\(\Delta x\)は確率変数\(X\)
+が取り得る値の中で\(>x\)を満たす最小のものと\(x\)との差である\footnote{\(x 
+\leq X < x + \Delta x\)において、\(P_{d}(X)\)は一定と考える。}。従って
+\(g(z)\)が確率密度関数であるためには、\(g(z)\Delta z\)が確率\(P(x)\Delta 
+x=P(x)\)を表さなければならない。すなわち、
+
+\begin{equation}
+g(z)=\frac{1}{\Delta z}P(x)
+\label{zeq7}
+\end{equation}
+
+\noindent
+および
+
+\begin{equation}
+g(z+\Delta z)=\frac{1}{\Delta z}P(x+1)
+\label{zeq8}
+\end{equation}
+
+\noindent
+が成立する。式\ref{zeq8}を式\ref{zeq7}で割り、式\ref{zeq6}を代入すると、
+
+\begin{equation}
+\frac{g(z+\Delta z)}{g(z)}=\frac{P(x+1)}{P(x)}=\frac{(n-x)p}{(x+1)(1-p)}
+\label{zeq9}
+\end{equation}
+
+\noindent
+式\ref{zeq9}に\ref{zeq4}を代入して\(x\)を消去すると、
+
+\begin{equation}
+\frac{g(z+\Delta z)}{g(z)}=\frac{(n-np-z/\Delta z)p}{(np+z/\Delta z + 1)(1-p)}
+=\frac{np(1-p)-pz/\Delta z}{np(1-p)+(1-p)(z/\Delta z + 1)}
+\end{equation}
+
+\noindent
+式\ref{zeq3}より\(np(1-p)=\frac{1}{\Delta z^{2}}\)なので、これを上の式に代入して、
+
+\begin{equation}
+\frac{g(z+\Delta z)}{g(z)}=\frac{\frac{1}{\Delta z^{2}}-p\frac{z}{\Delta z}}
+{\frac{1}{\Delta z^{2}}+(1-p)(\frac{z}{\Delta z} + 1)}
+=\frac{1-pz\Delta z}{1+(1-p)\{z\Delta z + \Delta z^{2}\}}
+\label{zeqn1}
+\end{equation}
+
+\noindent
+となる。式\ref{zeqn1}を使うと、
+
+\begin{eqnarray}
+& & \frac{g(z+\Delta z)-g(z)}{\Delta z}=
+\left(\frac{g(z+\Delta z)}{g(z)}-1\right)\frac{g(z)}{\Delta z}\nonumber\\
+& & =\frac{1-pz\Delta z-1-(1-p)(z\Delta z+\Delta z^{2})}
+{1+(1-p)(z\Delta z+\Delta z^{2})}\frac{g(z)}{\Delta z}\nonumber\\
+& & =\frac{-z\Delta z-(1-p)\Delta z^{2}}{1+(1-p)(z\Delta z+\Delta z^{2})}
+\frac{g(z)}{\Delta z}
+=\frac{-z-(1-p)\Delta z}{1+(1-p)(z\Delta z+\Delta z^{2})}g(z)
+\label{eq10}
+\end{eqnarray}
+
+\noindent
+が得られる。式\ref{zeq3}より\(n \to \infty\)のとき、\(\Delta z \to 0\)となる。
+このとき、式\ref{eq10}の極限は
+
+\begin{equation}
+\frac{dg(z)}{dz}=-zg(z)
+\end{equation}
+
+\noindent
+となる。これを解くと、
+
+\begin{displaymath}
+g(z)=Ce^{-\frac{1}{2}z^{2}}
+\end{displaymath}
+
+\noindent
+が得られる。但し\(C\)は定数である。以下、この\(C\)を定めよう。
+\(g(z)\)は確率密度関数でありまた偶関数\footnote{\(f(x)=f(-x)\)が常に成立する関数を偶関数と呼ぶ。これに対し、\(f(x)=-f(x)\)が常に成立する関数を奇関数と呼ぶ。}なので、
+
+\begin{equation}
+\int^{+\infty}_{-\infty}g(z)dz=\int^{+\infty}_{-\infty}Ce^{-\frac{1}{2}z^{2}}dz=
+2\sqrt{2}C\int^{\infty}_{0}e^{-z^{2}}dz=1
+\label{integ10}
+\end{equation}
+
+\noindent
+が成立する。式\ref{integ10}の\(z\)を\(y\)に変えても式全体の値は変わらないから、
+
+\begin{equation}
+\left(\int^{+\infty}_{0}e^{-z^{2}}dz\right)^{2}
+=\left(\int^{+\infty}_{0}e^{-z^{2}}dz\right)\left(\int^{+\infty}_{0}e^{-y^{2}}dy\right)=\int^{+\infty}_{0}\int^{+\infty}_{0}e^{-(z^{2}+y^{2})}dydz
+\label{integ11}
+\end{equation}
+
+\noindent
+ここで\(y=zu\)とおくと
+\footnote{\(y=zu\)の制約の中でも、\(u\)の値を調整すれば、\(z,y\)は正のあらゆる組み合わせの値を取り得ることに注意。
+式の中に3つの変数全て(\(z,y,u \))が登場すると、これらの3つの変数の取り得る値の組み合わせは限定される。}、
+\(\frac{dy}{du}=z\)すなわち\(dy=zdu\)より、
+
+\begin{eqnarray}
+& & \int^{+\infty}_{0}\int^{+\infty}_{0}e^{-(z^{2}+y^{2})}dydz=\int^{+\infty}_{0}\left(\int^{+\infty}_{0}e^{-(1+u^{2})z^{2}}zdu\right)dz\nonumber\\
+& & =\int^{+\infty}_{0}\int^{+\infty}_{0}e^{-(1+u^{2})z^{2}}zdzdu=\int^{+\infty}_{0}\left[-\frac{1}{2(1+u^{2})}\cdot e^{-(1+u^{2})z^{2}}\right]^{+\infty}_{0}du\nonumber\\
+& & =\int^{+\infty}_{0}\frac{du}{2(1+u^{2})}=\frac{\pi}{4} % =\frac{1}{2}\left[{\rm tan}^{-1} u\right]^{+\infty}_{0}
+\label{eqn367}
+\end{eqnarray}
+
+\noindent
+となり、\(C=\frac{1}{\sqrt{2\pi}}\)が導かれる。結局\(z\)の確率密度関数は、
+
+\begin{displaymath}
+g(z)=\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}z^{2}}
+\end{displaymath}
+
+\noindent
+になることが導かれた。この確率密度関数に従う分布を標準正規分布と呼ぶ。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\(N(\mu,\sigma^{2})\)に従う正規分布\(f(x)\)は
+
+\begin{equation}
+f(x)=\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-\mu)^{2}}{2\sigma^{2}}}
+\label{gaussian}
+\end{equation}
+
+\noindent
+で表される。
+
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\label{exer56}
+\noindent
+{\bf 問題\thesection-\theexer}:~
+三角関数の関係式\(\frac{\sin\theta}{\cos\theta}=\tan\theta,\ 
+\sin^{2}\theta+\cos^{2}\theta=1,\frac{d\tan\theta}{d\theta}=\frac{1}{\cos^{2}\theta}\)を駆使して、式\ref{eqn367}の最後の部分
+\(\int^{+\infty}_{0}\frac{du}{2(1+u^{2})}=\frac{\pi}{4}\)が成立すること
+を示せ。
+
+\section{ポワソン分布}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.72]{Figures/shootstars1}
+\end{center}
+\vspace{-2em}
+\caption{60分の間に流れ星が観測される回数の統計的考察}
+\label{shootstars1}
+\begin{small}
+\begin{quotation}
+60分を(a)5つの時間帯に分けた場合、(b)10個の時間帯分けた場合、(c)20個の時間帯に分けた場合を示した。 
+\end{quotation}
+\end{small}
+\end{figure}
+
+二項分布から導かれる分布は他にもある。身近な例でこれを説明しよう。今ある地方で深夜の1時間の間に流れ星が平均3個観測されるものとする。
+各流れ星は一瞬しか観測されないものとし、1時間のうちどの時間帯に観測されるかは全て同様に確からしいとする。また、流れ星の出現という事象は
+複数の流れ星に関して互いに独立であるとする。
+
+ここで図\ref{shootstars1}(a)に示すように、60分を5個(\(n=5)\)の時間帯、すなわち12分ずつに分けよう。ここで仮定をもうひとつ置く。
+各時間帯で流れ星が2つ以上観測されることはない、すなわち
+各時間帯で流れ星は全く観測されないか、1個だけ観測されるかのどちらかである。
+各時間帯で流れ星が観測される確率を\(p(n)\)とすれば、60分の間に流れ星が観測される個数は二項分布\(B(5, p(5))\)に
+従う。ここで平均を\(\lambda\)とおけば、\(\lambda=5\cdot p(5)=3\)である。
+
+分割数\(n\)を増やし、図\ref{shootstars1}(b,c)に示すように、\(n=10,20\)と増やしていったらどうだろうか。この
+場合も\(\lambda=n\cdot p(n)=3\)で一定となる。さらに\(n\)を増やしたとき、この二項分布はどのような分布に近づいて
+いくかを計算すると以下のようになる。60分の間に流れ星が観測される数を\(x\)、その確率を\(P(x)\)とおくと、
+\(n\to\infty\)のとき、
+
+\begin{eqnarray}
+P(x) & = & \lim_{n\to\infty}\,_{n}C_{x}p(n)^{x}(1-p(n))^{n-x}\nonumber\\
+     & = & \lim_{n\to\infty}\,\frac{n!}{x!(n-x)!}\cdot\left(\frac{\lambda}{n}\right)\left(1-\frac{\lambda}{n}\right)^{n-x}\nonumber\\
+     & = & \lim_{n\to\infty}\,\frac{1}{x!}\cdot\frac{n(n-1)\cdots(n-x-1)}{nn\cdots n}\cdot\lambda^{x}\left(1-\frac{\lambda}{n}\right)^{n}\left(1-\frac{\lambda}{n}\right)^{-x}\nonumber\\
+     & = & \lim_{n\to\infty}\,\frac{\lambda^{x}}{x!}\cdot \underbrace{1\cdot\left(1-\frac{1}{n}\right)\cdots\left(1-\frac{x-1}{n}\right)}_{\to 1}\underbrace{\left(1-\frac{\lambda}{n}\right)^{n}}_{e^{\to -\lambda}}\underbrace{\left(1-\frac{\lambda}{n}\right)^{-x}}_{\to 1}\nonumber\\
+     & = & \frac{\lambda^{x}}{x!}e^{-\lambda}
+\end{eqnarray}
+
+\noindent
+となる。このように確率関数\(P(x)=\frac{\lambda^{x}}{x!}e^{-\lambda}\)に従う確率分布を
+ポワソン分布(Poisson distribution)\index{ぽわそんぶんぷ@ポワソン分布}という。
+
+
+
+
+\section{テイラー展開}
+
+\subsection{平均値の定理}
+
+\noindent
+{\bf ロル(Rolle)の定理:}\index{ろるのていり@ロルの定理} \(f(x)\)が区間\([a,b]\)で連続、\((a,b)\)で微分可能であり、
+\(f(a)=f(b)=0\)なら、\(f'(c)=0\ \ \ (a < c < b)\)となる\(c\)が少なくとも
+1つ存在する。
+
+\noindent
+{\bf 証明:} \(f(x)\)が定数なら、\(f'(x)=0\)となり、定理は明らかである。それ以外に
+関しては、閉区間\([a,b]\)で\(f(x)\)には最大値\(M\)と最小値\(m\)が存在する。
+\(M\neq f(a)\)なら、最大値を与える点を\(x=c\)とすると、\(M=f(c)\)。十分
+小さい\(h\)に対し\(f(c+h)-f(c)\leq 0\)だから、
+
+\begin{eqnarray}
+\frac{f(c+h)-f(c)}{h}\leq 0 \ \ \ \ \ \ (h > 0)\nonumber\\
+\frac{f(c+h)-f(c)}{h}\geq 0 \ \ \ \ \ \ (h < 0)\nonumber
+\end{eqnarray}
+
+\noindent
+f(x)は微分可能だから、\(h\to 0\)の極限を取れば両者は\(f'(c)=0\)を与えるが、
+\(f'(c)\leq 0\)かつ\(f'(c)\geq 0\)でなければならないから、\(f'(c)=0\)。
+また\(M=f(a)\)のとき、\((a,b)\)に最小値\(m\)を与える\(x=c'\)が存在するから、
+上と同様にして、\(f'(c)\geq 0, f'(c) \leq 0\)でなければならず、\(f'(c')=0\)となる
+\(c'\)が\((a,b)\)内に存在する。
+
+\begin{flushright}
+□
+\end{flushright}
+
+\vspace{1em}
+
+\noindent
+{\bf 平均値の定理:}\index{へいきんちのていり@平均値の定理} \(f(x)\)が区間\([a,b]\)で連続で区間\((a,b)\)で微分可能ならば、
+
+\begin{equation}
+f(b)-f(a)=f'(c)(b-a)
+\label{eqn_av10}
+\end{equation}
+
+\noindent
+となる\(c\ \ (a < c < b)\)が少なくとも1つ存在する。
+
+\noindent
+{\bf 証明:}
+
+\begin{displaymath}
+F(x)=f(b)-f(x)-\frac{f(b)-f(a)}{b-a}(b-x)
+\end{displaymath}
+
+\noindent
+を考えれば、\(F(x)\)は\([a,b]\)で連続、\((a,b)\)で微分可能である。
+\(F(a)=F(b)\)だから、\(F(x)\)のロルの定義が適用できて、\(F'(c)=0\)となる\(c\)が
+少なくとも区間\((a,b)\)に1つは存在する。
+
+\begin{displaymath}
+F'(x)=-f'(x)+\frac{f(b)-f(a)}{b-a}
+\end{displaymath}
+
+\noindent
+より、\(F'(c)=0\)とおいて、
+
+\begin{displaymath}
+f'(c)=\frac{f(b)-f(a)}{b-a}
+\end{displaymath}
+
+\begin{flushright}
+□
+\end{flushright}
+
+\((a,b)\)内の点\(c\)は\(c=a+\theta(b-a)\ \ (0 < \theta < 1)\)と表すこともでき、
+式\ref{eqn_av10}は、
+
+\begin{equation}
+f(b)=f(a)+f'(a+\theta(b-a))(b-a)
+\end{equation}
+
+\noindent
+と書くことができる。
+
+
+\subsection{テイラーの定理}
+
+\noindent
+{\bf 定理:} \(f(x),f'(x),\cdots,f^{(n-1)}(x)\)は\([a,b]\)で連続で\((a,b)\)で\(f^{(n)}(x)\)が存在すれば、
+
+\begin{eqnarray}
+f(b)=f(a)+\frac{f'(a)}{1!}(b-a)+\frac{f''(a)}{2!}(b-a)^{2}+\nonumber\\
+\cdots +\frac{f^{(n-1)}(a)}{(n-1)!}(b-a)^{n-1}+\frac{f^{(n)}(c)}{n!}(b-a)^{n}\nonumber\\
+(a<c<b)
+\end{eqnarray}
+
+\noindent
+となるような\(c\)が存在する。
+
+\vspace{1em}
+
+\noindent
+{\bf 証明：}
+
+\begin{eqnarray}
+f(b)=f(a)+\frac{f'(a)}{1!}(b-a)+\frac{f''(a)}{2!}(b-a)^{2}+\nonumber\\
+\cdots +\frac{f^{(n-1)}(a)}{(n-1)!}(b-a)^{n-1}+\frac{k}{n!}(b-a)^{n}
+\label{taylor_p1}
+\end{eqnarray}
+
+\noindent
+とおく。\(k\)以外の変数が固定されていても、\(k\)の値を調整すれば、式\ref{taylor_p1}を
+成立させることができる。右辺の\(a\)を\(x\)に置き換え、\(f(b)\)から引くと、
+
+\begin{eqnarray}
+F(x)=f(b)-f(x)-\frac{f'(x)}{1!}(b-x)-\frac{f''(x)}{2!}(b-x)^{2}-\nonumber\\
+\cdots -\frac{f^{(n-1)}(x)}{(n-1)!}(b-x)^{n-1}+\frac{k}{n!}(b-x)^{n}
+\end{eqnarray}
+
+\noindent
+\(F(a)=0, F(b)=0\)であり、Rolleの定理から\(F'(c), a<c<b\)となる\(c\)が存在する。
+
+\begin{equation}
+F'(c)=-\frac{f^{(n)}(c)}{(n-1)!}(b-c)^{n-1}+\frac{k}{(n-1)!}(b-x)^{n-1}=0
+\end{equation}
+
+\noindent
+より\(k=f^{(n)}(c)\)を得る。
+
+\vspace{-1em}
+
+\begin{flushright}
+□
+\end{flushright}
+
+区間\([a,b]\)は任意だから、\(a=0\)、\(b=x\)とおけば次のマクローリン(Maclaurin)展開\index{まくろーりんてんかい@マクローリン展開}が得られる。
+
+\begin{eqnarray}
+f(x) & = & f(0)+\frac{f'(0)}{1!}x+\frac{f''(0)}{2!}x^{2}+\cdots\nonumber\\
+     &   & +\frac{f^{n-1}(0)}{(n-1)!}x^{n-1}+\frac{f^{n}(\theta x)}{n!}x^{n}\ \ \ \ \ \ \ \ (0 < \theta < 1)
+\end{eqnarray}
+
+
+\section{偏微分}
+
+\noindent
+\(n\)個の独立変数を持つ関数\(f(x,x_{2},x_{3},\cdots,x_{n})\)に対して定義される
+
+\begin{equation}
+f_{x}(x,x_{2},\cdots,x_{n})=\frac{\partial f(x,x_{2},\cdots x_{n})}{\partial x}=\frac{\partial f}{\partial x}=\lim_{\Delta x\rightarrow 0}\frac{f(x+\Delta x,x_{2},\cdots,x_{n})-f(x,x_{2},\cdots x_{n})}{\Delta x}
+\end{equation}
+
+\noindent
+を$f$の$x$による偏微分と呼ぶ。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Figures/part_deriv1}
+\end{center}
+\vspace{-2em}
+\caption{\(z=f(x,y)\)の偏微分の幾何学的意味}
+\label{part_deriv1}
+\end{figure}
+
+
+今簡単のために、２変数の関数$f(x,y)$を考える。その幾何学的な意味を図\ref{part_deriv1}に示す。
+
+\begin{eqnarray}
+\Delta f & = & f(x+\Delta x,y+\Delta y)-f(x,y)\nonumber\\
+         & = & f(x+\Delta x,y+\Delta y)-f(x,y+\Delta y)+f(x,y+\Delta y)-f(x,y)
+\label{eqn_partial10}
+\end{eqnarray}
+
+\noindent
+ここで平均値の定理を用いれば、
+
+\begin{eqnarray}
+& & f(x+\Delta x,y+\Delta y)-f(x,y+\Delta y) = \Delta x\cdot f_{x}(x+\theta_{1}\Delta x,y+\Delta y)\nonumber\\
+& & f(x,y+\Delta y)-f(x,y)                   = \Delta y\cdot f_{y}(x,y+\theta_{2}\Delta y)\nonumber\\
+& &                                            \mbox{\hspace{20em}} (0<\theta_{1},\theta_{2}<1)\nonumber
+\end{eqnarray}
+
+\noindent
+と書けるから、式\ref{eqn_partial10}は
+
+\begin{equation}
+\Delta f=\Delta x\cdot f_{x}(x+\theta_{1}\Delta x,y+\Delta y)+\Delta y\cdot f_{y}(x,y+\theta_{2}\Delta y)
+\end{equation}
+
+\noindent
+ここで、
+
+\begin{displaymath}
+\lim_{\Delta x\rightarrow 0}\lim_{\Delta y\rightarrow 0}\frac{\partial f(x+\theta_{1}\Delta x,y+\Delta y)}{\partial x}=\frac{\partial f(x,y)}{\partial x}
+\end{displaymath}
+
+\begin{displaymath}
+\lim_{\Delta x\rightarrow 0}\lim_{\Delta y\rightarrow 0}\frac{\partial f(x,y+\theta_{2}\Delta y)}{\partial y}=\frac{\partial f(x,y)}{\partial x}
+\end{displaymath}
+
+\noindent
+を使って、
+
+\begin{eqnarray}
+\frac{\partial f(x+\theta_{1}\Delta x,y+\Delta y)}{\partial x}=\frac{\partial f(x,y)}{\partial x}+\epsilon_{1}\nonumber\\
+\frac{\partial f(x,y+\theta_{2}\Delta y)}{\partial y}=\frac{\partial f(x,y)}{\partial x}+\epsilon_{2}\nonumber\\
+\end{eqnarray}
+
+\noindent
+とおけば、$\Delta x\rightarrow 0,\Delta y\rightarrow 0$のとき、$\epsilon_{1}\rightarrow 0,\epsilon_{2}\rightarrow 0$。
+従って、
+
+\begin{equation}
+\Delta f\approx\frac{\partial f(x,y)}{\partial x}\Delta x+\frac{\partial f(x,y)}{\partial y}\Delta y+\epsilon_{1}\Delta x+\epsilon_{2}\Delta y
+\end{equation}
+
+\noindent
+\(\Delta x\to 0\)、\(\Delta y\to 0\)のとき、
+
+\begin{equation}
+df=\displaystyle \frac{\partial f(x,y)}{\partial x}dx+\frac{\partial f(x,y)}{\partial y}dy
+\end{equation}
+
+\noindent
+これを$f$の全微分という。
+
+\(f(x,y)\)が\((a,b)\)の近傍で定義されており、\((a,b)\)の近くの任意の\((x,y)\)に対して常に
+\(f(x,y)<f(a,b)\)が成立するとき、\(f(x,y)\)は点\((a,b)\)で極大をとるといい、\(f(a,b)\)を
+極大値という。また逆に\(f(x,y)>f(a,b)\)であれば、\(f(x,y)\)は\(f(a,b)\)で極小ととるといい、
+\(f(a,b)\)を極小値という。極大値、極小値を総称して極値という。
+
+\vspace{1em}
+
+\noindent
+{\bf 定理:} \(f(x,y),f_{x}(x,y),f_{y}(x,y)\)は\((a,b)\)近くで連続で\(f(x,y)\)が点\((a,b)\)で
+極値をとるならば、\(f_{x}(a,b)=0,f_{y}(a,b)=0\)である。
+
+\noindent
+{\bf 証明:} \(F(x)=f(x,b)\)とおけば、\(F(x)\)は\(x=a\)で極値を持つから、\(F'(a)=0\)、つまり
+\(f_{x}(a,b)=0\)。また\(G(y)=f(a,y)\)は\(y=b\)で極値を持つから、\(G'(b)=0\)。つまり、
+\(f_{y}(a,b)=0\)である。
+
+\begin{flushright}
+□
+\end{flushright}
+
+
+\section{行列式}
+
+\setcounter{exer}{0}
+\setcounter{preexer}{1}
+
+\subsection{置換}
+
+有限集合\(\omega\)から\(\omega\)自身への1対1の写像を\(\omega\)の置換とい
+う。特に\(M=\{1,2,\cdots,n\}\)とするとき、\(M\)の置換を\(n\)文字の置換という。
+置換\(\sigma:M\to M\)を
+
+\begin{equation}
+\sigma=\left(\Downarrow
+\begin{array}{cccc}
+1         & 2         & \cdots & n\\
+\sigma(1) & \sigma(2) & \cdots & \sigma(n)\\
+\end{array}
+\right)
+\end{equation}
+
+\noindent
+と表す。
+
+\begin{equation}
+I=\left(\Downarrow
+\begin{array}{cccc}
+1 & 2 & \cdots & n\\
+1 & 2 & \cdots & n\\
+\end{array}
+\right)
+\end{equation}
+
+\noindent
+を恒等置換という。また2つの置換
+
+\begin{equation}
+\sigma=\left(\Downarrow
+\begin{array}{cccc}
+1         & 2         & \cdots & n\\
+\sigma(1) & \sigma(2) & \cdots & \sigma(n)\\
+\end{array}
+\right),\quad
+\tau=\left(\Downarrow
+\begin{array}{cccc}
+1         & 2         & \cdots & n\\
+\tau(1) & \tau(2) & \cdots & \tau(n)\\
+\end{array}
+\right)
+\end{equation}
+
+\noindent
+に対し、\(\sigma\)と\(\tau\)の合成写像
+
+\begin{eqnarray}
+\tau\sigma=\left(\Downarrow
+\begin{array}{cccc}
+\sigma(1)       & \sigma(2)       & \cdots & \sigma(n)\\
+\tau(\sigma(1)) & \tau(\sigma(2)) & \cdots & \tau(\sigma(n))\\
+\end{array}
+\right)
+\left(\Downarrow
+\begin{array}{cccc}
+1         & 2         & \cdots & n\\
+\sigma(1) & \sigma(2) & \cdots & \sigma(n)\\
+\end{array}
+\right)\nonumber\\
+=\left(\Downarrow
+\begin{array}{cccc}
+1               & 2               & \cdots & n\\
+\tau(\sigma(1)) & \tau(\sigma(2)) & \cdots & \tau(\sigma(n))\\
+\end{array}
+\right)\mbox{\hspace{12.7em}}
+\end{eqnarray}
+
+\noindent
+を\(\sigma\)と\(\tau\)の積と呼ぶ。また
+置換\(\sigma=\left(\Downarrow
+\begin{array}{cccc}
+1         & 2         & \cdots & n\\
+\sigma(1) & \sigma(2) & \cdots & \sigma(n)\\
+\end{array}
+\right)\)に対して、
+
+\begin{equation}
+\sigma^{-1}=\left(\Downarrow
+\begin{array}{cccc}
+\sigma(1)       & \sigma(2)       & \cdots & \sigma(n)\\
+1               & 2               & \cdots & n\\
+\end{array}
+\right)
+=\left(\Downarrow
+\begin{array}{cccc}
+1         & 2         & \cdots & n\\
+\sigma^{-1}(1) & \sigma^{-1}(2) & \cdots & \sigma^{-1}(n)\\
+\end{array}
+\right)
+\end{equation}
+
+\noindent
+を\(\sigma\)の逆置換という。さらに\(i,j\)を異なる2つの文字とするとき、置換\(\sigma\)によって
+
+\begin{equation}
+\sigma(i)=j,\ \sigma(j)=i, \quad \mbox{その他の}M\mbox{の文字は動かない}
+\end{equation}
+
+\noindent
+のとき、すなわち、\(i\)と\(j\)だけが入れ替わるとき、\(\sigma\)は互換であるといい、
+
+\begin{equation}
+\sigma=(i,j)
+\end{equation}
+
+\noindent
+で表す。そして、\(i_{1},\cdots,i_{r}\)を\(M\)の互いに異なる文字とするとき、
+置換\(\sigma\)によって
+
+\begin{equation}
+\sigma(i_{1})=i_{2},\ \sigma(i_{2})=i_{3},\ \cdots, \ \sigma(i_{r})=i_{1}, \quad \mbox{その他の文字は動かない}
+\end{equation}
+
+\noindent
+とするとき、\(\sigma\)を\(r\)次の巡回置換といい、
+
+\begin{equation}
+\sigma=(i_{1},i_{2},\cdots,i_{r})
+\end{equation}
+
+\noindent
+で表す。
+
+\vspace{1em}
+
+\noindent
+{\bf 定理:} 任意の置換は互換の積で表せる。
+
+\noindent
+{\bf 証明:} 置換\(\sigma\)が恒等置換\(I\)ならば、それは0個の互換の積と考えられるので、以下、\(\sigma \neq I\)について考える。まず\(\sigma\)が巡回
+置換の積で表されることを示す。\(\sigma(i_{1})\neq i_{1}\)となる\(i\)を1
+つとり、\(i,\ \sigma(i_{1}), \ \sigma^{2}(i_{1}), \ \cdots \)の中で最初
+に\(\sigma^{r_{1}}(i_{1})=i_{1}\)となる自然数\(r_{1}\)をとる。このとき、以下の巡回置換\(\sigma_{1}\)を考える。
+
+\begin{equation}
+\sigma_{1}=(i_{1},\ \sigma(i_{1}), \ \cdots, \sigma^{r_{1}-1}(i_{1}))
+\end{equation}
+
+このとき\(\sigma=\sigma_{1}\)ならば、\(\sigma\)が巡回置換1つの積と考えられる。
+\(\sigma \neq \sigma_{1}\)ならば、\(i_{1},\sigma(i_{1}),\cdots,\sigma{r_{1}-1}(i_{1})\)のどれとも
+異なる\(i_{2}\)で、\(\sigma(i_{2})\neq i_{2}\)を満たす文字\(i_{2}\)がある。上と同様にして、以下の巡回置換が得られる。
+
+\begin{equation}
+\sigma_{2}=(i_{2},\sigma(i_{2}),\cdots,\sigma^{r_{2}-1}(i_{2}))
+\end{equation}
+
+\noindent
+この操作を続けると巡回置換\(\sigma_{1},\sigma_{2},\cdots,\sigma_{k}\)が得られ、しかも\(\sigma\)は
+\(\sigma=\sigma_{1}\sigma_{2}\cdots\sigma_{k}\)と表せる。
+
+一方で任意の巡回置換\(\tau=(i_{1},i_{2},\cdots,i_{r}\))は、互換\((i_{1},i_{r}),(i_{1},i_{r-1}),\cdots,(i_{1},i_{2})\)
+によって、
+
+\begin{equation}
+\tau=(i_{1},i_{r})(i_{1},i_{r-1})\cdots (i_{1},i_{2})
+\end{equation}
+
+\noindent
+と表される。以上により、任意の置換\(\sigma\)は互換の積として表されることが分かる。
+
+\begin{flushright}
+□
+\end{flushright}
+
+\vspace{1em}
+
+\noindent
+{\bf 定理:} 1つの置換を互換の積で表すとき使われる互換の個数が偶数であるか奇数であるかは、その表し方に
+よらないで定まる。
+
+\noindent
+{\bf 証明:} 差積と呼ばれる以下の多項式を考える。
+
+\begin{eqnarray}
+\Delta(x_{1},\cdots,x_{n})=\Pi_{i<j}(x_{i}-x_{j})
+=(x_{1}-x_{2})(x_{1}-x_{3})\cdots(x_{1}-x_{n})\nonumber\\
+(x_{2}-x_{3})\cdots(x_{2}-x_{n})\nonumber\\
+\vdots\nonumber\\
+(x_{n-1}-x_{n})
+\end{eqnarray}
+
+\noindent
+\(\Delta\)の変数\(x_{1},\cdots,x_{n}\)を置換\(\sigma\)によって、\(x_{\sigma(1)},\cdots,x_{\sigma(n)}\)に
+置き換えた式を\(\sigma\Delta\)と書く。すなわち、
+
+\begin{equation}
+\sigma\Delta(x_{1},\cdots,x_{n}=\Delta(x_{\sigma(1)},\cdots,x_{\sigma(n)})
+\end{equation}
+
+\noindent
+と書く。このとき、互換\(\tau=(i,j) (i < j)\)によって、
+
+\begin{equation}
+\tau\Delta(x_{1},\cdots,x_{n})=-\Delta(x_{1},\cdots,x_{n})
+\end{equation}
+
+\noindent
+となることが分かる。実際、互換\(\tau=(i,j) (i < j)\)をほどこすと、
+
+\begin{enumerate}
+\item \(x_{i}-x_{j}\)の項は\(-(x_{i}-x_{j})\)
+\item \((x_{k}-x_{i})(x_{k}-x_{j})\)の項は\((x_{k}-x_{j})(x_{k}-x_{i})\quad (k < i)\)
+\item \((x_{i}-x_{k})(x_{k}-x_{j})\)の項は\((x_{j}-x_{k})(x_{k}-x_{i})\quad (i < k < j)\)
+\item \((x_{i}-x_{k})(x_{j}-x_{k})\)の項は\((x_{j}-x_{k})(x_{i}-x_{k})\quad (j < k)\)
+\item それ以外の部分で不変
+\end{enumerate}
+
+\noindent
+となる。最初の場合だけ符号が変化し、その他の場合は対になっている2つの因数の積は変わらない。
+今置換\(\sigma\)が互換\(\tau_{1},\cdots,\tau_{s}\)、\(\rho_{1},\cdots,\rho_{t}\)を使って
+
+\begin{equation}
+\rho=\tau_{1}\tau_{2}\cdots\tau_{k}=\rho_{1}\rho_{2}\cdots\rho_{t}
+\end{equation}
+
+\noindent
+の2通りに表せたとすると、
+
+\begin{eqnarray}
+\sigma\Delta(x_{1},x_{2},\cdots,x_{n})=(-1)^{s}\Delta(x_{1},\cdots,x_{n})\nonumber\\
+=(-1)^{t}\Delta(x_{1},\cdots,x_{n})\nonumber\\
+\end{eqnarray}
+
+\noindent
+が得られる。従って、\(s\)と\(t\)は共に奇数か偶数である。
+
+\begin{flushright}
+□
+\end{flushright}
+
+置換\(\sigma\)が偶数個の互換の積で表されるとき、\(\sigma\)を偶置換、奇数個の積で表されるとき
+奇置換という。さらに置換\(\sigma\)に対し、その符号を
+
+\begin{equation}
+\mbox{sgn}\ \sigma=\left\{
+\begin{array}{cc}
++1 & (\sigma\mbox{が偶置換のとき})\\
+-1 & (\sigma\mbox{が奇置換のとき})\\
+\end{array}\right.
+\end{equation}
+
+\noindent
+によって定義する。
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ 置換\(\sigma=\left(\Downarrow
+\begin{array}{cccc}
+1 & 2 & 3 & 4\\
+2 & 4 & 1 & 3\\
+\end{array}
+\right)\)に対し、\(\mbox{sgn}\ \sigma\)を求めよ。
+
+
+\subsection{行列式の定義}
+
+\(n\)次正方行列\(A=(a_{ij})\)に対し、以下の\(|A|\)を\(A\)の{\bf 行列式}\index{ぎょうれつしき@行列式}という。
+
+\begin{equation}
+|A|=\sum_{\sigma \in S_{n}} \mbox{sgn}\ \sigma\cdot a_{1\sigma(1)}a_{2\sigma(2)}\cdots a_{n\sigma(n)}
+\end{equation}
+
+\noindent
+但し\(S_{n}\)は\(n\)文字の置換全てを含む集合を表す。
+これは以下のようにも表される。
+
+\begin{equation}
+|A|=\mbox{det}\ A=\left|
+\begin{array}{cccc}
+a_{11} & a_{12} & \cdots & a_{1n} \\
+a_{21} & a_{22} & \cdots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} & a_{n2} & \cdots & a_{nn} \\
+\end{array}
+\right|
+\end{equation}
+
+\noindent
+\(A\)が\(n\)次正方行列のとき、\(|A|\)を\(n\)次の行列式という。例として2次の行列式を求めてみよう。
+
+\begin{eqnarray}
+\left|
+\begin{array}{cc}
+a_{11} & a_{12}\\
+a_{21} & a_{22}\\
+\end{array}\right|
+=\mbox{sgn}\left(\Downarrow
+\begin{array}{cc}
+1 & 2\\
+1 & 2\\
+\end{array}\right)a_{11}a_{22}
++\mbox{sgn}\left(\Downarrow
+\begin{array}{cc}
+1 & 2\\
+2 & 1\\
+\end{array}\right)a_{12}a_{21}
+=a_{11}a_{22}-a_{12}a_{21}
+\end{eqnarray}
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ 3次の行列式\(
+\left|
+\begin{array}{ccc}
+a_{11} & a_{12} & a_{13}\\
+a_{21} & a_{22} & a_{23}\\
+a_{31} & a_{32} & a_{33}\\
+\end{array}\right|\)を求めよ。
+
+\subsection{行列式の性質}
+
+ここではいくつか有用な行列式の性質について触れておこう。
+
+\vspace{1em}
+
+\noindent
+{\bf 定理:} 正方行列\(A\)の転置行列\(A^{t}\)の行列式は\(A\)の行列式に等しい。すなわち、
+
+\begin{equation}
+|A^{t}|=|A|
+\end{equation}
+
+\noindent
+{\bf 証明:} \(A=(a_{ij})\)とし、\(A^{t}=(b_{ij})\)とすれば、\(b_{ij}=a_{ji}\)であるから、
+
+\begin{displaymath}
+|A^{t}| = \sum_{\sigma \in S_{n}}\mbox{sgn}\ \sigma b_{1\sigma(1)}b_{2\sigma(2)}\cdots b_{n\sigma(n)}
+        = \sum_{\sigma \in S_{n}}\mbox{sgn}\ \sigma a_{\sigma(1)1}a_{\sigma(2)2}\cdots a_{\sigma(n)n}
+\end{displaymath}
+
+\noindent
+\(\sigma^{-1}=\tau\)とおくと、
+
+\begin{displaymath}
+\sigma^{-1}=
+\left(\Downarrow
+\begin{array}{cccc}
+\sigma(1) & \sigma(2) & \cdots & \sigma(n)\\
+       1  &        2  & \cdots &        n \\
+\end{array}
+\right)
+=\tau=
+\left(\Downarrow
+\begin{array}{cccc}
+     1  &      2  & \cdots &      n \\
+\tau(1) & \tau(2) & \cdots & \tau(n) \\
+\end{array}
+\right)
+\end{displaymath}
+
+\noindent
+ところで、\(\mbox{sgn}\ \sigma=\mbox{sgn}\ \sigma^{-1}=\mbox{sgn}\ \tau\)。ここで\(\{\sigma^{-1}|\sigma \in S_{n}\}=S_{n}\)である
+ことに注意すれば、
+
+\begin{eqnarray}
+|A^{t}| & = & \sum_{\sigma\in S_{n}}\mbox{sgn}\ \sigma^{-1} a_{1\sigma^{-1}(1)}a_{2\sigma^{-1}(2)}\cdots a_{n\sigma^{-1}(n)}\nonumber\\
+        & = & \sum_{\tau\in S_{n}}\mbox{sgn}\ \tau a_{1\tau(1)}a_{2\tau(2)}\cdots a_{n\tau(n)}\nonumber\\
+        & = & |A|\nonumber
+\end{eqnarray}
+
+\begin{flushright}
+□
+\end{flushright}
+
+この定理により、行列式に関する性質で、行に関して成り立つことは全て列に関しても成り立ち、逆に列に関して
+成り立つことは全て行に対しても成り立つ(行と列の双対性)。
+
+\vspace{1em}
+
+\noindent
+{\bf 定理:} 行列式において、ある行を\(c\)倍したものは全体を\(c\)倍したものに等しい。すなわち、
+\begin{equation}
+\left|
+\begin{array}{ccccc}
+a_{11}  & a_{12}  & \cdots & \cdots & a_{1n} \\
+\vdots  & \vdots  &        &        & \vdots \\
+ca_{i1} & ca_{i2} & \cdots & \cdots & ca_{in}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & \cdots & a_{nn}\\
+\end{array}\right|=
+c\left|
+\begin{array}{ccccc}
+a_{11}  & a_{12}  & \cdots & \cdots & a_{1n} \\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{i1}  & a_{i2}  & \cdots & \cdots & a_{in}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & \cdots & a_{nn}\\
+\end{array}\right|
+\label{eq_det19}
+\end{equation}
+
+\vspace{1em}
+
+\noindent
+{\bf 定理:} 行列式において、ある行の\(c\)倍を別の行に足したものはもとの行列式に等しい。すなわち、
+
+\begin{equation}
+\left|
+\begin{array}{ccccc}
+a_{11}  & a_{12}  & \cdots & \cdots & a_{1n} \\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{i1}  & a_{i2}  & \cdots & \cdots & a_{in}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{k1}+ca_{i1}  & a_{k2}+ca_{i2}  & \cdots & \cdots & a_{kn}+ca_{in}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & \cdots & a_{nn}\\
+\end{array}\right|=
+\left|
+\begin{array}{ccccc}
+a_{11}  & a_{12}  & \cdots & \cdots & a_{1n} \\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{i1}  & a_{i2}  & \cdots & \cdots & a_{in}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{k1}  & a_{k2}  & \cdots & \cdots & a_{kn}\\
+\vdots  & \vdots  &        &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & \cdots & a_{nn}\\
+\end{array}\right|
+\label{eq_det28}
+\end{equation}
+
+\noindent
+{\bf 定理:} 先頭を除いて一行目の要素が0の行列式は先頭の要素と先頭の行・列を削除した行列式との積に等しい。すなわち、
+\begin{equation}
+\left|
+\begin{array}{ccccc}
+a_{11}  & 0       & \cdots & 0 \\
+a_{21}  & a_{22}  & \cdots & a_{2n} \\
+\vdots  & \vdots  &        & \vdots \\
+a_{n1}  & a_{n2}  & \cdots & a_{nn} \\
+\end{array}\right|=
+a_{11}\left|
+\begin{array}{cccc}
+a_{22}  & \cdots & a_{2n} \\
+\vdots  &        & \vdots \\
+a_{n2}  & \cdots & a_{nn} \\
+\end{array}
+\right|
+\end{equation}
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ \(
+\left|
+\begin{array}{cccc}
+-1 &  0 &  1 &  1\\ 
+ 2 & -1 &  0 &  2\\ 
+ 1 &  2 &  1 & -1\\ 
+-1 & -1 &  1 &  0\\ 
+\end{array}\right|\)の値を求めよ。
+
+\subsection{内積}
+
+任意のベクトル\(a,b\)に対し、実数\(a\cdot b\)が対応し、\(a\cdot b\)が以下の条件を全て
+満たすとき、\(a\cdot b\)を\(a\)と\(b\)の{\bf 内積}\index{ないせき@内積}という。
+
+\begin{enumerate}
+\item \(a\cdot b=b\cdot a\)
+\item \((\lambda a)\cdot b=\lambda(a \cdot b)\)
+\item \((a+b)\cdot c=a\cdot c + b\cdot c\)
+\item 常に\(a\cdot a \geq 0\)。但し等号が成り立つのは、\(a=o\)のときに限る(必要十分条件)。
+\end{enumerate}
+
+任意のベクトル\(v\)に対し、\(\|v\|=\sqrt{v\cdot v}\)を\(v\)の長さ、または{\bf ノルム}\index{のるむ@ノルム}という。
+\(a\cdot b=\|a\|\ \|b\|\cos \theta\)(但し\(\theta\)はベクトル\(a\)と\(b\)の
+なす角)とすれば、これは上の条件を全て満たすことを確かめられたい。従ってこの定義による
+\(a\cdot b\)は\(a\)と\(b\)の
+内積と呼べる。
+
+\(a \cdot b=0\)のとき、\(a\)と\(b\)は{\bf 直交}するという。\(o\)でないベクトル\(a_{1},a_{2},\cdots,a_{n}\)はどの
+２つも直交するとき、直交系と呼ばれる。さらに単位ベクトルからなる直交系、すなわち、
+
+\begin{displaymath}
+u_{i}\cdot u_{j}=\delta_{ij}
+\end{displaymath}
+
+\noindent
+を満たすベクトル\(u_{1},u_{2},\cdots,u_{n}\)を{\bf 正規直交系}\index{せいきちょっこうけい@正規直交系}と呼ぶ。
+ここで\(\delta_{ij}\)は
+
+\begin{displaymath}
+\delta_{ij}=\left\{
+\begin{array}{cc}
+1 & (i=j)\\
+0 & (i\neq j)\\
+\end{array}\right.
+\end{displaymath}
+
+\noindent
+と定義され、クロネッカー(Kronecker)のデルタと呼ばれる。
+
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ 2つのベクトル\(a=(a_{1},a_{2},\cdots,a_{n})^{t},\ b=(b_{1},b_{2},\cdots,b_{n})^{t}\)の
+内積が\(a\cdot b=\|a\|\ \|b\|\cos \theta\)(但し\(\theta\)はベクトル\(a\)と\(b\)の
+なす角)で定義されるとき、余弦定理\footnote{三角形の内角を\(A,B,C\)、これと向き合う辺の長さをそれぞれ\(\alpha,\beta,\gamma\)とすると、
+\(\gamma^{2}=\alpha^{2}+\beta^{2}-2\alpha\beta \cos C\)が成立する。
+}
+を使って
+
+\begin{equation}
+a\cdot b=\sum_{i=1}^{n}a_{i}b_{i}
+\end{equation}
+
+\noindent
+を示せ。
+
+\subsection{グラム・シュミットの直交化法}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Figures/vector_norm1}
+\end{center}
+\vspace{-2em}
+\caption{二次元の場合のベクトル直交化}
+\label{vector_norm1}
+\end{figure}
+
+線形独立なベクトル\(x_{1},x_{2},\cdots,x_{n}\)に対し、
+\(u_{1},u_{2},\cdots,u_{n}\)を順次以下の手順で定めれば、
+\(u_{1},u_{2},\cdots,u_{n}\)は正規直交系である。
+
+\begin{center}
+\begin{tabular}{ll}
+\(v_{1}=x_{1}\) & \(u_{1}=\displaystyle \frac{v_{1}}{||v_{1}||}\)\\
+\vspace{-0.75em}\\
+\(v_{2}=x_{2}-(u_{1}\cdot x_{2})u_{1}\) & \(u_{2}=\displaystyle \frac{v_{2}}{||v_{2}||}\)\\
+\vspace{-0.75em}\\
+\(v_{3}=x_{3}(u_{1}\cdot x_{3})u_{1}-(u_{2}\cdot x_{3})u_{2}\) &
+\(u_{3}=\displaystyle \frac{v_{3}}{||v_{3}||}\)\\
+\(\vdots\) & \(\vdots\)\\
+\(v_{n}=x_{n}-\displaystyle \sum_{k=1}^{n-1}(u_{k}\cdot x_{n})u_{k}\) &
+\(u_{n}=\displaystyle \frac{v_{n}}{||v_{n}||}\)
+\end{tabular}
+\end{center}
+
+\noindent
+これをグラム‐シュミット(Gram-Schmidt)の直交化法という。
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ 次のベクトルからグラム‐シュミットの直交化法により正規直交系を作れ。
+
+\begin{displaymath}
+\left(
+\begin{array}{ccc}
+2\\
+0\\
+1\\
+\end{array}\right),\ \ 
+\left(
+\begin{array}{ccc}
+-1\\
+1\\
+0\\
+\end{array}\right),\ \ 
+\left(
+\begin{array}{ccc}
+0\\
+1\\
+-1\\
+\end{array}\right)
+\end{displaymath}
+
+
+\subsection{行列式と超平行面体の超体積との関係}
+
+図\ref{vector_norm1}の$v_{2}$に着目しよう。$v_{2}$は$x_{2}$から「$x_{2}$の$u_{1}$方向に平行な
+成分」を引いたベクトル、すなわち平行四辺形の面積を「底辺の長さ×高さ」と
+して$u_{1}$の絶対値を底辺の長さとすると、$v_{2}$の長さは高さに相当する。
+故に、$x_{1}$と$x_{2}$で構成される平行四辺形の面積(底辺の長さ×高さ)は、
+$v_{1}=x_{1}$と$v_{2}$で構成される長方形の面積と等しい。
+
+同様の議論を繰り返していくと、
+\((x_{1}\ x_{2}\ \cdots\ x_{n})\)
+で構成される平行$2n$面体の体積は、
+\((v_{1}\ v_{2}\ \cdots\ v_{n})\)
+で構成される超直方体の体積と等しくなることが分かる。超直方体の体積\(\||V|\|\)は、
+
+\begin{equation}
+\||V|\|=\prod_{k=1}^{n}||v_{k}||
+\end{equation}
+
+\noindent
+になる。
+
+さて、
+$(x_{1}\ x_{2}\ \cdots\ x_{n})$
+の行列式をグラム‐シュミットの方法と絡めながら求めよう。
+式\ref{eq_det19}と式\ref{eq_det28}に注意すれば、
+
+\begin{eqnarray}
+&& |x_{1}\ x_{2}\ \cdots\ x_{n}|\nonumber\\
+&& =\|x_{1}\|\left|\frac{x_{1}}{\|x_{1}\|}\ \ x_{2}\ \cdots\ x_{n}\right|\nonumber\\
+&& =\|x_{1}\|\ |u_{1}\ x_{2}\ \cdots\ x_{n}|\nonumber\\
+&& =\|x_{1}\|\ |u_{1}\ \ x_{2}-(u_{1}\cdot x_{2})u_{1}\ \cdots\ x_{n}|\nonumber\\
+&& =\|x_{1}\|\ \|x_{2}-(u_{1}\cdot x_{2})u_{1}\|\left|u_{1}\ \ \frac{x_{2}-(u_{1}\ x_{2})u_{1}}{\|x_{2}-(u_{1}\cdot x_{2})u_{1}\|}\ \cdots \ x_{n}\right|\nonumber\\
+&& =\|x_{1}\|\ \left|\right|x_{2}-(u_{1}\cdot x_{2})u_{1}\|\ |u_{1}\ u_{2}\ \cdots\ x_{n}|\nonumber\\
+&& \vdots\nonumber\\
+&& =\|x_{1}\|\ \left|\right|x_{2}-(u_{1}\cdot x_{2})\|\cdots\|x_{n}-\sum_{k=1}^{n-1}(u_{k}\cdot\ x_{n})u_{k}\|\ |u_{1}\ u_{2}\ \cdots\ u_{n}|\nonumber\\
+&& =|u_{1}\ u_{2}\ \cdots\ u_{n}|\prod_{k=1}^{n}\|v_{k}\|=|u_{1}\ u_{2}\ \cdots\ u_{n}|\ \||V|\|
+\end{eqnarray}
+
+\noindent
+を得る。% 但しここでは行列\(X\)の行列式を\(|X|\)と表している。
+正規直交ベクトルで構成された行列
+$U=(u_{1}\ u_{2}\ \cdots\ u_{n})$
+は直交行列
+$U^{t}U=E$
+を成し、$|U|=\pm 1$
+である。よって
+\(\displaystyle \|\ |x_{1}\ x_{2}\ \cdots\ x_{n}|\ \|=\||V|\|\)
+を得る。すなわち、
+$(x_{1}\ x_{2}\ \cdots\ x_{n})$
+の行列式の絶対値は、これが成す平行$2n$面体の体積と等しい。
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ 2つのベクトル\(a=(a_{1},a_{2})^{t}\)と\(b=(b_{1},b_{2})^{t}\)が形成する平行四辺形の面積を求めよ。
+
+
+
+\section{多変量の確率関数}
+\setcounter{exer}{0}
+\setcounter{preexer}{1}
+\label{multivar1}
+
+\subsection{多変量の確率関数の定義}
+
+確率関数は多変量に対しても拡張できる。まずは2変量で考えてみよう。確率密度関数を\(f(x,y)\)とすれば、節\ref{cont_dist1}で述べた確率密度関数の
+性質を以下のように拡張できる。
+
+\begin{enumerate}
+\item 確率変数が取りうる全範囲の確率の合計は1となる。すなわち、
+\begin{equation}
+\int^{+\infty}_{-\infty}\int^{+\infty}_{-\infty}f(x,y)dxdy=1
+\end{equation}
+\item \(X,Y\)が範囲\(D\)の値に収まる確率は以下の式で与えられる。
+\begin{equation}
+P((X,Y) \in D)=\int\int_{D}f(x,y)dxdy
+\label{d3_1}
+\end{equation}
+\end{enumerate}
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.6]{Figures/prob3D1}
+\end{center}
+\vspace{-2em}
+\caption{3次元空間上の連続分布}
+\label{prob3D1}
+\end{figure}
+
+図形的に表せば図\ref{prob3D1}のように、\(X,Y\)が領域\(D\)に入る確率は領域\(D\)と\(f(x,y)\)の部分で囲まれた空間の体積で表される。
+すなわち、
+
+\begin{equation}
+P((x_{i} \leq X < x_{i}+\Delta x) \land (y_{j} \leq Y < y_{j}+\Delta y))\approx f(x_{i},y_{j})\Delta x \Delta y
+\label{eqn297}
+\end{equation}
+
+\noindent
+領域\(D\)に\(\Delta x, \Delta y\)の長方形を互いに重ならないようにタイル
+のように可能な限り敷き詰め、\(i\)番目の長方形の隅の座標を\(x_{i},y_{j} 
+\in D\)として合計すると、\(\sum_{(x_{i},y_{j}) \in 
+D}f(x_{i},y_{j})\Delta x \Delta y\)であり、\(\Delta x, \Delta y \to 0\)
+のとき、式\ref{d3_1}に収束する。
+
+これをさらに\(n\)変量で考えると、
+
+\begin{enumerate}
+\item 確率変数が取りうる全範囲の確率の合計は1となる。すなわち、
+\begin{equation}
+\int^{x_{1}=+\infty}_{x_{1}=-\infty}\int^{x_{2}=+\infty}_{x_{2}=-\infty}\cdots\int^{x_{n}=+\infty}_{x_{n}=-\infty}f(x_{1},x_{2},\cdots,x_{n})dx_{1}dx_{2}\cdots dx_{n}=1
+\label{d3_2_1}
+\end{equation}
+\item \(X_{1},X_{2},\cdots,X_{n}\)が範囲\(D\)の値に収まる確率は以下の式で与えられる。
+\begin{equation}
+P((X_{1},X_{2},\cdots,X_{n}) \in D)=\int\int\cdots\int_{D}f(x_{1},x_{2},\cdots,x_{n})dx_{1}dx_{2}\cdots dx_{n}
+\label{d3_2_2}
+\end{equation}
+\end{enumerate}
+
+\noindent
+式\ref{d3_2_1}、\ref{d3_2_2}のいずれにおいても積分記号\(\int\)は\(n\)回登場することに注意されたい。
+
+確率密度関数\(X \sim f(x),Y \sim g(y)\)について、
+
+\begin{eqnarray}
+P(x\leq X \leq x + \Delta x) \approx f(x)\Delta x\nonumber\\
+P(y\leq Y \leq y + \Delta y) \approx g(y)\Delta y
+\end{eqnarray}
+
+\noindent
+が成立するが、\(X\)と\(Y\)が独立な場合、
+
+\begin{equation}
+P((x\leq X \leq x + \Delta x) \land (y\leq Y \leq y + \Delta y))=f(x)\Delta x \cdot g(y)\Delta y=f(x)g(y)\Delta x \Delta y
+\end{equation}
+
+\noindent
+となり、式\ref{eqn297}で\(f(x,y)=f(x)g(y)\)としたものに一致する。すなわち、\(f(x)g(y)\)は\(X,Y\)が従う結合密度関数である。
+
+確率変数\(X\)と\(Y\)の和\(X+Y\)が従う分布\(h(z)\)は以下のように求めるこ
+とができる。まず\(X \sim f(x), Y \sim g(y)\)とすると、その結合密度関数は、
+\(f(x)g(y)\)である。\(a \leq X + Y \leq z\)となる確率は、
+
+\begin{equation}
+H(z)=\int_{-\infty}^{z}h(w)dw
+\end{equation}
+
+\noindent
+とおくと、
+
+\begin{equation}
+P(a \leq X + Y \leq z)=H(z)-H(a)
+\end{equation}
+
+\noindent
+と表すことができる。次に\(a \leq X + Y \leq z\)を満たす\(X\)と\(Y\)の範
+囲を考えよう。\(Y\)が\(-\infty\)から\(+\infty\)まで自由に値を変えるとす
+ると、\(X\)は\(a-Y \leq X \leq Z - Y\)という制約を受ける。この制約の中で
+\(f(x)g(y)\)を積分すれば、\(P(a \leq X + Y \leq z)\)が求まる。すなわち
+\(F(z)=\int_{-\infty}^{z}f(x)dx\)とおけば、
+
+\begin{eqnarray}
+P(a \leq X + Y \leq z)=H(z)-H(a)=\int_{y=-\infty}^{y=+\infty}\left\{\int_{x=a-y}^{x=z-y}f(x)dx\right\}g(y)dy\nonumber\\
+=\int_{y=-\infty}^{y=+\infty}\left\{F(z-y)-F(a-y)\right\}g(y)dy\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \nonumber\\
+=\int_{y=-\infty}^{y=+\infty}F(z-y)g(y)dy-\int_{y=-\infty}^{y=+\infty}F(a-y)g(y)dy 
+\end{eqnarray}
+
+\noindent
+\(z\)を含む項、\(a\)を含む項だけを抜き出すと、
+
+\begin{equation}
+H(z)=\int_{y=-\infty}^{y=+\infty}F(z-y)g(y)dy, \ \ \ H(a)=\int_{y=-\infty}^{y=+\infty}F(a-y)g(y)dy
+\end{equation}
+
+\noindent
+左の式について\(z\)で微分すると、
+
+\begin{equation}
+h(z)=\int_{-\infty}^{+\infty}f(z-y)g(y)dy
+\label{eqn_convol1}
+\end{equation}
+
+\noindent
+が求まる。式\ref{eqn_convol1}を\(f\)と\(g\)の{\bf 畳み込み積分(convolution)}\index{たたみこみせきぶん@畳み込み積分}という。
+
+畳み込み積分を用いて\(N(\mu, \sigma^{2})\)に従う2つの確率変数\(X,Y\)の和\(X+Y\)が従う分布を求めよう。\(N(\mu, \sigma^{2})\)の
+確率密度関数を\(f(x)\)として、\(X+Y\)の従う結合密度関数は、
+
+\begin{eqnarray}
+h(z)=\int_{-\infty}^{+\infty}f(z-y)f(y)dy=\int_{-\infty}^{+\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(z-y-\mu)^{2}}{2\sigma^{2}}}
+                                                                  \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-\mu)^{2}}{2\sigma^{2}}}dy
+\mbox{\hspace{12em}}\nonumber\\
+=
+\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{\frac{1}{2}(z-2\mu)^{2}}{2\sigma^{2}}}
+\cdot\int_{-\infty}^{+\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{2(y-\frac{1}{2}z)^{2}}{2\sigma^{2}}}dy=
+\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(z-2\mu)^{2}}{4\sigma^{2}}}
+\cdot\frac{1}{\sqrt{2}}\int_{-\infty}^{+\infty}\frac{1}{\sqrt{2\pi}\frac{1}{\sqrt{2}}\sigma}e^{-\frac{(y-\frac{1}{2}z)^{2}}{2(\frac{1}{\sqrt{2}}\sigma)^{2}}}dy\nonumber\\
+=\frac{1}{\sqrt{2\pi}\sqrt{2}\sigma}e^{-\frac{(z-2\mu)^{2}}{2(\sqrt{2}\sigma)^{2}}}
+\cdot\int_{-\infty}^{+\infty}\frac{1}{\sqrt{2\pi}\frac{1}{\sqrt{2}}\sigma}e^{-\frac{(y-\frac{1}{2}z)^{2}}{2(\frac{1}{\sqrt{2}}\sigma)^{2}}}dy
+\mbox{\hspace{20em}}\nonumber\\
+\nonumber\\
+=N(2\mu,2\sigma^{2})\mbox{の確率密度関数}\cdot N(\frac{1}{2}z,\frac{1}{2}\sigma^{2})\mbox{の全域に関する積分}
+=N(2\mu,2\sigma^{2})\mbox{の確率密度関数}\cdot 1\nonumber\\
+=N(2\mu,2\sigma^{2})\mbox{の確率密度関数}
+\end{eqnarray}
+
+\noindent
+となり、\(X+Y\)は\(N(2\mu,2\sigma^{2})\)に従うことが示された。
+
+\vspace{1em}
+
+\refstepcounter{exer}
+
+\noindent
+{\bf 問題\thesection-\theexer}:~\label{exer_nzmhard1} 畳み込み積分を用いて、サイコロルーレットを2回回したときに得られる数値の合計値が従う確率密度関数を求めよ。
+
+\subsection{多変量の確率関数に関する期待値計算}
+
+確率変数$X$が確率密度関数$f(x)$に従うとする。また同時に$X$は$n$個の変数で定義される関数$u$で$X=u(X_{1},X_{2},\cdots X_{n})$と表され、さらに$X_{1},X_{2},\cdots X_{n}$は確率密度関数$g(x_{1},x_{2},\cdots x_{n})$に
+従うとする。また関数$h$が与えられているとき、$E(h(X))$を求めてみよう。
+
+まず、$E(h(X))$は$h(x)\times P(x\leq X<x+\Delta x)$の確率の総和であるという観点から、
+
+\begin{equation}
+E(h(X))=\displaystyle \int_{-\infty}^{+\infty}h(x)f(x)dx
+\end{equation}
+
+\noindent
+である。また確率密度関数に$\varphi$を使って考えると、$E(h(u(x_{1},x_{2},\cdots x_{n})))$は$h(u(x_{1},x_{2},\cdots x_{n}))\times P((x_{1},x_{2},\cdots x_{n})\in\Delta D)$の総和と考えれば、
+
+\begin{equation}
+E(h(X))=\displaystyle \int_{-\infty}^{+\infty}\int_{-\infty}^{+\infty}\cdots\int_{-\infty}^{+\infty}h(u(x_{1},x_{2},\cdots x_{n}))g(x_{1},x_{2},\cdots x_{n})dx_{1}dx_{2}\cdots dx_{n}
+\end{equation}
+
+\noindent
+となる。
+
+
+\subsection{多変量の確率関数の変数変換}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.6]{Figures/jacobian1}
+\end{center}
+\vspace{-2em}
+\caption{2変数の変換のイメージ}
+\label{jacobian1}
+\end{figure}
+
+\(x=\varphi(u,v)\),\(y=\psi(u,v)\)の関係が成立するとき、
+図\ref{jacobian1}に示すように、
+\((x,y)\)の定義域Dの1小領域P\(_{1}\)P\(_{2}\)P\(_{3}\)P\(_{4}\)とし、その内部の点Pがある。
+上式によってP\(_{1}\)P\(_{2}\)P\(_{3}\)P\(_{4}\)がP\(_{1}'\)P\(_{2}'\)P\(_{3}'\)P\(_{4}'\)に移ったとする。
+点P\(_{i}\)を$(x_{i},y_{i})$で表せば、
+\begin{displaymath}
+\displaystyle \lim_{\Delta u\rightarrow 0}\frac{\varphi(u+\Delta u,v)-\varphi(u,v)}{\Delta u}=\frac{\partial\varphi}{\partial u}
+\end{displaymath}
+\begin{displaymath}
+\displaystyle \lim_{\Delta u\rightarrow 0}\lim_{\Delta v\rightarrow 0}\varphi(u+\Delta u,v+\Delta v)-\varphi(u,v)=\frac{\partial\varphi}{\partial u}\Delta u+\frac{\partial\varphi}{\partial v}\Delta v \mbox{\hspace{3em}(全微分)}
+\end{displaymath}
+などに注意して、
+
+\begin{eqnarray}
+x_{1} & = & \varphi(u,v)\nonumber\\
+y_{1} & = & \psi(u,v)\nonumber\\
+x_{2} & = & \varphi(u+\Delta u,v)=\varphi(u,v)+\frac{\partial\varphi}{\partial u}\Delta u\nonumber\\
+y_{2} & = & \displaystyle \psi(u+\Delta u,v)=\psi(u,v)+\frac{\partial\psi}{\partial u}\Delta u\nonumber\\
+x_{3} & = & \displaystyle \varphi(u+\Delta u,v+\Delta v)=\varphi(u,v)+\frac{\partial\varphi}{\partial u}\Delta u+\frac{\partial\varphi}{\partial v}\Delta v\nonumber\\
+y_{3} & = & \displaystyle \psi(u+\Delta u,v+\Delta v)=\psi(u,v)+\frac{\partial\psi}{\partial u}\Delta u+\frac{\partial\psi}{\partial v}\Delta v\nonumber\\
+x_{4} & = & \displaystyle \varphi(u+v+\Delta v)=\varphi(u,v)+\frac{\partial\varphi}{\partial v}\Delta v\nonumber\\
+y_{4} & = & \displaystyle \psi(u+v+\Delta v)=\psi(u,v)+\frac{\partial\psi}{\partial v}\Delta v\nonumber\\
+\end{eqnarray}
+
+\noindent
+平行四辺形の面積$\Delta S$は、
+
+\begin{equation}
+\left|\begin{array}{l}
+\frac{\partial\varphi}{\partial u} \frac{\partial\varphi}{\partial v}\\
+\frac{\partial\psi}{\partial u} \frac{\partial\psi}{\partial v}
+\end{array}\right|\Delta u\Delta v=\frac{\partial(x,y)}{\partial(u,v)}\Delta u\Delta v=J\Delta u\Delta v
+\end{equation}
+
+\noindent
+$J$はヤコビアン(Jacobian)と呼ばれる。
+$\Delta S^{\prime}=\Delta u\Delta v$として、
+
+\begin{equation}
+\Delta S=|J|\Delta S^{\prime}
+\end{equation}
+
+\noindent
+を得る。
+$D$上で定義された$f(x,y)$の$x,y$に最初の式を代入すれば、$f(\varphi(u,v),\psi(u,v))$は$D^{\prime}$上の関数である。
+$D^{\prime}$上の分割による小領域$\Delta S_{i}^{\prime}$に対し、$D$上の小領域$\Delta S$が対応するとすれば、
+
+\begin{equation}
+\sum_{i=1}^{n}f(x_{i},y_{i})\Delta S_{i}=\sum_{i=1}^{n}f(\varphi(u,v),\psi(u,v))|J|\Delta S_{i}^{\prime}
+\end{equation}
+
+\noindent
+各$\Delta S_{i}^{\prime}\rightarrow 0$となる極限を考えれば、$x,y$は連続であるから、
+\(\Delta S_{i}\rightarrow 0\)となり、
+
+\begin{equation}
+\int\int_{D}f(x,y)dxdy=\int\int_{D^{\prime}}f(\varphi(u,v),\psi(u,v))|J|dudv
+\end{equation}
+
+\section{積率母関数}
+
+\subsection{積率母関数の定義}
+\setcounter{preexer}{1}
+
+\(x\)を確率変数とし、\(t\)を実数とするとき、\(e^{tx}\)の期待値を\(x\)の
+積率母関数(moment generating function)といい、\(M_{x}(t)\)で表す。すなわち\(x\)が
+離散型であれば、\(f(x)\)を確率関数として、
+
+\begin{equation}
+M_{x}(t)=E(e^{tx})=\sum_{x}e^{tx}f(x)
+\end{equation}
+
+\noindent
+となる。但し、\(\sigma_{x}\)は\(x\)の可能な値全てについての合計を表す。また\(x\)が
+連続型で\(-\infty<x<\infty\)とすれば、\(f(x)\)を密度関数として、
+
+\begin{equation}
+M_{x}(t)=E(e^{tx})=\int^{\infty}_{-\infty}e^{tx}f(x)dx
+\label{eq2}
+\end{equation}
+
+\noindent
+である。
+
+\(e^{tx}\)をマクローリン展開すれば、
+
+\begin{equation}
+e^{tx}=1+\frac{tx}{1!}+\frac{(tx)^{2}}{2!}+\cdots
+\end{equation}
+
+\noindent
+であるから、これを式\ref{eq2}に代入して、
+
+\begin{eqnarray}
+E(e^{tx})=\int^{\infty}_{-\infty}f(x)dx+\int^{\infty}_{-\infty}txf(x)dx+\frac{1}{2}\int^{\infty}_{-\infty}(tx)^{2}f(x)dx+\cdots \nonumber\\
+=1+tE(x)+\frac{t^{2}}{2}E(x^{2})+\cdots=\sum_{k=0}^{\infty}\frac{t^{k}}{k!}E(x^{k})\mbox{\hspace{10em}}
+\label{eq4}
+\end{eqnarray}
+
+\noindent
+となる。すなわち各項は原点回りの\(k\)次の積率\(E(x^{k})\)を含んでいる。
+
+式\ref{eq4}に関する\(k\)階の導関数で\(t=0\)とおくとその値は\(E(x^{k})\)すなわち原点回りの\(k\)の
+積率に等しくなる。すなわち、
+
+\begin{equation}
+\frac{\partial^{k}M_{x}(t)}{\partial t^{k}}\biggl|_{t=0}=E(x^{k})\;\;\;\;\;k=1,2,\cdots
+\end{equation}
+
+\noindent
+これが\(M_{x}(t)\)が積率母関数と呼ばれる所以である。以下、
+\(\partial^{k}M_{x}(t)/\partial t^{k}|_{t=0}\)を単に\(M_{x}^{(k)}(0)\)と表すことにする。
+例えば\(k=1\)であれば、
+
+\[
+M_{x}'(0)=E(x) 
+\]
+
+\noindent
+で平均が得られる。また\(k=2\)ならば、
+
+\[M_{x}''(0)=E(x^{2})\]
+
+\noindent
+すなわち、原点周りの2次の積率が得られるから、
+
+\[E(x^{2})-{E(x)}^{2}=\sigma^{2}\]
+
+\noindent
+によって分散が得られる。
+
+\vspace{2em}
+
+\noindent
+{\bf 例題\thesection-\thepreexer}:
+正規分布\(N(\mu, \sigma^{2})\)の積率母関数を求めてみよう。
+
+\begin{eqnarray}
+M_{x}(t)=\int^{\infty}_{\infty}e^{tx}\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2\sigma^{2}}(x-\mu)^{2}}dx \mbox{\hspace{10em}} \nonumber\\
+=\int^{\infty}_{\infty}{\rm exp}\left[-\frac{1}{2\sigma^{2}}\underbrace{\{(x-\mu)^{2}-2\sigma^{2}tx\}}_{*}\right]dx \mbox{\hspace{6em}}\nonumber
+\end{eqnarray}
+
+ところで\(*\)の部分は\((x-\mu)^{2}-2\sigma^{2}tx=x^{2}-2\mu x + \mu^{2}-2\sigma^{2}tx=x^{2}-2(\mu-\sigma^{2}t)x+\mu^{2}
+=\{x-(\mu+\sigma^{2}t)\}^{2}-2\sigma^{2}\mu t - \sigma^{4}t^{2}\)
+であるから、
+
+\begin{eqnarray}
+M_{x}(t)=\frac{1}{\sqrt{2\pi}\sigma}\int^{\infty}_{-\infty}{\rm exp}\left[-\frac{1}{2\sigma^{2}}\left\{x-(\mu+\sigma^{2}t)\right\}^{2}+\mu t+\frac{\sigma^{2}}{2}t^{2}\right]dx \nonumber \\
+={\rm exp}\left(\mu t+\frac{\sigma^{2}}{2}t^{2}\right)\cdot \frac{1}{\sqrt{2\pi}\sigma}\int^{\infty}_{-\infty}{\rm exp}\left[-\frac{1}{2\sigma^{2}}\left\{x-(\mu+\sigma^{2}t)\right\}^{2}\right]dx \nonumber
+\end{eqnarray}
+
+\noindent
+ここで、\(\frac{1}{\sqrt{2\pi}\sigma}\int^{\infty}_{-\infty}{\rm exp}\left[-\frac{1}{2\sigma^{2}}\left\{x-(\mu+\sigma^{2}t)\right\}^{2}\right]dx\)は平均\(\mu+\sigma^{2}t\)、
+分散\(\sigma^{2}\)の正規分布密度関数の積分に他ならないから、1に等しい。それゆえ、
+
+\begin{equation}
+M_{x}(t)={\rm exp}\left(\mu t+\frac{\sigma^{2}}{2}t^{2}\right)
+\end{equation}
+
+\noindent
+である。
+
+\(M_{x}'(t)=(\mu+\sigma^{2}t){\rm exp}(\mu t + \frac{\sigma^{2}}{2}t^{2})\)
+であるから、
+
+\begin{equation}
+M_{x}'(0)=\mu
+\end{equation}
+
+\noindent
+となり、また
+\(M_{x}''(t)=\sigma^{2}{\rm exp}(\mu t+\frac{\sigma^2}{2}t^{2})+(\mu+\sigma^{2}t)^{2}{\rm exp}(\mu t + \frac{\sigma^{2}}{2}t^{2})\)
+から、\(M''(0)=\sigma^{2}+\mu^{2}\)、すなわち、
+
+\begin{equation}
+M''(0)-{M'(0)}^{2}=\sigma^{2}
+\end{equation}
+
+\noindent
+となり、正規分布の平均は\(\mu\)、分散は\(\sigma^{2}\)であることが示された。
+
+\subsection{確率変数の関数の積率母関数}
+
+\(x\)を確率変数、\(t\)を実数とするとき、\(e^{tx}\)の期待値を\(x\)の積率
+母関数ということは既に述べた。ここで、\(\varphi(x)\)を\(x\)の連続な関数としたとき、
+\(\varphi(x)\)の積率母関数は\(e^{t\varphi(x)}\)の期待値と定義され、\(M_{\varphi(x)}(t)\)で表される。
+
+\(x\)が連続型で\(-\infty<x<\infty\)とすれば、\(f(x)\)を密度関数として、
+
+\begin{equation}
+M_{\varphi(x)}(t)=E(e^{t\varphi(x)})=\int^{\infty}_{-\infty}e^{t\varphi(x)}f(x)dx
+\label{eq11}
+\end{equation}
+
+\noindent
+である。
+
+\(e^{t\varphi(x)}\)をマクローリン展開すれば、
+
+\begin{equation}
+e^{t\varphi(x)}=1+\frac{t\varphi(x)}{1!}+\frac{(t\varphi(x))^{2}}{2!}+\cdots
+\end{equation}
+
+\noindent
+であるから、これを式\ref{eq11}に代入して、
+
+\begin{eqnarray}
+E(e^{t\varphi(x)})=\int^{\infty}_{-\infty}f(x)dx+\int^{\infty}_{-\infty}t\varphi(x)f(x)dx+\frac{1}{2}\int^{\infty}_{-\infty}\{t\varphi(x)\}^{2}f(x)dx+\cdots \nonumber\\
+=1+tE[\varphi(x)]+\frac{t^{2}}{2}E[\{\varphi(x)\}^{2}]+\cdots
+%\label{eq4}
+\end{eqnarray}
+
+\noindent
+であるから、
+
+\begin{equation}
+M^{k}(0)=E[\{\varphi(x)\}^{k}] \ \ \ \ \ k=1,2,\cdots
+\end{equation}
+
+\noindent
+により、\(\varphi(x)\)の原点回りの\(k\)次の積率が計算できる。
+
+
+\subsection{正規分布による二項分布の近似}
+\label{bigaus}
+
+\(a,b\)および\(p\)を一定とするとき、確率
+
+\begin{equation}
+P(a \leq  x \leq b)=\sum_{a \leq x \leq b}\frac{n!}{x!(n-x)!}p^{x}q^{n-x}, \ \ \ \ q=1-p
+\end{equation}
+
+\noindent
+は\(n\to\infty\)のとき、
+
+\begin{equation}
+\int^{(b-np)/\sqrt{npq}}_{(a-np)/\sqrt{npq}}\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}z^{2}}dz
+\label{eqn48}
+\end{equation}
+
+\noindent
+に収束する。
+
+\vspace{1em}
+
+\noindent
+{\bf 証明：} 標準化された\(z=(x-np)/\sqrt{npq}\)の積率母関数は、
+
+\begin{eqnarray}
+M_{z}(t)=\sum_{x=0}^{n}\frac{n!}{x!(n-x)!}p^{x}q^{n-x}e^{t(x-np)/\sqrt{npq}}\nonumber
+=e^{-\frac{np}{\sqrt{npq}}t}\sum_{x=0}^{n}\frac{n!}{x!(n-x)!}(pe^{\frac{t}{\sqrt{npq}}})^{x}q^{n-x}\nonumber\\
+=e^{-\frac{np}{\sqrt{npq}}t}(q+pe^{\frac{t}{\sqrt{npq}}})^{n}\mbox{\hspace{23em}}
+\end{eqnarray}
+
+\noindent
+従って、
+
+\begin{equation}
+\log M_{z}(t)=-\frac{np}{\sqrt{npq}}t+n\log(q+pe^{\frac{t}{\sqrt{npq}}})=-\frac{np}{\sqrt{npq}}t+n\log(1+u)
+\label{eqn50}
+\end{equation}
+
+\noindent
+但し\(u=p(-1+e^{t/\sqrt{npq}})\)となる。\(\log(1+u)\)を展開すれば、
+
+\begin{equation}
+\log(1+u)=u-\frac{u^{2}}{2}+\frac{u^{3}}{3}-\cdots
+\label{eqn51}
+\end{equation}
+
+\noindent
+となる。また\(u\)は\(e^{t/\sqrt{npq}}\)の展開により、
+
+\begin{eqnarray}
+u=p(-1+e^{\frac{t}{\sqrt{npq}}})
+=p\left\{
+\left(\frac{t}{\sqrt{npq}}\right)+
+\frac{1}{2!}\left(\frac{t}{\sqrt{npq}}\right)^{2}+
+\frac{1}{3!}\left(\frac{t}{\sqrt{npq}}\right)^{3}+\cdots
+\right\}
+\label{eqn52}
+\end{eqnarray}
+
+\noindent
+となる。式\ref{eqn52}を式\ref{eqn51}に代入し、これをさらに式\ref{eqn50}に代入して整理すれば、
+
+\begin{equation}
+\log M_{z}(t)=\frac{t^{2}}{2}+\sum_{k=3}^{\infty}c_{k}\left(\frac{t}{\sqrt{npq}}\right)^{k}
+\end{equation}
+
+\noindent
+となる。但し右辺の第2項は\(\frac{t}{\sqrt{npq}}\)の3次以上の項よりなる多項式で、\(c_{3},c_{4},\cdots\)は\(n\)を
+含まない係数である。そこで両辺の極限を取れば\(\lim_{n\to\infty}\log M_{x}(t)=\frac{t^{2}}{2}\)、すなわち
+
+\begin{equation}
+\lim_{n\to\infty}M_{z}(t)=e^{\frac{t^{2}}{2}}
+\end{equation}
+
+\noindent
+となる。これは正規分布\(N(0,1)\)の積率母関数に他ならない。よって、\(z=(x-np)/\sqrt{npq}\)は\(N(0,1)\)に
+分布収束する。このことは、\(P(a\leq x \leq b)=P((a-np)/\sqrt{npq}\leq z \leq (b-np)/\sqrt{npq}\)が式\ref{eqn48}
+に収束することを意味する。
+
+\begin{flushright}
+□
+\end{flushright}
+
+
+\section{中心極限定理}
+\label{clt}
+
+\setcounter{exer}{0}
+\setcounter{preexer}{1}
+
+\noindent
+{\bf 定理}:~ \(x_{1},\cdots,x_{n}\)を密度関数\(f(x)\)からの大きさ\(n\)の無作為標本とし、\(x\)の平均を\(\mu\)、分散を\(\sigma^{2}\)とする。またのこの標本の
+標本平均を\(\bar{x}\)、標本平均を標準化した変数を\(z_{*}\)とする。すなわち、
+
+\begin{equation}
+z_{*}=\frac{\bar{x}-\mu}{\sigma/\sqrt{n}}=z\sqrt{n}
+\end{equation}
+
+\noindent
+このとき\(z_{*} \sim N(0,1)\)、すなわち\(z_{*}\)は標準正規分布に従う。この定理を{\bf 中心極限定理}\index{中心極限定理@ちゅうしんきょくげんていり}という。
+
+\noindent
+{\bf 証明}:~ \(z_{*}\)の積率母関数は、
+
+% \begin{eqnarray}
+% M_{y_{n}}(t)=M_{\frac{\bar{x}-\mu}{\sigma/\sqrt{n}}}(t)
+% =\int^{\infty}_{-\infty}{\rm exp}\left(\frac{\bar{x}-\mu}{\sigma/\sqrt{n}}t\right)f(\bar{x})d\bar{x}\mbox{\hspace{7em}}\nonumber\\
+% =\int^{\infty}_{-\infty}\cdots\int^{\infty}_{-\infty}{\rm exp}\left(t\sum_{i=1}^{n}\frac{x_{i}-\mu}{\sigma/\sqrt{n}}\right)f(x_{1})\cdots f(x_{n})dx_{1}\cdots dx_{n}\nonumber\\
+% =\left\{\int^{\infty}_{-\infty}{\rm exp}\left(\frac{x-\mu}{\sigma/\sqrt{n}}t\right)f(x)dx\right\}^{n}
+% =\left\{M_{\frac{x-\mu}{\sigma}}\left(\frac{t}{\sqrt{n}}\right)\right\}^{n}
+% \end{eqnarray}
+
+% \lefteqn{M_{z}(t)=\int^{\infty}_{-\infty}\cdots\int^{\infty}_{-\infty}e^{tz}f(x_{1})\cdots f(x_{n})dx_{1}\cdots dx_{n}}
+
+\begin{eqnarray}
+M_{z}(t) & = & \int^{\infty}_{-\infty}e^{tz_{*}}f(z_{*})dz_{*}\nonumber\\
+         & = & \int^{\infty}_{-\infty}\cdots\int^{\infty}_{-\infty}{\rm exp}\left(\frac{\bar{x}-\mu}{\sigma/\sqrt{n}}t\right)f(x_{1})\cdots f(x_{n})dx_{1}\cdots dx_{n}\nonumber\\
+         & = & \int^{\infty}_{-\infty}\cdots\int^{\infty}_{-\infty}{\rm exp}\left(t\sum_{i=1}^{n}\frac{x_{i}-\mu}{\sigma/\sqrt{n}}\right)f(x_{1})\cdots f(x_{n})dx_{1}\cdots dx_{n}\nonumber\\
+         & = & \left\{\int^{\infty}_{-\infty}{\rm exp}\left(\frac{x-\mu}{\sigma/\sqrt{n}}t\right)f(x)dx\right\}^{n}=\left\{M_{z}\left(\frac{t}{\sqrt{n}}\right)\right\}^{n}\nonumber\\
+         & = & \left\{\int^{\infty}_{\infty}{\rm exp}\left(\frac{t}{\sqrt{n}}z\right)f(z)dz \right\}^{n}
+\end{eqnarray}
+
+\noindent
+ここで、
+
+\begin{equation}
+{\rm exp}\left(\frac{t}{\sqrt{n}}z\right)=1+\frac{tz}{\sqrt{n}}+\frac{1}{2}\left(\frac{tz}{\sqrt{n}}\right)^{2}+\frac{1}{6}\left(\frac{tz}{\sqrt{n}}\right)^{3}+\cdots
+\end{equation}
+
+\noindent
+となるから、
+
+\begin{eqnarray}
+\left\{M_{z}\left(\frac{t}{\sqrt{n}}\right)\right\}^{n}=\left[\int^{\infty}_{-\infty}\left\{1+\frac{tz}{\sqrt{n}}+\frac{1}{2}\left(\frac{tz}{\sqrt{n}}\right)^{2}+\frac{1}{6}\left(\frac{tz}{\sqrt{n}}\right)^{3}+\cdots \right\}f(z)dz \right]^{n}\nonumber\\
+=\left[\int^{\infty}_{-\infty}f(z)dz+\int^{\infty}_{\infty}\frac{t}{\sqrt{n}}zf(z)dz+\int^{\infty}_{-\infty}\frac{t^{2}}{2n}z^{2}f(z)dz+\int^{\infty}_{-\infty}\frac{t^{3}}{6n^{3/2}}z^{3}f(z)dz+\cdots \right]^{n}
+\label{eqn25}
+\end{eqnarray}
+
+\noindent
+となる。ここで、\(\int^{\infty}_{-\infty}f(z)dz=1\)(確率密度関数の定義、全確率の合計は1)、\(\int^{\infty}_{-\infty}zf(z)dz=0\)(\(z\)の平均は0)、
+\(\int^{\infty}_{-\infty}z^{2}f(z)dz=1\)(\(z\)の分散)より、式\ref{eqn25}は、
+
+\begin{equation}
+M_{z*}(t)=\left[1+0+\frac{t^{2}}{2n}+(n^{-3/2}\mbox{の項})+(n^{-2}\mbox{の項})+\cdots\right]^{n}
+\end{equation}
+
+\noindent
+かくして、両辺の\(n \to \infty\)における極限を取れば
+
+\begin{equation}
+\lim_{n \to \infty}M_{z_{*}}(t)=e^{\frac{t^{2}}{2}}
+\label{eq496}
+\end{equation}
+
+\noindent
+となり、標準正規分布の積率母関数と一致する。
+
+\begin{flushright}
+□
+\end{flushright}
+
+\vspace{1em}
+
+\refstepcounter{exer}\label{exer_eq496}
+\noindent
+{\bf 問題\thesection-\theexer}:~式\ref{eq496}が成り立つことを示せ。
+
+
+\newpage
+
+\section*{略解}
+
+\noindent
+{\bf \ref{sample_distr1}-\ref{exerx2}}:~
+\(E(\bar{X}^{2})=\frac{\sigma^{2}}{n}+\mu^{2}\)
+
+\vspace{1em}
+
+\noindent
+{\bf \ref{sample_distr1}-\ref{exerx3}}:~
+\ref{sample_distr1}-\ref{exerx2}の結果および\(E(X^{2})=\sigma^{2}+\mu^{2}\)を利用して、
+\begin{eqnarray}
+E\{\frac{1}{n}\sum_{i=1}^{n}(X_{i}-\bar{X})^{2}\}=\frac{1}{n}\sum E\left\{X_{i}^{2}-2X_{i}\bar{X}+\bar{X}^{2}\right\}
+=\frac{1}{n}\sum E(X_{i}^{2})-\frac{2}{n}E(\sum X_{i}\bar{X})+\frac{1}{n}E(\sum\bar{X}^{2})\nonumber\\
+=\frac{1}{n}n(\mu^{2}+\sigma^{2})-\frac{2}{n}E(n\bar{X}\bar{X})+\frac{1}{n}E(n\bar{X}^{2})
+=\mu^{2}+\sigma^{2}-E(\bar{X}^{2})=\mu^{2}+\sigma^{2}-\frac{\sigma^{2}}{n}-\mu^{2}=\left(1-\frac{1}{n}\right)\sigma^{2}\ \ \nonumber 
+\end{eqnarray}
+
+\vspace{1em}
+
+
+\noindent
+{\bf \ref{gaus_distr1}-\ref{exer56}}:~\(y=\tan x\)として、\(\frac{dy}{dx}=\frac{1}{\cos^{2}x}\)。従って、
+\(\frac{dx}{dy}=\frac{d\tan^{-1}y}{dy}=\cos^{2}x=\frac{1}{\tan^{2}x+1}=\frac{1}{y^{2}+1}\)。
+
+\vspace{1em}
+
+\noindent
+{\bf \ref{multivar1}-\ref{exer_nzmhard1}}:~サイコロルーレットを1回回したときに得られる数値\(x\)に関する確率密度関数\(f(x)\)は、\\
+\(
+f(x)=
+\left\{
+\begin{array}{l}
+\frac{1}{6} \ \ \ \ \ \mbox{for} \ \ 0 \leq x \leq 6\\
+0 \ \ \ \ \ \mbox{otherwise}
+\end{array}\right.\nonumber
+\)
+であり、2回回したときに得られる数値の合計値\(z\)に関する確率密度関数は畳み込み積分を行って、
+\(h(z)=\int_{-\infty}^{+\infty}f(z-y)g(y)dy\)である。\(y\)に関する積分を行う区間は\(f(z-y)g(y)>0\)、すなわち、\(f(z-y)>0\)かつ\(g(y)>0\)の範囲
+である。これを満たす\(y\)の範囲は、\(0 \leq z-y \leq 6\)かつ\(0 \leq y \leq 6\)、すなわち\(z-6 \leq y \leq z\)かつ\(0 \leq y \leq 6\)である。
+\(z<0\)または\(z>12\)のときはこの制約を満たすことができず、\(h(z)=0\)となる。\(0 \leq z \leq 6\)のときは、\(0 \leq y < z\)、\(6 \leq z \leq 12\)のときは、
+\(z-6\leq y \leq 6\)が積分する範囲となる。すなわち、
+
+\begin{eqnarray}
+h(z)=
+\left\{
+\begin{array}{ll}
+\frac{1}{36}z & \mbox{for} \ \ 0 \leq z \leq 6\\
+-\frac{1}{36}z+\frac{1}{3} & \mbox{for} \ \ 6 \leq z \leq 12\\
+0 & \mbox{otherwise}
+\end{array}\right.\nonumber
+\end{eqnarray}
+
+\noindent
+{\bf \ref{clt}-\ref{exer_eq496}}:~
+\(\lim_{n\to\infty}n\cdot h(n)=0\)なら、任意に小さい\(\epsilon > 0\)に対し、
+\(\exists_{n_{0}}\forall_{n>n_{0}}\{0 < n\cdot h(n) < \epsilon\}\)が成立するから、
+十分大きな\(n\)に対し、\(\frac{1}{n}<\frac{1}{n}+h(n)<\frac{1+\epsilon}{n}\)
+とすることができる。
+\((1+\frac{1}{n})^{n}<(1+\frac{1}{n}+h(n))^{n}<(1+\frac{1+\epsilon}{n})^{n}\)
+より、\(n\to\infty\)をとって、\(e < \lim_{n\to\infty}(1+\frac{1}{n}+h(n))^{n}<e^{1+\epsilon}\)。さらに\(n\to\infty\)
+のとき、\(e^{1+\epsilon}\)はいくらでも\(e\)に近づけるから、\(\lim_{n\to\infty}(1+\frac{1}{n}+h(n))^{n}=e\)。
+
+
+\newpage
+
+\begin{thebibliography}{99}
+\bibitem{BI}
+冨田勝(監修)
+斎藤輪太郎(著)
+「バイオインフォマティクスの基礎
+～ゲノム解析プログラミングを中心に～」
+サイエンス社(2005/07)
+\bibitem{Hall} Hall, P(1927) "The Distribution of Means for Samples of Size N 
+Drawn from a Population in which the Variate Takes Values Between 0 and 
+1, All Such Values Being Equally Probable". Biometrika, Vol. 19, No. 3/4., 
+pp. 240-245. 
+\bibitem{Irwin} 
+Irwin JO (1927) "On the Frequency Distribution of the Means of 
+Samples from a Population Having any Law of Frequency with Finite 
+Moments, with Special Reference to Pearson's Type II". Biometrika, Vol. 
+19, No. 3/4., pp. 225-239.
+\bibitem{Gakken1} 黒川厳(発行) 金井康彦(編集)「学研の図鑑 数・形」学習研究社(1977)
+ 
+\end{thebibliography}
+
+\newpage
+
+\printindex
+
+\end{document}

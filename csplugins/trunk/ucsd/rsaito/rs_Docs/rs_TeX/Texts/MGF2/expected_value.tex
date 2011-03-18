@@ -1,0 +1,302 @@
+\section{期待値}
+\label{avvar1}
+
+\(n\)個の値の羅列\(x_{1},x_{2},\cdots,x_{n}\)の{\bf 平均}\(\mu\)\index{へいきん@平均}は、
+
+\begin{equation}
+\mu=\frac{1}{n}(x_{1}+x_{2}+\cdots+x_{n})=\frac{1}{n}\sum_{i=1}^{n}x_{i}
+\end{equation}
+
+\noindent
+であり、また{\bf 分散}\(\sigma^{2}\)\index{ぶんさん@分散}は、
+
+\begin{equation}
+\sigma^{2}=\frac{1}{n}\sum_{i=1}^{n}(x_{i}-\mu)^{2}
+\end{equation}
+
+\noindent
+と定義される。ちなみに{\bf 標準偏差}\(\sigma\)\index{ひょうじゅんへんさ@標準偏差}は分散\(\sigma^{2}\)の平方根、すなわち、
+
+\begin{equation}
+\sigma=\sqrt{\frac{1}{n}\sum_{i=1}^{n}(x_{i}-\mu)^{2}}
+\end{equation}
+
+\noindent
+で定義される。
+
+次に値が重複している場合を考慮に入れ、
+\(x_{1},x_{2},\cdots,x_{i}\)の値を持つ対象が\(それぞれN_{1},N_{2},\cdots,N_{n}\)個観測されたとする。但し、
+\(\sum_{i=1}^{n}N_{i}=N\)とする。これらの対象が持つ値の平均\(\mu\)は、\(P_{i}=\frac{N_{i}}{N}\)として、
+
+\begin{equation}
+\mu=\frac{1}{N}\sum_{i=1}^{n}x_{i}N_{i}=\sum_{i=1}^{n}x_{i}\frac{N_{i}}{N}=\sum_{i=1}^{n}x_{i}P_{i}
+\label{avn}
+\end{equation}
+
+\noindent
+である。但し、
+
+\begin{equation}
+P_{i}\geq 0
+\label{eqn_sat_126}
+\end{equation}
+
+\noindent
+かつ
+
+\begin{equation}
+\sum_{i=1}^{n}P_{i}=1
+\label{eqn_sat_127}
+\end{equation}
+
+\noindent
+である。一方分散は、
+
+\begin{equation}
+\sigma^{2}=\frac{1}{N}\sum_{i=1}^{n}(x_{i}-\mu)^{2}N_{i}=\sum_{i=1}^{n}(x_{i}-\mu)^{2}\frac{N_{i}}{N}=\sum_{i=1}^{n}(x_{i}-\mu)^{2}P_{i}
+\label{eqn_var700}
+\end{equation}
+
+\noindent
+となる。
+
+これら平均、分散の定義を確率変数にまで拡張することを考えよう。\(X\)が取り得
+る値\(x_{1},x_{2},x_{3},\cdots\)に対してその確率は
+\(P(X=x_{1}),P(X=x_{2}),P(X=x_{3}),\cdots\)と表されるが、小節\ref{sec_desc_prob}
+で触れたように、羅列\(x_{1},x_{2},\cdots,x_{n}\)から無作為に数値を1つ選ぶときの
+その数値を確率変数\(X\)で表すと、\(P_{i}=P(X=x_{i})\)である。
+従って確率変数の平均の定義として、式\ref{avn}の\(P_{i}\)を\(P(X=x_{i})\)に
+置き換えて
+
+\begin{equation}
+E_{X}(X)=\sum_{i} x_{i}P(X=x_{i})
+\label{eqn_expect327}
+\end{equation}
+
+\noindent
+という式が自然であることが分かる。この
+式\ref{eqn_expect327}で表されているような
+\(X\)が取り得る値\(x_{1},x_{2},x_{3},\cdots\)とその確率\(P(X=x_{1}),P(X=x_{2}),P(X=x_{3}),\cdots\)
+の積の総和を\(X\)の{\bf 期待値}\index{きたいち@期待値}と呼び、\(E_{X}(X)\)で表す。
+例えば先に出たサイコロの例では、期待値は3.5となる。
+どの確率変数に関する期待値であるかがはっきりしている場合は、\(E(X)\)などと省略する。
+
+なお確率変数\(X\)が定数\(c\)の場合は、
+\(P(X=c)=1\)であるから\footnote{\(x_{i}\)の定義の仕方によっては、
+\(i\neq j\)について、\(x_{i}=x_{j}\)となりうるが、この場合は、次のように考える。
+確率変数\(X\)が定数であるということは、
+全ての\(i\)について\(x_{i}=c\)だから、\(\sum_{i}P(X=x_{i})\)に注意すると、
+\(E(X)=\sum_{i}x_{i}P(X=x_{i})=\sum_{i}cP(X=x_{i})=c\sum_{i}P(X=x_{i})=c\)となる。
+}、これを式\ref{eqn_expect327}に代入して
+
+\begin{equation}
+E(c)=c
+\end{equation}
+
+\noindent
+となる。
+
+さて確率変数の関数\(h\)が与えられたとき、\(h(X)\)の期待値\(E_{X}(h(X))\)をどのように計算するのが
+妥当であるか考えよう。
+\(h(X)\)も確率的に値が決まるから、\(h(X)\)を確率変数と同じように扱うと、
+\(h(X)\)の期待値は\(h(X)\)が取り得る値\(h(x_{1}),h(x_{2}),h(x_{3}),\cdots\)とその確率
+\(P(X=x_{1}),P(X=x_{2}),P(X=x_{3}),\cdots\)の積の総和、すなわち
+
+\begin{equation}
+E_{X}(h(X))=\sum_{i} h(x_{i})P(X=x_{i})
+\label{eq_expect_103}
+\end{equation}
+
+\noindent
+となる\footnote{
+\(h(x_{1}),h(x_{2}),\cdots\)は必ずしも全て異なる値ではない。
+%より正確には確率変数\(Y=h(X)\)を考えると、
+% \(P(Y=y_{i})=\sum_{\{x_{i}|h(x_{i})=y_{i}\}}P(X=x_{i})\)に注意して、
+%\(E_{X}(h(X))=E_{X}(Y)
+%=\sum_{x_{i}}y_{j}P(Y=y_{j}=h(x_{i}))
+%=\sum_{x_{i}}h(x_{i})P(Y=h(x_{i}))
+%=\sum_{x_{i}}y_{j}\sum_{\{x_{i}|h(x_{i})=y_{i}\}}P(X=x_{i})
+%\sum_{y_{j}}\sum_{\{x_{i}|h(x_{i})=y_{j}\}}y_{j}P(X=x_{i})
+% =\sum_{i}h(x_{i})P(X=x_{i})
+%\)
+}。
+
+以上は\(X\)が離散値の場合だが、連続値の場合は、
+\(X\)の取りうる範囲を\(\Delta x\)の大きさに分割すると、\(X \sim f(x)\)として
+
+\begin{equation}
+E(X)=\sum_{i} x_{i}f(x_{i})\Delta x
+\label{eq250}
+\end{equation}
+
+\noindent
+となる。\(\Delta x \to 0\)を取れば式\ref{eq250}は、
+
+\begin{equation}
+E(X)=\int_{-\infty}^{+\infty}xf(x)dx
+\end{equation}
+
+\noindent
+に収束する。特に\(X\)が確率密度関数\(f(x)\)に従うとき、\(E(X)\)を
+\(f(x)\)の平均という。さらに式\ref{eq_expect_103}を連続型に直すと、
+
+\begin{equation}
+E(X)=\int_{-\infty}^{+\infty}h(x)f(x)dx
+\label{eq_expect_104}
+\end{equation}
+
+\noindent
+となる。
+
+さて分散を表す式\ref{eqn_var700}の\(P_{i}\)を\(P(X=x_{i}\))に換えたものを\(V(X)\)と表すと、
+
+\begin{equation}
+V(X)=\sum_{i=1}^{n}(x_{i}-E(X))^{2}P(X=x_{i})
+\label{eqn_var701}
+\end{equation}
+
+\noindent
+となる。この\(V(X)\)が確率変数\(X\)の分散である。
+式\ref{eqn_var701}はまた、
+
+\begin{equation}
+V(X)=E(X^{2})-\{E(X)\}^{2}
+\label{eqn_var702}
+\end{equation}
+
+\noindent
+と書き直すことが可能である。確率変数\(X\)が定数\(c\)の場合は、
+
+\begin{equation}
+V(c)=0
+\end{equation}
+
+\noindent
+となることが容易に確かめられる。
+
+さて確率変数\(X\)から\(\alpha\)を足したり、\(\beta\)を掛けたりすると、そ
+の平均や分散はどう変化するだろうか。例えばサイコロの目\(X\)の平均は3.5だ
+ったが、サイコロを振って出た目の2倍を得点としたとき、その得点の平均はど
+うなるだろうか。まず平均から調べてみよう。式\ref{eqn_expect327}の\(X\)に
+\(\alpha\)を足すと、\(\sum_{i}P(X=x_{i})=1\)に注意して
+
+\begin{equation}
+E(X+\alpha)=\sum_{i} (x_{i}+\alpha)P(X=x_{i})=\sum_{i}x_{i}P(X=x_{i})+\sum_{i}\alpha P(X=x_{i})=E(X)+\alpha
+\end{equation}
+
+\noindent
+となる。また\(X\)に\(\beta\)を掛けると、
+
+\begin{equation}
+E(X)=\sum_{i}\beta x_{i}P(X=x_{i})=\beta\sum_{i} x_{i}P(X=x_{i})=\beta E(X)
+\end{equation}
+
+\noindent
+となる。すなわち確率変数に\(\alpha\)を足せば平均も\(\alpha\)の分だけ上がり、\(\beta\)を掛ければ
+平均も\(\beta\)倍される。分散については、式\ref{eqn_var701}に着目すると、
+
+\begin{equation}
+V(X+\alpha)=V(X)
+\label{eqn_var_bsc101}
+\end{equation}
+
+\noindent
+および
+
+\begin{equation}
+V(\beta X)=\beta^{2}V(X)
+\label{eqn_var_bsc102}
+\end{equation}
+
+\noindent
+が成立することが分かる。これを用いると\(E(X-E(X))=E(X)-E(X)=0\)、
+\(V(\frac{X}{\sqrt{V(X)}})=\frac{1}{V(X)}V(X)=1\)となる。すなわち\(X\)からその
+平均を引いた数値の平均は0となり、\(X\)をその標準偏差で割った数値の分散は1となる
+\footnote{\(X\)は値が変わる確率変数だが、\(E(X)\)や\(V(X)\)は値が一定の定数であることに注意。}。
+今\(X\)からその平均を引き、分散の平方根すなわち標準偏差で割った値を新たな確率変数\(Z\)とする。すなわち
+
+\begin{equation}
+Z=\frac{X-E(X)}{\sqrt{V(X)}}
+\end{equation}
+
+\noindent
+を新たな確率変数とすると、\(Z\)は平均0、分散1の確率変数となる。これを
+確率変数\(X\)の{\bf 標準化}\index{ひょうじゅんか@標準化}または{\bf 正規化}\index{せいきか@正規化}という。
+
+$X$が$X=X_{1}+X_{2}$と2つの確率変数の和で表されるとき、
+
+\begin{eqnarray}
+E(X) & = & \sum_{x}xP(X=x)=\sum_{x}x\sum_{\{(x_{1},x_{2})|x_{1}+x_{2}=x\}}P(X_{1}=x_{1},X_{2}=x_{2})\nonumber\\
+     & = & \sum_{x}\sum_{\{(x_{1},x_{2})|x_{1}+x_{2}=x\}}xP(X_{1}=x_{1},X_{2}=x_{2})\nonumber
+\end{eqnarray}
+
+\noindent
+\(\sum_{x}\sum_{\{(x_{1},x_{2})|x_{1}+x_{2}=x\}}\)というのは、結局\(x_{1}\)と\(x_{2}\)が取りうる組み合わせを
+\(x=x_{1}+x_{2}\)ごとに整理しているに過ぎないことに注意すれば\footnote{
+集合の考え方を用いれば、$x$の取りうる値について$x_{1}+x_{2}=x$となる
+$(x_{1},x_{2})$の和集合は$(x_{1},x_{2})$の取りうる値の組み合わせの集合に
+一致する。すなわち、\(\bigcup_{x}\{(x_{1},x_{2})|x_{1}+x_{2}=x\}=\{(x_{1},x_{2})\}\)。
+}、
+
+\begin{eqnarray}
+& & \sum_{x}\sum_{\{(x_{1},x_{2})|x_{1}+x_{2}=x\}}xP(X_{1}=x_{1},X_{2}=x_{2})=\sum_{x_{1}}\sum_{x_{2}}(x_{1}+x_{2})P(X_{1}=x_{1},X_{2}=x_{2})\nonumber\\
+& & =\sum_{x_{1}}\sum_{x_{2}}x_{1}P(X_{1}=x_{1},X_{2}=x_{2})+\sum_{x_{1}}\sum_{x_{2}}x_{2}P(X_{1}=x_{1},X_{2}=x_{2})\nonumber
+\end{eqnarray}
+
+\(\sum_{x_{1}}P(X=x_{1},X=x_{2})=P(X=x_{2}),\ \ \sum_{x_{2}}P(X=x_{1},X=x_{2})=P(x_{1})\)に注意して、
+
+\begin{eqnarray}
+\sum_{x_{1}}\sum_{x_{2}}x_{1}P(X_{1}=x_{1},X_{2}=x_{2})+\sum_{x_{1}}\sum_{x_{2}}x_{2}P(X_{1}=x_{1},X_{2}=x_{2})\nonumber\\
+=\sum_{x_{1}}x_{1}P(X_{1}=x_{1})+\sum_{x_{2}}x_{2}P(X_{2}=x_{2})=E_{X_{1}}(X_{1})+E_{X_{2}}(X_{2})\nonumber
+\end{eqnarray}
+
+\noindent
+すなわち、\(X=X_{1}+X_{2}\)のとき、
+
+\begin{equation}
+E(X)=E(X_{1})+E(X_{2})
+\end{equation}
+
+\noindent
+となる。この論法を使えば、\(X=X_{\alpha}+X_{\beta}, X_{\alpha}=X_{1}+X_{2},X_{\beta}=X_{3}+X_{4}\)のとき、
+\(X=X_{1}+X_{2}+X_{3}+X_{4}\)であり、また
+\(E(X)=E(X_{\alpha})+E(X_{\beta})=E(X_{1})+E(X_{2})+E(X_{3})+E(X_{4})\)となる。
+確率変数\(X_{1},X_{2},\cdots,X_{n}\)について、一般に以下の数式が成立する。
+
+\begin{equation}
+E(X_{1}+X_{2}+\cdots+X_{n})=E(X_{1})+E(X_{2})+\cdots+E(X_{n})
+\label{eqn_E_sum1}
+\end{equation}
+
+\vspace{1em}
+
+\refstepcounter{exer}
+
+\noindent
+{\bf 問題\thechapter-\theexer}:~数列5,4,6,2,8の平均と分散、標準偏差を求めよ。
+
+\refstepcounter{exer}
+
+\noindent
+{\bf 問題\thechapter-\theexer}:~式\ref{eqn_var701}から式\ref{eqn_var702}を導け。
+
+\refstepcounter{exer}
+
+\noindent
+{\bf 問題\thechapter-\theexer}:~式\ref{eqn_var_bsc101}および式\ref{eqn_var_bsc102}を導け。
+
+\refstepcounter{exer}
+
+\noindent
+{\bf 問題\thechapter-\theexer}:~連続確率について、分散を表す式を導け。
+
+% \refstepcounter{exer}
+
+% \noindent
+% {\bf 問題\thechapter-\theexer}:~以下の数式が成立することを示せ。
+
+% \begin{equation}
+% \sigma^{2}=E((X-E(X))^{2})=E(X^{2})-\left\{E(X)\right\}^{2}=E(X^{2})-\mu^{2}
+% \label{eqn305}
+% \end{equation}
+

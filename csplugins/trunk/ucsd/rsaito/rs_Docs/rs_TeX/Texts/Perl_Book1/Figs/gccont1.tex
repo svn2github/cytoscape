@@ -1,0 +1,162 @@
+\documentclass{jarticle}
+
+\usepackage[dvips]{graphicx}
+\usepackage{fancybox}
+
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\evensidemargin}{0.5cm}
+\setlength{\textwidth}{423pt}
+\setlength{\topmargin}{0pt}
+
+\newenvironment{stagebox} 
+{\begin{Sbox}\begin{minipage}{0.9\textwidth}} 
+{\end{minipage}\end{Sbox}\shadowbox{\TheSbox}} 
+
+\title{ゲノムのGC含有量の解析}
+\author{ゲノム解析プログラミング}
+\date{2007年度春学期}
+
+\begin{document}
+\maketitle
+
+\section{はじめに}
+
+GC含有量\footnote{GC含量、GC contentとも呼ばれる。}は核酸配列の性質を調べる上で基本的な指標で、以下のように定義されます。
+
+\begin{displaymath}
+\mbox{GC含有量}=\frac{\mbox{対象とする核酸配列に含まれるCとGの数}}{\mbox{対象とする核酸配列の長さ}}
+\end{displaymath}
+
+例えば、\tt{ACTCAATGAG}という核酸配列のGC含有量は40\%になります。核酸配列のGC含有量には以下のような生物学的意義や応用があります。
+
+\begin{itemize}
+\item 核酸の立体構造上の安定性、二次構造のできやすさ
+\item ゲノム全体の塩基組成
+\item ゲノム上の遺伝子領域の予測
+\item ゲノム上の外来性領域の予測
+\end{itemize}
+
+\section{GC含有量を計算する関数}
+
+与えられた核酸配列のGC含有量を計算する関数\verb+calc_gc+は以下のようになります。
+
+\vspace{1em}
+\begin{stagebox}
+\begin{verbatim}
+sub calc_gc {
+  my $seq_frag = $_[0];
+  my $gc_count = $seq_frag =~ tr/cg/cg/;
+  return $gc_count / length($seq_frag);
+}
+\end{verbatim}
+\end{stagebox}
+\vspace{1em}
+
+ここで、\verb+$gc_count = $seq_frag =~ tr/cg/cg/;+は\verb+$seq_frag+中に含まれ
+るcやgの数を数え\footnote{厳密にいうと、cをcにgをgに変換してその変換数を
+返す。}、それを\verb+$gc_count+に代入します。
+
+\section{ゲノム配列の読み込み}
+
+まず、以下のように"ORIGIN"以下の行から"//"の部分までの塩基配列を読み込み、それを返す関数\verb+get_sequence+を
+作成します。
+
+\vspace{1em}
+\begin{stagebox}
+\begin{verbatim}
+sub get_sequence {
+
+  my($fh) = $_[0]; #ファイルハンドル
+  my $seq = "";
+  my $seq_frag;
+  
+  while(<$fh>){
+    if($_ =~ /^\/\//){ # //を見つけたらそこで終了
+      last;
+    }
+    else {
+      $seq_frag = $_; #読みこんだ行の塩基配列を$seq_fragに格納する。
+      $seq_frag =~ s/[^a-z]//g;  # 数字、空白などは削除。
+      $seq .= $seq_frag; # $seqに配列全体を格納
+      # $seq = $seq . $seq_fragだとかなり遅くなるので注意
+    }
+  }
+  
+  return $seq;
+}
+\end{verbatim}
+\end{stagebox}
+\vspace{1em}
+
+次にGenBankファイルを読み込んで、"ORIGIN"を見つけた後、\verb+get_sequence+を呼び出す
+部分を作成します。
+
+\vspace{1em}
+\begin{stagebox}
+\begin{verbatim}
+local *FH;
+my $gbk_file = shift @ARGV;
+open(FH, $gbk_file) || die "Cannot open \"$gbk_file\": $!";
+my $seq = "";
+while(<FH>){
+  if(/^ORIGIN/){
+    $seq = get_sequence(*FH); 
+  }
+}
+close FH;
+\end{verbatim}
+\end{stagebox}
+
+\section{ゲノム上の領域のGC含有量の推移の解析}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{gcskew_win.eps}
+\end{center}
+\caption{ウィンドウを使用したゲノム上のGC含有量推移の計算}
+\label{gcskew_win}
+\begin{quotation}
+この例ではウィンドウの大きさを5塩基、移動幅を3塩基に設定した。ウィンドウの中の数値はGC含有量を表す。
+\end{quotation}
+\end{figure}
+
+図\ref{gcskew_win}に示すように、
+ゲノム配列上にウィンドウを置き、ウィンドウ中のGC含有量を計算し、ウィンド
+ウを移動させるというステップを繰り返します。以下のプログラムではウィンドウの大き
+さを1000塩基、移動幅を500塩基に設定しています。
+
+\vspace{1em}
+
+\begin{stagebox}
+\begin{verbatim}
+my $win_size = 1000;
+my $step = 500;
+for(my $pos = 0;$pos + $win_size <= length($seq); $pos += $step){
+  my $seq_frag = substr($seq, $pos, $win_size);
+  my $gc_content = calc_gc($seq_frag);
+  print "$pos\t$gc_content\n";
+}
+\end{verbatim}
+\end{stagebox}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{gcskew1.eps}
+\end{center}
+\caption{大腸菌とマイコプラズマ菌のゲノム中のGC含有量}
+\label{gcskew1}
+\end{figure}
+
+\vspace{3em}
+
+\begin{description}
+\item[演習問題１] Microsoft Excelなどを用いて、図\ref{gcskew1}のようなゲノム上のGC含有量の推移を
+示す図を作成しましょう。
+\item[演習問題２] ゲノム中のGC skewの推移を表すプログラムを作成し、実行結果を図にしてみましょう。
+GC skewは以下の式で定義されます。
+\begin{displaymath}
+\mbox{GC skew}=\frac{\mbox{対象とする核酸配列に含まれるCの数}-\mbox{対象とする核酸配列に含まれるGの数}}{\mbox{対象とする核酸配列に含まれるCとGの数}}
+\end{displaymath}
+\end{description}
+
+\end{document}

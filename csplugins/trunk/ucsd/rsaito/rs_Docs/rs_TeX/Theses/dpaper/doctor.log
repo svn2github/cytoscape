@@ -1,0 +1,432 @@
+This is pTeX, Version p2.1.8, based on TeX, Version 3.14159 (EUC) (Web2C 7.2) (format=jlplain 1999.1.6)  11 FEB 2000 19:22
+**doctor.tex
+(doctor.tex
+LaTeX Version 2.09 <7 Dec 1989>
+(/usr/share/texmf/tex/platex209/report.sty
+Document Style `report' <26 Apr 88>.
+(/usr/share/texmf/tex/platex209/rep11.sty)
+\descriptionmargin=\dimen99
+\c@part=\count78
+\c@chapter=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+
+(/usr/share/texmf/tex/platex209/titlepage.sty)) (doublespace.sty)
+(/usr/share/texmf/tex/generic/misc/epsf.sty
+EPSbox version 1.7b for LaTeX/jdvi2kps2.1-3.0 (May 26, 1992)
+Based on EPSF macro package. version 1.2 - Released July 16, 1990
+\@darg=\dimen100
+\eps@xdim=\dimen101
+\eps@ydim=\dimen102
+\eps@width=\dimen103
+\eps@height=\dimen104
+\eps@tempdima=\dimen105
+\eps@tempdimb=\dimen106
+\eps@cnta=\count87
+\eps@cntb=\count88
+\eps@cntc=\count89
+\eps@cntd=\count90
+\ps@stream=\read0
+) (doctor.aux)
+\openout1 = `doctor.aux'.
+
+ [0
+
+] [0] [0] (doctor.toc [1
+
+] [2] [3])
+\tf@toc=\write3
+ [4
+\openout3 = `doctor.toc'.
+
+]
+Chapter 1.
+(dp1_intr.tex [5
+
+] <DNAhlx5.ps(275.43005pt,127.67747pt)>
+<pro_pic.eps(114.4275pt,33.12375pt)>
+<euc_anim_pic.eps(156.58499pt,111.41624pt)> [6] [7]
+Overfull \hbox (14.83293pt too wide) in paragraph at lines 113--126
+[]\elvrm There are t-wo kind-s of nu-cle-ic acid. These are D-NA(deoxyribonucle
+ic acid) and R-NA(ribonucleic
+
+\hbox(8.2125+2.73749)x455.24408, glue set - 1.0
+.\hbox(0.0+0.0)x17.0
+.\elvrm T
+.\elvrm h
+.\elvrm e
+.\elvrm r
+.etc.
+
+<discr_exp1.eps(292.09126pt,186.69751pt)> [8]
+<trans1.eps(266.9975pt,138.5175pt)> [9] [10] [11] [12] [13]) [14]
+Chapter 2.
+(dp2_survey.tex [15
+
+] [16] [17] [18] [19] [20]
+<transbct.eps(274.02374pt,531.48563pt)> [21] [22]
+<euc_init_cyc2.eps(372.64217pt,557.08124pt)> [23] [24]
+<lkdiscr8.eps(345.29001pt,186.69751pt)> [25] [26] [27] [28] [29] [30]) [31]
+Chapter 3.
+(consensus.tex [32
+
+] [33] [34] [35] [36] [37] [38] [39] [40] [41] [42] [43]
+[44] [45] [46]
+Overfull \hbox (7.43202pt too wide) in paragraph at lines 660--675
+[]\elvrm In \elvit M.genitalium\elvrm , \elvit R.prowazekii \elvrm and \elvit S
+yne-chocys-tis\elvrm , se-quence pat-tern-s oth-er than Shine-Dalgarno
+
+\hbox(7.60416+2.12917)x455.24408, glue set - 1.0
+.\hbox(0.0+0.0)x17.0
+.\elvrm I
+.\elvrm n
+.\glue 3.65 plus 1.825 minus 1.21666
+.\elvit M
+.etc.
+
+<bct_coreSD.eps(302.12875pt,295.1025pt)> <pro_ic.eps(302.12875pt,295.1025pt)>
+[47] [48] [49] [50] [51] <mg_taas3.eps(211.4892pt,206.57083pt)>
+<mg_taas6_op.eps(211.4892pt,206.57083pt)>
+Underfull \hbox (badness 3417) in paragraph at lines 845--845
+[]\elvrm Figure 3.6: Fre-quen-cy of TAA triplet-s around s-tart codon-s of head
+-on genes in
+
+\hbox(7.60416+2.12917)x455.24408, glue set 3.24887
+.\hbox(0.0+0.0)x0.0
+.\elvrm F
+.\elvrm i
+.\elvrm g
+.\elvrm u
+.etc.
+
+<mg_gags3.ps(162.30801pt,162.30801pt)> <mg_aggs3.ps(162.30801pt,162.30801pt)>
+<mg_gtgs3.ps(162.30801pt,162.30801pt)> [52] [53]
+<ec_mgen_lorf_agg.eps(306.14375pt,295.1025pt)> [54]
+<reinit1.eps(293.095pt,47.17625pt)> <reinit2.eps(293.095pt,47.17625pt)>
+<reinit3.eps(293.095pt,47.17625pt)> <reinit_inv.eps(288.07626pt,106.39749pt)>
+[55] [56] <ec_agg_dist.eps(300.12126pt,301.125pt)>
+<ec_agg_stopeli1_20.eps(302.12875pt,295.1025pt)> [57] [58] [59] [60]
+<hsap_prof.eps(301.125pt,105.39375pt)> [61]) [62]
+Chapter 4.
+(chiyo3.tex [63
+
+] [64] [65] [66] [67] [68] <aggs10.ps(216.40518pt,216.40518pt)>
+<agg_dif.ps(216.40518pt,216.40518pt)> [69]
+<rseq_agtg.ps(216.40518pt,216.40518pt)>
+<agtg_pchi.ps(216.40518pt,216.40518pt)> [70]
+Overfull \hbox (22.20134pt too wide) in paragraph at lines 347--360
+[][]
+
+\hbox(33.09999+28.09999)x455.24408
+.\hbox(0.0+0.0)x0.0
+.\hbox(33.09999+28.09999)x477.44542, yoko direction
+..\mathon
+..\vbox(33.09999+28.09999)x477.44542, yoko direction
+...\rule(0.4+0.0)x477.44542
+...\hbox(8.39996+3.60004)x477.44542, yoko direction []
+...\rule(0.4+0.0)x477.44542
+...\hbox(8.39996+3.60004)x477.44542, yoko direction []
+...\glue(\lineskip) 0.0
+...etc.
+..\mathoff
+.\glue(\rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 347--360
+
+
+\hbox(0.0+0.0)x455.24408
+.\glue(\rightskip) 0.0
+
+
+Overfull \hbox (22.20134pt too wide) in paragraph at lines 365--378
+[][]
+
+\hbox(33.09999+28.09999)x455.24408
+.\hbox(0.0+0.0)x0.0
+.\hbox(33.09999+28.09999)x477.44542, yoko direction
+..\mathon
+..\vbox(33.09999+28.09999)x477.44542, yoko direction
+...\rule(0.4+0.0)x477.44542
+...\hbox(8.39996+3.60004)x477.44542, yoko direction []
+...\rule(0.4+0.0)x477.44542
+...\hbox(8.39996+3.60004)x477.44542, yoko direction []
+...\glue(\lineskip) 0.0
+...etc.
+..\mathoff
+.\glue(\rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 365--378
+
+
+\hbox(0.0+0.0)x455.24408
+.\glue(\rightskip) 0.0
+
+
+Overfull \hbox (22.20134pt too wide) in paragraph at lines 383--396
+[][]
+
+\hbox(33.09999+28.09999)x455.24408
+.\hbox(0.0+0.0)x0.0
+.\hbox(33.09999+28.09999)x477.44542, yoko direction
+..\mathon
+..\vbox(33.09999+28.09999)x477.44542, yoko direction
+...\rule(0.4+0.0)x477.44542
+...\hbox(8.39996+3.60004)x477.44542, yoko direction []
+...\rule(0.4+0.0)x477.44542
+...\hbox(8.39996+3.60004)x477.44542, yoko direction []
+...\glue(\lineskip) 0.0
+...etc.
+..\mathoff
+.\glue(\rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 383--396
+
+
+\hbox(0.0+0.0)x455.24408
+.\glue(\rightskip) 0.0
+
+[71] <agtg_model2.ps(243.4579pt,243.4579pt)>
+<g2agtg.ps(162.30801pt,162.30801pt)> <atg_model2.ps(243.4579pt,243.4579pt)>
+<g2atg.ps(162.30801pt,162.30801pt)> <gtg_model2.ps(243.4579pt,243.4579pt)>
+<g2gtg.ps(162.30801pt,162.30801pt)> [72] [73] [74]) [75]
+Chapter 5.
+(correlation.tex [76
+
+] [77] [78] [79] [80] [81] [82]
+Overfull \hbox (13.86684pt too wide) in paragraph at lines 286--290
+[] []\elvrm This will give whether
+
+\hbox(7.60416+2.12917)x427.86902, glue set - 1.0
+.\hbox(0.0+0.0)x0.0
+.\glue 0.0
+.\hbox(7.60416+2.12917)x338.83615, yoko direction
+..\glue -27.37506
+..\glue 0.0
+..\glue -5.475
+..\hbox(7.60416+2.12917)x366.21121, yoko direction
+...\glue 5.475
+...\elvbf A
+...\elvbf n
+...\elvbf a
+...\elvbf l
+...etc.
+..\glue 5.475
+.\penalty 0
+.\elvrm T
+.etc.
+
+
+Overfull \hbox (10.50705pt too wide) in paragraph at lines 290--295
+[] []\elvrm Many or-gan-
+
+\hbox(7.60416+2.12917)x427.86902, glue set - 1.0
+.\hbox(0.0+0.0)x0.0
+.\glue 0.0
+.\hbox(7.60416+2.12917)x378.42474, yoko direction
+..\glue -27.37506
+..\glue 0.0
+..\glue -5.475
+..\hbox(7.60416+2.12917)x405.7998, yoko direction
+...\glue 5.475
+...\elvbf A
+...\elvbf n
+...\elvbf a
+...\elvbf l
+...etc.
+..\glue 5.475
+.\penalty 0
+.\elvrm M
+.etc.
+
+
+Overfull \hbox (18.10504pt too wide) in paragraph at lines 295--300
+[] []\elvrm Start codon-
+
+\hbox(7.60416+2.12917)x427.86902, glue set - 1.0
+.\hbox(0.0+0.0)x0.0
+.\glue 0.0
+.\hbox(7.60416+2.12917)x387.2394, yoko direction
+..\glue -27.37506
+..\glue 0.0
+..\glue -5.475
+..\hbox(7.60416+2.12917)x414.61446, yoko direction
+...\glue 5.475
+...\elvbf A
+...\elvbf n
+...\elvbf a
+...\elvbf l
+...etc.
+..\glue 5.475
+.\penalty 0
+.\elvrm S
+.etc.
+
+<ecmark1.eps(212.89444pt,212.19182pt)> <ecmark4.eps(212.89444pt,212.19182pt)>
+[83] <ecolimut1.eps(305.14pt,304.13625pt)>
+<ecolimut2.eps(305.14pt,308.15125pt)> <ecolimut3.ps(216.40518pt,216.40518pt)>
+<ecolimut4.ps(216.40518pt,216.40518pt)>
+<ecolimut5.ps(216.40518pt,216.40518pt)>
+<ecolimut6.ps(216.40518pt,216.40518pt)> [84] [85] [86]
+<ecaa_oe.ps(216.40518pt,216.40518pt)> <ecac_oe.ps(216.40518pt,216.40518pt)>
+<ecag_oe.ps(216.40518pt,216.40518pt)> <ecat_oe.ps(216.40518pt,216.40518pt)>
+<ecga_oe.ps(216.40518pt,216.40518pt)> <ecgc_oe.ps(216.40518pt,216.40518pt)>
+<ecgg_oe.ps(216.40518pt,216.40518pt)> <ecgt_oe.ps(216.40518pt,216.40518pt)>
+<hsapmut1.eps(210.08395pt,214.29967pt)> <mmusmut1.eps(211.4892pt,215.70493pt)>
+[87] [88] [89] [90] [91]
+Overfull \hbox (20.49504pt too wide) in paragraph at lines 564--570
+[]\elvrm Analyses of oth-er eu-cary-otes were al-so con-duct-ed. In \elvit D.me
+lanogaster\elvrm , \elvit A.thaliana \elvrm and \elvit S.cerevisiae\elvrm ,
+
+\hbox(7.60416+2.12917)x455.24408, glue set - 1.0
+.\hbox(0.0+0.0)x17.0
+.\elvrm A
+.\elvrm n
+.\elvrm a
+.\elvrm l
+.etc.
+
+<scermut1.eps(213.59706pt,212.19182pt)>
+<celemut1.eps(213.59706pt,212.19182pt)> [92] [93]
+<ecoliud.eps(443.6575pt,299.1175pt)> <hsapud.eps(443.6575pt,299.1175pt)>
+[94] [95] [96] <ecoliupd3.eps(215.70493pt,210.08395pt)>
+<hsapupd3.eps(215.70493pt,210.08395pt)> <ecstart2.eps(317.185pt,303.13249pt)>
+[97] [98] [99]) [100]
+Chapter 6.
+(neg_atg.tex
+Overfull \hbox (18.39668pt too wide) in paragraph at lines 18--29
+[]\elvrm The AT-G triplet anal-y-sis on ar-chae-bac-te-ri-al genomes re-vealed 
+that \elvit M.jannaschii \elvrm and \elvit P.horikoshii
+
+\hbox(7.60416+2.12917)x455.24408, glue set - 1.0
+.\hbox(0.0+0.0)x17.0
+.\elvrm T
+.\elvrm h
+.\elvrm e
+.\glue 3.65 plus 1.825 minus 1.21666
+.etc.
+
+[101
+
+]
+Overfull \hbox (17.85442pt too wide) in paragraph at lines 44--50
+[]\elvrm In p-ro-cary-otes, on the oth-er hand, the ri-bo-some bind-s di-rect-l
+y to the Shine-Dalgarno sequence[[],
+
+\hbox(8.2125+2.73749)x455.24408, glue set - 1.0
+.\hbox(0.0+0.0)x17.0
+.\elvrm I
+.\elvrm n
+.\glue 3.65 plus 1.825 minus 1.21666
+.\elvrm p
+.etc.
+
+[102] <Hsap_atgs3.ps(216.40518pt,216.40518pt)>
+<Mmus_atgs3.ps(216.40518pt,216.40518pt)>
+<Dmel_atgs3.ps(216.40518pt,216.40518pt)>
+<Cele_atgs3.ps(216.40518pt,216.40518pt)>
+<Scer_atgs3.ps(216.40518pt,216.40518pt)>
+<Atha_atgs3.ps(216.40518pt,216.40518pt)>
+<aquae_atgs3.ps(216.40518pt,216.40518pt)>
+<bbur_atgs3.ps(216.40518pt,216.40518pt)>
+<bsub_atgs3.ps(216.40518pt,216.40518pt)>
+<cpneu_atgs3.ps(216.40518pt,216.40518pt)>
+<ctra_atgs3.ps(216.40518pt,216.40518pt)>
+<ecoli_atgs3.ps(216.40518pt,216.40518pt)>
+<hinf_atgs3.ps(216.40518pt,216.40518pt)>
+<hpyl_atgs3.ps(216.40518pt,216.40518pt)>
+<mgen_atgs3.ps(216.40518pt,216.40518pt)>
+<mpneu_atgs3.ps(216.40518pt,216.40518pt)>
+<mtub_atgs3.ps(216.40518pt,216.40518pt)>
+<rpxx_atgs3.ps(216.40518pt,216.40518pt)>
+<synecho_atgs3.ps(216.40518pt,216.40518pt)>
+<tpal_atgs3.ps(216.40518pt,216.40518pt)> [103] [104] [105] [106] [107] [108]
+[109] [110] [111] [112] <aful_atgs3.eps(211.4892pt,210.08395pt)>
+<mjan_atgs3.eps(211.4892pt,210.08395pt)>
+<mthe_atgs3.eps(211.4892pt,210.08395pt)>
+<pyro_atgs3.eps(211.4892pt,210.08395pt)> [113]
+<atgdist.ps(227.19725pt,255.65338pt)> [114]) [115]
+Chapter 7.
+(dp5_concl.tex [116
+
+]) [117] [118
+
+] [119
+
+] [120] [121] [122] [123]
+Underfull \hbox (badness 2057) in paragraph at lines 379--381
+[] []\elvrm Karlin, S. and Car-don, L.R.(1994) Com-pu-ta-tion-al D-NA se-quence
+ anal-y-sis. An-
+
+\hbox(8.2125+2.73749)x427.26071, glue set 2.744
+.\hbox(0.0+0.0)x0.0
+.\glue 0.0
+.\hbox(8.2125+2.73749)x0.0, yoko direction
+..\glue 0.0
+..\glue -22.50836
+..\glue -5.475
+..\hbox(8.2125+2.73749)x22.50836, glue set 5.475fil, yoko direction
+...\glue 0.0 plus 1.0fil
+...\elvrm [
+...\elvrm 5
+...\elvrm 1
+...\elvrm ]
+..\glue 5.475
+.\penalty 0
+.\elvrm K
+.etc.
+
+[124] [125] [126] [127] [128]
+Underfull \hbox (badness 1314) in paragraph at lines 551--552
+\elvrm ri-bo-so-ma-l R-NA:Complementarity to non-sense triplet-s and ri-bo-some
+ bind-ing sites.
+
+\hbox(7.60416+2.12917)x427.26071, glue set 2.36232
+.\elvrm r
+.\elvrm i
+.\discretionary
+..\elvrm -
+.\elvrm b
+.\kern0.30417
+.etc.
+
+[129] [130] [131]
+Appendix A.
+(dp_ap_stats.tex [132
+
+] [133] [134] [135] [136] [137] [138]
+Overfull \hbox (14.39261pt too wide) detected at line 392
+[] \elvrm = \elvmi H\elvrm (\elvmi p[]; [] ; p[]\elvrm ) \elvsy   []\elvrm ([] 
+\elvsy   \elvmi p[]\elvrm )(1 + [] \elvmi p[]\elvrm ) \elvsy   [] []  [] \elvr
+m + [] [] \elvsy  []   [] []  []
+
+\hbox(17.18198+13.21793)x455.24408, glue set - 1.0
+.\hbox(0.0+0.0)x0.0
+.\glue(\thickmuskip) 3.04161 plus 3.04161
+.\elvrm =
+.\glue(\thickmuskip) 3.04161 plus 3.04161
+.\elvmi H
+.etc.
+
+[139] [140] [141]) [142]
+Appendix B.
+(dp_ap_gloss.tex [143
+
+]) [144] (doctor.aux) ) 
+Here is how much of TeX's memory you used:
+ 669 strings out of 11804
+ 6958 string characters out of 86891
+ 53105 words of memory out of 263001
+ 2539 multiletter control sequences out of 10000+0
+ 25112 words of font info for 94 fonts, out of 200000 for 1000
+ 14 hyphenation exceptions out of 1000
+ 17i,10n,18p,334b,514s stack positions out of 300i,100n,500p,30000b,4000s
+
+Output written on doctor.dvi (147 pages, 295188 bytes).

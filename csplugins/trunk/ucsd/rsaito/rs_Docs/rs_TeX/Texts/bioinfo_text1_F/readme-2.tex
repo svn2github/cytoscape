@@ -1,0 +1,360 @@
+\chapter{美しい組版のために}
+
+\begin{abstract}
+ この章では，\TeX{} で文章を記述する際の注意点，
+ 長い数式を縮めたり折り返したりする場合のヒントをまとめてあります．
+ 細かいことのようですが，美しい組版をするために必要です．
+\end{abstract}
+
+\section{組版のルール}\label{rule}
+
+\begin{itemize}
+\item
+和文の句読点は，
+``\makebox[1zw][l]{，}'' ``\makebox[1zw][l]{．}''（全角記号）を
+使用して下さい．
+和文中には欧文用のピリオドとカンマ，``,'' ``.'' ``('' ``)''（半角）を
+使わないで下さい．
+
+\item
+括弧類は，和文中で欧文を括弧でくくる場合は全角の括弧を
+使用して下さい．欧文中ではすべて半角ものにして下さい．
+
+\noindent
+例：クラス（style）ファイル / some (style) files
+
+この例のように括弧のベースラインが異なります．
+
+\item
+ハイフン（{\ttfamily -}），二分ダッシュ（{\ttfamily --}），
+全角ダッシュ（{\ttfamily ---}）の区別をして下さい．
+
+ハイフンはwell-knownなど一般的な欧語の連結に，
+二分ダッシュはpp.298--301のように範囲を示すときに使用して下さい．
+全角ダッシュは欧文用のem-dash（---）で，次のように使います．
+
+The em-dash is even longer --- it's used as punctuation, as in this sense, 
+and you get it by typing {\ttfamily ---}.\cite{Seroul}
+
+\item
+修正が入るとパラグラフの改行位置なども当然変わってきます．
+したがって，\verb/\\/，\allowbreak
+\verb/\hfil\break/，\allowbreak
+\verb/\linebreak/ などを
+使って強制改行するときには修正が入る場合のことを考慮して下さい．
+
+\item
+アラインメント以外の場所で，空行を広くとるため \verb/\\/ による
+強制改行を乱用することは避けて下さい．
+
+空行の直前に \verb/\\/ を入れたり，\verb/\\/ を二つ重ねれば，
+確かに縦方向のスペースは広がりますが，
+\verb/Underfull \hbox/ のメッセージがたくさん出力されて，
+重要なメッセージを見落としがちになります\cite{jiyuu}．
+\verb/\par\noindent/，\allowbreak
+\verb/\hfil\break/ を使うようにして下さい．
+
+\item
+プログラムリストなど，インデントが重要なものは，
+力わざ（\verb/\hspace*/ の使用や \verb/\\/ などによる強制改行）で
+整形するのではなく，
+{\ttfamily list} 環境や {\ttfamily tabbing} 環境などを使って
+修正がしやすいように記述して下さい．
+
+\item
+文献などで欧文を記述する場合は，以下のことにも注意して下さい．
+\begin{itemize}
+\item
+イタリックにするときは，イタリック補正（\verb#\/#）を忘れないで下さい．
+\item
+\verb/et al./ や \verb/etc./ のように，文末ではないが
+小文字に続いてピリオドを使うときは，
+\TeX{} に文末ではないことを指示するために，
+\verb*/et al.\ / や \verb*/etc.\ / として下さい．
+
+\verb/Mr./ などのようにそこで改行を抑制するときには，
+\verb*/Mr.~/ のようにして下さい．
+
+大文字に続くピリオドが文末であるときは，
+\TeX{} に文末であることを指示するために，\verb/U.S.A\@./，
+\verb/NEC\@./ などとして下さい．
+\item
+\verb*/( word )/のように ``( )'' 内の単語の前後には
+スペースを入れないで下さい．
+\end{itemize}
+\end{itemize}
+
+\section{数式の組版}
+
+数式の組版一般については，参考文献を参照してください．
+また，難しい数式の組版については，AMS パッケージの
+利用を検討してください．
+
+\subsection{一般的な注意点}
+
+\begin{itemize}
+\item
+数式モードの中でのマイナス，ハイフン，
+二分ダッシュは明確に区別して下さい．\par
+例えば，\par
+\verb/$t-$th/\par
+\hspace{2zw} $t-$th $\Rightarrow$ マイナス\par
+\verb/$t$-th/\par
+\hspace{2zw} $t$-th $\Rightarrow$ ハイフン\par
+\verb/$A^{b\mbox{\tiny -}c}$/\par
+\hspace{2zw} $A^{b\mbox{\tiny -}c}$ 
+$\Rightarrow$ ハイフン\par
+\verb/$A^{b\mbox{\tiny --}c}$/\par
+\hspace{2zw} $A^{b\mbox{\tiny --}c}$ 
+$\Rightarrow$ 二分ダッシュ\par
+\verb/$A^{b-c}$/\par
+\hspace{2zw} $A^{b-c}$ $\Rightarrow$ マイナス\par
+\noindent
+となります．それぞれの違いを確認して下さい．
+
+\item
+数式の中で，\verb/</ や \verb/>/ を括弧のように使用することがありますが，
+数式中ではこの記号は不等号記号として扱われ，その前後にスペースが入ります．
+このような形の記号を括弧として使いたいときは，
+\verb/\langle/ や \verb/\rangle/ を使って下さい．
+
+\item
+複数行の数式でアラインメントをするときに
+数式が $+$ または $-$ で始まる場合，$+$ や $-$ は単項演算子と
+みなされます．つまり，$+x$ と $x+y$ の $+$ の前後のスペースは
+変わります．したがって，複数行の数式で $+$ や $-$ が先頭にくる場合は，
+それらが2項演算子であることを示す必要があります\cite{latexbook}．
+\begin{verbatim}
+\begin{eqnarray}
+y &=& a + b + c + ... + e\\
+  & & \mbox{} + f + ... 
+\end{eqnarray}
+\end{verbatim}
+
+\item
+\TeX{}は，段落中の数式の中（\verb/$...$/）では改行を
+うまくやってくれないことがあるので，
+その場合には \verb/\\/ や \verb/\linebreak/ ではなく，\verb/\allowbreak/ を
+使用することを勧めます\cite{Abrahams}．
+このコマンドは，その場所で必ず改行するわけではなく，
+改行を促すものです．
+\end{itemize}
+
+\subsection{長い数式の処理}\label{longmath}
+
+数式と数式番号が重なったり数式がはみ出したりする場合の
+対処策を，いくつか挙げます．
+
+\noindent
+{\bfseries 例1}\hskip1zw \verb/\!/で縮める．
+\begin{eqnarray}
+ y &=& a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p
+\end{eqnarray}
+のように数式と数式番号が重なるか，かなり接近する場合は，
+2項演算記号や関係記号の前後を \verb/\!/ で
+はさんで縮める方法があります．
+\begin{verbatim}
+\begin{equation}
+ y &\!=\!& a \!+\! b \!+\! c \!+\! ... \!+\! p
+\end{equation}
+\end{verbatim}
+
+縮めても，重なったりはみ出してしまう場合があります．
+その場合は，{\ttfamily eqnarray} を使います．
+
+\noindent
+{\bfseries 例2}\hskip1zw {\ttfamily eqnarray} を使う．
+\begin{verbatim}
+\begin{eqnarray}
+ y &=& a+b+c+d+e+f+g+h+i\nonumber\\
+   & & \mbox{}+j+k+l+m+n+o+p
+\end{eqnarray}
+\end{verbatim}
+と記述すれば，
+\begin{eqnarray}
+ y &=& a+b+c+d+e+f+g+h+i\nonumber\\
+   & & \mbox{}+j+k+l+m+n+o+p
+\end{eqnarray}
+となります．
+
+\noindent
+{\bfseries 例3}\hskip1zw 数式を途中で切りたくない場合，
+\verb/\mathindent/ を変更します%
+\footnote{左寄せの数式の場合に当てはまります．
+一般のセンタリングの数式には当てはまりません．}．
+\begin{verbatim}
+\mathindent=0zw % <-- [1]
+\begin{equation}
+ y=a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p
+\end{equation}
+\mathindent=2zw % <-- [2] デフォルト
+\end{verbatim}
+と記述すれば（{\ttfamily [1]}），
+\mathindent=0zw
+\begin{equation}
+ y=a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p
+\end{equation}
+\mathindent=2zw
+となって，数式の頭が左端にきます。
+この場合，その数式の後で \verb/\mathindent/ というパラメータを
+元に戻すことを忘れないでください（{\ttfamily [2]}）。
+
+\noindent
+{\bfseries 例4}\hskip1zw \verb/\lefteqn/ を使う．
+\begin{equation}
+  \int\!\!\!\int_S \left({\partial V \over \partial x}
+ -{\partial U \over \partial y}\right)dxdy=
+ \oint_C \left(U{dx \over ds}+V{dy \over ds}\right)ds 
+\end{equation}
+\hskip1zw
+上のように，$=$ までが長くて，数式がはみ出したり，
+数式と数式番号が重なる場合には
+（この例では離れていますが，重なっていると想定して）
+\begin{verbatim}
+\begin{eqnarray}
+ \lefteqn{
+  \int\!\!\!\int_S
+   \left(\frac{\partial V}{\partial x}
+    -\frac{\partial U}{\partial y}
+   \right) dxdy
+ }\quad \nonumber\\
+ &=& \oint_C \left(U{dx \over ds}
+      + V{dy \over ds}\right)ds
+\end{eqnarray}
+\end{verbatim}
+と記述すれば，
+\begin{eqnarray}
+\lefteqn{ \int\!\!\!\int_S 
+ \left(\frac{\partial V}{\partial x}
+ -\frac{\partial U}{\partial y}\right)
+ dxdy} \quad\nonumber\\
+ &=& \oint_C \left(U{dx \over ds}
+      + V{dy \over ds}\right)ds
+\end{eqnarray}
+となります．
+
+\noindent
+{\bfseries 例5}\hskip1zw パラメータを変える．
+\begin{equation}
+A = \left(
+  \begin{array}{cccc}
+   a_{11} & a_{12} & \ldots & a_{1n} \\
+   a_{21} & a_{22} & \ldots & a_{2n} \\
+   \vdots & \vdots & \ddots & \vdots \\
+   a_{m1} & a_{m2} & \ldots & a_{mn} \\
+  \end{array}
+    \right) \label{eq:ex1}
+\end{equation}
+\hskip1zw
+上の行列では説明のために便宜上 {\ttfamily array} 環境を
+使って記述しましたが，{\ttfamily array} 環境を使っていて，
+数式がはみ出す場合は，
+\begin{verbatim}
+\begin{equation}
+\arraycolsep=3pt %               <--- [1]
+A = \left(
+  \begin{array}{@{\hskip2pt}cccc@{\hskip2pt}}
+%                   ↑              ↑ [2]
+   a_{11} & a_{12} & \ldots & a_{1n} \\
+   a_{21} & a_{22} & \ldots & a_{2n} \\
+   \vdots & \vdots & \ddots & \vdots \\
+   a_{m1} & a_{m2} & \ldots & a_{mn} \\
+  \end{array}
+    \right) 
+\end{equation}
+\end{verbatim}
+{\ttfamily [1]} のように，\verb/\arraycolsep/ の値（デフォルトは5\,pt）を
+小さくしてみるか，{\ttfamily [2]} のように {\ttfamily @} 表現を
+使うことができます．
+\begin{equation}
+\arraycolsep=3pt
+A = \left(
+  \begin{array}{@{\hskip2pt}cccc@{\hskip2pt}}
+   a_{11} & a_{12} & \ldots & a_{1n} \\
+   a_{21} & a_{22} & \ldots & a_{2n} \\
+   \vdots & \vdots & \ddots & \vdots \\
+   a_{m1} & a_{m2} & \ldots & a_{mn} \\
+  \end{array}
+    \right) \label{eq:ex2}
+\end{equation}
+式（\ref{eq:ex1}）と式（\ref{eq:ex2}）を比べてください．
+
+\makeatletter\ifx\@mathmargin\undefined\makeatother
+
+\noindent
+{\bfseries 例6}\hskip1zw 定義を変える．
+
+行列を記述する場合に使用する \verb/\matrix/，
+\verb/\pmatrix/ はコラムの間に \verb/\quad/ が挿入されているので，
+間隔を縮めるには，ディスプレー数式環境の中で，
+\verb/\def\quad/ の定義を変えてみてください．例えば，
+\begin{equation}
+ A = \pmatrix{
+      a_{11} & a_{12} & \ldots & a_{1n} \cr
+      a_{21} & a_{22} & \ldots & a_{2n} \cr
+      \vdots & \vdots & \ddots & \vdots \cr
+      a_{m1} & a_{m2} & \ldots & a_{mn} \cr
+     }
+\end{equation}
+のような \verb/\pmatrix/ で記述した行列式で，
+\verb/\quad/ の定義を変更すると
+\begin{verbatim}
+\begin{equation}
+ \def\quad{\hskip.75em\relax}
+ %% デフォルトは \hskip1em
+ A = \pmatrix{
+      a_{11} & a_{12} & \ldots & a_{1n} \cr
+      a_{21} & a_{22} & \ldots & a_{2n} \cr
+
+      \vdots & \vdots & \ddots & \vdots \cr
+      a_{m1} & a_{m2} & \ldots & a_{mn} \cr
+     }
+\end{equation}
+\end{verbatim}
+\begin{equation}
+ \def\quad{\hskip.75em\relax}
+ A = \pmatrix{
+      a_{11} & a_{12} & \ldots & a_{1n} \cr
+      a_{21} & a_{22} & \ldots & a_{2n} \cr
+      \vdots & \vdots & \ddots & \vdots \cr
+      a_{m1} & a_{m2} & \ldots & a_{mn} \cr
+     }
+\end{equation}
+となります．
+
+\else
+
+{\ttfamily [pbvV]matrix} 環境などを使って
+行列を記述する場合は，
+\verb/\arraycolsep/ の値を変更します．
+\begin{verbatim}
+\begin{equation}
+%% デフォルトは 5pt
+ \arraycolsep3pt
+ A =
+  \begin{pmatrix}
+   a_{11} & a_{12} & \ldots & a_{1n}\\
+   a_{21} & a_{22} & \ldots & a_{2n}\\
+   \vdots & \vdots & \ddots & \vdots\\
+   a_{m1} & a_{m2} & \ldots & a_{mn}
+  \end{pmatrix}
+\end{equation}
+\end{verbatim}
+
+\begin{equation}
+ \arraycolsep3pt
+ A = \begin{pmatrix}
+      a_{11} & a_{12} & \ldots & a_{1n} \\
+      a_{21} & a_{22} & \ldots & a_{2n} \\
+      \vdots & \vdots & \ddots & \vdots \\
+      a_{m1} & a_{m2} & \ldots & a_{mn} 
+     \end{pmatrix}
+\end{equation}
+
+\fi
+
+以上に挙げたような処理でも数式がはみ出す場合には，
+ディスプレー数式環境全体を {\ttfamily small}，
+{\ttfamily footnotesize} などで囲むことが考えられます．
+
+\endinput

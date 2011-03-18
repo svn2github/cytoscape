@@ -1,0 +1,151 @@
+Although cytosine or thymine in position -3 is known to promote leaky
+scanning, our results showed that there is no remarkable consensus sequence to
+promote leaky scanning. Then the question ``what promotes leaky scanning 
+for the existing AUGs located upstream of start codons?'' arises.
+It is known that leaky scanning occurs if
+the first AUG is followed shortly by a stop codon(In other words
+reinitiation occurs). In this section, we
+focus on stop codons which is located downstream of the skipped
+AUGs. 
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+Hypothesis:\\
+\hline
+\end{tabular}
+
+A lot of existing AUGs in 5'UTR are skipped by ribosomes by the stop
+codons located just after in the same frame. Thus the frequency of
+stop codons after the skipped AUGs in the same frame will be
+relatively high. 
+
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+Data analysis:\\
+\hline
+\end{tabular}
+
+Frequencies of stop codons located downstream of first skipped AUGs
+in position \(p\)(\(FS_{p}\)) are calculated by the following
+formula(Position of A located in skipped AUG is defined +1.). 
+
+
+\begin{displaymath}
+FS_{p} =
+\frac{Number\:of\:stop\:codons\:that\:appear\:in\:position\:p}{
+Number\:of\:sequence\:data\:that\:has\:data\:for\:position\:p}
+\end{displaymath}
+
+We also calculated the rate of mRNAs that have stop codons located
+downstream of the first skipped AUGs in the same frame and located
+within specific distance \(d\)(\(RR_{d}\)) to investigate how many
+skipped AUGs that can be explained by reinitiation mechanisms(Distance
+\(d\) is defined as position \(d\)).
+
+\begin{displaymath}
+RR_{d} =
+\frac{mRNAs\:whose\:first\:skipped\:AUGs\:have\:stop\:codons\:within\:distance\:d}{mRNAs\:that\:have\:skipped\:AUGs} 
+\end{displaymath}
+
+If a second AUG trinucleotide located
+upstream of start codon is flanked by first AUG trinucleotide and stop 
+codon in the same frame(in other words, if the second AUG
+trinucleotide is located in the ``minicistron'' upstream of start
+codon),  this AUG trinucleotide
+may not have any effect on 
+translation initiation. Thus, for the simplicity of the calculation, we
+only focused on first skipped AUGs.
+And we only calculated the cases where stop codons located downstream
+of skipped AUG are located upstream of start codons, because the
+influences to reinitiation by stop codons 
+that are located downstream of start codons are unknown.
+
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+Results:\\
+\hline
+\end{tabular}
+
+\begin{figure}
+\begin{center}
+\epsfile{file=eu_stopf.ps,scale=0.40}
+\end{center}
+\caption{Frequencies of stop codons located downstream of the first
+skipped AUGs and in the same frame as the first skipped AUGs}
+\label{eu_stopf}
+\end{figure}
+
+
+\begin{figure}
+\epsfile{file=gbstop.ps,scale=0.67}
+\caption{Frequencies of stop codons located downstream of the first
+skipped AUGs in vertebrates}
+\label{gbstop}
+\end{figure}
+
+\begin{figure}
+\epsfile{file=invstop.ps,scale=0.67}
+\caption{Frequencies of stop codons located downstream of the first
+skipped AUGs in invertebrates}
+\label{invstop}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\epsfile{file=stop_reini.ps,scale=0.40}
+\end{center}
+\caption{Rate of mRNAs that have stop codons located downstream of
+the first skipped AUGs in the same frame within specific distance}
+\label{stop_reini}
+\end{figure}
+
+Figure \ref{eu_stopf} shows frequency of stop 
+codons after the first skipped
+AUGs in the same reading frame.  The
+stop codon frequencies gradually decrease in
+both vertebrates and invertebrates.  Also according to the figure
+\ref{gbstop} and \ref{invstop}, there are regular peaks of
+the frequency every 3 base positions(corresponding bar is colored in
+ black in the figure)
+ from the skipped AUG.  In
+other words, stop codons exist preferably in the same reading frame
+as the skipped AUG. 
+
+Figure \ref{stop_reini} shows rate of mRNAs that have stop codons
+located downstream of the first skipped AUGs in the same frame and within
+specific distance from the first skipped AUGs. 
+
+
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+Discussion:\\
+\hline
+\end{tabular}
+
+From these results, stop codons located downstream 
+and close to AUG trinucleotides may be important for the leaky scannings.
+From figure \ref{stop_reini}, if
+the ribosomes have ability to reinitiate translation when stop codons
+are located within position +20 from AUG trinucleotides, 
+\(\frac{1}{4}\) of the cause of leaky scanning may be explained by
+reinitiation mechanism. Although it is believed that this distance
+must be short, we cannot suggest the appropriate
+distance. In human immunodeficiency virus type 1 mRNA, if the upstream 
+open reading frame consists of 84 nucleotides, reinitiation occurs by
+50\%\cite{label31}.  
+% In Kozak's paper, it is written that reinitiation occurs
+% when AUG trinucleotide is followed shortly by stop codons.
+
+
+

@@ -1,0 +1,32 @@
+This is pTeX, Version p2.1.5, based on TeX, Version 3.14159 (EUC) (Web2c 7.0) (format=jlplain 97.8.31)  31 OCT 1999 18:04
+**dp2_survey.tex
+(dp2_survey.tex
+LaTeX Version 2.09 <24 May 1989>
+LaTeX error.  See LaTeX manual for explanation.
+              Type  H <return>  for immediate help.
+! Missing \begin{document}.
+\@latexerr ...for immediate help.}\errmessage {#1}
+                                                  
+...
+l.2 I
+     n this chapter, details known so far about translation initiation is
+? 
+! Emergency stop.
+\@latexerr ...for immediate help.}\errmessage {#1}
+                                                  
+...
+l.2 I
+     n this chapter, details known so far about translation initiation is
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+ 
+Here is how much of TeX's memory you used:
+ 4 strings out of 11797
+ 62 string characters out of 86694
+ 25685 words of memory out of 263001
+ 2076 multiletter control sequences out of 10000+0
+ 23946 words of font info for 90 fonts, out of 100000 for 500
+ 14 hyphenation exceptions out of 1000
+ 7i,0n,3p,86b,7s stack positions out of 300i,100n,500p,3000b,4000s
+No pages of output.

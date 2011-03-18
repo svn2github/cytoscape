@@ -1,0 +1,437 @@
+
+\section{Overview}
+
+The frequencies of ATG triplets in the genomes of various species have
+been systematically analyzed, and the frequency of ATG triplets has
+found significantly low around start codons in both procaryotic and
+eucaryotic genomes. In procaryotes, the ATG frequency pattern around
+the start codon was symmetric. In eucaryotes, on the other hand, the
+frequency decrease before the start codon was much more evident than
+that after the start codon.  This is presumably because ribosome of
+eukaryotes scans mRNA from the 5' to 3' direction to find proper start
+codons. Extra ATG triplets before start codons would confuse the
+process and thus they have been negatively selected in eukaryotic
+genomes.  In eubacterial genomes, on the other hand, ribosome binds to
+the Shine-Dalgarno sequence at once without mRNA scanning, and the
+characteristic patterns of ATG triplet depletion were not observed.
+
+The ATG triplet analysis on archaebacterial genomes revealed that {\it
+M.jannaschii} and {\it P.horikoshii} show patterns similar to
+eukaryotes, implying that these species employ scanning of mRNA from
+the 5' to 3' direction in the process of translation initiation.  On
+the other hand, these archaea have Shine-Dalgarno-like sequences,
+which are complementary to the 3'end sequence of 16S rRNA, as in
+eubacterial translation initiation\cite{arclabel_osada}. These two
+results combined lead us to suggest that these archaea probably use
+hybrid mechanism; their ribosome scans mRNAs from the 5' to 3'
+direction and then 16S rRNA binds to the Shine-Dalgarno-like sequence
+of the 5'UTR.
+
+Also average distances between a start codon and its nearest
+upstream-located ATG triplet were computed, and the average distances
+were found to be longer in higher organisms.
+
+\section{Introduction}
+
+The ribosomes of eucaryotes are known to scan mRNA from left to right
+(5' to 3') and to initiate translation usually at the
+first-encountered AUG triplet\cite{label22,label21,label12}, although
+the ribosome sometimes ignores the first AUG and initiates translation
+at the next found AUG
+triplet\cite{label18,label4,label2,label19,label31,label5}, a
+phenomenon known as ``leaky scanning''.
+
+In procaryotes, on the other hand, the ribosome binds directly to the
+Shine-Dalgarno sequence\cite{label20,label22,label7}, and translation
+is initiated at an AUG triplet located several bases downstream of the
+sequence. If the AUG triplet is not in correct proximity to the
+Shine-Dalgarno sequences, it does not usually function as a start
+codon.
+
+The insertion of an AUG triplet upstream of a start codon is reported
+to reduce the accuracy of the translation initiation at the proper
+start codon\cite{label1112,label1}. Yun\cite{label30} conducted
+similar experiments with {\it S.cerevisiae}, and reported that AUG
+triplets closer to the start codon have a higher probability of
+provoking improper translation initiations.  These experimental
+results predict that AUG triplets near start codons are evolutionarily
+disadvantageous and thus appear less frequently due to negative
+selectional pressure.
+
+Systematic analyses of the frequencies of ATG/AUG triplets around
+start codons in genomes of various species were conducted, and it was
+found that the frequency of AUG triplets is indeed significantly low
+around start codons in both procaryotic and eucaryotic genomes.
+However, their patterns of AUG frequency are quite distinct between
+those two domains(procaryotes and eucaryotes), presumably because of
+the differences in their translation initiation mechanisms. Similar
+analyses were also conducted using archaebacterial genomes(Translation
+initiation in archaebacteria is discussed in \ref{trans_arc}).
+
+Also average distances between a start codon and its nearest
+upstream-located ATG triplet were computed using GenBank database, and
+the average distances were found to be longer in organisms in higher
+taxonomical groups.
+
+
+\section{Materials and Methods}
+
+Frequencies of ATG triplets around start codons were computed. In
+order to absorb fluctuations, especially in coding regions,
+frequencies of ATG triplets were averaged within the window size of 3
+base pairs.
+
+In calculating average distances between a start codon and its nearest
+ATG triplet, DNA sequence data was used throughout. Moreover, sequences
+whose 5'UTRs contain ATGs in the same reading frame as its ORF have
+been excluded, because such cases are known to include a large number
+of of annotation errors.
+
+\section{Results and Discussion}
+
+\subsection{Analyses of procaryotes and eucaryotes}
+
+As seen in figure \ref{freq_euc}, in eucaryotes, the frequencies of
+AUG triplets in 5'UTR are significantly low, while rising sharply in
+the coding region.  It should be noted that AUG frequencies
+immediately after start codons are also low, although AUG frequencies
+in 5'UTR are significantly lower.
+
+\begin{figure}
+\begin{center}
+\epsfile{file=Hsap_atgs3.ps,scale=0.40}
+\epsfile{file=Mmus_atgs3.ps,scale=0.40}\\
+\epsfile{file=Dmel_atgs3.ps,scale=0.40}
+\epsfile{file=Cele_atgs3.ps,scale=0.40}\\
+\epsfile{file=Scer_atgs3.ps,scale=0.40}
+\epsfile{file=Atha_atgs3.ps,scale=0.40}
+\end{center}
+\caption{Frequencies of AUG triplets around start codons in various
+eucaryotes}
+\label{freq_euc}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\epsfile{file=aquae_atgs3.ps,scale=0.4}
+\epsfile{file=bbur_atgs3.ps,scale=0.4}\\
+\epsfile{file=bsub_atgs3.ps,scale=0.4}
+\epsfile{file=cpneu_atgs3.ps,scale=0.4}\\
+\epsfile{file=ctra_atgs3.ps,scale=0.4}
+\epsfile{file=ecoli_atgs3.ps,scale=0.4}
+\end{center}
+\caption{Frequency of ATG triplets around start codons in various
+procaryotes(1)} 
+\label{freq_proc}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\epsfile{file=hinf_atgs3.ps,scale=0.4}
+\epsfile{file=hpyl_atgs3.ps,scale=0.4}\\
+\epsfile{file=mgen_atgs3.ps,scale=0.4}
+\epsfile{file=mpneu_atgs3.ps,scale=0.4}\\
+\epsfile{file=mtub_atgs3.ps,scale=0.4}
+\epsfile{file=rpxx_atgs3.ps,scale=0.4}
+\end{center}
+\caption{Frequency of ATG triplets around start codons in various
+procaryotes(2)} 
+\label{freq_proc2}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\epsfile{file=synecho_atgs3.ps,scale=0.4}
+\epsfile{file=tpal_atgs3.ps,scale=0.4}
+\end{center}
+\caption{Frequency of ATG triplets around start codons in various
+procaryotes(3)} 
+\label{freq_proc3}
+\end{figure}
+
+
+AUG triplets near a start codon(located both 5'UTR and in coding
+region) could disturb the ribosome's ability to select the proper
+start codon. Since ribosomes scan mRNAs from left to right (5' to 3'),
+AUGs in 5'UTR are probably more disruptive than AUGs in the coding
+region, and this explains the uneven AUG frequencies between the two
+sides of the start codon.
+
+The same analyses were conducted as a control with all other 63
+triplets in {\it H.sapiens}, and it was verified that that these
+tendencies are specific for the AUG triplets (data not shown).
+
+Figure \ref{freq_proc} shows that, in procaryotes,
+the ATG frequency decrease around the start codon is not as evident as
+in eucaryotes, and their decreasing patterns are notably symmetrical.
+These distinct features in eucaryotes and procaryotes are due
+presumably to the difference of their translation initiation
+mechanisms.  While the eucaryotic ribosome searches for the start
+codon by scanning the mRNA from left to right (5' to 3'), the
+bacterial ribosome is believed to find the start codon at once upon
+recognizing the Shine-Dalgarno sequence, located several bases
+upstream of the start codon.  Thus, AUG triplets at either side of
+the start codon could exert an equally disruptive effect on the
+translation initiation, resulting the symmetric decreases of ATG
+triplets shown in figure \ref{freq_proc}.  Also,
+the bacterial ribosome is probably less sensitive to spurious AUGs
+around start codons than eucaryotes, because bacterial translation
+initiation mechanisms, in general, do not have to scan long lengths of
+mRNA.
+
+
+\subsection{Analyses of  archaebacteria}
+\label{trans_arc}
+
+Translation initiation mechanism of archaebacteria is not
+clearly understood.  Archaebacteria were thought to initiate
+translation in the way similar to eubacteria. There is no 5' CAP
+structure or no poly(A) tail on archaebacterial mRNA, and sequences
+that could form base-pairing with 16S rRNA are found upstream of start
+codons\cite{label2051,label2014,label2025}. 
+In addition, many archaebacterial mRNAs are polycistronic.  
+
+After the complete genome of {\it M.jannaschii}\cite{label2080} was
+sequenced, homologs of eukaryotic translation initiation factors,
+eIF-1A, eIF-2, $\alpha$ and $\delta$ eIF-2B subunits, eIF-4A, and
+eIF-5A were reported to exist in this organism\cite{label2080,label2014,label2015}.
+
+Furthermore, the archaebacterial and eukaryotic eIF-2$\gamma$ are
+found to be very closely related and they are not found in
+eubacteria\cite{label2052}. Thus, archaebacterial translation seems to
+have both eukaryotic and eubacterial features\cite{label2020}.
+
+The frequencies of ATG triplets around predicted start codons in four
+completely sequenced archaebacterial genomes were computed, and it was
+found that some of their ATG depletion patterns are more similar to
+those of eukaryotes than eubacteria.
+
+Results of archaebacteria are shown in figure \ref{archae_atg}. 
+In {\it A.fulgidus} and {\it M.thermoautotrophicum}, there appears to
+be no significant ATG triplet depletion. On the other hand, {\it
+P.horikoshii} and {\it M.jannaschii} show asymmetric patterns with
+stronger ATG depletion before start codons, which are similar to the
+eukaryotic pattern.
+
+Also a strong consensus sequence of ``atg'' at position +9 (position 0
+being the start codon) was found in all of the four archaebacteria.
+
+To calculate amount of asymmetricity, frequencies of ATG triplets
+around start codons within 30 bases were evaluated by the following
+measurements. All values become high as the frequencies get asymmetric.
+
+\begin{enumerate}
+\item Ratio of frequencies of ATG triplets before start codons(-30 to -3) and coding region(+3 to +30)(Rate)
+
+\[ \mbox{Rate} = \frac{\mbox{Frequency of ATG triplets in coding regions}}{\mbox{Frequency of ATG triplets before start codons}}
+\]
+
+\item Euclid distance of frequencies of ATG triplets before start codons and coding region(Dist)
+
+\[
+\mbox{Dist} = \sqrt{\sum_{i=5}^{30}(P_{i} - P_{-i})^2}
+\]
+
+\item 3rd moment of frequencies of ATG triplets around start codons(-30 to -5 and +5 to +30)(\(\beta_{1}\))
+
+\[
+\beta_{1} = \frac{\sum_{i=-30}^{30}P_{i}i^{3}/\sum_{i=-30}^{30}P_{i}}{\left(\sqrt{\sum_{i=-30}^{30}P_{i}i^{2}/\sum_{i=-30}^{30}P_{i}}\right)^3}
+\]
+\end{enumerate}
+
+Where \(P_{i}\) is frequency of ATG at position \(i\). The results are
+shown in table \ref{ratio_atg}, \ref{eucdist_atg} and
+\ref{moment_atg}, respectively. In those table, {\it M.jannaschii}
+ and {\it P.horikoshii}, as well as eucaryotes tend to show higher
+ values than eubacteria do.
+
+
+
+\begin{table}
+
+\begin{center}
+\begin{tabular}{|c|l|r|}
+E& {\it Arabidopsis thaliana   } & 7.6372 \\
+E& {\it Drosophila melanogaster   } & 3.8588 \\
+E& {\it Saccharomyces cerevisiae   } & 3.1594 \\
+E& {\it Mus musculus   } & 3.1555 \\
+E& {\it Homo sapiens   } & 3.0944 \\
+A& {\it Methanococcus jannaschii   } & 2.0043 \\
+E& {\it Caenorhabditis elegans   } & 1.7270 \\
+& {\it Synechocystis PCC6803   } & 1.5308 \\
+A& {\it Pyrococcus horikoshii   } & 1.5248 \\
+& {\it Haemophilus influenzae Rd  } & 1.4472 \\
+& {\it Borrelia burgdorferi   } & 1.3696 \\
+& {\it Helicobacter pylori 26695  } & 1.3603 \\
+& {\it Mycoplasma pneumoniae   } & 1.2895 \\
+A& {\it Methanobacterium thermoautotrophicum   } & 1.2796 \\
+A& {\it Archaeoglobus fulgidus   } & 1.2731 \\
+& {\it Chlamydia trachomatis   } & 1.2518 \\
+& {\it Chlamydia pneumoniae   } & 1.2310 \\
+& {\it Escherichia coli   } & 1.2093 \\
+& {\it Mycoplasma genitalium   } & 1.1169 \\
+& {\it Rhizobium sp. NGR234  } & 1.1028 \\
+& {\it Rickettsia prowazekii   } & 1.0743 \\
+& {\it Treponema pallidum   } & 1.0356 \\
+& {\it Bacillus subtilis   } & 0.9719 \\
+& {\it Aquifex aeolicus   } & 0.9435 \\
+& {\it Mycobacterium tuberculosis   } & 0.8185 \\
+\end{tabular}
+\end{center}
+\caption{Ratio of frequencies of ATG triplets before start codons(-30 to -3) and coding region(+3 to +30)}
+\label{ratio_atg}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|l|r|}
+A& {\it Methanococcus jannaschii   } & 0.0870 \\
+E& {\it Arabidopsis thaliana   } & 0.0702 \\
+E& {\it Drosophila melanogaster   } & 0.0555 \\
+A& {\it Pyrococcus horikoshii   } & 0.0525 \\
+E& {\it Saccharomyces cerevisiae   } & 0.0517 \\
+A& {\it Methanobacterium thermoautotrophicum   } & 0.0466 \\
+E& {\it Mus musculus   } & 0.0438 \\
+E& {\it Homo sapiens   } & 0.0435 \\
+E& {\it Caenorhabditis elegans   } & 0.0324 \\
+& {\it Borrelia burgdorferi   } & 0.0313 \\
+& {\it Rhizobium sp. NGR234  } & 0.0291 \\
+& {\it Mycoplasma genitalium   } & 0.0278 \\
+& {\it Haemophilus influenzae Rd  } & 0.0261 \\
+& {\it Helicobacter pylori 26695  } & 0.0259 \\
+A& {\it Archaeoglobus fulgidus   } & 0.0240 \\
+& {\it Mycoplasma pneumoniae   } & 0.0237 \\
+& {\it Helicobacter pylori J99  } & 0.0237 \\
+& {\it Rickettsia prowazekii   } & 0.0235 \\
+& {\it Bacillus subtilis   } & 0.0226 \\
+& {\it Synechocystis PCC6803   } & 0.0220 \\
+& {\it Chlamydia trachomatis   } & 0.0190 \\
+& {\it Escherichia coli   } & 0.0179 \\
+& {\it Chlamydia pneumoniae   } & 0.0145 \\
+& {\it Treponema pallidum   } & 0.0140 \\
+& {\it Mycobacterium tuberculosis   } & 0.0126 \\
+& {\it Aquifex aeolicus   } & 0.0096 \\
+\end{tabular}
+\end{center}
+\caption{Euclid distance of frequencies of ATG triplets before start codons(-30 to -5)and coding region(+5 to +30)}
+\label{eucdist_atg}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|l|r|}
+E& {\it Arabidopsis thaliana   } & 0.9139 \\
+E& {\it Drosophila melanogaster   } & 0.6976 \\
+E& {\it Saccharomyces cerevisiae   } & 0.6554 \\
+E& {\it Mus musculus   } & 0.5904 \\
+E& {\it Homo sapiens   } & 0.5832 \\
+A& {\it Methanococcus jannaschii   } & 0.4070 \\
+E& {\it Caenorhabditis elegans   } & 0.2958 \\
+& {\it Haemophilus influenzae Rd  } & 0.2490 \\
+& {\it Synechocystis PCC6803   } & 0.1821 \\
+& {\it Borrelia burgdorferi   } & 0.1592 \\
+& {\it Mycoplasma pneumoniae   } & 0.1430 \\
+A& {\it Pyrococcus horikoshii   } & 0.1394 \\
+& {\it Escherichia coli   } & 0.1376 \\
+& {\it Helicobacter pylori 26695  } & 0.1247 \\
+A& {\it Archaeoglobus fulgidus   } & 0.1214 \\
+& {\it Mycoplasma genitalium   } & 0.1092 \\
+& {\it Chlamydia pneumoniae   } & 0.0810 \\
+A& {\it Methanobacterium thermoautotrophicum   } & 0.0656 \\
+& {\it Chlamydia trachomatis   } & 0.0422 \\
+& {\it Rhizobium sp. NGR234  } & 0.0366 \\
+& {\it Rickettsia prowazekii   } & 0.0112 \\
+& {\it Treponema pallidum   } & -0.0081 \\
+& {\it Bacillus subtilis   } & -0.0249 \\
+& {\it Mycobacterium tuberculosis   } & -0.1171 \\
+& {\it Aquifex aeolicus   } & -0.1203 \\
+\end{tabular}
+\end{center}
+\caption{3rd moment of frequencies of ATG triplets around start codons(-30 to -5 and +5 to +30)}
+\label{moment_atg}
+\end{table}
+
+
+It is interesting because the four archaebacteria that were analyzed
+are known to have Shine-Dalgarno sequences, which is a characteristic
+feature of eubacteria.  This leads us to suspect that perhaps these
+archaebacteria use a hybrid mechanism; ribosome scans mRNA from the 5'
+to 3' direction to find a Shine-Dalgarno sequence.
+
+According to the typical phylogenetic trees of 16S rRNA\cite{label2095,label2099}, {\it P.horikoshii} ({\it Thermococcus}) and {\it
+Methanococcus} are relatively close to eukaryotes, and this may
+explain why frequencies of ATG triplets in these species are more
+asymmetric than the other two archaebacteria.
+
+
+One possible explanation of the absence of clear ATG depletion around
+start codons in {\it A.fulgidus} and {\it M.thermoautotrophicum} is
+that these species have short 5'UTRs.
+
+Many archaebacterial mRNAs are known to have short 5'UTRs, or
+sometimes no 5'UTR at all\cite{label3001,label2051}. If
+these two species have short 5'UTRs, many ATG triplets before start
+codons are untranscribed, and therefore they have not been negatively
+selected.
+
+
+\begin{figure}
+\epsfile{file=aful_atgs3.eps,scale=0.7}
+\epsfile{file=mjan_atgs3.eps,scale=0.7}\\
+\epsfile{file=mthe_atgs3.eps,scale=0.7}
+\epsfile{file=pyro_atgs3.eps,scale=0.7}
+\caption{Frequencies of ATG triplets around start codons in
+archaebacteria}
+\label{archae_atg}
+\end{figure}
+
+\section{Average distances between start codons and their nearest ATG's}
+
+Figure \ref{atgdist} shows average distances between a start codon and
+its nearest ATG triplet located upstream and downstream, respectively.
+Interestingly, the average distances are generally longer in higher
+organisms and shorter in lower organisms, as seen in the following
+order: primates \verb+>+ rodents \verb+>+ other mammals \verb+>+ other
+vertebrates \verb+>+ invertebrates \verb+>+ bacteria.  This rule holds
+only for upstream ATG triplets but not for downstream ATGs. Higher
+organisms may have more sophisticated translation initiation machinery
+and may be more sensitive to spurious AUGs before start codons.
+
+\begin{figure}
+\begin{center}
+\epsfile{file=atgdist.ps,scale=0.45}\\
+\end{center}
+\caption{Average distances between a start codon and its nearest ATGs (up and
+downstream) in various taxonomical groups: primates, rodents, other
+mammals, other vertebrates, invertebrates, and bacteria.}
+\label{atgdist}
+\end{figure}
+
+
+
+\section{Summary}
+
+In this study, it was shown that sequences around start codons contain
+fewer AUG triplets due to negative selection against the disruptive
+triplets which could disturb the accurate detection of proper start
+codons.  Negative selection in the upstream regions is especially
+strong in eucaryotes (but not in procaryotes), an observation
+consistent with the fact that eucaryotic ribosomes scan mRNA from left
+to right (5' to 3') to find start codons.
+
+The analysis of frequency of ATG triplets around start codons suggests
+that the translation initiation mechanism in {\it M.jannaschii} and
+{\it P.horikoshii} involves in ribosome's scanning of mRNAs from the
+5' to 3' direction, as in eukaryotic translation initiation.  On the
+other hand, all of the four archaea have Shine-Dalgarno-like
+sequences, which are complementary with the 3'end of 16S rRNA, as in
+eubacterial translation initiation\cite{arclabel_osada}.  These two
+results combined lead us to suggest that some archaea probably use the
+hybrid mechanism; their ribosome scans mRNAs from the 5' to 3'
+direction and then 16S rRNA binds to the Shine-Dalgarno-like sequence
+of the 5'UTR.
+
+Also it was found that the average distances between a start codon and
+its nearest upstream-located ATG are generally longer in higher
+organisms.
+

@@ -1,0 +1,270 @@
+%!
+%%BoundingBox: 0 0 539 539
+%%EndComments
+%
+% Xgraph postscript output
+% Rick Spickelmier and David Harrison
+% University of California, Berkeley
+%
+% Output produced for inclusion in another document.
+% This file will not work properly if sent directly to a printer.
+%
+% Rotation and centering are turned off for inclusion in a document
+% Set the scale
+0.06 0.06 scale
+% Font Handling Functions
+%
+% Function giving y-offset to center of font
+% Assumes font is set and uses numbers to gauge center
+%
+/choose-font	% stack: fontsize fontname => ---
+{
+   findfont 
+   exch scalefont 
+   setfont
+   newpath
+   0 0 moveto (0) true charpath flattenpath pathbbox
+   /top exch def pop
+   /bottom exch def pop
+   bottom top bottom top add 2 div
+   /center-font-val exch def 
+   /upper-font-val exch def 
+   /lower-font-val exch def
+} def
+%
+% Justfication offset routines
+%
+/center-x-just	% stack: (string) x y => (string) newx y
+{
+   exch 2 index stringwidth pop 2 div sub exch
+} def
+%
+/left-x-just	% stack: (string) x y => (string) newx y
+{ 
+} def
+%
+/right-x-just	% stack: (string) x y => (string) newx y
+{
+   exch 2 index stringwidth pop sub exch
+} def
+%
+/center-y-just	% stack: (string) x y => (string) x newy
+{
+   center-font-val sub
+} def
+%
+/lower-y-just	% stack: (string) x y => (string) x newy
+{
+   lower-font-val sub
+} def
+%
+/upper-y-just	% stack: (string) x y => (string) x newy
+{
+   upper-font-val sub
+} def
+%
+% Shows a string on the page subject to justification
+%   
+/just-string	% stack: (string) x y just => ---
+{
+   dup 0 eq { pop center-x-just center-y-just 		} if
+   dup 1 eq { pop left-x-just center-y-just		} if
+   dup 2 eq { pop left-x-just upper-y-just	 	} if
+   dup 3 eq { pop center-x-just upper-y-just 		} if
+   dup 4 eq { pop right-x-just upper-y-just	 	} if
+   dup 5 eq { pop right-x-just center-y-just 		} if
+   dup 6 eq { pop right-x-just lower-y-just	 	} if
+   dup 7 eq { pop center-x-just lower-y-just  		} if
+   dup 8 eq { pop left-x-just lower-y-just	 	} if
+   moveto show
+} def
+%
+% Marker definitions
+/mark0 {/size exch def /y exch def /x exch def
+newpath x size sub y size sub moveto
+size size add 0 rlineto 0 size size add rlineto
+0 size size add sub 0 rlineto closepath fill} def
+/mark1 {/size exch def /y exch def /x exch def
+newpath x size sub y size sub moveto
+size size add 0 rlineto 0 size size add rlineto
+0 size size add sub 0 rlineto closepath stroke} def
+/mark2 {/size exch def /y exch def /x exch def
+newpath x y moveto x y size 0 360 arc stroke} def
+/mark3 {/size exch def /y exch def /x exch def
+newpath x size sub y size sub moveto x size add y size add lineto
+x size sub y size add moveto x size add y size sub lineto stroke} def
+/mark4 {/size exch def /y exch def /x exch def
+newpath x size sub y moveto x y size add lineto
+x size add y lineto x y size sub lineto
+closepath stroke} def
+/mark5 {/size exch def /y exch def /x exch def
+x y size mark1
+newpath x size sub y moveto size size add 0 rlineto stroke} def
+/mark6 {/size exch def /y exch def /x exch def
+newpath x y moveto x y size 0 360 arc fill} def
+/mark7 {/size exch def /y exch def /x exch def
+newpath x y moveto x size sub y size sub lineto
+x size add y size sub lineto closepath fill
+newpath x y moveto x size add y size add lineto
+x size sub y size add lineto closepath fill} def
+%
+% Main body begins here
+%
+300 /Times-Bold choose-font
+(Relationship between Leaky Scanning and Distance between two AUGs) 4488 8856 3 just-string
+200 /Times-Roman choose-font
+(Eucaryotes) 6226 8104 2 just-string
+14 setlinewidth
+[] 0 setdash
+newpath
+  6226 8136 moveto
+  7326 8136 lineto
+stroke
+(Rate of Leaky Scanning) 90 8496 2 just-string
+(Distance between Two AUGs) 8886 380 5 just-string
+(5.00) 860 704 5 just-string
+(10.00) 860 1362 5 just-string
+(15.00) 860 2020 5 just-string
+(20.00) 860 2678 5 just-string
+(25.00) 860 3336 5 just-string
+(30.00) 860 3994 5 just-string
+(35.00) 860 4652 5 just-string
+(40.00) 860 5310 5 just-string
+(45.00) 860 5969 5 just-string
+(50.00) 860 6627 5 just-string
+(55.00) 860 7285 5 just-string
+(60.00) 860 7943 5 just-string
+(0.00) 1186 90 7 just-string
+(10.00) 2811 90 7 just-string
+(20.00) 4437 90 7 just-string
+(30.00) 6063 90 7 just-string
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 704 moveto
+  6136 704 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 1362 moveto
+  6136 1362 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 2020 moveto
+  6136 2020 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 2678 moveto
+  6136 2678 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 3336 moveto
+  6136 3336 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 3994 moveto
+  6136 3994 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 4652 moveto
+  6136 4652 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 5310 moveto
+  6136 5310 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 5969 moveto
+  6136 5969 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 6627 moveto
+  6136 6627 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 7285 moveto
+  6136 7285 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  950 7943 moveto
+  6136 7943 lineto
+stroke
+[] 0 setdash
+8 setlinewidth
+newpath
+  1186 8106 moveto
+  1186 380 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  2811 8106 moveto
+  2811 380 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  4437 8106 moveto
+  4437 380 lineto
+stroke
+[] 0 setdash
+2 setlinewidth
+newpath
+  6063 8106 moveto
+  6063 380 lineto
+stroke
+14 setlinewidth
+newpath
+  1186 1414 moveto
+  1348 731 lineto
+  1511 4995 lineto
+  1673 1501 lineto
+  1836 1784 lineto
+  1999 7160 lineto
+  2161 1152 lineto
+  2324 2950 lineto
+  2486 5174 lineto
+  2649 896 lineto
+  2811 1588 lineto
+  2974 5393 lineto
+  3137 1735 lineto
+  3299 2279 lineto
+  3462 6883 lineto
+  3624 1092 lineto
+  3787 2503 lineto
+  3949 5310 lineto
+  4112 1027 lineto
+  4275 2445 lineto
+  4437 4433 lineto
+  4600 1356 lineto
+  4762 1633 lineto
+  4925 4135 lineto
+  5087 2053 lineto
+  5250 1893 lineto
+  5413 7755 lineto
+  5575 904 lineto
+  5738 1501 lineto
+  5900 4565 lineto
+stroke
+% End of xgraph output

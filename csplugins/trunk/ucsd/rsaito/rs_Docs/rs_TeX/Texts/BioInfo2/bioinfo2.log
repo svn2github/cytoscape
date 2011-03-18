@@ -1,0 +1,123 @@
+This is pTeX, Version 3.141592-p3.1.10 (sjis) (Web2C 7.5.6) (format=platex 2007.3.5)  4 MAY 2009 15:28
+**bioinfo2.tex
+(./bioinfo2.tex
+pLaTeX2e <2006/11/10>+0 (based on LaTeX2e <2005/12/01> patch level 0)
+Babel <v3.8h> and hyphenation patterns for english, usenglishmax, ukenglish, ba
+sque, bulgarian, coptic, welsh, czech, slovak, german, ngerman, danish, spanish
+, catalan, estonian, finnish, french, irish, polygreek, monogreek, ancientgreek
+, croatian, hungarian, interlingua, ibycus, bahasa, icelandic, italian, latin, 
+mongolian, dutch, norsk, polish, portuguese, pinyin, romanian, russian, samin, 
+slovene, usorbian, serbian, swedish, turkish, ukrainian, dumylang, nohyphenatio
+n, loaded.
+(c:/WinAppl/TeX/share/texmf/ptex/platex/base/jbook.cls
+Document Class: jbook 2006/06/27 v1.6 Standard pLaTeX class
+\c@@paper=\count81
+(c:/WinAppl/TeX/share/texmf/ptex/platex/base/jbk10.clo
+File: jbk10.clo 2006/06/27 v1.6 Standard pLaTeX file (size option)
+)
+\c@part=\count82
+\c@chapter=\count83
+\c@section=\count84
+\c@subsection=\count85
+\c@subsubsection=\count86
+\c@paragraph=\count87
+\c@subparagraph=\count88
+\c@figure=\count89
+\c@table=\count90
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\symmincho=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
+(Font)                  JY1/mc/m/n --> JY1/gt/m/n on input line 680.
+\toclineskip=\dimen118
+\@lnumwidth=\dimen119
+\bibindent=\dimen120
+\heisei=\count91
+)
+(c:/WinAppl/TeX/share/texmf/tex/latex/graphics/graphics.sty
+Package: graphics 2006/02/20 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(c:/WinAppl/TeX/share/texmf/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(c:/WinAppl/TeX/share/texmf/tex/latex/config/graphics.cfg)
+Package graphics Info: Driver file: dvips.def on input line 90.
+
+(c:/WinAppl/TeX/share/texmf/tex/latex/graphics/dvips.def
+File: dvips.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
+))
+(c:/WinAppl/TeX/share/texmf/tex/latex/misc/wrapfig.sty
+\wrapoverhang=\dimen121
+\WF@size=\dimen122
+\c@WF@wrappedlines=\count92
+\WF@box=\box41
+\WF@everypar=\toks15
+Package: wrapfig 2003/01/31  v 3.6
+) (./bioinfo2.aux
+(./bayesian.aux))
+\openout1 = `bioinfo2.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <14.4> on input line 14.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 14.
+ [1
+
+
+] [2
+
+]
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <20.74> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 15.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <20.74> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 15.
+ (./bioinfo2.toc
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <10> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 1.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <10> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 1.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 2.
+)
+\tf@toc=\write3
+\openout3 = `bioinfo2.toc'.
+
+ [3]
+\openout2 = `bayesian.aux'.
+
+ (./bayesian.tex [4
+
+
+]
+ëÊ 1 èÕ
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <14.4> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 7.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <14.4> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 7.
+) [5] (./bioinfo2.aux (./bayesian.aux)) ) 
+Here is how much of TeX's memory you used:
+ 602 strings out of 94481
+ 6884 string characters out of 1174925
+ 59880 words of memory out of 1500000
+ 3992 multiletter control sequences out of 10000+50000
+ 12557 words of font info for 50 fonts, out of 2000000 for 2000
+ 679 hyphenation exceptions out of 8191
+ 23i,6n,21p,184b,245s stack positions out of 3000i,500n,5000p,200000b,5000s
+
+Output written on bioinfo2.dvi (5 pages, 4832 bytes).

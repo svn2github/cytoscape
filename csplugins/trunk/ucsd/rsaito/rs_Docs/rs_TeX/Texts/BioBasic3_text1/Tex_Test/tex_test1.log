@@ -1,0 +1,71 @@
+This is pTeX, Version 3.141592-p3.1.10 (sjis) (Web2C 7.5.6) (format=platex 2007.3.5)  1 OCT 2007 16:22
+**tex_test1.tex
+(./tex_test1.tex
+pLaTeX2e <2006/11/10>+0 (based on LaTeX2e <2005/12/01> patch level 0)
+Babel <v3.8h> and hyphenation patterns for english, usenglishmax, ukenglish, ba
+sque, bulgarian, coptic, welsh, czech, slovak, german, ngerman, danish, spanish
+, catalan, estonian, finnish, french, irish, polygreek, monogreek, ancientgreek
+, croatian, hungarian, interlingua, ibycus, bahasa, icelandic, italian, latin, 
+mongolian, dutch, norsk, polish, portuguese, pinyin, romanian, russian, samin, 
+slovene, usorbian, serbian, swedish, turkish, ukrainian, dumylang, nohyphenatio
+n, loaded.
+(c:/WinAppl/TeX/share/texmf/ptex/platex/base/jarticle.cls
+Document Class: jarticle 2006/06/27 v1.6 Standard pLaTeX class
+\c@@paper=\count81
+(c:/WinAppl/TeX/share/texmf/ptex/platex/base/jsize10.clo
+File: jsize10.clo 2006/06/27 v1.6 Standard pLaTeX file (size option)
+)
+\c@part=\count82
+\c@section=\count83
+\c@subsection=\count84
+\c@subsubsection=\count85
+\c@paragraph=\count86
+\c@subparagraph=\count87
+\c@figure=\count88
+\c@table=\count89
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\symmincho=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
+(Font)                  JY1/mc/m/n --> JY1/gt/m/n on input line 601.
+\toclineskip=\dimen118
+\@lnumwidth=\dimen119
+\bibindent=\dimen120
+\heisei=\count90
+)
+No file tex_test1.aux.
+\openout1 = `tex_test1.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <14.4> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 5.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <14.4> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 5.
+[1
+
+] (./tex_test1.aux) ) 
+Here is how much of TeX's memory you used:
+ 258 strings out of 94481
+ 2665 string characters out of 1174925
+ 52546 words of memory out of 1500000
+ 3681 multiletter control sequences out of 10000+50000
+ 9042 words of font info for 37 fonts, out of 2000000 for 2000
+ 679 hyphenation exceptions out of 8191
+ 22i,4n,19p,120b,242s stack positions out of 3000i,500n,5000p,200000b,5000s
+
+Output written on tex_test1.dvi (1 page, 460 bytes).

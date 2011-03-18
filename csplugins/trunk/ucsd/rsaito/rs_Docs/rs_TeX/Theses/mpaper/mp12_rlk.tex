@@ -1,0 +1,123 @@
+
+We have investigated the relationship between distances of two AUGs
+and the rate of leaky scanning.
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+Hypothesis:\\
+\hline
+\end{tabular}
+
+When two AUGs are close to each other, ribosome confuse to select
+one of AUGs as start codon. This phenomenon has influence on leaky
+scanning. 
+Thus rate of leaky scanning changes when two AUGs are close to each other.
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+Data analysis:\\
+\hline
+\end{tabular}
+
+The rate of leaky scanning when two AUGs are separated by \(n\) bases
+(\(RLK_{n}\)) is calculated as follows.
+
+\begin{small}
+\begin{displaymath}
+RLK_{n} = \frac{Number\:of\:leaky\:scanning\:observed\:when\:two\:AUGs\:
+are\:separated\:by\:n\:bases}{Number\:of
+\:cases\:that\:there\:is\:AUG\:trinucleotide\:n\:bases\:
+upstream/downstream\:of\:start\:codon}
+\end{displaymath}
+\end{small}
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+Results:\\
+\hline
+\end{tabular}
+
+\begin{figure}
+\begin{center}
+\epsfile{file=leak_bun.ps,scale=0.40}
+\end{center}
+\caption{Relationship between leaky scanning and distance between two AUGs}
+\label{leak_bun}
+\end{figure}
+
+The rate of leaky scanning fluctuates(figure \ref{leak_bun}), but this holds
+not only when 
+two AUGs are close to each other, but also when two AUGs are separated
+far from each other.
+
+While the first AUG is selected as a
+starting AUG for the most of the time, we found that the second AUG is
+frequently selected by leaky scanning if the two AUG's are
+separated by \(3n+2\) bases where \(n\) is an integer.  
+
+\vspace{2ex}
+\noindent
+\begin{tabular}{|l|}
+\hline
+Discussion:\\
+\hline
+\end{tabular}
+
+The distance of two AUGs does have influence on rate of leaky
+scanning, but we cannot observe any remarkable features when two AUGs
+are close to each other. Thus, the hypothesis is not confirmed.
+
+The periodic peak of the rate is presumably due to the following
+hypothesis(figure \ref{3n2}).
+Suppose that AUGs are separated by \(3n+2\) bases and translation
+starts from first AUGs. The nucleotide pattern ``ua'' and ``ug''
+just before second AUG trinucleotide and ``a'' just after the second 
+AUG will make stop codons in frame, disturbing the farther translation
+downstream. Thus, translation initiation from first AUG when second
+AUG is separated by \(3n+2\) bases restricts these nucleotide patterns
+around second AUGs. This restriction may make the rate of leaky scanning 
+higher.
+
+\begin{figure}
+\begin{picture}(400,120)
+\put(0,73){\line(1,0){50}}
+\put(50,70){AUG}
+\put(73,73){\line(1,0){200}}
+\put(273,70){\underline{taA}UG}
+\put(305,73){\line(1,0){50}}
+
+
+\put(0,43){\line(1,0){50}}
+\put(50,40){AUG}
+\put(73,43){\line(1,0){200}}
+\put(273,40){\underline{tgA}UG}
+\put(305,43){\line(1,0){50}}
+
+
+
+\put(0,13){\line(1,0){50}}
+\put(50,10){AUG}
+\put(73,13){\line(1,0){210}}
+\put(282,10){A\underline{UGa}}
+\put(311,13){\line(1,0){44}}
+
+\put(150,80){$3n+2$ bases}
+\put(240,81){\shortstack[c]{\small Stop codons in\\ the reading frames}}
+\end{picture}
+
+\caption{When two AUGs are separated by \(3n+2\) base pairs, stop
+codons are likely to be in the same reading frame.}
+\label{3n2}
+\end{figure}
+
+
+
+
+
+

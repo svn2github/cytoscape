@@ -1,0 +1,419 @@
+\documentstyle[12pt,epsf]{report}
+\topmargin=-45pt
+\oddsidemargin=0cm
+\evensidemargin=0cm
+\textheight=23.7cm
+\textwidth=16cm
+
+\def\thebibliography#1{\chapter*{References\markboth
+ {References}{}}\list
+ {[\arabic{enumi}]}{\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+ \advance\leftmargin\labelsep
+ \usecounter{enumi}}
+ \def\newblock{\hskip .11em plus .33em minus .07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax}
+\let\endthebibliography=\endlist
+
+% \def\thebibliography#1{\section*{References\markboth
+%  {References}{}}\list
+%  {[\arabic{enumi}]}{\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+%  \advance\leftmargin\labelsep
+%  \usecounter{enumi}}
+%  \def\newblock{\hskip .11em plus .33em minus .07em}
+%  \sloppy
+%  \sfcode`\.=1000\relax}
+% \let\endthebibliography=\endlist
+
+\title{Computer Analyses of\\ Translation Initiation Sites of Genes}
+\author{
+ Tomita Laboratory ATG Project\\
+ \begin{tabular}{|c|c|l|}
+ \hline
+  Name            & Student ID & Affiliation \\
+ \hline
+  Rintaro Saito   & 89531794 & Graduate School of Media and Governance \\
+  Hidekazu Sasaki & 79401975 & Faculty of Policy Management \\
+  Yuko Osada      & 79450924 & Faculty of Environmental Information \\
+  Yukari Shimizu  & 79452137 & Faculty of Environmental Information \\
+ \hline
+\end{tabular}\\
+% Takefuji Laboratory Neural Computing Group\\
+Keio University Shonan Fujisawa Campus
+}
+\date{}
+\begin{document}
+\maketitle
+
+
+\begin{Large}
+\verb+       +Abstract of Master's Thesis
+
+\vspace{1ex}
+\verb+                       +Academic Year 1996\\
+\end{Large}
+
+\begin{LARGE}
+\begin{center}
+Computer Analyses of\\ Translation Initiation Sites of Genes
+\end{center}
+\end{LARGE}
+
+\vspace{4ex}
+\begin{small}
+Gene is one of the main factors that determine how the organism will
+be like. The information of gene is written on the molecule called DNA
+in the cell. But organisms use only part of DNA as genes. The exact
+mechanism of distinguishing gene regions in DNA is still unknown.
+Previous research showed that there is some remarkable patterns in the 
+boundary region of genes on DNA. 
+In this paper, we focused on one of the boundaries called translation
+initiation site. 
+By introducing computer programs that we developed, comprehensive analyses
+of sequencing results 
+ in GenBank database(database for genetic sequences) were conducted.
+This analyzing method is an original and new one.
+We have discovered tendencies that would be important. For
+example, there  
+is general tendency to have fewer AUG trinucleotides around start
+codons. And higher organisms tend to keep the upstream AUG trinucleotides
+farther from start codons.  \\ 
+
+% for translation  initiation.
+% Translation is a process that ribosomes synthesize protein by scanning
+% a mRNA from left to right.  Although ribosome initiates translation at
+% the first found AUG trinucleotide in eucaryotes most of the time,
+% it sometimes skips
+% and ignores the first AUG and initiates translation at the second or
+% third AUG trinucleotide.  On the other hand in procaryotes, 
+% Shine-Dalgarno sequence
+% seems to play a important role for translation initiation, but this
+% sequence is not completely conserved. And there are many regions that have
+% sequences very similar to Shine-Dalgarno sequences and does not serve as
+% translation initiation site. 
+% After all, the exact mechanism 
+% of selecting AUG for translation initiation is not known.  
+% By using GenBank database(database for nucleotide sequences) and 
+% computer programs, comprehensive analyses were conducted.
+% We have discovered tendencies that may be important.
+% for translation  initiation.
+% Some results show the new aspects of characteristics of translation 
+% initiation and its site.
+\end{small}
+
+\begin{small}
+This work was done by Tomita Laboratory ATG Projects.
+Main roles of each members are briefly described below. 
+
+\begin{description}
+\item[Academic adviser:] M.Tomita
+\item[Project leader:] R.Saito
+\item[Survey:] R.Saito
+\item[Construction of main analysis program] R.Saito
+\item[Analyses of profile around start codons] 
+H.Sasaki(program and analyses of
+eucaryotes), \\Y.Osada(procaryotes), Y.Shimizu(mitochondria), R.Saito(adviser) 
+\item[Analyses of entropy values around start codons] Y.Osada
+\item[Analyses of GC/AT contents in 5'UTR] R.Saito
+\item[Analyses of frequencies of AUG trinucleotides around start
+codons] R.Saito
+\item[Analyses of rate of leaky scanning and distance between two
+AUGs] R.Saito,H.Sasaki
+\item[Analyses of tendencies when two AUGs are close to each other]
+R.Saito, H.Sasaki
+\item[Analyses of relationship between initiation mechanism and
+evolution]
+R.Saito
+\item[Analyses of frequencies of stop codons located downstream of
+skipped AUGs] H.Sasaki
+
+\end{description}
+\end{small}
+
+\vspace{2ex}
+\noindent
+Key Words
+\begin{small}
+\begin{center}
+1.Gene\ \ \  2.Translation Initiation \ \ \ 3.Computer Analyses \ \ \ 4.Start Codon\ \ \ 5.Leaky Scanning
+
+\end{center}
+\end{small}
+\vspace{2ex}
+
+\begin{center}
+{\large Keio University Graduate School of Media and Governance}
+\end{center}
+
+\begin{large}
+\verb+                                             +Rintaro Saito
+\end{large}
+
+\tableofcontents
+
+
+\chapter{Overview}
+\label{overv}
+\input{mp3_intr.tex}
+
+\chapter{Materials and Methods}
+
+In this chapter, original method used for the analyses is described.
+
+\label{matmeth}
+\input{mp11_ovrv.tex}
+
+
+\chapter{Background}
+\label{backgr}
+\input{mp8_fdation.tex}
+
+% \input{mp4_back.tex}
+
+\section{Advance in the Research of Translation Initiation}
+\label{surv}
+\input{mp1_sur.tex}
+
+
+
+
+\chapter{Result of This Research}
+
+We conducted comprehensive computer analyses on translation initiation 
+site by using our method described in chapter \ref{matmeth}.
+In section \ref{prof_ent}, we conduct analyses of nucleotide
+distributions around start codons to verify the results of previous
+research and to discover new tendencies.
+In section \ref{lowfreq}, we conduct comprehensive analyses from
+various view points to examine our hypothesis that  AUG trinucleotides
+near start codons confuse ribosomes. In section \ref{reinitia}, we
+focus on stop codons located downstream of skipped AUGs to investigate the
+significance of those codons for leaky scannings.
+
+\label{resu}
+\section{Profile and Entropy around Start Codons}
+\label{prof_ent}
+
+The purpose of this section is to analyze tendencies of nucleotide
+distributions around start codons to find whether the tendencies are
+consistent with previous research and to discover remarkable tendencies.
+In previous study, Kozak conducted similar analyses with
+699 vertebrate mRNA sequences\cite{label3}.
+But our sequence data were taken from
+GenBank database, which contains more than ten thousands mRNA sequences.
+
+
+
+\input{mp2_prof.tex}
+
+\section{On Low Frequencies of AUG Trinucleotides in front of Start Codons}
+\label{lowfreq}
+
+In this section, we focus on the skipped AUGs that are close to start
+codons.
+Ribosomes ignore AUGs that should not serve as start codons by leaky 
+scanning and they select appropriate AUGs as start codons. But do
+ribosomes confuse to select appropriate AUG as start codon if two AUGs
+are close to each other? 
+% Some experiments showed that AUG
+% trinucleotide just in front of start codon will disturb translation
+% initiation from the appropriate start codon in some organisms such as 
+% yeast $Saccharomyces cerevisiae$\cite{label30}.
+ We investigated this hypothesis from
+4 approaches. That is frequencies of AUG trinucleotides around start codons,
+rate of leaky scanning when two AUGs are close to each other,
+consensus sequences when two AUGs are close, and relationship between
+translation initiation mechanisms and evolutions.
+
+
+\subsection{Frequencies of AUG trinucleotides around start codons}
+ 
+\input{mp7_atgfreq.tex}
+
+\subsection{Rate of leaky scanning and distance between two AUGs}
+
+\input{mp12_rlk.tex}
+
+\subsection{Tendencies when two AUGs are close to each other}
+
+\input{mp9_atgnatg.tex}
+
+
+\subsection{Relationship between initiation mechanism and evolution}
+
+\input{mp6_avdist.tex}
+
+\subsection{Discussion of the cases where two AUGs are close}
+
+From our results, we suggest that there is evolutional pressure to 
+eliminate AUG trinucleotides near start codons, presumably because AUG 
+trinucleotides near start codons may confuse ribosomes. This
+hypothesis is consistent with recent experimental research on yeast
+$Saccharomyces\:cerevisiae$\cite{label30}.
+The tendency to keep the AUG trinucleotides far from start codons
+is
+weaker in lower organisms, presumably because lower organisms have
+more reliable mechanisms to identify the appropriate AUG as a start codon.
+
+However the existing AUGs, which are close to each other, does not
+seem to have much influence on the fidelity of translation initiation. 
+%Thus the
+%hypothesis that upstream AUGs near start codons are
+%unpreferable holds in the long period of time. 
+But in cases where two
+AUGs are separated by two bases, strong consensus sequences may be 
+needed to avoid leaky scannings.
+
+
+
+\section{Frequencies of Stop Codons Located Downstream of Skipped AUGs}
+\label{reinitia}
+\input{mp10_stop.tex}
+
+
+\newpage
+% \setcounter{page}{30}
+\chapter{Conclusion}
+\label{concl}
+\input{mp5_concl.tex}
+
+\chapter*{Acknowledgements}
+The author thanks to associate professor Masaru Tomita for giving me
+suggestions and comments. And thanks to professor Takemochi Ishii and
+associate professor Yoshiyasu Takefuji for giving me a comment on this
+paper. And thanks to Yoshimi Toda and Junko Hara for checking my
+paper. And thanks to my project members, Hidekazu Sasaki, Yuko Osada,
+and Yukari Shimizu for working with me in the project.
+
+\newpage
+\begin{thebibliography}{99}
+% \addcontentsline{toc}{chapter}{References}
+\bibitem{label0} Bruce Alberts et al.,
+Molecular Biology of THE CELL third edition,
+Garland Publishing Inc.
+
+\bibitem{label3} Kozak,M.(1987) An analysis of 5'-noncoding sequences from
+699 vertebrate messenger RNAs,Nucleic Acids Research Volume 15 pp.8125-8148
+
+\bibitem{label1} Kozak,M.(1995),Adherence to the first-AUG rule when a 
+second AUG codon follows closely upon the first,
+Proc.Natl.Acad.Sci.USA Vol.92 pp.2662-2666
+
+\bibitem{label2} Kozak,M.(1990),Downstream secondary structure facilitates
+recognition of initiator codons by eukaryotic ribosomes,
+Proc.Natl.Acad.Sci.USA VOl.87.pp.8301-8305
+
+\bibitem{label4} Kozak,M.(1989),The Scanning Model for Translation:An Update,
+J.Cell.Biol 108,pp.229-241
+
+\bibitem{label6} Kozak,M.(1989),Context Effects and Inefficient Initiation
+ at Non-AUG Codons in Eucaryotic Cell-Free Translation Systems,
+
+\bibitem{label12} Kozak,M.(1992),Regulation of Translation in Eucaryotic
+Systems,Annuu.Rev.Cell Biol.8:197-225
+
+\bibitem{label5} Slunsher, L. et al(1991),mRNA leader length and initiation
+codon context determine alternative AUG selection for the yeast gene MOD5,
+Proc.Natl.Acad.Sci.USA Vol.88,pp.9789-9793
+
+
+\bibitem{label8} Imataka,H. et al(1994), Cell-specific Translational Control
+of Transcription Factor BTEB Expression,J.Biol.Chem. Vol.269 pp.20668-20673
+
+\bibitem{label7} Shine,J. and Dalgarno,L.(1974). The 3'-terminal sequence
+of Escherichia coli 16S ribosomal RNA:Complementarity to nonsense triplets
+and ribosome binding sites. Proc.Nat.Acad.Sci.USA Vol.71 pp1342-1346
+
+\bibitem{label9} Hongyun Chen, et al(1994),
+Determination of the optimal aligned spacing between the Shine-Dalgarno
+sequence and the translational initiation codon of Escherichia coli mRNAs,
+Nuc.Acid.Res. Vol.22 pp.4953-4957
+
+\bibitem{label10} Rinke-Appel,J. et al(1994),
+ Contacts between 16S ribosomal RNA and
+mRNA, within the spacer region separating the AUG initiator codon and the
+Shine-Dalgarno sequence; a site directed cross-linking study,
+Nuc.Acid.Res. Vol.22 pp.3018-3025
+
+\bibitem{label11} Schneider,T et al.(1986),
+Information Content of Binding Sites on Nucleotide Sequences,
+J.Mol.Biol.188,pp.415-431
+
+\bibitem{label18} Kozak,M.(1987),
+ Effects of intercistronic length on the efficiency of reinitiation
+by eucaryotic ribosomes,
+Mol.Cell.Biol.10,pp.3438-3445
+
+\bibitem{label19} Kozak,M.(1991),
+ A short leader sequence impairs the fidelity of initiation by eukaryotic
+ribosomes, Gene Expr, 2, pp.111-115
+
+\bibitem{label20} Claudio O.Gualerzi and Cynthia L.Pon(1990),
+Initiation of mRNA Translation in Procaryotes,
+Biochem.Vol.29,pp.5881-5889
+
+\bibitem{label21} Kozak,M.(1986),
+Influences of mRNA secondary structure on initiation by eucaryotic 
+ribosomes,
+Proc.Natl.Acad.Sci.83,pp.2850-2854
+
+
+\bibitem{label22} Kozak,M.(1983)
+Comparison of initiation of protein synthesis in procaryotes, eucaryotes,
+and organelles,
+Microbiol Rev Vol.47 pp.1-45
+
+\bibitem{label23} IG.Ivanov, et al.(1995)
+A second putative mRNA binding site on the Escherichia coli ribosome.
+Gene 160:75-79
+
+\bibitem{label24} Hannig,EM.(1995)
+Protein synthesis in eucaryotic organisms: new insights into the function
+of translation initiation factor eIF3.
+Bioessays 17:915-919
+
+\bibitem{label25} Herman, A.DE BOER et al.(1990)
+Sequences within Ribosome Binding Site Affecting Messenger RNA Translatability
+and Methods to Direct Ribosomes to Single Messenger RNA Species.
+Methods Enzymol. 185:103-114
+
+\bibitem{label26} Maarten H. de Smit. et al.(1994)
+Translational Initiation on Structured Messengers.
+Another Role for the Shine-Dalgarno Interaction.
+J.Mol.Biol. 235:173-184
+
+\bibitem{label27} Claire M.Fraser et al.(1995)
+The Minimal Gene Complement of Mycoplasma genitalium.
+Science 270:397-403
+
+\bibitem{label28}
+Barrick D. et al.(1994)
+Quantitative analysis of ribosome binding sites in E.coli.
+Nuc.Acid.Res. 22:1287-1295
+
+\bibitem{label29}
+Mehdi H. et al.(1990)
+Initiation of translation at CUG, GUG and ACG codons in mammalian
+cells.
+Gene 91:173-178
+
+\bibitem{label30}
+Ding-Fang Yun et al.(1996)
+mRNA sequences influencing translation and the selection of AUG
+initiator codons in the yeast Saccharomyces cerevisiae.
+Mol.Microbiol.19:1225-1239
+
+\bibitem{label31}
+Luukkonen BG et al.(1995)
+Efficiency of reinitiation of translation on human immunodeficiency
+virus type 1 mRNAs is determined by the length of the upstream open
+reading frame and by intercistronic distance.
+J.Virol. 69:4086-4094
+
+\end{thebibliography}
+
+\end{document}
+
+
+
+

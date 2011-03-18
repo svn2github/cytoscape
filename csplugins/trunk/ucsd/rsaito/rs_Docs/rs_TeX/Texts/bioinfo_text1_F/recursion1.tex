@@ -1,0 +1,452 @@
+\chapter{再帰アルゴリズムの基本}
+
+\begin{abstract}
+再帰アルゴリズムを使うと解く問題によっては、アルゴリズムを簡潔に表現をす
+ることができます。本テキストで扱っているアラインメント、RNA二次構造予測、隠れ
+マルコフモデルで使われるアルゴリズムは、再帰アルゴリズムを用いて簡潔に記
+述することができます。そこでこの章で再帰アルゴリズムを十分にマスターして
+おきましょう。
+\end{abstract}
+
+
+\section{階乗計算の再帰的定義}
+
+再帰は関数の中で自分自身の関数を呼び出すことを意味します。例えば、関数f
+の定義の中でfを呼び出していれば、fは再帰的な関数ということができます。
+これをまず、階乗の計算を例にとって説明しましょう。
+
+階乗というのは１からある数までの積をいいます。例えば、
+
+\begin{itemize}
+\item 9の階乗は\(9 \times 8 \times 7 \times 6 \times 5 \times 4 \times 3 \times 2 \times 1\)
+\item 10の階乗は10×9×8×7×6×5×4×3×2×1、
+\item \(n\)の階乗は \(n ×( n-1)× (n-2) ・・・・・ × 1\)
+\end{itemize}
+となります。\(n\)の階乗は\(n!\)と表します。
+
+さて\(n!\)を厳密に定義するには、どうしたらいいでしょうか？
+一番分かりやすい定義は、
+
+\begin{displaymath}
+n! = n \times (n - 1) \times (n - 2) \times \cdots \times 2 \times 1
+\end{displaymath}
+
+\noindent
+と表すことでしょう。でも\(\cdots\)の部分が直感的であまり厳密な意味を持た
+ない気がしませんか。しかし数学的には以下のように厳密に定義することができ
+ます。
+
+\begin{displaymath}
+n! = 
+\left\{
+\begin{array}{llll}
+1 & (n = 1) & \cdots & (1)\\ 
+n \times (n - 1)! & (n > 1) & \cdots & (2)
+\end{array}\right.
+\end{displaymath}
+
+こうすると例えば、3!は、
+
+\begin{enumerate}
+\item (2)より、3! = 3 x 2!
+\item (2)より、3 x 2! = 3 x 2 x 1!
+\item (1)より、3 x 2 x 1! = 3 x 2 x 1
+\end{enumerate}
+となります。
+
+再帰を使ったプログラムを4の階乗の計算を例として書くと、以下のようになります。
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+#include<stdio.h>
+
+int factorial(int n){
+     if(n==1)n=1;                 /* 式(1)  */
+     else n=n*factorial(n-1);     /* 式(2)  */
+     return n;
+}
+main(){
+     int a;
+     a=factorial(4);
+     printf(“%d\n”,a);
+}
+\end{verbatim}
+
+\noindent
+\underline{\hspace{10cm}}\\
+
+factorialという関数の中で、さらにfactorialという関数を呼び出しているのが
+分かると思います。再帰の様子を表したのが図\ref{factorial_recur}です。4回
+factorial関数が呼び出され、引数nに値が代入されています。nは{\bf ローカル
+変数}と呼ばれるものです。これはその関数が呼ばれた段階で局所的に確保され
+る変数です。噛み砕いて言えば、呼び出す度に異なる変数になります。従って再
+帰1、2、3のそれぞれにおける変数nは別のものなので、例えば再帰2の段階でnに
+2が代入されても、再帰1で定義されたnの値は変化しません。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Figures_EPS/factorial_recur.eps}
+\end{center}
+\caption{factorialの再帰の様子}
+\label{factorial_recur}
+\begin{quotation}
+関数factorial(4)を呼び出したときの再帰の様子を表し、再帰１→再帰２→再帰３→リターン１→リターン２→リターン３の順にプログラムが流れる。変数または式の値を下に示した（引数に関わる数値は上に示した）。
+\end{quotation}
+\end{figure}
+
+再帰プログラムの特徴は２つあります。１つは、関数の中で自分の関数を呼び出
+していること、もう１つは、関数の中に自分の呼び出しをストップされるような
+選択肢があることです。階乗計算の例で言えば、(1)が前者、(2)が後者となりま
+す。後者がなければ、関数は再帰を繰り返して永遠に回ってしまうことになりま
+す。
+
+\section{フィボナッチ数列計算の再帰的定義} 
+
+再帰的アルゴリズムの次の例として、フィボナッチ数列について解説します。フ
+ィボナッチ数列とは、ピサのレオナルドの異名を持つ数学者、レオナルド・フィ
+ボナッチによって発見された数列です。フィボナッチはその著「算術の書」のな
+かで次のような話をしました。
+
+\begin{enumerate}
+\item 生まれたばかりの１つがいのウサギがいます。
+\item この１つがいのウサギは、２か月目から毎月１つがいのウサギを生むとします。
+\item 生まれたウサギも２か月すると、同じように毎月１つがいの子を生むとします。
+\end{enumerate}
+
+このようにして増え続けていくと、毎月のウサギのつがいの数はどうなっていく
+でしょうか。これを数列として表すと、1,1,2,3,5,8,13,...となる数字をたどっ
+ていくことになります。つまり2つ前の数値と1つ前の数値を足すと、現在の数値
+になるのです。フィボナッチ数列の\(n\)番目の数値\({\rm fibonatcci}(n)\)を
+数式で表現すると、以下のようになります。
+
+\begin{equation}
+{\rm fibonatcci}(n) = 
+\left\{
+\begin{array}{llll}
+1 & (n = 1) & \cdots & (1)\\ 
+1 & (n = 2) & \cdots & (2)\\ 
+{\rm fibonatcci}(n-1) & \cdots & \\
+\ \ \ \ \ \ \ +{\rm fibonatcci}(n-2) & (n > 2) & \cdots & (3)
+\end{array}\right.
+\label{fibonatcci_eq}
+\end{equation}
+
+これをそのまま関数として実装すると、以下のようになります。
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+#include <stdio.h>
+
+int fibonatcci(int n){
+  int ret;
+  if(n == 1)ret = 1; /* 式(1) */
+  else if(n == 2)ret = 1; /* 式(2) */
+  else ret = fibonatcci(n - 1) + fibonatcci(n - 2); /* 式(3) */
+  return ret; 
+}
+
+main(){
+  printf("%d\n", fibonatcci(8));
+}
+\end{verbatim}
+\noindent
+\underline{\hspace{10cm}}
+
+\section{計算の重複の回避}
+\label{recur_fast}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.4]{Figures_EPS/fb_recur1.eps}
+\end{center}
+\caption{関数fibonatcciの再帰}
+\label{fibo_recur}
+\begin{quotation}
+関数fibonatcci(fbと略記)の引数に代入される値が括弧の中に、呼び出される順
+番が関数の下に書かれている。(a)は途中計算の記録をしない場合の関数の呼び
+出され方で、(b)が途中計算の記録をする場合。(b)の方ではfb(3)で一度再帰が
+起こると次からは再帰が起こらなくなり、結果として関数fibonatcciの呼び出し
+回数が減っていることが分かる。
+\end{quotation}
+\end{figure}
+
+fibonatcci関数をそのまま実装しただけでは、求める数が大きくなった場合、プ
+ログラムの実行速度が非常に遅くなります。そこでプログラムを高速化する方法
+を考えましょう。図\ref{fibo_recur}(a)はfibonatcci(5)が呼ばれたとき、どの
+ように再帰が起こっているかを示しています。よく見てみると、fibonatcci(3)
+が3回目と7回目に呼び出されているのが分かります。fibonatcci(3)の値は3回目
+の呼び出し時に一度求めていますから、7回目の呼び出し時にもう一度再帰して
+答えを求めるのは効率が悪いと言えます。そこでfibonatcci(3)の値を保存して
+おけば、次回fibonatcci(3)が呼ばれたときにもう一度再帰することなく、保存
+してある値を答えとして返すことができます。結果として無駄な再帰が起こらな
+くなるので、プログラムの高速化が実現できます(図\ref{fibo_recur}(b))。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.4]{Figures_EPS/fb_recur_rec.eps}
+\end{center}
+\caption{関数fibonatcciの計算過程の記録アルゴリズム}
+\label{fibo_recur_rec}
+\begin{quotation}
+fibonatcci(n)が呼ばれたとき、\verb+fib_rec[n]+の値をまず見る。そこに計算
+済みの答えがある場合(\verb+fib_rec[n]+ \(>\) -1)、\verb+fib_rec[n]+をそのまま返す。そうで
+なければ、再帰計算を行い、その答えを\verb+fib_rec[n]+に記録した上で返す。nが1ま
+たは2のときの動作は省略した。
+\end{quotation}
+\end{figure}
+
+
+これをプログラムとして実装するには、
+途中計算結果を保存しておく配列変数\verb+fib_rec[]+を定義し、初期値
+-1(負の値なら何でもよい)を代入しておきます。そしてfibonatcci(n)の値が計
+算されたときに、\verb+fib_rec[n]+にその値を代入します。そして
+fibonatcci(n)が呼ばれる度に\verb+fib_rec[n]+の値を確認し、初期値-1でなけ
+れば、\verb+fib_rec[n]+にはfibonatcci(n)の値が入っていることになるので、
+\verb+fib_rec[n]+の値をそのまま返せばいいことになります。
+図\ref{fibo_recur_rec}にそのアルゴリズムの概要を示しました。以下が実装例です。
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+#include <stdio.h>
+#define MAX_REC 1000000
+
+static int fib_rec[MAX_REC];
+   /* fibonatcciの計算結果を入れておく配列変数 */
+
+int fibonatcci(int n){
+   int ret;
+
+   if(fib_rec[n] > 0)return fib_rec[n];
+      /* fib_rec[n]が-1でなければ、fib_rec[n]にfibonatcci(n)の
+         答えが入っている */
+
+   if(n == 1)ret = 1; /* 式(1) */
+   else if(n == 2)ret = 1; /* 式(2) */
+   else ret = fibonatcci(n - 1) + fibonatcci(n - 2); /* 式(3) */
+
+   fib_rec[n] = ret; /* 再帰による計算結果をfib_rec[n]に保存 */
+                     /* 次回からはこの中に入っている値を返す */
+   return ret; 
+}
+
+main(){
+   int i;
+   for(i = 0;i < MAX_REC;i ++)
+      fib_rec[i] = -1; /* 配列変数 fic_rec[]の初期化
+                          (-1を入れておく) */
+   printf("%\n", fibonatcci(8));
+}
+\end{verbatim}
+\noindent
+\underline{\hspace{10cm}}
+
+上記プログラムを実装して演習問題\ref{fib_prac2},\ref{fib_prac3}を解いて
+みましょう。
+
+式\ref{fibonatcci_eq}をそのまま実装すると再帰関数をなってしまいますが、
+再帰を使わない方法もあります。fibonatcci(n)の値は
+fibonatcci(n-1)とfibonatcci(n-2)の値が分かっていれば求めることができます。
+逆に言えば、fibonatcci(n-1)とfibonatcci(n-2)の値を{\bf 先に}求めてしまえば、
+fibonatcci(n)の値は直ちに求めることができます。
+
+再帰計算では、fibonatcci(n)の値を要求し、その次にfibonatcci(n-1)と
+fibonatcci(n-2)の値を要求してこの２つの値が求まったところで、
+fibonatcci(n)の値を求めていました。この要求するというステップ(関数の再帰
+呼び出し)を省き、fibonatcci(0)=0, fibonatcci(1)=1として、計算を
+fibonatcci(2), fibonatcci(3), \(\cdots\)と「下から積み上げていく」ことに
+より、再帰を使わずかつ効率の良いプログラムを作成することができます。以下
+がその例です。
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+int fibonatcci(int n){
+  int i;
+  fib_rec[0] = 0;
+  fib_rec[1] = 1;
+  for(i = 2;i <= n; i ++)
+    fib_rec[i] = fib_rec[i - 1] + fib_rec[i - 2];
+  return fib_rec[n];
+}
+\end{verbatim}
+\noindent
+\underline{\hspace{10cm}}
+
+
+\section{計算のオーダー}
+
+\(n\)を引数としたとき、fibonatcciという関数が呼ばれる回数\(F_{r}\)
+は途中計算結果を記録しないとき、
+
+\begin{small}
+\begin{displaymath}
+F_{r}(n)=
+1-\frac{1}{\sqrt{5}}
+\left\{(3+\sqrt{5})\left[1-\left(\frac{1+\sqrt{5}}{2}\right)^{n-2}\right]
+      -(3-\sqrt{5})\left[1-\left(\frac{1-\sqrt{5}}{2}\right)^{n-2}\right]\right\} 
+\end{displaymath}
+\end{small}
+
+\noindent
+になります\footnote{\(a_{1}=1,a_{2}=1,a_{n}=a_{n-1}+a_{n-2}+1,n > 2\)と
+して、\(a_{n}\)の一般項を求めるとこのような数式になる。}。ところが、途中計算
+結果を記録すると、回数を\(2n-3\ (n \geq 2)\)まで減らすことができます。こ
+こでオーダーの考え方を使ってこの計算量をもう少し分かりやすく表現しましょ
+う。
+
+ある定数\(c\)が存在して十分大きな\(n\)に対し、\(g(n)<cf(n)\)が成立すると
+き、「\(g(n)\)は\(O(f(n))\)」と書き、\(g(n)\)は\(f(n)\)のオーダーである
+と呼びます。先ほどの例で\(g(n) = 2n-3\)とおくと、\(c=3\)、\(f(n)=n\)とす
+れば、\(n>-3\)に対し\(g(n)<cf(n)\)が成立するので、途中計算を記録する場合
+の計算量は\(O(n)\)となります。同様にして、定数\(c\)を十分大きく設定すれば、
+十分大きな\(n\)に対して\(c\cdot 2^{n} > F_{r}(n)\) 
+が成立するため、途中計算を記録しない場合の計算量は\(O(2^{n})\)とな
+ります。明らかに途中計算を記録した方が計算量が少なくなるのが分かると思い
+ます。
+
+\section{ハノイの塔}
+
+階乗やフィボナッチ数列の計算例では、再帰のメリットが少し分かりづらかった
+と思います。しかし再帰はときとしてプログラムの簡潔な記述を可能にします。
+それを「ハノイの塔」を題材にしてみてゆきましょう。
+
+ハノイの塔は、今から100年くらい前に、フランスのリュカという人が考え出し
+たゲームです。台の上に柱が３本立っていて、そのうちの1本に円盤が何枚か、
+大きい順にはまっています。この円盤をルールに従って、そっくり別の柱に移す
+ゲームです。
+
+円盤の移し方のルールは以下の通りです。
+
+\begin{enumerate}
+\item １回に1枚の円盤しか動かしてはいけません。
+\item 小さい円盤の上に大きい円盤を載せてはいけません。つまり、円盤を置くときは、必ずその円盤より大きな円盤の上に置かなければなりません。
+\item 円盤はどれかの柱にかならずはめなければなりません。手に持っていたり、下においたりしてはいけません。
+\end{enumerate}
+
+こうしてできるだけ少ない回数で別の柱へ円盤を全部移すようにします。
+
+図\ref{saucer1}は円盤が３枚のときの移し方です。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures_EPS/fig_samp.eps}
+\end{center}
+\caption{円盤が３枚のときの移し方}
+\label{saucer1}
+\end{figure}
+
+ここでどの棒からどの棒へどのような順序で円盤を移せばいいかを求めるアルゴ
+リズムを考えましょう。
+今棒\(\alpha\)、\(\beta\)、\(\gamma\)があるとして\footnote{
+\(\alpha\)、\(\beta\)、\(\gamma\)は棒を表す変数として使っている。A,B,Cは棒を表す定数として
+使っている。}、\(\alpha\)に置かれて
+いる円盤\(n\)個を\(\beta\)に移す操作を\(trans(\alpha \rightarrow \beta, n)\)
+と表します。
+
+\begin{figure}
+\includegraphics[scale=0.8]{Figures_EPS/tower_fig2.eps}
+\caption{円盤が\(n\)枚のときの移し方}
+\label{saucer2}
+\end{figure}
+
+棒\(\alpha\)=Aに置かれた\(n\)個の円盤を\(\gamma\)=Cを中継して棒
+\(\beta\)=Bに移すときには、図\ref{saucer2}に示すように、まずAの上の
+\(n-1\)個の円盤を一回Cに移し、Aの一番下の円盤をBに移してから、Cに退避さ
+せた\(n-1\)個の円盤をBに移します。この操作は再帰を使って以下のように非常
+に簡潔に表すことができます。
+
+\begin{displaymath}
+\begin{array}{l}
+trans(\alpha \rightarrow \beta, n) = trans(\alpha \rightarrow \gamma, n-1) + trans(\alpha \rightarrow \beta, 1)\\
+\ \ \ \ \ \ \ + trans(\gamma \rightarrow \beta, n-1)\\
+\end{array}
+\end{displaymath}
+
+但し操作1+操作2は、操作1を行った後に操作2を行うことを意味します。ちなみ
+に\(trans(\alpha \to \beta, 1)\)は、棒\(\alpha\)の一番上の円盤を一枚取っ
+て、棒\(\beta\)に移すことを意味します。プログラムとして実装するときは、
+円盤が移ったことを表示したり(演習問題\ref{hanoi_prac1})、メモリ上で円盤
+の位置を移し変えたり(演習問題\ref{hanoi_prac2})する動作に該当します。演
+習問題を通じてハノイの塔の円盤を移し変える手順を求めるアルゴリズムをぜひ実装
+してみて下さい。
+
+\begin{practice}
+\item \label{fib_prac2} フィボナッチ数列の36項目の数字（36ヶ月目のつがい
+の数）はいくつになるでしょうか？フィボナッチ数列を計算するプログラムを使
+って調べましょう。
+\item \label{fib_prac3} フィボナッチ数列が10,000,000を超
+えるのは、第何項目でしょうか？
+
+\item \label{hanoi_prac1} ハノイの塔で、n枚の円盤を柱fromから柱toへ移すと
+きの操作を表示する再帰的関数trans(char from, char to, int n)を作りましょう。
+trans('A', 'B', 3)の出力結果は以下のようになるはずです。
+
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+A->B
+A->C
+B->C
+A->B
+C->A
+C->B
+A->B
+\end{verbatim}
+\noindent
+\underline{\hspace{10cm}}
+\vspace{1em}
+
+\item \label{hanoi_prac2} ハノイの塔で棒Aに下から順（大きい順）に円盤
+a,b,cが刺さっているとします。これを柱Bに移し変えるときの状態の移り変わり
+を表示するプログラムを作りましょう。以下のような出力になるはずです。
+
+\begin{small}
+\noindent
+\underline{\hspace{10cm}}
+\begin{verbatim}
+A:a,b,c
+B:
+C:
+
+A:a,b
+B:c
+C:
+
+A:a
+B:c
+C:b
+
+A:a
+B:
+C:b,c
+
+A:
+B:a
+C:b,c
+
+A:c
+B:a
+C:b
+
+A:c
+B:a,b
+C:
+
+A:
+B:a,b,c
+C:
+\end{verbatim}
+\noindent
+\underline{\hspace{10cm}}
+\end{small}
+
+\vspace{1em}
+
+\item ハノイの塔で、移す円盤の数を\(n\)としたときにかかる計算量のオーダは？
+
+\end{practice}
+
+

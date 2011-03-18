@@ -1,0 +1,1403 @@
+\section{複素変数の関数}
+
+\setcounter{exer}{0}
+\setcounter{preexer}{0}
+\setcounter{theorem}{0}
+
+\label{complex_number}
+
+
+
+
+\subsection{複素変数の関数}
+
+\(i\)を{\bf 虚数単位}(\(i^{2}=-1\))とし、\(a,b\)を実数としたとき、\(\alpha=a+bi\)を{\bf 複素数}(complex number)ということを思い出そう。
+\(a\)と\(b\)をそれぞれ複素数\(\alpha\)の実部と虚部といい、\(\mbox{Re}(\alpha)=a,\mbox{Im}(\alpha)=b\)で
+表す。また\(\bar{\alpha}=a-bi\)を\(\alpha\)の{\bf 共役複素数}または共役数という。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures/complex_xy1}
+\end{center}
+\vspace{-2em}
+\caption{複素数と複素数平面}
+\label{complex_xy1}
+\end{figure}
+
+実数が直線上のある1点を表すものとすれば、複素数は図\ref{complex_xy1}に示すように、\(xy\)座標を持つ平面上の1点P\((x,y)\)を表すと考えることができる。
+この1点に対応する複素数\(z\)は\(z=x+yi\)である。図の例では\(x=a, y=b\)になっている。
+このように点が複素数を表しているような平面を{\bf 複素平面}\index{ふくそへいめん@複素平面}またはガウス平面という。
+複素数の絶対値はベクトルOPの長さと定義され、\(|a+bi|=\sqrt{a^{2}+b^{2}}\)で表される。
+
+複素変数\(w\)が\(w=u+vi\)(但し\(u,v\)は実数)と表され、複素変数\(u,v\)がさらに\(u=u(x,y)\)、\(v=v(x,y)\)(但し\(x,y\)は実数)と
+表されるとき、\(w\)は\(z\)の関数であるといい\footnote{\(z\)は\((x,y)\)の組み合わせで\(z=x+yi\)と一意に決まることに注意。}、
+
+\begin{equation}
+w=f(z)
+\end{equation}
+
+\noindent
+などの記号を用いて表す。
+
+
+\subsection{正則関数}
+
+複素変数\(z\)の関数\(f(z)\)の定義域内に点\(z=a\)を考えて独立変数\(z\)が点\(a\)に近づくとき、その近づき方に
+関係なく極限
+\(\lim_{z\to a}\frac{f(z)-f(a)}{z-a}\)
+が確定して存在しているとき、\(w=f(z)\)は点\(z=a\)で微分可能であるといい、これを
+
+\begin{equation}
+f'(a)=\frac{df(a)}{dz}=\lim_{z\to a}\frac{f(z)-f(a)}{z-a}
+\label{eq_complex123}
+\end{equation}
+
+\noindent
+と表す。また\(\Delta z=z-a\)、\(\Delta w=(f(z)-f(a)\)とおくと、
+式\ref{eq_complex123}を
+
+\begin{equation}
+\lim_{\Delta z\to 0}\frac{\Delta w}{\Delta z}=\lim_{\Delta z\to 0}\frac{f(a+\Delta z)-f(a)}{\Delta z}
+\label{eq_complex124}
+\end{equation}
+
+\noindent
+と書くこともできる。ここで\(w=f(z)\)が点\(z=a\)で微分可能であるとは、\(\Delta z\)が0に近づけば
+その経路に関わらず式\ref{eq_complex124}が確定した値になることである。
+今\(z\)が取る値の範囲を領域\(D\)で表すと、\(D\)内の全ての点で関数\(w=f(z)\)が微分可能であるとき、
+関数\(w=f(z)\)は領域\(D\)で{\bf 正則}\index{せいそく@正則}であるといい、
+\(w=f(z)\)を{\bf 正則関数}\index{せいそくかんすう@正則関数}という。このとき、領域\(D\)の各点\(z\)での微分係数
+\(f'(z)\)を考えることによって、\(w=f(z)\)の導関数が得られる。導関数については、実変数の関数の場合と
+同じ記号を用いる。
+
+\vspace{1em}
+
+\refstepcounter{preexer}
+
+\noindent
+{\bf 例題\thesection-\thepreexer}:~ 
+\(w=z^{2}=(x+yi)^{2}\)のとき、\(w\)を微分しよう。
+
+\begin{displaymath}
+f'(z)=\lim_{\Delta z\to 0}\frac{\Delta w}{\Delta z}
+=\lim_{\Delta z\to 0}\frac{(z+\Delta z)^{2}-z^{2}}{\Delta z}=\lim_{\Delta z\to 0}(2z+\Delta z)=2z
+\end{displaymath}
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ 次の関数\(w\)を微分せよ。
+\begin{displaymath}
+w=\frac{z}{z-i}=\frac{(x+yi)}{x+yi-i}
+\end{displaymath}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ 次の関数\(w\)は微分できないことを示せ。
+
+\begin{displaymath}
+w=2x+yi
+\end{displaymath}
+
+\subsection{コーシー・リーマンの方程式}
+
+複素変数\(z=x+yi\)の関数\(f(z)=u(x,y)+v(x,y)i\)が微分可能であるための条件を求めよう。
+実変数\(t\)の関数
+\(\varphi(t)=\frac{at+b}{ct+d}\)
+が定数であるための必要十分条件は、\(ad-bc=0\)である。なぜならば
+\(\varphi'(t)=\frac{ad-bc}{(ct+d)^{2}}\)
+であるからである。これを用いて以下の定理を導こう。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:~ 領域\(D\)で定義された関数\(f(z)=u(x,y)+v(x,y)i\)
+について、\(u(x,y)\)と\(v(x,y)\)が連続な偏導関数を持つとする。このとき
+関数\(f(z)\)が正則であるための必要十分条件は、
+
+\begin{equation}
+\frac{\partial u}{\partial x}=\frac{\partial v}{\partial y}
+\ \ \ \mbox{かつ} \ \ \ 
+\frac{\partial u}{\partial y}=-\frac{\partial v}{\partial x}
+\label{eq_cauchy_riemann10}
+\end{equation}
+
+\noindent
+{\bf 証明\thesection-\thetheorem}:~
+$w=f(z)$とする。$\Delta z=\Delta x+\Delta yi, \Delta w=f(z+\Delta z)-f(z)$とすれば、
+
+\begin{displaymath}
+\frac{\Delta w}{\Delta z}=\frac{f(z+\Delta z)-f(z)}{\Delta z}=\frac{\{u(x+\Delta x,y+\Delta y)+v(x+\Delta x,y+\Delta y)i\}-\{u(x,y)+v(x,y)i\}}{\Delta x+\Delta yi}
+\end{displaymath}
+
+\noindent
+ゆえに、
+
+\begin{equation}
+\frac{\Delta w}{\Delta z}=\frac{\{u(x+\Delta x,y+\Delta y)-u(x,y)\}+\{v(x+\Delta x,y+\Delta y)-v(x,y)\}i}{\Delta x+\Delta yi}
+\label{eq_cauchy_riemann_d1}
+\end{equation}
+
+\noindent
+さて$u(x,y)$と$v(x,y)$が連続な偏導関数を持つから、これらは全微分可能である。ゆえに
+
+\begin{eqnarray}
+u(x+\Delta x,y+\Delta y)-u(x,y) &=& u_{x}\Delta x+u_{y}\Delta y+\epsilon_{1}\label{eq_cauchy_riemann_d2_1}\\
+v(x+\Delta x,y+\Delta y)-v(x,y) &=& v_{x}\Delta x+v_{y}\Delta y+\epsilon_{2}\label{eq_cauchy_riemann_d2_2}
+\end{eqnarray}
+
+\noindent
+となる。$\rho$=$\sqrt{(\Delta x^{2})+(\Delta y)^{2}}$として
+
+\begin{equation}
+\frac{\epsilon_{1}}{\rho}\rightarrow 0,\ \ \ \ \frac{\epsilon_{2}}{\rho}\rightarrow 0\ \ \ \ \ (\Delta x\rightarrow 0, \Delta y\rightarrow 0) \label{eq_cauchy_riemann_d3}
+\end{equation}
+
+\noindent
+式\ref{eq_cauchy_riemann_d2_1},\ref{eq_cauchy_riemann_d2_2}を式\ref{eq_cauchy_riemann_d1}に代入して
+$m_{*}=\frac{\Delta y}{\Delta x}$とおけば、
+
+\begin{displaymath}
+\frac{\Delta w}{\Delta z}=\frac{(u_{x}\Delta x+u_{y}\Delta y+\epsilon_{1})+(v_{x}\Delta x+v_{y}\Delta y+\epsilon_{2})i}{\Delta x+\Delta yi}
+\end{displaymath}
+
+\noindent
+従って
+
+\begin{equation}
+\frac{\Delta w}{\Delta z}=\frac{(u_{x}+u_{y}m_{*})+(v_{x}+v_{y}m_{*})i}{1+m_{*}i}+\epsilon
+\label{eq_cauchy_riemann_d4}
+\end{equation}
+
+\noindent
+ここで
+
+\begin{displaymath}
+\epsilon=\left(\frac{\epsilon_{1}}{\rho}\frac{\Delta x}{\rho}+\frac{\epsilon_{2}}{\rho}\frac{\Delta y}{\rho}\right)+\left(\frac{\epsilon_{2}}{\rho}\frac{\Delta x}{\rho}-\frac{\epsilon_{1}}{\rho}\frac{\Delta y}{\rho}\right)i
+\end{displaymath}
+
+\noindent
+である。
+さて$\left|\frac{\Delta x}{\rho}\right|\leq 1, \left|\frac{\Delta y}{\rho}\right|\leq 1$であるから、
+式\ref{eq_cauchy_riemann_d3}によって
+
+\begin{equation}
+\epsilon\rightarrow 0\ \ \ \ \ (\Delta x\rightarrow 0, \Delta y\rightarrow 0)
+\label{eq_cauchy_riemann_d5}
+\end{equation}
+
+\noindent
+である。
+今点$z$を通る曲線$C$を任意にとる。曲線$C$に沿って点$z+\Delta z$が点$z$に近づくとすれば、曲線$C$上の点$z$における
+接線の傾きを$m$として、
+
+\begin{equation}
+m_{*}=\displaystyle \frac{\Delta y}{\Delta x}\rightarrow m
+\end{equation}
+
+\noindent
+である。ゆえに式\ref{eq_cauchy_riemann_d4}と\ref{eq_cauchy_riemann_d5}によって
+
+\begin{equation}
+\frac{\Delta w}{\Delta z}\rightarrow\frac{(u_{y}+v_{y}i)m+(u_{x}+v_{x}i)}{im+1}
+\end{equation}
+
+\noindent
+さて$w=f(z)$が微分可能であるための必要十分条件は
+
+\begin{displaymath}
+\frac{(u_{y}+v_{y}i)m+(u_{x}+v_{x}i)}{im+1}
+\end{displaymath}
+
+\noindent
+がどんな$m$に対しても同一の値であることである。従ってこの必要十分条件は
+
+\begin{displaymath}
+(u_{y}+v_{y}i)\cdot 1-(u_{x}+v_{x}i)\cdot i=0
+\end{displaymath}
+
+\noindent
+ゆえに$(u_{y}+v_{x})+(v_{y}-u_{x})i=0$となり、
+従って$u_{x}=v_{y},  u_{y}=-v_{x}$が成立する。
+
+\begin{flushright}
+□
+\end{flushright}
+
+\subsection{複素積分}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures/curve1}
+\end{center}
+\vspace{-2em}
+\caption{積分経路の曲線\(C\)}
+\label{curve1}
+\end{figure}
+
+複素平面上の曲線\(C:z=z(t)=x(t)+iy(t)\ (a \leq t \leq b)\)と関数\(f(z)\)を考える。図\ref{curve1}に
+示すように、
+\(C\)上に\(C\)の向きに従って順次点列\(z_{0}=z(a),z_{1},z_{2},\cdots, z_{n-1},z_{n}=z(b)\)を
+とって\(C\)を\(n\)個の区画に分割する。さらに分割した各区画の曲線上に任意に1つずつ点\(e_{1},e_{2},\cdots,e_{n}\)を取る。
+ここで
+
+\begin{equation}
+S_{\Delta}=\sum_{i=1}^{n}f(e_{i})(z_{i}-z_{i-1})
+\label{eq_complex_integ105}
+\end{equation}
+
+\noindent
+を考える。分割区画数\(n\)の数を限りなく増やして全ての区画の曲線の長さを限りなく0に近づけたとき、\(S_{\Delta}\)が一定値\(S\)に近づくなら、
+\(f(z)\)の経路\(C\)に沿っての複素積分を
+\(\displaystyle S=\int_{C}f(z)dz\)
+と定義する。z=\(z_{0},z_{1},\cdots,z_{n-1},z_{n}\)を与える\(t\)を\(t_{0},t_{1},t_{2},\cdots,t_{n-1},t_{n}\)とすれば
+式\ref{eq_complex_integ105}は
+
+\begin{equation}
+S_{\Delta}=\sum_{i=1}^{n}f(e_{i})\frac{z(t_{i})-z(t_{i-1})}{t_{i}-t_{i-1}}(t_{i}-t_{i-1}) \ \ \ (t_{i-1} < e_{i} < t_{i})
+\label{eq_complex_integ106}
+\end{equation}
+
+\noindent
+となる。ここで全ての区画で\(t_{i}-t_{i-1}\to 0\)のとき、式\ref{eq_complex_integ106}は、
+
+\begin{equation}
+S=\int_{t=a}^{t=b}f(z(t))\frac{dz(t)}{dt}dt=\int_{C}f(z)dz
+\label{eq_complex_integ107}
+\end{equation}
+
+\noindent
+と表される。
+
+
+\vspace{1em}
+
+\refstepcounter{preexer}
+
+\noindent
+{\bf 例題\thesection-\thepreexer}:~ 以下の複素積分を求めよう。
+
+\begin{displaymath}
+\int_{C}z^{2}dz,\ \ \ \ \ C:z=t+2ti\ \ \ (0 \leq t \leq 1)
+\end{displaymath}
+
+\noindent
+これは直線\(y=2x\)に沿う積分である。\(\frac{dz}{dt}=1+2i\)から
+
+\begin{displaymath}
+\int_{C}z^{2}dz=\int_{0}^{1}(t+2ti)^{2}(1+2i)dt=(1+2i)^3\int_{0}^{1}t^{2}dt=\frac{1}{3}(1+2i)^{3}
+\end{displaymath}
+
+\vspace{1em}
+
+\refstepcounter{preexer}
+
+\noindent
+{\bf 例題\thesection-\thepreexer}:~ \label{ex_complex_integ_sample1}
+以下の等式が成り立つことを示そう。
+
+\begin{eqnarray}
+& & \int_{C}\frac{dz}{z-a} = 2\pi i\label{eq_complex_integ_sample100_1}\\
+& & \int_{C}\frac{dz}{(z-a)^{n}} = 0\ \ \ \ \ (n=2,3,\cdots)\label{eq_complex_integ_sample100_2}
+\end{eqnarray}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures/complex_integ_sample1}
+\end{center}
+\vspace{-2em}
+\caption{円\(C\)}
+\label{complex_integ_sample1}
+\end{figure}
+
+\noindent
+但し$C$は円$|z-a|=r$であり、円$C$は正の回転の向き(反時計回り)を持つとする。
+図\ref{complex_integ_sample1}に示すように、円$C$は$z=a+re^{i\theta} (0\leq\theta\leq 2\pi)$で表され、$\displaystyle \frac{dz}{d\theta}=ire^{i\theta}$である。
+従って式\ref{eq_complex_integ_sample100_1}は
+
+\begin{displaymath}
+\int_{C}\frac{dz}{z-a}=\int_{0}^{2\pi}\frac{1}{re^{i\theta}}ire^{i\theta}d\theta=i\int_{0}^{2\pi}d\theta=2\pi i
+\end{displaymath}
+
+\noindent
+となり、また式\ref{eq_complex_integ_sample100_2}は
+
+\begin{displaymath}
+\int_{C}\frac{dz}{(z-a)^{n}}=\frac{i}{r^{n-1}}\int_{0}^{2\pi}e^{-i(n-1)\theta}d\theta=\frac{i}{r^{n-1}}\left[-\frac{1}{i(n-1)}e^{-i(n-1)\theta}\right]_{0}^{2\pi}=0
+\end{displaymath}
+
+\noindent
+となる。
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ 次の複素積分を求めよ。
+\begin{displaymath}
+\int_{C}(1+z)^{2}dz, \ \ \ \ \ C:z=ti \ (0 \leq t \leq 1)
+\end{displaymath}
+
+\subsection{グリーンの定理}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:~
+$xy$平面で単一閉曲線\(C\)で囲まれた領域を\(F\)とする。
+2つの関数\(M(x,y)\)と\(N(x,y)\)について、
+
+\begin{equation}
+\int_{C}(Mdx+Ndy)=\int\int_{F}\left(\frac{\partial N}{\partial x}-\frac{\partial M}{\partial y}\right)dxdy
+\label{eq_green_theorem1}
+\end{equation}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures/green1}
+\end{center}
+\vspace{-2em}
+\caption{積分経路の曲線\(C\)}
+\label{green1}
+\end{figure}
+
+\noindent
+{\bf 証明\thesection-\thetheorem}:~
+簡単にするため、図\ref{green1}のように\(y\)軸に平行な直線と曲線\(C\)は多くとも2点でしか交わらない場合について証明しよう。
+この図の記号を用いて、曲線AEBと曲線ADBの方程式をそれぞれ$y=Y_1(x)$, $y=Y_{2}(x)$とする。さて、
+
+\begin{displaymath}
+\int\int_{F}\frac{\partial M}{\partial y}dxdy  =  \int_{a}^{b}\int_{Y_{1}(x)}^{Y_{2}(x)}\frac{\partial M}{\partial y}dxdy
+                                               =  \int_{a}^{b}\left[M(x,y)\right]_{y=Y_{1}(x)}^{y=Y_{2}(x)}dx
+                                               =  \int_{a}^{b}\{M(x,Y_{2}(x))-M(x,Y_{1}(x))\}dx
+\end{displaymath}
+
+\noindent
+従って
+
+\begin{equation}
+\int\int_{F}\frac{\partial M}{\partial y}dxdy=\int_{a}^{b}M(x,Y_{2}(x))dx-\int_{a}^{b}M(x,Y_{1}(x))dx
+\label{eq_green_1}
+\end{equation}
+
+\noindent
+ところで
+
+\begin{equation}
+\int_{a}^{b}M(x,Y_{2}(x))dx=\int_{\mbox{\small ADB}}Mdx=-\int_{\mbox{\small BDA}}Mdx\ \ \ \ \ \int_{a}^{b}M(x,Y_{1}(x))dx=\int_{\mbox{\small AEB}}Mdx
+\label{eq_green_1_1}
+\end{equation}
+
+\noindent
+だが、これを式\ref{eq_green_1}に代入すると、
+
+\begin{equation}
+\int\int_{F}\frac{\partial M}{\partial y}dxdy=-\int_{\mbox{\small BDA}}Mdx-\int_{\mbox{\small AEB}}Mdx=-\int_{C}Mdx
+\label{eq_green_2}
+\end{equation}
+
+\noindent
+同様にして
+
+\begin{equation}
+\int\int_{F}\frac{\partial N}{\partial x}dxdy=\int_{C}Ndy
+\label{eq_green_3}
+\end{equation}
+
+\noindent
+式\ref{eq_green_3}-式\ref{eq_green_2}を計算することによって
+式\ref{eq_green_theorem1}を得る。
+
+\begin{flushright}
+□
+\end{flushright}
+
+
+\subsection{コーシーの定理}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:~ \label{theorem_cauchy_main1}
+関数$f(z)$は単一閉曲線$C$と$C$の内部を含む領域で正則であるとする。このとき、
+
+\begin{equation}
+\int_{C}f(z)dx=0
+\label{eq_cauchy_theorem1}
+\end{equation}
+
+
+\noindent
+{\bf 証明\thesection-\thetheorem}:~
+単一閉曲線$C$の内部を$F$とする。グリーンの定理によって、$f(z)=u+vi$とすれば、
+
+\begin{eqnarray}
+\int_{C}\left(ux-vdy\right) & = & \int\int_{F}\left(-\frac{\partial v}{\partial x}-\frac{\partial u}{\partial y}\right)dxdy\label{eq_cauchy1_1}\\
+\int_{C}(vdx+udy) & = & \int\int_{F}\left(\frac{\partial u}{\partial x}-\frac{\partial v}{\partial y}\right)dxdy\label{eq_cauchy1_2}
+\end{eqnarray}
+
+\noindent
+さて$f(z)$は正則であるから、コーシー・リーマンの方程式によって、
+
+\begin{equation}
+\frac{\partial u}{\partial x}=\frac{\partial v}{\partial y},\ \ \ \ \ \frac{\partial u}{\partial y}=-\frac{\partial v}{\partial x}
+\end{equation}
+
+\noindent
+従って式\ref{eq_cauchy1_1}、\ref{eq_cauchy1_2}によって
+
+\begin{equation}
+\int_{C}(udx-vdy)=0, \int_{C}(vdx+udy)=0
+\label{eq_cauchy2}
+\end{equation}
+
+\noindent
+である。ところが、複素積分の一般的な関係
+
+\begin{displaymath}
+\int_{C}f(z)dx=\int_{C}(u+vi)(dx+dyi)=\int_{C}(udx-vdy)+i\int_{C}(vdx+udy)
+\end{displaymath}
+
+\noindent
+によって
+
+\begin{equation}
+\int_{C}f(z)dx=\int_{C}(udx-vdy)+i\int_{C}(vdx+udy)
+\label{eq_cauchy3}
+\end{equation}
+
+\noindent
+である。これを式\ref{eq_cauchy2}に代入すれば、
+式\ref{eq_cauchy_theorem1}
+が得られる。
+
+\begin{flushright}
+□
+\end{flushright}
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:~ \label{cauchy_ext_theorem2}
+領域\(D\)で\(f(z)\)は正則関数であるとする\footnote{領域\(D\)はドーナッツ型の
+場合もあり得る}。\(D\)内に2つの単一閉曲線\(C_{1}, C_{2}\)があり、\(C_{2}\)は\(C_{1}\)
+の内部にあるとする。さらに\(C_{1}\)と\(C_{2}\)の間の領域は領域\(D\)に含まれていると
+する\footnote{\(f(z)\)が\(C_{2}\)の内部で正則であるとは限らない。}。
+このとき次の式が成り立つ。
+
+\begin{equation}
+\int_{C_{1}}f(z)dz
+=
+\int_{C_{2}}f(z)dz
+\label{eq_cauchy_ext__2}
+\end{equation}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures/cauchy_ext2}
+\end{center}
+\vspace{-2em}
+\caption{曲線\(C_{1}, C_{2}\)}
+\label{cauchy_ext_theorem_fig2}
+\end{figure}
+
+\noindent
+{\bf 証明\thesection-\thetheorem}:~
+図\ref{cauchy_ext_theorem_fig2}のように曲線\(C_{1}\)と\(C_{2}\)上に
+それぞれ点AとBをとり、AとBを\(C_{1}\)と\(C_{2}\)で囲まれた
+領域内にある曲線ABで結ぶ。コーシーの定理によって、
+
+\begin{equation}
+\int_{\mbox{\small APQABTSBA}}f(z)dz=0
+\end{equation}
+
+\noindent
+ここでこの式の左辺の積分を次のように分解する。
+
+\begin{equation}
+\int_{\mbox{\small APQA}}f(z)dz+
+\int_{\mbox{\small AB}}f(z)dz+
+\int_{\mbox{\small BTSB}}f(z)dz+
+\int_{\mbox{\small BA}}f(z)dz=0
+\label{eq_cauchy_ext_theorem201}
+\end{equation}
+
+\noindent
+ところが、
+
+\begin{equation}
+\int_{\mbox{\small APQA}}f(z)dz = \int_{C_{1}}f(z)dz,\ \  
+\int_{\mbox{\small BTSB}}f(z)dz = \int_{-C_{2}}f(z)dz = -\int_{C_{2}}f(z)dz,\ \ 
+\int_{\mbox{\small BA}}f(z)dz = -\int_{\mbox{\small AB}}f(z)dz
+\end{equation}
+
+\noindent
+これを式\ref{eq_cauchy_ext_theorem201}の左辺に代入すると、
+
+\begin{displaymath}
+\int_{C_{1}}f(z)dz-\int_{C_{2}}f(z)dz=0
+\end{displaymath}
+
+\noindent
+すなわち、式\ref{eq_cauchy_ext__2}が成り立つ。
+
+\begin{flushright}
+□
+\end{flushright}
+
+\vspace{1em}
+
+\refstepcounter{preexer}
+
+\noindent
+{\bf 例題\thesection-\thepreexer}:~ \label{ex_cauchy_ext3_125}
+点$a$は単一閉曲線$C$の内部にあるとする。このとき、以下の式が成立することを示そう。
+
+\begin{eqnarray}
+& & \int_{C}\frac{1}{z-a}dz=2\pi i\label{eq_cauchy_ext3_101}\\
+& & \int_{C}\frac{1}{(z-a)^{n}}dz=0\ \ \ \ \ (n>1)\label{eq_cauchy_ext3_102} %(1)
+\end{eqnarray}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures/cauchy_ext3}
+\end{center}
+\vspace{-2em}
+\caption{単一閉曲線\(C\)と小円\(\Gamma\)}
+\label{cauchy_ext3}
+\end{figure}
+
+\noindent
+今図\ref{cauchy_ext3}に示すように、単一閉曲線$C$の内部に点$a$を中心とする小円$\Gamma$を描く。$C$と$\Gamma$で囲まれる
+領域で$\displaystyle \frac{1}{(z-a)^{n}} (n$は正の整数)は正則であるから、
+定理\thesection-\ref{cauchy_ext_theorem2}によって、
+
+\begin{equation}
+\int_{C}\frac{1}{(z-a)^{n}}dz=\int_{\Gamma}\frac{1}{(z-a)^{n}}dz
+\end{equation}
+
+\noindent
+ところが例題\ref{complex_number}-\ref{ex_complex_integ_sample1}によって、
+式\ref{eq_cauchy_ext3_101}、\ref{eq_cauchy_ext3_102}が成立する。
+
+\vspace{1em}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures/cauchy_ext4}
+\end{center}
+\vspace{-2em}
+\caption{単一閉曲線\(C\)とその中の単一閉曲線\(C_{1},\cdots,C_{k}\)}
+\label{cauchy_ext4}
+\end{figure}
+
+定理\ref{complex_number}-\ref{cauchy_ext_theorem2}を次のように拡張できる。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:~ \label{theorem_cauchy_ext4}
+図\ref{cauchy_ext4}に示すように、単一閉曲線$C$の内部に単一閉曲線$C_{1},\cdots,C_{k}$があるとする。関数$f(z)$は
+領域$D$で正則であり、$D$は$C$および$C_{1},\cdots,C_{k}$で囲まれた領域を含むとする。
+このとき、
+
+\begin{equation}
+\int_{C}f(z)dz=\int_{C_{1}}f(z)dz+\int_{C_{2}}f(z)dz+\cdots+\int_{C_{k}}f(z)dz
+\label{eq_cauchy_ext4_120}
+\end{equation}
+
+\noindent
+が成立する。
+
+\subsection{コーシーの積分表示}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:~ \label{theorem_cauchy_integ_expr1}
+$f(z)$は領域$D$で正則であるとする。$D$内に単一閉曲線$C$があって、$C$の内部は領域$D$に含まれているとする。
+点$a$が$C$の内部にあれば、
+
+\begin{equation}
+f(a)=\displaystyle \frac{1}{2\pi i}\int_{C}\frac{f(z)}{z-a}dz
+\label{eq_cauchy_integ_disp1}
+\end{equation}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures/cauchy_integ_disp1}
+\end{center}
+\vspace{-2em}
+\caption{積分経路の曲線\(C\)}
+\label{cauchy_integ_disp1}
+\end{figure}
+
+\noindent
+{\bf 証明\thesection-\thetheorem}:~
+点$a$を中心とし、十分小さい$R$の円$\Gamma$をかけば、$\Gamma$は$C$の内部にある。ゆえに$\displaystyle \frac{f(z)}{z-a}$は$C$と$\Gamma$で囲まれた領域で正則である。
+従って、定理\ref{complex_number}-\ref{cauchy_ext_theorem2}
+によって、
+
+\begin{equation}
+\int_{C}\frac{f(z)}{z-a}dz=\int_{\Gamma}\frac{f(z)}{z-a}dz
+\label{eq_cauchy_integ_disp_105}
+\end{equation}
+
+\noindent
+ここで上式の右辺の積分を考える。円$\Gamma$の任意の点は$z=a+Re^{i\theta}$と表せて$ dz=iRe^{i\theta}d\theta$である。
+ゆえに、
+
+\begin{equation}
+\int_{\Gamma}\frac{f(z)}{z-a}dz=\int_{0}^{2\pi}\frac{f(a+Re^{i\theta})}{Re^{i\theta}}iRe^{i\theta}d\theta
+\end{equation}
+
+\noindent
+従って、
+
+\begin{equation}
+\int_{C}\frac{f(z)}{z-a}dz=i\int_{0}^{2\pi}f(a+Re^{i\theta})d\theta
+\end{equation}
+
+\noindent
+ここで式\ref{eq_cauchy_integ_disp_105}を利用した。この等式の左辺は$R$を含まない。ゆえに十分小さい$R(>0)$に対してもこの積分の値は$R$に無関係である。従って$f(z)$が連続であることを利用すれば、
+
+\begin{equation}
+\int_{C}\frac{f(z)}{z-a}dz=i\lim_{R\rightarrow+0}\int_{0}^{2\pi}f(a+Re^{i\theta})d\theta=i\int_{0}^{2\pi}f(a)d\theta=2\pi if(a)
+\end{equation}
+
+\noindent
+ゆえに、式\ref{eq_cauchy_integ_disp1}が成立する。
+
+\begin{flushright}
+□
+\end{flushright}
+
+定理\thesection-\ref{theorem_cauchy_integ_expr1}は以下のように拡張できる。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:~ \label{theorem_cauchy_integ_expr1_2}
+単一閉曲線\(C_{1}\)の内部に単一閉曲線\(C_{2}\)があり、\(C_{1}\)と\(C_{2}\)で囲まれた
+領域\(D\)で関数\(f(z)\)は正則であるとする。点\(a\)が領域\(D\)の内部にあれば、
+
+\begin{equation}
+f(a)=\frac{1}{2\pi i}\int_{C_{1}}\frac{f(z)}{z-a}dz-\frac{1}{2\pi i}\int_{C_{2}}\frac{f(z)}{z-a}dz
+\label{eq_cauchy_integ_expr1041}
+\end{equation}
+
+\noindent
+が成立する。
+
+\vspace{1em}
+
+また定理\thesection-\ref{theorem_cauchy_integ_expr1}の条件で、点$a+h$が$C$の内部にあるように$|h|$を小さくとる。
+このとき、コーシーの積分表示によって、
+
+\begin{equation}
+\frac{f(a+h)-f(a)}{h}=\frac{1}{2\pi hi}\int_{C}\left(\frac{f(\zeta)}{\zeta-(a+h)}-\frac{f(\zeta)}{\zeta-a}\right)d\zeta=\frac{1}{2\pi i}\int_{C}\frac{f(\zeta)}{(\zeta-a-h)(\zeta-a)}d\zeta
+\end{equation}
+
+\noindent
+ここで$h\rightarrow 0$とすれば、上記の式は、
+
+\begin{equation}
+f^{\prime}(a)=\frac{1}{2\pi i}\int_{C}\frac{f(\zeta)}{(\zeta-a)^{2}}d\zeta
+\end{equation}
+
+\noindent
+これを利用して$f^{\prime}(z)$について同様に考察すれば、
+
+\begin{equation}
+f^{\prime\prime}(a)=\frac{2!}{2\pi i}\int_{C}\frac{f(\zeta)}{(\zeta-a)^{3}}d\zeta
+\end{equation}
+
+\noindent
+が得られる。以下同様にして次の式が導出される。
+
+\begin{equation}
+f^{(n)}(a)=\frac{n!}{2\pi i}\int_{C}\frac{f(\zeta)}{(\zeta-a)^{n+1}}d\zeta\ \ \ \ \ (n=1,2,\cdots)
+\end{equation}
+
+\noindent
+これによって以下の定理が成り立つ。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:
+正則な関数$f(z)$は何回でも微分できる。$f(z)$の導関数$f^{(n)}(z)\  (n=1,2,\cdots)$は$f(z)$が正則で
+ある領域で正則である。
+
+\subsection{複素関数のテイラー展開}
+
+我々は実関数のテイラー展開、マクローリン展開については、既に節\ref{taylor}で学んでいる。
+本節ではこれを複素関数に拡張することを試みる。
+
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:~\label{theorem_taylor_exp_complex1}
+関数\(f(z)\)は領域\(D\)内で正則であるとする。\(D\)内の任意の点\(a\)を
+中心としてこの領域\(D\)内に半径\(R\)の円を考える。この円の内部\(|z-a|<R\)に
+含まれる任意の点\(z\)について、\(f(z)\)は次のようなべき級数に展開できる。
+
+\begin{equation}
+f(z)=f(a)+
+\frac{f^{\prime}(a)}{1!}(z-a)+
+\frac{f^{\prime\prime}(a)}{2!}(z-a)^{2}+
+\cdots
++
+\frac{f^{n}(a)}{n!}(z-a)^{n}
+\label{eq_taylor_complex101}
+\end{equation}
+
+\noindent
+このべき級数を\(f(z)\)の点\(a\)を中心とする{\bf テイラー展開}\index{ていらーてんかい@テイラー展開}という。
+
+\vspace{1em}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures/taylor_complex1}
+\end{center}
+\vspace{-2em}
+\caption{円\(\Gamma\)および関連する点や他の円の位置関係}
+\label{taylor_complex11}
+\end{figure}
+
+
+\noindent
+{\bf 証明\thesection-\thetheorem}:~
+図\ref{taylor_complex11}に示すように、円\(|z-a|=R\)の内部に点\(z\)を任意にとる。
+\(0 < R_{1} < R\)を満足する\(R_{1}\)を半径とする円\(\Gamma\)を点\(a\)を
+中心として描き、点\(z\)が円\(\Gamma\)の内部にあるようにする。定理\ref{complex_number}-\ref{theorem_cauchy_integ_expr1}(コーシーの積分表示)によって
+
+\begin{equation}
+f(z)=\frac{1}{2\pi i}\int_{\Gamma}\frac{f(\zeta)}{\zeta-z}d\zeta
+\label{eq_taylor_complex1101}
+\end{equation}
+
+\noindent
+この積分で$\zeta$は円$\Gamma$の上にあるから$|\displaystyle \frac{z-a}{\zeta-a}|<1$である。従って、
+
+\begin{eqnarray}
+\frac{1}{\zeta-z} & = & \frac{1}{(\zeta-a)-(z-a)}=\frac{1}{\zeta-a}\left(1-\frac{z-a}{\zeta-a}\right)^{-1}\nonumber\\
+                  & = & \frac{1}{\zeta-a}\left\{1+\frac{z-a}{\zeta-a}+\left(\frac{z-a}{\zeta-a}\right)^{2}+\cdots+\left(\frac{z-a}{\zeta-a}\right)^{n}+\cdots\right\}\label{eq_taylor_complex1120}
+\end{eqnarray}
+
+\noindent
+式\ref{eq_taylor_complex1120}を式\ref{eq_taylor_complex1101}の右辺に代入すれば、
+
+\begin{equation}
+f(z)=\displaystyle \frac{1}{2\pi i}\int_{\Gamma}\frac{f(\zeta)}{\zeta-a}d\zeta+(z-a)\frac{1}{2\pi i}\int_{\Gamma}\frac{f(\zeta)}{(\zeta-a)^{2}}d\zeta+\cdots+(z-a)^{n}\frac{1}{2\pi i}\int_{\Gamma}\frac{f(\zeta)}{(\zeta-a)^{n+1}}d\zeta+\cdots\label{eq_taylor_complex1102}
+\end{equation}
+
+\noindent
+ここで積分表示を利用すれば、
+
+\begin{displaymath}
+\frac{1}{2\pi i}\int_{\Gamma}\frac{f(\zeta)}{\zeta-a}d\zeta=f(a), \ \ \ 
+\frac{1}{2\pi i}\int_{\Gamma}\frac{f(\zeta)}{(\zeta-a)^{2}}d\zeta=f^{\prime}(a),\ \ \ \cdots\ \ \ 
+\frac{n!}{2\pi i}\int_{\Gamma}\frac{f(\zeta)}{(\zeta-a)^{n+1}}d\zeta=f^{(n)}(a),\ \ \ \cdots
+\end{displaymath}
+
+\noindent
+これらを式\ref{eq_taylor_complex1102}に代入すれば、式\ref{eq_taylor_complex101}が成立する。
+
+\begin{flushright}
+□
+\end{flushright}
+
+この定理で$a=0$である場合に、$f(z)$の展開は、
+
+\begin{equation}
+f(z)=f(0)+\frac{f^{\prime}(0)}{1!}z+\frac{f^{\prime\prime}(0)}{2!}z^{2}+\cdots+\frac{f^{(n)}(0)}{n!}z^{n}+\cdots
+\end{equation}
+
+\noindent
+となる。これを関数$f(z)$のマクローリン展開\index{まくろーりんてんかい@マクローリン展開}という。
+
+
+\subsection{オイラーの公式}
+
+マクローリン展開を使うと、
+
+% $e^{x}=\displaystyle \sum_{n=0}^{\infty}\frac{1}{n!}x^{n}$より、
+
+\begin{eqnarray}
+e^{ix} & = & \displaystyle \sum_{n=0}^{\infty}i^{n}\frac{1}{n!}x^{n}\label{eqn_Euler10}\\
+\cos x & = & \sum_{n=0}^{\infty}(-1)^{n}\frac{1}{(2n)!}x^{2n}\label{eqn_Euler11}\\
+\sin x & = & \sum_{n=0}^{\infty}(-1)^{n}\frac{1}{(2n+1)!}x^{2n+1}\label{eqn_Euler12}
+\end{eqnarray}
+
+\noindent
+より式\ref{eqn_Euler10}=式\ref{eqn_Euler11}+\(i\)式\(\times\)式\ref{eqn_Euler12}、すなわち以下の定理が成り立つ。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:~ ネイピア数のべき乗\(e^{ix}\)は
+
+\begin{equation}
+e^{ix}=\cos x+i\sin x
+\label{eqn_Euler9}
+\end{equation}
+
+\noindent
+と表される。式\ref{eqn_Euler9}を{\bf オイラーの公式(Euler's formula)}\index{おいらーのこうしき@オイラーの公式}という。
+
+\begin{figure}
+\refstepcounter{column}\label{euler_eqn8128}
+\begin{itembox}[l]{コラム\thecolumn:オイラーの等式}
+式\ref{eqn_Euler9}の\(x\)に\(\pi\)を代入すると、以下の{\bf オイラーの等式}が得られる。
+
+\begin{equation}
+e^{i\pi}+1=0
+\label{euler_eqn_treasure2}
+\end{equation}
+
+この式は、自然対数の底\(e\)、虚数単位\(i\)、円周率\(\pi\)という、それま
+で個別の分野で扱われ\footnote{
+自然対数の底\(e\)(ネイピア数)は主にヨーロッパの解析学で使われた。
+虚数単位\(i\)は主にアラビア(イスラム)の代数学で使われた。
+円周率\(\pi\)は主にエジプトやギリシアの幾何学で使われた。
+}、何の関係性も持ち得ないと思われていた3つの
+重要な定数が、加法の元である0および乗法の元である1とともに、加法、乗法、べき乗を
+それぞれ1回ずつ使った極めて簡潔な式で見事なまでに結び付けられている。
+数学者たちはこの予想外の連関・調和を「人類の至宝」と表現している
+\footnote{
+このあまりに美しいオイラーの等式は専門書だけでなく、小説などでも紹介されている。
+以下は日本で有名になった小説「博士の愛した数式」(後に映画化)の一節である\cite{Love_Eqn1}。
+
+\vspace{1em}
+
+私は本の重みで痺れてきた手を休め、ページをめくり直し、十八世紀最大の数学者だと
+いうレオンハルト・オイラーについて思いを馳せた。彼について私は何も知らないが、
+この公式一つを手にしただけで、彼の体温に触れたような気がする。オイラーは不自然
+極まりない概念を用い、一つの公式を編み出した。無関係にしか見えない数の間に、自然な結び付きを
+発見した。
+
+\(\pi\)と\(i\)を掛け合わせた数で\(e\)を累乗し、1を足すと0になる。
+
+私はもう一度博士のメモを見直した。果ての果てまで循環する数と、決して正体を見せない
+虚ろな数が、簡潔な軌跡を描き、一点に着地する。どこにも円は登場しないのに、予期せぬ
+宙から\(\pi\)が\(e\)の元に舞い下り、恥ずかしがり屋の\(i\)と握手をする。彼らは身を寄せ合い、
+じっと息をひそめているのだが、一人の人間が1つだけ足算をした途端、何の前触れもなく、世界が転換する。
+すべてが0に抱き留められる。
+
+オイラーの公式は暗闇に光る一筋の流星だった。暗黒の洞窟に刻まれた詩の一行だった。
+}。
+
+\end{itembox}
+
+\vspace{1em}
+\verb+ +
+\end{figure}
+
+
+\vspace{1em}
+
+\refstepcounter{exer}
+\noindent
+{\bf 問題\thesection-\theexer}:~ \label{exer_euler1} \(y=\cos x + i\sin x\)とおくと、
+\(\displaystyle \frac{dy}{dx}=iy\)となる。この微分方程式を解くことにより、オイラーの公式を導出せよ。
+
+
+\subsection{ローラン展開}
+
+関数\(f(z)=\frac{1}{(z-1)(z-2)}\)は点\(z=1\)と\(z=2\)を除外した領域で正則である。
+\(z=1\)と\(z=2\)の2点間の距離は1であるから、点\(z=1\)を中心とし、\(0 < R < 1\)
+となる\(R\)を半径とする円の内部から点\(z=1\)を除外した領域で\(f(z)\)は正則である。
+また、点\(z=2\)を中心とし、\(0 < R < 1\)となる\(R\)を半径とする円の内部から\(z=2\)
+を除外した領域で\(f(z)\)は正則である。一般に関数\(f(z)\)が点\(z=a\)で定義されていないが、
+ある円板\(|z-a|<R\)、\(R>0\)から中心\(z=a\)を除外した領域\(0 < |z-a| < R\)で\(f(z)\)が
+正則であるとする。このとき\(z=a\)を関数\(f(z)\)の{\bf 特異点}\index{とくいてん@特異点}
+という。\(f(z)=\frac{1}{(z-1)(z-2)}\)では点\(z=1\)と\(z=2\)が特異点である。
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Figures/laurent_expansion1}
+\end{center}
+\vspace{-2em}
+\caption{積分経路となる曲線\(C\)と\(\Gamma\)}
+\label{laurent_expansion1}
+\end{figure}
+
+さて点\(z=a\)が関数\(f(z)\)の特異点とする。
+図\ref{laurent_expansion1}に示すように
+点\(z=a\)を中心とし、半径\(R\)の円\(C\)を
+描き、この円\(C\)とその内部では点\(z=a\)を除いた
+全ての点で\(f(z)\)は正則であるとする。また、
+点\(z=a\)を中心とし、半径\(k\)の円\(\Gamma\ (0 < k < R)\)を描き、
+点\(z\)は円\(\Gamma\)の外部にあるようにする。\(f(z)\)は\(C\)と
+\(\Gamma\)で囲まれた輪環状の領域で正則であるから、
+定理\ref{complex_number}-\ref{theorem_cauchy_integ_expr1_2}によって、
+
+\begin{equation}
+f(z)=\frac{1}{2\pi i}\int_{C}\frac{f(\zeta)}{\zeta-z}d\zeta-\frac{1}{2\pi i}\int_{\Gamma}\frac{f(\zeta)}{\zeta-z}d\zeta
+\label{eq_laurent_expansion208}
+\end{equation}
+
+\noindent
+ここで右辺の第1項では点$z$は円$C$の内部にあるから、この第1項を定理\thesection-\ref{theorem_taylor_exp_complex1}の
+証明で示したように、$(z-a)$のべき級数に展開できて、次の式が成り立つ。
+
+\begin{equation}
+\frac{1}{2\pi i}\int_{C}\frac{f(\zeta)}{\zeta-z}d\zeta=\sum_{n=0}^{\infty}b_{n}(z-a)^{n},\ \ \ b_{n}=\frac{1}{2\pi i}\int_{C}\frac{f(\zeta)}{(\zeta-a)^{n+1}}d\zeta
+\label{eq_laurent_expansion209}
+\end{equation}
+
+\noindent
+次に第2項について考えよう。円$\zeta$は円$\Gamma$上にあり、点$z$は$\Gamma$の外部にあるから、$|\displaystyle \frac{\zeta-a}{z-a}|<1$である。従って
+
+\begin{eqnarray}
+\frac{1}{\zeta-z} & = & \frac{-1}{(z-a)-(\zeta-a)}=-\frac{1}{z-a}\left(1-\frac{\zeta-a}{z-a}\right)^{-1}\nonumber\\
+                  & = & -\frac{1}{z-a}\left\{1+\frac{\zeta-a}{z-a}+\left(\frac{\zeta-a}{z-a}\right)^{2}+\cdots+\left(\frac{\zeta-a}{z-a}\right)^{n}+\cdots\right\}
+\end{eqnarray}
+
+\noindent
+となる。これを式\ref{eq_laurent_expansion208}の右辺の第2項に代入すれば、
+
+\begin{equation}
+-\frac{1}{2\pi i}\int_{\Gamma}\frac{f(\zeta)}{\zeta-z}d\zeta=\sum_{m=1}^{\infty}b_{-m}(z-a)^{-m}
+\label{eq_laurent_expansion210}
+\end{equation}
+
+\noindent
+ここで、
+
+\begin{equation}
+b_{-m}=\displaystyle \frac{1}{2\pi i}\int_{\Gamma}f(\zeta)(\zeta-a)^{m-1}d\zeta
+\label{eq_laurent_expansion211}
+\end{equation}
+
+\noindent
+今、式\ref{eq_laurent_expansion209}と式\ref{eq_laurent_expansion210}を
+式\ref{eq_laurent_expansion208}に代入すれば、以下の定理を得る。
+式\ref{eq_laurent_expansion211}で積分路$\Gamma$を$C$にとりかえてもよい。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:~
+関数$f(z)$の特異点$z=a$について、円$C:|z-a|=R$とその内部から点$z=a$を除外した領域で$f(z)$は正則であるとする。
+このとき、円$C$の内部に点$z\neq a$となる点$z$を任意にとれば、$f(z)$を以下のように展開することができる。
+
+\begin{eqnarray}
+f(z) & = & \sum_{n=-\infty}^{\infty}b_{n}(z-a)^{n}=\cdots+\frac{b_{-m}}{(z-a)^{m}}+\cdots+\frac{b_{-2}}{(z-a)^{2}}+\frac{b_{-1}}{z-a}\nonumber\\
+     &   & +b_{0}+b_{1}(z-a)+\cdots+b_{n}(z-a)^{n}+\cdots
+\label{eq_laurent_expansion212}
+\end{eqnarray}
+
+\noindent
+ここで、
+
+\begin{equation}
+b_{n}=\frac{1}{2\pi i}\int_{C}\frac{f(z)}{(z-a)^{n+1}}dz\ \ \ (n=0,\pm 1,\pm 2,\cdots)
+\end{equation}
+
+\vspace{1em}
+
+% \noindent
+この式\ref{eq_laurent_expansion212}で表される展開を
+関数$f(z)$の特異点$z=a$を中心とする{\bf ローラン展開}\index{ろーらんてんかい@ローラン展開}という。
+さてこのローラン展開で、
+
+\begin{equation}
+\varphi(z)=b_{0}+b_{1}(z-a)+b_{2}(z-a)^{2}+\cdots+b_{n}(z-a)^{n}+\cdots
+\end{equation}
+
+\noindent
+とすれば、$\varphi(z)$は点$z=a$を含んだある領域で正則である。従ってローラン展開を次のように書き直せる。
+
+\begin{equation}
+f(z)=\displaystyle \cdots+\frac{b_{-m}}{(z-a)^{m}}+\cdots+\frac{b_{-1}}{z-a}+\varphi(z)
+\end{equation}
+
+\noindent
+ここで$\varphi(z)$は点$z$で正則である。
+
+関数$f(z)$の特異点$z=a$を中心とするローラン展開で負のべきの項の係数が全て$0$になることがある。このとき、
+
+\begin{equation}
+f(z)=b_{0}+b_{1}(z-a)+b_{2}(z-a)^{2}+\cdots+b_{m}(z-a)^{m}+\cdots
+\end{equation}
+
+\noindent
+となる。ゆえに、\(f(z)\rightarrow b_{0}\ (z\rightarrow a)\)
+である。そこであらためて$f(a)=b_{0}$と定義すれば、$f(z)$は点$z=a$でも微分可能となり、$f(z)$は
+ある円の内部$|z-a|<R$で正則となる。このような性質を持つ特異点$a$を$f(z)$の除去可能な特異点という。
+
+
+\subsection{極と留数}
+
+点$a$が関数$f(x)$の特異点であるとする。特異点$a$を中心とする$f(z)$のローラン展開が
+
+\begin{equation}
+f(z)=\displaystyle \frac{b_{-k}}{(z-a)^{k}}+\cdots+\frac{b_{-1}}{z-a}+b_{0}+b_{1}(z-a)+b_{2}(z-a)^{2}+\cdots
+\end{equation}
+
+\noindent
+であって、$b_{-k}\neq 0$とする。すなわち、$b_{-k}\neq 0, b_{-(k+1)}=0=b_{-(k+2)}=\cdots=0$であるとする。
+このとき特異点$a$を関数$f(z)$の$k$位の極、または単に極という。点$a$が$f(z)$の$k$位の極であれば、
+
+\begin{equation}
+f(z)=\displaystyle \frac{g(z)}{(z-a)^{k}}\ \ \ \ \ (g(a)\neq 0)
+\end{equation}
+
+\noindent
+であって、$g(z)$は点$a$とその近傍で正則である。逆も成立する。
+これに対して、特異点$a$を中心とするローラン展開において、負のべきの項の
+係数$b_{-n}$のうちに$0$でないものが無限個あれば、特異点$a$を関数$f(z)$の真性特異点という。
+
+例えば、関数$f(z)=\frac{z-2}{(z^{2}+1)(z-1)^{3}}=\frac{z-2}{(z-i)(z+i)(z-1)^{3}}$の特異点
+は$i,-i,1$であって、点$i$と点$-i$は1位の極、点1は3位の極である。
+また、関数$f(z)=e^{\frac{1}{z}}$の特異点$z=0$を中心とするローラン展開は
+$f(z)=1+\frac{1}{z}+\frac{1}{2!z^{2}}+\cdots+\frac{1}{n!z}+\cdots$
+であるから、点$z$はこの関数$f(z)$の真性特異点である。
+
+点$a$が関数$f(z)$の極であるとする。点$a$をその内部に含む単一閉曲線$C$を考え、$C$の内部では
+点$a$以外の全ての点で$f(z)$が正則であるとすれば、
+
+\begin{equation}
+\mbox{Res}[f,a]=\frac{1}{2\pi i}\int_{C}f(z)dz
+\label{eq_residue_def101}
+\end{equation}
+
+\noindent
+を$f(z)$の極$a$における{\bf 留数}\index{りゅうすう@留数}という。$\mbox{Res}[f,a]$は誤解を招く恐れがないときは、$\mbox{Res}[a]$と略す。
+なお、この式の左辺の値はこのような単一閉曲線$C$の選び方は無関係である(定理\ref{complex_number}-\ref{cauchy_ext_theorem2})。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:~
+特異点$a$を中心とする$f(z)$のローラン展開を
+
+\begin{equation}
+f(z)=\varphi(z)+\frac{b_{-1}}{z-a}+\frac{b_{-2}}{(z-a)^{2}}+\cdots+\frac{b_{-k}}{(z-a)^{k}}
+\label{eq_residue_104}
+\end{equation}
+
+\noindent
+とする。ここで$\varphi(z)$は点$a$とその近くで正則な関数である。このとき
+
+\begin{equation}
+\mbox{Res}[f,a]=b_{-1}
+\label{eq_residue_105}
+\end{equation}
+
+\noindent
+が成り立つ。
+
+\noindent
+{\bf 証明\thesection-\thetheorem}:~
+式\ref{eq_residue_104}の両辺を閉曲線$C$に沿って積分すれば、
+
+\begin{equation}
+\int_{C}f(z)dz=2\pi ib_{-1}
+\end{equation}
+
+\noindent
+が得られる(定理\ref{complex_number}-\ref{theorem_cauchy_main1}、例題\ref{complex_number}-\ref{ex_cauchy_ext3_125})。両辺を$2\pi i$で割れば式\ref{eq_residue_105}が得られる
+\footnote{式\ref{eq_residue_105}は関数$f(z)$の真性特異点$a$についても成り立つことが知られている。}。
+
+\vspace{1em}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:~
+点$a$が関数$f(z)$の$1$位の極であれば、
+
+\begin{equation}
+\mbox{Res}[f,a]=\displaystyle \lim_{z\rightarrow a}[(z-a)/f(z)]
+\end{equation}
+
+\noindent
+{\bf 証明\thesection-\thetheorem}:~
+まず点$a$が$f(z)$の1位の極であれば、式\ref{eq_residue_104}のローラン展開は
+
+\begin{equation}
+f(z)=\varphi(z)+\frac{b_{-1}}{z-a}
+\end{equation}
+
+\noindent
+となる。ゆえに、
+
+\begin{equation}
+\lim_{z\rightarrow a}[(z-a)f(z)]=b_{-1}=\mbox{Res}[f,a]
+\end{equation}
+
+\noindent
+次に点$a$が$f(z)$の2位の極であれば、ローラン展開は、
+
+\begin{equation}
+f(z)=\varphi(z)+\frac{b_{-1}}{z-a}+\frac{b_{-2}}{(z-a)^{2}}
+\end{equation}
+
+\noindent
+となる。ゆえに、
+
+\begin{equation}
+\lim_{z\rightarrow a}\frac{d}{dz}[(z-a)^{2}f(z)]=b_{-1}=\mbox{Res}[f,a]
+\end{equation}
+
+\begin{flushright}
+□
+\end{flushright}
+
+同様に、点$a$が$f(z)$の$k$位の極であるとき、
+
+\begin{equation}
+\mbox{Res}[f,a]=\frac{1}{(k-1)!}\lim_{z\rightarrow a}\frac{d^{k-1}}{dz^{k-1}}\{(z-a)^{k}f(z)\}
+\end{equation}
+
+\noindent
+が成立する。
+
+\subsection{留数定理}
+
+\refstepcounter{theorem}
+
+\noindent
+{\bf 定理\thesection-\thetheorem}:~ \label{theorem_residue1}
+関数$f(z)$が正則である領域内に描かれた単一閉曲線$C$があり、
+$C$の内部で$f(z)$はその極$a_{1},a_{2},\cdots,a_{m}$以外の点では正則であるとする。
+このとき、
+
+\begin{equation}
+\frac{1}{2\pi i}\int_{C}f(z)dz=Res[f,a_{1}]+Res[f,a_{2}]+\cdots+Res[f,a_{m}]
+\label{eq_residue_theorem1}
+\end{equation}
+
+\noindent
+これを{\bf 留数定理}\index{りゅうすうていり@留数定理}という。
+
+\vspace{1em}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{Figures/residue_theorem1}
+\end{center}
+\vspace{-2em}
+\caption{曲線\(C\)とその内部の円\(\Gamma_{1},\cdots,\Gamma_{m}\)}
+\label{residue_theorem1}
+\end{figure}
+
+\noindent
+{\bf 証明\thesection-\thetheorem}:~
+図\ref{eq_residue_theorem1}に示すように、曲線$C$の内部に極$a_{1},a_{2},\cdots,a_{m}$を中心とする
+半径が十分小さい円を描き、それぞれ$\Gamma_{1},\Gamma_{2},\cdots,\Gamma_{m}$とすれば、$\Gamma_{1},\Gamma_{2},\cdots,\Gamma_{m}$は
+それぞれ内部に極を1つしか含まず、かつ互いに交わらないようにできる。
+$f(z)$は$C$と$\Gamma_{1},\Gamma_{2},\cdots,\Gamma_{m}$で囲まれた領域で正則であるから、
+定理\ref{complex_number}-\ref{theorem_cauchy_ext4}によって、
+
+\begin{equation}
+\frac{1}{2\pi i}\int_{C}f(z)dz=\frac{1}{2\pi i}\int_{\Gamma_{1}}f(z)dz+\frac{1}{2\pi i}\int_{\Gamma_{2}}f(z)dz+\cdots+\frac{1}{2\pi i}\int_{\Gamma_{m}}f(z)dz
+\end{equation}
+
+\noindent
+従って式\ref{eq_residue_def101}によって、式\ref{eq_residue_theorem1}が成立する。
+
+\begin{flushright}
+□
+\end{flushright}
+
+\vspace{1em}
+
+\refstepcounter{preexer}
+
+\noindent
+{\bf 例題\thesection-\thepreexer}:~ 以下の積分を求めよう。
+
+\begin{displaymath}
+\int_{C}\frac{z}{(z+2)(z-1)}dz,\ \ \ \ \ C:|z|=3
+\end{displaymath}
+
+\noindent
+\(f(z)=\frac{z}{(z+2)(z-1)}\)とする。2つの点\(z=-2,z=1\)はともに1位の極で
+あって円\(C\)の内部にある。ここで
+
+\begin{displaymath}
+\mbox{Res}[f,-2]=\lim_{z\to-2}(z+2)f(z)=\frac{2}{3}
+\end{displaymath}
+\begin{displaymath}
+\mbox{Res}[f,1]=\lim_{z\to 1}(z-1)f(z)=\frac{1}{3}
+\end{displaymath}
+
+\noindent
+ゆえに留数定理によって、
+
+\begin{eqnarray}
+\int_{C}\frac{z}{(z+2)(z-1)}dz & =& 2\pi i\{\mbox{Res}[f,-2]+\mbox{Res}[f,1]\}\nonumber\\
+& = & 2\pi i\left(\frac{2}{3}+\frac{1}{3}\right)=2\pi i\nonumber
+\end{eqnarray}
+
+\vspace{1em}
+
+\refstepcounter{preexer}
+
+\noindent
+{\bf 例題\thesection-\thepreexer}:~
+次の等式を示そう\cite{fourier_sin_x_x}。
+
+\begin{equation}
+J=\int_{-\infty}^{\infty}\frac{\sin z}{z}dz=\pi
+\label{eq_complex_integ_sinx_x1}
+\end{equation}
+
+\noindent
+式\ref{eq_complex_integ_sinx_x1}を変形して、
+
+\begin{equation}
+J=\frac{1}{2i}\int_{-\infty}^{\infty}\frac{e^{iz}-e^{-iz}}{z}dz=\frac{1}{2i}\left(\int_{-\infty}^{\infty}\frac{e^{iz}}{z}dz+\int_{-\infty}^{\infty}\frac{e^{is}}{s}ds\right)=\frac{1}{i}\int_{-\infty}^{\infty}\frac{e^{iz}}{z}dz
+\label{eq_complex_integ_sinx_x1_2}
+\end{equation}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.9]{Figures/complex_integ_sinx_x1}
+\end{center}
+\vspace{-5em}
+\caption{積分経路\(C\)}
+\label{complex_integ_sinx_x1}
+\end{figure}
+
+\noindent
+ここで$I=\int_{-\infty}^{\infty}\frac{e^{iz}}{z}dz$とおいて、$z$を複素数に拡張して$I$を求めよう。まず図\ref{complex_integ_sinx_x1}のように
+閉曲線$C$(A→B→E→B'→A'→E'→A)を考えると、この閉曲線$C$に沿った積分$I_{C}$は
+
+\begin{equation}
+I_{C}=\int_{C}\frac{e^{iz}}{z}dz=I_{\mbox{\small AB}}+I_{\mbox{\small BEB}^{\prime}}+I_{\mbox{\small B}^{\prime}\mbox{\small A}^{\prime}}+I_{\mbox{\small A}^{\prime}\mbox{\small E}^{\prime}\mbox{\small A}}
+\label{eq_complex_integ_sinx_x1_deriv1} % (1)
+\end{equation}
+
+\noindent
+と表される。ここでさらに$I_{\mbox{\small AB}}+I_{\mbox{\small B}^{\prime}\mbox{\small A}^{\prime}}=I_{e,R}, I_{\mbox{\small BEB}^{\prime}}=I_{R}, I_{\mbox{\small A}^{\prime}\mbox{\small E}^{\prime}\mbox{\small A}}=I_{e}$とおく。$\epsilon\rightarrow 0, R\rightarrow\infty$の極限で
+$I_{e,R}=\int_{-R}^{-\epsilon}\frac{e^{iz}}{z}dz+\int_{\epsilon}^{R}\frac{e^{iz}}{z}dz$
+は求める積分$I$に近づくことを確かめよう。すなわち、$\lim_{\epsilon\rightarrow 0,R\rightarrow\infty}I_{\epsilon,R}=I$である。
+式\ref{eq_complex_integ_sinx_x1_deriv1}の被積分関数$\frac{e^{iz}}{z}$は$z=0$に1位の極を持ち、それ以外に特異点はない。$z=0$における
+留数は$e^{iz}|_{z=0}=1$だから、留数定理によって、
+
+\begin{equation}
+I_{C}=I_{\epsilon,R}+I_{R}+I_{\epsilon}=2\pi i\cdot 1=2\pi i
+\label{eq_complex_integ_sinx_x1_deriv2} % (2)
+\end{equation}
+
+\noindent
+また、下半円周上で$z=\epsilon e^{i\theta}$($\epsilon$=正の整数、$\theta=$角度変数), $ dz=i\epsilon e^{i\theta}d\theta$となるから、
+
+\begin{equation}
+I_{\epsilon}=\int_{\mbox{\small A}^{\prime}\mbox{\small E}^{\prime}\mbox{\small A}}\frac{e^{iz}}{z}dz=\int_{-\pi}^{0}\frac{e^{i\epsilon e^{i\theta}}}{\epsilon e^{i\theta}}i\epsilon e^{i\theta}d\theta
+\label{eq_complex_integ_sinx_x1_3}
+\end{equation}
+
+\noindent
+$\lim_{\epsilon\rightarrow 0}\exp(i\epsilon e^{i\theta})=1$を使えば、
+
+\begin{equation}
+\lim_{\epsilon\rightarrow 0}I_{\epsilon}=\lim_{\epsilon\rightarrow 0}\int_{-\pi}^{0}\frac{e^{i\epsilon e^{i\theta}}}{\epsilon e^{i\theta}}i\epsilon e^{i\theta}d\theta=i\int_{-\pi}^{0}d\theta=i\pi
+\label{eq_complex_integ_sinx_x1_4}
+\end{equation}
+
+\noindent
+を得る。上半円上で$z=Re^{i\theta}$($R=$正の定数、$\theta=$角度変数)、$ dz=iRe^{i\theta}d\theta$だから、
+
+\begin{equation}
+I_{R}=\int_{\mbox{\small BEB}^{\prime}}\frac{e^{iz}}{z}dz=\int_{0}^{\pi}\frac{e^{iRe^{i\theta}}}{Re^{i\theta}}iRe^{i\theta}d\theta=i\int_{0}^{\pi}e^{iR(\cos\theta+i\sin\theta)}d\theta
+\label{eq_complex_integ_sinx_x1_5}
+\end{equation}
+
+\noindent
+となり、この積分の大きさの上限は、
+
+\begin{equation}
+|I_{R}|\leq\int_{0}^{\pi}|e^{iR(\cos\theta+i\sin\theta)}|d\theta=\int_{0}^{\pi}e^{-R\sin\theta}|e^{iR\cos\theta}|d\theta=2\int_{0}^{\frac{\pi}{2}}e^{-R\sin\theta}d\theta
+\label{eq_complex_integ_sinx_x1_6}
+\end{equation}
+
+\noindent
+$0\leq\theta\leq\frac{\pi}{2}$では、$\frac{2}{\pi}\leq\frac{\sin\theta}{\theta}\leq$1であるから\footnote{
+$f(\theta)=\frac{\sin\theta}{\theta}$とおくと、
+$f^{\prime}(\theta)=\frac{\theta\cos\theta-\sin\theta}{\theta^{2}}$
+となるが、
+$0\leq\theta\leq\frac{\pi}{2}$
+の範囲で分子のさらなる微分は
+$\frac{d}{d\theta}\theta\cos\theta-\sin\theta=-\theta\sin\theta<0$
+なので、
+$0\leq\theta\leq\frac{\pi}{2}$
+の範囲で
+$f^{\prime}(\theta)$
+は減少関数であり、さらにこの区間における
+$f^{\prime}(\theta)$の最大値は$f^{\prime}(\frac{\pi}{2})=0$
+なので、
+$f^{\prime}(\theta)\leq 0$。
+従って、
+$0\leq\theta\leq\frac{\pi}{2}$
+の範囲で$f(\theta)$も減少関数である。よって
+$f(\theta)$の最小値は$f(\frac{\pi}{2})=\frac{2}{\pi},$ 最大値(厳密には$\theta\rightarrow 0$の極限)は$\lim_{\theta\rightarrow 0}f(\theta)=1$。
+直感的には、半径の長さ1の円を\(xy\)平面上に描くと分かりやすい。\(frac{2}{\pi}\)は直径の長さと半円の長さの比、\(\frac{\sin \theta}{\theta}\)は第1象限の円上の点Pから\(x\)軸に
+向かって降ろした垂線の長さと\(x\)軸と点Pに挟まれた第1象限内の弧の長さの比である。
+}、$\alpha$=$\frac{2}{\pi}$として、$\sin\theta\geq\alpha\theta$だから、
+
+\begin{equation}
+\int_{0}^{\frac{\pi}{2}}e^{-R\sin\theta}d\theta\leq\int_{0}^{\frac{\pi}{2}}e^{-R\alpha\theta}d\theta=-\frac{1}{R\alpha}\left[e^{-R\alpha\theta}\right]_{0}^{\frac{\pi}{2}}=\frac{1}{R\alpha}(1-e^{-\frac{R\alpha\pi}{2}})
+\label{eq_complex_integ_sinx_x1_7}
+\end{equation}
+
+\noindent
+この値は$ R\rightarrow$∞で0に近づくから、$\lim_{R\rightarrow\infty}I_{\mbox{\small BEB}^{\prime}}=0$となることが分かった。従って、$ R\rightarrow\infty$、$\epsilon\rightarrow$0の極限で、
+$ I_{C}=I_{\epsilon,R}+I_{R}+I_{\epsilon}\rightarrow I+0+i\pi$
+となる。この値が式\ref{eq_complex_integ_sinx_x1_deriv2}により、$I_{C}=2\pi i$だから$I=\pi i$が得られ、これにより$ J=I/i=\pi$となって
+式\ref{eq_complex_integ_sinx_x1}が示された。
+
+また、
+\(J_{t}=\int_{-\infty}^{\infty}\frac{\sin tx}{x}dx\)
+は\(tx=x_{*}\)、すなわち\(x=\frac{x_{*}}{t}\)と変数変換を行って、
+
+\begin{displaymath}
+J_{t}=\int_{x=-\infty}^{x=\infty}\frac{\sin x_{*}}{\frac{1}{t}x_{*}}\frac{1}{t}dx_{*}
+=\int_{x=-\infty}^{x=\infty}\frac{\sin x_{*}}{x_{*}}dx_{*}
+\end{displaymath}
+
+\noindent
+となる。ここで\(t > 0\)のとき、
+\(x\to\infty\)は\(x_{*}\to\infty\)に対応し、
+\(x\to-\infty\)は\(x_{*}\to-\infty\)に対応するが、
+\(t < 0\)のときは、
+\(x\to\infty\)は\(x_{*}\to-\infty\)に対応し、
+\(x\to-\infty\)は\(x_{*}\to\infty\)に対応するので、結局
+
+\begin{equation}
+\int_{-\infty}^{\infty}\frac{\sin tx}{x}dx=\left\{\begin{array}{ll}
+-\pi & (\mbox{for}\ \ \ t < 0)\\
+0    & (\mbox{for}\ \ \ t = 0)\\
+\pi  & (\mbox{for}\ \ \ t > 0)\\
+\end{array}\right.
+\label{eq_sinax_x_integ}
+\end{equation}
+
+\noindent
+が得られる。
+
+

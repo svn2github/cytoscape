@@ -1,0 +1,163 @@
+
+\section{Introduction}
+
+Recently, a large amount of data on a variety of biological
+experiments can be obtained freely through 
+the internet. And as for species like {\it Mycoplasma
+genitalium}\cite{label27},  {\it Haemophilas influenzae}, and yeasts, 
+their whole DNA sequence data have already been read and we can easily 
+obtain the data.
+Obviously, amount of biological data such as DNA sequence data is increasing
+drastically. On the other hand, amount of knowledge obtained from
+these data is not increasing so fast.\\
+
+\begin{center}
+\epsfile{file=gengrow.ps,scale=0.6}\\
+Figure: Increasing amount of biological data
+\end{center}
+
+To understand organisms, it is very important to 
+find what meaning is hidden in these data. As the size of data is extremely
+large, computer is very important tool for the fast analysis and knowledge
+discovery. This new scientific field in which computer analyses of
+biological data are done is called $Bio-informatics$. 
+
+Biological experiments may investigate what kind of phenomenon 
+occurs and how the phenomenon occurs in the specific cases. At the
+same time, investigation
+of organism by biological experiments has some disadvantages.
+
+\begin{itemize}
+\item Biological experiments are time consuming works, which often spend much
+time to get single result.
+When we want to know the universal law for a phenomenon, much data is needed.
+But biological experiments take too much time.
+
+\item There is the case where it is very difficult to see the cell and
+its component at  
+the molecular level. For example, protein is very important component for 
+the cell, but it is very difficult to see its structure.
+% Figure above shows number of entries for 
+% GenBank(database for nucleic acid sequences)
+% and PDB(database for structures of proteins) increasing each year. Although
+% number of nucleic acid registered is increasing very rapidly, 
+% number of structures
+% of proteins registered is not increasing so fast.
+Furthermore, looking the interaction of the component at the molecular level
+is much more difficult.
+
+\end{itemize}
+ 
+$Bio-informatics$ investigates organisms from the view of information. 
+By analyzing large amount of data in databases from various aspects, 
+universal law for a phenomenon may be discovered. And by analyzing 
+data which seems to be important for a specific interaction at the molecular
+level, we can infer how the interaction occurs. Those
+cannot be done by biological experiments. However, biological experiments are
+important because it is only the way to directly observe the phenomenon.
+
+So biological research must be done from two approaches to understand
+ the organism.
+
+\begin{itemize}
+\item Approach from the experiments
+\item Approach from the data analyses
+\end{itemize}
+
+In this paper, we approach to biology from the data analyses. The
+topic is translation initiation.
+The goal of this research is to find how the organisms recognize specific
+DNA sequence as genes. Gene is information about how the organisms would
+be like. This information is written on molecule called DNA in the cell.
+But only part of DNA is used as genes. Then the question ``How do the 
+organisms distinguish gene region of DNA?'' arises. The exact mechanism
+is still unknown. If we discover new mechanisms, it must be the contribution
+not only to biology, but also to biotechnology and medical.
+
+We are conducting comprehensive computer analyses around boundaries
+of gene regions. If the remarkable patterns are found, this may be 
+influencing the distinction of gene region. 
+
+In this paper, we focus on boundary called translation initiation site
+and discuss the tendencies we discovered from this site.
+
+
+\section{Purpose}
+
+The goal of this research is to understand how the ribosomes 
+determine the translation initiation site. In this paper, we use
+comprehensive computer analyses, and try to discover tendencies that
+ may be important for the selection of translation initiation site by 
+ribosomes and infer the mechanism of them.
+
+First, we conduct profile analyses and entropy calculations around
+start codons to verify the hypotheses of
+M.Kozak(eucaryotes)\cite{label3}, J.Shine and 
+L.Dalgarno(procaryotes)\cite{label7}, and other researchers on translation
+initiation. And further analyses are conducted to find remarkable tendencies.
+
+Secondly, tendencies including frequencies of AUG trinucleotides
+around start codons are invenstigated to support our original
+hypothesis that ribosomes confuse if two AUGs are located close to
+each other.
+
+Thirdly, analyses of stop codons are conducted to investigate the
+importance of reinitiation for leaky scanning, whose phenomenon is
+investigated by M.Kozak\cite{label18} and other researchers. 
+
+\section{Originality}
+
+In the field of $bio-informatics$, there are many researches for making
+the algorithm to analyze data. And there are many researches for analyzing
+a specific biological substance or phenomenon such as analyses of protein 
+function, analyses of third dimensional structure of protein, analyses
+of metabolic pathway, analyses of evolution at the molecular model,etc. 
+Databases are used to help their work.
+
+However, there are few researches which are done by analyzing whole database
+itself by creating original programs to find tendencies and infer the
+biological mechanisms.
+We have done it for translation initiation site from various points of view.
+
+
+% \section{Significance of this Research}
+% By analyzing translation initiation site from database, we may
+% discover the mechanism of translation initiation that is not known
+% so far. In the long term, this will make contribution not only to
+% biology, but also to medical, and to biotechnology. 
+
+
+\section{Results Expected}
+
+By conducting comprehensive computer analyses of large amount of sequences
+in database, we can expect the following results.
+
+\begin{itemize}
+
+\item We can get data that support the already known hypotheses on
+translation initiation.
+\item We can get data that is consistent with our original hypotheses
+on translation initiation. 
+\item We can discover tendencies by analyzing database from various
+view points. From these discoveries, we can make new hypotheses.
+
+\end{itemize}
+
+% we can discover universal rule of ribosomes in determining
+% the translation initiation site.
+
+\section{Composition of This Paper}
+
+Chapter \ref{matmeth} describes materials and methods for this research.
+Chapter \ref{backgr} explains the foundation of genetics which is
+needed to understand this paper(section \ref{founda}) and mechanism of
+translation initiation discovered so far by other researches(section
+\ref{surv}).  
+Chapter \ref{resu} introduces our research and its results. 
+In this chapter, section \ref{prof_ent} is mainly data analyses to
+confirm the known 
+hypotheses and section \ref{lowfreq} and section \ref{reinitia} are
+mainly data analyses to confirm our original hypotheses.
+Chapter \ref{concl} concludes our paper with future prospects.
+
+

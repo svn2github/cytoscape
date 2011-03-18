@@ -1,0 +1,44 @@
+\contentsline {chapter}{\numberline {1}Overview}{3}
+\contentsline {section}{\numberline {1.1}Introduction}{3}
+\contentsline {section}{\numberline {1.2}Purpose}{4}
+\contentsline {section}{\numberline {1.3}Originality}{5}
+\contentsline {section}{\numberline {1.4}Results Expected}{5}
+\contentsline {section}{\numberline {1.5}Composition of This Paper}{5}
+\contentsline {chapter}{\numberline {2}Materials and Methods}{6}
+\contentsline {section}{\numberline {2.1}Flow}{6}
+\contentsline {section}{\numberline {2.2}Method for data analyses}{7}
+\contentsline {chapter}{\numberline {3}Background}{9}
+\contentsline {section}{\numberline {3.1}Foundation of Genetics}{9}
+\contentsline {subsection}{\numberline {3.1.1}What are genes?}{9}
+\contentsline {subsection}{\numberline {3.1.2}Cells}{9}
+\contentsline {subsection}{\numberline {3.1.3}Amino acids and proteins}{9}
+\contentsline {subsection}{\numberline {3.1.4}Nucleotides and nucleic acids}{10}
+\contentsline {subsection}{\numberline {3.1.5}Transcription and translation}{11}
+\contentsline {section}{\numberline {3.2}Advance in the Research of Translation Initiation}{11}
+\contentsline {subsection}{\numberline {3.2.1}Translation initiation in procaryotes}{11}
+\contentsline {subsubsection}{fMet-tRNA$^{\prm Metf}$}{13}
+\contentsline {subsubsection}{Ribosome}{13}
+\contentsline {subsubsection}{mRNA}{13}
+\contentsline {subsubsection}{Initiation factors}{15}
+\contentsline {subsection}{\numberline {3.2.2}Translation initiation in eucaryotes}{15}
+\contentsline {subsubsection}{Met-tRNA$^{\prm Meti}$}{15}
+\contentsline {subsubsection}{Ribosome}{17}
+\contentsline {subsubsection}{mRNA}{17}
+\contentsline {subsubsection}{Initiation factors}{17}
+\contentsline {subsubsection}{Decision of translation initiation site}{19}
+\contentsline {subsection}{\numberline {3.2.3}Translation initiation in mitochondria}{20}
+\contentsline {chapter}{\numberline {4}Result of This Research}{21}
+\contentsline {section}{\numberline {4.1}Profile and Entropy around Start Codons}{21}
+\contentsline {subsection}{\numberline {4.1.1}Profile analyses}{21}
+\contentsline {subsubsection}{Nucleotide distributions around start codons}{21}
+\contentsline {subsubsection}{Nucleotide distributions around skipped AUGs}{23}
+\contentsline {subsection}{\numberline {4.1.2}Analyses of entropy value around start codons}{26}
+\contentsline {subsection}{\numberline {4.1.3}GC and AT content in 5'UTR}{26}
+\contentsline {section}{\numberline {4.2}On Low Frequencies of AUG Trinucleotides in front of Start Codons}{28}
+\contentsline {subsection}{\numberline {4.2.1}Frequencies of AUG trinucleotides around start codons}{31}
+\contentsline {subsection}{\numberline {4.2.2}Rate of leaky scanning and distance between two AUGs}{33}
+\contentsline {subsection}{\numberline {4.2.3}Tendencies when two AUGs are close to each other}{35}
+\contentsline {subsection}{\numberline {4.2.4}Relationship between initiation mechanism and evolution}{37}
+\contentsline {subsection}{\numberline {4.2.5}Discussion of the cases where two AUGs are close}{39}
+\contentsline {section}{\numberline {4.3}Frequencies of Stop Codons Located Downstream of Skipped AUGs}{40}
+\contentsline {chapter}{\numberline {5}Conclusion}{44}
