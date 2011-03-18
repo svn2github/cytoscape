@@ -231,9 +231,31 @@
 			<id>ops4j-snapshots</id>
 			<name>OPS4J Snapshots</name>
 			<url>https://oss.sonatype.org/content/repositories/ops4j-snapshots</url>
-            <snapshots>
-              <enabled>true</enabled>
-            </snapshots>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>cytoscape_snapshots</id>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<name>Cytoscape Snapshots</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>cytoscape_releases</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Cytoscape Releases</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
 		</pluginRepository>
 	</pluginRepositories>
 
