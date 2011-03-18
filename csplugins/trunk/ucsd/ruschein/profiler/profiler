@@ -7,6 +7,7 @@ import xml.etree.ElementTree
 
 
 verbose = False
+backup_pom_name = "original_pom.xml"
 
 
 def PrintUsage():
@@ -35,8 +36,8 @@ def ReadBaselineFile(maven_project_directory):
 
 
 def RunMavenTest():
-#    if os.system("mvn clean test") != 0:
-#    	return False
+    if os.system("mvn clean test") != 0:
+    	return False
     return True
 
 
@@ -57,7 +58,7 @@ def ExtractTimingInfoFromSurefireReports(maven_project_directory):
 
 def SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version):
     pom_file_name = maven_project_directory + "/pom.xml"
-    shutil.copyfile(pom_file_name, maven_project_directory + "/original_pom.xml")
+    shutil.copyfile(pom_file_name, maven_project_directory + "/" + backup_pom_name)
     tree = xml.etree.ElementTree.parse(pom_file_name)
     root = tree.getroot()
     dependencies = root.find("{http://maven.apache.org/POM/4.0.0}dependencies")
@@ -127,6 +128,10 @@ if not SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_versi
 if not RunMavenTest():
     print "*** Failed to run Maven with the baseline version!"
     exit(-6)
+
+if verbose:
+    print "*** Restoring original POM."
+os.rename(maven_project_directory + "/" + backup_pom_name, maven_project_directory + "/pom.xml")
 
 timing_baseline_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
 
