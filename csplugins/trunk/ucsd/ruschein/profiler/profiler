@@ -36,8 +36,8 @@ def ReadBaselineFile(maven_project_directory):
 
 
 def RunMavenTest(pom_file_name):
-#    if os.system("mvn --file " + pom_file_name + " clean test") != 0:
-#    	return False
+    if os.system("mvn --file " + pom_file_name + " clean test") != 0:
+    	return False
     return True
 
 
@@ -52,7 +52,7 @@ def ExtractTimingInfoFromSurefireReports(maven_project_directory):
             time = testcase.get("time")
             classname = testcase.get("classname")
             name = testcase.get("name")
-        dict[classname + "." + name] = float(time)
+            dict[classname + "." + name] = float(time)
     return dict
 
 
@@ -87,17 +87,17 @@ def SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version)
 
 
 def GenerateTimingReport(current_version, baseline_version):
-    max_deviation = 10 # in percent
+    max_deviation = 10.0 # in percent
     print "---------------------------------------- Timing Comparison --------------------------------------------"
     failure_count = 0
     for key in baseline_version.keys():
         baseline_time = baseline_version[key]
         current_time  = current_version[key]
-        if baseline_version == 0.0:
+        if baseline_time == 0.0:
             percent_deviation = current_time * 100.0
         else:
             percent_deviation = 100.0 * (current_time - baseline_time) / baseline_time
-        print "Test " + key + " ran " + str(percent_deviation) + "% slower than the baseline."
+        print str("Test " + key + " ran %.5f" + "%% slower than the baseline.") % percent_deviation
     if failure_count > 0:
         print str(failure_count) + " failed because current tests were running too slow!"
         exit(1)
@@ -145,7 +145,7 @@ if not RunMavenTest(temp_pom_name):
 
 if verbose:
     print "profiler: About to delete temporary POM."
-#os.remove(maven_project_directory + "/" + temp_pom_name)
+os.remove(maven_project_directory + "/" + temp_pom_name)
 
 timing_baseline_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
 
