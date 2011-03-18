@@ -50,6 +50,31 @@ public abstract class ServiceTestSupport {
 	}
 
 	/**
+	 * Registers a mock service of type clazz with the OSGi service registry. 
+	 * This is meant to be used to provide prerequisite services for testing
+	 * purposes. Will register the service with an empty Properties object. 
+	 * @param clazz The class type describing the type of mock service to register.
+	 */
+	protected void registerMockService(final Class<?> clazz, final Object mockObject) {
+		registerMockService(clazz, mockObject, new Properties());
+	}
+
+	/**
+	 * Registers a mock service of type clazz with the OSGi service registry. 
+	 * This is meant to be used to provide prerequisite services for testing
+	 * purposes.
+	 * @param clazz The class type describing the type of mock service to register.
+	 * @param d The service properties. 
+	 */
+	protected void registerMockService(final Class<?> clazz, final Object mockObject,
+					   final Dictionary d)
+	{
+		if (mockObject.getClass() != clazz)
+			throw new IllegalArgumentException("the mock object is an instance of the wrong class!");
+		bundleContext.registerService(clazz.getName(), mockObject, d);
+	}
+
+	/**
 	 * Asserts that a service of the specified type exists. Uses
 	 * a wait time of 1 second.
 	 * @param clazz The service interface type to be checked. 
