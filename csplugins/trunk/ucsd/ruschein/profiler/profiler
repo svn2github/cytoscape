@@ -7,7 +7,7 @@ import xml.etree.ElementTree
 
 
 verbose = False
-backup_pom_name = "original_pom.xml"
+temp_pom_name = "temp_pom.xml"
 
 
 def PrintUsage():
@@ -35,8 +35,8 @@ def ReadBaselineFile(maven_project_directory):
         return None
 
 
-def RunMavenTest():
-    if os.system("mvn clean test") != 0:
+def RunMavenTest(pom_file_name):
+    if os.system("mvn --file " + pom_file_name + " clean test") != 0:
     	return False
     return True
 
@@ -58,7 +58,6 @@ def ExtractTimingInfoFromSurefireReports(maven_project_directory):
 
 def SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version):
     pom_file_name = maven_project_directory + "/pom.xml"
-    shutil.copyfile(pom_file_name, maven_project_directory + "/" + backup_pom_name)
     tree = xml.etree.ElementTree.parse(pom_file_name)
     root = tree.getroot()
     dependencies = root.find("{http://maven.apache.org/POM/4.0.0}dependencies")
@@ -71,10 +70,10 @@ def SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version)
             continue
         version = dependency.find("{http://maven.apache.org/POM/4.0.0}version")
         version.text = groupId_artifactId_version[2]
-        file = open(pom_file_name, "w")
+        file = open( maven_project_directory + "/" + temp_pom_name, "w")
         tree.write(file, encoding="UTF-8")
         return True
-    print "*** Error: Can't find a dependency on " + groupId_artifactId_version[0] + ":" + groupId_artifactId_version[1] + " in " + pom_file_name
+    print "profiler: Error: Can't find a dependency on " + groupId_artifactId_version[0] + ":" + groupId_artifactId_version[1] + " in " + pom_file_name
     return False
 
 
@@ -110,28 +109,34 @@ else: # We have 3 arguments.
         verbose = True
         maven_project_directory = sys.argv[2]
 
+if verbose:
+    print "profiler: About to parse baseline version file."
 groupId_artifactId_version = ReadBaselineFile(maven_project_directory)
 if groupId_artifactId_version == None:
-    print "*** Failed to read baseline version from file!"
+    print "profiler: Failed to read baseline version from file!"
     exit(-2)
 
-if not RunMavenTest():
-    print "*** Failed to run Maven with the current version!"
+if verbose:
+    print "profiler: About to run Maven with the current version."
+if not RunMavenTest("pom.xml"):
+    print "profiler: Failed to run Maven with the current version!"
     exit(-3)
 
 timing_current_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
 
 if not SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version):
-    print "*** Failed to replace the current version with the baseline version!"
+    print "profiler: Failed to replace the current version with the baseline version!"
     exit(-4)
 
-if not RunMavenTest():
-    print "*** Failed to run Maven with the baseline version!"
+if verbose:
+    print "profiler: About to run Maven with the baseline version."
+if not RunMavenTest(temp_pom_name):
+    print "profiler: Failed to run Maven with the baseline version!"
     exit(-6)
 
 if verbose:
-    print "*** Restoring original POM."
-os.rename(maven_project_directory + "/" + backup_pom_name, maven_project_directory + "/pom.xml")
+    print "profiler: About to delete temporary POM."
+os.remove(maven_project_directory + "/" + temp_pom_name)
 
 timing_baseline_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
 
