@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import glob
 import os
-import shutil
+import re
 import sys
 import xml.etree.ElementTree
 
@@ -36,8 +36,8 @@ def ReadBaselineFile(maven_project_directory):
 
 
 def RunMavenTest(pom_file_name):
-    if os.system("mvn --file " + pom_file_name + " clean test") != 0:
-    	return False
+#    if os.system("mvn --file " + pom_file_name + " clean test") != 0:
+#    	return False
     return True
 
 
@@ -70,8 +70,17 @@ def SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version)
             continue
         version = dependency.find("{http://maven.apache.org/POM/4.0.0}version")
         version.text = groupId_artifactId_version[2]
-        file = open( maven_project_directory + "/" + temp_pom_name, "w")
+        file = open(maven_project_directory + "/" + temp_pom_name, "w+")
+        xml.etree.ElementTree._namespace_map["http://maven.apache.org/POM/4.0.0"] = "XYZ_ABC"
+        xml.etree.ElementTree._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = "xsi"
         tree.write(file, encoding="UTF-8")
+        file.seek(0)
+        temp_pom = file.read()
+        temp_pom = re.sub("XYZ_ABC:", "", temp_pom)
+        temp_pom = re.sub(":XYZ_ABC", "", temp_pom, 1)
+        file.truncate(0)
+        file.seek(0)
+        file.write(temp_pom)
         return True
     print "profiler: Error: Can't find a dependency on " + groupId_artifactId_version[0] + ":" + groupId_artifactId_version[1] + " in " + pom_file_name
     return False
@@ -136,7 +145,7 @@ if not RunMavenTest(temp_pom_name):
 
 if verbose:
     print "profiler: About to delete temporary POM."
-os.remove(maven_project_directory + "/" + temp_pom_name)
+#os.remove(maven_project_directory + "/" + temp_pom_name)
 
 timing_baseline_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
 
