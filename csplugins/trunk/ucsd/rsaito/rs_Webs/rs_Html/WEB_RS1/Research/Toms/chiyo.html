@@ -1,0 +1,71 @@
+<TITLE>ATG versus GTG</TITLE>
+
+<H1>
+Analyses of whole genome suggest that many GTG start codons do not
+have strong SD sequences in <I>Escherichia coli</I></H1>
+
+<hr>
+
+<CENTER>
+<B>
+Abstract
+</B>
+</CENTER>
+<p>
+
+Two major signals on mRNA for translation initiation in <I>E.coli</I> are
+known, i.e. start codon, and Shine-Dalgarno sequence.
+<I>E.coli</I> has several kinds of start codons, i.e. AUG, GUG, and
+UUG.
+However, when start codons are GUG or UUG, translational efficiency is
+much less. In this case, strong Shine-Dalgarno sequence may restore the
+translational efficiency.
+
+By using unbiased start codons in the whole genome of <I>E.coli</I>, we 
+have conducted the computational analysis of translation initiation
+sites to investigate whether Shine-Dalgarno sequences will be strong
+in case where the start codons are GTG. We have applied information
+theory for the accurate analysis. According to our
+results, there are many GTG start sequences with weak Shine-Dalgarno
+sequences. <p>
+
+<hr>
+
+Value of (B,L) in matrix Riw is calculated by the following formula.
+
+<img src="riwfor.gif"><p>
+
+By applying each sequence <I>j</I> to this matrix with the following
+formula, we obtain individual information Ri(<I>j</I>) according to the
+model of that matrix. <p>
+
+<img src="rindi.gif"><p>
+
+where s(B,L,<I>j</I>) = 1 if and only if there is base B at position L 
+in the sequence <I>j</I>, otherwise s(B,L,<I>j</I>) = 0.
+
+(<B>If you want to know more about this theory, look at <A HREF =
+"http://www-lecb.ncifcrf.gov/~toms/">Tom Schneider</a>'s page.</B>)
+
+<hr>
+<img src="atg_model.gif">
+Above:Distribution of Ri according to ATG model<p>
+Below:Transformed into Gaussian distribution<p>
+<img src="g2atg.gif">
+
+
+<hr>
+<img src="gtg_model.gif">
+Above:Distribution of Ri according to GTG model<p>
+Below:Transformed into Gaussian distribution<p>
+
+<img src="g2gtg.gif">
+
+<hr>
+
+<P>
+
+<A HREF="../research.html">
+<i>Go back to my research page</i></a><p>
+
+

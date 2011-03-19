@@ -1,0 +1,266 @@
+<TITLE>Neural Network</TITLE>
+<H1>Prediction of Translation Initiation Site of Vertebrate mRNAs
+Using Neural Network with Small Amount of Information</H1><p>
+
+Rintaro Saito
+Takefuji Laboratory Genetic Group<p>
+
+<hr>
+
+<B>Abstract:</B>
+In this work, neural network was introduced in our system to predict
+the translation 
+initiation site of vertebrates in general. The amount of information
+that we gave to neural network as inputs  was just 10 bases around
+AUG triplets and information about  
+whether the stop codons are located downstream of AUG triplets in the
+same frame within 80 bases.
+We used 8046 vertebrate mRNA sequence data in GenBank database release 94.0.
+We used 4023 of them as a training set and other 4023 of them as a
+test set. Our system predicted 94% of translation initiation site
+correctly in the test set.<p>
+
+<hr>
+
+<B>Introduction:</B>
+In this paper, we introduce our original system that predicts translation
+initiation site of mRNA.
+Translation is a process that organisms synthesize proteins from the
+molecule called mRNA. But only part of mRNA is translated into
+proteins.
+In eucaryotes, the position where the translation start in mRNA is
+usually where the first AUG is located. 
+But this does not always hold,
+because the phenomenon ``leaky scanning'' allows the translation to
+start at the second or third AUG triplet.<p>
+
+<img src = "dscr4.gif">
+
+In fact, only 3/4 of mRNAs in Genbank database start
+translation at the first AUG. We used neural networks to predict the 
+translation initiation site on mRNA. 
+There are many systems that predict translation initiation
+sites(more precisely, coding region) of DNA.
+For example, GRAIL, GeneParser,
+ Gene ID and FGENEH are well known systems
+for the prediction of coding regions. GRAIL predicts
+exon with accuracy of 90%,
+using dynamic programming. GeneParser predicts coding region with
+accuracy of 86%, using dynamic programming and neural network.
+GeneID predicts coding region with accuracy of 88% using evaluation
+of atomic sites. FGENEH predicts 89% of exons and 98% of introns of
+human DNA using discriminant function.
+They predict translation initiation sites and splicing
+sites of DNA by using a lot of data of DNA sequences, such as
+nucleotide patterns around specific sites, nucleotide content of
+coding regions, promoter regions, or introns.
+Most of those input data are not
+biologically important for translation initiation. But our system is
+only focused on  
+translation 
+initiation site of mRNA, and it only uses data of sequences that seems 
+to
+be biologically important for the selection of translation initiation.
+That are 10 nucleotides around AUG triplets and information about
+whether stop codons are located downstream of AUG triplet in the same
+frame within 80 bases.
+It has been shown by M.Kozak that 9 bases before start codons and 
+1 base just after start codons play an important role for translation 
+initiation. And if the stop codons are located just after 
+start
+codons, translation will be initiated at the next AUG.
+Some experiments showed that stop codons within about 80 bases from start
+codons
+will make the translation to be started at the next AUG.
+Our system uses only those two factors for the prediction. And once
+our
+system is trained by mRNA sequences of vertebrates, it can be used to
+predict translation initiation site of vertebrates in general.<p>
+
+<B>Materials and Methods:</B>
+
+We used neural networks in our system to predict translation
+initiation site of mRNA. The overview of the system is described in
+the figure below. <p>
+
+<CENTER>
+<img src = "neuov.gif"><p>
+<U>Figure: Overview of the system</U><p>
+</CENTER>
+
+The system scans mRNA from 5'end to 3'end,
+searching for ``ATG''(More precisely, AUG. Data input is T instead of U.).
+If the system finds ATG, it looks downstream to find the pattern of 
+stop codons, i.e.
+``TAA'', ``TAG'', or ``TGA'' within 80 bases and in the same frame
+as ATG. If the system finds one of these three patterns, the system 
+assumes that the position where that ATG is located is not translation 
+initiation site and looks farther downstream. If the system does not
+find any one of these three patterns, 9 bases which are located just
+upstream of start codon and 1 base just downstream of start codon are
+input to neural network and the decision of whether the translation
+initiates at that ATG or not is made. The overview of neural network 
+is described in the figure below.<p>
+
+<CENTER>
+<img src = "neural_atcg.gif"><p>
+
+<U>Figure: Overview of the neural network</U><p>
+</CENTER>
+
+Each of 10 locations has 4 bits of neurons, which 
+correspond to A, T, C, and G base. Thus, (9 + 1)x4 = 40 neurons
+are used in input layer. According to the sequence input,
+corresponding neurons are fired. Then the information goes to an output
+neuron, by passing through 40 neurons in hidden layer. When the output
+neuron is fired, it means that the system assumed the ATG as
+translation initiation site. In the training mode, weight between
+neurons are modified if the output is incorrect.
+
+We used vertebrate mRNA sequence data in GenBank database
+ release 94.0. Because our system needs at least 9 bases before start codon,
+sequence data which do not have at least 9 bases 
+are discarded.
+According to the keyword of the database, we excluded partial,
+putative, pseudo, mitochondrial, or immunoglobulin sequences.
+And sequences that have introns before start codons are excluded. 
+Also we excluded the cases where translation is initiated at non-ATG 
+codons as abnormal data, because although some experiments showed that
+eucaryotes can initiate translation at non-AUG codon
+eucaryotes 
+almost always initiate translation at AUG codon in vivo.
+In addition, we excluded the cases where there is ATG triplet located
+upstream of start codon and in the same frame as start codon, because
+in this case, the annotated translation initiation site in database is 
+likely to be wrong. 
+
+We got 8046 sequences. We numbered each sequence and used odd numbered
+sequences as training set, and used even numbered sequences as test
+set. After the random initialization of weights, we trained the neural
+network independently five times using training set.
+ After the training, we tested our
+system using the test set. The test sequence data was input into all
+five training results. And if more than 3 of 5 output neurons fire,
+the system assumes the corresponding position of the sequence as translation
+initiation site.<p>  
+
+
+
+<B>Results:</B>
+
+After more than 50 iteration steps(but less than 100 iteration steps)
+of learning, all five neural network learned more than 98% of
+nucleotide patterns around start codons in the training set as described in the table.<p>
+
+<CENTER>
+<TABLE BORDER> 
+<TR>
+<TD>Training</TD><TD>Iterations</TD><TD>Rate</TD>
+</TR>
+<TR>
+<TD>1 </TD><TD> 77 </TD><TD> 98.31% </TD>
+</TR>
+<TR>
+<TD>2 </TD><TD> 48 </TD><TD> 98.22% </TD>
+</TR>
+<TR>
+<TD>3 </TD><TD> 61 </TD><TD> 98.31% </TD>
+</TR>
+<TR>
+<TD>4 </TD><TD> 58 </TD><TD> 98.52% </TD>
+</TR>
+<TR>
+<TD>5 </TD><TD> 58 </TD><TD> 98.38% </TD>
+</TR>
+</TABLE>
+</CENTER>
+<p>
+
+Of 4023 mRNA sequences in the test set, our system predicted 3789(94.18%)
+translation initiation sites correctly. <p>
+
+
+<B>Discussion:</B>
+The accuracy 94% may indicate how stop codons located downstream of
+AUG triplet and 10 bases around start codons are biologically
+important for the decision of translation initiation site.
+Using only such amount of information, we can predict translation
+initiation site with that accuracy. 
+
+There are 6% of sequences that our system did not predict their
+translation initiation sites correctly. The failure is probably due to
+the errors in the database or due to other phenomenon that has
+influence on leaky scanning. One of the main phenomenon is
+secondary structure of mRNA. It may disturb or
+enhance the recognition of translation initiation  
+site. If this phenomenon is taken account in our system, the accuracy
+may be better. But it may be hard to determine what form of secondary
+structure that will be made, and what form of secondary structures that 
+affect translation initiation.<p>
+
+<B>Conclusion:</B>
+Our system can predict translation initiation site of vertebrate mRNAs 
+in general, with the accuracy of 94%, with small amount of
+information in the sequence.<p>
+
+
+<B>References:</B><p>
+
+Guigo R. et al.(1992) Prediction of gene structure.
+J.Mol.Biol. 226:141-157<p>
+
+Kozak,M.(1986),
+Influences of mRNA secondary structure on initiation by eucaryotic 
+ribosomes,
+Proc.Natl.Acad.Sci.83:2850-285<p>
+
+Kozak,M.(1987) An analysis of 5'-noncoding sequences
+from
+699 vertebrate messenger RNAs, Nuc.Acid.Res. 15:8125-8148<p>
+
+Kozak, M.(1987) Effect of intercistronic length on
+the
+efficiency of reinitiation by eucaryotic ribosomes. 
+Mol.Cell.Biol.10:3438-3445<p>
+
+
+Kozak,M.(1989),The Scanning Model for Translation:An Update,
+J.Cell.Biol. 108:229-24<p>
+
+Kozak,M.(1990),Downstream secondary structure facilitates
+recognition of initiator codons by eukaryotic ribosomes,
+Proc.Natl.Acad.Sci.USA 87:8301-83<p>
+
+Luukkonen BG et al.(1995) Efficiency of reinitiation 
+of 
+translation on human immunodeficiency virus type 1 mRNAs is determined 
+by
+the length of the upstream open reading frame and by intercistronic
+distance.
+J.Virol.69:4086-4094<p>
+
+Mehdi H. et al.(1990)
+Initiation of translation at CUG, GUG and ACG codons in mammalian
+cells.
+Gene 91:173-178<p>
+
+Snyder, EE. et al.(1993) Identification of coding
+regions
+in genomic DNA sequences:An application of dynamic programming and
+neural networks.
+Nuc.Acid.Res. 21:607-613<p>
+
+
+Solovyev VV et al.(1994) Predicting internal exons
+by oligonucleotide composition and discriminant analysis of spliceable 
+open reading frames. Nuc.Acid.Res. 22:5156-5163<p>
+
+
+Xu,Y. et al.(1994) Constructing gene models from
+accurately
+predicted exons:an application of dynamic programming. 
+Comput.Appl.Biosci. 10:613-623<p>
+
+<A HREF="../research.html">
+<i>Go back to my research page</i></a><p>
+

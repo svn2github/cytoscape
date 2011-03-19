@@ -1,0 +1,1079 @@
+<HTML>
+<HEAD>
+<TITLE>Signaling Network Mechanisms and Modeling</TITLE>
+</HEAD>
+
+<H1 ALIGN=CENTER>
+シグナル伝達のメカニズムとモデリング<p>
+Signaling network mechanisms and modeling
+</H1>
+<P ALIGN="CENTER"><STRONG>Frank Schacherer</STRONG><BR>
+Research Group Bioinformatics<BR>
+Gesellschaft f&uuml;r Biotechnologische Forschung mbH<BR>
+Mascheroder Weg 1, D-38124 Braunschweig, Germany<BR>        
+<a HREF="mailto:frs@gbf.de">frs@gbf.de</A>  
+</P>
+
+
+<UL>
+<LI><A HREF="#intro">Introduction</A></LI>
+<LI><A HREF="#props">Properties</A></LI>
+<LI><A HREF="#static">Static models</A></LI>
+<LI><A HREF="#models">Dynamic models</A></LI>
+<LI><A HREF="#previous">Previous work</A></LI>
+<LI><A HREF="#questions">Open Questions</A></LI>
+<LI><A HREF="#literature">References</A></LI>
+</UL>
+
+<H2> <A NAME="intro">Introduction</A></H2>
+
+<P> Cells face a steady input of signals. All cellular decisions, like 
+survival or apoptosis (cellular suicide), proliferation or secretion of 
+certain compounds are goverened by this complex pattern of inputs (or lack 
+thereof). Obviously, the cell needs a way to map the set of inputs to the 
+set of possible responses, weighting and integrating the different inputs 
+in their context. It has to be possible for the cell to adapt to the 
+multitude of exterior environments. Therefore the signaling network has to 
+be robust, that means it may not fall apart because if minute changes in 
+some parameter. To achieve this, differing levels of exterior have to be 
+translated into one cellular state, which may change to another one on a 
+certain treshold in the signal. This many-to-one mapping (see <A 
+HREF="http://rsb.info.nih.gov/mol-physiol/ICCS/ms/mappings.html">Somogyi
+</A>) is an essential ingredient in life.</P>
+
+<P> This integration is the product of mechanisms on at least three 
+levels:</P>
+
+<OL><LI>the set of receptors, which act as a first signal filter</LI>
+
+<LI>the transduction pathways hooked up to them and their interaction, 
+which may act as a complex switching network (but also may turn out to do 
+more or less linear passing on of the signal). In the context of this 
+document, a signal transduction pathway is the series of molecular 
+interactions triggered by an extracellular signaling molecule and leading 
+to the activation of one or more transcription factors.</LI>
+
+<LI>finally the regulatory region on the DNA, which acts as a regulatory 
+program for transcription factors, and the current set of expressed 
+transcription factors.</LI></OL>
+
+<P>While the first and last point mostly depend on expression patterns of 
+the components, the transduction networks also strongly depend of the 
+interactions which connect the signaling molecules. Connectionism is the 
+notion that complex networks of simple elements show emergent behavior, 
+which is a property of the network, not of those simple elements per se. 
+This complex behaviour stems mainly from feedback lopps, where elements 
+downstream in a signaling pathway influence elements upstream of 
+themselves.</P>
+
+<P>A global view of signal transduction would include the gene-regulatory 
+networks in the nucleus and the intercellular signaling molecules also, 
+yielding an organisma wide signaling network, with interactions on vastly 
+different timescales. These different timescales can be a means for the 
+organism of decoupling slow signaling from the state of fast-changing parts 
+of the networks, since the slow processes will only see an average of the 
+fast ones [].</P>
+
+
+<H2> <A NAME="props">Properties and mechanisms</A></H2>
+
+<P>Which signaling mechanisms are essential for reproducing behaviour of a 
+intracellular signaling system? Several likely candidates include feedback 
+loops, signal amplification and treshholds, timing delays and self-
+modification of the network wiring.</P>
+
+
+<H3>Feedback circuits</H3>
+
+<P>Each element of a feedback circuit (or loop) has an direct or indirect 
+effect on itself. The circuit is said to have positive feedback, when this 
+effect is positive, otherwise the circuit is said to have negative 
+feedback. The sign is easily determined by checking the parity of negative 
+interactions. If this is zero or even, the circuit is positive, otherwise 
+it is negative. Positive circuits can yield multistationary behaviour, 
+negative ones can generate damped or sustained oszillatory behaviour and 
+homeostasis.[Mendoza99][Thieffry and Romero 99]. The effect of a circuit 
+does not only depend on the existence of the interactions, but also their 
+relative strengths: a functional circuit is one with such parameters, that 
+the effect will be multistationarity or homeostasis. [Thieffry and Romero 
+99] suggest that the larger the circuit, the bigger the set of constraints 
+it has to fullfill, and therefore most circuits should be very short, one 
+or two elements only in most cases. While this may hold for gene-
+regulatioory circuits, clearly it is not true for some metabolic and 
+regulatory [Bhalla and Lyengar 99] circuits.</P>
+
+<UL>
+<LI><H3>Positive feedback loops: Switches and Memory effects</H3>
+
+<P>Positive feedback is a mechanism to change the mode of activation of a component from 
+proportional to the signal strength to an &quot;off&quot; state below
+and an &quot;on&quot; state above a certain signal level. 
+In this model a product downstream of the activated component
+also activates the component, leading to it&#39;s own production, activating
+the component even more etc. If the signal grows beyond a level where this
+positive feedback can kick in, then the activation will suddenly take off,
+independent of the input signal level. Another way to change linear growing
+response to sigmoid growing response (which looks very much like on/off, when
+it happens fast enough) is allosteric influences, like you got with
+haemoglobins O2 binding: At a low concentration, the ligand binds poorly. But
+Bound subtrate changes the conformation of the - often symmetric - carrier as
+to bind better. This leads to much faster binding at higher concentration. At
+even higher concentrations, when all sites are saturated with ligand, the
+curve ends in a plateau, giving an overall sigmoid shape with an
+&quot;off&quot; state at low concentrations, then a fast change as
+concentration changes to an &quot;on&quot; state at higher ones.</P>
+
+<P> During development transient signals can effect a permanent change in the
+cells state. A mechanism to allow these memory effects is again positive
+feedback: once the treshhold is surpassed, the component will stay activated,
+by reactivating itself. The only way to get back to the previous state, then,
+is another signal that breaks the positive feedback loop. Another way to
+change the cell is by activating transcription and thus introducing new
+players into the network, which change it&#39;s behaviour.</P>
+
+
+<LI><H3>Negative feedback: Robustness of signal level</H3>
+
+<P>A mechanism to keep the level of any compound in a certain range is negative
+feedback loops. If the concentration of a compound exeeds the upper limit,
+the comound itself stops the process leading to its production, if it falls
+below the lower limit, another pathway activating it&#39;s production is
+switched on (cf. glucose/glycogen levels). Negative does not neccesarily mean
+switching something off, but ratehr acting in the opposite direction of the
+observed change.</P>
+</UL>
+
+<H3>Amplification</H3>
+
+Cascades are a mechanism to amplify signals. If on each step in an enzymatic
+cascade ten enzymes of the next level are activated by phosphorylation, then
+you will have multiplied the signal a thousandfold after three steps. This
+amplification is paid for by ATP burned up in the phosphorylations.
+Amplification is not limited to this mechanism. Binding to a channel which
+releases large amounts of Calcium from the ER is another example of
+amplification, this time paid for by the energy used to build up the Calcium
+cooncentration gradient over the ER membrane. 
+
+<H3>Time delays</H3>
+
+Turnover rates are a mechanism to control the speed of the response.
+Biological signals act on a network whose components are subject to constant
+degradation and builtup. To keep a steady concentration of a molecule, the
+production rate has to match the degradation rate. The amount of molecules
+exchanged per unit of time is called the turnover rate. If you switch off the
+signal, it&#39;s effect is flushed by exchanging modified molecules
+through new unmodified ones. A high turnover will lead to fast signal
+shutdown. But it also can lead to fast response to the signal: if the signal
+leads for example to doubling the production rate of a molecule, then that
+molecules level will rise much faster in system with the high turnover.
+Systems which have to respond fast thus often show a high turnover rate. The
+extra energy burned in those &quot;futile&quot; cycles is the price to pay
+for the ability of fast response. 
+
+
+<H3>Self-modification</H3>
+
+<P>The mechanism by which the cellular signling machinery can re-wire itself is
+transcription. If a signal leads to transcription of a protein not present
+before, then after the signal you have another signalling network. This
+differnce my be only superfical, as you could see the proteins of all genes
+as present in any cell, albeit in an inactive state, which changes through
+transcription to another (presumably active) one.</P> 
+
+
+
+<H2><A NAME="static">Static modeling</A></H2>
+
+<P> One has to differentiate between the static model of the network itself
+and the dynamic model of what goes on in this network. The static model
+contains different states of signaling compounds and their wiring. By wiring
+I mean the connections between these compounds, including additional
+information like if a connection is activating or inhibiting, or it&#39;s
+rate constant.</P>
+
+<P>This model is essentialy a big graph, where the nodes are states of 
+signaling compounds and their interactions to each other. Depending on the 
+detail level of modeling, on can have represent the network as a clique 
+grape with only one type of node (the signaling compounds), where the 
+interactions are implicitly contained in the edges, as a bipartite graph, 
+where the interactions also form nodes or even as a tripartite graph, where 
+the conections between interactions and compounds form nodes. It may be 
+convenient to view the bipartite graph as a hypergraph, where reactions are 
+the hyperedges.</P>
+
+<P>The static model can stored in a database.</P>
+
+<P>If we want to model a signaling reaction in the cytosol, we usually have 
+two or three signaling inputs, either two molecules that interact directly, 
+or aided by an enzyme. (If one were to model the enzymatic reaction in 
+detail, this would in most cases reduce to two sequential reactions between 
+two molecules for each case). Combinatoric richness in this case comes from 
+several reactions competing for the same molecules.</P>
+
+<P> If we want to simulate an promotor, it has to be possible 
+to express boolean relations between binding factors, since some can 
+activate, others inhibit, these may compete and the overall outcome of the 
+decision to transcribe may well depend on the relative numbers of 
+activators and inhibitors bound. In the graph we have a group 
+of active promotor states, from which the transcription reaction is wired, 
+and a group of inactive ones, from which it is not. By connecting these 
+states with all possible sequences of binding reactions all states will be 
+enumerated and connected, and there is no need to built any kind of 
+boolean information is stored in the  reactions and the state 
+distribution. With a big number of states, everything can be modeled in a 
+plain graph, but this is impractical for the example just discussed. By 
+using multiple inputs for each edge, we can build a hypergraph that is much 
+easier to handle.</P>
+
+<P> The decision which factors will bind in a real-life situation will 
+depend on the concentrations of factors, and on the binding constants. An 
+inhibitor with binding constant for binding will quickly claim the 
+available promotor binding site, making it unavailable for an activating 
+transcription factor with a low constant.</P>
+
+<P> Thus actual competition or inhibition decisions based on the mechanistic
+model can only be seen during actual simulation of the mechanism. In contrast,
+when building networks of activation/inhibition relations (semantic model),
+it may be possible to predict certain properties from the wiring alone.</P>
+
+<P> One can, however also try to built this boolean information into the
+reaction instead into the state distribution. In this case, and AND will be
+all the reactants and enzymes needed, a NOT will be the inhibitors. An OR
+would have to be modeled by a group as a reactant. The model is limited,
+since it does not allow for arbitrary constructs but only for constructs
+matching the syntax</P>
+
+<PRE>
+reaction   ::= activators | activators &quot;AND NOT&quot; inhibitors
+activators ::= alternative | alternative &quot;AND&quot; activators
+inhibitors ::= alternative | alternative &quot;AND&quot; inhibitors
+alternative::= molecule | molecule &quot;OR&quot; alternative 
+</PRE>
+
+Also, one needs contextual information for the molecules and reactions, like
+stoichometric indices, which wouold correspond to atrributes for the
+relations-arrows in a petrinet. 
+
+<H2><A NAME="models">Ways to model dynamic regulatory networks</A></H2>
+
+<P>There are two generally differing ways to model these networks: one, 
+first build the model with a priori parameters from expert knowledge. If 
+all the parameters and connections were correct, and thus the model is 
+correct, and the model is expressive enough, then the model should predict 
+observed data. Thus data is used only for hypothesis testing about the 
+model.  If the model does not predict data correctly, it then has to be 
+improved by hand - and it may be not obvious where to change it, if it 
+shows complex behaviour. Two, automatically infer the model (or at least 
+its parameters) from the data using machine learning techniques. After you 
+train a model with an unbiased training set, it then should be able to 
+predict regulation of a test set. The disadvantages are that you may need a 
+lot of date, and that today's expression data measures RNA levels. It has 
+been shown that for some cells the correlation between expressed RNA and 
+Proteins is only about 50%[]. Also, important proteins which are only 
+needed in low concentration (like transcription factors) may be entirely 
+missed.</P>
+
+<P>A good compromise seems to be: build the model by hand, then train it 
+with data to infer or improve parameters. Thus the model wiring works as a 
+contraint on the machine learning. If the model cannot be fitted to the 
+data, there may be some mistake in the models wiring, which then has to be 
+invetigated experimentally. 
+
+<H3> Data classes usable for modeling</H3>
+
+In order of decreasing detail and modeling power: 
+
+<UL>
+<LI><EM>kinetic data</EM> enzymatic speed constants, reaction equilibrium constants,
+concentrations of molecules (these last of course would have to represent
+some steady state in a given cell and tissue type of a given developmental
+stage, probably they can only be given for the adult stage, or would have to
+be given as a time series.) Kinetics also need stoichometric coefficients</LI>
+
+<LI><EM>semantic data</EM> what is the effect and context of a (boolean) interaction?
+is it inhibition, activation, is it direct, or indirect?</LI>
+
+<LI><EM>connectivity data</EM> which molecule interacts with which other
+molecule</LI>
+</UL>
+
+<P>Further properties of on the model
+
+<UL>
+<LI>Partitioning: How far can subnets be seen as modules, and the net be
+constructed from subnets?</LI>
+
+<LI>Time-delay: how can we include timing delays. Time delays (especial 
+signal accumulation delays) are central to the correct function of the 
+circuit [McAdams & Shapiro 95]. Do we have a synchronized clock or 
+independend concurrent flows of events? How can we handle the vastly 
+different timescales of various processes? Do we need to? </LI>
+
+</UL>
+
+
+<H3> Timing</H3>
+
+Time delay mechanisms, especially transcription delay and signal accumulation
+delays, are central to the correct functioning of the circuits. (Sharipo) 
+
+<H3> Asynchronity</H3>
+
+All cellular communication proceeds locally and asynchronous time, as there
+is no means for global synchronisation. 
+
+<H3> Modularization and decoupling</H3>
+
+<P> Once you start building a network like this, people come and say
+&quot;Gee, what a waste of time. In the end you&#39;ll find everything is
+connected to everything else. It is. But it still works. One of the most
+interesting things to find out is how the decoupling of signals takes part,
+even though the pathways are interconnected into networks.</P>
+
+<P> One mechanism might be spatial compartimentation. It&#39;s like using
+modules in programming (and actually object-oriented programming incorporates
+ideas seen in biological systems to handel complexity (cf. Booch, Hartwell).
+if you have subsystems with strong interactions or coupling within, but
+weaker interactions or coupling between subsystems, the overall system is
+much more robust, as changes in one subsystem do not influence the others
+strongly.</P>
+
+<P> Also, eukaryotic cells have evolved scaffolding proteins that can
+simultaneously bind multiple components of a signaling pathway and thereby
+impose a degree of specificity and order on he highly connected network of
+signaling molecules.</P>
+
+<P> Compartimentation does not stop at the subcellular compartment level:
+often molecules in a cascade are grouped together by scaffold or adapter
+molecules. One example is the yeast pheromone response with
+Ste5/ste11/Ste7/Fus3-Kss1, which is homolog to the human MAP Kinase cascade.
+Clustering insulates these molecules and may diminuish &#39;cross- talk&#39;
+to other pathways. It also makes possible a new degree of signal
+amplification and speed which could not be achieved with molecules freely
+distributed in the cytosol and relying on diffusion to collide and interact
+every now and then. (The notion of the cytosol as a thin solution akin to an
+aquatic one is quite wrong anyways, it&#39;s much more like a gel, filled
+with cytoskeletal structures which also act as rails for transport
+processes.)</P>
+
+<P> Another may be time-scale decoupling (Rodjestvenski), times of processes
+in the cell vary significantly from &lt;&gt; in enzymatic catalysis or even
+femtoseconds in photosyntetic excitation to dozens of minutes for protein
+expression and even days or weeks for hormone responses. Slower processes are
+insensitive to the values of fast-changing processes, seeing only their
+averaged value.</P>
+
+<H2><A NAME="previous">Previous work: network models and tools</A></H2>
+
+<P> As far as modeling is concerned, what has already been tried? Which 
+research groups exist, and what is their approach? What kinds of models for 
+networks exist? What kind of data is needed to support the various models? 
+</P>
+
+<P>Network models of all kinds have been used on such research topics as 
+electrical circuitry, gene-regeulatory networks or metabolic networks. 
+Since we are interested ways to model networks, we present an overview 
+based on the kind of model used, not on the kind of application domain. The 
+classification of methods follows [Hofest臈t and Thelen 98].</P>
+
+<TABLE SUMMARY="Modelling techniques" BORDER="1">
+<TR BGCOLOR="#CCFFCC">
+<TD COLSPAN="2">Analytical models: <EM>quantitative</EM> simulation</TD>
+</TR>
+
+<TR BGCOLOR="#CCFFCC"> <TD COLSPAN="2">These are the most detailed models, 
+nedd the most parameters and have to date been used most often. Because of 
+their hunger for information and compuztaional complexity, usually only 
+small systems can be modeled.</TD> </TR>
+
+
+<TR BGCOLOR="#CCCCFF">
+<TD COLSPAN="2">微分方程式 differential equations</TD>
+</TR>
+
+<TR> <TD>Method</TD> <TD>The network is modeled as a collection of (usually 
+nonlinear) differnetial equations, where reaction rates and compound 
+concentratuions are the variables. These are solved then numerically for 
+each time step. Stoichometric coefficients, starting concentrations and 
+rate constants for all interactions are needed.</TD> </TR>
+
+<TR> <TD>Advantages</TD> <TD>Of  course, quantitative modeling would give the 
+highest predictive precision. The concept of sensitivity of a pathway (i.e. 
+the change in level of activated target divided by the change in the level 
+of signal) allows the quantification of signal transfer.</TD> </TR>
+
+<TR><TD>Limitations</TD><TD>Unfortunately, the conditions under which the 
+parameters for the model have been measured differ widely. Unless the 
+system is robust vs. those differences, it'll not be possible to 
+reconstruct the actual workings of the network. Also for large networks the 
+computational cost may get very high.</TD> </TR>
+
+
+<TR> <TD>Example Applications</TD> <TD>[Kholodenko97] <P>There is a far 
+more mature theory and more databases for <A 
+HREF="metabolic.html">metabolic networks</A> and their analysis, which has 
+been largely modeled with differntial equations. <BR><EM> How far can such 
+tools be used for modeling regulatory networks?</EM><BR> In metabolic 
+networks the model is that of a small molecule that is transformed by 
+enzymatically catalyzed reactions. Thus there is always a flow of mass 
+through the network. Nothing is said about the regulation of the enzymes - 
+if they are present, they are assumed to work. In regulatory networks, 
+information is flowing, and often does so without mass being passed on. 
+Consider the catalysis in regulatory cascades: here you have futile cycles 
+between the active and inactive state of the enzymes from a mass-
+conservation point of view, but what really counts is the passing of 
+information that manifests in this ste-change. These processes will not 
+yield usable results with present day tools for metabolic network 
+analysis.</P>
+
+
+</TD>
+</TR>
+
+<TR BGCOLOR="#CCFFCC">
+<TD COLSPAN="2">離散モデル Discrete models: <B>定性的</B> シミュレーション <EM>qualitative</EM> simulation</TD>
+</TR>
+
+<TR BGCOLOR="#CCFFCC"> <TD COLSPAN="2">These models do not need exact 
+concentrations. They represent a middle ground between the more 
+exhaustive differential equation systems and the very simolified
+abstrart models.</TD> </TR>
+
+<TR BGCOLOR="#CCCCFF">
+<TD COLSPAN="2"><A HREF="http://www.daimi.au.dk/PetriNets/" TARGET="_top">Petrinets</A></TD>
+</TR>
+
+<TR> <TD>Advantages</TD> <TD>Petri Nets have a mature theoretical 
+background, and numerous tools for analysis and running simulations exist. 
+There are a lot of variants, including colored and timed Petrinets. There 
+are properties which can be checked for petrinets, like liveness or 
+reachability. </TD> </TR>
+
+<TR> <TD>Limitations</TD> <TD>The main limitation is that of most of the 
+discrete models, transitions switch, or they don't, there are no 
+probabilities. Also given the big number of tools it is disappointing they 
+do not use a common data exchange format.</TD> </TR>
+
+<TR>
+<TD>Example Applications</TD>
+<TD>[Hofest臈t and Thelen 98] used Petri Nets to simulate metabolic networks.</TD>
+</TR>
+
+<TR BGCOLOR="#CCCCFF">
+<TD COLSPAN="2">Stochastic Activity Nets (SANs)</TD>
+</TR>
+
+<TR> <TD>Advantages</TD> <TD>These are a variant of Petrinets, which put 
+more muscle in the conditions upon which transactions fire, thereby making 
+it easier to model behavior witthout introducing many additional places. 
+Switching here is based on probabilities, overcoming one limitation most 
+other discrete models have.</TD> </TR>
+
+<TR> <TD>Limitations</TD> <TD>There are still only discrete sets of tokens 
+moved in the network (although one could try to assimilate floating-point 
+behaviour by large numbers of tokens, so that one token in effect equals 
+the smalles possible fraction of a unit to be represented).</TD> </TR>
+
+<TR>
+<TD>Example Applications</TD>
+<TD>[Mounts and Liebman 97] used a SAN model blood coagulation.</TD>
+</TR>
+
+<TR BGCOLOR="#CCCCFF">
+<TD COLSPAN="2">Neural Networks/Parallel Distributed Process-networks (PDP)</TD>
+</TR>
+
+<TR>
+<TD>Method</TD>
+<TD>Layered network of neural units with input layer, hidden inner layers,
+output layer plus training program for weights (i.e. neural network
+approach). Compounds = neural units.</TD>
+</TR>
+
+<TR>
+<TD>Needed values</TD>
+<TD>Connectivity, input/output functions (reactions) for compounds,
+connection weights.</TD>
+</TR>
+
+<TR>
+<TD>Predictive power</TD>
+<TD></TD>
+</TR>
+
+<TR>
+<TD>Example Applications</TD>
+<TD>[Bray90]</TD>
+</TR>
+
+<TR BGCOLOR="#CCCCFF">
+<TD COLSPAN="2">Rule-based systems (Prolog, Lisp, or Expert System shells)</TD>
+</TR>
+
+<TR> <TD>Method</TD><TD>The network is modeled as a collection of IF..THEN 
+.. rules. A rule fires, when the boolean exression in its preconditions (IF 
+part) holds, setting the values in its postconditions (THEN part) to TRUE. 
+There are effecient algorithms (like RETE) to re-evaluate if a rule fires 
+when some arbitrary rukle of the network is changed. For Parameters, 
+connectivity is enough for the base level. Depending on the state of the 
+cell conditions have to be initialized to TRUE.. Rules are our Reactions 
+and fire when all compounds and enzymes are present and the inhibitors are 
+not.</TD> </TR>
+
+<TR> <TD>Advantages</TD> <TD>Like the boolean networks needs only little 
+data to begin with, and has prebuild tools to do the computation. (Rule-
+based models seem to be a transform of boolean nets? The principal 
+difference seems to be that the boolean networks handle bitstrings, while 
+this handles symbolic names, maybe more appropriate to our task.) </TD> 
+</TR>
+
+<TR> <TD>Limitations</TD> <TD>See Boolean Networks.</TD> 
+</TR>
+
+
+<TR>
+<TD>Example Applications</TD>
+<TD>[Brutlag et al. 91] used it to model enzyme behaviour (for DNA polymerase).</TD>
+</TR>
+
+
+<TR BGCOLOR="#CCFFCC">
+<TD COLSPAN="2">Abstract models: cellular automata and logical models</TD>
+</TR>
+
+<TR BGCOLOR="#CCFFCC"> <TD COLSPAN="2">Cellular automata use the content of cells in 
+a matrix to calculate the content of neighboring cells. If the influencing 
+cells are definde by spacial proximity (like in the "Game of Life" 
+automaton), you have a normal automaton, otherwise you have a boolean 
+network. Varieties of cellular automata have been used to study complex 
+systems: von Neumann and Ulam, Conway, Wolfram, Langton.</TD> </TR>
+
+<TR BGCOLOR="#CCCCFF">
+<TD COLSPAN="2">(Random) <A HREF="boolnet.html">Boolean Networks</A></TD>
+</TR>
+
+<TR> <TR> <TD>Method</TD> <TD>This is the simplest model, but still is able 
+to express positive and negative feedback loops. Parameters you need are a 
+set of rules and a set of tokens that defines which cells are on in each 
+iteration of the network. For details see <A 
+HREF="boolnet.html">here</A>.</TD> </TR>
+
+
+<TR><TD>Advantages</TD> <TD>Computationally cheap and has been extensively 
+used before.</TD> </TR>
+
+<TR> <TD>Limitations</TD> <TD>Since the model is boolean only, no 
+quantities can be expressed. Thus amplification and thresholds cannot be 
+modeled.</TD> </TR>
+
+<TR> <TD>Example Applications</TD> <TD>
+
+<P><P><A HREF="genereg.html">Gene-regulatory Networks</A>:[Thieffry &amp; Romero 99]</P>  
+
+
+<P><A HREF="vlsi.html">VLSI Design</A>: This is about modeling of 
+electric signal networks. A lot of the ideas and methods could be used in 
+our context, too. Naturally there are models of all kinds used in that 
+context, but the gate-level logic models seem to be most interesting. 
+[McAdams & Shapiro 95] used this approach by modeling gene-regulatory 
+networks, mixing in nonlinear differential equations for selected critical 
+control elements.
+
+
+</TD>
+</TR>
+
+</TABLE>
+
+
+<H2> <A NAME="questions">Open Questions</A></H2>
+
+<H3>Modeling Questions</H3>
+
+<P> The problem with the state machine approach is that state is contextually
+dependend on the location of the molecule. In the nucleus a transcription
+factor can activate transcription, but in the cytosol it obviously can not.
+Since there are so many different possible contexts, this can theoretically
+explode the number of states, just think also about developmental stages,
+species, different cell types. Also if one molecule can be phosphorylated at
+a lot of sites, like PDGFR, the number of possible combinations is exploding.
+The limiting factor for the database is of course what was experimentally
+shown. But with experimental science shifting to bulk-data aquisition, like
+it is done with chip technologies, this limit may well fall.</P>
+
+<P> The number of molecules and locales involved just makes it impossible to
+really model the whole cell as a big state machine.</P>
+
+<P> Similarly the possible combinations of factors binding to a promotor and
+the boolean rules that govern if the promoter will be activated or not are
+not well modelled in a state transition net. For a promotor with n different
+factors able to bind to the m binding sites, one could have m to the power of
+n + 1 (for none binding) different states. And only some of them would
+activate transcription. This could be expressed much more succinct with a
+boolean rule for the sites. The other way to avoid the problem is to group
+the factors by function, effectively reducing their numbers.</P>
+
+
+<H3>General Questions</H3>
+
+<P>How important are signal transduction pathways for the specificity of 
+the cells response to a signal? Is all of the different behaviour between 
+cells because of the differently expressed receptors and factors? If, so is 
+it still useful to model signaling networks?</P>
+
+<P> There are only a relatively small number of known intracellular pathways
+for signal transduction, and these also do cross-talk. The current
+notion[Pawson and Saxton 99] is that the function of these networks is
+to integrate incoming signals. Several positive signals add up to a higher
+quantitative effect in immediate early gene transcription, and a coherent
+response to conflicting signals is made possible. Since all kinds of
+receptors link to those few pathways, the activation of distinct signaling
+pathways at the membrane may converge on a related set of promotors. The
+question here is how biological specificity can be generated through rather
+general intracellular signals. The current notion is that cells with
+different histories, and therefore expressing different repertoires of
+transcription factors may form distinct complexes of newly activated
+transcription factors, which target different promotors. The same signal may
+therefore induce different transcriptional readouts in different cells.</P>
+
+<P>Oncogenes often code for key proteins in signal transduction pathways, 
+which then constitutively switch on transcription. Having information about 
+alternate pathways and the interaction between pathways will help to 
+understand abnormal behaviour and to target critical elements in pathways 
+for medical treatment. Therfore, modelimng the networks should be 
+interesting even if most of the specificity of responses roots in a cells 
+history and in the expression pattern of the entries and exits from the 
+signal transduction maze.</P>
+
+<P> The basic idea to model cellular signaling in the computer is to have the
+cell as a big state machine, with each signalling molecule another, smaller
+state machine, which can change frome one state to another upon recieving
+signals, and which transmits signals to other molecules (and sometimes
+itself), depending of the state it is in. So you end up with a big graph (or
+Petri-Net) of molecule-states and interaction-reactions. In the simplest case
+only two states (on/off) for each molecule would exist, so you could describe
+it with a single node reciving and sending activation/inhibition signals (the
+semantic view of the network).</P>
+
+
+<H2> <A NAME="literature">References</A></H2>
+
+<H3>Books</H3>
+
+<TABLE BORDER>
+<TR>
+<TD>M. Mitchell Waldrop</TD>
+<TD>Complexity</TD>
+<TD ALIGN=RIGHT>1993</TD>
+<TD><A HREF="http://www.amazon.com/exec/obidos/ASIN/0671872346/o/qid=952332661/sr=8-1/002-8295222-1306636">Amazon.com</A></TD>
+<TD>0-671-87234-6</TD>
+</TR>
+<TR>
+<TD>Dieter Jungnickel</TD>
+<TD>Graphen, Netzwerke und Algoriothmen</TD>
+<TD ALIGN=RIGHT>1994</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+</TABLE>
+
+
+<H3>Papers</H3>
+
+<TABLE BORDER>
+<TR>
+<TD>Bray D., Lay S.</TD>
+<TD>Computer Simulated Evolution of a Network of Cell-Signaling Molecules</TD>
+<TD ALIGN=RIGHT>1994</TD>
+<TD>Biophys. J.</TD>
+<TD ALIGN=RIGHT>66</TD>
+<TD><BR></TD>
+<TD>972-77</TD>
+</TR>
+<TR>
+<TD>Egan E. S., Weinberg R. A.</TD>
+<TD>The pathway to signal achievement</TD>
+<TD ALIGN=RIGHT>1993</TD>
+<TD>Nature</TD>
+<TD ALIGN=RIGHT>365</TD>
+<TD><BR></TD>
+<TD>781-83</TD>
+</TR>
+<TR>
+<TD>Bray D.</TD>
+<TD>Intracellular signalling as a parralel distributed process</TD>
+<TD ALIGN=RIGHT>1990</TD>
+<TD>J. Theor. Biol.</TD>
+<TD ALIGN=RIGHT>143</TD>
+<TD>2</TD>
+<TD>215-31</TD>
+</TR>
+<TR>
+<TD>Somogyi R.</TD>
+<TD>Many to One Mappings as a Basis For Life</TD>
+<TD ALIGN=RIGHT>1997</TD>
+<TD>ICCS</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Thomas R.</TD>
+<TD><BR></TD>
+<TD ALIGN=RIGHT>1991</TD>
+<TD>J. Theor. Biol.</TD>
+<TD ALIGN=RIGHT>153</TD>
+<TD>1</TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Selkov E. et al.</TD>
+<TD>Mathematical simulation and analysis of cellular metabolism and regulation</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>Bioinformatics</TD>
+<TD ALIGN=RIGHT>15</TD>
+<TD>9</TD>
+<TD>749-758</TD>
+</TR>
+<TR>
+<TD>Rojdestvenski I., Cottam M., Park Y-I., &Ouml;quist G.</TD>
+<TD>Robustness and time-scale hierarchy in biological systems</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>BioSystems</TD>
+<TD ALIGN=RIGHT>50</TD>
+<TD><BR></TD>
+<TD>71-82</TD>
+</TR>
+<TR>
+<TD>Hartwell H. L., Hopfield J. J., Leibler S., Murray A. W.</TD>
+<TD>From molecular to modular cell biology</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>Nature</TD>
+<TD ALIGN=RIGHT>402</TD>
+<TD>SUPP</TD>
+<TD>C47-C52</TD>
+</TR>
+<TR>
+<TD>Bhalla U. S., Iyengar R.</TD>
+<TD>Emergent Properties of Networks of Biological Signaling Pathways</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>Science</TD>
+<TD ALIGN=RIGHT>283</TD>
+<TD><BR></TD>
+<TD>381-387</TD>
+</TR>
+<TR>
+<TD>Wenig G., Bhalla U. S., Iyengar R.</TD>
+<TD>Complexity in Biological Signaling Systems</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>Science</TD>
+<TD ALIGN=RIGHT>284</TD>
+<TD><BR></TD>
+<TD>92-96</TD>
+</TR>
+<TR>
+<TD>McAdams H. H., Shapiro L.</TD>
+<TD>Circuit Simulation of Genetic Networks</TD>
+<TD ALIGN=RIGHT>1995</TD>
+<TD>Science</TD>
+<TD ALIGN=RIGHT>269</TD>
+<TD><BR></TD>
+<TD>650-56</TD>
+</TR>
+<TR>
+<TD>Fisher M. J., Paton R. C., Matsuno K.</TD>
+<TD>Intracellular  signalling proteins as 'smart' agents in parallel distributed processes</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>BioSystems</TD>
+<TD ALIGN=RIGHT>50</TD>
+<TD><BR></TD>
+<TD>159-171</TD>
+</TR>
+<TR>
+<TD>Mendoza L., Thieffry D., Alvarez-Buylla E. R.</TD>
+<TD>Genetic control of flower morphogenesis in Arabidopsis thaliana: a logical analysis</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>Bioinformatics</TD>
+<TD ALIGN=RIGHT>15</TD>
+<TD>07</TD>
+<TD>593-606</TD>
+</TR>
+<TR>
+<TD>Thieffry D., Romero D.</TD>
+<TD>The modularity of biological regulatory networks</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>BioSystems</TD>
+<TD ALIGN=RIGHT>50</TD>
+<TD><BR></TD>
+<TD>49-59</TD>
+</TR>
+<TR>
+<TD>Sch&ouml;nfisch B., de Roos, A.</TD>
+<TD>Synchronous and asysnchronous  updating in cellular automata</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>BioSystems</TD>
+<TD ALIGN=RIGHT>51</TD>
+<TD><BR></TD>
+<TD>123-143</TD>
+</TR>
+<TR>
+<TD>Igamberdiev A. U.</TD>
+<TD>Foundations of metabolic organization: coherence as a basis of computational properties in metabolic networks</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>BioSystems</TD>
+<TD ALIGN=RIGHT>50</TD>
+<TD><BR></TD>
+<TD>1-16</TD>
+</TR>
+<TR>
+<TD>De la Fuente I. M.</TD>
+<TD>Diversity of temporal self-organized behaviours in a biochemical system</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>BioSystems</TD>
+<TD ALIGN=RIGHT>50</TD>
+<TD><BR></TD>
+<TD>83-97</TD>
+</TR>
+<TR>
+<TD>D'haeseleer P., Liang S., Somogyi R.</TD>
+<TD>Gene Expression Data Analysis and Modeling</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>PSB</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Somogyi R., Fuhrmann S.</TD>
+<TD>Distributivity, a general information theoretic network measure, or why the whole is more than the sum of ist parts</TD>
+<TD ALIGN=RIGHT>1997</TD>
+<TD>Proceedings of the International Workshop on Information Processing in Cells and Tissues</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Schuster S., Dandekar T., Fell A. D.</TD>
+<TD>Detection of elementary flux modes in biochemical networks: a promising tool for pathway analysis and metabolic engineering</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>TIBTECH</TD>
+<TD ALIGN=RIGHT>17</TD>
+<TD><BR></TD>
+<TD>53-60</TD>
+</TR>
+<TR>
+<TD>Pfeiffer T., S&aacute;nchez-Valdenebro I, Nuno J. C., Montero F., Schuster S.</TD>
+<TD>METATOOL: for studying metabolic networks</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>Bioinformatics</TD>
+<TD ALIGN=RIGHT>15</TD>
+<TD>3</TD>
+<TD>251-257</TD>
+</TR>
+<TR>
+<TD>Kholodenko B. N., Hoek J. B., Westerhoff H. V., Brown G. C.</TD>
+<TD>Quantification of information transfer via cellular signal transduction pathways</TD>
+<TD ALIGN=RIGHT>1997</TD>
+<TD>FEBS Letters</TD>
+<TD ALIGN=RIGHT>414</TD>
+<TD><BR></TD>
+<TD>430-434</TD>
+</TR>
+<TR>
+<TD>Karp P. D., Riley M.</TD>
+<TD>Guide to the EcoCyc Schema</TD>
+<TD ALIGN=RIGHT>1994</TD>
+<TD>no journal</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Karp P. D., Paley S. M.</TD>
+<TD>Representations of Metabolic Knowledge: Pathways</TD>
+<TD><BR></TD>
+<TD>no journal</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Karp P. D., Paley S. M.</TD>
+<TD>Automated Drawing of Metabolic Pathways</TD>
+<TD ALIGN=RIGHT>1994</TD>
+<TD>no journal</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Yuh C.-H., Bolouri H., Davidson E. H.</TD>
+<TD>Genomic Cis-Regulatory Logic: Experimental and Computational Analysis of a Sea Urchin Gene</TD>
+<TD ALIGN=RIGHT>1998</TD>
+<TD>Science</TD>
+<TD ALIGN=RIGHT>279</TD>
+<TD><BR></TD>
+<TD>1896-1902</TD>
+</TR>
+<TR>
+<TD>Ball P.</TD>
+<TD>Transitions still to be made</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>Science</TD>
+<TD ALIGN=RIGHT>402</TD>
+<TD>SUPP</TD>
+<TD>C73-C76</TD>
+</TR>
+<TR>
+<TD>Bhalla U. S., Iyengar R.</TD>
+<TD>Emergent Properties of Networks of Biological Signaling Pathways: Support Website with Parameter Values</TD>
+<TD><BR></TD>
+<TD>Science</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>K&uuml;ffner R., Zimmer R., Lengauer T.</TD>
+<TD>Pathway Analysis in Metabolic Databases via Differntial Metabolic Display</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>GCB</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Krishnamurthy V., Krishnamurthy E. V.</TD>
+<TD>Rule-based programming paradigm: a formal basis for biological, chemical and physical computation</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>BioSystems</TD>
+<TD ALIGN=RIGHT>49</TD>
+<TD><BR></TD>
+<TD>205-228</TD>
+</TR>
+<TR>
+<TD>Weaver D.C., Workman C. T., Stromo G. D.</TD>
+<TD>Modeling regulatory networks with weight matrices</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>PSB</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Schaff J., Loew L. M.</TD>
+<TD>The virtual cell</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>PSB</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Erb R. S., Michaels G. S.</TD>
+<TD>Sensitivity of Biological Models to Errors in Parameter Estimates</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>PSB</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Chen T., He L. H., Church G. M.</TD>
+<TD>Modeling Gene Expression with differential equations</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>PSB</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Bugrim A., Keizer J., Glass L., Winfree A.</TD>
+<TD>Computer Modeling in physiology: from cell to tissue</TD>
+<TD ALIGN=RIGHT>1999</TD>
+<TD>PSB</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Rocha L.</TD>
+<TD>Evolutionary Systems and Artificial life</TD>
+<TD><BR></TD>
+<TD>no journal</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Wuensche A.</TD>
+<TD>Genomic Regulation modeled as a network with basins of attraction</TD>
+<TD><BR></TD>
+<TD>no journal</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Heidtke K. R., Schulze-Kremer S.</TD>
+<TD>BioSim - A New  Qualitative Simulation Environment for Molecular Biology</TD>
+<TD ALIGN=RIGHT>1998</TD>
+<TD>Annu Rev Pharmacol Toxicol</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD><BR></TD>
+</TR>
+<TR>
+<TD>Brutlag D. L., Galper A. R., Millis D. H.</TD>
+<TD>Knowledge-based simulation of DANN metabolism: prediction of enzyme action</TD>
+<TD ALIGN=RIGHT>1991</TD>
+<TD>CABIOS</TD>
+<TD ALIGN=RIGHT>7</TD>
+<TD>1</TD>
+<TD>9-19</TD>
+</TR>
+<TR>
+<TD>Hofest&auml;dt R., Thelen S.</TD>
+<TD>Quantitative Modeling of Biochemical Networks</TD>
+<TD ALIGN=RIGHT>1998</TD>
+<TD>In Silico Biol.</TD>
+<TD ALIGN=RIGHT>1</TD>
+<TD><BR></TD>
+<TD>0005</TD>
+</TR>
+<TR>
+<TD>Kohn M., Letzkus W.</TD>
+<TD>A Graph-theoretical Analysis of Metablolic Regulation</TD>
+<TD ALIGN=RIGHT>1982</TD>
+<TD>J. Theor. Biol.</TD>
+<TD ALIGN=RIGHT>100</TD>
+<TD><BR></TD>
+<TD>293-304</TD>
+</TR>
+<TR>
+<TD>Reddy V. N.,  Mavrovouniotis  M. L., Liebman  M. N.</TD>
+<TD>Petri Net Representations in Metabolic Pathways</TD>
+<TD ALIGN=RIGHT>1993</TD>
+<TD>Proceedings of the First International Conference on Intelligent Systems for Molecular Biology</TD>
+<TD><BR></TD>
+<TD><BR></TD>
+<TD>328-336</TD>
+</TR>
+<TR>
+<TD>Mounts W. M., Liebman M. N.</TD>
+<TD>Qualitative modeling of normal blood coagulation and its pathological states using stochastic activity networks.</TD>
+<TD ALIGN=RIGHT>1997</TD>
+<TD>Int J Biol Macromol</TD>
+<TD ALIGN=RIGHT>20</TD>
+<TD>4</TD>
+<TD>265-281</TD>
+</TR>
+</TABLE>
+
+<SMALL>
+Last updated: Thu 01 Jan 1970 09:00:00 AM JST
+</SMALL>
+
+</BODY>
+</HTML>
+

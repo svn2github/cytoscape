@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<categorymngdoc>
+  <category numid="0">
+    <name>最新の記事</name>
+    <icon>
+    </icon>
+  </category>
+  <category numid="1">
+    <name>日記</name>
+    <icon>
+    </icon>
+  </category>
+  <category numid="2">
+    <name>お知らせ</name>
+    <icon>
+    </icon>
+  </category>
+  <category numid="3">
+    <name>なし</name>
+    <icon>
+    </icon>
+  </category>
+</categorymngdoc>

@@ -1,0 +1,72 @@
+<Title>Prediction method</title>
+<H1>
+<CENTER>
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+Prediction method
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+</center>
+</h1>
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>
+By evolutional data
+</B>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+
+<DL>
+<DT>Annotation matching
+<DD>原始的な方法だが、タンパク質AとＢのannotationが似ている場合、タンパク質A
+とB がinteractすると予測するもの。ランダムに選んだ２つのタンパク質が
+interactする可能性よりは高い。
+
+<DT>Neibouring genes
+<DD>polycistronicな遺伝子同士がinteractする可能性が高いとするもの(Dandekar,
+T. et al.  1998)。あまり効果は期待できない。主に原核生物に対して適用され
+る手法。
+
+
+<DT>Phylogenetic profiling
+<DD>ある２つのタンパク質ＡとＢの様々な生物における存在状況(phylogenetic
+profile)が似ている場合、ＡとＢは機能的にリンクしている可能性が高く、
+interactionしている可能性も高いと考えられる(Pellegrini, M. et al. 1999)。
+問題は、真核生物の完全に配列が決定された種が少ないことである。このため現
+時点では、原核生物のphylogenetic profileを使うのが現実的である。
+
+<DT>Domain fusion analysis
+<DD>ある種の遺伝子Ａと遺伝子Ｂが別の種で遺伝子Ａ−Ｂのように１つの遺伝子に融
+合している場合、遺伝子Ａと遺伝子Ｂはinteractする可能性が高いと考えられる
+(Enright et al.  1999)。原核生物ではそれなりの効果が確かめられているが、
+真核生物ではまだ未知数。
+
+<DT>Correlation of mRNA expression patterns
+<DD>microarrayの発現パターンで遺伝子AとBが高い相関を示す場合、AとBがinteractす
+る可能性がやや高いと考えられる。
+
+<DT>Related metabolic function
+<DD>代謝経路上、近いタンパク質同士はinteractionする可能性が高いと考えられる。
+代謝経路はEcoCycやKeggのようなデータベースを利用して調べればよい
+(Marcotte et al. 1999)。原核生物に対しては非常に効果が高いと思われる。真
+核生物に対する効果も期待できる。
+
+</DL>
+<hr>
+
+<A HREF="index.html">
+<I>Go back to PPI home page</i></a><p>

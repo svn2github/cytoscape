@@ -1,0 +1,680 @@
+<Title>Literatures</title>
+<H1>
+<CENTER>
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+PPI related literatures
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+<img src = "ballm.gif"> 
+</center>
+</h1>
+
+<img src = "greenb.gif">
+<A HREF="http://www.ncbi.nlm.nih.gov/entrez/">
+PubMed</a><p>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>
+データベース
+</B>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+
+<UL>
+<LI> Eilbeck K, Brass A, Paton N, Hodgman C(1999)
+INTERACT: an object oriented protein-protein interaction database. Proc. Int. Conf. Intell. Syst. Mol. Biol. 1999:87-94 
+<LI> Xenarios, L. et al.(2000) DIP: the Database of Interacting Proteins. Nuc. Acid. Res. 
+28:289-291
+
+<LI>Bader, G.D. et al.(2001) BIND - The Biomolecular Interaction
+Network Database. Nuc.Acid.Res. 29:242-245
+
+<LI>Bader, G.D. et al.(2000) BIND - a data specification for storing
+and describing biomolecular interactions, molecular complexes and
+pathways. Bioinformatics 16:465-477<p>
+BINDを構築する上で定義したデータ構造について。
+
+</UL>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>
+PPIの網羅的Assay
+</B>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+<UL>
+<LI> Uetz, P. et al.(2000) A comprehensive analysis of protein-protein interactions in 
+Saccharomyces cerevisiae. Nature 403:623-627<p>
+
+酵母菌のPPIの網羅的assay。<p>
+
+<LI>Schwikowski B, Uetz P, Fields S.(2000)
+A network of protein-protein interactions in yeast.
+Nat Biotechnol. 18:1257-61.
+
+<LI> Ito, T. et al.(2000) Toward a protein-protein interaction map of the budding yeast: A comprehensive system to examine two-hybrid interactions in all possible combinations between the yeast proteins.  Proc Natl Acad Sci U S A 97(3):1143-1147<p>
+
+酵母菌のPPIの網羅的assay。ただしこの時点では全組合わせは終了していない。<p>
+
+<LI>Ito T, Chiba T, Ozawa R, Yoshida M, Hattori M, Sakaki Y.(2001)
+A comprehensive two-hybrid analysis to explore the yeast protein interactome.
+Proc Natl Acad Sci USA 98(8):4569-74<p>
+
+酵母菌のPPIの網羅的assay。全ての組合わせが終了。ただし、false
+positive/negativeが多いことが予想される。自己貧食や紡錘体、小胞におけ
+る輸送など、生物学的に面白そうなPPIクラスターも見つかっている。<p>
+
+<LI> Walhout, A.J. et al.(2000) Protein interaction mapping in C. elegans using proteins 
+involved in vulval development. Science 287:116-122<p>
+
+まず、線虫の産卵口の27個のタンパク質についてPPIのAssayを行った。約100
+個の機能未知の遺伝子産物に対してannotationがつけられる。<p>
+
+現在様々な種の全ゲノム配列が決定されているが、機能未知の遺伝子がとても多
+     い。線虫は約20000個の遺伝子を持つと思われるが、機能が分かるのは700 
+     個である。PPIが機能を解明する上で強力な方法となる。ORFを発現ベクター
+     でクローニングするのはとても手間がかかるため、システマティックな方
+     法が必要。ここではrecombinational cloning(RC)を使っている。29の産卵
+     口のタンパク質を用いてPPIを行ったところ、文献で報告されているPPIの
+     50%のPPIを検出することができた。配列を管理するため、interaction
+     sequence tags(ISTs) を作成。これを公開するため、ACeDBデータベース管
+     理システムを構築。ここには遺伝的、物理的マップとともにゲノム配列が
+     格納されており、assay情報とリンクされている。ISTsはWormPDともリンク
+     されている。他の種とのPPIの比較...interolog...ある種でX-YのPPIがあ
+     り、別の種でX'-Y'のinteractionがあり、XとX'、YとY'がそれぞれ
+     ortholog。closed loopの形をとるPPIの組の集合は生物学的に意味がある
+     可能性が高いため、PPIの集合のクラスター化を行った。検出されたPPIの
+     生物学的意味を確かめるためには相互作用が失われると機能が失われるこ
+     とを確かめることである。<p>
+
+<LI> Rain, J-C. et al.(2001) The protein-protein interaction map of<I> Helicobacter pylori</I>. Nature 409:211-215<p>
+
+Yeast two-hybridを使って<I>H.pylori</I>のゲノム上にコードされたポリペ
+プチドのライブラリーのスクリーニングを<I>H.pylori</I>の261個のタンパク
+に対して行った。その結果、1,200以上のPPIをスクリーニングできた。
+
+</UL>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>
+PPIのassay技術
+</B>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+<UL>
+
+<LI>Phizicky, E.M. and Fields, S.(1995) Protein-Protein interactions: Method for detection and analysis. Microbiol. Rev. 59:94-123
+<LI> Serebriiskii I. et al.(2000)
+Approaches to detecting false positives in yeast two-hybrid systems.
+Biotechniques 28:328-30, 332-336
+<LI> Rossi FM, Blakely BT, Charlton CA, Blau HM.(2000)
+Monitoring protein-protein interactions in live mammalian cells by beta-galactosidase complementation. Methods Enzymol 328:231-51
+<LI> Michnick SW, Remy I, Campbell-Valois FX, Vallee-Belisle A, Pelletier JN.(200)
+Detection of protein-protein interactions by protein fragment complementation strategies. Methods Enzymol 328:208-30
+<LI> Endoh H, Walhout AJ, Vidal M.(2000) 
+A green fluorescent protein-based reverse two-hybrid system: application to the characterization of large numbers of potential protein-protein interactions.
+Methods Enzymol 328:74-88
+<LI>Aronheim A, Karin M.(2000)
+Analysis and identification of protein-protein interactions using protein recruitment systems.
+Methods Enzymol 328:47-59
+<LI>Cagney G, Uetz P, Fields S.(2000)
+High-throughput screening for protein-protein interactions using two-hybrid assay. Methods Enzymol 328:3-14
+<LI>Hubsman M, Yudkovsky G, Aronheim A.(2001)
+A novel approach for the identification of protein-protein interaction with integral membrane proteins.
+Nucleic Acids Res 29(4):E18
+
+</UL>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>
+ゲノム、発現データ、代謝経路からのPPIの予測
+</B>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+<UL>
+<LI> Dandekar T et al.(1998) Conservation of gene order: a fingerprint of proteins that 
+physically interact. Trends Biochem Sci. 23:324-328
+<LI> Enright, A.J. et al.(1999) Protein interaction maps for complete genomes based on gene 
+fusion events. Nature 402:86-89
+<LI> Hofacker, I.L. et al.(1998) Automatic detection of
+	conserved RNA structure elements in complete RNA virus genomes. Nuc. Acid. Res. 26:3825-3836
+<LI> Marcotte, E. M. et al.(1999) Detecting protein function and protein-protein interactions 
+from genome sequences. Science 285:751-753
+<LI> Marcotte, E. M. et al.(1999) A combined algorithm for genome-wide prediction of protein 
+function. Nature 402:83-86
+<LI> Overbeek, R.(1999) The use of gene clusters to infer functional coupling. Proc. Natl. 
+Acad. Sci. USA 96:2896-2901
+<LI> Pellegrini, M. et al.(1999) Assigning protein functions by comparative genome analysis: 
+Protein phylogenetic profiles. Proc. Natl. Acad. Sci. USA 96:4285-4288
+<LI> Sali, A.(1999) Functional links between proteins. Nature 402:23-26
+<LI>Bock JR, Gough DA.(2001) Predicting protein-protein interactions from primary structure. Bioinformatics 17(5):455-60<p>
+
+Support Vector Machineを使ったタンパクの一次構造からのPPIの予測法。
+
+
+
+</UL>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>相互作用しているタンパク質の構造の性質</B>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+
+<UL>
+<LI> Jones, S. and Thornton, J.M.(1996) Principles of protein-protein
+     interactions. Proc. Natl. Acad. Sci. USA 93:13-20<p>
+
+PPIに関して基本的なことが述べられている。タンパク質が複合体で存在する
+割合。protein-protein interfaceの定義...複合体を形成することによって減
+るSolvent Accessible Surface Area。接合面の特徴。タンパク質の補完性は
+Gap indexという指標で計ることができる。この場合のGapとはタンパク質間に
+できる空間。 小さいほど補完性がある。interfaceに多いアミノ酸。patchの
+分析。<p>
+
+<LI> Conte, L.L. et al.(1999) The atomic structure of protein-protein recognition sites. J.Mol.Biol. 285:2177-2198<p>
+
+75個のタンパク質を集め、原子の構造を分析。interfaceの面積を分析。
+
+</UL>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>Motif & Domain</B>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+<UL>
+
+<LI> Hofmann K, Bucher P, Falquet L, Bairoch A(1999)
+The PROSITE database, its status in 1999.
+Nucleic Acids Res 27:215-9
+
+<LI> Bateman A, Birney E, Durbin R, Eddy SR, Howe KL, Sonnhammer EL(2000)
+The Pfam protein families database. Nucleic Acids Res 28:263-6
+
+<LI> Sprinzak E, Margalit H.(2001) Correlated sequence-signatures as markers of protein-protein interaction. J.Mol.Biol. 311:681-692<p>
+
+相互作用するタンパク質間で高頻度で出現するモチーフの組を使ってタンパク
+質間相互作用を推定する方法。<p>
+
+
+<LI> Nevill-Manning, C.G., Wu, T.D., Brutlag, D.L.(1998) Highly
+specific protein sequence motifs for genome
+analysis. Proc.Natl.Acad.Sci. U.S.A. 95:5865-5871<p>
+
+タンパク質のアラインメントからMotifを得るための手法。幅広いsensitivity
+とspecificityでmotifを検出することができる。<p>
+
+<LI> Pandey A, Fernandez MM, Steen H, Blagoev B, Nielsen MM, Roche S,
+Mann M, Lodish HF(2000) Identification of a novel immunoreceptor
+tyrosine-based activation motif (ITAM) - containing molecule, STAM2,
+by mass spectrometry and its involvement in growth factor and cytokine
+receptor signaling pathways. J Biol Chem <p>
+ 
+成長因子やサイトカインレセプターシグナル経路に関係するシグナル分子
+STAM2の特定。Src homology 3(SH3)のドメインと、免疫レセプターのチロシン
+ベースの活性モチーフ(ITAM)を持つ。チロシン残基がリン酸化されている。<p>
+
+<LI>
+Bedford MT, Sarbassova D, Xu J, Leder P, Yaffe MB(2000)
+A novel pro-Arg motif recognized by WW domains.
+J Biol Chem. 275:10359-69.<p>
+
+WW domainはPPI時に短いプロリンリッチな配列に結合するが、WWのクラスによっ
+て結合配列に違いが出る。ここでは、Pro-Argに結合するWW domainで異なるクラ
+スのものを紹介。
+
+<p>
+
+
+<LI>Nakamura R, Sumimoto H, Mizuki K, Hata K, Ago T, Kitajima S,
+Takeshige K, Sakaki Y, Ito T.(1998) The PC motif: a novel and
+evolutionarily conserved sequence involved in interaction between
+p40phox and p67phox, SH3 domain-containing cytosolic factors of the
+phagocyte NADPH oxidase.  Eur J Biochem. 251:583-9.<p>
+
+Yeast two-hybrid法とin vitroの結合assayを使い、細胞質ゾルのp40phoxと
+p67phoxのPPIを解析。p40phoxのC-末端がPPIに関わっている可能性が高く、特
+徴的なアミノ酸配列を持っていた。このmotifはPC motifと名付けられ、酵母
+菌からヒトまで様々な種のシグナル伝達タンパクに存在することが分かった。
+ここに変異を入れる実験の結果より、このmotifはp67phoxへ結合する機能が分
+かった。PC motifはシグナル伝達経路のPPIにおいて重要な役割を果たしてい
+ることが示唆される。<p>
+
+<LI>Kato M, Miyazawa K, Kitamura N(2000)
+A De-ubiquitinating enzyme UBPY interacts with the SH3 domain of Hrs
+binding protein via a novel binding motif Px(V/I)(D/N)RxxKP.
+J Biol Chem.<p>
+
+<LI>Bailey,T.L. and Elkan, C.(1994) Fitting a mixture model by expectation maximization to discover motifs in biopolymers. Proc. Int. Conf. Intell. Syst. Mol. Biol. 1994 28-36<p>
+
+MEMEのアルゴリズム。配列を同じ長さに分割し、それぞれがmotifかmotifでな
+いかを推定し、さらにmotif内の残基の出現確率を推定する。推定はEMアルゴ
+リズムによって行われる。<p>
+
+<LI>Grundy, William N., Timothy L. Bailey, Charles P. Elkan and
+Michael E. Baker(1997) Meta-MEME: Motif-based Hidden Markov Models of
+Biological Sequences. Computer Applications in the Biosciences,
+13:397-406<p>
+
+隠れマルコフモデルによるmotifのモデリング。少ないデータでモデリングを
+行うことができる。<p>
+
+
+<LI>Stukey J, Carman GM(1997)
+Identification of a novel phosphatase sequence motif.
+Protein Sci. 6:469-72
+
+リン酸化に関与する保存されたmotifを特定した。配列は以下の通り。<p>
+
+KXXXXXXRP-(X12-54)-PSGH-(X31-54)-SRXXXXX HXXXD<p>
+
+これらのmotifはlipid phosphatasesや哺乳類のglucose-6-phosphatases、バ
+クテリアのアミノ酸リン酸化酵素に発見されている。立体構造や機能解析も行っ
+た。<p>
+
+<LI>Leon O, Roth M.(2000) Zinc fingers: DNA binding and protein-protein interactions. Biol Res. 33(1):21-30. 
+
+</UL>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>相互作用の物理的、化学的予測</b>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+<UL>
+<LI> Munoz, C.A.D.C., Yoshimori, A.(1999) MIAX: A Novel system for assessment of macromolecular interaction in condensed phases. 1) Description of the interaction model and simulation algorithm. Genome Informatics 1999:3-12<p>
+
+分子間相互作用の化学的モデリング。分子間に働く疎水性エネルギー
+(hydrophobic interaction energy)、静電気エネルギー(electrostatic
+interaction energy)、水素結合エネルギー(hydrogen bond energy)、ねじり
+(torsional potential)、溶解エネルギー(solvation and desolvation
+energy)を取り入れている。
+<p>
+
+<LI>Noskov, S.Y., Lim, C.(2001) Free energy decomposition of protein-protein interactions. Biophysical J. 81:737-750
+
+<LI>Wang W, Donini O, Reyes CM, Kollman PA.(2001)
+Biomolecular simulations: recent developments in force fields, simulations of enzyme catalysis, protein-ligand, protein-protein, and protein-nucleic acid noncovalent interactions. Annu Rev Biophys Biomol Struct. 30:211-243
+
+<LI> Palma et al.(2000) BiGGER: A new (soft) docking algorithm for predicting protein interactions. PROTEINS: Structure, Function, and Genetics 39:372-384<p>
+
+コンピュータ上でタンパク質同士をドッキングさせるアルゴリズム。このよう
+なアルゴリズムは一般的に(1)Searching: 幾何的にマッチングが可能な配置を
+求める (2)Scoring: その配置がタンパク質工学的にどれだけ妥当かを評価す
+る、という2つの部分からなる。<p>
+
+</UL>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>総説</b>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+
+<UL>
+<LI> 伊藤隆司(1997)「タンパク質相互作用の系統的解析をめざして」日本生物物理学会編、ヒ
+ューマンゲノム計画第３章、共立出版
+<LI> 伊藤隆司、谷口寿章(2000)プロテオミクス タンパク質の系統的・網羅的解析 中山書店
+<LI> Chen, Z. and Han, M.(2000) Building a protein interaction map: research in the post-genome era. BioEssays 22:503-506
+<LI> Walhout, A.J.M. et al.(2000) Yeast two-hybrid systems and protein interaction mapping projects for yeast and worm. Yeast 17:88-94
+<LI> Legrain, P. and Selig, L.(2000) Genome-wide protein interaction maps using two-hybrid systems. FEBS Letters 480:32-36
+<LI> Rudert F., Ge L., Ilag L.L.(2000) 
+Functional genomics with protein-protein interactions.
+Biotechnol Annu Rev 5:45-86
+</UL>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>PPIの情報科学的分析およびその手法</b>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+<UL>
+<LI> Fellenberg, M. et al.(2000) Interactive analysis of protein interaction data. Proc. Int. Conf. Intell. Syst. Mol. Biol. 2000:152-161<p>
+
+MIPSデータベース中の酵母菌のPPIデータと遺伝子機能を統合した解析。遺伝
+子の機能は階層に分けられている。これによってPPIから機能未知の遺伝子の
+機能を予測することが可能になる。例えば、あるタンパク質が多くのスプライ
+シング関係のタンパク質と相互作用するなら、そのタンパク質はスプライシン
+グに関わっていると考えられる。<p>
+
+<LI>Cardenas-Garcia M. et al.(2000) Efficient attractor analysis based on self-dependent subsets of elements--an application to signal transduction studies.
+Proc. Int. Conf. Intell. Syst. Mol. Biol. 2000 8:86-92<p>
+
+PPIネットワークのノードのクラスタリング法。各要素の依存関係から階層構
+造を導く。有効グラフの意味付けもされている。<p>
+
+<LI>Hishigaki H, Nakai K, Ono T, Tanigami A, Takagi T.(2001)
+Assessment of prediction accuracy of protein function from
+protein-protein interaction data. Yeast 18(6):523-531<p>
+
+Guilt-by-associationによるタンパク質の機能推定の精度の分析。細胞内局在、
+細胞内機能、化学的機能を推定。
+
+<LI>Schwikowski, B. et al.(2000) A network of protein-protein interactions in yeast. Nature Biotechnology 18:1257-1261
+
+<LI>Ideker, T. et al.(2001) Integrated genomics and proteomic analyses of a systematically perturbed metabolic network. Science 292:929-934
+
+<LI>Grigoriev A.(2001) A relationship between gene expression and protein interactions on the
+proteome scale: analysis of the bacteriophage T7 and the yeast
+Saccharomyces cerevisiae. Nuc. Acid. Res. 29(17):3513-3519<p>
+
+PPIと発現データを統合した解析。発現相関の高いペアはinteractしやすいと
+いう結果を出している。<p>
+
+<LI>Ge H, Liu Z, Church GM, Vidal M.(2001)
+Correlation between transcriptome and interactome mapping data from
+Saccharomyces cerevisiae.  Nat Genet.<p>
+
+PPIデータと発現データのクラスタリング結果を統合した解析。これにより同
+一クラスター内の遺伝子産物はinteractしやすいという結果を得ている。さら
+にprotein complexの中のsubcomplexの存在が推定された。
+
+</UL>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>Pathway</b>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+<UL>
+<LI> Pawson T, Nash P.(2000) Protein-protein interactions define specificity in signal transduction. Genes Dev. 14(9):1027-47<p>
+シグナル伝達におけるPPIの役割を豊富な例を取り入れて説明。
+<p>
+ 
+<LI>Blundell. T.L. et al.(2000) Protein-protein interactions in receptor activation and intracellular signalling. Biol.Chem. 381(9-10):955-959
+
+<LI>Mayer BJ.(1999)
+Protein-protein interactions in signaling cascades.
+Mol Biotechnol 13(3):201-213
+
+<LI> Seidensticker, M.J. et al.(2000) Biochemical interactions in the wnt pathway. Biochem. Biophysica. Acta 1495:168-182
+
+
+</ul>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>Pathwayモデリング</b>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+<UL>
+<LI> Takai-Igarashi, T., and Kaminuma, T.(1998) A Pathway Finding System for the Cell Signaling Networks Database. In Silico Biology<p>
+
+エキスパートシステムを使ったシグナル伝達経路の予測。<p>
+
+<LI> Akutsu, T., Miyano, S., Kuhara, S.(2000) Algorithms for identifying
+     boolean networks and related biological networks based on matrix
+     multiplidation and fingerprint function. RECOMB 2000 Proceedings of
+     the fourth annual international conference on computational
+     molecular biology. 8-14<p>
+
+Boolean networkを使った遺伝子の発現ネットワークの解析法。ごく簡単に言え
+     ば、ある遺伝子郡x1,x2,...,xnの発現情報(発現している、していないとい
+     う0,1 情報か、発現レベル)が与えられたときに、y1,y2,...,ylの遺伝子が
+     発現しているか(発現に向かっているか)を決める関数の集合を求める。各
+     関数の性質としては、(1)独立変数(入力)としてx1,...xnの中からどれを選
+     ぶか、(2)関数の中でどんな演算(論理演算)を行うべきかがポイント。
+<p>
+
+<LI>Zien, A. et al.(2000) Analysis of gene expression data with pathway scores.
+Proc. Int. Conf. Intell. Syst. Mol. Biol. 2000 8:407-17<p>
+
+発現データからpathwayを予測するための先駆的研究。pathway上の遺伝子発現
+パターンの顕著さと相同性から、そのpathwayの生物学的な面白さ(?)のスコア
+を算出する。<p>
+
+<LI>岡本正宏(2000)"S-systemによる遺伝子の相互作用推定" ゲノム情報生物
+学 165-188 中山書店<p>
+
+S-systemと呼ばれる数学的枠組み（微分方程式）をモデルとして遺伝子の相互
+作用の推定を行う。具体的には遺伝子の発現データからS-systemのパラメータ
+を遺伝的アルゴリズムを使って推定する。大規模な遺伝子間相互作用を推定す
+るときは、まずどちらpathwayの上流か分からないものをひとまとめにする
+（多階層有向グラフの作成）。<p>
+
+<LI>Edwards JS, Ibarra RU, Palsson BO.(2001)
+In silico predictions of Escherichia coli metabolic capabilities are consistent with experimental data. Nat Biotechnol. 19(2):125-30.
+
+</UL>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>発現データの解析</b>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+<UL>
+<LI>Holmes, I. and Bruno, W.(2000)
+Finding regulatory elements using joint likelihoods for sequence and
+expression profile data. Proc. Int. Conf. Intell. Syst. Mol. Biol. 2000 8:202-210.<p>
+
+発現データのクラスタリングと、共通配列（プロモータなど）の探索を統合し
+た手法。
+
+</ul>
+
+<hr>
+
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>PPIに基づく転写制御、転写活性ドメイン</b>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+<UL>
+<LI>Roberts, S.G.E.(2000)
+Mechanisms of action of transcription activation and repression domains.
+Cell. Mol. Life Sci. 57:1149-1160
+
+<LI>Triezenberg, S.J.(1995) Structure and function of transcriptional activation domains. Curr. Opin. Genet. Dev. 5:190-196
+
+<LI>Ma, J. and Ptashne, M.(1987) A new class of yeast transcriptional activators. Cell 51:113-119
+
+<LI>Lu, X. et al.(2000) An artificial transcriptional activating region with unusual properties. Proc. Natl. Acad. Sci. USA 97:1988-1992
+
+<LI>Suzuki, M., Brenner, S.E., Gerstein, M., Yagi, N.(1995)
+DNA recognition code of transcription factors. Protein Eng. 8:319-328
+
+<LI>Kasler, H.G. et al.(2000) ERK5 is a novel type of
+mitogen-activated protein kinase containing a transcriptional
+activation domain. Mol.Cell Biol. 20:8382-8389
+
+<LI>Uesugi, M. et al.(1997) Induced alpha Helix in the VP16 activation
+domain upon binding to a Human TAF. Science 277:1310-1313
+
+<LI> Hua, Q-X. et al.(1998) Transcriptional activator-coactivator
+recognition: Nascent folding of a kinase-inducible transactivation
+domain predicts its structure on coactivator binding. Biochemistry
+37:5858-5866
+
+<LI> Richard, D.J. et al.(2001) Par4 is a coactivator for a splice
+isoform-specific transcriptional activation domain in WT1. Genes &
+Development 15:328-339
+
+<LI>Pugh, B.F.(2000) Control of gene expression through regulation of
+the TATA-binding protein. Gene 255:1-14
+
+</UL>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>ツール<b>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+<UL>
+<LI>Koike, T. and Rzhetsky, A.(2000) A graphic editor for analyzing signal-transduction pathways. Gene 259:235-244
+<LI>Mrowka, R.(2001) A Java applet for visualizing protein-protein interaction. Bioinformatics 17:669-670
+</UL>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>文献からの情報の抽出<b>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+<UL>
+
+<LI>Stephens, M. et al.(2001)
+Detecting Gene Relations from MEDLINE Abstracts 
+Pacific Symposium on Biocomputing 6:483-496
+<LI>Marcotte EM, Xenarios I, Eisenberg D.(2001)
+Mining literature for protein-protein interactions.
+Bioinformatics 17(4):359-363
+<LI>Ono T, Hishigaki H, Tanigami A, Takagi T.(2001)
+Automated extraction of information on protein-protein interactions from the biological literature.  Bioinformatics 17(2):155-61
+
+</UL>
+
+<hr>
+
+<TABLE BORDER width="100%">
+<TR>
+<TD bgcolor="#ccffcc">
+<CENTER>
+<B>その他<b>
+</CENTER>
+</TD>
+</TR>
+</TABLE>
+<p>
+
+<UL>
+
+<LI>Kono H, Sarai A.(1999)
+Structure-based prediction of DNA target sites by regulatory proteins.
+Proteins. 35(1):114-31.<p>
+構造データに基づいたDNA結合部位の推定
+
+</UL>
+
+<hr>
+
+<A HREF="index.html">
+<I>Go back to PPI home page</i></a><p>
