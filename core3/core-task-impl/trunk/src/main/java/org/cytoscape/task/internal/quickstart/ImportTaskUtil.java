@@ -56,6 +56,16 @@ public class ImportTaskUtil {
 	public Task getFileImportTask() {
 		return new LoadNetworkFileTask(mgr, netmgr, networkViewManager, props, cyNetworkNaming);
 	}
+
+	public Task getURLImportTableTask() {
+		// TODO return something useful!
+		return null; 
+	}
+	
+	public Task getFileImportTableTask() {
+		// TODO return something useful!
+		return null; 
+	}
 	
 	public Task getWebServiceImportTask() {
 		return new ImportNetworkFromPublicDataSetTask(processors, mgr, netmgr, networkViewManager, props, cyNetworkNaming, streamUtil);

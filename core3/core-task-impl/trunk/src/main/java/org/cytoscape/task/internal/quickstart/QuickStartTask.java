@@ -64,6 +64,6 @@ public class QuickStartTask extends AbstractTask {
 		if (selected == LOAD_NETWORK) {
 			insertTasksAfterCurrentTask(new LoadNetworkTask(state, importTaskUtil));
 		} else if (selected == LOAD_TABLE)
-			insertTasksAfterCurrentTask(new LoadTableTask(state));
+			insertTasksAfterCurrentTask(new LoadTableTask(state, importTaskUtil));
 	}
 }

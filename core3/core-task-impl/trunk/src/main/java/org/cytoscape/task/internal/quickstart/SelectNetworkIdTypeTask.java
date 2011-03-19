@@ -22,10 +22,12 @@ public class SelectNetworkIdTypeTask extends AbstractTask {
 	private final QuickStartState state;
 	
 	private final Map<String, IDType> idTypeMap;
+	private final ImportTaskUtil util;
 
-	public SelectNetworkIdTypeTask(final QuickStartState state) {
+	public SelectNetworkIdTypeTask(final QuickStartState state, ImportTaskUtil util) {
 		this.idTypeMap = new HashMap<String, IDType>();
 		this.state = state;	
+		this.util = util;
 		final List<String> values = new ArrayList<String>();
 		for(IDType val: IDType.values()) {
 			values.add(val.getDisplayName());
@@ -48,7 +50,7 @@ public class SelectNetworkIdTypeTask extends AbstractTask {
 			monitor.setProgress(1.0);
 		} else {
 			// Need to load table.
-			insertTasksAfterCurrentTask(new LoadTableTask(state));
+			insertTasksAfterCurrentTask(new LoadTableTask(state, util));
 		}
 	}
 

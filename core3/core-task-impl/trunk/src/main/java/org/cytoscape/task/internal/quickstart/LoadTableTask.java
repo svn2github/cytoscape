@@ -35,15 +35,46 @@
 
 package org.cytoscape.task.internal.quickstart;
 
+import org.cytoscape.task.internal.quickstart.QuickStartState.Job;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.util.ListSingleSelection;
 
 public class LoadTableTask extends AbstractTask {
 
-	public LoadTableTask(QuickStartState state) {
+	private static final String FROM_FILE = "File";
+	private static final String FROM_URL = "URL";
+//	private static final String FROM_SERVICE = "Public Database";
+
+	@Tunable(description = "Select Data Source Type")
+	public ListSingleSelection<String> dataSource = new ListSingleSelection<String>(
+			FROM_FILE, FROM_URL/*, FROM_SERVICE*/);
+
+	private QuickStartState state;
+	private final ImportTaskUtil util;
+
+	public LoadTableTask(QuickStartState state, ImportTaskUtil util) {
+		this.state = state;
+		this.util = util;
 	}
 
-	public void run(TaskMonitor e) {
-		System.out.println("loading table");
+	public void run(TaskMonitor monitor) {
+
+		if (state.getIDType() == null) {
+			// This is for next step: specify ID type
+			insertTasksAfterCurrentTask(new SelectTableMappingKeyTask(state));
+		}
+
+		final String selected = dataSource.getSelectedValue();
+		if (selected == FROM_FILE) {
+			// Load file task
+			insertTasksAfterCurrentTask(util.getFileImportTableTask());
+		} else if (selected == FROM_URL) {
+			// Load URL task
+			insertTasksAfterCurrentTask(util.getURLImportTableTask());
+		} 
+	
+		state.finished(Job.LOAD_TABLE);
 	}
 }
