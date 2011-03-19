@@ -69,7 +69,8 @@ public class LoadTableTask extends AbstractTask {
 		final String selected = dataSource.getSelectedValue();
 		if (selected == FROM_FILE) {
 			// Load file task
-			insertTasksAfterCurrentTask(util.getFileImportTableTask());
+			//insertTasksAfterCurrentTask(util.getFileImportTableTask());
+			insertTasksAfterCurrentTask(new FileImportTableTask(state, util));
 		} else if (selected == FROM_URL) {
 			// Load URL task
 			insertTasksAfterCurrentTask(util.getURLImportTableTask());
