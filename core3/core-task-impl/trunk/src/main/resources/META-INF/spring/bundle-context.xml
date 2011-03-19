@@ -325,6 +325,7 @@
 		<constructor-arg ref="cyPropertyServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 		<constructor-arg ref="streamUtilRef" />
+		<constructor-arg ref="cyDataTableReaderManagerServiceRef" />
 	</bean>
 
 	
