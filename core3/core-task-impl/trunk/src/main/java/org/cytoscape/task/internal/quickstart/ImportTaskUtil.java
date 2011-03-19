@@ -17,6 +17,7 @@ import org.cytoscape.task.internal.quickstart.remote.InteractionFilePreprocessor
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.io.read.CyTableReaderManager;
 
 public class ImportTaskUtil {
 	
@@ -31,13 +32,14 @@ public class ImportTaskUtil {
 	private final Set<InteractionFilePreprocessor> processors;
 	
 	private InputStreamTaskFactory sifReaderFactory;
+	private CyTableReaderManager tblReaderMgr;
 
 	public ImportTaskUtil(
 			CyNetworkViewReaderManager mgr,
 		     CyNetworkManager netmgr,
 		     final CyNetworkViewManager networkViewManager,
 		     CyProperty<Properties> cyProps, CyNetworkNaming cyNetworkNaming,
-		     StreamUtil streamUtil) {
+		     StreamUtil streamUtil, CyTableReaderManager tblReaderMgr) {
 		this.mgr = mgr;
 		this.netmgr = netmgr;
 		this.networkViewManager = networkViewManager;
@@ -46,6 +48,7 @@ public class ImportTaskUtil {
 		this.streamUtil = streamUtil;
 		this.processors = new HashSet<InteractionFilePreprocessor>();
 		this.sifReaderFactory = sifReaderFactory;
+		this.tblReaderMgr = tblReaderMgr;
 		
 	}
 
@@ -83,4 +86,7 @@ public class ImportTaskUtil {
 		
 	}
 
+	public CyTableReaderManager getTableReaderManager(){
+		return tblReaderMgr;
+	}	
 }
