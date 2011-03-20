@@ -84,6 +84,15 @@ public class ParseCMLAttributes implements PropertyChangeListener {
 	private void addSMILES(CyNode node, String CML) {
 		Document cml = null;
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		// Alternative approach
+
+		// Find the SMILES string
+		int offset = CML.indexOf("smiles");
+		int end = CML.indexOf("<", offset+8);
+
+		String smilesString = CML.substring(offset+8, end);
+
+		/*
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -102,6 +111,8 @@ public class ParseCMLAttributes implements PropertyChangeListener {
 				nodeAttributes.setAttribute(node.getIdentifier(), SMILES_ATTRIBUTE, smiles);
 			}
 		}
+		*/
+		nodeAttributes.setAttribute(node.getIdentifier(), SMILES_ATTRIBUTE, smilesString);
 	}
 }
 
