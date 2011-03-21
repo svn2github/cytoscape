@@ -15,22 +15,25 @@ def PrintUsage():
     exit(-1)
 
 
-# Returns a triple [groupId,artifactId,version] upon success or None upon failure.
+# Returns a list of triples [groupId,artifactId,version] upon success or None upon failure.
 def ReadBaselineFile(maven_project_directory):
     try:
         file = open(maven_project_directory + "/baseline.xml", "r")
         tree = xml.etree.ElementTree.parse(file)
         root = tree.getroot()
-        groupId = root.find("groupId")
-        if groupId == None:
-            return None
-        artifactId = root.find("artifactId")
-        if artifactId == None:
-            return artifactId
-        version = root.find("version")
-        if version == None:
-            return None
-        return groupId.text,artifactId.text,version.text
+        replacements = []
+        for replace in root.getiterator("replace"):
+            groupId = replace.find("groupId")
+            if groupId == None:
+                return None
+            artifactId = replace.find("artifactId")
+            if artifactId == None:
+                return artifactId
+            version = replace.find("version")
+            if version == None:
+                return None
+            replacements += [[groupId.text,artifactId.text,version.text]]
+        return replacements
     except:
         return None
 
@@ -56,7 +59,7 @@ def ExtractTimingInfoFromSurefireReports(maven_project_directory):
     return dict
 
 
-def SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version):
+def SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version_list):
     pom_file_name = maven_project_directory + "/pom.xml"
     tree = xml.etree.ElementTree.parse(pom_file_name)
     root = tree.getroot()
@@ -120,22 +123,23 @@ else: # We have 3 arguments.
 
 if verbose:
     print "profiler: About to parse baseline version file."
-groupId_artifactId_version = ReadBaselineFile(maven_project_directory)
-if groupId_artifactId_version == None:
+groupId_artifactId_version_list = ReadBaselineFile(maven_project_directory)
+if groupId_artifactId_version_list == None:
     print "profiler: Failed to read baseline version from file!"
     exit(-2)
 
 if verbose:
     print "profiler: About to run Maven with the current version."
-if not RunMavenTest("pom.xml"):
-    print "profiler: Failed to run Maven with the current version!"
-    exit(-3)
+#if not RunMavenTest("pom.xml"):
+#    print "profiler: Failed to run Maven with the current version!"
+#    exit(-3)
 
 timing_current_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
 
-if not SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version):
+if not SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version_list):
     print "profiler: Failed to replace the current version with the baseline version!"
     exit(-4)
+exit(0)
 
 if verbose:
     print "profiler: About to run Maven with the baseline version."
