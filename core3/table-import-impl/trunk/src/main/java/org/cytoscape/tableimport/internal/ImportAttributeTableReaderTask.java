@@ -15,10 +15,8 @@ import org.cytoscape.model.CyTable;
 public class ImportAttributeTableReaderTask implements CyTableReader {
 
 	private ImportTextTableDialog importDialog = null;
-	private TaskIterator taskIterator = new TaskIterator();
 	
 	public ImportAttributeTableReaderTask(InputStream is){
-		System.out.println("\n\nEntering ImportAttributeTableReaderTask constructor ...\n");
 	}
 
 	@ProvidesGUI
@@ -51,8 +49,7 @@ public class ImportAttributeTableReaderTask implements CyTableReader {
 		try {
 			this.importDialog.importButtonActionPerformed();
 			if (this.importDialog.getLoadTask() != null){
-				//insertTasksAfterCurrentTask(this.importDialog.getLoadTask());
-				taskIterator.insertTasksAfter(this, this.importDialog.getLoadTask());
+				 this.importDialog.getLoadTask().run(e);
 			}
 		}
 		catch (Exception ex){
@@ -65,6 +62,6 @@ public class ImportAttributeTableReaderTask implements CyTableReader {
 	}
 	
 	public CyTable[] getCyTables(){
-		return null;
+		return null; //this.importDialog.getCyTables();
 	}
 }
