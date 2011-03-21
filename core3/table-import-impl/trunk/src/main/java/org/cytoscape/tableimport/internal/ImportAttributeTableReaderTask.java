@@ -21,9 +21,7 @@ public class ImportAttributeTableReaderTask implements CyTableReader {
 
 	@ProvidesGUI
 	public JPanel getGUI() { 
-		
-		System.out.println("\tEntering ImportAttributeTableTask.getGUI() ...");
-		
+
 		JPanel myPanel = new JPanel();
 
 		try {
@@ -45,7 +43,6 @@ public class ImportAttributeTableReaderTask implements CyTableReader {
 	
 	
 	public void run(TaskMonitor e) {
-		System.out.println("\tEntering ImportAttributeTableTask.run()...");
 		try {
 			this.importDialog.importButtonActionPerformed();
 			if (this.importDialog.getLoadTask() != null){
