@@ -91,7 +91,7 @@ def SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version
                 + ":" + replacement_groupId_artifactId_version[1] + "!"
             return False
         if verbose:
-            print "About to replace " + version.text + " with " + replacement_groupId_artifactId_version[2] \
+            print "About to replace " + version.text + " with " + replacement_groupId_artifactId_version[2] + \
                 " for " + replacement_groupId_artifactId_version[1] + ":" + replacement_groupId_artifactId_version[2]
         version.text = replacement_groupId_artifactId_version[2]
         ++actual_replacement_count
