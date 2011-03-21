@@ -59,7 +59,7 @@ def ExtractTimingInfoFromSurefireReports(maven_project_directory):
     return dict
 
 
-# Returns None if no match was found or the replacement version number if a match was found
+# Returns None if no match was found or the replacement (groupId,artifactId,version) if a match was found
 def foundGroupAndArtifactIdMatch(dependency, groupId_artifactId_version_list):
     groupId = dependency.find("{http://maven.apache.org/POM/4.0.0}groupId")
     if groupId == None:
@@ -70,7 +70,7 @@ def foundGroupAndArtifactIdMatch(dependency, groupId_artifactId_version_list):
     for groupId_artifactId_version in groupId_artifactId_version_list:
         if groupId.text != groupId_artifactId_version[0] or artifactId.text != groupId_artifactId_version[1]:
             continue
-        return groupId_artifactId_version[2]
+        return groupId_artifactId_version
     return None
 
 
@@ -85,13 +85,15 @@ def SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version
         replacement_version = foundGroupAndArtifactIdMatch(dependency, groupId_artifactId_version_list)
         if replacement_version == None:
             continue
-        version = dependency.find("{http://maven.apache.org/POM/4.0.0}version")
-        if version == None:
-            print "profiler: Error: \"version\" tag missing for " \
-                + dependency.find("{http://maven.apache.org/POM/4.0.0}groupId").text + ":" \
-                + dependency.find("{http://maven.apache.org/POM/4.0.0}artifactId") + "!"
+        replacement_groupId_artifactId_version = dependency.find("{http://maven.apache.org/POM/4.0.0}version")
+        if replacement_groupId_artifactId_version == None:
+            print "profiler: Error: \"version\" tag missing for " replacement_groupId_artifactId_version[1] \
+                + ":" + replacement_groupId_artifactId_version[1] + "!"
             return False
-        version.text = replacement_version
+        if verbose:
+            print "About to replace " + version.text + " with " + replacement_groupId_artifactId_version[2] \
+                " for " + replacement_groupId_artifactId_version[1] + ":" + replacement_groupId_artifactId_version[2]
+        version.text = replacement_groupId_artifactId_version[2]
         ++actual_replacement_count
 
     if actual_replacement_count == actual_replacement_count:
