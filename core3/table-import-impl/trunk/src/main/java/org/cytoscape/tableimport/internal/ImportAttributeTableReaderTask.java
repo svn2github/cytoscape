@@ -11,34 +11,14 @@ import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.io.read.CyTableReader;
 import org.cytoscape.model.CyTable;
-import javax.swing.JDialog;
 
 public class ImportAttributeTableReaderTask implements CyTableReader {
 
 	private ImportTextTableDialog importDialog = null;
-	private TaskIterator taskIterator;
+	private TaskIterator taskIterator = new TaskIterator();
 	
 	public ImportAttributeTableReaderTask(InputStream is){
 		System.out.println("\n\nEntering ImportAttributeTableReaderTask constructor ...\n");
-		
-		// This is a word-around, Do not know why ProvidesGUI does not work
-		JDialog dlg = new JDialog();
-		dlg.setModal(true);
-
-		try {
-			this.importDialog = new ImportTextTableDialog(true, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
-		} catch (JAXBException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		if (importDialog != null){
-			dlg.add(importDialog);
-		}
-
-		dlg.setSize(800, 800);
-		dlg.setVisible(true);
 	}
 
 	@ProvidesGUI
