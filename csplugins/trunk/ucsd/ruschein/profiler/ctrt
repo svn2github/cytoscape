@@ -11,7 +11,7 @@ temp_pom_name = "temp_pom.xml"
 
 
 def PrintUsage():
-    print "usage: profiler [--verbose] maven_project_directory"
+    print "usage: ctrt [--verbose] maven_project_directory"
     exit(-1)
 
 
@@ -41,7 +41,7 @@ def ReadBaselineFile(maven_project_directory):
 def RunMavenTest(pom_file_name):
     command = "mvn --quiet --file " + pom_file_name + " clean test"
     if verbose:
-        print "profiler: Info: About to run \"" + command + "\"."
+        print "ctrt: Info: About to run \"" + command + "\"."
     if os.system(command) != 0:
     	return False
     return True
@@ -60,7 +60,7 @@ def ExtractTimingInfoFromSurefireReports(maven_project_directory):
             name = testcase.get("name")
             dict[classname + "." + name] = float(time)
             if verbose:
-                print "profiler: Info: test " + classname + "." + name + " took " + time + "sec"
+                print "ctrt: Info: test " + classname + "." + name + " took " + time + "sec"
     return dict
 
 
@@ -95,7 +95,7 @@ def SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version
             continue
         version = dependency.find("{http://maven.apache.org/POM/4.0.0}version")
         if version == None:
-            print "profiler: Error: \"version\" tag missing for " + replacement_groupId_artifactId_version[1] \
+            print "ctrt: Error: \"version\" tag missing for " + replacement_groupId_artifactId_version[1] \
                 + ":" + replacement_groupId_artifactId_version[1] + "!"
             return False
         if verbose:
@@ -117,7 +117,7 @@ def SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version
         file.seek(0)
         file.write(temp_pom)
         return True
-    print "profiler: Error: Not all version number replacements could be carried out!"
+    print "ctrt: Error: Not all version number replacements could be carried out!"
     return False
 
 
@@ -154,32 +154,32 @@ else: # We have 3 arguments.
         maven_project_directory = sys.argv[2]
 
 if verbose:
-    print "profiler: About to parse baseline version file."
+    print "ctrt: About to parse baseline version file."
 groupId_artifactId_version_list = ReadBaselineFile(maven_project_directory)
 if groupId_artifactId_version_list == None:
-    print "profiler: Failed to read baseline version from file!"
+    print "ctrt: Failed to read baseline version from file!"
     exit(-2)
 
 if verbose:
-    print "profiler: About to run Maven with the current version."
+    print "ctrt: About to run Maven with the current version."
 if not RunMavenTest("pom.xml"):
-    print "profiler: Failed to run Maven with the current version!"
+    print "ctrt: Failed to run Maven with the current version!"
     exit(-3)
 
 timing_current_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
 
 if not SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version_list):
-    print "profiler: Failed to replace the current version with the baseline version!"
+    print "ctrt: Failed to replace the current version with the baseline version!"
     exit(-4)
 
 if verbose:
-    print "profiler: About to run Maven with the baseline version."
+    print "ctrt: About to run Maven with the baseline version."
 if not RunMavenTest(temp_pom_name):
-    print "profiler: Failed to run Maven with the baseline version!"
+    print "ctrt: Failed to run Maven with the baseline version!"
     exit(-6)
 
 if verbose:
-    print "profiler: About to delete temporary POM."
+    print "ctrt: About to delete temporary POM."
 os.remove(maven_project_directory + "/" + temp_pom_name)
 
 timing_baseline_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
