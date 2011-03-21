@@ -80,8 +80,10 @@ def foundGroupAndArtifactIdMatch(dependency, groupId_artifactId_version_list):
 
 
 def SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version_list):
-    pom_file_name = maven_project_directory + "/pom.xml"
-    tree = xml.etree.ElementTree.parse(pom_file_name)
+    effective_pom_file_name = maven_project_directory + "/effective.pom"
+    os.system("mvn --quiet help:effective-pom -Doutput='" + effective_pom_file_name + "'")
+    tree = xml.etree.ElementTree.parse(effective_pom_file_name)
+    os.remove(effective_pom_file_name)
     root = tree.getroot()
     dependencies = root.find("{http://maven.apache.org/POM/4.0.0}dependencies")
     expected_replacement_count = len(groupId_artifactId_version_list)
