@@ -2,7 +2,6 @@ package org.cytoscape.tableimport.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import javax.swing.JPanel;
 import javax.xml.bind.JAXBException;
 import org.cytoscape.tableimport.internal.ui.ImportTextTableDialog;
@@ -11,6 +10,7 @@ import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.io.read.CyTableReader;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.tableimport.internal.ui.ImportAttributeTableTask;
 
 public class ImportAttributeTableReaderTask implements CyTableReader {
 
@@ -59,6 +59,10 @@ public class ImportAttributeTableReaderTask implements CyTableReader {
 	}
 	
 	public CyTable[] getCyTables(){
-		return null; //this.importDialog.getCyTables();
+		if (this.importDialog.getLoadTask() instanceof ImportAttributeTableTask){
+			ImportAttributeTableTask importTask = (ImportAttributeTableTask) this.importDialog.getLoadTask();
+			return importTask.getCyTables();
+		}
+		return null;
 	}
 }
