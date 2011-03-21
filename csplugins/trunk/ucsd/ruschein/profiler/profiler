@@ -87,7 +87,7 @@ def SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version
             continue
         replacement_groupId_artifactId_version = dependency.find("{http://maven.apache.org/POM/4.0.0}version")
         if replacement_groupId_artifactId_version == None:
-            print "profiler: Error: \"version\" tag missing for " replacement_groupId_artifactId_version[1] \
+            print "profiler: Error: \"version\" tag missing for " + replacement_groupId_artifactId_version[1] \
                 + ":" + replacement_groupId_artifactId_version[1] + "!"
             return False
         if verbose:
