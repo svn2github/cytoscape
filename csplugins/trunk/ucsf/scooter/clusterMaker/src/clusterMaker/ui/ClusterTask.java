@@ -84,6 +84,7 @@ public class ClusterTask implements Task {
 		cluster.doCluster(monitor);
 		if (dialog != null)
 			dialog.updateVizButton();
+		monitor.setStatus("Clustering complete");
 		done = true;
 	}
 
