@@ -56,6 +56,8 @@ def ExtractTimingInfoFromSurefireReports(maven_project_directory):
             classname = testcase.get("classname")
             name = testcase.get("name")
             dict[classname + "." + name] = float(time)
+            if verbose:
+                print "profiler: Info: test " + classname + "." + name + " took " + time + "sec"
     return dict
 
 
@@ -82,17 +84,18 @@ def SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version
     expected_replacement_count = len(groupId_artifactId_version_list)
     actual_replacement_count = 0
     for dependency in dependencies.getiterator("{http://maven.apache.org/POM/4.0.0}dependency"):
-        replacement_version = foundGroupAndArtifactIdMatch(dependency, groupId_artifactId_version_list)
-        if replacement_version == None:
-            continue
-        replacement_groupId_artifactId_version = dependency.find("{http://maven.apache.org/POM/4.0.0}version")
+        replacement_groupId_artifactId_version = \
+            foundGroupAndArtifactIdMatch(dependency, groupId_artifactId_version_list)
         if replacement_groupId_artifactId_version == None:
+            continue
+        version = dependency.find("{http://maven.apache.org/POM/4.0.0}version")
+        if version == None:
             print "profiler: Error: \"version\" tag missing for " + replacement_groupId_artifactId_version[1] \
                 + ":" + replacement_groupId_artifactId_version[1] + "!"
             return False
         if verbose:
             print "About to replace " + version.text + " with " + replacement_groupId_artifactId_version[2] + \
-                " for " + replacement_groupId_artifactId_version[1] + ":" + replacement_groupId_artifactId_version[2]
+                " for " + replacement_groupId_artifactId_version[0] + ":" + replacement_groupId_artifactId_version[1]
         version.text = replacement_groupId_artifactId_version[2]
         ++actual_replacement_count
 
