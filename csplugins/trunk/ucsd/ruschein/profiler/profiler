@@ -15,7 +15,7 @@ def PrintUsage():
     exit(-1)
 
 
-# Returns a list of triples [groupId,artifactId,version] upon success or None upon failure.
+# Returns a list of triples (groupId,artifactId,version) upon success or None upon failure.
 def ReadBaselineFile(maven_project_directory):
     try:
         file = open(maven_project_directory + "/baseline.xml", "r")
@@ -32,7 +32,7 @@ def ReadBaselineFile(maven_project_directory):
             version = replace.find("version")
             if version == None:
                 return None
-            replacements += [[groupId.text,artifactId.text,version.text]]
+            replacements.append((groupId.text,artifactId.text,version.text))
         return replacements
     except:
         return None
@@ -59,20 +59,42 @@ def ExtractTimingInfoFromSurefireReports(maven_project_directory):
     return dict
 
 
-def SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version_list):
+# Returns None if no match was found or the replacement version number if a match was found
+def foundGroupAndArtifactIdMatch(dependency, groupId_artifactId_version_list):
+    groupId = dependency.find("{http://maven.apache.org/POM/4.0.0}groupId")
+    if groupId == None:
+        return None
+    artifactId = dependency.find("{http://maven.apache.org/POM/4.0.0}artifactId")
+    if artifactId == None:
+        return None
+    for groupId_artifactId_version in groupId_artifactId_version_list:
+        if groupId.text != groupId_artifactId_version[0] or artifactId.text != groupId_artifactId_version[1]:
+            continue
+        return groupId_artifactId_version[2]
+    return None
+
+
+def SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version_list):
     pom_file_name = maven_project_directory + "/pom.xml"
     tree = xml.etree.ElementTree.parse(pom_file_name)
     root = tree.getroot()
     dependencies = root.find("{http://maven.apache.org/POM/4.0.0}dependencies")
+    expected_replacement_count = len(groupId_artifactId_version_list)
+    actual_replacement_count = 0
     for dependency in dependencies.getiterator("{http://maven.apache.org/POM/4.0.0}dependency"):
-        groupId = dependency.find("{http://maven.apache.org/POM/4.0.0}groupId")
-        if groupId == None or groupId.text != groupId_artifactId_version[0]:
-            continue
-        artifactId = dependency.find("{http://maven.apache.org/POM/4.0.0}artifactId")
-        if artifactId == None or artifactId.text != groupId_artifactId_version[1]:
+        replacement_version = foundGroupAndArtifactIdMatch(dependency, groupId_artifactId_version_list)
+        if replacement_version == None:
             continue
         version = dependency.find("{http://maven.apache.org/POM/4.0.0}version")
-        version.text = groupId_artifactId_version[2]
+        if version == None:
+            print "profiler: Error: \"version\" tag missing for " \
+                + dependency.find("{http://maven.apache.org/POM/4.0.0}groupId").text + ":" \
+                + dependency.find("{http://maven.apache.org/POM/4.0.0}artifactId") + "!"
+            return False
+        version.text = replacement_version
+        ++actual_replacement_count
+
+    if actual_replacement_count == actual_replacement_count:
         file = open(maven_project_directory + "/" + temp_pom_name, "w+")
         xml.etree.ElementTree._namespace_map["http://maven.apache.org/POM/4.0.0"] = "XYZ_ABC"
         xml.etree.ElementTree._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = "xsi"
@@ -85,7 +107,7 @@ def SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version_
         file.seek(0)
         file.write(temp_pom)
         return True
-    print "profiler: Error: Can't find a dependency on " + groupId_artifactId_version[0] + ":" + groupId_artifactId_version[1] + " in " + pom_file_name
+    print "profiler: Error: Not all version number replacements could be carried out!"
     return False
 
 
@@ -130,16 +152,15 @@ if groupId_artifactId_version_list == None:
 
 if verbose:
     print "profiler: About to run Maven with the current version."
-#if not RunMavenTest("pom.xml"):
-#    print "profiler: Failed to run Maven with the current version!"
-#    exit(-3)
+if not RunMavenTest("pom.xml"):
+    print "profiler: Failed to run Maven with the current version!"
+    exit(-3)
 
 timing_current_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
 
-if not SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version_list):
+if not SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version_list):
     print "profiler: Failed to replace the current version with the baseline version!"
     exit(-4)
-exit(0)
 
 if verbose:
     print "profiler: About to run Maven with the baseline version."
