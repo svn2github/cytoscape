@@ -39,7 +39,10 @@ def ReadBaselineFile(maven_project_directory):
 
 
 def RunMavenTest(pom_file_name):
-    if os.system("mvn --file " + pom_file_name + " clean test") != 0:
+    command = "mvn --quiet --file " + pom_file_name + " clean test"
+    if verbose:
+        print "profiler: Info: About to run \"" + command + "\"."
+    if os.system(command) != 0:
     	return False
     return True
 
