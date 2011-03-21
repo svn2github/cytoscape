@@ -63,7 +63,7 @@ public class LoadNetworkTask extends AbstractTask {
 
 		if (state.getIDType() == null) {
 			// This is for next step: specify ID type
-			insertTasksAfterCurrentTask(new SelectNetworkIdTypeTask(state,util));
+			insertTasksAfterCurrentTask(new SelectMappingKeyTypeTask(state,util));
 		}
 
 		final String selected = dataSource.getSelectedValue();

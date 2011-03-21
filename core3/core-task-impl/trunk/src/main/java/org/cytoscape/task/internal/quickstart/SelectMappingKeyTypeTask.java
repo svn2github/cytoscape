@@ -11,7 +11,7 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
 
-public class SelectNetworkIdTypeTask extends AbstractTask {
+public class SelectMappingKeyTypeTask extends AbstractTask {
 	
 	@Tunable(description="Select Network ID Type")
 	public final ListSingleSelection<String> selection;
@@ -24,7 +24,7 @@ public class SelectNetworkIdTypeTask extends AbstractTask {
 	private final Map<String, IDType> idTypeMap;
 	private final ImportTaskUtil util;
 
-	public SelectNetworkIdTypeTask(final QuickStartState state, ImportTaskUtil util) {
+	public SelectMappingKeyTypeTask(final QuickStartState state, ImportTaskUtil util) {
 		this.idTypeMap = new HashMap<String, IDType>();
 		this.state = state;	
 		this.util = util;
