@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import exceptions
+import getopt
 import glob
 import os
 import re
@@ -7,6 +9,7 @@ import xml.etree.ElementTree
 
 
 verbose = False
+loop_count = 20
 temp_pom_name = "temp_pom.xml"
 
 
@@ -140,48 +143,73 @@ def GenerateTimingReport(current_version, baseline_version):
     return
 
 
-# Main program starts here:
-if len(sys.argv) != 2 and len(sys.argv) != 3:
-    PrintUsage()
+def PrintUsage():
+    print "usage: ctrt [--verbose|-v] [[--loop-count=|-l] loop_count] maven_project_directory"
+    print "       (Default for loop count is 20.)"
+    exit(1)
 
-if len(sys.argv) == 2:
-    maven_project_directory = sys.argv[1]
-else: # We have 3 arguments.
-    if sys.argv[1] != "--verbose":
+
+# Returns the Maven project directory upon success and does not return upon failure.
+# Also updates global variables "verbose" and "loop_count".
+def ProcessArgs():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hvl:", ["help", "verbose", "loop-count="])
+    except getopt.GetoptError, err:
+        print str(err)
+        exit(2)
+    for opt, arg in opts:
+        if opt in ("-v", "--verbose"):
+            verbose = True
+        elif opt in ("-h", "--help"):
+            PrintUsage()
+        elif opt in ("-l", "--loop-count"):
+            try:
+                loop_count = int(arg)
+            except exceptions.ValueError:
+                print "ctrt: " + arg + " is not a valid loop count!"
+                PrintUsage()
+        else:
+            assert False, "unhandled option"
+    if len(args) != 1:
         PrintUsage()
-    else:
-        verbose = True
-        maven_project_directory = sys.argv[2]
+    return args[0]
 
-if verbose:
-    print "ctrt: About to parse baseline version file."
-groupId_artifactId_version_list = ReadBaselineFile(maven_project_directory)
-if groupId_artifactId_version_list == None:
-    print "ctrt: Failed to read baseline version from file!"
-    exit(-2)
 
-if verbose:
-    print "ctrt: About to run Maven with the current version."
-if not RunMavenTest("pom.xml"):
-    print "ctrt: Failed to run Maven with the current version!"
-    exit(-3)
+def main():
+    maven_project_directory = ProcessArgs()
 
-timing_current_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
+    if verbose:
+        print "ctrt: About to parse baseline version file."
+    groupId_artifactId_version_list = ReadBaselineFile(maven_project_directory)
+    if groupId_artifactId_version_list == None:
+        print "ctrt: Failed to read baseline version from file!"
+        exit(-2)
 
-if not SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version_list):
-    print "ctrt: Failed to replace the current version with the baseline version!"
-    exit(-4)
+    if verbose:
+        print "ctrt: About to run Maven with the current version."
+    if not RunMavenTest("pom.xml"):
+        print "ctrt: Failed to run Maven with the current version!"
+        exit(-3)
 
-if verbose:
-    print "ctrt: About to run Maven with the baseline version."
-if not RunMavenTest(temp_pom_name):
-    print "ctrt: Failed to run Maven with the baseline version!"
-    exit(-6)
+    timing_current_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
 
-if verbose:
-    print "ctrt: About to delete temporary POM."
-os.remove(maven_project_directory + "/" + temp_pom_name)
+    if not SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version_list):
+        print "ctrt: Failed to replace the current version with the baseline version!"
+        exit(-4)
 
-timing_baseline_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
+    if verbose:
+        print "ctrt: About to run Maven with the baseline version."
+    if not RunMavenTest(temp_pom_name):
+        print "ctrt: Failed to run Maven with the baseline version!"
+        exit(-6)
 
-GenerateTimingReport(timing_current_version, timing_baseline_version)
+    if verbose:
+        print "ctrt: About to delete temporary POM."
+    os.remove(maven_project_directory + "/" + temp_pom_name)
+
+    timing_baseline_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
+
+    GenerateTimingReport(timing_current_version, timing_baseline_version)
+
+
+main()
