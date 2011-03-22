@@ -65,12 +65,10 @@ public class FileImportTableTask extends AbstractTask {
 		if (reader == null)
 			throw new NullPointerException("Failed to find reader for specified file!");
 		else {
-			this.insertTasksAfterCurrentTask(reader);
+			taskMonitor.setStatusMessage("Importing Data Table...");
+			insertTasksAfterCurrentTask(new SetTableNameTask(state, reader, file.getName()));
+			insertTasksAfterCurrentTask(reader);
 		}
-
-		taskMonitor.setStatusMessage("Importing Data Table...");
-
-		taskMonitor.setProgress(1.0);
 
 		state.finished(Job.LOAD_TABLE);
 	}

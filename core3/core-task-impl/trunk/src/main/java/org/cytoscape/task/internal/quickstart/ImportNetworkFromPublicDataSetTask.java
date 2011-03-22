@@ -104,8 +104,6 @@ public class ImportNetworkFromPublicDataSetTask extends AbstractLoadNetworkTask 
 
 		taskMonitor.setStatusMessage("Loading network...");
 		loadNetwork(reader);
-		
-		
 	}
 
 }

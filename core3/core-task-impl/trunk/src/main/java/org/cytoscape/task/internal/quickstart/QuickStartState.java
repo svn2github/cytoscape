@@ -46,8 +46,7 @@ class QuickStartState {
 	enum Job { 
 		LOAD_NETWORK,
 		LOAD_TABLE,
-		SELECT_NETWORK_ID_TYPE,
-		SELECT_TABLE_ID_TYPE;
+		SELECT_MAPPING_ID_TYPE;
 	}
 	
 	private IDType idType;
@@ -64,6 +63,10 @@ class QuickStartState {
 
 	synchronized boolean isFinished() {
 		return (completedSoFar.size() == Job.values().length);
+	}
+	
+	synchronized boolean isJobFinished(final Job job) {
+		return (completedSoFar.contains(job));
 	}
 	
 	IDType getIDType() {

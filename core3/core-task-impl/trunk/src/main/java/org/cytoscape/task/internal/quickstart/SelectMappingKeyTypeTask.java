@@ -13,7 +13,7 @@ import org.cytoscape.work.util.ListSingleSelection;
 
 public class SelectMappingKeyTypeTask extends AbstractTask {
 	
-	@Tunable(description="Select Network ID Type")
+	@Tunable(description="Select Mapping Key ID Type")
 	public final ListSingleSelection<String> selection;
 	
 	@Tunable(description="Or, enter ID Type")
@@ -38,20 +38,26 @@ public class SelectMappingKeyTypeTask extends AbstractTask {
 
 	@Override
 	public void run(TaskMonitor monitor) throws Exception {
+		
+		// Check current status and move to next task.
+		if(state.isJobFinished(Job.LOAD_NETWORK) && state.isJobFinished(Job.LOAD_TABLE)) {
+			System.out.println("!!!!!!!! Merge task added");
+			insertTasksAfterCurrentTask(new MergeDataTask(state));
+		} else if(state.isJobFinished(Job.LOAD_NETWORK)) {
+			// Need to load table.
+			insertTasksAfterCurrentTask(new LoadTableTask(state, util));
+		} else if(state.isJobFinished(Job.LOAD_TABLE)) {
+			// Need to load network.
+			insertTasksAfterCurrentTask(new LoadNetworkTask(state, util));
+		}	
+		
+		
 		final String selected = selection.getSelectedValue();
 		
 		state.setIDType(this.idTypeMap.get(selected));
 		
-		System.out.println("ID type selected for network.  Selected type = " + selected);
-		state.finished(Job.SELECT_NETWORK_ID_TYPE);
-		
-		if(state.isFinished()) {
-			monitor.setStatusMessage("Finished!");
-			monitor.setProgress(1.0);
-		} else {
-			// Need to load table.
-			insertTasksAfterCurrentTask(new LoadTableTask(state, util));
-		}
+		System.out.println("ID type selected.  Selected type = " + selected);
+		state.finished(Job.SELECT_MAPPING_ID_TYPE);
 	}
 
 }

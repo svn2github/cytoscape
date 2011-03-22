@@ -61,9 +61,12 @@ public class LoadNetworkTask extends AbstractTask {
 
 	public void run(TaskMonitor monitor) {
 
-		if (state.getIDType() == null) {
+		if (state.isJobFinished(Job.SELECT_MAPPING_ID_TYPE) == false) {
 			// This is for next step: specify ID type
 			insertTasksAfterCurrentTask(new SelectMappingKeyTypeTask(state,util));
+		} else if(state.isJobFinished(Job.LOAD_TABLE)) {
+			System.out.println("Already has a table.  No need to set ID type. Move to merge");
+			insertTasksAfterCurrentTask(new MergeDataTask(state));
 		}
 
 		final String selected = dataSource.getSelectedValue();
@@ -80,6 +83,5 @@ public class LoadNetworkTask extends AbstractTask {
 		}
 
 		state.finished(Job.LOAD_NETWORK);
-
 	}
 }

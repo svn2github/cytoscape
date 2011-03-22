@@ -8,6 +8,7 @@ import java.util.Set;
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.io.util.StreamUtil;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.session.CyNetworkNaming;
@@ -47,7 +48,6 @@ public class ImportTaskUtil {
 		this.cyNetworkNaming = cyNetworkNaming;
 		this.streamUtil = streamUtil;
 		this.processors = new HashSet<InteractionFilePreprocessor>();
-		this.sifReaderFactory = sifReaderFactory;
 		this.tblReaderMgr = tblReaderMgr;
 		
 	}

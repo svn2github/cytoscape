@@ -45,13 +45,12 @@ public class LoadTableTask extends AbstractTask {
 
 	private static final String FROM_FILE = "File";
 	private static final String FROM_URL = "URL";
-//	private static final String FROM_SERVICE = "Public Database";
 
-	@Tunable(description = "Select Data Source Type")
+	@Tunable(description = "Import Attribute: Select Source Data")
 	public ListSingleSelection<String> dataSource = new ListSingleSelection<String>(
-			FROM_FILE, FROM_URL/*, FROM_SERVICE*/);
+			FROM_FILE, FROM_URL);
 
-	private QuickStartState state;
+	private final QuickStartState state;
 	private final ImportTaskUtil util;
 
 	public LoadTableTask(QuickStartState state, ImportTaskUtil util) {
@@ -61,9 +60,12 @@ public class LoadTableTask extends AbstractTask {
 
 	public void run(TaskMonitor monitor) {
 
-		if (state.getIDType() == null) {
+		if (state.isJobFinished(Job.SELECT_MAPPING_ID_TYPE) == false) {
 			// This is for next step: specify ID type
-			insertTasksAfterCurrentTask(new SelectTableMappingKeyTask(state));
+			insertTasksAfterCurrentTask(new SelectMappingKeyTypeTask(state, util));
+		} else if (state.isJobFinished(Job.LOAD_NETWORK)){
+			System.out.println("No need to set ID type. Move to merge");
+			insertTasksAfterCurrentTask(new MergeDataTask(state));
 		}
 
 		final String selected = dataSource.getSelectedValue();
@@ -75,7 +77,6 @@ public class LoadTableTask extends AbstractTask {
 			// Load URL task
 			insertTasksAfterCurrentTask(util.getURLImportTableTask());
 		} 
-	
 		state.finished(Job.LOAD_TABLE);
 	}
 }
