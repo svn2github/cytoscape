@@ -18,6 +18,9 @@ import org.cytoscape.property.bookmark.BookmarksUtil;
 
 public class ImportAttributeTableReaderFactory extends AbstractTableReaderFactory {
 	private final static long serialVersionUID = 12023139869460898L;
+	public static String FILE_EXTENSION_TXT = ".txt";
+	public static String FILE_EXTENSION_XSL = ".xls"; // or ".xslx"
+	private String fileFormat = "Unknow";
 	
 	/**
 	 * Creates a new ImportAttributeTableReaderFactory object.
@@ -27,7 +30,7 @@ public class ImportAttributeTableReaderFactory extends AbstractTableReaderFactor
 			CyProperty<Bookmarks> bookmarksProp, BookmarksUtil bookmarksUtil,
 			GUITaskManager guiTaskManagerServiceRef, CyProperty cytoscapePropertiesServiceRef,
 			CyTableManager tblMgr, FileUtil fileUtilService, OpenBrowser openBrowserService,
-			CyTableFactory tableFactory) 
+			CyTableFactory tableFactory, String fileFormat) 
 	{
 		super(filter, tableFactory);
 
@@ -41,12 +44,20 @@ public class ImportAttributeTableReaderFactory extends AbstractTableReaderFactor
 		CytoscapeServices.fileUtil = fileUtilService;
 		CytoscapeServices.appMgr = appMgr;
 		CytoscapeServices.netMgr = netMgr;
-		CytoscapeServices.tableFactory = tableFactory;	
+		CytoscapeServices.tableFactory = tableFactory;
+		this.fileFormat = fileFormat;
 	}
 
 	
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new ImportAttributeTableReaderTask(this.inputStream));
+		if (fileFormat.equalsIgnoreCase("file_format_txt")){
+			return new TaskIterator(new ImportAttributeTableReaderTask(this.inputStream, FILE_EXTENSION_TXT));			
+		}
+		else if (fileFormat.equalsIgnoreCase("file_format_xls")){
+			return new TaskIterator(new ImportAttributeTableReaderTask(this.inputStream, FILE_EXTENSION_XSL));						
+		}
+		// This should not happen.
+		return null;
 	} 	
 }
 

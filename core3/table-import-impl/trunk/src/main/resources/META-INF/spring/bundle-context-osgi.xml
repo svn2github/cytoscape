@@ -40,8 +40,6 @@
 
 	<osgi:reference id="streamUtilService" interface="org.cytoscape.io.util.StreamUtil" />
 
-
-
 	<!--
 	This code registers the bean we just created "sampleTaskFactory" as an 
 	OSGi service of a particular type (org.cytoscape.task.NetworkTaskFactory).
@@ -52,7 +50,18 @@
 	(like determining which menu to put the service in).
 	-->
 
-	<osgi:service id="importAttributeTableReaderFactoryService" ref="importAttributeTableReaderFactory"
+<!-- 
+	<osgi:service id="importAttributeTableReaderFactoryService_txt" ref="importAttributeTableReaderFactory_txt"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="importAttributeTableTaskFactory" />
+			<entry key="readerId" value="attributeTableReader" />
+			<entry key="readerDescription" value="Attribute Table file reader" />
+		</osgi:service-properties>		
+	</osgi:service>	
+ -->
+
+	<osgi:service id="importAttributeTableReaderFactoryService_xls" ref="importAttributeTableReaderFactory_xls"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>
 			<entry key="serviceType" value="importAttributeTableTaskFactory" />
@@ -61,14 +70,7 @@
 		</osgi:service-properties>		
 	</osgi:service>	
 
-	<osgi:service id="importAttributeTableTaskFactoryService" ref="importAttributeTableTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
-		<osgi:service-properties>
-			<entry key="title" value="From Table (Text/MS Excel)..." />
-			<entry key="preferredMenu" value="File.Import.Table" />
-			<entry key="menuGravity" value="2.1" />
-		</osgi:service-properties>		
-	</osgi:service>	
+
 
 	<osgi:service id="ImportNetworkTableTaskFactoryService" ref="importNetworkTableTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">

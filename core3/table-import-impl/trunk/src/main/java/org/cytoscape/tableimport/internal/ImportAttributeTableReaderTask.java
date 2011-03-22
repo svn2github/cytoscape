@@ -15,8 +15,13 @@ import org.cytoscape.tableimport.internal.ui.ImportAttributeTableTask;
 public class ImportAttributeTableReaderTask implements CyTableReader {
 
 	private ImportTextTableDialog importDialog = null;
+	private InputStream is= null;
+	private String fileType = null;
 	
-	public ImportAttributeTableReaderTask(InputStream is){
+	
+	public ImportAttributeTableReaderTask(InputStream is, String fileType){
+		this.is = is;
+		this.fileType = fileType;
 	}
 
 	@ProvidesGUI
@@ -26,7 +31,7 @@ public class ImportAttributeTableReaderTask implements CyTableReader {
 
 		try {
 			if (this.importDialog == null){
-				this.importDialog = new ImportTextTableDialog(true, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);				
+				this.importDialog = new ImportTextTableDialog(true, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT, is, this.fileType);				
 			}
 		} catch (JAXBException e1) {
 			e1.printStackTrace();

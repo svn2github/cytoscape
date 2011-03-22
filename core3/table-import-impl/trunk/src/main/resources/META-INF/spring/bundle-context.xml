@@ -15,13 +15,10 @@
 	bundle-context-osgi.xml file.
 	-->
 			
-	<bean id="attrsTableFilter" class="org.cytoscape.io.BasicCyFileFilter">
+	<bean id="attrsTableFilter_txt" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
 				<value>txt</value>
-				<value>xls</value>
-				<value>xlsx</value>
-				<value>csv</value>
 			</set>
 		</constructor-arg>
 		<constructor-arg index="1">
@@ -33,10 +30,28 @@
 		<constructor-arg type="org.cytoscape.io.DataCategory" value="TABLE" />
 		<constructor-arg ref="streamUtilService" />
 	</bean>			
-			
-	<bean id="importAttributeTableReaderFactory" 
+
+	<bean id="attrsTableFilter_xls" class="org.cytoscape.io.BasicCyFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>xls</value>
+				<value>xlsx</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>text/plain</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Any text file" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="TABLE" />
+		<constructor-arg ref="streamUtilService" />
+	</bean>			
+
+<!-- 
+	<bean id="importAttributeTableReaderFactory_txt" 
 			class="org.cytoscape.tableimport.internal.ImportAttributeTableReaderFactory">
-		<constructor-arg ref="attrsTableFilter" />
+		<constructor-arg ref="attrsTableFilter_txt" />
 		<constructor-arg ref="cytoscapeDesktopService" /> 
 		<constructor-arg ref="cyApplicationManagerRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
@@ -48,11 +63,13 @@
 		<constructor-arg ref="fileUtilService" />
 		<constructor-arg ref="openBrowserService" />
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
+		<constructor-arg value="file_format_txt" />
 	</bean>
-	
-	<bean id="importAttributeTableTaskFactory" 
-			class="org.cytoscape.tableimport.internal.ImportAttributeTableTaskFactory">
-		<constructor-arg ref="attrsTableFilter" />
+ -->
+ 
+	<bean id="importAttributeTableReaderFactory_xls" 
+			class="org.cytoscape.tableimport.internal.ImportAttributeTableReaderFactory">
+		<constructor-arg ref="attrsTableFilter_xls" />
 		<constructor-arg ref="cytoscapeDesktopService" /> 
 		<constructor-arg ref="cyApplicationManagerRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
@@ -64,8 +81,11 @@
 		<constructor-arg ref="fileUtilService" />
 		<constructor-arg ref="openBrowserService" />
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
+		<constructor-arg value="file_format_xls" />
 	</bean>
 
+
+	<!-- XXXXXXXXXXXXXXXX Network import should be in the same pattern as attribute import XXXXXXXXX -->
 	<bean id="importNetworkTableTaskFactory" 
 			class="org.cytoscape.tableimport.internal.ImportNetworkTableTaskFactory">
 		<constructor-arg ref="cytoscapeDesktopService" /> 

@@ -21,7 +21,7 @@ public class ImportNetworkTableTask extends AbstractTask {
 		JPanel myPanel = new JPanel();
 
 		try {
-			importDialog = new ImportTextTableDialog(true, ImportTextTableDialog.NETWORK_IMPORT);
+			importDialog = new ImportTextTableDialog(true, ImportTextTableDialog.NETWORK_IMPORT, null, null);
 		} catch (JAXBException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

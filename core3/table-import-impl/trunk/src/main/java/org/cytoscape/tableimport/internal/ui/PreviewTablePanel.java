@@ -173,6 +173,8 @@ public class PreviewTablePanel extends JPanel {
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private int panelType;
 	private String listDelimiter;
+	private InputStream is = null;
+	private String fileType;
 
 	private static final Logger logger = LoggerFactory.getLogger(PreviewTablePanel.class);
 	/**
@@ -677,9 +679,13 @@ public class PreviewTablePanel extends JPanel {
 	 *            TODO
 	 * @throws IOException
 	 */
-	public void setPreviewTable(URL sourceURL, List<String> delimiters,
+	public void setPreviewTable(InputStream is, String fileType, URL sourceURL, List<String> delimiters,
 			TableCellRenderer renderer, int size, final String commentLineChar,
 			final int startLine) throws IOException {
+		
+		this.is = is;
+		this.fileType = fileType;
+		
 		TableCellRenderer curRenderer = renderer;
 
 		if ((commentLineChar != null) && (commentLineChar.trim().length() != 0))
@@ -709,26 +715,29 @@ public class PreviewTablePanel extends JPanel {
 
 		fileTypeLabel.setVisible(true);
 
-		if (sourceURL.toString().endsWith(
-				SupportedFileType.EXCEL.getExtension())
-				|| sourceURL.toString().endsWith(
-						SupportedFileType.OOXML.getExtension())) {
-			
+		//if (sourceURL.toString().endsWith(
+		//		SupportedFileType.EXCEL.getExtension())
+		//		|| sourceURL.toString().endsWith(
+		//				SupportedFileType.OOXML.getExtension())) {		
+		if (this.fileType.equalsIgnoreCase(
+					SupportedFileType.EXCEL.getExtension())
+					|| this.fileType.equalsIgnoreCase(
+							SupportedFileType.OOXML.getExtension())) {
 			fileTypeLabel.setIcon(SPREADSHEET_ICON.getIcon());
 			fileTypeLabel.setText("Excel" + '\u2122' + " Workbook");
 
-			InputStream is = null;
+			//InputStream is = null;
 			final Workbook wb;
 
 			try {
-				is = sourceURL.openStream();
+				//is = sourceURL.openStream();
 				wb = WorkbookFactory.create(is);
 			} catch (InvalidFormatException e) {
 				e.printStackTrace();
 				throw new IllegalArgumentException("Could not read Excel file.  Maybe the file is broken?");
 			} finally {
-				if (is != null)
-					is.close();
+				//if (is != null)
+				//	is.close();
 			}
 
 			if (wb.getNumberOfSheets() == 0)
@@ -754,30 +763,30 @@ public class PreviewTablePanel extends JPanel {
 					.put(wb.getSheetName(0), initListDataTypes(newModel));
 			addTableTab(newModel, wb.getSheetName(0), curRenderer);
 		} else {
-			if (isCytoscapeAttributeFile(sourceURL)) {
-				fileTypeLabel.setText("Cytoscape Attribute File");
-				fileTypeLabel.setIcon(new ImageIcon(getClass()
-						.getResource("/images/icon48.png")));
-				newModel = parseText(sourceURL, size, curRenderer, null, 1);
-			} else {
+			//if (isCytoscapeAttributeFile(sourceURL)) {
+			//	fileTypeLabel.setText("Cytoscape Attribute File");
+			//	fileTypeLabel.setIcon(new ImageIcon(getClass()
+			//			.getResource("/images/icon48.png")));
+			//	newModel = parseText(sourceURL, size, curRenderer, null, 1);
+			//} else {
 				fileTypeLabel.setText("Text File");
 				fileTypeLabel.setIcon(TEXT_FILE_ICON.getIcon());
 				newModel = parseText(sourceURL, size, curRenderer, delimiters,
 						startLine);
-			}
+			//}
 
-			String[] urlParts = sourceURL.toString().split("/");
-			final String tabName = urlParts[urlParts.length - 1];
-			DataTypeUtil.guessTypes(newModel, tabName, dataTypeMap);
-			listDataTypeMap.put(tabName, initListDataTypes(newModel));
-			addTableTab(newModel, tabName, curRenderer);
+			//String[] urlParts = sourceURL.toString().split("/");
+			//final String tabName = urlParts[urlParts.length - 1];
+			//DataTypeUtil.guessTypes(newModel, tabName, dataTypeMap);
+			//listDataTypeMap.put(tabName, initListDataTypes(newModel));
+			//addTableTab(newModel, tabName, curRenderer);
 		}
 
-		if (getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
-			fileTypeLabel.setText("Gene Association");
-			fileTypeLabel
-					.setToolTipText("This is a fixed-format Gene Association file.");
-		}
+		//if (getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
+		//	fileTypeLabel.setText("Gene Association");
+		//	fileTypeLabel
+		//			.setToolTipText("This is a fixed-format Gene Association file.");
+		//}
 
 		loadFlag = true;
 	}
@@ -924,19 +933,19 @@ public class PreviewTablePanel extends JPanel {
 
 		final Vector<String> colNames = new Vector<String>();
 
-		String[] parts = sourceURL.toString().split("/");
-		final String fileName = parts[parts.length - 1];
+		//String[] parts = sourceURL.toString().split("/");
+		//final String fileName = parts[parts.length - 1];
 
-		if ((colCount == GeneAssociationTags.values().length)
-				&& fileName.startsWith("gene_association")) {
-			for (Object colName : GeneAssociationTags.values()) {
-				colNames.add(colName.toString());
-			}
-		} else {
+		//if ((colCount == GeneAssociationTags.values().length)
+		//		&& fileName.startsWith("gene_association")) {
+		//	for (Object colName : GeneAssociationTags.values()) {
+		//		colNames.add(colName.toString());
+		//	}
+		//} else {
 			for (int i = 0; i < colCount; i++) {
 				colNames.add("Column " + (i + 1));
 			}
-		}
+		//}
 
 		return colNames;
 	}
@@ -944,7 +953,7 @@ public class PreviewTablePanel extends JPanel {
 	private TableModel parseText(URL sourceURL, int size,
 			TableCellRenderer renderer, List<String> delimiters, int startLine)
 			throws IOException {
-		InputStream is = null;
+		//InputStream is = null;
 		String line;
 		String attrName = "Attr1";
 		Vector data;
@@ -953,7 +962,7 @@ public class PreviewTablePanel extends JPanel {
 		try {
 			BufferedReader bufRd = null;
 
-			is = URLUtil.getInputStream(sourceURL);
+			//is = URLUtil.getInputStream(sourceURL);
 			try {
 				bufRd = new BufferedReader(new InputStreamReader(is));
 				/*
@@ -1109,8 +1118,7 @@ public class PreviewTablePanel extends JPanel {
 			rowCount++;
 		}
 
-		return new DefaultTableModel(data, this.getDefaultColumnNames(maxCol,
-				sourceURL));
+		return new DefaultTableModel(data, this.getDefaultColumnNames(maxCol, sourceURL));
 	}
 
 	/**

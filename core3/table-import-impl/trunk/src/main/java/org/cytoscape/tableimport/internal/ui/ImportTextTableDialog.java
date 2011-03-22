@@ -258,6 +258,9 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 	
 	private CyNetwork network;
 
+	private InputStream is;
+	private String fileType;
+	
 	/**
 	 * Creates new form ImportAttributesDialog
 	 *
@@ -265,17 +268,19 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 	 * @throws JAXBException
 	 */
 	public ImportTextTableDialog(boolean modal) throws JAXBException, IOException {
-		this(modal, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
+		this(modal, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT, null, null);
 	}
 
-	public ImportTextTableDialog(boolean modal, int dialogType)
+	public ImportTextTableDialog(boolean modal, int dialogType, InputStream is, String fileType)
 	    throws JAXBException, IOException {
 		//super(parent, modal);
 
 		// Default Attribute is node attr.
 		//selectedAttributes = Cytoscape.getNodeAttributes();
+		this.is = is;
+		this.fileType = fileType;
 		selectedAttributes = null;
-		
+				
 		network = CytoscapeServices.appMgr.getCurrentNetwork();
 		if (network != null){
 			selectedAttributes = CytoscapeServices.tblMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);			
@@ -311,6 +316,12 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 		
 		//Don't know why this panel is disabled at start up
 		this.attributeNamePanel.setEnabled(true);
+		
+		// Hide input file and use inputStream
+		this.attributeFileLabel.setVisible(false);
+		this.selectAttributeFileButton.setVisible(false);
+		this.targetDataSourceTextField.setVisible(false);
+		selectAttributeFileButtonActionPerformed(null);
 		
 	}
 	
@@ -1539,7 +1550,7 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 
 		try {
 			if ((dialogType == SIMPLE_ATTRIBUTE_IMPORT) || (dialogType == NETWORK_IMPORT)) {
-				setStatusBar(new URL(targetDataSourceTextField.getText()));
+				//setStatusBar(new URL(targetDataSourceTextField.getText()));
 			} else {
 				setStatusBar(new URL(annotationUrlMap.get(annotationComboBox.getSelectedItem()
 				                                                            .toString())));
@@ -1855,7 +1866,8 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 				 * Case 1: Attribute table import.
 				 */
 				// Extract URL from the text table.
-				final URL source = new URL(targetDataSourceTextField.getText());
+				//final URL source = new URL(targetDataSourceTextField.getText());
+				
 				// Make sure primary key index is up-to-date.
 				keyInFile = primaryKeyComboBox.getSelectedIndex();
 
@@ -1863,13 +1875,13 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 				final AttributeMappingParameters mapping;
 				final List<String> del;
 
-				System.out.println("IsCytoscapeAttributeFile " + previewPanel.isCytoscapeAttributeFile(source));
-				if (previewPanel.isCytoscapeAttributeFile(source)) {
-					del = new ArrayList<String>();
-					del.add(" += +");
-				} else {
+				//System.out.println("IsCytoscapeAttributeFile " + previewPanel.isCytoscapeAttributeFile(source));
+				//if (previewPanel.isCytoscapeAttributeFile(source)) {
+				//	del = new ArrayList<String>();
+				//	del.add(" += +");
+				//} else {
 					del = checkDelimiter();
-				}
+				//}
 
 				//TODO -- Need to fix problem in AttributeMappingParameters				
 				mapping = new AttributeMappingParameters(objType, del,
@@ -1879,22 +1891,27 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 														 listDataTypes, importFlag,
 														 caseSensitive);
 				
-				if (source.toString().endsWith(SupportedFileType.EXCEL.getExtension()) || 
-						source.toString().endsWith(SupportedFileType.OOXML.getExtension())) {
+				//if (source.toString().endsWith(SupportedFileType.EXCEL.getExtension()) || 
+				//		source.toString().endsWith(SupportedFileType.OOXML.getExtension())) {
+				if (this.fileType.equalsIgnoreCase(SupportedFileType.EXCEL.getExtension()) || 
+							this.fileType.equalsIgnoreCase(SupportedFileType.OOXML.getExtension())) {
 					/*
 					 * Read one sheet at a time
 					 */
-					InputStream is = null;
+					//InputStream is = null;
 					Workbook wb = null;
 					
 					try {
-						is = source.openStream();
-						wb = WorkbookFactory.create(is);
+						//is = source.openStream();
+						wb = WorkbookFactory.create(this.is);
+					}
+					catch (Exception ex){
+						ex.printStackTrace();
 					}
 					finally {
-						if (is != null) {
-							is.close();
-						}
+						//if (is != null) {
+						//	is.close();
+						//}
 					}
 
 					// Load all sheets in the table
@@ -1904,13 +1921,15 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 						loadAnnotation(new ExcelAttributeSheetReader(sheet, mapping,
 						                                             startLineNumber,
 																	 importAll),
-									   source.toString());
+																	 null);
+																	 //source.toString());
 					}
 				} else {
-					loadAnnotation(new DefaultAttributeTableReader(source, mapping,
+					loadAnnotation(new DefaultAttributeTableReader(null, mapping,
 																   startLineNumber,
 																   null, importAll),
-								   source.toString());
+																   null);
+																   //source.toString());
 				}
 
 				break;
@@ -2165,6 +2184,7 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 	private void selectAttributeFileButtonActionPerformed(ActionEvent evt)
 	    throws IOException {
 
+		/*
 		final File[] multiSource = CytoscapeServices.fileUtil.getFiles(this,
 				"Select local file", 
 				CytoscapeServices.fileUtil.LOAD);
@@ -2192,8 +2212,10 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 
 		final URL sourceURL = new URL(targetDataSourceTextField.getText());
 
-		readAnnotationForPreview(sourceURL, checkDelimiter());
+		*/
 
+		readAnnotationForPreview(null, checkDelimiter());
+		
 		if (previewPanel.getPreviewTable() == null) {
 			JLabel label = new JLabel("File is broken or empty!");
 			label.setForeground(Color.RED);
@@ -2312,7 +2334,7 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 	private void updateComponents() throws JAXBException, IOException {
 		/*
 		 * Do misc. GUI setups
-		 */
+		 */		
 		if (dialogType == SIMPLE_ATTRIBUTE_IMPORT) {
 			//setTitle("Import Annotation File");
 			titleLabel.setText("Import Attribute from Table");
@@ -2437,7 +2459,7 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 
 	private void setOntologyInAnnotationComboBox() {
 		final DefaultTableModel model = (DefaultTableModel) previewPanel.getPreviewTable().getModel();
-
+		
 		if ((model != null) && (model.getColumnCount() > 0)) {
 			ontologyInAnnotationComboBox.removeAllItems();
 
@@ -2578,6 +2600,7 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 	 */
 	private void readAnnotationForPreview(URL sourceURL, List<String> delimiters)
 	    throws IOException {
+
 		/*
 		 * Check number of lines we should load. if -1, load everything in the
 		 * file.
@@ -2594,9 +2617,9 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 		 */
 		final String commentChar = commentLineTextField.getText();
 		final int startLine = Integer.parseInt(startRowSpinner.getValue().toString());
-		previewPanel.setPreviewTable(sourceURL, delimiters, null, previewSize, commentChar,
+		previewPanel.setPreviewTable(this.is, this.fileType, sourceURL, delimiters, null, previewSize, commentChar,
 		                             startLine - 1);
-
+		
 		if (previewPanel.getPreviewTable() == null)
 			return;
 
@@ -2634,10 +2657,10 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 			rend.setSourceIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
 			rend.setTargetIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
 			rend.setInteractionIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
-		} else {
+		} else {			
 			for (int i = 0; i < previewPanel.getTableCount(); i++) {
 				final int columnCount = previewPanel.getPreviewTable(i).getColumnCount();
-
+				
 				aliasTableModelMap.put(previewPanel.getSheetName(i),
 				                       new AliasTableModel(keyTable, columnCount));
 
@@ -2660,7 +2683,7 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 
 				updatePrimaryKeyComboBox();
 			}
-
+						
 			setOntologyInAnnotationComboBox();
 
 			/*
@@ -2672,7 +2695,8 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 				primaryKeyComboBox.setSelectedIndex(DB_OBJECT_SYMBOL.getPosition());
 				ontologyInAnnotationComboBox.setSelectedIndex(GO_ID.getPosition());
 				disableComponentsForGA();
-			} else if (sourceURL.toString().endsWith(SupportedFileType.EXCEL.getExtension()) == false || sourceURL.toString().endsWith(SupportedFileType.OOXML.getExtension()) == false) {
+//			} else if (sourceURL.toString().endsWith(SupportedFileType.EXCEL.getExtension()) == false || sourceURL.toString().endsWith(SupportedFileType.OOXML.getExtension()) == false) {
+			} else if (this.fileType.equalsIgnoreCase(SupportedFileType.EXCEL.getExtension()) == false || this.fileType.equalsIgnoreCase(SupportedFileType.OOXML.getExtension()) == false) {
 				switchDelimiterCheckBoxes(true);
 				nodeRadioButton.setEnabled(true);
 				edgeRadioButton.setEnabled(true);
@@ -2686,7 +2710,7 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 			/*
 			 * Set Status bar
 			 */
-			setStatusBar(sourceURL);
+			//setStatusBar(sourceURL);
 		}
 
 		//pack();
@@ -2732,13 +2756,15 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 	}
 
 	private FileTypes checkFileType(URL source) {
-		String[] parts = source.toString().split("/");
-		final String fileName = parts[parts.length - 1];
+		//String[] parts = source.toString().split("/");
+		
+		//final String fileName = parts[parts.length - 1];
 
-		if (fileName.startsWith("gene_association")
-		    && (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT)) {
-			return FileTypes.GENE_ASSOCIATION_FILE;
-		} else if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
+		//if (fileName.startsWith("gene_association")
+		//    && (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT)) {
+		//	return FileTypes.GENE_ASSOCIATION_FILE;
+		//} else 
+		if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
 			return FileTypes.CUSTOM_ANNOTATION_FILE;
 		} else if (dialogType == NETWORK_IMPORT) {
 			return FileTypes.NETWORK_FILE;
