@@ -42,7 +42,7 @@ public class SelectMappingKeyTypeTask extends AbstractTask {
 		// Check current status and move to next task.
 		if(state.isJobFinished(Job.LOAD_NETWORK) && state.isJobFinished(Job.LOAD_TABLE)) {
 			System.out.println("!!!!!!!! Merge task added");
-			insertTasksAfterCurrentTask(new MergeDataTask(state));
+			insertTasksAfterCurrentTask(new MergeDataTask(state, util));
 		} else if(state.isJobFinished(Job.LOAD_NETWORK)) {
 			// Need to load table.
 			insertTasksAfterCurrentTask(new LoadTableTask(state, util));

@@ -6,19 +6,18 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
-import org.cytoscape.io.read.InputStreamTaskFactory;
+import org.cytoscape.io.read.CyTableReaderManager;
 import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.property.CyProperty;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.internal.loadnetwork.LoadNetworkFileTask;
 import org.cytoscape.task.internal.loadnetwork.LoadNetworkURLTask;
 import org.cytoscape.task.internal.quickstart.remote.InteractionFilePreprocessor;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.io.read.CyTableReaderManager;
 
 public class ImportTaskUtil {
 	
@@ -32,15 +31,16 @@ public class ImportTaskUtil {
 	
 	private final Set<InteractionFilePreprocessor> processors;
 	
-	private InputStreamTaskFactory sifReaderFactory;
 	private CyTableReaderManager tblReaderMgr;
+	
+	private final CyApplicationManager appManager;
 
 	public ImportTaskUtil(
 			CyNetworkViewReaderManager mgr,
 		     CyNetworkManager netmgr,
 		     final CyNetworkViewManager networkViewManager,
 		     CyProperty<Properties> cyProps, CyNetworkNaming cyNetworkNaming,
-		     StreamUtil streamUtil, CyTableReaderManager tblReaderMgr) {
+		     StreamUtil streamUtil, CyTableReaderManager tblReaderMgr, final CyApplicationManager appManager) {
 		this.mgr = mgr;
 		this.netmgr = netmgr;
 		this.networkViewManager = networkViewManager;
@@ -49,6 +49,7 @@ public class ImportTaskUtil {
 		this.streamUtil = streamUtil;
 		this.processors = new HashSet<InteractionFilePreprocessor>();
 		this.tblReaderMgr = tblReaderMgr;
+		this.appManager = appManager;
 		
 	}
 
@@ -60,14 +61,9 @@ public class ImportTaskUtil {
 		return new LoadNetworkFileTask(mgr, netmgr, networkViewManager, props, cyNetworkNaming);
 	}
 
-	public Task getURLImportTableTask() {
-		// TODO return something useful!
-		return null; 
-	}
-	
-	public Task getFileImportTableTask() {
-		// TODO return something useful!
-		return null; 
+	public CyNetwork getTargetNetwork() {
+		// Currently, just use currentNetwork as the target.
+		return appManager.getCurrentNetwork();
 	}
 	
 	public Task getWebServiceImportTask() {
@@ -88,5 +84,10 @@ public class ImportTaskUtil {
 
 	public CyTableReaderManager getTableReaderManager(){
 		return tblReaderMgr;
+	}
+
+	public Task getURLImportTableTask() {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 }

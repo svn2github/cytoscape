@@ -65,7 +65,7 @@ public class LoadTableTask extends AbstractTask {
 			insertTasksAfterCurrentTask(new SelectMappingKeyTypeTask(state, util));
 		} else if (state.isJobFinished(Job.LOAD_NETWORK)){
 			System.out.println("No need to set ID type. Move to merge");
-			insertTasksAfterCurrentTask(new MergeDataTask(state));
+			insertTasksAfterCurrentTask(new MergeDataTask(state, util));
 		}
 
 		final String selected = dataSource.getSelectedValue();
