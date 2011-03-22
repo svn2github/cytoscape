@@ -1,7 +1,6 @@
 package org.cytoscape.task.internal.loaddatatable;
 
 
-import java.io.File;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.io.read.CyTableReaderManager;
@@ -13,46 +12,15 @@ import java.util.Set;
 import java.util.Iterator;
 
 
-public class LoadAttributesTask extends AbstractTask {
-	@Tunable(description="Atrtribute file", params="fileCategory=table;input=true")
-	public File file;
-
-	private CyTableReader reader;
-	private final CyTableReaderManager mgr;
-	private CyTableManager tableMgr;
-
-	public LoadAttributesTask(final CyTableReaderManager mgr, CyTableManager tableMgr) {
-		this.mgr = mgr;
-		this.tableMgr = tableMgr;
-	}
-
-	/**
-	 * Executes Task.
-	 */
-	public void run(final TaskMonitor taskMonitor) throws Exception {
-		taskMonitor.setStatusMessage("Finding Attribute Data Reader...");
-		taskMonitor.setProgress(-1.0);
-		reader = mgr.getReader(file.toURI());
-
-		if (reader == null)
-			throw new NullPointerException("Failed to find reader for specified file!");
-
-		taskMonitor.setStatusMessage("Importing Data Table...");
-
-		insertTasksAfterCurrentTask(reader, new FinalStatusMessageUpdateTask2(reader, tableMgr, file));
-	}
-}
-
-
-class FinalStatusMessageUpdateTask2 extends AbstractTask {
+class FinalStatusMessageUpdateTask extends AbstractTask {
 	private final CyTableReader reader;
 	private CyTableManager tableMgr;
-	private File file;
+	private String name;
 	
-	FinalStatusMessageUpdateTask2(final CyTableReader reader, CyTableManager tableMgr, File file) {
+	FinalStatusMessageUpdateTask(final CyTableReader reader, CyTableManager tableMgr, String name) {
 		this.reader = reader;
 		this.tableMgr = tableMgr;
-		this.file = file;
+		this.name = name;
 	}
 
 	public void run(final TaskMonitor taskMonitor) throws Exception {
@@ -62,7 +30,7 @@ class FinalStatusMessageUpdateTask2 extends AbstractTask {
 			String tableTitle = "ThisIsAGlobalTable";
 			CyTable globalTable = getTableByTitle(tableMgr, tableTitle);
 			if (globalTable != null){
-				globalTable.setTitle(file.getName());
+				globalTable.setTitle(name);
 			}
 		}
 		

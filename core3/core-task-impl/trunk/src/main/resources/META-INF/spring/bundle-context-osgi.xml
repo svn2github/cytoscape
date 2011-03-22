@@ -96,23 +96,22 @@
 			<entry key="menuGravity" value="2.0" />
 		</osgi:service-properties>
 	</osgi:service>
-<!--
-	<osgi:service id="loadDataTableTaskFactoryService" ref="loadDataTableTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
-		<osgi:service-properties>
-			<entry key="title" value="File (2)..." />
-			<entry key="preferredMenu" value="File.Import.Table" />
-			<entry key="menuGravity" value="1.0" />
-		</osgi:service-properties>
-	</osgi:service>
-	-->
 
-	<osgi:service id="loadAttrsTaskFactoryService" ref="loadAttrsTaskFactory"
+	<osgi:service id="loadAttrsFileTaskFactoryService" ref="loadAttrsFileTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Attribute File..." />
+			<entry key="title" value="File..." />
 			<entry key="preferredMenu" value="File.Import.Table" />
 			<entry key="menuGravity" value="1.1" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="loadAttrsURLTaskFactoryService" ref="loadAttrsURLTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="URL..." />
+			<entry key="preferredMenu" value="File.Import.Table" />
+			<entry key="menuGravity" value="1.2" />
 		</osgi:service-properties>
 	</osgi:service>
 

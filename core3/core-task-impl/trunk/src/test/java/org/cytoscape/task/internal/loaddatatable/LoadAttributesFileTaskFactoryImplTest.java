@@ -4,17 +4,19 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import org.cytoscape.io.read.CyTableReaderManager;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
 import org.junit.Test;
 
-public class LoadDataTableTaskFactoryImplTest {
+public class LoadAttributesFileTaskFactoryImplTest {
 	@Test
 	public void testRun() throws Exception {
 		
-		CyTableReaderManager mgr = mock(CyTableReaderManager.class);;
+		CyTableReaderManager rmgr = mock(CyTableReaderManager.class);;
+		CyTableManager tmgr = mock(CyTableManager.class);;
 
-		LoadDataTableTaskFactoryImpl factory = new LoadDataTableTaskFactoryImpl(mgr);
+		LoadAttributesFileTaskFactoryImpl factory = new LoadAttributesFileTaskFactoryImpl(rmgr, tmgr);
 		
 		TaskIterator ti = factory.getTaskIterator();
 		assertNotNull(ti);
@@ -22,5 +24,5 @@ public class LoadDataTableTaskFactoryImplTest {
 		assertTrue( ti.hasNext() );
 		Task t = ti.next();
 		assertNotNull( t );				
-	}	
+	}
 }

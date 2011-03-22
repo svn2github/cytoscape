@@ -7,15 +7,15 @@ import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
 
 
-public class LoadAttributesTaskFactoryImpl implements TaskFactory {
+public class LoadAttributesFileTaskFactoryImpl implements TaskFactory {
 	private CyTableReaderManager mgr;
 	private CyTableManager tableMgr;
-	public LoadAttributesTaskFactoryImpl(CyTableReaderManager mgr, CyTableManager tableMgr) {
+	public LoadAttributesFileTaskFactoryImpl(CyTableReaderManager mgr, CyTableManager tableMgr) {
 		this.mgr = mgr;
 		this.tableMgr = tableMgr;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new LoadAttributesTask(mgr, tableMgr));
+		return new TaskIterator(new LoadAttributesFileTask(mgr, tableMgr));
 	}
 }
