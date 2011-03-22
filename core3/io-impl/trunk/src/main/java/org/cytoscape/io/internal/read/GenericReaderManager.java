@@ -70,7 +70,10 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 			if (cff.accepts(uri, category) && uri != null ) {
 				try {
 					logger.debug("successfully matched factory " + factory);
-					factory.setInputStream( uri.toURL().openStream() );
+					InputStream stream = uri.toURL().openStream();
+					if ( !stream.markSupported() )
+		                stream = new MarkSupportedInputStream(stream);
+					factory.setInputStream( stream );
 					return (R)factory.getTaskIterator().next();
 				} catch (IOException e) {
 					logger.warn("Error opening stream to URI: " + uri.toString(), e);
