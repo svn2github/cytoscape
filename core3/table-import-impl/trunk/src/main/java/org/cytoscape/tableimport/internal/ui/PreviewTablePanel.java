@@ -106,7 +106,7 @@ import org.cytoscape.tableimport.internal.reader.ExcelAttributeSheetReader;
 import org.cytoscape.tableimport.internal.reader.GeneAssociationTags;
 import org.cytoscape.tableimport.internal.reader.SupportedFileType;
 import org.cytoscape.tableimport.internal.reader.TextFileDelimiters;
-import org.cytoscape.tableimport.internal.ui.ImportTextTableDialog.FileTypes;
+import org.cytoscape.tableimport.internal.ui.ImportTablePanel.FileTypes;
 import org.cytoscape.tableimport.internal.util.AttributeTypes;
 
 /**
@@ -640,7 +640,7 @@ public class PreviewTablePanel extends JPanel {
 				&& (((JScrollPane) tableTabbedPane.getSelectedComponent())
 						.getViewport().getComponent(0) != null)
 				&& (loadFlag == true)) {
-			changes.firePropertyChange(ImportTextTableDialog.SHEET_CHANGED,
+			changes.firePropertyChange(ImportTablePanel.SHEET_CHANGED,
 					null, null);
 		}
 	}
@@ -1208,12 +1208,12 @@ public class PreviewTablePanel extends JPanel {
 						listDelimiter = atd.getListDelimiterType();
 
 						changes.firePropertyChange(
-								ImportTextTableDialog.LIST_DELIMITER_CHANGED,
+								ImportTablePanel.LIST_DELIMITER_CHANGED,
 								null, atd.getListDelimiterType());
 
 						listDataTypes[column] = newListType;
 						changes.firePropertyChange(
-								ImportTextTableDialog.LIST_DATA_TYPE_CHANGED,
+								ImportTablePanel.LIST_DATA_TYPE_CHANGED,
 								null, listDataTypes);
 						listDataTypeMap.put(selectedTabName, listDataTypes);
 					}
@@ -1222,14 +1222,14 @@ public class PreviewTablePanel extends JPanel {
 					keyValPair.add(column);
 					keyValPair.add(newType);
 					changes.firePropertyChange(
-							ImportTextTableDialog.ATTR_DATA_TYPE_CHANGED, null,
+							ImportTablePanel.ATTR_DATA_TYPE_CHANGED, null,
 							keyValPair);
 
 					final Vector colNamePair = new Vector();
 					colNamePair.add(column);
 					colNamePair.add(name);
 					changes.firePropertyChange(
-							ImportTextTableDialog.ATTRIBUTE_NAME_CHANGED, null,
+							ImportTablePanel.ATTRIBUTE_NAME_CHANGED, null,
 							colNamePair);
 
 					dataTypes[column] = newType;

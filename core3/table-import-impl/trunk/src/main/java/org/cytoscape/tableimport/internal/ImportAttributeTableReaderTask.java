@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.JPanel;
 import javax.xml.bind.JAXBException;
-import org.cytoscape.tableimport.internal.ui.ImportTextTableDialog;
+import org.cytoscape.tableimport.internal.ui.ImportTablePanel;
 import org.cytoscape.work.ProvidesGUI;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
@@ -14,7 +14,7 @@ import org.cytoscape.tableimport.internal.ui.ImportAttributeTableTask;
 
 public class ImportAttributeTableReaderTask implements CyTableReader {
 
-	private ImportTextTableDialog importDialog = null;
+	private ImportTablePanel importDialog = null;
 	private InputStream is= null;
 	private String fileType = null;
 	
@@ -31,7 +31,7 @@ public class ImportAttributeTableReaderTask implements CyTableReader {
 
 		try {
 			if (this.importDialog == null){
-				this.importDialog = new ImportTextTableDialog(true, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT, is, this.fileType);				
+				this.importDialog = new ImportTablePanel(true, ImportTablePanel.SIMPLE_ATTRIBUTE_IMPORT, is, this.fileType);				
 			}
 		} catch (JAXBException e1) {
 			e1.printStackTrace();

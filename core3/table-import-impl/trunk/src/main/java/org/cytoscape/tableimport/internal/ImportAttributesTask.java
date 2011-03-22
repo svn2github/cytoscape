@@ -1,7 +1,7 @@
 package org.cytoscape.tableimport.internal;
 
 import java.io.IOException;
-import org.cytoscape.tableimport.internal.ui.ImportTextTableDialog;
+import org.cytoscape.tableimport.internal.ui.ImportTablePanel;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.ProvidesGUI;
 import org.cytoscape.work.TaskMonitor;
@@ -13,7 +13,7 @@ import javax.xml.bind.JAXBException;
 
 public class ImportAttributesTask extends AbstractTask {
 	
-	private ImportTextTableDialog importDialog = null;
+	private ImportTablePanel importDialog = null;
 	
 	public ImportAttributesTask(){
 		System.out.println("Entering ImportAttributesTask constructor ...");
@@ -27,7 +27,7 @@ public class ImportAttributesTask extends AbstractTask {
 		JPanel myPanel = new JPanel();
 
 		try {
-			this.importDialog = new ImportTextTableDialog(true, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT, null, null);
+			this.importDialog = new ImportTablePanel(true, ImportTablePanel.SIMPLE_ATTRIBUTE_IMPORT, null, null);
 			
 		} catch (JAXBException e1) {
 			e1.printStackTrace();

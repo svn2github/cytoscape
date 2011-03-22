@@ -36,7 +36,6 @@ import static org.cytoscape.tableimport.internal.reader.TextFileDelimiters.PIPE;
 import static org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType.EDGE;
 import static org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType.NETWORK;
 import static org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType.NODE;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogColorTheme.NOT_LOADED_COLOR;
 import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogColorTheme.ONTOLOGY_COLOR;
 import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogFontTheme.ITEM_FONT;
 import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogFontTheme.LABEL_FONT;
@@ -55,7 +54,6 @@ import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.S
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -72,9 +70,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +82,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -108,48 +103,36 @@ import javax.xml.bind.JAXBException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.jdesktop.layout.GroupLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.cytoscape.model.CyColumn;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.property.bookmark.Bookmarks;
-import org.cytoscape.property.bookmark.DataSource;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.tableimport.internal.reader.GraphReader;
-//import cytoscape.task.ui.JTaskConfig;
-//import cytoscape.task.util.TaskManager;
-import org.cytoscape.property.bookmark.BookmarksUtil;
-//import cytoscape.util.CyFileFilter;
-import org.cytoscape.tableimport.internal.util.URLUtil;
-import org.cytoscape.util.swing.ColumnResizer;
-import org.cytoscape.util.swing.JStatusBar;
-import org.cytoscape.tableimport.internal.reader.AttributeAndOntologyMappingParameters;
 import org.cytoscape.tableimport.internal.reader.AttributeMappingParameters;
 import org.cytoscape.tableimport.internal.reader.DefaultAttributeTableReader;
 import org.cytoscape.tableimport.internal.reader.ExcelAttributeSheetReader;
 import org.cytoscape.tableimport.internal.reader.ExcelNetworkSheetReader;
-//import org.cytoscape.tableimport.internal.reader.GeneAssociationReader;
+import org.cytoscape.tableimport.internal.reader.GraphReader;
 import org.cytoscape.tableimport.internal.reader.NetworkTableMappingParameters;
 import org.cytoscape.tableimport.internal.reader.NetworkTableReader;
-//import org.cytoscape.tableimport.internal.reader.OntologyAnnotationReader;
 import org.cytoscape.tableimport.internal.reader.SupportedFileType;
 import org.cytoscape.tableimport.internal.reader.TextFileDelimiters;
 import org.cytoscape.tableimport.internal.reader.TextTableReader;
 import org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 import org.cytoscape.tableimport.internal.util.AttributeTypes;
+import org.cytoscape.tableimport.internal.util.CytoscapeServices;
+import org.cytoscape.util.swing.ColumnResizer;
+import org.cytoscape.util.swing.JStatusBar;
 import org.cytoscape.work.Task;
+import org.jdesktop.layout.GroupLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Main UI for Table Import.
  *
- * @author kono
  */
-public class ImportTextTableDialog extends JPanel implements PropertyChangeListener,
+public class ImportTablePanel extends JPanel implements PropertyChangeListener,
                                                               TableModelListener {
 	
 	private static final long serialVersionUID = 7356378931577386260L;
@@ -166,14 +149,8 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 	 */
 	public static final int SIMPLE_ATTRIBUTE_IMPORT = 1;
 
-	/**
-	 *
-	 */
 	public static final int ONTOLOGY_AND_ANNOTATION_IMPORT = 2;
 
-	/**
-	 *
-	 */
 	public static final int NETWORK_IMPORT = 3;
 
 	/**
@@ -254,7 +231,7 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private File[] inputFiles;
 
-	private static final Logger logger = LoggerFactory.getLogger(ImportTextTableDialog.class);
+	private static final Logger logger = LoggerFactory.getLogger(ImportTablePanel.class);
 	
 	private CyNetwork network;
 
@@ -267,11 +244,11 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	public ImportTextTableDialog(boolean modal) throws JAXBException, IOException {
-		this(modal, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT, null, null);
+	public ImportTablePanel(boolean modal) throws JAXBException, IOException {
+		this(modal, ImportTablePanel.SIMPLE_ATTRIBUTE_IMPORT, null, null);
 	}
 
-	public ImportTextTableDialog(boolean modal, int dialogType, InputStream is, String fileType)
+	public ImportTablePanel(boolean modal, int dialogType, InputStream is, String fileType)
 	    throws JAXBException, IOException {
 		//super(parent, modal);
 
@@ -850,7 +827,7 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 							selectAttributeFileButtonActionPerformed(evt);
 						} catch (IOException e) {
 							
-							JOptionPane.showMessageDialog(ImportTextTableDialog.this, "<html>Could not read selected file.<p>See <b>Help->Error Dialog</b> for further details.</html>", "ERROR", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(ImportTablePanel.this, "<html>Could not read selected file.<p>See <b>Help->Error Dialog</b> for further details.</html>", "ERROR", JOptionPane.ERROR_MESSAGE);
 							logger.warn("Could not read selected file.", e);
 						}
 					}
@@ -1626,7 +1603,7 @@ public class ImportTextTableDialog extends JPanel implements PropertyChangeListe
 			ontology2annotationPanel.setVisible(false);
 		}
 
-		if (dialogType == ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT) {
+		if (dialogType == ImportTablePanel.SIMPLE_ATTRIBUTE_IMPORT) {
 			ontology2annotationPanel.setVisible(false);
 		}
 
@@ -3720,11 +3697,11 @@ class ComboBoxRenderer extends JLabel implements ListCellRenderer {
 			if (dataType == null) {
 				setIcon(null);
 			} else {
-				setIcon(ImportTextTableDialog.getDataTypeIcon(dataType));
+				setIcon(ImportTablePanel.getDataTypeIcon(dataType));
 			}
 		} else if ((attributeDataTypes != null) && (attributeDataTypes.size() != 0)
 		           && (index < attributeDataTypes.size())) {
-			setIcon(ImportTextTableDialog.getDataTypeIcon(attributeDataTypes.get(list.getSelectedIndex())));
+			setIcon(ImportTablePanel.getDataTypeIcon(attributeDataTypes.get(list.getSelectedIndex())));
 		}
 
 		return this;

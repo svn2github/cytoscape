@@ -15,30 +15,33 @@ import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 
-
-public class ImportAttributeTableReaderFactory extends AbstractTableReaderFactory {
+public class ImportAttributeTableReaderFactory extends
+		AbstractTableReaderFactory {
 	private final static long serialVersionUID = 12023139869460898L;
-	public static String FILE_EXTENSION_TXT = ".txt";
-	public static String FILE_EXTENSION_XSL = ".xls"; // or ".xslx"
+
+	public static final String FILE_EXTENSION_TXT = ".txt";
+	public static final String FILE_EXTENSION_XSL = ".xls"; // or ".xslx"
+
 	private String fileFormat = "Unknow";
-	
+
 	/**
 	 * Creates a new ImportAttributeTableReaderFactory object.
-	 */ 
-	public ImportAttributeTableReaderFactory(CyFileFilter filter, CySwingApplication desktop,CyApplicationManager appMgr,
-			CyNetworkManager netMgr,
-			CyProperty<Bookmarks> bookmarksProp, BookmarksUtil bookmarksUtil,
-			GUITaskManager guiTaskManagerServiceRef, CyProperty cytoscapePropertiesServiceRef,
-			CyTableManager tblMgr, FileUtil fileUtilService, OpenBrowser openBrowserService,
-			CyTableFactory tableFactory, String fileFormat) 
-	{
+	 */
+	public ImportAttributeTableReaderFactory(CyFileFilter filter,
+			CySwingApplication desktop, CyApplicationManager appMgr,
+			CyNetworkManager netMgr, CyProperty<Bookmarks> bookmarksProp,
+			BookmarksUtil bookmarksUtil,
+			GUITaskManager guiTaskManagerServiceRef,
+			CyProperty<?> cytoscapePropertiesServiceRef, CyTableManager tblMgr,
+			FileUtil fileUtilService, OpenBrowser openBrowserService,
+			CyTableFactory tableFactory, String fileFormat) {
 		super(filter, tableFactory);
 
 		CytoscapeServices.desktop = desktop;
 		CytoscapeServices.bookmarksUtil = bookmarksUtil;
-		CytoscapeServices.cytoscapePropertiesServiceRef= cytoscapePropertiesServiceRef;
+		CytoscapeServices.cytoscapePropertiesServiceRef = cytoscapePropertiesServiceRef;
 		CytoscapeServices.guiTaskManagerServiceRef = guiTaskManagerServiceRef;
-		CytoscapeServices.tblMgr =tblMgr;
+		CytoscapeServices.tblMgr = tblMgr;
 		CytoscapeServices.theBookmarks = bookmarksProp.getProperties();
 		CytoscapeServices.openBrowser = openBrowserService;
 		CytoscapeServices.fileUtil = fileUtilService;
@@ -48,16 +51,16 @@ public class ImportAttributeTableReaderFactory extends AbstractTableReaderFactor
 		this.fileFormat = fileFormat;
 	}
 
-	
 	public TaskIterator getTaskIterator() {
-		if (fileFormat.equalsIgnoreCase("file_format_txt")){
-			return new TaskIterator(new ImportAttributeTableReaderTask(this.inputStream, FILE_EXTENSION_TXT));			
+		if (fileFormat.equalsIgnoreCase("file_format_txt")) {
+			return new TaskIterator(new ImportAttributeTableReaderTask(
+					this.inputStream, FILE_EXTENSION_TXT));
+		} else if (fileFormat.equalsIgnoreCase("file_format_xls")) {
+			return new TaskIterator(new ImportAttributeTableReaderTask(
+					this.inputStream, FILE_EXTENSION_XSL));
 		}
-		else if (fileFormat.equalsIgnoreCase("file_format_xls")){
-			return new TaskIterator(new ImportAttributeTableReaderTask(this.inputStream, FILE_EXTENSION_XSL));						
-		}
+		
 		// This should not happen.
 		return null;
-	} 	
+	}
 }
-

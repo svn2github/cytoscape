@@ -3,14 +3,14 @@ package org.cytoscape.tableimport.internal;
 import java.io.IOException;
 import javax.swing.JPanel;
 import javax.xml.bind.JAXBException;
-import org.cytoscape.tableimport.internal.ui.ImportTextTableDialog;
+import org.cytoscape.tableimport.internal.ui.ImportTablePanel;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.ProvidesGUI;
 import org.cytoscape.work.TaskMonitor;
 
 public class ImportNetworkTableTask extends AbstractTask {
 
-	private ImportTextTableDialog importDialog = null;
+	private ImportTablePanel importDialog = null;
 	
 	public ImportNetworkTableTask(){	
 	}
@@ -21,7 +21,7 @@ public class ImportNetworkTableTask extends AbstractTask {
 		JPanel myPanel = new JPanel();
 
 		try {
-			importDialog = new ImportTextTableDialog(true, ImportTextTableDialog.NETWORK_IMPORT, null, null);
+			importDialog = new ImportTablePanel(true, ImportTablePanel.NETWORK_IMPORT, null, null);
 		} catch (JAXBException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

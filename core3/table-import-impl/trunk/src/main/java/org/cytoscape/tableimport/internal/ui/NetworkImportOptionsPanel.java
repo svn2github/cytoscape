@@ -225,7 +225,7 @@ public class NetworkImportOptionsPanel extends JPanel {
 		colIdx.add(tIdx);
 		colIdx.add(iIdx);
 
-		changes.firePropertyChange(ImportTextTableDialog.NETWORK_IMPORT_TEMPLATE_CHANGED, null,
+		changes.firePropertyChange(ImportTablePanel.NETWORK_IMPORT_TEMPLATE_CHANGED, null,
 		                           colIdx);
 	}
 
