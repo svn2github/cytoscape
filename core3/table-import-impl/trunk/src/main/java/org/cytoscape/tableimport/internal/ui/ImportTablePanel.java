@@ -148,9 +148,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 	 * NETWORK_IMPORT: Import text table as a network.
 	 */
 	public static final int SIMPLE_ATTRIBUTE_IMPORT = 1;
-
 	public static final int ONTOLOGY_AND_ANNOTATION_IMPORT = 2;
-
 	public static final int NETWORK_IMPORT = 3;
 
 	/**
@@ -238,19 +236,9 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 	private InputStream is;
 	private String fileType;
 	
-	/**
-	 * Creates new form ImportAttributesDialog
-	 *
-	 * @throws IOException
-	 * @throws JAXBException
-	 */
-	public ImportTablePanel(boolean modal) throws JAXBException, IOException {
-		this(modal, ImportTablePanel.SIMPLE_ATTRIBUTE_IMPORT, null, null);
-	}
 
-	public ImportTablePanel(boolean modal, int dialogType, InputStream is, String fileType)
+	public ImportTablePanel(int dialogType, InputStream is, String fileType)
 	    throws JAXBException, IOException {
-		//super(parent, modal);
 
 		// Default Attribute is node attr.
 		//selectedAttributes = Cytoscape.getNodeAttributes();

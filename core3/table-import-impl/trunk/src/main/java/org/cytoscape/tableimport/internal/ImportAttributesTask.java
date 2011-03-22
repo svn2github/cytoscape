@@ -27,7 +27,7 @@ public class ImportAttributesTask extends AbstractTask {
 		JPanel myPanel = new JPanel();
 
 		try {
-			this.importDialog = new ImportTablePanel(true, ImportTablePanel.SIMPLE_ATTRIBUTE_IMPORT, null, null);
+			this.importDialog = new ImportTablePanel(ImportTablePanel.SIMPLE_ATTRIBUTE_IMPORT, null, null);
 			
 		} catch (JAXBException e1) {
 			e1.printStackTrace();

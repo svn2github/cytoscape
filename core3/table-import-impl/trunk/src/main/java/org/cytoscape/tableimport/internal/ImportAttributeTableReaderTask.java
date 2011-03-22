@@ -31,7 +31,7 @@ public class ImportAttributeTableReaderTask implements CyTableReader {
 
 		try {
 			if (this.importDialog == null){
-				this.importDialog = new ImportTablePanel(true, ImportTablePanel.SIMPLE_ATTRIBUTE_IMPORT, is, this.fileType);				
+				this.importDialog = new ImportTablePanel(ImportTablePanel.SIMPLE_ATTRIBUTE_IMPORT, is, this.fileType);				
 			}
 		} catch (JAXBException e1) {
 			e1.printStackTrace();
