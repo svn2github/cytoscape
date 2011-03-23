@@ -24,6 +24,7 @@
 		<constructor-arg index="1">
 			<set>
 				<value>text/plain</value>
+				<value>text/tab-separated-values</value>
 			</set>
 		</constructor-arg>
 		<constructor-arg value="Any text file" />
@@ -48,7 +49,8 @@
 		<constructor-arg ref="streamUtilService" />
 	</bean>			
 
-<!-- 
+ 
+ 
 	<bean id="importAttributeTableReaderFactory_txt" 
 			class="org.cytoscape.tableimport.internal.ImportAttributeTableReaderFactory">
 		<constructor-arg ref="attrsTableFilter_txt" />
@@ -65,7 +67,7 @@
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
 		<constructor-arg value="file_format_txt" />
 	</bean>
- -->
+
  
 	<bean id="importAttributeTableReaderFactory_xls" 
 			class="org.cytoscape.tableimport.internal.ImportAttributeTableReaderFactory">
@@ -85,7 +87,9 @@
 	</bean>
 
 
+
 	<!-- XXXXXXXXXXXXXXXX Network import should be in the same pattern as attribute import XXXXXXXXX -->
+	<!-- 
 	<bean id="importNetworkTableTaskFactory" 
 			class="org.cytoscape.tableimport.internal.ImportNetworkTableTaskFactory">
 		<constructor-arg ref="cytoscapeDesktopService" /> 
@@ -104,5 +108,5 @@
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
-
+ -->
 </beans>
