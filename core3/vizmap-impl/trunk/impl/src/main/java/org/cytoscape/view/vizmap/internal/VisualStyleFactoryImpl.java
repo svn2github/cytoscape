@@ -1,6 +1,8 @@
 package org.cytoscape.view.vizmap.internal;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
@@ -17,25 +19,43 @@ public class VisualStyleFactoryImpl implements VisualStyleFactory {
 
 	@Override
 	public VisualStyle getInstance(final VisualStyle original) {
-		final VisualStyle copyVS = new VisualStyleImpl(original.getTitle(), lexManager);
-		
-		// TODO: copy everything! This is incomplete
-		Collection<VisualMappingFunction<?, ?>> allMapping = original.getAllVisualMappingFunctions();
+		final VisualStyle copy = new VisualStyleImpl(original.getTitle(), lexManager);
 
-		String attrName;
-		VisualProperty<?> vp;
+		copyDefaultValues(original, copy);
+		copyMappingFunctions(original, copy);
 
-		for (VisualMappingFunction<?, ?> mapping : allMapping) {
-			attrName = mapping.getMappingAttributeName();
-			vp = mapping.getVisualProperty();
-		}
-
-		return copyVS;
+		return copy;
 	}
 	
-
 	@Override
 	public VisualStyle getInstance(String title) {
 		return new VisualStyleImpl(title, lexManager);
+	}
+	
+	private <V, S extends V> void copyDefaultValues(final VisualStyle original, final VisualStyle copy) {
+	    Set<VisualProperty<?>> visualProps = new HashSet<VisualProperty<?>>();
+        visualProps.addAll(lexManager.getNetworkVisualProperties());
+        visualProps.addAll(lexManager.getNodeVisualProperties());
+        visualProps.addAll(lexManager.getEdgeVisualProperties());
+        
+        for (VisualProperty<?> vp : visualProps) {
+            S value = (S) original.getDefaultValue(vp);
+            
+            // TODO: if the value is not immutable, this can create problems, since it is not setting a copy!
+            if (value != null)
+                copy.setDefaultValue((VisualProperty<V>) vp, value);
+        }
+	}
+	
+	private void copyMappingFunctions(final VisualStyle original, final VisualStyle copy) {
+	    Collection<VisualMappingFunction<?, ?>> allMapping = original.getAllVisualMappingFunctions();
+	    
+        for (VisualMappingFunction<?, ?> mapping : allMapping) {
+            String attrName = mapping.getMappingAttributeName();
+            VisualProperty<?> vp = mapping.getVisualProperty();
+            
+            // TODO: clone mappings
+//            copy.addVisualMappingFunction(mapping);
+        }
 	}
 }

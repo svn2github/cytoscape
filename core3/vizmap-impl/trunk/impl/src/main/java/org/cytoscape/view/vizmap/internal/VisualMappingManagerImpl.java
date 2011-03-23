@@ -35,14 +35,18 @@
 package org.cytoscape.view.vizmap.internal;
 
 import java.awt.Color;
+import java.awt.Paint;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.PaintVisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -57,11 +61,16 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	public static final String DEFAULT_STYLE_NAME = "default";
 	
 	// Default Style
+	private static final Color NETWORK_COLOR = Color.WHITE;
+	private static final Color NETWORK_NODE_SELECTED_COLOR = Color.YELLOW;
+	private static final Color NETWORK_EDGE_SELECTED_COLOR = Color.YELLOW;
 	private static final Color NODE_COLOR = new Color(0x4F, 0x94, 0xCD);
+	private static final Color NODE_LABEL_COLOR = Color.BLACK;
 	private static final Color EDGE_COLOR = new Color(50, 50, 50);
-	private static final Double EDGE_WIDTH = 3d;
+	private static final Double EDGE_WIDTH = 2d;
 	private static final Double NODE_WIDTH = 35d;
 	private static final Double NODE_HEIGHT = 35d;
+	private static final Color EDGE_LABEL_COLOR = Color.BLACK;
 
 	private final VisualStyle defaultStyle;
 
@@ -89,11 +98,16 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	private VisualStyle buildGlobalDefaultStyle(final VisualStyleFactory factory) {
 		final VisualStyle defStyle = factory.getInstance(DEFAULT_STYLE_NAME);
 		
+		defStyle.setDefaultValue(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT, NETWORK_COLOR);
+		defStyle.setDefaultValue(TwoDVisualLexicon.NETWORK_NODE_SELECTED_COLOR, NETWORK_NODE_SELECTED_COLOR);
+		defStyle.setDefaultValue(TwoDVisualLexicon.NETWORK_EDGE_SELECTED_COLOR, NETWORK_EDGE_SELECTED_COLOR);
 		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_COLOR, NODE_COLOR);
+		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_LABEL_COLOR, NODE_LABEL_COLOR);
 		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_X_SIZE, NODE_WIDTH);
 		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_Y_SIZE, NODE_HEIGHT);
 		defStyle.setDefaultValue(TwoDVisualLexicon.EDGE_WIDTH, EDGE_WIDTH);
 		defStyle.setDefaultValue(TwoDVisualLexicon.EDGE_PAINT, EDGE_COLOR);
+		defStyle.setDefaultValue(TwoDVisualLexicon.EDGE_LABEL_COLOR, EDGE_LABEL_COLOR);
 		
 		return defStyle;
 	}

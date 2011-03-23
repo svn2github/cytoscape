@@ -38,7 +38,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -46,7 +45,6 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
@@ -102,6 +100,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param c
 	 *            DOCUMENT ME!
 	 */
+	@Override
 	public void addVisualMappingFunction(
 			final VisualMappingFunction<?, ?> mapping) {
 		mappings.put(mapping.getVisualProperty(), mapping);
@@ -266,6 +265,7 @@ public class VisualStyleImpl implements VisualStyle {
 			final VisualProperty<?> vp) {
 
 		Object defaultValue = getDefaultValue(vp);
+		
 		if(defaultValue == null) {
 			this.perVSDefaults.put(vp, vp.getDefault());
 			defaultValue = getDefaultValue(vp);
@@ -302,6 +302,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
+	@Override
 	public String getTitle() {
 		return title;
 	}
@@ -312,6 +313,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param title
 	 *            DOCUMENT ME!
 	 */
+	@Override
 	public void setTitle(String title) {
 		this.title = title;
 	}
