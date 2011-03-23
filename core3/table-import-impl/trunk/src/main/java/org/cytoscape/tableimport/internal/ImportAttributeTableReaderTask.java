@@ -40,28 +40,22 @@ public class ImportAttributeTableReaderTask extends AbstractTask implements
 			}
 		}
 
-		System.out.println("$$$$$$$$$GUI Created. ");
-
 		return importTablePanel;
 	}
 
 	@Override
 	public void run(TaskMonitor monitor) throws Exception {
 
-		System.out.println("$$$$$$$$$Run called");
-
 		monitor.setTitle("Loading attribute table data");
 		monitor.setProgress(0.0);
 		monitor.setStatusMessage("Loading table...");
 
-		System.out.println("$$$$$$$$$Table import start ");
+		// Load all table data sets here.
 		this.importTablePanel.importTable();
-		System.out.println("$$$$$$$$$Table import END ");
 
 		monitor.setStatusMessage("Mapping data table to local ones...");
 		this.insertTasksAfterCurrentTask(importTablePanel.getLoadTask());
 
-		System.out.println("$$$$$$$$$Finished. ");
 		monitor.setProgress(1.0);
 	}
 
