@@ -21,8 +21,7 @@ public class ThreeDVisualLexiconTest extends AbstractVisualLexiconTest {
 	public void setUp() throws Exception {
 
 		// Create root node.
-		threeDRoot = new NullVisualProperty("THREE_D_ROOT",
-				"3D Root Visual Property");
+		threeDRoot = new NullVisualProperty("THREE_D_ROOT", "3D Root Visual Property");
 
 		threeDLex = new ThreeDVisualLexicon(threeDRoot);
 	}
@@ -34,7 +33,7 @@ public class ThreeDVisualLexiconTest extends AbstractVisualLexiconTest {
 
 	@Test
 	public void test2DLexicon() throws Exception {
-		assertEquals(39, threeDLex.getAllVisualProperties().size());
+		assertEquals(38, threeDLex.getAllVisualProperties().size());
 	}
 
 	@Test

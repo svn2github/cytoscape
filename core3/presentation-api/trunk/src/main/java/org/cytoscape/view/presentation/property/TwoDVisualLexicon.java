@@ -151,14 +151,11 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 			0.0, ARBITRARY_DOUBLE_RANGE, "NETWORK_CENTER_Y_LOCATION", "Network Center Y Location", true, CyNetwork.class);
 
 	public static final VisualProperty<Double> NETWORK_SIZE = new DoubleVisualProperty(
-			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_SIZE", "Network Size", true, CyNetwork.class);
+			400.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_SIZE", "Network Size", true, CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_WIDTH = new DoubleVisualProperty(
-			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_WIDTH", "Network Width", true, CyNetwork.class);
+			400.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_WIDTH", "Network Width", true, CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_HEIGHT = new DoubleVisualProperty(
-			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_HEIGHT", "Network Height", true, CyNetwork.class);
-
-	public static final VisualProperty<String> NETWORK_TITLE = new StringVisualProperty(
-			"", ARBITRARY_STRING_RANGE, "NETWORK_TITLE", "Network Title", CyNetwork.class);
+			400.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_HEIGHT", "Network Height", true, CyNetwork.class);
 
 	public static final VisualProperty<Paint> NETWORK_BACKGROUND_PAINT = new PaintVisualProperty(
 			Color.WHITE, PAINT_RANGE, "NETWORK_BACKGROUND_PAINT", "Network Background Paint", CyNetwork.class);
@@ -203,7 +200,6 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 		addVisualProperty(EDGE_VISIBLE, EDGE);
 		addVisualProperty(EDGE_SELECTED, EDGE);
 
-		addVisualProperty(NETWORK_TITLE, NETWORK);
 		addVisualProperty(NETWORK_BACKGROUND_PAINT, NETWORK);
 		addVisualProperty(NETWORK_WIDTH, NETWORK_SIZE);
 		addVisualProperty(NETWORK_HEIGHT, NETWORK_SIZE);
@@ -231,7 +227,6 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 		addIdentifierMapping(CyNetwork.class,"GRAPH_VIEW_CENTER_X",NETWORK_CENTER_X_LOCATION);
 		addIdentifierMapping(CyNetwork.class,"GRAPH_VIEW_CENTER_Y",NETWORK_CENTER_Y_LOCATION);
 		addIdentifierMapping(CyNetwork.class,"GRAPH_VIEW_ZOOM",NETWORK_SCALE_FACTOR);
-		addIdentifierMapping(CyNetwork.class,"label",NETWORK_TITLE);
 		
 		addIdentifierMapping(CyNode.class,"fill",NODE_COLOR);
 		addIdentifierMapping(CyNode.class,"x",NODE_X_LOCATION);

@@ -24,9 +24,7 @@ public class TwoDVisualLexiconTest extends AbstractVisualLexiconTest {
 	public void setUp() throws Exception {
 
 		// Create root node.
-		twoDRoot = new NullVisualProperty("TWO_D_ROOT",
-				"2D Root Visual Property");
-
+		twoDRoot = new NullVisualProperty("TWO_D_ROOT", "2D Root Visual Property");
 		twoDLex = new TwoDVisualLexicon(twoDRoot);
 	}
 
@@ -37,7 +35,7 @@ public class TwoDVisualLexiconTest extends AbstractVisualLexiconTest {
 
 	@Test
 	public void test2DLexicon() throws Exception {
-		assertEquals(35, twoDLex.getAllVisualProperties().size());
+		assertEquals(34, twoDLex.getAllVisualProperties().size());
 	}
 
 	@Test
