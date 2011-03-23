@@ -3088,9 +3088,8 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 	private void loadAnnotation(TextTableReader reader, String source) {
 		
 		// Create loadAnnotation Task
-		ImportAttributeTableTask task = new ImportAttributeTableTask(reader, source);
-		
-		this.loadTask = task;
+		final ImportAttributeTableTaskFactory factory = new ImportAttributeTableTaskFactory(reader);		
+		this.loadTask = factory.getTaskIterator().next();
 		//ImportAttributeTableTaskFactory taskFactory = new ImportAttributeTableTaskFactory(task);
 		//CytoscapeServices.guiTaskManagerServiceRef.execute(taskFactory);
 	}

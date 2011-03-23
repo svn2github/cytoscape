@@ -42,7 +42,6 @@ import org.cytoscape.task.MapNetworkAttrTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 
 public class ImportAttributeTableTask extends AbstractTask implements
@@ -52,7 +51,6 @@ public class ImportAttributeTableTask extends AbstractTask implements
 	protected VisualStyle[] visualstyles;
 
 	private final TextTableReader reader;
-	private final String source;
 
 	private CyTable[] cyTables;
 	private static int numImports = 0;
@@ -65,29 +63,15 @@ public class ImportAttributeTableTask extends AbstractTask implements
 	 * @param source
 	 *            DOCUMENT ME!
 	 */
-	public ImportAttributeTableTask(final TextTableReader reader, final String source) {
-		super();
-		this.setTaskIterator(new TaskIterator(this));
-		
+	public ImportAttributeTableTask(final TextTableReader reader) {		
 		this.reader = reader;
-		this.source = source;
 	}
 
-	// @Override
-	// public void runx(TaskMonitor tm) throws IOException {
-	// tm.setProgress(0.10);
-	// this.reader.setNetwork(network);
-	// if (this.cancelled){
-	// return;
-	// }
-	// this.reader.readTable();
-	// tm.setProgress(1.0);
-	// }
-
+	
 	@Override
 	public void run(TaskMonitor tm) throws IOException {
 
-		CyTable table = CytoscapeServices.tableFactory.createTable("AttrTable "
+		final CyTable table = CytoscapeServices.tableFactory.createTable("AttrTable "
 				+ Integer.toString(numImports++), "name", String.class, true,
 				true);
 		cyTables = new CyTable[] { table };
@@ -103,8 +87,6 @@ public class ImportAttributeTableTask extends AbstractTask implements
 
 		this.reader.readTable(table);
 		// loadAttributesInternal(table);
-
-		
 	}
 
 
