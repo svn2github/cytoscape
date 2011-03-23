@@ -47,7 +47,7 @@ import org.cytoscape.io.CyFileFilter;
 public interface CyWriterManager {
 
 	/**
-	 * @return A list of the available {@link org.cytoscape.io.CyFileFilters} that define the available
+	 * @return A list of the available {@link CyFileFilter}s that define the available
 	 * output types.
 	 */
 	List<CyFileFilter> getAvailableWriterFilters();
