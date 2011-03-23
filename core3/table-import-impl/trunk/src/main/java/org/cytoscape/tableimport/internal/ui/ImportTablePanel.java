@@ -1686,10 +1686,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 		repaint();
 	}
 
-	//private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		//dispose();
-	//}
-
+	
 	/**
 	 * Load from the data source.<br>
 	 *

@@ -19,10 +19,7 @@ public class ImportAttributeTableReaderFactory extends
 		AbstractTableReaderFactory {
 	private final static long serialVersionUID = 12023139869460898L;
 
-	public static final String FILE_EXTENSION_TXT = ".txt";
-	public static final String FILE_EXTENSION_XSL = ".xls"; // or ".xslx"
-
-	private String fileFormat = "Unknow";
+	private final String fileFormat;
 
 	/**
 	 * Creates a new ImportAttributeTableReaderFactory object.
@@ -52,15 +49,7 @@ public class ImportAttributeTableReaderFactory extends
 	}
 
 	public TaskIterator getTaskIterator() {
-		if (fileFormat.equalsIgnoreCase("file_format_txt")) {
-			return new TaskIterator(new ImportAttributeTableReaderTask(
-					this.inputStream, FILE_EXTENSION_TXT));
-		} else if (fileFormat.equalsIgnoreCase("file_format_xls")) {
-			return new TaskIterator(new ImportAttributeTableReaderTask(
-					this.inputStream, FILE_EXTENSION_XSL));
-		}
-		
-		// This should not happen.
-		return null;
+		return new TaskIterator(new ImportAttributeTableReaderTask(
+				this.inputStream, fileFormat));
 	}
 }

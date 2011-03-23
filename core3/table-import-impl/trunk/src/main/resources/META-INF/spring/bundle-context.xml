@@ -65,7 +65,7 @@
 		<constructor-arg ref="fileUtilService" />
 		<constructor-arg ref="openBrowserService" />
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
-		<constructor-arg value="file_format_txt" />
+		<constructor-arg value=".txt" />
 	</bean>
 
  
@@ -83,6 +83,6 @@
 		<constructor-arg ref="fileUtilService" />
 		<constructor-arg ref="openBrowserService" />
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
-		<constructor-arg value="file_format_xls" />
+		<constructor-arg value=".xls" />
 	</bean>
 </beans>
