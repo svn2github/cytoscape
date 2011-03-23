@@ -2,8 +2,11 @@
 import exceptions
 import getopt
 import glob
+import math
+import numpy
 import os
 import re
+import scipy.stats
 import sys
 import xml.etree.ElementTree
 
@@ -41,30 +44,35 @@ def ReadBaselineFile(maven_project_directory):
         return None
 
 
-def RunMavenTest(pom_file_name):
+# Updates and returns a map from test names to lists of test execution times in ns.
+def ExtractTimingInfo(file_name, test_name_to_times_map):
+    for line in open(file_name):
+        if line.startswith("*** CTRT: "):
+            parts = line.split()
+            test = parts[2]
+            time = float(parts[3])
+            if test not in test_name_to_times_map:
+                test_name_to_times_map[test] = [time]
+            else:
+                test_name_to_times_map[test].append(time)
+    return test_name_to_times_map
+
+
+# Runs Maven loop_count times and extracts timing information from the
+# .../target/surefire-reports/*-output.txt files and returns it.  Upon failure we return None.
+def RunMavenTestAndExtractTimingInfo(pom_file_name, maven_project_directory):
+    test_name_to_times_map = { }
     command = "mvn --quiet --file " + pom_file_name + " clean test"
     if verbose:
-        print "ctrt: Info: About to run \"" + command + "\"."
-    if os.system(command) != 0:
-    	return False
-    return True
-
-
-# Returns a dictonary upon success or None upon failure.  The dictionary has the test names as the
-# keys and the test execution times (in seconds) as the values.
-def ExtractTimingInfoFromSurefireReports(maven_project_directory):
-    dict = {}
-    for file in glob.glob(maven_project_directory + "/target/surefire-reports/*.xml"):
-        tree = xml.etree.ElementTree.parse(file)
-        root = tree.getroot()
-        for testcase in root.getiterator("testcase"):
-            time = testcase.get("time")
-            classname = testcase.get("classname")
-            name = testcase.get("name")
-            dict[classname + "." + name] = float(time)
+        print "ctrt: Info: About to run \"" + command + "\" " + str(loop_count) + " times."
+    for i in range(loop_count):
+        if os.system(command) != 0:
+            return None
+        for file in glob.glob(maven_project_directory + "/target/surefire-reports/*-output.txt"):
             if verbose:
-                print "ctrt: Info: test " + classname + "." + name + " took " + time + "sec"
-    return dict
+                print "ctrt: About to extract timing information from " + file
+            test_name_to_times_map = ExtractTimingInfo(file, test_name_to_times_map)
+    return test_name_to_times_map
 
 
 # Returns None if no match was found or the replacement (groupId,artifactId,version) if a match was found
@@ -124,23 +132,81 @@ def SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version
     return False
 
 
-def GenerateTimingReport(current_version, baseline_version):
-    max_deviation = 10.0 # in percent
-    print "---------------------------------------- Timing Comparison --------------------------------------------"
-    failure_count = 0
-    for key in baseline_version.keys():
-        baseline_time = baseline_version[key]
-        current_time  = current_version[key]
-        if baseline_time == 0.0:
-            percent_deviation = current_time * 100.0
+# Returns "dataset1" and "dataset2" with their values replaced by the ranks of the union of their
+# values.  (Helper function for MannWhitneyUTest())
+def calcRanks(dataset1, dataset2):
+    combined = []
+    combined += dataset1
+    combined += dataset2
+    combined_ranks = scipy.stats.rankdata(combined)
+    
+    ranks1 = []
+    len1 = len(dataset1)
+    for i in range(len1):
+        ranks1.append(combined_ranks[i])
+
+    ranks2 = []
+    for i in range(len(dataset2)):
+        ranks2.append(combined_ranks[i + len1])
+
+    return ranks1, ranks2
+
+
+# Returns (significance,median(dataset1),median(dataset2)).  The difference in the medians is
+# significant is "significance" <= 0.05.
+def MannWhitneyUTest(dataset1, dataset2):
+    if len(dataset1) < 20:
+        raise ValueError("dataset1 must contain at least 20 values!")
+    if len(dataset2) < 20:
+        raise ValueError("dataset2 must contain at least 20 values!")
+
+    ranks1, ranks2 = calcRanks(dataset1, dataset2)
+    R1 = sum(ranks1)
+    R2 = sum(ranks2)
+    n1 = len(dataset1)
+    n2 = len(dataset2)
+    
+    U1 = R1 - n1 * (n1 + 1.0) / 2.0
+    U2 = R2 - n2 * (n2 + 1.0) / 2.0
+    U = min(U1, U2)
+
+    mU = n1 * n2 / 2.0
+    sigmaU = math.sqrt((n1 * n2 * (n1 + n2 + 1)) / 12.0)
+    z = (U - mU - 0.5) / sigmaU # The -0.5 is a continuity correction
+    phi = scipy.stats.norm.cdf(z)
+    return 2.0 * min(phi, 1.0 - phi), numpy.median(dataset1), numpy.median(dataset2)
+
+
+# Returns True if no timing issues were found and False otherwise.  A return value of False is not
+# always bad news since a significant speedup also causes a false return since we would then like to
+# update the baseline version to the current version in the baseline.xml file.
+def GenerateTimingReport(current_test_name_to_times_map, baseline_test_name_to_times_map):
+    print "=============================== Test Results =============================================="
+    number_of_tests = len(current_test_name_to_times_map)
+    no_problems_found = True
+    for test_name in current_test_name_to_times_map.keys():
+        if not test_name in baseline_test_name_to_times_map:
+            print "ctrt: Warning test is only in current version but not the baseline version: " + test_name
+            continue
+        significance,current_mean,baseline_mean = \
+            MannWhitneyUTest(current_test_name_to_times_map[test_name],\
+                             baseline_test_name_to_times_map[test_name])
+        significance *= n
+        is_significant = significance < 0.05
+        if is_significant:
+            no_problems_found = False
+            if baseline_mean == 0.0:
+                percent_difference = "unknown"
+            else:
+                percent_difference = 100.0 * (baseline_mean - current_mean) / baseline_mean
+            if percent_difference < 0.0:
+                print test_name + ": is " + str(percent_difference) + "% slower than the baseline!"
+            else:
+                print test_name + ": is " + str(-percent_difference) + "% faster than the baseline!"
         else:
-            percent_deviation = 100.0 * (current_time - baseline_time) / baseline_time
-        print str("Test " + key + " ran %.5f" + "%% slower than the baseline.") % percent_deviation
-    if failure_count > 0:
-        print str(failure_count) + " failed because current tests were running too slow!"
-        exit(1)
-    print "-------------------------------------------------------------------------------------------------------"
-    return
+            test_name + ": no significant change found!"
+    print "==========================================================================================="
+    return no_problems_found
 
 
 def PrintUsage():
@@ -152,6 +218,8 @@ def PrintUsage():
 # Returns the Maven project directory upon success and does not return upon failure.
 # Also updates global variables "verbose" and "loop_count".
 def ProcessArgs():
+    global loop_count, verbose
+
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hvl:", ["help", "verbose", "loop-count="])
     except getopt.GetoptError, err:
@@ -177,6 +245,7 @@ def ProcessArgs():
 
 def main():
     maven_project_directory = ProcessArgs()
+    test_name_to_times_map = { }
 
     if verbose:
         print "ctrt: About to parse baseline version file."
@@ -187,11 +256,9 @@ def main():
 
     if verbose:
         print "ctrt: About to run Maven with the current version."
-    if not RunMavenTest("pom.xml"):
+    current_test_name_to_times_map = RunMavenTestAndExtractTimingInfo("pom.xml", maven_project_directory)
+    if current_test_name_to_times_map == None:
         print "ctrt: Failed to run Maven with the current version!"
-        exit(-3)
-
-    timing_current_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
 
     if not SwapBundleVersionNumbers(maven_project_directory, groupId_artifactId_version_list):
         print "ctrt: Failed to replace the current version with the baseline version!"
@@ -199,7 +266,8 @@ def main():
 
     if verbose:
         print "ctrt: About to run Maven with the baseline version."
-    if not RunMavenTest(temp_pom_name):
+    baseline_test_name_to_times_map = RunMavenTestAndExtractTimingInfo(temp_pom_name, maven_project_directory)
+    if baseline_test_name_to_times_map == None:
         print "ctrt: Failed to run Maven with the baseline version!"
         exit(-6)
 
@@ -207,9 +275,11 @@ def main():
         print "ctrt: About to delete temporary POM."
     os.remove(maven_project_directory + "/" + temp_pom_name)
 
-    timing_baseline_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
-
-    GenerateTimingReport(timing_current_version, timing_baseline_version)
+    if not GenerateTimingReport(current_test_name_to_times_map, baseline_test_name_to_times_map):
+        print "*** SIGNIFICANT CHANGES HAVE BEEN DETECTED!! ***"
+        exit(1)
+    else:
+        exit(0)
 
 
 main()
