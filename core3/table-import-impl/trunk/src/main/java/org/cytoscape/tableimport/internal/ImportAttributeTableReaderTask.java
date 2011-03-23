@@ -24,6 +24,8 @@ public class ImportAttributeTableReaderTask extends AbstractTask implements
 			final String fileType) {
 		this.is = is;
 		this.fileType = fileType;
+		
+		this.importTablePanel = null;
 	}
 
 	@ProvidesGUI
@@ -65,6 +67,8 @@ public class ImportAttributeTableReaderTask extends AbstractTask implements
 					.getLoadTask();
 			return importTask.getCyTables();
 		}
+		
+		
 		return null;
 	}
 }
