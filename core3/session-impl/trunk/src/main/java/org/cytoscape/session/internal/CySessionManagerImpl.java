@@ -233,7 +233,6 @@ public class CySessionManagerImpl implements CySessionManager {
                     String name = netView.getModel().getCyRow().get(CyNetwork.NAME, String.class);
 
                     if (name != null && name.length() > 0) {
-                        netView.setVisualProperty(TwoDVisualLexicon.NETWORK_TITLE, name);
                         NetworkFrame nf = framesLookup.get(name);
 
                         if (nf != null) {
@@ -246,8 +245,6 @@ public class CySessionManagerImpl implements CySessionManager {
                                 netView.setVisualProperty(TwoDVisualLexicon.NETWORK_HEIGHT, h.doubleValue());
                         }
                     }
-                    
-                    // TODO: restore selected elements
 
                     netView.updateView();
                 }
