@@ -33,7 +33,6 @@ public class HandleListAttribute extends AbstractHandler {
             default:
                 clazz = String.class;
                 break;
-
         }
 
         String name = manager.currentAttributeID;
@@ -45,7 +44,7 @@ public class HandleListAttribute extends AbstractHandler {
             column = row.getTable().getColumn(name);
         }
 
-        if (column.getType() == List.class) {
+        if (List.class.isAssignableFrom(column.getType())) {
             if (manager.listAttrHolder == null) {
                 manager.listAttrHolder = new ArrayList<Object>();
                 row.set(name, manager.listAttrHolder);

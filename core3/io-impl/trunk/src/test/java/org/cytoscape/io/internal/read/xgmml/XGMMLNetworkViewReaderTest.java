@@ -37,12 +37,12 @@ import org.cytoscape.io.internal.read.AbstractNetworkViewReaderTester;
 public class XGMMLNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 
     RenderingEngineManager renderingEngineManager;
-    ReadDataManager        readDataManager;
-    AttributeValueUtil     attributeValueUtil;
-    VisualStyleFactory     styleFactory;
-    VisualMappingManager   visMappingManager;
+    ReadDataManager readDataManager;
+    AttributeValueUtil attributeValueUtil;
+    VisualStyleFactory styleFactory;
+    VisualMappingManager visMappingManager;
     DiscreteMappingFactory discreteMappingFactory;
-    XGMMLParser            parser;
+    XGMMLParser parser;
     CyProperty<Properties> properties;
 
     @Before
@@ -84,7 +84,7 @@ public class XGMMLNetworkViewReaderTest extends AbstractNetworkViewReaderTester 
         XGMMLNetworkViewReader snvp = new XGMMLNetworkViewReader(new FileInputStream(f), renderingEngineManager,
                                                                  viewFactory, netFactory, readDataManager,
                                                                  attributeValueUtil, styleFactory, visMappingManager,
-                                                                 discreteMappingFactory, parser, properties);
+                                                                 parser, properties);
         snvp.run(taskMonitor);
 
         return snvp.getNetworkViews();

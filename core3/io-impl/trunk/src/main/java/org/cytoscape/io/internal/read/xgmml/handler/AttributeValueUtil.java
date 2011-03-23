@@ -8,6 +8,7 @@ import org.cytoscape.io.internal.read.xgmml.MetadataParser;
 import org.cytoscape.io.internal.read.xgmml.ObjectType;
 import org.cytoscape.io.internal.read.xgmml.ObjectTypeMap;
 import org.cytoscape.io.internal.read.xgmml.ParseState;
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -276,6 +277,7 @@ public class AttributeValueUtil {
         String type = atts.getValue("type");
         ObjectType objType = typeMap.getType(type);
         Object obj = getTypedAttributeValue(objType, atts);
+        CyColumn column = row.getTable().getColumn(name);
 
         switch (objType) {
             case BOOLEAN:
@@ -290,7 +292,6 @@ public class AttributeValueUtil {
             case STRING:
                 if (obj != null) setAttribute(row, name, (String) obj);
                 break;
-
             // We need to be *very* careful. Because we duplicate attributes for
             // each network we write out, we wind up reading and processing each
             // attribute multiple times, once for each network. This isn't a problem
@@ -299,10 +300,8 @@ public class AttributeValueUtil {
             // must make sure to clear out any existing values before we parse.
             case LIST:
                 manager.currentAttributeID = name;
-                
-                if (row.getTable().getColumn(name) != null && row.getTable().getColumn(name).getType() == List.class)
+                if (column != null && List.class.isAssignableFrom(column.getType()))
                     row.set(name, null);
-                
                 return ParseState.LISTATT;
         }
         

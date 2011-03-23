@@ -53,14 +53,13 @@ import org.cytoscape.work.TaskIterator;
  */
 public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFactory {
 
-    private final RenderingEngineManager       renderingEngineManager;
-    private VisualStyleFactory                 styleFactory;
-    private VisualMappingManager               visMappingManager;
-    private final VisualMappingFunctionFactory discreteMappingFactory;
-    private XGMMLParser                        parser;
-    private ReadDataManager                    readDataManager;
-    private AttributeValueUtil                 attributeValueUtil;
-    private CyProperty<Properties>             properties;
+    private final RenderingEngineManager renderingEngineManager;
+    private VisualStyleFactory styleFactory;
+    private VisualMappingManager visMappingManager;
+    private XGMMLParser parser;
+    private ReadDataManager readDataManager;
+    private AttributeValueUtil attributeValueUtil;
+    private CyProperty<Properties> properties;
 
     public XGMMLNetworkViewReaderFactory(CyFileFilter filter,
                                          RenderingEngineManager renderingEngineManager,
@@ -79,7 +78,6 @@ public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFact
         this.attributeValueUtil = attributeValueUtil;
         this.styleFactory = styleFactory;
         this.visMappingManager = visMappingManager;
-        this.discreteMappingFactory = discreteMappingFactory;
         this.parser = parser;
         this.properties = properties;
     }
@@ -87,7 +85,6 @@ public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFact
     public TaskIterator getTaskIterator() {
         return new TaskIterator(new XGMMLNetworkViewReader(inputStream, renderingEngineManager, cyNetworkViewFactory,
                                                            cyNetworkFactory, readDataManager, attributeValueUtil,
-                                                           styleFactory, visMappingManager, discreteMappingFactory,
-                                                           parser, properties));
+                                                           styleFactory, visMappingManager, parser, properties));
     }
 }

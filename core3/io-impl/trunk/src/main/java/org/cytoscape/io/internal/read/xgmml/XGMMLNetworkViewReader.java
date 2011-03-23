@@ -38,6 +38,7 @@ package org.cytoscape.io.internal.read.xgmml;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Stroke;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -51,7 +52,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.cytoscape.io.internal.read.AbstractNetworkViewReader;
-import org.cytoscape.io.internal.read.VisualStyleBuilder;
 import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
 import org.cytoscape.model.CyEdge;
@@ -68,7 +68,6 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
-import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
@@ -100,7 +99,6 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
     private final AttributeValueUtil attributeValueUtil;
     private final VisualStyleFactory styleFactory;
     private final VisualMappingManager visMappingManager;
-    private final VisualMappingFunctionFactory discreteMappingFactory;
     private final CyProperty<Properties> properties;
 
     private VisualLexicon lexicon;
@@ -114,23 +112,22 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
     /**
      * Constructor.
      */
-    public XGMMLNetworkViewReader(InputStream inputStream,
-                                  RenderingEngineManager renderingEngineManager,
-                                  CyNetworkViewFactory cyNetworkViewFactory,
-                                  CyNetworkFactory cyNetworkFactory,
-                                  ReadDataManager readDataManager,
-                                  AttributeValueUtil attributeValueUtil,
-                                  VisualStyleFactory styleFactory,
-                                  VisualMappingManager visMappingManager,
-                                  VisualMappingFunctionFactory discreteMappingFactory,
-                                  XGMMLParser parser,
-                                  CyProperty<Properties> properties) {
+    public XGMMLNetworkViewReader(final InputStream inputStream,
+                                  final RenderingEngineManager renderingEngineManager,
+                                  final CyNetworkViewFactory cyNetworkViewFactory,
+                                  final CyNetworkFactory cyNetworkFactory,
+                                  final ReadDataManager readDataManager,
+                                  final AttributeValueUtil attributeValueUtil,
+                                  final VisualStyleFactory styleFactory,
+                                  final VisualMappingManager visMappingManager,
+                                  //                                  final VisualMappingFunctionFactory discreteMappingFactory,
+                                  final XGMMLParser parser,
+                                  final CyProperty<Properties> properties) {
         super(inputStream, cyNetworkViewFactory, cyNetworkFactory);
         this.readDataManager = readDataManager;
         this.attributeValueUtil = attributeValueUtil;
         this.styleFactory = styleFactory;
         this.visMappingManager = visMappingManager;
-        this.discreteMappingFactory = discreteMappingFactory;
         this.parser = parser;
         this.properties = properties;
         this.lexicon = renderingEngineManager.getDefaultVisualLexicon();
@@ -143,7 +140,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         tm.setProgress(-1.0);
 
         readDataManager.initAllData();
-        this.readDataManager.setNetwork(cyNetworkFactory.getInstance());
+        readDataManager.setNetwork(cyNetworkFactory.getInstance());
 
         try {
             this.readXGMML();
@@ -219,45 +216,35 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         // style builder
         // whether to create the override attributes or not
         boolean buildStyle = vsbSwitch == null || vsbSwitch.equals("on");
-        VisualStyleBuilder styleBuilder = null;
 
-        if (buildStyle)
-            styleBuilder = new VisualStyleBuilder(readDataManager.getNetworkName(), styleFactory, visMappingManager,
-                                                  discreteMappingFactory, cyNetworkFactory.getInstance()
-                                                          .getDefaultNodeTable(), cyNetworkFactory.getInstance()
-                                                          .getDefaultEdgeTable());
-
+        // Nodes and edges
         if (view.getModel().getNodeCount() > 0) {
-            // Layout nodes and edges
-            layoutNodes(styleBuilder);
-            layoutEdges(styleBuilder);
+            layoutNodes(buildStyle);
+            layoutEdges(buildStyle);
         }
 
+        // Network Title
         CyRow netRow = view.getModel().getCyRow();
-
         String netName = readDataManager.getNetworkName();
         netRow.set(NODE_NAME_ATTR_LABEL, netName);
-
-        if (styleBuilder != null) {
-            // Network name
-            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_TITLE, netName);
+        
+        if (buildStyle) {
+            VisualStyle defStyle = visMappingManager.getDefaultVisualStyle();
+            VisualStyle style = styleFactory.getInstance(defStyle);
+            style.setTitle(netName + " style");
+            visualstyles = new VisualStyle[] { style };
 
             // Background color
             Color bgColor = readDataManager.getBackgroundColor();
-            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT, bgColor);
+            style.setDefaultValue(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT, bgColor);
 
-            // Create and set the visual style
-            VisualStyle style = styleBuilder.buildStyle();
-            visualstyles = new VisualStyle[] { style };
-
-            // Add and apply the new style
             visMappingManager.addVisualStyle(style);
             visMappingManager.setVisualStyle(style, view);
             style.apply(view);
             view.updateView();
         }
 
-        // Graph center and zoom must be set to the view directly
+        // Network center and zoom
         view.setVisualProperty(TwoDVisualLexicon.NETWORK_SCALE_FACTOR, readDataManager.getGraphZoom());
         view.setVisualProperty(TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION, readDataManager.getGraphCenterX());
         view.setVisualProperty(TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION, readDataManager.getGraphCenterY());
@@ -265,15 +252,10 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 
     /**
      * Layout nodes if view is available.
-     * 
-     * @param myView
-     *            GINY's graph view object for the current network.
-     * @param graphStyle
-     *            the visual style creator object
-     * @param buildStyle
-     *            if true, build the graphical style
+     *
+     * @param buildStyle if true, build the graphical style
      */
-    private void layoutNodes(final VisualStyleBuilder styleBuilder) {
+    private void layoutNodes(boolean buildStyle) {
         // Graphics (defaults & mappings)
         final Map<CyNode, Attributes> graphicsMap = readDataManager.getNodeGraphics();
 
@@ -283,7 +265,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
             View<CyNode> nv = view.getNodeView(node);
 
             if (nv != null) {
-                layoutNodeGraphics(attr, nv, styleBuilder);
+                layoutNodeGraphics(attr, nv, buildStyle);
             }
         }
     }
@@ -291,19 +273,11 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
     /**
      * Extract node graphics information from JAXB object.<br>
      * 
-     * @param attr
-     *            Graphics information for a node as JAXB object.
-     * @param nodeView
-     *            Actual node view for the target node.
-     * @param graphStyle
-     *            the visual style creator object
-     * @param buildStyle
-     *            if true, build the graphical style
-     * 
+     * @param attr Graphics information for a node as JAXB object.
+     * @param nodeView Actual node view for the target node.
+     * @param buildStyle if true, build the graphical style
      */
-    private void layoutNodeGraphics(final Attributes attr,
-                                    final View<CyNode> nodeView,
-                                    final VisualStyleBuilder styleBuilder) {
+    private void layoutNodeGraphics(final Attributes attr, final View<CyNode> nodeView, boolean buildStyle) {
         // Location and size of the node
         double x = attributeValueUtil.getDoubleAttribute(attr, "x");
         double y = attributeValueUtil.getDoubleAttribute(attr, "y");
@@ -311,20 +285,15 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, x);
         nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, y);
 
-        layoutGraphics(attr, nodeView, styleBuilder);
+        layoutGraphics(attr, nodeView, buildStyle);
     }
 
     /**
      * Layout edges if view is available.
      * 
-     * @param myView
-     *            GINY's graph view object for the current network.
-     * @param graphStyle
-     *            the visual style creator object
-     * @param buildStyle
-     *            if true, build the graphical style
+     * @param buildStyle if true, build the graphical style
      */
-    private void layoutEdges(final VisualStyleBuilder styleBuilder) {
+    private void layoutEdges(boolean buildStyle) {
         View<CyEdge> ev = null;
         Map<CyEdge, Attributes> edgeGraphicsMap = readDataManager.getEdgeGraphics();
 
@@ -332,7 +301,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
             ev = view.getEdgeView(edge);
 
             if ((edgeGraphicsMap != null) && (ev != null)) {
-                layoutEdgeGraphics(edgeGraphicsMap.get(edge), ev, styleBuilder);
+                layoutEdgeGraphics(edgeGraphicsMap.get(edge), ev, buildStyle);
             }
         }
     }
@@ -340,17 +309,13 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
     /**
      * Layout an edge using the stored graphics attributes
      * 
-     * @param attr
-     *            Graphics information for an edge as SAX attributes.
-     * @param edgeView
-     *            Actual edge view for the target edge.
-     * 
+     * @param attr Graphics information for an edge as SAX attributes.
+     * @param edgeView Actual edge view for the target edge.
+     * @param buildStyle if true, build the graphical style
      */
-    private void layoutEdgeGraphics(final Attributes attr,
-                                    final View<CyEdge> edgeView,
-                                    final VisualStyleBuilder styleBuilder) {
+    private void layoutEdgeGraphics(final Attributes attr, final View<CyEdge> edgeView, boolean buildStyle) {
 
-        layoutGraphics(attr, edgeView, styleBuilder);
+        layoutGraphics(attr, edgeView, buildStyle);
 
         // TODO missing styles:
         //        if (attributeValueUtil.getAttributeNS(attr, "curved", CY_NAMESPACE) != null) {
@@ -374,29 +339,24 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         //        }
     }
 
-    private void layoutGraphics(final Attributes attr,
-                                final View<? extends CyTableEntry> view,
-                                final VisualStyleBuilder styleBuilder) {
+    private void layoutGraphics(final Attributes attr, final View<? extends CyTableEntry> view, boolean buildStyle) {
 
         // The attributes of this view
         CyTableEntry model = view.getModel();
-        CyRow row = model.getCyRow();
         Class<?> type = (model instanceof CyNode) ? CyNode.class : CyEdge.class;
         List<GraphicsConverter<?>> converters = (type == CyNode.class) ? nodeConverters : edgeConverters;
 
         for (GraphicsConverter<?> conv : converters) {
+            if (!buildStyle && !conv.isBypass()) continue;
+
             String key = conv.getKey();
             VisualProperty vp = lexicon.lookup(type, key);
 
             if (vp != null) {
                 Object value = conv.getValue(attr, attributeValueUtil, vp);
 
-                if (value != null) {
-                    if (conv.isBypass()) {
-                        view.setLockedValue(vp, value);
-                    } else if (styleBuilder != null) {
-                        styleBuilder.addProperty(row, vp, value);
-                    }
+                if (value != null && !view.isValueLocked(vp)) {
+                    view.setLockedValue(vp, value);
                 }
             }
         }
@@ -405,8 +365,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
     /**
      * Create and layout the view.
      * 
-     * @param network
-     *            The network we just parsed.
+     * @param network The network we just parsed.
      */
     private void createView(CyNetwork network) {
         view = cyNetworkViewFactory.getNetworkView(network);
@@ -426,7 +385,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         nodeConverters.add(new GraphicsConverter<Color>("fill", Color.class));
         nodeConverters.add(new GraphicsConverter<Color>("outline", Color.class));
         nodeConverters.add(new GraphicsConverter<Double>("width", Double.class));
-        nodeConverters.add(new GraphicsConverter<Object>("borderLineType", Object.class));
+        nodeConverters.add(new GraphicsConverter<Stroke>("borderLineType", Stroke.class));
         nodeConverters.add(new GraphicsConverter<Font>("nodeLabelFont", Font.class, CY_NAMESPACE));
         nodeConverters.add(new GraphicsConverter<Integer>("nodeTransparency", Integer.class, CY_NAMESPACE));
         nodeConverters.add(new GraphicsConverter<Object>("type", Object.class));
@@ -438,6 +397,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         edgeConverters.add(new GraphicsConverter<Object>("targetArrow", Object.class, CY_NAMESPACE));
         edgeConverters.add(new GraphicsConverter<Font>("edgeLabelFont", Font.class, CY_NAMESPACE));
         edgeConverters.add(new GraphicsConverter<Integer>("edgeTransparency", Integer.class, CY_NAMESPACE));
+        edgeConverters.add(new GraphicsConverter<Stroke>("edgeLineType", Stroke.class, CY_NAMESPACE));
 
         // attr (bypass):
         // ----------------------------------
@@ -448,6 +408,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         nodeConverters.add(new GraphicsConverter<Color>("nodefillcolor", Color.class, true));
         nodeConverters.add(new GraphicsConverter<Color>("nodebordercolor", Color.class, true));
         nodeConverters.add(new GraphicsConverter<Double>("nodelinewidth", Double.class, true));
+        nodeConverters.add(new GraphicsConverter<Stroke>("nodelinestyle", Stroke.class, true));
         nodeConverters.add(new GraphicsConverter<Integer>("nodeopacity", Integer.class, true));
         nodeConverters.add(new GraphicsConverter<Font>("nodefont", Font.class, true));
         nodeConverters.add(new GraphicsConverter<Integer>("nodefontsize", Integer.class, true));
@@ -457,6 +418,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         nodeConverters.add(new GraphicsConverter<Double>("nodelabelwidth", Double.class, true));
 
         edgeConverters.add(new GraphicsConverter<Double>("edgelinewidth", Double.class, true));
+        edgeConverters.add(new GraphicsConverter<Stroke>("edgelinestyle", Stroke.class, true));
         edgeConverters.add(new GraphicsConverter<Color>("edgecolor", Color.class, true));
         edgeConverters.add(new GraphicsConverter<Integer>("edgeopacity", Integer.class, true));
         edgeConverters.add(new GraphicsConverter<Font>("edgefont", Font.class, true));
@@ -506,41 +468,32 @@ class GraphicsConverter<T> {
             if (type == Color.class) {
                 value = attributeValueUtil.getColorAttribute(attr, key);
             } else if (type == Font.class) {
-                String name = null;
-                boolean bold = false;
-                String sSize = null;
-
                 if (isBypass()) {
                     String s = attributeValueUtil.getAttribute(attr, key);
-
-                    if (s != null) {
-                        // e.g. "Monospaced,plain,12"
-                        name = s.replaceAll(",[a-z]+,d+", "");
-                        sSize = s.replaceAll("[^,]+,[a-z]+,", "");
-                        bold = s.matches("(?i)[^,]+,bold,[^,]+");
-                    }
+                    value = vp.parseSerializableString(s);
                 } else {
                     String s = attributeValueUtil.getAttributeNS(attr, key, namespace);
 
                     if (s != null) {
                         // e.g. "SansSerif.bold-0-14"
-                        name = s.replaceAll("(\\.[bB]old)?-\\d+(\\.\\d+)?-\\d+(\\.\\d+)?", "");
-                        bold = s.matches("(?i).*\\.bold-.*");
-                        sSize = s.replaceAll(".+-[^\\-]+-", "");
+                        // TODO: add this to FontTwoDVisaulProperty as well?
+                        String name = s.replaceAll("(\\.[bB]old)?-\\d+(\\.\\d+)?-\\d+(\\.\\d+)?", "");
+                        boolean bold = s.matches("(?i).*\\.bold-.*");
+                        String sSize = s.replaceAll(".+-[^\\-]+-", "");
+                        
+                        if (name != null) {
+                            int style = bold ? Font.BOLD : Font.PLAIN;
+                            int size = 12;
+
+                            try {
+                                size = Integer.parseInt(sSize);
+                            } catch (NumberFormatException nfe) {
+                                // TODO: log
+                            }
+
+                            value = new Font(name, style, size);
+                        }
                     }
-                }
-
-                if (name != null) {
-                    int style = bold ? Font.BOLD : Font.PLAIN;
-                    int size = 12;
-
-                    try {
-                        size = Integer.parseInt(sSize);
-                    } catch (NumberFormatException nfe) {
-                        // TODO: log
-                    }
-
-                    value = new Font(name, style, size);
                 }
             } else {
                 // String, Number or Object...

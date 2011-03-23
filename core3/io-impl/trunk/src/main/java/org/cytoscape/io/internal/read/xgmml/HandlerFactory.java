@@ -1,6 +1,5 @@
 package org.cytoscape.io.internal.read.xgmml;
 
-import static org.cytoscape.io.internal.read.xgmml.ParseState.COMPLEXATT;
 import static org.cytoscape.io.internal.read.xgmml.ParseState.EDGE;
 import static org.cytoscape.io.internal.read.xgmml.ParseState.EDGEATT;
 import static org.cytoscape.io.internal.read.xgmml.ParseState.EDGEBEND;
@@ -10,8 +9,6 @@ import static org.cytoscape.io.internal.read.xgmml.ParseState.GRAPH;
 import static org.cytoscape.io.internal.read.xgmml.ParseState.GROUP;
 import static org.cytoscape.io.internal.read.xgmml.ParseState.LISTATT;
 import static org.cytoscape.io.internal.read.xgmml.ParseState.LISTELEMENT;
-import static org.cytoscape.io.internal.read.xgmml.ParseState.MAPATT;
-import static org.cytoscape.io.internal.read.xgmml.ParseState.MAPELEMENT;
 import static org.cytoscape.io.internal.read.xgmml.ParseState.NETATT;
 import static org.cytoscape.io.internal.read.xgmml.ParseState.NODE;
 import static org.cytoscape.io.internal.read.xgmml.ParseState.NODEATT;
@@ -24,8 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
-import org.cytoscape.io.internal.read.xgmml.handler.HandleComplexAttribute;
-import org.cytoscape.io.internal.read.xgmml.handler.HandleComplexAttributeDone;
 import org.cytoscape.io.internal.read.xgmml.handler.HandleEdge;
 import org.cytoscape.io.internal.read.xgmml.handler.HandleEdgeAttribute;
 import org.cytoscape.io.internal.read.xgmml.handler.HandleEdgeGraphics;
@@ -39,8 +34,6 @@ import org.cytoscape.io.internal.read.xgmml.handler.HandleGroupDone;
 import org.cytoscape.io.internal.read.xgmml.handler.HandleGroupNode;
 import org.cytoscape.io.internal.read.xgmml.handler.HandleListAttribute;
 import org.cytoscape.io.internal.read.xgmml.handler.HandleListAttributeDone;
-import org.cytoscape.io.internal.read.xgmml.handler.HandleMapAttribute;
-import org.cytoscape.io.internal.read.xgmml.handler.HandleMapAttributeDone;
 import org.cytoscape.io.internal.read.xgmml.handler.HandleNetworkAttribute;
 import org.cytoscape.io.internal.read.xgmml.handler.HandleNode;
 import org.cytoscape.io.internal.read.xgmml.handler.HandleNodeAttribute;
@@ -143,10 +136,7 @@ public class HandlerFactory {
 			{ EDGEBEND, "att", EDGEHANDLE, new HandleEdgeHandle() },
 			{ EDGEHANDLE, "att", EDGEHANDLE, new HandleEdgeHandle() },
 			{ LISTATT, "att", LISTELEMENT, new HandleListAttribute() },
-			{ LISTELEMENT, "att", LISTELEMENT, new HandleListAttribute() },
-			{ MAPATT, "att", MAPELEMENT, new HandleMapAttribute() },
-			{ MAPELEMENT, "att", MAPELEMENT, new HandleListAttribute() },
-			{ COMPLEXATT, "att", COMPLEXATT, new HandleComplexAttribute() }, };
+			{ LISTELEMENT, "att", LISTELEMENT, new HandleListAttribute() } };
 
 	/**
 	 * End tag parse table. This table handles calling methods on end tags under
@@ -161,17 +151,11 @@ public class HandlerFactory {
 			{ RDFDESC, "title", RDFDESC, new HandleRDFTitle() },
 			{ RDFDESC, "source", RDFDESC, new HandleRDFSource() },
 			{ RDFDESC, "format", RDFDESC, new HandleRDFFormat() },
-			// Special handling for group completion
 			{ GROUP, "graph", NONE, new HandleGroupDone() },
-			// Special handling for edge handles
 			{ EDGEHANDLE, "att", EDGEBEND, new HandleEdgeHandleDone() },
 			{ EDGEBEND, "att", EDGEBEND, new HandleEdgeHandleList() },
-			// Special handling for complex attributes
-			{ COMPLEXATT, "att", COMPLEXATT, new HandleComplexAttributeDone() },
 			{ GRAPH, "graph", NONE, new HandleGraphDone() },
-
-			{ LISTATT, "att", NONE, new HandleListAttributeDone() },
-			{ MAPATT, "att", NONE, new HandleMapAttributeDone() }, };
+			{ LISTATT, "att", NONE, new HandleListAttributeDone() } };
 
 	public SAXState getStartHandler(ParseState currentState, String tag) {
 		if (startParseMap.get(currentState) != null)

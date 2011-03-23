@@ -10,9 +10,6 @@ public enum ParseState {
     // Types of attributes that require special handling
     LISTATT("List Attribute"),
     LISTELEMENT("List Element"),
-    MAPATT("Map Attribute"),
-    MAPELEMENT("Map Element"),
-    COMPLEXATT("Complex Attribute"),
     NODEGRAPHICS("Node Graphics"),
     EDGEGRAPHICS("Edge Graphics"),
 

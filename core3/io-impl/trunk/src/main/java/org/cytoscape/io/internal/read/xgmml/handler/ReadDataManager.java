@@ -38,8 +38,7 @@ public class ReadDataManager {
     /* Map of XML ID's to nodes */
     protected HashMap<String, CyNode> idMap;
 
-    // Groups might actually recurse on us, so we need to
-    // maintain a stack
+    /* Groups might actually recurse on us, so we need to maintain a stack */
     protected Stack<CyNode> groupStack;
 
     protected CyNode currentNode;
@@ -52,16 +51,6 @@ public class ReadDataManager {
     protected CyRow currentAttributes;
     protected String objectTarget;
 
-    /* Complex attribute data */
-    protected int level = 0;
-    protected int numKeys = 0;
-    protected Map complexMap[];
-    protected Object complexKey[];
-    protected byte[] attributeDefinition;
-    protected byte valueType;
-    protected boolean complexAttributeDefined;
-    // protected MultiHashMap mhm = null;
-
     /* Edge handle list */
     protected List<String> handleList;
     /* X handle */
@@ -70,7 +59,6 @@ public class ReadDataManager {
     protected String edgeBendY;
 
     protected List<Object> listAttrHolder;
-    protected Map<String, Object> mapAttrHolder;
     protected CyNetwork network;
 
     /*
@@ -125,15 +113,6 @@ public class ReadDataManager {
         currentAttributeID = null;
         currentAttributes = null;
         objectTarget = null;
-
-        /* Complex attribute data */
-        level = 0;
-        numKeys = 0;
-        complexMap = null;
-        complexKey = null;
-        attributeDefinition = null;
-        valueType = (byte) 4;
-        complexAttributeDefined = false;
 
         /* Edge handle list */
         handleList = null;

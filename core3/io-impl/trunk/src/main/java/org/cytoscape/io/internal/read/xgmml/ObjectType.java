@@ -1,20 +1,19 @@
 package org.cytoscape.io.internal.read.xgmml;
 
 public enum ObjectType {
-	NONE("none"), STRING("string"), BOOLEAN("boolean"), REAL("real"), INTEGER(
-			"integer"), LIST("list"), MAP("map"), COMPLEX("complex");
+    NONE("none"), STRING("string"), BOOLEAN("boolean"), REAL("real"), INTEGER("integer"), LIST("list");
 
-	private String name;
+    private String name;
 
-	private ObjectType(String s) {
-		name = s;
-	}
-	
-	public String getName() {
-	    return name;
-	}
+    private ObjectType(String s) {
+        name = s;
+    }
 
-	public String toString() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
+
+    public String toString() {
+        return name;
+    }
 }
