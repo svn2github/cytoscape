@@ -169,7 +169,7 @@ public class BasicCyFileFilter implements CyFileFilter {
 	/**
 	 * Returns a string containing the specified number of lines from the
 	 * beginning of the file.  This is useful for testing input streams. 
-	 * @returns a string containing the specified number of lines from the
+	 * @return a string containing the specified number of lines from the
 	 * beginning of the file.
 	 */
 	protected final String getHeader(InputStream stream, int numLines) {
