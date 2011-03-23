@@ -50,9 +50,6 @@
 	(like determining which menu to put the service in).
 	-->
 
-
-
-
 	<osgi:service id="importAttributeTableReaderFactoryService_xls" ref="importAttributeTableReaderFactory_xls"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>
@@ -71,14 +68,4 @@
 		</osgi:service-properties>		
 	</osgi:service>	
 
-<!-- 
-	<osgi:service id="ImportNetworkTableTaskFactoryService" ref="importNetworkTableTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
-		<osgi:service-properties>
-			<entry key="title" value="From Table (Text/MS Excel)..." />
-			<entry key="preferredMenu" value="File.Import.Network" />
-			<entry key="menuGravity" value="2.2" />
-		</osgi:service-properties>		
-	</osgi:service>	
- -->	
 </beans>

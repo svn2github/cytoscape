@@ -85,28 +85,4 @@
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
 		<constructor-arg value="file_format_xls" />
 	</bean>
-
-
-
-	<!-- XXXXXXXXXXXXXXXX Network import should be in the same pattern as attribute import XXXXXXXXX -->
-	<!-- 
-	<bean id="importNetworkTableTaskFactory" 
-			class="org.cytoscape.tableimport.internal.ImportNetworkTableTaskFactory">
-		<constructor-arg ref="cytoscapeDesktopService" /> 
-		<constructor-arg ref="cyApplicationManagerRef" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="bookmarkServiceRef" />		
-		<constructor-arg ref="bookmarksUtilServiceRef" />	
-		<constructor-arg ref="guiTaskManagerServiceRef" />
-		<constructor-arg ref="cytoscapePropertiesServiceRef" />
-		<constructor-arg ref="cyTableManagerServiceRef" />
-		<constructor-arg ref="fileUtilService" />
-		<constructor-arg ref="openBrowserService" />
-		<constructor-arg ref="cyLayoutsServiceRef" />
-		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
-		<constructor-arg ref="cyNetworkFactoryServiceRef" />
-		<constructor-arg ref="cyNetworkNamingServiceRef" />
-		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
-	</bean>
- -->
 </beans>
