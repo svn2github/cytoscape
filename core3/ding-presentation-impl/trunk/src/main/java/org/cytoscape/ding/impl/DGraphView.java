@@ -2687,7 +2687,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		m_networkCanvas.setBounds(x, y, width, height);
 		m_foregroundCanvas.setBounds(x, y, width, height);
 	}
-
+	
 	public void setSize(Dimension d) {
 		m_networkCanvas.setSize(d);
 	}
@@ -2778,32 +2778,29 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 *
 	 */
 	@Override
-	public void networkVisualPropertySet(View<CyNetwork> target,
-			VisualProperty<?> vp, Object o) {
-
-		if (o == null)
-			return;
+	public void networkVisualPropertySet(View<CyNetwork> target, VisualProperty<?> vp, Object value) {
+		if (value == null) return;
 
 		if (vp == DVisualLexicon.NETWORK_NODE_SELECTION) {
-			boolean b = ((Boolean) o).booleanValue();
+			boolean b = ((Boolean) value).booleanValue();
 			if (b)
 				enableNodeSelection();
 			else
 				disableNodeSelection();
 		} else if (vp == DVisualLexicon.NETWORK_EDGE_SELECTION) {
-			boolean b = ((Boolean) o).booleanValue();
+			boolean b = ((Boolean) value).booleanValue();
 			if (b)
 				enableEdgeSelection();
 			else
 				disableEdgeSelection();
 		} else if (vp == TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT) {
-			setBackgroundPaint((Paint) o);
+			setBackgroundPaint((Paint) value);
 		} else if (vp == TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION) {
-			setCenter(((Double) o).doubleValue(), m_networkCanvas.m_yCenter);
+			setCenter(((Double) value).doubleValue(), m_networkCanvas.m_yCenter);
 		} else if (vp == TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION) {
-			setCenter(m_networkCanvas.m_xCenter, ((Double) o).doubleValue());
+			setCenter(m_networkCanvas.m_xCenter, ((Double) value).doubleValue());
 		} else if (vp == TwoDVisualLexicon.NETWORK_SCALE_FACTOR) {
-			setZoom(((Double) o).doubleValue());
+			setZoom(((Double) value).doubleValue());
 		}
 	}
 
@@ -2826,7 +2823,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		// TODO Auto-generated method stub
 
 	}
-
 	
 	/**
 	 * Common API for all rendering engines.

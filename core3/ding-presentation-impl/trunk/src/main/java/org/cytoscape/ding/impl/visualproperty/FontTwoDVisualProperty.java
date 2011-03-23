@@ -38,7 +38,6 @@ import java.awt.Font;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.cytoscape.ding.ArrowShape;
 import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRangeImpl;
 import org.cytoscape.view.model.Range;
@@ -68,6 +67,7 @@ public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
 		Font font = null;
 		
 		if (text != null) {
+			// e.g. "Monospaced,plain,12"
             String name = text.replaceAll("(\\.[bB]old)?,[a-zA-Z]+,\\d+(\\.\\d+)?", "");
 
             boolean bold = text.matches("(?i).*\\.bold,[a-zA-Z]+,.*");
