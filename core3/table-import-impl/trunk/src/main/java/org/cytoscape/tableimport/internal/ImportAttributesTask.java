@@ -46,7 +46,7 @@ public class ImportAttributesTask extends AbstractTask {
 	public void run(TaskMonitor taskMonitor) {
 		System.out.println("Entering ImportAttributeTableTask.run()...");
 		try {
-			this.importDialog.importButtonActionPerformed();
+			this.importDialog.importTable();
 			if (this.importDialog.getLoadTask() != null){
 				insertTasksAfterCurrentTask(this.importDialog.getLoadTask());				
 			}

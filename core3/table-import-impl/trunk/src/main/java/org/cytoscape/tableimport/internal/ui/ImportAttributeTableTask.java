@@ -24,42 +24,29 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.tableimport.internal.ui;
 
+import java.io.IOException;
 
-import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyTableReader;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.CyTableFactory;
-import org.cytoscape.tableimport.internal.reader.GraphReader;
+import org.cytoscape.tableimport.internal.reader.TextTableReader;
+import org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
+import org.cytoscape.task.MapNetworkAttrTask;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Map;
-import org.cytoscape.tableimport.internal.reader.TextTableReader;
-import org.cytoscape.io.read.CyTableReader;
-import org.cytoscape.task.MapNetworkAttrTask;
-import org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType;
 
-
-public class ImportAttributeTableTask extends AbstractTask implements CyTableReader {
+public class ImportAttributeTableTask extends AbstractTask implements
+		CyTableReader {
 
 	protected CyNetworkView[] cyNetworkViews;
 	protected VisualStyle[] visualstyles;
@@ -67,74 +54,77 @@ public class ImportAttributeTableTask extends AbstractTask implements CyTableRea
 	private final TextTableReader reader;
 	private final String source;
 
-	private CyTable[] cyTables; 
+	private CyTable[] cyTables;
 	private static int numImports = 0;
-	
+
 	/**
 	 * Creates a new ImportNetworkTask object.
-	 *
-	 * @param reader  DOCUMENT ME!
-	 * @param source  DOCUMENT ME!
+	 * 
+	 * @param reader
+	 *            DOCUMENT ME!
+	 * @param source
+	 *            DOCUMENT ME!
 	 */
-	public ImportAttributeTableTask(final TextTableReader reader, String source) {
+	public ImportAttributeTableTask(final TextTableReader reader, final String source) {
+		super();
+		this.setTaskIterator(new TaskIterator(this));
+		
 		this.reader = reader;
 		this.source = source;
 	}
 
+	// @Override
+	// public void runx(TaskMonitor tm) throws IOException {
+	// tm.setProgress(0.10);
+	// this.reader.setNetwork(network);
+	// if (this.cancelled){
+	// return;
+	// }
+	// this.reader.readTable();
+	// tm.setProgress(1.0);
+	// }
 
-	//@Override
-	//public void runx(TaskMonitor tm) throws IOException {
-	//	tm.setProgress(0.10);
-		//this.reader.setNetwork(network);
-	//	if (this.cancelled){
-	//		return;
-	//	}
-	//	this.reader.readTable();
-	//	tm.setProgress(1.0);
-	//}
-
-	
 	@Override
 	public void run(TaskMonitor tm) throws IOException {
-	
-		CyTable table = CytoscapeServices.tableFactory.createTable("AttrTable " + Integer.toString(numImports++), 
-									   "name", String.class, true, true);
-		cyTables = new CyTable[] { table };
 
-		try {
-			this.reader.readTable(table);
-			//loadAttributesInternal(table);
-		} finally 
-		{
-			//
+		CyTable table = CytoscapeServices.tableFactory.createTable("AttrTable "
+				+ Integer.toString(numImports++), "name", String.class, true,
+				true);
+		cyTables = new CyTable[] { table };
+		
+		final Class<? extends CyTableEntry> type = getMappingClass();
+		
+		if (CytoscapeServices.netMgr.getNetworkSet().size() > 0 && type != null) {
+			System.out.println("$$$$$$$ Mapping inserted.");
+			final MapNetworkAttrTask task = new MapNetworkAttrTask(type, table,
+					CytoscapeServices.netMgr, CytoscapeServices.appMgr);
+			insertTasksAfterCurrentTask(task);
 		}
 
-		Class<? extends CyTableEntry> type = getMappingClass();
+		this.reader.readTable(table);
+		// loadAttributesInternal(table);
 
-		if ( CytoscapeServices.netMgr.getNetworkSet().size() > 0 && type != null ) 
-			super.insertTasksAfterCurrentTask( new MapNetworkAttrTask(type,table,CytoscapeServices.netMgr,CytoscapeServices.appMgr) );
+		
 	}
 
-	//
+
 	private Class<? extends CyTableEntry> getMappingClass() {
-		
+
 		ObjectType type = reader.getMappingParameter().getObjectType();
-		
-		if (type == ObjectType.NODE){
+
+		if (type == ObjectType.NODE) {
 			return CyNode.class;
-		}
-		else if (type == ObjectType.EDGE){
+		} else if (type == ObjectType.EDGE) {
 			return CyEdge.class;
-		}
-		else if (type == ObjectType.NETWORK){
+		} else if (type == ObjectType.NETWORK) {
 			return CyNetwork.class;
 		}
-		return null; 
+		
+		return null;
 	}
-	
-	
+
 	@Override
-	public CyTable[] getCyTables(){
+	public CyTable[] getCyTables() {
 		return cyTables;
 	}
 }

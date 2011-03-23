@@ -100,6 +100,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.xml.bind.JAXBException;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -233,15 +234,15 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 	
 	private CyNetwork network;
 
-	private InputStream is;
-	private String fileType;
+	private final InputStream is;
+	private final String fileType;
+	
+	private Workbook workbook = null;
 	
 
 	public ImportTablePanel(int dialogType, InputStream is, String fileType)
 	    throws JAXBException, IOException {
 
-		// Default Attribute is node attr.
-		//selectedAttributes = Cytoscape.getNodeAttributes();
 		this.is = is;
 		this.fileType = fileType;
 		selectedAttributes = null;
@@ -286,8 +287,8 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 		this.attributeFileLabel.setVisible(false);
 		this.selectAttributeFileButton.setVisible(false);
 		this.targetDataSourceTextField.setVisible(false);
-		selectAttributeFileButtonActionPerformed(null);
 		
+		setPreviewPanel(null);
 	}
 	
 	
@@ -812,7 +813,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 			selectAttributeFileButton.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
-							selectAttributeFileButtonActionPerformed(evt);
+							setPreviewPanel(evt);
 						} catch (IOException e) {
 							
 							JOptionPane.showMessageDialog(ImportTablePanel.this, "<html>Could not read selected file.<p>See <b>Help->Error Dialog</b> for further details.</html>", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -1695,7 +1696,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 	 * @param evt
 	 * @throws Exception
 	 */
-	public void importButtonActionPerformed() throws Exception {
+	public void importTable() throws Exception {
 		if (checkDataSourceError() == false)
 			return;
 		
@@ -1860,28 +1861,13 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 				//		source.toString().endsWith(SupportedFileType.OOXML.getExtension())) {
 				if (this.fileType.equalsIgnoreCase(SupportedFileType.EXCEL.getExtension()) || 
 							this.fileType.equalsIgnoreCase(SupportedFileType.OOXML.getExtension())) {
-					/*
-					 * Read one sheet at a time
-					 */
-					//InputStream is = null;
-					Workbook wb = null;
-					
-					try {
-						//is = source.openStream();
-						wb = WorkbookFactory.create(this.is);
-					}
-					catch (Exception ex){
-						ex.printStackTrace();
-					}
-					finally {
-						//if (is != null) {
-						//	is.close();
-						//}
-					}
 
+					if(workbook == null)
+						throw new NullPointerException("Wrokbook object is null.");
+					
 					// Load all sheets in the table
-					for (int i = 0; i < wb.getNumberOfSheets(); i++) {
-						final Sheet sheet = wb.getSheetAt(i);
+					for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+						final Sheet sheet = workbook.getSheetAt(i);
 
 						loadAnnotation(new ExcelAttributeSheetReader(sheet, mapping,
 						                                             startLineNumber,
@@ -2146,7 +2132,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 		ontologyTextField.setText(ontologyComboBox.getSelectedItem().toString());
 	}
 
-	private void selectAttributeFileButtonActionPerformed(ActionEvent evt)
+	private void setPreviewPanel(ActionEvent evt)
 	    throws IOException {
 
 		/*
@@ -2582,7 +2568,24 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 		 */
 		final String commentChar = commentLineTextField.getText();
 		final int startLine = Integer.parseInt(startRowSpinner.getValue().toString());
-		previewPanel.setPreviewTable(this.is, this.fileType, sourceURL, delimiters, null, previewSize, commentChar,
+		
+		// Load data for preview.
+		
+		if((fileType.equalsIgnoreCase(
+				SupportedFileType.EXCEL.getExtension())
+				|| fileType.equalsIgnoreCase(
+						SupportedFileType.OOXML.getExtension())) && workbook == null) {
+			try {
+				workbook = WorkbookFactory.create(is);
+			} catch (InvalidFormatException e) {
+				e.printStackTrace();
+				throw new IllegalArgumentException("Could not read Excel file.  Maybe the file is broken?");
+			} finally {
+				if (is != null)
+					is.close();
+			}
+		}
+		previewPanel.setPreviewTable(workbook, this.is, this.fileType, sourceURL, delimiters, null, previewSize, commentChar,
 		                             startLine - 1);
 		
 		if (previewPanel.getPreviewTable() == null)

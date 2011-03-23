@@ -41,7 +41,7 @@ public class ImportNetworkTableTask extends AbstractTask {
 	public void run(TaskMonitor e) {
 		
 		try {
-			this.importDialog.importButtonActionPerformed();
+			this.importDialog.importTable();
 			if (this.importDialog.getLoadTask() != null){
 				insertTasksAfterCurrentTask(this.importDialog.getLoadTask());				
 			}

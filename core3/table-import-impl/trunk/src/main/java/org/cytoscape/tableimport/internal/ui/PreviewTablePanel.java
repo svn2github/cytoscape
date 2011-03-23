@@ -679,7 +679,7 @@ public class PreviewTablePanel extends JPanel {
 	 *            TODO
 	 * @throws IOException
 	 */
-	public void setPreviewTable(InputStream is, String fileType, URL sourceURL, List<String> delimiters,
+	public void setPreviewTable(final Workbook wb, InputStream is, String fileType, URL sourceURL, List<String> delimiters,
 			TableCellRenderer renderer, int size, final String commentLineChar,
 			final int startLine) throws IOException {
 		
@@ -724,21 +724,7 @@ public class PreviewTablePanel extends JPanel {
 					|| this.fileType.equalsIgnoreCase(
 							SupportedFileType.OOXML.getExtension())) {
 			fileTypeLabel.setIcon(SPREADSHEET_ICON.getIcon());
-			fileTypeLabel.setText("Excel" + '\u2122' + " Workbook");
-
-			//InputStream is = null;
-			final Workbook wb;
-
-			try {
-				//is = sourceURL.openStream();
-				wb = WorkbookFactory.create(is);
-			} catch (InvalidFormatException e) {
-				e.printStackTrace();
-				throw new IllegalArgumentException("Could not read Excel file.  Maybe the file is broken?");
-			} finally {
-				//if (is != null)
-				//	is.close();
-			}
+			fileTypeLabel.setText("Excel" + '\u2122' + " Workbook");			
 
 			if (wb.getNumberOfSheets() == 0)
 				throw new IllegalStateException("No sheet found in the workbook.");
