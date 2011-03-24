@@ -249,7 +249,6 @@
 	<bean id="attrsDataReaderFactory" class="org.cytoscape.io.internal.read.datatable.CyAttributesReaderFactory">
 		<constructor-arg ref="attrsFilter" />
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
-		<constructor-arg ref="cyTableManagerServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
