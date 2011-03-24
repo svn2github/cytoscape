@@ -33,23 +33,23 @@
 // Create namespaces if not already defined:
 (function () {
     "use strict";
-
-    if (!this.org) {
-        this.org = {};
+    
+    if (typeof(window['org']) === 'undefined') {
+    	window['org'] = {};
     }
-    if (!this.org.cytoscapeweb) {
-        this.org.cytoscapeweb = {};
+    if (typeof(window.org['cytoscapeweb']) === 'undefined') {
+    	window.org['cytoscapeweb'] = {};
     }
-    if (!this.org.cytoscapeweb.demo) {
-    	this.org.cytoscapeweb.demo = {};
+    if (typeof(window.org.cytoscapeweb['demo']) === 'undefined') {
+    	window.org.cytoscapeweb['demo'] = {};
     }
 
     // ===[ Exporter ]==============================================================================
 
     // Create a global map to store all instances:
-    this._cytoscapeWebExporterInstances = { index: 0 };
+    window._cytoscapeWebExporterInstances = { index: 0 };
     	
-    this.org.cytoscapeweb.demo.Exporter = function (containerId, options) {
+    org.cytoscapeweb.demo.Exporter = function (containerId, options) {
         this.containerId = containerId;
 
         if (!options) { options = {}; }
@@ -95,9 +95,9 @@
     // ===[ Importer ]==============================================================================
     
     // Create a global map to store all instances:
-    this._cytoscapeWebImporterInstances = { index: 0 };
+    window._cytoscapeWebImporterInstances = { index: 0 };
     	
-    this.org.cytoscapeweb.demo.Importer = function (containerId, options) {
+    org.cytoscapeweb.demo.Importer = function (containerId, options) {
         this.containerId = containerId;
 
         if (!options) { options = {}; }
