@@ -1,0 +1,179 @@
+package org.cytoscape.cpath2.internal;
+
+import java.net.URL;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.undo.UndoableEdit;
+
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
+import org.cytoscape.cpath2.internal.biopax.BioPaxFactory;
+import org.cytoscape.cpath2.internal.cytoscape.MergeNetworkEdit;
+import org.cytoscape.cpath2.internal.mapping.MapCPathToCytoscape;
+import org.cytoscape.cpath2.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
+import org.cytoscape.cpath2.internal.task.MergeNetworkTaskFactory;
+import org.cytoscape.cpath2.internal.util.NetworkMergeUtil;
+import org.cytoscape.cpath2.internal.util.NetworkUtil;
+import org.cytoscape.cpath2.internal.view.DownloadDetails;
+import org.cytoscape.cpath2.internal.view.InteractionBundlePanel;
+import org.cytoscape.cpath2.internal.view.MergePanel;
+import org.cytoscape.cpath2.internal.view.PhysicalEntityDetailsPanel;
+import org.cytoscape.cpath2.internal.view.SearchBoxPanel;
+import org.cytoscape.cpath2.internal.view.SearchDetailsPanel;
+import org.cytoscape.cpath2.internal.view.SearchHitsPanel;
+import org.cytoscape.cpath2.internal.view.model.InteractionBundleModel;
+import org.cytoscape.cpath2.internal.view.model.PathwayTableModel;
+import org.cytoscape.cpath2.internal.web_service.CPathResponseFormat;
+import org.cytoscape.cpath2.internal.web_service.CPathWebService;
+import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.session.CyNetworkNaming;
+import org.cytoscape.util.swing.OpenBrowser;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.undo.UndoSupport;
+
+public class CPath2Factory {
+	private final CySwingApplication application;
+	private final TaskManager taskManager;
+	private final OpenBrowser openBrowser;
+	private final CyNetworkManager networkManager;
+	private final CyApplicationManager applicationManager;
+	private final CyNetworkViewManager networkViewManager;
+	private final CyNetworkViewReaderManager networkViewReaderManager;
+	private final CyNetworkNaming naming;
+	private final CyNetworkFactory networkFactory;
+	private final UndoSupport undoSupport;
+	private final BioPaxFactory bioPaxFactory;
+
+	public CPath2Factory(CySwingApplication application, TaskManager taskManager, OpenBrowser openBrowser, CyNetworkManager networkManager, CyApplicationManager applicationManager, CyNetworkViewManager networkViewManager, CyNetworkViewReaderManager networkViewReaderManager, CyNetworkNaming naming, CyNetworkFactory networkFactory, UndoSupport undoSupport, BioPaxFactory bioPaxFactory) {
+		this.application = application;
+		this.taskManager = taskManager;
+		this.openBrowser = openBrowser;
+		this.networkManager = networkManager;
+		this.applicationManager = applicationManager;
+		this.networkViewManager = networkViewManager;
+		this.networkViewReaderManager = networkViewReaderManager;
+		this.naming = naming;
+		this.networkFactory = networkFactory;
+		this.undoSupport = undoSupport;
+		this.bioPaxFactory = bioPaxFactory;
+	}
+	
+	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(CPathWebService webApi, long[] ids, CPathResponseFormat format, String networkTitle, CyNetwork networkToMerge) {
+		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, networkTitle, networkToMerge, this, bioPaxFactory);
+	}
+
+	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(
+			CPathWebService webApi, long[] ids, CPathResponseFormat format, String title) {
+		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, null, this, bioPaxFactory);
+	}
+
+	public SearchBoxPanel createSearchBoxPanel(CPathWebService webApi) {
+		return new SearchBoxPanel(webApi, this);
+	}
+
+	public OpenBrowser getOpenBrowser() {
+		return openBrowser;
+	}
+
+	public SearchHitsPanel createSearchHitsPanel(
+			InteractionBundleModel interactionBundleModel,
+			PathwayTableModel pathwayTableModel, CPathWebService webApi) {
+		return new SearchHitsPanel(interactionBundleModel, pathwayTableModel, webApi, this);
+	}
+
+	public MergePanel createMergePanel() {
+		return new MergePanel(this);
+	}
+
+	public CySwingApplication getCySwingApplication() {
+		return application;
+	}
+
+	public TaskManager getTaskManager() {
+		return taskManager;
+	}
+
+	public DownloadDetails createDownloadDetails(List<BasicRecordType> passedRecordList, String physicalEntityName) {
+		return new DownloadDetails(passedRecordList, physicalEntityName, this);
+	}
+
+	public JPanel createInteractionBundlePanel(InteractionBundleModel interactionBundleModel) {
+		return new InteractionBundlePanel(interactionBundleModel, this);
+	}
+
+	public InteractionBundlePanel createInteractionBundlePanel(
+			InteractionBundleModel interactionBundleModel, CyNetwork network,
+			JDialog dialog) {
+		return new InteractionBundlePanel(interactionBundleModel, network, dialog, this);
+	}
+
+	public NetworkMergeUtil getNetworkMergeUtil() {
+		return new NetworkMergeUtil(this);
+	}
+
+	public PhysicalEntityDetailsPanel createPhysicalEntityDetailsPanel(SearchHitsPanel searchHitsPanel) {
+		return new PhysicalEntityDetailsPanel(searchHitsPanel, this);
+	}
+
+	public SearchDetailsPanel createSearchDetailsPanel(
+			InteractionBundleModel interactionBundleModel,
+			PathwayTableModel pathwayTableModel) {
+		return new SearchDetailsPanel(interactionBundleModel, pathwayTableModel, this);
+	}
+
+	public CyNetworkManager getNetworkManager() {
+		return networkManager;
+	}
+
+	public CyApplicationManager getCyApplicationManager() {
+		return applicationManager;
+	}
+
+	public CyNetworkViewManager getCyNetworkViewManager() {
+		return networkViewManager;
+	}
+
+	public CyNetworkViewReaderManager getCyNetworkViewReaderManager() {
+		return networkViewReaderManager;
+	}
+
+	public CyNetworkNaming getCyNetworkNaming() {
+		return naming;
+	}
+
+	public Thread createNetworkUtil(String cpathRequest, CyNetwork network, boolean merging) {
+		return new NetworkUtil(cpathRequest, network, merging, this);
+	}
+
+	public MapCPathToCytoscape createMapCPathToCytoscape() {
+		return new MapCPathToCytoscape(this);
+	}
+
+	public CyNetworkFactory getCyNetworkFactory() {
+		return networkFactory;
+	}
+
+	public UndoSupport getUndoSupport() {
+		return undoSupport;
+	}
+
+	public TaskFactory createMergeNetworkTaskFactory(URL cpathURL, CyNetwork cyNetwork) {
+		return new MergeNetworkTaskFactory(cpathURL, cyNetwork, this);
+	}
+
+	public UndoableEdit createMergeNetworkEdit(CyNetwork cyNetwork, Collection<CyNode> cyNodes, Set<CyEdge> cyEdges) {
+		return new MergeNetworkEdit(cyNetwork, cyNodes, cyEdges, this);
+	}
+}
