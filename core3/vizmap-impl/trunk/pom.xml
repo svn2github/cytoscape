@@ -123,7 +123,7 @@
 		<dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>default-mappings</artifactId>
-            <version>3.0.0-alpha2-SNAPSHOT</version>
+            <version>3.0.0-alpha3-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 	</dependencies>

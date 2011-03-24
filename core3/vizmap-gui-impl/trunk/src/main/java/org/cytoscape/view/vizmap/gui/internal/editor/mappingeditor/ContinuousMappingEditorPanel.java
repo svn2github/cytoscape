@@ -127,8 +127,10 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 		
 		final String controllingAttrName = mapping.getMappingAttributeName();
 		final Class<?> attrType = attr.getColumn(controllingAttrName).getType();
-		if (attrType != Double.class)
-			throw new IllegalArgumentException("Cannot support attribute data type: " + attrType);
+		
+		logger.debug("Selected Attr Type is " + attrType);
+		if (Number.class.isAssignableFrom(attrType))
+			throw new IllegalArgumentException("Cannot support attribute data type.  Numerical values only: " + attrType);
 		
 		this.attr = attr;
 		
