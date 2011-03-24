@@ -748,7 +748,7 @@ public class PreviewTablePanel extends JPanel {
 			listDataTypeMap
 					.put(wb.getSheetName(0), initListDataTypes(newModel));
 			addTableTab(newModel, wb.getSheetName(0), curRenderer);
-		} else {
+		} else {// Should be text format "csv" or "tsv"
 			//if (isCytoscapeAttributeFile(sourceURL)) {
 			//	fileTypeLabel.setText("Cytoscape Attribute File");
 			//	fileTypeLabel.setIcon(new ImageIcon(getClass()
@@ -763,9 +763,10 @@ public class PreviewTablePanel extends JPanel {
 
 			//String[] urlParts = sourceURL.toString().split("/");
 			//final String tabName = urlParts[urlParts.length - 1];
-			//DataTypeUtil.guessTypes(newModel, tabName, dataTypeMap);
-			//listDataTypeMap.put(tabName, initListDataTypes(newModel));
-			//addTableTab(newModel, tabName, curRenderer);
+			String tabName = "newTable";
+			DataTypeUtil.guessTypes(newModel, tabName, dataTypeMap);
+			listDataTypeMap.put(tabName, initListDataTypes(newModel));
+			addTableTab(newModel, tabName, curRenderer);
 		}
 
 		//if (getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
