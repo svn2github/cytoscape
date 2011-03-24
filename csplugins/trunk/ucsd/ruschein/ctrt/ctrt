@@ -17,7 +17,9 @@ temp_pom_name = "temp_pom.xml"
 
 
 def PrintUsage():
-    print "usage: ctrt [--verbose] maven_project_directory"
+    print "usage: ctrt [--help | -h] [--verbose | -v] [--loop-count=count | -lcount]maven_project_directory"
+    print "       The loop count must be at least 20 for reasons having to do with the statistics that are"
+    print "       being generated."
     exit(-1)
 
 
@@ -154,6 +156,7 @@ def calcRanks(dataset1, dataset2):
 
 # Returns (significance,median(dataset1),median(dataset2)).  The difference in the medians is
 # significant is "significance" <= 0.05.
+# Note: This implementatn is based on http://en.wikipedia.org/wiki/Mann-whitney
 def MannWhitneyUTest(dataset1, dataset2):
     if len(dataset1) < 20:
         raise ValueError("dataset1 must contain at least 20 values!")
@@ -233,6 +236,9 @@ def ProcessArgs():
         elif opt in ("-l", "--loop-count"):
             try:
                 loop_count = int(arg)
+                if loop_count < 20:
+                    print "ctrt: Error: loop count argument must be at least 20!"
+                    PrintUsage()
             except exceptions.ValueError:
                 print "ctrt: " + arg + " is not a valid loop count!"
                 PrintUsage()
