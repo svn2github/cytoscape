@@ -18,7 +18,8 @@
 	<bean id="attrsTableFilter_txt" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
-				<value>txt</value>
+				<value>csv</value>
+				<value>tsv</value>
 			</set>
 		</constructor-arg>
 		<constructor-arg index="1">
