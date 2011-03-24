@@ -1875,7 +1875,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 				} else {
 					loadAnnotation(new DefaultAttributeTableReader(null, mapping,
 																   startLineNumber,
-																   null, importAll),
+																   null, importAll, this.is),
 																   null);
 																   //source.toString());
 				}
