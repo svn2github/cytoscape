@@ -51,7 +51,6 @@ import org.slf4j.LoggerFactory;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.tableimport.internal.util.URLUtil;
 
-
 /**
  * Basic text table reader for attributes.<br>
  *
@@ -83,7 +82,9 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	
 	// If this is on, import everything using ID as the key.
 	private boolean importAll = false;
-
+	
+	private InputStream is = null;
+	
 	/**
 	 * Constructor.<br>
 	 *
@@ -168,6 +169,20 @@ public class DefaultAttributeTableReader implements TextTableReader {
 		this.importAll = importAll;
 	}
 
+	public DefaultAttributeTableReader(final URL source, AttributeMappingParameters mapping,
+            final int startLineNumber, final String commentChar, boolean importAll,
+            InputStream is) {
+		this.source = source;
+		this.mapping = mapping;
+		this.startLineNumber = startLineNumber;
+		this.parser = new AttributeLineParser(mapping);
+		this.commentChar = commentChar;
+		this.importAll = importAll;
+
+		this.is = is;
+	}
+
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -187,12 +202,14 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	 * Read table from the data source.
 	 */
 	public void readTable(CyTable table) throws IOException {
-		InputStream is = null;
+		//InputStream is = null;
 
 		try {
 			BufferedReader bufRd = null;
 
-			is = URLUtil.getInputStream(source);
+			if (is == null){
+				is = URLUtil.getInputStream(source);				
+			}
 			try {
 				String line;
 				int lineCount = 0;
