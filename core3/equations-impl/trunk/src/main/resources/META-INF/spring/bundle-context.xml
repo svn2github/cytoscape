@@ -15,9 +15,9 @@
 
 	<bean id="interpreter" class="org.cytoscape.equations.internal.interpreter.InterpreterImpl" />
 
-	<bean id="compiler" class="org.cytoscape.equations.internal.EqnCompilerImpl">
+	<bean id="compiler" class="org.cytoscape.equations.internal.EquationCompilerImpl">
 		 <constructor-arg ref="parser" />
 	</bean>
 
-	<bean id="parser" class="org.cytoscape.equations.internal.EqnParserImpl" />
+	<bean id="parser" class="org.cytoscape.equations.internal.EquationParserImpl" />
 </beans>

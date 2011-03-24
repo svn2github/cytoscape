@@ -7,7 +7,6 @@
 
 	<!-- Services provided by this bundle -->
 
-	<osgi:service id="compilerService" ref="compiler" interface="org.cytoscape.equations.EqnCompiler" />
-
+	<osgi:service id="compilerService" ref="compiler" interface="org.cytoscape.equations.EquationCompiler" />
 	<osgi:service id="interpreterService" ref="interpreter" interface="org.cytoscape.equations.Interpreter" />
 </beans>
