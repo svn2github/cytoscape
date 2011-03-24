@@ -949,9 +949,12 @@ public class PreviewTablePanel extends JPanel {
 		try {
 			BufferedReader bufRd = null;
 
-			//is = URLUtil.getInputStream(sourceURL);
+			if (this.is == null){
+				this.is = URLUtil.getInputStream(sourceURL);				
+			}
+			
 			try {
-				bufRd = new BufferedReader(new InputStreamReader(is));
+				bufRd = new BufferedReader(new InputStreamReader(this.is));
 				/*
 				 * Generate reg. exp. for delimiter.
 				 */
@@ -1028,12 +1031,14 @@ public class PreviewTablePanel extends JPanel {
 					}
 				}
 			} finally {
-				if (bufRd != null) {
-					bufRd.close();
-				}
+				//Do not close this inputStream after use in preview Panel
+				//if (bufRd != null) {
+				//	bufRd.close();
+				//}
 			}
 		} finally {
-			if (is != null) {
+			// If the inputStream is passed in from parameter, do not close it
+			if (sourceURL != null && is != null) {
 				is.close();
 			}
 		}
