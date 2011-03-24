@@ -108,6 +108,12 @@ class EqnSupport {
 		if (columnType == Boolean.class && resultType == Double.class)
 			return (Double)result == 0.0 ? Boolean.FALSE : Boolean.TRUE;
 
+		if (columnType == Integer.class && resultType == Double.class)
+			return ((Double)result).intValue();
+
+		if (columnType == Integer.class && resultType == Long.class)
+			return ((Long)result).intValue();
+
 		throw new IllegalArgumentException("unexpected equation result type " + resultType
 						   + " for a column of type " + columnType + "!");
 	}

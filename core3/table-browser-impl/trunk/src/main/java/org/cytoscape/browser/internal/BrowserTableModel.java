@@ -442,7 +442,7 @@ public final class BrowserTableModel extends AbstractTableModel
 			return true;
 		if (columnType == String.class) // Anything can be trivially converted to a string.
 			return true;
-		if (columnType == Integer.class && eqnType == Long.class)
+		if (columnType == Integer.class && (eqnType == Long.class || eqnType == Double.class))
 			return true;
 		if (columnType == Double.class && eqnType == Long.class)
 			return true;
