@@ -2578,13 +2578,33 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 				e.printStackTrace();
 				throw new IllegalArgumentException("Could not read Excel file.  Maybe the file is broken?");
 			} finally {
-				if (is != null)
+				if (is != null) {
 					is.close();
+				}
+				
 			}
 		}
-		previewPanel.setPreviewTable(workbook, this.is, this.fileType, sourceURL, delimiters, null, previewSize, commentChar,
-		                             startLine - 1);
 		
+		boolean is_isClosed = false;
+		try {
+			this.is.available();
+		}
+		catch (Exception e){
+			is_isClosed = true;
+		}
+
+		// Mark the inputStream before preview
+		if (!is_isClosed){
+			this.is.mark(Integer.MAX_VALUE);
+		}
+		
+		previewPanel.setPreviewTable(workbook, this.is, this.fileType, sourceURL, delimiters, null, previewSize, commentChar,
+			                             startLine - 1);
+		// Reset the inputStream to the mark after preview
+		if (!is_isClosed){
+				this.is.reset();
+		}
+
 		if (previewPanel.getPreviewTable() == null)
 			return;
 
