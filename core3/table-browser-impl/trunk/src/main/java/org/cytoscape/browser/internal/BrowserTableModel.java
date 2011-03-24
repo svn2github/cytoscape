@@ -16,7 +16,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelEvent.*;
 
-import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.equations.Equation;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
@@ -39,12 +39,12 @@ public final class BrowserTableModel extends AbstractTableModel
 	private static final int MAX_INITIALLY_VSIBLE_ATTRS = 10;
 	private final JTable table;
 	private final CyTable attrs;
-	private final EqnCompiler compiler;
+	private final EquationCompiler compiler;
 	private final CyTableRowUpdateService tableRowUpdateService;
 	private boolean tableHasBooleanSelected;
 	private List<AttrNameAndVisibility> attrNamesAndVisibilities;
 
-	public BrowserTableModel(final JTable table, final CyTable attrs, final EqnCompiler compiler,
+	public BrowserTableModel(final JTable table, final CyTable attrs, final EquationCompiler compiler,
 				 final CyTableRowUpdateService tableRowUpdateService)
 	{
 		this.table = table;

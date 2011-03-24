@@ -67,7 +67,7 @@ import java.util.HashMap;
 
 import org.cytoscape.browser.internal.AttributeListModel;
 import org.cytoscape.browser.internal.BrowserTableModel;
-import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
@@ -112,13 +112,13 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JButton importButton = null;
 
 	private AttributeListModel attrListModel;
-	private final EqnCompiler compiler;
+	private final EquationCompiler compiler;
 	//private final CyTableManager tableManager;
 	private final TableTaskFactory deleteTableTaskFactoryService;
 	private final GUITaskManager guiTaskManagerServiceRef;
 	
 	public AttributeBrowserToolBar(final CyServiceRegistrar serviceRegistrar,
-				       final EqnCompiler compiler, final 
+				       final EquationCompiler compiler, final 
 				       TableTaskFactory deleteTableTaskFactoryService,
 				       GUITaskManager guiTaskManagerServiceRef)
 	{

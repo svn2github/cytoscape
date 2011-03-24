@@ -66,8 +66,8 @@ import org.cytoscape.browser.internal.BrowserTableModel;
 
 import org.cytoscape.equations.BooleanList;
 import org.cytoscape.equations.DoubleList;
-import org.cytoscape.equations.EqnCompiler;
-import org.cytoscape.equations.EqnParser;
+import org.cytoscape.equations.EquationCompiler;
+import org.cytoscape.equations.EquationParser;
 import org.cytoscape.equations.Equation;
 import org.cytoscape.equations.EquationUtil;
 import org.cytoscape.equations.Function;
@@ -110,11 +110,11 @@ public class FormulaBuilderDialog extends JDialog {
 	private ArrayList<Class> leadingArgs;
 	private ApplicationDomain applicationDomain;
 	private Stack<Integer> undoStack;
-	private final EqnCompiler compiler;
+	private final EquationCompiler compiler;
 	private final BrowserTableModel tableModel;
 	private final String targetAttrName;
 
-	public FormulaBuilderDialog(final EqnCompiler compiler,
+	public FormulaBuilderDialog(final EquationCompiler compiler,
 				    final BrowserTableModel tableModel, final Frame parent,
 	                            final String targetAttrName)
 	{
@@ -159,7 +159,7 @@ public class FormulaBuilderDialog extends JDialog {
 				}
 			});
 
-		final EqnParser parser = compiler.getParser();
+		final EquationParser parser = compiler.getParser();
 		final Set<Function> functions = parser.getRegisteredFunctions();
 		final String[] functionNames = new String[functions.size()];
 		int index = 0;
@@ -330,7 +330,7 @@ public class FormulaBuilderDialog extends JDialog {
 		for (final CyColumn column : tableModel.getAttributes().getColumns())
 			attribNamesAndTypes.put(column.getName(), column.getType());
 
-		final EqnParser parser = compiler.getParser();
+		final EquationParser parser = compiler.getParser();
 		if (!parser.parse("=" + expression, attribNamesAndTypes)) {
 			displayErrorMessage(parser.getErrorMsg());
 			return null;

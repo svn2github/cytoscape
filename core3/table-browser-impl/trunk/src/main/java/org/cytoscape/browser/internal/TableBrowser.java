@@ -16,7 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 import org.cytoscape.browser.ui.AttributeBrowserToolBar;
-import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
@@ -42,7 +42,7 @@ public class TableBrowser
 {
 	private final CyTableManager tableManager;
 	private final CyServiceRegistrar serviceRegistrar;
-	private final EqnCompiler compiler;
+	private final EquationCompiler compiler;
 	private final BrowserTable browserTable;
 	private final CyTableRowUpdateService tableRowUpdateService;
 	private final AttributeBrowserToolBar attributeBrowserToolBar;
@@ -53,7 +53,7 @@ public class TableBrowser
 	private final GUITaskManager guiTaskManagerServiceRef;
 	
 	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
-		     final EqnCompiler compiler, final OpenBrowser openBrowser,
+		     final EquationCompiler compiler, final OpenBrowser openBrowser,
 		     final CyNetworkManager networkManager,
 		     final CyTableRowUpdateService tableRowUpdateService, 
 		     final TableTaskFactory deleteTableTaskFactoryService,

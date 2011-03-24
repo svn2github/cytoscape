@@ -50,11 +50,12 @@ import javax.swing.table.TableModel;
 
 import org.cytoscape.browser.ui.FormulaBuilderDialog;
 import org.cytoscape.browser.util.HyperLinkOut;
-import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyColumn;
+
 
 public class BrowserTable extends JTable
 	implements MouseListener, ActionListener, MouseMotionListener
@@ -74,10 +75,10 @@ public class BrowserTable extends JTable
 	private JMenuItem openFormulaBuilderMenuItem = null;
 
 	private final OpenBrowser openBrowser;
-	private final EqnCompiler compiler;
+	private final EquationCompiler compiler;
 	private final PopupMenuHelper popupMenuHelper;
 
-	public BrowserTable(final OpenBrowser openBrowser, final EqnCompiler compiler,
+	public BrowserTable(final OpenBrowser openBrowser, final EquationCompiler compiler,
 			    final PopupMenuHelper popupMenuHelper)
 	{
 		this.openBrowser     = openBrowser;
