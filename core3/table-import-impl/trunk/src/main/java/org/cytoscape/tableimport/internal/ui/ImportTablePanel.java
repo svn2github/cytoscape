@@ -288,6 +288,21 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 		this.selectAttributeFileButton.setVisible(false);
 		this.targetDataSourceTextField.setVisible(false);
 		
+		//Case import network
+		if (this.dialogType == NETWORK_IMPORT) {
+			this.edgeRadioButton.setVisible(false);
+			this.nodeRadioButton.setVisible(false);
+		}
+
+		// Case import node/edge attribute
+		if (this.dialogType == SIMPLE_ATTRIBUTE_IMPORT) {
+			this.networkRadioButton.setVisible(false);
+			// we will handle edge attribute import late
+			this.edgeRadioButton.setVisible(false); 
+		}
+		
+		this.helpButton.setVisible(false);
+		
 		setPreviewPanel(null);
 	}
 	
