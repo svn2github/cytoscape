@@ -24,6 +24,7 @@ package org.cytoscapeweb.vis.data
 		 */
 		private var _nodesMap:Object;
 		
+		private var _parentId:String;
 		private var _bounds:Rectangle;
 		private var _leftMargin:Number;
 		private var _rightMargin:Number;
@@ -92,7 +93,18 @@ package org.cytoscapeweb.vis.data
 			_leftMargin = value;
 		}
 
+		/**
+		 * ID of the parent node containing this node sprite
+		 */
+		public function get parentId():String
+		{
+			return _parentId;
+		}
 		
+		public function set parentId(value:String):void
+		{
+			_parentId = value;
+		}
 		
 		
 		
@@ -102,6 +114,7 @@ package org.cytoscapeweb.vis.data
 		{
 			this._nodesMap = null;
 			this._bounds = null;
+			this._parentId = null;
 		}
 		
 		// ====================== [ PUBLIC FUNCTIONS ] =========================
@@ -140,13 +153,26 @@ package org.cytoscapeweb.vis.data
 		 */
 		public function addNode(ns:NodeSprite) : void
 		{
+			// check if the node is initialized
 			if (this._nodesMap != null)
 			{
 				// add the node to the child node list of this node
 				this._nodesMap[ns.data.id] = ns;
 			
 				// set the parent id of the added node
-				ns.data.parentId = this.data.id;
+				
+				if (ns is CompoundNodeSprite)
+				{
+					// if a CompoundNodeSprite instance is added set the 
+					// corresponding field for parent id.
+					(ns as CompoundNodeSprite).parentId = this.data.id; 
+				}
+				else
+				{
+					// TODO what to do if a NodeSprite is added? 
+					ns.data.parentId = this.data.id;
+				}
+				
 			}
 		}
 		
@@ -158,13 +184,31 @@ package org.cytoscapeweb.vis.data
 		 */ 
 		public function removeNode(ns:NodeSprite) : void
 		{
+			var parentId:String;
+			
+			if (ns is CompoundNodeSprite)
+			{
+				parentId = (ns as CompoundNodeSprite).parentId;
+			}
+			else
+			{
+				parentId = ns.data.id;
+			}
+			
 			// check if given node is a child of this compound
 			if (this._nodesMap != null &&
-				ns.data.parentId == this.data.id)
+				parentId == this.data.id)
 			{
 				// reset the parent id of the removed node
-				ns.data.parentId = null;
-			
+				if (ns is CompoundNodeSprite)
+				{
+					(ns as CompoundNodeSprite).parentId = null;
+				}
+				else
+				{
+					ns.data.parentId = null;
+				}
+				
 				// remove the node from the list of child nodes 
 				delete this._nodesMap[ns.data.id];
 			}
@@ -204,10 +248,6 @@ package org.cytoscapeweb.vis.data
 			// the new bounds
 			this.x = bounds.x + (bounds.width / 2);
 			this.y = bounds.y + (bounds.height / 2);
-			
-			trace("[ub] bounds: " + bounds);
-			trace("[ub] this._bounds: " + _bounds);
-			
 		}
 		
 		public function resetBounds() : void

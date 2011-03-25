@@ -415,7 +415,7 @@ package org.cytoscapeweb.view {
 						
 						// advance to the next parent node
 						targetNode = this.graphProxy.getNode(
-							targetNode.data.parentId);
+							(targetNode as CompoundNodeSprite).parentId);
 					}
 				}
 			}
@@ -809,6 +809,9 @@ package org.cytoscapeweb.view {
 					n.props.label.y += amountY;
 				}
 				
+				
+				var parentId:String;
+				
 				// update parent compound node(s) bounds if necessary
 				// if n is target node, then its parents may need to be updated.
 				// if n is a selected node, then other selected nodes' parents
@@ -820,11 +823,22 @@ package org.cytoscapeweb.view {
 				if (n == target ||
 					n.props.$selected)
 				{
-					ns = n
+					ns = n;
 					
-					while (ns.data.parentId != null)
+					if (ns is CompoundNodeSprite)
+					{
+						parentId = (ns as CompoundNodeSprite).parentId; 
+					}
+					else
+					{
+						// TODO we always use CompoundNodeSprite instances,
+						// so this condition will never be true
+						parentId = ns.data.parentId
+					}
+					
+					while (parentId != null)
 					{	
-						ns = this.graphProxy.getNode(ns.data.parentId);
+						ns = this.graphProxy.getNode(parentId);
 						
 						if ((ns != null) &&
 							(ns is CompoundNodeSprite))
@@ -841,10 +855,13 @@ package org.cytoscapeweb.view {
 								// render the compound node with the new bounds
 								ns.render();
 							}
+							
+							parentId = (ns as CompoundNodeSprite).parentId;
 						}
 						else
 						{
-							break;
+							// reached top, no more parent
+							parentId = null;
 						}
 					}
 				}

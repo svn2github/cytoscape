@@ -445,6 +445,7 @@ package org.cytoscapeweb.view {
 			var childMap:Object = new Object();
 			var childList:Array;
 			var node:NodeSprite;
+			var parentId:String;
 			
 			if (items != null)
 			{
@@ -504,14 +505,30 @@ package org.cytoscapeweb.view {
 							}
 						}
 						
+						if (ns is CompoundNodeSprite
+							&& (ns as CompoundNodeSprite).parentId != null)
+						{
+							parentId = (ns as CompoundNodeSprite).parentId;
+						}
+						else if (ns.data.parentId != null)
+						{
+							// TODO we always use CompoundNodeSprites, so
+							// this condition will never be true
+							parentId = ns.data.parentId;
+						}
+						else
+						{
+							parentId = null;
+						}
+						
 						// remove ns from its parent compound's children list 
 						// if it is in a compound
-						
-						if (ns.data.parentId != null)
+											
+						if (parentId != null)
 						{
 							// get the parent node
-							cNodeSprite = this.graphProxy.getNode(
-								ns.data.parentId) as CompoundNodeSprite;
+							cNodeSprite = this.graphProxy.getNode(parentId)
+								as CompoundNodeSprite;
 							
 							// remove current node from the compound node
 							if (cNodeSprite != null)

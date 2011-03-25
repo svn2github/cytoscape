@@ -70,7 +70,6 @@ package org.cytoscapeweb.model.converters {
         public static const TARGET:String = "target";
         public static const DIRECTED:String = "directed";
         public static const NETWORK:String = "network";
-		public static const PARENT_ID:String = "parentId";
 		
         private static const NODE_ATTR:Object = {
             id: 1
@@ -188,16 +187,16 @@ package org.cytoscapeweb.model.converters {
 			// id information set by the readData function.
 			for each (cns in nodes)
 			{
-				if (cns.data.parentId != null)
+				if (cns.parentId != null)
 				{
-					parent = (lookup[cns.data.parentId] as CompoundNodeSprite); 
+					parent = (lookup[cns.parentId] as CompoundNodeSprite); 
 					
 					// add the current compound node as a child
 					parent.addNode(cns);
 					
 					// TODO:debug
 					trace("Node " + cns.data.id +
-						" added to " + cns.data.parentId);
+						" added to " + cns.parentId);
 				}
 			}
 			
@@ -264,7 +263,7 @@ package org.cytoscapeweb.model.converters {
 				// update parent id of the current node
 				if (parentId != null)
 				{
-					obj[PARENT_ID] = parentId;
+					cns.parentId = parentId;
 				}
 				
 				// add the node to the array of compound nodes

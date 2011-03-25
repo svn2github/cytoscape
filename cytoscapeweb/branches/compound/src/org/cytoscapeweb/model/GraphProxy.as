@@ -878,26 +878,53 @@ package org.cytoscapeweb.model {
             }
         }
         
-        public function getDataAsText(format:String="xgmml", options:Object=null):String {
-            var out:IDataOutput, nodesTable:DataTable, edgesTable:DataTable, dtSet:DataSet;
-            format = StringUtil.trim(format.toLowerCase());
-                        
-            if (format === "xgmml") {
-                nodesTable = new GraphicsDataTable(graphData.nodes, nodesSchema);
-                edgesTable = new GraphicsDataTable(graphData.group(Groups.REGULAR_EDGES), edgesSchema);
-                dtSet = new DataSet(nodesTable, edgesTable);
-                out = new XGMMLConverter(configProxy.visualStyle).write(dtSet);
-            } else {
-                nodesTable = new DataTable(graphData.nodes.toDataArray(), nodesSchema);
-                edgesTable = new DataTable(graphData.group(Groups.REGULAR_EDGES).toDataArray(), edgesSchema);
-                dtSet = new DataSet(nodesTable, edgesTable);
+        public function getDataAsText(format:String="xgmml", options:Object=null):String
+		{
+            var out:IDataOutput,
+				nodesTable:DataTable,
+				edgesTable:DataTable,
+				dtSet:DataSet;
+            
+			format = StringUtil.trim(format.toLowerCase());
 
-                if (format === "graphml") {
-                    out = new GraphMLConverter().write(dtSet);
-                } else {
-                    var interaction:String =  options != null ? options.interactionAttr : null;
-                    out = new SIFConverter(interaction).write(dtSet);
-                }
+            if (format === "xgmml" ||
+				format === "graphml")
+			{
+				// GraphicsDataTable is needed for both graphML and XGMML
+				// formats, since we also require the information contained
+				// in the DataSprite instances in addition to the raw data.
+				
+                nodesTable = new GraphicsDataTable(graphData.nodes,
+					nodesSchema);
+				
+                edgesTable = new GraphicsDataTable(
+					graphData.group(Groups.REGULAR_EDGES), edgesSchema);
+				
+                dtSet = new DataSet(nodesTable, edgesTable);
+				
+				if (format === "xgmml")
+				{
+                	out = new XGMMLConverter(
+						configProxy.visualStyle).write(dtSet);
+				}
+				else
+				{
+					out = new GraphMLConverter().write(dtSet);
+				}
+            }
+			else // convert to SIF (TODO: is it possible to support compounds?)
+			{
+                nodesTable = new DataTable(graphData.nodes.toDataArray(),
+					nodesSchema);
+				
+				edgesTable = new DataTable(
+					graphData.group(Groups.REGULAR_EDGES).toDataArray(),
+						edgesSchema);
+				
+                dtSet = new DataSet(nodesTable, edgesTable);
+                
+				var interaction:String =  options != null ? options.interactionAttr : null;
+				out = new SIFConverter(interaction).write(dtSet);
             }
 
             return "" + out;

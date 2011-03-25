@@ -34,13 +34,19 @@ package org.cytoscapeweb.model.converters {
 	import flare.data.DataTable;
 	import flare.data.DataUtil;
 	import flare.data.converters.IDataConverter;
+	import flare.vis.data.DataSprite;
+	import flare.vis.data.EdgeSprite;
+	import flare.vis.data.NodeSprite;
 	
 	import flash.utils.ByteArray;
 	import flash.utils.IDataInput;
 	import flash.utils.IDataOutput;
 	
+	import org.cytoscapeweb.model.GraphProxy;
+	import org.cytoscapeweb.model.data.GraphicsDataTable;
 	import org.cytoscapeweb.util.Utils;
 	import org.cytoscapeweb.util.methods.$each;
+	import org.cytoscapeweb.vis.data.CompoundNodeSprite;
 
 	/**
 	 * Converts data between GraphML markup and flare DataSet instances.
@@ -132,8 +138,43 @@ package org.cytoscapeweb.model.converters {
 			// graph.@[EDGEDEF] = ed==DIRECTED ? DIRECTED : UNDIRECTED;
 			graph.@[EDGEDEF] = ed ? DIRECTED : UNDIRECTED;
 			// ############################################
-			addData(graph, ds.nodes.data, ds.nodes.schema, NODE, NODE_ATTR);
-			addData(graph, ds.edges.data, ds.edges.schema, EDGE, EDGE_ATTR);
+			//addData(graph, ds.nodes.data, ds.nodes.schema, NODE, NODE_ATTR);
+			//addData(graph, ds.edges.data, ds.edges.schema, EDGE, EDGE_ATTR);
+			
+			// init xml lookup <id, xml> which is needed to construct compound
+			// structure correctly
+			var lookup:Object = new Object();
+			
+			var nodes:Array = new Array();
+			var edges:Array = new Array();
+			var sprite:Object;
+			
+			// populate nodes array with NodeSprite instances
+			for each (sprite in (ds.nodes as GraphicsDataTable).dataSprites)
+			{
+				nodes.push(sprite);
+			}
+			
+			// populate edges array with EdgeSprite instances
+			for each (sprite in (ds.edges as GraphicsDataTable).dataSprites)
+			{
+				edges.push(sprite);
+			}
+			
+			// add node data
+			addData(graph,
+				nodes,
+				ds.nodes.schema,
+				NODE, NODE_ATTR,
+				lookup);
+			
+			// add edge data
+			addData(graph,
+				edges,
+				ds.edges.schema,
+				EDGE, EDGE_ATTR,
+				lookup);
+			
 			graphml = graphml.appendChild(graph);
 			
 			if (output == null) output = new ByteArray();
@@ -187,13 +228,76 @@ package org.cytoscapeweb.model.converters {
                 // ############################################
             }
             
+			var childNodes:XMLList = graphml.graph.child("node");
+						
+			for each (var child:XML in childNodes)
+			{
+				trace("node: " + child.@[ID]);
+			}
+			
             // parse nodes
             var nodeList:XMLList = graphml..node;
-            for each (var node:XML in nodeList) {
+			var nodeSprites:Array = new Array();
+			var cns:CompoundNodeSprite;
+			var node:XML;
+			
+			// for each node in the node list create a CompoundNodeSprite
+			// instance and add it to the nodeSprites array.
+            for each (node in nodeList)
+			{
                 id = node.@[ID].toString();
-                lookup[id] = (n = parseData(node, nodeSchema));
-                nodes.push(n);
+                //lookup[id] = (n = parseData(node, nodeSchema));
+				n = parseData(node, nodeSchema)
+                //nodes.push(n);
+				cns = new CompoundNodeSprite();
+				cns.data = n;
+				lookup[id] = cns;
+				nodeSprites.push(cns);
             }
+			
+			var graphList:XMLList = graphml..graph;
+			var graph:XML;
+			var compound:XML
+			
+			// for each subgraph in the XML, initialize the CompoundNodeSprite
+			// owning that subgraph.
+			
+			for each (graph in graphList)
+			{
+				// if the parent is GRAPHML, then the node is in the root graph.
+				if (graph.parent().name() !== GRAPHML)
+				{
+					compound = graph.parent();
+					id = compound.@[ID].toString();
+					cns = lookup[id] as CompoundNodeSprite;
+					
+					if (cns != null)
+					{
+						cns.initialize();
+					}
+				}
+			}
+			
+			// add each node to its parent if it is not a node in the root
+			
+			for each (node in nodeList)
+			{
+				graph = node.parent();
+			
+				// if the parent is GRAPHML, then the node is in the root graph.
+				if (graph.parent().name() !== GRAPHML)
+				{
+					compound = graph.parent();
+					id = compound.@[ID].toString();
+					cns = lookup[id] as CompoundNodeSprite;
+					id = node.@[ID].toString();
+					
+					if (cns != null)
+					{
+						cns.addNode(lookup[id] as CompoundNodeSprite);
+					}
+				}
+			}
             
             // parse edges
             var edgeList:XMLList = graphml..edge;
@@ -212,7 +316,8 @@ package org.cytoscapeweb.model.converters {
             }
             
             return new DataSet(
-                new DataTable(nodes, nodeSchema),
+                //new DataTable(nodes, nodeSchema),
+				new DataTable(nodeSprites, nodeSchema),
                 new DataTable(edges, edgeSchema)
             );
         }
@@ -279,6 +384,226 @@ package org.cytoscapeweb.model.converters {
 			return xml;
 		}
 		
+		/**
+		 * Adds the data of the sprites in the given array to the specified
+		 * XML object. The given sprite array is supposed to contain DataSprite
+		 * instances. Also, adds the given schema information to the XML. 
+		 * 
+		 * @param xml		target XML object to add data
+		 * @param sprites	array of DataSprite instances	
+		 * @param schema	DataSchema for nodes or edges
+		 * @param tag		tag of the data (node, edge, etc.)
+		 * @param attrs		list of XML attributes
+		 * @param lookup	lookup map for <id, sprite> pairs
+		 * @param parentId	optional parent id for recursive calls
+		 */
+		private static function addData(xml:XML,
+			tuples:Array,
+			schema:DataSchema,
+			tag:String,
+			attrs:Object,
+			lookup:Object,
+			parentId:String = null):void
+		{
+			// xml used when creating subgraphs for compound nodes
+			var childXml:XML = null;
+			
+			/**
+			 * Function (as a variable) to append a child xml representing the
+			 * given tuple data to the target XML. If target is null, then
+			 * the xml is appended to the root xml.
+			 */
+			var appendChild:Function = function(i:uint, 
+									  tuple:Object,
+									  target:XML = null):void
+			{
+				var x:XML = new XML("<"+tag+"/>");
+				
+				for (var name:String in tuple)
+				{
+					var value:* = tuple[name];
+					var field:DataField = schema.getFieldByName(name);
+					if (field != null && value == field.defaultValue) continue;
+					
+					var dataType:int = field != null ? field.type : Utils.dataType(value);
+					var type:String = fromCW_Type(dataType); // GraphML type
+					
+					if (attrs.hasOwnProperty(name)) {
+						// add as attribute
+						x.@[name] = toString(value, dataType);
+					} else {
+						// add as data child tag
+						var data:XML = new XML(<data/>);
+						data.@[KEY] = name;
+						data.appendChild(toString(value, dataType));
+						x.appendChild(data);
+					}
+				}
+				
+				if (target == null)
+				{
+					// append to the root xml
+					xml.appendChild(x);
+				}
+				else
+				{
+					// append to the given xml
+					target.appendChild(x);
+				}
+				
+				// update child xml
+				childXml = x;
+			};
+			
+			// array of compound nodes
+			var compoundNodes:Array = new Array();
+			
+			// array of data (for both edges and simple nodes)
+			var plainData:Array = new Array();
+			
+			// separate compound nodes and simple nodes if tuples are nodes.
+			// separate intra-graph edges and inter-graph edges if tuples are
+			// edges.
+			
+			for each (var ds:DataSprite in tuples)
+			{
+				if (ds is CompoundNodeSprite)
+				{
+					// check if compound node is initialized
+					if ((ds as CompoundNodeSprite).isInitialized())
+					{
+						// if no parent id is provided, then we are iterating
+						// the root graph. Include only 'parentless' compounds  
+						if (parentId == null)
+						{
+							if((ds as CompoundNodeSprite).parentId == null)
+							{
+								compoundNodes.push(ds);
+							}
+						}
+						// if parent id is provided, it is safe to include all
+						// initialized compound nodes.
+						else
+						{
+							compoundNodes.push(ds);
+						}
+					}
+					else
+					{
+						// If no parent id is provided include only parentless
+						// nodes' data.
+						if (parentId == null)
+						{
+							if((ds as CompoundNodeSprite).parentId == null)
+							{
+								plainData.push(ds.data);
+							}
+						}
+						// if parent id is provided, it is safe to include data
+						else
+						{
+							plainData.push(ds.data);
+						}
+					}
+				}
+				else if (ds is NodeSprite)
+				{
+					// include only parentless nodes' data
+					if (parentId == null)
+					{
+						if (ds.data.parentId == null)
+						{
+							plainData.push(ds.data);
+						}
+					}
+					// safe to include node data
+					else
+					{
+						plainData.push(ds.data);
+					}
+				}
+				else if (ds is EdgeSprite)
+				{
+					var es:EdgeSprite =  ds as EdgeSprite;
+					var target:XML = null;
+					var sParentId:String;
+					var tParentId:String;
+					
+					if (es.source is CompoundNodeSprite
+						&& es.target is CompoundNodeSprite)
+					{
+						sParentId = (es.source as CompoundNodeSprite).parentId;
+						tParentId = (es.target as CompoundNodeSprite).parentId;
+						
+						// if both source and target parents are in the same
+						// subgraph (i.e. in the same compound), then the edge
+						// information will be written to the corresponding
+						// subgraph.
+						if (sParentId != null &&
+							tParentId != null &&
+							sParentId == tParentId)
+						{
+							// try to get the XML corresponding to the parent
+							target = lookup[sParentId] as XML;
+						}
+					}
+					
+					// check if the target parent compound is valid
+					if (target != null)
+					{
+						appendChild(0, es.data, target);
+					}
+					else
+					{
+						// add the edge data to the array of data to be added
+						// to the root graph
+						plainData.push(es.data);
+					}
+				}
+			}
+			
+			// write simple node information to the xml
+			$each(plainData, appendChild);
+			
+			var subgraph:XML;
+			
+			// for each compound node sprite, recursively write child node
+			// information into a new subgraph
+			
+			for each (var cns:CompoundNodeSprite in compoundNodes)
+			{
+				// sub graph for child nodes & edges
+				subgraph = new XML(<graph/>);
+				
+				// set edge definition (directed or undirected) of the subgraph 
+				subgraph.@[EDGEDEF] = xml.@[EDGEDEF].toString();
+				
+				// construct a map for <id, graph> pairs in order to
+				// use while writing edges				
+				lookup[cns.data.id] = subgraph;
+				
+				// add compound node data to the current graph 
+				appendChild(0, cns.data);
+				
+				// recursively add child node data
+				addData(subgraph,
+					cns.getNodes(),
+					schema,
+					tag,
+					attrs,
+					lookup,
+					cns.data.id);
+				
+				// add subgraph information to the current graph
+				childXml.appendChild(subgraph);
+			}
+		}
+		
+		/**
+		 * Previous addData function which is not suitable for compound node
+		 * structure.  
+		 */
+		/*
 		private static function addData(xml:XML, tuples:Array, schema:DataSchema, tag:String, attrs:Object):void {
 			$each(tuples, function(i:uint, tuple:Object):void {
 				var x:XML = new XML("<"+tag+"/>");
@@ -306,6 +631,7 @@ package org.cytoscapeweb.model.converters {
 				xml.appendChild(x);
 			});
 		}
+		*/
 		
 		// -- static helpers --------------------------------------------------
 		

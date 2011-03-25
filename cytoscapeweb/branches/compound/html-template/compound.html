@@ -8,17 +8,31 @@
         <script type="text/javascript" src="js/AC_OETags.js"></script>
         <script type="text/javascript" src="js/json2.js"></script>
         <script type="text/javascript" src="js/cytoscapeweb.js"></script>
+        <script type="text/javascript" src="js/cytoscapeweb-file.js"></script>
         <script type="text/javascript" src="js/compound.js"></script>
         
+        <link rel="stylesheet" href="css/demo.css" type="text/css"/>
         <style>
             /* The Cytoscape Web container must have its dimensions set. */
             html, body { padding: 0; margin: 0; text-align: center; }
             #cytoscapeweb { width: 800px; height: 600px; border: 2px solid #333333; margin: 0 auto 0 auto;  }
         </style>
+        
     </head>
     
     <body>
         <h1>Compound Testing</h1>
+        <div id="toolbar">
+        	<input id="in-object-model" type="button" value="Sample ObjectModel"></input>
+        	<input id="in-graphml" type="button" value="Sample GraphML"></input>
+        	<input id="to-graphml" type="button" value="To GraphML"></input>
+        	<input id="to-xgmml" type="button" value="To XGMML"></input>
+        	<input id="to-pdf" type="button" value="To PDF"></input>
+        	<input id="to-svg" type="button" value="To SVG"></input>
+        	<input id="to-png" type="button" value="To PNG"></input>
+        	<input id="to-sif" type="button" value="To SIF"></input>
+        	
+        </div>
         <div id="cytoscapeweb">
             Cytoscape Web will replace the contents of this div with your graph.
         </div>
