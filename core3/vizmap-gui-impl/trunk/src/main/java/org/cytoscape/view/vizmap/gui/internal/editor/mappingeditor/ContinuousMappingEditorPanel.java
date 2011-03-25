@@ -50,6 +50,7 @@ import javax.swing.event.ChangeListener;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -70,7 +71,7 @@ import org.slf4j.LoggerFactory;
  *            type of the value associated with the thumb.
  * 
  */
-public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implements
+public abstract class ContinuousMappingEditorPanel<K extends Number, V> extends JPanel implements
 		PropertyChangeListener {
 	private static final long serialVersionUID = 2077889066171872186L;
 	
@@ -82,7 +83,8 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 	// Only accepts Continuous Mapping
 	protected final ContinuousMapping<K, V> mapping;
 	protected final VisualProperty<V> type;
-	private final CyTable attr;
+	private final CyTable dataTable;
+	private final Class<K> dataType;
 	
 	protected List<ContinuousMappingPoint<K, V>> allPoints;
 	private SpinnerNumberModel spinnerModel;
@@ -128,11 +130,12 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 		final String controllingAttrName = mapping.getMappingAttributeName();
 		final Class<?> attrType = attr.getColumn(controllingAttrName).getType();
 		
-		logger.debug("Selected Attr Type is " + attrType);
-		if (Number.class.isAssignableFrom(attrType))
+		logger.debug("Selected attr type is " + attrType);
+		if (!Number.class.isAssignableFrom(attrType))
 			throw new IllegalArgumentException("Cannot support attribute data type.  Numerical values only: " + attrType);
 		
-		this.attr = attr;
+		this.dataTable = attr;
+		this.dataType = (Class<K>) attrType;
 		
 		initComponents();
 		setVisualPropLabel();
@@ -176,8 +179,9 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 	private void initComponents() {
 
-		mainPanel.setSize(650, 300);
-		mainPanel.setPreferredSize(new Dimension(650, 300));
+		mainPanel.setSize(650, 800);
+		mainPanel.setMinimumSize(new Dimension(650, 800));
+		mainPanel.setPreferredSize(new Dimension(650, 800));
 		
 		abovePanel = new BelowAndAbovePanel(Color.yellow, false, mapping);
 		abovePanel.setName("abovePanel");
@@ -398,13 +402,13 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 		if (tracer.getRange(type) == 0) {
 			Double maxValue = Double.NEGATIVE_INFINITY;
 			Double minValue = Double.POSITIVE_INFINITY;
-			final List<Double> valueList = attr.getColumn(mapping.getMappingAttributeName()).getValues(Double.class);
-			for (Double val : valueList) {
-				if (val > maxValue)
-					maxValue = val;
+			final List<K> valueList = dataTable.getColumn(mapping.getMappingAttributeName()).getValues(this.dataType);
+			for (K val : valueList) {
+				if (val.doubleValue() > maxValue)
+					maxValue = val.doubleValue();
 
-				if (val < minValue)
-					minValue = val;
+				if (val.doubleValue() < minValue)
+					minValue = val.doubleValue();
 			}
 
 			tracer.setMax(type, maxValue);
@@ -513,7 +517,7 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 		
 		public void mouseReleased(MouseEvent e) {
 			
-			logger.debug("$$$$$$$$ Mouse released: ");
+			logger.debug("Mouse released from thumb: ");
 			
 			int selectedIndex = slider.getSelectedIndex();
 
@@ -530,7 +534,9 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 				slider.repaint();
 				repaint();
 
-				appManager.getCurrentNetworkView().updateView();
+				final CyNetworkView curView = appManager.getCurrentNetworkView();
+				style.apply(curView);
+				curView.updateView();
 			} else {
 				valueSpinner.setEnabled(false);
 				valueSpinner.setValue(0);

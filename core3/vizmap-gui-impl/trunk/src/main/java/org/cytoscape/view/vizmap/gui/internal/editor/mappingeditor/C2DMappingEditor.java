@@ -65,9 +65,8 @@ public class C2DMappingEditor<V> extends
 		ContinuousMappingEditorPanel<Number, V> {
 	private final static long serialVersionUID = 1213748837197780L;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(C2DMappingEditor.class);
-
+	private static final Logger logger = LoggerFactory.getLogger(C2DMappingEditor.class);
+	
 	private final EditorManager editorManager;
 
 	public C2DMappingEditor(final VisualStyle style,
@@ -75,7 +74,7 @@ public class C2DMappingEditor<V> extends
 			final CyApplicationManager appManager,
 			final VisualMappingManager vmm, final EditorManager editorManager) {
 		super(style, mapping, attr, appManager, vmm);
-		
+				
 		if(editorManager == null)
 			throw new NullPointerException("Editor manager is null.");
 		

@@ -2,10 +2,10 @@ package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.GroupLayout;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
@@ -18,7 +18,9 @@ import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 
 import com.l2fprod.common.beans.editor.AbstractPropertyEditor;
 
-public abstract class AbstractContinuousMappingEditor<K, V> extends AbstractPropertyEditor {
+public abstract class AbstractContinuousMappingEditor<K extends Number, V> extends AbstractPropertyEditor {
+	
+	private static final Dimension MIN_SIZE = new Dimension(650, 400);
 	
 	protected ContinuousMapping<K, V> mapping;
 	protected ContinuousMappingEditorPanel<K, V> editorPanel;
@@ -43,11 +45,11 @@ public abstract class AbstractContinuousMappingEditor<K, V> extends AbstractProp
 		this.editor.addMouseListener(new MouseAdapter() {
 
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
+			public void mouseClicked(MouseEvent ev) {
 				final JDialog editorDialog = new JDialog();
 				initComponents(editorDialog);
 				
-				editorDialog.setTitle("Discrete Mapping Editor: Mapping for " + mapping.getVisualProperty().getDisplayName());
+				editorDialog.setTitle("Continuous Mapping Editor: Mapping for " + mapping.getVisualProperty().getDisplayName());
 				editorDialog.setLocationRelativeTo(editor);
 				editorDialog.setVisible(true);
 			}
@@ -59,6 +61,8 @@ public abstract class AbstractContinuousMappingEditor<K, V> extends AbstractProp
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.getContentPane().add(editorPanel, BorderLayout.CENTER);
 
+				dialog.setPreferredSize(MIN_SIZE);
+								
 		        dialog.pack();
 		    }
 		});

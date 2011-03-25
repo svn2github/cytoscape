@@ -23,6 +23,7 @@ public class C2DEditor<V> extends AbstractContinuousMappingEditor<Number, V> {
 		if (value instanceof ContinuousMapping == false)
 			throw new IllegalArgumentException(
 					"Value should be ContinuousMapping: this is " + value);
+		
 		ContinuousMapping<?, ?> mTest = (ContinuousMapping<?, ?>) value;
 
 		// TODO: error chekcing
