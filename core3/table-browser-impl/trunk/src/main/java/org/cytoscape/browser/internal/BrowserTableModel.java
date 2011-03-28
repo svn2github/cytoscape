@@ -380,7 +380,11 @@ public final class BrowserTableModel extends AbstractTableModel
 		final String columnName = mapColumnIndexToColumnName(columnIndex);
 		final Class<?> columnType = attrs.getColumn(columnName).getType();
 
-		if (text.startsWith("=")) {
+		if (text.isEmpty()) {
+			if (!row.isSet(columnName))
+				return;
+			row.set(columnName, null);
+		} else if (text.startsWith("=")) {
 			final Map<String, Class<?>> variableNameToTypeMap = new HashMap<String, Class<?>>();
 			initVariableNameToTypeMap(variableNameToTypeMap);
 			if (compiler.compile(text, variableNameToTypeMap)) {

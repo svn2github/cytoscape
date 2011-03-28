@@ -50,7 +50,7 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 
 	@Override
 	public Object getCellEditorValue() {
-		return textArea.getText();
+		return textArea.getText().trim();
 	}
 
 	@Override
