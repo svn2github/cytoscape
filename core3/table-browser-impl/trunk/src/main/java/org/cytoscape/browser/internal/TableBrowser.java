@@ -6,6 +6,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JPanel;
@@ -13,6 +17,8 @@ import javax.swing.Icon;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
 import org.cytoscape.browser.ui.AttributeBrowserToolBar;
@@ -51,6 +57,7 @@ public class TableBrowser
 	private CyTable currentTable;
 	private final TableTaskFactory deleteTableTaskFactoryService;
 	private final GUITaskManager guiTaskManagerServiceRef;
+	private final Map<CyTable, TableMetadata> tableToMetadataMap;
 	
 	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
 		     final EquationCompiler compiler, final OpenBrowser openBrowser,
@@ -66,6 +73,7 @@ public class TableBrowser
 
 		this.deleteTableTaskFactoryService = deleteTableTaskFactoryService;
 		this.guiTaskManagerServiceRef = guiTaskManagerServiceRef;
+		this.tableToMetadataMap = new HashMap<CyTable, TableMetadata>();
 		
 		this.browserTable = new BrowserTable(openBrowser, compiler, popupMenuHelper);
 		this.tableRowUpdateService = tableRowUpdateService;
@@ -108,9 +116,10 @@ public class TableBrowser
 	 */
 	public Icon getIcon() { return null; }
 
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		final CyTable table = (CyTable)tableChooser.getSelectedItem();
-		if (table == null && table != currentTable){
+
+		if (table == null && table != currentTable) {
 			if (browserTableModel != null) {
 				browserTableModel.cleanup();
 				serviceRegistrar.unregisterAllServices(browserTableModel);
@@ -123,6 +132,11 @@ public class TableBrowser
 		
 		if (table != null && table != currentTable) {
 			if (browserTableModel != null) {
+				final TableColumnModel columnModel =
+					browserTableModel.getTable().getColumnModel();
+				tableToMetadataMap.put(currentTable,
+						       new TableMetadata(columnModel,
+									 browserTableModel));
 				browserTableModel.cleanup();
 				serviceRegistrar.unregisterAllServices(browserTableModel);
 			}
@@ -134,18 +148,31 @@ public class TableBrowser
 			browserTable.setModel(browserTableModel);
 			browserTable.setRowSorter(new TableRowSorter(browserTableModel));
 			attributeBrowserToolBar.setBrowserTableModel(browserTableModel);
+			final TableMetadata tableMetadata = tableToMetadataMap.get(currentTable);
+			if (tableToMetadataMap != null) {
+				final JTable jTable = browserTableModel.getTable();
+				final TableColumnModel columnModel = jTable.getColumnModel();
+				final Iterator<ColumnDescriptor> columnDescIter = tableMetadata.getColumnDescriptors();
+				while (columnDescIter.hasNext()) {
+					final ColumnDescriptor desc = columnDescIter.next();
+					final TableColumn tableColumn = columnModel.getColumn(desc.getColumnIndex());
+//					tableColumn.setModelIndex(...);	
+					tableColumn.setWidth(desc.getColumnWidth());
+				}
+			}
 		}
 	}
 
-	public void handleEvent(NetworkViewAddedEvent e) {
+	public void handleEvent(final NetworkViewAddedEvent e) {
 		final CyTable nodeTable = e.getNetworkView().getModel().getDefaultNodeTable();
 		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
 		comboBoxModel.addAndSetSelectedItem(nodeTable);
 	}
 	
-	public void handleEvent(TableAboutToBeDeletedEvent e){
+	public void handleEvent(final TableAboutToBeDeletedEvent e) {
 		final CyTable cyTable = e.getTable();
 		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
 		comboBoxModel.removeItem(cyTable);
+		tableToMetadataMap.remove(cyTable);
 	}
 }
