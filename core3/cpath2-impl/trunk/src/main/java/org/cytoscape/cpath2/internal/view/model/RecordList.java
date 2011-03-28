@@ -1,12 +1,12 @@
 package org.cytoscape.cpath2.internal.view.model;
 
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.DataSourceType;
-import org.cytoscape.cpath2.internal.util.BioPaxEntityTypeMap;
-
 import java.util.List;
 import java.util.TreeMap;
+
+import org.cytoscape.cpath2.internal.schemas.summary_response.BasicRecordType;
+import org.cytoscape.cpath2.internal.schemas.summary_response.DataSourceType;
+import org.cytoscape.cpath2.internal.schemas.summary_response.SummaryResponseType;
+import org.cytoscape.cpath2.internal.util.BioPaxEntityTypeMap;
 
 /**
  * List of BioPAX Records.

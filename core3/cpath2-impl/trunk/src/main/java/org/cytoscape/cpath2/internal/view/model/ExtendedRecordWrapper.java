@@ -1,6 +1,6 @@
 package org.cytoscape.cpath2.internal.view.model;
 
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.ExtendedRecordType;
+import org.cytoscape.cpath2.internal.schemas.search_response.ExtendedRecordType;
 
 /**
  * Wrapper for ExtendedRecordType.

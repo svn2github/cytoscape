@@ -1,8 +1,8 @@
 package org.cytoscape.cpath2.internal.filters;
 
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
-
 import java.util.List;
+
+import org.cytoscape.cpath2.internal.schemas.summary_response.BasicRecordType;
 
 /**
  * Filter interface.

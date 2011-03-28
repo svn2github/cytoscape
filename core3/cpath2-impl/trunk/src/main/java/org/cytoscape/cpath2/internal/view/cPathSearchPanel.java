@@ -8,9 +8,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.cpath2.internal.CPath2Factory;
+import org.cytoscape.cpath2.internal.schemas.search_response.SearchResponseType;
+import org.cytoscape.cpath2.internal.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.cpath2.internal.view.model.InteractionBundleModel;
 import org.cytoscape.cpath2.internal.view.model.PathwayTableModel;
 import org.cytoscape.cpath2.internal.web_service.CPathProperties;

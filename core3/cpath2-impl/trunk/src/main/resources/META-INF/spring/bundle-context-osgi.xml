@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="false">
+
+
+	<!-- Import services -->
+	<osgi:reference id="cySwingApplicationRef"
+		interface="org.cytoscape.application.swing.CySwingApplication" />
+	
+	<osgi:reference id="taskManagerRef"
+		interface="org.cytoscape.work.TaskManager" />
+	
+	<osgi:reference id="openBrowserRef"
+		interface="org.cytoscape.util.swing.OpenBrowser" />
+		
+	<osgi:reference id="cyNetworkManagerRef"
+		interface="org.cytoscape.model.CyNetworkManager" />
+
+	<osgi:reference id="cyApplicationManagerServiceRef"
+		interface="org.cytoscape.session.CyApplicationManager" />
+
+	<osgi:reference id="cyNetworkViewManagerRef"
+		interface="org.cytoscape.view.model.CyNetworkViewManager" />
+
+	<osgi:reference id="cyNetworkViewReaderManagerRef"
+		interface="org.cytoscape.io.read.CyNetworkViewReaderManager" />
+
+	<osgi:reference id="cyNetworkNamingRef"
+		interface="org.cytoscape.session.CyNetworkNaming" />
+
+	<osgi:reference id="cyNetworkFactoryServiceRef"
+		interface="org.cytoscape.model.CyNetworkFactory" />
+
+	<osgi:reference id="undoSupportRef"
+		interface="org.cytoscape.work.undo.UndoSupport" />
+
+	<osgi:reference id="fileUtilRef"
+		interface="org.cytoscape.util.swing.FileUtil" />
+	
+	<osgi:reference id="streamUtilRef"
+		interface="org.cytoscape.io.util.StreamUtil" />
+</beans>

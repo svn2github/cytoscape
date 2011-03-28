@@ -2,8 +2,8 @@ package org.cytoscape.cpath2.internal.task;
 
 import java.util.List;
 
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.ExtendedRecordType;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
+import org.cytoscape.cpath2.internal.schemas.search_response.ExtendedRecordType;
+import org.cytoscape.cpath2.internal.schemas.search_response.SearchResponseType;
 import org.cytoscape.cpath2.internal.web_service.CPathException;
 import org.cytoscape.cpath2.internal.web_service.CPathProperties;
 import org.cytoscape.cpath2.internal.web_service.CPathWebService;

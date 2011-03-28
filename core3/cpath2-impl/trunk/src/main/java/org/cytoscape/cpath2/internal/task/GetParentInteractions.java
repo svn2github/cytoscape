@@ -3,9 +3,9 @@ package org.cytoscape.cpath2.internal.task;
 import javax.swing.JDialog;
 
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.cpath2.internal.CPath2Factory;
 import org.cytoscape.cpath2.internal.biopax.util.BioPaxVisualStyleUtil;
+import org.cytoscape.cpath2.internal.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.cpath2.internal.view.InteractionBundlePanel;
 import org.cytoscape.cpath2.internal.view.model.InteractionBundleModel;
 import org.cytoscape.cpath2.internal.view.model.RecordList;

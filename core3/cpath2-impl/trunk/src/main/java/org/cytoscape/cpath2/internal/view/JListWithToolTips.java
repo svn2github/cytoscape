@@ -1,13 +1,14 @@
 package org.cytoscape.cpath2.internal.view;
 
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.ExtendedRecordType;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.OrganismType;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.XRefType;
-import org.cytoscape.cpath2.internal.view.model.ExtendedRecordWrapper;
-
-import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.util.List;
+
+import javax.swing.JList;
+import javax.swing.ListModel;
+
+import org.cytoscape.cpath2.internal.schemas.search_response.ExtendedRecordType;
+import org.cytoscape.cpath2.internal.schemas.search_response.OrganismType;
+import org.cytoscape.cpath2.internal.view.model.ExtendedRecordWrapper;
 
 /**
  * Extension to JList to Support Tool Tips.

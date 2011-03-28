@@ -27,11 +27,11 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
 import org.cytoscape.cpath2.internal.CPath2Factory;
 import org.cytoscape.cpath2.internal.filters.ChainedFilter;
 import org.cytoscape.cpath2.internal.filters.DataSourceFilter;
 import org.cytoscape.cpath2.internal.filters.EntityTypeFilter;
+import org.cytoscape.cpath2.internal.schemas.summary_response.BasicRecordType;
 import org.cytoscape.cpath2.internal.view.model.InteractionBundleModel;
 import org.cytoscape.cpath2.internal.view.model.RecordList;
 import org.cytoscape.cpath2.internal.view.tree.CheckNode;

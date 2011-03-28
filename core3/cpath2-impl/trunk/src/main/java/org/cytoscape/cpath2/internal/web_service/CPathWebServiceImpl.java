@@ -8,15 +8,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.DataSourceType;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.ExtendedRecordType;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.ObjectFactory;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.OrganismType;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.PathwayListType;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.PathwayType;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.XRefType;
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
+import org.cytoscape.cpath2.internal.schemas.search_response.DataSourceType;
+import org.cytoscape.cpath2.internal.schemas.search_response.ExtendedRecordType;
+import org.cytoscape.cpath2.internal.schemas.search_response.ObjectFactory;
+import org.cytoscape.cpath2.internal.schemas.search_response.OrganismType;
+import org.cytoscape.cpath2.internal.schemas.search_response.PathwayListType;
+import org.cytoscape.cpath2.internal.schemas.search_response.PathwayType;
+import org.cytoscape.cpath2.internal.schemas.search_response.SearchResponseType;
+import org.cytoscape.cpath2.internal.schemas.search_response.XRefType;
+import org.cytoscape.cpath2.internal.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.work.TaskMonitor;
 
 /**
@@ -78,8 +78,8 @@ public class CPathWebServiceImpl implements CPathWebService {
             StringReader reader = new StringReader(responseXml);
 
             Class[] classes = new Class[2];
-            classes[0] = org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType.class;
-            classes[1] = org.cytoscape.coreplugin.cpath2.schemas.search_response.ObjectFactory.class;
+            classes[0] = org.cytoscape.cpath2.internal.schemas.search_response.SearchResponseType.class;
+            classes[1] = org.cytoscape.cpath2.internal.schemas.search_response.ObjectFactory.class;
             try {
                 JAXBContext jc = JAXBContext.newInstance(classes);
                 Unmarshaller u = jc.createUnmarshaller();
@@ -127,8 +127,8 @@ public class CPathWebServiceImpl implements CPathWebService {
         StringReader reader = new StringReader(responseXml);
 
         Class[] classes = new Class[2];
-        classes[0] = org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType.class;
-        classes[1] = org.cytoscape.coreplugin.cpath2.schemas.summary_response.ObjectFactory.class;
+        classes[0] = org.cytoscape.cpath2.internal.schemas.summary_response.SummaryResponseType.class;
+        classes[1] = org.cytoscape.cpath2.internal.schemas.summary_response.ObjectFactory.class;
         try {
             JAXBContext jc = JAXBContext.newInstance(classes);
             Unmarshaller u = jc.createUnmarshaller();

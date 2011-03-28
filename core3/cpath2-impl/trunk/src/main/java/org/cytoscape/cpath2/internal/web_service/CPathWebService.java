@@ -2,9 +2,9 @@ package org.cytoscape.cpath2.internal.web_service;
 
 import java.util.ArrayList;
 
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.OrganismType;
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
+import org.cytoscape.cpath2.internal.schemas.search_response.OrganismType;
+import org.cytoscape.cpath2.internal.schemas.search_response.SearchResponseType;
+import org.cytoscape.cpath2.internal.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.work.TaskMonitor;
 
 /**

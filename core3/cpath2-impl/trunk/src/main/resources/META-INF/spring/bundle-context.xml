@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:lang="http://www.springframework.org/schema/lang" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+    http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+            http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="true">
+
+	<context:annotation-config />
+
+	<bean id="bioPaxFilter" class="org.cytoscape.cpath2.internal.biopax.BioPaxFilter">
+		<constructor-arg ref="streamUtilRef" />
+	</bean>
+		
+	<bean id="launchExternalBrowser" class="org.cytoscape.cpath2.internal.biopax.action.LaunchExternalBrowser">
+		<constructor-arg ref="openBrowserRef" />
+	</bean>
+
+	<bean id="bioPaxFactory" class="org.cytoscape.cpath2.internal.biopax.BioPaxFactory">
+		<constructor-arg ref="cyNetworkViewManagerRef" />
+		<constructor-arg ref="fileUtilRef" />
+		<constructor-arg ref="cyApplicationManagerRef" />
+		<constructor-arg ref="bioPaxFilter" />
+		<constructor-arg ref="taskManagerRef" />
+		<constructor-arg ref="launchExternalBrowser" />
+		<constructor-arg ref="cySwingApplicationRef" />		
+	</bean>
+	
+	<bean id="bioPaxContainer" class="org.cytoscape.cpath2.internal.biopax.view.BioPaxContainer">
+		<constructor-arg ref="launchExternalBrowser" />
+		<constructor-arg ref="cyApplicationManagerRef" />
+		<constructor-arg ref="cyNetworkViewManagerRef" />
+	</bean>
+	
+	<bean id="cPath2Factory" class="org.cytoscape.cpath2.internal.CPath2Factory">
+		<constructor-arg ref="cySwingApplicationRef" />
+		<constructor-arg ref="taskManagerRef" />
+		<constructor-arg ref="openBrowserRef" />
+		<constructor-arg ref="cyNetworkManagerRef" />
+		<constructor-arg ref="cyApplicationManagerRef" />
+		<constructor-arg ref="cyNetworkViewManagerRef" />
+		<constructor-arg ref="cyNetworkViewReaderManagerRef" />
+		<constructor-arg ref="cyNetworkNamingRef" />
+		<constructor-arg ref="cyNetworkFactoryRef" />
+		<constructor-arg ref="undoSupportRef" />
+		<constructor-arg ref="bioPaxContainer" />
+	</bean>
+</beans>

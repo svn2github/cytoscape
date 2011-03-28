@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.cytoscape.cpath2.internal.CPath2Factory;
+import org.cytoscape.cpath2.internal.CPathNetworkImportTask;
 import org.cytoscape.cpath2.internal.plugin.CPathPlugIn2;
 import org.cytoscape.cpath2.internal.view.TabUi;
 import org.cytoscape.cpath2.internal.view.cPathSearchPanel;
@@ -30,9 +31,6 @@ public class CytoscapeCPathWebService extends AbstractWebServiceClient implement
     private static final String DISPLAY_NAME = CPathProperties.getInstance().getCPathServerName() +
             " Web Service Client";
 
-    // Client ID. This should be unique.
-    private static final String CLIENT_ID = CPathProperties.getInstance().getWebServicesId();
-
     /**
      * NCBI Taxonomy ID Filter.
      */
@@ -47,6 +45,10 @@ public class CytoscapeCPathWebService extends AbstractWebServiceClient implement
 	Integer taxonomyId = -1;
 	
     private JPanel mainPanel;
+
+	private final CPath2Factory factory;
+
+	private CPathWebService webApi;
 
     public List<JMenuItem> getNodeContextMenuItems(View<CyNode> nodeView) {
     	// TODO: Figure out how we're going to wire this up with OSGi
@@ -78,16 +80,20 @@ public class CytoscapeCPathWebService extends AbstractWebServiceClient implement
     
     @Override
     public TaskIterator getTaskIterator() {
-    	// TODO Auto-generated method stub
-    	return null;
+    	String query = "";
+		CPathResponseFormat format = CPathResponseFormat.BINARY_SIF;
+		CPathNetworkImportTask task = factory.createCPathNetworkImportTask(query, webApi, format);
+    	return new TaskIterator(task);
     }
     
     /**
      * Creates a new Web Services client.
      * @param factory 
      */
-    private CytoscapeCPathWebService(CPath2Factory factory) {
+    public CytoscapeCPathWebService(CPath2Factory factory) {
     	super(CPathProperties.getInstance().getCPathUrl(), DISPLAY_NAME, makeDescription());
+    	this.factory = factory;
+    	
         // Set properties for this client.
         setProperty();
 
@@ -95,7 +101,7 @@ public class CytoscapeCPathWebService extends AbstractWebServiceClient implement
         mainPanel.setPreferredSize(new Dimension (500,400));
         mainPanel.setLayout (new BorderLayout());
 
-        CPathWebService webApi = CPathWebServiceImpl.getInstance();
+        webApi = CPathWebServiceImpl.getInstance();
         cPathSearchPanel cpathPanel = new cPathSearchPanel(webApi, factory);
 
         TabUi tabbedPane = TabUi.getInstance();
@@ -104,7 +110,6 @@ public class CytoscapeCPathWebService extends AbstractWebServiceClient implement
         JScrollPane configPanel = CPathPlugIn2.createConfigPanel();
         tabbedPane.add("Options", configPanel);
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
-
     }
 
     private static String makeDescription() {

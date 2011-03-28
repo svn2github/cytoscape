@@ -1,6 +1,6 @@
 package org.cytoscape.cpath2.internal;
 
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
+import org.cytoscape.cpath2.internal.schemas.search_response.SearchResponseType;
 import org.cytoscape.cpath2.internal.util.NullTaskMonitor;
 import org.cytoscape.cpath2.internal.web_service.CPathWebService;
 import org.cytoscape.work.Task;

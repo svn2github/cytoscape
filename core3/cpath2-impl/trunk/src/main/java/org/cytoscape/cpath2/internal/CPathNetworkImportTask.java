@@ -1,19 +1,12 @@
 package org.cytoscape.cpath2.internal;
 
-import java.util.Set;
-
-import javax.management.Query;
-
-import org.cytoscape.cpath2.internal.task.ExecuteGetRecordByCPathId;
 import org.cytoscape.cpath2.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
 import org.cytoscape.cpath2.internal.web_service.CPathProperties;
 import org.cytoscape.cpath2.internal.web_service.CPathResponseFormat;
 import org.cytoscape.cpath2.internal.web_service.CPathWebService;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
 
 public class CPathNetworkImportTask implements Task {
 

@@ -21,7 +21,6 @@ import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.physicalEntity;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.cytoscape.cpath2.internal.CPath2Factory;
-import org.cytoscape.cpath2.internal.biopax.BioPaxFactory;
 import org.cytoscape.cpath2.internal.biopax.MapBioPaxToCytoscape;
 import org.cytoscape.cpath2.internal.biopax.action.NetworkListener;
 import org.cytoscape.cpath2.internal.biopax.util.BioPaxUtil;
@@ -64,7 +63,7 @@ public class ExecuteGetRecordByCPathId implements Task {
     private final static String CPATH_SERVER_DETAILS_URL = "CPATH_SERVER_DETAILS_URL";
 	private Logger logger = LoggerFactory.getLogger(ExecuteGetRecordByCPathId.class);
 	private final CPath2Factory cPathFactory;
-	private final BioPaxFactory bioPaxFactory;
+	private final BioPaxContainer bpContainer;
 	
     /**
      * Constructor.
@@ -73,16 +72,17 @@ public class ExecuteGetRecordByCPathId implements Task {
      * @param ids           Array of cPath IDs.
      * @param format        CPathResponseFormat Object.
      * @param networkTitle  Tentative Network Title.
+     * @param bpContainer 
      * @param application 
      */
     public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], CPathResponseFormat format,
-            String networkTitle, CPath2Factory cPathFactory, BioPaxFactory bioPaxFactory) {
+            String networkTitle, CPath2Factory cPathFactory, BioPaxContainer bpContainer) {
         this.webApi = webApi;
         this.ids = ids;
         this.format = format;
         this.networkTitle = networkTitle;
         this.cPathFactory = cPathFactory;
-        this.bioPaxFactory = bioPaxFactory;
+        this.bpContainer = bpContainer;
     }
 
     /**
@@ -97,14 +97,15 @@ public class ExecuteGetRecordByCPathId implements Task {
      * @param application 
      */
     public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], CPathResponseFormat format,
-            String networkTitle, CyNetwork mergedNetwork, CPath2Factory cPathFactory, BioPaxFactory bioPaxFactory) {
+            String networkTitle, CyNetwork mergedNetwork, CPath2Factory cPathFactory,
+            BioPaxContainer bpContainer) {
         this.webApi = webApi;
         this.ids = ids;
         this.format = format;
         this.networkTitle = networkTitle;
         this.mergedNetwork = mergedNetwork;
         this.cPathFactory = cPathFactory;
-        this.bioPaxFactory = bioPaxFactory;
+        this.bpContainer = bpContainer;
     }
 
     /**
@@ -274,7 +275,6 @@ public class ExecuteGetRecordByCPathId implements Task {
 //                final CyNetworkView view = createNetworkView
 //                        (cyNetwork, cyNetwork.getCyRow().get(CyNetwork.NAME, String.class), layoutAlgorithm, null);
                 
-                final BioPaxContainer bpContainer = bioPaxFactory.getBioPaxContainer();
                 NetworkListener networkListener = bpContainer.getNetworkListener();
                 networkListener.registerNetwork(cyNetwork);
 
@@ -374,7 +374,7 @@ public class ExecuteGetRecordByCPathId implements Task {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 //                CytoscapeWrapper.activateBioPaxPlugInTab(bpContainer);
-                bioPaxFactory.getBioPaxContainer().showLegend();
+                bpContainer.showLegend();
 //                VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 //                vizmapper.applyAppearances();
             }

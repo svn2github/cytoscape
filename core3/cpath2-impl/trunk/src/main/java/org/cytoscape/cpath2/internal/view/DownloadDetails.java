@@ -20,8 +20,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
 import org.cytoscape.cpath2.internal.CPath2Factory;
+import org.cytoscape.cpath2.internal.schemas.summary_response.BasicRecordType;
 import org.cytoscape.cpath2.internal.view.model.NetworkWrapper;
 import org.cytoscape.cpath2.internal.web_service.CPathProperties;
 import org.cytoscape.cpath2.internal.web_service.CPathResponseFormat;

@@ -3,9 +3,6 @@ package org.cytoscape.cpath2.internal.biopax;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.cpath2.internal.biopax.action.ExportAsBioPAXTaskFactory;
 import org.cytoscape.cpath2.internal.biopax.action.LaunchExternalBrowser;
-import org.cytoscape.cpath2.internal.biopax.action.NetworkListener;
-import org.cytoscape.cpath2.internal.biopax.view.BioPaxContainer;
-import org.cytoscape.cpath2.internal.biopax.view.BioPaxDetailsPanel;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.util.swing.FileUtil;
@@ -14,7 +11,6 @@ import org.cytoscape.work.TaskManager;
 
 public class BioPaxFactory {
 
-	private final BioPaxContainer bioPaxContainer;
 	private final CyNetworkViewManager networkViewManager;
 	private final FileUtil fileUtil;
 	private final CyApplicationManager applicationManager;
@@ -23,8 +19,7 @@ public class BioPaxFactory {
 	private final LaunchExternalBrowser launchExternalBrowser;
 	private final CySwingApplication cySwingApplication;
 
-	public BioPaxFactory(BioPaxContainer bioPaxContainer, CyNetworkViewManager networkViewManager, FileUtil fileUtil, CyApplicationManager applicationManager, CyFileFilter bioPaxFilter, TaskManager taskManager, LaunchExternalBrowser launchExternalBrowser, CySwingApplication cySwingApplication) {
-		this.bioPaxContainer = bioPaxContainer;
+	public BioPaxFactory(CyNetworkViewManager networkViewManager, FileUtil fileUtil, CyApplicationManager applicationManager, CyFileFilter bioPaxFilter, TaskManager taskManager, LaunchExternalBrowser launchExternalBrowser, CySwingApplication cySwingApplication) {
 		this.networkViewManager = networkViewManager;
 		this.fileUtil = fileUtil;
 		this.applicationManager = applicationManager;
@@ -34,10 +29,6 @@ public class BioPaxFactory {
 		this.cySwingApplication = cySwingApplication;
 	}
 	
-	public BioPaxContainer getBioPaxContainer() {
-		return bioPaxContainer;
-	}
-
 	public CyNetworkViewManager getCyNetworkViewManager() {
 		return networkViewManager;
 	}
@@ -56,10 +47,6 @@ public class BioPaxFactory {
 
 	public TaskManager getTaskManager() {
 		return taskManager;
-	}
-
-	public NetworkListener createNetworkListener(BioPaxDetailsPanel bpDetailsPanel) {
-		return new NetworkListener(bpDetailsPanel, this);
 	}
 
 	public LaunchExternalBrowser getLaunchExternalBrowser() {

@@ -33,7 +33,6 @@ package org.cytoscape.cpath2.internal.biopax.action;
 
 import java.beans.PropertyChangeEvent;
 
-import org.cytoscape.cpath2.internal.biopax.BioPaxFactory;
 import org.cytoscape.cpath2.internal.biopax.util.BioPaxUtil;
 import org.cytoscape.cpath2.internal.biopax.view.BioPaxDetailsPanel;
 import org.cytoscape.model.CyNetwork;
@@ -49,17 +48,17 @@ import org.cytoscape.view.model.CyNetworkViewManager;
  */
 public class NetworkListener {
 	private final BioPaxDetailsPanel bpPanel;
-	private final BioPaxFactory factory;
+	private CyNetworkViewManager viewManager;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param bpPanel BioPaxDetails Panel Object.
 	 */
-	public NetworkListener(BioPaxDetailsPanel bpPanel, BioPaxFactory factory) {
+	public NetworkListener(BioPaxDetailsPanel bpPanel, CyNetworkViewManager viewManager) {
 		this.bpPanel = bpPanel;
-		this.factory = factory;
-
+		this.viewManager = viewManager;
+		
 		// to catch network creation / destruction events
 //		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
@@ -209,8 +208,7 @@ public class NetworkListener {
 		// interate through our network list checking if their views exists
 		for (Long networkId : BioPaxUtil.getNetworkModelMap().keySet()) {
 			// get the network view via id
-			CyNetworkViewManager manager = factory.getCyNetworkViewManager();
-			CyNetworkView cyNetworkView = manager.getNetworkView(networkId);
+			CyNetworkView cyNetworkView = viewManager.getNetworkView(networkId);
 			if (cyNetworkView != null) {
 				return true;
 			}

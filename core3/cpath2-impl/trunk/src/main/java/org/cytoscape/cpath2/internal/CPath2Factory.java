@@ -10,10 +10,10 @@ import javax.swing.JPanel;
 import javax.swing.undo.UndoableEdit;
 
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
-import org.cytoscape.cpath2.internal.biopax.BioPaxFactory;
+import org.cytoscape.cpath2.internal.biopax.view.BioPaxContainer;
 import org.cytoscape.cpath2.internal.cytoscape.MergeNetworkEdit;
 import org.cytoscape.cpath2.internal.mapping.MapCPathToCytoscape;
+import org.cytoscape.cpath2.internal.schemas.summary_response.BasicRecordType;
 import org.cytoscape.cpath2.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
 import org.cytoscape.cpath2.internal.task.MergeNetworkTaskFactory;
 import org.cytoscape.cpath2.internal.util.NetworkMergeUtil;
@@ -43,6 +43,9 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 
+// TODO: This is a "God" object.  Probably shouldn't exist, but it's better than having to
+//       propagate all of the injected dependencies throughout all the implementation classes.
+//       Lesser of two evils.
 public class CPath2Factory {
 	private final CySwingApplication application;
 	private final TaskManager taskManager;
@@ -54,9 +57,9 @@ public class CPath2Factory {
 	private final CyNetworkNaming naming;
 	private final CyNetworkFactory networkFactory;
 	private final UndoSupport undoSupport;
-	private final BioPaxFactory bioPaxFactory;
+	private final BioPaxContainer bpContainer;
 
-	public CPath2Factory(CySwingApplication application, TaskManager taskManager, OpenBrowser openBrowser, CyNetworkManager networkManager, CyApplicationManager applicationManager, CyNetworkViewManager networkViewManager, CyNetworkViewReaderManager networkViewReaderManager, CyNetworkNaming naming, CyNetworkFactory networkFactory, UndoSupport undoSupport, BioPaxFactory bioPaxFactory) {
+	public CPath2Factory(CySwingApplication application, TaskManager taskManager, OpenBrowser openBrowser, CyNetworkManager networkManager, CyApplicationManager applicationManager, CyNetworkViewManager networkViewManager, CyNetworkViewReaderManager networkViewReaderManager, CyNetworkNaming naming, CyNetworkFactory networkFactory, UndoSupport undoSupport, BioPaxContainer bpContainer) {
 		this.application = application;
 		this.taskManager = taskManager;
 		this.openBrowser = openBrowser;
@@ -67,16 +70,16 @@ public class CPath2Factory {
 		this.naming = naming;
 		this.networkFactory = networkFactory;
 		this.undoSupport = undoSupport;
-		this.bioPaxFactory = bioPaxFactory;
+		this.bpContainer = bpContainer;
 	}
 	
 	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(CPathWebService webApi, long[] ids, CPathResponseFormat format, String networkTitle, CyNetwork networkToMerge) {
-		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, networkTitle, networkToMerge, this, bioPaxFactory);
+		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, networkTitle, networkToMerge, this, bpContainer);
 	}
 
 	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(
 			CPathWebService webApi, long[] ids, CPathResponseFormat format, String title) {
-		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, null, this, bioPaxFactory);
+		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, null, this, bpContainer);
 	}
 
 	public SearchBoxPanel createSearchBoxPanel(CPathWebService webApi) {
@@ -175,5 +178,9 @@ public class CPath2Factory {
 
 	public UndoableEdit createMergeNetworkEdit(CyNetwork cyNetwork, Collection<CyNode> cyNodes, Set<CyEdge> cyEdges) {
 		return new MergeNetworkEdit(cyNetwork, cyNodes, cyEdges, this);
+	}
+
+	public CPathNetworkImportTask createCPathNetworkImportTask(String query, CPathWebService client, CPathResponseFormat format) {
+		return new CPathNetworkImportTask(query, client, format, this);
 	}
 }

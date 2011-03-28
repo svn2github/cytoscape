@@ -1,16 +1,22 @@
 package org.cytoscape.cpath2.internal.task;
 
-import org.cytoscape.coreplugin.cpath2.schemas.search_response.*;
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
+
+import javax.swing.JComponent;
+import javax.swing.JTextPane;
+import javax.swing.text.Document;
+
+import org.cytoscape.cpath2.internal.schemas.search_response.ExtendedRecordType;
+import org.cytoscape.cpath2.internal.schemas.search_response.OrganismType;
+import org.cytoscape.cpath2.internal.schemas.search_response.PathwayType;
+import org.cytoscape.cpath2.internal.schemas.search_response.SearchResponseType;
+import org.cytoscape.cpath2.internal.schemas.search_response.XRefType;
+import org.cytoscape.cpath2.internal.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.cpath2.internal.view.model.InteractionBundleModel;
 import org.cytoscape.cpath2.internal.view.model.PathwayTableModel;
 import org.cytoscape.cpath2.internal.view.model.RecordList;
-
-import javax.swing.text.Document;
-import javax.swing.*;
-import java.util.List;
-import java.util.Vector;
-import java.util.HashMap;
 
 /**
  * Indicates that the user has selected a physical entity from the list of search results.

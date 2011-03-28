@@ -44,12 +44,14 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import org.cytoscape.application.swing.CytoPanelName;
-import org.cytoscape.cpath2.internal.biopax.BioPaxFactory;
 import org.cytoscape.cpath2.internal.biopax.MapBioPaxToCytoscape;
+import org.cytoscape.cpath2.internal.biopax.action.LaunchExternalBrowser;
 import org.cytoscape.cpath2.internal.biopax.action.NetworkListener;
+import org.cytoscape.cpath2.internal.biopax.action.NetworkListenerFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 
 
 /**
@@ -74,23 +76,22 @@ public class BioPaxContainer extends JPanel {
 	private NetworkListener networkListener;
     private JEditorPane label;
     private JPanel cards;
+	private final CyApplicationManager applicationManager;
 
     private final static String DETAILS_CARD = "DETAILS";
     private final static String LEGEND_BIOPAX_CARD = "LEGEND_BIOPAX";
     private final static String LEGEND_BINARY_CARD = "LEGEND_BINARY";
 
-	private final BioPaxFactory factory;
-	
     /**
 	 * Private Constructor.
      * @param factory 
      * @param applicationManager 
 	 */
-	private BioPaxContainer(BioPaxFactory factory) {
-		this.factory = factory;
+	private BioPaxContainer(LaunchExternalBrowser browser, CyApplicationManager applicationManager, CyNetworkViewManager viewManager) {
+		this.applicationManager = applicationManager;
 		
         cards = new JPanel(new CardLayout());
-        bpDetailsPanel = new BioPaxDetailsPanel(factory.getLaunchExternalBrowser());
+        bpDetailsPanel = new BioPaxDetailsPanel(browser);
         LegendPanel bioPaxLegendPanel = new LegendPanel(LegendPanel.BIOPAX_LEGEND);
         LegendPanel binaryLegendPanel = new LegendPanel(LegendPanel.BINARY_LEGEND);
 
@@ -124,7 +125,7 @@ public class BioPaxContainer extends JPanel {
         label.setFont(newFont);
         label.setBorder(new EmptyBorder(5,3,3,3));
         this.add(label, BorderLayout.SOUTH);
-        this.networkListener = factory.createNetworkListener(bpDetailsPanel);
+        this.networkListener = new NetworkListener(bpDetailsPanel, viewManager);
 	}
 
     /**
@@ -141,7 +142,6 @@ public class BioPaxContainer extends JPanel {
      */
     public void showLegend() {
         CardLayout cl = (CardLayout)(cards.getLayout());
-        CyApplicationManager applicationManager = factory.getCyApplicationManager();
         CyNetwork network = applicationManager.getCurrentNetwork();
         CyRow row = network.getCyRow();
         Boolean isBioPaxNetwork = row.get(MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.class);

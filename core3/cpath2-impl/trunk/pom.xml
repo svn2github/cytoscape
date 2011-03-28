@@ -56,7 +56,7 @@
 	        <version>1.0</version>
 	    </dependency>
 		<dependency>
-			<groupId>commons-httpclient</groupId>
+			<groupId>cytoscape-temp</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
 		</dependency>
@@ -151,7 +151,7 @@
 			                <schemaIncludes>
 			                    <include>SearchResponse.xsd</include>
 			                </schemaIncludes>
-			                <generatePackage>org.cytoscape.coreplugin.cpath2.schemas.search_response</generatePackage>
+			                <generatePackage>org.cytoscape.cpath2.internal.schemas.search_response</generatePackage>
 			                <verbose>true</verbose>
 			                <removeOldOutput>false</removeOldOutput>
 			                <forceRegenerate>true</forceRegenerate>
@@ -167,7 +167,7 @@
 			                <schemaIncludes>
 			                    <include>SummaryResponse.xsd</include>
 			                </schemaIncludes>
-			                <generatePackage>org.cytoscape.coreplugin.cpath2.schemas.summary_response</generatePackage>
+			                <generatePackage>org.cytoscape.cpath2.internal.schemas.summary_response</generatePackage>
 			                <verbose>true</verbose>
 			                <removeOldOutput>false</removeOldOutput>
 			                <forceRegenerate>true</forceRegenerate>
