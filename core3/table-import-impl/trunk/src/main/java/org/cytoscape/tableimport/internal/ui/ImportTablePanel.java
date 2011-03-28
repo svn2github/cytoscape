@@ -2280,17 +2280,17 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 	
 	private void displayPreview() throws IOException {
 		final String selectedSourceName;
-		final URL sourceURL;
+		//final URL sourceURL;
 
 		if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
 			selectedSourceName = annotationComboBox.getSelectedItem().toString();
-			sourceURL = new URL(annotationUrlMap.get(selectedSourceName));
+			//sourceURL = new URL(annotationUrlMap.get(selectedSourceName));
 		} else {
 			selectedSourceName = targetDataSourceTextField.getText();
-			sourceURL = new URL(selectedSourceName);
+			//sourceURL = new URL(selectedSourceName);
 		}
 
-		readAnnotationForPreview(sourceURL, checkDelimiter());
+		readAnnotationForPreview(null, checkDelimiter());
 		previewPanel.repaint();
 	}
 
