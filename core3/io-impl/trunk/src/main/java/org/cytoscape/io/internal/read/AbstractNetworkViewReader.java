@@ -18,9 +18,6 @@ public abstract class AbstractNetworkViewReader extends AbstractTask implements 
     protected final CyNetworkViewFactory cyNetworkViewFactory;
     protected final CyNetworkFactory cyNetworkFactory;
 
-    // TODO this should come from model-api
-    public static final String NODE_NAME_ATTR_LABEL = "name";
-
     public AbstractNetworkViewReader(InputStream inputStream,
                                      CyNetworkViewFactory cyNetworkViewFactory,
                                      CyNetworkFactory cyNetworkFactory) {

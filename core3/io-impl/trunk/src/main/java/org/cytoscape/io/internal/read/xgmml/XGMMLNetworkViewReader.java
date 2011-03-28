@@ -226,7 +226,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         // Network Title
         CyRow netRow = view.getModel().getCyRow();
         String netName = readDataManager.getNetworkName();
-        netRow.set(NODE_NAME_ATTR_LABEL, netName);
+        netRow.set(CyTableEntry.NAME, netName);
         
         if (buildStyle) {
             VisualStyle defStyle = visMappingManager.getDefaultVisualStyle();

@@ -41,6 +41,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.Task;
@@ -128,7 +129,7 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 			//tm.setProgress(progress);
 			
 			final CyNode node = network.addNode();
-			node.getCyRow().set(NODE_NAME_ATTR_LABEL, nodeName);
+			node.getCyRow().set(CyTableEntry.NAME, nodeName);
 			nodeMap.put(nodeName, node);
 		}
 
@@ -151,7 +152,7 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 			for (String tgtName : interaction.getTargets()) {
 				edge = network.addEdge(nodeMap.get(srcName), nodeMap
 						.get(tgtName), true);
-				edge.getCyRow().set(NODE_NAME_ATTR_LABEL,
+				edge.getCyRow().set(CyTableEntry.NAME,
 						srcName + " (" + interactionType + ") " + tgtName);
 				edge.getCyRow().set(INTERACTION, interactionType);
 			}
