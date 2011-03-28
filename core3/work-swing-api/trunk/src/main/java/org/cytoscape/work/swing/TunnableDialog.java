@@ -3,6 +3,7 @@ package org.cytoscape.work.swing;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import java.awt.Component;
+import java.awt.Dimension;
 
 public class TunnableDialog extends JDialog {
 	
@@ -16,8 +17,15 @@ public class TunnableDialog extends JDialog {
 	
 	//
 	public void addComponent(Component optionPanel){
+		
+		// adjust the preferred size of optionPanel 
+		int w = optionPanel.getPreferredSize().width+30;
+		int h = optionPanel.getPreferredSize().height+30;
+		optionPanel.setPreferredSize(new Dimension(w, h));
+		
 		jScrollPane1.setViewportView(optionPanel);
-		pack();
+				
+		pack();		
 	}
 		
 	// Set the text to replace the "OK" string on OK button
@@ -67,7 +75,7 @@ public class TunnableDialog extends JDialog {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.CENTER;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
