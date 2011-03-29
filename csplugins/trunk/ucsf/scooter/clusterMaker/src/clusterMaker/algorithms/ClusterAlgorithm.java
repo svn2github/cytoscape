@@ -33,6 +33,7 @@
 package clusterMaker.algorithms;
 
 import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
 import clusterMaker.ui.ClusterViz;
 
 import java.beans.PropertyChangeSupport;
@@ -118,6 +119,13 @@ public interface ClusterAlgorithm {
 	 * @param monitor a TaskMonitor
 	 */
 	public void doCluster(TaskMonitor monitor);
+
+	/**
+	 * This call returns a JTaskConfig option
+	 *
+	 * @return the JTaskconfig
+	 */
+	public JTaskConfig getDefaultTaskConfig();
 
 	/**
  	 * Hooks for the visualizer

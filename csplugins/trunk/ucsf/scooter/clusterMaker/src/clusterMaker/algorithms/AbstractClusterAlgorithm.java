@@ -39,6 +39,7 @@ import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.layout.Tunable;
 import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
 
 import java.lang.Math;
 import java.util.ArrayList;
@@ -47,6 +48,8 @@ import java.util.List;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 import javax.swing.JPanel;
+
+import clusterMaker.ui.ClusterTask;
 
 // clusterMaker imports
 
@@ -122,6 +125,8 @@ public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 	public ClusterResults getResults() { return results; }
 
 	public PropertyChangeSupport getPropertyChangeSupport() {return pcs;}
+
+	public JTaskConfig getDefaultTaskConfig() { return ClusterTask.getDefaultTaskConfig(false); }
 	
 	public static double mean(Double[] vector) {
 		double result = 0.0;

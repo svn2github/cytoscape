@@ -80,6 +80,7 @@ import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.ClusterProperties;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.AbstractNetworkClusterer;
+import clusterMaker.ui.ClusterTask;
 
 /**
  * The ClusterViz class provides the primary interface to the
@@ -125,6 +126,8 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 		}
 	}
 
+	public JTaskConfig getDefaultTaskConfig() { return ClusterTask.getDefaultTaskConfig(false); }
+
 	public void startViz() {
 		startup();
 	}
@@ -162,7 +165,7 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 
 		// Set up a new task
 		CreateNetworkTask task = new CreateNetworkTask(clusterAttribute);
-		TaskManager.executeTask( task, task.getDefaultTaskConfig() );
+		TaskManager.executeTask( task, ClusterTask.getDefaultTaskConfig(false) );
 	}
 
 	protected void initialize() {
@@ -411,20 +414,6 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 
 		public String getTitle() {
 			return "Creating new network";
-		}
-
-		public JTaskConfig getDefaultTaskConfig() {
-			JTaskConfig result = new JTaskConfig();
-	
-			result.displayCancelButton(false);
-			result.displayCloseButton(false);
-			result.displayStatus(true);
-			result.displayTimeElapsed(false);
-			result.setAutoDispose(true);
-			result.setModal(false);
-			result.setOwner(Cytoscape.getDesktop());
-	
-			return result;
 		}
 
 	}

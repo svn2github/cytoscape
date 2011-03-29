@@ -40,6 +40,7 @@ import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.layout.Tunable;
 import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
 
 import java.lang.Math;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ import java.beans.PropertyChangeSupport;
 import javax.swing.JPanel;
 
 import clusterMaker.ClusterMaker;
+import clusterMaker.ui.ClusterTask;
 
 /**
  * This abstract class is the base class for all of the network clusterers provided by
@@ -73,6 +75,9 @@ public abstract class AbstractNetworkClusterer extends AbstractClusterAlgorithm 
 			}
 		}
 	}
+
+	// We don't want to autodispose our task monitors
+	public JTaskConfig getDefaultTaskConfig() { return ClusterTask.getDefaultTaskConfig(true); }
 
 	protected List<List<CyNode>> createGroups(CyAttributes netAttributes, 
 	                                          String networkID,

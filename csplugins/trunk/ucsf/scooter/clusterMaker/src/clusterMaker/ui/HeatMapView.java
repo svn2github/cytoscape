@@ -67,6 +67,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
@@ -79,6 +80,7 @@ import giny.view.GraphViewChangeEvent;
 import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.ClusterProperties;
 import clusterMaker.algorithms.ClusterAlgorithm;
+import clusterMaker.ui.ClusterTask;
 
 // TreeView imports
 import clusterMaker.treeview.FileSet;
@@ -156,6 +158,8 @@ public class HeatMapView extends TreeViewApp implements Observer,
 	public String getShortName() { return "heatMapView"; }
 
 	public String getName() { return "HeatMapView (unclustered)"; }
+
+	public JTaskConfig getDefaultTaskConfig() { return ClusterTask.getDefaultTaskConfig(false); }
 
 	public void startViz() {
 		startup();

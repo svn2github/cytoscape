@@ -132,7 +132,7 @@ public class ClusterSettingsDialog extends JDialog
 			// Cluster using the current layout
 			updateAllSettings();
 			TaskManager.executeTask( new ClusterTask(currentAlgorithm, this),
-			                         ClusterTask.getDefaultTaskConfig() );
+			                         currentAlgorithm.getDefaultTaskConfig() );
 		} else if (command.equals("visualize")) {
 			visualizer.startViz();
 			// setVisible(false);
