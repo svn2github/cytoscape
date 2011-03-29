@@ -11,6 +11,7 @@ import org.osgi.framework.FrameworkListener;
 import org.springframework.osgi.context.event.OsgiBundleContextRefreshedEvent;
 import org.springframework.osgi.context.event.OsgiBundleApplicationContextEvent;
 import org.springframework.osgi.context.event.OsgiBundleApplicationContextListener;
+import java.awt.Font;
 
 public class SplashManipulator implements 
 	OsgiBundleApplicationContextListener,
@@ -19,6 +20,7 @@ public class SplashManipulator implements
 
 	private final SplashScreen splash;
 	private final Graphics2D g;
+	private final Font font;
 
     public SplashManipulator() {
         splash = SplashScreen.getSplashScreen();
@@ -27,6 +29,7 @@ public class SplashManipulator implements
 		else
         	g = splash.createGraphics();
 		renderSplashFrame("Cytoscape Starting...");
+		font = new Font(Font.MONOSPACED,Font.PLAIN,12);
 	}
 
     public void bundleChanged(BundleEvent event) {
@@ -47,10 +50,12 @@ public class SplashManipulator implements
     private synchronized void renderSplashFrame(String message) {
 		if ( g == null || splash == null || !splash.isVisible() )
 			return;
-        g.setComposite(AlphaComposite.Clear);
+        //g.setComposite(AlphaComposite.Clear);
+        g.setColor(Color.WHITE);
         g.fillRect(20,300,800,40);
         g.setPaintMode();
         g.setColor(Color.BLACK);
+		g.setFont(font);
         g.drawString(message, 20, 320);
 		if ( splash.isVisible() )
 			splash.update();
