@@ -26,11 +26,11 @@ public class TextIcon extends VisualPropertyIcon<Object> {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 
-		Font original = g2d.getFont();
+		final Font original = g2d.getFont();
 		if (value != null) {
 			g2d.setColor(color);
 			g2d.setFont(font);
-			g2d.drawString(value.toString(), x + leftPad, y+height/2+9);
+			g2d.drawString(value.toString(), leftPad, height/2+9);
 		}
 		
 		g2d.setFont(original);

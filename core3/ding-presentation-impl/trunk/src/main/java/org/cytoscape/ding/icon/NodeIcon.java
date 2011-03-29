@@ -35,7 +35,6 @@
 package org.cytoscape.ding.icon;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -110,6 +109,8 @@ public class NodeIcon extends VisualPropertyIcon<Shape> {
 	 * @param y DOCUMENT ME!
 	 */
 	@Override public void paintIcon(Component c, Graphics g, int x, int y) {
+		System.out.println("2################ Icon paint called: " + this.getClass());
+		
 		g2d = (Graphics2D) g;
 
 		final AffineTransform af = new AffineTransform();

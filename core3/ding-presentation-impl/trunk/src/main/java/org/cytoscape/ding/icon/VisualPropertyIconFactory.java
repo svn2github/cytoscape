@@ -6,7 +6,6 @@ import java.awt.Stroke;
 
 import javax.swing.Icon;
 
-import org.cytoscape.ding.LineStyle;
 import org.cytoscape.ding.NodeShape;
 import org.cytoscape.ding.ObjectPosition;
 import org.cytoscape.ding.customgraphics.CyCustomGraphics;
@@ -15,8 +14,6 @@ import org.cytoscape.view.model.VisualProperty;
 
 /**
  * Static factory for icons.
- * 
- * @author kono
  *
  */
 public class VisualPropertyIconFactory {	
