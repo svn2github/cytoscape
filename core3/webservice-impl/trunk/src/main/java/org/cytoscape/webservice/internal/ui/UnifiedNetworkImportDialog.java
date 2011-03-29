@@ -150,6 +150,7 @@ public class UnifiedNetworkImportDialog extends JDialog {
 		
 		datasourceComboBox.removeItem(client);
 		this.clients.remove(client);
+		serviceUIPanels.remove(client);
 		numClients--;
 		
 		if(numClients == 0) {
