@@ -58,11 +58,11 @@ public class TableBrowser
 	private final TableTaskFactory deleteTableTaskFactoryService;
 	private final GUITaskManager guiTaskManagerServiceRef;
 	private final Map<CyTable, TableMetadata> tableToMetadataMap;
-	
+
 	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
 		     final EquationCompiler compiler, final OpenBrowser openBrowser,
 		     final CyNetworkManager networkManager,
-		     final CyTableRowUpdateService tableRowUpdateService, 
+		     final CyTableRowUpdateService tableRowUpdateService,
 		     final TableTaskFactory deleteTableTaskFactoryService,
 		     final GUITaskManager guiTaskManagerServiceRef,
 		     final PopupMenuHelper popupMenuHelper)
@@ -74,10 +74,10 @@ public class TableBrowser
 		this.deleteTableTaskFactoryService = deleteTableTaskFactoryService;
 		this.guiTaskManagerServiceRef = guiTaskManagerServiceRef;
 		this.tableToMetadataMap = new HashMap<CyTable, TableMetadata>();
-		
+
 		this.browserTable = new BrowserTable(openBrowser, compiler, popupMenuHelper);
 		this.tableRowUpdateService = tableRowUpdateService;
-		this.attributeBrowserToolBar = new AttributeBrowserToolBar(serviceRegistrar, compiler, 
+		this.attributeBrowserToolBar = new AttributeBrowserToolBar(serviceRegistrar, compiler,
 				this.deleteTableTaskFactoryService, this.guiTaskManagerServiceRef);
 		this.setLayout(new BorderLayout());
 
@@ -129,7 +129,7 @@ public class TableBrowser
 			browserTable.setModel(new DefaultTableModel());
 			attributeBrowserToolBar.setBrowserTableModel(null);
 		}
-		
+
 		if (table != null && table != currentTable) {
 			if (browserTableModel != null) {
 				final TableColumnModel columnModel =
@@ -149,15 +149,20 @@ public class TableBrowser
 			browserTable.setRowSorter(new TableRowSorter(browserTableModel));
 			attributeBrowserToolBar.setBrowserTableModel(browserTableModel);
 			final TableMetadata tableMetadata = tableToMetadataMap.get(currentTable);
-			if (tableToMetadataMap != null) {
-				final JTable jTable = browserTableModel.getTable();
-				final TableColumnModel columnModel = jTable.getColumnModel();
-				final Iterator<ColumnDescriptor> columnDescIter = tableMetadata.getColumnDescriptors();
-				while (columnDescIter.hasNext()) {
-					final ColumnDescriptor desc = columnDescIter.next();
-					final TableColumn tableColumn = columnModel.getColumn(desc.getColumnIndex());
-//					tableColumn.setModelIndex(...);	
-					tableColumn.setWidth(desc.getColumnWidth());
+			if (tableMetadata != null) {
+                                final JTable jTable = browserTableModel.getTable();
+                                final TableColumnModel columnModel = jTable.getColumnModel();
+                                final Iterator<ColumnDescriptor> columnDescIter = tableMetadata.getColumnDescriptors();
+                                while (columnDescIter.hasNext()) {
+                                        final ColumnDescriptor desc = columnDescIter.next();
+                                        final int savedColumnIndex = desc.getColumnIndex();
+                                        final TableColumn tableColumn = columnModel.getColumn(savedColumnIndex);
+                                        tableColumn.setPreferredWidth(desc.getColumnWidth());
+                                        final int currentColumnIndex =
+						jTable.convertColumnIndexToView(
+							browserTableModel.mapColumnNameToColumnIndex(desc.getColumnName()));
+                                        if (currentColumnIndex != savedColumnIndex)
+                                                jTable.moveColumn(currentColumnIndex, savedColumnIndex);
 				}
 			}
 		}
@@ -168,7 +173,7 @@ public class TableBrowser
 		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
 		comboBoxModel.addAndSetSelectedItem(nodeTable);
 	}
-	
+
 	public void handleEvent(final TableAboutToBeDeletedEvent e) {
 		final CyTable cyTable = e.getTable();
 		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();

@@ -161,7 +161,7 @@ public final class BrowserTableModel extends AbstractTableModel
 
 		return getValidatedObjectAndEditString(row, columnName);
 	}
- 
+
 	CyColumn getColumn(final int columnIndex)  {
 		final String columnName = getColumnName(columnIndex);
 		return attrs.getColumn(columnName);
@@ -308,7 +308,7 @@ public final class BrowserTableModel extends AbstractTableModel
 		throw new IllegalStateException("We should *never* get here!");
 	}
 
-	private int mapColumnNameToColumnIndex(final String columnName) {
+	int mapColumnNameToColumnIndex(final String columnName) {
 		final String primaryKey = attrs.getPrimaryKey().getName();
 		if (columnName.equals(primaryKey))
 			return 0;
@@ -327,7 +327,6 @@ public final class BrowserTableModel extends AbstractTableModel
 		throw new IllegalStateException("We should *never* get here!");
 	}
 
-	
 	private String mapColumnIndexToColumnName(final int index) {
 		final String primaryKey = attrs.getPrimaryKey().getName();
 		final boolean primaryKeyIsVisible = attrNamesAndVisibilities.get(0).isVisible();
