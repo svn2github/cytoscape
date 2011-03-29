@@ -96,6 +96,8 @@ public class DiscreteTrackRenderer<K, V> extends JComponent implements
 
 	private final EditorValueRangeTracer tracer;
 	private final Map<V, Icon> iconMap;
+	
+	private final RenderingEngine<CyNetwork> engine;
 
 	/**
 	 * 
@@ -119,6 +121,7 @@ public class DiscreteTrackRenderer<K, V> extends JComponent implements
 		this.below = below;
 		this.above = above;
 		this.tracer = tracer;
+		this.engine = engine;
 
 		this.vp = mapping.getVisualProperty();
 		final Range<V> rangeObject = vp.getRange();
@@ -522,9 +525,14 @@ public class DiscreteTrackRenderer<K, V> extends JComponent implements
 			return;
 		
 		g.translate(x, y);
-		final Icon icon = iconMap.get(key);
-		if(icon != null)
-			icon.paintIcon(this, g, x, y);
+		
+		Icon icon = iconMap.get(key);
+		if(icon == null) {
+			// Need to render icon.
+			icon = engine.createIcon(vp, key, ICON_SIZE, ICON_SIZE);
+		}
+		
+		icon.paintIcon(this, g, x, y);
 		
 		g.translate(-x, -y);
 		

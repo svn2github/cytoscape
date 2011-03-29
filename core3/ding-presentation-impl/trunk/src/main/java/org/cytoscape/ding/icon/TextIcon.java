@@ -25,6 +25,8 @@ public class TextIcon extends VisualPropertyIcon<Object> {
 		// Turn AA on
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		System.out.println("################ Text Icon paint called: " + value.getClass());
 
 		final Font original = g2d.getFont();
 		if (value != null) {

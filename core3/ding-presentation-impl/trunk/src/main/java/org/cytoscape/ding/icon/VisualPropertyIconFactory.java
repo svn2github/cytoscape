@@ -37,6 +37,7 @@ public class VisualPropertyIconFactory {
 		}  else if(value instanceof Font) {
 			icon = new FontFaceIcon((Font) value, w, h, "");
 		} else {
+			// If not found, use text as icon.
 			icon = new TextIcon(value, w, h, value.toString());
 		}
 		

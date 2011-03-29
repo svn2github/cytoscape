@@ -49,72 +49,60 @@ import javax.swing.JPanel;
 
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
 
-
-
-/**
- *
- */
-public class FontEditor extends JDialog implements ValueEditor<Font>{
+public class FontEditor extends JDialog implements ValueEditor<Font> {
 	private final static long serialVersionUID = 1202339876814272L;
-	
+
 	private Font font;
-	private FontChooser chooser = new FontChooser();
+	private final FontChooser chooser;
 	
 	public FontEditor() {
 		super();
 		this.setModal(true);
+		this.chooser = new FontChooser();
 		init();
 	}
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param f
-	 *            DOCUMENT ME!
-	 * @param begin
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * Display editor for the given data type.
 	 */
-	public Font showEditor(Component parent, Font initialValue) {
+	public Font showEditor(final Component parent, final Font initialValue) {
 		this.setLocationRelativeTo(parent);
 		setModal(true);
 		setAlwaysOnTop(true);
 		font = initialValue;
-		chooser.setSelectedFont(font.deriveFont(1F));
+		if(font != null)
+			chooser.setSelectedFont(font.deriveFont(1F));
 		setVisible(true);
 		return getThisFont();
 	}
 
-
 	private void init() {
-		this.setTitle("Please select a font...");
+		this.setTitle("Please select new font...");
 
 		if (font != null)
 			chooser.setSelectedFont(font.deriveFont(1F));
 
-		// JComboBox face = chooser.getFaceComboBox();
 		JPanel butPanel = new JPanel(false);
 
 		// buttons - OK/Cancel
 		JButton okBut = new JButton("OK");
 		okBut.addActionListener(new AbstractAction() {
-				private final static long serialVersionUID = 1202339876795625L;
+			private final static long serialVersionUID = 1202339876795625L;
 
-				public void actionPerformed(ActionEvent e) {
-					font = chooser.getSelectedFont().deriveFont(12F);
-					dispose();
-				}
-			});
+			public void actionPerformed(ActionEvent e) {
+				font = chooser.getSelectedFont().deriveFont(12F);
+				dispose();
+			}
+		});
 
 		JButton cancelBut = new JButton("Cancel");
 		cancelBut.addActionListener(new AbstractAction() {
-				private final static long serialVersionUID = 1202339876804773L;
+			private final static long serialVersionUID = 1202339876804773L;
 
-				public void actionPerformed(ActionEvent e) {
-					dispose();
-				}
-			});
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
 
 		butPanel.add(okBut);
 		butPanel.add(cancelBut);
@@ -132,12 +120,8 @@ public class FontEditor extends JDialog implements ValueEditor<Font>{
 		return font;
 	}
 
-
-
 	public Class<Font> getType() {
-		// TODO Auto-generated method stub
 		return Font.class;
 	}
-
 
 }

@@ -35,6 +35,7 @@
 package org.cytoscape.ding.impl.visualproperty;
 
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -45,12 +46,16 @@ import org.cytoscape.view.model.Range;
 public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
 
 	private static final Range<Font> FONT_RANGE;
+	private static final int DEF_FONT_SIZE = 12;
 
 	static {
 		final Set<Font> fontSet = new HashSet<Font>();
-		//TODO: register all available system fonts here.
-		FONT_RANGE = new DiscreteRangeImpl<Font>(Font.class,
-				fontSet);
+		final Font[] allFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
+
+		for(Font f: allFonts)
+			fontSet.add(f.deriveFont(DEF_FONT_SIZE));
+		
+		FONT_RANGE = new DiscreteRangeImpl<Font>(Font.class,fontSet);
 	}
 
 	public FontTwoDVisualProperty(final Font def, final String id,
