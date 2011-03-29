@@ -71,6 +71,9 @@ public class CyGradientTrackRenderer extends JComponent implements
 	// Preset fonts
 	private static final Font SMALL_FONT = new Font("SansSerif", Font.BOLD, 16);
 	private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
+	
+	// Width of the slider
+	private static final int THUMB_WIDTH = 12;
 
 	private int trackHeight = 40;
 
@@ -119,20 +122,19 @@ public class CyGradientTrackRenderer extends JComponent implements
 	}
 
 	protected void paintComponent(Graphics gfx) {
-		Graphics2D g = (Graphics2D) gfx;
+		final Graphics2D g = (Graphics2D) gfx;
 
 		// Turn AA on
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		double minValue = tracer.getMin(type);
 		double maxValue = tracer.getMax(type);
 		double range = tracer.getRange(type);
 
 		// calculate the track area
-		int thumb_width = 12;
-		int track_width = slider.getWidth() - thumb_width;
-		g.translate(thumb_width / 2, 12);
+		
+		int track_width = slider.getWidth() - THUMB_WIDTH;
+		g.translate(THUMB_WIDTH / 2, 12);
 
 		// get the list of colors
 		List<Thumb<Color>> stops = slider.getModel().getSortedThumbs();
@@ -251,7 +253,7 @@ public class CyGradientTrackRenderer extends JComponent implements
 
 		// draw a border
 		g.draw(rect);
-		g.translate(-thumb_width / 2, -12);
+		g.translate(-THUMB_WIDTH / 2, -12);
 	}
 
 	private static void drawGradient(Graphics2D g, Point2D start, Point2D end,

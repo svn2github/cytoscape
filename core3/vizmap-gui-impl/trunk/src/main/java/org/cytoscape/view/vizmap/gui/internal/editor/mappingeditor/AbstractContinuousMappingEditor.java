@@ -20,7 +20,8 @@ import com.l2fprod.common.beans.editor.AbstractPropertyEditor;
 
 public abstract class AbstractContinuousMappingEditor<K extends Number, V> extends AbstractPropertyEditor {
 	
-	private static final Dimension MIN_SIZE = new Dimension(650, 400);
+	private static final Dimension DEF_SIZE = new Dimension(650, 400);
+	private static final Dimension MIN_SIZE = new Dimension(400, 200);
 	
 	protected ContinuousMapping<K, V> mapping;
 	protected ContinuousMappingEditorPanel<K, V> editorPanel;
@@ -61,7 +62,8 @@ public abstract class AbstractContinuousMappingEditor<K extends Number, V> exten
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.getContentPane().add(editorPanel, BorderLayout.CENTER);
 
-				dialog.setPreferredSize(MIN_SIZE);
+				dialog.setPreferredSize(DEF_SIZE);
+				dialog.setMinimumSize(MIN_SIZE);
 								
 		        dialog.pack();
 		    }

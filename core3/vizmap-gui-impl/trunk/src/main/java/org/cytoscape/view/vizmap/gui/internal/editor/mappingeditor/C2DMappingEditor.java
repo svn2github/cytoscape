@@ -284,7 +284,7 @@ public class C2DMappingEditor<V> extends
 					updateMap();
 
 					slider.setTrackRenderer(new DiscreteTrackRenderer<Number, V>(
-							mapping, below, above, tracer));
+							mapping, below, above, tracer, appManager.getCurrentRenderingEngine()));
 					slider.repaint();
 
 					// Update network
@@ -328,7 +328,7 @@ public class C2DMappingEditor<V> extends
 		 */
 		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
 		DiscreteTrackRenderer<Number, V> dRend = new DiscreteTrackRenderer<Number, V>(
-				mapping, below, above, tracer);
+				mapping, below, above, tracer, appManager.getCurrentRenderingEngine());
 
 		slider.setThumbRenderer(thumbRend);
 		slider.setTrackRenderer(dRend);

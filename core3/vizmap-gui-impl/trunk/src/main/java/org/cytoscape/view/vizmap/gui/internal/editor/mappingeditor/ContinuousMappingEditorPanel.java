@@ -76,6 +76,8 @@ public abstract class ContinuousMappingEditorPanel<K extends Number, V> extends 
 	private static final long serialVersionUID = 2077889066171872186L;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ContinuousMappingEditorPanel.class);
+	
+	protected static final Color BACKGROUND = Color.WHITE;
 
 	protected static final String BELOW_VALUE_CHANGED = "BELOW_VALUE_CHANGED";
 	protected static final String ABOVE_VALUE_CHANGED = "ABOVE_VALUE_CHANGED";
@@ -182,6 +184,8 @@ public abstract class ContinuousMappingEditorPanel<K extends Number, V> extends 
 		mainPanel.setSize(650, 800);
 		mainPanel.setMinimumSize(new Dimension(650, 800));
 		mainPanel.setPreferredSize(new Dimension(650, 800));
+		mainPanel.setBackground(BACKGROUND);
+		this.setBackground(BACKGROUND);
 		
 		abovePanel = new BelowAndAbovePanel(Color.yellow, false, mapping);
 		abovePanel.setName("abovePanel");
@@ -247,7 +251,6 @@ public abstract class ContinuousMappingEditorPanel<K extends Number, V> extends 
 			}
 		});
 
-		// New in 2.6
 		minMaxButton.setText("Min/Max");
 		minMaxButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
 		minMaxButton.addActionListener(new java.awt.event.ActionListener() {
