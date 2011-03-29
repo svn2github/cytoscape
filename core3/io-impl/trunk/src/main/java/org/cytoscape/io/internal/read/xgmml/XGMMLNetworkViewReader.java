@@ -100,8 +100,8 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
     private final VisualStyleFactory styleFactory;
     private final VisualMappingManager visMappingManager;
     private final CyProperty<Properties> properties;
-
-    private VisualLexicon lexicon;
+    private final VisualLexicon visualLexicon;
+    
     private CyNetworkView view;
 
     private List<GraphicsConverter<?>> nodeConverters;
@@ -130,7 +130,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         this.visMappingManager = visMappingManager;
         this.parser = parser;
         this.properties = properties;
-        this.lexicon = renderingEngineManager.getDefaultVisualLexicon();
+        this.visualLexicon = renderingEngineManager.getDefaultVisualLexicon();
 
         createConverters();
     }
@@ -350,7 +350,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
             if (!buildStyle && !conv.isBypass()) continue;
 
             String key = conv.getKey();
-            VisualProperty vp = lexicon.lookup(type, key);
+            VisualProperty vp = visualLexicon.lookup(type, key);
 
             if (vp != null) {
                 Object value = conv.getValue(attr, attributeValueUtil, vp);

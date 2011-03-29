@@ -3,15 +3,19 @@ package org.cytoscape.io.internal.write.xgmml;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.write.AbstractCyNetworkViewWriterFactory;
 import org.cytoscape.io.write.CyWriter;
+import org.cytoscape.view.presentation.RenderingEngineManager;
 
 public class XGMMLNetworkViewWriterFactory extends AbstractCyNetworkViewWriterFactory {
-	
-	public XGMMLNetworkViewWriterFactory(CyFileFilter filter) {
-		super(filter);
-	}
-	
-	@Override
-	public CyWriter getWriterTask() {
-		return new XGMMLWriter(outputStream, view, true);
-	}
+
+    protected RenderingEngineManager renderingEngineManager;
+
+    public XGMMLNetworkViewWriterFactory(CyFileFilter filter, RenderingEngineManager renderingEngineManager) {
+        super(filter);
+        this.renderingEngineManager = renderingEngineManager;
+    }
+
+    @Override
+    public CyWriter getWriterTask() {
+        return new XGMMLWriter(outputStream, renderingEngineManager, view, true);
+    }
 }

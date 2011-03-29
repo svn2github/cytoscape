@@ -282,6 +282,7 @@
 
 	<bean id="xgmmlNetworkViewWriterFactory" class="org.cytoscape.io.internal.write.xgmml.XGMMLNetworkViewWriterFactory">
 		<constructor-arg ref="xgmmlFilter"/>
+		<constructor-arg ref="renderingEngineManagerServiceRef"/>
 	</bean>
 
 	<bean id="cysessionWriterFactory" class="org.cytoscape.io.internal.write.cysession.CysessionWriterFactoryImpl">

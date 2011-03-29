@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.model.CyColumn;
@@ -47,8 +48,12 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
@@ -155,6 +160,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
     private final OutputStream outputStream;
     private final CyNetwork network;
+    private final VisualLexicon visualLexicon;
     private final CyNetworkView networkView;
 
     private boolean isMixed;
@@ -169,11 +175,15 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
     private boolean doFullEncoding;
 
-    public XGMMLWriter(OutputStream outputStream, CyNetworkView networkView, boolean noCytoscapeGraphics) {
+    public XGMMLWriter(final OutputStream outputStream,
+                       final RenderingEngineManager renderingEngineManager,
+                       final CyNetworkView networkView,
+                       final boolean noCytoscapeGraphics) {
         this.outputStream = outputStream;
         this.networkView = networkView;
         this.network = networkView.getModel();
         this.noCytoscapeGraphics = noCytoscapeGraphics;
+        this.visualLexicon = renderingEngineManager.getDefaultVisualLexicon();
 
         // Create our indent string (480 blanks);
         for (int i = 0; i < 20; i++)
@@ -221,8 +231,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
     private void writePreamble() throws IOException {
         String directed = getDirectionality();
         writeElement(XML_STRING + "\n");
-        writeElement("<graph label=\"" + getNetworkName(network) + "\" directed=\"" +
-                     directed + "\" ");
+        writeElement("<graph label=\"" + getNetworkName(network) + "\" directed=\"" + directed + "\" ");
         for (int ns = 0; ns < NAMESPACES.length; ns++)
             writer.write(NAMESPACES[ns] + " ");
         writer.write(">\n");
@@ -414,111 +423,10 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
         //        }
 
         // Output the node graphics if we have a view
-        if (networkView != null) {
-            writeNodeGraphics(node, networkView.getNodeView(node));
-        }
+        if (networkView != null) writeGraphics(networkView.getNodeView(node));
 
         depth--;
         writeElement("</node>\n");
-    }
-
-    /**
-     * Output the node graphics
-    *   <graphics y="17276.9" x="15552.7" width="5" outline="#000000" fill="#44f687" type="diamond" w="35.0" h="35.0">
-    *      <att name="cytoscapeNodeGraphicsAttributes">
-    *         <att value="1.0" name="nodeTransparency"/>
-    *         <att value="Arial Bold-0-6" name="nodeLabelFont"/>
-    *         <att value="solid" name="borderLineType"/>
-    *      </att>
-    *   </graphics>
-     *
-     * @param node the node whose graphics we're outputting
-     * @param nodeView the view for this node
-     *
-     * @throws IOException
-     */
-    private void writeNodeGraphics(CyNode node, View<CyNode> nodeView) throws IOException {
-        if (nodeView == null) return;
-
-        writeElement("<graphics");
-
-        // Node size and position
-        Double size = nodeView.getVisualProperty(TwoDVisualLexicon.NODE_SIZE);
-        Double h = size != null ? size : nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE);
-        Double w = size != null ? size : nodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_SIZE);
-
-        writeAttributePair("h", Double.toString(h));
-        writeAttributePair("w", Double.toString(w));
-        writeAttributePair("x", Double.toString(nodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION)));
-        writeAttributePair("y", Double.toString(nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION)));
-
-        // Node color
-        Paint paint = nodeView.getVisualProperty(TwoDVisualLexicon.NODE_COLOR);
-        writeAttributePair("fill", paint2string(paint, Color.LIGHT_GRAY));
-
-        // TODO fix for new style view
-        //        // In case node is hidden, we temporarily show the node view
-        //        // and then hide it later on.
-        //        boolean rehideNode = false;
-        //        if (nodeView.getWidth() == -1) {
-        //            networkView.showGraphObject(nodeView);
-        //            rehideNode = true;
-        //        }
-        //
-        //        // Node shape
-        //        GraphicsType shape = number2shape(nodeView.getShape());
-        //        if (shape == GraphicsType.PARALLELOGRAM)
-        //            writeAttributePair("type",GraphicsType.RHOMBUS);
-        //        else
-        //            writeAttributePair("type",shape);
-        //
-        //        // Node color
-        //        writeAttributePair("fill", toHexColorString(nodeView.getUnselectedPaint()));
-        //
-        //        // Node border basic info.
-        //        final BasicStroke borderType = (BasicStroke) nodeView.getBorder();
-        //        writeAttributePair("width", Integer.toString(((int)borderType.getLineWidth())));
-        //        writeAttributePair("outline", toHexColorString(nodeView.getBorderPaint()));
-        //
-        //        // Write out the Cytoscape-specific attributes
-        //        if (!noCytoscapeGraphics) {
-        //            // Get the opacity
-        //            Integer tp = ((Color) nodeView.getUnselectedPaint()).getAlpha();
-        //            double transparency = 1.0;
-        //            if (tp != null && tp.intValue() != 255)
-        //                transparency = tp.doubleValue()/255.0;
-        //
-        //            writeAttributePair("cy:nodeTransparency", Double.toString(transparency));
-        //            writeAttributePair("cy:nodeLabelFont", encodeFont(nodeView.getLabel().getFont()));
-        //
-        //            // Where should we store line-type info???
-        //            final float[] dash = borderType.getDashArray();
-        //
-        //            if (dash == null) {
-        //                // CyLogger.getLogger().info("##Border is NORMAL LINE");
-        //                writeAttributePair("cy:borderLineType", "solid");
-        //            } else {
-        //                // CyLogger.getLogger().info("##Border is DASHED LINE");
-        //                String dashArray = null;
-        //                final StringBuilder dashBuf = new StringBuilder();
-        //
-        //                for (int i = 0; i < dash.length; i++) {
-        //                    dashBuf.append(Double.toString(dash[i]));
-        //
-        //                    if (i < (dash.length - 1)) {
-        //                        dashBuf.append(",");
-        //                    }
-        //                }
-        //
-        //                dashArray = dashBuf.toString();
-        //                writeAttributePair("cy:borderLineType", dashArray);
-        //            }
-        //        }
-        //
-        //        if ( rehideNode )
-        //            networkView.hideGraphObject(nodeView);
-
-        writer.write("/>\n");
     }
 
     /*
@@ -592,73 +500,85 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
             writeAttribute(curEdge.getCyRow(), column.getName());
 
         // Write the edge graphics
-        if (networkView != null) writeEdgeGraphics(curEdge, networkView.getEdgeView(curEdge));
+        if (networkView != null) writeGraphics(networkView.getEdgeView(curEdge));
 
         depth--;
         writeElement("</edge>\n");
     }
 
-    /**
-     * Output the edge graphics
-     *
-     * @param edge the edge whose graphics we're outputting
-     * @param edgeView the view for this edge
-     *
-     * @throws IOException
-     */
-    private void writeEdgeGraphics(CyEdge edge, View<CyEdge> edgeView) throws IOException {
-        if (edgeView == null) return;
+    private void writeGraphics(View<? extends CyTableEntry> view) throws IOException {
+        if (view == null) return;
+        CyTableEntry element = view.getModel();
 
         writeElement("<graphics");
 
-        // Width
-        Double width = edgeView.getVisualProperty(TwoDVisualLexicon.EDGE_WIDTH);
-        if (width == null) width = new Double(0);
+        Set<VisualProperty<?>> visualProperties = visualLexicon.getAllVisualProperties();
 
-        writeAttributePair("width", Integer.toString(width.intValue()));
+        for (VisualProperty vp : visualProperties) {
+            if (!vp.getTargetDataType().isAssignableFrom(element.getClass())) continue;
+            
+            String key = getGraphicsKey(vp);
+            Object value = view.getVisualProperty(vp);
 
-        // Color
-        Paint paint = edgeView.getVisualProperty(TwoDVisualLexicon.EDGE_PAINT);
-        writeAttributePair("fill", paint2string(paint, Color.DARK_GRAY));
-
-        // TODO: Store Cytoscape-local graphical attributes
-        if (!noCytoscapeGraphics) {
-            //            writeAttributePair("cy:sourceArrow", Integer.toString(edgeView.getSourceEdgeEnd()));
-            //            writeAttributePair("cy:targetArrow", Integer.toString(edgeView.getTargetEdgeEnd()));
-            //            writeAttributePair("cy:sourceArrowColor", toHexColorString(edgeView.getSourceEdgeEndPaint()));
-            //            writeAttributePair("cy:targetArrowColor", toHexColorString(edgeView.getTargetEdgeEndPaint()));
-            //
-            //            writeAttributePair("cy:edgeLabelFont", encodeFont(edgeView.getLabel().getFont()));
-            //            writeAttributePair("cy:edgeLineType", LineStyle.extractLineStyle(edgeView.getStroke()).toString());
-            //            // Set curved or not
-            //            if (edgeView.getLineType() == EdgeView.CURVED_LINES) {
-            //                writeAttributePair("cy:curved", "CURVED_LINES");
-            //            } else if (edgeView.getLineType() == EdgeView.STRAIGHT_LINES) {
-            //                writeAttributePair("cy:curved", "STRAIGHT_LINES");
-            //            }
+            if (key != null && value != null) {
+                writeAttributePair(key, vp.toSerializableString(value));
+            }
         }
 
         // TODO: Handle bends
-        //                final Bend bendData = edgeView.getBend();
-        final List<Point2D> handles = new ArrayList<Point2D>(); //final List<Point2D> handles = bendData.getHandles();
-
-        if (handles.size() == 0) {
-            writer.write("/>\n");
-        } else {
-            writer.write(">\n");
-            //            depth++;
-            //        writeElement("<att name=\"edgeBend\">\n");
-            //        depth++;
-            //        for (Point2D handle: handles) {
-            //            String x = Double.toString(handle.getX());
-            //            String y = Double.toString(handle.getY());
-            //            writeElement("<att name=\"handle\" x=\""+x+"\" y=\""+y+"\" />\n");
-            //        }
-            //        depth--;
-            //        writeElement("</att>\n");
-            //        depth--;
-            //        writeElement("</graphics>\n");
+        if (element instanceof CyEdge) {
+            //   final Bend bendData = edgeView.getBend();
+            //   final List<Point2D> handles = new ArrayList<Point2D>(); //final List<Point2D> handles = bendData.getHandles();
+            //
+            //   if (handles.size() == 0) {
+            //       writer.write("/>\n");
+            //   } else {
+            //       writer.write(">\n");
+            //       depth++;
+            //       writeElement("<att name=\"edgeBend\">\n");
+            //       depth++;
+            //       for (Point2D handle: handles) {
+            //           String x = Double.toString(handle.getX());
+            //           String y = Double.toString(handle.getY());
+            //           writeElement("<att name=\"handle\" x=\""+x+"\" y=\""+y+"\" />\n");
+            //       }
+            //       depth--;
+            //       writeElement("</att>\n");
+            //       depth--;
+            //       writeElement("</graphics>\n");
+            //   }
         }
+
+        writer.write("/>\n");
+    }
+
+    private String getGraphicsKey(VisualProperty<?> vp) {
+        //Nodes
+        if (vp.equals(TwoDVisualLexicon.NODE_X_LOCATION)) return "x";
+        if (vp.equals(TwoDVisualLexicon.NODE_Y_LOCATION)) return "y";
+        if (vp.equals(TwoDVisualLexicon.NODE_X_SIZE)) return "w";
+        if (vp.equals(TwoDVisualLexicon.NODE_Y_SIZE)) return "h";
+        if (vp.equals(TwoDVisualLexicon.NODE_COLOR)) return "fill";
+        // TODO: Visual Lexicon has to expose these properties
+        //        if (vp.equals(TwoDVisualLexicon.NODE_SHAPE)) return "type";
+        //        if (vp.equals(TwoDVisualLexicon.NODE_)) return "wth";
+        //        if (vp.equals(TwoDVisualLexicon.NODE_)) return "outline";
+        //        if (vp.equals(TwoDVisualLexicon.NODE_)) return "cy:nodeTransparency";
+        //        if (vp.equals(TwoDVisualLexicon.NODE_)) return "cy:borderLineType";
+        //        if (vp.equals(TwoDVisualLexicon.NODE_)) return "cy:nodeLabelFont";
+
+        // Edges
+        if (vp.equals(TwoDVisualLexicon.EDGE_WIDTH)) return "width";
+        if (vp.equals(TwoDVisualLexicon.EDGE_PAINT)) return "fill";
+        // TODO:
+        //            "cy:sourceArrow"
+        //            "cy:targetArrow"
+        //            "cy:sourceArrowColor"
+        //            "cy:targetArrowColor"
+        //            "cy:edgeLabelFont"
+        //            "cy:edgeLineType"
+
+        return null;
     }
 
     /**
@@ -1070,7 +990,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
     private String getNetworkName(CyNetwork network) {
         String name = encode(network.getCyRow().get("name", String.class));
         if (name == null) name = "UNDEFINED";
-        
+
         return name;
     }
 
