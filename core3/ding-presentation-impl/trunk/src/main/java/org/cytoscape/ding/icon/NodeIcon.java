@@ -108,9 +108,7 @@ public class NodeIcon extends VisualPropertyIcon<Shape> {
 	 * @param x DOCUMENT ME!
 	 * @param y DOCUMENT ME!
 	 */
-	@Override public void paintIcon(Component c, Graphics g, int x, int y) {
-		System.out.println("2################ Icon paint called: " + this.getClass());
-		
+	@Override public void paintIcon(Component c, Graphics g, int x, int y) {		
 		g2d = (Graphics2D) g;
 
 		final AffineTransform af = new AffineTransform();
