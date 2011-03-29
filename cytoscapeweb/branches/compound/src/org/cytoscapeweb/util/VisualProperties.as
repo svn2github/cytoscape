@@ -127,39 +127,39 @@ package org.cytoscapeweb.util {
         
 		// Compound Nodes properties:
 		//--------------------------------
-		public static const C_NODE_SHAPE:String = "compoundNodes.shape";
-		public static const C_NODE_SIZE:String = "compoundNodes.size";
-		public static const C_NODE_COLOR:String = "compoundNodes.color";
-		public static const C_NODE_ALPHA:String = "compoundNodes.opacity";
-		public static const C_NODE_LINE_COLOR:String = "compoundNodes.borderColor";
-		public static const C_NODE_LINE_WIDTH:String = "compoundNodes.borderWidth";
-		public static const C_NODE_IMAGE:String = "compoundNodes.image";
+		public static const C_NODE_PADDING_LEFT:String = "nodes.compoundPaddingLeft";
+		public static const C_NODE_PADDING_RIGHT:String = "nodes.compoundPaddingRight";
+		public static const C_NODE_PADDING_TOP:String = "nodes.compoundPaddingTop";
+		public static const C_NODE_PADDING_BOTTOM:String = "nodes.compoundPaddingBottom";
 		
-		public static const C_NODE_LEFT_MARGIN:String = "compoundNodes.leftMargin";
-		public static const C_NODE_RIGHT_MARGIN:String = "compoundNodes.rightMargin";
-		public static const C_NODE_TOP_MARGIN:String = "compoundNodes.topMargin";
-		public static const C_NODE_BOTTOM_MARGIN:String = "compoundNodes.bottomMargin";
+		public static const C_NODE_SHAPE:String = "nodes.compoundShape";
+		public static const C_NODE_SIZE:String = "nodes.compoundSize";
+		public static const C_NODE_COLOR:String = "nodes.compoundColor";
+		public static const C_NODE_ALPHA:String = "nodes.compoundOpacity";
+		public static const C_NODE_LINE_COLOR:String = "nodes.compoundBorderColor";
+		public static const C_NODE_LINE_WIDTH:String = "nodes.compoundBorderWidth";
+		public static const C_NODE_IMAGE:String = "nodes.compoundImage";		
 		
-		public static const C_NODE_SELECTION_COLOR:String = "compoundNodes.selectionColor";
-		public static const C_NODE_SELECTION_ALPHA:String = "compoundNodes.selectionOpacity";
-		public static const C_NODE_SELECTION_LINE_COLOR:String = "compoundNodes.selectionBorderColor";
-		public static const C_NODE_SELECTION_LINE_WIDTH:String = "compoundNodes.selectionBorderWidth";
-		public static const C_NODE_SELECTION_GLOW_COLOR:String = "compoundNodes.selectionGlowColor";
-		public static const C_NODE_SELECTION_GLOW_ALPHA:String = "compoundNodes.selectionGlowOpacity";
-		public static const C_NODE_SELECTION_GLOW_BLUR:String = "compoundNodes.selectionGlowBlur";
-		public static const C_NODE_SELECTION_GLOW_STRENGTH:String = "compoundNodes.selectionGlowStrength";
+		public static const C_NODE_SELECTION_COLOR:String = "nodes.compoundSelectionColor";
+		public static const C_NODE_SELECTION_ALPHA:String = "nodes.compoundSelectionOpacity";
+		public static const C_NODE_SELECTION_LINE_COLOR:String = "nodes.compoundSelectionBorderColor";
+		public static const C_NODE_SELECTION_LINE_WIDTH:String = "nodes.compoundSelectionBorderWidth";
+		public static const C_NODE_SELECTION_GLOW_COLOR:String = "nodes.compoundSelectionGlowColor";
+		public static const C_NODE_SELECTION_GLOW_ALPHA:String = "nodes.compoundSelectionGlowOpacity";
+		public static const C_NODE_SELECTION_GLOW_BLUR:String = "nodes.compoundSelectionGlowBlur";
+		public static const C_NODE_SELECTION_GLOW_STRENGTH:String = "nodes.compoundSelectionGlowStrength";
 		
-		public static const C_NODE_HOVER_ALPHA:String = "compoundNodes.hoverOpacity";
-		public static const C_NODE_HOVER_LINE_COLOR:String = "compoundNodes.hoverBorderColor";
-		public static const C_NODE_HOVER_LINE_WIDTH:String = "compoundNodes.hoverBorderWidth";
-		public static const C_NODE_HOVER_GLOW_COLOR:String = "compoundNodes.hoverGlowColor";
-		public static const C_NODE_HOVER_GLOW_ALPHA:String = "compoundNodes.hoverGlowOpacity";
-		public static const C_NODE_HOVER_GLOW_BLUR:String = "compoundNodes.hoverGlowBlur";
-		public static const C_NODE_HOVER_GLOW_STRENGTH:String = "compoundNodes.hoverGlowStrength";
+		public static const C_NODE_HOVER_ALPHA:String = "nodes.compoundHoverOpacity";
+		public static const C_NODE_HOVER_LINE_COLOR:String = "nodes.compoundHoverBorderColor";
+		public static const C_NODE_HOVER_LINE_WIDTH:String = "nodes.compoundHoverBorderWidth";
+		public static const C_NODE_HOVER_GLOW_COLOR:String = "nodes.compoundHoverGlowColor";
+		public static const C_NODE_HOVER_GLOW_ALPHA:String = "nodes.compoundHoverGlowOpacity";
+		public static const C_NODE_HOVER_GLOW_BLUR:String = "nodes.compoundHoverGlowBlur";
+		public static const C_NODE_HOVER_GLOW_STRENGTH:String = "nodes.compoundHoverGlowStrength";
 		
-		public static const C_NODE_LABEL_FONT_SIZE:String = "compoundNodes.labelFontSize";
-		public static const C_NODE_LABEL_HANCHOR:String = "compoundNodes.labelHorizontalAnchor";
-		public static const C_NODE_LABEL_VANCHOR:String = "compoundNodes.labelVerticalAnchor";
+		public static const C_NODE_LABEL_FONT_SIZE:String = "nodes.compoundLabelFontSize";
+		public static const C_NODE_LABEL_HANCHOR:String = "nodes.compoundLabelHorizontalAnchor";
+		public static const C_NODE_LABEL_VANCHOR:String = "nodes.compoundLabelVerticalAnchor";
 		
         // TODO rename and create colors, etc:
         public static const EDGE_TOOLTIP_TEXT_MERGE:String = "edges.mergeTooltipText";

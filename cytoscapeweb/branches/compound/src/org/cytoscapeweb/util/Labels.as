@@ -135,7 +135,7 @@ package org.cytoscapeweb.util {
         /**
          * @param propName A node property name.
          * @param d A node or edge sprite.
-         * @return The analogue edge property name name if the DataSprite is an edge
+         * @return The analogue property name if the DataSprite is an edge or a compound node
          */
         private static function _$(propName:String, d:DataSprite):String
 		{
@@ -147,7 +147,13 @@ package org.cytoscapeweb.util {
 			{
 				if ((d as CompoundNodeSprite).isInitialized())
 				{
-					propName = propName.replace("node", "compoundNode");
+					var idx:int = propName.indexOf(".");
+					
+					// convert from node.property to node.compoundProperty
+					
+					propName = propName.substring(0,idx+1) + "compound" +
+						propName.charAt(idx+1).toUpperCase() +
+						propName.substring(idx+2);
 				}
 			}
 			

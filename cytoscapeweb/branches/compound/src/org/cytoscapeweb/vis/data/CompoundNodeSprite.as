@@ -9,7 +9,7 @@ package org.cytoscapeweb.vis.data
 
 	/**
 	 * This class represents a Compound Node with its child nodes, bounds and
-	 * margin values. A compound node can contain any other node (both simple
+	 * padding values. A compound node can contain any other node (both simple
 	 * node and compound node) as its child.
 	 * 
 	 * @author Selcuk Onur Sumer
@@ -26,10 +26,10 @@ package org.cytoscapeweb.vis.data
 		
 		private var _parentId:String;
 		private var _bounds:Rectangle;
-		private var _leftMargin:Number;
-		private var _rightMargin:Number;
-		private var _topMargin:Number;
-		private var _bottomMargin:Number;
+		private var _paddingLeft:Number;
+		private var _paddingRight:Number;
+		private var _paddingTop:Number;
+		private var _paddingBottom:Number;
 		
 		// ===================== [ PUBLIC PROPERTIES ] =========================
 
@@ -42,55 +42,55 @@ package org.cytoscapeweb.vis.data
 		}
 		
 		/**
-		 * Width of the right margin of the compound node
+		 * Width of the right padding of the compound node
 		 */
-		public function get rightMargin():Number
+		public function get paddingRight():Number
 		{
-			return _rightMargin;
+			return _paddingRight;
 		}
 
-		public function set rightMargin(value:Number):void
+		public function set paddingRight(value:Number):void
 		{
-			_rightMargin = value;
+			_paddingRight = value;
 		}
 
 		/**
-		 * Height of the margin of the compound node
+		 * Height of the top padding of the compound node
 		 */
-		public function get topMargin():Number
+		public function get paddingTop():Number
 		{
-			return _topMargin;
+			return _paddingTop;
 		}
 
-		public function set topMargin(value:Number):void
+		public function set paddingTop(value:Number):void
 		{
-			_topMargin = value;
+			_paddingTop = value;
 		}
 
 		/**
-		 * Height of the bottom margin of the compound node
+		 * Height of the bottom padding of the compound node
 		 */
-		public function get bottomMargin():Number
+		public function get paddingBottom():Number
 		{
-			return _bottomMargin;
+			return _paddingBottom;
 		}
 
-		public function set bottomMargin(value:Number):void
+		public function set paddingBottom(value:Number):void
 		{
-			_bottomMargin = value;
+			_paddingBottom = value;
 		}
 
 		/**
-		 * Width of the left margin of the compound node
+		 * Width of the left padding of the compound node
 		 */
-		public function get leftMargin():Number
+		public function get paddingLeft():Number
 		{
-			return _leftMargin;
+			return _paddingLeft;
 		}
 
-		public function set leftMargin(value:Number):void
+		public function set paddingLeft(value:Number):void
 		{
-			_leftMargin = value;
+			_paddingLeft = value;
 		}
 
 		/**
@@ -235,11 +235,11 @@ package org.cytoscapeweb.vis.data
 		
 		public function updateBounds(bounds:Rectangle) : void
 		{
-			// extend bounds by adding margin width & height
-			bounds.x -= this.leftMargin;
-			bounds.y -= this.topMargin;
-			bounds.height += this.topMargin + this.bottomMargin;
-			bounds.width += this.leftMargin + this.rightMargin;
+			// extend bounds by adding padding width & height
+			bounds.x -= this.paddingLeft;
+			bounds.y -= this.paddingTop;
+			bounds.height += this.paddingTop + this.paddingBottom;
+			bounds.width += this.paddingLeft + this.paddingRight;
 			
 			// set bounds
 			_bounds = bounds;

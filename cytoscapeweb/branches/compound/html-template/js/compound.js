@@ -4,6 +4,7 @@
  */
 
 var vis;
+var autoLabel = 1;
 
 //options used for Cytoscape Web
 var options = {
@@ -48,13 +49,25 @@ var options = {
         */
         
         nodes: {
+        	// regular nodes
         	size: 30,
-        	color: "#8a1b0b"
+        	color: "#8a1b0b",
+        	
+        	// compound nodes
+        	compoundPaddingLeft: 20,
+        	compoundPaddingRight: 8,
+        	compoundPaddingTop: 12,
+        	compoundPaddingBottom: 22,
+        	compoundColor: "#9ed1dc",
+        	compoundShape: "RECTANGLE",
+        	compoundLabelFontSize: 15,
+        	compoundLabelVerticalAnchor: "bottom"
         },
         edges: {
         	
         },
         
+        /*
         compoundNodes: {
         	color: "#9ed1dc",
         	shape: "RECTANGLE",        	
@@ -66,6 +79,7 @@ var options = {
         	labelFontSize: 15,
         	labelVerticalAnchor: "bottom"
         }
+        */
     }
 };
 
@@ -196,10 +210,13 @@ function clickNodeToAddEdge(evt)
 function initContextMenu()
 {
 	vis.addContextMenuItem("Add new node", function(evt) {
+		var label = "node " + autoLabel;
+		autoLabel++;
+		
 		var n = vis.addNode(evt.mouseX,
 					evt.mouseY,
 					{ weight: Math.random(),
-					  label: "node"},
+					  label: label},
 					true,
 					evt.target);
 	});

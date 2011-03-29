@@ -59,10 +59,10 @@ package org.cytoscapeweb.util
 				{
 					shape: CompoundNodes.shape,
 					size: CompoundNodes.size,
-					leftMargin: CompoundNodes.leftMargin,
-					rightMargin: CompoundNodes.rightMargin,
-					topMargin: CompoundNodes.topMargin,
-					bottomMargin: CompoundNodes.bottomMargin,
+					paddingLeft: CompoundNodes.paddingLeft,
+					paddingRight: CompoundNodes.paddingRight,
+					paddingTop: CompoundNodes.paddingTop,
+					paddingBottom: CompoundNodes.paddingBottom,
 					fillColor: CompoundNodes.fillColor,
 					lineColor: CompoundNodes.lineColor, 
 					lineWidth: CompoundNodes.lineWidth,
@@ -270,34 +270,34 @@ package org.cytoscapeweb.util
 			return filter;
 		}
 		
-		public static function leftMargin(n:NodeSprite) : Number
+		public static function paddingLeft(n:NodeSprite) : Number
 		{
 			var margin:Number = style.getValue(
-				VisualProperties.C_NODE_LEFT_MARGIN, n.data);
+				VisualProperties.C_NODE_PADDING_LEFT, n.data);
 			
 			return margin;
 		}
 		
-		public static function rightMargin(n:NodeSprite) : Number
+		public static function paddingRight(n:NodeSprite) : Number
 		{
 			var margin:Number = style.getValue(
-				VisualProperties.C_NODE_RIGHT_MARGIN, n.data);
+				VisualProperties.C_NODE_PADDING_RIGHT, n.data);
 			
 			return margin;
 		}
 		
-		public static function topMargin(n:NodeSprite) : Number
+		public static function paddingTop(n:NodeSprite) : Number
 		{
 			var margin:Number = style.getValue(
-				VisualProperties.C_NODE_TOP_MARGIN, n.data);
+				VisualProperties.C_NODE_PADDING_TOP, n.data);
 			
 			return margin;
 		}
 		
-		public static function bottomMargin(n:NodeSprite) : Number
+		public static function paddingBottom(n:NodeSprite) : Number
 		{
 			var margin:Number = style.getValue(
-				VisualProperties.C_NODE_BOTTOM_MARGIN, n.data);
+				VisualProperties.C_NODE_PADDING_BOTTOM, n.data);
 			
 			return margin;
 		}
