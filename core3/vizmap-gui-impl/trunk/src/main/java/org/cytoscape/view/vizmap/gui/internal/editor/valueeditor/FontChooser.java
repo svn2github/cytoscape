@@ -33,7 +33,7 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 //--------------------------------------------------------------------------
 // $Revision: 12968 $
@@ -42,6 +42,8 @@
 //--------------------------------------------------------------------------
 package org.cytoscape.view.vizmap.gui.internal.editor.valueeditor;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ItemEvent;
@@ -53,58 +55,58 @@ import javax.swing.JPanel;
 
 import org.cytoscape.view.vizmap.gui.internal.cellrenderer.FontCellRenderer;
 
-
-//--------------------------------------------------------------------------
 /**
  * Defines a generalized font chooser class. FontChooser contains three
  * components to display font face selection.
  */
 public class FontChooser extends JPanel {
+
 	private final static long serialVersionUID = 1202339876728781L;
+
 	private Font selectedFont;
+
 	protected DefaultComboBoxModel fontFaceModel;
-	protected JComboBox face;
-	protected static final float DEF_SIZE = 12F;
+	protected JComboBox fontSelector;
+
+	protected static final int DEF_SIZE = 12;
+	private static final Dimension SIZE = new Dimension(350, 40);
 	protected static Font[] scaledFonts;
-	protected static final Font DEF_FONT = new Font("SansSerif", Font.PLAIN, 1);
+	protected static final Font DEF_FONT = new Font("SansSerif", Font.PLAIN, DEF_SIZE);
 
 	static {
-		scaledFonts = scaleFonts(GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts(),
-		                         DEF_SIZE);
+		scaledFonts = scaleFonts(GraphicsEnvironment
+				.getLocalGraphicsEnvironment().getAllFonts(), DEF_SIZE);
 	}
 
 	/**
 	 * Create a FontChooser to choose between all fonts available on the system.
 	 */
 	public FontChooser() {
-		this(null);
-	}
-
-	/**
-	 * Creates a new FontChooser object.
-	 *
-	 * @param def  DOCUMENT ME!
-	 */
-	public FontChooser(Font def) {
-		this(scaledFonts, def);
+		this(scaledFonts, DEF_FONT);
 	}
 
 	/**
 	 * Create a FontChooser to choose between the given array of fonts.
 	 */
 	public FontChooser(Font[] srcFonts, Font def) {
+		this.setLayout(new BorderLayout());
 		Font[] displayFonts = scaledFonts;
 
 		if (srcFonts != scaledFonts)
 			displayFonts = scaleFonts(srcFonts, DEF_SIZE);
 
 		this.fontFaceModel = new DefaultComboBoxModel(displayFonts);
-
-		this.face = new JComboBox(fontFaceModel);
-		face.setRenderer(new FontCellRenderer());
+		
+		this.fontSelector = new JComboBox(fontFaceModel);
+		this.fontSelector.setRenderer(new FontCellRenderer());
+		this.fontSelector.setPreferredSize(SIZE);
+		this.fontSelector.setMinimumSize(SIZE);
+		this.setPreferredSize(SIZE);
+		this.setMinimumSize(SIZE);
+		
 
 		// set the prototype display for the combo box
-		face.addItemListener(new FontFaceSelectionListener());
+		fontSelector.addItemListener(new FontFaceSelectionListener());
 
 		// set the currently selected face, default if null
 		if (def == null)
@@ -112,31 +114,27 @@ public class FontChooser extends JPanel {
 		else
 			this.selectedFont = def.deriveFont(1F);
 
-		face.setEditable(true); // so that we may select the default font
-		face.setSelectedItem(this.selectedFont);
-		face.setEditable(false); // so that users aren't allowed to edit the list
+		fontSelector.setEditable(true); // so that we may select the default font
+		fontSelector.setSelectedItem(this.selectedFont);
+		fontSelector.setEditable(false); // so that users aren't allowed to edit the list
 
-		add(face);
+		add(fontSelector, BorderLayout.CENTER);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
+	
 	public JComboBox getFaceComboBox() {
-		return face;
+		return fontSelector;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Font getSelectedFont() {
 		return selectedFont;
 	}
-	
+
 	public void setSelectedFont(Font font) {
 		this.selectedFont = font;
 	}

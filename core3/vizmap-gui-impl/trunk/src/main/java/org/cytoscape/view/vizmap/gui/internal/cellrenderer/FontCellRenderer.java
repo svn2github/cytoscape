@@ -36,58 +36,45 @@
 
 package org.cytoscape.view.vizmap.gui.internal.cellrenderer;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 
-import javax.swing.JTable;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
-import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 
-
-/**
- * DOCUMENT ME!
- *
- * @author kono
- */
-public class FontCellRenderer extends DefaultCellRenderer {
+public class FontCellRenderer extends JLabel implements ListCellRenderer {
+	
 	private final static long serialVersionUID = 120233986931967L;
+	
+	private static final Dimension SIZE = new Dimension(310, 40);
+	private static final int DISPLAY_FONT_SIZE = 18;
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param table
-	 *            DOCUMENT ME!
-	 * @param value
-	 *            DOCUMENT ME!
-	 * @param isSelected
-	 *            DOCUMENT ME!
-	 * @param hasFocus
-	 *            DOCUMENT ME!
-	 * @param row
-	 *            DOCUMENT ME!
-	 * @param column
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-	                                               boolean hasFocus, int row, int column) {
+	@Override
+	public Component getListCellRendererComponent(JList list, Object value,
+			int index, boolean isSelected, boolean cellHasFocus) {
+		
+		this.setPreferredSize(SIZE);
+		this.setMinimumSize(SIZE);
+		
 		if (isSelected) {
-			setBackground(table.getSelectionBackground());
-			setForeground(table.getSelectionForeground());
+			setBackground(list.getSelectionBackground());
+			setForeground(Color.DARK_GRAY);
 		} else {
-			setBackground(table.getBackground());
-			setForeground(table.getForeground());
+			setBackground(list.getBackground());
+			setForeground(Color.DARK_GRAY);
 		}
 
 		if ((value != null) && value instanceof Font) {
 			final Font font = (Font) value;
-			final Font modFont = new Font(font.getFontName(), font.getStyle(), 12);
-
+			final Font modFont = new Font(font.getFontName(), font.getStyle(), DISPLAY_FONT_SIZE);
 			this.setFont(modFont);
-			this.setText(modFont.getFontName());
+			this.setText(modFont.getName());
 		} else
-			this.setValue(null);
+			this.setText("? (Unknown data type)");
 
 		return this;
 	}
