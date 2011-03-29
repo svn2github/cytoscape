@@ -56,7 +56,6 @@ import javax.swing.LayoutStyle;
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
 import org.cytoscape.io.webservice.SearchWebServiceClient;
 import org.cytoscape.io.webservice.WebServiceClient;
-import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
 import org.cytoscape.work.TaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,6 +128,13 @@ public class UnifiedNetworkImportDialog extends JDialog {
 		numClients++;
 		setComponentsEnabled(true);
 		
+		if (client instanceof WebServiceClient) {
+			WebServiceClient service = (WebServiceClient) client;
+			Container container = service.getQueryBuilderGUI();
+			if (container != null) {
+				serviceUIPanels.put(client, container);
+			}
+		}
 		logger.info("New network import client registered: " + client);
 	}
 
