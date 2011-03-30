@@ -15,6 +15,7 @@
 	<modules>
 		<module>impl</module>
 		<module>it</module>
+		<module>performance</module>
 	</modules>
 
 	<scm>
@@ -87,7 +88,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-api</artifactId>
-			<version>3.0.0-alpha3</version>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -105,7 +106,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-api</artifactId>
-			<version>3.0.0-alpha3</version>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>

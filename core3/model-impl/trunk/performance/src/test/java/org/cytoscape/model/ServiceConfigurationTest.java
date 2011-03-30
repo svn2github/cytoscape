@@ -3,8 +3,8 @@ package org.cytoscape.model;
 
 import org.easymock.EasyMock;
 import static org.junit.Assert.*;
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.MavenConfiguredJUnit4TestRunner;
@@ -31,36 +31,49 @@ import java.util.Random;
 
 @RunWith(MavenConfiguredJUnit4TestRunner.class)
 public class ServiceConfigurationTest extends ServiceTestSupport {
+	private CyNetworkFactory networkFactory;
+
 	@Before 
 	public void setup() {
 		registerMockService(Interpreter.class);
 		registerMockService(CyServiceRegistrar.class);
-	}
-
-	@Test
-	public void testAddNode() {
-		final ServiceTracker tracker =
-			new ServiceTracker(bundleContext, CyNetworkFactory.class.getName(), null);
-		tracker.open();
 
 		// Obtain a CyNetworkFactory service:
-		CyNetworkFactory factory = null;
+		final ServiceTracker networkFactoryTracker =
+			new ServiceTracker(bundleContext, CyNetworkFactory.class.getName(), null);
+		networkFactoryTracker.open();
+		networkFactory = null;
 		try {
-			final int WAIT_TIME = 4000; // seconds
-			factory = (CyNetworkFactory)tracker.waitForService(WAIT_TIME);
+			final int WAIT_TIME = 10000; // seconds
+			networkFactory = (CyNetworkFactory)networkFactoryTracker.waitForService(WAIT_TIME);
 		} catch (final InterruptedException ie) {
 			fail("Did not get an instance of a CyNetworkFactory service within the specified amount of time!");
 		}
-		assertNotNull(factory);
+		assertNotNull(networkFactory);
+	}
 
-		final CyNetwork network = factory.getInstance();
-		assertNotNull(network);
+	@Test
+	public void runTestLoop() {
+		final int EFFECTIVE_LOOP_COUNT = 2;
+		for (int i = 0; i <= EFFECTIVE_LOOP_COUNT; ++i) {
+			final long startTime = System.nanoTime();
+			testMiscNodeAndEdgeOps();
+			final long endTime = System.nanoTime();
+			if (i > 0) // We throw the first value away.
+				System.err.println("*** CTRT: " + getClass().getName() + ".testMiscNodeAndEdgeOps "
+						   + (endTime - startTime));
+		}
+	}
+
+	private void testMiscNodeAndEdgeOps() {
+		final CyNetwork network = networkFactory.getInstance();
 
 		final int NODE_COUNT = 50000;
 		final List<CyNode> nodes = new ArrayList<CyNode>(NODE_COUNT);
 		for (int i = 0; i < NODE_COUNT; ++i)
 			nodes.add(network.addNode());
 
+/*
 		boolean isDirected = true;
 		final Random rand = new Random(1234L);
 
@@ -82,5 +95,6 @@ public class ServiceConfigurationTest extends ServiceTestSupport {
 			final CyNode target = nodes.get(i + 1000);
 			network.getConnectingEdgeList(source, target, CyEdge.Type.ANY);
 		}
+*/
 	}
 }

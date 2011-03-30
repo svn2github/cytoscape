@@ -45,6 +45,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+					<argLine>-Xms512m -Xmx8000m</argLine>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -59,12 +60,6 @@
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-impl</artifactId>
 			<version>${version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>model-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
