@@ -24,7 +24,7 @@ import com.l2fprod.common.beans.editor.AbstractPropertyEditor;
 
 public abstract class AbstractContinuousMappingEditor<K extends Number, V> extends AbstractPropertyEditor {
 	
-	private static final Dimension DEF_SIZE = new Dimension(650, 400);
+	private static final Dimension DEF_SIZE = new Dimension(550, 300);
 	private static final Dimension MIN_SIZE = new Dimension(400, 200);
 	
 	protected ContinuousMapping<K, V> mapping;
