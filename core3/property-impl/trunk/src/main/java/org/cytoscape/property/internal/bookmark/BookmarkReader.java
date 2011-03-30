@@ -1,5 +1,6 @@
 package org.cytoscape.property.internal.bookmark;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -14,8 +15,8 @@ import org.cytoscape.session.events.SessionLoadedListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BookmarkReader implements CyProperty<Bookmarks>, SessionLoadedListener {
 
+public final class BookmarkReader implements CyProperty<Bookmarks>, SessionLoadedListener {
 	private static final String BOOKMARK_PACKAGE = Bookmarks.class.getPackage().getName();
 	private static final Logger logger = LoggerFactory.getLogger(BookmarkReader.class);
 
@@ -53,8 +54,14 @@ public class BookmarkReader implements CyProperty<Bookmarks>, SessionLoadedListe
 		}
 	}
 
+	@Override
 	public Bookmarks getProperties() {
 		return bookmarks;
+	}
+
+	@Override
+	public CyProperty.SavePolicy getSavePolicy() {
+		return CyProperty.SavePolicy.SESSION_FILE;
 	}
 
 	@Override
