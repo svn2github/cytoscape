@@ -15,6 +15,7 @@ public class SBMLNetworkViewTaskFactory implements InputStreamTaskFactory {
 	private final CyNetworkViewFactory viewFactory;
 	
 	private InputStream stream;
+	private String inputName;
 
 	public SBMLNetworkViewTaskFactory(CyFileFilter filter, CyNetworkFactory networkFactory, CyNetworkViewFactory viewFactory) {
 		this.networkFactory = networkFactory;
@@ -30,8 +31,9 @@ public class SBMLNetworkViewTaskFactory implements InputStreamTaskFactory {
 		return filter;
 	}
 
-	public void setInputStream(InputStream is) {
+	public void setInputStream(InputStream is, String in) {
 		stream = is;
+		inputName = in;
 	}
 
 }
