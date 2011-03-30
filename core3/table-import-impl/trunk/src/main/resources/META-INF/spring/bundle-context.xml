@@ -42,7 +42,7 @@
 		</constructor-arg>
 		<constructor-arg index="1">
 			<set>
-				<value>text/plain</value>
+				<value>application/excel</value>
 			</set>
 		</constructor-arg>
 		<constructor-arg value="Any text file" />
