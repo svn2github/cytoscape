@@ -1,5 +1,5 @@
-
 package org.cytoscape.io.write;
+
 
 import org.cytoscape.session.CySession;
 import org.cytoscape.io.CyFileFilter;
@@ -8,14 +8,14 @@ import org.cytoscape.work.AbstractTask;
 import java.io.File;
 import java.util.List;
 
+
 /**
  * A utility Task implementation that writes a {@link org.cytoscape.session.CySession} to a file.
  */
 public final class CySessionWriter extends AbstractTask implements CyWriter {
-
 	private final CySession session; 
 	private final CySessionWriterManager writerMgr; 
-	private final File outputFile; 
+	private File outputFile; 
 
 	/**
 	 * @param writerMgr The {@link org.cytoscape.io.write.CySessionWriterManager} contains single expected
@@ -24,7 +24,6 @@ public final class CySessionWriter extends AbstractTask implements CyWriter {
 	 * @param outputFile The file the {@link org.cytoscape.session.CySession} should be written to.
  	 */
 	public CySessionWriter(CySessionWriterManager writerMgr, CySession session, File outputFile) {
-
 		if ( writerMgr == null )
 			throw new NullPointerException("Writer Manager is null");
 		this.writerMgr = writerMgr;
@@ -44,17 +43,25 @@ public final class CySessionWriter extends AbstractTask implements CyWriter {
 	 * @param tm The {@link org.cytoscape.work.TaskMonitor} provided by the TaskManager execution environment.
 	 */
 	public final void run(TaskMonitor tm) throws Exception {
-
 		List<CyFileFilter> filters = writerMgr.getAvailableWriterFilters();
 		if ( filters == null || filters.size() < 1)
 			throw new NullPointerException("No Session file filters found");
 		if ( filters.size() > 1 )
 			throw new IllegalArgumentException("Found too many session filters!");
 
+		if (!HasFileExtension(outputFile.getName()))
+			outputFile = new File(outputFile.getName() + ".cys");
+
 		CyWriter writer = writerMgr.getWriter(session,filters.get(0),outputFile); 
 		if ( writer == null )
 			throw new NullPointerException("No CyWriter found for specified file type!");
 
 		insertTasksAfterCurrentTask( writer );
+	}
+
+	private static boolean HasFileExtension(final String pathName) {
+		final int lastDotPos = pathName.lastIndexOf('.');
+		final int lastSlashPos = pathName.lastIndexOf(File.separatorChar);
+		return lastSlashPos < lastDotPos; // Yes, this also works if one or both of lastSlashPos and lastDotPos are -1!
 	}
 }
