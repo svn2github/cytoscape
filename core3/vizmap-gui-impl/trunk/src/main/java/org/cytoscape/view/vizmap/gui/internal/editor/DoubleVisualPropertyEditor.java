@@ -60,9 +60,10 @@ public class DoubleVisualPropertyEditor extends
 		super(type, new CyDoublePropertyEditor(null));
 		discreteTableCellRenderer = REG.getRenderer(Double.class);
 
-		continuousTableCellRenderer = new ColorContinuousMappingCellRenderer();
 		continuousEditor = new C2CEditor(manager, appManager, selectedManager,
 				editorManager, vmm);
+		//FIXME
+		continuousTableCellRenderer = null;
 	}
 
 }

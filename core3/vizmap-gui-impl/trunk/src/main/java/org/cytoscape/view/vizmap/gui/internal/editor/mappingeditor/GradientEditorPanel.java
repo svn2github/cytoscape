@@ -64,9 +64,10 @@ import org.slf4j.LoggerFactory;
 public class GradientEditorPanel extends
 		ContinuousMappingEditorPanel<Double, Color> implements
 		PropertyChangeListener {
-	
-	private static final Logger logger = LoggerFactory.getLogger(GradientEditorPanel.class);
-	
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(GradientEditorPanel.class);
+
 	private final static long serialVersionUID = 1202339877433771L;
 
 	// Preset colors
@@ -77,6 +78,7 @@ public class GradientEditorPanel extends
 	private final CyApplicationManager appManager;
 	private final ValueEditor<Paint> colorEditor;
 
+	private CyGradientTrackRenderer gRend;
 
 	/**
 	 * Creates a new GradientEditorPanel object.
@@ -86,13 +88,14 @@ public class GradientEditorPanel extends
 	 */
 	public GradientEditorPanel(final VisualStyle style,
 			final ContinuousMapping<Double, Color> mapping, final CyTable attr,
-			final CyApplicationManager appManager, final ValueEditor<Paint> colorEditor, final VisualMappingManager vmm) {
-		
+			final CyApplicationManager appManager,
+			final ValueEditor<Paint> colorEditor, final VisualMappingManager vmm) {
+
 		super(style, mapping, attr, appManager, vmm);
-		
-		if(colorEditor == null)
+
+		if (colorEditor == null)
 			throw new NullPointerException("Color Value Editor is missing.");
-		
+
 		this.colorEditor = colorEditor;
 		this.appManager = appManager;
 
@@ -106,23 +109,21 @@ public class GradientEditorPanel extends
 			addButtonActionPerformed(null);
 	}
 
-	
-	public ImageIcon getLegend(final int width, final int height) {
-		final CyGradientTrackRenderer rend = (CyGradientTrackRenderer) slider
-				.getTrackRenderer();
-		rend.getRendererComponent(slider);
-
-		return rend.getLegend(width, height);
-	}
-
-	
-	public ImageIcon getIcon(final int iconWidth, final int iconHeight) {
-		final CyGradientTrackRenderer rend = (CyGradientTrackRenderer) slider
-				.getTrackRenderer();
-		rend.getRendererComponent(slider);
-
-		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
-	}
+//	public ImageIcon getLegend(final int width, final int height) {
+//		final CyGradientTrackRenderer rend = (CyGradientTrackRenderer) slider
+//				.getTrackRenderer();
+//		rend.getRendererComponent(slider);
+//
+//		return rend.getLegend(width, height);
+//	}
+//
+//	public ImageIcon getIcon(final int iconWidth, final int iconHeight) {
+//		final CyGradientTrackRenderer rend = (CyGradientTrackRenderer) slider
+//				.getTrackRenderer();
+//		rend.getRendererComponent(slider);
+//
+//		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
+//	}
 
 	@Override
 	protected void addButtonActionPerformed(ActionEvent evt) {
@@ -160,7 +161,7 @@ public class GradientEditorPanel extends
 			// Update view.
 			style.apply(appManager.getCurrentNetworkView());
 			appManager.getCurrentNetworkView().updateView();
-			
+
 			return;
 		}
 
@@ -201,19 +202,19 @@ public class GradientEditorPanel extends
 	}
 
 	private void setColor(final Color newColor) {
-		
-		logger.debug("%%%%%%%%% Set color called: New color = " + newColor);
-		
-		slider.getModel().getThumbAt(slider.getSelectedIndex()).setObject(newColor);
 
-		
+		logger.debug("Set color called: New color = " + newColor);
+
+		slider.getModel().getThumbAt(slider.getSelectedIndex())
+				.setObject(newColor);
+
 		int selected = getSelectedPoint(slider.getSelectedIndex());
 
 		mapping.getPoint(selected).getRange().equalValue = newColor;
 
-		final BoundaryRangeValues<Color> brv = new BoundaryRangeValues<Color>(mapping
-				.getPoint(selected).getRange().lesserValue, newColor, mapping
-				.getPoint(selected).getRange().greaterValue);
+		final BoundaryRangeValues<Color> brv = new BoundaryRangeValues<Color>(
+				mapping.getPoint(selected).getRange().lesserValue, newColor,
+				mapping.getPoint(selected).getRange().greaterValue);
 
 		mapping.getPoint(selected).setRange(brv);
 
@@ -230,8 +231,10 @@ public class GradientEditorPanel extends
 				brv.greaterValue = newColor;
 			}
 
-			//mapping.fireStateChanged();
+			// mapping.fireStateChanged();
 
+			// Update view.
+			style.apply(appManager.getCurrentNetworkView());
 			appManager.getCurrentNetworkView().updateView();
 			slider.repaint();
 		}
@@ -248,13 +251,14 @@ public class GradientEditorPanel extends
 			public void mouseClicked(MouseEvent e) {
 
 				final JComponent selectedThumb = slider.getSelectedThumb();
-				
+
 				if (selectedThumb != null) {
 					// final Point location = selectedThumb.getLocation();
 					// double diff = Math.abs(location.getX() - e.getX());
 					if (e.getClickCount() == 2) {
-						
-						final Paint newColor = colorEditor.showEditor(slider, null);
+
+						final Paint newColor = colorEditor.showEditor(slider,
+								null);
 
 						if (newColor != null) {
 							// Set new color
@@ -269,7 +273,7 @@ public class GradientEditorPanel extends
 		final double minValue = tracer.getMin(type);
 
 		if (allPoints != null) {
-			for(final ContinuousMappingPoint<Double, Color> point : allPoints) {
+			for (final ContinuousMappingPoint<Double, Color> point : allPoints) {
 				BoundaryRangeValues<Color> bound = point.getRange();
 
 				slider.getModel()
@@ -304,9 +308,8 @@ public class GradientEditorPanel extends
 		slider.setToolTipText("Double-click handles to edit boundary colors.");
 	}
 
-
 	public void propertyChange(PropertyChangeEvent e) {
-		
+
 		// FIXME!!!!!!!
 		if (e.getPropertyName().equals(BelowAndAbovePanel.COLOR_CHANGED)) {
 			String sourceName = ((BelowAndAbovePanel) e.getSource()).getName();
@@ -323,5 +326,14 @@ public class GradientEditorPanel extends
 
 			repaint();
 		}
+	}
+
+	@Override
+	public ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail) {
+		final CyGradientTrackRenderer rend = (CyGradientTrackRenderer) slider
+				.getTrackRenderer();
+		rend.getRendererComponent(slider);
+		
+		return rend.drawIcon(iconWidth, iconHeight, detail);
 	}
 }

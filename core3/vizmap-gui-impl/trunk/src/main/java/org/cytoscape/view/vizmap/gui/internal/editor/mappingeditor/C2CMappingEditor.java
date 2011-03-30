@@ -287,4 +287,18 @@ public class C2CMappingEditor<V extends Number> extends
 			above = (V) evt.getNewValue();
 		}
 	}
+
+	@Override
+	public ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail) {
+		final TrackRenderer rend = slider.getTrackRenderer();
+
+		if (rend instanceof ContinuousTrackRenderer) {
+			rend.getRendererComponent(slider);
+
+			return ((ContinuousTrackRenderer<Double, V>) rend)
+					.getTrackGraphicIcon(iconWidth, iconHeight);
+		} else {
+			return null;
+		}
+	}
 }

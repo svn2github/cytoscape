@@ -5,8 +5,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.cytoscape.model.CyTableManager;
@@ -33,9 +37,15 @@ public abstract class AbstractContinuousMappingEditor<K extends Number, V> exten
 	
 	protected final VisualMappingManager vmm;
 	
+	private final JLabel iconLabel;
+	
+	private boolean isEditorDialogActive;
+	
 	public AbstractContinuousMappingEditor(final CyTableManager manager, final CyApplicationManager appManager, 
 			final SelectedVisualStyleManager selectedManager, final EditorManager editorManager, final VisualMappingManager vmm) {
 	
+		this.isEditorDialogActive = false;
+		this.iconLabel = new JLabel();
 		this.vmm = vmm;
 		this.manager = manager;
 		this.appManager = appManager;
@@ -43,16 +53,35 @@ public abstract class AbstractContinuousMappingEditor<K extends Number, V> exten
 		this.editorManager = editorManager;
 		
 		editor = new JPanel();
+		((JPanel)editor).setLayout(new BorderLayout());
+		((JPanel)editor).add(iconLabel, BorderLayout.CENTER);
+				
 		this.editor.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseClicked(MouseEvent ev) {
+				
+				// Open only one editor at a time.
+				if(isEditorDialogActive)
+					return;
+				
 				final JDialog editorDialog = new JDialog();
 				initComponents(editorDialog);
+				
+				editorDialog.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent evt) {
+						final Dimension size = editor.getSize();
+						drawIcon(size.width, size.height, false);
+						isEditorDialogActive = false;
+					}
+				});
 				
 				editorDialog.setTitle("Continuous Mapping Editor: Mapping for " + mapping.getVisualProperty().getDisplayName());
 				editorDialog.setLocationRelativeTo(editor);
 				editorDialog.setVisible(true);
+				isEditorDialogActive = true;
 			}
 			
 			private void initComponents(final JDialog dialog) {
@@ -68,8 +97,17 @@ public abstract class AbstractContinuousMappingEditor<K extends Number, V> exten
 		        dialog.pack();
 		    }
 		});
+	}
+	
+	
+	public ImageIcon drawIcon(int width, int height, boolean detail) {
+		if(editorPanel == null)
+			return null;
 		
+		final ImageIcon newIcon = this.editorPanel.drawIcon(width, height, detail);
+		iconLabel.setIcon(newIcon);
 		
+		return newIcon;
 	}
 	
 	

@@ -65,8 +65,9 @@ public class C2DMappingEditor<V> extends
 		ContinuousMappingEditorPanel<Number, V> {
 	private final static long serialVersionUID = 1213748837197780L;
 
-	private static final Logger logger = LoggerFactory.getLogger(C2DMappingEditor.class);
-	
+	private static final Logger logger = LoggerFactory
+			.getLogger(C2DMappingEditor.class);
+
 	private final EditorManager editorManager;
 
 	public C2DMappingEditor(final VisualStyle style,
@@ -74,12 +75,12 @@ public class C2DMappingEditor<V> extends
 			final CyApplicationManager appManager,
 			final VisualMappingManager vmm, final EditorManager editorManager) {
 		super(style, mapping, attr, appManager, vmm);
-				
-		if(editorManager == null)
+
+		if (editorManager == null)
 			throw new NullPointerException("Editor manager is null.");
-		
+
 		this.editorManager = editorManager;
-		
+
 		this.iconPanel.setVisible(false);
 		this.belowPanel.setVisible(false);
 		this.abovePanel.setVisible(false);
@@ -115,7 +116,8 @@ public class C2DMappingEditor<V> extends
 	 * @param type
 	 * @return
 	 */
-	public ImageIcon getLegend(final int width, final int height, final VisualProperty<?> type) {
+	public ImageIcon getLegend(final int width, final int height,
+			final VisualProperty<?> type) {
 
 		if (slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
 			return null;
@@ -284,7 +286,8 @@ public class C2DMappingEditor<V> extends
 					updateMap();
 
 					slider.setTrackRenderer(new DiscreteTrackRenderer<Number, V>(
-							mapping, below, above, tracer, appManager.getCurrentRenderingEngine()));
+							mapping, below, above, tracer, appManager
+									.getCurrentRenderingEngine()));
 					slider.repaint();
 
 					// Update network
@@ -328,7 +331,8 @@ public class C2DMappingEditor<V> extends
 		 */
 		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
 		DiscreteTrackRenderer<Number, V> dRend = new DiscreteTrackRenderer<Number, V>(
-				mapping, below, above, tracer, appManager.getCurrentRenderingEngine());
+				mapping, below, above, tracer,
+				appManager.getCurrentRenderingEngine());
 
 		slider.setThumbRenderer(thumbRend);
 		slider.setTrackRenderer(dRend);
@@ -339,5 +343,14 @@ public class C2DMappingEditor<V> extends
 	public void propertyChange(PropertyChangeEvent arg0) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail) {
+		DiscreteTrackRenderer<Number, V> rend = (DiscreteTrackRenderer<Number, V>) slider
+				.getTrackRenderer();
+		rend.getRendererComponent(slider);
+		
+		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
 	}
 }

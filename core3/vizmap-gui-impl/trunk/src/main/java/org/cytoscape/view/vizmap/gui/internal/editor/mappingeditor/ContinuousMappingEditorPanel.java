@@ -39,6 +39,7 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -398,6 +399,10 @@ public abstract class ContinuousMappingEditorPanel<K extends Number, V> extends 
 
 	abstract protected void addButtonActionPerformed(
 			java.awt.event.ActionEvent evt);
+	
+	// Generate icon from current mapping.
+	abstract public ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail);
+	
 
 	private void initRangeValues() {
 
@@ -547,12 +552,7 @@ public abstract class ContinuousMappingEditorPanel<K extends Number, V> extends 
 		}
 	}
 
-	/**
-	 * Watching spinner
-	 * 
-	 * @author kono
-	 * 
-	 */
+	
 	class SpinnerChangeListener implements ChangeListener {
 		public void stateChanged(ChangeEvent e) {
 			Number newVal = spinnerModel.getNumber();

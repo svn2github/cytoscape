@@ -31,9 +31,7 @@ public final class VizMapPropertySheetTable extends PropertySheetTable {
 
 			final String colorString = Integer.toHexString(fontColor.getRGB());
 
-			/*
-			 * Edit
-			 */
+			
 			if (prop == null)
 				return null;
 

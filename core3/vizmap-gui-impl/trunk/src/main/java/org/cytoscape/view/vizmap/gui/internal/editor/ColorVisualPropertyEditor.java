@@ -64,9 +64,9 @@ public class ColorVisualPropertyEditor extends
 		super(type, new CyColorPropertyEditor());
 
 		discreteTableCellRenderer = REG.getRenderer(Color.class);
-		continuousTableCellRenderer = new ColorContinuousMappingCellRenderer();
+		
 
-		continuousEditor = new GradientEditor(manager, appManager,
-				selectedManager, editorManager, vmm);
+		continuousEditor = new GradientEditor(manager, appManager, selectedManager, editorManager, vmm);
+		continuousTableCellRenderer = new ColorContinuousMappingCellRenderer((GradientEditor) continuousEditor);
 	}
 }

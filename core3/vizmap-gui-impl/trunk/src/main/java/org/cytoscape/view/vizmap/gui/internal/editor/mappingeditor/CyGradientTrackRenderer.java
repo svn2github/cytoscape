@@ -71,24 +71,19 @@ public class CyGradientTrackRenderer extends JComponent implements
 	// Preset fonts
 	private static final Font SMALL_FONT = new Font("SansSerif", Font.BOLD, 16);
 	private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
-	
+
 	// Width of the slider
 	private static final int THUMB_WIDTH = 12;
 
 	private int trackHeight = 40;
 
-	// private Paint checker_paint;
 	private JXMultiThumbSlider<Color> slider;
-
-	// private double minValue;
-	// private double maxValue;
-	// private double range;
+	
 	private Color below;
 	private Color above;
 	private String attrName;
-	
-	private final VisualProperty<Color> type;
 
+	private final VisualProperty<Color> type;
 	private final EditorValueRangeTracer tracer;
 
 	/**
@@ -97,25 +92,18 @@ public class CyGradientTrackRenderer extends JComponent implements
 	 * @param gradientPicker
 	 *            DOCUMENT ME!
 	 */
-	public CyGradientTrackRenderer(final VisualProperty<Color> type, final Color below, final Color above, final String title, final EditorValueRangeTracer tracer) {
-		// checker_paint = ColorUtil.getCheckerPaint();
+	public CyGradientTrackRenderer(final VisualProperty<Color> type,
+			final Color below, final Color above, final String title,
+			final EditorValueRangeTracer tracer) {
 		this.below = below;
 		this.above = above;
 		this.tracer = tracer;
-		// this.minValue = minValue;
-		// this.maxValue = maxValue;
 		this.attrName = title;
 
-		// this.range = Math.abs(maxValue - minValue);
 		this.type = type;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param g
-	 *            DOCUMENT ME!
-	 */
+	
 	public void paint(Graphics g) {
 		super.paint(g);
 		paintComponent(g);
@@ -125,15 +113,16 @@ public class CyGradientTrackRenderer extends JComponent implements
 		final Graphics2D g = (Graphics2D) gfx;
 
 		// Turn AA on
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
 
-		double minValue = tracer.getMin(type);
-		double maxValue = tracer.getMax(type);
-		double range = tracer.getRange(type);
+		final double minValue = tracer.getMin(type);
+		final double maxValue = tracer.getMax(type);
+		final double range = tracer.getRange(type);
 
 		// calculate the track area
-		
-		int track_width = slider.getWidth() - THUMB_WIDTH;
+
+		final int track_width = slider.getWidth() - THUMB_WIDTH;
 		g.translate(THUMB_WIDTH / 2, 12);
 
 		// get the list of colors
@@ -327,55 +316,25 @@ public class CyGradientTrackRenderer extends JComponent implements
 		return null;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param x
-	 *            DOCUMENT ME!
-	 * @param y
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
+	
 	public String getToolTipForCurrentLocation(int x, int y) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param iconWidth
-	 *            DOCUMENT ME!
-	 * @param iconHeight
-	 *            DOCUMENT ME!
-	 * @param mapping
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public ImageIcon getTrackGraphicIcon(int iconWidth, int iconHeight) {
-		return drawIcon(iconWidth, iconHeight, false);
-	}
+	
+//	public ImageIcon getTrackGraphicIcon(int iconWidth, int iconHeight) {
+//		return drawIcon(iconWidth, iconHeight, false);
+//	}
+//
+//
+//	public ImageIcon getLegend(int iconWidth, int iconHeight) {
+//		return drawIcon(iconWidth, iconHeight, true);
+//	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param iconWidth
-	 *            DOCUMENT ME!
-	 * @param iconHeight
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public ImageIcon getLegend(int iconWidth, int iconHeight) {
-		return drawIcon(iconWidth, iconHeight, true);
-	}
-
-	private ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail) {
-		if (slider == null) {
+	public ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail) {
+		if (slider == null)
 			return null;
-		}
 
 		final BufferedImage bi = new BufferedImage(iconWidth, iconHeight,
 				BufferedImage.TYPE_INT_RGB);
