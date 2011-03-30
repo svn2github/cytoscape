@@ -1613,7 +1613,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 		}
 
 		JDialog dlg = (JDialog)this.getParent().getParent().getParent().getParent().getParent().getParent();
-		//dlg.pack();
+		dlg.pack();
 		
 		//pack();
 	}
