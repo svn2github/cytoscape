@@ -91,6 +91,15 @@ public class InterpreterTest extends TestCase {
 		assertEquals(new Double(12.0), interpreter.execute(compiler.getEquation(), nameToDescriptorMap));
 	}
 
+	public void testUnaryPlusAndMinus2() throws Exception {
+		final Map<String, Class<?>> attribNameToTypeMap = new HashMap<String, Class<?>>();
+		attribNameToTypeMap.put("attr1", Long.class);
+		assertTrue(compiler.compile("=-$attr1", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		nameToDescriptorMap.put("attr1", new IdentDescriptor(5L));
+		assertEquals(new Double(-5.0), interpreter.execute(compiler.getEquation(), nameToDescriptorMap));
+	}
+
 	public void testFunctionCall() throws Exception {
 		final Map<String, Class<?>> attribNameToTypeMap = new HashMap<String, Class<?>>();
 		assertTrue(compiler.compile("=42 + log(4 - 2)", attribNameToTypeMap));

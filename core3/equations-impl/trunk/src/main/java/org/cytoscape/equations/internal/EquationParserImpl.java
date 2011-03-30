@@ -39,6 +39,7 @@ import java.util.TreeSet;
 
 import org.cytoscape.equations.EquationParser;
 import org.cytoscape.equations.Function;
+import org.cytoscape.equations.FunctionUtil;
 import org.cytoscape.equations.Node;
 import org.cytoscape.equations.internal.builtins.*;
 import org.cytoscape.equations.internal.parse_tree.*;
@@ -306,10 +307,15 @@ public class EquationParserImpl implements EquationParser {
 	}
 
 	private Node handleUnaryOp(final int sourceLocation, final Token operator, final Node operand) {
-		if (operand.getType() == Boolean.class || operand.getType() == String.class)
+		final Class<?> operandType = operand.getType();
+		if (operandType == Boolean.class || operandType == String.class
+		    || FunctionUtil.isSomeKindOfList(operandType))
 			throw new ArithmeticException(sourceLocation + ": can't apply a unary " + operator.asString()
 			                              + " a boolean, string or list operand!");
-		return new UnaryOpNode(sourceLocation, operator, operand);
+		if (operandType == Double.class)
+			return new UnaryOpNode(sourceLocation, operator, operand);
+		else
+			return new UnaryOpNode(sourceLocation, operator, new FConvNode(operand));
 	}
 
 	/**
