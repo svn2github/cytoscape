@@ -91,7 +91,7 @@ public class ImportNetworkFromPublicDataSetTask extends AbstractLoadNetworkTask 
 			return;
 
 		taskMonitor.setStatusMessage("Finding network reader...");
-		reader = mgr.getReader(url.toURI());
+		reader = mgr.getReader(url.toURI(),url.toString());
 
 		if (cancelled)
 			return;

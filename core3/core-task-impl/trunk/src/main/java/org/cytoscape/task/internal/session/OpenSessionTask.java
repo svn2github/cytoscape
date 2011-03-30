@@ -75,7 +75,7 @@ public class OpenSessionTask extends AbstractTask {
 		if ( file == null )
 			throw new NullPointerException("No file specified!");
 		
-		CySessionReader reader = readerMgr.getReader((file.toURI()));
+		CySessionReader reader = readerMgr.getReader(file.toURI(),file.getName());
 		reader.run(taskMonitor);
 
 		if (cancelled)

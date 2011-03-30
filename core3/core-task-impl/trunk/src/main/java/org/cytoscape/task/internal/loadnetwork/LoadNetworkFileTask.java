@@ -64,7 +64,7 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 		if ( file == null )
 			throw new NullPointerException("No file specified!");
 		
-		reader = mgr.getReader((file.toURI()));
+		reader = mgr.getReader(file.toURI(),file.getName());
 
 		if (cancelled)
 			return;

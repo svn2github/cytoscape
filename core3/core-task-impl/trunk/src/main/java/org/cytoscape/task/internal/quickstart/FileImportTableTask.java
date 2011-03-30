@@ -60,7 +60,7 @@ public class FileImportTableTask extends AbstractTask {
 		
 		taskMonitor.setStatusMessage("Finding Attribute Data Reader...");
 		taskMonitor.setProgress(-1.0);
-		reader = util.getTableReaderManager().getReader(file.toURI());
+		reader = util.getTableReaderManager().getReader(file.toURI(),file.getName());
 
 		if (reader == null)
 			throw new NullPointerException("Failed to find reader for specified file!");
