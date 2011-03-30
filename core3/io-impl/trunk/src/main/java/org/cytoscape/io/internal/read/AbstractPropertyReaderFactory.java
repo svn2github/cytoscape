@@ -39,15 +39,17 @@ public abstract class AbstractPropertyReaderFactory implements InputStreamTaskFa
 	private final CyFileFilter filter;
 
 	protected InputStream inputStream;
+	protected String inputName;
 
 	public AbstractPropertyReaderFactory(CyFileFilter filter) {
 		this.filter = filter;
 	}
 
-	public void setInputStream(InputStream is) {
+	public void setInputStream(InputStream is, String in) {
 		if (is == null)
 			throw new NullPointerException("Input stream is null");
 		inputStream = is;
+		inputName = in;
 	}
 
 	public CyFileFilter getCyFileFilter() {

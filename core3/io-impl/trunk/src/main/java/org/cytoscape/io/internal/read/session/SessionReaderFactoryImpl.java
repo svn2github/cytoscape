@@ -46,6 +46,7 @@ public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 	private final CyPropertyReaderManager propertyReaderMgr;
 	private final CyProperty<Properties> properties;
 	private InputStream inputStream;
+	private String inputName;
 
 	public SessionReaderFactoryImpl(CyFileFilter filter, 
 	                                CyNetworkViewReaderManager netviewReaderMgr, 
@@ -57,10 +58,11 @@ public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 		this.properties = properties;
 	}
 
-	public void setInputStream(InputStream is) {
+	public void setInputStream(InputStream is, String in) {
 		if (is == null)
 			throw new NullPointerException("Input stream is null");
 		inputStream = is;
+		inputName = in;
 	}
 
 	public CyFileFilter getCyFileFilter() {

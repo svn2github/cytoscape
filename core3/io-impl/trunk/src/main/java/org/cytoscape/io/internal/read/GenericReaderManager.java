@@ -61,7 +61,7 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 	 *            File name or null if no reader is capable of reading the file.
 	 * @return GraphReader capable of reading the specified file.
 	 */
-	public R getReader(URI uri) {
+	public R getReader(URI uri, String inputName) {
 		for (T factory : factories) {
 			
 			CyFileFilter cff = factory.getCyFileFilter();
@@ -73,7 +73,7 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 					InputStream stream = uri.toURL().openStream();
 					if ( !stream.markSupported() )
 		                stream = new MarkSupportedInputStream(stream);
-					factory.setInputStream( stream );
+					factory.setInputStream( stream, inputName );
 					return (R)factory.getTaskIterator().next();
 				} catch (IOException e) {
 					logger.warn("Error opening stream to URI: " + uri.toString(), e);
@@ -85,7 +85,7 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 	 	return null;	
 	}
 
-	public R getReader(InputStream stream) {
+	public R getReader(InputStream stream, String inputName) {
 		try {
 
 			if ( !stream.markSupported() )
@@ -100,7 +100,7 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 				// of the first 2KB rather than the stream itself. 
 				if (cff.accepts(CopyInputStream.copyKBytes(stream,2), category)) {
 					logger.debug("successfully matched factory " + factory);
-					factory.setInputStream(stream);
+					factory.setInputStream(stream, inputName);
 					return (R)factory.getTaskIterator().next();	
 				}
 			}

@@ -188,18 +188,18 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 				extractPluginEntry(tmpIs, entryName);
 			} else if (entryName.endsWith(CYSESSION)) {
 				//System.out.println("   extracting session file");
-				extractSessionState(tmpIs);
+				extractSessionState(tmpIs, entryName);
 			} else if (entryName.endsWith(VIZMAP_PROPS)) {
 				//System.out.println("   extracting vizmap props");
-				extractVizmapProps(tmpIs);
+				extractVizmapProps(tmpIs, entryName);
 			} else if (entryName.endsWith(CY_PROPS)) {
 				//System.out.println("   extracting cytoscape props");
-				extractCytoscapeProps(tmpIs);
+				extractCytoscapeProps(tmpIs, entryName);
 			} else if (entryName.endsWith(XGMML_EXT)) {
 				//System.out.println("   extracting network");
 				extractNetwork(tmpIs, entryName);
 			} else if (entryName.endsWith(BOOKMARKS_FILE)) {
-				extractBookmarks(tmpIs);
+				extractBookmarks(tmpIs, entryName);
 				//System.out.println("   extracting bookmarks");
 			} else {
 				logger.warn("Unknown entry found in session zip file!\n" + entryName);
@@ -232,7 +232,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	    // force the vsbSwitch off
 	    prop.setProperty("visualStyleBuilder", "off");
 	    
-		CyNetworkViewReader reader = netviewReaderMgr.getReader(is);
+		CyNetworkViewReader reader = netviewReaderMgr.getReader(is, entryName);
 		reader.run(taskMonitor);
 		networkViews.put(entryName, reader.getNetworkViews());
 		
@@ -287,9 +287,9 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 
 	}
 
-	private void extractVizmapProps(InputStream is) throws Exception {
+	private void extractVizmapProps(InputStream is, String entryName) throws Exception {
 		
-		CyPropertyReader reader = propertyReaderMgr.getReader(is);
+		CyPropertyReader reader = propertyReaderMgr.getReader(is, entryName);
 		if(reader == null){
 			return;
 		}
@@ -297,20 +297,20 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		vizmapProps = (Properties) reader.getProperty(); 
 	}
 
-	private void extractCytoscapeProps(InputStream is) throws Exception {
-		CyPropertyReader reader = propertyReaderMgr.getReader(is);
+	private void extractCytoscapeProps(InputStream is, String entryName) throws Exception {
+		CyPropertyReader reader = propertyReaderMgr.getReader(is, entryName);
 		reader.run(taskMonitor);
 		cytoscapeProps = (Properties) reader.getProperty(); 
 	}
 
-	private void extractBookmarks(InputStream is) throws Exception {
-		CyPropertyReader reader = propertyReaderMgr.getReader(is);
+	private void extractBookmarks(InputStream is, String entryName) throws Exception {
+		CyPropertyReader reader = propertyReaderMgr.getReader(is, entryName);
 		reader.run(taskMonitor);
 		bookmarks = (Bookmarks) reader.getProperty(); 
 	}
 
-	private void extractSessionState(InputStream is) throws Exception {
-		CyPropertyReader reader = propertyReaderMgr.getReader(is);
+	private void extractSessionState(InputStream is, String entryName) throws Exception {
+		CyPropertyReader reader = propertyReaderMgr.getReader(is, entryName);
 		reader.run(taskMonitor);
 		cysession = (Cysession) reader.getProperty(); 
 	}

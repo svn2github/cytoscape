@@ -39,6 +39,7 @@ public abstract class AbstractTableReaderFactory implements InputStreamTaskFacto
 	private final CyFileFilter filter;
 
 	protected InputStream inputStream;
+	protected String inputName;
 	protected final CyTableFactory tableFactory;
 
 	public AbstractTableReaderFactory(CyFileFilter filter, CyTableFactory tableFactory) {
@@ -51,10 +52,11 @@ public abstract class AbstractTableReaderFactory implements InputStreamTaskFacto
 		this.tableFactory = tableFactory;
 	}
 
-	public void setInputStream(InputStream is) {
+	public void setInputStream(InputStream is, String in) {
 		if (is == null)
 			throw new NullPointerException("Input stream is null");
 		inputStream = is;
+		inputName = in;
 	}
 
 	public CyFileFilter getCyFileFilter() {

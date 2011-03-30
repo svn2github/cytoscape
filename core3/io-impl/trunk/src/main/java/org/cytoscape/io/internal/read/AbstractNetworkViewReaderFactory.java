@@ -42,6 +42,7 @@ public abstract class AbstractNetworkViewReaderFactory implements InputStreamTas
     protected final CyNetworkFactory     cyNetworkFactory;
 
     protected InputStream                inputStream;
+    protected String                     inputName;
 
     public AbstractNetworkViewReaderFactory(CyFileFilter filter,
                                             CyNetworkViewFactory cyNetworkViewFactory,
@@ -51,9 +52,10 @@ public abstract class AbstractNetworkViewReaderFactory implements InputStreamTas
         this.cyNetworkFactory = cyNetworkFactory;
     }
 
-    public void setInputStream(InputStream is) {
+    public void setInputStream(InputStream is, String in) {
         if (is == null) throw new NullPointerException("Input stream is null");
         inputStream = is;
+		inputName = in;
     }
 
     public CyFileFilter getCyFileFilter() {
