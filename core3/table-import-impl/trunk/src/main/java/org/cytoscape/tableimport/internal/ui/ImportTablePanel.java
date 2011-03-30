@@ -128,6 +128,7 @@ import org.cytoscape.work.Task;
 import org.jdesktop.layout.GroupLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.swing.JDialog;
 
 /**
  * Main UI for Table Import.
@@ -1611,6 +1612,9 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 			ontology2annotationPanel.setVisible(false);
 		}
 
+		JDialog dlg = (JDialog)this.getParent().getParent().getParent().getParent().getParent().getParent();
+		//dlg.pack();
+		
 		//pack();
 	}
 
@@ -2207,6 +2211,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 			textImportOptionPanel.setVisible(false);
 		}
 
+		((JDialog)this.getParent().getParent().getParent().getParent().getParent().getParent()).pack();
 		//pack();
 	}
 
