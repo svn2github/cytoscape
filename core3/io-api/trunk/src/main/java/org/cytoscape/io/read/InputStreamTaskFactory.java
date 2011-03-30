@@ -15,6 +15,7 @@ public interface InputStreamTaskFactory extends TaskFactory, CyFileFilterProvide
 	 * Sets the input stream that will be read by the Reader created from
 	 * this factory.
 	 * @param is The {@link java.io.InputStream} to be read.
+	 * @param inputName The name of the input. 
 	 */
-	void setInputStream(InputStream is);
+	void setInputStream(InputStream is, String inputName);
 }
