@@ -16,6 +16,7 @@ public class PsiMiNetworkViewTaskFactory implements InputStreamTaskFactory {
 	private final CyFileFilter filter;
 	
 	private InputStream inputStream;
+	private String inputName;
 
 	public PsiMiNetworkViewTaskFactory(CyFileFilter filter, CyNetworkFactory networkFactory, CyNetworkViewFactory networkViewFactory, CyLayouts layouts) {
 		this.filter = filter;
@@ -35,7 +36,8 @@ public class PsiMiNetworkViewTaskFactory implements InputStreamTaskFactory {
 	}
 
 	@Override
-	public void setInputStream(InputStream inputStream) {
+	public void setInputStream(InputStream inputStream, String inputName) {
 		this.inputStream = inputStream;
+		this.inputName = inputName;
 	}
 }

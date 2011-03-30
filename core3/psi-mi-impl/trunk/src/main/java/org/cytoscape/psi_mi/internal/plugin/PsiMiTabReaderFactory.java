@@ -18,6 +18,7 @@ public class PsiMiTabReaderFactory implements InputStreamTaskFactory {
 	private final CyLayouts layouts;
 
 	private InputStream inputStream;
+	private String inputName;
 
 	public PsiMiTabReaderFactory(
 			CyFileFilter filter,
@@ -41,10 +42,11 @@ public class PsiMiTabReaderFactory implements InputStreamTaskFactory {
 	}
 
 	@Override
-	public void setInputStream(InputStream is) {
+	public void setInputStream(InputStream is, String in) {
 		if (is == null)
 			throw new NullPointerException("Input stream is null");
 		this.inputStream = is;
+		this.inputName = in;
 	}
 
 }
