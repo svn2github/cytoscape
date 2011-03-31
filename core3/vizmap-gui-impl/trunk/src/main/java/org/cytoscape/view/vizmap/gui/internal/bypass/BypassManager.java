@@ -15,7 +15,7 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.slf4j.Logger;
@@ -54,8 +54,8 @@ public class BypassManager {
 
 		final VisualLexicon lexicon = factory.getVisualLexicon();
 
-		final VisualProperty<?> nodeRoot = TwoDVisualLexicon.NODE;
-		final VisualProperty<?> edgeRoot = TwoDVisualLexicon.EDGE;
+		final VisualProperty<?> nodeRoot = MinimalVisualLexicon.NODE;
+		final VisualProperty<?> edgeRoot = MinimalVisualLexicon.EDGE;
 
 		// Tree traversal
 		final VisualLexiconNode nodeRootNode = lexicon

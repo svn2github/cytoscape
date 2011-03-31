@@ -46,7 +46,7 @@ import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngineManager;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -273,8 +273,8 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
     private void setDependency(VisualLexicon lexicon, VisualStyle vs, String calcKey, String value) {
         if (calcKey.contains(".nodeSizeLocked")) {
             boolean b = Boolean.parseBoolean(value);
-            lexicon.getVisualLexiconNode(TwoDVisualLexicon.NODE_X_SIZE).setDependency(b);
-            lexicon.getVisualLexiconNode(TwoDVisualLexicon.NODE_Y_SIZE).setDependency(b);
+            lexicon.getVisualLexiconNode(MinimalVisualLexicon.NODE_WIDTH).setDependency(b);
+            lexicon.getVisualLexiconNode(MinimalVisualLexicon.NODE_HEIGHT).setDependency(b);
         }
     }
 }

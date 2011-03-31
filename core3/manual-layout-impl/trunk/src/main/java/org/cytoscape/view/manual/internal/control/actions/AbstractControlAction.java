@@ -42,7 +42,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableUtil;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.session.CyApplicationManager;
 
 
@@ -99,7 +99,7 @@ public abstract class AbstractControlAction extends AbstractAction {
 	 * with special cases.
 	 */
 	protected double getX(View<CyNode> n) {
-		return n.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
+		return n.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public abstract class AbstractControlAction extends AbstractAction {
 	 * with special cases.
 	 */
 	protected double getY(View<CyNode> n) {
-		return n.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
+		return n.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION);
 	}
 
 	private void computeDimensions() {

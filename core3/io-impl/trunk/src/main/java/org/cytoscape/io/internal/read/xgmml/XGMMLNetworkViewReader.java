@@ -67,7 +67,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngineManager;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
@@ -236,7 +236,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 
             // Background color
             Color bgColor = readDataManager.getBackgroundColor();
-            style.setDefaultValue(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT, bgColor);
+            style.setDefaultValue(MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT, bgColor);
 
             visMappingManager.addVisualStyle(style);
             visMappingManager.setVisualStyle(style, view);
@@ -245,9 +245,9 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         }
 
         // Network center and zoom
-        view.setVisualProperty(TwoDVisualLexicon.NETWORK_SCALE_FACTOR, readDataManager.getGraphZoom());
-        view.setVisualProperty(TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION, readDataManager.getGraphCenterX());
-        view.setVisualProperty(TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION, readDataManager.getGraphCenterY());
+        view.setVisualProperty(MinimalVisualLexicon.NETWORK_SCALE_FACTOR, readDataManager.getGraphZoom());
+        view.setVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_X_LOCATION, readDataManager.getGraphCenterX());
+        view.setVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_Y_LOCATION, readDataManager.getGraphCenterY());
     }
 
     /**
@@ -282,8 +282,8 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         double x = attributeValueUtil.getDoubleAttribute(attr, "x");
         double y = attributeValueUtil.getDoubleAttribute(attr, "y");
 
-        nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, x);
-        nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, y);
+        nodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION, x);
+        nodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION, y);
 
         layoutGraphics(attr, nodeView, buildStyle);
     }

@@ -54,7 +54,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngineManager;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
@@ -333,20 +333,20 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
     private void writeNetworkAttributes() throws IOException {
         if (networkView != null) {
             // Get our background color
-            Paint paint = networkView.getVisualProperty(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT);
+            Paint paint = networkView.getVisualProperty(MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT);
             String bgColor = paint2string(paint, Color.WHITE);
 
             writeElement("<att type=\"string\" name=\"" + BACKGROUND + "\" value=\"" + bgColor + "\"/>\n");
 
             // Write the graph zoom
-            final Double zoom = networkView.getVisualProperty(TwoDVisualLexicon.NETWORK_SCALE_FACTOR);
+            final Double zoom = networkView.getVisualProperty(MinimalVisualLexicon.NETWORK_SCALE_FACTOR);
             writeAttributeXML(GRAPH_VIEW_ZOOM, ObjectType.REAL, zoom, true);
 
             // Write the graph center
-            final Double cx = networkView.getVisualProperty(TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION);
+            final Double cx = networkView.getVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_X_LOCATION);
             writeAttributeXML(GRAPH_VIEW_CENTER_X, ObjectType.REAL, cx, true);
 
-            final Double cy = networkView.getVisualProperty(TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION);
+            final Double cy = networkView.getVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_Y_LOCATION);
             writeAttributeXML(GRAPH_VIEW_CENTER_Y, ObjectType.REAL, cy, true);
 
             // TODO: Figure out if our node height and width is locked
@@ -554,11 +554,11 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
     private String getGraphicsKey(VisualProperty<?> vp) {
         //Nodes
-        if (vp.equals(TwoDVisualLexicon.NODE_X_LOCATION)) return "x";
-        if (vp.equals(TwoDVisualLexicon.NODE_Y_LOCATION)) return "y";
-        if (vp.equals(TwoDVisualLexicon.NODE_X_SIZE)) return "w";
-        if (vp.equals(TwoDVisualLexicon.NODE_Y_SIZE)) return "h";
-        if (vp.equals(TwoDVisualLexicon.NODE_COLOR)) return "fill";
+        if (vp.equals(MinimalVisualLexicon.NODE_X_LOCATION)) return "x";
+        if (vp.equals(MinimalVisualLexicon.NODE_Y_LOCATION)) return "y";
+        if (vp.equals(MinimalVisualLexicon.NODE_WIDTH)) return "w";
+        if (vp.equals(MinimalVisualLexicon.NODE_HEIGHT)) return "h";
+        if (vp.equals(MinimalVisualLexicon.NODE_FILL_COLOR)) return "fill";
         // TODO: Visual Lexicon has to expose these properties
         //        if (vp.equals(TwoDVisualLexicon.NODE_SHAPE)) return "type";
         //        if (vp.equals(TwoDVisualLexicon.NODE_)) return "wth";
@@ -568,8 +568,8 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
         //        if (vp.equals(TwoDVisualLexicon.NODE_)) return "cy:nodeLabelFont";
 
         // Edges
-        if (vp.equals(TwoDVisualLexicon.EDGE_WIDTH)) return "width";
-        if (vp.equals(TwoDVisualLexicon.EDGE_PAINT)) return "fill";
+        if (vp.equals(MinimalVisualLexicon.EDGE_WIDTH)) return "width";
+        if (vp.equals(MinimalVisualLexicon.EDGE_PAINT)) return "fill";
         // TODO:
         //            "cy:sourceArrow"
         //            "cy:targetArrow"

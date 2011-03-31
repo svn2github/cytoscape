@@ -1,7 +1,7 @@
 package org.cytoscape.io.internal.write.graphics;
 
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_HEIGHT;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_WIDTH;
+import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.NETWORK_HEIGHT;
+import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.NETWORK_WIDTH;
 
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;

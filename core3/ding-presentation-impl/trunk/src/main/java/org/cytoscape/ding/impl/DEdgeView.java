@@ -51,7 +51,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 
 import org.cytoscape.ding.LineStyle;
 
@@ -1494,13 +1494,13 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 			setSourceEdgeEndPaint((Paint) value);
 		} else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_UNSELECTED_PAINT) {
 			setTargetEdgeEndPaint((Paint) value);
-		} else if (vp == TwoDVisualLexicon.EDGE_SELECTED) {
+		} else if (vp == MinimalVisualLexicon.EDGE_SELECTED) {
 			setSelected((Boolean) value);
 		} else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SHAPE) {
 			setTargetEdgeEnd(((ArrowShape) value).getRendererTypeID());
 		} else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SHAPE) {
 			setSourceEdgeEnd(((ArrowShape) value).getRendererTypeID());
-		} else if (vp == TwoDVisualLexicon.EDGE_LABEL) {
+		} else if (vp == MinimalVisualLexicon.EDGE_LABEL) {
 			setText(value.toString());
 		} else if (vp == DVisualLexicon.EDGE_TOOLTIP) {
 			setToolTip(value.toString());
@@ -1514,9 +1514,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 			setFont((Font) value);
 		} else if (vp == DVisualLexicon.EDGE_LABEL_FONT_SIZE) {
 			setFont(getFont().deriveFont(((Integer) value).floatValue()));
-		} else if (vp == TwoDVisualLexicon.EDGE_LABEL_COLOR) {
+		} else if (vp == MinimalVisualLexicon.EDGE_LABEL_COLOR) {
 			setTextPaint((Paint) value);
-		} else if (vp == TwoDVisualLexicon.NODE_VISIBLE) {
+		} else if (vp == MinimalVisualLexicon.NODE_VISIBLE) {
 			if (((Boolean) value).booleanValue())
 				m_view.showGraphObject(this);
 			else

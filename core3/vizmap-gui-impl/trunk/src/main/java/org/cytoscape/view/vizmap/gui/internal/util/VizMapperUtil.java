@@ -17,7 +17,7 @@ import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 
@@ -32,9 +32,9 @@ public class VizMapperUtil {
 	private static final Map<Class<? extends CyTableEntry>, VisualProperty<Visualizable>> TARGET_TYPE_MAP;
 	static {
 		TARGET_TYPE_MAP = new HashMap<Class<? extends CyTableEntry>, VisualProperty<Visualizable>>();
-		TARGET_TYPE_MAP.put(CyNode.class, TwoDVisualLexicon.NODE);
-		TARGET_TYPE_MAP.put(CyEdge.class, TwoDVisualLexicon.EDGE);
-		TARGET_TYPE_MAP.put(CyNetwork.class, TwoDVisualLexicon.NETWORK);
+		TARGET_TYPE_MAP.put(CyNode.class, MinimalVisualLexicon.NODE);
+		TARGET_TYPE_MAP.put(CyEdge.class, MinimalVisualLexicon.EDGE);
+		TARGET_TYPE_MAP.put(CyNetwork.class, MinimalVisualLexicon.NETWORK);
 	}
 	
 

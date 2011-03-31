@@ -4,7 +4,6 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 public class VisualPropertyUtil {
 	@SuppressWarnings("unchecked")

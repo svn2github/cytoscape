@@ -1,18 +1,11 @@
 package org.cytoscape.view.vizmap;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import java.awt.Color;
-
-import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.property.NullVisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
-import org.cytoscape.view.vizmap.VisualStyle;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public abstract class AbstractVisualStyleTest {

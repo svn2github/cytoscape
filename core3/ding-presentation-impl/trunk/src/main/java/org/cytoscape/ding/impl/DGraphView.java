@@ -103,7 +103,7 @@ import org.cytoscape.view.model.events.FitSelectedEventListener;
 import org.cytoscape.view.model.events.NetworkViewChangeMicroListener;
 import org.cytoscape.view.model.events.NodeViewChangeMicroListener;
 import org.cytoscape.view.presentation.RenderingEngine;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.undo.UndoSupport;
@@ -2793,13 +2793,13 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 				enableEdgeSelection();
 			else
 				disableEdgeSelection();
-		} else if (vp == TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT) {
+		} else if (vp == MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT) {
 			setBackgroundPaint((Paint) value);
-		} else if (vp == TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION) {
+		} else if (vp == MinimalVisualLexicon.NETWORK_CENTER_X_LOCATION) {
 			setCenter(((Double) value).doubleValue(), m_networkCanvas.m_yCenter);
-		} else if (vp == TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION) {
+		} else if (vp == MinimalVisualLexicon.NETWORK_CENTER_Y_LOCATION) {
 			setCenter(m_networkCanvas.m_xCenter, ((Double) value).doubleValue());
-		} else if (vp == TwoDVisualLexicon.NETWORK_SCALE_FACTOR) {
+		} else if (vp == MinimalVisualLexicon.NETWORK_SCALE_FACTOR) {
 			setZoom(((Double) value).doubleValue());
 		}
 	}

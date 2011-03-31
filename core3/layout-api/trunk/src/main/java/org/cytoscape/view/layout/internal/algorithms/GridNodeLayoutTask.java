@@ -39,7 +39,7 @@ import org.cytoscape.view.layout.LayoutTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 
 import org.cytoscape.work.TaskMonitor;
 
@@ -77,8 +77,8 @@ public class GridNodeLayoutTask extends LayoutTask {
 		double initialY = 0.0d;
 		int columns;
 
-		final VisualProperty<Double> xLoc = TwoDVisualLexicon.NODE_X_LOCATION;
-		final VisualProperty<Double> yLoc = TwoDVisualLexicon.NODE_Y_LOCATION;
+		final VisualProperty<Double> xLoc = MinimalVisualLexicon.NODE_X_LOCATION;
+		final VisualProperty<Double> yLoc = MinimalVisualLexicon.NODE_Y_LOCATION;
 
 		// Selected only?
 		if (selectedOnly) {

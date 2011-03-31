@@ -34,7 +34,6 @@
  */
 package org.cytoscape.view.vizmap.gui.editor;
 
-import java.awt.Component;
 import java.beans.PropertyEditor;
 
 import javax.swing.Icon;

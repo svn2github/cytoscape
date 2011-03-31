@@ -45,12 +45,14 @@ import org.cytoscape.view.manual.internal.control.actions.AbstractControlAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 
 /**
  *
  */
 public class HAlignLeft extends AbstractControlAction {
+
+	private static final long serialVersionUID = 6744254664976466345L;
 
 	public HAlignLeft(Icon i,CyApplicationManager appMgr) {
 		super("Horizontal Align Left",i,appMgr);
@@ -58,14 +60,14 @@ public class HAlignLeft extends AbstractControlAction {
 
 	protected void control(List<View<CyNode>> nodes) {
 		for ( View<CyNode> n : nodes ) {
-			double w = n.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION) / 2;
-			n.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, X_min + w);
+			double w = n.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION) / 2;
+			n.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION, X_min + w);
 		}
 	}
 
 	protected double getX(View<CyNode> n) {
-		double x = n.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
-		double w = n.getVisualProperty(TwoDVisualLexicon.NODE_X_SIZE) / 2;
+		double x = n.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
+		double w = n.getVisualProperty(MinimalVisualLexicon.NODE_WIDTH) / 2;
 
 		return x - w;
 	}

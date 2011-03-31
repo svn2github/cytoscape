@@ -8,37 +8,37 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.AbstractVisualLexiconTest;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
-import org.cytoscape.view.presentation.property.ThreeDVisualLexicon;
+import org.cytoscape.view.presentation.property.RichVisualLexicon;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ThreeDVisualLexiconTest extends AbstractVisualLexiconTest {
+public class RichVisualLexiconTest extends AbstractVisualLexiconTest {
 
-	private VisualLexicon threeDLex;
-	private VisualProperty<NullDataType> threeDRoot;
+	private VisualLexicon richLex;
+	private VisualProperty<NullDataType> richRoot;
 
 	@Before
 	public void setUp() throws Exception {
 
 		// Create root node.
-		threeDRoot = new NullVisualProperty("THREE_D_ROOT", "3D Root Visual Property");
+		richRoot = new NullVisualProperty("RICH_ROOT", "Rich Root Visual Property");
 
-		threeDLex = new ThreeDVisualLexicon(threeDRoot);
+		richLex = new RichVisualLexicon(richRoot);
 	}
 
 	@Test
 	public void testLexiconInstances() {
-		assertNotNull(threeDLex);
+		assertNotNull(richLex);
 	}
 
 	@Test
 	public void test2DLexicon() throws Exception {
-		assertEquals(38, threeDLex.getAllVisualProperties().size());
+		assertEquals(33, richLex.getAllVisualProperties().size());
 	}
 
 	@Test
 	public void testTree() throws Exception {
-		testTree(threeDLex);
+		testTree(richLex);
 	}
 
 }

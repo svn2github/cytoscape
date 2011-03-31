@@ -39,8 +39,8 @@
 package org.cytoscape.task.internal.hide;
 
 
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_VISIBLE;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_VISIBLE;
+import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.EDGE_VISIBLE;
+import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.NODE_VISIBLE;
 
 import java.util.Collection;
 

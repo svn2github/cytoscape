@@ -52,7 +52,7 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineManager;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskMonitor;
 
@@ -95,10 +95,10 @@ public class CloneNetworkTask extends AbstractCreationTask {
 			// Copy locaitons since this is controlled outside of visual style.
 			for (final View<CyNode> newNodeView : newView.getNodeViews()) {
 				final View<CyNode> origNodeView = origView.getNodeView( newNodeView.getModel() );
-				newNodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION,
-							      origNodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION));
-				newNodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION,
-							      origNodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION));
+				newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION,
+							      origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION));
+				newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION,
+							      origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
 			}
 
 			vmm.setVisualStyle(vmm.getVisualStyle(origView), newView );

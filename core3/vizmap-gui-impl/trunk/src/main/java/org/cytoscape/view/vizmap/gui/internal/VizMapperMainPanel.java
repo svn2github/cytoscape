@@ -60,7 +60,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.presentation.RenderingEngine;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
@@ -387,7 +387,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		defaultImageButton.setIcon(new ImageIcon(defImage));
 		final VisualStyle currentStyle = manager.getCurrentVisualStyle();
 		defaultImageButton.setBackground((Color) currentStyle
-				.getDefaultValue(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT));
+				.getDefaultValue(MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT));
 
 		defaultViewImagePanel.add(defaultImageButton, BorderLayout.CENTER);
 		defaultImageButton.addMouseListener(defaultViewMouseListener);

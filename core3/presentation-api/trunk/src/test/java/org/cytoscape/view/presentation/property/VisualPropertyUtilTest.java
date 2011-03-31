@@ -7,10 +7,6 @@ import static org.junit.Assert.assertTrue;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.property.DoubleVisualProperty;
-import org.cytoscape.view.presentation.property.NullVisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
-import org.cytoscape.view.presentation.property.VisualPropertyUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,18 +19,18 @@ public class VisualPropertyUtilTest {
 
 	@Before
 	public void setUp() throws Exception {
-		dummy = new DoubleVisualProperty(new Double(10), TwoDVisualLexicon.ARBITRARY_DOUBLE_RANGE, "DUMMY", "Dummy Prop", CyNode.class);
+		dummy = new DoubleVisualProperty(new Double(10), MinimalVisualLexicon.ARBITRARY_DOUBLE_RANGE, "DUMMY", "Dummy Prop", CyNode.class);
 		
 		// Create root node.
 		twoDRoot = new NullVisualProperty("TWO_D_ROOT",
 				"2D Root Visual Property");
 
-		lexicon = new TwoDVisualLexicon(twoDRoot);
+		lexicon = new MinimalVisualLexicon(twoDRoot);
 	}
 
 	@Test
 	public void testIsChildOf1() {
-		assertTrue(VisualPropertyUtil.isChildOf(twoDRoot, TwoDVisualLexicon.EDGE, lexicon));
+		assertTrue(VisualPropertyUtil.isChildOf(twoDRoot, MinimalVisualLexicon.EDGE, lexicon));
 		
 		try {
 			VisualPropertyUtil.isChildOf(twoDRoot, dummy, lexicon);
@@ -42,7 +38,7 @@ public class VisualPropertyUtilTest {
 			assertTrue(e instanceof IllegalArgumentException);
 		}
 		
-		assertFalse(VisualPropertyUtil.isChildOf(TwoDVisualLexicon.NODE, TwoDVisualLexicon.EDGE, lexicon));
+		assertFalse(VisualPropertyUtil.isChildOf(MinimalVisualLexicon.NODE, MinimalVisualLexicon.EDGE, lexicon));
 	}
 	
 	@Test
@@ -52,12 +48,12 @@ public class VisualPropertyUtilTest {
 	
 	@Test
 	public void testIsChildOf3() {
-		assertEquals(true, VisualPropertyUtil.isChildOf(TwoDVisualLexicon.NODE_COLOR, TwoDVisualLexicon.NODE_COLOR, lexicon));
+		assertEquals(true, VisualPropertyUtil.isChildOf(MinimalVisualLexicon.NODE_PAINT, MinimalVisualLexicon.NODE_FILL_COLOR, lexicon));
 	}
 	
 	@Test
 	public void testIsChildOf4() {
-		assertEquals(true, VisualPropertyUtil.isChildOf(TwoDVisualLexicon.NODE_PAINT, TwoDVisualLexicon.NODE_COLOR, lexicon));
+		assertEquals(true, VisualPropertyUtil.isChildOf(MinimalVisualLexicon.NODE_PAINT, MinimalVisualLexicon.NODE_LABEL_COLOR, lexicon));
 	}
 	
 	@Test(expected=NullPointerException.class)

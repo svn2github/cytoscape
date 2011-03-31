@@ -101,7 +101,7 @@ import org.cytoscape.util.swing.DropDownMenuButton;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.RenderingEngine;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 
 
 public class FilterMainPanel extends JPanel implements ActionListener,
@@ -290,7 +290,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			return;
 		}
 		VisualLexicon lexicon = engine.getVisualLexicon();
-		String title = VisualPropertyUtil.get(lexicon, view, "NETWORK_TITLE", TwoDVisualLexicon.NETWORK, String.class);
+		String title = VisualPropertyUtil.get(lexicon, view, "NETWORK_TITLE", MinimalVisualLexicon.NETWORK, String.class);
 		tblFeedBack.getModel().setValueAt(title, 0, 0);
 
 		String nodeStr = "" + cyNetwork.getNodeCount() + "(" + SelectUtil.getSelectedNodeCount(cyNetwork) + ")";

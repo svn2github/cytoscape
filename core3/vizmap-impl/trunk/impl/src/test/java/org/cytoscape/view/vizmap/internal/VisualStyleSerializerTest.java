@@ -14,7 +14,7 @@ import java.util.Properties;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.AbstractVisualStyleSerializerTest;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -54,7 +54,7 @@ public class VisualStyleSerializerTest extends AbstractVisualStyleSerializerTest
 
         final RenderingEngineManager renderingEngineManager = mock(RenderingEngineManager.class);
         NullVisualProperty twoDRoot = new NullVisualProperty("TWO_D_ROOT", "2D Root Visual Property");
-        when(renderingEngineManager.getDefaultVisualLexicon()).thenReturn(new TwoDVisualLexicon(twoDRoot));
+        when(renderingEngineManager.getDefaultVisualLexicon()).thenReturn(new MinimalVisualLexicon(twoDRoot));
 
         final CalculatorConverterFactory calcConvFactory = new CalculatorConverterFactory(discreteMappingFactory,
                                                                                           continuousMappingFactory,

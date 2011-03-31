@@ -42,8 +42,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -75,11 +73,9 @@ import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualLexicon;
-import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngine;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 
 
@@ -163,7 +159,7 @@ public class QuickFindConfigDialog extends JDialog {
 		RenderingEngine<CyNetwork> engine = applicationManager.getCurrentRenderingEngine();
 		VisualLexicon lexicon = engine.getVisualLexicon();
 		CyNetworkView view = applicationManager.getCurrentNetworkView();
-		String title = VisualPropertyUtil.get(lexicon, view, "NETWORK_TITLE", TwoDVisualLexicon.NETWORK, String.class);
+		String title = VisualPropertyUtil.get(lexicon, view, "NETWORK_TITLE", MinimalVisualLexicon.NETWORK, String.class);
 		this.setTitle("Configure Search Options for:  " + title);
 
 		//  If we are working on Linux, set always on top to true.
@@ -695,7 +691,7 @@ class DetermineDistinctValuesTask implements Task {
 		} else {
 			VisualLexicon lexicon = applicationManager.getCurrentRenderingEngine().getVisualLexicon();
 			CyNetworkView view = applicationManager.getCurrentNetworkView();
-			String title = VisualPropertyUtil.get(lexicon, view, "NETWORK_TITLE", TwoDVisualLexicon.NETWORK, String.class);
+			String title = VisualPropertyUtil.get(lexicon, view, "NETWORK_TITLE", MinimalVisualLexicon.NETWORK, String.class);
 			tableModel.setValueAt("No values found in network:  " + title
 			                      + ".  Cannot create index.", 0, 0);
 		}

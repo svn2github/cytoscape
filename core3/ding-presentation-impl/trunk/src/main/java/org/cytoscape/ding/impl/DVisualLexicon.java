@@ -69,10 +69,10 @@ import org.cytoscape.view.presentation.property.DoubleVisualProperty;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
 import org.cytoscape.view.presentation.property.PaintVisualProperty;
 import org.cytoscape.view.presentation.property.StringVisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 
 
-public class DVisualLexicon extends TwoDVisualLexicon {
+public class DVisualLexicon extends MinimalVisualLexicon {
 	
 	private static final int DEF_FONT_SIZE = 12;
 	private static final double DEF_BORDER_WIDTH = 2.0d;
@@ -98,17 +98,17 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 			NodeShape.ROUND_RECT, "NODE_SHAPE", "Node Shape");
 
 	public static final VisualProperty<Paint> NODE_SELECTED_PAINT = new PaintVisualProperty(
-			Color.YELLOW, TwoDVisualLexicon.PAINT_RANGE, "NODE_SELECTED_PAINT", "Node Selected Paint", CyNode.class);
+			Color.YELLOW, MinimalVisualLexicon.PAINT_RANGE, "NODE_SELECTED_PAINT", "Node Selected Paint", CyNode.class);
 	public static final VisualProperty<Paint> NODE_BORDER_PAINT = new PaintVisualProperty(
-			Color.BLACK, TwoDVisualLexicon.PAINT_RANGE, "NODE_BORDER_PAINT", "Node Border Paint", CyNode.class);
+			Color.BLACK, MinimalVisualLexicon.PAINT_RANGE, "NODE_BORDER_PAINT", "Node Border Paint", CyNode.class);
 
 	public static final VisualProperty<Double> NODE_BORDER_WIDTH = new DoubleVisualProperty(
-			DEF_BORDER_WIDTH, TwoDVisualLexicon.NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_BORDER_WIDTH", "Node Border Width", CyNode.class);
+			DEF_BORDER_WIDTH, MinimalVisualLexicon.NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_BORDER_WIDTH", "Node Border Width", CyNode.class);
 	public static final VisualProperty<? extends Stroke> NODE_BORDER_STROKE = new StrokeTwoDVisualProperty(
 			StrokeTwoDVisualProperty.DEFAULT_STROKE, "NODE_BORDER_STROKE", "Node Border Stroke", CyNode.class);
 
 	public static final VisualProperty<String> NODE_TOOLTIP = new StringVisualProperty(
-			"", TwoDVisualLexicon.ARBITRARY_STRING_RANGE, "NODE_TOOLTIP", "Node Tooltip", CyNode.class);
+			"", MinimalVisualLexicon.ARBITRARY_STRING_RANGE, "NODE_TOOLTIP", "Node Tooltip", CyNode.class);
 	
 	public static final VisualProperty<Font> NODE_LABEL_FONT_FACE = new FontTwoDVisualProperty(
 			new Font("SansSerif", Font.PLAIN, DEF_FONT_SIZE),
@@ -215,28 +215,28 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	
 	// Edge VPs
 	public static final VisualProperty<Paint> EDGE_SELECTED_PAINT = new PaintVisualProperty(
-			Color.RED, TwoDVisualLexicon.PAINT_RANGE, "EDGE_SELECTED_PAINT", "Edge Selected Paint", CyEdge.class);
+			Color.RED, MinimalVisualLexicon.PAINT_RANGE, "EDGE_SELECTED_PAINT", "Edge Selected Paint", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_UNSELECTED_PAINT = new PaintVisualProperty(
-			Color.DARK_GRAY, TwoDVisualLexicon.PAINT_RANGE, "EDGE_UNSELECTED_PAINT", "Edge Unselected Paint", CyEdge.class);
+			Color.DARK_GRAY, MinimalVisualLexicon.PAINT_RANGE, "EDGE_UNSELECTED_PAINT", "Edge Unselected Paint", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_STROKE_SELECTED_PAINT = new PaintVisualProperty(
-			Color.RED, TwoDVisualLexicon.PAINT_RANGE, "EDGE_STROKE_SELECTED_PAINT", "Edge Stroke Selected Paint", CyEdge.class);
+			Color.RED, MinimalVisualLexicon.PAINT_RANGE, "EDGE_STROKE_SELECTED_PAINT", "Edge Stroke Selected Paint", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_STROKE_UNSELECTED_PAINT = new PaintVisualProperty(
-			Color.DARK_GRAY, TwoDVisualLexicon.PAINT_RANGE, "EDGE_STROKE_UNSELECTED_PAINT", "Edge Stroke Unselected Paint", CyEdge.class);
+			Color.DARK_GRAY, MinimalVisualLexicon.PAINT_RANGE, "EDGE_STROKE_UNSELECTED_PAINT", "Edge Stroke Unselected Paint", CyEdge.class);
 	
 	
 	public static final VisualProperty<? extends Stroke> EDGE_STROKE = new StrokeTwoDVisualProperty(
 			StrokeTwoDVisualProperty.DEFAULT_STROKE, "EDGE_STROKE", "Edge Stroke", CyEdge.class);
 
 	public static final VisualProperty<Paint> EDGE_SOURCE_ARROW_SELECTED_PAINT = new PaintVisualProperty(
-			Color.YELLOW, TwoDVisualLexicon.PAINT_RANGE, "EDGE_SOURCE_ARROW_SELECTED_PAINT", "Edge Source Arrow Selected Paint", CyEdge.class);
+			Color.YELLOW, MinimalVisualLexicon.PAINT_RANGE, "EDGE_SOURCE_ARROW_SELECTED_PAINT", "Edge Source Arrow Selected Paint", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_TARGET_ARROW_SELECTED_PAINT = new PaintVisualProperty(
-			Color.YELLOW, TwoDVisualLexicon.PAINT_RANGE, "EDGE_TARGET_ARROW_SELECTED_PAINT",
+			Color.YELLOW, MinimalVisualLexicon.PAINT_RANGE, "EDGE_TARGET_ARROW_SELECTED_PAINT",
 			"Edge Target Arrow Selected Paint", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_SOURCE_ARROW_UNSELECTED_PAINT = new PaintVisualProperty(
-			Color.BLACK, TwoDVisualLexicon.PAINT_RANGE, "EDGE_SOURCE_ARROW_UNSELECTED_PAINT",
+			Color.BLACK, MinimalVisualLexicon.PAINT_RANGE, "EDGE_SOURCE_ARROW_UNSELECTED_PAINT",
 			"Edge Source Arrow Unselected Paint", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_TARGET_ARROW_UNSELECTED_PAINT = new PaintVisualProperty(
-			Color.BLACK, TwoDVisualLexicon.PAINT_RANGE, "EDGE_TARGET_ARROW_UNSELECTED_PAINT",
+			Color.BLACK, MinimalVisualLexicon.PAINT_RANGE, "EDGE_TARGET_ARROW_UNSELECTED_PAINT",
 			"Edge Target Arrow Unselected Paint", CyEdge.class);
 
 	public static final VisualProperty<ArrowShape> EDGE_SOURCE_ARROW_SHAPE = new ArrowShapeTwoDVisualProperty(
@@ -247,7 +247,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 			"Edge Target Arrow Shape");
 
 	public static final VisualProperty<String> EDGE_TOOLTIP = new StringVisualProperty(
-			"", TwoDVisualLexicon.ARBITRARY_STRING_RANGE, "EDGE_TOOLTIP", "Edge Tooltip", CyEdge.class);
+			"", MinimalVisualLexicon.ARBITRARY_STRING_RANGE, "EDGE_TOOLTIP", "Edge Tooltip", CyEdge.class);
 
 
 	public static final VisualProperty<Font> EDGE_LABEL_FONT_FACE = new FontTwoDVisualProperty(
@@ -313,7 +313,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 		
 		addVisualProperty(NODE_BORDER_PAINT, NODE_PAINT);
 		
-		addVisualProperty(NODE_TOOLTIP, NODE_TEXT);
+		addVisualProperty(NODE_TOOLTIP, NODE);
 		
 		addVisualProperty(NODE_LABEL_FONT_SIZE, NODE_SIZE);
 		
@@ -382,7 +382,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 		addVisualProperty(EDGE_TARGET_ARROW_UNSELECTED_PAINT, EDGE_UNSELECTED_PAINT);
 		addVisualProperty(EDGE_SOURCE_ARROW_SHAPE, EDGE);
 		addVisualProperty(EDGE_TARGET_ARROW_SHAPE, EDGE);
-		addVisualProperty(EDGE_TOOLTIP, EDGE_TEXT);
+		addVisualProperty(EDGE_TOOLTIP, EDGE);
 		addVisualProperty(EDGE_LABEL_POSITION, EDGE);
 		addVisualProperty(EDGE_LABEL_FONT_FACE, EDGE);
 		addVisualProperty(EDGE_LABEL_FONT_SIZE, EDGE);	

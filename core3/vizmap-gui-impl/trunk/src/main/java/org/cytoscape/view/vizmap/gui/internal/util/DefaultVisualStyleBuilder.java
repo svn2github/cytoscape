@@ -1,14 +1,11 @@
 package org.cytoscape.view.vizmap.gui.internal.util;
 
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_PAINT;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_LABEL;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_LABEL_COLOR;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_LABEL;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_LABEL_COLOR;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_SIZE;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_SIZE;
+import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.*;
+import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.EDGE_LABEL_COLOR;
+import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.EDGE_PAINT;
+import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT;
+import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.NODE_LABEL;
+import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.NODE_LABEL_COLOR;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -91,10 +88,10 @@ public class DefaultVisualStyleBuilder {
 		final VisualStyle newStyle = vsFactory.getInstance(DEFAULT_VS_NAME);
 		
 		// Set node appearance
-		newStyle.setDefaultValue(NODE_COLOR, DEFAULT_NODE_COLOR );
+		newStyle.setDefaultValue(NODE_FILL_COLOR, DEFAULT_NODE_COLOR );
 		newStyle.setDefaultValue(NODE_LABEL_COLOR, DEFAULT_NODE_LABEL_COLOR );
-		newStyle.setDefaultValue(NODE_X_SIZE, DEFAULT_NODE_WIDTH );
-		newStyle.setDefaultValue(NODE_Y_SIZE, DEFAULT_NODE_HEIGHT );
+		newStyle.setDefaultValue(NODE_WIDTH, DEFAULT_NODE_WIDTH );
+		newStyle.setDefaultValue(NODE_HEIGHT, DEFAULT_NODE_HEIGHT );
 		
 		// Set edge appearance
 		newStyle.setDefaultValue(EDGE_PAINT, DEFAULT_EDGE_COLOR );

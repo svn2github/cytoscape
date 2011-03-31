@@ -45,12 +45,14 @@ import org.cytoscape.view.manual.internal.control.actions.AbstractControlAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 
 /**
  *
  */
 public class VAlignBottom extends AbstractControlAction {
+
+	private static final long serialVersionUID = 179061461245367451L;
 
 	public VAlignBottom(Icon i,CyApplicationManager appMgr) {
 		super("Vertical Align Bottom",i,appMgr);
@@ -58,14 +60,14 @@ public class VAlignBottom extends AbstractControlAction {
 
 	protected void control(List<View<CyNode>> nodes) {
 		for ( View<CyNode> n : nodes ) {
-			double h = n.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE) / 2;
-			n.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION,Y_max - h);
+			double h = n.getVisualProperty(MinimalVisualLexicon.NODE_HEIGHT) / 2;
+			n.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION,Y_max - h);
 		}
 	}
 
 	protected double getY(View<CyNode> n) {
-		double y = n.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
-		double h = n.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE) / 2;
+		double y = n.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION);
+		double h = n.getVisualProperty(MinimalVisualLexicon.NODE_HEIGHT) / 2;
 
 		return y + h;
 	}

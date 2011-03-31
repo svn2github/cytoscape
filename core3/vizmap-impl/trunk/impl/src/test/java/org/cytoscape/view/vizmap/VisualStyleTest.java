@@ -1,12 +1,7 @@
 package org.cytoscape.view.vizmap;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
-import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.view.model.NullDataType;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.property.NullVisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.internal.VisualLexiconManager;
 import org.cytoscape.view.vizmap.internal.VisualStyleFactoryImpl;
 import org.junit.After;

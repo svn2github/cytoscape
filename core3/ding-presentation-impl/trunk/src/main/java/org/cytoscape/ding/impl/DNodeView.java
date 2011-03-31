@@ -73,7 +73,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 
 
 /**
@@ -1515,14 +1515,14 @@ public class DNodeView implements NodeView, Label {
 			setShape(((NodeShape) value));
 		} else if (vp == DVisualLexicon.NODE_SELECTED_PAINT) {
 			setSelectedPaint((Paint) value);
-		} else if (vp == TwoDVisualLexicon.NODE_SELECTED) {
+		} else if (vp == MinimalVisualLexicon.NODE_SELECTED) {
 			setSelected(((Boolean) value).booleanValue());
-		} else if (vp == TwoDVisualLexicon.NODE_VISIBLE) {
+		} else if (vp == MinimalVisualLexicon.NODE_VISIBLE) {
 			if (((Boolean) value).booleanValue())
 				graphView.showGraphObject(this);
 			else
 				graphView.hideGraphObject(this);
-		} else if (vp == TwoDVisualLexicon.NODE_COLOR) { // unselected paint
+		} else if (vp == MinimalVisualLexicon.NODE_FILL_COLOR) { // unselected paint
 			setUnselectedPaint((Paint) value);
 		} else if (vp == DVisualLexicon.NODE_BORDER_PAINT) {
 			setBorderPaint((Paint) value);
@@ -1532,22 +1532,22 @@ public class DNodeView implements NodeView, Label {
 			setBorder((Stroke) value);
 		} else if (vp == DVisualLexicon.NODE_TRANSPARENCY) {
 			setTransparency(((Integer) value));
-		} else if (vp == TwoDVisualLexicon.NODE_X_SIZE) {
+		} else if (vp == MinimalVisualLexicon.NODE_WIDTH) {
 			setWidth(((Number) value).doubleValue());
-		} else if (vp == TwoDVisualLexicon.NODE_Y_SIZE) {
+		} else if (vp == MinimalVisualLexicon.NODE_HEIGHT) {
 			setHeight(((Number) value).doubleValue());
-		} else if (vp == TwoDVisualLexicon.NODE_SIZE) {
+		} else if (vp == MinimalVisualLexicon.NODE_SIZE) {
 			setWidth(((Number) value).doubleValue());
 			setHeight(((Number) value).doubleValue());
-		} else if (vp == TwoDVisualLexicon.NODE_LABEL) {
+		} else if (vp == MinimalVisualLexicon.NODE_LABEL) {
 			setText(value.toString());
-		} else if (vp == TwoDVisualLexicon.NODE_X_LOCATION) {
+		} else if (vp == MinimalVisualLexicon.NODE_X_LOCATION) {
 			setXPosition(((Number) value).doubleValue());
-		} else if (vp == TwoDVisualLexicon.NODE_Y_LOCATION) {
+		} else if (vp == MinimalVisualLexicon.NODE_Y_LOCATION) {
 			setYPosition(((Number) value).doubleValue());
 		} else if (vp == DVisualLexicon.NODE_TOOLTIP) {
 			setToolTip((String) value);
-		} else if (vp == TwoDVisualLexicon.NODE_LABEL_COLOR) {
+		} else if (vp == MinimalVisualLexicon.NODE_LABEL_COLOR) {
 			setTextPaint((Paint) value);
 		} else if (vp == DVisualLexicon.NODE_LABEL_FONT_FACE) {
 			setFont((Font) value);
@@ -1611,7 +1611,7 @@ public class DNodeView implements NodeView, Label {
 			CustomGraphic finalCG = newCG;
 			if (sync) {
 				//Size is locked to node size.
-				finalCG = syncSize(customGraphics, newCG, lexicon.getVisualLexiconNode(TwoDVisualLexicon.NODE_X_SIZE).isDepend());
+				finalCG = syncSize(customGraphics, newCG, lexicon.getVisualLexiconNode(MinimalVisualLexicon.NODE_WIDTH).isDepend());
 			}
 //				addCustomGraphic(resized);
 //				dCustomGraphicsSet.add(resized);

@@ -35,19 +35,15 @@
 package org.cytoscape.view.vizmap.internal;
 
 import java.awt.Color;
-import java.awt.Paint;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualLexicon;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.property.PaintVisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
@@ -98,16 +94,14 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	private VisualStyle buildGlobalDefaultStyle(final VisualStyleFactory factory) {
 		final VisualStyle defStyle = factory.getInstance(DEFAULT_STYLE_NAME);
 		
-		defStyle.setDefaultValue(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT, NETWORK_COLOR);
-		defStyle.setDefaultValue(TwoDVisualLexicon.NETWORK_NODE_SELECTED_COLOR, NETWORK_NODE_SELECTED_COLOR);
-		defStyle.setDefaultValue(TwoDVisualLexicon.NETWORK_EDGE_SELECTED_COLOR, NETWORK_EDGE_SELECTED_COLOR);
-		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_COLOR, NODE_COLOR);
-		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_LABEL_COLOR, NODE_LABEL_COLOR);
-		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_X_SIZE, NODE_WIDTH);
-		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_Y_SIZE, NODE_HEIGHT);
-		defStyle.setDefaultValue(TwoDVisualLexicon.EDGE_WIDTH, EDGE_WIDTH);
-		defStyle.setDefaultValue(TwoDVisualLexicon.EDGE_PAINT, EDGE_COLOR);
-		defStyle.setDefaultValue(TwoDVisualLexicon.EDGE_LABEL_COLOR, EDGE_LABEL_COLOR);
+		defStyle.setDefaultValue(MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT, NETWORK_COLOR);
+		defStyle.setDefaultValue(MinimalVisualLexicon.NODE_FILL_COLOR, NODE_COLOR);
+		defStyle.setDefaultValue(MinimalVisualLexicon.NODE_LABEL_COLOR, NODE_LABEL_COLOR);
+		defStyle.setDefaultValue(MinimalVisualLexicon.NODE_WIDTH, NODE_WIDTH);
+		defStyle.setDefaultValue(MinimalVisualLexicon.NODE_HEIGHT, NODE_HEIGHT);
+		defStyle.setDefaultValue(MinimalVisualLexicon.EDGE_WIDTH, EDGE_WIDTH);
+		defStyle.setDefaultValue(MinimalVisualLexicon.EDGE_PAINT, EDGE_COLOR);
+		defStyle.setDefaultValue(MinimalVisualLexicon.EDGE_LABEL_COLOR, EDGE_LABEL_COLOR);
 		
 		return defStyle;
 	}

@@ -75,7 +75,7 @@ import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.model.events.NetworkViewChangeMicroListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -393,8 +393,8 @@ public class NetworkViewManager implements InternalFrameListener,
 			if ((max != null) && Boolean.parseBoolean(max)) {
 				iframe.setMaximum(true);
 			} else {
-				int w = view.getVisualProperty(TwoDVisualLexicon.NETWORK_WIDTH).intValue();
-				int h = view.getVisualProperty(TwoDVisualLexicon.NETWORK_HEIGHT).intValue();
+				int w = view.getVisualProperty(MinimalVisualLexicon.NETWORK_WIDTH).intValue();
+				int h = view.getVisualProperty(MinimalVisualLexicon.NETWORK_HEIGHT).intValue();
 				updateNetworkSize(netModelId, w, h);
 			}
 		} catch (PropertyVetoException pve) {
@@ -410,11 +410,11 @@ public class NetworkViewManager implements InternalFrameListener,
 			public void networkVisualPropertySet(View<CyNetwork> target, VisualProperty<?> vp, Object value) {
 				Long id = target.getModel().getSUID();
 				
-				if (vp.equals(TwoDVisualLexicon.NETWORK_WIDTH)) {
+				if (vp.equals(MinimalVisualLexicon.NETWORK_WIDTH)) {
 					int w = ((Double) value).intValue();
 					int h = iframe.getSize().height;
 					updateNetworkSize(id, w, h);
-				} else if (vp.equals(TwoDVisualLexicon.NETWORK_HEIGHT)) {
+				} else if (vp.equals(MinimalVisualLexicon.NETWORK_HEIGHT)) {
 					int w = iframe.getSize().width;
 					int h = ((Double) value).intValue();
 					updateNetworkSize(id, w, h);

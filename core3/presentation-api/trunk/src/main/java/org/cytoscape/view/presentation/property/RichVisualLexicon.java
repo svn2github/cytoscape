@@ -9,13 +9,13 @@ import org.cytoscape.view.model.VisualProperty;
  * Minimal set of Visual Properties for 3D rendering engines.
  *
  */
-public class ThreeDVisualLexicon extends TwoDVisualLexicon {
+public class RichVisualLexicon extends MinimalVisualLexicon {
 
 	public static final VisualProperty<Double> NODE_Z_LOCATION = new DoubleVisualProperty(
 			0.0, ARBITRARY_DOUBLE_RANGE, "NODE_Z_LOCATION", "Node Z Location", true, CyNode.class);
 
-	public static final VisualProperty<Double> NODE_Z_SIZE = new DoubleVisualProperty(
-			0.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_Z_SIZE", "Node z size (depth)", CyNode.class);
+	public static final VisualProperty<Double> NODE_DEPTH = new DoubleVisualProperty(
+			0.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_DEPTH", "Node Depth", CyNode.class);
 
 	public static final VisualProperty<Double> NETWORK_CENTER_Z_LOCATION = new DoubleVisualProperty(
 			0.0, ARBITRARY_DOUBLE_RANGE, "NETWORK_CENTER_Z_LOCATION", "Network Center Z Location", CyNetwork.class);
@@ -29,13 +29,13 @@ public class ThreeDVisualLexicon extends TwoDVisualLexicon {
 	 * @param root Root node in the lexicon tree.
 	 * 
 	 */
-	public ThreeDVisualLexicon(final VisualProperty<NullDataType> root) {
+	public RichVisualLexicon(final VisualProperty<NullDataType> root) {
 		super(root);
 
-		addVisualProperty(NODE_Z_LOCATION, NODE_LOCATION);
-		addVisualProperty(NODE_Z_SIZE, NODE_SIZE);
+		addVisualProperty(NODE_Z_LOCATION, NODE);
+		addVisualProperty(NODE_DEPTH, NODE_SIZE);
 
-		addVisualProperty(NETWORK_CENTER_Z_LOCATION, NETWORK_CENTER_LOCATION);
+		addVisualProperty(NETWORK_CENTER_Z_LOCATION, NETWORK);
 		addVisualProperty(NETWORK_DEPTH, NETWORK_SIZE);
 
 	}

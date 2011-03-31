@@ -34,7 +34,7 @@ package org.cytoscape.view.layout;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,8 +81,8 @@ public class LayoutNode {
 		this.nodeView = nodeView;
 		this.node = nodeView.getModel();
 		this.index = index;
-		this.x = nodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
-		this.y = nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
+		this.x = nodeView.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
+		this.y = nodeView.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION);
 		this.neighbors = new ArrayList<LayoutNode>();
 	}
 
@@ -307,7 +307,7 @@ public class LayoutNode {
 	 * @return        width of this node
 	 */
 	public double getWidth() {
-		return this.nodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_SIZE);
+		return this.nodeView.getVisualProperty(MinimalVisualLexicon.NODE_WIDTH);
 	}
 
 	/**
@@ -316,7 +316,7 @@ public class LayoutNode {
 	 * @return        height of this node
 	 */
 	public double getHeight() {
-		return this.nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE);
+		return this.nodeView.getVisualProperty(MinimalVisualLexicon.NODE_HEIGHT);
 	}
 
 	/**
@@ -351,11 +351,11 @@ public class LayoutNode {
 	 */
 	public void moveToLocation() {
 		if (isLocked) {
-			this.x = nodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
-			this.y = nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
+			this.x = nodeView.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
+			this.y = nodeView.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION);
 		} else {
-			nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, this.x);
-			nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, this.y);
+			nodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION, this.x);
+			nodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION, this.y);
 		}
 	}
 

@@ -30,34 +30,28 @@
 package org.cytoscape.task.internal.creation;
 
 
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.session.CyNetworkNaming;
+import java.util.Collection;
+import java.util.List;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.model.subnetwork.CySubNetwork;
+import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
-import org.cytoscape.model.subnetwork.CyRootNetwork;
-import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineManager;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
-import org.cytoscape.work.Task;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.session.CyApplicationManager;
-
-import java.util.Set;
-import java.util.List;
-import java.util.Collection;
 
 
 abstract class AbstractNetworkFromSelectionTask extends AbstractCreationTask {
@@ -125,8 +119,8 @@ abstract class AbstractNetworkFromSelectionTask extends AbstractCreationTask {
 		// copy node location only.
 		for ( View<CyNode> newNodeView : newView.getNodeViews() ) {
 			View<CyNode> origNodeView = currView.getNodeView( newNodeView.getModel() );
-			newNodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, origNodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION));
-			newNodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, origNodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION));
+			newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION, origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION));
+			newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION, origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
 
 			// FIXME
 //			// Set lock (if necessary)

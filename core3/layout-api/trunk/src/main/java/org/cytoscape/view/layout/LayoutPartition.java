@@ -38,7 +38,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -194,12 +194,12 @@ public class LayoutPartition {
 			v.lock();
 			lockedNodes++;
 		} else {
-			updateMinMax(nv.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION),
-						 nv.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION));
+			updateMinMax(nv.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION),
+						 nv.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
 			// this.width += Math.sqrt(nv.getWidth());
 			// this.height += Math.sqrt(nv.getHeight());
-			this.width += nv.getVisualProperty(TwoDVisualLexicon.NODE_X_SIZE); 
-			this.height += nv.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE);
+			this.width += nv.getVisualProperty(MinimalVisualLexicon.NODE_WIDTH); 
+			this.height += nv.getVisualProperty(MinimalVisualLexicon.NODE_HEIGHT);
 		}
 	}
 

@@ -44,11 +44,11 @@ public abstract class AbstractVisualLexiconTest {
 		traverse(children, lexicon);
 		
 		// Test adding
-		final DoubleVisualProperty dummyVP = new DoubleVisualProperty(new Double(10), TwoDVisualLexicon.ARBITRARY_DOUBLE_RANGE, "DUMMY", "Dummy VP", CyNode.class);
+		final DoubleVisualProperty dummyVP = new DoubleVisualProperty(new Double(10), MinimalVisualLexicon.ARBITRARY_DOUBLE_RANGE, "DUMMY", "Dummy VP", CyNode.class);
 		
 		
 		try {
-			((AbstractVisualLexicon) lexicon).addVisualProperty(TwoDVisualLexicon.NODE_COLOR, root);
+			((AbstractVisualLexicon) lexicon).addVisualProperty(MinimalVisualLexicon.NODE_FILL_COLOR, root);
 		} catch(Exception e) {
 			assertTrue(e instanceof IllegalStateException);
 		}

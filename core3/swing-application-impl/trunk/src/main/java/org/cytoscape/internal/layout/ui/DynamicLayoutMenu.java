@@ -52,10 +52,10 @@ import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon.*;
-import org.cytoscape.view.presentation.property.ThreeDVisualLexicon;
-import org.cytoscape.view.presentation.property.ThreeDVisualLexicon.*;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon.*;
+import org.cytoscape.view.presentation.property.RichVisualLexicon;
+import org.cytoscape.view.presentation.property.RichVisualLexicon.*;
 import org.cytoscape.work.TaskManager;
 
 
@@ -229,12 +229,12 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 			CyNode node = nv.getModel();
 	
 			if (!selectedNodes.contains(node)) {
-				nv.setLockedValue(TwoDVisualLexicon.NODE_X_LOCATION,
-						  nv.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION));
-				nv.setLockedValue(TwoDVisualLexicon.NODE_Y_LOCATION,
-						  nv.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION));
-				nv.setLockedValue(ThreeDVisualLexicon.NODE_Z_LOCATION,
-						  nv.getVisualProperty(ThreeDVisualLexicon.NODE_Z_LOCATION));
+				nv.setLockedValue(MinimalVisualLexicon.NODE_X_LOCATION,
+						  nv.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION));
+				nv.setLockedValue(MinimalVisualLexicon.NODE_Y_LOCATION,
+						  nv.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
+				nv.setLockedValue(RichVisualLexicon.NODE_Z_LOCATION,
+						  nv.getVisualProperty(RichVisualLexicon.NODE_Z_LOCATION));
 			}
 		}
 	}

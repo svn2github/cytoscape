@@ -46,7 +46,7 @@ import org.cytoscape.view.manual.internal.control.actions.AbstractControlAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 
 /**
  *
@@ -67,7 +67,7 @@ public class HDistCenter extends AbstractControlAction {
 		d = d / (nodes.size() - 1);
 
 		for (int i = 0; i < nodes.size(); i++) {
-			nodes.get(i).setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION,X_min + (i * d));
+			nodes.get(i).setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION,X_min + (i * d));
 		}
 	}
 }
