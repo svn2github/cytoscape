@@ -1,1 +1,0 @@
-dvipdfm perl_text11_3.dvi
