@@ -126,21 +126,22 @@ public class PsiMiTabParser {
 
 				sourceID = entry[0].split(SEPARATOR);
 				targetID = entry[1].split(SEPARATOR);
-
+				final String sourceRawID = sourceID[0].split(":")[1];
+				final String targetRawID = targetID[0].split(":")[1];
 				
-				CyNode source = nodeMap.get(sourceID[0]);
+				CyNode source = nodeMap.get(sourceRawID);
 				if(source == null) {
 					source = network.addNode();
-					nodeMap.put(sourceID[0], source);
+					nodeMap.put(sourceRawID, source);
 				}
-				CyNode target = nodeMap.get(targetID[0]);
+				CyNode target = nodeMap.get(targetRawID);
 				if(target == null) {
 					target = network.addNode();
-					nodeMap.put(targetID[0], target);
+					nodeMap.put(targetRawID, target);
 				}
 				
-				source.getCyRow().set(CyTableEntry.NAME, sourceID[0]);
-				target.getCyRow().set(CyTableEntry.NAME, targetID[0]);
+				source.getCyRow().set(CyTableEntry.NAME, sourceRawID);
+				target.getCyRow().set(CyTableEntry.NAME, targetRawID);
 
 				// Set type if not protein
 				if (sourceID[0].contains(CHEBI)) {
@@ -203,9 +204,11 @@ public class PsiMiTabParser {
 		if (buf != null && buf.length == 2) {
 			attrName = ATTR_PREFIX + buf[0];
 			
-			if(row.getTable().getColumn(attrName) == null)
+			if(row.getTable().getColumn(attrName) == null) {
 				row.getTable().createColumn(attrName, String.class, false);
-
+				row.getTable().createColumn(attrName + ".name", String.class, false);
+			}
+				
 			matcher = miNamePttr.matcher(buf[1]);
 			if (matcher.find()) {
 				taxonName = matcher.group();
@@ -289,9 +292,9 @@ public class PsiMiTabParser {
 				final Double score = Double.parseDouble(scoreString);
 				row.set(key + "." + scoreType, score);
 			} catch (Exception e) {
-				if (scoreString != null
-						&& scoreString.trim().equals("") == false)
-					row.set(key + "." + scoreType, scoreString);
+//				if (scoreString != null
+//						&& scoreString.trim().equals("") == false)
+//					row.set(key + "." + scoreType, scoreString);
 
 				continue;
 			}
