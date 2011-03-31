@@ -10,7 +10,7 @@ import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.view.layout.LayoutTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.work.TaskMonitor;
 
 public class StackedNodeLayoutTask extends LayoutTask {
@@ -60,10 +60,10 @@ public class StackedNodeLayoutTask extends LayoutTask {
 			CyNode node = (CyNode) it.next();
 			View<CyNode> nodeView = networkView.getNodeView(node);
 			
-			nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, x_position);
-			nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, yPosition);
+			nodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION, x_position);
+			nodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION, yPosition);
 			
-			int y = new Float((nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE).toString())).intValue();
+			int y = new Float((nodeView.getVisualProperty(MinimalVisualLexicon.NODE_HEIGHT).toString())).intValue();
 			
 			yPosition += y * 2;
 		}

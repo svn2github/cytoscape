@@ -42,7 +42,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 
 /**
  * Class that represents the Layout of a given graph.
@@ -75,8 +75,8 @@ public class Layout {
 		// initialize current values
 		if (load_current_values) {
 			for (View<CyNode>nv: view.getNodeViews()){
-				setX(nv, nv.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION));
-				setY(nv, nv.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION));
+				setX(nv, nv.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION));
+				setY(nv, nv.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
 			}
 		}
 	}
@@ -86,8 +86,8 @@ public class Layout {
 	 */
 	public void applyLayout(CyNetworkView view) {
 		for (View<CyNode>nv: view.getNodeViews()){
-			nv.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, getX(nv));
-			nv.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, getY(nv));
+			nv.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION, getX(nv));
+			nv.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION, getY(nv));
 		}
 	}
 

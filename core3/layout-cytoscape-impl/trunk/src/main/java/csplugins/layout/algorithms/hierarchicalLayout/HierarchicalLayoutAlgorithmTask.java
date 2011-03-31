@@ -15,7 +15,7 @@ import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.view.layout.LayoutTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 
@@ -493,8 +493,8 @@ public class HierarchicalLayoutAlgorithmTask extends LayoutTask {
 			int currentRight;
 
 			if (currentView != null) {
-				currentBottom = startLayerY + currentView.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE).intValue();
-				currentRight = cleanLayerX + currentView.getVisualProperty(TwoDVisualLexicon.NODE_X_SIZE).intValue(); 
+				currentBottom = startLayerY + currentView.getVisualProperty(MinimalVisualLexicon.NODE_HEIGHT).intValue();
+				currentRight = cleanLayerX + currentView.getVisualProperty(MinimalVisualLexicon.NODE_WIDTH).intValue(); 
 			} else {
 				currentBottom = startLayerY;
 				currentRight = cleanLayerX;
@@ -567,8 +567,8 @@ public class HierarchicalLayoutAlgorithmTask extends LayoutTask {
 
 			if (node.nodeView != null) {
 				View<CyNode> currentView = node.nodeView;
-				currentView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, Double.valueOf((double)node.getXPos()));
-				currentView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, Double.valueOf((double)node.getYPos()));
+				currentView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION, Double.valueOf((double)node.getXPos()));
+				currentView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION, Double.valueOf((double)node.getYPos()));
 			}
 		}
 
@@ -625,10 +625,10 @@ public class HierarchicalLayoutAlgorithmTask extends LayoutTask {
 		taskMonitor.setStatusMessage("hierarchical layout complete");
 	}
 	private double getXPositionOf(HashMap<Integer, View<CyNode>> index2NodeView, int nodeIndex){
-		return index2NodeView.get(nodeIndex).getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
+		return index2NodeView.get(nodeIndex).getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
 	}
 	private double getYPositionOf(HashMap<Integer, View<CyNode>> index2NodeView, int nodeIndex){
-		return index2NodeView.get(nodeIndex).getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
+		return index2NodeView.get(nodeIndex).getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION);
 	}
 
 	/**
