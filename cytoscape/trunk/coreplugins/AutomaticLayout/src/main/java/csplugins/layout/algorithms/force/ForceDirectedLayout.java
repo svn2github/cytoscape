@@ -299,7 +299,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		layoutProperties.add(new Tunable("numIterations", "Number of Iterations",
 		                                 Tunable.INTEGER, new Integer(numIterations)));
 
-		layoutProperties.add(new Tunable("discrete", "Force discrete layouts (slower)",
+		layoutProperties.add(new Tunable("discrete", "Force deterministic layouts (slower)",
 		                                 Tunable.BOOLEAN, new Boolean(false)));
 
 //		layoutProperties.add(new Tunable("integrator", "Integration algorithm to use",
