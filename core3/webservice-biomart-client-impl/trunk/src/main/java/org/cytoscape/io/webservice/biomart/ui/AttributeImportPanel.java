@@ -36,6 +36,7 @@ package org.cytoscape.io.webservice.biomart.ui;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -48,6 +49,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
@@ -429,9 +431,10 @@ public abstract class AttributeImportPanel extends JPanel implements
 		for(CyNetwork network: networks) {
 			final Map<String, CyTable> tables = this.tblManager.getTableMap(CyNode.class, network);
 			final CyTable nodeTable = tables.get(CyNetwork.DEFAULT_ATTRS);
-			final Map<String, Class<?>> columns = nodeTable.getColumnTypeMap();
-			for (String name : columns.keySet())
-				attributeComboBox.addItem(name);
+			//final Map<String, Class<?>> columns = nodeTable.getColumnTypeMap();
+			Collection<CyColumn> columns = nodeTable.getColumns();
+			for (CyColumn col : columns)
+				attributeComboBox.addItem(col.getName());
 		}
 	}
 

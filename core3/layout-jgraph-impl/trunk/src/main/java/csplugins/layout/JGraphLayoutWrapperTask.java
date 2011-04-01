@@ -15,7 +15,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.layout.LayoutTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.work.TaskMonitor;
 import org.jgraph.JGraph;
 import org.jgraph.graph.CellView;
@@ -139,10 +139,10 @@ public class JGraphLayoutWrapperTask extends LayoutTask{
 
 			// Set bounds
 			Rectangle2D bounds = new Rectangle2D.Double(
-                                       node_view.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION),
-				       node_view.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION),
-				       node_view.getVisualProperty(TwoDVisualLexicon.NODE_X_SIZE),
-				       node_view.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE)
+                                       node_view.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION),
+				       node_view.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION),
+				       node_view.getVisualProperty(MinimalVisualLexicon.NODE_WIDTH),
+				       node_view.getVisualProperty(MinimalVisualLexicon.NODE_HEIGHT)
 								    );
 
 			GraphConstants.setBounds(jcell.getAttributes(), bounds);
@@ -216,8 +216,8 @@ public class JGraphLayoutWrapperTask extends LayoutTask{
 				Rectangle2D rect = graph.getCellBounds(cell_view.getCell());
 				CyNode giny = (CyNode) j_giny_node_map.get(cell_view.getCell());
 				View<CyNode> node_view = networkView.getNodeView(giny);
-				node_view.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, rect.getX());
-				node_view.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, rect.getY());
+				node_view.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION, rect.getX());
+				node_view.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION, rect.getY());
 
 				// update progress bar
 				currentProgress += percentProgressPerIter;

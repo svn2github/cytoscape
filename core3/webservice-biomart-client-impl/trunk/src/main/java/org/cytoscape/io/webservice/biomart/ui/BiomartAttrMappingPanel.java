@@ -37,6 +37,7 @@ package org.cytoscape.io.webservice.biomart.ui;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +57,7 @@ import org.cytoscape.io.webservice.biomart.task.BioMartTaskFactory;
 import org.cytoscape.io.webservice.biomart.task.ImportAttributeListTask;
 import org.cytoscape.io.webservice.biomart.task.ImportFilterTask;
 import org.cytoscape.io.webservice.biomart.task.LoadRepositoryResult;
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
@@ -251,8 +253,9 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		// Use Attributes for mapping
 		final CyTable defTable = tblManager.getTableMap(CyNode.class,
 				curNetwork).get(CyNetwork.DEFAULT_ATTRS);
-		final Class<?> attrDataType = defTable.getColumnTypeMap().get(
-				keyAttrName);
+		
+		final CyColumn column = defTable.getColumn(keyAttrName);
+		final Class<?> attrDataType = column.getType();
 		for (CyNode node : nodes) {
 			final CyRow row = defTable.getRow(node.getSUID());
 

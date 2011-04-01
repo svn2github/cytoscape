@@ -157,13 +157,13 @@ public class MinimalVisualLexicon extends AbstractVisualLexicon {
 			"Network Center Y Location", true, CyNetwork.class);
 
 	public static final VisualProperty<Double> NETWORK_SIZE = new DoubleVisualProperty(
-			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_SIZE",
+			550.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_SIZE",
 			"Network Size", true, CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_WIDTH = new DoubleVisualProperty(
-			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_WIDTH",
+			550.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_WIDTH",
 			"Network Width", true, CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_HEIGHT = new DoubleVisualProperty(
-			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_HEIGHT",
+			400.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_HEIGHT",
 			"Network Height", true, CyNetwork.class);
 
 	public static final VisualProperty<String> NETWORK_TITLE = new StringVisualProperty(

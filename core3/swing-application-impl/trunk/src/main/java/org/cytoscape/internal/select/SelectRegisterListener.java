@@ -2,20 +2,14 @@
 package org.cytoscape.internal.select;
 
 
-import java.util.Properties;
-
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyTableManager;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.RowSetMicroListener;
-import org.cytoscape.service.util.CyServiceRegistrar;
-import org.cytoscape.view.model.events.NetworkViewAddedEvent;
-import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.events.NetworkViewAddedEvent;
+import org.cytoscape.view.model.events.NetworkViewAddedListener;
 
 public class SelectRegisterListener implements NetworkViewAddedListener {
 

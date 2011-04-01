@@ -17,9 +17,12 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Task>  {
+	
+	private static final Logger logger = LoggerFactory.getLogger( GenericReaderManager.class ); 
+	
 	protected final DataCategory category; 
 	protected final Set<T> factories;
-	private static final Logger logger = LoggerFactory.getLogger( GenericReaderManager.class ); 
+	
 
 	public GenericReaderManager(DataCategory category) {
 		this.category = category;
@@ -32,8 +35,7 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 	 * @param factory
 	 * @param props
 	 */
-	@SuppressWarnings("unchecked")
-	public void addInputStreamTaskFactory(T factory, Map props) {
+	public void addInputStreamTaskFactory(T factory, @SuppressWarnings("rawtypes") Map props) {
 		if (factory == null)
 			logger.warn("Specified factory is null!");
 		else if (factory.getCyFileFilter().getDataCategory() == category) {
@@ -49,8 +51,7 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 	 * @param factory
 	 * @param props
 	 */
-	@SuppressWarnings("unchecked")
-	public void removeInputStreamTaskFactory(T factory, Map props) {
+	public void removeInputStreamTaskFactory(T factory, @SuppressWarnings("rawtypes") Map props) {
 		factories.remove(factory);
 	}
 
@@ -62,26 +63,28 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 	 * @return GraphReader capable of reading the specified file.
 	 */
 	public R getReader(URI uri, String inputName) {
+		
+		logger.debug("Number of factories: " + factories.size());
 		for (T factory : factories) {
 			
-			CyFileFilter cff = factory.getCyFileFilter();
-			logger.debug("trying factory: " + factory + " with filter: " + cff);
+			final CyFileFilter cff = factory.getCyFileFilter();
+			logger.debug("Trying factory: " + factory + " with filter: " + cff);
 
 			if (cff.accepts(uri, category) && uri != null ) {
 				try {
-					logger.debug("successfully matched factory " + factory);
+					logger.debug("Successfully found matched factory " + factory);
 					InputStream stream = uri.toURL().openStream();
 					if ( !stream.markSupported() )
 		                stream = new MarkSupportedInputStream(stream);
 					factory.setInputStream( stream, inputName );
-					return (R)factory.getTaskIterator().next();
+					return (R) factory.getTaskIterator().next();
 				} catch (IOException e) {
 					logger.warn("Error opening stream to URI: " + uri.toString(), e);
 				}
 			}
 		}
 
-		logger.info("No reader found for uri: " + uri.toString());
+		logger.warn("No reader found for uri: " + uri.toString());
 	 	return null;	
 	}
 
@@ -108,7 +111,7 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 			logger.warn("Error setting input stream", ioe);
 		}
 
-		logger.info("No reader found for input stream");
+		logger.warn("No reader found for input stream");
 	 	return null;	
 	}
 }

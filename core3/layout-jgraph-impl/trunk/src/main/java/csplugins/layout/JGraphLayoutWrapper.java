@@ -2,7 +2,6 @@ package csplugins.layout;
 
 import org.cytoscape.view.layout.AbstractLayout;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.undo.UndoSupport;
 import org.jgraph.plugins.layouts.AnnealingLayoutAlgorithm;

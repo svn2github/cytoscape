@@ -1,5 +1,7 @@
 package org.cytoscape.tableimport.internal;
 
+import java.io.InputStream;
+
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 import org.cytoscape.util.swing.FileUtil;
@@ -51,5 +53,11 @@ public class ImportAttributeTableReaderFactory extends
 	public TaskIterator getTaskIterator() {
 		return new TaskIterator(new ImportAttributeTableReaderTask(
 				this.inputStream, fileFormat));
+	}
+
+	@Override
+	public void setInputStream(InputStream is, String inputName) {
+		// TODO Auto-generated method stub
+		
 	}
 }
