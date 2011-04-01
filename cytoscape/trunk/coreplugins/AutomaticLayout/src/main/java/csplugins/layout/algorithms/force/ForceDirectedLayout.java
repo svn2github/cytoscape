@@ -73,7 +73,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	double defaultSpringCoefficient = 1e-4f;
 	double defaultSpringLength = 50;
 	double defaultNodeMass = 3.0;
-	boolean discrete = false;
+	boolean deterministic = false;
 
 	/**
 	 * Value to set for doing unweighted layouts
@@ -139,7 +139,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		List<LayoutNode> nodeList = part.getNodeList();
 		List<LayoutEdge> edgeList = part.getEdgeList();
 
-		if (discrete) {
+		if (deterministic) {
 			Collections.sort(nodeList);
 			Collections.sort(edgeList);
 		}
@@ -299,7 +299,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		layoutProperties.add(new Tunable("numIterations", "Number of Iterations",
 		                                 Tunable.INTEGER, new Integer(numIterations)));
 
-		layoutProperties.add(new Tunable("discrete", "Force deterministic layouts (slower)",
+		layoutProperties.add(new Tunable("deterministic", "Force deterministic layouts (slower)",
 		                                 Tunable.BOOLEAN, new Boolean(false)));
 
 //		layoutProperties.add(new Tunable("integrator", "Integration algorithm to use",
@@ -365,9 +365,9 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		}
 
 
-		t = layoutProperties.get("discrete");
+		t = layoutProperties.get("deterministic");
 		if ((t != null) && (t.valueChanged() || force)) {
-			discrete = ((Boolean) t.getValue()).booleanValue();
+			deterministic = ((Boolean) t.getValue()).booleanValue();
 			if (t.valueChanged())
 				layoutProperties.setProperty(t.getName(), t.getValue().toString());
 		}
