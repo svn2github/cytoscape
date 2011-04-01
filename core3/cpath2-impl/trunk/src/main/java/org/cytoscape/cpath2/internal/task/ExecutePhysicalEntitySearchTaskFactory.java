@@ -9,20 +9,22 @@ public class ExecutePhysicalEntitySearchTaskFactory implements TaskFactory {
 	private final String keyword;
 	private final int ncbiTaxonomyId;
 	private ExecutePhysicalEntitySearch task;
+	private ResultHandler result;
 
-	public ExecutePhysicalEntitySearchTaskFactory(CPathWebService webApi, String keyword, int ncbiTaxonomyId) {
+	public ExecutePhysicalEntitySearchTaskFactory(CPathWebService webApi, String keyword, int ncbiTaxonomyId, ResultHandler result) {
 		this.webApi = webApi;
 		this.keyword = keyword;
 		this.ncbiTaxonomyId = ncbiTaxonomyId;
+		this.result = result;
 	}
 
 	@Override
 	public TaskIterator getTaskIterator() {
-		task = new ExecutePhysicalEntitySearch(webApi, keyword, ncbiTaxonomyId);
+		task = new ExecutePhysicalEntitySearch(webApi, keyword, ncbiTaxonomyId, result);
 		return new TaskIterator(task);
 	}
 
-	public int getNumMatchesFound() {
-		return task.getNumMatchesFound();
+	public interface ResultHandler {
+		void finished(int matchesFound) throws Exception;
 	}
 }

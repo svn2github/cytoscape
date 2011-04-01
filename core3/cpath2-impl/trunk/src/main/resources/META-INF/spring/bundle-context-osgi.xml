@@ -19,7 +19,7 @@
 	<osgi:reference id="cyNetworkManagerRef"
 		interface="org.cytoscape.model.CyNetworkManager" />
 
-	<osgi:reference id="cyApplicationManagerServiceRef"
+	<osgi:reference id="cyApplicationManagerRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
 
 	<osgi:reference id="cyNetworkViewManagerRef"
@@ -31,9 +31,15 @@
 	<osgi:reference id="cyNetworkNamingRef"
 		interface="org.cytoscape.session.CyNetworkNaming" />
 
-	<osgi:reference id="cyNetworkFactoryServiceRef"
+	<osgi:reference id="cyNetworkFactoryRef"
 		interface="org.cytoscape.model.CyNetworkFactory" />
 
+	<osgi:reference id="cyNetworkViewFactoryRef"
+		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
+
+	<osgi:reference id="cyLayoutsRef"
+		interface="org.cytoscape.view.layout.CyLayouts" />
+		
 	<osgi:reference id="undoSupportRef"
 		interface="org.cytoscape.work.undo.UndoSupport" />
 
@@ -42,4 +48,9 @@
 	
 	<osgi:reference id="streamUtilRef"
 		interface="org.cytoscape.io.util.StreamUtil" />
+	
+	<osgi:service ref="cPathWebService" auto-export="interfaces" />
+	
+	<osgi:service ref="bioPaxNetworkViewTaskFactory"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory" />
 </beans>

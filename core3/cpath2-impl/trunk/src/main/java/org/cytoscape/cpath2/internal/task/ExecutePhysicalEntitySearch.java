@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.cytoscape.cpath2.internal.schemas.search_response.ExtendedRecordType;
 import org.cytoscape.cpath2.internal.schemas.search_response.SearchResponseType;
+import org.cytoscape.cpath2.internal.task.ExecutePhysicalEntitySearchTaskFactory.ResultHandler;
 import org.cytoscape.cpath2.internal.web_service.CPathException;
 import org.cytoscape.cpath2.internal.web_service.CPathProperties;
 import org.cytoscape.cpath2.internal.web_service.CPathWebService;
@@ -20,7 +21,7 @@ public class ExecutePhysicalEntitySearch implements Task {
     private CPathWebService webApi;
     private String keyword;
     private int ncbiTaxonomyId;
-    private int numMatchesFound = 0;
+	private ResultHandler result;
 
     /**
      * Constructor.
@@ -28,12 +29,14 @@ public class ExecutePhysicalEntitySearch implements Task {
      * @param webApi         cPath Web Api.
      * @param keyword        Keyword
      * @param ncbiTaxonomyId NCBI Taxonomy ID.
+     * @param result 
      */
     public ExecutePhysicalEntitySearch(CPathWebService webApi, String keyword,
-            int ncbiTaxonomyId) {
+            int ncbiTaxonomyId, ResultHandler result) {
         this.webApi = webApi;
         this.keyword = keyword;
         this.ncbiTaxonomyId = ncbiTaxonomyId;
+        this.result = result;
     }
 
     /**
@@ -41,14 +44,6 @@ public class ExecutePhysicalEntitySearch implements Task {
      */
     public void cancel() {
         webApi.abort();
-    }
-
-    /**
-     * Gets Number of Matches Found.
-     * @return Number of Matches Found.
-     */
-    public int getNumMatchesFound() {
-        return this.numMatchesFound;
     }
 
     /**
@@ -65,6 +60,7 @@ public class ExecutePhysicalEntitySearch implements Task {
      */
     @Override
     public void run(TaskMonitor taskMonitor) throws Exception {
+    	int numHits = 0;
         try {
             // read the network from cpath instance
             taskMonitor.setProgress(0);
@@ -75,7 +71,7 @@ public class ExecutePhysicalEntitySearch implements Task {
                     ncbiTaxonomyId, taskMonitor);
             List<ExtendedRecordType> searchHits = searchResponse.getSearchHit();
 
-            int numHits = searchHits.size();
+            numHits = searchHits.size();
             int numRetrieved = 1;
             taskMonitor.setProgress(0.01);
             for (ExtendedRecordType hit:  searchHits) {
@@ -88,7 +84,6 @@ public class ExecutePhysicalEntitySearch implements Task {
                 double progress = numRetrieved++ / (double) numHits;
                 taskMonitor.setProgress(progress);
             }
-            this.numMatchesFound = numHits;
         } catch (EmptySetException e) {
         } catch (CPathException e) {
             if (e.getErrorCode() != CPathException.ERROR_CANCELED_BY_USER) {
@@ -97,6 +92,7 @@ public class ExecutePhysicalEntitySearch implements Task {
         } finally {
             taskMonitor.setStatusMessage("Done");
             taskMonitor.setProgress(1);
+            result.finished(numHits);
         }
     }
 }

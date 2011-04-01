@@ -104,7 +104,7 @@ public class MergeNetworkTask implements Task {
                 + CPathProperties.getInstance().getCPathServerName()  + "...");
         
         CyNetworkViewReaderManager manager = factory.getCyNetworkViewReaderManager();
-        CyNetworkViewReader reader = manager.getReader(cpathInstanceURL.toURI());
+        CyNetworkViewReader reader = manager.getReader(cpathInstanceURL.toURI(), cpathInstanceURL.getFile());
         reader.run(taskMonitor);
         
         CyNetworkView networkView = reader.getNetworkViews()[0];

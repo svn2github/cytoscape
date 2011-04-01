@@ -30,6 +30,7 @@ import javax.swing.event.HyperlinkListener;
 
 import org.cytoscape.cpath2.internal.CPath2Factory;
 import org.cytoscape.cpath2.internal.task.ExecutePhysicalEntitySearchTaskFactory;
+import org.cytoscape.cpath2.internal.task.ExecutePhysicalEntitySearchTaskFactory.ResultHandler;
 import org.cytoscape.cpath2.internal.view.model.Organism;
 import org.cytoscape.cpath2.internal.web_service.CPathProperties;
 import org.cytoscape.cpath2.internal.web_service.CPathWebService;
@@ -184,24 +185,28 @@ public class SearchBoxPanel extends JPanel {
         return searchButton;
     }
 
-    private void executeSearch(String keyword, int ncbiTaxonomyId, String speciesName) {
+    private void executeSearch(final String keyword, int ncbiTaxonomyId, final String speciesName) {
         Window window = factory.getCySwingApplication().getJFrame();
         if (keyword == null || keyword.trim().length() == 0
                 || keyword.startsWith(ENTER_TEXT)) {
             JOptionPane.showMessageDialog(window, "Please enter a Gene Name or ID.",
                     "Search Error", JOptionPane.ERROR_MESSAGE);
         } else {
+        	ResultHandler handler = new ResultHandler() {
+        		@Override
+        		public void finished(int matchesFound) throws Exception {
+                    if (matchesFound == 0) {
+                        JOptionPane.showMessageDialog(factory.getCySwingApplication().getJFrame(),
+                                "No matches found for:  " + keyword + " [" + speciesName + "]" +
+                                "\nPlease try a different search term and/or organism filter.",
+                                "No matches found.",
+                                JOptionPane.WARNING_MESSAGE);
+                    }
+        		}
+        	};
             ExecutePhysicalEntitySearchTaskFactory search = new ExecutePhysicalEntitySearchTaskFactory
-                    (webApi, keyword.trim(), ncbiTaxonomyId);
-
+                    (webApi, keyword.trim(), ncbiTaxonomyId, handler);
             factory.getTaskManager().execute(search);
-            if (search.getNumMatchesFound() == 0) {
-                JOptionPane.showMessageDialog(factory.getCySwingApplication().getJFrame(),
-                        "No matches found for:  " + keyword + " [" + speciesName + "]" +
-                        "\nPlease try a different search term and/or organism filter.",
-                        "No matches found.",
-                        JOptionPane.WARNING_MESSAGE);
-            }
         }
     }
 

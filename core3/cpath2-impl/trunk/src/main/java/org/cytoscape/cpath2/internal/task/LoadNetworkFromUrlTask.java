@@ -51,7 +51,6 @@ import org.cytoscape.cpath2.internal.CPath2Factory;
 import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
@@ -80,7 +79,7 @@ public class LoadNetworkFromUrlTask implements Task {
 
         try {
         	CyNetworkViewReaderManager readerManager = factory.getCyNetworkViewReaderManager();
-			CyNetworkViewReader reader = readerManager.getReader(url.toURI());
+			CyNetworkViewReader reader = readerManager.getReader(url.toURI(), url.getFile());
 
     		if (reader == null) {
     			JOptionPane.showMessageDialog(factory.getCySwingApplication().getJFrame(),

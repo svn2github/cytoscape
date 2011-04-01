@@ -2,7 +2,6 @@ package org.cytoscape.cpath2.internal.task;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,8 +39,13 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.session.CyNetworkNaming;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +56,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Ethan Cerami.
  */
-public class ExecuteGetRecordByCPathId implements Task {
+public class ExecuteGetRecordByCPathId extends AbstractTask {
     private CPathWebService webApi;
     private long ids[];
     private String networkTitle;
@@ -166,7 +170,7 @@ public class ExecuteGetRecordByCPathId implements Task {
                 System.setProperty("biopax.network_view_title", networkTitle);
             }
             
-            CyNetworkViewReader reader = cPathFactory.getCyNetworkViewReaderManager().getReader(new FileInputStream(tmpFile));
+            CyNetworkViewReader reader = cPathFactory.getCyNetworkViewReaderManager().getReader(tmpFile.toURI(), tmpFile.getName());
             if (taskMonitor != null) {
                 taskMonitor.setStatusMessage("Creating Cytoscape Network...");
                 taskMonitor.setProgress(0);
@@ -175,7 +179,12 @@ public class ExecuteGetRecordByCPathId implements Task {
         	reader.run(taskMonitor);
         	CyNetworkView view = reader.getNetworkViews()[0];
             CyNetwork cyNetwork = view.getModel();
-        	// Branch, based on download mode.
+
+            cPathFactory.getCyNetworkManager().addNetwork(cyNetwork);
+            cPathFactory.getCyNetworkViewManager().addNetworkView(view);
+            cPathFactory.getCyApplicationManager().setCurrentNetworkView(cyNetwork.getSUID());
+            
+            // Branch, based on download mode.
             if (format == CPathResponseFormat.BINARY_SIF) {
                 postProcessingBinarySif(cyNetwork, taskMonitor);
             } else {
@@ -206,6 +215,13 @@ public class ExecuteGetRecordByCPathId implements Task {
                 taskMonitor.setStatusMessage("Done");
                 taskMonitor.setProgress(1.0);
             }
+            
+            CyLayouts layouts = cPathFactory.getCyLayouts();
+    		TaskFactory tf = layouts.getDefaultLayout(view);
+    		TaskIterator ti = tf.getTaskIterator();
+    		Task task = ti.next();
+    		insertTasksAfterCurrentTask(task);
+            
         } catch (IOException e) {
         	throw new Exception("Failed to retrieve records.", e);
         } catch (EmptySetException e) {
@@ -228,9 +244,9 @@ public class ExecuteGetRecordByCPathId implements Task {
         CyRow row = cyNetwork.getCyRow();
         String cPathServerDetailsUrl = row.get(ExecuteGetRecordByCPathId.CPATH_SERVER_DETAILS_URL, String.class);
         if (cPathServerDetailsUrl == null) {
-            row.set(ExecuteGetRecordByCPathId.CPATH_SERVER_NAME_ATTRIBUTE, serverName);
+            AttributeUtil.set(cyNetwork, ExecuteGetRecordByCPathId.CPATH_SERVER_NAME_ATTRIBUTE, serverName, String.class);
             String url = serverURL.replaceFirst("webservice.do", "record2.do?id=");
-            row.set(ExecuteGetRecordByCPathId.CPATH_SERVER_DETAILS_URL, url);
+            AttributeUtil.set(cyNetwork, ExecuteGetRecordByCPathId.CPATH_SERVER_DETAILS_URL, url, String.class);
         }
     }
 
@@ -245,10 +261,10 @@ public class ExecuteGetRecordByCPathId implements Task {
 //        MapBioPaxToCytoscape.initAttributes(nodeAttributes);
 
         //  Set the Quick Find Default Index
-        cyNetwork.getCyRow().set("quickfind.default_index", "biopax.node_label");
+    	AttributeUtil.set(cyNetwork, "quickfind.default_index", "biopax.node_label", String.class);
 
         //  Specify that this is a BINARY_NETWORK
-        cyNetwork.getCyRow().set(BinarySifVisualStyleUtil.BINARY_NETWORK, Boolean.TRUE);
+    	AttributeUtil.set(cyNetwork, BinarySifVisualStyleUtil.BINARY_NETWORK, Boolean.TRUE, Boolean.class);
 
         //  Get all node details.
         getNodeDetails(cyNetwork, taskMonitor);
@@ -288,7 +304,7 @@ public class ExecuteGetRecordByCPathId implements Task {
                         CyNetworkNaming naming = cPathFactory.getCyNetworkNaming();
                         networkTitleWithUnderscores = naming.getSuggestedNetworkTitle
                                 (networkTitleWithUnderscores);
-                        cyNetwork.getCyRow().set(CyNetwork.NAME, networkTitleWithUnderscores);
+                        AttributeUtil.set(cyNetwork, CyNetwork.NAME, networkTitleWithUnderscores, String.class);
                     }
                 });
             }
@@ -436,12 +452,15 @@ public class ExecuteGetRecordByCPathId implements Task {
                 ids[j] = Long.valueOf(name);
             }
             try {
-                String xml = webApi.getRecordsByIds(ids, CPathResponseFormat.BIOPAX,
-                        new NullTaskMonitor());
+                final String xml = webApi.getRecordsByIds(ids, CPathResponseFormat.BIOPAX, new NullTaskMonitor());
                 //StringReader reader = new StringReader(xml);
                 //BioPaxUtil bpUtil = new BioPaxUtil(reader, new NullTaskMonitor());
-                Model model = (new SimpleReader())
-                	.convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
+                Model model = new StaxHack<Model>() {
+					@Override
+					public Model runWithHack() {
+		                return new SimpleReader().convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
+					}
+				}.run();
                 //ArrayList peList = bpUtil.getPhysicalEntityList();
                 //Namespace ns = Namespace.getNamespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
                 //for (int j=0; j<peList.size(); j++) {
@@ -537,5 +556,25 @@ class NullTaskMonitor implements TaskMonitor {
 
 	@Override
 	public void setTitle(String arg0) {
+	}
+}
+
+/**
+ * This class executes code using this bundle's ClassLoader as the current
+ * thread's context ClassLoader.  This enables the service discovery mechanism
+ * used by some StAX implementations to function properly under OSGi.
+ */
+abstract class StaxHack<T> {
+	public abstract T runWithHack();
+	
+	public final T run() {
+		Thread thread = Thread.currentThread();
+		ClassLoader oldClassLoader = thread.getContextClassLoader();
+		try {
+			thread.setContextClassLoader(getClass().getClassLoader());
+			return runWithHack();
+		} finally {
+			thread.setContextClassLoader(oldClassLoader);
+		}
 	}
 }

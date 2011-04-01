@@ -19,7 +19,7 @@
 	<bean id="bioPaxFilter" class="org.cytoscape.cpath2.internal.biopax.BioPaxFilter">
 		<constructor-arg ref="streamUtilRef" />
 	</bean>
-		
+	
 	<bean id="launchExternalBrowser" class="org.cytoscape.cpath2.internal.biopax.action.LaunchExternalBrowser">
 		<constructor-arg ref="openBrowserRef" />
 	</bean>
@@ -40,6 +40,14 @@
 		<constructor-arg ref="cyNetworkViewManagerRef" />
 	</bean>
 	
+	<bean id="bioPaxNetworkViewTaskFactory" class="org.cytoscape.cpath2.internal.biopax.BioPaxNetworkViewTaskFactory">
+		<constructor-arg ref="bioPaxFilter"/>
+		<constructor-arg ref="cyNetworkFactoryRef"/>
+		<constructor-arg ref="cyNetworkViewFactoryRef"/>
+		<constructor-arg ref="cyNetworkNamingRef"/>
+		<constructor-arg ref="bioPaxContainer"/>
+	</bean>
+	
 	<bean id="cPath2Factory" class="org.cytoscape.cpath2.internal.CPath2Factory">
 		<constructor-arg ref="cySwingApplicationRef" />
 		<constructor-arg ref="taskManagerRef" />
@@ -50,7 +58,12 @@
 		<constructor-arg ref="cyNetworkViewReaderManagerRef" />
 		<constructor-arg ref="cyNetworkNamingRef" />
 		<constructor-arg ref="cyNetworkFactoryRef" />
+		<constructor-arg ref="cyLayoutsRef" />
 		<constructor-arg ref="undoSupportRef" />
 		<constructor-arg ref="bioPaxContainer" />
+	</bean>
+	
+	<bean id="cPathWebService" class="org.cytoscape.cpath2.internal.web_service.CytoscapeCPathWebService">
+		<constructor-arg ref="cPath2Factory" />
 	</bean>
 </beans>

@@ -1,6 +1,7 @@
 package org.cytoscape.cpath2.internal.biopax;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -9,6 +10,7 @@ import org.cytoscape.cpath2.internal.biopax.action.NetworkListener;
 import org.cytoscape.cpath2.internal.biopax.util.BioPaxUtil;
 import org.cytoscape.cpath2.internal.biopax.util.BioPaxVisualStyleUtil;
 import org.cytoscape.cpath2.internal.biopax.view.BioPaxContainer;
+import org.cytoscape.cpath2.internal.util.AttributeUtil;
 import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -32,9 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetworkViewReader {
 	public static final Logger log = LoggerFactory.getLogger(BioPaxNetworkViewReaderTask.class);
-	
-	private String fileName;
-	private Model model;
+
 	private String networkName;
 	private String networkId;
 	private final CyNetworkFactory networkFactory;
@@ -44,6 +44,10 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 	private final BioPaxContainer bpContainer;
 
 	private CyNetworkView view;
+
+	private InputStream stream;
+
+	private String inputName;
 	
 	/**
 	 * Constructor
@@ -61,13 +65,13 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 	 *
 	 * @param model PaxTools BioPAX Model
 	 */
-	public BioPaxNetworkViewReaderTask(Model model, CyNetworkFactory networkFactory, CyNetworkViewFactory viewFactory, CyNetworkNaming naming, BioPaxContainer bpContainer) {
+	public BioPaxNetworkViewReaderTask(InputStream stream, String inputName, CyNetworkFactory networkFactory, CyNetworkViewFactory viewFactory, CyNetworkNaming naming, BioPaxContainer bpContainer) {
+		this.stream = stream;
+		this.inputName = inputName;
 		this.networkFactory = networkFactory;
 		this.viewFactory = viewFactory;
 		this.naming = naming;
 		this.bpContainer = bpContainer;
-		this.model= model;
-		this.fileName=null;
 	}
 	
 	public String getNetworkId() {
@@ -90,9 +94,7 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 	}
 	
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		if(model == null && fileName != null) { // import new data
-			model = BioPaxUtil.readFile(fileName);
-		}
+		Model model = BioPaxUtil.read(stream);
 		
 		if(model == null) {
 			log.error("Failed to read BioPAX model");
@@ -104,8 +106,7 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 		
 		networkName = getNetworkName(model);
 		CyNetwork network = networkFactory.getInstance();
-		CyRow row = network.getCyRow();
-		row.set(CyNetwork.NAME, networkName);
+		AttributeUtil.set(network, CyNetwork.NAME, networkName, String.class);
 		
 		view = viewFactory.getNetworkView(network);
 		
@@ -138,12 +139,12 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 		}
 		
 		if(candidateName == null || "".equalsIgnoreCase(candidateName)) {
-			candidateName = fileName;
+			candidateName = inputName;
 			if(log.isDebugEnabled())
 				log.debug("Network name will be the file name: " + candidateName);
 		} else if(candidateName.length() > 100) {
 			if(log.isDebugEnabled())
-				candidateName = fileName + " - " + candidateName.substring(0, 100);
+				candidateName = inputName + " - " + candidateName.substring(0, 100);
 				log.debug("Based on multiple pathways network name is too long; " +
 					"it will be truncated: " + candidateName);
 		}
@@ -161,24 +162,21 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 	 *
 	 * @param cyNetwork CyNetwork object.
 	 */
-	public void doPostProcessing(final CyNetwork cyNetwork) {
-		CyRow row = cyNetwork.getCyRow();
-		
+	public void doPostProcessing(Model model, final CyNetwork cyNetwork) {
 		// Sets a network attribute which indicates this network is a biopax network
-		row.set(MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE);
+		AttributeUtil.set(cyNetwork, MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE, Boolean.class);
 
 		//  Repair Canonical Name 
 		repairNodesCanonicalName(cyNetwork);
 		
 		//  Set default Quick Find Index
-		row.set("quickfind.default_index", MapBioPaxToCytoscape.BIOPAX_SHORT_NAME);
+		AttributeUtil.set(cyNetwork, "quickfind.default_index", MapBioPaxToCytoscape.BIOPAX_SHORT_NAME, String.class);
 
 		// set url to pathway commons -
 		// used for pathway commons context menus
 		String urlToBioPAXWebServices = System.getProperty("biopax.web_services_url");
 		if (urlToBioPAXWebServices != null && urlToBioPAXWebServices.length() > 0) {
-			row.set("biopax.web_services_url",
-										   urlToBioPAXWebServices);
+			AttributeUtil.set(cyNetwork, "biopax.web_services_url", urlToBioPAXWebServices, String.class);
 			System.setProperty("biopax.web_services_url", "");
 		}
 
@@ -186,15 +184,14 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 		// used for pathway commons context menus
 		String dataSources = System.getProperty("biopax.data_sources");
 		if (dataSources != null && dataSources.length() > 0) {
-			row.set("biopax.data_sources",
-										   dataSources);
+			AttributeUtil.set(cyNetwork, "biopax.data_sources", dataSources, String.class);
 			System.setProperty("biopax.data_sources", "");
 		}
 
 		// associate the new network with its model
 		BioPaxUtil.addNetworkModel(cyNetwork.getSUID(), model);
-		String modelString = (fileName!=null) ? fileName : "";
-		row.set(BioPaxUtil.BIOPAX_MODEL_STRING,	modelString);
+		String modelString = (inputName!=null) ? inputName : "";
+		AttributeUtil.set(cyNetwork, BioPaxUtil.BIOPAX_MODEL_STRING, modelString, String.class);
 		
 		//  Set-up the BioPax Visual Style
 		// TODO: VisualStyle
@@ -244,7 +241,7 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 			CyRow row = node.getCyRow();
 			String label = row.get(BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, String.class);
 			if (label != null) {
-				row.set(CyNode.NAME, label);
+				AttributeUtil.set(node, CyNode.NAME, label, String.class);
 			}
 		}
 	}

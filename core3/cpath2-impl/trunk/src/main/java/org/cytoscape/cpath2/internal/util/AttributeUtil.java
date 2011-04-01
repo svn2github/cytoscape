@@ -8,7 +8,7 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 
 public class AttributeUtil {
-	public static <V> void set(CyTableEntry entry, String name, V value, Class<V> type) {
+	public static void set(CyTableEntry entry, String name, Object value, Class<?> type) {
 		CyRow row = entry.getCyRow();
 		CyTable table = row.getTable();
 		CyColumn column = table.getColumn(name);

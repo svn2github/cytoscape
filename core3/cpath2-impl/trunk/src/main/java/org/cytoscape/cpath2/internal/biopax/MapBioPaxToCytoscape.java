@@ -38,6 +38,7 @@ import org.biopax.paxtools.model.level3.Xref;
 import org.cytoscape.cpath2.internal.biopax.util.BioPaxUtil;
 import org.cytoscape.cpath2.internal.biopax.util.BioPaxVisualStyleUtil;
 import org.cytoscape.cpath2.internal.biopax.util.ExternalLinkUtil;
+import org.cytoscape.cpath2.internal.util.AttributeUtil;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -363,7 +364,7 @@ public class MapBioPaxToCytoscape {
 
 			//  Create node symbolizing the interaction
 			CyNode interactionNode = network.addNode();
-			interactionNode.getCyRow().set(CyNode.NAME, id);
+			AttributeUtil.set(interactionNode, CyNode.NAME, id, String.class);
 
 			//  Add New Interaction Node to Network
 			nodeMap.put(id, interactionNode);
@@ -496,8 +497,7 @@ public class MapBioPaxToCytoscape {
 						if (complexMemberCyNode != null) {
 							// create edge, set attributes
 							CyEdge edge = network.addEdge(complexCyNode, complexMemberCyNode, true);
-							CyRow row = edge.getCyRow();
-							row.set(BIOPAX_EDGE_TYPE, CONTAINS);
+							AttributeUtil.set(edge, BIOPAX_EDGE_TYPE, CONTAINS, String.class);
 							edgeList.add(edge);
 							// if there was a complex, add it to complexElementList for processing next time
 							if (BioPaxUtil.isOneOfBiopaxClasses(member, complex.class, Complex.class)) {
@@ -572,7 +572,7 @@ public class MapBioPaxToCytoscape {
 			edge = network.addEdge(nodeB, nodeA, true);
 		}
 
-		edge.getCyRow().set(BIOPAX_EDGE_TYPE, type);
+		AttributeUtil.set(edge, BIOPAX_EDGE_TYPE, type, String.class);
 		edgeList.add(edge);
 	}
 
@@ -612,7 +612,7 @@ public class MapBioPaxToCytoscape {
 				// Create Edge from Control Interaction Node to the
 				// Controlled Node
 				CyEdge edge = network.addEdge(interactionNode, controlledNode, true);
-				edge.getCyRow().set(BIOPAX_EDGE_TYPE, typeStr);
+				AttributeUtil.set(edge, BIOPAX_EDGE_TYPE, typeStr, String.class);
 				edgeList.add(edge);
 			} 
 			else
@@ -770,8 +770,7 @@ public class MapBioPaxToCytoscape {
 
 		// haven't seen this node before, lets create a new one
 		CyNode node = network.addNode();
-		CyRow row = node.getCyRow();
-		row.set(CyNode.NAME, cyNodeId);
+		AttributeUtil.set(node, CyNode.NAME, cyNodeId, String.class);
 		nodeMap.put(cyNodeId, node);
 
 		// set node attributes
@@ -779,7 +778,7 @@ public class MapBioPaxToCytoscape {
 		setChemicalModificationAttributes(node, chemicalModificationsWrapper);
 		
 		if (cellularLocations != null) {
-			row.set(BIOPAX_CELLULAR_LOCATIONS, cellularLocations);
+			AttributeUtil.set(node, BIOPAX_CELLULAR_LOCATIONS, cellularLocations, String.class);
 		}
 
 		// update our created nodes map
@@ -876,13 +875,12 @@ public class MapBioPaxToCytoscape {
 
 		// haven't seen this node before, lets create a new one
 		CyNode complexMemberCyNode = network.addNode();
-		CyRow row = complexMemberCyNode.getCyRow();
-		row.set(CyNode.NAME, complexMemberCyNodeId);		
+		AttributeUtil.set(complexMemberCyNode, CyNode.NAME, complexMemberCyNodeId, String.class);		
 		nodeMap.put(complexMemberCyNodeId, complexMemberCyNode);
 
 		// save/set it at last
 		List<String> allCellLocations = new ArrayList<String>(parentLocations);
-		row.set(BIOPAX_CELLULAR_LOCATIONS, allCellLocations);	
+		AttributeUtil.set(complexMemberCyNode, BIOPAX_CELLULAR_LOCATIONS, allCellLocations, String.class);	
 
 		setBasicNodeAttributes(complexMemberCyNode, complexMemberElement,
 						  (isMemberComplex) ? "" : complexMemberCyNodeLabel);
@@ -994,27 +992,27 @@ public class MapBioPaxToCytoscape {
 		// name feature will not work.
 		if(bpe == null) {
 //			attributes.setAttribute(nodeID, Semantics.CANONICAL_NAME, "null");
-			row.set(BIOPAX_ENTITY_TYPE, BioPaxUtil.NULL_ELEMENT_TYPE);
+			AttributeUtil.set(node, BIOPAX_ENTITY_TYPE, BioPaxUtil.NULL_ELEMENT_TYPE, String.class);
 			return;
 		}
 		
 		String name = BioPaxUtil.getNodeName(bpe) + "";
 		row.set(CyNode.NAME, name);
 
-		row.set(BIOPAX_NAME, name);
+		AttributeUtil.set(node, BIOPAX_NAME, name, String.class);
 		
-		row.set(BIOPAX_ENTITY_TYPE, BioPaxUtil.getType(bpe));
+		AttributeUtil.set(node, BIOPAX_ENTITY_TYPE, BioPaxUtil.getType(bpe), String.class);
 		
 		if(bpe instanceof physicalEntityParticipant 
 				&& ((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY() != null) {
-			row.set(BIOPAX_RDF_ID, 
-					((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY().getRDFId());
+			AttributeUtil.set(node, BIOPAX_RDF_ID, 
+					((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY().getRDFId(), String.class);
 		} else {
-			row.set(BIOPAX_RDF_ID, bpe.getRDFId());
+			AttributeUtil.set(node, BIOPAX_RDF_ID, bpe.getRDFId(), String.class);
 		}
 			
 		if ((label != null) && (label.length() > 0)) {
-			row.set(BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, label);
+			AttributeUtil.set(node, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, label, String.class);
 		}
 	}
 
@@ -1023,8 +1021,6 @@ public class MapBioPaxToCytoscape {
 	 * A helper function to set chemical modification attributes
 	 */
 	private void setChemicalModificationAttributes(CyNode node, NodeAttributesWrapper chemicalModificationsWrapper) {
-		CyRow row = node.getCyRow();
-		
 		Map<String, Object> modificationsMap = (chemicalModificationsWrapper != null)
 		                       ? chemicalModificationsWrapper.getMap() : null;
 
@@ -1042,14 +1038,14 @@ public class MapBioPaxToCytoscape {
 
 			//  Store List of Chemical Modifications Only
 			List<String> list = new ArrayList<String>(modificationsMap.keySet());
-			row.set(BIOPAX_CHEMICAL_MODIFICATIONS_LIST, list);
+			AttributeUtil.set(node, BIOPAX_CHEMICAL_MODIFICATIONS_LIST, list, String.class);
 
 			//  Store Complete Map of Chemical Modifications --> # of Modifications
 			// TODO: How do we handle MultiHashMaps?
 //			setMultiHashMap(cyNodeId, nodeAttributes, BIOPAX_CHEMICAL_MODIFICATIONS_MAP, modificationsMap);
 
 			if (modificationsMap.containsKey(BioPaxUtil.PHOSPHORYLATION_SITE)) {
-				row.set(BIOPAX_ENTITY_TYPE, BioPaxUtil.PROTEIN_PHOSPHORYLATED);
+				AttributeUtil.set(node, BIOPAX_ENTITY_TYPE, BioPaxUtil.PROTEIN_PHOSPHORYLATED, String.class);
 			}
 		}
 	}
@@ -1114,10 +1110,8 @@ public class MapBioPaxToCytoscape {
      * @param nodeId TODO
      * @param nodeAttributes    Node Attributes.
      */
-    public static void mapNodeAttribute(BioPAXElement element, Model model, CyNetwork network, CyNode node) {
-        if (element != null) {
-        	final CyRow row = node.getCyRow();
-        	
+    public static void mapNodeAttribute(BioPAXElement element, Model model, CyNetwork network, final CyNode node) {
+        if (element != null && node != null) {
             String stringRef = "";
             
         	AbstractTraverser bpeAutoMapper = 
@@ -1159,6 +1153,7 @@ public class MapBioPaxToCytoscape {
 		            	}
 		            	
 		                if(editor.isMultipleCardinality()) {
+		                	CyRow row = node.getCyRow();
 		                	List<String> vals =  new ArrayList<String>();
 		                	if (row.isSet(attrName)) {
 		                		Class<?> listElementType = row.getTable().getColumn(attrName).getListElementType();
@@ -1176,15 +1171,16 @@ public class MapBioPaxToCytoscape {
 		                	}
 		                	
 		                	if(!vals.isEmpty()) {
-		                		row.set(attrName, vals);
+		                		AttributeUtil.set(node, attrName, vals, String.class);
 		                	}
 		                	
-		                } else {
+		                } else {		                	
 		                	//this strange thing may never happen...
+		                	CyRow row = node.getCyRow();
 		                	if(row.isSet(attrName)) {
-		                		value += ", " + row.get(attrName, String.class); 
+		                		value += ", " + row.get(attrName, String.class);
 		                	}
-		                	row.set(attrName, value);
+		                	AttributeUtil.set(node, attrName, value, String.class);
 		                }
 		                
 		                if(obj instanceof BioPAXElement) {
@@ -1200,38 +1196,38 @@ public class MapBioPaxToCytoscape {
             // type
             stringRef = addType(element, node);
             if (stringRef != null) {
-                row.set(BIOPAX_ENTITY_TYPE, stringRef);
+            	AttributeUtil.set(node, BIOPAX_ENTITY_TYPE, stringRef, String.class);
             }
 
             // unification references
             stringRef = addXRefs(BioPaxUtil.getUnificationXRefs(element));
             if (stringRef != null) {
-                row.set(BIOPAX_UNIFICATION_REFERENCES, stringRef);
+            	AttributeUtil.set(node, BIOPAX_UNIFICATION_REFERENCES, stringRef, String.class);
             }
 
             // the following code should replace the old way to set
             // relationship references
             List<String> xrefList = getXRefList(element, BIOPAX_AFFYMETRIX_REFERENCES_LIST);
             if ((xrefList != null) && !xrefList.isEmpty()) {
-                row.set(BIOPAX_AFFYMETRIX_REFERENCES_LIST, xrefList);
+            	AttributeUtil.set(node, BIOPAX_AFFYMETRIX_REFERENCES_LIST, xrefList, String.class);
             }
 
             // relationship references - old way
             stringRef = addXRefs(BioPaxUtil.getRelationshipXRefs(element));
             if (stringRef != null) {
-                row.set(BIOPAX_RELATIONSHIP_REFERENCES, stringRef);
+            	AttributeUtil.set(node, BIOPAX_RELATIONSHIP_REFERENCES, stringRef, String.class);
             }
 
             // publication references
             stringRef = addPublicationXRefs(element);
             if (stringRef != null) {
-                row.set(BIOPAX_PUBLICATION_REFERENCES, stringRef);
+            	AttributeUtil.set(node, BIOPAX_PUBLICATION_REFERENCES, stringRef, String.class);
             }
 
             // ihop links
             stringRef = addIHOPLinks(network, element);
             if (stringRef != null) {
-                row.set(BIOPAX_IHOP_LINKS, stringRef);
+            	AttributeUtil.set(node, BIOPAX_IHOP_LINKS, stringRef, String.class);
             }
 
             // pathway name
@@ -1245,24 +1241,26 @@ public class MapBioPaxToCytoscape {
             List<ExternalLink> xList = BioPaxUtil.getAllXRefs(element);
             List<String> idList = addXRefIds(xList);
             if (idList != null && !idList.isEmpty()) {
-                row.set(BIOPAX_XREF_IDS, idList);
+            	AttributeUtil.set(node, BIOPAX_XREF_IDS, idList, String.class);
                 for (ExternalLink link : xList) {
                     String key = BIOPAX_XREF_PREFIX + link.getDbName().toUpperCase();
                     //  Set individual XRefs;  Max of 1 per database.
+                    CyRow row = node.getCyRow();
                     String existingId = row.get(key, String.class);
                     if (existingId == null) {
-                        row.set(key, link.getId());
+                        AttributeUtil.set(node, key, existingId, String.class);
                     }
                 }
             }
 
             //  Optionally add Node Label
+            CyRow row = node.getCyRow();
             String label = row.get(BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, String.class);
             if (label == null) {
                 label = BioPaxUtil.getNodeName(element);
                 if (label != null) {
-                    row.set(BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL,
-                    		BioPaxUtil.truncateLongStr(label));
+                    AttributeUtil.set(node, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL,
+                    		BioPaxUtil.truncateLongStr(label), String.class);
                 }
             }
         }

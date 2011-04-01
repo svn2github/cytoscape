@@ -25,8 +25,8 @@
  **/
 package org.cytoscape.cpath2.internal.biopax.util;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -195,10 +195,11 @@ public class BioPaxUtil {
 	 * @return BioPaxUtil new instance (containing the imported BioPAX data)
 	 * @throws FileNotFoundException 
 	 */
-	public static Model readFile(String in) throws FileNotFoundException {
+	public static Model read(InputStream in) throws FileNotFoundException {
 		Model model = null;
 		try {
-			model = (new SimpleReader()).convertFromOWL(new FileInputStream(in));
+			// TODO: Use StAXHack here
+			model = (new SimpleReader()).convertFromOWL(in);
 		} catch (Exception e) {
 			log.warn("Import failed: " + e);
 		}
@@ -217,7 +218,7 @@ public class BioPaxUtil {
 	 */
 	public static String getTypeInPlainEnglish(String type) {
 
-		String plainEnglish = (String) plainEnglishMap.get(type.toLowerCase());
+		String plainEnglish = plainEnglishMap.get(type.toLowerCase());
 
 		if (plainEnglish == null) {
 			return type;
