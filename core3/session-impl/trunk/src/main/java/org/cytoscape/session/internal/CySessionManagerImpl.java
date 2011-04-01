@@ -61,7 +61,7 @@ import org.cytoscape.session.events.SessionAboutToBeSavedEvent;
 import org.cytoscape.session.events.SessionLoadedEvent;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleSerializer;
@@ -240,9 +240,9 @@ public class CySessionManagerImpl implements CySessionManager {
                             BigInteger h = nf.getHeight();
 
                             if (w != null)
-                                netView.setVisualProperty(TwoDVisualLexicon.NETWORK_WIDTH, w.doubleValue());
+                                netView.setVisualProperty(MinimalVisualLexicon.NETWORK_WIDTH, w.doubleValue());
                             if (h != null)
-                                netView.setVisualProperty(TwoDVisualLexicon.NETWORK_HEIGHT, h.doubleValue());
+                                netView.setVisualProperty(MinimalVisualLexicon.NETWORK_HEIGHT, h.doubleValue());
                         }
                     }
 
