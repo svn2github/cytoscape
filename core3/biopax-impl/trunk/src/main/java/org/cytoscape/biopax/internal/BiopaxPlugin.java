@@ -75,10 +75,6 @@ public class BiopaxPlugin {
 	 * This method is called by the main Cytoscape Application upon startup.
 	 */
 	public BiopaxPlugin() {
-		// TODO: Wire BioPaxFilter using OSGi
-//		ImportHandler importHandler = new ImportHandler();
-//		importHandler.addFilter(new BioPaxFilter());
-
 		//  Optionally set up HTTP Proxy
 		// TODO: Wire up proxy properties
 //		Properties cytoProps = CytoscapeInit.getProperties();
