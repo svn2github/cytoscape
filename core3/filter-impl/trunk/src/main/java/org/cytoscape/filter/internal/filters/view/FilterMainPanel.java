@@ -45,8 +45,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -65,6 +63,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import org.cytoscape.filter.internal.filters.CompositeFilter;
@@ -213,14 +212,19 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 	
 	void handleAttributesChanged() {
-		refreshAttributeCMB();
-		replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());
-		
-		FilterSettingPanel theSettingPanel= filter2SettingPanelMap.get(cmbSelectFilter.getSelectedItem());
-		if (theSettingPanel != null) {
-			theSettingPanel.refreshIndicesForWidgets();
-		}
-		updateFeedbackTableModel();
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				refreshAttributeCMB();
+				replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());
+				
+				FilterSettingPanel theSettingPanel= filter2SettingPanelMap.get(cmbSelectFilter.getSelectedItem());
+				if (theSettingPanel != null) {
+					theSettingPanel.refreshIndicesForWidgets();
+				}
+				updateFeedbackTableModel();
+			}
+		});
 	}
 	
 	@Override
