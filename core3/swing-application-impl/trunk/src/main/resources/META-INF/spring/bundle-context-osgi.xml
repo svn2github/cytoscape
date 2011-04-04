@@ -7,12 +7,18 @@
 
 	<!-- Import OSGi services -->
 
+	<osgi:reference id="streamUtilServiceRef"
+			interface="org.cytoscape.io.util.StreamUtil" />
+
 	<osgi:reference id="cytoscapePropertiesServiceRef" 
 		interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=coreSettings)" />
 
 	<osgi:reference id="cyApplicationManagerServiceRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
+
+	<osgi:reference id="propertyWriterManagerRef"
+		interface="org.cytoscape.io.write.CyPropertyWriterManager" />
 
 	<osgi:reference id="cyNetworkViewManagerServiceRef"
 		interface="org.cytoscape.view.model.CyNetworkViewManager" />
@@ -328,4 +334,19 @@
 			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener</value>
 		</osgi:interfaces>
 	</osgi:service>
+
+        <osgi:service id="configDirPropertyWriterService" ref="configDirPropertyWriter"
+		      interface="org.cytoscape.application.swing.events.CytoscapeShutdownListener" />
+
+        <osgi:set id="propertySet" interface="org.cytoscape.property.CyProperty"
+                cardinality="0..N">
+                <osgi:listener bind-method="addCyProperty" unbind-method="removeCyProperty"
+			       ref="configDirPropertyWriter" />
+        </osgi:set>
+
+        <osgi:set id="propertyFileFilterSet" interface="org.cytoscape.io.write.CyPropertyWriterFactory"
+                cardinality="0..N">
+                <osgi:listener bind-method="addCyPropertyFileWriterFactory" unbind-method="removeCyPropertyFileWriterFactory"
+			       ref="configDirPropertyWriter" />
+        </osgi:set>
 </beans>

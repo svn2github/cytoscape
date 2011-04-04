@@ -32,7 +32,9 @@
 	<bean name="cytoscapeShutdown" class="org.cytoscape.internal.ShutdownHandler">
 		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
-
+	<bean name="configDirPropertyWriter" class="org.cytoscape.internal.shutdown.ConfigDirPropertyWriter">
+		<constructor-arg ref="propertyWriterManagerRef" />
+	</bean>
 
 	<!-- Various Utilities -->
 
