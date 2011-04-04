@@ -12,7 +12,7 @@ import java.io.File;
 /**
  * A utility Task implementation specifically for writing {@link org.cytoscape.model.CyTable} objects.
  */
-public final class CyTableWriter extends AbstractCyWriter<CyTableWriterManager> {
+public final class CyTableWriter extends TunableAbstractCyWriter<CyTableWriterManager> {
 
 	private final CyTable table;
 

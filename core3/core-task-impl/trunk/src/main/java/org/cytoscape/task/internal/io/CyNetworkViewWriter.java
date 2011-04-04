@@ -1,5 +1,5 @@
-
 package org.cytoscape.task.internal.io;
+
 
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.io.CyFileFilter;
@@ -9,11 +9,11 @@ import org.cytoscape.io.write.CyWriter;
 
 import java.io.File;
 
+
 /**
  * A utility Task implementation specifically for writing a {@link org.cytoscape.view.model.CyNetworkView}.
  */
-public final class CyNetworkViewWriter extends AbstractCyWriter<CyNetworkViewWriterManager> {
-
+public final class CyNetworkViewWriter extends TunableAbstractCyWriter<CyNetworkViewWriterManager> {
 	// the view to be written
 	private final CyNetworkView view;
 
@@ -22,10 +22,10 @@ public final class CyNetworkViewWriter extends AbstractCyWriter<CyNetworkViewWri
 	 * {@link org.cytoscape.io.write.CyNetworkViewWriterFactory} to use to write the file.
 	 * @param view The {@link org.cytoscape.view.model.CyNetworkView} to be written out. 
 	 */
-    public CyNetworkViewWriter(CyNetworkViewWriterManager writerManager, CyNetworkView view ) {
+	public CyNetworkViewWriter(CyNetworkViewWriterManager writerManager, CyNetworkView view ) {
 		super(writerManager);
-		if ( view == null )
-			throw new NullPointerException("View is null");
+		if (view == null)
+			throw new NullPointerException("View is null!");
 		this.view = view;
 	}
 

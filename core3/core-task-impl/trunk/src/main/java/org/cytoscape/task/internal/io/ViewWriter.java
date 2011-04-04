@@ -1,5 +1,5 @@
-
 package org.cytoscape.task.internal.io;
+
 
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.RenderingEngine;
@@ -9,12 +9,12 @@ import org.cytoscape.io.write.PresentationWriterManager;
 
 import java.io.File;
 
+
 /**
  * A utility Task implementation that will write the specified View to the
  * the specified image file using the specified RenderingEngine.
  */
-public final class ViewWriter extends AbstractCyWriter<PresentationWriterManager> {
-
+public final class ViewWriter extends TunableAbstractCyWriter<PresentationWriterManager> {
 	private final View<?> view;
 	private final RenderingEngine<?> re;
 
@@ -24,7 +24,7 @@ public final class ViewWriter extends AbstractCyWriter<PresentationWriterManager
 	 * @param view The View object to be written to the specified file.
 	 * @param re The RenderingEngine used to generate the image to be written to the file.  
 	 */
-    public ViewWriter(final PresentationWriterManager writerManager, final View<?> view, final RenderingEngine<?> re ) {
+	public ViewWriter(final PresentationWriterManager writerManager, final View<?> view, final RenderingEngine<?> re ) {
 		super(writerManager);
 
 		if ( view == null )
