@@ -58,6 +58,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 import java.util.Dictionary;
 import java.util.Properties;
+import org.cytoscape.work.swing.GUITaskManager;
 
 
 /**
@@ -113,7 +114,8 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	/**
 	 * Creates a new CytoscapeDesktop object.
 	 */
-	public CytoscapeDesktop(CytoscapeMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel, CytoscapeShutdown shut, CyEventHelper eh, CyServiceRegistrar registrar) {
+	public CytoscapeDesktop(CytoscapeMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel, 
+			CytoscapeShutdown shut, CyEventHelper eh, CyServiceRegistrar registrar, GUITaskManager taskManager) {
 		super("Cytoscape Desktop (New Session)");
 
 		this.cyMenus = cyMenus;
@@ -122,6 +124,8 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		this.shutdown = shut;
 		this.cyEventHelper = eh;
 		this.registrar = registrar;
+		
+		taskManager.setParent(this);
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource(SMALL_ICON)));
 

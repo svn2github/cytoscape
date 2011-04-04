@@ -107,6 +107,7 @@
 		<constructor-arg ref="cytoscapeShutdown" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="cyServiceRegistrarServiceRef" />
+		<constructor-arg ref="guiTaskManagerServiceRef" />
 	</bean>
 
 	<!-- session support -->
