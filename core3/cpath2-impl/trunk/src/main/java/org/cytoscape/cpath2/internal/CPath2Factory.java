@@ -10,7 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.undo.UndoableEdit;
 
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.cpath2.internal.biopax.view.BioPaxContainer;
+import org.cytoscape.biopax.BioPaxContainer;
+import org.cytoscape.biopax.MapBioPaxToCytoscape;
+import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
 import org.cytoscape.cpath2.internal.cytoscape.MergeNetworkEdit;
 import org.cytoscape.cpath2.internal.mapping.MapCPathToCytoscape;
 import org.cytoscape.cpath2.internal.schemas.summary_response.BasicRecordType;
@@ -60,8 +62,9 @@ public class CPath2Factory {
 	private final CyLayouts layouts;
 	private final UndoSupport undoSupport;
 	private final BioPaxContainer bpContainer;
+	private final MapBioPaxToCytoscapeFactory mapperFactory;
 	
-	public CPath2Factory(CySwingApplication application, TaskManager taskManager, OpenBrowser openBrowser, CyNetworkManager networkManager, CyApplicationManager applicationManager, CyNetworkViewManager networkViewManager, CyNetworkViewReaderManager networkViewReaderManager, CyNetworkNaming naming, CyNetworkFactory networkFactory, CyLayouts layouts, UndoSupport undoSupport, BioPaxContainer bpContainer) {
+	public CPath2Factory(CySwingApplication application, TaskManager taskManager, OpenBrowser openBrowser, CyNetworkManager networkManager, CyApplicationManager applicationManager, CyNetworkViewManager networkViewManager, CyNetworkViewReaderManager networkViewReaderManager, CyNetworkNaming naming, CyNetworkFactory networkFactory, CyLayouts layouts, UndoSupport undoSupport, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory) {
 		this.application = application;
 		this.taskManager = taskManager;
 		this.openBrowser = openBrowser;
@@ -74,15 +77,16 @@ public class CPath2Factory {
 		this.networkFactory = networkFactory;
 		this.undoSupport = undoSupport;
 		this.bpContainer = bpContainer;
+		this.mapperFactory = mapperFactory;
 	}
 	
 	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(CPathWebService webApi, long[] ids, CPathResponseFormat format, String networkTitle, CyNetwork networkToMerge) {
-		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, networkTitle, networkToMerge, this, bpContainer);
+		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, networkTitle, networkToMerge, this, bpContainer, mapperFactory);
 	}
 
 	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(
 			CPathWebService webApi, long[] ids, CPathResponseFormat format, String title) {
-		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, null, this, bpContainer);
+		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, null, this, bpContainer, mapperFactory);
 	}
 
 	public SearchBoxPanel createSearchBoxPanel(CPathWebService webApi) {

@@ -4,8 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.cytoscape.cpath2.internal.biopax.MapBioPaxToCytoscape;
-import org.cytoscape.cpath2.internal.biopax.util.BioPaxVisualStyleUtil;
+import org.cytoscape.biopax.MapBioPaxToCytoscape;
+import org.cytoscape.biopax.util.BioPaxVisualStyleUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;

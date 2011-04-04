@@ -16,17 +16,11 @@
 	<osgi:reference id="openBrowserRef"
 		interface="org.cytoscape.util.swing.OpenBrowser" />
 		
-	<osgi:reference id="cyNetworkManagerRef"
-		interface="org.cytoscape.model.CyNetworkManager" />
-
 	<osgi:reference id="cyApplicationManagerRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
 
 	<osgi:reference id="cyNetworkViewManagerRef"
 		interface="org.cytoscape.view.model.CyNetworkViewManager" />
-
-	<osgi:reference id="cyNetworkViewReaderManagerRef"
-		interface="org.cytoscape.io.read.CyNetworkViewReaderManager" />
 
 	<osgi:reference id="cyNetworkNamingRef"
 		interface="org.cytoscape.session.CyNetworkNaming" />
@@ -34,17 +28,21 @@
 	<osgi:reference id="cyNetworkFactoryRef"
 		interface="org.cytoscape.model.CyNetworkFactory" />
 
-	<osgi:reference id="cyLayoutsRef"
-		interface="org.cytoscape.view.layout.CyLayouts" />
-		
-	<osgi:reference id="undoSupportRef"
-		interface="org.cytoscape.work.undo.UndoSupport" />
+	<osgi:reference id="cyNetworkViewFactoryRef"
+		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 
-	<osgi:reference id="bioPaxContainerRef"
-		interface="org.cytoscape.biopax.BioPaxContainer" />
+	<osgi:reference id="fileUtilRef"
+		interface="org.cytoscape.util.swing.FileUtil" />
 	
-	<osgi:reference id="mapBioPaxToCytoscapeFactoryRef"
+	<osgi:reference id="streamUtilRef"
+		interface="org.cytoscape.io.util.StreamUtil" />
+	
+	<osgi:service ref="mapBioPaxToCytoscapeFactory"
 		interface="org.cytoscape.biopax.MapBioPaxToCytoscapeFactory" />
-
-	<osgi:service ref="cPathWebService" auto-export="interfaces" />
+	
+	<osgi:service ref="bioPaxNetworkViewTaskFactory"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory" />
+		
+	<osgi:service ref="bioPaxContainer"
+		interface="org.cytoscape.biopax.BioPaxContainer" />
 </beans>

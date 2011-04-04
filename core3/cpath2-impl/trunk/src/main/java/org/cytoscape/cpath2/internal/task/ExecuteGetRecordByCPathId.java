@@ -19,12 +19,13 @@ import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.physicalEntity;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
+import org.cytoscape.biopax.BioPaxContainer;
+import org.cytoscape.biopax.MapBioPaxToCytoscape;
+import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
+import org.cytoscape.biopax.NetworkListener;
+import org.cytoscape.biopax.util.BioPaxUtil;
+import org.cytoscape.biopax.util.BioPaxVisualStyleUtil;
 import org.cytoscape.cpath2.internal.CPath2Factory;
-import org.cytoscape.cpath2.internal.biopax.MapBioPaxToCytoscape;
-import org.cytoscape.cpath2.internal.biopax.action.NetworkListener;
-import org.cytoscape.cpath2.internal.biopax.util.BioPaxUtil;
-import org.cytoscape.cpath2.internal.biopax.util.BioPaxVisualStyleUtil;
-import org.cytoscape.cpath2.internal.biopax.view.BioPaxContainer;
 import org.cytoscape.cpath2.internal.cytoscape.BinarySifVisualStyleUtil;
 import org.cytoscape.cpath2.internal.util.AttributeUtil;
 import org.cytoscape.cpath2.internal.util.SelectUtil;
@@ -68,6 +69,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	private Logger logger = LoggerFactory.getLogger(ExecuteGetRecordByCPathId.class);
 	private final CPath2Factory cPathFactory;
 	private final BioPaxContainer bpContainer;
+	private final MapBioPaxToCytoscapeFactory mapperFactory;
 	
     /**
      * Constructor.
@@ -80,13 +82,14 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
      * @param application 
      */
     public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], CPathResponseFormat format,
-            String networkTitle, CPath2Factory cPathFactory, BioPaxContainer bpContainer) {
+            String networkTitle, CPath2Factory cPathFactory, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory) {
         this.webApi = webApi;
         this.ids = ids;
         this.format = format;
         this.networkTitle = networkTitle;
         this.cPathFactory = cPathFactory;
         this.bpContainer = bpContainer;
+        this.mapperFactory = mapperFactory;
     }
 
     /**
@@ -97,12 +100,14 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
      * @param format        CPathResponseFormat Object.
      * @param networkTitle  Tentative Network Title.
      * @param mergedNetwork Network to merge into.
+     * @param mapperFactory 
+     * @param mapBioPaxToCytoscape 
      * @param viewManager 
      * @param application 
      */
     public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], CPathResponseFormat format,
             String networkTitle, CyNetwork mergedNetwork, CPath2Factory cPathFactory,
-            BioPaxContainer bpContainer) {
+            BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory) {
         this.webApi = webApi;
         this.ids = ids;
         this.format = format;
@@ -110,6 +115,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
         this.mergedNetwork = mergedNetwork;
         this.cPathFactory = cPathFactory;
         this.bpContainer = bpContainer;
+        this.mapperFactory = mapperFactory;
     }
 
     /**
@@ -437,6 +443,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
         if (batchList.size()==0) {
 						logger.info ("Skipping node details.  Already have all the details new need.");
         }
+        MapBioPaxToCytoscape mapBioPaxToCytoscape = mapperFactory.getInstance(cyNetwork, taskMonitor);
         for (int i=0; i<batchList.size(); i++) {
             if (haltFlag == true) {
                 break;
@@ -470,7 +477,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
                 	String id = BioPaxUtil.getLocalPartRdfId(pe);
                     if (id != null) {
                         id = id.replaceAll("CPATH-", "");
-                        MapBioPaxToCytoscape.mapNodeAttribute(pe, model, cyNetwork, nodes.get(id));
+                        mapBioPaxToCytoscape.mapNodeAttribute(pe, model, cyNetwork, nodes.get(id));
                     }
                 }
                 double percentComplete = i / (double) batchList.size();

@@ -1,7 +1,9 @@
 package org.cytoscape.cpath2.internal.task;
 
+import org.cytoscape.biopax.BioPaxContainer;
+import org.cytoscape.biopax.MapBioPaxToCytoscape;
+import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
 import org.cytoscape.cpath2.internal.CPath2Factory;
-import org.cytoscape.cpath2.internal.biopax.view.BioPaxContainer;
 import org.cytoscape.cpath2.internal.web_service.CPathResponseFormat;
 import org.cytoscape.cpath2.internal.web_service.CPathWebService;
 import org.cytoscape.model.CyNetwork;
@@ -17,10 +19,12 @@ public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory {
 	private final CyNetwork networkToMerge;
 	private final CPath2Factory cPathFactory;
 	private final BioPaxContainer bpContainer;
+	private final MapBioPaxToCytoscapeFactory mapperFactory;
 
 	public ExecuteGetRecordByCPathIdTaskFactory(CPathWebService webApi,
 			long[] ids, CPathResponseFormat format, String networkTitle,
-			CyNetwork networkToMerge, CPath2Factory cPathFactory, BioPaxContainer bpContainer) {
+			CyNetwork networkToMerge, CPath2Factory cPathFactory, BioPaxContainer bpContainer,
+			MapBioPaxToCytoscapeFactory mapperFactory) {
 		this.webApi = webApi;
 		this.ids = ids;
 		this.format = format;
@@ -28,11 +32,12 @@ public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory {
 		this.networkToMerge = networkToMerge;
 		this.cPathFactory = cPathFactory;
 		this.bpContainer = bpContainer;
+		this.mapperFactory = mapperFactory;
 	}
 
 	@Override
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new ExecuteGetRecordByCPathId(webApi, ids, format, networkTitle, networkToMerge, cPathFactory, bpContainer));
+		return new TaskIterator(new ExecuteGetRecordByCPathId(webApi, ids, format, networkTitle, networkToMerge, cPathFactory, bpContainer, mapperFactory));
 	}
 
 }

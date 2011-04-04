@@ -3,7 +3,7 @@ package org.cytoscape.cpath2.internal.util;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.cytoscape.cpath2.internal.biopax.MapBioPaxToCytoscape;
+import org.cytoscape.biopax.MapBioPaxToCytoscape;
 import org.cytoscape.cpath2.internal.cytoscape.BinarySifVisualStyleUtil;
 import org.cytoscape.cpath2.internal.web_service.CPathProperties;
 import org.cytoscape.model.CyNetwork;
