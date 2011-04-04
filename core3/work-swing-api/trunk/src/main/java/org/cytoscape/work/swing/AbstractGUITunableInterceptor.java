@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Vector;
 import java.awt.Dimension;
+import java.awt.Window;
 
 /**
  * Interceptor of <code>Tunable</code>s that will be applied on <code>GUITunableHandlers</code>.
@@ -52,6 +53,8 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 	/** Provides an initialised logger. */
 	protected Logger logger;
 
+	protected Window parent = null;
+	
 	/**
 	 * Creates an Interceptor that will use the <code>GUITunableHandlers</code> created in a
 	 * <code>TunableHandlerFactory</code> from intercepted <code>Tunables</code>.
@@ -63,10 +66,10 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 	}
 
 	/** {@inheritDoc} */
-	final public void setParent(final JPanel parent) {
+	public void setTunablePanel(final JPanel parent){
 		this.parentPanel = (JPanel)parent;
 	}
-
+	
 	/** {@inheritDoc} */
 	final public JPanel getUI(final Object... proxyObjs) {
 		this.objectsWithTunables = convertSpringProxyObjs(proxyObjs);
@@ -127,7 +130,7 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 		//
 		
 		tunnableDialog = new TunnableDialog();
-		tunnableDialog.setLocationRelativeTo(parentPanel);
+		tunnableDialog.setLocationRelativeTo(parent);
 		tunnableDialog.setTitle("Set Parameters");
 
 		tunnableDialog.addComponent(optionPanel);
