@@ -11,10 +11,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
 import org.cytoscape.work.AbstractTaskManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
@@ -124,13 +121,14 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	 * @param owner JDialogs created by this <code>TaskManager</code>
 	 * will have its owner set to this parameter.
 	 */
-	@Override public void setParent(final Window parent) {
+	@Override 
+	public void setParent(final Window parent) {
 		this.parent = parent;
 	}
 
 	@Override
 	public void setTunablePanel(final JPanel tunablePanel) {
-		((GUITunableInterceptor)tunableInterceptor).setParent(tunablePanel);
+		((GUITunableInterceptor)tunableInterceptor).setTunablePanel(tunablePanel);
 	}
 
 	@Override
@@ -145,6 +143,12 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 			    !tunableInterceptor.validateAndWriteBackTunables(factory))
 				throw new IllegalArgumentException("Tunables are not valid");
 
+			// pass the parent (Cytoscape desktop Window) for TunableDialog
+			if (tunableInterceptor instanceof GUITunableInterceptor){
+				GUITunableInterceptor guiTI = (GUITunableInterceptor)tunableInterceptor;				
+				guiTI.setParent(parent);
+			}
+			
 			taskIterator = factory.getTaskIterator();
 
 			// Get the first task and display its tunables.  This is a bit of a hack.  
