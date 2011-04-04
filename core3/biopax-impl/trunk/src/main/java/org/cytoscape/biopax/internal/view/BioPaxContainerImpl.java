@@ -174,4 +174,9 @@ public class BioPaxContainerImpl extends JPanel implements BioPaxContainer {
 	public NetworkListener getNetworkListener() {
 		return networkListener;
 	}
+	
+	@Override
+	public Component getComponent() {
+		return this;
+	}
 }

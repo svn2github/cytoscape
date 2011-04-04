@@ -42,8 +42,6 @@ import org.cytoscape.biopax.internal.view.BioPaxContainerImpl;
  * @author Ethan Cerami.
  */
 public class CytoscapeWrapper {
-	private static boolean bioPaxUIInitialized = false;
-
 	/**
 	 * Sets the Status Bar Message.
 	 * Feature only available in Cytoscape 2.2.
@@ -88,30 +86,4 @@ public class CytoscapeWrapper {
 		int index = cytoPanel.indexOfComponent(bpContainer);
 		cytoPanel.setSelectedIndex(index);
 	}
-	
-	// TODO: Wire this via OSGi
-//	/**
-//	 * Initializes the BioPax PlugIn UI.
-//	 */
-//	public static void initBioPaxPlugInUI() {
-//		if (!bioPaxUIInitialized) {
-//			//  cytoscape 2.1 code
-//			//  BioPaxDetailsWindow bpWindow =
-//			//      BioPaxDetailsWindow.getInstance();
-//
-//			//  cytoscape 2.2 code
-//			final BioPaxContainer bpContainer = BioPaxContainer.getInstance();
-//			final CytoscapeDesktop desktop = Cytoscape.getDesktop();
-//            SwingUtilities.invokeLater(new Runnable() {
-//                public void run() {
-//                    CytoPanel cytoPanel = desktop.getCytoPanel(BioPaxContainer.CYTO_PANEL_LOCATION);
-//                    URL url = BioPaxDetailsPanel.class.getResource("read_obj.gif");
-//                    Icon icon = new ImageIcon(url);
-//                    cytoPanel.add("Node Details", icon, bpContainer, "Node Details");
-//                    cytoPanel.setState(CytoPanelState.DOCK);
-//                    bioPaxUIInitialized = true;
-//                }
-//            });
-//        }
-//    }
 }

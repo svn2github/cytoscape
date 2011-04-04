@@ -45,4 +45,7 @@
 		
 	<osgi:service ref="bioPaxContainer"
 		interface="org.cytoscape.biopax.BioPaxContainer" />
+	
+	<osgi:service ref="bioPaxCytoPanelComponent"
+		interface="org.cytoscape.application.swing.CytoPanelComponent" />
 </beans>

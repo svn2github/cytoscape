@@ -42,6 +42,10 @@
 		<constructor-arg ref="cyNetworkViewManagerRef" />
 	</bean>
 	
+	<bean id="bioPaxCytoPanelComponent" class="org.cytoscape.biopax.internal.view.BioPaxCytoPanelComponent">
+		<constructor-arg ref="bioPaxContainer" />
+	</bean>
+	
 	<bean id="bioPaxNetworkViewTaskFactory" class="org.cytoscape.biopax.internal.BioPaxNetworkViewTaskFactory">
 		<constructor-arg ref="bioPaxFilter"/>
 		<constructor-arg ref="cyNetworkFactoryRef"/>
