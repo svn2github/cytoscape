@@ -2,6 +2,7 @@ package org.cytoscape.work.internal.tunables;
 
 
 import java.awt.Color;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -386,5 +387,9 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 			h.handleDependents();
 
 		return validateTunableInput();
+	}
+	
+	public void setParent(Window win){
+		parent = win;
 	}
 }
