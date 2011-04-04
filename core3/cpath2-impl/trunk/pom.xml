@@ -35,11 +35,6 @@
             <artifactId>webservice-api</artifactId>
             <version>3.0.0-alpha2-SNAPSHOT</version>
         </dependency>
-		<dependency>
-			<groupId>cytoscape-temp</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
-		</dependency>
         <dependency>
         	<groupId>org.cytoscape</groupId>
         	<artifactId>viewmodel-api</artifactId>
@@ -54,7 +49,7 @@
         <dependency>
         	<groupId>org.cytoscape</groupId>
         	<artifactId>presentation-api</artifactId>
-        	<version>3.0.0-alpha2-SNAPSHOT</version>
+        	<version>3.0.0-alpha3-SNAPSHOT</version>
         </dependency>
         <dependency>
         	<groupId>org.cytoscape</groupId>
@@ -64,7 +59,7 @@
         <dependency>
         	<groupId>org.cytoscape</groupId>
         	<artifactId>swing-application-api</artifactId>
-        	<version>1.0-SNAPSHOT</version>
+        	<version>3.0.0-alpha2-SNAPSHOT</version>
         </dependency>
 
 		<dependency>
@@ -73,6 +68,12 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+
         <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
