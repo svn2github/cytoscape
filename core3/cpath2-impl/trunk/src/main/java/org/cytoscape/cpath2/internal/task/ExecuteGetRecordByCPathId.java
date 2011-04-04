@@ -28,6 +28,7 @@ import org.cytoscape.cpath2.internal.biopax.view.BioPaxContainer;
 import org.cytoscape.cpath2.internal.cytoscape.BinarySifVisualStyleUtil;
 import org.cytoscape.cpath2.internal.util.AttributeUtil;
 import org.cytoscape.cpath2.internal.util.SelectUtil;
+import org.cytoscape.cpath2.internal.util.StaxHack;
 import org.cytoscape.cpath2.internal.web_service.CPathException;
 import org.cytoscape.cpath2.internal.web_service.CPathProperties;
 import org.cytoscape.cpath2.internal.web_service.CPathResponseFormat;
@@ -39,7 +40,6 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.session.CyNetworkNaming;
-import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.AbstractTask;
@@ -556,25 +556,5 @@ class NullTaskMonitor implements TaskMonitor {
 
 	@Override
 	public void setTitle(String arg0) {
-	}
-}
-
-/**
- * This class executes code using this bundle's ClassLoader as the current
- * thread's context ClassLoader.  This enables the service discovery mechanism
- * used by some StAX implementations to function properly under OSGi.
- */
-abstract class StaxHack<T> {
-	public abstract T runWithHack();
-	
-	public final T run() {
-		Thread thread = Thread.currentThread();
-		ClassLoader oldClassLoader = thread.getContextClassLoader();
-		try {
-			thread.setContextClassLoader(getClass().getClassLoader());
-			return runWithHack();
-		} finally {
-			thread.setContextClassLoader(oldClassLoader);
-		}
 	}
 }
