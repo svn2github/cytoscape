@@ -1,7 +1,7 @@
 package org.cytoscape.work.swing;
 
 
-import java.util.Map;
+import java.awt.Window;
 import javax.swing.JPanel;
 
 import org.cytoscape.work.TunableInterceptor;
@@ -29,13 +29,18 @@ public interface GUITunableInterceptor<TH extends TunableHandler> extends Tunabl
 	JPanel getUI(Object... obs);
 
 	/**
-	 * Use to add the Tunables' JPanels to an external JPanel that has been defined 
+	 * Use to add the Tunable's JPanels to an external JPanel that has been defined 
 	 * in another class.
 	 * @param parent An Object that has to be an instance of a <code>JPanel</code>.
 	 * @throws IllegalArgumentException If the Object o is not a JPanel, it can not be 
 	 * set as the parent for the others : they will be displayed to the user in a 
 	 * <code>JOptionPanel</code>.
 	 */
-	void setParent(final JPanel parent);
+	void setTunablePanel(final JPanel parent);
 	
+	/*
+	 * Used to set the top level parent (window) of Tunable dialog
+	 * @param topParent An UI component, usually it is the desktop window of Cytoscape
+	 */
+	public void setParent(Window win);
 }
