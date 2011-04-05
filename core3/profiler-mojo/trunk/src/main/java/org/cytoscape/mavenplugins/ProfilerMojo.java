@@ -668,12 +668,19 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 
 			logReportsDirectory();
 
-			setClassesDirectory(getCurrentArtifact());
-			run();
+System.err.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 1 ("+classesDirectory+")");
+//			setClassesDirectory(getCurrentArtifact().getFile());
+			run(getCurrentArtifact().getFile().toString(), null);
 			final Set<ClassAndMethodNameAndExecutionTime> currentNamesAndTimes = getTestTimes();
 
-			setClassesDirectory(getBaselineArtifact());
-			run();
+System.err.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 2 ("+classesDirectory+")");
+//			setClassesDirectory(getBaselineArtifact().getFile());
+/*
+			if (classpathDependencyExcludes == null)
+				classpathDependencyExcludes = new ArrayList();
+			classpathDependencyExcludes.add(getCurrentArtifact().getGroupId()+":"+getCurrentArtifact().getArtifactId());
+*/
+			run(getBaselineArtifact().getFile().toString(), getCurrentArtifact().getFile().toString());
 			final Set<ClassAndMethodNameAndExecutionTime> baselineNamesAndTimes = getTestTimes();
 
 			compareRuntimes(currentNamesAndTimes, baselineNamesAndTimes);
@@ -686,18 +693,19 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 			bootClassPath.addClassPathElementUrl(classPathElement);
 	}
 
-	private void run() throws MojoExecutionException, MojoFailureException {
+	private void run(final String projectArtifact, final String skipPath) throws MojoExecutionException, MojoFailureException {
 		final List providers = initialize();
 		Exception exception = null;
 		ForkConfiguration forkConfiguration = getForkConfiguration();
 		final List testClassPath;
 		try {
-			testClassPath = generateTestClasspath();
+			testClassPath = generateTestClasspath(projectArtifact, skipPath);
 			getLog().info("testClassPath = " + testClassPath);
 		} catch (final DependencyResolutionRequiredException e) {
 			throw new MojoExecutionException("Failed to resolve one or more dependencies!", e);
 		}
 		updateClassPath(testClassPath, forkConfiguration);
+
 		int result = 0;
 		for (Iterator iter = providers.iterator(); iter.hasNext(); /* Empty! */) {
 			ProviderInfo provider = (ProviderInfo) iter.next();
@@ -705,6 +713,7 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 				getClassLoaderConfiguration(forkConfiguration);
 			ForkStarter forkStarter =
 				createForkStarter(provider, forkConfiguration, classLoaderConfiguration);
+System.err.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX forkStarter="+forkStarter);
 
 			try {
 				result = forkStarter.run();
@@ -731,7 +740,7 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 		throws MojoFailureException
 	{
 		final NumberFormat formatter = new DecimalFormat("0.0000");
-		boolean failed = false;
+		int failureCount = 0;
 		for (final ClassAndMethodNameAndExecutionTime currentNameAndTime : currentNamesAndTimes) {
 			final ClassAndMethodNameAndExecutionTime baselineNameAndTime =
 				find(currentNameAndTime.getClassAndMethodName(), baselineNamesAndTimes);
@@ -751,14 +760,17 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 			if (percentageDifference > maxPerformanceDecreasePercentage) {
 				getLog().error(currentNameAndTime.getClassAndMethodName() + " is " + differenceAsString
 					       + "% slower than the baseline version!");
-				failed = true;
+				++failureCount;
 			} else if (percentageDifference > 0.0)
 				getLog().info(currentNameAndTime.getClassAndMethodName() + " is " + differenceAsString
 					       + "% slower than the baseline version.");
+			else if (percentageDifference != 0.0)
+				getLog().info(currentNameAndTime.getClassAndMethodName() + " is " + differenceAsString
+					       + "% faster than the baseline version.");
 		}
 
-		if (failed)
-			throw new MojoFailureException("One or more tests took too long relative to the baseline version!");
+		if (failureCount > 0)
+			throw new MojoFailureException(failureCount + " test(s) took too long relative to the baseline version!");
 	}
 
 	private ClassAndMethodNameAndExecutionTime find(final String classAndMethodName,
@@ -826,24 +838,24 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 		return result;
 	}
 
-	private File getCurrentArtifact() throws MojoExecutionException {
+	private Artifact getCurrentArtifact() throws MojoExecutionException {
 		final Artifact artifact = project.getArtifact();
-		final Artifact baselineArtifact = artifactFactory.createArtifactWithClassifier(groupId, artifactId,
-											       currentVersion,
-											       artifact.getType(),
-											       artifact.getClassifier());
-		resolveDependencies(baselineArtifact);
-		return baselineArtifact.getFile();
+		final Artifact currentArtifact = artifactFactory.createArtifactWithClassifier(groupId, artifactId,
+											      currentVersion,
+											      artifact.getType(),
+											      artifact.getClassifier());
+		resolveDependencies(currentArtifact);
+		return currentArtifact;
 	}
 
-	private File getBaselineArtifact() throws MojoExecutionException {
+	private Artifact getBaselineArtifact() throws MojoExecutionException {
 		final Artifact artifact = project.getArtifact();
 		final Artifact baselineArtifact = artifactFactory.createArtifactWithClassifier(groupId, artifactId,
 											       baselineVersion,
 											       artifact.getType(),
 											       artifact.getClassifier());
 		resolveDependencies(baselineArtifact);
-		return baselineArtifact.getFile();
+		return baselineArtifact;
 	}
 
 	/*
@@ -1583,15 +1595,18 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 	 * @throws org.apache.maven.plugin.MojoExecutionException
 	 *          upon other problems
 	 */
-	public List<String> generateTestClasspath() throws DependencyResolutionRequiredException, MojoExecutionException
+	public List<String> generateTestClasspath(final String projectArtifact, final String skipPath)
+		throws DependencyResolutionRequiredException, MojoExecutionException
 	{
+System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> projectArtifact="+projectArtifact+", skipPath="+skipPath);
 		final Set<Artifact> resolvedDependencies = resolveAllDependencies();
 		getProject().setArtifacts(resolvedDependencies);
 		final List<String> classpath = new ArrayList(2 + getProject().getArtifacts().size());
 
 		classpath.add( getTestClassesDirectory().getAbsolutePath() );
 
-		classpath.add( getClassesDirectory().getAbsolutePath() );
+//		classpath.add( getClassesDirectory().getAbsolutePath() );
+		classpath.add(projectArtifact);
 
 		Set classpathArtifacts = getProject().getArtifacts();
 
@@ -1609,8 +1624,11 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 			Artifact artifact = (Artifact) iter.next();
 			if (artifact.getArtifactHandler().isAddedToClasspath()) {
 				File file = artifact.getFile();
-				if (file != null)
-					classpath.add( file.getPath() );
+				if (file != null) {
+					final String path = file.getPath();
+					if (skipPath != null && !skipPath.equals(path))
+						classpath.add(path);
+				}
 			}
 		}
 
