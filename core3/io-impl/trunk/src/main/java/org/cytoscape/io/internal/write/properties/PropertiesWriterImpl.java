@@ -1,13 +1,6 @@
 /*
  Copyright (c) 2006,2010 The Cytoscape Consortium (www.cytoscape.org)
 
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
-
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
  by the Free Software Foundation; either version 2.1 of the License, or
@@ -31,8 +24,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.io.internal.write.properties;
 
 
@@ -43,18 +35,20 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.cytoscape.io.write.CyWriter;
+import org.cytoscape.property.CyProperty;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.AbstractTask;
 
 
 public class PropertiesWriterImpl extends AbstractTask implements CyWriter {
-
 	private final OutputStream outputStream;
 	private final Properties properties;
 
-	public PropertiesWriterImpl(final OutputStream outputStream, final Object props) {
+	public PropertiesWriterImpl(final OutputStream outputStream, Object props) {
 		this.outputStream = outputStream;
-		if ( props instanceof Properties )
+		if (props instanceof CyProperty)
+			props = ((CyProperty)props).getProperties();
+		if (props instanceof Properties)
 			properties = (Properties)props;
 		else
 			throw new IllegalArgumentException("Properties must be of type java.util.Properties");
