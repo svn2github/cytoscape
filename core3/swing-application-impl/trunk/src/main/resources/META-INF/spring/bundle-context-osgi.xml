@@ -343,10 +343,4 @@
                 <osgi:listener bind-method="addCyProperty" unbind-method="removeCyProperty"
 			       ref="configDirPropertyWriter" />
         </osgi:set>
-
-        <osgi:set id="propertyFileFilterSet" interface="org.cytoscape.io.write.CyPropertyWriterFactory"
-                cardinality="0..N">
-                <osgi:listener bind-method="addCyPropertyFileWriterFactory" unbind-method="removeCyPropertyFileWriterFactory"
-			       ref="configDirPropertyWriter" />
-        </osgi:set>
 </beans>

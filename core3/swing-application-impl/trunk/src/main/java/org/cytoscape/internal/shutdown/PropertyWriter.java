@@ -18,24 +18,29 @@ public final class PropertyWriter extends AbstractCyWriter<CyPropertyWriterManag
 	private final CyProperty property;
 
 	/**
-	 * @param writerManager The {@link org.cytoscape.io.write.PresentationWriterManager} used to determine which type of
+	 * @param writerManager  The {@link org.cytoscape.io.write.CyPropertyWriterManager} used to determine which type of
 	 * file should be written.
-	 * @param view The View object to be written to the specified file.
-	 * @param re The RenderingEngine used to generate the image to be written to the file.  
+	 * @param property       The {@link org.cytoscape.property.CyProperty} that should be serialised.
+	 * @param outputFile     Where to write the serialised data to.
 	 */
-	public PropertyWriter(final CyPropertyWriterManager writerManager, final CyProperty property) {
+	public PropertyWriter(final CyPropertyWriterManager writerManager, final CyProperty property,
+			      final File outputFile)
+	{
 		super(writerManager);
 		this.property = property;
+		setOutputFile(outputFile);
 	}
 
 	protected String getExportFileFormat() {
-		return "props";
+System.err.println("++++++++++++ in PropertyWriter.getExportFileFormat()");
+		return "Java Properties files (*.props, *.properties)";
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected CyWriter getWriter(final CyFileFilter filter, final File file) throws Exception {
+System.err.println("++++++++++++ Entering PropertyWriter.getWriter()");
 		return writerManager.getWriter(property, filter, file);
 	}
 }

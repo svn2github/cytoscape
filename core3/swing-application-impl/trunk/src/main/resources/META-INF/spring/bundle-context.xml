@@ -33,6 +33,7 @@
 		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 	<bean name="configDirPropertyWriter" class="org.cytoscape.internal.shutdown.ConfigDirPropertyWriter">
+		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="propertyWriterManagerRef" />
 	</bean>
 
