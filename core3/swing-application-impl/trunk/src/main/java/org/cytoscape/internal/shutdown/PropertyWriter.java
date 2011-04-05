@@ -42,6 +42,6 @@ public final class PropertyWriter extends AbstractCyWriter<CyPropertyWriterManag
 	 * {@inheritDoc}
 	 */
 	protected CyWriter getWriter(final CyFileFilter filter, final File file) throws Exception {
-		return writerManager.getWriter(property, filter, file);
+		return writerManager.getWriter(property.getProperties(), filter, file);
 	}
 }

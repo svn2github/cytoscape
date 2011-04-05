@@ -46,8 +46,6 @@ public class PropertiesWriterImpl extends AbstractTask implements CyWriter {
 
 	public PropertiesWriterImpl(final OutputStream outputStream, Object props) {
 		this.outputStream = outputStream;
-		if (props instanceof CyProperty)
-			props = ((CyProperty)props).getProperties();
 		if (props instanceof Properties)
 			properties = (Properties)props;
 		else
