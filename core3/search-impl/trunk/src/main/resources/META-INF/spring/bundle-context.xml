@@ -14,8 +14,8 @@
 	is used to identify this particular object in this and the 
 	bundle-context-osgi.xml file.
 	-->
-	<bean id="enhancedSearchFactory"
-		class="org.cytoscape.search.internal.EnhancedSearchFactory">
+	<bean id="enhancedSearchPlugin"
+		class="org.cytoscape.search.internal.EnhancedSearchPlugin">
 		<constructor-arg ref="cytoscapeDesktopService" />
 		<constructor-arg ref="cyApplicationManagerRef" />
 		<constructor-arg ref="cyTableManagerServiceRef" />
