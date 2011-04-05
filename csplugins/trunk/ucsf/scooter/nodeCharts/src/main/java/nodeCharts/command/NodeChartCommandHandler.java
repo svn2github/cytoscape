@@ -248,6 +248,9 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 					ValueUtils.normalize(values, maxValues);
 			}
 
+			if (values == null || values.size() == 0)
+				continue;
+
 			Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, size, view, pos, scale);
 			List<CustomGraphic> cgList = viewer.getCustomGraphics(args, values, labels, bbox, view);
 			ViewUtils.addCustomGraphics(cgList, node, view);

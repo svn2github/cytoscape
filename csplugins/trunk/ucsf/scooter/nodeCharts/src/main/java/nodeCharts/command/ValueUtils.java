@@ -60,7 +60,10 @@ public class ValueUtils {
 		if (input instanceof String) {
 			values = ValueUtils.parseStringList((String)input);
 		} else if (input instanceof List) {
-			Object o = ((List)input).get(0);
+			List l = (List)input;
+			if (l == null || l.size() == 0)
+				return null;
+			Object o = l.get(0);
 			if (o instanceof Double) {
 				values = (List<Double>)input;
 			} else if (o instanceof String) {
