@@ -289,7 +289,7 @@ public class DiscreteValueEditor<T> extends JDialog implements ValueEditor<T> {
 			
 			final Icon icon = iconMap.get(value);
 
-			setText(value.toString());
+			
 			//icon.setLeftPadding(15);
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
@@ -305,11 +305,13 @@ public class DiscreteValueEditor<T> extends JDialog implements ValueEditor<T> {
 			this.setHorizontalTextPosition(LEFT);
 			this.setHorizontalAlignment(LEFT);
 				
-			if(icon != null)
+			if(icon != null) {
+				
 				setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight() + 20));
-			else
+			} else {
+				setText(value.toString());
 				setPreferredSize(new Dimension(100, 60));
-			
+			}
 			this.setBorder(new DropShadowBorder());
 
 			return this;

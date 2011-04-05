@@ -75,6 +75,7 @@ import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
+import org.cytoscape.view.presentation.property.values.LineType;
 import org.cytoscape.view.presentation.property.values.NodeShape;
 
 
@@ -1535,9 +1536,11 @@ public class DNodeView implements NodeView, Label {
 		} else if (vp == DVisualLexicon.NODE_BORDER_PAINT) {
 			setBorderPaint((Paint) value);
 		} else if (vp == DVisualLexicon.NODE_BORDER_WIDTH) {
+			// FIXME
 			setBorderWidth(((Number) value).floatValue());
-		} else if (vp == DVisualLexicon.NODE_BORDER_STROKE) {
-			setBorder((Stroke) value);
+		} else if (vp == DVisualLexicon.NODE_BORDER_LINE_TYPE) {
+			DLineType dLineType = DLineType.getDLineType((LineType) value);
+			setBorder(dLineType.getStroke(this.getBorderWidth()));
 		} else if (vp == DVisualLexicon.NODE_TRANSPARENCY) {
 			setTransparency(((Integer) value));
 		} else if (vp == MinimalVisualLexicon.NODE_WIDTH) {

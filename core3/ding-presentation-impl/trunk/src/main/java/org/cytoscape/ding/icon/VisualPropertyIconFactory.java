@@ -2,15 +2,16 @@ package org.cytoscape.ding.icon;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Stroke;
 
 import javax.swing.Icon;
 
 import org.cytoscape.ding.DNodeShape;
 import org.cytoscape.ding.ObjectPosition;
 import org.cytoscape.ding.customgraphics.CyCustomGraphics;
+import org.cytoscape.ding.impl.DLineType;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
+import org.cytoscape.view.presentation.property.values.LineType;
 import org.cytoscape.view.presentation.property.values.NodeShape;
 
 
@@ -34,11 +35,9 @@ public class VisualPropertyIconFactory {
 				dShape = DNodeShape.getDShape((NodeShape) value);
 			else
 				dShape = (DNodeShape) value;
-			
-			System.out.println("\n\n\n\n===========>>> Creating shape icon: " + dShape);
 			icon = new NodeIcon(dShape.getShape(), w, h, dShape.getDisplayName());
-		} else if(value instanceof Stroke) {
-			icon = new StrokeIcon((Stroke) value, w, h, value.toString());
+		} else if(value instanceof LineType) {
+			icon = new StrokeIcon(DLineType.getDLineType((LineType) value).getStroke(2f), w, h, value.toString());
 		} else if(value instanceof CyCustomGraphics) {
 			icon = new CustomGraphicsIcon(((CyCustomGraphics) value), w, h, ((CyCustomGraphics) value).getDisplayName());
 		} else if(value instanceof ObjectPosition) {

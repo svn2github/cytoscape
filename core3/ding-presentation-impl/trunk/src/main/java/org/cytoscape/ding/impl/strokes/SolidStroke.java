@@ -3,7 +3,7 @@ package org.cytoscape.ding.impl.strokes;
 
 import java.awt.BasicStroke;
 
-import org.cytoscape.ding.LineStyle;
+import org.cytoscape.view.presentation.property.LineTypeVisualProperty;
 
 public class SolidStroke extends BasicStroke implements WidthStroke {
 
@@ -18,11 +18,11 @@ public class SolidStroke extends BasicStroke implements WidthStroke {
 		return new SolidStroke(w);
 	}
 
-	public LineStyle getLineStyle() {
-		return LineStyle.SOLID;
-	}
+//	public LineStyle getLineStyle() {
+//		return LineStyle.SOLID;
+//	}
 
-	@Override public String toString() { return LineStyle.SOLID.toString() + " " + Float.toString(width); }
+	@Override public String toString() { return LineTypeVisualProperty.SOLID.toString() + " " + Float.toString(width); }
 }
 
 

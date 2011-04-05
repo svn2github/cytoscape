@@ -3,8 +3,6 @@ package org.cytoscape.ding.impl.strokes;
 
 import java.awt.BasicStroke;
 
-import org.cytoscape.ding.LineStyle;
-
 /**
  * Rather than handle strokes of width 0 for all implementations of WidthStroke,
  * use this wrapper class that, when the width is less than or equal to 0 a

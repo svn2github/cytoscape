@@ -52,8 +52,7 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
-
-import org.cytoscape.ding.LineStyle;
+import org.cytoscape.view.presentation.property.values.LineType;
 
 
 class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
@@ -66,6 +65,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	static final String DEFAULT_LABEL_TEXT = "";
 	static final Font DEFAULT_LABEL_FONT = new Font("SansSerif", Font.PLAIN, 12);
 	static final Paint DEFAULT_LABEL_PAINT = Color.black;
+	
 	DGraphView m_view;
 	final int m_inx; // Positive.
 	boolean m_selected;
@@ -1478,13 +1478,15 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 			setUnselectedPaint((Paint) value);
 		} else if (vp == DVisualLexicon.EDGE_WIDTH) {
 			final float currentWidth = this.getStrokeWidth();
-			final float newWidth = ((Double) value).floatValue();
+			final float newWidth = ((Number) value).floatValue();
 			if(currentWidth != newWidth) {
 				setStrokeWidth(newWidth);
-				setStroke(LineStyle.extractLineStyle(getStroke()).getStroke(newWidth));
+				//setStroke(LineStyle.extractLineStyle(getStroke()).getStroke(newWidth));
+				//setStroke(LineStyle.extractLineStyle(getStroke()).getStroke(newWidth));
 			}
-		} else if (vp == DVisualLexicon.EDGE_STROKE) {
-			final Stroke newStroke = LineStyle.extractLineStyle((Stroke) value).getStroke(this.getStrokeWidth());
+		} else if (vp == DVisualLexicon.EDGE_LINE_TYPE) {
+			//final Stroke newStroke = LineStyle.extractLineStyle((Stroke) value).getStroke(this.getStrokeWidth());
+			final Stroke newStroke = DLineType.getDLineType((LineType)value).getStroke(this.getStrokeWidth());
 			setStroke(newStroke);
 		} else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SELECTED_PAINT) {
 			setSourceEdgeEndSelectedPaint((Paint) value);

@@ -23,8 +23,6 @@ import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 
-import org.cytoscape.ding.LineStyle;
-
 
 public class ZigzagStroke implements WidthStroke {
 

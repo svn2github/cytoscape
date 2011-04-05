@@ -1,9 +1,11 @@
 package org.cytoscape.view.presentation.property;
 
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.values.LineType;
 import org.cytoscape.view.presentation.property.values.NodeShape;
 
 /**
@@ -28,6 +30,12 @@ public class RichVisualLexicon extends MinimalVisualLexicon {
 	
 	public static final VisualProperty<NodeShape> NODE_SHAPE = new NodeShapeVisualProperty(
 			NodeShapeVisualProperty.RECTANGLE, "NODE_SHAPE", "Node Shape", CyNode.class);
+	
+	// Line Types
+	public static final VisualProperty<LineType> NODE_BORDER_LINE_TYPE = new LineTypeVisualProperty(
+			LineTypeVisualProperty.SOLID, "NODE_BORDER_STROKE", "Node Border Line Type", CyNode.class);
+	public static final VisualProperty<LineType> EDGE_LINE_TYPE = new LineTypeVisualProperty(
+			LineTypeVisualProperty.SOLID, "EDGE_LINE_TYPE", "Edge Line Type", CyEdge.class);
 
 	/**
 	 * Construct a {@linkplain VisalLexicon} for 3D rendering engine.

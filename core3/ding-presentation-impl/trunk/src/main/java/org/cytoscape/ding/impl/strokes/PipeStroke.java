@@ -3,8 +3,6 @@ package org.cytoscape.ding.impl.strokes;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 
-import org.cytoscape.ding.LineStyle;
-
 public class PipeStroke extends ShapeStroke {
 
 	public enum Type {
