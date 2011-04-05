@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.property.values.NodeShape;
 
 
 /**
@@ -205,7 +206,7 @@ public interface NodeView  extends GraphViewObject {
 	 * <B>Note:</B> calling setPathTo( Shape ), allows one to define their own
 	 * java.awt.Shape ( i.e. A picture of Johnny Cash )
 	 */
-	public void setShape(NodeShape shape) ;
+	public void setShape(final NodeShape shape) ;
 
 	/**
 	 * Sets what the tooltip will be for this NodeView

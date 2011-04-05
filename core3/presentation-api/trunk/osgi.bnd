@@ -3,5 +3,5 @@
 #-----------------------------------------------------------------
 
 Import-Package: *
-Export-Package: org.cytoscape.view.presentation, org.cytoscape.view.presentation.property, org.cytoscape.view.presentation.events
+Export-Package: org.cytoscape.view.presentation, org.cytoscape.view.presentation.property, org.cytoscape.view.presentation.events, org.cytoscape.view.presentation.property.values
 Private-Package: org.cytoscape.view.presentation.internal.*

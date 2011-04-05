@@ -53,11 +53,11 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
+import org.cytoscape.ding.DNodeShape;
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.Label;
-import org.cytoscape.ding.NodeShape;
 import org.cytoscape.ding.NodeView;
 import org.cytoscape.ding.ObjectPosition;
 import org.cytoscape.ding.customgraphics.CyCustomGraphics;
@@ -74,6 +74,8 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
+import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
+import org.cytoscape.view.presentation.property.values.NodeShape;
 
 
 /**
@@ -552,7 +554,7 @@ public class DNodeView implements NodeView, Label {
 
 			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
 					&& (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
-				setShape(NodeShape.RECT);
+				setShape(NodeShapeVisualProperty.RECTANGLE);
 
 			graphView.m_contentChanged = true;
 
@@ -921,7 +923,13 @@ public class DNodeView implements NodeView, Label {
 	 */
 	@Override public void setShape(final NodeShape shape) {
 		synchronized (graphView.m_lock) {
-			graphView.m_nodeDetails.overrideShape(m_inx, shape);
+			final DNodeShape dShape;
+			if(NodeShapeVisualProperty.isDefaultShape(shape))
+				dShape = DNodeShape.getDShape(shape);
+			else
+				dShape = (DNodeShape) shape;
+			
+			graphView.m_nodeDetails.overrideShape(m_inx, dShape);
 			graphView.m_contentChanged = true;
 		}
 	}

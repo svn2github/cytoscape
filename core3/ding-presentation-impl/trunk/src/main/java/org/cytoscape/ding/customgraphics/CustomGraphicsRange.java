@@ -30,4 +30,10 @@ public class CustomGraphicsRange implements DiscreteRange<CyCustomGraphics>  {
 		return new HashSet<CyCustomGraphics>(manager.getAllCustomGraphics());
 	}
 
+	@Override
+	public void addRangeValue(CyCustomGraphics newValue) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

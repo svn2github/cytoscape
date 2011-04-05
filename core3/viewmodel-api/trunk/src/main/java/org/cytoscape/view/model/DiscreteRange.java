@@ -13,4 +13,12 @@ public interface DiscreteRange<T> extends Range<T> {
 	 * 
 	 */
 	Set<T> values();
+	
+	
+	/**
+	 * Add a new range value.
+	 * 
+	 * @param newValue new range value.
+	 */
+	void addRangeValue(T newValue);
 }

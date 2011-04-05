@@ -44,7 +44,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.ding.ArrowShape;
-import org.cytoscape.ding.NodeShape;
+import org.cytoscape.ding.DNodeShape;
 import org.cytoscape.ding.ObjectPosition;
 import org.cytoscape.ding.customgraphics.CustomGraphicsManager;
 import org.cytoscape.ding.customgraphics.CustomGraphicsRange;
@@ -54,25 +54,30 @@ import org.cytoscape.ding.impl.visualproperty.ArrowShapeTwoDVisualProperty;
 import org.cytoscape.ding.impl.visualproperty.CustomGraphicsVisualProperty;
 import org.cytoscape.ding.impl.visualproperty.FontTwoDVisualProperty;
 import org.cytoscape.ding.impl.visualproperty.IntegerTwoDVisualProperty;
-import org.cytoscape.ding.impl.visualproperty.NodeShapeTwoDVisualProperty;
 import org.cytoscape.ding.impl.visualproperty.ObjectPositionVisualProperty;
 import org.cytoscape.ding.impl.visualproperty.StrokeTwoDVisualProperty;
+import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
+import org.cytoscape.view.presentation.internal.property.values.NodeShapeImpl;
 import org.cytoscape.view.presentation.property.BooleanVisualProperty;
 import org.cytoscape.view.presentation.property.DefaultVisualizableVisualProperty;
 import org.cytoscape.view.presentation.property.DoubleVisualProperty;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
+import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
 import org.cytoscape.view.presentation.property.PaintVisualProperty;
+import org.cytoscape.view.presentation.property.RichVisualLexicon;
 import org.cytoscape.view.presentation.property.StringVisualProperty;
-import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
+import org.cytoscape.view.presentation.property.values.NodeShape;
 
 
-public class DVisualLexicon extends MinimalVisualLexicon {
+public class DVisualLexicon extends RichVisualLexicon {
 	
 	private static final int DEF_FONT_SIZE = 12;
 	private static final double DEF_BORDER_WIDTH = 2.0d;
@@ -94,8 +99,8 @@ public class DVisualLexicon extends MinimalVisualLexicon {
 			Boolean.TRUE, "NETWORK_EDGE_SELECTION", "Network Edge Selection", CyNetwork.class);
 
 	
-	public static final VisualProperty<NodeShape> NODE_SHAPE = new NodeShapeTwoDVisualProperty(
-			NodeShape.ROUND_RECT, "NODE_SHAPE", "Node Shape");
+//	public static final VisualProperty<NodeShape> NODE_SHAPE = new NodeShapeTwoDVisualProperty(
+//			NodeShape.ROUND_RECT, "NODE_SHAPE", "Node Shape");
 
 	public static final VisualProperty<Paint> NODE_SELECTED_PAINT = new PaintVisualProperty(
 			Color.YELLOW, MinimalVisualLexicon.PAINT_RANGE, "NODE_SELECTED_PAINT", "Node Selected Paint", CyNode.class);
@@ -260,6 +265,10 @@ public class DVisualLexicon extends MinimalVisualLexicon {
 			ObjectPositionImpl.DEFAULT_POSITION, "EDGE_LABEL_POSITION",
 			"Edge Label Position", CyEdge.class);
 	
+	
+	// Ding specific node shapes.
+	private static final NodeShape VEE = new DNodeShape(GraphGraphics.SHAPE_VEE, "V", "VEE");
+	
 	static {
 		CG_POSITIONS.add(NODE_CUSTOMGRAPHICS_POSITION_1);
 		CG_POSITIONS.add(NODE_CUSTOMGRAPHICS_POSITION_2);
@@ -306,6 +315,12 @@ public class DVisualLexicon extends MinimalVisualLexicon {
 	public DVisualLexicon(final CustomGraphicsManager manager) {
 		super(DING_ROOT);
 		
+		// Add new Shapes to the default
+		((DiscreteRange<NodeShape>)NODE_SHAPE.getRange()).addRangeValue(VEE);
+		
+		// Add Ding-dependent line types.
+		
+		
 		CG_RANGE.setManager(manager);
 			
 		addVisualProperty(NETWORK_NODE_SELECTION, NETWORK);
@@ -320,7 +335,7 @@ public class DVisualLexicon extends MinimalVisualLexicon {
 		addVisualProperty(NODE_LABEL_POSITION, NODE);
 		addVisualProperty(NODE_LABEL_FONT_FACE, NODE);
 		
-		addVisualProperty(NODE_SHAPE, NODE);
+//		addVisualProperty(NODE_SHAPE, NODE);
 		addVisualProperty(NODE_SELECTED_PAINT, NODE_PAINT);
 		addVisualProperty(NODE_BORDER_WIDTH, NODE);
 		addVisualProperty(NODE_BORDER_STROKE, NODE);
@@ -385,7 +400,7 @@ public class DVisualLexicon extends MinimalVisualLexicon {
 		addVisualProperty(EDGE_TOOLTIP, EDGE);
 		addVisualProperty(EDGE_LABEL_POSITION, EDGE);
 		addVisualProperty(EDGE_LABEL_FONT_FACE, EDGE);
-		addVisualProperty(EDGE_LABEL_FONT_SIZE, EDGE);	
+		addVisualProperty(EDGE_LABEL_FONT_SIZE, EDGE);
 
 		createLookupMap();
 	}

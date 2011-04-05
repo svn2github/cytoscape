@@ -6,10 +6,12 @@ import java.awt.Stroke;
 
 import javax.swing.Icon;
 
-import org.cytoscape.ding.NodeShape;
+import org.cytoscape.ding.DNodeShape;
 import org.cytoscape.ding.ObjectPosition;
 import org.cytoscape.ding.customgraphics.CyCustomGraphics;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
+import org.cytoscape.view.presentation.property.values.NodeShape;
 
 
 /**
@@ -27,7 +29,14 @@ public class VisualPropertyIconFactory {
 		if(value instanceof Color) {
 			icon = new ColorIcon((Color) value, w, h, value.toString());
 		} else if(value instanceof NodeShape) {
-			icon = new NodeIcon(((NodeShape) value).getShape(), w, h, ((NodeShape) value).getShapeName());
+			final DNodeShape dShape;
+			if(NodeShapeVisualProperty.isDefaultShape((NodeShape) value))
+				dShape = DNodeShape.getDShape((NodeShape) value);
+			else
+				dShape = (DNodeShape) value;
+			
+			System.out.println("\n\n\n\n===========>>> Creating shape icon: " + dShape);
+			icon = new NodeIcon(dShape.getShape(), w, h, dShape.getDisplayName());
 		} else if(value instanceof Stroke) {
 			icon = new StrokeIcon((Stroke) value, w, h, value.toString());
 		} else if(value instanceof CyCustomGraphics) {

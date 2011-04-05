@@ -4,6 +4,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.values.NodeShape;
 
 /**
  * Minimal set of Visual Properties for 3D rendering engines.
@@ -11,6 +12,7 @@ import org.cytoscape.view.model.VisualProperty;
  */
 public class RichVisualLexicon extends MinimalVisualLexicon {
 
+	// 3D-related props
 	public static final VisualProperty<Double> NODE_Z_LOCATION = new DoubleVisualProperty(
 			0.0, ARBITRARY_DOUBLE_RANGE, "NODE_Z_LOCATION", "Node Z Location", true, CyNode.class);
 
@@ -22,6 +24,10 @@ public class RichVisualLexicon extends MinimalVisualLexicon {
 
 	public static final VisualProperty<Double> NETWORK_DEPTH = new DoubleVisualProperty(
 			0.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_DEPTH", "Network Depth", CyNetwork.class);
+	
+	
+	public static final VisualProperty<NodeShape> NODE_SHAPE = new NodeShapeVisualProperty(
+			NodeShapeVisualProperty.RECTANGLE, "NODE_SHAPE", "Node Shape", CyNode.class);
 
 	/**
 	 * Construct a {@linkplain VisalLexicon} for 3D rendering engine.
@@ -37,6 +43,8 @@ public class RichVisualLexicon extends MinimalVisualLexicon {
 
 		addVisualProperty(NETWORK_CENTER_Z_LOCATION, NETWORK);
 		addVisualProperty(NETWORK_DEPTH, NETWORK_SIZE);
+		
+		addVisualProperty(NODE_SHAPE, NODE);
 
 	}
 }

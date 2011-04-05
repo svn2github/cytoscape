@@ -1,5 +1,6 @@
 package org.cytoscape.view.model;
 
+import java.util.Collections;
 import java.util.Set;
 
 public final class DiscreteRangeImpl<T> implements DiscreteRange<T> {
@@ -24,7 +25,13 @@ public final class DiscreteRangeImpl<T> implements DiscreteRange<T> {
 
 	@Override
 	public Set<T> values() {
-		return values;
+		// This is immutable to prevent add/remove operation by 3rd party developers.
+		return Collections.unmodifiableSet(values);
+	}
+
+	@Override
+	public void addRangeValue(final T newValue) {
+		values.add(newValue);
 	}
 
 }
