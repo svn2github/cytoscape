@@ -47,6 +47,7 @@ import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.search.internal.ui.EnhancedSearchPanel;
 import org.cytoscape.work.swing.GUITaskManager;
+import org.cytoscape.model.CyNetwork;
 
 public class EnhancedSearchPlugin implements SetCurrentNetworkViewListener, NetworkAboutToBeDestroyedListener, 
 					SessionLoadedListener
@@ -55,7 +56,7 @@ public class EnhancedSearchPlugin implements SetCurrentNetworkViewListener, Netw
 	private CyApplicationManager netmgr;
 	private CyTableManager tableMgr;
 	private GUITaskManager taskMgr;
-	private EnhancedSearchManager searchMgr;
+	private EnhancedSearchManager searchMgr = null;
 	private static boolean initialized = false;
 
 	public EnhancedSearchPlugin(CySwingApplication desktopApp, CyApplicationManager netmgr, 
@@ -79,7 +80,7 @@ public class EnhancedSearchPlugin implements SetCurrentNetworkViewListener, Netw
 
 	@Override
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
-		// Show the Enhanced Search text-field only when a network view is presented in screen
+		// Show the Enhanced Search text-field only when after network view is presented on screen
 		if (!initialized){
 			init();	
 		}
@@ -87,12 +88,18 @@ public class EnhancedSearchPlugin implements SetCurrentNetworkViewListener, Netw
 	
 	@Override
 	public void handleEvent(SessionLoadedEvent e) {
-		//System.out.println("\n\tEnhanceSearch: Got event --- SessionLoadedEvent");
+		// reset the state of the search-manager
+		if (searchMgr != null){
+			searchMgr.clear();			
+		}	
 	}
 
 	@Override
 	public void handleEvent(NetworkAboutToBeDestroyedEvent e) {
-		//CyNetwork network = e.getNetwork();
-		//System.out.println("\n\tEnhanceSearch: Got event --- NetworkAboutToBeDestroyedEvent");	
+		// remove the index of network to be destroyed 
+		if (searchMgr != null){
+			CyNetwork network = e.getNetwork();
+			searchMgr.removeNetworkIndex(network);			
+		}
 	}
 }
