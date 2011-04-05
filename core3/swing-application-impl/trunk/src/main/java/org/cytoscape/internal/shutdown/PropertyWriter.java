@@ -16,6 +16,7 @@ import java.io.File;
  */
 public final class PropertyWriter extends AbstractCyWriter<CyPropertyWriterManager> {
 	private final CyProperty property;
+	private final String fileFilterDescription;
 
 	/**
 	 * @param writerManager  The {@link org.cytoscape.io.write.CyPropertyWriterManager} used to determine which type of
@@ -23,16 +24,18 @@ public final class PropertyWriter extends AbstractCyWriter<CyPropertyWriterManag
 	 * @param property       The {@link org.cytoscape.property.CyProperty} that should be serialised.
 	 * @param outputFile     Where to write the serialised data to.
 	 */
-	public PropertyWriter(final CyPropertyWriterManager writerManager, final CyProperty property,
+	public PropertyWriter(final CyPropertyWriterManager writerManager,
+			      final CyFileFilter fileFilter, final CyProperty property,
 			      final File outputFile)
 	{
 		super(writerManager);
 		this.property = property;
+		fileFilterDescription = fileFilter.getDescription();
 		setOutputFile(outputFile);
 	}
 
 	protected String getExportFileFormat() {
-		return "Java Properties files (*.props, *.properties)";
+		return fileFilterDescription;
 	}
 
 	/**
