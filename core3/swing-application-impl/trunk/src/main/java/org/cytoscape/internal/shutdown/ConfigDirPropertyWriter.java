@@ -12,7 +12,6 @@ import org.cytoscape.application.swing.events.CytoscapeShutdownListener;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.io.write.CyPropertyWriterManager;
 import org.cytoscape.io.write.CyWriter;
-//import org.cytoscape.work.SequentialTaskFactory;
 import org.cytoscape.work.TaskManager;
 
 
@@ -20,7 +19,6 @@ public class ConfigDirPropertyWriter implements CytoscapeShutdownListener {
 	private final TaskManager taskManager;
 	private final CyPropertyWriterManager propertyWriterManager;
 	private final Map<CyProperty, Map> configDirProperties;
-//	private final SequentialTaskFactory sequentialTaskFactory;
 
 	ConfigDirPropertyWriter(final TaskManager taskManager,
 				final CyPropertyWriterManager propertyWriterManager)
@@ -31,7 +29,6 @@ public class ConfigDirPropertyWriter implements CytoscapeShutdownListener {
 	}
 
 	public void handleEvent(final CytoscapeShutdownEvent event) {
-System.err.println("+++++++++++++++ Entering ConfigDirPropertyWriter.handleEvent()");
 		for (final Map.Entry<CyProperty, Map> keyAndValue : configDirProperties.entrySet()) {
 			final String propertyName = (String)keyAndValue.getValue().get("cyPropertyName");
 			final String outputFileName =
@@ -40,7 +37,6 @@ System.err.println("+++++++++++++++ Entering ConfigDirPropertyWriter.handleEvent
 			final File outputFile = new File(outputFileName);
 			final PropertyWriterFactory taskFactory =
 				new PropertyWriterFactory(propertyWriterManager, keyAndValue.getKey(), outputFile);
-System.err.println("+++++++++++++++ About to execute task factory!");
 			taskManager.execute(taskFactory);
 		}
 	}

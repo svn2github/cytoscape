@@ -32,7 +32,6 @@ public final class PropertyWriter extends AbstractCyWriter<CyPropertyWriterManag
 	}
 
 	protected String getExportFileFormat() {
-System.err.println("++++++++++++ in PropertyWriter.getExportFileFormat()");
 		return "Java Properties files (*.props, *.properties)";
 	}
 
@@ -40,7 +39,6 @@ System.err.println("++++++++++++ in PropertyWriter.getExportFileFormat()");
 	 * {@inheritDoc}
 	 */
 	protected CyWriter getWriter(final CyFileFilter filter, final File file) throws Exception {
-System.err.println("++++++++++++ Entering PropertyWriter.getWriter()");
 		return writerManager.getWriter(property, filter, file);
 	}
 }
