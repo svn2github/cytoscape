@@ -72,4 +72,11 @@ public class EnhancedSearchManager implements EnhancedSearch {
 		}
 	}	
 
+	/**
+	 * Set the state of the Manger to its original 
+	 */
+	public void clear(){
+		networkIndexMap.clear();
+		networkIndexStatusMap.clear();
+	}
 }
