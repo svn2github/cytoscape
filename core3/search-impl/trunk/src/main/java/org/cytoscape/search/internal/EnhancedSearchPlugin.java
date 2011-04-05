@@ -32,36 +32,67 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package org.cytoscape.search.internal;
 
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
+import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.task.AbstractNetworkViewTaskFactory;
-import org.cytoscape.work.TaskIterator;
+import org.cytoscape.session.events.SessionLoadedEvent;
+import org.cytoscape.session.events.SessionLoadedListener;
+import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
+import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.search.internal.ui.EnhancedSearchPanel;
 import org.cytoscape.work.swing.GUITaskManager;
 
+public class EnhancedSearchPlugin implements SetCurrentNetworkViewListener, NetworkAboutToBeDestroyedListener, 
+					SessionLoadedListener
+{
+	private CySwingApplication desktopApp;
+	private CyApplicationManager netmgr;
+	private CyTableManager tableMgr;
+	private GUITaskManager taskMgr;
+	private EnhancedSearchManager searchMgr;
+	private static boolean initialized = false;
 
-public class EnhancedSearchFactory extends AbstractNetworkViewTaskFactory {
-
-	public EnhancedSearchFactory(CySwingApplication desktopApp, CyApplicationManager netmgr, 
+	public EnhancedSearchPlugin(CySwingApplication desktopApp, CyApplicationManager netmgr, 
 			CyTableManager tableMgr, GUITaskManager taskMgr) {
-		
-		EnhancedSearchManager searchMgr = new EnhancedSearchManager();
-		
+
+		this.desktopApp = desktopApp;
+		this.netmgr = netmgr;
+		this.tableMgr = tableMgr;
+		this.taskMgr = taskMgr;
+	}
+
+	private void init(){		
+		searchMgr = new EnhancedSearchManager();
 		// Add a text-field and a search button on tool-bar
 		EnhancedSearchPanel searchPnl = new EnhancedSearchPanel(netmgr, tableMgr, searchMgr, taskMgr);
 		searchPnl.setVisible(true);
-		desktopApp.getJToolBar().add(searchPnl);		
+		desktopApp.getJToolBar().add(searchPnl);
+
+		initialized = true;
 	}
 
-	public TaskIterator getTaskIterator() {
-		// This taskFactory is initialized, but never executed in TaskMgr
-		return null;
+	@Override
+	public void handleEvent(SetCurrentNetworkViewEvent e) {
+		// Show the Enhanced Search text-field only when a network view is presented in screen
+		if (!initialized){
+			init();	
+		}
+	}
+	
+	@Override
+	public void handleEvent(SessionLoadedEvent e) {
+		//System.out.println("\n\tEnhanceSearch: Got event --- SessionLoadedEvent");
+	}
+
+	@Override
+	public void handleEvent(NetworkAboutToBeDestroyedEvent e) {
+		//CyNetwork network = e.getNetwork();
+		//System.out.println("\n\tEnhanceSearch: Got event --- NetworkAboutToBeDestroyedEvent");	
 	}
 }
-
-
