@@ -40,7 +40,7 @@ import org.cytoscape.model.CyNode;
 
 class IntegerVisualProperty extends AbstractVisualProperty<Integer> {
 	
-	private static final ContinuousRange<Integer> cRange = new ContinuousRangeImpl<Integer>(Integer.class, -10, 10);
+	private static final ContinuousRange<Integer> cRange = new ContinuousRange<Integer>(Integer.class, -10, 10);
 	
 
 	public IntegerVisualProperty() {

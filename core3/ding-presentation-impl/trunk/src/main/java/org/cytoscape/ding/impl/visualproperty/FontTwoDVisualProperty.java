@@ -40,7 +40,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.Range;
 
 public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
@@ -55,7 +55,7 @@ public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
 		for(Font f: allFonts)
 			fontSet.add(f.deriveFont(DEF_FONT_SIZE));
 		
-		FONT_RANGE = new DiscreteRangeImpl<Font>(Font.class,fontSet);
+		FONT_RANGE = new DiscreteRange<Font>(Font.class,fontSet);
 	}
 
 	public FontTwoDVisualProperty(final Font def, final String id,

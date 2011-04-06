@@ -26,7 +26,7 @@ public class VisualLexiconNodeTest {
 	public void setUp() throws Exception {
 		final Set<DummyObject> dummySet = new HashSet<DummyObject>();
 		dummySet.add(new DummyObject());
-		DiscreteRangeImpl<DummyObject> range = new DiscreteRangeImpl<DummyObject>(DummyObject.class, dummySet);
+		DiscreteRange<DummyObject> range = new DiscreteRange<DummyObject>(DummyObject.class, dummySet);
 		vp1 = new DummyVisualProperty(new DummyObject(), "dummy", "Dummy Visual Property", range);
 		vp2 = new IntegerVisualProperty();
 		vp3 = new StringVisualProperty();

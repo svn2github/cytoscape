@@ -5,7 +5,11 @@ import java.util.Set;
 
 import org.cytoscape.view.model.DiscreteRange;
 
-public class CustomGraphicsRange implements DiscreteRange<CyCustomGraphics>  {
+public class CustomGraphicsRange extends DiscreteRange<CyCustomGraphics>  {
+
+	public CustomGraphicsRange() {
+		super(CyCustomGraphics.class, new HashSet<CyCustomGraphics>());
+	}
 
 	private CustomGraphicsManager manager;
 	

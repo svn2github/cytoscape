@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.Range;
 
@@ -20,7 +20,7 @@ public class NullVisualProperty extends AbstractVisualProperty<NullDataType> {
 
 	static {
 		final Set<NullDataType> nRange = new HashSet<NullDataType>();
-		NULL_RANGE = new DiscreteRangeImpl<NullDataType>(
+		NULL_RANGE = new DiscreteRange<NullDataType>(
 				NullDataType.class, nRange);
 	}
 

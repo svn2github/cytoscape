@@ -42,7 +42,7 @@ import java.util.Set;
 import org.cytoscape.ding.ArrowShape;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.Range;
 
 public class ArrowShapeTwoDVisualProperty extends
@@ -57,7 +57,7 @@ public class ArrowShapeTwoDVisualProperty extends
 		final Set<ArrowShape> arrowSet = new HashSet<ArrowShape>();
 		for (final ArrowShape arrow : ArrowShape.values())
 			arrowSet.add(arrow);
-		ARROW_SHAPE_RANGE = new DiscreteRangeImpl<ArrowShape>(ArrowShape.class,
+		ARROW_SHAPE_RANGE = new DiscreteRange<ArrowShape>(ArrowShape.class,
 				arrowSet);
 
 		// We have to support Cytoscape 2.8 XGMML shapes!

@@ -13,7 +13,7 @@ public class StringVisualProperty extends AbstractVisualProperty<String> {
 	static  {
 		final Set<String> valSet = new HashSet<String>();
 		valSet.add("Foo");
-		sRange = new DiscreteRangeImpl<String>(String.class, valSet);
+		sRange = new DiscreteRange<String>(String.class, valSet);
 	}
 	
 	public StringVisualProperty() {

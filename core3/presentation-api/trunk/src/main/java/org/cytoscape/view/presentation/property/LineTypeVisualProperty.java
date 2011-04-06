@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRange;
-import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.presentation.property.values.LineType;
 
 public class LineTypeVisualProperty extends AbstractVisualProperty<LineType> {
@@ -30,7 +30,7 @@ public class LineTypeVisualProperty extends AbstractVisualProperty<LineType> {
 		lineTypes.add(DASH_DOT);
 		lineTypes.add(DOT);
 		
-		LINE_TYPE_RANGE = new DiscreteRangeImpl<LineType>(LineType.class, new HashSet<LineType>(lineTypes));
+		LINE_TYPE_RANGE = new DiscreteRange<LineType>(LineType.class, new HashSet<LineType>(lineTypes));
 	}
 
 	public LineTypeVisualProperty(LineType defaultValue,

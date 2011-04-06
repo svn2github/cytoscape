@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRange;
-import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.presentation.property.values.NodeShape;
 
 public final class NodeShapeVisualProperty extends
@@ -44,7 +44,7 @@ public final class NodeShapeVisualProperty extends
 		DEFAULT_SHAPES.add(HEXAGON);
 		DEFAULT_SHAPES.add(OCTAGON);
 
-		NODE_SHAPE_RANGE = new DiscreteRangeImpl<NodeShape>(NodeShape.class,
+		NODE_SHAPE_RANGE = new DiscreteRange<NodeShape>(NodeShape.class,
 				new HashSet<NodeShape>(DEFAULT_SHAPES));
 	}
 

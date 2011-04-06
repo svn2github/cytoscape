@@ -19,7 +19,7 @@ public class DummyVisualPropertyTest extends AbstractVisualPropertyTest<DummyObj
 		
 		final Set<DummyObject> dummySet = new HashSet<DummyObject>();
 		dummySet.add(new DummyObject());
-		range = new DiscreteRangeImpl<DummyObject>(DummyObject.class, dummySet);
+		range = new DiscreteRange<DummyObject>(DummyObject.class, dummySet);
 		ignore = false;
 		vp = new DummyVisualProperty(defaultVal, id, displayName, range);
 	}

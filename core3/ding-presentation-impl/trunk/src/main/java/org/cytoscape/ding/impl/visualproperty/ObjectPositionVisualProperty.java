@@ -3,7 +3,7 @@ package org.cytoscape.ding.impl.visualproperty;
 import org.cytoscape.ding.ObjectPosition;
 import org.cytoscape.ding.impl.ObjectPositionImpl;
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.ContinuousRangeImpl;
+import org.cytoscape.view.model.ContinuousRange;
 import org.cytoscape.view.model.Range;
 
 public class ObjectPositionVisualProperty extends AbstractVisualProperty<ObjectPosition> {
@@ -13,7 +13,7 @@ public class ObjectPositionVisualProperty extends AbstractVisualProperty<ObjectP
 	private static final ObjectPosition MIN_OBJECT = ObjectPositionImpl.DEFAULT_POSITION;
 
 	static {
-		OBJECT_POSITION_RANGE = new ContinuousRangeImpl<ObjectPosition>(ObjectPosition.class, MIN_OBJECT, MIN_OBJECT);
+		OBJECT_POSITION_RANGE = new ContinuousRange<ObjectPosition>(ObjectPosition.class, MIN_OBJECT, MIN_OBJECT);
 	}
 
 	public ObjectPositionVisualProperty(ObjectPosition defaultValue,

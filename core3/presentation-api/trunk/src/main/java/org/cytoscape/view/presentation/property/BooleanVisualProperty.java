@@ -39,7 +39,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.Range;
 
 public class BooleanVisualProperty extends AbstractVisualProperty<Boolean> { 
@@ -50,7 +50,7 @@ public class BooleanVisualProperty extends AbstractVisualProperty<Boolean> {
 		final Set<Boolean> bRange = new HashSet<Boolean>();
 		bRange.add(true);
 		bRange.add(false);
-		BOOLEAN_RANGE = new DiscreteRangeImpl<Boolean>(Boolean.class, bRange); 
+		BOOLEAN_RANGE = new DiscreteRange<Boolean>(Boolean.class, bRange); 
 	}
 	
 	public BooleanVisualProperty(final Boolean def, final String id, final String name, final Class<?> targetDataType) {

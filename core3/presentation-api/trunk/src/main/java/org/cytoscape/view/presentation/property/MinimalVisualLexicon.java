@@ -42,8 +42,8 @@ import java.util.Set;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.model.ContinuousRangeImpl;
-import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.ContinuousRange;
+import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.Range;
 import org.cytoscape.view.model.VisualProperty;
@@ -61,17 +61,17 @@ public class MinimalVisualLexicon extends AbstractVisualLexicon {
 	// TODO move these!
 	protected static final Color MIN_COLOR = new Color(0, 0, 0);
 	protected static final Color MAX_COLOR = new Color(0xFF, 0xFF, 0xFF);
-	protected static final Range<Paint> PAINT_RANGE = new ContinuousRangeImpl<Paint>(
+	protected static final Range<Paint> PAINT_RANGE = new ContinuousRange<Paint>(
 			Paint.class, MIN_COLOR, MAX_COLOR);
 
 	protected static final Set<String> STRING_SET = new HashSet<String>();
 	// This will be used to for String VP which accepts any string values.
-	protected static final Range<String> ARBITRARY_STRING_RANGE = new DiscreteRangeImpl<String>(
+	protected static final Range<String> ARBITRARY_STRING_RANGE = new DiscreteRange<String>(
 			String.class, STRING_SET);
 
-	protected static final Range<Double> ARBITRARY_DOUBLE_RANGE = new ContinuousRangeImpl<Double>(
+	protected static final Range<Double> ARBITRARY_DOUBLE_RANGE = new ContinuousRange<Double>(
 			Double.class, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-	protected static final Range<Double> NONE_ZERO_POSITIVE_DOUBLE_RANGE = new ContinuousRangeImpl<Double>(
+	protected static final Range<Double> NONE_ZERO_POSITIVE_DOUBLE_RANGE = new ContinuousRange<Double>(
 			Double.class, 0d, Double.POSITIVE_INFINITY, false, true);
 
 	// Top level nodes has null as parent, and will be pointed by parent node.

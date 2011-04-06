@@ -36,12 +36,12 @@
 package org.cytoscape.ding.impl.visualproperty;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.ContinuousRangeImpl;
+import org.cytoscape.view.model.ContinuousRange;
 import org.cytoscape.view.model.Range;
 
 public class IntegerTwoDVisualProperty extends AbstractVisualProperty<Integer> { 
 
-	private static final Range<Integer> INT_RANGE = new ContinuousRangeImpl<Integer>(Integer.class, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	private static final Range<Integer> INT_RANGE = new ContinuousRange<Integer>(Integer.class, Integer.MIN_VALUE, Integer.MAX_VALUE);
 	
 	public IntegerTwoDVisualProperty(final Integer def, final String id, final String name, final Class<?> targetDataType) {
 		super(def,INT_RANGE, id, name, targetDataType);

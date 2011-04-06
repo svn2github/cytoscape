@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.Range;
 import org.cytoscape.view.model.Visualizable;
 
@@ -22,7 +22,7 @@ public class DefaultVisualizableVisualProperty extends
 
 	static {
 		final Set<Visualizable> vRange = new HashSet<Visualizable>();
-		VISUALIZABLE_RANGE = new DiscreteRangeImpl<Visualizable>(
+		VISUALIZABLE_RANGE = new DiscreteRange<Visualizable>(
 				Visualizable.class, vRange);
 	}
 

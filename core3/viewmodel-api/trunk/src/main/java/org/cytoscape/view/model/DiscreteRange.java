@@ -1,24 +1,35 @@
 package org.cytoscape.view.model;
 
+import java.util.Collections;
 import java.util.Set;
 
-public interface DiscreteRange<T> extends Range<T> {
+public class DiscreteRange<T> implements Range<T> {
+
+	private final Class<T> type;
+	private final Set<T> values;
 	
-	/**
-	 * Returns all available values in this type of data.
-	 * For example, if T is NodeShape, this method returns all types of node shape, 
-	 * such as oval, triangle, rectangle, etc.
-	 * 
-	 * @return All available values of the type T.
-	 * 
-	 */
-	Set<T> values();
+	public DiscreteRange(final Class<T> type, final Set<T> values) {
+		this.type = type;
+		this.values = values;
+	}
 	
-	
-	/**
-	 * Add a new range value.
-	 * 
-	 * @param newValue new range value.
-	 */
-	void addRangeValue(T newValue);
+	@Override
+	public Class<T> getType() {
+		return type;
+	}
+
+	@Override
+	public boolean isDiscrete() {
+		return true;
+	}
+
+	public Set<T> values() {
+		// This is immutable to prevent add/remove operation by 3rd party developers.
+		return Collections.unmodifiableSet(values);
+	}
+
+	public void addRangeValue(final T newValue) {
+		values.add(newValue);
+	}
+
 }
