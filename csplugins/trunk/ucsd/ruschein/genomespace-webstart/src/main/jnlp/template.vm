@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp codebase="$project.Url" href="$outputFile">
+  <information>
+    <title>Cytoscape</title>
+    <vendor>Cytoscape Consortium</vendor>
+    <homepage href="http://cytoscape.org"/>
+    <offline-allowed/>
+  </information>
+  <security>
+     <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="$j2seVersion" max-heap-size="1024M"/>
+     $dependencies
+  </resources>
+  <application-desc main-class="$mainClass">
+    <argument>-p</argument>
+    <argument>csplugins.network.merge.NetworkMergePlugin</argument>
+    <argument>-p</argument>
+    <argument>csplugins.layout.LayoutPlugin</argument>
+    <argument>-p</argument>
+    <argument>edu.ucsd.bioeng.idekerlab.biomartclient.BiomartClientPlugin</argument>
+    <argument>-p</argument>
+    <argument>cytoscape.coreplugins.biopax.BiopaxPlugin</argument>
+    <argument>-p</argument>
+    <argument>browser.AttributeBrowserPlugin</argument>
+    <argument>-p</argument>
+    <argument>org.cytoscape.coreplugin.cpath.plugin.CPathPlugIn</argument>
+    <argument>-p</argument>
+    <argument>org.cytoscape.coreplugin.cpath2.plugin.CPathPlugIn2</argument>
+    <argument>-p</argument>
+    <argument>cytoscape.editor.CytoscapeEditorPlugin</argument>
+    <argument>-p</argument>
+    <argument>org.cytoscape.EquationFunctions.EquationFunctionsPlugin</argument>
+    <argument>-p</argument>
+    <argument>filter.cytoscape.CsFilter</argument>
+    <argument>-p</argument>
+    <argument>cytoscape.filters.FilterPlugin</argument>
+    <argument>-p</argument>
+    <argument>linkout.LinkOutPlugin</argument>
+    <argument>-p</argument>
+    <argument>ManualLayout.ManualLayoutPlugin</argument>
+    <argument>-p</argument>
+    <argument>edu.ucsd.bioeng.idekerlab.ncbiclient.NCBIClientPlugin</argument>
+    <argument>-p</argument>
+    <argument>org.cytoscape.coreplugin.psi_mi.plugin.PsiMiPlugIn</argument>
+    <argument>-p</argument>
+    <argument>csplugins.quickfind.plugin.QuickFindPlugIn</argument>
+    <argument>-p</argument>
+    <argument>sbmlreader.SBMLReaderPlugin</argument>
+    <argument>-p</argument>
+    <argument>edu.ucsd.bioeng.coreplugin.tableImport.TableImportPlugin</argument>
+    <argument>-p</argument>
+    <argument>yfiles.YFilesLayoutPlugin</argument>
+  </application-desc>
+</jnlp>
+
