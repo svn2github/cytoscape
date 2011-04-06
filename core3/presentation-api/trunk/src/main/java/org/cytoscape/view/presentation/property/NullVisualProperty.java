@@ -7,7 +7,6 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRangeImpl;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.Range;
-import org.cytoscape.view.presentation.internal.property.NullDataTypeImpl;
 
 /**
  * Visual Property for root. This will not be used in actual visualization. Just
@@ -35,5 +34,9 @@ public class NullVisualProperty extends AbstractVisualProperty<NullDataType> {
 
 	public NullDataType parseSerializableString(final String text) {
 		return dummyObject;
+	}
+	
+	private final static class NullDataTypeImpl implements NullDataType {
+		// Dummy class.  Currently this does nothing.
 	}
 }

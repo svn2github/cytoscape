@@ -6,23 +6,31 @@ import java.util.Set;
 import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.DiscreteRangeImpl;
-import org.cytoscape.view.presentation.internal.property.values.NodeShapeImpl;
 import org.cytoscape.view.presentation.property.values.NodeShape;
 
-public final class NodeShapeVisualProperty extends AbstractVisualProperty<NodeShape> {
+public final class NodeShapeVisualProperty extends
+		AbstractVisualProperty<NodeShape> {
 
 	// Presets
-	public static final NodeShape RECTANGLE = new NodeShapeImpl("Rectangle", "RECTANGLE");
-	public static final NodeShape ROUND_RECTANGLE = new NodeShapeImpl("Round Rectangle", "ROUND_RECTANGLE");
-	public static final NodeShape TRIANGLE = new NodeShapeImpl("Triangle", "TRIANGLE");
-	public static final NodeShape PARALLELOGRAM = new NodeShapeImpl("Parallelogram", "PARALLELOGRAM");
-	public static final NodeShape DIAMOND = new NodeShapeImpl("Diamond", "DIAMOND");
-	public static final NodeShape ELLIPSE = new NodeShapeImpl("Ellipse", "ELLIPSE");
-	public static final NodeShape HEXAGON = new NodeShapeImpl("Hexagon", "HEXAGON");
-	public static final NodeShape OCTAGON = new NodeShapeImpl("Octagon", "OCTAGON");
+	public static final NodeShape RECTANGLE = new NodeShapeImpl("Rectangle",
+			"RECTANGLE");
+	public static final NodeShape ROUND_RECTANGLE = new NodeShapeImpl(
+			"Round Rectangle", "ROUND_RECTANGLE");
+	public static final NodeShape TRIANGLE = new NodeShapeImpl("Triangle",
+			"TRIANGLE");
+	public static final NodeShape PARALLELOGRAM = new NodeShapeImpl(
+			"Parallelogram", "PARALLELOGRAM");
+	public static final NodeShape DIAMOND = new NodeShapeImpl("Diamond",
+			"DIAMOND");
+	public static final NodeShape ELLIPSE = new NodeShapeImpl("Ellipse",
+			"ELLIPSE");
+	public static final NodeShape HEXAGON = new NodeShapeImpl("Hexagon",
+			"HEXAGON");
+	public static final NodeShape OCTAGON = new NodeShapeImpl("Octagon",
+			"OCTAGON");
 
 	private static final DiscreteRange<NodeShape> NODE_SHAPE_RANGE;
-	
+
 	private static final Set<NodeShape> DEFAULT_SHAPES;
 
 	static {
@@ -35,8 +43,9 @@ public final class NodeShapeVisualProperty extends AbstractVisualProperty<NodeSh
 		DEFAULT_SHAPES.add(ELLIPSE);
 		DEFAULT_SHAPES.add(HEXAGON);
 		DEFAULT_SHAPES.add(OCTAGON);
-		
-		NODE_SHAPE_RANGE = new DiscreteRangeImpl<NodeShape>(NodeShape.class, new HashSet<NodeShape>(DEFAULT_SHAPES));
+
+		NODE_SHAPE_RANGE = new DiscreteRangeImpl<NodeShape>(NodeShape.class,
+				new HashSet<NodeShape>(DEFAULT_SHAPES));
 	}
 
 	public NodeShapeVisualProperty(NodeShape defaultValue, String id,
@@ -55,11 +64,29 @@ public final class NodeShapeVisualProperty extends AbstractVisualProperty<NodeSh
 		// TODO
 		return null;
 	}
-	
+
 	public static boolean isDefaultShape(final NodeShape shape) {
-		if(DEFAULT_SHAPES.contains(shape))
+		if (DEFAULT_SHAPES.contains(shape))
 			return true;
 		else
 			return false;
 	}
+
+	private static final class NodeShapeImpl extends
+			AbstractVisualPropertyValue implements NodeShape {
+
+		public NodeShapeImpl(final String displayName,
+				final String serializableString) {
+			super(displayName, serializableString);
+		}
+
+		@Override
+		public VisualPropertyValue parseSerializableString(
+				String serializableString) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+	}
+
 }

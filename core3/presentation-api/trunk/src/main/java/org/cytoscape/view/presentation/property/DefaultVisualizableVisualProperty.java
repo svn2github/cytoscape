@@ -7,7 +7,6 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRangeImpl;
 import org.cytoscape.view.model.Range;
 import org.cytoscape.view.model.Visualizable;
-import org.cytoscape.view.presentation.internal.property.VisualizableImpl;
 
 /**
  * Visual Property to represent abstract concept such as Node or Edge. If
@@ -40,6 +39,10 @@ public class DefaultVisualizableVisualProperty extends
 	@Override
 	public Visualizable parseSerializableString(final String text) {
 		return visualizable;
+	}
+	
+	private static final class VisualizableImpl implements Visualizable {
+		// Dummy class.  Currently this does nothing.
 	}
 
 }

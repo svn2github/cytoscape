@@ -11,8 +11,6 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
-import org.cytoscape.view.presentation.internal.property.NullDataTypeImpl;
-import org.cytoscape.view.presentation.internal.property.VisualizableImpl;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
 import org.junit.After;
@@ -76,7 +74,6 @@ public class VisualPropertyTest {
 		
 		final VisualProperty<Visualizable> visualizableProp = MinimalVisualLexicon.NODE;
 		assertEquals(Visualizable.class, visualizableProp.getRange().getType());
-		assertTrue(visualizableProp.toSerializableString(new VisualizableImpl()).contains("Visualizable"));
 		assertTrue(visualizableProp.parseSerializableString("test string") instanceof Visualizable );
 		
 		final VisualProperty<String> stringProp = MinimalVisualLexicon.NODE_LABEL;
@@ -86,9 +83,7 @@ public class VisualPropertyTest {
 		
 		final VisualProperty<NullDataType> nullProp = new NullVisualProperty("ROOT", "Root Visual Property");
 		assertEquals(NullDataType.class, nullProp.getRange().getType());
-		assertTrue(nullProp.toSerializableString(new NullDataTypeImpl()).contains("org.cytoscape.view.presentation.internal.property.NullDataTypeImpl"));
-		assertTrue(nullProp.parseSerializableString("test string") instanceof NullDataType );
-		
+		assertTrue(nullProp.parseSerializableString("test string") instanceof NullDataType );		
 	}
 
 }
