@@ -1,5 +1,6 @@
 package cytoscape.genomespace;
 
+
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
@@ -22,13 +23,13 @@ import org.genomespace.client.GsSession;
 import org.genomespace.client.DataManagerClient;
 import org.genomespace.client.User;
 
+
 /**
  * A simple action.  Change the names as appropriate and
  * then fill in your expected behavior in the actionPerformed()
  * method.
  */
 public class ListFilesInGenomeSpace extends CytoscapeAction {
-
 	private static final long serialVersionUID = 1234487711999989L;
 	private static final CyLogger logger = CyLogger.getLogger(ListFilesInGenomeSpace.class);
 
@@ -39,24 +40,22 @@ public class ListFilesInGenomeSpace extends CytoscapeAction {
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
 		// is appropriate!
-        setPreferredMenu("Plugins.GenomeSpace");
+		setPreferredMenu("Plugins.GenomeSpace");
 	}
 
 	public void actionPerformed(ActionEvent e) {
-
 		try {
+			GsSession client = GSUtils.getSession(); 
+			DataManagerClient dmc = client.getDataManagerClient();
 
-		GsSession client = GSUtils.getSession(); 
-		DataManagerClient dmc = client.getDataManagerClient();
+			// list the files present for this user
+			List<GSFileMetadata> myFiles = dmc.listDefaultDirectory().getContents();
+			Vector<String> fileNames = new Vector<String>();
+			for (GSFileMetadata aFile: myFiles) {
+				fileNames.add(aFile.getName());
+			}
 
-		// list the files present for this user
-		List<GSFileMetadata> myFiles = dmc.listDefaultDirectory().getContents();
-		Vector<String> fileNames = new Vector<String>();
-		for (GSFileMetadata aFile: myFiles) {
-			fileNames.add(aFile.getName());
-		}
-
-		displayFiles(fileNames);
+			displayFiles(fileNames);
 	
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed",ex);
