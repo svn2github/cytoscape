@@ -52,6 +52,10 @@
     <argument>edu.ucsd.bioeng.coreplugin.tableImport.TableImportPlugin</argument>
     <argument>-p</argument>
     <argument>yfiles.YFilesLayoutPlugin</argument>
+    <argument>-p</argument>
+    <argument>cytoscape.genomespace.libs.GenomeSpaceLibsPlugin</argument>
+    <argument>-p</argument>
+    <argument>cytoscape.genomespace.GenomeSpacePlugin</argument>
   </application-desc>
 </jnlp>
 
