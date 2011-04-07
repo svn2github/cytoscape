@@ -1,6 +1,8 @@
 
 package org.cytoscape.plugin.internal;
 
+import java.util.Properties;
+
 import org.cytoscape.plugin.CyPluginAdapter;
 
 import org.cytoscape.application.swing.CySwingApplication;
@@ -33,7 +35,44 @@ import org.cytoscape.io.read.CyPropertyReaderManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.service.util.CyServiceRegistrar;
 
-import java.util.Properties;
+//
+// The following imports are necessary to trick BND into
+// importing the packages containing these packages.
+//
+import org.cytoscape.session.events.SessionAboutToBeSavedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleAboutToBeRemovedEvent;
+import org.cytoscape.view.model.events.AboutToRemoveEdgeViewMicroListener;
+import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
+import org.cytoscape.view.presentation.events.RenderingEngineAboutToBeRemovedEvent;
+import org.cytoscape.view.presentation.property.AbstractVisualLexicon;
+import org.cytoscape.property.BasicCyProperty;
+import org.cytoscape.property.bookmark.BookmarksUtil;
+import org.cytoscape.property.session.Cysession;
+import org.cytoscape.task.NetworkTaskFactory;
+import org.cytoscape.task.creation.NewEmptyNetworkViewFactory;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.undo.UndoSupport;
+import org.cytoscape.work.util.BoundedDouble;
+import org.cytoscape.application.swing.CyAction;
+import org.cytoscape.application.swing.events.CytoPanelComponentSelectedEvent;
+import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.util.StreamUtil;
+import org.cytoscape.io.write.CyNetworkViewWriterFactory;
+import org.cytoscape.work.swing.AbstractGUITunableHandler;
+import org.cytoscape.work.spring.SpringTunableInterceptor;
+import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.view.vizmap.gui.AbstractVisualPropertyDependency;
+import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
+import org.cytoscape.view.vizmap.gui.editor.AbstractVisualPropertyEditor;
+import org.cytoscape.view.vizmap.gui.event.LexiconStateChangedEvent;
+import org.cytoscape.view.vizmap.gui.util.ContinuousMappingGenerator;
+import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
+import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
+import org.cytoscape.io.webservice.events.DataImportFinishedEvent;
+import org.cytoscape.dnd.DropNetworkViewTaskFactory;
+import org.cytoscape.plugin.CyPlugin;
 
 
 /**
@@ -78,6 +117,48 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	private final UndoSupport undoSupport;
 	private final VisualMappingManager visualMappingManager;
 	private final VisualStyleFactory visualStyleFactory;
+
+
+	//
+	// The following fields are not actually used, but are here
+	// to trick BND into importing the packages that contain
+	// these objects.  This will pull the package into the classloader,
+	// thus making it available to any plugin.  All packages in the
+	// Cytoscape API should have at least one object in this class!!!
+	//
+	private SessionAboutToBeSavedEvent sessionAboutToBeSavedEvent;
+	private VisualStyleAboutToBeRemovedEvent visualStyleAboutToBeRemovedEvent;
+	private AboutToRemoveEdgeViewMicroListener aboutToRemoveEdgeViewMicroListener;
+	private AboutToRemoveEdgeEvent aboutToRemoveEdgeEvent;
+	private RenderingEngineAboutToBeRemovedEvent renderingEngineAboutToBeRemovedEvent;
+	private AbstractVisualLexicon abstractVisualLexicon;
+	private BasicCyProperty basicCyProperty;
+	private BookmarksUtil bookmarksUtil;
+	private Cysession cysession;
+	private NetworkTaskFactory networkTaskFactory;
+	private NewEmptyNetworkViewFactory newEmptyNetworkViewFactory;
+	private Task task;
+	private BoundedDouble boundedDouble;
+	private CyAction cyAction;
+	private CytoPanelComponentSelectedEvent cytoPanelComponentSelectedEvent;
+	private CyFileFilter cyFileFilter;
+	private CyNetworkViewReader cyNetworkViewReader;
+	private StreamUtil streamUtil;
+	private CyNetworkViewWriterFactory cyNetworkViewWriterFactory;
+	private AbstractGUITunableHandler abstractGUITunableHandler;
+	private SpringTunableInterceptor springTunableInterceptor;
+	private AbstractLayout abstractLayout;
+	private AbstractFunction abstractFunction;
+	private AbstractVisualPropertyDependency abstractVisualPropertyDependency;
+	private VizMapUIAction vizMapUIAction;
+	private AbstractVisualPropertyEditor abstractVisualPropertyEditor;
+	private LexiconStateChangedEvent lexiconStateChangedEvent;
+	private ContinuousMappingGenerator continuousMappingGenerator;
+	private NetworkImportWebServiceClient networkImportWebServiceClient;
+	private AbstractWebServiceClient abstractWebServiceClient;
+	private DataImportFinishedEvent dataImportFinishedEvent;
+	private DropNetworkViewTaskFactory dropNetworkViewTaskFactory;
+	private CyPlugin cyPlugin;
 
 	//
 	// Since this is implementation code, there shouldn't be a
