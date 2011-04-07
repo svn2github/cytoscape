@@ -29,7 +29,6 @@ import org.cytoscape.cpath2.internal.CPath2Factory;
 import org.cytoscape.cpath2.internal.cytoscape.BinarySifVisualStyleUtil;
 import org.cytoscape.cpath2.internal.util.AttributeUtil;
 import org.cytoscape.cpath2.internal.util.SelectUtil;
-import org.cytoscape.cpath2.internal.util.StaxHack;
 import org.cytoscape.cpath2.internal.web_service.CPathException;
 import org.cytoscape.cpath2.internal.web_service.CPathProperties;
 import org.cytoscape.cpath2.internal.web_service.CPathResponseFormat;
@@ -188,7 +187,6 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 
             cPathFactory.getCyNetworkManager().addNetwork(cyNetwork);
             cPathFactory.getCyNetworkViewManager().addNetworkView(view);
-            cPathFactory.getCyApplicationManager().setCurrentNetworkView(cyNetwork.getSUID());
             
             // Branch, based on download mode.
             if (format == CPathResponseFormat.BINARY_SIF) {
@@ -462,12 +460,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
                 final String xml = webApi.getRecordsByIds(ids, CPathResponseFormat.BIOPAX, new NullTaskMonitor());
                 //StringReader reader = new StringReader(xml);
                 //BioPaxUtil bpUtil = new BioPaxUtil(reader, new NullTaskMonitor());
-                Model model = new StaxHack<Model>() {
-					@Override
-					public Model runWithHack() {
-		                return new SimpleReader().convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
-					}
-				}.run();
+                Model model = new SimpleReader().convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
                 //ArrayList peList = bpUtil.getPhysicalEntityList();
                 //Namespace ns = Namespace.getNamespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
                 //for (int j=0; j<peList.size(); j++) {
