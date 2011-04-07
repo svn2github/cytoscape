@@ -1,5 +1,9 @@
 package org.cytoscape.view.presentation.property;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
+
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -13,6 +17,9 @@ import org.cytoscape.view.presentation.property.values.NodeShape;
  *
  */
 public class RichVisualLexicon extends MinimalVisualLexicon {
+	
+	private static final double DEF_BORDER_WIDTH = 2.0d;
+	private static final int DEF_FONT_SIZE = 12;
 
 	// 3D-related props
 	public static final VisualProperty<Double> NODE_Z_LOCATION = new DoubleVisualProperty(
@@ -36,6 +43,45 @@ public class RichVisualLexicon extends MinimalVisualLexicon {
 			LineTypeVisualProperty.SOLID, "NODE_BORDER_STROKE", "Node Border Line Type", CyNode.class);
 	public static final VisualProperty<LineType> EDGE_LINE_TYPE = new LineTypeVisualProperty(
 			LineTypeVisualProperty.SOLID, "EDGE_LINE_TYPE", "Edge Line Type", CyEdge.class);
+	
+	// Moved from DING rendering engine.
+	public static final VisualProperty<Paint> NODE_SELECTED_PAINT = new PaintVisualProperty(
+			Color.YELLOW, MinimalVisualLexicon.PAINT_RANGE,
+			"NODE_SELECTED_PAINT", "Node Selected Paint", CyNode.class);
+	public static final VisualProperty<Paint> NODE_BORDER_PAINT = new PaintVisualProperty(
+			Color.BLACK, MinimalVisualLexicon.PAINT_RANGE, "NODE_BORDER_PAINT",
+			"Node Border Paint", CyNode.class);
+
+	public static final VisualProperty<Double> NODE_BORDER_WIDTH = new DoubleVisualProperty(
+			DEF_BORDER_WIDTH,
+			MinimalVisualLexicon.NONE_ZERO_POSITIVE_DOUBLE_RANGE,
+			"NODE_BORDER_WIDTH", "Node Border Width", CyNode.class);
+
+	public static final VisualProperty<String> NODE_TOOLTIP = new StringVisualProperty(
+			"", MinimalVisualLexicon.ARBITRARY_STRING_RANGE, "NODE_TOOLTIP",
+			"Node Tooltip", CyNode.class);
+	
+	public static final VisualProperty<Font> NODE_LABEL_FONT_FACE = new FontTwoDVisualProperty(
+			new Font("SansSerif", Font.PLAIN, DEF_FONT_SIZE),
+			"NODE_LABEL_FONT_FACE", "Node Label Font Face", CyNode.class);
+	public static final VisualProperty<Integer> NODE_LABEL_FONT_SIZE = new IntegerTwoDVisualProperty(
+			DEF_FONT_SIZE, "NODE_LABEL_FONT_SIZE", "Node Label Font Size",
+			CyNode.class);
+	
+	public static final VisualProperty<Integer> NODE_TRANSPARENCY = new IntegerTwoDVisualProperty(
+			200, "NODE_TRANSPARENCY", "Node Transparency", CyNode.class);
+	
+	public static final VisualProperty<String> EDGE_TOOLTIP = new StringVisualProperty(
+			"", MinimalVisualLexicon.ARBITRARY_STRING_RANGE, "EDGE_TOOLTIP",
+			"Edge Tooltip", CyEdge.class);
+	
+	public static final VisualProperty<Font> EDGE_LABEL_FONT_FACE = new FontTwoDVisualProperty(
+			new Font("SansSerif", Font.PLAIN, 10), "EDGE_LABEL_FONT_FACE",
+			"Edge Label Font Face", CyEdge.class);
+	public static final VisualProperty<Integer> EDGE_LABEL_FONT_SIZE = new IntegerTwoDVisualProperty(
+			10, "EDGE_LABEL_FONT_SIZE", "Edge Label Font Size", CyEdge.class);
+	
+	
 
 	/**
 	 * Construct a {@linkplain VisalLexicon} for 3D rendering engine.
@@ -53,6 +99,23 @@ public class RichVisualLexicon extends MinimalVisualLexicon {
 		addVisualProperty(NETWORK_DEPTH, NETWORK_SIZE);
 		
 		addVisualProperty(NODE_SHAPE, NODE);
+		
+		addVisualProperty(NODE_SELECTED_PAINT, NODE_PAINT);
+		addVisualProperty(NODE_BORDER_WIDTH, NODE);
+		addVisualProperty(NODE_BORDER_LINE_TYPE, NODE);
+		addVisualProperty(NODE_TRANSPARENCY, NODE);
+		
+		addVisualProperty(NODE_BORDER_PAINT, NODE_PAINT);
+		addVisualProperty(NODE_TOOLTIP, NODE);
+		addVisualProperty(NODE_LABEL_FONT_SIZE, NODE_SIZE);
+		
+		addVisualProperty(NODE_LABEL_FONT_FACE, NODE);
 
+		addVisualProperty(EDGE_LINE_TYPE, EDGE);
+		
+		addVisualProperty(EDGE_TOOLTIP, EDGE);
+		
+		addVisualProperty(EDGE_LABEL_FONT_FACE, EDGE);
+		addVisualProperty(EDGE_LABEL_FONT_SIZE, EDGE);
 	}
 }

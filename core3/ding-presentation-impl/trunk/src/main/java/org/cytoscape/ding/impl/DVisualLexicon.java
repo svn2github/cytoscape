@@ -35,7 +35,6 @@
 package org.cytoscape.ding.impl;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Paint;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,8 +59,6 @@ import org.cytoscape.ding.impl.strokes.VerticalSlashStroke;
 import org.cytoscape.ding.impl.strokes.ZigzagStroke;
 import org.cytoscape.ding.impl.visualproperty.ArrowShapeTwoDVisualProperty;
 import org.cytoscape.ding.impl.visualproperty.CustomGraphicsVisualProperty;
-import org.cytoscape.ding.impl.visualproperty.FontTwoDVisualProperty;
-import org.cytoscape.ding.impl.visualproperty.IntegerTwoDVisualProperty;
 import org.cytoscape.ding.impl.visualproperty.ObjectPositionVisualProperty;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.model.CyEdge;
@@ -78,14 +75,10 @@ import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
 import org.cytoscape.view.presentation.property.PaintVisualProperty;
 import org.cytoscape.view.presentation.property.RichVisualLexicon;
-import org.cytoscape.view.presentation.property.StringVisualProperty;
 import org.cytoscape.view.presentation.property.values.LineType;
 import org.cytoscape.view.presentation.property.values.NodeShape;
 
 public class DVisualLexicon extends RichVisualLexicon {
-
-	private static final int DEF_FONT_SIZE = 12;
-	private static final double DEF_BORDER_WIDTH = 2.0d;
 
 	// Set of custom graphics positions.
 	private static final Set<VisualProperty<?>> CG_POSITIONS = new HashSet<VisualProperty<?>>();
@@ -105,38 +98,9 @@ public class DVisualLexicon extends RichVisualLexicon {
 			Boolean.TRUE, "NETWORK_EDGE_SELECTION", "Network Edge Selection",
 			CyNetwork.class);
 
-	public static final VisualProperty<Paint> NODE_SELECTED_PAINT = new PaintVisualProperty(
-			Color.YELLOW, MinimalVisualLexicon.PAINT_RANGE,
-			"NODE_SELECTED_PAINT", "Node Selected Paint", CyNode.class);
-	public static final VisualProperty<Paint> NODE_BORDER_PAINT = new PaintVisualProperty(
-			Color.BLACK, MinimalVisualLexicon.PAINT_RANGE, "NODE_BORDER_PAINT",
-			"Node Border Paint", CyNode.class);
-
-	public static final VisualProperty<Double> NODE_BORDER_WIDTH = new DoubleVisualProperty(
-			DEF_BORDER_WIDTH,
-			MinimalVisualLexicon.NONE_ZERO_POSITIVE_DOUBLE_RANGE,
-			"NODE_BORDER_WIDTH", "Node Border Width", CyNode.class);
-	// public static final VisualProperty<? extends Stroke> NODE_BORDER_STROKE =
-	// new StrokeTwoDVisualProperty(
-	// StrokeTwoDVisualProperty.DEFAULT_STROKE, "NODE_BORDER_STROKE",
-	// "Node Border Stroke", CyNode.class);
-
-	public static final VisualProperty<String> NODE_TOOLTIP = new StringVisualProperty(
-			"", MinimalVisualLexicon.ARBITRARY_STRING_RANGE, "NODE_TOOLTIP",
-			"Node Tooltip", CyNode.class);
-
-	public static final VisualProperty<Font> NODE_LABEL_FONT_FACE = new FontTwoDVisualProperty(
-			new Font("SansSerif", Font.PLAIN, DEF_FONT_SIZE),
-			"NODE_LABEL_FONT_FACE", "Node Label Font Face", CyNode.class);
-	public static final VisualProperty<Integer> NODE_LABEL_FONT_SIZE = new IntegerTwoDVisualProperty(
-			DEF_FONT_SIZE, "NODE_LABEL_FONT_SIZE", "Node Label Font Size",
-			CyNode.class);
 	public static final VisualProperty<ObjectPosition> NODE_LABEL_POSITION = new ObjectPositionVisualProperty(
 			ObjectPositionImpl.DEFAULT_POSITION, "NODE_LABEL_POSITION",
 			"Node Label Position", CyNode.class);
-
-	public static final VisualProperty<Integer> NODE_TRANSPARENCY = new IntegerTwoDVisualProperty(
-			200, "NODE_TRANSPARENCY", "Node Transparency", CyNode.class);
 
 	// Range object for custom graphics.
 	private static final CustomGraphicsRange CG_RANGE = new CustomGraphicsRange();
@@ -264,26 +228,6 @@ public class DVisualLexicon extends RichVisualLexicon {
 			"Node Custom Graphics Position 9", CyNode.class);
 
 	// Edge VPs
-	public static final VisualProperty<Paint> EDGE_SELECTED_PAINT = new PaintVisualProperty(
-			Color.RED, MinimalVisualLexicon.PAINT_RANGE, "EDGE_SELECTED_PAINT",
-			"Edge Selected Paint", CyEdge.class);
-	public static final VisualProperty<Paint> EDGE_UNSELECTED_PAINT = new PaintVisualProperty(
-			Color.DARK_GRAY, MinimalVisualLexicon.PAINT_RANGE,
-			"EDGE_UNSELECTED_PAINT", "Edge Unselected Paint", CyEdge.class);
-	public static final VisualProperty<Paint> EDGE_STROKE_SELECTED_PAINT = new PaintVisualProperty(
-			Color.RED, MinimalVisualLexicon.PAINT_RANGE,
-			"EDGE_STROKE_SELECTED_PAINT", "Edge Stroke Selected Paint",
-			CyEdge.class);
-	public static final VisualProperty<Paint> EDGE_STROKE_UNSELECTED_PAINT = new PaintVisualProperty(
-			Color.DARK_GRAY, MinimalVisualLexicon.PAINT_RANGE,
-			"EDGE_STROKE_UNSELECTED_PAINT", "Edge Stroke Unselected Paint",
-			CyEdge.class);
-
-	// public static final VisualProperty<? extends Stroke> EDGE_STROKE = new
-	// StrokeTwoDVisualProperty(
-	// StrokeTwoDVisualProperty.DEFAULT_STROKE, "EDGE_STROKE", "Edge Stroke",
-	// CyEdge.class);
-
 	public static final VisualProperty<Paint> EDGE_SOURCE_ARROW_SELECTED_PAINT = new PaintVisualProperty(
 			Color.YELLOW, MinimalVisualLexicon.PAINT_RANGE,
 			"EDGE_SOURCE_ARROW_SELECTED_PAINT",
@@ -308,23 +252,12 @@ public class DVisualLexicon extends RichVisualLexicon {
 			ArrowShape.NONE, "EDGE_TARGET_ARROW_SHAPE",
 			"Edge Target Arrow Shape");
 
-	public static final VisualProperty<String> EDGE_TOOLTIP = new StringVisualProperty(
-			"", MinimalVisualLexicon.ARBITRARY_STRING_RANGE, "EDGE_TOOLTIP",
-			"Edge Tooltip", CyEdge.class);
-
-	public static final VisualProperty<Font> EDGE_LABEL_FONT_FACE = new FontTwoDVisualProperty(
-			new Font("SansSerif", Font.PLAIN, 10), "EDGE_LABEL_FONT_FACE",
-			"Edge Label Font Face", CyEdge.class);
-	public static final VisualProperty<Integer> EDGE_LABEL_FONT_SIZE = new IntegerTwoDVisualProperty(
-			10, "EDGE_LABEL_FONT_SIZE", "Edge Label Font Size", CyEdge.class);
-
 	public static final VisualProperty<ObjectPosition> EDGE_LABEL_POSITION = new ObjectPositionVisualProperty(
 			ObjectPositionImpl.DEFAULT_POSITION, "EDGE_LABEL_POSITION",
 			"Edge Label Position", CyEdge.class);
 
 	// Ding specific node shapes.
-	private static final NodeShape VEE = new DNodeShape(
-			GraphGraphics.SHAPE_VEE, "V", "VEE");
+	private static final NodeShape VEE = new DNodeShape(GraphGraphics.SHAPE_VEE, "V", "VEE");
 
 	// Ding-local line types
 	private static final DLineType ZIGZAG = new DLineType("Zigzag", "ZIGZAG",
@@ -347,6 +280,21 @@ public class DVisualLexicon extends RichVisualLexicon {
 					1.0f));
 	private static final DLineType SEPARATE_ARROW = new DLineType(
 			"Separate Arrow", "SEPARATE_ARROW", new SeparateArrowStroke(1.0f));
+	
+	public static final VisualProperty<Paint> EDGE_SELECTED_PAINT = new PaintVisualProperty(
+			Color.RED, MinimalVisualLexicon.PAINT_RANGE, "EDGE_SELECTED_PAINT",
+			"Edge Selected Paint", CyEdge.class);
+	public static final VisualProperty<Paint> EDGE_UNSELECTED_PAINT = new PaintVisualProperty(
+			Color.DARK_GRAY, MinimalVisualLexicon.PAINT_RANGE,
+			"EDGE_UNSELECTED_PAINT", "Edge Unselected Paint", CyEdge.class);
+	public static final VisualProperty<Paint> EDGE_STROKE_SELECTED_PAINT = new PaintVisualProperty(
+			Color.RED, MinimalVisualLexicon.PAINT_RANGE,
+			"EDGE_STROKE_SELECTED_PAINT", "Edge Stroke Selected Paint",
+			CyEdge.class);
+	public static final VisualProperty<Paint> EDGE_STROKE_UNSELECTED_PAINT = new PaintVisualProperty(
+			Color.DARK_GRAY, MinimalVisualLexicon.PAINT_RANGE,
+			"EDGE_STROKE_UNSELECTED_PAINT", "Edge Stroke Unselected Paint",
+			CyEdge.class);
 
 	static {
 		CG_POSITIONS.add(NODE_CUSTOMGRAPHICS_POSITION_1);
@@ -420,20 +368,7 @@ public class DVisualLexicon extends RichVisualLexicon {
 		addVisualProperty(NETWORK_NODE_SELECTION, NETWORK);
 		addVisualProperty(NETWORK_EDGE_SELECTION, NETWORK);
 
-		addVisualProperty(NODE_BORDER_PAINT, NODE_PAINT);
-
-		addVisualProperty(NODE_TOOLTIP, NODE);
-
-		addVisualProperty(NODE_LABEL_FONT_SIZE, NODE_SIZE);
-
 		addVisualProperty(NODE_LABEL_POSITION, NODE);
-		addVisualProperty(NODE_LABEL_FONT_FACE, NODE);
-
-		// addVisualProperty(NODE_SHAPE, NODE);
-		addVisualProperty(NODE_SELECTED_PAINT, NODE_PAINT);
-		addVisualProperty(NODE_BORDER_WIDTH, NODE);
-		addVisualProperty(NODE_BORDER_LINE_TYPE, NODE);
-		addVisualProperty(NODE_TRANSPARENCY, NODE);
 
 		// Parent of Custom Graphics related
 		addVisualProperty(NODE_CUSTOMPAINT_1, NODE_PAINT);
@@ -477,13 +412,12 @@ public class DVisualLexicon extends RichVisualLexicon {
 		addVisualProperty(NODE_CUSTOMGRAPHICS_POSITION_7, NODE_CUSTOMPAINT_7);
 		addVisualProperty(NODE_CUSTOMGRAPHICS_POSITION_8, NODE_CUSTOMPAINT_8);
 		addVisualProperty(NODE_CUSTOMGRAPHICS_POSITION_9, NODE_CUSTOMPAINT_9);
-
+		
+		
 		addVisualProperty(EDGE_SELECTED_PAINT, EDGE_PAINT);
 		addVisualProperty(EDGE_UNSELECTED_PAINT, EDGE_PAINT);
 		addVisualProperty(EDGE_STROKE_SELECTED_PAINT, EDGE_SELECTED_PAINT);
 		addVisualProperty(EDGE_STROKE_UNSELECTED_PAINT, EDGE_UNSELECTED_PAINT);
-
-		addVisualProperty(EDGE_LINE_TYPE, EDGE);
 		addVisualProperty(EDGE_SOURCE_ARROW_SELECTED_PAINT, EDGE_SELECTED_PAINT);
 		addVisualProperty(EDGE_TARGET_ARROW_SELECTED_PAINT, EDGE_SELECTED_PAINT);
 		addVisualProperty(EDGE_SOURCE_ARROW_UNSELECTED_PAINT,
@@ -492,10 +426,8 @@ public class DVisualLexicon extends RichVisualLexicon {
 				EDGE_UNSELECTED_PAINT);
 		addVisualProperty(EDGE_SOURCE_ARROW_SHAPE, EDGE);
 		addVisualProperty(EDGE_TARGET_ARROW_SHAPE, EDGE);
-		addVisualProperty(EDGE_TOOLTIP, EDGE);
+		
 		addVisualProperty(EDGE_LABEL_POSITION, EDGE);
-		addVisualProperty(EDGE_LABEL_FONT_FACE, EDGE);
-		addVisualProperty(EDGE_LABEL_FONT_SIZE, EDGE);
 
 		createLookupMap();
 	}

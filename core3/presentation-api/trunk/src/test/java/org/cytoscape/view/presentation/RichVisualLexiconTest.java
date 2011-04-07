@@ -19,10 +19,8 @@ public class RichVisualLexiconTest extends AbstractVisualLexiconTest {
 
 	@Before
 	public void setUp() throws Exception {
-
 		// Create root node.
 		richRoot = new NullVisualProperty("RICH_ROOT", "Rich Root Visual Property");
-
 		richLex = new RichVisualLexicon(richRoot);
 	}
 
@@ -33,7 +31,7 @@ public class RichVisualLexiconTest extends AbstractVisualLexiconTest {
 
 	@Test
 	public void test2DLexicon() throws Exception {
-		assertEquals(34, richLex.getAllVisualProperties().size());
+		assertEquals(46, richLex.getAllVisualProperties().size());
 	}
 
 	@Test
