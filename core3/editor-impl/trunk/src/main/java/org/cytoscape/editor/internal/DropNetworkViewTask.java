@@ -10,7 +10,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskMonitor;
 
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 
@@ -42,8 +42,8 @@ public class DropNetworkViewTask extends AbstractNetworkViewTask {
 		CyNetwork net = view.getModel();
 		CyNode n = net.addNode();
 		View<CyNode> nv = view.getNodeView(n);
-		nv.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION,xformPt.getX());
-		nv.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION,xformPt.getY());
+		nv.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION,xformPt.getX());
+		nv.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION,xformPt.getY());
 		view.updateView();
 	}
 }
