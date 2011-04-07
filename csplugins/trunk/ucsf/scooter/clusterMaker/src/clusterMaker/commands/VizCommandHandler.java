@@ -56,7 +56,7 @@ public class VizCommandHandler extends ClusterMakerCommandHandler {
 	Map<String, ClusterViz> vizMap;
 
 	public VizCommandHandler (Map<String, ClusterViz>vizMap) {
-		super("clusterViz");
+		super("clusterviz");
 
 		this.vizMap = vizMap;
 

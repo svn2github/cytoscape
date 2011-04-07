@@ -61,11 +61,11 @@ import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.ClusterProperties;
 
 enum BuiltIn {
-	HASCLUSTER("hasCluster", "Test to see if this network has a cluster of the requested type", "type"),
-	GETNETCLUSTER("getNetworkCluster", "Get a cluster of the requested type and the requested clustertype (node or attribute)",
+	HASCLUSTER("hascluster", "Test to see if this network has a cluster of the requested type", "type"),
+	GETNETCLUSTER("getnetworkcluster", "Get a cluster of the requested type and the requested clustertype (node or attribute)",
              "type"),
-	GETEISENCLUSTER("getCluster", "Get a cluster of the requested clustertype (node or attribute)", "type=hierarchical|clustertype=node"),
-	SHOWDIALOG("showDialog", "Show the clusterMaker dialog","type");
+	GETEISENCLUSTER("getcluster", "Get a cluster of the requested clustertype (node or attribute)", "type=hierarchical|clustertype=node"),
+	SHOWDIALOG("showdialog", "Show the clusterMaker dialog","type");
 
 	private String command = null;
 	private String argList = null;

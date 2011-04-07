@@ -84,7 +84,7 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		initializeProperties();
 	}
 
-	public String getShortName() {return "MCL";};
+	public String getShortName() {return "mcl";};
 	public String getName() {return "MCL cluster";};
 
 	public JPanel getSettingsPanel() {
@@ -110,7 +110,7 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 
 		// Inflation Parameter
 		clusterProperties.add(new Tunable("inflation_parameter",
-		                                  "Density Parameter",
+		                                  "Graularity Parameter (inflation value)",
 		                                  Tunable.DOUBLE, new Double(2.5),
 		                                  (Object)null, (Object)null, 0));
 		// Clustering Threshold

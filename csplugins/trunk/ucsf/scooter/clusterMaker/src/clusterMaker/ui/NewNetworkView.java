@@ -116,7 +116,7 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 	}
 
 	// ClusterViz methods
-	public String getShortName() { return "newNetworkView"; }
+	public String getShortName() { return "newnetworkview"; }
 
 	public String getName() { 
 		if (checkForAvailability) {

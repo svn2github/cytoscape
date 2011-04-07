@@ -84,7 +84,7 @@ public class SCPSCluster extends AbstractNetworkClusterer  {
 		initializeProperties();
 	}
 
-	public String getShortName() {return "SCPS";};
+	public String getShortName() {return "scps";};
 	public String getName() {return "SCPS cluster";};
 
 	public JPanel getSettingsPanel() {

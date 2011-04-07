@@ -76,7 +76,7 @@ public class GLayCluster extends AbstractNetworkClusterer  {
 		initializeProperties();
 	}
 
-	public String getShortName() {return "GLay";};
+	public String getShortName() {return "glay";};
 	public String getName() {return "Community cluster (GLay)";};
 
 	public JPanel getSettingsPanel() {

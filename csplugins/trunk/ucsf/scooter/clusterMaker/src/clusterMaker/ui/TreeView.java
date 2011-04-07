@@ -135,7 +135,7 @@ public class TreeView extends TreeViewApp implements Observer,
 	}
 
 	// ClusterViz methods
-	public String getShortName() { return "treeView"; }
+	public String getShortName() { return "treeview"; }
 
 	public String getName() { return "Eisen TreeView"; }
 

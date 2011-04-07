@@ -80,7 +80,7 @@ import clusterMaker.algorithms.autosome.AutoSOMECluster;
  * Cytoscape plugin mechanism
  */
 public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListener {
-	static final double VERSION = 0.1;
+	static final double VERSION = 1.9;
 	HashMap<JMenuItem,ClusterViz> vizMenus;
 	HashMap<String, ClusterViz> vizMap;
 	HashMap<String, ClusterAlgorithm> algMap;

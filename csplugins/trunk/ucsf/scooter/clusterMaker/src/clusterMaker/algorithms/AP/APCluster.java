@@ -83,7 +83,7 @@ public class APCluster extends AbstractNetworkClusterer  {
 		initializeProperties();
 	}
 
-	public String getShortName() {return "AP";};
+	public String getShortName() {return "ap";};
 	public String getName() {return "Affinity Propagation cluster";};
 
 	public JPanel getSettingsPanel() {

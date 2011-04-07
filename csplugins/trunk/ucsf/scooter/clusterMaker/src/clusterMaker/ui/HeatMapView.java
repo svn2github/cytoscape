@@ -155,7 +155,7 @@ public class HeatMapView extends TreeViewApp implements Observer,
 	}
 
 	// ClusterViz methods
-	public String getShortName() { return "heatMapView"; }
+	public String getShortName() { return "heatmapview"; }
 
 	public String getName() { return "HeatMapView (unclustered)"; }
 

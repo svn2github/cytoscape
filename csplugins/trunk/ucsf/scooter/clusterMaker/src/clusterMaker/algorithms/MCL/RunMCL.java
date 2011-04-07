@@ -81,7 +81,7 @@ public class RunMCL {
 	private DistanceMatrix distanceMatrix = null;
 	private DoubleMatrix2D matrix = null;
 	private boolean debug = false;
-	final int NTHREADS = Runtime.getRuntime().availableProcessors();
+	final int NTHREADS = Runtime.getRuntime().availableProcessors()-1;
 	
 	public RunMCL(DistanceMatrix dMat, double inflationParameter, int num_iterations, 
 	              double clusteringThresh, double maxResidual, CyLogger logger )
@@ -187,13 +187,16 @@ public class RunMCL {
 		clusterCount = 0;
 		HashMap<Integer, NodeCluster> clusterMap = new HashMap();
 		matrix.forEachNonZero(new ClusterMatrix(clusterMap));
+		System.out.println("Cluster map has "+clusterMap.keySet().size()+" clusters");
 
 		//Update node attributes in network to include clusters. Create cygroups from clustered nodes
 		logger.info("Created "+clusterCount+" clusters");
+		logger.info("Cluster map has "+clusterMap.keySet().size()+" clusters");
 		// debugln("Created "+clusterCount+" clusters:");
 		//
 		if (clusterCount == 0) {
 			logger.error("Created 0 clusters!!!!");
+			logger.error("Cluster map has "+clusterMap.keySet().size()+" clusters");
 			return null;
 		}
 
@@ -536,11 +539,13 @@ public class RunMCL {
 					NodeCluster rowCluster = clusterMap.get(row);
 					if (rowCluster == columnCluster) 
 						return value;
-					// debugln("Joining cluster "+columnCluster.getClusterNumber()+" and "+rowCluster.getClusterNumber());
-					columnCluster.addAll(rowCluster);
 					clusterCount--;
+					logger.debug("Joining cluster "+columnCluster.getClusterNumber()+" and "+rowCluster.getClusterNumber());
+					logger.debug("clusterCount = "+clusterCount);
+					columnCluster.addAll(rowCluster);
 				} else {
-					// debugln("Adding "+row+" to "+columnCluster.getClusterNumber());
+					logger.debug("Adding "+row+" to "+columnCluster.getClusterNumber());
+					logger.debug("clusterCount = "+clusterCount);
 					columnCluster.add(nodes, row);
 				}
 				updateClusters(columnCluster);
@@ -550,12 +555,14 @@ public class RunMCL {
 				if (clusterMap.containsKey(row)) {
 					// Yes, just add column to row's cluster
 					rowCluster = clusterMap.get(row);
-					// debugln("Adding "+column+" to "+rowCluster.getClusterNumber());
+					logger.debug("Adding "+column+" to "+rowCluster.getClusterNumber());
+					logger.debug("clusterCount = "+clusterCount);
 					rowCluster.add(nodes, column);
 				} else {
 					clusterCount++;
 					rowCluster = new NodeCluster();
-					// debugln("Created new cluster "+rowCluster.getClusterNumber()+" with "+row+" and "+column);
+					logger.debug("Created new cluster "+rowCluster.getClusterNumber()+" with "+row+" and "+column);
+					logger.debug("clusterCount = "+clusterCount);
 					rowCluster.add(nodes, column);
 					rowCluster.add(nodes, row);
 				}

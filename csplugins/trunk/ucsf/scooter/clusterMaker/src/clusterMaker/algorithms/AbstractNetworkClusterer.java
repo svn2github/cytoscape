@@ -147,7 +147,7 @@ public abstract class AbstractNetworkClusterer extends AbstractClusterAlgorithm 
 		}
 
 		String cluster_type = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
-		if (cluster_type != getShortName())
+		if (cluster_type == null || !cluster_type.toLowerCase().equals(getShortName()))
 			return false;
 
 		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE)) {

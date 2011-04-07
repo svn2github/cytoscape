@@ -139,9 +139,9 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 
 	public String getShortName() {
 		if (heatmap)
-			return "AutoSOME (HeatMap)";
+			return "autosome_heatmap";
 		else
-			return "AutoSOME (Network)";
+			return "autosome_network";
 	};
 
 	public String getName() {return "AutoSOME "+((settings.distMatrix) ? "Fuzzy " : "")+"Clustering";};

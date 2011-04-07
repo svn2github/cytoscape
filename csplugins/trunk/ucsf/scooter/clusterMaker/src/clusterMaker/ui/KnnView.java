@@ -109,7 +109,7 @@ public class KnnView extends TreeView {
 	}
 
 	// ClusterViz methods
-	public String getShortName() { return "knnView"; }
+	public String getShortName() { return "knnview"; }
 
 	public String getName() { return "Eisen KnnView"; }
 

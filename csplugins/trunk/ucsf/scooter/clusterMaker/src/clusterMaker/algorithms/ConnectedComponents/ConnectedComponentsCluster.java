@@ -81,7 +81,7 @@ public class ConnectedComponentsCluster extends AbstractNetworkClusterer  {
 		initializeProperties();
 	}
 
-	public String getShortName() {return "ConnectedComponents";};
+	public String getShortName() {return "connectedcomponents";};
 	public String getName() {return "Connected Components cluster";};
 
 	public JPanel getSettingsPanel() {

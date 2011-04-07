@@ -90,7 +90,7 @@ public class MCODECluster extends AbstractNetworkClusterer  {
 		initializeProperties();
 	}
 
-	public String getShortName() {return "MCODE";};
+	public String getShortName() {return "mcode";};
 	public String getName() {return "MCODE cluster";};
 
 	public JPanel getSettingsPanel() {

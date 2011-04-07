@@ -121,7 +121,7 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 	}
 
 	// ClusterViz methods
-	public String getShortName() { return "NestedNetworkView"; }
+	public String getShortName() { return "nestednetworkview"; }
 
 	public String getName() { 
 		if (checkForAvailability) {

@@ -58,7 +58,7 @@ public class TransClustCluster extends AbstractNetworkClusterer{
 		initializeProperties();
 	}
 
-	public String getShortName() {return "TransClust";};
+	public String getShortName() {return "transclust";};
 	public String getName() {return "Transitivity Clustering";};
 
 	public JPanel getSettingsPanel() {
