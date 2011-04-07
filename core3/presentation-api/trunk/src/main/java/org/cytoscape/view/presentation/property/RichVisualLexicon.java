@@ -82,6 +82,21 @@ public class RichVisualLexicon extends MinimalVisualLexicon {
 			10, "EDGE_LABEL_FONT_SIZE", "Edge Label Font Size", CyEdge.class);
 	
 	
+	public static final VisualProperty<Paint> EDGE_SELECTED_PAINT = new PaintVisualProperty(
+			Color.RED, MinimalVisualLexicon.PAINT_RANGE, "EDGE_SELECTED_PAINT",
+			"Edge Selected Paint", CyEdge.class);
+	public static final VisualProperty<Paint> EDGE_UNSELECTED_PAINT = new PaintVisualProperty(
+			Color.DARK_GRAY, MinimalVisualLexicon.PAINT_RANGE,
+			"EDGE_UNSELECTED_PAINT", "Edge Unselected Paint", CyEdge.class);
+	public static final VisualProperty<Paint> EDGE_STROKE_SELECTED_PAINT = new PaintVisualProperty(
+			Color.RED, MinimalVisualLexicon.PAINT_RANGE,
+			"EDGE_STROKE_SELECTED_PAINT", "Edge Stroke Selected Paint",
+			CyEdge.class);
+	public static final VisualProperty<Paint> EDGE_STROKE_UNSELECTED_PAINT = new PaintVisualProperty(
+			Color.DARK_GRAY, MinimalVisualLexicon.PAINT_RANGE,
+			"EDGE_STROKE_UNSELECTED_PAINT", "Edge Stroke Unselected Paint",
+			CyEdge.class);
+	
 
 	/**
 	 * Construct a {@linkplain VisalLexicon} for 3D rendering engine.
@@ -117,5 +132,10 @@ public class RichVisualLexicon extends MinimalVisualLexicon {
 		
 		addVisualProperty(EDGE_LABEL_FONT_FACE, EDGE);
 		addVisualProperty(EDGE_LABEL_FONT_SIZE, EDGE);
+		
+		addVisualProperty(EDGE_SELECTED_PAINT, EDGE_PAINT);
+		addVisualProperty(EDGE_UNSELECTED_PAINT, EDGE_PAINT);
+		addVisualProperty(EDGE_STROKE_SELECTED_PAINT, EDGE_SELECTED_PAINT);
+		addVisualProperty(EDGE_STROKE_UNSELECTED_PAINT, EDGE_UNSELECTED_PAINT);
 	}
 }

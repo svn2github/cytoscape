@@ -281,20 +281,7 @@ public class DVisualLexicon extends RichVisualLexicon {
 	private static final DLineType SEPARATE_ARROW = new DLineType(
 			"Separate Arrow", "SEPARATE_ARROW", new SeparateArrowStroke(1.0f));
 	
-	public static final VisualProperty<Paint> EDGE_SELECTED_PAINT = new PaintVisualProperty(
-			Color.RED, MinimalVisualLexicon.PAINT_RANGE, "EDGE_SELECTED_PAINT",
-			"Edge Selected Paint", CyEdge.class);
-	public static final VisualProperty<Paint> EDGE_UNSELECTED_PAINT = new PaintVisualProperty(
-			Color.DARK_GRAY, MinimalVisualLexicon.PAINT_RANGE,
-			"EDGE_UNSELECTED_PAINT", "Edge Unselected Paint", CyEdge.class);
-	public static final VisualProperty<Paint> EDGE_STROKE_SELECTED_PAINT = new PaintVisualProperty(
-			Color.RED, MinimalVisualLexicon.PAINT_RANGE,
-			"EDGE_STROKE_SELECTED_PAINT", "Edge Stroke Selected Paint",
-			CyEdge.class);
-	public static final VisualProperty<Paint> EDGE_STROKE_UNSELECTED_PAINT = new PaintVisualProperty(
-			Color.DARK_GRAY, MinimalVisualLexicon.PAINT_RANGE,
-			"EDGE_STROKE_UNSELECTED_PAINT", "Edge Stroke Unselected Paint",
-			CyEdge.class);
+	
 
 	static {
 		CG_POSITIONS.add(NODE_CUSTOMGRAPHICS_POSITION_1);
@@ -413,11 +400,6 @@ public class DVisualLexicon extends RichVisualLexicon {
 		addVisualProperty(NODE_CUSTOMGRAPHICS_POSITION_8, NODE_CUSTOMPAINT_8);
 		addVisualProperty(NODE_CUSTOMGRAPHICS_POSITION_9, NODE_CUSTOMPAINT_9);
 		
-		
-		addVisualProperty(EDGE_SELECTED_PAINT, EDGE_PAINT);
-		addVisualProperty(EDGE_UNSELECTED_PAINT, EDGE_PAINT);
-		addVisualProperty(EDGE_STROKE_SELECTED_PAINT, EDGE_SELECTED_PAINT);
-		addVisualProperty(EDGE_STROKE_UNSELECTED_PAINT, EDGE_UNSELECTED_PAINT);
 		addVisualProperty(EDGE_SOURCE_ARROW_SELECTED_PAINT, EDGE_SELECTED_PAINT);
 		addVisualProperty(EDGE_TARGET_ARROW_SELECTED_PAINT, EDGE_SELECTED_PAINT);
 		addVisualProperty(EDGE_SOURCE_ARROW_UNSELECTED_PAINT,
