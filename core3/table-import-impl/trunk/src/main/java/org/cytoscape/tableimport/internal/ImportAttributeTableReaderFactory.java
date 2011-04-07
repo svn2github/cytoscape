@@ -57,7 +57,6 @@ public class ImportAttributeTableReaderFactory extends
 
 	@Override
 	public void setInputStream(InputStream is, String inputName) {
-		// TODO Auto-generated method stub
-		
+		this.inputStream = is;
 	}
 }
