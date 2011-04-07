@@ -48,13 +48,13 @@ import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
+import javax.swing.SwingUtilities;
 
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnCreatedListener;
@@ -467,14 +467,24 @@ public abstract class AttributeImportPanel extends JPanel implements
 
 	@Override
 	public void handleEvent(ColumnCreatedEvent e) {
-		final String attrName = e.getColumnName();		
-		addAttribute(attrName);
+		final String attrName = e.getColumnName();
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				addAttribute(attrName);
+			}
+		});
 	}
 
 	@Override
 	public void handleEvent(ColumnDeletedEvent e) {
 		final String attrName = e.getColumnName();
-		removeAttribute(attrName);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				removeAttribute(attrName);
+			}
+		});
 	}
 
 }
