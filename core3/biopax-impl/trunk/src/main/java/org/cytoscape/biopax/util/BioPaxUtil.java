@@ -71,7 +71,6 @@ import org.biopax.paxtools.util.ClassFilterSet;
 import org.cytoscape.biopax.internal.ExternalLink;
 import org.cytoscape.biopax.internal.MapBioPaxToCytoscapeImpl;
 import org.cytoscape.biopax.internal.util.ParentFinder;
-import org.cytoscape.biopax.internal.util.StaxHack;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.slf4j.Logger;
@@ -198,18 +197,12 @@ public class BioPaxUtil {
 	 * @throws FileNotFoundException 
 	 */
 	public static Model read(final InputStream in) throws FileNotFoundException {
-		Model model = null;
 		try {
-			model = new StaxHack<Model>() {
-				@Override
-				public Model runWithHack() {
-					return new SimpleReader().convertFromOWL(in);
-				}
-			}.runWithHack();
+			return new SimpleReader().convertFromOWL(in);
 		} catch (Exception e) {
 			log.warn("Import failed: " + e);
 		}
-		return model;
+		return null;
 	}
 
 	/**
