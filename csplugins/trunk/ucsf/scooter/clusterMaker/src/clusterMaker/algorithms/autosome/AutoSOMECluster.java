@@ -212,14 +212,12 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
                 clusterProperties.add(norm_mode);
                 logscaling = new Tunable("logScaling",
 		                                  "Log2 Scaling",
-		                                  Tunable.LIST, 0,
-		                                  new Object[]{"No", "Yes"}, (Object)null, 0);
+		                                  Tunable.BOOLEAN, new Boolean(false));
                 clusterProperties.add(logscaling);
 
                 unitVar = new Tunable("unitVariance",
 		                                  "Unit Variance",
-		                                  Tunable.LIST, 0,
-		                                  new Object[]{"No", "Yes"}, (Object)null, 0);
+		                                  Tunable.BOOLEAN, new Boolean(false));
                 clusterProperties.add(unitVar);
 
                 medCent = new Tunable("medCenter",
@@ -340,7 +338,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		if ((t != null) && (t.valueChanged() || force)){
                     int index = ((Integer) t.getValue()).intValue();
                     if (index < 0) index = 0;
-			AutoSOME_Mode = mode[index];
+                        AutoSOME_Mode = mode[index];
                         if(AutoSOME_Mode.equals("Normal")){
                             settings.som_iters=500;
                             settings.de_resolution=32;
@@ -353,28 +351,28 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
                         }
                 }
 
-		t = clusterProperties.get("ensembleRuns");
-		if ((t != null) && (t.valueChanged() || force))
-			settings.ensemble_runs = ((Integer) t.getValue()).intValue();
+                t = clusterProperties.get("ensembleRuns");
+                if ((t != null) && (t.valueChanged() || force))
+                        settings.ensemble_runs = ((Integer) t.getValue()).intValue();
 
-		t = clusterProperties.get("pvalueThresh");
-		if ((t != null) && (t.valueChanged() || force))
-			settings.mst_pval = ((Double) t.getValue()).doubleValue();
+                t = clusterProperties.get("pvalueThresh");
+                if ((t != null) && (t.valueChanged() || force))
+                        settings.mst_pval = ((Double) t.getValue()).doubleValue();
 
-		t = clusterProperties.get("numThreads");
-		if ((t != null) && (t.valueChanged() || force))
-			settings.threads = ((Integer) t.getValue()).intValue();
+                t = clusterProperties.get("numThreads");
+                if ((t != null) && (t.valueChanged() || force))
+                        settings.threads = ((Integer) t.getValue()).intValue();
 
                 t = clusterProperties.get("logScaling");
-		if ((t != null) && (t.valueChanged() || force))
-			settings.logNorm = ((t.getValue()).toString().equals("1")) ? true : false;
+                if ((t != null) && (t.valueChanged() || force))
+                        settings.logNorm = ((Boolean) t.getValue()).booleanValue();
 
                 t = clusterProperties.get("unitVariance");
-		if ((t != null) && (t.valueChanged() || force))
-			settings.unitVar = ((t.getValue()).toString().equals("1")) ? true : false;
+                if ((t != null) && (t.valueChanged() || force))
+                        settings.unitVar = ((Boolean) t.getValue()).booleanValue();
 
                 t = clusterProperties.get("medCenter");
-		if ((t != null) && (t.valueChanged() || force)){
+                if ((t != null) && (t.valueChanged() || force)){
                     String val = (t.getValue()).toString();
                     if(val.equals("1")){
                         settings.medCenter=true;
@@ -416,27 +414,18 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
                 }
 
                  t = clusterProperties.get("ignoreMissing");
-		if ((t != null) && (t.valueChanged() || force)){
-                    String val = (t.getValue()).toString();
-                    if(val.equals("false")){
-                        ignoreMissing=false;
-                    } else ignoreMissing=true;
-                }
+                 if ((t != null) && (t.valueChanged() || force)){
+                    ignoreMissing = ((Boolean) t.getValue()).booleanValue();
+                 }
 
                   t = clusterProperties.get("selectedNodes");
-		if ((t != null) && (t.valueChanged() || force)){
-                    String val = (t.getValue()).toString();
-                    if(val.equals("false")){
-                        selectedNodes=false;
-                    } else selectedNodes=true;
-                }
+                  if ((t != null) && (t.valueChanged() || force)){
+                    ignoreMissing = ((Boolean) t.getValue()).booleanValue();
+                  }
                 
                  t = clusterProperties.get("enableFCN");
-		if ((t != null) && (t.valueChanged() || force)){
-                    String val = (t.getValue()).toString();
-                    if(val.equals("false")){
-                        settings.distMatrix=false;
-                    } else settings.distMatrix=true;
+                 if ((t != null) && (t.valueChanged() || force)){
+                    settings.distMatrix = ((Boolean) t.getValue()).booleanValue();
                 }
 
                 t = clusterProperties.get("FCNInput");
@@ -589,20 +578,20 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		t.clearFlag(Tunable.IMMUTABLE);
                 switch(Integer.valueOf((t.getValue().toString()))){
                     case 1:
-                        logscaling.setValue(0);
-                        unitVar.setValue(0);
+                        logscaling.setValue(Boolean.FALSE);
+                        unitVar.setValue(Boolean.FALSE);
                         medCent.setValue(0);
                         sumSqr.setValue(0);
                         break;
                     case 2:
-                        logscaling.setValue(1);
-                        unitVar.setValue(1);
+                        logscaling.setValue(Boolean.TRUE);
+                        unitVar.setValue(Boolean.TRUE);
                         medCent.setValue(1);
                         sumSqr.setValue(0);
                         break;
                     case 3:
-                        logscaling.setValue(1);
-                        unitVar.setValue(1);
+                        logscaling.setValue(Boolean.TRUE);
+                        unitVar.setValue(Boolean.TRUE);
                         medCent.setValue(1);
                         sumSqr.setValue(3);
                         break;

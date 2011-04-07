@@ -185,9 +185,9 @@ public class RunMCL {
 		monitor.setStatus("Assigning nodes to clusters");
 
 		clusterCount = 0;
-		HashMap<Integer, NodeCluster> clusterMap = new HashMap();
+		HashMap<Integer, NodeCluster> clusterMap = new HashMap<Integer, NodeCluster>();
 		matrix.forEachNonZero(new ClusterMatrix(clusterMap));
-		System.out.println("Cluster map has "+clusterMap.keySet().size()+" clusters");
+		// System.out.println("Cluster map has "+clusterMap.keySet().size()+" clusters");
 
 		//Update node attributes in network to include clusters. Create cygroups from clustered nodes
 		logger.info("Created "+clusterCount+" clusters");
@@ -201,7 +201,7 @@ public class RunMCL {
 		}
 
 		int clusterNumber = 1;
-		HashMap<NodeCluster,NodeCluster> cMap = new HashMap();
+		HashMap<NodeCluster,NodeCluster> cMap = new HashMap<NodeCluster, NodeCluster>();
 		for (NodeCluster cluster: NodeCluster.sortMap(clusterMap)) {
 
 			if (cMap.containsKey(cluster))
@@ -221,7 +221,7 @@ public class RunMCL {
 		logger.info("Total runtime = "+(System.currentTimeMillis()-startTime)+"ms");
 
 		Set<NodeCluster>clusters = cMap.keySet();
-		return new ArrayList(clusters);
+		return new ArrayList<NodeCluster>(clusters);
 	}	
 
 	/**
@@ -349,30 +349,12 @@ public class RunMCL {
 				threadPools[pool] = Executors.newFixedThreadPool(1);
 		}
 
-		// final cern.jet.math.PlusMult fun = cern.jet.math.PlusMult.plusMult(0);
-
 		A.forEachNonZero(
 			new cern.colt.function.IntIntDoubleFunction() {
 				public double apply(int row, int column, double value) {
 
 					Runnable r = new ThreadedDotProduct(value, Brows[column], Crows[row]);
-					//r.run();
 					threadPools[row%NTHREADS].submit(r);
-					/*
-					final int frow = row;
-					final int fcolumn = column;
-					final double fvalue = value;
-					threadPool.submit(
-						new Callable <Double>() {
-							public Double call() {
-								final cern.jet.math.PlusMult fun = cern.jet.math.PlusMult.plusMult(0);
-								fun.multiplicator = fvalue;
-								Crows[frow].assign(Brows[fcolumn], fun);
-								return fvalue;
-							}
-						}
-					);
-					*/
 					return value;
 				}
 			}
