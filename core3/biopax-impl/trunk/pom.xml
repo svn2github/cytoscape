@@ -77,16 +77,6 @@
 			<version>4.01</version>
 		</dependency>
 		
-		<dependency>
-			<groupId>cytoscape-temp</groupId>
-			<artifactId>stax-api</artifactId>
-			<version>1.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>cytoscape-temp</groupId>
-			<artifactId>sjsxp</artifactId>
-			<version>1.0.1</version>
-		</dependency>
         <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
