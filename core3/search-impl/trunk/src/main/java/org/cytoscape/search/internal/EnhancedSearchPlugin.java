@@ -48,42 +48,32 @@ import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.search.internal.ui.EnhancedSearchPanel;
 import org.cytoscape.work.swing.GUITaskManager;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.application.swing.AbstractToolBarComponent;
+import java.awt.Component;
 
-public class EnhancedSearchPlugin implements SetCurrentNetworkViewListener, NetworkAboutToBeDestroyedListener, 
+public class EnhancedSearchPlugin extends AbstractToolBarComponent implements SetCurrentNetworkViewListener, NetworkAboutToBeDestroyedListener, 
 					SessionLoadedListener
 {
-	private CySwingApplication desktopApp;
-	private CyApplicationManager netmgr;
-	private CyTableManager tableMgr;
-	private GUITaskManager taskMgr;
 	private EnhancedSearchManager searchMgr = null;
-	private static boolean initialized = false;
+	private EnhancedSearchPanel searchPnl = null; 
 
 	public EnhancedSearchPlugin(CySwingApplication desktopApp, CyApplicationManager netmgr, 
 			CyTableManager tableMgr, GUITaskManager taskMgr) {
-
-		this.desktopApp = desktopApp;
-		this.netmgr = netmgr;
-		this.tableMgr = tableMgr;
-		this.taskMgr = taskMgr;
-	}
-
-	private void init(){		
+		
 		searchMgr = new EnhancedSearchManager();
 		// Add a text-field and a search button on tool-bar
-		EnhancedSearchPanel searchPnl = new EnhancedSearchPanel(netmgr, tableMgr, searchMgr, taskMgr);
-		searchPnl.setVisible(true);
-		desktopApp.getJToolBar().add(searchPnl);
-
-		initialized = true;
+		searchPnl = new EnhancedSearchPanel(netmgr, tableMgr, searchMgr, taskMgr);
 	}
+
+	@Override	
+	public Component getComponent(){
+		return searchPnl;
+	}
+	
 
 	@Override
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
-		// Show the Enhanced Search text-field only when after network view is presented on screen
-		if (!initialized){
-			init();	
-		}
+		//
 	}
 	
 	@Override
