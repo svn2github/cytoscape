@@ -534,6 +534,7 @@ public class NetworkColorDialog extends JDialog
 		try {
 			CyCommandManager.getCommand(NODECHARTS, "clear");
 		} catch (RuntimeException e) {
+			System.out.println("Got runtime error: "+e);
 			return false;
 		}
 		return true;

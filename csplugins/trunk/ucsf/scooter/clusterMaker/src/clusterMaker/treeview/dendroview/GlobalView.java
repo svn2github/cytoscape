@@ -318,14 +318,20 @@ class GlobalView extends ModelViewProduced
 		// composite the rectangles...
 		if (selectionRect != null) {	    
 			if (zoomRect != null) {
-				g.setColor(Color.cyan);
+				g.setColor(Color.magenta);
 				g.drawRect(zoomRect.x, zoomRect.y, 
 				zoomRect.width, zoomRect.height);
+				g.setColor(Color.black);
+				g.drawRect(zoomRect.x-1, zoomRect.y-1, 
+				zoomRect.width+2, zoomRect.height+2);
 			}
 	
-			g.setColor(Color.yellow);
+			g.setColor(Color.white);
 			g.drawRect(selectionRect.x, selectionRect.y, 
 			selectionRect.width, selectionRect.height);
+			g.setColor(Color.black);
+			g.drawRect(selectionRect.x-1, selectionRect.y-1, 
+			selectionRect.width+2, selectionRect.height+2);
 		}
 	}
 
@@ -498,27 +504,56 @@ class GlobalView extends ModelViewProduced
 		g.setPaintMode();
 	}
 
+	public void keyTyped(KeyEvent e) {
+		char c = e.getKeyChar();
+		// System.out.println("Key typed: "+c);
+		switch (c) {
+		case '+':
+			// System.out.println("Equals");
+			xmap.setScale(xmap.getScale()*2);
+			ymap.setScale(ymap.getScale()*2);
+			break;
+		case '-':
+			// System.out.println("Minus");
+			double xScale = xmap.getScale()/2;
+			double yScale = ymap.getScale()/2;
+			if (xScale >= 1.0)
+			xmap.setScale(xScale);
+			if (yScale >= 1.0)
+				ymap.setScale(yScale);
+			break;
+		default:
+			break;
+		}
+	}
+
 	// KeyListener 
 	public void keyPressed(KeyEvent e) {
 		int c = e.getKeyCode();
+		// System.out.println("Key pressed: "+c);
 		startPoint.setLocation(arraySelection.getMinIndex(), geneSelection.getMinIndex());
 		endPoint.setLocation (arraySelection.getMaxIndex(), geneSelection.getMaxIndex());
 
 		if (e.isControlDown()) {
+			// System.out.print("Control-");
 			switch (c) {
 			case KeyEvent.VK_UP:
+				// System.out.println("Up");
 				startPoint.translate(0, -1); 
 				endPoint.translate(0, 1); 
 				break;
 			case KeyEvent.VK_DOWN:
+				// System.out.println("Down");
 				startPoint.translate(0, 1); 
 				endPoint.translate(0, -1); 
 				break;
 			case KeyEvent.VK_LEFT:
+				// System.out.println("Left");
 				startPoint.translate(1, 0); 
 				endPoint.translate(-1, 0); 
 				break;
 			case KeyEvent.VK_RIGHT:
+				// System.out.println("Right");
 				startPoint.translate(-1, 0); 
 				endPoint.translate(1, 0); 
 				break;
@@ -528,24 +563,28 @@ class GlobalView extends ModelViewProduced
 		} else {
 			switch (c) {
 			case KeyEvent.VK_UP:
+				// System.out.println("Up");
 				startPoint.translate(0, -1); 
 				endPoint.translate(0, -1); 
 				break;
 			case KeyEvent.VK_DOWN:
+				// System.out.println("Down");
 				startPoint.translate(0, 1); 
 				endPoint.translate(0, 1); 
 				break;
 			case KeyEvent.VK_LEFT:
+				// System.out.println("Left");
 				startPoint.translate(-1, 0); 
 				endPoint.translate(-1, 0); 
 				break;
 			case KeyEvent.VK_RIGHT:
+				// System.out.println("Right");
 				startPoint.translate(1, 0); 
 				endPoint.translate(1, 0); 
 				break;
 			case KeyEvent.VK_SHIFT:
 				// should we do something if shift is pressed during drag?
-				return;
+			 	return;
 			default:
 				return;
 			}

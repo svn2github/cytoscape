@@ -213,18 +213,7 @@ public class TransClustCluster extends AbstractNetworkClusterer{
 		                                  new Boolean(true), null, Tunable.COLLAPSABLE));
 		{
 
-			//	Cytoscape
-			clusterProperties.add(new Tunable("cytoscapeGroup", 
-			                                  "Cytoscape",
-			                                  Tunable.GROUP, new Integer(3)));
-			{
-				clusterProperties.add(new Tunable("clusterAttrName", "Cluster Attribute", 
-	                    Tunable.STRING, clusterAttributeName));
-				clusterProperties.add(new Tunable("createGroups", "Create metanodes with results", 
-	                    Tunable.BOOLEAN, new Boolean(false)));
-				clusterProperties.add(new Tunable("debug", "Enable debugging", 
-	                     Tunable.BOOLEAN, new Boolean(false))); 
-			}
+		  super.advancedProperties();
 
 			//	Find Exact Solution group
 			clusterProperties.add(new Tunable("findExactGroup", 

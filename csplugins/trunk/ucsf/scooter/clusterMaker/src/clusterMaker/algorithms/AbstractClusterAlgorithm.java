@@ -87,7 +87,7 @@ public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 	}
 
 	protected void advancedProperties() {
-		clusterProperties.add(new Tunable("advancedGroup", "Advanced Settings",
+		clusterProperties.add(new Tunable("advancedGroup", "Cytoscape Advanced Settings",
 		                                  Tunable.GROUP, new Integer(3),
 		                                  new Boolean(true), null, Tunable.COLLAPSABLE));
 		clusterProperties.add(new Tunable("clusterAttrName", "Cluster Attribute", 

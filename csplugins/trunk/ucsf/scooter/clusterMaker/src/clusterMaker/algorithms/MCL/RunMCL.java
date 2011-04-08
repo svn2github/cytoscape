@@ -81,10 +81,10 @@ public class RunMCL {
 	private DistanceMatrix distanceMatrix = null;
 	private DoubleMatrix2D matrix = null;
 	private boolean debug = false;
-	final int NTHREADS = Runtime.getRuntime().availableProcessors()-1;
+	private int nThreads = Runtime.getRuntime().availableProcessors()-1;
 	
 	public RunMCL(DistanceMatrix dMat, double inflationParameter, int num_iterations, 
-	              double clusteringThresh, double maxResidual, CyLogger logger )
+	              double clusteringThresh, double maxResidual, int maxThreads, CyLogger logger )
 	{
 		this.distanceMatrix = dMat;
 		this.inflationParameter = inflationParameter;
@@ -95,6 +95,10 @@ public class RunMCL {
 		nodes = distanceMatrix.getNodes();
 		edges = distanceMatrix.getEdges();
 		this.matrix = distanceMatrix.getDistanceMatrix();
+		if (maxThreads > 0)
+			nThreads = maxThreads;
+		else
+			nThreads = Runtime.getRuntime().availableProcessors()-1;
 		// logger.info("InflationParameter = "+inflationParameter);
 		// logger.info("Iterations = "+num_iterations);
 		// logger.info("Clustering Threshold = "+clusteringThresh);
@@ -139,7 +143,7 @@ public class RunMCL {
 				monitor.setStatus("Iteration: "+(i+1)+" expanding ");
 				// debugln("Iteration: "+(i+1)+" expanding ");
 				// printMatrixInfo(matrix);
-				if (NTHREADS > 1) {
+				if (nThreads > 1) {
 					matrix = multiplyMatrix(matrix, matrix);
 				} else {
 					DoubleMatrix2D newMatrix = DoubleFactory2D.sparse.make(matrix.rows(), matrix.columns());
@@ -344,7 +348,7 @@ public class RunMCL {
 		for (int i = m; --i>=0; ) Crows[i] = B.like1D(m);
 
 		// Create the thread pools
-		final ExecutorService[] threadPools = new ExecutorService[NTHREADS];
+		final ExecutorService[] threadPools = new ExecutorService[nThreads];
 		for (int pool = 0; pool < threadPools.length; pool++) {
 				threadPools[pool] = Executors.newFixedThreadPool(1);
 		}
@@ -354,7 +358,7 @@ public class RunMCL {
 				public double apply(int row, int column, double value) {
 
 					Runnable r = new ThreadedDotProduct(value, Brows[column], Crows[row]);
-					threadPools[row%NTHREADS].submit(r);
+					threadPools[row%nThreads].submit(r);
 					return value;
 				}
 			}

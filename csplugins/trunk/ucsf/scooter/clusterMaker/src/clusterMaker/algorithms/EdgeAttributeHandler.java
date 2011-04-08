@@ -102,7 +102,7 @@ public class EdgeAttributeHandler
 
 		clusterProperties.add(new Tunable("attributeListGroup",
 		                                  "Source for array data",
-		                                  Tunable.GROUP, new Integer(6)));
+		                                  Tunable.GROUP, new Integer(5)));
 
 		// The attribute to use to get the weights
 		attributeArray = getAllAttributes();

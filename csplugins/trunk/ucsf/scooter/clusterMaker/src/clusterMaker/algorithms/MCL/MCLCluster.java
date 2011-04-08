@@ -71,6 +71,7 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 	int rNumber = 8;
 	double clusteringThresh = 1e-15;
 	double maxResidual = 0.001;
+	int maxThreads = 0;
 	EdgeAttributeHandler edgeAttributeHandler = null;
 
 	TaskMonitor monitor = null;
@@ -105,14 +106,21 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		 * Tuning values
 		 */
 		clusterProperties.add(new Tunable("tunables_panel",
-		                                  "MCL Tuning",
-		                                  Tunable.GROUP, new Integer(4)));
+		                                  "Basic MCL Tuning",
+		                                  Tunable.GROUP, new Integer(1)));
 
 		// Inflation Parameter
 		clusterProperties.add(new Tunable("inflation_parameter",
 		                                  "Graularity Parameter (inflation value)",
 		                                  Tunable.DOUBLE, new Double(2.5),
 		                                  (Object)null, (Object)null, 0));
+
+		// Use the standard edge attribute handling stuff....
+		edgeAttributeHandler = new EdgeAttributeHandler(clusterProperties, true);
+
+		clusterProperties.add(new Tunable("mclAdvancedGroup", "MCL Advanced Settings",
+		                                  Tunable.GROUP, new Integer(4),
+		                                  new Boolean(true), null, Tunable.COLLAPSABLE));
 		// Clustering Threshold
 		clusterProperties.add(new Tunable("clusteringThresh",
 		                                  "Weak EdgeWeight Pruning Threshold",
@@ -122,20 +130,22 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		// Number of iterations
 		clusterProperties.add(new Tunable("rNumber",
 		                                  "Number of iterations",
-		                                  Tunable.INTEGER, new Integer(8),
+		                                  Tunable.INTEGER, new Integer(16),
 		                                  (Object)null, (Object)null, 0));
 
 		// Number of iterations
 		clusterProperties.add(new Tunable("maxResidual",
 		                                  "The maximum residual value",
-		                                  Tunable.DOUBLE, new Double(.001),
+		                                  Tunable.DOUBLE, new Double(.0001),
 		                                  (Object)null, (Object)null, 0));
 
-		// Use the standard edge attribute handling stuff....
-		edgeAttributeHandler = new EdgeAttributeHandler(clusterProperties, true);
+		// Maximum number of CPU's to use
+		clusterProperties.add(new Tunable("maxThreads",
+		                                  "The maximum number of threads",
+		                                  Tunable.INTEGER, new Integer(0),
+		                                  (Object)null, (Object)null, 0));
 
 		super.advancedProperties();
-
 		clusterProperties.initializeProperties();
 		updateSettings(true);
 	}
@@ -160,6 +170,10 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		if ((t != null) && (t.valueChanged() || force))
 			maxResidual = ((Double) t.getValue()).doubleValue();
 
+		t = clusterProperties.get("maxThreads");
+		if ((t != null) && (t.valueChanged() || force))
+			maxThreads = ((Integer) t.getValue()).intValue();
+
 		t = clusterProperties.get("rNumber");
 		if ((t != null) && (t.valueChanged() || force))
 			rNumber = ((Integer) t.getValue()).intValue();
@@ -182,8 +196,8 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		}
 
 		//Cluster the nodes
-		runMCL = new RunMCL(matrix, inflation_parameter, 
-		                    rNumber, clusteringThresh, maxResidual, logger);
+		runMCL = new RunMCL(matrix, inflation_parameter, rNumber, 
+		                    clusteringThresh, maxResidual, maxThreads, logger);
 
 		runMCL.setDebug(debug);
 

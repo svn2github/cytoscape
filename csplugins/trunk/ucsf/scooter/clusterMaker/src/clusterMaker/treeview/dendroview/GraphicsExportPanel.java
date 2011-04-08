@@ -1217,7 +1217,7 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 			scalePanel.add(Xsub);
 			
 			double yScale = geneMap.getScale();
-			if (yScale < 15) yScale = 15;
+			// if (yScale < 15) yScale = 15;
 			yScaleField = new JTextField(Double.toString(yScale));
 			JPanel Ysub = new JPanel();
 			Ysub.add(new JLabel("y scale"));
