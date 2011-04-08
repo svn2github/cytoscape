@@ -325,7 +325,6 @@ public class EisenCluster {
 			List<String>clList = (List<String>)netAttr.getListAttribute(netID, ClusterMaker.GROUP_ATTRIBUTE);
 			for (String groupName: clList) {
 				CyGroup group = CyGroupManager.findGroup(groupName);
-				// XXX FIXME XXX This doesn't seem to be working
 				if (group != null)
 					CyGroupManager.removeGroup(group);
 			}

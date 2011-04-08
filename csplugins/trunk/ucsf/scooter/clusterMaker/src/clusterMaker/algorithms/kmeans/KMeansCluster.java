@@ -66,7 +66,8 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 	                                   DistanceMetric.UNCENTERED_CORRELATION,
 	                                   DistanceMetric.ABS_UNCENTERED_CORRELATION,
 	                                   DistanceMetric.SPEARMANS_RANK,
-	                                   DistanceMetric.KENDALLS_TAU };
+	                                   DistanceMetric.KENDALLS_TAU,
+	                                   DistanceMetric.VALUE_IS_CORRELATION };
 	String[] attributeArray = new String[1];
 
 	int kNumber = 0;

@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.lang.Math;
 
 public enum DistanceMetric {
+	VALUE_IS_CORRELATION("None -- attributes are correlations"),
 	UNCENTERED_CORRELATION("Uncentered correlation"),
 	CORRELATION("Pearson correlation"),
 	ABS_UNCENTERED_CORRELATION("Uncentered correlation, absolute value"),
@@ -74,6 +75,8 @@ public enum DistanceMetric {
 				return spearmanMetric(data1, data2, weights, index1, index2);
 			case KENDALLS_TAU:
 				return kendallMetric(data1, data2, weights, index1, index2);
+			case VALUE_IS_CORRELATION:
+				return data1.doubleValue(index1, index2);
 		}
 		return euclidMetric(data1, data2, weights, index1, index2);
 	}
