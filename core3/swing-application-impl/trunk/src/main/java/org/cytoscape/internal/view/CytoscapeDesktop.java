@@ -59,6 +59,7 @@ import javax.swing.WindowConstants;
 import java.util.Dictionary;
 import java.util.Properties;
 import org.cytoscape.work.swing.GUITaskManager;
+import org.cytoscape.application.swing.ToolBarComponent;
 
 
 /**
@@ -360,6 +361,9 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	}
 
 	public void addCytoPanelComponent(CytoPanelComponent cp, Dictionary props) {
+		
+		System.out.println("\nEntering CytoscapeDesktop.addCytoPanelComponent()....");
+
 		CytoPanelImp impl = getCytoPanelInternal(cp.getCytoPanelName());
 		impl.add(cp);
 	}
@@ -371,5 +375,22 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 
 	public JToolBar getStatusToolBar() {
 		return statusToolBar;
+	}
+
+	public void addToolBarComponent(ToolBarComponent tp, Dictionary props) {
+		
+		
+		//System.out.println("\nEntering CytoscapeDesktop.addTooBarComponent()....");
+		
+		//CytoPanelImp impl = getCytoPanelInternal(cp.getCytoPanelName());
+		//impl.add(cp);
+	}
+
+	public void removeToolBarComponent(ToolBarComponent tp, Dictionary props) {
+		
+		//System.out.println("\nEntering CytoscapeDesktop.removeTooBarComponent()....");
+		
+		//CytoPanelImp impl = getCytoPanelInternal(cp.getCytoPanelName());
+		//impl.remove(cp);
 	}
 }
