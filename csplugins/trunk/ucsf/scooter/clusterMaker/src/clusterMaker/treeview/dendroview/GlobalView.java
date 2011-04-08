@@ -317,21 +317,19 @@ class GlobalView extends ModelViewProduced
 	public synchronized void paintComposite (Graphics g) {
 		// composite the rectangles...
 		if (selectionRect != null) {	    
+			g.setColor(Color.white);
+			g.drawRect(selectionRect.x, selectionRect.y, selectionRect.width, selectionRect.height);
+			g.setColor(Color.black);
+			g.drawRect(selectionRect.x-1, selectionRect.y-1, selectionRect.width+2, selectionRect.height+2);
+
+			// Draw the zoomRect second so that it shows up
 			if (zoomRect != null) {
 				g.setColor(Color.magenta);
-				g.drawRect(zoomRect.x, zoomRect.y, 
-				zoomRect.width, zoomRect.height);
+				g.drawRect(zoomRect.x, zoomRect.y, zoomRect.width, zoomRect.height);
+				g.drawRect(zoomRect.x-1, zoomRect.y-1, zoomRect.width+2, zoomRect.height+2);
 				g.setColor(Color.black);
-				g.drawRect(zoomRect.x-1, zoomRect.y-1, 
-				zoomRect.width+2, zoomRect.height+2);
+				g.drawRect(zoomRect.x-2, zoomRect.y-2, zoomRect.width+4, zoomRect.height+4);
 			}
-	
-			g.setColor(Color.white);
-			g.drawRect(selectionRect.x, selectionRect.y, 
-			selectionRect.width, selectionRect.height);
-			g.setColor(Color.black);
-			g.drawRect(selectionRect.x-1, selectionRect.y-1, 
-			selectionRect.width+2, selectionRect.height+2);
 		}
 	}
 
