@@ -31,12 +31,7 @@
 	system to identify and otherwise control how the service gets use 
 	(like determining which menu to put the service in).
 	-->
-	<osgi:service id="enhancedSearchService" ref="enhancedSearchPlugin">
-		<osgi:interfaces>
-			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener</value>
-			<value>org.cytoscape.model.events.NetworkAboutToBeDestroyedListener</value>
-			<value>org.cytoscape.session.events.SessionLoadedListener</value>
-		</osgi:interfaces>
-					
-	</osgi:service>
+	<osgi:service id="enhancedSearchService" ref="enhancedSearchPlugin" 
+		 auto-export="interfaces" />  
+ 	 
 </beans>
