@@ -361,9 +361,6 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	}
 
 	public void addCytoPanelComponent(CytoPanelComponent cp, Dictionary props) {
-		
-		System.out.println("\nEntering CytoscapeDesktop.addCytoPanelComponent()....");
-
 		CytoPanelImp impl = getCytoPanelInternal(cp.getCytoPanelName());
 		impl.add(cp);
 	}
@@ -378,19 +375,10 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	}
 
 	public void addToolBarComponent(ToolBarComponent tp, Dictionary props) {
-		
-		
-		//System.out.println("\nEntering CytoscapeDesktop.addTooBarComponent()....");
-		
-		//CytoPanelImp impl = getCytoPanelInternal(cp.getCytoPanelName());
-		//impl.add(cp);
+		((CytoscapeToolBar)cyMenus.getJToolBar()).addToolBarComponent(tp);
 	}
 
 	public void removeToolBarComponent(ToolBarComponent tp, Dictionary props) {
-		
-		//System.out.println("\nEntering CytoscapeDesktop.removeTooBarComponent()....");
-		
-		//CytoPanelImp impl = getCytoPanelInternal(cp.getCytoPanelName());
-		//impl.remove(cp);
+		((CytoscapeToolBar)cyMenus.getJToolBar()).removeToolBarComponent(tp);		
 	}
 }
