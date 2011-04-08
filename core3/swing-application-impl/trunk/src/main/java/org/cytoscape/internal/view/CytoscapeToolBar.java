@@ -100,18 +100,21 @@ public class CytoscapeToolBar extends JToolBar {
 		int addInd = getInsertLocation(action.getToolbarGravity());
 		orderedList.add(addInd, button);
 
-		addButtons();
+		addComponents();
 
 		return true;
 	}
 
-	private void addButtons() {
+	private void addComponents() {
 		removeAll();
 		for ( Object o : orderedList) {
 			if ( o instanceof JButton ) {
 				add((JButton)o);
 			} else if ( o instanceof Float ) {
 				addSeparator();
+			}
+			else if (o instanceof ToolBarComponent){
+				add(((ToolBarComponent)o).getComponent());
 			}
 		}
 		validate();
@@ -155,28 +158,24 @@ public class CytoscapeToolBar extends JToolBar {
 		return true;
 	}
 
-	public JToolBar getJToolBar() {
-		return this;
-	}
-
 	// use by toolbar updater to keep things properly enabled/disabled
 	Collection<CyAction> getAllToolBarActions() {
 		return actionButtonMap.keySet();
 	}
 	
-	
-	public void  addToolBarComponent(ToolBarComponent tp){
-		
-		//System.out.println("CytoscapeToolBar.addToolBarComponent()....tp.getComponent() ="+ tp.getComponent());
-		
-		//add(tp.getComponent());
+	public void addToolBarComponent(ToolBarComponent tbc){		
+		componentGravity.put(tbc,tbc.getToolBarGravity());
+		int addInd = getInsertLocation(tbc.getToolBarGravity());
+		orderedList.add(addInd, tbc);
+		addComponents();
 	}
 
-	public void  removeToolBarComponent(ToolBarComponent tp){
-
-		//System.out.println("CytoscapeToolBar.removeToolBarComponent()....tp.getComponent() ="+ tp.getComponent());
-
-		//remove(tp.getComponent());
+	public void removeToolBarComponent(ToolBarComponent tbc){
+		if (tbc != null){
+			this.componentGravity.remove(tbc);
+			this.orderedList.remove(tbc);
+			this.remove(tbc.getComponent());
+			this.repaint();
+		}	
 	}
-
 }
