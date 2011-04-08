@@ -139,6 +139,12 @@
 			ref="cytoscapeDesktop" />
 	</osgi:set>
 
+	<osgi:set id="toolbarComponentSet" interface="org.cytoscape.application.swing.ToolBarComponent"
+		cardinality="0..N">
+		<osgi:listener bind-method="addToolBarComponent" unbind-method="removeToolBarComponent"
+			ref="cytoscapeDesktop" />
+	</osgi:set>
+
 	<!-- task factories for CyMenuPopulator -->
 	<osgi:set id="taskFactorySet" interface="org.cytoscape.work.TaskFactory"
 		cardinality="0..N" >
