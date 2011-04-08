@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.cytoscape.application.swing.CyAction;
+import org.cytoscape.application.swing.ToolBarComponent;
 
 /**
  *
@@ -162,4 +163,20 @@ public class CytoscapeToolBar extends JToolBar {
 	Collection<CyAction> getAllToolBarActions() {
 		return actionButtonMap.keySet();
 	}
+	
+	
+	public void  addToolBarComponent(ToolBarComponent tp){
+		
+		//System.out.println("CytoscapeToolBar.addToolBarComponent()....tp.getComponent() ="+ tp.getComponent());
+		
+		//add(tp.getComponent());
+	}
+
+	public void  removeToolBarComponent(ToolBarComponent tp){
+
+		//System.out.println("CytoscapeToolBar.removeToolBarComponent()....tp.getComponent() ="+ tp.getComponent());
+
+		//remove(tp.getComponent());
+	}
+
 }
