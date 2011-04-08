@@ -312,6 +312,8 @@
 		   <constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
 
+
+	<!-- Quick Start and Wizards -->
 	<bean id="quickStartTaskFactory"
 	      class="org.cytoscape.task.internal.quickstart.QuickStartTaskFactory">
 		<constructor-arg ref="importTaskUtil" />
@@ -327,9 +329,23 @@
 		<constructor-arg ref="cyDataTableReaderManagerServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
-
 	
 	<bean id="bioGridPreprocessor" class="org.cytoscape.task.internal.quickstart.remote.BioGridPreprocessor">
 		<constructor-arg ref="cyPropertyServiceRef" />
+	</bean>
+	
+	
+	<bean id="subnetworkBuilderUtil" class="org.cytoscape.task.internal.quickstart.subnetworkbuilder.SubnetworkBuilderUtil">
+	<constructor-arg ref="cyNetworkViewReaderManagerServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
+		<constructor-arg ref="cyPropertyServiceRef" />
+		<constructor-arg ref="cyNetworkNamingServiceRef" />
+		<constructor-arg ref="streamUtilRef" />
+	</bean>
+	<bean id="subnetworkBuilderTaskFactory"
+	      class="org.cytoscape.task.internal.quickstart.subnetworkbuilder.SubnetworkBuilderTaskFactory">
+		<constructor-arg ref="subnetworkBuilderUtil" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 </beans>
