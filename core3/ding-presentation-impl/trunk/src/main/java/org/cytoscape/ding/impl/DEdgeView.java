@@ -44,6 +44,8 @@ import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.Label;
+import org.cytoscape.ding.impl.events.GraphViewEdgesSelectedEvent;
+import org.cytoscape.ding.impl.events.GraphViewEdgesUnselectedEvent;
 import org.cytoscape.graph.render.immed.EdgeAnchors;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.model.CyEdge;
@@ -434,10 +436,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void select() {
+	
+	@Override public void select() {
 		final boolean somethingChanged;
 
 		synchronized (m_view.m_lock) {
@@ -445,14 +445,6 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 
 			if (somethingChanged)
 				m_view.m_contentChanged = true;
-		}
-
-		if (somethingChanged) {
-			final GraphViewChangeListener listener = m_view.m_lis[0];
-
-			if (listener != null)
-				listener.graphViewChanged(new GraphViewEdgesSelectedEvent(
-						m_view, DGraphView.makeList(getEdge())));
 		}
 	}
 
@@ -494,10 +486,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		return true;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void unselect() {
+	
+	@Override public void unselect() {
 		final boolean somethingChanged;
 
 		synchronized (m_view.m_lock) {
@@ -505,14 +495,6 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 
 			if (somethingChanged)
 				m_view.m_contentChanged = true;
-		}
-
-		if (somethingChanged) {
-			final GraphViewChangeListener listener = m_view.m_lis[0];
-
-			if (listener != null)
-				listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(
-						m_view, DGraphView.makeList(getEdge())));
 		}
 	}
 
@@ -542,14 +524,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		return true;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param state
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
+	@Override
 	public boolean setSelected(boolean state) {
 		if (state)
 			select();
@@ -759,19 +734,13 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	public void updateLine() {
 	}
 
-	// This is also a method on org.cytoscape.ding.Bend.
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void drawSelected() {
+	
+	@Override public void drawSelected() {
 		select();
 	}
 
-	// This is also a method on org.cytoscape.ding.Bend.
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void drawUnselected() {
+
+	@Override public void drawUnselected() {
 		unselect();
 	}
 

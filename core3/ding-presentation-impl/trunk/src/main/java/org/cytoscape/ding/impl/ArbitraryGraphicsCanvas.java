@@ -33,6 +33,7 @@ package org.cytoscape.ding.impl;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.ding.NodeView;
+import org.cytoscape.ding.impl.events.ViewportChangeListener;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;

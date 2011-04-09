@@ -67,6 +67,15 @@ import org.cytoscape.ding.GraphViewObject;
 import org.cytoscape.ding.NodeView;
 import org.cytoscape.ding.PrintLOD;
 import org.cytoscape.ding.icon.VisualPropertyIconFactory;
+import org.cytoscape.ding.impl.events.GraphViewChangeListenerChain;
+import org.cytoscape.ding.impl.events.GraphViewEdgesHiddenEvent;
+import org.cytoscape.ding.impl.events.GraphViewEdgesRestoredEvent;
+import org.cytoscape.ding.impl.events.GraphViewEdgesUnselectedEvent;
+import org.cytoscape.ding.impl.events.GraphViewNodesHiddenEvent;
+import org.cytoscape.ding.impl.events.GraphViewNodesRestoredEvent;
+import org.cytoscape.ding.impl.events.GraphViewNodesUnselectedEvent;
+import org.cytoscape.ding.impl.events.ViewportChangeListener;
+import org.cytoscape.ding.impl.events.ViewportChangeListenerChain;
 import org.cytoscape.dnd.DropNetworkViewTaskFactory;
 import org.cytoscape.dnd.DropNodeViewTaskFactory;
 import org.cytoscape.event.CyEventHelper;
@@ -1129,15 +1138,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		fitContent(/* updateView = */ true);
 	}
 
+	
 	/**
-	 * DOCUMENT ME!
+	 * Redraw the canvas.
 	 */
 	public void updateView() {
 		final long start = System.currentTimeMillis();
-		logger.debug("########## This is relatively heavy operation:  Update view called.  repainting canvas...");
 		m_networkCanvas.repaint();
-		logger.debug("Repaint finised.  Time = "
-				+ (System.currentTimeMillis() - start));
+		logger.debug("========= Repaint finised in " + (System.currentTimeMillis() - start) + " msec. ==========");
 	}
 
 	/**
@@ -2551,91 +2559,39 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		this.title = title;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public String getTitle() {
+	
+	@Override public String getTitle() {
 		return title;
 	}
 
+	
 	/**
-	 * DOCUMENT ME!
-	 *
+	 * Set selected nodes
 	 * @param nodes
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * @return
 	 */
-	public boolean setSelected(CyNode[] nodes) {
-		return setSelected(convertToViews(nodes));
+	public boolean setSelected(final CyNode[] nodes) {
+		
+		System.out.println("@@@@@@@@@@@@ Node selected called!!! @@@@@@@@@");
+		final int size = nodes.length;
+		for (int i = 0; i < size; i++)
+			getNodeView(nodes[i]).select();
+		
+		return true;
 	}
-
-	private NodeView[] convertToViews(CyNode[] nodes) {
-		NodeView[] views = new NodeView[nodes.length];
-
-		for (int i = 0; i < nodes.length; i++) {
-			views[i] = getNodeView(nodes[i]);
-		}
-
-		return views;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node_views
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public boolean setSelected(NodeView[] node_views) {
-		for (int i = 0; i < node_views.length; i++) {
-			node_views[i].select();
-		}
+	
+	
+	public boolean setSelected(final CyEdge[] edges) {
+		
+		System.out.println("@@@@@@@@@@@@ Edge selected called!!! @@@@@@@@@");
+		final int size = edges.length;
+		for (int i = 0; i < size; i++)
+			getEdgeView(edges[i]).select();
 
 		return true;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param edges
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public boolean setSelected(CyEdge[] edges) {
-		return setSelected(convertToViews(edges));
-	}
-
-	private EdgeView[] convertToViews(CyEdge[] edges) {
-		EdgeView[] views = new EdgeView[edges.length];
-
-		for (int i = 0; i < edges.length; i++) {
-			views[i] = getEdgeView(edges[i]);
-		}
-
-		return views;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param edge_views
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public boolean setSelected(EdgeView[] edge_views) {
-		for (int i = 0; i < edge_views.length; i++) {
-			edge_views[i].select();
-		}
-
-		return true;
-	}
-
+	
 	/**
 	 * DOCUMENT ME!
 	 *

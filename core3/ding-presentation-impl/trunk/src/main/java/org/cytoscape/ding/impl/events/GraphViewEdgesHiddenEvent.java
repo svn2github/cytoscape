@@ -34,19 +34,46 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.ding.impl;
+package org.cytoscape.ding.impl.events;
+
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.ding.GraphView;
+
+import java.util.List;
 
 
-/**
- * DOCUMENT ME!
- *
- * @author $author$-
- */
-public interface ViewportChangeListener {
+public final class GraphViewEdgesHiddenEvent extends GraphViewChangeEventAdapter {
+	private final static long serialVersionUID = 120241651250257L;
+	private final GraphView m_view;
+	private final List<CyEdge> m_hiddenEdgeInx;
+
+	public GraphViewEdgesHiddenEvent(GraphView view, List<CyEdge> hiddenEdgeInx) {
+		super(view);
+		m_view = view;
+		m_hiddenEdgeInx = hiddenEdgeInx;
+	}
+
 	/**
-	 * This gets fired upon graph redraw when zoom is changed or the graph
-	 * center is changed or the view component is resized.
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
 	 */
-	public void viewportChanged(int viewportWidth, int viewportHeight, double newXCenter,
-	                            double newYCenter, double newScaleFactor);
+	public final int getType() {
+		return EDGES_HIDDEN_TYPE;
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public final CyEdge[] getHiddenEdges() {
+		final CyEdge[] returnThis = new CyEdge[m_hiddenEdgeInx.size()];
+
+		for (int i = 0; i < returnThis.length; i++)
+			returnThis[i] = m_hiddenEdgeInx.get(i);
+
+		return returnThis;
+	}
+
 }

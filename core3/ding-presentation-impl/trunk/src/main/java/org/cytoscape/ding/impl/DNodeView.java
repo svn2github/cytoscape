@@ -65,6 +65,8 @@ import org.cytoscape.ding.customgraphics.Layer;
 import org.cytoscape.ding.customgraphics.NullCustomGraphics;
 import org.cytoscape.ding.impl.customgraphics.CustomGraphicsPositionCalculator;
 import org.cytoscape.ding.impl.customgraphics.vector.VectorCustomGraphics;
+import org.cytoscape.ding.impl.events.GraphViewNodesSelectedEvent;
+import org.cytoscape.ding.impl.events.GraphViewNodesUnselectedEvent;
 import org.cytoscape.ding.impl.visualproperty.CustomGraphicsVisualProperty;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.graph.render.stateful.CustomGraphic;
@@ -806,10 +808,8 @@ public class DNodeView implements NodeView, Label {
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void select() {
+	
+	@Override public void select() {
 		final boolean somethingChanged;
 
 		synchronized (graphView.m_lock) {
@@ -818,17 +818,14 @@ public class DNodeView implements NodeView, Label {
 			if (somethingChanged)
 				graphView.m_contentChanged = true;
 		}
-
-		if (somethingChanged) {
-			final GraphViewChangeListener listener = graphView.m_lis[0];
-
-			if (listener != null)
-				listener.graphViewChanged(new GraphViewNodesSelectedEvent(
-						graphView, DGraphView.makeList(this.getNodeViewModel().getModel())));
-		}
 	}
 
-	// Should synchronize around m_view.m_lock.
+
+	/**
+	 * Should synchronize around m_view.m_lock.
+	 * 
+	 * @return true if selected.
+	 */
 	boolean selectInternal() {
 		if (m_selected)
 			return false;
@@ -837,18 +834,15 @@ public class DNodeView implements NodeView, Label {
 		graphView.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
 
 		if (m_selectedPaint instanceof Color)
-			graphView.m_nodeDetails.overrideColorLowDetail(m_inx,
-					(Color) m_selectedPaint);
+			graphView.m_nodeDetails.overrideColorLowDetail(m_inx, (Color) m_selectedPaint);
 
 		graphView.m_selectedNodes.insert(m_inx);
 
 		return true;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void unselect() {
+	
+	@Override public void unselect() {
 		final boolean somethingChanged;
 
 		synchronized (graphView.m_lock) {
@@ -856,14 +850,6 @@ public class DNodeView implements NodeView, Label {
 
 			if (somethingChanged)
 				graphView.m_contentChanged = true;
-		}
-
-		if (somethingChanged) {
-			final GraphViewChangeListener listener = graphView.m_lis[0];
-
-			if (listener != null)
-				listener.graphViewChanged(new GraphViewNodesUnselectedEvent(
-						graphView, DGraphView.makeList(this.getNodeViewModel().getModel())));
 		}
 	}
 
@@ -893,15 +879,8 @@ public class DNodeView implements NodeView, Label {
 		return m_selected;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param selected
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	@Override public boolean setSelected(boolean selected) {
+	
+	@Override public boolean setSelected(final boolean selected) {
 		if (selected)
 			select();
 		else
@@ -1481,12 +1460,6 @@ public class DNodeView implements NodeView, Label {
 		return newCg;
 	}
 
-//	private ObjectPosition getCustomGraphicsPosition(final CustomGraphic cg) {
-//		if (cg == null)
-//			return ObjectPositionImpl.DEFAULT_POSITION;
-//
-//		return graphicsPositions.get(cg);
-//	}
 
 	@Override
 	public void setVisualPropertyValue(final VisualProperty<?> vpOriginal, final Object value) {
@@ -1518,14 +1491,13 @@ public class DNodeView implements NodeView, Label {
 			vp = vpOriginal;
 		}
 		
-		
 
 		if (vp == DVisualLexicon.NODE_SHAPE) {
 			setShape(((NodeShape) value));
 		} else if (vp == DVisualLexicon.NODE_SELECTED_PAINT) {
 			setSelectedPaint((Paint) value);
 		} else if (vp == MinimalVisualLexicon.NODE_SELECTED) {
-			setSelected(((Boolean) value).booleanValue());
+			setSelected((Boolean) value);
 		} else if (vp == MinimalVisualLexicon.NODE_VISIBLE) {
 			if (((Boolean) value).booleanValue())
 				graphView.showGraphObject(this);

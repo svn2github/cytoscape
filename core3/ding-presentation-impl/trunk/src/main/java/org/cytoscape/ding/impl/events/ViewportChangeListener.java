@@ -34,43 +34,19 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.ding.impl;
+package org.cytoscape.ding.impl.events;
 
-import org.cytoscape.model.CyNode;
-import org.cytoscape.ding.GraphView;
-import java.util.List;
 
-final class GraphViewNodesHiddenEvent extends GraphViewChangeEventAdapter {
-	private final static long serialVersionUID = 1202416512123636L;
-	private final GraphView m_view;
-	private final List<CyNode> m_hiddenNodeInx;
-
-	GraphViewNodesHiddenEvent(GraphView view, List<CyNode> hiddenNodeInx) {
-		super(view);
-		m_view = view;
-		m_hiddenNodeInx = hiddenNodeInx;
-	}
-
+/**
+ * DOCUMENT ME!
+ *
+ * @author $author$-
+ */
+public interface ViewportChangeListener {
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * This gets fired upon graph redraw when zoom is changed or the graph
+	 * center is changed or the view component is resized.
 	 */
-	public final int getType() {
-		return NODES_HIDDEN_TYPE;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public final CyNode[] getHiddenNodes() {
-		final CyNode[] returnThis = new CyNode[m_hiddenNodeInx.size()];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_hiddenNodeInx.get(i);
-
-		return returnThis;
-	}
+	public void viewportChanged(int viewportWidth, int viewportHeight, double newXCenter,
+	                            double newYCenter, double newScaleFactor);
 }

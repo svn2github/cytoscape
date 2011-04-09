@@ -34,17 +34,13 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.ding.impl;
+package org.cytoscape.ding.impl.events;
 
-import org.cytoscape.ding.GraphViewChangeEvent;
-import org.cytoscape.ding.GraphViewChangeListener;
+public class ViewportChangeListenerChain implements ViewportChangeListener {
+	private final ViewportChangeListener a;
+	private final ViewportChangeListener b;
 
-
-class GraphViewChangeListenerChain implements GraphViewChangeListener {
-	private final GraphViewChangeListener a;
-	private final GraphViewChangeListener b;
-
-	private GraphViewChangeListenerChain(GraphViewChangeListener a, GraphViewChangeListener b) {
+	private ViewportChangeListenerChain(ViewportChangeListener a, ViewportChangeListener b) {
 		this.a = a;
 		this.b = b;
 	}
@@ -52,42 +48,47 @@ class GraphViewChangeListenerChain implements GraphViewChangeListener {
 	/**
 	 * DOCUMENT ME!
 	 *
-	 * @param evt DOCUMENT ME!
+	 * @param w DOCUMENT ME!
+	 * @param h DOCUMENT ME!
+	 * @param newXCenter DOCUMENT ME!
+	 * @param newYCenter DOCUMENT ME!
+	 * @param newScaleFactor DOCUMENT ME!
 	 */
-	public void graphViewChanged(GraphViewChangeEvent evt) {
-		a.graphViewChanged(evt);
-		b.graphViewChanged(evt);
+	public void viewportChanged(int w, int h, double newXCenter, double newYCenter,
+	                            double newScaleFactor) {
+		a.viewportChanged(w, h, newXCenter, newYCenter, newScaleFactor);
+		b.viewportChanged(w, h, newXCenter, newYCenter, newScaleFactor);
 	}
 
-	static GraphViewChangeListener add(GraphViewChangeListener a, GraphViewChangeListener b) {
+	public static ViewportChangeListener add(ViewportChangeListener a, ViewportChangeListener b) {
 		if (a == null)
 			return b;
 
 		if (b == null)
 			return a;
 
-		return new GraphViewChangeListenerChain(a, b);
+		return new ViewportChangeListenerChain(a, b);
 	}
 
-	static GraphViewChangeListener remove(GraphViewChangeListener l, GraphViewChangeListener oldl) {
+	public static ViewportChangeListener remove(ViewportChangeListener l, ViewportChangeListener oldl) {
 		if ((l == oldl) || (l == null))
 			return null;
-		else if (l instanceof GraphViewChangeListenerChain)
-			return ((GraphViewChangeListenerChain) l).remove(oldl);
+		else if (l instanceof ViewportChangeListenerChain)
+			return ((ViewportChangeListenerChain) l).remove(oldl);
 		else
 
 			return l;
 	}
 
-	private GraphViewChangeListener remove(GraphViewChangeListener oldl) {
+	private ViewportChangeListener remove(ViewportChangeListener oldl) {
 		if (oldl == a)
 			return b;
 
 		if (oldl == b)
 			return a;
 
-		GraphViewChangeListener a2 = remove(a, oldl);
-		GraphViewChangeListener b2 = remove(b, oldl);
+		ViewportChangeListener a2 = remove(a, oldl);
+		ViewportChangeListener b2 = remove(b, oldl);
 
 		if ((a2 == a) && (b2 == b))
 			return this;

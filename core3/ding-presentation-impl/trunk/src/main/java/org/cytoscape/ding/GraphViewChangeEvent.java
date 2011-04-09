@@ -10,9 +10,8 @@ import java.util.EventObject;
  */
 public abstract class GraphViewChangeEvent extends EventObject {
 
-	
 	private static final long serialVersionUID = 7718801897482070648L;
-	
+
 	public static final int NODES_RESTORED_TYPE = 1;
 	public static final int EDGES_RESTORED_TYPE = 2;
 	public static final int NODES_HIDDEN_TYPE = 4;
@@ -22,7 +21,7 @@ public abstract class GraphViewChangeEvent extends EventObject {
 	public static final int EDGES_SELECTED_TYPE = 64;
 	public static final int EDGES_UNSELECTED_TYPE = 128;
 
-	public GraphViewChangeEvent(GraphView source) {
+	public GraphViewChangeEvent(final GraphView source) {
 		super(source);
 	}
 
@@ -60,4 +59,4 @@ public abstract class GraphViewChangeEvent extends EventObject {
 
 	public abstract CyEdge[] getUnselectedEdges();
 
-} // abstract class GraphPerspectiveChangeEvent
+}

@@ -56,6 +56,7 @@ import java.util.Properties;
 import javax.swing.Icon;
 
 import org.cytoscape.ding.GraphView;
+import org.cytoscape.ding.impl.events.ViewportChangeListener;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;

@@ -34,18 +34,19 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.ding.impl;
+package org.cytoscape.ding.impl.events;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.ding.GraphView;
+
 import java.util.List;
 
-final class GraphViewEdgesSelectedEvent extends GraphViewChangeEventAdapter {
+public final class GraphViewEdgesSelectedEvent extends GraphViewChangeEventAdapter {
 	private final static long serialVersionUID = 120241651286784L;
 	private final GraphView m_view;
 	private final List<CyEdge> m_selectedEdgeInx;
 
-	GraphViewEdgesSelectedEvent(GraphView view, List<CyEdge> selectedEdgeInx) {
+	public GraphViewEdgesSelectedEvent(GraphView view, List<CyEdge> selectedEdgeInx) {
 		super(view);
 		m_view = view;
 		m_selectedEdgeInx = selectedEdgeInx;

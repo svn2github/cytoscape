@@ -63,9 +63,12 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class FlagAndSelectionHandler implements GraphViewChangeListener {
+	
 	private static final Logger logger = LoggerFactory.getLogger(FlagAndSelectionHandler.class);
+	
 	private final GraphView view;
 	private final CyEventHelper eventHelper;
+	
 
 	/**
 	 * Standard constructor takes the flag filter and the view that should be
@@ -163,16 +166,11 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 		// GINY bug: the event we get frequently has the correct indices
 		// but incorrect Node and Edge objects. For now we get around this
 		// by converting indices to graph objects ourselves
-		final GraphView source = (GraphView) event.getSource();
-
-		logger.debug("DING got GraphViewChangeEvent: Source = " + source);
 
 		final long start = System.currentTimeMillis();
 
 		if (event.isNodesSelectedType()) {
-			// Nodes are selected.
 			final CyNode[] selectedNodes = event.getSelectedNodes();
-
 			select(Arrays.asList(selectedNodes), true);
 		} else if (event.isNodesUnselectedType() || event.isNodesHiddenType()) {
 			final CyNode[] objIndecies;
@@ -195,40 +193,7 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 			select(Arrays.asList(objIndecies), false);
 		}
 
-		logger.debug("Finished select operation: Time = "
+		logger.debug("Finished selection: Time = "
 				+ (System.currentTimeMillis() - start) + " msec.");
-	}
-
-	/**
-	 * Helper method to set selection for a node view.
-	 */
-	private void setNodeSelected(final CyNode node, boolean selectOn) {
-		final NodeView nodeView = view.getNodeView(node);
-
-		if (nodeView == null)
-			return;
-
-		// sanity check
-		// Giny fires a selection event even if there's no change in state
-		// we trap this by only requesting a selection if there's a change
-
-		if (nodeView.isSelected() != selectOn)
-			nodeView.setSelected(selectOn);
-	}
-
-	/**
-	 * Helper method to set selection for an edge view.
-	 */
-	private void setEdgeSelected(final CyEdge edge, boolean selectOn) {
-		EdgeView edgeView = view.getEdgeView(edge);
-
-		if (edgeView == null)
-			return;
-		// sanity check
-		// Giny fires a selection event even if there's no change in state
-		// we trap this by only requesting a selection if there's a change
-
-		if (edgeView.isSelected() != selectOn)
-			edgeView.setSelected(selectOn);
 	}
 }

@@ -34,44 +34,35 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.ding.impl;
+package org.cytoscape.ding.impl.events;
 
-import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.ding.GraphView;
+
 import java.util.List;
 
+public final class GraphViewNodesSelectedEvent extends GraphViewChangeEventAdapter {
+	private final static long serialVersionUID = 1202416512158746L;
+	
+	private final List<CyNode> selectedNodes;
 
-
-final class GraphViewEdgesRestoredEvent extends GraphViewChangeEventAdapter {
-	private final static long serialVersionUID = 120241651269164L;
-	private final GraphView m_view;
-	private final List<CyEdge> m_restoredEdgeInx;
-
-	GraphViewEdgesRestoredEvent(GraphView view, List<CyEdge> restoredEdgeInx) {
+	public GraphViewNodesSelectedEvent(final GraphView view, final List<CyNode> selectedNodeInx) {
 		super(view);
-		m_view = view;
-		m_restoredEdgeInx = restoredEdgeInx;
+		selectedNodes = selectedNodeInx;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public final int getType() {
-		return EDGES_RESTORED_TYPE;
+	
+	@Override public final int getType() {
+		return NODES_SELECTED_TYPE;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public final CyEdge[] getRestoredEdges() {
-		final CyEdge[] returnThis = new CyEdge[m_restoredEdgeInx.size()];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_restoredEdgeInx.get(i);
+	
+	@Override public final CyNode[] getSelectedNodes() {
+		final int selectedSize = selectedNodes.size();
+		final CyNode[] returnThis = new CyNode[selectedSize];
+		
+		for (int i=0; i < selectedSize; i++)
+			returnThis[i] = selectedNodes.get(i);
 
 		return returnThis;
 	}

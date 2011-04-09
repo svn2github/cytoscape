@@ -34,7 +34,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.ding.impl;
+package org.cytoscape.ding.impl.events;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
@@ -43,6 +43,11 @@ import org.cytoscape.ding.GraphViewChangeEvent;
 
 
 abstract class GraphViewChangeEventAdapter extends GraphViewChangeEvent {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6878247224212872761L;
+
 	GraphViewChangeEventAdapter(GraphView source) {
 		super(source);
 	}

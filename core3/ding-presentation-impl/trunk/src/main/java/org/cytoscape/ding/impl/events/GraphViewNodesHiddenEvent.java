@@ -34,65 +34,44 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.ding.impl;
+package org.cytoscape.ding.impl.events;
 
-class ViewportChangeListenerChain implements ViewportChangeListener {
-	private final ViewportChangeListener a;
-	private final ViewportChangeListener b;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.ding.GraphView;
 
-	private ViewportChangeListenerChain(ViewportChangeListener a, ViewportChangeListener b) {
-		this.a = a;
-		this.b = b;
+import java.util.List;
+
+public final class GraphViewNodesHiddenEvent extends GraphViewChangeEventAdapter {
+	private final static long serialVersionUID = 1202416512123636L;
+	private final GraphView m_view;
+	private final List<CyNode> m_hiddenNodeInx;
+
+	public GraphViewNodesHiddenEvent(GraphView view, List<CyNode> hiddenNodeInx) {
+		super(view);
+		m_view = view;
+		m_hiddenNodeInx = hiddenNodeInx;
 	}
 
 	/**
 	 * DOCUMENT ME!
 	 *
-	 * @param w DOCUMENT ME!
-	 * @param h DOCUMENT ME!
-	 * @param newXCenter DOCUMENT ME!
-	 * @param newYCenter DOCUMENT ME!
-	 * @param newScaleFactor DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
-	public void viewportChanged(int w, int h, double newXCenter, double newYCenter,
-	                            double newScaleFactor) {
-		a.viewportChanged(w, h, newXCenter, newYCenter, newScaleFactor);
-		b.viewportChanged(w, h, newXCenter, newYCenter, newScaleFactor);
+	public final int getType() {
+		return NODES_HIDDEN_TYPE;
 	}
 
-	static ViewportChangeListener add(ViewportChangeListener a, ViewportChangeListener b) {
-		if (a == null)
-			return b;
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public final CyNode[] getHiddenNodes() {
+		final CyNode[] returnThis = new CyNode[m_hiddenNodeInx.size()];
 
-		if (b == null)
-			return a;
+		for (int i = 0; i < returnThis.length; i++)
+			returnThis[i] = m_hiddenNodeInx.get(i);
 
-		return new ViewportChangeListenerChain(a, b);
-	}
-
-	static ViewportChangeListener remove(ViewportChangeListener l, ViewportChangeListener oldl) {
-		if ((l == oldl) || (l == null))
-			return null;
-		else if (l instanceof ViewportChangeListenerChain)
-			return ((ViewportChangeListenerChain) l).remove(oldl);
-		else
-
-			return l;
-	}
-
-	private ViewportChangeListener remove(ViewportChangeListener oldl) {
-		if (oldl == a)
-			return b;
-
-		if (oldl == b)
-			return a;
-
-		ViewportChangeListener a2 = remove(a, oldl);
-		ViewportChangeListener b2 = remove(b, oldl);
-
-		if ((a2 == a) && (b2 == b))
-			return this;
-
-		return add(a2, b2);
+		return returnThis;
 	}
 }
