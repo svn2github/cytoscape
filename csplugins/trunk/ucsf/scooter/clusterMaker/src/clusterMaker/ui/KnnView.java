@@ -60,6 +60,8 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
+import cytoscape.command.CyCommandException;
+import cytoscape.command.CyCommandResult;
 import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
@@ -73,6 +75,7 @@ import giny.view.GraphViewChangeEvent;
 // ClusterMaker imports
 import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.ClusterProperties;
+import clusterMaker.algorithms.ClusterResults;
 
 // TreeView imports
 import clusterMaker.treeview.FileSet;
@@ -113,6 +116,8 @@ public class KnnView extends TreeView {
 
 	public String getName() { return "Eisen KnnView"; }
 
+	public ClusterResults getResults() { return null; }
+
 	public boolean isAvailable() {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
@@ -129,13 +134,19 @@ public class KnnView extends TreeView {
 		return false;
 	}
 
-	public void startViz() {
-		KnnView kv = new KnnView();  // Clone ourselves
-		kv.startup();
-		// startup();
+	public CyCommandResult startViz() throws CyCommandException {
+		CyCommandResult result = new CyCommandResult();
+		if (isAvailable()) {
+			KnnView kv = new KnnView();  // Clone ourselves
+			kv.startup();
+			result.addMessage("Knn View displayed");
+		} else {
+			throw new CyCommandException("No K-Means compatible cluster available");
+		}
+		return result;
 	}
 
-	public void startup() {
+	protected void startup() {
 		// Get our data model
 		dataModel = new KnnViewModel(myLogger);
 

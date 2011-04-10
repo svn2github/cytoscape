@@ -59,6 +59,7 @@ import clusterMaker.ui.ClusterTask;
 import clusterMaker.algorithms.AbstractNetworkClusterer;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.ClusterProperties;
+import clusterMaker.algorithms.ClusterResults;
 
 enum BuiltIn {
 	HASCLUSTER("hascluster", "Test to see if this network has a cluster of the requested type", "type"),
@@ -178,7 +179,12 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 					Thread.sleep(100);
 				} catch (Exception e) {}
 			}
+			ClusterResults clusterResults = alg.getResults();
 			result.addMessage("Clustering complete");
+			if (clusterResults != null) {
+				result.addMessage("Clustering results: ");
+				result.addMessage(clusterResults.toString());
+			}
 		} else {
 			// Throw
 			throw new RuntimeException("clusterMaker has no "+command+" command");
@@ -258,7 +264,7 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 	}
 
 	private void getEisenClusters(CyCommandResult result, ClusterAlgorithm alg, String type, String order, String clusters) {
-		System.out.println("Eisencluster(result,"+alg+","+type+","+order+","+clusters+")");
+		// System.out.println("Eisencluster(result,"+alg+","+type+","+order+","+clusters+")");
 
 		String netId = Cytoscape.getCurrentNetwork().getIdentifier();
 		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
@@ -269,17 +275,17 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 
 		result.addResult("type", alg.getShortName());
 		
-		System.out.println("getting groups");
+		// System.out.println("getting groups");
 		// Get the list of groups
 		List<String>groupList = netAttributes.getListAttribute(netId, ClusterMaker.GROUP_ATTRIBUTE);
 		if (groupList != null && groupList.size() > 0)
 			result.addResult("groups", groupList);
 
-		System.out.println("getting cluster order");
+		// System.out.println("getting cluster order");
 		// Get the cluster order
 		List<String>clusterOrder = netAttributes.getListAttribute(netId, order);
 		result.addResult("order", clusterOrder);
-		System.out.println("getting clusters");
+		// System.out.println("getting clusters");
 		// Get the clusters themselves
 		List<String>clusterList = netAttributes.getListAttribute(netId, clusters);
 		result.addResult("clusters", clusterList);

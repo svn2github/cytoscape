@@ -116,7 +116,7 @@ public class SCPSCluster extends AbstractNetworkClusterer  {
 	      
 
 		// Number of iterations
-		clusterProperties.add(new Tunable("rNumber",
+		clusterProperties.add(new Tunable("iterations",
 		                                  "Number of iterations",
 		                                  Tunable.INTEGER, new Integer(50),
 		                                  (Object)null, (Object)null, 0));
@@ -155,7 +155,7 @@ public class SCPSCluster extends AbstractNetworkClusterer  {
 			knumber = ((Integer) t.getValue()).intValue();
 
 	       
-		t = clusterProperties.get("rNumber");
+		t = clusterProperties.get("iterations");
 		if ((t != null) && (t.valueChanged() || force))
 			rNumber = ((Integer) t.getValue()).intValue();
 
@@ -189,7 +189,7 @@ public class SCPSCluster extends AbstractNetworkClusterer  {
 		List<List<CyNode>> nodeClusters = 
 		     createGroups(netAttributes, networkID, nodeAttributes, clusters);
 
-		ClusterResults results = new ClusterResults(network, nodeClusters);
+		results = new ClusterResults(network, nodeClusters);
 		monitor.setStatus("Done.  SCPS results:\n"+results);
 
 

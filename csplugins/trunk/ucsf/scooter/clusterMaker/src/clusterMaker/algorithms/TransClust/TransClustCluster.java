@@ -183,7 +183,7 @@ public class TransClustCluster extends AbstractNetworkClusterer{
 		List<List<CyNode>> nodeClusters = 
 		     createGroups(netAttributes, networkID, nodeAttributes, clusters);
 
-		ClusterResults results = new ClusterResults(network, nodeClusters);
+		results = new ClusterResults(network, nodeClusters);
 		monitor.setStatus("Done.  TransClust results:\n"+results);
 
 

@@ -88,7 +88,9 @@ public class VizCommandHandler extends ClusterMakerCommandHandler {
 
 				try {
 					setTunables(props, args);
-					viz.startViz();
+					return viz.startViz();
+				} catch (CyCommandException cce) {
+					throw cce;
 				} catch (Exception e) {
 					result.addError(e.getMessage());
 				}

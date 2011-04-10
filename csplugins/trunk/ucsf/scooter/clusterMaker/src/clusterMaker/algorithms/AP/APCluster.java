@@ -119,7 +119,7 @@ public class APCluster extends AbstractNetworkClusterer  {
 		                                  (Object)null, (Object)null, 0));
 
 		// Number of iterations
-		clusterProperties.add(new Tunable("rNumber",
+		clusterProperties.add(new Tunable("iterations",
 		                                  "Number of iterations",
 		                                  Tunable.INTEGER, new Integer(10),
 		                                  (Object)null, (Object)null, 0));
@@ -154,7 +154,7 @@ public class APCluster extends AbstractNetworkClusterer  {
 		//if ((t != null) && (t.valueChanged() || force))
 		//	maxResidual = ((Double) t.getValue()).doubleValue();
 
-		t = clusterProperties.get("rNumber");
+		t = clusterProperties.get("iterations");
 		if ((t != null) && (t.valueChanged() || force))
 			rNumber = ((Integer) t.getValue()).intValue();
 
@@ -187,7 +187,7 @@ public class APCluster extends AbstractNetworkClusterer  {
 		List<List<CyNode>> nodeClusters = 
 		     createGroups(netAttributes, networkID, nodeAttributes, clusters);
 
-		ClusterResults results = new ClusterResults(network, nodeClusters);
+		results = new ClusterResults(network, nodeClusters);
 		monitor.setStatus("Done.  AP results:\n"+results);
 
 

@@ -135,7 +135,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		                                  (Object)kNumber, (Object)null, 0));
 
 		// Number of iterations
-		clusterProperties.add(new Tunable("rnumber",
+		clusterProperties.add(new Tunable("iterations",
 		                                  "Number of iterations",
 		                                  Tunable.INTEGER, new Integer(10),
 		                                  (Object)rNumber, (Object)null, 0));
@@ -193,7 +193,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		if ((t != null) && (t.valueChanged() || force))
 			kNumber = ((Integer) t.getValue()).intValue();
 
-		t = clusterProperties.get("rnumber");
+		t = clusterProperties.get("iterations");
 		if ((t != null) && (t.valueChanged() || force))
 			rNumber = ((Integer) t.getValue()).intValue();
 
@@ -202,6 +202,8 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 			distanceMetric = distanceTypes[((Integer) t.getValue()).intValue()];
 
 		t = clusterProperties.get("clusterAttributes");
+		attributeArray = EisenCluster.getAllAttributes();
+		t.setLowerBound(attributeArray);
 		if ((t != null) && (t.valueChanged() || force))
 			clusterAttributes = ((Boolean) t.getValue()).booleanValue();
 

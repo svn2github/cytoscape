@@ -106,7 +106,7 @@ public class EdgeAttributeHandler
 
 		// The attribute to use to get the weights
 		attributeArray = getAllAttributes();
-		Tunable attrTunable = new Tunable("attributeList",
+		Tunable attrTunable = new Tunable("attribute",
 		                                  "Array sources",
 		                                  Tunable.LIST, 0,
 		                                  (Object)attributeArray, new Integer(0), 0);
@@ -190,7 +190,9 @@ public class EdgeAttributeHandler
 		if ((t != null) && (t.valueChanged() || force))
 			adjustLoops = ((Boolean) t.getValue()).booleanValue();
 
-		t = clusterProperties.get("attributeList");
+		t = clusterProperties.get("attribute");
+		attributeArray = getAllAttributes();
+		t.setLowerBound((Object)attributeArray);
 		if ((t != null) && (t.valueChanged() || force)) {
 			if (attributeArray.length == 1) {
 				dataAttribute = attributeArray[0];
@@ -208,7 +210,7 @@ public class EdgeAttributeHandler
 	}
 
 	public void	updateAttributeList() {
-		Tunable attributeTunable = clusterProperties.get("attributeList");
+		Tunable attributeTunable = clusterProperties.get("attribute");
 		attributeArray = getAllAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
 		if (dataAttribute == null && attributeArray.length > 0)

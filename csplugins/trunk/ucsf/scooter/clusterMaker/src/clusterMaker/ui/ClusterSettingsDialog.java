@@ -134,7 +134,11 @@ public class ClusterSettingsDialog extends JDialog
 			TaskManager.executeTask( new ClusterTask(currentAlgorithm, this),
 			                         currentAlgorithm.getDefaultTaskConfig() );
 		} else if (command.equals("visualize")) {
-			visualizer.startViz();
+			try {
+				visualizer.startViz();
+			} catch (Exception commandException) {
+				// Just ignore Command Errors for now
+			}
 			// setVisible(false);
 		} else if (command.equals("cancel")) {
 			// Call revertSettings for each layout

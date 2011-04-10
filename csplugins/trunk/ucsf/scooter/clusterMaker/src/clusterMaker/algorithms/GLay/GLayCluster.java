@@ -188,7 +188,7 @@ public class GLayCluster extends AbstractNetworkClusterer  {
 		List<List<CyNode>> nodeClusters = 
 		     createGroups(netAttributes, networkID, nodeAttributes, clusterList);
 
-		ClusterResults results = new ClusterResults(network, nodeClusters, "Modularity: "+modularityString);
+		results = new ClusterResults(network, nodeClusters, "Modularity: "+modularityString);
 		monitor.setStatus("Done.  Community Clustering results:\n"+results+"\n  Modularity: "+modularityString);
 
 		// Tell any listeners that we're done

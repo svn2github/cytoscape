@@ -51,6 +51,8 @@ import cytoscape.CyNetwork;
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.CytoscapeInit;
+import cytoscape.command.CyCommandException;
+import cytoscape.command.CyCommandResult;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.layout.CyLayoutAlgorithm;
@@ -81,8 +83,9 @@ import giny.view.EdgeView;
 // ClusterMaker imports
 import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.AbstractNetworkClusterer;
-import clusterMaker.algorithms.ClusterProperties;
 import clusterMaker.algorithms.ClusterAlgorithm;
+import clusterMaker.algorithms.ClusterProperties;
+import clusterMaker.algorithms.ClusterResults;
 import clusterMaker.ui.ClusterTask;
 
 /**
@@ -133,8 +136,19 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 
 	public JTaskConfig getDefaultTaskConfig() { return ClusterTask.getDefaultTaskConfig(false); }
 
-	public void startViz() {
+	public ClusterResults getResults() { return null; }
+
+	public CyCommandResult startViz() throws CyCommandException {
+		updateSettings();
+		if (clusterAttribute == null || clusterAttribute.length() == 0) {
+			if (!isAvailable())
+				throw new CyCommandException("No attribute specified and no previous network attribute run found");
+		}
+
 		startup();
+		CyCommandResult result = new CyCommandResult();
+		result.addMessage("Nested network for attribute "+clusterAttribute+" created");
+		return result;
 	}
 
 	public boolean isAvailable() {
@@ -160,9 +174,7 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 		return false;
 	}
 
-	public void startup() {
-		updateSettings();
-
+	private void startup() {
 		// Set up a new task
 		CreateNetworkTask task = new CreateNetworkTask(clusterAttribute);
 		TaskManager.executeTask( task, ClusterTask.getDefaultTaskConfig(false) );
@@ -180,7 +192,7 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 		// The attribute to use to get the weights
 		attributeArray = getAllAttributes();
 
-		clusterProperties.add(new Tunable("attributeList",
+		clusterProperties.add(new Tunable("attribute",
 		                                  "Cluster Attribute to Use",
 		                                  Tunable.LIST, new Integer(0),
 		                                  (Object)attributeArray, (Object)null, 0));
@@ -200,7 +212,10 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 	public void updateSettings(boolean force) {
 		clusterProperties.updateValues();
 
-		Tunable t = clusterProperties.get("attributeList");
+		Tunable t = clusterProperties.get("attribute");
+		// Make sure to update the tunable while we're at it...
+		attributeArray = getAllAttributes();
+		t.setLowerBound(attributeArray);
 		if ((t != null) && (t.valueChanged() || force)) {
 			int val = ((Integer) t.getValue()).intValue();
 			clusterAttribute = attributeArray[val];
@@ -216,7 +231,7 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
-		Tunable attributeTunable = clusterProperties.get("attributeList");
+		Tunable attributeTunable = clusterProperties.get("attribute");
 		attributeArray = getAllAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
 

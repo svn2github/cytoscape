@@ -111,8 +111,8 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 
 		// Inflation Parameter
 		clusterProperties.add(new Tunable("inflation_parameter",
-		                                  "Graularity Parameter (inflation value)",
-		                                  Tunable.DOUBLE, new Double(2.5),
+		                                  "Granularity Parameter (inflation value)",
+		                                  Tunable.DOUBLE, new Double(2.0),
 		                                  (Object)null, (Object)null, 0));
 
 		// Use the standard edge attribute handling stuff....
@@ -128,7 +128,7 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		                                  (Object)null, (Object)null, 0));
 
 		// Number of iterations
-		clusterProperties.add(new Tunable("rNumber",
+		clusterProperties.add(new Tunable("iterations",
 		                                  "Number of iterations",
 		                                  Tunable.INTEGER, new Integer(16),
 		                                  (Object)null, (Object)null, 0));
@@ -174,7 +174,7 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		if ((t != null) && (t.valueChanged() || force))
 			maxThreads = ((Integer) t.getValue()).intValue();
 
-		t = clusterProperties.get("rNumber");
+		t = clusterProperties.get("iterations");
 		if ((t != null) && (t.valueChanged() || force))
 			rNumber = ((Integer) t.getValue()).intValue();
 
@@ -215,7 +215,7 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		List<List<CyNode>> nodeClusters = 
 		     createGroups(netAttributes, networkID, nodeAttributes, clusters);
 
-		ClusterResults results = new ClusterResults(network, nodeClusters);
+		results = new ClusterResults(network, nodeClusters);
 		monitor.setStatus("Done.  MCL results:\n"+results);
 
 		// Tell any listeners that we're done

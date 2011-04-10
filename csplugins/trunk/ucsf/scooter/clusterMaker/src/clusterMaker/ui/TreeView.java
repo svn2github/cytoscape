@@ -61,6 +61,8 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
+import cytoscape.command.CyCommandException;
+import cytoscape.command.CyCommandResult;
 import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
@@ -74,6 +76,7 @@ import giny.view.GraphViewChangeEvent;
 // ClusterMaker imports
 import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.ClusterProperties;
+import clusterMaker.algorithms.ClusterResults;
 
 // TreeView imports
 import clusterMaker.treeview.FileSet;
@@ -149,10 +152,19 @@ public class TreeView extends TreeViewApp implements Observer,
 
 	public ClusterProperties getSettings() { return null; }
 
-	public void startViz() {
-		TreeView tv = new TreeView();  // Clone ourselves
-		tv.startup();
-		// startup();
+	public ClusterResults getResults() { return null; }
+
+	public CyCommandResult startViz() throws CyCommandException {
+		CyCommandResult result = new CyCommandResult();
+		// Sanity check
+		if (isAvailable()) {
+			TreeView tv = new TreeView();  // Clone ourselves
+			tv.startup();
+			result.addMessage("Tree View displayed");
+		} else {
+			throw new CyCommandException("No TreeView compatible cluster available");
+		}
+		return result;
 	}
 
 	public boolean isAvailable() {
@@ -171,7 +183,7 @@ public class TreeView extends TreeViewApp implements Observer,
 		return false;
 	}
 
-	public void startup() {
+	protected void startup() {
 		// Get our data model
 		dataModel = new TreeViewModel(myLogger);
 

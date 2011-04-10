@@ -63,6 +63,8 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
+import cytoscape.command.CyCommandException;
+import cytoscape.command.CyCommandResult;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
@@ -78,8 +80,9 @@ import giny.view.GraphViewChangeEvent;
 
 // ClusterMaker imports
 import clusterMaker.ClusterMaker;
-import clusterMaker.algorithms.ClusterProperties;
 import clusterMaker.algorithms.ClusterAlgorithm;
+import clusterMaker.algorithms.ClusterProperties;
+import clusterMaker.algorithms.ClusterResults;
 import clusterMaker.ui.ClusterTask;
 
 // TreeView imports
@@ -161,17 +164,27 @@ public class HeatMapView extends TreeViewApp implements Observer,
 
 	public JTaskConfig getDefaultTaskConfig() { return ClusterTask.getDefaultTaskConfig(false); }
 
-	public void startViz() {
-		startup();
+	public ClusterResults getResults() { return null; }
+
+	public CyCommandResult startViz() throws CyCommandException {
+		CyCommandResult result = new CyCommandResult();
+		// Sanity check
+		updateSettings();
+		String attributeArray[] = getAttributeArray(dataAttributes);
+		if (attributeArray == null || attributeArray.length == 0)
+			throw new CyCommandException("No attributes specified");
+		// Clone ourselves
+		HeatMapView hmView = new HeatMapView();
+		hmView.startup();
+		result.addMessage("Heat Map View displayed");
+		return result;
 	}
 
 	public boolean isAvailable() {
 		return true;
 	}
 
-	public void startup() {
-		updateSettings();
-
+	protected void startup() {
 		// Set up the global config
 		setConfigDefaults(new PropertyConfig(globalConfigName(),"ProgramConfig"));
 
@@ -299,6 +312,8 @@ public class HeatMapView extends TreeViewApp implements Observer,
 		clusterProperties.updateValues();
 
 		Tunable t = clusterProperties.get("attributeList");
+		attributeArray = getAllAttributes();
+		t.setLowerBound(attributeArray);
 		if ((t != null) && (t.valueChanged() || force)) {
 			dataAttributes = (String) t.getValue();
 		}
@@ -540,6 +555,8 @@ public class HeatMapView extends TreeViewApp implements Observer,
 	}
 
 	private String[] getAttributeArray(String dataAttributes) {
+		if (dataAttributes == null) return null;
+
 		String indices[] = dataAttributes.split(",");
 		String selectedAttributes[] = new String[indices.length];
 		for (int i = 0; i < indices.length; i++) {

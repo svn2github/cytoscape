@@ -135,6 +135,14 @@ public interface ClusterAlgorithm {
 	public ClusterViz getVisualizer();
 
 	/**
+ 	 * Hooks for the results.  This is so results can
+ 	 * be returned to commands.
+ 	 *
+ 	 * @return cluster results.
+ 	 */
+	public ClusterResults getResults();
+
+	/**
  	 * Returns 'true' if this algorithm has already been run on this network
  	 *
  	 * @return true if the algorithm attributes exist

@@ -47,6 +47,7 @@ import java.util.List;
 
 // Cytoscape imports
 import cytoscape.Cytoscape;
+import cytoscape.command.CyCommandException;
 import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
@@ -126,7 +127,6 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		addClusterAlgorithm(menu, new MCLCluster());
 		// addClusterAlgorithm(menu, new SpectralCluster());
 		// addClusterAlgorithm(menu, new CPCluster());
-		// addClusterAlgorithm(menu, new FORCECluster());
 		addClusterAlgorithm(menu, new SCPSCluster());
 		addClusterAlgorithm(menu, new TransClustCluster());
 		// addClusterAlgorithm(new HOPACHCluster());
@@ -137,7 +137,10 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 			menu.add(item);
 		}
 
-		addVizBuiltIn(menu, new HeatMapView());
+		HeatMapView hmViz = new HeatMapView();
+		addVizBuiltIn(menu, hmViz);
+		vizMap.put(hmViz.getShortName(), hmViz);
+
 		addVizBuiltIn(menu, new NewNetworkView());
 
 		// Add the nested network visualization
@@ -270,7 +273,11 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 				// Pop it up
 				settingsDialog.showDialog();
 			} else if (viz != null) {
-				viz.startViz();
+				try {
+					viz.startViz();
+				} catch (CyCommandException cce) {
+					// Shouldn't happen
+				}
 			}
 		}
 	}

@@ -32,6 +32,8 @@
  */
 package clusterMaker.ui;
 
+import cytoscape.command.CyCommandException;
+import cytoscape.command.CyCommandResult;
 import clusterMaker.algorithms.ClusterProperties;
 
 import java.util.Arrays;
@@ -90,11 +92,11 @@ public interface ClusterViz {
 	public ClusterProperties getSettings();
 
 	/**
-	 * This is the main interface to trigger a cluster to compute
+	 * This is the main interface to trigger a ui to display
 	 *
 	 * @param monitor a TaskMonitor
 	 */
-	public void startViz();
+	public CyCommandResult startViz() throws CyCommandException;
 
 	/**
  	 * Returns true if the data is available to visualize
