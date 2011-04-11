@@ -202,8 +202,6 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 			distanceMetric = distanceTypes[((Integer) t.getValue()).intValue()];
 
 		t = clusterProperties.get("clusterAttributes");
-		attributeArray = EisenCluster.getAllAttributes();
-		t.setLowerBound((Object)attributeArray);
 		if ((t != null) && (t.valueChanged() || force))
 			clusterAttributes = ((Boolean) t.getValue()).booleanValue();
 

@@ -455,8 +455,10 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 
 
                 t = clusterProperties.get("attributeList");
-                attributeArray = getAllAttributes();
-                t.setLowerBound(attributeArray);
+                if (force) {
+                        attributeArray = getAllAttributes();
+                        t.setLowerBound(attributeArray);
+                }
                 if ((t != null) && (t.valueChanged() || force)) {
                         dataAttribute = (String) t.getValue();
                 }

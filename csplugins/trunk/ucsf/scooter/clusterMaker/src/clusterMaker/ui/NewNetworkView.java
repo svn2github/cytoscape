@@ -211,9 +211,6 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 		clusterProperties.updateValues();
 
 		Tunable t = clusterProperties.get("attribute");
-		// Make sure to update the tunable while we're at it...
-		attributeArray = getAllAttributes();
-		t.setLowerBound(attributeArray);
 		if ((t != null) && (t.valueChanged() || force)) {
 			int val = ((Integer) t.getValue()).intValue();
 			clusterAttribute = attributeArray[val];
@@ -270,22 +267,33 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 		CyNetwork net = Cytoscape.createNetwork(currentNetwork.getTitle()+"--clustered",currentNetwork,false);
 
 		// Create the cluster Map
-		HashMap<Integer, List<CyNode>> clusterMap = new HashMap();
+		HashMap<Object, List<CyNode>> clusterMap = new HashMap<Object, List<CyNode>>();
 		for (CyNode node: (List<CyNode>)currentNetwork.nodesList()) {
 			// For each node -- see if it's in a cluster.  If so, add it to our map
 			if (nodeAttributes.hasAttribute(node.getIdentifier(), clusterAttribute)) {
-				Integer cluster = nodeAttributes.getIntegerAttribute(node.getIdentifier(), clusterAttribute);
-				if (!clusterMap.containsKey(cluster)) {
-					clusterMap.put(cluster, new ArrayList());
+				Object cluster = nodeAttributes.getAttribute(node.getIdentifier(), clusterAttribute);
+				switch (nodeAttributes.getType(clusterAttribute)) {
+				case CyAttributes.TYPE_SIMPLE_LIST:
+					// As a convenience, take the first element of the list
+					List lObj = nodeAttributes.getListAttribute(node.getIdentifier(), clusterAttribute);
+					if (lObj != null && lObj.size() > 0)
+						cluster = lObj.get(0);
+					else
+						continue;
 				}
+				if (!clusterMap.containsKey(cluster)) {
+					System.out.println("Creating new entry for: "+cluster.toString());
+					clusterMap.put(cluster, new ArrayList<CyNode>());
+				}
+				System.out.println("Adding node "+node+" to "+cluster.toString());
 				clusterMap.get(cluster).add(node);
 				net.addNode(node);
 			}
 		}
 
-		HashMap<CyEdge,CyEdge> edgeMap = new HashMap();
+		HashMap<CyEdge,CyEdge> edgeMap = new HashMap<CyEdge,CyEdge>();
 
-		for (Integer cluster: clusterMap.keySet()) {
+		for (Object cluster: clusterMap.keySet()) {
 			// Get the list of nodes
 			List<CyNode> nodeList = clusterMap.get(cluster); 
 			// Get the list of edges
@@ -386,7 +394,10 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 		String[] names = attributes.getAttributeNames();
 		for (int i = 0; i < names.length; i++) {
 			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING ||
-			    attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER) {
+			    attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER ||
+			    attributes.getType(names[i]) == CyAttributes.TYPE_BOOLEAN ||
+			    attributes.getType(names[i]) == CyAttributes.TYPE_STRING ||
+			    attributes.getType(names[i]) == CyAttributes.TYPE_SIMPLE_LIST) {
 				attributeList.add(prefix+names[i]);
 			}
 		}

@@ -213,9 +213,6 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 		clusterProperties.updateValues();
 
 		Tunable t = clusterProperties.get("attribute");
-		// Make sure to update the tunable while we're at it...
-		attributeArray = getAllAttributes();
-		t.setLowerBound(attributeArray);
 		if ((t != null) && (t.valueChanged() || force)) {
 			int val = ((Integer) t.getValue()).intValue();
 			clusterAttribute = attributeArray[val];

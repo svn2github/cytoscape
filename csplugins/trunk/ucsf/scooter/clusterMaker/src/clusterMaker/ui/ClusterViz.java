@@ -92,6 +92,13 @@ public interface ClusterViz {
 	public ClusterProperties getSettings();
 
 	/**
+ 	 * This method is used to re-initialize the properties for an algorithm.  This
+ 	 * might be used, for example, by an external command, or when a new network
+ 	 * is loaded.
+ 	 */
+	public void initializeProperties();
+
+	/**
 	 * This is the main interface to trigger a ui to display
 	 *
 	 * @param monitor a TaskMonitor

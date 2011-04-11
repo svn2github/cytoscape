@@ -191,8 +191,6 @@ public class EdgeAttributeHandler
 			adjustLoops = ((Boolean) t.getValue()).booleanValue();
 
 		t = clusterProperties.get("attribute");
-		attributeArray = getAllAttributes();
-		t.setLowerBound((Object)attributeArray);
 		if ((t != null) && (t.valueChanged() || force)) {
 			if (attributeArray.length == 1) {
 				dataAttribute = attributeArray[0];

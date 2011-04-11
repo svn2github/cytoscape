@@ -200,9 +200,11 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		                    clusteringThresh, maxResidual, maxThreads, logger);
 
 		runMCL.setDebug(debug);
+		if (canceled) return;
 
 		// results = runMCL.run(monitor);
 		List<NodeCluster> clusters = runMCL.run(monitor);
+		if (clusters == null) return; // Canceled?
 
 		logger.info("Removing groups");
 
@@ -223,6 +225,7 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 	}
 
 	public void halt() {
+		canceled = true;
 		runMCL.halt();
 	}
 }

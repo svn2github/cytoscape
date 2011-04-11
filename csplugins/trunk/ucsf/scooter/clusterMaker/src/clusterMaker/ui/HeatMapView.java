@@ -312,8 +312,6 @@ public class HeatMapView extends TreeViewApp implements Observer,
 		clusterProperties.updateValues();
 
 		Tunable t = clusterProperties.get("attributeList");
-		attributeArray = getAllAttributes();
-		t.setLowerBound(attributeArray);
 		if ((t != null) && (t.valueChanged() || force)) {
 			dataAttributes = (String) t.getValue();
 		}

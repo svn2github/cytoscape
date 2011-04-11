@@ -82,6 +82,7 @@ public class VizCommandHandler extends ClusterMakerCommandHandler {
 			if (command.equalsIgnoreCase(vizname)) {
 				// Get the algorithm
 				ClusterViz viz = vizMap.get(vizname);
+				viz.initializeProperties();
 				ClusterProperties props = viz.getSettings();
 	
 				viz.updateSettings(true);

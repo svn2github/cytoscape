@@ -118,6 +118,8 @@ public class KnnView extends TreeView {
 
 	public ClusterResults getResults() { return null; }
 
+	public void initializeProperties() {}
+
 	public boolean isAvailable() {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
