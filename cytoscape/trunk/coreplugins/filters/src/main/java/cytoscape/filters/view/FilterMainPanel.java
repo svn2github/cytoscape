@@ -930,20 +930,20 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					}
 				}
 				
-				String attributeType = cmbAttributes.getSelectedItem().toString().substring(0,4);// "node" or "edge"
-				String attributeName = cmbAttributes.getSelectedItem().toString().substring(5);
+				if (cmbAttributes.getSelectedItem().toString().startsWith("node.")||
+						cmbAttributes.getSelectedItem().toString().startsWith("edge.")){
+						String attributeType = cmbAttributes.getSelectedItem().toString().substring(0,4);// "node" or "edge"
+						String attributeName = cmbAttributes.getSelectedItem().toString().substring(5);
 
-				if(CyAttributesUtils.isNullAttribute(attributeType, attributeName)){
-					JOptionPane.showMessageDialog(this, "All the values for this attribute are NULL!", "Can not create filter", JOptionPane.ERROR_MESSAGE); 
-				}
-				else {
-					theSettingPanel.addNewWidget((Object)cmbAttributes.getSelectedItem());					
-				}
+						if(CyAttributesUtils.isNullAttribute(attributeType, attributeName)){
+							JOptionPane.showMessageDialog(this, "All the values for this attribute are NULL!", "Can not create filter", JOptionPane.ERROR_MESSAGE); 						
+							return;
+						}
+				}	
+				theSettingPanel.addNewWidget((Object)cmbAttributes.getSelectedItem());					
 			}
 			if (_btn == btnSelectAll){
 				Cytoscape.getCurrentNetwork().selectAllNodes();
-				
-				//System.out.println("Cytoscape.getCurrentNetwork().getClass() = "+Cytoscape.getCurrentNetwork().getClass());
 				
 				Cytoscape.getCurrentNetwork().selectAllEdges();
 
