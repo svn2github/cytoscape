@@ -30,20 +30,22 @@
 package org.cytoscape.task.internal.select;  
 
 
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TaskIterator;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.work.TaskIterator;
 
 
 public class SelectAdjacentEdgesTaskFactory extends AbstractNetworkTaskFactory {
 	private CyNetworkViewManager networkViewManager;
+	private final CyEventHelper eventHelper;
 
-	public SelectAdjacentEdgesTaskFactory(final CyNetworkViewManager networkViewManager) {
+	public SelectAdjacentEdgesTaskFactory(final CyNetworkViewManager networkViewManager, final CyEventHelper eventHelper) {
 		this.networkViewManager = networkViewManager;
+		this.eventHelper = eventHelper;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new SelectAdjacentEdgesTask(net, networkViewManager));
+		return new TaskIterator(new SelectAdjacentEdgesTask(net, networkViewManager, eventHelper));
 	} 
 }

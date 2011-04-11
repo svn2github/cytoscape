@@ -26,9 +26,8 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.task.internal.select;
-
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,64 +39,62 @@ import java.util.Set;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.events.RowsAboutToChangeEvent;
 import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 
-
 public class SelectFromFileListTask extends AbstractSelectTask {
-	@Tunable(description="Node selection file")
-	public File file;
+    @Tunable(description = "Node selection file")
+    public File file;
 
-	private final CyEventHelper eventHelper;
+    private final CyEventHelper eventHelper;
 
-	public SelectFromFileListTask(final CyNetwork net,
-				      final CyNetworkViewManager networkViewManager,
-				      final CyEventHelper eventHelper)
-	{
-		super(net, networkViewManager);
-		this.eventHelper = eventHelper;
-	}
+    public SelectFromFileListTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
+	    final CyEventHelper eventHelper) {
+	super(net, networkViewManager, eventHelper);
+	this.eventHelper = eventHelper;
+    }
 
-	public void run(final TaskMonitor tm) throws Exception {
-		if (file == null)
-			throw new NullPointerException("You must specify a non-null file to load!");
+    public void run(final TaskMonitor tm) throws Exception {
+	if (file == null)
+	    throw new NullPointerException("You must specify a non-null file to load!");
 
-		try {
-			FileReader fin = new FileReader(file);
-			BufferedReader bin = new BufferedReader(fin);
-			Set<String> fileNodes = new HashSet<String>();
-			String s;
+	try {
+	    FileReader fin = new FileReader(file);
+	    BufferedReader bin = new BufferedReader(fin);
+	    Set<String> fileNodes = new HashSet<String>();
+	    String s;
 
-			while ((s = bin.readLine()) != null) {
-				String trimName = s.trim();
+	    while ((s = bin.readLine()) != null) {
+		String trimName = s.trim();
 
-				if (trimName.length() > 0)
-					fileNodes.add(trimName);
-			}
+		if (trimName.length() > 0)
+		    fileNodes.add(trimName);
+	    }
 
-			fin.close();
+	    fin.close();
 
-			try {
-				eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, net.getDefaultNodeTable()));
+	    try {
+		eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, net.getDefaultNodeTable()));
 
-				// loop through all the node of the graph selecting those in the file
-				List<CyNode> nodeList = net.getNodeList();
-				for (final CyNode node : nodeList) {
-					if (fileNodes.contains(node.getCyRow().get("name", String.class)))
-						node.getCyRow().set("selected",true);
-				}
-			} finally {
-				eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, net.getDefaultNodeTable()));
-			}
-
-			updateView();
-
-		} catch (Exception e) {
-			throw new Exception("Error reading file: " + file.getAbsolutePath(), e);
+		// loop through all the node of the graph selecting those in the
+		// file
+		List<CyNode> nodeList = net.getNodeList();
+		for (final CyNode node : nodeList) {
+		    if (fileNodes.contains(node.getCyRow().get(CyTableEntry.NAME, String.class)))
+			node.getCyRow().set("selected", true);
 		}
+	    } finally {
+		eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, net.getDefaultNodeTable()));
+	    }
+
+	    updateView();
+
+	} catch (Exception e) {
+	    throw new Exception("Error reading file: " + file.getAbsolutePath(), e);
 	}
+    }
 }

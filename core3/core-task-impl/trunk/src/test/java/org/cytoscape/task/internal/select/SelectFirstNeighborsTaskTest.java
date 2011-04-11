@@ -24,50 +24,44 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-
+ */
 
 package org.cytoscape.task.internal.select;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.Before;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.Task;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
-
+import org.cytoscape.model.CyNode;
+import org.cytoscape.work.Task;
+import org.junit.Before;
+import org.junit.Test;
 
 public class SelectFirstNeighborsTaskTest extends AbstractSelectTaskTester {
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-	}
+    @Before
+    public void setUp() throws Exception {
+	super.setUp();
+    }
 
-	@Test
-	public void testRun() throws Exception {
-		// more setup
-		when(r3.get("selected",Boolean.class)).thenReturn(true);	
-		when(r4.get("selected",Boolean.class)).thenReturn(false);	
+    @Test
+    public void testRun() throws Exception {
+	// more setup
+	when(r3.get("selected", Boolean.class)).thenReturn(true);
+	when(r4.get("selected", Boolean.class)).thenReturn(false);
 
-		List<CyNode> nl = new ArrayList<CyNode>();
-		nl.add(e4);
-		when(net.getNeighborList(e3, CyEdge.Type.ANY)).thenReturn(nl);
+	List<CyNode> nl = new ArrayList<CyNode>();
+	nl.add(e4);
+	when(net.getNeighborList(e3, CyEdge.Type.ANY)).thenReturn(nl);
 
-		// run the task
-		Task t = new SelectFirstNeighborsTask(net, networkViewManager);
-		t.run(tm);
+	// run the task
+	Task t = new SelectFirstNeighborsTask(net, networkViewManager, eventHelper);
+	t.run(tm);
 
-		// check that the expected rows were set
-		verify(r4, times(1)).set("selected",true);
-	}
+	// check that the expected rows were set
+	verify(r4, times(1)).set("selected", true);
+    }
 }

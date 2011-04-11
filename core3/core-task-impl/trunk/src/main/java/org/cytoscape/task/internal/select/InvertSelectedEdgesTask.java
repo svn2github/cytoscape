@@ -29,7 +29,6 @@
  */
 package org.cytoscape.task.internal.select;
 
-
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -38,32 +37,29 @@ import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
 
-
 public class InvertSelectedEdgesTask extends AbstractSelectTask {
-	private final CyEventHelper eventHelper;
+    private final CyEventHelper eventHelper;
 
-	public InvertSelectedEdgesTask(final CyNetwork net,
-				       final CyNetworkViewManager networkViewManager,
-				       final CyEventHelper eventHelper)
-	{
-		super(net, networkViewManager);
-		this.eventHelper = eventHelper;
+    public InvertSelectedEdgesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
+	    final CyEventHelper eventHelper) {
+	super(net, networkViewManager, eventHelper);
+	this.eventHelper = eventHelper;
+    }
+
+    public void run(TaskMonitor tm) {
+	try {
+	    eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, net.getDefaultNodeTable()));
+
+	    for (final CyEdge e : net.getEdgeList()) {
+		if (e.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
+		    e.getCyRow().set(CyNetwork.SELECTED, false);
+		else
+		    e.getCyRow().set(CyNetwork.SELECTED, true);
+	    }
+	} finally {
+	    eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, net.getDefaultNodeTable()));
 	}
 
-	public void run(TaskMonitor tm) {
-		try {
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, net.getDefaultNodeTable()));
-
-			for (final CyEdge e : net.getEdgeList()) {
-				if (e.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
-					e.getCyRow().set(CyNetwork.SELECTED, false);
-				else
-					e.getCyRow().set(CyNetwork.SELECTED, true);
-			}
-		} finally {
-			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, net.getDefaultNodeTable()));
-		}
-
-		updateView();
-	}
+	updateView();
+    }
 }

@@ -24,12 +24,12 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.task.internal.select;
-
 
 import static org.mockito.Mockito.*;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -42,59 +42,60 @@ import org.cytoscape.work.TaskMonitor;
 import java.util.List;
 import java.util.ArrayList;
 
-
 public class AbstractSelectTaskTester {
-	CyNetworkViewManager networkViewManager;
-	TaskMonitor tm;
-	CyTable table;
-	CyNetwork net; 
-	CyRow r1;
-	CyEdge e1;
-	CyRow r2;
-	CyEdge e2;
-	CyRow r3;
-	CyNode e3;
-	CyRow r4;
-	CyNode e4;
 
-	public void setUp() throws Exception {
-		table = mock(CyTable.class);
-		net = mock(CyNetwork.class);
-		when(net.getDefaultNodeTable()).thenReturn(table);
+    CyEventHelper eventHelper;
+    CyNetworkViewManager networkViewManager;
+    TaskMonitor tm;
+    CyTable table;
+    CyNetwork net;
+    CyRow r1;
+    CyEdge e1;
+    CyRow r2;
+    CyEdge e2;
+    CyRow r3;
+    CyNode e3;
+    CyRow r4;
+    CyNode e4;
 
-		CyNetworkView view = mock(CyNetworkView.class);
-		when(view.getModel()).thenReturn(net);
+    public void setUp() throws Exception {
+	eventHelper = mock(CyEventHelper.class);
+	table = mock(CyTable.class);
+	net = mock(CyNetwork.class);
+	when(net.getDefaultNodeTable()).thenReturn(table);
 
-		networkViewManager = mock(CyNetworkViewManager.class);
-		when(networkViewManager.getNetworkView(anyLong())).thenReturn(view);
+	CyNetworkView view = mock(CyNetworkView.class);
+	when(view.getModel()).thenReturn(net);
 
-		tm = mock(TaskMonitor.class);
+	networkViewManager = mock(CyNetworkViewManager.class);
+	when(networkViewManager.getNetworkView(anyLong())).thenReturn(view);
 
+	tm = mock(TaskMonitor.class);
 
-		r1 = mock(CyRow.class);
-		e1 = mock(CyEdge.class);
-		when(e1.getCyRow()).thenReturn(r1);
+	r1 = mock(CyRow.class);
+	e1 = mock(CyEdge.class);
+	when(e1.getCyRow()).thenReturn(r1);
 
-		r2 = mock(CyRow.class);
-		e2 = mock(CyEdge.class);
-		when(e2.getCyRow()).thenReturn(r2);
+	r2 = mock(CyRow.class);
+	e2 = mock(CyEdge.class);
+	when(e2.getCyRow()).thenReturn(r2);
 
-		List<CyEdge> el = new ArrayList<CyEdge>();
-		el.add(e1);
-		el.add(e2);
-		when(net.getEdgeList()).thenReturn(el);
+	List<CyEdge> el = new ArrayList<CyEdge>();
+	el.add(e1);
+	el.add(e2);
+	when(net.getEdgeList()).thenReturn(el);
 
-		r3 = mock(CyRow.class);
-		e3 = mock(CyNode.class);
-		when(e3.getCyRow()).thenReturn(r3);
+	r3 = mock(CyRow.class);
+	e3 = mock(CyNode.class);
+	when(e3.getCyRow()).thenReturn(r3);
 
-		r4 = mock(CyRow.class);
-		e4 = mock(CyNode.class);
-		when(e4.getCyRow()).thenReturn(r4);
+	r4 = mock(CyRow.class);
+	e4 = mock(CyNode.class);
+	when(e4.getCyRow()).thenReturn(r4);
 
-		List<CyNode> nl = new ArrayList<CyNode>();
-		nl.add(e3);
-		nl.add(e4);
-		when(net.getNodeList()).thenReturn(nl);
-	}
+	List<CyNode> nl = new ArrayList<CyNode>();
+	nl.add(e3);
+	nl.add(e4);
+	when(net.getNodeList()).thenReturn(nl);
+    }
 }

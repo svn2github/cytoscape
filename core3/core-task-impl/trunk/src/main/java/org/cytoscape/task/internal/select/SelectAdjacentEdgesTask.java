@@ -29,33 +29,33 @@
  */
 package org.cytoscape.task.internal.select;
 
-
 import java.util.HashSet;
 import java.util.Set;
 
-import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.view.model.CyNetworkViewManager;
-
+import org.cytoscape.work.TaskMonitor;
 
 public class SelectAdjacentEdgesTask extends AbstractSelectTask {
-	public SelectAdjacentEdgesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager) {
-		super(net, networkViewManager);
+    public SelectAdjacentEdgesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
+	    final CyEventHelper eventHelper) {
+	super(net, networkViewManager, eventHelper);
+    }
+
+    public void run(TaskMonitor tm) {
+	final Set<CyEdge> edgeSet = new HashSet<CyEdge>();
+
+	// Get the list of selected nodes
+	for (CyNode node : CyTableUtil.getNodesInState(net, "selected", true)) {
+	    // Get the list of edges connected to this node
+	    edgeSet.addAll(net.getAdjacentEdgeList(node, CyEdge.Type.ANY));
 	}
 
-	public void run(TaskMonitor tm) {
-		final Set<CyEdge> edgeSet = new HashSet<CyEdge>();
-
-		// Get the list of selected nodes
-		for (CyNode node: CyTableUtil.getNodesInState(net,"selected",true)) {
-			// Get the list of edges connected to this node
-			edgeSet.addAll( net.getAdjacentEdgeList(node,CyEdge.Type.ANY) );
-		}
-
-		SelectUtils.setSelectedEdges(edgeSet,true);
-		updateView();
-	} 
+	selectUtils.setSelectedEdges(edgeSet, true);
+	updateView();
+    }
 }

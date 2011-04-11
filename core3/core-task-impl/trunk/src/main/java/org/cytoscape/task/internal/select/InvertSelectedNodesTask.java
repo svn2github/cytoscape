@@ -26,45 +26,41 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.task.internal.select;
-
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.events.RowsAboutToChangeEvent;
 import org.cytoscape.model.events.RowsFinishedChangingEvent;
-import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.model.CyNetworkViewManager;
-
+import org.cytoscape.work.TaskMonitor;
 
 public class InvertSelectedNodesTask extends AbstractSelectTask {
-	private final CyEventHelper eventHelper;
+    private final CyEventHelper eventHelper;
 
-	public InvertSelectedNodesTask(final CyNetwork net,
-				       final CyNetworkViewManager networkViewManager,
-				       final CyEventHelper eventHelper)
-	{
-		super(net, networkViewManager);
-		this.eventHelper = eventHelper;
+    public InvertSelectedNodesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
+	    final CyEventHelper eventHelper) {
+	super(net, networkViewManager, eventHelper);
+	this.eventHelper = eventHelper;
+    }
+
+    @Override
+    public void run(final TaskMonitor tm) {
+	try {
+	    eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, net.getDefaultNodeTable()));
+
+	    for (final CyNode n : net.getNodeList()) {
+		if (n.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
+		    n.getCyRow().set(CyNetwork.SELECTED, false);
+		else
+		    n.getCyRow().set(CyNetwork.SELECTED, true);
+	    }
+	} finally {
+	    eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, net.getDefaultNodeTable()));
 	}
 
-	@Override
-	public void run(final TaskMonitor tm) {
-		try {
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, net.getDefaultNodeTable()));
-
-			for (final CyNode n : net.getNodeList())  {
-				if (n.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
-					n.getCyRow().set(CyNetwork.SELECTED, false);
-				else
-					n.getCyRow().set(CyNetwork.SELECTED, true);
-			}
-		} finally {
-			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, net.getDefaultNodeTable()));
-		}
-
-		updateView();
-	}
+	updateView();
+    }
 }

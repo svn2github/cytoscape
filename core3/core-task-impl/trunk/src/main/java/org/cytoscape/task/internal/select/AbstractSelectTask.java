@@ -30,19 +30,22 @@
 package org.cytoscape.task.internal.select;  
 
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.task.AbstractNetworkTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.task.AbstractNetworkTask;
-import org.cytoscape.work.TaskMonitor;
 
 
 public abstract class AbstractSelectTask extends AbstractNetworkTask {
 	private final CyNetworkViewManager networkViewManager;
+	
+	protected final SelectUtils selectUtils;
 
-	public AbstractSelectTask(final CyNetwork net, final CyNetworkViewManager networkViewManager) {
+	public AbstractSelectTask(final CyNetwork net, final CyNetworkViewManager networkViewManager, final CyEventHelper eventHelper) {
 		super(net);
 		this.networkViewManager = networkViewManager;
+		this.selectUtils = new SelectUtils(eventHelper, this);
 	}
 
 	protected final void updateView() {

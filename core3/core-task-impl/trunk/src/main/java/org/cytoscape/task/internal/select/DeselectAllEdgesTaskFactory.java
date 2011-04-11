@@ -33,17 +33,20 @@ package org.cytoscape.task.internal.select;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
 
 
 public class DeselectAllEdgesTaskFactory extends AbstractNetworkTaskFactory {
 	private CyNetworkViewManager networkViewManager;
+	private final CyEventHelper eventHelper;
 
-	public DeselectAllEdgesTaskFactory(final CyNetworkViewManager networkViewManager) {
+	public DeselectAllEdgesTaskFactory(final CyNetworkViewManager networkViewManager, final CyEventHelper eventHelper) {
 		this.networkViewManager = networkViewManager;
+		this.eventHelper = eventHelper;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new DeselectAllEdgesTask(net, networkViewManager));
+		return new TaskIterator(new DeselectAllEdgesTask(net, networkViewManager, eventHelper));
 	} 
 }

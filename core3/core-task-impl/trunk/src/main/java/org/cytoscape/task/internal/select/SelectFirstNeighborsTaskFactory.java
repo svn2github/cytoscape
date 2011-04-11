@@ -27,23 +27,24 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.task.internal.select;  
+package org.cytoscape.task.internal.select;
 
-
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TaskIterator;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
-
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.work.TaskIterator;
 
 public class SelectFirstNeighborsTaskFactory extends AbstractNetworkTaskFactory {
-	private CyNetworkViewManager networkViewManager;
+    private CyNetworkViewManager networkViewManager;
+    private final CyEventHelper eventHelper;
 
-	public SelectFirstNeighborsTaskFactory(final CyNetworkViewManager networkViewManager) {
-		this.networkViewManager = networkViewManager;
-	}
+    public SelectFirstNeighborsTaskFactory(final CyNetworkViewManager networkViewManager,
+	    final CyEventHelper eventHelper) {
+	this.networkViewManager = networkViewManager;
+	this.eventHelper = eventHelper;
+    }
 
-	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new SelectFirstNeighborsTask(net, networkViewManager));
-	} 
+    public TaskIterator getTaskIterator() {
+	return new TaskIterator(new SelectFirstNeighborsTask(net, networkViewManager, eventHelper));
+    }
 }

@@ -29,41 +29,45 @@
  */
 package org.cytoscape.task.internal.select;
 
+import java.util.HashSet;
+import java.util.Set;
 
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.model.CyNode;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
-import java.util.Set;
-import java.util.HashSet;
-
-
 public class SelectFirstNeighborsNodeViewTask extends AbstractTask {
-	private View<CyNode> nodeView;
-	private CyNetworkView netView;
 
-	public SelectFirstNeighborsNodeViewTask(View<CyNode> nodeView, CyNetworkView netView) {
-		this.nodeView = nodeView;
-		this.netView = netView;
-	}
+    private View<CyNode> nodeView;
+    private CyNetworkView netView;
 
-	public void run(TaskMonitor tm) throws Exception {
-		if ( nodeView == null )
-			throw new NullPointerException("node view is null");
-		if ( netView == null )
-			throw new NullPointerException("network view is null");
+    private final SelectUtils selectUtils;
 
-		final Set<CyNode> selNodes = new HashSet<CyNode>();
-		final CyNode node = nodeView.getModel();
-		final CyNetwork net = netView.getModel();
-		selNodes.add( node );
-		selNodes.addAll( net.getNeighborList(node, CyEdge.Type.ANY ) );		
-		SelectUtils.setSelectedNodes( selNodes, true);		
+    public SelectFirstNeighborsNodeViewTask(View<CyNode> nodeView, CyNetworkView netView,
+	    final CyEventHelper eventHelper) {
+	this.nodeView = nodeView;
+	this.netView = netView;
+	this.selectUtils = new SelectUtils(eventHelper, this);
+    }
 
-		netView.updateView();
-	} 
+    public void run(TaskMonitor tm) throws Exception {
+	if (nodeView == null)
+	    throw new NullPointerException("node view is null");
+	if (netView == null)
+	    throw new NullPointerException("network view is null");
+
+	final Set<CyNode> selNodes = new HashSet<CyNode>();
+	final CyNode node = nodeView.getModel();
+	final CyNetwork net = netView.getModel();
+	selNodes.add(node);
+	selNodes.addAll(net.getNeighborList(node, CyEdge.Type.ANY));
+	selectUtils.setSelectedNodes(selNodes, true);
+
+	netView.updateView();
+    }
 }

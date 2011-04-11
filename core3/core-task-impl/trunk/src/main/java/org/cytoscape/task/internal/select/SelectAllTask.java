@@ -27,22 +27,22 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.task.internal.select;  
+package org.cytoscape.task.internal.select;
 
-
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.model.CyNetworkViewManager;
-
+import org.cytoscape.work.TaskMonitor;
 
 public class SelectAllTask extends AbstractSelectTask {
-	public SelectAllTask(final CyNetwork net, final CyNetworkViewManager networkViewManager) {
-		super(net,networkViewManager);
-	}
+    public SelectAllTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
+	    final CyEventHelper eventHelper) {
+	super(net, networkViewManager, eventHelper);
+    }
 
-	public void run(TaskMonitor monitor) {
-		SelectUtils.setSelectedNodes( net.getNodeList(), true);
-		SelectUtils.setSelectedEdges( net.getEdgeList(), true);
-		updateView();
-	} 
+    public void run(TaskMonitor monitor) {
+	selectUtils.setSelectedNodes(net.getNodeList(), true);
+	selectUtils.setSelectedEdges(net.getEdgeList(), true);
+	updateView();
+    }
 }

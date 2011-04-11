@@ -29,20 +29,21 @@
  */
 package org.cytoscape.task.internal.select;
 
-
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.model.CyNetworkViewManager;
-
+import org.cytoscape.work.TaskMonitor;
 
 public class DeselectAllTask extends AbstractSelectTask {
-	public DeselectAllTask(final CyNetwork net, final CyNetworkViewManager networkViewManager) {
-		super(net, networkViewManager);
-	}
 
-	public void run(TaskMonitor tm) {
-		SelectUtils.setSelectedEdges( net.getEdgeList(), false);
-		SelectUtils.setSelectedNodes( net.getNodeList(), false);
-		updateView();
-	}
+    public DeselectAllTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
+	    final CyEventHelper eventHelper) {
+	super(net, networkViewManager, eventHelper);
+    }
+
+    public void run(TaskMonitor tm) {
+	selectUtils.setSelectedEdges(net.getEdgeList(), false);
+	selectUtils.setSelectedNodes(net.getNodeList(), false);
+	updateView();
+    }
 }

@@ -34,29 +34,30 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.view.model.CyNetworkViewManager;
-
+import org.cytoscape.work.TaskMonitor;
 
 public class SelectConnectedNodesTask extends AbstractSelectTask {
-	public SelectConnectedNodesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager) {
-		super(net, networkViewManager);
+    public SelectConnectedNodesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
+	    final CyEventHelper eventHelper) {
+	super(net, networkViewManager, eventHelper);
+    }
+
+    public void run(TaskMonitor tm) {
+	final List<CyEdge> selectedEdges = CyTableUtil.getEdgesInState(net, "selected", true);
+	final Set<CyNode> nodes = new HashSet<CyNode>();
+
+	for (CyEdge edge : selectedEdges) {
+	    nodes.add(edge.getSource());
+	    nodes.add(edge.getTarget());
 	}
 
-	public void run(TaskMonitor tm) {
-		final List<CyEdge> selectedEdges = CyTableUtil.getEdgesInState(net, "selected", true);
-		final Set<CyNode> nodes = new HashSet<CyNode>();
-
-		for (CyEdge edge : selectedEdges) {
-			nodes.add(edge.getSource());
-			nodes.add(edge.getTarget());
-		}
-
-		SelectUtils.setSelectedNodes(nodes, true);
-		updateView();
-	}
+	selectUtils.setSelectedNodes(nodes, true);
+	updateView();
+    }
 }

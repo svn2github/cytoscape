@@ -102,8 +102,7 @@ abstract class AbstractNetworkFromSelectionTask extends AbstractCreationTask {
 		for ( CyEdge edge : getEdges(currNet,nodes) )
 			newNet.addEdge(edge);
 
-		newNet.getCyRow().set(CyTableEntry.NAME,
-				      cyNetworkNaming.getSuggestedSubnetworkTitle(currNet));
+		newNet.getCyRow().set(CyTableEntry.NAME, cyNetworkNaming.getSuggestedSubnetworkTitle(currNet));
 
 		networkManager.addNetwork(newNet);
 

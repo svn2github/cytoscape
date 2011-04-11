@@ -24,42 +24,31 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-
+ */
 
 package org.cytoscape.task.internal.select;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.Before;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-import java.util.List;
-import java.util.ArrayList;
-
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyNode;
-
+import org.junit.Before;
+import org.junit.Test;
 
 public class DeselectAllNodesTaskTest extends AbstractSelectTaskTester {
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-	}
+    @Before
+    public void setUp() throws Exception {
+	super.setUp();
+    }
 
-	@Test
-	public void testRun() throws Exception {
-		// run the task
-		Task t = new DeselectAllNodesTask(net, networkViewManager);
-		t.run(tm);
+    @Test
+    public void testRun() throws Exception {
+	// run the task
+	Task t = new DeselectAllNodesTask(net, networkViewManager, eventHelper);
+	t.run(tm);
 
-		// check that the expected rows were set
-		verify(r3, times(1)).set("selected",false);
-		verify(r4, times(1)).set("selected",false);
-	}
+	// check that the expected rows were set
+	verify(r3, times(1)).set("selected", false);
+	verify(r4, times(1)).set("selected", false);
+    }
 }
