@@ -294,6 +294,8 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
 
             if (nodeNameSet.add(label)) {
                 CyNode node = network.addNode();
+                
+                //FIXME this fires too many events!!
                 node.getCyRow().set(CyTableEntry.NAME, label);
 
                 nodeIDMap.put(label, node);

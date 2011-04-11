@@ -17,6 +17,7 @@ import static org.mockito.Mockito.*;
 import org.cytoscape.test.support.NetworkTestSupport;
 import org.cytoscape.test.support.NetworkViewTestSupport;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.io.internal.util.ReadUtils;
 import org.cytoscape.io.internal.util.StreamUtilImpl;
 
@@ -94,8 +95,9 @@ public class SIFNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 
 	private CyNetworkView[] getViews(String file) throws Exception {
 		File f = new File("./src/test/resources/testData/sif/" + file);
+		final CyEventHelper eventHelper = mock(CyEventHelper.class);
 		SIFNetworkViewReader snvp = new SIFNetworkViewReader(new FileInputStream(f), 
-		                                              readUtil, layouts, viewFactory, netFactory);
+		                                              readUtil, layouts, viewFactory, netFactory, eventHelper);
 		new TaskIterator(snvp);
 		snvp.run(taskMonitor);
 

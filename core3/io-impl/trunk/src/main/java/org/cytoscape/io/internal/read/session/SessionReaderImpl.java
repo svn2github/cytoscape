@@ -392,6 +392,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		// set attr values based on ids
 		while (it.hasNext()) {
 			final Node nodeObject = (Node) it.next();
+			// FIXME this fires too many events
 			nodeMap.get(nodeObject.getId()).getCyRow().set(attrName,true);
 		}
 	}
@@ -408,6 +409,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		// set attr values based on ids
 		while (it.hasNext()) {
 			final Edge edgeObject = (Edge) it.next();
+			// FIXME this fires too many events
 			edgeMap.get(edgeObject.getId()).getCyRow().set(attrName,true);
 		}
 	}

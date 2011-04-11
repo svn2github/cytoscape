@@ -259,6 +259,7 @@
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
+		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
 
 	<bean id="gmlNetworkViewReaderFactory" class="org.cytoscape.io.internal.read.gml.GMLNetworkViewReaderFactory">
