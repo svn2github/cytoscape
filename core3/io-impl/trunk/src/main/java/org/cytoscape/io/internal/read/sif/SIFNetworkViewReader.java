@@ -131,9 +131,9 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 
 	tm.setProgress(0.25);
 
-	final CyTable table = network.getDefaultNodeTable();
+	final CyTable nodeTable = network.getDefaultNodeTable();
 	try {
-	    eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, table));
+	    eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, nodeTable));
 
 	    for (final String nodeName : nodeMap.keySet()) {
 		if (cancelled)
@@ -147,7 +147,7 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 	    }
 
 	} finally {
-	    eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, table));
+	    eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, nodeTable));
 	}
 
 	tm.setProgress(0.65);
@@ -159,18 +159,24 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 	String interactionType;
 	CyEdge edge;
 
-	for (Interaction interaction : interactions) {
-	    if (cancelled)
-		return;
+	final CyTable edgeTable = network.getDefaultEdgeTable();
+	try {
+	    eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, edgeTable));
+	    for (Interaction interaction : interactions) {
+		if (cancelled)
+		    return;
 
-	    srcName = interaction.getSource();
-	    interactionType = interaction.getType();
+		srcName = interaction.getSource();
+		interactionType = interaction.getType();
 
-	    for (String tgtName : interaction.getTargets()) {
-		edge = network.addEdge(nodeMap.get(srcName), nodeMap.get(tgtName), true);
-		edge.getCyRow().set(CyTableEntry.NAME, srcName + " (" + interactionType + ") " + tgtName);
-		edge.getCyRow().set(INTERACTION, interactionType);
+		for (String tgtName : interaction.getTargets()) {
+		    edge = network.addEdge(nodeMap.get(srcName), nodeMap.get(tgtName), true);
+		    edge.getCyRow().set(CyTableEntry.NAME, srcName + " (" + interactionType + ") " + tgtName);
+		    edge.getCyRow().set(INTERACTION, interactionType);
+		}
 	    }
+	} finally {
+	    eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, edgeTable));
 	}
 
 	tm.setProgress(0.90);
