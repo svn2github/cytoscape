@@ -287,9 +287,51 @@ public final class BrowserTableModel extends AbstractTableModel
 
 	@Override
 	public void handleRowSets(final CyTable table, final List<RowSet> rowSets) {
+		// The following is an optimisation hack to prevent excessive calls to
+		// fireTableDataChanged() in the case of multiple selection events:
+		if (tableHasBooleanSelected) {
+			boolean foundANonSelectedColumnName = false;
+			for (final RowSet rowSet : rowSets) {
+				if (!rowSet.getColumn().equals(CyNetwork.SELECTED)) {
+					foundANonSelectedColumnName = true;
+					break;
+				}
+			}
+
+			if (!foundANonSelectedColumnName) {
+				fireTableDataChanged();
+				return;
+			}
+		}
+
 		for (final RowSet rowSet : rowSets)
 			handleRowValueUpdate(rowSet.getRow(), rowSet.getColumn(), rowSet.getValue(),
 					     rowSet.getRawValue());
+	}
+
+	private void handleRowValueUpdate(final CyRow row, final String columnName, final Object newValue,
+				  final Object newRawValue)
+	{
+		if (tableHasBooleanSelected && columnName.equals(CyNetwork.SELECTED)) {
+/*
+			final boolean selected = (Boolean)newValue;
+			final int rowIndex = mapRowToRowIndex(row);
+			if (!selected && rowIndex == -1)
+				return;
+*/
+			fireTableDataChanged();
+		} else {
+			final int rowIndex = mapRowToRowIndex(row);
+			if (rowIndex == -1)
+				return;
+
+			final int columnIndex = mapColumnNameToColumnIndex(columnName);
+			if (columnIndex == -1)
+				return;
+
+			final TableModelEvent event = new TableModelEvent(this, rowIndex, rowIndex, columnIndex);
+			fireTableChanged(event);
+		}
 	}
 
 	@Override
@@ -345,31 +387,6 @@ public final class BrowserTableModel extends AbstractTableModel
 		}
 
 		throw new IllegalStateException("We should *never* get here! (index="+index+", i="+i);
-	}
-
-	void handleRowValueUpdate(final CyRow row, final String columnName, final Object newValue,
-				  final Object newRawValue)
-	{
-		if (tableHasBooleanSelected && columnName.equals(CyNetwork.SELECTED)) {
-/*
-			final boolean selected = (Boolean)newValue;
-			final int rowIndex = mapRowToRowIndex(row);
-			if (!selected && rowIndex == -1)
-				return;
-*/
-			fireTableDataChanged();
-		} else {
-			final int rowIndex = mapRowToRowIndex(row);
-			if (rowIndex == -1)
-				return;
-
-			final int columnIndex = mapColumnNameToColumnIndex(columnName);
-			if (columnIndex == -1)
-				return;
-
-			final TableModelEvent event = new TableModelEvent(this, rowIndex, rowIndex, columnIndex);
-			fireTableChanged(event);
-		}
 	}
 
 	@Override
