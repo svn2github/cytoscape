@@ -2,14 +2,21 @@ package cytoscape.genomespace;
 
 
 import cytoscape.Cytoscape;
+import cytoscape.genomespace.filechoosersupport.GenomeSpaceFileSystemView;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 import cytoscape.logger.CyLogger;
+
+import java.awt.Component;
 import java.awt.event.ActionEvent;
-import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JScrollPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 
 import java.io.File;
@@ -45,30 +52,63 @@ public class ListFilesInGenomeSpace extends CytoscapeAction {
 
 	public void actionPerformed(ActionEvent e) {
 		try {
-			GsSession client = GSUtils.getSession(); 
+			GsSession client = GSUtils.getSession();
 			DataManagerClient dmc = client.getDataManagerClient();
 
 			// list the files present for this user
-			List<GSFileMetadata> myFiles = dmc.listDefaultDirectory().getContents();
-			Vector<String> fileNames = new Vector<String>();
-			for (GSFileMetadata aFile: myFiles) {
-				fileNames.add(aFile.getName());
-			}
+//			Vector<GSFileMetadata> myFiles = new Vector(dmc.listDefaultDirectory().getContents());
+//			displayFiles(myFiles);
+			final JFileChooser chooser = new JFileChooser(new GenomeSpaceFileSystemView(dmc));
+			chooser.showDialog(Cytoscape.getDesktop(), "Close");
 
-			displayFiles(fileNames);
-	
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed",ex);
 		}
 	}
 
-	private void displayFiles(Vector<String> fileNames) {
-		JList jl = new JList( fileNames );
+	private void displayFiles(final Vector<GSFileMetadata> files) {
+		final JList jl = new JList(files);
+		jl.setCellRenderer(new MyCellRenderer());
 		jl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(jl);
-		scrollPane.setPreferredSize(new Dimension(250, 200));
+		scrollPane.setPreferredSize(new Dimension(350, 600));
 		JPanel jp = new JPanel();
 		jp.add(scrollPane);
-		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),jp);
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), jp);
 	}
+}
+
+
+class MyCellRenderer extends JLabel implements ListCellRenderer {
+	final static ImageIcon regularFileIcon = new ImageIcon("images/regularFile.png");
+	final static ImageIcon directoryIcon = new ImageIcon("images/directory.png");
+
+	// This is the only method defined by ListCellRenderer.
+	// We just reconfigure the JLabel each time we're called.
+
+	public Component getListCellRendererComponent(JList list,              // the list
+						      Object value,            // value to display
+						      int index,               // cell index
+						      boolean isSelected,      // is the cell selected
+						      boolean cellHasFocus)    // does the cell have focus
+	{
+		final GSFileMetadata fileMetadata = (GSFileMetadata)value;
+		setText(fileMetadata.getName() + " (" + fileMetadata.getOwner() + ")" + fileMetadata.getSize());
+		setIcon(fileMetadata.isDirectory() ? directoryIcon : regularFileIcon);
+
+		if (isSelected) {
+			setBackground(list.getSelectionBackground());
+			setForeground(list.getSelectionForeground());
+		} else {
+			setBackground(list.getBackground());
+			setForeground(list.getForeground());
+		}
+
+		setEnabled(list.isEnabled());
+		setFont(list.getFont());
+		setOpaque(true);
+
+		return this;
+	}
+
 }

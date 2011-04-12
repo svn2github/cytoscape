@@ -26,8 +26,6 @@ final class GSUtils {
 	public static GsSession getSession() {
 		if (session == null || !session.isLoggedIn()) {
 			try {
-				final UserNamePasswordDialog userNamePasswordDialog = new UserNamePasswordDialog();
-				userNamePasswordDialog.setVisible(true);
 				session = new GsSession();
 				if (!loginToGenomeSpace())
 					throw new GSClientException("failed to login!", null);

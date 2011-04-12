@@ -15,13 +15,16 @@ import org.genomespace.datamanager.core.GSFileMetadata;
 public final class GenomeSpaceFile extends File {
 	private final GSFileMetadata fileMetadata;
 	private final DataManagerClient dataManagerClient;
+	private final GenomeSpaceFile parent;
 
 	public GenomeSpaceFile(final GSFileMetadata fileMetadata,
-			       final DataManagerClient dataManagerClient)
+			       final DataManagerClient dataManagerClient,
+			       final GenomeSpaceFile parent)
 	{
 		super(fileMetadata.getPath() + "/" + fileMetadata.getName());
 		this.fileMetadata = fileMetadata;
 		this.dataManagerClient = dataManagerClient;
+		this.parent = parent;
 	}
 
 	@Override
@@ -65,8 +68,14 @@ public final class GenomeSpaceFile extends File {
 	}
 
 	@Override
-	public boolean equals(final Object other) {
-		return other instanceof GenomeSpaceFile ? other.equals(this) : false;
+	public boolean equals(final Object o) {
+if ((o instanceof File) && !(o instanceof GenomeSpaceFile))System.err.println("Strange, we have a File that is not a GenomeSpaceFile ("+o);
+		if (o instanceof GenomeSpaceFile) {
+			final GenomeSpaceFile other = (GenomeSpaceFile)o;
+			return other.fileMetadata.getName().equals(fileMetadata.getName())
+			       && other.fileMetadata.getPath().equals(fileMetadata.getPath());
+		} else
+			return false;
 	}
 
 	@Override
@@ -106,12 +115,14 @@ public final class GenomeSpaceFile extends File {
 
 	@Override
 	public String getParent() {
+		System.err.println("oooooooooooooooooooooooooooooooooo call to GenomeSpaceFile.getParent() -> "+fileMetadata.getPath());
 		return fileMetadata.getPath();
 	}
 
 	@Override
 	public File getParentFile() {
-		throw new UnsupportedOperationException("don't know how to get the parent file from GenomeSpace!");
+System.err.println("oooooooooooooooooooooooooooooooooo call to GenomeSpaceFile.getParentFile(), this="+this+", parent="+parent);
+		return parent;
 	}
 
 	@Override
@@ -166,13 +177,17 @@ public final class GenomeSpaceFile extends File {
 
 	@Override
 	public String[] list() {
+System.err.println("****************************** Entering list()");
 		if (!fileMetadata.isDirectory())
 			return null;
 
 		final List<GSFileMetadata> filesMetaData = dataManagerClient.list(fileMetadata).getContents();
+System.err.println("****************************** data manager returned " + filesMetaData.size() + " files");
 		final List<String> fileNames = new ArrayList<String>(filesMetaData.size());
 		for (final GSFileMetadata metadata : filesMetaData)
+{System.err.println("****************************** Adding file name: " + metadata.getName());
 			fileNames.add(metadata.getName());
+}
 		final String[] strings = new String[filesMetaData.size()];
 		return fileNames.toArray(strings);
 	}
@@ -184,13 +199,15 @@ public final class GenomeSpaceFile extends File {
 
 	@Override
 	public File[] listFiles() {
+System.err.println("+++++++++++++++ Entering listFiles()");
 		if (!fileMetadata.isDirectory())
 			return null;
 
 		final List<GSFileMetadata> filesMetaData = dataManagerClient.list(fileMetadata).getContents();
+System.err.println("+++++++++++++++ got " + filesMetaData + " files from the data manager");
 		final List<File> fileNames = new ArrayList<File>(filesMetaData.size());
 		for (final GSFileMetadata metadata : filesMetaData)
-			fileNames.add(new GenomeSpaceFile(metadata, dataManagerClient));
+			fileNames.add(new GenomeSpaceFile(metadata, dataManagerClient, parent));
 		final File[] files = new GenomeSpaceFile[filesMetaData.size()];
 		return fileNames.toArray(files);
 	}

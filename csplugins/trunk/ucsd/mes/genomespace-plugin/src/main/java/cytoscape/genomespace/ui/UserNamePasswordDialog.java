@@ -21,6 +21,8 @@ import javax.swing.border.LineBorder;
 
 
 public final class UserNamePasswordDialog extends JDialog {
+	private String userName = null;
+	private String password = null;
 	private final JLabel userNameLabel;
 	private final JLabel passwordLabel;
 	private final JTextField userNameTextField;
@@ -39,25 +41,25 @@ public final class UserNamePasswordDialog extends JDialog {
 		constraints.gridx = 0;
 		constraints.gridy = 0;
 		constraints.gridwidth = 1;
-		userNameAndPasswordPanel.add(userNameLabel);
+		userNameAndPasswordPanel.add(userNameLabel, constraints);
 
 		userNameTextField = new JTextField(20);
 		constraints.gridx = 1;
 		constraints.gridy = 0;
 		constraints.gridwidth = 2;
-		userNameAndPasswordPanel.add(userNameTextField);
+		userNameAndPasswordPanel.add(userNameTextField, constraints);
 
 		passwordLabel = new JLabel("GS Password: ");
 		constraints.gridx = 0;
 		constraints.gridy = 1;
 		constraints.gridwidth = 1;
-		userNameAndPasswordPanel.add(passwordLabel);
+		userNameAndPasswordPanel.add(passwordLabel, constraints);
 
 		passwordField = new JPasswordField(20);
 		constraints.gridx = 1;
 		constraints.gridy = 1;
 		constraints.gridwidth = 2;
-		userNameAndPasswordPanel.add(passwordField);
+		userNameAndPasswordPanel.add(passwordField, constraints);
 
 		userNameAndPasswordPanel.setBorder(new LineBorder(Color.GRAY));
 
@@ -70,13 +72,16 @@ public final class UserNamePasswordDialog extends JDialog {
 								      "Please enter a non-empty user name!",
 								      "Error",
 								      JOptionPane.ERROR_MESSAGE);
-				else if (passwordField.getText().isEmpty())
+				else if (passwordField.getPassword().length == 0)
                                         JOptionPane.showMessageDialog(UserNamePasswordDialog.this,
                                                                       "Please enter a non-empty password!",
                                                                       "Error",
                                                                       JOptionPane.ERROR_MESSAGE);
-				else
+				else {
+					userName = userNameTextField.getText().trim();
+					password = new String(passwordField.getPassword());
 					dispose();
+				}
 			}
 			});
 		buttonPanel.add(loginButton);
@@ -98,6 +103,6 @@ public final class UserNamePasswordDialog extends JDialog {
 		setLocationRelativeTo(Cytoscape.getDesktop());
 	}
 
-	public String getUserName() { return userNameTextField.getText().trim(); }
-	public String getPassword() { return passwordField.getText(); }
+	public String getUserName() { return userName; }
+	public String getPassword() { return password; }
 }
