@@ -33,26 +33,27 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package org.cytoscape.task.internal.title;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.task.AbstractNetworkTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 
 public class EditNetworkTitleTask extends AbstractNetworkTask {
-	
-	@Tunable(description="Edit network title")
-	public String title;
 
-	public EditNetworkTitleTask(CyNetwork n) {
-		super(n);
-		title = net.getCyRow().get("name",String.class);
-	}
+    @Tunable(description = "Edit network title")
+    public String title;
 
-	public void run(TaskMonitor e) {
-		net.getCyRow().set("name",title);
-	} 
+    public EditNetworkTitleTask(CyNetwork n) {
+	super(n);
+	title = net.getCyRow().get(CyTableEntry.NAME, String.class);
+    }
+
+    public void run(TaskMonitor e) {
+	net.getCyRow().set(CyTableEntry.NAME, title);
+    }
 }
