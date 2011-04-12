@@ -27,6 +27,7 @@
 		<constructor-arg ref="filterPlugin" />
 		<constructor-arg ref="cyTableRowUpdateServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyServiceRegistrarServiceRef" />
 	</bean>
 
 	<bean id="filterCytoPanelComponent"
