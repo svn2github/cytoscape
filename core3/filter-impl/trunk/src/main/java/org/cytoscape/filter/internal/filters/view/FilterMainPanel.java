@@ -43,7 +43,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
@@ -82,15 +84,21 @@ import org.cytoscape.filter.internal.quickfind.util.CyAttributesUtil;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableRowUpdateService;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.events.NetworkAddedEvent;
 import org.cytoscape.model.events.NetworkAddedListener;
+import org.cytoscape.model.events.RowsFinishedChangingEvent;
+import org.cytoscape.model.events.RowsFinishedChangingListener;
+import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.events.SessionLoadedEvent;
 import org.cytoscape.session.events.SessionLoadedListener;
@@ -106,7 +114,7 @@ import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 public class FilterMainPanel extends JPanel implements ActionListener,
 		ItemListener, SetCurrentNetworkViewListener, NetworkAddedListener,
 		NetworkAboutToBeDestroyedListener, SessionLoadedListener,
-		CyTableRowUpdateMicroListener {
+		CyTableRowUpdateMicroListener, RowsFinishedChangingListener {
 
     // String constants used for seperator entries in the attribute combobox
     private static final String filtersSeperator = "-- Filters --";
@@ -144,11 +152,20 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private final CyTableRowUpdateService rowUpdateService;
 	private final CyNetworkManager networkManager;
 	
-	public FilterMainPanel(CyApplicationManager applicationManager, FilterPlugin filterPlugin, CyTableRowUpdateService rowUpdateService, CyNetworkManager networkManager) {
+	private final CyServiceRegistrar serviceRegistrar;
+	
+	public FilterMainPanel(CyApplicationManager applicationManager, FilterPlugin filterPlugin, 
+			CyTableRowUpdateService rowUpdateService, CyNetworkManager networkManager,
+			 final CyServiceRegistrar serviceRegistrar) {
 		this.applicationManager = applicationManager;
 		this.filterPlugin = filterPlugin;
 		this.rowUpdateService = rowUpdateService;
 		this.networkManager = networkManager;
+		
+		this.serviceRegistrar = serviceRegistrar;
+		
+		final Dictionary emptyProps = new Hashtable();
+		serviceRegistrar.registerService(this, RowsFinishedChangingListener.class, emptyProps);
 		
 		//Initialize the option menu with menuItems
 		setupOptionMenu();
@@ -191,6 +208,15 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		addComponentListener(cmpAdpt);
 	}
 
+	@Override
+	public void handleEvent(RowsFinishedChangingEvent e){
+		// Handle selection events
+		if (this.applicationManager.getCurrentNetworkView() == null){
+			return;
+		}
+		updateFeedbackTableModel();
+	}
+	
 	@Override
 	public void handleRowCreations(CyTable table, List<CyRow> newRows) {
 		handleAttributesChanged();
@@ -293,14 +319,15 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		if (cyNetwork == null || view == null || engine == null) {
 			return;
 		}
-		VisualLexicon lexicon = engine.getVisualLexicon();
-		String title = VisualPropertyUtil.get(lexicon, view, "NETWORK_TITLE", MinimalVisualLexicon.NETWORK, String.class);
-		tblFeedBack.getModel().setValueAt(title, 0, 0);
+		
+		//VisualLexicon lexicon = engine.getVisualLexicon();
+		//String title = VisualPropertyUtil.get(lexicon, view, "NETWORK_TITLE", MinimalVisualLexicon.NETWORK, String.class);
+		tblFeedBack.getModel().setValueAt(cyNetwork.getCyRow().get("name", String.class), 0, 0);
 
-		String nodeStr = "" + cyNetwork.getNodeCount() + "(" + SelectUtil.getSelectedNodeCount(cyNetwork) + ")";
+		String nodeStr = "" + cyNetwork.getNodeCount() + "(" + CyTableUtil.getNodesInState(cyNetwork,"selected",true).size() + ")";
 		tblFeedBack.getModel().setValueAt(nodeStr, 0, 1);
 
-		String edgeStr = "" + cyNetwork.getEdgeCount() + "(" + SelectUtil.getSelectedEdgeCount(cyNetwork) + ")";
+		String edgeStr = "" + cyNetwork.getEdgeCount() + "(" + CyTableUtil.getEdgesInState(cyNetwork,"selected",true).size() + ")";
 		tblFeedBack.getModel().setValueAt(edgeStr, 0, 2);				
 	}
 	
