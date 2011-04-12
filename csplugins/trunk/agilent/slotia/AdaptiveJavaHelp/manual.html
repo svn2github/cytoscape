@@ -1,0 +1,271 @@
+<html>
+  <head>
+    <title>Adaptive JavaHelp 1.0 Manual</title>
+    <style type="text/css">
+      body
+      {
+        font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+      }
+
+      .htmlcode
+      {
+        font-family:"Lucida Console", monospace;
+        background-color:#ffffcc;
+      }
+
+      .javacode
+      {
+        font-family:"Lucida Console", monospace;
+        background-color:#99ffff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Adaptive JavaHelp 1.0 Manual</h1>
+    <p>Samad Lotia, Agilent Technologies &copy; 2011</p>
+    <p>Last updated: 12 April 2011</p>
+
+    <h2>Introduction</h2>
+    <p>Adaptive JavaHelp, a library that extends the capabilities of JavaHelp, allows the creation
+      of help pages whose content can change according to changes in an application's state.
+      Changes in application state can be things like whether the user has clicked some button,
+      has some window open, or entered some text in a text field. An example of a help page that
+      uses Adaptive JavaHelp would be a workflow that shows whether the user has successfully
+      completed each step along with some helpful hints.</p>
+
+     <p>
+       The purpose of this document is to describe how to write the appropriate Java code and JavaHelp HTML pages
+      that use Adaptive JavaHelp. This document does not describe how to use JavaHelp. The reader must be
+       familiar with writing JavaHelp pages.
+     </p>
+
+    <h2>Building Adaptive JavaHelp</h2>
+    <p>
+      Adaptive JavaHelp uses Apache Maven for its build system. To build it, enter the directory
+      containing <tt>pom.xml</tt> and run <tt>mvn install</tt>. Once building is complete,
+      the jar will be located in the local Maven repository.
+    </p>
+
+    <h2>Running the example Swing application</h2>
+    <p>
+      Included with the source code is an example Swing application and JavaHelp files that exhibit
+      Adaptive JavaHelp's features. To run it:
+      <ol>
+	<li>Build the Adaptive JavaHelp library as described above.</li>
+	<li>Build the example application by entering the directory <tt>AdaptiveJavaHelpExample</tt>,
+	  then run <tt>mvn install</tt>.</li>
+	<li>
+	  Run the example by running <tt>java</tt>. Include the AdaptiveJavaHelpExample, AdaptiveJavaHelp,
+	  and JavaHelp jars in the classpath. The main class path is
+	  <tt>com.agilent.AdaptiveJavaHelp.example.ExampleMain</tt>.
+	  <p>Here is an example of running the <tt>java</tt> command in the bash shell:</p>
+	  <blockquote><tt>java -cp target/AdaptiveJavaHelpExample-1.0.jar:/home/samad/.m2/repository/com/agilent/AdaptiveJavaHelp/1.0/AdaptiveJavaHelp-1.0.jar:/home/samad/.m2/repository/javax/help/javahelp/2.0.05/javahelp-2.0.05.jar com.agilent.AdaptiveJavaHelp.example.ExampleMain</tt></blockquote>
+	</li>
+      </ol>
+    </p>
+
+    <h2>Getting started with Adaptive JavaHelp</h2>
+    <p>
+      Because this document deals with both HTML and Java code:
+      <font class="javacode">Java code will have this formatting,</font>
+      <font class="htmlcode">whereas HTML code will have this formatting.</font>
+    </p>
+
+    <ol>
+      <li>To build the application with Adaptive JavaHelp using Maven, add the following dependency to the application's <tt>pom.xml</tt> file:
+	<blockquote><pre>
+&lt;dependency&gt;
+  &lt;groupId&gt;com.agilent&lt;/groupId&gt;
+  &lt;artifactId&gt;AdaptiveJavaHelp&lt;/artifactId&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+	</blockquote>
+      </li>
+
+      <li>Applications do not need to change the way they invoke JavaHelp, as demonstrated in <tt>ExampleMain.java</tt>:
+	<pre class="javacode">
+URL hsURL = ExampleMain.class.getResource(PATH_TO_HELPSET);
+HelpSet hs = new HelpSet(null, hsURL);
+HelpBroker hb = hs.createHelpBroker();
+showHelpButton.addActionListener(new CSH.DisplayHelpFromSource(hb));</pre>
+      </li>
+
+      <li>
+	However once the application has started JavaHelp, <i>it must invoke the following method</i>:
+	<p><font class="javacode">
+	    DynamicTextMonitors.start();
+	</font></p>
+	<p>This starts the process of Adaptive JavaHelp updating itself. When this
+	  method is called is not important, so long as it is called before JavaHelp pages are shown.</p>
+      </li>
+    </ol>
+
+    <h2>Writing a page whose content changes based on some condition</h2>
+
+    <ol>
+      <li>Write an implementation of the <tt>Condition</tt> interface.
+	<p>The implementation must:
+	  <ul>
+	    <li>be public,</li>
+	    <li>and have a constructor with no arguments.</li>
+	  </ul>
+	</p>
+	<p>Example:</p>
+	<pre class="javacode">
+package com.agilent.AdaptiveJavaHelp.example;
+
+import com.agilent.AdaptiveJavaHelp.Condition;
+
+public class HasButtonBeenClickedCondition implements Condition
+{
+    public boolean isMet()
+    {
+	return ExampleMain.hasButtonBeenClicked();
+    }
+}</pre>
+      </li>
+
+      <li>In the JavaHelp page, write the code for the condition. It follows this general pattern:
+
+	<table border=0>
+	  <tr>
+	    <td>
+	      <pre class="htmlcode">
+1.
+2.
+3.
+4.
+5.
+6.
+7.</pre>
+	    </td>
+	    <td>
+	      <pre class="htmlcode">
+&lt;object classid="java:com.agilent.AdaptiveJavaHelp.ConditionMonitor"&gt;
+ &lt;param name="condition" value="<b><i>path to class implementing Condition</i></b>"&gt;
+ &lt;param name="paragraphID" value="<b><i>a valid paragraph ID</i></b>"&gt;
+ &lt;param name="true" value="<b><i>some text here</i></b>"&gt;
+ &lt;param name="false" value="<b><i>some more text</i></b>"&gt;
+&lt;/object&gt;
+&lt;p id="<b><i>the same paragraph ID</i></b>"&gt;&lt;/p&gt;</pre>
+	    </td>
+	    </tr>
+	  </table>
+	<p>Line 1: This does not change. <tt>ConditionMonitor</tt> is a class that monitors changes in
+	  the <tt>Condition</tt> and updates the HTML page accordingly.</p>
+	<p>Line 2: Specify the fully qualified path to the class that implements the <tt>Condition</tt> interface.
+	When the HTML page is shown in JavaHelp, the <tt>Condition</tt> instance will be instantiated, and
+	  its <tt>isMet</tt> method is periodically invoked to check its status.</p>
+	<p>Line 3: The ID specified here <i>must</i> match the ID of a paragraph somewhere in the HTML document.</p>
+	<p>Line 4: When <tt>Condition.isMet</tt> returns true, Adapative JavaHelp will replace the paragraph's
+	  body with the text specified in this value. This value can, in turn, contain HTML code.</p>
+	<p>Line 5: Same thing as line 4, but with this text when <tt>Condition.isMet</tt> returns false.</p>
+	<p>Line 7: The paragraph's ID <i>must</i> match as what is in line 3.</p>
+	<p>Example:</p>
+	      <pre class="htmlcode">
+&lt;object classid="java:com.agilent.AdaptiveJavaHelp.ConditionMonitor"&gt;
+ &lt;param name="condition" value="com.agilent.AdaptiveJavaHelp.example.HasButtonBeenClickedCondition"&gt;
+ &lt;param name="paragraphID" value="clickButtonInstructions"&gt;
+ &lt;param name="true" value="&lt;h3&gt;You clicked the button!&lt;/h3&gt;"&gt;
+ &lt;param name="false" value="You need to click on the button in the application..."&gt;
+&lt;/object&gt;
+&lt;p id="clickButtonInstructions"&gt;&lt;/p&gt;</pre>
+      </li>
+    </ol>
+
+    <h2>Writing dynamic texts in conditions</h2>
+    <p>
+      As shown above, the condition's true and false values are static.
+      They are inserted into the paragraph as is depending on whether
+      the condition returns true or false, but they themselves do not change.
+      However it can be useful to include snippets of text in the condition that
+      are dynamic. These text snippets can change depending on the application's state.
+      For example, one can write a condition that checks whether
+      some button has been clicked or not. To do so, one would follow
+      the steps as described above. One can also include
+      in the condition's true value the number of times the button has
+      been clicked.
+    </p>
+    <p>
+      To do this, one would write a <i>regular-expression-based dynamic text</i>.
+      This consists of two things: a regular expression and a dynamic text.
+      Any portion of a condition's text that matches the regular expression
+      will be periodically replaced by the dynamic text. To write a regular-expression-based dynamic text:
+    </p>
+    <p>
+      <ol>
+	<li>
+	  Write a dynamic text. This is a class that implements the <tt>DynamicText</tt> interface.
+	  Its <tt>getText</tt> method is periodically invoked and inserted into the JavaHelp page.
+	  The returned text can contain HTML tags.
+	</li>
+	<li>
+	  Register this dynamic text and its regular expression with <tt>DynamicTextMonitors</tt>.
+	  Calling the <tt>register</tt> method can be done at any time, but it should be done
+	  before JavaHelp has been started.
+	  <p>Example:</p>
+	<pre class="javacode">
+DynamicTextMonitors.register("\\%whats-in-the-text-field\\%", new DynamicText()
+{
+  public String getText()
+  {
+    return field.getText();
+  }
+});</pre>
+	</li>
+	<li>
+	  Employ this dynamic text in the condition's <tt>object</tt> tag by including some text that matches
+	  the regular expression.
+	  <p>Example:</p>
+	<pre class="htmlcode">
+&lt;param name="false" value="This is currently entered in the text field: &lt;i&gt;%whats-in-the-text-field%&lt;/i&gt;. Please enter this into the text field: I heart AJH"&gt;</pre>
+	</li>
+      </ol>
+    </p>
+
+    <h2>Writing dynamic texts</h2>
+    <p>
+      One can write a dynamic text which is inserted into the JavaHelp page. The <tt>DynamicText</tt>'s
+      <tt>getText</tt> method is periodically invoked and is inserted into a paragraph. This functionality
+      exists independently of conditions. To write a dynamic text:
+    </p>
+    <p>
+      <ol>
+	<li>Write an implementation of the <tt>DynamicText</tt> interface. The implementation must be:
+	  <ul>
+	    <li>public</li>
+	    <li>and have a constructor with no arguments.</li>
+	  </ul>
+	<li>In the JavaHelp page, write the HTML code that uses the <tt>DynamicText</tt>:
+	      <pre class="htmlcode">
+&lt;object classid="java:com.agilent.AdaptiveJavaHelp.DynamicTextMonitor"&gt;
+ &lt;param name="dynamicText" value="<b><i>path to class implementing DynamicText</i></b>"&gt;
+ &lt;param name="paragraphID" value="<b><i>a valid paragraph ID</i></b>"&gt;
+&lt;/object&gt;
+&lt;p id="<b><i>the same paragraph ID</i></b>"&gt;&lt;/p&gt;</pre>
+      </ol>
+    </p>
+
+    <h2>Troubleshooting</h2>
+
+    <h3>Problem</h3>
+    <p>The JavaHelp page just shows <font color=red>??</font> where the <tt>object</tt> tag is.</p>
+
+    <h3>Solution</h3>
+    <p>JavaHelp is unable to access the <tt>ConditionMonitor</tt> or <tt>DynamicTextMonitor</tt> class.
+      Make sure that the <tt>object</tt> tag's <tt>classid</tt> value is correct and that
+      JavaHelp's class loader can access Adaptive JavaHelp.</p>
+
+    <h3>Problem</h3>
+    <p>
+      The paragraph is not being replaced by the condition's text or the dynamic text.
+    </p>
+
+    <h3>Solution</h3>
+    <p>
+      Either <tt>DynamicTextMonitors</tt>' <tt>start</tt> method has not been called, or
+      the <tt>paragraphID</tt> value has not been set correctly. Make sure it matches a valid paragraph ID.
+    </p>
+
+  </body>
+</html>

@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'  ?>
+
+
+<toc version="2.0">
+  <tocitem text="Introduction" target="intro"/>
+  <tocitem text="Click on the button" target="click_button"/>
+  <tocitem text="Enter some text" target="enter_text"/>
+</toc>
