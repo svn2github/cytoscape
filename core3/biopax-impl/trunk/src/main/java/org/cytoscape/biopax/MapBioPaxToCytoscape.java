@@ -4,6 +4,7 @@ import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.CyNetworkView;
 
 /**
  * This API is provisional and is subject to change at any time.
@@ -165,4 +166,5 @@ public interface MapBioPaxToCytoscape {
 
 	void doMapping(Model model);
 	void mapNodeAttribute(BioPAXElement element, Model model, CyNetwork network, CyNode node);
+	void customNodes(CyNetworkView networkView);
 }

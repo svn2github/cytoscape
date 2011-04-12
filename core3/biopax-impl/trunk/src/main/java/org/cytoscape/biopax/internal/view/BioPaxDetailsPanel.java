@@ -38,7 +38,6 @@ import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.JEditorPane;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -88,7 +87,6 @@ public class BioPaxDetailsPanel extends JPanel {
 	 * Constructor.
 	 */
 	public BioPaxDetailsPanel(LaunchExternalBrowser browser) {
-		JLabel label = new JLabel();
 		textPane = new JTextPane();
 
 		//  Set Editor Kit that is capable of handling long words
@@ -252,27 +250,32 @@ public class BioPaxDetailsPanel extends JPanel {
 	private void addAttributeList(CyNode node, String attribute, String label, StringBuffer buf) {
 		StringBuffer displayString = new StringBuffer();
 		CyRow row = node.getCyRow();
-		List<String> list = (List<String>) row.getList(attribute, String.class);
+		if (row.getTable().getColumn(attribute) == null) {
+			return;
+		}
+		
+		List<String> list = row.getList(attribute, String.class);
+        if (list == null) {
+        	return;
+        }
+        
+        int len = list.size();
+        boolean tooMany = false;
+        if (len > 7) {
+            len = 7;
+            tooMany = true;
+        }
+        for (int lc = 0; lc < len; lc++) {
+			String listItem = list.get(lc);
 
-        if (list != null) {
-            int len = list.size();
-            boolean tooMany = false;
-            if (len > 7) {
-                len = 7;
-                tooMany = true;
-            }
-            for (int lc = 0; lc < len; lc++) {
-				String listItem = list.get(lc);
-
-				if ((listItem != null) && (listItem.length() > 0)) {
-					String plainEnglish = BioPaxUtil.getTypeInPlainEnglish(listItem);
-                    displayString.append("<LI> - " + plainEnglish);
-                    displayString.append("</LI>"); 
-				}
+			if ((listItem != null) && (listItem.length() > 0)) {
+				String plainEnglish = BioPaxUtil.getTypeInPlainEnglish(listItem);
+                displayString.append("<LI> - " + plainEnglish);
+                displayString.append("</LI>"); 
 			}
-            if (tooMany) {
-                displayString.append("<LI>  ...</LI>");
-            }
+		}
+        if (tooMany) {
+            displayString.append("<LI>  ...</LI>");
         }
 
         // do we have a string to display ?

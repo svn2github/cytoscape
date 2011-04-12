@@ -45,10 +45,8 @@ import javax.swing.event.HyperlinkListener;
 
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.biopax.BioPaxContainer;
-import org.cytoscape.biopax.NetworkListener;
 import org.cytoscape.biopax.internal.MapBioPaxToCytoscapeImpl;
 import org.cytoscape.biopax.internal.action.LaunchExternalBrowser;
-import org.cytoscape.biopax.internal.action.NetworkListenerImpl;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.session.CyApplicationManager;
@@ -73,8 +71,6 @@ public class BioPaxContainerImpl extends JPanel implements BioPaxContainer {
 	 * CytoPanel Location of this Panel
 	 */
 	public static final CytoPanelName CYTO_PANEL_LOCATION = CytoPanelName.EAST;
-	private BioPaxDetailsPanel bpDetailsPanel;
-	private NetworkListenerImpl networkListener;
     private JEditorPane label;
     private JPanel cards;
 	private final CyApplicationManager applicationManager;
@@ -88,11 +84,10 @@ public class BioPaxContainerImpl extends JPanel implements BioPaxContainer {
      * @param factory 
      * @param applicationManager 
 	 */
-	private BioPaxContainerImpl(LaunchExternalBrowser browser, CyApplicationManager applicationManager, CyNetworkViewManager viewManager) {
+	private BioPaxContainerImpl(LaunchExternalBrowser browser, CyApplicationManager applicationManager, CyNetworkViewManager viewManager, BioPaxDetailsPanel bpDetailsPanel) {
 		this.applicationManager = applicationManager;
 		
         cards = new JPanel(new CardLayout());
-        bpDetailsPanel = new BioPaxDetailsPanel(browser);
         LegendPanel bioPaxLegendPanel = new LegendPanel(LegendPanel.BIOPAX_LEGEND);
         LegendPanel binaryLegendPanel = new LegendPanel(LegendPanel.BINARY_LEGEND);
 
@@ -126,7 +121,6 @@ public class BioPaxContainerImpl extends JPanel implements BioPaxContainer {
         label.setFont(newFont);
         label.setBorder(new EmptyBorder(5,3,3,3));
         this.add(label, BorderLayout.SOUTH);
-        this.networkListener = new NetworkListenerImpl(bpDetailsPanel, viewManager);
 	}
 
     /**
@@ -156,25 +150,6 @@ public class BioPaxContainerImpl extends JPanel implements BioPaxContainer {
         label.setText("<a href='DETAILS'>View Details</a>");
     }
 
-	/**
-	 * Gets the Embedded BioPax Details Panel.
-	 *
-	 * @return BioPaxDetailsPanel Object.
-	 */
-	public BioPaxDetailsPanel getBioPaxDetailsPanel() {
-		return bpDetailsPanel;
-	}
-
-	/**
-	 * Gets the Network Listener Object.
-	 *
-	 * @return Network Listener Object.
-	 */
-	@Override
-	public NetworkListener getNetworkListener() {
-		return networkListener;
-	}
-	
 	@Override
 	public Component getComponent() {
 		return this;

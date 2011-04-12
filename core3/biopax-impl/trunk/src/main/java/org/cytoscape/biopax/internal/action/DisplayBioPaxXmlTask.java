@@ -36,8 +36,6 @@ public final class DisplayBioPaxXmlTask implements Task {
 	
 	@Override
 	public void cancel() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override

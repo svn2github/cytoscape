@@ -1031,7 +1031,7 @@ public class BioPaxUtil {
 		return networkModelMap;
 	}
 
-	public static void removeNetworkModel(String cyNetworkId) {
+	public static void removeNetworkModel(long cyNetworkId) {
 	    networkModelMap.remove(cyNetworkId);
 	    if(log.isDebugEnabled())
 	    	log.debug("in-memory biopax networks: " 

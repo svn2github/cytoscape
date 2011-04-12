@@ -8,6 +8,5 @@ import java.awt.Component;
 public interface BioPaxContainer {
 	void showDetails();
 	void showLegend();
-	NetworkListener getNetworkListener();
 	Component getComponent();
 }

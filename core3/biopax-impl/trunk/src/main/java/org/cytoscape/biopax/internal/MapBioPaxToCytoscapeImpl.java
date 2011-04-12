@@ -1120,7 +1120,8 @@ public class MapBioPaxToCytoscapeImpl implements MapBioPaxToCytoscape {
 	 *
 	 * @param networkView CyNetworkView
 	 */
-	public static void customNodes(CyNetworkView networkView) {
+	@Override
+	public void customNodes(CyNetworkView networkView) {
 		// grab node attributes
 		CyNetwork cyNetwork = networkView.getModel();
 

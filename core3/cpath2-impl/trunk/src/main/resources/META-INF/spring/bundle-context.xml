@@ -30,6 +30,7 @@
 		<constructor-arg ref="undoSupportRef" />
 		<constructor-arg ref="bioPaxContainerRef" />
 		<constructor-arg ref="mapBioPaxToCytoscapeFactoryRef" />
+		<constructor-arg ref="networkListenerRef" />
 	</bean>
 	
 	<bean id="cPathWebService" class="org.cytoscape.cpath2.internal.web_service.CytoscapeCPathWebService">

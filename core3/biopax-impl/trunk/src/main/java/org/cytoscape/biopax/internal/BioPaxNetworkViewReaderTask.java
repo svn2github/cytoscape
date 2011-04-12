@@ -42,13 +42,14 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 	private final CyNetworkNaming naming;
 
 	private final BioPaxContainerImpl bpContainer;
+	private final NetworkListener networkListener;
 
 	private CyNetworkView view;
 
 	private InputStream stream;
 
 	private String inputName;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -65,13 +66,14 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 	 *
 	 * @param model PaxTools BioPAX Model
 	 */
-	public BioPaxNetworkViewReaderTask(InputStream stream, String inputName, CyNetworkFactory networkFactory, CyNetworkViewFactory viewFactory, CyNetworkNaming naming, BioPaxContainerImpl bpContainer) {
+	public BioPaxNetworkViewReaderTask(InputStream stream, String inputName, CyNetworkFactory networkFactory, CyNetworkViewFactory viewFactory, CyNetworkNaming naming, BioPaxContainerImpl bpContainer, NetworkListener networkListener) {
 		this.stream = stream;
 		this.inputName = inputName;
 		this.networkFactory = networkFactory;
 		this.viewFactory = viewFactory;
 		this.naming = naming;
 		this.bpContainer = bpContainer;
+		this.networkListener = networkListener;
 	}
 	
 	public String getNetworkId() {
@@ -119,6 +121,8 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 					"Please check the BioPAX source file.");
 			return;
 		}
+		
+		doPostProcessing(model, network);
 	}
 
 	private String getNetworkName(Model model) {
@@ -207,11 +211,10 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 
 		//  Set up BP UI
 //		CytoscapeWrapper.initBioPaxPlugInUI();
-        bpContainer.showLegend();
+//        bpContainer.showLegend();
         
         // add network listener
-        NetworkListener networkListener = bpContainer.getNetworkListener();
-		networkListener.registerNetwork(cyNetwork);
+		networkListener.registerNetwork(view);
 		
 		// add node's context menu
 		// TODO: NodeViewTaskFactory?

@@ -1,6 +1,7 @@
 package org.cytoscape.biopax.internal.util;
 
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyRow;
@@ -23,7 +24,18 @@ public class AttributeUtil {
 	}
 
 	public static void copyAttributes(CyTableEntry source, CyTableEntry target) {
-		// TODO Auto-generated method stub
-		
+		CyRow sourceRow = source.getCyRow();
+		for (Entry<String, Object> entry : sourceRow.getAllValues().entrySet()) {
+			String key = entry.getKey();
+			Object value = entry.getValue();
+			CyColumn column = sourceRow.getTable().getColumn(key);
+			Class<?> type;
+			if (value instanceof List) {
+				type = column.getListElementType();
+			} else {
+				type = column.getType();
+			}
+			set(target, key, value, type);
+		}
 	}
 }

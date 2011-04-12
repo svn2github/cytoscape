@@ -31,14 +31,27 @@
  **/
 package org.cytoscape.biopax.internal.action;
 
-import java.beans.PropertyChangeEvent;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.cytoscape.biopax.BioPaxContainer;
+import org.cytoscape.biopax.MapBioPaxToCytoscape;
+import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
 import org.cytoscape.biopax.NetworkListener;
 import org.cytoscape.biopax.internal.view.BioPaxDetailsPanel;
 import org.cytoscape.biopax.util.BioPaxUtil;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableRowUpdateService;
+import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
+import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
+import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedEvent;
+import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener;
+import org.cytoscape.view.model.events.NetworkViewAddedEvent;
+import org.cytoscape.view.model.events.NetworkViewAddedListener;
 
 
 /**
@@ -47,25 +60,31 @@ import org.cytoscape.view.model.CyNetworkViewManager;
  *
  * @author Ethan Cerami / Benjamin Gross / Igor Rodchenkov.
  */
-public class NetworkListenerImpl implements NetworkListener {
+public class NetworkListenerImpl implements NetworkListener, NetworkViewAddedListener,
+	NetworkViewAboutToBeDestroyedListener, SetCurrentNetworkViewListener {
+	
 	private final BioPaxDetailsPanel bpPanel;
-	private CyNetworkViewManager viewManager;
+	private final BioPaxContainer bpContainer;
+	private final MapBioPaxToCytoscape mapBioPaxToCytoscape;
+
+	private final CyNetworkViewManager viewManager;
+	private final CyTableRowUpdateService rowUpdateService;
+	
+	private Map<CyNetworkView, CyTableRowUpdateMicroListener> rowUpdateListeners;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param bpPanel BioPaxDetails Panel Object.
 	 */
-	public NetworkListenerImpl(BioPaxDetailsPanel bpPanel, CyNetworkViewManager viewManager) {
+	public NetworkListenerImpl(BioPaxDetailsPanel bpPanel, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapBioPaxToCytoscapeFactory, CyNetworkViewManager viewManager, CyTableRowUpdateService rowUpdateService) {
 		this.bpPanel = bpPanel;
+		this.bpContainer = bpContainer;
+		this.mapBioPaxToCytoscape = mapBioPaxToCytoscapeFactory.getInstance(null, null);
 		this.viewManager = viewManager;
+		this.rowUpdateService = rowUpdateService;
 		
-		// to catch network creation / destruction events
-//		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-
-		// to catch network selection / focus events
-//		Cytoscape.getDesktop().getNetworkViewManager().getSwingPropertyChangeSupport()
-//		         .addPropertyChangeListener(this);
+		rowUpdateListeners = new HashMap<CyNetworkView, CyTableRowUpdateMicroListener>();
 	}
 
 	/**
@@ -74,8 +93,8 @@ public class NetworkListenerImpl implements NetworkListener {
 	 * @param cyNetwork Object.
 	 */
 	@Override
-	public void registerNetwork(CyNetwork cyNetwork) {
-		registerNodeSelectionEvents(cyNetwork);
+	public void registerNetwork(CyNetworkView view) {
+		registerNodeSelectionEvents(view);
 	}
 
 	/**
@@ -83,10 +102,12 @@ public class NetworkListenerImpl implements NetworkListener {
 	 *
 	 * @param cyNetwork CyNetwork Object.
 	 */
-	private void registerNodeSelectionEvents(CyNetwork cyNetwork) {
-		// TODO: Port this later
-//		SelectFilter flagFilter = cyNetwork.getSelectFilter();
-//		flagFilter.addSelectEventListener(new DisplayBioPaxDetails(bpPanel));
+	private void registerNodeSelectionEvents(CyNetworkView view) {
+		CyNetwork cyNetwork = view.getModel();
+		CyTable table = cyNetwork.getDefaultNodeTable();
+		DisplayBioPaxDetails rowUpdateListener = new DisplayBioPaxDetails(view, bpPanel, bpContainer, mapBioPaxToCytoscape);
+		rowUpdateListeners.put(view, rowUpdateListener);
+		rowUpdateService.startTracking(rowUpdateListener, table);
 		bpPanel.resetText();
 	}
 
@@ -127,7 +148,8 @@ public class NetworkListenerImpl implements NetworkListener {
 	/**
 	 * Network Created Event
 	 */
-	private void networkCreatedEvent(PropertyChangeEvent event) {
+	@Override
+	public void handleEvent(NetworkViewAddedEvent e) {
 		// get the network
 		/* (why was that?)
 		CyNetwork cyNetwork = null;
@@ -147,14 +169,15 @@ public class NetworkListenerImpl implements NetworkListener {
 		}
 		*/
 		
+        bpContainer.showLegend();
 		bpPanel.resetText();
-		
 	}
 
 	/**
 	 * Network Focus Event.
 	 */
-	private void networkFocusEvent(PropertyChangeEvent event, boolean sessionLoaded) {
+	@Override
+	public void handleEvent(SetCurrentNetworkViewEvent e) {
 //		// get network id
 //		String networkId = null;
 //		CyNetwork cyNetwork = null;
@@ -174,12 +197,12 @@ public class NetworkListenerImpl implements NetworkListener {
 //		if (networkId != null) {
 //			// update bpPanel accordingly
 //            if (!sessionLoaded) {
-//            	if (BioPaxUtil.getNetworkModelMap().containsKey(networkId)) {
-//                    bpPanel.resetText();
-//                } else {
-//                    bpPanel.resetText("Node details are not provided for"
-//                                      + " the currently selected network.");
-//                }
+            	if (BioPaxUtil.getNetworkModelMap().containsKey(e.getNetworkView().getModel().getSUID())) {
+                    bpPanel.resetText();
+                } else {
+                    bpPanel.resetText("Node details are not provided for"
+                                      + " the currently selected network.");
+                }
 //            }
 //            
 //            // due to quirky-ness in event model, we could get here without registering network
@@ -196,9 +219,22 @@ public class NetworkListenerImpl implements NetworkListener {
 	*
 	* @param networkID the ID of the CyNetwork just destroyed.
 	*/
-	private void networkDestroyed(String networkID) {
+	@Override
+	public void handleEvent(NetworkViewAboutToBeDestroyedEvent e) {
+		CyNetworkView view = e.getNetworkView();
+		CyNetwork network = view.getModel();
 		// destroy the corresponding model
-		BioPaxUtil.removeNetworkModel(networkID);
+		BioPaxUtil.removeNetworkModel(network.getSUID());
+		
+		CyTable table = network.getDefaultNodeTable();
+		CyTableRowUpdateMicroListener listener = rowUpdateListeners.get(view);
+		if (listener != null) {
+			rowUpdateService.stopTracking(listener, table);
+		}
+		
+		if (!networkViewsRemain()) {
+			onZeroNetworkViewsRemain();
+		}
 	}
 
 	/*

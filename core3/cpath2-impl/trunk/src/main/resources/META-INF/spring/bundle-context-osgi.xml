@@ -46,5 +46,8 @@
 	<osgi:reference id="mapBioPaxToCytoscapeFactoryRef"
 		interface="org.cytoscape.biopax.MapBioPaxToCytoscapeFactory" />
 
+	<osgi:reference id="networkListenerRef"
+		interface="org.cytoscape.biopax.NetworkListener" />
+	
 	<osgi:service ref="cPathWebService" auto-export="interfaces" />
 </beans>

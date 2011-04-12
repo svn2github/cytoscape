@@ -36,10 +36,23 @@
 		<constructor-arg ref="cySwingApplicationRef" />		
 	</bean>
 	
+	<bean id="bioPaxDetailsPanel" class="org.cytoscape.biopax.internal.view.BioPaxDetailsPanel">
+		<constructor-arg ref="launchExternalBrowser" />
+	</bean>
+	
 	<bean id="bioPaxContainer" class="org.cytoscape.biopax.internal.view.BioPaxContainerImpl">
 		<constructor-arg ref="launchExternalBrowser" />
 		<constructor-arg ref="cyApplicationManagerRef" />
 		<constructor-arg ref="cyNetworkViewManagerRef" />
+		<constructor-arg ref="bioPaxDetailsPanel" />
+	</bean>
+	
+	<bean id="networkListener" class="org.cytoscape.biopax.internal.action.NetworkListenerImpl">
+		<constructor-arg ref="bioPaxDetailsPanel"/>
+		<constructor-arg ref="bioPaxContainer"/>
+		<constructor-arg ref="mapBioPaxToCytoscapeFactory"/>
+		<constructor-arg ref="cyNetworkViewManagerRef"/>
+		<constructor-arg ref="cyTableRowUpdateServiceRef"/>
 	</bean>
 	
 	<bean id="bioPaxCytoPanelComponent" class="org.cytoscape.biopax.internal.view.BioPaxCytoPanelComponent">
@@ -52,5 +65,6 @@
 		<constructor-arg ref="cyNetworkViewFactoryRef"/>
 		<constructor-arg ref="cyNetworkNamingRef"/>
 		<constructor-arg ref="bioPaxContainer"/>
+		<constructor-arg ref="networkListener"/>
 	</bean>
 </beans>

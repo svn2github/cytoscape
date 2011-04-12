@@ -69,6 +69,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	private final CPath2Factory cPathFactory;
 	private final BioPaxContainer bpContainer;
 	private final MapBioPaxToCytoscapeFactory mapperFactory;
+	private final NetworkListener networkListener;
 	
     /**
      * Constructor.
@@ -81,7 +82,8 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
      * @param application 
      */
     public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], CPathResponseFormat format,
-            String networkTitle, CPath2Factory cPathFactory, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory) {
+            String networkTitle, CPath2Factory cPathFactory, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory,
+            NetworkListener networkListener) {
         this.webApi = webApi;
         this.ids = ids;
         this.format = format;
@@ -89,6 +91,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
         this.cPathFactory = cPathFactory;
         this.bpContainer = bpContainer;
         this.mapperFactory = mapperFactory;
+        this.networkListener = networkListener;
     }
 
     /**
@@ -106,7 +109,8 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
      */
     public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], CPathResponseFormat format,
             String networkTitle, CyNetwork mergedNetwork, CPath2Factory cPathFactory,
-            BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory) {
+            BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory,
+            NetworkListener networkListener) {
         this.webApi = webApi;
         this.ids = ids;
         this.format = format;
@@ -115,6 +119,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
         this.cPathFactory = cPathFactory;
         this.bpContainer = bpContainer;
         this.mapperFactory = mapperFactory;
+        this.networkListener = networkListener;
     }
 
     /**
@@ -190,9 +195,9 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
             
             // Branch, based on download mode.
             if (format == CPathResponseFormat.BINARY_SIF) {
-                postProcessingBinarySif(cyNetwork, taskMonitor);
+                postProcessingBinarySif(view, taskMonitor);
             } else {
-                postProcessingBioPAX(cyNetwork, taskMonitor);             
+                postProcessingBioPAX(view, taskMonitor);             
             }
 
             // Fire appropriate network event.
@@ -259,11 +264,13 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
      *
      * @param cyNetwork Cytoscape Network Object.
      */
-    private void postProcessingBinarySif(final CyNetwork cyNetwork, TaskMonitor taskMonitor) {
+    private void postProcessingBinarySif(final CyNetworkView view, TaskMonitor taskMonitor) {
         //  Init the node attribute meta data, e.g. description, visibility, etc.
     	// TODO: What happened to attribute descriptions?
 //        MapBioPaxToCytoscape.initAttributes(nodeAttributes);
 
+    	final CyNetwork cyNetwork = view.getModel();
+    	
         //  Set the Quick Find Default Index
     	AttributeUtil.set(cyNetwork, "quickfind.default_index", "biopax.node_label", String.class);
 
@@ -295,8 +302,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 //                final CyNetworkView view = createNetworkView
 //                        (cyNetwork, cyNetwork.getCyRow().get(CyNetwork.NAME, String.class), layoutAlgorithm, null);
                 
-                NetworkListener networkListener = bpContainer.getNetworkListener();
-                networkListener.registerNetwork(cyNetwork);
+                networkListener.registerNetwork(view);
 
                 SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
@@ -306,8 +312,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
                         String networkTitleWithUnderscores = networkTitle.replaceAll(": ", "");
                         networkTitleWithUnderscores = networkTitleWithUnderscores.replaceAll(" ", "_");
                         CyNetworkNaming naming = cPathFactory.getCyNetworkNaming();
-                        networkTitleWithUnderscores = naming.getSuggestedNetworkTitle
-                                (networkTitleWithUnderscores);
+                        networkTitleWithUnderscores = naming.getSuggestedNetworkTitle(networkTitleWithUnderscores);
                         AttributeUtil.set(cyNetwork, CyNetwork.NAME, networkTitleWithUnderscores, String.class);
                     }
                 });
@@ -325,7 +330,9 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
      *
      * @param cyNetwork Cytoscape Network Object.
      */
-    private void postProcessingBioPAX(final CyNetwork cyNetwork, TaskMonitor taskMonitor) {
+    private void postProcessingBioPAX(final CyNetworkView view, TaskMonitor taskMonitor) {
+    	final CyNetwork cyNetwork = view.getModel();
+    	
         if (haltFlag == false) {
             if (mergedNetwork != null) {
                 mergeNetworks(cyNetwork, taskMonitor);

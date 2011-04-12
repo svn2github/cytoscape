@@ -31,19 +31,17 @@
  **/
 package org.cytoscape.biopax.internal.action;
 
-import java.awt.Container;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
 
-import javax.swing.JTabbedPane;
-
-import org.cytoscape.biopax.internal.MapBioPaxToCytoscapeImpl;
-import org.cytoscape.biopax.internal.util.CySessionUtil;
-import org.cytoscape.biopax.internal.util.CytoscapeWrapper;
-import org.cytoscape.biopax.internal.view.BioPaxContainerImpl;
+import org.cytoscape.biopax.BioPaxContainer;
+import org.cytoscape.biopax.MapBioPaxToCytoscape;
 import org.cytoscape.biopax.internal.view.BioPaxDetailsPanel;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
+import org.cytoscape.view.model.CyNetworkView;
 
 
 /**
@@ -56,67 +54,56 @@ import org.cytoscape.model.CyNode;
  *
  * @author Ethan Cerami
  */
-// TODO: Port this over to the new selection API
-public class DisplayBioPaxDetails /*implements SelectEventListener*/ {
-//	private int totalNumNodesSelected = 0;
-//	private BioPaxDetailsPanel bpPanel;
-//
-//	/**
-//	 * Constructor.
-//	 *
-//	 * @param bpPanel BioPaxDetailsPanel Object that will actually display
-//	 *                the BioPax details.
-//	 */
-//	public DisplayBioPaxDetails(BioPaxDetailsPanel bpPanel) {
-//		this.bpPanel = bpPanel;
-//	}
-//
-//	/**
-//	 * User has selected/unselected one or more nodes.
-//	 *
-//	 * @param event Select Event.
-//	 */
-//	@SuppressWarnings("unchecked")
-//	public void onSelectEvent(SelectEvent event) {
-//		int targetType = event.getTargetType();
-//
-//		//  Only show details when exactly one node/edge is selected.
-//		//  This is done by keeping a running total of number of nodes/edges
-//		//  currently selected.
-//
-//		//  A simpler option would be to obtain a SelectFilter object from
-//		//  the current network, and simply query it for a list of selected
-//		//  nodes/edges.  However, we want the listener to work on multiple
-//		//  networks.  For example, we want to display node/edge details
-//		//  for a parent network and any of its subnetworks.
-//		if (targetType == SelectEvent.NODE_SET) {
-//			HashSet set = (HashSet) event.getTarget();
-//			trackTotalNumberNodesSelected(event, set);
-//
-//			if (event.getEventType() && (totalNumNodesSelected == 1)) {
-//				Iterator iterator = set.iterator();
-//				CyNode node = (CyNode) iterator.next();
-//
-//				//  Get the BioPAX Util Object from the current network
-//				CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-//				String id = node.getIdentifier();
-//
-//				if (id != null && !CySessionUtil.isSessionReadingInProgress()) {
-//					//  Conditionally, set up BP UI
-//			        //  If we are reading a session file, ignore the node selection event.
-//		            CytoscapeWrapper.initBioPaxPlugInUI();
-//		            //  Show the details
-//		            bpPanel.showDetails(cyNetwork, node);
-//		            //  If legend is showing, show details
-//		            BioPaxContainer bpContainer = BioPaxContainer.getInstance();
-//		            bpContainer.showDetails();
-//				}
-//			}
-//		}
-//
-//		// update custom nodes
-//		MapBioPaxToCytoscape.customNodes(Cytoscape.getCurrentNetworkView());
-//	}
+public class DisplayBioPaxDetails implements CyTableRowUpdateMicroListener {
+	private BioPaxDetailsPanel bpPanel;
+	private BioPaxContainer bpContainer;
+	private CyNetworkView view;
+	private MapBioPaxToCytoscape mapBioPaxToCytoscape;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param bpPanel BioPaxDetailsPanel Object that will actually display
+	 *                the BioPax details.
+	 */
+	public DisplayBioPaxDetails(CyNetworkView view, BioPaxDetailsPanel bpPanel, BioPaxContainer bpContainer, MapBioPaxToCytoscape mapBioPaxToCytoscape) {
+		this.bpPanel = bpPanel;
+		this.bpContainer = bpContainer;
+		this.view = view;
+		this.mapBioPaxToCytoscape = mapBioPaxToCytoscape;
+	}
+	
+	@Override
+	public void handleRowCreations(CyTable table, List<CyRow> newRows) {
+	}
+	
+	@Override
+	public void handleRowSets(CyTable table, List<RowSet> rowSets) {
+		try {
+			CyNode selected = null;
+			CyNetwork network = view.getModel();
+			for (CyNode node : network.getNodeList()) {
+				if (node.getCyRow().get(CyNetwork.SELECTED, Boolean.class)) {
+					if (selected != null) {
+						return;
+					}
+					selected = node;
+				}
+			}
+			
+			if (selected == null) {
+				return;
+			}
+			
+            //  Show the details
+            bpPanel.showDetails(network, selected);
+            //  If legend is showing, show details
+            bpContainer.showDetails();
+		} finally {
+			// update custom nodes
+			mapBioPaxToCytoscape.customNodes(view);
+		}
+	}
 //
 //	/**
 //	 * Recursive Method for Walking up a Containment Tree, looking for

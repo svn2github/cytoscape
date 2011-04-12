@@ -2,6 +2,7 @@ package org.cytoscape.biopax.internal;
 
 import java.io.InputStream;
 
+import org.cytoscape.biopax.NetworkListener;
 import org.cytoscape.biopax.internal.view.BioPaxContainerImpl;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.read.InputStreamTaskFactory;
@@ -17,21 +18,23 @@ public class BioPaxNetworkViewTaskFactory implements InputStreamTaskFactory {
 	private final CyNetworkViewFactory viewFactory;
 	private final CyNetworkNaming naming;
 	private final BioPaxContainerImpl bpContainer;
+	private final NetworkListener networkListener;
 
 	private InputStream inputStream;
 	private String inputName;
 
-	public BioPaxNetworkViewTaskFactory(CyFileFilter filter, CyNetworkFactory networkFactory, CyNetworkViewFactory viewFactory, CyNetworkNaming naming, BioPaxContainerImpl bpContainer) {
+	public BioPaxNetworkViewTaskFactory(CyFileFilter filter, CyNetworkFactory networkFactory, CyNetworkViewFactory viewFactory, CyNetworkNaming naming, BioPaxContainerImpl bpContainer, NetworkListener networkListener) {
 		this.filter = filter;
 		this.networkFactory = networkFactory;
 		this.viewFactory = viewFactory;
 		this.naming = naming;
 		this.bpContainer = bpContainer;
+		this.networkListener = networkListener;
 	}
 	
 	@Override
 	public TaskIterator getTaskIterator() {
-		BioPaxNetworkViewReaderTask task = new BioPaxNetworkViewReaderTask(inputStream, inputName, networkFactory, viewFactory, naming, bpContainer);
+		BioPaxNetworkViewReaderTask task = new BioPaxNetworkViewReaderTask(inputStream, inputName, networkFactory, viewFactory, naming, bpContainer, networkListener);
 		return new TaskIterator(task);
 	}
 
