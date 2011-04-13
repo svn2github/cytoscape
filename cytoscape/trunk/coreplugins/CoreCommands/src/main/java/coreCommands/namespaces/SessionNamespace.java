@@ -94,6 +94,11 @@ public class SessionNamespace extends AbstractCommandHandler {
 			else
 				throw new CyCommandException("session: need file argument to open a session");
 
+      // Close all networks in the workspace.
+      Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
+      Cytoscape.createNewSession();
+      Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
+
 			try {
 				CytoscapeSessionReader reader = new CytoscapeSessionReader(fileName);
 				reader.read();
