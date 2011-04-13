@@ -47,6 +47,8 @@ import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.work.TaskMonitor;
 //import org.cytoscape.work.Tunable;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.events.RowsAboutToChangeEvent;
+import org.cytoscape.model.events.RowsFinishedChangingEvent;
 
 public class IndexAndSearchTask extends AbstractNetworkViewTask {
 
@@ -54,7 +56,7 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 	private EnhancedSearch enhancedSearch;
 	private CyNetwork network;
 	private CyTableManager tableMgr;
-	
+
 	//@Tunable(description="Search for:")
 	public String query;
 
@@ -72,12 +74,12 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 		this.query = query;
 	}
 
-    @Override
+	@Override
 	public void run(final TaskMonitor taskMonitor) {
-    	
+
 		// Give the task a title.
 		taskMonitor.setTitle("Searching the network");
-		
+
 		// Index the given network or use existing index
 		RAMDirectory idx = null;
 
@@ -95,7 +97,7 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 		if (interrupted) {
 			return;
 		}
-		
+
 		// Execute query
 		taskMonitor.setStatusMessage("Executing query");
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(network, idx, tableMgr);
@@ -105,20 +107,32 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 			return;
 		}
 
-		showResults(queryHandler, taskMonitor);
+		if (network != null && network.getNodeList().size() > 0){
+			try {
+
+				EnhancedSearchPlugin.eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this,  network.getDefaultNodeTable()));
+				EnhancedSearchPlugin.eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this,  network.getDefaultEdgeTable()));
+
+				showResults(queryHandler, taskMonitor);
+			}
+			finally {
+				EnhancedSearchPlugin.eventHelper.fireAsynchronousEvent(new RowsFinishedChangingEvent(this, network.getDefaultNodeTable()));		
+				EnhancedSearchPlugin.eventHelper.fireAsynchronousEvent(new RowsFinishedChangingEvent(this, network.getDefaultEdgeTable()));							
+			}
+		}
 	}
 
-    
-    private void showResults(EnhancedSearchQuery queryHandler, final TaskMonitor taskMonitor){
+
+	private void showResults(EnhancedSearchQuery queryHandler, final TaskMonitor taskMonitor){
 		// Display results
-    	if (network == null || network.getNodeList().size() == 0){
-    		return;
-    	}
-    	
+		if (network == null || network.getNodeList().size() == 0){
+			return;
+		}
+
 		List<CyNode> nodeList = network.getNodeList();
 		for (CyNode n : nodeList) {
 			n.getCyRow().set("selected",false);
-    	}
+		}
 		List<CyEdge> edgeList = network.getEdgeList();
 		for (CyEdge e : edgeList) {
 			e.getCyRow().set("selected",false);
@@ -138,7 +152,7 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 		Iterator nodeIt = nodeHits.iterator();
 		int numCompleted = 0;
 		while (nodeIt.hasNext() && !interrupted) {
-		    int currESPIndex = Integer.parseInt(nodeIt.next().toString());
+			int currESPIndex = Integer.parseInt(nodeIt.next().toString());
 			CyNode currNode = network.getNode(currESPIndex);
 			if (currNode != null) {
 				currNode.getCyRow().set("selected", true);
@@ -152,7 +166,7 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 		Iterator edgeIt = edgeHits.iterator();
 		numCompleted = 0;
 		while (edgeIt.hasNext() && !interrupted) {
-		    int currESPIndex = Integer.parseInt(edgeIt.next().toString());
+			int currESPIndex = Integer.parseInt(edgeIt.next().toString());
 			CyEdge currEdge = network.getEdge(currESPIndex);
 			if (currEdge != null) {
 				currEdge.getCyRow().set("selected", true);
@@ -162,14 +176,14 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 
 			taskMonitor.setProgress(numCompleted++ / edgeHitCount);
 		}
-		
+
 		// Refresh view to show selected nodes and edges
 		view.updateView();
-    }
+	}
 
-    
-    @Override
-    public void cancel() {
+
+	@Override
+	public void cancel() {
 		this.interrupted = true;
-    }
+	}
 }
