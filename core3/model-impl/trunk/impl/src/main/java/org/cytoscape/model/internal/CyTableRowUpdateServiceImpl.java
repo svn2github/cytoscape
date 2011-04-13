@@ -130,7 +130,10 @@ class CyTableRowUpdateServiceImpl
 
 		final int newRefCount = tableToRefCountMap.get(table) - 1;
 		if (newRefCount < 0)
-			throw new IllegalStateException("reference counts should *never* drop to zero!");
+			throw new IllegalStateException(
+					"reference counts should *never* drop to zero!"
+					+ "(Maybe someone fired a RowsFinishedChangingEvent w/o "
+					+ "first firing a RowsAboutToChangeEvent?)");
 		tableToRefCountMap.put(table, newRefCount);
 		fireUpdateEvents(table);
 	}
