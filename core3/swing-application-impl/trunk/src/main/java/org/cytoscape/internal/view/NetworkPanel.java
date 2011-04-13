@@ -413,14 +413,14 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
     public void handleRowSets(final CyTable table, final List<RowSet> rowSets) {
 	boolean selectColumnHasBeenUpdated = false;
 	for (final RowSet rowSet : rowSets) {
-	    if (rowSet.getColumn() == CyNetwork.SELECTED) {
+	    if (rowSet.getColumn().equalsIgnoreCase(CyNetwork.SELECTED)) {
 		selectColumnHasBeenUpdated = true;
 		break;
 	    }
 	}
 
 	if (selectColumnHasBeenUpdated)
-	    treeTable.getTree().repaint();
+	    treeTable.getTree().updateUI();
     }
 
     @Override
