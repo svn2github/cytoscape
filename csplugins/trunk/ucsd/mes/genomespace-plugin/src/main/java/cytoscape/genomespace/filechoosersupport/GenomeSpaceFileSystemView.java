@@ -22,27 +22,30 @@ public final class GenomeSpaceFileSystemView extends FileSystemView {
 	public File createNewFolder(final File containingDir) throws IOException {
 		final GSFileMetadata fileMetadata =
 			dataManagerClient.createDirectory(containingDir.getPath(), "New Folder");
-		return new GenomeSpaceFile(fileMetadata, dataManagerClient, null);
+		return new GenomeSpaceFile(fileMetadata, dataManagerClient, getRootDirectory());
+	}
+
+	private String getRootDirectory() {
+		if (root == null)
+			root = dataManagerClient.listDefaultDirectory().getDirectory();
+		return root.getPath();
 	}
 
 	@Override
 	public File getChild(final File parent, final String fileName) {
-System.err.println("++++++++++++++++++++++++++ call to GenomeSpaceFileSystemView.getChild(" + parent.getPath() + ", " + fileName + ")");
-return null;
+		throw new IllegalStateException("not implemented!");
 	}
 
 	@Override
 	public File getDefaultDirectory() {
-System.err.println("++++++++++++++++++++++++++ call to GenomeSpaceFileSystemView.getDefaultDirectory()");
 		if (root == null)
 			root = dataManagerClient.listDefaultDirectory().getDirectory();
-		return new GenomeSpaceFile(root, dataManagerClient, null);
+		return new GenomeSpaceFile(root, dataManagerClient, getRootDirectory());
 	}
 
 	@Override
 	public File[] getFiles(final File dir, final boolean useFileHiding) {
-System.err.println("++++++++++++++++++++++++++ in GenomeSpaceFileSystemView.getFiles(" + dir.getPath() + ", " + useFileHiding + ")");
-return new File[0];
+		return dir.listFiles();
 	}
 
 	@Override
@@ -57,7 +60,6 @@ return new File[0];
 
 	@Override
 	public File[] getRoots() {
-System.err.println("++++++++++++++++++++++++++ Entering GenomeSpaceFileSystemView.getRoots()");
 		final File[] files = { getDefaultDirectory() };
 		return files;
 	}
@@ -66,7 +68,6 @@ System.err.println("++++++++++++++++++++++++++ Entering GenomeSpaceFileSystemVie
 	public String getSystemDisplayName(final File f) {
 		return f.toString();
 	}
-
 	
 	@Override
 	public String getSystemTypeDescription(File f) {
@@ -94,13 +95,11 @@ System.err.println("++++++++++++++++++++++++++ Entering GenomeSpaceFileSystemVie
 
 	@Override
 	public boolean isParent(final File folder, final File file) {
-System.err.println("++++++++++++++++++++++++++ call to GenomeSpaceFileSystemView.isParent("+folder+", "+file+")");
-return false;
+		return file.getPath().startsWith(folder.getPath() + "/");
 	}
 
 	@Override
 	public Boolean isTraversable(final File f) {
-System.err.println("++++++++++++++++++++++++++ About to return "+super.isTraversable(f)+" from GenomeSpaceFileSystemView.isTraversable()");
-		return super.isTraversable(f);
+		return f.isDirectory();
 	}
 }

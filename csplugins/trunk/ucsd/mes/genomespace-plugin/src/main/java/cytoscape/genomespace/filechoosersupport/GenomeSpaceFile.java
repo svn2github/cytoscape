@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -15,16 +16,59 @@ import org.genomespace.datamanager.core.GSFileMetadata;
 public final class GenomeSpaceFile extends File {
 	private final GSFileMetadata fileMetadata;
 	private final DataManagerClient dataManagerClient;
-	private final GenomeSpaceFile parent;
+	private final String rootDirectory;
+	private final String canonicalPath;
 
 	public GenomeSpaceFile(final GSFileMetadata fileMetadata,
 			       final DataManagerClient dataManagerClient,
-			       final GenomeSpaceFile parent)
+			       final String rootDirectory)
 	{
-		super(fileMetadata.getPath() + "/" + fileMetadata.getName());
+		super(GenomeSpaceFile.getCanonicalPathname(fileMetadata, rootDirectory));
 		this.fileMetadata = fileMetadata;
 		this.dataManagerClient = dataManagerClient;
-		this.parent = parent;
+		this.rootDirectory = rootDirectory;
+		this.canonicalPath =
+			GenomeSpaceFile.getCanonicalPathname(fileMetadata, rootDirectory);
+	}
+
+	/** Strips "rootDirectory" from the beginning of "noncanonicalPath" and returns the rest after
+	 *  ensuring that the rest starts with a leading slash.
+	 */
+        private static String getCanonicalPathname(final GSFileMetadata fileMetadata,
+						   final String rootDirectory)
+	{
+		final String noncanonicalPath =
+			fileMetadata.isDirectory() ? fileMetadata.getPath()
+			                           : fileMetadata.getPath() + "/" + fileMetadata.getName();
+                if (!noncanonicalPath.startsWith(rootDirectory))
+                        throw new IllegalArgumentException("in getCanonicalPathname: noncanonicalPath="
+                                                           + noncanonicalPath
+                                                           + " does not start with rootDirectory="
+                                                           + rootDirectory + "!");
+
+                String canonicalPath = noncanonicalPath.substring(rootDirectory.length());
+                if (!canonicalPath.startsWith("/"))
+			canonicalPath = "/" + canonicalPath;
+		if (canonicalPath.length() == 1)
+			return canonicalPath;
+		return canonicalPath.endsWith("/") ? canonicalPath.substring(0, canonicalPath.length() - 1)
+		                                   : canonicalPath;
+        }
+
+	private static String getParentDirectory(final String canonicalPath) {
+		if (canonicalPath.length() == 1)
+			return null;
+
+		final int lastSlashPos = canonicalPath.lastIndexOf("/");
+		return canonicalPath.substring(0, lastSlashPos);
+	}
+
+	private static String getBaseName(final String canonicalPath) {
+		if (canonicalPath.length() == 1)
+			return "";
+
+		final int lastSlashPos = canonicalPath.lastIndexOf("/");
+		return canonicalPath.substring(lastSlashPos + 1);
 	}
 
 	@Override
@@ -44,12 +88,7 @@ public final class GenomeSpaceFile extends File {
 
 	@Override
 	public int compareTo(final File pathname) {
-		try {
-			return (fileMetadata.getPath() + "/" + fileMetadata.getName())
-				.compareToIgnoreCase(pathname.getCanonicalPath());
-		} catch (final IOException e) {
-			return 0;
-		}
+		return canonicalPath.compareTo(pathname.getPath());
 	}
 
 	@Override
@@ -69,11 +108,9 @@ public final class GenomeSpaceFile extends File {
 
 	@Override
 	public boolean equals(final Object o) {
-if ((o instanceof File) && !(o instanceof GenomeSpaceFile))System.err.println("Strange, we have a File that is not a GenomeSpaceFile ("+o);
 		if (o instanceof GenomeSpaceFile) {
 			final GenomeSpaceFile other = (GenomeSpaceFile)o;
-			return other.fileMetadata.getName().equals(fileMetadata.getName())
-			       && other.fileMetadata.getPath().equals(fileMetadata.getPath());
+			return other.fileMetadata.getPath().equals(fileMetadata.getPath());
 		} else
 			return false;
 	}
@@ -90,7 +127,7 @@ if ((o instanceof File) && !(o instanceof GenomeSpaceFile))System.err.println("S
 
 	@Override
 	public String getCanonicalPath() throws IOException {
-		return fileMetadata.getPath() + "/" + fileMetadata.getName();
+		return canonicalPath;
 	}
 
 	@Override
@@ -100,7 +137,7 @@ if ((o instanceof File) && !(o instanceof GenomeSpaceFile))System.err.println("S
 
 	@Override
 	public String getAbsolutePath() {
-		return fileMetadata.getPath() + "/" + fileMetadata.getName();
+		return canonicalPath;
 	}
 
 	@Override
@@ -110,24 +147,32 @@ if ((o instanceof File) && !(o instanceof GenomeSpaceFile))System.err.println("S
 
 	@Override
 	public String getName() {
-		return fileMetadata.getName();
+		return GenomeSpaceFile.getBaseName(canonicalPath);
 	}
 
 	@Override
 	public String getParent() {
-		System.err.println("oooooooooooooooooooooooooooooooooo call to GenomeSpaceFile.getParent() -> "+fileMetadata.getPath());
-		return fileMetadata.getPath();
+		return GenomeSpaceFile.getParentDirectory(canonicalPath);
 	}
 
 	@Override
 	public File getParentFile() {
-System.err.println("oooooooooooooooooooooooooooooooooo call to GenomeSpaceFile.getParentFile(), this="+this+", parent="+parent);
-		return parent;
+		final String parentDir = GenomeSpaceFile.getParentDirectory(canonicalPath);
+		if (parentDir == null)
+			return null;
+
+		final String serverParentDir =
+			fileMetadata.isDirectory() ? GenomeSpaceFile.getParentDirectory(fileMetadata.getPath())
+			                           : fileMetadata.getPath();
+		final GSFileMetadata parentMetadata = dataManagerClient.getMetadata(serverParentDir);
+		final GenomeSpaceFile parentFile =
+			new GenomeSpaceFile(parentMetadata, dataManagerClient, rootDirectory);
+		return parentFile;
 	}
 
 	@Override
 	public String getPath() {
-		return fileMetadata.getPath() + "/" + fileMetadata.getName();
+		return canonicalPath;
 	}
 
 	@Override
@@ -167,7 +212,8 @@ System.err.println("oooooooooooooooooooooooooooooooooo call to GenomeSpaceFile.g
 
 	@Override
 	public long lastModified() {
-		return fileMetadata.getLastModified().getTime();
+		final Date lastModified = fileMetadata.getLastModified();
+		return lastModified == null ? 0 : lastModified.getTime();
 	}
 
 	@Override
@@ -177,17 +223,13 @@ System.err.println("oooooooooooooooooooooooooooooooooo call to GenomeSpaceFile.g
 
 	@Override
 	public String[] list() {
-System.err.println("****************************** Entering list()");
 		if (!fileMetadata.isDirectory())
 			return null;
 
 		final List<GSFileMetadata> filesMetaData = dataManagerClient.list(fileMetadata).getContents();
-System.err.println("****************************** data manager returned " + filesMetaData.size() + " files");
 		final List<String> fileNames = new ArrayList<String>(filesMetaData.size());
 		for (final GSFileMetadata metadata : filesMetaData)
-{System.err.println("****************************** Adding file name: " + metadata.getName());
-			fileNames.add(metadata.getName());
-}
+			fileNames.add(GenomeSpaceFile.getCanonicalPathname(metadata, rootDirectory));
 		final String[] strings = new String[filesMetaData.size()];
 		return fileNames.toArray(strings);
 	}
@@ -198,16 +240,14 @@ System.err.println("****************************** data manager returned " + fil
 	}
 
 	@Override
-	public File[] listFiles() {
-System.err.println("+++++++++++++++ Entering listFiles()");
+	public synchronized File[] listFiles() {
 		if (!fileMetadata.isDirectory())
 			return null;
 
 		final List<GSFileMetadata> filesMetaData = dataManagerClient.list(fileMetadata).getContents();
-System.err.println("+++++++++++++++ got " + filesMetaData + " files from the data manager");
 		final List<File> fileNames = new ArrayList<File>(filesMetaData.size());
 		for (final GSFileMetadata metadata : filesMetaData)
-			fileNames.add(new GenomeSpaceFile(metadata, dataManagerClient, parent));
+			fileNames.add(new GenomeSpaceFile(metadata, dataManagerClient, rootDirectory));
 		final File[] files = new GenomeSpaceFile[filesMetaData.size()];
 		return fileNames.toArray(files);
 	}
