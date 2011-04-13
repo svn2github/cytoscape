@@ -19,9 +19,10 @@
 
 	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager" />
 
-	<osgi:reference id="guiTaskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager">
-	</osgi:reference>
+	<osgi:reference id="guiTaskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager" />
 
+    <osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
+        
 	<!--
 	This code registers the bean we just created "sampleTaskFactory" as an 
 	OSGi service of a particular type (org.cytoscape.task.NetworkTaskFactory).
