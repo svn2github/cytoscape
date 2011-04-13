@@ -723,7 +723,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 								// Check if this is a URL
 								URL url = null;
 								try {
-									url = new URL((String)objectAndEditString.getValidatedObject());
+									url = new URL(objectAndEditString.getValidatedObject().toString());
 								} catch (final MalformedURLException e1) {
 									// If invalid, just ignore.
 								}
