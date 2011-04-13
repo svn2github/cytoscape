@@ -73,10 +73,12 @@ public class AbstractSelectTaskTester {
 	tm = mock(TaskMonitor.class);
 
 	r1 = mock(CyRow.class);
+	when(r1.getTable()).thenReturn(table);
 	e1 = mock(CyEdge.class);
 	when(e1.getCyRow()).thenReturn(r1);
 
 	r2 = mock(CyRow.class);
+	when(r2.getTable()).thenReturn(table);
 	e2 = mock(CyEdge.class);
 	when(e2.getCyRow()).thenReturn(r2);
 
@@ -86,10 +88,12 @@ public class AbstractSelectTaskTester {
 	when(net.getEdgeList()).thenReturn(el);
 
 	r3 = mock(CyRow.class);
+	when(r3.getTable()).thenReturn(table);
 	e3 = mock(CyNode.class);
 	when(e3.getCyRow()).thenReturn(r3);
 
 	r4 = mock(CyRow.class);
+	when(r4.getTable()).thenReturn(table);
 	e4 = mock(CyNode.class);
 	when(e4.getCyRow()).thenReturn(r4);
 
