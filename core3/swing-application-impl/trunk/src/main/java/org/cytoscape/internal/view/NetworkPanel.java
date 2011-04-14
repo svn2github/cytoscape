@@ -401,7 +401,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
     }
 
     public void handleEvent(NetworkViewAddedEvent nde) {
-	logger.debug("Network view added " + nde.getNetworkView().getModel().getSUID());
+	logger.debug("Network view added to NetworkPanel: " + nde.getNetworkView().getModel().getSUID());
 
 	// Set current network view to the new one.
 	applicationManager.setCurrentNetworkView(nde.getNetworkView().getModel().getSUID());

@@ -38,7 +38,6 @@ package org.cytoscape.application.swing;
 
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JToolBar;
