@@ -347,6 +347,18 @@
 		<constructor-arg ref="cyPropertyServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 		<constructor-arg ref="streamUtilRef" />
+		<constructor-arg ref="cyEventHelperRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+
+		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
+		<constructor-arg ref="visualMappingManagerServiceRef" />
+		<constructor-arg ref="renderingEngineManagerServiceRef" />
+
+
+
+
+
 	</bean>
 	<bean id="subnetworkBuilderTaskFactory"
 		class="org.cytoscape.task.internal.quickstart.subnetworkbuilder.SubnetworkBuilderTaskFactory">
