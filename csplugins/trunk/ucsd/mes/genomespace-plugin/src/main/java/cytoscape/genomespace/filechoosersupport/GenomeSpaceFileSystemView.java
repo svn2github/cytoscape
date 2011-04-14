@@ -19,7 +19,26 @@ public final class GenomeSpaceFileSystemView extends FileSystemView {
 	}
 
 	@Override
+	public File createFileObject(final File dir, final String filename) {
+		String dirPath = dir.getPath();
+		if (!dirPath.equals("/"))
+			dirPath += '/';
+		return createFileObject(dirPath + filename);
+	}
+
+	@Override
+	public File createFileObject(final String path) {
+		throw new IllegalStateException("not implemented!");
+	}
+
+	@Override
+	protected File createFileSystemRoot(final File f) {
+		throw new IllegalStateException("not implemented!");
+	}
+
+	@Override
 	public File createNewFolder(final File containingDir) throws IOException {
+System.err.println("+++++++++++++++++++++++ call to GenomeSpaceFileSystemView.createNewFolder("+containingDir+")");
 		final GSFileMetadata fileMetadata =
 			dataManagerClient.createDirectory(containingDir.getPath(), "New Folder");
 		return new GenomeSpaceFile(fileMetadata, dataManagerClient, getRootDirectory());
@@ -45,6 +64,7 @@ public final class GenomeSpaceFileSystemView extends FileSystemView {
 
 	@Override
 	public File[] getFiles(final File dir, final boolean useFileHiding) {
+System.err.println("************************ GenomeSpaceFileSystemView.getFiles("+dir+") was called!");
 		return dir.listFiles();
 	}
 
@@ -77,7 +97,8 @@ public final class GenomeSpaceFileSystemView extends FileSystemView {
 
 	@Override
 	public boolean isFileSystem(final File f) {
-		return false;
+System.err.println("************************ GenomeSpaceFileSystemView.isFileSystem("+f+") was called!");
+		return true;
 	}
 
 	@Override
@@ -95,11 +116,19 @@ public final class GenomeSpaceFileSystemView extends FileSystemView {
 
 	@Override
 	public boolean isParent(final File folder, final File file) {
-		return file.getPath().startsWith(folder.getPath() + "/");
+		final String folderPath = folder.getPath();
+		boolean retval = file.getPath().startsWith(folderPath.equals("/") ? folderPath : folderPath + "/");
+System.err.println("************************ GenomeSpaceFileSystemView.isParent("+folder+", "+file+") returned "+retval);
+return retval;
+	}
+
+	public boolean isRoot(final File file) {
+		return file.getPath().equals("/");
 	}
 
 	@Override
 	public Boolean isTraversable(final File f) {
+System.err.println("************************ GenomeSpaceFileSystemView.isTraversable("+f+") was called!");
 		return f.isDirectory();
 	}
 }

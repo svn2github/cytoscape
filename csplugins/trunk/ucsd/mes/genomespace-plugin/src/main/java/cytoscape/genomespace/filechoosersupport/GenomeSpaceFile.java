@@ -37,9 +37,7 @@ public final class GenomeSpaceFile extends File {
         private static String getCanonicalPathname(final GSFileMetadata fileMetadata,
 						   final String rootDirectory)
 	{
-		final String noncanonicalPath =
-			fileMetadata.isDirectory() ? fileMetadata.getPath()
-			                           : fileMetadata.getPath() + "/" + fileMetadata.getName();
+		final String noncanonicalPath = fileMetadata.getPath();
                 if (!noncanonicalPath.startsWith(rootDirectory))
                         throw new IllegalArgumentException("in getCanonicalPathname: noncanonicalPath="
                                                            + noncanonicalPath
@@ -259,6 +257,7 @@ public final class GenomeSpaceFile extends File {
 
 	@Override
 	public boolean mkdir() {
+System.err.println("++++++++++++++++++++++++++++++++ attempted call to GenomeSpaceFile.mkdir()");
 		throw new UnsupportedOperationException("directory creation is currently not impemented for GenomeSpace!");
 	}
 
