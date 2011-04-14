@@ -35,17 +35,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.event.CyEventHelper;
-
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
-
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewDestroyedEvent;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +93,7 @@ public class CyNetworkViewManagerImpl implements CyNetworkViewManager, NetworkAb
     }
 
     @Override
-    public void destroyNetworkView(final CyNetworkView view) {
+    public void destroyNetworkView(CyNetworkView view) {
 	if (view == null)
 	    throw new NullPointerException("view is null");
 
@@ -114,11 +111,12 @@ public class CyNetworkViewManagerImpl implements CyNetworkViewManager, NetworkAb
 	    if (!networkViewMap.containsKey(viewID))
 		throw new IllegalArgumentException("network view is not recognized by this NetworkManager");
 
-	    CyNetworkView removed = networkViewMap.remove(viewID);
-	    removed = null;
+	    networkViewMap.remove(viewID);
 	}
 
 	cyEventHelper.fireSynchronousEvent(new NetworkViewDestroyedEvent(this));
+	view = null;
+	logger.debug("######### Network View deleted: " + viewID);
     }
 
     @Override

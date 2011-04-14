@@ -44,8 +44,8 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 {
 	private static final Logger logger = LoggerFactory.getLogger(NetworkViewImpl.class);
 
-	private Map<CyNode, View<CyNode>> nodeViews;
-	private Map<CyEdge, View<CyEdge>> edgeViews;
+	private final Map<CyNode, View<CyNode>> nodeViews;
+	private final Map<CyEdge, View<CyEdge>> edgeViews;
 
 	/**
 	 * Create a new instance of a network view model.
