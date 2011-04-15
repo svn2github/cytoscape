@@ -22,6 +22,7 @@ fi
 if `java -version 2>&1 | grep -- 64-Bit > /dev/null`; then # We have a 64 bit JVM.
     echo -Xms20m          >  "$vm_options_path/Cytoscape.vmoptions"
     echo -Xmx${phys_mem}m >> "$vm_options_path/Cytoscape.vmoptions"
+    echo -Xss10m          >> "$vm_options_path/Cytoscape.vmoptions"
     echo -d64             >> "$vm_options_path/Cytoscape.vmoptions"
 else # Assume a 32 bit JVM.
     # Truncate memory setting at 1550 MiB:
@@ -31,6 +32,7 @@ else # Assume a 32 bit JVM.
 
     echo -Xms10m          >  "$vm_options_path/Cytoscape.vmoptions"
     echo -Xmx${phys_mem}m >> "$vm_options_path/Cytoscape.vmoptions"
+    echo -Xss10m          >> "$vm_options_path/Cytoscape.vmoptions"
 fi
 
 # Shared JVM options

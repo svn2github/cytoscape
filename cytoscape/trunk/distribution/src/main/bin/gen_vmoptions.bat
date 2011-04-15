@@ -12,16 +12,16 @@ if exist findstr.out del findstr.out
 java -version 2>&1 | findstr /I 64-Bit > findstr.out
 for /f %%i in ('dir /b findstr.out') do if %%~zi equ 0 goto 32bit
 
-
 :64bit
 	echo -Xms20m > Cytoscape.vmoptions
 	echo -Xmx2g  >>Cytoscape.vmoptions
+	echo -Xss10m >>Cytoscape.vmoptions
 	goto shared
-
 
 :32bit
 	echo -Xms10m   > Cytoscape.vmoptions
 	echo -Xmx1550m >>Cytoscape.vmoptions
+	echo -Xss10m   >>Cytoscape.vmoptions
 
 :shared
 	echo -Dswing.aatext=true               >>Cytoscape.vmoptions
