@@ -24,16 +24,60 @@ public class ThresholdHeuristic{
     private int totalMin = 100000000;
     private int totalMax = -100000000;
 
+    //this multipled against all edgeweights to expand the number of integer bins if edge weight range less then 100
+    private double binFactor;
+
     public ThresholdHeuristic(DistanceMatrix matrix){
 
 	this.edgeWeights = matrix.getEdgeValues();
 	this.nodes = matrix.getNodes();
 	this.edges = matrix.getEdges();
+	setBinFactor();
     }
 
+    //calculates the binFactor. Multiplies edgeweights by binFactor edge weight range less then 100
+    private void setBinFactor(){
+
+	double minWeight = 1000000;
+	double maxWeight = -1000000;
+	double weightRange;
+
+	for(int i = 0; i < edgeWeights.length; i++){
+
+	    double weight = edgeWeights[i];
+
+	    if(weight > maxWeight)
+		maxWeight = weight;
+
+	    if(weight < minWeight)
+		minWeight = weight;
+	}
+
+	weightRange = maxWeight - minWeight;
+
+	//keep edges as they are
+	if(weightRange >= 100)
+	    binFactor =  1.0;
+
+	
+	else{
+
+	    //avoid dividing by zero
+	    if(weightRange == 0)
+		weightRange = .00001;
+
+	    binFactor = 100.0/weightRange;
+
+	    //adjust all edges using binFactor
+	    for(int i = 0; i < edgeWeights.length; i++)
+		edgeWeights[i] = binFactor*edgeWeights[i];
+	} 
+    }
+		    
+	    
 
     //run threshold heuristic, returning -1000 if no threshold is found
-    public int run(){
+    public double run(){
 
 	int[] numConnectedNodes  = getNumConnectedNodes();
 	int[] seArray = getSEarray();
@@ -160,7 +204,7 @@ public class ThresholdHeuristic{
     }
 
     //use change in NSV distribution to calculate threshold
-    private int selectThreshold(int[] numConnectedNodes, int[] seArray){
+    private double selectThreshold(int[] numConnectedNodes, int[] seArray){
 
       
 
@@ -173,12 +217,12 @@ public class ThresholdHeuristic{
 	    newNSV = (double)numConnectedNodes[i]/(double)seArray[i];
 	    deltaNSV = newNSV - oldNSV;
 	    
-	    //dNSV/dTH is positive, shift index by minimum edge weight and return as threshold
+	    //dNSV/dTH is positive, shift index by minimum edge weight and return as threshold. Dive by binFactor to adjust for original scale
 	    if(deltaNSV > 0)
-		return (i + totalMin);
+		return ((double)(i + totalMin))/binFactor;
 	}
 
-	//If no threshold found, retun -1000
+	//If no threshold found, return -1000
 	return -1000;
 
     }
