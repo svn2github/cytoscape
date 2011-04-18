@@ -14,14 +14,17 @@ public final class GSFileMetadataTreeNode extends DefaultMutableTreeNode {
 	private final GSFileMetadata fileMetadata;
 	private final DataManagerClient dataManagerClient;
 	private int childCount;
+	private final List<String> acceptableExtensions;
 
 	GSFileMetadataTreeNode(final GSFileMetadata fileMetadata,
-			       final DataManagerClient dataManagerClient)
+			       final DataManagerClient dataManagerClient,
+			       final List<String> acceptableExtensions)
 	{
 		super(fileMetadata, fileMetadata.isDirectory());
 		this.fileMetadata = fileMetadata;
 		this.dataManagerClient = dataManagerClient;
 		this.childCount = fileMetadata.isDirectory() ? UNINITIALISED : 0;
+		this.acceptableExtensions = acceptableExtensions;
 	}
 
 	@Override
@@ -50,12 +53,29 @@ public final class GSFileMetadataTreeNode extends DefaultMutableTreeNode {
 		// in this method is essential!  Do not change it!!
 		Collections.sort(filesMetadata, new GSFileMetadataComparator());
 		for (final GSFileMetadata metadata : filesMetadata) {
-			add(new GSFileMetadataTreeNode(metadata, dataManagerClient));
+			add(new GSFileMetadataTreeNode(metadata, dataManagerClient, acceptableExtensions));
 			++childCount;
 		}
 	}
 
 	public GSFileMetadata getFileMetadata() {
 		return fileMetadata;
+	}
+
+	public boolean isEnabled() {
+		if (acceptableExtensions.isEmpty())
+			return true;
+
+		final String extension = getFileExtension(fileMetadata.getName());
+		for (final String acceptableExtension : acceptableExtensions) {
+			if (extension.equalsIgnoreCase(acceptableExtension))
+				return true;
+		}
+
+		return false;
+	}
+	private static String getFileExtension(final String fileName) {
+		final int lastDotPos = fileName.lastIndexOf('.');
+		return (lastDotPos == -1) ? "" : fileName.substring(lastDotPos + 1);
 	}
 }
