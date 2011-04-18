@@ -3,7 +3,6 @@ package org.cytoscape.task.internal.quickstart.subnetworkbuilder;
 import java.util.Arrays;
 import java.util.List;
 
-import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
@@ -18,9 +17,9 @@ import org.cytoscape.work.Tunable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SetQueryGeneTask extends AbstractTask {
+public class CreateSubnetworkTask extends AbstractTask {
 
-    private static final Logger logger = LoggerFactory.getLogger(SetQueryGeneTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(CreateSubnetworkTask.class);
 
     private static final String QUERY_GENE_ATTR_NAME = "Gene Type";
 
@@ -29,7 +28,7 @@ public class SetQueryGeneTask extends AbstractTask {
 
     private final SubnetworkBuilderUtil util;
 
-    SetQueryGeneTask(final SubnetworkBuilderUtil util) {
+    CreateSubnetworkTask(final SubnetworkBuilderUtil util) {
 	this.util = util;
     }
 
@@ -61,9 +60,8 @@ public class SetQueryGeneTask extends AbstractTask {
 	    List<CyNode> nodeList = target.getNodeList();
 	    for (final CyNode node : nodeList) {
 		if (geneList.contains(node.getCyRow().get(CyTableEntry.NAME, String.class))) {
-		    node.getCyRow().set("selected", true);
+		    node.getCyRow().set(CyNetwork.SELECTED, true);
 		    node.getCyRow().set(QUERY_GENE_ATTR_NAME, "query");
-		    logger.debug("!!! Found: " + node.getCyRow().get(CyTableEntry.NAME, String.class));
 		    found = true;
 		}
 	    }
@@ -82,6 +80,5 @@ public class SetQueryGeneTask extends AbstractTask {
 	SelectFirstNeighborsTask nextTask = new SelectFirstNeighborsTask(target, util.networkViewManager,
 		util.eventHelper);
 	this.insertTasksAfterCurrentTask(nextTask);
-
     }
 }

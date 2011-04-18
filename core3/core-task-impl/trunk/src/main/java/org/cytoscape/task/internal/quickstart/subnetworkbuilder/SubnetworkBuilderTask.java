@@ -31,7 +31,7 @@ public class SubnetworkBuilderTask extends AbstractTask {
     @Override
     public void run(TaskMonitor monitor) throws Exception {
 	final String selected = selection.getSelectedValue();
-	insertTasksAfterCurrentTask(new SetQueryGeneTask(util));
+	insertTasksAfterCurrentTask(new CreateSubnetworkTask(util));
 
 	if (selected == LOAD_NEW_NETWORK) {
 	    insertTasksAfterCurrentTask(util.getWebServiceImportTask());

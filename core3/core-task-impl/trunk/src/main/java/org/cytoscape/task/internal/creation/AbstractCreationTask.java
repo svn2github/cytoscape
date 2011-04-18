@@ -27,27 +27,27 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.task.internal.creation;  
-
+package org.cytoscape.task.internal.creation;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.TaskMonitor;
 
-
-// net can be null, so don't use AbstractNetworkTask
+/**
+ * Task to create new sub network from an original (parent) network.
+ * 
+ */
 public abstract class AbstractCreationTask extends AbstractTask {
-	protected final CyNetworkManager networkManager;
-	protected final CyNetworkViewManager networkViewManager;
-	protected final CyNetwork net;
 
-	public AbstractCreationTask(final CyNetwork net, final CyNetworkManager networkManager,
-				    final CyNetworkViewManager networkViewManager)
-	{
-		this.net = net;
-		this.networkManager = networkManager;
-		this.networkViewManager = networkViewManager;
-	}
+    protected final CyNetworkManager networkManager;
+    protected final CyNetworkViewManager networkViewManager;
+    protected final CyNetwork parentNetwork;
+
+    public AbstractCreationTask(final CyNetwork parentNetwork, final CyNetworkManager networkManager,
+	    final CyNetworkViewManager networkViewManager) {
+	this.parentNetwork = parentNetwork;
+	this.networkManager = networkManager;
+	this.networkViewManager = networkViewManager;
+    }
 }

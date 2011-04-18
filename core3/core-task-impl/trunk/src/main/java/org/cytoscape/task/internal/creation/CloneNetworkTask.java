@@ -84,8 +84,8 @@ public class CloneNetworkTask extends AbstractCreationTask {
 	}
 
 	public void run(TaskMonitor tm) {
-		CyNetwork newNet = cloneNetwork(net);
-		CyNetworkView origView = networkViewManager.getNetworkView(net.getSUID());
+		CyNetwork newNet = cloneNetwork(parentNetwork);
+		CyNetworkView origView = networkViewManager.getNetworkView(parentNetwork.getSUID());
 		final RenderingEngine<?> re = reManager.getRendringEngine(origView);
 
 		networkManager.addNetwork(newNet);

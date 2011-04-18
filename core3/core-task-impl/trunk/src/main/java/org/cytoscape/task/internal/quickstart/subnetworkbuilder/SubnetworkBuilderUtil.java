@@ -14,14 +14,11 @@ import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CyNetworkNaming;
-import org.cytoscape.task.internal.creation.NewNetworkSelectedNodesEdgesTask;
 import org.cytoscape.task.internal.creation.NewNetworkSelectedNodesOnlyTask;
 import org.cytoscape.task.internal.quickstart.ImportNetworkFromPublicDataSetTask;
 import org.cytoscape.task.internal.quickstart.remote.InteractionFilePreprocessor;
-import org.cytoscape.task.internal.select.SelectAdjacentEdgesTask;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.Task;
 
@@ -41,7 +38,6 @@ class SubnetworkBuilderUtil {
     private final CyRootNetworkFactory crnf;
     private final CyNetworkViewFactory cnvf;
     private final VisualMappingManager vmm;
-    private final RenderingEngineManager reMgr;
 
     private final Set<InteractionFilePreprocessor> processors;
 
@@ -49,14 +45,13 @@ class SubnetworkBuilderUtil {
 	    final CyNetworkViewManager networkViewManager, CyProperty<Properties> cyProps,
 	    CyNetworkNaming cyNetworkNaming, StreamUtil streamUtil, final CyEventHelper eventHelper,
 	    final CyApplicationManager appManager, CyRootNetworkFactory crnf, CyNetworkViewFactory cnvf,
-	    VisualMappingManager vmm, final RenderingEngineManager reMgr) {
+	    VisualMappingManager vmm) {
 	this.mgr = mgr;
 	this.netmgr = netmgr;
 	this.networkViewManager = networkViewManager;
 	this.crnf = crnf;
 	this.cnvf = cnvf;
 	this.vmm = vmm;
-	this.reMgr = reMgr;
 	this.props = cyProps.getProperties();
 	this.cyNetworkNaming = cyNetworkNaming;
 	this.streamUtil = streamUtil;
@@ -83,7 +78,7 @@ class SubnetworkBuilderUtil {
 
     Task getNewNetworkSelectedNodesOnlyTask(final CyNetwork network) {
 	return new NewNetworkSelectedNodesOnlyTask(network, crnf, cnvf, netmgr, networkViewManager, cyNetworkNaming,
-		vmm, reMgr);
+		vmm, appManager);
     }
 
 }

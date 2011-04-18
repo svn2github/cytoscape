@@ -27,19 +27,17 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.task.internal.creation;  
-
+package org.cytoscape.task.internal.creation;
 
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskIterator;
-
 
 public class NewNetworkSelectedNodesEdgesTaskFactory extends AbstractNetworkTaskFactory {
 
@@ -49,25 +47,23 @@ public class NewNetworkSelectedNodesEdgesTaskFactory extends AbstractNetworkTask
     private CyNetworkViewFactory cnvf;
     private CyNetworkNaming naming;
     private VisualMappingManager vmm;
-    private final RenderingEngineManager reMgr;
+    private final CyApplicationManager appManager;
 
-    public NewNetworkSelectedNodesEdgesTaskFactory(CyRootNetworkFactory crnf,
-                              CyNetworkViewFactory cnvf, CyNetworkManager netmgr,
-                              final CyNetworkViewManager networkViewManager,
-                              CyNetworkNaming naming, VisualMappingManager vmm,
-                              final RenderingEngineManager reMgr)
-    {
-        this.netmgr = netmgr;
-        this.networkViewManager = networkViewManager;
-        this.crnf = crnf;
-        this.cnvf = cnvf;
-        this.naming = naming;
-        this.vmm = vmm;
-		this.reMgr = reMgr;
+    public NewNetworkSelectedNodesEdgesTaskFactory(CyRootNetworkFactory crnf, CyNetworkViewFactory cnvf,
+	    CyNetworkManager netmgr, final CyNetworkViewManager networkViewManager, CyNetworkNaming naming,
+	    VisualMappingManager vmm, final CyApplicationManager appManager) {
+	this.netmgr = netmgr;
+	this.networkViewManager = networkViewManager;
+	this.crnf = crnf;
+	this.cnvf = cnvf;
+	this.naming = naming;
+	this.vmm = vmm;
+	this.appManager = appManager;
     }
 
     public TaskIterator getTaskIterator() {
-        return new TaskIterator(new NewNetworkSelectedNodesEdgesTask(net,crnf, cnvf, netmgr, networkViewManager, naming, vmm, reMgr));
+	return new TaskIterator(new NewNetworkSelectedNodesEdgesTask(net, crnf, cnvf, netmgr, networkViewManager,
+		naming, vmm, appManager));
     }
 
 }

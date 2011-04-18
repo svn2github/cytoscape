@@ -38,10 +38,10 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 
 public class NewNetworkSelectedNodesEdgesTask extends AbstractNetworkFromSelectionTask {
@@ -49,11 +49,11 @@ public class NewNetworkSelectedNodesEdgesTask extends AbstractNetworkFromSelecti
     public NewNetworkSelectedNodesEdgesTask(final CyNetwork net, final CyRootNetworkFactory cyroot,
 	    final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
 	    final CyNetworkViewManager networkViewManager, final CyNetworkNaming cyNetworkNaming,
-	    final VisualMappingManager vmm, final RenderingEngineManager reMgr) {
-	super(net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming, vmm, reMgr);
+	    final VisualMappingManager vmm, final CyApplicationManager appManager) {
+	super(net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming, vmm, appManager);
     }
 
     Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes) {
-	return CyTableUtil.getEdgesInState(netx, "selected", true);
+	return CyTableUtil.getEdgesInState(netx, CyNetwork.SELECTED, true);
     }
 }

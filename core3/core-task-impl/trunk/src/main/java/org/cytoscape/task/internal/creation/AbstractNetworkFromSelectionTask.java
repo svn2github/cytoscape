@@ -26,9 +26,8 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.task.internal.creation;
-
 
 import java.util.Collection;
 import java.util.List;
@@ -42,96 +41,96 @@ import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.session.CyNetworkNaming;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.RenderingEngine;
-import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.TaskMonitor;
 
-
 abstract class AbstractNetworkFromSelectionTask extends AbstractCreationTask {
 
-    protected final CyRootNetworkFactory cyroot;
-    protected final CyNetworkViewFactory cnvf;
+    protected final CyRootNetworkFactory rootNetworkFactory;
+    protected final CyNetworkViewFactory viewFactory;
     protected final VisualMappingManager vmm;
     protected final CyNetworkNaming cyNetworkNaming;
-	protected final RenderingEngineManager reManager;
+    protected final CyApplicationManager appManager;
 
-    public AbstractNetworkFromSelectionTask(final CyNetwork net, final CyRootNetworkFactory cyroot,
-                           final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
-                           final CyNetworkViewManager networkViewManager,
-                           final CyNetworkNaming cyNetworkNaming,
-                           final VisualMappingManager vmm, final RenderingEngineManager reManager)
-	{
-		super(net, netmgr, networkViewManager);
-		this.cyroot = cyroot;
-		this.cnvf = cnvf;
-		this.cyNetworkNaming = cyNetworkNaming;
-		this.vmm = vmm;
-		this.reManager = reManager;
-	}
+    public AbstractNetworkFromSelectionTask(final CyNetwork parentNetwork,
+	    final CyRootNetworkFactory rootNetworkFactory, final CyNetworkViewFactory viewFactory,
+	    final CyNetworkManager netmgr, final CyNetworkViewManager networkViewManager,
+	    final CyNetworkNaming cyNetworkNaming, final VisualMappingManager vmm, final CyApplicationManager appManager) {
+	super(parentNetwork, netmgr, networkViewManager);
+	this.rootNetworkFactory = rootNetworkFactory;
+	this.viewFactory = viewFactory;
+	this.cyNetworkNaming = cyNetworkNaming;
+	this.vmm = vmm;
+	this.appManager = appManager;
+    }
 
-	abstract Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes);
+    abstract Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes);
 
-	public void run(TaskMonitor tm) {
-		if (net == null) 
-			throw new NullPointerException("Null current network!");
+    @Override
+    public void run(TaskMonitor tm) {
+	if (parentNetwork == null)
+	    throw new NullPointerException("Source network is null.");
 
-		// rename network to keep code comprehensible
-        CyNetwork currNet = net; 
-        CyNetworkView currView = networkViewManager.getNetworkView(currNet.getSUID());
-        final RenderingEngine<?> re = reManager.getRendringEngine(currView);
+	final CyNetworkView curView = networkViewManager.getNetworkView(parentNetwork.getSUID());
 
-		// Get the selected nodes, but only create network if nodes are actually selected.
-		List<CyNode> nodes = CyTableUtil.getNodesInState(currNet,"selected",true);
+	// Get the selected nodes, but only create network if nodes are actually selected.
+	final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(parentNetwork, CyNetwork.SELECTED, true);
 
-		if ( nodes.size() <= 0 )
-			throw new IllegalArgumentException("No nodes selected!");
+	if (selectedNodes.size() <= 0)
+	    throw new IllegalArgumentException("No nodes are selected!");
 
-		// create subnetwork and add selected nodes and appropriate edges
-		final CySubNetwork newNet = cyroot.convert(currNet).addSubNetwork();
+	// create subnetwork and add selected nodes and appropriate edges
+	final CySubNetwork newNet = rootNetworkFactory.convert(parentNetwork).addSubNetwork();
 
-		for ( CyNode node : nodes )
-			newNet.addNode(node);
+	for (final CyNode node : selectedNodes)
+	    newNet.addNode(node);
 
-		for ( CyEdge edge : getEdges(currNet,nodes) )
-			newNet.addEdge(edge);
+	for (final CyEdge edge : getEdges(parentNetwork, selectedNodes))
+	    newNet.addEdge(edge);
 
-		newNet.getCyRow().set(CyTableEntry.NAME, cyNetworkNaming.getSuggestedSubnetworkTitle(currNet));
+	newNet.getCyRow().set(CyTableEntry.NAME, cyNetworkNaming.getSuggestedSubnetworkTitle(parentNetwork));
 
-		networkManager.addNetwork(newNet);
+	networkManager.addNetwork(newNet);
 
-		if (currView == null)
-			return;
-
-		// create new view
-		CyNetworkView newView = cnvf.getNetworkView(newNet);
-        
-
-		networkViewManager.addNetworkView(newView);
+	appManager.setCurrentNetworkView(newNet.getSUID());
 	
-		// copy node location only.
-		for ( View<CyNode> newNodeView : newView.getNodeViews() ) {
-			View<CyNode> origNodeView = currView.getNodeView( newNodeView.getModel() );
-			newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION, origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION));
-			newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION, origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
+	if (curView == null)
+	    return;
 
-			// FIXME
-//			// Set lock (if necessary)
-//			for ( VisualProperty<?> vp : vpSet ) {
-//				if (origNodeView.isValueLocked(vp) )
-//					newNodeView.setLockedValue(vp, origNodeView.getVisualProperty(vp));
-//			}
-		}
-        
-		final VisualStyle style = vmm.getVisualStyle(currView);
-        vmm.setVisualStyle(vmm.getVisualStyle(currView),newView);
-        style.apply(newView);
-		newView.fitContent();
+	// create new view
+	final CyNetworkView newView = viewFactory.getNetworkView(newNet);
+
+	networkViewManager.addNetworkView(newView);
+
+	// copy node location only.
+	for (View<CyNode> newNodeView : newView.getNodeViews()) {
+	    View<CyNode> origNodeView = curView.getNodeView(newNodeView.getModel());
+	    newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION,
+		    origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION));
+	    newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION,
+		    origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
+
+	    // FIXME
+	    // // Set lock (if necessary)
+	    // for ( VisualProperty<?> vp : vpSet ) {
+	    // if (origNodeView.isValueLocked(vp) )
+	    // newNodeView.setLockedValue(vp,
+	    // origNodeView.getVisualProperty(vp));
+	    // }
 	}
+
+	final VisualStyle style = vmm.getVisualStyle(curView);
+	vmm.setVisualStyle(vmm.getVisualStyle(curView), newView);
+	style.apply(newView);
+	newView.fitContent();
+	
+	appManager.setCurrentNetworkView(newView.getModel().getSUID());
+    }
 }
