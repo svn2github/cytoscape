@@ -2,7 +2,7 @@ package cytoscape.genomespace;
 
 
 import cytoscape.Cytoscape;
-import cytoscape.genomespace.filechoosersupport.GenomeSpaceFileSystemView;
+import cytoscape.genomespace.filechoosersupport.GenomeSpaceTree;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 import cytoscape.logger.CyLogger;
@@ -56,21 +56,17 @@ public class ListFilesInGenomeSpace extends CytoscapeAction {
 			DataManagerClient dmc = client.getDataManagerClient();
 
 			// list the files present for this user
-//			Vector<GSFileMetadata> myFiles = new Vector(dmc.listDefaultDirectory().getContents());
-//			displayFiles(myFiles);
-			final JFileChooser chooser = new JFileChooser(new GenomeSpaceFileSystemView(dmc));
-			chooser.showDialog(Cytoscape.getDesktop(), "Close");
+			Vector<GSFileMetadata> myFiles = new Vector(dmc.listDefaultDirectory().getContents());
+			displayTree(dmc);
 
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed",ex);
 		}
 	}
 
-	private void displayFiles(final Vector<GSFileMetadata> files) {
-		final JList jl = new JList(files);
-		jl.setCellRenderer(new MyCellRenderer());
-		jl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane scrollPane = new JScrollPane(jl);
+	private void displayTree(final DataManagerClient dataManagerClient) {
+		final GenomeSpaceTree tree = new GenomeSpaceTree(dataManagerClient);
+		JScrollPane scrollPane = new JScrollPane(tree);
 		scrollPane.setPreferredSize(new Dimension(350, 600));
 		JPanel jp = new JPanel();
 		jp.add(scrollPane);
