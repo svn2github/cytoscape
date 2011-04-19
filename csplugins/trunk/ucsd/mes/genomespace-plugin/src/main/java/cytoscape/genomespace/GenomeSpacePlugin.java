@@ -31,5 +31,8 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 
 		LoadNetworkFromGenomeSpace loadNetworkAction = new LoadNetworkFromGenomeSpace();
 		Cytoscape.getDesktop().getCyMenus().addAction(loadNetworkAction);
+
+		LoadAttrsFromGenomeSpace loadAttrsAction = new LoadAttrsFromGenomeSpace();
+		Cytoscape.getDesktop().getCyMenus().addAction(loadAttrsAction);
 	}
 }	

@@ -2,10 +2,8 @@ package cytoscape.genomespace;
 
 
 import cytoscape.Cytoscape;
-import cytoscape.genomespace.filechoosersupport.GenomeSpaceFileSystemView;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.util.FileUtil;
 
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
