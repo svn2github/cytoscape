@@ -26,9 +26,8 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.task.internal.creation;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,122 +55,115 @@ import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskMonitor;
 
-
 public class CloneNetworkTask extends AbstractCreationTask {
-	private Map<CyNode,CyNode> origNewNodeMap;
-	private Map<CyEdge,CyEdge> origNewEdgeMap;
-	private final VisualMappingManager vmm;
-	private final CyNetworkFactory netFactory;
-	private final CyNetworkViewFactory netViewFactory;
-	private final RenderingEngineManager reManager;
-	private final CyNetworkNaming naming;
-	private final CyEventHelper eventHelper;
+    private Map<CyNode, CyNode> origNewNodeMap;
+    private Map<CyEdge, CyEdge> origNewEdgeMap;
+    private final VisualMappingManager vmm;
+    private final CyNetworkFactory netFactory;
+    private final CyNetworkViewFactory netViewFactory;
+    private final RenderingEngineManager reManager;
+    private final CyNetworkNaming naming;
+    private final CyEventHelper eventHelper;
 
-	public CloneNetworkTask(final CyNetwork net, final CyNetworkManager netmgr,
-    		                final CyNetworkViewManager networkViewManager,
-				final VisualMappingManager vmm, final CyNetworkFactory netFactory,
-				final CyNetworkViewFactory netViewFactory,
-    		                final RenderingEngineManager reManager,
-				final CyNetworkNaming naming, final CyEventHelper eventHelper)
-	{
-		super(net, netmgr, networkViewManager);
-		this.vmm            = vmm;
-		this.netFactory     = netFactory;
-		this.netViewFactory = netViewFactory;
-		this.reManager      = reManager;
-		this.naming         = naming;
-		this.eventHelper    = eventHelper;
+    public CloneNetworkTask(final CyNetwork net, final CyNetworkManager netmgr,
+	    final CyNetworkViewManager networkViewManager, final VisualMappingManager vmm,
+	    final CyNetworkFactory netFactory, final CyNetworkViewFactory netViewFactory,
+	    final RenderingEngineManager reManager, final CyNetworkNaming naming, final CyEventHelper eventHelper) {
+	super(net, netmgr, networkViewManager);
+	this.vmm = vmm;
+	this.netFactory = netFactory;
+	this.netViewFactory = netViewFactory;
+	this.reManager = reManager;
+	this.naming = naming;
+	this.eventHelper = eventHelper;
+    }
+
+    public void run(TaskMonitor tm) {
+	CyNetwork newNet = cloneNetwork(parentNetwork);
+	CyNetworkView origView = networkViewManager.getNetworkView(parentNetwork.getSUID());
+	final RenderingEngine<?> re = reManager.getRendringEngine(origView);
+
+	networkManager.addNetwork(newNet);
+	if (origView != null) {
+	    CyNetworkView newView = netViewFactory.getNetworkView(newNet);
+
+	    // Copy locaitons since this is controlled outside of visual style.
+	    for (final View<CyNode> newNodeView : newView.getNodeViews()) {
+		final View<CyNode> origNodeView = origView.getNodeView(newNodeView.getModel());
+		newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION,
+			origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION));
+		newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION,
+			origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
+	    }
+
+	    vmm.setVisualStyle(vmm.getVisualStyle(origView), newView);
+	    vmm.getVisualStyle(origView).apply(newView);
+	    networkViewManager.addNetworkView(newView);
+	    newView.fitContent();
 	}
+    }
 
-	public void run(TaskMonitor tm) {
-		CyNetwork newNet = cloneNetwork(parentNetwork);
-		CyNetworkView origView = networkViewManager.getNetworkView(parentNetwork.getSUID());
-		final RenderingEngine<?> re = reManager.getRendringEngine(origView);
+    private CyNetwork cloneNetwork(CyNetwork origNet) {
+	final CyNetwork newNet = netFactory.getInstance();
 
-		networkManager.addNetwork(newNet);
-		if ( origView != null ) {
-			CyNetworkView newView = netViewFactory.getNetworkView(newNet);
+	// copy default columns
+	cloneColumns(origNet.getDefaultNodeTable(), newNet.getDefaultNodeTable());
+	cloneColumns(origNet.getDefaultEdgeTable(), newNet.getDefaultEdgeTable());
+	cloneColumns(origNet.getDefaultNetworkTable(), newNet.getDefaultNetworkTable());
 
-			// Copy locaitons since this is controlled outside of visual style.
-			for (final View<CyNode> newNodeView : newView.getNodeViews()) {
-				final View<CyNode> origNodeView = origView.getNodeView( newNodeView.getModel() );
-				newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION,
-							      origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION));
-				newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION,
-							      origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
-			}
+	cloneNodes(origNet, newNet);
+	cloneEdges(origNet, newNet);
 
-			vmm.setVisualStyle(vmm.getVisualStyle(origView), newView );
-			vmm.getVisualStyle(origView).apply(newView);
-			networkViewManager.addNetworkView(newView);
-			newView.fitContent();
-		}
+	newNet.getCyRow().set(CyTableEntry.NAME,
+		naming.getSuggestedNetworkTitle(origNet.getCyRow().get(CyTableEntry.NAME, String.class)));
+
+	return newNet;
+    }
+
+    private void cloneNodes(CyNetwork origNet, CyNetwork newNet) {
+	origNewNodeMap = new HashMap<CyNode, CyNode>();
+	for (final CyNode origNode : origNet.getNodeList()) {
+	    final CyNode newNode = newNet.addNode();
+	    origNewNodeMap.put(origNode, newNode);
+	    cloneRow(origNode.getCyRow(), newNode.getCyRow());
 	}
+    }
 
-	private CyNetwork cloneNetwork(CyNetwork origNet) {
-		final CyNetwork newNet = netFactory.getInstance();
-
-		// copy default columns
-		cloneColumns( origNet.getDefaultNodeTable(), newNet.getDefaultNodeTable() );
-		cloneColumns( origNet.getDefaultEdgeTable(), newNet.getDefaultEdgeTable() );
-		cloneColumns( origNet.getDefaultNetworkTable(), newNet.getDefaultNetworkTable() );
-
-		cloneNodes( origNet, newNet );
-		cloneEdges( origNet, newNet );
-
-		newNet.getCyRow().set(CyTableEntry.NAME,
-				      naming.getSuggestedNetworkTitle(origNet.getCyRow().get(CyTableEntry.NAME, String.class)));
-
-		return newNet;
+    private void cloneEdges(CyNetwork origNet, CyNetwork newNet) {
+	origNewEdgeMap = new HashMap<CyEdge, CyEdge>();
+	for (final CyEdge origEdge : origNet.getEdgeList()) {
+	    final CyNode newSource = origNewNodeMap.get(origEdge.getSource());
+	    final CyNode newTarget = origNewNodeMap.get(origEdge.getTarget());
+	    final boolean newDirected = origEdge.isDirected();
+	    final CyEdge newEdge = newNet.addEdge(newSource, newTarget, newDirected);
+	    origNewEdgeMap.put(origEdge, newEdge);
+	    cloneRow(origEdge.getCyRow(), newEdge.getCyRow());
 	}
+    }
 
-	private void cloneNodes( CyNetwork origNet, CyNetwork newNet ) {
-		origNewNodeMap = new HashMap<CyNode,CyNode>();
-		for ( final CyNode origNode : origNet.getNodeList() ) {
-			final CyNode newNode = newNet.addNode();
-			origNewNodeMap.put( origNode, newNode );
-			cloneRow( origNode.getCyRow(), newNode.getCyRow() );
-		}
+    private void cloneColumns(final CyTable from, final CyTable to) {
+	for (final CyColumn fromColumn : from.getColumns()) {
+	    final CyColumn toColumn = to.getColumn(fromColumn.getName());
+	    if (toColumn == null)
+		to.createColumn(fromColumn.getName(), fromColumn.getType(), false);
+	    else if (toColumn.getType() == fromColumn.getType()) {
+		continue;
+	    } else {
+		throw new IllegalArgumentException("column of same name: " + fromColumn.getName()
+			+ "but types don't match (orig): " + fromColumn.getType().getName() + " (new): "
+			+ toColumn.getType().getName());
+	    }
 	}
+    }
 
-	private void cloneEdges( CyNetwork origNet, CyNetwork newNet ) {
-		origNewEdgeMap = new HashMap<CyEdge,CyEdge>();
-		for ( final CyEdge origEdge : origNet.getEdgeList() ) {
-			final CyNode newSource = origNewNodeMap.get( origEdge.getSource() );
-			final CyNode newTarget = origNewNodeMap.get( origEdge.getTarget() );
-			final boolean newDirected = origEdge.isDirected();
-			final CyEdge newEdge = newNet.addEdge( newSource, newTarget, newDirected );
-			origNewEdgeMap.put( origEdge, newEdge );
-			cloneRow( origEdge.getCyRow(), newEdge.getCyRow() );
-		}
+    private void cloneRow(final CyRow from, final CyRow to) {
+	try {
+	    eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, to.getTable()));
+
+	    for (final CyColumn column : from.getTable().getColumns())
+		to.set(column.getName(), from.getRaw(column.getName()));
+	} finally {
+	    eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, to.getTable()));
 	}
-
-	private void cloneColumns(final CyTable from, final CyTable to) {
-		for (final CyColumn fromColumn : from.getColumns()) {
-			final CyColumn toColumn = to.getColumn(fromColumn.getName());
-			if (toColumn == null )
-				to.createColumn(fromColumn.getName(), fromColumn.getType(), false);
-			else if (toColumn.getType() == fromColumn.getType()) {
-				continue;
-			} else {
-				throw new IllegalArgumentException("column of same name: "
-								   + fromColumn.getName() +
-								   "but types don't match (orig): " +
-								   fromColumn.getType().getName()
-								   + " (new): "
-								   + toColumn.getType().getName());
-			}
-		}
-	}
-
-	private void cloneRow(final CyRow from, final CyRow to) {
-		try {
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, to.getTable()));
-
-			for (final CyColumn column : from.getTable().getColumns())
-				to.set(column.getName(), from.getRaw(column.getName()));
-		} finally {
-			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, to.getTable()));
-		}
-	}
+    }
 }

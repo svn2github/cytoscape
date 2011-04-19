@@ -58,6 +58,8 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractCyAction extends AbstractAction implements CyAction {
 
     private static final long serialVersionUID = -2245672104075936952L;
+    
+    private static final Logger logger = LoggerFactory.getLogger(AbstractCyAction.class);
 
     protected String preferredMenu = null;
     protected float menuGravity = 100.0f; // end of menu
@@ -71,8 +73,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
     protected String enableFor = null;
     protected CyApplicationManager applicationManager;
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractCyAction.class);
-
+    
     /**
      * Creates a new AbstractCyAction object.
      * 

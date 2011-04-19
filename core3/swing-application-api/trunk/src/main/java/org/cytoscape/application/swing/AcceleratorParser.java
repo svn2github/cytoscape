@@ -38,13 +38,14 @@ import org.slf4j.LoggerFactory;
  * </ol>
  */
 final class AcceleratorParser {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(AcceleratorParser.class);
-    
+
     private static final String PREFIX = "VK_";
-    
+    private static final String FUNCTION_KEY = "fn";
+
     private static final Map<String, Integer> MOD_MAP = new HashMap<String, Integer>();
-    
+
     static {
 	MOD_MAP.put("command", Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 	MOD_MAP.put("cmd", Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
@@ -55,6 +56,16 @@ final class AcceleratorParser {
 	MOD_MAP.put("alt", InputEvent.ALT_MASK);
 	MOD_MAP.put("option", InputEvent.ALT_MASK);
 	MOD_MAP.put("opt", InputEvent.ALT_MASK);
+	MOD_MAP.put("fn1", KeyEvent.VK_F1);
+	MOD_MAP.put("fn2", KeyEvent.VK_F2);
+	MOD_MAP.put("fn3", KeyEvent.VK_F3);
+	MOD_MAP.put("fn4", KeyEvent.VK_F4);
+	MOD_MAP.put("fn5", KeyEvent.VK_F5);
+	MOD_MAP.put("fn6", KeyEvent.VK_F6);
+	MOD_MAP.put("fn7", KeyEvent.VK_F7);
+	MOD_MAP.put("fn8", KeyEvent.VK_F8);
+	MOD_MAP.put("fn9", KeyEvent.VK_F9);
+	MOD_MAP.put("fn10", KeyEvent.VK_F10);
     }
 
     /**
@@ -95,9 +106,15 @@ final class AcceleratorParser {
      *            A well formatted accelerator combination described above.
      */
     static KeyStroke parse(final String string) {
+
+	// Special case: function keys
+	if (string.startsWith(FUNCTION_KEY))
+	    return KeyStroke.getKeyStroke(MOD_MAP.get(string), 0);
+
 	int keyCode = 0;
 	int modifierCode = 0;
 	final StringTokenizer tokenizer = new StringTokenizer(string);
+
 	while (tokenizer.hasMoreTokens()) {
 	    String token = tokenizer.nextToken();
 	    if (tokenizer.hasMoreTokens())
@@ -124,11 +141,11 @@ final class AcceleratorParser {
     private static int lookupVKCode(final String name) {
 
 	String newName = name.toUpperCase();
-	if(newName.startsWith(PREFIX) == false)
+	if (newName.startsWith(PREFIX) == false)
 	    newName = PREFIX + newName;
-	
+
 	final String error = "The virtual key '" + newName + "' does not exist.";
-	    
+
 	int code = 0;
 	try {
 	    code = KeyEvent.class.getField(newName).getInt(KeyEvent.class);

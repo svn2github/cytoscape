@@ -78,6 +78,7 @@
 			<entry key="menuGravity" value="1.0" />
 			<entry key="command" value="load" />
 			<entry key="commandNamespace" value="network" />
+			<entry key="accelerator" value="cmd l" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -87,6 +88,7 @@
 			<entry key="title" value="URL..." />
 			<entry key="preferredMenu" value="File.Import.Network" />
 			<entry key="menuGravity" value="2.0" />
+			<entry key="accelerator" value="cmd shift l" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -419,6 +421,7 @@
 			<entry key="inToolBar" value="true" />
 			<entry key="toolBarGravity" value="3.1" />
 			<entry key="iconName" value="/images/ximian/stock_zoom-in.png" />
+			<entry key="accelerator" value="cmd plus" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -431,6 +434,7 @@
 			<entry key="inToolBar" value="true" />
 			<entry key="toolBarGravity" value="3.2" />
 			<entry key="iconName" value="/images/ximian/stock_zoom-out.png" />
+			<entry key="accelerator" value="cmd minus" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -443,6 +447,7 @@
 			<entry key="inToolBar" value="true" />
 			<entry key="toolBarGravity" value="3.4" />
 			<entry key="iconName" value="/images/ximian/stock_zoom-object.png" />
+			<entry key="accelerator" value="cmd shift f" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -455,6 +460,7 @@
 			<entry key="inToolBar" value="true" />
 			<entry key="toolBarGravity" value="3.3" />
 			<entry key="iconName" value="/images/ximian/stock_zoom-1.png" />
+			<entry key="accelerator" value="cmd f" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -525,6 +531,7 @@
 			<entry key="inToolBar" value="true" />
 			<entry key="iconName" value="/images/ximian/stock_open.png" />
 			<entry key="toolBarGravity" value="1.0" />
+			<entry key="accelerator" value="cmd o" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -537,6 +544,7 @@
 			<entry key="inToolBar" value="true" />
 			<entry key="iconName" value="/images/ximian/stock_save.png" />
 			<entry key="toolBarGravity" value="1.1" />
+			<entry key="accelerator" value="cmd s" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -546,6 +554,7 @@
 			<entry key="title" value="Save As" />
 			<entry key="preferredMenu" value="File" />
 			<entry key="menuGravity" value="3.1" />
+			<entry key="accelerator" value="cmd shift s" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -559,6 +568,7 @@
 			<entry key="toolBarGravity" value="9.0" />
 			<entry key="menuGravity" value="5.0" />
 			<entry key="iconName" value="/images/apply-force-directed-layout-32.png" />
+			<entry key="accelerator" value="fn5" />
 		</osgi:service-properties>
 	</osgi:service>
 
