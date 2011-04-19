@@ -29,22 +29,19 @@
  */
 package org.cytoscape.application.swing;
 
-import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.view.model.CyNetworkView;
-
-import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.PopupMenuEvent;
-import java.awt.event.ActionEvent;
-import java.awt.Toolkit;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.KeyStroke;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.PopupMenuEvent;
+
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.CyNetworkView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +55,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractCyAction extends AbstractAction implements CyAction {
 
     private static final long serialVersionUID = -2245672104075936952L;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(AbstractCyAction.class);
 
     protected String preferredMenu = null;
@@ -73,7 +70,6 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
     protected String enableFor = null;
     protected CyApplicationManager applicationManager;
 
-    
     /**
      * Creates a new AbstractCyAction object.
      * 
@@ -400,25 +396,29 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
      * perform the action.
      */
     protected void enableForSelectedNodesOrEdges() {
-	CyNetwork n = applicationManager.getCurrentNetwork();
+	
+	final CyNetwork curNetwork = applicationManager.getCurrentNetwork();
 
-	if (n == null) {
+	// Disable if there is no current network.
+	if(curNetwork == null) {
 	    setEnabled(false);
 	    return;
 	}
 
-	for (CyNode node : n.getNodeList()) {
-	    if (node.getCyRow().get("selected", Boolean.class)) {
+	// If any of nodes are selected, enable this.
+	for (CyNode node : curNetwork.getNodeList()) {
+	    if (node.getCyRow().get(CyNetwork.SELECTED, Boolean.class)) {
 		setEnabled(true);
 		return;
 	    }
 	}
-	for (CyEdge edge : n.getEdgeList()) {
-	    if (edge.getCyRow().get("selected", Boolean.class)) {
+	for (CyEdge edge : curNetwork.getEdgeList()) {
+	    if (edge.getCyRow().get(CyNetwork.SELECTED, Boolean.class)) {
 		setEnabled(true);
 		return;
 	    }
 	}
+	
 	setEnabled(false);
     }
 

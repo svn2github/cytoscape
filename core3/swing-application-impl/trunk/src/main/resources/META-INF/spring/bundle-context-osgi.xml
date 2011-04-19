@@ -7,12 +7,10 @@
 
 	<!-- Import OSGi services -->
 
-	<osgi:reference id="streamUtilServiceRef"
-			interface="org.cytoscape.io.util.StreamUtil" />
+	<osgi:reference id="streamUtilServiceRef" interface="org.cytoscape.io.util.StreamUtil" />
 
-	<osgi:reference id="cytoscapePropertiesServiceRef" 
-		interface="org.cytoscape.property.CyProperty"
-		filter="(cyPropertyName=coreSettings)" />
+	<osgi:reference id="cytoscapePropertiesServiceRef"
+		interface="org.cytoscape.property.CyProperty" filter="(cyPropertyName=coreSettings)" />
 
 	<osgi:reference id="cyApplicationManagerServiceRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
@@ -29,9 +27,11 @@
 	<osgi:reference id="cyNetworkNamingServiceRef"
 		interface="org.cytoscape.session.CyNetworkNaming" />
 
-	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager" />
+	<osgi:reference id="taskManagerServiceRef"
+		interface="org.cytoscape.work.swing.GUITaskManager" />
 
-	<osgi:reference id="cyTableRowUpdateServiceRef" interface="org.cytoscape.model.CyTableRowUpdateService" />
+	<osgi:reference id="cyTableRowUpdateServiceRef"
+		interface="org.cytoscape.model.CyTableRowUpdateService" />
 
 	<!-- Rendering Engine factory for main network views -->
 	<osgi:reference id="dingRenderingEngineFactoryServiceRef"
@@ -70,10 +70,12 @@
 	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager">
 	</osgi:reference>
 
-	<osgi:reference id="guiTaskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager">
+	<osgi:reference id="guiTaskManagerServiceRef"
+		interface="org.cytoscape.work.swing.GUITaskManager">
 	</osgi:reference>
 
-	<osgi:reference id="cyServiceRegistrarServiceRef" interface="org.cytoscape.service.util.CyServiceRegistrar">
+	<osgi:reference id="cyServiceRegistrarServiceRef"
+		interface="org.cytoscape.service.util.CyServiceRegistrar">
 	</osgi:reference>
 
 
@@ -88,9 +90,10 @@
 	<!-- </osgi:service> -->
 
 
-	<osgi:reference id="openBrowserServiceRef" interface="org.cytoscape.util.swing.OpenBrowser" />
+	<osgi:reference id="openBrowserServiceRef"
+		interface="org.cytoscape.util.swing.OpenBrowser" />
 
-	<osgi:service id="printActionService" ref="printAction" 
+	<osgi:service id="printActionService" ref="printAction"
 		interface="org.cytoscape.application.swing.CyAction" />
 	<osgi:service id="exitActionService" ref="exitAction"
 		interface="org.cytoscape.application.swing.CyAction" />
@@ -104,10 +107,11 @@
 		interface="org.cytoscape.application.swing.CyAction" />
 	<!-- <osgi:service id="alphabeticalSelectionActionService" ref="alphabeticalSelectionAction" 
 		interface="org.cytoscape.application.swing.CyAction" /> <osgi:service id="bendSelectedEdgesActionService" 
-		ref="bendSelectedEdgesAction" interface="org.cytoscape.application.swing.CyAction" /> <osgi:service 
-		id="straightenSelectedEdgesActionService" ref="straightenSelectedEdgesAction" 
+		ref="bendSelectedEdgesAction" interface="org.cytoscape.application.swing.CyAction" 
+		/> <osgi:service id="straightenSelectedEdgesActionService" ref="straightenSelectedEdgesAction" 
 		interface="org.cytoscape.application.swing.CyAction" /> <osgi:service id="showGraphicsDetailsActionService" 
-		ref="showGraphicsDetailsAction" interface="org.cytoscape.application.swing.CyAction" /> -->
+		ref="showGraphicsDetailsAction" interface="org.cytoscape.application.swing.CyAction" 
+		/> -->
 	<osgi:service id="settingsActionService" ref="settingsAction"
 		interface="org.cytoscape.application.swing.CyAction" />
 
@@ -126,28 +130,29 @@
 			ref="cytoscapeDesktop" />
 	</osgi:set>
 
-	<osgi:set id="cyPropertySet"
-		interface="org.cytoscape.property.CyProperty"
+	<osgi:set id="cyPropertySet" interface="org.cytoscape.property.CyProperty"
 		cardinality="0..N">
 		<osgi:listener bind-method="addCyProperty"
 			unbind-method="removeCyProperty" ref="preferenceAction" />
 	</osgi:set>
-	
-	<osgi:set id="cytoPanelComponentSet" interface="org.cytoscape.application.swing.CytoPanelComponent"
+
+	<osgi:set id="cytoPanelComponentSet"
+		interface="org.cytoscape.application.swing.CytoPanelComponent"
 		cardinality="0..N">
-		<osgi:listener bind-method="addCytoPanelComponent" unbind-method="removeCytoPanelComponent"
-			ref="cytoscapeDesktop" />
+		<osgi:listener bind-method="addCytoPanelComponent"
+			unbind-method="removeCytoPanelComponent" ref="cytoscapeDesktop" />
 	</osgi:set>
 
-	<osgi:set id="toolbarComponentSet" interface="org.cytoscape.application.swing.ToolBarComponent"
+	<osgi:set id="toolbarComponentSet"
+		interface="org.cytoscape.application.swing.ToolBarComponent"
 		cardinality="0..N">
-		<osgi:listener bind-method="addToolBarComponent" unbind-method="removeToolBarComponent"
-			ref="cytoscapeDesktop" />
+		<osgi:listener bind-method="addToolBarComponent"
+			unbind-method="removeToolBarComponent" ref="cytoscapeDesktop" />
 	</osgi:set>
 
 	<!-- task factories for CyMenuPopulator -->
 	<osgi:set id="taskFactorySet" interface="org.cytoscape.work.TaskFactory"
-		cardinality="0..N" >
+		cardinality="0..N">
 		<osgi:listener bind-method="addTaskFactory"
 			unbind-method="removeTaskFactory" ref="cytoscapeMenuPopulator" />
 	</osgi:set>
@@ -313,7 +318,8 @@
 		</osgi:interfaces>
 	</osgi:service>
 
-	<osgi:service id="birdsEyeViewHandlerService" ref="birdsEyeViewHandler" auto-export="interfaces" />
+	<osgi:service id="birdsEyeViewHandlerService" ref="birdsEyeViewHandler"
+		auto-export="interfaces" />
 
 	<osgi:service id="undoMonitorSetCurrentNetworkViewListenerService"
 		ref="undoMonitor" interface="org.cytoscape.session.events.SetCurrentNetworkViewListener" />
@@ -330,23 +336,15 @@
 	<osgi:service id="cytoscapeVersionService" ref="cytoscapeVersion"
 		interface="org.cytoscape.application.swing.CytoscapeVersion" />
 
-	<osgi:service id="toolBarEnableUpdaterService" ref="toolBarEnableUpdater">
-		<osgi:interfaces>
-			<value>org.cytoscape.model.events.NetworkAddedListener</value>
-			<value>org.cytoscape.model.events.NetworkDestroyedListener</value>
-			<value>org.cytoscape.view.model.events.NetworkViewAddedListener</value>
-			<value>org.cytoscape.view.model.events.NetworkViewDestroyedListener</value>
-			<value>org.cytoscape.session.events.SetCurrentNetworkListener</value>
-			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener</value>
-		</osgi:interfaces>
-	</osgi:service>
+	<osgi:service id="toolBarEnableUpdaterService" ref="toolBarEnableUpdater"
+		auto-export="interfaces" />
 
-        <osgi:service id="configDirPropertyWriterService" ref="configDirPropertyWriter"
-		      interface="org.cytoscape.application.swing.events.CytoscapeShutdownListener" />
+	<osgi:service id="configDirPropertyWriterService" ref="configDirPropertyWriter"
+		interface="org.cytoscape.application.swing.events.CytoscapeShutdownListener" />
 
-        <osgi:set id="propertySet" interface="org.cytoscape.property.CyProperty"
-                cardinality="0..N">
-                <osgi:listener bind-method="addCyProperty" unbind-method="removeCyProperty"
-			       ref="configDirPropertyWriter" />
-        </osgi:set>
+	<osgi:set id="propertySet" interface="org.cytoscape.property.CyProperty"
+		cardinality="0..N">
+		<osgi:listener bind-method="addCyProperty"
+			unbind-method="removeCyProperty" ref="configDirPropertyWriter" />
+	</osgi:set>
 </beans>
