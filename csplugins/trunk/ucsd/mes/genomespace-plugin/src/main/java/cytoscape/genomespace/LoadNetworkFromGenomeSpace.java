@@ -2,6 +2,10 @@ package cytoscape.genomespace;
 
 
 import cytoscape.Cytoscape;
+import cytoscape.data.readers.GraphReader;
+import cytoscape.data.readers.GMLReader;
+import cytoscape.data.readers.InteractionsReader;
+import cytoscape.data.readers.XGMMLReader;
 import cytoscape.genomespace.filechoosersupport.GenomeSpaceFileSystemView;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.CytoscapeAction;
@@ -38,6 +42,7 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 			final GsSession client = GSUtils.getSession(); 
 			final DataManagerClient dataManagerClient = client.getDataManagerClient();
 
+			// Select the GenomeSpace file:
 			final List<String> acceptableExtensions = new ArrayList<String>();
 			acceptableExtensions.add("sif");
 			acceptableExtensions.add("xgmml");
@@ -49,11 +54,25 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 			if (fileMetadata == null)
 				return;
 
+			// Download the GenomeSpace file:
 			tempFile = File.createTempFile("temp", "cynetwork");
 			dataManagerClient.downloadFile(fileMetadata, tempFile, true);
-			logger.info("Saved downloaded file as " + tempFile);
+
+			// Select the type of network reader:
+			final String origFileName = fileMetadata.getName();
+			final String extension = getExtension(origFileName);
+			final GraphReader reader;
+			if (extension.equals("sif"))
+				reader = new InteractionsReader(tempFile.getPath());
+			else if (extension.equals("gml"))
+				reader = new GMLReader(tempFile.getPath());
+			else
+				reader = new XGMMLReader(tempFile.getPath());
+
+			Cytoscape.createNetwork(reader, /* create_view */ true, /* parent = */ null)
+				.setTitle(getNetworkTitle(origFileName));
 		} catch (Exception ex) {
-			logger.error("GenomeSpace failed",ex);
+			logger.error("GenomeSpace failed", ex);
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 						      ex.getMessage(), "GenomeSpace Error",
 						      JOptionPane.ERROR_MESSAGE);
@@ -61,5 +80,15 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 			if (tempFile != null)
 				tempFile.delete();
 		}
+	}
+
+	private static String getExtension(final String fileName) {
+		final int lastDotPos = fileName.lastIndexOf('.');
+		return (lastDotPos == -1 ? fileName : fileName.substring(lastDotPos)).toLowerCase();
+	}
+
+	private static String getNetworkTitle(final String fileName) {
+		final int lastDotPos = fileName.lastIndexOf('.');
+		return lastDotPos == -1 ? fileName : fileName.substring(0, lastDotPos);
 	}
 }
