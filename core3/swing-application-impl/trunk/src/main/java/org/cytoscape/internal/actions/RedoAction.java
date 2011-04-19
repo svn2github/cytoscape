@@ -36,6 +36,7 @@
 */
 package org.cytoscape.internal.actions;
 
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -66,7 +67,7 @@ public class RedoAction extends AbstractCyAction {
 	 */
 	public RedoAction(UndoSupport undo, CyApplicationManager appMgr ) {
 		super("Redo",appMgr);
-		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
+		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_Y, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		setPreferredMenu("Edit");
 		setEnabled(true);
 		setMenuGravity(1.1f);

@@ -45,6 +45,7 @@ import org.cytoscape.application.swing.CytoscapeShutdown;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.KeyStroke;
@@ -65,7 +66,7 @@ public class ExitAction extends AbstractCyAction {
 		super("Quit",appMgr);
 		this.shutdown = shutdown;
 		setPreferredMenu("File");
-		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		setMenuGravity(1000.0f);
 	}
 

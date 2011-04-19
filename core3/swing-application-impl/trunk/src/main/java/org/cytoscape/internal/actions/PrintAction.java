@@ -42,6 +42,7 @@
 //-------------------------------------------------------------------------
 package org.cytoscape.internal.actions;
 
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterJob;
@@ -77,7 +78,7 @@ public class PrintAction extends AbstractCyAction {
 		super(MENU_LABEL, appMgr );
 		setPreferredMenu("File");
 		setMenuGravity(7.0f);
-		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		this.props = p.getProperties();
 	}
 
