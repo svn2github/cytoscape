@@ -296,7 +296,7 @@ public class NetworkViewManager extends InternalFrameAdapter implements NetworkV
 			    null,
 			    "Network contains "
 				    + graphObjectCount
-				    + " objects.\nDo you still want to create visualization?\nThis is not recommended for machines with small amount of memory.",
+			    + " objects.\nDo you still want to create visualization?\nThis is not recommended for machines with small amount of memory.",
 			    "Large Network Data Loaded", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 	    if (createFlag == JOptionPane.NO_OPTION) {
 		networkViewManager.destroyNetworkView(networkView);

@@ -33,6 +33,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -70,6 +71,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableRowUpdateService;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
@@ -104,27 +106,39 @@ import org.slf4j.LoggerFactory;
 public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCurrentNetworkViewListener,
 	CyTableRowUpdateMicroListener, SetCurrentNetworkListener, NetworkAddedListener, NetworkViewAddedListener,
 	NetworkAboutToBeDestroyedListener, NetworkViewAboutToBeDestroyedListener {
-    
+
     private final static long serialVersionUID = 1213748836763243L;
+
+    private static final Color WITH_VIEW = new Color(0x66, 0xCD, 0xAA, 100);
+    private static final Color WITH_VIEW_SELECTED = new Color(0x54, 0xFF, 0x9F, 170);
+    private static final Color WITHOUT_VIEW = new Color(0x69, 0x69, 0x69, 50);
+    private static final Color WITHOUT_VIEW_SELECTED = new Color(0x69, 0x69, 0x69, 170);
+    private static final Color FONT_COLOR = new Color(20, 20, 20);
+    
+    private static final int TABLE_ROW_HEIGHT = 32;
+    private static final Font TABLE_FONT = new Font("SansSerif", Font.PLAIN, 14);
 
     private static final Logger logger = LoggerFactory.getLogger(NetworkPanel.class);
 
     private final JTreeTable treeTable;
     private final NetworkTreeNode root;
     private JPanel navigatorPanel;
-    private JPopupMenu popup;
     private JSplitPane split;
+
     private final NetworkTreeTableModel treeTableModel;
-    private final CyApplicationManager applicationManager;
+    private final CyApplicationManager appManager;
     private final CyNetworkManager netmgr;
     private final CyNetworkViewManager networkViewManager;
-    private Long currentNetId;
+
     private final TaskManager taskManager;
-    private Map<TaskFactory, JMenuItem> popupMap;
-    private Map<TaskFactory, CyAction> popupActions;
-    private CyEventHelper eventHelper;
-    private Map<CyNetwork, RowSetMicroListener> nameListeners;
-    private CyTableRowUpdateService tableRowUpdateService;
+
+    private final JPopupMenu popup;
+    private final Map<TaskFactory, JMenuItem> popupMap;
+    private final Map<TaskFactory, CyAction> popupActions;
+
+    private final CyEventHelper eventHelper;
+    private final Map<CyNetwork, RowSetMicroListener> nameListeners;
+    private final CyTableRowUpdateService tableRowUpdateService;
 
     /**
      * Constructor for the Network Panel.
@@ -137,7 +151,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	    final CyTableRowUpdateService tableRowUpdateService) {
 	super();
 
-	this.applicationManager = applicationManager;
+	this.appManager = applicationManager;
 	this.netmgr = netmgr;
 	this.networkViewManager = networkViewManager;
 	this.taskManager = taskManager;
@@ -148,8 +162,13 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	treeTableModel = new NetworkTreeTableModel(root);
 	treeTable = new JTreeTable(treeTableModel);
 	initialize();
+
+	// create and populate the popup window
+	popup = new JPopupMenu();
+	popupMap = new HashMap<TaskFactory, JMenuItem>();
+	popupActions = new HashMap<TaskFactory, CyAction>();
+
 	setNavigator(bird.getBirdsEyeView());
-	currentNetId = null;
 	nameListeners = new HashMap<CyNetwork, RowSetMicroListener>();
 
 	/*
@@ -179,12 +198,17 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	treeTable.getColumn("Network").setPreferredWidth(100);
 	treeTable.getColumn("Nodes").setPreferredWidth(45);
 	treeTable.getColumn("Edges").setPreferredWidth(45);
+	
+	treeTable.setBackground(Color.WHITE);
+	treeTable.setRowHeight(TABLE_ROW_HEIGHT);
+	treeTable.setForeground(FONT_COLOR);
 
 	navigatorPanel = new JPanel();
 	navigatorPanel.setLayout(new BorderLayout());
 	navigatorPanel.setPreferredSize(new Dimension(280, 280));
 	navigatorPanel.setSize(new Dimension(280, 280));
 	navigatorPanel.setBackground(Color.white);
+	
 
 	JScrollPane scroll = new JScrollPane(treeTable);
 
@@ -197,15 +221,10 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	// this mouse listener listens for the right-click event and will show
 	// the pop-up window when that occurrs
 	treeTable.addMouseListener(new PopupListener());
-
-	// create and populate the popup window
-	popup = new JPopupMenu();
-	popupMap = new HashMap<TaskFactory, JMenuItem>();
-	popupActions = new HashMap<TaskFactory, CyAction>();
     }
 
     private void addFactory(TaskFactory factory, CyAction action) {
-	JMenuItem item = new JMenuItem(action);
+	final JMenuItem item = new JMenuItem(action);
 	popupMap.put(factory, item);
 	popupActions.put(factory, action);
 	popup.add(item);
@@ -221,17 +240,16 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	    popup.removePopupMenuListener(action);
     }
 
-    public void addTaskFactory(TaskFactory factory, Map props) {
-	addFactory(factory, new TaskFactoryTunableAction(taskManager, factory, props, applicationManager));
+    public void addTaskFactory(TaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
+	addFactory(factory, new TaskFactoryTunableAction(taskManager, factory, props, appManager));
     }
 
-    public void removeTaskFactory(TaskFactory factory, Map props) {
+    public void removeTaskFactory(TaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
 	removeFactory(factory);
     }
 
     public void addNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
-	addFactory(factory, new NetworkCollectionTaskFactoryTunableAction(taskManager, factory, props,
-		applicationManager));
+	addFactory(factory, new NetworkCollectionTaskFactoryTunableAction(taskManager, factory, props, appManager));
     }
 
     public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
@@ -239,36 +257,29 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
     }
 
     public void addNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
-	addFactory(factory, new NetworkViewCollectionTaskFactoryTunableAction(taskManager, factory, props,
-		applicationManager));
+	addFactory(factory, new NetworkViewCollectionTaskFactoryTunableAction(taskManager, factory, props, appManager));
     }
 
     public void removeNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
 	removeFactory(factory);
     }
 
-    public void addNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
-	addFactory(factory, new NetworkTaskFactoryTunableAction(taskManager, factory, props, applicationManager));
+    public void addNetworkTaskFactory(NetworkTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
+	addFactory(factory, new NetworkTaskFactoryTunableAction(taskManager, factory, props, appManager));
     }
 
-    public void removeNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
+    public void removeNetworkTaskFactory(NetworkTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
 	removeFactory(factory);
     }
 
-    public void addNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
-	addFactory(factory, new NetworkViewTaskFactoryTunableAction(taskManager, factory, props, applicationManager));
+    public void addNetworkViewTaskFactory(NetworkViewTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
+	addFactory(factory, new NetworkViewTaskFactoryTunableAction(taskManager, factory, props, appManager));
     }
 
-    public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
+    public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
 	removeFactory(factory);
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param comp
-     *            DOCUMENT ME!
-     */
     public void setNavigator(final Component comp) {
 	this.navigatorPanel.removeAll();
 	this.navigatorPanel.add(comp, BorderLayout.CENTER);
@@ -283,11 +294,6 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	return treeTable;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public JPanel getNavigatorPanel() {
 	return navigatorPanel;
     }
@@ -365,11 +371,12 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	nameListeners.put(e.getNetwork(), rsml);
     }
 
+    @Override
     public void handleEvent(SetCurrentNetworkViewEvent e) {
-	CyNetworkView view = e.getNetworkView();
+	final CyNetworkView view = e.getNetworkView();
 
 	if (view == null) {
-	    logger.debug("Got SetCurrentNetworkViewEvent.  null view");
+	    logger.warn("Current network view is set to null.");
 	    return;
 	}
 
@@ -377,22 +384,20 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 
 	final long curr = e.getNetworkView().getModel().getSUID();
 
-	if (currentNetId == null || curr != currentNetId.longValue())
-	    focusNetworkNode(curr);
+	focusNetworkNode(curr);
     }
 
+    @Override
     public void handleEvent(SetCurrentNetworkEvent e) {
-	CyNetwork cnet = e.getNetwork();
+	final CyNetwork cnet = e.getNetwork();
 	if (cnet == null) {
-	    logger.debug("Set current network:  null network");
+	    logger.warn("Got null for current network.");
 	    return;
 	}
 
 	logger.debug("Set current network " + cnet.getSUID());
-	long curr = cnet.getSUID();
 
-	if (currentNetId == null || curr != currentNetId.longValue())
-	    focusNetworkNode(curr);
+	focusNetworkNode(cnet.getSUID());
     }
 
     public void handleEvent(NetworkViewAboutToBeDestroyedEvent nde) {
@@ -404,7 +409,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	logger.debug("Network view added to NetworkPanel: " + nde.getNetworkView().getModel().getSUID());
 
 	// Set current network view to the new one.
-	applicationManager.setCurrentNetworkView(nde.getNetworkView().getModel().getSUID());
+	appManager.setCurrentNetworkView(nde.getNetworkView().getModel().getSUID());
 
 	treeTable.getTree().updateUI();
     }
@@ -425,10 +430,9 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 
     @Override
     public void handleRowCreations(final CyTable table, final List<CyRow> newRows) {
-	treeTable.getTree().repaint();
+	treeTable.getTree().updateUI();
     }
 
-    
     private void addNetwork(final Long network_id, final Long parent_id) {
 	// first see if it exists
 	if (getNetworkNode(network_id) == null) {
@@ -436,9 +440,8 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	    tableRowUpdateService.startTracking(this, network.getDefaultNodeTable());
 	    tableRowUpdateService.startTracking(this, network.getDefaultEdgeTable());
 
-	    // logger.debug("NetworkPanel: addNetwork " + network_id);
 	    NetworkTreeNode dmtn = new NetworkTreeNode(netmgr.getNetwork(network_id).getCyRow()
-		    .get("name", String.class), network_id);
+		    .get(CyTableEntry.NAME, String.class), network_id);
 
 	    if (parent_id != null && getNetworkNode(parent_id) != null) {
 		getNetworkNode(parent_id).add(dmtn);
@@ -463,36 +466,16 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param network_id
-     *            DOCUMENT ME!
-     */
-    public void focusNetworkNode(Long network_id) {
-	// logger.debug("NetworkPanel: focus network node");
-	DefaultMutableTreeNode node = getNetworkNode(network_id);
+    public void focusNetworkNode(final Long networkID) {
+	final DefaultMutableTreeNode node = getNetworkNode(networkID);
 
 	if (node != null) {
-	    // logger.debug("NetworkPanel - setting currentNetId");
-	    // do this first so that events triggered by subequent lines don't
-	    // recurse unecessarily
-	    currentNetId = network_id;
-
 	    // fires valueChanged if the network isn't already selected
 	    treeTable.getTree().getSelectionModel().setSelectionPath(new TreePath(node.getPath()));
 	    treeTable.getTree().scrollPathToVisible(new TreePath(node.getPath()));
 	}
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param network_id
-     *            DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public NetworkTreeNode getNetworkNode(Long network_id) {
 	Enumeration tree_node_enum = root.breadthFirstEnumeration();
 
@@ -525,7 +508,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	    return;
 	}
 
-	applicationManager.setCurrentNetwork(node.getNetworkID());
+	appManager.setCurrentNetwork(node.getNetworkID());
 
 	// creates a list of all selected networks
 	List<Long> networkList = new LinkedList<Long>();
@@ -540,13 +523,13 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
 
 	if (networkList.size() > 0)
-	    applicationManager.setSelectedNetworkViews(networkList);
+	    appManager.setSelectedNetworkViews(networkList);
     }
 
     /**
      * Inner class that extends the AbstractTreeTableModel
      */
-    class NetworkTreeTableModel extends AbstractTreeTableModel {
+    private final class NetworkTreeTableModel extends AbstractTreeTableModel {
 	String[] columns = { "Network", "Nodes", "Edges" };
 	Class[] columns_class = { TreeTableModel.class, String.class, String.class };
 
@@ -621,7 +604,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
     }
 
-    public class NetworkTreeNode extends DefaultMutableTreeNode {
+    final class NetworkTreeNode extends DefaultMutableTreeNode {
 	private final static long serialVersionUID = 1213748836736485L;
 	protected Long network_uid;
 
@@ -639,29 +622,33 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
     }
 
-    private class TreeCellRenderer extends DefaultTreeCellRenderer {
-	private final static long serialVersionUID = 1213748836751014L;
+    private final class TreeCellRenderer extends DefaultTreeCellRenderer {
 
+	private final static long serialVersionUID = 1213748836751014L;
+	
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
 		boolean leaf, int row, boolean hasFocus) {
 	    super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
+	    setFont(TABLE_FONT);
+	    this.setForeground(FONT_COLOR);
 	    if (hasView(value)) {
-		setBackgroundNonSelectionColor(java.awt.Color.green.brighter());
-		setBackgroundSelectionColor(java.awt.Color.green.darker());
+		setBackgroundNonSelectionColor(WITH_VIEW);
+		setBackgroundSelectionColor(WITH_VIEW_SELECTED);
 	    } else {
-		setBackgroundNonSelectionColor(java.awt.Color.red.brighter());
-		setBackgroundSelectionColor(java.awt.Color.red.darker());
+		setBackgroundNonSelectionColor(WITHOUT_VIEW);
+		setBackgroundSelectionColor(WITHOUT_VIEW_SELECTED);
 	    }
 
 	    return this;
 	}
 
-	private boolean hasView(Object value) {
-	    NetworkTreeNode node = (NetworkTreeNode) value;
-	    CyNetwork n = netmgr.getNetwork(node.getNetworkID());
-	    if (n != null)
-		setToolTipText(n.getCyRow().get("name", String.class));
+	private boolean hasView(final Object value) {
+	    final NetworkTreeNode node = (NetworkTreeNode) value;
+	    final CyNetwork network = netmgr.getNetwork(node.getNetworkID());
+	    
+	    if (network != null)
+		setToolTipText(network.getCyRow().get(CyTableEntry.NAME, String.class));
 	    else
 		setToolTipText("Root");
 
@@ -680,7 +667,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	 * Don't know why you need both of these, but this is how they did it in
 	 * the example
 	 */
-	public void mousePressed(MouseEvent e) {
+	@Override public void mousePressed(MouseEvent e) {
 	    maybeShowPopup(e);
 	}
 
@@ -688,7 +675,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	 * Don't know why you need both of these, but this is how they did it in
 	 * the example
 	 */
-	public void mouseReleased(MouseEvent e) {
+	@Override public void mouseReleased(MouseEvent e) {
 	    maybeShowPopup(e);
 	}
 

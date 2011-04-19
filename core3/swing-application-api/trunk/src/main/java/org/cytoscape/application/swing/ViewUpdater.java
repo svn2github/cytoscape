@@ -24,63 +24,73 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.application.swing;
-
 
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.View;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.events.RowSetMicroListener;
 
-
 /**
  * A utility class that provides an implementation of
- * {@link RowSetMicroListener} for a particular {@link View}
- * and {@link VisualProperty}.
+ * {@link RowSetMicroListener} for a particular {@link View} and
+ * {@link VisualProperty}.
  */
-public class ViewUpdater<T,S> implements RowSetMicroListener {
+public class ViewUpdater<T, S> implements RowSetMicroListener {
 
-	protected final CyRow row; 
-	protected final View<T> view;
-	protected final VisualProperty<S> vp;
-	protected final String columnName;
+    protected final CyRow row;
+    protected final View<T> view;
+    protected final VisualProperty<S> vp;
+    protected final String columnName;
 
-	/**
-	 * Constructor.
-	 * @param view The view that the visual property should be set whne the row is changed. 
-	 * @param vp The visual property that should be set on the view when the row is changed.
-	 * @param row The row that is being listened to.
-	 * @param columnName The name of the column within the row that is being listened to.
-	 */
-	public ViewUpdater(View<T> view, VisualProperty<S> vp, CyRow row, String columnName) {
-		this.view = view;
-		this.vp = vp;
-		this.row = row;
-		this.columnName = columnName;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param view
+     *            The view that the visual property should be set whne the row
+     *            is changed.
+     * @param vp
+     *            The visual property that should be set on the view when the
+     *            row is changed.
+     * @param row
+     *            The row that is being listened to.
+     * @param columnName
+     *            The name of the column within the row that is being listened
+     *            to.
+     */
+    public ViewUpdater(View<T> view, VisualProperty<S> vp, CyRow row, String columnName) {
+	this.view = view;
+	this.vp = vp;
+	this.row = row;
+	this.columnName = columnName;
+    }
 
-	/**
-	 * Returns the source of the event.  
-	 * @return the source of the event.  
-	 */
-	public Object getEventSource() {
-		return row;
-	}
+    /**
+     * Returns the source of the event.
+     * 
+     * @return the source of the event.
+     */
+    public Object getEventSource() {
+	return row;
+    }
 
-	/**
-	 * Called whenever the {@link CyRow} is changed. Will attempt to set
-	 * the visual property on the view with the new value that has been
-	 * set in the row.
-	 * @param columnName The name of the column with the row that was changed.
-	 * @param newValue The new value that the row has been set to. 
-	 */
-	@SuppressWarnings("unchecked")
-		public void handleRowSet(final String columnName, final Object newValue, final Object newRawValue) {
-		if (!columnName.equals(this.columnName))
-			return;
+    /**
+     * Called whenever the {@link CyRow} is changed. Will attempt to set the
+     * visual property on the view with the new value that has been set in the
+     * row.
+     * 
+     * @param columnName
+     *            The name of the column with the row that was changed.
+     * @param newValue
+     *            The new value that the row has been set to.
+     */
+    @SuppressWarnings("unchecked")
+    public void handleRowSet(final String columnName, final Object newValue, final Object newRawValue) {
+	if (!columnName.equals(this.columnName))
+	    return;
 
-		// Assume caller checks validity of value parameter.
-		view.setVisualProperty(vp, (S)newValue);
-	}
+	// Assume caller checks validity of value parameter.
+	view.setVisualProperty(vp, (S) newValue);
+    }
 }
