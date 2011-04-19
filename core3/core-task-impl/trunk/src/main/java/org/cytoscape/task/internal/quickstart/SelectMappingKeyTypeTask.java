@@ -4,41 +4,53 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.swing.JPanel;
 import org.cytoscape.task.internal.quickstart.QuickStartState.Job;
 import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.ProvidesGUI;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
 
 public class SelectMappingKeyTypeTask extends AbstractTask {
 	
-	@Tunable(description="Select Mapping Key ID Type")
-	public final ListSingleSelection<String> selection;
-	
-	@Tunable(description="Or, enter ID Type")
-	public String otherIDType;
+	public String otherIDType = null;
 	
 	private final QuickStartState state;
 	
 	private final Map<String, IDType> idTypeMap;
 	private final ImportTaskUtil util;
+	private MappingKeyTypePanel mappingKeyTypePanel = null;
 
+	private List<String> values = new ArrayList<String>();
+	
 	public SelectMappingKeyTypeTask(final QuickStartState state, ImportTaskUtil util) {
 		this.idTypeMap = new HashMap<String, IDType>();
 		this.state = state;	
 		this.util = util;
-		final List<String> values = new ArrayList<String>();
+		
 		for(IDType val: IDType.values()) {
 			values.add(val.getDisplayName());
 			this.idTypeMap.put(val.getDisplayName(), val);
 		}
-		selection = new ListSingleSelection<String>(values);
 	}
 
+	
+	@ProvidesGUI
+	public JPanel getGUI() {
+		if (mappingKeyTypePanel == null){
+			
+			String[][] keyValues = {}; //{{"key1","value1"},{"key2","value2"},{"key3","value3"},{"key4","value4"}};
+			this.mappingKeyTypePanel = new MappingKeyTypePanel(values, keyValues);
+		}
+				
+		return mappingKeyTypePanel;
+	}
+	
+	
 	@Override
 	public void run(TaskMonitor monitor) throws Exception {
-		
+				
 		// Check current status and move to next task.
 		if(state.isJobFinished(Job.LOAD_NETWORK) && state.isJobFinished(Job.LOAD_TABLE)) {
 			System.out.println("!!!!!!!! Merge task added");
@@ -51,8 +63,11 @@ public class SelectMappingKeyTypeTask extends AbstractTask {
 			insertTasksAfterCurrentTask(new LoadNetworkTask(state, util));
 		}	
 		
-		
-		final String selected = selection.getSelectedValue();
+		String selected = mappingKeyTypePanel.getSelectedValue();
+		otherIDType = mappingKeyTypePanel.getOtherIDType();
+		if (otherIDType != null && !otherIDType.equalsIgnoreCase("")){
+			selected = otherIDType;
+		}
 		
 		state.setIDType(this.idTypeMap.get(selected));
 		
