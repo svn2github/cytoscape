@@ -47,41 +47,23 @@ public class DownloadFileFromGenomeSpace extends CytoscapeAction {
 			final GsSession client = GSUtils.getSession(); 
 			final DataManagerClient dataManagerClient = client.getDataManagerClient();
 
-			final List<String> acceptableExtensions = new ArrayList<String>();
-			acceptableExtensions.add("sif");
-			acceptableExtensions.add("xgmml");
 			final TreeSelectionDialog dialog =
-				new TreeSelectionDialog(Cytoscape.getDesktop(), dataManagerClient,
-							acceptableExtensions);
-			dialog.setVisible(true);
-/*
-			final JFileChooser chooser = new JFileChooser(new GenomeSpaceFileSystemView(dmc));
-			int returnVal = chooser.showDialog(Cytoscape.getDesktop(), "Download");
-			if (returnVal != JFileChooser.APPROVE_OPTION)
+				new TreeSelectionDialog(Cytoscape.getDesktop(), dataManagerClient);
+			final GSFileMetadata fileMetadata = dialog.getSelectedFileMetadata();
+			if (fileMetadata == null)
 				return;
-			final String selectedFile = chooser.getSelectedFile().getName();
 
-			// Download the file from GenomeSpace:
-			if (selectedFile != null) {
-				logger.info("Downloading " + selectedFile);
-				final String path =
-					dmc.listDefaultDirectory().getDirectory().getPath()
-					+ "/" + selectedFile;
-				final GSFileMetadata downloadFileMetadata =
-					dmc.getMetadata(path);
-				final JFileChooser saveChooser = new JFileChooser();
-				final File defaultSaveFile =
-					new File(System.getProperty("user.home") + File.separator
-						 + selectedFile);
-				saveChooser.setSelectedFile(defaultSaveFile);
-				returnVal = saveChooser.showSaveDialog(Cytoscape.getDesktop());
-				if (returnVal != JFileChooser.APPROVE_OPTION)
-					return;
-				final File downloadTarget = saveChooser.getSelectedFile();
-				dmc.downloadFile(downloadFileMetadata, downloadTarget, true);
-				logger.info("Saved downloaded file as " + downloadTarget);
-			}
-*/
+			final JFileChooser saveChooser = new JFileChooser();
+			final File defaultSaveFile =
+				new File(System.getProperty("user.home") + File.separator
+					 + fileMetadata.getName());
+			saveChooser.setSelectedFile(defaultSaveFile);
+			if (saveChooser.showSaveDialog(Cytoscape.getDesktop())
+			    != JFileChooser.APPROVE_OPTION)
+				return;
+
+			final File downloadTarget = saveChooser.getSelectedFile();
+			dataManagerClient.downloadFile(fileMetadata, downloadTarget, true);
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed",ex);
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),

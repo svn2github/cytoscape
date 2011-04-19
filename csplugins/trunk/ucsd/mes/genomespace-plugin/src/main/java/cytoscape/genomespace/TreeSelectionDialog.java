@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -31,7 +32,7 @@ final class TreeSelectionDialog extends JDialog implements TreeSelectionListener
 	TreeSelectionDialog(final Frame owner, final DataManagerClient dataManagerClient,
 			    final List<String> acceptableExtensions)
 	{
-		super(owner);
+		super(owner, /* modal = */ true);
 		this.acceptableExtensions = acceptableExtensions;
 		this.selectedFileMetadata = null;
 
@@ -69,6 +70,10 @@ final class TreeSelectionDialog extends JDialog implements TreeSelectionListener
 		setVisible(true);
 	}
 
+	TreeSelectionDialog(final Frame owner, final DataManagerClient dataManagerClient) {
+		this(owner, dataManagerClient, new ArrayList<String>());
+	}
+
 	public void valueChanged(final TreeSelectionEvent e) {
 		final GSFileMetadataTreeNode node =
 			(GSFileMetadataTreeNode)tree.getLastSelectedPathComponent();
@@ -76,17 +81,20 @@ final class TreeSelectionDialog extends JDialog implements TreeSelectionListener
 		if (node == null)
 			return;
 
-		final GSFileMetadata fileMetadata = node.getFileMetadata();
-System.err.println("----------------------> selected " + fileMetadata.getPath());
-
-		selectButton.setEnabled(false);
-		selectedFileMetadata = null;
-		final String extension = getFileExtension(fileMetadata.getName());
-		for (final String acceptableExtension : acceptableExtensions) {
-			if (extension.equalsIgnoreCase(acceptableExtension)) {
-				selectButton.setEnabled(true);
-				selectedFileMetadata = fileMetadata;
-				break;
+		if (acceptableExtensions.isEmpty()) {
+			selectedFileMetadata = node.getFileMetadata();
+			selectButton.setEnabled(selectedFileMetadata != null);
+		} else {
+			selectButton.setEnabled(false);
+			selectedFileMetadata = null;
+			final GSFileMetadata nodeFileMetadata = node.getFileMetadata();
+			final String extension = getFileExtension(nodeFileMetadata.getName());
+			for (final String acceptableExtension : acceptableExtensions) {
+				if (extension.equalsIgnoreCase(acceptableExtension)) {
+					selectButton.setEnabled(true);
+					selectedFileMetadata = nodeFileMetadata;
+					break;
+				}
 			}
 		}
 	}

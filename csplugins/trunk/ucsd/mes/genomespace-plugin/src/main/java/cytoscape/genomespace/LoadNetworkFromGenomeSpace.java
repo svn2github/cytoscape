@@ -12,6 +12,7 @@ import java.awt.Container;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
 import java.util.Map;
@@ -63,16 +64,16 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 	public void actionPerformed(ActionEvent e) {
 		File tempFile = null;
 		try {
-			GsSession client = GSUtils.getSession(); 
-			DataManagerClient dmc = client.getDataManagerClient();
+			final GsSession client = GSUtils.getSession(); 
+			final DataManagerClient dataManagerClient = client.getDataManagerClient();
 
-			final JFileChooser chooser = new JFileChooser(new GenomeSpaceFileSystemView(dmc));
+			final List<String> acceptableExtensions = new ArrayList<String>();
+			acceptableExtensions.add("sif");
+			acceptableExtensions.add("xgmml");
+			final TreeSelectionDialog dialog =
+				new TreeSelectionDialog(Cytoscape.getDesktop(), dataManagerClient,
+							acceptableExtensions);
 /*
-			disableNewFolderButton(chooser);
-			chooser.setFileFilter(new NetworkFileFilter());
-			chooser.setDialogType(JFileChooser.OPEN_DIALOG);
-			chooser.setDialogTitle("Select Network File");
-*/
 			int returnVal = chooser.showDialog(Cytoscape.getDesktop(), "Download");
 			if (returnVal != JFileChooser.APPROVE_OPTION)
 				return;
@@ -92,6 +93,7 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 				dmc.downloadFile(downloadFileMetadata, tempFile, true);
 				logger.info("Saved downloaded file as " + tempFile);
 			}
+*/
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed",ex);
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
