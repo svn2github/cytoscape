@@ -31,7 +31,7 @@ import javax.swing.border.EtchedBorder;
 
 import clusterMaker.algorithms.ThresholdHeuristic;
 
-public class HistogramDialog extends JDialog implements ActionListener, ComponentListener, HistoChangeListener{
+public class HistogramDialog extends JDialog implements ActionListener, ComponentListener, HistoChangeListener {
 	double[] inputArray;
 	int nBins;
 	int currentBins;
@@ -42,6 +42,7 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 	JButton zoomOutButton;
 	boolean isZoomed = false;
 	List<HistoChangeListener> changeListenerList = null;
+	double cutOff = -1.0;
 
 	ThresholdHeuristic thueristic = null;
 
@@ -62,6 +63,13 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 		this.inputArray = inputArray;
 		if (histo != null) {
 			histo.updateData(inputArray);
+		}
+	}
+
+	public void setLineValue(double cutOffValue) {
+		cutOff = cutOffValue;
+		if (histo != null) {
+			histo.setLineValue(cutOffValue);
 		}
 	}
 
@@ -91,13 +99,13 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 
 		if(e.getActionCommand().equals("cuttoffHeuristic")){
 
-			double hCuttoff = thueristic.run();
+			cutOff = thueristic.run();
 		
 			//Found cuttoff. Update histogram
-			if(hCuttoff > -1000) {
-				histoValueChanged((double)hCuttoff);
+			if(cutOff > -1000) {
+				histoValueChanged((double)cutOff);
 				histo.setBoolShowLine(true);
-				histo.setLineValue((double)hCuttoff);
+				histo.setLineValue((double)cutOff);
 			}
 		}
 		
@@ -191,6 +199,7 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 	
 	public void histoValueChanged(double bounds){
 		if (changeListenerList.size() == 0) return;
+		cutOff = bounds;
 		for (HistoChangeListener listener: changeListenerList)
 			listener.histoValueChanged(bounds);
 	}
@@ -216,6 +225,8 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 		}
 
 		histo.revalidate();
+		if (cutOff != -1.0)
+			histo.setLineValue(cutOff);
 
 	}
 
