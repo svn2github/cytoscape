@@ -10,6 +10,7 @@ import cytoscape.util.FileUtil;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
 import java.util.Map;
@@ -43,9 +44,17 @@ public class DownloadFileFromGenomeSpace extends CytoscapeAction {
 
 	public void actionPerformed(ActionEvent e) {
 		try {
-			GsSession client = GSUtils.getSession(); 
-			DataManagerClient dmc = client.getDataManagerClient();
+			final GsSession client = GSUtils.getSession(); 
+			final DataManagerClient dataManagerClient = client.getDataManagerClient();
 
+			final List<String> acceptableExtensions = new ArrayList<String>();
+			acceptableExtensions.add("sif");
+			acceptableExtensions.add("xgmml");
+			final TreeSelectionDialog dialog =
+				new TreeSelectionDialog(Cytoscape.getDesktop(), dataManagerClient,
+							acceptableExtensions);
+			dialog.setVisible(true);
+/*
 			final JFileChooser chooser = new JFileChooser(new GenomeSpaceFileSystemView(dmc));
 			int returnVal = chooser.showDialog(Cytoscape.getDesktop(), "Download");
 			if (returnVal != JFileChooser.APPROVE_OPTION)
@@ -72,6 +81,7 @@ public class DownloadFileFromGenomeSpace extends CytoscapeAction {
 				dmc.downloadFile(downloadFileMetadata, downloadTarget, true);
 				logger.info("Saved downloaded file as " + downloadTarget);
 			}
+*/
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed",ex);
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),

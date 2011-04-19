@@ -63,7 +63,7 @@ public final class GSFileMetadataTreeNode extends DefaultMutableTreeNode {
 	}
 
 	public boolean isEnabled() {
-		if (acceptableExtensions.isEmpty())
+		if (acceptableExtensions.isEmpty() || fileMetadata.isDirectory())
 			return true;
 
 		final String extension = getFileExtension(fileMetadata.getName());
@@ -74,6 +74,7 @@ public final class GSFileMetadataTreeNode extends DefaultMutableTreeNode {
 
 		return false;
 	}
+
 	private static String getFileExtension(final String fileName) {
 		final int lastDotPos = fileName.lastIndexOf('.');
 		return (lastDotPos == -1) ? "" : fileName.substring(lastDotPos + 1);
