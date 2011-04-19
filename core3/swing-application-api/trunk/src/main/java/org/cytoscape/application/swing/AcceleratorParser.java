@@ -121,11 +121,11 @@ final class AcceleratorParser {
 	return modifier;
     }
 
-    private static int lookupVKCode(String name) {
+    private static int lookupVKCode(final String name) {
 
 	String newName = name.toUpperCase();
-	if(name.startsWith(PREFIX) == false)
-	    newName = PREFIX + name;
+	if(newName.startsWith(PREFIX) == false)
+	    newName = PREFIX + newName;
 	
 	final String error = "The virtual key '" + newName + "' does not exist.";
 	    
