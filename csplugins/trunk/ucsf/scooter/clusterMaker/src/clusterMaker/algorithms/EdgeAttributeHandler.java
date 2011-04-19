@@ -139,10 +139,12 @@ public class EdgeAttributeHandler
 		                                  "Edge weight cutoff",
 		                                  Tunable.GROUP, new Integer(2)));
 
-   clusterProperties.add(new Tunable("edgeCutOff",
-		                                  "",
-		                                  Tunable.DOUBLE, new Double(0),
-		                                  new Double(0), new Double(1), Tunable.USESLIDER));
+		Tunable edgeCutOffTunable = new Tunable("edgeCutOff",
+		                                        "",
+		                                        Tunable.DOUBLE, new Double(0),
+		                                        new Double(0), new Double(1), Tunable.USESLIDER);
+		clusterProperties.add(edgeCutOffTunable);
+		edgeCutOffTunable.addTunableValueListener(this);
 
 		clusterProperties.add(new Tunable("edgeHistogram",
 		                                  "Set Edge Cutoff Using Histogram",
@@ -223,6 +225,16 @@ public class EdgeAttributeHandler
 	}
 
 	public void tunableChanged(Tunable tunable) {
+		// If the tunable that changed is the edge cutoff tunable, 
+		// just update the histogram, if it's up
+		System.out.println("Tunable "+tunable.getName()+" changed");
+		if (tunable.getName().equals("edgeCutOff")) {
+			edgeCutOff = (Double) tunable.getValue();
+			System.out.println("Setting line value to "+edgeCutOff);
+			if (histo != null)
+				histo.setLineValue(edgeCutOff);
+		}
+
 		updateSettings(false);
 		Tunable edgeCutOffTunable = clusterProperties.get("edgeCutOff");
 		if (edgeCutOffTunable == null || dataAttribute == null) 
@@ -242,6 +254,7 @@ public class EdgeAttributeHandler
 		if (histo != null) {
 			histo.updateData(dataArray);
 			histo.pack();
+			histo.setLineValue(edgeCutOff);
 		}
 	}
 
@@ -254,6 +267,10 @@ public class EdgeAttributeHandler
 		double dataArray[] = matrix.getEdgeValues();
 
 		int nbins = 100;
+		double minLogWeight = Math.log10(Math.abs(matrix.getMinWeight()));
+		double maxLogWeight = Math.log10(Math.abs(matrix.getMaxWeight()));
+		System.out.println("maxLogWeight = "+maxLogWeight+", minLogWeight = "+minLogWeight);
+
 		if (dataArray.length < 100)
 			nbins = 10;
 		else if (dataArray.length > 10000)
