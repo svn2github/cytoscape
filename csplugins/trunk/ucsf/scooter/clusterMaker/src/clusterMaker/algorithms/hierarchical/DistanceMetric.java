@@ -76,7 +76,7 @@ public enum DistanceMetric {
 			case KENDALLS_TAU:
 				return kendallMetric(data1, data2, weights, index1, index2);
 			case VALUE_IS_CORRELATION:
-				return data1.doubleValue(index1, index2);
+				return (1-data1.doubleValue(index1, index2));
 		}
 		return euclidMetric(data1, data2, weights, index1, index2);
 	}

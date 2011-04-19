@@ -69,8 +69,8 @@ public class ThresholdHeuristic{
 	    binFactor = 100.0/weightRange;
 
 	    //adjust all edges using binFactor
-	    for(int i = 0; i < edgeWeights.length; i++)
-		edgeWeights[i] = binFactor*edgeWeights[i];
+	    // for(int i = 0; i < edgeWeights.length; i++)
+		// edgeWeights[i] = binFactor*edgeWeights[i];
 	} 
     }
 		    
@@ -102,7 +102,7 @@ public class ThresholdHeuristic{
 
 	for(int i = 0; i < edgeWeights.length; i++){
 	    
-	    int edgeWeight = (int)edgeWeights[i];
+	    int edgeWeight = (int)(edgeWeights[i]*binFactor);
 
 	    //update totalMin and totalMax, if neccesary
 	    if(totalMin > edgeWeight)
@@ -188,7 +188,7 @@ public class ThresholdHeuristic{
 	//loop through edge weights, and create the network distribution
 	for(int i = 0; i < edgeWeights.length; i++){
 
-	    int edgeWeight = (int)edgeWeights[i];
+	    int edgeWeight = (int)(edgeWeights[i]*binFactor);
 	    int index = shiftIndex(edgeWeight);
 	    distribArray[index] += 1;
 	}

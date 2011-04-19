@@ -217,7 +217,7 @@ public class EdgeAttributeHandler
 	}
 
 	public void histoValueChanged(double cutoffValue) {
-		System.out.println("New cutoff value: "+cutoffValue);
+		// System.out.println("New cutoff value: "+cutoffValue);
 		Tunable edgeCutoff = clusterProperties.get("edgeCutOff");
 		edgeCutoff.setValue(cutoffValue);
 	}

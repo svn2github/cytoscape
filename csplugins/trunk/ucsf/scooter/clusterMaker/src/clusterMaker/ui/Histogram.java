@@ -47,8 +47,8 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 	// X scale values
 	private double minValue = Double.MAX_VALUE;
 	private double maxValue = Double.MIN_VALUE;
-	private int low;
-	private int high;
+	private double low;
+	private double high;
 
 	private final int XSTART = 100;
 	private final int YEND = 50;
@@ -241,16 +241,16 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 		// Calculate our X scale
 		double range = maxValue - minValue;
 		double oomRange = Math.log10(range); //order of magnitude
-		// System.out.println("oomRange = "+oomRange);
+		// System.out.println("oomRange = "+oomRange+", range = "+range+", minValue = "+minValue+", maxValue = "+maxValue);
 		oomRange = oomRange + (.5*oomRange/Math.abs(oomRange)); // Increase our oom by .5
 		oomRange = (int)(oomRange); //make it an integer
 
-		double high = (Math.rint((maxValue/Math.pow(10, oomRange))+.5)) * (Math.pow(10, oomRange)); // This is our initial high value
+		high = (Math.rint((maxValue/Math.pow(10, oomRange))+.5)) * (Math.pow(10, oomRange)); // This is our initial high value
 
 		if (maxValue <= high/2) 
 			high = high/2; // A little fine-tuning
 
-		double low = (Math.rint((minValue/Math.pow(10, oomRange))-.5)) * Math.pow(10,oomRange);
+		low = (Math.rint((minValue/Math.pow(10, oomRange))-.5)) * Math.pow(10,oomRange);
 
 		if (minValue >= low/2) 
 			low = low/2;
