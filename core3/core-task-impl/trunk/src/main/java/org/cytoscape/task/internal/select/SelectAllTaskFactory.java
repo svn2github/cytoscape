@@ -44,6 +44,6 @@ public class SelectAllTaskFactory extends AbstractNetworkTaskFactory {
     }
 
     public TaskIterator getTaskIterator() {
-	return new TaskIterator(new SelectAllTask(net, networkViewManager, eventHelper));
+	return new TaskIterator(new SelectAllTask(network, networkViewManager, eventHelper));
     }
 }

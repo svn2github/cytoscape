@@ -45,6 +45,6 @@ public class SelectFirstNeighborsTaskFactory extends AbstractNetworkTaskFactory 
     }
 
     public TaskIterator getTaskIterator() {
-	return new TaskIterator(new SelectFirstNeighborsTask(net, networkViewManager, eventHelper));
+	return new TaskIterator(new SelectFirstNeighborsTask(network, networkViewManager, eventHelper));
     }
 }

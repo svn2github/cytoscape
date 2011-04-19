@@ -62,7 +62,7 @@ public class NewNetworkSelectedNodesEdgesTaskFactory extends AbstractNetworkTask
     }
 
     public TaskIterator getTaskIterator() {
-	return new TaskIterator(new NewNetworkSelectedNodesEdgesTask(net, crnf, cnvf, netmgr, networkViewManager,
+	return new TaskIterator(new NewNetworkSelectedNodesEdgesTask(network, crnf, cnvf, netmgr, networkViewManager,
 		naming, vmm, appManager));
     }
 

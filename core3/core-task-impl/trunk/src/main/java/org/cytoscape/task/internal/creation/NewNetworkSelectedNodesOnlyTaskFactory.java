@@ -61,7 +61,7 @@ public class NewNetworkSelectedNodesOnlyTaskFactory extends AbstractNetworkTaskF
     }
 
     public TaskIterator getTaskIterator() {
-	return new TaskIterator(new NewNetworkSelectedNodesOnlyTask(net, crnf, cnvf, netmgr, networkViewManager,
+	return new TaskIterator(new NewNetworkSelectedNodesOnlyTask(network, crnf, cnvf, netmgr, networkViewManager,
 		naming, vmm, appManager));
     }
 }

@@ -62,7 +62,7 @@ public class CloneNetworkTaskFactory extends AbstractNetworkTaskFactory {
     }
 
     public TaskIterator getTaskIterator() {
-	return new TaskIterator(new CloneNetworkTask(net, networkManager, networkViewManager, vmm, netFactory,
+	return new TaskIterator(new CloneNetworkTask(network, networkManager, networkViewManager, vmm, netFactory,
 		netViewFactory, naming, eventHelper));
     }
 }

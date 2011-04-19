@@ -26,23 +26,26 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.task;
-
 
 import org.cytoscape.model.CyNetwork;
 
-
 public abstract class AbstractNetworkTaskFactory implements NetworkTaskFactory {
-	/** Network to be passed into any task constructed by descendents of this class. */
-	protected CyNetwork net; // TODO: should be renamed to network
 
-	/** Provisions descendents of this factory class with the network for any task to be constructed by them.
-	 *  @param net  must be a non-null {@link CyNetwork}
-	 */
-	public void setNetwork(final CyNetwork net) {
-		if (net == null)
-			throw new NullPointerException("\"net\" is null!");
-		this.net = net;
-	}
+    // Network to be passed into any task constructed by descendants of this class.
+    protected CyNetwork network;
+
+    /**
+     * Provisions descendants of this factory class with the network for any
+     * task to be constructed by them.
+     * 
+     * @param net
+     *            must be a non-null {@link CyNetwork}
+     */
+    public void setNetwork(final CyNetwork network) {
+	if (network == null)
+	    throw new NullPointerException("CyNetwork object is null.");
+	this.network = network;
+    }
 }

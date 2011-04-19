@@ -49,7 +49,7 @@ public class SelectFromFileListTaskFactory extends AbstractNetworkTaskFactory {
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new SelectFromFileListTask(net, networkViewManager,
+		return new TaskIterator(new SelectFromFileListTask(network, networkViewManager,
 								   eventHelper));
 	} 
 }

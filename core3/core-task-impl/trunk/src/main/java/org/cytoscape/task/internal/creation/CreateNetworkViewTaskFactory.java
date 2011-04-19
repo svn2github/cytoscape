@@ -29,25 +29,24 @@
  */
 package org.cytoscape.task.internal.creation;
 
-
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
 
 import org.cytoscape.view.model.CyNetworkViewManager;
 
-
 public class CreateNetworkViewTaskFactory extends AbstractNetworkTaskFactory {
-	private final CyNetworkViewManager networkViewManager;
-	private final CyNetworkViewFactory gvf;
+    
+    private final CyNetworkViewManager networkViewManager;
+    private final CyNetworkViewFactory viewFactory;
 
-	CreateNetworkViewTaskFactory(CyNetworkViewFactory gvf, final CyNetworkViewManager networkViewManager) {
-		super();
-		this.gvf = gvf;
-		this.networkViewManager = networkViewManager;
-	}
+    CreateNetworkViewTaskFactory(final CyNetworkViewFactory viewFactory, final CyNetworkViewManager networkViewManager) {
+	super();
+	this.viewFactory = viewFactory;
+	this.networkViewManager = networkViewManager;
+    }
 
-	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new CreateNetworkViewTask(net, gvf, networkViewManager));
-	}
+    public TaskIterator getTaskIterator() {
+	return new TaskIterator(new CreateNetworkViewTask(network, viewFactory, networkViewManager));
+    }
 }

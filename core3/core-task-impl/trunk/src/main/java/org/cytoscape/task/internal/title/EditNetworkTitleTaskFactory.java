@@ -37,6 +37,6 @@ import org.cytoscape.work.TaskIterator;
 public class EditNetworkTitleTaskFactory extends AbstractNetworkTaskFactory {
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new EditNetworkTitleTask(net));
+		return new TaskIterator(new EditNetworkTitleTask(network));
 	} 
 }

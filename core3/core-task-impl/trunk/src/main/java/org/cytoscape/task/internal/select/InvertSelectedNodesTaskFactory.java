@@ -50,6 +50,6 @@ public class InvertSelectedNodesTaskFactory extends AbstractNetworkTaskFactory {
 
 	public TaskIterator getTaskIterator() {
 		return new TaskIterator(
-				new InvertSelectedNodesTask(net, networkViewManager, eventHelper));
+				new InvertSelectedNodesTask(network, networkViewManager, eventHelper));
 	} 
 }

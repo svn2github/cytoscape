@@ -46,6 +46,6 @@ public class SelectAdjacentEdgesTaskFactory extends AbstractNetworkTaskFactory {
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new SelectAdjacentEdgesTask(net, networkViewManager, eventHelper));
+		return new TaskIterator(new SelectAdjacentEdgesTask(network, networkViewManager, eventHelper));
 	} 
 }

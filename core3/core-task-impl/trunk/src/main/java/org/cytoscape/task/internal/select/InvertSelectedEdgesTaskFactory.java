@@ -49,7 +49,7 @@ public class InvertSelectedEdgesTaskFactory extends AbstractNetworkTaskFactory {
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new InvertSelectedEdgesTask(net, networkViewManager,
+		return new TaskIterator(new InvertSelectedEdgesTask(network, networkViewManager,
 								    eventHelper));
 	} 
 }

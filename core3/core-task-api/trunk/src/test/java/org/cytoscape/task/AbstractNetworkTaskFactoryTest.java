@@ -68,15 +68,15 @@ public class AbstractNetworkTaskFactoryTest {
 	@Test
 	public void testGoodSetNetwork() throws Exception {
 		factory.setNetwork(mock(CyNetwork.class));
-		assertNotNull( factory.net );
+		assertNotNull( factory.network );
 	}
 
 	@Test
 	public void testNotFinal() throws Exception {
 		factory.setNetwork(mock(CyNetwork.class));
-		CyNetwork t1 = factory.net;
+		CyNetwork t1 = factory.network;
 		factory.setNetwork(mock(CyNetwork.class));
-		CyNetwork t2 = factory.net;
+		CyNetwork t2 = factory.network;
 		assertFalse( (t1 == t2) );
 	}
 }

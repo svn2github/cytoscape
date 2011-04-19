@@ -44,6 +44,6 @@ public class SelectAllEdgesTaskFactory extends AbstractNetworkTaskFactory {
     }
 
     public TaskIterator getTaskIterator() {
-	return new TaskIterator(new SelectAllEdgesTask(net, networkViewManager, this.eventHelper));
+	return new TaskIterator(new SelectAllEdgesTask(network, networkViewManager, this.eventHelper));
     }
 }

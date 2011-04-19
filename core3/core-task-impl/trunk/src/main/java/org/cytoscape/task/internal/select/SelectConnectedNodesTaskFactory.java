@@ -45,6 +45,6 @@ public class SelectConnectedNodesTaskFactory extends AbstractNetworkTaskFactory 
     }
 
     public TaskIterator getTaskIterator() {
-	return new TaskIterator(new SelectConnectedNodesTask(net, networkViewManager, eventHelper));
+	return new TaskIterator(new SelectConnectedNodesTask(network, networkViewManager, eventHelper));
     }
 }
