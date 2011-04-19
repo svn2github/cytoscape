@@ -66,7 +66,9 @@ public class ExitAction extends AbstractCyAction {
 		super("Quit",appMgr);
 		this.shutdown = shutdown;
 		setPreferredMenu("File");
-		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		
+		// TODO: need create special case for Mac.
+		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.VK_CONTROL));
 		setMenuGravity(1000.0f);
 	}
 
