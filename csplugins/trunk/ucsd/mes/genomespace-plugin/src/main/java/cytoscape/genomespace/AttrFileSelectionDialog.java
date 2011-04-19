@@ -44,7 +44,7 @@ final class AttrFileSelectionDialog extends JDialog implements TreeSelectionList
 		treeScrollPane.setPreferredSize(new Dimension(450, 300));
 		final JPanel treePane = new JPanel();
 		treePane.add(treeScrollPane);
-		getContentPane().add(treePane);
+		getContentPane().add(treePane, BorderLayout.PAGE_START);
 
 		final JPanel radioButtonPane = new JPanel();
 
@@ -70,7 +70,7 @@ final class AttrFileSelectionDialog extends JDialog implements TreeSelectionList
 		group.add(nodeAttrButton);
 		group.add(edgeAttrButton);
 
-		getContentPane().add(radioButtonPane, BorderLayout.SOUTH);
+		getContentPane().add(radioButtonPane, BorderLayout.CENTER);
 
 		final JPanel buttonPane = new JPanel();
 
@@ -92,7 +92,7 @@ final class AttrFileSelectionDialog extends JDialog implements TreeSelectionList
 			});
 		buttonPane.add(cancelButton);
 
-		getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		getContentPane().add(buttonPane, BorderLayout.PAGE_END);
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		pack();
