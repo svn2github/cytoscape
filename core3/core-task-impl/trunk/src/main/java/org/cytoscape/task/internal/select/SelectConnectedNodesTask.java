@@ -49,7 +49,7 @@ public class SelectConnectedNodesTask extends AbstractSelectTask {
     }
 
     public void run(TaskMonitor tm) {
-	final List<CyEdge> selectedEdges = CyTableUtil.getEdgesInState(net, "selected", true);
+	final List<CyEdge> selectedEdges = CyTableUtil.getEdgesInState(network, "selected", true);
 	final Set<CyNode> nodes = new HashSet<CyNode>();
 
 	for (CyEdge edge : selectedEdges) {

@@ -49,7 +49,7 @@ public abstract class AbstractSelectTask extends AbstractNetworkTask {
 	}
 
 	protected final void updateView() {
-		final CyNetworkView view = networkViewManager.getNetworkView(net.getSUID());
+		final CyNetworkView view = networkViewManager.getNetworkView(network.getSUID());
 		if (view != null)
 			view.updateView();
 	}

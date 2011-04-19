@@ -42,7 +42,7 @@ public class DeselectAllEdgesTask extends AbstractSelectTask {
 	}
 
 	public void run(TaskMonitor tm) {
-		selectUtils.setSelectedEdges( net.getEdgeList(), false);
+		selectUtils.setSelectedEdges( network.getEdgeList(), false);
 		updateView();
 	} 
 }

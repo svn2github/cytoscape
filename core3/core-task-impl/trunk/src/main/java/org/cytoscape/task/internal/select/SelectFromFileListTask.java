@@ -78,17 +78,17 @@ public class SelectFromFileListTask extends AbstractSelectTask {
 	    fin.close();
 
 	    try {
-		eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, net.getDefaultNodeTable()));
+		eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, network.getDefaultNodeTable()));
 
 		// loop through all the node of the graph selecting those in the
 		// file
-		List<CyNode> nodeList = net.getNodeList();
+		List<CyNode> nodeList = network.getNodeList();
 		for (final CyNode node : nodeList) {
 		    if (fileNodes.contains(node.getCyRow().get(CyTableEntry.NAME, String.class)))
 			node.getCyRow().set("selected", true);
 		}
 	    } finally {
-		eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, net.getDefaultNodeTable()));
+		eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, network.getDefaultNodeTable()));
 	    }
 
 	    updateView();

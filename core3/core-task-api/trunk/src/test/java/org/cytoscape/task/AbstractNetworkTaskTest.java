@@ -41,7 +41,7 @@ public class AbstractNetworkTaskTest {
 	private class NetworkTask extends AbstractNetworkTask {
 		NetworkTask(CyNetwork view) { super(view); }
 		public void run(TaskMonitor tm) { 
-			assertNotNull(net);
+			assertNotNull(network);
 		}
 
 		@Override

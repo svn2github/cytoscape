@@ -41,7 +41,7 @@ public class SelectAllNodesTask extends AbstractSelectTask {
     }
 
     public void run(TaskMonitor tm) {
-	selectUtils.setSelectedNodes(net.getNodeList(), true);
+	selectUtils.setSelectedNodes(network.getNodeList(), true);
 	updateView();
     }
 }

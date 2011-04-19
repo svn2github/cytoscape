@@ -42,8 +42,8 @@ public class DeselectAllTask extends AbstractSelectTask {
     }
 
     public void run(TaskMonitor tm) {
-	selectUtils.setSelectedEdges(net.getEdgeList(), false);
-	selectUtils.setSelectedNodes(net.getNodeList(), false);
+	selectUtils.setSelectedEdges(network.getEdgeList(), false);
+	selectUtils.setSelectedNodes(network.getNodeList(), false);
 	updateView();
     }
 }

@@ -26,25 +26,27 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.task;
-
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.AbstractTask;
 
-
 public abstract class AbstractNetworkTask extends AbstractTask {
-	/** The network that descendents of this class will operate on. */
-	final protected CyNetwork net; // TODO: should be renamed to network
 
-	/** Base class for tasks that need to operate on a {@link CyNetwork}
-	 *  @param net must be a non-null CyNetwork
-	 */
-	public AbstractNetworkTask(final CyNetwork net) {
-		if (net == null)
-			throw new NullPointerException("CyNetwork is null");
+    // The network that descendants of this class will operate on.
+    final protected CyNetwork network;
 
-		this.net = net;	
-	}
+    /**
+     * Base class for tasks that need to operate on a {@link CyNetwork}
+     * 
+     * @param net
+     *            must be a non-null CyNetwork
+     */
+    public AbstractNetworkTask(final CyNetwork network) {
+	if (network == null)
+	    throw new NullPointerException("CyNetwork is null");
+
+	this.network = network;
+    }
 }

@@ -42,7 +42,7 @@ public class DeselectAllNodesTask extends AbstractSelectTask {
 	}
 
 	public void run(TaskMonitor tm) {
-		selectUtils.setSelectedNodes( net.getNodeList(), false);
+		selectUtils.setSelectedNodes( network.getNodeList(), false);
 		updateView();
 	}
 }

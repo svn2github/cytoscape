@@ -48,16 +48,16 @@ public class InvertSelectedEdgesTask extends AbstractSelectTask {
 
     public void run(TaskMonitor tm) {
 	try {
-	    eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, net.getDefaultNodeTable()));
+	    eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, network.getDefaultNodeTable()));
 
-	    for (final CyEdge e : net.getEdgeList()) {
+	    for (final CyEdge e : network.getEdgeList()) {
 		if (e.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
 		    e.getCyRow().set(CyNetwork.SELECTED, false);
 		else
 		    e.getCyRow().set(CyNetwork.SELECTED, true);
 	    }
 	} finally {
-	    eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, net.getDefaultNodeTable()));
+	    eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, network.getDefaultNodeTable()));
 	}
 
 	updateView();

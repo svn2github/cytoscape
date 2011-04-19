@@ -56,24 +56,24 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskMonitor;
 
 public class CloneNetworkTask extends AbstractCreationTask {
+    
     private Map<CyNode, CyNode> origNewNodeMap;
     private Map<CyEdge, CyEdge> origNewEdgeMap;
     private final VisualMappingManager vmm;
     private final CyNetworkFactory netFactory;
     private final CyNetworkViewFactory netViewFactory;
-    private final RenderingEngineManager reManager;
     private final CyNetworkNaming naming;
     private final CyEventHelper eventHelper;
 
     public CloneNetworkTask(final CyNetwork net, final CyNetworkManager netmgr,
 	    final CyNetworkViewManager networkViewManager, final VisualMappingManager vmm,
 	    final CyNetworkFactory netFactory, final CyNetworkViewFactory netViewFactory,
-	    final RenderingEngineManager reManager, final CyNetworkNaming naming, final CyEventHelper eventHelper) {
+	    final CyNetworkNaming naming, final CyEventHelper eventHelper) {
 	super(net, netmgr, networkViewManager);
+	
 	this.vmm = vmm;
 	this.netFactory = netFactory;
 	this.netViewFactory = netViewFactory;
-	this.reManager = reManager;
 	this.naming = naming;
 	this.eventHelper = eventHelper;
     }
@@ -81,7 +81,6 @@ public class CloneNetworkTask extends AbstractCreationTask {
     public void run(TaskMonitor tm) {
 	CyNetwork newNet = cloneNetwork(parentNetwork);
 	CyNetworkView origView = networkViewManager.getNetworkView(parentNetwork.getSUID());
-	final RenderingEngine<?> re = reManager.getRendringEngine(origView);
 
 	networkManager.addNetwork(newNet);
 	if (origView != null) {

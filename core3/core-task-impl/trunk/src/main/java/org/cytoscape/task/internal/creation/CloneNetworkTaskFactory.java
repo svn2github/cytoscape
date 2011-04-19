@@ -27,8 +27,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.task.internal.creation;  
-
+package org.cytoscape.task.internal.creation;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkFactory;
@@ -37,42 +36,33 @@ import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskIterator;
 
-
 public class CloneNetworkTaskFactory extends AbstractNetworkTaskFactory {
-	private final CyNetworkManager networkManager;
-	private final CyNetworkViewManager networkViewManager;
-	private final VisualMappingManager vmm;
-	private final CyNetworkFactory netFactory;
-	private final CyNetworkViewFactory netViewFactory;
-	private final RenderingEngineManager reMgr;
-	private final CyNetworkNaming naming;
-	private final CyEventHelper eventHelper;
+    private final CyNetworkManager networkManager;
+    private final CyNetworkViewManager networkViewManager;
+    private final VisualMappingManager vmm;
+    private final CyNetworkFactory netFactory;
+    private final CyNetworkViewFactory netViewFactory;
+    private final CyNetworkNaming naming;
+    private final CyEventHelper eventHelper;
 
-	public CloneNetworkTaskFactory(final CyNetworkManager networkManager, 
-				       final CyNetworkViewManager networkViewManager,
-				       final VisualMappingManager vmm, 
-				       final CyNetworkFactory netFactory,
-				       final CyNetworkViewFactory netViewFactory, 
-				       final RenderingEngineManager reMgr,
-				       final CyNetworkNaming naming, final CyEventHelper eventHelper)
-	{
-		this.networkManager     = networkManager;
-		this.networkViewManager = networkViewManager;
-		this.vmm                = vmm;
-		this.netFactory         = netFactory;
-		this.netViewFactory     = netViewFactory;
-		this.reMgr              = reMgr;
-		this.naming             = naming;
-		this.eventHelper        = eventHelper;
-	}
+    public CloneNetworkTaskFactory(final CyNetworkManager networkManager,
+	    final CyNetworkViewManager networkViewManager, final VisualMappingManager vmm,
+	    final CyNetworkFactory netFactory, final CyNetworkViewFactory netViewFactory, final CyNetworkNaming naming,
+	    final CyEventHelper eventHelper) {
+	this.networkManager = networkManager;
+	this.networkViewManager = networkViewManager;
+	this.vmm = vmm;
+	this.netFactory = netFactory;
+	this.netViewFactory = netViewFactory;
+	this.naming = naming;
+	this.eventHelper = eventHelper;
+    }
 
-	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new CloneNetworkTask(net, networkManager, networkViewManager,
-							     vmm, netFactory, netViewFactory, reMgr,
-							     naming, eventHelper));
-	} 
+    public TaskIterator getTaskIterator() {
+	return new TaskIterator(new CloneNetworkTask(net, networkManager, networkViewManager, vmm, netFactory,
+		netViewFactory, naming, eventHelper));
+    }
 }

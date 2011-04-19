@@ -49,16 +49,16 @@ public class InvertSelectedNodesTask extends AbstractSelectTask {
     @Override
     public void run(final TaskMonitor tm) {
 	try {
-	    eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, net.getDefaultNodeTable()));
+	    eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, network.getDefaultNodeTable()));
 
-	    for (final CyNode n : net.getNodeList()) {
+	    for (final CyNode n : network.getNodeList()) {
 		if (n.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
 		    n.getCyRow().set(CyNetwork.SELECTED, false);
 		else
 		    n.getCyRow().set(CyNetwork.SELECTED, true);
 	    }
 	} finally {
-	    eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, net.getDefaultNodeTable()));
+	    eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, network.getDefaultNodeTable()));
 	}
 
 	updateView();

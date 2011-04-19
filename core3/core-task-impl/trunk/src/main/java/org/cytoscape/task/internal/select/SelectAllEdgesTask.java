@@ -41,7 +41,7 @@ public class SelectAllEdgesTask extends AbstractSelectTask {
     }
 
     public void run(TaskMonitor tm) {
-	selectUtils.setSelectedEdges(net.getEdgeList(), true);
+	selectUtils.setSelectedEdges(network.getEdgeList(), true);
 	updateView();
     }
 }
