@@ -155,14 +155,15 @@ final class TreeSelectionDialog extends JDialog implements TreeSelectionListener
 		}
 
 		final TreePath path = tree.getSelectionPath();
-		if (tree.isCollapsed(path))
-			tree.expandPath(path);
-		else {
+		if (tree.isExpanded(path) || currentNode.childrenHaveBeenInitialised()) {
 			final GSFileMetadataTreeNode newDirNode =
 				new GSFileMetadataTreeNode(newDirMetadata, dataManagerClient,
 							   acceptableExtensions);
 			final DefaultTreeModel treeModel = (DefaultTreeModel)tree.getModel();
 			// TODO insert new dir node in model, sorted appropriately (alphabetically, dirs first)
 		}
+
+		if (tree.isCollapsed(path))
+			tree.expandPath(path);
 	}
 }

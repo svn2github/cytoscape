@@ -79,4 +79,8 @@ public final class GSFileMetadataTreeNode extends DefaultMutableTreeNode {
 		final int lastDotPos = fileName.lastIndexOf('.');
 		return (lastDotPos == -1) ? "" : fileName.substring(lastDotPos + 1);
 	}
+
+	public boolean childrenHaveBeenInitialised() {
+		return childCount != UNINITIALISED;
+	}
 }
