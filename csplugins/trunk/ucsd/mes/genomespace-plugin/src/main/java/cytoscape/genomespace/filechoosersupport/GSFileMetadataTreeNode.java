@@ -16,9 +16,9 @@ public final class GSFileMetadataTreeNode extends DefaultMutableTreeNode {
 	private int childCount;
 	private final List<String> acceptableExtensions;
 
-	GSFileMetadataTreeNode(final GSFileMetadata fileMetadata,
-			       final DataManagerClient dataManagerClient,
-			       final List<String> acceptableExtensions)
+	public GSFileMetadataTreeNode(final GSFileMetadata fileMetadata,
+				      final DataManagerClient dataManagerClient,
+				      final List<String> acceptableExtensions)
 	{
 		super(fileMetadata, fileMetadata.isDirectory());
 		this.fileMetadata = fileMetadata;

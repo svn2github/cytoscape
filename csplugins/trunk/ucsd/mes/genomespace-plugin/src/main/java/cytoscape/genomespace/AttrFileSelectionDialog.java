@@ -37,7 +37,6 @@ final class AttrFileSelectionDialog extends JDialog implements TreeSelectionList
 		this.useNodeAttrs = true;
 
 		final List<String> acceptableExtensions = new ArrayList<String>();
-		acceptableExtensions.add("attrs");
 		tree = new GenomeSpaceTree(dataManagerClient, acceptableExtensions);
 		tree.addTreeSelectionListener(this);
 		final JScrollPane treeScrollPane = new JScrollPane(tree);
@@ -103,22 +102,16 @@ final class AttrFileSelectionDialog extends JDialog implements TreeSelectionList
 		final GSFileMetadataTreeNode node =
 			(GSFileMetadataTreeNode)tree.getLastSelectedPathComponent();
 
-		if (node == null)
+		if (node == null || node.getFileMetadata().isDirectory()) {
+			selectButton.setEnabled(false);
+			selectedFileMetadata = null;
 			return;
+		}
 
 		selectButton.setEnabled(false);
-		selectedFileMetadata = null;
-		final GSFileMetadata nodeFileMetadata = node.getFileMetadata();
-		final String extension = getFileExtension(nodeFileMetadata.getName());
-		if (extension.equalsIgnoreCase("attrs")) {
+		selectedFileMetadata = node.getFileMetadata();
+		if (selectedFileMetadata != null)
 			selectButton.setEnabled(true);
-			selectedFileMetadata = nodeFileMetadata;
-		}
-	}
-
-	private static String getFileExtension(final String fileName) {
-		final int lastDotPos = fileName.lastIndexOf('.');
-		return (lastDotPos == -1) ? "" : fileName.substring(lastDotPos + 1);
 	}
 
 	public GSFileMetadata getSelectedFileMetadata() {

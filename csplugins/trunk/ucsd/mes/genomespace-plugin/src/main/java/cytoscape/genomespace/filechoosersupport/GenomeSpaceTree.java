@@ -11,7 +11,9 @@ import java.util.Vector;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
+import javax.swing.tree.TreeModel;
 
 import org.genomespace.client.DataManagerClient;
 import org.genomespace.datamanager.core.GSFileMetadata;
@@ -22,6 +24,7 @@ public class GenomeSpaceTree extends JTree {
 			       final List<String> acceptableExtensions)
 	{
 		super(createTopAndFirstTier(dataManagerClient, acceptableExtensions));
+		setShowsRootHandles(true);
 		getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		setCellRenderer(new MyTreeCellRenderer());
 	}
@@ -30,7 +33,7 @@ public class GenomeSpaceTree extends JTree {
 		this(dataManagerClient, new ArrayList<String>());
 	}
 
-	private static DefaultMutableTreeNode createTopAndFirstTier(
+	private static TreeModel createTopAndFirstTier(
 						final DataManagerClient dataManagerClient,
 						final List<String> acceptableExtensions)
 	{
@@ -48,7 +51,7 @@ public class GenomeSpaceTree extends JTree {
 							   acceptableExtensions));
 		}
 
-		return top;
+		return new DefaultTreeModel(top);
 	}
 
 	static final class MyTreeCellRenderer extends DefaultTreeCellRenderer {
