@@ -287,36 +287,8 @@
 	<osgi:service id="cytoscapeDesktopService" ref="cytoscapeDesktop"
 		interface="org.cytoscape.application.swing.CySwingApplication" />
 
-	<osgi:service id="networkPanelService" ref="networkPanel">
-		<osgi:interfaces>
-			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener
-			</value>
-			<value>org.cytoscape.session.events.SetCurrentNetworkListener
-			</value>
-			<value>org.cytoscape.model.events.NetworkAddedListener
-			</value>
-			<value>org.cytoscape.view.model.events.NetworkViewAddedListener
-			</value>
-			<value>org.cytoscape.model.events.NetworkAboutToBeDestroyedListener
-			</value>
-			<value>org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener
-			</value>
-		</osgi:interfaces>
-	</osgi:service>
-
-	<osgi:service id="networkViewManagerService" ref="networkViewManager">
-		<osgi:interfaces>
-			<value>org.cytoscape.view.model.events.NetworkViewAddedListener
-			</value>
-			<value>org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener
-			</value>
-			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener
-			</value>
-			<value>org.cytoscape.session.events.SetCurrentNetworkListener
-			</value>
-			<value>org.cytoscape.session.events.SessionLoadedListener</value>
-		</osgi:interfaces>
-	</osgi:service>
+	<osgi:service id="networkPanelService" ref="networkPanel" auto-export="interfaces" />
+	<osgi:service id="networkViewManagerService" ref="networkViewManager" auto-export="interfaces" />
 
 	<osgi:service id="birdsEyeViewHandlerService" ref="birdsEyeViewHandler"
 		auto-export="interfaces" />

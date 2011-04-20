@@ -26,9 +26,8 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.task.internal.destruction;
-
 
 import java.util.Collection;
 
@@ -37,18 +36,17 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
 
-
 public class DestroyNetworkViewTask extends AbstractNetworkViewCollectionTask {
-    
-	private final CyNetworkViewManager networkViewManager;
 
-	public DestroyNetworkViewTask(final Collection<CyNetworkView> views, final CyNetworkViewManager networkViewManager) {
-		super(views);
-		this.networkViewManager = networkViewManager;
-	}
+    private final CyNetworkViewManager networkViewManager;
 
-	public void run(TaskMonitor tm) {
-		for ( final CyNetworkView n : networkViews )
-			networkViewManager.destroyNetworkView(n);
-	}
+    public DestroyNetworkViewTask(final Collection<CyNetworkView> views, final CyNetworkViewManager networkViewManager) {
+	super(views);
+	this.networkViewManager = networkViewManager;
+    }
+
+    public void run(TaskMonitor tm) {
+	for (final CyNetworkView n : networkViews)
+	    networkViewManager.destroyNetworkView(n);
+    }
 }
