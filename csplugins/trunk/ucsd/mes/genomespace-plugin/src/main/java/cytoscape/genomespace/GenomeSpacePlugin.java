@@ -37,5 +37,8 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 
 		LoadSessionFromGenomeSpace loadSessionAction = new LoadSessionFromGenomeSpace();
 		Cytoscape.getDesktop().getCyMenus().addAction(loadSessionAction);
+
+		SaveSessionToGenomeSpace saveSessionAction = new SaveSessionToGenomeSpace();
+		Cytoscape.getDesktop().getCyMenus().addAction(saveSessionAction);
 	}
 }	

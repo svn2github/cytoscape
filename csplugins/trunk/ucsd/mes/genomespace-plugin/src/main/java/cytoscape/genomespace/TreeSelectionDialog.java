@@ -10,9 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
@@ -26,34 +30,48 @@ import org.genomespace.client.DataManagerClient;
 import org.genomespace.datamanager.core.GSFileMetadata;
 
 
-final class TreeSelectionDialog extends JDialog implements TreeSelectionListener {
+final class TreeSelectionDialog extends JDialog implements TreeSelectionListener, DocumentListener {
 	private final DataManagerClient dataManagerClient;
 	private final List<String> acceptableExtensions;
 	private final GenomeSpaceTree tree;
+	private final JTextField saveFileName;
 	private final JButton newFolderButton;
 	private final JButton selectButton;
 	private final JButton cancelButton;
 	private GSFileMetadata selectedFileMetadata;
 	private GSFileMetadataTreeNode currentNode;
+	private final boolean isSaveAsDialog;
 
 	TreeSelectionDialog(final Frame owner, final DataManagerClient dataManagerClient,
-			    final List<String> acceptableExtensions)
+			    final List<String> acceptableExtensions, final boolean isSaveAsDialog)
 	{
 		super(owner, /* modal = */ true);
 
 		this.dataManagerClient    = dataManagerClient;
 		this.acceptableExtensions = acceptableExtensions;
 		this.selectedFileMetadata = null;
-		this.currentNode          = null;
+		this.isSaveAsDialog       = isSaveAsDialog;
 
 		tree = new GenomeSpaceTree(dataManagerClient, acceptableExtensions);
+		this.currentNode = (GSFileMetadataTreeNode)tree.getModel().getRoot();
 		tree.setEditable(true);
 		tree.addTreeSelectionListener(this);
 		final JScrollPane treeScrollPane = new JScrollPane(tree);
 		treeScrollPane.setPreferredSize(new Dimension(450, 300));
 		final JPanel treePane = new JPanel();
 		treePane.add(treeScrollPane);
-		getContentPane().add(treePane);
+		getContentPane().add(treePane, BorderLayout.NORTH);
+
+		if (isSaveAsDialog) {
+			final JPanel textPane = new JPanel();
+			final JLabel label = new JLabel("Save as:");
+			textPane.add(label);
+			saveFileName = new JTextField(25);
+			saveFileName.getDocument().addDocumentListener(this);
+			textPane.add(saveFileName);
+			getContentPane().add(textPane, BorderLayout.CENTER);
+		} else
+			saveFileName = null;
 
 		final JPanel buttonPane = new JPanel();
 
@@ -92,8 +110,14 @@ final class TreeSelectionDialog extends JDialog implements TreeSelectionListener
 		setVisible(true);
 	}
 
+	TreeSelectionDialog(final Frame owner, final DataManagerClient dataManagerClient,
+			    final List<String> acceptableExtensions)
+	{
+		this(owner, dataManagerClient, acceptableExtensions, false);
+	}
+
 	TreeSelectionDialog(final Frame owner, final DataManagerClient dataManagerClient) {
-		this(owner, dataManagerClient, new ArrayList<String>());
+			this(owner, dataManagerClient, new ArrayList<String>(), false);
 	}
 
 	public void valueChanged(final TreeSelectionEvent e) {
@@ -103,7 +127,8 @@ final class TreeSelectionDialog extends JDialog implements TreeSelectionListener
 			newFolderButton.setEnabled(currentNode.getFileMetadata().isDirectory());
 
 		if (currentNode == null || currentNode.getFileMetadata().isDirectory()) {
-			selectButton.setEnabled(false);
+			if (!isSaveAsDialog)
+				selectButton.setEnabled(false);
 			selectedFileMetadata = null;
 			return;
 		}
@@ -111,6 +136,8 @@ final class TreeSelectionDialog extends JDialog implements TreeSelectionListener
 		if (acceptableExtensions.isEmpty()) {
 			selectedFileMetadata = currentNode.getFileMetadata();
 			selectButton.setEnabled(selectedFileMetadata != null);
+			if (saveFileName != null)
+				saveFileName.setText(selectedFileMetadata.getName());
 		} else {
 			selectButton.setEnabled(false);
 			selectedFileMetadata = null;
@@ -120,10 +147,15 @@ final class TreeSelectionDialog extends JDialog implements TreeSelectionListener
 				if (extension.equalsIgnoreCase(acceptableExtension)) {
 					selectButton.setEnabled(true);
 					selectedFileMetadata = nodeFileMetadata;
+					if (saveFileName != null)
+						saveFileName.setText(selectedFileMetadata.getName());
 					break;
 				}
 			}
 		}
+
+		if (isSaveAsDialog)
+			selectButton.setEnabled(!saveFileName.getText().isEmpty());
 	}
 
 	private static String getFileExtension(final String fileName) {
@@ -165,5 +197,31 @@ final class TreeSelectionDialog extends JDialog implements TreeSelectionListener
 
 		if (tree.isCollapsed(path))
 			tree.expandPath(path);
+	}
+
+	public String getSaveFileName() {
+		final String fileName = saveFileName.getText();
+		if (fileName == null)
+			return null;
+
+		return fileName == null ? null : dirName(currentNode.getFileMetadata().getPath()) + fileName;
+	}
+
+	// Returns the directory component of "path"
+	private String dirName(final String path) {
+		final int lastSlashPos = path.lastIndexOf('/');
+		return path.substring(0, lastSlashPos + 1);
+	}
+
+	public void insertUpdate(final DocumentEvent e) {
+		selectButton.setEnabled(!saveFileName.getText().isEmpty());
+	}
+
+	public void removeUpdate(final DocumentEvent e) {
+		selectButton.setEnabled(!saveFileName.getText().isEmpty());
+	}
+
+	public void changedUpdate(final DocumentEvent e) {
+		selectButton.setEnabled(!saveFileName.getText().isEmpty());
 	}
 }

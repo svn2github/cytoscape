@@ -17,6 +17,7 @@ import javax.swing.tree.TreeModel;
 
 import org.genomespace.client.DataManagerClient;
 import org.genomespace.datamanager.core.GSFileMetadata;
+import org.genomespace.datamanager.core.GSDirectoryListing;
 
 
 public class GenomeSpaceTree extends JTree {
@@ -37,12 +38,12 @@ public class GenomeSpaceTree extends JTree {
 						final DataManagerClient dataManagerClient,
 						final List<String> acceptableExtensions)
 	{
-		final DefaultMutableTreeNode top =
-			new DefaultMutableTreeNode("GenomeSpace Files");
-		
-		final Vector<GSFileMetadata> filesMetadata =
-			new Vector(dataManagerClient.listDefaultDirectory().getContents());
+		final GSDirectoryListing dirListing = dataManagerClient.listDefaultDirectory();
+		final Vector<GSFileMetadata> filesMetadata = new Vector(dirListing.getContents());
 		Collections.sort(filesMetadata, new GSFileMetadataComparator());
+
+		final RootTreeNode top =
+			new RootTreeNode(dirListing.getDirectory(), dataManagerClient);
 
 		final Iterator<GSFileMetadata> iter = filesMetadata.iterator();
 		while (iter.hasNext()) {
@@ -79,3 +80,28 @@ public class GenomeSpaceTree extends JTree {
 		}
 	}
 }
+
+
+class RootTreeNode extends GSFileMetadataTreeNode {
+	public RootTreeNode(final GSFileMetadata fileMetadata,
+			    final DataManagerClient dataManagerClient)
+	{
+		super(fileMetadata, dataManagerClient, new ArrayList<String>());
+	}
+
+	@Override
+	public boolean isLeaf() {
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "GenomeSpace Files";
+	}
+
+	@Override
+	public boolean childrenHaveBeenInitialised() {
+		return true;
+	}
+}
+

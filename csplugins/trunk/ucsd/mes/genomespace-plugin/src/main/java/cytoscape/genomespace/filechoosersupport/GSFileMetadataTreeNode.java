@@ -9,7 +9,7 @@ import org.genomespace.client.DataManagerClient;
 import org.genomespace.datamanager.core.GSFileMetadata;
 
 
-public final class GSFileMetadataTreeNode extends DefaultMutableTreeNode {
+public class GSFileMetadataTreeNode extends DefaultMutableTreeNode {
 	private static int UNINITIALISED = -1;
 	private final GSFileMetadata fileMetadata;
 	private final DataManagerClient dataManagerClient;
@@ -63,7 +63,7 @@ public final class GSFileMetadataTreeNode extends DefaultMutableTreeNode {
 	}
 
 	public boolean isEnabled() {
-		if (acceptableExtensions.isEmpty() || fileMetadata.isDirectory())
+		if (fileMetadata.isDirectory() || acceptableExtensions.isEmpty())
 			return true;
 
 		final String extension = getFileExtension(fileMetadata.getName());
