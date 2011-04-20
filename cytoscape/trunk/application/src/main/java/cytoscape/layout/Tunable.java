@@ -1159,9 +1159,8 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			slider.removeChangeListener(this);
 			slider.setValue(sliderScale(value));
 			slider.addChangeListener(this);
-		} else {
-			updateValueListeners();
 		}
+		updateValueListeners();
 	}
 
 	/**
@@ -1185,9 +1184,8 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 
 			// Update the text box
 			((JTextField) inputField).setText(sliderScale(value).toString());
-		} else {
-			updateValueListeners();
 		}
+		updateValueListeners();
 	}
 
 	/**
