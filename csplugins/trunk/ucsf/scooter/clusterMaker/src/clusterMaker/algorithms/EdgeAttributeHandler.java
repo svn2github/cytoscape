@@ -221,18 +221,23 @@ public class EdgeAttributeHandler
 	public void histoValueChanged(double cutoffValue) {
 		// System.out.println("New cutoff value: "+cutoffValue);
 		Tunable edgeCutoff = clusterProperties.get("edgeCutOff");
+		edgeCutoff.removeTunableValueListener(this);
 		edgeCutoff.setValue(cutoffValue);
+		edgeCutoff.addTunableValueListener(this);
 	}
 
 	public void tunableChanged(Tunable tunable) {
 		// If the tunable that changed is the edge cutoff tunable, 
 		// just update the histogram, if it's up
-		System.out.println("Tunable "+tunable.getName()+" changed");
 		if (tunable.getName().equals("edgeCutOff")) {
 			edgeCutOff = (Double) tunable.getValue();
-			System.out.println("Setting line value to "+edgeCutOff);
-			if (histo != null)
+			if (histo != null) {
+				// No backs!
+				histo.removeHistoChangeListener(this);
 				histo.setLineValue(edgeCutOff);
+				histo.addHistoChangeListener(this);
+			}
+			return;
 		}
 
 		updateSettings(false);
@@ -254,7 +259,6 @@ public class EdgeAttributeHandler
 		if (histo != null) {
 			histo.updateData(dataArray);
 			histo.pack();
-			histo.setLineValue(edgeCutOff);
 		}
 	}
 
@@ -266,15 +270,12 @@ public class EdgeAttributeHandler
 
 		double dataArray[] = matrix.getEdgeValues();
 
+		// TODO: There really needs to be a better way to calculate the number of bins
 		int nbins = 100;
-		double minLogWeight = Math.log10(Math.abs(matrix.getMinWeight()));
-		double maxLogWeight = Math.log10(Math.abs(matrix.getMaxWeight()));
-		System.out.println("maxLogWeight = "+maxLogWeight+", minLogWeight = "+minLogWeight);
-
 		if (dataArray.length < 100)
 			nbins = 10;
-		else if (dataArray.length > 10000)
-			nbins = 1000;
+		// else if (dataArray.length > 10000)
+		// 	nbins = 1000;
 		String title = "Histogram for "+dataAttribute+" edge attribute";
 		histo = new HistogramDialog(title, dataArray, nbins,thueristic);
 		histo.pack();
