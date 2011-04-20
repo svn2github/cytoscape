@@ -43,7 +43,6 @@ public class LoadSessionFromGenomeSpace extends CytoscapeAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		File tempFile = null;
 		try {
 			if (!destroyCurrentSession(Cytoscape.getDesktop()))
 				return;
@@ -62,7 +61,7 @@ public class LoadSessionFromGenomeSpace extends CytoscapeAction {
 				return;
 
 			// Download the GenomeSpace file:
-			tempFile = File.createTempFile("temp", "cysession");
+			final File tempFile = File.createTempFile("temp", "cysession");
 			dataManagerClient.downloadFile(fileMetadata, tempFile, true);
 
 			// Close all networks in the workspace.
@@ -72,8 +71,7 @@ public class LoadSessionFromGenomeSpace extends CytoscapeAction {
 
 			logger.info("Opening session file: " + tempFile.getName());
 
-			// Create Task
-			final OpenSessionTask task = new OpenSessionTask(tempFile.getName());
+			final Task task = new OpenSessionTask(tempFile, fileMetadata.getName());
 
 			// Configure JTask Dialog Pop-Up Box
 			final JTaskConfig jTaskConfig = new JTaskConfig();
@@ -90,9 +88,6 @@ public class LoadSessionFromGenomeSpace extends CytoscapeAction {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 						      ex.getMessage(), "GenomeSpace Error",
 						      JOptionPane.ERROR_MESSAGE);
-		} finally {
-			if (tempFile != null)
-				tempFile.delete();
 		}
 	}
 
@@ -108,31 +103,17 @@ public class LoadSessionFromGenomeSpace extends CytoscapeAction {
 						      JOptionPane.WARNING_MESSAGE, null);
 		return result == JOptionPane.YES_OPTION;
 	}
-
-	private static String getExtension(final String fileName) {
-		final int lastDotPos = fileName.lastIndexOf('.');
-		return (lastDotPos == -1 ? fileName : fileName.substring(lastDotPos)).toLowerCase();
-	}
-
-	private static String getNetworkTitle(final String fileName) {
-		final int lastDotPos = fileName.lastIndexOf('.');
-		return lastDotPos == -1 ? fileName : fileName.substring(0, lastDotPos);
-	}
 }
 
 
 class OpenSessionTask implements Task {
-	private String fileName;
+	private final File localFile;
+	private final String origFileName;
 	private TaskMonitor taskMonitor;
 
-	/**
-	 * Constructor.<br>
-	 *
-	 * @param fileName
-	 *            Session file name
-	 */
-	OpenSessionTask(String fileName) {
-		this.fileName = fileName;
+	OpenSessionTask(final File localFile, final String origFileName) {
+		this.localFile = localFile;
+		this.origFileName = origFileName;
 	}
 
 	/**
@@ -148,20 +129,26 @@ class OpenSessionTask implements Task {
 		CytoscapeSessionReader sr;
 
 		try {
-			sr = new CytoscapeSessionReader(fileName, taskMonitor);
+			sr = new CytoscapeSessionReader(localFile.getPath(), taskMonitor);
 			sr.read();
 		} catch (IOException e) {
 			taskMonitor.setException(e, "Cannot open the session file: " + e.getMessage());
-			LoadSessionFromGenomeSpace.logger.error("Cannot open the session file: "+ e.getMessage(), e);
+			LoadSessionFromGenomeSpace.logger.error("Cannot open the session file: "
+								+ e.getMessage(), e);
 		} catch (JAXBException e) {
 			taskMonitor.setException(e, "Cannot unmarshall document: " + e.getMessage());
-			LoadSessionFromGenomeSpace.logger.error("Cannot unmarshall document: "+ e.getMessage(), e);
+			LoadSessionFromGenomeSpace.logger.error("Cannot unmarshall document: "
+								+ e.getMessage(), e);
 		} catch (XGMMLException e) {
-			taskMonitor.setException(e, "XGMML format error in network: "+e.getMessage());
-			LoadSessionFromGenomeSpace.logger.error("XGMML format error in network "+ e.getMessage(), e);
+			taskMonitor.setException(e, "XGMML format error in network: "
+						 + e.getMessage());
+			LoadSessionFromGenomeSpace.logger.error("XGMML format error in network "
+								+ e.getMessage(), e);
 		} catch (Exception e) { // catch any exception: the user should know something went wrong
-			taskMonitor.setException(e, "Error while loading session " + e.getMessage());
-			LoadSessionFromGenomeSpace.logger.error("Error while loading session: "+ e.getMessage(), e);
+			taskMonitor.setException(e, "Error while loading session "
+						 + e.getMessage());
+			LoadSessionFromGenomeSpace.logger.error("Error while loading session: "
+								+ e.getMessage(), e);
 		} finally {
 			sr = null;
 			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
@@ -169,13 +156,15 @@ class OpenSessionTask implements Task {
 		}
 
 		taskMonitor.setPercentCompleted(100);
-		taskMonitor.setStatus("Session file " + fileName + " successfully loaded.");
+		taskMonitor.setStatus("Session file " + origFileName
+				      + " successfully loaded from GenomeSpace.");
 
-		Cytoscape.setCurrentSessionFileName(fileName);
+		Cytoscape.setCurrentSessionFileName(origFileName);
 
-		final File sessionFile = new File(fileName);
-		Cytoscape.getDesktop().setTitle("Cytoscape Desktop (Session: " + sessionFile.getName()
-		                                + ")");
+		Cytoscape.getDesktop().setTitle("Cytoscape Desktop (Session: " + origFileName + ")");
+
+		// Remove the temporary file:
+		localFile.delete();
 	}
 
 	/**
