@@ -34,5 +34,8 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 
 		LoadAttrsFromGenomeSpace loadAttrsAction = new LoadAttrsFromGenomeSpace();
 		Cytoscape.getDesktop().getCyMenus().addAction(loadAttrsAction);
+
+		LoadSessionFromGenomeSpace loadSessionAction = new LoadSessionFromGenomeSpace();
+		Cytoscape.getDesktop().getCyMenus().addAction(loadSessionAction);
 	}
 }	

@@ -48,7 +48,7 @@ public class LoadAttrsFromGenomeSpace extends CytoscapeAction {
 				return;
 
 			// Download the GenomeSpace file:
-			tempFile = File.createTempFile("temp", "cynetwork");
+			tempFile = File.createTempFile("temp", "cyattrs");
 			dataManagerClient.downloadFile(fileMetadata, tempFile, true);
 
 			final boolean useNodeAttrs = dialog.useNodeAttrs();
