@@ -29,7 +29,6 @@
  */
 package org.cytoscape.model.internal;
 
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -40,100 +39,112 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
-
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAddedEvent;
 import org.cytoscape.model.events.NetworkDestroyedEvent;
-
+import org.cytoscape.model.events.RowsAboutToChangeEvent;
+import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * An implementation of CyNetworkManager.
  */
 public class CyNetworkManagerImpl implements CyNetworkManager {
-	private static final Logger logger = LoggerFactory.getLogger(CyNetworkManagerImpl.class);
 
-	private final Map<Long, CyNetwork> networkMap;
-	private final CyEventHelper cyEventHelper;
-	
-	/**
-	 * 
-	 * @param cyEventHelper
-	 */
-	public CyNetworkManagerImpl(final CyEventHelper cyEventHelper) {
-		networkMap = new HashMap<Long, CyNetwork>();
-		this.cyEventHelper = cyEventHelper;
+    private static final Logger logger = LoggerFactory.getLogger(CyNetworkManagerImpl.class);
+
+    private final Map<Long, CyNetwork> networkMap;
+    private final CyEventHelper cyEventHelper;
+
+    /**
+     * 
+     * @param cyEventHelper
+     */
+    public CyNetworkManagerImpl(final CyEventHelper cyEventHelper) {
+	this.networkMap = new HashMap<Long, CyNetwork>();
+	this.cyEventHelper = cyEventHelper;
+    }
+
+    @Override
+    public synchronized Set<CyNetwork> getNetworkSet() {
+	return new HashSet<CyNetwork>(networkMap.values());
+    }
+
+    @Override
+    public synchronized CyNetwork getNetwork(long id) {
+	return networkMap.get(id);
+    }
+
+    @Override
+    public synchronized boolean networkExists(long network_id) {
+	return networkMap.containsKey(network_id);
+    }
+
+    // TODO
+    // Does this need to distinguish between root networks and subnetworks?
+    @Override
+    public void destroyNetwork(CyNetwork network) {
+	if (network == null)
+	    throw new NullPointerException("Network is null");
+
+	final Long networkId = network.getSUID();
+
+	// check outside the lock so that we fail early
+	if (!networkMap.containsKey(networkId))
+	    throw new IllegalArgumentException("network is not recognized by this NetworkManager");
+
+	// let everyone know!
+	cyEventHelper.fireSynchronousEvent(new NetworkAboutToBeDestroyedEvent(CyNetworkManagerImpl.this, network));
+
+	synchronized (this) {
+	    // check again within the lock in case something has changed
+	    if (!networkMap.containsKey(networkId))
+		throw new IllegalArgumentException("network is not recognized by this NetworkManager");
+
+	    CyTable nodeTable = network.getDefaultNodeTable();
+	    CyTable edgeTable = network.getDefaultEdgeTable();
+	    try {
+		cyEventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, nodeTable));
+		cyEventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, edgeTable));
+
+		for (CyNode n : network.getNodeList())
+		    n.getCyRow().set(CyNetwork.SELECTED, false);
+		for (CyEdge e : network.getEdgeList())
+		    e.getCyRow().set(CyNetwork.SELECTED, false);
+
+	    } finally {
+		cyEventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, nodeTable));
+		cyEventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, edgeTable));
+	    }
+
+	    networkMap.remove(networkId);
+	    
+	    // TODO: remove tables!!
+
+	    network = null;
 	}
 
-	@Override
-	public synchronized Set<CyNetwork> getNetworkSet() {
-		return new HashSet<CyNetwork>(networkMap.values());
+	// let everyone know that some network is gone
+	cyEventHelper.fireSynchronousEvent(new NetworkDestroyedEvent(CyNetworkManagerImpl.this));
+    }
+
+    @Override
+    public void addNetwork(final CyNetwork network) {
+	if (network == null)
+	    throw new NullPointerException("Network is null");
+
+	synchronized (this) {
+	    logger.debug("Adding new Network Model: Model ID = " + network.getSUID());
+	    networkMap.put(network.getSUID(), network);
 	}
 
-	@Override
-	public synchronized CyNetwork getNetwork(long id) {
-		return networkMap.get(id);
-	}
+	cyEventHelper.fireSynchronousEvent(new NetworkAddedEvent(CyNetworkManagerImpl.this, network));
+    }
 
-	@Override
-	public synchronized boolean networkExists(long network_id) {
-		return networkMap.containsKey(network_id);
-	}
-
-	// TODO
-	// Does this need to distinguish between root networks and subnetworks?
-	@Override
-	public void destroyNetwork(CyNetwork network) {
-		if (network == null)
-			throw new NullPointerException("network is null");
-
-		final Long networkId = network.getSUID();
-		
-		// check outside the lock so that we fail early
-		if (!networkMap.containsKey(networkId))
-			throw new IllegalArgumentException(
-					"network is not recognized by this NetworkManager");
-
-		// let everyone know! 
-		cyEventHelper.fireSynchronousEvent(new NetworkAboutToBeDestroyedEvent(CyNetworkManagerImpl.this, network));
-
-		synchronized (this) {
-			// check again within the lock in case something has changed
-			if (!networkMap.containsKey(networkId))
-				throw new IllegalArgumentException(
-						"network is not recognized by this NetworkManager");
-
-			for (CyNode n : network.getNodeList())
-				n.getCyRow().set("selected", false);
-			for (CyEdge e : network.getEdgeList())
-				e.getCyRow().set("selected", false);
-
-			networkMap.remove(networkId);
-
-			network = null;
-		}
-
-		// let everyone know that some network is gone
-		cyEventHelper.fireSynchronousEvent(new NetworkDestroyedEvent( CyNetworkManagerImpl.this ));
-	}
-	
-	@Override
-	public void addNetwork(final CyNetwork network) {
-		if (network == null)
-			throw new NullPointerException("Network is null");
-
-		synchronized (this) {
-			logger.debug("Adding new Network Model: Model ID = " + network.getSUID());
-			networkMap.put(network.getSUID(), network);
-		}
-
-		cyEventHelper.fireSynchronousEvent(new NetworkAddedEvent(CyNetworkManagerImpl.this, network));
-	}
-
-	@Override
-	public synchronized void reset() {
-		networkMap.clear();
-	}
+    @Override
+    public synchronized void reset() {
+	networkMap.clear();
+    }
 }
