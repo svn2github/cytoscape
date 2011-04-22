@@ -50,10 +50,14 @@ public class FileImportTableTask extends AbstractTask {
 	private QuickStartState state;
 	private final ImportTaskUtil util;
 	private CyTableReader reader;
+	private String[] previewKey;
+	private String[][] previewData;
 	
-	public FileImportTableTask(QuickStartState state, ImportTaskUtil util) {
+	public FileImportTableTask(QuickStartState state, ImportTaskUtil util, String[] previewKey, String[][]previewData) {
 		this.state = state;
 		this.util = util;
+		this.previewKey = previewKey;
+		this.previewData = previewData;
 	}
 
 	public void run(TaskMonitor taskMonitor) {
@@ -65,6 +69,8 @@ public class FileImportTableTask extends AbstractTask {
 		if (reader == null)
 			throw new NullPointerException("Failed to find reader for specified file!");
 		else {
+			insertTasksAfterCurrentTask(new GetAttributePreviewDataTask(reader, previewKey, previewData));
+			
 			taskMonitor.setStatusMessage("Importing Data Table...");
 			insertTasksAfterCurrentTask(new SetTableNameTask(state, reader, file.getName()));
 			insertTasksAfterCurrentTask(reader);

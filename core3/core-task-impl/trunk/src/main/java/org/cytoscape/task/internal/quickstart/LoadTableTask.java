@@ -53,6 +53,9 @@ public class LoadTableTask extends AbstractTask {
 	private final QuickStartState state;
 	private final ImportTaskUtil util;
 
+	private  String[] previewKey = {"key"};
+	private  String[][] previewData = new String[20][1];
+
 	public LoadTableTask(QuickStartState state, ImportTaskUtil util) {
 		this.state = state;
 		this.util = util;
@@ -61,8 +64,8 @@ public class LoadTableTask extends AbstractTask {
 	public void run(TaskMonitor monitor) {
 
 		if (state.isJobFinished(Job.SELECT_MAPPING_ID_TYPE) == false) {
-			// This is for next step: specify ID type
-			insertTasksAfterCurrentTask(new SelectMappingKeyTypeTask(state, util, null, null));
+			// This is for next step: specify ID type, and pass the preview data
+			insertTasksAfterCurrentTask(new SelectMappingKeyTypeTask(state, util, previewKey, previewData));
 		} else if (state.isJobFinished(Job.LOAD_NETWORK)){
 			System.out.println("No need to set ID type. Move to merge");
 			insertTasksAfterCurrentTask(new MergeDataTask(state, util));
@@ -71,8 +74,7 @@ public class LoadTableTask extends AbstractTask {
 		final String selected = dataSource.getSelectedValue();
 		if (selected == FROM_FILE) {
 			// Load file task
-			//insertTasksAfterCurrentTask(util.getFileImportTableTask());
-			insertTasksAfterCurrentTask(new FileImportTableTask(state, util));
+			insertTasksAfterCurrentTask(new FileImportTableTask(state, util, previewKey, previewData));
 		} else if (selected == FROM_URL) {
 			// Load URL task
 			insertTasksAfterCurrentTask(util.getURLImportTableTask());
