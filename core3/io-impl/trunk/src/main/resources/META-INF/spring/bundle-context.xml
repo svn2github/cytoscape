@@ -241,11 +241,6 @@
 	<bean id="streamUtil" class="org.cytoscape.io.internal.util.StreamUtilImpl" />
 
 	<!-- Reader Factories -->
-	<bean id="textDataTableReaderFactory" class="org.cytoscape.io.internal.read.datatable.TextDataTableReaderFactory">
-		<constructor-arg ref="textTableFilter" />
-		<constructor-arg ref="cyDataTableFactoryServiceRef" />
-	</bean>
-
 	<bean id="attrsDataReaderFactory" class="org.cytoscape.io.internal.read.datatable.CyAttributesReaderFactory">
 		<constructor-arg ref="attrsFilter" />
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
