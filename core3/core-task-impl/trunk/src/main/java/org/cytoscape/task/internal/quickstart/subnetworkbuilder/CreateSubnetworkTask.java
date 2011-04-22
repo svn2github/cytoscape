@@ -22,14 +22,17 @@ public class CreateSubnetworkTask extends AbstractTask {
     private static final Logger logger = LoggerFactory.getLogger(CreateSubnetworkTask.class);
 
     private static final String QUERY_GENE_ATTR_NAME = "Gene Type";
+    private static final String SEARCH_GENE_ATTR_NAME = "Search Term";
 
     @Tunable(description = "Enter list of genes you are interested in (NCBI Entrez Gene ID)")
     public String queryGenes;
 
     private final SubnetworkBuilderUtil util;
+    private final SubnetworkBuilderState state;
 
-    CreateSubnetworkTask(final SubnetworkBuilderUtil util) {
+    CreateSubnetworkTask(final SubnetworkBuilderUtil util, final SubnetworkBuilderState state) {
 	this.util = util;
+	this.state = state;
     }
 
     @Override
@@ -51,6 +54,8 @@ public class CreateSubnetworkTask extends AbstractTask {
 
 	if (nodeTable.getColumn(QUERY_GENE_ATTR_NAME) == null)
 	    nodeTable.createColumn(QUERY_GENE_ATTR_NAME, String.class, false);
+	if (nodeTable.getColumn(SEARCH_GENE_ATTR_NAME) == null)
+	    nodeTable.createColumn(SEARCH_GENE_ATTR_NAME, String.class, false);
 
 	boolean found = false;
 	final List<String> geneList = Arrays.asList(genes);
@@ -59,21 +64,31 @@ public class CreateSubnetworkTask extends AbstractTask {
 
 	    List<CyNode> nodeList = target.getNodeList();
 	    for (final CyNode node : nodeList) {
-		if (geneList.contains(node.getCyRow().get(CyTableEntry.NAME, String.class))) {
+		final String nodeName = node.getCyRow().get(CyTableEntry.NAME, String.class);
+		
+		if(geneList.contains(nodeName) && state.getDiseaseGenes().contains(nodeName)) {
+		    node.getCyRow().set(CyNetwork.SELECTED, true);
+		    node.getCyRow().set(QUERY_GENE_ATTR_NAME, "query and disease");
+		    node.getCyRow().set(SEARCH_GENE_ATTR_NAME, state.getSearchTerms());
+		} else if (geneList.contains(nodeName)) {
 		    node.getCyRow().set(CyNetwork.SELECTED, true);
 		    node.getCyRow().set(QUERY_GENE_ATTR_NAME, "query");
 		    found = true;
+		} else if (state.getDiseaseGenes().contains(nodeName)) {
+		    node.getCyRow().set(CyNetwork.SELECTED, true);
+		    node.getCyRow().set(QUERY_GENE_ATTR_NAME, "disease");
+		    node.getCyRow().set(SEARCH_GENE_ATTR_NAME, state.getSearchTerms());
 		}
 	    }
 	} finally {
 	    util.eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, nodeTable));
 	}
-	
-	if(!found) {
+
+	if (!found) {
 	    logger.debug("Not found in the interactome.");
 	    return;
 	}
-	    
+
 	Task createNetworkTask = util.getNewNetworkSelectedNodesOnlyTask(target);
 	this.insertTasksAfterCurrentTask(createNetworkTask);
 

@@ -22,16 +22,21 @@ public class SubnetworkBuilderTask extends AbstractTask {
 
     private final CyNetworkManager networkManager;
     private final SubnetworkBuilderUtil util;
+    private final SubnetworkBuilderState state;
 
     SubnetworkBuilderTask(final CyNetworkManager networkManager, final SubnetworkBuilderUtil util) {
 	this.networkManager = networkManager;
 	this.util = util;
+	this.state = new SubnetworkBuilderState();
     }
 
     @Override
     public void run(TaskMonitor monitor) throws Exception {
 	final String selected = selection.getSelectedValue();
-	insertTasksAfterCurrentTask(new CreateSubnetworkTask(util));
+	
+	
+	insertTasksAfterCurrentTask(new CreateSubnetworkTask(util, state));
+	insertTasksAfterCurrentTask(new SearchRelatedGenesTask(state));
 
 	if (selected == LOAD_NEW_NETWORK) {
 	    insertTasksAfterCurrentTask(util.getWebServiceImportTask());
@@ -45,6 +50,8 @@ public class SubnetworkBuilderTask extends AbstractTask {
 	    }
 
 	}
+	
+	
 
     }
 
