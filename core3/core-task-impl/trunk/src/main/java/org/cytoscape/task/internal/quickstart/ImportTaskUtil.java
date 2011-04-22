@@ -89,5 +89,9 @@ public class ImportTaskUtil {
 	public Task getURLImportTableTask() {
 		// TODO Auto-generated method stub
 		return null;
-	}	
+	}
+	
+	public CyApplicationManager getAppManager() {
+		return this.appManager;
+	}
 }
