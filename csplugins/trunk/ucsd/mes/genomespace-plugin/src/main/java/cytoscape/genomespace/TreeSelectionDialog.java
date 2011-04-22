@@ -27,6 +27,7 @@ import cytoscape.genomespace.filechoosersupport.GenomeSpaceTree;
 import cytoscape.genomespace.filechoosersupport.GSFileMetadataTreeNode;
 
 import org.genomespace.client.DataManagerClient;
+import org.genomespace.client.exceptions.NotFoundException;
 import org.genomespace.datamanager.core.GSFileMetadata;
 
 
@@ -89,6 +90,15 @@ final class TreeSelectionDialog extends JDialog implements TreeSelectionListener
 		selectButton.setEnabled(false);
 		selectButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
+					if (TreeSelectionDialog.this.saveAsFileExists()) {
+						if (JOptionPane.showConfirmDialog(
+							TreeSelectionDialog.this,
+							TreeSelectionDialog.this.saveFileName.getText()
+							+ " already exist!  Are you sure you want to overwrite it?",
+							"Warning", JOptionPane.YES_NO_OPTION)
+						    != JOptionPane.YES_OPTION)
+							return;
+					}
 					TreeSelectionDialog.this.dispose();
 				}
 			});
@@ -117,7 +127,7 @@ final class TreeSelectionDialog extends JDialog implements TreeSelectionListener
 	}
 
 	TreeSelectionDialog(final Frame owner, final DataManagerClient dataManagerClient) {
-			this(owner, dataManagerClient, new ArrayList<String>(), false);
+		this(owner, dataManagerClient, new ArrayList<String>(), false);
 	}
 
 	public void valueChanged(final TreeSelectionEvent e) {
@@ -204,7 +214,24 @@ final class TreeSelectionDialog extends JDialog implements TreeSelectionListener
 		if (fileName == null)
 			return null;
 
-		return fileName == null ? null : dirName(currentNode.getFileMetadata().getPath()) + fileName;
+		return fileName == null ? null : dirName(currentNode.getFileMetadata()) + fileName;
+	}
+
+	private boolean saveAsFileExists() {
+		if (!isSaveAsDialog)
+			return false;
+		try {
+			return dataManagerClient.getMetadata(getSaveFileName()) != null;
+		} catch (final NotFoundException e) {
+			return false;
+		}
+	}
+
+	private String dirName(final GSFileMetadata fileMetadata) {
+		String path = fileMetadata.getPath();
+		if (!fileMetadata.isDirectory())
+			path = dirName(path);
+		return path.endsWith("/") ? path : path + "/";
 	}
 
 	// Returns the directory component of "path"
