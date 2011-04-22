@@ -8,15 +8,15 @@ import javax.swing.table.DefaultTableModel;
 public class MappingKeyTypePanel extends JPanel{
 
 	/** Creates new form SelectMappingKeyTypePanel */
-	public MappingKeyTypePanel(List<String> keyIDTypes, String[][] keyValuesPairs) {
+	public MappingKeyTypePanel(List<String> keyIDTypes, String[] tblHeader, String[][] tblData) {
 		initComponents();
-				
+						
 		DefaultComboBoxModel model = new DefaultComboBoxModel(keyIDTypes.toArray());
 		cmbKeyIDTypes.setModel(model);
 		
-		String[] colNames = {"Key","Value"};
-		DefaultTableModel tblModel = new DefaultTableModel(keyValuesPairs, colNames);
+		DefaultTableModel tblModel = new DefaultTableModel(tblData, tblHeader);
 		this.tblPreview.setModel(tblModel);
+		this.tblPreview.setEnabled(false);
 	}
 
 	

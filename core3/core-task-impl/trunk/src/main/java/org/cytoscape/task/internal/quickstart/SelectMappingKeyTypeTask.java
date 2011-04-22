@@ -23,12 +23,17 @@ public class SelectMappingKeyTypeTask extends AbstractTask {
 	private MappingKeyTypePanel mappingKeyTypePanel = null;
 
 	private List<String> values = new ArrayList<String>();
+	private String[] previewKeys;
+	private String[][] previewData;
 	
-	public SelectMappingKeyTypeTask(final QuickStartState state, ImportTaskUtil util) {
+	public SelectMappingKeyTypeTask(final QuickStartState state, ImportTaskUtil util, 
+			String[] previewKeys, String[][] previewData) {
 		this.idTypeMap = new HashMap<String, IDType>();
 		this.state = state;	
 		this.util = util;
-		
+		this.previewKeys = previewKeys;
+		this.previewData = previewData;
+				
 		for(IDType val: IDType.values()) {
 			values.add(val.getDisplayName());
 			this.idTypeMap.put(val.getDisplayName(), val);
@@ -39,9 +44,7 @@ public class SelectMappingKeyTypeTask extends AbstractTask {
 	@ProvidesGUI
 	public JPanel getGUI() {
 		if (mappingKeyTypePanel == null){
-			
-			String[][] keyValues = {}; //{{"key1","value1"},{"key2","value2"},{"key3","value3"},{"key4","value4"}};
-			this.mappingKeyTypePanel = new MappingKeyTypePanel(values, keyValues);
+			this.mappingKeyTypePanel = new MappingKeyTypePanel(values, previewKeys, previewData);			
 		}
 				
 		return mappingKeyTypePanel;
@@ -50,7 +53,6 @@ public class SelectMappingKeyTypeTask extends AbstractTask {
 	
 	@Override
 	public void run(TaskMonitor monitor) throws Exception {
-				
 		// Check current status and move to next task.
 		if(state.isJobFinished(Job.LOAD_NETWORK) && state.isJobFinished(Job.LOAD_TABLE)) {
 			System.out.println("!!!!!!!! Merge task added");

@@ -40,6 +40,9 @@ import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import java.util.List;
 
 public class LoadNetworkTask extends AbstractTask {
 
@@ -54,16 +57,20 @@ public class LoadNetworkTask extends AbstractTask {
 	private QuickStartState state;
 	private final ImportTaskUtil util;
 
+	private  String[] previewKeys = {"key"};
+	private  String[][] previewData = new String[20][1]; //{{"AAA"},{"BBB"},{"CCC"}};
+
+	
 	public LoadNetworkTask(QuickStartState state, ImportTaskUtil util) {
 		this.state = state;
 		this.util = util;
 	}
 
 	public void run(TaskMonitor monitor) {
-
 		if (state.isJobFinished(Job.SELECT_MAPPING_ID_TYPE) == false) {
 			// This is for next step: specify ID type
-			insertTasksAfterCurrentTask(new SelectMappingKeyTypeTask(state,util));
+			insertTasksAfterCurrentTask(new SelectMappingKeyTypeTask(state,util, previewKeys, previewData));
+			insertTasksAfterCurrentTask(new GetNetworkPreviewDataTask(util, previewData));
 		} else if(state.isJobFinished(Job.LOAD_TABLE)) {
 			System.out.println("Already has a table.  No need to set ID type. Move to merge");
 			insertTasksAfterCurrentTask(new MergeDataTask(state, util));

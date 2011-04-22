@@ -62,7 +62,7 @@ public class LoadTableTask extends AbstractTask {
 
 		if (state.isJobFinished(Job.SELECT_MAPPING_ID_TYPE) == false) {
 			// This is for next step: specify ID type
-			insertTasksAfterCurrentTask(new SelectMappingKeyTypeTask(state, util));
+			insertTasksAfterCurrentTask(new SelectMappingKeyTypeTask(state, util, null, null));
 		} else if (state.isJobFinished(Job.LOAD_NETWORK)){
 			System.out.println("No need to set ID type. Move to merge");
 			insertTasksAfterCurrentTask(new MergeDataTask(state, util));
