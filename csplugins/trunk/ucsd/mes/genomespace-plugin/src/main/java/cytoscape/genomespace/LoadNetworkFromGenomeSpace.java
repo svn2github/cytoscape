@@ -84,7 +84,7 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 
 	private static String getExtension(final String fileName) {
 		final int lastDotPos = fileName.lastIndexOf('.');
-		return (lastDotPos == -1 ? fileName : fileName.substring(lastDotPos)).toLowerCase();
+		return (lastDotPos == -1 ? fileName : fileName.substring(lastDotPos + 1)).toLowerCase();
 	}
 
 	private static String getNetworkTitle(final String fileName) {
