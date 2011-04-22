@@ -178,20 +178,20 @@ public class LinkOut {
 		}
 
 		// Replace %ATTRIBUTE.NAME% mark with the value of the attribute
-		final String REGEX = "%.*%";
+		final String REGEX = "%.*?%";
 		Pattern pat = Pattern.compile(REGEX);
 		Matcher mat = pat.matcher(url);
 
 		while (mat.find()) {
 			String attrName = url.substring(mat.start() + 1, mat.end() - 1);
-
 			// backwards compatibility, old keywords were %ID%, %ID1%, %ID2%.
 			if (attrName.equals(idKeyword)) {
 				String attrValue = graphObjId;
 				url = url.replace("%" + idKeyword + "%", attrValue);
 				mat = pat.matcher(url);
 			} else if (validAttrs.contains(attrName)) {
-				String attrValue = attrToString(attrs, graphObjId, attrName);
+                String prefixlessAttrName = attrName.substring(prefix.length());
+				String attrValue = attrToString(attrs, graphObjId, prefixlessAttrName);
 				url = url.replace("%" + attrName + "%", attrValue);
 				mat = pat.matcher(url);
 			}
@@ -268,11 +268,16 @@ public class LinkOut {
 				//add edge label to the URL
 				String edgelabel;
 
-				CyAttributes attrs = Cytoscape.getNodeAttributes();
+				CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+                CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
 				String sourceId = ed.getSource().getIdentifier();
 				String targetId = ed.getTarget().getIdentifier();
-				String fUrl = subsAttrs(url, attrs, sourceId, "ID%1", "source.");
-				fUrl = subsAttrs(fUrl, attrs, targetId, "ID%2", "target.");
+                String edgeId = ed.getIdentifier();
+//				String fUrl = subsAttrs(url, attrs, sourceId, "ID%1", "source.");
+//				fUrl = subsAttrs(fUrl, attrs, targetId, "ID%2", "target.");
+		String fUrl = subsAttrs(url, nodeAtts, sourceId, "ID1", "source.");
+		fUrl = subsAttrs(fUrl, nodeAtts, targetId, "ID2", "target.");
+		fUrl = subsAttrs(fUrl, edgeAtts, edgeId, "ID", "");
 
 				// System.out.println(fUrl);
 
