@@ -56,9 +56,7 @@ public class ListFilesInGenomeSpace extends CytoscapeAction {
 			DataManagerClient dmc = client.getDataManagerClient();
 
 			// list the files present for this user
-			Vector<GSFileMetadata> myFiles = new Vector(dmc.listDefaultDirectory().getContents());
 			displayTree(dmc);
-
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed",ex);
 		}
