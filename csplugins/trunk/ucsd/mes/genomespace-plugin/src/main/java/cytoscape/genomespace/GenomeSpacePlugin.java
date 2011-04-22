@@ -40,5 +40,8 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 
 		SaveSessionToGenomeSpace saveSessionAction = new SaveSessionToGenomeSpace();
 		Cytoscape.getDesktop().getCyMenus().addAction(saveSessionAction);
+
+		SaveNetworkToGenomeSpace saveNetworkAction = new SaveNetworkToGenomeSpace();
+		Cytoscape.getDesktop().getCyMenus().addAction(saveNetworkAction);
 	}
 }	
