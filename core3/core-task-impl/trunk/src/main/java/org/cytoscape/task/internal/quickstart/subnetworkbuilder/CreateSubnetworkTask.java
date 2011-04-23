@@ -70,6 +70,7 @@ public class CreateSubnetworkTask extends AbstractTask {
 		    node.getCyRow().set(CyNetwork.SELECTED, true);
 		    node.getCyRow().set(QUERY_GENE_ATTR_NAME, "query and disease");
 		    node.getCyRow().set(SEARCH_GENE_ATTR_NAME, state.getSearchTerms());
+		    found = true;
 		} else if (geneList.contains(nodeName)) {
 		    node.getCyRow().set(CyNetwork.SELECTED, true);
 		    node.getCyRow().set(QUERY_GENE_ATTR_NAME, "query");
@@ -85,10 +86,12 @@ public class CreateSubnetworkTask extends AbstractTask {
 	}
 
 	if (!found) {
-	    logger.debug("Not found in the interactome.");
+	    logger.error("Query genes were not found in the interactome.");
 	    return;
 	}
 
+	this.insertTasksAfterCurrentTask(new BuildVisualStyleTask(util));
+	
 	Task createNetworkTask = util.getNewNetworkSelectedNodesOnlyTask(target);
 	this.insertTasksAfterCurrentTask(createNetworkTask);
 

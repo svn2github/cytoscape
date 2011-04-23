@@ -19,7 +19,10 @@ import org.cytoscape.task.internal.quickstart.ImportNetworkFromPublicDataSetTask
 import org.cytoscape.task.internal.quickstart.remote.InteractionFilePreprocessor;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyleFactory;
+import org.cytoscape.view.vizmap.mappings.DiscreteMappingFactory;
 import org.cytoscape.work.Task;
 
 class SubnetworkBuilderUtil {
@@ -37,15 +40,20 @@ class SubnetworkBuilderUtil {
 
     private final CyRootNetworkFactory crnf;
     private final CyNetworkViewFactory cnvf;
-    private final VisualMappingManager vmm;
 
     private final Set<InteractionFilePreprocessor> processors;
 
+    VisualStyleBuilder vsBuilder;
+    final VisualMappingManager vmm;
+    
+    // For mapping generator
+    final VisualStyleFactory vsFactory;
+    
     public SubnetworkBuilderUtil(CyNetworkViewReaderManager mgr, CyNetworkManager netmgr,
 	    final CyNetworkViewManager networkViewManager, CyProperty<Properties> cyProps,
 	    CyNetworkNaming cyNetworkNaming, StreamUtil streamUtil, final CyEventHelper eventHelper,
 	    final CyApplicationManager appManager, CyRootNetworkFactory crnf, CyNetworkViewFactory cnvf,
-	    VisualMappingManager vmm) {
+	    VisualMappingManager vmm, final VisualStyleFactory vsFactory) {
 	this.mgr = mgr;
 	this.netmgr = netmgr;
 	this.networkViewManager = networkViewManager;
@@ -58,6 +66,7 @@ class SubnetworkBuilderUtil {
 	this.processors = new HashSet<InteractionFilePreprocessor>();
 	this.eventHelper = eventHelper;
 	this.appManager = appManager;
+	this.vsFactory = vsFactory;
     }
 
     public void addProcessor(InteractionFilePreprocessor processor, Map props) {
@@ -79,6 +88,16 @@ class SubnetworkBuilderUtil {
     Task getNewNetworkSelectedNodesOnlyTask(final CyNetwork network) {
 	return new NewNetworkSelectedNodesOnlyTask(network, crnf, cnvf, netmgr, networkViewManager, cyNetworkNaming,
 		vmm, appManager);
+    }
+    
+    public void addFactory(VisualMappingFunctionFactory factory, Map props) {
+	if(factory.toString().startsWith("Discrete Mapping")) {
+	    this.vsBuilder = new VisualStyleBuilder(vsFactory,  factory);
+	}
+    }
+    
+    void removeFactory(VisualMappingFunctionFactory factory, Map props) {
+	
     }
 
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
 		<artifactId>parent</artifactId>
@@ -22,7 +23,7 @@
 	<packaging>bundle</packaging>
 
 	<scm>
-        	<connection>scm:svn:http://chianti.ucsd.edu/svn/core3/core-task-impl/trunk</connection>
+		<connection>scm:svn:http://chianti.ucsd.edu/svn/core3/core-task-impl/trunk</connection>
 		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/core-task-impl/trunk</developerConnection>
 		<url>http://chianti.ucsd.edu/svn/core3/core-task-impl/trunk</url>
 	</scm>
@@ -133,6 +134,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
+			<artifactId>default-mappings</artifactId>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-api</artifactId>
 			<version>3.0.0-alpha3-SNAPSHOT</version>
 		</dependency>
@@ -146,7 +152,7 @@
 			<artifactId>layout-api</artifactId>
 			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

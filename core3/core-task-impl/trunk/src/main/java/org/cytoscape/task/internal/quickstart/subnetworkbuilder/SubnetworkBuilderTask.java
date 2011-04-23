@@ -10,13 +10,17 @@ import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SubnetworkBuilderTask extends AbstractTask {
+
+    private static final Logger logger = LoggerFactory.getLogger(SubnetworkBuilderTask.class);
 
     private static final String USE_EXISTING_NETWORK = "Use existing network as interactome";
     private static final String LOAD_NEW_NETWORK = "Load all known interactions for a model organism";
 
-    @Tunable(description = "Create subnetwork from list of genes and phynotype")
+    @Tunable(description = "Create subnetwork from interactome")
     public ListSingleSelection<String> selection = new ListSingleSelection<String>(LOAD_NEW_NETWORK,
 	    USE_EXISTING_NETWORK);
 
@@ -32,11 +36,12 @@ public class SubnetworkBuilderTask extends AbstractTask {
 
     @Override
     public void run(TaskMonitor monitor) throws Exception {
+	
+	final long start = System.currentTimeMillis();
+	
 	final String selected = selection.getSelectedValue();
-	
-	
-	insertTasksAfterCurrentTask(new CreateSubnetworkTask(util, state));
-	insertTasksAfterCurrentTask(new SearchRelatedGenesTask(state));
+
+	insertTasksAfterCurrentTask(new SearchRelatedGenesTask(util, state));
 
 	if (selected == LOAD_NEW_NETWORK) {
 	    insertTasksAfterCurrentTask(util.getWebServiceImportTask());
@@ -48,11 +53,8 @@ public class SubnetworkBuilderTask extends AbstractTask {
 			"No network found", JOptionPane.ERROR_MESSAGE);
 		insertTasksAfterCurrentTask(util.getWebServiceImportTask());
 	    }
-
 	}
 	
-	
-
+	logger.debug("\n\n========== Subnet builder task finished in " + (System.currentTimeMillis() - start) + " msec.  =============\n\n");
     }
-
 }

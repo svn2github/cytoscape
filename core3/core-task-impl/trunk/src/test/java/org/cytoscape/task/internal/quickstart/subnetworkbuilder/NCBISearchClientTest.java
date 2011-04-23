@@ -27,15 +27,17 @@ public class NCBISearchClientTest {
 	final String disease = "Rheumatoid Arthritis";
 	final String go1 = "neurogenesis";
 	final String go2 = "Rho GTPase activity";
-	final Set<String> result1 = client.search(disease, go1);
-
-	assertNotNull(result1);
-	assertEquals(322, result1.size());
-
-	final Set<String> result2 = client.search(disease, go1 + ", " + go2);
-
-	assertNotNull(result2);
-	assertEquals(391, result2.size());
+	
+	// Enable this for client test.
+//	final Set<String> result1 = client.search(disease, go1);
+//
+//	assertNotNull(result1);
+//	assertEquals(322, result1.size());
+//
+//	final Set<String> result2 = client.search(disease, go1 + ", " + go2);
+//
+//	assertNotNull(result2);
+//	assertEquals(391, result2.size());
     }
 
 }

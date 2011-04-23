@@ -31,6 +31,9 @@
 	<osgi:reference id="visualMappingManagerServiceRef"
 		interface="org.cytoscape.view.vizmap.VisualMappingManager" />
 
+	<osgi:reference id="visualStyleFactoryServiceRef"
+		interface="org.cytoscape.view.vizmap.VisualStyleFactory" />
+
 	<osgi:reference id="streamUtilRef" interface="org.cytoscape.io.util.StreamUtil" />
 
 	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager" />
@@ -624,5 +627,14 @@
 			<entry key="scope" value="startup" />
 		</osgi:service-properties>
 	</osgi:service>
+	
+	
+	<!-- For visual style builder -->
+	<osgi:set id="mappingFunctionFactorySet"
+		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addFactory"
+			unbind-method="removeFactory" ref="subnetworkBuilderUtil" />
+	</osgi:set>
 
 </beans>
