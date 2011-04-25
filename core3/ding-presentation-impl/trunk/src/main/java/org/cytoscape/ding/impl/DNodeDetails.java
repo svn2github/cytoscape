@@ -315,7 +315,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	/*
 	 * A null font has the special meaning to remove overridden font.
 	 */
-	void overrideLabelFont(int node, int labelInx, Font font) {
+	void overrideLabelFont(int node, int labelInx, final Font font) {
 		final long key = (((long) node) << 32) | ((long) labelInx);
 
 		if ((font == null) || font.equals(super.labelFont(node, labelInx)))
