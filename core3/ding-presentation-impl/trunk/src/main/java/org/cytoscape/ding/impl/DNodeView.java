@@ -1474,8 +1474,7 @@ public class DNodeView implements NodeView, Label {
 		graphView.showGraphObject(this);
 	    else
 		graphView.hideGraphObject(this);
-	} else if (vp == MinimalVisualLexicon.NODE_FILL_COLOR) { // unselected
-								 // paint
+	} else if (vp == MinimalVisualLexicon.NODE_FILL_COLOR) {
 	    setUnselectedPaint((Paint) value);
 	} else if (vp == DVisualLexicon.NODE_BORDER_PAINT) {
 	    setBorderPaint((Paint) value);
@@ -1507,7 +1506,7 @@ public class DNodeView implements NodeView, Label {
 	} else if (vp == DVisualLexicon.NODE_LABEL_FONT_FACE) {
 	    setFont((Font) value);
 	} else if (vp == DVisualLexicon.NODE_LABEL_FONT_SIZE) {
-	    setFont(getFont().deriveFont(((Number) value).intValue()));
+	    setFont(getFont().deriveFont(((Number) value).floatValue()));
 	} else if (vp == DVisualLexicon.NODE_LABEL_POSITION) {
 	    this.setLabelPosition((ObjectPosition) value);
 	} else if (vp instanceof CustomGraphicsVisualProperty) {
