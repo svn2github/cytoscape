@@ -17,20 +17,18 @@ import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPr
  * 
  * @param <T>
  */
-public class DiscreteValuePropertyEditor<T> extends
-		BasicVisualPropertyEditor<T> {
-	
-	public DiscreteValuePropertyEditor(Class<T> type, Set<T> values, final CyTableManager manager,
-			final CyApplicationManager appManager,
-			final SelectedVisualStyleManager selectedManager, final EditorManager editorManager, final VisualMappingManager vmm) {
-		super(type, new CyComboBoxPropertyEditor());
-		
-		discreteTableCellRenderer = REG.getRenderer(type);
-		//continuousTableCellRenderer = new IconCellRenderer<T>(icons);
-		
-		CyComboBoxPropertyEditor cbe = (CyComboBoxPropertyEditor) propertyEditor;
-		cbe.setAvailableValues(values.toArray());
-		continuousEditor = new C2DEditor<T>(manager, appManager,
-				selectedManager, editorManager, vmm);
-	}
+public class DiscreteValuePropertyEditor<T> extends BasicVisualPropertyEditor<T> {
+
+    public DiscreteValuePropertyEditor(Class<T> type, Set<T> values, final CyTableManager manager,
+	    final CyApplicationManager appManager, final SelectedVisualStyleManager selectedManager,
+	    final EditorManager editorManager, final VisualMappingManager vmm) {
+	super(type, new CyComboBoxPropertyEditor());
+
+	discreteTableCellRenderer = REG.getRenderer(type);
+	// continuousTableCellRenderer = new IconCellRenderer<T>(icons);
+
+	CyComboBoxPropertyEditor cbe = (CyComboBoxPropertyEditor) propertyEditor;
+	cbe.setAvailableValues(values.toArray());
+	continuousEditor = new C2DEditor<T>(manager, appManager, selectedManager, editorManager, vmm);
+    }
 }

@@ -39,31 +39,26 @@ import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
-import org.cytoscape.view.vizmap.gui.internal.cellrenderer.ColorContinuousMappingCellRenderer;
 import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.C2CEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyDoublePropertyEditor;
 
 /**
  *
  */
-public class DoubleVisualPropertyEditor extends
-		BasicVisualPropertyEditor<Double> {
+public class NumberVisualPropertyEditor<T extends Number> extends BasicVisualPropertyEditor<T> {
 
-	/**
-	 * Creates a new DiscreteNumber object.
-	 */
-	public DoubleVisualPropertyEditor(Class<Double> type,
-			final CyTableManager manager,
-			final CyApplicationManager appManager,
-			final SelectedVisualStyleManager selectedManager,
-			final EditorManager editorManager, final VisualMappingManager vmm) {
-		super(type, new CyDoublePropertyEditor(null));
-		discreteTableCellRenderer = REG.getRenderer(Double.class);
+    /**
+     * Creates a new DiscreteNumber object.
+     */
+    public NumberVisualPropertyEditor(Class<T> type, final CyTableManager manager,
+	    final CyApplicationManager appManager, final SelectedVisualStyleManager selectedManager,
+	    final EditorManager editorManager, final VisualMappingManager vmm) {
+	super(type, new CyDoublePropertyEditor(null));
+	discreteTableCellRenderer = REG.getRenderer(type);
 
-		continuousEditor = new C2CEditor(manager, appManager, selectedManager,
-				editorManager, vmm);
-		//FIXME
-		continuousTableCellRenderer = null;
-	}
+	continuousEditor = new C2CEditor(manager, appManager, selectedManager, editorManager, vmm);
+	// FIXME
+	continuousTableCellRenderer = null;
+    }
 
 }

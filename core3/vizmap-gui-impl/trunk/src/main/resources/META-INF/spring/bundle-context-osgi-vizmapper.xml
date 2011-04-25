@@ -37,7 +37,9 @@
 		auto-export="interfaces" />
 		
 	<osgi:service id="colorPropertyEditorService" ref="colorPropertyEditor" auto-export="interfaces" />
-	<osgi:service id="numberPropertyEditorService" ref="doublePropertyEditor" auto-export="interfaces" />
+	<osgi:service id="doublePropertyEditorService" ref="doublePropertyEditor" auto-export="interfaces" />
+	<osgi:service id="floatPropertyEditorService" ref="floatPropertyEditor" auto-export="interfaces" />
+	<osgi:service id="integerPropertyEditorService" ref="integerPropertyEditor" auto-export="interfaces" />
 
 	<!-- Export as Editor Manager -->
 	
