@@ -56,6 +56,8 @@ class QuickStartState {
 	private String keyColumnName;
 
 	private final Set<Job> completedSoFar = Collections.synchronizedSet(EnumSet.noneOf(Job.class));
+
+	private String tableLoadSummaryMessage = "Unavailable"; 
 	
 	synchronized void finished(Job j) {
 		completedSoFar.add(j);	
@@ -92,4 +94,13 @@ class QuickStartState {
 	String getKeyColumnName() {
 		return keyColumnName;
 	}
+	
+	String getTableLoadSummaryMessage(){
+		return tableLoadSummaryMessage;
+	}
+	
+	void setTableLoadSummaryMessage(String msg){
+		tableLoadSummaryMessage = msg;
+	}
+
 }
