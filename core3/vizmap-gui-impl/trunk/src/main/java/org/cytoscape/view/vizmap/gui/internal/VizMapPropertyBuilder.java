@@ -238,7 +238,7 @@ public class VizMapPropertyBuilder {
 		if (column != null) {
 		    Class<?> attrClass = column.getType();
 
-		    id = go.getCyRow().get("name", String.class);
+		    id = go.getCyRow().get(CyTableEntry.NAME, String.class);
 
 		    if (attrName.equals("SUID"))
 			value = go.getSUID();
@@ -330,12 +330,11 @@ public class VizMapPropertyBuilder {
 
 	    children.add(valProp);
 	    final VisualPropertyEditor<V> editor = editorManager.getVisualPropertyEditor(vp);
-	    logger.debug("Type: " + vp.getRange().getType() + ", Got Editor: " + editor);
-
-	    final TableCellRenderer renderer = editor.getDiscreteTableCellRenderer();
-	    if (renderer != null)
-		cellRendererFactory.registerRenderer(valProp, renderer);
-
+	    if (editor != null) {
+		final TableCellRenderer renderer = editor.getDiscreteTableCellRenderer();
+		if (renderer != null)
+		    cellRendererFactory.registerRenderer(valProp, renderer);
+	    }
 	    final PropertyEditor cellEditor = editorManager.getVisualPropertyEditor(vp).getPropertyEditor();
 
 	    if (cellEditor != null)

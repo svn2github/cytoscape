@@ -43,59 +43,58 @@ import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.l2fprod.common.beans.editor.DoublePropertyEditor;
+import com.l2fprod.common.beans.editor.NumberPropertyEditor;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
 /**
  *
  */
-public class CyDoublePropertyEditor extends DoublePropertyEditor {
+public class CyNumberPropertyEditor<T extends Number> extends NumberPropertyEditor {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(CyDoublePropertyEditor.class);
-	
-	private final VizMapperMainPanel panel;
+    private static final Logger logger = LoggerFactory.getLogger(CyNumberPropertyEditor.class);
 
-	private Object currentValue;
-	private Object selected;
+    private final VizMapperMainPanel panel;
 
-	/**
-	 * Creates a new CyStringPropertyEditor object.
-	 */
-	public CyDoublePropertyEditor(final VizMapperMainPanel vmp) {
-		super();
-		panel = vmp;
+    private Object currentValue;
+    private Object selected;
 
-		((JTextField) editor).addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent e) {
-				
-				logger.debug("Double Editor got val: " + currentValue);
-				
-				final Item item = (Item) panel.getSelectedItem();
-				selected = item.getProperty().getDisplayName();
-				setCurrentValue();
-			}
+    /**
+     * Creates a new CyStringPropertyEditor object.
+     */
+    public CyNumberPropertyEditor(Class<T> type, final VizMapperMainPanel vmp) {
+	super(type);
+	panel = vmp;
 
-			public void focusLost(FocusEvent arg0) {
-				checkChange();
-			}
-		});
+	((JTextField) editor).addFocusListener(new FocusListener() {
+	    public void focusGained(FocusEvent e) {
+
+		logger.debug("Number Editor got val: " + currentValue);
+
+		final Item item = (Item) panel.getSelectedItem();
+		selected = item.getProperty().getDisplayName();
+		setCurrentValue();
+	    }
+
+	    public void focusLost(FocusEvent arg0) {
+		checkChange();
+	    }
+	});
+    }
+
+    private void setCurrentValue() {
+	this.currentValue = super.getValue();
+    }
+
+    private void checkChange() {
+	Number newValue = (Number) super.getValue();
+
+	if (newValue.doubleValue() <= 0) {
+	    newValue = 0;
+	    currentValue = 0;
+	    ((JTextField) editor).setText("0");
+	    editor.repaint();
 	}
 
-	private void setCurrentValue() {
-		this.currentValue = super.getValue();
-	}
-
-	private void checkChange() {
-		Number newValue = (Number) super.getValue();
-
-		if (newValue.doubleValue() <= 0) {
-			newValue = 0;
-			currentValue = 0;
-			((JTextField) editor).setText("0");
-			editor.repaint();
-		}
-
-		firePropertyChange(selected, newValue);
-	}
+	firePropertyChange(selected, newValue);
+    }
 }
