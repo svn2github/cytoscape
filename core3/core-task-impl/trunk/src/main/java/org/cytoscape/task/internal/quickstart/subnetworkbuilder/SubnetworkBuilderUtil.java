@@ -45,15 +45,18 @@ class SubnetworkBuilderUtil {
 
     VisualStyleBuilder vsBuilder;
     final VisualMappingManager vmm;
-    
+
     // For mapping generator
     final VisualStyleFactory vsFactory;
-    
+    private VisualMappingFunctionFactory discFactory;
+    private VisualMappingFunctionFactory ptFactory;
+
     public SubnetworkBuilderUtil(CyNetworkViewReaderManager mgr, CyNetworkManager netmgr,
 	    final CyNetworkViewManager networkViewManager, CyProperty<Properties> cyProps,
 	    CyNetworkNaming cyNetworkNaming, StreamUtil streamUtil, final CyEventHelper eventHelper,
 	    final CyApplicationManager appManager, CyRootNetworkFactory crnf, CyNetworkViewFactory cnvf,
 	    VisualMappingManager vmm, final VisualStyleFactory vsFactory) {
+
 	this.mgr = mgr;
 	this.netmgr = netmgr;
 	this.networkViewManager = networkViewManager;
@@ -89,15 +92,24 @@ class SubnetworkBuilderUtil {
 	return new NewNetworkSelectedNodesOnlyTask(network, crnf, cnvf, netmgr, networkViewManager, cyNetworkNaming,
 		vmm, appManager);
     }
-    
+
     public void addFactory(VisualMappingFunctionFactory factory, Map props) {
-	if(factory.toString().startsWith("Discrete Mapping")) {
-	    this.vsBuilder = new VisualStyleBuilder(vsFactory,  factory);
+
+	System.out.println("\n\n\n *********** Got Factory ***************" + factory + "\n\n\n");
+
+	if (factory.toString().startsWith("Discrete Mapping"))
+	    discFactory = factory;
+	else if (factory.toString().startsWith("Passthrough Mapping"))
+	    ptFactory = factory;
+
+	if (discFactory != null && ptFactory != null) {
+	    this.vsBuilder = new VisualStyleBuilder(vsFactory, discFactory, ptFactory);
+	    System.out.println("\n\n\n *********** vsBuilder Created. ***************\n\n\n");
 	}
     }
-    
+
     void removeFactory(VisualMappingFunctionFactory factory, Map props) {
-	
+
     }
 
 }

@@ -21,8 +21,8 @@ public class CreateSubnetworkTask extends AbstractTask {
 
     private static final Logger logger = LoggerFactory.getLogger(CreateSubnetworkTask.class);
 
-    private static final String QUERY_GENE_ATTR_NAME = "Gene Type";
-    private static final String SEARCH_GENE_ATTR_NAME = "Search Term";
+    static final String QUERY_GENE_ATTR_NAME = "Gene Type";
+    static final String SEARCH_GENE_ATTR_NAME = "Search Term";
 
     @Tunable(description = "Enter list of genes you are interested in (NCBI Entrez Gene ID)")
     public String queryGenes;

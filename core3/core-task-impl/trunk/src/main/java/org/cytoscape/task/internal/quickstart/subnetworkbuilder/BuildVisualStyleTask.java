@@ -8,8 +8,12 @@ import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Create a new Visual Style for the subnetwork.
+ * 
+ */
 public class BuildVisualStyleTask extends AbstractTask {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(BuildVisualStyleTask.class);
 
     private final SubnetworkBuilderUtil util;
@@ -19,18 +23,19 @@ public class BuildVisualStyleTask extends AbstractTask {
     }
 
     @Override
-    public void run(TaskMonitor arg0) throws Exception {
+    public void run(TaskMonitor tm) throws Exception {
+
+	// Assume current network is the target
 	final CyNetwork targetNetwork = util.appManager.getCurrentNetwork();
 	logger.debug("Network: " + targetNetwork);
 	logger.debug("Builder: " + util.vsBuilder);
 	
-	final VisualStyle style = util.vsBuilder.buildStyle(targetNetwork.getCyRow()
-		.get(CyTableEntry.NAME, String.class)
-		+ " Style");
+	final String networkName = targetNetwork.getCyRow().get(CyTableEntry.NAME, String.class);
+	final VisualStyle style = util.vsBuilder.buildStyle(networkName + " Style");
 
 	util.vmm.addVisualStyle(style);
-	
-	logger.debug("Visual Style Created: " + style.getTitle());
+
+	logger.debug("New Visual Style created: " + style.getTitle());
     }
 
 }
