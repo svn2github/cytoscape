@@ -17,6 +17,8 @@ import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.internal.creation.NewNetworkSelectedNodesOnlyTask;
 import org.cytoscape.task.internal.quickstart.ImportNetworkFromPublicDataSetTask;
 import org.cytoscape.task.internal.quickstart.remote.InteractionFilePreprocessor;
+import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
@@ -50,12 +52,13 @@ class SubnetworkBuilderUtil {
     final VisualStyleFactory vsFactory;
     private VisualMappingFunctionFactory discFactory;
     private VisualMappingFunctionFactory ptFactory;
+    private final CyLayouts layouts;
 
     public SubnetworkBuilderUtil(CyNetworkViewReaderManager mgr, CyNetworkManager netmgr,
 	    final CyNetworkViewManager networkViewManager, CyProperty<Properties> cyProps,
 	    CyNetworkNaming cyNetworkNaming, StreamUtil streamUtil, final CyEventHelper eventHelper,
 	    final CyApplicationManager appManager, CyRootNetworkFactory crnf, CyNetworkViewFactory cnvf,
-	    VisualMappingManager vmm, final VisualStyleFactory vsFactory) {
+	    VisualMappingManager vmm, final VisualStyleFactory vsFactory, final CyLayouts layouts) {
 
 	this.mgr = mgr;
 	this.netmgr = netmgr;
@@ -70,6 +73,7 @@ class SubnetworkBuilderUtil {
 	this.eventHelper = eventHelper;
 	this.appManager = appManager;
 	this.vsFactory = vsFactory;
+	this.layouts = layouts;
     }
 
     public void addProcessor(InteractionFilePreprocessor processor, Map props) {
@@ -91,6 +95,10 @@ class SubnetworkBuilderUtil {
     Task getNewNetworkSelectedNodesOnlyTask(final CyNetwork network) {
 	return new NewNetworkSelectedNodesOnlyTask(network, crnf, cnvf, netmgr, networkViewManager, cyNetworkNaming,
 		vmm, appManager);
+    }
+    
+    Task getApplLayoutTask() {
+	return new ApplyLayoutTask(this, layouts);
     }
 
     public void addFactory(VisualMappingFunctionFactory factory, Map props) {

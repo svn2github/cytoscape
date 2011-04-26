@@ -355,6 +355,7 @@
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="visualMappingManagerServiceRef" />
 		<constructor-arg ref="visualStyleFactoryServiceRef" />
+		<constructor-arg ref="cyLayoutsServiceRef" />
 
 	</bean>
 	<bean id="subnetworkBuilderTaskFactory"

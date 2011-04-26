@@ -28,6 +28,9 @@ public class SearchRelatedGenesTask extends AbstractTask {
 
     @Override
     public void run(TaskMonitor tm) throws Exception {
+	tm.setStatusMessage("Searching NCBI Gene Database...");
+
+	tm.setProgress(0.0);
 	
 	insertTasksAfterCurrentTask(new CreateSubnetworkTask(util, state));
 	

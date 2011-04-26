@@ -36,9 +36,7 @@ public class SubnetworkBuilderTask extends AbstractTask {
 
     @Override
     public void run(TaskMonitor monitor) throws Exception {
-	
-	final long start = System.currentTimeMillis();
-	
+		
 	final String selected = selection.getSelectedValue();
 
 	insertTasksAfterCurrentTask(new SearchRelatedGenesTask(util, state));
@@ -55,6 +53,5 @@ public class SubnetworkBuilderTask extends AbstractTask {
 	    }
 	}
 	
-	logger.debug("\n\n========== Subnet builder task finished in " + (System.currentTimeMillis() - start) + " msec.  =============\n\n");
     }
 }

@@ -37,7 +37,8 @@ public class CreateSubnetworkTask extends AbstractTask {
 
     @Override
     public void run(TaskMonitor taskMonitor) throws Exception {
-
+	taskMonitor.setStatusMessage("Searching related genes in parent network...");
+	taskMonitor.setProgress(0.0);
 	final String[] genes = queryGenes.split("\\s+");
 	logger.debug("Got gene list: " + genes.length);
 	for (final String gene : genes) {
@@ -45,6 +46,8 @@ public class CreateSubnetworkTask extends AbstractTask {
 	}
 
 	selectGenes(genes);
+	
+	taskMonitor.setProgress(1.0);
 
     }
 
@@ -91,6 +94,8 @@ public class CreateSubnetworkTask extends AbstractTask {
 	}
 
 	this.insertTasksAfterCurrentTask(new BuildVisualStyleTask(util));
+	
+	this.insertTasksAfterCurrentTask(util.getApplLayoutTask());
 	
 	Task createNetworkTask = util.getNewNetworkSelectedNodesOnlyTask(target);
 	this.insertTasksAfterCurrentTask(createNetworkTask);
