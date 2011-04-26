@@ -47,6 +47,7 @@ package org.cytoscapeweb.util {
         public static const FORCE_DIRECTED:String = "ForceDirected";
         public static const RADIAL:String = "Radial";
         public static const TREE:String = "Tree";
+		public static const COSE:String = "CoSE";
         public static const PRESET:String = "Preset";
         
         public static const DEFAULT_OPTIONS:Object = {
@@ -83,7 +84,10 @@ package org.cytoscapeweb.util {
             Preset: {
                 points: [ ],
                 fitToScreen: true
-            }
+            },
+			CoSE : {
+				
+			}
         };
         
         // ========[ CONSTRUCTOR ]==================================================================

@@ -90,10 +90,10 @@ package org.cytoscapeweb.model.data {
                     hoverGlowStrength: 6,
 					
 					// compound nodes
-					compoundLeftPadding: 10,
-					compoundRightPadding: 10,
-					compoundTopPadding: 10,
-					compoundBottomPadding: 10,
+					compoundPaddingLeft: 10,
+					compoundPaddingRight: 10,
+					compoundPaddingTop: 10,
+					compoundPaddingBottom: 10,
 					compoundShape: NodeShapes.RECTANGLE,
 					compoundSize: 48,
 					compoundColor: "#f5f5f5",
@@ -102,7 +102,7 @@ package org.cytoscapeweb.model.data {
 					compoundBorderWidth: 1,
 					compoundLabel: { passthroughMapper: { attrName: "label" } },
 					compoundLabelHorizontalAnchor: "center",
-					compoundLabelVerticalAnchor: "bottom",
+					compoundLabelVerticalAnchor: "top",
 					compoundLabelXOffset: 0,
 					compoundLabelYOffset: 0,
 					compoundLabelFontName: "Arial",

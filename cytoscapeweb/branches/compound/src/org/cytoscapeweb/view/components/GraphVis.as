@@ -67,12 +67,14 @@ package org.cytoscapeweb.view.components {
     import org.cytoscapeweb.util.methods.$each;
     import org.cytoscapeweb.view.controls.TooltipControl;
     import org.cytoscapeweb.view.layout.CircleLayout;
+    import org.cytoscapeweb.view.layout.ForceDirectedCompoundLayout;
     import org.cytoscapeweb.view.layout.ForceDirectedLayout;
     import org.cytoscapeweb.view.layout.NodeLinkTreeLayout;
     import org.cytoscapeweb.view.layout.PresetLayout;
     import org.cytoscapeweb.view.layout.RadialTreeLayout;
     import org.cytoscapeweb.view.layout.physics.Simulation;
     import org.cytoscapeweb.view.render.Labeler;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     
 
     public class GraphVis extends Visualization {
@@ -290,10 +292,14 @@ package org.cytoscapeweb.view.components {
             
             var layout:Layout, fdl:ForceDirectedLayout;
             
-            if (_layoutName === Layouts.PRESET) {
+            if (_layoutName === Layouts.PRESET
+				|| _layoutName === Layouts.COSE)
+			{
                 layout = createLayout(layoutObj, data);
                 _appliedLayouts.push(layout);
-            } else {
+            }
+			else
+			{
                 if (_layoutName === Layouts.FORCE_DIRECTED) {
                     // If the previous layout is ForceDirected, we need to set the nodes' particles and
                     // the edges' springs to null, otherwise the layout may not render very well
@@ -343,12 +349,21 @@ package org.cytoscapeweb.view.components {
                 evt.currentTarget.removeEventListener(evt.type, arguments.callee);
 
                 for each (layout in _appliedLayouts) layout.operate();
-                if (_layoutName != Layouts.PRESET) realignGraph();
+                
+				if (_layoutName == Layouts.COSE)
+				{	
+					updateAllCompoundBounds();
+				}
+				else if (_layoutName != Layouts.PRESET)
+				{
+					realignGraph();
+				}
 
                 DirtySprite.renderDirty();
                 updateLabels();
                 
-                var repack:Boolean = _layoutName !== Layouts.PRESET;
+                var repack:Boolean = (_layoutName !== Layouts.PRESET) &&
+					(_layoutName !== Layouts.COSE);
 
                 if ( repack && _dataList != null && _dataList.length > 0) {
                     GraphUtils.repackDisconnected(_dataList,
@@ -484,6 +499,54 @@ package org.cytoscapeweb.view.components {
             }
         }
 
+		/**
+		 * Updates the bounds of the given compound node sprite using bounds of
+		 * its child nodes. This function does NOT recursively update bounds of
+		 * its child compounds, in other words the bounds of all child nodes are
+		 * assumed to be up-to-date. This method also updates the coordinates
+		 * of the given compound node sprite according to the newly calculated
+		 * bounds.
+		 * 
+		 * @param cns	compound node sprite
+		 */
+		public function updateCompoundBounds(cns:CompoundNodeSprite) : void
+		{
+			var children:Data = new Data();
+			var bounds:Rectangle;
+			var allChildren:Array = CompoundNodes.getChildren(cns);
+			
+			if (allChildren.length > 0)
+			{
+				for each (var ns:NodeSprite in allChildren)
+				{
+					children.addNode(ns);
+				}
+				
+				// calculate&update bounds of the compound node 
+				bounds = this.getRealBounds(children);
+				cns.updateBounds(bounds);
+			}
+			else
+			{
+				// empty compound, so reset bounds
+				cns.resetBounds();
+			}
+		}
+		
+		public function updateAllCompoundBounds() : void
+		{
+			// find all parentless compounds, and recursively update bounds
+			// in a bottom-up manner.
+			for each (var cns:CompoundNodeSprite in
+				data.group(Groups.COMPOUND_NODES))
+			{
+				if (cns.isInitialized() && cns.parentId == null)
+				{
+					updateAllBounds(cns);
+				}
+			}
+		}
+		
         // ========[ PRIVATE METHODS ]==============================================================
         
         /**
@@ -588,6 +651,14 @@ package org.cytoscapeweb.view.components {
                 
                 layout = psl;
             }
+			else if (name === Layouts.COSE)
+			{
+				var cose:ForceDirectedCompoundLayout = new ForceDirectedCompoundLayout();
+				
+				// TODO options?
+				
+				layout = cose;
+			}
             
             layout.layoutBounds = layoutBounds;
             layout.layoutRoot = layoutRoot;
@@ -671,5 +742,20 @@ package org.cytoscapeweb.view.components {
 
             return text;
         }
+		
+		private function updateAllBounds(cns:CompoundNodeSprite) : void
+		{	
+			for each (var ns:NodeSprite in cns.getNodes())
+			{
+				if (ns is CompoundNodeSprite &&
+					(ns as CompoundNodeSprite).isInitialized())
+				{
+					updateAllBounds(ns as CompoundNodeSprite);
+				}
+			}
+			
+			updateCompoundBounds(cns);
+			cns.render();
+		}
     }
 }

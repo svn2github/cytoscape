@@ -14,6 +14,10 @@ var options = {
     edgesMerged: false,
     //mouseDownToDragDelay: -1,
     network: { }, // initial empty network
+    layout: {
+    	name: "CoSE",
+    	options: { }
+    },
     visualStyle: {
         global: {
             backgroundColor: "#fefefe",
@@ -50,10 +54,11 @@ var options = {
         
         nodes: {
         	// regular nodes
-        	size: 30,
+        	size: 40,
         	color: "#8a1b0b",
         	
         	// compound nodes
+        	/*
         	compoundPaddingLeft: 20,
         	compoundPaddingRight: 8,
         	compoundPaddingTop: 12,
@@ -62,11 +67,19 @@ var options = {
         	compoundShape: "RECTANGLE",
         	compoundLabelFontSize: 15,
         	compoundLabelVerticalAnchor: "bottom"
+        	*/
+        	compoundPaddingLeft: 10,
+        	compoundPaddingRight: 10,
+        	compoundPaddingTop: 10,
+        	compoundPaddingBottom: 10,
+        	compoundColor: "#9ed1dc",
+        	compoundShape: "RECTANGLE",
+        	compoundLabelFontSize: 14,
+        	compoundLabelVerticalAnchor: "top"
         },
         edges: {
         	
-        },
-        
+        }
         /*
         compoundNodes: {
         	color: "#9ed1dc",
@@ -95,6 +108,7 @@ window.onload = function()
 	vis.ready(initContextMenu);
 	
 	//createMenu();
+	options.network = createObjectData();
 	vis.draw(options);
 };
 
@@ -158,6 +172,7 @@ function createGraphmlData()
  * compound nodes.
  *
  */
+
 function createObjectData()
 {
 	var data = {
@@ -177,8 +192,8 @@ function createObjectData()
 						    edges: [ { id: "e12", label: "e12", weight: 1.2, source: "n11", target: "n12" } ]
 						}
 					},
-			         { id: "n2", label: "n2"},
-			         { id: "n3", label: "n3", network: { } } ],
+			         { id: "n2", label: "n2"}/*,
+			         { id: "n3", label: "n3", network: { } }*/ ],
 			edges: [ { id: "e1", label: "e1", weight: 1.1, source: "n1", target: "n2" },
 			         { id: "e2", label: "e2", weight: 1.6, source: "n2", target: "n12" }]
 		}
@@ -186,6 +201,30 @@ function createObjectData()
 	
 	return data;
 }
+
+
+/*
+function createObjectData()
+{
+	var data = {
+	    	dataSchema: {
+			nodes: [ { name: "label", type: "string" } ],       
+			edges: [ { name: "label", type: "string" },
+			         { name: "weight", type: "number" } ]
+		},
+		data: {
+			nodes: [ { id: "n0", label: "n0"},
+			         { id: "n1", label: "n1"},
+			         { id: "n2", label: "n2", network: { nodes: [ { id: "n2:n0", label: "n2:n0"} ]} }],			         
+			edges: [ { id: "e0", label: "e0", weight: 1.1, source: "n1", target: "n0" },
+			         { id: "e1", label: "e1", weight: 1.1, source: "n2:n0", target: "n0" },
+			         { id: "e2", label: "e2", weight: 1.1, source: "n1", target: "n2" }]
+		}
+	};
+	
+	return data;
+}
+*/
 
 /*
  *
@@ -262,15 +301,27 @@ function initContextMenu()
 		if (items.length > 0) { vis.removeElements(items, true); }
 	});
 	
-	/* TODO import from input file
+	/*
 	vis.addContextMenuItem("Import", function(evt) {
-		createOpen();
+		//createOpen();
 	});
 	*/
+	
 }
 
 function initToolbar()
 {
+	/*
+	$("#load-file").click(function(evt) {
+		//new org.cytoscapeweb.demo.Importer("file_importer", null);
+		createOpen();
+    });
+    */
+	
+	$("#layout").click(function(evt) {
+        vis.layout("CoSE");
+    });
+	
 	$("#in-object-model").click(function(evt) {
         var network = createObjectData();
         options.network = network;
@@ -312,8 +363,8 @@ function initToolbar()
 
 function createOpen(){
     var opts = {
-            swfPath: path("Importer"),
-            flashInstallerPath: path("playerProductInstall"),
+            //swfPath: path("Importer"),
+            //flashInstallerPath: path("playerProductInstall"),
             data: function(data){
     			var network = data.string;
 				var new_graph_options = {
@@ -325,7 +376,7 @@ function createOpen(){
 				    nodeLabelsVisible: true
 				};
 
-				open_graph(new_graph_options);
+				openGraph(new_graph_options);
 			},
 			
             ready: function(){
@@ -342,8 +393,13 @@ function createOpen(){
         };
         
     new org.cytoscapeweb.demo.Importer("file_importer", opts);
+    //new org.cytoscapeweb.demo.Importer("open-file", opts);
 }
 
+function openGraph(opt)
+{
+	return;
+}
 
 function createMenu(){
     $("#menu").children().remove(); // remove old menu if needed (we don't want two after a redraw)

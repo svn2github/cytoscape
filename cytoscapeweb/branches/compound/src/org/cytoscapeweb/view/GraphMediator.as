@@ -407,7 +407,7 @@ package org.cytoscapeweb.view {
 						(targetNode is CompoundNodeSprite))
 					{
 						// update the bounds of the compound node
-						this.updateCompoundBounds(
+						this.vis.updateCompoundBounds(
 							(targetNode as CompoundNodeSprite));
 						
 						// render the compound node with new bounds
@@ -849,7 +849,7 @@ package org.cytoscapeweb.view {
 								|| (n == target && !n.props.$selected))
 							{
 								// update the bounds of the compound node
-								this.updateCompoundBounds(
+								this.vis.updateCompoundBounds(
 									ns as CompoundNodeSprite);
 								
 								// render the compound node with the new bounds
@@ -1087,40 +1087,6 @@ package org.cytoscapeweb.view {
         }
 		
 		/**
-		 * Updates the bounds of the given compound node sprite using bounds of
-		 * its child nodes. This function does NOT recursively update bounds of
-		 * its child compounds, in other words the bounds of all child nodes are
-		 * assumed to be up-to-date. This method also updates the coordinates
-		 * of the given compound node sprite according to the newly calculated
-		 * bounds.
-		 * 
-		 * @param cns	compound node sprite
-		 */
-		private function updateCompoundBounds(cns:CompoundNodeSprite) : void
-		{
-			var children:Data = new Data();
-			var bounds:Rectangle;
-			var allChildren:Array = CompoundNodes.getChildren(cns);
-			
-			if (allChildren.length > 0)
-			{
-				for each (var ns:NodeSprite in allChildren)
-				{
-					children.addNode(ns);
-				}
-				
-				// calculate&update bounds of the compound node 
-				bounds = this.vis.getRealBounds(children);
-				cns.updateBounds(bounds);
-			}
-			else
-			{
-				// empty compound, so reset bounds
-				cns.resetBounds();
-			}
-		}
-		
-		/**
 		 * In a bottom-up manner, recursively updates the bounds of all inner 
 		 * compound nodes of the given compound node and also the bounds of
 		 * the given compound node itself.
@@ -1139,7 +1105,7 @@ package org.cytoscapeweb.view {
 			}
 			
 			// then, update bounds of the compound node
-			this.updateCompoundBounds(cns);
+			this.vis.updateCompoundBounds(cns);
 			
 			// render the node with the new bounds
 			cns.render();

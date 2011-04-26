@@ -175,6 +175,7 @@ package org.cytoscapeweb.model {
                     case Layouts.PRESET.toLowerCase():         name = Layouts.PRESET; break;
                     case Layouts.RADIAL.toLowerCase():         name = Layouts.RADIAL; break;
                     case Layouts.TREE.toLowerCase():           name = Layouts.TREE; break;
+					case Layouts.COSE.toLowerCase():           name = Layouts.COSE; break;
                 }
                 
                 options = Layouts.mergeOptions(name, options);
