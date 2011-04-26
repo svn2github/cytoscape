@@ -21,6 +21,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
+import org.cytoscape.browser.TableBrowser;
 import org.cytoscape.browser.ui.AttributeBrowserToolBar;
 import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.event.CyEventHelper;
@@ -43,8 +44,8 @@ import org.cytoscape.work.swing.GUITaskManager;
 
 
 @SuppressWarnings("serial")
-public class TableBrowser
-	extends JPanel implements CytoPanelComponent, ActionListener, NetworkViewAddedListener, TableAboutToBeDeletedListener
+public class TableBrowserImpl
+	extends JPanel implements CytoPanelComponent, ActionListener, NetworkViewAddedListener, TableAboutToBeDeletedListener, TableBrowser
 {
 	private final CyTableManager tableManager;
 	private final CyServiceRegistrar serviceRegistrar;
@@ -59,7 +60,7 @@ public class TableBrowser
 	private final GUITaskManager guiTaskManagerServiceRef;
 	private final Map<CyTable, TableMetadata> tableToMetadataMap;
 
-	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
+	TableBrowserImpl(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
 		     final EquationCompiler compiler, final OpenBrowser openBrowser,
 		     final CyNetworkManager networkManager,
 		     final CyTableRowUpdateService tableRowUpdateService,
@@ -179,5 +180,10 @@ public class TableBrowser
 		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
 		comboBoxModel.removeItem(cyTable);
 		tableToMetadataMap.remove(cyTable);
+	}
+	
+	@Override
+	public CyTable getCurrentTable() {
+		return currentTable;
 	}
 }

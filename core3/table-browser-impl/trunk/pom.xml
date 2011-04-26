@@ -157,5 +157,10 @@
 			<artifactId>work-swing-api</artifactId>
 			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>table-browser-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

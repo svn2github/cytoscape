@@ -22,6 +22,7 @@
 			<value>org.cytoscape.application.swing.CytoPanelComponent</value>
                         <value>org.cytoscape.view.model.events.NetworkViewAddedListener</value>
                         <value>org.cytoscape.model.events.TableAboutToBeDeletedListener</value>
+                        <value>org.cytoscape.browser.TableBrowser</value>
                 </osgi:interfaces>
 	</osgi:service>
 

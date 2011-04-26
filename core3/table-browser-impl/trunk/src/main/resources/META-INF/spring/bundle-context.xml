@@ -25,7 +25,7 @@
 
 	<context:annotation-config/>
 
-	<bean id="tableBrowser" class="org.cytoscape.browser.internal.TableBrowser">
+	<bean id="tableBrowser" class="org.cytoscape.browser.internal.TableBrowserImpl">
 		<constructor-arg ref="cyTableManagerServiceRef" />
 		<constructor-arg ref="cyServiceRegistrarServiceRef" />
 		<constructor-arg ref="compilerServiceRef" />
