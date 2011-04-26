@@ -43,11 +43,11 @@ public class GetAttributePreviewDataTask extends AbstractTask {
 		}
 		
 		//
-		String msg = "column names: ";
+		String msg = "column(s): ";
 		Iterator<CyColumn> it = tbls[0].getColumns().iterator();
 		while (it.hasNext()){
 			CyColumn col = it.next();
-			msg += col.getName();
+			msg += col.getName()+ " ";
 		}
 		msg += "\nTotal rows: "+tbls[0].getRowCount();
 		
