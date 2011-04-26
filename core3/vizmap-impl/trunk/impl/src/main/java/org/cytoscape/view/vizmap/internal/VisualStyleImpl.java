@@ -56,281 +56,266 @@ import org.slf4j.LoggerFactory;
  */
 public class VisualStyleImpl implements VisualStyle {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(VisualStyleImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(VisualStyleImpl.class);
 
-	private static final String DEFAULT_TITLE = "?";
+    private static final String DEFAULT_TITLE = "?";
 
-	private final Map<VisualProperty<?>, VisualMappingFunction<?, ?>> mappings;
-	private final Map<VisualProperty<?>, Object> perVSDefaults;
-	
-	private final VisualLexiconManager lexManager;
+    private final Map<VisualProperty<?>, VisualMappingFunction<?, ?>> mappings;
+    private final Map<VisualProperty<?>, Object> perVSDefaults;
 
-	private String title;
+    private final VisualLexiconManager lexManager;
 
-	/**
-	 * Creates a new VisualStyleImpl object.
-	 * 
-	 * @param eventHelper
-	 *            DOCUMENT ME!
-	 * @param rootLexicon
-	 *            DOCUMENT ME!
-	 */
-	public VisualStyleImpl(final String title, final VisualLexiconManager lexManager) {
-		
-		if(lexManager == null)
-			throw new NullPointerException("Lexicon Manager is missing.");
-		
-		this.lexManager = lexManager;
+    private String title;
 
-		if (title == null)
-			this.title = DEFAULT_TITLE;
-		else
-			this.title = title;
+    /**
+     * Creates a new VisualStyleImpl object.
+     * 
+     * @param eventHelper
+     *            DOCUMENT ME!
+     * @param rootLexicon
+     *            DOCUMENT ME!
+     */
+    public VisualStyleImpl(final String title, final VisualLexiconManager lexManager) {
 
-		mappings = new HashMap<VisualProperty<?>, VisualMappingFunction<?, ?>>();
-		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
-		
-		logger.info("New Visual Style Created: Style Name = " + this.title);
+	if (lexManager == null)
+	    throw new NullPointerException("Lexicon Manager is missing.");
+
+	this.lexManager = lexManager;
+
+	if (title == null)
+	    this.title = DEFAULT_TITLE;
+	else
+	    this.title = title;
+
+	mappings = new HashMap<VisualProperty<?>, VisualMappingFunction<?, ?>>();
+	perVSDefaults = new HashMap<VisualProperty<?>, Object>();
+
+	logger.info("New Visual Style Created: Style Name = " + this.title);
+    }
+
+    /**
+     * DOCUMENT ME!
+     * 
+     * @param c
+     *            DOCUMENT ME!
+     */
+    @Override
+    public void addVisualMappingFunction(final VisualMappingFunction<?, ?> mapping) {
+	mappings.put(mapping.getVisualProperty(), mapping);
+    }
+
+    /**
+     * DOCUMENT ME!
+     * 
+     * @param <V>
+     *            DOCUMENT ME!
+     * @param t
+     *            DOCUMENT ME!
+     * 
+     * @return DOCUMENT ME!
+     */
+    @SuppressWarnings("unchecked")
+    public <V> VisualMappingFunction<?, V> getVisualMappingFunction(VisualProperty<V> t) {
+	return (VisualMappingFunction<?, V>) mappings.get(t);
+    }
+
+    /**
+     * DOCUMENT ME!
+     * 
+     * @param <V>
+     *            DOCUMENT ME!
+     * @param t
+     *            DOCUMENT ME!
+     * 
+     * @return DOCUMENT ME!
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public void removeVisualMappingFunction(VisualProperty<?> t) {
+	mappings.remove(t);
+    }
+
+    /**
+     * DOCUMENT ME!
+     * 
+     * @param <T>
+     *            DOCUMENT ME!
+     * @param vp
+     *            DOCUMENT ME!
+     * 
+     * @return DOCUMENT ME!
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <V> V getDefaultValue(final VisualProperty<V> vp) {
+	return (V) perVSDefaults.get(vp);
+    }
+
+    /**
+     * Set the default value for a Visual Property
+     * 
+     * @param <T>
+     *            Default value data type.
+     * @param vp
+     *            DOCUMENT ME!
+     * @param value
+     *            DOCUMENT ME!
+     */
+    @Override
+    public <V, S extends V> void setDefaultValue(final VisualProperty<V> vp, final S value) {
+	perVSDefaults.put(vp, value);
+    }
+
+    /**
+     * DOCUMENT ME!
+     * 
+     * @param networkView
+     *            DOCUMENT ME!
+     */
+    @Override
+    public void apply(final CyNetworkView networkView) {
+	if (networkView == null) {
+	    logger.warn("Tried to apply Visual Style to null view");
+	    return;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param c
-	 *            DOCUMENT ME!
-	 */
-	@Override
-	public void addVisualMappingFunction(
-			final VisualMappingFunction<?, ?> mapping) {
-		mappings.put(mapping.getVisualProperty(), mapping);
+	logger.debug("Visual Style Apply method called: " + this.title);
+
+	final Collection<View<CyNode>> nodeViews = networkView.getNodeViews();
+	final Collection<View<CyEdge>> edgeViews = networkView.getEdgeViews();
+	final Collection<View<CyNetwork>> networkViewSet = new HashSet<View<CyNetwork>>();
+	networkViewSet.add(networkView);
+
+	// Current visual prop tree.
+	applyImpl(nodeViews, lexManager.getNodeVisualProperties());
+	applyImpl(edgeViews, lexManager.getEdgeVisualProperties());
+	applyImpl(networkViewSet, lexManager.getNetworkVisualProperties());
+
+	logger.debug("Visual Style applied: " + this.title + "\n");
+    }
+
+    /**
+     * DOCUMENT ME!
+     * 
+     * @param <T>
+     *            DOCUMENT ME!
+     * @param views
+     *            DOCUMENT ME!
+     * @param visualProperties
+     *            DOCUMENT ME!
+     */
+    private void applyImpl(final Collection<? extends View<?>> views,
+	    final Collection<VisualProperty<?>> visualProperties) {
+
+	for (VisualProperty<?> vp : visualProperties)
+	    applyToView(views, vp);
+    }
+
+   
+    private void applyToView(final Collection<? extends View<?>> views, final VisualProperty<?> vp) {
+
+	final VisualMappingFunction<?, ?> mapping = getVisualMappingFunction(vp);
+
+	if (mapping != null) {
+	    // Mapping is available for this VP. Apply it.
+	    logger.debug("###### Mapping found for " + vp.getDisplayName() + ": " + mapping.toString());
+	    final Object styleDefaultValue = getDefaultValue(vp);
+	    for (View<?> view : views) {
+		mapping.apply((View<? extends CyTableEntry>) view);
+
+		// FIXME: this condition is not enough in some cases.
+		if (view.getVisualProperty(vp) == vp.getDefault())
+		    view.setVisualProperty(vp, styleDefaultValue);
+	    }
+	} else if (!vp.shouldIgnoreDefault()) {
+	    // Ignore defaults flag is OFF. Apply defaults.
+	    applyStyleDefaults((Collection<View<?>>) views, vp);
+	} else if (vp.getDefault() instanceof Visualizable == false) {
+	    Object defVal = getDefaultValue(vp);
+	    if (defVal == null) {
+		this.perVSDefaults.put(vp, vp.getDefault());
+		defVal = getDefaultValue(vp);
+	    }
+	    for (View<?> view : views) {
+		Object val = view.getVisualProperty(vp);
+		// logger.debug(vp.getDisplayName() + ": Ignore flag.  Val = " +
+		// val);
+		// logger.debug(vp.getDisplayName() + ": DEF Val = " + defVal);
+		if (defVal.equals(val) == false)
+		    view.setVisualProperty(vp, val);
+	    }
 	}
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param <V>
-	 *            DOCUMENT ME!
-	 * @param t
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	@SuppressWarnings("unchecked")
-	public <V> VisualMappingFunction<?, V> getVisualMappingFunction(
-			VisualProperty<V> t) {
-		return (VisualMappingFunction<?, V>) mappings.get(t);
+    private void applyStyleDefaults(final Collection<View<?>> views, final VisualProperty<?> vp) {
+
+	Object defaultValue = getDefaultValue(vp);
+
+	if (defaultValue == null) {
+	    this.perVSDefaults.put(vp, vp.getDefault());
+	    defaultValue = getDefaultValue(vp);
 	}
+	// reset all rows to allow usage of default value:
+	for (final View<?> viewModel : views) {
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param <V>
-	 *            DOCUMENT ME!
-	 * @param t
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void removeVisualMappingFunction(VisualProperty<?> t) {
-		mappings.remove(t);
+	    // Not a leaf VP. We can ignore those.
+	    if (vp.getDefault() instanceof Visualizable)
+		continue;
+
+	    final Object currentValue = viewModel.getVisualProperty(vp);
+
+	    // // Some of the VP has null defaults.
+	    // if (currentValue == null)
+	    // continue;
+
+	    // // If equals, it is not necessary to set new value.
+	    // if (currentValue.equals(defaultValue))
+	    // continue;
+	    //
+	    //
+
+	    // This is a leaf, and need to be updated.
+	    viewModel.setVisualProperty(vp, defaultValue);
+
+	    // logger.debug(vp.getDisplayName() + " updated from: " +
+	    // currentValue + " to " + defaultValue);
 	}
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param <T>
-	 *            DOCUMENT ME!
-	 * @param vp
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public <V> V getDefaultValue(final VisualProperty<V> vp) {
-		return (V) perVSDefaults.get(vp);
-	}
+    /**
+     * DOCUMENT ME!
+     * 
+     * @return DOCUMENT ME!
+     */
+    @Override
+    public String getTitle() {
+	return title;
+    }
 
-	/**
-	 * Set the default value for a Visual Property
-	 * 
-	 * @param <T>
-	 *            Default value data type.
-	 * @param vp
-	 *            DOCUMENT ME!
-	 * @param value
-	 *            DOCUMENT ME!
-	 */
-	@Override
-	public <V, S extends V> void setDefaultValue(final VisualProperty<V> vp,
-			final S value) {
-		perVSDefaults.put(vp, value);
-	}
+    /**
+     * DOCUMENT ME!
+     * 
+     * @param title
+     *            DOCUMENT ME!
+     */
+    @Override
+    public void setTitle(String title) {
+	this.title = title;
+    }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param networkView
-	 *            DOCUMENT ME!
-	 */
-	@Override
-	public void apply(final CyNetworkView networkView) {
-		if (networkView == null) {
-			logger.warn("Tried to apply Visual Style to null view");
-			return;
-		}
+    /**
+     * toString method returns title of this Visual Style.
+     * 
+     * @return DOCUMENT ME!
+     */
+    @Override
+    public String toString() {
+	return this.title;
+    }
 
-		logger.debug("Visual Style Apply method called: " + this.title);
-
-		final Collection<View<CyNode>> nodeViews = networkView.getNodeViews();
-		final Collection<View<CyEdge>> edgeViews = networkView.getEdgeViews();
-		final Collection<View<CyNetwork>> networkViewSet = new HashSet<View<CyNetwork>>();
-		networkViewSet.add(networkView);
-
-		// Current visual prop tree.
-		applyImpl(nodeViews, lexManager.getNodeVisualProperties());
-		applyImpl(edgeViews, lexManager.getEdgeVisualProperties());
-		applyImpl(networkViewSet, lexManager.getNetworkVisualProperties());
-
-		logger.debug("Visual Style applied: " + this.title + "\n");
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param <T>
-	 *            DOCUMENT ME!
-	 * @param views
-	 *            DOCUMENT ME!
-	 * @param visualProperties
-	 *            DOCUMENT ME!
-	 */
-	private void applyImpl(final Collection<? extends View<?>> views,
-			final Collection<VisualProperty<?>> visualProperties) {
-
-		for (VisualProperty<?> vp : visualProperties)
-			applyToView(views, vp);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param <T>
-	 *            DOCUMENT ME!
-	 * @param views
-	 *            DOCUMENT ME!
-	 * @param visualProperties
-	 *            DOCUMENT ME!
-	 */
-	private void applyToView(final Collection<? extends View<?>> views,
-			final VisualProperty<?> vp) {
-
-		final VisualMappingFunction<?, ?> mapping = getVisualMappingFunction(vp);
-
-		if (mapping != null) {
-			// Mapping is available for this VP. Apply it.
-			logger.debug("###### Mapping found for " + vp.getDisplayName()
-					+ ": " + mapping.toString());
-			final Object styleDefaultValue = getDefaultValue(vp);
-			for (View<?> view : views) {
-				mapping.apply((View<? extends CyTableEntry>) view);
-
-				if (view.getVisualProperty(vp) == vp.getDefault())
-					view.setVisualProperty(vp, styleDefaultValue);
-			}
-		} else if (!vp.shouldIgnoreDefault()) {
-			// Ignore defaults flag is OFF. Apply defaults.
-			applyStyleDefaults((Collection<View<?>>) views, vp);
-		} else if (vp.getDefault() instanceof Visualizable == false) {
-			Object defVal = getDefaultValue(vp);
-			if(defVal == null) {
-				this.perVSDefaults.put(vp, vp.getDefault());
-				defVal = getDefaultValue(vp);
-			}
-			for (View<?> view : views) {
-				Object val = view.getVisualProperty(vp);
-				// logger.debug(vp.getDisplayName() + ": Ignore flag.  Val = " +
-				// val);
-				// logger.debug(vp.getDisplayName() + ": DEF Val = " + defVal);
-				if (defVal.equals(val) == false)
-					view.setVisualProperty(vp, val);
-			}
-		}
-	}
-
-	private void applyStyleDefaults(final Collection<View<?>> views,
-			final VisualProperty<?> vp) {
-
-		Object defaultValue = getDefaultValue(vp);
-		
-		if(defaultValue == null) {
-			this.perVSDefaults.put(vp, vp.getDefault());
-			defaultValue = getDefaultValue(vp);
-		}
-		// reset all rows to allow usage of default value:
-		for (final View<?> viewModel : views) {
-
-			// Not a leaf VP. We can ignore those.
-			if (vp.getDefault() instanceof Visualizable)
-				continue;
-
-			final Object currentValue = viewModel.getVisualProperty(vp);
-
-			// // Some of the VP has null defaults.
-			// if (currentValue == null)
-			// continue;
-
-			// // If equals, it is not necessary to set new value.
-			// if (currentValue.equals(defaultValue))
-			// continue;
-			//
-			//
-
-			// This is a leaf, and need to be updated.
-			viewModel.setVisualProperty(vp, defaultValue);
-
-			// logger.debug(vp.getDisplayName() + " updated from: " +
-			// currentValue + " to " + defaultValue);
-		}
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	@Override
-	public String getTitle() {
-		return title;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param title
-	 *            DOCUMENT ME!
-	 */
-	@Override
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	/**
-	 * toString method returns title of this Visual Style.
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	@Override
-	public String toString() {
-		return this.title;
-	}
-
-	@Override
-	public Collection<VisualMappingFunction<?, ?>> getAllVisualMappingFunctions() {
-		return mappings.values();
-	}
+    @Override
+    public Collection<VisualMappingFunction<?, ?>> getAllVisualMappingFunctions() {
+	return mappings.values();
+    }
 
 }

@@ -9,7 +9,7 @@
 	<osgi:reference id="applicationManagerManagerServiceRef"
 		interface="org.cytoscape.session.CyApplicationManager">
 	</osgi:reference>
-	
+
 	<osgi:reference id="customGraphicsManagerServiceRef"
 		interface="org.cytoscape.ding.customgraphics.CustomGraphicsManager">
 	</osgi:reference>
@@ -128,8 +128,23 @@
 		auto-export="interfaces" />
 	<osgi:service id="objectPositionPropertyEditorService"
 		ref="objectPositionEditor" auto-export="interfaces" />
-		
-	<osgi:service id="edgeColor2arrowColorDependencyService" ref="edgeColor2arrowColorDependency" auto-export="interfaces" />
-	<osgi:service id="nodeCustomGraphicsSizeDependencyService" ref="nodeCustomGraphicsSizeDependency" auto-export="interfaces" />
 
+	<osgi:service id="edgeColor2arrowColorDependencyService"
+		ref="edgeColor2arrowColorDependency" auto-export="interfaces" />
+	<osgi:service id="nodeCustomGraphicsSizeDependencyService"
+		ref="nodeCustomGraphicsSizeDependency" auto-export="interfaces" />
+
+
+	<osgi:reference id="cyPropertyServiceRef" interface="org.cytoscape.property.CyProperty"
+		filter="(cyPropertyName=coreSettings)" />
+		
+	<osgi:service id="showGraphicsDetailTaskFactoryService" ref="showGraphicsDetailTaskFactory" auto-export="interfaces">
+		<osgi:service-properties>
+			<entry key="title" value="Switch Graphics Details" />
+			<entry key="preferredMenu" value="View" />
+			<entry key="enableFor" value="networkAndView" />
+			<entry key="menuGravity" value="5.0" />
+			<entry key="accelerator" value="fn1" />
+		</osgi:service-properties>
+	</osgi:service>
 </beans>

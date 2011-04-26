@@ -65,5 +65,10 @@
 	<bean id="edgeColor2arrowColorDependency" class="org.cytoscape.ding.dependency.EdgePaintToArrowHeadPaintDependency" />
 	<bean id="nodeCustomGraphicsSizeDependency" class="org.cytoscape.ding.dependency.CustomGraphicsSizeDependency" />
 	
+	<!-- Show Graphics Detail -->
+	<bean id="showGraphicsDetailTaskFactory" class="org.cytoscape.ding.impl.ShowGraphicsDetailTaskFactory">
+		<constructor-arg ref="applicationManagerManagerServiceRef" />
+		<constructor-arg ref="cyPropertyServiceRef" />
+	</bean>
 
 </beans>

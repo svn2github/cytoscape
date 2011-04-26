@@ -55,7 +55,6 @@ import javax.imageio.ImageIO;
 import org.cytoscape.ding.DNodeShape;
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
-import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.Label;
 import org.cytoscape.ding.NodeView;
 import org.cytoscape.ding.ObjectPosition;
@@ -64,8 +63,6 @@ import org.cytoscape.ding.customgraphics.Layer;
 import org.cytoscape.ding.customgraphics.NullCustomGraphics;
 import org.cytoscape.ding.impl.customgraphics.CustomGraphicsPositionCalculator;
 import org.cytoscape.ding.impl.customgraphics.vector.VectorCustomGraphics;
-import org.cytoscape.ding.impl.events.GraphViewNodesSelectedEvent;
-import org.cytoscape.ding.impl.events.GraphViewNodesUnselectedEvent;
 import org.cytoscape.ding.impl.visualproperty.CustomGraphicsVisualProperty;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.graph.render.stateful.CustomGraphic;
@@ -1506,10 +1503,8 @@ public class DNodeView implements NodeView, Label {
 	    setFont((Font) value);
 	} else if (vp == DVisualLexicon.NODE_LABEL_FONT_SIZE) {
 	    float newSize = ((Number) value).floatValue();
-	    if (getFont().getSize() != newSize) {
-		final Font newFont = getFont().deriveFont(newSize);
-		setFont(newFont);
-	    }
+	    final Font newFont = getFont().deriveFont(newSize);
+	    setFont(newFont);
 	} else if (vp == DVisualLexicon.NODE_LABEL_POSITION) {
 	    this.setLabelPosition((ObjectPosition) value);
 	} else if (vp instanceof CustomGraphicsVisualProperty) {
