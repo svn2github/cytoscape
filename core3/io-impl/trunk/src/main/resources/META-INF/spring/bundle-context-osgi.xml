@@ -236,4 +236,10 @@
 		<osgi:listener bind-method="addCyWriterFactory"
 			unbind-method="removeCyWriterFactory" ref="propertyWriterManager" />
 	</osgi:set>
+
+	<osgi:set id="tableWriterFactories" interface="org.cytoscape.io.write.CyTableWriterFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addCyWriterFactory"
+			unbind-method="removeCyWriterFactory" ref="tableWriterManager" />
+	</osgi:set>
 </beans>
