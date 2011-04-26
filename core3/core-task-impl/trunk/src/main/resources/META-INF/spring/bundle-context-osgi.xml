@@ -623,8 +623,9 @@
 	<osgi:service id="subnetworkBuilderTaskFactoryService"
 		ref="subnetworkBuilderTaskFactory" interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Build Subnetwork from Interactome" />
-			<entry key="scope" value="startup" />
+			<entry key="title" value="Create subnetwork from interactome..." />
+			<entry key="preferredMenu" value="Plugins" />
+			<entry key="menuGravity" value="5.0" />
 		</osgi:service-properties>
 	</osgi:service>
 	
