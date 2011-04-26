@@ -33,51 +33,47 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 // $Revision: 12968 $
 // $Date: 2008-02-06 15:34:25 -0800 (Wed, 06 Feb 2008) $
 // $Author: mes $
 package org.cytoscape.internal.actions;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+import javax.swing.KeyStroke;
+
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CytoscapeShutdown;
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
-
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import javax.swing.KeyStroke;
-
 
 /**
  *
  */
 public class ExitAction extends AbstractCyAction {
-	private final static long serialVersionUID = 1202339869460858L;
-	protected int returnVal;
-	private final CytoscapeShutdown shutdown;
+    
+    private final static long serialVersionUID = 1202339869460858L;
+    
+    protected int returnVal;
+    private final CytoscapeShutdown shutdown;
 
-	/**
-	 * Creates a new ExitAction object.
-	 */
-	public ExitAction(CyApplicationManager appMgr, CytoscapeShutdown shutdown) {
-		super("Quit",appMgr);
-		this.shutdown = shutdown;
-		setPreferredMenu("File");
-		
-		// TODO: need create special case for Mac.
-		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.VK_CONTROL));
-		setMenuGravity(1000.0f);
-	}
+    /**
+     * Creates a new ExitAction object.
+     */
+    public ExitAction(CyApplicationManager appMgr, CytoscapeShutdown shutdown) {
+	super("Quit", appMgr);
+	this.shutdown = shutdown;
+	setPreferredMenu("File");
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void actionPerformed(ActionEvent e) {
-		shutdown.exit(returnVal);
-	}
+	// TODO: need to create special case for Mac to use apple key.
+	setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.VK_CONTROL));
+	setMenuGravity(1000.0f);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+	shutdown.exit(returnVal);
+    }
 }
