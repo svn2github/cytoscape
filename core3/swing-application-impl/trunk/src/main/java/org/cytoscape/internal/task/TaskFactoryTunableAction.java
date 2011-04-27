@@ -41,24 +41,24 @@ import org.slf4j.LoggerFactory;
 
 public class TaskFactoryTunableAction<T extends TaskFactory> extends AbstractCyAction {
 
-	private static final long serialVersionUID = 8009915597814265396L;
-	
-	final protected T factory;
-	final protected TaskManager manager;
-	
-	private final static Logger logger = LoggerFactory.getLogger(TaskFactoryTunableAction.class);
+    private static final long serialVersionUID = 8009915597814265396L;
 
-	public TaskFactoryTunableAction(final TaskManager manager, final T factory,
-			final Map serviceProps,
-			final CyApplicationManager applicationManager) {
-		super(serviceProps, applicationManager);
-		this.manager = manager;
-		this.factory = factory;
-	}
+    private final static Logger logger = LoggerFactory.getLogger(TaskFactoryTunableAction.class);
 
-	public void actionPerformed(ActionEvent a) {
-		logger.debug("About to execute task from factory: " + factory.toString());
-		// execute the task(s) in a separate thread
-		manager.execute(factory);
-	}
+    final protected T factory;
+    final protected TaskManager manager;
+
+    public TaskFactoryTunableAction(final TaskManager manager, final T factory, final Map<String, String> serviceProps,
+	    final CyApplicationManager applicationManager) {
+	super(serviceProps, applicationManager);
+	this.manager = manager;
+	this.factory = factory;
+    }
+
+    public void actionPerformed(ActionEvent a) {
+	logger.debug("About to execute task from factory: " + factory.toString());
+	
+	// execute the task(s) in a separate thread
+	manager.execute(factory);
+    }
 }

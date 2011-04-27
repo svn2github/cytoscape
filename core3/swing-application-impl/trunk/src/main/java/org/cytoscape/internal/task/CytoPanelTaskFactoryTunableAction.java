@@ -102,14 +102,14 @@ public class CytoPanelTaskFactoryTunableAction extends AbstractCyAction {
 	final private static CytoPanelName DEFAULT_CYTOPANEL = CytoPanelName.WEST;
 	final private TaskFactory factory;
 	final private GUITaskManager manager;
-	final private Map serviceProps;
+	final private Map<String, String> serviceProps;
 	final private CytoPanelName cytoPanelName;
 	final private CyServiceRegistrar registrar;
 	final private static Logger logger = LoggerFactory.getLogger(CytoPanelTaskFactoryTunableAction.class);
 
 	public CytoPanelTaskFactoryTunableAction(final TaskFactory factory, 
 	                                         final GUITaskManager manager,
-	                                         final Map serviceProps, 
+	                                         final Map<String, String> serviceProps, 
 	                                         final CyApplicationManager appMgr,
 											 final CyServiceRegistrar registrar)
 	{

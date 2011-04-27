@@ -59,16 +59,21 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
     private static final Logger logger = LoggerFactory.getLogger(AbstractCyAction.class);
 
     protected String preferredMenu = null;
-    protected float menuGravity = 100.0f; // end of menu
-    protected float toolbarGravity = 100.0f; // end of toolbar
+
+    // Value 100.0 means end of menu/tool bar
+    protected float menuGravity = 100.0f;
+    protected float toolbarGravity = 100.0f;
+
     protected boolean acceleratorSet = false;
     protected KeyStroke acceleratorKeyStroke = null;
-    protected String name;
+
     protected boolean useCheckBoxMenuItem = false;
     protected boolean inToolBar = false;
     protected boolean inMenuBar = true;
     protected String enableFor = null;
-    protected CyApplicationManager applicationManager;
+
+    protected String name;
+    protected final CyApplicationManager applicationManager;
 
     /**
      * Creates a new AbstractCyAction object.
@@ -106,41 +111,41 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
      * @param applicationManager
      *            The application manager providing context for this action.
      */
-    public AbstractCyAction(final Map configProps, final CyApplicationManager applicationManager) {
-	this((String) (configProps.get("title")), applicationManager);
+    public AbstractCyAction(final Map<String, String> configProps, final CyApplicationManager applicationManager) {
+	this(configProps.get("title"), applicationManager);
 
-	String prefMenu = (String) (configProps.get("preferredMenu"));
+	System.out.println("New Action: " + configProps.get("title"));
+
+	final String prefMenu = configProps.get("preferredMenu");
 	if (prefMenu != null)
 	    setPreferredMenu(prefMenu);
 
-	String iconName = (String) (configProps.get("iconName"));
+	final String iconName = configProps.get("iconName");
 	if (iconName != null)
 	    putValue(SMALL_ICON, new ImageIcon(getClass().getResource(iconName)));
 
-	String tooltip = (String) (configProps.get("tooltip"));
+	final String tooltip = configProps.get("tooltip");
 	if (tooltip != null)
 	    putValue(SHORT_DESCRIPTION, tooltip);
 
-	String foundInToolBar = (String) (configProps.get("inToolBar"));
+	final String foundInToolBar = configProps.get("inToolBar");
 	if (foundInToolBar != null)
 	    inToolBar = true;
 
-	String foundInMenuBar = (String) (configProps.get("inMenuBar"));
+	final String foundInMenuBar = configProps.get("inMenuBar");
 	if (foundInMenuBar != null)
 	    inMenuBar = true;
 
-	enableFor = (String) (configProps.get("enableFor"));
+	this.enableFor = configProps.get("enableFor");
 
-	String keyComboString = (String) configProps.get("accelerator");
+	final String keyComboString = configProps.get("accelerator");
 	if (keyComboString != null) {
 	    final KeyStroke command = AcceleratorParser.parse(keyComboString);
-	    if (command != null) {
+	    if (command != null)
 		setAcceleratorKeyStroke(command);
-		logger.debug("Got KeyStroke: " + command.getKeyChar());
-	    }
 	}
 
-	String menuGravityString = (String) configProps.get("menuGravity");
+	final String menuGravityString = configProps.get("menuGravity");
 	if (menuGravityString != null) {
 	    try {
 		menuGravity = Float.valueOf(menuGravityString);
@@ -149,7 +154,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	    }
 	}
 
-	String toolbarGravityString = (String) configProps.get("toolBarGravity");
+	final String toolbarGravityString = configProps.get("toolBarGravity");
 	if (toolbarGravityString != null) {
 	    try {
 		toolbarGravity = Float.valueOf(toolbarGravityString);
@@ -157,6 +162,9 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 		logger.warn("failed to set toolBarGravity with: " + toolbarGravityString, nfe);
 	    }
 	}
+
+	System.out.println("New Action Created: enable for = " + this.enableFor);
+	this.setEnabled(true);
     }
 
     /**
@@ -280,6 +288,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
      *            The triggering event.
      */
     public void menuCanceled(MenuEvent e) {
+	updateEnableState();
     }
 
     /**
@@ -289,6 +298,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
      *            The triggering event.
      */
     public void menuDeselected(MenuEvent e) {
+	updateEnableState();
     }
 
     /**
@@ -396,11 +406,11 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
      * perform the action.
      */
     protected void enableForSelectedNodesOrEdges() {
-	
+
 	final CyNetwork curNetwork = applicationManager.getCurrentNetwork();
 
 	// Disable if there is no current network.
-	if(curNetwork == null) {
+	if (curNetwork == null) {
 	    setEnabled(false);
 	    return;
 	}
@@ -418,7 +428,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 		return;
 	    }
 	}
-	
+
 	setEnabled(false);
     }
 
@@ -435,7 +445,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	}
 
 	for (CyNode node : n.getNodeList()) {
-	    if (node.getCyRow().get("selected", Boolean.class)) {
+	    if (node.getCyRow().get(CyNetwork.SELECTED, Boolean.class)) {
 		setEnabled(true);
 		return;
 	    }
@@ -456,7 +466,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	}
 
 	for (CyEdge edge : n.getEdgeList()) {
-	    if (edge.getCyRow().get("selected", Boolean.class)) {
+	    if (edge.getCyRow().get(CyNetwork.SELECTED, Boolean.class)) {
 		setEnabled(true);
 		return;
 	    }
