@@ -143,6 +143,9 @@ public class DNodeView implements NodeView, Label {
     // Opacity
     private int transparency;
 
+    // Font size
+    private float fontSize = 12;
+
     /**
      * Stores the position of a nodeView when it's hidden so that when the
      * nodeView is restored we can restore the view into the same position.
@@ -1475,7 +1478,6 @@ public class DNodeView implements NodeView, Label {
 	} else if (vp == DVisualLexicon.NODE_BORDER_PAINT) {
 	    setBorderPaint((Paint) value);
 	} else if (vp == DVisualLexicon.NODE_BORDER_WIDTH) {
-	    // FIXME
 	    setBorderWidth(((Number) value).floatValue());
 	} else if (vp == DVisualLexicon.NODE_BORDER_LINE_TYPE) {
 	    DLineType dLineType = DLineType.getDLineType((LineType) value);
@@ -1500,11 +1502,15 @@ public class DNodeView implements NodeView, Label {
 	} else if (vp == MinimalVisualLexicon.NODE_LABEL_COLOR) {
 	    setTextPaint((Paint) value);
 	} else if (vp == DVisualLexicon.NODE_LABEL_FONT_FACE) {
-	    setFont((Font) value);
+	    final Font newFont = ((Font) value).deriveFont(fontSize);
+	    setFont(newFont);
 	} else if (vp == DVisualLexicon.NODE_LABEL_FONT_SIZE) {
 	    float newSize = ((Number) value).floatValue();
-	    final Font newFont = getFont().deriveFont(newSize);
-	    setFont(newFont);
+	    if (newSize != this.fontSize) {
+		final Font newFont = getFont().deriveFont(newSize);
+		setFont(newFont);
+		fontSize = newSize;
+	    }
 	} else if (vp == DVisualLexicon.NODE_LABEL_POSITION) {
 	    this.setLabelPosition((ObjectPosition) value);
 	} else if (vp instanceof CustomGraphicsVisualProperty) {

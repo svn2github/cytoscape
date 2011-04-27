@@ -319,9 +319,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 		final long key = (((long) node) << 32) | ((long) labelInx);
 
 		if ((font == null) || font.equals(super.labelFont(node, labelInx)))
-			m_labelFonts.remove(Long.valueOf(key));
+			m_labelFonts.remove(key);
 		else
-			m_labelFonts.put(Long.valueOf(key), font);
+			m_labelFonts.put(key, font);
 	}
 
 	/**
