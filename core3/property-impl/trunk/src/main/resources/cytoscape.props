@@ -3,7 +3,7 @@
 secondaryViewThreshold=30000
 defaultSpeciesName=Saccharomyces cerevisiae
 bioDataServer=PleaseSpecify
-viewThreshold=10000
+viewThreshold=4000
 defaultVisualStyle=default
 canonicalizeNames=true
 render.coarseDetailThreshold=2000
