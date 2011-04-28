@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<parent>
+		<groupId>org.cytoscape</groupId>
+		<artifactId>parent</artifactId>
+		<version>3.0.0-alpha6-SNAPSHOT</version>
+	</parent>
+	<properties>
+		<bundle.symbolicName>org.cytoscape.paperwing-impl</bundle.symbolicName>
+		<bundle.namespace>org.cytoscape.paperwing</bundle.namespace>
+	</properties>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.cytoscape</groupId>
+	<artifactId>paperwing-impl</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
+	<packaging>bundle</packaging>
+	<dependencies>
+        <dependency>
+            <groupId>org.cytoscape</groupId>
+            <artifactId>model-api</artifactId>
+            <version>3.0.0-alpha3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.cytoscape</groupId>
+        	<artifactId>swing-application-api</artifactId>
+        	<version>3.0.0-alpha2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.cytoscape</groupId>
+        	<artifactId>viewmodel-api</artifactId>
+        	<version>3.0.0-alpha4-SNAPSHOT</version>
+        	<scope>compile</scope>
+        </dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	<repositories>
+		<repository>
+			<id>cytoscape_thirdparty</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Wrapped Third Party Libraries</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/thirdparty/</url>
+		</repository>
+	</repositories>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.ops4j</groupId>
+				<artifactId>maven-pax-plugin</artifactId>
+				<version>${maven-pax-plugin.version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>${maven-bundle-plugin.version}</version>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+						<Bundle-Version>${pom.version}</Bundle-Version>
+						<_include>-osgi.bnd</_include>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
