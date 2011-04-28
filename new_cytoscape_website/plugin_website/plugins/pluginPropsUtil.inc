@@ -65,6 +65,16 @@ function validatePluginProps($pluginProps) {
 		<strong>Error in plugin.prop: plugin version must be double type, two numbers seperated by a dot (.).</strong><br>
 		<?php
 
+		} 
+		else {
+			// Exclude the version number, like 0.09
+			list($part1, $part2) = split('\.', $pluginProps['pluginVersion']);
+			if (is_numeric($part2) && $part2 < 10 && strlen($part2)>1){
+				$retVal = false;
+				?>
+				<strong>Error in plugin.prop: plugin minor version must not start with 0</strong><br>
+				<?php
+			}
 		}
 	}
 	
