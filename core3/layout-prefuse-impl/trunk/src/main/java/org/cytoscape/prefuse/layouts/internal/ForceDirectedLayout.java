@@ -51,7 +51,7 @@ public class ForceDirectedLayout extends AbstractLayout implements TunableValida
 	 * Creates a new GridNodeLayout object.
 	 */
 	public ForceDirectedLayout(UndoSupport un) {
-		super(un);
+		super(un, "force-directed", "Force Directed Layout");
 	}
 
 	public boolean tunablesAreValid(final Appendable errMsg) {
@@ -73,24 +73,6 @@ public class ForceDirectedLayout extends AbstractLayout implements TunableValida
 						    numIterations, defaultSpringCoefficient,
 						    defaultSpringLength, defaultNodeMass, integrator,
 						    singlePartition));
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getName() {
-		return "force-directed";
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String toString() {
-		return "Force Directed Layout";
 	}
 
 	/**
