@@ -20,18 +20,16 @@ import org.slf4j.LoggerFactory;
 
 public abstract class LayoutTask extends AbstractTask {
 	
-	protected static final Logger logger = LoggerFactory.getLogger(LayoutTask.class);
-	
+	private static final Logger logger = LoggerFactory.getLogger(LayoutTask.class);
 	protected static final String LAYOUT_ALGORITHM = "layoutAlgorithm";
 
 	protected final CyNetworkView networkView;
-	private final String name;
 	protected final boolean selectedOnly;
 	protected final Set<View<CyNode>> staticNodes;
 
-	protected boolean cancelled = false;
+	private final String name;
 
-	public LayoutTask(final CyNetworkView networkView, final String name, final boolean selectedOnly,
+	public LayoutTask(final CyNetworkView networkView, final String name, boolean selectedOnly,
 			  final Set<View<CyNode>> staticNodes)
 	{
 		super();
@@ -71,44 +69,9 @@ public abstract class LayoutTask extends AbstractTask {
 		logger.debug("Layout finished: " + (System.currentTimeMillis()-start) + " msec.");
 	}
 
-	/**
-	 * Lock these nodes (i.e. prevent them from moving).
-	 *
-	 * @param nodes An array of View<CyNode>'s to lock
-	 */
-	public void lockNodes(View<CyNode>[] nodes) {
-		for (int i = 0; i < nodes.length; ++i) {
-			staticNodes.add(nodes[i]);
-		}
-	}
-
-	/**
-	 * Lock this node (i.e. prevent it from moving).
-	 *
-	 * @param v A View<CyNode> to lock
-	 */
-	public void lockNode(View<CyNode> v) {
-		staticNodes.add(v);
-	}
-
-	/**
-	 * Unlock this node
-	 *
-	 * @param v A View<CyNode> to unlock
-	 */
-	public void unlockNode(View<CyNode> v) {
-		staticNodes.remove(v);
-	}
 
 	protected boolean isLocked(View<CyNode> v) {
-		return (staticNodes.contains(v));
-	}
-
-	/**
-	 * Unlock all nodes
-	 */
-	public void unlockAllNodes() {
-		staticNodes.clear();
+		return ((staticNodes != null) && (staticNodes.contains(v)));
 	}
 
 	protected abstract void doLayout(final TaskMonitor taskMonitor, final CyNetwork network);

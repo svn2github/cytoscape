@@ -40,19 +40,13 @@ import org.cytoscape.model.CyEdge;
  * to information about the weights associated with edges, and pointers to the
  * LayoutNodes that are joined by this edge.
  */
-public class LayoutEdge {
+public final class LayoutEdge {
 	// instance variables
 	private LayoutNode v1;
 	private LayoutNode v2;
 	private double weight = 0.5;
 	private double logWeight;
 	private CyEdge edge;
-
-	/**
-	 * An empty constructor
-	 */
-	public LayoutEdge() {
-	}
 
 	/**
 	 * Create a LayoutEdge that will contain information about this edge.

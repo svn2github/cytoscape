@@ -63,7 +63,7 @@ public class GridNodeLayout extends AbstractLayout implements TunableValidator {
 	 * Creates a new GridNodeLayout object.
 	 */
 	public GridNodeLayout(UndoSupport un) {
-		super(un);
+		super(un,CyLayouts.DEFAULT_LAYOUT_NAME,"Grid Layout");
 	}
 
 	public boolean tunablesAreValid(final Appendable errMsg) {
@@ -85,24 +85,6 @@ public class GridNodeLayout extends AbstractLayout implements TunableValidator {
 			initStaticNodes();
 		return new TaskIterator(new GridNodeLayoutTask(networkView, getName(), selectedOnly, staticNodes,
 							       nodeVerticalSpacing, nodeHorizontalSpacing));
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getName() {
-		return CyLayouts.DEFAULT_LAYOUT_NAME;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String toString() {
-		return "Grid Layout";
 	}
 
 	/**

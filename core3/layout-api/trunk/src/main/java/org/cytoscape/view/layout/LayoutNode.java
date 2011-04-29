@@ -47,9 +47,8 @@ import java.util.List;
  * the methods of this class are wrappers for Node or View<CyNode> methods, and
  * these are often wrapped by LayoutPartition methods.
  */
-public class LayoutNode {
+public final class LayoutNode {
 	// static (class) variables
-	private static int lockedNodes = 0;
 	static final double EPSILON = 0.0000001D;
 
 	// instance variables
@@ -64,12 +63,6 @@ public class LayoutNode {
 	private int index;
 	private boolean isLocked = false;
 	private ArrayList<LayoutNode> neighbors = null;
-
-	/**
-	   * Empty constructor
-	   */
-	public LayoutNode() {
-	}
 
 	/**
 	 * The main constructor for a LayoutNode.
@@ -197,7 +190,6 @@ public class LayoutNode {
 	 */
 	public void lock() {
 		this.isLocked = true;
-		lockedNodes += 1;
 	}
 
 	/**
@@ -207,7 +199,6 @@ public class LayoutNode {
 	 */
 	public void unLock() {
 		this.isLocked = false;
-		lockedNodes -= 1;
 	}
 
 	/**
@@ -406,17 +397,5 @@ public class LayoutNode {
 		String ret = new String("" + x + ", " + y);
 
 		return ret;
-	}
-
-	/**
-	 * Returns the number of locked nodes.  This is a static that is incremented whenever
-	 * lock() is called and decremented whenever unlock() is called.  It is useful for some
-	 * algorithms that only want to get the number of unlocked nodes for the purposes of their
-	 * layout loops.
-	 *
-	 * @return        the number of unlocked nodes.
-	 */
-	public static int lockedNodeCount() {
-		return lockedNodes;
 	}
 }

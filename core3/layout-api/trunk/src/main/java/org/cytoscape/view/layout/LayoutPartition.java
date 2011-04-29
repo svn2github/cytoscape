@@ -65,12 +65,10 @@ import org.cytoscape.work.TaskMonitor;
  * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  * @version 0.9
  */
-public class LayoutPartition {
+public final class LayoutPartition {
 	private ArrayList<LayoutNode> nodeList;
 	private ArrayList<LayoutEdge> edgeList;
-	private static HashMap<CyNode, LayoutNode> nodeToLayoutNode = null;
-	private static Map<Integer,Integer> nodesSeenMap = null;
-	private static Map<Integer,Integer> edgesSeenMap = null;
+	private HashMap<CyNode, LayoutNode> nodeToLayoutNode; 
 	private int nodeIndex = 0;
 	private int partitionNumber = 0;
 	private EdgeWeighter edgeWeighter = null;
@@ -110,10 +108,8 @@ public class LayoutPartition {
 	public LayoutPartition(int nodeCount, int edgeCount) {
 		nodeList = new ArrayList<LayoutNode>(nodeCount);
 		edgeList = new ArrayList<LayoutEdge>(edgeCount);
+		nodeToLayoutNode = new HashMap<CyNode,LayoutNode>(nodeCount);
 		partitionNumber = 1;
-
-		if (nodeToLayoutNode == null)
-			nodeToLayoutNode = new HashMap<CyNode,LayoutNode>(nodeCount);
 	}
 
 	/**
@@ -125,9 +121,9 @@ public class LayoutPartition {
 	 * @param nodeSet the nodes to be considered
 	 * @param edgeWeighter the weighter to use for edge weighting
 	 */
-	public LayoutPartition(CyNetwork network, CyNetworkView networkView, Collection<CyNode>nodeSet,
+	public LayoutPartition(CyNetworkView networkView, Collection<CyNode>nodeSet,
 	                       EdgeWeighter edgeWeighter) {
-		initialize(network,networkView,nodeSet,edgeWeighter);
+		initialize(networkView,nodeSet,edgeWeighter);
 	}
 
 
@@ -140,30 +136,28 @@ public class LayoutPartition {
 	 * @param selectedOnly if true, only include selected nodes in the partition
 	 * @param edgeWeighter the weighter to use for edge weighting
 	 */
-	public LayoutPartition(CyNetwork network, CyNetworkView networkView, boolean selectedOnly,
+	public LayoutPartition(CyNetworkView networkView, boolean selectedOnly,
 	                       EdgeWeighter edgeWeighter) {
 		if (selectedOnly) {
-			initialize(network,networkView,CyTableUtil.getNodesInState(network,"selected",true),edgeWeighter);
+			initialize(networkView,CyTableUtil.getNodesInState(networkView.getModel(),"selected",true),edgeWeighter);
 		} else {
-			initialize(network,networkView,network.getNodeList(),edgeWeighter);
+			initialize(networkView,networkView.getModel().getNodeList(),edgeWeighter);
 		}
 	}
 
-	protected void initialize(CyNetwork network, CyNetworkView networkView, Collection<CyNode>nodeSet,
+	private void initialize(CyNetworkView networkView, Collection<CyNode>nodeSet,
 	                          EdgeWeighter edgeWeighter) {
 
 		this.edgeWeighter = edgeWeighter;
 
 		// Initialize
-		nodeList = new ArrayList<LayoutNode>(network.getNodeCount());
-		edgeList = new ArrayList<LayoutEdge>(network.getEdgeCount());
-
-		if (nodeToLayoutNode == null)
-			nodeToLayoutNode = new HashMap<CyNode,LayoutNode>(network.getNodeCount());
+		nodeList = new ArrayList<LayoutNode>(networkView.getModel().getNodeCount());
+		edgeList = new ArrayList<LayoutEdge>(networkView.getModel().getEdgeCount());
+		nodeToLayoutNode = new HashMap<CyNode,LayoutNode>(networkView.getModel().getNodeCount());
 
 		// Now, walk the iterators and fill in the values
-		nodeListInitialize(network, networkView, nodeSet);
-		edgeListInitialize(network, networkView);
+		nodeListInitialize(networkView, nodeSet);
+		edgeListInitialize(networkView);
 		trimToSize();
 		partitionNumber = 1;
 	}
@@ -196,8 +190,6 @@ public class LayoutPartition {
 		} else {
 			updateMinMax(nv.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION),
 						 nv.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
-			// this.width += Math.sqrt(nv.getWidth());
-			// this.height += Math.sqrt(nv.getHeight());
 			this.width += nv.getVisualProperty(MinimalVisualLexicon.NODE_WIDTH); 
 			this.height += nv.getVisualProperty(MinimalVisualLexicon.NODE_HEIGHT);
 		}
@@ -283,8 +275,8 @@ public class LayoutPartition {
 
 			if (nodeToLayoutNode.containsKey(source) && nodeToLayoutNode.containsKey(target)) {
 				// Add the connecting nodes
-				lEdge.addNodes((LayoutNode) nodeToLayoutNode.get(source),
-				               (LayoutNode) nodeToLayoutNode.get(target));
+				lEdge.addNodes(nodeToLayoutNode.get(source),
+				               nodeToLayoutNode.get(target));
 			}
 		}
 	}
@@ -514,13 +506,13 @@ public class LayoutPartition {
 	/**
 	 * Private routines
 	 */
-	private void nodeListInitialize(CyNetwork network, CyNetworkView networkView,
+	private void nodeListInitialize(CyNetworkView networkView,
 	                                Collection<CyNode> nodeSet) {
 		int nodeIndex = 0;
-		this.nodeList = new ArrayList<LayoutNode>(network.getNodeCount());
+		this.nodeList = new ArrayList<LayoutNode>(networkView.getModel().getNodeCount());
 
 		for (View<CyNode>nv: networkView.getNodeViews()){
-			CyNode node = (CyNode) nv.getModel();
+			CyNode node = nv.getModel();
 
 			if (!nodeSet.contains(node)) {
 				addNode(nv, true);
@@ -530,20 +522,20 @@ public class LayoutPartition {
 		}
 	}
 
-	private void edgeListInitialize(CyNetwork network, CyNetworkView networkView) {
+	private void edgeListInitialize(CyNetworkView networkView) {
 		for (View<CyEdge>ev: networkView.getEdgeViews()){
 			CyEdge edge = ev.getModel();
 			// Make sure we clean up after any previous layouts
 			//ev.clearBends(); // FIXME: this will mean some cleanup in VisualProperty, right?
 
-			CyNode source = (CyNode) edge.getSource();
-			CyNode target = (CyNode) edge.getTarget();
+			CyNode source = edge.getSource();
+			CyNode target = edge.getTarget();
 
 			if (source == target)
 				continue;
 
-			LayoutNode v1 = (LayoutNode) nodeToLayoutNode.get(source);
-			LayoutNode v2 = (LayoutNode) nodeToLayoutNode.get(target);
+			LayoutNode v1 = nodeToLayoutNode.get(source);
+			LayoutNode v2 = nodeToLayoutNode.get(target);
 
 			// Do we care about this edge?
 			if (v1.isLocked() && v2.isLocked())
@@ -556,9 +548,9 @@ public class LayoutPartition {
 	/**
 	 * Space saving convenience function to trim the internal arrays to fit the
 	 * contained data.  Useful to call this after a partition has been created
-	 * and filled.  This is used by the static method LayoutPartition.partition
+	 * and filled.  This is used by the static method PartitionUtil.partition()
 	 */
-	private void trimToSize() {
+	void trimToSize() {
 		nodeList.trimToSize();
 		edgeList.trimToSize();
 	}
@@ -578,170 +570,5 @@ public class LayoutPartition {
 		}
 
 		// System.out.println("Updating "+newEdge);
-	}
-
-	// Static routines
-
-	/**
-	 * Partition the graph -- this builds the LayoutEdge and LayoutNode
-	 * arrays as a byproduct.  The algorithm for this was taken from
-	 * algorithms/graphPartition/SGraphPartition.java.
-	 *
-	 * @param network the GraphPerspective containing the graph
-	 * @param networkView the CyNetworkView representing the graph
-	 * @param selectedOnly only consider selected nodes
-	 * @param edgeWeighter the weighter to use for edge weighting
-	 * @return a List of LayoutPartitions
-	 */
-	public static List<LayoutPartition> partition(CyNetwork network, CyNetworkView networkView,
-	                             boolean selectedOnly, EdgeWeighter edgeWeighter) {
-
-		if (selectedOnly) {
-			return partition(network,networkView, CyTableUtil.getNodesInState(network,"selected",true),edgeWeighter);
-		}
-
-		return partition(network,networkView,network.getNodeList(),edgeWeighter);
-
-	}
-
-	/**
-	 * Partition the graph -- this builds the LayoutEdge and LayoutNode
-	 * arrays as a byproduct.  The algorithm for this was taken from
-	 * algorithms/graphPartition/SGraphPartition.java.
-	 *
-	 * @param network the GraphPerspective containing the graph
-	 * @param networkView the CyNetworkView representing the graph
-	 * @param nodeSet the set of nodes to consider
-	 * @param edgeWeighter the weighter to use for edge weighting
-	 * @return a List of LayoutPartitions
-	 */
-	public static List<LayoutPartition> partition(CyNetwork network, CyNetworkView networkView,
-	                             Collection<CyNode> nodeSet, EdgeWeighter edgeWeighter) {
-		ArrayList<LayoutPartition> partitions = new ArrayList<LayoutPartition>();
-
-		nodesSeenMap = new HashMap<Integer,Integer>(); 
-		edgesSeenMap = new HashMap<Integer,Integer>(); 
-
-		Map<Integer,View<CyNode>> nodesToViews = new HashMap<Integer,View<CyNode>>(); 
-		nodeToLayoutNode = new HashMap<CyNode,LayoutNode>(network.getNodeCount());
-
-		// Initialize the maps
-		for (View<CyNode> nv: networkView.getNodeViews()){
-			int node = nv.getModel().getIndex();
-			nodesSeenMap.put(node, m_NODE_HAS_NOT_BEEN_SEEN);
-			nodesToViews.put(node, nv);
-		}
-
-		for (CyEdge edge: network.getEdgeList()) {
-			int edgeIndex = edge.getIndex();
-			edgesSeenMap.put(edgeIndex, m_NODE_HAS_NOT_BEEN_SEEN);
-		}
-
-		// OK, now traverse the graph
-		for (CyNode node: nodeSet) {
-			int nodeIndex = node.getIndex();
-
-			// Have we seen this already?
-			if (nodesSeenMap.get(nodeIndex) == m_NODE_HAS_BEEN_SEEN)
-				continue;
-
-			// Nope, first time
-			LayoutPartition part = new LayoutPartition(network.getNodeCount(),
-			                                           network.getEdgeCount());
-			// Set the edge weighter
-			part.setEdgeWeighter(edgeWeighter);
-
-			nodesSeenMap.put(nodeIndex, m_NODE_HAS_BEEN_SEEN);
-
-			// Traverse through all connected nodes
-			traverse(network, networkView, nodesToViews, node, part);
-
-			// Done -- finalize the parition
-			part.trimToSize();
-
-			// Finally, now that we're sure we've touched all of our
-			// nodes.  Fix up our edgeLayout list to have all of our
-			// layoutNodes
-			part.fixEdges();
-
-			partitions.add(part);
-		}
-
-		// Now sort the partitions based on the partition's node count
-		LayoutPartition[] a = new LayoutPartition[1];
-		LayoutPartition[] parts = partitions.toArray(a);
-		Arrays.sort(parts,
-		            new Comparator<LayoutPartition>() {
-				public int compare(LayoutPartition p1, LayoutPartition p2) {
-					return (p2.size() - p1.size());
-				}
-
-				public boolean equals(LayoutPartition obj) {
-					return false;
-				}
-			});
-
-		return Arrays.asList(parts);
-	}
-
-	/**
-	  * This method traverses nodes connected to the specified node.
-	  * @param network            The GraphPerspective we are laying out
-	  * @param networkView        The CyNetworkView we are laying out
-	  * @param nodesToViews       A map that maps between nodes and views
-	  * @param node               The node to search for connected nodes.
-	  * @param partition          The partition that we're laying out
-	  */
-	private static void traverse(CyNetwork network, CyNetworkView networkView,
-	                             Map<Integer,View<CyNode>> nodesToViews, CyNode node,
-	                             LayoutPartition partition) {
-		int nodeIndex = node.getIndex();
-
-		// Get the View<CyNode>
-		View<CyNode> nv = nodesToViews.get(nodeIndex);
-
-		// Add this node to the partition
-		partition.addNode(nv, false);
-
-		// Iterate through each connected edge
-		for (CyEdge incidentEdge: network.getAdjacentEdgeList(node, CyEdge.Type.ANY)){
-
-			int edgeIndex = incidentEdge.getIndex();
-
-			// Have we already seen this edge?
-			if (edgesSeenMap.get(edgeIndex) == m_NODE_HAS_BEEN_SEEN) {
-				// Yes, continue since it means we *must* have seen both sides
-				continue;
-			}
-
-			edgesSeenMap.put(edgeIndex, m_NODE_HAS_BEEN_SEEN);
-
-			// Make sure we clean up after any previous layouts
-			//View<CyEdge> ev = networkView.getEdgeView(incidentEdge);
-			//ev.clearBends(); FIXME: punted
-
-			// Add the edge to the partition
-			partition.addEdge(incidentEdge);
-
-			// Determine the node's index that is on the other side of the edge
-			CyNode otherNode;
-
-			if (incidentEdge.getSource() == node) {
-				otherNode = incidentEdge.getTarget();
-			} else {
-				otherNode = incidentEdge.getSource();
-			}
-
-			int incidentNodeIndex = otherNode.getIndex();
-
-			// Have we seen the connecting node yet?
-			if (nodesSeenMap.get(incidentNodeIndex) == m_NODE_HAS_NOT_BEEN_SEEN) {
-				// Mark it as having been seen
-				nodesSeenMap.put(incidentNodeIndex, m_NODE_HAS_BEEN_SEEN);
-
-				// Traverse through this one
-				traverse(network, networkView, nodesToViews, otherNode, partition);
-			}
-		}
 	}
 }

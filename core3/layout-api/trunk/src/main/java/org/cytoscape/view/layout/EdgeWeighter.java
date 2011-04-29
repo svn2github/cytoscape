@@ -51,40 +51,40 @@ enum WeightTypes {
  * The EdgeWeighter class.  This class is used as a container for information
  * about how to interpret weights in an weighted layout.
  */
-public class EdgeWeighter {
+public final class EdgeWeighter {
+
 	@Tunable(description="How to interpret weight values", groups={"Edge Weight Settings"})
 	public WeightTypes type = WeightTypes.GUESS;
+
 	@Tunable(description="The minimum edge weight to consider", groups={"Edge Weight Settings"})
 	public double minWeightCutoff = 0;
+
 	@Tunable(description="The maximum edge weight to consider", groups={"Edge Weight Settings"})
 	public double maxWeightCutoff = Double.MAX_VALUE;
-	final static double EPSILON = .001;
-
-	// Default normalization bounds
-	final static double LOWER_BOUND = .1f;
-	final static double UPPER_BOUND = .9f;
-
-	double lowerBounds = LOWER_BOUND;
-	double upperBounds = UPPER_BOUND;
-
-	double maxWeight = -1000000;
-	double minWeight = 1000000;
-	double maxLogWeight = -1000000;
-	double minLogWeight = 1000000;
-
-	double logWeightCeiling = 1028;
-	boolean logOverflow = false;
-
-	// These are just here for efficiency reasons
-	double normalFactor = Double.MAX_VALUE;
 
 	@Tunable(description="The edge attribute that contains the weights", groups={"Edge Weight Settings"})
 	public String weightAttribute = null;
 
-	static WeightTypes[] weightChoices = {WeightTypes.GUESS,
-	                                      WeightTypes.LOG,
-	                                      WeightTypes.DISTANCE,
-	                                      WeightTypes.WEIGHT};
+
+	private final static double EPSILON = .001;
+
+	// Default normalization bounds
+	private final static double LOWER_BOUND = .1f;
+	private final static double UPPER_BOUND = .9f;
+
+	private double lowerBounds = LOWER_BOUND;
+	private double upperBounds = UPPER_BOUND;
+
+	private double maxWeight = -1000000;
+	private double minWeight = 1000000;
+	private double maxLogWeight = -1000000;
+	private double minLogWeight = 1000000;
+
+	private double logWeightCeiling = 1028;
+	private boolean logOverflow = false;
+
+	// These are just here for efficiency reasons
+	private double normalFactor = Double.MAX_VALUE;
 
 	public void reset() {
 		maxWeight = -1000000;
@@ -174,7 +174,7 @@ public class EdgeWeighter {
 				weight = normalize(edge.getWeight());
 			}
 			break;
-	  case LOG:
+		case LOG:
 			// System.out.print("Log: ");
 			weight = edge.getLogWeight();
 			// System.out.print("Log weight = "+weight);
@@ -183,12 +183,12 @@ public class EdgeWeighter {
 			weight = logNormalize(weight);
 			// System.out.println(" normalized weight = "+weight);
 			break;
-	  case DISTANCE:
+		case DISTANCE:
 			// System.out.println("Distance");
 			weight = edge.getWeight();
 			weight = (lowerBounds + upperBounds) - normalize(weight);
 			break;
-	  case WEIGHT:
+		case WEIGHT:
 			// System.out.println("Weight");
 			weight = normalize(edge.getWeight());
 			break;

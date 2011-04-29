@@ -72,12 +72,17 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	protected String propertyPrefix = "abstract";
 	protected UndoSupport undo;
 
+	private final String humanName;
+	private final String computerName;
+
 	/**
 	 * The Constructor is null
 	 */
-	public AbstractLayout(UndoSupport undo) {
+	public AbstractLayout(UndoSupport undo, String computerName, String humanName) {
 		this.staticNodes = new HashSet<View<CyNode>>();
 		this.undo = undo;
+		this.computerName = computerName;
+		this.humanName = humanName;
 	}
 
 	@Override
@@ -89,13 +94,17 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * getName is used to construct property strings
 	 * for this layout.
 	 */
-	public abstract String getName();
+	public String getName() {
+		return computerName;
+	}
 
 	/**
 	 * toString is used to get the user-visible name
 	 * of the layout
 	 */
-	public abstract String toString();
+	public String toString() {
+		return humanName;
+	}
 
 	/**
 	 * These methods should be overridden
@@ -193,7 +202,8 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	protected void initialize_local() {
 	}
 
-	/** Descendents need to call this if they intend to use the "staticNodes" field.
+	/** 
+	 * Descendents need to call this if they intend to use the "staticNodes" field.
 	 */
 	public final void initStaticNodes() {
 		staticNodes.clear();
@@ -204,6 +214,5 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 			if (!selectedNodes.contains(nodeView.getModel()))
 				staticNodes.add(nodeView);
 		}
-			
 	}
 }

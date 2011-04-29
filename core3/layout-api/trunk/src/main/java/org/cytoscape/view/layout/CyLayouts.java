@@ -42,10 +42,6 @@ public interface CyLayouts {
 	String PREF_MENU_DEFAULT = "Cytoscape Layouts";
 	String DEFAULT_LAYOUT_NAME = "grid";
 
-	void addLayout(CyLayoutAlgorithm layout, Map props);
-
-	void removeLayout(CyLayoutAlgorithm layout, Map props);
-
 	CyLayoutAlgorithm getLayout(String name);
 
 	Collection<CyLayoutAlgorithm> getAllLayouts(); 

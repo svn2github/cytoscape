@@ -34,8 +34,7 @@ public abstract class AbstractGraphPartition extends LayoutTask {
 	 */
 	public AbstractGraphPartition(final CyNetworkView networkView, final String name,
 				      final boolean singlePartition,
-	                              final boolean selectedOnly, final Set<View<CyNode>> staticNodes)
-	{
+	                              final boolean selectedOnly, final Set<View<CyNode>> staticNodes) {
 		super(networkView, name, selectedOnly, staticNodes);
 		this.singlePartition = singlePartition;
 	}
@@ -113,7 +112,7 @@ public abstract class AbstractGraphPartition extends LayoutTask {
 			// We still use the partition abstraction, even if we're
 			// not partitioning.  This makes the code further down
 			// much cleaner
-			LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly, edgeWeighter);
+			LayoutPartition partition = new LayoutPartition(networkView, selectedOnly, edgeWeighter);
 			partition.setTaskMonitor(taskMonitor);
 			partitionList = new ArrayList(1);
 			partitionList.add(partition);
@@ -126,11 +125,11 @@ public abstract class AbstractGraphPartition extends LayoutTask {
 					unlockedNodes.add(node);
 				}
 			}
-			LayoutPartition partition = new LayoutPartition(network, networkView, unlockedNodes, edgeWeighter);
+			LayoutPartition partition = new LayoutPartition(networkView, unlockedNodes, edgeWeighter);
 			partitionList = new ArrayList(1);
 			partitionList.add(partition);
 		} else {
-			partitionList = LayoutPartition.partition(network, networkView, false, edgeWeighter);
+			partitionList = PartitionUtil.partition(networkView, false, edgeWeighter);
 		}
 
 		total_nodes = network.getNodeCount();
