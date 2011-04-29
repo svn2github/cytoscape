@@ -636,7 +636,7 @@ public final class CyTableImpl implements CyTable {
 
 	synchronized private <T> T getX(final Object key, final String columnName, final Class<? extends T> type) {
 		if (type.isAssignableFrom(List.class))
-			throw new IllegalArgumentException("use getList() to retrieve lists!");
+			logger.debug("risky use of get() instead of getList() for retrieving list");
 		lastInternalError = null;
 
 		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
@@ -919,10 +919,8 @@ public final class CyTableImpl implements CyTable {
 				final String columnName = column.getName();
 				final Class<?> type = column.getType();
 				if (type == List.class) {
-					final Class<?> elementType =
-						column.getListElementType();
-					nameToValueMap.put(columnName, getListX(key, columnName,
-										elementType));
+					final Class<?> elementType = column.getListElementType();
+					nameToValueMap.put(columnName, getListX(key, columnName, elementType));
 				} else
 					nameToValueMap.put(columnName, getX(key, columnName, type));
 			}
