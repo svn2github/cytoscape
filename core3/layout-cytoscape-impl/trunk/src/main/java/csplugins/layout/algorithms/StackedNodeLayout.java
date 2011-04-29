@@ -28,14 +28,14 @@
 package csplugins.layout.algorithms;
 
 
-import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public class StackedNodeLayout extends AbstractLayout implements TunableValidator {
+public class StackedNodeLayout extends AbstractLayoutAlgorithm implements TunableValidator {
 	@Tunable(description="x_position")
 	public double x_position = 10.0;
 

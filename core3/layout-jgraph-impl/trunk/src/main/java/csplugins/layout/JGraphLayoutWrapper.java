@@ -1,6 +1,6 @@
 package csplugins.layout;
 
-import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.undo.UndoSupport;
@@ -15,7 +15,7 @@ import org.jgraph.plugins.layouts.SpringEmbeddedLayoutAlgorithm;
 import org.jgraph.plugins.layouts.SugiyamaLayoutAlgorithm;
 import org.jgraph.plugins.layouts.TreeLayoutAlgorithm;
 
-public class JGraphLayoutWrapper extends AbstractLayout implements TunableValidator {
+public class JGraphLayoutWrapper extends AbstractLayoutAlgorithm implements TunableValidator {
 	
 	public static final int ANNEALING = 0;
 	public static final int MOEN = 1;

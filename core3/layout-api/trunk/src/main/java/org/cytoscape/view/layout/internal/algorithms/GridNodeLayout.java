@@ -37,7 +37,7 @@ import java.util.Set;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
 
-import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
@@ -52,7 +52,7 @@ import org.cytoscape.work.undo.UndoSupport;
  * The GridNodeLayout provides a very simple layout, suitable as
  * the default layout for Cytoscape data readers.
  */
-public class GridNodeLayout extends AbstractLayout implements TunableValidator {
+public class GridNodeLayout extends AbstractLayoutAlgorithm implements TunableValidator {
 	@Tunable(description="Vertical spacing between nodes")
 	public double nodeVerticalSpacing = 40.0;
 

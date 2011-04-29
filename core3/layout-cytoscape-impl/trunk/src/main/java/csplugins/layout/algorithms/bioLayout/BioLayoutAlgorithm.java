@@ -150,7 +150,7 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	 * @param value the name of the attribute
 	 */
 	public void setSelectedOnly(boolean value) {
-		// Inherited by AbstractLayout
+		// Inherited by AbstractLayoutAlgorithm
 		//selectedOnly = value;
 	}
 

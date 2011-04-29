@@ -37,7 +37,7 @@
 package csplugins.layout.algorithms;
 
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.undo.UndoSupport;
@@ -54,7 +54,7 @@ import org.cytoscape.work.undo.UndoSupport;
 /**
  *
  */
-public class GroupAttributesLayout extends AbstractLayout {
+public class GroupAttributesLayout extends AbstractLayoutAlgorithm {
 	/*
 	  Layout parameters:
 	    - spacingx: Horizontal spacing (on the x-axis) between two partitions in a row.

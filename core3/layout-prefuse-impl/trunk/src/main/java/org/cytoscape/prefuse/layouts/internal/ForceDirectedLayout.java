@@ -2,7 +2,7 @@ package org.cytoscape.prefuse.layouts.internal;
 
 import java.io.IOException;
 
-import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
@@ -15,7 +15,7 @@ import prefuse.util.force.RungeKuttaIntegrator;
 import prefuse.util.force.Integrator;
 import org.cytoscape.work.util.ListSingleSelection;
 
-public class ForceDirectedLayout extends AbstractLayout implements TunableValidator {
+public class ForceDirectedLayout extends AbstractLayoutAlgorithm implements TunableValidator {
 	@Tunable(description="Number of Iterations", groups="Algorithm settings")
 	public int numIterations = 100;
 	@Tunable(description="Default Spring Coefficient", groups="Algorithm settings")

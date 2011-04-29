@@ -1,5 +1,5 @@
 /*
-  File: AbstractLayout.java
+  File: AbstractLayoutAlgorithm.java
 
   Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -48,10 +48,10 @@ import org.cytoscape.work.undo.UndoSupport;
 
 
 /**
- * The AbstractLayout provides nice starting point for Layouts
+ * The AbstractLayoutAlgorithm provides nice starting point for Layouts
  * written for Cytoscape.
  */
-abstract public class AbstractLayout implements CyLayoutAlgorithm {
+abstract public class AbstractLayoutAlgorithm implements CyLayoutAlgorithm {
 	protected CyNetworkView networkView;
 	
 	// Graph Objects and Views
@@ -78,7 +78,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	/**
 	 * The Constructor is null
 	 */
-	public AbstractLayout(UndoSupport undo, String computerName, String humanName) {
+	public AbstractLayoutAlgorithm(UndoSupport undo, String computerName, String humanName) {
 		this.staticNodes = new HashSet<View<CyNode>>();
 		this.undo = undo;
 		this.computerName = computerName;

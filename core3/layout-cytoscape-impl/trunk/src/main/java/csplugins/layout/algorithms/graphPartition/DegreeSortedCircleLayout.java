@@ -11,7 +11,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.layout.AbstractGraphPartition;
-import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.view.layout.LayoutPartition;
 import org.cytoscape.work.TaskIterator;
@@ -20,7 +20,7 @@ import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public class DegreeSortedCircleLayout extends AbstractLayout implements TunableValidator {
+public class DegreeSortedCircleLayout extends AbstractLayoutAlgorithm implements TunableValidator {
 	private static final String DEGREE_ATTR_NAME = "degree";
 	private CyTableManager tableMgr;
 

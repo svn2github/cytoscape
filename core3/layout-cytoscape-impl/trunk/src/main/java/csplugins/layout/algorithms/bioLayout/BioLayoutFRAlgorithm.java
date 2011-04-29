@@ -35,7 +35,7 @@ package csplugins.layout.algorithms.bioLayout;
 import java.awt.Dimension;
 import java.util.ArrayList;
 
-import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.layout.LayoutEdge;
 import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.view.layout.LayoutPartition;
@@ -60,7 +60,7 @@ import org.cytoscape.work.undo.UndoSupport;
  * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  * @version 0.9
  */
-public class BioLayoutFRAlgorithm extends AbstractLayout implements TunableValidator {
+public class BioLayoutFRAlgorithm extends AbstractLayoutAlgorithm implements TunableValidator {
 	/**
 	 * Sets the number of iterations for each update
 	 */

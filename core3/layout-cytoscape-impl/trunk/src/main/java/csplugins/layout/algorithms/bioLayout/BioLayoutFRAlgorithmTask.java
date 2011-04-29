@@ -137,7 +137,7 @@ public class BioLayoutFRAlgorithmTask extends BioLayoutAlgorithm {
 	}
 
 	/**
-	 * Required methods (and overrides) for AbstractLayout
+	 * Required methods (and overrides) for AbstractLayoutAlgorithm
 	 */
 
 	/**

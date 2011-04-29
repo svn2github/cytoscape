@@ -6,7 +6,7 @@ package csplugins.layout.algorithms.graphPartition;
 import java.util.Iterator;
 //import java.util.List;
 
-import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
@@ -15,7 +15,7 @@ import org.cytoscape.work.undo.UndoSupport;
 /**
  *
  */
-public class ISOMLayout extends AbstractLayout implements TunableValidator {
+public class ISOMLayout extends AbstractLayoutAlgorithm implements TunableValidator {
 	@Tunable(description="Number of iterations")
 	public int maxEpoch = 5000;
 	@Tunable(description="Radius constant")

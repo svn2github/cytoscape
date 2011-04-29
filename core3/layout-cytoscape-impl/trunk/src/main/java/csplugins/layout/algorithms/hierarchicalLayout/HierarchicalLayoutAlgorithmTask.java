@@ -88,7 +88,7 @@ public class HierarchicalLayoutAlgorithmTask extends LayoutTask {
 	 */
 
 	/**
-	 * Main entry point for AbstractLayout classes
+	 * Main entry point for AbstractLayoutAlgorithm classes
 	 */
 	public void construct() {
 		taskMonitor.setStatusMessage("Initializing");

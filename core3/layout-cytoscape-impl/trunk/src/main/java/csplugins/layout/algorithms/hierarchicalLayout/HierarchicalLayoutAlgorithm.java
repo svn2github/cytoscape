@@ -40,7 +40,7 @@
 package csplugins.layout.algorithms.hierarchicalLayout;
 
 
-import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
@@ -70,7 +70,7 @@ import org.cytoscape.work.undo.UndoSupport;
  * Steps 2 through 6 are performed by calls to methods in the class
  * {@link csplugins.hierarchicallayout.Graph}
 */
-public class HierarchicalLayoutAlgorithm extends AbstractLayout implements TunableValidator {
+public class HierarchicalLayoutAlgorithm extends AbstractLayoutAlgorithm implements TunableValidator {
 	@Tunable(description="Horizontal spacing between nodes")
 	private int nodeHorizontalSpacing = 64;
 	@Tunable(description="Vertical spacing between nodes")

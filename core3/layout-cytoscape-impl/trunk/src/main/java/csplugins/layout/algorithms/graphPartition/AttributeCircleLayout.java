@@ -42,7 +42,7 @@ import java.util.Set;
 
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableEntry.*;
-import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
@@ -50,7 +50,7 @@ import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public class AttributeCircleLayout extends AbstractLayout implements TunableValidator {
+public class AttributeCircleLayout extends AbstractLayoutAlgorithm implements TunableValidator {
 	@Tunable(description="The attribute to use for the layout")
 	public String attribute = CyTableEntry.NAME;
 	@Tunable(description="Circle size")

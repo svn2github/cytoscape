@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
@@ -13,7 +13,7 @@ import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public class CircularLayoutAlgorithm extends AbstractLayout implements TunableValidator{
+public class CircularLayoutAlgorithm extends AbstractLayoutAlgorithm implements TunableValidator{
 	@Tunable(description="Horizontal spacing between nodes")
 	public int nodeHorizontalSpacing = 64;
 	@Tunable(description="Vertical spacing between nodes")

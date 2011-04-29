@@ -31,7 +31,7 @@
  */
 package csplugins.layout.algorithms.bioLayout;
 
-import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
@@ -58,7 +58,7 @@ import org.cytoscape.work.undo.UndoSupport;
  * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  * @version 0.9
  */
-public class BioLayoutKKAlgorithm  extends AbstractLayout implements TunableValidator {
+public class BioLayoutKKAlgorithm  extends AbstractLayoutAlgorithm implements TunableValidator {
 	/**
 	 * The average number of iterations per Node
 	 */
