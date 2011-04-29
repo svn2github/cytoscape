@@ -844,4 +844,16 @@ public abstract class AbstractCyTableTest {
 		// doesn't create a row like getRow does.
 		assertFalse(table.rowExists(l));
     }
+
+	// Allow the get() method to work for list types, even if not perfectly type safe.
+    @Test
+    public void testGetForLists() {
+        List<Boolean> ls = new ArrayList<Boolean>();
+        ls.add(true);
+        ls.add(false);
+        table.createListColumn("simpson", Boolean.class, false);
+        attrs.set("simpson",ls);
+        List res = attrs.get("simpson",List.class);
+        assertEquals(ls,res);
+	}
 }
