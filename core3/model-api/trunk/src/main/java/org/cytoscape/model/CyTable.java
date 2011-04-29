@@ -144,6 +144,13 @@ public interface CyTable extends Identifiable {
 	CyRow getRow(Object primaryKey);
 
 	/**
+	 * Returns true if a row exists for the specified primary key and false otherwise. 
+	 * @param primaryKey The primary key index of the row.
+	 * @return True if a row exists for the specified primary key and false otherwise. 
+	 */
+	boolean rowExists(Object primaryKey);
+
+	/**
 	 * Return a list of all the rows stored in this data table.
 	 * @return a list of all the rows stored in this data table.
 	 */

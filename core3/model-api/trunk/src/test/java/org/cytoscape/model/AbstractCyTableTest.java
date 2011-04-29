@@ -823,4 +823,25 @@ public abstract class AbstractCyTableTest {
         List<Boolean> res = attrs.getList("simpson",Boolean.class);
         assertEquals(ls,res);
     }
+
+    @Test
+    public void testRowExistsFalse() {
+		assertFalse(table.rowExists(new Object()));
+    }
+
+    @Test
+    public void testRowExistsTrue() {
+		Long l = Long.valueOf(4444L);
+		table.getRow(l);
+		assertTrue(table.rowExists(l));
+    }
+
+    @Test
+    public void testRowExistsFalseAndDoesntCreateRow() {
+		Long l = Long.valueOf(54444L);
+		assertFalse(table.rowExists(l));
+		// Make sure it *still* doesn't exist, i.e. that calling rowExists
+		// doesn't create a row like getRow does.
+		assertFalse(table.rowExists(l));
+    }
 }
