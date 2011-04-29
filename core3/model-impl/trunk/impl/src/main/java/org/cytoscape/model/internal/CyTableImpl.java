@@ -392,6 +392,11 @@ public final class CyTableImpl implements CyTable {
 		return row;
 	}
 
+	@Override
+	synchronized public boolean rowExists(final Object primaryKey) {
+		return (primaryKey != null && rows.containsKey(primaryKey));	
+	}
+
 	private boolean rowIsEmpty(final Object key) {
 		for (final String columnName : attributes.keySet()) {
 			if (!attributes.get(columnName).isEmpty())
