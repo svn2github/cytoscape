@@ -249,7 +249,7 @@ public class PluginManager {
 	}
 
 	// create plugin manager
-	private PluginManager(PluginTracker Tracker) {
+	private PluginManager(PluginTracker tracker) {
 
 		CytoscapeVersion cytoscapeVersion = new CytoscapeVersion();
 		
@@ -273,23 +273,21 @@ public class PluginManager {
 				removeWebstartInstalls();
 				trackerFileName = "track_webstart_plugins.xml";
 			} else {
-				tempDir = new File(cyConfigVerDir,
-						"plugins");
+				tempDir = new File(cyConfigVerDir,"plugins");
 			}
 		} else if (!tempDir.getAbsolutePath().endsWith("/plugins")) {
 			tempDir = new File(tempDir, "plugins");
 		}
 
 		if (!tempDir.exists()) {
-			logger.info("Creating directories for "
-					+ tempDir.getAbsolutePath());
+			logger.info("Creating directories for " + tempDir.getAbsolutePath());
 			if (!tempDir.mkdirs()) {
 				logger.warn("Failed to create directory --- "+ tempDir.getAbsolutePath());
 			}
 		}
 
-		if (Tracker != null) {
-			pluginTracker = Tracker;
+		if (tracker != null) {
+			pluginTracker = tracker;
 		} else {
 			try {
 				pluginTracker = new PluginTracker(tempDir.getParentFile(),
@@ -320,26 +318,26 @@ public class PluginManager {
 	 * Get a list of downloadable objects by status. CURRENT: currently
 	 * installed INSTALL: objects to be installed DELETE: objects to be deleted
 	 * 
-	 * @param Status
+	 * @param status
 	 * @return
 	 */
-	public List<DownloadableInfo> getDownloadables(PluginStatus Status) {
-		return pluginTracker.getDownloadableListByStatus(Status);
+	public List<DownloadableInfo> getDownloadables(PluginStatus status) {
+		return pluginTracker.getDownloadableListByStatus(status);
 	}
 
 	/**
 	 * Calls the given url, expects document describing plugins available for
 	 * download
 	 * 
-	 * @param Url
+	 * @param url
 	 * @return List of PluginInfo objects
 	 */
-	public List<DownloadableInfo> inquire(String Url) throws IOException,
+	public List<DownloadableInfo> inquire(String url) throws IOException,
 			org.jdom.JDOMException {	
 		
 		List<DownloadableInfo> infoObjs = null;
-		PluginFileReader Reader = new PluginFileReader(Url);
-		infoObjs = Reader.getDownloadables();
+		PluginFileReader reader = new PluginFileReader(url);
+		infoObjs = reader.getDownloadables();
 		return infoObjs;
 	}
 
@@ -347,80 +345,79 @@ public class PluginManager {
 	 * Registers a currently installed plugin with tracking object. Only useful
 	 * if the plugin was not installed via the install process.
 	 * 
-	 * @param Plugin
+	 * @param plugin
 	 * @param JarFileName
 	 */
-	protected void register(CytoscapePlugin Plugin, JarFile Jar) {
-		logger.info("Registering " + Plugin.toString());
+	protected void register(CytoscapePlugin plugin, JarFile jar) {
+		logger.info("Registering " + plugin.toString());
 
-		DownloadableInfo InfoObj = ManagerUtil.getInfoObject(Plugin.getClass());
-		if (InfoObj != null && InfoObj.getType().equals(DownloadableType.THEME)) {
-			this.registerTheme(Plugin, Jar, (ThemeInfo) InfoObj);
+		DownloadableInfo infoObj = ManagerUtil.getInfoObject(plugin.getClass());
+		if (infoObj != null && infoObj.getType().equals(DownloadableType.THEME)) {
+			this.registerTheme(plugin, jar, (ThemeInfo) infoObj);
 		} else {
-			this.registerPlugin(Plugin, Jar, (PluginInfo) InfoObj, true);
+			this.registerPlugin(plugin, jar, (PluginInfo) infoObj, true);
 		}
 	}
 
-	private PluginInfo registerPlugin(CytoscapePlugin Plugin, JarFile Jar,
-			PluginInfo PluginObj, boolean addToTracker) {
+	private PluginInfo registerPlugin(CytoscapePlugin plugin, JarFile jar,
+			PluginInfo pluginObj, boolean addToTracker) {
 		// try to get it from the file
 		// XXX PROBLEM: what to do about a plugin that attempts to register
 		// itself and is not compatible with the current version?
-		logger.info("     Registering " + Plugin.getClass().getName());
+		logger.info("     Registering " + plugin.getClass().getName());
 		try {
-			PluginProperties pp = new PluginProperties(Plugin);
-			PluginObj = pp.fillPluginInfoObject(PluginObj);
+			PluginProperties pp = new PluginProperties(plugin);
+			pluginObj = pp.fillPluginInfoObject(pluginObj);
 
 		} catch (IOException ioe) {
 			logger.warn("ERROR registering plugin: " + ioe.getMessage(), ioe);
-			logger.warn(Plugin.getClass().getName()
+			logger.warn(plugin.getClass().getName()
 							+ " loaded but not registered, this will not affect the operation of the plugin");
 		} catch (Exception e) {
 			logger.warn("ERROR registering plugin: ", e);
 		} finally {
-			if (PluginObj == null) { // still null, create a default one
-				PluginObj = new PluginInfo();
-				PluginObj.addCytoscapeVersion(cyVersion);
-				PluginObj.setName(Plugin.getClass().getName());
-				PluginObj.setObjectVersion(0.1);
+			if (pluginObj == null) { // still null, create a default one
+				pluginObj = new PluginInfo();
+				pluginObj.addCytoscapeVersion(cyVersion);
+				pluginObj.setName(plugin.getClass().getName());
+				pluginObj.setObjectVersion(0.1);
 			}
 
-			PluginObj.setPluginClassName(Plugin.getClass().getName());
-			if (!usingWebstart && Jar != null) {
-				PluginObj.setInstallLocation(Jar.getName());
-				PluginObj.addFileName(Jar.getName());
+			pluginObj.setPluginClassName(plugin.getClass().getName());
+			if (!usingWebstart && jar != null) {
+				pluginObj.setInstallLocation(jar.getName());
+				pluginObj.addFileName(jar.getName());
 			}
-			PluginObj.setFiletype(PluginInfo.FileType.JAR);
+			pluginObj.setFiletype(PluginInfo.FileType.JAR);
 
-			initializedPlugins.put(PluginObj.getPluginClassName(), PluginObj);
+			initializedPlugins.put(pluginObj.getPluginClassName(), pluginObj);
 			// TODO This causes a bug where theme plugins essentially get added
 			// to the current list twice
 			logger.info("Track plugin: " + addToTracker);
 			if (addToTracker) {
-				pluginTracker.addDownloadable(PluginObj, PluginStatus.CURRENT);
+				pluginTracker.addDownloadable(pluginObj, PluginStatus.CURRENT);
 			}
 		}
-		return PluginObj;
+		return pluginObj;
 	}
 
-	private void registerTheme(CytoscapePlugin Plugin, JarFile Jar,
-			ThemeInfo ThemeObj) {
-		logger.info("--- Registering THEME " + ThemeObj.getName());
-		for (PluginInfo plugin : ThemeObj.getPlugins()) {
-			if (plugin.getPluginClassName().equals(Plugin.getClass().getName())) {
+	private void registerTheme(CytoscapePlugin inputPlugin, JarFile jar,
+			ThemeInfo themeObj) {
+		logger.info("--- Registering THEME " + themeObj.getName());
+		for (PluginInfo plugin : themeObj.getPlugins()) {
+			if (plugin.getPluginClassName().equals(inputPlugin.getClass().getName())) {
 				logger.info(plugin.getName());
-				PluginInfo updatedPlugin = registerPlugin(Plugin, Jar, plugin,
-						false);
-				ThemeObj.replacePlugin(plugin, updatedPlugin);
+				PluginInfo updatedPlugin = registerPlugin(inputPlugin, jar, plugin, false);
+				themeObj.replacePlugin(plugin, updatedPlugin);
 			}
 		}
-		pluginTracker.addDownloadable(ThemeObj, PluginStatus.CURRENT);
+		pluginTracker.addDownloadable(themeObj, PluginStatus.CURRENT);
 	}
 
 	// TODO would be better to fix how initializedPlugins are tracked...
 	private void cleanCurrentList() {
-		List<DownloadableInfo> CurrentList = getDownloadables(PluginStatus.CURRENT);
-		for (DownloadableInfo info : CurrentList) {
+		List<DownloadableInfo> currentList = getDownloadables(PluginStatus.CURRENT);
+		for (DownloadableInfo info : currentList) {
 			if (info.getType().equals(DownloadableType.PLUGIN)) {
 				PluginInfo pInfo = (PluginInfo) info;
 				if (!initializedPlugins.containsKey(pInfo.getPluginClassName())) {
@@ -459,9 +456,9 @@ public class PluginManager {
 	 * 
 	 * @param Obj
 	 */
-	public void delete(DownloadableInfo Obj) throws WebstartException {
+	public void delete(DownloadableInfo obj) throws WebstartException {
 		checkWebstart();
-		pluginTracker.addDownloadable(Obj, PluginStatus.DELETE);
+		pluginTracker.addDownloadable(obj, PluginStatus.DELETE);
 	}
 
 	/**
@@ -474,8 +471,7 @@ public class PluginManager {
 	 *             If this method is called from a webstart instance
 	 */
 	public void delete() throws ManagerException {
-		List<DownloadableInfo> toDelete = pluginTracker.getDownloadableListByStatus(
-		                                                             PluginStatus.DELETE);
+		List<DownloadableInfo> toDelete = pluginTracker.getDownloadableListByStatus(PluginStatus.DELETE);
 
 		for (DownloadableInfo infoObj : toDelete) {
 			Installable ins = infoObj.getInstallable();
@@ -520,22 +516,22 @@ public class PluginManager {
 	/**
 	 * Get list of plugins that would update the given plugin.
 	 * 
-	 * @param Info
+	 * @param info
 	 * @return List<PluginInfo>
 	 * @throws ManagerException
 	 */
-	public List<DownloadableInfo> findUpdates(DownloadableInfo Info)
+	public List<DownloadableInfo> findUpdates(DownloadableInfo info)
 			throws IOException, org.jdom.JDOMException {
-		return Info.getInstallable().findUpdates();
+		return info.getInstallable().findUpdates();
 	}
 
 	/**
 	 * Finds the given version of the new object, sets the old object for
 	 * deletion and downloads new object to temporary directory
 	 * 
-	 * @param Current
+	 * @param current
 	 *            DownloadableInfo object currently installed
-	 * @param New
+	 * @param newDownload
 	 *            DownloadableInfo object to install
 	 * @throws IOException
 	 *             Fails to download the file.
@@ -543,9 +539,9 @@ public class PluginManager {
 	 *             If the objects don't match or the new one is not a newer
 	 *             version.
 	 */
-	public void update(DownloadableInfo Current, DownloadableInfo New)
+	public void update(DownloadableInfo current, DownloadableInfo newDownload)
 			throws IOException, ManagerException, WebstartException {
-		update(Current, New, null);
+		update(current, newDownload, null);
 	}
 
 	/**
@@ -581,20 +577,20 @@ public class PluginManager {
 	/**
 	 * Downloads given object to the temporary directory.
 	 * 
-	 * @param Obj
+	 * @param obj
 	 *            PluginInfo object to be downloaded
 	 * @return File downloaded
 	 */
-	public DownloadableInfo download(DownloadableInfo Obj) throws IOException,
+	public DownloadableInfo download(DownloadableInfo obj) throws IOException,
 			ManagerException {
-		return this.download(Obj, null);
+		return this.download(obj, null);
 	}
 
 	/**
 	 * Downloads given object to the temporary directory. Uses a task monitor if
 	 * available.
 	 * 
-	 * @param Obj
+	 * @param obj
 	 *            PluginInfo object to be downloaded
 	 * @param taskMonitor
 	 *            TaskMonitor
@@ -603,54 +599,54 @@ public class PluginManager {
 	 *            .cytoscape/plugins/[cytoscape version number]
 	 * @return File downloaded
 	 */
-	public DownloadableInfo download(DownloadableInfo Obj,
+	public DownloadableInfo download(DownloadableInfo obj,
 			TaskMonitor taskMonitor) throws IOException, ManagerException {
 		// run a check for plugins 
-		List<DownloadableInfo> CurrentAndInstalled = new ArrayList<DownloadableInfo>();
-		CurrentAndInstalled.addAll(this.getDownloadables(PluginStatus.CURRENT));
-		CurrentAndInstalled.addAll(this.getDownloadables(PluginStatus.INSTALL));
+		List<DownloadableInfo> currentAndInstalled = new ArrayList<DownloadableInfo>();
+		currentAndInstalled.addAll(this.getDownloadables(PluginStatus.CURRENT));
+		currentAndInstalled.addAll(this.getDownloadables(PluginStatus.INSTALL));
 		
-		List<DownloadableInfo> FlattenedList = this.flattenDownloadableList(CurrentAndInstalled);
+		List<DownloadableInfo> flattenedList = this.flattenDownloadableList(currentAndInstalled);
 		
-		for (DownloadableInfo currentlyInstalled : FlattenedList) {
-			DownloadableInfo CurrentlyInstalled = null;
+		for (DownloadableInfo currentlyInstalled : flattenedList) {
+			DownloadableInfo xCurrentlyInstalled = null;
 			if (currentlyInstalled.getParent() != null) {
-				CurrentlyInstalled = currentlyInstalled.getParent();
+				xCurrentlyInstalled = currentlyInstalled.getParent();
 			} else {
-				CurrentlyInstalled = currentlyInstalled;
+				xCurrentlyInstalled = currentlyInstalled;
 			}
 				
-			if (Obj.equals(currentlyInstalled) || Obj.equalsDifferentObjectVersion(currentlyInstalled)) {
-				throw new ManagerException(Obj.toString() + " cannot be installed, it is already loaded in: " + CurrentlyInstalled.toString());
+			if (obj.equals(currentlyInstalled) || obj.equalsDifferentObjectVersion(currentlyInstalled)) {
+				throw new ManagerException(obj.toString() + " cannot be installed, it is already loaded in: " + xCurrentlyInstalled.toString());
 			}
 				
-			if (Obj.getType().equals(DownloadableType.THEME)) {
-				for (PluginInfo themePlugin: ((ThemeInfo) Obj).getPlugins()) {
+			if (obj.getType().equals(DownloadableType.THEME)) {
+				for (PluginInfo themePlugin: ((ThemeInfo) obj).getPlugins()) {
 					if (themePlugin.equalsDifferentObjectVersion(currentlyInstalled)) {
-						throw new ManagerException(Obj.toString() + " cannot be installed a plugin contained within the theme is already present: " 
-								+ CurrentlyInstalled.toString());
+						throw new ManagerException(obj.toString() + " cannot be installed a plugin contained within the theme is already present: " 
+								+ xCurrentlyInstalled.toString());
 					}
 				}
 			}
 		}
 
-		Installable installable = Obj.getInstallable();
+		Installable installable = obj.getInstallable();
 		installable.install(taskMonitor);
-		pluginTracker.addDownloadable(Obj, PluginStatus.INSTALL);
+		pluginTracker.addDownloadable(obj, PluginStatus.INSTALL);
 		return installable.getInfoObj();
 	}
 
 	private List<DownloadableInfo> flattenDownloadableList(List<DownloadableInfo> list) {
-		List<DownloadableInfo> FlattenedList = new ArrayList<DownloadableInfo>();
+		List<DownloadableInfo> flattenedList = new ArrayList<DownloadableInfo>();
 		for (DownloadableInfo info: list) {
 			switch (info.getType()) {
 			case THEME:
-				FlattenedList.addAll(((ThemeInfo) info).getPlugins());
+				flattenedList.addAll(((ThemeInfo) info).getPlugins());
 			case PLUGIN:
-				FlattenedList.add(info);
+				flattenedList.add(info);
 			}
 		}
-		return FlattenedList;
+		return flattenedList;
 	}
 	
 	/*
@@ -680,7 +676,7 @@ public class PluginManager {
 	 * @throws ManagerException
 	 */
 	public void loadPlugin(PluginInfo p) throws ManagerException {
-		List<URL> ToLoad = new ArrayList<URL>();
+		List<URL> toLoad = new ArrayList<URL>();
 
 		for (String FileName : p.getFileList()) {
 			
