@@ -31,12 +31,11 @@ public class CircularLayoutAlgorithm extends AbstractLayout implements TunableVa
 	 * Creates a new Layout object.
 	 */
 	public CircularLayoutAlgorithm(UndoSupport un) {
-		super(un);
+		super(un, "circular", "Circular Layout");
 	}
 
 	//TODO how to validate these values?
 	public boolean tunablesAreValid(final Appendable errMsg) {
-
 		return true;
 	}
 
@@ -56,25 +55,4 @@ public class CircularLayoutAlgorithm extends AbstractLayout implements TunableVa
 	public boolean supportsSelectedOnly() {
 		return false;
 	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getName() {
-		return "circular";
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String toString() {
-		return "Circular Layout";
-	}
-
-
-
 }

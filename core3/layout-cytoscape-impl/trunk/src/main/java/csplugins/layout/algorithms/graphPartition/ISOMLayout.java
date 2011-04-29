@@ -39,7 +39,7 @@ public class ISOMLayout extends AbstractLayout implements TunableValidator {
 	 * Creates a new ISOMLayout object.
 	 */
 	public ISOMLayout(UndoSupport undoSupport) {
-		super(undoSupport);
+		super(undoSupport,"isom", "Inverted Self-Organizing Map Layout");
 	}
 
 	// TODO
@@ -56,24 +56,6 @@ public class ISOMLayout extends AbstractLayout implements TunableValidator {
 					   maxEpoch, radiusConstantTime, radius, minRadius,
 					   initialAdaptation, minAdaptation, sizeFactor,
 					   coolingFactor, singlePartition));
-	}
-	
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String toString() {
-		return "Inverted Self-Organizing Map Layout";
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getName() {
-		return "isom";
 	}
 	
 	/**

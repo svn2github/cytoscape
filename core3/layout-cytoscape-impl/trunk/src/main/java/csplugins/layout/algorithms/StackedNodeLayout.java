@@ -68,29 +68,11 @@ public class StackedNodeLayout extends AbstractLayout implements TunableValidato
 	 * @param nodes  DOCUMENT ME!
 	 */
 	public StackedNodeLayout(UndoSupport undoSupport) {
-		super(undoSupport);
+		super(undoSupport, "stacked-node-layout", "Stacked Node Layout");
 	}
 
 	public TaskIterator getTaskIterator() {
 		return new TaskIterator(new StackedNodeLayoutTask(networkView, getName(), selectedOnly, staticNodes,
 				x_position, y_start_position));
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getName() {
-		return "Stacked Node Layout";
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String toString() {
-		return getName();
 	}
 }

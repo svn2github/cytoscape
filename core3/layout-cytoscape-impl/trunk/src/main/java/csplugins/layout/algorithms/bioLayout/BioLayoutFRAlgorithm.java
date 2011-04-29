@@ -115,14 +115,14 @@ public class BioLayoutFRAlgorithm extends AbstractLayout implements TunableValid
 	@Tunable(description="Don't partition graph before layout", groups="Standard settings")
 	public boolean singlePartition;
 	
-	boolean supportWeights = true;
+	final boolean supportWeights; 
 	
 	/**
 	 * This is the constructor for the bioLayout algorithm.
 	 */
 	public BioLayoutFRAlgorithm(UndoSupport undoSupport, boolean supportEdgeWeights) {
 		
-		super(undoSupport);
+		super(undoSupport, "fruchterman-rheingold", (supportEdgeWeights ?  "Edge-weighted Force directed (BioLayout)" : "Force directed (BioLayout)"));
 
 		supportWeights = supportEdgeWeights;
 
@@ -140,32 +140,5 @@ public class BioLayoutFRAlgorithm extends AbstractLayout implements TunableValid
 	// TODO
 	public boolean tunablesAreValid(final Appendable errMsg) {
 		return true;
-	}
-	
-	/**
-	 * Return the "name" of this algorithm.  This is meant
-	 * to be used by programs for deciding which algorithm to
-	 * use.  toString() should be used for the human-readable
-	 * name.
-	 *
-	 * @return the algorithm name
-	 */
-	public String getName() {
-		return "fruchterman-rheingold";
-	}
-
-	/**
-	 * Return the "title" of this algorithm.  This is meant
-	 * to be used for titles and labels that represent this
-	 * algorithm.
-	 *
-	 * @return the human-readable algorithm name
-	 */
-	public String toString() {
-		if (supportWeights)
-			return "Edge-weighted Force directed (BioLayout)";
-		else
-
-			return "Force directed (BioLayout)";
 	}
 }

@@ -85,7 +85,7 @@ public class GroupAttributesLayout extends AbstractLayout {
 	 * Creates a new GroupAttributesLayout object.
 	 */
 	public GroupAttributesLayout(UndoSupport undoSupport, CyTableManager tableMgr) {
-		super(undoSupport);
+		super(undoSupport, "attributes-layout", "Group Attributes Layout");
 		this.tableMgr = tableMgr;
 	}
 
@@ -98,22 +98,4 @@ public class GroupAttributesLayout extends AbstractLayout {
 	public boolean tunablesAreValid(final Appendable errMsg) {
 		return true;
 	}
-	
-	
-	/**
-	 * Overrides for CyLayoutAlgorithm support
-	 */
-	public String getName() {
-		return "attributes-layout";
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String toString() {
-		return "Group Attributes Layout";
-	}
-
 }

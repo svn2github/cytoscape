@@ -92,7 +92,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout implements Tunab
 	 * Creates a new HierarchicalLayoutAlgorithm object.
 	 */
 	public HierarchicalLayoutAlgorithm(UndoSupport undoSupport) {
-		super(undoSupport);
+		super(undoSupport, "hierarchical", "Hierarchical Layout");
 	}
 
 	// TODO
@@ -113,21 +113,4 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout implements Tunab
 	public boolean supportsSelectedOnly() {
 		return true;
 	}
-
-	/**
-	 * Overrides for LayoutAlgorithm support
-	 */
-	public String getName() {
-		return "hierarchical";
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String toString() {
-		return "Hierarchical Layout";
-	}
-
 }

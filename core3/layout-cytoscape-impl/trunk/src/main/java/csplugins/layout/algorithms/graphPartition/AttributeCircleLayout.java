@@ -67,7 +67,8 @@ public class AttributeCircleLayout extends AbstractLayout implements TunableVali
 	 */
 	public AttributeCircleLayout(final UndoSupport undoSupport, final boolean supportNodeAttributes)
 	{
-		super(undoSupport);
+		super(undoSupport, (supportNodeAttributes ? "attribute-circle": "circle"), 
+		                   (supportNodeAttributes ? "Attribute Circle Layout" : "Circle Layout") );
 		this.supportNodeAttributes = supportNodeAttributes;
 	}
 
@@ -75,8 +76,7 @@ public class AttributeCircleLayout extends AbstractLayout implements TunableVali
 	 * Creates a new AttributeCircleLayout object.
 	 */
 	public AttributeCircleLayout(final UndoSupport undoSupport) {
-		super(undoSupport);
-		this.supportNodeAttributes = true;
+		this(undoSupport,true);
 	}
 
 	@Override
@@ -137,31 +137,4 @@ public class AttributeCircleLayout extends AbstractLayout implements TunableVali
 
 		return attList;
 	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String toString() {
-		if (!supportNodeAttributes) {
-			return "Circle Layout";
-		} else {
-			return "Attribute Circle Layout";
-		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getName() {
-		if (!supportNodeAttributes)
-			return "circle";
-		else
-
-			return "attribute-circle";
-	}
-
 }

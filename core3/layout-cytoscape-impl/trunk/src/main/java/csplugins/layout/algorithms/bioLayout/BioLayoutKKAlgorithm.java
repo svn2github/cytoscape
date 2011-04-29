@@ -75,13 +75,14 @@ public class BioLayoutKKAlgorithm  extends AbstractLayout implements TunableVali
 	public double m_disconnectedNodeDistanceSpringRestLength=2000.0;
 	@Tunable(description="Strength to apply to avoid collisions", groups="Algorithm settings")
 	public double m_anticollisionSpringStrength;
-        @Tunable(description="Don't partition graph before layout", groups="Standard settings")
+	@Tunable(description="Don't partition graph before layout", groups="Standard settings")
 	public boolean singlePartition;
 
-	private boolean supportWeights = true;
+	private final boolean supportWeights; 
 
 	public BioLayoutKKAlgorithm(UndoSupport un, boolean supportEdgeWeights) {
-		super(un);
+		super(un, (supportEdgeWeights ?  "kamada-kawai" : "kamada-kawai-noweight"),
+		          (supportEdgeWeights ?  "Edge-weighted Spring Embedded" : "Spring Embedded") );
 		supportWeights = supportEdgeWeights;
 	}
 
@@ -99,29 +100,5 @@ public class BioLayoutKKAlgorithm  extends AbstractLayout implements TunableVali
 	// TODO
 	public boolean tunablesAreValid(final Appendable errMsg) {
 		return true;
-	}
-
-	/**
-	 * Overrides for LayoutAlgorithm support
-	 */
-	public String getName() {
-		if (supportWeights)
-			return "kamada-kawai-noweight";
-		else
-
-			return "kamada-kawai";
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String toString() {
-		if (supportWeights)
-			return "Edge-weighted Spring Embedded";
-		else
-
-			return "Spring Embedded";
 	}
 }
