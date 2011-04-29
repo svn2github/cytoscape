@@ -34,7 +34,8 @@ public class JGraphLayoutWrapper extends AbstractLayout implements TunableValida
 	 * Creates a new GridNodeLayout object.
 	 */
 	public JGraphLayoutWrapper(UndoSupport un, int layout_type) {
-		super(un);
+		// names here will be overridden by provided methods
+		super(un, "jgraph", "jgraph");
 		
 		this.layout_type = layout_type;
 
