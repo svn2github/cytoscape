@@ -53,7 +53,7 @@ class Framework {
 		public Class getReturnType() { return Double.class; }
 		public Class validateArgTypes(final Class[] argTypes) { return argTypes.length == 0 ? Double.class : null; }
 		public Object evaluateFunction(final Object[] args) { return new Integer(1); }
-		public List<Class> getPossibleArgTypes(final Class[] leadingArgs) { return null; }
+		public List<Class<?>> getPossibleArgTypes(final Class[] leadingArgs) { return null; }
 	}
 
 	private static final EquationCompiler compiler;
