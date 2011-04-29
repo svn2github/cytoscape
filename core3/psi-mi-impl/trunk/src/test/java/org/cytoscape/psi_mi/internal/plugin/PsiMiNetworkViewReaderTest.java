@@ -39,7 +39,7 @@ public class PsiMiNetworkViewReaderTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		
-		when(layouts.getDefaultLayout(any(CyNetworkView.class))).thenReturn(layout);
+		when(layouts.getDefaultLayout()).thenReturn(layout);
 		when(layout.getTaskIterator()).thenReturn(new TaskIterator(task));
 		
 		networkFactory = new NetworkTestSupport().getNetworkFactory();

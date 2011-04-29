@@ -112,7 +112,7 @@ public class CyLayoutsImpl implements CyLayouts {
 	 *
 	 * @return CyLayoutAlgorithm to use as the default layout algorithm
 	 */
-	public CyLayoutAlgorithm getDefaultLayout(CyNetworkView view) {
+	public CyLayoutAlgorithm getDefaultLayout() {
 		// See if the user has set the layout.default property
 //		String defaultLayout = CytoscapeInit.getProperties().getProperty("layout.default");
 //
@@ -122,7 +122,6 @@ public class CyLayoutsImpl implements CyLayouts {
 		String defaultLayout = CyLayouts.DEFAULT_LAYOUT_NAME; 
 
 		CyLayoutAlgorithm l = layoutMap.get(defaultLayout);
-		l.setNetworkView(view);
 		return l;
 	}
 

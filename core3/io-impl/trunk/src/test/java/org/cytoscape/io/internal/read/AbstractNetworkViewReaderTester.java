@@ -54,7 +54,7 @@ public class AbstractNetworkViewReaderTester {
 		when(def.getTaskIterator()).thenReturn(new TaskIterator(new SimpleTask()));
 
 		layouts = mock(CyLayouts.class);
-		when(layouts.getDefaultLayout(any(CyNetworkView.class))).thenReturn(def);
+		when(layouts.getDefaultLayout()).thenReturn(def);
 
 		NetworkTestSupport nts = new NetworkTestSupport();
 		netFactory = nts.getNetworkFactory();

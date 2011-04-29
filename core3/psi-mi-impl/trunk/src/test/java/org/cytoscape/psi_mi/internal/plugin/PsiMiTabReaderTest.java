@@ -45,7 +45,7 @@ public class PsiMiTabReaderTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		when(layouts.getDefaultLayout(any(CyNetworkView.class))).thenReturn(
+		when(layouts.getDefaultLayout()).thenReturn(
 				layout);
 		when(layout.getTaskIterator()).thenReturn(new TaskIterator(task));
 		

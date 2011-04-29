@@ -6,6 +6,7 @@ import java.io.InputStream;
 import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -71,7 +72,8 @@ public class PsiMiTabReader extends AbstractTask implements CyNetworkViewReader 
 
 		final CyNetworkView view = cyNetworkViewFactory.getNetworkView(network);
 
-		TaskFactory tf = layouts.getDefaultLayout(view);
+		CyLayoutAlgorithm tf = layouts.getDefaultLayout();
+		tf.setNetworkView(view);
 		TaskIterator ti = tf.getTaskIterator();
 		Task task = ti.next();
 		insertTasksAfterCurrentTask(task);

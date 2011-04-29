@@ -46,7 +46,7 @@ public interface CyLayouts {
 
 	Collection<CyLayoutAlgorithm> getAllLayouts(); 
 
-	CyLayoutAlgorithm getDefaultLayout(CyNetworkView view); 
+	CyLayoutAlgorithm getDefaultLayout(); 
 
 	String getMenuName(CyLayoutAlgorithm layout); 
 }

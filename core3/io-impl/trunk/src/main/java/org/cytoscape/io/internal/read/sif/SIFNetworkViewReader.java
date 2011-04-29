@@ -45,6 +45,7 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.events.RowsAboutToChangeEvent;
 import org.cytoscape.model.events.RowsFinishedChangingEvent;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -183,7 +184,8 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 
 	final CyNetworkView view = cyNetworkViewFactory.getNetworkView(network);
 
-	TaskFactory tf = layouts.getDefaultLayout(view);
+	CyLayoutAlgorithm tf = layouts.getDefaultLayout();
+	tf.setNetworkView(view);
 	TaskIterator ti = tf.getTaskIterator();
 	Task task = ti.next();
 	insertTasksAfterCurrentTask(task);

@@ -18,7 +18,7 @@ public class ApplyLayoutTask extends AbstractTask {
     @Override
     public void run(TaskMonitor taskMonitor) throws Exception {
 //	final CyLayoutAlgorithm layout = layouts.getLayout(CyLayouts.DEFAULT_LAYOUT_NAME);
-	final CyLayoutAlgorithm layout = layouts.getDefaultLayout(util.appManager.getCurrentNetworkView());
+	final CyLayoutAlgorithm layout = layouts.getDefaultLayout();
 	layout.setNetworkView(util.appManager.getCurrentNetworkView());
 	insertTasksAfterCurrentTask(layout.getTaskIterator());
     }

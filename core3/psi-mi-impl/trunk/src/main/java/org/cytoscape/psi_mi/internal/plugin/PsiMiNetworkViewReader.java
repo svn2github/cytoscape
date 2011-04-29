@@ -14,6 +14,7 @@ import org.cytoscape.psi_mi.internal.cyto_mapper.MapToCytoscape;
 import org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractions;
 import org.cytoscape.psi_mi.internal.data_mapper.MapPsiTwoFiveToInteractions;
 import org.cytoscape.psi_mi.internal.model.Interaction;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -71,7 +72,8 @@ public class PsiMiNetworkViewReader extends AbstractTask implements CyNetworkVie
 		
 		networkView = networkViewFactory.getNetworkView(network);
 		
-		TaskFactory taskFactory = layouts.getDefaultLayout(networkView);
+		CyLayoutAlgorithm taskFactory = layouts.getDefaultLayout();
+		taskFactory.setNetworkView(networkView);
 		TaskIterator taskIterator = taskFactory.getTaskIterator();
 		Task task = taskIterator.next();
 		insertTasksAfterCurrentTask(task);
