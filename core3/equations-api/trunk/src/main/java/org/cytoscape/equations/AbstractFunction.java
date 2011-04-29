@@ -191,7 +191,7 @@ public abstract class AbstractFunction implements Function {
 	 *          indicates that no further arguments are valid.  Please note that if the returned set
 	 *          contains a null, this indicates an optional additional argument.
 	 */
-	public final List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
+	public final List<Class<?>> getPossibleArgTypes(final Class[] leadingArgs) {
 		int i = 0;
 
 		int currentArgCount = 0;
@@ -216,7 +216,7 @@ public abstract class AbstractFunction implements Function {
 		if (currentArgCount == 0 && i == argDescriptors.length)
 			return null;
 
-		final List<Class> possibleNextArgs = new LinkedList<Class>();
+		final List<Class<?>> possibleNextArgs = new LinkedList<Class<?>>();
 		if (currentArgCount > 0) { // => We're dealing w/ an argument descriptor that can take multiple actual arguments.
 			for (final Class type : currentArgDescriptor.getCompatibleTypes())
 				possibleNextArgs.add(type);
