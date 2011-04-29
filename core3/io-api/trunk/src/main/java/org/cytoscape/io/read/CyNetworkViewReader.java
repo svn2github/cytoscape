@@ -15,6 +15,11 @@ import org.cytoscape.work.Task;
  * {@link org.cytoscape.io.CyFileFilter}.
  */
 public interface CyNetworkViewReader extends Task {
+    
+    /**
+     * By default, this value will be used as the View Threshold.
+     */
+    static final int DEF_VIEW_THRESHOLD = 3000;
 
     /**
      * Return an array of {@link org.cytoscape.view.model.CyNetworkView} objects
