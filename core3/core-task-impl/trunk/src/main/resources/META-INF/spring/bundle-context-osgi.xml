@@ -72,6 +72,8 @@
 
 	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayouts" />
 
+	<osgi:reference id="cyTableWriterManagerRef" interface="org.cytoscape.io.write.CyTableWriterManager" />
+	
 	<!-- now register our services -->
 	<osgi:service id="loadNetworkFileTaskFactoryService" ref="loadNetworkFileTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
@@ -508,6 +510,26 @@
 			<entry key="preferredMenu" value="File.Export.Network View" />
 			<entry key="enableFor" value="networkAndView" />
 			<entry key="menuGravity" value="5.1" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="exportNodeTableTaskFactoryService" ref="exportNodeTableTaskFactory"
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="File..." />
+			<entry key="preferredMenu" value="File.Export.Node Attributes" />
+			<entry key="enableFor" value="networkAndView" />
+			<entry key="menuGravity" value="1.0" />
+		</osgi:service-properties>
+	</osgi:service>
+	
+	<osgi:service id="exportEdgeTableTaskFactoryService" ref="exportEdgeTableTaskFactory"
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="File..." />
+			<entry key="preferredMenu" value="File.Export.Edge Attributes" />
+			<entry key="enableFor" value="networkAndView" />
+			<entry key="menuGravity" value="1.1" />
 		</osgi:service-properties>
 	</osgi:service>
 

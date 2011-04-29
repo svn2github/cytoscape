@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.RenderingEngine;
 
@@ -106,4 +107,15 @@ public interface CyApplicationManager {
 	 * @param engine The rendering engine that should be made current.
 	 */
 	public void setCurrentRenderingEngine(final RenderingEngine<CyNetwork> engine);
+
+	/**
+	 * Returns the currently active table.
+	 */
+	public CyTable getCurrentTable();
+	
+	/**
+	 * Sets the currently active table.
+	 * @param table The table that should be made current.
+	 */
+	public void setCurrentTable(CyTable table);
 }

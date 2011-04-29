@@ -77,8 +77,7 @@
 	<osgi:reference id="cyServiceRegistrarServiceRef"
 		interface="org.cytoscape.service.util.CyServiceRegistrar">
 	</osgi:reference>
-
-
+	
 	<!-- define services that application provides -->
 
 	<!-- <osgi:service id="proxyHandlerService" ref="proxyHandler"> -->
@@ -180,6 +179,13 @@
 		cardinality="0..N">
 		<osgi:listener bind-method="addNetworkViewCollectionTaskFactory"
 			unbind-method="removeNetworkViewCollectionTaskFactory" ref="cytoscapeMenuPopulator" />
+	</osgi:set>
+
+	<osgi:set id="tableTaskFactorySet"
+		interface="org.cytoscape.task.DataTableTaskFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addTableTaskFactory"
+			unbind-method="removeTableTaskFactory" ref="cytoscapeMenuPopulator" />
 	</osgi:set>
 
 	<!-- presentation factory -->

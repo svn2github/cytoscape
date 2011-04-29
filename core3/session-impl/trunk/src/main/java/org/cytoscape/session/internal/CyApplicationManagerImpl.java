@@ -37,6 +37,7 @@ import java.util.Set;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.session.CyApplicationManager;
@@ -72,6 +73,8 @@ public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAb
     private CyNetwork currentNetwork;
     private CyNetworkView currentNetworkView;
     private RenderingEngine<CyNetwork> currentRenderer;
+
+	private CyTable currentTable;
 
     /**
      * 
@@ -280,5 +283,15 @@ public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAb
 
 	cyEventHelper.fireSynchronousEvent(new SetCurrentRenderingEngineEvent(this, this.currentRenderer));
 
+    }
+    
+    @Override
+    public CyTable getCurrentTable() {
+    	return currentTable;
+    }
+    
+    @Override
+    public void setCurrentTable(CyTable table) {
+    	currentTable = table;
     }
 }

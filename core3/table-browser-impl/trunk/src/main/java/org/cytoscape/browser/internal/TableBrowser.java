@@ -4,16 +4,15 @@ package org.cytoscape.browser.internal;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.swing.JPanel;
 import javax.swing.Icon;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -21,31 +20,28 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
-import org.cytoscape.browser.TableBrowser;
+import org.cytoscape.application.swing.CytoPanelComponent;
+import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.browser.ui.AttributeBrowserToolBar;
 import org.cytoscape.equations.EquationCompiler;
-import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.CyTableRowUpdateService;
-import org.cytoscape.model.events.RowCreatedMicroListener;
-import org.cytoscape.model.events.TableDeletedEvent;
-import org.cytoscape.application.swing.CytoPanelComponent;
-import org.cytoscape.application.swing.CytoPanelName;
+import org.cytoscape.model.events.TableAboutToBeDeletedEvent;
+import org.cytoscape.model.events.TableAboutToBeDeletedListener;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.task.TableTaskFactory;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
-import org.cytoscape.model.events.TableAboutToBeDeletedListener;
-import org.cytoscape.model.events.TableAboutToBeDeletedEvent;
-import org.cytoscape.task.TableTaskFactory;
 import org.cytoscape.work.swing.GUITaskManager;
 
 
 @SuppressWarnings("serial")
-public class TableBrowserImpl
-	extends JPanel implements CytoPanelComponent, ActionListener, NetworkViewAddedListener, TableAboutToBeDeletedListener, TableBrowser
+public class TableBrowser
+	extends JPanel implements CytoPanelComponent, ActionListener, NetworkViewAddedListener, TableAboutToBeDeletedListener
 {
 	private final CyTableManager tableManager;
 	private final CyServiceRegistrar serviceRegistrar;
@@ -59,14 +55,16 @@ public class TableBrowserImpl
 	private final TableTaskFactory deleteTableTaskFactoryService;
 	private final GUITaskManager guiTaskManagerServiceRef;
 	private final Map<CyTable, TableMetadata> tableToMetadataMap;
+	private final CyApplicationManager applicationManager;
 
-	TableBrowserImpl(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
+	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
 		     final EquationCompiler compiler, final OpenBrowser openBrowser,
 		     final CyNetworkManager networkManager,
 		     final CyTableRowUpdateService tableRowUpdateService,
 		     final TableTaskFactory deleteTableTaskFactoryService,
 		     final GUITaskManager guiTaskManagerServiceRef,
-		     final PopupMenuHelper popupMenuHelper)
+		     final PopupMenuHelper popupMenuHelper,
+		     final CyApplicationManager applicationManager)
 	{
 		this.tableManager = tableManager;
 		this.serviceRegistrar = serviceRegistrar;
@@ -75,6 +73,7 @@ public class TableBrowserImpl
 		this.deleteTableTaskFactoryService = deleteTableTaskFactoryService;
 		this.guiTaskManagerServiceRef = guiTaskManagerServiceRef;
 		this.tableToMetadataMap = new HashMap<CyTable, TableMetadata>();
+		this.applicationManager = applicationManager;
 
 		this.browserTable = new BrowserTable(openBrowser, compiler, popupMenuHelper);
 		this.tableRowUpdateService = tableRowUpdateService;
@@ -167,6 +166,7 @@ public class TableBrowserImpl
 				}
 			}
 		}
+		applicationManager.setCurrentTable(currentTable);
 	}
 
 	public void handleEvent(final NetworkViewAddedEvent e) {
@@ -180,10 +180,5 @@ public class TableBrowserImpl
 		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
 		comboBoxModel.removeItem(cyTable);
 		tableToMetadataMap.remove(cyTable);
-	}
-	
-	@Override
-	public CyTable getCurrentTable() {
-		return currentTable;
 	}
 }

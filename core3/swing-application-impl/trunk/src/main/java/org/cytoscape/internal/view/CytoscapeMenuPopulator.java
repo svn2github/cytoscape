@@ -31,30 +31,27 @@ package org.cytoscape.internal.view;
 
 
 
-import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.cytoscape.application.swing.CyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.internal.task.CytoPanelTaskFactoryTunableAction;
-import org.cytoscape.internal.task.TaskFactoryTunableAction;
 import org.cytoscape.internal.task.NetworkCollectionTaskFactoryTunableAction;
 import org.cytoscape.internal.task.NetworkTaskFactoryTunableAction;
 import org.cytoscape.internal.task.NetworkViewCollectionTaskFactoryTunableAction;
 import org.cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
-
-
-import java.util.Map;
-import java.util.HashMap;
-
+import org.cytoscape.internal.task.TableTaskFactoryTunableAction;
+import org.cytoscape.internal.task.TaskFactoryTunableAction;
+import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.task.DataTableTaskFactory;
+import org.cytoscape.task.NetworkCollectionTaskFactory;
+import org.cytoscape.task.NetworkTaskFactory;
+import org.cytoscape.task.NetworkViewCollectionTaskFactory;
+import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.swing.GUITaskManager;
-
-import org.cytoscape.task.NetworkTaskFactory;
-import org.cytoscape.task.NetworkViewTaskFactory;
-import org.cytoscape.task.NetworkCollectionTaskFactory;
-import org.cytoscape.task.NetworkViewCollectionTaskFactory;
-import org.cytoscape.service.util.CyServiceRegistrar;
 
 
 /**
@@ -129,6 +126,14 @@ public class CytoscapeMenuPopulator {
 	}
 
 	public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
+		removeFactory(factory, props);
+	}
+	
+	public void addTableTaskFactory(DataTableTaskFactory factory, Map props) {
+		addFactory(new TableTaskFactoryTunableAction(taskManager, factory, props, appManager), factory, props);
+	}
+	
+	public void removeTableTaskFactory(DataTableTaskFactory factory, Map props) {
 		removeFactory(factory, props);
 	}
 	

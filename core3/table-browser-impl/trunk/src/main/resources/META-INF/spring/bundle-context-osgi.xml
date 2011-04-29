@@ -15,6 +15,7 @@
 
         <osgi:reference id="deleteTableTaskFactoryService" interface="org.cytoscape.task.TableTaskFactory" />
         <osgi:reference id="guiTaskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager" />
+        <osgi:reference id="cyApplicationManagerServiceRef" interface="org.cytoscape.session.CyApplicationManager" />
         
 	<!-- listeners -->
 	<osgi:service id="tableBrowserCytoPanelComponentService" ref="tableBrowser">
@@ -22,7 +23,6 @@
 			<value>org.cytoscape.application.swing.CytoPanelComponent</value>
                         <value>org.cytoscape.view.model.events.NetworkViewAddedListener</value>
                         <value>org.cytoscape.model.events.TableAboutToBeDeletedListener</value>
-                        <value>org.cytoscape.browser.TableBrowser</value>
                 </osgi:interfaces>
 	</osgi:service>
 

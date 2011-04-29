@@ -293,6 +293,21 @@
 		<constructor-arg ref="networkViewWriterManagerServiceRef" />
 	</bean>
 
+	<bean id="exportNodeTableTaskFactory"
+		class="org.cytoscape.task.internal.exporttable.ExportNodeTableTaskFactory">
+		<constructor-arg ref="cyTableWriterManagerRef" />
+	</bean>
+
+	<bean id="exportEdgeTableTaskFactory"
+		class="org.cytoscape.task.internal.exporttable.ExportEdgeTableTaskFactory">
+		<constructor-arg ref="cyTableWriterManagerRef" />
+	</bean>
+
+	<bean id="exportCurrentTableTaskFactory"
+		class="org.cytoscape.task.internal.exporttable.ExportCurrentTableTaskFactory">
+		<constructor-arg ref="cyTableWriterManagerRef" />
+	</bean>
+	
 	<bean id="applyPreferredLayoutTaskFactory"
 		class="org.cytoscape.task.internal.layout.ApplyPreferredLayoutTaskFactory">
 		<constructor-arg ref="cyLayoutsServiceRef" />
