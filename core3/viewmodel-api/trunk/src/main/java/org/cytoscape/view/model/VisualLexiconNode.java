@@ -37,7 +37,6 @@ public final class VisualLexiconNode {
 	
 	
 	public void setDependency(boolean depend) {
-		System.out.println(vp.getDisplayName() + " = Depend set to " + depend);
 		this.isDepend = depend;
 	}
 	
