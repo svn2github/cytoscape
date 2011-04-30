@@ -44,7 +44,6 @@ public class GenerateValuesTask extends AbstractTask {
 
 	@Override
 	public void run(TaskMonitor monitor) throws Exception {
-		System.out.println("Running task...");
 
 		int selectedRow = table.getTable().getSelectedRow();
 
@@ -60,12 +59,10 @@ public class GenerateValuesTask extends AbstractTask {
 
 			if (prop.getCellType() == CellType.VISUAL_PROPERTY_TYPE) {
 				final VisualProperty<?> vp = (VisualProperty<?>) prop.getKey();
-				System.out.println("Type of VP: " + vp.getRange().getType());
 
 				if (vp.getRange().getType()
 						.isAssignableFrom(generator.getDataType())) {
-					System.out.println("This is compatible: "
-							+ generator.getDataType());
+					
 					generateMapping(prop, prop.getValue().toString(), vp);
 
 				}
@@ -77,7 +74,6 @@ public class GenerateValuesTask extends AbstractTask {
 
 	private void generateMapping(final VizMapperProperty<?, ?, ?> prop,
 			final String attrName, final VisualProperty<?> vp) {
-		System.out.println("Target Attr name = " + attrName);
 
 		final Property[] subProps = prop.getSubProperties();
 		final VisualStyle style = manager.getCurrentVisualStyle();

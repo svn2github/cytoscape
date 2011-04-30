@@ -191,7 +191,6 @@ public class C2CMappingEditor<V extends Number> extends
 
 		newRange.lesserValue = slider.getModel().getSortedThumbs()
 				.get(slider.getModel().getThumbCount() - 1).getObject();
-		System.out.println("EQ color = " + newRange.lesserValue);
 		newRange.equalValue = FIVE;
 		newRange.greaterValue = previousRange.greaterValue;
 		mapping.addPoint(maxValue, newRange);
