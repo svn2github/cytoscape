@@ -31,21 +31,38 @@ package org.cytoscape.view.layout;
 
 
 import java.util.Collection;
-import java.util.Map;
 
-import org.cytoscape.view.model.CyNetworkView;
-
-
+/**
+ *  This class provides access to the available layout algorithms.
+ */
 public interface CyLayoutAlgorithmManager {
 
 	String PREF_MENU_KEY = "preferredMenu";
 	String PREF_MENU_DEFAULT = "Cytoscape Layouts";
 	String DEFAULT_LAYOUT_NAME = "grid";
+	String DEFAULT_LAYOUT_PROPERTY_NAME = "layout.default";
 
+	/**
+	 * Returns a layout algorithm of the specified name and null if no
+	 * algorithm exists with that name.
+	 * @param name The name of the algorithm.
+	 * @return a layout algorithm of the specified name and null if no
+	 * algorithm exists with that name.
+	 */
 	CyLayoutAlgorithm getLayout(String name);
 
+	/**
+	 * Returns a collection of all available layouts.
+	 * @return a collection of all available layouts.
+	 */
 	Collection<CyLayoutAlgorithm> getAllLayouts(); 
 
+	/**
+	 * Returns the default layout. The default layout name
+	 * can be specified using the DEFAULT_LAYOUT_PROPERTY_NAME 
+	 * property.
+	 * @return the default layout.
+	 */
 	CyLayoutAlgorithm getDefaultLayout(); 
 
 	String getMenuName(CyLayoutAlgorithm layout); 

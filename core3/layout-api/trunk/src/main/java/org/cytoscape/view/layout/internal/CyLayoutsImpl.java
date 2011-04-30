@@ -35,8 +35,10 @@ import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.internal.algorithms.GridNodeLayout;
 import org.cytoscape.view.model.CyNetworkView;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -91,6 +93,7 @@ public class CyLayoutsImpl implements CyLayoutAlgorithmManager {
 	 * @param name String representing the name of the layout
 	 * @return the layout of that name or null if it is not reigstered
 	 */
+	@Override
 	public CyLayoutAlgorithm getLayout(String name) {
 		if (layoutMap.containsKey(name))
 			return layoutMap.get(name);
@@ -102,6 +105,7 @@ public class CyLayoutsImpl implements CyLayoutAlgorithmManager {
 	 *
 	 * @return a Collection of all the available layouts
 	 */
+	@Override
 	public Collection<CyLayoutAlgorithm> getAllLayouts() {
 		return layoutMap.values();
 	}
@@ -112,6 +116,7 @@ public class CyLayoutsImpl implements CyLayoutAlgorithmManager {
 	 *
 	 * @return CyLayoutAlgorithm to use as the default layout algorithm
 	 */
+	@Override
 	public CyLayoutAlgorithm getDefaultLayout() {
 		// See if the user has set the layout.default property
 //		String defaultLayout = CytoscapeInit.getProperties().getProperty("layout.default");
@@ -126,6 +131,7 @@ public class CyLayoutsImpl implements CyLayoutAlgorithmManager {
 	}
 
 	// Ack.
+	@Override
 	public String getMenuName(CyLayoutAlgorithm layout) {
 		return menuNameMap.get(layout); 
 	}
