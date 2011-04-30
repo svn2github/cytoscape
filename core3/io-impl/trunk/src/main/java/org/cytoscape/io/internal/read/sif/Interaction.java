@@ -38,87 +38,68 @@ package org.cytoscape.io.internal.read.sif;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Utility class for representing one line of SIF file.
  */
-class Interaction {
+final class Interaction {
 
-	private String source;
-	private List<String> targets = new ArrayList<String>();
-	private String interactionType;
+    private final String source;
+    private List<String> targets;
+    private String interactionType;
 
-	/**
-	 * Creates a new Interaction object.
-	 * 
-	 * @param rawText
-	 *            DOCUMENT ME!
-	 * @param delimiter
-	 *            DOCUMENT ME!
-	 */
-	Interaction(final String rawText, final String delimiter) {
-		final StringTokenizer strtok = new StringTokenizer(rawText, delimiter);
-		int counter = 0;
+    Interaction(final String rawText, final String delimiter) {
+	final String[] values = rawText.split(delimiter);
+	if (values.length < 1)
+	    throw new IllegalArgumentException("Invalid entry.");
 
-		while (strtok.hasMoreTokens()) {
-			if (counter == 0)
-				source = strtok.nextToken().trim();
-			else if (counter == 1)
-				interactionType = strtok.nextToken().trim();
-			else
-				targets.add(strtok.nextToken().trim());
+	source = values[0].trim();
 
-			counter++;
-		}
+	if (values.length > 2) {
+	    interactionType = values[1].trim();
+	    targets = new ArrayList<String>();
+	    for (int i = 2; i < values.length; i++)
+		targets.add(values[i].trim());
+	}
+    }
+
+    /**
+     * @return The source node identifier string.
+     */
+    String getSource() {
+	return source;
+    }
+
+    /**
+     * @return The interaction type string.
+     */
+    String getType() {
+	return interactionType;
+    }
+
+    /**
+     * @return The array of target node identifier strings.
+     */
+    List<String> getTargets() {
+	return targets;
+    }
+
+    @Override
+    public String toString() {
+	final StringBuilder sb = new StringBuilder();
+	sb.append(interactionType);
+	sb.append("::");
+	sb.append(source);
+	sb.append("::");
+
+	final int targetSize = targets.size();
+	for (int i = 0; i < targetSize; i++) {
+	    sb.append(targets.get(i));
+
+	    if (i < (targetSize - 1))
+		sb.append(",");
 	}
 
-	/**
-	 * @return The source node identifier string.
-	 */
-	public String getSource() {
-		return source;
-	}
-
-	/**
-	 * @return The interaction type string.
-	 */
-	public String getType() {
-		return interactionType;
-	}
-
-	/**
-	 * @return The number of target nodes found.
-	 */
-	public int numberOfTargets() {
-		return targets.size();
-	}
-
-	/**
-	 * @return The array of target node identifier strings.
-	 */
-	public String[] getTargets() {
-		return targets.toArray(new String[0]);
-	}
-
-	/**
-	 * @return A string rep of the interaction.
-	 */
-	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(interactionType);
-		sb.append("::");
-		sb.append(source);
-		sb.append("::");
-
-		final int targetSize = targets.size();
-		for (int i = 0; i < targetSize; i++) {
-			sb.append(targets.get(i));
-
-			if (i < (targetSize - 1))
-				sb.append(",");
-		}
-
-		return sb.toString();
-	}
+	return sb.toString();
+    }
 }

@@ -28,37 +28,63 @@
 package org.cytoscape.io.internal.read;
 
 import java.io.InputStream;
+import java.util.Properties;
 
 import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 
 public abstract class AbstractNetworkViewReaderFactory implements InputStreamTaskFactory {
 
-    private final CyFileFilter           filter;
+    private final CyFileFilter filter;
 
     protected final CyNetworkViewFactory cyNetworkViewFactory;
-    protected final CyNetworkFactory     cyNetworkFactory;
+    protected final CyNetworkFactory cyNetworkFactory;
 
-    protected InputStream                inputStream;
-    protected String                     inputName;
+    protected InputStream inputStream;
+    protected String inputName;
 
-    public AbstractNetworkViewReaderFactory(CyFileFilter filter,
-                                            CyNetworkViewFactory cyNetworkViewFactory,
-                                            CyNetworkFactory cyNetworkFactory) {
-        this.filter = filter;
-        this.cyNetworkViewFactory = cyNetworkViewFactory;
-        this.cyNetworkFactory = cyNetworkFactory;
+    private final Properties props;
+    
+    //TODO: is this the right place to save this constant?
+    private final String VIEW_THRESHOLD = "viewThreshold";
+    
+    protected int threshold;
+
+    public AbstractNetworkViewReaderFactory(CyFileFilter filter, CyNetworkViewFactory cyNetworkViewFactory,
+	    CyNetworkFactory cyNetworkFactory, final CyProperty<Properties> prop) {
+	this.filter = filter;
+	this.cyNetworkViewFactory = cyNetworkViewFactory;
+	this.cyNetworkFactory = cyNetworkFactory;
+
+	this.props = prop.getProperties();
     }
 
     public void setInputStream(InputStream is, String in) {
-        if (is == null) throw new NullPointerException("Input stream is null");
-        inputStream = is;
-		inputName = in;
+	if (is == null)
+	    throw new NullPointerException("Input stream is null");
+	inputStream = is;
+	inputName = in;
+	
+	this.threshold = getViewThreshold();
+    }
+    
+    private int getViewThreshold() {
+	final String vts = props.getProperty(VIEW_THRESHOLD);
+	int threshold;
+	try {
+	    threshold = Integer.parseInt(vts);
+	} catch (Exception e) {
+	    threshold = CyNetworkViewReader.DEF_VIEW_THRESHOLD;
+	}
+	
+	return threshold;
     }
 
     public CyFileFilter getCyFileFilter() {
-        return filter;
+	return filter;
     }
 }

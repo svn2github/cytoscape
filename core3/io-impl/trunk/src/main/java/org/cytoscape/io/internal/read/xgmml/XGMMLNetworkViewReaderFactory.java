@@ -72,7 +72,7 @@ public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFact
                                          VisualMappingFunctionFactory discreteMappingFactory,
                                          XGMMLParser parser,
                                          CyProperty<Properties> properties) {
-        super(filter, cyNetworkViewFactory, cyNetworkFactory);
+        super(filter, cyNetworkViewFactory, cyNetworkFactory, properties);
         this.renderingEngineManager = renderingEngineManager;
         this.readDataManager = readDataManager;
         this.attributeValueUtil = attributeValueUtil;
@@ -85,6 +85,6 @@ public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFact
     public TaskIterator getTaskIterator() {
         return new TaskIterator(new XGMMLNetworkViewReader(inputStream, renderingEngineManager, cyNetworkViewFactory,
                                                            cyNetworkFactory, readDataManager, attributeValueUtil,
-                                                           styleFactory, visMappingManager, parser, properties));
+                                                           styleFactory, visMappingManager, parser, properties, threshold));
     }
 }

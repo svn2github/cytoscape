@@ -249,12 +249,12 @@
 	</bean>
 
 	<bean id="sifNetworkViewReaderFactory" class="org.cytoscape.io.internal.read.sif.SIFNetworkViewReaderFactory">
-		<constructor-arg ref="readUtil" />
 		<constructor-arg ref="sifFilter" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 		<constructor-arg ref="cyEventHelperRef" />
+		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>
 
 	<bean id="gmlNetworkViewReaderFactory" class="org.cytoscape.io.internal.read.gml.GMLNetworkViewReaderFactory">
@@ -262,6 +262,7 @@
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 		<constructor-arg ref="renderingEngineManagerServiceRef" />
+		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>
 
 	<!-- Writer Factories -->

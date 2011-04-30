@@ -49,6 +49,7 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.NullCyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
@@ -192,8 +193,8 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
     public GMLNetworkViewReader(InputStream inputStream,
                                 CyNetworkFactory networkFactory,
                                 CyNetworkViewFactory viewFactory,
-                                RenderingEngineManager renderingEngineManager) {
-        super(inputStream, viewFactory, networkFactory);
+                                RenderingEngineManager renderingEngineManager, final int viewThreshold) {
+        super(inputStream, viewFactory, networkFactory, viewThreshold);
         this.renderingEngineManager = renderingEngineManager;
 
         // Set new style name
@@ -215,8 +216,24 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
         readGML(keyVals, taskMonitor); // read the GML file
 
         network = cyNetworkFactory.getInstance();
-        view = cyNetworkViewFactory.getNetworkView(network);
         createGraph(taskMonitor); // create the graph AND new visual style
+        
+        createView();
+    }
+
+    @Override
+    public void cancel() {
+    }
+    
+    private void createView() {
+	final int objectCount = network.getNodeCount() + network.getEdgeCount();
+	if(this.viewThreshold < objectCount) {
+	    this.cyNetworkViews = new CyNetworkView[] { new NullCyNetworkView(network) };
+	    return;
+	}
+	
+	view = cyNetworkViewFactory.getNetworkView(network);
+       
 
         // New features are called here:
         // 1 Extract (virtually) all attributes from the GML file
@@ -229,15 +246,7 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
         releaseStructures();
 
         layout(view);
-    }
-
-    @Override
-    public void cancel() {
-    }
-
-    @Override
-    public CyNetworkView[] getNetworkViews() {
-        return new CyNetworkView[] { view };
+	this.cyNetworkViews = new CyNetworkView[] { view };
     }
 
     @Override
@@ -581,10 +590,8 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
         }
 
         if (graphics_list != null) {
-            if (node == null) {
-                System.out.println("ERROR: node is missing for node ID: " + tempid);
+            if (node == null)
                 return;
-            }
 
             extractNodeAttributes(graphics_list, node);
         }

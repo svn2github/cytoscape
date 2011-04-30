@@ -55,8 +55,8 @@ public class InteractionTest {
 		Interaction inter0 = new Interaction(raw, delim);
 		assertTrue(inter0.getSource().equals(source));
 		assertTrue(inter0.getType().equals(type));
-		assertTrue(inter0.numberOfTargets() == 1);
-		assertTrue(inter0.getTargets()[0].equals(target));
+		assertTrue(inter0.getTargets().size() == 1);
+		assertTrue(inter0.getTargets().get(0).equals(target));
 	} 
 
 	@Test
@@ -66,17 +66,17 @@ public class InteractionTest {
 		Interaction inter0 = new Interaction(rawText0, delim);
 		assertTrue(inter0.getSource().equals("YNL312W"));
 		assertTrue(inter0.getType().equals("pp"));
-		assertTrue(inter0.numberOfTargets() == 1);
-		assertTrue(inter0.getTargets()[0].equals("YPL111W"));
+		assertTrue(inter0.getTargets().size() == 1);
+		assertTrue(inter0.getTargets().get(0).equals("YPL111W"));
 
 		String rawText1 = "YPL075W pd YDR050C YGR254W YHR174W";
 		Interaction inter1 = new Interaction(rawText1, delim);
 		assertTrue(inter1.getSource().equals("YPL075W"));
 		assertTrue(inter1.getType().equals("pd"));
-		assertTrue(inter1.numberOfTargets() == 3);
-		assertTrue(inter1.getTargets()[0].equals("YDR050C"));
-		assertTrue(inter1.getTargets()[1].equals("YGR254W"));
-		assertTrue(inter1.getTargets()[2].equals("YHR174W"));
+		assertTrue(inter1.getTargets().size() == 3);
+		assertTrue(inter1.getTargets().get(0).equals("YDR050C"));
+		assertTrue(inter1.getTargets().get(1).equals("YGR254W"));
+		assertTrue(inter1.getTargets().get(2).equals("YHR174W"));
 	} 
 
 	/** a degenerate form has -only- a source node:  no interaction type
@@ -88,7 +88,7 @@ public class InteractionTest {
 		Interaction inter0 = new Interaction(rawText0, delim);
 		assertTrue(inter0.getSource().equals("YNL312W"));
 		assertTrue(inter0.getType() == null);
-		assertTrue(inter0.numberOfTargets() == 0);
+		assertTrue(inter0.getTargets().size() == 0);
 	} 
 
 } 

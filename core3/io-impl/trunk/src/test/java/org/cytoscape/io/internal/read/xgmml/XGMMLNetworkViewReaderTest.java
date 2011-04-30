@@ -1,38 +1,32 @@
 package org.cytoscape.io.internal.read.xgmml;
 
 import static org.junit.Assert.*;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileInputStream;
-
-import java.util.List;
 import java.util.Properties;
 
-import static org.mockito.Mockito.*;
-
-import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.io.internal.read.AbstractNetworkViewReaderTester;
+import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
+import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.NullCyNetworkView;
 import org.cytoscape.view.presentation.RenderingEngineManager;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
+import org.cytoscape.view.presentation.property.NullVisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.mappings.DiscreteMappingFactory;
-import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
-import org.cytoscape.view.layout.CyLayoutAlgorithm;
-
-import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
-import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
-
-import org.cytoscape.io.internal.read.AbstractNetworkViewReaderTester;
+import org.cytoscape.work.TaskMonitor;
+import org.junit.Before;
+import org.junit.Test;
 
 public class XGMMLNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 
@@ -47,46 +41,48 @@ public class XGMMLNetworkViewReaderTest extends AbstractNetworkViewReaderTester 
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-
-        readDataManager = new ReadDataManager();
-        ObjectTypeMap objectTypeMap = new ObjectTypeMap();
-        attributeValueUtil = new AttributeValueUtil(objectTypeMap, readDataManager);
-        HandlerFactory handlerFactory = new HandlerFactory(readDataManager, attributeValueUtil);
-        parser = new XGMMLParser(handlerFactory, readDataManager);
-        // TODO
-        // properties = new Properties();
+	super.setUp();
+	properties = mock(CyProperty.class);
+	when(properties.getProperties()).thenReturn(new Properties());
+	renderingEngineManager = mock(RenderingEngineManager.class);
+	when(renderingEngineManager.getDefaultVisualLexicon()).thenReturn(
+		new MinimalVisualLexicon(new NullVisualProperty("MINIMAL_ROOT", "Minimal Root Visual Property")));
+	visMappingManager = mock(VisualMappingManager.class);
+	VisualStyle defVisualStyle = mock(VisualStyle.class);
+	styleFactory = mock(VisualStyleFactory.class);
+	when(styleFactory.getInstance(defVisualStyle)).thenReturn(defVisualStyle);
+	when(visMappingManager.getDefaultVisualStyle()).thenReturn(defVisualStyle);
+	readDataManager = new ReadDataManager();
+	ObjectTypeMap objectTypeMap = new ObjectTypeMap();
+	attributeValueUtil = new AttributeValueUtil(objectTypeMap, readDataManager);
+	HandlerFactory handlerFactory = new HandlerFactory(readDataManager, attributeValueUtil);
+	parser = new XGMMLParser(handlerFactory, readDataManager);
     }
 
     @Test
     public void testReadFromTypicalFile() throws Exception {
-        // TODO
-        // CyNetworkView[] views = getViews("galFiltered.xgmml");
-        // CyNetwork net = checkSingleNetwork(views, 331, 362);
 
-        // for ( CyNode n : net.getNodeList() ) {
-        // System.out.print(n.attrs().get("name",String.class) + " - ");
-        // for ( CyNode nn : net.getNeighborList(n,CyEdge.Type.OUTGOING)) {
-        // System.out.print(" " + nn.attrs().get("name",String.class));
-        // System.out.print("[");
-        // for ( CyEdge e : net.getConnectingEdgeList(n,nn,CyEdge.Type.ANY))
-        // System.out.print(e.attrs().get("interaction",String.class)+",");
-        // System.out.print("]");
-        // }
-        // System.out.println();
-        // }
+	CyNetworkView[] views = getViews("galFiltered.xgmml");
+	CyNetwork net = checkSingleNetwork(views, 331, 362);
 
-        // findInteraction(net, "YGR136W", "YGR058W", "pp", 1);
+	findInteraction(net, "YGR136W", "YGR058W", "pp", 1);
+
+	// Test low threshold
+	this.viewThreshold = 5;
+	CyNetworkView[] nullViews = getViews("galFiltered.xgmml");
+	assertNotNull(nullViews);
+	assertEquals(1, nullViews.length);
+	assertTrue(nullViews[0] instanceof NullCyNetworkView);
+	this.viewThreshold = this.DEF_THRESHOLD;
     }
 
     private CyNetworkView[] getViews(String file) throws Exception {
-        File f = new File("./src/test/resources/testData/xgmml/" + file);
-        XGMMLNetworkViewReader snvp = new XGMMLNetworkViewReader(new FileInputStream(f), renderingEngineManager,
-                                                                 viewFactory, netFactory, readDataManager,
-                                                                 attributeValueUtil, styleFactory, visMappingManager,
-                                                                 parser, properties);
-        snvp.run(taskMonitor);
+	File f = new File("./src/test/resources/testData/xgmml/" + file);
+	XGMMLNetworkViewReader snvp = new XGMMLNetworkViewReader(new FileInputStream(f), renderingEngineManager,
+		viewFactory, netFactory, readDataManager, attributeValueUtil, styleFactory, visMappingManager, parser,
+		properties, viewThreshold);
+	snvp.run(taskMonitor);
 
-        return snvp.getNetworkViews();
+	return snvp.getNetworkViews();
     }
 }
