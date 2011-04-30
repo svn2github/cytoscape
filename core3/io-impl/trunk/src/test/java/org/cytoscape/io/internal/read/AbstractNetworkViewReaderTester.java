@@ -30,7 +30,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 
 
@@ -44,7 +44,7 @@ public class AbstractNetworkViewReaderTester {
 	protected CyNetworkFactory netFactory; 
 	protected CyNetworkViewFactory viewFactory;
 	protected ReadUtils readUtil;
-	protected CyLayouts layouts;
+	protected CyLayoutAlgorithmManager layouts;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -53,7 +53,7 @@ public class AbstractNetworkViewReaderTester {
 		CyLayoutAlgorithm def = mock(CyLayoutAlgorithm.class);
 		when(def.getTaskIterator()).thenReturn(new TaskIterator(new SimpleTask()));
 
-		layouts = mock(CyLayouts.class);
+		layouts = mock(CyLayoutAlgorithmManager.class);
 		when(layouts.getDefaultLayout()).thenReturn(def);
 
 		NetworkTestSupport nts = new NetworkTestSupport();

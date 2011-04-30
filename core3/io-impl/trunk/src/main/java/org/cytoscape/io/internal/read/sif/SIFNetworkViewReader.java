@@ -46,7 +46,7 @@ import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.events.RowsAboutToChangeEvent;
 import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.Task;
@@ -68,11 +68,11 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 
     private final Set<Interaction> interactions = new HashSet<Interaction>();
     private final ReadUtils readUtil;
-    private final CyLayouts layouts;
+    private final CyLayoutAlgorithmManager layouts;
 
     private boolean cancelled = false;
 
-    public SIFNetworkViewReader(InputStream is, ReadUtils readUtil, CyLayouts layouts,
+    public SIFNetworkViewReader(InputStream is, ReadUtils readUtil, CyLayoutAlgorithmManager layouts,
 	    CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory,
 	    final CyEventHelper eventHelper) {
 	super(is, cyNetworkViewFactory, cyNetworkFactory);

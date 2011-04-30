@@ -1,5 +1,5 @@
 /*
-  File: CyLayouts.java
+  File: CyLayoutAlgorithmManager.java
 
   Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,7 +36,7 @@ import java.util.Map;
 import org.cytoscape.view.model.CyNetworkView;
 
 
-public interface CyLayouts {
+public interface CyLayoutAlgorithmManager {
 
 	String PREF_MENU_KEY = "preferredMenu";
 	String PREF_MENU_DEFAULT = "Cytoscape Layouts";

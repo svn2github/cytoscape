@@ -38,7 +38,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
 
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 
@@ -63,7 +63,7 @@ public class GridNodeLayout extends AbstractLayoutAlgorithm implements TunableVa
 	 * Creates a new GridNodeLayout object.
 	 */
 	public GridNodeLayout(UndoSupport un) {
-		super(un,CyLayouts.DEFAULT_LAYOUT_NAME,"Grid Layout");
+		super(un,CyLayoutAlgorithmManager.DEFAULT_LAYOUT_NAME,"Grid Layout");
 	}
 
 	public boolean tunablesAreValid(final Appendable errMsg) {

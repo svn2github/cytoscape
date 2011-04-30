@@ -37,7 +37,7 @@
 package org.cytoscape.internal.layout.ui;
 
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.session.CyApplicationManager;
@@ -56,13 +56,13 @@ public class LayoutMenuManager implements MenuListener {
 	private CyApplicationManager appMgr;
 	private TaskManager tm;
 
-	private CyLayouts cyLayouts;
+	private CyLayoutAlgorithmManager cyLayoutAlgorithmManager;
 
-	public LayoutMenuManager(CySwingApplication swingApp, CyLayouts cyLayouts, CyApplicationManager appMgr, TaskManager tm) {
+	public LayoutMenuManager(CySwingApplication swingApp, CyLayoutAlgorithmManager cyLayoutAlgorithmManager, CyApplicationManager appMgr, TaskManager tm) {
 		menuAlgorithmMap = new HashMap<String,List<CyLayoutAlgorithm>>();
 		menuMap = new HashMap<String,LayoutMenu>();
 		existingLayouts = new HashSet<CyLayoutAlgorithm>();
-		this.cyLayouts = cyLayouts;
+		this.cyLayoutAlgorithmManager = cyLayoutAlgorithmManager;
 		this.appMgr = appMgr;
 		this.tm = tm;
 
@@ -82,12 +82,12 @@ public class LayoutMenuManager implements MenuListener {
 	private void updateMenus(JMenu parentMenu) {
 
 		// first add all layouts from cylayouts if they're not already there
-		for ( CyLayoutAlgorithm la : cyLayouts.getAllLayouts() ) 
+		for ( CyLayoutAlgorithm la : cyLayoutAlgorithmManager.getAllLayouts() ) 
 			if ( !existingLayouts.contains(la) )
 				addLayout(la);
 
 		// now remove any existing layouts that are no longer in cylayouts
-		Set<CyLayoutAlgorithm> newLayouts = new HashSet<CyLayoutAlgorithm>(cyLayouts.getAllLayouts());
+		Set<CyLayoutAlgorithm> newLayouts = new HashSet<CyLayoutAlgorithm>(cyLayoutAlgorithmManager.getAllLayouts());
 		for ( CyLayoutAlgorithm la : existingLayouts ) 
 			if ( !newLayouts.contains(la) )
 				removeLayout(la);
@@ -110,7 +110,7 @@ public class LayoutMenuManager implements MenuListener {
 
 	private void addLayout(CyLayoutAlgorithm layout) {
 		
-		String menuName = cyLayouts.getMenuName(layout);
+		String menuName = cyLayoutAlgorithmManager.getMenuName(layout);
 		if (menuName == null )
 			return;	
 

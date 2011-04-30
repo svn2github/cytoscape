@@ -15,7 +15,7 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.test.support.NetworkTestSupport;
 import org.cytoscape.test.support.NetworkViewTestSupport;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.Task;
@@ -27,7 +27,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public class PsiMiNetworkViewReaderTest {
-	@Mock CyLayouts layouts;
+	@Mock CyLayoutAlgorithmManager layouts;
 	@Mock CyLayoutAlgorithm layout;
 	@Mock TaskMonitor taskMonitor;
 	@Mock Task task;

@@ -30,7 +30,7 @@
 package org.cytoscape.view.layout.internal;
 
 
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.internal.algorithms.GridNodeLayout;
 import org.cytoscape.view.model.CyNetworkView;
@@ -44,7 +44,7 @@ import java.util.Map;
  * CyLayoutsImpl is a singleton class that is used to register all available
  * layout algorithms.  
  */
-public class CyLayoutsImpl implements CyLayouts {
+public class CyLayoutsImpl implements CyLayoutAlgorithmManager {
 
 	private HashMap<String, CyLayoutAlgorithm> layoutMap;
 	private HashMap<CyLayoutAlgorithm, String> menuNameMap;
@@ -66,9 +66,9 @@ public class CyLayoutsImpl implements CyLayouts {
 	 * @param menu The menu that this should appear under
 	 */
 	public void addLayout(CyLayoutAlgorithm layout, Map props) {
-		String prefMenu = (String)props.get(CyLayouts.PREF_MENU_KEY); 
+		String prefMenu = (String)props.get(CyLayoutAlgorithmManager.PREF_MENU_KEY); 
 		if ( prefMenu == null || prefMenu.equals("") )
-			prefMenu = CyLayouts.PREF_MENU_DEFAULT; 
+			prefMenu = CyLayoutAlgorithmManager.PREF_MENU_DEFAULT; 
 
 		layoutMap.put(layout.getName(),layout);
 		menuNameMap.put(layout, prefMenu);
@@ -119,7 +119,7 @@ public class CyLayoutsImpl implements CyLayouts {
 //		if ((defaultLayout == null) || !layoutMap.containsKey(defaultLayout)) {
 //			defaultLayout = "grid";
 //		}
-		String defaultLayout = CyLayouts.DEFAULT_LAYOUT_NAME; 
+		String defaultLayout = CyLayoutAlgorithmManager.DEFAULT_LAYOUT_NAME; 
 
 		CyLayoutAlgorithm l = layoutMap.get(defaultLayout);
 		return l;

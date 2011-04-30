@@ -7,7 +7,7 @@ import java.util.Set;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 //import cytoscape.task.TaskMonitor;
 //import cytoscape.util.CyNetworkNaming;
 
@@ -98,7 +98,7 @@ public abstract class AbstractGraphReader implements GraphReader {
 	 * Return the CyLayoutAlgorithm used to layout the graph
 	 */
 	//public CyLayoutAlgorithm getLayoutAlgorithm() {
-	//	return null;//CyLayouts.getDefaultLayout();
+	//	return null;//CyLayoutAlgorithmManager.getDefaultLayout();
 	//}
 
 	/**

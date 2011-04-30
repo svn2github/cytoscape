@@ -7,7 +7,7 @@ import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -26,13 +26,13 @@ public class PsiMiTabReader extends AbstractTask implements CyNetworkViewReader 
 	private CyNetworkView[] cyNetworkViews;
 	private VisualStyle[] visualstyles;
 	
-	private final CyLayouts layouts;
+	private final CyLayoutAlgorithmManager layouts;
 
 	private final PsiMiTabParser parser;
 
 	public PsiMiTabReader(InputStream is,
 			CyNetworkViewFactory cyNetworkViewFactory,
-			CyNetworkFactory cyNetworkFactory, final CyLayouts layouts) {
+			CyNetworkFactory cyNetworkFactory, final CyLayoutAlgorithmManager layouts) {
 		if (is == null)
 			throw new NullPointerException("Input stream is null");
 		this.inputStream = is;

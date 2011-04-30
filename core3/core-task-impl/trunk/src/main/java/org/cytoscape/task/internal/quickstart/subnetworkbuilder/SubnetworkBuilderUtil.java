@@ -17,7 +17,7 @@ import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.internal.creation.NewNetworkSelectedNodesOnlyTask;
 import org.cytoscape.task.internal.quickstart.ImportNetworkFromPublicDataSetTask;
 import org.cytoscape.task.internal.quickstart.remote.InteractionFilePreprocessor;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
@@ -52,13 +52,13 @@ class SubnetworkBuilderUtil {
     final VisualStyleFactory vsFactory;
     private VisualMappingFunctionFactory discFactory;
     private VisualMappingFunctionFactory ptFactory;
-    private final CyLayouts layouts;
+    private final CyLayoutAlgorithmManager layouts;
 
     public SubnetworkBuilderUtil(CyNetworkViewReaderManager mgr, CyNetworkManager netmgr,
 	    final CyNetworkViewManager networkViewManager, CyProperty<Properties> cyProps,
 	    CyNetworkNaming cyNetworkNaming, StreamUtil streamUtil, final CyEventHelper eventHelper,
 	    final CyApplicationManager appManager, CyRootNetworkFactory crnf, CyNetworkViewFactory cnvf,
-	    VisualMappingManager vmm, final VisualStyleFactory vsFactory, final CyLayouts layouts) {
+	    VisualMappingManager vmm, final VisualStyleFactory vsFactory, final CyLayoutAlgorithmManager layouts) {
 
 	this.mgr = mgr;
 	this.netmgr = netmgr;

@@ -3,7 +3,7 @@ package org.cytoscape.prefuse.layouts.internal;
 import java.io.IOException;
 
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;

@@ -8,7 +8,7 @@ import org.cytoscape.model.CyTableManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.swing.GUITaskManager;
@@ -29,7 +29,7 @@ public class  CytoscapeServices {
 	public static FileUtil fileUtil;
 	public static CyApplicationManager appMgr;
 	public static CyNetworkManager netMgr;
-	public static CyLayouts cyLayoutsServiceRef;
+	public static CyLayoutAlgorithmManager cyLayoutsServiceRef;
 	public static CyNetworkViewFactory cyNetworkViewFactoryServiceRef;
 	public static CyNetworkFactory cyNetworkFactoryServiceRef;
 	public static CyNetworkViewManager networkViewManager;

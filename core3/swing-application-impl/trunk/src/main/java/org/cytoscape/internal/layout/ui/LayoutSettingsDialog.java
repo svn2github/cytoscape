@@ -33,7 +33,7 @@ package org.cytoscape.internal.layout.ui;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.swing.GUITaskManager;
@@ -68,7 +68,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private JComboBox algorithmSelector; // Which algorithm we're using
 	private JPanel algorithmPanel; // The panel this algorithm uses
 
-	private CyLayouts cyLayouts;
+	private CyLayoutAlgorithmManager cyLayoutAlgorithmManager;
 	private CySwingApplication desktop;
 	private LayoutMenuManager menuMgr;
 	private CyApplicationManager appMgr;
@@ -77,13 +77,13 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	/**
 	 * Creates a new LayoutSettingsDialog object.
 	 */
-	public LayoutSettingsDialog(final CyLayouts cyLayouts, final CySwingApplication desktop,
+	public LayoutSettingsDialog(final CyLayoutAlgorithmManager cyLayoutAlgorithmManager, final CySwingApplication desktop,
 	                            final LayoutMenuManager menuMgr, final CyApplicationManager appMgr,
 	                            final GUITaskManager taskManager)
 	{
 		super(desktop.getJFrame(), "Layout Settings", false);
 		initializeOnce(); // Initialize the components we only do once
-		this.cyLayouts = cyLayouts;
+		this.cyLayoutAlgorithmManager = cyLayoutAlgorithmManager;
 		this.desktop = desktop;
 		this.menuMgr = menuMgr;
 		this.appMgr = appMgr;

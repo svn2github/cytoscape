@@ -33,7 +33,7 @@ package org.cytoscape.internal.layout.ui;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.work.swing.GUITaskManager;
 
 import javax.swing.event.MenuEvent;
@@ -43,12 +43,12 @@ import java.awt.event.ActionEvent;
 public class SettingsAction extends AbstractCyAction {
 	private final static long serialVersionUID = 1202339874289357L;
 
-	private CyLayouts cyl;
+	private CyLayoutAlgorithmManager cyl;
 	private CySwingApplication desk;
 	private LayoutMenuManager menuMgr;
 	private GUITaskManager tm;
 
-	public SettingsAction(final CyLayouts cyl, final CySwingApplication desk, final LayoutMenuManager menuMgr, final CyApplicationManager appMgr, final GUITaskManager tm)
+	public SettingsAction(final CyLayoutAlgorithmManager cyl, final CySwingApplication desk, final LayoutMenuManager menuMgr, final CyApplicationManager appMgr, final GUITaskManager tm)
 	{
 		super("Settings...",appMgr);
 		setPreferredMenu("Layout");

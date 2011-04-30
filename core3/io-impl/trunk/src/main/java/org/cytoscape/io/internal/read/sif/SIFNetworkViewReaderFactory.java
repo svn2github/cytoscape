@@ -32,17 +32,17 @@ import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.read.AbstractNetworkViewReaderFactory;
 import org.cytoscape.io.internal.util.ReadUtils;
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskIterator;
 
 public class SIFNetworkViewReaderFactory extends AbstractNetworkViewReaderFactory {
 
     private final ReadUtils readUtil;
-    private final CyLayouts layouts;
+    private final CyLayoutAlgorithmManager layouts;
     private final CyEventHelper eventHelper;
 
-    public SIFNetworkViewReaderFactory(ReadUtils readUtil, CyFileFilter filter, CyLayouts layouts,
+    public SIFNetworkViewReaderFactory(ReadUtils readUtil, CyFileFilter filter, CyLayoutAlgorithmManager layouts,
 	    CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory,
 	    final CyEventHelper eventHelper) {
 	super(filter, cyNetworkViewFactory, cyNetworkFactory);

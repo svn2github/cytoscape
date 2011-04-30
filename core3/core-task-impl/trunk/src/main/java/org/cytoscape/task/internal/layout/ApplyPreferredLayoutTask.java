@@ -31,7 +31,7 @@ package org.cytoscape.task.internal.layout;
 import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import java.util.Properties;
 
@@ -40,9 +40,9 @@ public class ApplyPreferredLayoutTask extends AbstractNetworkViewTask {
     private static final String DEF_LAYOUT = "force-directed";
 
     private final Properties props;
-    private final CyLayouts layouts;
+    private final CyLayoutAlgorithmManager layouts;
 
-    public ApplyPreferredLayoutTask(CyNetworkView v, CyLayouts layouts, Properties props) {
+    public ApplyPreferredLayoutTask(CyNetworkView v, CyLayoutAlgorithmManager layouts, Properties props) {
 	super(v);
 	this.layouts = layouts;
 	this.props = props;
