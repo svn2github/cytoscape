@@ -12,7 +12,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.view.layout.AbstractGraphPartition;
+import org.cytoscape.view.layout.AbstractPartitionLayoutTask;
 import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.view.layout.LayoutPartition;
 import org.cytoscape.view.model.CyNetworkView;
@@ -20,7 +20,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.model.CyTableEntry;
 
 
-public class DegreeSortedCircleLayoutTask extends AbstractGraphPartition {
+public class DegreeSortedCircleLayoutTask extends AbstractPartitionLayoutTask {
 	private String DEGREE_ATTR_NAME = "degree";
 	private CyTableManager tableMgr;
 	private CyNetwork network;

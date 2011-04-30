@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.layout.AbstractGraphPartition;
+import org.cytoscape.view.layout.AbstractPartitionLayoutTask;
 import org.cytoscape.view.layout.EdgeWeighter;
 import org.cytoscape.view.layout.LayoutPartition;
 import org.cytoscape.view.model.CyNetworkView;
@@ -53,7 +53,7 @@ import org.cytoscape.work.undo.UndoSupport;
  * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  * @version 0.9
  */
-public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
+public abstract class BioLayoutAlgorithm extends AbstractPartitionLayoutTask {
 	/**
 	 * Properties
 	 */

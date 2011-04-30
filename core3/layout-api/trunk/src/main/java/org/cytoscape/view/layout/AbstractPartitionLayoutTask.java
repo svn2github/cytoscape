@@ -11,12 +11,15 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskMonitor;
 
-
 /**
- * An abstract class that handles the partitioning of graphs so that
- * the partitions will be laid out individually.
+ *  This is a more helpful implementation of a LayoutAlgorithm Task 
+ *  that extends AbstractBasicLayoutTask and does the work of partitioning
+ *  the CyNetworkView so that partitions may be laid out individually.
+ *  Extensions of this class are meant to implement the layoutPartition()
+ *  method and operate on the LayoutParition object that is passed to that
+ *  method as an argument.
  */
-public abstract class AbstractGraphPartition extends LayoutTask {
+public abstract class AbstractPartitionLayoutTask extends AbstractBasicLayoutTask {
 	protected TaskMonitor taskMonitor;
 
 	double incr = 100;
@@ -30,9 +33,9 @@ public abstract class AbstractGraphPartition extends LayoutTask {
 	double	total_nodes = 0;		// Total number of nodes
 
 	/**
-	 * Creates a new AbstractGraphPartition object.
+	 * Creates a new AbstractPartitionLayoutTask object.
 	 */
-	public AbstractGraphPartition(final CyNetworkView networkView, final String name,
+	public AbstractPartitionLayoutTask(final CyNetworkView networkView, final String name,
 				      final boolean singlePartition,
 	                              final boolean selectedOnly, final Set<View<CyNode>> staticNodes) {
 		super(networkView, name, selectedOnly, staticNodes);
@@ -99,7 +102,8 @@ public abstract class AbstractGraphPartition extends LayoutTask {
 	 * AbstractGraphPartitionLayout implements the constuct method
 	 * and calls layoutPartion for each partition.
 	 */
-	public void doLayout(final TaskMonitor taskMonitor, final CyNetwork network) {
+	public void doLayout(final TaskMonitor taskMonitor) {
+		final CyNetwork network = networkView.getModel();
 		if (edgeWeighter != null)
 			edgeWeighter.reset();
 

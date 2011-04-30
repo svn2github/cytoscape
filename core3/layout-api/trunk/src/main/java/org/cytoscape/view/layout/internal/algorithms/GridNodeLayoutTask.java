@@ -35,7 +35,7 @@ import java.util.Set;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 
-import org.cytoscape.view.layout.LayoutTask;
+import org.cytoscape.view.layout.AbstractBasicLayoutTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
@@ -48,7 +48,7 @@ import org.cytoscape.work.TaskMonitor;
  * The GridNodeLayout provides a very simple layout, suitable as
  * the default layout for Cytoscape data readers.
  */
-public class GridNodeLayoutTask extends LayoutTask {
+public class GridNodeLayoutTask extends AbstractBasicLayoutTask {
 	private final double nodeVerticalSpacing;
 	private final double nodeHorizontalSpacing;
 
@@ -70,12 +70,13 @@ public class GridNodeLayoutTask extends LayoutTask {
 	 *  This creates the default square layout.
 	 */
 	@Override
-	final protected void doLayout(final TaskMonitor taskMonitor, final CyNetwork network) {
+	final protected void doLayout(final TaskMonitor taskMonitor) {
 		double currX = 0.0d;
 		double currY = 0.0d;
 		double initialX = 0.0d;
 		double initialY = 0.0d;
 		int columns;
+		final CyNetwork network = networkView.getModel();
 
 		final VisualProperty<Double> xLoc = MinimalVisualLexicon.NODE_X_LOCATION;
 		final VisualProperty<Double> yLoc = MinimalVisualLexicon.NODE_Y_LOCATION;

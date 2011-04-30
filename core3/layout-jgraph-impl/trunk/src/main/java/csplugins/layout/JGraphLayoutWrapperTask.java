@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.layout.LayoutTask;
+import org.cytoscape.view.layout.AbstractBasicLayoutTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
@@ -31,7 +31,7 @@ import org.jgraph.graph.VertexView;
 import org.jgraph.plugins.layouts.JGraphLayoutAlgorithm;
 import org.jgraph.plugins.layouts.JGraphLayoutSettings;
 
-public class JGraphLayoutWrapperTask extends LayoutTask{
+public class JGraphLayoutWrapperTask extends AbstractBasicLayoutTask{
 	
 	private JGraphLayoutAlgorithm layout = null;
 	private JGraphLayoutSettings layoutSettings = null;
@@ -59,9 +59,9 @@ public class JGraphLayoutWrapperTask extends LayoutTask{
 	 *  Perform actual layout task.
 	 */
 	@Override
-	final protected void doLayout(final TaskMonitor taskMonitor, final CyNetwork network) {
+	final protected void doLayout(final TaskMonitor taskMonitor) {
 		this.taskMonitor = taskMonitor;
-		this.network = network;
+		this.network = networkView.getModel();
 		construct();
 	}
 	

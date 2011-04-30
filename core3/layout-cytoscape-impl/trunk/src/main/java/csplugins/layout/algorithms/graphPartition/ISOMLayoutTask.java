@@ -7,7 +7,7 @@ import java.util.Set;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.layout.AbstractGraphPartition;
+import org.cytoscape.view.layout.AbstractPartitionLayoutTask;
 import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.view.layout.LayoutPartition;
 import org.cytoscape.view.model.CyNetworkView;
@@ -21,7 +21,7 @@ import cern.colt.map.PrimeFinder;
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 
-public class ISOMLayoutTask  extends AbstractGraphPartition {
+public class ISOMLayoutTask  extends AbstractPartitionLayoutTask {
 
 	public int maxEpoch;
 	private int epoch;

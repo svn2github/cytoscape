@@ -17,10 +17,16 @@ import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-public abstract class LayoutTask extends AbstractTask {
+/**
+ *  This is a basic implementation of a LayoutAlgorithm Task that does
+ *  some bookkeeping, but primarily delegates to the doLayout() method.
+ *  Extensions of this class are meant to operate on the CyNetworkView 
+ *  provided to the constructor (and is available as a protected member 
+ *  variable).
+ */
+public abstract class AbstractBasicLayoutTask extends AbstractTask {
 	
-	private static final Logger logger = LoggerFactory.getLogger(LayoutTask.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractBasicLayoutTask.class);
 	protected static final String LAYOUT_ALGORITHM = "layoutAlgorithm";
 
 	protected final CyNetworkView networkView;
@@ -29,7 +35,7 @@ public abstract class LayoutTask extends AbstractTask {
 
 	private final String name;
 
-	public LayoutTask(final CyNetworkView networkView, final String name, boolean selectedOnly,
+	public AbstractBasicLayoutTask(final CyNetworkView networkView, final String name, boolean selectedOnly,
 			  final Set<View<CyNode>> staticNodes)
 	{
 		super();
@@ -54,7 +60,7 @@ public abstract class LayoutTask extends AbstractTask {
 			return;
 
 		// this is overridden by children and does the actual layout
-		doLayout(taskMonitor, network);
+		doLayout(taskMonitor);
 
 		// Fit Content method always redraw the presentation.
 		networkView.fitContent();
@@ -74,5 +80,5 @@ public abstract class LayoutTask extends AbstractTask {
 		return ((staticNodes != null) && (staticNodes.contains(v)));
 	}
 
-	protected abstract void doLayout(final TaskMonitor taskMonitor, final CyNetwork network);
+	protected abstract void doLayout(final TaskMonitor taskMonitor);
 }

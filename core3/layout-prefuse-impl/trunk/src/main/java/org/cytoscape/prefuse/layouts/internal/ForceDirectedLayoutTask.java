@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.layout.AbstractGraphPartition;
+import org.cytoscape.view.layout.AbstractPartitionLayoutTask;
 import org.cytoscape.view.layout.EdgeWeighter;
 import org.cytoscape.view.layout.LayoutEdge;
 import org.cytoscape.view.layout.LayoutNode;
@@ -61,7 +61,7 @@ import prefuse.util.force.SpringForce;
  * This class wraps the Prefuse force-directed layout algorithm.
  * See {@link http://prefuse.org} for more detail.
  */
-public class ForceDirectedLayoutTask extends AbstractGraphPartition {
+public class ForceDirectedLayoutTask extends AbstractPartitionLayoutTask {
 	private ForceSimulator m_fsim;
 
 	public int numIterations;

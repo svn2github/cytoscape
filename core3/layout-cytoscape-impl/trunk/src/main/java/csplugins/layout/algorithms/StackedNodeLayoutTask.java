@@ -7,13 +7,13 @@ import java.util.Set;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableUtil;
-import org.cytoscape.view.layout.LayoutTask;
+import org.cytoscape.view.layout.AbstractBasicLayoutTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.work.TaskMonitor;
 
-public class StackedNodeLayoutTask extends LayoutTask {
+public class StackedNodeLayoutTask extends AbstractBasicLayoutTask {
 
 	private double y_start_position;
 	private double x_position;
@@ -36,14 +36,14 @@ public class StackedNodeLayoutTask extends LayoutTask {
 		
 	}
 
-	final protected void doLayout(final TaskMonitor taskMonitor, final CyNetwork network) {
+	final protected void doLayout(final TaskMonitor taskMonitor) {
 
 		if (selectedOnly){
 			nodes = CyTableUtil.getNodesInState(networkView.getModel(),"selected",true);
 		}
 		else {
 			// select all nodes from the view
-			nodes = network.getNodeList();			
+			nodes = networkView.getModel().getNodeList();			
 		}
 		construct();
 	}

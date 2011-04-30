@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.layout.AbstractGraphPartition;
+import org.cytoscape.view.layout.AbstractPartitionLayoutTask;
 import org.cytoscape.view.layout.LayoutEdge;
 import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.view.layout.LayoutPartition;
@@ -21,7 +21,7 @@ import csplugins.layout.algorithms.hierarchicalLayout.Edge;
 import csplugins.layout.algorithms.hierarchicalLayout.Graph;
 
 
-public class CircularLayoutAlgorithmTask extends AbstractGraphPartition {
+public class CircularLayoutAlgorithmTask extends AbstractPartitionLayoutTask {
 	public int nodeHorizontalSpacing; // = 64;
 	public int nodeVerticalSpacing;// = 32;
 	public int leftEdge;// = 32;

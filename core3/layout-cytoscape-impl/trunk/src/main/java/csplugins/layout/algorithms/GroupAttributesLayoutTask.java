@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.layout.LayoutTask;
+import org.cytoscape.view.layout.AbstractBasicLayoutTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
@@ -21,7 +21,7 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
 
-public class GroupAttributesLayoutTask extends LayoutTask {
+public class GroupAttributesLayoutTask extends AbstractBasicLayoutTask {
 
 	//@Tunable(description="Horizontal spacing between two partitions in a row")
 	public double spacingx;
@@ -61,9 +61,9 @@ public class GroupAttributesLayoutTask extends LayoutTask {
 
 
 	
-	final protected void doLayout(final TaskMonitor taskMonitor, final CyNetwork network) {
+	final protected void doLayout(final TaskMonitor taskMonitor) {
 		this.taskMonitor = taskMonitor;
-		this.network = network;
+		this.network = networkView.getModel();
 		
 		construct(); 
 	}

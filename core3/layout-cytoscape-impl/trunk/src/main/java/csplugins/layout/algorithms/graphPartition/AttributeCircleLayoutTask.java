@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.layout.AbstractGraphPartition;
+import org.cytoscape.view.layout.AbstractPartitionLayoutTask;
 import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.view.layout.LayoutPartition;
 import org.cytoscape.view.model.CyNetworkView;
@@ -17,7 +17,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.work.Tunable;
 
 
-public class AttributeCircleLayoutTask extends AbstractGraphPartition {
+public class AttributeCircleLayoutTask extends AbstractPartitionLayoutTask {
 	private final String attribute;
 	private final double spacing;
 	private final boolean supportNodeAttributes;
