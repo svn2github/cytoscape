@@ -103,7 +103,6 @@ class SubnetworkBuilderUtil {
 
     public void addFactory(VisualMappingFunctionFactory factory, Map props) {
 
-	System.out.println("\n\n\n *********** Got Factory ***************" + factory + "\n\n\n");
 
 	if (factory.toString().startsWith("Discrete Mapping"))
 	    discFactory = factory;
@@ -112,7 +111,6 @@ class SubnetworkBuilderUtil {
 
 	if (discFactory != null && ptFactory != null) {
 	    this.vsBuilder = new VisualStyleBuilder(vsFactory, discFactory, ptFactory);
-	    System.out.println("\n\n\n *********** vsBuilder Created. ***************\n\n\n");
 	}
     }
 

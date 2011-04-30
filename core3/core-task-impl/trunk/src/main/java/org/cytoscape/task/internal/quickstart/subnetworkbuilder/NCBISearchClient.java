@@ -64,7 +64,6 @@ public class NCBISearchClient {
 
 	urlString = urlString + builder.toString();
 	urlString = urlString.substring(0, urlString.length() - 4);
-	System.out.println("URL String = " + urlString);
 	return new URL(urlString);
     }
 
@@ -80,17 +79,14 @@ public class NCBISearchClient {
 	final NodeList ids = result.getElementsByTagName("Id");
 	final int dataSize = ids.getLength();
 
-	System.out.println("Data size = " + dataSize);
 	for (int i = 0; i < dataSize; i++) {
 	    Node id = ids.item(i);
 	    idSet.add(id.getTextContent());
-	    System.out.println("Node ID = " + id.getTextContent());
 	}
 
 	is.close();
 	is = null;
 
-	System.out.println("Number of result = " + idSet.size());
 	return idSet;
     }
 }

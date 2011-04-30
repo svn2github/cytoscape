@@ -55,7 +55,6 @@ public class SelectMappingKeyTypeTask extends AbstractTask {
 	public void run(TaskMonitor monitor) throws Exception {
 		// Check current status and move to next task.
 		if(state.isJobFinished(Job.LOAD_NETWORK) && state.isJobFinished(Job.LOAD_TABLE)) {
-			System.out.println("!!!!!!!! Merge task added");
 			insertTasksAfterCurrentTask(new MergeDataTask(state, util));
 		} else if(state.isJobFinished(Job.LOAD_NETWORK)) {
 			// Need to load table.
@@ -73,7 +72,6 @@ public class SelectMappingKeyTypeTask extends AbstractTask {
 		
 		state.setIDType(this.idTypeMap.get(selected));
 		
-		System.out.println("ID type selected.  Selected type = " + selected);
 		state.finished(Job.SELECT_MAPPING_ID_TYPE);
 	}
 

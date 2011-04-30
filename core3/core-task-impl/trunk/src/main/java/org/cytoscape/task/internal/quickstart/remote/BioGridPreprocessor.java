@@ -81,7 +81,6 @@ public class BioGridPreprocessor implements InteractionFilePreprocessor {
 			this.sourceFileLocation = source;
 
 		boolean test = isUpToDate();
-		System.out.println("UP2DATE = " + test);
 		if (!test) {
 			final InputStream is = sourceFileLocation.openStream();
 			extractEntrey(is);
@@ -116,7 +115,6 @@ public class BioGridPreprocessor implements InteractionFilePreprocessor {
 
 			while ((zen = zis.getNextEntry()) != null) {
 				entryName = zen.getName();
-				System.out.println("SESSION entry name: " + entryName);
 				File outFile = new File(dataFileDirectory, entryName + ".sif");
 				outFile.createNewFile();
 				FileWriter outWriter = new FileWriter(outFile);

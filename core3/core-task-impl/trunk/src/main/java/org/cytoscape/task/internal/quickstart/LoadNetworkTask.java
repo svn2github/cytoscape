@@ -72,7 +72,6 @@ public class LoadNetworkTask extends AbstractTask {
 			insertTasksAfterCurrentTask(new SelectMappingKeyTypeTask(state,util, previewKeys, previewData));
 			insertTasksAfterCurrentTask(new GetNetworkPreviewDataTask(util, previewData));
 		} else if(state.isJobFinished(Job.LOAD_TABLE)) {
-			System.out.println("Already has a table.  No need to set ID type. Move to merge");
 			insertTasksAfterCurrentTask(new MergeDataTask(state, util));
 		}
 

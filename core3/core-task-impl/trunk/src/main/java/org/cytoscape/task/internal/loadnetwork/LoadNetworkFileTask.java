@@ -29,7 +29,6 @@
  */
 package org.cytoscape.task.internal.loadnetwork;
 
-
 import java.io.File;
 import java.util.Properties;
 
@@ -40,41 +39,38 @@ import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 
-
 /**
  * Specific instance of AbstractLoadNetworkTask that loads a File.
  */
 public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
-	@Tunable(description="Network file to load", params="fileCategory=network;input=true")
-	public File file;
+    @Tunable(description = "Network file to load", params = "fileCategory=network;input=true")
+    public File file;
 
-	public LoadNetworkFileTask(CyNetworkViewReaderManager mgr, CyNetworkManager netmgr, 
-	                           final CyNetworkViewManager networkViewManager,
-				   final Properties props, CyNetworkNaming namingUtil)
-	{
-		super(mgr, netmgr, networkViewManager, props, namingUtil);
-	}
+    public LoadNetworkFileTask(CyNetworkViewReaderManager mgr, CyNetworkManager netmgr,
+	    final CyNetworkViewManager networkViewManager, final Properties props, CyNetworkNaming namingUtil) {
+	super(mgr, netmgr, networkViewManager, props, namingUtil);
+    }
 
-	/**
-	 * Executes Task.
-	 */
-	public void run(TaskMonitor taskMonitor) throws Exception {
-		this.taskMonitor = taskMonitor;
+    /**
+     * Executes Task.
+     */
+    public void run(TaskMonitor taskMonitor) throws Exception {
+	this.taskMonitor = taskMonitor;
 
-		if ( file == null )
-			throw new NullPointerException("No file specified!");
-		
-		reader = mgr.getReader(file.toURI(),file.getName());
+	if (file == null)
+	    throw new NullPointerException("No file specified!");
 
-		if (cancelled)
-			return;
+	reader = mgr.getReader(file.toURI(), file.getName());
 
-		if (reader == null)
-			throw new NullPointerException("Failed to find appropriate reader for file: " + file);
+	if (cancelled)
+	    return;
 
-		uri = file.toURI();
-		name = file.getName();
-		
-		loadNetwork(reader);
-	}
+	if (reader == null)
+	    throw new NullPointerException("Failed to find appropriate reader for file: " + file);
+
+	uri = file.toURI();
+	name = file.getName();
+
+	loadNetwork(reader);
+    }
 }
