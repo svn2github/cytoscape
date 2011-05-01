@@ -54,10 +54,10 @@ final class Interaction {
 	    throw new IllegalArgumentException("Invalid entry.");
 
 	source = values[0].trim();
+	targets = new ArrayList<String>();
 
 	if (values.length > 2) {
 	    interactionType = values[1].trim();
-	    targets = new ArrayList<String>();
 	    for (int i = 2; i < values.length; i++)
 		targets.add(values[i].trim());
 	}
