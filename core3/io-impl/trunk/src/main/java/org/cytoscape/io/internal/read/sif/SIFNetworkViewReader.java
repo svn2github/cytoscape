@@ -48,7 +48,6 @@ import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.NullCyNetworkView;
 import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,8 +67,9 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
     private final CyEventHelper eventHelper;
     private final CyLayoutAlgorithmManager layouts;
 
-    public SIFNetworkViewReader(InputStream is, CyLayoutAlgorithmManager layouts, CyNetworkViewFactory cyNetworkViewFactory,
-	    CyNetworkFactory cyNetworkFactory, final CyEventHelper eventHelper, final int viewThreshold) {
+    public SIFNetworkViewReader(InputStream is, CyLayoutAlgorithmManager layouts,
+	    CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory,
+	    final CyEventHelper eventHelper, final int viewThreshold) {
 	super(is, cyNetworkViewFactory, cyNetworkFactory, viewThreshold);
 	this.layouts = layouts;
 	this.eventHelper = eventHelper;
@@ -93,7 +93,7 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 	String line;
 	final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 	Map<String, CyNode> nMap = new HashMap<String, CyNode>();
-	
+
 	CyNetwork network = cyNetworkFactory.getInstance();
 	final CyTable nodeTable = network.getDefaultNodeTable();
 	final CyTable edgeTable = network.getDefaultEdgeTable();
@@ -109,17 +109,17 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 
 	    while ((line = br.readLine()) != null) {
 		if (cancelled) {
-		    // Cancel called.  Clean up the garbage.
+		    // Cancel called. Clean up the garbage.
 		    nMap.clear();
 		    nMap = null;
 		    network = null;
 		    br.close();
 		    return;
 		}
-		
+
 		if (line.trim().length() <= 0)
 		    continue;
-		
+
 		try {
 		    final Interaction itr = new Interaction(line, delimiter);
 		    createEdge(itr, network, nMap);
@@ -139,7 +139,9 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 	nMap.clear();
 	nMap = null;
 
-	createView(network);
+	this.networks = new CyNetwork[]{network};
+	createViews();
+	
 	tm.setProgress(1.0);
     }
 
@@ -164,23 +166,14 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 	}
     }
 
-    
-    private void createView(final CyNetwork network) {
+    @Override
+    protected CyNetworkView createView(final CyNetwork network) {
 
-	final int objectCount = network.getEdgeCount() + network.getNodeCount();
-	if (this.viewThreshold < objectCount) {
-	    this.cyNetworkViews = new CyNetworkView[] { new NullCyNetworkView(network) };
-	    logger.info("Number of object in this network is above threshold.  View model was not created.");
-	    return;
-	}
-
-	// Assume sif contains only one network.
 	final CyNetworkView view = cyNetworkViewFactory.getNetworkView(network);
-
 	final CyLayoutAlgorithm layout = layouts.getDefaultLayout();
 	layout.setNetworkView(view);
 	insertTasksAfterCurrentTask(layout.getTaskIterator());
-	// SIF always creates only one network.
-	this.cyNetworkViews = new CyNetworkView[] { view };
+
+	return view;
     }
 }

@@ -44,8 +44,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -63,7 +63,6 @@ import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.NullCyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
@@ -108,8 +107,6 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
     private List<GraphicsConverter<?>> nodeConverters;
     private List<GraphicsConverter<?>> edgeConverters;
 
-    private CyNetwork network;
-
     private static final Logger logger = LoggerFactory.getLogger(XGMMLNetworkViewReader.class);
 
     /**
@@ -142,8 +139,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 
 	try {
 	    readXGMML();
-	    network = readDataManager.getNetwork();
-	    createView();
+	    networks = new CyNetwork[]{readDataManager.getNetwork()};
 	} catch (SAXException e) {
 	    throw new IOException("Could not parse XGMML file: ");
 	}
@@ -153,6 +149,16 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 
     @Override
     public void cancel() {
+    }
+
+    @Override
+    protected CyNetworkView createView(CyNetwork network) {
+
+	view = cyNetworkViewFactory.getNetworkView(network);
+	layout();
+
+	return view;
+
     }
 
     /**
@@ -371,24 +377,6 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 		}
 	    }
 	}
-    }
-
-    /**
-     * Create and layout the view.
-     * 
-     * @param network
-     *            The network we just parsed.
-     */
-    private void createView() {
-	final int objectCount = network.getNodeCount() + network.getEdgeCount();
-	if (this.viewThreshold < objectCount)
-	    view = new NullCyNetworkView(network);
-	else {
-	    view = cyNetworkViewFactory.getNetworkView(network);
-	    layout();
-	}
-	
-	cyNetworkViews = new CyNetworkView[] { view };
     }
 
     private void createConverters() {

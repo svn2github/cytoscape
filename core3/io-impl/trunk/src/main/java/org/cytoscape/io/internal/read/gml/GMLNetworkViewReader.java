@@ -178,7 +178,6 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
 
     private final RenderingEngineManager renderingEngineManager;
 
-    private CyNetwork network;
     private CyNetworkView view;
 
     /**
@@ -215,25 +214,15 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
 
         readGML(keyVals, taskMonitor); // read the GML file
 
-        network = cyNetworkFactory.getInstance();
-        createGraph(taskMonitor); // create the graph AND new visual style
-        
-        createView();
-    }
-
-    @Override
-    public void cancel() {
+        this.networks = new CyNetwork[1];
+        this.networks[0] = cyNetworkFactory.getInstance();
+        createGraph(taskMonitor); // create the graph AND new visual style        
     }
     
-    private void createView() {
-	final int objectCount = network.getNodeCount() + network.getEdgeCount();
-	if(this.viewThreshold < objectCount) {
-	    this.cyNetworkViews = new CyNetworkView[] { new NullCyNetworkView(network) };
-	    return;
-	}
-	
+    @Override
+    protected CyNetworkView createView(CyNetwork network) {
 	view = cyNetworkViewFactory.getNetworkView(network);
-       
+	       
 
         // New features are called here:
         // 1 Extract (virtually) all attributes from the GML file
@@ -246,7 +235,12 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
         releaseStructures();
 
         layout(view);
-	this.cyNetworkViews = new CyNetworkView[] { view };
+        
+        return view;
+    }
+
+    @Override
+    public void cancel() {
     }
 
     @Override
@@ -302,7 +296,7 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
             String label = node_labels.get(idx);
 
             if (nodeNameSet.add(label)) {
-                CyNode node = network.addNode();
+                CyNode node = networks[0].addNode();
                 
                 //FIXME this fires too many events!!
                 node.getCyRow().set(CyTableEntry.NAME, label);
@@ -343,7 +337,7 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
 
                 CyNode node_1 = nodeIDMap.get(sourceName);
                 CyNode node_2 = nodeIDMap.get(targetName);
-                CyEdge edge = network.addEdge(node_1, node_2, isDirected.booleanValue());
+                CyEdge edge = networks[0].addEdge(node_1, node_2, isDirected.booleanValue());
                 edge.getCyRow().set(CyTableEntry.NAME, edgeName);
                 edge.getCyRow().set("interaction", label);
                 edge_names.add(idx, edge);
@@ -512,7 +506,7 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
      */
     @SuppressWarnings("unchecked")
     public void layout(CyNetworkView view) {
-        if ((view == null) || (network.getNodeCount() == 0)) {
+        if ((view == null) || (networks[0].getNodeCount() == 0)) {
             return;
         }
 
@@ -673,7 +667,7 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
 
         // System.out.print( "In layout, Root index is: " + root_index );
         // System.out.print( " Checking label: " + label );
-        View<CyNode> view = myView.getNodeView(network.getNode(root_index.intValue()));
+        View<CyNode> view = myView.getNodeView(networks[0].getNode(root_index.intValue()));
 
         // TODO update for new view
         //		if (label != null) {
@@ -831,7 +825,7 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
                     return;
                 }
 
-                edgeView = myView.getEdgeView(network.getEdge(((Integer) keyVal.value).intValue()));
+                edgeView = myView.getEdgeView(networks[0].getEdge(((Integer) keyVal.value).intValue()));
             } else if (keyVal.key.equals(GRAPHICS)) {
                 graphics_list = (List<KeyValue>) keyVal.value;
             }
