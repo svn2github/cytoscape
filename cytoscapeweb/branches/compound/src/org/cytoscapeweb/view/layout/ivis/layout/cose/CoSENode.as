@@ -11,7 +11,6 @@ import org.cytoscapeweb.view.layout.ivis.layout.fd.FDLayoutNode;
 import org.cytoscapeweb.view.layout.ivis.util.DimensionD;
 import org.cytoscapeweb.view.layout.ivis.util.IMath;
 import org.cytoscapeweb.view.layout.ivis.util.PointD;
-import org.cytoscapeweb.view.layout.ivis.util.printf;
 
 //import org.gvt.model.NodeModel;
 

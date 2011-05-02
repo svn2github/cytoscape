@@ -321,7 +321,7 @@ package org.cytoscapeweb.view.components {
                         var d:Data = _dataList[i];
                         if (d.nodes.length > 1) {
                             var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, _layoutName, _style); 
-                            var root:NodeSprite = Layouts.rootNode(data);
+                            var root:NodeSprite = Layouts.rootNode(d);
                             
                             layout = createLayout(layoutObj, d, rect, root);
                             _appliedLayouts.push(layout);
