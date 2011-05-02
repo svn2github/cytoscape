@@ -157,6 +157,7 @@ package org.cytoscapeweb.util {
 		public static const C_NODE_HOVER_GLOW_BLUR:String = "nodes.compoundHoverGlowBlur";
 		public static const C_NODE_HOVER_GLOW_STRENGTH:String = "nodes.compoundHoverGlowStrength";
 		
+		public static const C_NODE_LABEL_FONT_NAME:String = "nodes.compoundLabelFontName";
 		public static const C_NODE_LABEL_FONT_SIZE:String = "nodes.compoundLabelFontSize";
 		public static const C_NODE_LABEL_HANCHOR:String = "nodes.compoundLabelHorizontalAnchor";
 		public static const C_NODE_LABEL_VANCHOR:String = "nodes.compoundLabelVerticalAnchor";

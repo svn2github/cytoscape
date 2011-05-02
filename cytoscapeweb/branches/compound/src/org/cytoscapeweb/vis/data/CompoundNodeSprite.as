@@ -41,6 +41,11 @@ package org.cytoscapeweb.vis.data
 			return _bounds;
 		}
 		
+		public function set bounds(rect:Rectangle):void
+		{
+			_bounds = rect;
+		}
+		
 		/**
 		 * Width of the right padding of the compound node
 		 */

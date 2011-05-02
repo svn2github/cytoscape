@@ -831,7 +831,10 @@ package org.cytoscapeweb.model {
                             ds = xgmmlConverter.parse(xml);
                             
                             var points:Object = xgmmlConverter.points;
-                            if (points != null) {
+							
+							// update node positions & layout info
+							if (points != null)
+							{
                                 if (layout == null) layout = {};
                                 if (layout is String) layout = { name: layout };
                                 
