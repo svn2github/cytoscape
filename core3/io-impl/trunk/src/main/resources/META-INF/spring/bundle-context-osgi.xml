@@ -9,7 +9,7 @@
 	<!-- Import services -->
 	<osgi:reference id="cyEventHelperRef" interface="org.cytoscape.event.CyEventHelper" />
 	
-	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayouts" />
+	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayoutAlgorithmManager" />
 
 	<osgi:reference id="cyNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.CyNetworkFactory" />
@@ -75,6 +75,10 @@
 
 	<osgi:service id="propertyWriterManagerService" ref="propertyWriterManager"
 		interface="org.cytoscape.io.write.CyPropertyWriterManager">
+	</osgi:service>
+	
+	<osgi:service id="cyTableWriterManagerService" ref="tableWriterManager"
+		interface="org.cytoscape.io.write.CyTableWriterManager">
 	</osgi:service>
 
 	<osgi:service id="sifNetworkViewReaderFactoryService" ref="sifNetworkViewReaderFactory"

@@ -40,7 +40,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.session.CyNetworkNaming;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.Task;
@@ -225,8 +225,8 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
                 taskMonitor.setProgress(1.0);
             }
             
-            CyLayouts layouts = cPathFactory.getCyLayouts();
-    		TaskFactory tf = layouts.getDefaultLayout(view);
+            CyLayoutAlgorithmManager layoutManager = cPathFactory.getCyLayoutAlgorithmManager();
+    		TaskFactory tf = layoutManager.getDefaultLayout();
     		TaskIterator ti = tf.getTaskIterator();
     		Task task = ti.next();
     		insertTasksAfterCurrentTask(task);

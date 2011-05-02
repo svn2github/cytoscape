@@ -128,7 +128,7 @@
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>plugin-api</artifactId>
-      <version>3.0.0-alpha2</version>
+      <version>3.0.0-alpha3-SNAPSHOT</version>
     </dependency>
     
     <!-- dependencies needed for plugin manager -->
@@ -195,7 +195,7 @@
     <dependency>
 		<groupId>org.cytoscape</groupId>
 		<artifactId>plugin-api</artifactId>
-		<version>3.0.0-alpha2</version>
+		<version>3.0.0-alpha3-SNAPSHOT</version>
 		<type>test-jar</type>
 		<scope>test</scope>
 	</dependency>

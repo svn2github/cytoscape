@@ -3,76 +3,68 @@ package org.cytoscape.plugin.internal;
 
 import java.util.Properties;
 
-import org.cytoscape.plugin.CyPluginAdapter;
-
-import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyTableManager;
-import org.cytoscape.model.CyTableFactory;
-import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
-import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.session.CySessionManager;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.layout.CyLayouts;
-import org.cytoscape.view.presentation.RenderingEngineManager;
-import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.VisualStyleFactory;
-import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.undo.UndoSupport;
-import org.cytoscape.work.swing.GUITaskManager;
-import org.cytoscape.io.write.CyNetworkViewWriterManager;
-import org.cytoscape.io.write.CySessionWriterManager;
-//import org.cytoscape.io.write.CyTableWriterManager;
-import org.cytoscape.io.write.CyPropertyWriterManager;
-import org.cytoscape.io.write.PresentationWriterManager;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
-import org.cytoscape.io.read.CySessionReaderManager;
-import org.cytoscape.io.read.CyTableReaderManager;
-import org.cytoscape.io.read.CyPropertyReaderManager;
-import org.cytoscape.property.CyProperty;
-import org.cytoscape.service.util.CyServiceRegistrar;
-
-//
-// The following imports are necessary to trick BND into
-// importing the packages containing these packages.
-//
-import org.cytoscape.session.events.SessionAboutToBeSavedEvent;
-import org.cytoscape.view.vizmap.events.VisualStyleAboutToBeRemovedEvent;
-import org.cytoscape.view.model.events.AboutToRemoveEdgeViewMicroListener;
-import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
-import org.cytoscape.view.presentation.events.RenderingEngineAboutToBeRemovedEvent;
-import org.cytoscape.view.presentation.property.AbstractVisualLexicon;
-import org.cytoscape.property.BasicCyProperty;
-import org.cytoscape.property.bookmark.BookmarksUtil;
-import org.cytoscape.property.session.Cysession;
-import org.cytoscape.task.NetworkTaskFactory;
-import org.cytoscape.task.creation.NewEmptyNetworkViewFactory;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.undo.UndoSupport;
-import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.application.swing.CyAction;
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.events.CytoPanelComponentSelectedEvent;
+import org.cytoscape.dnd.DropNetworkViewTaskFactory;
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyPropertyReaderManager;
+import org.cytoscape.io.read.CySessionReaderManager;
+import org.cytoscape.io.read.CyTableReaderManager;
 import org.cytoscape.io.util.StreamUtil;
+import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
+import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
+import org.cytoscape.io.webservice.events.DataImportFinishedEvent;
 import org.cytoscape.io.write.CyNetworkViewWriterFactory;
-import org.cytoscape.work.swing.AbstractGUITunableHandler;
-import org.cytoscape.work.spring.SpringTunableInterceptor;
-import org.cytoscape.view.layout.AbstractLayout;
-import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.io.write.CyNetworkViewWriterManager;
+import org.cytoscape.io.write.CyPropertyWriterManager;
+import org.cytoscape.io.write.CySessionWriterManager;
+import org.cytoscape.io.write.PresentationWriterManager;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.plugin.CyPlugin;
+import org.cytoscape.plugin.CyPluginAdapter;
+import org.cytoscape.property.BasicCyProperty;
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.property.bookmark.BookmarksUtil;
+import org.cytoscape.property.session.Cysession;
+import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.session.CySessionManager;
+import org.cytoscape.session.events.SessionAboutToBeSavedEvent;
+import org.cytoscape.task.NetworkTaskFactory;
+import org.cytoscape.task.creation.NewEmptyNetworkViewFactory;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.model.events.AboutToRemoveEdgeViewMicroListener;
+import org.cytoscape.view.presentation.RenderingEngineManager;
+import org.cytoscape.view.presentation.events.RenderingEngineAboutToBeRemovedEvent;
+import org.cytoscape.view.presentation.property.AbstractVisualLexicon;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyleFactory;
+import org.cytoscape.view.vizmap.events.VisualStyleAboutToBeRemovedEvent;
 import org.cytoscape.view.vizmap.gui.AbstractVisualPropertyDependency;
 import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.view.vizmap.gui.editor.AbstractVisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.event.LexiconStateChangedEvent;
 import org.cytoscape.view.vizmap.gui.util.ContinuousMappingGenerator;
-import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
-import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
-import org.cytoscape.io.webservice.events.DataImportFinishedEvent;
-import org.cytoscape.dnd.DropNetworkViewTaskFactory;
-import org.cytoscape.plugin.CyPlugin;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.spring.SpringTunableInterceptor;
+import org.cytoscape.work.swing.AbstractGUITunableHandler;
+import org.cytoscape.work.swing.GUITaskManager;
+import org.cytoscape.work.undo.UndoSupport;
+import org.cytoscape.work.util.BoundedDouble;
 
 
 /**
@@ -90,7 +82,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	//
 	private final CyApplicationManager cyApplicationManager;
 	private final CyEventHelper cyEventHelper;
-	private final CyLayouts cyLayouts;
+	private final CyLayoutAlgorithmManager cyLayouts;
 	private final CyNetworkFactory cyNetworkFactory;
 	private final CyNetworkManager cyNetworkManager;
 	private final CyNetworkViewFactory cyNetworkViewFactory;
@@ -147,7 +139,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	private CyNetworkViewWriterFactory cyNetworkViewWriterFactory;
 	private AbstractGUITunableHandler abstractGUITunableHandler;
 	private SpringTunableInterceptor springTunableInterceptor;
-	private AbstractLayout abstractLayout;
+	private AbstractLayoutAlgorithm abstractLayout;
 	private AbstractFunction abstractFunction;
 	private AbstractVisualPropertyDependency abstractVisualPropertyDependency;
 	private VizMapUIAction vizMapUIAction;
@@ -167,7 +159,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	//
 	CyPluginAdapterImpl( final CyApplicationManager cyApplicationManager,
 	                     final CyEventHelper cyEventHelper,
-	                     final CyLayouts cyLayouts,
+	                     final CyLayoutAlgorithmManager cyLayouts,
 	                     final CyNetworkFactory cyNetworkFactory,
 	                     final CyNetworkManager cyNetworkManager,
 	                     final CyNetworkViewFactory cyNetworkViewFactory,
@@ -232,7 +224,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	// 
 	public CyApplicationManager getCyApplicationManager() { return cyApplicationManager; }
 	public CyEventHelper getCyEventHelper() { return cyEventHelper; } 
-	public CyLayouts getCyLayouts() { return cyLayouts; } 
+	public CyLayoutAlgorithmManager getCyLayouts() { return cyLayouts; } 
 	public CyNetworkFactory getCyNetworkFactory() { return cyNetworkFactory; }
 	public CyNetworkManager getCyNetworkManager() { return cyNetworkManager; } 
 	public CyNetworkViewFactory getCyNetworkViewFactory() { return cyNetworkViewFactory; }

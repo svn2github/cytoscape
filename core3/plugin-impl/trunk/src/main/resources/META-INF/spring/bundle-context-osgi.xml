@@ -20,7 +20,7 @@
 	</osgi:reference>
 
 	<osgi:reference id="cyLayoutsRef"
-		interface="org.cytoscape.view.layout.CyLayouts">
+		interface="org.cytoscape.view.layout.CyLayoutAlgorithmManager">
 	</osgi:reference>
 
 	<osgi:reference id="cyNetworkFactoryRef"

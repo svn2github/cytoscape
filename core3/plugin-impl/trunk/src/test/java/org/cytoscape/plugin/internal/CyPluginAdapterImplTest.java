@@ -1,43 +1,39 @@
 package org.cytoscape.plugin.internal;
 
 
-import org.cytoscape.plugin.CyPluginAdapter;
-import org.cytoscape.plugin.CyPluginAdapterTest;
+import static org.mockito.Mockito.mock;
+
+import java.util.Properties;
 
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyPropertyReaderManager;
+import org.cytoscape.io.read.CySessionReaderManager;
+import org.cytoscape.io.read.CyTableReaderManager;
+import org.cytoscape.io.write.CyNetworkViewWriterManager;
+import org.cytoscape.io.write.CyPropertyWriterManager;
+import org.cytoscape.io.write.CySessionWriterManager;
+import org.cytoscape.io.write.PresentationWriterManager;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.plugin.CyPluginAdapterTest;
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CySessionManager;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.undo.UndoSupport;
 import org.cytoscape.work.swing.GUITaskManager;
-import org.cytoscape.io.write.CyNetworkViewWriterManager;
-import org.cytoscape.io.write.CySessionWriterManager;
-//import org.cytoscape.io.write.CyTableWriterManager;
-import org.cytoscape.io.write.CyPropertyWriterManager;
-import org.cytoscape.io.write.PresentationWriterManager;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
-import org.cytoscape.io.read.CySessionReaderManager;
-import org.cytoscape.io.read.CyTableReaderManager;
-import org.cytoscape.io.read.CyPropertyReaderManager;
-import org.cytoscape.property.CyProperty;
-import org.cytoscape.service.util.CyServiceRegistrar;
-
-import java.util.Properties;
-
-
-import static org.mockito.Mockito.*;
+import org.cytoscape.work.undo.UndoSupport;
 import org.junit.Before;
 
 public class CyPluginAdapterImplTest extends CyPluginAdapterTest {
@@ -47,7 +43,7 @@ public class CyPluginAdapterImplTest extends CyPluginAdapterTest {
 		adapter = new CyPluginAdapterImpl( 
 			mock(CyApplicationManager.class),
 			mock(CyEventHelper.class),
-			mock(CyLayouts.class),
+			mock(CyLayoutAlgorithmManager.class),
 			mock(CyNetworkFactory.class),
 			mock(CyNetworkManager.class),
 			mock(CyNetworkViewFactory.class),

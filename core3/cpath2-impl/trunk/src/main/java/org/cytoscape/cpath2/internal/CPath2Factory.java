@@ -40,7 +40,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.util.swing.OpenBrowser;
-import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
@@ -59,13 +59,13 @@ public class CPath2Factory {
 	private final CyNetworkViewReaderManager networkViewReaderManager;
 	private final CyNetworkNaming naming;
 	private final CyNetworkFactory networkFactory;
-	private final CyLayouts layouts;
+	private final CyLayoutAlgorithmManager layoutManager;
 	private final UndoSupport undoSupport;
 	private final BioPaxContainer bpContainer;
 	private final MapBioPaxToCytoscapeFactory mapperFactory;
 	private final NetworkListener networkListener;
 	
-	public CPath2Factory(CySwingApplication application, TaskManager taskManager, OpenBrowser openBrowser, CyNetworkManager networkManager, CyApplicationManager applicationManager, CyNetworkViewManager networkViewManager, CyNetworkViewReaderManager networkViewReaderManager, CyNetworkNaming naming, CyNetworkFactory networkFactory, CyLayouts layouts, UndoSupport undoSupport, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener) {
+	public CPath2Factory(CySwingApplication application, TaskManager taskManager, OpenBrowser openBrowser, CyNetworkManager networkManager, CyApplicationManager applicationManager, CyNetworkViewManager networkViewManager, CyNetworkViewReaderManager networkViewReaderManager, CyNetworkNaming naming, CyNetworkFactory networkFactory, CyLayoutAlgorithmManager layouts, UndoSupport undoSupport, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener) {
 		this.application = application;
 		this.taskManager = taskManager;
 		this.openBrowser = openBrowser;
@@ -74,7 +74,7 @@ public class CPath2Factory {
 		this.networkViewManager = networkViewManager;
 		this.networkViewReaderManager = networkViewReaderManager;
 		this.naming = naming;
-		this.layouts = layouts;
+		this.layoutManager = layouts;
 		this.networkFactory = networkFactory;
 		this.undoSupport = undoSupport;
 		this.bpContainer = bpContainer;
@@ -197,7 +197,7 @@ public class CPath2Factory {
 		return networkManager;
 	}
 
-	public CyLayouts getCyLayouts() {
-		return layouts;
+	public CyLayoutAlgorithmManager getCyLayoutAlgorithmManager() {
+		return layoutManager;
 	}
 }

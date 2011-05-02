@@ -58,7 +58,7 @@
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
 		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 
-	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayouts">
+	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayoutAlgorithmManager">
 	</osgi:reference>
 
 	<osgi:reference id="undoSupportServiceRef" interface="org.cytoscape.work.undo.UndoSupport">

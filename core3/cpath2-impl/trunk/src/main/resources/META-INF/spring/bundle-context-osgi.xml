@@ -35,7 +35,7 @@
 		interface="org.cytoscape.model.CyNetworkFactory" />
 
 	<osgi:reference id="cyLayoutsRef"
-		interface="org.cytoscape.view.layout.CyLayouts" />
+		interface="org.cytoscape.view.layout.CyLayoutAlgorithmManager" />
 		
 	<osgi:reference id="undoSupportRef"
 		interface="org.cytoscape.work.undo.UndoSupport" />
