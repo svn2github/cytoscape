@@ -70,9 +70,11 @@
 	<osgi:reference id="renderingEngineManagerServiceRef"
 		interface="org.cytoscape.view.presentation.RenderingEngineManager" />
 
-	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayoutAlgorithmManager" />
+	<osgi:reference id="cyLayoutsServiceRef" 
+		interface="org.cytoscape.view.layout.CyLayoutAlgorithmManager" />
 
-	<osgi:reference id="cyTableWriterManagerRef" interface="org.cytoscape.io.write.CyTableWriterManager" />
+	<osgi:reference id="cyTableWriterManagerRef" 
+		interface="org.cytoscape.io.write.CyTableWriterManager" />
 	
 	<!-- now register our services -->
 	<osgi:service id="loadNetworkFileTaskFactoryService" ref="loadNetworkFileTaskFactory"
