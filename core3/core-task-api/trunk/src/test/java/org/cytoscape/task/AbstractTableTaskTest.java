@@ -1,6 +1,12 @@
 /*
+  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
-  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
+  The Cytoscape Consortium is:
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -26,25 +32,38 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
+
 package org.cytoscape.task;
 
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import org.cytoscape.model.CyTable;
-import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskMonitor;
 
+public class AbstractTableTaskTest {
+	
+	private class DataTableTask extends AbstractTableTask {
+		DataTableTask(CyTable tab) { super(tab); }
+		public void run(TaskMonitor tm) { 
+			assertNotNull(table);
+		}
 
-public abstract class AbstractDataTableTask extends AbstractTask {
-	/** The table that this task operates on.
-	 */
-	final protected CyTable table;
+		@Override
+		public void cancel() {
+		}
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void testNullDataTable() throws Exception {
+		new DataTableTask(null);
+	}
 
-	/** Initialises the Task with the table that it will operate on.
-	 *  @param table  the reference to a CyTable that descendent tasks will operate on
-	 */
-	public AbstractDataTableTask(final CyTable table) {
-		if (table == null)
-			throw new NullPointerException("CyTable is null");
-
-		this.table = table;	
+	@Test
+	public void testGoodDataTable() throws Exception {
+		DataTableTask rt = new DataTableTask( mock(CyTable.class) );
+		rt.run(mock(TaskMonitor.class));
 	}
 }

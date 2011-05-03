@@ -1,12 +1,5 @@
 /*
-  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -32,52 +25,25 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-
 package org.cytoscape.task;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.Before;
 
-import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTable;
 
-import org.cytoscape.work.TaskIterator;
 
-public class AbstractDataTableTaskFactoryTest {
-	
-	private class DataTableTaskFactory extends AbstractDataTableTaskFactory {
-		public TaskIterator getTaskIterator() {
-			return null;
-		}
+public abstract class AbstractTableTaskFactory implements DataTableTaskFactory {
+	/** The table that will be passed into any Task constructor.
+	 */
+	protected CyTable table;
+
+	/** Provisions this factory with a table that will be used to construct tasks.
+	 *  @param table the {@link CyTable} to be passed into <code>Task</code> constructors; <b>must</b> not be null!
+	 */
+	public void setDataTable(final CyTable table) {
+		if (table == null)
+			throw new NullPointerException("CyTable is null");
+
+		this.table = table;
 	}
 
-	DataTableTaskFactory factory; 
-
-	@Before
-	public void setUp() {
-		factory = new DataTableTaskFactory();
-	}
-	
-	@Test(expected=NullPointerException.class)
-	public void testNullSetDataTable() throws Exception {
-		factory.setDataTable(null);
-	}
-
-	@Test
-	public void testGoodSetDataTable() throws Exception {
-		factory.setDataTable(mock(CyTable.class));
-		assertNotNull( factory.table );
-	}
-
-	@Test
-	public void testNotFinal() throws Exception {
-		factory.setDataTable(mock(CyTable.class));
-		CyTable t1 = factory.table;
-		factory.setDataTable(mock(CyTable.class));
-		CyTable t2 = factory.table;
-		assertFalse( (t1 == t2) );
-	}
 }
