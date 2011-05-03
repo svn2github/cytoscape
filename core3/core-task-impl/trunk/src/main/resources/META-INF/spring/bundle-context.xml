@@ -336,6 +336,8 @@
 	<bean id="quickStartTaskFactory"
 		class="org.cytoscape.task.internal.quickstart.QuickStartTaskFactory">
 		<constructor-arg ref="importTaskUtil" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="subnetworkBuilderUtil" />
 	</bean>
 
 	<bean id="importTaskUtil" class="org.cytoscape.task.internal.quickstart.ImportTaskUtil">
@@ -372,10 +374,5 @@
 		<constructor-arg ref="visualStyleFactoryServiceRef" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
 
-	</bean>
-	<bean id="subnetworkBuilderTaskFactory"
-		class="org.cytoscape.task.internal.quickstart.subnetworkbuilder.SubnetworkBuilderTaskFactory">
-		<constructor-arg ref="subnetworkBuilderUtil" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 </beans>

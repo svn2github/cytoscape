@@ -643,16 +643,6 @@
 		<osgi:listener bind-method="addProcessor" unbind-method="removeProcessor"
 			ref="subnetworkBuilderUtil" />
 	</osgi:set>
-
-	<osgi:service id="subnetworkBuilderTaskFactoryService"
-		ref="subnetworkBuilderTaskFactory" interface="org.cytoscape.work.TaskFactory">
-		<osgi:service-properties>
-			<entry key="title" value="Create subnetwork from interactome..." />
-			<entry key="preferredMenu" value="Plugins" />
-			<entry key="menuGravity" value="5.0" />
-		</osgi:service-properties>
-	</osgi:service>
-	
 	
 	<!-- For visual style builder -->
 	<osgi:set id="mappingFunctionFactorySet"
