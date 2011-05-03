@@ -43,7 +43,6 @@ import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.model.NullCyNetworkView;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
@@ -121,7 +120,7 @@ class GenerateNetworkViewsTask extends AbstractTask {
 	    networkManager.addNetwork(cyNetwork);
 	    
 	    // Do the following only for non-null views.
-	    if (view instanceof NullCyNetworkView == false) {
+	    if (view.isNullView() == false) {
 		networkViewManager.addNetworkView(view);
 		view.fitContent();
 	    } else {

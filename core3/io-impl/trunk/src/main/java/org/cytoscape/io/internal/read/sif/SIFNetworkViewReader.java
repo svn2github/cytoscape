@@ -69,8 +69,8 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 
     public SIFNetworkViewReader(InputStream is, CyLayoutAlgorithmManager layouts,
 	    CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory,
-	    final CyEventHelper eventHelper, final int viewThreshold) {
-	super(is, cyNetworkViewFactory, cyNetworkFactory, viewThreshold);
+	    final CyEventHelper eventHelper) {
+	super(is, cyNetworkViewFactory, cyNetworkFactory);
 	this.layouts = layouts;
 	this.eventHelper = eventHelper;
     }
@@ -139,8 +139,7 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 	nMap.clear();
 	nMap = null;
 
-	this.networks = new CyNetwork[]{network};
-	createViews();
+	createView(network);
 	
 	tm.setProgress(1.0);
     }
@@ -166,10 +165,14 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 	}
     }
 
-    @Override
-    protected CyNetworkView createView(final CyNetwork network) {
+    private CyNetworkView createView(final CyNetwork network) {
 
 	final CyNetworkView view = cyNetworkViewFactory.getNetworkView(network);
+	this.cyNetworkViews = new CyNetworkView[]{view};
+	
+	if(view.isNullView())
+	    return view;
+	
 	final CyLayoutAlgorithm layout = layouts.getDefaultLayout();
 	layout.setNetworkView(view);
 	insertTasksAfterCurrentTask(layout.getTaskIterator());

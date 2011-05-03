@@ -1,6 +1,6 @@
 package org.cytoscape.io.internal.read.sif;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -12,7 +12,6 @@ import org.cytoscape.io.internal.read.AbstractNetworkViewReaderTester;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.NullCyNetworkView;
 import org.cytoscape.work.TaskIterator;
 import org.junit.Test;
 
@@ -34,7 +33,7 @@ public class SIFNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 	this.viewThreshold = 5;
 	CyNetworkView[] nullViews = getViews("sample.sif");
 	assertNotNull(nullViews);
-	assertTrue(nullViews[0] instanceof NullCyNetworkView);
+	assertTrue(nullViews[0].isNullView());
 	this.viewThreshold = this.DEF_THRESHOLD;
     }
 
@@ -83,7 +82,7 @@ public class SIFNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 	File f = new File("./src/test/resources/testData/sif/" + file);
 	final CyEventHelper eventHelper = mock(CyEventHelper.class);
 	SIFNetworkViewReader snvp = new SIFNetworkViewReader(new FileInputStream(f), layouts, viewFactory,
-		netFactory, eventHelper, viewThreshold);
+		netFactory, eventHelper);
 	new TaskIterator(snvp);
 	snvp.run(taskMonitor);
 

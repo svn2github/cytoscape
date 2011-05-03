@@ -28,13 +28,10 @@
 package org.cytoscape.io.internal.read;
 
 import java.io.InputStream;
-import java.util.Properties;
 
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 
 public abstract class AbstractNetworkViewReaderFactory implements InputStreamTaskFactory {
@@ -47,20 +44,12 @@ public abstract class AbstractNetworkViewReaderFactory implements InputStreamTas
     protected InputStream inputStream;
     protected String inputName;
 
-    private final Properties props;
-    
-    //TODO: is this the right place to save this constant?
-    private final String VIEW_THRESHOLD = "viewThreshold";
-    
-    protected int threshold;
 
     public AbstractNetworkViewReaderFactory(CyFileFilter filter, CyNetworkViewFactory cyNetworkViewFactory,
-	    CyNetworkFactory cyNetworkFactory, final CyProperty<Properties> prop) {
+	    CyNetworkFactory cyNetworkFactory) {
 	this.filter = filter;
 	this.cyNetworkViewFactory = cyNetworkViewFactory;
 	this.cyNetworkFactory = cyNetworkFactory;
-
-	this.props = prop.getProperties();
     }
 
     public void setInputStream(InputStream is, String in) {
@@ -68,20 +57,6 @@ public abstract class AbstractNetworkViewReaderFactory implements InputStreamTas
 	    throw new NullPointerException("Input stream is null");
 	inputStream = is;
 	inputName = in;
-	
-	this.threshold = getViewThreshold();
-    }
-    
-    private int getViewThreshold() {
-	final String vts = props.getProperty(VIEW_THRESHOLD);
-	int threshold;
-	try {
-	    threshold = Integer.parseInt(vts);
-	} catch (Exception e) {
-	    threshold = CyNetworkViewReader.DEF_VIEW_THRESHOLD;
-	}
-	
-	return threshold;
     }
 
     public CyFileFilter getCyFileFilter() {

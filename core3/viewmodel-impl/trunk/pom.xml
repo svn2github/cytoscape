@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.cytoscape</groupId>
@@ -24,7 +25,7 @@
 	</scm>
 
 	<build>
-        	<plugins>
+		<plugins>
 			<plugin>
 				<inherited>false</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -67,11 +68,9 @@
 		</repository>
 	</repositories>
 
-	<!--
-	Dependencies included here should *ONLY* be for the impl bundle.
-	All additional dependencies necessary for the integration tests (it) 
-	should be kept in the it/pom.xml
-	-->
+	<!-- Dependencies included here should *ONLY* be for the impl bundle. All 
+		additional dependencies necessary for the integration tests (it) should be 
+		kept in the it/pom.xml -->
 	<dependencies>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -97,6 +96,12 @@
 			<version>3.0.0-alpha1</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>property-api</artifactId>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

@@ -37,7 +37,7 @@ public class GMLNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 	public void testLoadGml() throws Exception {
 		File file = new File("src/test/resources/testData/gml/example1.gml");
 		GMLNetworkViewReader reader =
-			new GMLNetworkViewReader(new FileInputStream(file), netFactory, viewFactory, renderingEngineManager, viewThreshold);
+			new GMLNetworkViewReader(new FileInputStream(file), netFactory, viewFactory, renderingEngineManager);
 		reader.run(taskMonitor);
 		CyNetworkView[] networkViews = reader.getNetworkViews();
 		

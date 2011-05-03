@@ -1,11 +1,8 @@
 package org.cytoscape.io.internal.read.gml;
 
-import java.util.Properties;
-
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.read.AbstractNetworkViewReaderFactory;
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.work.TaskIterator;
@@ -14,15 +11,15 @@ public class GMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFactor
     private final RenderingEngineManager renderingEngineManager;
 
     public GMLNetworkViewReaderFactory(CyFileFilter filter, CyNetworkViewFactory networkViewFactory,
-	    CyNetworkFactory networkFactory, RenderingEngineManager renderingEngineManager, CyProperty<Properties> props) {
-	super(filter, networkViewFactory, networkFactory, props);
+	    CyNetworkFactory networkFactory, RenderingEngineManager renderingEngineManager) {
+	super(filter, networkViewFactory, networkFactory);
 	this.renderingEngineManager = renderingEngineManager;
     }
 
     @Override
     public TaskIterator getTaskIterator() {
 	return new TaskIterator(new GMLNetworkViewReader(inputStream, cyNetworkFactory, cyNetworkViewFactory,
-		renderingEngineManager, threshold));
+		renderingEngineManager));
     }
 
 }

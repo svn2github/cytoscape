@@ -59,7 +59,7 @@ public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFact
     private XGMMLParser parser;
     private ReadDataManager readDataManager;
     private AttributeValueUtil attributeValueUtil;
-    private CyProperty<Properties> properties;
+    private final CyProperty<Properties> properties;
 
     public XGMMLNetworkViewReaderFactory(CyFileFilter filter,
                                          RenderingEngineManager renderingEngineManager,
@@ -70,21 +70,21 @@ public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFact
                                          VisualStyleFactory styleFactory,
                                          VisualMappingManager visMappingManager,
                                          VisualMappingFunctionFactory discreteMappingFactory,
-                                         XGMMLParser parser,
-                                         CyProperty<Properties> properties) {
-        super(filter, cyNetworkViewFactory, cyNetworkFactory, properties);
+                                         XGMMLParser parser, final CyProperty<Properties> properties) {
+        super(filter, cyNetworkViewFactory, cyNetworkFactory);
         this.renderingEngineManager = renderingEngineManager;
         this.readDataManager = readDataManager;
         this.attributeValueUtil = attributeValueUtil;
         this.styleFactory = styleFactory;
         this.visMappingManager = visMappingManager;
         this.parser = parser;
+        
         this.properties = properties;
     }
 
     public TaskIterator getTaskIterator() {
         return new TaskIterator(new XGMMLNetworkViewReader(inputStream, renderingEngineManager, cyNetworkViewFactory,
                                                            cyNetworkFactory, readDataManager, attributeValueUtil,
-                                                           styleFactory, visMappingManager, parser, properties, threshold));
+                                                           styleFactory, visMappingManager, parser, properties));
     }
 }

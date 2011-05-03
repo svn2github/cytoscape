@@ -116,8 +116,8 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 	    final CyNetworkViewFactory cyNetworkViewFactory, final CyNetworkFactory cyNetworkFactory,
 	    final ReadDataManager readDataManager, final AttributeValueUtil attributeValueUtil,
 	    final VisualStyleFactory styleFactory, final VisualMappingManager visMappingManager,
-	    final XGMMLParser parser, final CyProperty<Properties> properties, final int viewThreshold) {
-	super(inputStream, cyNetworkViewFactory, cyNetworkFactory, viewThreshold);
+	    final XGMMLParser parser, final CyProperty<Properties> properties) {
+	super(inputStream, cyNetworkViewFactory, cyNetworkFactory);
 
 	this.readDataManager = readDataManager;
 	this.attributeValueUtil = attributeValueUtil;
@@ -139,7 +139,8 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 
 	try {
 	    readXGMML();
-	    networks = new CyNetwork[]{readDataManager.getNetwork()};
+	    final CyNetwork network = readDataManager.getNetwork();
+	    createView(network);
 	} catch (SAXException e) {
 	    throw new IOException("Could not parse XGMML file: ");
 	}
@@ -151,14 +152,10 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
     public void cancel() {
     }
 
-    @Override
-    protected CyNetworkView createView(CyNetwork network) {
-
+    private void createView(CyNetwork network) {
 	view = cyNetworkViewFactory.getNetworkView(network);
 	layout();
-
-	return view;
-
+	this.cyNetworkViews = new CyNetworkView[]{view};
     }
 
     /**
