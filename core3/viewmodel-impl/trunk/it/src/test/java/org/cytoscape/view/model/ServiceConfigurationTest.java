@@ -1,6 +1,9 @@
 package org.cytoscape.view.model;
 
 import static org.junit.Assert.*;
+
+import java.util.Properties;
+
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -17,7 +20,9 @@ public class ServiceConfigurationTest extends ServiceTestSupport {
 
     @Before
     public void setup() {
-	registerMockService(CyProperty.class);
+	Properties p1 = new Properties();
+	p1.setProperty("cyPropertyName", "coreSettings");
+	registerMockService(CyProperty.class, p1);
 	registerMockService(CyEventHelper.class);
 	registerMockService(CyServiceRegistrar.class);
     }
