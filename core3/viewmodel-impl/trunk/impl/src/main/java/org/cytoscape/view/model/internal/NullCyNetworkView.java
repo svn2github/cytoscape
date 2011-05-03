@@ -105,7 +105,7 @@ public final class NullCyNetworkView implements CyNetworkView {
     }
 
     @Override
-    public Boolean isNullView() {
+    public Boolean isEmptyView() {
 	return true;
     }
 

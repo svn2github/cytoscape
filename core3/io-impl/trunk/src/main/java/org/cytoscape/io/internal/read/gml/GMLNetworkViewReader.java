@@ -221,7 +221,7 @@ public class GMLNetworkViewReader extends AbstractNetworkViewReader {
     
     private void createView() {
 	view = cyNetworkViewFactory.getNetworkView(network);
-	if(view.isNullView())
+	if(view.isEmptyView())
 	    return;
 	       
 

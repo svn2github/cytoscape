@@ -33,7 +33,7 @@ public class SIFNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 	this.viewThreshold = 5;
 	CyNetworkView[] nullViews = getViews("sample.sif");
 	assertNotNull(nullViews);
-	assertTrue(nullViews[0].isNullView());
+	assertTrue(nullViews[0].isEmptyView());
 	this.viewThreshold = this.DEF_THRESHOLD;
     }
 

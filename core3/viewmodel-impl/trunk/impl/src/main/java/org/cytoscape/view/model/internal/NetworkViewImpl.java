@@ -195,7 +195,7 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 
 
 	@Override
-	public Boolean isNullView() {
+	public Boolean isEmptyView() {
 	    return false;
 	}
 	

@@ -170,7 +170,7 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 	final CyNetworkView view = cyNetworkViewFactory.getNetworkView(network);
 	this.cyNetworkViews = new CyNetworkView[]{view};
 	
-	if(view.isNullView())
+	if(view.isEmptyView())
 	    return view;
 	
 	final CyLayoutAlgorithm layout = layouts.getDefaultLayout();

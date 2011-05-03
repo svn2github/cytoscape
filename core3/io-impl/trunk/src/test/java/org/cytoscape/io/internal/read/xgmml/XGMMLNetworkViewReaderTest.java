@@ -70,7 +70,7 @@ public class XGMMLNetworkViewReaderTest extends AbstractNetworkViewReaderTester 
 	CyNetworkView[] nullViews = getViews("galFiltered.xgmml");
 	assertNotNull(nullViews);
 	assertEquals(1, nullViews.length);
-	assertTrue(nullViews[0].isNullView());
+	assertTrue(nullViews[0].isEmptyView());
 	this.viewThreshold = this.DEF_THRESHOLD;
     }
 

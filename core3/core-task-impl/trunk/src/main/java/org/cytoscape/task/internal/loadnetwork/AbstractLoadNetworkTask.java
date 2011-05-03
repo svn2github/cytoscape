@@ -120,7 +120,7 @@ class GenerateNetworkViewsTask extends AbstractTask {
 	    networkManager.addNetwork(cyNetwork);
 	    
 	    // Do the following only for non-null views.
-	    if (view.isNullView() == false) {
+	    if (view.isEmptyView() == false) {
 		networkViewManager.addNetworkView(view);
 		view.fitContent();
 	    } else {
