@@ -50,112 +50,112 @@ import org.cytoscape.work.TaskMonitor;
  * Task to load a new network.
  */
 abstract public class AbstractLoadNetworkTask extends AbstractTask {
-    protected CyNetworkViewReader reader;
-    protected URI uri;
-    protected TaskMonitor taskMonitor;
-    protected String name;
-    protected boolean interrupted = false;
-    protected CyNetworkViewReaderManager mgr;
-    protected CyNetworkManager networkManager;
-    protected CyNetworkViewManager networkViewManager;
-    protected Properties props;
-    protected CyNetworkNaming namingUtil;
+	protected CyNetworkViewReader reader;
+	protected URI uri;
+	protected TaskMonitor taskMonitor;
+	protected String name;
+	protected boolean interrupted = false;
+	protected CyNetworkViewReaderManager mgr;
+	protected CyNetworkManager networkManager;
+	protected CyNetworkViewManager networkViewManager;
+	protected Properties props;
+	protected CyNetworkNaming namingUtil;
 
-    public AbstractLoadNetworkTask(final CyNetworkViewReaderManager mgr, final CyNetworkManager networkManager,
-	    final CyNetworkViewManager networkViewManager, final Properties props, final CyNetworkNaming namingUtil) {
-	this.mgr = mgr;
-	this.networkManager = networkManager;
-	this.networkViewManager = networkViewManager;
-	this.props = props;
-	this.namingUtil = namingUtil;
-    }
+	public AbstractLoadNetworkTask(final CyNetworkViewReaderManager mgr, final CyNetworkManager networkManager,
+			final CyNetworkViewManager networkViewManager, final Properties props, final CyNetworkNaming namingUtil) {
+		this.mgr = mgr;
+		this.networkManager = networkManager;
+		this.networkViewManager = networkViewManager;
+		this.props = props;
+		this.namingUtil = namingUtil;
+	}
 
-    protected void loadNetwork(final CyNetworkViewReader viewReader) throws Exception {
-	if (viewReader == null)
-	    throw new IllegalArgumentException("Could not read file: Network View Reader is null.");
+	protected void loadNetwork(final CyNetworkViewReader viewReader) throws Exception {
+		if (viewReader == null)
+			throw new IllegalArgumentException("Could not read file: Network View Reader is null.");
 
-	taskMonitor.setStatusMessage("Reading in Network Data...");
-	taskMonitor.setProgress(-1.0);
-	taskMonitor.setStatusMessage("Creating Cytoscape Network...");
+		taskMonitor.setStatusMessage("Reading in Network Data...");
+		taskMonitor.setProgress(-1.0);
+		taskMonitor.setStatusMessage("Creating Cytoscape Network...");
 
-	insertTasksAfterCurrentTask(viewReader, new GenerateNetworkViewsTask(name, viewReader, networkManager,
-		networkViewManager, namingUtil, props));
-    }
+		insertTasksAfterCurrentTask(viewReader, new GenerateNetworkViewsTask(name, viewReader, networkManager,
+				networkViewManager, namingUtil, props));
+	}
 
-    @Override
-    abstract public void run(TaskMonitor taskMonitor) throws Exception;
+	@Override
+	abstract public void run(TaskMonitor taskMonitor) throws Exception;
 }
 
 class GenerateNetworkViewsTask extends AbstractTask {
-    private final String name;
-    private final CyNetworkViewReader viewReader;
-    private final CyNetworkManager networkManager;
-    private final CyNetworkViewManager networkViewManager;
-    private final CyNetworkNaming namingUtil;
-    private final Properties props;
+	private final String name;
+	private final CyNetworkViewReader viewReader;
+	private final CyNetworkManager networkManager;
+	private final CyNetworkViewManager networkViewManager;
+	private final CyNetworkNaming namingUtil;
+	private final Properties props;
 
-    GenerateNetworkViewsTask(final String name, final CyNetworkViewReader viewReader,
-	    final CyNetworkManager networkManager, final CyNetworkViewManager networkViewManager,
-	    final CyNetworkNaming namingUtil, final Properties props) {
-	this.name = name;
-	this.viewReader = viewReader;
-	this.networkManager = networkManager;
-	this.networkViewManager = networkViewManager;
-	this.namingUtil = namingUtil;
-	this.props = props;
-    }
-
-    public void run(final TaskMonitor taskMonitor) throws Exception {
-	final CyNetworkView[] cyNetworkViews = viewReader.getNetworkViews();
-
-	if (cyNetworkViews == null || cyNetworkViews.length < 0)
-	    throw new IOException("Could not create network for the producer.");
-
-	for (CyNetworkView view : cyNetworkViews) {
-	    if (cancelled)
-		return;
-
-	    final CyNetwork cyNetwork = view.getModel();
-	    cyNetwork.getCyRow().set(CyTableEntry.NAME, namingUtil.getSuggestedNetworkTitle(name));
-	    networkManager.addNetwork(cyNetwork);
-	    
-	    // Do the following only for non-null views.
-	    if (view.isEmptyView() == false) {
-		networkViewManager.addNetworkView(view);
-		view.fitContent();
-	    } else {
-		view = null;
-	    }
-
-	    informUserOfGraphStats(cyNetwork, taskMonitor);
+	GenerateNetworkViewsTask(final String name, final CyNetworkViewReader viewReader,
+			final CyNetworkManager networkManager, final CyNetworkViewManager networkViewManager,
+			final CyNetworkNaming namingUtil, final Properties props) {
+		this.name = name;
+		this.viewReader = viewReader;
+		this.networkManager = networkManager;
+		this.networkViewManager = networkViewManager;
+		this.namingUtil = namingUtil;
+		this.props = props;
 	}
 
-	taskMonitor.setProgress(1.0);
-    }
+	public void run(final TaskMonitor taskMonitor) throws Exception {
+		final CyNetworkView[] cyNetworkViews = viewReader.getNetworkViews();
 
-    /**
-     * Inform User of Network Stats.
-     */
-    private void informUserOfGraphStats(final CyNetwork newNetwork, final TaskMonitor taskMonitor) {
-	NumberFormat formatter = new DecimalFormat("#,###,###");
-	StringBuffer sb = new StringBuffer();
+		if (cyNetworkViews == null || cyNetworkViews.length < 0)
+			throw new IOException("Could not create network for the producer.");
 
-	// Give the user some confirmation
-	sb.append("Successfully loaded network from:  ");
-	sb.append(name);
-	sb.append("\n\nNetwork contains " + formatter.format(newNetwork.getNodeCount()));
-	sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
-	sb.append(" edges.\n\n");
+		for (CyNetworkView view : cyNetworkViews) {
+			if (cancelled)
+				return;
 
-	String thresh = props.getProperty("viewThreshold");
+			final CyNetwork cyNetwork = view.getModel();
+			cyNetwork.getCyRow().set(CyTableEntry.NAME, namingUtil.getSuggestedNetworkTitle(name));
+			networkManager.addNetwork(cyNetwork);
 
-	if (newNetwork.getNodeCount() < Integer.parseInt(thresh)) {
-	    sb.append("Network is under " + thresh + " nodes.  A view will be automatically created.");
-	} else {
-	    sb.append("Network is over " + thresh + " nodes.  A view has not been created."
-		    + "  If you wish to view this network, use " + "\"Create View\" from the \"Edit\" menu.");
+			// Do the following only for non-null views.
+			if (view.isEmptyView() == false) {
+				networkViewManager.addNetworkView(view);
+				view.fitContent();
+			} else {
+				view = null;
+			}
+
+			informUserOfGraphStats(cyNetwork, taskMonitor);
+		}
+
+		taskMonitor.setProgress(1.0);
 	}
 
-	taskMonitor.setStatusMessage(sb.toString());
-    }
+	/**
+	 * Inform User of Network Stats.
+	 */
+	private void informUserOfGraphStats(final CyNetwork newNetwork, final TaskMonitor taskMonitor) {
+		NumberFormat formatter = new DecimalFormat("#,###,###");
+		StringBuffer sb = new StringBuffer();
+
+		// Give the user some confirmation
+		sb.append("Successfully loaded network from:  ");
+		sb.append(name);
+		sb.append("\n\nNetwork contains " + formatter.format(newNetwork.getNodeCount()));
+		sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
+		sb.append(" edges.\n\n");
+
+		String thresh = props.getProperty("viewThreshold");
+
+		if (newNetwork.getNodeCount() < Integer.parseInt(thresh)) {
+			sb.append("Network is under " + thresh + " nodes.  A view will be automatically created.");
+		} else {
+			sb.append("Network is over " + thresh + " nodes.  A view has not been created."
+					+ "  If you wish to view this network, use " + "\"Create View\" from the \"Edit\" menu.");
+		}
+
+		taskMonitor.setStatusMessage(sb.toString());
+	}
 }
