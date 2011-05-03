@@ -1,4 +1,4 @@
-package org.cytoscape.view.model; 
+package org.cytoscape.view.model;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -9,20 +9,22 @@ import org.ops4j.pax.exam.junit.MavenConfiguredJUnit4TestRunner;
 import org.cytoscape.integration.ServiceTestSupport;
 
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.property.CyProperty;
 import org.cytoscape.service.util.CyServiceRegistrar;
 
 @RunWith(MavenConfiguredJUnit4TestRunner.class)
 public class ServiceConfigurationTest extends ServiceTestSupport {
 
-	@Before
-	public void setup() {
-		registerMockService(CyEventHelper.class);
-		registerMockService(CyServiceRegistrar.class);
-	}
+    @Before
+    public void setup() {
+	registerMockService(CyProperty.class);
+	registerMockService(CyEventHelper.class);
+	registerMockService(CyServiceRegistrar.class);
+    }
 
-	@Test
-	public void testExpectedServices() {
-		checkService(CyNetworkViewFactory.class);
-		checkService(CyNetworkViewManager.class);
-	}
+    @Test
+    public void testExpectedServices() {
+	checkService(CyNetworkViewFactory.class);
+	checkService(CyNetworkViewManager.class);
+    }
 }
