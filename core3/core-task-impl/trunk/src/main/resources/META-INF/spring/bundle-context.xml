@@ -350,7 +350,7 @@
 	</bean>
 
 	<bean id="bioGridPreprocessor"
-		class="org.cytoscape.task.internal.quickstart.remote.BioGridPreprocessor">
+		class="org.cytoscape.task.internal.quickstart.datasource.BioGridPreprocessor">
 		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>
 

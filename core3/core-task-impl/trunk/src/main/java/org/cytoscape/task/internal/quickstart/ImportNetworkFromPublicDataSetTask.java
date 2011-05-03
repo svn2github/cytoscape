@@ -14,7 +14,7 @@ import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.internal.loadnetwork.AbstractLoadNetworkTask;
-import org.cytoscape.task.internal.quickstart.remote.InteractionFilePreprocessor;
+import org.cytoscape.task.internal.quickstart.datasource.InteractionFilePreprocessor;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;

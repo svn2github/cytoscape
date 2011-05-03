@@ -1,4 +1,4 @@
-package org.cytoscape.task.internal.quickstart.remote;
+package org.cytoscape.task.internal.quickstart.datasource;
 
 import java.io.IOException;
 import java.net.URL;

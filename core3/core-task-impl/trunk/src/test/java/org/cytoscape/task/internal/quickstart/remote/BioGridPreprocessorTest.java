@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.Properties;
 
 import org.cytoscape.property.CyProperty;
+import org.cytoscape.task.internal.quickstart.datasource.BioGridPreprocessor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

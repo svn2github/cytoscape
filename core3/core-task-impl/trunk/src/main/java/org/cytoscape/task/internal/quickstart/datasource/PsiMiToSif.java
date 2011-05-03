@@ -1,4 +1,4 @@
-package org.cytoscape.task.internal.quickstart.remote;
+package org.cytoscape.task.internal.quickstart.datasource;
 
 public class PsiMiToSif {
 

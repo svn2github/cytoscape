@@ -636,7 +636,7 @@
 		auto-export="interfaces" />
 
 	<osgi:set id="processorSetRef"
-		interface="org.cytoscape.task.internal.quickstart.remote.InteractionFilePreprocessor"
+		interface="org.cytoscape.task.internal.quickstart.datasource.InteractionFilePreprocessor"
 		cardinality="0..N">
 		<osgi:listener bind-method="addProcessor" unbind-method="removeProcessor"
 			ref="importTaskUtil" />

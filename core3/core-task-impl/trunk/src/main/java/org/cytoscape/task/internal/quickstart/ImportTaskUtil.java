@@ -15,7 +15,7 @@ import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.internal.loadnetwork.LoadNetworkFileTask;
 import org.cytoscape.task.internal.loadnetwork.LoadNetworkURLTask;
-import org.cytoscape.task.internal.quickstart.remote.InteractionFilePreprocessor;
+import org.cytoscape.task.internal.quickstart.datasource.InteractionFilePreprocessor;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.Task;
 
