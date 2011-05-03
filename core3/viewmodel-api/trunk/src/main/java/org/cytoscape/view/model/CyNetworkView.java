@@ -48,8 +48,6 @@ import org.cytoscape.model.CyTableEntry;
  * 
  * Consolidated data structure for graph object views.
  * 
- * @author kono
- * 
  */
 public interface CyNetworkView extends View<CyNetwork> {
 
@@ -95,7 +93,15 @@ public interface CyNetworkView extends View<CyNetwork> {
 	Collection<View<? extends CyTableEntry>> getAllViews();
 	
 	
-	Boolean isNullView();
+	/**
+	 * Returns true if this is an empty view object.
+	 * Usually, the empty view is used when network model is too big to visualize.
+	 * {@link CyNetworkViewFactory} checks viewThreshold property value to create regular 
+	 * view model implementation or empty view model.  
+	 * 
+	 * @return true if this is an empty view model.
+	 */
+	Boolean isEmptyView();
 	
 	
 	/**

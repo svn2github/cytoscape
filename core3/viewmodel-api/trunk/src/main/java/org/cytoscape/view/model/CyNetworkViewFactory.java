@@ -47,10 +47,21 @@ public interface CyNetworkViewFactory {
 	/** 
 	 * Create a {@linkplain CyNetworkView} from a {@linkplain org.cytoscape.model.CyNetwork} object. 
 	 * 
+	 * This method always checks viewThreshold property value and returns empty view if number of 
+	 * graph objects (nodes and edges) is above the threshold.
+	 * 
 	 * @param network for which the CyNetworkView is to be created
 	 * @return the view model for the network data model
 	 */
 	public CyNetworkView getNetworkView(final CyNetwork network);
 	
+	/**
+	 * Creates view with or without using viewThreshold property.
+	 * 
+	 * @param network network data model for this view. 
+	 * @param useThreshold if false, this factory creates actual view model by ignoring threshold.
+	 * 
+	 * @return View model for the given data model.
+	 */
 	public CyNetworkView getNetworkView(final CyNetwork network, final Boolean useThreshold);
 }
