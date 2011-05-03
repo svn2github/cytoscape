@@ -27,7 +27,7 @@ import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.mappings.DiscreteMappingFactory;
 import org.cytoscape.work.Task;
 
-class SubnetworkBuilderUtil {
+public class SubnetworkBuilderUtil {
 
     private CyNetworkViewReaderManager mgr;
     private CyNetworkManager netmgr;

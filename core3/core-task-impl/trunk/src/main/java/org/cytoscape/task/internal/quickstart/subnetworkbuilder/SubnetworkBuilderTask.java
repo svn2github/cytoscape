@@ -28,7 +28,7 @@ public class SubnetworkBuilderTask extends AbstractTask {
     private final SubnetworkBuilderUtil util;
     private final SubnetworkBuilderState state;
 
-    SubnetworkBuilderTask(final CyNetworkManager networkManager, final SubnetworkBuilderUtil util) {
+    public SubnetworkBuilderTask(final CyNetworkManager networkManager, final SubnetworkBuilderUtil util) {
 	this.networkManager = networkManager;
 	this.util = util;
 	this.state = new SubnetworkBuilderState();
