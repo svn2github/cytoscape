@@ -95,6 +95,9 @@ public interface CyNetworkView extends View<CyNetwork> {
 	Collection<View<? extends CyTableEntry>> getAllViews();
 	
 	
+	Boolean isNullView();
+	
+	
 	/**
 	 * Utility method to fit content to the presentation container (usually a Swing Window).
 	 * This fires event to the presentation layer for updating presentation.
