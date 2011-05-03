@@ -28,6 +28,8 @@
 package org.cytoscape.task.internal.quickstart;
 
 
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.task.internal.quickstart.subnetworkbuilder.SubnetworkBuilderUtil;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
 
@@ -35,12 +37,17 @@ import org.cytoscape.work.TaskFactory;
 public class QuickStartTaskFactory implements TaskFactory {
 	
 	private final ImportTaskUtil util;
+	private final CyNetworkManager networkManager;
+	private final SubnetworkBuilderUtil subnetworkUtil;
 	
-	public QuickStartTaskFactory(final ImportTaskUtil util) {
+	public QuickStartTaskFactory(final ImportTaskUtil util, 
+			final CyNetworkManager networkManager, final SubnetworkBuilderUtil subnetworkUtil) {
 		this.util = util;
+		this.networkManager = networkManager;
+		this.subnetworkUtil = subnetworkUtil;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new QuickStartTask(new QuickStartState(), util));
+		return new TaskIterator(new QuickStartTask(new QuickStartState(), util, networkManager, subnetworkUtil));
 	} 
 }
