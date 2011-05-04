@@ -68,7 +68,8 @@ public class AttributeCircleLayout extends AbstractLayoutAlgorithm implements Tu
 	public AttributeCircleLayout(final UndoSupport undoSupport, final boolean supportNodeAttributes)
 	{
 		super(undoSupport, (supportNodeAttributes ? "attribute-circle": "circle"), 
-		                   (supportNodeAttributes ? "Attribute Circle Layout" : "Circle Layout") );
+		                   (supportNodeAttributes ? "Attribute Circle Layout" : "Circle Layout"),
+		                   true);
 		this.supportNodeAttributes = supportNodeAttributes;
 	}
 

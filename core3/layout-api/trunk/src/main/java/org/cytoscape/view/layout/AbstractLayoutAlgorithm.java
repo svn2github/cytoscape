@@ -48,106 +48,68 @@ import org.cytoscape.work.undo.UndoSupport;
 
 
 /**
- * The AbstractLayoutAlgorithm provides nice starting point for Layouts
- * written for Cytoscape.
+ * The AbstractLayoutAlgorithm provides a basic implementation of a layout TaskFactory.
  */
 abstract public class AbstractLayoutAlgorithm implements CyLayoutAlgorithm {
+	
+	/**
+	 * The network view that the layout will be applied to.
+	 */
 	protected CyNetworkView networkView;
 	
-	// Graph Objects and Views
-	protected Set<View<CyNode>> staticNodes;
+	/**
+	 * The network model underlying the networkView.  This shouldn't be set directly
+	 * by extending classes.
+	 */
 	protected CyNetwork network;
 
-	//
-	protected boolean selectedOnly = false;
-	protected String edgeAttribute = null;
-	protected String nodeAttribute = null;
-	protected boolean canceled = false;
-	protected Dimension currentSize = new Dimension(20, 20);
-	protected HashMap propertyMap = null;  // TODO figure out if this is used in a child somewhere
-	protected HashMap savedPropertyMap = null;  // TODO figure out if this is used in a child somewhere
+	/**
+	 * The UndoSupport object use for allowing undo of layouts.
+	 */
+	protected final UndoSupport undo;
 //	private ViewChangeEdit undoableEdit;
-
-	// Should definitely be overridden!
-	protected String propertyPrefix = "abstract";
-	protected UndoSupport undo;
-
+	
+	/**
+	 * The set of nodes that are  
+	 */
+	protected Set<View<CyNode>> staticNodes = new HashSet<View<CyNode>>();
+	
+	/**
+	 * Indicates that only selected nodes should be laid out.
+	 */
+	protected boolean selectedOnly;
+	
+	private final boolean supportsSelectedOnly;
+	private String edgeAttribute = null;
+	private String nodeAttribute = null;
+	private Dimension currentSize = new Dimension(20, 20);
 	private final String humanName;
 	private final String computerName;
 
 	/**
-	 * The Constructor is null
+	 * The Constructor.
 	 */
-	public AbstractLayoutAlgorithm(UndoSupport undo, String computerName, String humanName) {
-		this.staticNodes = new HashSet<View<CyNode>>();
+	public AbstractLayoutAlgorithm(final UndoSupport undo, final String computerName, final String humanName, boolean supportsSelectedOnly) {
 		this.undo = undo;
 		this.computerName = computerName;
 		this.humanName = humanName;
+		this.supportsSelectedOnly = supportsSelectedOnly;
 	}
 
+	/**
+	 * Sets the network view to be laid out.
+	 * @param networkView the network view to be laid out.
+	 */
 	@Override
 	public void setNetworkView(final CyNetworkView networkView) {
 		this.networkView = networkView;
+		this.network = networkView.getModel();
+		double node_count = (double) network.getNodeCount();
+		node_count = Math.sqrt(node_count);
+		node_count *= 100;
+		currentSize = new Dimension((int) node_count, (int) node_count);
 	}
-
-	/**
-	 * getName is used to construct property strings
-	 * for this layout.
-	 */
-	public String getName() {
-		return computerName;
-	}
-
-	/**
-	 * toString is used to get the user-visible name
-	 * of the layout
-	 */
-	public String toString() {
-		return humanName;
-	}
-
-	/**
-	 * These methods should be overridden
-	 */
-	public boolean supportsSelectedOnly() {
-		return false;
-	}
-
-	/**
-	 * Set the flag that indicates that this algorithm
-	 * should only operate on the currently selected nodes.
-	 *
-	 * @param selectedOnly set to "true" if the algorithm should
-	 * only apply to selected nodes only
-	 */
-	public void setSelectedOnly(boolean selectedOnly) {
-		this.selectedOnly = selectedOnly;
-	}
-
-	/**
-	 * Returns the types of node attributes supported by
-	 * this algorithm.  This should be overloaded by the
-	 * specific algorithm
-	 *
-	 * @return the list of supported attribute types, or null
-	 * if node attributes are not supported
-	 */
-	public Set<Class<?>> supportsNodeAttributes() {
-		return new HashSet<Class<?>>();
-	}
-
-	/**
-	 * Returns the types of edge attributes supported by
-	 * this algorithm.  This should be overloaded by the
-	 * specific algorithm
-	 *
-	 * @return the list of supported attribute types, or null
-	 * if edge attributes are not supported
-	 */
-	public Set<Class<?>> supportsEdgeAttributes() {
-		return new HashSet<Class<?>>();
-	}
-
+	
 	/**
 	 * Set the name of the attribute to use for attribute
 	 * dependent layout algorithms.
@@ -161,10 +123,63 @@ abstract public class AbstractLayoutAlgorithm implements CyLayoutAlgorithm {
 			edgeAttribute = attributeName;
 		}
 	}
-
-	/*
-	 * Override this if you want to provide a custom attribute
+	
+	/**
+	 * Set the flag that indicates that this algorithm
+	 * should only operate on the currently selected nodes.
+	 *
+	 * @param selectedOnly set to "true" if the algorithm should
+	 * only apply to selected nodes only
 	 */
+	public void setSelectedOnly(boolean selectedOnly) {
+		this.selectedOnly = selectedOnly;
+	}
+
+	/**
+	 * A computer readable name used to construct property strings.
+	 */
+	public String getName() {
+		return computerName;
+	}
+
+	/**
+	 * Used to get the user-visible name of the layout.
+	 */
+	public String toString() {
+		return humanName;
+	}
+
+	/**
+	 * Indicates whether this algorithm supports applying the layout 
+	 * only to selected nodes.
+	 */
+	public final boolean supportsSelectedOnly() {
+		return supportsSelectedOnly;
+	}
+
+	/**
+	 * Returns the types of node attributes supported by
+	 * this algorithm.  This should be overridden by the
+	 * specific algorithm.
+	 *
+	 * @return the list of supported attribute types, or null
+	 * if node attributes are not supported
+	 */
+	public Set<Class<?>> supportsNodeAttributes() {
+		return new HashSet<Class<?>>();
+	}
+
+	/**
+	 * Returns the types of edge attributes supported by
+	 * this algorithm.  This should be overridden by the
+	 * specific algorithm.
+	 *
+	 * @return the list of supported attribute types, or null
+	 * if edge attributes are not supported
+	 */
+	public Set<Class<?>> supportsEdgeAttributes() {
+		return new HashSet<Class<?>>();
+	}
 
 	/**
 	 * This returns the list of "attributes" that are provided
@@ -179,31 +194,8 @@ abstract public class AbstractLayoutAlgorithm implements CyLayoutAlgorithm {
 		return new ArrayList<String>();
 	}
 
-	/**
-	 * Initializer, calls <tt>intialize_local</tt> to
-	 * start construction process.
-	 */
-	public void initialize() {
-		double node_count = (double) network.getNodeCount();
-		node_count = Math.sqrt(node_count);
-		node_count *= 100;
-		currentSize = new Dimension((int) node_count, (int) node_count);
-		initialize_local();
-	}
-
-	/**
-	 * Initializes all local information, and is called immediately
-	 * within the <tt>initialize()</tt> process.
-	 * The user is responsible for overriding this method
-	 * to do any construction that may be necessary:
-	 * for example, to initialize local per-edge or
-	 * graph-wide data.
-	 */
-	protected void initialize_local() {
-	}
-
 	/** 
-	 * Descendents need to call this if they intend to use the "staticNodes" field.
+	 * Descendants need to call this if they intend to use the "staticNodes" field.
 	 */
 	public final void initStaticNodes() {
 		staticNodes.clear();

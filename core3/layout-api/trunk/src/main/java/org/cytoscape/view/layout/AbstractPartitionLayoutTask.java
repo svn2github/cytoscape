@@ -10,6 +10,8 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *  This is a more helpful implementation of a LayoutAlgorithm Task 
@@ -20,24 +22,52 @@ import org.cytoscape.work.TaskMonitor;
  *  method as an argument.
  */
 public abstract class AbstractPartitionLayoutTask extends AbstractBasicLayoutTask {
+	
+	private static Logger logger = LoggerFactory.getLogger(AbstractPartitionLayoutTask.class);
+	
+	/**
+	 * The TaskMonitor initially set in the run method of the task. 
+	 * Used to track the layout progress.
+	 */
 	protected TaskMonitor taskMonitor;
 
-	double incr = 100;
+	/**
+	 * The value used for spacing nodes.  Defaults to 100.
+	 */
+	protected double incr = 100;
+	
+	/**
+	 * The list of LayoutPartition objects that get laid out.
+	 */
 	protected List <LayoutPartition> partitionList = null;
+	
+	/**
+	 * The EdgeWeighter used for edge weight calculations.
+	 */
 	protected EdgeWeighter edgeWeighter = null;
-	private boolean singlePartition;
+	
+	private final boolean singlePartition;
 
-	// Information for taskMonitor
-	double current_start = 0;	// Starting node number
-	double	current_size = 0;		// Partition size
-	double	total_nodes = 0;		// Total number of nodes
+	/**
+	 * Starting node number used for taskMonitor.
+	 */
+	protected double current_start = 0;
+	
+	/**
+	 * Partition size used for taskMonitor.
+	 */
+	protected double current_size = 0;
+	
+	/**
+	 * Total number of nodes used for taskMonitor.
+	 */
+	protected double total_nodes = 0;
 
 	/**
 	 * Creates a new AbstractPartitionLayoutTask object.
 	 */
 	public AbstractPartitionLayoutTask(final CyNetworkView networkView, final String name,
-				      final boolean singlePartition,
-	                              final boolean selectedOnly, final Set<View<CyNode>> staticNodes) {
+				      final boolean singlePartition, final boolean selectedOnly, final Set<View<CyNode>> staticNodes) {
 		super(networkView, name, selectedOnly, staticNodes);
 		this.singlePartition = singlePartition;
 	}
@@ -51,44 +81,25 @@ public abstract class AbstractPartitionLayoutTask extends AbstractBasicLayoutTas
 	public abstract void layoutPartion(LayoutPartition partition);
 
 	/**
-	 *  DOCUMENT ME!
+	 * Returns true if the layout supports only applying the layout to selected nodes.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return True if the layout supports only applying the layout to selected nodes.
 	 */
 	public boolean supportsSelectedOnly() {
 		return true;
 	}
 
 	/**
-	 * Sets the singlePartition flag, which disables partitioning. This
-	 * can be used by users who do not want to partition their graph for
-	 * some reason.
+	 * Used for 
 	 *
-	 * @param partitioning if false, no paritioning will be done
-	 */
-	public void setPartition(final boolean partitioning) {
-		singlePartition = !partitioning;
-	}
-
-	/**
-	 * Sets the singlePartition flag, which disables partitioning. This
-	 * can be used by users who do not want to partition their graph for
-	 * some reason.
-	 *
-	 * @param value if "false", no paritioning will be done
-	 */
-	public void setPartition(String value) {
-		Boolean val = new Boolean(value);
-		setPartition(val.booleanValue());
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param percent The percentage of completion for this partition
+	 * @param percent The percentage of completion for this partition. Value must be between 0 and 100.
 	 */
 	protected void setTaskStatus(int percent) {
 		if (taskMonitor != null) {
+			if ( percent < 0 || percent > 100 ) {
+				logger.warn("invalid percent value set for layout status (must be between 0 and 100): " + percent);
+				return;
+			}	
 			// Calculate the nodes done for this partition
 			double nodesDone = current_size*(double)percent/100.;
 			// Calculate the percent done overall
@@ -99,8 +110,11 @@ public abstract class AbstractPartitionLayoutTask extends AbstractBasicLayoutTas
 	}
 
 	/**
-	 * AbstractGraphPartitionLayout implements the constuct method
-	 * and calls layoutPartion for each partition.
+	 * AbstractGraphPartitionLayout implements the doLayout method
+	 * of AbstractBasicLayout in which it calls the layoutParition
+	 * method on each LayoutPartition object created for the network.
+	 * @param taskMonitor the TaskMonitor provided by the run() method
+	 * of the Task.
 	 */
 	public void doLayout(final TaskMonitor taskMonitor) {
 		final CyNetwork network = networkView.getModel();

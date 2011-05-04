@@ -85,7 +85,7 @@ public class GroupAttributesLayout extends AbstractLayoutAlgorithm {
 	 * Creates a new GroupAttributesLayout object.
 	 */
 	public GroupAttributesLayout(UndoSupport undoSupport, CyTableManager tableMgr) {
-		super(undoSupport, "attributes-layout", "Group Attributes Layout");
+		super(undoSupport, "attributes-layout", "Group Attributes Layout", true);
 		this.tableMgr = tableMgr;
 	}
 

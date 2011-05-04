@@ -58,8 +58,6 @@ import org.cytoscape.work.TaskMonitor;
 
 /**
  * This class also provides static methods that are used to partition a network. 
- *
- * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  */
 public final class PartitionUtil {
 

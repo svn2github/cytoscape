@@ -92,7 +92,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayoutAlgorithm impleme
 	 * Creates a new HierarchicalLayoutAlgorithm object.
 	 */
 	public HierarchicalLayoutAlgorithm(UndoSupport undoSupport) {
-		super(undoSupport, "hierarchical", "Hierarchical Layout");
+		super(undoSupport, "hierarchical", "Hierarchical Layout",true);
 	}
 
 	// TODO
@@ -106,11 +106,5 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayoutAlgorithm impleme
 		return new TaskIterator(new HierarchicalLayoutAlgorithmTask(networkView, getName(), selectedOnly, staticNodes,
 				nodeHorizontalSpacing, nodeVerticalSpacing, componentSpacing, bandGap,leftEdge, topEdge,
 				rightMargin, selected_only));
-	}
-	
-	// We do support selected only
-	@Override
-	public boolean supportsSelectedOnly() {
-		return true;
 	}
 }

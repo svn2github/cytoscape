@@ -68,7 +68,7 @@ public class StackedNodeLayout extends AbstractLayoutAlgorithm implements Tunabl
 	 * @param nodes  DOCUMENT ME!
 	 */
 	public StackedNodeLayout(UndoSupport undoSupport) {
-		super(undoSupport, "stacked-node-layout", "Stacked Node Layout");
+		super(undoSupport, "stacked-node-layout", "Stacked Node Layout", true);
 	}
 
 	public TaskIterator getTaskIterator() {

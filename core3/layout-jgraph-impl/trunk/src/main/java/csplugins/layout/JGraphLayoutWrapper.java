@@ -35,7 +35,7 @@ public class JGraphLayoutWrapper extends AbstractLayoutAlgorithm implements Tuna
 	 */
 	public JGraphLayoutWrapper(UndoSupport un, int layout_type) {
 		// names here will be overridden by provided methods
-		super(un, "jgraph", "jgraph");
+		super(un, "jgraph", "jgraph", true);
 		
 		this.layout_type = layout_type;
 
@@ -163,14 +163,5 @@ public class JGraphLayoutWrapper extends AbstractLayoutAlgorithm implements Tuna
 		}
 
 		return "";
-	}
-
-	/**
-	 * We do support selected only
-	 *
-	 * @return true
-	 */
-	public boolean supportsSelectedOnly() {
-		return true;
 	}
 }

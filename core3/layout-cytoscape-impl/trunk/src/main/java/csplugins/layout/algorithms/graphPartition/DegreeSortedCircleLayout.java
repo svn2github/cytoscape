@@ -31,7 +31,7 @@ public class DegreeSortedCircleLayout extends AbstractLayoutAlgorithm implements
 	 * Creates a new DegreeSortedCircleLayout object.
 	 */
 	public DegreeSortedCircleLayout(UndoSupport undoSupport, CyTableManager tableMgr) {
-		super(undoSupport, "degree-circle", "Degree Sorted Circle Layout");
+		super(undoSupport, "degree-circle", "Degree Sorted Circle Layout", true);
 		this.tableMgr = tableMgr;
 	}
 

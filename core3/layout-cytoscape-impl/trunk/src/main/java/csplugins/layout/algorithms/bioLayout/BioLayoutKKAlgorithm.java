@@ -82,7 +82,8 @@ public class BioLayoutKKAlgorithm  extends AbstractLayoutAlgorithm implements Tu
 
 	public BioLayoutKKAlgorithm(UndoSupport un, boolean supportEdgeWeights) {
 		super(un, (supportEdgeWeights ?  "kamada-kawai" : "kamada-kawai-noweight"),
-		          (supportEdgeWeights ?  "Edge-weighted Spring Embedded" : "Spring Embedded") );
+		          (supportEdgeWeights ?  "Edge-weighted Spring Embedded" : "Spring Embedded"),
+		          true);
 		supportWeights = supportEdgeWeights;
 	}
 

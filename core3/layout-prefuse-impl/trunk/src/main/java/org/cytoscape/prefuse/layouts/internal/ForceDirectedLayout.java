@@ -51,7 +51,7 @@ public class ForceDirectedLayout extends AbstractLayoutAlgorithm implements Tuna
 	 * Creates a new GridNodeLayout object.
 	 */
 	public ForceDirectedLayout(UndoSupport un) {
-		super(un, "force-directed", "Force Directed Layout");
+		super(un, "force-directed", "Force Directed Layout", true);
 	}
 
 	public boolean tunablesAreValid(final Appendable errMsg) {
@@ -73,14 +73,5 @@ public class ForceDirectedLayout extends AbstractLayoutAlgorithm implements Tuna
 						    numIterations, defaultSpringCoefficient,
 						    defaultSpringLength, defaultNodeMass, integrator,
 						    singlePartition));
-	}
-
-	/**
-	 * We do support selected only
-	 *
-	 * @return true
-	 */
-	public boolean supportsSelectedOnly() {
-		return true;
 	}
 }

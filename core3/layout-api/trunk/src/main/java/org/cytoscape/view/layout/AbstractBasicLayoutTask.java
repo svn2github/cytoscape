@@ -27,14 +27,38 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractBasicLayoutTask extends AbstractTask {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AbstractBasicLayoutTask.class);
+	private final String name;
+	
+	/**
+	 * The table column name that provides the layout algorithm name.
+	 */
 	protected static final String LAYOUT_ALGORITHM = "layoutAlgorithm";
 
+	/**
+	 * The network view that the layout will be applied to.
+	 */
 	protected final CyNetworkView networkView;
-	protected final boolean selectedOnly;
+	
+	/**
+	 * The set of nodes whose positions are locked and not meant to change.
+	 */
 	protected final Set<View<CyNode>> staticNodes;
+	
+	/**
+	 * Indicates whether to apply the layout to all nodes or only the selected nodes.
+	 */
+	protected final boolean selectedOnly;
 
-	private final String name;
-
+	/**
+	 * Constructor.
+	 * @param networkView The network view that the layout algorithm will be applied to.
+	 * @param name The name of the algorithm.  Used for setting attributes associated with 
+	 * this layout.
+	 * @param selectedOnly Indicates whether the layout should be applied to the selected nodes
+	 * or not.
+	 * @param staticNodes The list of nodes whose positions are meant to be locked and
+	 * not changed.
+	 */
 	public AbstractBasicLayoutTask(final CyNetworkView networkView, final String name, boolean selectedOnly,
 			  final Set<View<CyNode>> staticNodes)
 	{
@@ -45,7 +69,7 @@ public abstract class AbstractBasicLayoutTask extends AbstractTask {
 		this.selectedOnly = selectedOnly;
 		this.staticNodes = staticNodes;
 	}
-
+ 
 	@Override
 	public final void run(final TaskMonitor taskMonitor)  {
 		final long start = System.currentTimeMillis();
@@ -75,10 +99,19 @@ public abstract class AbstractBasicLayoutTask extends AbstractTask {
 		logger.debug("Layout finished: " + (System.currentTimeMillis()-start) + " msec.");
 	}
 
-
+	/**
+	 * Returns true if the specified node view is locked in place, false otherwise.
+	 * @param v The node view to test.
+	 * @return True if the specified node view is locked in place, false otherwise.
+	 */
 	protected boolean isLocked(View<CyNode> v) {
 		return ((staticNodes != null) && (staticNodes.contains(v)));
 	}
 
+	/**
+	 * This method is designed to actually encapsulate the layout algorithm. It will be
+	 * called from within the run() method of the task.  
+	 * @param taskMonitor Provided to allow updates to the task status.
+	 */
 	protected abstract void doLayout(final TaskMonitor taskMonitor);
 }

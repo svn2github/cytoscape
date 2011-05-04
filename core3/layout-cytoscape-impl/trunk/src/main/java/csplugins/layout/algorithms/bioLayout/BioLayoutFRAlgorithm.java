@@ -1,5 +1,4 @@
 /**
- * Copyright (c) 2006 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -122,7 +121,7 @@ public class BioLayoutFRAlgorithm extends AbstractLayoutAlgorithm implements Tun
 	 */
 	public BioLayoutFRAlgorithm(UndoSupport undoSupport, boolean supportEdgeWeights) {
 		
-		super(undoSupport, "fruchterman-rheingold", (supportEdgeWeights ?  "Edge-weighted Force directed (BioLayout)" : "Force directed (BioLayout)"));
+		super(undoSupport, "fruchterman-rheingold", (supportEdgeWeights ?  "Edge-weighted Force directed (BioLayout)" : "Force directed (BioLayout)"), true);
 
 		supportWeights = supportEdgeWeights;
 

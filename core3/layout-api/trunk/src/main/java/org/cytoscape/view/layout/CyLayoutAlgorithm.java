@@ -40,7 +40,9 @@ import javax.swing.*;
 import java.util.List;
 import java.util.Set;
 
-
+/**
+ * An extension of NetworkViewTaskFactory specific to layout algorithms.
+ */
 public interface CyLayoutAlgorithm extends NetworkViewTaskFactory {
 	/**
 	 * Tests to see if this layout supports doing a layout on a subset of the

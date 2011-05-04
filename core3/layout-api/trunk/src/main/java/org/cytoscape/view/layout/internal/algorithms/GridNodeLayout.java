@@ -63,7 +63,7 @@ public class GridNodeLayout extends AbstractLayoutAlgorithm implements TunableVa
 	 * Creates a new GridNodeLayout object.
 	 */
 	public GridNodeLayout(UndoSupport un) {
-		super(un,CyLayoutAlgorithmManager.DEFAULT_LAYOUT_NAME,"Grid Layout");
+		super(un,CyLayoutAlgorithmManager.DEFAULT_LAYOUT_NAME,"Grid Layout", true);
 	}
 
 	public boolean tunablesAreValid(final Appendable errMsg) {
@@ -85,14 +85,5 @@ public class GridNodeLayout extends AbstractLayoutAlgorithm implements TunableVa
 			initStaticNodes();
 		return new TaskIterator(new GridNodeLayoutTask(networkView, getName(), selectedOnly, staticNodes,
 							       nodeVerticalSpacing, nodeHorizontalSpacing));
-	}
-
-	/**
-	 * We do support selected only
-	 *
-	 * @return true
-	 */
-	public boolean supportsSelectedOnly() {
-		return true;
 	}
 }

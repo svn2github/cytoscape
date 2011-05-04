@@ -39,7 +39,7 @@ public class ISOMLayout extends AbstractLayoutAlgorithm implements TunableValida
 	 * Creates a new ISOMLayout object.
 	 */
 	public ISOMLayout(UndoSupport undoSupport) {
-		super(undoSupport,"isom", "Inverted Self-Organizing Map Layout");
+		super(undoSupport,"isom", "Inverted Self-Organizing Map Layout", true);
 	}
 
 	// TODO
@@ -56,14 +56,5 @@ public class ISOMLayout extends AbstractLayoutAlgorithm implements TunableValida
 					   maxEpoch, radiusConstantTime, radius, minRadius,
 					   initialAdaptation, minAdaptation, sizeFactor,
 					   coolingFactor, singlePartition));
-	}
-	
-	/**
-	 * We do support selected only
-	 *
-	 * @return true
-	 */
-	public boolean supportsSelectedOnly() {
-		return true;
 	}
 }

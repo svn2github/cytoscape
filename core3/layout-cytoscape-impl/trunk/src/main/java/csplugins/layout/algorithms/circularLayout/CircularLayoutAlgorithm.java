@@ -31,7 +31,7 @@ public class CircularLayoutAlgorithm extends AbstractLayoutAlgorithm implements 
 	 * Creates a new Layout object.
 	 */
 	public CircularLayoutAlgorithm(UndoSupport un) {
-		super(un, "circular", "Circular Layout");
+		super(un, "circular", "Circular Layout", false);
 	}
 
 	//TODO how to validate these values?
@@ -45,14 +45,5 @@ public class CircularLayoutAlgorithm extends AbstractLayoutAlgorithm implements 
 							staticNodes, nodeHorizontalSpacing,
 							nodeVerticalSpacing, leftEdge, topEdge,
 							rightMargin, singlePartition));
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean supportsSelectedOnly() {
-		return false;
 	}
 }
