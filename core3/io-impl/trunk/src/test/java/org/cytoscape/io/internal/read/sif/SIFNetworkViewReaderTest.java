@@ -17,74 +17,74 @@ import org.junit.Test;
 
 public class SIFNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 
-    /**
-     * 'typical' means that all lines have the form "node1 pd node2 [node3 node4
-     * ...]
-     */
-    @Test
-    public void testReadFromTypicalFile() throws Exception {
+	/**
+	 * 'typical' means that all lines have the form "node1 pd node2 [node3 node4
+	 * ...]
+	 */
+	@Test
+	public void testReadFromTypicalFile() throws Exception {
 
-	CyNetworkView[] views = getViews("sample.sif");
-	CyNetwork net = checkSingleNetwork(views, 31, 27);
+		CyNetworkView[] views = getViews("sample.sif");
+		CyNetwork net = checkSingleNetwork(views, 31, 27);
 
-	findInteraction(net, "YNL312W", "YPL111W", "pd", 1);
+		findInteraction(net, "YNL312W", "YPL111W", "pd", 1);
 
-	// Test low threshold
-	setViewThreshold(5);
-	CyNetworkView[] nullViews = getViews("sample.sif");
-	assertNotNull(nullViews);
-	assertTrue(nullViews[0].isEmptyView());
-    }
+		// Test low threshold
+		setViewThreshold(5);
+		CyNetworkView[] nullViews = getViews("sample.sif");
+		assertNotNull(nullViews);
+		assertTrue(nullViews[0].isEmptyView());
+	}
 
-    /**
-     * all lines have the degenerate form "node1" that is, with no interaction
-     * type and no target
-     */
-    @Test
-    public void testReadFileWithNoInteractions() throws Exception {
-	CyNetworkView[] views = getViews("degenerate.sif");
+	/**
+	 * all lines have the degenerate form "node1" that is, with no interaction
+	 * type and no target
+	 */
+	@Test
+	public void testReadFileWithNoInteractions() throws Exception {
+		CyNetworkView[] views = getViews("degenerate.sif");
 
-	CyNetwork net = checkSingleNetwork(views, 9, 0);
+		CyNetwork net = checkSingleNetwork(views, 9, 0);
 
-	for (CyNode n : net.getNodeList())
-	    assertTrue(n.getCyRow().get("name", String.class).startsWith("Y"));
-    }
+		for (CyNode n : net.getNodeList())
+			assertTrue(n.getCyRow().get("name", String.class).startsWith("Y"));
+	}
 
-    @Test
-    public void testReadMultiWordProteinsFile() throws Exception {
+	@Test
+	public void testReadMultiWordProteinsFile() throws Exception {
 
-	CyNetworkView[] views = getViews("multiWordProteins.sif");
+		CyNetworkView[] views = getViews("multiWordProteins.sif");
 
-	CyNetwork net = checkSingleNetwork(views, 28, 31);
+		CyNetwork net = checkSingleNetwork(views, 28, 31);
 
-	findInteraction(net, "26S ubiquitin dependent proteasome", "I-kappa-B-alpha", "interactsWith", 1);
-	findInteraction(net, "TRAF6", "RIP2", "interactsWith", 13);
-	findInteraction(net, "TRAF6", "ABCDE oopah", "interactsWith", 13);
-	findInteraction(net, "TRAF6", "HJKOL coltrane", "interactsWith", 13);
+		findInteraction(net, "26S ubiquitin dependent proteasome", "I-kappa-B-alpha", "interactsWith", 1);
+		findInteraction(net, "TRAF6", "RIP2", "interactsWith", 13);
+		findInteraction(net, "TRAF6", "ABCDE oopah", "interactsWith", 13);
+		findInteraction(net, "TRAF6", "HJKOL coltrane", "interactsWith", 13);
 
-    }
+	}
 
-    @Test
-    public void testReadMultiWordProteinsFileWithErrantSpaces() throws Exception {
+	@Test
+	public void testReadMultiWordProteinsFileWithErrantSpaces() throws Exception {
 
-	CyNetworkView[] views = getViews("multiWordProteinsFileTrailingSpaces.sif");
+		CyNetworkView[] views = getViews("multiWordProteinsFileTrailingSpaces.sif");
 
-	CyNetwork net = checkSingleNetwork(views, 28, 31);
+		CyNetwork net = checkSingleNetwork(views, 28, 31);
 
-	findInteraction(net, "26S ubiquitin dependent proteasome", "I-kappa-B-alpha", "interactsWith", 1);
-	findInteraction(net, "TRAF6", "RIP2", "interactsWith", 13);
-	findInteraction(net, "TRAF6", "ABCDE oopah", "interactsWith", 13);
-	findInteraction(net, "TRAF6", "HJKOL coltrane", "interactsWith", 13);
-    }
+		findInteraction(net, "26S ubiquitin dependent proteasome", "I-kappa-B-alpha", "interactsWith", 1);
+		findInteraction(net, "TRAF6", "RIP2", "interactsWith", 13);
+		findInteraction(net, "TRAF6", "ABCDE oopah", "interactsWith", 13);
+		findInteraction(net, "TRAF6", "HJKOL coltrane", "interactsWith", 13);
+	}
 
-    private CyNetworkView[] getViews(String file) throws Exception {
-	File f = new File("./src/test/resources/testData/sif/" + file);
-	final CyEventHelper eventHelper = mock(CyEventHelper.class);
-	SIFNetworkViewReader snvp = new SIFNetworkViewReader(new FileInputStream(f), layouts, viewFactory,
-		netFactory, eventHelper);
-	new TaskIterator(snvp);
-	snvp.run(taskMonitor);
+	private CyNetworkView[] getViews(String file) throws Exception {
+		File f = new File("./src/test/resources/testData/sif/" + file);
+		final CyEventHelper eventHelper = mock(CyEventHelper.class);
+		SIFNetworkViewReader snvp = new SIFNetworkViewReader(new FileInputStream(f), layouts, viewFactory, netFactory,
+				eventHelper);
+		new TaskIterator(snvp);
+		snvp.run(taskMonitor);
 
-	return snvp.getNetworkViews();
-    }
+		return snvp.getNetworkViews();
+	}
 }
