@@ -154,7 +154,9 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 
     private void createView(CyNetwork network) {
 	view = cyNetworkViewFactory.getNetworkView(network);
-	layout();
+	if (!view.isEmptyView()) {
+	    layout();
+	}
 	this.cyNetworkViews = new CyNetworkView[]{view};
     }
 

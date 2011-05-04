@@ -30,11 +30,10 @@ public class SIFNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 	findInteraction(net, "YNL312W", "YPL111W", "pd", 1);
 
 	// Test low threshold
-	this.viewThreshold = 5;
+	setViewThreshold(5);
 	CyNetworkView[] nullViews = getViews("sample.sif");
 	assertNotNull(nullViews);
 	assertTrue(nullViews[0].isEmptyView());
-	this.viewThreshold = this.DEF_THRESHOLD;
     }
 
     /**

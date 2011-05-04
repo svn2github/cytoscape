@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.cytoscape.io.internal.util.ReadUtils;
 import org.cytoscape.io.internal.util.StreamUtilImpl;
@@ -14,6 +15,9 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.property.BasicCyProperty;
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.property.CyProperty.SavePolicy;
 import org.cytoscape.test.support.NetworkTestSupport;
 import org.cytoscape.test.support.NetworkViewTestSupport;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
@@ -39,7 +43,7 @@ public class AbstractNetworkViewReaderTester {
     protected ReadUtils readUtil;
     protected CyLayoutAlgorithmManager layouts;
 
-    protected int viewThreshold = DEF_THRESHOLD;
+	private Properties properties;
 
     @Before
     public void setUp() throws Exception {
@@ -54,12 +58,20 @@ public class AbstractNetworkViewReaderTester {
 	NetworkTestSupport nts = new NetworkTestSupport();
 	netFactory = nts.getNetworkFactory();
 
-	NetworkViewTestSupport nvts = new NetworkViewTestSupport();
+	properties = new Properties();
+	CyProperty<Properties> cyProperties = new BasicCyProperty(properties, SavePolicy.DO_NOT_SAVE);	
+	NetworkViewTestSupport nvts = new NetworkViewTestSupport(cyProperties);
+	setViewThreshold(DEF_THRESHOLD);
+	
 	viewFactory = nvts.getNetworkViewFactory();
 
 	readUtil = new ReadUtils(new StreamUtilImpl());
     }
 
+    protected void setViewThreshold(int threshold) {
+	properties.setProperty("viewThreshold", String.valueOf(threshold));
+    }
+    
     /**
      * Will fail if it doesn't find the specified interaction.
      */

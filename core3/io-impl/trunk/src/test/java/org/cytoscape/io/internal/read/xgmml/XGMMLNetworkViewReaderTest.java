@@ -66,12 +66,11 @@ public class XGMMLNetworkViewReaderTest extends AbstractNetworkViewReaderTester 
 	findInteraction(net, "YGR136W", "YGR058W", "pp", 1);
 
 	// Test low threshold
-	this.viewThreshold = 5;
+	setViewThreshold(5);
 	CyNetworkView[] nullViews = getViews("galFiltered.xgmml");
 	assertNotNull(nullViews);
 	assertEquals(1, nullViews.length);
 	assertTrue(nullViews[0].isEmptyView());
-	this.viewThreshold = this.DEF_THRESHOLD;
     }
 
     private CyNetworkView[] getViews(String file) throws Exception {
