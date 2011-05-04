@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.cytoscape</groupId>
+    <artifactId>parent</artifactId>
+    <version>3.0.0-alpha6-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <bundle.symbolicName>org.cytoscape.layout-impl</bundle.symbolicName>
+    <bundle.namespace>org.cytoscape.view.layout.internal</bundle.namespace>
+  </properties>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.cytoscape</groupId>
+  <artifactId>layout-impl</artifactId>
+  <version>3.0.0-alpha1-SNAPSHOT</version>
+
+  <name>${bundle.symbolicName}</name>
+
+    <scm>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/layout-impl/trunk</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/layout-impl/trunk</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/layout-impl/trunk</url>
+    </scm>
+
+  <packaging>bundle</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.ops4j</groupId>
+				<artifactId>maven-pax-plugin</artifactId>
+				<version>${maven-pax-plugin.version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>${maven-bundle-plugin.version}</version>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<_include>-osgi.bnd</_include>
+					</instructions>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>layout-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>
