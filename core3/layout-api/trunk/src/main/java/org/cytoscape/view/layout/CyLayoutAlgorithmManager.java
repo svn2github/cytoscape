@@ -37,8 +37,6 @@ import java.util.Collection;
  */
 public interface CyLayoutAlgorithmManager {
 
-	String PREF_MENU_KEY = "preferredMenu";
-	String PREF_MENU_DEFAULT = "Cytoscape Layouts";
 	String DEFAULT_LAYOUT_NAME = "grid";
 	String DEFAULT_LAYOUT_PROPERTY_NAME = "layout.default";
 
@@ -65,5 +63,4 @@ public interface CyLayoutAlgorithmManager {
 	 */
 	CyLayoutAlgorithm getDefaultLayout(); 
 
-	String getMenuName(CyLayoutAlgorithm layout); 
 }

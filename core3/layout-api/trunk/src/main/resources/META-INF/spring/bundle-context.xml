@@ -18,7 +18,9 @@
 
     <context:annotation-config />
 
-	<bean id="cyLayouts" class="org.cytoscape.view.layout.internal.CyLayoutsImpl"/>
+	<bean id="cyLayouts" class="org.cytoscape.view.layout.internal.CyLayoutsImpl">
+		<constructor-arg ref="cyPropertyServiceRef"/>
+	</bean>
 	
 	<bean id="gridNodeLayout" class="org.cytoscape.view.layout.internal.algorithms.GridNodeLayout">
 		<constructor-arg ref="undoSupportServiceRef"/>

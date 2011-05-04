@@ -30,16 +30,15 @@
 package org.cytoscape.view.layout.internal;
 
 
+import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.internal.algorithms.GridNodeLayout;
-import org.cytoscape.view.model.CyNetworkView;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 
 /**
@@ -49,11 +48,11 @@ import java.util.Map;
 public class CyLayoutsImpl implements CyLayoutAlgorithmManager {
 
 	private HashMap<String, CyLayoutAlgorithm> layoutMap;
-	private HashMap<CyLayoutAlgorithm, String> menuNameMap;
+	private final Properties props;
 
-	public CyLayoutsImpl() {
+	public CyLayoutsImpl(CyProperty<Properties> p) {
+		props = p.getProperties();
 		layoutMap = new HashMap<String,CyLayoutAlgorithm>();
-		menuNameMap = new HashMap<CyLayoutAlgorithm,String>();
 		addLayout(new GridNodeLayout(null), new HashMap());
 	}
 
@@ -68,12 +67,8 @@ public class CyLayoutsImpl implements CyLayoutAlgorithmManager {
 	 * @param menu The menu that this should appear under
 	 */
 	public void addLayout(CyLayoutAlgorithm layout, Map props) {
-		String prefMenu = (String)props.get(CyLayoutAlgorithmManager.PREF_MENU_KEY); 
-		if ( prefMenu == null || prefMenu.equals("") )
-			prefMenu = CyLayoutAlgorithmManager.PREF_MENU_DEFAULT; 
-
-		layoutMap.put(layout.getName(),layout);
-		menuNameMap.put(layout, prefMenu);
+		if ( layout != null )
+			layoutMap.put(layout.getName(),layout);
 	}
 
 	/**
@@ -82,8 +77,8 @@ public class CyLayoutsImpl implements CyLayoutAlgorithmManager {
 	 * @param layout The layout to remove
 	 */
 	public void removeLayout(CyLayoutAlgorithm layout, Map props) {
-		layoutMap.remove(layout.getName());
-		menuNameMap.remove(layout);
+		if ( layout != null )
+			layoutMap.remove(layout.getName());
 	}
 
 	/**
@@ -95,7 +90,7 @@ public class CyLayoutsImpl implements CyLayoutAlgorithmManager {
 	 */
 	@Override
 	public CyLayoutAlgorithm getLayout(String name) {
-		if (layoutMap.containsKey(name))
+		if (name != null && layoutMap.containsKey(name))
 			return layoutMap.get(name);
 		return null;
 	}
@@ -118,21 +113,15 @@ public class CyLayoutsImpl implements CyLayoutAlgorithmManager {
 	 */
 	@Override
 	public CyLayoutAlgorithm getDefaultLayout() {
-		// See if the user has set the layout.default property
-//		String defaultLayout = CytoscapeInit.getProperties().getProperty("layout.default");
-//
-//		if ((defaultLayout == null) || !layoutMap.containsKey(defaultLayout)) {
-//			defaultLayout = "grid";
-//		}
-		String defaultLayout = CyLayoutAlgorithmManager.DEFAULT_LAYOUT_NAME; 
+		// See if the user has set the layout.default property	
+		String defaultLayout = props.getProperty(CyLayoutAlgorithmManager.DEFAULT_LAYOUT_PROPERTY_NAME);
+
+		if ((defaultLayout == null) || !layoutMap.containsKey(defaultLayout)) {
+			defaultLayout = "grid";
+		}
+		defaultLayout = CyLayoutAlgorithmManager.DEFAULT_LAYOUT_NAME; 
 
 		CyLayoutAlgorithm l = layoutMap.get(defaultLayout);
 		return l;
-	}
-
-	// Ack.
-	@Override
-	public String getMenuName(CyLayoutAlgorithm layout) {
-		return menuNameMap.get(layout); 
 	}
 }
