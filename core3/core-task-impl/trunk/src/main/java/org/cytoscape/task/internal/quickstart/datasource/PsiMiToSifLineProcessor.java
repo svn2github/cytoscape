@@ -1,12 +1,12 @@
 package org.cytoscape.task.internal.quickstart.datasource;
 
-public class PsiMiToSif {
+public class PsiMiToSifLineProcessor implements LineProcessor {
 
 	private static final String TAB = "\t";
 	private static final String SEPARATOR = "\\|";
 	private static final int COLUMN_COUNT = 15;
 	
-	public String toSif(final String line) {
+	public String processLine(final String line) {
 		final String[] entry = line.split(TAB);
 		
 		// Validate entry list.

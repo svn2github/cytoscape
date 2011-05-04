@@ -30,12 +30,9 @@ public class ImportNetworkFromPublicDataSetTask extends AbstractLoadNetworkTask 
 	final Set<InteractionFilePreprocessor> processors;
 	private final StreamUtil streamUtil;
 
-	public ImportNetworkFromPublicDataSetTask(
-			final Set<InteractionFilePreprocessor> processors,
-			final CyNetworkViewReaderManager mgr,
-			final CyNetworkManager networkManager,
-			final CyNetworkViewManager networkViewManager,
-			final Properties props, final CyNetworkNaming namingUtil,
+	public ImportNetworkFromPublicDataSetTask(final Set<InteractionFilePreprocessor> processors,
+			final CyNetworkViewReaderManager mgr, final CyNetworkManager networkManager,
+			final CyNetworkViewManager networkViewManager, final Properties props, final CyNetworkNaming namingUtil,
 			final StreamUtil streamUtil) {
 		super(mgr, networkManager, networkViewManager, props, namingUtil);
 
@@ -50,7 +47,7 @@ public class ImportNetworkFromPublicDataSetTask extends AbstractLoadNetworkTask 
 		for (InteractionFilePreprocessor processor : processors) {
 
 			try {
-				processor.processFile(null);
+				processor.processFile();
 			} catch (IOException e) {
 				throw new IllegalStateException("Could not init processor");
 			}
@@ -75,8 +72,7 @@ public class ImportNetworkFromPublicDataSetTask extends AbstractLoadNetworkTask 
 		this.taskMonitor = taskMonitor;
 		name = url.toString();
 
-		taskMonitor
-				.setTitle(String.format("Loading Network from \'%s\'", name));
+		taskMonitor.setTitle(String.format("Loading Network from \'%s\'", name));
 
 		taskMonitor.setStatusMessage("Checking URL...");
 		try {
@@ -89,15 +85,14 @@ public class ImportNetworkFromPublicDataSetTask extends AbstractLoadNetworkTask 
 			return;
 
 		taskMonitor.setStatusMessage("Finding network reader...");
-		reader = mgr.getReader(url.toURI(),url.toString());
+		reader = mgr.getReader(url.toURI(), url.toString());
 
 		if (cancelled)
 			return;
 
 		if (reader == null)
-			throw new NullPointerException(
-					"Failed to find reader for specified URL: " + name);
-		
+			throw new NullPointerException("Failed to find reader for specified URL: " + name);
+
 		insertTasksAfterCurrentTask(new SetNetworkNameTask(reader, selected));
 
 		taskMonitor.setStatusMessage("Loading network...");
