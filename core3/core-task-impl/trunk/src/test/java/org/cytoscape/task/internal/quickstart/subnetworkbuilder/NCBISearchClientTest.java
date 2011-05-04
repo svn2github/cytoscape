@@ -50,13 +50,15 @@ public class NCBISearchClientTest {
 				"YAL038W YCR012W YGR254W YHR174W YIL133C YLR044C YOL120C YNL301C YCL030C YDR171W " +
 				"YBR093C YER074W YIL069C YAL038W YOL127W YDR050C YOL086C YER143W";
 
-		final Set<String> result1 = client.convert(symbols, true);
-		final Set<String> result2= client.convert(symbols2, true);
-
-		System.out.println("Value = " + result1.size());
-		System.out.println("Value = " + result2.size());
-
-		assertNotNull(result1);
+		// Enable this to test client.
+		
+//		final Set<String> result1 = client.convert(symbols, true);
+//		final Set<String> result2= client.convert(symbols2, true);
+//
+//		System.out.println("Value = " + result1.size());
+//		System.out.println("Value = " + result2.size());
+//
+//		assertNotNull(result1);
 
 	}
 

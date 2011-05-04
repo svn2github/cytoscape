@@ -71,7 +71,7 @@ public class NCBISearchClient {
 		String urlString = BASE_URL + builder.toString();
 		urlString = urlString.substring(0, urlString.length() - 4);
 		
-		System.out.println("URL = " + urlString);
+		logger.debug("NCBI Service Query URL = " + urlString);
 		
 		return new URL(urlString);
 	}
