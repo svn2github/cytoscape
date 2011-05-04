@@ -29,7 +29,7 @@ public class ServiceConfigurationTest extends ServiceTestSupport {
 
     @Test
     public void testExpectedServices() {
-	checkService(CyNetworkViewFactory.class);
-	checkService(CyNetworkViewManager.class);
+	checkService(CyNetworkViewFactory.class, 5000);
+	checkService(CyNetworkViewManager.class, 5000);
     }
 }
