@@ -70,22 +70,21 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 
 	private CyLayoutAlgorithmManager cyLayoutAlgorithmManager;
 	private CySwingApplication desktop;
-	private LayoutMenuManager menuMgr;
 	private CyApplicationManager appMgr;
 	private GUITaskManager taskManager;
 
 	/**
 	 * Creates a new LayoutSettingsDialog object.
 	 */
-	public LayoutSettingsDialog(final CyLayoutAlgorithmManager cyLayoutAlgorithmManager, final CySwingApplication desktop,
-	                            final LayoutMenuManager menuMgr, final CyApplicationManager appMgr,
+	public LayoutSettingsDialog(final CyLayoutAlgorithmManager cyLayoutAlgorithmManager, 
+	                            final CySwingApplication desktop,
+	                            final CyApplicationManager appMgr,
 	                            final GUITaskManager taskManager)
 	{
 		super(desktop.getJFrame(), "Layout Settings", false);
 		initializeOnce(); // Initialize the components we only do once
 		this.cyLayoutAlgorithmManager = cyLayoutAlgorithmManager;
 		this.desktop = desktop;
-		this.menuMgr = menuMgr;
 		this.appMgr = appMgr;
 		this.taskManager = taskManager;
 	}
@@ -164,18 +163,8 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		algorithmSelector.setRenderer(new MyItemRenderer());
 		algorithmSelector.addItem("Select algorithm to view settings");
 
-		// Get the list of known layout menus
-		Set<String> menus = menuMgr.getLayoutMenuNames();
-	
-		for (String menu : menus) {
-			if (menus.size() > 1)
-				algorithmSelector.addItem(menu);
-
-			for (CyLayoutAlgorithm algo : menuMgr.getLayoutsInMenu(menu)) {
-				// TODO might want a check here to see if algorithm has any tunables
-				algorithmSelector.addItem(algo);
-			}
-		}
+		for ( CyLayoutAlgorithm algo : cyLayoutAlgorithmManager.getAllLayouts()) 
+			algorithmSelector.addItem(algo);
 	}
 
 	private class AlgorithmActionListener implements ActionListener {

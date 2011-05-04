@@ -62,7 +62,6 @@ import java.util.Set;
 public class LayoutMenu extends JMenu implements MenuListener {
 	private final static long serialVersionUID = 1202339874255880L;
 	List<CyLayoutAlgorithm> subMenuList;
-	LayoutMenuManager menuMgr;
 	private CyApplicationManager appMgr;
 	private TaskManager tm;
 
@@ -71,11 +70,10 @@ public class LayoutMenu extends JMenu implements MenuListener {
 	 *
 	 * @param menuName  DOCUMENT ME!
 	 */
-	public LayoutMenu(String menuName, LayoutMenuManager menuMgr, CyApplicationManager appMgr,TaskManager tm) {
+	public LayoutMenu(String menuName, CyApplicationManager appMgr,TaskManager tm) {
 		super(menuName);
 		addMenuListener(this);
 		subMenuList = new ArrayList<CyLayoutAlgorithm>();
-		this.menuMgr = menuMgr;
 		this.appMgr = appMgr;
 		this.tm = tm;
 	}
@@ -141,10 +139,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 
 		boolean enableMenuItem = checkEnabled(); 
 
-		// Now, add each layout, as appropriate
-		for (CyLayoutAlgorithm layout: menuMgr.getLayoutsInMenu(getText())) {
-			// Make sure we don't have any lingering locked nodes
-			//layout.unlockAllNodes();
+		for ( CyLayoutAlgorithm layout : subMenuList ) {
 
 			if ((layout.supportsNodeAttributes().size() > 0)
 			    || (layout.supportsEdgeAttributes().size() > 0)) {

@@ -48,73 +48,27 @@ import javax.swing.event.MenuListener;
 import java.util.*;
 
 
-public class LayoutMenuManager implements MenuListener {
+public class LayoutMenuPopulator {
 
 	private Map<String, List<CyLayoutAlgorithm>> menuAlgorithmMap;
 	private Map<String, LayoutMenu> menuMap;
-	private Set<CyLayoutAlgorithm> existingLayouts;
 	private CyApplicationManager appMgr;
 	private TaskManager tm;
+	private CySwingApplication swingApp;
 
-	private CyLayoutAlgorithmManager cyLayoutAlgorithmManager;
-
-	public LayoutMenuManager(CySwingApplication swingApp, CyLayoutAlgorithmManager cyLayoutAlgorithmManager, CyApplicationManager appMgr, TaskManager tm) {
+	public LayoutMenuPopulator(CySwingApplication swingApp, CyApplicationManager appMgr, TaskManager tm) {
 		menuAlgorithmMap = new HashMap<String,List<CyLayoutAlgorithm>>();
 		menuMap = new HashMap<String,LayoutMenu>();
-		existingLayouts = new HashSet<CyLayoutAlgorithm>();
-		this.cyLayoutAlgorithmManager = cyLayoutAlgorithmManager;
 		this.appMgr = appMgr;
 		this.tm = tm;
-
-		swingApp.getJMenu("Layout").addMenuListener(this);
+		this.swingApp = swingApp;
 	}
 
-	public void menuCanceled(MenuEvent e) { };
-
-	public void menuDeselected(MenuEvent e) { };
-
-	public void menuSelected(MenuEvent e) { 
-		Object o = e.getSource();
-		if ( o instanceof JMenu ) 
-			updateMenus((JMenu)o);
-	}
-
-	private void updateMenus(JMenu parentMenu) {
-
-		// first add all layouts from cylayouts if they're not already there
-		for ( CyLayoutAlgorithm la : cyLayoutAlgorithmManager.getAllLayouts() ) 
-			if ( !existingLayouts.contains(la) )
-				addLayout(la);
-
-		// now remove any existing layouts that are no longer in cylayouts
-		Set<CyLayoutAlgorithm> newLayouts = new HashSet<CyLayoutAlgorithm>(cyLayoutAlgorithmManager.getAllLayouts());
-		for ( CyLayoutAlgorithm la : existingLayouts ) 
-			if ( !newLayouts.contains(la) )
-				removeLayout(la);
-
-		// now update the menus if necessary 
-		for ( String name : menuMap.keySet() ) {
-			LayoutMenu lm = menuMap.get(name);
-			int size = menuAlgorithmMap.get(name).size();
-
-			// if the menu is not already there and
-			// actually contains layouts, add it
-			if ( !parentMenu.isMenuComponent(lm) && size > 0 )
-				parentMenu.add(lm);
-
-			// remove any menus that don't contain any layouts 
-			else if ( parentMenu.isMenuComponent(lm) && size <= 0 )
-				parentMenu.remove(lm);
-		}
-	}
-
-	private void addLayout(CyLayoutAlgorithm layout) {
+	public void addLayout(CyLayoutAlgorithm layout, Map props) {
 		
-		String menuName = cyLayoutAlgorithmManager.getMenuName(layout);
+		String menuName = (String)props.get("preferredMenu");
 		if (menuName == null )
-			return;	
-
-		existingLayouts.add(layout);
+			menuName = "Layout";	
 
 		// make sure the list is set up for this name
 		if ( !menuAlgorithmMap.containsKey(menuName) ) {
@@ -127,15 +81,16 @@ public class LayoutMenuManager implements MenuListener {
 
 		// make sure the menu is set up
 		if ( !menuMap.containsKey(menuName) ) {
-			LayoutMenu menu = new LayoutMenu(menuName, this, appMgr, tm);
+			LayoutMenu menu = new LayoutMenu(menuName, appMgr, tm);
 			menuMap.put(menuName, menu);
+			swingApp.getJMenu("Layout").add(menu);
 		}
 
 		// add layout to the menu for this name
 		menuMap.get(menuName).add(layout);
 	}
 
-	private void removeLayout(CyLayoutAlgorithm layout) {
+	public void removeLayout(CyLayoutAlgorithm layout, Map props) {
 
 		for (String menu : menuAlgorithmMap.keySet()) {
 
@@ -144,29 +99,8 @@ public class LayoutMenuManager implements MenuListener {
 			if (menuList.indexOf(layout) >= 0) {
 				menuList.remove(layout);
 				menuMap.get(menu).remove(layout);
-				existingLayouts.remove(layout);
 				return;
 			}
 		}
-	}
-
-	/**
-	 * Get all of the layouts associated with a specific
-	 * menu.
-	 *
-	 * @param menu The name of the menu
-	 * @return a List of all layouts associated with this menu (could be null)
-	 */
-	List<CyLayoutAlgorithm> getLayoutsInMenu(String menu) {
-		return menuAlgorithmMap.get(menu);
-	}
-
-	/**
-	 * Get all of the menus (categories of layouts) currently defined.
-	 *
-	 * @return a Collection of Strings representing each of the menus
-	 */
-	Set<String> getLayoutMenuNames() {
-		return menuAlgorithmMap.keySet();
 	}
 }

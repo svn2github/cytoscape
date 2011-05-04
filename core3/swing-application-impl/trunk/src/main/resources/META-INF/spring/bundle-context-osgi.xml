@@ -325,4 +325,10 @@
 		<osgi:listener bind-method="addCyProperty"
 			unbind-method="removeCyProperty" ref="configDirPropertyWriter" />
 	</osgi:set>
+
+	<osgi:set id="layoutSet" interface="org.cytoscape.view.layout.CyLayoutAlgorithm"
+		cardinality="0..N">
+		<osgi:listener bind-method="addLayout"
+			unbind-method="removeLayout" ref="layoutMenuPopulator" />
+	</osgi:set>
 </beans>

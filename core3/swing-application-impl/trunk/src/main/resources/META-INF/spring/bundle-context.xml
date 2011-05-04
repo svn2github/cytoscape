@@ -163,10 +163,8 @@
 		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 	</bean>
 	-->
-	<!-- not a CyAction, but adds menu -->
-	<bean id="layoutMenuManager" class="org.cytoscape.internal.layout.ui.LayoutMenuManager">
+	<bean id="layoutMenuPopulator" class="org.cytoscape.internal.layout.ui.LayoutMenuPopulator">
 		<constructor-arg ref="cytoscapeDesktop" />
-		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 	</bean>
@@ -181,7 +179,6 @@
 	<bean id="settingsAction" class="org.cytoscape.internal.layout.ui.SettingsAction">
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cytoscapeDesktop" />
-		<constructor-arg ref="layoutMenuManager" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 	</bean>

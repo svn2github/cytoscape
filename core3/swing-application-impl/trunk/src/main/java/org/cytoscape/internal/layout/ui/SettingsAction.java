@@ -45,22 +45,20 @@ public class SettingsAction extends AbstractCyAction {
 
 	private CyLayoutAlgorithmManager cyl;
 	private CySwingApplication desk;
-	private LayoutMenuManager menuMgr;
 	private GUITaskManager tm;
 
-	public SettingsAction(final CyLayoutAlgorithmManager cyl, final CySwingApplication desk, final LayoutMenuManager menuMgr, final CyApplicationManager appMgr, final GUITaskManager tm)
+	public SettingsAction(final CyLayoutAlgorithmManager cyl, final CySwingApplication desk, final CyApplicationManager appMgr, final GUITaskManager tm)
 	{
 		super("Settings...",appMgr);
 		setPreferredMenu("Layout");
 		setMenuGravity(3.0f);
 		this.cyl = cyl;
 		this.desk = desk;
-		this.menuMgr = menuMgr;
 		this.tm = tm;
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog(cyl, desk, menuMgr, applicationManager, tm);
+		LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog(cyl, desk, applicationManager, tm);
 		settingsDialog.actionPerformed(e);
 	}
 
