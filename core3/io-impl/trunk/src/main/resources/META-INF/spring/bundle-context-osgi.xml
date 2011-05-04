@@ -186,6 +186,10 @@
 		interface="org.cytoscape.io.write.CyPropertyWriterFactory">
 	</osgi:service>
 
+	<osgi:service id="csvTableWriterFactoryService" ref="csvTableWriterFactory"
+		interface="org.cytoscape.io.write.CyTableWriterFactory">
+	</osgi:service>
+
 	<osgi:service id="streamUtilService" ref="streamUtil"
 		interface="org.cytoscape.io.util.StreamUtil">
 	</osgi:service>

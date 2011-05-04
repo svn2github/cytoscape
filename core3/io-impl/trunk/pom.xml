@@ -114,11 +114,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>io-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
 			<artifactId>property-api</artifactId>
 			<version>3.0.0-alpha4-SNAPSHOT</version>
 		</dependency>
@@ -154,6 +149,11 @@
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
 			<version>2.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>2.1</version>
 		</dependency>
 
 		<!-- For Testing -->
