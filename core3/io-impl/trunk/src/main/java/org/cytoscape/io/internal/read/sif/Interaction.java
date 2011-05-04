@@ -44,62 +44,62 @@ import java.util.List;
  */
 final class Interaction {
 
-    private final String source;
-    private List<String> targets;
-    private String interactionType;
+	private final String source;
+	private List<String> targets;
+	private String interactionType;
 
-    Interaction(final String rawText, final String delimiter) {
-	final String[] values = rawText.split(delimiter);
-	if (values.length < 1)
-	    throw new IllegalArgumentException("Invalid entry.");
+	Interaction(final String rawText, final String delimiter) {
+		final String[] values = rawText.split(delimiter);
+		if (values.length < 1)
+			throw new IllegalArgumentException("Invalid entry.");
 
-	source = values[0].trim();
-	targets = new ArrayList<String>();
+		source = values[0].trim();
+		targets = new ArrayList<String>();
 
-	if (values.length > 2) {
-	    interactionType = values[1].trim();
-	    for (int i = 2; i < values.length; i++)
-		targets.add(values[i].trim());
-	}
-    }
-
-    /**
-     * @return The source node identifier string.
-     */
-    String getSource() {
-	return source;
-    }
-
-    /**
-     * @return The interaction type string.
-     */
-    String getType() {
-	return interactionType;
-    }
-
-    /**
-     * @return The array of target node identifier strings.
-     */
-    List<String> getTargets() {
-	return targets;
-    }
-
-    @Override
-    public String toString() {
-	final StringBuilder sb = new StringBuilder();
-	sb.append(interactionType);
-	sb.append("::");
-	sb.append(source);
-	sb.append("::");
-
-	final int targetSize = targets.size();
-	for (int i = 0; i < targetSize; i++) {
-	    sb.append(targets.get(i));
-
-	    if (i < (targetSize - 1))
-		sb.append(",");
+		if (values.length > 2) {
+			interactionType = values[1].trim();
+			for (int i = 2; i < values.length; i++)
+				targets.add(values[i].trim());
+		}
 	}
 
-	return sb.toString();
-    }
+	/**
+	 * @return The source node identifier string.
+	 */
+	String getSource() {
+		return source;
+	}
+
+	/**
+	 * @return The interaction type string.
+	 */
+	String getType() {
+		return interactionType;
+	}
+
+	/**
+	 * @return The array of target node identifier strings.
+	 */
+	List<String> getTargets() {
+		return targets;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append(interactionType);
+		sb.append("::");
+		sb.append(source);
+		sb.append("::");
+
+		final int targetSize = targets.size();
+		for (int i = 0; i < targetSize; i++) {
+			sb.append(targets.get(i));
+
+			if (i < (targetSize - 1))
+				sb.append(",");
+		}
+
+		return sb.toString();
+	}
 }
