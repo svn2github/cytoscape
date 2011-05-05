@@ -1,7 +1,12 @@
 package org.cytoscape.plugin.internal;
 
-import org.cytoscape.application.swing.CySwingApplication; 
+import java.util.Map;
 
+import org.cytoscape.application.swing.CySwingApplication; 
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.application.swing.events.CytoscapeStartEvent;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.swing.GUITaskManager;
 /**
  * A simple class whose instantiation indicates that startup is
  * largely (but not necessarily 100 percent) complete for Cytoscape.
@@ -12,10 +17,11 @@ import org.cytoscape.application.swing.CySwingApplication;
  * splash screen can be closed.
  */
 class StartupMostlyFinished {
-	public StartupMostlyFinished(CySwingApplication app) {
-		// Make the main desktop visible, which
-		// will also close the splash screen.
-		app.getJFrame().setVisible(true);
-		app.getJFrame().toFront();
-	}
+
+	//public StartupMostlyFinished(CySwingApplication app, final CyEventHelper eventHelper) {
+	public StartupMostlyFinished(final CyEventHelper eventHelper) {
+
+		// fire event "start up mostly finished"
+		eventHelper.fireAsynchronousEvent(new CytoscapeStartEvent(this));
+	}	
 }
