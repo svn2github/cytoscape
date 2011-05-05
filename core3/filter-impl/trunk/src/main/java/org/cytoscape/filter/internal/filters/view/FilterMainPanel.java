@@ -280,6 +280,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	@Override
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
 		handleNetworkFocused(e.getNetworkView());
+		updateFeedbackTableModel();
 	}
 
 	@Override
