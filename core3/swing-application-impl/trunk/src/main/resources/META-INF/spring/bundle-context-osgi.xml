@@ -290,8 +290,12 @@
 
 	<!-- Finally, Export Cytoscape Desktop itself as a service. Other desktop 
 		components (like VizMapper GUI) can use it through DI -->
-	<osgi:service id="cytoscapeDesktopService" ref="cytoscapeDesktop"
-		interface="org.cytoscape.application.swing.CySwingApplication" />
+	<osgi:service id="cytoscapeDesktopService" ref="cytoscapeDesktop">
+		<osgi:interfaces>
+			<value>org.cytoscape.application.swing.events.CytoscapeStartListener</value>
+			<value>org.cytoscape.application.swing.CySwingApplication</value>
+		</osgi:interfaces>
+	</osgi:service>
 
 	<osgi:service id="networkPanelService" ref="networkPanel" auto-export="interfaces" />
 	<osgi:service id="networkViewManagerService" ref="networkViewManager" auto-export="interfaces" />
@@ -331,4 +335,10 @@
 		<osgi:listener bind-method="addLayout"
 			unbind-method="removeLayout" ref="layoutMenuPopulator" />
 	</osgi:set>
+ 
+ 	<osgi:reference id="quickStartRef"
+		interface="org.cytoscape.work.TaskFactory"
+		filter="(title=QuickStart)" />
+	<osgi:service id="quickStartStartupService" ref="quickStartStartup" auto-export="interfaces"/>
+ 
 </beans>
