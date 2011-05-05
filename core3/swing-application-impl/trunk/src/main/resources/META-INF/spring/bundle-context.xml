@@ -251,5 +251,10 @@
 		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 
+	<bean id="quickStartStartup" class="org.cytoscape.internal.QuickStartStartup">
+		<constructor-arg ref="quickStartRef" />
+		<constructor-arg ref="taskManagerServiceRef" />
+	</bean>
+
 
 </beans>
