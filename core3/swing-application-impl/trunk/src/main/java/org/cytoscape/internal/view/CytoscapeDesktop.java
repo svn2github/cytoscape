@@ -60,12 +60,14 @@ import java.util.Dictionary;
 import java.util.Properties;
 import org.cytoscape.work.swing.GUITaskManager;
 import org.cytoscape.application.swing.ToolBarComponent;
+import org.cytoscape.application.swing.events.CytoscapeStartListener;
+import org.cytoscape.application.swing.events.CytoscapeStartEvent;
 
 
 /**
  * The CytoscapeDesktop is the central Window for working with Cytoscape
  */
-public class CytoscapeDesktop extends JFrame implements CySwingApplication {
+public class CytoscapeDesktop extends JFrame implements CySwingApplication, CytoscapeStartListener {
 
 	private final static long serialVersionUID = 1202339866271348L;
 
@@ -380,5 +382,11 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 
 	public void removeToolBarComponent(ToolBarComponent tp, Dictionary props) {
 		((CytoscapeToolBar)cyMenus.getJToolBar()).removeToolBarComponent(tp);		
+	}
+	
+	// handle CytoscapeStartEvent
+	public void handleEvent(CytoscapeStartEvent e){
+		this.setVisible(true);
+		this.toFront();
 	}
 }
