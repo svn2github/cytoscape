@@ -24,16 +24,20 @@ public class TestGraphics implements GLEventListener{
 		private float[] y;
 		private float[] z;
 		
-		private float yRotate;
+		private float yRotate = 0;
 		
 		private int nodeListIndex;
+		
+		private long startTime;
+		private long endTime;
+		private int framesElapsed = 0;
 		
         /**
          * @param args
          */
         public static void main(String[] args) {
                 JFrame frame = new JFrame("Test");
-                frame.setSize(600, 600);
+                frame.setSize(650, 650);
 
                 frame.setLocationRelativeTo(null);
                 
@@ -70,7 +74,10 @@ public class TestGraphics implements GLEventListener{
 			gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 			gl.glLoadIdentity();
 
+			
 			drawNodes(gl, -6.0f);
+			
+			framesElapsed++;
 		}
 
 		private void drawNodes(GL2 gl, float zTranslate) {
@@ -79,15 +86,14 @@ public class TestGraphics implements GLEventListener{
 			
 			// gl.glColor3f(1.0f, 1.0f, 1.0f);
 			gl.glColor3f(0.5f, 0.5f, 0.5f);
-			GLUT glut = new GLUT();
+			// GLUT glut = new GLUT();
 			
-			gl.glRotatef(yRotate, 0.5f, 0.5f, 0.0f);
+			gl.glRotatef(yRotate, 1.0f, -0.5f, 0.0f);
 			yRotate--;
 			
 			for (int i = 0; i < NODE_COUNT; i++) {
 				gl.glTranslatef(x[i], y[i], z[i]);
 				//glut.glutSolidSphere(SMALL_SPHERE_RADIUS, 5, 5);
-				//glut.
 				gl.glCallList(nodeListIndex);
 				gl.glTranslatef(-x[i], -y[i], -z[i]);
 			}
@@ -95,6 +101,7 @@ public class TestGraphics implements GLEventListener{
 		
 		@Override
 		public void dispose(GLAutoDrawable arg0) {
+			
 			
 		}
 
@@ -109,12 +116,12 @@ public class TestGraphics implements GLEventListener{
 			gl.glDepthFunc(GL.GL_LEQUAL);
 			// gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
 			gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_FASTEST);
-			//gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+			// gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
 			
 			gl.glViewport(0, 0, drawable.getWidth(), drawable.getHeight());
 			
 			computeCoordinates();
-			
+			startTime = System.nanoTime();
 			createNodeDisplayList(gl);
 		}
 		
@@ -148,8 +155,7 @@ public class TestGraphics implements GLEventListener{
 			GL2 gl = drawable.getGL().getGL2();
 			
 			float[] global = {0.5f, 0.5f, 0.5f, 1.0f};
-			// float[] global = {1.0f, 1.0f, 1.0f, 1.0f};
-			
+
 			gl.glEnable(GL2.GL_LIGHTING);
 			gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, FloatBuffer.wrap(global));
 			gl.glShadeModel(GL2.GL_SMOOTH);
@@ -158,7 +164,6 @@ public class TestGraphics implements GLEventListener{
 			float[] diffuse = {0.8f, 0.8f, 0.8f, 1.0f};
 			float[] specular = {0.5f, 0.5f, 0.5f, 1.0f};
 			float[] position = {8.5f, 5.5f, -1.0f, 1.0f};
-			//float[] position = {0.0f, 0.0f, -1.5f, 1.0f};
 			
 			gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, FloatBuffer.wrap(ambient));
 			gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, FloatBuffer.wrap(diffuse));
@@ -183,8 +188,14 @@ public class TestGraphics implements GLEventListener{
 			
 			GLU glu = new GLU();
 			glu.gluPerspective(45.0f, (float) width/height, 0.2f, 50.0f);
-			// glu.gluCylinder(arg0, arg1, arg2, arg3, arg4, arg5)
+
 			gl.glMatrixMode(GL2.GL_MODELVIEW);
 			gl.glLoadIdentity();
+			
+			endTime = System.nanoTime();
+			
+			double duration = (endTime - startTime) / Math.pow(10, 9);
+			double frameRate = framesElapsed / duration;
+			System.out.println("Average fps over " + duration + " seconds: " + frameRate);
 		}
 }
