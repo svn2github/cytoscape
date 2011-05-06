@@ -31,7 +31,7 @@ package org.cytoscape.task;
 import org.cytoscape.model.CyTable;
 
 
-public abstract class AbstractTableTaskFactory implements DataTableTaskFactory {
+public abstract class AbstractTableTaskFactory implements TableTaskFactory {
 	/** The table that will be passed into any Task constructor.
 	 */
 	protected CyTable table;
@@ -39,7 +39,7 @@ public abstract class AbstractTableTaskFactory implements DataTableTaskFactory {
 	/** Provisions this factory with a table that will be used to construct tasks.
 	 *  @param table the {@link CyTable} to be passed into <code>Task</code> constructors; <b>must</b> not be null!
 	 */
-	public void setDataTable(final CyTable table) {
+	public void setTable(final CyTable table) {
 		if (table == null)
 			throw new NullPointerException("CyTable is null");
 

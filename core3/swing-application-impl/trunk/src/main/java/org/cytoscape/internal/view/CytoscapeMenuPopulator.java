@@ -45,11 +45,11 @@ import org.cytoscape.internal.task.TableTaskFactoryTunableAction;
 import org.cytoscape.internal.task.TaskFactoryTunableAction;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.task.DataTableTaskFactory;
 import org.cytoscape.task.NetworkCollectionTaskFactory;
 import org.cytoscape.task.NetworkTaskFactory;
 import org.cytoscape.task.NetworkViewCollectionTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
+import org.cytoscape.task.TableTaskFactory;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.swing.GUITaskManager;
 
@@ -129,11 +129,11 @@ public class CytoscapeMenuPopulator {
 		removeFactory(factory, props);
 	}
 	
-	public void addTableTaskFactory(DataTableTaskFactory factory, Map props) {
+	public void addTableTaskFactory(TableTaskFactory factory, Map props) {
 		addFactory(new TableTaskFactoryTunableAction(taskManager, factory, props, appManager), factory, props);
 	}
 	
-	public void removeTableTaskFactory(DataTableTaskFactory factory, Map props) {
+	public void removeTableTaskFactory(TableTaskFactory factory, Map props) {
 		removeFactory(factory, props);
 	}
 	

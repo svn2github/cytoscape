@@ -182,7 +182,7 @@
 	</osgi:set>
 
 	<osgi:set id="tableTaskFactorySet"
-		interface="org.cytoscape.task.DataTableTaskFactory"
+		interface="org.cytoscape.task.TableTaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addTableTaskFactory"
 			unbind-method="removeTableTaskFactory" ref="cytoscapeMenuPopulator" />

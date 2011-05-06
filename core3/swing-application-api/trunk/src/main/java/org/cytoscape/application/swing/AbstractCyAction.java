@@ -365,11 +365,13 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	    enableForSelectedNodes();
 	else if (enableFor.equals("selectedEdges"))
 	    enableForSelectedEdges();
+	else if (enableFor.equals("table"))
+	    enableForTable();
 	else
 	    setEnabled(true);
     }
 
-    //
+	//
     // The following methods are utility methods that that enable or disable
     // the action based on the state of Cytoscape. These methods are meant to
     // reduce duplicate code since many actions demand the same state to be
@@ -473,4 +475,9 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	}
 	setEnabled(false);
     }
+
+    private void enableForTable() {
+	setEnabled(applicationManager.getCurrentTable() != null);
+    }
+
 }

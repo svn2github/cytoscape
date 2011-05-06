@@ -535,6 +535,16 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="exportCurrentTableTaskFactoryService" ref="exportCurrentTableTaskFactory"
+		interface="org.cytoscape.task.TableTaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="File..." />
+			<entry key="preferredMenu" value="File.Export.Table" />
+			<entry key="enableFor" value="table" />
+			<entry key="menuGravity" value="1.2" />
+		</osgi:service-properties>
+	</osgi:service>
+	
 	<!-- consider removing -->
 	<!-- useful for command line, but not otherwise <osgi:service id="setCurrentNetworkTaskFactoryService" 
 		ref="setCurrentNetworkTaskFactory" interface="org.cytoscape.work.TaskFactory"/> -->
