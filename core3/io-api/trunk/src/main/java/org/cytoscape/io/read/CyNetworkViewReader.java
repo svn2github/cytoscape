@@ -16,25 +16,26 @@ import org.cytoscape.work.Task;
  */
 public interface CyNetworkViewReader extends Task {
 
-    /**
-     * Return an array of {@link org.cytoscape.view.model.CyNetworkView} objects
-     * 
-     * <p>
-     * This array may contain {@link org.cytoscape.view.model.NullCyNetworkView}.
-     * Create actual view or not is controlled by a parameter for reader implementation.
-     * </p>
-     * 
-     * @return An array of {@link org.cytoscape.view.model.CyNetworkView}
-     *         objects.
-     */
-    CyNetworkView[] getNetworkViews();
+	/**
+	 * Return an array of {@link org.cytoscape.view.model.CyNetworkView} objects
+	 * 
+	 * <p>
+	 * This array may contain {@link org.cytoscape.view.model.NullCyNetworkView}
+	 * . Create actual view or not is controlled by a parameter for reader
+	 * implementation.
+	 * </p>
+	 * 
+	 * @return An array of {@link org.cytoscape.view.model.CyNetworkView}
+	 *         objects.
+	 */
+	CyNetworkView[] getNetworkViews();
 
-    /**
-     * Return an array of {@link org.cytoscape.view.vizmap.VisualStyle} objects.
-     * 
-     * @return An array of {@link org.cytoscape.view.vizmap.VisualStyle}
-     *         objects. The list may be empty if no VisualStyle is defined by
-     *         the input being read.
-     */
-    VisualStyle[] getVisualStyles();
+	/**
+	 * Return an array of {@link org.cytoscape.view.vizmap.VisualStyle} objects.
+	 * 
+	 * @return An array of {@link org.cytoscape.view.vizmap.VisualStyle}
+	 *         objects. The list may be empty if no VisualStyle is defined by
+	 *         the input being read.
+	 */
+	VisualStyle[] getVisualStyles();
 }
