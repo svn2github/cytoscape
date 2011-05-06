@@ -495,6 +495,9 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 				setTunable(props, "enableHandling", "false");
 				result.addMessage("metanode: attribute aggregation disabled");
 			} else {
+				setTunable(props, "enableHandling", "true");
+				result.addMessage("metanode: attribute aggregation enabled");
+
 				if (args.containsKey(STRING)) {
 					setDefault(props, "stringDefaults", CyAttributes.TYPE_STRING, args.get(STRING).toString());
 					result.addMessage("metanode: set default aggregation handling for "+STRING+" to "+args.get(STRING).toString());
