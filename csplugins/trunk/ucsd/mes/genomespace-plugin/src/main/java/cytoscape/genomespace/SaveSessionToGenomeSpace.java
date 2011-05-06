@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 
+import org.genomespace.client.ui.GSFileBrowserDialog;
 import org.genomespace.datamanager.core.GSFileMetadata;
 import org.genomespace.datamanager.core.GSFileMetadataImpl;
 import org.genomespace.client.DataManagerClient;
@@ -52,8 +53,8 @@ public class SaveSessionToGenomeSpace extends CytoscapeAction {
 
 			final List<String> acceptableExtensions = new ArrayList<String>();
 			acceptableExtensions.add("cys");
-			final TreeSelectionDialog dialog =
-				new TreeSelectionDialog(Cytoscape.getDesktop(), dataManagerClient,
+			final GSFileBrowserDialog dialog =
+				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
 							acceptableExtensions,
 							/* isSaveAsDialog = */ true);
 			String saveFileName = dialog.getSaveFileName();

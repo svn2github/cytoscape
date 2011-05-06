@@ -42,8 +42,10 @@ final class GSUtils {
 			userNamePasswordDialog.setVisible(true);
 			final String userName = userNamePasswordDialog.getUserName();
 			final String password = userNamePasswordDialog.getPassword();
-			if (userName == null || userName.isEmpty() || password == null || password.isEmpty())
+			if (userName == null || userName.isEmpty() || password == null || password.isEmpty()) {
+				System.out.println("no login info");
 				return false;
+			}
 
 			try {
 				session.login(userName, password);

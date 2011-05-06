@@ -23,6 +23,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBException;
 
+import org.genomespace.client.ui.GSFileBrowserDialog;
 import org.genomespace.client.DataManagerClient;
 import org.genomespace.client.GsSession;
 import org.genomespace.client.User;
@@ -53,8 +54,8 @@ public class LoadSessionFromGenomeSpace extends CytoscapeAction {
 			// Select the GenomeSpace file:
 			final List<String> acceptableExtensions = new ArrayList<String>();
 			acceptableExtensions.add("cys");
-			final TreeSelectionDialog dialog =
-				new TreeSelectionDialog(Cytoscape.getDesktop(), dataManagerClient,
+			final GSFileBrowserDialog dialog =
+				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
 							acceptableExtensions);
 			final GSFileMetadata fileMetadata = dialog.getSelectedFileMetadata();
 			if (fileMetadata == null)

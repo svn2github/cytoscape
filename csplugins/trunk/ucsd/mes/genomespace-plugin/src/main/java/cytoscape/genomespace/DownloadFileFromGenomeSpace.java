@@ -15,6 +15,7 @@ import java.util.Map;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.genomespace.client.ui.GSFileBrowserDialog;
 import org.genomespace.client.DataManagerClient;
 import org.genomespace.client.GsSession;
 import org.genomespace.client.User;
@@ -45,8 +46,8 @@ public class DownloadFileFromGenomeSpace extends CytoscapeAction {
 			final GsSession client = GSUtils.getSession(); 
 			final DataManagerClient dataManagerClient = client.getDataManagerClient();
 
-			final TreeSelectionDialog dialog =
-				new TreeSelectionDialog(Cytoscape.getDesktop(), dataManagerClient);
+			final GSFileBrowserDialog dialog =
+				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient);
 			final GSFileMetadata fileMetadata = dialog.getSelectedFileMetadata();
 			if (fileMetadata == null)
 				return;

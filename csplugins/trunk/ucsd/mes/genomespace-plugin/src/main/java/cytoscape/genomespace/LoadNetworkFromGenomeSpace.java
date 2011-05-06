@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 
+import org.genomespace.client.ui.GSFileBrowserDialog;
 import org.genomespace.client.DataManagerClient;
 import org.genomespace.client.GsSession;
 import org.genomespace.client.User;
@@ -47,8 +48,8 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 			acceptableExtensions.add("sif");
 			acceptableExtensions.add("xgmml");
 			acceptableExtensions.add("gml");
-			final TreeSelectionDialog dialog =
-				new TreeSelectionDialog(Cytoscape.getDesktop(), dataManagerClient,
+			final GSFileBrowserDialog dialog =
+				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
 							acceptableExtensions);
 			final GSFileMetadata fileMetadata = dialog.getSelectedFileMetadata();
 			if (fileMetadata == null)
