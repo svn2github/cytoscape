@@ -161,6 +161,17 @@ public class MetaNodeManager {
 		// vizmapper.applyAppearances();
 		nView.updateView();
 	}
+	static public void expandAll(CyNetworkView view) {
+		CyNetworkView nView = view;
+		Collection<MetaNode> metaNodes = metaMap.values();
+		for (MetaNode mNode: metaNodes) {
+			if (mNode.isHidden())
+				continue;
+			if (mNode.isCollapsed())
+				mNode.getCyGroup().setState(MetaNodePlugin2.EXPANDED);
+		}
+		nView.updateView();
+	}
 
 	/**
  	 * Collapse all MetaNodes
@@ -174,6 +185,15 @@ public class MetaNodeManager {
 		}
 		// VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		// vizmapper.applyAppearances();
+		nView.updateView();
+	}
+	static public void collapseAll(CyNetworkView view) {
+		CyNetworkView nView = view;
+		Collection<MetaNode> metaNodes = metaMap.values();
+		for (MetaNode mNode: metaNodes) {
+			if (!mNode.isCollapsed())
+				mNode.getCyGroup().setState(MetaNodePlugin2.COLLAPSED);
+		}
 		nView.updateView();
 	}
 

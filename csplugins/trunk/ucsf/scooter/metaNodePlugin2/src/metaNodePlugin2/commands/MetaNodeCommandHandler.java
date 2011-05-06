@@ -76,9 +76,15 @@ enum Command {
 	COLLAPSE("collapse",
 	         "Collapse a metanode",
 	         "metanode|networkview=current"),
+	COLLAPSEALL("collapse all",
+	         "Collapse all metanodes",
+	         "networkview=current"),
 	EXPAND("expand",
 	       "Expand a metanode",
 	       "metanode|networkview=current"),
+	EXPANDALL("expand all",
+	 	      "Expand all metanodes",
+	 	      "networkview=current"),	       
 	LISTEDGES("list edges",
 	          "List the edges in a particular metanode",
 	          "metanode"),
@@ -283,6 +289,16 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		//	       "Expand a metanode",
 		//	       "metanode|networkview=current"),
 		// 
+		} else if (Command.COLLAPSEALL.equals(command)){
+			// Get the network view
+			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			if (args.containsKey(NETWORKVIEW) && !CURRENT.equalsIgnoreCase((String)args.get(NETWORKVIEW))) {
+				view = Cytoscape.getNetworkView((String)args.get(NETWORKVIEW));
+				if (view == null || view == Cytoscape.getNullNetworkView())
+					throw new RuntimeException("metanode: can't find a network view for "+args.get(NETWORKVIEW));
+			}
+			MetaNodeManager.collapseAll(view);
+
 		} else if (Command.EXPAND.equals(command)) {
 			if (metaNode == null) {
 				throw new RuntimeException("metanode: expand requires a metanode");
@@ -309,6 +325,16 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		//	          "List the edges in a particular metanode",
 		//	          "metanode"),
 		//
+		} else if (Command.EXPANDALL.equals(command)){
+			// Get the network view
+			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			if (args.containsKey(NETWORKVIEW) && !CURRENT.equalsIgnoreCase((String)args.get(NETWORKVIEW))) {
+				view = Cytoscape.getNetworkView((String)args.get(NETWORKVIEW));
+				if (view == null || view == Cytoscape.getNullNetworkView())
+					throw new RuntimeException("metanode: can't find a network view for "+args.get(NETWORKVIEW));
+			}
+			MetaNodeManager.expandAll(view);
+
 		} else if (Command.LISTEDGES.equals(command)) {
 			if (metaGroup == null)
 				throw new RuntimeException("metanode: list edges requires a metanode name");
