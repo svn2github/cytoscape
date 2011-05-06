@@ -99,7 +99,7 @@ enum Command {
 	       "metanode|node|nodelist"),
 	/* MODIFYAGG("modify aggregation", // FIXME
 	          "Modify the aggregation behavior of a metanode",
-	          "metanode|enabled=true|strings=csv|integer=sum|double=sum|list=none|boolean=or"), */
+	          "metanode|enabled=true|string=csv|integer=sum|double=sum|list=none|boolean=or"), */
 	MODIFYAPP("modify appearance",
 	          "Modify the appearance of a metanode",
 	          "metanode|usenestednetworks=false|opacity=100|nodechart=none|chartattribute=none"),
@@ -108,7 +108,7 @@ enum Command {
 	                  "metanode|attribute|aggregation"), */
   SETDEFAULTAGG("set default aggregation", 
 	              "Set the default aggregation options",
-	              "enabled=true|strings=csv|integer=sum|double=sum|list=none|boolean=or"),
+	              "enabled=true|string=csv|integer=sum|double=sum|list=none|boolean=or"),
 	SETDEFAULTAPP("set default appearance",
 	              "Set the default appearance options",
 	              "usenestednetworks=false|opacity=100|nodechart=none|chartattribute=none"),
@@ -466,7 +466,7 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		// 
 		//	MODIFYAGG("modify aggregation",
 		//	          "Modify the aggregation behavior of a metanode",
-		//	          "metanode|enabled=true|strings=csv|integer=sum|double=sum|list=none|boolean=or"),
+		//	          "metanode|enabled=true|string=csv|integer=sum|double=sum|list=none|boolean=or"),
 		// 
 		// } else if (Command.MODIFYAGG.equals(command)) {
 
@@ -510,7 +510,7 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		// 
 		//  SETDEFAULTAGG("set default aggregation", 
 		//	              "Set the default aggregation options",
-		//	              "enabled=true|strings=csv|integer=sum|double=sum|list=none|boolean=or"),
+		//	              "enabled=true|string=csv|integer=sum|double=sum|list=none|boolean=or"),
 		// 
 		} else if (Command.SETDEFAULTAGG.equals(command)) {
 			boolean attrHandling = false;
