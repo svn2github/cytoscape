@@ -363,7 +363,7 @@ public class ViewUtils {
  	 */
 	private static void setPosition(CyNode node, CyNetworkView view, Dimension position) {
 		NodeView nView = view.getNodeView(node);
-		if (nView == null) 
+		if (nView == null || position == null) 
 			return;
 		nView.setXPosition(position.getWidth());
 		nView.setYPosition(position.getHeight());
