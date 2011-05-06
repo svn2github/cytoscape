@@ -62,20 +62,20 @@ public class AbstractTableTaskFactoryTest {
 	
 	@Test(expected=NullPointerException.class)
 	public void testNullSetDataTable() throws Exception {
-		factory.setDataTable(null);
+		factory.setTable(null);
 	}
 
 	@Test
 	public void testGoodSetDataTable() throws Exception {
-		factory.setDataTable(mock(CyTable.class));
+		factory.setTable(mock(CyTable.class));
 		assertNotNull( factory.table );
 	}
 
 	@Test
 	public void testNotFinal() throws Exception {
-		factory.setDataTable(mock(CyTable.class));
+		factory.setTable(mock(CyTable.class));
 		CyTable t1 = factory.table;
-		factory.setDataTable(mock(CyTable.class));
+		factory.setTable(mock(CyTable.class));
 		CyTable t2 = factory.table;
 		assertFalse( (t1 == t2) );
 	}
