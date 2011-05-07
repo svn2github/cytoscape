@@ -489,7 +489,7 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 					throw new RuntimeException("metanode: nodeCharts type '"+type+"' is not provided by the nodeChart plugin");
 
 				// OK, now check our attribute
-				String attribute = getAttribute((String)args.get(ATTRIBUTE));
+				String attribute = getAttribute((String)args.get(CHARTATTR));
 				metaNode.setChartType(type);
 				metaNode.setNodeChartAttribute(attribute);
 			}
@@ -567,7 +567,7 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 					throw new RuntimeException("metanode: nodeCharts type '"+type+"' is not provided by the nodeChart plugin");
 
 				// OK, now check our attribute
-				String attribute = getAttribute((String)args.get(ATTRIBUTE));
+				String attribute = getAttribute((String)args.get(CHARTATTR));
 				setTunable(props, "chartType", type);
 				setTunable(props, "nodeChartAttribute", attribute);
 			}
