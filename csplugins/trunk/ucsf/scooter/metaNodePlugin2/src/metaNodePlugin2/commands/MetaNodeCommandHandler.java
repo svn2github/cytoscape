@@ -575,7 +575,7 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 			if (args.containsKey(USENESTEDNETWORKS))
 				setTunable(props, "useNestedNetworks", args.get(USENESTEDNETWORKS).toString());
 			if (args.containsKey(OPACITY)) {
-				setTunable(props, "metaNodeOpacity", args.get(OPACITY).toString());
+				setTunable(props, "metanodeOpacity", args.get(OPACITY).toString());
 			}
 			settingsDialog.updateSettings(true);
 
