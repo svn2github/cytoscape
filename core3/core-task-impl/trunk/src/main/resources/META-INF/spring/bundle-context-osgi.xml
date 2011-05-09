@@ -642,6 +642,14 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="quickStartTaskFactoryService2" ref="quickStartTaskFactory2"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="id" value="QuickStart2" />
+			<entry key="scope" value="startup" />
+		</osgi:service-properties>
+	</osgi:service>
+
 	<osgi:service id="bioGridPreprocessorService" ref="bioGridPreprocessor"
 		auto-export="interfaces" />
 
