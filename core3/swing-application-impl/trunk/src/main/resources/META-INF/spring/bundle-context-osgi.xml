@@ -338,7 +338,8 @@
  
  	<osgi:reference id="quickStartRef"
 		interface="org.cytoscape.work.TaskFactory"
-		filter="(title=QuickStart)" />
+		filter="(id=QuickStart2)" />
+		
 	<osgi:service id="quickStartStartupService" ref="quickStartStartup" auto-export="interfaces"/>
  
 </beans>
