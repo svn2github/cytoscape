@@ -21,16 +21,14 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.cytoscape.io.read.CyNetworkViewReader;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
-import org.cytoscape.model.CyNetworkManager;
-
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.io.read.CyNetworkReaderManager;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,13 +50,13 @@ public class BatchAnalysisAction extends NetAnalyzerAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(BatchAnalysisAction.class);
 	
-	private final CyNetworkViewReaderManager cyNetworkViewReaderMgr;
+	private final CyNetworkReaderManager cyNetworkViewReaderMgr;
 	private final CyNetworkManager netMgr;
 
 	/**
 	 * Constructs a new batch analysis action.
 	 */
-	protected BatchAnalysisAction(CyApplicationManager appMgr,CySwingApplication swingApp, CyNetworkManager netMgr, CyNetworkViewReaderManager cyNetworkViewReaderMgr) {
+	protected BatchAnalysisAction(CyApplicationManager appMgr,CySwingApplication swingApp, CyNetworkManager netMgr, CyNetworkReaderManager cyNetworkViewReaderMgr) {
 		super(Messages.AC_BATCH_ANALYSIS,appMgr,swingApp);
 		this.netMgr = netMgr;
 		this.cyNetworkViewReaderMgr = cyNetworkViewReaderMgr;
@@ -118,7 +116,7 @@ public class BatchAnalysisAction extends NetAnalyzerAction {
 			public boolean accept(File aPathname) {
 				if (aPathname.isFile() && aPathname.canRead()) {
 					final String name = aPathname.getAbsolutePath();
-					CyNetworkViewReader reader =  cyNetworkViewReaderMgr.getReader(aPathname.toURI()); 
+					CyNetworkReader reader =  cyNetworkViewReaderMgr.getReader(aPathname.toURI(), name); 
 					if (reader != null) {
 						return true;
 					}

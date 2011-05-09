@@ -15,7 +15,7 @@
 		interface="org.cytoscape.model.CyNetworkManager"/>
 	                
 	<osgi:reference id="cyNetworkViewReaderManagerServiceRef" 
-		interface="org.cytoscape.io.read.CyNetworkViewReaderManager"/>
+		interface="org.cytoscape.io.read.CyNetworkReaderManager"/>
 
 	<osgi:service id="analyzeNetworkActionService" ref="analyzeNetworkAction" 
 		interface="org.cytoscape.application.swing.CyAction"/>

@@ -24,16 +24,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.cytoscape.io.read.CyNetworkViewReader;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyTable;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
+
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.AnalysisError;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Interpretations;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
@@ -55,7 +54,7 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.BatchAnalysisDialog;
 public class BatchNetworkAnalyzer extends SwingWorker {
 
 	private final CyNetworkManager netMgr;
-	private final CyNetworkViewReaderManager cyNetworkViewReaderMgr;
+	private final CyNetworkReaderManager cyNetworkViewReaderMgr;
 	
 	/**
 	 * Initializes a new instance of <code>BatchNetworkAnalyzer</code>.
@@ -67,7 +66,7 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 	 * @param aInterpr
 	 *            Parameter specifying which interpretations to be applied to each network.
 	 */
-	public BatchNetworkAnalyzer(File aOutputDir, List<File> aInputFiles, Interpretations aInterpr, CyNetworkManager netMgr, CyNetworkViewReaderManager cyNetworkViewReaderMgr) {
+	public BatchNetworkAnalyzer(File aOutputDir, List<File> aInputFiles, Interpretations aInterpr, CyNetworkManager netMgr, CyNetworkReaderManager cyNetworkViewReaderMgr) {
 		analyzer = null;
 		cancelled = false;
 		dialog = null;
@@ -117,8 +116,8 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 				if (!inputFile.isFile()) {
 					throw new RuntimeException();
 				}
-				CyNetworkViewReader reader = cyNetworkViewReaderMgr.getReader(inputFile.toURI());
-				network = reader.getNetworkViews()[0].getModel();
+				CyNetworkReader reader = cyNetworkViewReaderMgr.getReader(inputFile.toURI(), inputFile.getName());
+				network = reader.getCyNetworks()[0];
 			} catch (RuntimeException e) {
 				writeLine(Messages.SM_READERROR);
 				reports.add(new NetworkAnalysisReport(inputFile, null, AnalysisError.NETWORK_NOT_OPENED));

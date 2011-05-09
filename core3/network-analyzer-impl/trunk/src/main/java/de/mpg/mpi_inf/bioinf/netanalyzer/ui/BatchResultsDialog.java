@@ -40,9 +40,9 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.cytoscape.io.read.CyNetworkViewReader;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
-import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.io.read.CyNetworkReaderManager;
+import org.cytoscape.model.CyNetwork;
 
 import de.mpg.mpi_inf.bioinf.netanalyzer.LoadNetstatsAction;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
@@ -56,7 +56,7 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkInterpretation;
  */
 public class BatchResultsDialog extends JDialog implements ActionListener, ListSelectionListener {
 
-	private final CyNetworkViewReaderManager cyNetworkViewReaderMgr;
+	private final CyNetworkReaderManager cyNetworkViewReaderMgr;
 	private final Frame aOwner;
 
 	/**
@@ -67,7 +67,7 @@ public class BatchResultsDialog extends JDialog implements ActionListener, ListS
 	 * @param aReports
 	 *            List of analysis reports to be visualized.
 	 */
-	public BatchResultsDialog(Frame aOwner, List<NetworkAnalysisReport> aReports, CyNetworkViewReaderManager cyNetworkViewReaderMgr) {
+	public BatchResultsDialog(Frame aOwner, List<NetworkAnalysisReport> aReports, CyNetworkReaderManager cyNetworkViewReaderMgr) {
 		super(aOwner, Messages.DT_BATCHRESULTS, false);
 		init(aReports);
 		setLocationRelativeTo(aOwner);
@@ -111,8 +111,8 @@ public class BatchResultsDialog extends JDialog implements ActionListener, ListS
 				} else if (c == 0) {
 					final File file = model.getNetwork(r);
 					if (file != null && file.isFile()) {
-						CyNetworkViewReader reader = cyNetworkViewReaderMgr.getReader(file.toURI());
-						CyNetworkView[] views = reader.getNetworkViews();
+						CyNetworkReader reader = cyNetworkViewReaderMgr.getReader(file.toURI(), file.getName());
+						CyNetwork[] networks = reader.getCyNetworks();
 						// TODO do something with the networks?
 					}
 				}
