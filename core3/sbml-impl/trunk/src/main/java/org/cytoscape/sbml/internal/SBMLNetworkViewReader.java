@@ -8,7 +8,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -16,7 +16,6 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.sbml.jsbml.JSBML;
@@ -29,7 +28,7 @@ import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.Species;
 import org.sbml.jsbml.SpeciesReference;
 
-public class SBMLNetworkViewReader extends AbstractTask implements CyNetworkViewReader {
+public class SBMLNetworkViewReader extends AbstractTask implements CyNetworkReader {
 	private static final int BUFFER_SIZE = 16384;
 	
 	static final String NODE_NAME_ATTR_LABEL = "name"; //$NON-NLS-1$
@@ -66,7 +65,8 @@ public class SBMLNetworkViewReader extends AbstractTask implements CyNetworkView
 	private final CyNetworkFactory networkFactory;
 	private final CyNetworkViewFactory viewFactory;
 
-	private CyNetworkView view;
+	//private CyNetworkView view;
+	private CyNetwork network;
 
 	public SBMLNetworkViewReader(InputStream stream, CyNetworkFactory networkFactory, CyNetworkViewFactory viewFactory) {
 		this.stream = stream;
@@ -79,8 +79,8 @@ public class SBMLNetworkViewReader extends AbstractTask implements CyNetworkView
 		String xml = readString(stream);
 		SBMLDocument document = JSBML.readSBMLFromString(xml);
 		
-		CyNetwork network = networkFactory.getInstance();
-		view = viewFactory.getNetworkView(network);
+		network = networkFactory.getInstance();
+		//view = viewFactory.getNetworkView(network);
 		Model model = document.getModel();
 		
 		// Create a node for each Species
@@ -200,11 +200,13 @@ public class SBMLNetworkViewReader extends AbstractTask implements CyNetworkView
 	public void cancel() {
 	}
 
-	public CyNetworkView[] getNetworkViews() {
-		return new CyNetworkView[] { view };
+	@Override
+	public CyNetwork[] getCyNetworks() {
+		return new CyNetwork[] { network };
 	}
 
-	public VisualStyle[] getVisualStyles() {
-		return null;
+	@Override
+	public CyNetworkView buildCyNetworkView(CyNetwork network) {
+		return viewFactory.getNetworkView(network);
 	}
 }

@@ -7,14 +7,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.test.support.NetworkTestSupport;
 import org.cytoscape.test.support.NetworkViewTestSupport;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
@@ -39,7 +38,7 @@ public class SBMLNetworkViewReaderTest {
 	}
 	
 	
-	CyNetworkViewReader createReader(File file) throws IOException {
+	CyNetworkReader createReader(File file) throws IOException {
 		SBMLNetworkViewReader reader = new SBMLNetworkViewReader(new FileInputStream(file), networkFactory, networkViewFactory);
 		reader.setTaskIterator(new TaskIterator(reader));
 		return reader;
@@ -48,17 +47,17 @@ public class SBMLNetworkViewReaderTest {
 	@Test
 	public void testSBMLLevel2() throws Exception {
 		File file = new File("src/test/resources/BIOMD0000000003.xml");
-		CyNetworkViewReader reader = createReader(file);
+		CyNetworkReader reader = createReader(file);
 		reader.run(taskMonitor);
-		CyNetworkView[] views = reader.getNetworkViews();
+		CyNetwork[] networks = reader.getCyNetworks();
 		
-		assertNotNull(views);
-		assertEquals(1, views.length);
+		assertNotNull(networks);
+		assertEquals(1, networks.length);
 		
-		CyNetworkView view = views[0];
-		assertNotNull(view);
+		CyNetwork network = networks[0];
+		assertNotNull(network);
 		
-		CyNetwork model = view.getModel();
+		CyNetwork model = network;
 		assertNotNull(model);
 		
 		assertEquals(10, model.getNodeCount());
