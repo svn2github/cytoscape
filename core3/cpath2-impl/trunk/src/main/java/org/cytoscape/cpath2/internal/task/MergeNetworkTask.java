@@ -46,12 +46,11 @@ import org.cytoscape.cpath2.internal.CPath2Factory;
 import org.cytoscape.cpath2.internal.util.AttributeUtil;
 import org.cytoscape.cpath2.internal.util.SelectUtil;
 import org.cytoscape.cpath2.internal.web_service.CPathProperties;
-import org.cytoscape.io.read.CyNetworkViewReader;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.undo.UndoSupport;
@@ -103,12 +102,11 @@ public class MergeNetworkTask implements Task {
         taskMonitor.setStatusMessage("Reading in Network Data from "
                 + CPathProperties.getInstance().getCPathServerName()  + "...");
         
-        CyNetworkViewReaderManager manager = factory.getCyNetworkViewReaderManager();
-        CyNetworkViewReader reader = manager.getReader(cpathInstanceURL.toURI(), cpathInstanceURL.getFile());
+        CyNetworkReaderManager manager = factory.getCyNetworkViewReaderManager();
+        CyNetworkReader reader = manager.getReader(cpathInstanceURL.toURI(), cpathInstanceURL.getFile());
         reader.run(taskMonitor);
         
-        CyNetworkView networkView = reader.getNetworkViews()[0];
-        CyNetwork network = networkView.getModel();
+        CyNetwork network = reader.getCyNetworks()[0];
 
         // unselect all nodes / edges
         SelectUtil.unselectAllNodes(mergedNetwork);

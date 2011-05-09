@@ -31,7 +31,7 @@ import org.cytoscape.cpath2.internal.view.model.InteractionBundleModel;
 import org.cytoscape.cpath2.internal.view.model.PathwayTableModel;
 import org.cytoscape.cpath2.internal.web_service.CPathResponseFormat;
 import org.cytoscape.cpath2.internal.web_service.CPathWebService;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -56,7 +56,7 @@ public class CPath2Factory {
 	private final CyNetworkManager networkManager;
 	private final CyApplicationManager applicationManager;
 	private final CyNetworkViewManager networkViewManager;
-	private final CyNetworkViewReaderManager networkViewReaderManager;
+	private final CyNetworkReaderManager networkViewReaderManager;
 	private final CyNetworkNaming naming;
 	private final CyNetworkFactory networkFactory;
 	private final CyLayoutAlgorithmManager layoutManager;
@@ -65,7 +65,7 @@ public class CPath2Factory {
 	private final MapBioPaxToCytoscapeFactory mapperFactory;
 	private final NetworkListener networkListener;
 	
-	public CPath2Factory(CySwingApplication application, TaskManager taskManager, OpenBrowser openBrowser, CyNetworkManager networkManager, CyApplicationManager applicationManager, CyNetworkViewManager networkViewManager, CyNetworkViewReaderManager networkViewReaderManager, CyNetworkNaming naming, CyNetworkFactory networkFactory, CyLayoutAlgorithmManager layouts, UndoSupport undoSupport, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener) {
+	public CPath2Factory(CySwingApplication application, TaskManager taskManager, OpenBrowser openBrowser, CyNetworkManager networkManager, CyApplicationManager applicationManager, CyNetworkViewManager networkViewManager, CyNetworkReaderManager networkViewReaderManager, CyNetworkNaming naming, CyNetworkFactory networkFactory, CyLayoutAlgorithmManager layouts, UndoSupport undoSupport, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener) {
 		this.application = application;
 		this.taskManager = taskManager;
 		this.openBrowser = openBrowser;
@@ -157,7 +157,7 @@ public class CPath2Factory {
 		return networkViewManager;
 	}
 
-	public CyNetworkViewReaderManager getCyNetworkViewReaderManager() {
+	public CyNetworkReaderManager getCyNetworkViewReaderManager() {
 		return networkViewReaderManager;
 	}
 

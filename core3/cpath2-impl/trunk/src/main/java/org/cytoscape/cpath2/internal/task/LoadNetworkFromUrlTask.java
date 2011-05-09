@@ -48,10 +48,9 @@ import java.text.NumberFormat;
 import javax.swing.JOptionPane;
 
 import org.cytoscape.cpath2.internal.CPath2Factory;
-import org.cytoscape.io.read.CyNetworkViewReader;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
@@ -78,8 +77,8 @@ public class LoadNetworkFromUrlTask implements Task {
         taskMonitor.setStatusMessage("Reading in Network Data...");
 
         try {
-        	CyNetworkViewReaderManager readerManager = factory.getCyNetworkViewReaderManager();
-			CyNetworkViewReader reader = readerManager.getReader(url.toURI(), url.getFile());
+        	CyNetworkReaderManager readerManager = factory.getCyNetworkViewReaderManager();
+			CyNetworkReader reader = readerManager.getReader(url.toURI(), url.getFile());
 
     		if (reader == null) {
     			JOptionPane.showMessageDialog(factory.getCySwingApplication().getJFrame(),
@@ -89,8 +88,8 @@ public class LoadNetworkFromUrlTask implements Task {
             }
 			taskMonitor.setStatusMessage("Creating Cytoscape Network...");
 			reader.run(taskMonitor);
-			CyNetworkView[] views = reader.getNetworkViews();
-			CyNetwork cyNetwork = views[0].getModel();
+			CyNetwork[] networks = reader.getCyNetworks();
+			CyNetwork cyNetwork = networks[0];
 
 			// TODO: Does CPath2 listen for this?
 //			Object[] ret_val = new Object[2];
