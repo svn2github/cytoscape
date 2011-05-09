@@ -26,7 +26,7 @@
 		interface="org.cytoscape.view.model.CyNetworkViewManager" />
 
 	<osgi:reference id="cyNetworkViewReaderManagerRef"
-		interface="org.cytoscape.io.read.CyNetworkViewReaderManager" />
+		interface="org.cytoscape.io.read.CyNetworkReaderManager" />
 
 	<osgi:reference id="cyNetworkNamingRef"
 		interface="org.cytoscape.session.CyNetworkNaming" />
