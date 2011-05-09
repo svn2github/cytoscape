@@ -53,8 +53,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.cytoscape.io.internal.read.MarkSupportedInputStream;
-import org.cytoscape.io.read.CyNetworkViewReader;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyPropertyReader;
 import org.cytoscape.io.read.CyPropertyReaderManager;
 import org.cytoscape.io.read.CySessionReader;
@@ -96,7 +96,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	private final Map<String, Network> netMap = new HashMap<String, Network>();
 
 	private final InputStream sourceInputStream;
-	private final CyNetworkViewReaderManager netviewReaderMgr; 
+	private final CyNetworkReaderManager netviewReaderMgr; 
 	private final CyPropertyReaderManager propertyReaderMgr; 
 
 	private Cysession cysession;
@@ -109,7 +109,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	/**
 	 */
 	public SessionReaderImpl(final InputStream sourceInputStream, 
-	                         final CyNetworkViewReaderManager netviewReaderMgr, 
+	                         final CyNetworkReaderManager netviewReaderMgr, 
 	                         CyPropertyReaderManager propertyReaderMgr,
 	                         CyProperty<Properties> properties) {
 
@@ -232,9 +232,16 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	    // force the vsbSwitch off
 	    prop.setProperty("visualStyleBuilder", "off");
 	    
-		CyNetworkViewReader reader = netviewReaderMgr.getReader(is, entryName);
+		CyNetworkReader reader = netviewReaderMgr.getReader(is, entryName);
 		reader.run(taskMonitor);
-		networkViews.put(entryName, reader.getNetworkViews());
+		CyNetwork[] networks = reader.getCyNetworks();
+		CyNetworkView[] views = new CyNetworkView[networks.length];
+		int i = 0;
+		for(CyNetwork network: networks) {
+			views[i] = reader.buildCyNetworkView(network);
+			i++;
+		}
+		networkViews.put(entryName, views);
 		
 		// Restore the original state of the style builder switch
         if (vsbSwitch != null) prop.setProperty("visualStyleBuilder", vsbSwitch);

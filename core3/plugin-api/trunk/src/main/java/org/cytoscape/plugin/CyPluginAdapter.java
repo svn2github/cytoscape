@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyPropertyReaderManager;
 import org.cytoscape.io.read.CySessionReaderManager;
 import org.cytoscape.io.read.CyTableReaderManager;
@@ -202,7 +202,7 @@ public interface CyPluginAdapter {
 	 * Returns an instance of {@link CyNetworkViewReaderManager}.
 	 * @return an instance of {@link CyNetworkViewReaderManager}.
 	 */
-	CyNetworkViewReaderManager getCyNetworkViewReaderManager();
+	CyNetworkReaderManager getCyNetworkViewReaderManager();
 
 	/**
 	 * Returns an instance of {@link CyPropertyReaderManager}.

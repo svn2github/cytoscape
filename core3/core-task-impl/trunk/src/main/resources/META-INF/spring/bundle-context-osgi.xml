@@ -22,8 +22,8 @@
 	<osgi:reference id="cyRootNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory" />
 
-	<osgi:reference id="cyNetworkViewReaderManagerServiceRef"
-		interface="org.cytoscape.io.read.CyNetworkViewReaderManager" />
+	<osgi:reference id="cyNetworkReaderManagerServiceRef"
+		interface="org.cytoscape.io.read.CyNetworkReaderManager" />
 
 	<osgi:reference id="cyDataTableReaderManagerServiceRef"
 		interface="org.cytoscape.io.read.CyTableReaderManager" />

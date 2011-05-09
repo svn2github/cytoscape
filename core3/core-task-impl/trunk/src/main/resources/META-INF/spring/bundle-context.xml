@@ -37,7 +37,7 @@
 
 	<bean id="loadNetworkFileTaskFactory"
 		class="org.cytoscape.task.internal.loadnetwork.LoadNetworkFileTaskFactoryImpl">
-		<constructor-arg ref="cyNetworkViewReaderManagerServiceRef" />
+		<constructor-arg ref="cyNetworkReaderManagerServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyPropertyServiceRef" />
@@ -47,7 +47,7 @@
 	<!-- this creates a LoadPropsInterceptor object -->
 	<bean id="loadNetworkURLTaskFactory"
 		class="org.cytoscape.task.internal.loadnetwork.LoadNetworkURLTaskFactoryImpl">
-		<constructor-arg ref="cyNetworkViewReaderManagerServiceRef" />
+		<constructor-arg ref="cyNetworkReaderManagerServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyPropertyServiceRef" />
@@ -340,7 +340,7 @@
 	</bean>
 
 	<bean id="importTaskUtil" class="org.cytoscape.task.internal.quickstart.ImportTaskUtil">
-		<constructor-arg ref="cyNetworkViewReaderManagerServiceRef" />
+		<constructor-arg ref="cyNetworkReaderManagerServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyPropertyServiceRef" />
@@ -366,7 +366,7 @@
 
 	<bean id="subnetworkBuilderUtil"
 		class="org.cytoscape.task.internal.quickstart.subnetworkbuilder.SubnetworkBuilderUtil">
-		<constructor-arg ref="cyNetworkViewReaderManagerServiceRef" />
+		<constructor-arg ref="cyNetworkReaderManagerServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyPropertyServiceRef" />

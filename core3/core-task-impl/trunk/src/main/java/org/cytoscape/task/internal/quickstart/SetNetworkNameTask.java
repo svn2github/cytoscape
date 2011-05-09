@@ -1,6 +1,7 @@
 package org.cytoscape.task.internal.quickstart;
 
-import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.AbstractTask;
@@ -9,20 +10,20 @@ import org.cytoscape.work.TaskMonitor;
 public class SetNetworkNameTask extends AbstractTask {
 
 	private final String newName;
-	private final CyNetworkViewReader reader;
+	private final CyNetworkReader reader;
 	
-	public SetNetworkNameTask(final CyNetworkViewReader reader, final String name) {
+	public SetNetworkNameTask(final CyNetworkReader reader, final String name) {
 		super();
 		this.newName = name;
 		this.reader = reader;
 	}
 
 	public void run(TaskMonitor e) {
-		CyNetworkView[] networkViews = reader.getNetworkViews();
+		final CyNetwork[] networks = reader.getCyNetworks();
 		
-		if(networkViews == null || networkViews.length == 0)
+		if(networks == null || networks.length == 0)
 			throw new IllegalStateException("Could not find network to be renamed.");
 		
-		networkViews[0].getModel().getCyRow().set(CyTableEntry.NAME, newName);
+		networks[0].getCyRow().set(CyTableEntry.NAME, newName);
 	} 
 }

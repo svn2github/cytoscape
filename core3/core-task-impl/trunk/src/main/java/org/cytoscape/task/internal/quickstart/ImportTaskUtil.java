@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyTableReaderManager;
 import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.model.CyNetwork;
@@ -21,7 +21,7 @@ import org.cytoscape.work.Task;
 
 public class ImportTaskUtil {
 	
-	private CyNetworkViewReaderManager mgr;
+	private CyNetworkReaderManager mgr;
 	private CyNetworkManager netmgr;
 	private final CyNetworkViewManager networkViewManager;
 	private Properties props;
@@ -37,7 +37,7 @@ public class ImportTaskUtil {
 	private CyProperty<Properties> cyProps;
 
 	public ImportTaskUtil(
-			CyNetworkViewReaderManager mgr,
+			CyNetworkReaderManager mgr,
 		     CyNetworkManager netmgr,
 		     final CyNetworkViewManager networkViewManager,
 		     CyProperty<Properties> cyProps, CyNetworkNaming cyNetworkNaming,

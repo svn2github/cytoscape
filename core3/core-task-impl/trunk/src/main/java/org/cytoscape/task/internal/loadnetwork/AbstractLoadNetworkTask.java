@@ -29,19 +29,17 @@
  */
 package org.cytoscape.task.internal.loadnetwork;
 
-import java.io.IOException;
 import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Properties;
 
-import org.cytoscape.io.read.CyNetworkViewReader;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.session.CyNetworkNaming;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
@@ -50,27 +48,35 @@ import org.cytoscape.work.TaskMonitor;
  * Task to load a new network.
  */
 abstract public class AbstractLoadNetworkTask extends AbstractTask {
-	protected CyNetworkViewReader reader;
+	
+	private final String VIEW_THRESHOLD = "viewThreshold";
+	private static final int DEF_VIEW_THRESHOLD = 3000;
+	
+	private int viewThreshold;
+	
+	protected CyNetworkReader reader;
 	protected URI uri;
 	protected TaskMonitor taskMonitor;
 	protected String name;
 	protected boolean interrupted = false;
-	protected CyNetworkViewReaderManager mgr;
+	protected CyNetworkReaderManager mgr;
 	protected CyNetworkManager networkManager;
 	protected CyNetworkViewManager networkViewManager;
 	protected Properties props;
 	protected CyNetworkNaming namingUtil;
 
-	public AbstractLoadNetworkTask(final CyNetworkViewReaderManager mgr, final CyNetworkManager networkManager,
+	public AbstractLoadNetworkTask(final CyNetworkReaderManager mgr, final CyNetworkManager networkManager,
 			final CyNetworkViewManager networkViewManager, final Properties props, final CyNetworkNaming namingUtil) {
 		this.mgr = mgr;
 		this.networkManager = networkManager;
 		this.networkViewManager = networkViewManager;
 		this.props = props;
 		this.namingUtil = namingUtil;
+		
+		this.viewThreshold = getViewThreshold();
 	}
 
-	protected void loadNetwork(final CyNetworkViewReader viewReader) throws Exception {
+	protected void loadNetwork(final CyNetworkReader viewReader) throws Exception {
 		if (viewReader == null)
 			throw new IllegalArgumentException("Could not read file: Network View Reader is null.");
 
@@ -79,64 +85,68 @@ abstract public class AbstractLoadNetworkTask extends AbstractTask {
 		taskMonitor.setStatusMessage("Creating Cytoscape Network...");
 
 		insertTasksAfterCurrentTask(viewReader, new GenerateNetworkViewsTask(name, viewReader, networkManager,
-				networkViewManager, namingUtil, props));
+				networkViewManager, namingUtil, viewThreshold));
 	}
 
-	@Override
-	abstract public void run(TaskMonitor taskMonitor) throws Exception;
+	private int getViewThreshold() {
+		final String vts = props.getProperty(VIEW_THRESHOLD);
+		int threshold;
+		try {
+			threshold = Integer.parseInt(vts);
+		} catch (Exception e) {
+			threshold = DEF_VIEW_THRESHOLD;
+		}
+
+		return threshold;
+	}
 }
 
 class GenerateNetworkViewsTask extends AbstractTask {
 	private final String name;
-	private final CyNetworkViewReader viewReader;
+	private final CyNetworkReader viewReader;
 	private final CyNetworkManager networkManager;
 	private final CyNetworkViewManager networkViewManager;
 	private final CyNetworkNaming namingUtil;
-	private final Properties props;
+	private final int viewThreshold;
+	
 
-	GenerateNetworkViewsTask(final String name, final CyNetworkViewReader viewReader,
+	GenerateNetworkViewsTask(final String name, final CyNetworkReader viewReader,
 			final CyNetworkManager networkManager, final CyNetworkViewManager networkViewManager,
-			final CyNetworkNaming namingUtil, final Properties props) {
+			final CyNetworkNaming namingUtil, final int viewThreshold) {
 		this.name = name;
 		this.viewReader = viewReader;
 		this.networkManager = networkManager;
 		this.networkViewManager = networkViewManager;
 		this.namingUtil = namingUtil;
-		this.props = props;
+		this.viewThreshold = viewThreshold;
 	}
 
 	public void run(final TaskMonitor taskMonitor) throws Exception {
-		final CyNetworkView[] cyNetworkViews = viewReader.getNetworkViews();
 
-		if (cyNetworkViews == null || cyNetworkViews.length < 0)
-			throw new IOException("Could not create network for the producer.");
+		taskMonitor.setProgress(-1.0);
+		
+		final CyNetwork[] networks = viewReader.getCyNetworks();
 
-		for (CyNetworkView view : cyNetworkViews) {
-			if (cancelled)
-				return;
+		for (CyNetwork network : networks) {
+			network.getCyRow().set(CyTableEntry.NAME, namingUtil.getSuggestedNetworkTitle(name));
+			networkManager.addNetwork(network);
 
-			final CyNetwork cyNetwork = view.getModel();
-			cyNetwork.getCyRow().set(CyTableEntry.NAME, namingUtil.getSuggestedNetworkTitle(name));
-			networkManager.addNetwork(cyNetwork);
-
-			// Do the following only for non-null views.
-			if (view.isEmptyView() == false) {
-				networkViewManager.addNetworkView(view);
-				view.fitContent();
-			} else {
-				view = null;
+			final int numGraphObjects = network.getNodeCount() + network.getEdgeCount();
+			if (numGraphObjects < viewThreshold) {
+				networkViewManager.addNetworkView(viewReader.buildCyNetworkView(network));
+				// TODO: is this necessary?
+				// view.fitContent();
 			}
 
-			informUserOfGraphStats(cyNetwork, taskMonitor);
+			informUserOfGraphStats(network, numGraphObjects, taskMonitor);
 		}
-
 		taskMonitor.setProgress(1.0);
 	}
 
 	/**
 	 * Inform User of Network Stats.
 	 */
-	private void informUserOfGraphStats(final CyNetwork newNetwork, final TaskMonitor taskMonitor) {
+	private void informUserOfGraphStats(final CyNetwork newNetwork, final int objectCount, final TaskMonitor taskMonitor) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 		StringBuffer sb = new StringBuffer();
 
@@ -147,12 +157,11 @@ class GenerateNetworkViewsTask extends AbstractTask {
 		sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
 		sb.append(" edges.\n\n");
 
-		String thresh = props.getProperty("viewThreshold");
 
-		if (newNetwork.getNodeCount() < Integer.parseInt(thresh)) {
-			sb.append("Network is under " + thresh + " nodes.  A view will be automatically created.");
+		if (objectCount < viewThreshold) {
+			sb.append("Network is under " + viewThreshold + " graph objects.  A view will be automatically created.");
 		} else {
-			sb.append("Network is over " + thresh + " nodes.  A view has not been created."
+			sb.append("Network is over " + viewThreshold + " graph objects.  A view has not been created."
 					+ "  If you wish to view this network, use " + "\"Create View\" from the \"Edit\" menu.");
 		}
 

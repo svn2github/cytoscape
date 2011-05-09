@@ -49,47 +49,47 @@ import org.junit.Test;
 
 public class LoadNetworkFileTaskTest extends AbstractLoadNetworkTaskTester {
 
-    File file;
+	File file;
 
-    @Before
-    public void setUp() throws Exception {
-	file = new File("/tmp/asdfasdf");
-	uri = file.toURI();
-	super.setUp();
-    }
-
-    @Test
-    public void testRun() throws Exception {
-	TaskFactory factory = new LoadNetworkFileTaskFactoryImpl(mgr, netmgr, networkViewManager, props, namingUtil);
-	TaskIterator ti = factory.getTaskIterator();
-	TaskMonitor tm = mock(TaskMonitor.class);
-	boolean first = true;
-	while (ti.hasNext()) {
-	    Task t = ti.next();
-	    if (first) {
-		((LoadNetworkFileTask) t).file = file;
-		first = false;
-	    }
-	    t.run(tm);
+	@Before
+	public void setUp() throws Exception {
+		file = new File("/tmp/asdfasdf");
+		uri = file.toURI();
+		super.setUp();
 	}
-	verify(netmgr).addNetwork(net);
-	//verify(networkViewManager).addNetworkView(view);
-	verify(tm).setProgress(1.0);
-    }
 
-    @Test(expected = NullPointerException.class)
-    public void testNullFile() throws Exception {
-	TaskFactory factory = new LoadNetworkFileTaskFactoryImpl(mgr, netmgr, networkViewManager, props, namingUtil);
-	TaskIterator ti = factory.getTaskIterator();
-	TaskMonitor tm = mock(TaskMonitor.class);
-	boolean first = true;
-	while (ti.hasNext()) {
-	    Task t = ti.next();
-	    if (first) {
-		((LoadNetworkFileTask) t).file = null;
-		first = false;
-	    }
-	    t.run(tm);
+	@Test
+	public void testRun() throws Exception {
+		TaskFactory factory = new LoadNetworkFileTaskFactoryImpl(mgr, netmgr, networkViewManager, props, namingUtil);
+		TaskIterator ti = factory.getTaskIterator();
+		TaskMonitor tm = mock(TaskMonitor.class);
+		boolean first = true;
+		while (ti.hasNext()) {
+			Task t = ti.next();
+			if (first) {
+				((LoadNetworkFileTask) t).file = file;
+				first = false;
+			}
+			t.run(tm);
+		}
+		verify(netmgr).addNetwork(net);
+		// verify(networkViewManager).addNetworkView(view);
+		verify(tm).setProgress(1.0);
 	}
-    }
+
+	@Test(expected = NullPointerException.class)
+	public void testNullFile() throws Exception {
+		TaskFactory factory = new LoadNetworkFileTaskFactoryImpl(mgr, netmgr, networkViewManager, props, namingUtil);
+		TaskIterator ti = factory.getTaskIterator();
+		TaskMonitor tm = mock(TaskMonitor.class);
+		boolean first = true;
+		while (ti.hasNext()) {
+			Task t = ti.next();
+			if (first) {
+				((LoadNetworkFileTask) t).file = null;
+				first = false;
+			}
+			t.run(tm);
+		}
+	}
 }

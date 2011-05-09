@@ -65,22 +65,23 @@ public class XGMMLNetworkViewReaderTest extends AbstractNetworkViewReaderTester 
 
 		findInteraction(net, "YGR136W", "YGR058W", "pp", 1);
 
-		// Test low threshold
-		setViewThreshold(5);
-		CyNetworkView[] nullViews = getViews("galFiltered.xgmml");
-		assertNotNull(nullViews);
-		assertEquals(1, nullViews.length);
-		//Will be removed when new IO is available.
-		//assertTrue(nullViews[0].isEmptyView());
 	}
 
 	private CyNetworkView[] getViews(String file) throws Exception {
 		File f = new File("./src/test/resources/testData/xgmml/" + file);
-		XGMMLNetworkViewReader snvp = new XGMMLNetworkViewReader(new FileInputStream(f), renderingEngineManager,
+		XGMMLNetworkReader snvp = new XGMMLNetworkReader(new FileInputStream(f), renderingEngineManager,
 				viewFactory, netFactory, readDataManager, attributeValueUtil, styleFactory, visMappingManager, parser,
 				properties);
 		snvp.run(taskMonitor);
+		
+		final CyNetwork[] networks = snvp.getCyNetworks();
+		final CyNetworkView[] views = new CyNetworkView[networks.length];
+		int i = 0;
+		for(CyNetwork network: networks) {
+			views[i] = snvp.buildCyNetworkView(network);
+			i++;
+		}
 
-		return snvp.getNetworkViews();
+		return views;
 	}
 }

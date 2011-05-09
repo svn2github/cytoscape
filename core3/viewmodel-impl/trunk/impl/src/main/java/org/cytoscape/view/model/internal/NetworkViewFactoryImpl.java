@@ -11,74 +11,74 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 
 public class NetworkViewFactoryImpl implements CyNetworkViewFactory {
 
-    private final String VIEW_THRESHOLD = "viewThreshold";
+	private final String VIEW_THRESHOLD = "viewThreshold";
 
-    /**
-     * By default, this value will be used as the View Threshold.
-     */
-    private static final int DEF_VIEW_THRESHOLD = 3000;
+	/**
+	 * By default, this value will be used as the View Threshold.
+	 */
+	private static final int DEF_VIEW_THRESHOLD = 3000;
 
-    private final CyEventHelper eventHelper;
-    private final CyServiceRegistrar registrar;
-    private final Properties props;
+	private final CyEventHelper eventHelper;
+	private final CyServiceRegistrar registrar;
+	private final Properties props;
 
-    /**
-     * For injection, use this constructor.
-     * 
-     * @param eventHelper
-     */
-    public NetworkViewFactoryImpl(final CyEventHelper eventHelper, final CyServiceRegistrar registrar,
-	    final CyProperty<Properties> prop) {
+	/**
+	 * For injection, use this constructor.
+	 * 
+	 * @param eventHelper
+	 */
+	public NetworkViewFactoryImpl(final CyEventHelper eventHelper, final CyServiceRegistrar registrar,
+			final CyProperty<Properties> prop) {
 
-	if (eventHelper == null)
-	    throw new NullPointerException("CyEventHelper is null");
-	this.eventHelper = eventHelper;
+		if (eventHelper == null)
+			throw new NullPointerException("CyEventHelper is null");
+		this.eventHelper = eventHelper;
 
-	if (registrar == null)
-	    throw new NullPointerException("CyServiceRegistrar is null");
+		if (registrar == null)
+			throw new NullPointerException("CyServiceRegistrar is null");
 
-	this.registrar = registrar;
+		this.registrar = registrar;
 
-	this.props = prop.getProperties();
-    }
-
-    @Override
-    public CyNetworkView getNetworkView(final CyNetwork network) {
-	return getNetworkView(network, true);
-    }
-
-    @Override
-    public CyNetworkView getNetworkView(final CyNetwork network, final Boolean useThreshold) {
-
-	CyNetworkView view;
-	
-	if (!useThreshold) {
-	    view = new NetworkViewImpl(network, eventHelper);
-	    registrar.registerAllServices(view, new Properties());
-	    return view;
+		this.props = prop.getProperties();
 	}
 
-	final int viewThreshold = getViewThreshold();
-	final int objectCount = network.getEdgeCount() + network.getNodeCount();
-	if (viewThreshold < objectCount)
-	    view = new NullCyNetworkView(network);
-	else {
-	    view = new NetworkViewImpl(network, eventHelper);
-	    registrar.registerAllServices(view, new Properties());
+	@Override
+	public CyNetworkView getNetworkView(final CyNetwork network) {
+		return getNetworkView(network, true);
 	}
 
-	return view;
-    }
+	@Override
+	public CyNetworkView getNetworkView(final CyNetwork network, final Boolean useThreshold) {
 
-    private int getViewThreshold() {
-	final String vts = props.getProperty(VIEW_THRESHOLD);
-	int threshold;
-	try {
-	    threshold = Integer.parseInt(vts);
-	} catch (Exception e) {
-	    threshold = DEF_VIEW_THRESHOLD;
+		CyNetworkView view;
+
+		if (!useThreshold) {
+			view = new NetworkViewImpl(network, eventHelper);
+			registrar.registerAllServices(view, new Properties());
+			return view;
+		}
+
+		final int viewThreshold = getViewThreshold();
+		final int objectCount = network.getEdgeCount() + network.getNodeCount();
+		if (viewThreshold < objectCount)
+			view = new NullCyNetworkView(network);
+		else {
+			view = new NetworkViewImpl(network, eventHelper);
+			registrar.registerAllServices(view, new Properties());
+		}
+
+		return view;
 	}
 
-	return threshold;
-    }
+	private int getViewThreshold() {
+		final String vts = props.getProperty(VIEW_THRESHOLD);
+		int threshold;
+		try {
+			threshold = Integer.parseInt(vts);
+		} catch (Exception e) {
+			threshold = DEF_VIEW_THRESHOLD;
+		}
+
+		return threshold;
+	}
 }

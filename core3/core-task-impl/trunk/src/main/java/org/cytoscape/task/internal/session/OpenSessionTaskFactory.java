@@ -31,7 +31,7 @@ package org.cytoscape.task.internal.session;
 
 
 import org.cytoscape.session.CySessionManager; 
-import org.cytoscape.io.read.CyNetworkViewReaderManager; 
+import org.cytoscape.io.read.CyNetworkReaderManager; 
 import org.cytoscape.io.read.CySessionReaderManager;
 
 import org.cytoscape.work.TaskFactory;

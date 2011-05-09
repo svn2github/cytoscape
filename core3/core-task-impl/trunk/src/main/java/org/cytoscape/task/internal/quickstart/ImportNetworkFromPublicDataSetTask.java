@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
@@ -31,7 +31,7 @@ public class ImportNetworkFromPublicDataSetTask extends AbstractLoadNetworkTask 
 	private final StreamUtil streamUtil;
 
 	public ImportNetworkFromPublicDataSetTask(final Set<InteractionFilePreprocessor> processors,
-			final CyNetworkViewReaderManager mgr, final CyNetworkManager networkManager,
+			final CyNetworkReaderManager mgr, final CyNetworkManager networkManager,
 			final CyNetworkViewManager networkViewManager, final Properties props, final CyNetworkNaming namingUtil,
 			final StreamUtil streamUtil) {
 		super(mgr, networkManager, networkViewManager, props, namingUtil);

@@ -10,8 +10,8 @@ import org.cytoscape.dnd.DropNetworkViewTaskFactory;
 import org.cytoscape.equations.AbstractFunction;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.read.CyNetworkViewReader;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyPropertyReaderManager;
 import org.cytoscape.io.read.CySessionReaderManager;
 import org.cytoscape.io.read.CyTableReaderManager;
@@ -87,7 +87,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	private final CyNetworkManager cyNetworkManager;
 	private final CyNetworkViewFactory cyNetworkViewFactory;
 	private final CyNetworkViewManager cyNetworkViewManager;
-	private final CyNetworkViewReaderManager cyNetworkViewReaderManager;
+	private final CyNetworkReaderManager cyNetworkViewReaderManager;
 	private final CyNetworkViewWriterManager cyNetworkViewWriterManager;
 	private final CyProperty<Properties> cyProperty;
 	private final CyPropertyReaderManager cyPropertyReaderManager;
@@ -134,7 +134,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	private CyAction cyAction;
 	private CytoPanelComponentSelectedEvent cytoPanelComponentSelectedEvent;
 	private CyFileFilter cyFileFilter;
-	private CyNetworkViewReader cyNetworkViewReader;
+	private CyNetworkReader cyNetworkViewReader;
 	private StreamUtil streamUtil;
 	private CyNetworkViewWriterFactory cyNetworkViewWriterFactory;
 	private AbstractGUITunableHandler abstractGUITunableHandler;
@@ -164,7 +164,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	                     final CyNetworkManager cyNetworkManager,
 	                     final CyNetworkViewFactory cyNetworkViewFactory,
 	                     final CyNetworkViewManager cyNetworkViewManager,
-	                     final CyNetworkViewReaderManager cyNetworkViewReaderManager,
+	                     final CyNetworkReaderManager cyNetworkViewReaderManager,
 	                     final CyNetworkViewWriterManager cyNetworkViewWriterManager,
 	                     final CyProperty<Properties> cyProperty,
 	                     final CyPropertyReaderManager cyPropertyReaderManager,
@@ -229,7 +229,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	public CyNetworkManager getCyNetworkManager() { return cyNetworkManager; } 
 	public CyNetworkViewFactory getCyNetworkViewFactory() { return cyNetworkViewFactory; }
 	public CyNetworkViewManager getCyNetworkViewManager() { return cyNetworkViewManager; }
-	public CyNetworkViewReaderManager getCyNetworkViewReaderManager() { return cyNetworkViewReaderManager; }
+	public CyNetworkReaderManager getCyNetworkViewReaderManager() { return cyNetworkViewReaderManager; }
 	public CyNetworkViewWriterManager getCyNetworkViewWriterManager() { return cyNetworkViewWriterManager; }
 	public CyProperty<Properties> getCoreProperties() { return cyProperty; }
 	public CyPropertyReaderManager getCyPropertyReaderManager() { return cyPropertyReaderManager; }

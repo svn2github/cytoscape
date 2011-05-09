@@ -6,7 +6,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
@@ -29,7 +29,7 @@ import org.cytoscape.work.Task;
 
 public class SubnetworkBuilderUtil {
 
-    private CyNetworkViewReaderManager mgr;
+    private CyNetworkReaderManager mgr;
     private CyNetworkManager netmgr;
     protected final CyNetworkViewManager networkViewManager;
     private Properties props;
@@ -54,7 +54,7 @@ public class SubnetworkBuilderUtil {
     private VisualMappingFunctionFactory ptFactory;
     private final CyLayoutAlgorithmManager layouts;
 
-    public SubnetworkBuilderUtil(CyNetworkViewReaderManager mgr, CyNetworkManager netmgr,
+    public SubnetworkBuilderUtil(CyNetworkReaderManager mgr, CyNetworkManager netmgr,
 	    final CyNetworkViewManager networkViewManager, CyProperty<Properties> cyProps,
 	    CyNetworkNaming cyNetworkNaming, StreamUtil streamUtil, final CyEventHelper eventHelper,
 	    final CyApplicationManager appManager, CyRootNetworkFactory crnf, CyNetworkViewFactory cnvf,

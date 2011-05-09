@@ -7,7 +7,7 @@ import java.util.Properties;
 
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyPropertyReaderManager;
 import org.cytoscape.io.read.CySessionReaderManager;
 import org.cytoscape.io.read.CyTableReaderManager;
@@ -48,7 +48,7 @@ public class CyPluginAdapterImplTest extends CyPluginAdapterTest {
 			mock(CyNetworkManager.class),
 			mock(CyNetworkViewFactory.class),
 			mock(CyNetworkViewManager.class),
-			mock(CyNetworkViewReaderManager.class),
+			mock(CyNetworkReaderManager.class),
 			mock(CyNetworkViewWriterManager.class),
 			(CyProperty<Properties>)mock(CyProperty.class),
 			mock(CyPropertyReaderManager.class),

@@ -32,7 +32,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyPropertyReaderManager;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.property.CyProperty;
@@ -42,14 +42,14 @@ import org.cytoscape.work.TaskIterator;
 public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 
 	private final CyFileFilter filter;
-	private final CyNetworkViewReaderManager netviewReaderMgr;
+	private final CyNetworkReaderManager netviewReaderMgr;
 	private final CyPropertyReaderManager propertyReaderMgr;
 	private final CyProperty<Properties> properties;
 	private InputStream inputStream;
 	private String inputName;
 
 	public SessionReaderFactoryImpl(CyFileFilter filter, 
-	                                CyNetworkViewReaderManager netviewReaderMgr, 
+	                                CyNetworkReaderManager netviewReaderMgr, 
 	                                CyPropertyReaderManager propertyReaderMgr,
 	                                CyProperty<Properties> properties) {
 		this.filter = filter;

@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
@@ -54,7 +54,7 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 
 	static String BAD_INTERNET_SETTINGS_MSG = "<html><p>Cytoscape has failed to connect to the URL. Please ensure that:</p><p><ol><li>the URL is correct,</li><li>your computer is able to connect to the Internet, and</li><li>your proxy settings are correct.</li></ol></p><p>The reason for the failure is: %s</html>";
 
-	public LoadNetworkURLTask(CyNetworkViewReaderManager mgr, 
+	public LoadNetworkURLTask(CyNetworkReaderManager mgr, 
 				  CyNetworkManager netmgr, final CyNetworkViewManager networkViewManager,
 				  final Properties props,
 				  CyNetworkNaming namingUtil, StreamUtil streamUtil)

@@ -80,11 +80,19 @@ public class SIFNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 	private CyNetworkView[] getViews(String file) throws Exception {
 		File f = new File("./src/test/resources/testData/sif/" + file);
 		final CyEventHelper eventHelper = mock(CyEventHelper.class);
-		SIFNetworkViewReader snvp = new SIFNetworkViewReader(new FileInputStream(f), layouts, viewFactory, netFactory,
+		SIFNetworkReader snvp = new SIFNetworkReader(new FileInputStream(f), layouts, viewFactory, netFactory,
 				eventHelper);
 		new TaskIterator(snvp);
 		snvp.run(taskMonitor);
 
-		return snvp.getNetworkViews();
+		final CyNetwork[] networks = snvp.getCyNetworks();
+		final CyNetworkView[] views = new CyNetworkView[networks.length];
+		int i = 0;
+		for(CyNetwork network: networks) {
+			views[i] = snvp.buildCyNetworkView(network);
+			i++;
+		}
+		
+		return views;
 	}
 }

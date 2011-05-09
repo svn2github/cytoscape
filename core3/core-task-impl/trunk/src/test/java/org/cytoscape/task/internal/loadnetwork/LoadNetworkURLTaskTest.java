@@ -48,81 +48,81 @@ import org.junit.Test;
 
 public class LoadNetworkURLTaskTest extends AbstractLoadNetworkTaskTester {
 
-    URL url;
+	URL url;
 
-    @Before
-    public void setUp() throws Exception {
-	url = new URL("http://example.com");
-	uri = url.toURI();
-	super.setUp();
-    }
-
-    @Test
-    public void testRun() throws Exception {
-	URLConnection con = mock(URLConnection.class);
-	StreamUtil streamUtil = mock(StreamUtil.class);
-	when(streamUtil.getURLConnection(url)).thenReturn(con);
-
-	TaskFactory factory = new LoadNetworkURLTaskFactoryImpl(mgr, netmgr, networkViewManager, props, namingUtil,
-		streamUtil);
-	assertNotNull(networkViewManager);
-	TaskIterator ti = factory.getTaskIterator();
-	TaskMonitor tm = mock(TaskMonitor.class);
-	boolean first = true;
-	while (ti.hasNext()) {
-	    Task t = ti.next();
-	    if (first) {
-		((LoadNetworkURLTask) t).url = url;
-		first = false;
-	    }
-	    t.run(tm);
+	@Before
+	public void setUp() throws Exception {
+		url = new URL("http://example.com");
+		uri = url.toURI();
+		super.setUp();
 	}
-	verify(netmgr).addNetwork(net);
-	//verify(networkViewManager).addNetworkView(view);
-	verify(tm).setProgress(1.0);
-    }
 
-    @Test(expected = Exception.class)
-    public void testBadConnection() throws Exception {
-	URLConnection con = mock(URLConnection.class);
-	doThrow(new IOException("bad connection")).when(con).connect();
+	@Test
+	public void testRun() throws Exception {
+		URLConnection con = mock(URLConnection.class);
+		StreamUtil streamUtil = mock(StreamUtil.class);
+		when(streamUtil.getURLConnection(url)).thenReturn(con);
 
-	StreamUtil streamUtil = mock(StreamUtil.class);
-	when(streamUtil.getURLConnection(url)).thenReturn(con);
-
-	TaskFactory factory = new LoadNetworkURLTaskFactoryImpl(mgr, netmgr, networkViewManager, props, namingUtil,
-		streamUtil);
-	TaskIterator ti = factory.getTaskIterator();
-	TaskMonitor tm = mock(TaskMonitor.class);
-	boolean first = true;
-	while (ti.hasNext()) {
-	    Task t = ti.next();
-	    if (first) {
-		((LoadNetworkURLTask) t).url = url;
-		first = false;
-	    }
-	    t.run(tm);
+		TaskFactory factory = new LoadNetworkURLTaskFactoryImpl(mgr, netmgr, networkViewManager, props, namingUtil,
+				streamUtil);
+		assertNotNull(networkViewManager);
+		TaskIterator ti = factory.getTaskIterator();
+		TaskMonitor tm = mock(TaskMonitor.class);
+		boolean first = true;
+		while (ti.hasNext()) {
+			Task t = ti.next();
+			if (first) {
+				((LoadNetworkURLTask) t).url = url;
+				first = false;
+			}
+			t.run(tm);
+		}
+		verify(netmgr).addNetwork(net);
+		// verify(networkViewManager).addNetworkView(view);
+		verify(tm).setProgress(1.0);
 	}
-    }
 
-    @Test(expected = NullPointerException.class)
-    public void testNullURL() throws Exception {
-	URLConnection con = mock(URLConnection.class);
-	StreamUtil streamUtil = mock(StreamUtil.class);
-	when(streamUtil.getURLConnection(url)).thenReturn(con);
+	@Test(expected = Exception.class)
+	public void testBadConnection() throws Exception {
+		URLConnection con = mock(URLConnection.class);
+		doThrow(new IOException("bad connection")).when(con).connect();
 
-	TaskFactory factory = new LoadNetworkURLTaskFactoryImpl(mgr, netmgr, networkViewManager, props, namingUtil,
-		streamUtil);
-	TaskIterator ti = factory.getTaskIterator();
-	TaskMonitor tm = mock(TaskMonitor.class);
-	boolean first = true;
-	while (ti.hasNext()) {
-	    Task t = ti.next();
-	    if (first) {
-		((LoadNetworkURLTask) t).url = null;
-		first = false;
-	    }
-	    t.run(tm);
+		StreamUtil streamUtil = mock(StreamUtil.class);
+		when(streamUtil.getURLConnection(url)).thenReturn(con);
+
+		TaskFactory factory = new LoadNetworkURLTaskFactoryImpl(mgr, netmgr, networkViewManager, props, namingUtil,
+				streamUtil);
+		TaskIterator ti = factory.getTaskIterator();
+		TaskMonitor tm = mock(TaskMonitor.class);
+		boolean first = true;
+		while (ti.hasNext()) {
+			Task t = ti.next();
+			if (first) {
+				((LoadNetworkURLTask) t).url = url;
+				first = false;
+			}
+			t.run(tm);
+		}
 	}
-    }
+
+	@Test(expected = NullPointerException.class)
+	public void testNullURL() throws Exception {
+		URLConnection con = mock(URLConnection.class);
+		StreamUtil streamUtil = mock(StreamUtil.class);
+		when(streamUtil.getURLConnection(url)).thenReturn(con);
+
+		TaskFactory factory = new LoadNetworkURLTaskFactoryImpl(mgr, netmgr, networkViewManager, props, namingUtil,
+				streamUtil);
+		TaskIterator ti = factory.getTaskIterator();
+		TaskMonitor tm = mock(TaskMonitor.class);
+		boolean first = true;
+		while (ti.hasNext()) {
+			Task t = ti.next();
+			if (first) {
+				((LoadNetworkURLTask) t).url = null;
+				first = false;
+			}
+			t.run(tm);
+		}
+	}
 }

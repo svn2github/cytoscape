@@ -43,8 +43,8 @@ import static org.mockito.Mockito.when;
 import java.net.URI;
 import java.util.Properties;
 
-import org.cytoscape.io.read.CyNetworkViewReader;
-import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyRow;
@@ -55,47 +55,48 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 
 public class AbstractLoadNetworkTaskTester {
 
-    URI uri;
+	URI uri;
 
-    CyNetworkViewReaderManager mgr;
-    CyNetworkManager netmgr;
-    CyNetworkViewManager networkViewManager;
-    CyProperty<Properties> props;
-    CyNetworkNaming namingUtil;
+	CyNetworkReaderManager mgr;
+	CyNetworkManager netmgr;
+	CyNetworkViewManager networkViewManager;
+	CyProperty<Properties> props;
+	CyNetworkNaming namingUtil;
 
-    CyNetwork net;
-    CyNetworkView view;
-    CyNetworkView[] views;
-    CyNetworkViewReader reader;
+	CyNetwork net;
+	CyNetworkView view;
 
-    public void setUp() throws Exception {
-	CyRow attrs = mock(CyRow.class);
+	CyNetwork[] networks;
+	CyNetworkReader reader;
 
-	net = mock(CyNetwork.class);
-	when(net.getNodeCount()).thenReturn(2);
-	when(net.getEdgeCount()).thenReturn(1);
-	when(net.getCyRow()).thenReturn(attrs);
+	public void setUp() throws Exception {
+		CyRow attrs = mock(CyRow.class);
 
-	view = mock(CyNetworkView.class);
-	when(view.getModel()).thenReturn(net);
+		net = mock(CyNetwork.class);
+		when(net.getNodeCount()).thenReturn(2);
+		when(net.getEdgeCount()).thenReturn(1);
+		when(net.getCyRow()).thenReturn(attrs);
 
-	views = new CyNetworkView[] { view };
+		view = mock(CyNetworkView.class);
+		when(view.getModel()).thenReturn(net);
 
-	reader = mock(CyNetworkViewReader.class);
-	when(reader.getNetworkViews()).thenReturn(views);
+		networks = new CyNetwork[] { net };
 
-	mgr = mock(CyNetworkViewReaderManager.class);
-	when(mgr.getReader(eq(uri), anyString())).thenReturn(reader);
+		reader = mock(CyNetworkReader.class);
+		when(reader.getCyNetworks()).thenReturn(networks);
 
-	netmgr = mock(CyNetworkManager.class);
-	networkViewManager = mock(CyNetworkViewManager.class);
+		mgr = mock(CyNetworkReaderManager.class);
+		when(mgr.getReader(eq(uri), anyString())).thenReturn(reader);
 
-	Properties p = new Properties();
-	p.setProperty("viewThreshold", "1000");
+		netmgr = mock(CyNetworkManager.class);
+		networkViewManager = mock(CyNetworkViewManager.class);
 
-	props = mock(CyProperty.class);
-	when(props.getProperties()).thenReturn(p);
+		Properties p = new Properties();
+		p.setProperty("viewThreshold", "1000");
 
-	namingUtil = mock(CyNetworkNaming.class);
-    }
+		props = mock(CyProperty.class);
+		when(props.getProperties()).thenReturn(p);
+
+		namingUtil = mock(CyNetworkNaming.class);
+	}
 }

@@ -35,10 +35,10 @@ import java.net.URI;
 /**
  * An object that registers all InputStreamReaderFactory singletons,
  * processes specified input to determine the appropriate factory to
- * use and then returns an instance of the correct {@link org.cytoscape.io.read.CyNetworkViewReader} 
+ * use and then returns an instance of the correct {@link org.cytoscape.io.read.CyNetworkReader} 
  * for the input.
  */
-public interface CyNetworkViewReaderManager {
+public interface CyNetworkReaderManager {
 	/**
 	 * Given a URI this method will attempt to find a InputStreamReaderFactory
 	 * that can read the URI, will set the InputStream for the factory and
@@ -48,7 +48,7 @@ public interface CyNetworkViewReaderManager {
 	 * @return A reader than can read the specified URI. Will return null if
 	 * no reader can be found.
 	 */
-	CyNetworkViewReader getReader(URI uri, String inputName); 
+	CyNetworkReader getReader(URI uri, String inputName); 
 
 	/**
 	 * Given an InputStream this method will attempt to find a InputStreamReaderFactory
@@ -59,5 +59,5 @@ public interface CyNetworkViewReaderManager {
 	 * @return A reader that can read the specified stream. Will return null if
 	 * no reader can be found.
 	 */
-	CyNetworkViewReader getReader(InputStream stream, String inputName); 
+	CyNetworkReader getReader(InputStream stream, String inputName); 
 }

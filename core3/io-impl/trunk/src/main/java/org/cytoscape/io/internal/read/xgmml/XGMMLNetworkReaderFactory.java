@@ -30,7 +30,7 @@ package org.cytoscape.io.internal.read.xgmml;
 import java.util.Properties;
 
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.internal.read.AbstractNetworkViewReaderFactory;
+import org.cytoscape.io.internal.read.AbstractNetworkReaderFactory;
 import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
 import org.cytoscape.model.CyNetworkFactory;
@@ -51,40 +51,35 @@ import org.cytoscape.work.TaskIterator;
  * @author kono
  * 
  */
-public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFactory {
+public class XGMMLNetworkReaderFactory extends AbstractNetworkReaderFactory {
 
-    private final RenderingEngineManager renderingEngineManager;
-    private VisualStyleFactory styleFactory;
-    private VisualMappingManager visMappingManager;
-    private XGMMLParser parser;
-    private ReadDataManager readDataManager;
-    private AttributeValueUtil attributeValueUtil;
-    private final CyProperty<Properties> properties;
+	private final RenderingEngineManager renderingEngineManager;
+	private VisualStyleFactory styleFactory;
+	private VisualMappingManager visMappingManager;
+	private XGMMLParser parser;
+	private ReadDataManager readDataManager;
+	private AttributeValueUtil attributeValueUtil;
+	private final CyProperty<Properties> properties;
 
-    public XGMMLNetworkViewReaderFactory(CyFileFilter filter,
-                                         RenderingEngineManager renderingEngineManager,
-                                         CyNetworkViewFactory cyNetworkViewFactory,
-                                         CyNetworkFactory cyNetworkFactory,
-                                         ReadDataManager readDataManager,
-                                         AttributeValueUtil attributeValueUtil,
-                                         VisualStyleFactory styleFactory,
-                                         VisualMappingManager visMappingManager,
-                                         VisualMappingFunctionFactory discreteMappingFactory,
-                                         XGMMLParser parser, final CyProperty<Properties> properties) {
-        super(filter, cyNetworkViewFactory, cyNetworkFactory);
-        this.renderingEngineManager = renderingEngineManager;
-        this.readDataManager = readDataManager;
-        this.attributeValueUtil = attributeValueUtil;
-        this.styleFactory = styleFactory;
-        this.visMappingManager = visMappingManager;
-        this.parser = parser;
-        
-        this.properties = properties;
-    }
+	public XGMMLNetworkReaderFactory(CyFileFilter filter, RenderingEngineManager renderingEngineManager,
+			CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory,
+			ReadDataManager readDataManager, AttributeValueUtil attributeValueUtil, VisualStyleFactory styleFactory,
+			VisualMappingManager visMappingManager, VisualMappingFunctionFactory discreteMappingFactory,
+			XGMMLParser parser, final CyProperty<Properties> properties) {
+		super(filter, cyNetworkViewFactory, cyNetworkFactory);
+		this.renderingEngineManager = renderingEngineManager;
+		this.readDataManager = readDataManager;
+		this.attributeValueUtil = attributeValueUtil;
+		this.styleFactory = styleFactory;
+		this.visMappingManager = visMappingManager;
+		this.parser = parser;
 
-    public TaskIterator getTaskIterator() {
-        return new TaskIterator(new XGMMLNetworkViewReader(inputStream, renderingEngineManager, cyNetworkViewFactory,
-                                                           cyNetworkFactory, readDataManager, attributeValueUtil,
-                                                           styleFactory, visMappingManager, parser, properties));
-    }
+		this.properties = properties;
+	}
+
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(new XGMMLNetworkReader(inputStream, renderingEngineManager, cyNetworkViewFactory,
+				cyNetworkFactory, readDataManager, attributeValueUtil, styleFactory, visMappingManager, parser,
+				properties));
+	}
 }

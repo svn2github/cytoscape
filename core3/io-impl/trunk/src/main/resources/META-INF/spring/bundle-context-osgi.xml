@@ -45,8 +45,8 @@
 		interface="org.cytoscape.view.presentation.RenderingEngineManager" />
 
 	<!-- Export services -->
-	<osgi:service id="cyNetworkViewReaderManagerService" ref="cyNetworkViewReaderManager"
-		interface="org.cytoscape.io.read.CyNetworkViewReaderManager">
+	<osgi:service id="cyNetworkReaderManagerService" ref="cyNetworkReaderManager"
+		interface="org.cytoscape.io.read.CyNetworkReaderManager">
 	</osgi:service>
 
 	<osgi:service id="cyDataTableReaderManagerService" ref="cyDataTableReaderManager"

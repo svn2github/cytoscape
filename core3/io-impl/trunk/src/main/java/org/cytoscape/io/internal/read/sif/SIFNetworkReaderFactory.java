@@ -29,27 +29,27 @@ package org.cytoscape.io.internal.read.sif;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.internal.read.AbstractNetworkViewReaderFactory;
+import org.cytoscape.io.internal.read.AbstractNetworkReaderFactory;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class SIFNetworkViewReaderFactory extends AbstractNetworkViewReaderFactory {
+public class SIFNetworkReaderFactory extends AbstractNetworkReaderFactory {
 
-    private final CyLayoutAlgorithmManager layouts;
-    private final CyEventHelper eventHelper;
+	private final CyLayoutAlgorithmManager layouts;
+	private final CyEventHelper eventHelper;
 
-    public SIFNetworkViewReaderFactory(CyFileFilter filter, CyLayoutAlgorithmManager layouts,
-	    CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory,
-	    final CyEventHelper eventHelper) {
-	super(filter, cyNetworkViewFactory, cyNetworkFactory);
-	this.layouts = layouts;
-	this.eventHelper = eventHelper;
-    }
+	public SIFNetworkReaderFactory(CyFileFilter filter, CyLayoutAlgorithmManager layouts,
+			CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory,
+			final CyEventHelper eventHelper) {
+		super(filter, cyNetworkViewFactory, cyNetworkFactory);
+		this.layouts = layouts;
+		this.eventHelper = eventHelper;
+	}
 
-    public TaskIterator getTaskIterator() {
-	return new TaskIterator(new SIFNetworkViewReader(inputStream, layouts, cyNetworkViewFactory,
-		cyNetworkFactory, eventHelper));
-    }
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(new SIFNetworkReader(inputStream, layouts, cyNetworkViewFactory, cyNetworkFactory,
+				eventHelper));
+	}
 }
