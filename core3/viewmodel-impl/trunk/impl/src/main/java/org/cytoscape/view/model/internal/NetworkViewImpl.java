@@ -193,10 +193,4 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 		cyEventHelper.getMicroListener(NetworkViewChangeMicroListener.class, this).networkVisualPropertySet(this, vp, value);	
 	}
 
-
-	@Override
-	public Boolean isEmptyView() {
-	    return false;
-	}
-	
 }

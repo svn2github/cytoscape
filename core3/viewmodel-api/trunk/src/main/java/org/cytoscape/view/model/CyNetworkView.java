@@ -94,17 +94,6 @@ public interface CyNetworkView extends View<CyNetwork> {
 	
 	
 	/**
-	 * Returns true if this is an empty view object.
-	 * Usually, the empty view is used when network model is too big to visualize.
-	 * {@link CyNetworkViewFactory} checks viewThreshold property value to create regular 
-	 * view model implementation or empty view model.  
-	 * 
-	 * @return true if this is an empty view model.
-	 */
-	Boolean isEmptyView();
-	
-	
-	/**
 	 * Utility method to fit content to the presentation container (usually a Swing Window).
 	 * This fires event to the presentation layer for updating presentation.
 	 */

@@ -81,7 +81,7 @@ abstract public class AbstractLoadNetworkTask extends AbstractTask {
 			throw new IllegalArgumentException("Could not read file: Network View Reader is null.");
 
 		taskMonitor.setStatusMessage("Reading in Network Data...");
-		taskMonitor.setProgress(-1.0);
+		taskMonitor.setProgress(0.0);
 		taskMonitor.setStatusMessage("Creating Cytoscape Network...");
 
 		insertTasksAfterCurrentTask(viewReader, new GenerateNetworkViewsTask(name, viewReader, networkManager,
@@ -123,21 +123,22 @@ class GenerateNetworkViewsTask extends AbstractTask {
 
 	public void run(final TaskMonitor taskMonitor) throws Exception {
 
-		taskMonitor.setProgress(-1.0);
+		taskMonitor.setProgress(0.0);
 		
 		final CyNetwork[] networks = viewReader.getCyNetworks();
 
 		for (CyNetwork network : networks) {
+			
 			network.getCyRow().set(CyTableEntry.NAME, namingUtil.getSuggestedNetworkTitle(name));
 			networkManager.addNetwork(network);
 
 			final int numGraphObjects = network.getNodeCount() + network.getEdgeCount();
-			if (numGraphObjects < viewThreshold) {
-				networkViewManager.addNetworkView(viewReader.buildCyNetworkView(network));
-				// TODO: is this necessary?
-				// view.fitContent();
-			}
+//			if (numGraphObjects < viewThreshold) {
+//				networkViewManager.addNetworkView(viewReader.buildCyNetworkView(network));
+//				//view.fitContent();
+//			}
 
+			
 			informUserOfGraphStats(network, numGraphObjects, taskMonitor);
 		}
 		taskMonitor.setProgress(1.0);

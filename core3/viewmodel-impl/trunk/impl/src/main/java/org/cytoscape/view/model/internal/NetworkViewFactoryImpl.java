@@ -11,13 +11,6 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 
 public class NetworkViewFactoryImpl implements CyNetworkViewFactory {
 
-	private final String VIEW_THRESHOLD = "viewThreshold";
-
-	/**
-	 * By default, this value will be used as the View Threshold.
-	 */
-	private static final int DEF_VIEW_THRESHOLD = 3000;
-
 	private final CyEventHelper eventHelper;
 	private final CyServiceRegistrar registrar;
 	private final Properties props;
@@ -58,27 +51,9 @@ public class NetworkViewFactoryImpl implements CyNetworkViewFactory {
 			return view;
 		}
 
-		final int viewThreshold = getViewThreshold();
-		final int objectCount = network.getEdgeCount() + network.getNodeCount();
-		if (viewThreshold < objectCount)
-			view = new NullCyNetworkView(network);
-		else {
-			view = new NetworkViewImpl(network, eventHelper);
-			registrar.registerAllServices(view, new Properties());
-		}
+		view = new NetworkViewImpl(network, eventHelper);
+		registrar.registerAllServices(view, new Properties());
 
 		return view;
-	}
-
-	private int getViewThreshold() {
-		final String vts = props.getProperty(VIEW_THRESHOLD);
-		int threshold;
-		try {
-			threshold = Integer.parseInt(vts);
-		} catch (Exception e) {
-			threshold = DEF_VIEW_THRESHOLD;
-		}
-
-		return threshold;
 	}
 }
