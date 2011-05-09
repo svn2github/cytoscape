@@ -36,9 +36,9 @@ import org.cytoscape.work.TaskFactory;
 
 public class QuickStartTaskFactory implements TaskFactory {
 	
-	private final ImportTaskUtil util;
-	private final CyNetworkManager networkManager;
-	private final SubnetworkBuilderUtil subnetworkUtil;
+	protected final ImportTaskUtil util;
+	protected final CyNetworkManager networkManager;
+	protected final SubnetworkBuilderUtil subnetworkUtil;
 	
 	public QuickStartTaskFactory(final ImportTaskUtil util, 
 			final CyNetworkManager networkManager, final SubnetworkBuilderUtil subnetworkUtil) {

@@ -45,21 +45,20 @@ import org.cytoscape.task.internal.quickstart.subnetworkbuilder.SubnetworkBuilde
 
 public class QuickStartTask extends AbstractTask {
 
-	private static final String LOAD_NETWORK = "Load a Network";
-	private static final String LOAD_TABLE = "Load an Attribute Table";
-	private static final String LOAD_SUBNETWORK = "Create subnetwork from interactome";
+	protected static final String LOAD_NETWORK = "Load a Network";
+	protected static final String LOAD_TABLE = "Load an Attribute Table";
+	protected static final String LOAD_SUBNETWORK = "Create subnetwork from interactome";
 	
 	// @Tunable(description="What would you like to do today?\nCytoscape requires at the minimum a network to do anything.  A network and attributes makes life much better.  If you don't have a network, that's OK, we'll help you find one.")
 	@Tunable(description = "What would you like to do today?")
 	public ListSingleSelection<String> selection = new ListSingleSelection<String>(
 			LOAD_NETWORK, LOAD_TABLE, LOAD_SUBNETWORK);
 
-	private final QuickStartState state;
-	private final ImportTaskUtil importTaskUtil;
+	protected final QuickStartState state;
+	protected final ImportTaskUtil importTaskUtil;
 	
-	private final CyNetworkManager networkManager;
-	private final SubnetworkBuilderUtil subnetworkUtil;
-	
+	protected final CyNetworkManager networkManager;
+	protected final SubnetworkBuilderUtil subnetworkUtil;
 	
 	public QuickStartTask(final QuickStartState state, final ImportTaskUtil importTaskUtil, 
 			final CyNetworkManager networkManager, final SubnetworkBuilderUtil subnetworkUtil) {
@@ -71,6 +70,10 @@ public class QuickStartTask extends AbstractTask {
 	}
 
 	public void run(TaskMonitor e) {
+		doLoading();
+	}
+	
+	protected void doLoading(){
 		String selected = selection.getSelectedValue();
 		if (selected == LOAD_NETWORK) {
 			insertTasksAfterCurrentTask(new LoadNetworkTask(state, importTaskUtil));
@@ -78,6 +81,6 @@ public class QuickStartTask extends AbstractTask {
 			insertTasksAfterCurrentTask(new LoadTableTask(state, importTaskUtil));
 		 else if (selected == LOAD_SUBNETWORK) {
 			 insertTasksAfterCurrentTask(new SubnetworkBuilderTask(networkManager, subnetworkUtil));	 
-		}
+		}		
 	}
 }
