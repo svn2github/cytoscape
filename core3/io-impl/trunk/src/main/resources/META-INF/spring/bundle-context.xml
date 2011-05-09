@@ -371,7 +371,7 @@
 	<bean id="sessionReaderFactory"
 		class="org.cytoscape.io.internal.read.session.SessionReaderFactoryImpl">
 		<constructor-arg ref="cysFilter" />
-		<constructor-arg ref="cyNetworkViewReaderManager" />
+		<constructor-arg ref="cyNetworkReaderManager" />
 		<constructor-arg ref="cyPropertyReaderManager" />
 		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>
