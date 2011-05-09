@@ -1,7 +1,7 @@
 package org.cytoscape.psi_mi.internal.plugin;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -9,14 +9,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.test.support.NetworkTestSupport;
 import org.cytoscape.test.support.NetworkViewTestSupport;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
@@ -61,18 +60,15 @@ public class PsiMiTabReaderTest {
 	public void testPsiMiTabReader() throws Exception {
 		final File file = new File(
 				"src/test/resources/testData/BIOGRID-ORGANISM-Bos_taurus-3.1.74.mitab");
-		final CyNetworkViewReader reader = createReader(file);
+		final CyNetworkReader reader = createReader(file);
 
 		reader.run(taskMonitor);
-		CyNetworkView[] views = reader.getNetworkViews();
+		CyNetwork[] networks = reader.getCyNetworks();
 
-		assertNotNull(views);
-		assertEquals(1, views.length);
+		assertNotNull(networks);
+		assertEquals(1, networks.length);
 
-		CyNetworkView view = views[0];
-		assertNotNull(view);
-
-		final CyNetwork network = view.getModel();
+		final CyNetwork network = networks[0];
 		assertNotNull(network);
 
 		assertEquals(109, network.getNodeCount());
@@ -80,7 +76,7 @@ public class PsiMiTabReaderTest {
 	}
 
 	
-	private CyNetworkViewReader createReader(File file) throws IOException {
+	private CyNetworkReader createReader(File file) throws IOException {
 		final InputStream is = new FileInputStream(file);
 		PsiMiTabReader reader = new PsiMiTabReader(is, networkViewFactory,
 				networkFactory, layouts);

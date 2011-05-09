@@ -3,32 +3,29 @@ package org.cytoscape.psi_mi.internal.plugin;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 
-public class PsiMiTabReader extends AbstractTask implements CyNetworkViewReader {
+public class PsiMiTabReader extends AbstractTask implements CyNetworkReader {
 
 	private InputStream inputStream;
 
 	private final CyNetworkViewFactory cyNetworkViewFactory;
-
-	private CyNetworkView[] cyNetworkViews;
-	private VisualStyle[] visualstyles;
 	
 	private final CyLayoutAlgorithmManager layouts;
 
 	private final PsiMiTabParser parser;
+	
+	private CyNetwork network;
 
 	public PsiMiTabReader(InputStream is,
 			CyNetworkViewFactory cyNetworkViewFactory,
@@ -40,16 +37,6 @@ public class PsiMiTabReader extends AbstractTask implements CyNetworkViewReader 
 		this.layouts = layouts;
 
 		parser = new PsiMiTabParser(is, cyNetworkFactory);
-	}
-
-	@Override
-	public CyNetworkView[] getNetworkViews() {
-		return cyNetworkViews;
-	}
-
-	@Override
-	public VisualStyle[] getVisualStyles() {
-		return visualstyles;
 	}
 
 	@Override
@@ -68,8 +55,19 @@ public class PsiMiTabReader extends AbstractTask implements CyNetworkViewReader 
 		
 		taskMonitor.setProgress(0.0);
 		
-		final CyNetwork network = parser.parse();
+		network = parser.parse();
 
+		taskMonitor.setProgress(1.0);
+
+	}
+
+	@Override
+	public CyNetwork[] getCyNetworks() {
+		return new CyNetwork[] {network};
+	}
+
+	@Override
+	public CyNetworkView buildCyNetworkView(CyNetwork network) {
 		final CyNetworkView view = cyNetworkViewFactory.getNetworkView(network);
 
 		CyLayoutAlgorithm tf = layouts.getDefaultLayout();
@@ -78,10 +76,6 @@ public class PsiMiTabReader extends AbstractTask implements CyNetworkViewReader 
 		Task task = ti.next();
 		insertTasksAfterCurrentTask(task);
 
-		// SIF always creates only one network.
-		this.cyNetworkViews = new CyNetworkView[] { view };
-
-		taskMonitor.setProgress(1.0);
-
+		return view;
 	}
 }

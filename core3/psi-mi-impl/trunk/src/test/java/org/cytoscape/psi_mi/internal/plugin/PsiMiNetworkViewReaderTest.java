@@ -2,21 +2,19 @@ package org.cytoscape.psi_mi.internal.plugin;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.test.support.NetworkTestSupport;
 import org.cytoscape.test.support.NetworkViewTestSupport;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
@@ -46,7 +44,7 @@ public class PsiMiNetworkViewReaderTest {
 		networkViewFactory = new NetworkViewTestSupport().getNetworkViewFactory();
 	}
 	
-	CyNetworkViewReader createReader(File file) throws IOException {
+	CyNetworkReader createReader(File file) throws IOException {
 		PsiMiNetworkViewReader reader = new PsiMiNetworkViewReader(new FileInputStream(file), networkFactory, networkViewFactory, layouts);
 		reader.setTaskIterator(new TaskIterator(reader));
 		return reader;
@@ -55,17 +53,14 @@ public class PsiMiNetworkViewReaderTest {
 	@Test
 	public void testReadPsiMi1() throws Exception {
 		File file = new File("src/test/resources/testData/dip_sample.xml");
-		CyNetworkViewReader reader = createReader(file);
+		CyNetworkReader reader = createReader(file);
 		reader.run(taskMonitor);
-		CyNetworkView[] views = reader.getNetworkViews();
+		CyNetwork[] networks = reader.getCyNetworks();
 		
-		assertNotNull(views);
-		assertEquals(1, views.length);
+		assertNotNull(networks);
+		assertEquals(1, networks.length);
 		
-		CyNetworkView view = views[0];
-		assertNotNull(view);
-		
-		CyNetwork network = view.getModel();
+		CyNetwork network = networks[0];
 		assertNotNull(network);
 		
 		// 2 interactors, 4 distinct bits of evidence supporting
@@ -76,17 +71,14 @@ public class PsiMiNetworkViewReaderTest {
 	@Test
 	public void testReadPsiMi25() throws Exception {
 		File file = new File("src/test/resources/testData/psi_sample_2_5_1.xml");
-		CyNetworkViewReader reader = createReader(file);
+		CyNetworkReader reader = createReader(file);
 		reader.run(taskMonitor);
-		CyNetworkView[] views = reader.getNetworkViews();
+		CyNetwork[] networks = reader.getCyNetworks();
 		
-		assertNotNull(views);
-		assertEquals(1, views.length);
+		assertNotNull(networks);
+		assertEquals(1, networks.length);
 		
-		CyNetworkView view = views[0];
-		assertNotNull(view);
-		
-		CyNetwork network = view.getModel();
+		CyNetwork network = networks[0];
 		assertNotNull(network);
 		
 		// Spoke model: 40 interactors, 1 bait = 39 interactions
