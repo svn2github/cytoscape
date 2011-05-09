@@ -20,3 +20,4 @@ exportTextAsShape=true
 vizmapper.cntMapperUpperLimit=2000
 undo.limit=10
 defaultPluginDownloadUrl=http://cytoscape.org/plugins/plugins.xml
+showQuickStartAtStartup= false
