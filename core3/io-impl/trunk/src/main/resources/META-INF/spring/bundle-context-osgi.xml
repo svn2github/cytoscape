@@ -198,7 +198,7 @@
 	<osgi:set id="cyNetworkViewReaderFactories" interface="org.cytoscape.io.read.InputStreamTaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addInputStreamTaskFactory"
-			unbind-method="removeInputStreamTaskFactory" ref="cyNetworkViewReaderManager" />
+			unbind-method="removeInputStreamTaskFactory" ref="cyNetworkReaderManager" />
 	</osgi:set>
 
 	<osgi:set id="cyDataTableReaderFactories" interface="org.cytoscape.io.read.InputStreamTaskFactory"
