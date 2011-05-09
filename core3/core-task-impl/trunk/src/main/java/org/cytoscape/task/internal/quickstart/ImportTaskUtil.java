@@ -34,6 +34,7 @@ public class ImportTaskUtil {
 	private CyTableReaderManager tblReaderMgr;
 	
 	private final CyApplicationManager appManager;
+	private CyProperty<Properties> cyProps;
 
 	public ImportTaskUtil(
 			CyNetworkViewReaderManager mgr,
@@ -50,7 +51,7 @@ public class ImportTaskUtil {
 		this.processors = new HashSet<InteractionFilePreprocessor>();
 		this.tblReaderMgr = tblReaderMgr;
 		this.appManager = appManager;
-		
+		this.cyProps = cyProps;
 	}
 
 	public Task getURLImportTask() {
@@ -93,5 +94,10 @@ public class ImportTaskUtil {
 	
 	public CyApplicationManager getAppManager() {
 		return this.appManager;
+	}
+	
+	public  CyProperty<Properties> getCyProperty()
+	{
+		return cyProps;
 	}
 }
