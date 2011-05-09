@@ -18,7 +18,7 @@ import java.net.URL;
 public class PluginLoaderTask extends AbstractTask {
 	private CyPluginAdapter adapter;
 
-	@Tunable(description="Select plugin JAR to load")
+	@Tunable(description="Select plugin JAR to load",params="input=true")
 	public File filename;
 
 	PluginLoaderTask(CyPluginAdapter adapter) {
