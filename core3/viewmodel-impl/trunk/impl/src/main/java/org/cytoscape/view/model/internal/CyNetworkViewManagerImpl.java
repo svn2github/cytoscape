@@ -50,90 +50,90 @@ import org.slf4j.LoggerFactory;
  * An implementation of CyNetworkViewManager.
  */
 public class CyNetworkViewManagerImpl implements CyNetworkViewManager, NetworkAboutToBeDestroyedListener {
-    
-    private static final Logger logger = LoggerFactory.getLogger(CyNetworkViewManagerImpl.class);
-    
-    private final Map<Long, CyNetworkView> networkViewMap;
-    private final CyEventHelper cyEventHelper;
 
-    /**
-     * 
-     * @param cyEventHelper
-     */
-    public CyNetworkViewManagerImpl(final CyEventHelper cyEventHelper) {
-	networkViewMap = new HashMap<Long, CyNetworkView>();
-	this.cyEventHelper = cyEventHelper;
-    }
+	private static final Logger logger = LoggerFactory.getLogger(CyNetworkViewManagerImpl.class);
 
-    @Override
-    public synchronized void reset() {
-	networkViewMap.clear();
-    }
+	private final Map<Long, CyNetworkView> networkViewMap;
+	private final CyEventHelper cyEventHelper;
 
-    @Override
-    public synchronized void handleEvent(final NetworkAboutToBeDestroyedEvent event) {
-	final long networkId = event.getNetwork().getSUID();
-	if (viewExists(networkId))
-	    destroyNetworkView(networkViewMap.get(networkId));
-    }
-
-    @Override
-    public synchronized Set<CyNetworkView> getNetworkViewSet() {
-	return new HashSet<CyNetworkView>(networkViewMap.values());
-    }
-
-    @Override
-    public synchronized CyNetworkView getNetworkView(long networkId) {
-	return networkViewMap.get(networkId);
-    }
-
-    @Override
-    public synchronized boolean viewExists(long networkId) {
-	return networkViewMap.containsKey(networkId);
-    }
-
-    @Override
-    public void destroyNetworkView(CyNetworkView view) {
-	if (view == null)
-	    throw new NullPointerException("view is null");
-
-	final Long viewID = view.getModel().getSUID();
-
-	// do this outside of the lock to fail early
-	if (!networkViewMap.containsKey(viewID))
-	    throw new IllegalArgumentException("network view is not recognized by this NetworkManager");
-
-	// let everyone know!
-	cyEventHelper.fireSynchronousEvent(new NetworkViewAboutToBeDestroyedEvent(this, view));
-
-	synchronized (this) {
-	    // do this again within the lock to be safe
-	    if (!networkViewMap.containsKey(viewID))
-		throw new IllegalArgumentException("network view is not recognized by this NetworkManager");
-
-	    networkViewMap.remove(viewID);
+	/**
+	 * 
+	 * @param cyEventHelper
+	 */
+	public CyNetworkViewManagerImpl(final CyEventHelper cyEventHelper) {
+		networkViewMap = new HashMap<Long, CyNetworkView>();
+		this.cyEventHelper = cyEventHelper;
 	}
 
-	cyEventHelper.fireSynchronousEvent(new NetworkViewDestroyedEvent(this));
-	view = null;
-	logger.debug("######### Network View deleted: " + viewID);
-    }
-
-    @Override
-    public void addNetworkView(final CyNetworkView view) {
-	if (view == null)
-	    throw new NullPointerException("CyNetworkView is null");
-
-	final CyNetwork network = view.getModel();
-	long networkId = network.getSUID();
-
-	synchronized (this) {
-	    logger.debug("Adding new Network View Model: Model ID = " + networkId);
-	    networkViewMap.put(networkId, view);
+	@Override
+	public synchronized void reset() {
+		networkViewMap.clear();
 	}
 
-	logger.debug("Firing event: NetworkViewAddedEvent");
-	cyEventHelper.fireSynchronousEvent(new NetworkViewAddedEvent(this, view));
-	logger.debug("Done event: NetworkViewAddedEvent");
-    }
+	@Override
+	public synchronized void handleEvent(final NetworkAboutToBeDestroyedEvent event) {
+		final long networkId = event.getNetwork().getSUID();
+		if (viewExists(networkId))
+			destroyNetworkView(networkViewMap.get(networkId));
+	}
+
+	@Override
+	public synchronized Set<CyNetworkView> getNetworkViewSet() {
+		return new HashSet<CyNetworkView>(networkViewMap.values());
+	}
+
+	@Override
+	public synchronized CyNetworkView getNetworkView(long networkId) {
+		return networkViewMap.get(networkId);
+	}
+
+	@Override
+	public synchronized boolean viewExists(long networkId) {
+		return networkViewMap.containsKey(networkId);
+	}
+
+	@Override
+	public void destroyNetworkView(CyNetworkView view) {
+		if (view == null)
+			throw new NullPointerException("view is null");
+
+		final Long viewID = view.getModel().getSUID();
+
+		// do this outside of the lock to fail early
+		if (!networkViewMap.containsKey(viewID))
+			throw new IllegalArgumentException("network view is not recognized by this NetworkManager");
+
+		// let everyone know!
+		cyEventHelper.fireSynchronousEvent(new NetworkViewAboutToBeDestroyedEvent(this, view));
+
+		synchronized (this) {
+			// do this again within the lock to be safe
+			if (!networkViewMap.containsKey(viewID))
+				throw new IllegalArgumentException("network view is not recognized by this NetworkManager");
+
+			networkViewMap.remove(viewID);
+		}
+
+		cyEventHelper.fireSynchronousEvent(new NetworkViewDestroyedEvent(this));
+		view = null;
+		logger.debug("######### Network View deleted: " + viewID);
+	}
+
+	@Override
+	public void addNetworkView(final CyNetworkView view) {
+		if (view == null)
+			throw new NullPointerException("CyNetworkView is null");
+
+		final CyNetwork network = view.getModel();
+		long networkId = network.getSUID();
+
+		synchronized (this) {
+			logger.debug("Adding new Network View Model: Model ID = " + networkId);
+			networkViewMap.put(networkId, view);
+		}
+
+		logger.debug("Firing event: NetworkViewAddedEvent");
+		cyEventHelper.fireSynchronousEvent(new NetworkViewAddedEvent(this, view));
+		logger.debug("Done event: NetworkViewAddedEvent");
+	}
 }
