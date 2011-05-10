@@ -49,6 +49,20 @@ $(function(){
     // Cytoscape Web instance
     var vis;
     
+    function subtabs(ele){
+    	$(ele).addClass("ui-tabs ui-widget ui-widget-content ui-corner-all");
+    	$(ele).find("ul").addClass("ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all");
+    	$(ele).find("li").addClass("ui-state-default ui-corner-top");
+    	
+    	
+    	$(ele).find("a").click(function(){
+    		var div_to_show = $( $(this).attr("href") );
+    		div_to_show.show().siblings().hide();
+    		$(this).parent().addClass("ui-state-active ui-tabs-selected").siblings().removeClass("ui-state-active ui-tabs-selected");
+    		return false;
+    	}).filter(":first").click();
+    }
+    
     // Path util
     ////////////////////////////////////////////////////////////////////////////////////////////////
     
@@ -152,14 +166,15 @@ $(function(){
    
     // [layout] Layout set up and override
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     $("body").html('\
                         <div id="header" class="slice">\
                             <a href="/"><div id="logo"></div></a>\
                             <div class="message">\
                             	<h2>Feature Showcase Demo</h2>\
                             	<p>This is a separate demo application, built around the Cytoscape Web visualization.\
-                            	   <br/>Because this showcase is complex, you may experience issues, such as slowdowns, on older or less efficient browsers.</p>\
+            					    <br/>Because this showcase is complex, you may experience issues, such as slowdowns, on older or less efficient browsers.\
+            					</p>\
                             </div>\
                         </div>\
                         <div id="cytoweb">\
@@ -1240,6 +1255,15 @@ $(function(){
                                 text_div.remove();
                                 
                                 var val = input.val();
+                                
+                                var schema = vis.dataSchema();
+                                $.each(schema[group], function(i, el) {
+                                	if (el.name === param_name) {
+                                		if (el.type === "number") { val = parseFloat(val); }
+                                		if (el.type === "int") { val = parseInt(val); }
+                                	}
+                                });
+                                
                                 var data = {};
                                 data[param_name] = val;
                                 ele.data[param_name] = val;
@@ -2478,7 +2502,8 @@ $(function(){
     
     	$("#vizmapper").html(parent);
     
-        $("#vizmapper_tabs").tabs();
+        //$("#vizmapper_tabs").tabs();
+    	subtabs("#vizmapper_tabs");
         
         vizmapper_dirty = false;
         
@@ -3029,7 +3054,8 @@ $(function(){
             append_group(group, group_name);
         }
         
-        $("#filter_tabs").tabs();
+        //$("#filter_tabs").tabs();
+        subtabs("#filter_tabs");
         
         vis.removeFilter();
         

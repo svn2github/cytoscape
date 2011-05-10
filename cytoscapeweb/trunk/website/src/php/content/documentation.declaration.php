@@ -18,8 +18,6 @@
     
     if($page_link != "tutorial" && $page_link != "") { 
         $include = "php/content/documentation/list_functions.php";
-        //include_js("/js/content/api.js");
-        //include_js("/js/jquery/jquery-ui-1.7.2.custom/jquery-ui-1.7.2.custom.min.js");
     }
     
     // use half_and_half if api.js enabled for demos of each function
