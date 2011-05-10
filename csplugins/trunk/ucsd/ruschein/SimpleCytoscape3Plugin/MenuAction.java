@@ -1,6 +1,3 @@
-package org.cytoscape.plugin.example;
-
-
 import java.awt.event.ActionEvent;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.model.CyEdge;
@@ -21,6 +18,7 @@ public class MenuAction extends AbstractCyAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+System.err.println("+++++++++++++++++++++++++++++++++ Entering actionPerformed()");
 		final CyNetwork currentNetwork = adapter.getCyApplicationManager().getCurrentNetwork();
 		if (currentNetwork == null)
 			return;
@@ -29,9 +27,13 @@ public class MenuAction extends AbstractCyAction {
 
 		for (CyNode node : currentNetwork.getNodeList()) {
 			if (currentNetwork.getNeighborList(node, CyEdge.Type.ANY).isEmpty())
+				{
+System.err.println("+++++++++++++++++++++++++++++++++ found one");
 				currentNetworkView.getNodeView(node).setVisualProperty(NODE_VISIBLE, false);
+				}
 		}
 
+System.err.println("+++++++++++++++++++++++++++++++++ about to call updateView()");
 		currentNetworkView.updateView();
 	}
 }

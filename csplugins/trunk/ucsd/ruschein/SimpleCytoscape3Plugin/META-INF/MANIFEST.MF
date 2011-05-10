@@ -1,1 +1,1 @@
-Cytoscape-Plugin: org.cytoscape.plugin.example.SamplePlugin
+Cytoscape-Plugin: SamplePlugin

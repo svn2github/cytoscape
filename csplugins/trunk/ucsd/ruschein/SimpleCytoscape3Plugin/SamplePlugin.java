@@ -1,6 +1,3 @@
-package org.cytoscape.plugin.example;
-
-
 import org.cytoscape.plugin.CyPluginAdapter;
 import org.cytoscape.plugin.CyPlugin;
 
