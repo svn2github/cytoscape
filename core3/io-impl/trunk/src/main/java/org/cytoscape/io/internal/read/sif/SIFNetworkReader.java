@@ -48,6 +48,8 @@ import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +68,8 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 
 	private final CyEventHelper eventHelper;
 	private final CyLayoutAlgorithmManager layouts;
+	
+	private TaskMonitor parentTaskMonitor;
 
 	public SIFNetworkReader(InputStream is, CyLayoutAlgorithmManager layouts,
 			CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory,
@@ -88,6 +92,7 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 	}
 
 	private void readInput(TaskMonitor tm) throws IOException {
+		this.parentTaskMonitor = tm;
 		tm.setProgress(0.0);
 
 		String line;
@@ -175,8 +180,14 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 		final CyLayoutAlgorithm layout = layouts.getDefaultLayout();
 		layout.setNetworkView(view);
 		
-		// FIXME: this causes infinite loop...Why?
-		//insertTasksAfterCurrentTask(layout.getTaskIterator());
+		// Force to run this task here to avoid concurrency problem.
+		TaskIterator itr = layout.getTaskIterator();
+		Task nextTask = itr.next();
+		try {
+			nextTask.run(parentTaskMonitor);
+		} catch (Exception e) {
+			throw new RuntimeException("Could not finish layout", e);
+		}
 
 		return view;
 	}
