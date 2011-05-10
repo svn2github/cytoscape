@@ -398,8 +398,10 @@
 		<constructor-arg ref="bookmarksFilter" />
 		<constructor-arg ref="cysessionFilter" />
 		<constructor-arg ref="propertiesFilter" />
+		<constructor-arg ref="csvFilter" />
 		<constructor-arg ref="networkViewWriterManager" />
 		<constructor-arg ref="propertyWriterManager" />
+		<constructor-arg ref="tableWriterManager" />
 	</bean>
 
 	<!-- All Reader Managers -->

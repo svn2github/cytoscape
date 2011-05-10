@@ -44,7 +44,7 @@ public class CSVCyWriter implements CyWriter {
 			writeHeader(writer, columns);
 			writeValues(writer, columns);
 		} finally {
-			writer.close();
+			writer.flush();
 		}
 	}
 	

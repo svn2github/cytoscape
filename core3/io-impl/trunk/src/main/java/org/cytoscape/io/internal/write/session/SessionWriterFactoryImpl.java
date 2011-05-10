@@ -2,6 +2,7 @@ package org.cytoscape.io.internal.write.session;
 
 import org.cytoscape.session.CySession;
 import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.write.CyTableWriterManager;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.io.write.CySessionWriterFactory;
 import org.cytoscape.io.write.CyNetworkViewWriterManager;
@@ -15,8 +16,10 @@ public class SessionWriterFactoryImpl implements CySessionWriterFactory {
 	private final CyFileFilter bookmarksFilter;
 	private final CyFileFilter cysessionFilter;
 	private final CyFileFilter propertiesFilter;
+	private final CyFileFilter tableFilter;
 	private final CyNetworkViewWriterManager networkViewWriterMgr;
 	private final CyPropertyWriterManager propertyWriterMgr;
+	private final CyTableWriterManager tableWriterMgr;
 
 	private OutputStream outputStream;
 	private CySession session;
@@ -27,23 +30,28 @@ public class SessionWriterFactoryImpl implements CySessionWriterFactory {
 	                                final CyFileFilter xgmmlFilter, 
 	                                final CyFileFilter bookmarksFilter, 
 	                                final CyFileFilter cysessionFilter, 
-	                                final CyFileFilter propertiesFilter, 
+	                                final CyFileFilter propertiesFilter,
+	                                final CyFileFilter tableFilter,
 	                                final CyNetworkViewWriterManager networkViewWriterMgr, 
-	                                final CyPropertyWriterManager propertyWriterMgr) {
+	                                final CyPropertyWriterManager propertyWriterMgr,
+	                                final CyTableWriterManager tableWriterMgr) {
 		this.thisFilter = thisFilter;
 		this.xgmmlFilter = xgmmlFilter;
 		this.bookmarksFilter = bookmarksFilter;
 		this.cysessionFilter = cysessionFilter;
 		this.propertiesFilter = propertiesFilter;
+		this.tableFilter = tableFilter;
 		this.networkViewWriterMgr = networkViewWriterMgr;
 		this.propertyWriterMgr = propertyWriterMgr;
+		this.tableWriterMgr = tableWriterMgr;
 	}
 	
 	@Override
 	public CyWriter getWriterTask() {
 		return new SessionWriterImpl(outputStream, session, networkViewWriterMgr, 
-		                             propertyWriterMgr, xgmmlFilter, bookmarksFilter, 
-		                             cysessionFilter, propertiesFilter);
+		                             propertyWriterMgr, tableWriterMgr, xgmmlFilter,
+		                             bookmarksFilter, cysessionFilter, propertiesFilter,
+		                             tableFilter);
 	}
 
 	@Override

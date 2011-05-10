@@ -36,51 +36,42 @@
 package org.cytoscape.io.internal.write.session;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.util.List;
-
-import org.cytoscape.property.session.*;
-import org.cytoscape.property.bookmark.*;
-
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyTableUtil;
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.write.CyNetworkViewWriterManager;
-import org.cytoscape.io.write.CyPropertyWriterManager;
-import org.cytoscape.session.CySession;
-import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.TaskMonitor;
-
-import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.stream.XMLStreamException;
-import java.awt.*;
-import java.io.*;
-import java.math.BigInteger;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+
+import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.write.CyNetworkViewWriterManager;
+import org.cytoscape.io.write.CyPropertyWriterManager;
+import org.cytoscape.io.write.CyTableWriterManager;
 import org.cytoscape.io.write.CyWriter;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.AbstractTask;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.property.session.Cysession;
+import org.cytoscape.property.session.Cytopanels;
+import org.cytoscape.property.session.Network;
+import org.cytoscape.property.session.NetworkTree;
+import org.cytoscape.property.session.Plugins;
+import org.cytoscape.property.session.SessionState;
 import org.cytoscape.session.CySession;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskMonitor;
 
 /**
  * Write session states into files.<br>
@@ -159,27 +150,33 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	private final CySession session;
 	private final CyNetworkViewWriterManager networkViewWriterMgr;
 	private final CyPropertyWriterManager propertyWriterMgr;
+	private final CyTableWriterManager tableWriterMgr;
 	private final CyFileFilter xgmmlFilter;
 	private final CyFileFilter bookmarksFilter;
 	private final CyFileFilter cysessionFilter;
 	private final CyFileFilter propertiesFilter;
+	private final CyFileFilter tableFilter;
 
 	public SessionWriterImpl(final OutputStream outputStream, 
 	                         final CySession session, 
 	                         final CyNetworkViewWriterManager networkViewWriterMgr, 
-	                         final CyPropertyWriterManager propertyWriterMgr, 
+	                         final CyPropertyWriterManager propertyWriterMgr,
+	                         final CyTableWriterManager tableWriterMgr,
 	                         final CyFileFilter xgmmlFilter, 
 	                         final CyFileFilter bookmarksFilter,
 	                         final CyFileFilter cysessionFilter,
-	                         final CyFileFilter propertiesFilter) {
+	                         final CyFileFilter propertiesFilter,
+	                         final CyFileFilter tableFilter) {
 		this.outputStream = outputStream;
 		this.session = session;
 		this.networkViewWriterMgr = networkViewWriterMgr;
 		this.propertyWriterMgr = propertyWriterMgr;
+		this.tableWriterMgr = tableWriterMgr;
 		this.xgmmlFilter = xgmmlFilter;
 		this.bookmarksFilter = bookmarksFilter;
 		this.cysessionFilter = cysessionFilter;
 		this.propertiesFilter = propertiesFilter;
+		this.tableFilter = tableFilter;
 
 		// For now, session ID is time and date
 		final DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
@@ -203,6 +200,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 
 		for (CyNetworkView netView : session.getNetworkViews())
 			zipNetwork(netView);
+		zipGlobalTables();
 		zipCySession();
 		zipVizmapProps();
 		zipCytoscapeProps();
@@ -354,6 +352,32 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 			newFileName = newFileName.replace(ch.toString(), (i++).toString());
 		
 		return newFileName;
+	}
+
+	private void zipGlobalTables() throws Exception {
+		Set<CyNetworkView> views = session.getNetworkViews();
+		Set<Long> excluded = new HashSet<Long>();
+		for (CyNetworkView view : views) {
+			CyNetwork network = view.getModel();
+			excluded.add(network.getDefaultNetworkTable().getSUID());
+			excluded.add(network.getDefaultNodeTable().getSUID());
+			excluded.add(network.getDefaultEdgeTable().getSUID());
+		}
+		Set<CyTable> tables = session.getTables();
+		for (CyTable table : tables) {
+			if (excluded.contains(table.getSUID())) {
+				continue;
+			}
+			
+			String fileName = String.format("%d|%s.table", table.getSUID(), URLEncoder.encode(table.getTitle(), "UTF-8"));
+			zos.putNextEntry(new ZipEntry(sessionDir + fileName));
+			try {
+				CyWriter writer = tableWriterMgr.getWriter(table, tableFilter, zos);
+				writer.run(taskMonitor);
+			} finally {
+				zos.closeEntry();
+			}
+		}
 	}
 
 }
