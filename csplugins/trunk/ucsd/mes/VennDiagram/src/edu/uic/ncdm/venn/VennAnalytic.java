@@ -251,7 +251,6 @@ public class VennAnalytic {
     }
 
     private void calculateAreas() {
-		polyAreas = new double[nPolygons];
         totalCount = 0;
         int size = 200;
         byte[][][] bis = new byte[nCircles][size][size];
