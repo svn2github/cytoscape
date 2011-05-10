@@ -27,7 +27,11 @@
 	</osgi:service>
 	
 	<osgi:service id="cyTableManagerService"
-		ref="cyTableManager" interface="org.cytoscape.model.CyTableManager">
+		ref="cyTableManager">
+		<osgi:interfaces>
+			<value>org.cytoscape.model.CyTableManager</value>
+			<value>org.cytoscape.model.events.NetworkAboutToBeDestroyedListener</value>
+		</osgi:interfaces>
 	</osgi:service>
 	
 	<osgi:service id="cyNetworkManagerService"

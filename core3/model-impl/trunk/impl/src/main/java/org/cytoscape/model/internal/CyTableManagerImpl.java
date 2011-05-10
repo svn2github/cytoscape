@@ -39,6 +39,8 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTable.Mutability;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
+import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.events.TableAboutToBeDeletedEvent;
 import org.cytoscape.model.events.TableDeletedEvent;
 import org.slf4j.Logger;
@@ -48,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * An interface describing a factory used for managing {@link CyTable} objects.
  * This class will be provided as a service through Spring/OSGi.
  */
-public class CyTableManagerImpl implements CyTableManager {
+public class CyTableManagerImpl implements CyTableManager, NetworkAboutToBeDestroyedListener {
     
     private static final Logger logger = LoggerFactory.getLogger(CyTableManagerImpl.class);
     
@@ -128,8 +130,7 @@ public class CyTableManagerImpl implements CyTableManager {
 	return tables.get(suid);
     }
 
-    @Override
-    public void deleteTable(final long suid) {
+    void deleteTableInternal(final long suid, boolean force) {
 	CyTableImpl table;
 	synchronized (this) {
 	    table = (CyTableImpl) tables.get(suid);
@@ -144,7 +145,7 @@ public class CyTableManagerImpl implements CyTableManager {
 	    if (table == null)
 		return;
 
-	    if (table.getMutability() != Mutability.MUTABLE)
+	    if (!force && table.getMutability() != Mutability.MUTABLE)
 		throw new IllegalArgumentException("can't delete an immutable table!");
 
 	    table.removeAllVirtColumns();
@@ -154,5 +155,20 @@ public class CyTableManagerImpl implements CyTableManager {
 	
 	logger.debug("CyTable removed: table ID = " + table.getSUID());
 	table = null;
+    }
+
+    @Override
+    public void handleEvent(NetworkAboutToBeDestroyedEvent e) {
+	CyNetwork network = e.getNetwork();
+	for (Class<?> type : new Class[] { CyNetwork.class, CyNode.class, CyEdge.class }) {
+	    for (CyTable table : getTableMap(type, network).values()) {
+		deleteTableInternal(table.getSUID(), true);
+	    }
+	}
+    }
+
+    @Override
+	public void deleteTable(long suid) {
+	deleteTableInternal(suid, false);
     }
 }
