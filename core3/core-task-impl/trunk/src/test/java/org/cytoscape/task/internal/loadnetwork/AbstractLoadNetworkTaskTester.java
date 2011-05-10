@@ -84,6 +84,7 @@ public class AbstractLoadNetworkTaskTester {
 
 		reader = mock(CyNetworkReader.class);
 		when(reader.getCyNetworks()).thenReturn(networks);
+		when(reader.buildCyNetworkView(net)).thenReturn(view);
 
 		mgr = mock(CyNetworkReaderManager.class);
 		when(mgr.getReader(eq(uri), anyString())).thenReturn(reader);
