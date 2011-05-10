@@ -66,6 +66,12 @@ final class MyTableHeaderRenderer extends JLabel implements TableCellRenderer {
 		// Configure the component with the specified value
 		setText(value.toString());
 
+		if (!(table.getModel() instanceof BrowserTableModel)) {
+			this.setForeground(defaultForeground);
+			this.setBackground(defaultBackground);
+			return this;
+		}
+		
 		BrowserTableModel model = (BrowserTableModel)table.getModel();
 		CyColumn col = model.getAttributes().getColumn(value.toString());
 		
