@@ -31,5 +31,7 @@ public class MenuAction extends AbstractCyAction {
 			if (currentNetwork.getNeighborList(node, CyEdge.Type.ANY).isEmpty())
 				currentNetworkView.getNodeView(node).setVisualProperty(NODE_VISIBLE, false);
 		}
+
+		currentNetworkView.updateView();
 	}
 }
