@@ -40,6 +40,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.session.CyNetworkNaming;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
@@ -84,8 +85,11 @@ abstract public class AbstractLoadNetworkTask extends AbstractTask {
 		taskMonitor.setProgress(0.0);
 		taskMonitor.setStatusMessage("Creating Cytoscape Network...");
 
+		
 		insertTasksAfterCurrentTask(viewReader, new GenerateNetworkViewsTask(name, viewReader, networkManager,
 				networkViewManager, namingUtil, viewThreshold));
+		
+		taskMonitor.setProgress(1.0);
 	}
 
 	private int getViewThreshold() {
@@ -126,22 +130,23 @@ class GenerateNetworkViewsTask extends AbstractTask {
 		taskMonitor.setProgress(0.0);
 		
 		final CyNetwork[] networks = viewReader.getCyNetworks();
-
+		
 		for (CyNetwork network : networks) {
 			
 			network.getCyRow().set(CyTableEntry.NAME, namingUtil.getSuggestedNetworkTitle(name));
 			networkManager.addNetwork(network);
 
 			final int numGraphObjects = network.getNodeCount() + network.getEdgeCount();
-//			if (numGraphObjects < viewThreshold) {
-//				networkViewManager.addNetworkView(viewReader.buildCyNetworkView(network));
-//				//view.fitContent();
-//			}
+			if (numGraphObjects < viewThreshold) {
+				final CyNetworkView view = viewReader.buildCyNetworkView(network);
+				networkViewManager.addNetworkView(view);
+				view.fitContent();
+			}
 
 			
 			informUserOfGraphStats(network, numGraphObjects, taskMonitor);
+			
 		}
-		taskMonitor.setProgress(1.0);
 	}
 
 	/**

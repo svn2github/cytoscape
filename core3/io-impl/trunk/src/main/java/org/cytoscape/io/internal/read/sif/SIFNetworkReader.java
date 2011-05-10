@@ -142,6 +142,8 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 		this.cyNetworks = new CyNetwork[] {network};
 		
 		tm.setProgress(1.0);
+
+		logger.debug("SIF file loaded: ID = " + network.getSUID());
 	}
 
 	private void createEdge(final Interaction itr, final CyNetwork network, final Map<String, CyNode> nMap) {
@@ -170,12 +172,11 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 	public CyNetworkView buildCyNetworkView(CyNetwork network) {
 		final CyNetworkView view = cyNetworkViewFactory.getNetworkView(network);
 
-		if (view.isEmptyView())
-			return view;
-
 		final CyLayoutAlgorithm layout = layouts.getDefaultLayout();
 		layout.setNetworkView(view);
-		insertTasksAfterCurrentTask(layout.getTaskIterator());
+		
+		// FIXME: this causes infinite loop...Why?
+		//insertTasksAfterCurrentTask(layout.getTaskIterator());
 
 		return view;
 	}
