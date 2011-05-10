@@ -51,6 +51,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -422,7 +423,12 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
     
     @Override
     public void handleEvent(RowsFinishedChangingEvent e) {
-	treeTable.getTree().updateUI();
+	SwingUtilities.invokeLater(new Runnable() {
+	    @Override
+	    public void run() {
+		treeTable.getTree().updateUI();
+	    }
+	});
     }
     
 
