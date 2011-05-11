@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-	<properties>
-		<bundle.symbolicName>org.cytoscape.bundle-plugin</bundle.symbolicName>
-		<bundle.namespace>org.cytoscape.plugin</bundle.namespace>
-	</properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>${groupId}</groupId>
 	<artifactId>${artifactId}</artifactId>
 	<version>${version}</version>
+
+	<properties>
+		<bundle.symbolicName>${groupId}.${artifactId}</bundle.symbolicName>
+		<bundle.namespace>${groupId}.${artifactId}</bundle.namespace>
+	</properties>
 
 	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
 
@@ -93,6 +94,16 @@
 
 	<!-- Dependencies needed to compile this project. -->
 	<dependencies>
+
+
+		<!-- This is for logging  -->
+		<dependency>
+			<groupId>org.ops4j.pax.logging</groupId>
+			<artifactId>pax-logging-api</artifactId>
+			<version>1.5.2</version>
+			<scope>provided</scope>
+		</dependency>
+		
 		<!-- dependencies specifically for unit testing -->
 		<dependency>
 			<groupId>junit</groupId>
