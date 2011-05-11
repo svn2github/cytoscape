@@ -6,12 +6,15 @@ import org.cytoscape.io.write.CyWriter;
 
 public class CSVTableWriterFactory extends AbstractCyTableWriterFactory {
 
-	public CSVTableWriterFactory(CyFileFilter fileFilter) {
+	private final boolean writeSchema;
+
+	public CSVTableWriterFactory(CyFileFilter fileFilter, boolean writeSchema) {
 		super(fileFilter);
+		this.writeSchema = writeSchema;
 	}
 	
 	@Override
 	public CyWriter getWriterTask() {
-		return new CSVCyWriter(outputStream, table);
+		return new CSVCyWriter(outputStream, table, writeSchema);
 	}
 }

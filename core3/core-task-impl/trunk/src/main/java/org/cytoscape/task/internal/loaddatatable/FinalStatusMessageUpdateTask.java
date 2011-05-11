@@ -1,15 +1,14 @@
 package org.cytoscape.task.internal.loaddatatable;
 
 
+import java.util.Set;
+
+import org.cytoscape.io.read.CyTableReader;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.io.read.CyTableReaderManager;
-import org.cytoscape.io.read.CyTableReader;
+import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
-import java.util.Set;
-import java.util.Iterator;
 
 
 class FinalStatusMessageUpdateTask extends AbstractTask {
@@ -44,11 +43,10 @@ class FinalStatusMessageUpdateTask extends AbstractTask {
 	private CyTable getTableByTitle(CyTableManager tableMgr, String tableTitle){
 		CyTable retValue = null;
 
-		Set<CyTable> tableSet = tableMgr.getAllTables(false);
+		Set<CyTableMetadata> tableSet = tableMgr.getAllTables(false);
 
-		Iterator<CyTable> it = tableSet.iterator();
-		while (it.hasNext()){
-			CyTable tbl= it.next();
+		for (CyTableMetadata metadata : tableSet){
+			CyTable tbl= metadata.getCyTable();
 			if(tbl.getTitle().equalsIgnoreCase(tableTitle)){
 				retValue = tbl;
 				break;

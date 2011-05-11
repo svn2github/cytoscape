@@ -190,6 +190,10 @@
 		interface="org.cytoscape.io.write.CyTableWriterFactory">
 	</osgi:service>
 
+	<osgi:service id="sessionTableWriterFactoryService" ref="sessionTableWriterFactory"
+		interface="org.cytoscape.io.write.CyTableWriterFactory">
+	</osgi:service>
+
 	<osgi:service id="streamUtilService" ref="streamUtil"
 		interface="org.cytoscape.io.util.StreamUtil">
 	</osgi:service>

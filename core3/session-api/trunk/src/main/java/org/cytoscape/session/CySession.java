@@ -28,9 +28,8 @@
  */
 package org.cytoscape.session;
 
-import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.session.Cysession;
 import java.util.Properties;
@@ -66,7 +65,7 @@ import org.slf4j.LoggerFactory;
 public final class CySession {
 
 	private final Set<CyNetworkView> netViews;
-	private final Set<CyTable> tables;
+	private final Set<CyTableMetadata> tables;
 	private final Map<CyNetworkView,String> vsMap;
 	private final Properties cyProps;
 	private final Properties vProps;
@@ -85,7 +84,7 @@ public final class CySession {
 			netViews = b.netViews;
 
 		if ( b.tables == null )
-			tables = new HashSet<CyTable>();
+			tables = new HashSet<CyTableMetadata>();
 		else 
 			tables = b.tables;
 
@@ -127,7 +126,7 @@ public final class CySession {
 	public static class Builder {
 
 		private Set<CyNetworkView> netViews; 
-		private Set<CyTable> tables;
+		private Set<CyTableMetadata> tables;
 		private Map<CyNetworkView,String> vsMap; 
 		private Properties cyProps;
 		private Properties vProps; 
@@ -158,13 +157,13 @@ public final class CySession {
 		/**
 		 * Returns an instance of Builder that has at least been configured
 		 * with the specified tables.
-		 * @param t A Set of CyTable objects, presumably all tables
+		 * @param tables2 A Set of CyTable objects, presumably all tables
 		 * that exist in this instance of Cytoscape.
 		 * @return An instance of Builder that has at least been configured
 		 * with the specified tables.
 		 */
-    	public Builder tables(final Set<CyTable> t) { 
-			tables = t; 
+    	public Builder tables(final Set<CyTableMetadata> tables2) { 
+			tables = tables2; 
 			return this;
 		}
 
@@ -258,7 +257,7 @@ public final class CySession {
 	 * Returns a set of all CyTable objects contained in this Session. 
 	 * @return A set of all CyTable objects contained in this Session. 
 	 */
-    public Set<CyTable> getTables() { return tables; }
+    public Set<CyTableMetadata> getTables() { return tables; }
 
 	/**
 	 * Returns a map of CyNetworkViews to the names of the VisualStyle

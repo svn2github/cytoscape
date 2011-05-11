@@ -18,12 +18,14 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 public class CSVCyWriter implements CyWriter {
 
-	private OutputStream outputStream;
-	private CyTable table;
+	private final OutputStream outputStream;
+	private final CyTable table;
+	private final boolean writeSchema;
 
-	public CSVCyWriter(OutputStream outputStream, CyTable table) {
+	public CSVCyWriter(OutputStream outputStream, CyTable table, boolean writeSchema) {
 		this.outputStream = outputStream;
 		this.table = table;
+		this.writeSchema = writeSchema;
 	}
 
 	@Override
@@ -38,16 +40,40 @@ public class CSVCyWriter implements CyWriter {
 			Collections.sort(columns, new Comparator<CyColumn>() {
 				@Override
 				public int compare(CyColumn o1, CyColumn o2) {
+					// First column should be primary key
+					if (o1.isPrimaryKey()) {
+						return -1;
+					}
+					if (o2.isPrimaryKey()) {
+						return 1;
+					}
 					return o1.getName().compareToIgnoreCase(o2.getName());
 				}
 			});
 			writeHeader(writer, columns);
+			if (writeSchema) {
+				writeSchema(writer, columns);
+			}
 			writeValues(writer, columns);
 		} finally {
 			writer.flush();
 		}
 	}
 	
+	private void writeSchema(CSVWriter writer, List<CyColumn> columns) {
+		String[] values = new String[columns.size()];
+		for (int i = 0; i < columns.size(); i++) {
+			CyColumn column = columns.get(i);
+			Class<?> type = column.getType();
+			if (List.class.isAssignableFrom(type)) {
+				values[i] = String.format("%s<%s>", List.class.getCanonicalName(), column.getListElementType().getCanonicalName());
+			} else {
+				values[i] = type.getCanonicalName();
+			}
+		}
+		writer.writeNext(values);
+	}
+
 	private void writeValues(CSVWriter writer, Collection<CyColumn> columns) {
 		for (CyRow row : table.getAllRows()) {
 			String[] values = new String[columns.size()];

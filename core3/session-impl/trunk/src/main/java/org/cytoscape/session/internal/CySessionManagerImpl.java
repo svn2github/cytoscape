@@ -42,15 +42,15 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.session.Cysession;
@@ -121,7 +121,7 @@ public class CySessionManagerImpl implements CySessionManager {
 
         Map<String, List<File>> pluginMap = savingEvent.getPluginFileListMap();
 
-        Set<CyTable> tables = tblMgr.getAllTables(true);
+        Set<CyTableMetadata> tables = tblMgr.getAllTables(true);
         Set<CyNetworkView> netViews = nvMgr.getNetworkViewSet();
 
         Set<VisualStyle> allStyles = vmMgr.getAllVisualStyles();

@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.text.DateFormat;
@@ -62,6 +63,7 @@ import org.cytoscape.io.write.CyTableWriterManager;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.property.session.Cysession;
 import org.cytoscape.property.session.Cytopanels;
 import org.cytoscape.property.session.Network;
@@ -266,7 +268,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	private void zipNetwork(final CyNetworkView view) throws Exception {
 		final CyNetwork network = view.getModel();
 
-		String xgmmlFile = getValidFileName( network.getCyRow().get("name",String.class) + XGMML_EXT );
+		String xgmmlFile = getNetworkFileName(network) + XGMML_EXT;
 		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile) );
 
 		// Write the XGMML file *without* our graphics attributes
@@ -278,6 +280,11 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 
 		xgmmlWriter = null;
 	}
+
+	private String getNetworkFileName(CyNetwork network) throws UnsupportedEncodingException {
+		return escape(network.getCyRow().get("name",String.class));
+	}
+
 
 	/**
 	 * Create cysession.xml file.
@@ -356,20 +363,37 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 
 	private void zipGlobalTables() throws Exception {
 		Set<CyNetworkView> views = session.getNetworkViews();
-		Set<Long> excluded = new HashSet<Long>();
+		Set<Long> excludedTables = new HashSet<Long>();
+		Set<CyNetwork> includedNetworks = new HashSet<CyNetwork>();
 		for (CyNetworkView view : views) {
 			CyNetwork network = view.getModel();
-			excluded.add(network.getDefaultNetworkTable().getSUID());
-			excluded.add(network.getDefaultNodeTable().getSUID());
-			excluded.add(network.getDefaultEdgeTable().getSUID());
+			includedNetworks.add(network);
+			excludedTables.add(network.getDefaultNetworkTable().getSUID());
+			excludedTables.add(network.getDefaultNodeTable().getSUID());
+			excludedTables.add(network.getDefaultEdgeTable().getSUID());
 		}
-		Set<CyTable> tables = session.getTables();
-		for (CyTable table : tables) {
-			if (excluded.contains(table.getSUID())) {
+		Set<CyTableMetadata> tableData = session.getTables();
+		for (CyTableMetadata metadata : tableData) {
+			CyTable table = metadata.getCyTable();
+			if (excludedTables.contains(table.getSUID())) {
 				continue;
 			}
-			
-			String fileName = String.format("%d|%s.table", table.getSUID(), URLEncoder.encode(table.getTitle(), "UTF-8"));
+
+			String tableTitle = escape(table.getTitle());
+			String fileName;
+			Set<CyNetwork> networks = metadata.getCyNetworks();
+			if (networks.size() == 0) {
+				fileName = String.format("global/%s.table", tableTitle);
+			} else {
+				CyNetwork network = findIntersection(includedNetworks, networks);
+				if (network == null) {
+					continue;
+				}
+				String networkFileName = getNetworkFileName(network);
+				String namespace = escape(metadata.getNamespace());
+				String type = escape(metadata.getType().getCanonicalName());
+				fileName = String.format("%s/%s-%s-%s.table", networkFileName, namespace, type, tableTitle);
+			}
 			zos.putNextEntry(new ZipEntry(sessionDir + fileName));
 			try {
 				CyWriter writer = tableWriterMgr.getWriter(table, tableFilter, zos);
@@ -378,6 +402,19 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 				zos.closeEntry();
 			}
 		}
+	}
+
+	private <T> T findIntersection(Set<T> set1, Set<T> set2) {
+		for (T element: set1) {
+			if (set2.contains(element)) {
+				return element;
+			}
+		}
+		return null;
+	}
+
+	private String escape(String text) throws UnsupportedEncodingException {
+		return URLEncoder.encode(text, "UTF-8").replace("-", "%2D");
 	}
 
 }

@@ -1,17 +1,25 @@
 package org.cytoscape.session;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
-import java.util.*;
 import java.io.File;
-import org.cytoscape.view.model.CyNetworkView;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
 import org.cytoscape.model.CyTable;
-import org.cytoscape.session.CySession;
-import org.cytoscape.property.session.Cysession;
+import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.property.bookmark.Bookmarks;
-import org.junit.Before;
+import org.cytoscape.property.session.Cysession;
+import org.cytoscape.view.model.CyNetworkView;
 import org.junit.Test;
-import static org.mockito.Mockito.*;
 
 public class CySessionTest {
 
@@ -72,17 +80,19 @@ public class CySessionTest {
 		CyTable t1 = mock(CyTable.class); 
 		CyTable t2 = mock(CyTable.class); 
 
-		Set<CyTable> ts = new HashSet<CyTable>();
-		ts.add( t1 );
-		ts.add( t2 );
+		Set<CyTableMetadata> ts = new HashSet<CyTableMetadata>();
+		CyTableMetadataImpl m1 = new CyTableMetadataImpl(t1);
+		CyTableMetadataImpl m2 = new CyTableMetadataImpl(t2);
+		ts.add( m1 );
+		ts.add( m2 );
 
 		session = new CySession.Builder().tables( ts ).build();
 
 		assertNotNull(session);
 		assertNotNull(session.getTables());
 		assertEquals(2,session.getTables().size());
-		assertTrue(session.getTables().contains( t1 ));
-		assertTrue(session.getTables().contains( t2 ));
+		assertTrue(session.getTables().contains( m1 ));
+		assertTrue(session.getTables().contains( m2 ));
 	}
 	
 	@Test

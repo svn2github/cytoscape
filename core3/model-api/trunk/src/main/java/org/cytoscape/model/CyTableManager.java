@@ -57,7 +57,7 @@ public interface CyTableManager {
 	 * including private CyTables (i.e. meaning all possible
 	 * CyTables) or just public CyTables.
 	 */
-	Set<CyTable> getAllTables(boolean includePrivate);
+	Set<CyTableMetadata> getAllTables(boolean includePrivate);
 
 	/**
 	 * Returns the table with the specified SUID. 

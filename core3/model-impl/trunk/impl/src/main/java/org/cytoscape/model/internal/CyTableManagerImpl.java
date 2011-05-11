@@ -30,6 +30,7 @@ package org.cytoscape.model.internal;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.cytoscape.event.CyEventHelper;
@@ -39,6 +40,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTable.Mutability;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.events.TableAboutToBeDeletedEvent;
@@ -113,19 +115,43 @@ public class CyTableManagerImpl implements CyTableManager, NetworkAboutToBeDestr
     }
 
     @Override
-    public synchronized Set<CyTable> getAllTables(final boolean includePrivate) {
-	Set<CyTable> res = new HashSet<CyTable>();
+    public synchronized Set<CyTableMetadata> getAllTables(final boolean includePrivate) {
+	Set<CyTableMetadata> res = new HashSet<CyTableMetadata>();
 
 	for (Long key : tables.keySet()) {
-	    if (includePrivate)
-		res.add(tables.get(key));
-	    else if (tables.get(key).isPublic())
-		res.add(tables.get(key));
+	    if (includePrivate || tables.get(key).isPublic())
+		res.add(createMetadata(tables.get(key)));
 	}
 	return res;
     }
 
-    @Override
+    private CyTableMetadata createMetadata(CyTable cyTable) {
+	Class<?> entryType = null;
+	String entryNamespace = null;
+	Set<CyNetwork> networks = new HashSet<CyNetwork>();
+	for (Entry<Class<?>, Map<CyNetwork, Map<String, CyTable>>> mapEntry : networkTableMap.entrySet()) {
+	    Class<?> type = mapEntry.getKey();
+	    Map<CyNetwork, Map<String, CyTable>> networkMap = mapEntry.getValue();
+	    for (Entry<CyNetwork, Map<String, CyTable>> entry : networkMap.entrySet()) {
+		CyNetwork network = entry.getKey();
+		for (Entry<String, CyTable> tableEntry : entry.getValue().entrySet()) {
+		    String namespace = tableEntry.getKey();
+		    CyTable table = tableEntry.getValue();
+		    if (table.getSUID() == cyTable.getSUID()) {
+		    	entryType = type;
+		    	entryNamespace = namespace;
+		    	networks.add(network);
+		    }
+		}
+	    }
+	}
+	if (networks.size() > 0) {
+	    return new CyTableMetadataImpl(entryType, cyTable, networks, entryNamespace);
+	}
+	return new CyTableMetadataImpl(null, cyTable, networks, null);
+    }
+
+	@Override
     public synchronized CyTable getTable(final long suid) {
 	return tables.get(suid);
     }

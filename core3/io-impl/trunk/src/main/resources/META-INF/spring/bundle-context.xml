@@ -255,6 +255,25 @@
 		</constructor-arg>
 	</bean>
 
+	<bean id="sessionTableFilter" class="org.cytoscape.io.BasicCyFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>table</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>text/plain</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Session table file" />
+		<constructor-arg type="org.cytoscape.io.DataCategory"
+			value="TABLE" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil" />
+		</constructor-arg>
+	</bean>
+
 	<!-- Utility for Stream/Proxy management -->
 	<bean id="readUtil" class="org.cytoscape.io.internal.util.ReadUtils">
 		<constructor-arg ref="streamUtil" />
@@ -327,8 +346,15 @@
 	<bean id="csvTableWriterFactory"
 		class="org.cytoscape.io.internal.write.datatable.csv.CSVTableWriterFactory">
 		<constructor-arg ref="csvFilter" />
+		<constructor-arg value="false" type="boolean" />
 	</bean>
 
+	<bean id="sessionTableWriterFactory"
+		class="org.cytoscape.io.internal.write.datatable.csv.CSVTableWriterFactory">
+		<constructor-arg ref="sessionTableFilter" />
+		<constructor-arg value="true" type="boolean" />
+	</bean>
+	
 	<!-- Utilities for XGMML Reader -->
 
 	<bean id="objectTypeMap" class="org.cytoscape.io.internal.read.xgmml.ObjectTypeMap" />
@@ -398,7 +424,7 @@
 		<constructor-arg ref="bookmarksFilter" />
 		<constructor-arg ref="cysessionFilter" />
 		<constructor-arg ref="propertiesFilter" />
-		<constructor-arg ref="csvFilter" />
+		<constructor-arg ref="sessionTableFilter" />
 		<constructor-arg ref="networkViewWriterManager" />
 		<constructor-arg ref="propertyWriterManager" />
 		<constructor-arg ref="tableWriterManager" />

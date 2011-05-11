@@ -2,19 +2,19 @@ package org.cytoscape.browser.internal;
 
 
 import java.awt.Component;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
 
 import org.cytoscape.model.CyNetwork;
@@ -22,6 +22,7 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyTableMetadata;
 
 
 public class TableChooser extends JComboBox {
@@ -50,10 +51,11 @@ class MyComboBoxModel extends DefaultComboBoxModel {
 		this.networkManager   = networkManager;
 		this.tableToStringMap = tableToStringMap;
 
-		oldSet = tableManager.getAllTables(/* includePrivate = */ false);
-		tables = new ArrayList<CyTable>(oldSet.size());
-		for (final CyTable table : oldSet)
-			tables.add(table);
+		oldSet = new HashSet<CyTable>();
+		for (CyTableMetadata metadata : tableManager.getAllTables(/* includePrivate = */ false)) {
+			oldSet.add(metadata.getCyTable());
+		}
+		tables = new ArrayList<CyTable>(oldSet);
 		Collections.sort(tables, tableComparator);
 		updateTableToStringMap();
 	}
@@ -73,7 +75,10 @@ class MyComboBoxModel extends DefaultComboBoxModel {
 	}
 
 	public int getSize() {
-		final Set<CyTable> tableSet = tableManager.getAllTables(/* includePrivate = */ false);
+		final Set<CyTable> tableSet = new HashSet<CyTable>();
+		for (CyTableMetadata metadata : tableManager.getAllTables(/* includePrivate = */ false)) {
+			tableSet.add(metadata.getCyTable());
+		}
 		if (!tableSet.equals(oldSet)) {
 			oldSet = tableSet;
 			fireContentsChanged(this, 0, tableSet.size() - 1);
