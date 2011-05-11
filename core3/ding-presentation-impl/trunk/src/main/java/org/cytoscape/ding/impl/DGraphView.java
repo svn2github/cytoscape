@@ -1351,7 +1351,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 * @return DOCUMENT ME!
 	 */
 	public boolean hideGraphObject(Object obj) {
-System.err.println("+++++++++++++++++++++++ call to DGraphView.hideGraphObject()");
 		return hideGraphObjectInternal(obj, true);
 	}
 
