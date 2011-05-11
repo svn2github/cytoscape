@@ -1351,6 +1351,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 * @return DOCUMENT ME!
 	 */
 	public boolean hideGraphObject(Object obj) {
+System.err.println("+++++++++++++++++++++++ call to DGraphView.hideGraphObject()");
 		return hideGraphObjectInternal(obj, true);
 	}
 
@@ -1393,13 +1394,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 				nnode = networkModel.getNode(nodeInx);
 				edges = m_drawPersp.getAdjacentEdgeList(nnode, CyEdge.Type.ANY);
 
-				if (edges == null || edges.size() <= 0) {
-					return false;
+				if (edges != null) {
+					for (CyEdge ee : edges)
+						hideGraphObjectInternal(m_edgeViewMap.get(ee.getIndex()),
+									false);
 				}
-
-				for (CyEdge ee : edges)
-					hideGraphObjectInternal(m_edgeViewMap.get(ee.getIndex()),
-							false);
 
 				nView.unselectInternal();
 				m_spacial.exists(nodeInx, m_extentsBuff, 0);
@@ -1417,7 +1416,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 				final GraphViewChangeListener listener = m_lis[0];
 
 				if (listener != null) {
-					if (edges.size() > 0) {
+					if (edges != null && edges.size() > 0) {
 						listener.graphViewChanged(new GraphViewEdgesHiddenEvent(
 								this, edges));
 					}
