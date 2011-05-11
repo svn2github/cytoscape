@@ -313,7 +313,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	//
 
 	public void mouseDragged(MouseEvent e) {
-		mouseDraggedDelegator.delegateMouseEvent(e);
+		mouseDraggedDelegator.delegateMouseDragEvent(e);
 	}
 
 	public void mouseMoved(MouseEvent e) {
@@ -1277,6 +1277,11 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 	private class MouseDraggedDelegator extends ButtonDelegator {
 
+		// emulate right click and middle click with a left clic and a modifier
+		// TODO: make sure to be consistent with other emulation inside cytoscape and on Mac OSX
+		static final int FAKEMIDDLECLIC = MouseEvent.BUTTON1_DOWN_MASK | MouseEvent.META_DOWN_MASK;
+		static final int FAKERIGHTCLIC  = MouseEvent.BUTTON1_DOWN_MASK | MouseEvent.CTRL_DOWN_MASK;
+		
 		@Override
 		void singleLeftClick(MouseEvent e) {
 			//System.out.println("MouseDragged ----> singleLeftClick");
@@ -1359,6 +1364,23 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			}
 	
 			repaint();
+		}
+
+		public void delegateMouseDragEvent(MouseEvent e) {
+			// Note: the fake clic are here for OSX but I do not see a reason to disable them on other systems
+			switch (e.getModifiersEx()) {
+			case MouseEvent.BUTTON1_DOWN_MASK:
+				singleLeftClick(e);
+				break;
+			case MouseEvent.BUTTON2_DOWN_MASK:
+			case FAKEMIDDLECLIC:
+				singleMiddleClick(e);
+				break;
+			case MouseEvent.BUTTON3_DOWN_MASK:
+			case FAKERIGHTCLIC:
+				singleRightClick(e);
+				break;
+			}
 		}
 
 		@Override
