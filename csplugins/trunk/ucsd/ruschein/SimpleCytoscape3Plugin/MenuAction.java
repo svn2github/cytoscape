@@ -18,7 +18,6 @@ public class MenuAction extends AbstractCyAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-System.err.println("+++++++++++++++++++++++++++++++++ Entering actionPerformed()");
 		final CyNetwork currentNetwork = adapter.getCyApplicationManager().getCurrentNetwork();
 		if (currentNetwork == null)
 			return;
@@ -27,13 +26,9 @@ System.err.println("+++++++++++++++++++++++++++++++++ Entering actionPerformed()
 
 		for (CyNode node : currentNetwork.getNodeList()) {
 			if (currentNetwork.getNeighborList(node, CyEdge.Type.ANY).isEmpty())
-				{
-System.err.println("+++++++++++++++++++++++++++++++++ found one");
 				currentNetworkView.getNodeView(node).setVisualProperty(NODE_VISIBLE, false);
-				}
 		}
 
-System.err.println("+++++++++++++++++++++++++++++++++ about to call updateView()");
 		currentNetworkView.updateView();
 	}
 }
