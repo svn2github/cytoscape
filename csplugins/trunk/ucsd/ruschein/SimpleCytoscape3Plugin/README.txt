@@ -4,5 +4,5 @@
 
 2) Create the actual plugin jar with:
 
-   jar cfM SamplePlugin.jar META-INF/MANIFEST.MF org/cytoscape/plugin/example/*.class plugin.props
+   jar cfm SamplePlugin.jar manifest *.class
 
