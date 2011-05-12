@@ -3,8 +3,8 @@ import org.cytoscape.plugin.CyPlugin;
 
 
 public class SamplePlugin extends CyPlugin {
-	public SamplePlugin(CyPluginAdapter a){
-		super(a);
-		a.getCySwingApplication().addAction(new MenuAction(a));
+	public SamplePlugin(CyPluginAdapter adapter){
+		super(adapter);
+		adapter.getCySwingApplication().addAction(new MenuAction(adapter));
 	}
 }
