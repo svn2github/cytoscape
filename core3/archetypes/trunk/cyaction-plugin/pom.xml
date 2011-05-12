@@ -12,7 +12,7 @@
 	<groupId>org.cytoscape.archetypes</groupId>
 	<artifactId>cyaction-plugin</artifactId>
 	<packaging>maven-archetype</packaging>
-	<name>Cytoscape 3 Archetype - Creates a CyAction for Cytoscape 3 desktop application</name>
+	<name>Cytoscape 3 Archetype - Creates CyAction (menu item) for desktop application</name>
 
 	<build>
 		<plugins>
