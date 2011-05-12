@@ -189,4 +189,9 @@ public class ReadDataManager {
     public CyNetwork getNetwork() {
         return this.network;
     }
+
+    public void addEquation(String columnName, CyRow row, String equationStr) {
+        // TODO: should just store all the equation strings per columnName/row
+        // TODO: create all equations after all CyTables/CyColumns are loaded?
+    }
 }

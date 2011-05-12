@@ -275,36 +275,45 @@ public class AttributeValueUtil {
     public ParseState handleAttribute(Attributes atts, CyRow row) throws SAXParseException {
         String name = atts.getValue("name");
         String type = atts.getValue("type");
+        String equationStr = atts.getValue("cy:equation");
+        
         ObjectType objType = typeMap.getType(type);
-        Object obj = getTypedAttributeValue(objType, atts);
         CyColumn column = row.getTable().getColumn(name);
 
-        switch (objType) {
-            case BOOLEAN:
-                if (obj != null) setAttribute(row, name, (Boolean) obj);
-                break;
-            case REAL:
-                if (obj != null) setAttribute(row, name, (Double) obj);
-                break;
-            case INTEGER:
-                if (obj != null) setAttribute(row, name, (Integer) obj);
-                break;
-            case STRING:
-                if (obj != null) setAttribute(row, name, (String) obj);
-                break;
-            // We need to be *very* careful. Because we duplicate attributes for
-            // each network we write out, we wind up reading and processing each
-            // attribute multiple times, once for each network. This isn't a problem
-            // for "base" attributes, but is a significant problem for attributes
-            // like LIST and MAP where we add to the attribute as we parse. So, we
-            // must make sure to clear out any existing values before we parse.
-            case LIST:
-                manager.currentAttributeID = name;
-                if (column != null && List.class.isAssignableFrom(column.getType()))
-                    row.set(name, null);
-                return ParseState.LISTATT;
+        if (equationStr == null) {
+            // Regular attribute value (NOT an equation)...
+            Object obj = getTypedAttributeValue(objType, atts);
+
+            switch (objType) {
+                case BOOLEAN:
+                    if (obj != null && name != null) setAttribute(row, name, (Boolean) obj);
+                    break;
+                case REAL:
+                    if (obj != null && name != null) setAttribute(row, name, (Double) obj);
+                    break;
+                case INTEGER:
+                    if (obj != null && name != null) setAttribute(row, name, (Integer) obj);
+                    break;
+                case STRING:
+                    if (obj != null && name != null) setAttribute(row, name, (String) obj);
+                    break;
+                // We need to be *very* careful. Because we duplicate attributes for
+                // each network we write out, we wind up reading and processing each
+                // attribute multiple times, once for each network. This isn't a problem
+                // for "base" attributes, but is a significant problem for attributes
+                // like LIST and MAP where we add to the attribute as we parse. So, we
+                // must make sure to clear out any existing values before we parse.
+                case LIST:
+                    manager.currentAttributeID = name;
+                    if (column != null && List.class.isAssignableFrom(column.getType())) row.set(name, null);
+                    return ParseState.LISTATT;
+            }
+        } else {
+            // It is an equation...
+            if (name != null) manager.addEquation(name, row, equationStr);
+            if (objType.equals(ObjectType.LIST)) return ParseState.LISTATT;
         }
-        
+
         return ParseState.NONE;
     }
 

@@ -30,17 +30,15 @@ package org.cytoscape.io.internal.write.xgmml;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
-import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import org.cytoscape.equations.Equation;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyEdge;
@@ -55,51 +53,16 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
+import org.cytoscape.view.presentation.property.RichVisualLexicon;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
-
-enum GraphicsType {
-    ARC("arc"),
-    BITMAP("bitmap"),
-    IMAGE("image"),
-    LINE("line"),
-    OVAL("oval"),
-    POLYGON("polygon"),
-    RECTANGLE("rectangle"),
-    TEXT("text"),
-    BOX("box"),
-    CIRCLE("circle"),
-    VER_ELLIPSIS("ver_ellipsis"),
-    HOR_ELLIPSIS("hor_ellipsis"),
-    RHOMBUS("rhombus"),
-    TRIANGLE("triangle"),
-    PENTAGON("pentagon"),
-    HEXAGON("hexagon"),
-    OCTAGON("octagon"),
-    ELLIPSE("ellipse"),
-    DIAMOND("diamond"),
-    PARALLELOGRAM("parallelogram"),
-    ROUNDED_RECTANGLE("rounded_rectangle");
-
-    private final String value;
-
-    GraphicsType(String v) {
-        value = v;
-    }
-
-    String value() {
-        return value;
-    }
-}
 
 enum ObjectType {
     LIST("list"),
     STRING("string"),
     REAL("real"),
     INTEGER("integer"),
-    BOOLEAN("boolean"),
-    MAP("map"),
-    COMPLEX("complex");
+    BOOLEAN("boolean");
 
     private final String value;
 
@@ -516,12 +479,13 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
         for (VisualProperty vp : visualProperties) {
             if (!vp.getTargetDataType().isAssignableFrom(element.getClass())) continue;
-            
+
             String key = getGraphicsKey(vp);
             Object value = view.getVisualProperty(vp);
 
             if (key != null && value != null) {
-                writeAttributePair(key, vp.toSerializableString(value));
+                value = vp.toSerializableString(value);
+                if (value != null) writeAttributePair(key, value);
             }
         }
 
@@ -559,24 +523,24 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
         if (vp.equals(MinimalVisualLexicon.NODE_WIDTH)) return "w";
         if (vp.equals(MinimalVisualLexicon.NODE_HEIGHT)) return "h";
         if (vp.equals(MinimalVisualLexicon.NODE_FILL_COLOR)) return "fill";
-        // TODO: Visual Lexicon has to expose these properties
-        //        if (vp.equals(TwoDVisualLexicon.NODE_SHAPE)) return "type";
-        //        if (vp.equals(TwoDVisualLexicon.NODE_)) return "wth";
-        //        if (vp.equals(TwoDVisualLexicon.NODE_)) return "outline";
-        //        if (vp.equals(TwoDVisualLexicon.NODE_)) return "cy:nodeTransparency";
-        //        if (vp.equals(TwoDVisualLexicon.NODE_)) return "cy:borderLineType";
-        //        if (vp.equals(TwoDVisualLexicon.NODE_)) return "cy:nodeLabelFont";
+        if (vp.equals(RichVisualLexicon.NODE_SHAPE)) return "type";
+        if (vp.equals(RichVisualLexicon.NODE_BORDER_WIDTH)) return "width";
+        if (vp.equals(RichVisualLexicon.NODE_BORDER_PAINT)) return "outline";
+        if (vp.equals(RichVisualLexicon.NODE_TRANSPARENCY)) return "cy:nodeTransparency";
+        if (vp.equals(RichVisualLexicon.NODE_BORDER_LINE_TYPE)) return "cy:borderLineType";
+        if (vp.equals(RichVisualLexicon.NODE_LABEL)) return "cy:nodeLabelFont";
 
         // Edges
         if (vp.equals(MinimalVisualLexicon.EDGE_WIDTH)) return "width";
-        if (vp.equals(MinimalVisualLexicon.EDGE_PAINT)) return "fill";
+        if (vp.equals(RichVisualLexicon.EDGE_STROKE_UNSELECTED_PAINT)) return "fill";
+        if (vp.equals(MinimalVisualLexicon.EDGE_LABEL)) return "cy:edgeLabelFont";
+        if (vp.equals(RichVisualLexicon.EDGE_LINE_TYPE)) return "cy:edgeLineType";
         // TODO:
         //            "cy:sourceArrow"
         //            "cy:targetArrow"
         //            "cy:sourceArrowColor"
         //            "cy:targetArrowColor"
-        //            "cy:edgeLabelFont"
-        //            "cy:edgeLineType"
+        //            "cy:curved"
 
         return null;
     }
@@ -600,53 +564,49 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
         if (column == null) return;
         final Class<?> attType = column.getType();
 
-        String value = null;
-        String type = null;
-
-        // TODO: Equations
-        //        final Equation equation = row.getEquation(id, attributeName);
+        Equation equation = null;
+        Object rawValue = row.getRaw(attName);
+        if (rawValue instanceof Equation) equation = (Equation) rawValue;
 
         if (attType == Double.class) {
-            //            if (equation != null) {
-            //                writeEquationAttributeXML(attName, ObjectType.REAL, equation.toString(),
-            //                                          true, hidden, editable);
-            //            } else {
-            Double dAttr = row.get(attName, Double.class);
-            writeAttributeXML(attName, ObjectType.REAL, dAttr, true);
-            //            }
+            if (equation != null) {
+                writeEquationAttributeXML(attName, ObjectType.REAL, equation.toString(), true);
+            } else {
+                Double dAttr = row.get(attName, Double.class);
+                writeAttributeXML(attName, ObjectType.REAL, dAttr, true);
+            }
         } else {
             if (attType == Integer.class) {
-                //                if (equation != null) {
-                //                    writeEquationAttributeXML(attName, ObjectType.INTEGER, equation.toString(), true, hidden, editable);
-                //                } else {
-                Integer iAttr = row.get(attName, Integer.class);
-                writeAttributeXML(attName, ObjectType.INTEGER, iAttr, true);
-                //                }
-            } else if (attType == String.class) {
-                //                if (equation != null) {
-                //                    writeEquationAttributeXML(attName, ObjectType.STRING, equation.toString(),
-                //                                              true, hidden, editable);
-                //                } else {
-                String sAttr = row.get(attName, String.class);
-                // Protect tabs and returns
-                if (sAttr != null) {
-                    sAttr = sAttr.replace("\n", "\\n");
-                    sAttr = sAttr.replace("\t", "\\t");
+                if (equation != null) {
+                    writeEquationAttributeXML(attName, ObjectType.INTEGER, equation.toString(), true);
+                } else {
+                    Integer iAttr = row.get(attName, Integer.class);
+                    writeAttributeXML(attName, ObjectType.INTEGER, iAttr, true);
                 }
-                // TODO: nested networks
-                //                if (attName.equals(CyNode.NESTED_NETWORK_ID_ATTR)) {
-                //                    // This is a special attribute for nested network.
-                //                    sAttr = Cytoscape.getNetwork(sAttr).getTitle();
-                //                }
-                writeAttributeXML(attName, ObjectType.STRING, sAttr, true);
-                //                }
+            } else if (attType == String.class) {
+                if (equation != null) {
+                    writeEquationAttributeXML(attName, ObjectType.STRING, equation.toString(), true);
+                } else {
+                    String sAttr = row.get(attName, String.class);
+                    // Protect tabs and returns
+                    if (sAttr != null) {
+                        sAttr = sAttr.replace("\n", "\\n");
+                        sAttr = sAttr.replace("\t", "\\t");
+                    }
+                    // TODO: nested networks
+                    //                if (attName.equals(CyNode.NESTED_NETWORK_ID_ATTR)) {
+                    //                    // This is a special attribute for nested network.
+                    //                    sAttr = Cytoscape.getNetwork(sAttr).getTitle();
+                    //                }
+                    writeAttributeXML(attName, ObjectType.STRING, sAttr, true);
+                }
             } else if (attType == Boolean.class) {
-                //                if (equation != null) {
-                //                    writeEquationAttributeXML(attName, ObjectType.BOOLEAN, equation.toString(), true, hidden, editable);
-                //                } else {
-                Boolean bAttr = row.get(attName, Boolean.class);
-                writeAttributeXML(attName, ObjectType.BOOLEAN, bAttr, true);
-                //                }
+                if (equation != null) {
+                    writeEquationAttributeXML(attName, ObjectType.BOOLEAN, equation.toString(), true);
+                } else {
+                    Boolean bAttr = row.get(attName, Boolean.class);
+                    writeAttributeXML(attName, ObjectType.BOOLEAN, bAttr, true);
+                }
             } else if (attType == List.class) {
                 final List<?> listAttr = row.getList(attName, column.getListElementType());
                 writeAttributeXML(attName, ObjectType.LIST, null, false);
@@ -667,160 +627,9 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
                     depth--;
                 }
                 writeAttributeXML(null, null, null, true);
-            } else if (attType == Map.class) {
-                // process SIMPLE MAP
-                // get the attribute map
-                final Map mapAttr = row.get(attName, Map.class);
-                writeAttributeXML(attName, ObjectType.MAP, null, false);
-
-                if (mapAttr != null) {
-                    depth++;
-                    // interate through the map
-                    for (Object obj : mapAttr.keySet()) {
-                        // get the attribute from the map
-                        String key = (String) obj;
-                        Object val = mapAttr.get(key);
-                        String sAttr = val.toString();
-                        if (sAttr != null) {
-                            sAttr = sAttr.replace("\n", "\\n");
-                            sAttr = sAttr.replace("\t", "\\t");
-                        }
-
-                        writeAttributeXML(key, checkType(val), sAttr, true);
-                    }
-                    depth--;
-                }
-                writeAttributeXML(null, null, null, true);
             }
         }
-
-        // TODO: process COMPLEX MAP
-        //        else if (attType == CyAttributes.TYPE_COMPLEX) {
-        //            MultiHashMap mmap = attributes.getMultiHashMap();
-        //            MultiHashMapDefinition mmapDef = attributes.getMultiHashMapDefinition();
-        //
-        //            // get the number & types of dimensions
-        //            byte[] dimTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attName);
-        //
-        //            // Check to see if id has value assigned to attribute
-        //            if (!objectHasKey(id, attributes, attName)) {
-        //                return;
-        //            }
-        //            // Output the first <att>
-        //            writeAttributeXML(attName, ObjectType.COMPLEX, String.valueOf(dimTypes.length), false, hidden, editable);
-        //
-        //            // grab the complex attribute structure
-        //            Map complexAttributeStructure = getComplexAttributeStructure(mmap, id, attributeName, null,
-        //                                                                         0, dimTypes.length);
-        //
-        //            // determine val type, get its string equivalent to store in XGMML
-        //            ObjectType valType = getType(mmapDef.getAttributeValueType(attributeName));
-        //
-        //            depth++;
-        //            // walk the structure
-        //            writeComplexAttribute(complexAttributeStructure, valType, dimTypes, 0);
-        //            depth--;
-        //            // Close
-        //            writeAttributeXML(null, null, null, true);
-        //        }
     }
-
-    /**
-     * Returns a map where the key(s) are each key in the attribute key space,
-     * and the value is another map or the attribute value.
-     *
-     * For example, if the following key:
-     *
-     * {externalref1}{authors}{1} pointed to the following value:
-     *
-     * "author 1 name",
-     *
-     * Then we would have a Map where the key is externalref1, the value is a
-     * Map where the key is {authors}, the value is a Map where the key is {1},
-     * the value is "author 1 name".
-     *
-     * @param mmap -
-     *            reference to MultiHashMap used by CyAttributes
-     * @param id -
-     *            id of node, edge or network
-     * @param attributeName -
-     *            name of attribute
-     * @param keys -
-     *            array of objects which store attribute keys
-     * @param keysIndex -
-     *            index into keys array we should add the next key
-     * @param numKeyDimensions -
-     *            the number of keys used for given attribute name
-     * @return Map - ref to Map interface
-    private Map<Object,Object> getComplexAttributeStructure(MultiHashMap mmap, String id, String attributeName,
-                                             Object[] keys, int keysIndex, int numKeyDimensions) {
-    	// are we done?
-    	if (keysIndex == numKeyDimensions)
-    		return null;
-
-    	// the hashmap to return
-    	Map<Object,Object> keyHashMap = new HashMap<Object,Object>();
-
-    	// create a new object array to store keys for this interation
-    	// copy all existing keys into it
-    	Object[] newKeys = new Object[keysIndex + 1];
-
-    	for (int lc = 0; lc < keysIndex; lc++) {
-    		newKeys[lc] = keys[lc];
-    	}
-
-    	// get the key span
-    	Iterator keyspan = mmap.getAttributeKeyspan(id, attributeName, keys);
-
-    	while (keyspan.hasNext()) {
-    		Object newKey = keyspan.next();
-    		newKeys[keysIndex] = newKey;
-
-    		Map nextLevelMap = getComplexAttributeStructure(mmap, id, attributeName, newKeys,
-    		                                                keysIndex + 1, numKeyDimensions);
-    		Object objectToStore = (nextLevelMap == null)
-    		                       ? mmap.getAttributeValue(id, attributeName, newKeys) : nextLevelMap;
-    		keyHashMap.put(newKey, objectToStore);
-    	}
-    	return keyHashMap;
-    }
-     */
-
-    /**
-     * This method is a recursive routine to output a complex attribute.
-     *
-     * @param complexAttributeStructure the structure of the attribute
-     * @param type the type of the attribute
-     * @param dimTypes the array of dimension types
-     * @param dimTypesIndex which dimType we're working on
-    private void writeComplexAttribute(Map complexAttributeStructure, ObjectType type,
-                                       byte[] dimTypes, int dimTypesIndex) throws IOException {
-    	for (Object key: complexAttributeStructure.keySet()) {
-    		Object possibleAttributeValue = complexAttributeStructure.get(key);
-
-    		// Is this a leaf or are we still dealing with maps?
-    		if (possibleAttributeValue instanceof Map) {
-    			// Another map
-    			writeAttributeXML(key.toString(), getType(dimTypes[dimTypesIndex]),
-    			                  String.valueOf(((Map) possibleAttributeValue).size()), false);
-    			// Recurse
-    			depth++;
-    			writeComplexAttribute((Map)possibleAttributeValue, type, dimTypes, dimTypesIndex+1);
-    			depth--;
-    			// Close
-    			writeAttributeXML(null, null, null, true);
-    		} else {
-    			// Final key
-    			writeAttributeXML(key.toString(), getType(dimTypes[dimTypesIndex]),
-    			                  String.valueOf(1), false);
-    			depth++;
-    			writeAttributeXML(null, type, possibleAttributeValue.toString(), true);
-    			depth--;
-    			writeAttributeXML(null, null, null, true);
-    		}
-    	}
-    }
-     */
 
     /**
      * writeAttributeXML outputs an XGMML attribute
@@ -875,35 +684,33 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
     }
 
     /**
-     * Convert enumerated shapes into human-readable string.<br>
+     * writeEquationAttributeXML outputs an XGMML attribute
      *
-     * @param type
-     *            Enumerated node shape.
-     * @return Shape in string.
+     * @param name is the name of the attribute we are outputting
+     * @param type is the XGMML type of the attribute
+     * @param equation is the textual representation of the formula we're outputting
+     * @param end is a flag to tell us if the attribute should include a tag end
+     * @param hidden is a flag to tell us if the attribute should be hidden
+     * @param editable is a flag to tell us if the attribute should be user editable
+     *
+     * @throws IOException
      */
-    private GraphicsType number2shape(final int type) {
-        switch (type) {
-            // TODO:
-            //            case NodeView.ELLIPSE:
-            //                return GraphicsType.ELLIPSE;
-            //            case NodeView.RECTANGLE:
-            //                return GraphicsType.RECTANGLE;
-            //            case NodeView.ROUNDED_RECTANGLE:
-            //                return GraphicsType.ROUNDED_RECTANGLE;
-            //            case NodeView.DIAMOND:
-            //                return GraphicsType.DIAMOND;
-            //            case NodeView.HEXAGON:
-            //                return GraphicsType.HEXAGON;
-            //            case NodeView.OCTAGON:
-            //                return GraphicsType.OCTAGON;
-            //            case NodeView.PARALELLOGRAM:
-            //                return GraphicsType.PARALLELOGRAM;
-            //            case NodeView.TRIANGLE:
-            //                return GraphicsType.TRIANGLE;
-            //            case NodeView.VEE:
-            //                return GraphicsType.VEE;
-            default:
-                return null;
+    private void writeEquationAttributeXML(final String name,
+                                           final ObjectType type,
+                                           final String equation,
+                                           final boolean end) throws IOException {
+        if (name == null && type == null)
+            writeElement("</att>\n");
+        else {
+            writeElement("<att type=" + quote(type.toString()));
+            if (name != null) writer.write(" name=" + quote(name));
+            writer.write(" value=" + quote(equation));
+            writer.write(" cy:equation=\"true\"");
+
+            if (end)
+                writer.write("/>\n");
+            else
+                writer.write(">\n");
         }
     }
 
@@ -961,31 +768,6 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
             return null;
         }
     }
-
-    /**
-     * Given a byte describing a MultiHashMapDefinition TYPE_*, return the
-     * proper XGMMLWriter type.
-     *
-     * @param dimType -
-     *            byte as described in MultiHashMapDefinition
-     * @return the type pointed to by this dim
-    private ObjectType getType(final byte dimType) {
-    	if (dimType == MultiHashMapDefinition.TYPE_BOOLEAN)
-    		return ObjectType.BOOLEAN;
-
-    	if (dimType == MultiHashMapDefinition.TYPE_FLOATING_POINT)
-    		return ObjectType.REAL;
-
-    	if (dimType == MultiHashMapDefinition.TYPE_INTEGER)
-    		return ObjectType.INTEGER;
-
-    	if (dimType == MultiHashMapDefinition.TYPE_STRING)
-    		return ObjectType.STRING;
-
-    	// houston we have a problem
-    	return null;
-    }
-     */
 
     private String getNetworkName(CyNetwork network) {
         String name = encode(network.getCyRow().get("name", String.class));
@@ -1049,29 +831,4 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
     private String quote(String str) {
         return '"' + encode(str) + '"';
     }
-
-    /**
-     * Determines if object has key in multihashmap
-     *
-     * @param id -
-     *            node, edge, network id
-     * @param attributes -
-     *            CyAttributes ref
-     * @param attributeName -
-     *            attribute name
-     *
-     * @return boolean
-    private boolean objectHasKey(String id, CyAttributes attributes, String attributeName) {
-    	MultiHashMap mmap = attributes.getMultiHashMap();
-
-    	for (Iterator keysIt = mmap.getObjectKeys(attributeName); keysIt.hasNext();) {
-    		String thisKey = (String) keysIt.next();
-
-    		if ((thisKey != null) && thisKey.equals(id)) {
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-     */
 }
