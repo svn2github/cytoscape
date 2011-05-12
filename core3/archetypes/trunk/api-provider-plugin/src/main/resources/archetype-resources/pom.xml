@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<properties>
-#if( !$symbolicName )
-#set( $symbolicName = "${groupId}.${artifactId}" )
-#end
+		#if( !$symbolicName )
+		#set( $symbolicName = "${groupId}.${artifactId}" )
+		#end
 		<bundle.symbolicName>${symbolicName}</bundle.symbolicName>
 		<bundle.namespace>${package}</bundle.namespace>
 	</properties>
@@ -14,12 +15,12 @@
 	<artifactId>${artifactId}</artifactId>
 	<version>${version}</version>
 
-#set( $dollar = "$" )
-#if( $symbolicName.equals($package) )
+	#set( $dollar = "$" )
+	#if( $symbolicName.equals($package) )
 	<name>${dollar}{bundle.symbolicName}</name>
-#else
+	#else
 	<name>${dollar}{bundle.symbolicName} [${dollar}{bundle.namespace}]</name>
-#end
+	#end
 
 	<packaging>bundle</packaging>
 
@@ -68,10 +69,10 @@
 				<version>1.4.3</version>
 				<configuration>
 					<instructions>
-#literal()
+						#literal()
 						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
 						<Bundle-Version>${pom.version}</Bundle-Version>
-#end
+						#end
 						<_include>-osgi.bnd</_include>
 					</instructions>
 				</configuration>
@@ -111,6 +112,14 @@
 			<version>3.0.0-alpha3-SNAPSHOT</version>
 		</dependency>
 
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.ops4j.pax.logging</groupId>
+			<artifactId>pax-logging-api</artifactId>
+			<version>1.5.2</version>
+			<scope>provided</scope>
+		</dependency>
+		
 		<!-- dependencies specifically for unit testing -->
 		<dependency>
 			<groupId>junit</groupId>
