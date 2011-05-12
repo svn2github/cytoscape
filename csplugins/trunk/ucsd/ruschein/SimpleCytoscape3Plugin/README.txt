@@ -4,5 +4,5 @@
 
 2) Create the actual plugin jar with:
 
-   jar cfm SamplePlugin.jar manifest *.class
+   jar cfm HideSingletonNodesPlugin.jar manifest *.class
 
