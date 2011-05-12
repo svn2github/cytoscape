@@ -2478,9 +2478,9 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 				(m_networkCanvas.getLastRenderDetail() & GraphRenderer.LOD_HIGH_DETAIL) == 0,
 				nodeStack);
 
-		chosenNode = (nodeStack.size() > 0) ? nodeStack.peek() : 0;
+		chosenNode = (nodeStack.size() > 0) ? nodeStack.peek() : -1;
 
-		if (chosenNode != 0) {
+		if (chosenNode >= 0) {
 			nv = getNodeView(chosenNode);
 		}
 
@@ -2501,9 +2501,9 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 				(int) pt.getY(), edgeStack);
 
 		int chosenEdge = 0;
-		chosenEdge = (edgeStack.size() > 0) ? edgeStack.peek() : 0;
+		chosenEdge = (edgeStack.size() > 0) ? edgeStack.peek() : -1;
 
-		if (chosenEdge != 0) {
+		if (chosenEdge >= 0) {
 			ev = getEdgeView(chosenEdge);
 		}
 
