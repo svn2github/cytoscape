@@ -8,4 +8,10 @@
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
+	<!-- Create an instance (bean) of the class -->
+	<bean id="menuAction" class="org.cytoscape.myplugin.internal.MenuAction">
+		<!-- Inject an OSGi service as a constructor argument -->
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+	</bean>
+
 </beans>
