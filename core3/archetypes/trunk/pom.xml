@@ -23,6 +23,7 @@
 	<modules>
 		<module>api-provider-plugin</module>
 		<module>task-plugin</module>
+		<module>cyaction-plugin</module>
 	</modules>
 
 	<scm>
