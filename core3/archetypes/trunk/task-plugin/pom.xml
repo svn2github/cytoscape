@@ -12,7 +12,7 @@
 	<groupId>org.cytoscape.archetypes</groupId>
 	<artifactId>task-plugin</artifactId>
 	<packaging>maven-archetype</packaging>
-	<name>Archetype - Cytoscape Task Plugin</name>
+	<name>Cytoscape 3 Archetype - Cytoscape Task Plugin</name>
 
 	<build>
 		<plugins>

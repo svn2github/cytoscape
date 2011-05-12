@@ -12,7 +12,7 @@
 	<groupId>org.cytoscape.archetypes</groupId>
 	<artifactId>api-provider-plugin</artifactId>
 	<packaging>maven-archetype</packaging>
-	<name>Archetype - API Provider Plugin</name>
+	<name>Cytoscape 3 Archetype - API Provider Plugin</name>
 
 	<build>
 		<plugins>
