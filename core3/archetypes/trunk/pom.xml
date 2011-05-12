@@ -23,7 +23,6 @@
 	<modules>
 		<module>api-provider-plugin</module>
 		<module>task-plugin</module>
-		<module>bundle-plugin</module>
 	</modules>
 
 	<scm>
