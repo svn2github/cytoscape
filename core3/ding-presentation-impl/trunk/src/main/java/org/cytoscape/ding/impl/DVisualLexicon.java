@@ -416,20 +416,6 @@ public class DVisualLexicon extends RichVisualLexicon {
 
 	private void createLookupMap() {
 		// XGMML:
-		addIdentifierMapping(CyNode.class, "type", NODE_SHAPE);
-		addIdentifierMapping(CyNode.class, "outline", NODE_BORDER_PAINT);
-		addIdentifierMapping(CyNode.class, "width", NODE_BORDER_WIDTH);
-		addIdentifierMapping(CyNode.class, "borderLineType",
-				NODE_BORDER_LINE_TYPE);
-		addIdentifierMapping(CyNode.class, "nodeLabelFont",
-				NODE_LABEL_FONT_FACE);
-		addIdentifierMapping(CyNode.class, "nodeTransparency",
-				NODE_TRANSPARENCY);
-
-		addIdentifierMapping(CyEdge.class, "fill", EDGE_STROKE_UNSELECTED_PAINT);
-		addIdentifierMapping(CyEdge.class, "edgeLineType", EDGE_LINE_TYPE);
-		addIdentifierMapping(CyEdge.class, "edgeLabelFont",
-				EDGE_LABEL_FONT_FACE);
 		addIdentifierMapping(CyEdge.class, "sourceArrow",
 				EDGE_SOURCE_ARROW_SHAPE);
 		addIdentifierMapping(CyEdge.class, "targetArrow",
@@ -440,23 +426,11 @@ public class DVisualLexicon extends RichVisualLexicon {
 				EDGE_TARGET_ARROW_UNSELECTED_PAINT);
 
 		// 2.x VizMap Properties:
-		addIdentifierMapping(CyNode.class, "nodeOpacity", NODE_TRANSPARENCY);
-		addIdentifierMapping(CyNode.class, "nodeBorderColor", NODE_BORDER_PAINT);
-		addIdentifierMapping(CyNode.class, "nodeLineWidth", NODE_BORDER_WIDTH);
-		addIdentifierMapping(CyNode.class, "nodeLineStyle",
-				NODE_BORDER_LINE_TYPE);
-		addIdentifierMapping(CyNode.class, "nodeShape", NODE_SHAPE);
-		addIdentifierMapping(CyNode.class, "nodeFont", NODE_LABEL_FONT_FACE);
-		addIdentifierMapping(CyNode.class, "nodeFontSize", NODE_LABEL_FONT_SIZE);
-		addIdentifierMapping(CyNode.class, "nodeToolTip", NODE_TOOLTIP);
 		// TODO: missing node properties
 		// addIdentifierMapping(CyNode.class,"nodeLabelOpacity",NODE_LABEL_TRANSPARENCY);
 		// addIdentifierMapping(CyNode.class,"nodeBorderOpacity",NODE_BORDER_TRANSPARENCY);
 		// addIdentifierMapping(CyNode.class,"nodeLabelWidth",NODE_LABEL_WIDTH);
 
-		addIdentifierMapping(CyEdge.class, "edgeColor",
-				EDGE_STROKE_UNSELECTED_PAINT);
-		addIdentifierMapping(CyEdge.class, "edgeLineStyle", EDGE_LINE_TYPE);
 		addIdentifierMapping(CyEdge.class, "edgeSourceArrowShape",
 				EDGE_SOURCE_ARROW_SHAPE);
 		addIdentifierMapping(CyEdge.class, "edgeSourceArrowColor",
@@ -465,9 +439,6 @@ public class DVisualLexicon extends RichVisualLexicon {
 				EDGE_TARGET_ARROW_SHAPE);
 		addIdentifierMapping(CyEdge.class, "edgeTargetArrowColor",
 				EDGE_TARGET_ARROW_UNSELECTED_PAINT);
-		addIdentifierMapping(CyEdge.class, "edgeToolTip", EDGE_TOOLTIP);
-		addIdentifierMapping(CyEdge.class, "edgeFont", EDGE_LABEL_FONT_FACE);
-		addIdentifierMapping(CyEdge.class, "edgeFontSize", EDGE_LABEL_FONT_SIZE);
 		// TODO: missing edge properties
 		// addIdentifierMapping(CyEdge.class,"edgeLabelOpacity",EDGE_LABEL_TRANSPARENCY);
 		// addIdentifierMapping(CyEdge.class,"edgeLabelWidth",EDGE_LABEL_WIDTH);
