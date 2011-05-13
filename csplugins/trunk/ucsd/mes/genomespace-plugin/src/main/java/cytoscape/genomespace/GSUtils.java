@@ -2,8 +2,8 @@ package cytoscape.genomespace;
 
 
 import cytoscape.Cytoscape;
-import cytoscape.genomespace.ui.UserNamePasswordDialog;
 
+import java.awt.Dialog;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -11,9 +11,10 @@ import java.util.Collection;
 import javax.swing.JOptionPane;
 
 import org.genomespace.client.GsSession;
+import org.genomespace.client.User;
 import org.genomespace.client.exceptions.AuthorizationException;
 import org.genomespace.client.exceptions.GSClientException;
-import org.genomespace.client.User;
+import org.genomespace.client.ui.GSLoginDialog;
 
 import org.genomespace.datamanager.core.GSFileMetadata;
 
@@ -38,10 +39,11 @@ final class GSUtils {
 
 	public static boolean loginToGenomeSpace() {
 		for (;;) {
-			final UserNamePasswordDialog userNamePasswordDialog = new UserNamePasswordDialog();
-			userNamePasswordDialog.setVisible(true);
-			final String userName = userNamePasswordDialog.getUserName();
-			final String password = userNamePasswordDialog.getPassword();
+			final GSLoginDialog loginDialog =
+				new GSLoginDialog(null, Dialog.ModalityType.APPLICATION_MODAL);
+			loginDialog.setVisible(true);
+			final String userName = loginDialog.getUsername();
+			final String password = loginDialog.getPassword();
 			if (userName == null || userName.isEmpty() || password == null || password.isEmpty()) {
 				System.out.println("no login info");
 				return false;

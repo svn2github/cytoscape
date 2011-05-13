@@ -6,7 +6,6 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.GMLReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.readers.XGMMLReader;
-import cytoscape.genomespace.filechoosersupport.GenomeSpaceFileSystemView;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
