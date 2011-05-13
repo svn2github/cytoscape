@@ -12,6 +12,7 @@ import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTable.Mutability;
 import org.cytoscape.work.TaskMonitor;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -74,6 +75,20 @@ public class CSVCyWriter implements CyWriter {
 			}
 		}
 		writer.writeNext(values);
+		values = new String[2];
+		values[0] = table.getTitle();
+		
+		StringBuilder builder = new StringBuilder();
+		if (table.isPublic()) {
+			builder.append("public");
+		}
+		if (table.getMutability() == Mutability.MUTABLE) {
+			if (builder.length() > 0) {
+				builder.append(",");
+			}
+			builder.append("mutable");
+		}
+		values[1] = builder.toString();
 	}
 
 	private void writeValues(CSVWriter writer, Collection<CyColumn> columns) {
