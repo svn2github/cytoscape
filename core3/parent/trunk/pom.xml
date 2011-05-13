@@ -4,7 +4,7 @@
 	<groupId>org.cytoscape</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>3.0.0-alpha7-SNAPSHOT</version>
+	<version>3.0.0-alpha6-SNAPSHOT</version>
 	<name>Basic Cytoscape POM Configuration</name>
 
 
