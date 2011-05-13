@@ -21,6 +21,7 @@ public class CSVCyWriter implements CyWriter {
 	private final OutputStream outputStream;
 	private final CyTable table;
 	private final boolean writeSchema;
+	private boolean isCanceled;
 
 	public CSVCyWriter(OutputStream outputStream, CyTable table, boolean writeSchema) {
 		this.outputStream = outputStream;
@@ -30,6 +31,7 @@ public class CSVCyWriter implements CyWriter {
 
 	@Override
 	public void cancel() {
+		isCanceled = true;
 	}
 
 	@Override
@@ -76,6 +78,9 @@ public class CSVCyWriter implements CyWriter {
 
 	private void writeValues(CSVWriter writer, Collection<CyColumn> columns) {
 		for (CyRow row : table.getAllRows()) {
+			if (isCanceled) {
+				return;
+			}
 			String[] values = new String[columns.size()];
 			int index = 0;
 			for (CyColumn column : columns) {
