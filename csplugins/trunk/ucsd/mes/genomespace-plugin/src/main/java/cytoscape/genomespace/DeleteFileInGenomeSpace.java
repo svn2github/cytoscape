@@ -1,10 +1,12 @@
 package cytoscape.genomespace;
 
+
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 import cytoscape.logger.CyLogger;
 import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import java.io.File;
@@ -18,6 +20,7 @@ import org.genomespace.client.GsSession;
 import org.genomespace.client.DataManagerClient;
 import org.genomespace.client.User;
 
+
 /**
  * A simple action.  Change the names as appropriate and
  * then fill in your expected behavior in the actionPerformed()
@@ -30,7 +33,8 @@ public class DeleteFileInGenomeSpace extends CytoscapeAction {
 
 	public DeleteFileInGenomeSpace() {
 		// Give your action a name here
-		super("Delete File in GenomeSpace");
+		super("Delete File in GenomeSpace",
+		      new ImageIcon(DeleteFileInGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
