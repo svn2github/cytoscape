@@ -45,7 +45,7 @@ public class SaveNetworkToGenomeSpace extends CytoscapeAction {
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
 		// is appropriate!
-		setPreferredMenu("Plugins.GenomeSpace");
+		setPreferredMenu("File.Export.GenomeSpace");
 	}
 
 	public void actionPerformed(ActionEvent e) {

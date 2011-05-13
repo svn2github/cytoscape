@@ -42,13 +42,13 @@ public class ListFilesInGenomeSpace extends CytoscapeAction {
 
 	public ListFilesInGenomeSpace() {
 		// Give your action a name here
-		super("List Available Files",
+		super("List Available Files in GenomeSpace",
 		      new ImageIcon(ListFilesInGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
 		// is appropriate!
-		setPreferredMenu("Plugins.GenomeSpace");
+		setPreferredMenu("File.GenomeSpace");
 	}
 
 	public void actionPerformed(ActionEvent e) {

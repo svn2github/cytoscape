@@ -40,7 +40,7 @@ public class DownloadFileFromGenomeSpace extends CytoscapeAction {
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
 		// is appropriate!
-		setPreferredMenu("Plugins.GenomeSpace");
+		setPreferredMenu("File.Import.GenomeSpace");
 	}
 
 	public void actionPerformed(ActionEvent e) {

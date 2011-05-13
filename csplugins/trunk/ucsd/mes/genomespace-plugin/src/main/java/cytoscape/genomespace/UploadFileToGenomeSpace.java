@@ -32,13 +32,13 @@ public class UploadFileToGenomeSpace extends CytoscapeAction {
 
 	public UploadFileToGenomeSpace() {
 		// Give your action a name here
-		super("Upload File to GenomeSpace",
+		super("Upload File",
 		      new ImageIcon(UploadFileToGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
 		// is appropriate!
-		setPreferredMenu("Plugins.GenomeSpace");
+		setPreferredMenu("File.Export.GenomeSpace");
 	}
 
 	public void actionPerformed(ActionEvent e) {
