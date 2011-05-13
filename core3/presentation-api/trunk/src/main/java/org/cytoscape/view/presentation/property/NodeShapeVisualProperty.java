@@ -3,12 +3,9 @@ package org.cytoscape.view.presentation.property;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRange;
-import org.cytoscape.view.model.DiscreteRange;
-import org.cytoscape.view.presentation.property.values.LineType;
 import org.cytoscape.view.presentation.property.values.NodeShape;
 
 public final class NodeShapeVisualProperty extends
@@ -46,6 +43,16 @@ public final class NodeShapeVisualProperty extends
 		DEFAULT_SHAPES.put(ELLIPSE.getSerializableString().toUpperCase(), ELLIPSE);
 		DEFAULT_SHAPES.put(HEXAGON.getSerializableString().toUpperCase(), HEXAGON);
 		DEFAULT_SHAPES.put(OCTAGON.getSerializableString().toUpperCase(), OCTAGON);
+		// Keys of older versions of Cytoscape:
+		DEFAULT_SHAPES.put("RECT", RECTANGLE);
+		DEFAULT_SHAPES.put("ROUNDRECT", ROUND_RECTANGLE);
+		DEFAULT_SHAPES.put("ROUND_RECT", ROUND_RECTANGLE);
+		// Regular XGMML keys:
+		DEFAULT_SHAPES.put("BOX", RECTANGLE);
+		DEFAULT_SHAPES.put("CIRCLE", ELLIPSE);
+		DEFAULT_SHAPES.put("VER_ELLIPSIS", ELLIPSE);
+		DEFAULT_SHAPES.put("HOR_ELLIPSIS", ELLIPSE);
+		DEFAULT_SHAPES.put("RHOMBUS", PARALLELOGRAM);
 
 		NODE_SHAPE_RANGE = new DiscreteRange<NodeShape>(NodeShape.class, new HashSet<NodeShape>(DEFAULT_SHAPES.values()));
 	}
