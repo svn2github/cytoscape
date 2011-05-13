@@ -1,11 +1,14 @@
 package org.cytoscape.view.presentation.property;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.DiscreteRange;
+import org.cytoscape.view.presentation.property.values.LineType;
 import org.cytoscape.view.presentation.property.values.NodeShape;
 
 public final class NodeShapeVisualProperty extends
@@ -31,21 +34,20 @@ public final class NodeShapeVisualProperty extends
 
 	private static final DiscreteRange<NodeShape> NODE_SHAPE_RANGE;
 
-	private static final Set<NodeShape> DEFAULT_SHAPES;
+	private static final Map<String, NodeShape> DEFAULT_SHAPES;
 
 	static {
-		DEFAULT_SHAPES = new HashSet<NodeShape>();
-		DEFAULT_SHAPES.add(RECTANGLE);
-		DEFAULT_SHAPES.add(ROUND_RECTANGLE);
-		DEFAULT_SHAPES.add(TRIANGLE);
-		DEFAULT_SHAPES.add(PARALLELOGRAM);
-		DEFAULT_SHAPES.add(DIAMOND);
-		DEFAULT_SHAPES.add(ELLIPSE);
-		DEFAULT_SHAPES.add(HEXAGON);
-		DEFAULT_SHAPES.add(OCTAGON);
+		DEFAULT_SHAPES = new HashMap<String, NodeShape>();
+		DEFAULT_SHAPES.put(RECTANGLE.getSerializableString().toUpperCase(), RECTANGLE);
+		DEFAULT_SHAPES.put(ROUND_RECTANGLE.getSerializableString().toUpperCase(), ROUND_RECTANGLE);
+		DEFAULT_SHAPES.put(TRIANGLE.getSerializableString().toUpperCase(), TRIANGLE);
+		DEFAULT_SHAPES.put(PARALLELOGRAM.getSerializableString().toUpperCase(), PARALLELOGRAM);
+		DEFAULT_SHAPES.put(DIAMOND.getSerializableString().toUpperCase(), DIAMOND);
+		DEFAULT_SHAPES.put(ELLIPSE.getSerializableString().toUpperCase(), ELLIPSE);
+		DEFAULT_SHAPES.put(HEXAGON.getSerializableString().toUpperCase(), HEXAGON);
+		DEFAULT_SHAPES.put(OCTAGON.getSerializableString().toUpperCase(), OCTAGON);
 
-		NODE_SHAPE_RANGE = new DiscreteRange<NodeShape>(NodeShape.class,
-				new HashSet<NodeShape>(DEFAULT_SHAPES));
+		NODE_SHAPE_RANGE = new DiscreteRange<NodeShape>(NodeShape.class, new HashSet<NodeShape>(DEFAULT_SHAPES.values()));
 	}
 
 	public NodeShapeVisualProperty(NodeShape defaultValue, String id,
@@ -61,15 +63,16 @@ public final class NodeShapeVisualProperty extends
 
 	@Override
 	public NodeShape parseSerializableString(String value) {
-		// TODO
-		return null;
+		NodeShape shape = null;
+		
+		if (value != null)
+			shape = DEFAULT_SHAPES.get(value.toUpperCase());
+		
+		return shape;
 	}
 
 	public static boolean isDefaultShape(final NodeShape shape) {
-		if (DEFAULT_SHAPES.contains(shape))
-			return true;
-		else
-			return false;
+		return DEFAULT_SHAPES.containsValue(shape);
 	}
 
 	private static final class NodeShapeImpl extends

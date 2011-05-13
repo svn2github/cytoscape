@@ -1,10 +1,10 @@
 package org.cytoscape.view.presentation.property;
 
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.presentation.property.values.LineType;
 
@@ -19,18 +19,18 @@ public class LineTypeVisualProperty extends AbstractVisualProperty<LineType> {
 
 	
 	private static DiscreteRange<LineType> LINE_TYPE_RANGE;
-	private static final Set<LineType> lineTypes;
+	private static final Map<String, LineType> lineTypes;
 	
 	static {
-		lineTypes = new HashSet<LineType>();
+		lineTypes = new HashMap<String, LineType>();
 		
-		lineTypes.add(SOLID);
-		lineTypes.add(LONG_DASH);
-		lineTypes.add(EQUAL_DASH);
-		lineTypes.add(DASH_DOT);
-		lineTypes.add(DOT);
+		lineTypes.put(SOLID.getSerializableString().toUpperCase(), SOLID);
+		lineTypes.put(LONG_DASH.getSerializableString().toUpperCase(), LONG_DASH);
+		lineTypes.put(EQUAL_DASH.getSerializableString().toUpperCase(), EQUAL_DASH);
+		lineTypes.put(DASH_DOT.getSerializableString().toUpperCase(), DASH_DOT);
+		lineTypes.put(DOT.getSerializableString().toUpperCase(), DOT);
 		
-		LINE_TYPE_RANGE = new DiscreteRange<LineType>(LineType.class, new HashSet<LineType>(lineTypes));
+		LINE_TYPE_RANGE = new DiscreteRange<LineType>(LineType.class, new HashSet<LineType>(lineTypes.values()));
 	}
 
 	public LineTypeVisualProperty(LineType defaultValue,
@@ -40,14 +40,21 @@ public class LineTypeVisualProperty extends AbstractVisualProperty<LineType> {
 
 	@Override
 	public String toSerializableString(LineType value) {
-		// TODO Auto-generated method stub
-		return null;
+		return value.getSerializableString();
 	}
 
 	@Override
 	public LineType parseSerializableString(String value) {
-		// TODO Auto-generated method stub
-		return null;
+		LineType lineType = null;
+		
+		if (value != null) {
+			value = value.toUpperCase();
+			lineType = lineTypes.get(value);
+		}
+		
+		if (lineType == null) lineType = SOLID;
+		
+		return lineType;
 	}
 	
 	private static final class LineTypeImpl extends AbstractVisualPropertyValue implements LineType {
