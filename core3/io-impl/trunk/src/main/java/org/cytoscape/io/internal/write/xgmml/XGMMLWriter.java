@@ -484,7 +484,14 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
             Object value = view.getVisualProperty(vp);
 
             if (key != null && value != null) {
-                value = vp.toSerializableString(value);
+                if (key.toLowerCase().contains("transparency") && value instanceof Integer) {
+                    // Cytoscape's XGMML specifies transparency as between 0-1.0 when it is a <graphics> attribute!
+                    float transparency  = ((Integer) value).floatValue();
+                    value = transparency / 255;
+                } else {
+                    value = vp.toSerializableString(value);
+                }
+                
                 if (value != null) writeAttributePair(key, value);
             }
         }
