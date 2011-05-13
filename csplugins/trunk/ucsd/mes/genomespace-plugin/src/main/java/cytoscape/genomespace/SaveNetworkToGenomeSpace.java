@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import org.genomespace.client.ui.GSFileBrowserDialog;
@@ -38,7 +39,8 @@ public class SaveNetworkToGenomeSpace extends CytoscapeAction {
 
 	public SaveNetworkToGenomeSpace() {
 		// Give your action a name here
-		super("Save Network As");
+		super("Save Network As",
+		      new ImageIcon(SaveNetworkToGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
@@ -53,7 +55,6 @@ public class SaveNetworkToGenomeSpace extends CytoscapeAction {
 			if (networkType == null)
 				return;
 			networkType = networkType.toLowerCase();
-System.err.println("++++++++++++++++++ networkType="+networkType);
 			final GsSession client = GSUtils.getSession();
 			final DataManagerClient dataManagerClient = client.getDataManagerClient();
 

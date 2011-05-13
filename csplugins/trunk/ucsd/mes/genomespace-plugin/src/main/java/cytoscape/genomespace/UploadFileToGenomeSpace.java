@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import org.genomespace.datamanager.core.GSFileMetadata;
@@ -31,7 +32,8 @@ public class UploadFileToGenomeSpace extends CytoscapeAction {
 
 	public UploadFileToGenomeSpace() {
 		// Give your action a name here
-		super("Upload File");
+		super("Upload File to GenomeSpace",
+		      new ImageIcon(UploadFileToGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever

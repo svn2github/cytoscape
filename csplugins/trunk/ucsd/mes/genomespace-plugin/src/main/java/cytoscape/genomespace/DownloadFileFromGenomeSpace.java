@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
 import java.util.Map;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -33,7 +34,8 @@ public class DownloadFileFromGenomeSpace extends CytoscapeAction {
 
 	public DownloadFileFromGenomeSpace() {
 		// Give your action a name here
-		super("Download File");
+		super("Download File",
+		      new ImageIcon(DownloadFileFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever

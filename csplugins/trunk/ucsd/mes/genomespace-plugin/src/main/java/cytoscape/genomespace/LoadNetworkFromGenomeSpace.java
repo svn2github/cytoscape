@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import org.genomespace.client.ui.GSFileBrowserDialog;
@@ -29,7 +30,8 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 	private static final CyLogger logger = CyLogger.getLogger(LoadNetworkFromGenomeSpace.class);
 
 	public LoadNetworkFromGenomeSpace() {
-		super("Load Network");
+		super("Load Network",
+		      new ImageIcon(LoadNetworkFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever

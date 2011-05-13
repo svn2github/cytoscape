@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import org.genomespace.client.ui.GSFileBrowserDialog;
@@ -38,7 +39,8 @@ public class SaveSessionToGenomeSpace extends CytoscapeAction {
 
 	public SaveSessionToGenomeSpace() {
 		// Give your action a name here
-		super("Save Session As");
+		super("Save Session As",
+		      new ImageIcon(SaveSessionToGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
