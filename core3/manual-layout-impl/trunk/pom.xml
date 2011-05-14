@@ -9,7 +9,7 @@
   <artifactId>manual-layout-impl</artifactId>
   <packaging>bundle</packaging>
   <name>Manual Layout</name>
-  <version>3.0.0-alpha2-SNAPSHOT</version>
+  <version>3.0.0-alpha2</version>
 
   <properties>
     <bundle.symbolicName>org.cytoscape.manual-layout-impl</bundle.symbolicName>
@@ -17,9 +17,9 @@
   </properties>
 
   <scm>
-    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/manual-layout-impl/trunk</connection>
-    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/manual-layout-impl/trunk</developerConnection>
-    <url>http://chianti.ucsd.edu/svn/core3/manual-layout-impl/trunk</url>
+    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/manual-layout-impl/tags/manual-layout-impl-3.0.0-alpha2</connection>
+    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/manual-layout-impl/tags/manual-layout-impl-3.0.0-alpha2</developerConnection>
+    <url>http://chianti.ucsd.edu/svn/core3/manual-layout-impl/tags/manual-layout-impl-3.0.0-alpha2</url>
   </scm>
 
   <build>
@@ -56,12 +56,12 @@
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>model-api</artifactId>
-      <version>3.0.0-alpha3-SNAPSHOT</version>
+      <version>3.0.0-alpha3</version>
     </dependency>
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>viewmodel-api</artifactId>
-      <version>3.0.0-alpha4-SNAPSHOT</version>
+      <version>3.0.0-alpha4</version>
     </dependency>
     <dependency>
       <groupId>org.cytoscape</groupId>
