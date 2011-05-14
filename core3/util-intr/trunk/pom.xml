@@ -15,7 +15,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
   <artifactId>util-intr</artifactId>
-  <version>3.0.0-alpha2-SNAPSHOT</version>
+  <version>3.0.0-alpha2</version>
 
   <name>${bundle.symbolicName}</name>
 
@@ -104,9 +104,9 @@
   </build>
 
     <scm>
-        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/util-intr/trunk</connection>
-        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/util-intr/trunk</developerConnection>
-        <url>http://chianti.ucsd.edu/svn/core3/util-intr/trunk</url>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/util-intr/tags/util-intr-3.0.0-alpha2</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/util-intr/tags/util-intr-3.0.0-alpha2</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/util-intr/tags/util-intr-3.0.0-alpha2</url>
     </scm>
 
 </project>
