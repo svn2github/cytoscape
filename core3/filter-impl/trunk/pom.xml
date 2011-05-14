@@ -12,15 +12,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>filter-impl</artifactId>
-	<version>3.0.0-alpha2-SNAPSHOT</version>
+	<version>3.0.0-alpha2</version>
 	<name>${bundle.symbolicName}
 		[${bundle.namespace}]</name>
 	<packaging>bundle</packaging>
 
     <scm>
-        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/filter-impl/trunk</connection>
-        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/filter-impl/trunk</developerConnection>
-        <url>http://chianti.ucsd.edu/svn/core3/filter-impl/trunk</url>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/filter-impl/tags/filter-impl-3.0.0-alpha2</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/filter-impl/tags/filter-impl-3.0.0-alpha2</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/filter-impl/tags/filter-impl-3.0.0-alpha2</url>
     </scm>
 
 	<dependencies>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>model-api</artifactId>
-            <version>3.0.0-alpha3-SNAPSHOT</version>
+            <version>3.0.0-alpha3</version>
         </dependency>
 
 		<dependency>
@@ -54,13 +54,13 @@
         <dependency>
         	<groupId>org.cytoscape</groupId>
         	<artifactId>session-api</artifactId>
-        	<version>3.0.0-alpha3-SNAPSHOT</version>
+        	<version>3.0.0-alpha3</version>
         	<scope>compile</scope>
         </dependency>
         <dependency>
         	<groupId>org.cytoscape</groupId>
         	<artifactId>viewmodel-api</artifactId>
-        	<version>3.0.0-alpha4-SNAPSHOT</version>
+        	<version>3.0.0-alpha4</version>
         	<scope>compile</scope>
         </dependency>
         <dependency>
@@ -88,7 +88,7 @@
         <dependency>
         	<groupId>org.cytoscape</groupId>
         	<artifactId>swing-application-api</artifactId>
-        	<version>3.0.0-alpha2-SNAPSHOT</version>
+        	<version>3.0.0-alpha2</version>
         </dependency>
         <dependency>
 			<groupId>org.cytoscape</groupId>
