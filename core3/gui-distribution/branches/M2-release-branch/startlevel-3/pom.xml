@@ -225,17 +225,17 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>ding-presentation-impl</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-impl</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-impl</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -255,7 +255,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>io-impl</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -265,7 +265,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-impl</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -295,7 +295,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>equations-impl</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -488,7 +488,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>table-import-impl</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 
 		<!-- Web service clients -->
