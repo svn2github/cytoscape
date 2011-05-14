@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<!-- 
+	This simply constructs an object (or bean) called "sampleTaskFactory"
+	of type org.example.internal.SampleTaskFactory.  The name "sampleTaskFactory"
+	is used to identify this particular object in this and the 
+	bundle-context-osgi.xml file.
+	-->
+			
+	<bean id="attrsTableFilter_txt" class="org.cytoscape.io.BasicCyFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>csv</value>
+				<value>tsv</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>text/plain</value>
+				<value>text/tab-separated-values</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Any text file" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="TABLE" />
+		<constructor-arg ref="streamUtilService" />
+	</bean>			
+
+	<bean id="attrsTableFilter_xls" class="org.cytoscape.io.BasicCyFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>xls</value>
+				<value>xlsx</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>application/excel</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Any text file" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="TABLE" />
+		<constructor-arg ref="streamUtilService" />
+	</bean>			
+
+ 
+ 
+	<bean id="importAttributeTableReaderFactory_txt" 
+			class="org.cytoscape.tableimport.internal.ImportAttributeTableReaderFactory">
+		<constructor-arg ref="attrsTableFilter_txt" />
+		<constructor-arg ref="cytoscapeDesktopService" /> 
+		<constructor-arg ref="cyApplicationManagerRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="bookmarkServiceRef" />		
+		<constructor-arg ref="bookmarksUtilServiceRef" />	
+		<constructor-arg ref="guiTaskManagerServiceRef" />
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="fileUtilService" />
+		<constructor-arg ref="openBrowserService" />
+		<constructor-arg ref="cyDataTableFactoryServiceRef" />
+		<constructor-arg value=".txt" />
+	</bean>
+
+ 
+	<bean id="importAttributeTableReaderFactory_xls" 
+			class="org.cytoscape.tableimport.internal.ImportAttributeTableReaderFactory">
+		<constructor-arg ref="attrsTableFilter_xls" />
+		<constructor-arg ref="cytoscapeDesktopService" /> 
+		<constructor-arg ref="cyApplicationManagerRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="bookmarkServiceRef" />		
+		<constructor-arg ref="bookmarksUtilServiceRef" />	
+		<constructor-arg ref="guiTaskManagerServiceRef" />
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="fileUtilService" />
+		<constructor-arg ref="openBrowserService" />
+		<constructor-arg ref="cyDataTableFactoryServiceRef" />
+		<constructor-arg value=".xls" />
+	</bean>
+</beans>
