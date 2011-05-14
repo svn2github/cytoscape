@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.cytoscape</groupId>
 		<artifactId>parent</artifactId>
-		<version>3.0.0-alpha6-SNAPSHOT</version>
+		<version>3.0.0-alpha7</version>
 	</parent>
 
 	<properties>
@@ -105,7 +105,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -132,24 +132,6 @@
 			<artifactId>com.springsource.com.lowagie.text</artifactId>
 			<version>2.0.8</version>
 		</dependency>
-		<!-- <dependency> <groupId>org.freehep</groupId> <artifactId>freehep-graphicsio-pdf</artifactId> 
-			<version>2.0</version> </dependency> <dependency> <groupId>org.freehep</groupId> 
-			<artifactId>freehep-graphicsio-ps</artifactId> <version>2.0</version> </dependency> 
-			<dependency> <groupId>org.freehep</groupId> <artifactId>freehep-graphicsio-svg</artifactId> 
-			<version>2.0</version> </dependency> <dependency> <groupId>org.freehep</groupId> 
-			<artifactId>freehep-graphicsio-swf</artifactId> <version>2.0</version> </dependency> 
-			<dependency> <groupId>org.freehep</groupId> <artifactId>freehep-io</artifactId> 
-			<version>2.0.1</version> </dependency> <dependency> <groupId>org.freehep</groupId> 
-			<artifactId>freehep-swing</artifactId> <version>2.0.2</version> </dependency> 
-			<dependency> <groupId>org.freehep</groupId> <artifactId>freehep-export</artifactId> 
-			<version>2.0.3</version> </dependency> <dependency> <groupId>org.freehep</groupId> 
-			<artifactId>freehep-graphics2d</artifactId> <version>2.0</version> </dependency> 
-			<dependency> <groupId>org.freehep</groupId> <artifactId>freehep-graphicsio</artifactId> 
-			<version>2.0</version> </dependency> <dependency> <groupId>org.freehep</groupId> 
-			<artifactId>freehep-graphicsio-emf</artifactId> <version>2.0</version> </dependency> 
-			<dependency> <groupId>org.freehep</groupId> <artifactId>freehep-util</artifactId> 
-			<version>2.0.1</version> </dependency> <dependency> <groupId>org.freehep</groupId> 
-			<artifactId>freehep-xml</artifactId> <version>2.0.1</version> </dependency> -->
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
