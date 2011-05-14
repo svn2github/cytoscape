@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>model-impl-parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-alpha3-SNAPSHOT</version>
+		<version>3.0.0-alpha3</version>
 	</parent>
 
 	<properties>
@@ -65,7 +65,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>integration-test-support</artifactId>
-			<version>3.0.0-alpha4-SNAPSHOT</version>
+			<version>3.0.0-alpha4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -92,7 +92,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-impl</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
