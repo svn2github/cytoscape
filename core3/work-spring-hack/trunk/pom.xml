@@ -15,16 +15,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>work-spring-hack</artifactId>
-	<version>3.0.0-alpha2</version>
+	<version>3.0.0-alpha3-SNAPSHOT</version>
 
 	<name>${bundle.symbolicName}</name>
 
 	<packaging>bundle</packaging>
 
 	<scm>
-		<connection>scm:svn:http://chianti.ucsd.edu/svn/core3/work-spring-hack/tags/work-spring-hack-3.0.0-alpha2</connection>
-		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/work-spring-hack/tags/work-spring-hack-3.0.0-alpha2</developerConnection>
-		<url>http://chianti.ucsd.edu/svn/core3/work-spring-hack/tags/work-spring-hack-3.0.0-alpha2</url>
+		<connection>scm:svn:http://chianti.ucsd.edu/svn/core3/work-spring-hack/trunk</connection>
+		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/work-spring-hack/trunk</developerConnection>
+		<url>http://chianti.ucsd.edu/svn/core3/work-spring-hack/trunk</url>
 	</scm>
 
 	<repositories>
@@ -106,7 +106,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-api</artifactId>
-			<version>3.0.0-alpha3</version>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
