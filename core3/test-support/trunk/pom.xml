@@ -10,13 +10,13 @@
 	<groupId>org.cytoscape</groupId>
 	<artifactId>test-support</artifactId>
 	<packaging>jar</packaging>
-	<version>3.0.0-alpha2-SNAPSHOT</version>
+	<version>3.0.0-alpha2</version>
 	<name>test-support</name>
 
 	<scm>
-          <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/test-support/trunk</connection>
-          <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/test-support/trunk</developerConnection>
-          <url>http://chianti.ucsd.edu/svn/core3/test-support/trunk</url>
+          <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/test-support/tags/test-support-3.0.0-alpha2</connection>
+          <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/test-support/tags/test-support-3.0.0-alpha2</developerConnection>
+          <url>http://chianti.ucsd.edu/svn/core3/test-support/tags/test-support-3.0.0-alpha2</url>
 	</scm>
 
 	<repositories>
@@ -80,7 +80,7 @@
 	  <dependency>
 	    <groupId>org.cytoscape</groupId>
 	    <artifactId>viewmodel-api</artifactId>
-	    <version>3.0.0-alpha4-SNAPSHOT</version>
+	    <version>3.0.0-alpha4</version>
 	  </dependency>
 	  <dependency>
 	    <groupId>org.cytoscape</groupId>
@@ -90,18 +90,18 @@
 	  <dependency>
 	    <groupId>org.cytoscape</groupId>
 	    <artifactId>property-api</artifactId>
-	    <version>3.0.0-alpha4-SNAPSHOT</version>
+	    <version>3.0.0-alpha4</version>
 	  </dependency>
 	  <!-- implementations of the APIs - these can change as things evolve -->
 	  <dependency>
 	    <groupId>org.cytoscape</groupId>
 	    <artifactId>model-impl</artifactId>
-	    <version>3.0.0-alpha3-SNAPSHOT</version>
+	    <version>3.0.0-alpha3</version>
 	  </dependency>
 	  <dependency>
 	    <groupId>org.cytoscape</groupId>
 	    <artifactId>viewmodel-impl</artifactId>
-	    <version>3.0.0-alpha3-SNAPSHOT</version>
+	    <version>3.0.0-alpha3</version>
 	  </dependency>
 	  
 	  <dependency>
