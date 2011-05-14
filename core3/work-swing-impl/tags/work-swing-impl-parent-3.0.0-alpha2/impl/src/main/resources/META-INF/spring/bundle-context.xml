@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<!-- regular spring configuration file defining the beans for this bundle. 
+		We've kept the osgi definitions in a separate configuration file so that 
+		this file can easily be used for integration testing outside of an OSGi environment -->
+
+	<context:annotation-config />
+
+	<bean id="undoSupport" class="org.cytoscape.work.internal.UndoSupportImpl" />
+
+	<bean id="swingTaskManager" class="org.cytoscape.work.internal.task.SwingTaskManager">
+		 <constructor-arg ref="guiTunableInterceptor" />
+	</bean>
+
+	<bean id="guiTunableInterceptor"
+		class="org.cytoscape.work.internal.tunables.GUITunableInterceptorImpl">
+		<constructor-arg ref="guiHandlerFactory" />
+	</bean>
+
+	<bean id="guiHandlerFactory" class="org.cytoscape.work.internal.tunables.GUITunableHandlerFactory">
+		<constructor-arg ref="bookmarkServiceRef" />
+		<constructor-arg ref="bookmarksUtilServiceRef" />
+		<constructor-arg ref="supportedFileTypesManager" />
+	</bean>
+
+	<bean id="supportedFileTypesManager" class="org.cytoscape.work.internal.tunables.utils.SupportedFileTypesManager" />
+</beans>
