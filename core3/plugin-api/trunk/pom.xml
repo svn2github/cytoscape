@@ -15,16 +15,16 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
   <artifactId>plugin-api</artifactId>
-  <version>3.0.0-alpha3</version>
+  <version>3.0.0-alpha4-SNAPSHOT</version>
 
   <name>${bundle.symbolicName}</name>
 
   <packaging>bundle</packaging>
 
   <scm>
-    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/plugin-api/tags/plugin-api-3.0.0-alpha3</connection>
-    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/plugin-api/tags/plugin-api-3.0.0-alpha3</developerConnection>
-    <url>http://chianti.ucsd.edu/svn/core3/plugin-api/tags/plugin-api-3.0.0-alpha3</url>
+    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/plugin-api/trunk</connection>
+    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/plugin-api/trunk</developerConnection>
+    <url>http://chianti.ucsd.edu/svn/core3/plugin-api/trunk</url>
   </scm>
 
   <repositories>
@@ -150,22 +150,22 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>session-api</artifactId>
-			<version>3.0.0-alpha3</version>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-api</artifactId>
-			<version>3.0.0-alpha3</version>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-application-api</artifactId>
-			<version>3.0.0-alpha2</version>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>io-api</artifactId>
-			<version>3.0.0-alpha3</version>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -180,12 +180,12 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>layout-api</artifactId>
-			<version>3.0.0-alpha2</version>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>property-api</artifactId>
-			<version>3.0.0-alpha4</version>
+			<version>3.0.0-alpha5-SNAPSHOT</version>
 		</dependency>
 
 		<!-- 
