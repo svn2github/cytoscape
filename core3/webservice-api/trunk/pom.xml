@@ -15,16 +15,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>webservice-api</artifactId>
-	<version>3.0.0-alpha2-SNAPSHOT</version>
+	<version>3.0.0-alpha2</version>
 
 	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
 
 	<packaging>bundle</packaging>
 
     <scm>
-        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/webservice-api/trunk</connection>
-        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/webservice-api/trunk</developerConnection>
-        <url>http://chianti.ucsd.edu/svn/core3/webservice-api/trunk</url>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/webservice-api/tags/webservice-api-3.0.0-alpha2</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/webservice-api/tags/webservice-api-3.0.0-alpha2</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/webservice-api/tags/webservice-api-3.0.0-alpha2</url>
     </scm>
 
     <repositories>
@@ -110,12 +110,12 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>io-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
