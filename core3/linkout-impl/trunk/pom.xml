@@ -14,16 +14,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>linkout-impl</artifactId>
-	<version>3.0.0-alpha2</version>
+	<version>3.0.0-alpha3-SNAPSHOT</version>
 
 	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
 
 	<packaging>bundle</packaging>
 
     <scm>
-        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/linkout-impl/tags/linkout-impl-3.0.0-alpha2</connection>
-        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/linkout-impl/tags/linkout-impl-3.0.0-alpha2</developerConnection>
-        <url>http://chianti.ucsd.edu/svn/core3/linkout-impl/tags/linkout-impl-3.0.0-alpha2</url>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/linkout-impl/trunk</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/linkout-impl/trunk</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/linkout-impl/trunk</url>
     </scm>
 
     <repositories>
@@ -86,7 +86,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-api</artifactId>
-			<version>3.0.0-alpha3</version>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
