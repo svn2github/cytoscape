@@ -15,7 +15,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>presentation-impl</artifactId>
-	<version>3.0.0-alpha3</version>
+	<version>3.0.0-alpha4-SNAPSHOT</version>
 
 	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
 
