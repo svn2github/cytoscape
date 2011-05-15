@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>vizmap-impl-parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-alpha2-SNAPSHOT</version>
+		<version>3.0.0-alpha2</version>
 	</parent>
 
 	<properties>
@@ -70,7 +70,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>integration-test-support</artifactId>
-			<version>3.0.0-alpha4-SNAPSHOT</version>
+			<version>3.0.0-alpha4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

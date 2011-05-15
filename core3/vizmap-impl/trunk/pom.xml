@@ -9,7 +9,7 @@
 	<groupId>org.cytoscape</groupId>
 	<artifactId>vizmap-impl-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>3.0.0-alpha2-SNAPSHOT</version>
+	<version>3.0.0-alpha2</version>
 	<name>vizmap-impl-parent</name>
 
 	<modules>
@@ -18,9 +18,9 @@
 	</modules>
 
 	<scm>
-		<connection>scm:svn:http://chianti.ucsd.edu/svn/core3/vizmap-impl/trunk</connection>
-		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/vizmap-impl/trunk</developerConnection>
-		<url>http://chianti.ucsd.edu/svn/core3/vizmap-impl/trunk</url>
+		<connection>scm:svn:http://chianti.ucsd.edu/svn/core3/vizmap-impl/tags/vizmap-impl-parent-3.0.0-alpha2</connection>
+		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/vizmap-impl/tags/vizmap-impl-parent-3.0.0-alpha2</developerConnection>
+		<url>http://chianti.ucsd.edu/svn/core3/vizmap-impl/tags/vizmap-impl-parent-3.0.0-alpha2</url>
 	</scm>
 
 	<repositories>
@@ -80,7 +80,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-api</artifactId>
-			<version>3.0.0-alpha4-SNAPSHOT</version>
+			<version>3.0.0-alpha4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -92,7 +92,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -117,13 +117,13 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>presentation-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>default-mappings</artifactId>
-            <version>3.0.0-alpha3-SNAPSHOT</version>
+            <version>3.0.0-alpha3</version>
             <scope>provided</scope>
         </dependency>
 	</dependencies>
