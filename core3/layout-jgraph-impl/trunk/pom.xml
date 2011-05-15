@@ -85,7 +85,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>layout-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		<dependency>
 			<groupId>cytoscape-temp</groupId>
