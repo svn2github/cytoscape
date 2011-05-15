@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.cytoscape</groupId>
 		<artifactId>parent</artifactId>
-		<version>3.0.0-alpha6-SNAPSHOT</version>
+		<version>3.0.0-alpha7</version>
 	</parent>
 
 	<!-- These values should be used in child modules! -->
@@ -32,6 +32,32 @@
 		<url>http://chianti.ucsd.edu/svn/core3/archetypes/trunk</url>
 	</scm>
 
+	<repositories>
+		<!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
+		<repository>
+			<id>cytoscape_snapshots</id>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<name>Cytoscape Snapshots</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
+		<repository>
+			<id>cytoscape_releases</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Cytoscape Releases</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+		</repository>
+	</repositories>
 	<build>
 		<extensions>
 			<extension>
