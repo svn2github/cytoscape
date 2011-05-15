@@ -215,7 +215,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>table-browser-impl</artifactId>
-			<version>3.0.0-alpha2</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
