@@ -124,14 +124,14 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>plugin-api</artifactId>
-			<version>3.0.0-alpha4-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 
 		<!-- dependencies needed for plugin manager -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>io-api</artifactId>
-			<version>3.0.0-alpha4-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 
 		<dependency>
@@ -155,7 +155,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-application-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 
 		<dependency>
@@ -179,7 +179,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>webservice-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 
 		<dependency>
@@ -191,7 +191,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>plugin-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
