@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>sbml-impl</artifactId>
-	<version>3.0.0-alpha2-SNAPSHOT</version>
+	<version>3.0.0-alpha1</version>
 	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
 	<packaging>bundle</packaging>
     <scm>
@@ -24,12 +24,12 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>io-api</artifactId>
-			<version>3.0.0-alpha4-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
-			<version>3.0.0-alpha5-SNAPSHOT</version>
+			<version>3.0.0-alpha4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -76,7 +76,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>test-support</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -87,7 +87,32 @@
 		</dependency>
 	</dependencies>
 	
+
 	<repositories>
+		<!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
+		<repository>
+			<id>cytoscape_snapshots</id>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<name>Cytoscape Snapshots</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
+		<repository>
+			<id>cytoscape_releases</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Cytoscape Releases</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+		</repository>
 		<repository>
 			<id>cytoscape_thirdparty</id>
 			<snapshots>
