@@ -9,7 +9,7 @@
   <artifactId>manual-layout-impl</artifactId>
   <packaging>bundle</packaging>
   <name>Manual Layout</name>
-  <version>3.0.0-alpha2</version>
+  <version>3.0.0-alpha3-SNAPSHOT</version>
 
   <properties>
     <bundle.symbolicName>org.cytoscape.manual-layout-impl</bundle.symbolicName>
