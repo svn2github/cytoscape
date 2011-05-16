@@ -4,6 +4,7 @@
 	<properties>
 		<bundle.symbolicName>${groupId}.${artifactId}</bundle.symbolicName>
 		<bundle.namespace>${groupId}</bundle.namespace>
+		<junit.version>4.8.2</junit.version>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -96,12 +97,12 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-application-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>session-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 
 		<!-- Logging -->
@@ -116,13 +117,13 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>test-support</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
