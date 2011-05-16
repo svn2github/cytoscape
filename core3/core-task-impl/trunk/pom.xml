@@ -97,7 +97,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
-			<version>3.0.0-alpha5-SNAPSHOT</version>
+			<version>3.0.0-alpha4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -107,39 +107,39 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>session-api</artifactId>
-			<version>3.0.0-alpha4-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>io-api</artifactId>
-			<version>3.0.0-alpha4-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>io-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>property-api</artifactId>
-			<version>3.0.0-alpha5-SNAPSHOT</version>
+			<version>3.0.0-alpha4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>vizmap-api</artifactId>
-			<version>3.0.0-alpha4-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>default-mappings</artifactId>
-			<version>3.0.0-alpha4-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-api</artifactId>
-			<version>3.0.0-alpha4-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -149,7 +149,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>layout-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 
 		<dependency>
@@ -167,7 +167,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-api</artifactId>
-			<version>3.0.0-alpha5-SNAPSHOT</version>
+			<version>3.0.0-alpha4</version>
 		</dependency>
 	</dependencies>
 </project>
