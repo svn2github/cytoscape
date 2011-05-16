@@ -1,3 +1,4 @@
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.nio.FloatBuffer;
@@ -11,31 +12,35 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
+import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JFrame;
+import javax.swing.event.MouseInputListener;
 
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public class TestGraphics implements GLEventListener{
+public class TestGraphics implements GLEventListener, MouseInputListener{
 
-		private static final int NODE_COUNT = 100;
-		private static final int EDGE_COUNT = 200;
+		private static final int NODE_COUNT = 1000;
+		private static final int EDGE_COUNT = 1000;
 		private static final float LARGE_SPHERE_RADIUS = 2.0f;
-		private static final float SMALL_SPHERE_RADIUS = 0.03f;
-		private static final float EDGE_RADIUS = 0.01f;
+		private static final float SMALL_SPHERE_RADIUS = 0.032f;
+		private static final float EDGE_RADIUS = 0.008f;
 		
 		private static final int NODE_SLICES_DETAIL = 6;
 		private static final int NODE_STACKS_DETAIL = 3;
 		
-		private static final int EDGE_SLICES_DETAIL = 4;
+		private static final int EDGE_SLICES_DETAIL = 3;
 		private static final int EDGE_STACKS_DETAIL = 1;
 		
 		private DrawnNode[] nodes;
 		private DrawnEdge[] edges;
 		
-		private float yRotate = 0;
+		private float yRotate = 0.0f;
+		private float xRotate = 0.0f;
 		
 		private int nodeListIndex;
+		private int edgeListIndex;
 		
 		private long startTime;
 		private long endTime;
@@ -61,11 +66,17 @@ public class TestGraphics implements GLEventListener{
 		private int nodeSeed = 556;
 		private int edgeSeed = 556;
 		
+		private int canvasWidth;
+		private int canvasHeight;
+		
+		private int lastX;
+		private int lastY;
+		
         /**
          * @param args
          */
         public static void main(String[] args) {
-                JFrame frame = new JFrame("Test");
+                JFrame frame = new JFrame("JOGL Test");
                 frame.setSize(650, 650);
 
                 frame.setLocationRelativeTo(null);
@@ -78,7 +89,11 @@ public class TestGraphics implements GLEventListener{
                 GLCapabilities capab = new GLCapabilities(profile);
                 GLCanvas canvas = new GLCanvas(capab);
 
-                canvas.addGLEventListener(new TestGraphics());
+                TestGraphics graphics = new TestGraphics();
+                
+                canvas.addGLEventListener(graphics);
+                canvas.addMouseListener(graphics);
+                canvas.addMouseMotionListener(graphics);
                 frame.add(canvas);
                 
                 frame.addWindowListener(new WindowAdapter() {
@@ -94,6 +109,22 @@ public class TestGraphics implements GLEventListener{
                 FPSAnimator animator = new FPSAnimator(60);
                 animator.add(canvas);
                 animator.start();
+                
+                /*
+                double pi = Math.PI;
+
+                System.out.println("acos(-1): " + Math.acos(-1));
+                System.out.println("acos(-0.9): " + Math.acos(-0.9));
+                System.out.println("acos(-0.6): " + Math.acos(-0.6));
+                System.out.println("acos(-0.3): " + Math.acos(-0.3));
+                System.out.println("acos(0): " + Math.acos(0));
+                System.out.println("acos(0.3): " + Math.acos(0.3));
+                System.out.println("acos(0.6): " + Math.acos(0.6));
+                System.out.println("acos(0.9): " + Math.acos(0.9));
+                System.out.println("acos(1): " + Math.acos(1));
+                */
+                
+                // canvas.addMouseMotionListener(l);
         }
 
 		@Override
@@ -103,18 +134,112 @@ public class TestGraphics implements GLEventListener{
 			gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 			gl.glLoadIdentity();
 
-			gl.glColor3f(0.3f, 0.6f, 0.3f);
+			gl.glColor3f(0.6f, 0.6f, 0.6f);
 			
 			gl.glTranslatef(0.0f, 0.0f, -6.0f);
-			//gl.glRotatef(yRotate, 1.0f, -0.5f, 0.0f);
-			gl.glRotatef(yRotate, 0.0f, -1.0f, 0.0f);
+			
+			gl.glRotatef(yRotate, 1.0f, 0.0f, 0.0f);
+			gl.glRotatef(xRotate, 0.0f, 1.0f, 0.0f);
+			
+			// gl.glRotatef(xRotate, 0.0f, (float) Math.cos(yRotate * Math.PI / 180), 
+			//		(float) Math.sin(yRotate * Math.PI / 180));
+			
+			//gl.glRotatef(yRotate, (float) Math.cos(xRotate * Math.PI / 180), 
+			//		0.0f, (float) Math.sin(xRotate * Math.PI / 180));
+			
+			
+			
+			/*
+			gl.glRotatef(90 - xRotate, 0.0f, 1.0f, 0.0f);
+			gl.glColor3f(0.0f, 1.0f, 0.0f);
+			glut.glutSolidCylinder(0.005f, 3f, 6, 3);
+			gl.glRotatef(-90 + xRotate, 0.0f, 1.0f, 0.0f);
+			*/
+			
+			// gl.glRotatef(-yRotate, (float) Math.cos(xRotate * Math.PI / 180), 
+			//		0.0f, (float) Math.sin(xRotate * Math.PI / 180));
+			
+			
+			/*
+			float xRotateResult, yRotateResult, zRotateResult;
+			
+			float yRotateRadians = (float) Math.toRadians(yRotate);
+			float xRotateRadians = (float) Math.toRadians(xRotate);
+			
+			xRotateResult = (float) (Math.sin(yRotateRadians) * Math.cos(xRotateRadians));
+			yRotateResult = (float) (Math.sin(xRotateRadians));
+			zRotateResult = (float) (Math.cos(yRotateRadians) * Math.cos(xRotateRadians));
+			
+			float rotateAxisX, rotateAxisY, rotateAxisZ;
+			
+			// Cross product: (xRotateResult, yRotateResult, zRotateResult) x (0, 0, 1)
+			rotateAxisX = yRotateResult;
+			rotateAxisY = -1 * xRotateResult;
+			rotateAxisZ = 0;
+			
+			// Use dot product between vectors (xRotateResult, yRotateResult, zRotateResult) and (0, 0, 1)
+			float rotateAngle = (float) Math.toDegrees(Math.acos(zRotateResult));
+			
+			gl.glRotatef(rotateAngle, rotateAxisX, rotateAxisY, rotateAxisZ);
+			*/
+			
+			GLUT glut = new GLUT();
+			
+			float axisLength = 1.8f;
+			float overhang = 0.0f;
+			
+			gl.glTranslatef(-overhang, 0.0f, 0.0f);
+			gl.glRotatef(90, 0, 1, 0);
+			gl.glColor3f(1.0f, 0.0f, 0.0f);
+			glut.glutSolidCylinder(0.005f, axisLength, 6, 3);
+			gl.glRotatef(-90, 0, 1, 0);
+			gl.glTranslatef(overhang, 0.0f, 0.0f);
+			
+			gl.glTranslatef(0.0f, -overhang, 0.0f);
+			gl.glRotatef(-90, 1, 0, 0);
+			gl.glColor3f(0.0f, 1.0f, 0.0f);
+			glut.glutSolidCylinder(0.005f, axisLength, 6, 3);
+			gl.glRotatef(90, 1, 0, 0);
+			gl.glTranslatef(0.0f, overhang, 0.0f);
+			
+			gl.glTranslatef(0.0f, 0.0f, -overhang);
+			gl.glColor3f(0.0f, 0.0f, 1.0f);
+			glut.glutSolidCylinder(0.005f, axisLength, 6, 3);
+			gl.glTranslatef(0.0f, 0.0f, overhang);
+			
 			// gl.glRotatef(90, 0.0f, -1.0f, 0.0f);
 			
-			//drawNodes(gl);
+			// float[] specularReflection = {0.5f, 0.5f, 0.5f, 1.0f};
+			// gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, FloatBuffer.wrap(specularReflection));
+			// gl.glMateriali(GL2.GL_FRONT, GL2.GL_SHININESS, 80);
+			
+			
+			
+			gl.glColor3f(0.53f, 0.53f, 0.55f);
+			drawNodes(gl);
+			gl.glColor3f(0.53f, 0.53f, 0.55f);
 			drawEdges(gl);
 			
+			/*
+			GLUT glut = new GLUT();
+
+			gl.glColor3f(1.0f, 0.0f, 0.0f);
+			glut.glutSolidCylinder(0.008f, 3.5f, 6, 3);
+			gl.glRotatef(-90, 1.0f, 0.0f, 0.0f);
+			
+			gl.glColor3f(0.0f, 1.0f, 0.0f);
+			glut.glutSolidCylinder(0.008f, 3.5f, 6, 3);
+			gl.glRotatef(90, 0.0f, 1.0f, 0.0f);
+	
+			gl.glColor3f(0.0f, 0.0f, 1.0f);
+			glut.glutSolidCylinder(0.008f, 3.5f, 6, 3);
+			gl.glRotatef(90, 1.0f, 0.0f, 0.0f);
+			*/
+			
+			// gl.glColor3f(1.0f, 0.0f, 0.0f);
+			
 			//yRotate += 0.035;
-			yRotate += 0.8;
+			// yRotate += 0.5;
 			
 			/*
 			GLUT glut = new GLUT();
@@ -182,13 +307,16 @@ public class TestGraphics implements GLEventListener{
 		}
 		
 		private void drawEdges(GL2 gl) {			
-			GLUT glut = new GLUT();
 			
 			// gl.glColor3f(0.9f, 0.1f, 0.1f);
 			for (int i = 0; i < EDGE_COUNT; i++) {
 				gl.glTranslatef(edges[i].x, edges[i].y, edges[i].z);
 				gl.glRotatef(edges[i].rotateAngle, edges[i].rotateAxisX, edges[i].rotateAxisY, edges[i].rotateAxisZ);
-				glut.glutSolidCylinder(EDGE_RADIUS, edges[i].length, EDGE_SLICES_DETAIL, EDGE_STACKS_DETAIL);
+				gl.glScalef(1.0f, 1.0f, edges[i].length);
+				gl.glCallList(edgeListIndex);
+				gl.glScalef(1.0f, 1.0f, 1.0f / edges[i].length);
+				//glut.glutSolidCylinder(EDGE_RADIUS, edges[i].length, EDGE_SLICES_DETAIL, EDGE_STACKS_DETAIL);
+				
 				// gl.glCallList(nodeListIndex);
 				// Undo the transformation operations we performed above
 				gl.glRotatef(-edges[i].rotateAngle, edges[i].rotateAxisX, edges[i].rotateAxisY, edges[i].rotateAxisZ);
@@ -198,7 +326,6 @@ public class TestGraphics implements GLEventListener{
 		
 		@Override
 		public void dispose(GLAutoDrawable arg0) {
-			
 			
 		}
 
@@ -220,22 +347,35 @@ public class TestGraphics implements GLEventListener{
 			generateNodes();
 			generateEdges();
 			startTime = System.nanoTime();
-			createNodeDisplayList(gl);
+			createDisplayLists(gl);
 			
 		}
 		
-		private void createNodeDisplayList(GL2 gl) {
+		private void createDisplayLists(GL2 gl) {
 			nodeListIndex = gl.glGenLists(1);
+			edgeListIndex = gl.glGenLists(1);
+			
 			GLUT glut = new GLUT();
-
+			GLU glu = new GLU();
+			
+			GLUquadric quadric = glu.gluNewQuadric();
+			glu.gluQuadricDrawStyle(quadric, GLU.GLU_FILL);
+			glu.gluQuadricNormals(quadric, GLU.GLU_SMOOTH);
+	
 			gl.glNewList(nodeListIndex, GL2.GL_COMPILE);
-			glut.glutSolidSphere(SMALL_SPHERE_RADIUS, NODE_SLICES_DETAIL, NODE_STACKS_DETAIL);
+			glu.gluSphere(quadric, SMALL_SPHERE_RADIUS, NODE_SLICES_DETAIL, NODE_STACKS_DETAIL);
+			// glut.glutSolidSphere(SMALL_SPHERE_RADIUS, NODE_SLICES_DETAIL, NODE_STACKS_DETAIL);
+			gl.glEndList();
+			
+			gl.glNewList(edgeListIndex, GL2.GL_COMPILE);
+			glu.gluCylinder(quadric, EDGE_RADIUS, EDGE_RADIUS, 1.0, EDGE_SLICES_DETAIL, EDGE_STACKS_DETAIL);
+			// glut.glutSolidCylinder(EDGE_RADIUS, 1.0f, EDGE_SLICES_DETAIL, EDGE_STACKS_DETAIL);
 			gl.glEndList();
 		}
 		
 		private void generateNodes() {
 			Random random = new Random();
-			random.setSeed(nodeSeed);
+			//random.setSeed(nodeSeed);
 			nodeSeed++;
 			// 500 should be the default seed
 			
@@ -263,7 +403,7 @@ public class TestGraphics implements GLEventListener{
 		
 		private void generateEdges() {
 			Random random = new Random();
-			random.setSeed(edgeSeed);
+			//random.setSeed(edgeSeed);
 			edgeSeed++;
 			
 			edges = new DrawnEdge[EDGE_COUNT];
@@ -298,6 +438,10 @@ public class TestGraphics implements GLEventListener{
 				edges[i].rotateAxisY = second.x - first.x;
 				edges[i].rotateAxisZ = 0;
 				
+				if (edges[i].length < (EDGE_RADIUS * 2)) {
+					edges[i].length = EDGE_RADIUS * 2;
+				}
+				
 				// Convert radians to degrees as well
 				edges[i].rotateAngle = (float) (Math.acos((second.z - first.z)/edges[i].length) * 180 / Math.PI);
 			}
@@ -308,16 +452,16 @@ public class TestGraphics implements GLEventListener{
 		private void initLighting(GLAutoDrawable drawable) {
 			GL2 gl = drawable.getGL().getGL2();
 			
-			float[] global = {0.3f, 0.3f, 0.3f, 1.0f};
+			float[] global = {0.2f, 0.2f, 0.2f, 1.0f};
 
 			gl.glEnable(GL2.GL_LIGHTING);
 			gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, FloatBuffer.wrap(global));
 			gl.glShadeModel(GL2.GL_SMOOTH);
 			
-			float[] ambient = {0.2f, 0.2f, 0.3f, 1.0f};
-			float[] diffuse = {0.8f, 0.8f, 0.9f, 1.0f};
-			float[] specular = {0.5f, 0.5f, 0.5f, 1.0f};
-			float[] position = {8.5f, 5.5f, -1.0f, 1.0f};
+			float[] ambient = {0.14f, 0.16f, 0.16f, 1.0f};
+			float[] diffuse = {0.7f, 0.7f, 0.7f, 1.0f};
+			float[] specular = {0.9f, 0.7f, 0.7f, 1.0f};
+			float[] position = {-4.0f, 4.0f, 6.0f, 1.0f};
 			
 			gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, FloatBuffer.wrap(ambient));
 			gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, FloatBuffer.wrap(diffuse));
@@ -325,6 +469,9 @@ public class TestGraphics implements GLEventListener{
 			gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, FloatBuffer.wrap(position));
 			
 			gl.glEnable(GL2.GL_LIGHT0);
+			
+			gl.glEnable(GL2.GL_COLOR_MATERIAL);
+			gl.glColorMaterial(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE);
 		}
 
 		@Override
@@ -346,10 +493,79 @@ public class TestGraphics implements GLEventListener{
 			gl.glMatrixMode(GL2.GL_MODELVIEW);
 			gl.glLoadIdentity();
 			
+			canvasWidth = width;
+			canvasHeight = height;
+			
 			endTime = System.nanoTime();
 			
 			double duration = (endTime - startTime) / Math.pow(10, 9);
-			// double frameRate = framesElapsed / duration;
-			// System.out.println("Average fps over " + duration + " seconds: " + frameRate);
+			double frameRate = framesElapsed / duration;
+			System.out.println("Average fps over " + duration + " seconds: " + frameRate);
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			System.out.print("(" + e.getX() + ", ");
+			System.out.println(e.getY() + ") Clicked");
+			
+			// System.out.print("x: " + xPart + " y: " + yPart);
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// Toolkit toolkit 
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			lastX = e.getX();
+			lastY = e.getY();
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+			// System.out.println("yRotate: " + yRotate + ", xRotate: " + xRotate);
+		}
+
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			float xDelta = e.getX() - lastX;
+			float yDelta = e.getY() - lastY;
+			
+			xRotate += xDelta / 8.0f;
+			yRotate += yDelta / 8.0f;
+			
+			// yRotate = yRotate % 360;
+			// xRotate = xRotate % 360;
+			
+			lastX = e.getX();
+			lastY = e.getY();
+			//System.out.println("mouse drag");
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			/*
+			int halfWidth = canvasWidth / 2;
+			int halfHeight = canvasHeight / 2;
+			
+			float xPart = (float) (e.getX() - halfWidth) / halfWidth;
+			float yPart = (float) (e.getY() - halfHeight) / halfHeight;
+			
+			xRotate = xPart * 180.0f;
+			yRotate = yPart * 180.0f;
+			*/
+			
+			//System.out.println("mouse move");
 		}
 }
