@@ -128,7 +128,7 @@ class TaskDialog extends JDialog {
 	Date startTime = new Date();
 
 	public TaskDialog(final Window parentFrame, final SwingTaskMonitor parentTaskMonitor) {
-		super(parentFrame);
+		super();
 		this.parentTaskMonitor = parentTaskMonitor;
 		initComponents();
 		initTimer();
