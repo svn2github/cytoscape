@@ -86,6 +86,9 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 	}
 
 	public static MessageHandler getMessageHandlerContext() {
+		if (handlerContext == null) {
+			handlerContext = new LogMessageHandler(CyLogger.getLogger(CommandTool.class));
+		}
 		return handlerContext;
 	}
 
