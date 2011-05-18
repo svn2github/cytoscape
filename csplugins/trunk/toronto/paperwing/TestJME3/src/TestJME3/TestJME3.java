@@ -2,6 +2,8 @@ package TestJME3;
 
 import java.util.Random;
 
+import jme3tools.optimize.GeometryBatchFactory;
+
 // import TestGraphics.DrawnNode;
 
 import com.jme3.app.SimpleApplication;
@@ -24,7 +26,7 @@ import com.jme3.util.TangentBinormalGenerator;
  */
 public class TestJME3 extends SimpleApplication {
 
-	private final int NODE_COUNT = 5500;
+	private final int NODE_COUNT = 30000;
 	private final float LARGE_SPHERE_RADIUS = 3.0f;
 	
     float angle;
@@ -43,7 +45,7 @@ public class TestJME3 extends SimpleApplication {
 
         // teapot.setLocalScale(2f);
         
-    	Sphere s = new Sphere(3, 2, 2);
+    	Sphere s = new Sphere(6, 6, 2);
         Geometry sphere = new Geometry ("Sphere", s);
         Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
 
@@ -69,9 +71,9 @@ public class TestJME3 extends SimpleApplication {
         
         DirectionalLight dl = new DirectionalLight();
         dl.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
-        dl.setColor(ColorRGBA.Cyan);
+        dl.setColor(ColorRGBA.White);
         rootNode.addLight(dl);
-        
+
         generateNodes();
     }
 
@@ -81,7 +83,7 @@ public class TestJME3 extends SimpleApplication {
 		// nodeSeed++;
 		// 500 should be the default seed
 		
-		Sphere sphere = new Sphere(10, 10, 0.03f);;
+		Sphere sphere = new Sphere(6, 6, 0.02f);;
 		Geometry geometry;
 		Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
 		
@@ -111,6 +113,9 @@ public class TestJME3 extends SimpleApplication {
 			
 			rootNode.attachChild(geometry);
 		}
+		
+		// GeometryBatchFactory.optimize(rootNode);
+
 		
 		//System.out.println("Last node float: " + random.nextFloat());
 	}
