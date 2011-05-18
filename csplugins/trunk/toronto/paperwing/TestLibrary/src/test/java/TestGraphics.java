@@ -21,8 +21,8 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class TestGraphics implements GLEventListener, MouseInputListener{
 
-		private static final int NODE_COUNT = 1000;
-		private static final int EDGE_COUNT = 1000;
+		private static final int NODE_COUNT = 10000;
+		private static final int EDGE_COUNT = 10000;
 		private static final float LARGE_SPHERE_RADIUS = 2.0f;
 		private static final float SMALL_SPHERE_RADIUS = 0.032f;
 		private static final float EDGE_RADIUS = 0.008f;
@@ -35,16 +35,6 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 		
 		private DrawnNode[] nodes;
 		private DrawnEdge[] edges;
-		
-		private float yRotate = 0.0f;
-		private float xRotate = 0.0f;
-		
-		private int nodeListIndex;
-		private int edgeListIndex;
-		
-		private long startTime;
-		private long endTime;
-		private int framesElapsed = 0;
 		
 		private class DrawnNode {
 			public float x;
@@ -63,14 +53,25 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 			public float length;
 		}
 		
+		private float yRotate = 0.0f;
+		private float xRotate = 0.0f;
+		
+		private int nodeListIndex;
+		private int edgeListIndex;
+		
+		private long startTime;
+		private long endTime;
+		private int framesElapsed = 0;
+		
 		private int nodeSeed = 556;
 		private int edgeSeed = 556;
 		
-		private int canvasWidth;
-		private int canvasHeight;
-		
 		private int lastX;
 		private int lastY;
+		
+		private float xFace = 1;
+		private float yFace = 0;
+		private float zFace = 0;
 		
         /**
          * @param args
@@ -109,22 +110,6 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
                 FPSAnimator animator = new FPSAnimator(60);
                 animator.add(canvas);
                 animator.start();
-                
-                /*
-                double pi = Math.PI;
-
-                System.out.println("acos(-1): " + Math.acos(-1));
-                System.out.println("acos(-0.9): " + Math.acos(-0.9));
-                System.out.println("acos(-0.6): " + Math.acos(-0.6));
-                System.out.println("acos(-0.3): " + Math.acos(-0.3));
-                System.out.println("acos(0): " + Math.acos(0));
-                System.out.println("acos(0.3): " + Math.acos(0.3));
-                System.out.println("acos(0.6): " + Math.acos(0.6));
-                System.out.println("acos(0.9): " + Math.acos(0.9));
-                System.out.println("acos(1): " + Math.acos(1));
-                */
-                
-                // canvas.addMouseMotionListener(l);
         }
 
 		@Override
@@ -138,56 +123,18 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 			
 			gl.glTranslatef(0.0f, 0.0f, -6.0f);
 			
-			gl.glRotatef(yRotate, 1.0f, 0.0f, 0.0f);
-			gl.glRotatef(xRotate, 0.0f, 1.0f, 0.0f);
+			// Use dot product to find angle
+			float angle = (float) Math.toDegrees(Math.acos(zFace / (Math.sqrt(Math.pow(xFace, 2) + Math.pow(yFace, 2) + Math.pow(zFace, 2)))));
 			
-			// gl.glRotatef(xRotate, 0.0f, (float) Math.cos(yRotate * Math.PI / 180), 
-			//		(float) Math.sin(yRotate * Math.PI / 180));
-			
-			//gl.glRotatef(yRotate, (float) Math.cos(xRotate * Math.PI / 180), 
-			//		0.0f, (float) Math.sin(xRotate * Math.PI / 180));
-			
-			
-			
-			/*
-			gl.glRotatef(90 - xRotate, 0.0f, 1.0f, 0.0f);
-			gl.glColor3f(0.0f, 1.0f, 0.0f);
-			glut.glutSolidCylinder(0.005f, 3f, 6, 3);
-			gl.glRotatef(-90 + xRotate, 0.0f, 1.0f, 0.0f);
-			*/
-			
-			// gl.glRotatef(-yRotate, (float) Math.cos(xRotate * Math.PI / 180), 
-			//		0.0f, (float) Math.sin(xRotate * Math.PI / 180));
-			
-			
-			/*
-			float xRotateResult, yRotateResult, zRotateResult;
-			
-			float yRotateRadians = (float) Math.toRadians(yRotate);
-			float xRotateRadians = (float) Math.toRadians(xRotate);
-			
-			xRotateResult = (float) (Math.sin(yRotateRadians) * Math.cos(xRotateRadians));
-			yRotateResult = (float) (Math.sin(xRotateRadians));
-			zRotateResult = (float) (Math.cos(yRotateRadians) * Math.cos(xRotateRadians));
-			
-			float rotateAxisX, rotateAxisY, rotateAxisZ;
-			
-			// Cross product: (xRotateResult, yRotateResult, zRotateResult) x (0, 0, 1)
-			rotateAxisX = yRotateResult;
-			rotateAxisY = -1 * xRotateResult;
-			rotateAxisZ = 0;
-			
-			// Use dot product between vectors (xRotateResult, yRotateResult, zRotateResult) and (0, 0, 1)
-			float rotateAngle = (float) Math.toDegrees(Math.acos(zRotateResult));
-			
-			gl.glRotatef(rotateAngle, rotateAxisX, rotateAxisY, rotateAxisZ);
-			*/
+			// Find rotation vector with cross product
+			gl.glRotatef(-angle, -yFace, xFace, 0);
 			
 			GLUT glut = new GLUT();
 			
 			float axisLength = 1.8f;
 			float overhang = 0.0f;
 			
+			// Draw X axis
 			gl.glTranslatef(-overhang, 0.0f, 0.0f);
 			gl.glRotatef(90, 0, 1, 0);
 			gl.glColor3f(1.0f, 0.0f, 0.0f);
@@ -195,6 +142,7 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 			gl.glRotatef(-90, 0, 1, 0);
 			gl.glTranslatef(overhang, 0.0f, 0.0f);
 			
+			// Draw Y axis
 			gl.glTranslatef(0.0f, -overhang, 0.0f);
 			gl.glRotatef(-90, 1, 0, 0);
 			gl.glColor3f(0.0f, 1.0f, 0.0f);
@@ -202,6 +150,7 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 			gl.glRotatef(90, 1, 0, 0);
 			gl.glTranslatef(0.0f, overhang, 0.0f);
 			
+			// Draw Z axis
 			gl.glTranslatef(0.0f, 0.0f, -overhang);
 			gl.glColor3f(0.0f, 0.0f, 1.0f);
 			glut.glutSolidCylinder(0.005f, axisLength, 6, 3);
@@ -213,81 +162,13 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 			// gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, FloatBuffer.wrap(specularReflection));
 			// gl.glMateriali(GL2.GL_FRONT, GL2.GL_SHININESS, 80);
 			
-			
-			
 			gl.glColor3f(0.53f, 0.53f, 0.55f);
-			drawNodes(gl);
+			//drawNodes(gl);
 			gl.glColor3f(0.53f, 0.53f, 0.55f);
-			drawEdges(gl);
+			//drawEdges(gl);
+			drawNodesEdges(gl);
 			
-			/*
-			GLUT glut = new GLUT();
-
-			gl.glColor3f(1.0f, 0.0f, 0.0f);
-			glut.glutSolidCylinder(0.008f, 3.5f, 6, 3);
-			gl.glRotatef(-90, 1.0f, 0.0f, 0.0f);
-			
-			gl.glColor3f(0.0f, 1.0f, 0.0f);
-			glut.glutSolidCylinder(0.008f, 3.5f, 6, 3);
-			gl.glRotatef(90, 0.0f, 1.0f, 0.0f);
-	
-			gl.glColor3f(0.0f, 0.0f, 1.0f);
-			glut.glutSolidCylinder(0.008f, 3.5f, 6, 3);
-			gl.glRotatef(90, 1.0f, 0.0f, 0.0f);
-			*/
-			
-			// gl.glColor3f(1.0f, 0.0f, 0.0f);
-			
-			//yRotate += 0.035;
-			// yRotate += 0.5;
-			
-			/*
-			GLUT glut = new GLUT();
-			// glut.glutSolidCylinder(0.5f, 1.0f, 6, 3);
-			
-			float x1, y1, z1, x2, y2, z2;
-			x1 = -1.0f;
-			y1 = 0.5f;
-			z1 = 0.0f;
-			x2 = 0.9f;
-			y2 = -0.6f;
-			z2 = 0.0f;
-			
-			float length = (float) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2) + Math.pow(z1 - z2, 2));
-			
-			gl.glTranslatef(x1, y1, z1);
-			glut.glutSolidSphere(0.5f, 6, 3);
-			gl.glTranslatef(-x1, -y1, -z1);
-			
-			gl.glTranslatef(x2, y2, z2);
-			glut.glutSolidSphere(0.5f, 6, 3);
-			gl.glTranslatef(-x2, -y2, -z2);
-			
-			gl.glTranslatef(x1, y1, z1);
-			
-			// float angle = (float) Math.acos(((length)(y2 - y1))/((length)(length)));
-			
-			float angle = (float) (Math.acos((z2 - z1)/length) * 180 / Math.PI);
-			gl.glRotatef(angle, -(y2 - y1), x2 - x1, 0);
-			
-
-			glut.glutSolidCylinder(0.1f, length, 6, 1);
-			*/
 			framesElapsed++;
-			
-			/*
-			endTime = System.nanoTime();
-			double duration = (endTime - startTime) / Math.pow(10, 9);
-			if (duration > 2.5) {
-				System.out.println("Generating new nodes with seed: " + nodeSeed);
-				// System.out.println("Generating new edges with seed: " + edgeSeed);
-				
-				generateNodes();
-				generateEdges();
-				
-				startTime = System.nanoTime();
-			}
-			*/
 		}
 
 		private void drawNodes(GL2 gl) {
@@ -324,6 +205,11 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 			}
 		}
 		
+		private void drawNodesEdges(GL2 gl) {
+			gl.glCallList(edgeListIndex);
+			gl.glCallList(nodeListIndex);
+		}
+		
 		@Override
 		public void dispose(GLAutoDrawable arg0) {
 			
@@ -347,8 +233,46 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 			generateNodes();
 			generateEdges();
 			startTime = System.nanoTime();
-			createDisplayLists(gl);
+			createDisplayListsIndividual(gl);
+			//createDisplayLists(gl);
+		}
+		
+		private void createDisplayListsIndividual(GL2 gl) {
+			nodeListIndex = gl.glGenLists(1);
+			edgeListIndex = gl.glGenLists(1);
 			
+			GLU glu = new GLU();
+			
+			GLUquadric quadric = glu.gluNewQuadric();
+			glu.gluQuadricDrawStyle(quadric, GLU.GLU_FILL);
+			glu.gluQuadricNormals(quadric, GLU.GLU_SMOOTH);
+	
+			gl.glNewList(nodeListIndex, GL2.GL_COMPILE);
+			float x, y, z;
+			for (int i = 0; i < NODE_COUNT; i++) {
+				x = nodes[i].x;
+				y = nodes[i].y;
+				z = nodes[i].z;
+				
+				gl.glTranslatef(x, y, z);
+				glu.gluSphere(quadric, SMALL_SPHERE_RADIUS, NODE_SLICES_DETAIL, NODE_STACKS_DETAIL);
+				gl.glTranslatef(-x, -y, -z);
+			}
+			gl.glEndList();
+			
+			gl.glNewList(edgeListIndex, GL2.GL_COMPILE);
+			for (int i = 0; i < EDGE_COUNT; i++) {
+				gl.glTranslatef(edges[i].x, edges[i].y, edges[i].z);
+				gl.glRotatef(edges[i].rotateAngle, edges[i].rotateAxisX, edges[i].rotateAxisY, edges[i].rotateAxisZ);
+				gl.glScalef(1.0f, 1.0f, edges[i].length);
+				glu.gluCylinder(quadric, EDGE_RADIUS, EDGE_RADIUS, 1.0, EDGE_SLICES_DETAIL, EDGE_STACKS_DETAIL);
+				gl.glScalef(1.0f, 1.0f, 1.0f / edges[i].length);
+
+				// Undo the transformation operations we performed above
+				gl.glRotatef(-edges[i].rotateAngle, edges[i].rotateAxisX, edges[i].rotateAxisY, edges[i].rotateAxisZ);
+				gl.glTranslatef(-edges[i].x, -edges[i].y, -edges[i].z);
+			}
+			gl.glEndList();
 		}
 		
 		private void createDisplayLists(GL2 gl) {
@@ -492,49 +416,33 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 
 			gl.glMatrixMode(GL2.GL_MODELVIEW);
 			gl.glLoadIdentity();
-			
-			canvasWidth = width;
-			canvasHeight = height;
-			
-			endTime = System.nanoTime();
-			
-			double duration = (endTime - startTime) / Math.pow(10, 9);
-			double frameRate = framesElapsed / duration;
-			System.out.println("Average fps over " + duration + " seconds: " + frameRate);
 		}
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			System.out.print("(" + e.getX() + ", ");
-			System.out.println(e.getY() + ") Clicked");
-			
-			// System.out.print("x: " + xPart + " y: " + yPart);
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			// Toolkit toolkit 
-			
 		}
 
 		@Override
 		public void mouseExited(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
 		public void mousePressed(MouseEvent e) {
 			lastX = e.getX();
 			lastY = e.getY();
-			
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
-			// TODO Auto-generated method stub
+			endTime = System.nanoTime();
 			
-			// System.out.println("yRotate: " + yRotate + ", xRotate: " + xRotate);
+			double duration = (endTime - startTime) / Math.pow(10, 9);
+			double frameRate = framesElapsed / duration;
+			System.out.println("Average fps over " + duration + " seconds: " + frameRate);
 		}
 
 		@Override
@@ -550,22 +458,9 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 			
 			lastX = e.getX();
 			lastY = e.getY();
-			//System.out.println("mouse drag");
 		}
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			/*
-			int halfWidth = canvasWidth / 2;
-			int halfHeight = canvasHeight / 2;
-			
-			float xPart = (float) (e.getX() - halfWidth) / halfWidth;
-			float yPart = (float) (e.getY() - halfHeight) / halfHeight;
-			
-			xRotate = xPart * 180.0f;
-			yRotate = yPart * 180.0f;
-			*/
-			
-			//System.out.println("mouse move");
 		}
 }
