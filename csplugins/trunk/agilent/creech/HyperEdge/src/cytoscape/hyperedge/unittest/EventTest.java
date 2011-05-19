@@ -92,9 +92,11 @@ public class EventTest extends TestBase {
         final NewObjTester not = new NewObjTester();
         manager.addNewObjectListener(not);
         setUp1(true);
+	System.out.println ("testHyperEdgeEvents: expected 2 HyperEdges and found " + numHes + " HyperEdges");
         Assert.assertTrue(numHes == 2);
         manager.removeNewObjectListener(not);
         manager.reset(true);
+	System.out.println ("testHyperEdgeEvents: expected 0 HyperEdges and found " + numHes + " HyperEdges");
         Assert.assertTrue(numHes == 0);
         setUp1(true);
 
