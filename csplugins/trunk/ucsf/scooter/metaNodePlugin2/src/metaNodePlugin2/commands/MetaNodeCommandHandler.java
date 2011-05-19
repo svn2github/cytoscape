@@ -257,6 +257,23 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		//	       "metanode|network=current|nodelist=selected"),
 		// 
 		} else if (Command.CREATE.equals(command)) {
+			if (!args.containsKey(METANODE))
+				throw new RuntimeException("metanode: create requires a 'metanode' argument");
+			String metanodeName = (String)args.get(METANODE);
+			if (metanodeName == null || metanodeName.length() == 0)
+				throw new RuntimeException("metanode: create requires a 'metanode' argument");
+
+			Map<String, Object> destargs = new HashMap<String, Object>();
+			destargs.put("name",metanodeName);
+			if (args.containsKey(NODE))
+				destargs.put(NODE, args.get(NODE));
+			if (args.containsKey(NODELIST))
+				destargs.put(NODELIST, args.get(NODELIST));
+			if (args.containsKey(NETWORK))
+				destargs.put(NETWORK, args.get(NETWORK));
+			destargs.put("viewer", "metaNode");
+
+			return CyCommandManager.execute("group", "create", destargs);
 
 		// 
 		//	COLLAPSE("collapse",
@@ -557,6 +574,8 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		//	              "usenestednetworks=false|opacity=100|nodechart=none|chartattribute=none"),
 		// 
 		} else if (Command.SETDEFAULTAPP.equals(command)) {
+			settingsDialog.updateAttributes();
+			settingsDialog.updateNodeChartTypes();
 			// Handle node chart configuration
 			if (args.containsKey(NODECHART) && !NONE.equalsIgnoreCase(args.get(NODECHART).toString())) {
 				if (!metanodeViewer.haveNodeCharts())
@@ -698,11 +717,11 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		AttributeManager.setDefault(type, aggrType);
 
 		// Now reflect the change in our tunable
-		Tunable t = props.get(tunable);
-		setListTunable(t, aggrType.toString());
+		setListTunable(props, tunable, aggrType.toString());
 	}
 
-	private void setListTunable(Tunable t, String value) {
+	private void setListTunable(MetanodeProperties props, String tunable, String value) {
+		Tunable t = props.get(tunable);
 		if (t == null) return;
 
 		// Get the list of options
