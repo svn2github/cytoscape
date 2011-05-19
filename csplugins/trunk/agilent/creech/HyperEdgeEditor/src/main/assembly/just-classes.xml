@@ -1,0 +1,25 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+  <!-- This assembly builds a jar of just the class files for use as middleware for a higher
+       level application. -->
+  <id>just-classes</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <!-- Don't add any extra directories to the ones under ${basedir}/bin in the fileset.
+           So, 'com' will be the top level directory. -->
+      <outputDirectory>/</outputDirectory>
+      <!-- Where to start building this file set; stuff in the bin directory -->
+       <directory>${basedir}/bin</directory>
+	    <excludes>
+	      <exclude>cytoscape/hyperedge/editor/unittest/**</exclude>
+	      <exclude>**/plugin.props</exclude>
+	      <exclude>**/package.html</exclude>
+	    </excludes>
+    </fileSet>
+  </fileSets>
+</assembly>
