@@ -103,6 +103,8 @@ public class MetaNode {
 		metaGroup = group;
 		logger = CyLogger.getLogger(MetaNode.class);
 
+		logger.debug("Creating new metanode: "+group.getGroupNode());
+
 		// This method does most of the work.
 		updateMetaEdges();
 
@@ -221,6 +223,7 @@ public class MetaNode {
 			CyEdge edge = (CyEdge)e;
 			// Add any new edges.
 			if (!metaEdges.containsKey(edge)) {
+				// logger.debug("  found new edge: "+edge.getIdentifier());
 				metaEdges.put(edge, edge);
 				metaGroup.addOuterEdge(edge);
 			}
@@ -270,9 +273,15 @@ public class MetaNode {
 	 * @return the created metaEdge
 	 */
 	public CyEdge createMetaEdge(String edgeName, CyNode source, CyNode target) {
+		logger.debug("Creating metaedge: meta-"+edgeName+" between "+source+" and "+target);
 		CyEdge newEdge = createEdge("meta-", edgeName, source, target);
 		metaEdges.put(newEdge,newEdge);
 		return newEdge;
+	}
+
+	public boolean haveMetaEdge(String edgeName, CyNode source, CyNode target) {
+		CyEdge newEdge = createEdge("meta-", edgeName, source, target);
+		return metaEdges.containsKey(newEdge);
 	}
 
 	/**
@@ -416,19 +425,58 @@ public class MetaNode {
 	}
 
 	/**
+	 * Add edges to our outer edge map and recurse (if needed).
+	 *
+	 * @param partnerGroup the group that's calling us
+	 * @param partnerEdges the list of outer edges our partner has
+	 */
+	protected void addPartnerOuterEdges(CyGroup partnerGroup, List<CyEdge> partnerEdges) {
+		MetaNode partnerMeta = MetaNodeManager.getMetaNode(partnerGroup);
+		CyNode partnerNode = partnerGroup.getGroupNode();
+		CyNode myNode = metaGroup.getGroupNode();
+
+		// logger.debug(myNode.toString()+".addPartnerOuterEdges("+partnerNode+")");
+
+		for (CyEdge pEdge: partnerEdges) {
+			// logger.debug("    edge: "+pEdge.getIdentifier());
+			// Start by adding the relevant edges to our outer edge map
+			CyNode pNode = getLocalNode(pEdge);
+			if (pNode == null) 
+				continue;
+
+			CyEdge metaEdge = createEdge("meta-", pEdge.getIdentifier(), pNode, partnerNode);
+			metaGroup.addOuterEdge(metaEdge);
+		}
+
+		/* DEBUG
+		logger.debug("addPrtnerOuterEdges: outer edges for:"+metaGroup);
+		for (CyEdge edge: metaGroup.getOuterEdges()) {
+			logger.debug("  "+edge.getIdentifier());
+		}
+		*/
+
+		// OK, check all of our nodes and if any of them are metanodes, recurse down
+		for (CyNode child: metaGroup.getNodes()) {
+			MetaNode childMeta = MetaNodeManager.getMetaNode(child);
+			if (childMeta == null)
+				continue;
+
+			childMeta.addPartnerOuterEdges(partnerGroup, partnerEdges);
+		}
+	}
+
+	/**
  	 * This method is the central method for the creation and maintenance of a
  	 * meta-node.  Essentially, it is responsible for creating all of the meta-edges
  	 * that connect this meta-node to external nodes.
  	 *
  	 * Basic approach:
- 	 * 	for each external edge:
- 	 * 	     if edge.partner is in a group AND group is in our network:
- 	 * 	         add a meta-edge to the parter group node
- 	 * 	     add a meta-edge to the parter
- 	 *	 
- 	 * We also handle the following special cases:
- 	 * 	Partner node is itself a group
- 	 * 	Partner node is a member of a group
+ 	 *	for each external edge:
+ 	 *		add a meta-edge to the parter
+	 *		if the partner is a group and the group is in our network:
+	 *			add ourselves to the group's outer edges list (recursively)
+	 *		if the partner is in a group:
+	 *			add ourselves to the group's meta edge list
  	 */
 	private void updateMetaEdges() {
 		// Initialize our meta-edge map
@@ -440,22 +488,69 @@ public class MetaNode {
 		while(iterator.hasNext()) {
 			CyEdge edge = iterator.next();
 			CyNode node = getPartner(edge);
+			// logger.debug("Outer edge = "+edge.getIdentifier());
 
 			// Create the meta-edge to the external node
 			CyEdge metaEdge = createMetaEdge(edge.getIdentifier(), metaGroup.getGroupNode(), node);
 
-			// Special case for the situation where our partner is a group.  In this
-			// case, some of our outer edges might be missing because they were hidden
-			// so we need to add it to our outerEdges list and to our iterator so that
-			// we'll revisit it.
-			if (MetaNodeManager.getMetaNode(node) != null) { 
-				addPartnerEdges(iterator, node);
+			MetaNode metaPartner = MetaNodeManager.getMetaNode(node);
+			if (metaPartner != null) { 
+				// Recursively add links to the appropriate children
+				addPartnerEdges(metaPartner);
+				metaPartner.addMetaEdge(metaEdge);
 			}
+
 			// Now, handle the case where the partner is a member of one or more groups
 			if (node.getGroups() != null && node.getGroups().size() > 0) {
+				// Add ourselves to the outer edges list of the partner
 				addPartnerMetaEdges(edge, node, metaEdge);
 			}
 		}
+
+		/* DEBUGGING
+		logger.debug("Outer edges for:"+metaGroup);
+		for (CyEdge edge: metaGroup.getOuterEdges()) {
+			logger.debug("  "+edge.getIdentifier());
+		}
+		*/
+	}
+
+	// Find the edge in our partner that links to us
+	protected void addPartnerEdges(MetaNode metaPartner) {
+		List<CyEdge> partnerEdges = metaPartner.getCyGroup().getOuterEdges();
+		List<CyEdge> newEdges = new ArrayList<CyEdge>();
+		for (CyEdge edge: partnerEdges) {
+			// logger.debug("Looking at partner edge: "+edge.getIdentifier());
+			CyNode source = (CyNode)edge.getSource();
+			CyNode target = (CyNode)edge.getTarget();
+			if (metaGroup.getNodes().contains(target) || metaGroup.getNodes().contains(source)) {
+				CyNode partner;
+				if (metaGroup.getNodes().contains(source)) {
+					// We're the source
+					source = metaGroup.getGroupNode();
+					partner = target;
+				} else {
+					// We're the target
+					target = metaGroup.getGroupNode();
+					partner = source;
+				}
+
+				// Create a new edge
+				CyEdge newEdge = createEdge("meta-", edge.getIdentifier(), source, target);
+				newEdges.add(newEdge);
+
+				// logger.debug("   ... it points us -- created new edge: "+newEdge.getIdentifier());
+				
+				metaGroup.addOuterEdge(edge);
+
+				MetaNode partnerMeta = MetaNodeManager.getMetaNode(partner);
+				if (partnerMeta != null)
+					addPartnerEdges(partnerMeta);
+
+				createMetaEdge(edge.getIdentifier(), source, target);
+			}
+		}
+		for (CyEdge edge: newEdges) { metaPartner.getCyGroup().addOuterEdge(edge); }
 	}
 
 	/**
@@ -491,6 +586,7 @@ public class MetaNode {
 	}
 
 	private void addPartnerMetaEdges(CyEdge connectingEdge, CyNode partnerNode, CyEdge metaEdge) {
+		// logger.debug("addPartnerMetaEdges to "+partnerNode);
 		for (CyGroup partnerGroup: partnerNode.getGroups()) {
 			if (partnerGroup.getNetwork() == metaGroup.getNetwork()) {
 			  MetaNode partner = MetaNodeManager.getMetaNode(partnerGroup.getGroupNode());
@@ -501,28 +597,6 @@ public class MetaNode {
 					partner.addMetaEdge(metaMetaEdge);
 					// Add our meta-edge to the partner group
 					partner.addMetaEdge(metaEdge);
-				}
-			}
-		}
-	}
-
-	private void addPartnerEdges(ListIterator<CyEdge> iterator, CyNode partnerNode) {
-		CyGroup partnerGroup = CyGroupManager.getCyGroup(partnerNode);
-		MetaNode partnerMeta = MetaNodeManager.getMetaNode(partnerGroup);
-		if (partnerMeta.isCollapsed()) {
-			// Get the outer edges of the partner node, and if they point to us,
-			// add the edge to our outer edge list
-			CyNetwork myGraph = metaGroup.getGraphPerspective();
-			List<CyEdge> partnerEdges = partnerGroup.getOuterEdges();
-			for (CyEdge partnerEdge: partnerEdges) {
-				// We are only interested in edges that connect to one of our nodes
-				if (isConnectingEdge(partnerEdge)) {
-					// Actually add it to the list
-					metaGroup.addOuterEdge(partnerEdge);
-					// Now, add it to our iterator so that we can re-examine it
-					iterator.add(partnerEdge);
-					// We actually want to examine this edge again, so we need to back up
-					iterator.previous();
 				}
 			}
 		}
