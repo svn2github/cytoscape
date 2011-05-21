@@ -97,15 +97,15 @@ enum Command {
 	REMOVE("remove node",
 	       "Remove a node from a metanode",
 	       "metanode|node|nodelist"),
-	/* MODIFYAGG("modify aggregation", // FIXME
+	MODIFYAGG("modify aggregation",
 	          "Modify the aggregation behavior of a metanode",
-	          "metanode|enabled=true|string=csv|integer=sum|double=sum|list=none|boolean=or"), */
+	          "metanode|enabled=true|string=csv|integer=sum|double=sum|list=none|boolean=or"),
 	MODIFYAPP("modify appearance",
 	          "Modify the appearance of a metanode",
-	          "metanode|usenestednetworks=false|opacity=100|nodechart=none|chartattribute=none"),
-	/* MODIFYAGGOVERRIDE("modify overrides", // FIXME
+	          "metanode|usenestednetworks=false|opacity=100|nodechart=none|chartattribute=non"),
+	MODIFYAGGOVERRIDE("modify overrides", 
 	                  "Modify aggregation overrides for specific attributes in a metanode",
-	                  "metanode|attribute|aggregation"), */
+	                  "metanode|attribute|aggregation"),
   SETDEFAULTAGG("set default aggregation", 
 	              "Set the default aggregation options",
 	              "enabled=true|string=csv|integer=sum|double=sum|list=none|boolean=or"),
@@ -485,7 +485,8 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		//	          "Modify the aggregation behavior of a metanode",
 		//	          "metanode|enabled=true|string=csv|integer=sum|double=sum|list=none|boolean=or"),
 		// 
-		// } else if (Command.MODIFYAGG.equals(command)) {
+		} else if (Command.MODIFYAGG.equals(command)) {
+			setAggregation(result, metaNode, props, command, args);
 
 		// 
 		//	MODIFYAPP("modify appearance",
@@ -522,7 +523,21 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		//	                  "Modify aggregation overrides for specific attributes in a metanode",
 		//	                  "metanode|attribute|aggregation"),
 		// 
-		// } else if (Command.MODIFYAGGOVERRIDE.equals(command)) {
+		} else if (Command.MODIFYAGGOVERRIDE.equals(command)) {
+			if (!args.containsKey(ATTRIBUTE))
+				throw new RuntimeException("metanode: "+command+" requires an attribute");
+			if (!args.containsKey(AGGREGATION))
+				throw new RuntimeException("metanode: "+command+" requires an aggregation type");
+
+			if (metaNode == null)
+				throw new RuntimeException("metanode: "+command+" requires a metanode");
+
+			String attr = getAttribute(args.get(ATTRIBUTE).toString());
+			byte type = Cytoscape.getNodeAttributes().getType(attr);
+			String aggrType = args.get(AGGREGATION).toString();
+			AttributeHandlingType aggr = getAggregation(type, aggrType);
+			AttributeHandler handler = metaNode.getAttributeManager().getHandler(attr);
+			handler.setHandlerType(aggr);
 
 		// 
 		//  SETDEFAULTAGG("set default aggregation", 
@@ -530,43 +545,7 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		//	              "enabled=true|string=csv|integer=sum|double=sum|list=none|boolean=or"),
 		// 
 		} else if (Command.SETDEFAULTAGG.equals(command)) {
-			boolean attrHandling = false;
-			if(args.containsKey(ENABLED))
-				attrHandling = getBooleanArg(command, ENABLED, args);
-
-			if (!attrHandling) {
-				setTunable(props, "enableHandling", "false");
-				result.addMessage("metanode: attribute aggregation disabled");
-			} else {
-				setTunable(props, "enableHandling", "true");
-				result.addMessage("metanode: attribute aggregation enabled");
-
-				if (args.containsKey(STRING)) {
-					setDefault(props, "stringDefaults", CyAttributes.TYPE_STRING, args.get(STRING).toString());
-					result.addMessage("metanode: set default aggregation handling for "+STRING+" to "+args.get(STRING).toString());
-				}
-
-				if (args.containsKey(INTEGER)) {
-					setDefault(props, "intDefaults", CyAttributes.TYPE_INTEGER, args.get(INTEGER).toString());
-					result.addMessage("metanode: set default aggregation handling for "+INTEGER+" to "+args.get(INTEGER).toString());
-				}
-
-				if (args.containsKey(DOUBLE)) {
-					setDefault(props, "doubleDefaults", CyAttributes.TYPE_FLOATING, args.get(DOUBLE).toString());
-					result.addMessage("metanode: set default aggregation handling for "+DOUBLE+" to "+args.get(DOUBLE).toString());
-				}
-
-				if (args.containsKey(LIST)) {
-					setDefault(props, "listDefaults", CyAttributes.TYPE_SIMPLE_LIST, args.get(LIST).toString());
-					result.addMessage("metanode: set default aggregation handling for "+LIST+" to "+args.get(LIST).toString());
-				}
-
-				if (args.containsKey(BOOLEAN)) {
-					setDefault(props, "booleanDefaults", CyAttributes.TYPE_BOOLEAN, args.get(BOOLEAN).toString());
-					result.addMessage("metanode: set default aggregation handling for "+BOOLEAN+" to "+args.get(BOOLEAN).toString());
-				}
-			}
-			
+			setAggregation(result, null, props, command, args);
 
 		// 
 		//	SETDEFAULTAPP("set default appearance",
@@ -613,8 +592,8 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 			byte type = Cytoscape.getNodeAttributes().getType(attr);
 			String aggrType = args.get(AGGREGATION).toString();
 			AttributeHandlingType aggr = getAggregation(type, aggrType);
-			AttributeHandler handler = AttributeManager.getHandler(attr);
-			handler.setHandlerType(aggr);
+			AttributeManager manager = MetaNodeManager.getDefaultAttributeManager();
+			manager.addHandler(attr, aggr);
 			result.addMessage("metanode: set attribute aggretion for "+attr+" to "+aggr.toString());
 		}
 
@@ -709,12 +688,61 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		throw new RuntimeException("metanode: unknown attribute type!?!");
 	}
 
-	private void setDefault(MetanodeProperties props, String tunable, byte type, String value) {
+	private void setAggregation(CyCommandResult result, MetaNode metanode, MetanodeProperties props, 
+	                            String command, Map<String, Object>args) {
+		boolean attrHandling = false;
+		String messagePrefix = "metanode (default):";
+		AttributeManager attributeManager = MetaNodeManager.getDefaultAttributeManager();
+
+		if(args.containsKey(ENABLED))
+			attrHandling = getBooleanArg(command, ENABLED, args);
+
+		if (metanode != null) {
+			messagePrefix = "metanode ("+metanode.getGroupNode().getIdentifier()+"): ";
+			attributeManager = metanode.getAttributeManager();
+		}
+
+		if (!attrHandling) {
+			setTunable(props, "enableHandling", "false");
+			attributeManager.setEnable(false);
+			result.addMessage(messagePrefix+" attribute aggregation disabled");
+		} else {
+			setTunable(props, "enableHandling", "true");
+			attributeManager.setEnable(false);
+			result.addMessage(messagePrefix+" attribute aggregation enabled");
+		}
+
+		if (args.containsKey(STRING)) {
+			setDefault(attributeManager, props, "stringDefaults", CyAttributes.TYPE_STRING, args.get(STRING).toString());
+			result.addMessage(messagePrefix+" set default aggregation handling for "+STRING+" to "+args.get(STRING).toString());
+		}
+
+		if (args.containsKey(INTEGER)) {
+			setDefault(attributeManager, props, "intDefaults", CyAttributes.TYPE_INTEGER, args.get(INTEGER).toString());
+			result.addMessage(messagePrefix+" set default aggregation handling for "+INTEGER+" to "+args.get(INTEGER).toString());
+		}
+
+		if (args.containsKey(DOUBLE)) {
+			setDefault(attributeManager, props, "doubleDefaults", CyAttributes.TYPE_FLOATING, args.get(DOUBLE).toString());
+			result.addMessage(messagePrefix+" set default aggregation handling for "+DOUBLE+" to "+args.get(DOUBLE).toString());
+		}
+
+		if (args.containsKey(LIST)) {
+			setDefault(attributeManager, props, "listDefaults", CyAttributes.TYPE_SIMPLE_LIST, args.get(LIST).toString());
+			result.addMessage(messagePrefix+" set default aggregation handling for "+LIST+" to "+args.get(LIST).toString());
+		}
+
+		if (args.containsKey(BOOLEAN)) {
+			setDefault(attributeManager, props, "booleanDefaults", CyAttributes.TYPE_BOOLEAN, args.get(BOOLEAN).toString());
+			result.addMessage(messagePrefix+" set default aggregation handling for "+BOOLEAN+" to "+args.get(BOOLEAN).toString());
+		}
+	}
+			
+
+	private void setDefault(AttributeManager manager, MetanodeProperties props, String tunable, byte type, String value) {
 		// First, check to see if our value is good
 		AttributeHandlingType aggrType = getAggregation(type, value);
-
-		// Apparently it is, so set the default
-		AttributeManager.setDefault(type, aggrType);
+		manager.setDefault(type, aggrType);
 
 		// Now reflect the change in our tunable
 		setListTunable(props, tunable, aggrType.toString());

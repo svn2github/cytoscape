@@ -54,14 +54,15 @@ import java.util.Map;
  * themselves handle the aggregation of attributes.
  */
 public class AttributeManager {
-	static private Map<String, AttributeHandler>handlerMap = null;
-	static private Map<String, AttributeHandler>saveHandlerMap = null;
-	static private AttributeHandlingType[] defaultHandling = new AttributeHandlingType[15];
-	static private boolean aggregating = false;
-	static private CyNetwork network;
 	static public final String OVERRIDE_ATTRIBUTE = "__MetanodeAggregation";
 	static public final String CHILDREN_ATTRIBUTE = "NumChildren";
 	static public final String DESCENDENTS_ATTRIBUTE = "NumDescendents";
+
+	private AttributeHandlingType[] defaultHandling = new AttributeHandlingType[15];
+	private Map<String, AttributeHandler>handlerMap = null;
+	private Map<String, AttributeHandler>saveHandlerMap = null;
+	private boolean aggregating = false;
+	private CyNetwork network;
 
 	static AttributeHandlingType[] stringArray = {AttributeHandlingType.MCV, AttributeHandlingType.CSV, 
 	                                              AttributeHandlingType.TSV, AttributeHandlingType.NONE};
@@ -143,6 +144,21 @@ public class AttributeManager {
 		}
 	}
 
+	/**************************************************************************
+	 * Instance methods for AttributeManager                                  *
+	 *************************************************************************/
+	public AttributeManager () {
+	}
+
+	public AttributeManager (AttributeManager source) {
+		this.handlerMap = source.handlerMap;
+		this.saveHandlerMap = source.saveHandlerMap;
+		this.aggregating = source.aggregating;
+		for (int index = 0; index < 15; index++)
+			this.defaultHandling[index] = source.defaultHandling[index];
+	}
+	
+
 	/**
  	 * Add a new handler to our internal map for aggregating the designated
  	 * attribute and handlerType
@@ -150,7 +166,7 @@ public class AttributeManager {
  	 * @param attribute the attribute this handler is for
  	 * @param handlerType the aggregation method for use by the handler
  	 */
-	static public void addHandler(String attribute, AttributeHandlingType handlerType) {
+	public void addHandler(String attribute, AttributeHandlingType handlerType) {
 		if (handlerMap == null) handlerMap = new HashMap();
 
 		if (handlerMap.containsKey(attribute)) {
@@ -173,7 +189,7 @@ public class AttributeManager {
  	 *
  	 * @param attribute the attribute this handler is for
  	 */
-	static public void removeHandler(String attribute) {
+	public void removeHandler(String attribute) {
 		if (handlerMap != null && handlerMap.containsKey(attribute)) {
 			handlerMap.remove(attribute);
 		}
@@ -182,7 +198,7 @@ public class AttributeManager {
 	/**
  	 * Save the current attribute map
  	 */
-	static public void saveSettings() {
+	public void saveSettings() {
 		if (handlerMap == null) return;
 		saveHandlerMap = new HashMap();
 		for (String attribute: handlerMap.keySet()) {
@@ -194,7 +210,7 @@ public class AttributeManager {
 	/**
  	 * Revert the attribute map back to the saved settings.
  	 */
-	static public void revertSettings() {
+	public void revertSettings() {
 		handlerMap = saveHandlerMap;
 		saveHandlerMap = null;
 	}
@@ -202,7 +218,7 @@ public class AttributeManager {
 	/**
  	 * Clear the attribute handler map
  	 */
-	static public void clearSettings() {
+	public void clearSettings() {
 		handlerMap = null;
 		saveHandlerMap = null;
 	}
@@ -214,7 +230,7 @@ public class AttributeManager {
  	 * @return the AttributeHandler or null if there is no attribute handler
  	 *         for this attribute.
  	 */
-	static public AttributeHandler getHandler(String attribute) {
+	public AttributeHandler getHandler(String attribute) {
 		if (handlerMap == null) return null;
 		if (handlerMap.containsKey(attribute))
 			return handlerMap.get(attribute);
@@ -227,9 +243,9 @@ public class AttributeManager {
  	 *
  	 * @param network the CyNetwork we're going to read our options from
  	 */
-	static public void loadHandlerMappings(CyNetwork network) {
+	public void loadHandlerMappings(CyNetwork network) {
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-		AttributeManager.network = network;
+		this.network = network;
 		if (networkAttributes.hasAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE)) {
 			Map<String,String> attrMap = (Map<String,String>)networkAttributes.getMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE);
 			for (String attr: attrMap.keySet()) {
@@ -243,7 +259,7 @@ public class AttributeManager {
  	 *
  	 * @param enable if 'true' enable aggregation otherwise, disable aggregation
  	 */
-	static public void setEnable(boolean enable) {
+	public void setEnable(boolean enable) {
 		aggregating = enable;
 	}
 
@@ -252,16 +268,16 @@ public class AttributeManager {
  	 *
  	 * @return 'true' if attribute aggregation is enabled otherwise, 'false'
  	 */
-	static public boolean getEnable() {
+	public boolean getEnable() {
 		return aggregating;
 	}
 
-	static public void setDefault(byte attributeType, AttributeHandlingType type) {
+	public void setDefault(byte attributeType, AttributeHandlingType type) {
 		if (attributeType < 0) attributeType += 10;
 		defaultHandling[attributeType] = type;
 	}
 
-	static public AttributeHandler getDefaultHandler(byte attributeType, String attribute) {
+	public AttributeHandler getDefaultHandler(byte attributeType, String attribute) {
 		AttributeHandlingType t;
 		if (attributeType < 0) attributeType += 10;
 		t = defaultHandling[attributeType];
@@ -276,7 +292,7 @@ public class AttributeManager {
 	}
 
 
-	static public AttributeHandlingType stringToType(String str) {
+	public AttributeHandlingType stringToType(String str) {
 		for (AttributeHandlingType type: AttributeHandlingType.values()) {
 			if (str.equals(type.toString()))
 				return type;
@@ -291,7 +307,7 @@ public class AttributeManager {
  	 *
  	 * @param mNode the metanode we're agregating over
  	 */
-	static public void updateAttributes(MetaNode mNode) {
+	public void updateAttributes(MetaNode mNode) {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		CyGroup metaGroup = mNode.getCyGroup();
@@ -311,16 +327,16 @@ public class AttributeManager {
 				// Yes, do it
 				if (MetaNodeManager.getMetaNode(node) != null) {
 					// This is a metanode -- some algorithm (e.g. median) require recursion...
-					aggregateAttributes(nodeAttributes, "node", node.getIdentifier(), 
+					aggregateAttributes(nodeAttributes, node.getIdentifier(), 
 					                    MetaNodeManager.getMetaNode(node));
 				} else {
-					aggregateAttributes(nodeAttributes, "node", node.getIdentifier(), null);
+					aggregateAttributes(nodeAttributes, node.getIdentifier(), null);
 				}
 			}
 		}
 		if (getEnable()) {
 			// Update all of the node attributes
-			assignAttributes(nodeAttributes, "node", metaNodeName);
+			assignAttributes(nodeAttributes, metaNodeName);
 		}
 
 		// Update our special attributes
@@ -338,9 +354,8 @@ public class AttributeManager {
 	 * @param source the source (node or edge ID) for the attributes
 	 * @param recurse a metanode if we are supposed to recurse (only done for MEDIAN)
 	 */
-	private static void aggregateAttributes(CyAttributes attrMap, 
-	                                        String attrType,
-	                                        String source, MetaNode recurse) {
+	private void aggregateAttributes(CyAttributes attrMap, 
+	                                 String source, MetaNode recurse) {
 		String [] attributes = attrMap.getAttributeNames();
 		for (int i = 0; i < attributes.length; i++) {
 			String attr = attributes[i];
@@ -353,12 +368,13 @@ public class AttributeManager {
 			}
 
 			// Do we have a specific handler (override)?
-			AttributeHandler handler = getHandler(attrType+"."+attr);
+			// AttributeHandler handler = getHandler(attrType+"."+attr);
+			AttributeHandler handler = getHandler(attr);
 			if (handler == null) {
 				// No, create a basic handler
-				handler = getDefaultHandler(attrMap.getType(attr), attrType+"."+attr);
-			}
-			if (handler != null) {
+				handler = getDefaultHandler(attrMap.getType(attr), attr);
+				aggregateAttribute(attrMap, handler, source, recurse);
+			} else {
 				// Aggregate
 				aggregateAttribute(attrMap, handler, source, recurse);
 			}
@@ -373,10 +389,10 @@ public class AttributeManager {
 	 * @param source the source (node or edge ID) for the attributes
 	 * @param recurse a metanode if we are supposed to recurse (only done for MEDIAN)
 	 */
-	private static void aggregateAttribute(CyAttributes attrMap,
-	                                       AttributeHandler handler,
-	                                       String source,
-	                                       MetaNode recurse) {
+	private void aggregateAttribute(CyAttributes attrMap,
+	                                AttributeHandler handler,
+	                                String source,
+	                                MetaNode recurse) {
 
 		if (recurse == null) {
 			Object value = handler.aggregateAttribute(attrMap, source, 1);
@@ -408,15 +424,15 @@ public class AttributeManager {
 	 * @param attrType "edge" or "node"
  	 * @param target the name of the object
  	 */
-	private static void	assignAttributes(CyAttributes attrMap,
-	                                     String attrType,
-	                                     String target) {
+	private void	assignAttributes(CyAttributes attrMap,
+	                               String target) {
 
 		String [] attributes = attrMap.getAttributeNames();
 		for (int i = 0; i < attributes.length; i++) {
 			String attr = attributes[i];
 			// Get our handler
-			AttributeHandler handler = getHandler(attrType+"."+attr);
+			// AttributeHandler handler = getHandler(attrType+"."+attr);
+			AttributeHandler handler = getHandler(attr);
 			if (handler != null)
 				handler.assignAttribute(attrMap, target);
 		}

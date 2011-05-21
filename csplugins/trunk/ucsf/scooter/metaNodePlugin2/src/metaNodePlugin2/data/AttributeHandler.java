@@ -65,7 +65,7 @@ public class AttributeHandler {
 	 *************************************************************************/
 
 	protected AttributeHandler (String attribute, AttributeHandlingType type) {
-		this.attribute = attribute.substring(5); // Skip over type
+		this.attribute = attribute;
 		this.type = type;
 		this.count = 0;
 		aggregateValue = null;

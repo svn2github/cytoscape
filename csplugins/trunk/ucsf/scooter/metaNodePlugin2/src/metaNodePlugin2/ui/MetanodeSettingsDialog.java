@@ -106,6 +106,7 @@ public class MetanodeSettingsDialog extends JDialog
 	private String chartType = null;
 	private String nodeChartAttribute = null;
 	private MetaNodeGroupViewer groupViewer = null;
+	private AttributeManager defaultAttributeManager = null;
 
 	// Dialog components
 	JPanel tunablePanel = null;
@@ -120,9 +121,11 @@ public class MetanodeSettingsDialog extends JDialog
 		metanodeProperties = new MetanodeProperties("metanode");
 		this.groupViewer = viewer;
 
+		defaultAttributeManager = MetaNodeManager.getDefaultAttributeManager();
+
 		initializeProperties();
 
-		AttributeManager.saveSettings();
+		defaultAttributeManager.saveSettings();
 
 		initialize();
 		pack();
@@ -248,7 +251,7 @@ public class MetanodeSettingsDialog extends JDialog
 			nodeChartEnablers.add(t);
 
 			{
-				// Get the attribute to map
+				// Get the attribute to map (This should be a list! -- FIXME)
 				nodeChartAttrList = new Tunable("nodeChartAttribute", "Attribute to use for node chart",
 		 	 	                                Tunable.LIST, new Integer(0),
 		 	 	                                getNodeAttributes(), null, 0);
@@ -343,7 +346,7 @@ public class MetanodeSettingsDialog extends JDialog
 		Tunable t = metanodeProperties.get("enableHandling");
 		if ((t != null) && (t.valueChanged() || force)) {
       enableHandling = ((Boolean) t.getValue()).booleanValue();
-			AttributeManager.setEnable(enableHandling);
+			defaultAttributeManager.setEnable(enableHandling);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 			enableTunables(enableHandling);
 		}
@@ -387,27 +390,27 @@ public class MetanodeSettingsDialog extends JDialog
 		// For each default value, get the default and set it
 		t = metanodeProperties.get("stringDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
-			AttributeManager.setDefault(CyAttributes.TYPE_STRING, (AttributeHandlingType)getListValue(t));
+			defaultAttributeManager.setDefault(CyAttributes.TYPE_STRING, (AttributeHandlingType)getListValue(t));
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("intDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
-			AttributeManager.setDefault(CyAttributes.TYPE_INTEGER, (AttributeHandlingType)getListValue(t));
+			defaultAttributeManager.setDefault(CyAttributes.TYPE_INTEGER, (AttributeHandlingType)getListValue(t));
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("doubleDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
-			AttributeManager.setDefault(CyAttributes.TYPE_FLOATING, (AttributeHandlingType)getListValue(t));
+			defaultAttributeManager.setDefault(CyAttributes.TYPE_FLOATING, (AttributeHandlingType)getListValue(t));
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("listDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
-			AttributeManager.setDefault(CyAttributes.TYPE_SIMPLE_LIST, (AttributeHandlingType)getListValue(t));
+			defaultAttributeManager.setDefault(CyAttributes.TYPE_SIMPLE_LIST, (AttributeHandlingType)getListValue(t));
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("booleanDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
-			AttributeManager.setDefault(CyAttributes.TYPE_BOOLEAN, (AttributeHandlingType)getListValue(t));
+			defaultAttributeManager.setDefault(CyAttributes.TYPE_BOOLEAN, (AttributeHandlingType)getListValue(t));
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 	}
@@ -417,7 +420,7 @@ public class MetanodeSettingsDialog extends JDialog
 	 */
 	public void revertSettings() {
 		metanodeProperties.revertProperties();
-		AttributeManager.revertSettings();
+		defaultAttributeManager.revertSettings();
 	}
 
 	/**
@@ -435,7 +438,7 @@ public class MetanodeSettingsDialog extends JDialog
 	 * @param network the network we're updating our override values for
 	 */
 	public void updateOverrides(CyNetwork network) {
-		AttributeManager.loadHandlerMappings(network);
+		defaultAttributeManager.loadHandlerMappings(network);
 	}
 
 	/**
@@ -489,11 +492,12 @@ public class MetanodeSettingsDialog extends JDialog
 	 */
 	private String[] getAttributes() {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+		// CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 
 		List<String> attributeList = new ArrayList();
-		makeAttributes("node", nodeAttributes, attributeList);
-		makeAttributes("edge", edgeAttributes, attributeList);
+		makeAttributes(null, nodeAttributes, attributeList);
+		// makeAttributes("node", nodeAttributes, attributeList);
+		// makeAttributes("edge", edgeAttributes, attributeList);
 		String [] a = new String[1];
 		attributeArray = attributeList.toArray(a);
 		Arrays.sort(attributeArray);
@@ -554,7 +558,7 @@ public class MetanodeSettingsDialog extends JDialog
 			revertSettings();
 			setVisible(false);
 		} else if (command.equals("clear")) {
-			AttributeManager.clearSettings();
+			defaultAttributeManager.clearSettings();
 			tunableChanged(attrList);
 
 		// Apply the current settings to the selected metanodes
@@ -592,11 +596,11 @@ public class MetanodeSettingsDialog extends JDialog
 		mn.setUseNestedNetworks(useNestedNetworks);
 		// mn.setSizeToBoundingBox(sizeToBoundingBox);
 		mn.setHideMetaNode(hideMetaNode);
-		mn.setAggregateAttributes(enableHandling);
 		// System.out.println("setting opacity for "+mn+" to "+metanodeOpacity);
 		mn.setMetaNodeOpacity(metanodeOpacity);
 		mn.setChartType(chartType);
 		mn.setNodeChartAttribute(nodeChartAttribute);
+		mn.setAttributeManager(defaultAttributeManager);
 	}
 
 	public void tunableChanged(Tunable t) {
@@ -611,7 +615,7 @@ public class MetanodeSettingsDialog extends JDialog
 			MetaNodeManager.setExpandedOpacityDefault(metanodeOpacity);
 		} else if (t.getName().equals("enableHandling")) {
       enableHandling = ((Boolean) t.getValue()).booleanValue();
-			AttributeManager.setEnable(enableHandling);
+			defaultAttributeManager.setEnable(enableHandling);
 			enableTunables(enableHandling);
 		} else if (t.getName().equals("nodeChartAttribute")) {
 			nodeChartAttribute = (String)getListValue(t);
@@ -632,7 +636,7 @@ public class MetanodeSettingsDialog extends JDialog
 			AttributeHandlingType handlerType = (AttributeHandlingType)getListValue(t);
 
 			// Create the handler
-			AttributeManager.addHandler(attributeWP, handlerType);
+			defaultAttributeManager.addHandler(attributeWP.substring(5), handlerType);
 		}
 		repaint();
 	}
@@ -640,15 +644,9 @@ public class MetanodeSettingsDialog extends JDialog
 	private void updateAttributeHandlers(String attributeWP) {
 		CyAttributes attrs = null;
 
-		// Strip prefix
-		String attribute = attributeWP.substring(5);
+		attrs = Cytoscape.getNodeAttributes();
 
-		if (attributeWP.startsWith("edge"))
-			attrs = Cytoscape.getEdgeAttributes();
-		else
-			attrs = Cytoscape.getNodeAttributes();
-
-		byte type = attrs.getType(attribute);
+		byte type = attrs.getType(attributeWP);
 
 		// Get the list
 		AttributeHandlingType[] hTypes = AttributeManager.getHandlingOptions(type);
@@ -667,7 +665,7 @@ public class MetanodeSettingsDialog extends JDialog
 		typeList.setLowerBound(handlingTypes);
 
 		// Do we already have a handler?
-		AttributeHandler handler = AttributeManager.getHandler(attributeWP);
+		AttributeHandler handler = defaultAttributeManager.getHandler(attributeWP);
 		if (handler != null) {
 			// Yes, show the right one to the user
 			for (int i = 0; i < handlingTypes.length; i++) {

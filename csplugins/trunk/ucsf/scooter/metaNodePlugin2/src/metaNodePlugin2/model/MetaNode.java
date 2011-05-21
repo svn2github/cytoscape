@@ -62,6 +62,7 @@ import cytoscape.groups.CyGroupViewer;
 
 // our imports
 import metaNodePlugin2.MetaNodePlugin2;
+import metaNodePlugin2.data.AttributeManager;
 import metaNodePlugin2.view.ViewUtils;
 
 // import csplugins.layout.Profile;
@@ -81,7 +82,7 @@ public class MetaNode {
 	private CyLogger logger = null;
 	private CyGroup metaGroup = null;
 
-	private boolean aggregateAttributes = false;
+	private AttributeManager attributeManager = null;
 	private boolean hideMetanode = true;
 	private double metanodeOpacity = 0.;
 	private boolean useNestedNetworks = false;
@@ -111,6 +112,8 @@ public class MetaNode {
 	}
 
 	public CyGroup getCyGroup() { return metaGroup; }
+
+	public CyNode getGroupNode() { return metaGroup.getGroupNode(); }
 
 	/**
 	 * Add a node to this metaNode.  It will already have been added to the 
@@ -196,6 +199,10 @@ public class MetaNode {
 
 		// Restore our meta-edges
 		ViewUtils.restoreEdges(metaGroup, metaEdges.values(), view);
+
+		// Update our attributes (if we're aggregating)
+		if (attributeManager != null)
+			attributeManager.updateAttributes(this);
 
 		collapsed = true;
 	}
@@ -373,6 +380,11 @@ public class MetaNode {
 		this.nodeChartAttribute = nodeChartAttribute;
 	}
 
+	/**
+	 * Gets the attribute to use node charting
+	 *
+	 * @return the attribute to use for node charting
+	 */
 	public String getNodeChartAttribute() {
 		return this.nodeChartAttribute;
 	}
@@ -386,6 +398,11 @@ public class MetaNode {
 		this.chartType = chartType;
 	}
 
+	/**
+	 * Get the chart type we're using
+	 *
+	 * @return chart type
+	 */
 	public String getChartType() {
 		return this.chartType;
 	}
@@ -401,17 +418,23 @@ public class MetaNode {
 	}
 
 	/**
-	 * Controls whether this metanode is aggregating attributes
+	 * Set the attribute manager (for attribute aggregation) that
+	 * we're supposed to use.
 	 *
-	 * @param aggregate if 'true' aggregate
+	 * @param attributeManager the attribute manager to use
 	 */
-	public void setAggregateAttributes(boolean aggregate) {
-		if (!this.aggregateAttributes && aggregate) {
-			this.aggregateAttributes = aggregate;
-			// updateAttributes();
-		} else {
-			this.aggregateAttributes = aggregate;
-		}
+	public void setAttributeManager(AttributeManager attributeManager) {
+		this.attributeManager = attributeManager;
+	}
+
+	/**
+	 * Get the attribute manager (for attribute aggregation) that
+	 * we're using.
+	 *
+	 * @return the attribute manager we're using
+	 */
+	public AttributeManager getAttributeManager() {
+		return attributeManager;
 	}
 
 	/**
@@ -475,6 +498,7 @@ public class MetaNode {
  	 *		add a meta-edge to the parter
 	 *		if the partner is a group and the group is in our network:
 	 *			add ourselves to the group's outer edges list (recursively)
+	 *			add ourselves to the partner's meta edge list
 	 *		if the partner is in a group:
 	 *			add ourselves to the group's meta edge list
  	 */
@@ -494,7 +518,7 @@ public class MetaNode {
 			CyEdge metaEdge = createMetaEdge(edge.getIdentifier(), metaGroup.getGroupNode(), node);
 
 			MetaNode metaPartner = MetaNodeManager.getMetaNode(node);
-			if (metaPartner != null) { 
+			if (metaPartner != null && metaPartner.metaGroup.getNetwork().equals(metaGroup.getNetwork())) { 
 				// Recursively add links to the appropriate children
 				addPartnerEdges(metaPartner);
 				metaPartner.addMetaEdge(metaEdge);

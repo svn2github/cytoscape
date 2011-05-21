@@ -44,6 +44,7 @@ import cytoscape.groups.CyGroup;
 import cytoscape.view.CyNetworkView;
 
 import metaNodePlugin2.MetaNodePlugin2;
+import metaNodePlugin2.data.AttributeManager;
 
 
 /**
@@ -60,6 +61,7 @@ public class MetaNodeManager {
 	protected static boolean useNestedNetworksDefault = false;
 	protected static String chartTypeDefault = null;
 	protected static String nodeChartAttributeDefault = null;
+	protected static AttributeManager defaultAttributeManager = new AttributeManager();
 
 	public static final String X_HINT_ATTR = "__metanodeHintX";
 	public static final String Y_HINT_ATTR = "__metanodeHintY";
@@ -92,6 +94,7 @@ public class MetaNodeManager {
 		mn.setMetaNodeOpacity(metanodeOpacityDefault);
 		mn.setChartType(chartTypeDefault);
 		mn.setNodeChartAttribute(nodeChartAttributeDefault);
+		mn.setAttributeManager(new AttributeManager(defaultAttributeManager));
 		if (metaGroup.getNetwork() == null) {
 			metaGroup.setNetwork(Cytoscape.getCurrentNetwork(), false);
 		}
@@ -281,5 +284,14 @@ public class MetaNodeManager {
 	 */
 	static public String getChartTypeDefault() {
 		return MetaNodeManager.chartTypeDefault;
+	}
+
+	/**
+	 * Gets the default attribute manager
+	 *
+	 * @return the default attribute manager object
+	 */
+	static public AttributeManager getDefaultAttributeManager () {
+		return MetaNodeManager.defaultAttributeManager;
 	}
 }

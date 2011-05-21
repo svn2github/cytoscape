@@ -257,8 +257,7 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	public void collapse(MetaNode metaNode, CyNetworkView view) {
 		// Actually collapse the group
 		metaNode.collapse(view);
-		// Handle our attributes
-		AttributeManager.updateAttributes(metaNode);
+
 		if (haveNodeCharts) {
 			// Handle our node charts
 			NodeCharts.updateNodeCharts(metaNode, logger);
