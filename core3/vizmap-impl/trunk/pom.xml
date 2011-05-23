@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.cytoscape</groupId>
 		<artifactId>parent</artifactId>
-		<version>3.0.0-alpha7</version>
+		<version>3.0.0-alpha8-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.cytoscape</groupId>
@@ -11,6 +12,10 @@
 	<packaging>pom</packaging>
 	<version>3.0.0-alpha3-SNAPSHOT</version>
 	<name>vizmap-impl-parent</name>
+	
+	<properties>
+		<vizmap-api.version>3.0.0-alpha4-SNAPSHOT</vizmap-api.version>
+	</properties>
 
 	<modules>
 		<module>impl</module>
@@ -48,33 +53,31 @@
 		</repository>
 	</repositories>
 
-    <build>
-        <plugins>
-            <plugin>
-                <inherited>false</inherited>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>${maven-release-plugin.version}</version>
-                <configuration>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <goals>deploy</goals>
-                    <!-- so that impl bundles with modules will build correctly -->
-                    <preparationGoals>clean install</preparationGoals>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<inherited>false</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>${maven-release-plugin.version}</version>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<goals>deploy</goals>
+					<!-- so that impl bundles with modules will build correctly -->
+					<preparationGoals>clean install</preparationGoals>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-	<!--
-	Dependencies included here should *ONLY* be for the impl bundle.
-	All additional dependencies necessary for the integration tests (it) 
-	should be kept in the it/pom.xml
-	-->
+	<!-- Dependencies included here should *ONLY* be for the impl bundle. All 
+		additional dependencies necessary for the integration tests (it) should be 
+		kept in the it/pom.xml -->
 	<dependencies>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>vizmap-api</artifactId>
-			<version>3.0.0-alpha2</version>
+			<version>${vizmap-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -95,6 +98,7 @@
 			<version>3.0.0-alpha3</version>
 			<scope>provided</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -110,10 +114,23 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>vizmap-api</artifactId>
-			<version>3.0.0-alpha2</version>
+			<version>${vizmap-api.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>property-api</artifactId>
+			<version>3.0.0-alpha5-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>test-support</artifactId>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>presentation-api</artifactId>
@@ -121,10 +138,10 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-            <groupId>org.cytoscape</groupId>
-            <artifactId>default-mappings</artifactId>
-            <version>3.0.0-alpha3</version>
-            <scope>provided</scope>
-        </dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>default-mappings</artifactId>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>
