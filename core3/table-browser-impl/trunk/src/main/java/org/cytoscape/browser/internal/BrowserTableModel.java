@@ -484,6 +484,8 @@ public final class BrowserTableModel extends AbstractTableModel
 			final String columnName = column.getName();
 			if (type == String.class)
 				variableNameToTypeMap.put(columnName, String.class);
+			else if (type == Double.class)
+				variableNameToTypeMap.put(columnName, Double.class);
 			else if (type == Integer.class)
 				variableNameToTypeMap.put(columnName, Long.class);
 			else if (type == Long.class)
