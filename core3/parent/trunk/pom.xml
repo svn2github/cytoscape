@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
@@ -13,18 +14,18 @@
 
 		<spring.version>2.5.6</spring.version>
 		<spring.osgi.version>1.2.1</spring.osgi.version>
-		<junit.version>4.8.1</junit.version>
-		<mockito.version>1.8.1</mockito.version>
+		<junit.version>4.8.2</junit.version>
+		<mockito.version>1.8.5</mockito.version>
 
 		<pax.exam.version>1.2.2</pax.exam.version>
-		<maven-paxexam-plugin.version>1.2.2</maven-paxexam-plugin.version>
+		<maven-paxexam-plugin.version>1.2.4</maven-paxexam-plugin.version>
 
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
-		<maven-javadoc-plugin.version>2.7</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>2.8</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
 		<maven-release-plugin.version>2.1</maven-release-plugin.version>
 		<maven-pax-plugin.version>1.5</maven-pax-plugin.version>
-		<maven-bundle-plugin.version>2.1.0</maven-bundle-plugin.version>
+		<maven-bundle-plugin.version>2.3.4</maven-bundle-plugin.version>
 		<maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
 		<maven-surefire-plugin.version>2.7.1</maven-surefire-plugin.version>
 		<maven-assembly-plugin.version>2.2</maven-assembly-plugin.version>
@@ -58,9 +59,7 @@
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 					<compilerArguments>
-					<!--
-						<compilerArgument>-Xlint:all -Xlint:-path</compilerArgument>
-						-->
+						<!-- <compilerArgument>-Xlint:all -Xlint:-path</compilerArgument> -->
 						<Xmaxwarns>10000</Xmaxwarns>
 						<Xmaxerrs>10000</Xmaxerrs>
 					</compilerArguments>
@@ -72,6 +71,7 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${maven-javadoc-plugin.version}</version>
 				<configuration>
+					<skip>true</skip>
 					<encoding>UTF-8</encoding>
 					<locale>en</locale>
 					<javadocVersion>1.6</javadocVersion>
@@ -81,7 +81,7 @@
 					</links>
 					<footer>Cytoscape 3 Core API</footer>
 					<header>Cytoscape 3 Core API</header>
-					<bottom>Copyright 2010 Cytoscape Consortium. All rights reserved.</bottom>
+					<bottom>Copyright 2010 - 2011 Cytoscape Consortium. All rights reserved.</bottom>
 					<tagletArtifacts>
 						<tagletArtifact>
 							<groupId>org.cytoscape</groupId>
@@ -90,14 +90,7 @@
 						</tagletArtifact>
 					</tagletArtifacts>
 				</configuration>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
+
 			</plugin>
 			<plugin>
 				<inherited>true</inherited>
@@ -143,82 +136,83 @@
 	<!-- these items don't exist in the typical public maven repos; we could 
 		add these directly to Nexus if desired -->
 	<repositories>
-      <repository>
-          <id>cytoscape_snapshots</id>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-          <releases>
-            <enabled>false</enabled>
-          </releases>
-          <name>Cytoscape Snapshots</name>
-          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
-       </repository>
-       <repository>
-          <id>cytoscape_releases</id>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <name>Cytoscape Releases</name>
-          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
-       </repository>
-       <repository>
-          <id>cytoscape_thirdparty</id>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <name>Cytoscape Third Party</name>
-          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/thirdparty/</url>
-       </repository>
-       <repository>
-          <id>cytoscape_biopax_release</id>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <name>Cytoscape BioPAX Release Mirror</name>
-          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/biopax-release/</url>
-       </repository>
-       <repository>
-          <id>cytoscape_biopax_snapshot</id>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-          <releases>
-            <enabled>false</enabled>
-          </releases>
-          <name>Cytoscape BioPAX Snapshot Mirror</name>
-          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/biopax-snapshot/</url>
-       </repository>
-       <repository>
-          <id>ops4j-release</id>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <name>Cytoscape Ops4j Release Mirror</name>
-          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/ops4j-release/</url>
-       </repository>
-       <repository>
-          <id>spring-osgi</id>
-          <name>Cytoscape Spring OSGi Release Mirror</name>
-          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/spring-osgi/</url>
-       </repository>
-       <repository>
-          <id>spring-osgi-snapshots</id>
-          <name>Cytoscape Spring OSGi External Mirror</name>
-          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/spring-osgi-external/</url>
-       </repository>
+		<repository>
+			<id>cytoscape_snapshots</id>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<name>Cytoscape Snapshots</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>cytoscape_releases</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Cytoscape Releases</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+		</repository>
+		<repository>
+			<id>cytoscape_thirdparty</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Cytoscape Third Party</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/thirdparty/</url>
+		</repository>
+		<repository>
+			<id>cytoscape_biopax_release</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Cytoscape BioPAX Release Mirror</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/biopax-release/</url>
+		</repository>
+		<repository>
+			<id>cytoscape_biopax_snapshot</id>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<name>Cytoscape BioPAX Snapshot Mirror</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/biopax-snapshot/</url>
+		</repository><!-- <repository> <id>ops4j-release</id> <snapshots> <enabled>false</enabled> 
+			</snapshots> <releases> <enabled>true</enabled> </releases> <name>Cytoscape 
+			Ops4j Release Mirror</name> <url>http://cytoscape.wodaklab.org/nexus/content/repositories/ops4j-release/</url> 
+			</repository> -->
+		<repository>
+			<id>spring-osgi</id>
+			<name>Cytoscape Spring OSGi Release Mirror</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/spring-osgi/</url>
+		</repository>
+		<repository>
+			<id>spring-osgi-snapshots</id>
+			<name>Cytoscape Spring OSGi External Mirror</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/spring-osgi-external/</url>
+		</repository>
+
+		<repository>
+			<id>neo4j-public-repository</id>
+			<name>Publically available Maven 2 repository for Neo4j</name>
+			<url>http://m2.neo4j.org</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
@@ -259,11 +253,11 @@
 		</pluginRepository>
 	</pluginRepositories>
 
-  <scm>
-    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/parent/trunk</connection>
-    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/parent/trunk</developerConnection>
-    <url>http://chianti.ucsd.edu/svn/core3/parent/trunk</url>
-  </scm>
+	<scm>
+		<connection>scm:svn:http://chianti.ucsd.edu/svn/core3/parent/trunk</connection>
+		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/parent/trunk</developerConnection>
+		<url>http://chianti.ucsd.edu/svn/core3/parent/trunk</url>
+	</scm>
 
 	<reporting>
 		<plugins>
