@@ -43,9 +43,9 @@ import org.cytoscape.equations.interpreter.Interpreter;
 
 class Framework {
 	static private class BadReturnFunction implements Function {
-		public String getName() { return "BAD"; }
+		public String getName() { return "BADRETURN"; }
 		public String getFunctionSummary() { return "Returns an invalid type at runtime."; }
-		public String getUsageDescription() { return "Call this with \"BAD()\"."; }
+		public String getUsageDescription() { return "Call this with \"BADRETURN()\"."; }
 		public Class getReturnType() { return Double.class; }
 		public Class validateArgTypes(final Class[] argTypes) { return argTypes.length == 0 ? Double.class : null; }
 		public Object evaluateFunction(final Object[] args) { return new Integer(1); }
