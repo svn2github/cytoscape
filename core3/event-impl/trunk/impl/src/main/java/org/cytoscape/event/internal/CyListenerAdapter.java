@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,6 +27,7 @@
 */
 package org.cytoscape.event.internal;
 
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -55,7 +49,6 @@ import org.slf4j.LoggerFactory;
  * Some static utility methods that help you fire events.
  */
 public class CyListenerAdapter {
-	
 	private static final Logger logger = LoggerFactory.getLogger(CyListenerAdapter.class);
 	private static final Executor EXEC = Executors.newCachedThreadPool();
 	private static final ServiceComparator serviceComparator = new ServiceComparator(); 
@@ -94,25 +87,27 @@ public class CyListenerAdapter {
 			return;
 		} 
 
+		Object lastListener = null;
 		try {
 			final Method method = listenerClass.getMethod("handleEvent", event.getClass());
 
 			for (final Object listener : listeners) {
+				lastListener = listener;
 				//System.out.println("event: " + event.getClass().getName() + "  listener: " + listener.getClass().getName());
 				method.invoke(listenerClass.cast(listener), event);
 			}
 		} catch (NoSuchMethodException e) {
 			logger.error("Listener doesn't implement \"handleEvent\" method: "
-			                   + listenerClass.getName(), e);
+				     + listenerClass.getName(), e);
 		} catch (InvocationTargetException e) {
-			logger.error("Listener threw exception as part of \"handleEvent\" invocation: "
-			                   + listenerClass.getName(), e);
+			logger.error("Listener \"" + lastListener.getClass().getName()
+				     + "\" threw exception as part of \"handleEvent\" invocation: "
+				     + listenerClass.getName(), e);
 		} catch (IllegalAccessException e) {
 			logger.error("Listener can't execute \"handleEvent\" method: "
-			                   + listenerClass.getName(), e);
+				     + listenerClass.getName(), e);
 		}
 	}
-
 
 	/**
 	 * Calls each listener found in the Service Registry identified by the listenerClass
