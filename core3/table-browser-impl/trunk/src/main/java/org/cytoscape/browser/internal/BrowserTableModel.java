@@ -249,18 +249,8 @@ public final class BrowserTableModel extends AbstractTableModel
 		if (e.getSource() != attrs)
 			return;
 
-System.err.println("******************** in BrowserTableModel.handleEvent(ColumnCreatedEvent)");
-System.err.println("******************** \t new columnName = "+e.getColumnName());
-try{
 		attrNamesAndVisibilities.add(new AttrNameAndVisibility(e.getColumnName(), true));
-} catch(final Exception e1) {
-	System.err.println("******************** \t exception (1) was: "+e1);
-}
-try{
 		fireTableStructureChanged();
-}catch(final Exception e2) {
-	System.err.println("******************** \t exception (2) was: "+e2);
-}
 	}
 
 	@Override
