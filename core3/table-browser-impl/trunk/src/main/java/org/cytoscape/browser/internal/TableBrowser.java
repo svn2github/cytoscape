@@ -15,6 +15,8 @@ import javax.swing.Icon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -41,7 +43,8 @@ import org.cytoscape.work.swing.GUITaskManager;
 
 @SuppressWarnings("serial")
 public class TableBrowser
-	extends JPanel implements CytoPanelComponent, ActionListener, NetworkViewAddedListener, TableAboutToBeDeletedListener
+	extends JPanel implements CytoPanelComponent, ActionListener, NetworkViewAddedListener,
+				  TableAboutToBeDeletedListener
 {
 	private final CyTableManager tableManager;
 	private final CyServiceRegistrar serviceRegistrar;
@@ -146,7 +149,9 @@ public class TableBrowser
 								  tableRowUpdateService);
 			serviceRegistrar.registerAllServices(browserTableModel, new Properties());
 			browserTable.setModel(browserTableModel);
-			browserTable.setRowSorter(new TableRowSorter(browserTableModel));
+			final TableRowSorter rowSorter = new TableRowSorter(browserTableModel);
+			browserTable.setRowSorter(rowSorter);
+			updateColumnComparators(rowSorter);
 			attributeBrowserToolBar.setBrowserTableModel(browserTableModel);
 			final TableMetadata tableMetadata = tableToMetadataMap.get(currentTable);
 			if (tableMetadata != null) {
@@ -169,16 +174,33 @@ public class TableBrowser
 		applicationManager.setCurrentTable(currentTable);
 	}
 
+	public void updateColumnComparators(final TableRowSorter rowSorter) {
+		for (int column = 0; column < browserTableModel.getColumnCount(); ++column)
+			rowSorter.setComparator(
+				column,
+				new ValidatedObjectAndEditStringComparator(
+					browserTableModel.getColumn(column).getType()));
+	}
+
+	@Override
 	public void handleEvent(final NetworkViewAddedEvent e) {
 		final CyTable nodeTable = e.getNetworkView().getModel().getDefaultNodeTable();
 		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
 		comboBoxModel.addAndSetSelectedItem(nodeTable);
 	}
 
+	@Override
 	public void handleEvent(final TableAboutToBeDeletedEvent e) {
 		final CyTable cyTable = e.getTable();
 		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
 		comboBoxModel.removeItem(cyTable);
 		tableToMetadataMap.remove(cyTable);
 	}
+/*
+	@Override
+	public void tableChanged(final TableModelEvent e) {
+		if (e.getFirstRow() == -1)
+			updateColumnComparators(rowSorter);
+	}
+*/
 }

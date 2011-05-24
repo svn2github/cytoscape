@@ -46,7 +46,9 @@ import javax.swing.border.Border;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import org.cytoscape.browser.ui.FormulaBuilderDialog;
 import org.cytoscape.browser.util.HyperLinkOut;
@@ -610,6 +612,19 @@ public class BrowserTable extends JTable
 				c = c.getParent();
 			}
 		}
+	}
+
+	public void addColumn(final TableColumn aColumn) {
+		super.addColumn(aColumn);
+
+		final TableRowSorter rowSorter = (TableRowSorter)getRowSorter();
+		if (rowSorter == null)
+			return;
+
+		final BrowserTableModel tableModel = (BrowserTableModel)getModel();
+		final Class<?> rowDataType = tableModel.getColumn(aColumn.getModelIndex()).getType();
+		rowSorter.setComparator(aColumn.getModelIndex(),
+					new ValidatedObjectAndEditStringComparator(rowDataType));
 	}
 }
 
