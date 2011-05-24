@@ -87,9 +87,9 @@ public class MinimalVisualLexicon extends AbstractVisualLexicon {
 
 	// //// Node VP /////////
 	public static final VisualProperty<Paint> NODE_PAINT = new PaintVisualProperty(
-			Color.gray, PAINT_RANGE, "NODE_PAINT", "Node Paint", CyNode.class);
+			new Color(120, 120, 120), PAINT_RANGE, "NODE_PAINT", "Node Paint", CyNode.class);
 	public static final VisualProperty<Paint> NODE_FILL_COLOR = new PaintVisualProperty(
-			Color.RED, PAINT_RANGE, "NODE_FILL_COLOR", "Node Fill Color",
+			new Color(200, 0, 0), PAINT_RANGE, "NODE_FILL_COLOR", "Node Fill Color",
 			CyNode.class);
 
 	public static final VisualProperty<Paint> NODE_LABEL_COLOR = new PaintVisualProperty(
