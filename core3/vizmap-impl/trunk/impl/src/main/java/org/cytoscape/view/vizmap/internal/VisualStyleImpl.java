@@ -38,6 +38,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -45,6 +46,8 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
@@ -208,31 +211,38 @@ public class VisualStyleImpl implements VisualStyle {
 			final Collection<VisualProperty<?>> visualProperties) {
 		
 		for (VisualProperty<?> vp : visualProperties)
-			applyToView(views, vp);
+					applyToView(views, vp);
 	}
 
 	private void applyToView(final Collection<? extends View<?>> views, final VisualProperty<?> vp) {
 
 		logger.info("###### Apply called for " + vp.getDisplayName());
-		
+
 		final VisualMappingFunction<?, ?> mapping = getVisualMappingFunction(vp);
 
 		if (mapping != null) {
 			// Mapping is available for this VP. Apply it.
-			logger.debug("###### Visual Mapping found for " + vp.getDisplayName() + ": " + mapping.toString());
+			logger.debug("Visual Mapping found for " + vp.getDisplayName() + ": " + mapping.toString());
+
+			// Default of this style
 			final Object styleDefaultValue = getDefaultValue(vp);
+			// Default of this Visual Property
+			final Object vpDefault = vp.getDefault();
+
 			for (View<?> view : views) {
 				mapping.apply((View<? extends CyTableEntry>) view);
-
-				// FIXME: this condition is not enough in some cases.
-				if (view.getVisualProperty(vp) == vp.getDefault())
+				
+				if (view.getVisualProperty(vp) == vpDefault) {
 					view.setVisualProperty(vp, styleDefaultValue);
+				} 
 			}
 		} else if (!vp.shouldIgnoreDefault()) {
 			// Ignore defaults flag is OFF. Apply defaults.
 			applyStyleDefaults((Collection<View<?>>) views, vp);
 		} else if (vp.getDefault() instanceof Visualizable == false) {
 			Object defVal = getDefaultValue(vp);
+
+			// Visual Style does not have default value
 			if (defVal == null) {
 				this.perVSDefaults.put(vp, vp.getDefault());
 				defVal = getDefaultValue(vp);
@@ -244,6 +254,8 @@ public class VisualStyleImpl implements VisualStyle {
 				// logger.debug(vp.getDisplayName() + ": DEF Val = " + defVal);
 				if (defVal.equals(val) == false)
 					view.setVisualProperty(vp, val);
+
+				logger.debug("!! Applied 2: " + view.getVisualProperty(vp));
 			}
 		}
 	}
