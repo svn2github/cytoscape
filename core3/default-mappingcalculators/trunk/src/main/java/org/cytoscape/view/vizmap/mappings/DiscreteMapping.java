@@ -48,127 +48,127 @@ import org.slf4j.LoggerFactory;
  */
 public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DiscreteMapping.class);
+	private static final Logger logger = LoggerFactory.getLogger(DiscreteMapping.class);
 
-    // Name of mapping. This will be used by toString() method.
-    protected static final String DISCRETE = "Discrete Mapping";
+	// Name of mapping. This will be used by toString() method.
+	protected static final String DISCRETE = "Discrete Mapping";
 
-    // contains the actual map elements (sorted)
-    private final Map<K, V> attribute2visualMap;
+	// contains the actual map elements (sorted)
+	private final Map<K, V> attribute2visualMap;
 
-    /**
-     * Constructor.
-     * 
-     * @param defObj
-     *            Default Object.
-     */
-    public DiscreteMapping(final String attrName, final Class<K> attrType, final VisualProperty<V> vp) {
-	super(attrName, attrType, vp);
-	attribute2visualMap = new HashMap<K, V>();
-    }
-
-    @Override
-    public String toString() {
-	return DISCRETE;
-    }
-
-    @Override
-    public void apply(View<? extends CyTableEntry> view) {
-	if (view == null)
-	    return; // empty view, nothing to do
-
-	applyDiscreteMapping(view);
-    }
-
-    /**
-     * Read attribute from row, map it and apply it.
-     * 
-     * types are guaranteed to be correct (? FIXME: check this)
-     * 
-     * Putting this in a separate method makes it possible to make it
-     * type-parametric.
-     * 
-     * @param <V>
-     *            the type-parameter of the ViewColumn column
-     * @param <K>
-     *            the type-parameter of the key stored in the mapping (the
-     *            object read as an attribute value has to be is-a K)
-     * @param <V>
-     *            the type-parameter of the View
-     */
-    private void applyDiscreteMapping(final View<? extends CyTableEntry> view) {
-	final CyRow row = view.getModel().getCyRow();
-	V value = null;
-
-	if (row.isSet(attrName)) {
-	    // skip Views where source attribute is not defined;
-	    // ViewColumn will automatically substitute the per-VS or global
-	    // default, as appropriate
-	    final CyColumn column = row.getTable().getColumn(attrName);
-	    final Class<?> attrClass = column.getType();
-
-	    if (attrClass.isAssignableFrom(List.class)) {
-		List<?> list = row.getList(attrName, column.getListElementType());
-
-		if (list != null) {
-		    for (Object item : list) {
-			// TODO: should we convert other types to String?
-			String key = item.toString();
-			value = attribute2visualMap.get(key);
-			if (value != null)
-			    break;
-		    }
-		}
-	    } else {
-		Object key = row.get(attrName, attrType);
-
-		if (key != null)
-		    value = attribute2visualMap.get(key);
-	    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param defObj
+	 *            Default Object.
+	 */
+	public DiscreteMapping(final String attrName, final Class<K> attrType, final VisualProperty<V> vp) {
+		super(attrName, attrType, vp);
+		attribute2visualMap = new HashMap<K, V>();
 	}
 
-	// set a new value or null to use the default one:
-	view.setVisualProperty(vp, value);
-    }
+	@Override
+	public String toString() {
+		return DISCRETE;
+	}
 
-    /**
-     * Gets Value for Specified Key.
-     * 
-     * @param key
-     *            String Key.
-     * @return Object.
-     */
-    public V getMapValue(K key) {
-	return attribute2visualMap.get(key);
-    }
+	@Override
+	public void apply(View<? extends CyTableEntry> view) {
+		if (view == null)
+			return; // empty view, nothing to do
 
-    /**
-     * Puts New Key/Value in Map.
-     * 
-     * @param key
-     *            Key Object.
-     * @param value
-     *            Value Object.
-     */
-    public <T extends V> void putMapValue(final K key, final T value) {
-	attribute2visualMap.put(key, value);
-    }
+		applyDiscreteMapping(view);
+	}
 
-    /**
-     * Adds All Members of Specified Map.
-     * 
-     * @param map
-     *            Map.
-     */
-    public <T extends V> void putAll(Map<K, T> map) {
-	attribute2visualMap.putAll(map);
-    }
+	/**
+	 * Read attribute from row, map it and apply it.
+	 * 
+	 * types are guaranteed to be correct (? FIXME: check this)
+	 * 
+	 * Putting this in a separate method makes it possible to make it
+	 * type-parametric.
+	 * 
+	 * @param <V>
+	 *            the type-parameter of the ViewColumn column
+	 * @param <K>
+	 *            the type-parameter of the key stored in the mapping (the
+	 *            object read as an attribute value has to be is-a K)
+	 * @param <V>
+	 *            the type-parameter of the View
+	 */
+	private void applyDiscreteMapping(final View<? extends CyTableEntry> view) {
+		final CyRow row = view.getModel().getCyRow();
+		V value = null;
 
-    /**
-     * gets all map values
-     * 
-     */
-    public Map<K, V> getAll() {
-	return attribute2visualMap;
-    }
+		if (row.isSet(attrName)) {
+			// skip Views where source attribute is not defined;
+			// ViewColumn will automatically substitute the per-VS or global
+			// default, as appropriate
+			final CyColumn column = row.getTable().getColumn(attrName);
+			final Class<?> attrClass = column.getType();
+
+			if (attrClass.isAssignableFrom(List.class)) {
+				List<?> list = row.getList(attrName, column.getListElementType());
+
+				if (list != null) {
+					for (Object item : list) {
+						// TODO: should we convert other types to String?
+						String key = item.toString();
+						value = attribute2visualMap.get(key);
+						if (value != null)
+							break;
+					}
+				}
+			} else {
+				Object key = row.get(attrName, attrType);
+
+				if (key != null)
+					value = attribute2visualMap.get(key);
+			}
+		}
+
+		// set a new value or null to use the default one:
+		view.setVisualProperty(vp, value);
+	}
+
+	/**
+	 * Gets Value for Specified Key.
+	 * 
+	 * @param key
+	 *            String Key.
+	 * @return Object.
+	 */
+	public V getMapValue(K key) {
+		return attribute2visualMap.get(key);
+	}
+
+	/**
+	 * Puts New Key/Value in Map.
+	 * 
+	 * @param key
+	 *            Key Object.
+	 * @param value
+	 *            Value Object.
+	 */
+	public <T extends V> void putMapValue(final K key, final T value) {
+		attribute2visualMap.put(key, value);
+	}
+
+	/**
+	 * Adds All Members of Specified Map.
+	 * 
+	 * @param map
+	 *            Map.
+	 */
+	public <T extends V> void putAll(Map<K, T> map) {
+		attribute2visualMap.putAll(map);
+	}
+
+	/**
+	 * gets all map values
+	 * 
+	 */
+	public Map<K, V> getAll() {
+		return attribute2visualMap;
+	}
 }
