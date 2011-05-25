@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
@@ -26,25 +27,28 @@ import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.browser.ui.AttributeBrowserToolBar;
 import org.cytoscape.equations.EquationCompiler;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.model.CyTableRowUpdateService;
 import org.cytoscape.model.events.TableAboutToBeDeletedEvent;
 import org.cytoscape.model.events.TableAboutToBeDeletedListener;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.session.events.SetCurrentNetworkEvent;
+import org.cytoscape.session.events.SetCurrentNetworkListener;
 import org.cytoscape.task.TableTaskFactory;
 import org.cytoscape.util.swing.OpenBrowser;
-import org.cytoscape.view.model.events.NetworkViewAddedEvent;
-import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.work.swing.GUITaskManager;
 
 
 @SuppressWarnings("serial")
 public class TableBrowser
-	extends JPanel implements CytoPanelComponent, ActionListener, NetworkViewAddedListener,
-				  TableAboutToBeDeletedListener
+	extends JPanel implements CytoPanelComponent, ActionListener, TableAboutToBeDeletedListener,
+				  SetCurrentNetworkListener
 {
 	private final CyTableManager tableManager;
 	private final CyServiceRegistrar serviceRegistrar;
@@ -171,25 +175,40 @@ public class TableBrowser
 	}
 
 	@Override
-	public void handleEvent(final NetworkViewAddedEvent e) {
-		final CyTable nodeTable = e.getNetworkView().getModel().getDefaultNodeTable();
+	public void handleEvent(final TableAboutToBeDeletedEvent e) {
+		final CyTable cyTable = e.getTable();
 		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
-		comboBoxModel.addAndSetSelectedItem(nodeTable);
+		comboBoxModel.removeItem(cyTable);
+		tableToMetadataMap.remove(cyTable);
 	}
 
 	@Override
-	public void handleEvent(final TableAboutToBeDeletedEvent e) {
-		try {
-		final CyTable cyTable = e.getTable();
-System.err.println("********************************************** cyTable="+cyTable);
+	public void handleEvent(final SetCurrentNetworkEvent e) {
 		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
-System.err.println("********************************************** comboBoxModel="+comboBoxModel);
-		comboBoxModel.removeItem(cyTable);
-System.err.println("********************************************** after call to comboBoxModel.removeItem(cyTable);");
-		tableToMetadataMap.remove(cyTable);
-System.err.println("********************************************** after call to tableToMetadataMap.remove(cyTable);");
-		} catch (Exception e1){
-			System.err.println("******************** exception: "+e1);
+		final CyNetwork currentNetwork = e.getNetwork();
+
+		if (currentTable == null) {
+			comboBoxModel.addAndSetSelectedItem(currentNetwork.getDefaultNodeTable());
+		} else {
+			// Determine which table type we're currently displaying:
+			final Set<CyTableMetadata> tableMetadataSet =
+				tableManager.getAllTables(/* includePrivate = */false);
+			Class<?> tableType = null;
+			for (final CyTableMetadata tableMetadata : tableMetadataSet) {
+				if (currentTable.getSUID() == tableMetadata.getCyTable().getSUID()) {
+					tableType = tableMetadata.getType();
+					break;
+				}
+			}
+
+			final CyTable tableToSelect;
+			if (tableType == CyEdge.class)
+				tableToSelect = currentNetwork.getDefaultEdgeTable();
+			else if (tableType == CyNetwork.class)
+				tableToSelect = currentNetwork.getDefaultNetworkTable();
+			else
+				tableToSelect = currentNetwork.getDefaultNodeTable();
+			comboBoxModel.addAndSetSelectedItem(tableToSelect);
 		}
 	}
 }
