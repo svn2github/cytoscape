@@ -30,13 +30,13 @@
 
 
     <!-- Define the Cytoscape directories -->
-    <property name="cytoscape.dir" value="/Users/gerardohuck/Cytoscape"/>
+    <property name="cytoscape.dir" value="/Applications/Cytoscape_v2.8.1"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
     <!--
     <property name="cytoscape.dir" value="../../../../../cytoscape"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins/core"/>
     -->
-    <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
+<!--     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/> -->
 
 
     <!-- Inheritable properties -->
@@ -55,9 +55,9 @@
     <path id="project.class.path">
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
       <pathelement path="${java.class.path}/"/>
-      <fileset dir="${cytoscape.lib.dir}">
-        <include name="**/*.jar"/>
-      </fileset>
+<!--       <fileset dir="${cytoscape.lib.dir}"> -->
+<!--         <include name="**/*.jar"/> -->
+<!--       </fileset> -->
       <fileset dir="${cytoscape.plugin.dir}">
         <include name="**/*.jar"/>
       </fileset>
