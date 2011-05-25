@@ -9,8 +9,8 @@
   <!-- =================================================================== -->
   <target name="init">
     <property name="plugin_name" value="IgraphPlugin"/>
-    <property name="plugin_class" value="cytoscape.plugins.IgraphPlugin"/>
-    <property name="package_path" value="cytoscape/plugins"/> 
+    <property name="plugin_class" value="cytoscape.plugins.igraph.IgraphPlugin"/>
+    <property name="package_path" value="cytoscape/plugins/igraph"/> 
     <property name="project.jar" value="${plugin_name}.jar"/> 
     <property name="version" value="0.01"/>
     <property name="year" value="2010"/>
