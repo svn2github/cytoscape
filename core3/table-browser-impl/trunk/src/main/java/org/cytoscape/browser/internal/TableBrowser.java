@@ -196,11 +196,4 @@ public class TableBrowser
 		comboBoxModel.removeItem(cyTable);
 		tableToMetadataMap.remove(cyTable);
 	}
-/*
-	@Override
-	public void tableChanged(final TableModelEvent e) {
-		if (e.getFirstRow() == -1)
-			updateColumnComparators(rowSorter);
-	}
-*/
 }
