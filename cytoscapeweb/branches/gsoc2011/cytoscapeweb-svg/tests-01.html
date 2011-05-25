@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cytoscape Web: SVG prototype</title>
+		<style>
+			#page {
+				width: 640px;
+				margin: 30px auto;
+			}
+		</style>
+		<script type="text/javascript" src="raphael-1.5.2-min.js"></script>
+		<script type="text/javascript">
+			/* Test of:
+			 * Drawing circles for nodes
+			 * Drawing lines for edges
+			 */
+			var paper;
+			window.onload = function() {
+
+				 paper = Raphael("page", 400, 400);
+				
+				/* "node" and "edge" are custom methods that we are adding to Raphael */
+				var node1 = paper.node(30, 81).attr("title", "node 1"); // Title attribute gets displayed in a tooltip on mouse hover
+				var node2 = paper.node(150, 30).attr("title", "node 2");
+				var node3 = paper.node(100, 180).attr("title", "node 3");
+				var node4 = paper.node(190, 148).attr("title", "node 4");
+				var node5 = paper.node(210, 90).attr("title", "node 5");
+				
+
+				
+				var edge1 = paper.edge(node1, node2);
+				var edge2 = paper.edge(node2, node3);
+				var edge3 = paper.edge(node3, node4);
+				var edge4 = paper.edge(node2, node5);
+				var edge5 = paper.edge(node1, node5);
+				var edge6 = paper.edge(node5, node4);
+				var edge7 = paper.edge(node1, node3);
+				
+			}
+
+	
+			
+			/* Hardcoded circle node */
+			Raphael.fn.node = function(x, y) {
+				return this.circle(x, y, 18).attr({fill: "#bbb", stroke: "#888", "stroke-width": 4}).hover(function() {
+					this.attr("fill", "#ddd");
+				}, function() {
+					this.attr("fill", "#bbb");
+				});
+			}
+
+			/* Naive edge that takes its endpoints from the node svg elements */
+			Raphael.fn.edge = function(a, b) {
+				var s = "M " + a.attr("cx") + " " + a.attr("cy") + " L " + b.attr("cx") + " " + b.attr("cy");
+				return this.path(s).attr({"stroke": "teal", "stroke-width": 3, "stroke-linecap": "round"}).toBack();
+			}
+		</script>
+	</head>
+	<body>
+		<div id="page"></div>
+	</body>
+</html>
