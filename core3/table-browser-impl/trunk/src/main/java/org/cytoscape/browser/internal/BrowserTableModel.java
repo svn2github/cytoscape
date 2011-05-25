@@ -227,7 +227,18 @@ public final class BrowserTableModel extends AbstractTableModel
 		if (raw == null)
 			return null;
 
-		final Object cooked = getColumnValue(row, columnName);
+		// Optimisation hack:
+		Object cooked;
+		if (!(raw instanceof String))
+			cooked = raw;
+		else {
+			final String rawString = (String)raw;
+			if (!rawString.startsWith("="))
+				cooked = rawString;
+			else
+				cooked = getColumnValue(row, columnName);
+		}
+
 		if (cooked != null)
 			return new ValidatedObjectAndEditString(cooked, raw.toString());
 

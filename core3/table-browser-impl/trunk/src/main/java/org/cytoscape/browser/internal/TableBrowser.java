@@ -121,56 +121,44 @@ public class TableBrowser
 
 	public void actionPerformed(final ActionEvent e) {
 		final CyTable table = (CyTable)tableChooser.getSelectedItem();
+		if (table == currentTable || table == null)
+			return;
 
-		if (table == null && table != currentTable) {
-			if (browserTableModel != null) {
-				browserTableModel.cleanup();
-				serviceRegistrar.unregisterAllServices(browserTableModel);
-			}
-			currentTable = null;
-			browserTableModel = null;
-			browserTable.setModel(new DefaultTableModel());
-			attributeBrowserToolBar.setBrowserTableModel(null);
+		if (browserTableModel != null) {
+			browserTableModel.cleanup();
+			serviceRegistrar.unregisterAllServices(browserTableModel);
 		}
 
-		if (table != null && table != currentTable) {
-			if (browserTableModel != null) {
-				final TableColumnModel columnModel =
-					browserTableModel.getTable().getColumnModel();
-				tableToMetadataMap.put(currentTable,
-						       new TableMetadata(columnModel,
-									 browserTableModel));
-				browserTableModel.cleanup();
-				serviceRegistrar.unregisterAllServices(browserTableModel);
-			}
-
-			currentTable = table;
-			browserTableModel = new BrowserTableModel(browserTable, table, compiler,
-								  tableRowUpdateService);
-			serviceRegistrar.registerAllServices(browserTableModel, new Properties());
-			browserTable.setModel(browserTableModel);
-			final TableRowSorter rowSorter = new TableRowSorter(browserTableModel);
-			browserTable.setRowSorter(rowSorter);
-			updateColumnComparators(rowSorter);
-			attributeBrowserToolBar.setBrowserTableModel(browserTableModel);
-			final TableMetadata tableMetadata = tableToMetadataMap.get(currentTable);
-			if (tableMetadata != null) {
-                                final JTable jTable = browserTableModel.getTable();
-                                final TableColumnModel columnModel = jTable.getColumnModel();
-                                final Iterator<ColumnDescriptor> columnDescIter = tableMetadata.getColumnDescriptors();
-                                while (columnDescIter.hasNext()) {
-                                        final ColumnDescriptor desc = columnDescIter.next();
-                                        final int savedColumnIndex = desc.getColumnIndex();
-                                        final TableColumn tableColumn = columnModel.getColumn(savedColumnIndex);
-                                        tableColumn.setPreferredWidth(desc.getColumnWidth());
-                                        final int currentColumnIndex =
-						jTable.convertColumnIndexToView(
-							browserTableModel.mapColumnNameToColumnIndex(desc.getColumnName()));
-                                        if (currentColumnIndex != savedColumnIndex)
-                                                jTable.moveColumn(currentColumnIndex, savedColumnIndex);
-				}
+		currentTable = table;
+		browserTableModel = new BrowserTableModel(browserTable, table, compiler,
+							  tableRowUpdateService);
+		serviceRegistrar.registerAllServices(browserTableModel, new Properties());
+		browserTable.setUpdateComparators(false);
+		browserTable.setModel(browserTableModel);
+		final TableRowSorter rowSorter = new TableRowSorter(browserTableModel);
+		browserTable.setRowSorter(rowSorter);
+		updateColumnComparators(rowSorter);
+		browserTable.setUpdateComparators(true);
+		attributeBrowserToolBar.setBrowserTableModel(browserTableModel);
+		final TableMetadata tableMetadata = tableToMetadataMap.get(currentTable);
+		if (tableMetadata != null) {
+			final JTable jTable = browserTableModel.getTable();
+			final TableColumnModel columnModel = jTable.getColumnModel();
+			final Iterator<ColumnDescriptor> columnDescIter =
+				tableMetadata.getColumnDescriptors();
+			while (columnDescIter.hasNext()) {
+				final ColumnDescriptor desc = columnDescIter.next();
+				final int savedColumnIndex = desc.getColumnIndex();
+				final TableColumn tableColumn = columnModel.getColumn(savedColumnIndex);
+				tableColumn.setPreferredWidth(desc.getColumnWidth());
+				final int currentColumnIndex =
+					jTable.convertColumnIndexToView(
+						browserTableModel.mapColumnNameToColumnIndex(desc.getColumnName()));
+				if (currentColumnIndex != savedColumnIndex)
+					jTable.moveColumn(currentColumnIndex, savedColumnIndex);
 			}
 		}
+
 		applicationManager.setCurrentTable(currentTable);
 	}
 
@@ -191,9 +179,17 @@ public class TableBrowser
 
 	@Override
 	public void handleEvent(final TableAboutToBeDeletedEvent e) {
+		try {
 		final CyTable cyTable = e.getTable();
+System.err.println("********************************************** cyTable="+cyTable);
 		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
+System.err.println("********************************************** comboBoxModel="+comboBoxModel);
 		comboBoxModel.removeItem(cyTable);
+System.err.println("********************************************** after call to comboBoxModel.removeItem(cyTable);");
 		tableToMetadataMap.remove(cyTable);
+System.err.println("********************************************** after call to tableToMetadataMap.remove(cyTable);");
+		} catch (Exception e1){
+			System.err.println("******************** exception: "+e1);
+		}
 	}
 }

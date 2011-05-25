@@ -79,6 +79,7 @@ public class BrowserTable extends JTable
 	private final OpenBrowser openBrowser;
 	private final EquationCompiler compiler;
 	private final PopupMenuHelper popupMenuHelper;
+	private boolean updateColumnComparators;
 
 	public BrowserTable(final OpenBrowser openBrowser, final EquationCompiler compiler,
 			    final PopupMenuHelper popupMenuHelper)
@@ -86,6 +87,7 @@ public class BrowserTable extends JTable
 		this.openBrowser     = openBrowser;
 		this.compiler        = compiler;
 		this.popupMenuHelper = popupMenuHelper;
+		this.updateColumnComparators = false;
 
 //		setColumnModel(new MyTableColumnModel());
 		initHeader();
@@ -94,6 +96,10 @@ public class BrowserTable extends JTable
 		getPopupMenu();
 		getHeaderPopupMenu();
 		setKeyStroke();
+	}
+
+	public void setUpdateComparators(final boolean updateColumnComparators) {
+		this.updateColumnComparators = updateColumnComparators;
 	}
 
 	/**
@@ -616,6 +622,9 @@ public class BrowserTable extends JTable
 
 	public void addColumn(final TableColumn aColumn) {
 		super.addColumn(aColumn);
+
+		if (!updateColumnComparators)
+			return;
 
 		final TableRowSorter rowSorter = (TableRowSorter)getRowSorter();
 		if (rowSorter == null)
