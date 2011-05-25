@@ -216,13 +216,9 @@ public class VisualStyleImpl implements VisualStyle {
 
 	private void applyToView(final Collection<? extends View<?>> views, final VisualProperty<?> vp) {
 
-		logger.info("###### Apply called for " + vp.getDisplayName());
-
 		final VisualMappingFunction<?, ?> mapping = getVisualMappingFunction(vp);
 
 		if (mapping != null) {
-			// Mapping is available for this VP. Apply it.
-			logger.debug("Visual Mapping found for " + vp.getDisplayName() + ": " + mapping.toString());
 
 			// Default of this style
 			final Object styleDefaultValue = getDefaultValue(vp);
@@ -254,8 +250,6 @@ public class VisualStyleImpl implements VisualStyle {
 				// logger.debug(vp.getDisplayName() + ": DEF Val = " + defVal);
 				if (defVal.equals(val) == false)
 					view.setVisualProperty(vp, val);
-
-				logger.debug("!! Applied 2: " + view.getVisualProperty(vp));
 			}
 		}
 	}
