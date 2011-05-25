@@ -413,8 +413,15 @@ public abstract class DownloadableInfo {
 
   private boolean compareVersions(String[] v1, String[] v2) {
     if (v1.length != v2.length) return false;
-  
-    for (int i = 0; i < v1.length; i++) {
+      
+    for (int i = 0; i < v1.length; i++) {  	
+    	// Remove ".SNAPSHOT in versiopn number if any 
+    	v1[i] = v1[i].toUpperCase();
+    	int idx = v1[i].indexOf("SNAPSHOT");
+    	if (idx >0){
+    		v1[i] = v1[i].substring(0, idx-1);
+    	}
+    	
       if (Integer.valueOf(v1[i]).intValue() != Integer.valueOf(
           v2[i]).intValue())
         return false;
