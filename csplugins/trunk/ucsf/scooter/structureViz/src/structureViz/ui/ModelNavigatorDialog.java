@@ -615,9 +615,9 @@ public class ModelNavigatorDialog
 				navigationTree.removeSelectionPaths(navigationTree.getSelectionPaths());
 			} else if (type == EXIT) {
 				chimeraObject.exit();
-				setVisible(false);
-				if (chimeraObject.getAlignDialog() != null)
-					chimeraObject.getAlignDialog().setVisible(false);
+				// setVisible(false);
+				// if (chimeraObject.getAlignDialog() != null)
+				// 	chimeraObject.getAlignDialog().setVisible(false);
 			} else if (type == FUNCTIONALRESIDUES) {
 				String command = null;
 				// For all open structures, select the functional residues

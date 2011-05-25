@@ -490,14 +490,19 @@ public class Chimera {
    * 
    */
   public void exit() {
-  	if (chimera == null)
-  		return;
-  	chimeraSend("stop really");
-  	chimera.destroy();
-  	chimera = null;
-		models = null;
-		modelHash = null;
-		staticPointer = null;
+  	if (chimera != null) {
+  		chimeraSend("stop really");
+  		chimera.destroy();
+  		chimera = null;
+			models = null;
+			modelHash = null;
+			staticPointer = null;
+		}
+		if (alDialog != null)
+			alDialog.setVisible(false);
+
+		if (mnDialog != null)
+			mnDialog.setVisible(false);
   }
 
 	/**
