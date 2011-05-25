@@ -114,7 +114,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
     public AbstractCyAction(final Map<String, String> configProps, final CyApplicationManager applicationManager) {
 	this(configProps.get("title"), applicationManager);
 
-	System.out.println("New Action: " + configProps.get("title"));
+	logger.debug("New CyAction with title: " + configProps.get("title"));
 
 	final String prefMenu = configProps.get("preferredMenu");
 	if (prefMenu != null)
@@ -163,7 +163,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	    }
 	}
 
-	System.out.println("New Action Created: enable for = " + this.enableFor);
+	logger.debug("New Action: enable for = " + this.enableFor);
 	this.setEnabled(true);
     }
 
