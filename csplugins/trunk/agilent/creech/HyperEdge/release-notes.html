@@ -7,6 +7,8 @@
 <H1>HyperEdge Release Notes (version 2.63)</H1>
 <OL>
 <LI>Updated for use with Cytoscape 2.8 including changing build environment to use Maven 3.</LI>
+<LI>Fixed bug where exceptions were logged when they shouldn't be.
+<BR>The Cytoscape CyLogger was being called to log exceptions thrown that shouldn't really be logged when these excpetions are caught by higher-level methods.</BR>
 </OL>
 
 <H1>Prior Notes</H1>
@@ -462,7 +464,7 @@ HyperEdges along with your Cytoscape structures.
 <P>To compile, point at your cytoscape 2.2 libraries in your Eclipse project.
 
 <HR>
-<SMALL><EM>This page was last updated: 05/18/11</EM></SMALL>
+<SMALL><EM>This page was last updated: 05/25/11</EM></SMALL>
 
 </BODY>
 </HTML>
