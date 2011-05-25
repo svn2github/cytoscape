@@ -1090,7 +1090,10 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	
 	
 	public void updateList(List<String> newSelection) {
-		orderedCol = newSelection;
+		// We need to make sure we use a *copy* of the selection or when we remove
+		// attributes from the list in the table browser, we also remove them from the
+		// list that the popup dialog uses -- which we *definitely* don't want to do
+		orderedCol = new ArrayList<String>(newSelection);
 		attributeList.setSelectedItems(orderedCol);
 	}
 
