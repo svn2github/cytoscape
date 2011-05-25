@@ -40,14 +40,6 @@ public class ValidatedObjectAndEditStringComparator implements Comparator<Valida
 
 	@Override
 	public int compare(final ValidatedObjectAndEditString v1, final ValidatedObjectAndEditString v2) {
-		// Deal w/ nulls first:
-		if (v1 == null && v2 == null)
-			return 0;
-		if (v1 == null)
-			return -1;
-		if (v2 == null)
-			return +1;
-
 		// Deal with ValidatedObjectAndEditString objects that must display an error message:
 		final String errorText1 = v1.getErrorText();
 		final String errorText2 = v2.getErrorText();
@@ -58,43 +50,41 @@ public class ValidatedObjectAndEditStringComparator implements Comparator<Valida
 		if (errorText1 != null)
 			return -1;
 
+		final Object val1 = v1.getValidatedObject();
+		final Object val2 = v2.getValidatedObject();
+
 		if (internalColumnType == Double.class)
-			return doubleCompare((Double)v1.getValidatedObject(),
-					     (Double)v2.getValidatedObject());
+			return doubleCompare((double)(Double)val1, (double)(Double)val2);
 		if (internalColumnType == Long.class)
-			return longCompare((Long)v1.getValidatedObject(),
-					   (Long)v2.getValidatedObject());
+			return longCompare((long)(Long)val1, (long)(Long)val2);
 		if (internalColumnType == Integer.class)
-			return integerCompare((Integer)v1.getValidatedObject(),
-					      (Integer)v2.getValidatedObject());
+			return integerCompare((int)(Integer)val1, (int)(Integer)val2);
 
 		if (internalColumnType == Boolean.class)
-			return booleanCompare((Boolean)v1.getValidatedObject(),
-					      (Boolean)v2.getValidatedObject());
+			return booleanCompare((boolean)(Boolean)val1, (boolean)(Boolean)val2);
 
-		return stringCompare(v1.getValidatedObject().toString(),
-				     v2.getValidatedObject().toString());
+		return stringCompare(val1.toString(), val2.toString());
 	}
 
-	private static int doubleCompare(final Double d1, final Double d2) {
+	private static int doubleCompare(final double d1, final double d2) {
 		if (d1 < d2)
 			return -1;
 		return d1 > d2 ? +1 : 0;
 	}
 
-	private static int longCompare(final Long l1, final Long l2) {
+	private static int longCompare(final long l1, final long l2) {
 		if (l1 < l2)
 			return -1;
 		return l1 > l2 ? +1 : 0;
 	}
 
-	private static int integerCompare(final Integer i1, Integer i2) {
+	private static int integerCompare(final int i1, int i2) {
 		if (i1 < i2)
 			return -1;
 		return i1 > i2 ? +1 : 0;
 	}
 
-	private static int booleanCompare(final Boolean b1, final Boolean b2) {
+	private static int booleanCompare(final boolean b1, final boolean b2) {
 		if ((b1 && b2) || (!b1 && !b2))
 			return 0;
 		return b1 ? -1 : +1;
