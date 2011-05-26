@@ -101,10 +101,10 @@ public class MinimalVisualLexicon extends AbstractVisualLexicon {
 			CyNode.class);
 
 	public static final VisualProperty<Double> NODE_X_LOCATION = new DoubleVisualProperty(
-			Double.NaN, ARBITRARY_DOUBLE_RANGE, "NODE_X_LOCATION",
+			0.0, ARBITRARY_DOUBLE_RANGE, "NODE_X_LOCATION",
 			"Node X Location", true, CyNode.class);
 	public static final VisualProperty<Double> NODE_Y_LOCATION = new DoubleVisualProperty(
-			Double.NaN, ARBITRARY_DOUBLE_RANGE, "NODE_Y_LOCATION",
+			0.0, ARBITRARY_DOUBLE_RANGE, "NODE_Y_LOCATION",
 			"Node Y Location", true, CyNode.class);
 
 	public static final VisualProperty<Double> NODE_SIZE = new DoubleVisualProperty(
