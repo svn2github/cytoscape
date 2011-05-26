@@ -71,10 +71,8 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication, Cyto
 
 	private final static long serialVersionUID = 1202339866271348L;
 
-	/*
-	 * Default Desktop Size (slitly wider than 2.4 and before for new UI)
-	 */
-	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(950, 700);
+	
+	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(950, 720);
 
 	private static final String SMALL_ICON = "/images/c16.png";
 
@@ -161,13 +159,13 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication, Cyto
 		setContentPane(main_panel);
 		pack();
 		setSize(DEF_DESKTOP_SIZE);
+		
+		// Move it to the center
+		this.setLocationRelativeTo(null);
 	
 		// ...but don't actually show it!!!!
 		// Once the system has fully started the JFrame will be set to 
 		// visible by the StartupMostlyFinished class, found elsewhere.
-
-		//setVisible(true);
-		//toFront();
 	}
 
 	/**
