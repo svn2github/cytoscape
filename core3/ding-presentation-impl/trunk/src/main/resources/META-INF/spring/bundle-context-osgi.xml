@@ -55,8 +55,7 @@
 	<osgi:service id="dingRenderingEngineFactoryService" ref="dingRenderingEngineFactory">
 		<osgi:interfaces>
 			<value>org.cytoscape.view.presentation.RenderingEngineFactory</value>
-			<value>org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener
-			</value>
+			<value>org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="serviceType" value="presentationFactory" />
@@ -68,8 +67,7 @@
 		ref="dingNavigationRenderingEngineFactory">
 		<osgi:interfaces>
 			<value>org.cytoscape.view.presentation.RenderingEngineFactory</value>
-			<value>org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener
-			</value>
+			<value>org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="serviceType" value="presentationFactory" />
