@@ -1103,10 +1103,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		for (int i = 0; i < numrows; i++) {
 			for (int j = 0; j < numcols; j++) {
 				final Object cellValue = this.getValueAt(rowsselected[i], colsselected[j]);
-				if (cellValue == null)
-					continue;
-
-				final String cellText = ((ValidatedObjectAndEditString)cellValue).getEditString();
+				final String cellText =
+					cellValue == null ? "null" :((ValidatedObjectAndEditString)cellValue).getEditString();
 				sbf.append(cellText);
 
 				if (j < (numcols - 1))
