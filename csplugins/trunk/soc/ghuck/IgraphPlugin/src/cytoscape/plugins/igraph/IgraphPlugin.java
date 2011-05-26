@@ -101,7 +101,9 @@ public class IgraphPlugin extends CytoscapePlugin {
     } // checkLib
 
 
-    protected void loadIgraph() {
+    protected boolean loadIgraph() {
+
+	boolean res = true;
 
 	// Reset the "sys_paths" field of the ClassLoader to null.
 	Class clazz = ClassLoader.class;
@@ -120,7 +122,7 @@ public class IgraphPlugin extends CytoscapePlugin {
 	    field.set(clazz, null);
 	    try {
 		// Change the value and load the library.
-		System.setProperty("java.library.path", "./plugins" + ":" + ":" + orig_path);
+		System.setProperty("java.library.path", "./plugins"  + ":" + orig_path);
 		System.loadLibrary("igraph");
 	    }
 
@@ -129,13 +131,8 @@ public class IgraphPlugin extends CytoscapePlugin {
 		    + error.getMessage() 
 		    + "\nPlease check your plugins folder.";
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
-		
-		// Revert back the changes
-		field.set(clazz, original);
-		field.setAccessible(accessible);
-		
-		// Exit
-		return;
+				
+		res = false;
 	    }		
 
 	    finally {
@@ -145,6 +142,11 @@ public class IgraphPlugin extends CytoscapePlugin {
 	    }
 	}
 	catch (Exception exception){
+	    res = false;
+	}
+
+	finally{
+	    return res;
 	}
     }
         
