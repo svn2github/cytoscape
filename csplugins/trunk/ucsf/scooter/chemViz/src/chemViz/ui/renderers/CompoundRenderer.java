@@ -94,8 +94,11 @@ public class CompoundRenderer implements TableCellRenderer {
 		if (width != table.getRowHeight())
 			table.setRowHeight(width); // Note, this will trigger a repaint!
 		Image resizedImage = c.getImage(width,width);
-		if (resizedImage == null) return null;
-		JLabel l = new JLabel(new ImageIcon(resizedImage));
+		JLabel l;
+		if (resizedImage != null)
+			l = new JLabel(new ImageIcon(resizedImage));
+		else
+			l = new JLabel("No Image Available", JLabel.CENTER);
 		if (!rowMap.containsKey(c.getSource())) {
 			rowMap.put(c.getSource(), new ArrayList());
 		}

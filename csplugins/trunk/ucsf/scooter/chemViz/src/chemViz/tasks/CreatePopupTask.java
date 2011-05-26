@@ -128,7 +128,10 @@ public class CreatePopupTask extends AbstractCompoundTask {
 			if (objectList.size() == 1) {
 				CompoundPopup popup = new CompoundPopup(cList, objectList, null);
 			} else {
-				CompoundPopup popup = new CompoundPopup(cList, objectList, labelAttribute);
+				if (labelAttribute.equals("ID"))
+					new CompoundPopup(cList, objectList, type+".ID");
+				else
+					new CompoundPopup(cList, objectList, labelAttribute);
 			}
 		}
 	}

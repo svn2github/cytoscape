@@ -69,14 +69,14 @@
   <target name="compile" depends="compile-core" description="Compile with Cytoscape under development" />
 
   <target name="compile-core" depends="init">
-    <javac source="1.5" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" srcdir="${src.dir}" destdir="${build.dir}/classes">
+    <javac source="1.6" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" srcdir="${src.dir}" destdir="${build.dir}/classes">
       <classpath refid="compile.classpath" />
     </javac>
   </target>
 
   <target name="compile-test" depends="compile">
     <mkdir dir="${build.dir}/classes/test" />
-    <javac source="1.5" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" srcdir="${src.dir}/test" destdir="${build.dir}/classes/test">
+    <javac source="1.6" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" srcdir="${src.dir}/test" destdir="${build.dir}/classes/test">
       <classpath refid="test.classpath" />
     </javac>
   </target>

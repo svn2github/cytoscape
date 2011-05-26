@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -115,7 +116,8 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 		// Is it in our map?
 		if (imageMap.containsKey(labelComponent)) {
 			Image img = imageMap.get(labelComponent).getImage(width,height, Color.WHITE);
-			labelComponent.setIcon(new ImageIcon(img));
+			if (img != null)
+				labelComponent.setIcon(new ImageIcon(img));
 		}
 	}
 
@@ -131,11 +133,13 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 		setLayout(layout);
 
 		// Get the right attributes
-		if (labelAttribute != null && labelAttribute.startsWith("node."))
+		if (labelAttribute != null && labelAttribute.startsWith("node.")) {
 			attributes = Cytoscape.getNodeAttributes();
-		else if (labelAttribute != null && labelAttribute.startsWith("edge."))
+			labelAttribute = labelAttribute.substring(5);
+		} else if (labelAttribute != null && labelAttribute.startsWith("edge.")) {
 			attributes = Cytoscape.getEdgeAttributes();
-		else
+			labelAttribute = labelAttribute.substring(5);
+		} else
 			labelAttribute = null;
 
 		for (Compound compound: compoundList) {
@@ -145,12 +149,16 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 			if (labelAttribute == null) {
 				label = new JLabel(new ImageIcon(img));
 			} else {
-				String textLabel = attributes.getAttribute(compound.getSource().getIdentifier(),labelAttribute.substring(5)).toString();
-				label = new JLabel(textLabel, new ImageIcon(img), JLabel.CENTER);
+				Object textLabel = attributes.getAttribute(compound.getSource().getIdentifier(),labelAttribute);
+				if (textLabel == null)
+					textLabel = compound.getSource().getIdentifier();
+				label = new JLabel(textLabel.toString(), new ImageIcon(img), JLabel.CENTER);
 				label.setVerticalTextPosition(JLabel.BOTTOM);
 				label.setHorizontalTextPosition(JLabel.CENTER);
 			}
 			label.setBackground(Color.WHITE);
+			label.setOpaque(true);
+			label.setBorder(BorderFactory.createEtchedBorder());
 			label.addComponentListener(this);
 			imageMap.put(label, compound);
 			add (label);

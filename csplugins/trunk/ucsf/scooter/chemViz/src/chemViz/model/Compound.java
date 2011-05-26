@@ -37,9 +37,11 @@ package chemViz.model;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.AffineTransformOp;
@@ -78,6 +80,7 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.fingerprint.Fingerprinter;
 import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.inchi.InChIGenerator;
 import org.openscience.cdk.inchi.InChIGeneratorFactory;
 import org.openscience.cdk.inchi.InChIToStructure;
@@ -414,40 +417,7 @@ public class Compound {
 		this.iMolecule = null;
 		this.iMolecule3D = null;
 		this.fingerPrint = null;
-		if (attrType == AttriType.inchi) {
-			// Convert to smiles 
-			this.smilesStr = convertInchiToSmiles(moleculeString);
-		} else {
-			this.smilesStr = mstring;
-			// Create the CDK Molecule object
-			SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder
-							.getInstance());
-			try {
-				iMolecule = sp.parseSmiles(this.smilesStr);
-			} catch (InvalidSmilesException e) {
-				iMolecule = null;
-				logger.error("Unable to parse SMILES: "+smilesStr+": "+e.getMessage());
-			}
-		}
-
-		// At this point, we should have an IMolecule
-		try { 
-			if (iMolecule != null) {
-
-				CDKHueckelAromaticityDetector.detectAromaticity(iMolecule);
-
-				// Make sure we update our implicit hydrogens
-				CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(iMolecule.getBuilder());
-				adder.addImplicitHydrogens(iMolecule);
-
-				// Get our fingerprint
-				Fingerprinter fp = new Fingerprinter();
-				// Do we need to do the addh here?
-				fingerPrint = fp.getFingerprint(addh(iMolecule));
-			}
-		} catch (CDKException e1) {
-			fingerPrint = null;
-		}
+		this.smilesStr = null;
 
 		List<Compound> mapList = null;
 		if (Compound.compoundMap == null) 
@@ -460,6 +430,49 @@ public class Compound {
 		}
 		mapList.add(this);
 		Compound.compoundMap.put(source, mapList);
+
+		if (attrType == AttriType.inchi) {
+			// Convert to smiles 
+			this.smilesStr = convertInchiToSmiles(moleculeString);
+		} else {
+			if (mstring != null && mstring.length() > 0) {
+				// Strip any blanks in the string
+				this.smilesStr = mstring.replaceAll(" ", "");
+			}
+		}
+
+		if (smilesStr == null)
+			return;
+
+		logger.debug("smiles string = "+smilesStr);
+
+		// Create the CDK Molecule object
+		SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder
+						.getInstance());
+		try {
+			iMolecule = sp.parseSmiles(this.smilesStr);
+		} catch (InvalidSmilesException e) {
+			iMolecule = null;
+			logger.warning("Unable to parse SMILES: "+smilesStr+" for "+source.getIdentifier()+": "+e.getMessage());
+			return;
+		}
+
+		// At this point, we should have an IMolecule
+		try { 
+			CDKHueckelAromaticityDetector.detectAromaticity(iMolecule);
+
+			// Make sure we update our implicit hydrogens
+			CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(iMolecule.getBuilder());
+			adder.addImplicitHydrogens(iMolecule);
+
+			// Get our fingerprint
+			Fingerprinter fp = new Fingerprinter();
+			// Do we need to do the addh here?
+			fingerPrint = fp.getFingerprint(addh(iMolecule));
+		} catch (CDKException e1) {
+			fingerPrint = null;
+		}
+
 	}
 
 	/**
@@ -730,11 +743,22 @@ public class Compound {
 		// System.out.println("depictWithCDK("+width+","+height+")");
 
 		if (iMolecule == null || width == 0 || height == 0) {
-			return null;
+			return blankImage(iMolecule, width, height);
 		}
 
 		try {
 			if (!laidOut) {
+				// Is the structure connected?
+				if (!ConnectivityChecker.isConnected(iMolecule)) {
+					// No, for now, find the largest component and use that exclusively
+					IMoleculeSet molSet = ConnectivityChecker.partitionIntoMolecules(iMolecule);
+					IMolecule largest = molSet.getMolecule(0);
+					for (int i = 0; i < molSet.getMoleculeCount(); i++) {
+						if (molSet.getMolecule(i).getAtomCount() > largest.getAtomCount())
+							largest = molSet.getMolecule(i);
+					}
+					iMolecule = largest;
+				}
 				StructureDiagramGenerator sdg = new StructureDiagramGenerator();
 				sdg.setUseTemplates(false);
 				sdg.setMolecule(iMolecule);
@@ -777,6 +801,7 @@ public class Compound {
 			graphics.setColor(background);
 			graphics.setBackground(background);
 			graphics.fillRect(0,0,renderWidth,renderHeight);
+			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 			renderer.paint(iMolecule, new AWTDrawVisitor(graphics), bbox, true);
 
@@ -794,7 +819,7 @@ public class Compound {
 				bufferedImage = op.filter(bufferedImage, null);
 			}
 		} catch (Exception e) {
-			logger.warning("Unable to depict molecule with CDK depiction: "+e.getMessage(), e);
+			logger.warning("Unable to depict molecule for "+source.getIdentifier()+" with CDK depiction: "+e.getMessage(), e);
 		}
 
 		return bufferedImage;
@@ -826,6 +851,11 @@ public class Compound {
 		try {
 			// Get the factory	
 			InChIGeneratorFactory factory = InChIGeneratorFactory.getInstance();
+			if (!inchi.startsWith("InChI="))
+				inchi = "InChI="+inchi;
+
+			logger.debug("Getting structure for: "+inchi);
+
 			InChIToStructure intostruct = factory.getInChIToStructure(inchi, DefaultChemObjectBuilder.getInstance());
 
 			// Get the structure
@@ -833,7 +863,7 @@ public class Compound {
 			if (ret == INCHI_RET.WARNING) {
 				logger.warning("InChI warning: " + intostruct.getMessage());
 			} else if (ret != INCHI_RET.OKAY) {
-				logger.error("Structure generation failed failed: " + ret.toString()
+				logger.warning("Structure generation failed: " + ret.toString()
      	               + " [" + intostruct.getMessage() + "]");
 				return null;
 			}
@@ -843,10 +873,45 @@ public class Compound {
 			SmilesGenerator sg = new SmilesGenerator();
 			return sg.createSMILES(iMolecule);
 		} catch (Exception e) {
-			logger.error("Structure generation failed failed: " + e.getMessage());
+			logger.warning("Structure generation failed: " + e.getMessage(), e);
 			return null;
 		}
 
+	}
+
+	private Image blankImage(IMolecule mol, int width, int height) {
+		final String noImage = "Image Unavailable";
+
+		if (width == 0 || height == 0)
+			return null;
+
+		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D graphics = bufferedImage.createGraphics();
+		graphics.setBackground(Color.WHITE);
+
+		graphics.setColor(Color.WHITE);
+		graphics.fillRect(0,0,width,height);
+		graphics.setColor(Color.BLACK);
+
+		// Create our font
+		Font font = new Font("SansSerif", Font.PLAIN, 18);
+		graphics.setFont(font);
+		FontMetrics metrics = graphics.getFontMetrics();
+
+		int length = metrics.stringWidth(noImage);
+		while (length+6 >= width) {
+			font = font.deriveFont((float)(font.getSize2D() * 0.9)); // Scale our font
+			graphics.setFont(font);
+			metrics = graphics.getFontMetrics();
+			length = metrics.stringWidth(noImage);
+		}
+
+		int lineHeight = metrics.getHeight();
+
+		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		graphics.drawString(noImage, (width-length)/2, (height+lineHeight)/2);
+
+		return bufferedImage;
 	}
 
 }
