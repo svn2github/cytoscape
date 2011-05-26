@@ -87,9 +87,6 @@ class PopupMenuHelper {
 		menu.show(invoker, x, y);
 	}
 
-	/**
-	 * Creates a menu based on a drop event on a NodeView.
-	 */
 	void createTableCellMenu(final CyColumn column, final Object primaryKeyValue,
 				 final Component invoker, final int x, final int y)
 	{
@@ -136,7 +133,7 @@ class PopupMenuHelper {
 	}
 
 	public void addTableCellTaskFactory(final TableCellTaskFactory newFactory,
-					      final Map properties)
+					    final Map properties)
 	{
 		tableCellFactoryMap.put(newFactory, properties);
 	}
