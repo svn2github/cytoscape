@@ -136,7 +136,6 @@ public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAb
 	    if (toBeDestroyed == currentNetworkView) {
 		changed = true;
 		currentNetworkView = null;
-		currentNetwork = null;
 
 		final Set<CyNetworkView> networkViews = networkViewManager.getNetworkViewSet();
 		for (final CyNetworkView view : networkViews) {
