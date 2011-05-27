@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cytoscape Web: SVG prototype</title>
+		<style>
+			#page {
+				width: 400px;
+				margin: 30px auto;
+			}
+		</style>
+		<script type="text/javascript" src="raphael-1.5.2-min.js"></script>
+		<script type="text/javascript">
+			/* Test of:
+			 * Drawing circles for nodes
+			 * Drawing squares for nodes
+			 * Drawing lines for edges
+			 * Drawing dashed and dotted edges
+			 */
+			var paper;
+			window.onload = function() {
+
+				 paper = Raphael("page", 400, 400);
+				
+				/* "node" and "edge" are custom methods that we are adding to Raphael */
+				
+				var node1 = paper.circleNode(30, 81, 20).attr("title", "node 1"); // Title attribute gets displayed in a tooltip on mouse hover
+				var node2 = paper.circleNode(150, 30).attr("title", "node 2");
+				var node3 = paper.squareNode(70, 220, 22).attr("title", "node 3");
+				var node4 = paper.squareNode(260, 148).attr("title", "node 4");
+				var node5 = paper.circleNode(210, 290, 24).attr("title", "node 5");
+				
+
+				
+				var edge1 = paper.edge(node1, node2, " ");
+				var edge2 = paper.edge(node2, node3, "-");
+				var edge3 = paper.edge(node3, node4, ".");
+				var edge4 = paper.edge(node2, node5, ". ");
+				var edge5 = paper.edge(node1, node5, "-..");
+				var edge6 = paper.edge(node5, node4, "--");
+				var edge7 = paper.edge(node1, node3, "-.");
+				
+			}
+
+	
+			
+			/* Hardcoded circle node */
+			Raphael.fn.circleNode = function(x, y, size) {
+				size = size || 18;
+				var node = this.circle(x, y, size).attr({fill: "#bbb", stroke: "#888", "stroke-width": 4}).hover(function() {
+					this.attr("fill", "#ddd");
+				}, function() {
+					this.attr("fill", "#bbb");
+				});
+				node.x = x;
+				node.y = y;
+				return node;
+			}
+			
+			/* Hardcoded square node (square path) */
+			Raphael.fn.squareNode = function(x, y, size) {
+				size = size || 16;
+				
+				var s = populateString("M %,% m %,% l %,0 0,% %,0 z", [x, y, -size, size, 2*size, -2*size, -2*size]);
+				var node = this.path(s).attr({fill: "#bbb", stroke: "#888", "stroke-width": 4}).hover(function() {
+					this.attr("fill", "#ddd");
+				}, function() {
+					this.attr("fill", "#bbb");
+				});
+				node.x = x;
+				node.y = y;
+				return node;
+			}
+
+			/* Naive edge that takes its endpoints from the node svg elements */
+			Raphael.fn.edge = function(a, b, dash) {
+				dash = dash || " ";
+				var s = populateString("M % % L % %", [a.x, a.y, b.x, b.y]);
+				return this.path(s).attr({"stroke": "teal", "stroke-width": 3, "stroke-linecap": "round", "stroke-dasharray": dash}).toBack();
+			}
+			
+			/**
+			 * Replace each instance of the placeholder token ("%") with a successive item from a list.
+			 */
+			function populateString(string, items) {
+				var i = 0;
+				return string.replace(/%/g, function() {
+					return items[i++];
+				}); 
+			}
+		</script>
+	</head>
+	<body>
+		<div id="page"></div>
+	</body>
+</html>
