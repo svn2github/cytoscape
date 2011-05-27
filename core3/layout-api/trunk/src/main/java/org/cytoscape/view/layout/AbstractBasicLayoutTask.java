@@ -60,8 +60,7 @@ public abstract class AbstractBasicLayoutTask extends AbstractTask {
 	 * not changed.
 	 */
 	public AbstractBasicLayoutTask(final CyNetworkView networkView, final String name, boolean selectedOnly,
-			  final Set<View<CyNode>> staticNodes)
-	{
+			final Set<View<CyNode>> staticNodes) {
 		super();
 
 		this.networkView = networkView;
@@ -71,9 +70,9 @@ public abstract class AbstractBasicLayoutTask extends AbstractTask {
 	}
  
 	@Override
-	public final void run(final TaskMonitor taskMonitor)  {
+	public final void run(final TaskMonitor taskMonitor) {
 		final long start = System.currentTimeMillis();
-		logger.debug("Layout Start: " + name);
+		logger.debug("Layout Start: Algorithm = " + name);
 
 		// do some sanity checking
 		if (networkView == null)
@@ -96,7 +95,7 @@ public abstract class AbstractBasicLayoutTask extends AbstractTask {
 			netAttrsTable.createColumn(LAYOUT_ALGORITHM, String.class, true);
 		networkAttributes.set(LAYOUT_ALGORITHM, name);
 
-		logger.debug("Layout finished: " + (System.currentTimeMillis()-start) + " msec.");
+		logger.debug("Layout finished in " + (System.currentTimeMillis() - start) + " msec.");
 	}
 
 	/**
