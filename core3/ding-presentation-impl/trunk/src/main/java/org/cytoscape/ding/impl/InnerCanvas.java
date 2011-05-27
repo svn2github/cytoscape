@@ -36,13 +36,12 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetListener;
-import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -55,12 +54,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Vector;
-
-import javax.swing.JComponent;
-import javax.swing.TransferHandler;
+import java.util.List;
 
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphViewChangeListener;
@@ -71,6 +65,7 @@ import org.cytoscape.ding.impl.events.GraphViewEdgesUnselectedEvent;
 import org.cytoscape.ding.impl.events.GraphViewNodesSelectedEvent;
 import org.cytoscape.ding.impl.events.GraphViewNodesUnselectedEvent;
 import org.cytoscape.ding.impl.events.ViewportChangeListener;
+import org.cytoscape.dnd.DropUtil;
 import org.cytoscape.graph.render.export.ImageImposter;
 import org.cytoscape.graph.render.immed.EdgeAnchors;
 import org.cytoscape.graph.render.immed.GraphGraphics;
@@ -82,8 +77,9 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.util.intr.IntEnumerator;
 import org.cytoscape.util.intr.IntHash;
 import org.cytoscape.util.intr.IntStack;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.work.undo.UndoSupport;
-import org.cytoscape.dnd.DropUtil;
 
 /**
  *
@@ -542,6 +538,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 	private int[] setSelectedNodes() {
 		int [] selectedNodes = null;
+		
 		m_ptBuff[0] = m_selectionRect.x;
 		m_ptBuff[1] = m_selectionRect.y;
 		m_view.xformComponentToNodeCoords(m_ptBuff);
@@ -1057,7 +1054,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		}
 	}
 
-	private class MousePressedDelegator extends ButtonDelegator {
+	private final class MousePressedDelegator extends ButtonDelegator {
 
 		@Override
 		void singleLeftClick(MouseEvent e) {
@@ -1206,11 +1203,12 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		}
 	}
 
-	private class MouseReleasedDelegator extends ButtonDelegator {
+	private final class MouseReleasedDelegator extends ButtonDelegator {
 
 		@Override
 		void singleLeftClick(MouseEvent e) {
-			//System.out.println("MouseReleased ----> singleLeftClick");
+			//System.out.println("1. MouseReleased ----> singleLeftClick");
+			
 			if (m_currMouseButton == 1) {
 				m_currMouseButton = 0;
 	
@@ -1220,16 +1218,13 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	
 					synchronized (m_lock) {
 						if (m_view.m_nodeSelection || m_view.m_edgeSelection) {
-							if (m_view.m_nodeSelection) {
-								selectedNodes = setSelectedNodes();
-							}
-	
-							if (m_view.m_edgeSelection) {
+							if (m_view.m_nodeSelection)
+								selectedNodes = setSelectedNodes();	
+							if (m_view.m_edgeSelection)
 								selectedEdges = setSelectedEdges ();
-							}								
 						}
 					}
-	
+					
 					m_selectionRect = null;
 	
 					final GraphViewChangeListener listener = m_view.m_lis[0];
@@ -1243,15 +1238,28 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 							listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view,
 					                               DGraphView.makeEdgeList(selectedEdges,m_view)));
 					}
-	
+					
 					// Repaint after listener events are fired because listeners may
 					// change something in the graph view.
 					repaint();
 				}
 			}
+			
 	
 			if (m_undoable_edit != null)
 				m_undoable_edit.post();
+			
+			final List<CyNode> selected = m_view.getSelectedNodes();			
+			// Update view model if necessary (node location)
+			if(selected.size() != 0) {
+				for (CyNode node : selected) {
+					final NodeView dNodeView = m_view.getNodeView(node);
+					// Update visual property value (x/y)
+					final View<CyNode> nodeView = dNodeView.getNodeViewModel();
+					nodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION, dNodeView.getXPosition());
+					nodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION, dNodeView.getYPosition());					
+				}
+			}
 		}
 	
 		@Override
@@ -1275,7 +1283,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		}
 	}
 
-	private class MouseDraggedDelegator extends ButtonDelegator {
+	private final class MouseDraggedDelegator extends ButtonDelegator {
 
 		// emulate right click and middle click with a left clic and a modifier
 		// TODO: make sure to be consistent with other emulation inside cytoscape and on Mac OSX
@@ -1330,10 +1338,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 					final int[] selectedNodes = m_view.getSelectedNodeIndices();
 	
 					for (int i = 0; i < selectedNodes.length; i++) {
-						final NodeView nv = m_view.getNodeView(selectedNodes[i]);
-						final double oldXPos = nv.getXPosition();
-						final double oldYPos = nv.getYPosition();
-						nv.setOffset(oldXPos + deltaX, oldYPos + deltaY);
+						final NodeView dNodeView = m_view.getNodeView(selectedNodes[i]);
+						final double oldXPos = dNodeView.getXPosition();
+						final double oldYPos = dNodeView.getYPosition();
+						dNodeView.setOffset(oldXPos + deltaX, oldYPos + deltaY);
 					}
 	
 					final IntEnumerator anchorsToMove = m_view.m_selectedAnchors.searchRange(Integer.MIN_VALUE,
