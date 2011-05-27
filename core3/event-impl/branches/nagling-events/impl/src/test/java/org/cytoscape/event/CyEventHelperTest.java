@@ -51,6 +51,8 @@ import java.lang.RuntimeException;
 
 import java.util.List;
 
+import org.junit.Before;
+
 
 /**
  * DOCUMENT ME!
@@ -64,8 +66,10 @@ public class CyEventHelperTest extends AbstractCyEventHelperTest {
 	/**
 	 *  DOCUMENT ME!
 	 */
+	@Before
 	public void setUp() {
 		service = new StubCyListenerImpl();
+		payloadService = new StubCyPayloadListenerImpl();
 
 		stubServiceRef = new MockServiceReference();
 		fakeServiceRef = new MockServiceReference();
@@ -99,8 +103,7 @@ public class CyEventHelperTest extends AbstractCyEventHelperTest {
 			};
 
 		CyListenerAdapter la = new CyListenerAdapter(bc);
-		CyMicroListenerAdapter ma = new CyMicroListenerAdapter();
 
-		helper = new CyEventHelperImpl(la,ma);
+		helper = new CyEventHelperImpl(la);
 	}
 }

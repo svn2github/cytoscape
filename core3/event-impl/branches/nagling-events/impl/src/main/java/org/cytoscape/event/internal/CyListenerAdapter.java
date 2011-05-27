@@ -75,17 +75,29 @@ public class CyListenerAdapter {
 	 * @param <E> The type of event. 
 	 * @param event  The event object. 
 	 */
-	public <E extends CyEvent<?>> void fireSynchronousEvent(final E event) {
+	public <E extends CyEvent<?>> void fireEvent(final E event) {
+		if ( event == null )
+			return;
 
 		if ( silencedSources.contains( event.getSource() ) )
 			return;
-
+		
 		final Class<?> listenerClass = event.getListenerClass();
 		
 		final Object[] listeners = getListeners(listenerClass);
 		if ( listeners == null ) {
 			return;
 		} 
+
+		if ( event.synchronousOnly() )
+			fireSynchronousEvent(event,listenerClass,listeners);
+		else
+			fireAsynchronousEvent(event,listenerClass,listeners);
+	}
+
+
+
+	private <E extends CyEvent<?>> void fireSynchronousEvent(final E event, Class<?> listenerClass, Object[] listeners) {
 
 		Object lastListener = null;
 		try {
@@ -117,17 +129,8 @@ public class CyListenerAdapter {
 	 * @param <E> The type of event. 
 	 * @param event  The event object. 
 	 */
-	public <E extends CyEvent> void fireAsynchronousEvent(final E event) {
+	private <E extends CyEvent> void fireAsynchronousEvent(final E event, Class<?> listenerClass, Object[] listeners) {
 
-		if ( silencedSources.contains( event.getSource() ) )
-			return;
-
-		final Class listenerClass = event.getListenerClass(); 
-
-		final Object[] listeners = getListeners(listenerClass);
-		if ( listeners == null ) {
-			return;
-		} 
 
 		try {
 			final Method method = listenerClass.getMethod("handleEvent", event.getClass());

@@ -36,7 +36,6 @@ package org.cytoscape.event.internal;
 
 import org.cytoscape.event.CyEvent;
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.event.CyMicroListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,47 +45,33 @@ public class CyEventHelperImpl implements CyEventHelper {
 	private static final Logger logger = LoggerFactory.getLogger(CyEventHelperImpl.class);
 
 	private final CyListenerAdapter normal;
-	private final CyMicroListenerAdapter micro;
 
-	public CyEventHelperImpl(final CyListenerAdapter normal, final CyMicroListenerAdapter micro) {
+	public CyEventHelperImpl(final CyListenerAdapter normal) {
 		this.normal = normal;
-		this.micro = micro;
 	}
 
-	@Override public <E extends CyEvent<?>> void fireSynchronousEvent(final E event) {
-		normal.fireSynchronousEvent(event);
+	@Override 
+	public <E extends CyEvent<?>> void fireEvent(final E event) {
+		normal.fireEvent(event);
+	}
+
+	public <T,E extends CyEvent<?>> void addEventPayload(Object source, T payload, Class<E> eventType) {
 	}
 
 
-	@Override public <E extends CyEvent<?>> void fireAsynchronousEvent(final E event) {
-		normal.fireAsynchronousEvent(event);
-	}
-
-	@Override public <M extends CyMicroListener> M getMicroListener(Class<M> c, Object source) {
-		return micro.getMicroListener(c,source);
-	}
-
-	@Override public <M extends CyMicroListener> void addMicroListener(M m, Class<M> c, Object source) {
-		micro.addMicroListener(m,c,source);
-	}
-
-	@Override public <M extends CyMicroListener> void removeMicroListener(M m, Class<M> c, Object source) {
-		micro.removeMicroListener(m,c,source);
-	}
-
-	@Override public void silenceEventSource(Object eventSource) {
+	@Override 
+	public void silenceEventSource(Object eventSource) {
 		if ( eventSource == null )
 			return;
 		logger.info("silencing event source: " + eventSource.toString());
 		normal.silenceEventSource(eventSource);
-		micro.silenceEventSource(eventSource);
 	}
 
-	@Override public void unsilenceEventSource(Object eventSource) {
+	@Override 
+	public void unsilenceEventSource(Object eventSource) {
 		if ( eventSource == null )
 			return;
 		logger.info("unsilencing event source: " + eventSource.toString());
 		normal.unsilenceEventSource(eventSource);
-		micro.unsilenceEventSource(eventSource);
 	}
 }
