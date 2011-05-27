@@ -115,6 +115,8 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 		
 		final VisualLexiconNode newNode = new VisualLexiconNode(vp, parentNode);
 		this.visualPropertyMap.put(vp, newNode);
+		
+		addIdentifierMapping(vp.getTargetDataType(), vp.getIdString(), vp);
 	}
 	
 	
