@@ -42,11 +42,15 @@ import java.util.Set;
 import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.Range;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
 
 	private static final Range<Font> FONT_RANGE;
 	private static final int DEF_FONT_SIZE = 12;
+	
+	private static final Logger logger = LoggerFactory.getLogger(FontTwoDVisualProperty.class);
 
 	static {
 		final Set<Font> fontSet = new HashSet<Font>();
@@ -63,11 +67,17 @@ public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
 		super(def, FONT_RANGE, id, name, targetDataType);
 	}
 
+	@Override
 	public String toSerializableString(final Font value) {
-		// TODO:
-		return value.toString();
+		// e.g.: "SanSerif,bold,10"
+		String name = value.getFontName();
+		String weight = value.isBold() ? "bold" : "plain";
+		int size = value.getSize();
+		
+		return name + "," + weight + "," + size;
 	}
 
+	@Override
 	public Font parseSerializableString(final String text) {
 		Font font = null;
 		
@@ -84,7 +94,7 @@ public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
             try {
                 size = Integer.parseInt(sSize);
             } catch (NumberFormatException nfe) {
-                // TODO: log/warning
+                logger.warn("Cannot parse font size in '" + text +"'", nfe);
             }
 
             font = new Font(name, style, size);
