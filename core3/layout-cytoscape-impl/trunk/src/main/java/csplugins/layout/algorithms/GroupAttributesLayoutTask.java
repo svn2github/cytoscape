@@ -3,110 +3,72 @@ package csplugins.layout.algorithms;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.layout.AbstractBasicLayoutTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
-import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.CyTableManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GroupAttributesLayoutTask extends AbstractBasicLayoutTask {
+	
+	private static Logger logger = LoggerFactory.getLogger(GroupAttributesLayoutTask.class);
 
-	//@Tunable(description="Horizontal spacing between two partitions in a row")
-	public double spacingx;
-	//@Tunable(description="Vertical spacing between the largest partitions of two rows")
-	public double spacingy;
-	//@Tunable(description="Maximum width of a row")
-	public double maxwidth;
-	//@Tunable(description="Minimum width of a partition")
-	public double minrad;
-	//@Tunable(description="Scale of the radius of the partition")
-	public double radmult;
-	//@Tunable(description="The attribute to use for the layout")
-	public String attributeName;
-	//@Tunable(description="The namespace of the attribute to use for the layout")
-	public String attributeNamespace;
+	private double spacingx;
+	private double spacingy;
+	private double maxwidth;
+	private double minrad;
+	private double radmult;
+	
+	final private String attributeName;
+	private String attributeNamespace;
 	
 	private TaskMonitor taskMonitor;	
 	private CyNetwork network;
 	private CyTableManager tableMgr;
 	
-	public GroupAttributesLayoutTask(final CyNetworkView networkView, final String name,
-			  final boolean selectedOnly, final Set<View<CyNode>> staticNodes,
-			  final double spacingx,final double spacingy,final double maxwidth,final double minrad,
-			  final double radmult,final String attributeName,final String attributeNamespace, CyTableManager tableMgr)
-
-	{
+	public GroupAttributesLayoutTask(final CyNetworkView networkView, final String name, final boolean selectedOnly,
+			final Set<View<CyNode>> staticNodes, final double spacingx, final double spacingy, final double maxwidth,
+			final double minrad, final double radmult, final String attributeName, final String attributeNamespace,
+			CyTableManager tableMgr) {
+		
 		super(networkView, name, selectedOnly, staticNodes);
+		
+		if (attributeName == null)
+			throw new NullPointerException("Attribute is null.  This is required for this layout.");
+
 		this.spacingx = spacingx;
-		this.spacingy =spacingy;
-		this.maxwidth =maxwidth;
+		this.spacingy = spacingy;
+		this.maxwidth = maxwidth;
 		this.minrad = minrad;
-		this.radmult =radmult;
+		this.radmult = radmult;
+
 		this.attributeName = attributeName;
-		this.attributeNamespace =attributeNamespace;
+		this.attributeNamespace = attributeNamespace;
 		this.tableMgr = tableMgr;
 	}
 
 
-	
+	@Override
 	final protected void doLayout(final TaskMonitor taskMonitor) {
 		this.taskMonitor = taskMonitor;
 		this.network = networkView.getModel();
 		
 		construct(); 
 	}
-	
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Set<Class<?>> supportsNodeAttributes() {
-    	Set<Class<?>> ret = new HashSet<Class<?>>();
 
-   		ret.add(Integer.class);
-		ret.add(Double.class);
-		ret.add(String.class);
-		ret.add(Boolean.class);
-
-    	return ret;
-	}
 
 	/**
-	 * Sets the attribute to use for the weights
-	 *
-	 * @param value the name of the attribute
-	 */
-	public void setLayoutAttribute(String value) {
-		if (value == null) {
-			attributeName = null;
-		} else {
-			attributeName = value;
-		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List<String> getInitialAttributeList() {
-		return null;
-	}
-
-	/*
 	  Pseudo-procedure:
 	  1. Call makeDiscrete(). This will create a map for each value of the
 	     node attribute to the list of nodes with that attribute value.
@@ -126,26 +88,19 @@ public class GroupAttributesLayoutTask extends AbstractBasicLayoutTask {
 	        reset offsetx and maxheight; update offsety so that
 	    it will store the y-axis location of the next row.
 	*/
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void construct() {
+	private void construct() {
 		
 		if (this.attributeName == null){
-			System.out.println("\nWarning: GroupAttributesLayoutTask:construct(): attributeName is not defined!\n");
+			logger.warn("Attribute name is not defined.");
 			return;
 		}
 		
 		taskMonitor.setStatusMessage("Initializing");
-		//initialize(); // Calls initialize_local
 
 		CyTable dataTable = tableMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);
-		
-		//Class<?> klass = dataTable.getColumnTypeMap().get(attributeName);
-		Class klass = dataTable.getColumn(attributeName).getType();
+		Class<?> klass = dataTable.getColumn(attributeName).getType();
 		
 		if (Comparable.class.isAssignableFrom(klass)){
-			//Class<Comparable<?>>kasted = (Class<Comparable<?>>) klass;
 			Class<Comparable>kasted = (Class<Comparable>) klass;
 			doConstruct(kasted);
 		} else {
@@ -154,11 +109,11 @@ public class GroupAttributesLayoutTask extends AbstractBasicLayoutTask {
 	}
 	/** Needed to allow usage of parametric types */
 	private <T extends Comparable<T>> void doConstruct(Class<T> klass){
-		Map<T, List<CyNode>> partitionMap = new TreeMap<T, List<CyNode>>();
-		List<CyNode> invalidNodes = new ArrayList<CyNode>();
+		final Map<T, List<CyNode>> partitionMap = new TreeMap<T, List<CyNode>>();
+		final List<CyNode> invalidNodes = new ArrayList<CyNode>();
 		makeDiscrete(partitionMap, invalidNodes, klass);
 
-		List<List<CyNode>> partitionList = sort(partitionMap);
+		final List<List<CyNode>> partitionList = sort(partitionMap);
 		partitionList.add(invalidNodes);
 
 		double offsetx = 0.0;
@@ -192,7 +147,8 @@ public class GroupAttributesLayoutTask extends AbstractBasicLayoutTask {
 			return;
 		
 		for (CyNode node:network.getNodeList()){
-			T key = node.getCyRow(attributeNamespace).get(attributeName, klass);
+			// TODO: support namespace
+			T key = node.getCyRow().get(attributeName, klass);
 
 			if (key == null) {
 				if (invalidNodes != null)
@@ -266,8 +222,4 @@ public class GroupAttributesLayoutTask extends AbstractBasicLayoutTask {
 
 		return radius;
 	}
-
-	
-	
-	
 }

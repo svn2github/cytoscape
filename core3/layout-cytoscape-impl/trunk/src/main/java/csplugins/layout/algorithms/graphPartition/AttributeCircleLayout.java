@@ -33,29 +33,31 @@ package csplugins.layout.algorithms.graphPartition;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.CyTableEntry.*;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
-import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.undo.UndoSupport;
+import org.cytoscape.work.util.ListSingleSelection;
 
 
 public class AttributeCircleLayout extends AbstractLayoutAlgorithm implements TunableValidator {
-	@Tunable(description="The attribute to use for the layout")
+	
+	@Tunable(description = "The attribute to use for the layout")
 	public String attribute = CyTableEntry.NAME;
-	@Tunable(description="Circle size")
+	
+//	@Tunable(description="Node attribute to be use")
+//	public ListSingleSelection<Integer> attrName;
+	
+	@Tunable(description = "Circle size")
 	public double spacing = 100.0;
-        @Tunable(description="Don't partition graph before layout", groups="Standard settings")
+	@Tunable(description = "Don't partition graph before layout", groups = "Standard settings")
 	public boolean singlePartition;
 
 	private final boolean supportNodeAttributes;

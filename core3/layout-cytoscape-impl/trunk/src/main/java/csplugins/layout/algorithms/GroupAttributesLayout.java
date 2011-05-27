@@ -36,6 +36,10 @@
 
 package csplugins.layout.algorithms;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.work.TaskIterator;
@@ -74,9 +78,10 @@ public class GroupAttributesLayout extends AbstractLayoutAlgorithm {
 	public double minrad = 100.0;
 	@Tunable(description="Scale of the radius of the partition")
 	public double radmult = 50.0;
-	@Tunable(description="The attribute to use for the layout")
+	
+	//@Tunable(description="The attribute to use for the layout")
 	public String attributeName;
-	@Tunable(description="The namespace of the attribute to use for the layout")
+	//@Tunable(description="The namespace of the attribute to use for the layout")
 	public String attributeNamespace;
 	
 	private CyTableManager tableMgr;
@@ -87,12 +92,41 @@ public class GroupAttributesLayout extends AbstractLayoutAlgorithm {
 	public GroupAttributesLayout(UndoSupport undoSupport, CyTableManager tableMgr) {
 		super(undoSupport, "attributes-layout", "Group Attributes Layout", true);
 		this.tableMgr = tableMgr;
+		
 	}
 
 	public TaskIterator getTaskIterator() {
 		return new TaskIterator(new GroupAttributesLayoutTask(networkView, getName(), selectedOnly, staticNodes,
 				spacingx,spacingy,maxwidth,minrad,radmult,attributeName,attributeNamespace, tableMgr));
 	}
+	
+	@Override
+	public Set<Class<?>> supportsNodeAttributes() {
+		Set<Class<?>> ret = new HashSet<Class<?>>();
+
+		ret.add(Integer.class);
+		ret.add(Double.class);
+		ret.add(String.class);
+		ret.add(Boolean.class);
+
+		return ret;
+	}
+	
+	
+	@Override
+	public void setLayoutAttribute(String value) {
+		if (value.equals("(none)"))
+			this.attributeName = null;
+		else
+			this.attributeName = value;
+	}
+	
+	
+	@Override
+	public List<String> getInitialAttributeList() {
+		return null;
+	}
+
 
 	//TODO
 	public boolean tunablesAreValid(final Appendable errMsg) {
