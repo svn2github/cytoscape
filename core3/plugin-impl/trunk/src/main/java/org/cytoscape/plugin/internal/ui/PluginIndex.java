@@ -92,8 +92,20 @@ public class PluginIndex {
 		
 		// The index does exist, do the search now
 		Directory index = (Directory) indexTracker.get(index_id);
+				
+		// Add  wildcard characters to queryStr at beginning and end 
+		querystr = querystr.trim();
+		if (!querystr.startsWith("*")){
+			querystr = "*"+querystr;
+		}
+		if (!querystr.endsWith("*")){
+			querystr = querystr+ "*";
+		}
 		
-	    Query q = new QueryParser(Version.LUCENE_30, "default", analyzer).parse(querystr);
+		// The index does exist, do the search now
+		QueryParser qp = new QueryParser(Version.LUCENE_30, "default", analyzer);
+		qp.setAllowLeadingWildcard(true); 
+	    Query q = qp.parse(querystr);
 
 	    // search
 	    int hitsPerPage = 1000;
