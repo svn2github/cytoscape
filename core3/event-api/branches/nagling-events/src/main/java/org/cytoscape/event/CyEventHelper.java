@@ -41,63 +41,20 @@ public interface CyEventHelper {
 	 * @param <E> The type of event fired. 
 	 * @param event The event to be fired. 
 	 */
-	public <E extends CyEvent<?>> void fireSynchronousEvent(final E event);
+	<E extends CyEvent<?>> void fireEvent(final E event);
 
 	/**
-	 * Calls each listener found in the Service Registry identified by the listenerClass
-	 * the supplied event in a new thread.
-	 * <p>This method should <b>ONLY</b> ever be called with a thread safe event object!</p>
-	 *
-	 * @param <E> The type of event fired. 
-	 * @param event The event to be fired. 
+	 * Adds a payload object to be accumulated in an event. The event is guaranteed
+	 * to be fired after a certain duration where the single event contains all payload
+	 * objects added to the event within that window of time.  Payload objects added
+	 * after an event has fired simply trigger a new event to fire at the next time
+	 * point.
+	 * @param source The object firing the event.
+	 * @param payload The data payload to be added to the event that will
+	 * eventually be fired.
+	 * @param eventType The type of the event that the payload will be added to. 
 	 */
-	public <E extends CyEvent<?>> void fireAsynchronousEvent(final E event);
-
-	/**
-	 * Returns a single instance of CyMicroListener that will in turn execute any method
-	 * executed on the returned object on all registered CyMicroListeners for the specified
-	 * event source object. So, executing the following code:
-	 * <code>
-	 * eventHelper.getMicroListener(SomeListener.class, this).someEvent(...);
-	 * </code>
-	 * will execute the "someEvent(...)" method on every registered SomeListener 
-	 * that is listening for events from "this" event source.
-	 * <br/>
-	 * In general, CyMicroListener should avoided in favor the CyEvent/CyListener combination
-	 * as that code provides more flexibility for backwards compatibility.  CyMicroListener
-	 * should <b>only</b> be used when high performance is absolutely necessary <b>and</b>
-	 * when CyEvent/CyListener has been demonstrated to be inadequate!
-	 *
-	 * @param <M> the type of micro listener requested.
-	 * @param m the class object for type M
-	 * @param source The source object that fires the event. 
-	 * @return A single instance CyMicroListener of type M that will in turn execute any
-	 * called methods on all registered CyMicroListeners.
-	 */
-	public <M extends CyMicroListener> M getMicroListener(Class<M> m, Object source);
-
-
-	/**
-	 * Registers an object as a CyMicroListener to the event source object.
-	 *
-	 * @param <M> The type of micro listener being registered.
-	 * @param listener The object implementing the specified micro listener interface. 
-	 * @param clazz The specific CyMicroListener class that the listener is being registered for.
-	 * This is necessary because the listener object may implement several CyMicroListener 
-	 * interfaces.
-	 * @param source The event source that the listener object should listen to.
-	 */
-	public <M extends CyMicroListener> void addMicroListener(M listener, Class<M> clazz, Object source);
-
-	/**
-	 * Unregisters an object as a CyMicroListener for all event sources. 
-	 *
-	 * @param <M> The type of micro listener being unregistered.
-	 * @param listener The object implementing the specified micro listener interface. 
-	 * @param clazz The specific CyMicroListener class that the listener is being unregistered for.
-	 * @param source The event source that the listener object should be removed from. 
-	 */
-	public <M extends CyMicroListener> void removeMicroListener(M listener, Class<M> clazz, Object source);
+	<T,E extends CyEvent<?>> void addEventPayload(Object source, T payload, Class<E> eventType);
 
 	/**
 	 * This method will prevent any events fired from the specified source 
@@ -106,7 +63,7 @@ public interface CyEventHelper {
 	 * @param eventSource The object that should have its events blocked 
 	 * from being sent.
 	 */
-	public void silenceEventSource(Object eventSource);
+	void silenceEventSource(Object eventSource);
 
 	/**
 	 * This method will allow events fired from the specified source 
@@ -118,6 +75,5 @@ public interface CyEventHelper {
 	 * @param eventSource The object that should have its events sent
 	 * to listeners.
 	 */
-	public void unsilenceEventSource(Object eventSource);
-
+	void unsilenceEventSource(Object eventSource);
 }

@@ -36,46 +36,57 @@
 
 package org.cytoscape.event;
 
-import junit.framework.TestCase;
 
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 
 /**
  */
-public class AbstractCyEventTest extends TestCase {
+public class AbstractCyEventTest {
 
 	private static class TestEvent<T> extends AbstractCyEvent<T> {
-		TestEvent(T src, Class<?> c) {
-			super(src,c);
+		TestEvent(T src, Class<?> c, boolean s) {
+			super(src,c,s);
 		}
 	}
 
+	@Test
 	public void testGetSource() {
 		Integer i = new Integer(1);
-		TestEvent<Integer> e = new TestEvent<Integer>(i,Integer.class);
+		TestEvent<Integer> e = new TestEvent<Integer>(i,Integer.class,true);
 		assertEquals( i, e.getSource() ); 
 	}
 
+	@Test
 	public void testGetListenerClass() {
 		Object i = new Object(); 
-		TestEvent<Object> e = new TestEvent<Object>(i,Object.class);
+		TestEvent<Object> e = new TestEvent<Object>(i,Object.class,false);
 		assertEquals( Object.class, e.getListenerClass() ); 
 	}
 
+	@Test(expected=NullPointerException.class)
 	public void testNullSource() {
-		try {
-			new TestEvent<Object>(null, Object.class);
-		} catch (NullPointerException npe) {
-			return;
-		}
-		fail("should have thrown an exception");
+		new TestEvent<Object>(null, Object.class,true);
 	}
 
+	@Test(expected=NullPointerException.class)
 	public void testNullListenerClass() {
-		try {
-			new TestEvent<Object>(new Object(), null);
-		} catch (NullPointerException npe) {
-			return;
-		}
-		fail("should have thrown an exception");
+		new TestEvent<Object>(new Object(), null,false);
+	}
+
+	@Test
+	public void testSynchronousTrue() {
+		Object i = new Object(); 
+		TestEvent<Object> e = new TestEvent<Object>(i,Object.class,true);
+		assertTrue( e.synchronousOnly() ); 
+	}
+
+	@Test
+	public void testSynchronousFalse() {
+		Object i = new Object(); 
+		TestEvent<Object> e = new TestEvent<Object>(i,Object.class,false);
+		assertFalse( e.synchronousOnly() ); 
 	}
 }

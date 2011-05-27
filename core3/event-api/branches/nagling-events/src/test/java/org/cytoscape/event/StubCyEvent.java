@@ -37,10 +37,10 @@
 package org.cytoscape.event;
 
 /**
- * DOCUMENT ME!
-  */
+ * A simple event stub for testing. 
+ */
 public class StubCyEvent extends AbstractCyEvent<String> {
-	public StubCyEvent(String source) {
-		super(source, StubCyListener.class);
+	public StubCyEvent(String source, boolean sync) {
+		super(source, StubCyListener.class, sync);
 	}
 }

@@ -36,51 +36,53 @@
 
 package org.cytoscape.event;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 
 /**
  */
-public abstract class AbstractCyEventHelperTest extends TestCase {
+public abstract class AbstractCyEventHelperTest {
 
 	protected CyEventHelper helper;
 	protected StubCyListener service;
+	protected StubCyPayloadListener payloadService;
 
-	final protected MicroEventSource microEventSource = new MicroEventSource(); 
-
-	public void testSynchronous() {
-		helper.fireSynchronousEvent(new StubCyEvent("homer"));
+	@Test
+	public void testFireSynchronous() {
+		helper.fireEvent(new StubCyEvent("homer",true));
 		assertEquals(1, service.getNumCalls());
 	}
 
-	public void testAsynchronous() {
+	@Test
+	public void testFireAsynchronous() {
 		try {
-			helper.fireAsynchronousEvent(new StubCyEvent("marge"));
-			Thread.sleep(500); // TODO is there a better way to wait?
-			assertEquals(1, service.getNumCalls());
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-			fail();
-		}
+		helper.fireEvent(new StubCyEvent("marge",false));
+		Thread.sleep(500); // TODO is there a better way to wait?
+		assertEquals(1, service.getNumCalls());
+		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
 	}
 
 	// This is a performance test that counts the number of events fired in 1 second. 
 	// We verify that the microlistener approach is at least 3 times faster than the
 	// event/listener combo. 
+	/*
+	@Test
 	public void testLD1second() {
 		final long duration = 1000000000;
 
 		long end = System.nanoTime() + duration;
 		int syncCount = 0;
 		while ( end > System.nanoTime() ) {
-			helper.fireSynchronousEvent((StubCyEvent) new StubCyEvent("homer"));
+			helper.fireEvent(new StubCyEvent("homer",true));
 			syncCount++;
 		}
 
 		end = System.nanoTime() + duration;
 		int asyncCount = 0;
 		while ( end > System.nanoTime() ) {
-			helper.fireAsynchronousEvent((StubCyEvent) new StubCyEvent("homer"));
+			helper.fireEvent(new StubCyEvent("homer",false));
 			asyncCount++;
 		}
 	
@@ -103,202 +105,93 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 
 		assertTrue( microCount > (syncCount*3) );
 	}
+	*/
 
-	public void testAddMicroListener() {
-		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
-		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
-
-		microEventSource.testFire( helper, 5 );
-		assertEquals("number of calls", 1,stub1.getNumCalls());
-		assertEquals("value of event", 5,stub1.getEventValue());
-
-		microEventSource.testFire( helper, 10 );
-		assertEquals("number of calls", 2,stub1.getNumCalls());
-		assertEquals("value of event", 10,stub1.getEventValue());
-	}
-
-	// any exception thrown here is a problem
-	// firing with no registered listeners should be OK
-	public void testAddNullMicroListener() {
-		StubCyMicroListener stub1 = null; 
-		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
-		microEventSource.testFire( helper, 5 );
-	}
-
-	// any exception thrown here is a problem
-	// at most a message should be logged
-	public void testAddNullEventSource() {
-		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
-		helper.addMicroListener(stub1, StubCyMicroListener.class, null);
-	}
-
-	public void testRemoveMicroListener() {
-		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
-		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
-
-		microEventSource.testFire( helper, 5 );
-		assertEquals("number of calls", 1,stub1.getNumCalls());
-		assertEquals("value of event", 5,stub1.getEventValue());
-
-		helper.removeMicroListener(stub1, StubCyMicroListener.class, microEventSource);
-
-		microEventSource.testFire( helper, 10 );
-		// these values should reflect the previous values
-		assertEquals("number of calls", 1,stub1.getNumCalls());
-		assertEquals("value of event", 5,stub1.getEventValue());
-	}
-
-	public void testRemoveMicroListenerFromWrongSource() {
-		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
-		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
-
-		microEventSource.testFire( helper, 5 );
-		assertEquals("number of calls", 1,stub1.getNumCalls());
-		assertEquals("value of event", 5,stub1.getEventValue());
-
-		helper.removeMicroListener(stub1, StubCyMicroListener.class, new Object());
-
-		microEventSource.testFire( helper, 10 );
-		// these values should reflect be updated because we removed the listener from
-		// the wrong source obj
-		assertEquals("number of calls", 2,stub1.getNumCalls());
-		assertEquals("value of event", 10,stub1.getEventValue());
-	}
-
+	@Test
 	public void testSynchronousNoInstances() {
-		helper.fireSynchronousEvent(new FakeCyEvent());
+		helper.fireEvent(new FakeCyEvent(true));
 	}
 
+	@Test
 	public void testAsynchronousNoInstances() {
 		try {
-			helper.fireAsynchronousEvent(new FakeCyEvent());
-			Thread.sleep(500); // TODO is there a better way to wait?
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-			fail();
-		}
+		helper.fireEvent(new FakeCyEvent(false));
+		Thread.sleep(500); // TODO is there a better way to wait?
+		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
 	}
 
+	@Test
 	public void testSynchronousSilenced() {
 		String source = "homer";
 		helper.silenceEventSource(source);
-		helper.fireSynchronousEvent(new StubCyEvent(source));
+		helper.fireEvent(new StubCyEvent(source,true));
 		assertEquals(0, service.getNumCalls());
 	}
 
+	@Test
 	public void testAsynchronousSilenced() {
 		try {
-			String source = "homer";
-			helper.silenceEventSource(source);
-			helper.fireAsynchronousEvent(new StubCyEvent(source));
-			Thread.sleep(500); // TODO is there a better way to wait?
-			assertEquals(0, service.getNumCalls());
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-			fail();
-		}
+		String source = "homer";
+		helper.silenceEventSource(source);
+		helper.fireEvent(new StubCyEvent(source,false));
+		Thread.sleep(500); // TODO is there a better way to wait?
+		assertEquals(0, service.getNumCalls());
+		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
 	}
 
-	public void testAddMicroListenerSilenced() {
-		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
-		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
-		helper.silenceEventSource(microEventSource);
-
-		microEventSource.testFire( helper, 5 );
-		assertEquals("number of calls", 0,stub1.getNumCalls());
-
-		microEventSource.testFire( helper, 10 );
-		assertEquals("number of calls", 0,stub1.getNumCalls());
-	}
-
+	@Test
 	public void testSynchronousSilencedThenUnsilenced() {
 		String source = "homer";
 		helper.silenceEventSource(source);
-		helper.fireSynchronousEvent(new StubCyEvent(source));
+		helper.fireEvent(new StubCyEvent(source,true));
 		assertEquals(0, service.getNumCalls());
 		helper.unsilenceEventSource(source);
-		helper.fireSynchronousEvent(new StubCyEvent(source));
+		helper.fireEvent(new StubCyEvent(source,true));
 		assertEquals(1, service.getNumCalls());
 	}
 
+	@Test
 	public void testAsynchronousSilencedThenUnsilenced() {
 		try {
-			String source = "homer";
-			helper.silenceEventSource(source);
-			helper.fireAsynchronousEvent(new StubCyEvent(source));
-			Thread.sleep(500); // TODO is there a better way to wait?
-			assertEquals(0, service.getNumCalls());
-			helper.unsilenceEventSource(source);
-			helper.fireAsynchronousEvent(new StubCyEvent(source));
-			Thread.sleep(500); // TODO is there a better way to wait?
-			assertEquals(1, service.getNumCalls());
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-			fail();
-		}
+		String source = "homer";
+		helper.silenceEventSource(source);
+		helper.fireEvent(new StubCyEvent(source,false));
+		Thread.sleep(500); // TODO is there a better way to wait?
+		assertEquals(0, service.getNumCalls());
+		helper.unsilenceEventSource(source);
+		helper.fireEvent(new StubCyEvent(source,false));
+		Thread.sleep(500); // TODO is there a better way to wait?
+		assertEquals(1, service.getNumCalls());
+		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
 	}
 
-	public void testAddMicroListenerSilencedThenUnsilenced() {
-		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
-		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
-		helper.silenceEventSource(microEventSource);
-
-		microEventSource.testFire( helper, 5 );
-		assertEquals("number of calls", 0,stub1.getNumCalls());
-
-		helper.unsilenceEventSource(microEventSource);
-
-		microEventSource.testFire( helper, 10 );
-		assertEquals("number of calls", 1,stub1.getNumCalls());
+	@Test
+	public void testAddEventPayload() {
+		try {
+		helper.addEventPayload("source","homer",StubCyPayloadEvent.class);
+		helper.addEventPayload("source","marge",StubCyPayloadEvent.class);
+		Thread.sleep(500);
+		assertTrue( payloadService.getNumCalls() >= 1 );
+		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
 	}
 
-	public void testMultipleSameClassRowListenersAddedAndRemoved() {
-
-        StubCyMicroListener stub1 = new StubCyMicroListenerImpl();
-        helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
-
-        StubCyMicroListener stub2 = new StubCyMicroListenerImpl();
-        helper.addMicroListener(stub2, StubCyMicroListener.class, microEventSource);
-
-        StubCyMicroListener stubOther = new OtherStubCyMicroListenerImpl();
-        helper.addMicroListener(stubOther, StubCyMicroListener.class, microEventSource);
-
-		microEventSource.testFire( helper, 10 );
-
-		assertEquals( 1, stub1.getNumCalls() );
-		assertEquals( 1, stub2.getNumCalls() );
-		assertEquals( 1, stubOther.getNumCalls() );
-
-		microEventSource.testFire( helper, 11 );
-
-		assertEquals( 2, stub1.getNumCalls() );
-		assertEquals( 2, stub2.getNumCalls() );
-		assertEquals( 2, stubOther.getNumCalls() );
-
-        helper.removeMicroListener(stub1, StubCyMicroListener.class, microEventSource);
-
-		microEventSource.testFire( helper, 12 );
-
-		assertEquals( 2, stub1.getNumCalls() );
-		assertEquals( 3, stub2.getNumCalls() );
-		assertEquals( 3, stubOther.getNumCalls() );
+	@Test(expected=NullPointerException.class)
+	public void testAddEventPayloadNullSource() {
+		helper.addEventPayload(null,"homer",StubCyPayloadEvent.class);
 	}
 
-	private class OtherStubCyMicroListenerImpl implements StubCyMicroListener {
-		int called = 0;
-		int eventValue = Integer.MIN_VALUE;
+	@Test(expected=NullPointerException.class)
+	public void testAddEventPayloadNullPayload() {
+		helper.addEventPayload("source",null,StubCyPayloadEvent.class);
+	}
 
-		public void handleMicroEvent(int x) {
-			called++;
-			eventValue = x;
-		}
-	
-		public int getNumCalls() { return called; }
-	
-		public int getEventValue() { return eventValue; }
-	
-		public String toString() {
-			return "OtherStubCyMicroListenerImpl: " + called + " " + eventValue;
-		}
+	@Test(expected=NullPointerException.class)
+	public void testAddEventPayloadNullEventType() {
+		helper.addEventPayload("source","bart",null);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testAddEventPayloadMismatchedType() {
+		helper.addEventPayload("source",new Integer(1),StubCyPayloadEvent.class);
 	}
 }

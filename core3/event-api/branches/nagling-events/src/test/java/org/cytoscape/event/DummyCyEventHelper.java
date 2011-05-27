@@ -28,11 +28,6 @@
 package org.cytoscape.event;
 
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,42 +35,21 @@ import java.util.List;
 public class DummyCyEventHelper implements CyEventHelper {
 	private Object lastSynchronousEvent;
 	private Object lastAsynchronousEvent;
-	private Object lastMicroListener;
-	private List<String> calledMicroListenerMethods;
 
 	public DummyCyEventHelper() {
-		calledMicroListenerMethods = new ArrayList<String>();
 	}
 	
-	public <E extends CyEvent<?>> void fireSynchronousEvent(final E event) {
-		lastSynchronousEvent = event;
+	public <E extends CyEvent<?>> void fireEvent(final E event) {
+		if ( event.synchronousOnly() )
+			lastSynchronousEvent = event;
 	}
 
 	public <E extends CyEvent<?>> void fireAsynchronousEvent(final E event) {
-		lastAsynchronousEvent = event;
+		if ( !event.synchronousOnly() )
+			lastAsynchronousEvent = event;
 	}
 
-	public <M extends CyMicroListener> M getMicroListener(Class<M> c, Object o) {
-		lastMicroListener = Proxy.newProxyInstance(this.getClass().getClassLoader(), 
-		                    new Class[] { c }, new DummyListenerHandler());
-		return c.cast( lastMicroListener ); 
-	}
-
-	public <M extends CyMicroListener> void addMicroListener(M m, Class<M> c, Object o) {
-	}
-
-	public <M extends CyMicroListener> void removeMicroListener(M m, Class<M> c, Object o) {
-	}
-
-	private class DummyListenerHandler implements InvocationHandler {
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			calledMicroListenerMethods.add(method.getName());
-			return null;
-		}
-	}
-
-	public List<String> getCalledMicroListeners() {
-		return calledMicroListenerMethods;
+	public <T,E extends CyEvent<?>> void addEventPayload(Object source, T p, Class<E> e) {
 	}
 
 	public Object getLastSynchronousEvent() {

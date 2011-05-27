@@ -36,9 +36,18 @@
 
 package org.cytoscape.event;
 
-public class MicroEventSource {
+import java.util.Collection;
+/**
+ * A simple event stub for testing. 
+ */
+public class StubCyPayloadEvent extends AbstractCyEvent<String> {
+	private Collection<String> payload; 
+	public StubCyPayloadEvent(String source, Collection<String> payload) {
+		super(source, StubCyPayloadListener.class, false);
+		this.payload = payload;
+	}
 
-	public void testFire(CyEventHelper eh, int value) {
-		eh.getMicroListener(StubCyMicroListener.class, this).handleMicroEvent(value);
+	public Collection<String> getPayload() {
+		return payload;
 	}
 }

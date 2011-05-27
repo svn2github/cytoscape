@@ -39,27 +39,19 @@ package org.cytoscape.event;
 /**
  * DOCUMENT ME!
   */
-public interface StubCyMicroListener extends CyMicroListener {
-
+public interface StubCyPayloadListener extends CyListener {
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void handleMicroEvent(int x);
+	public void handleEvent(StubCyPayloadEvent e);
 
 	/**
 	 * A special method for testing which returns the number of times
-	 * that the handleMicroEvent() method had been called.  In general,
-	 * extensions of the CyMicroListener interface should NOT define other 
+	 * that the handleEvent() method had been called.  In general,
+	 * extensions of the CyListener interface should NOT define other 
 	 * methods.
 	 */
 	public int getNumCalls();
-
-	/**
-	 * A special method for testing which returns the value set in
-	 * the handleMicroEvent() method.  In general, extensions of the CyMicroListener 
-	 * interface should NOT define other methods.
-	 */
-	public int getEventValue();
 }
