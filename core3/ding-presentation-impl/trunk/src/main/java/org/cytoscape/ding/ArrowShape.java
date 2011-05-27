@@ -35,6 +35,9 @@
 package org.cytoscape.ding;
 
 
+import java.util.Hashtable;
+import java.util.Map;
+
 import org.cytoscape.graph.render.immed.GraphGraphics;
 
 
@@ -57,7 +60,22 @@ public enum ArrowShape {
 
 	private final String displayName;
 	private final byte rendererTypeID;
+	
+	/** old_key -> ArrowShape */
+	private static final Map<String, ArrowShape> legacyShapes = new Hashtable<String, ArrowShape>();
 
+	static {
+		// We have to support Cytoscape 2.8 XGMML shapes!
+		legacyShapes.put("0", NONE);
+		legacyShapes.put("3", DELTA);
+		legacyShapes.put("6", ARROW);
+		legacyShapes.put("9", DIAMOND);
+		legacyShapes.put("12", CIRCLE);
+		legacyShapes.put("15", T);
+		legacyShapes.put("16", HALF_TOP);
+		legacyShapes.put("17", HALF_BOTTOM);
+	}
+	
 	private ArrowShape(final String displayName, final byte rendererTypeID) {
 		this.displayName = displayName;
 		this.rendererTypeID = rendererTypeID;
@@ -81,10 +99,6 @@ public enum ArrowShape {
 	public String getDisplayName() {
 		return displayName;
 	}
-	
-	@Override public String toString() {
-		return this.displayName;
-	}
 
 	/**
 	 *
@@ -92,26 +106,34 @@ public enum ArrowShape {
 	 * @return
 	 */
 	public static ArrowShape parseArrowText(final String text) {
-		try {
-			ArrowShape val = valueOf(text);
-			return val;
-		// brilliant flow control
-		// this isn't a problem, we just don't match
-		} catch (IllegalArgumentException e) { }
+		ArrowShape shape = null;
 		
-		// if string doesn't match, then try other possible GINY names 
-		for (ArrowShape shape : values())  {
-			if (shape.displayName.equals(text))
-				return shape;
+		if (text != null) {
+			String key = text.trim().toUpperCase();
 			
-			// TODO: backward-compatibility
-//			for (String possibleName : shape.getPossibleGinyNames()) {
-//				if ( possibleName.equals(text) ) 
-//					return shape;
-//			}
+			try {
+				shape = valueOf(key);
+			} catch (IllegalArgumentException e) {
+				// brilliant flow control--this isn't a problem, we just don't match
+				
+				// maybe it is an old 2.x key
+				shape = legacyShapes.get(key);
+				
+				if (shape == null) {
+					// if string doesn't match, then try other possible GINY names 
+					for (ArrowShape val : values())  {
+						if (val.displayName.equalsIgnoreCase(text)) {
+							shape = val;
+							break;
+						}
+					}
+				}
+			}
 		}
+		
+		if (shape == null) shape = NONE;
 
-		return NONE;
+		return shape;
 	}
 
 	/**

@@ -35,8 +35,6 @@
 package org.cytoscape.ding.impl.visualproperty;
 
 import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.ding.ArrowShape;
@@ -45,30 +43,17 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.Range;
 
-public class ArrowShapeTwoDVisualProperty extends
-		AbstractVisualProperty<ArrowShape> {
+public class ArrowShapeTwoDVisualProperty extends AbstractVisualProperty<ArrowShape> {
 
 	private static final Range<ArrowShape> ARROW_SHAPE_RANGE;
 
-	/** key -> valid_cytoscape_key */
-	private static final Map<String, String> shapeKeys = new Hashtable<String, String>();
-
 	static {
 		final Set<ArrowShape> arrowSet = new HashSet<ArrowShape>();
+		
 		for (final ArrowShape arrow : ArrowShape.values())
 			arrowSet.add(arrow);
-		ARROW_SHAPE_RANGE = new DiscreteRange<ArrowShape>(ArrowShape.class,
-				arrowSet);
-
-		// We have to support Cytoscape 2.8 XGMML shapes!
-		shapeKeys.put("0", "NONE");
-		shapeKeys.put("3", "DELTA");
-		shapeKeys.put("6", "ARROW");
-		shapeKeys.put("9", "DIAMOND");
-		shapeKeys.put("12", "CIRCLE");
-		shapeKeys.put("15", "T");
-		shapeKeys.put("16", "HALF_ARROW_TOP");
-		shapeKeys.put("17", "HALF_ARROW_BOTTOM");
+		
+		ARROW_SHAPE_RANGE = new DiscreteRange<ArrowShape>(ArrowShape.class, arrowSet);
 	}
 
 	public ArrowShapeTwoDVisualProperty(final ArrowShape def, final String id,
@@ -81,17 +66,7 @@ public class ArrowShapeTwoDVisualProperty extends
 	}
 
 	public ArrowShape parseSerializableString(final String text) {
-		ArrowShape shape = null;
-
-		if (text != null) {
-			String key = text.trim().toUpperCase();
-			String validKey = shapeKeys.get(key);
-
-			if (validKey == null)
-				validKey = key;
-
-			shape = ArrowShape.valueOf(validKey);
-		}
+		ArrowShape shape = ArrowShape.parseArrowText(text);
 
 		return shape;
 	}
