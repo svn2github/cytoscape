@@ -16,7 +16,7 @@ import org.lwjgl.util.glu.GLU;
 
 public class LwjglTest {
 	
-	private static final int NODE_COUNT = 10000;
+	private static final int NODE_COUNT = 30000;
 	private static final float LARGE_SPHERE_RADIUS = 2.0f;
 	private static final float SMALL_SPHERE_RADIUS = 0.02f;
 	private float[] x;
@@ -143,7 +143,7 @@ public class LwjglTest {
 		GL11.glColor3f(0.5f, 0.5f, 0.5f);
 		
 		GL11.glRotatef(yRotate, 0.5f, 0.5f, 0.0f);
-		yRotate--;
+		// yRotate--;
 		
 		for (int i = 0; i < NODE_COUNT; i++) {
 			GL11.glTranslatef(x[i], y[i], z[i]);

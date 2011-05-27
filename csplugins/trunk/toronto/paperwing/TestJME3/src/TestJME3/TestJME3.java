@@ -26,7 +26,7 @@ import com.jme3.util.TangentBinormalGenerator;
  */
 public class TestJME3 extends SimpleApplication {
 
-	private final int NODE_COUNT = 30000;
+	private final int NODE_COUNT = 10000;
 	private final float LARGE_SPHERE_RADIUS = 3.0f;
 	
     float angle;
@@ -115,6 +115,7 @@ public class TestJME3 extends SimpleApplication {
 		}
 		
 		// GeometryBatchFactory.optimize(rootNode);
+		System.out.println("Number of children in root node: " + rootNode.getChildren().size());
 
 		
 		//System.out.println("Last node float: " + random.nextFloat());
