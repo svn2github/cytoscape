@@ -220,6 +220,7 @@ public class Graph {
 
 	/** number of passes to do adjacency exchange */
 	static int MAX_ADJACENT_EXCHANGE_PASSES = 5;
+	
 	private byte[] status;
 	private int[] d;
 	private int[] low;
@@ -236,7 +237,7 @@ public class Graph {
 	 * @param a_edge An array of all edges in the graph (each edge holds the source and destination node's indicies)
 	 * @throws IllegalArgumentException If any edge refers to an out of range node
 	*/
-	public Graph(int a_nodecount, Edge[] a_edge) {
+	public Graph(int a_nodecount, final Edge[] a_edge) {
 		nodecount = a_nodecount;
 		edge = new Edge[a_edge.length];
 		edgesFrom = new LinkedList[nodecount];
@@ -255,9 +256,8 @@ public class Graph {
 			int edgeTo = a_edge[x].getTo();
 
 			if ((edgeFrom < 0) || (edgeFrom >= nodecount) || (edgeTo < 0) || (edgeTo >= nodecount)) {
-				throw new IllegalArgumentException("Edge refered to node outside of valid range: "
-				                                   + "From=" + edgeFrom + " To=" + edgeTo
-				                                   + " with nodecount=" + nodecount + "\n");
+				throw new IllegalArgumentException("Edge refered to node outside of valid range: " + "From=" + edgeFrom
+						+ " To=" + edgeTo + " with nodecount=" + nodecount + "\n");
 			}
 
 			edge[x] = new Edge(edgeFrom, edgeTo);

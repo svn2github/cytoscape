@@ -4,6 +4,8 @@ package csplugins.layout.algorithms.circularLayout;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.model.CyNode;
@@ -15,51 +17,30 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
 
 import csplugins.layout.algorithms.hierarchicalLayout.Edge;
 import csplugins.layout.algorithms.hierarchicalLayout.Graph;
 
 
 public class CircularLayoutAlgorithmTask extends AbstractPartitionLayoutTask {
-	public int nodeHorizontalSpacing; // = 64;
-	public int nodeVerticalSpacing;// = 32;
-	public int leftEdge;// = 32;
-	public int topEdge;// = 32;
-	public int rightMargin;// = 1000;
-
+	
 	private int[][] bc;
 	private boolean[] posSet;
 	private boolean[] depthPosSet;
-	private HashMap<Integer, Integer> nodeHeights;
-	private LinkedList<Integer>[] edgesFrom;
-	//private NodeView[] nodeView;
-	private HashMap<Integer, View<CyNode>> nodeViews;
-	private HashMap<Integer, Integer> node2BiComp;
+	private Map<Integer, Integer> nodeHeights;
+	private List<Integer>[] edgesFrom;
+	private Map<Integer, View<CyNode>> nodeViews;
+	private Map<Integer, Integer> node2BiComp;
 	private boolean[] drawnBiComps;
 
 
-	public CircularLayoutAlgorithmTask(
-		final CyNetworkView networkView, final String name, final boolean selectedOnly,
-		final Set<View<CyNode>> staticNodes, final int nodeHorizontalSpacing,
-		final int nodeVerticalSpacing, final int leftEdge, final int topEdge,
-		final int rightMargin, final boolean singlePartition)
-	{
+	public CircularLayoutAlgorithmTask(final CyNetworkView networkView, final String name,
+			final boolean singlePartition, final boolean selectedOnly, final Set<View<CyNode>> staticNodes) {
 		super(networkView, name, singlePartition, selectedOnly, staticNodes);
-
-		this.nodeHorizontalSpacing = nodeHorizontalSpacing;
-		this.nodeVerticalSpacing = nodeVerticalSpacing;
-		this.leftEdge = leftEdge;
-		this.topEdge = topEdge;
-		this.rightMargin = rightMargin;
 	}
 
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param partition DOCUMENT ME!
-	 */
+	@Override
 	public void layoutPartion(LayoutPartition partition) {
 		if (cancelled)
 			return;
@@ -73,60 +54,51 @@ public class CircularLayoutAlgorithmTask extends AbstractPartitionLayoutTask {
 
 		nodeViews = new HashMap<Integer, View<CyNode>>(numNodes);
 
-		int nextNode = 0;
-		//HashMap<Integer, Integer> ginyIndex2Index = new HashMap<Integer, Integer>(numNodes * 2);
+		Map<CyNode, Integer> nodeIdexMap = new HashMap<CyNode, Integer>();
+		int nodeIndex = 0;
 
-		Iterator iter = partition.getNodeList().iterator(); /* all nodes */
-
-		while (iter.hasNext() && !cancelled) {
-			View<CyNode> nv = ((LayoutNode) (iter.next())).getNodeView();
-
-			nodeViews.put(nextNode, nv);
-			nextNode++;
-
+		Iterator<LayoutNode> nodeIter = partition.getNodeList().iterator();
+		while (nodeIter.hasNext() && !cancelled) {
+			final View<CyNode> nv = nodeIter.next().getNodeView();
+			nodeViews.put(nodeIndex, nv);
+			nodeIdexMap.put(nv.getModel(), nodeIndex);
+			nodeIndex++;
 		}
 
 		if (cancelled)
 			return;
 
 		/* create edge list from edges between selected nodes */
-		LinkedList<Edge> edges = new LinkedList<Edge>();
-		iter = partition.edgeIterator();
+		final List<Edge> edges = new LinkedList<Edge>();
+		final Iterator<LayoutEdge> edgeIter = partition.edgeIterator();
+		while (edgeIter.hasNext() && !cancelled) {
+			final LayoutEdge ev = edgeIter.next();
+			final Integer edgeFrom = nodeIdexMap.get(ev.getEdge().getSource());
+			final Integer edgeTo = nodeIdexMap.get(ev.getEdge().getTarget());
 
-		while (iter.hasNext()) {
-			LayoutEdge ev = (LayoutEdge) (iter.next());
-			Integer edgeFrom = ev.getEdge().getSource().getIndex();
-			Integer edgeTo = ev.getEdge().getTarget().getIndex();
-
-			if ((edgeFrom == null) || (edgeTo == null)) {
-				// Must be from an unselected node
+			if ((edgeFrom == null) || (edgeTo == null))
 				continue;
-			}
-
-			if (cancelled)
-				return;
-
-			/* add edge to graph */
-			edges.add(new Edge(edgeFrom.intValue(), edgeTo.intValue()));
-			edges.add(new Edge(edgeTo.intValue(), edgeFrom.intValue()));
+			
+			edges.add(new Edge(edgeFrom, edgeTo));
+			edges.add(new Edge(edgeTo, edgeFrom));
 		}
+		nodeIdexMap.clear();
+		nodeIdexMap = null;
+		if (cancelled)
+			return;
 
 		/* find horizontal and vertical coordinates of each node */
-		Edge[] edge = new Edge[edges.size()];
+		final Edge[] edge = new Edge[edges.size()];
 		edges.toArray(edge);
 
-		Graph graph = new Graph(numNodes, edge);
+		final Graph graph = new Graph(numNodes, edge);
 
 		if (cancelled)
 			return;
 
 		posSet = new boolean[nodeViews.size()]; // all false
 		depthPosSet = new boolean[nodeViews.size()]; // all false
-
-		//System.out.println("plain component:\n" + graph.getNodecount());
-
-		Thread.yield();
-
+		
 		bc = graph.biconnectedComponents();
 
 		int maxSize = -1;
@@ -159,12 +131,8 @@ public class CircularLayoutAlgorithmTask extends AbstractPartitionLayoutTask {
 				}
 			}
 
-		double radius = (48 * maxSize) / (2 * Math.PI);
-
-		/*int[] resultingNodes = new int[bc[maxIndex].length];
-		for (int i = 0; i < resultingNodes.length; i++)
-		    resultingNodes[i] = index2GinyIndex.get(bc[maxIndex][i]);*/
-		double deltaAngle = (2 * Math.PI) / maxSize;
+		final double radius = (48 * maxSize) / (2 * Math.PI);
+		final double deltaAngle = (2 * Math.PI) / maxSize;
 		double angle = 0;
 
 		int startX = (int) radius;
@@ -177,9 +145,9 @@ public class CircularLayoutAlgorithmTask extends AbstractPartitionLayoutTask {
 
 		// setting nodes on inner circle
 		for (int i = 0; i < bc[maxIndex].length; i++) {
-			//System.out.println(bc[maxIndex][i] + " " + part2NonPart[bc[maxIndex][i]] + "   ");
-			setOffset(nodeViews.get(bc[maxIndex][i]), startX + (Math.cos(angle) * radius),
-			                                          startY - (Math.sin(angle) * radius));
+			setOffset(nodeViews.get(bc[maxIndex][i]), 
+					startX + (Math.cos(angle) * radius), 
+					startY - (Math.sin(angle) * radius));
 			posSet[bc[maxIndex][i]] = true;
 
 			angle += deltaAngle;
@@ -194,15 +162,13 @@ public class CircularLayoutAlgorithmTask extends AbstractPartitionLayoutTask {
 		if (cancelled)
 			return;
 
-		iter = partition.nodeIterator();
+		nodeIter = partition.nodeIterator();
 
-		while (iter.hasNext() && !cancelled) {
-			LayoutNode ln = (LayoutNode) (iter.next());
-			View<CyNode> nv = ln.getNodeView();
-			double xPos = nv.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
-			double yPos = nv.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION);
-			ln.setX(xPos);
-			ln.setY(yPos);
+		while (nodeIter.hasNext() && !cancelled) {
+			final LayoutNode ln = nodeIter.next();
+			final View<CyNode> nv = ln.getNodeView();
+			ln.setX(nv.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION));
+			ln.setY(nv.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
 			partition.moveNodeToLocation(ln);
 		}
 	}
@@ -221,14 +187,14 @@ public class CircularLayoutAlgorithmTask extends AbstractPartitionLayoutTask {
 	                            double startY, int firstTouched) {
 		int outerNodesCount = 0;
 		int rnc = 0;
-		Iterator iter;
-		HashMap<Integer, Integer> outerCircle = new HashMap<Integer, Integer>();
+		Iterator<Integer> iter;
+		Map<Integer, Integer> outerCircle = new HashMap<Integer, Integer>();
 
 		for (int i = 0; i < bc[compIndex].length; i++) {
 			iter = edgesFrom[bc[compIndex][i]].iterator();
 
 			while (iter.hasNext()) {
-				int currNeighbour = ((Integer) iter.next()).intValue();
+				int currNeighbour = iter.next();
 
 				if (!posSet[currNeighbour]) {
 					outerNodesCount += (NoOfChildren(currNeighbour, outerCircle) + 1);
@@ -238,9 +204,7 @@ public class CircularLayoutAlgorithmTask extends AbstractPartitionLayoutTask {
 			}
 		}
 
-		double outerRadius;
-		//Math.round((nodeHorizontalSpacing * outerNodesCount) / (2 * Math.PI));
-		outerRadius = 1.5 * innerCircleRadius;
+		double outerRadius = 1.5 * innerCircleRadius;
 
 		// + 5 * nodeHorizontalSpacing;
 		int tryCount = (int) ((2 * Math.PI * outerRadius) / 32);
@@ -453,7 +417,7 @@ public class CircularLayoutAlgorithmTask extends AbstractPartitionLayoutTask {
 	 * @param outerCircle
 	 * @return
 	 */
-	private int NoOfChildren(int nodeID, HashMap<Integer, Integer> outerCircle) {
+	private int NoOfChildren(int nodeID, Map<Integer, Integer> outerCircle) {
 		int toReturn = 0;
 		Iterator iter = edgesFrom[nodeID].iterator();
 
@@ -535,90 +499,6 @@ public class CircularLayoutAlgorithmTask extends AbstractPartitionLayoutTask {
 		return toReturn;
 	}
 
-	/**
-	 * Sort the nodes from biconnected component to get the best ordering in terms
-	 * of minimizing inner circle crossings
-	 * @param icNodes - nodes from biconnected component
-	 * @return
-	 */
-	private int[] ReduceInnerCircleCrossings1(int[] icNodes) {
-		int[] toReturn = new int[icNodes.length];
-
-		HashMap<Integer, Boolean> alreadySet = new HashMap<Integer, Boolean>();
-
-		for (int i = 0; i < icNodes.length; i++)
-			alreadySet.put(Integer.valueOf(icNodes[i]), new Boolean(false));
-
-		int x = 0;
-		int p = 0;
-		toReturn[0] = icNodes[0];
-		alreadySet.put(Integer.valueOf(toReturn[0]), new Boolean(true));
-
-		while (p < (icNodes.length - 1)) {
-//			if ((p == x) && (p != 0))
-				//System.out.println("p = " + p + " x = " + x + " count = " + icNodes.length);
-
-			Iterator iter = edgesFrom[toReturn[p]].iterator();
-
-			while (iter.hasNext()) {
-				int neigh = ((Integer) iter.next()).intValue();
-
-				if (alreadySet.containsKey(Integer.valueOf(neigh))
-				    && !alreadySet.get(Integer.valueOf(neigh)).booleanValue()) {
-					toReturn[x++] = neigh;
-					alreadySet.put(Integer.valueOf(neigh), new Boolean(true));
-				}
-			}
-
-			p++;
-		}
-
-		return toReturn;
-	}
-
-	/**
-	 * Sort the nodes from biconnected component to get the best ordering in terms
-	 * of minimizing inner circle crossings
-	 * @param icNodes - nodes from biconnected component
-	 * @return
-	 */
-	private int[] ReduceInnerCircleCrossings(int[] icNodes) {
-		int[] toReturn = new int[icNodes.length];
-
-		HashMap<Integer, Boolean> alreadySet = new HashMap<Integer, Boolean>();
-		HashMap<Integer, Integer> nodeDegree = new HashMap<Integer, Integer>();
-
-		for (int i = 0; i < icNodes.length; i++) {
-			alreadySet.put(Integer.valueOf(icNodes[i]), new Boolean(false));
-			toReturn[i] = icNodes[i];
-		}
-
-		for (int i = 0; i < icNodes.length; i++) {
-			int degree = 0;
-			Iterator iter = edgesFrom[icNodes[i]].iterator();
-
-			while (iter.hasNext()) {
-				int neigh = ((Integer) iter.next()).intValue();
-
-				if (alreadySet.containsKey(Integer.valueOf(neigh)))
-					degree++;
-			}
-
-			nodeDegree.put(Integer.valueOf(icNodes[i]), Integer.valueOf(degree));
-		}
-
-		for (int i = 0; i < (toReturn.length - 1); i++) {
-			for (int j = i + 1; j < toReturn.length; j++) {
-				if (nodeDegree.get(Integer.valueOf(toReturn[i])) > nodeDegree.get(Integer.valueOf(toReturn[j]))) {
-					int tmp = toReturn[i];
-					toReturn[i] = toReturn[j];
-					toReturn[j] = tmp;
-				}
-			}
-		}
-
-		return toReturn;
-	}
 
 	/**
 	 * Function traverses graph starting from the node from outer circle until
@@ -1010,69 +890,10 @@ public class CircularLayoutAlgorithmTask extends AbstractPartitionLayoutTask {
 		    }*/
 		return startPos;
 	}
-
-	private int BestFreePosition(int idealPosition, boolean[] outerPositionsTaken) {
-		//for (int i = 0; i < outerPositionsTaken.length; i++)
-		//System.out.print(outerPositionsTaken[i] + " ");
-		//System.out.println();
-		//System.out.println(idealPosition);
-		int startPosition = idealPosition;
-
-		if (idealPosition < 0)
-			startPosition = idealPosition % outerPositionsTaken.length;
-
-		int move = 0;
-
-		while (move < ((outerPositionsTaken.length / 2) + 1)) {
-			if (!outerPositionsTaken[(startPosition + move) % outerPositionsTaken.length]) {
-				outerPositionsTaken[(startPosition + move) % outerPositionsTaken.length] = true;
-
-				//System.out.println((startPosition + move) % outerPositionsTaken.length);
-				return (startPosition + move) % outerPositionsTaken.length;
-			}
-
-			if (!outerPositionsTaken[(startPosition - move) % outerPositionsTaken.length]) {
-				outerPositionsTaken[(startPosition - move) % outerPositionsTaken.length] = true;
-
-				//	System.out.println((startPosition - move) % outerPositionsTaken.length);
-				return (startPosition - move) % outerPositionsTaken.length;
-			}
-
-			move++;
-		}
-
-		return -1;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void halt() {
-		cancelled = true;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param tm DOCUMENT ME!
-	 */
-	public void setTaskMonitor(TaskMonitor tm) {
-		taskMonitor = tm;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getTitle() {
-		return new String("Circular Layout");
-	}
+	
 
 	private void setOffset(View<CyNode> nv, double x, double y){
 		nv.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION, x);
 		nv.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION, y);
 	}
-
-
 }
