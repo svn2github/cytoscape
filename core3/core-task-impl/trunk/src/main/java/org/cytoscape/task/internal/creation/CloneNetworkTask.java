@@ -50,13 +50,18 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
+import org.cytoscape.view.presentation.property.RichVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CloneNetworkTask extends AbstractCreationTask {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CloneNetworkTask.class);
 
-	private Map<CyNode, CyNode> origNewNodeMap;
-	private Map<CyEdge, CyEdge> origNewEdgeMap;
+	private Map<CyNode, CyNode> orig2NewNodeMap;
+
 	private final VisualMappingManager vmm;
 	private final CyNetworkFactory netFactory;
 	private final CyNetworkViewFactory netViewFactory;
@@ -77,63 +82,67 @@ public class CloneNetworkTask extends AbstractCreationTask {
 	}
 
 	public void run(TaskMonitor tm) {
-		CyNetwork newNet = cloneNetwork(parentNetwork);
-		CyNetworkView origView = networkViewManager.getNetworkView(parentNetwork.getSUID());
-
+		final long start = System.currentTimeMillis();
+		logger.debug("Clone Network Task start");
+		
+		// Create copied network model
+		final CyNetwork newNet = cloneNetwork(parentNetwork);
+		final CyNetworkView origView = networkViewManager.getNetworkView(parentNetwork.getSUID());
 		networkManager.addNetwork(newNet);
-		if (origView != null) {
-			CyNetworkView newView = netViewFactory.getNetworkView(newNet);
 
-			// Copy locaitons since this is controlled outside of visual style.
-			for (final View<CyNode> newNodeView : newView.getNodeViews()) {
-				final View<CyNode> origNodeView = origView.getNodeView(newNodeView.getModel());
-				newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION,
-						origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION));
-				newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION,
-						origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
-			}
+		if (origView != null)
+			copyView(newNet, origView);
 
-			vmm.setVisualStyle(vmm.getVisualStyle(origView), newView);
-			vmm.getVisualStyle(origView).apply(newView);
-			networkViewManager.addNetworkView(newView);
-			newView.fitContent();
-		}
+		orig2NewNodeMap.clear();
+		orig2NewNodeMap = null;
+		
+		logger.debug("Cloning finished in " + (System.currentTimeMillis() - start) + " msec.");
 	}
 
 	private CyNetwork cloneNetwork(CyNetwork origNet) {
 		final CyNetwork newNet = netFactory.getInstance();
 
-		// copy default columns
-		cloneColumns(origNet.getDefaultNodeTable(), newNet.getDefaultNodeTable());
-		cloneColumns(origNet.getDefaultEdgeTable(), newNet.getDefaultEdgeTable());
-		cloneColumns(origNet.getDefaultNetworkTable(), newNet.getDefaultNetworkTable());
+		final CyTable nodeTable = newNet.getDefaultNodeTable();
+		final CyTable edgeTable = newNet.getDefaultEdgeTable();
+		final CyTable networkTable = newNet.getDefaultNetworkTable();
 
-		cloneNodes(origNet, newNet);
-		cloneEdges(origNet, newNet);
+		try {
+			// Generate bundled event to avoid too many events problem.
+			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, nodeTable));
+			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, edgeTable));
+			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, networkTable));
+			// copy default columns
+			cloneColumns(origNet.getDefaultNodeTable(), nodeTable);
+			cloneColumns(origNet.getDefaultEdgeTable(), edgeTable);
+			cloneColumns(origNet.getDefaultNetworkTable(), networkTable);
 
-		newNet.getCyRow().set(CyTableEntry.NAME,
-				naming.getSuggestedNetworkTitle(origNet.getCyRow().get(CyTableEntry.NAME, String.class)));
+			cloneNodes(origNet, newNet);
+			cloneEdges(origNet, newNet);
 
+			newNet.getCyRow().set(CyTableEntry.NAME,
+					naming.getSuggestedNetworkTitle(origNet.getCyRow().get(CyTableEntry.NAME, String.class)));
+		} finally {
+			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, nodeTable));
+			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, edgeTable));
+		}
 		return newNet;
 	}
 
 	private void cloneNodes(CyNetwork origNet, CyNetwork newNet) {
-		origNewNodeMap = new HashMap<CyNode, CyNode>();
+		orig2NewNodeMap = new HashMap<CyNode, CyNode>();
 		for (final CyNode origNode : origNet.getNodeList()) {
 			final CyNode newNode = newNet.addNode();
-			origNewNodeMap.put(origNode, newNode);
+			orig2NewNodeMap.put(origNode, newNode);
 			cloneRow(origNode.getCyRow(), newNode.getCyRow());
 		}
 	}
 
 	private void cloneEdges(CyNetwork origNet, CyNetwork newNet) {
-		origNewEdgeMap = new HashMap<CyEdge, CyEdge>();
 		for (final CyEdge origEdge : origNet.getEdgeList()) {
-			final CyNode newSource = origNewNodeMap.get(origEdge.getSource());
-			final CyNode newTarget = origNewNodeMap.get(origEdge.getTarget());
+			final CyNode newSource = orig2NewNodeMap.get(origEdge.getSource());
+			final CyNode newTarget = orig2NewNodeMap.get(origEdge.getTarget());
 			final boolean newDirected = origEdge.isDirected();
 			final CyEdge newEdge = newNet.addEdge(newSource, newTarget, newDirected);
-			origNewEdgeMap.put(origEdge, newEdge);
 			cloneRow(origEdge.getCyRow(), newEdge.getCyRow());
 		}
 	}
@@ -154,13 +163,33 @@ public class CloneNetworkTask extends AbstractCreationTask {
 	}
 
 	private void cloneRow(final CyRow from, final CyRow to) {
-		try {
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, to.getTable()));
+		for (final CyColumn column : from.getTable().getColumns())
+			to.set(column.getName(), from.getRaw(column.getName()));
+	}
 
-			for (final CyColumn column : from.getTable().getColumns())
-				to.set(column.getName(), from.getRaw(column.getName()));
-		} finally {
-			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, to.getTable()));
+	/**
+	 * Copy Visual Properties to the new network view.
+	 * 
+	 */
+	private void copyView(final CyNetwork newNet, final CyNetworkView origView) {
+		final CyNetworkView newView = netViewFactory.getNetworkView(newNet);
+
+		// Copy node locations since this is controlled outside of visual style.
+		for (final View<CyNode> origNodeView : origView.getNodeViews()) {
+			final CyNode node = origNodeView.getModel();
+			final View<CyNode> newNodeView = newView.getNodeView(orig2NewNodeMap.get(node));
+
+			newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION,
+					origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION));
+			newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION,
+					origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
+			newNodeView.setVisualProperty(RichVisualLexicon.NODE_Z_LOCATION,
+					origNodeView.getVisualProperty(RichVisualLexicon.NODE_Z_LOCATION));
 		}
+
+		vmm.setVisualStyle(vmm.getVisualStyle(origView), newView);
+		vmm.getVisualStyle(origView).apply(newView);
+		networkViewManager.addNetworkView(newView);
+		newView.fitContent();
 	}
 }
