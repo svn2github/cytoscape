@@ -63,8 +63,9 @@ import clusterMaker.ui.NestedNetworkView;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.hierarchical.HierarchicalCluster;
 import clusterMaker.algorithms.kmeans.KMeansCluster;
+import clusterMaker.algorithms.FeatureVector.FeatureVectorCluster;
 import clusterMaker.algorithms.TransClust.TransClustCluster;
-import clusterMaker.algorithms.FORCE.FORCECluster;
+// import clusterMaker.algorithms.FORCE.FORCECluster;
 import clusterMaker.algorithms.MCL.MCLCluster;
 import clusterMaker.algorithms.MCODE.MCODECluster;
 import clusterMaker.algorithms.glay.GLayCluster;
@@ -81,7 +82,7 @@ import clusterMaker.algorithms.autosome.AutoSOMECluster;
  * Cytoscape plugin mechanism
  */
 public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListener {
-	static final double VERSION = 1.9;
+	static final double VERSION = 1.10;
 	HashMap<JMenuItem,ClusterViz> vizMenus;
 	HashMap<String, ClusterViz> vizMap;
 	HashMap<String, ClusterAlgorithm> algMap;
@@ -116,6 +117,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		JMenu menu = new JMenu("Cluster");
 		addClusterAlgorithm(menu, new HierarchicalCluster());
 		addClusterAlgorithm(menu, new KMeansCluster());
+		addClusterAlgorithm(menu, new FeatureVectorCluster());
 		addClusterAlgorithm(menu, new AutoSOMECluster(true));
 		// addClusterAlgorithm(menu, new QTCluster());
 		menu.addSeparator();

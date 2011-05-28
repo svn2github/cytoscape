@@ -679,6 +679,13 @@ public class EisenCluster {
 		Collections.sort(attributeList);
 		return attributeList.toArray(new String[1]);
 	}
+
+	public static String[] getNodeAttributes() {
+		List<String> attributeList = new ArrayList<String>();
+		getAttributesList(attributeList, Cytoscape.getNodeAttributes(),"node.");
+		Collections.sort(attributeList);
+		return attributeList.toArray(new String[1]);
+	}
 		
 	/**
  	 * This function searches the distance matrix to find the pair with the shortest
