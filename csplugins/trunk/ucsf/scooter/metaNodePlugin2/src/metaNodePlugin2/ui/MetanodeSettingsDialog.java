@@ -105,7 +105,7 @@ public class MetanodeSettingsDialog extends JDialog
 	private double metanodeOpacity = 255.0f;
 	private String chartType = null;
 	private String nodeChartAttribute = null;
-	private MetaNodeGroupViewer groupViewer = null;
+	public MetaNodeGroupViewer groupViewer = null;
 	private AttributeManager defaultAttributeManager = null;
 
 	// Dialog components
@@ -592,7 +592,7 @@ public class MetanodeSettingsDialog extends JDialog
 		}
 	}
 
-	private void updateMetaNodeSettings(MetaNode mn) {
+	public void updateMetaNodeSettings(MetaNode mn) {
 		mn.setUseNestedNetworks(useNestedNetworks);
 		// mn.setSizeToBoundingBox(sizeToBoundingBox);
 		mn.setHideMetaNode(hideMetaNode);

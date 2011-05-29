@@ -38,6 +38,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyEdge;
@@ -112,6 +113,12 @@ enum Command {
 	SETDEFAULTAPP("set default appearance",
 	              "Set the default appearance options",
 	              "usenestednetworks=false|opacity=100|nodechart=none|chartattribute=none"),
+	APPLYTOALL(	"apply to all",
+	      	 	"Apply setting to all metanodes",
+	      	 	""),	       
+	APPLYTOSELECTED("apply to selected",
+					"Apply settings to selected metanodes",
+	      		 	""),	       
 	SETAGGOVERRIDE("set default overrides",
 	               "Override defailt aggregation for specific attributes",
 	               "attribute|aggregation");
@@ -577,11 +584,32 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 			}
 			settingsDialog.updateSettings(true);
 
+
 		// 
 		//	SETAGGOVERRIDE("set default overrides",
 		//	               "Override defailt aggregation for specific attributes",
 		//	               "attribute|aggregation");
 		// 
+		} else if (Command.APPLYTOALL.equals(command)){
+			List<CyGroup> groupList = CyGroupManager.getGroupList(settingsDialog.groupViewer);
+			if (groupList != null && groupList.size() > 0) {
+				// Update them
+				for (CyGroup group: groupList) 	{
+					MetaNode mn = MetaNodeManager.getMetaNode(group);
+					if (mn != null) {
+						settingsDialog.updateMetaNodeSettings(mn);
+					}
+				}
+			}
+			
+		} else if (Command.APPLYTOSELECTED.equals(command)){	
+			Set<CyNode> nodeList = Cytoscape.getCurrentNetwork().getSelectedNodes();
+			for (CyNode node: nodeList) {
+				MetaNode mn = MetaNodeManager.getMetaNode(node);
+				if (mn != null) {
+					settingsDialog.updateMetaNodeSettings(mn);
+				}
+			}
 		} else if (Command.SETAGGOVERRIDE.equals(command)) {
 			if (!args.containsKey(ATTRIBUTE))
 				throw new RuntimeException("metanode: "+command+" requires an attribute");
