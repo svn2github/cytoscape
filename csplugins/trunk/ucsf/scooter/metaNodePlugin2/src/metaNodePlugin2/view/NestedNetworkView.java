@@ -45,6 +45,8 @@ public class NestedNetworkView {
 	static private Map<CyGroup, CyNetworkView> nnMap = new HashMap<CyGroup, CyNetworkView>();
 
 	public static void create(CyGroup group, CyNetworkView view, double opacity) {
+		//TODO: nothing happens with opacity here...
+		
 		// Get the network
 		CyNetwork nn = group.getGraphPerspective();
 
