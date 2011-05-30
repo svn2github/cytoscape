@@ -19,7 +19,6 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
-import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,8 +40,8 @@ public abstract class AbstractVisualStyleTest {
 	
 	protected VisualLexicon lexicon;
 	
-	protected DiscreteMapping<String, Paint> colorMapping1;
-	protected DiscreteMapping<String, Paint> colorMapping2;
+//	protected DiscreteMapping<String, Paint> colorMapping1;
+//	protected DiscreteMapping<String, Paint> colorMapping2;
 	
 	
 	// Simple test network
@@ -58,18 +57,18 @@ public abstract class AbstractVisualStyleTest {
 	public void setUp() throws Exception {
 		
 		final Class<String> type = String.class;
-		colorMapping1 = new DiscreteMapping<String, Paint>(attrName, type,
-				MinimalVisualLexicon.NODE_PAINT);
-		colorMapping2 = new DiscreteMapping<String, Paint>(attrName, type,
-				MinimalVisualLexicon.NODE_FILL_COLOR);
-		
-		colorMapping1.putMapValue("red", RED2);
-		colorMapping1.putMapValue("green", GREEN2);
-		colorMapping1.putMapValue("blue", Color.BLUE);
-		
-		colorMapping2.putMapValue("red", RED1);
-		colorMapping2.putMapValue("green", GREEN1);
-		colorMapping2.putMapValue("blue", Color.BLUE);
+//		colorMapping1 = new DiscreteMapping<String, Paint>(attrName, type,
+//				MinimalVisualLexicon.NODE_PAINT);
+//		colorMapping2 = new DiscreteMapping<String, Paint>(attrName, type,
+//				MinimalVisualLexicon.NODE_FILL_COLOR);
+//		
+//		colorMapping1.putMapValue("red", RED2);
+//		colorMapping1.putMapValue("green", GREEN2);
+//		colorMapping1.putMapValue("blue", Color.BLUE);
+//		
+//		colorMapping2.putMapValue("red", RED1);
+//		colorMapping2.putMapValue("green", GREEN1);
+//		colorMapping2.putMapValue("blue", Color.BLUE);
 		
 		CyProperty<Properties> cyProperties = mock(CyProperty.class);
 		NetworkViewTestSupport nvts = new NetworkViewTestSupport(cyProperties);
@@ -101,7 +100,7 @@ public abstract class AbstractVisualStyleTest {
 		assertNotNull(newTitle);
 		assertNotNull(network);
 		assertNotNull(networkView);
-		assertNotNull(colorMapping1);
+//		assertNotNull(colorMapping1);
 		assertNotNull(networkView.getNodeView(node1));
 		assertNotNull(networkView.getNodeView(node2));
 		assertNotNull(networkView.getNodeView(node3));
@@ -115,8 +114,8 @@ public abstract class AbstractVisualStyleTest {
 		style.setTitle(newTitle);
 		assertEquals(newTitle, style.getTitle());
 		
-		style.addVisualMappingFunction(colorMapping1);
-		style.addVisualMappingFunction(colorMapping2);
+//		style.addVisualMappingFunction(colorMapping1);
+//		style.addVisualMappingFunction(colorMapping2);
 		style.setDefaultValue(MinimalVisualLexicon.NODE_PAINT, Color.BLACK);
 		style.setDefaultValue(MinimalVisualLexicon.NODE_FILL_COLOR, Color.PINK);
 		
