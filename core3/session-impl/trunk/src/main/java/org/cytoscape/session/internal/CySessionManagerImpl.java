@@ -65,6 +65,7 @@ import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleSerializer;
+import org.cytoscape.view.vizmap.model.Vizmap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +126,7 @@ public class CySessionManagerImpl implements CySessionManager {
         Set<CyNetworkView> netViews = nvMgr.getNetworkViewSet();
 
         Set<VisualStyle> allStyles = vmMgr.getAllVisualStyles();
-        Properties vmProps = vsSer.createProperties(allStyles);
+        Vizmap vizmap = vsSer.createVizmap(allStyles);
 
         Map<CyNetworkView, String> stylesMap = new HashMap<CyNetworkView, String>();
 
@@ -144,7 +145,7 @@ public class CySessionManagerImpl implements CySessionManager {
         Bookmarks bkmarks = bookmarks != null ? bookmarks.getProperties() : null;
 
         CySession sess = new CySession.Builder().cytoscapeProperties(props).bookmarks(bkmarks).cysession(cysess)
-                .pluginFileListMap(pluginMap).tables(tables).networkViews(netViews).vizmapProperties(vmProps)
+                .pluginFileListMap(pluginMap).tables(tables).networkViews(netViews).vizmap(vizmap)
                 .viewVisualStyleMap(stylesMap).build();
 
         return sess;
@@ -159,7 +160,7 @@ public class CySessionManagerImpl implements CySessionManager {
         if (emptySession) {
             logger.debug("Creating empty session...");
             Set<VisualStyle> allStyles = vmMgr.getAllVisualStyles();
-            Properties vmProps = vsSer.createProperties(allStyles);
+            Vizmap vizmap = vsSer.createVizmap(allStyles);
             Cysession cysess = new CysessionFactory().createDefaultCysession();
 
             // TODO: set default properties again
@@ -168,7 +169,7 @@ public class CySessionManagerImpl implements CySessionManager {
             Bookmarks bkmarks = bookmarks != null ? bookmarks.getProperties() : new Bookmarks();
 
             sess = new CySession.Builder().cytoscapeProperties(props).bookmarks(bkmarks).cysession(cysess)
-                    .vizmapProperties(vmProps).build();
+                    .vizmap(vizmap).build();
         } else {
             logger.debug("Restoring the session...");
 
@@ -193,8 +194,8 @@ public class CySessionManagerImpl implements CySessionManager {
 
             // Restore visual styles
             logger.debug("Restoring visual styles...");
-            Properties stylesProps = sess.getVizmapProperties();
-            Collection<VisualStyle> allStyles = vsSer.createVisualStyles(stylesProps);
+            Vizmap vizmap = sess.getVizmap();
+            Collection<VisualStyle> allStyles = vsSer.createVisualStyles(vizmap);
             Map<String, VisualStyle> stylesMap = new HashMap<String, VisualStyle>();
 
             if (allStyles != null) {
