@@ -30,6 +30,7 @@ package org.cytoscape.session;
 
 import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.model.Vizmap;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.session.Cysession;
 import java.util.Properties;
@@ -68,7 +69,7 @@ public final class CySession {
 	private final Set<CyTableMetadata> tables;
 	private final Map<CyNetworkView,String> vsMap;
 	private final Properties cyProps;
-	private final Properties vProps;
+	private final Vizmap vizmap;
 	private final Map<String, List<File>> pluginFiles;
 	private final Bookmarks bookmarks; 
 	private final Cysession cysession; 
@@ -98,10 +99,10 @@ public final class CySession {
 		else
 			cyProps = b.cyProps;
 
-		if ( b.vProps == null )
-			vProps = new Properties();
+		if ( b.vizmap == null )
+			vizmap = new Vizmap();
 		else
-			vProps = b.vProps;
+			vizmap = b.vizmap;
 
 		if ( b.pluginFiles == null )
 			pluginFiles = new HashMap<String, List<File>>(); 
@@ -129,7 +130,7 @@ public final class CySession {
 		private Set<CyTableMetadata> tables;
 		private Map<CyNetworkView,String> vsMap; 
 		private Properties cyProps;
-		private Properties vProps; 
+		private Vizmap vizmap; 
 		private Map<String, List<File>> pluginFiles; 
 		private Bookmarks bookmarks; 
 		private Cysession cysession; 
@@ -202,8 +203,8 @@ public final class CySession {
 		 * @return An instance of Builder that has at least been configured
 		 * with the specified properties.
 		 */
-    	public Builder vizmapProperties(final Properties p) { 
-			vProps = p; 
+    	public Builder vizmap(final Vizmap p) { 
+			vizmap = p; 
 			return this;
 		}
 
@@ -281,7 +282,7 @@ public final class CySession {
 	 * @return A Propeties object containing all VisualStyles defined
 	 * for this session.
 	 */
-    public Properties getVizmapProperties() { return vProps; }
+    public Vizmap getVizmap() { return vizmap; }
 
 	/**
 	 * Returns a {@link Bookmarks} object containing all bookmarks for this session.

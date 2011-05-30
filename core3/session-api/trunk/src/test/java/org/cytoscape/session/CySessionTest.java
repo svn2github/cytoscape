@@ -19,6 +19,7 @@ import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.session.Cysession;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.model.Vizmap;
 import org.junit.Test;
 
 public class CySessionTest {
@@ -152,25 +153,26 @@ public class CySessionTest {
 	}
 
 	@Test
-	public void testDefaultGetVizmapProperties() {
+	public void testDefaultGetVizmap() {
 		session = new CySession.Builder().build();
 		assertNotNull(session);
-		assertNotNull(session.getVizmapProperties());
+		assertNotNull(session.getVizmap());
 	}
 
 	@Test
-	public void testSetNullVizmapProperties() {
-		session = new CySession.Builder().vizmapProperties(null).build();
+	public void testSetNullVizmap() {
+		session = new CySession.Builder().vizmap(null).build();
 		assertNotNull(session);
-		assertNotNull(session.getVizmapProperties());
-		assertEquals(0,session.getVizmapProperties().size());
+		assertNotNull(session.getVizmap());
 	}
 
 	@Test
-	public void testSetVizmapProperties() {
-		session = new CySession.Builder().vizmapProperties(getFakeProps()).build();
+	public void testSetVizmap() {
+		Vizmap v = mock(Vizmap.class);
+		session = new CySession.Builder().vizmap(v).build();
 		assertNotNull(session);
-		checkProps(session.getVizmapProperties());
+		assertNotNull(session.getVizmap());
+		assertEquals(v, session.getVizmap());
 	}
 
 	@Test
