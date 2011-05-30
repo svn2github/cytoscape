@@ -23,6 +23,7 @@
 	<xs:element name="network">
 		<xs:complexType>
 			<xs:sequence>
+                <xs:element ref="dependency" maxOccurs="unbounded" />
 				<xs:element ref="visualProperty" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
@@ -30,6 +31,7 @@
 	<xs:element name="nodes">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element ref="dependency" maxOccurs="unbounded" />
 				<xs:element ref="visualProperty" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
@@ -37,8 +39,15 @@
 	<xs:element name="edges">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element ref="dependency" maxOccurs="unbounded" />
 				<xs:element ref="visualProperty" maxOccurs="unbounded" />
 			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dependency">
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:boolean" />
+			<xs:attribute name="name" use="required" type="xs:NCName" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="visualProperty">
@@ -49,7 +58,7 @@
 				<xs:element ref="passthroughMapping" />
 			</xs:choice>
 			<xs:attribute name="default" type="xs:string" />
-			<xs:attribute name="id" use="required" type="xs:NCName" />
+			<xs:attribute name="name" use="required" type="xs:NCName" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="continuousMapping">
