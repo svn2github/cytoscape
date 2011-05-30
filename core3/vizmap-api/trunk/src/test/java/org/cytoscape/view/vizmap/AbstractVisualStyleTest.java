@@ -1,7 +1,6 @@
 package org.cytoscape.view.vizmap;
 
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;

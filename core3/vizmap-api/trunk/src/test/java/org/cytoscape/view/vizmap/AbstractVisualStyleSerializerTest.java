@@ -1,35 +1,34 @@
 package org.cytoscape.view.vizmap;
 
 
-import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
-import java.util.Properties;
+
+import org.cytoscape.view.vizmap.model.Vizmap;
+import org.junit.Test;
 
 public abstract class AbstractVisualStyleSerializerTest {
 	
 	protected VisualStyleSerializer serializer;
 	
 	@Test
-	public void testVisualStyleCollectionNotNullForNullProperties() throws Exception {
+	public void testVisualStyleCollectionNotNullForNullVizmap() throws Exception {
 		assertNotNull(serializer.createVisualStyles(null));
 	}
 
 	@Test
-	public void testVisualStyleCollectionNotNullForEmptyProperties() throws Exception {
-		assertNotNull(serializer.createVisualStyles(new Properties()));
+	public void testVisualStyleCollectionNotNullForEmptyVizmap() throws Exception {
+		assertNotNull(serializer.createVisualStyles(new Vizmap()));
 	}
 
 	@Test
-	public void testPropertiesNotNullForNullVS() throws Exception {
-		assertNotNull(serializer.createProperties(null));
+	public void testVizmapNotNullForNullVS() throws Exception {
+		assertNotNull(serializer.createVizmap(null));
 	}
 
 	@Test
-	public void testPropertiesNotNullForEmptyVS() throws Exception {
-		assertNotNull(serializer.createProperties(new ArrayList<VisualStyle>()));
+	public void testVizmapNotNullForEmptyVS() throws Exception {
+		assertNotNull(serializer.createVizmap(new ArrayList<VisualStyle>()));
 	}
 }

@@ -34,8 +34,9 @@
  */
 package org.cytoscape.view.vizmap;
 
-import java.util.Properties;
 import java.util.Collection;
+
+import org.cytoscape.view.vizmap.model.Vizmap;
 
 /**
  * This is a utility interface used for converting collections of 
@@ -52,7 +53,7 @@ public interface VisualStyleSerializer {
 	 * @return A Properties object that contains a representation
 	 * of the collection of visual styles.
 	 */
-	Properties createProperties(Collection<VisualStyle> styles);
+	Vizmap createVizmap(Collection<VisualStyle> styles);
 
 	/**
 	 * This method creates a collection of VisualStyle objects based
@@ -62,5 +63,5 @@ public interface VisualStyleSerializer {
 	 * @return A collection of VisualStyle objects created from the
 	 * provided Properties object.
 	 */
-	Collection<VisualStyle> createVisualStyles(Properties props);
+	Collection<VisualStyle> createVisualStyles(Vizmap vizmap);
 }

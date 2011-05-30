@@ -16,7 +16,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>vizmap-api</artifactId>
-	<version>3.0.0-alpha4-SNAPSHOT</version>
+	<version>3.0.0-alpha5-SNAPSHOT</version>
 
 	<name>${bundle.symbolicName} (VizMap API Bundle)</name>
 
@@ -85,6 +85,29 @@
 					</instructions>
 				</configuration>
 			</plugin>
+			<plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.7.4</version>
+                <executions>
+                    <execution>
+                        <id>vizmap</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+                            <schemaIncludes>
+                                <include>vizmap.xsd</include>
+                            </schemaIncludes>
+                            <generatePackage>org.cytoscape.view.vizmap.model</generatePackage>
+                            <verbose>true</verbose>
+                            <removeOldOutput>false</removeOldOutput>
+                            <forceRegenerate>true</forceRegenerate>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 
