@@ -10,11 +10,11 @@
 	<groupId>org.cytoscape</groupId>
 	<artifactId>vizmap-impl-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>3.0.0-alpha3-SNAPSHOT</version>
+	<version>3.0.0-alpha4-SNAPSHOT</version>
 	<name>vizmap-impl-parent</name>
 	
 	<properties>
-		<vizmap-api.version>3.0.0-alpha4-SNAPSHOT</vizmap-api.version>
+		<vizmap-api.version>3.0.0-alpha5-SNAPSHOT</vizmap-api.version>
 	</properties>
 
 	<modules>
