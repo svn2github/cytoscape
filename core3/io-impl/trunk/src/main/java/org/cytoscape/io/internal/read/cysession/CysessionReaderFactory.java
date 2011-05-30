@@ -28,13 +28,9 @@
 package org.cytoscape.io.internal.read.cysession;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.work.TaskIterator;
-
 import org.cytoscape.io.internal.read.AbstractPropertyReaderFactory;
+import org.cytoscape.work.TaskIterator;
 
 
 public class CysessionReaderFactory extends AbstractPropertyReaderFactory {

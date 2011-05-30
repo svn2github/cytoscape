@@ -25,33 +25,21 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.io.internal.read;
+package org.cytoscape.io.internal.read.vizmap;
 
-
-import java.io.InputStream;
 
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.read.InputStreamTaskFactory;
+import org.cytoscape.io.internal.read.AbstractPropertyReaderFactory;
+import org.cytoscape.work.TaskIterator;
 
 
-public abstract class AbstractPropertyReaderFactory implements InputStreamTaskFactory {
-	private final CyFileFilter filter;
+public class VizmapXMLReaderFactory extends AbstractPropertyReaderFactory {
 
-	protected InputStream inputStream;
-	protected String inputName;
+    public VizmapXMLReaderFactory( CyFileFilter filter ) {
+        super(filter);
+    }
 
-	public AbstractPropertyReaderFactory(CyFileFilter filter) {
-		this.filter = filter;
-	}
-
-	public void setInputStream(InputStream is, String in) {
-		if (is == null)
-			throw new NullPointerException("Input stream is null");
-		inputStream = is;
-		inputName = in;
-	}
-
-	public CyFileFilter getCyFileFilter() {
-		return filter;
-	}
+    public TaskIterator getTaskIterator() {
+        return new TaskIterator( new VizmapXMLReader(inputStream) );
+    }
 }

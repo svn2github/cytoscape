@@ -25,33 +25,40 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.io.internal.read;
-
+package org.cytoscape.io.internal.read.vizmap;
 
 import java.io.InputStream;
+import java.util.Set;
 
-import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.read.InputStreamTaskFactory;
+import org.cytoscape.io.DataCategory;
+import org.cytoscape.io.internal.read.properties.PropertiesFileFilter;
+import org.cytoscape.io.util.StreamUtil;
+
+public class VizmapPropertiesFileFilter extends PropertiesFileFilter {
 
 
-public abstract class AbstractPropertyReaderFactory implements InputStreamTaskFactory {
-	private final CyFileFilter filter;
+    public VizmapPropertiesFileFilter(Set<String> extensions, Set<String> contentTypes,
+            String description, DataCategory category, StreamUtil streamUtil) {
+        super(extensions, contentTypes, description, category, streamUtil);
+    }
 
-	protected InputStream inputStream;
-	protected String inputName;
+    @Override
+    public boolean accepts(InputStream stream, DataCategory category) {
 
-	public AbstractPropertyReaderFactory(CyFileFilter filter) {
-		this.filter = filter;
-	}
+        // Check data category
+        if (category != this.category)
+            return false;
+        
+        final String header = this.getHeader(stream, 20);
 
-	public void setInputStream(InputStream is, String in) {
-		if (is == null)
-			throw new NullPointerException("Input stream is null");
-		inputStream = is;
-		inputName = in;
-	}
+        if (header.contains("<vizmap"))
+            return false;
 
-	public CyFileFilter getCyFileFilter() {
-		return filter;
-	}
+        // This is the real test to see if we're a .props file
+        // TODO can we find a better test?
+        if (matcher.reset(header).matches()) 
+            return true;
+        
+        return false;
+    }
 }

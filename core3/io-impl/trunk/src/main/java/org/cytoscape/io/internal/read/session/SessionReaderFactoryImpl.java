@@ -35,6 +35,7 @@ import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyPropertyReaderManager;
 import org.cytoscape.io.read.InputStreamTaskFactory;
+import org.cytoscape.io.read.VizmapReaderManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.work.TaskIterator;
 
@@ -44,6 +45,7 @@ public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 	private final CyFileFilter filter;
 	private final CyNetworkReaderManager netviewReaderMgr;
 	private final CyPropertyReaderManager propertyReaderMgr;
+	private final VizmapReaderManager vizmapReaderMgr;
 	private final CyProperty<Properties> properties;
 	private InputStream inputStream;
 	private String inputName;
@@ -51,10 +53,12 @@ public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 	public SessionReaderFactoryImpl(CyFileFilter filter, 
 	                                CyNetworkReaderManager netviewReaderMgr, 
 	                                CyPropertyReaderManager propertyReaderMgr,
+	                                VizmapReaderManager vizmapReaderMgr,
 	                                CyProperty<Properties> properties) {
 		this.filter = filter;
 		this.netviewReaderMgr = netviewReaderMgr;
 		this.propertyReaderMgr = propertyReaderMgr;
+		this.vizmapReaderMgr = vizmapReaderMgr;
 		this.properties = properties;
 	}
 
@@ -70,6 +74,10 @@ public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new SessionReaderImpl(inputStream, netviewReaderMgr, propertyReaderMgr, properties));
+		return new TaskIterator(new SessionReaderImpl(inputStream, 
+		                                              netviewReaderMgr, 
+		                                              propertyReaderMgr, 
+		                                              vizmapReaderMgr, 
+		                                              properties));
 	}
 }

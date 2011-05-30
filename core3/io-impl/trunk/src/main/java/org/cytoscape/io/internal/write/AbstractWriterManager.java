@@ -1,20 +1,18 @@
 package org.cytoscape.io.internal.write;
 
 
-import java.io.File;
 import java.io.OutputStream;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.write.CyWriterFactory;
 import org.cytoscape.io.write.CyWriterManager;
-
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class AbstractWriterManager<T extends CyWriterFactory>  implements CyWriterManager {

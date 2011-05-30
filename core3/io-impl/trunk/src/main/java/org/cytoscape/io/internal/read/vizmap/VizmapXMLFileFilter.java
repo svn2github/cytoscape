@@ -25,33 +25,49 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.io.internal.read;
+package org.cytoscape.io.internal.read.vizmap;
 
-
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.util.Set;
 
-import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.read.InputStreamTaskFactory;
+import org.cytoscape.io.DataCategory;
+import org.cytoscape.io.util.StreamUtil;
+import org.cytoscape.io.BasicCyFileFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class VizmapXMLFileFilter extends BasicCyFileFilter {
 
-public abstract class AbstractPropertyReaderFactory implements InputStreamTaskFactory {
-	private final CyFileFilter filter;
+    private static final Logger logger = LoggerFactory.getLogger(VizmapXMLFileFilter.class);
+    
+    public VizmapXMLFileFilter(Set<String> extensions, Set<String> contentTypes,
+            String description, DataCategory category, StreamUtil streamUtil) {
+        super(extensions, contentTypes, description, category, streamUtil);
+    }
 
-	protected InputStream inputStream;
-	protected String inputName;
+    @Override
+    public boolean accepts(InputStream stream, DataCategory category) {
 
-	public AbstractPropertyReaderFactory(CyFileFilter filter) {
-		this.filter = filter;
-	}
+        if (category != this.category) 
+            return false;
+        
+        final String header = this.getHeader(stream, 20);
+        
+        if (header.contains("<vizmap"))
+            return true;
+        
+        return false;
+    }
 
-	public void setInputStream(InputStream is, String in) {
-		if (is == null)
-			throw new NullPointerException("Input stream is null");
-		inputStream = is;
-		inputName = in;
-	}
-
-	public CyFileFilter getCyFileFilter() {
-		return filter;
-	}
+    @Override
+    public boolean accepts(URI uri, DataCategory category) {
+        try {
+            return accepts(uri.toURL().openStream(), category);
+        } catch (IOException e) {
+            logger.error("Error while opening stream: " + uri, e);
+            return false;
+        }
+    }
 }

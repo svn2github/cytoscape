@@ -25,33 +25,35 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.io.internal.read;
-
+package org.cytoscape.io.internal.read.vizmap;
 
 import java.io.InputStream;
 
-import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.read.InputStreamTaskFactory;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
 
+import org.cytoscape.io.internal.read.AbstractVizmapReader;
+import org.cytoscape.view.vizmap.model.Vizmap;
+import org.cytoscape.work.TaskMonitor;
 
-public abstract class AbstractPropertyReaderFactory implements InputStreamTaskFactory {
-	private final CyFileFilter filter;
+public class VizmapXMLReader extends AbstractVizmapReader {
 
-	protected InputStream inputStream;
-	protected String inputName;
+    private static final String VIZMAP_PACKAGE = Vizmap.class.getPackage().getName();
 
-	public AbstractPropertyReaderFactory(CyFileFilter filter) {
-		this.filter = filter;
-	}
+    public VizmapXMLReader(InputStream is) {
+        super(is);
+    }
 
-	public void setInputStream(InputStream is, String in) {
-		if (is == null)
-			throw new NullPointerException("Input stream is null");
-		inputStream = is;
-		inputName = in;
-	}
+    public void run(TaskMonitor tm) throws Exception {
 
-	public CyFileFilter getCyFileFilter() {
-		return filter;
-	}
+        // No idea why, but ObjectFactory doesn't get picked up in the default
+        // Thread.currentThread().getContextClassLoader() classloader, whereas 
+        // that approach works fine for bookmarks.  Anyway, just force the issue
+        // by getting this classloader.
+        final JAXBContext jaxbContext = JAXBContext.newInstance(VIZMAP_PACKAGE, getClass().getClassLoader());
+
+        final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
+        this.vizmap = (Vizmap) unmarshaller.unmarshal(inputStream);
+    }
 }

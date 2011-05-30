@@ -498,7 +498,8 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
         // TODO: Handle bends
         if (element instanceof CyEdge) {
-            //   final Bend bendData = edgeView.getBend();
+            final CyEdge edge = (CyEdge) element;
+//            final Bend bendData = edge.getBend();
             //   final List<Point2D> handles = new ArrayList<Point2D>(); //final List<Point2D> handles = bendData.getHandles();
             //
             //   if (handles.size() == 0) {

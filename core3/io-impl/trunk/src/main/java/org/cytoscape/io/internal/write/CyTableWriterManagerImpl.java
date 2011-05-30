@@ -21,10 +21,12 @@ public class CyTableWriterManagerImpl extends AbstractWriterManager<CyTableWrite
 		super(DataCategory.TABLE);
 	}
 
+	@Override
 	public CyWriter getWriter(CyTable table, CyFileFilter filter, File outFile) throws Exception{
 		return getWriter(table,filter,new FileOutputStream(outFile));
 	}
 
+	@Override
 	public CyWriter getWriter(CyTable table, CyFileFilter filter, OutputStream os) throws Exception{
 		CyTableWriterFactory tf = getMatchingFactory(filter,os);
 		if ( tf == null )

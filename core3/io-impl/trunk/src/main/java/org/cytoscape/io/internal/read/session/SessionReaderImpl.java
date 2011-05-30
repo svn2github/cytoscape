@@ -58,6 +58,8 @@ import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyPropertyReader;
 import org.cytoscape.io.read.CyPropertyReaderManager;
 import org.cytoscape.io.read.CySessionReader;
+import org.cytoscape.io.read.VizmapReader;
+import org.cytoscape.io.read.VizmapReaderManager;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -70,6 +72,7 @@ import org.cytoscape.property.session.Network;
 import org.cytoscape.property.session.Node;
 import org.cytoscape.session.CySession;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.model.Vizmap;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
@@ -82,6 +85,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 
 	public static final String CYSESSION = "cysession.xml";
 	public static final String VIZMAP_PROPS = "vizmap.props";
+	public static final String VIZMAP_XML = "vizmap.xml";
 	public static final String CY_PROPS = "cytoscape.props";
 	public static final String XGMML_EXT = ".xgmml";
 	public  static final String BOOKMARKS_FILE = "session_bookmarks.xml";
@@ -98,20 +102,22 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	private final InputStream sourceInputStream;
 	private final CyNetworkReaderManager netviewReaderMgr; 
 	private final CyPropertyReaderManager propertyReaderMgr; 
+	private final VizmapReaderManager vizmapReaderMgr; 
 
 	private Cysession cysession;
 	private Bookmarks bookmarks;
 	private TaskMonitor taskMonitor;
 	private Properties cytoscapeProps;
-	private Properties vizmapProps;
+	private Vizmap vizmap;
 	private final CyProperty<Properties> properties;
 
 	/**
 	 */
 	public SessionReaderImpl(final InputStream sourceInputStream, 
 	                         final CyNetworkReaderManager netviewReaderMgr, 
-	                         CyPropertyReaderManager propertyReaderMgr,
-	                         CyProperty<Properties> properties) {
+	                         final CyPropertyReaderManager propertyReaderMgr,
+	                         final VizmapReaderManager vizmapReaderMgr,
+	                         final CyProperty<Properties> properties) {
 
 		if ( sourceInputStream == null )
 			throw new NullPointerException("input stream is null!");
@@ -124,6 +130,10 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		if ( propertyReaderMgr == null )
 			throw new NullPointerException("property reader manager is null!");
 		this.propertyReaderMgr = propertyReaderMgr;
+		
+		if ( vizmapReaderMgr == null )
+		    throw new NullPointerException("vizmap reader manager is null!");
+		this.vizmapReaderMgr = vizmapReaderMgr;
 		
 		if ( properties == null )
             throw new NullPointerException("properties is null!");
@@ -152,7 +162,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 			.networkViews( views )
 			.viewVisualStyleMap( visualStyleMap )
 			.cytoscapeProperties( cytoscapeProps )
-			.vizmapProperties( vizmapProps )
+			.vizmap( vizmap )
 			.bookmarks( bookmarks )
 			.cysession( cysession )
 			.pluginFileListMap( pluginFileListMap )
@@ -189,9 +199,9 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 			} else if (entryName.endsWith(CYSESSION)) {
 				//System.out.println("   extracting session file");
 				extractSessionState(tmpIs, entryName);
-			} else if (entryName.endsWith(VIZMAP_PROPS)) {
-				//System.out.println("   extracting vizmap props");
-				extractVizmapProps(tmpIs, entryName);
+			} else if (entryName.endsWith(VIZMAP_XML) || entryName.endsWith(VIZMAP_PROPS)) {
+				//System.out.println("   extracting vizmap");
+				extractVizmap(tmpIs, entryName);
 			} else if (entryName.endsWith(CY_PROPS)) {
 				//System.out.println("   extracting cytoscape props");
 				extractCytoscapeProps(tmpIs, entryName);
@@ -293,15 +303,11 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		fileList.add(theFile);
 
 	}
-
-	private void extractVizmapProps(InputStream is, String entryName) throws Exception {
-		
-		CyPropertyReader reader = propertyReaderMgr.getReader(is, entryName);
-		if(reader == null){
-			return;
-		}
-		reader.run(taskMonitor);
-		vizmapProps = (Properties) reader.getProperty(); 
+	
+	private void extractVizmap(InputStream is, String entryName) throws Exception {
+	    VizmapReader reader = vizmapReaderMgr.getReader(is, entryName);
+        reader.run(taskMonitor);
+        vizmap = reader.getVizmap();
 	}
 
 	private void extractCytoscapeProps(InputStream is, String entryName) throws Exception {

@@ -1,7 +1,6 @@
 package org.cytoscape.io.internal.read;
 
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.cytoscape.io.read.CyPropertyReader;

@@ -1,9 +1,9 @@
 package org.cytoscape.io.internal.write;
 
-import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.write.CyWriter;
-import org.cytoscape.io.write.CyPropertyWriterFactory;
 import java.io.OutputStream;
+
+import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.write.CyPropertyWriterFactory;
 
 public abstract class AbstractPropertyWriterFactory implements CyPropertyWriterFactory {
 	

@@ -1,19 +1,17 @@
 package org.cytoscape.io.internal.read.properties;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.cytoscape.io.BasicCyFileFilter;
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.util.StreamUtil;
-import org.cytoscape.io.BasicCyFileFilter;
 
 public class PropertiesFileFilter extends BasicCyFileFilter {
 
-	Matcher matcher;
+	protected Matcher matcher;
 
 	public PropertiesFileFilter(Set<String> extensions, Set<String> contentTypes,
 			String description, DataCategory category, StreamUtil streamUtil) {
