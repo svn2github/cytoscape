@@ -35,7 +35,6 @@
 package org.cytoscape.view.vizmap.internal;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -189,7 +188,7 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
 
             if (defValue != null || mapping != null) {
                 org.cytoscape.view.vizmap.model.VisualProperty vpModel = new org.cytoscape.view.vizmap.model.VisualProperty();
-                vpModel.setId(vp.getIdString());
+                vpModel.setName(vp.getIdString());
 
                 vpModelList.add(vpModel);
 
@@ -265,7 +264,7 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
                                                Class<? extends CyTableEntry> targetType,
                                                List<org.cytoscape.view.vizmap.model.VisualProperty> vpModelList) {
         for (org.cytoscape.view.vizmap.model.VisualProperty vpModel : vpModelList) {
-            String vpId = vpModel.getId();
+            String vpId = vpModel.getName();
             String defValue = vpModel.getDefault();
 
             VisualProperty<V> vp = (VisualProperty<V>) lexicon.lookup(targetType, vpId);
@@ -405,17 +404,6 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
         }
 
         return value;
-    }
-
-    private static boolean isDependency(String vpId) {
-        boolean b = false;
-
-        if (vpId != null) {
-            b |= vpId
-                    .matches("nodeSizeLocked|nodeLabelColorFromNodeColor|defaultNodeShowNestedNetwork|nodeCustomGraphicsSizeSync|arrowColorMatchesEdge");
-        }
-
-        return b;
     }
 
     private static AttributeType toAttributeType(Class<?> attrClass) {
