@@ -30,6 +30,11 @@ public enum DataCategory {
 	SESSION, 
 	
 	/** 
+	 * Data to be import/export is VizMap
+	 */ 
+	VIZMAP, 
+	
+	/** 
 	* Data to be import/export is not specified (unknown)
 	*/ 
 	UNSPECIFIED;
