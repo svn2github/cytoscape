@@ -289,7 +289,6 @@ public class CalculatorConverter {
 
     private static String getVisualPropertyId(String calcKey) {
         if (calcKey != null) {
-            // TODO: updateLegacyKey
             return calcKey.replaceAll("(?i)default|calculator|uniform", "").toLowerCase().trim();
         }
 

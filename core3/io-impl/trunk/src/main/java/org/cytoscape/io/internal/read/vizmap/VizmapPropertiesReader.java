@@ -43,6 +43,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.vizmap.model.ContinuousMapping;
+import org.cytoscape.view.vizmap.model.Dependency;
 import org.cytoscape.view.vizmap.model.DiscreteMapping;
 import org.cytoscape.view.vizmap.model.Edges;
 import org.cytoscape.view.vizmap.model.Network;
@@ -108,7 +109,9 @@ public class VizmapPropertiesReader extends AbstractVizmapReader {
                 String key = p.getKey();
                 String value = p.getValue();
 
-                if (isDefaultProperty(key)) {
+                if (isDependency(key)) {
+                    setDependency(vs, key, value);
+                } else if (isDefaultProperty(key)) {
                     // e.g. "globalAppearanceCalculator.MyStyle.defaultBackgroundColor"
                     setDefaultProperty(vs, key, value);
                 } else if (isMappingFunction(key)) {
@@ -186,19 +189,19 @@ public class VizmapPropertiesReader extends AbstractVizmapReader {
         } else if (dataType == CyEdge.class) {
             vpList = vs.getEdges().getVisualProperty();
         }
-        
+
         for (VisualProperty v : vpList) {
-            if (v.getId().equalsIgnoreCase(vpId)) {
+            if (v.getName().equalsIgnoreCase(vpId)) {
                 // The Visual Property has already been created...
                 vp = v;
                 break;
             }
         }
-        
+
         if (vp == null) {
             // The Visual Property has not been created yet...
             vp = new VisualProperty();
-            vp.setId(vpId);
+            vp.setName(vpId);
             vpList.add(vp);
         }
 
@@ -215,13 +218,37 @@ public class VizmapPropertiesReader extends AbstractVizmapReader {
             VisualProperty vp = getVisualProperty(vs, dataType, vpId);
 
             Object mapping = c.getMappingFunction(props, value, vp);
-            
+
             if (mapping instanceof PassthroughMapping)
                 vp.setPassthroughMapping((PassthroughMapping) mapping);
             else if (mapping instanceof ContinuousMapping)
                 vp.setContinuousMapping((ContinuousMapping) mapping);
-            else if (mapping instanceof DiscreteMapping)
-                vp.setDiscreteMapping((DiscreteMapping) mapping);
+            else if (mapping instanceof DiscreteMapping) vp.setDiscreteMapping((DiscreteMapping) mapping);
+        }
+    }
+
+    private void setDependency(VisualStyle vs, String key, String value) {
+        String calcKey = key.split("\\.")[2];
+        CalculatorConverter[] convs = calculatorConverterFactory.getConverters(calcKey);
+
+        for (CalculatorConverter c : convs) {
+            Class<? extends CyTableEntry> dataType = c.getTargetType();
+
+            if (dataType != CyNetwork.class) {
+                String vpId = c.getVisualPropertyId();
+
+                Dependency d = new Dependency();
+                d.setName(vpId);
+                d.setValue(new Boolean(value.trim()));
+
+                if (dataType == CyNetwork.class) {
+                    vs.getNetwork().getDependency().add(d);
+                } else if (dataType == CyNode.class) {
+                    vs.getNodes().getDependency().add(d);
+                } else if (dataType == CyEdge.class) {
+                    vs.getEdges().getDependency().add(d);
+                }
+            }
         }
     }
 
@@ -253,6 +280,17 @@ public class VizmapPropertiesReader extends AbstractVizmapReader {
         if (key != null) {
             b |= key.matches("(node|edge)AppearanceCalculator\\.[^\\.]+\\."
                              + "\\1((CustomGraphics(Position)?\\d+)|LabelColor|([a-zA-Z]+Calculator))");
+        }
+
+        return b;
+    }
+
+    private static boolean isDependency(String vpId) {
+        boolean b = false;
+
+        if (vpId != null) {
+            b |= vpId
+                    .matches("nodeSizeLocked|nodeLabelColorFromNodeColor|defaultNodeShowNestedNetwork|nodeCustomGraphicsSizeSync|arrowColorMatchesEdge");
         }
 
         return b;
