@@ -1,7 +1,9 @@
 package org.cytoscape.work.internal.tunables;
 
 
+import java.awt.FileDialog;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -11,6 +13,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -24,9 +27,9 @@ import javax.swing.LayoutStyle;
 
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.swing.AbstractGUITunableHandler;
 import org.cytoscape.work.internal.tunables.utils.FileChooserFilter;
 import org.cytoscape.work.internal.tunables.utils.SupportedFileTypesManager;
+import org.cytoscape.work.swing.AbstractGUITunableHandler;
 
 
 /**
@@ -35,7 +38,16 @@ import org.cytoscape.work.internal.tunables.utils.SupportedFileTypesManager;
  * @author pasteur
  */
 public class FileHandler extends AbstractGUITunableHandler {
+	
+	private static final String DEF_DIRECTORY = System.getProperty("user.home");
+	
+	private static final String LAST_DIRECTORY = "directory.last";
+	
+	// Core Cytoscape props
+	private final Properties props;
+	
 	private JFileChooser fileChooser;
+	
 	private JButton chooseButton;
 	private JTextField fileTextField;
 	private ImageIcon image;
@@ -58,15 +70,19 @@ public class FileHandler extends AbstractGUITunableHandler {
 	 * @param t tunable associated to <code>f</code>
 	 * @param fileTypesManager 
 	 */
-	protected FileHandler(Field f, Object o, Tunable t, final SupportedFileTypesManager fileTypesManager) {
+	protected FileHandler(Field f, Object o, Tunable t, final SupportedFileTypesManager fileTypesManager,
+			Properties props) {
 		super(f, o, t);
 		this.fileTypesManager = fileTypesManager;
+		this.props = props;
 		init();
 	}
 
-	protected FileHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable, final SupportedFileTypesManager fileTypesManager) {
+	protected FileHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable,
+			final SupportedFileTypesManager fileTypesManager, Properties props) {
 		super(getter, setter, instance, tunable);
 		this.fileTypesManager = fileTypesManager;
+		this.props = props;
 		init();
 	}
 
@@ -115,7 +131,9 @@ public class FileHandler extends AbstractGUITunableHandler {
 		final String fileCategory = getFileCategory().toUpperCase();
 		fileTextField.setText("Please select a " + fileCategory.toLowerCase() + " file...");
 		titleLabel.setText("Import " + initialCaps(fileCategory) + " File");
-		List<FileChooserFilter> filters = fileTypesManager.getSupportedFileTypes(DataCategory.valueOf(fileCategory), input);
+		
+		final List<FileChooserFilter> filters = fileTypesManager.getSupportedFileTypes(
+				DataCategory.valueOf(fileCategory), input);
 		for (FileChooserFilter filter : filters)
 			fileChooser.addChoosableFileFilter(filter);
 	}
@@ -167,30 +185,40 @@ public class FileHandler extends AbstractGUITunableHandler {
 						  .addContainerGap()));
 	}
 
-	//Click on the "open" button actionlistener
-	private class myFileActionListener implements ActionListener{
+	//Click on the "open" button action listener
+	private final class myFileActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent ae) {
-			if (ae.getActionCommand().equals("open")) {
-				int ret = fileChooser.showOpenDialog(panel);
-				if (ret == JFileChooser.APPROVE_OPTION) {
-					File file = fileChooser.getSelectedFile();
-					if (file != null) {
-						fileTextField.setFont(new Font(null, Font.PLAIN,10));
-						fileTextField.setText(file.getAbsolutePath());
-						fileTextField.removeMouseListener(mouseClick);
-					}
-				}
-			} else if (ae.getActionCommand().equals("save")) {
-				int ret = fileChooser.showSaveDialog(panel);
-				if (ret == JFileChooser.APPROVE_OPTION) {
-					File file = fileChooser.getSelectedFile();
-					if (file != null) {
-						fileTextField.setFont(new Font(null, Font.PLAIN,10));
-						fileTextField.setText(file.getAbsolutePath());
-						fileTextField.removeMouseListener(mouseClick);
-					}
+			
+			File file = null;
+			final String lastDir = props.getProperty(LAST_DIRECTORY, DEF_DIRECTORY);
+			
+			File lastDirFile;
+			try {
+				lastDirFile = new File(lastDir);
+			} catch (Exception e){
+				lastDirFile = new File(DEF_DIRECTORY);
+			}
+			
+			if(!lastDirFile.isDirectory())
+				lastDirFile = new File(DEF_DIRECTORY);
+			
+			fileChooser.setCurrentDirectory(lastDirFile);
+			
+			int ret = JFileChooser.CANCEL_OPTION;
+			if (ae.getActionCommand().equals("open"))
+				ret = fileChooser.showOpenDialog(panel);
+			else if (ae.getActionCommand().equals("save"))
+				ret = fileChooser.showSaveDialog(panel);
+			
+			if (ret == JFileChooser.APPROVE_OPTION) {
+				file = fileChooser.getSelectedFile();
+				if (file != null) {
+					fileTextField.setFont(new Font(null, Font.PLAIN, 10));
+					fileTextField.setText(file.getAbsolutePath());
+					fileTextField.removeMouseListener(mouseClick);
 				}
 			}
+			props.put(LAST_DIRECTORY, fileChooser.getCurrentDirectory().getAbsolutePath());
 		}
 	}
 

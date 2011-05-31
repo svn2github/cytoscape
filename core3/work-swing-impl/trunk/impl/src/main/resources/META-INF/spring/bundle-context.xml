@@ -25,6 +25,7 @@
 	</bean>
 
 	<bean id="guiHandlerFactory" class="org.cytoscape.work.internal.tunables.GUITunableHandlerFactory">
+		<constructor-arg ref="cytoscapePropertiesServiceRef"/>
 		<constructor-arg ref="bookmarkServiceRef" />
 		<constructor-arg ref="bookmarksUtilServiceRef" />
 		<constructor-arg ref="supportedFileTypesManager" />

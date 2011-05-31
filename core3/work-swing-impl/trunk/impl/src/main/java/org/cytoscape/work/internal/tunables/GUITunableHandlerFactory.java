@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Properties;
 
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.BookmarksUtil;
@@ -33,16 +34,26 @@ public class GUITunableHandlerFactory implements TunableHandlerFactory<GUITunabl
 	private Bookmarks bookmarks;
 	private BookmarksUtil bkUtil;
 	private SupportedFileTypesManager fileTypesManager;
+	
+	private final Properties props;
 
 	/**
 	 * creates a new GUITunableHandlerFactory object
-	 * @param book	informations and properties of the <code>Bookmarks</code> registered
-	 * @param bkUtil object that provides tools to manage the <code>Bookmarks</code>
+	 * 
+	 * @param book
+	 *            informations and properties of the <code>Bookmarks</code>
+	 *            registered
+	 * @param bkUtil
+	 *            object that provides tools to manage the
+	 *            <code>Bookmarks</code>
 	 */
-	public GUITunableHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil, SupportedFileTypesManager fileTypesManager) {
+	public GUITunableHandlerFactory(final CyProperty<Properties> coreProps, final CyProperty<Bookmarks> book,
+			BookmarksUtil bkUtil, SupportedFileTypesManager fileTypesManager) {
 		this.bookmarks = book.getProperties();
 		this.bkUtil = bkUtil;
 		this.fileTypesManager = fileTypesManager;
+		
+		this.props = coreProps.getProperties();
 	}
 
 	/**
@@ -82,7 +93,7 @@ public class GUITunableHandlerFactory implements TunableHandlerFactory<GUITunabl
 		if (type == ListMultipleSelection.class)
 			return new ListMultipleHandler<String>(getter, setter, instance, tunable);
 		if (type == File.class)
-			return new FileHandler(getter, setter, instance, tunable, fileTypesManager);
+			return new FileHandler(getter, setter, instance, tunable, fileTypesManager, props);
 		if (type == URL.class)
 			return new URLHandler(getter, setter, instance, tunable, bookmarks, bkUtil);
 		if (type == InputStream.class)
@@ -139,7 +150,7 @@ public class GUITunableHandlerFactory implements TunableHandlerFactory<GUITunabl
 		if (type == ListMultipleSelection.class)
 			return new ListMultipleHandler<String>(field, instance, tunable);
 		if (type == File.class)
-			return new FileHandler(field, instance, tunable, fileTypesManager);
+			return new FileHandler(field, instance, tunable, fileTypesManager, props);
 		if (type == URL.class)
 			return new URLHandler(field, instance, tunable, bookmarks, bkUtil);
 		if (type == InputStream.class)

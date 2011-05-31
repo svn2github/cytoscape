@@ -6,6 +6,9 @@
         default-lazy-init="false">
 
 	<!-- Services provided by this bundle -->
+	
+	<osgi:reference id="cytoscapePropertiesServiceRef"
+		interface="org.cytoscape.property.CyProperty" filter="(cyPropertyName=coreSettings)" />
 
 	<osgi:service id="undoSupportService" ref="undoSupport"
 		interface="org.cytoscape.work.undo.UndoSupport">

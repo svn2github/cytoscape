@@ -21,9 +21,14 @@ public class ServiceConfigurationTest extends ServiceTestSupport {
 
 	@Before
 	public void setup() {
+		Properties coreP = new Properties();
+		coreP.setProperty("cyPropertyName","coreSettings");
+		
 		Properties p = new Properties();
 		p.setProperty("cyPropertyName","bookmarks");
-		registerMockService(CyProperty.class,p);
+		
+		registerMockService(CyProperty.class, coreP);
+		registerMockService(CyProperty.class, p);
 		registerMockService(BookmarksUtil.class);
 	}
 	
