@@ -54,21 +54,17 @@ abstract class HideUtils {
 
 	static void setVisibleNodes(Collection<CyNode> nodes, boolean visible, CyNetworkView view) {
 		final CyNetwork net = view.getModel();
-		for ( CyNode n : nodes ) {
-			if ( view != null ) {
-				view.getNodeView(n).setVisualProperty(NODE_VISIBLE,visible);
+		for (CyNode n : nodes) {
+			view.getNodeView(n).setVisualProperty(NODE_VISIBLE, visible);
 
-				for ( CyNode n2 : net.getNeighborList(n, CyEdge.Type.ANY) ) 
-					for ( CyEdge e : net.getConnectingEdgeList(n,n2,CyEdge.Type.ANY) ) 
-						view.getEdgeView( e ).setVisualProperty(EDGE_VISIBLE,visible);
-			}
+			for (CyNode n2 : net.getNeighborList(n, CyEdge.Type.ANY))
+				for (CyEdge e : net.getConnectingEdgeList(n, n2, CyEdge.Type.ANY))
+					view.getEdgeView(e).setVisualProperty(EDGE_VISIBLE, visible);
 		}
 	}
 
 	static void setVisibleEdges(Collection<CyEdge> edges, boolean visible, CyNetworkView view) {
-		for ( CyEdge e : edges ) {
-			if ( view != null )
-				view.getEdgeView(e).setVisualProperty(EDGE_VISIBLE,visible);
-		}
+		for (CyEdge e : edges)
+			view.getEdgeView(e).setVisualProperty(EDGE_VISIBLE, visible);
 	}
 }
