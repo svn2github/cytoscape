@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cytoscape Web: SVG prototype</title>
+		<style>
+			#container-div {
+				width: 400px;
+				margin: 30px auto;
+				background-color: #eee;
+			}
+		</style>
+		<script type="text/javascript" src="raphael-1.5.2-min.js"></script>
+		<script type="text/javascript" src="visualization-nom-draft.js"></script>
+		<script type="text/javascript">
+			/* Test of:
+			 * Network object model draft
+			 * Dragging nodes
+			 */
+			var paper;
+			window.onload = function() {
+
+				// The raphael instance will eventually be transparent and hidden from the API user
+				paper = Raphael("container-div", 400, 400);
+				 
+				// The Visualization instance is intended to be the interface
+				// for manipulating the network
+				var network = new Visualization(paper);
+				
+				// Using the network object model
+				var node1 = network.addNode({"x": 100, "y": 300});
+				var node2 = network.addNode({"x": 200, "y": 60});
+				var node3 = network.addNode({"x": 300, "y": 200});
+				
+				network.addEdge(node1, node2);
+				network.addEdge(node2, node3);
+				network.addEdge(node1, node3);
+				
+			}
+				
+
+		</script>
+	</head>
+	<body>
+		<div id="container-div"></div>
+	</body>
+</html>

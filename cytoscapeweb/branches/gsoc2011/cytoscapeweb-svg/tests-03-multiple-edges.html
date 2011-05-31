@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cytoscape Web: SVG prototype</title>
+		<style>
+			#page {
+				width: 400px;
+				margin: 30px auto;
+				background-color: #eee;
+			}
+		</style>
+		<script type="text/javascript" src="raphael-1.5.2-min.js"></script>
+		<script type="text/javascript">
+			/*
+			* Multiple curved edges (naive graphics test)
+			* Curved edges are drawn as elliptical arcs.
+			*/
+			var paper;
+			window.onload = function() {
+				
+				paper = Raphael("page", 400, 400);
+				paper.circleNode(60, 100);
+				paper.circleNode(280, 210);
+				paper.linearEdge(60, 100, 280, 210);
+				paper.ellipticalEdge(60, 100, 280, 210, 0);
+				paper.ellipticalEdge(60, 100, 280, 210, 1);
+				
+			}
+
+	
+			
+			/* Hardcoded circle node */
+			Raphael.fn.circleNode = function(x, y, size) {
+				size = size || 18;
+				var node = this.circle(x, y, size).attr({fill: "#bbb", stroke: "#888", "stroke-width": 4}).hover(function() {
+					this.attr("fill", "#ddd");
+				}, function() {
+					this.attr("fill", "#bbb");
+				});
+				node.x = x;
+				node.y = y;
+				return node;
+			}
+			
+			Raphael.fn.linearEdge = function(ax, ay, bx, by) {
+				return this.path(populateString("M %,% L %,%", [ax, ay, bx, by])).attr({"stroke": "teal", "stroke-width": 3}).toBack();
+			}
+			
+			Raphael.fn.ellipticalEdge = function(ax, ay, bx, by, side) {
+				side = side || 0; // which "side" the path takes
+
+				var dx = bx - ax;
+				var dy = by - ay;
+				var dist = Math.sqrt(dx*dx + dy*dy);
+				var r = dist * 1.5;
+				
+				var path = populateString("M %,% A %,% % % % %,%", [ax, ay, r, r, 0, 0, side, bx, by]);
+				this.path(path).attr({"stroke": "teal", "stroke-width": 3}).toBack();
+			}
+			
+			Raphael.fn.circleNode = function(x, y, size) {
+				size = size || 18;
+				var node = this.circle(x, y, size).attr({fill: "#bbb", stroke: "#888", "stroke-width": 4}).hover(function() {
+					this.attr("fill", "#ddd");
+				}, function() {
+					this.attr("fill", "#bbb");
+				});
+				node.x = x;
+				node.y = y;
+				return node;
+			}
+			
+			function populateString(string, items) {
+				var i = 0;
+				return string.replace(/%/g, function() {
+					return items[i++];
+				}); 
+			}
+
+			
+
+		</script>
+	</head>
+	<body>
+		<div id="page"></div>
+	</body>
+</html>
