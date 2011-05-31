@@ -12,7 +12,7 @@ for JAR in "$@"
 do
     unzip -o "../${JAR}"
 done
-mv lib*.* ../temp-natives
+find . -name 'lib*[.]*' -exec mv "{}" ../temp-natives ";"
 
 jar cvf ../${BUNDLE_NAME}.jar *
 popd
