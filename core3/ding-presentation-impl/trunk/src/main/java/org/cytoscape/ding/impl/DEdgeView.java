@@ -42,10 +42,7 @@ import org.cytoscape.ding.ArrowShape;
 import org.cytoscape.ding.Bend;
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
-import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.Label;
-import org.cytoscape.ding.impl.events.GraphViewEdgesSelectedEvent;
-import org.cytoscape.ding.impl.events.GraphViewEdgesUnselectedEvent;
 import org.cytoscape.graph.render.immed.EdgeAnchors;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.model.CyEdge;
@@ -1487,7 +1484,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 			setFont(getFont().deriveFont(((Integer) value).floatValue()));
 		} else if (vp == MinimalVisualLexicon.EDGE_LABEL_COLOR) {
 			setTextPaint((Paint) value);
-		} else if (vp == MinimalVisualLexicon.NODE_VISIBLE) {
+		} else if (vp == MinimalVisualLexicon.EDGE_VISIBLE) {
 			if (((Boolean) value).booleanValue())
 				m_view.showGraphObject(this);
 			else
