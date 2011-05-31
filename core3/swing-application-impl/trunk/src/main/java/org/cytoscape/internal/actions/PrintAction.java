@@ -49,49 +49,41 @@ import java.awt.print.PrinterJob;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.swing.event.MenuEvent;
 import javax.swing.KeyStroke;
+import javax.swing.event.MenuEvent;
 
 import org.cytoscape.application.swing.AbstractCyAction;
-import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.property.CyProperty;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.presentation.RenderingEngine;
 
 
-/**
- *
- */
 public class PrintAction extends AbstractCyAction {
+
 	private final static long serialVersionUID = 1202339870257629L;
 
-	/**
-	 *
-	 */
-	public final static String MENU_LABEL = "Print...";
-	private Properties props;
+	private final static String MENU_LABEL = "Print Current Network...";
+	private final Properties props;
 
 	/**
 	 * Creates a new PrintAction object.
 	 */
-	public PrintAction(CyApplicationManager appMgr, CyProperty<Properties> p ) {
+	public PrintAction(CyApplicationManager appMgr, CyProperty<Properties> coreProp) {
 		super(MENU_LABEL, appMgr );
 		setPreferredMenu("File");
 		setMenuGravity(7.0f);
 		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		this.props = p.getProperties();
+		this.props = coreProp.getProperties();
 	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param e
-	 *            DOCUMENT ME!
-	 */
+	
+	
 	public void actionPerformed(ActionEvent e) {
-		RenderingEngine engine = applicationManager.getCurrentRenderingEngine();
+		final RenderingEngine<CyNetwork> engine = applicationManager.getCurrentRenderingEngine();
 
-		PrinterJob printJob = PrinterJob.getPrinterJob();
+		final PrinterJob printJob = PrinterJob.getPrinterJob();
+		
+		// TODO: pick only required props
 		final Set<Object> keys = props.keySet();
 		for(Object key: keys)
 			engine.getProperties().put(key, props.get(key));
@@ -107,12 +99,7 @@ public class PrintAction extends AbstractCyAction {
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param e
-	 *            DOCUMENT ME!
-	 */
+	@Override
 	public void menuSelected(MenuEvent e) {
 		enableForNetworkAndView();
 	}

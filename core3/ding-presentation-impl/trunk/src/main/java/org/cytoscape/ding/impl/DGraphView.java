@@ -384,6 +384,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	// This is the view model. This should be immutable.
 	final CyNetworkView cyNetworkView;
+	
+	private final Properties props;
 
 
 	/**
@@ -408,6 +410,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			throw new IllegalArgumentException(
 					"Network View Model cannot be null.");
 
+		this.props = new Properties();
+		
 		long start = System.currentTimeMillis();
 		logger.debug("Phase 1: rendering start.");
 		networkModel = view.getModel();
@@ -1145,7 +1149,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	public void updateView() {
 		final long start = System.currentTimeMillis();
 		m_networkCanvas.repaint();
-		logger.debug("========= Repaint finised in " + (System.currentTimeMillis() - start) + " msec. ==========");
+		logger.debug("Repaint finised in " + (System.currentTimeMillis() - start) + " msec.");
 	}
 
 	/**
@@ -2764,18 +2768,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		return this;
 	}
 
-	public Image getImage() {
-		return null;
-	}
-
+	
+	@Override
 	public Properties getProperties() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setProperties(Properties props) {
-		// TODO Auto-generated method stub
-
+		return this.props;
 	}
 	
 	/**
