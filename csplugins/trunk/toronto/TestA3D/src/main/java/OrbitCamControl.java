@@ -7,6 +7,7 @@ import com.ardor3d.input.MouseState;
 import com.ardor3d.input.logical.AnyKeyCondition;
 import com.ardor3d.input.logical.InputTrigger;
 import com.ardor3d.input.logical.KeyHeldCondition;
+import com.ardor3d.input.logical.KeyPressedCondition;
 import com.ardor3d.input.logical.LogicalLayer;
 import com.ardor3d.input.logical.MouseWheelMovedCondition;
 import com.ardor3d.input.logical.TriggerAction;
@@ -30,21 +31,23 @@ public class OrbitCamControl {
     private Vector3 upAxis = new Vector3();
     private Vector3 leftAxis = new Vector3();
     private Vector3 worldUpAxis = new Vector3();
+    private Vector3 defaultTarget = new Vector3();
     
-    private double zoomSpeed = 0.01;
-    private double horizontalRotateSpeed = 0.01;
-    private double verticalRotateSpeed = 0.01;
-    private double rollSpeed = 0.0001;
+    private double zoomSpeed = 0.003;
+    private double horizontalRotateSpeed = 0.008;
+    private double verticalRotateSpeed = 0.008;
+    private double rollSpeed = 0.001;
     
     private double distance = 10;
     private double minDistance = 2;
-    private double maxDistance = 25;
+    private double maxDistance = 100;
+    private double defaultDistance = 10;
     
     private double xMoveSpeed = 0.01;
     private double yMoveSpeed = 0.01;
     private double zMoveSpeed = 0.01;
     
-    private double translateSpeed = 0.01;
+    private double translateSpeed = 0.015;
     
     private InputTrigger mouseTrigger;
     
@@ -52,10 +55,12 @@ public class OrbitCamControl {
     	this.target.set(target);
     	this.camera = camera;
     	this.worldUpAxis.set(worldUpAxis);
-    	this.position.set(camera.getLocation());
+    	position.set(camera.getLocation());
+    	defaultTarget.set(target);
     	
     	// Calculate camera distance
     	distance = position.distance(target);
+    	defaultDistance = distance;
     	
     	upAxis.set(camera.getUp());
     	leftAxis.set(camera.getLeft());
@@ -80,6 +85,14 @@ public class OrbitCamControl {
     	// System.out.println("new target: " + this.target);
     }
     
+    private void resetTranslation() {
+    	setTarget(defaultTarget);
+    }
+    
+    private void resetZoom() {
+    	zoom(distance - defaultDistance);
+    }
+    
     private void translate(ReadOnlyVector3 translation) {
     	setTarget(target.add(translation, null));
     }
@@ -96,6 +109,7 @@ public class OrbitCamControl {
     	offset.normalizeLocal();
     	offset.multiplyLocal(newDistance);
     	
+    	distance = newDistance;
     	camera.setLocation(target.add(offset, position));
     }
     
@@ -283,6 +297,13 @@ public class OrbitCamControl {
         layer.registerTrigger(new InputTrigger(new KeyHeldCondition(Key.DOWN), new TriggerAction() {
 			public void perform(final Canvas source, final TwoInputStates inputState, final double tpf) {
 				translate(upAxis.multiply(-translateSpeed, null));
+			}
+		}));
+        
+        layer.registerTrigger(new InputTrigger(new KeyPressedCondition(Key.C), new TriggerAction() {
+			public void perform(final Canvas source, final TwoInputStates inputState, final double tpf) {
+				resetTranslation();
+				resetZoom();
 			}
 		}));
     	
