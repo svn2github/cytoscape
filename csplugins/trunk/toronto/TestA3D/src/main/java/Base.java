@@ -4,7 +4,7 @@ import com.ardor3d.framework.lwjgl.*;
 import com.ardor3d.image.util.AWTImageLoader;
 import com.ardor3d.input.*;
 import com.ardor3d.input.control.FirstPersonControl;
-import com.ardor3d.input.control.OrbitCamControl;
+//import com.ardor3d.input.control.OrbitCamControl;
 import com.ardor3d.input.logical.*;
 import com.ardor3d.input.lwjgl.*;
 import com.ardor3d.intersection.PickResults;
@@ -120,6 +120,10 @@ public class Base implements Runnable, Updater, Scene {
         second.setTranslation(new Vector3(2, 0, -15));
         root.attachChild(second);
         
+        Sphere third = new Sphere("third", 12, 12, 0.3);
+        third.setTranslation(new Vector3(0, -1, -15));
+        root.attachChild(third);
+        
         Quaternion rotation = new Quaternion();
         rotation = rotation.fromAngleNormalAxis(MathUtils.HALF_PI, new Vector3(0, 1, 0));
         Cylinder edge = new Cylinder("Cylinder", 8, 8, 0.1, 4);
@@ -140,7 +144,7 @@ public class Base implements Runnable, Updater, Scene {
  
 		logicalLayer.checkTriggers(timer.getTimePerFrame());
 
-		canvas.getCanvasRenderer().getCamera().lookAt(new Vector3(0, 0, -15), (new Vector3(1, 0, 0)).normalizeLocal());
+		// canvas.getCanvasRenderer().getCamera().lookAt(new Vector3(0, 0, -15), (new Vector3(1, 0, 0)).normalizeLocal());
 		// orbitCam.update(timer.getTimePerFrame());
 		
 		// Execute updateQueue item
@@ -176,17 +180,18 @@ public class Base implements Runnable, Updater, Scene {
 	}
  
 	protected void registerInputTriggers() {
- 
 		//controlHandle = 
 		// FirstPersonControl.setupTriggers(logicalLayer, worldUp, true);
 		
+		orbitCam = new OrbitCamControl(canvas.getCanvasRenderer().getCamera(), new Vector3(0, 0, -15), worldUp);
+		orbitCam.setupInputTriggers(logicalLayer);
+		
+		// orbitCam.setTarget(new Vector3(0, 0, -10));
 		/*
-		orbitCam = new OrbitCamControl(canvas.getCanvasRenderer().getCamera(), new Vector3(0, 0, -15));
 		orbitCam.setBaseDistance(5);
 		orbitCam.setupMouseTriggers(logicalLayer, true);
 		orbitCam.setSphereCoords(15, 0, 0);
 		*/
-		
  
 		logicalLayer.registerTrigger(new InputTrigger(new MouseButtonClickedCondition(MouseButton.RIGHT), new TriggerAction() {
 			public void perform(final Canvas source, final TwoInputStates inputStates, final double tpf) {
@@ -216,21 +221,21 @@ public class Base implements Runnable, Updater, Scene {
 		logicalLayer.registerTrigger(new InputTrigger(new MouseButtonPressedCondition(MouseButton.LEFT), new TriggerAction() {
 			public void perform(final Canvas source, final TwoInputStates inputState, final double tpf) {
 				if (mouseManager.isSetGrabbedSupported()) {
-					mouseManager.setGrabbed(GrabbedState.GRABBED);
+					// mouseManager.setGrabbed(GrabbedState.GRABBED);
 				}
 			}
 		}));
 		logicalLayer.registerTrigger(new InputTrigger(new MouseButtonReleasedCondition(MouseButton.LEFT), new TriggerAction() {
 			public void perform(final Canvas source, final TwoInputStates inputState, final double tpf) {
 				if (mouseManager.isSetGrabbedSupported()) {
-					mouseManager.setGrabbed(GrabbedState.NOT_GRABBED);
+					// mouseManager.setGrabbed(GrabbedState.NOT_GRABBED);
 				}
 			}
 		}));
  
 		logicalLayer.registerTrigger(new InputTrigger(new AnyKeyCondition(), new TriggerAction() {
 			public void perform(final Canvas source, final TwoInputStates inputState, final double tpf) {
-				System.out.println("Key character pressed: " + inputState.getCurrent().getKeyboardState().getKeyEvent().getKeyChar());
+				// System.out.println("Key character pressed: " + inputState.getCurrent().getKeyboardState().getKeyEvent().getKeyChar());
 			}
 		}));
 		

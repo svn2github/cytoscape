@@ -9,7 +9,7 @@
 	<classpathentry kind="lib" path="/Users/yuedong/Downloads/OpenGL graphics libraries/ardor3d-0.7/ardor3d-effects-0.7.jar"/>
 	<classpathentry kind="lib" path="/Users/yuedong/Downloads/OpenGL graphics libraries/ardor3d-0.7/ardor3d-extras-0.7.jar"/>
 	<classpathentry kind="lib" path="/Users/yuedong/Downloads/OpenGL graphics libraries/ardor3d-0.7/ardor3d-jogl-0.7.jar"/>
-	<classpathentry kind="lib" path="/Users/yuedong/Downloads/OpenGL graphics libraries/ardor3d-0.7/ardor3d-lwjgl-0.7.jar"/>
+	<classpathentry kind="lib" path="/Users/yuedong/Downloads/OpenGL graphics libraries/ardor3d-0.7/ardor3d-lwjgl-0.7.jar" sourcepath="/ardor3d-lwjgl/src"/>
 	<classpathentry kind="lib" path="/Users/yuedong/Downloads/OpenGL graphics libraries/ardor3d-0.7/ardor3d-swt-0.7.jar"/>
 	<classpathentry kind="lib" path="/Users/yuedong/Downloads/OpenGL graphics libraries/ardor3d-0.7/ardor3d-terrain-0.7.jar"/>
 	<classpathentry kind="lib" path="/Users/yuedong/Downloads/OpenGL graphics libraries/ardor3d-0.7/ardor3d-ui-0.7.jar"/>
