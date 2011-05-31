@@ -39,6 +39,7 @@ package org.cytoscape.internal.view;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,9 +58,13 @@ import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.session.Cysession;
+import org.cytoscape.property.session.Desktop;
 import org.cytoscape.property.session.NetworkFrame;
+import org.cytoscape.property.session.NetworkFrames;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CySession;
+import org.cytoscape.session.events.SessionAboutToBeSavedEvent;
+import org.cytoscape.session.events.SessionAboutToBeSavedListener;
 import org.cytoscape.session.events.SessionLoadedEvent;
 import org.cytoscape.session.events.SessionLoadedListener;
 import org.cytoscape.session.events.SetCurrentNetworkEvent;
@@ -87,7 +92,7 @@ import org.slf4j.LoggerFactory;
  */
 public class NetworkViewManager extends InternalFrameAdapter implements NetworkViewAddedListener,
 		NetworkViewAboutToBeDestroyedListener, SetCurrentNetworkViewListener, SetCurrentNetworkListener,
-		SessionLoadedListener {
+		SessionLoadedListener, SessionAboutToBeSavedListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(NetworkViewManager.class);
 
@@ -485,6 +490,34 @@ public class NetworkViewManager extends InternalFrameAdapter implements NetworkV
 		}
 	}
 
+    @Override
+    public void handleEvent(SessionAboutToBeSavedEvent e) {
+    	// Save Network Frames
+    	Desktop desktop = e.getDesktop();
+        
+        if (desktop == null) {
+            desktop = new Desktop();
+            e.setDesktop(desktop);
+        }
+        
+        NetworkFrames netFrames = new NetworkFrames();
+        desktop.setNetworkFrames(netFrames);
+    	
+    	JInternalFrame[] internalFrames = desktopPane.getAllFrames();
+    	
+    	for (JInternalFrame iframe : internalFrames) {
+    		NetworkFrame nf = new NetworkFrame();
+    		
+            nf.setFrameID(iframe.getTitle());
+            nf.setHeight(BigInteger.valueOf(iframe.getHeight()));
+            nf.setWidth(BigInteger.valueOf(iframe.getWidth()));
+            nf.setX(BigInteger.valueOf(iframe.getX()));
+            nf.setY(BigInteger.valueOf(iframe.getY()));
+    		
+            netFrames.getNetworkFrame().add(nf);
+    	}
+    }
+	
 	private void updateNetworkTitle(Long networkModelID, String title) {
 		JInternalFrame frame = presentationContainerMap.get(networkModelID);
 

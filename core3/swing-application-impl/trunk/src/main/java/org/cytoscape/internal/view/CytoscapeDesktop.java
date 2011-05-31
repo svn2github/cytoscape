@@ -38,7 +38,11 @@ import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.application.swing.CytoscapeShutdown;
 import org.cytoscape.application.swing.events.CytoPanelStateChangedListener;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.property.session.Desktop;
+import org.cytoscape.property.session.DesktopSize;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.session.events.SessionAboutToBeSavedEvent;
+import org.cytoscape.session.events.SessionAboutToBeSavedListener;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -56,6 +60,8 @@ import javax.swing.JToolBar;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
+
+import java.math.BigInteger;
 import java.util.Dictionary;
 import java.util.Properties;
 import org.cytoscape.work.swing.GUITaskManager;
@@ -67,7 +73,8 @@ import org.cytoscape.application.swing.events.CytoscapeStartEvent;
 /**
  * The CytoscapeDesktop is the central Window for working with Cytoscape
  */
-public class CytoscapeDesktop extends JFrame implements CySwingApplication, CytoscapeStartListener {
+public class CytoscapeDesktop extends JFrame implements CySwingApplication, CytoscapeStartListener,
+                                                        SessionAboutToBeSavedListener {
 
 	private final static long serialVersionUID = 1202339866271348L;
 
@@ -383,8 +390,29 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication, Cyto
 	}
 	
 	// handle CytoscapeStartEvent
-	public void handleEvent(CytoscapeStartEvent e){
+	@Override
+	public void handleEvent(CytoscapeStartEvent e) {
 		this.setVisible(true);
 		this.toFront();
 	}
+
+    @Override
+    public void handleEvent(SessionAboutToBeSavedEvent e) {
+        // Just save the desktop size
+        BigInteger w = BigInteger.valueOf(this.getWidth());
+        BigInteger h = BigInteger.valueOf(this.getHeight());
+        
+        DesktopSize size = new DesktopSize();
+        size.setWidth(w);
+        size.setHeight(h);
+        
+        Desktop desktop = e.getDesktop();
+        
+        if (desktop == null) {
+            desktop = new Desktop();
+            e.setDesktop(desktop);
+        }
+        
+        desktop.setDesktopSize(size);
+    }
 }

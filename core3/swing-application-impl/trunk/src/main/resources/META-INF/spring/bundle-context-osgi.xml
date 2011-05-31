@@ -293,6 +293,7 @@
 	<osgi:service id="cytoscapeDesktopService" ref="cytoscapeDesktop">
 		<osgi:interfaces>
 			<value>org.cytoscape.application.swing.events.CytoscapeStartListener</value>
+			<value>org.cytoscape.session.events.SessionAboutToBeSavedListener</value>
 			<value>org.cytoscape.application.swing.CySwingApplication</value>
 		</osgi:interfaces>
 	</osgi:service>
