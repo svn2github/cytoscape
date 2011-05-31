@@ -50,31 +50,31 @@ import org.cytoscape.model.events.RowsFinishedChangingEvent;
 
 final class SelectUtils {
 
-    private final CyEventHelper eventHelper;
-    private final Object eventSource;
+	private final CyEventHelper eventHelper;
+	private final Object eventSource;
 
-    SelectUtils(final CyEventHelper eventHelper, final Object eventSource) {
-	this.eventHelper = eventHelper;
-	this.eventSource = eventSource;
-    }
-
-    void setSelectedNodes(final Collection<CyNode> nodes, final boolean select) {
-	setSelected(nodes, select);
-    }
-
-    void setSelectedEdges(final Collection<CyEdge> edges, final boolean select) {
-	setSelected(edges, select);
-    }
-
-    private void setSelected(final Collection<? extends CyTableEntry> objects, final boolean select) {
-	final CyTable table = objects.iterator().next().getCyRow().getTable();
-	try {
-	    eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(eventSource, table));
-
-	    for (final CyTableEntry nodeOrEdge : objects)
-		nodeOrEdge.getCyRow().set(CyNetwork.SELECTED, select);
-	} finally {
-	    eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(eventSource, table));
+	SelectUtils(final CyEventHelper eventHelper, final Object eventSource) {
+		this.eventHelper = eventHelper;
+		this.eventSource = eventSource;
 	}
-    }
+
+	void setSelectedNodes(final Collection<CyNode> nodes, final boolean select) {
+		setSelected(nodes, select);
+	}
+
+	void setSelectedEdges(final Collection<CyEdge> edges, final boolean select) {
+		setSelected(edges, select);
+	}
+
+	private void setSelected(final Collection<? extends CyTableEntry> objects, final boolean select) {
+		final CyTable table = objects.iterator().next().getCyRow().getTable();
+		try {
+			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(eventSource, table));
+
+			for (final CyTableEntry nodeOrEdge : objects)
+				nodeOrEdge.getCyRow().set(CyNetwork.SELECTED, select);
+		} finally {
+			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(eventSource, table));
+		}
+	}
 }
