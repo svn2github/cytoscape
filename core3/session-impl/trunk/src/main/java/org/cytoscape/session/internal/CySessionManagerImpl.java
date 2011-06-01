@@ -42,9 +42,9 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
@@ -76,218 +76,223 @@ import org.slf4j.LoggerFactory;
  */
 public class CySessionManagerImpl implements CySessionManager {
 
-    private String currentFileName;
-    private CySession currentSession;
+	private String currentFileName;
+	private CySession currentSession;
 
-    private final CyEventHelper cyEventHelper;
-    private final CyNetworkManager netMgr;
-    private final CyTableManager tblMgr;
-    private final VisualMappingManager vmMgr;
-    private final VisualStyleSerializer vsSer;
-    private final CyNetworkViewManager nvMgr;
+	private final CyEventHelper cyEventHelper;
+	private final CyNetworkManager netMgr;
+	private final CyTableManager tblMgr;
+	private final VisualMappingManager vmMgr;
+	private final VisualStyleSerializer vsSer;
+	private final CyNetworkViewManager nvMgr;
 
-    private final CyProperty<Properties> properties;
-    private final CyProperty<Bookmarks> bookmarks;
+	private final CyProperty<Properties> properties;
+	private final CyProperty<Bookmarks> bookmarks;
 
-    private static final Logger logger = LoggerFactory.getLogger(CySessionManagerImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(CySessionManagerImpl.class);
 
-    public CySessionManagerImpl(CyEventHelper cyEventHelper,
-                                CyNetworkManager netMgr,
-                                CyTableManager tblMgr,
-                                VisualMappingManager vmMgr,
-                                VisualStyleSerializer vsSer,
-                                CyNetworkViewManager nvMgr,
-                                CyProperty<Properties> props,
-                                CyProperty<Bookmarks> bkmarks) {
-        this.cyEventHelper = cyEventHelper;
-        this.netMgr = netMgr;
-        this.tblMgr = tblMgr;
-        this.vmMgr = vmMgr;
-        this.vsSer = vsSer;
-        this.nvMgr = nvMgr;
-        this.properties = props;
-        this.bookmarks = bkmarks;
-    }
+	public CySessionManagerImpl(CyEventHelper cyEventHelper,
+								CyNetworkManager netMgr,
+								CyTableManager tblMgr,
+								VisualMappingManager vmMgr,
+								VisualStyleSerializer vsSer,
+								CyNetworkViewManager nvMgr,
+								CyProperty<Properties> props,
+								CyProperty<Bookmarks> bkmarks) {
+		this.cyEventHelper = cyEventHelper;
+		this.netMgr = netMgr;
+		this.tblMgr = tblMgr;
+		this.vmMgr = vmMgr;
+		this.vsSer = vsSer;
+		this.nvMgr = nvMgr;
+		this.properties = props;
+		this.bookmarks = bkmarks;
+	}
 
-    public CySession getCurrentSession() {
-        // Plugins who want to save anything to a session will have to listen
-        // for this event
-        // and will then be responsible for adding files through
-        // SessionAboutToBeSavedEvent.addPluginFiles(..)
-        SessionAboutToBeSavedEvent savingEvent = new SessionAboutToBeSavedEvent(this);
-        cyEventHelper.fireSynchronousEvent(savingEvent);
+	public CySession getCurrentSession() {
+		// Plugins who want to save anything to a session will have to listen for this event
+		// and will then be responsible for adding files through SessionAboutToBeSavedEvent.addPluginFiles(..)
+		SessionAboutToBeSavedEvent savingEvent = new SessionAboutToBeSavedEvent(this);
+		cyEventHelper.fireSynchronousEvent(savingEvent);
 
-        CysessionFactory cysessFactory = new CysessionFactory();
-        Cysession cysess = cysessFactory.createCysession(savingEvent.getDesktop(), savingEvent.getCytopanels(), null);
+		CysessionFactory cysessFactory = new CysessionFactory(netMgr, nvMgr, vmMgr);
 
-        Map<String, List<File>> pluginMap = savingEvent.getPluginFileListMap();
+		Set<CyNetworkView> netViews = nvMgr.getNetworkViewSet();
 
-        Set<CyTableMetadata> tables = tblMgr.getAllTables(true);
-        Set<CyNetworkView> netViews = nvMgr.getNetworkViewSet();
+		// Visual Styles Map
+		Map<CyNetworkView, String> stylesMap = new HashMap<CyNetworkView, String>();
 
-        Set<VisualStyle> allStyles = vmMgr.getAllVisualStyles();
-        Vizmap vizmap = vsSer.createVizmap(allStyles);
+		if (netViews != null) {
+			for (CyNetworkView nv : netViews) {
+				VisualStyle style = vmMgr.getVisualStyle(nv);
 
-        Map<CyNetworkView, String> stylesMap = new HashMap<CyNetworkView, String>();
+				if (style != null) {
+					stylesMap.put(nv, style.getTitle());
+				}
+			}
+		}
 
-        if (netViews != null) {
-            for (CyNetworkView nv : netViews) {
-                VisualStyle style = vmMgr.getVisualStyle(nv);
+		// Cysession
+		Cysession cysess = cysessFactory.createCysession(savingEvent.getDesktop(), savingEvent.getCytopanels(), null);
 
-                if (style != null) {
-                    logger.debug("    NetView=" + nv + " :: Style=" + style.getTitle());
-                    stylesMap.put(nv, style.getTitle());
-                }
-            }
-        }
+		Map<String, List<File>> pluginMap = savingEvent.getPluginFileListMap();
 
-        Properties props = properties != null ? properties.getProperties() : null;
-        Bookmarks bkmarks = bookmarks != null ? bookmarks.getProperties() : null;
+		Set<CyTableMetadata> tables = tblMgr.getAllTables(true);
 
-        CySession sess = new CySession.Builder().cytoscapeProperties(props).bookmarks(bkmarks).cysession(cysess)
-                .pluginFileListMap(pluginMap).tables(tables).networkViews(netViews).vizmap(vizmap)
-                .viewVisualStyleMap(stylesMap).build();
+		Set<VisualStyle> allStyles = vmMgr.getAllVisualStyles();
+		Vizmap vizmap = vsSer.createVizmap(allStyles);
 
-        return sess;
-    }
+		// Properties and Bookmarks
+		Properties props = properties != null ? properties.getProperties() : null;
+		Bookmarks bkmarks = bookmarks != null ? bookmarks.getProperties() : null;
 
-    public void setCurrentSession(CySession sess, String fileName) {
-        boolean emptySession = sess == null;
+		// Build the session
+		CySession sess = new CySession.Builder().cytoscapeProperties(props).bookmarks(bkmarks).cysession(cysess)
+				.pluginFileListMap(pluginMap).tables(tables).networkViews(netViews).vizmap(vizmap)
+				.viewVisualStyleMap(stylesMap).build();
 
-        // Always remove the current session first
-        disposeCurrentSession(!emptySession);
+		return sess;
+	}
 
-        if (emptySession) {
-            logger.debug("Creating empty session...");
-            Set<VisualStyle> allStyles = vmMgr.getAllVisualStyles();
-            Vizmap vizmap = vsSer.createVizmap(allStyles);
-            Cysession cysess = new CysessionFactory().createDefaultCysession();
+	public void setCurrentSession(CySession sess, String fileName) {
+		boolean emptySession = sess == null;
 
-            // TODO: set default properties again
-            Properties props = properties != null ? properties.getProperties() : new Properties();
-            // TODO: set default bookmarks again
-            Bookmarks bkmarks = bookmarks != null ? bookmarks.getProperties() : new Bookmarks();
+		// Always remove the current session first
+		disposeCurrentSession(!emptySession);
 
-            sess = new CySession.Builder().cytoscapeProperties(props).bookmarks(bkmarks).cysession(cysess)
-                    .vizmap(vizmap).build();
-        } else {
-            logger.debug("Restoring the session...");
+		if (emptySession) {
+			logger.debug("Creating empty session...");
+			Set<VisualStyle> allStyles = vmMgr.getAllVisualStyles();
+			Vizmap vizmap = vsSer.createVizmap(allStyles);
 
-            // Restore tables
-            // ------------------------------------------------------------------------------
-            // TODO: add tables that are not associated with networks
-            // logger.debug("Restoring unattached tables...");
-            // Set<CyTable> tables = sess.getTables();
-            //			
-            // for (CyTable tbl : tables) {
-            // CyTableFactory.createTable();
-            // }
+			// Cysession info
+			Cysession cysess = new CysessionFactory(netMgr, nvMgr, vmMgr).createDefaultCysession();
 
-            // Restore networks
-            logger.debug("Restoring networks...");
-            Set<CyNetworkView> netViews = sess.getNetworkViews();
+			// TODO: set default properties again
+			Properties props = properties != null ? properties.getProperties() : new Properties();
+			// TODO: set default bookmarks again
+			Bookmarks bkmarks = bookmarks != null ? bookmarks.getProperties() : new Bookmarks();
 
-            for (CyNetworkView nv : netViews) {
-                netMgr.addNetwork(nv.getModel());
-                nvMgr.addNetworkView(nv);
-            }
+			sess = new CySession.Builder().cytoscapeProperties(props).bookmarks(bkmarks).cysession(cysess)
+					.vizmap(vizmap).build();
+		} else {
+			logger.debug("Restoring the session...");
 
-            // Restore visual styles
-            logger.debug("Restoring visual styles...");
-            Vizmap vizmap = sess.getVizmap();
-            Collection<VisualStyle> allStyles = vsSer.createVisualStyles(vizmap);
-            Map<String, VisualStyle> stylesMap = new HashMap<String, VisualStyle>();
+			// Restore tables
+			// ------------------------------------------------------------------------------
+			// TODO: add tables that are not associated with networks
+			// logger.debug("Restoring unattached tables...");
+			// Set<CyTable> tables = sess.getTables();
+			//			
+			// for (CyTable tbl : tables) {
+			// CyTableFactory.createTable();
+			// }
 
-            if (allStyles != null) {
-                for (VisualStyle vs : allStyles) {
-                    vmMgr.addVisualStyle(vs);
-                    stylesMap.put(vs.getTitle(), vs);
-                    // TODO: what if a style with the same name already exits?
-                }
-            }
+			// Restore networks
+			logger.debug("Restoring networks...");
+			Set<CyNetworkView> netViews = sess.getNetworkViews();
 
-            // Get network frames info
-            Cysession cysess = sess.getCysession();
+			for (CyNetworkView nv : netViews) {
+				netMgr.addNetwork(nv.getModel());
+				nvMgr.addNetworkView(nv);
+			}
 
-            if (cysess.getSessionState().getDesktop().getNetworkFrames() != null) {
-                List<NetworkFrame> frames = cysess.getSessionState().getDesktop().getNetworkFrames().getNetworkFrame();
-                Map<String, NetworkFrame> framesLookup = new Hashtable<String, NetworkFrame>();
+			// Restore visual styles
+			logger.debug("Restoring visual styles...");
+			Vizmap vizmap = sess.getVizmap();
+			Collection<VisualStyle> allStyles = vsSer.createVisualStyles(vizmap);
+			Map<String, VisualStyle> stylesMap = new HashMap<String, VisualStyle>();
 
-                for (NetworkFrame nf : frames) {
-                    framesLookup.put(nf.getFrameID(), nf);
-                }
+			if (allStyles != null) {
+				for (VisualStyle vs : allStyles) {
+					vmMgr.addVisualStyle(vs);
+					stylesMap.put(vs.getTitle(), vs);
+					// TODO: what if a style with the same name already exits?
+				}
+			}
 
-                // Set visual styles to network views
-                Map<CyNetworkView, String> netStyleMap = sess.getViewVisualStyleMap();
+			// Get network frames info
+			Cysession cysess = sess.getCysession();
 
-                for (Entry<CyNetworkView, String> entry : netStyleMap.entrySet()) {
-                    CyNetworkView netView = entry.getKey();
-                    String stName = entry.getValue();
-                    VisualStyle vs = stylesMap.get(stName);
+			if (cysess.getSessionState().getDesktop().getNetworkFrames() != null) {
+				List<NetworkFrame> frames = cysess.getSessionState().getDesktop().getNetworkFrames().getNetworkFrame();
+				Map<String, NetworkFrame> framesLookup = new Hashtable<String, NetworkFrame>();
 
-                    if (vs != null) {
-                        vmMgr.setVisualStyle(vs, netView);
-                        vs.apply(netView);
-                    }
+				for (NetworkFrame nf : frames) {
+					framesLookup.put(nf.getFrameID(), nf);
+				}
 
-                    // Set network width/height
-                    String name = netView.getModel().getCyRow().get(CyNetwork.NAME, String.class);
+				// Set visual styles to network views
+				Map<CyNetworkView, String> netStyleMap = sess.getViewVisualStyleMap();
 
-                    if (name != null && name.length() > 0) {
-                        NetworkFrame nf = framesLookup.get(name);
+				for (Entry<CyNetworkView, String> entry : netStyleMap.entrySet()) {
+					CyNetworkView netView = entry.getKey();
+					String stName = entry.getValue();
+					VisualStyle vs = stylesMap.get(stName);
 
-                        if (nf != null) {
-                            BigInteger w = nf.getWidth();
-                            BigInteger h = nf.getHeight();
+					if (vs != null) {
+						vmMgr.setVisualStyle(vs, netView);
+						vs.apply(netView);
+					}
 
-                            if (w != null)
-                                netView.setVisualProperty(MinimalVisualLexicon.NETWORK_WIDTH, w.doubleValue());
-                            if (h != null)
-                                netView.setVisualProperty(MinimalVisualLexicon.NETWORK_HEIGHT, h.doubleValue());
-                        }
-                    }
+					// Set network width/height
+					String name = netView.getModel().getCyRow().get(CyNetwork.NAME, String.class);
 
-                    netView.updateView();
-                }
-            }
-        }
+					if (name != null && name.length() > 0) {
+						NetworkFrame nf = framesLookup.get(name);
 
-        currentSession = sess;
-        currentFileName = fileName;
+						if (nf != null) {
+							BigInteger w = nf.getWidth();
+							BigInteger h = nf.getHeight();
 
-        cyEventHelper.fireSynchronousEvent(new SessionLoadedEvent(this, currentSession, getCurrentSessionFileName()));
-    }
+							if (w != null)
+								netView.setVisualProperty(MinimalVisualLexicon.NETWORK_WIDTH, w.doubleValue());
+							if (h != null)
+								netView.setVisualProperty(MinimalVisualLexicon.NETWORK_HEIGHT, h.doubleValue());
+						}
+					}
 
-    public String getCurrentSessionFileName() {
-        return currentFileName;
-    }
+					netView.updateView();
+				}
+			}
+		}
 
-    private void disposeCurrentSession(boolean removeVisualStyles) {
-        logger.debug("Disposing current session...");
+		currentSession = sess;
+		currentFileName = fileName;
 
-        // Destroy network views and models
-        Set<CyNetworkView> netViews = nvMgr.getNetworkViewSet();
+		cyEventHelper.fireSynchronousEvent(new SessionLoadedEvent(this, currentSession, getCurrentSessionFileName()));
+	}
 
-        for (CyNetworkView nv : netViews) {
-            nvMgr.destroyNetworkView(nv);
-            netMgr.destroyNetwork(nv.getModel());
-        }
+	public String getCurrentSessionFileName() {
+		return currentFileName;
+	}
 
-        // Destroy styles
-        if (removeVisualStyles) {
-            logger.debug("Removing current visual styles...");
-            VisualStyle defaultStyle = vmMgr.getDefaultVisualStyle();
-            List<VisualStyle> allStyles = new ArrayList<VisualStyle>(vmMgr.getAllVisualStyles());
+	private void disposeCurrentSession(boolean removeVisualStyles) {
+		logger.debug("Disposing current session...");
 
-            for (int i = 0; i < allStyles.size(); i++) {
-                VisualStyle vs = allStyles.get(i);
+		// Destroy network views and models
+		Set<CyNetworkView> netViews = nvMgr.getNetworkViewSet();
 
-                if (!vs.equals(defaultStyle)) {
-                    vmMgr.removeVisualStyle(vs);
-                }
-            }
-        }
+		for (CyNetworkView nv : netViews) {
+			nvMgr.destroyNetworkView(nv);
+			netMgr.destroyNetwork(nv.getModel());
+		}
 
-        // TODO: destroy unattached tables--how?
-    }
+		// Destroy styles
+		if (removeVisualStyles) {
+			logger.debug("Removing current visual styles...");
+			VisualStyle defaultStyle = vmMgr.getDefaultVisualStyle();
+			List<VisualStyle> allStyles = new ArrayList<VisualStyle>(vmMgr.getAllVisualStyles());
+
+			for (int i = 0; i < allStyles.size(); i++) {
+				VisualStyle vs = allStyles.get(i);
+
+				if (!vs.equals(defaultStyle)) {
+					vmMgr.removeVisualStyle(vs);
+				}
+			}
+		}
+
+		// TODO: destroy unattached tables--how?
+	}
 }
