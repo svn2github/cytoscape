@@ -189,10 +189,18 @@
 			</releases>
 			<name>Cytoscape BioPAX Snapshot Mirror</name>
 			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/biopax-snapshot/</url>
-		</repository><!-- <repository> <id>ops4j-release</id> <snapshots> <enabled>false</enabled> 
-			</snapshots> <releases> <enabled>true</enabled> </releases> <name>Cytoscape 
-			Ops4j Release Mirror</name> <url>http://cytoscape.wodaklab.org/nexus/content/repositories/ops4j-release/</url> 
-			</repository> -->
+		</repository>
+		<repository>
+			<id>ops4j-release</id> 
+			<snapshots> 
+				<enabled>false</enabled> 
+			</snapshots> 
+			<releases> 
+				<enabled>true</enabled> 
+			</releases> 
+			<name>Cytoscape Ops4j Release Mirror</name> 
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/ops4j-release/</url> 
+		</repository> 
 		<repository>
 			<id>spring-osgi</id>
 			<name>Cytoscape Spring OSGi Release Mirror</name>
