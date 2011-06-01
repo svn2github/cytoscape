@@ -14,6 +14,7 @@ import com.ardor3d.input.logical.TriggerAction;
 import com.ardor3d.input.logical.TriggerConditions;
 import com.ardor3d.input.logical.TwoInputStates;
 import com.ardor3d.math.FastMath;
+import com.ardor3d.math.MathUtils;
 import com.ardor3d.math.Vector3;
 import com.ardor3d.math.type.ReadOnlyVector3;
 import com.ardor3d.renderer.Camera;
@@ -144,6 +145,33 @@ public class OrbitCamControl {
     	// camera.g
     }
     
+    // Rotate a vector about a given normal
+    private ReadOnlyVector3 rotateVector(ReadOnlyVector3 vector, ReadOnlyVector3 normal, double angle) {
+    	// Parametric equation for circle in 3D space:
+    	// P = Rcos(t)u + Rsin(t)nxu + c
+    	//
+    	// Where:
+    	//  -u is a unit vector from the centre of the circle to any point
+    	// on the circumference
+    	//  -R is the radius
+    	//  -n is a unit vector perpendicular to the plane
+        //  -c is the centre of the circle.
+    	
+    	Vector3 rotated = new Vector3();
+    	
+    	// Obtain Rnxu
+    	normal.normalize(rotated);
+    	rotated.crossLocal(vector);
+    	
+    	// Obtain Rsin(t)nxu
+    	rotated.multiplyLocal(MathUtils.sin(angle));
+    	
+    	// Add Rcos(t)u to result
+    	rotated.addLocal(vector.multiply(MathUtils.cos(angle), null));
+    	
+    	return rotated;
+    }
+    
     private void orbit(double angle, RotateType type) {
     	// Parametric equation for circle in 3D space:
     	// P = R(cos(t)u + sin(t)nxu) + c
@@ -152,7 +180,7 @@ public class OrbitCamControl {
     	//  -u is a unit vector from the centre of the circle to any point
     	// on the circumference
     	//  -R is the radius
-    	//  -n is a unit vector perpendicular to the plane and c is the centre 
+    	//  -n is a unit vector perpendicular to the plane
         //  -c is the centre of the circle.
     	
     	// TODO correct the distance?
