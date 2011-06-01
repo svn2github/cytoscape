@@ -8,7 +8,6 @@
  * LICENSE file or at <http://www.ardor3d.com/LICENSE>.
  */
 
-
 import java.util.Random;
 
 import com.ardor3d.framework.Canvas;
@@ -18,6 +17,7 @@ import com.ardor3d.input.logical.KeyPressedCondition;
 import com.ardor3d.input.logical.TriggerAction;
 import com.ardor3d.input.logical.TwoInputStates;
 import com.ardor3d.math.ColorRGBA;
+import com.ardor3d.math.Vector3;
 import com.ardor3d.renderer.ContextManager;
 import com.ardor3d.renderer.Renderer;
 import com.ardor3d.renderer.state.BlendState;
@@ -48,7 +48,7 @@ public class DisplayListExample extends ExampleBase {
     private double counter = 0;
     private int frames = 0;
 
-    private static final int NODE_COUNT = 20000;
+    private static final int NODE_COUNT = 200;
     private static final float LARGE_SPHERE_RADIUS = 26.0f;
     private static final float SMALL_SPHERE_RADIUS = 0.032f;
 
@@ -59,6 +59,9 @@ public class DisplayListExample extends ExampleBase {
         public float y;
         public float z;
     }
+    
+    private Sphere movingSphere;
+    private int totalFrames;
 
     public static void main(final String[] args) {
         start(DisplayListExample.class);
@@ -73,8 +76,22 @@ public class DisplayListExample extends ExampleBase {
             first = false;
             _delegate = _shapeRoot.getRenderDelegate(ContextManager.getCurrentContext().getGlContextRep());
         }
-
+        
         super.renderExample(renderer);
+
+        if (totalFrames < 5) {
+        	//System.out.println("Removing, index: " + _shapeRoot.detachChild(movingSphere));
+        	
+        	_shapeRoot.setRenderDelegate(null, ContextManager.getCurrentContext().getGlContextRep());
+        	
+        	final CompileOptions options = new CompileOptions();
+            options.setDisplayList(true);
+            SceneCompiler.compile(_shapeRoot, _canvas.getCanvasRenderer().getRenderer(), options);
+            
+            _delegate = _shapeRoot.getRenderDelegate(ContextManager.getCurrentContext().getGlContextRep());
+            
+            _shapeRoot.setRenderDelegate(_delegate, ContextManager.getCurrentContext().getGlContextRep());
+        }
     }
 
     @Override
@@ -88,6 +105,12 @@ public class DisplayListExample extends ExampleBase {
             _fpsLabel.setText("FPS: " + Math.round(fps));
             // System.out.printf("%7.1f FPS\n", fps);
         }
+        
+        totalFrames++;
+        movingSphere.setTranslation(new Vector3(LARGE_SPHERE_RADIUS * 1.1 * Math.cos(totalFrames/400.0), 
+        		LARGE_SPHERE_RADIUS * 1.1 * Math.sin(totalFrames/400.0), 0)); 
+        
+        // movingSphere.setScale(scale);
     }
 
     @Override
@@ -97,18 +120,26 @@ public class DisplayListExample extends ExampleBase {
         _shapeRoot.getSceneHints().setDataMode(DataMode.VBO);
         _root.attachChild(_shapeRoot);
 
-        final Sphere main = new Sphere("Default", 6, 6, 0.15);
+        final Sphere main = new Sphere("Default", 12, 12, 0.15);
+        
         Sphere generated;
 
         generateNodes();
         for (int i = 0; i < NODE_COUNT; i++) {
-            generated = new Sphere("Sphere" + i, 6, 6, 0.15);
+            generated = new Sphere("Sphere" + i, 12, 12, 0.15);
             generated.setMeshData(main.getMeshData());
             generated.setModelBound(main.getModelBound());
             // generated.set
             addMesh(generated);
         }
-
+        
+        movingSphere = new Sphere("Sphere", 12, 12, 0.6);
+        movingSphere.setMeshData(main.getMeshData());
+        movingSphere.setModelBound(main.getModelBound());
+        movingSphere.setTranslation(new Vector3(LARGE_SPHERE_RADIUS * 1.1 * Math.cos(3), 
+        		LARGE_SPHERE_RADIUS * 1.1 * Math.cos(3), 0)); 
+        _shapeRoot.attachChild(movingSphere);
+        
         /*
          * final TextureState ts = new TextureState(); ts.setTexture(TextureManager.load("images/ardor3d_white_256.jpg",
          * Texture.MinificationFilter.Trilinear, TextureStoreFormat.GuessCompressedFormat, true));
@@ -147,10 +178,10 @@ public class DisplayListExample extends ExampleBase {
     protected void registerInputTriggers() {
         super.registerInputTriggers();
         _logicalLayer.registerTrigger(new InputTrigger(new KeyPressedCondition(Key.SPACE), new TriggerAction() {
-            private final boolean useDL = true;
+            private boolean useDL = true;
 
             public void perform(final Canvas source, final TwoInputStates inputStates, final double tpf) {
-                // useDL = !useDL;
+                useDL = !useDL;
                 if (useDL) {
                     _text.setText("[SPACE] display list on");
                     _shapeRoot.setRenderDelegate(_delegate, ContextManager.getCurrentContext().getGlContextRep());

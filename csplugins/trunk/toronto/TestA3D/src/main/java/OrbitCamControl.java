@@ -21,6 +21,8 @@ import com.ardor3d.renderer.Camera;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
+import com.ardor3d.input.ButtonState;
+
 public class OrbitCamControl {
 	
 	private enum RotateType { HORIZONTAL, VERTICAL }
@@ -115,38 +117,21 @@ public class OrbitCamControl {
     }
     
     private void roll(double angle) {
-    	// Parametric equation for circle in 3D space:
-    	// P = R(cos(t)u + sin(t)nxu) + c
-    	//
-    	// Where:
-    	//  -u is a unit vector from the centre of the circle to any point
-    	// on the circumference
-    	//  -R is the radius
-    	//  -n is a unit vector perpendicular to the plane
-    	//  -c is the centre of the circle.
+    	Vector3 direction = new Vector3(camera.getDirection());
+    	direction.normalizeLocal();
     	
-    	Vector3 newUp = new Vector3();
+    	Vector3 newUp = rotateVector(camera.getUp(), direction, angle).normalizeLocal();
     	
-    	// Calculate (cos(t)u + sin(t)nxu)
-    	newUp.set(camera.getDirection().multiply(-1, null));
-    	newUp.crossLocal(camera.getUp());
-    	newUp.multiplyLocal(FastMath.sin(angle));
-    	
-    	newUp.addLocal(camera.getUp().multiply(FastMath.sin(angle), null));
-    	newUp.normalizeLocal();
-  
-    	// Update the camera
     	camera.setUp(newUp);
-    	camera.setLeft(camera.getDirection().cross(newUp, null).normalizeLocal().multiply(-1, null));
-  
-    	upAxis.set(camera.getUp());
-    	leftAxis.set(camera.getLeft());
+    	// camera.setLeft(direction.cross(newUp, null));
+    	camera.setLeft(newUp.cross(direction, null));
     	
-    	// camera.g
+    	upAxis.set(newUp);
+    	leftAxis.set(camera.getLeft());
     }
     
     // Rotate a vector about a given normal
-    private ReadOnlyVector3 rotateVector(ReadOnlyVector3 vector, ReadOnlyVector3 normal, double angle) {
+    private Vector3 rotateVector(ReadOnlyVector3 vector, ReadOnlyVector3 normal, double angle) {
     	// Parametric equation for circle in 3D space:
     	// P = Rcos(t)u + Rsin(t)nxu + c
     	//
@@ -173,6 +158,86 @@ public class OrbitCamControl {
     }
     
     private void orbit(double angle, RotateType type) {
+    	Vector3 offsetDirection = position.subtract(target, null);
+    	// offsetDirection.normalizeLocal();
+    	
+    	Vector3 normal = new Vector3();
+    	if (type == RotateType.HORIZONTAL) {
+    		normal.set(camera.getUp());
+    	} else if (type == RotateType.VERTICAL) {
+    		normal.set(camera.getLeft());
+    	}
+    	
+    	// Rotate the direction vector
+    	offsetDirection.set(rotateVector(offsetDirection, normal, angle));
+    	offsetDirection.normalizeLocal();
+    	
+    	// Obtain new position
+    	Vector3 newPosition = new Vector3();
+    	offsetDirection.multiply(distance, newPosition);
+        newPosition.addLocal(target);
+        camera.setLocation(newPosition);
+        position.set(newPosition);
+        
+        // Obtain projection of previous camera up vector onto plane perpendicular
+        // to new direction vector
+    	Vector3 newUp = new Vector3(camera.getUp());
+    	newUp.normalizeLocal();
+    	
+    	// Subtract <old up, direction> * direction from old up
+    	newUp.subtractLocal(offsetDirection.multiply(newUp.dot(offsetDirection), null));
+    	camera.setUp(newUp);
+    	camera.setDirection(offsetDirection.multiply(-1, null));
+    	camera.setLeft(offsetDirection.cross(newUp, null));
+    	
+    	upAxis.set(camera.getUp());
+    	leftAxis.set(camera.getLeft());
+    }
+    
+    private void rotateTarget(double angle, RotateType type) {
+    	Vector3 offsetDirection = target.subtract(position, null);
+    	// TODO: remove unnecessary normalizations, such as this one
+    	// offsetDirection.normalizeLocal();
+    	
+    	Vector3 normal = new Vector3();
+    	if (type == RotateType.HORIZONTAL) {
+    		normal.set(camera.getUp());
+    	} else if (type == RotateType.VERTICAL) {
+    		normal.set(camera.getLeft());
+    	}
+    	
+    	// Rotate the direction vector
+    	offsetDirection.set(rotateVector(offsetDirection, normal, angle));
+    	offsetDirection.normalizeLocal();
+    	
+    	// Obtain new target
+    	Vector3 newTarget = new Vector3();
+    	offsetDirection.multiply(distance, newTarget);
+        newTarget.addLocal(position);
+        
+        target.set(newTarget);
+        //camera.setLocation(newPosition);
+        //position.set(newPosition);
+        
+        // Flip direction vector
+        offsetDirection.multiplyLocal(-1);
+        
+        // Obtain projection of previous camera up vector onto plane perpendicular
+        // to new direction vector
+    	Vector3 newUp = new Vector3(camera.getUp());
+    	newUp.normalizeLocal();
+    	
+    	// Subtract <old up, direction> * direction from old up
+    	newUp.subtractLocal(offsetDirection.multiply(newUp.dot(offsetDirection), null));
+    	camera.setUp(newUp);
+    	camera.setDirection(offsetDirection.multiply(-1, null));
+    	camera.setLeft(offsetDirection.cross(newUp, null));
+    	
+    	upAxis.set(camera.getUp());
+    	leftAxis.set(camera.getLeft());
+    }
+    
+    private void orbitOld(double angle, RotateType type) {
     	// Parametric equation for circle in 3D space:
     	// P = R(cos(t)u + sin(t)nxu) + c
     	//
@@ -244,6 +309,11 @@ public class OrbitCamControl {
     	orbit(-vertical, RotateType.VERTICAL);
     }
     
+    private void turnCamera(double horizontal, double vertical) {
+    	rotateTarget(-horizontal, RotateType.HORIZONTAL);
+    	rotateTarget(-vertical, RotateType.VERTICAL);
+    }
+    
     private void handleKeyboard(KeyboardState keyBoard) {
     	Set<Key> keysDown = keyBoard.getKeysDown();
     	
@@ -284,6 +354,7 @@ public class OrbitCamControl {
                 .or(TriggerConditions.rightButtonDown(), TriggerConditions.middleButtonDown()));
         
         Predicate<TwoInputStates> mouseDragged = Predicates.and(TriggerConditions.mouseMoved(), mouseDown);
+        Predicate<TwoInputStates> mouseMoved = TriggerConditions.mouseMoved();
         Predicate<TwoInputStates> scrollWheelMoved = new MouseWheelMovedCondition();
         
         TriggerAction mouseAction = new TriggerAction() {
@@ -291,16 +362,20 @@ public class OrbitCamControl {
             public void perform(final Canvas source, final TwoInputStates inputStates, final double tpf) {
                 final MouseState mouse = inputStates.getCurrent().getMouseState();
                 if (mouse.getDx() != 0 || mouse.getDy() != 0) {
-                    rotate(horizontalRotateSpeed * mouse.getDx(), verticalRotateSpeed * mouse.getDy());
+                	if (mouse.hasButtonState(ButtonState.DOWN)) {
+                		rotate(horizontalRotateSpeed * mouse.getDx(), verticalRotateSpeed * mouse.getDy());
+                	} else {
+                		turnCamera(horizontalRotateSpeed * mouse.getDx() / 2, verticalRotateSpeed * mouse.getDy() / 2);
+                	}
                 }
-
+                
                 if (mouse.getDwheel() != 0) {
                     zoom(zoomSpeed * mouse.getDwheel());
                 }
             }
         };
 
-        Predicate<TwoInputStates> predicate = Predicates.or(scrollWheelMoved, mouseDragged);
+        Predicate<TwoInputStates> predicate = Predicates.or(scrollWheelMoved, mouseMoved);
         mouseTrigger = new InputTrigger(predicate, mouseAction);
         layer.registerTrigger(mouseTrigger);
         
@@ -318,13 +393,13 @@ public class OrbitCamControl {
         
         layer.registerTrigger(new InputTrigger(new KeyHeldCondition(Key.UP), new TriggerAction() {
 			public void perform(final Canvas source, final TwoInputStates inputState, final double tpf) {
-				translate(upAxis.multiply(translateSpeed, null));
+				translate(camera.getDirection().multiply(translateSpeed, null));
 			}
 		}));
         
         layer.registerTrigger(new InputTrigger(new KeyHeldCondition(Key.DOWN), new TriggerAction() {
 			public void perform(final Canvas source, final TwoInputStates inputState, final double tpf) {
-				translate(upAxis.multiply(-translateSpeed, null));
+				translate(camera.getDirection().multiply(-translateSpeed, null));
 			}
 		}));
         
@@ -332,6 +407,30 @@ public class OrbitCamControl {
 			public void perform(final Canvas source, final TwoInputStates inputState, final double tpf) {
 				resetTranslation();
 				resetZoom();
+			}
+		}));
+        
+        layer.registerTrigger(new InputTrigger(new KeyHeldCondition(Key.Q), new TriggerAction() {
+			public void perform(final Canvas source, final TwoInputStates inputState, final double tpf) {
+				roll(rollSpeed);
+			}
+		}));
+        
+        layer.registerTrigger(new InputTrigger(new KeyHeldCondition(Key.E), new TriggerAction() {
+			public void perform(final Canvas source, final TwoInputStates inputState, final double tpf) {
+				roll(-rollSpeed);
+			}
+		}));
+        
+        layer.registerTrigger(new InputTrigger(new KeyPressedCondition(Key.SPACE), new TriggerAction() {
+			public void perform(final Canvas source, final TwoInputStates inputState, final double tpf) {
+				System.out.println("camera position: " + camera.getLocation());
+				System.out.println("position: " + position);
+				System.out.println("target: " + target);
+				System.out.println("direction: " + camera.getDirection());
+				System.out.println("up: " + camera.getUp());
+				System.out.println("left: " + camera.getLeft());
+				
 			}
 		}));
     	

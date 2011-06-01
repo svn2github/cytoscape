@@ -114,22 +114,24 @@ public class Base implements Runnable, Updater, Scene {
         
         Sphere first = new Sphere("first", 12, 12, 0.3);
         first.setTranslation(new Vector3(-2, 0, -15));
-        root.attachChild(first);
+        // root.attachChild(first);
         
         Sphere second = new Sphere("second", 12, 12, 0.3);
         second.setTranslation(new Vector3(2, 0, -15));
-        root.attachChild(second);
+        // root.attachChild(second);
         
-        Sphere third = new Sphere("third", 12, 12, 0.3);
-        third.setTranslation(new Vector3(0, -1, -15));
-        root.attachChild(third);
+        for (int i = 0; i < 20; i++ ) {
+        	Sphere third = new Sphere("sphere" + i, 12, 12, 0.3);
+        	third.setTranslation(new Vector3(i / 5, i % 4, -15));
+        	root.attachChild(third);
+        }
         
         Quaternion rotation = new Quaternion();
         rotation = rotation.fromAngleNormalAxis(MathUtils.HALF_PI, new Vector3(0, 1, 0));
         Cylinder edge = new Cylinder("Cylinder", 8, 8, 0.1, 4);
         edge.setTranslation(new Vector3(0, 0, -15));
         edge.setRotation(rotation);
-        root.attachChild(edge);
+        // root.attachChild(edge);
 	}
  
 	public void update(ReadOnlyTimer timer) {
