@@ -1,0 +1,215 @@
+package cytoscape.plugins.igraph;
+
+import com.sun.jna.Library;
+import com.sun.jna.Native;
+import com.sun.jna.Platform;
+import com.sun.jna.ptr.DoubleByReference;
+import com.sun.jna.Structure;
+
+
+/**
+ *
+ */
+public class IgraphLibrary {
+
+    public igraph() {
+        igraph INSTANCE = (igraph) Native.loadLibrary((Platform.isWindows() ? "msvcrt" : "c"), 
+						      igraph.class);
+    }
+
+    public interface igraphLibrary extends Library {
+
+
+	public static class igraph_vector_t implements Structure {
+	    DoubleByReference stor_begin;
+	    DoubleByReference stor_end;
+	    DoubleByReference end;
+	}
+	
+
+	
+	/* -------------------------------------------------- */
+	/* Data types                                         */
+	/* -------------------------------------------------- */
+
+	/*
+	  typedef int    igraph_integer_t;
+	  typedef double igraph_real_t;
+	  typedef int    igraph_bool_t;
+
+
+	  typedef struct igraph_s {
+	     igraph_integer_t n;
+	     igraph_bool_t directed;
+	     igraph_vector_t from;
+	     igraph_vector_t to;
+	     igraph_vector_t oi;
+	     igraph_vector_t ii;
+	     igraph_vector_t os;
+	     igraph_vector_t is;
+	     void *attr;
+	 } igraph_t;
+	 
+
+	 typedef struct TYPE(igraph_vector) {
+	     BASE* stor_begin;
+	     BASE* stor_end;
+	     BASE* end;
+	 } TYPE(igraph_vector);	   
+	 
+	 */
+
+	 /* -------------------------------------------------- */
+	 /* Interface                                          */
+	 /* -------------------------------------------------- */
+	 
+	 /*	
+	 int igraph_empty(igraph_t *graph, igraph_integer_t n, igraph_bool_t directed);
+	 int igraph_empty_attrs(igraph_t *graph, igraph_integer_t n, igraph_bool_t directed, void *attr);
+	 int igraph_destroy(igraph_t *graph);
+	 int igraph_copy(igraph_t *to, const igraph_t *from);
+	 int igraph_add_edges(igraph_t *graph, const igraph_vector_t *edges, 
+			      void *attr);
+	 int igraph_add_vertices(igraph_t *graph, igraph_integer_t nv, 
+				 void *attr);
+	 int igraph_delete_edges(igraph_t *graph, igraph_es_t edges);
+	 int igraph_delete_vertices(igraph_t *graph, const igraph_vs_t vertices);
+	 int igraph_delete_vertices_idx(igraph_t *graph, const igraph_vs_t vertices, 
+					igraph_vector_t *idx, 
+					igraph_vector_t *invidx);
+	 igraph_integer_t igraph_vcount(const igraph_t *graph);
+	 igraph_integer_t igraph_ecount(const igraph_t *graph);
+	 int igraph_neighbors(const igraph_t *graph, igraph_vector_t *neis, igraph_integer_t vid, 
+			      igraph_neimode_t mode); 
+	 igraph_bool_t igraph_is_directed(const igraph_t *graph);
+	 int igraph_degree(const igraph_t *graph, igraph_vector_t *res, 
+			   const igraph_vs_t vids, igraph_neimode_t mode, 
+			   igraph_bool_t loops);
+	 int igraph_edge(const igraph_t *graph, igraph_integer_t eid, 
+			 igraph_integer_t *from, igraph_integer_t *to);		
+	 int igraph_edges(const igraph_t *graph, igraph_es_t eids,
+			  igraph_vector_t *edges);
+	 int igraph_get_eid(const igraph_t *graph, igraph_integer_t *eid,
+			    igraph_integer_t from, igraph_integer_t to,
+			    igraph_bool_t directed, igraph_bool_t error);
+	 int igraph_get_eids(const igraph_t *graph, igraph_vector_t *eids,
+			     const igraph_vector_t *pairs,
+			     const igraph_vector_t *path,
+			     igraph_bool_t directed, igraph_bool_t error);
+	 int igraph_get_eids_multi(const igraph_t *graph, igraph_vector_t *eids,
+				   const igraph_vector_t *pairs, 
+				   const igraph_vector_t *path,
+				   igraph_bool_t directed, igraph_bool_t error);
+	 int igraph_incident(const igraph_t *graph, igraph_vector_t *eids, igraph_integer_t vid,
+			     igraph_neimode_t mode);
+	   
+	 #define IGRAPH_FROM(g,e) (VECTOR((g)->from)[(long int)(e)])
+	     #define IGRAPH_TO(g,e)   (VECTOR((g)->to)  [(long int)(e)])
+	     #define IGRAPH_OTHER(g,e,v) (IGRAPH_TO(g,(e))==(v) ? IGRAPH_FROM((g),(e)) : IGRAPH_TO((g),(e)))
+	 */
+
+
+	 /* -------------------------------------------------- */
+	 /* Constants                                          */
+	 /* -------------------------------------------------- */
+
+	 /*
+	 typedef enum { IGRAPH_UNDIRECTED=0, IGRAPH_DIRECTED=1 } igraph_i_directed_t;
+
+	 typedef enum { IGRAPH_NO_LOOPS=0, IGRAPH_LOOPS=1 } igraph_i_loops_t;
+
+	 typedef enum { IGRAPH_ASCENDING=0, IGRAPH_DESCENDING=1 } igraph_order_t;
+
+	 typedef enum { IGRAPH_OUT=1, IGRAPH_IN=2, IGRAPH_ALL=3,
+		 IGRAPH_TOTAL=3 } igraph_neimode_t;
+
+	 typedef enum { IGRAPH_WEAK=1, IGRAPH_STRONG=2 } igraph_connectedness_t;
+
+	 typedef enum { IGRAPH_ADJ_DIRECTED=0, 
+		 IGRAPH_ADJ_UNDIRECTED=1, IGRAPH_ADJ_MAX=1,
+		 IGRAPH_ADJ_UPPER, IGRAPH_ADJ_LOWER, IGRAPH_ADJ_MIN,
+		 IGRAPH_ADJ_PLUS } igraph_adjacency_t;
+
+	 typedef enum { IGRAPH_STAR_OUT=0, IGRAPH_STAR_IN,
+		 IGRAPH_STAR_UNDIRECTED, 
+		 IGRAPH_STAR_MUTUAL } igraph_star_mode_t;
+
+	 typedef enum { IGRAPH_TREE_OUT=0, IGRAPH_TREE_IN,
+		 IGRAPH_TREE_UNDIRECTED } igraph_tree_mode_t;
+
+	 typedef enum { IGRAPH_ERDOS_RENYI_GNP=0, 
+		 IGRAPH_ERDOS_RENYI_GNM } igraph_erdos_renyi_t;
+
+	 typedef enum { IGRAPH_GET_ADJACENCY_UPPER=0,
+		 IGRAPH_GET_ADJACENCY_LOWER,
+		 IGRAPH_GET_ADJACENCY_BOTH } igraph_get_adjacency_t;
+
+	 typedef enum { IGRAPH_DEGSEQ_SIMPLE=0,
+		 IGRAPH_DEGSEQ_VL } igraph_degseq_t;
+
+	 typedef enum { IGRAPH_FILEFORMAT_EDGELIST=0,
+		 IGRAPH_FILEFORMAT_NCOL,
+		 IGRAPH_FILEFORMAT_PAJEK,
+		 IGRAPH_FILEFORMAT_LGL,
+		 IGRAPH_FILEFORMAT_GRAPHML } igraph_fileformat_type_t;
+
+	 typedef enum { IGRAPH_REWIRING_SIMPLE=0 } igraph_rewiring_t;
+
+	 typedef enum { IGRAPH_EDGEORDER_ID=0,
+		 IGRAPH_EDGEORDER_FROM,
+		 IGRAPH_EDGEORDER_TO } igraph_edgeorder_type_t;
+
+	 typedef enum { IGRAPH_TO_DIRECTED_ARBITRARY=0,
+		 IGRAPH_TO_DIRECTED_MUTUAL } igraph_to_directed_t;
+
+	 typedef enum { IGRAPH_TO_UNDIRECTED_EACH=0,
+		 IGRAPH_TO_UNDIRECTED_COLLAPSE,
+		 IGRAPH_TO_UNDIRECTED_MUTUAL} igraph_to_undirected_t;
+
+	 typedef enum { IGRAPH_VCONN_NEI_ERROR=0,
+		 IGRAPH_VCONN_NEI_NUMBER_OF_NODES,
+		 IGRAPH_VCONN_NEI_IGNORE, 
+		 IGRAPH_VCONN_NEI_NEGATIVE } igraph_vconn_nei_t;
+
+	 typedef enum { IGRAPH_SPINCOMM_UPDATE_SIMPLE=0,
+		 IGRAPH_SPINCOMM_UPDATE_CONFIG } igraph_spincomm_update_t; 
+
+	 typedef enum { IGRAPH_DONT_SIMPLIFY=0,
+		 IGRAPH_SIMPLIFY } igraph_lazy_adlist_simplify_t;
+
+	 typedef enum { IGRAPH_TRANSITIVITY_NAN=0,
+		 IGRAPH_TRANSITIVITY_ZERO } igraph_transitivity_mode_t;
+
+	 typedef enum { IGRAPH_SPINCOMM_IMP_ORIG=0, 
+		 IGRAPH_SPINCOMM_IMP_NEG } igraph_spinglass_implementation_t;
+
+	 typedef enum { IGRAPH_COMMCMP_VI = 0,
+		 IGRAPH_COMMCMP_NMI,
+		 IGRAPH_COMMCMP_SPLIT_JOIN,
+		 IGRAPH_COMMCMP_RAND,
+		 IGRAPH_COMMCMP_ADJUSTED_RAND } igraph_community_comparison_t;
+
+	 typedef enum { IGRAPH_ADD_WEIGHTS_NO = 0,
+		 IGRAPH_ADD_WEIGHTS_YES,
+		 IGRAPH_ADD_WEIGHTS_IF_PRESENT } igraph_add_weights_t;
+
+	 typedef enum { IGRAPH_BARABASI_BAG = 0,
+		 IGRAPH_BARABASI_PSUMTREE, 
+		 IGRAPH_BARABASI_PSUMTREE_MULTIPLE} igraph_barabasi_algorithm_t;
+
+	 typedef enum { IGRAPH_SUBGRAPH_AUTO = 0,
+		 IGRAPH_SUBGRAPH_COPY_AND_DELETE,
+		 IGRAPH_SUBGRAPH_CREATE_FROM_SCRATCH
+		 } igraph_subgraph_implementation_t;
+
+	 typedef igraph_real_t  igraph_scalar_function_t(const igraph_vector_t *var, 
+							 const igraph_vector_t *par,
+							 void* extra);
+	 typedef void igraph_vector_function_t(const igraph_vector_t *var, 
+					       const igraph_vector_t *par,
+					       igraph_vector_t* res, void* extra);
+	 */
+
+
+     }
+}

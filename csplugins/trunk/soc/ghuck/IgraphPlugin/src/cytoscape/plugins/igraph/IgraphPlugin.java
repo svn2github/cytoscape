@@ -33,7 +33,6 @@ import java.lang.reflect.Field;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-
 /** ---------------------------IgraphPlugin-----------------------------
  * This plugin allows to call some of igraph functions from Cytoscape
  * @author Gerardo Huck
@@ -42,8 +41,7 @@ import javax.swing.JPanel;
 public class IgraphPlugin extends CytoscapePlugin {
 	
     /**
-     * Constructor which adds this layout to Cytoscape Layouts.  This in turn
-     * adds it to the Cytoscape menus as well.
+     * 
      */
     public IgraphPlugin() {
 
@@ -53,8 +51,12 @@ public class IgraphPlugin extends CytoscapePlugin {
 	// Load igraph
 	loadIgraph();
 
-	// Add layouts
-	//CyLayouts.addLayout(new sampleLayout(), "Igraph");	
+	// Use JNA to print a simple message
+	HelloWorld.hello();
+
+	// Add an element in menu toolbar
+	NodeCount nodeCountAction = new NodeCount(this);
+	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) nodeCountAction);
     }
 
     private boolean isOldVersion(){
@@ -62,6 +64,7 @@ public class IgraphPlugin extends CytoscapePlugin {
     }
 
     private void checkLib() {
+    // TODO: Make this cross-platform
 	File dynamicLib = new File ("./plugins/libigraph.dylib");
 	if (!dynamicLib.exists() || isOldVersion()){
 	    String message;	    

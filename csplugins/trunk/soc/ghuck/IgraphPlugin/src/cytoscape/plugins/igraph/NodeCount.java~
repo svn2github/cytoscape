@@ -1,0 +1,14 @@
+
+
+
+        public class MyPluginMenuAction extends CytoscapeAction {
+
+                public MyPluginMenuAction(HelloWorldPlugin myPlugin) {
+                        super("Hello World");
+                        setPreferredMenu("Plugins");
+                }
+
+                public void actionPerformed(ActionEvent e) {
+                        JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Hello World is selected!");       
+                }
+        }

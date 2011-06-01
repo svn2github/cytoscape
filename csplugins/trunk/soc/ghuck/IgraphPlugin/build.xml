@@ -13,7 +13,7 @@
     <property name="package_path" value="cytoscape/plugins/igraph"/> 
     <property name="project.jar" value="${plugin_name}.jar"/> 
     <property name="version" value="0.01"/>
-    <property name="year" value="2010"/>
+    <property name="year" value="2011"/>
 
     <echo message="Building plugin ${plugin_name} version ${version}..."/>
 
