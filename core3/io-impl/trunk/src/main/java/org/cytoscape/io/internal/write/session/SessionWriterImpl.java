@@ -97,9 +97,6 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	// These values will be replaced.
 	private static final char[] INVALID_CHAR = {'[', '\\', '/', ':', '*', '?', 
 	                                            '"', '<', '>', '|', ']'};
-	
-	// cysession.xml document version
-	private static final String cysessionVersion = "0.9";
 
 	// Enumerate types (node & edge)
 	public static final int NODE = 1;
@@ -299,9 +296,12 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	 * @throws Exception
 	 */
 	private void zipCySession() throws Exception {
+		Cysession cysess = session.getCysession();
+		cysess.setId(sessionDirName);
+		
 		zos.putNextEntry(new ZipEntry(sessionDir + CYSESSION_FILE_NAME) );
 
-		CyWriter cysessionWriter = propertyWriterMgr.getWriter(session.getCysession(), cysessionFilter, zos );
+		CyWriter cysessionWriter = propertyWriterMgr.getWriter(cysess, cysessionFilter, zos );
 		cysessionWriter.run(taskMonitor);
 
 		zos.closeEntry();

@@ -65,7 +65,6 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
-import org.cytoscape.property.session.Child;
 import org.cytoscape.property.session.Cysession;
 import org.cytoscape.property.session.Edge;
 import org.cytoscape.property.session.Network;
@@ -88,16 +87,15 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	public static final String VIZMAP_XML = "vizmap.xml";
 	public static final String CY_PROPS = "cytoscape.props";
 	public static final String XGMML_EXT = ".xgmml";
-	public  static final String BOOKMARKS_FILE = "session_bookmarks.xml";
-	public  static final String NETWORK_ROOT = "Network Root";
-
+	public static final String BOOKMARKS_FILE = "session_bookmarks.xml";
+	public static final String NETWORK_ROOT = "Network Root";
+	public static final int MAJOR_DOC_VERSION = 3;
 
 	private static final Logger logger = LoggerFactory.getLogger(SessionReaderImpl.class);
 
 	private final Map<String, List<File>> pluginFileListMap = new HashMap<String, List<File>>();
 	private final Map<String,CyNetworkView[]> networkViews = new HashMap<String,CyNetworkView[]>();
 	private final Map<CyNetworkView,String> visualStyleMap = new HashMap<CyNetworkView,String>();
-	private final Map<String, Network> netMap = new HashMap<String, Network>();
 
 	private final InputStream sourceInputStream;
 	private final CyNetworkReaderManager netviewReaderMgr; 
@@ -329,57 +327,58 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	}
 
 	private void processNetworks() throws Exception {
-		
 		if (cysession.getNetworkTree() == null){
 			return;
 		}
 		
-		for (Network curNet : cysession.getNetworkTree().getNetwork()) 
-			netMap.put(curNet.getId(), curNet);
-
-		walkTree(netMap.get(NETWORK_ROOT), null);
-	}
-
-	/**
-	 * Load the root network and then create its children.<br>
-	 *
-	 * @param currentNetwork
-	 * @param parent
-	 * @throws IOException
-	 */
-	private void walkTree(final Network currentNetwork, final CyNetwork parent) throws Exception {
-
-		for (Child child : currentNetwork.getChild() ) {
-
-			Network childNet = netMap.get(child.getId());
-
-			CyNetworkView view = getNetworkView(childNet.getFilename()); 
-			if ( view == null ) {
-				logger.warn("failed to find network in session: " + childNet.getFilename());
-				return;
+		boolean isOldFormat = false;
+		String docVersion = cysession.getDocumentVersion();
+		
+		if (docVersion != null) {
+			String[] tokens = docVersion.split(".");
+			
+			if (tokens.length > 0) {
+				String t0 = tokens[0];
+				
+				try {
+					int majorVersion = Integer.parseInt(t0);
+					isOldFormat = majorVersion < MAJOR_DOC_VERSION;
+				} catch (NumberFormatException nfe) {
+					logger.warn("The Cysession document version is invalid!");
+				}
 			}
-
-			String vsName = childNet.getVisualStyle();
-			if (vsName == null)
-				vsName = "default";
-
-			visualStyleMap.put( view, vsName );
-
-			CyNetwork new_network = view.getModel();
-
-			if ( childNet.getHiddenNodes() != null )
-				setBooleanNodeAttr(new_network, childNet.getHiddenNodes().getNode().iterator(), "hidden");
-			if ( childNet.getHiddenEdges() != null )
-				setBooleanEdgeAttr(new_network, childNet.getHiddenEdges().getEdge().iterator(), "hidden");
-			if ( childNet.getSelectedNodes() != null )
-				setBooleanNodeAttr(new_network, childNet.getSelectedNodes().getNode().iterator(), "selected");
-			if ( childNet.getSelectedEdges() != null )
-				setBooleanEdgeAttr(new_network, childNet.getSelectedEdges().getEdge().iterator(), "selected");
-
-			// Load child networks
-			if (childNet.getChild().size() != 0)
-				// child 2
-				walkTree(childNet, new_network);
+		} else {
+			logger.warn("The Cysession has no document version!");
+		}
+		
+		for (Network net : cysession.getNetworkTree().getNetwork()) {
+			// We no longer have the concept of a top-level network root,
+			// so let's ignore a network with that name, but only if the Cysession doc version is old.
+			if (isOldFormat && net.getId().equals(NETWORK_ROOT)) continue;
+			
+			CyNetworkView view = getNetworkView(net.getFilename());
+			
+			if (view == null) {
+				logger.warn("Failed to find network in session: " + net.getFilename());
+			} else {
+    			String vsName = net.getVisualStyle();
+    			if (vsName != null) visualStyleMap.put(view, vsName);
+    
+    			CyNetwork cyNet = view.getModel();
+    
+    			if (net.getHiddenNodes() != null)
+    				setBooleanNodeAttr(cyNet, net.getHiddenNodes().getNode().iterator(), "hidden");
+    			if (net.getHiddenEdges() != null)
+    				setBooleanEdgeAttr(cyNet, net.getHiddenEdges().getEdge().iterator(), "hidden");
+    			
+    			if (isOldFormat) {
+    				// From Cytoscape 3.0, the selection info is stored inside CyTables
+        			if (net.getSelectedNodes() != null)
+        				setBooleanNodeAttr(cyNet, net.getSelectedNodes().getNode().iterator(), CyNetwork.SELECTED);
+        			if (net.getSelectedEdges() != null)
+        				setBooleanEdgeAttr(cyNet, net.getSelectedEdges().getEdge().iterator(), CyNetwork.SELECTED);
+    			}
+			}
 		}
 	}
 
@@ -393,12 +392,12 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		return null;
 	}
 
-	private void setBooleanNodeAttr(final CyNetwork net, Iterator it, final String attrName) {
-		if (it == null) 
-			return;
+	private void setBooleanNodeAttr(final CyNetwork net, Iterator<?> it, final String attrName) {
+		if (it == null)  return;
 
 		// create an id map
 		Map<String,CyNode> nodeMap = new HashMap<String,CyNode>();
+		
 		for ( CyNode n : net.getNodeList() ) 
 			nodeMap.put(n.getCyRow().get("name",String.class), n);
 		
@@ -410,9 +409,8 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		}
 	}
 
-	private void setBooleanEdgeAttr(final CyNetwork net, final Iterator it, final String attrName) {
-		if (it == null) 
-			return;
+	private void setBooleanEdgeAttr(final CyNetwork net, final Iterator<?> it, final String attrName) {
+		if (it == null) return;
 
 		// create an id map
 		Map<String,CyEdge> edgeMap = new HashMap<String,CyEdge>();
