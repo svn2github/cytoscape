@@ -177,7 +177,8 @@ public class RunAutoSOME {
 
                 List<EdgeWeightConverter>converters = new ArrayList<EdgeWeightConverter>();
 		converters.add(new NoneConverter());
-		converters.add(new DistanceConverter());
+		converters.add(new DistanceConverter1());
+		converters.add(new DistanceConverter2());
 		converters.add(new LogConverter());
 		converters.add(new NegLogConverter());
 		converters.add(new SCPSConverter());

@@ -45,7 +45,8 @@ import cytoscape.layout.TunableListener;
 
 
 import clusterMaker.algorithms.edgeConverters.EdgeWeightConverter;
-import clusterMaker.algorithms.edgeConverters.DistanceConverter;
+import clusterMaker.algorithms.edgeConverters.DistanceConverter1;
+import clusterMaker.algorithms.edgeConverters.DistanceConverter2;
 import clusterMaker.algorithms.edgeConverters.LogConverter;
 import clusterMaker.algorithms.edgeConverters.NegLogConverter;
 import clusterMaker.algorithms.edgeConverters.NoneConverter;
@@ -89,7 +90,8 @@ public class EdgeAttributeHandler
 		// Create all of our edge weight converters
 		converters = new ArrayList<EdgeWeightConverter>();
 		converters.add(new NoneConverter());
-		converters.add(new DistanceConverter());
+		converters.add(new DistanceConverter1());
+		converters.add(new DistanceConverter2());
 		converters.add(new LogConverter());
 		converters.add(new NegLogConverter());
 		converters.add(new SCPSConverter());

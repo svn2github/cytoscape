@@ -139,7 +139,7 @@ public class RunAP {
 		}
 
 		int clusterNumber = 1;
-		Map<NodeCluster,NodeCluster> cMap = new HashMap();
+		Map<NodeCluster,NodeCluster> cMap = new HashMap<NodeCluster,NodeCluster>();
 		for (NodeCluster cluster: NodeCluster.sortMap(clusterMap)) {
 			if (cMap.containsKey(cluster))
 				continue;
@@ -160,7 +160,7 @@ public class RunAP {
 		}
 
 		Set<NodeCluster>clusters = cMap.keySet();
-		return new ArrayList(clusters);
+		return new ArrayList<NodeCluster>(clusters);
 	}	
 
 	//Exchange Messages between Responsibility and Availibility Matrix for Single Iteration of Affinity Propogation
@@ -213,7 +213,7 @@ public class RunAP {
 
 	private Map<Integer, NodeCluster> getClusterMap(){
 	    
-		HashMap<Integer, NodeCluster> clusterMap = new HashMap();
+		HashMap<Integer, NodeCluster> clusterMap = new HashMap<Integer, NodeCluster>();
 
 		for(int i = 0; i < s_matrix.rows(); i++){
 		
