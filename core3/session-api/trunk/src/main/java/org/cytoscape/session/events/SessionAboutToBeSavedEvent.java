@@ -105,9 +105,9 @@ public final class SessionAboutToBeSavedEvent extends AbstractCyEvent<CySessionM
 	/**
 	 * A method that allows plugins to add Cytopanel-related information to be
 	 * stored in the session.
-	 * @param cytopanels
+	 * @param cytopanel
 	 */
-	public void addCytopanels(Cytopanel cytopanel) throws Exception {
+	public void addCytopanel(Cytopanel cytopanel) throws Exception {
 		if ( cytopanel == null ) throw new Exception("cytopanel is null");
 		cytopanels.add(cytopanel);
 	}
