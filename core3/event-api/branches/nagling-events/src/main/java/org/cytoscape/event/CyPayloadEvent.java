@@ -1,5 +1,13 @@
+
 /*
- Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -27,42 +35,9 @@
 */
 package org.cytoscape.event;
 
+import java.util.Collection;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-public class DummyCyEventHelper implements CyEventHelper {
-	private Object lastSynchronousEvent;
-	private Object lastAsynchronousEvent;
-
-	public DummyCyEventHelper() {
-	}
+public interface CyPayloadEvent<T,P> extends CyEvent<T> {
 	
-	public <E extends CyEvent<?>> void fireEvent(final E event) {
-		if ( event.synchronousOnly() )
-			lastSynchronousEvent = event;
-	}
-
-	public <E extends CyEvent<?>> void fireAsynchronousEvent(final E event) {
-		if ( !event.synchronousOnly() )
-			lastAsynchronousEvent = event;
-	}
-
-	public <S,P,E extends CyPayloadEvent<S,P>> void addEventPayload(S source, P p, Class<E> e) {
-	}
-
-	public Object getLastSynchronousEvent() {
-		return lastSynchronousEvent;
-	}
-
-	public Object getLastAsynchronousEvent() {
-		return lastAsynchronousEvent;
-	}
-
-	public void silenceEventSource(Object o) {
-	}
-
-	public void unsilenceEventSource(Object o) {
-	}
+	Collection<P> getPayloadCollection();
 }

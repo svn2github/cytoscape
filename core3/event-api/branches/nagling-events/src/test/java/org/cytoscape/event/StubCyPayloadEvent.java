@@ -40,14 +40,8 @@ import java.util.Collection;
 /**
  * A simple event stub for testing. 
  */
-public class StubCyPayloadEvent extends AbstractCyEvent<String> {
-	private Collection<String> payload; 
+public class StubCyPayloadEvent extends AbstractCyPayloadEvent<String,String> {
 	public StubCyPayloadEvent(String source, Collection<String> payload) {
-		super(source, StubCyPayloadListener.class, false);
-		this.payload = payload;
-	}
-
-	public Collection<String> getPayload() {
-		return payload;
+		super(source, StubCyPayloadListener.class, payload);
 	}
 }

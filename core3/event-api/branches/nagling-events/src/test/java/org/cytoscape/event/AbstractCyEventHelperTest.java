@@ -175,23 +175,30 @@ public abstract class AbstractCyEventHelperTest {
 		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
 	}
 
-	@Test(expected=NullPointerException.class)
+	@Test
 	public void testAddEventPayloadNullSource() {
+		try {
 		helper.addEventPayload(null,"homer",StubCyPayloadEvent.class);
+		Thread.sleep(500);
+		assertEquals( 0, payloadService.getNumCalls() );
+		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
 	}
 
-	@Test(expected=NullPointerException.class)
+	@Test
 	public void testAddEventPayloadNullPayload() {
+		try {
 		helper.addEventPayload("source",null,StubCyPayloadEvent.class);
+		Thread.sleep(500);
+		assertEquals( 0, payloadService.getNumCalls() );
+		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
 	}
 
-	@Test(expected=NullPointerException.class)
+	@Test
 	public void testAddEventPayloadNullEventType() {
+		try {
 		helper.addEventPayload("source","bart",null);
-	}
-
-	@Test(expected=IllegalArgumentException.class)
-	public void testAddEventPayloadMismatchedType() {
-		helper.addEventPayload("source",new Integer(1),StubCyPayloadEvent.class);
+		Thread.sleep(500);
+		assertEquals( 0, payloadService.getNumCalls() );
+		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
 	}
 }

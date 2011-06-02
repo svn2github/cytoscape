@@ -54,7 +54,7 @@ public interface CyEventHelper {
 	 * eventually be fired.
 	 * @param eventType The type of the event that the payload will be added to. 
 	 */
-	<T,E extends CyEvent<?>> void addEventPayload(Object source, T payload, Class<E> eventType);
+	<S,P,E extends CyPayloadEvent<S,P>> void addEventPayload(S source, P payload, Class<E> eventType);
 
 	/**
 	 * This method will prevent any events fired from the specified source 
