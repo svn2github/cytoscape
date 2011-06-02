@@ -62,7 +62,7 @@ public class OBOReaderTest {
 	}
 	
 	private CyNetwork testFile(File file) throws Exception {
-		final OBOReader reader = new OBOReader(file.toURI().toURL().openStream(), "yeast slim", cyNetworkViewFactory,
+		final OBOReader reader = new OBOReader(file.toURI().toURL().openStream(), cyNetworkViewFactory,
 				cyNetworkFactory, eventHelper);
 		
 		reader.run(null);
