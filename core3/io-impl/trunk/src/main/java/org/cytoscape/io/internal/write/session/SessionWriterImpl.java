@@ -73,6 +73,7 @@ import org.cytoscape.property.session.Plugins;
 import org.cytoscape.property.session.SessionState;
 import org.cytoscape.session.CySession;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.model.Vizmap;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
@@ -100,23 +101,17 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 
 	// Enumerate types (node & edge)
 	public static final int NODE = 1;
-
 	public static final int EDGE = 2;
-	private static final String DEFAULT_VS_NAME = "default";
-
-	// Number of Cytopanels. Currently, we have 3 panels.
-	private static final int CYTOPANEL_COUNT = 3;
-
-	// Number of setting files in the cys file.
-	// For now, we have cysession.xml, vizmap.prop, cytoscape.prop, and
-	// bookmarks.
-	private static final int SETTING_FILE_COUNT = 4;
 
 	// Name of CySession file.
 	private static final String CYSESSION_FILE_NAME = "cysession.xml";
 	private static final String VIZMAP_FILE = "session_vizmap.xml";
 	private static final String CYPROP_FILE = "session_cytoscape.props";
 	private static final String BOOKMARKS_FILE = "session_bookmarks.xml";
+	
+	// Document versions
+	private static final String CYSESSION_VERSION = "3.0";
+	private static final String VIZMAP_VERSION = "3.0";
 
 	// Extension for the xgmml file
 	private static final String XGMML_EXT = ".xgmml";
@@ -141,7 +136,8 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	private Cytopanels cytoPanels;
 	private Plugins plugins;
 
-	private final String sessionDirName;
+	private final String cysessionDocId;
+	private final String vizmapDocId;
 	private final String sessionDir;
 	private ZipOutputStream zos; 
 	private TaskMonitor taskMonitor;
@@ -186,9 +182,12 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 
 		// For now, session ID is time and date
 		final DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
-		sessionDirName = "CytoscapeSession-" + df.format(new Date()); 
-		sessionDir = sessionDirName + "/"; 
+		String now = df.format(new Date());
 
+		cysessionDocId = "CytoscapeSession-" + now;
+		vizmapDocId = "VizMap-" + now;
+		sessionDir = cysessionDocId + "/"; 
+		
 		networkMap = new HashMap<String,Long>();
 	}
 
@@ -221,14 +220,16 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	 * Writes the vizmap.props file to the session zip.
 	 */
 	private void zipVizmap() throws Exception {
-
+		Vizmap vizmap = session.getVizmap();
+		vizmap.setId(vizmapDocId);
+		vizmap.setDocumentVersion(VIZMAP_VERSION);
+		
 		zos.putNextEntry(new ZipEntry(sessionDir + VIZMAP_FILE) );
 
-		CyWriter vizmapWriter = vizmapWriterMgr.getWriter(session.getVizmap(), vizmapFilter, zos );
+		CyWriter vizmapWriter = vizmapWriterMgr.getWriter(vizmap, vizmapFilter, zos );
 		vizmapWriter.run(taskMonitor);
 
 		zos.closeEntry();
-
 		vizmapWriter = null;
 	}
 
@@ -236,14 +237,12 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	 * Writes the cytoscape.props file to the session zip.
 	 */
 	private void zipCytoscapeProps() throws Exception {
-	
 		zos.putNextEntry(new ZipEntry(sessionDir + CYPROP_FILE) );
 
 		CyWriter propertiesWriter = propertyWriterMgr.getWriter(session.getCytoscapeProperties(), propertiesFilter, zos );
 		propertiesWriter.run(taskMonitor);
 
 		zos.closeEntry();
-
 		propertiesWriter = null;
 	}
 
@@ -251,14 +250,12 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	 * Writes the bookmarks.xml file to the session zip.
 	 */
 	private void zipBookmarks() throws Exception {
-
 		zos.putNextEntry(new ZipEntry(sessionDir + BOOKMARKS_FILE) );
 
 		CyWriter bookmarksWriter = propertyWriterMgr.getWriter(session.getBookmarks(), bookmarksFilter, zos );
 		bookmarksWriter.run(taskMonitor);
 
 		zos.closeEntry();
-
 		bookmarksWriter = null;
 	}
 
@@ -281,7 +278,6 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 		xgmmlWriter.run(taskMonitor);
 
 		zos.closeEntry();
-
 		xgmmlWriter = null;
 	}
 
@@ -297,7 +293,8 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	 */
 	private void zipCySession() throws Exception {
 		Cysession cysess = session.getCysession();
-		cysess.setId(sessionDirName);
+		cysess.setId(cysessionDocId);
+		cysess.setDocumentVersion(CYSESSION_VERSION);
 		
 		zos.putNextEntry(new ZipEntry(sessionDir + CYSESSION_FILE_NAME) );
 
@@ -305,7 +302,6 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 		cysessionWriter.run(taskMonitor);
 
 		zos.closeEntry();
-
 		cysessionWriter = null;
 	}
 
