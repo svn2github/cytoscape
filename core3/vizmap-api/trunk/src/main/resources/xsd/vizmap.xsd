@@ -7,7 +7,7 @@
 				<xs:element maxOccurs="unbounded" ref="visualStyle" />
 			</xs:sequence>
 			<xs:attribute name="id" use="required" type="xs:NCName" />
-			<xs:attribute name="documentVersion" type="xs:NCName" />
+			<xs:attribute name="documentVersion" use="optional" default="3.0" type="xs:normalizedString"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="visualStyle">
