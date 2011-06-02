@@ -48,8 +48,34 @@
 		<constructor-arg value="Any text file" />
 		<constructor-arg type="org.cytoscape.io.DataCategory" value="TABLE" />
 		<constructor-arg ref="streamUtilService" />
-	</bean>			
+	</bean>
 
+
+	<!-- Filter for OBO Flat File -->
+	<bean id="oboFilter" class="org.cytoscape.io.BasicCyFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>obo</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>text/obo</value>
+				<!-- content types should be exact - don't add possible matches! <value>text/plain</value> -->
+			</set>
+		</constructor-arg>
+		<constructor-arg value="OBO files" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="NETWORK" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil" ref="streamUtilService" />
+	</bean>
+	
+	<bean id="oboReaderFactory"
+		class="org.cytoscape.tableimport.internal.reader.ontology.OBONetworkReaderFactory">
+		<constructor-arg ref="oboFilter" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkFactoryServiceRef" />
+		<constructor-arg ref="cyEventHelperRef" />
+	</bean>
  
  
 	<bean id="importAttributeTableReaderFactory_txt" 

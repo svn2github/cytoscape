@@ -39,6 +39,8 @@
 	<osgi:reference id="cyDataTableFactoryServiceRef" interface="org.cytoscape.model.CyTableFactory" />
 
 	<osgi:reference id="streamUtilService" interface="org.cytoscape.io.util.StreamUtil" />
+	
+	<osgi:reference id="cyEventHelperRef" interface="org.cytoscape.event.CyEventHelper" />
 
 	<!--
 	This code registers the bean we just created "sampleTaskFactory" as an 
@@ -66,6 +68,17 @@
 			<entry key="readerId" value="attributeTableReader_txt" />
 			<entry key="readerDescription" value="Attribute Table file reader" />
 		</osgi:service-properties>		
-	</osgi:service>	
+	</osgi:service>
+	
+	<!-- Export OBO support as a regular network reader factory -->
+	<osgi:service id="oboReaderFactoryService" ref="oboReaderFactory"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="oboReaderFactory" />
+			<entry key="readerId" value="oboReader" />
+			<entry key="readerDescription" value="Open Biomedical Ontology (OBO) file reader" />
+		</osgi:service-properties>
+	</osgi:service>
+	
 
 </beans>
