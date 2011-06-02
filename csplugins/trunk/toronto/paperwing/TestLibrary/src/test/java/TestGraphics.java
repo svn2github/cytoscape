@@ -1,4 +1,8 @@
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.nio.FloatBuffer;
@@ -19,12 +23,12 @@ import javax.swing.event.MouseInputListener;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-public class TestGraphics implements GLEventListener, MouseInputListener{
+public class TestGraphics implements GLEventListener {
 
-	private static final int NODE_COUNT = 30000;
+	private static final int NODE_COUNT = 10;
 	private static final int EDGE_COUNT = 0;
 	private static final float LARGE_SPHERE_RADIUS = 2.0f;
-	private static final float SMALL_SPHERE_RADIUS = 0.03f;
+	private static final float SMALL_SPHERE_RADIUS = 0.015f;
 	private static final float EDGE_RADIUS = 0.008f;
 
 	private static final int NODE_SLICES_DETAIL = 6;
@@ -72,7 +76,26 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 	private float xFace = 1.0f;
 	private float yFace = 0.0f;
 	private float zFace = 0.0f;
+	
+	private KeyboardMonitor keys = new KeyboardMonitor();
+	private MouseMonitor mouse = new MouseMonitor();
 
+	public KeyListener getKeyListener() {
+		return keys;
+	}
+	
+	public MouseListener getMouseListener() {
+		return mouse;
+	}
+	
+	public MouseMotionListener getMouseMotionListener() {
+		return mouse;
+	}
+	
+	public MouseWheelListener getMouseWheelListener() {
+		return mouse;
+	}
+	
 	/**
 	 * @param args
 	 */
@@ -93,8 +116,9 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 		TestGraphics graphics = new TestGraphics();
 
 		canvas.addGLEventListener(graphics);
-		canvas.addMouseListener(graphics);
-		canvas.addMouseMotionListener(graphics);
+		// canvas.addMouseListener(graphics);
+		// canvas.addMouseMotionListener(graphics);
+		graphics.getKeyListener();
 		frame.add(canvas);
 
 		frame.addWindowListener(new WindowAdapter() {
@@ -107,6 +131,11 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 
 		frame.setVisible(true);
 
+		canvas.addKeyListener(graphics.getKeyListener());
+		canvas.addMouseListener(graphics.getMouseListener());
+		canvas.addMouseMotionListener(graphics.getMouseMotionListener());
+		canvas.addMouseWheelListener(graphics.getMouseWheelListener());
+		
 		FPSAnimator animator = new FPSAnimator(60);
 		animator.add(canvas);
 		animator.start();
@@ -138,6 +167,7 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 		float overhang = 0.0f;
 
 		
+		/*
 		// Draw X axis gl.glTranslatef(-overhang, 0.0f, 0.0f);
 		gl.glRotatef(90, 0, 1, 0); gl.glColor3f(1.0f, 0.0f, 0.0f);
 		glut.glutSolidCylinder(0.005f, axisLength, 6, 3); gl.glRotatef(-90, 0, 1, 0); gl.glTranslatef(overhang, 0.0f, 0.0f);
@@ -149,14 +179,14 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 		// Draw Z axis gl.glTranslatef(0.0f, 0.0f, -overhang);
 		gl.glColor3f(0.0f, 0.0f, 1.0f); glut.glutSolidCylinder(0.005f,
 		axisLength, 6, 3); gl.glTranslatef(0.0f, 0.0f, overhang);
-		 
+		*/
 
 		// gl.glRotatef(90, 0.0f, -1.0f, 0.0f);
 
 		float[] specularReflection = { 1.0f, 1.0f, 1.0f, 1.0f };
 		gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR,
 				FloatBuffer.wrap(specularReflection));
-		gl.glMateriali(GL2.GL_FRONT, GL2.GL_SHININESS, 20);
+		gl.glMateriali(GL2.GL_FRONT, GL2.GL_SHININESS, 40);
 
 		gl.glColor3f(0.73f, 0.73f, 0.75f);
 		drawNodes(gl);
@@ -165,6 +195,29 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 		// drawNodesEdges(gl);
 
 		framesElapsed++;
+		
+		
+		if (keys.hasNew()) {
+			System.out.println("Keys down: " + keys.getHeld());
+			keys.update();
+		}
+		
+		if (mouse.hasNew()) {
+			System.out.println("Mouse keys down: " + mouse.getHeld());
+			System.out.println("Mouse scroll change: " + mouse.dWheel());
+			mouse.update();
+		}
+		
+		/*
+		if (mouse.hasMoved()) {
+			System.out.println("dx: " + mouse.dX());
+			System.out.println("dy: " + mouse.dY());
+			mouse.update();
+		}
+		*/
+		
+		//GLU glu = new GLU();
+		//glu.gluLookAt(0, 0, 0, 0, 1, 0, 0, 0, 1);
 	}
 
 	private void drawNodes(GL2 gl) {
@@ -232,8 +285,11 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 		generateNodes();
 		generateEdges();
 		startTime = System.nanoTime();
-		// createDisplayListsIndividual(gl);
+		//createDisplayListsIndividual(gl);
 		createDisplayLists(gl);
+		
+		//drawable.addGLEventListener(arg0)
+		//keys = new KeyboardMonitor();
 	}
 
 	private void createDisplayListsIndividual(GL2 gl) {
@@ -427,24 +483,7 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 		gl.glLoadIdentity();
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		lastX = e.getX();
-		lastY = e.getY();
-	}
-
+	/*
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		endTime = System.nanoTime();
@@ -457,7 +496,9 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 		rotateY(1);
 		System.out.println("New facing: (" + xFace + ", " + yFace + ", " + zFace + ")");
 	}
+	*/
 
+	/*
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		float xDelta = e.getX() - lastX;
@@ -476,6 +517,7 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 		lastX = e.getX();
 		lastY = e.getY();
 	}
+	*/
 
 	// Rotation about the absolute y-axis, by the right-hand rule
 	private void rotateY(float degrees) {
@@ -539,9 +581,5 @@ public class TestGraphics implements GLEventListener, MouseInputListener{
 		// Update coordinates according to new angle
 		zFace = (float) Math.cos(Math.toRadians(newAngle)) * radius;
 		yFace = (float) -Math.sin(Math.toRadians(newAngle)) * radius;
-	}
-	
-	@Override
-	public void mouseMoved(MouseEvent e) {
 	}
 }
