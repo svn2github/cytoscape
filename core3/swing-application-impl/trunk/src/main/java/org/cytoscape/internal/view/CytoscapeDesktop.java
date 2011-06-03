@@ -38,11 +38,17 @@ import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.application.swing.CytoscapeShutdown;
 import org.cytoscape.application.swing.events.CytoPanelStateChangedListener;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.property.session.Cysession;
+import org.cytoscape.property.session.Cytopanel;
+import org.cytoscape.property.session.Cytopanels;
 import org.cytoscape.property.session.Desktop;
 import org.cytoscape.property.session.DesktopSize;
+import org.cytoscape.property.session.SessionState;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.events.SessionAboutToBeSavedEvent;
 import org.cytoscape.session.events.SessionAboutToBeSavedListener;
+import org.cytoscape.session.events.SessionLoadedEvent;
+import org.cytoscape.session.events.SessionLoadedListener;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -63,28 +69,33 @@ import javax.swing.WindowConstants;
 
 import java.math.BigInteger;
 import java.util.Dictionary;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import org.cytoscape.work.swing.GUITaskManager;
 import org.cytoscape.application.swing.ToolBarComponent;
 import org.cytoscape.application.swing.events.CytoscapeStartListener;
 import org.cytoscape.application.swing.events.CytoscapeStartEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * The CytoscapeDesktop is the central Window for working with Cytoscape
  */
 public class CytoscapeDesktop extends JFrame implements CySwingApplication, CytoscapeStartListener,
-                                                        SessionAboutToBeSavedListener {
+		                                                SessionLoadedListener, SessionAboutToBeSavedListener {
 
 	private final static long serialVersionUID = 1202339866271348L;
-
 	
 	private static final Dimension DEF_DESKTOP_SIZE = new Dimension(950, 720);
-
 	private static final String SMALL_ICON = "/images/c16.png";
-
 	private static final int DEVIDER_SIZE = 4;
-
+	private static final Map<String, CytoPanelName> CYTOPANEL_NAMES = new LinkedHashMap<String, CytoPanelName>();
+	
+	private static final Logger logger = LoggerFactory.getLogger(CytoscapeDesktop.class);
+	
 	/**
 	 * The network panel that sends out events when a network is selected from
 	 * the Tree that it contains.
@@ -119,6 +130,12 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication, Cyto
 	private final CyServiceRegistrar registrar;
 	private final JToolBar statusToolBar;
 
+	static {
+		CYTOPANEL_NAMES.put("CytoPanel1", CytoPanelName.WEST);
+		CYTOPANEL_NAMES.put("CytoPanel2", CytoPanelName.SOUTH);
+		CYTOPANEL_NAMES.put("CytoPanel3", CytoPanelName.EAST);
+	}
+	
 	/**
 	 * Creates a new CytoscapeDesktop object.
 	 */
@@ -396,9 +413,48 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication, Cyto
 		this.toFront();
 	}
 
+	@Override
+	public void handleEvent(SessionLoadedEvent e) {
+		// restore the states of the CytoPanels
+		Cysession cysess = e.getLoadedSession().getCysession();
+		SessionState sessionState = cysess.getSessionState();
+		
+		if (sessionState != null) {
+			Cytopanels cytopanels = sessionState.getCytopanels();
+			
+			if (cytopanels != null) {
+				List<Cytopanel> cytopanelsList = cytopanels.getCytopanel();
+				
+				for (Cytopanel cytopanel : cytopanelsList) {
+					String id = cytopanel.getId();
+					CytoPanelName panelName = CYTOPANEL_NAMES.get(id);
+					
+					if (panelName != null) {
+						CytoPanel p = getCytoPanelInternal(panelName);
+						
+						try {
+							p.setState(CytoPanelState.valueOf(cytopanel.getPanelState().toUpperCase().trim()));
+						} catch (Exception ex) {
+							logger.error("Cannot restore the state of panel \"" + panelName.getTitle() + "\"",
+							             ex);
+						}
+						
+						try {
+							p.setSelectedIndex(Integer.parseInt(cytopanel.getSelectedPanel()));
+						} catch (Exception ex) {
+							logger.error("Cannot restore the selected index of panel \"" + panelName.getTitle() + "\"",
+							             ex);
+						}
+					}
+				}
+			}
+			
+		}
+	}
+	
     @Override
     public void handleEvent(SessionAboutToBeSavedEvent e) {
-        // Just save the desktop size
+        // save the desktop size
         BigInteger w = BigInteger.valueOf(this.getWidth());
         BigInteger h = BigInteger.valueOf(this.getHeight());
         
@@ -414,5 +470,21 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication, Cyto
         }
         
         desktop.setDesktopSize(size);
+        
+        // save the states of the CytoPanels
+		for (Map.Entry<String, CytoPanelName> entry : CYTOPANEL_NAMES.entrySet()) {
+			CytoPanel p = getCytoPanelInternal(entry.getValue());
+			
+			Cytopanel cytopanel = new Cytopanel();
+			cytopanel.setId(entry.getKey());
+			cytopanel.setPanelState(p.getState().toString());
+			cytopanel.setSelectedPanel(Integer.toString(p.getSelectedIndex()));
+			
+			try {
+				e.addCytopanel(cytopanel);
+			} catch (Exception ex) {
+				logger.error("Cannot add Cytopanel to SessionAboutToBeSavedEvent", ex);
+			}
+		}
     }
 }
