@@ -36,7 +36,7 @@ import org.cytoscape.work.TaskMonitor;
 
 
 public class HelpContactHelpDeskTask extends AbstractTask {
-	private String helpDeskURL = "http://www.cytoscape.org/helpdesk.php";
+	private String helpDeskURL = "http://www.cytoscape.org/documentation_users.html";
 	private OpenBrowser openBrowser;
 
 	public HelpContactHelpDeskTask(OpenBrowser openBrowser) {
