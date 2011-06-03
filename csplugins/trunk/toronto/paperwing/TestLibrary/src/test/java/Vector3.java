@@ -1,6 +1,3 @@
-
-
-
 public class Vector3 {
 	private double x;
 	private double y;
@@ -13,6 +10,12 @@ public class Vector3 {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+	
+	public Vector3(Vector3 other) {
+		x = other.x;
+		y = other.y;
+		z = other.z;
 	}
 	
 	public double x() {
@@ -107,6 +110,11 @@ public class Vector3 {
 		} else {
 			x = y = z = 0;
 		}
+	}
+	
+	// Obtain distance between position vectors
+	public double distance(Vector3 other) {
+		return Math.sqrt(Math.pow(x - other.x, 2) + Math.pow(y - other.y, 2) + Math.pow(z - other.z, 2));
 	}
 	
 	// Project the vector onto the plane passing through the origin, perpendicular to the given normal

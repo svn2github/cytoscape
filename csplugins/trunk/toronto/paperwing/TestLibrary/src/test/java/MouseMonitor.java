@@ -1,3 +1,5 @@
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -65,6 +67,7 @@ public class MouseMonitor implements MouseListener, MouseMotionListener, MouseWh
 	
 	@Override
 	public void mouseDragged(MouseEvent event) {
+		mouseMoved(event);
 	}
 
 	@Override
@@ -78,6 +81,7 @@ public class MouseMonitor implements MouseListener, MouseMotionListener, MouseWh
 			prevY = currentY;
 			ignoreNext = false;
 		}
+		
 	}
 
 	@Override
@@ -128,6 +132,16 @@ public class MouseMonitor implements MouseListener, MouseMotionListener, MouseWh
 		wheelChange = 0;
 		prevX = currentX;
 		prevY = currentY;
+		
+		Robot r;
+		try {
+			r = new Robot();
+			// r.mouseMove(800, 500);
+		} catch (AWTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 

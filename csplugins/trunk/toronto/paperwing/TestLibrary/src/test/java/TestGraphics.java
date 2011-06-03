@@ -1,5 +1,6 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
@@ -66,15 +67,23 @@ public class TestGraphics implements GLEventListener {
 	private int nodeSeed = 556;
 	private int edgeSeed = 556;
 	
-	private KeyboardMonitor keys = new KeyboardMonitor();
-	private MouseMonitor mouse = new MouseMonitor();
+	private KeyboardMonitor keys;
+	private MouseMonitor mouse;
+	private SimpleCamera camera;
 	
-	
+	/*
 	private Vector3 camera = new Vector3(0, 0, 0);
 	private Vector3 direction = new Vector3(0, 0, -1.0);
 	private Vector3 up = new Vector3(0, 1.0, 0);
 	private Vector3 left = new Vector3(-1.0, 0, 0);
-
+	*/
+	
+	public TestGraphics() {
+		keys = new KeyboardMonitor();
+		mouse = new MouseMonitor();
+		camera = new SimpleCamera(new Vector3(0, 0, 2), new Vector3(0, 0, 0), new Vector3(0, 1, 0), 0.04, 0.003, 0.01, 0.01);
+	}
+	
 	public KeyListener getKeyListener() {
 		return keys;
 	}
@@ -146,20 +155,22 @@ public class TestGraphics implements GLEventListener {
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
 		
-		Vector3 current = new Vector3(0, 0, -1);
-		Vector3 normal = direction.cross(current);
+		Vector3 position = camera.getPosition();
+		Vector3 target = camera.getTarget();
+		Vector3 up = camera.getUp();
+		
+		// System.out.println(position + " " + target + " " + up);
 		
 		GLU glu = new GLU();
-		glu.gluLookAt(camera.x(), camera.y(), camera.z(), 
-				camera.x() + direction.x(), camera.y() + direction.y(), camera.z() + direction.z(), 
+		glu.gluLookAt(position.x(), position.y(), position.z(),
+				target.x(), target.y(), target.z(),
 				up.x(), up.y(), up.z());
-		
 		
 		// gl.glRotated(direction.angle(current) * 180 / Math.PI, normal.x(), normal.y(), normal.z());
 		// gl.glTranslated(-camera.x(), -camera.y(), -camera.z());
 		
-		float[] position = { -4.0f, 4.0f, 6.0f, 1.0f };
-		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, FloatBuffer.wrap(position));
+		float[] lightPosition = { -4.0f, 4.0f, 6.0f, 1.0f };
+		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, FloatBuffer.wrap(lightPosition));
 		
 		
 		gl.glColor3f(0.6f, 0.6f, 0.6f);
@@ -188,111 +199,102 @@ public class TestGraphics implements GLEventListener {
 						+ frameRate);
 			}
 			
-			if (pressed.contains(KeyEvent.VK_Z)) {
-				camera.set(0.0, 0.0, 0.0);
-			}
-			
-			if (pressed.contains(KeyEvent.VK_X)) {
-				camera.set(0.5, 0.0, 0.0);
-			}
-			
 			if (pressed.contains(KeyEvent.VK_C)) {
-				// camera = new Vector3(0, 0, 0);
-				direction.set(0, 0, -1.0);
-				up.set(0, 1.0, 0);
-				left.set(-1.0, 0, 0);
+				camera.setSpeed(0.04, 0.003, 0.01, 0.1);
+				camera.moveTo(0, 0, 2);
 			}
 			
-			if (pressed.contains(KeyEvent.VK_V)) {
-				direction.set(0.0, -0.2, -1.0);
-				System.out.println("rotation angle: " + direction.angle(new Vector3(0, 0, -1)) * 180 / Math.PI);
+			if (pressed.contains(KeyEvent.VK_SPACE)) {
+				System.out.println("====");
+				System.out.print("direction: " + camera.getDirection());
+				System.out.print(", left: " + camera.getLeft());
+				System.out.println(", up: " + camera.getUp());
+				System.out.print("position: " + camera.getPosition());
+				System.out.println(", target: " + camera.getTarget());
+				System.out.println("====");
 			}
 			
-			if (pressed.contains(KeyEvent.VK_B)) {
-				direction.set(-0.2, 0.0, -1.0);
-				System.out.println("rotation angle: " + direction.angle(new Vector3(0, 0, -1)) * 180 / Math.PI);
+			if (held.contains(KeyEvent.VK_Z)) {
+				camera.rollClockwise();
 			}
 			
-			if (pressed.contains(KeyEvent.VK_N)) {
-				System.out.println(camera.angle(up));
+			if (held.contains(KeyEvent.VK_X)) {
+				camera.rollCounterClockwise();
 			}
 			
-			double turnSpeed = 0.01;
+			if (held.contains(KeyEvent.VK_SHIFT)) {
 			
-			if (held.contains(KeyEvent.VK_LEFT)) {
-				direction = direction.rotate(up, turnSpeed);
-				direction.normalizeLocal();
-				left = left.projectNormal(direction);
-				left.normalizeLocal();
+				if (held.contains(KeyEvent.VK_LEFT)) {
+					camera.orbitLeft();
+				}
 				
-				up.set(direction.cross(left));
-			}
-			
-			if (held.contains(KeyEvent.VK_RIGHT)) {
-				direction = direction.rotate(up, -turnSpeed);
-				direction.normalizeLocal();
-				left = left.projectNormal(direction);
-				left.normalizeLocal();
+				if (held.contains(KeyEvent.VK_RIGHT)) {
+					camera.orbitRight();
+				}
 				
-				up.set(direction.cross(left));
-			}
-			
-			if (released.contains(KeyEvent.VK_LEFT) || released.contains(KeyEvent.VK_RIGHT)) {
-				System.out.println("direction: " + direction);
-				System.out.println("left: " + left);
-				System.out.println("up: " + up);
-			}
-			
-			if (held.contains(KeyEvent.VK_UP)) {
-				direction = direction.rotate(left, turnSpeed);
-				direction.normalizeLocal();
-				up = up.projectNormal(direction);
-				up.normalizeLocal();
+				if (held.contains(KeyEvent.VK_UP)) {
+					camera.orbitUp();
+				}
 				
-				left.set(up.cross(direction));
-			}
-			
-			if (held.contains(KeyEvent.VK_DOWN)) {
-				direction = direction.rotate(left, -turnSpeed);
-				direction.normalizeLocal();
-				up = up.projectNormal(direction);
-				up.normalizeLocal();
+				if (held.contains(KeyEvent.VK_DOWN)) {
+					camera.orbitDown();
+				}
 				
-				left.set(up.cross(direction));
-			}
+			} else {
 			
-			double translateSpeed = 0.02;
+				/*
+				if (held.contains(KeyEvent.VK_LEFT)) {
+					camera.turnLeft();
+				}
+				
+				if (held.contains(KeyEvent.VK_RIGHT)) {
+					camera.turnRight();
+				}
+				
+				if (held.contains(KeyEvent.VK_UP)) {
+					camera.turnUp();
+				}
+				
+				if (held.contains(KeyEvent.VK_DOWN)) {
+					camera.turnDown();
+				}
+				*/
+			
+			}
 			
 			if (held.contains(KeyEvent.VK_W)) {
-				camera.addLocal(0, 0, -translateSpeed);
+				camera.moveForward();
 			}
 			
 			if (held.contains(KeyEvent.VK_S)) {
-				camera.addLocal(0, 0, translateSpeed);
+				camera.moveBackward();
 			}
 			
 			if (held.contains(KeyEvent.VK_A)) {
-				camera.addLocal(-translateSpeed, 0, 0);
+				camera.moveLeft();
 			}
 			
 			if (held.contains(KeyEvent.VK_D)) {
-				camera.addLocal(translateSpeed, 0, 0);
+				camera.moveRight();
 			}
 			
 			if (held.contains(KeyEvent.VK_Q)) {
-				camera.addLocal(0, translateSpeed, 0);
+				camera.moveDown();
 			}
 			
 			if (held.contains(KeyEvent.VK_E)) {
-				camera.addLocal(0, -translateSpeed, 0);
+				camera.moveUp();
 			}
 			
 			keys.update();
 		}
 		
-		if (mouse.hasNew()) {
-			// System.out.println("Mouse keys down: " + mouse.getHeld());
-			// System.out.println("Mouse scroll change: " + mouse.dWheel());
+		if (mouse.hasMoved()) {
+			if (mouse.getHeld().contains(MouseEvent.BUTTON1)) {
+				camera.turnRight(mouse.dX());
+				camera.turnUp(mouse.dY());
+			}
+			
 			mouse.update();
 		}
 	}
