@@ -195,11 +195,14 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 			return;
 		}
 
+		if (canceled) return;
+
 		//Cluster the nodes
 		runMCL = new RunMCL(matrix, inflation_parameter, rNumber, 
 		                    clusteringThresh, maxResidual, maxThreads, logger);
 
 		runMCL.setDebug(debug);
+
 		if (canceled) return;
 
 		// results = runMCL.run(monitor);
@@ -226,6 +229,7 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 
 	public void halt() {
 		canceled = true;
-		runMCL.halt();
+		if (runMCL != null)
+			runMCL.halt();
 	}
 }

@@ -293,10 +293,10 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 
 		HashMap<CyEdge,CyEdge> edgeMap = new HashMap();
 		for (CyEdge edge: (List<CyEdge>)parentNet.edgesList()) {
-			System.out.print("Edge: "+edge.getIdentifier());
+			// System.out.print("Edge: "+edge.getIdentifier());
 			// Is this a non-clustered edge?
 			if (!nodeMap.containsKey((CyNode)edge.getSource()) && !nodeMap.containsKey((CyNode)edge.getTarget())) {
-				System.out.println(" Non-clustered");
+				// System.out.println(" Non-clustered");
 				continue;
 			}
 
@@ -305,10 +305,10 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 			// Is this an internal edge?
 			if (nodeMap.containsKey((CyNode)edge.getSource()) && nodeMap.containsKey((CyNode)edge.getTarget())) {
 				if (nodeMap.get(edge.getSource()) == nodeMap.get(edge.getTarget())) {
-					System.out.println(" Internal only");
+					// System.out.println(" Internal only");
 					continue;
 				}
-				System.out.println(" inter-cluster");
+				// System.out.println(" inter-cluster");
 				interaction = "inter-cluster";
 			} else {
 				interaction = "cluster-"+edgeAttributes.getStringAttribute(edge.getIdentifier(), Semantics.INTERACTION);
@@ -326,7 +326,7 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 
 			// Now create the new edge
 			CyEdge newEdge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true);
-			System.out.println("Adding "+newEdge.getIdentifier()+" to parent network");
+			// System.out.println("Adding "+newEdge.getIdentifier()+" to parent network");
 
 			// Add it to the parent network
 			parentNet.addEdge(newEdge);

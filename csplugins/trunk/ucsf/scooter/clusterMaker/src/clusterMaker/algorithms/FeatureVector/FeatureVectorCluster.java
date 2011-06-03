@@ -47,7 +47,9 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import cytoscape.layout.Tunable;
+import cytoscape.layout.TunableListener;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 
@@ -60,7 +62,7 @@ import clusterMaker.ui.ClusterViz;
 
 // clusterMaker imports
 
-public class FeatureVectorCluster extends AbstractClusterAlgorithm {
+public class FeatureVectorCluster extends AbstractClusterAlgorithm implements TunableListener {
 	/**
 	 * Linkage types
 	 */
@@ -80,10 +82,12 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm {
 	boolean selectedOnly = false;
 	boolean zeroMissing = false;
 	boolean createEdges = false;
+	double edgeCutoff = 0.5;
 	String dataAttributes = null;
 	String edgeAttribute = null;
 	TaskMonitor monitor = null;
 	CyLogger logger = null;
+	final static String interaction = "distance";
 
 	public FeatureVectorCluster() {
 		super();
@@ -146,9 +150,17 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm {
 		                                  Tunable.BOOLEAN, new Boolean(true)));
 
 		// Whether to create a new network or add values to existing network
-		clusterProperties.add(new Tunable("createEdges",
-		                                  "Create edges if they don't exist",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		Tunable t = new Tunable("createEdges",
+		                        "Create edges if they don't exist",
+		                        Tunable.BOOLEAN, new Boolean(false));
+		t.addTunableValueListener(this);
+		clusterProperties.add(t);
+
+		// If we're creating edges, do we have a cut-off value?
+		t = new Tunable("edgeCutoff", "Only create edges if nodes are closer than this",
+		                Tunable.DOUBLE, new Double(0.5));
+		t.setImmutable(true);
+		clusterProperties.add(t);
 
 		clusterProperties.add(new Tunable("advancedParametersGroup",
 		                                  "Advanced Parameters",
@@ -172,6 +184,17 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm {
 
 	public void updateSettings() {
 		updateSettings(false);
+	}
+
+	public void tunableChanged(Tunable tunable) {
+		if (tunable.getName().equals("createEdges")) {
+			createEdges = ((Boolean) tunable.getValue()).booleanValue();
+			Tunable t = clusterProperties.get("edgeCutoff");
+			if (createEdges)
+				t.setImmutable(false);
+			else
+				t.setImmutable(true);
+		}
 	}
 
 	public void updateSettings(boolean force) {
@@ -203,6 +226,10 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm {
 		if ((t != null) && (t.valueChanged() || force))
 			createEdges = ((Boolean) t.getValue()).booleanValue();
 
+		t = clusterProperties.get("edgeCutoff");
+		if ((t != null) && (t.valueChanged() || force))
+			edgeCutoff = ((Double) t.getValue()).doubleValue();
+
 	}
 
 	public void doCluster(TaskMonitor monitor) {
@@ -224,14 +251,19 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm {
 		// To make debugging easier, sort the attribute array
 		Arrays.sort(attributeArray);
 
-		if (monitor != null)
+		if (monitor != null) {
+			monitor.setPercentCompleted(0);
 			monitor.setStatus("Initializaing");
+		}
 
 		// Create the matrix
 		Matrix matrix = new Matrix(attributeArray, false, ignoreMissing, selectedOnly);
 
-		if (monitor != null)
+		if (monitor != null) {
+			monitor.setPercentCompleted(1);
 			monitor.setStatus("Calculating edge distances");
+			if (canceled) return;
+		}
 
 		// Create a weight vector of all ones (we don't use individual weighting, yet)
 		matrix.setUniformWeights();
@@ -245,67 +277,103 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm {
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 
 		// For each node, get the distance to all other nodes
+		double maxdistance = 0.0;
+		double mindistance = 0.0;
+
+		double distanceMatrix[][] = new double[nNodes][nNodes];
+		for (int i = 0; i < nNodes; i++) {
+			for (int j = i+1; j < nNodes; j++) {
+ 				double distance = distanceMetric.getMetric(matrix, matrix, matrix.getWeights(), i, j);
+				maxdistance = Math.max(maxdistance, distance);
+				mindistance = Math.min(mindistance, distance);
+				distanceMatrix[i][j] = distance;
+			}
+			if (monitor != null) {
+				if (canceled) return;
+				monitor.setPercentCompleted((int)(25 * (double)i/(double)nNodes));
+			}
+		}
+
+		if (monitor != null) {
+			monitor.setStatus("Assigning values to edges");
+		}
+
 		int[] nodeArray = new int[2];
-		double maxweight = 0.0;
-		double minweight = 0.0;
 		Map<CyEdge, Double> edgeList = new HashMap<CyEdge, Double>();
+		double scale = maxdistance - mindistance;
+
+		/* Performance tuning -- what's taking all the time!
+		long time = System.currentTimeMillis();
+		long nodeFetchTime = 0L;
+		long edgeFetchTime = 0L;
+		long edgeCreateTime = 0L;
+		long networkAddTime = 0L;
+		long setAttributeTime = 0L;
+		int newEdges = 0;
+		*/
 
 		for (int i = 0; i < nNodes; i++) {
 			for (int j = i+1; j < nNodes; j++) {
- 				double weight = distanceMetric.getMetric(matrix, matrix, matrix.getWeights(), i, j);
-				maxweight = Math.max(maxweight, weight);
-				minweight = Math.min(minweight, weight);
-
+				// time = System.currentTimeMillis();
+				double distance = distanceMatrix[i][j]/scale;
 				CyNode source = Cytoscape.getCyNode(matrix.getRowLabel(i));
 				CyNode target = Cytoscape.getCyNode(matrix.getRowLabel(j));
 				nodeArray[0] = source.getRootGraphIndex();
 				nodeArray[1] = target.getRootGraphIndex();
 
+				// nodeFetchTime += System.currentTimeMillis()-time;
+
+				if (createEdges == true && distance > edgeCutoff)
+					continue;
+
+				// time = System.currentTimeMillis();
+
 				CyEdge edge;
 				int[] edgeArray = network.getConnectingEdgeIndicesArray(nodeArray);
+				// edgeFetchTime += System.currentTimeMillis()-time;
+				// time = System.currentTimeMillis();
+
 				if ((edgeArray == null || edgeArray.length == 0) && createEdges == true) {
-					edge = Cytoscape.getCyEdge(source, target, "interaction", "distance", true);
+					edge = myCreateEdge(source, target, edgeAttributes);
+
+					// edgeCreateTime += System.currentTimeMillis()-time;
 					// System.out.println("Creating edge between "+source+" and "+target);
 					if (edge != null) {
 						// System.out.println("Adding edge "+edge.getIdentifier()+" to network");
+						// time = System.currentTimeMillis();
 						network.addEdge(edge);
+						// networkAddTime += System.currentTimeMillis()-time;
 					}
 				} else if (edgeArray == null || edgeArray.length == 0) {
 					continue;
 				} else {
 					edge = (CyEdge)network.getEdge(edgeArray[0]);
+					// edgeFetchTime += System.currentTimeMillis()-time;
 				}
 
 				if (edge == null) continue;
-
-				edgeList.put(edge, new Double(weight));
-				
+				// time = System.currentTimeMillis();
+				edgeAttributes.setAttribute(edge.getIdentifier(), edgeAttribute, distance);
+				// setAttributeTime += System.currentTimeMillis()-time;
+			}
+			if (monitor != null)  {
+				if (canceled) return;
+				monitor.setPercentCompleted((int)(25 + (75 * (double)i/(double)nNodes)));
 			}
 		}
 
-		double scale = maxweight - minweight;
-		// System.out.println("scale: "+maxweight+"-"+minweight+" = "+scale);
+		/*
+		System.out.println("Created "+newEdges+" edges");
+		System.out.println("Edge creation time: "+edgeCreateTime+"ms");
+		System.out.println("Network add time: "+networkAddTime+"ms");
+		System.out.println("Edge fetch time: "+edgeFetchTime+"ms");
+		System.out.println("Node fetch time: "+nodeFetchTime+"ms");
+		System.out.println("Set attribute time: "+setAttributeTime+"ms");
+		*/
 
-		for (CyEdge edge: edgeList.keySet()) {
-			edgeAttributes.setAttribute(edge.getIdentifier(), edgeAttribute, edgeList.get(edge)/scale);
-		}
+		if (monitor != null)
+			monitor.setStatus("Complete");
 
-/*
-		if (metric == DistanceMetric.EUCLIDEAN || metric == DistanceMetric.CITYBLOCK) {
-			// Normalize distances to between 0 and 1
-			double scale = 0.0;
-			for (int node = 0; node < nodeList.length; node++) {
-				if (nodeList[node].getDistance() > scale) scale = nodeList[node].getDistance();
-			}
-			if (scale != 0.0) {
-				for (int node = 0; node < nodeList.length; node++) {
-					double dist = nodeList[node].getDistance();
-					nodeList[node].setDistance(dist/scale);
-				}
-			}
-		}
-*/
-		
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
 	}
@@ -313,6 +381,27 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm {
 	public boolean isAvailable() {
 		// return EisenCluster.isAvailable(getShortName());
 		return false;
+	}
+
+	/**
+ 	 * Cytoscape doesn't provide us with an easy way to create an edge without searching
+ 	 * for it first.  Since we've already searched for it, we are absolutely certain
+ 	 * by this point that the edge doesn't exist, so we can save significant time by
+ 	 * just going ahead and creating it.
+ 	 */
+	private CyEdge myCreateEdge(CyNode source, CyNode target, CyAttributes edgeAttributes) {
+		int rootEdge = Cytoscape.getRootGraph().createEdge(source, target);
+		CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(rootEdge);
+
+		// create the edge id
+		String edge_name = CyEdge.createIdentifier(source.getIdentifier(),
+		                                           interaction,
+		                                           target.getIdentifier());
+		edge.setIdentifier(edge_name);
+
+		edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION, interaction);
+		edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME, edge_name);
+		return edge;
 	}
 
 	private String[] getAttributeArray(String dataAttributes) {

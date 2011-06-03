@@ -282,10 +282,10 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 						continue;
 				}
 				if (!clusterMap.containsKey(cluster)) {
-					System.out.println("Creating new entry for: "+cluster.toString());
+					// System.out.println("Creating new entry for: "+cluster.toString());
 					clusterMap.put(cluster, new ArrayList<CyNode>());
 				}
-				System.out.println("Adding node "+node+" to "+cluster.toString());
+				// System.out.println("Adding node "+node+" to "+cluster.toString());
 				clusterMap.get(cluster).add(node);
 				net.addNode(node);
 			}
