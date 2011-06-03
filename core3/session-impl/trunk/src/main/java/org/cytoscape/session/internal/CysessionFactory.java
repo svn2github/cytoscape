@@ -54,12 +54,10 @@ import org.cytoscape.property.session.SessionState;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.model.VisualStyle;
 
 public class CysessionFactory {
 
 	private static final String DEFAULT_SESSION_NOTE = "You can add note for this session here.";
-	private static final String CYSESSION_VERSION = "3.0";
 	
 	private final CyNetworkManager netMgr;
 	private final CyNetworkViewManager nvMgr;
@@ -87,7 +85,6 @@ public class CysessionFactory {
 
 		// Initialize objects for the marshaller:
 		session = factory.createCysession();
-		session.setDocumentVersion(CYSESSION_VERSION);
 
 		if (note == null) note = DEFAULT_SESSION_NOTE;
 		session.setSessionNote(note);
@@ -142,42 +139,11 @@ public class CysessionFactory {
 	 */
 	private Cytopanels getCytoPanelStates(List<Cytopanel> cytopanels) {
 		Cytopanels cps = factory.createCytopanels();
-		List<Cytopanel> cytoPanelList = cps.getCytopanel();
 
 		if (cytopanels != null) {
-			for (Cytopanel panel : cytopanels)
-				cytoPanelList.add(panel);
+			List<Cytopanel> cytoPanelList = cps.getCytopanel();
+			for (Cytopanel panel : cytopanels) cytoPanelList.add(panel);
 		}
-		// TODO: cleanup. This should be done by the swing related plugin
-		//		String[] cytopanelStates = new String[CYTOPANEL_COUNT + 1];
-		//		int[] selectedPanels = new int[CYTOPANEL_COUNT + 1];
-		//
-		//		// Extract states of 3 panels.
-		//		cytopanelStates[1] = application.getCytoPanel(CytoPanelName.WEST).getState().toString();
-		//		selectedPanels[1] = application.getCytoPanel(CytoPanelName.WEST).getSelectedIndex();
-		//		cytopanelStates[2] = application.getCytoPanel(CytoPanelName.SOUTH).getState().toString();
-		//		selectedPanels[2] = application.getCytoPanel(CytoPanelName.SOUTH).getSelectedIndex();
-		//		cytopanelStates[3] = application.getCytoPanel(CytoPanelName.EAST).getState().toString();
-		//		selectedPanels[3] = application.getCytoPanel(CytoPanelName.EAST).getSelectedIndex();
-		//
-		//		// Number of Cytopanels. Currently, we have 3 panels.
-		//		final int CYTOPANEL_COUNT = 3;
-
-		//		for (int i = 1; i < (CYTOPANEL_COUNT + 1); i++) {
-		//			Panels internalPanels = factory.createPanels();
-		//			List<Panel> iPanelList = internalPanels.getPanel();
-		//			Panel iPanel = factory.createPanel();
-		//			iPanel.setId("test");
-		//
-		//			iPanelList.add(iPanel);
-		//
-		//			Cytopanel curCp = factory.createCytopanel();
-		//			curCp.setId("CytoPanel" + i);
-		//			curCp.setPanelState(cytopanelStates[i]);
-		//			curCp.setSelectedPanel(Integer.toString(selectedPanels[i]));
-		//			curCp.setPanels(internalPanels);
-		//			cytoPanelList.add(curCp);
-		//		}
 
 		return cps;
 	}
