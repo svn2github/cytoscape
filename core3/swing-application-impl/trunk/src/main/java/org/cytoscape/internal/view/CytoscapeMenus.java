@@ -68,6 +68,8 @@ public class CytoscapeMenus {
 	menuBar.addSeparator("Edit", 4.0);
 	menuBar.addSeparator("Edit", 6.0);
 
+	menuBar.addMenu("Edit.Preferences", 10.0);
+
 	menuBar.addSeparator("View", 2.0);
 	menuBar.addSeparator("View", 4.0);
 	menuBar.addSeparator("View", 6.0);
