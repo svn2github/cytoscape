@@ -153,16 +153,6 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 	public static final int ONTOLOGY_AND_ANNOTATION_IMPORT = 2;
 	public static final int NETWORK_IMPORT = 3;
 
-	/**
-	 * Enums for file types.
-	 */
-	public static enum FileTypes {
-		ATTRIBUTE_FILE,
-		NETWORK_FILE,
-		GENE_ASSOCIATION_FILE,
-		CUSTOM_ANNOTATION_FILE;
-	}
-
 	/*
 	 * Default value for Interaction edge attribute.
 	 */
@@ -3679,100 +3669,4 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 	private AliasTableModel aliasTableModel;
 	private JTable aliasTable;
 	private JCheckBox importAllCheckBox;
-}
-
-
-class ComboBoxRenderer extends JLabel implements ListCellRenderer {
-	private List<Byte> attributeDataTypes;
-
-	/**
-	 * Creates a new ComboBoxRenderer object.
-	 *
-	 * @param attributeDataTypes  DOCUMENT ME!
-	 */
-	public ComboBoxRenderer(List<Byte> attributeDataTypes) {
-		this.attributeDataTypes = attributeDataTypes;
-		setOpaque(true);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param list DOCUMENT ME!
-	 * @param value DOCUMENT ME!
-	 * @param index DOCUMENT ME!
-	 * @param isSelected DOCUMENT ME!
-	 * @param cellHasFocus DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Component getListCellRendererComponent(JList list, Object value, int index,
-	                                              boolean isSelected, boolean cellHasFocus) {
-		setText(value.toString());
-		if (isSelected) {
-			setBackground(list.getSelectionBackground());
-			setForeground(list.getSelectionForeground());
-		} else {
-			setBackground(list.getBackground());
-			setForeground(list.getForeground());
-		}
-
-		if ((attributeDataTypes != null) && (attributeDataTypes.size() != 0)
-		    && (index < attributeDataTypes.size()) && (index >= 0)) {
-			final Byte dataType = attributeDataTypes.get(index);
-
-			if (dataType == null) {
-				setIcon(null);
-			} else {
-				setIcon(ImportTablePanel.getDataTypeIcon(dataType));
-			}
-		} else if ((attributeDataTypes != null) && (attributeDataTypes.size() != 0)
-		           && (index < attributeDataTypes.size())) {
-			setIcon(ImportTablePanel.getDataTypeIcon(attributeDataTypes.get(list.getSelectedIndex())));
-		}
-
-		return this;
-	}
-}
-
-
-class AliasTableModel extends DefaultTableModel {
-	AliasTableModel(String[] columnNames, int rowNum) {
-		super(columnNames, rowNum);
-	}
-
-	AliasTableModel(Object[][] data, Object[] colNames) {
-		super(data, colNames);
-	}
-
-	AliasTableModel() {
-		super();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param col DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Class getColumnClass(int col) {
-		return getValueAt(0, col).getClass();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param row DOCUMENT ME!
-	 * @param column DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean isCellEditable(int row, int column) {
-		if (column == 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 }

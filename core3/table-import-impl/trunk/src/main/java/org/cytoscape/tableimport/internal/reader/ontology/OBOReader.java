@@ -80,6 +80,7 @@ public class OBOReader extends AbstractTask implements CyNetworkReader {
 		interactionList = new ArrayList<String[]>();
 	}
 
+	
 	@Override
 	public void run(TaskMonitor tm) throws Exception {
 

@@ -106,7 +106,6 @@ import org.cytoscape.tableimport.internal.reader.ExcelAttributeSheetReader;
 import org.cytoscape.tableimport.internal.reader.GeneAssociationTags;
 import org.cytoscape.tableimport.internal.reader.SupportedFileType;
 import org.cytoscape.tableimport.internal.reader.TextFileDelimiters;
-import org.cytoscape.tableimport.internal.ui.ImportTablePanel.FileTypes;
 import org.cytoscape.tableimport.internal.util.AttributeTypes;
 
 /**
