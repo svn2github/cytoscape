@@ -80,5 +80,15 @@
 		</osgi:service-properties>
 	</osgi:service>
 	
+	<osgi:service id="importOntologyAndAnnotationTaskFactoryService" ref="importOntologyAndAnnotationTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Import Ontology and Annotation..." />
+			<entry key="preferredMenu" value="File.Import" />
+			<entry key="menuGravity" value="4.0" />
+			<entry key="command" value="import ontology" />
+		</osgi:service-properties>
+	</osgi:service>
+	
 
 </beans>

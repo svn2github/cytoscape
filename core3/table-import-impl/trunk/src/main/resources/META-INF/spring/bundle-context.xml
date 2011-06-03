@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-	<!-- 
-	This simply constructs an object (or bean) called "sampleTaskFactory"
-	of type org.example.internal.SampleTaskFactory.  The name "sampleTaskFactory"
-	is used to identify this particular object in this and the 
-	bundle-context-osgi.xml file.
-	-->
-			
+	<!-- This simply constructs an object (or bean) called "sampleTaskFactory" 
+		of type org.example.internal.SampleTaskFactory. The name "sampleTaskFactory" 
+		is used to identify this particular object in this and the bundle-context-osgi.xml 
+		file. -->
+
 	<bean id="attrsTableFilter_txt" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
@@ -29,9 +26,10 @@
 			</set>
 		</constructor-arg>
 		<constructor-arg value="Any text file" />
-		<constructor-arg type="org.cytoscape.io.DataCategory" value="TABLE" />
+		<constructor-arg type="org.cytoscape.io.DataCategory"
+			value="TABLE" />
 		<constructor-arg ref="streamUtilService" />
-	</bean>			
+	</bean>
 
 	<bean id="attrsTableFilter_xls" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
@@ -46,7 +44,8 @@
 			</set>
 		</constructor-arg>
 		<constructor-arg value="Any text file" />
-		<constructor-arg type="org.cytoscape.io.DataCategory" value="TABLE" />
+		<constructor-arg type="org.cytoscape.io.DataCategory"
+			value="TABLE" />
 		<constructor-arg ref="streamUtilService" />
 	</bean>
 
@@ -65,10 +64,12 @@
 			</set>
 		</constructor-arg>
 		<constructor-arg value="OBO files" />
-		<constructor-arg type="org.cytoscape.io.DataCategory" value="NETWORK" />
-		<constructor-arg type="org.cytoscape.io.util.StreamUtil" ref="streamUtilService" />
+		<constructor-arg type="org.cytoscape.io.DataCategory"
+			value="NETWORK" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil"
+			ref="streamUtilService" />
 	</bean>
-	
+
 	<bean id="oboReaderFactory"
 		class="org.cytoscape.tableimport.internal.reader.ontology.OBONetworkReaderFactory">
 		<constructor-arg ref="oboFilter" />
@@ -76,16 +77,16 @@
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
- 
- 
-	<bean id="importAttributeTableReaderFactory_txt" 
-			class="org.cytoscape.tableimport.internal.ImportAttributeTableReaderFactory">
+
+
+	<bean id="importAttributeTableReaderFactory_txt"
+		class="org.cytoscape.tableimport.internal.ImportAttributeTableReaderFactory">
 		<constructor-arg ref="attrsTableFilter_txt" />
-		<constructor-arg ref="cytoscapeDesktopService" /> 
+		<constructor-arg ref="cytoscapeDesktopService" />
 		<constructor-arg ref="cyApplicationManagerRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="bookmarkServiceRef" />		
-		<constructor-arg ref="bookmarksUtilServiceRef" />	
+		<constructor-arg ref="bookmarkServiceRef" />
+		<constructor-arg ref="bookmarksUtilServiceRef" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 		<constructor-arg ref="cyTableManagerServiceRef" />
@@ -95,15 +96,15 @@
 		<constructor-arg value=".txt" />
 	</bean>
 
- 
-	<bean id="importAttributeTableReaderFactory_xls" 
-			class="org.cytoscape.tableimport.internal.ImportAttributeTableReaderFactory">
+
+	<bean id="importAttributeTableReaderFactory_xls"
+		class="org.cytoscape.tableimport.internal.ImportAttributeTableReaderFactory">
 		<constructor-arg ref="attrsTableFilter_xls" />
-		<constructor-arg ref="cytoscapeDesktopService" /> 
+		<constructor-arg ref="cytoscapeDesktopService" />
 		<constructor-arg ref="cyApplicationManagerRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="bookmarkServiceRef" />		
-		<constructor-arg ref="bookmarksUtilServiceRef" />	
+		<constructor-arg ref="bookmarkServiceRef" />
+		<constructor-arg ref="bookmarksUtilServiceRef" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 		<constructor-arg ref="cyTableManagerServiceRef" />
@@ -112,4 +113,12 @@
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
 		<constructor-arg value=".xls" />
 	</bean>
+
+
+	<!-- For Ontology Import -->
+	<bean id="importOntologyAndAnnotationTaskFactory"
+		class="org.cytoscape.tableimport.internal.task.ImportOntologyAndAnnotationTaskFactory">
+
+	</bean>
+
 </beans>

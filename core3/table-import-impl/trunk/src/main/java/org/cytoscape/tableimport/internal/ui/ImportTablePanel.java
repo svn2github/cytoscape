@@ -28,29 +28,12 @@
 package org.cytoscape.tableimport.internal.ui;
 
 
-import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.DB_OBJECT_SYMBOL;
-import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.DB_OBJECT_SYNONYM;
-import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.GO_ID;
-import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.TAXON;
+import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.*;
 import static org.cytoscape.tableimport.internal.reader.TextFileDelimiters.PIPE;
-import static org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType.EDGE;
-import static org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType.NETWORK;
-import static org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType.NODE;
+import static org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType.*;
 import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogColorTheme.ONTOLOGY_COLOR;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogFontTheme.ITEM_FONT;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogFontTheme.LABEL_FONT;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogFontTheme.TITLE_FONT;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.BOOLEAN_ICON;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.FLOAT_ICON;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.ID_ICON;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.INT_ICON;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.LIST_ICON;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.LOCAL_SOURCE_ICON;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.REMOTE_SOURCE_ICON;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.REMOTE_SOURCE_ICON_LARGE;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.RIGHT_ARROW_ICON;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.SPREADSHEET_ICON_LARGE;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.STRING_ICON;
+import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogFontTheme.*;
+import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.*;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -168,23 +151,10 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 	public static final String SHEET_CHANGED = "sheetChanged";
 	public static final String NETWORK_IMPORT_TEMPLATE_CHANGED = "networkImportTemplateChanged";
 
-	/*
-	 * HTML strings for tool tip text
-	 */
-	private String ontologyHtml = "<html><body bgcolor=\"white\"><p><strong><font size=\"+1\" face=\"serif\"><u>%DataSourceName%</u></font></strong></p><br>"
-	                              + "<p><em>Data Source URL</em>: <br><font color=\"blue\">%SourceURL%</font></p><br><p><em>Description</em>:<br>"
-	                              + "<table width=\"300\" border=\"0\" cellspacing=\"3\" cellpadding=\"3\"><tr>"
-	                              + "<td rowspan=\"1\" colspan=\"1\">%Description%</td></tr></table></p></body></html>";
-	private String annotationHtml = "<html><body bgcolor=\"white\"><p><strong><font size=\"+1\" face=\"serif\"><u>%DataSourceName%</u></font></strong></p><br>"
-	                                + "<p><em>Annotation File URL</em>: <br><font color=\"blue\">%SourceURL%</font></p><br>"
-	                                + "<p><em>Data Format</em>: <font color=\"green\">%Format%</font></p><br>"
-	                                + "<p><em>Other Information</em>:<br>"
-	                                + "<table width=\"300\" border=\"0\" cellspacing=\"3\" cellpadding=\"3\">"
-	                                + "%AttributeTable%</table></p></body></html>";
-	private static final String DEF_ANNOTATION_ITEM = "Please select an annotation data source...";
+	
+	
 	private static final String[] keyTable = { "Alias?", "Column (Attribute Name)", "Data Type" };
 	private static final String ID = "name";
-	private static final String GENE_ASSOCIATION = "gene_association";
 
 	// Key column index
 	private int keyInFile;
@@ -195,12 +165,15 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 	// Data Type
 	private org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType objType;
 	private final int dialogType;
-	private Map<String, String> annotationUrlMap;
-	private Map<String, String> annotationFormatMap;
-	private Map<String, Map<String, String>> annotationAttributesMap;
-	private Map<String, String> ontologyUrlMap;
+	
+	
+	protected Map<String, String> annotationUrlMap;
+	protected  Map<String, String> annotationFormatMap;
+	protected Map<String, Map<String, String>> annotationAttributesMap;
+	protected Map<String, String> ontologyUrlMap;
+	
 	private Map<String, String> ontologyTypeMap;
-	private Map<String, String> ontologyDescriptionMap;
+	protected Map<String, String> ontologyDescriptionMap;
 	private List<Byte> attributeDataTypes;
 
 	/*
@@ -636,178 +609,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 		 * This panel is necessary only when this is an ontology import dialog.
 		 */
 		if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
-			titleIconLabel1.setIcon(REMOTE_SOURCE_ICON_LARGE.getIcon());
-
-			ontologyLabel.setFont(LABEL_FONT.getFont());
-			ontologyLabel.setForeground(ONTOLOGY_COLOR.getColor());
-			ontologyLabel.setText("Ontology");
-
-		    ontologyComboBox.setFont(new java.awt.Font("SansSerif", 1, 14));
-			ontologyComboBox.setPreferredSize(new java.awt.Dimension(68, 25));
-
-			final ListCellRenderer ontologyLcr = ontologyComboBox.getRenderer();
-			ontologyComboBox.setFont(ITEM_FONT.getFont());
-			ontologyComboBox.setForeground(ONTOLOGY_COLOR.getColor());
-			ontologyComboBox.setRenderer(new ListCellRenderer() {
-					public Component getListCellRendererComponent(JList list, Object value,
-					                                              int index, boolean isSelected,
-					                                              boolean cellHasFocus) {
-						JLabel ontologyItem = (JLabel) ontologyLcr.getListCellRendererComponent(list,
-						                                                                        value,
-						                                                                        index,
-						                                                                        isSelected,
-						                                                                        cellHasFocus);
-						String url = ontologyUrlMap.get(value);
-
-						if (isSelected) {
-							ontologyItem.setBackground(list.getSelectionBackground());
-							ontologyItem.setForeground(list.getSelectionForeground());
-						} else {
-							ontologyItem.setBackground(list.getBackground());
-							ontologyItem.setForeground(list.getForeground());
-						}
-
-						if ((url != null) && url.startsWith("http://")) {
-							ontologyItem.setIcon(REMOTE_SOURCE_ICON.getIcon());
-						} else {
-							ontologyItem.setIcon(LOCAL_SOURCE_ICON.getIcon());
-						}
-
-						//if (Cytoscape.getOntologyServer().getOntologyNames().contains(value)) {
-						//	ontologyItem.setForeground(ONTOLOGY_COLOR.getColor());
-						//} else {
-						//	ontologyItem.setForeground(NOT_LOADED_COLOR.getColor());
-						//}
-
-						return ontologyItem;
-					}
-				});
-
-			ontologyComboBox.addMouseListener(new MouseListener() {
-					public void mouseClicked(MouseEvent arg0) {
-					}
-
-					public void mouseEntered(MouseEvent arg0) {
-					}
-
-					public void mouseExited(MouseEvent arg0) {
-					}
-
-					public void mousePressed(MouseEvent arg0) {
-					}
-
-					public void mouseReleased(MouseEvent arg0) {
-					}
-				});
-
-			ontologyComboBox.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						ontologyComboBoxActionPerformed(evt);
-					}
-				});
-
-			browseOntologyButton.setText("Browse");
-			browseOntologyButton.setToolTipText("Browse local ontology file");
-			browseOntologyButton.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						browseOntologyButtonActionPerformed(evt);
-					}
-				});
-
-			sourceLabel.setFont(LABEL_FONT.getFont());
-			sourceLabel.setText("Annotation");
-
-			annotationComboBox.setName("annotationComboBox");
-			annotationComboBox.setFont(ITEM_FONT.getFont());
-			annotationComboBox.setPreferredSize(new java.awt.Dimension(68, 25));
-
-			final ListCellRenderer lcr = annotationComboBox.getRenderer();
-			annotationComboBox.setRenderer(new ListCellRenderer() {
-					public Component getListCellRendererComponent(JList list, Object value,
-					                                              int index, boolean isSelected,
-					                                              boolean cellHasFocus) {
-						JLabel cmp = (JLabel) lcr.getListCellRendererComponent(list, value, index,
-						                                                       isSelected,
-						                                                       cellHasFocus);
-						String url = annotationUrlMap.get(value);
-
-						if (isSelected) {
-							cmp.setBackground(list.getSelectionBackground());
-							cmp.setForeground(list.getSelectionForeground());
-						} else {
-							cmp.setBackground(list.getBackground());
-							cmp.setForeground(list.getForeground());
-						}
-
-						if (value.toString().equals(DEF_ANNOTATION_ITEM)) {
-							cmp.setIcon(null);
-						} else if ((url != null) && url.startsWith("http://")) {
-							cmp.setIcon(REMOTE_SOURCE_ICON.getIcon());
-						} else {
-							cmp.setIcon(LOCAL_SOURCE_ICON.getIcon());
-						}
-
-						return cmp;
-					}
-				});
-			annotationComboBox.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						annotationComboBoxActionPerformed(evt);
-					}
-				});
-
-			browseAnnotationButton.setText("Browse");
-			browseAnnotationButton.setToolTipText("Browse local annotation file...");
-			browseAnnotationButton.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						browseAnnotationButtonActionPerformed(evt);
-					}
-				});
-
-			GroupLayout annotationAndOntologyImportPanelLayout = new GroupLayout(annotationAndOntologyImportPanel);
-			annotationAndOntologyImportPanel.setLayout(annotationAndOntologyImportPanelLayout);
-
-			annotationAndOntologyImportPanelLayout.setHorizontalGroup(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.LEADING)
-			                                                                                                .add(annotationAndOntologyImportPanelLayout.createSequentialGroup()
-			                                                                                                                                           .addContainerGap()
-			                                                                                                                                           .add(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.LEADING)
-			                                                                                                                                                                                      .add(sourceLabel)
-			                                                                                                                                                                                      .add(ontologyLabel))
-			                                                                                                                                           .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-			                                                                                                                                           .add(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.TRAILING)
-			                                                                                                                                                                                      .add(annotationComboBox,
-			                                                                                                                                                                                           0,
-			                                                                                                                                                                                           100,
-			                                                                                                                                                                                           Short.MAX_VALUE)
-			                                                                                                                                                                                      .add(ontologyComboBox,
-			                                                                                                                                                                                           0,
-			                                                                                                                                                                                           100,
-			                                                                                                                                                                                           Short.MAX_VALUE))
-			                                                                                                                                           .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-			                                                                                                                                           .add(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.LEADING)
-			                                                                                                                                                                                      .add(browseAnnotationButton)
-			                                                                                                                                                                                      .add(browseOntologyButton))
-			                                                                                                                                           .addContainerGap()));
-			annotationAndOntologyImportPanelLayout.setVerticalGroup(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.LEADING)
-			                                                                                              .add(annotationAndOntologyImportPanelLayout.createSequentialGroup()
-			                                                                                                                                         .addContainerGap()
-			                                                                                                                                         .add(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.CENTER)
-			                                                                                                                                                                                    .add(sourceLabel)
-			                                                                                                                                                                                    .add(browseAnnotationButton)
-			                                                                                                                                                                                    .add(annotationComboBox,
-			                                                                                                                                                                                         GroupLayout.PREFERRED_SIZE,
-			                                                                                                                                                                                         GroupLayout.DEFAULT_SIZE,
-			                                                                                                                                                                                         GroupLayout.PREFERRED_SIZE))
-			                                                                                                                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-			                                                                                                                                         .add(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.CENTER)
-			                                                                                                                                                                                    .add(ontologyLabel)
-			                                                                                                                                                                                    .add(ontologyComboBox,
-			                                                                                                                                                                                         GroupLayout.PREFERRED_SIZE,
-			                                                                                                                                                                                         GroupLayout.DEFAULT_SIZE,
-			                                                                                                                                                                                         GroupLayout.PREFERRED_SIZE)
-			                                                                                                                                                                                    .add(browseOntologyButton))
-			                                                                                                                                         .addContainerGap(GroupLayout.DEFAULT_SIZE,
-			                                                                                                                                                          Short.MAX_VALUE)));
+			// Call buider here.
 		}
 
 		if ((dialogType == SIMPLE_ATTRIBUTE_IMPORT) || (dialogType == NETWORK_IMPORT)) {
@@ -1629,21 +1431,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 		setKeyList();
 	}
 
-	private void browseOntologyButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		DataSourceSelectDialog dssd = new DataSourceSelectDialog(DataSourceSelectDialog.ONTOLOGY_TYPE,
-				CytoscapeServices.desktop.getJFrame(), true);
-		dssd.setLocationRelativeTo(CytoscapeServices.desktop.getJFrame());
-		dssd.setVisible(true);
-
-		String key = dssd.getSourceName();
-
-		if (key != null) {
-			ontologyComboBox.insertItemAt(key, 0);
-			ontologyUrlMap.put(key, dssd.getSourceUrlString());
-			ontologyComboBox.setSelectedItem(key);
-			ontologyComboBox.setToolTipText(getOntologyTooltip());
-		}
-	}
+	
 
 	private void transferNameCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		final DefaultTableModel model = (DefaultTableModel) previewPanel.getPreviewTable().getModel();
@@ -2098,46 +1886,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 		previewPanel.repaint();
 	}
 
-	private void browseAnnotationButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		DataSourceSelectDialog dssd = new DataSourceSelectDialog(DataSourceSelectDialog.ANNOTATION_TYPE,
-				CytoscapeServices.desktop.getJFrame(), true);
-		dssd.setLocationRelativeTo(CytoscapeServices.desktop.getJFrame());
-		dssd.setVisible(true);
-
-		String key = dssd.getSourceName();
-
-		if (key != null) {
-			annotationComboBox.addItem(key);
-			annotationUrlMap.put(key, dssd.getSourceUrlString());
-			annotationComboBox.setSelectedItem(key);
-			annotationComboBox.setToolTipText(getAnnotationTooltip());
-		}
-	}
-
-	private void annotationComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
-		if (annotationComboBox.getSelectedItem().toString().equals(DEF_ANNOTATION_ITEM)) {
-			annotationComboBox.setToolTipText(null);
-
-			return;
-		}
-
-		annotationComboBox.setToolTipText(getAnnotationTooltip());
-
-		try {
-			final String selectedSourceName = annotationComboBox.getSelectedItem().toString();
-			final URL sourceURL = new URL(annotationUrlMap.get(selectedSourceName));
-			readAnnotationForPreview(sourceURL, checkDelimiter());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	private void ontologyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
-		ontologyComboBox.setToolTipText(getOntologyTooltip());
-		ontologyTextField.setText(ontologyComboBox.getSelectedItem().toString());
-	}
-
+	
 	private void setPreviewPanel(ActionEvent evt)
 	    throws IOException {
 
@@ -2463,63 +2212,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 		
 		*/
 	}
-
-	private String getOntologyTooltip() {
-		final String key = ontologyComboBox.getSelectedItem().toString();
-		String tooltip = ontologyHtml.replace("%DataSourceName%", key);
-		final String description = ontologyDescriptionMap.get(key);
-
-		if (description == null) {
-			tooltip = tooltip.replace("%Description%", "N/A");
-		} else {
-			tooltip = tooltip.replace("%Description%", description);
-		}
-
-		if (ontologyUrlMap.get(key) != null) {
-			return tooltip.replace("%SourceURL%", ontologyUrlMap.get(key));
-		} else {
-			return tooltip.replace("%SourceURL%", "N/A");
-		}
-	}
-
-	private String getAnnotationTooltip() {
-		final String key = annotationComboBox.getSelectedItem().toString();
-		String tooltip = annotationHtml.replace("%DataSourceName%", key);
-
-		if (annotationUrlMap.get(key) == null) {
-			return "";
-		}
-
-		tooltip = tooltip.replace("%SourceURL%", annotationUrlMap.get(key));
-
-		if (annotationFormatMap.get(key) != null) {
-			tooltip = tooltip.replace("%Format%", annotationFormatMap.get(key));
-		} else {
-			String[] parts = annotationUrlMap.get(key).split("/");
-
-			if (parts[parts.length - 1].startsWith(GENE_ASSOCIATION)) {
-				tooltip = tooltip.replace("%Format%", "Gene Association");
-			}
-
-			tooltip = tooltip.replace("%Format%", "General Annotation Text Table");
-		}
-
-		if (annotationAttributesMap.get(key) != null) {
-			StringBuffer table = new StringBuffer();
-			final Map<String, String> annotations = annotationAttributesMap.get(key);
-
-			for (String anno : annotations.keySet()) {
-				table.append("<tr>");
-				table.append("<td><strong>" + anno + "</strong></td><td>" + annotations.get(anno)
-				             + "</td>");
-				table.append("</tr>");
-			}
-
-			return tooltip.replace("%AttributeTable%", table.toString());
-		}
-
-		return tooltip.replace("%AttributeTable%", "");
-	}
+	
 
 	private void setAnnotationComboBox() throws JAXBException, IOException {
 		/*
@@ -2556,7 +2249,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 	 *
 	 * @throws IOException
 	 */
-	private void readAnnotationForPreview(URL sourceURL, List<String> delimiters)
+	protected void readAnnotationForPreview(URL sourceURL, List<String> delimiters)
 	    throws IOException {
 
 		/*
@@ -3208,7 +2901,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 		aliasScrollPane.repaint();
 	}
 
-	private List<String> checkDelimiter() {
+	protected List<String> checkDelimiter() {
 		final List<String> delList = new ArrayList<String>();
 
 		if (tabCheckBox.isSelected()) {
@@ -3589,84 +3282,84 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener,
 	}
 
 	// Variables declaration - do not modify
-	private javax.swing.JCheckBox advancedOptionCheckBox;
-	private javax.swing.JCheckBox caseSensitiveCheckBox;
-	private javax.swing.JPanel advancedPanel;
+	protected javax.swing.JCheckBox advancedOptionCheckBox;
+	protected javax.swing.JCheckBox caseSensitiveCheckBox;
+	protected javax.swing.JPanel advancedPanel;
 
-	// private JTable aliasTable;
-	private javax.swing.JScrollPane aliasScrollPane;
-	private javax.swing.JPanel annotationAndOntologyImportPanel;
-	private javax.swing.JButton arrowButton1;
-	private javax.swing.JButton arrowButton2;
-	private javax.swing.JPanel attr2annotationPanel;
-	private javax.swing.JCheckBox transferNameCheckBox;
-	private javax.swing.ButtonGroup attrTypeButtonGroup;
-	private javax.swing.JLabel attribuiteLabel;
-	private javax.swing.JLabel attributeFileLabel;
-	private javax.swing.JPanel basicPanel;
-	private javax.swing.JButton browseAnnotationButton;
-	private javax.swing.JButton browseOntologyButton;
-	private javax.swing.JButton cancelButton;
-	private javax.swing.JCheckBox commaCheckBox;
-	private javax.swing.JPanel delimiterPanel;
-	private javax.swing.JRadioButton edgeRadioButton;
-	private javax.swing.JButton helpButton;
-	private javax.swing.JButton importButton;
-	private javax.swing.JRadioButton networkRadioButton;
-	private javax.swing.JComboBox mappingAttributeComboBox;
-	private javax.swing.JLabel nodeKeyLabel;
-	private javax.swing.JRadioButton nodeRadioButton;
-	private javax.swing.JPanel ontology2annotationPanel;
-	private javax.swing.JComboBox ontologyComboBox;
-	private javax.swing.JComboBox ontologyInAnnotationComboBox;
-	private javax.swing.JLabel ontologyInAnnotationLabel;
-	private javax.swing.JLabel ontologyLabel;
-	private javax.swing.JTextField otherDelimiterTextField;
-	private javax.swing.JCheckBox otherCheckBox;
-	private PreviewTablePanel previewPanel;
-	private javax.swing.JLabel primaryKeyLabel;
-	private javax.swing.JButton selectAttributeFileButton;
-	private javax.swing.JCheckBox semicolonCheckBox;
-	private javax.swing.JPanel simpleAttributeImportPanel;
-	private javax.swing.JComboBox annotationComboBox;
-	private javax.swing.JLabel sourceLabel;
-	private javax.swing.JCheckBox spaceCheckBox;
-	private javax.swing.JCheckBox tabCheckBox;
-	private javax.swing.JTextField targetDataSourceTextField;
-	private javax.swing.JLabel targetOntologyLabel;
-	private javax.swing.JTextField ontologyTextField;
-	private javax.swing.JCheckBox textImportCheckBox;
-	private javax.swing.JPanel textImportOptionPanel;
-	private javax.swing.JLabel titleIconLabel1;
-	private javax.swing.JLabel titleIconLabel2;
-	private javax.swing.JLabel titleIconLabel3;
-	private javax.swing.JLabel titleLabel;
-	private javax.swing.JSeparator titleSeparator;
-	private JComboBox primaryKeyComboBox;
-	private JLabel primaryLabel;
-	private JPanel attrTypePanel;
-	private javax.swing.JRadioButton showAllRadioButton;
-	private javax.swing.JLabel counterLabel;
-	private javax.swing.JRadioButton counterRadioButton;
-	private javax.swing.JButton reloadButton;
-	private javax.swing.JSpinner counterSpinner;
-	private javax.swing.ButtonGroup importTypeButtonGroup;
-	private JPanel attributeNamePanel;
-	private JPanel previewOptionPanel;
-	private JPanel networkImportOptionPanel;
-	private JLabel defaultInteractionLabel;
-	private JTextField defaultInteractionTextField;
-	private JLabel startRowLabel;
-	private JSpinner startRowSpinner;
-	private JLabel commentLineLabel;
-	private JTextField commentLineTextField;
+	// protected JTable aliasTable;
+	protected javax.swing.JScrollPane aliasScrollPane;
+	protected javax.swing.JPanel annotationAndOntologyImportPanel;
+	protected javax.swing.JButton arrowButton1;
+	protected javax.swing.JButton arrowButton2;
+	protected javax.swing.JPanel attr2annotationPanel;
+	protected javax.swing.JCheckBox transferNameCheckBox;
+	protected javax.swing.ButtonGroup attrTypeButtonGroup;
+	protected javax.swing.JLabel attribuiteLabel;
+	protected javax.swing.JLabel attributeFileLabel;
+	protected javax.swing.JPanel basicPanel;
+	protected javax.swing.JButton browseAnnotationButton;
+	protected javax.swing.JButton browseOntologyButton;
+	protected javax.swing.JButton cancelButton;
+	protected javax.swing.JCheckBox commaCheckBox;
+	protected javax.swing.JPanel delimiterPanel;
+	protected javax.swing.JRadioButton edgeRadioButton;
+	protected javax.swing.JButton helpButton;
+	protected javax.swing.JButton importButton;
+	protected javax.swing.JRadioButton networkRadioButton;
+	protected javax.swing.JComboBox mappingAttributeComboBox;
+	protected javax.swing.JLabel nodeKeyLabel;
+	protected javax.swing.JRadioButton nodeRadioButton;
+	protected javax.swing.JPanel ontology2annotationPanel;
+	protected javax.swing.JComboBox ontologyComboBox;
+	protected javax.swing.JComboBox ontologyInAnnotationComboBox;
+	protected javax.swing.JLabel ontologyInAnnotationLabel;
+	protected javax.swing.JLabel ontologyLabel;
+	protected javax.swing.JTextField otherDelimiterTextField;
+	protected javax.swing.JCheckBox otherCheckBox;
+	protected PreviewTablePanel previewPanel;
+	protected javax.swing.JLabel primaryKeyLabel;
+	protected javax.swing.JButton selectAttributeFileButton;
+	protected javax.swing.JCheckBox semicolonCheckBox;
+	protected javax.swing.JPanel simpleAttributeImportPanel;
+	protected javax.swing.JComboBox annotationComboBox;
+	protected javax.swing.JLabel sourceLabel;
+	protected javax.swing.JCheckBox spaceCheckBox;
+	protected javax.swing.JCheckBox tabCheckBox;
+	protected javax.swing.JTextField targetDataSourceTextField;
+	protected javax.swing.JLabel targetOntologyLabel;
+	protected javax.swing.JTextField ontologyTextField;
+	protected javax.swing.JCheckBox textImportCheckBox;
+	protected javax.swing.JPanel textImportOptionPanel;
+	protected javax.swing.JLabel titleIconLabel1;
+	protected javax.swing.JLabel titleIconLabel2;
+	protected javax.swing.JLabel titleIconLabel3;
+	protected javax.swing.JLabel titleLabel;
+	protected javax.swing.JSeparator titleSeparator;
+	protected JComboBox primaryKeyComboBox;
+	protected JLabel primaryLabel;
+	protected JPanel attrTypePanel;
+	protected javax.swing.JRadioButton showAllRadioButton;
+	protected javax.swing.JLabel counterLabel;
+	protected javax.swing.JRadioButton counterRadioButton;
+	protected javax.swing.JButton reloadButton;
+	protected javax.swing.JSpinner counterSpinner;
+	protected javax.swing.ButtonGroup importTypeButtonGroup;
+	protected JPanel attributeNamePanel;
+	protected JPanel previewOptionPanel;
+	protected JPanel networkImportOptionPanel;
+	protected JLabel defaultInteractionLabel;
+	protected JTextField defaultInteractionTextField;
+	protected JLabel startRowLabel;
+	protected JSpinner startRowSpinner;
+	protected JLabel commentLineLabel;
+	protected JTextField commentLineTextField;
 
 	// End of variables declaration
 	JStatusBar statusBar;
-	private NetworkImportOptionsPanel networkImportPanel;
+	protected NetworkImportOptionsPanel networkImportPanel;
 
-	// private DefaultTableModel model;
-	private AliasTableModel aliasTableModel;
-	private JTable aliasTable;
-	private JCheckBox importAllCheckBox;
+	// protected DefaultTableModel model;
+	protected AliasTableModel aliasTableModel;
+	protected JTable aliasTable;
+	protected JCheckBox importAllCheckBox;
 }
