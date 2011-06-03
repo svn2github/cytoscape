@@ -38,6 +38,7 @@ final class GSUtils {
 	}
 
 	public static boolean loginToGenomeSpace() {
+		org.genomespace.client.ConfigurationUrls.init("test");
 		for (;;) {
 			final GSLoginDialog loginDialog =
 				new GSLoginDialog(null, Dialog.ModalityType.APPLICATION_MODAL);

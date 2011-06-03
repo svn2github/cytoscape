@@ -15,7 +15,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import org.genomespace.datamanager.core.GSFileMetadata;
-import org.genomespace.datamanager.core.GSFileMetadataImpl;
 import org.genomespace.client.DataManagerClient;
 import org.genomespace.client.GsSession;
 import org.genomespace.client.User;
