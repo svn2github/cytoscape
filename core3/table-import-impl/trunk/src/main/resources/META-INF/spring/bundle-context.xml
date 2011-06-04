@@ -114,11 +114,14 @@
 		<constructor-arg value=".xls" />
 	</bean>
 
-
-	<!-- For Ontology Import -->
-	<bean id="importOntologyAndAnnotationTaskFactory"
-		class="org.cytoscape.tableimport.internal.task.ImportOntologyAndAnnotationTaskFactory">
-
+	
+	<bean id="ontologyAction" class="org.cytoscape.tableimport.internal.task.ImportOntologyAndAnnotationAction">
+		<constructor-arg ref="cyApplicationManagerRef" />
+		<constructor-arg ref="bookmarkServiceRef" />
+		<constructor-arg ref="bookmarksUtilServiceRef" />
+		<constructor-arg ref="guiTaskManagerServiceRef" />
+		<constructor-arg ref="oboReaderFactory" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
 </beans>
