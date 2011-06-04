@@ -373,7 +373,6 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	final CyNetworkView view = e.getNetworkView();
 
 	if (view == null) {
-	    logger.warn("Current network view is set to null.");
 	    return;
 	}
 
