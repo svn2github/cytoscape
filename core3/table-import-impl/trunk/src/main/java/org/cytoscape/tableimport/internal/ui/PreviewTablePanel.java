@@ -682,6 +682,8 @@ public class PreviewTablePanel extends JPanel {
 			TableCellRenderer renderer, int size, final String commentLineChar,
 			final int startLine) throws IOException {
 		
+		logger.debug("Loading preview: " + sourceURL);
+		
 		this.is = is;
 		this.fileType = fileType;
 		
@@ -702,9 +704,6 @@ public class PreviewTablePanel extends JPanel {
 					null, TextFileDelimiters.PIPE.toString());
 		}
 
-		/*
-		 * Reset current state
-		 */
 		for (int i = 0; i < tableTabbedPane.getTabCount(); i++)
 			tableTabbedPane.removeTabAt(i);
 
@@ -714,14 +713,22 @@ public class PreviewTablePanel extends JPanel {
 
 		fileTypeLabel.setVisible(true);
 
-		//if (sourceURL.toString().endsWith(
-		//		SupportedFileType.EXCEL.getExtension())
-		//		|| sourceURL.toString().endsWith(
-		//				SupportedFileType.OOXML.getExtension())) {		
-		if (this.fileType.equalsIgnoreCase(
-					SupportedFileType.EXCEL.getExtension())
-					|| this.fileType.equalsIgnoreCase(
-							SupportedFileType.OOXML.getExtension())) {
+		if(fileType == null) {
+			if(sourceURL == null)
+				return;
+			
+			fileTypeLabel.setText("Text File");
+			fileTypeLabel.setIcon(TEXT_FILE_ICON.getIcon());
+			newModel = parseText(sourceURL, size, curRenderer, delimiters, startLine);
+
+			String[] urlParts = sourceURL.toString().split("/");
+			final String tabName = urlParts[urlParts.length - 1];
+			DataTypeUtil.guessTypes(newModel, tabName, dataTypeMap);
+			listDataTypeMap.put(tabName, initListDataTypes(newModel));
+			addTableTab(newModel, tabName, curRenderer);
+			
+		} else if (fileType.equalsIgnoreCase(SupportedFileType.EXCEL.getExtension())
+				|| fileType.equalsIgnoreCase(SupportedFileType.OOXML.getExtension())) {
 			fileTypeLabel.setIcon(SPREADSHEET_ICON.getIcon());
 			fileTypeLabel.setText("Excel" + '\u2122' + " Workbook");			
 
@@ -747,7 +754,8 @@ public class PreviewTablePanel extends JPanel {
 			listDataTypeMap
 					.put(wb.getSheetName(0), initListDataTypes(newModel));
 			addTableTab(newModel, wb.getSheetName(0), curRenderer);
-		} else {// Should be text format "csv" or "tsv"
+		} else {
+			// Should be text format "csv" or "tsv"
 			//if (isCytoscapeAttributeFile(sourceURL)) {
 			//	fileTypeLabel.setText("Cytoscape Attribute File");
 			//	fileTypeLabel.setIcon(new ImageIcon(getClass()
@@ -768,11 +776,11 @@ public class PreviewTablePanel extends JPanel {
 			addTableTab(newModel, tabName, curRenderer);
 		}
 
-		//if (getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
-		//	fileTypeLabel.setText("Gene Association");
-		//	fileTypeLabel
-		//			.setToolTipText("This is a fixed-format Gene Association file.");
-		//}
+		if (getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
+			fileTypeLabel.setText("Gene Association");
+			fileTypeLabel
+					.setToolTipText("This is a fixed-format Gene Association file.");
+		}
 
 		loadFlag = true;
 	}

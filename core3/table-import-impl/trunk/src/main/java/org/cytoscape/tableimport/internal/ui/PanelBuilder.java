@@ -1,5 +1,7 @@
 package org.cytoscape.tableimport.internal.ui;
 
+import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.DB_OBJECT_SYNONYM;
+import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.TAXON;
 import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogColorTheme.ONTOLOGY_COLOR;
 import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogFontTheme.ITEM_FONT;
 import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogFontTheme.LABEL_FONT;
@@ -7,49 +9,84 @@ import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.L
 import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.REMOTE_SOURCE_ICON;
 import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.REMOTE_SOURCE_ICON_LARGE;
 
+import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import javax.xml.bind.JAXBException;
 
+import org.cytoscape.io.read.InputStreamTaskFactory;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.property.bookmark.Attribute;
+import org.cytoscape.property.bookmark.Bookmarks;
+import org.cytoscape.property.bookmark.BookmarksUtil;
+import org.cytoscape.property.bookmark.DataSource;
+import org.cytoscape.tableimport.internal.reader.TextTableReader;
+import org.cytoscape.tableimport.internal.task.ImportOntologyAndAnnotationTaskFactory;
+import org.cytoscape.tableimport.internal.task.RegisterOntologyTask;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TaskManager;
 import org.jdesktop.layout.GroupLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PanelBuilder {
+
+	private static final Logger logger = LoggerFactory.getLogger(PanelBuilder.class);
 	
 	private static final String GENE_ASSOCIATION = "gene_association";
 	private static final String DEF_ANNOTATION_ITEM = "Please select an annotation data source...";
 
-	
+	private static final Dimension MIN_SIZE = new Dimension(800, 600);
+
 	private String annotationHtml = "<html><body bgcolor=\"white\"><p><strong><font size=\"+1\" face=\"serif\"><u>%DataSourceName%</u></font></strong></p><br>"
-        + "<p><em>Annotation File URL</em>: <br><font color=\"blue\">%SourceURL%</font></p><br>"
-        + "<p><em>Data Format</em>: <font color=\"green\">%Format%</font></p><br>"
-        + "<p><em>Other Information</em>:<br>"
-        + "<table width=\"300\" border=\"0\" cellspacing=\"3\" cellpadding=\"3\">"
-        + "%AttributeTable%</table></p></body></html>";
-	
+			+ "<p><em>Annotation File URL</em>: <br><font color=\"blue\">%SourceURL%</font></p><br>"
+			+ "<p><em>Data Format</em>: <font color=\"green\">%Format%</font></p><br>"
+			+ "<p><em>Other Information</em>:<br>"
+			+ "<table width=\"300\" border=\"0\" cellspacing=\"3\" cellpadding=\"3\">"
+			+ "%AttributeTable%</table></p></body></html>";
+
 	/*
 	 * HTML strings for tool tip text
 	 */
 	private String ontologyHtml = "<html><body bgcolor=\"white\"><p><strong><font size=\"+1\" face=\"serif\"><u>%DataSourceName%</u></font></strong></p><br>"
-	                              + "<p><em>Data Source URL</em>: <br><font color=\"blue\">%SourceURL%</font></p><br><p><em>Description</em>:<br>"
-	                              + "<table width=\"300\" border=\"0\" cellspacing=\"3\" cellpadding=\"3\"><tr>"
-	                              + "<td rowspan=\"1\" colspan=\"1\">%Description%</td></tr></table></p></body></html>";
-
+			+ "<p><em>Data Source URL</em>: <br><font color=\"blue\">%SourceURL%</font></p><br><p><em>Description</em>:<br>"
+			+ "<table width=\"300\" border=\"0\" cellspacing=\"3\" cellpadding=\"3\"><tr>"
+			+ "<td rowspan=\"1\" colspan=\"1\">%Description%</td></tr></table></p></body></html>";
 
 	private final ImportTablePanel panel;
+
+	private final CyProperty<Bookmarks> bookmarksProp;
+	private final BookmarksUtil bkUtil;
 	
-	PanelBuilder(final ImportTablePanel panel) {
+	private final InputStreamTaskFactory factory;
+	private final TaskManager taskManager;
+	
+	private final CyNetworkManager manager;
+
+	PanelBuilder(final ImportTablePanel panel, final CyProperty<Bookmarks> bookmarksProp, final BookmarksUtil bkUtil,
+			final TaskManager taskManager, final InputStreamTaskFactory factory, final CyNetworkManager manager) {
 		this.panel = panel;
+		this.bookmarksProp = bookmarksProp;
+		this.bkUtil = bkUtil;
+		this.taskManager = taskManager;
+		this.factory = factory;
+		this.manager = manager;
 	}
-	
-	
+
 	protected void buildPanel() {
 
 		panel.titleIconLabel1.setIcon(REMOTE_SOURCE_ICON_LARGE.getIcon());
@@ -133,7 +170,9 @@ public class PanelBuilder {
 					cmp.setForeground(list.getForeground());
 				}
 
-				if (value.toString().equals(DEF_ANNOTATION_ITEM)) {
+				if (value == null)
+					cmp.setIcon(null);
+				else if (value.toString().equals(DEF_ANNOTATION_ITEM)) {
 					cmp.setIcon(null);
 				} else if ((url != null) && url.startsWith("http://")) {
 					cmp.setIcon(REMOTE_SOURCE_ICON.getIcon());
@@ -144,7 +183,7 @@ public class PanelBuilder {
 				return cmp;
 			}
 		});
-		
+
 		panel.annotationComboBox.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				annotationComboBoxActionPerformed(evt);
@@ -175,7 +214,8 @@ public class PanelBuilder {
 										.add(panel.ontologyComboBox, 0, 100, Short.MAX_VALUE))
 								.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 								.add(annotationAndOntologyImportPanelLayout.createParallelGroup(GroupLayout.LEADING)
-										.add(panel.browseAnnotationButton).add(panel.browseOntologyButton)).addContainerGap()));
+										.add(panel.browseAnnotationButton).add(panel.browseOntologyButton))
+								.addContainerGap()));
 		annotationAndOntologyImportPanelLayout.setVerticalGroup(annotationAndOntologyImportPanelLayout
 				.createParallelGroup(GroupLayout.LEADING).add(
 						annotationAndOntologyImportPanelLayout
@@ -185,23 +225,27 @@ public class PanelBuilder {
 										.createParallelGroup(GroupLayout.CENTER)
 										.add(panel.sourceLabel)
 										.add(panel.browseAnnotationButton)
-										.add(panel.annotationComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE))
+										.add(panel.annotationComboBox, GroupLayout.PREFERRED_SIZE,
+												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 								.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 								.add(annotationAndOntologyImportPanelLayout
 										.createParallelGroup(GroupLayout.CENTER)
 										.add(panel.ontologyLabel)
-										.add(panel.ontologyComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE).add(panel.browseOntologyButton))
+										.add(panel.ontologyComboBox, GroupLayout.PREFERRED_SIZE,
+												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.add(panel.browseOntologyButton))
 								.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
+		panel.setSize(MIN_SIZE);
+		panel.setMinimumSize(MIN_SIZE);
+		panel.setPreferredSize(MIN_SIZE);
 	}
-	
+
 	private void ontologyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		panel.ontologyComboBox.setToolTipText(getOntologyTooltip());
 		panel.ontologyTextField.setText(panel.ontologyComboBox.getSelectedItem().toString());
 	}
-	
+
 	private String getOntologyTooltip() {
 		final String key = panel.ontologyComboBox.getSelectedItem().toString();
 		String tooltip = ontologyHtml.replace("%DataSourceName%", key);
@@ -219,11 +263,10 @@ public class PanelBuilder {
 			return tooltip.replace("%SourceURL%", "N/A");
 		}
 	}
-	
+
 	private void annotationComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		if (panel.annotationComboBox.getSelectedItem().toString().equals(DEF_ANNOTATION_ITEM)) {
 			panel.annotationComboBox.setToolTipText(null);
-
 			return;
 		}
 
@@ -238,7 +281,7 @@ public class PanelBuilder {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private String getAnnotationTooltip() {
 		final String key = panel.annotationComboBox.getSelectedItem().toString();
 		String tooltip = annotationHtml.replace("%DataSourceName%", key);
@@ -267,8 +310,7 @@ public class PanelBuilder {
 
 			for (String anno : annotations.keySet()) {
 				table.append("<tr>");
-				table.append("<td><strong>" + anno + "</strong></td><td>" + annotations.get(anno)
-				             + "</td>");
+				table.append("<td><strong>" + anno + "</strong></td><td>" + annotations.get(anno) + "</td>");
 				table.append("</tr>");
 			}
 
@@ -277,7 +319,7 @@ public class PanelBuilder {
 
 		return tooltip.replace("%AttributeTable%", "");
 	}
-	
+
 	private void browseAnnotationButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		DataSourceSelectDialog dssd = new DataSourceSelectDialog(DataSourceSelectDialog.ANNOTATION_TYPE,
 				CytoscapeServices.desktop.getJFrame(), true);
@@ -293,7 +335,7 @@ public class PanelBuilder {
 			panel.annotationComboBox.setToolTipText(getAnnotationTooltip());
 		}
 	}
-	
+
 	private void browseOntologyButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		DataSourceSelectDialog dssd = new DataSourceSelectDialog(DataSourceSelectDialog.ONTOLOGY_TYPE,
 				CytoscapeServices.desktop.getJFrame(), true);
@@ -310,4 +352,246 @@ public class PanelBuilder {
 		}
 	}
 
+	protected void setOntologyComboBox() {
+		final Bookmarks bookmarks = bookmarksProp.getProperties();
+		final List<DataSource> annotations = bkUtil.getDataSourceList("ontology", bookmarks.getCategory());
+		String key = null;
+
+		// final Set<String> ontologyNames =
+		// Cytoscape.getOntologyServer().getOntologyNames();
+
+		for (DataSource source : annotations) {
+			key = source.getName();
+			panel.ontologyComboBox.addItem(key);
+			panel.ontologyUrlMap.put(key, source.getHref());
+			panel.ontologyDescriptionMap.put(key, bkUtil.getAttribute(source, "description"));
+			panel.ontologyTypeMap.put(key, bkUtil.getAttribute(source, "ontologyType"));
+		}
+
+		panel.ontologyComboBox.setToolTipText(getOntologyTooltip());
+	}
+
+	protected void setAnnotationComboBox() throws JAXBException, IOException {
+		final Bookmarks bookmarks = bookmarksProp.getProperties();
+		final List<DataSource> annotations = bkUtil.getDataSourceList("annotation", bookmarks.getCategory());
+		String key = null;
+
+		panel.annotationComboBox.addItem(DEF_ANNOTATION_ITEM);
+
+		for (DataSource source : annotations) {
+			key = source.getName();
+			panel.annotationComboBox.addItem(key);
+			panel.annotationUrlMap.put(key, source.getHref());
+			panel.annotationFormatMap.put(key, source.getFormat());
+
+			final Map<String, String> attrMap = new HashMap<String, String>();
+
+			for (Attribute attr : source.getAttribute())
+				attrMap.put(attr.getName(), attr.getContent());
+
+			panel.annotationAttributesMap.put(key, attrMap);
+		}
+
+		panel.annotationComboBox.setToolTipText(getAnnotationTooltip());
+	}
+
+	protected void buildAnnotationPanel() {
+		panel.ontology2annotationPanel.setBackground(new java.awt.Color(250, 250, 250));
+		panel.ontology2annotationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
+				new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED),
+				"Annotation File to Ontology Mapping", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+				javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 11)));
+		panel.targetOntologyLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
+		panel.targetOntologyLabel.setForeground(new java.awt.Color(73, 127, 235));
+		panel.targetOntologyLabel.setText("Ontology");
+
+		panel.ontologyTextField.setFont(new java.awt.Font("SansSerif", 1, 14));
+		panel.ontologyTextField.setForeground(ONTOLOGY_COLOR.getColor());
+		panel.ontologyTextField.setBackground(Color.WHITE);
+		panel.ontologyTextField.setEditable(false);
+		panel.ontologyTextField.setToolTipText("This ontology will be used for mapping.");
+
+		panel.ontologyInAnnotationLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
+		panel.ontologyInAnnotationLabel.setForeground(new java.awt.Color(0, 255, 255));
+		panel.ontologyInAnnotationLabel.setText("Key Column in Annotation File");
+
+		panel.ontologyInAnnotationComboBox.setForeground(ONTOLOGY_COLOR.getColor());
+		panel.ontologyInAnnotationComboBox.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				ontologyInAnnotationComboBoxActionPerformed(evt);
+			}
+		});
+
+		panel.arrowButton2.setBackground(new java.awt.Color(250, 250, 250));
+		panel.arrowButton2.setIcon(new javax.swing.ImageIcon(getClass().getClassLoader().getResource(
+				"images/ximian/stock_right-16.png")));
+		panel.arrowButton2.setBorder(null);
+		panel.arrowButton2.setBorderPainted(false);
+
+		GroupLayout ontology2annotationPanelLayout = new GroupLayout(panel.ontology2annotationPanel);
+		panel.ontology2annotationPanel.setLayout(ontology2annotationPanelLayout);
+		ontology2annotationPanelLayout.setHorizontalGroup(ontology2annotationPanelLayout.createParallelGroup(
+				GroupLayout.LEADING).add(
+				ontology2annotationPanelLayout
+						.createSequentialGroup()
+						.addContainerGap()
+						.add(ontology2annotationPanelLayout.createParallelGroup(GroupLayout.LEADING)
+								.add(panel.ontologyInAnnotationLabel)
+								.add(panel.ontologyInAnnotationComboBox, 0, 100, Short.MAX_VALUE))
+						.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+						.add(panel.arrowButton2)
+						.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+						.add(ontology2annotationPanelLayout.createParallelGroup(GroupLayout.TRAILING)
+								.add(GroupLayout.LEADING, panel.targetOntologyLabel)
+								.add(panel.ontologyTextField, GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
+						.addContainerGap()));
+		ontology2annotationPanelLayout.setVerticalGroup(ontology2annotationPanelLayout.createParallelGroup(
+				GroupLayout.LEADING).add(
+				ontology2annotationPanelLayout
+						.createSequentialGroup()
+						.add(ontology2annotationPanelLayout.createParallelGroup(GroupLayout.BASELINE)
+								.add(panel.ontologyInAnnotationLabel).add(panel.targetOntologyLabel))
+						.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+						.add(ontology2annotationPanelLayout
+								.createParallelGroup(GroupLayout.BASELINE)
+								.add(panel.ontologyInAnnotationComboBox, GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.add(panel.ontologyTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE).add(panel.arrowButton2))
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+
+	}
+	
+	private void ontologyInAnnotationComboBoxActionPerformed(ActionEvent evt) {
+		
+		final int ontologyCol = panel.ontologyInAnnotationComboBox.getSelectedIndex();
+		final List<Integer> gaAlias = new ArrayList<Integer>();
+		gaAlias.add(DB_OBJECT_SYNONYM.getPosition());
+		panel.previewPanel.getPreviewTable().setDefaultRenderer(
+				Object.class,
+				new AttributePreviewTableCellRenderer(panel.keyInFile, gaAlias, ontologyCol, TAXON.getPosition(),
+						panel.importFlag, panel.listDelimiter));
+
+//		try {
+//			if ((dialogType == SIMPLE_ATTRIBUTE_IMPORT) || (dialogType == NETWORK_IMPORT)) {
+//				setStatusBar(new URL(targetDataSourceTextField.getText()));
+//			} else {
+//				setStatusBar(new URL(annotationUrlMap.get(annotationComboBox.getSelectedItem().toString())));
+//			}
+//		} catch (MalformedURLException e) {
+//			e.printStackTrace();
+//		}
+
+		panel.previewPanel.repaint();
+	}
+	
+	/**
+	 * Create task for annotation reader and run it.
+	 *
+	 * @param reader
+	 * @param ontology
+	 * @param source
+	 */
+	private void loadGeneAssociation(TextTableReader reader, String ontology, String source) {
+		/*
+		// Create LoadNetwork Task
+		ImportOntologyAnnotationTask task = new ImportOntologyAnnotationTask(reader, ontology,
+		                                                                     source);
+
+		// Configure JTask Dialog Pop-Up Box
+		JTaskConfig jTaskConfig = new JTaskConfig();
+		jTaskConfig.setOwner(CytoscapeServices.desktop.getJFrame());
+		jTaskConfig.displayCloseButton(true);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(false);
+
+		// Execute Task in New Thread; pops open JTask Dialog Box.
+		TaskManager.executeTask(task, jTaskConfig);
+		*/
+	}
+
+	
+	/**
+	 * Create task for ontology reader and run the task.<br>
+	 *
+	 * @param dataSource
+	 * @param ontologyName
+	 * @throws IOException 
+	 */
+	private void loadOntology(final String dataSource, final String ontologyName) throws IOException {
+		logger.debug("Target OBO URL = " + dataSource);
+		final URL url = new URL(dataSource);
+		ImportOntologyAndAnnotationTaskFactory taskFactory = new ImportOntologyAndAnnotationTaskFactory(manager, factory, url.openStream(), ontologyName);
+		taskManager.execute(taskFactory);
+	}
+	
+	protected void importOntologyAndAnnotation() throws IOException {
+		
+		logger.debug("Start loading Ontology and Annotation.");
+		
+		final String selectedOntologyName = panel.ontologyComboBox.getSelectedItem().toString();
+		final String ontologySourceLocation = panel.ontologyUrlMap.get(selectedOntologyName);
+
+		// If selected ontology is not loaded, load it first.
+		//TODO: add manager
+//		if (Cytoscape.getOntologyServer().getOntologyNames().contains(selectedOntologyName) == false)
+		loadOntology(ontologySourceLocation, selectedOntologyName);
+
+		final String annotationSource = panel.annotationUrlMap.get(panel.annotationComboBox.getSelectedItem());
+		final URL annotationSourceUrl = new URL(annotationSource);
+
+		if(panel.previewPanel.getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
+			/*
+			 * This is a Gene Association file.
+			 */
+			/*
+			GeneAssociationReader gaReader = null;
+			keyInFile = this.primaryKeyComboBox.getSelectedIndex();
+
+			InputStream is = null;
+			try {
+				is = URLUtil.getInputStream(annotationSourceUrl);
+				gaReader = new GeneAssociationReader(selectedOntologyName,
+													 is, mappingAttribute,
+													 importAll, keyInFile,
+													 caseSensitive);
+			}
+			catch (Exception e) {
+				if (is != null) {
+					is.close();
+				}
+				throw e;
+			}
+
+			loadGeneAssociation(gaReader, selectedOntologyName, annotationSource);
+			*/
+		} else {
+			/*
+			 * This is a custom annotation file.
+			 */
+			/*
+			final int ontologyIndex = ontologyInAnnotationComboBox.getSelectedIndex();
+
+			final AttributeAndOntologyMappingParameters aoMapping = new AttributeAndOntologyMappingParameters(objType,
+			                                                                                                  checkDelimiter(),
+			                                                                                                  listDelimiter,
+			                                                                                                  keyInFile,
+			                                                                                                  mappingAttribute,
+			                                                                                                  aliasList,
+			                                                                                                  attributeNames,
+			                                                                                                  attributeTypes,
+			                                                                                                  listDataTypes,
+			                                                                                                  importFlag,
+			                                                                                                  ontologyIndex,
+			                                                                                                  selectedOntologyName,
+																											  caseSensitive);
+			final OntologyAnnotationReader oaReader = new OntologyAnnotationReader(annotationSourceUrl,
+			                                                                       aoMapping,
+			                                                                       commentChar,
+			                                                                       startLineNumber);
+
+			loadAnnotation(oaReader, annotationSource);
+			*/
+		}
+	}
 }
