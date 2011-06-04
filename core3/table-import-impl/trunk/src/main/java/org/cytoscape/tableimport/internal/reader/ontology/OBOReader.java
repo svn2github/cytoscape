@@ -116,8 +116,9 @@ public class OBOReader extends AbstractTask implements CyNetworkReader {
 
 		networks[0] = this.ontologyDAG;
 		
-		termID2nodeMap.clear();
 		logger.debug("Number of terms loaded = " + this.termID2nodeMap.size());
+		termID2nodeMap.clear();
+		
 	}
 
 	private void parseHeader(final String line) {
@@ -192,7 +193,7 @@ public class OBOReader extends AbstractTask implements CyNetworkReader {
 					termNode = this.ontologyDAG.addNode();
 					termNode.getCyRow().set(CyTableEntry.NAME, val);
 					termID2nodeMap.put(val, termNode);
-					id = val;
+					id = val;					
 				}
 			} else if (key.equals(NAME.toString())) {
 				// Name column is used in Cytoscape core, so use different tag instead.
