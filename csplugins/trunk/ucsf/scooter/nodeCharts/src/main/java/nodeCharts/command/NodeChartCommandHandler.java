@@ -309,6 +309,15 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 					String command = chart.substring(12,chart.lastIndexOf('_'));
 					// Get the command args
 					Map<String,Object> args = nodeAttributes.getMapAttribute(nodeName, chart);
+					/* 
+					 * Watch out for inconsistent nodelist-network assignments in
+					 * chartlist attr. These can arise, e.g., when metanode children
+					 * are assigned to parent network (i.e., expanded) or to nested
+					 * networks, making former chart commands invalid.
+					 */
+					if (!((String) args.get("network")).equals(view.getNetwork().getTitle())){
+						continue;
+					}
 					// Execute it
 					CyCommandResult comResult = executeNodeChart(command, args, false);
 					resultList.add(comResult);
@@ -372,13 +381,13 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 	}
 
 	private CyNetworkView getNetworkView(String command, Map<String, Object> args) throws CyCommandException {
-		String netviewName = getArg(command, NodeChartCommandHandler.NETWORK, args);
-		if (netviewName == null || netviewName.equals(NodeChartCommandHandler.CURRENT))
+		String netName = getArg(command, NodeChartCommandHandler.NETWORK, args);
+		if (netName == null || netName.equals(NodeChartCommandHandler.CURRENT))
 			return Cytoscape.getCurrentNetworkView();
 
-		CyNetworkView netview = Cytoscape.getNetworkView(netviewName);
+		CyNetworkView netview = Cytoscape.getNetworkView(netName);
 		if (netview == Cytoscape.getNullNetworkView())
-			throw new CyCommandException(namespace.getNamespaceName()+": no such network "+netviewName);
+			throw new CyCommandException(namespace.getNamespaceName()+": no such network "+netName);
 
 		return netview;
 	}
