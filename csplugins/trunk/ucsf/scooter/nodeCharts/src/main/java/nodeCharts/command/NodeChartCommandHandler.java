@@ -120,13 +120,12 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 	public CyCommandResult execute(String command, Map<String, Object>args)
                                                       throws CyCommandException, RuntimeException {
 
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
-		return executeNodeChart(command, args, true, view);
+		return executeNodeChart(command, args, true);
 	}
 
 
 	private CyCommandResult executeNodeChart(String command, Map<String, Object>args, 
-	                                         boolean saveCommand, CyNetworkView view)
+	                                         boolean saveCommand)
                                                       throws CyCommandException, RuntimeException {
 		CyCommandResult result = new CyCommandResult();
 
@@ -144,10 +143,11 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 		}
 
 		CyNetwork network = getNetwork(command, args);
+		CyNetworkView view = getNetworkView(command, args);
 		List<CyNode> nodeList = getNodeList(network, result, args);
 		if (nodeList == null)
 			throw new CyCommandException("can't find node(s) or none specified");
-
+		
 		// Handle built-ins
 		if (command.equals(CLEAR)) {
 			for (CyNode node: nodeList) {
@@ -309,7 +309,7 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 					// Get the command args
 					Map<String,Object> args = nodeAttributes.getMapAttribute(nodeName, chart);
 					// Execute it
-					CyCommandResult comResult = executeNodeChart(command, args, false, view);
+					CyCommandResult comResult = executeNodeChart(command, args, false);
 					resultList.add(comResult);
 				}
 			}
@@ -368,6 +368,18 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 			throw new CyCommandException(namespace.getNamespaceName()+": no such network "+netName);
 
 		return net;
+	}
+
+	private CyNetworkView getNetworkView(String command, Map<String, Object> args) throws CyCommandException {
+		String netviewName = getArg(command, NodeChartCommandHandler.NETWORK, args);
+		if (netviewName == null || netviewName.equals(NodeChartCommandHandler.CURRENT))
+			return Cytoscape.getCurrentNetworkView();
+
+		CyNetworkView netview = Cytoscape.getNetworkView(netviewName);
+		if (netview == Cytoscape.getNullNetworkView())
+			throw new CyCommandException(namespace.getNamespaceName()+": no such network "+netviewName);
+
+		return netview;
 	}
 
 	private String makeNodeList(Collection<CyNode>nodes) {
