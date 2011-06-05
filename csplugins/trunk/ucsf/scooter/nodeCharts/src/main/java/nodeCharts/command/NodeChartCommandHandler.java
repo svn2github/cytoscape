@@ -107,7 +107,8 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 		addDescription(CLEAR, "Remove all charts from a node");
 		addArgument(CLEAR, NODE);
 		addArgument(CLEAR, NODELIST, SELECTED);
-
+		addArgument(CLEAR, NETWORK, CURRENT);
+		
 		addDescription(LIST, "List available chart types");
 		addArgument(LIST);
 	}
