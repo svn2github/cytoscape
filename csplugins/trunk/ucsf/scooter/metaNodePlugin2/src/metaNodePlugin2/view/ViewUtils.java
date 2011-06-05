@@ -35,6 +35,7 @@ package metaNodePlugin2.view;
 // System imports
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 import java.awt.Color;
 import java.awt.Dimension;
 
@@ -48,6 +49,7 @@ import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualPropertyType;
 import cytoscape.data.CyAttributes;
 
 import cytoscape.groups.CyGroup;
@@ -114,8 +116,7 @@ public class ViewUtils {
 			NestedNetworkView.create(group, view, opacity);
 		} else {
 			// Set the opacity, if desired
-			if (opacity != 1.0)
-				setOpacity(groupNode, view, opacity);
+			setOpacity(groupNode, view, opacity);
 		}
 	}
 
@@ -280,7 +281,13 @@ public class ViewUtils {
 			if (tp != newTp) {
 				nView.setUnselectedPaint(new Color(oldPaint.getRed(), oldPaint.getGreen(),
 				                                   oldPaint.getBlue(), newTp));
-				// Should we set the node.opacity override?
+				// Set the node.opacity attr
+				Cytoscape.getNodeAttributes().setAttribute(
+						node.getIdentifier(), 
+						VisualPropertyType.NODE_OPACITY.getBypassAttrName(), 
+						Double.toString(opacity));
+				List<VisualPropertyType> vplist = new ArrayList<VisualPropertyType>();
+				vplist.add(VisualPropertyType.NODE_OPACITY);
 			}
 		}
 	}

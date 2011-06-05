@@ -45,7 +45,6 @@ public class NestedNetworkView {
 	static private Map<CyGroup, CyNetworkView> nnMap = new HashMap<CyGroup, CyNetworkView>();
 
 	public static void create(CyGroup group, CyNetworkView view, double opacity) {
-		//TODO: nothing happens with opacity here...
 		
 		// Get the network
 		CyNetwork nn = group.getGraphPerspective();
@@ -77,6 +76,9 @@ public class NestedNetworkView {
 
 		// Set it as a nested network
 		group.getGroupNode().setNestedNetwork(nn);
+		
+		// Set opacity
+		ViewUtils.setOpacity(group.getGroupNode(), view, opacity);
 
 		// Update the size of our group node to match the bounding box
 		// Actually, this doesn't work.  If our bounding box is not square
