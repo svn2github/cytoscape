@@ -166,8 +166,12 @@ public class MetaNodeManager {
 	}
 	static public void expandAll(CyNetworkView view) {
 		CyNetworkView nView = view;
+		CyNetwork network = view.getNetwork();
 		Collection<MetaNode> metaNodes = metaMap.values();
 		for (MetaNode mNode: metaNodes) {
+			CyNetwork groupNetwork =  mNode.getCyGroup().getNetwork();
+			if (!network.equals(groupNetwork))
+				continue;
 			if (mNode.isHidden())
 				continue;
 			if (mNode.isCollapsed())
@@ -192,8 +196,12 @@ public class MetaNodeManager {
 	}
 	static public void collapseAll(CyNetworkView view) {
 		CyNetworkView nView = view;
+		CyNetwork network = view.getNetwork();
 		Collection<MetaNode> metaNodes = metaMap.values();
 		for (MetaNode mNode: metaNodes) {
+			CyNetwork groupNetwork =  mNode.getCyGroup().getNetwork();
+			if (!network.equals(groupNetwork))
+				continue;
 			if (!mNode.isCollapsed())
 				mNode.getCyGroup().setState(MetaNodePlugin2.COLLAPSED);
 		}
