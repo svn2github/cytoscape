@@ -570,6 +570,10 @@ public class MetanodeSettingsDialog extends JDialog
 				MetaNode mn = MetaNodeManager.getMetaNode(node);
 				if (mn != null) {
 					updateMetaNodeSettings(mn);
+				} else {
+					for (CyGroup gn :node.getGroups()){
+						updateMetaNodeSettings(MetaNodeManager.getMetaNode(gn));
+					}
 				}
 			}
 			setVisible(false);

@@ -226,6 +226,8 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		if (args.containsKey(METANODE) && !Command.CREATE.equals(command)) {
 			String metanodeName = (String)args.get(METANODE);
 			metaGroup = CyGroupManager.findGroup(metanodeName);
+			if (metaGroup == null)
+				throw new RuntimeException("metanode: can't find metagroup "+metanodeName);
 			metaNode = MetaNodeManager.getMetaNode(metaGroup);
 			if (metaNode == null)
 				throw new RuntimeException("metanode: can't find metanode "+metanodeName);
@@ -608,6 +610,10 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 				MetaNode mn = MetaNodeManager.getMetaNode(node);
 				if (mn != null) {
 					settingsDialog.updateMetaNodeSettings(mn);
+				} else {
+					for (CyGroup gn :node.getGroups()){
+						settingsDialog.updateMetaNodeSettings(MetaNodeManager.getMetaNode(gn));
+					}
 				}
 			}
 		} else if (Command.SETAGGOVERRIDE.equals(command)) {
