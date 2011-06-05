@@ -610,7 +610,7 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 				MetaNode mn = MetaNodeManager.getMetaNode(node);
 				if (mn != null) {
 					settingsDialog.updateMetaNodeSettings(mn);
-				} else {
+				} else if (node.getGroups() != null) {
 					for (CyGroup gn :node.getGroups()){
 						settingsDialog.updateMetaNodeSettings(MetaNodeManager.getMetaNode(gn));
 					}
