@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Built-By: ruschein
+Build-Jdk: 1.6.0_24
+Bundle-Version: 1.0.0.SNAPSHOT
+Tool: Bnd-1.15.0
+Bundle-Name: cytoscape.genomespace-plugin-cytoscape3 [cytoscape]
+Bnd-LastModified: 1307381966791
+Created-By: Apache Maven Bundle Plugin
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: cytoscape.genomespace-plugin-cytoscape3
+Import-Package: javax.swing,org.cytoscape.application.swing,org.cytosc
+ ape.session
+
