@@ -77,7 +77,12 @@ public class BitmapWriter extends AbstractTask implements CyWriter {
 		final int finalW = ((Number)(width.getValue()*scale)).intValue();
 		final int finalH = ((Number)(height.getValue()*scale)).intValue();
 
-		ImageIO.write(((BufferedImage) re.createImage(finalW, finalH)),
-				extension, outStream);
+		try {
+			ImageIO.write(((BufferedImage) re.createImage(finalW, finalH)),
+					extension, outStream);			
+		}
+		finally {
+			outStream.close();
+		}		
 	}
 }
