@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cytoscape Web: SVG prototype</title>
+		<style>
+			#container-div {
+				width: 400px;
+				margin: 30px auto;
+			}
+		</style>
+		<script type="text/javascript" src="raphael-1.5.2-min.js"></script>
+		<script type="text/javascript" src="cytoscapeweb-svg.js"></script>
+		<script type="text/javascript">
+			
+			window.onload = function() {
+
+				var vis = new Visualization("container-div");
+				
+				// Using the network object model
+				var node1 = vis.addNode("n1");
+				node1.setPosition(70, 120);
+				var node2 = vis.addNode("n2");
+				node2.setPosition(220, 90);
+				var node3 = vis.addNode("n3");
+				node3.setPosition(280, 280);
+				var node4 = vis.addNode("n4");
+				node4.setPosition(290, 120);
+				
+				vis.addEdge("e1", node1, node2);
+				vis.addEdge("e2", node2, node3);
+				vis.addEdge("e3", node1, node3);
+				vis.addEdge("e4", node2, node4);
+				vis.addEdge("e5", node3, node4);
+				
+				// Using visualStyle
+				vis.visualStyle({edges: {color: "teal"}});
+				
+				vis.draw();
+				
+				window.vis = vis; // for console testing
+				
+			}
+				
+
+		</script>
+	</head>
+	<body>
+		<div id="container-div"></div>
+	</body>
+</html>
