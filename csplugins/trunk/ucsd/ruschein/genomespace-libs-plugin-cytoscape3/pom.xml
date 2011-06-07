@@ -112,6 +112,23 @@
 			<name>Cytoscape Releases</name>
 			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
 		</repository>
+		<repository>
+			<id>cytoscape_thirdparty</id>
+			<snapshots>
+			  <enabled>false</enabled>
+			</snapshots>
+			<releases>            
+				<enabled>true</enabled>
+			</releases>
+			<name>Cytoscape Third Party</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/thirdparty/</url>
+		</repository>
+		<!-- Other Maven repositories. -->
+		<repository>
+			<id>java.net</id>
+			<name>Java.net</name>
+			<url>http://download.java.net/maven/2/</url>
+		</repository>
 	</repositories>
 
 	<!-- Dependencies needed to compile this project. -->
