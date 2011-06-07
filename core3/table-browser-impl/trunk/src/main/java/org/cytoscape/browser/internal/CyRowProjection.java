@@ -33,23 +33,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 
 
-/**
- * This class represents one row in a CyTableProjection.
- */
-public final class CyRowProjection implements CyRow {
-	private final CyTableProjection table;
-	private final CyRow row;
+final class CyRowProjection implements CyRow {
+	private final CyTableProjection tableProjection;
+	private final CyRow underlyingRow;
 
-	public CyRowProjection(final CyTableProjection table, final CyRow row) {
-		this.table = table;
-		this.row   = row;
+	CyRowProjection(final CyTableProjection tableProjection, final CyRow underlyingRow) {
+		this.tableProjection = tableProjection;
+		this.underlyingRow   = underlyingRow;
 	}
-
 	/**
 	 * Returns the value found for this row in the specified column
 	 * with the specified type.
@@ -59,7 +54,15 @@ public final class CyRowProjection implements CyRow {
 	 * Please not that this method cannot be used to retrieve values that are Lists!
 	 */
 	public <T> T get(final String columnName, final Class<?extends T> type) {
-		return table.getColumn(columnName) == null ? null : row.get(columnName, type);
+		checkColumnName(columnName);
+		return underlyingRow.get(columnName, type);
+	}
+
+	private void checkColumnName(final String columnName) {
+		if (!tableProjection.getColumnNames().contains(columnName))
+			throw new IllegalArgumentException("\"" + columnName
+							   + "\" is not a valid column in the \""
+							   + tableProjection.getTitle() + "\" table!");
 	}
 
 	/**
@@ -71,7 +74,8 @@ public final class CyRowProjection implements CyRow {
 	 * Please not that this method can only be used to retrieve values that are Lists!
 	 */
 	public <T> List<T> getList(final String columnName, final Class<T> listElementType) {
-		return table.getColumn(columnName) == null ? null : row.getList(columnName, listElementType);
+		checkColumnName(columnName);
+		return underlyingRow.getList(columnName, listElementType);
 	}
 
 	/**
@@ -84,7 +88,8 @@ public final class CyRowProjection implements CyRow {
 	 * {@link CyTable#createListColumn}!
 	 */
 	public <T> void set(final String columnName, final T value) {
-		throw new UnsupportedOperationException("set() not supported in CyRowProjection!");
+		checkColumnName(columnName);
+		underlyingRow.set(columnName, value);
 	}
 
 	/**
@@ -95,7 +100,8 @@ public final class CyRowProjection implements CyRow {
 	 * of the specified type is not null.
 	 */
 	public boolean isSet(final String columnName) {
-		return table.getColumn(columnName) == null ? false : row.isSet(columnName);
+		checkColumnName(columnName);
+		return underlyingRow.isSet(columnName);
 	}
 
 	/**
@@ -105,14 +111,14 @@ public final class CyRowProjection implements CyRow {
 	 * contained in this Row.
 	 */
 	public Map<String, Object> getAllValues() {
-		final Map<String, Object> values = new HashMap<String, Object>();
-		final Set<String> validColumnNames = table.getColumnNames();
-		for (final Map.Entry<String, Object> nameAndValue : row.getAllValues().entrySet()) {
-			if (validColumnNames.contains(nameAndValue.getKey()))
-				values.put(nameAndValue.getKey(), nameAndValue.getValue());
+		final Map<String, Object> nameToValueMap = new HashMap<String, Object>();
+		final Set<String> validNames = tableProjection.getColumnNames();
+		for (final Map.Entry<String, Object> nameAndValue : underlyingRow.getAllValues().entrySet()) {
+			if (validNames.contains(nameAndValue.getKey()))
+				nameToValueMap.put(nameAndValue.getKey(), nameAndValue.getValue());
 		}
 
-		return values;
+		return nameToValueMap;
 	}
 
 	/**
@@ -121,7 +127,8 @@ public final class CyRowProjection implements CyRow {
 	 * @return The row Object that represents the value in a column.
 	 */
 	public Object getRaw(final String columnName) {
-		return table.getColumn(columnName) == null ? false : row.getRaw(columnName);
+		checkColumnName(columnName);
+		return underlyingRow.getRaw(columnName);
 	}
 
 	/**
@@ -129,6 +136,6 @@ public final class CyRowProjection implements CyRow {
 	 * @return the {@link CyTable} that this row belongs to.
 	 */
 	public CyTable getTable() {
-		return table;
+		return  tableProjection;
 	}
 }
