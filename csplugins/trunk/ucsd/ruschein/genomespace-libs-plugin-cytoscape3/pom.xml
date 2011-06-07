@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<properties>
-		<bundle.symbolicName>org.cytoscape.genomespace</bundle.symbolicName>
+		<bundle.symbolicName>genomespacelibsplugin</bundle.symbolicName>
 		<bundle.namespace>org.cytoscape</bundle.namespace>
 	</properties>
 
@@ -133,33 +133,6 @@
 
 	<!-- Dependencies needed to compile this project. -->
 	<dependencies>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>model-api</artifactId>
-			<version>3.0.0-alpha4</version>
-		</dependency>
-
-		<!-- Logging -->
-		<dependency>
-			<groupId>org.ops4j.pax.logging</groupId>
-			<artifactId>pax-logging-api</artifactId>
-			<version>1.5.2</version>
-			<scope>provided</scope>
-		</dependency>
-		
-		<!-- dependencies specifically for unit testing -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>test-support</artifactId>
-			<version>3.0.0-alpha2</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 </project>
