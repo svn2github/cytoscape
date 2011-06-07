@@ -28,16 +28,23 @@
 package org.cytoscape.tableimport.internal.ui;
 
 
-import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.DB_OBJECT_SYMBOL;
-import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.DB_OBJECT_SYNONYM;
-import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.GO_ID;
-import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.TAXON;
 import static org.cytoscape.tableimport.internal.reader.TextFileDelimiters.PIPE;
 import static org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType.EDGE;
 import static org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType.NETWORK;
 import static org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType.NODE;
+import static org.cytoscape.tableimport.internal.reader.ontology.GeneAssociationTag.DB_OBJECT_SYMBOL;
+import static org.cytoscape.tableimport.internal.reader.ontology.GeneAssociationTag.DB_OBJECT_SYNONYM;
+import static org.cytoscape.tableimport.internal.reader.ontology.GeneAssociationTag.GO_ID;
+import static org.cytoscape.tableimport.internal.reader.ontology.GeneAssociationTag.TAXON;
 import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogFontTheme.TITLE_FONT;
-import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.*;
+import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.BOOLEAN_ICON;
+import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.FLOAT_ICON;
+import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.ID_ICON;
+import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.INT_ICON;
+import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.LIST_ICON;
+import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.RIGHT_ARROW_ICON;
+import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.SPREADSHEET_ICON_LARGE;
+import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogIconSets.STRING_ICON;
 
 import java.awt.Color;
 import java.awt.Component;

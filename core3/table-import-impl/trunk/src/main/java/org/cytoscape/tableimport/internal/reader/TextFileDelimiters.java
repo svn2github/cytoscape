@@ -40,10 +40,6 @@ package org.cytoscape.tableimport.internal.reader;
 /**
  * Define text file delimiters as enum.
  *
- * @since Cytoscape 2.4
- * @version 0.9
- * @author Keiichiro Ono
- *
  */
 public enum TextFileDelimiters {
 	TAB("\\t"),

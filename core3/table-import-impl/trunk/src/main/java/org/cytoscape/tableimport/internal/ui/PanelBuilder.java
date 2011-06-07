@@ -1,7 +1,7 @@
 package org.cytoscape.tableimport.internal.ui;
 
-import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.DB_OBJECT_SYNONYM;
-import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.TAXON;
+import static org.cytoscape.tableimport.internal.reader.ontology.GeneAssociationTag.DB_OBJECT_SYNONYM;
+import static org.cytoscape.tableimport.internal.reader.ontology.GeneAssociationTag.TAXON;
 import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogColorTheme.ONTOLOGY_COLOR;
 import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogFontTheme.ITEM_FONT;
 import static org.cytoscape.tableimport.internal.ui.theme.ImportDialogFontTheme.LABEL_FONT;
@@ -14,7 +14,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,9 +34,7 @@ import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.property.bookmark.DataSource;
 import org.cytoscape.tableimport.internal.reader.TextTableReader;
 import org.cytoscape.tableimport.internal.task.ImportOntologyAndAnnotationTaskFactory;
-import org.cytoscape.tableimport.internal.task.RegisterOntologyTask;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
-import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.jdesktop.layout.GroupLayout;
 import org.slf4j.Logger;
