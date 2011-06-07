@@ -435,13 +435,13 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param buildStyle if true, build the graphical style
 	 */
 	private void layoutNodes(final GraphView myView, final VisualStyleBuilder graphStyle, boolean buildStyle) {
-		String label = null;
 		int tempid = 0;
 		NodeView view = null;
 		HashMap<CyNode, Attributes> nodeGraphicsMap = parser.getNodeGraphics();
 
 		for (CyNode node : nodeGraphicsMap.keySet()) {
 			view = myView.getNodeView(node.getRootGraphIndex());
+			String label = node.getIdentifier();
 
 			if (view != null) {
 				if (label != null) {
@@ -545,11 +545,17 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 
 		// These are saved in the exported XGMML, but it's not clear how they get set
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"nodeLabel", CY_NAMESPACE) != null) {
+			String nodeLabel = XGMMLParser.getAttributeNS(graphics,"nodeLabel", CY_NAMESPACE);
+			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_LABEL, nodeLabel);
+		}
+
 		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"nodeLabelFont", CY_NAMESPACE) != null) {
 			String nodeLabelFont = XGMMLParser.getAttributeNS(graphics,"nodeLabelFont", CY_NAMESPACE);
 		
 			String[] items = nodeLabelFont.split("-"); // e.g. nodeLabelFont = "Arial-0-24"
 			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_FONT_SIZE, items[2]);
+			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_FONT_FACE, items[0]);
 		}
 
 		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"borderLineType", CY_NAMESPACE) != null) {
@@ -575,7 +581,6 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param buildStyle if true, build the graphical style
 	 */
 	private void layoutEdges(final GraphView myView, final VisualStyleBuilder graphStyle, final boolean buildStyle) {
-		String label = null;
 		int tempid = 0;
 		EdgeView view = null;
 		HashMap<CyEdge, Attributes> edgeGraphicsMap = parser.getEdgeGraphics();
@@ -672,6 +677,20 @@ public class XGMMLReader extends AbstractGraphReader {
 				point.setLocation(x,y);
 				edgeView.getBend().addHandle(point);
 			}
+		}
+
+		// These are saved in the exported XGMML, but it's not clear how they get set
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"edgeLabel", CY_NAMESPACE) != null) {
+			String nodeLabel = XGMMLParser.getAttributeNS(graphics,"edgeLabel", CY_NAMESPACE);
+			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_LABEL, nodeLabel);
+		}
+
+		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"edgeLabelFont", CY_NAMESPACE) != null) {
+			String edgeLabelFont = XGMMLParser.getAttributeNS(graphics,"edgeLabelFont", CY_NAMESPACE);
+		
+			String[] items = edgeLabelFont.split("-"); // e.g. edgeLabelFont = "Arial-0-24"
+			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_FONT_SIZE, items[2]);
+			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_FONT_FACE, items[0]);
 		}
 	}
 

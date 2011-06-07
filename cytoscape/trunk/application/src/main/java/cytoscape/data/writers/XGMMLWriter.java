@@ -545,6 +545,7 @@ public class XGMMLWriter {
 
 			writeAttributePair("cy:nodeTransparency", Double.toString(transparency));
 			writeAttributePair("cy:nodeLabelFont", encodeFont(nodeView.getLabel().getFont()));
+			writeAttributePair("cy:nodeLabel", nodeView.getLabel().getText());
 
 			// Where should we store line-type info???
 			final float[] dash = borderType.getDashArray();
@@ -749,6 +750,7 @@ public class XGMMLWriter {
 			writeAttributePair("cy:targetArrowColor", paint2string(edgeView.getTargetEdgeEndPaint()));
 
 			writeAttributePair("cy:edgeLabelFont", encodeFont(edgeView.getLabel().getFont()));
+			writeAttributePair("cy:edgeLabel", edgeView.getLabel().getText());
 			writeAttributePair("cy:edgeLineType", LineStyle.extractLineStyle(edgeView.getStroke()).toString());
 			// Set curved or not
 			if (edgeView.getLineType() == EdgeView.CURVED_LINES) {
