@@ -41,6 +41,7 @@ import org.cytoscape.model.CyTable;
 
 
 /** This class provides a view into an immutable subset of rows and columns of an associated CyTable.
+ *  (This view is only immutable when going through the methods of this class!)
  */
 public final class CyTableProjection implements CyTable {
 	final CyTable underlyingTable;
@@ -82,7 +83,9 @@ public final class CyTableProjection implements CyTable {
 		primaryKeys.add(primaryKey);
 	}
 
-	/** @warning This returns the SUID of the underlying reference table! */
+	/** Warning: This returns the SUID of the underlying reference table!
+	 *  @return the SUID of the underlying table
+	 */
 	public long getSUID() {
 		return underlyingTable.getSUID();
 	}
