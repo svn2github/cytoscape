@@ -16,12 +16,15 @@ import java.util.Comparator;
 import java.util.Vector;
 
 
+import cytoscape.data.CyAttributes;
+
 /**
  *
  */
 public class ColumnComparator implements Comparator {
 	private static final int EMPTY_STR_LENGTH = 2;
 	protected int index;
+	protected byte internalColumnType;
 	protected boolean ascending;
 
 	/**
@@ -30,8 +33,9 @@ public class ColumnComparator implements Comparator {
 	 * @param index  DOCUMENT ME!
 	 * @param ascending  DOCUMENT ME!
 	 */
-	public ColumnComparator(final int index, final boolean ascending) {
+	public ColumnComparator(final int index, final byte type, final boolean ascending) {
 		this.index = index;
+		this.internalColumnType = type;
 		this.ascending = ascending;
 	}
 
@@ -54,31 +58,33 @@ public class ColumnComparator implements Comparator {
 				return 1;
 			} else if (secondObj == null) {
 				return -1;
-			} else if (firstObj instanceof Comparable && secondObj instanceof Comparable) {
-				final Comparable firstComparableObj = (Comparable) firstObj;
-				final Comparable secondComparableObj = (Comparable) secondObj;
+			} else if (firstObj instanceof ValidatedObjectAndEditString && secondObj instanceof ValidatedObjectAndEditString) {
+				final ValidatedObjectAndEditString v1 = (ValidatedObjectAndEditString) firstObj;
+				final ValidatedObjectAndEditString v2 = (ValidatedObjectAndEditString) secondObj;
+				final String errorText1 = v1.getErrorText();
+				final String errorText2 = v2.getErrorText();
+				if (errorText1 != null && errorText2 != null)
+					return ascending ? errorText1.compareToIgnoreCase(errorText2) : errorText2.compareToIgnoreCase(errorText1);
+				if (errorText2 != null)
+					return ascending? 1: -1;
+				if (errorText1 != null)
+					return ascending? -1: 1;
+				final Object val1 = v1.getValidatedObject();
+				final Object val2 = v2.getValidatedObject();
 
-				/*
-				 * If these values are Strings, treat empty values as null.
-				 */
-				if (firstComparableObj instanceof String && secondComparableObj instanceof String) {
-					final int firstLength = ((String) firstComparableObj).trim().length();
-					final int secondLength = ((String) secondComparableObj).trim().length();
+				if (internalColumnType == CyAttributes.TYPE_FLOATING)
+					return ascending ? doubleCompare((double)(Double)val1, (double)(Double)val2) :
+					                   doubleCompare((double)(Double)val2, (double)(Double)val1);
+				if (internalColumnType == CyAttributes.TYPE_INTEGER)
+					return ascending ? integerCompare((int)(Integer)val1, (int)(Integer)val2) :
+					                   integerCompare((int)(Integer)val2, (int)(Integer)val1);
 
-					if ((firstLength == 0) && (secondLength == 0)) {
-						return 0;
-					} else if (firstLength == 0) {
-						return 1;
-					} else if (secondLength == 0) {
-						return -1;
-					} else {
-						return ascending ? firstComparableObj.compareTo(secondComparableObj)
-						                 : secondComparableObj.compareTo(firstComparableObj);
-					}
-				} else {
-					return ascending ? firstComparableObj.compareTo(secondComparableObj)
-					                 : secondComparableObj.compareTo(firstComparableObj);
-				}
+				if (internalColumnType == CyAttributes.TYPE_BOOLEAN)
+					return ascending ? booleanCompare((boolean)(Boolean)val1, (boolean)(Boolean)val2) :
+					                   booleanCompare((boolean)(Boolean)val2, (boolean)(Boolean)val1);
+
+				return ascending ? stringCompare(val1.toString(), val2.toString()):
+				                   stringCompare(val2.toString(), val1.toString());
 			} else {
 				/*
 				 * If not primitive, just compare as String
@@ -99,6 +105,34 @@ public class ColumnComparator implements Comparator {
 		}
 
 		return 1;
+	}
+
+	private static int doubleCompare(final double d1, final double d2) {
+		if (d1 < d2)
+			return -1;
+		return d1 > d2 ? +1 : 0;
+	}
+
+	private static int longCompare(final long l1, final long l2) {
+		if (l1 < l2)
+			return -1;
+		return l1 > l2 ? +1 : 0;
+	}
+
+	private static int integerCompare(final int i1, int i2) {
+		if (i1 < i2)
+			return -1;
+		return i1 > i2 ? +1 : 0;
+	}
+
+	private static int booleanCompare(final boolean b1, final boolean b2) {
+		if ((b1 && b2) || (!b1 && !b2))
+			return 0;
+		return b1 ? -1 : +1;
+	}
+
+	private static int stringCompare(final String s1, final String s2) {
+		return s1.compareToIgnoreCase(s2);
 	}
 
 	/**

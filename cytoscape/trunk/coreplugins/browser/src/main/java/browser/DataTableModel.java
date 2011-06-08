@@ -462,6 +462,11 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		return CyAttributesUtils.getClass(colName, data);
 	}
 
+	public byte getObjectTypeAt(int col) {
+		String columnName = getColumnName(col);
+		return data.getType(columnName);
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -480,7 +485,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @param ascending DOCUMENT ME!
 	 */
 	public void sortColumn(int col, boolean ascending) {
-		Collections.sort(getDataVector(), new ColumnComparator(col, ascending));
+		Collections.sort(getDataVector(), new ColumnComparator(col, getObjectTypeAt(col), ascending));
 	}
 
 	/**
