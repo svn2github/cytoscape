@@ -18,6 +18,7 @@ import org.cytoscape.test.support.DataTableTestSupport;
 import org.cytoscape.test.support.NetworkTestSupport;
 import org.cytoscape.test.support.NetworkViewTestSupport;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.work.TaskMonitor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +32,8 @@ public class GeneAssociationReaderTest {
 	private CyNetworkManager networkManager;
 
 	private CyNetwork dag;
+	
+	private TaskMonitor tm;
 
 	@Before
 	public void setUp() throws Exception {
@@ -44,6 +47,7 @@ public class GeneAssociationReaderTest {
 		tableFactory = tableSupport.getDataTableFactory();
 		dag = cyNetworkFactory.getInstance();
 		CyEventHelper eventHelper = mock(CyEventHelper.class);
+		tm = mock(TaskMonitor.class);
 	}
 
 	@After
@@ -53,20 +57,20 @@ public class GeneAssociationReaderTest {
 	@Test
 	public void gaReaderTest() throws Exception {
 		File file = new File("./src/test/resources/" + GA_YEAST);
-		GeneAssociationReader reader = new GeneAssociationReader(appManager, networkManager, tableFactory, dag, file
+		GeneAssociationReader reader = new GeneAssociationReader(tableFactory, dag, file
 				.toURI().toURL().openStream(), "yeast GA");
 
 		
 		System.out.print("Start read: ");
-		reader.run(null);
+		reader.run(tm);
 		
 		final CyTable[] tables = reader.getCyTables();
 		assertNotNull(tables);
 		assertEquals(1, tables.length);
 		assertNotNull(tables[0]);
 		
-		// All 17 Columns + NAME primary key
-		assertEquals(21, tables[0].getColumns().size());
+		// All 22 Columns + NAME primary key + synonyms
+		assertEquals(24, tables[0].getColumns().size());
 		// For yeast test file.
 		assertEquals(6359, tables[0].getRowCount());
 		
@@ -83,6 +87,10 @@ public class GeneAssociationReaderTest {
 		final String taxName = row1.get(GeneAssociationTag.TAXON.toString(), String.class);
 		assertNotNull(taxName);
 		assertEquals("Saccharomyces cerevisiae", taxName);
+		
+		final List<String> referenceList1 = row1.getList("biological process DB Reference", String.class);
+//		assertNotNull(referenceList1);
+//		assertEquals(2, referenceList1.size());
 		
 	}
 

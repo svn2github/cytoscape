@@ -104,6 +104,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
@@ -214,7 +215,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 	
 	private Workbook workbook = null;
 	
-	private PanelBuilder panelBuilder;
+	private OntologyPanelBuilder panelBuilder;
 	
 	private CyProperty<Bookmarks> bookmarksProp;
 	private BookmarksUtil bkUtil;
@@ -224,14 +225,17 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 	
 	private final CyNetworkManager manager;
 	
+	private final CyTableFactory tableFactory;
+	
 	public ImportTablePanel(int dialogType, final InputStream is, String fileType,
 			final CyProperty<Bookmarks> bookmarksProp, final BookmarksUtil bkUtil, final TaskManager taskManager,
-			final InputStreamTaskFactory factory, final CyNetworkManager manager)
+			final InputStreamTaskFactory factory, final CyNetworkManager manager, final CyTableFactory tableFactory)
 	    throws JAXBException, IOException {
 
 		this.taskManager = taskManager;
 		this.factory = factory;
 		this.manager = manager;
+		this.tableFactory = tableFactory;
 		
 		if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
 			if (bookmarksProp == null)
@@ -636,7 +640,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 
 		
 		if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
-			panelBuilder = new PanelBuilder(this, bookmarksProp, bkUtil, taskManager, factory, manager);
+			panelBuilder = new OntologyPanelBuilder(this, bookmarksProp, bkUtil, taskManager, factory, manager, tableFactory);
 			panelBuilder.buildPanel();
 		}
 

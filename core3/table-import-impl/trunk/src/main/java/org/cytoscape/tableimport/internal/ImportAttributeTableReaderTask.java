@@ -34,7 +34,7 @@ public class ImportAttributeTableReaderTask extends AbstractTask implements
 		if (importTablePanel == null) {
 			try {
 				this.importTablePanel = 
-					new ImportTablePanel(ImportTablePanel.SIMPLE_ATTRIBUTE_IMPORT, is, fileType, null, null, null, null, null);
+					new ImportTablePanel(ImportTablePanel.SIMPLE_ATTRIBUTE_IMPORT, is, fileType, null, null, null, null, null, null);
 			} catch (Exception e) {
 				throw new IllegalStateException("Could not initialize ImportTablePanel.", e);
 			}

@@ -47,6 +47,8 @@ public class OBOReader extends AbstractTask implements CyNetworkReader {
 
 	private static final String[] COMPATIBLE_VERSIONS = { "1.2" };
 	
+	public static final String DAG_ATTR = "Ontology DAG";
+	
 	private static final String TERM_NAME = "term name";
 
 	public static final String OBO_PREFIX = "obo.";
@@ -141,6 +143,11 @@ public class OBOReader extends AbstractTask implements CyNetworkReader {
 
 			networkTable.getRow(ontologyDAG.getSUID()).set(tag, header.get(tag));
 		}
+		
+		if(networkTable.getColumn(DAG_ATTR) == null)
+			networkTable.createColumn(DAG_ATTR, Boolean.class, true);
+		
+		networkTable.getRow(ontologyDAG.getSUID()).set(DAG_ATTR, true);
 	}
 
 	private void readEntry(final BufferedReader rd) throws IOException {

@@ -39,28 +39,33 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 
 	private static final String TAXON_RESOURCE_FILE = "tax_report.txt";
 	
+	private static final String LIST_DELIMITER = "\\|";
+
 	// The following columns should be handled as List in GA v2 spec.
 	private static final List<Integer> LIST_INDEX = new ArrayList<Integer>();
 	private static final Map<String, String> NAMESPACE_MAP = new HashMap<String, String>();
 	static {
 		LIST_INDEX.add(4);
-		LIST_INDEX.add(6);
 		LIST_INDEX.add(8);
 		LIST_INDEX.add(11);
 		LIST_INDEX.add(16);
-		
+
 		NAMESPACE_MAP.put("P", "biological process");
 		NAMESPACE_MAP.put("F", "molecular function");
 		NAMESPACE_MAP.put("C", "cellular component");
 	}
 
-
+	
+	public static final String SYNONYM_COL_NAME = "Synonym";
+	
+	private static final String EVIDENCE_SUFFIX = " Evidence Code";
+	private static final String REFERENCE_SUFFIX = " DB Reference";
 	private static final String GO_PREFIX = "GO";
 	private static final String ANNOTATION_PREFIX = "annotation";
 	private static final String GA_DELIMITER = TAB.toString();
 	private static final String ID = "ID";
-	
-	// This is minimum required fields.  Max is 17 for v2
+
+	// This is minimum required fields. Max is 17 for v2
 	private static final int EXPECTED_COL_COUNT = 15;
 
 	private static final int DB_OBJ_ID = 1;
@@ -84,14 +89,12 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 
 	private CyTable dagTable;
 
-	private final CyApplicationManager appMgr;
-	private final CyNetworkManager netMgr;
 	private final CyTableFactory tableFactory;
 
 	private final String tableName;
 
 	private boolean caseSensitive = true;
-	
+
 	// Global table (result)
 	private CyTable table;
 	private CyTable[] tables;
@@ -101,15 +104,12 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 	 * taxon resource file. Normal operation should use one of the other
 	 * constructors.
 	 */
-	public GeneAssociationReader(final CyApplicationManager appMgr, final CyNetworkManager netMgr,
-			final CyTableFactory tableFactory, final CyNetwork ontologyDAG, final InputStream is, final String tableName)
-			throws IOException {
+	public GeneAssociationReader(final CyTableFactory tableFactory, final CyNetwork ontologyDAG, final InputStream is,
+			final String tableName) throws IOException {
 
-		this.netMgr = netMgr;
-		this.appMgr = appMgr;
 		this.tableFactory = tableFactory;
-		this.ontologyDAG = ontologyDAG;
-		this.dagTable = ontologyDAG.getDefaultNodeTable();
+		// this.ontologyDAG = ontologyDAG;
+		// this.dagTable = ontologyDAG.getDefaultNodeTable();
 		this.is = is;
 
 		this.tableName = tableName;
@@ -203,6 +203,9 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 
 	@Override
 	public void run(TaskMonitor taskMonitor) throws Exception {
+		taskMonitor.setTitle("Loading Gene Association File");
+		taskMonitor.setStatusMessage("Importing annotation file.  Please wait...");
+		taskMonitor.setProgress(0.0);
 		BufferedReader bufRd = new BufferedReader(new InputStreamReader(is));
 
 		String line = null;
@@ -218,9 +221,9 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 
 		// Create result table
 		table = tableFactory.createTable(tableName, CyTableEntry.NAME, String.class, true, true);
-		
+
 		createColumns();
-		
+
 		while ((line = bufRd.readLine()) != null) {
 			lineCounter++;
 			if (line.startsWith("!"))
@@ -229,7 +232,6 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 			parts = line.split(GA_DELIMITER);
 			// GA is a fixed format file. Read only valid lines.
 			if (parts.length >= EXPECTED_COL_COUNT) {
-				//logger.debug("Mapping: " + line);
 				parseGA(parts);
 			}
 		}
@@ -242,30 +244,43 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 
 		tables = new CyTable[1];
 		tables[0] = table;
-		
+
 		// Map terms to existing networks
-//		if (netMgr.getNetworkSet().size() > 0)
-//			super.insertTasksAfterCurrentTask(new MapNetworkAttrTask(CyNode.class, table, netMgr, appMgr));
+		// if (netMgr.getNetworkSet().size() > 0)
+		// super.insertTasksAfterCurrentTask(new
+		// MapNetworkAttrTask(CyNode.class, table, netMgr, appMgr));
 	}
-	
+
 	private void createColumns() {
 		// Create columns if necessary
 		final GeneAssociationTag[] tags = GeneAssociationTag.values();
-		int index = 1;
-		for(GeneAssociationTag tag: tags) {
-			final String tagString = tag.toString();
-			if(table.getColumn(tagString) == null) {
-				if(LIST_INDEX.contains(index))
-					table.createListColumn(tagString, String.class, false);
-				else
-					table.createColumn(tagString, String.class, false);
-			}
+		int index = 0;
+		for (GeneAssociationTag tag : tags) {
 			index++;
+			// Special cases: handled in the last part
+			if (tag == GeneAssociationTag.GO_ID || tag == GeneAssociationTag.EVIDENCE
+					|| tag == GeneAssociationTag.DB_REFERENCE || tag == GeneAssociationTag.ASPECT)
+				continue;
+
+			final String tagString = tag.toString();
+			if (table.getColumn(tagString) == null) {
+				if (LIST_INDEX.contains(index)) {
+					table.createListColumn(tagString, String.class, false);
+				} else {
+					table.createColumn(tagString, String.class, false);
+				}
+			}
+		}
+
+		// Create one column per namespace
+		for (String name : NAMESPACE_MAP.keySet()) {
+			table.createListColumn(NAMESPACE_MAP.get(name), String.class, false);
+			table.createListColumn(NAMESPACE_MAP.get(name) + EVIDENCE_SUFFIX, String.class, false);
+			table.createListColumn(NAMESPACE_MAP.get(name) + REFERENCE_SUFFIX, String.class, false);
 		}
 		
-		// Create one column per namespace
-		for(String name: NAMESPACE_MAP.keySet())
-			table.createListColumn(NAMESPACE_MAP.get(name), String.class, false);
+		// Consolidated entry name list
+		table.createListColumn(SYNONYM_COL_NAME, String.class, true);
 	}
 
 	private void parseGA(String[] entries) {
@@ -368,82 +383,103 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 
 	private void mapEntry(final String[] entries) {
 		String fullName = null;
-		
+
 		// Set primary key for the table, which is DB Object ID
 		final String primaryKeyValue = entries[DB_OBJ_ID];
 		final CyRow row = table.getRow(primaryKeyValue);
 		row.set(CyTableEntry.NAME, primaryKeyValue);
-		
+
 		// Check namespace
 		final String namespace = NAMESPACE_MAP.get(entries[ASPECT]);
 
 		for (int i = 0; i < EXPECTED_COL_COUNT; i++) {
 			final GeneAssociationTag tag = GeneAssociationTag.values()[i];
-			
+
 			switch (tag) {
+
+			// Evidence code and GO ID should be organized by namespace.
 			case GO_ID:
-				final String goidString = entries[GOID];
+				final String goidString = entries[i];
 				List<String> currentList = row.getList(namespace, String.class);
-				if(currentList == null)
+				if (currentList == null)
 					currentList = new ArrayList<String>();
-				
-				currentList.add(goidString);
+
+				if(currentList.contains(goidString) == false)
+					currentList.add(goidString);
 				row.set(namespace, currentList);
-				
+
 				// TODO: create term name list here.
-				
+
 				break;
 
+			case EVIDENCE:
+			case DB_REFERENCE:
+				final String value = entries[i];
+				String columnName = namespace;
+				if (tag == GeneAssociationTag.EVIDENCE)
+					columnName = columnName + EVIDENCE_SUFFIX;
+				else
+					columnName = columnName + REFERENCE_SUFFIX;
+
+				List<String> valueList = row.getList(columnName, String.class);
+				if (valueList == null)
+					valueList = new ArrayList<String>();
+				if(valueList.contains(value) == false)
+					valueList.add(value);
+				row.set(columnName, valueList);
+
+				break;
 			case TAXON:
 				final String taxID = entries[i].split(":")[1];
 				final String taxName = speciesMap.get(taxID);
 				if (taxName != null)
 					row.set(tag.toString(), taxName);
-				else if(taxID != null)
+				else if (taxID != null)
 					row.set(tag.toString(), taxID);
 				break;
 
-//			case EVIDENCE:
-//
-//				Map<String, String> evidences = nodeAttributes.getMapAttribute(key,
-//						ANNOTATION_PREFIX + "." + tag.toString());
-//
-//				if (evidences == null) {
-//					evidences = new HashMap<String, String>();
-//				}
-//
-//				evidences.put(entries[GOID], entries[i]);
-//				nodeAttributes.setMapAttribute(key, ANNOTATION_PREFIX + "." + tag.toString(), evidences);
-//
-//				break;
-//
-//			case DB_REFERENCE:
-//
-//				Map<String, String> references = nodeAttributes.getMapAttribute(key,
-//						ANNOTATION_PREFIX + "." + tag.toString());
-//
-//				if (references == null) {
-//					references = new HashMap<String, String>();
-//				}
-//
-//				references.put(entries[GOID], entries[i]);
-//				nodeAttributes.setMapAttribute(key, ANNOTATION_PREFIX + "." + tag.toString(), references);
-//
-//				break;
-//
-//			case DB_OBJECT_SYMBOL:
-//			case ASPECT:
-//			case DB_OBJECT_SYNONYM:
-//				// Ignore these lines
-//				break;
-//
-//			default:
-//				row.set(tag.name(), entries[i]);
-//				break;
+			case ASPECT:
+				// Ignore these lines
+				break;
+
+			case DB_OBJECT_ID:
+			case DB_OBJECT_SYMBOL:
+			case DB_OBJECT_SYNONYM:
+				// Create consolidated id list attribute.
+				List<String> synList = row.getList(SYNONYM_COL_NAME, String.class);
+				if (synList == null)
+					synList = new ArrayList<String>();
+				
+				if(tag == GeneAssociationTag.DB_OBJECT_SYNONYM) {
+					final String[] vals = entries[i].split(LIST_DELIMITER);
+					for (String val : vals) {
+						if (synList.contains(val) == false)
+							synList.add(val);
+					}
+				} else {
+					if (synList.contains(entries[i]) == false)
+						synList.add(entries[i]);
+				}
+				row.set(SYNONYM_COL_NAME, synList);
+				break;
+			default:
+				if (LIST_INDEX.contains(i + 1)) {
+					final String[] vals = entries[i].split(LIST_DELIMITER);
+
+					List<String> listVals = row.getList(tag.toString(), String.class);
+					if (listVals == null)
+						listVals = new ArrayList<String>();
+					for (String val : vals) {
+						if (listVals.contains(val) == false)
+							listVals.add(val);
+					}
+					row.set(tag.toString(), listVals);
+				} else
+					row.set(tag.toString(), entries[i]);
+				break;
 			}
 		}
 	}
-	
 
 	@Override
 	public CyTable[] getCyTables() {

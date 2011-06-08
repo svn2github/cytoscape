@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -27,6 +28,7 @@ import javax.xml.bind.JAXBException;
 
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Attribute;
 import org.cytoscape.property.bookmark.Bookmarks;
@@ -40,9 +42,9 @@ import org.jdesktop.layout.GroupLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PanelBuilder {
+public class OntologyPanelBuilder {
 
-	private static final Logger logger = LoggerFactory.getLogger(PanelBuilder.class);
+	private static final Logger logger = LoggerFactory.getLogger(OntologyPanelBuilder.class);
 	
 	private static final String GENE_ASSOCIATION = "gene_association";
 	private static final String DEF_ANNOTATION_ITEM = "Please select an annotation data source...";
@@ -73,15 +75,17 @@ public class PanelBuilder {
 	private final TaskManager taskManager;
 	
 	private final CyNetworkManager manager;
+	private final CyTableFactory tableFactory;
 
-	PanelBuilder(final ImportTablePanel panel, final CyProperty<Bookmarks> bookmarksProp, final BookmarksUtil bkUtil,
-			final TaskManager taskManager, final InputStreamTaskFactory factory, final CyNetworkManager manager) {
+	OntologyPanelBuilder(final ImportTablePanel panel, final CyProperty<Bookmarks> bookmarksProp, final BookmarksUtil bkUtil,
+			final TaskManager taskManager, final InputStreamTaskFactory factory, final CyNetworkManager manager, final CyTableFactory tableFactory) {
 		this.panel = panel;
 		this.bookmarksProp = bookmarksProp;
 		this.bkUtil = bkUtil;
 		this.taskManager = taskManager;
 		this.factory = factory;
 		this.manager = manager;
+		this.tableFactory = tableFactory;
 	}
 
 	protected void buildPanel() {
@@ -456,7 +460,12 @@ public class PanelBuilder {
 								.add(panel.ontologyTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										GroupLayout.PREFERRED_SIZE).add(panel.arrowButton2))
 						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-
+		
+		// Disable unnecessary components
+		panel.advancedOptionCheckBox.setEnabled(false);
+		panel.textImportCheckBox.setEnabled(false);
+		panel.importAllCheckBox.setSelected(true);
+		panel.importAllCheckBox.setEnabled(false);
 	}
 	
 	private void ontologyInAnnotationComboBoxActionPerformed(ActionEvent evt) {
@@ -515,10 +524,17 @@ public class PanelBuilder {
 	 * @param ontologyName
 	 * @throws IOException 
 	 */
-	private void loadOntology(final String dataSource, final String ontologyName) throws IOException {
+	private void loadOntology(final String dataSource, final String ontologyName, final String annotationSource)
+			throws IOException {
 		logger.debug("Target OBO URL = " + dataSource);
+		logger.debug("!!!!!!!!!!!!GA URL = " + annotationSource);
 		final URL url = new URL(dataSource);
-		ImportOntologyAndAnnotationTaskFactory taskFactory = new ImportOntologyAndAnnotationTaskFactory(manager, factory, url.openStream(), ontologyName);
+		final URL annotationSourceUrl = new URL(annotationSource);
+
+		final GZIPInputStream gzipGAStream = new GZIPInputStream(annotationSourceUrl.openStream());
+		ImportOntologyAndAnnotationTaskFactory taskFactory = new ImportOntologyAndAnnotationTaskFactory(manager,
+				factory, url.openStream(), ontologyName, tableFactory, gzipGAStream,
+				annotationSource);
 		taskManager.execute(taskFactory);
 	}
 	
@@ -528,14 +544,15 @@ public class PanelBuilder {
 		
 		final String selectedOntologyName = panel.ontologyComboBox.getSelectedItem().toString();
 		final String ontologySourceLocation = panel.ontologyUrlMap.get(selectedOntologyName);
+		
+		final String annotationSource = panel.annotationUrlMap.get(panel.annotationComboBox.getSelectedItem());
+		
 
 		// If selected ontology is not loaded, load it first.
 		//TODO: add manager
 //		if (Cytoscape.getOntologyServer().getOntologyNames().contains(selectedOntologyName) == false)
-		loadOntology(ontologySourceLocation, selectedOntologyName);
+		loadOntology(ontologySourceLocation, selectedOntologyName, annotationSource);
 
-		final String annotationSource = panel.annotationUrlMap.get(panel.annotationComboBox.getSelectedItem());
-		final URL annotationSourceUrl = new URL(annotationSource);
 
 		if(panel.previewPanel.getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
 			/*
