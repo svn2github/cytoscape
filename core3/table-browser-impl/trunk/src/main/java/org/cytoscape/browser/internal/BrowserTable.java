@@ -50,8 +50,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import org.cytoscape.browser.ui.FormulaBuilderDialog;
-import org.cytoscape.browser.util.HyperLinkOut;
 import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.util.swing.OpenBrowser;

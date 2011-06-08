@@ -25,7 +25,6 @@ import javax.swing.table.TableRowSorter;
 
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
-import org.cytoscape.browser.ui.AttributeBrowserToolBar;
 import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;

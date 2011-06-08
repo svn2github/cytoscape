@@ -8,7 +8,7 @@
 
 	<properties>
 		<bundle.symbolicName>org.cytoscape.table-browser-impl</bundle.symbolicName>
-		<bundle.namespace>org.cytoscape.internal</bundle.namespace>
+		<bundle.namespace>org.cytoscape.browser.internal</bundle.namespace>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

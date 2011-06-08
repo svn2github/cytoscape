@@ -1,4 +1,4 @@
-package org.cytoscape.browser.ui;
+package org.cytoscape.browser.internal;
 
 
 import java.awt.Frame;
