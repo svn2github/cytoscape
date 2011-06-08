@@ -38,7 +38,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.cytoscape.coreplugin.cpath.test.protocol.ProtocolSuite;
 import org.cytoscape.coreplugin.cpath.test.task.TaskSuite;
 
 
@@ -57,7 +56,11 @@ public class AllTests extends TestCase {
 		//  Organize all suites into one master suite.
 		TestSuite suite = new TestSuite();
 		suite.addTest(TaskSuite.suite());
-		suite.addTest(ProtocolSuite.suite());
+ 		/* 
+		 * Commenting out test of webservice since it's not testing 
+		 * code, but rather an external service
+		 */
+//		suite.addTest(ProtocolSuite.suite());
 		suite.setName("Cytoscape cPath Plugin Tests");
 
 		return suite;
