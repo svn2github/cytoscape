@@ -21,21 +21,24 @@ public class ImportOntologyAndAnnotationTask extends AbstractTask {
 	
 	private final InputStreamTaskFactory factory;
 	private final CyNetworkManager manager;
-	private final String name;
+	private final String ontologyDagName;
 	final CyTableFactory tableFactory;
 	
 	private final InputStream gaStream;
 	
-	ImportOntologyAndAnnotationTask(final CyNetworkManager manager, final InputStreamTaskFactory factory, InputStream is, String name,
+	private final String gaTableName;
+	
+	ImportOntologyAndAnnotationTask(final CyNetworkManager manager, final InputStreamTaskFactory factory, InputStream is, String ontologyDagName,
 			final CyTableFactory tableFactory, final InputStream gaStream, final String tableName) {
 		this.factory = factory;
 		this.manager = manager;
-		this.name = name;
+		this.ontologyDagName = ontologyDagName;
 		this.tableFactory = tableFactory;
 		
 		this.gaStream = gaStream;
+		this.gaTableName = tableName;
 		
-		factory.setInputStream(is, name);
+		this.factory.setInputStream(is, ontologyDagName);
 	}
 	
 	@Override
@@ -43,11 +46,11 @@ public class ImportOntologyAndAnnotationTask extends AbstractTask {
 		logger.debug("Start");
 		Task loadOBOTask = factory.getTaskIterator().next();
 		
-		final GeneAssociationReader gaReader = new GeneAssociationReader(tableFactory, null, gaStream, "GA Table");
+		final GeneAssociationReader gaReader = new GeneAssociationReader(tableFactory, ontologyDagName, gaStream, gaTableName);
 		
 		insertTasksAfterCurrentTask(new MapGeneAssociationTask(gaReader, manager));
 		insertTasksAfterCurrentTask(gaReader);
-		insertTasksAfterCurrentTask(new RegisterOntologyTask((CyNetworkReader) loadOBOTask, manager, name));
+		insertTasksAfterCurrentTask(new RegisterOntologyTask((CyNetworkReader) loadOBOTask, manager, ontologyDagName));
 		insertTasksAfterCurrentTask(loadOBOTask);
 		
 	}

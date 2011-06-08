@@ -24,6 +24,7 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.tableimport.internal.util.OntologyDAGManager;
 import org.cytoscape.tableimport.internal.util.OntologyUtil;
 import org.cytoscape.task.MapNetworkAttrTask;
 import org.cytoscape.work.AbstractTask;
@@ -38,7 +39,7 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 	private static final String COMPATIBLE_VERSION = "gaf-version: 2.0";
 
 	private static final String TAXON_RESOURCE_FILE = "tax_report.txt";
-	
+
 	private static final String LIST_DELIMITER = "\\|";
 
 	// The following columns should be handled as List in GA v2 spec.
@@ -55,9 +56,8 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 		NAMESPACE_MAP.put("C", "cellular component");
 	}
 
-	
 	public static final String SYNONYM_COL_NAME = "Synonym";
-	
+
 	private static final String EVIDENCE_SUFFIX = " Evidence Code";
 	private static final String REFERENCE_SUFFIX = " DB Reference";
 	private static final String GO_PREFIX = "GO";
@@ -99,17 +99,20 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 	private CyTable table;
 	private CyTable[] tables;
 
+	private final String ontologyDagName;
+	private List<String> termIDList;
+
 	/**
 	 * Package protected because only in unit testing do we need to specify the
 	 * taxon resource file. Normal operation should use one of the other
 	 * constructors.
 	 */
-	public GeneAssociationReader(final CyTableFactory tableFactory, final CyNetwork ontologyDAG, final InputStream is,
+	public GeneAssociationReader(final CyTableFactory tableFactory, final String ontologyDagName, final InputStream is,
 			final String tableName) throws IOException {
 
+		logger.debug("DAG Manager key = " + ontologyDagName);
+		this.ontologyDagName = ontologyDagName;
 		this.tableFactory = tableFactory;
-		// this.ontologyDAG = ontologyDAG;
-		// this.dagTable = ontologyDAG.getDefaultNodeTable();
 		this.is = is;
 
 		this.tableName = tableName;
@@ -205,7 +208,18 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 	public void run(TaskMonitor taskMonitor) throws Exception {
 		taskMonitor.setTitle("Loading Gene Association File");
 		taskMonitor.setStatusMessage("Importing annotation file.  Please wait...");
-		taskMonitor.setProgress(0.0);
+		taskMonitor.setProgress(-1.0);
+
+		this.ontologyDAG = OntologyDAGManager.getOntologyDAG(ontologyDagName);
+
+		if (ontologyDAG == null)
+			logger.warn("Could not find associated Ontology DAG.");
+		else {
+			this.dagTable = ontologyDAG.getDefaultNodeTable();
+			termIDList = ontologyDAG.getDefaultNodeTable().getColumn(CyTableEntry.NAME).getValues(String.class);
+			logger.debug("DAG Name = " + ontologyDAG.getCyRow().get(CyTableEntry.NAME, String.class));
+		}
+		
 		BufferedReader bufRd = new BufferedReader(new InputStreamReader(is));
 
 		String line = null;
@@ -278,7 +292,7 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 			table.createListColumn(NAMESPACE_MAP.get(name) + EVIDENCE_SUFFIX, String.class, false);
 			table.createListColumn(NAMESPACE_MAP.get(name) + REFERENCE_SUFFIX, String.class, false);
 		}
-		
+
 		// Consolidated entry name list
 		table.createListColumn(SYNONYM_COL_NAME, String.class, true);
 	}
@@ -399,12 +413,15 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 
 			// Evidence code and GO ID should be organized by namespace.
 			case GO_ID:
-				final String goidString = entries[i];
+				String goidString = entries[i];
+				if(this.termIDList != null)
+					goidString = convertToName(goidString);
+				
 				List<String> currentList = row.getList(namespace, String.class);
 				if (currentList == null)
 					currentList = new ArrayList<String>();
 
-				if(currentList.contains(goidString) == false)
+				if (currentList.contains(goidString) == false)
 					currentList.add(goidString);
 				row.set(namespace, currentList);
 
@@ -424,7 +441,7 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 				List<String> valueList = row.getList(columnName, String.class);
 				if (valueList == null)
 					valueList = new ArrayList<String>();
-				if(valueList.contains(value) == false)
+				if (valueList.contains(value) == false)
 					valueList.add(value);
 				row.set(columnName, valueList);
 
@@ -449,8 +466,8 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 				List<String> synList = row.getList(SYNONYM_COL_NAME, String.class);
 				if (synList == null)
 					synList = new ArrayList<String>();
-				
-				if(tag == GeneAssociationTag.DB_OBJECT_SYNONYM) {
+
+				if (tag == GeneAssociationTag.DB_OBJECT_SYNONYM) {
 					final String[] vals = entries[i].split(LIST_DELIMITER);
 					for (String val : vals) {
 						if (synList.contains(val) == false)
@@ -479,6 +496,19 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 				break;
 			}
 		}
+	}
+	
+	private String convertToName(final String id) {
+		final Set<CyRow> rows = ontologyDAG.getDefaultNodeTable().getMatchingRows(CyTableEntry.NAME, id);
+		if(rows != null) {
+			final CyRow row = rows.iterator().next();
+			final String termName = row.get(OBOReader.TERM_NAME, String.class);
+			if(termName != null)
+				return termName;
+			else
+				return id;
+		} else
+			return id;
 	}
 
 	@Override

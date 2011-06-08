@@ -34,6 +34,7 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.tableimport.internal.util.OntologyDAGManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.AbstractTask;
@@ -49,7 +50,7 @@ public class OBOReader extends AbstractTask implements CyNetworkReader {
 	
 	public static final String DAG_ATTR = "Ontology DAG";
 	
-	private static final String TERM_NAME = "term name";
+	protected static final String TERM_NAME = "term name";
 
 	public static final String OBO_PREFIX = "obo.";
 	private static final String DEF_ORIGIN = "def_origin";
@@ -69,13 +70,16 @@ public class OBOReader extends AbstractTask implements CyNetworkReader {
 	private final InputStream inputStream;
 
 	private final Map<String, CyNode> termID2nodeMap;
+	
+	private final String dagName;
 
-	public OBOReader(final InputStream oboStream, final CyNetworkViewFactory cyNetworkViewFactory,
+	public OBOReader(final String dagName, final InputStream oboStream, final CyNetworkViewFactory cyNetworkViewFactory,
 			final CyNetworkFactory cyNetworkFactory, final CyEventHelper eventHelper) {
 		this.inputStream = oboStream;
 		this.cyNetworkFactory = cyNetworkFactory;
 		this.cyNetworkViewFactory = cyNetworkViewFactory;
 		this.eventHelper = eventHelper;
+		this.dagName = dagName;
 
 		termID2nodeMap = new HashMap<String, CyNode>();
 		networks = new CyNetwork[1];
@@ -91,7 +95,6 @@ public class OBOReader extends AbstractTask implements CyNetworkReader {
 
 		// Create new DAG
 		this.ontologyDAG = cyNetworkFactory.getInstance();
-
 		try {
 			// Phase 1: read header information
 			header = new HashMap<String, String>();
@@ -111,13 +114,13 @@ public class OBOReader extends AbstractTask implements CyNetworkReader {
 		} finally {
 			bufRd.close();
 			inputStream.close();
-			
 		}
 
 		buildEdge();
 
 		networks[0] = this.ontologyDAG;
 		
+		OntologyDAGManager.addOntologyDAG(dagName, ontologyDAG);
 		logger.debug("Number of terms loaded = " + this.termID2nodeMap.size());
 		termID2nodeMap.clear();
 		
@@ -133,7 +136,7 @@ public class OBOReader extends AbstractTask implements CyNetworkReader {
 		final String val = line.substring(colonInx + 1).trim();
 		header.put(key, val);
 	}
-
+	
 	private void mapHeader() {
 		final CyTable networkTable = this.ontologyDAG.getDefaultNetworkTable();
 
@@ -148,7 +151,9 @@ public class OBOReader extends AbstractTask implements CyNetworkReader {
 			networkTable.createColumn(DAG_ATTR, Boolean.class, true);
 		
 		networkTable.getRow(ontologyDAG.getSUID()).set(DAG_ATTR, true);
+		ontologyDAG.getCyRow().set(CyTableEntry.NAME, dagName);
 	}
+
 
 	private void readEntry(final BufferedReader rd) throws IOException {
 		String id = "";

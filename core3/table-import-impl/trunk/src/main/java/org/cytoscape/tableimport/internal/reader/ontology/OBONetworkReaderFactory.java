@@ -32,6 +32,8 @@ public class OBONetworkReaderFactory implements InputStreamTaskFactory {
 	public void setInputStream(InputStream is, String in) {
 		if (is == null)
 			throw new NullPointerException("Input stream is null");
+		if (in == null)
+			throw new NullPointerException("Input stream name is null");
 		inputStream = is;
 		inputName = in;
 	}
@@ -42,6 +44,6 @@ public class OBONetworkReaderFactory implements InputStreamTaskFactory {
 
 	@Override
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new OBOReader(inputStream, cyNetworkViewFactory, cyNetworkFactory, eventHelper));
+		return new TaskIterator(new OBOReader(inputName, inputStream, cyNetworkViewFactory, cyNetworkFactory, eventHelper));
 	}
 }

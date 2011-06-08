@@ -57,7 +57,7 @@ public class GeneAssociationReaderTest {
 	@Test
 	public void gaReaderTest() throws Exception {
 		File file = new File("./src/test/resources/" + GA_YEAST);
-		GeneAssociationReader reader = new GeneAssociationReader(tableFactory, dag, file
+		GeneAssociationReader reader = new GeneAssociationReader(tableFactory, "dummy dag", file
 				.toURI().toURL().openStream(), "yeast GA");
 
 		

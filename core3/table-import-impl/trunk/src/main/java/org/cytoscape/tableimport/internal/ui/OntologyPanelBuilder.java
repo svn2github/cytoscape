@@ -527,7 +527,8 @@ public class OntologyPanelBuilder {
 	private void loadOntology(final String dataSource, final String ontologyName, final String annotationSource)
 			throws IOException {
 		logger.debug("Target OBO URL = " + dataSource);
-		logger.debug("!!!!!!!!!!!!GA URL = " + annotationSource);
+		logger.debug("Gene Association URL = " + annotationSource);
+		logger.debug("Ontology DAG Name ===== " + ontologyName);
 		final URL url = new URL(dataSource);
 		final URL annotationSourceUrl = new URL(annotationSource);
 
