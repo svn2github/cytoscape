@@ -29,6 +29,7 @@
 
     <!-- Define igraph directory -->
     <property name="igraph.dir" value="/Users/gerardohuck/igraph"/>
+    <property name="igraphWrapper_src.dir" value="${src.dir}/igraphWrapper"/>
 
     <!-- Inheritable properties -->
     <property name="debug" value="on"/>
@@ -41,7 +42,7 @@
     <available file="${cytoscape.dir}/cytoscape.jar" property="cytoscape.present"/> 
     <available file="${root.dir}/plugin.props" property="plugin.prop.present"/>
     <available file="${root.dir}/License.txt" property="license.present"/>
-    <available file="${igraph.dir}/src/.libs/libigraph.dylib" property="igraph.lib.present"/>
+    <available file="${root.dir}/libigraphWrapper.dylib" property="igraphWrapper.lib.present"/>
 
     <!-- Define the java class path -->
     <path id="project.class.path">
@@ -76,9 +77,18 @@
   </target>
 
   <!-- =================================================================== -->
+  <!-- Executes "make" in igraphWrapper, buiding static library            -->
+  <!-- =================================================================== -->
+  <target name="igraphWrapper_compile" depends="init"  >
+    <echo message="Compiling igraph wrapper library..."/>
+    <exec executable="make" dir="${igraphWrapper_src.dir}"/>
+  </target>
+
+
+  <!-- =================================================================== -->
   <!-- Creates the plugin jar file                                           -->
   <!-- =================================================================== -->
-  <target name="jar" depends="compile, copy_plugin_prop, copy_license, copy_igraph_lib"> 
+  <target name="jar" depends="compile, copy_plugin_prop, copy_license, copy_igraphWrapper_lib"> 
     <jar destfile="${project.jar}">
       <manifest> <attribute name="Cytoscape-Plugin" value="${plugin_class}"/> </manifest>
       <fileset dir="${build.dir}" includes="**"/>
@@ -100,11 +110,11 @@
   </target>
 
   <!-- =================================================================== -->
-  <!-- If igraph.lib exist, copy it to build directory  -->	
+  <!-- If igraphWrapper.lib exist, copy it to build directory  -->	
   <!-- =================================================================== -->
-  <target name="copy_igraph_lib" if="igraph.lib.present">
-    <echo message="copying igraph lib to build dir"/>
-    <copy todir="${build.dir}/" file="${igraph.dir}/src/.libs/libigraph.dylib"/>	
+  <target name="copy_igraphWrapper_lib" depends="igraphWrapper_compile">
+    <echo message="copying igraphWrapper lib to build dir"/>
+    <copy todir="${build.dir}/" file="${igraphWrapper_src.dir}/libigraphWrapper.dylib"/>	
   </target>
 
   <!-- =================================================================== -->
@@ -126,7 +136,9 @@
   <target name="clean" depends="init">
     <delete dir="${build.dir}"/>
     <delete file="${root.dir}/${project.jar}"/>
-    <delete file="${root.dir}/${test.jar}"/>
+    <exec executable="make" dir="${igraphWrapper_src.dir}">
+      <arg line="clean"/>
+    </exec>
   </target>
 
 

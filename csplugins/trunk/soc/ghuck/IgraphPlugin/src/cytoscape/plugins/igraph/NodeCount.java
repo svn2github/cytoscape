@@ -22,6 +22,16 @@ public class NodeCount extends CytoscapeAction {
     }
 
     public static int countNodes() {
+
+	// igraph_vector_init(&edgesVector, 20);	
+	// fillEdgesVector(&edgesVector)
+	// igraph_empty(&graph, 0, 0);
+	// igraph_add_edges(&graph, edgesVector, 0);
+	// int nodesCount = igraph_vcount(&graph);
+	// igraph_vector_destroy(edgesVector);
+	// igraph_destroy(&graph);
+	// return nodesCount;
+
 	return 0;
     }
     

@@ -24,7 +24,18 @@ public class IgraphInterface {
 	    DoubleByReference stor_end;
 	    DoubleByReference end;
 	}
-	
+
+	public class Igraph_t extends Structure {
+	     int n;
+	     int directed;
+	     Igraph_vector_t from;
+	     Igraph_vector_t to;
+	     Igraph_vector_t oi;
+	     Igraph_vector_t ii;
+	     Igraph_vector_t os;
+	     Igraph_vector_t is;
+	    //	     void *attr;
+	}
 
 	
 	/* -------------------------------------------------- */
