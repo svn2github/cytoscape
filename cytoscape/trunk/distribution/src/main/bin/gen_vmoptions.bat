@@ -14,13 +14,13 @@ for /f %%i in ('dir /b findstr.out') do if %%~zi equ 0 goto 32bit
 
 :64bit
 	echo -Xms20m > Cytoscape.vmoptions
-	echo -Xmx2g  >>Cytoscape.vmoptions
+	echo -Xmx768m  >>Cytoscape.vmoptions
 	echo -Xss10m >>Cytoscape.vmoptions
 	goto shared
 
 :32bit
 	echo -Xms10m   > Cytoscape.vmoptions
-	echo -Xmx1550m >>Cytoscape.vmoptions
+	echo -Xmx768m >>Cytoscape.vmoptions
 	echo -Xss10m   >>Cytoscape.vmoptions
 
 :shared
