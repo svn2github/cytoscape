@@ -5,19 +5,6 @@
 
 @echo off
 
-:: Create the Cytoscape.vmoptions file, if it doesn't exist.
-IF EXIST "Cytoscape.vmoptions" GOTO vmoptionsFileExists
-CALL gen_vmoptions.bat
-:vmoptionsFileExists
-
-IF EXIST "Cytoscape.vmoptions" GOTO itIsThere
-; Run with defaults:
-echo "*** Missing Cytoscape.vmoptions, falling back to using defaults!"
-java -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd -Xss10M -Xmx768M -jar cytoscape.jar -p plugins %*
-GOTO end
-
-:: We end up here if we have a Cytoscape.vmoptions file:
-:itIsThere
 :: Read vmoptions, one per line.
 setLocal EnableDelayedExpansion
 for /f "tokens=* delims= " %%a in (Cytoscape.vmoptions) do (
