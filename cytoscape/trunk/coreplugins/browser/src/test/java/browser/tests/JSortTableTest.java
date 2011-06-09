@@ -31,7 +31,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import browser.DefaultSortTableModel;
 import browser.SortTableModel;
 
 
