@@ -26,7 +26,6 @@ import org.cytoscape.coreplugin.cpath2.web_service.*;
 import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.coreplugins.biopax.util.CytoscapeWrapper;
-import cytoscape.coreplugins.biopax.util.LayoutUtil;
 import cytoscape.coreplugins.biopax.action.NetworkListener;
 import cytoscape.coreplugins.biopax.view.BioPaxContainer;
 import cytoscape.coreplugins.biopax.util.BioPaxVisualStyleUtil;
@@ -266,7 +265,7 @@ public class ExecuteGetRecordByCPathId implements Task {
                 VisualStyle visualStyle = BinarySifVisualStyleUtil.getVisualStyle();
 
                 //  Set up the right layout algorithm.
-                LayoutUtil layoutAlgorithm = new LayoutUtil();
+                CyLayoutAlgorithm layoutAlgorithm = CyLayouts.getLayout("force-directed");
 
                 //  Now, create the view.
                 //  Use local create view option, so that we don't mess up the visual style.
@@ -325,7 +324,7 @@ public class ExecuteGetRecordByCPathId implements Task {
                 VisualStyle visualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
 
                 //  Set up the right layout algorithm.
-                LayoutUtil layoutAlgorithm = new LayoutUtil();
+                CyLayoutAlgorithm layoutAlgorithm = CyLayouts.getLayout("force-directed");
 
                 //  Now, create the view.
                 //  Use local create view option, so that we don't mess up the visual style.
@@ -396,7 +395,7 @@ public class ExecuteGetRecordByCPathId implements Task {
         if (n==0) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    LayoutUtil layoutAlgorithm = new LayoutUtil();
+                		CyLayoutAlgorithm layoutAlgorithm = CyLayouts.getLayout("force-directed");
                     networkView.applyLayout(layoutAlgorithm);
                     Cytoscape.getCurrentNetworkView().fitContent();
                 }

@@ -36,12 +36,13 @@ package org.cytoscape.coreplugin.cpath2.util;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import ding.view.NodeContextMenuListener;
-import cytoscape.coreplugins.biopax.util.LayoutUtil;
 import org.cytoscape.coreplugin.cpath2.task.MergeNetworkTask;
 import org.cytoscape.coreplugin.cpath2.task.LoadNetworkFromUrlTask;
 
@@ -235,8 +236,8 @@ public class NetworkUtil extends Thread {
 
         // if do layout, do it
         if (doLayout) {
-            LayoutUtil layoutUtil = new LayoutUtil();
-            layoutUtil.doLayout(view);
+            CyLayoutAlgorithm layout = CyLayouts.getLayout("force-directed");
+						view.applyLayout(layout);
             view.fitContent();
         }
 
