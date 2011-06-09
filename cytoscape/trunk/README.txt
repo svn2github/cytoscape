@@ -76,9 +76,6 @@ To build cytoscape:
 	cd distribution/target/distribution-${version}-null.dir/distribution-${version} 
 
 
-For questions, email Mike Smoot:  msmoot@ucsd.edu 
-
-
 IV. Release Process
 ===================
 
@@ -103,3 +100,6 @@ installation is.  Then run:
 	mvn install4j:compile
 
 The installers will be created in the target/install4j subdirectory
+
+
+For questions, email Mike Smoot:  msmoot@ucsd.edu 
