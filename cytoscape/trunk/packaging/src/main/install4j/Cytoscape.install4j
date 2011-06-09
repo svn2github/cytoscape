@@ -765,45 +765,6 @@ Ty Coon, President of Vice&lt;/tt&gt;&lt;/p&gt;
                 </serializedBean>
                 <condition />
               </action>
-              <action name="" id="133" beanClass="com.install4j.runtime.beans.actions.misc.RunExecutableAction" enabled="true" commentSet="false" comment="" rollbackBarrier="false" multiExec="false" failureStrategy="3" errorMessage="">
-                <serializedBean>
-                  <java class="java.beans.XMLDecoder">
-                    <object class="com.install4j.runtime.beans.actions.misc.RunExecutableAction">
-                      <void property="executable">
-                        <object class="java.io.File">
-                          <string>gen_vmoptions.sh</string>
-                        </object>
-                      </void>
-                      <void property="wait">
-                        <boolean>true</boolean>
-                      </void>
-                      <void property="workingDirectory">
-                        <object class="java.io.File">
-                          <string>{$installer:sys.installationDir}</string>
-                        </object>
-                      </void>
-                    </object>
-                  </java>
-                </serializedBean>
-                <condition>!Util.isWindows()</condition>
-              </action>
-              <action name="" id="134" beanClass="com.install4j.runtime.beans.actions.misc.RunExecutableAction" enabled="true" commentSet="false" comment="" rollbackBarrier="false" multiExec="false" failureStrategy="3" errorMessage="">
-                <serializedBean>
-                  <java class="java.beans.XMLDecoder">
-                    <object class="com.install4j.runtime.beans.actions.misc.RunExecutableAction">
-                      <void property="executable">
-                        <object class="java.io.File">
-                          <string>gen_vmoptions.bat</string>
-                        </object>
-                      </void>
-                      <void property="wait">
-                        <boolean>true</boolean>
-                      </void>
-                    </object>
-                  </java>
-                </serializedBean>
-                <condition>Util.isWindows()</condition>
-              </action>
             </actions>
             <formComponents />
           </screen>
