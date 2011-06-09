@@ -428,7 +428,7 @@
 			<entry key="inToolBar" value="true" />
 			<entry key="toolBarGravity" value="3.1" />
 			<entry key="iconName" value="/images/ximian/stock_zoom-in.png" />
-			<entry key="accelerator" value="cmd plus" />
+			<entry key="accelerator" value="cmd equals />
 		</osgi:service-properties>
 	</osgi:service>
 
