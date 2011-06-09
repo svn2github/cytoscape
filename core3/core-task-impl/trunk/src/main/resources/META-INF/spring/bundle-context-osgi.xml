@@ -428,7 +428,7 @@
 			<entry key="inToolBar" value="true" />
 			<entry key="toolBarGravity" value="3.1" />
 			<entry key="iconName" value="/images/ximian/stock_zoom-in.png" />
-			<entry key="accelerator" value="cmd equals />
+			<entry key="accelerator" value="cmd equals" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -669,5 +669,15 @@
 		<osgi:listener bind-method="addFactory"
 			unbind-method="removeFactory" ref="subnetworkBuilderUtil" />
 	</osgi:set>
+	
+	<osgi:service id="connectSelectedNodesTaskFactoryService" ref="connectSelectedNodesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Connect Selected Nodes" />
+			<entry key="enableFor" value="network" />
+			<entry key="preferredMenu" value="Edit" />
+			<entry key="toolBarGravity" value="2.5" />
+		</osgi:service-properties>
+	</osgi:service>
 
 </beans>

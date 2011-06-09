@@ -382,4 +382,10 @@
 		<constructor-arg ref="cyLayoutsServiceRef" />
 
 	</bean>
+	
+	<bean id="connectSelectedNodesTaskFactory"
+		class="org.cytoscape.task.internal.edit.ConnectSelectedNodesTaskFactory">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cyEventHelperRef" />
+	</bean>
 </beans>
