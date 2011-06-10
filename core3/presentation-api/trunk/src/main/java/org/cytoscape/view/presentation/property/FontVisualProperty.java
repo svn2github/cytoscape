@@ -45,12 +45,12 @@ import org.cytoscape.view.model.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
+public class FontVisualProperty extends AbstractVisualProperty<Font> {
 
 	private static final Range<Font> FONT_RANGE;
 	private static final int DEF_FONT_SIZE = 12;
 	
-	private static final Logger logger = LoggerFactory.getLogger(FontTwoDVisualProperty.class);
+	private static final Logger logger = LoggerFactory.getLogger(FontVisualProperty.class);
 
 	static {
 		final Set<Font> fontSet = new HashSet<Font>();
@@ -62,7 +62,7 @@ public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
 		FONT_RANGE = new DiscreteRange<Font>(Font.class,fontSet);
 	}
 
-	public FontTwoDVisualProperty(final Font def, final String id,
+	public FontVisualProperty(final Font def, final String id,
 			final String name, final Class<?> targetDataType) {
 		super(def, FONT_RANGE, id, name, targetDataType);
 	}

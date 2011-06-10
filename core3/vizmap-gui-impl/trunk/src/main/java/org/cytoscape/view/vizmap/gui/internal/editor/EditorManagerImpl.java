@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.model.CyEdge;
@@ -52,6 +53,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.ContinuousRange;
 import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.Range;
 import org.cytoscape.view.model.VisualLexicon;
@@ -174,48 +176,37 @@ public class EditorManagerImpl implements EditorManager {
 		this.editors.put(ve.getType(), ve);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#
-	 * removeEditorDisplayer(
-	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorDisplayer,
-	 * java.util.Map)
-	 */
+
 	public void removeVisualPropertyEditor(VisualPropertyEditor<?> vpEditor,
 			@SuppressWarnings("rawtypes") Map properties) {
 		logger.debug("************* Removing VP Editor ****************");
 		editors.remove(vpEditor.getType());
 	}
 
-	// private <T> VisualPropertyEditor<T> findEditor(VisualProperty<T> type) {
-	// final Class<T> dataType = type.getType();
-	//
-	// for (VisualPropertyEditor<?> disp : displayers)
-	// if ((dataType == disp.getVisualProperty().getType()))
-	// return disp;
-	//
-	// throw new NullPointerException("no editor displayer found for: "
-	// + type.toString());
-	// }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#
-	 * showDiscreteEditor(java .awt.Component,
-	 * org.cytoscape.application.swing.viewmodel.VisualProperty)
-	 */
-	@SuppressWarnings("unchecked")
-	public <V> V showVisualPropertyValueEditor(Component parentComponent, VisualProperty<V> type, V initialValue)
+	@Override
+	public <V> V showVisualPropertyValueEditor(final Component parentComponent, final VisualProperty<V> type, V initialValue)
 			throws Exception {
 
+		@SuppressWarnings("unchecked")
 		final ValueEditor<V> editor = (ValueEditor<V>) valueEditors.get(type.getRange().getType());
 
 		if (editor == null)
 			throw new IllegalStateException("No value editor for " + type.getDisplayName() + " is available.");
 
-		return editor.showEditor(null, initialValue);
+		while (true) {
+			final V newValue = editor.showEditor(parentComponent, initialValue);
+			if (type.getRange().validate(newValue))
+				return newValue;
+			else {
+				String message = "Please evter valid value";
+				if(type.getRange() instanceof ContinuousRange)
+					message = message + ": " + ((ContinuousRange)type.getRange()).getMin() + " to " + ((ContinuousRange)type.getRange()).getMax();
+				JOptionPane.showMessageDialog(parentComponent, message, "Invalid Value",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		
 	}
 
 	/*

@@ -7,6 +7,7 @@ import java.awt.Paint;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.ContinuousRange;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.values.LineType;
@@ -61,26 +62,26 @@ public class RichVisualLexicon extends MinimalVisualLexicon {
 			"", MinimalVisualLexicon.ARBITRARY_STRING_RANGE, "NODE_TOOLTIP",
 			"Node Tooltip", CyNode.class);
 	
-	public static final VisualProperty<Font> NODE_LABEL_FONT_FACE = new FontTwoDVisualProperty(
+	public static final VisualProperty<Font> NODE_LABEL_FONT_FACE = new FontVisualProperty(
 			new Font("SansSerif", Font.PLAIN, DEF_FONT_SIZE),
 			"NODE_LABEL_FONT_FACE", "Node Label Font Face", CyNode.class);
-	public static final VisualProperty<Integer> NODE_LABEL_FONT_SIZE = new IntegerTwoDVisualProperty(
-			DEF_FONT_SIZE, "NODE_LABEL_FONT_SIZE", "Node Label Font Size",
-			CyNode.class);
+	public static final VisualProperty<Integer> NODE_LABEL_FONT_SIZE = new IntegerVisualProperty(DEF_FONT_SIZE,
+			new ContinuousRange<Integer>(Integer.class, 1, Integer.MAX_VALUE, true, true), "NODE_LABEL_FONT_SIZE",
+			"Node Label Font Size", CyNode.class);
 	
-	public static final VisualProperty<Integer> NODE_TRANSPARENCY = new IntegerTwoDVisualProperty(
-			200, "NODE_TRANSPARENCY", "Node Transparency", CyNode.class);
-	
+	public static final VisualProperty<Integer> NODE_TRANSPARENCY = new IntegerVisualProperty(200,
+			new ContinuousRange<Integer>(Integer.class, 0, 255, true, true), "NODE_TRANSPARENCY", "Node Transparency", CyNode.class);
+
 	public static final VisualProperty<String> EDGE_TOOLTIP = new StringVisualProperty(
 			"", MinimalVisualLexicon.ARBITRARY_STRING_RANGE, "EDGE_TOOLTIP",
 			"Edge Tooltip", CyEdge.class);
 	
-	public static final VisualProperty<Font> EDGE_LABEL_FONT_FACE = new FontTwoDVisualProperty(
+	public static final VisualProperty<Font> EDGE_LABEL_FONT_FACE = new FontVisualProperty(
 			new Font("SansSerif", Font.PLAIN, 10), "EDGE_LABEL_FONT_FACE",
 			"Edge Label Font Face", CyEdge.class);
-	public static final VisualProperty<Integer> EDGE_LABEL_FONT_SIZE = new IntegerTwoDVisualProperty(
-			10, "EDGE_LABEL_FONT_SIZE", "Edge Label Font Size", CyEdge.class);
-	
+	public static final VisualProperty<Integer> EDGE_LABEL_FONT_SIZE = new IntegerVisualProperty(10,
+			new ContinuousRange<Integer>(Integer.class, 1, Integer.MAX_VALUE, true, true), "EDGE_LABEL_FONT_SIZE",
+			"Edge Label Font Size", CyEdge.class);
 	
 	public static final VisualProperty<Paint> EDGE_SELECTED_PAINT = new PaintVisualProperty(
 			Color.RED, MinimalVisualLexicon.PAINT_RANGE, "EDGE_SELECTED_PAINT",

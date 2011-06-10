@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,21 +31,27 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.presentation.property;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.ContinuousRange;
 import org.cytoscape.view.model.Range;
 
-public class IntegerTwoDVisualProperty extends AbstractVisualProperty<Integer> { 
+public class IntegerVisualProperty extends AbstractVisualProperty<Integer> {
 
-	private static final Range<Integer> INT_RANGE = new ContinuousRange<Integer>(Integer.class, Integer.MIN_VALUE, Integer.MAX_VALUE);
-	
-	public IntegerTwoDVisualProperty(final Integer def, final String id, final String name, final Class<?> targetDataType) {
-		super(def,INT_RANGE, id, name, targetDataType);
+	/**
+	 * Use specific range
+	 * @param def
+	 * @param id
+	 * @param name
+	 * @param targetDataType
+	 * @param range
+	 */
+	public IntegerVisualProperty(final Integer def, final Range<Integer> range, final String id, final String name,
+			final Class<?> targetDataType) {
+		super(def, range, id, name, targetDataType);
 	}
-	
+
 	public String toSerializableString(final Integer value) {
 		return value.toString();
 	}

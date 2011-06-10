@@ -32,4 +32,12 @@ public class DiscreteRange<T> implements Range<T> {
 		values.add(newValue);
 	}
 
+	@Override
+	public boolean validate(T value) {
+		if(values.contains(value))
+			return true;
+		else
+			return false;
+	}
+
 }

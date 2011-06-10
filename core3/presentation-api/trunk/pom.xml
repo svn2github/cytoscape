@@ -119,7 +119,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-api</artifactId>
-			<version>3.0.0-alpha4</version>
+			<version>3.0.0-alpha5-SNAPSHOT</version>
 		</dependency>
 
 		<!-- For Testing -->

@@ -10,10 +10,7 @@ public class ContinuousRange<T> implements Range<T> {
 	private final Boolean includeMin;
 	private final Boolean includeMax;
 	
-	public ContinuousRange(final Class<T> type, final T min, final T max) {
-		this(type, min, max, true, true);
-	}
-	
+
 	public ContinuousRange(final Class<T> type, final T min, final T max, final Boolean includeMin, final Boolean includeMax) {
 		this.type = type;
 		this.min = min;
@@ -49,6 +46,46 @@ public class ContinuousRange<T> implements Range<T> {
 	
 	public boolean includeMax() {
 		return includeMax;
+	}
+
+	@Override
+	public boolean validate(T value) {
+		// By default, treat T as number.  Otherwise, it should be implemented by developer.
+		if(value instanceof Number && min instanceof Number && max instanceof Number) {
+			return validateNumber((Number)value, (Number)min, (Number)max);
+		} else {
+			return true;
+		}
+			
+	}
+	
+	
+	private boolean validateNumber(final Number value, final Number minNumber, final Number maxNumber) {
+		final double testValue = value.doubleValue();
+		final double doubleMin = minNumber.doubleValue();
+		final double doubleMax = maxNumber.doubleValue();
+		
+		if(includeMax && includeMin) {
+			if(doubleMin <= testValue && doubleMax >= testValue )
+				return true;
+			else
+				return false;
+		} else if(includeMax == false && includeMin == false) {
+			if(doubleMin < testValue && doubleMax > testValue )
+				return true;
+			else
+				return false;
+		} else if(includeMax == false && includeMin) {
+			if(doubleMin <= testValue && doubleMax > testValue )
+				return true;
+			else
+				return false;
+		} else {
+			if(doubleMin < testValue && doubleMax >= testValue )
+				return true;
+			else
+				return false;
+		}
 	}
 
 }

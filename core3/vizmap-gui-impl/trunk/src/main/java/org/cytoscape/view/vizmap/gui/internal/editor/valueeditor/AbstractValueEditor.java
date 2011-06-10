@@ -1,7 +1,5 @@
 package org.cytoscape.view.vizmap.gui.internal.editor.valueeditor;
 
-import java.awt.Component;
-
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -25,7 +23,4 @@ public abstract class AbstractValueEditor<V> implements ValueEditor<V> {
 	@Override public Class<V> getType() {
 		return type;
 	}
-
-	@Override public abstract <S extends V> V showEditor(Component parent, S initialValue);
-
 }

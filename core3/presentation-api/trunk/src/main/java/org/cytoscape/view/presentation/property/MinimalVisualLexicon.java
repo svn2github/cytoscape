@@ -62,7 +62,7 @@ public class MinimalVisualLexicon extends AbstractVisualLexicon {
 	protected static final Color MIN_COLOR = new Color(0, 0, 0);
 	protected static final Color MAX_COLOR = new Color(0xFF, 0xFF, 0xFF);
 	protected static final Range<Paint> PAINT_RANGE = new ContinuousRange<Paint>(
-			Paint.class, MIN_COLOR, MAX_COLOR);
+			Paint.class, MIN_COLOR, MAX_COLOR, true, true);
 
 	protected static final Set<String> STRING_SET = new HashSet<String>();
 	// This will be used to for String VP which accepts any string values.
@@ -70,7 +70,7 @@ public class MinimalVisualLexicon extends AbstractVisualLexicon {
 			String.class, STRING_SET);
 
 	protected static final Range<Double> ARBITRARY_DOUBLE_RANGE = new ContinuousRange<Double>(
-			Double.class, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+			Double.class, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true, true);
 	protected static final Range<Double> NONE_ZERO_POSITIVE_DOUBLE_RANGE = new ContinuousRange<Double>(
 			Double.class, 0d, Double.POSITIVE_INFINITY, false, true);
 

@@ -159,7 +159,7 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 	 * flagged state in the SelectFilter object.
 	 */
 	public void graphViewChanged(final GraphViewChangeEvent event) {
-
+		
 		// GINY bug: the event we get frequently has the correct indices
 		// but incorrect Node and Edge objects. For now we get around this
 		// by converting indices to graph objects ourselves
