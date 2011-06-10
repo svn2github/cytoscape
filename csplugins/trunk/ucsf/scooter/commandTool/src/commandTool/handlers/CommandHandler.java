@@ -145,11 +145,13 @@ public class CommandHandler {
 
 		// We don't really want to parse numbers as numbers...
 		st.ordinaryChar('/');
+		st.ordinaryChar('_');
 		st.ordinaryChar('-');
 		st.ordinaryChar('.');
 		st.ordinaryChars('0', '9');
 
 		st.wordChars('/', '/');
+		st.wordChars('_', '_');
 		st.wordChars('-', '-');
 		st.wordChars('.', '.');
 		st.wordChars('0', '9');
