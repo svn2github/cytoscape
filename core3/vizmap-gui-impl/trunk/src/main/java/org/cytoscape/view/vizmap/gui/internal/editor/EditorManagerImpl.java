@@ -196,7 +196,7 @@ public class EditorManagerImpl implements EditorManager {
 
 		while (true) {
 			final V newValue = editor.showEditor(parentComponent, initialValue);
-			if (type.getRange().validate(newValue))
+			if (type.getRange().inRange(newValue))
 				return newValue;
 			else {
 				String message = "Please evter valid value";
