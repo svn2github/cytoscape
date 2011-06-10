@@ -59,7 +59,12 @@ public class FontVisualProperty extends AbstractVisualProperty<Font> {
 		for(Font f: allFonts)
 			fontSet.add(f.deriveFont(DEF_FONT_SIZE));
 		
-		FONT_RANGE = new DiscreteRange<Font>(Font.class,fontSet);
+		FONT_RANGE = new DiscreteRange<Font>(Font.class, fontSet) {
+			// Takes any String as valid value.
+			@Override public boolean validate(Font value) {
+				return true;
+			}
+		};
 	}
 
 	public FontVisualProperty(final Font def, final String id,
