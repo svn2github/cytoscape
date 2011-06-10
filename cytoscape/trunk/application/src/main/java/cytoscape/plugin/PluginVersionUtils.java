@@ -1,28 +1,24 @@
-/**
- *
- */
 package cytoscape.plugin;
+
 
 import cytoscape.logger.CyLogger;
 
-public class PluginVersionUtils {
-  protected static final CyLogger logger = CyLogger.getLogger(PluginVersionUtils.class);
 
-  public static final String versionMatch = "^\\d+\\.\\d+";
-  public static final String versionSplit = "\\.";
-  public static final int MAJOR = 1;
-  public static final int MINOR = 2;
-  public static final int BUGFIX = 3;
+public final class PluginVersionUtils {
+	public static final String VALID_CYTOSCAPE_VERSION_PATTERN = "^\\d+\\.\\d+(\\.\\d+(-[a-zA-Z]+)?)?$";
+	public static final int MINOR = 2;
+	public static final String VERSION_SEPARATOR = "\\.";
+	private static final CyLogger logger = CyLogger.getLogger(PluginVersionUtils.class);
 
-  public static boolean isVersion(String vers, int vt) {
-    String[] version = vers.split("\\.");
-    if (version.length == 2 && version[1].equals("0"))
-      version = new String[]{version[0]};
+	public static boolean isVersion(String vers, int vt) {
+		String[] version = vers.split("\\.");
+		if (version.length == 2 && version[1].equals("0"))
+			version = new String[]{version[0]};
 
-    return vt == version.length;
-  }
+		return vt == version.length;
+	}
 
-  /**
+	/**
 	 * Return the newer of the two versions.
 	 *
 	 * @param arg0
@@ -33,8 +29,8 @@ public class PluginVersionUtils {
 		String MostRecentVersion = null;
 		int max = 3;
 
-		String[] SplitVersionA = arg0.split(versionSplit);
-		String[] SplitVersionB = arg1.split(versionSplit);
+		String[] SplitVersionA = arg0.split("\\.");
+		String[] SplitVersionB = arg1.split("\\.");
 
 		for (int i = 0; i < max; i++) {
 			int a = 0;
@@ -43,9 +39,9 @@ public class PluginVersionUtils {
 			if (i == (max - 1)) {
 				logger.debug("A length: " + SplitVersionA.length + " B length: " + SplitVersionB.length);
 				a = (SplitVersionA.length == max) ? Integer
-						.valueOf(SplitVersionA[i]) : 0;
+					.valueOf(SplitVersionA[i]) : 0;
 				b = (SplitVersionB.length == max) ? Integer
-						.valueOf(SplitVersionB[i]) : 0;
+					.valueOf(SplitVersionB[i]) : 0;
 			} else {
 				a = Integer.valueOf(SplitVersionA[i]);
 				b = Integer.valueOf(SplitVersionB[i]);
@@ -56,53 +52,12 @@ public class PluginVersionUtils {
 				break;
 			}
 		}
-    return MostRecentVersion;
+		return MostRecentVersion;
 	}
-  
 
-  // this just checks the downloadable object version and the cytoscape version
-  protected static boolean versionOk(String version, boolean downloadObj) {
-    // \d+.\+d ok
-    String Match = versionMatch;
-    String Split = versionSplit;
-
-    if (downloadObj) {
-      Match = Match + "$";
-    } else { // cytoscape version
-      Match = Match + "(\\.\\d+)?$";
-      Split = "\\.|-";
-    }
-
-    if (!version.matches(Match)) {
-      return false;
-    }
-
-    String[] SplitVersion = version.split(Split);
-
-    int max = 2;
-    if (!downloadObj) {
-      max = 3; // cytoscape version numbers
-      // if there's a fourth is must be alpha
-      if (SplitVersion.length == 4) {
-        if (!SplitVersion[3].matches("[a-z]+")) {
-          return false;
-        }
-      }
-    }
-
-    // can't be longer than the accepted version types
-    if (SplitVersion.length > max) {
-      return false;
-    }
-
-    // must be digits
-    for (int i = 0; i < max && i < SplitVersion.length; i++) {
-      if (!SplitVersion[i].matches("\\d+")) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-
+	// this just checks the downloadable object version and the cytoscape version
+	public static boolean versionOk(final String version, final boolean downloadObj) {
+		final String pattern = downloadObj ? "^\\d+\\.\\d+$" : VALID_CYTOSCAPE_VERSION_PATTERN;
+		return version.matches(pattern);
+	}
 }

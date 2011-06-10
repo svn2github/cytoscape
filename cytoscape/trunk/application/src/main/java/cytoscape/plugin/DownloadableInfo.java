@@ -1,13 +1,6 @@
 /*
  File: DownloadableInfo.java 
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2011 The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -32,8 +25,9 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package cytoscape.plugin;
+
 
 import java.net.URL;
 import java.io.IOException;
@@ -51,12 +45,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
 public abstract class DownloadableInfo {
 	private static CyLogger logger = CyLogger.getLogger(DownloadableInfo.class);
-
-	protected String versionMatch = PluginVersionUtils.versionMatch;
-
-	protected String versionSplit = PluginVersionUtils.versionSplit;
 
 	private String releaseDate;
 
@@ -178,15 +169,14 @@ public abstract class DownloadableInfo {
 	 * @param cyVersion
 	 * @throws NumberFormatException
 	 */
-	public void addCytoscapeVersion(String cyVersion)
-			throws NumberFormatException {
-		if (versionOk(cyVersion, false)) {
+	public void addCytoscapeVersion(final String cyVersion) throws NumberFormatException {
+		if (versionOk(cyVersion, false))
 			compatibleCyVersions.add(cyVersion);
-            
-
-    } else {
+		else {
 			throw new NumberFormatException(
-					"Cytoscape version numbers must be in the format: \\d+.\\d+  optional to add: .\\d+-[a-z]");
+							"Cytoscape version numbers must be in the format: \""
+							+ PluginVersionUtils.VALID_CYTOSCAPE_VERSION_PATTERN + "\"!"
+							+ " (Bad version is \"" + cyVersion + "\".)");
 		}
 	}
 
@@ -195,14 +185,14 @@ public abstract class DownloadableInfo {
 	 *            Sets the version of this object.
 	 */
 	public void setObjectVersion(double objVersion)
-			throws NumberFormatException {
+		throws NumberFormatException {
 		String Version = Double.toString(objVersion);
 		if (versionOk(Version, true)) {
 			this.objVersion = Version;
 		} else {
 			throw new NumberFormatException("Bad version '" + Version + "'."
-					+ this
-					+ " version numbers must be in the format: \\d+.\\d+");
+							+ this
+							+ " version numbers must be in the format: \\d+.\\d+");
 		}
 	}
 
@@ -328,11 +318,11 @@ public abstract class DownloadableInfo {
 		}
 
 		logger.debug(getName() +": Compatible: " + all + " cyvers: " + currentPluginVersion
-				+ "(cyversion " + cytoscape.CytoscapeVersion.version +")");
+			     + "(cyversion " + cytoscape.CytoscapeVersion.version +")");
 		return currentPluginVersion;
 	}
 
-  /**
+	/**
 	 * @return All compatible Cytoscape versions.
 	 */
 	public List<String> getCytoscapeVersions() {
@@ -365,12 +355,12 @@ public abstract class DownloadableInfo {
 	 * @return true if given version is newer
 	 */
 	public boolean isNewerObjectVersion(DownloadableInfo New) {
-		String[] CurrentVersion = this.getObjectVersion().split(versionSplit);
-		String[] NewVersion = New.getObjectVersion().split(versionSplit);
+		String[] CurrentVersion = this.getObjectVersion().split(PluginVersionUtils.VERSION_SEPARATOR);
+		String[] NewVersion = New.getObjectVersion().split(PluginVersionUtils.VERSION_SEPARATOR);
 
 		// make sure it's the same object first
 		if (!(this.getID().equals(New.getID()) && this.getDownloadableURL()
-				.equals(New.getDownloadableURL()))) {
+		      .equals(New.getDownloadableURL()))) {
 			return false;
 		}
 
@@ -387,83 +377,83 @@ public abstract class DownloadableInfo {
 		return true;
 	}
 
-  /**
-   * @param pluginVersion
+	/**
+	 * @param pluginVersion
 	 * @return true if the given version is compatible with the current Cytoscape
 	 *         version major.minor (bugfix is only checked if the plugin
 	 *         specifies a bugfix version)
 	 */
-  private boolean isCytoscapeVersionCurrent(String pluginVersion) {
-  	if (pluginVersion == null )
-		return false;
+	private boolean isCytoscapeVersionCurrent(String pluginVersion) {
+		if (pluginVersion == null )
+			return false;
 
-    String[] cyVersion = new CytoscapeVersion().getFullVersion().split(versionSplit);
-    String[] plVersion = pluginVersion.split(versionSplit);
+		String[] cyVersion = new CytoscapeVersion().getFullVersion().split(PluginVersionUtils.VERSION_SEPARATOR);
+		String[] plVersion = pluginVersion.split(PluginVersionUtils.VERSION_SEPARATOR);
 
-	if ( cyVersion.length < plVersion.length )
-		return false;
+		if ( cyVersion.length < plVersion.length )
+			return false;
 
-    for (int i = 0; i < plVersion.length; i++) 
-      if (Integer.valueOf(cyVersion[i]).intValue() != Integer.valueOf(plVersion[i]).intValue())
-        return false;
+		for (int i = 0; i < plVersion.length; i++) 
+			if (Integer.valueOf(cyVersion[i]).intValue() != Integer.valueOf(plVersion[i]).intValue())
+				return false;
 
-    return true;
-  }
+		return true;
+	}
 
 
-  private boolean compareVersions(String[] v1, String[] v2) {
-    if (v1.length != v2.length) return false;
+	private boolean compareVersions(String[] v1, String[] v2) {
+		if (v1.length != v2.length) return false;
       
-    for (int i = 0; i < v1.length; i++) {  	
-    	// Remove ".SNAPSHOT in versiopn number if any 
-    	v1[i] = v1[i].toUpperCase();
-    	int idx = v1[i].indexOf("SNAPSHOT");
-    	if (idx >0){
-    		v1[i] = v1[i].substring(0, idx-1);
-    	}
+		for (int i = 0; i < v1.length; i++) {  	
+			// Remove ".SNAPSHOT in versiopn number if any 
+			v1[i] = v1[i].toUpperCase();
+			int idx = v1[i].indexOf("SNAPSHOT");
+			if (idx >0){
+				v1[i] = v1[i].substring(0, idx-1);
+			}
     	
-      if (Integer.valueOf(v1[i]).intValue() != Integer.valueOf(
-          v2[i]).intValue())
-        return false;
-    }
-  return true;
-  }
+			if (Integer.valueOf(v1[i]).intValue() != Integer.valueOf(
+										 v2[i]).intValue())
+				return false;
+		}
+		return true;
+	}
 
-/**
- * @return true if the plugin is compatible with the current version of Cytoscape.
- *    NOTE: It is assumed that if a plugin is listed as being compatible with the minor version number
- *      it is compatible with all bug fix versions.
- */
-  public boolean isPluginCompatibleWithCurrent() {
+	/**
+	 * @return true if the plugin is compatible with the current version of Cytoscape.
+	 *    NOTE: It is assumed that if a plugin is listed as being compatible with the minor version number
+	 *      it is compatible with all bug fix versions.
+	 */
+	public boolean isPluginCompatibleWithCurrent() {
 
-	  if (this.getCategory() != null && this.getCategory().equalsIgnoreCase("Core")){
-		  // core plugins already compatible with current version
-		  return true;
-	  }
+		if (this.getCategory() != null && this.getCategory().equalsIgnoreCase("Core")){
+			// core plugins already compatible with current version
+			return true;
+		}
 	  
-	boolean compatible = false;
-    CytoscapeVersion cv = new CytoscapeVersion();
-    for (String pluginVersion: compatibleCyVersions) {
-      String[] cyVersion = cv.getFullVersion().split(versionSplit);
-      String[] plVersion = pluginVersion.split(versionSplit);
-      if ( PluginVersionUtils.isVersion(pluginVersion, PluginVersionUtils.MINOR) ) {
-          cyVersion = new String[]{cyVersion[0], cyVersion[1]};
-        }
-      logger.debug("Comparing versions: " + Arrays.toString(cyVersion) + " : " + Arrays.toString(plVersion));
+		boolean compatible = false;
+		CytoscapeVersion cv = new CytoscapeVersion();
+		for (String pluginVersion: compatibleCyVersions) {
+			String[] cyVersion = cv.getFullVersion().split(PluginVersionUtils.VERSION_SEPARATOR);
+			String[] plVersion = pluginVersion.split(PluginVersionUtils.VERSION_SEPARATOR);
+			if ( PluginVersionUtils.isVersion(pluginVersion, PluginVersionUtils.MINOR) ) {
+				cyVersion = new String[]{cyVersion[0], cyVersion[1]};
+			}
+			logger.debug("Comparing versions: " + Arrays.toString(cyVersion) + " : " + Arrays.toString(plVersion));
 
-      if (compareVersions(cyVersion, plVersion)) {
-        compatible = true;
-        break;
-      }
-    }
-    return compatible;
-  }
+			if (compareVersions(cyVersion, plVersion)) {
+				compatible = true;
+				break;
+			}
+		}
+		return compatible;
+	}
 
 	/**
 	 * Compare the two info objects. If the ID, downloadable url and object
 	 * version are the same they are considered to be the same object.
-   *
-   * Careful, this overwrites the Object.equals method
+	 *
+	 * Careful, this overwrites the Object.equals method
 	 */
 	public boolean equals(Object Obj) {
 		DownloadableInfo obj = (DownloadableInfo) Obj;
@@ -471,11 +461,11 @@ public abstract class DownloadableInfo {
 		if ( this.getType().equals(obj.getType()) ) {
 			if ( (this.getID() != null && obj.getID() != null) ) {
 				if (this.getID().equals(obj.getID()) &&
-					this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
-					this.getObjectVersion().equals(obj.getObjectVersion()))
+				    this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
+				    this.getObjectVersion().equals(obj.getObjectVersion()))
 					return true;
 			} else if (this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
-					   this.getObjectVersion().equals(obj.getObjectVersion())) {
+				   this.getObjectVersion().equals(obj.getObjectVersion())) {
 				// should I do this?? Without an id there is no other good way to
 				// tell I suppose
 				return true;
@@ -494,14 +484,14 @@ public abstract class DownloadableInfo {
 	public boolean equalsDifferentObjectVersion(Object Obj) {
 		DownloadableInfo obj = (DownloadableInfo) Obj;
 		if (this.getID().equals(obj.getID())
-				&& this.getType().equals(obj.getType())
-				&& this.getDownloadableURL().equals(obj.getDownloadableURL()))
+		    && this.getType().equals(obj.getType())
+		    && this.getDownloadableURL().equals(obj.getDownloadableURL()))
 			return true;
 
 		return false;
 	}
 
-  /**
+	/**
 	 * @return Returns String of downloadable name and version ex. MyPlugin
 	 *         v.1.0
 	 */
@@ -528,11 +518,11 @@ public abstract class DownloadableInfo {
 
 		if (!isPluginCompatibleWithCurrent()) {
 			Html += "<br><b>Verified with the following Cytoscape versions:</b> "
-					+ getCytoscapeVersions().toString() + "<br>";
+				+ getCytoscapeVersions().toString() + "<br>";
 			Html += "<font color='red'><i>" + toString()
-					+ " is not verfied to work in the current version ("
-					+ cytoscape.CytoscapeVersion.version
-					+ ") of Cytoscape.</i></font>";
+				+ " is not verfied to work in the current version ("
+				+ cytoscape.CytoscapeVersion.version
+				+ ") of Cytoscape.</i></font>";
 		}
 		Html += "<p>";
 
