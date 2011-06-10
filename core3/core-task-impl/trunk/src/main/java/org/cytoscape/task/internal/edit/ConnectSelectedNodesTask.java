@@ -33,8 +33,6 @@ public class ConnectSelectedNodesTask extends AbstractTask {
 	@Override
 	public void run(TaskMonitor taskMonitor) throws Exception {
 
-		final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(network, CyNetwork.SELECTED, true);
-
 		final CyTable nodeTable = network.getDefaultNodeTable();
 		final CyTable edgeTable = network.getDefaultEdgeTable();
 		try {
@@ -42,6 +40,7 @@ public class ConnectSelectedNodesTask extends AbstractTask {
 			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, nodeTable));
 			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, edgeTable));
 			
+			final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(network, CyNetwork.SELECTED, true);
 			for (CyNode source : selectedNodes) {
 				for (CyNode target : selectedNodes) {
 					if (source != target) {
