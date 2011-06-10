@@ -55,7 +55,7 @@ public class RichVisualLexicon extends MinimalVisualLexicon {
 
 	public static final VisualProperty<Double> NODE_BORDER_WIDTH = new DoubleVisualProperty(
 			DEF_BORDER_WIDTH,
-			MinimalVisualLexicon.NONE_ZERO_POSITIVE_DOUBLE_RANGE,
+			new ContinuousRange<Double>(Double.class, 0d, Double.POSITIVE_INFINITY, true, true),
 			"NODE_BORDER_WIDTH", "Node Border Width", CyNode.class);
 
 	public static final VisualProperty<String> NODE_TOOLTIP = new StringVisualProperty(
