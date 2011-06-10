@@ -100,7 +100,7 @@ abstract class ClusterMakerCommandHandler extends AbstractCommandHandler {
 	}
 
 	private void setListTunable(Tunable listTunable, String value) {
-		String[] optionList = (String [])listTunable.getLowerBound();
+		Object[] optionList = (Object [])listTunable.getLowerBound();
 		String[] inputList = value.split(",");
 		String v = "";
 		Integer first = null;
