@@ -67,7 +67,12 @@ public class MinimalVisualLexicon extends AbstractVisualLexicon {
 	protected static final Set<String> STRING_SET = new HashSet<String>();
 	// This will be used to for String VP which accepts any string values.
 	protected static final Range<String> ARBITRARY_STRING_RANGE = new DiscreteRange<String>(
-			String.class, STRING_SET);
+			String.class, STRING_SET) {
+		// Takes any String as valid value.
+		@Override public boolean validate(String value) {
+			return true;
+		}
+	};
 
 	protected static final Range<Double> ARBITRARY_DOUBLE_RANGE = new ContinuousRange<Double>(
 			Double.class, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true, true);

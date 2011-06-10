@@ -36,8 +36,7 @@ public class CustomGraphicsRange extends DiscreteRange<CyCustomGraphics>  {
 
 	@Override
 	public void addRangeValue(CyCustomGraphics newValue) {
-		// TODO Auto-generated method stub
-		
+		manager.addCustomGraphics(newValue, null);
 	}
 
 }
