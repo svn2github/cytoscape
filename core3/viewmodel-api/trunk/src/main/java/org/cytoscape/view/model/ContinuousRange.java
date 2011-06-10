@@ -49,7 +49,7 @@ public class ContinuousRange<T> implements Range<T> {
 	}
 
 	@Override
-	public boolean validate(T value) {
+	public boolean inRange(T value) {
 		// By default, treat T as number.  Otherwise, it should be implemented by developer.
 		if(value instanceof Number && min instanceof Number && max instanceof Number) {
 			return validateNumber((Number)value, (Number)min, (Number)max);

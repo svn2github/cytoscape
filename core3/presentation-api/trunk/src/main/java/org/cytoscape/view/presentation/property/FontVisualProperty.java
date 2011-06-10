@@ -61,7 +61,7 @@ public class FontVisualProperty extends AbstractVisualProperty<Font> {
 		
 		FONT_RANGE = new DiscreteRange<Font>(Font.class, fontSet) {
 			// Takes any String as valid value.
-			@Override public boolean validate(Font value) {
+			@Override public boolean inRange(Font value) {
 				return true;
 			}
 		};

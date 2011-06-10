@@ -25,17 +25,17 @@ public class DiscreteRangeTest {
 		final DiscreteRange<String> range1 = new DiscreteRange<String>(String.class, rangeValues);
 		
 		assertEquals(6, range1.values().size());
-		assertTrue(range1.validate("a"));
-		assertTrue(range1.validate("b"));
-		assertTrue(range1.validate("c"));
-		assertTrue(range1.validate("d"));
-		assertTrue(range1.validate("e"));
-		assertFalse(range1.validate("f"));
-		assertTrue(range1.validate("foo"));
+		assertTrue(range1.inRange("a"));
+		assertTrue(range1.inRange("b"));
+		assertTrue(range1.inRange("c"));
+		assertTrue(range1.inRange("d"));
+		assertTrue(range1.inRange("e"));
+		assertFalse(range1.inRange("f"));
+		assertTrue(range1.inRange("foo"));
 		
 		range1.addRangeValue("f");
 		assertEquals(7, range1.values().size());
-		assertTrue(range1.validate("f"));
+		assertTrue(range1.inRange("f"));
 		
 	}
 

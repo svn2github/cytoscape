@@ -33,7 +33,7 @@ public class DiscreteRange<T> implements Range<T> {
 	}
 
 	@Override
-	public boolean validate(T value) {
+	public boolean inRange(T value) {
 		if(values.contains(value))
 			return true;
 		else

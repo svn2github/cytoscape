@@ -69,7 +69,7 @@ public class MinimalVisualLexicon extends AbstractVisualLexicon {
 	protected static final Range<String> ARBITRARY_STRING_RANGE = new DiscreteRange<String>(
 			String.class, STRING_SET) {
 		// Takes any String as valid value.
-		@Override public boolean validate(String value) {
+		@Override public boolean inRange(String value) {
 			return true;
 		}
 	};

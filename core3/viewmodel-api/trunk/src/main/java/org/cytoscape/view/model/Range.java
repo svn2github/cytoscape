@@ -27,5 +27,5 @@ public interface Range<T> {
 	 * 
 	 * @return true if the given value is in the range.
 	 */
-	boolean validate(final T value);
+	boolean inRange(final T value);
 }
