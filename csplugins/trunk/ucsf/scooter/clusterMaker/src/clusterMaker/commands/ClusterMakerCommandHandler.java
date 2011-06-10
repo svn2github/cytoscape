@@ -91,6 +91,7 @@ abstract class ClusterMakerCommandHandler extends AbstractCommandHandler {
 					} else {
 						target.setValue(value.toString());
 					}
+					target.updateValueListeners();
 				} catch (Exception e) {
 					throw new Exception("Unable to parse value for "+
 					                     t.getName()+": "+value.toString());

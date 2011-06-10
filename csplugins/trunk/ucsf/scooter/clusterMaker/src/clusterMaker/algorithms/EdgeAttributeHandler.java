@@ -77,6 +77,7 @@ public class EdgeAttributeHandler
 	private EdgeWeightConverter converter = null;
 	private boolean supportAdjustments = false;
 	private Double edgeCutOff = null;
+	private Double setEdgeCutOff = null;
 	private String[] attributeArray = new String[1];
 	private List<EdgeWeightConverter>converters = null;
 
@@ -233,6 +234,7 @@ public class EdgeAttributeHandler
 		// just update the histogram, if it's up
 		if (tunable.getName().equals("edgeCutOff")) {
 			edgeCutOff = (Double) tunable.getValue();
+			setEdgeCutOff = edgeCutOff;
 			if (histo != null) {
 				// No backs!
 				histo.removeHistoChangeListener(this);
@@ -250,13 +252,23 @@ public class EdgeAttributeHandler
 		Tunable t = clusterProperties.get("edgeHistogram");
 		t.clearFlag(Tunable.IMMUTABLE);
 
+		// System.out.println("edgeCutOff = "+edgeCutOff);
 		this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, converter);
 		double dataArray[] = matrix.getEdgeValues();
 		double range = matrix.getMaxWeight() - matrix.getMinWeight();
+		// System.out.println("Max weight = "+matrix.getMaxWeight());
+		// System.out.println("Min weight = "+matrix.getMinWeight());
 		edgeCutOffTunable.setUpperBound(matrix.getMaxWeight());
 		edgeCutOffTunable.setLowerBound(matrix.getMinWeight());
-		edgeCutOffTunable.setValue(matrix.getMinWeight());
-		edgeCutOff = (Double) edgeCutOffTunable.getValue();
+		if (setEdgeCutOff == null || 
+		    setEdgeCutOff > matrix.getMaxWeight() || setEdgeCutOff < matrix.getMinWeight()) {
+			edgeCutOffTunable.setValue(matrix.getMinWeight());
+			edgeCutOff = (Double) edgeCutOffTunable.getValue();
+		} else {
+			edgeCutOffTunable.setValue(setEdgeCutOff);
+			edgeCutOff = (Double) edgeCutOffTunable.getValue();
+		}
+		// System.out.println("edgeCutOff (2) = "+edgeCutOff);
 
 		if (histo != null) {
 			histo.updateData(dataArray);
