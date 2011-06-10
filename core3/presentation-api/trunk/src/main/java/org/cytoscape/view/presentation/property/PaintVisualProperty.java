@@ -50,20 +50,22 @@ public class PaintVisualProperty extends AbstractVisualProperty<Paint> {
 	
 	
 	@Override public String toSerializableString(final Paint paint) {
-		if(paint instanceof Color == false)
+		if (paint instanceof Color == false)
 			throw new UnsupportedOperationException("Currently, this implementation supports only Color object.");
 		
 		final Color color = (Color) paint;
 		
-		final Integer red = Integer.valueOf(color.getRed());
-		final Integer green = Integer.valueOf(color.getGreen());
-		final Integer blue = Integer.valueOf(color.getBlue());
+		String hex = Integer.toHexString(color.getRGB());
+		hex = hex.substring(2, hex.length()); // remove alpha bits
 
-		return red.toString() + "," + green.toString() + "," + blue.toString();
+		return "#" + hex;
 	}
 
 	
 	@Override public Paint parseSerializableString(final String text) {
+		if (text == null) 
+			throw new IllegalArgumentException("invalid color format: null");
+		
 		// Start by seeing if this is a hex representation
 		if (text.startsWith("#")) {
 			try {
@@ -73,8 +75,11 @@ public class PaintVisualProperty extends AbstractVisualProperty<Paint> {
 			}
 		}
 
-		// ok, this must be 3 comma separated integers instead
-		StringTokenizer strtok = new StringTokenizer(text, ",");
+		// could be an RGB color, such as "rgb(255,0,255)"
+		String s = text.replaceAll("(?i)rgb *\\(", "").replaceAll("\\)", "");
+		
+		// ok, this must be 3 comma separated integers now
+		StringTokenizer strtok = new StringTokenizer(s, ",");
 
 		if (strtok.countTokens() != 3) 
 			throw new IllegalArgumentException("not all RGB integers specified");	

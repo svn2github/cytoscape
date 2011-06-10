@@ -50,24 +50,33 @@ public class VisualPropertyTest {
 		assertEquals(CyNode.class, paintProp.getTargetDataType());
 		
 		final Color testColor = new Color(10, 20, 30); 
-		assertEquals("10,20,30", paintProp.toSerializableString(testColor));
+		assertEquals("#0A141E", paintProp.toSerializableString(testColor).toUpperCase());
 		assertEquals(testColor, paintProp.parseSerializableString("#0A141E"));
+		assertEquals(testColor, paintProp.parseSerializableString("#0a141e"));
 		assertEquals(testColor, paintProp.parseSerializableString("10,20,30"));
+		assertEquals(testColor, paintProp.parseSerializableString("rgb(10,20,30)"));
+		assertEquals(testColor, paintProp.parseSerializableString("RGB ( 10 , 20 , 30 )"));
 		
 		try {
-			final Paint result = paintProp.parseSerializableString("#2JK20A141E");
+			paintProp.parseSerializableString(null);
 		}catch(Exception e) {
 			assertTrue(e instanceof IllegalArgumentException);
 		}
 		
 		try {
-			final Paint result = paintProp.parseSerializableString("10, 20");
+			paintProp.parseSerializableString("#2JK20A141E");
 		}catch(Exception e) {
 			assertTrue(e instanceof IllegalArgumentException);
 		}
 		
 		try {
-			final Paint result = paintProp.parseSerializableString("10, 20, IJK");
+			paintProp.parseSerializableString("10, 20");
+		}catch(Exception e) {
+			assertTrue(e instanceof IllegalArgumentException);
+		}
+		
+		try {
+			paintProp.parseSerializableString("10, 20, IJK");
 		}catch(Exception e) {
 			assertTrue(e instanceof IllegalArgumentException);
 		}
