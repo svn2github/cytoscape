@@ -12,13 +12,26 @@ class PayloadAccumulator<S,P,E extends CyPayloadEvent<S,P>> {
 
 	private List<P> payloadList; 
 	private final Constructor<E> constructor;
+	private Class<?> sourceClass;
 
 	PayloadAccumulator(S source, Class<E> eventType) throws NoSuchMethodException {
-		constructor = eventType.getConstructor(source.getClass(), Collection.class);
+		System.out.println(" payload accumulator: source.getClass():  " + source + "   " + source.getClass());
+
+		for ( Constructor<?> cons : eventType.getConstructors() ) {
+			Class<?>[] params = cons.getParameterTypes();
+			if ( params.length == 2 && params[1] == Collection.class ) {
+				sourceClass = params[0];
+			}
+		}
+
+		if ( sourceClass == null )
+			throw new IllegalArgumentException("no valid source class found!");
+			
+		constructor = eventType.getConstructor(sourceClass, Collection.class);
 		payloadList = new ArrayList<P>();
 	}
 
-	E newEventInstance(Object source) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+	E newEventInstance(Object source) throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassCastException {
 		if ( source == null ) 
 			return null;
 
@@ -27,7 +40,7 @@ class PayloadAccumulator<S,P,E extends CyPayloadEvent<S,P>> {
 		if ( coll == null ) 
 			return null;
 
-		return constructor.newInstance( source, coll );			
+		return constructor.newInstance( sourceClass.cast(source), coll );			
 	}
 
 	synchronized void addPayload(P t) {

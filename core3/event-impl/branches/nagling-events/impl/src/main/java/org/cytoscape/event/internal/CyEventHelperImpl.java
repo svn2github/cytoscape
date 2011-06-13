@@ -39,6 +39,7 @@ import org.cytoscape.event.CyPayloadEvent;
 import org.cytoscape.event.CyEventHelper;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.HashMap;
 import java.lang.reflect.Constructor;
@@ -60,13 +61,13 @@ public class CyEventHelperImpl implements CyEventHelper {
 	public CyEventHelperImpl(final CyListenerAdapter normal) {
 		this.normal = normal;
 
-		sourceAccMap = new HashMap<Object,Map<Class<?>,PayloadAccumulator<?,?,?>>>();
+		sourceAccMap = Collections.synchronizedMap( new HashMap<Object,Map<Class<?>,PayloadAccumulator<?,?,?>>>());
 
 		payloadEventMonitor = Executors.newSingleThreadScheduledExecutor();
 
         final Runnable firingAgent = new Runnable() {
             public void run() {
-                firePayloadEvents();
+                forceFirePayloadEvents();
             }
         };
         payloadEventMonitor.scheduleAtFixedRate(firingAgent, 100, 100, TimeUnit.MILLISECONDS);
@@ -74,6 +75,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 
 	@Override 
 	public <E extends CyEvent<?>> void fireEvent(final E event) {
+		System.out.println("firing event: " + event);
 		normal.fireEvent(event);
 	}
 
@@ -96,6 +98,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 
 	@Override 
 	public <S,P,E extends CyPayloadEvent<S,P>> void addEventPayload(S source, P payload, Class<E> eventType) {
+		System.out.println("addEventPayload: " + source + "  " + payload + "  " + eventType);
 		if ( payload == null || source == null || eventType == null) {
 			logger.warn("improperly specified payload event with source: " + source + 
 			            "  with payload: " + payload + 
@@ -105,8 +108,9 @@ public class CyEventHelperImpl implements CyEventHelper {
 
 		Map<Class<?>,PayloadAccumulator<?,?,?>> cmap = sourceAccMap.get(source);
 		if ( cmap == null ) { 
-			cmap = new HashMap<Class<?>,PayloadAccumulator<?,?,?>>();
+			cmap = Collections.synchronizedMap(new HashMap<Class<?>,PayloadAccumulator<?,?,?>>());
 			sourceAccMap.put(source,cmap);
+			System.out.println("  adding source to map: " + source);
 		}
 
 		PayloadAccumulator<S,P,E> acc = (PayloadAccumulator<S,P,E>) cmap.get(eventType);
@@ -115,22 +119,29 @@ public class CyEventHelperImpl implements CyEventHelper {
 			try {
 				acc = new PayloadAccumulator<S,P,E>(source, eventType);
 				cmap.put(eventType,acc);
+				System.out.println("  adding accumulator: " + source + " " + eventType);
 			} catch (NoSuchMethodException nsme) {
 				logger.warn("Unable to add payload to event, because of missing event constructor.", nsme);
 				return;
 			}
 		}
 
+		System.out.println("   addEventPayload: " + source + "  " + payload + "  " + eventType);
 		acc.addPayload(payload);
 	}
 
-	private void firePayloadEvents() {
+	public void forceFirePayloadEvents() {
+//		System.out.println("forceFirePayloadEvents in thread: " + Thread.currentThread());
 		for ( Object source : sourceAccMap.keySet() ) {
+//			System.out.println("   examining source: " + source);
 			for ( PayloadAccumulator<?,?,?> acc : sourceAccMap.get(source).values() ) {
+//				System.out.println("      found accumulator: " + acc);
 				try {
 					CyPayloadEvent<?,?> event = acc.newEventInstance( source );
-					if ( event != null ) 
+					if ( event != null ) {
+						System.out.println("        -----------force firing event: " + event);
 						fireEvent(event);
+					}
 				} catch (Exception ie) {
 					logger.warn("Couldn't instantiate event for source: " + source, ie);
 				}

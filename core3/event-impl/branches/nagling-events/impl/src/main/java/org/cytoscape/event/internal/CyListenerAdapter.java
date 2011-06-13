@@ -89,10 +89,10 @@ public class CyListenerAdapter {
 			return;
 		} 
 
-		if ( event.synchronousOnly() )
+	//	if ( event.synchronousOnly() )
 			fireSynchronousEvent(event,listenerClass,listeners);
-		else
-			fireAsynchronousEvent(event,listenerClass,listeners);
+	//	else
+	//		fireAsynchronousEvent(event,listenerClass,listeners);
 	}
 
 
