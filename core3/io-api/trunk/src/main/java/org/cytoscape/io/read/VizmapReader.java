@@ -1,6 +1,8 @@
 package org.cytoscape.io.read;
 
-import org.cytoscape.view.vizmap.model.Vizmap;
+import java.util.Set;
+
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.Task;
 
 /**
@@ -15,7 +17,7 @@ import org.cytoscape.work.Task;
 public interface VizmapReader extends Task {
 
 	/**
-	 * @return A {@link org.cytoscape.view.vizmap.model.Vizmap} object
+	 * @return A list of {@link org.cytoscape.view.vizmap.VisualStyle} objects
 	 */
-	Vizmap getVizmap();
+	Set<VisualStyle> getVisualStyles();
 }
