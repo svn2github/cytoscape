@@ -11,16 +11,34 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
  
-  <modules>
-    <module>corelibs</module>
-    <module>application</module>
-    <module>coreplugins</module>
-    <module>distribution</module>
-    <module>javadoc</module>
-    <module>packaging</module>
-    <module>webstart</module>
-    <module>archetypes</module>
-  </modules>
+  <profiles>
+    <profile>
+      <id>work</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>corelibs</module>
+        <module>application</module>
+        <module>coreplugins</module>
+        <module>distribution</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>all</id>
+      <modules>
+       <module>corelibs</module>
+       <module>application</module>
+       <module>coreplugins</module>
+       <module>distribution</module>
+       <module>javadoc</module>
+       <module>packaging</module>
+       <module>webstart</module>
+       <module>archetypes</module>
+      </modules>
+    </profile>
+  </profiles>
+
 
   <build>
     <plugins>
