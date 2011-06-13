@@ -73,7 +73,7 @@ import org.cytoscape.property.session.Plugins;
 import org.cytoscape.property.session.SessionState;
 import org.cytoscape.session.CySession;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.vizmap.model.Vizmap;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
@@ -111,7 +111,6 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	
 	// Document versions
 	private static final String CYSESSION_VERSION = "3.0";
-	private static final String VIZMAP_VERSION = "3.0";
 
 	// Extension for the xgmml file
 	private static final String XGMML_EXT = ".xgmml";
@@ -137,7 +136,6 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	private Plugins plugins;
 
 	private final String cysessionDocId;
-	private final String vizmapDocId;
 	private final String sessionDir;
 	private ZipOutputStream zos; 
 	private TaskMonitor taskMonitor;
@@ -185,7 +183,6 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 		String now = df.format(new Date());
 
 		cysessionDocId = "CytoscapeSession-" + now;
-		vizmapDocId = "VizMap-" + now;
 		sessionDir = cysessionDocId + "/"; 
 		
 		networkMap = new HashMap<String,Long>();
@@ -220,13 +217,11 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	 * Writes the vizmap.props file to the session zip.
 	 */
 	private void zipVizmap() throws Exception {
-		Vizmap vizmap = session.getVizmap();
-		vizmap.setId(vizmapDocId);
-		vizmap.setDocumentVersion(VIZMAP_VERSION);
-		
+		Set<VisualStyle> styles = session.getVisualStyles();
+
 		zos.putNextEntry(new ZipEntry(sessionDir + VIZMAP_FILE) );
 
-		CyWriter vizmapWriter = vizmapWriterMgr.getWriter(vizmap, vizmapFilter, zos );
+		CyWriter vizmapWriter = vizmapWriterMgr.getWriter(styles, vizmapFilter, zos);
 		vizmapWriter.run(taskMonitor);
 
 		zos.closeEntry();
