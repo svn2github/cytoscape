@@ -254,7 +254,7 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler,Pr
 		if (event.getPropertyName().equalsIgnoreCase(Cytoscape.SESSION_LOADED)){
 			// perform the same action as clearButton
 			try {
-				this.clearButtonActionPerformed(null);
+				// this.clearButtonActionPerformed(null);
 			}
 			catch (Exception e){
 			}
