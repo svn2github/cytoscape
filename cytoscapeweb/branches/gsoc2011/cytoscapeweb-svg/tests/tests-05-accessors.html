@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cytoscape Web: SVG prototype</title>
+		<style>
+			#container-div {
+				width: 400px;
+				margin: 30px auto;
+				background-color: #eee;
+			}
+		</style>
+		<script type="text/javascript" src="accessor.js"></script>
+		<script type="text/javascript">
+			var t;
+			window.onload = function() {
+
+				function TestObject() {
+					// The underscore convention is used for private fields.
+					this._id = "e1";
+					this._source = "n1"; // In reality source and target would be object references rather than strings
+					this._target = "n2";
+					
+					// Container objects for data used by accessors
+					this._data = {};
+					this._style = {};
+				
+					this.data = accessor(
+						this._data,
+						["id", "source", "target"],
+						null,
+						{"id": "_id", "source":"_source", "target":"_target"},
+						this
+					);
+					this.style = accessor(
+						this._style,
+						[],
+						["color", "width", "opacity"]
+					);
+				}
+			
+				t = new TestObject();
+				
+				t.data("score", 32);
+				t.data("label", "my label");
+				
+				console.log(t.data());
+				
+				t.data({score: 40, weight: 1.5});
+				
+				console.log(t.data("score"));
+				console.log(t.data("weight"));
+				console.log(t.data());
+				
+				t.style();
+				
+			}
+				
+
+		</script>
+	</head>
+	<body>
+		<div id="container-div">This test uses the JS console</div>
+	</body>
+</html>
