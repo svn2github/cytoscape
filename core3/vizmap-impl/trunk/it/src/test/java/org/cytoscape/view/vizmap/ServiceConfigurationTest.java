@@ -1,18 +1,14 @@
 package org.cytoscape.view.vizmap; 
 
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.junit.MavenConfiguredJUnit4TestRunner;
-
-import org.cytoscape.integration.ServiceTestSupport;
+import java.util.Properties;
 
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.integration.ServiceTestSupport;
 import org.cytoscape.view.presentation.RenderingEngineManager;
-import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
-
-import java.util.Properties;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.ops4j.pax.exam.junit.MavenConfiguredJUnit4TestRunner;
 
 @RunWith(MavenConfiguredJUnit4TestRunner.class)
 public class ServiceConfigurationTest extends ServiceTestSupport {
@@ -39,6 +35,5 @@ public class ServiceConfigurationTest extends ServiceTestSupport {
 	public void testExpectedServices() {
 		checkService(VisualMappingManager.class);
 		checkService(VisualStyleFactory.class);
-		checkService(VisualStyleSerializer.class);
 	}
 }
