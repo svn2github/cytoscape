@@ -37,7 +37,6 @@ package org.cytoscape.session.internal;
 import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -64,8 +63,6 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.VisualStyleSerializer;
-import org.cytoscape.view.vizmap.model.Vizmap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +80,6 @@ public class CySessionManagerImpl implements CySessionManager {
 	private final CyNetworkManager netMgr;
 	private final CyTableManager tblMgr;
 	private final VisualMappingManager vmMgr;
-	private final VisualStyleSerializer vsSer;
 	private final CyNetworkViewManager nvMgr;
 
 	private final CyProperty<Properties> properties;
@@ -95,7 +91,6 @@ public class CySessionManagerImpl implements CySessionManager {
 								CyNetworkManager netMgr,
 								CyTableManager tblMgr,
 								VisualMappingManager vmMgr,
-								VisualStyleSerializer vsSer,
 								CyNetworkViewManager nvMgr,
 								CyProperty<Properties> props,
 								CyProperty<Bookmarks> bkmarks) {
@@ -103,7 +98,6 @@ public class CySessionManagerImpl implements CySessionManager {
 		this.netMgr = netMgr;
 		this.tblMgr = tblMgr;
 		this.vmMgr = vmMgr;
-		this.vsSer = vsSer;
 		this.nvMgr = nvMgr;
 		this.properties = props;
 		this.bookmarks = bkmarks;
@@ -136,19 +130,14 @@ public class CySessionManagerImpl implements CySessionManager {
 		Cysession cysess = cysessFactory.createCysession(savingEvent.getDesktop(), savingEvent.getCytopanels(), null);
 
 		Map<String, List<File>> pluginMap = savingEvent.getPluginFileListMap();
-
 		Set<CyTableMetadata> tables = tblMgr.getAllTables(true);
-
-		Set<VisualStyle> allStyles = vmMgr.getAllVisualStyles();
-		Vizmap vizmap = vsSer.createVizmap(allStyles);
-
-		// Properties and Bookmarks
+		Set<VisualStyle> styles = vmMgr.getAllVisualStyles();
 		Properties props = properties != null ? properties.getProperties() : null;
 		Bookmarks bkmarks = bookmarks != null ? bookmarks.getProperties() : null;
 
 		// Build the session
 		CySession sess = new CySession.Builder().cytoscapeProperties(props).bookmarks(bkmarks).cysession(cysess)
-				.pluginFileListMap(pluginMap).tables(tables).networkViews(netViews).vizmap(vizmap)
+				.pluginFileListMap(pluginMap).tables(tables).networkViews(netViews).visualStyles(styles)
 				.viewVisualStyleMap(stylesMap).build();
 
 		return sess;
@@ -162,19 +151,16 @@ public class CySessionManagerImpl implements CySessionManager {
 
 		if (emptySession) {
 			logger.debug("Creating empty session...");
-			Set<VisualStyle> allStyles = vmMgr.getAllVisualStyles();
-			Vizmap vizmap = vsSer.createVizmap(allStyles);
+			Set<VisualStyle> styles = vmMgr.getAllVisualStyles();
 
 			// Cysession info
 			Cysession cysess = new CysessionFactory(netMgr, nvMgr, vmMgr).createDefaultCysession();
 
-			// TODO: set default properties again
 			Properties props = properties != null ? properties.getProperties() : new Properties();
-			// TODO: set default bookmarks again
 			Bookmarks bkmarks = bookmarks != null ? bookmarks.getProperties() : new Bookmarks();
 
 			sess = new CySession.Builder().cytoscapeProperties(props).bookmarks(bkmarks).cysession(cysess)
-					.vizmap(vizmap).build();
+					.visualStyles(styles).build();
 		} else {
 			logger.debug("Restoring the session...");
 
@@ -199,12 +185,11 @@ public class CySessionManagerImpl implements CySessionManager {
 
 			// Restore visual styles
 			logger.debug("Restoring visual styles...");
-			Vizmap vizmap = sess.getVizmap();
-			Collection<VisualStyle> allStyles = vsSer.createVisualStyles(vizmap);
+			Set<VisualStyle> styles = sess.getVisualStyles();
 			Map<String, VisualStyle> stylesMap = new HashMap<String, VisualStyle>();
 
-			if (allStyles != null) {
-				for (VisualStyle vs : allStyles) {
+			if (styles != null) {
+				for (VisualStyle vs : styles) {
 					vmMgr.addVisualStyle(vs);
 					stylesMap.put(vs.getTitle(), vs);
 					// TODO: what if a style with the same name already exits?

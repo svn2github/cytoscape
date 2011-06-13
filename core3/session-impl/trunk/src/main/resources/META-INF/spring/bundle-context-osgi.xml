@@ -35,8 +35,6 @@
     
     <osgi:reference id="visualMappingManagerServiceRef" interface="org.cytoscape.view.vizmap.VisualMappingManager" />
     
-    <osgi:reference id="visualStyleSerializerServiceRef" interface="org.cytoscape.view.vizmap.VisualStyleSerializer" />
-    
     <osgi:reference id="cyPropertyServiceRef" interface="org.cytoscape.property.CyProperty" filter="(cyPropertyName=coreSettings)" />
     
     <osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty" filter="(cyPropertyName=bookmarks)" />

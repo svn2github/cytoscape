@@ -31,7 +31,6 @@
        <constructor-arg ref="cyNetworkManagerServiceRef" />
        <constructor-arg ref="cyTableManagerServiceRef" />
        <constructor-arg ref="visualMappingManagerServiceRef" />
-       <constructor-arg ref="visualStyleSerializerServiceRef" />
        <constructor-arg ref="cyNetworkViewManagerServiceRef" />
        <constructor-arg ref="cyPropertyServiceRef" />
        <constructor-arg ref="bookmarkServiceRef" />
