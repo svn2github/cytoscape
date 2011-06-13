@@ -37,13 +37,14 @@ package org.cytoscape.io.internal.write;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.Set;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.io.write.VizmapWriterFactory;
 import org.cytoscape.io.write.VizmapWriterManager;
-import org.cytoscape.view.vizmap.model.Vizmap;
+import org.cytoscape.view.vizmap.VisualStyle;
 
 public class VizmapWriterManagerImpl extends AbstractWriterManager<VizmapWriterFactory> implements VizmapWriterManager {
 
@@ -51,20 +52,20 @@ public class VizmapWriterManagerImpl extends AbstractWriterManager<VizmapWriterF
         super(DataCategory.VIZMAP);
     }
 
-    @Override
-    public CyWriter getWriter(Vizmap vizmap, CyFileFilter filter, File file) throws Exception {
-        return getWriter(vizmap, filter, new FileOutputStream(file));
-    }
+	@Override
+	public CyWriter getWriter(Set<VisualStyle> styles, CyFileFilter filter, File file) throws Exception {
+		return getWriter(styles, filter, new FileOutputStream(file));
+	}
 
-    @Override
-    public CyWriter getWriter(Vizmap vizmap, CyFileFilter filter, OutputStream os) throws Exception {
-        VizmapWriterFactory vf = getMatchingFactory(filter, os);
+	@Override
+	public CyWriter getWriter(Set<VisualStyle> styles, CyFileFilter filter, OutputStream os) throws Exception {
+		VizmapWriterFactory vf = getMatchingFactory(filter, os);
 
         if (vf == null)
             throw new NullPointerException("Couldn't find matching factory for filter: " + filter);
         
-        vf.setVizmap(vizmap);
+        vf.setVisualStyles(styles);
 
         return vf.getWriterTask();
-    }
+	}
 }

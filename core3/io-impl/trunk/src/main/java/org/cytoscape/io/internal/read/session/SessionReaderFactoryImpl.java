@@ -27,7 +27,6 @@
  */
 package org.cytoscape.io.internal.read.session;
 
-
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -39,7 +38,6 @@ import org.cytoscape.io.read.VizmapReaderManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.work.TaskIterator;
 
-
 public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 
 	private final CyFileFilter filter;
@@ -47,14 +45,15 @@ public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 	private final CyPropertyReaderManager propertyReaderMgr;
 	private final VizmapReaderManager vizmapReaderMgr;
 	private final CyProperty<Properties> properties;
+
 	private InputStream inputStream;
 	private String inputName;
 
-	public SessionReaderFactoryImpl(CyFileFilter filter, 
-	                                CyNetworkReaderManager netviewReaderMgr, 
-	                                CyPropertyReaderManager propertyReaderMgr,
-	                                VizmapReaderManager vizmapReaderMgr,
-	                                CyProperty<Properties> properties) {
+	public SessionReaderFactoryImpl(final CyFileFilter filter,
+									final CyNetworkReaderManager netviewReaderMgr,
+									final CyPropertyReaderManager propertyReaderMgr,
+									final VizmapReaderManager vizmapReaderMgr,
+									final CyProperty<Properties> properties) {
 		this.filter = filter;
 		this.netviewReaderMgr = netviewReaderMgr;
 		this.propertyReaderMgr = propertyReaderMgr;
@@ -63,8 +62,7 @@ public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 	}
 
 	public void setInputStream(InputStream is, String in) {
-		if (is == null)
-			throw new NullPointerException("Input stream is null");
+		if (is == null) throw new NullPointerException("Input stream is null");
 		inputStream = is;
 		inputName = in;
 	}
@@ -74,10 +72,7 @@ public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new SessionReaderImpl(inputStream, 
-		                                              netviewReaderMgr, 
-		                                              propertyReaderMgr, 
-		                                              vizmapReaderMgr, 
-		                                              properties));
+		return new TaskIterator(new SessionReaderImpl(inputStream, netviewReaderMgr, propertyReaderMgr,
+													  vizmapReaderMgr, properties));
 	}
 }

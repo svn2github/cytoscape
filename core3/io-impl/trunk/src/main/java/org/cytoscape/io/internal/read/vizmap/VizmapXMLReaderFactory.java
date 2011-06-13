@@ -27,19 +27,21 @@
  */
 package org.cytoscape.io.internal.read.vizmap;
 
-
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.read.AbstractPropertyReaderFactory;
+import org.cytoscape.io.internal.util.vizmap.VizmapAdapter;
 import org.cytoscape.work.TaskIterator;
-
 
 public class VizmapXMLReaderFactory extends AbstractPropertyReaderFactory {
 
-    public VizmapXMLReaderFactory( CyFileFilter filter ) {
-        super(filter);
-    }
+	private final VizmapAdapter vizmapAdapter;
 
-    public TaskIterator getTaskIterator() {
-        return new TaskIterator( new VizmapXMLReader(inputStream) );
-    }
+	public VizmapXMLReaderFactory(CyFileFilter filter, VizmapAdapter vizmapAdapter) {
+		super(filter);
+		this.vizmapAdapter = vizmapAdapter;
+	}
+
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(new VizmapXMLReader(inputStream, vizmapAdapter));
+	}
 }

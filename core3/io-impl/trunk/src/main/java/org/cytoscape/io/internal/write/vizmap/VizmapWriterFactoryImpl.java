@@ -35,30 +35,30 @@
 package org.cytoscape.io.internal.write.vizmap;
 
 import java.io.OutputStream;
+import java.util.Set;
 
 import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.internal.util.vizmap.VizmapAdapter;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.io.write.VizmapWriterFactory;
-import org.cytoscape.view.vizmap.model.Vizmap;
+import org.cytoscape.view.vizmap.VisualStyle;
 
 public class VizmapWriterFactoryImpl implements VizmapWriterFactory {
 
+	private final CyFileFilter fileFilter;
+	private final VizmapAdapter vizmapAdapter;
     private OutputStream outputStream;
-    private Vizmap vizmap;
-    private CyFileFilter fileFilter;
 
-    public VizmapWriterFactoryImpl(CyFileFilter fileFilter) {
+    protected Set<VisualStyle> visualStyles;
+
+    public VizmapWriterFactoryImpl(CyFileFilter fileFilter, VizmapAdapter vizmapAdapter) {
         this.fileFilter = fileFilter;
+        this.vizmapAdapter = vizmapAdapter;
     }
 
     @Override
     public CyWriter getWriterTask() {
-        return new VizmapWriterImpl(outputStream, vizmap);
-    }
-
-    @Override
-    public void setVizmap(Vizmap vizmap) {
-        this.vizmap = vizmap;
+        return new VizmapWriterImpl(outputStream, vizmapAdapter, visualStyles);
     }
 
     @Override
@@ -70,4 +70,9 @@ public class VizmapWriterFactoryImpl implements VizmapWriterFactory {
     public CyFileFilter getCyFileFilter() {
         return fileFilter;
     }
+
+	@Override
+	public void setVisualStyles(Set<VisualStyle> styles) {
+		this.visualStyles = styles;
+	}
 }

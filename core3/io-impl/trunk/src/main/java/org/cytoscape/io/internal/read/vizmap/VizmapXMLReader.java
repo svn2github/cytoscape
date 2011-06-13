@@ -33,27 +33,28 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.cytoscape.io.internal.read.AbstractVizmapReader;
-import org.cytoscape.view.vizmap.model.Vizmap;
+import org.cytoscape.io.internal.util.vizmap.VizmapAdapter;
+import org.cytoscape.io.internal.util.vizmap.model.Vizmap;
 import org.cytoscape.work.TaskMonitor;
 
 public class VizmapXMLReader extends AbstractVizmapReader {
 
     private static final String VIZMAP_PACKAGE = Vizmap.class.getPackage().getName();
 
-    public VizmapXMLReader(InputStream is) {
-        super(is);
+    public VizmapXMLReader(InputStream is, VizmapAdapter vizmapAdapter) {
+        super(is, vizmapAdapter);
     }
 
     public void run(TaskMonitor tm) throws Exception {
-
         // No idea why, but ObjectFactory doesn't get picked up in the default
         // Thread.currentThread().getContextClassLoader() classloader, whereas 
         // that approach works fine for bookmarks.  Anyway, just force the issue
         // by getting this classloader.
         final JAXBContext jaxbContext = JAXBContext.newInstance(VIZMAP_PACKAGE, getClass().getClassLoader());
-
         final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-        this.vizmap = (Vizmap) unmarshaller.unmarshal(inputStream);
+        Vizmap vizmap = (Vizmap) unmarshaller.unmarshal(inputStream);
+        
+        this.visualStyles = vizmapAdapter.createVisualStyles(vizmap);
     }
 }

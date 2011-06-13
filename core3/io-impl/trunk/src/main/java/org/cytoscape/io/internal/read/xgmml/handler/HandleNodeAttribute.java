@@ -17,7 +17,7 @@ public class HandleNodeAttribute extends AbstractHandler {
 			return current;
 
 		manager.attState = current;
-		// System.out.println("Node attribute: "+printAttribute(atts));
+		
 		// Is this a graphics override?
 		String name = atts.getValue("name");
 

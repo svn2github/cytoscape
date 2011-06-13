@@ -35,34 +35,55 @@
 package org.cytoscape.io.internal.write.vizmap;
 
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
+import org.cytoscape.io.internal.util.vizmap.VizmapAdapter;
+import org.cytoscape.io.internal.util.vizmap.model.Vizmap;
 import org.cytoscape.io.write.CyWriter;
-import org.cytoscape.view.vizmap.model.Vizmap;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
-
 public class VizmapWriterImpl extends AbstractTask implements CyWriter {
 
-    private final OutputStream outputStream;
-    private final Vizmap vizmap;
-    
-    public VizmapWriterImpl(final OutputStream outputStream, final Object props) {
-        this.outputStream = outputStream;
-        if ( props instanceof Vizmap )
-            vizmap = (Vizmap) props;
-        else
-            throw new IllegalArgumentException("Properties must be of type Vizmap");
-    }
+	private static final String VIZMAP_VERSION = "3.0";
+	
+	private final OutputStream outputStream;
+	private final VizmapAdapter vizmapAdapter;
+	private final Set<VisualStyle> visualStyles;
 
-    @Override
-    public void run(TaskMonitor taskMonitor) throws Exception {
-        final JAXBContext jc = JAXBContext.newInstance(Vizmap.class.getPackage().getName(), this.getClass().getClassLoader());
-        Marshaller m = jc.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        m.marshal(vizmap, outputStream);
-    }
+	public VizmapWriterImpl(final OutputStream outputStream, final VizmapAdapter vizmapAdapter, final Object props) {
+		this.outputStream = outputStream;
+		this.vizmapAdapter = vizmapAdapter;
+
+		if (props instanceof Set<?>) {
+			this.visualStyles = (Set<VisualStyle>) props;
+		} else {
+			throw new IllegalArgumentException("Properties must be of type Set<VisualStyle>");
+		}
+	}
+
+	@Override
+	public void run(TaskMonitor taskMonitor) throws Exception {
+		final JAXBContext jc = JAXBContext.newInstance(Vizmap.class.getPackage().getName(), this.getClass()
+				.getClassLoader());
+		Marshaller m = jc.createMarshaller();
+		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		
+		final DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
+		String now = df.format(new Date());
+		String vizmapDocId = "VizMap-" + now;
+		
+		Vizmap vizmap = vizmapAdapter.createVizmap(visualStyles);
+		vizmap.setId(vizmapDocId);
+		vizmap.setDocumentVersion(VIZMAP_VERSION);
+		
+		m.marshal(vizmap, outputStream);
+	}
 }

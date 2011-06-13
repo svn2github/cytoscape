@@ -49,6 +49,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -71,7 +72,7 @@ import org.cytoscape.property.session.Network;
 import org.cytoscape.property.session.Node;
 import org.cytoscape.session.CySession;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.vizmap.model.Vizmap;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
@@ -99,14 +100,14 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 
 	private final InputStream sourceInputStream;
 	private final CyNetworkReaderManager netviewReaderMgr; 
-	private final CyPropertyReaderManager propertyReaderMgr; 
+	private final CyPropertyReaderManager propertyReaderMgr;
 	private final VizmapReaderManager vizmapReaderMgr; 
 
 	private Cysession cysession;
 	private Bookmarks bookmarks;
 	private TaskMonitor taskMonitor;
 	private Properties cytoscapeProps;
-	private Vizmap vizmap;
+	private Set<VisualStyle> visualStyles;
 	private final CyProperty<Properties> properties;
 
 	/**
@@ -135,6 +136,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		
 		if ( properties == null )
             throw new NullPointerException("properties is null!");
+		
 		this.properties = properties;
 	}
 
@@ -160,7 +162,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 			.networkViews( views )
 			.viewVisualStyleMap( visualStyleMap )
 			.cytoscapeProperties( cytoscapeProps )
-			.vizmap( vizmap )
+			.visualStyles( visualStyles )
 			.bookmarks( bookmarks )
 			.cysession( cysession )
 			.pluginFileListMap( pluginFileListMap )
@@ -303,9 +305,9 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	}
 	
 	private void extractVizmap(InputStream is, String entryName) throws Exception {
-	    VizmapReader reader = vizmapReaderMgr.getReader(is, entryName);
+		VizmapReader reader = vizmapReaderMgr.getReader(is, entryName);
         reader.run(taskMonitor);
-        vizmap = reader.getVizmap();
+        visualStyles = reader.getVisualStyles();
 	}
 
 	private void extractCytoscapeProps(InputStream is, String entryName) throws Exception {

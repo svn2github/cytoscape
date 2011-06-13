@@ -351,6 +351,57 @@
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 		<constructor-arg ref="renderingEngineManagerServiceRef" />
 	</bean>
+	
+	<bean id="xgmmlNetworkViewReaderFactory"
+        class="org.cytoscape.io.internal.read.xgmml.XGMMLNetworkReaderFactory">
+        <constructor-arg ref="xgmmlFilter" />
+        <constructor-arg ref="renderingEngineManagerServiceRef" />
+        <constructor-arg ref="cyNetworkViewFactoryServiceRef" />
+        <constructor-arg ref="cyNetworkFactoryServiceRef" />
+        <constructor-arg ref="readDataManager" />
+        <constructor-arg ref="attributeValueUtil" />
+        <constructor-arg ref="visualStyleFactoryServiceRef" />
+        <constructor-arg ref="visualMappingManagerServiceRef" />
+        <constructor-arg ref="discreteMappingFactoryServiceRef" />
+        <constructor-arg ref="xgmmlParser" />
+        <constructor-arg ref="cyPropertyServiceRef" />
+    </bean>
+
+    <bean id="sessionReaderFactory"
+        class="org.cytoscape.io.internal.read.session.SessionReaderFactoryImpl">
+        <constructor-arg ref="cysFilter" />
+        <constructor-arg ref="cyNetworkReaderManager" />
+        <constructor-arg ref="cyPropertyReaderManager" />
+        <constructor-arg ref="vizmapReaderManager" />
+        <constructor-arg ref="cyPropertyServiceRef" />
+    </bean>
+
+    <bean id="cysessionReaderFactory"
+        class="org.cytoscape.io.internal.read.cysession.CysessionReaderFactory">
+        <constructor-arg ref="cysessionFilter" />
+    </bean>
+
+    <bean id="bookmarkReaderFactory"
+        class="org.cytoscape.io.internal.read.bookmarks.BookmarkReaderFactory">
+        <constructor-arg ref="bookmarksFilter" />
+    </bean>
+
+    <bean id="propertiesReaderFactory"
+        class="org.cytoscape.io.internal.read.properties.PropertiesReaderFactory">
+        <constructor-arg ref="propertiesFilter" />
+    </bean>
+    
+    <bean id="vizmapXMLReaderFactory"
+        class="org.cytoscape.io.internal.read.vizmap.VizmapXMLReaderFactory">
+        <constructor-arg ref="vizmapXMLFilter" />
+        <constructor-arg ref="vizmapAdapter" />
+    </bean>
+    
+    <bean id="vizmapPropertiesReaderFactory"
+        class="org.cytoscape.io.internal.read.vizmap.VizmapPropertiesReaderFactory">
+        <constructor-arg ref="vizmapPropertiesFilter" />
+        <constructor-arg ref="vizmapAdapter" />
+    </bean>
 
 	<!-- Writer Factories -->
 	
@@ -404,6 +455,22 @@
 	<bean id="vizmapWriterFactory"
         class="org.cytoscape.io.internal.write.vizmap.VizmapWriterFactoryImpl">
         <constructor-arg ref="vizmapXMLFilter" />
+        <constructor-arg ref="vizmapAdapter" />
+    </bean>
+    
+    <bean id="sessionWriterFactory"
+        class="org.cytoscape.io.internal.write.session.SessionWriterFactoryImpl">
+        <constructor-arg ref="cysFilter" />
+        <constructor-arg ref="xgmmlFilter" />
+        <constructor-arg ref="bookmarksFilter" />
+        <constructor-arg ref="cysessionFilter" />
+        <constructor-arg ref="propertiesFilter" />
+        <constructor-arg ref="sessionTableFilter" />
+        <constructor-arg ref="vizmapXMLFilter" />
+        <constructor-arg ref="networkViewWriterManager" />
+        <constructor-arg ref="propertyWriterManager" />
+        <constructor-arg ref="tableWriterManager" />
+        <constructor-arg ref="vizmapWriterManager" />
     </bean>
 	
 	<!-- Utilities for XGMML Reader -->
@@ -430,71 +497,6 @@
 		<constructor-arg ref="readDataManager" />
 	</bean>
 
-	<bean id="xgmmlNetworkViewReaderFactory"
-		class="org.cytoscape.io.internal.read.xgmml.XGMMLNetworkReaderFactory">
-		<constructor-arg ref="xgmmlFilter" />
-		<constructor-arg ref="renderingEngineManagerServiceRef" />
-		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
-		<constructor-arg ref="cyNetworkFactoryServiceRef" />
-		<constructor-arg ref="readDataManager" />
-		<constructor-arg ref="attributeValueUtil" />
-		<constructor-arg ref="visualStyleFactoryServiceRef" />
-		<constructor-arg ref="visualMappingManagerServiceRef" />
-		<constructor-arg ref="discreteMappingFactoryServiceRef" />
-		<constructor-arg ref="xgmmlParser" />
-		<constructor-arg ref="cyPropertyServiceRef" />
-	</bean>
-
-	<bean id="sessionReaderFactory"
-		class="org.cytoscape.io.internal.read.session.SessionReaderFactoryImpl">
-		<constructor-arg ref="cysFilter" />
-		<constructor-arg ref="cyNetworkReaderManager" />
-		<constructor-arg ref="cyPropertyReaderManager" />
-		<constructor-arg ref="vizmapReaderManager" />
-		<constructor-arg ref="cyPropertyServiceRef" />
-	</bean>
-
-	<bean id="cysessionReaderFactory"
-		class="org.cytoscape.io.internal.read.cysession.CysessionReaderFactory">
-		<constructor-arg ref="cysessionFilter" />
-	</bean>
-
-	<bean id="bookmarkReaderFactory"
-		class="org.cytoscape.io.internal.read.bookmarks.BookmarkReaderFactory">
-		<constructor-arg ref="bookmarksFilter" />
-	</bean>
-
-	<bean id="propertiesReaderFactory"
-		class="org.cytoscape.io.internal.read.properties.PropertiesReaderFactory">
-		<constructor-arg ref="propertiesFilter" />
-	</bean>
-	
-	<bean id="vizmapXMLReaderFactory"
-        class="org.cytoscape.io.internal.read.vizmap.VizmapXMLReaderFactory">
-        <constructor-arg ref="vizmapXMLFilter" />
-    </bean>
-    
-	<bean id="vizmapPropertiesReaderFactory"
-        class="org.cytoscape.io.internal.read.vizmap.VizmapPropertiesReaderFactory">
-        <constructor-arg ref="vizmapPropertiesFilter" />
-        <constructor-arg ref="calculatorConverterFactory" />
-    </bean>
-
-	<bean id="sessionWriterFactory"
-		class="org.cytoscape.io.internal.write.session.SessionWriterFactoryImpl">
-		<constructor-arg ref="cysFilter" />
-		<constructor-arg ref="xgmmlFilter" />
-		<constructor-arg ref="bookmarksFilter" />
-		<constructor-arg ref="cysessionFilter" />
-		<constructor-arg ref="propertiesFilter" />
-		<constructor-arg ref="sessionTableFilter" />
-		<constructor-arg ref="vizmapXMLFilter" />
-		<constructor-arg ref="networkViewWriterManager" />
-		<constructor-arg ref="propertyWriterManager" />
-		<constructor-arg ref="tableWriterManager" />
-		<constructor-arg ref="vizmapWriterManager" />
-	</bean>
-
 	<!-- All Reader Managers -->
 	
 	<bean id="cyNetworkReaderManager"
@@ -505,7 +507,7 @@
 	<bean id="cySessionReaderManager"
 		class="org.cytoscape.io.internal.read.CySessionReaderManagerImpl" />
 
-    <bean id="vizmapReaderManager"
+	<bean id="vizmapReaderManager"
         class="org.cytoscape.io.internal.read.VizmapReaderManagerImpl" />
 
 	<bean id="cyPropertyReaderManager"
@@ -527,13 +529,24 @@
 
 	<bean id="tableWriterManager"
 		class="org.cytoscape.io.internal.write.CyTableWriterManagerImpl" />
-		
+	
 	<bean id="vizmapWriterManager"
 		class="org.cytoscape.io.internal.write.VizmapWriterManagerImpl" />
-		
+	
 	<!-- Other beans -->
 	
 	<bean id="calculatorConverterFactory"
-        class="org.cytoscape.io.internal.read.vizmap.converters.CalculatorConverterFactory" />
+        class="org.cytoscape.io.internal.util.vizmap.CalculatorConverterFactory" />
+        
+    <bean id="vizmapAdapter"
+        class="org.cytoscape.io.internal.util.vizmap.VizmapAdapter">
+        <constructor-arg ref="calculatorConverterFactory" />
+        <constructor-arg ref="visualStyleFactoryServiceRef" />
+        <constructor-arg ref="visualMappingManagerServiceRef" />
+        <constructor-arg ref="renderingEngineManagerServiceRef" />
+        <constructor-arg ref="discreteMappingFactoryServiceRef" />
+        <constructor-arg ref="continuousMappingFactoryServiceRef" />
+        <constructor-arg ref="passthroughMappingFactoryServiceRef" />
+    </bean>
 
 </beans>

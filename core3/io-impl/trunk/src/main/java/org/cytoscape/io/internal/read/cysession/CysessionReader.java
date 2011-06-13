@@ -1,15 +1,13 @@
 package org.cytoscape.io.internal.read.cysession;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.cytoscape.io.internal.read.AbstractPropertyReader;
 import org.cytoscape.property.session.Cysession;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.io.internal.read.AbstractPropertyReader;
 
 public class CysessionReader extends AbstractPropertyReader {
 

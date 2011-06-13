@@ -29,20 +29,20 @@ package org.cytoscape.io.internal.read.vizmap;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.read.AbstractPropertyReaderFactory;
-import org.cytoscape.io.internal.read.vizmap.converters.CalculatorConverterFactory;
+import org.cytoscape.io.internal.util.vizmap.VizmapAdapter;
 import org.cytoscape.work.TaskIterator;
 
 
 public class VizmapPropertiesReaderFactory extends AbstractPropertyReaderFactory {
 
-    private final CalculatorConverterFactory calculatorConverterFactory;
+    private final VizmapAdapter vizmapAdapter;
     
-    public VizmapPropertiesReaderFactory(CyFileFilter filter, CalculatorConverterFactory calculatorConverterFactory) {
+    public VizmapPropertiesReaderFactory(CyFileFilter filter, VizmapAdapter vizmapAdapter) {
         super(filter);
-        this.calculatorConverterFactory = calculatorConverterFactory;
+        this.vizmapAdapter = vizmapAdapter;
     }
 
     public TaskIterator getTaskIterator() {
-        return new TaskIterator( new VizmapPropertiesReader(inputStream, calculatorConverterFactory) );
+        return new TaskIterator( new VizmapPropertiesReader(inputStream, vizmapAdapter) );
     }
 }

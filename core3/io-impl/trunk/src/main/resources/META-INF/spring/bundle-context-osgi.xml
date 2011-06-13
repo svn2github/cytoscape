@@ -37,12 +37,20 @@
 	<osgi:reference id="visualMappingManagerServiceRef"
 		interface="org.cytoscape.view.vizmap.VisualMappingManager" />
 
-	<osgi:reference id="discreteMappingFactoryServiceRef"
-		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory"
-		filter="(mapping.type=discrete)" />
-
 	<osgi:reference id="renderingEngineManagerServiceRef"
 		interface="org.cytoscape.view.presentation.RenderingEngineManager" />
+
+    <osgi:reference id="discreteMappingFactoryServiceRef"
+        interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory"
+        filter="(mapping.type=discrete)" />
+        
+    <osgi:reference id="continuousMappingFactoryServiceRef"
+        interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory"
+        filter="(mapping.type=continuous)" />
+        
+    <osgi:reference id="passthroughMappingFactoryServiceRef"
+        interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory"
+        filter="(mapping.type=passthrough)" />
 
 	<!-- Export services -->
 	<osgi:service id="cyNetworkReaderManagerService" ref="cyNetworkReaderManager"
@@ -51,6 +59,10 @@
 
 	<osgi:service id="cyDataTableReaderManagerService" ref="cyDataTableReaderManager"
 		interface="org.cytoscape.io.read.CyTableReaderManager">
+	</osgi:service>
+	
+	<osgi:service id="vizmapReaderManagerService" ref="vizmapReaderManager"
+		interface="org.cytoscape.io.read.VizmapReaderManager">
 	</osgi:service>
 
 	<osgi:service id="viewWriterManagerService" ref="viewWriterManager"
