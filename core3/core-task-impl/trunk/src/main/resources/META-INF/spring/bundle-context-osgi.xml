@@ -27,6 +27,9 @@
 
 	<osgi:reference id="cyDataTableReaderManagerServiceRef"
 		interface="org.cytoscape.io.read.CyTableReaderManager" />
+		
+	<osgi:reference id="vizmapReaderManagerServiceRef"
+		interface="org.cytoscape.io.read.VizmapReaderManager" />
 
 	<osgi:reference id="visualMappingManagerServiceRef"
 		interface="org.cytoscape.view.vizmap.VisualMappingManager" />
@@ -43,6 +46,9 @@
 
 	<osgi:reference id="networkViewWriterManagerServiceRef"
 		interface="org.cytoscape.io.write.CyNetworkViewWriterManager" />
+		
+	<osgi:reference id="vizmapWriterManagerServiceRef"
+		interface="org.cytoscape.io.write.VizmapWriterManager" />
 
 	<osgi:reference id="sessionWriterManagerServiceRef"
 		interface="org.cytoscape.io.write.CySessionWriterManager" />
@@ -96,6 +102,15 @@
 			<entry key="preferredMenu" value="File.Import.Network" />
 			<entry key="menuGravity" value="2.0" />
 			<entry key="accelerator" value="cmd shift l" />
+		</osgi:service-properties>
+	</osgi:service>
+	
+	<osgi:service id="loadVizmapFileTaskFactoryService" ref="loadVizmapFileTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Vizmap File..." />
+			<entry key="preferredMenu" value="File.Import" />
+			<entry key="menuGravity" value="3.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -542,6 +557,16 @@
 			<entry key="preferredMenu" value="File.Export.Table" />
 			<entry key="enableFor" value="table" />
 			<entry key="menuGravity" value="1.2" />
+		</osgi:service-properties>
+	</osgi:service>
+	
+	<osgi:service id="exportVizmapTaskFactoryService" ref="exportVizmapTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="File..." />
+			<entry key="preferredMenu" value="File.Export.Vizmap" />
+			<entry key="enableFor" value="vizmap" />
+			<entry key="menuGravity" value="1.1" />
 		</osgi:service-properties>
 	</osgi:service>
 	
