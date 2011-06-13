@@ -37,6 +37,11 @@ public class CytoscapeVersion {
 	private static String bugFixVersion = "0";
 
 	public CytoscapeVersion() {
+		if (version.indexOf('-') > 0) {
+			// This is either a snapshot or a beta or something -- strip off that information
+			int indx = version.indexOf('-');
+			version = version.substring(0, indx);
+		}
 		String[] Versions = version.split("\\.");
 		majorMinorVersion = Versions[0] + "." + Versions[1];
 		if (Versions.length == 3) {
