@@ -30,7 +30,7 @@ package org.cytoscape.session;
 
 import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.vizmap.model.Vizmap;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.session.Cysession;
 import java.util.Properties;
@@ -69,7 +69,7 @@ public final class CySession {
 	private final Set<CyTableMetadata> tables;
 	private final Map<CyNetworkView,String> vsMap;
 	private final Properties cyProps;
-	private final Vizmap vizmap;
+	private final Set<VisualStyle> visualStyles;
 	private final Map<String, List<File>> pluginFiles;
 	private final Bookmarks bookmarks; 
 	private final Cysession cysession; 
@@ -99,10 +99,10 @@ public final class CySession {
 		else
 			cyProps = b.cyProps;
 
-		if ( b.vizmap == null )
-			vizmap = new Vizmap();
+		if ( b.visualStyles == null )
+			visualStyles = new HashSet<VisualStyle>();
 		else
-			vizmap = b.vizmap;
+			visualStyles = b.visualStyles;
 
 		if ( b.pluginFiles == null )
 			pluginFiles = new HashMap<String, List<File>>(); 
@@ -130,7 +130,7 @@ public final class CySession {
 		private Set<CyTableMetadata> tables;
 		private Map<CyNetworkView,String> vsMap; 
 		private Properties cyProps;
-		private Vizmap vizmap; 
+		private Set<VisualStyle> visualStyles; 
 		private Map<String, List<File>> pluginFiles; 
 		private Bookmarks bookmarks; 
 		private Cysession cysession; 
@@ -198,13 +198,12 @@ public final class CySession {
 		/**
 		 * Returns an instance of Builder that has at least been configured
 		 * with the specified properties.
-		 * @param p A Properties object that contains the current VizMap 
-		 * properties for all VisualStyles in this instance of Cytoscape.
+		 * @param styles All VisualStyles in this instance of Cytoscape.
 		 * @return An instance of Builder that has at least been configured
 		 * with the specified properties.
 		 */
-    	public Builder vizmap(final Vizmap p) { 
-			vizmap = p; 
+    	public Builder visualStyles(final Set<VisualStyle> styles) { 
+			visualStyles = styles; 
 			return this;
 		}
 
@@ -277,12 +276,10 @@ public final class CySession {
     public Properties getCytoscapeProperties() { return cyProps; }
 
 	/**
-	 * Returns a Propeties object containing all VisualStyles defined
-	 * for this session.
-	 * @return A Propeties object containing all VisualStyles defined
-	 * for this session.
+	 * Returns a set containing all VisualStyles defined for this session.
+	 * @return A Set of {@link org.cytoscape.view.vizmap.VisualStyle} objects
 	 */
-    public Vizmap getVizmap() { return vizmap; }
+    public Set<VisualStyle> getVisualStyles() { return visualStyles; }
 
 	/**
 	 * Returns a {@link Bookmarks} object containing all bookmarks for this session.

@@ -19,7 +19,7 @@ import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.session.Cysession;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.vizmap.model.Vizmap;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.junit.Test;
 
 public class CySessionTest {
@@ -156,23 +156,25 @@ public class CySessionTest {
 	public void testDefaultGetVizmap() {
 		session = new CySession.Builder().build();
 		assertNotNull(session);
-		assertNotNull(session.getVizmap());
+		assertNotNull(session.getVisualStyles());
 	}
 
 	@Test
-	public void testSetNullVizmap() {
-		session = new CySession.Builder().vizmap(null).build();
+	public void testSetNullVisualStyles() {
+		session = new CySession.Builder().visualStyles(null).build();
 		assertNotNull(session);
-		assertNotNull(session.getVizmap());
+		assertNotNull(session.getVisualStyles());
 	}
 
 	@Test
-	public void testSetVizmap() {
-		Vizmap v = mock(Vizmap.class);
-		session = new CySession.Builder().vizmap(v).build();
+	public void testSetVisualStyles() {
+		VisualStyle v1 = mock(VisualStyle.class);
+		Set<VisualStyle> set = new HashSet<VisualStyle>();
+		set.add(v1);
+		session = new CySession.Builder().visualStyles(set).build();
 		assertNotNull(session);
-		assertNotNull(session.getVizmap());
-		assertEquals(v, session.getVizmap());
+		assertNotNull(session.getVisualStyles());
+		assertEquals(set, session.getVisualStyles());
 	}
 
 	@Test
