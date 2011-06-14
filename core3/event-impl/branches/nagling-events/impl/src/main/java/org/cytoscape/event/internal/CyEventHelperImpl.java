@@ -70,7 +70,7 @@ public class CyEventHelperImpl implements CyEventHelper {
                 forceFirePayloadEvents();
             }
         };
-        payloadEventMonitor.scheduleAtFixedRate(firingAgent, 100, 100, TimeUnit.MILLISECONDS);
+        payloadEventMonitor.scheduleAtFixedRate(firingAgent, CyEventHelper.DEFAULT_PAYLOAD_WAIT_TIME_MILLIS, CyEventHelper.DEFAULT_PAYLOAD_WAIT_TIME_MILLIS, TimeUnit.MILLISECONDS);
 	}	
 
 	@Override 
