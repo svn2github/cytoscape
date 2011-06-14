@@ -7,6 +7,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.service.startlevel.StartLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -27,7 +29,8 @@ import org.cytoscape.cmdline.CommandLineArgs;
 public class Launcher {
 
 	private static String[] args;
-
+	private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
+	
 	public static void main(String[] a) {
 		args = a;
 		
@@ -66,7 +69,7 @@ public class Launcher {
 
 			framework.waitForStop(0);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.warn(e.getMessage());
 		}
 	}
 
