@@ -56,7 +56,11 @@ import javax.swing.LayoutStyle;
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
 import org.cytoscape.io.webservice.SearchWebServiceClient;
 import org.cytoscape.io.webservice.WebServiceClient;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -433,9 +437,10 @@ public class UnifiedNetworkImportDialog extends JDialog {
 			throw new IllegalStateException("Selected cleint does not have search function.");
 		}
 		
+		// Set query.  Just pass the text in the panel.
+		client.setQuery(this.queryTextPane.getText());
 		taskManager.execute(client);
-
-		logger.info("Network Import from WS Success!");
+		
 	}
 
 	private void aboutButtonActionPerformed(ActionEvent evt) {
@@ -451,6 +456,33 @@ public class UnifiedNetworkImportDialog extends JDialog {
 			icon = DEF_ICON;
 		}
 		//AboutDialog.showDialog(clientName, icon, description);
+	}
+	
+	private final class ImportNetworkTaskFactory implements TaskFactory {
+
+		private final TaskFactory tFactory;
+		
+		ImportNetworkTaskFactory(TaskFactory tFactory) {
+			this.tFactory = tFactory;
+		}
+		
+		@Override
+		public TaskIterator getTaskIterator() {
+			final TaskIterator itr = new TaskIterator();
+			itr.insertTasksAfter(new RegisterNetworkTask(), tFactory.getTaskIterator().next());
+			return itr;
+		}
+		
+	}
+	
+	private final class RegisterNetworkTask extends AbstractTask {
+
+		@Override
+		public void run(TaskMonitor taskMonitor) throws Exception {
+			logger.debug("Executing register task ------------------");
+			logger.info("DONE!");
+		}
+		
 	}
 
 	/**

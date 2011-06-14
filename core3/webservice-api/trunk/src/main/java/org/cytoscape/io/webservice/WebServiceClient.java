@@ -87,4 +87,12 @@ public interface WebServiceClient extends TaskFactory {
 	 */
 	@ProvidesGUI Container getQueryBuilderGUI();
 	
+	
+	/**
+	 * Set query for the tasks to be executed.
+	 * 
+	 * @param query query object.  This is client-dependent.
+	 */
+	void setQuery(Object query);
+	
 }

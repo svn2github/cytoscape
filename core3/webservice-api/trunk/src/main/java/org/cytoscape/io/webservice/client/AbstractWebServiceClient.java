@@ -60,6 +60,8 @@ public abstract class AbstractWebServiceClient implements WebServiceClient {
 	
 	// By default, this is null.
 	protected final Container panel = null;
+	
+	protected Object currentQuery = null;
 
 
 	public AbstractWebServiceClient(final String uri, final String displayName, final String description) {
@@ -100,5 +102,10 @@ public abstract class AbstractWebServiceClient implements WebServiceClient {
 	@Override @ProvidesGUI
 	public Container getQueryBuilderGUI() {
 		return panel;
+	}
+	
+	
+	@Override public void setQuery(Object query) {
+		this.currentQuery = query;
 	}
 }
