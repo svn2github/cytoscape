@@ -6,6 +6,12 @@
 	default-lazy-init="false">
 
 
-	<osgi:service id="ncbiClientService" ref="ncbiClient" auto-export="interfaces" />
+	<osgi:service id="ncbiClientService" ref="ncbiClient"
+		auto-export="interfaces" />
+
+	<osgi:reference id="cyNetworkFactoryServiceRef"
+		interface="org.cytoscape.model.CyNetworkFactory" />
+	<osgi:reference id="cyNetworkManagerServiceRef"
+		interface="org.cytoscape.model.CyNetworkManager" />
 
 </beans>

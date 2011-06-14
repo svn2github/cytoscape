@@ -24,5 +24,7 @@
 		<constructor-arg index="0" value="http://www.ncbi.nlm.nih.gov/entrez/eutils/soap/v2.0/eutils.wsdl" />
 		<constructor-arg index="1" value="NCBI Client" />
 		<constructor-arg index="2" value="SOAP version of NCBI Web Service Client." />
+		<constructor-arg index="3" ref="cyNetworkFactoryServiceRef"/>
+		<constructor-arg index="4" ref="cyNetworkManagerServiceRef" />
 	</bean>
 </beans>
