@@ -109,6 +109,8 @@ public class XGMMLNetworkReader extends AbstractNetworkReader {
 
 	private static final Logger logger = LoggerFactory.getLogger(XGMMLNetworkReader.class);
 
+	public static final String ORIGINAL_ID_COLUMN = "original_id";
+
 	/**
 	 * Constructor.
 	 */

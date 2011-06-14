@@ -196,6 +196,15 @@
         </osgi:service-properties>
     </osgi:service>
 
+	<osgi:service id="sessionTableReaderFactoryService" ref="sessionTableReaderFactory"
+        interface="org.cytoscape.io.read.InputStreamTaskFactory">
+        <osgi:service-properties>
+            <entry key="serviceType" value="sessionTableReaderFactory" />
+            <entry key="readerId" value="sessionTableReaderFactory" />
+            <entry key="readerDescription" value="Session Table File Reader" />
+        </osgi:service-properties>
+    </osgi:service>
+
 	<osgi:service id="sessionWriterFactoryService" ref="sessionWriterFactory"
 		interface="org.cytoscape.io.write.CySessionWriterFactory">
 	</osgi:service>

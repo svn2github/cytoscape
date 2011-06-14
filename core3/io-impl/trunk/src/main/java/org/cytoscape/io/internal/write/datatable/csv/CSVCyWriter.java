@@ -89,6 +89,7 @@ public class CSVCyWriter implements CyWriter {
 			builder.append("mutable");
 		}
 		values[1] = builder.toString();
+		writer.writeNext(values);
 	}
 
 	private void writeValues(CSVWriter writer, Collection<CyColumn> columns) {

@@ -8,6 +8,7 @@ import org.cytoscape.io.internal.read.xgmml.MetadataParser;
 import org.cytoscape.io.internal.read.xgmml.ObjectType;
 import org.cytoscape.io.internal.read.xgmml.ObjectTypeMap;
 import org.cytoscape.io.internal.read.xgmml.ParseState;
+import org.cytoscape.io.internal.read.xgmml.XGMMLNetworkReader;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -358,6 +359,15 @@ public class AttributeValueUtil {
         // OK, now actually create it
         CyNode node = manager.network.addNode();
         node.getCyRow().set("name", label);
+        
+        // Add mapping to old id
+        CyRow row = node.getCyRow(CyNetwork.HIDDEN_ATTRS);
+        CyTable table = row.getTable();
+        CyColumn column = table.getColumn(XGMMLNetworkReader.ORIGINAL_ID_COLUMN);
+        if (column == null) {
+        	table.createColumn(XGMMLNetworkReader.ORIGINAL_ID_COLUMN, String.class, true);
+        }
+        row.set(XGMMLNetworkReader.ORIGINAL_ID_COLUMN, id);
         // System.out.println("Created new node("+label+") id="+node.getRootGraphIndex());
 
         // Add it our indices

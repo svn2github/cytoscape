@@ -497,6 +497,12 @@
 		<constructor-arg ref="readDataManager" />
 	</bean>
 
+	<bean id="sessionTableReaderFactory" class="org.cytoscape.io.internal.read.datatable.CSVCyReaderFactory">
+		<constructor-arg ref="sessionTableFilter"/>
+		<constructor-arg value="true"/>
+		<constructor-arg ref="cyDataTableFactoryServiceRef"/>
+	</bean>
+	
 	<!-- All Reader Managers -->
 	
 	<bean id="cyNetworkReaderManager"
