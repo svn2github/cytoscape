@@ -373,6 +373,7 @@
         <constructor-arg ref="cyNetworkReaderManager" />
         <constructor-arg ref="cyPropertyReaderManager" />
         <constructor-arg ref="vizmapReaderManager" />
+        <constructor-arg ref="sessionTableReaderFactory" />
         <constructor-arg ref="cyPropertyServiceRef" />
     </bean>
 
