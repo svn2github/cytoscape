@@ -1932,6 +1932,7 @@ public final class GraphGraphics {
 	public final void drawTextFull(final Font font, final double scaleFactor,
 			final String text, final float xCenter, final float yCenter,
 			final float theta, final Paint paint, final boolean drawTextAsShape) {
+		if (font.getSize() == 0) return;
 		if (m_debug) {
 			checkDispatchThread();
 			checkCleared();
