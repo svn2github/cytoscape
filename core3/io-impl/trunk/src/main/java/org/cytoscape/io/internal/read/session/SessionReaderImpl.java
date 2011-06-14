@@ -108,7 +108,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	public static final int MAJOR_DOC_VERSION = 3;
 	public static final Pattern NETWORK_PATTERN = Pattern.compile(".*/([^/]+)[.]xgmml");
 	public static final Pattern NETWORK_TABLE_PATTERN = Pattern.compile(".*/([^/]+)/([^/]+)-([^/]+)-([^/]+)[.]table");
-	public static final Pattern GLOBAL_TABLE_PATTERN = Pattern.compile(".*/([^/]+)[.]table");
+	public static final Pattern GLOBAL_TABLE_PATTERN = Pattern.compile(".*/(\\d+)-([^/]+)[.]table");
 
 	private static final Logger logger = LoggerFactory.getLogger(SessionReaderImpl.class);
 
@@ -404,7 +404,9 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		
 		matcher = GLOBAL_TABLE_PATTERN.matcher(entryName);
 		if (matcher.matches()) {
-			String title = URLDecoder.decode(matcher.group(1), "UTF-8");
+			// table SUID is in group(1); we may need it when restoring
+			// equations/virtual columns
+			String title = URLDecoder.decode(matcher.group(2), "UTF-8");
 			table.setTitle(title);
 			Set<CyNetwork> networks = Collections.emptySet();
 			CyTableMetadataBuilder builder = new CyTableMetadataBuilder()

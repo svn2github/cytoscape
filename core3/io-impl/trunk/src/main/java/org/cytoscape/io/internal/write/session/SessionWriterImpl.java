@@ -381,7 +381,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 			String fileName;
 			Set<CyNetwork> networks = metadata.getCyNetworks();
 			if (networks.size() == 0) {
-				fileName = String.format("global/%s.table", tableTitle);
+				fileName = String.format("global/%d-%s.table", table.getSUID(), tableTitle);
 			} else {
 				CyNetwork network = findIntersection(includedNetworks, networks);
 				if (network == null) {
