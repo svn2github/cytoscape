@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,12 +39,19 @@ public class ImportNetworkTask<V> implements Callable<V> {
 	final String[] ids;
 
 	private final CyNetwork network;
+	
+	
+	private final ConcurrentMap<String, CyNode> nodeName2CyNodeMap;
+	private final Map<String, CyEdge> nodeName2CyEdgeMap;
 
-	public ImportNetworkTask(final String[] ids, final CyNetwork network) {
+	public ImportNetworkTask(final String[] ids, final CyNetwork network, final ConcurrentMap<String, CyNode> nodeName2CyNodeMap) {
 		this.ids = ids;
 		this.network = network;
 		this.processor = new InteractionDocNodeProcessor();
+		this.nodeName2CyNodeMap = nodeName2CyNodeMap;
+		this.nodeName2CyEdgeMap = new HashMap<String, CyEdge>();
 	}
+
 
 	@Override
 	public V call() throws Exception {
@@ -62,8 +72,10 @@ public class ImportNetworkTask<V> implements Callable<V> {
 		if(geneIDString == null)
 			throw new NullPointerException("Could not find NCBI Gene ID for the entry.");
 		
+		// This is the center of spokes
 		final CyNode centerNode = network.addNode();
 		centerNode.getCyRow().set(CyTableEntry.NAME, geneIDString);
+		this.nodeName2CyNodeMap.put(geneIDString, centerNode);
 		
 		final Set<String> idSet = new HashSet<String>();
 		final NodeList ids = result.getElementsByTagName("Gene-commentary");
@@ -76,9 +88,6 @@ public class ImportNetworkTask<V> implements Callable<V> {
 			// ids.item(i).getChildNodes().getLength());
 			NodeList children = ids.item(i).getChildNodes();
 			for (int j = 0; j < children.getLength(); j++) {
-				// logger.debug("        Node name = " +
-				// children.item(j).getNodeName() + " ====> " +
-				// children.item(j).getTextContent());
 				if (children.item(j).getNodeName().equals("Gene-commentary_heading")) {
 
 					//logger.debug("HEADING = " + children.item(j).getTextContent());
@@ -132,12 +141,18 @@ public class ImportNetworkTask<V> implements Callable<V> {
 				processor.process(item);
 				final String id = processor.getTargetID();
 				if (id != null) {
-					final CyNode targetNode = network.addNode();
+					// Create actual nodes and edges here.
+					CyNode targetNode = this.nodeName2CyNodeMap.get(id);;
+					if(targetNode == null) {
+						targetNode = network.addNode();
+						nodeName2CyNodeMap.put(id, targetNode);
+					}
+					
 					targetNode.getCyRow().set(CyTableEntry.NAME, id);
 					logger.debug("New Node Name = " + id);
 					final CyEdge newEdge = network.addEdge(centerNode, targetNode, false);
 					newEdge.getCyRow().set(CyTableEntry.NAME, 
-							centerNode.getCyRow().get(CyTableEntry.NAME, String.class) + " (" + "pp" + ") " 
+							centerNode.getCyRow().get(CyTableEntry.NAME, String.class) + " (" + processor.getInteractionType() + ") " 
 							+ targetNode.getCyRow().get(CyTableEntry.NAME, String.class));
 				}
 			}

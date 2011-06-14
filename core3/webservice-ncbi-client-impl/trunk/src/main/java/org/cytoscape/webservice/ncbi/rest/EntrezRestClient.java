@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -30,9 +34,6 @@ public class EntrezRestClient {
 	static final String FETCH_URL = BASE_URL + "efetch.fcgi?db=gene&retmode=xml&id=";
 	private static final String SEARCH_URL = BASE_URL + "esearch.fcgi?db=gene&retmax=100000&term=";
 
-
-	
-	
 	private final String regex = "\\s+";
 	
 	private static final String ID = "Id";
@@ -76,9 +77,12 @@ public class EntrezRestClient {
 
 		final ExecutorService executer = Executors.newFixedThreadPool(4);
 
-		System.out.println("Thread Pool Initialized.");
+		logger.debug("Executor initialized.");
 		final CyNetwork newNetwork = networkFactory.getInstance();
-
+		
+		
+		final ConcurrentMap<String, CyNode> nodeName2CyNodeMap = new ConcurrentHashMap<String, CyNode>();
+		
 		int group = 0;
 		int buketNum = 10;
 		String[] box = new String[buketNum];
@@ -89,7 +93,7 @@ public class EntrezRestClient {
 			group++;
 
 			if (group == buketNum) {
-				executer.submit(new EntryProcessor<String>(new ImportNetworkTask<String>(box, newNetwork)));
+				executer.submit(new EntryProcessor<String>(new ImportNetworkTask<String>(box, newNetwork, nodeName2CyNodeMap)));
 				group = 0;
 				box = new String[buketNum];
 			}
@@ -100,7 +104,7 @@ public class EntrezRestClient {
 		for (int i = 0; i < group; i++)
 			newbox[i] = box[i];
 
-		executer.submit(new EntryProcessor<String>(new ImportNetworkTask<String>(box, newNetwork)));
+		executer.submit(new EntryProcessor<String>(new ImportNetworkTask<String>(box, newNetwork, nodeName2CyNodeMap)));
 
 		try {
 			executer.shutdown();

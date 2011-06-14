@@ -25,18 +25,25 @@ public class InteractionDocNodeProcessor {
 	static final String targetSource = "DB Name";
 	static final String targetSourceID = "Target ID";
 	static final String targetOtherName = "Other Name";
+	static final String interaction = "Interaction Type";
 	
 	
 	private static final String NCBI_GENE_ID_TAG = "GeneID";
+	private static final String DEF_INTERACTION_TYPE = "protein-protein";
 	
 	private Map<String, String> idMap;
 	private Map<String, String> resultMap;
 
 	protected String getTargetID() {
+		// Use NCBI ID if available
 		String geneID = idMap.get(NCBI_GENE_ID_TAG);
 		if(geneID == null)
 			geneID = idMap.values().iterator().next();
 		return geneID;
+	}
+	
+	protected String getInteractionType() {
+		return resultMap.get(interaction);
 	}
 	
 	protected String getTargetAltName() {
@@ -53,10 +60,17 @@ public class InteractionDocNodeProcessor {
 
 		for (int i = 0; i < length; i++) {
 			final Node node = children.item(i);
+			if(node.getNodeType() != Node.ELEMENT_NODE)
+				continue;
+			
 			final String nodeName = node.getNodeName();
 			if (nodeName.equals(GC_TEXT)) {
 				final String interactionTypeText = node.getTextContent();
 				logger.debug("Interaction type = " + interactionTypeText);
+				if(interactionTypeText != null && interactionTypeText.trim().length() != 0)
+					resultMap.put(interaction, interactionTypeText);
+				else
+					resultMap.put(interaction, DEF_INTERACTION_TYPE);
 			} else if (nodeName.equals(GC_REFS))
 				processReference(node);
 			else if (nodeName.equals(GC_SOURCE))
@@ -94,7 +108,6 @@ public class InteractionDocNodeProcessor {
 					
 					for(String key: idBlock.keySet()) {
 						logger.debug(key + " ======= " + idBlock.get(key));
-						
 					}
 					
 					idMap.put(idBlock.get(DB_TAG), idBlock.get(ID_TAG));
