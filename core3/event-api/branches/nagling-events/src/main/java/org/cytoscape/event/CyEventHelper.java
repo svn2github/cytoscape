@@ -57,6 +57,14 @@ public interface CyEventHelper {
 	<S,P,E extends CyPayloadEvent<S,P>> void addEventPayload(S source, P payload, Class<E> eventType);
 
 	/**
+	 * Forces accumulated payload events to be fired.  This is a useful method
+	 * that forces payload events, which are normally fired asynchronously to
+	 * be fired synchronously at a precise time. This method should NOT be called
+	 * as a course of habit, but can be used in special circumstances.
+	 */
+	 void forceFirePayloadEvents();
+
+	/**
 	 * This method will prevent any events fired from the specified source 
 	 * object from being propagated to listeners.  This applies to both
 	 * normal Listeners and MicroListeners.

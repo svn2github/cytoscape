@@ -65,4 +65,7 @@ public class DummyCyEventHelper implements CyEventHelper {
 
 	public void unsilenceEventSource(Object o) {
 	}
+
+	public void forceFirePayloadEvents() {
+	}
 }
