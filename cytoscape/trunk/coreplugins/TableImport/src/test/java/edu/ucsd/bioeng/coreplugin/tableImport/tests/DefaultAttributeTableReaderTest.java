@@ -112,6 +112,10 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 			System.out.println("GAL Data Type " + i + " = " + galAttrTypes[i]);
 		}
 
+		// We need to delete the "String List" attribute because this one concatenates
+		// and if we've executed a previous test, we may have some junk lying around
+		Cytoscape.getNodeAttributes().deleteAttribute("String List");
+
 		AttributeMappingParameters mapping = new AttributeMappingParameters(TextTableReader.ObjectType.NODE,
 		                                                                    null, COMMA.toString(),
 		                                                                    0, "ID", aliasList,
