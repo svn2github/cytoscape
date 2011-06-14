@@ -5,7 +5,7 @@
 extern "C"
 {
   //test functions
-/*   int nativeAdd( int a, int b ); */
+  int nativeAdd( int a, int b );
 /*   void nativeIncrement(int* iptr); */
 /*   int nativeArrayReset(int data[], int length); */
 /*   int nativeCountAdd(int value); */
@@ -18,10 +18,10 @@ extern "C"
   //igraph functions
   void createGraph(int edgeArray[], int length);
 /*   bool isSimple(); */
-/*   bool isConnected(); */
-/*   void simplify(); */
+  bool isConnected();
+  void simplify();
 /*   void clusters(int membership[], int csize[], int* numCluster); */
-/*   int nodeCount(); */
+  int nodeCount();
 /*   int edgeCount(); */
 
 /*   void fastGreedy(int membership[], double* modularity, int csize[], int * numCluster); */

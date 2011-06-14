@@ -1,13 +1,5 @@
 //Author Gang Su
 //sugang@umich.edu
-//functions to be exported
-//The purpose of this program, is to port some of the igraph funcions/focus on community structure detection
-//To cytoscape.
-
-
-
-
-
 
 
 /*include this igraph.h first*/
@@ -27,24 +19,28 @@ int count = 0;
 //use a global graph object
 //Make sure there's only one active graph @ a time to reduce confusions
 igraph_t g;
+int existsGraph = 0;
 
 void createGraph(int edgeArray[], int length){
 
-	igraph_vector_t v;
-	igraph_vector_init(&v, length);
-	for(int i=0; i<length; i++){
-		VECTOR(v)[i] = edgeArray[i];
-	}
+  // Destroy old graph if it exists
+  if (existsGraph) {
+    igraph_destroy(&g);
+    existsGraph = 0;
+  }
 
-	//Create undirected graphs here.
-	//Can be extended to create directed graph.
-	//But the problem is the original graph may contain both
-	//Directed an undirected edges.
-	igraph_create(&g, &v, 0, 0);
-	//cout << "Graph Created";
-	//igraph_bool_t simple;
-	//igraph_is_simple(&g, &simple);
-	//return (bool)simple;
+  igraph_vector_t v;
+  igraph_vector_init(&v, length);
+  for(int i=0; i<length; i++){
+    VECTOR(v)[i] = edgeArray[i];
+  }
+
+  igraph_create(&g, &v, 0, 0);
+  existsGraph = 1;
+  printf("Graph created! Number of nodes: %d\n", nodeCount());
+
+  // Free resources no longer needed
+  igraph_vector_destroy(&v);
 }
 
 //Boolean, test whether the current graph is simple
@@ -56,16 +52,16 @@ void createGraph(int edgeArray[], int length){
 // 	//return 1;
 // }
 
-// bool isConnected(){
-// 	igraph_bool_t connected;
-// 	igraph_is_connected(&g, &connected, IGRAPH_STRONG);
-// 	return (bool)connected;
-// }
+bool isConnected(){
+	igraph_bool_t connected;
+	igraph_is_connected(&g, &connected, IGRAPH_STRONG);
+	return (bool)connected;
+}
 
-// void simplify(){
-// 	igraph_simplify(&g, 1, 1);
-// }
-// //////////////////////////////
+void simplify(){
+  igraph_simplify(&g, 1, 1, 0);
+}
+//////////////////////////////
 // void clusters(int membership[], int csize[], int* numCluster){
 // 	igraph_vector_t membership_v;
 // 	igraph_vector_t csize_v;
@@ -91,10 +87,10 @@ void createGraph(int edgeArray[], int length){
 	
 // }
 
-// //get nodeCount and edgeCount of the current loaded graph
-// int nodeCount(){
-// 	return (int)igraph_vcount(&g);
-// }
+//get nodeCount and edgeCount of the current loaded graph
+int nodeCount(){
+	return (int)igraph_vcount(&g);
+}
 
 // int edgeCount(){
 // 	return (int)igraph_ecount(&g);
@@ -578,13 +574,13 @@ void createGraph(int edgeArray[], int length){
 // }
 
 
-// //extern "C"{
-// //Simple adding of two integers
-// int nativeAdd( int a, int b )
-// {
-//    return( a + b );
-// }
-
+extern "C"{
+//Simple adding of two integers
+  int nativeAdd( int a, int b )
+  {
+    return( a + b );
+  }
+}
 // //Add one to the passed integer via pointer
 // void nativeIncrement(int* iptr){
 // 	*iptr += 1;

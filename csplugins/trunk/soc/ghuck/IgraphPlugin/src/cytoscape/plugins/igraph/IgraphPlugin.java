@@ -33,6 +33,8 @@ import java.lang.reflect.Field;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import com.sun.jna.*;
+
 /** ---------------------------IgraphPlugin-----------------------------
  * This plugin allows to call some of igraph functions from Cytoscape
  * @author Gerardo Huck
@@ -45,27 +47,37 @@ public class IgraphPlugin extends CytoscapePlugin {
      */
     public IgraphPlugin() {
 
- 	// Make sure Igraph library is extracted in the plugins folder
-	checkLib();
+ 	// Make sure libraries are extracted in the plugins folder
+	checkLib("igraphWrapper");
+	checkLib("igraph.0");
 
 	// Load igraph
-	loadIgraph();
+	//loadIgraph();
 
 	// Use JNA to print a simple message
-	HelloWorld.hello();
+	//HelloWorld.hello();
 
-	// Add an element in menu toolbar
+        String userDir = System.getProperty("user.dir"); 
+// 	JOptionPane.showMessageDialog( Cytoscape.getDesktop(), "user dir:"+ userDir);	
+ 	NativeLibrary.addSearchPath("igraphWrapper", userDir + "/plugins");
+
+// 	JOptionPane.showMessageDialog(Cytoscape.getDesktop(), IgraphInterface.nativeAdd(10, 20));	   
+
+	// Add elements in menu toolbar
 	NodeCount nodeCountAction = new NodeCount(this);
 	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) nodeCountAction);
+
+	IsConnected isConnectedAction = new IsConnected(this);
+	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction);
     }
 
     private boolean isOldVersion(){
 	return false;
     }
 
-    private void checkLib() {
+    private void checkLib(String lib) {
     // TODO: Make this cross-platform
-	File dynamicLib = new File ("./plugins/libigraph.dylib");
+	File dynamicLib = new File ("./plugins/lib" + lib + ".dylib");
 	if (!dynamicLib.exists() || isOldVersion()){
 	    String message;	    
 	    try {
@@ -73,7 +85,7 @@ public class IgraphPlugin extends CytoscapePlugin {
 		    getCodeSource().getLocation().toString().
 		    substring(6);
 		JarFile jar = new JarFile("./plugins/igraphPlugin.jar");
-		ZipEntry entry = jar.getEntry("libigraph.dylib");
+		ZipEntry entry = jar.getEntry("lib" + lib + ".dylib");
 		File efile = new File("./plugins/", entry.getName());
 	    
 		InputStream in = 
@@ -90,7 +102,7 @@ public class IgraphPlugin extends CytoscapePlugin {
 		out.close();
 		in.close();
 
-		message = "Igraph library extracted!"; 
+		message = lib + " library extracted!"; 
 	    }
 	    catch (Exception e) {
 		e.printStackTrace();
@@ -126,11 +138,12 @@ public class IgraphPlugin extends CytoscapePlugin {
 	    try {
 		// Change the value and load the library.
 		System.setProperty("java.library.path", "./plugins"  + ":" + orig_path);
-		System.loadLibrary("igraph");
+		//		System.loadLibrary("igraph.0");
+		System.loadLibrary("igraphWrapper");
 	    }
 
-	    catch (UnsatisfiedLinkError error){
-		String message = "Problem detected while loading igraph Library.\n"		    
+	    catch (UnsatisfiedLinkError error) {
+		String message = "Problem detected while loading library.\n"		    
 		    + error.getMessage() 
 		    + "\nPlease check your plugins folder.";
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
@@ -144,11 +157,11 @@ public class IgraphPlugin extends CytoscapePlugin {
 		field.setAccessible(accessible);   
 	    }
 	}
-	catch (Exception exception){
+	catch (Exception exception) {
 	    res = false;
 	}
 
-	finally{
+	finally {
 	    return res;
 	}
     }
