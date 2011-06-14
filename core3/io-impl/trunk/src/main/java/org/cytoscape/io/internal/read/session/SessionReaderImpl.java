@@ -387,7 +387,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 			String networkName = matcher.group(1);
 			String namespace = matcher.group(2);
 			Class<?> type = Class.forName(matcher.group(3));
-			String title = URLDecoder.decode(matcher.group(3), "UTF-8");
+			String title = URLDecoder.decode(matcher.group(4), "UTF-8");
 			table.setTitle(title);
 			CyTableMetadataBuilder builder = new CyTableMetadataBuilder()
 				.setCyTable(table)
