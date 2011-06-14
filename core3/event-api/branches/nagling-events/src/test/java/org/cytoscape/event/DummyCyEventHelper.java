@@ -28,36 +28,36 @@
 package org.cytoscape.event;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 public class DummyCyEventHelper implements CyEventHelper {
 	private Object lastSynchronousEvent;
 	private Object lastAsynchronousEvent;
+	private Object payload;
 
 	public DummyCyEventHelper() {
 	}
 	
-	public <E extends CyEvent<?>> void fireEvent(final E event) {
+	public synchronized <E extends CyEvent<?>> void fireEvent(final E event) {
+		System.out.println("got event: " + event );
 		if ( event.synchronousOnly() )
 			lastSynchronousEvent = event;
-	}
-
-	public <E extends CyEvent<?>> void fireAsynchronousEvent(final E event) {
-		if ( !event.synchronousOnly() )
+		else
 			lastAsynchronousEvent = event;
 	}
 
 	public <S,P,E extends CyPayloadEvent<S,P>> void addEventPayload(S source, P p, Class<E> e) {
+		payload = p;
 	}
 
-	public Object getLastSynchronousEvent() {
+	public synchronized Object getLastSynchronousEvent() {
 		return lastSynchronousEvent;
 	}
 
 	public Object getLastAsynchronousEvent() {
 		return lastAsynchronousEvent;
+	}
+	
+	public Object getLastPayload() {
+		return payload;
 	}
 
 	public void silenceEventSource(Object o) {

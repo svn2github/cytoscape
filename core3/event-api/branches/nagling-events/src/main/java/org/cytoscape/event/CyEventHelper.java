@@ -35,6 +35,12 @@ package org.cytoscape.event;
  */
 public interface CyEventHelper {
 	/**
+	 * The default number of milliseconds to wait before the next
+	 * time that we will check for payload events to fire. 
+	 */
+	int DEFAULT_PAYLOAD_WAIT_TIME_MILLIS = 100;
+	
+	/**
 	 * Calls each listener found in the Service Registry identified by the listenerClass
 	 * interface by the supplied CyEvent.
 	 *
