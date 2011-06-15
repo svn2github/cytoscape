@@ -40,10 +40,21 @@ public class PersistImageTask implements Task {
 		taskMonitor
 				.setStatus("Saving image library to your local disk.\n\nPlease wait...");
 		taskMonitor.setPercentCompleted(-1);
+
+		// Does the directory exist?
+		if (!location.exists()) {
+			// No, create it
+			if (!location.mkdir()) {
+				logger.warning("Unable to create image library directory: "+location);
+				return;
+			}
+		}
 		// Remove all existing files
 		final File[] files = location.listFiles();
-		for (File old : files)
-			old.delete();
+		if (files != null && files.length > 0) {
+			for (File old : files)
+				old.delete();
+		}
 
 		final long startTime = System.currentTimeMillis();
 		final CustomGraphicsManager pool = Cytoscape.getVisualMappingManager()
@@ -65,7 +76,7 @@ public class PersistImageTask implements Task {
 					exService.submit(new SaveImageTask(location, cg.getIdentifier().toString(),
 							ImageUtil.toBufferedImage(img)));
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.warning("Unable to save images", e);
 				}
 			}
 			
@@ -83,7 +94,7 @@ public class PersistImageTask implements Task {
 					"Image Metadata");
 		} catch (IOException e) {
 			taskMonitor.setException(e, "Could not save image metadata.");
-			e.printStackTrace();
+			logger.warning("Could not save image metadata.",e);
 		}
 
 		long endTime = System.currentTimeMillis();
