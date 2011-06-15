@@ -197,9 +197,8 @@ public class AttributeUtils {
 
 		// For each object
 		for (GraphObject obj: objects) {
-			String objectName = obj.getIdentifier();
 			// Output a row
-			exportRow(output, objectName, attrs, attrList, delim);
+			exportRow(output, obj.getIdentifier(), attrs, attrList, delim);
 			lineCount++;
 		}
 		output.close();
@@ -209,7 +208,9 @@ public class AttributeUtils {
 	private static void exportRow(BufferedWriter output, String name, CyAttributes attrs, 
 	                              List<String>attrList, String delim) throws IOException {
 		for (String attr: attrList) {
-			if (attrs.hasAttribute(name, attr) && attrs.getUserVisible(attr)) {
+			if (attr.equals("ID")) {
+				output.write(name);
+			} else if (attrs.hasAttribute(name, attr) && attrs.getUserVisible(attr)) {
 				byte type = attrs.getType(attr);
 				// Special handling for Lists or Maps
 				if (type == CyAttributes.TYPE_SIMPLE_LIST) {
