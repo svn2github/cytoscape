@@ -669,14 +669,16 @@ public class XGMMLReader extends AbstractGraphReader {
 
 	 	if (XGMMLParser.getAttribute(graphics,"edgeHandleList") != null) {
 			String handles[] = XGMMLParser.getAttribute(graphics, "edgeHandleList").split(";");
+			List<Point2D> bendPoints = new ArrayList<Point2D>();
 			for (int i = 0; i < handles.length; i++) {
 				String points[] = handles[i].split(",");
 				double x = (new Double(points[0])).doubleValue();
 				double y = (new Double(points[1])).doubleValue();
 				Point2D.Double point = new Point2D.Double();
 				point.setLocation(x,y);
-				edgeView.getBend().addHandle(point);
+				bendPoints.add(point);
 			}
+			edgeView.getBend().setHandles(bendPoints);
 		}
 
 		// These are saved in the exported XGMML, but it's not clear how they get set
