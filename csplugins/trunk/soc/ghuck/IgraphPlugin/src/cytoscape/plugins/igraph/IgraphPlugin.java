@@ -67,8 +67,11 @@ public class IgraphPlugin extends CytoscapePlugin {
 	NodeCount nodeCountAction = new NodeCount(this);
 	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) nodeCountAction);
 
-	IsConnected isConnectedAction = new IsConnected(this);
-	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction);
+	IsConnected isConnectedAction1 = new IsConnected(this, "All nodes",false);
+	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction1);
+
+	IsConnected isConnectedAction2 = new IsConnected(this, "Selected Nodes", true);
+	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction2);
     }
 
     private boolean isOldVersion(){
