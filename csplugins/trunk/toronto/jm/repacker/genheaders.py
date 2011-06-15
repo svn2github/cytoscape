@@ -5,19 +5,32 @@ import sys
 from zipfile import ZipFile
 
 patterns = [
-    [re.compile('lib(.+)[.](dylib|jnilib)'), 'mac os x'],
-    [re.compile('lib(.+)[.]so'), 'linux'],
-    [re.compile('lib(.+)[.]dll'), 'win32'],
+    re.compile('((.*)/)?lib(.+)[.](dylib|jnilib)'),
+    re.compile('((.*)/)?lib(.+)[.]so'),
+    re.compile('((.*)/)?(.+)[.]dll'),
 ]
+
+all_processors = {
+    'universal': ['x86', 'x86-64'],
+    'i586': ['x86'],
+    'amd64': ['x86-64'],
+}
+
+all_oses = {
+    'macosx': 'mac os x',
+    'windows': 'win32',
+    'linux': 'linux',
+}
 
 def generate_headers(name, fragment_host):
     zip = ZipFile(name, 'r')
-    processors = ['x86-64', 'x86']
     platforms = {}
     for entry in zip.namelist():
-        for pattern, platform in patterns:
+        for pattern in patterns:
             matcher = pattern.match(entry)
             if matcher:
+                platform = matcher.group(2)
+                print platform, entry
                 if platform not in platforms:
                     entries = []
                     platforms[platform] = entries
@@ -29,9 +42,11 @@ def generate_headers(name, fragment_host):
         return
     
     platform_entries = []
-    for processor in processors:
-        for platform, entries in platforms.items():
-            platform_entries.append('%s;osname=%s;processor=%s' % (';'.join(entries), platform, processor))
+    for platform, entries in platforms.items():
+        os, processor_name = platform.split('-')
+        os = all_oses[os]
+        for processor in all_processors[processor_name]:
+            platform_entries.append('%s;osname=%s;processor=%s' % (';'.join(entries), os, processor))
     
     properties = open('%s.properties' % name, 'w')
     print >> properties, 'Bundle-NativeCode=%s' % ','.join(platform_entries + ['*'])

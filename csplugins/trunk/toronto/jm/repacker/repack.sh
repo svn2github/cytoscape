@@ -11,12 +11,11 @@ pushd temp-all
 for JAR in "$@"
 do
     unzip -o "../${JAR}"
+    python ../extract_natives.py ${JAR} ../temp-natives
 done
-find . -name 'lib*[.]*' -exec mv "{}" ../temp-natives ";"
 
 jar cvf ../${BUNDLE_NAME}.jar *
 popd
-
 
 pushd temp-natives
 jar cvf ../${BUNDLE_NAME}-natives.jar *
