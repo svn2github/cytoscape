@@ -125,6 +125,7 @@ public class DownloadableInfoTest extends TestCase {
 	 * Test method for {@link cytoscape.plugin.DownloadableInfo#setCytoscapeVersion(java.lang.String)}.
 	 */
 	public void testCytoscapeVersion() {
+		String currentVersion = cytoscape.CytoscapeVersion.version;
 		cytoscape.CytoscapeVersion.version = "2.5";
 
 		di.addCytoscapeVersion("2.5");
@@ -139,6 +140,7 @@ public class DownloadableInfoTest extends TestCase {
 		//di.addCytoscapeVersion("2.5.6");
 		//assertTrue(di.containsVersion("2.5.6"));
 		//assertEquals(di.getCytoscapeVersion(), "2.5.6");
+		cytoscape.CytoscapeVersion.version = currentVersion;
 	}
 
 	/**
@@ -203,6 +205,8 @@ public class DownloadableInfoTest extends TestCase {
 	
 	  /** test for bug #... */
 	  public void testPluginCompatible() {
+			String currentVersion = cytoscape.CytoscapeVersion.version;
+
 		  // at each version level (major, minor, bugfix)
 		  cytoscape.CytoscapeVersion.version = "3.6";
 		  di.addCytoscapeVersion("2.1");
@@ -217,6 +221,8 @@ public class DownloadableInfoTest extends TestCase {
 
 		  di.addCytoscapeVersion("2.6.1");
 		  assertTrue(di.isPluginCompatibleWithCurrent());
+
+			cytoscape.CytoscapeVersion.version = currentVersion;
 	  }
 
 	

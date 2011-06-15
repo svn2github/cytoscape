@@ -131,12 +131,14 @@ public class PluginFileReaderTest extends TestCase {
     assertNotNull(reader.getPlugins());
     assertEquals(reader.getPlugins().size(), 10);
 
+		String cytoscapeVersion = cytoscape.CytoscapeVersion.version;
     cytoscape.CytoscapeVersion.version = "2.3.3";
     int count = 0;
     for (DownloadableInfo info: reader.getPlugins()) {
       if (info.isPluginCompatibleWithCurrent()) count ++;
     }
   assertEquals(count, 2);
+		cytoscape.CytoscapeVersion.version = cytoscapeVersion;;
   }
 
   // regression test to insure themes work as expected
