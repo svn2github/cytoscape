@@ -84,7 +84,10 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	                           String attributeFrom, String[] keys, DataObjectType graphObjectType,
 	                           DataTableModel table)
 	{
-		this.input = input.trim();
+		if (input != null && input.length() > 0)
+			this.input = input.trim();
+		else
+			this.input = input;
 		this.action = action;
 		this.table = table;
 		this.objects = objects;
