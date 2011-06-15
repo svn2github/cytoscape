@@ -69,6 +69,8 @@ public class CytoscapeSessionReaderTest extends TestCase {
 	
 	
 	public void testNestedNetworkReconstruction1() throws Exception {
+		Cytoscape.createNewSession();
+
 		invokeReader("src/test/resources/testData/NNFData/t3.cys");
 		
 		//Check all networks are available.
@@ -76,6 +78,7 @@ public class CytoscapeSessionReaderTest extends TestCase {
 		
 		CyNetwork targetNet = null;
 		for (CyNetwork net:networks) {
+			System.out.println("Network: "+net.getTitle());
 			if (net.getTitle().equals("Module_Overview")) {
 				targetNet = net;
 			}
@@ -96,6 +99,8 @@ public class CytoscapeSessionReaderTest extends TestCase {
 	}
 	
 	public void testNestedNetworkReconstruction2() throws Exception {
+		Cytoscape.createNewSession();
+
 		invokeReader("src/test/resources/testData/NNFData/t4.cys");
 		
 		//Check all networks are available.
