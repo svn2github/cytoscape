@@ -28,7 +28,6 @@
 		cardinality="0..N">
 		<osgi:interfaces>
 			<value>org.cytoscape.io.webservice.NetworkImportWebServiceClient</value>
-			<value>org.cytoscape.io.webservice.SearchWebServiceClient</value>
 			<value>org.cytoscape.io.webservice.WebServiceClient</value>
 		</osgi:interfaces>
 		<osgi:listener bind-method="addNetworkImportClient"

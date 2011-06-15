@@ -139,7 +139,7 @@ public class UnifiedNetworkImportDialog extends JDialog {
 				serviceUIPanels.put(client, container);
 			}
 		}
-		logger.info("New network import client registered: " + client);
+		logger.info("\n\n\n================== New network import client registered: " + client);
 	}
 
 	
