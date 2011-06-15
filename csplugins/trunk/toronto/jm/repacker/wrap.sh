@@ -2,7 +2,7 @@
 
 BND_CMD=bnd
 
-for FILE in *.jar
+for FILE in "$@"
 do
     FRAGMENT_HOST=$(basename ${FILE} -natives.jar)
     echo ${FRAGMENT_HOST}
@@ -16,7 +16,8 @@ do
 done
 
 mkdir -p bundles
-for FILE in *.bar
+for FILE in "$@"
 do
-    mv "${FILE}" "bundles/$(basename ${FILE} .bar).jar"
+    SOURCE=$(dirname ${FILE})/$(basename ${FILE} .jar).bar
+    mv "${SOURCE}" "bundles/$(basename ${FILE})"
 done

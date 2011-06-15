@@ -3,9 +3,11 @@
 BUNDLE_NAME=$1
 shift
 
-rm -rf temp-all temp-natives
+rm -rf temp-all temp-natives temp-jar bundles
 mkdir -p temp-all
 mkdir -p temp-natives
+mkdir -p temp-jar
+mkdir -p bundles
 
 pushd temp-all
 for JAR in "$@"
@@ -14,13 +16,11 @@ do
     python ../extract_natives.py ${JAR} ../temp-natives
 done
 
-jar cvf ../${BUNDLE_NAME}.jar *
+jar cvf ../temp-jar/${BUNDLE_NAME}.jar *
 popd
 
 pushd temp-natives
-jar cvf ../${BUNDLE_NAME}-natives.jar *
+jar cvf ../temp-jar/${BUNDLE_NAME}-natives.jar *
 popd
 
-rm -rf bundles
-mkdir -p bundles
-./wrap.sh
+./wrap.sh temp-jar/*.jar
