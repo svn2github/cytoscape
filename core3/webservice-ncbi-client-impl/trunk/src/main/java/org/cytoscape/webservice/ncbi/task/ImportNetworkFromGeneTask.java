@@ -6,6 +6,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.webservice.ncbi.rest.EntrezRestClient;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
@@ -18,21 +19,23 @@ public class ImportNetworkFromGeneTask extends AbstractTask {
 	
 	private final String queryString;
 	private final CyNetworkFactory networkFactory;
+	private final CyTableFactory tableFactory;
 	private final CyNetworkManager manager;
 	
 	private CyNetwork newNetwork;
 	
-	public ImportNetworkFromGeneTask(final String queryString, final CyNetworkFactory networkFactory, final CyNetworkManager manager) {
+	public ImportNetworkFromGeneTask(final String queryString, final CyNetworkFactory networkFactory, final CyTableFactory tableFactory, final CyNetworkManager manager) {
 		this.queryString = queryString;
 		this.networkFactory = networkFactory;
 		this.manager = manager;
+		this.tableFactory = tableFactory;
 	}
 
 	@Override
 	public void run(TaskMonitor taskMonitor) throws Exception {
 		logger.debug("Import Start: Query = " + queryString);
 		
-		final EntrezRestClient restClient = new EntrezRestClient(networkFactory);
+		final EntrezRestClient restClient = new EntrezRestClient(networkFactory, tableFactory);
 		
 		taskMonitor.setTitle("Accessing NCBI Entrez Gene");
 		taskMonitor.setStatusMessage("Searching matching genes...");

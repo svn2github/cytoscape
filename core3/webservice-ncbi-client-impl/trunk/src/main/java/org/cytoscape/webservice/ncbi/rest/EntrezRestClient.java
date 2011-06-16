@@ -19,6 +19,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.webservice.ncbi.ImportTableTask;
+import org.cytoscape.webservice.ncbi.ui.AnnotationCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -31,19 +36,21 @@ public class EntrezRestClient {
 	private static final Logger logger = LoggerFactory.getLogger(EntrezRestClient.class);
 	
 	private static final String BASE_URL = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
-	static final String FETCH_URL = BASE_URL + "efetch.fcgi?db=gene&retmode=xml&id=";
+	public static final String FETCH_URL = BASE_URL + "efetch.fcgi?db=gene&retmode=xml&id=";
 	private static final String SEARCH_URL = BASE_URL + "esearch.fcgi?db=gene&retmax=100000&term=";
 
 	private final String regex = "\\s+";
 	
 	private static final String ID = "Id";
 	
+	private final CyTableFactory tableFactory;
+	
 	private final CyNetworkFactory networkFactory;
 
 	
-	
-	public EntrezRestClient(final CyNetworkFactory networkFactory) {
+	public EntrezRestClient(final CyNetworkFactory networkFactory, final CyTableFactory tableFactory) {
 		this.networkFactory = networkFactory;
+		this.tableFactory = tableFactory;
 	}
 	
 	
@@ -126,19 +133,61 @@ public class EntrezRestClient {
 		return newNetwork;
 	}
 	
-	private void walk(Node node, final String targetTag, final String targetVal) {
-		for(Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
-			if(child.getNodeType() == Node.ELEMENT_NODE) {
-				if(child.getNodeName().equals(targetTag)) {
-					logger.debug(targetTag + " Tag = " + child.getTextContent());
-					//this.resultMap.put(targetVal, child.getTextContent());
-					break;
-				} else
-					walk(child, targetTag, targetVal);
+	
+	
+	public CyTable importDataTable(final Set<String> idList, final Set<AnnotationCategory> category) {
+		if(idList == null || idList.size() == 0)
+			throw new IllegalArgumentException("ID list is null.");
+		
+		long startTime = System.currentTimeMillis();
+		final ExecutorService executer = Executors.newFixedThreadPool(4);
+
+		logger.debug("Table Import Executor initialized.");
+		
+		final CyTable table = tableFactory.createTable("NCBI Global Table", CyTableEntry.NAME, String.class, true, true);
+				
+		int group = 0;
+		int buketNum = 10;
+		String[] box = new String[buketNum];
+		
+		
+		for (String entrezID : idList) {
+			box[group] = entrezID;
+			group++;
+
+			if (group == buketNum) {
+				executer.submit(new ImportTableTask(box, category, table));
+				group = 0;
+				box = new String[buketNum];
 			}
 		}
+		
+		String[] newbox = new String[group];
+
+		for (int i = 0; i < group; i++)
+			newbox[i] = box[i];
+
+		executer.submit(new ImportTableTask(box, category, table));
+
+		try {
+			executer.shutdown();
+			executer.awaitTermination(1000, TimeUnit.SECONDS);
+
+			long endTime = System.currentTimeMillis();
+			double sec = (endTime - startTime) / (1000.0);
+			System.out.println("Table Import Finished in " + sec + " sec.");
+
+//			if ((canceled != null) && canceled) {
+//				canceled = null;
+//
+//				return null;
+//			}
+		} catch( Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return table;
 	}
-	
 	
 	private URL createURL(final String base, final String queryString) throws IOException {
 		

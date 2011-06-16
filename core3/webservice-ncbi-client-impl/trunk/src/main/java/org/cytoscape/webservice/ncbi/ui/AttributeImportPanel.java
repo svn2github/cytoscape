@@ -119,7 +119,7 @@ public abstract class AttributeImportPanel extends JPanel implements
 	protected String attributePanelTitle;
 	
 	protected final CyTableManager tblManager;
-	private final CyNetworkManager netManager;
+	protected final CyNetworkManager netManager;
 
 
 	protected AttributeImportPanel(final CyTableManager tblManager, final CyNetworkManager netManager,

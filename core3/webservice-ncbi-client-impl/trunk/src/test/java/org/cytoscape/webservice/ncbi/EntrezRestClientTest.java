@@ -20,7 +20,7 @@ public class EntrezRestClientTest {
 	@Before
 	public void setUp() throws Exception {
 		NetworkTestSupport support = new NetworkTestSupport();
-		client = new EntrezRestClient(support.getNetworkFactory());
+		client = new EntrezRestClient(support.getNetworkFactory(), null);
 	}
 	
 	@Test

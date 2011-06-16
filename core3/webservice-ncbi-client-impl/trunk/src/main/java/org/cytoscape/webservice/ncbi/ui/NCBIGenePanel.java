@@ -31,40 +31,54 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.webservice.ncbi.ui;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.webservice.ncbi.NCBIQuery;
+import org.cytoscape.webservice.ncbi.NCBITableImportClient;
+import org.cytoscape.work.TaskManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Simple attribute import GUI for Entrez Gene database
- * This UI depends on
+ * Simple attribute import GUI for Entrez Gene database This UI depends on
  */
 public class NCBIGenePanel extends AttributeImportPanel {
-	
+
 	private static final long serialVersionUID = -7433578094886775930L;
-	
+
+	private static final Logger logger = LoggerFactory.getLogger(NCBIGenePanel.class);
+
 	private static final Icon LOGO = new ImageIcon(NCBIGenePanel.class.getResource("/images/entrez_page_title.gif"));
 
 	private DefaultListModel model;
 
-	private JComboBox attrList;
+	private final NCBITableImportClient client;
+	private final TaskManager taskManager;
 
-
-	public NCBIGenePanel(final CyTableManager tblManager, final CyNetworkManager netManager, String attrPanelName) throws IOException {
+	public NCBIGenePanel(final NCBITableImportClient client, final TaskManager taskManager,
+			final CyTableManager tblManager, final CyNetworkManager netManager, String attrPanelName) {
 		super(tblManager, netManager, LOGO, "NCBI Client", attrPanelName);
+		this.client = client;
+		this.taskManager = taskManager;
+
 		initDataSources();
-		this.setPreferredSize(new Dimension(550, 480));
+		titleLabel.setText("");
+		this.setPreferredSize(new Dimension(650, 480));
 	}
 
 	private void initDataSources() {
@@ -76,35 +90,68 @@ public class NCBIGenePanel extends AttributeImportPanel {
 	private void setDataType() {
 		this.attributeTypeComboBox.addItem("Entrez Gene ID");
 		attributeTypeComboBox.setEnabled(false);
-		
+
 		buildList();
 	}
 
 	protected void importButtonActionPerformed(ActionEvent e) {
 		importAttributes();
 	}
-	
+
 	protected void resetButtonActionPerformed(ActionEvent e) {
 		buildList();
 	}
-	
+
 	private void buildList() {
-//		model = new DefaultListModel();
-//		this.attributeComboBox.setModel((ComboBoxModel) model);
-//		for(AnnotationCategory dispAttrName : AnnotationCategory.values()) {
-//			model.addElement(dispAttrName.getName());
-//		}
-	}
-
-
-	@Override
-	protected void databaseComboBoxActionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+		model = new DefaultListModel();
+		attrCheckboxList.setModel(model);
+		for (AnnotationCategory dispAttrName : AnnotationCategory.values()) {
+			model.addElement(dispAttrName.getName());
+		}
 	}
 
 	@Override
 	protected void importAttributes() {
+		logger.debug("Import start.");
+		client.setQuery(new NCBIQuery(getCategory(), createIDSet()));
+		taskManager.execute(client);
+	}
+	
+	private Set<AnnotationCategory> getCategory() {
+		final Set<AnnotationCategory> category = new HashSet<AnnotationCategory>();
+		final Object[] selectedAttr = attrCheckboxList.getSelectedValues();
+		for (Object name : selectedAttr) {
+			logger.debug("Category Selected: " + name);
+			AnnotationCategory ann = AnnotationCategory.getValue(name.toString());
+
+			if (ann != null)
+				category.add(ann);
+		}
+		return category;
+	}
+	
+	private Set<String> createIDSet() {
+		final Set<String> idList = new HashSet<String>();
+		final String attrName = this.attributeComboBox.getSelectedItem().toString();
 		
+		logger.debug("Attr Name = " + attrName);
+		
+		final Set<CyNetwork> networks = this.netManager.getNetworkSet();
+		for(final CyNetwork net: networks) {
+			final List<CyNode> nodes = net.getNodeList();
+			for(final CyNode node: nodes) {
+				final String val = node.getCyRow().get(attrName, String.class);
+				if(val != null) {
+					logger.debug("node ID found = " + val);
+					idList.add(val);
+				}
+			}
+		}
+		return idList;
 	}
 
+	@Override
+	protected void databaseComboBoxActionPerformed(ActionEvent evt) {
+		// TODO Auto-generated method stub
+	}
 }

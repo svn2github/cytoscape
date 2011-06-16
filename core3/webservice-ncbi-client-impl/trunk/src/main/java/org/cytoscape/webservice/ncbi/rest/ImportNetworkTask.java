@@ -160,9 +160,6 @@ public class ImportNetworkTask<V> implements Callable<V> {
 
 	}
 
-	private void processOneInteractionEntry() {
-
-	}
 
 	private URL createURL() throws IOException {
 

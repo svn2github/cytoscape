@@ -1,0 +1,34 @@
+package org.cytoscape.webservice.ncbi.task;
+
+import java.util.Set;
+
+import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.webservice.ncbi.rest.EntrezRestClient;
+import org.cytoscape.webservice.ncbi.ui.AnnotationCategory;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ImportTableFromNCBITask extends AbstractTask {
+
+	private static final Logger logger = LoggerFactory.getLogger(ImportTableFromNCBITask.class);
+
+	private final CyTableFactory tableFactory;
+	private final Set<String> idList;
+	private final Set<AnnotationCategory> category;
+	
+	public ImportTableFromNCBITask(final CyTableFactory tableFactory, final Set<String> idList, final Set<AnnotationCategory> category) {
+		this.tableFactory = tableFactory;
+		this.idList = idList;
+		this.category = category;
+	}
+	
+	@Override
+	public void run(TaskMonitor taskMonitor) throws Exception {
+		logger.debug("Table Import Task Start.");
+		EntrezRestClient client = new EntrezRestClient(null, tableFactory);
+		client.importDataTable(idList, category);
+	}
+
+}

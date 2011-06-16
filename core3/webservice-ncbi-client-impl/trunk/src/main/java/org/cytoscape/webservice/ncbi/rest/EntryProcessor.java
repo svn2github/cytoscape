@@ -8,8 +8,4 @@ public class EntryProcessor<V> extends FutureTask<V> {
 	public EntryProcessor(Callable<V> callable) {
 		super(callable);
 	}
-	
-	
-	
-
 }

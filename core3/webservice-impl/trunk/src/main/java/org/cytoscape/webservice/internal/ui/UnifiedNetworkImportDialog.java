@@ -139,7 +139,7 @@ public class UnifiedNetworkImportDialog extends JDialog {
 				serviceUIPanels.put(client, container);
 			}
 		}
-		logger.info("\n\n\n================== New network import client registered: " + client);
+		logger.info("New network import client registered: " + client);
 	}
 
 	
@@ -431,10 +431,10 @@ public class UnifiedNetworkImportDialog extends JDialog {
 			return;
 		
 		WebServiceClient client = null;
-		if(selected instanceof SearchWebServiceClient && selected instanceof WebServiceClient) {
+		if(selected instanceof WebServiceClient) {
 			client = (WebServiceClient) selected;
 		} else {
-			throw new IllegalStateException("Selected cleint does not have search function.");
+			throw new IllegalStateException("Selected cleint is not a compatible client.");
 		}
 		
 		// Set query.  Just pass the text in the panel.
