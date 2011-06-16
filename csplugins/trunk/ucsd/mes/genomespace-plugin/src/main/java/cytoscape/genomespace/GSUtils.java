@@ -20,7 +20,7 @@ import org.genomespace.datamanager.core.GSFileMetadata;
 
 
 final class GSUtils {
-	private GSUtils() {};
+	private GSUtils() { } // Prevent constructor calls.
 
 	private static GsSession session = null;
 
@@ -28,7 +28,7 @@ final class GSUtils {
 		if (session == null || !session.isLoggedIn()) {
 			try {
 				session = new GsSession();
-				if (!loginToGenomeSpace())
+				if (session.isLoggedIn() && !loginToGenomeSpace())
 					throw new GSClientException("failed to login!", null);
 			} catch (Exception e) {
 				throw new GSClientException("failed to login", e);
