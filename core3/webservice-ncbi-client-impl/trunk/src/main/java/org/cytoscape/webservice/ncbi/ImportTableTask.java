@@ -3,6 +3,7 @@ package org.cytoscape.webservice.ncbi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -12,7 +13,6 @@ import java.util.concurrent.Callable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
@@ -28,16 +28,59 @@ public class ImportTableTask implements Callable<String> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ImportTableTask.class);
 
+	// Pre-defined keys in the Gene XML file
+	private static final String GENE_ID_TAG = "Gene-track_geneid";
 	private String ENTRY_KEY = "Entrezgene";
+	private static final String TAX_KEY = "Org-ref_taxname";
+	private static final String LOCUS_NAME_KEY = "Gene-ref_locus";
+	private static final String LOCUS_TAG_KEY = "Gene-ref_locus-tag";
+	private static final String ID_IN_PRIMARY_SOURCE_KEY = "Object-id_str";
+	
+	private static final String SUMMARY_TAG = "Entrezgene_summary";
+	
+	private static final String PROTEIN_INFO_NAME_TAG = "Prot-ref_desc";
+
+	private enum GeneTags {
+		GENE_ID(GENE_ID_TAG, "Entrez Gene ID"), TAX(TAX_KEY, "Taxonomy"), SYMBOL(LOCUS_NAME_KEY, "Official Symbol"), LOCUS_TAG(LOCUS_TAG_KEY, "Locus Name"), SOURCE_ID(
+				ID_IN_PRIMARY_SOURCE_KEY, "Source ID"), PROT_NAME(PROTEIN_INFO_NAME_TAG, "Preferred Name");
+
+		private static final Map<String, String> tag2NameMap;
+		static {
+			tag2NameMap = new HashMap<String, String>();
+			for(GeneTags tag: GeneTags.values())
+				tag2NameMap.put(tag.getTag(), tag.getAttrName());
+		}
+		private final String tag;
+		private final String attrName;
+
+		private GeneTags(final String tag, final String attrName) {
+			this.tag = tag;
+			this.attrName = attrName;
+		}
+		
+		public String getTag() {
+			return tag;
+		}
+		
+		public String getAttrName() {
+			return this.attrName;
+		}
+		
+		public static String getAttrNameFromTag(String tag) {
+			return tag2NameMap.get(tag);
+		}
+	}
 
 	private final String[] ids;
 	private final CyTable table;
 
 	private Map<String, String> valueMap;
-
-	private static final String GENE_ID_TAG = "Gene-track_geneid";
+	private Set<String> pubmedIDs;
+	private Node pathwayNode;
 
 	final Set<AnnotationCategory> category;
+
+	private Set<String> pathways;
 
 	public ImportTableTask(final String[] ids, final Set<AnnotationCategory> category, final CyTable table) {
 		this.ids = ids;
@@ -62,48 +105,12 @@ public class ImportTableTask implements Callable<String> {
 		final int dataSize = entries.getLength();
 		for (int i = 0; i < dataSize; i++) {
 			Node item = entries.item(i);
+			if (item.getNodeType() != Node.ELEMENT_NODE)
+				continue;
+			
 			logger.debug(i + ": Item = " + item.getNodeName());
 			processEntry(item);
-
-			// final String geneIDString = walk(item, GENE_ID_TAG);
-			// logger.debug("Gene ID ======== " + geneIDString);
-			// if (geneIDString == null)
-			// throw new
-			// NullPointerException("Could not find NCBI Gene ID for the entry.");
-			// final CyRow row = table.getRow(geneIDString);
-			// row.set(CyTableEntry.NAME, geneIDString);
-			// if (table.getColumn("Entrez Gene ID") == null)
-			// table.createColumn("Entrez Gene ID", String.class, false);
-			// row.set("Entrez Gene ID", geneIDString);
-			//
-			// final Set<String> idSet = new HashSet<String>();
-			// final NodeList ids =
-			// result.getElementsByTagName("Gene-commentary");
 		}
-
-		// boolean interactionFound = false;
-		// Node interactionNode = null;
-		// for (int i = 0; i < dataSize; i++) {
-		// // logger.debug("    GC = " +
-		// // ids.item(i).getChildNodes().getLength());
-		// NodeList children = ids.item(i).getChildNodes();
-		// for (int j = 0; j < children.getLength(); j++) {
-		// if (children.item(j).getNodeName().equals("Gene-commentary_heading"))
-		// {
-		//
-		// //logger.debug("HEADING = " + children.item(j).getTextContent());
-		// if (children.item(j).getTextContent().equals("Interactions")) {
-		// logger.debug("FOUND interactions");
-		// interactionFound = true;
-		// break;
-		// }
-		// }
-		// }
-		// if (interactionFound) {
-		// interactionNode = ids.item(i);
-		// break;
-		// }
-		// }
 
 		is.close();
 		is = null;
@@ -112,26 +119,157 @@ public class ImportTableTask implements Callable<String> {
 	}
 
 	private void processEntry(Node entry) {
+		// Create columns
+		for(GeneTags geneTag: GeneTags.values()) {
+			if(table.getColumn(geneTag.getAttrName()) == null)
+				table.createColumn(geneTag.getAttrName(), String.class, false);
+		}
+		// Summary
+		if(table.getColumn("Summary") == null)
+			table.createColumn("Summary", String.class, false);
+		
 		valueMap = new HashMap<String, String>();
-		walk(entry, GENE_ID_TAG);
-		walk(entry, "Gene-ref_locus");
-		walk(entry, "Gene-source_src");
-		walk(entry, "Prot-ref_desc");
-		if (category.contains(AnnotationCategory.SUMMARY)) {
-			logger.debug("2 !!!!!! Calling summary");
-			for (Node child = entry.getFirstChild(); child != null; child = child.getNextSibling()) {
-				logger.debug("node = " + child.getNodeName());
-				if (child.getNodeName().equals("Entrezgene_summary")) {
-					logger.debug("Summary = " + child.getTextContent());
-				}
+		pubmedIDs = new HashSet<String>();
+		pathwayNode = null;
 
+		// Get primary key (Entrez gene id)
+		walk(entry, GENE_ID_TAG);
+
+		// Check ID. If this does not exists, it's an invalid entry!
+		final String geneID = valueMap.get(GENE_ID_TAG);
+		logger.debug("Gene ID = " + geneID);
+		
+		if (geneID == null)
+			return;
+
+		// Create row
+		final CyRow row = table.getRow(geneID);
+		row.set(CyTableEntry.NAME, geneID);
+
+		// First, extract general information.  This will be imported always.
+		
+		// Taxonomy name
+		walk(entry, GeneTags.TAX.getTag());
+		// Official Symbol
+		walk(entry, GeneTags.SYMBOL.getTag());
+		// Locas tag
+		walk(entry, GeneTags.LOCUS_TAG.getTag());
+		// ID in Source Database
+		walk(entry, GeneTags.SOURCE_ID.getTag());
+
+		// Process Summary
+		if (category.contains(AnnotationCategory.SUMMARY)) {
+			logger.debug("Searching summary");
+			for (Node child = entry.getFirstChild(); child != null; child = child.getNextSibling()) {
+				
+				if (child.getNodeName().equals(SUMMARY_TAG)) {
+					logger.debug("Summary Found = " + child.getTextContent());
+					row.set("Summary", child.getTextContent());
+				}
 			}
 		}
+		
+		if (category.contains(AnnotationCategory.GENERAL)) {
+			walk(entry, PROTEIN_INFO_NAME_TAG);
+		}
 
-		final CyRow row = table.getRow(valueMap.get(GENE_ID_TAG));
-		row.set(CyTableEntry.NAME, valueMap.get(GENE_ID_TAG));
+		if (category.contains(AnnotationCategory.PATHWAY)) {
+			pathways = new HashSet<String>();
+			pathwayNode = null;
+			processPathways(entry, row, "Pathways");
+		}
+		
+		if (category.contains(AnnotationCategory.PHENOTYPE)) {
+			pathways = new HashSet<String>();
+			pathwayNode = null;
+			processPathways(entry, row, "Phenotypes");
+		}
+		
+		if (category.contains(AnnotationCategory.LINK)) {
+			pathways = new HashSet<String>();
+			pathwayNode = null;
+			processPathways(entry, row, "Additional Links");
+		}
+		
+		if (category.contains(AnnotationCategory.PUBLICATION)) {
+			pubmedIDs = new HashSet<String>();
+			processPublications(entry, row);
+		}
+		
 		for (String key : valueMap.keySet()) {
-			logger.debug(key + " = " + valueMap.get(key));
+			row.set(GeneTags.getAttrNameFromTag(key), valueMap.get(key));
+			logger.debug(GeneTags.getAttrNameFromTag(key) + " = " + valueMap.get(key));
+		}
+	}
+
+	
+	private void processPathways(Node entry, CyRow row, String tagName) {
+		logger.debug("Searching " + tagName);
+		if(table.getColumn(tagName) == null)
+			table.createListColumn(tagName, String.class, false);
+		
+		findPathwaySection(entry, tagName);
+		if(this.pathwayNode == null)
+			return;
+		logger.debug(tagName + "Node found.");
+		Node pathwayTarget = null;
+		for (Node child = pathwayNode.getFirstChild(); child != null; child = child.getNextSibling()) {
+			if (child.getNodeType() == Node.ELEMENT_NODE) {
+				if (child.getNodeName().equals("Gene-commentary_comment")) {
+					pathwayTarget = child;
+					break;
+				}
+			}
+		}
+		walkPathways(pathwayTarget, tagName);
+		if(this.pathways.size() != 0) {
+			row.set(tagName, new ArrayList<String>(pathways));
+			logger.debug(tagName + " Found Size = " + pathways.size());
+		}
+	}
+	
+	private void walkPathways(Node node, String tag) {
+		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
+			if (child.getNodeType() == Node.ELEMENT_NODE) {
+				if (child.getNodeName().equals("Gene-commentary_text")) {
+					logger.debug(tag + " Found =>>> " + child.getTextContent());
+					pathways.add(child.getTextContent());
+					break;
+				} else
+					walkPathways(child, tag);
+			}
+		}
+	}
+	
+	private void findPathwaySection(Node entry, String tag) {
+		for (Node child = entry.getFirstChild(); child != null; child = child.getNextSibling()) {
+			if (child.getNodeType() == Node.ELEMENT_NODE) {
+				if (child.getTextContent().equals(tag)) {
+					pathwayNode = child.getParentNode();
+					break;
+				} else
+					findPathwaySection(child, tag);
+			}
+		}
+	}
+	
+	private void processPublications(Node entry, CyRow row) {
+		logger.debug("Searching publications");
+		if(table.getColumn("PubMed ID") == null)
+			table.createListColumn("PubMed ID", String.class, false);
+		
+		for (Node child = entry.getFirstChild(); child != null; child = child.getNextSibling()) {
+			if (child.getNodeType() != Node.ELEMENT_NODE)
+				continue;
+			
+			if (child.getNodeName().equals("Entrezgene_comments")) {
+				
+				walkPubID(child);
+				if(this.pubmedIDs.size() != 0) {
+					row.set("PubMed ID", new ArrayList<String>(pubmedIDs));
+					logger.debug("Total Found = " + pubmedIDs.size());
+				}
+			}
 		}
 	}
 
@@ -149,6 +287,18 @@ public class ImportTableTask implements Callable<String> {
 			}
 		}
 		return result;
+	}
+	
+	private void walkPubID(Node node) {
+		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
+			if (child.getNodeType() == Node.ELEMENT_NODE) {
+				if (child.getNodeName().equals("PubMedId")) {
+					pubmedIDs.add(child.getTextContent());
+					break;
+				} else
+					walkPubID(child);
+			}
+		}
 	}
 
 	private URL createURL() throws IOException {

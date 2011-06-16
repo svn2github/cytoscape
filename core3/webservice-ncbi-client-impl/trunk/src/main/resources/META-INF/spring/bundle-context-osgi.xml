@@ -21,7 +21,10 @@
 
 	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager" />
 	<osgi:reference id="cyDataTableFactoryServiceRef" interface="org.cytoscape.model.CyTableFactory" />
-
+	
+	<!-- Application Manager -->
+	<osgi:reference id="cyApplicationManagerServiceRef"
+		interface="org.cytoscape.session.CyApplicationManager" />
 
 	<!-- Export Network Import Client -->
 	<osgi:service id="ncbiClientService" ref="ncbiClient"

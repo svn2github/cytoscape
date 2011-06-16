@@ -22,7 +22,7 @@ public class NCBITableImportAction extends AbstractCyAction {
 	public NCBITableImportAction(final NCBITableImportClient client, final TaskManager taskManager,
 			final CyTableManager tblManager, final CyNetworkManager netManager, CyApplicationManager applicationManager) {
 		super("Import Data Table from NCBI...", applicationManager);
-		setPreferredMenu("File.Import");
+		setPreferredMenu("File.Import.Table.WebService");
 		this.tblManager = tblManager;
 		this.netManager = netManager;
 		this.client = client;

@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-alpha7</version>
+		<version>3.0.0-alpha8-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -119,6 +119,12 @@
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-application-api</artifactId>
 			<version>3.0.0-alpha3-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>core-task-api</artifactId>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Testing -->

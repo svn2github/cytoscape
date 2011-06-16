@@ -39,6 +39,8 @@
 		<constructor-arg index="2"
 			value="REST version of NCBI Web Service Client for importing tables." />
 		<constructor-arg index="3" ref="cyDataTableFactoryServiceRef" />
+		<constructor-arg index="4" ref="cyNetworkManagerServiceRef" />
+		<constructor-arg index="5" ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<!-- Table Import Action -->

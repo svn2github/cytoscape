@@ -3,6 +3,7 @@ package org.cytoscape.webservice.ncbi.rest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -143,8 +144,8 @@ public class EntrezRestClient {
 		final ExecutorService executer = Executors.newFixedThreadPool(4);
 
 		logger.debug("Table Import Executor initialized.");
-		
-		final CyTable table = tableFactory.createTable("NCBI Global Table", CyTableEntry.NAME, String.class, true, true);
+		final Date currentDate = new Date();
+		final CyTable table = tableFactory.createTable("NCBI Global Table: " + currentDate.toString(), CyTableEntry.NAME, String.class, true, true);
 				
 		int group = 0;
 		int buketNum = 10;
