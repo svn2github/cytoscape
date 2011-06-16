@@ -58,8 +58,8 @@ import clusterMaker.algorithms.AbstractNetworkClusterer;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.ClusterResults;
 import clusterMaker.algorithms.DistanceMatrix;
-import clusterMaker.algorithms.EdgeAttributeHandler;
 import clusterMaker.algorithms.NodeCluster;
+import clusterMaker.algorithms.edgeConverters.EdgeAttributeHandler;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.NewNetworkView;
 

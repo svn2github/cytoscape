@@ -60,12 +60,13 @@ import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.HeatMapView;
 import clusterMaker.ui.NewNetworkView;
 import clusterMaker.ui.NestedNetworkView;
+import clusterMaker.algorithms.AbstractNetworkClusterer;
+import clusterMaker.algorithms.AbstractNetworkFilter;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.hierarchical.HierarchicalCluster;
 import clusterMaker.algorithms.kmeans.KMeansCluster;
 import clusterMaker.algorithms.FeatureVector.FeatureVectorCluster;
 import clusterMaker.algorithms.TransClust.TransClustCluster;
-// import clusterMaker.algorithms.FORCE.FORCECluster;
 import clusterMaker.algorithms.MCL.MCLCluster;
 import clusterMaker.algorithms.MCODE.MCODECluster;
 import clusterMaker.algorithms.glay.GLayCluster;
@@ -76,6 +77,9 @@ import clusterMaker.algorithms.SCPS.SCPSCluster;
 // import clusterMaker.algorithms.CP.CPCluster;
 import clusterMaker.algorithms.AP.APCluster;
 import clusterMaker.algorithms.autosome.AutoSOMECluster;
+import clusterMaker.algorithms.clusterFilters.HairCutFilter;
+import clusterMaker.algorithms.clusterFilters.CuttingEdgeFilter;
+import clusterMaker.algorithms.clusterFilters.DensityFilter;
 
 /**
  * The ClusterMaker class provides the primary interface to the
@@ -86,6 +90,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 	HashMap<JMenuItem,ClusterViz> vizMenus;
 	HashMap<String, ClusterViz> vizMap;
 	HashMap<String, ClusterAlgorithm> algMap;
+	HashMap<JMenuItem,ClusterAlgorithm> filterMenus;
 	List<JMenuItem> menuList;
 	boolean menusEnabled = false;
 
@@ -113,6 +118,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		vizMenus = new HashMap<JMenuItem, ClusterViz>();
 		vizMap = new HashMap<String, ClusterViz>();
 		algMap = new HashMap<String, ClusterAlgorithm>();
+		filterMenus = new HashMap<JMenuItem, ClusterAlgorithm>();
 		menuList = new ArrayList<JMenuItem>();
 		JMenu menu = new JMenu("Cluster");
 		addClusterAlgorithm(menu, new HierarchicalCluster());
@@ -132,6 +138,10 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		addClusterAlgorithm(menu, new SCPSCluster());
 		addClusterAlgorithm(menu, new TransClustCluster());
 		// addClusterAlgorithm(new HOPACHCluster());
+		menu.addSeparator();
+		addClusterFilter(menu, new HairCutFilter());
+		addClusterFilter(menu, new DensityFilter());
+		addClusterFilter(menu, new CuttingEdgeFilter());
 		menu.addSeparator();
 
 		// Add the visualization menu items
@@ -186,6 +196,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 				menusEnabled = true;
 				for (JMenuItem item: menuList) item.setEnabled(true);
 			}
+			updateFilterMenus();
 			updateVizMenus();
     }
 	}
@@ -216,10 +227,10 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		algMap.put(algorithm.getShortName(), algorithm);
 		ClusterViz visualizer = algorithm.getVisualizer();
 
+		algorithm.getPropertyChangeSupport().
+				addPropertyChangeListener(ClusterAlgorithm.CLUSTER_COMPUTED, this);
+
 		if (visualizer != null && !vizMap.containsKey(visualizer.getShortName())) {
-			// We have a visualizer, so we're interested in any clusters that get completed
-			algorithm.getPropertyChangeSupport().
-					addPropertyChangeListener(ClusterAlgorithm.CLUSTER_COMPUTED, this);
 			JMenuItem vizItem = new JMenuItem(visualizer.getName());
 			vizMenus.put(vizItem, visualizer);
 			vizMap.put(visualizer.getShortName(), visualizer);
@@ -235,6 +246,26 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		menu.add(item);
 	}
 
+	/**
+ 	 * addClusterFilter does some basic inquiry of the algorithm to see what it
+ 	 * supports and constructs the appropriate menu, taking into account whether
+ 	 * the algorithm supports edge as well as node attributes, and whether the algorithm
+ 	 * can be restricted to selected edges/nodes only.
+ 	 *
+ 	 * @param menu the top-level menu we're going to attach to
+ 	 * @param algorithm the cluster algorithm itself
+ 	 */  
+	private void addClusterFilter(JMenu menu, ClusterAlgorithm algorithm) {
+		algMap.put(algorithm.getShortName(), algorithm);
+
+		JMenuItem item = new JMenuItem(algorithm.getName());
+		item.addActionListener(new ClusterMakerCommandListener(algorithm));
+		item.setEnabled(false);
+		menuList.add(item);
+		menu.add(item);
+		filterMenus.put(item, algorithm);
+	}
+
 	private void updateVizMenus() {
 		for (JMenuItem item: vizMenus.keySet()) {
 			ClusterViz viz = vizMenus.get(item);
@@ -242,6 +273,25 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 				item.setEnabled(false);
 			else
 				item.setEnabled(true);
+		}
+	}
+
+	private void updateFilterMenus() {
+		boolean netClusterAvailable = false;
+		// See if we have any network cluster results available
+		for (ClusterAlgorithm alg: algMap.values()) {
+			if (alg instanceof AbstractNetworkFilter) continue;
+			if (alg instanceof AbstractNetworkClusterer && alg.isAvailable()) {
+				netClusterAvailable = true;
+				break;
+			}
+		}
+
+		for (JMenuItem item: filterMenus.keySet()) {
+			if (netClusterAvailable)
+				item.setEnabled(true);
+			else
+				item.setEnabled(false);
 		}
 	}
 

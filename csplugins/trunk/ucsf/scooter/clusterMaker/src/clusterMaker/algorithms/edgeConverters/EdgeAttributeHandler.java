@@ -1,6 +1,6 @@
 /* vim: set ts=2: */
 /**
- * Copyright (c) 2009 The Regents of the University of California.
+ * Copyright (c) 2011 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package clusterMaker.algorithms;
+package clusterMaker.algorithms.edgeConverters;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,6 +44,8 @@ import cytoscape.layout.Tunable;
 import cytoscape.layout.TunableListener;
 
 
+import clusterMaker.algorithms.ClusterProperties;
+import clusterMaker.algorithms.DistanceMatrix;
 import clusterMaker.algorithms.edgeConverters.EdgeWeightConverter;
 import clusterMaker.algorithms.edgeConverters.DistanceConverter1;
 import clusterMaker.algorithms.edgeConverters.DistanceConverter2;
@@ -252,23 +254,24 @@ public class EdgeAttributeHandler
 		Tunable t = clusterProperties.get("edgeHistogram");
 		t.clearFlag(Tunable.IMMUTABLE);
 
-		// System.out.println("edgeCutOff = "+edgeCutOff);
 		this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, converter);
 		double dataArray[] = matrix.getEdgeValues();
 		double range = matrix.getMaxWeight() - matrix.getMinWeight();
-		// System.out.println("Max weight = "+matrix.getMaxWeight());
-		// System.out.println("Min weight = "+matrix.getMinWeight());
 		edgeCutOffTunable.setUpperBound(matrix.getMaxWeight());
 		edgeCutOffTunable.setLowerBound(matrix.getMinWeight());
-		if (setEdgeCutOff == null || 
-		    setEdgeCutOff > matrix.getMaxWeight() || setEdgeCutOff < matrix.getMinWeight()) {
+		// We need to be a little careful.  There are two ways to set the
+		// edgeCutOff: 1) With the GUI, which will always be right; 2) via
+		// a CyCommand.  In the second case, we don't want to reset the edge
+		// cut off when the attribute or converter changes because we might have
+		// already set the edge cutoff.
+		if (setEdgeCutOff == null ||
+		    setEdgeCutOff > matrix.getMaxWeight() || 
+		    setEdgeCutOff < matrix.getMinWeight()) {
 			edgeCutOffTunable.setValue(matrix.getMinWeight());
-			edgeCutOff = (Double) edgeCutOffTunable.getValue();
 		} else {
 			edgeCutOffTunable.setValue(setEdgeCutOff);
-			edgeCutOff = (Double) edgeCutOffTunable.getValue();
 		}
-		// System.out.println("edgeCutOff (2) = "+edgeCutOff);
+		edgeCutOff = (Double) edgeCutOffTunable.getValue();
 
 		if (histo != null) {
 			histo.updateData(dataArray);

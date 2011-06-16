@@ -133,6 +133,8 @@ public class ClusterTask implements Task {
 		else
 			result.setAutoDispose(true);
 		result.setModal(true);
+		if (includeClose)
+			result.setMillisToPopup(1);
 		result.setOwner(Cytoscape.getDesktop());
 
 		return result;

@@ -1,4 +1,4 @@
-package clusterMaker.algorithms;
+package clusterMaker.algorithms.edgeConverters;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,7 +93,7 @@ public class ThresholdHeuristic{
 
 	
 	//maps id of each node to its maximum edge weight connection
-	HashMap <Integer,Integer>  maxNodeConnection = new HashMap();
+	HashMap <Integer,Integer>  maxNodeConnection = new HashMap<Integer, Integer>();
 	
 	//each index of array maps number of non-singleton nodes remaining at index (taking account a shift such that lowest index is zero)
 	int[] numConnectedNodes = null;

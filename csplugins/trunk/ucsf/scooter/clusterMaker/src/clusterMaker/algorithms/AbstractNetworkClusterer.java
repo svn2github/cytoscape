@@ -160,11 +160,18 @@ public abstract class AbstractNetworkClusterer extends AbstractClusterAlgorithm 
 	public List<List<CyNode>> getNodeClusters() {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		String netId = network.getIdentifier();
 
-		List<List<CyNode>> clusterList = new ArrayList<List<CyNode>>(); // List of node lists
 		String clusterAttribute = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE);
+		return getNodeClusters(clusterAttribute);
+	}
+
+
+	@SuppressWarnings("unchecked")
+	public List<List<CyNode>> getNodeClusters(String clusterAttribute) {
+		List<List<CyNode>> clusterList = new ArrayList<List<CyNode>>(); // List of node lists
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
 
 		// Create the cluster Map
 		HashMap<Integer, List<CyNode>> clusterMap = new HashMap<Integer, List<CyNode>>();
@@ -182,5 +189,6 @@ public abstract class AbstractNetworkClusterer extends AbstractClusterAlgorithm 
 		}
 		return clusterList;
 	}
+
 
 }
