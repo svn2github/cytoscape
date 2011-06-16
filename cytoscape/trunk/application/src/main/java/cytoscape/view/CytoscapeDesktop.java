@@ -370,6 +370,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		}
 		catch (Exception e){
 			setLocationRelativeTo(null);
+			this.setSize(800, 600);
 		}		
 	}
 	
