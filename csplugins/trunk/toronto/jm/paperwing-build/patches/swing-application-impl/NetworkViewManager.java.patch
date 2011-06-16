@@ -1,0 +1,13 @@
+Index: src/main/java/org/cytoscape/internal/view/NetworkViewManager.java
+===================================================================
+--- src/main/java/org/cytoscape/internal/view/NetworkViewManager.java	(revision 25654)
++++ src/main/java/org/cytoscape/internal/view/NetworkViewManager.java	(working copy)
+@@ -184,7 +184,7 @@
+ 			throw new IllegalArgumentException("Renderer ID is null.");
+ 
+ 		factories.put(rendererID.toString(), factory);
+-		if (currentRenderingEngineFactory == null && rendererID.equals(DEFAULT_PRESENTATION)) {
++		if (currentRenderingEngineFactory == null) {
+ 			currentRenderingEngineFactory = factory;
+ 			logger.info(rendererID + " is registered as the default rendering engine.");
+ 		}
