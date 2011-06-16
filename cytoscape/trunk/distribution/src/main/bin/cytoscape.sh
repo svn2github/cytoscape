@@ -4,7 +4,11 @@
 # This script is a UNIX-only (i.e. Linux, Mac OS, etc.) version
 #-------------------------------------------------------------------------------
 
-script_path="$(dirname -- $(readlink -f $0))"
+script_path="$(dirname -- $0)"
+if [ -h $script_path ]; then
+	script_path="$(readlink $script_path)"
+fi
+
 
 #vm_options_path=$HOME/.cytoscape
 vm_options_path=$script_path
