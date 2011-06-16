@@ -790,6 +790,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         pnlImportLocalPlugin = new javax.swing.JPanel();
         lbSelectLocalFile = new javax.swing.JLabel();
         tfLocalPluginFile = new javax.swing.JTextField();
+        btnSelectLocalPlugin = new javax.swing.JButton();
         btnImportLocalPlugin = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         availablePluginsLabel = new javax.swing.JLabel();
@@ -979,10 +980,23 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 20, 20, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 20, 10, 0);
         pnlImportLocalPlugin.add(tfLocalPluginFile, gridBagConstraints);
 
-        btnImportLocalPlugin.setText("Select");
+        btnSelectLocalPlugin.setText("Select");
+        btnSelectLocalPlugin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelectLocalPluginActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 20, 10, 30);
+        pnlImportLocalPlugin.add(btnSelectLocalPlugin, gridBagConstraints);
+
+        btnImportLocalPlugin.setText("Load");
         btnImportLocalPlugin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnImportLocalPluginActionPerformed(evt);
@@ -990,9 +1004,8 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         });
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 20, 20, 30);
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 20, 0);
         pnlImportLocalPlugin.add(btnImportLocalPlugin, gridBagConstraints);
 
         jTabbedPane1.addTab("Import Local Plugin", pnlImportLocalPlugin);
@@ -1116,10 +1129,12 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         pack();
     }// </editor-fold>                        
 
-    
     private void btnImportLocalPluginActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+// TODO add your handling code here:
+    }                                                    
+   
+    private void btnSelectLocalPluginActionPerformed(java.awt.event.ActionEvent evt) {                                                     
     	// TODO add your handling code here:
-    	
     }                                                    
 
     private void btnDeleteSiteActionPerformed(java.awt.event.ActionEvent evt) {                                              
@@ -1407,6 +1422,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     private javax.swing.JButton btnEditSite;
     private javax.swing.JButton btnImportLocalPlugin;
     private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnSelectLocalPlugin;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton closeButton;
     private javax.swing.JLabel downloadLocText;
@@ -1435,7 +1451,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     private javax.swing.JPanel topPane;
     private javax.swing.JScrollPane treeScrollPane;
     private javax.swing.JCheckBox versionCheck;
-    // End of variables declaration  
+    // End of variables declaration                   
     
     private TreeNode rootTreeNode;
 	private TreeNode installedNode;
