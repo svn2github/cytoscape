@@ -66,6 +66,7 @@
 		<constructor-arg ref="guiTaskManagerRef" />
 		<constructor-arg ref="cyPropertyRef" />
 		<constructor-arg ref="cyPluginAdapter" />
+		<constructor-arg ref="pluginLoaderTaskFactory" />
 	</bean>
 
 	<bean id="startupMostlyFinished" class="org.cytoscape.plugin.internal.StartupMostlyFinished">

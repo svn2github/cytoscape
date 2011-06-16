@@ -57,6 +57,7 @@ import org.cytoscape.work.swing.GUITaskManager;
 //import java.util.Properties;
 import org.cytoscape.plugin.internal.*;
 //import org.cytoscape.plugin.internal.ui.*;
+import org.cytoscape.work.TaskFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -73,16 +74,18 @@ public class PluginManagerAction extends AbstractCyAction {
 	private Bookmarks theBookmarks;
 	private GUITaskManager guiTaskManagerServiceRef;
 	private CyProperty cytoscapePropertiesServiceRef;
+	private TaskFactory pluginLoaderTaskFactory;
 	
 	// Hard-coded for now, should get system configuration
 	public static String cyConfigDir = ".cytoscape";
 	public static String cyConfigVerDir = "3.0.0";
+	
 	/**
 	 * Creates a new BookmarkAction object.
 	 */
 	public PluginManagerAction(CySwingApplication desktop, CyApplicationManager appMgr, CytoscapeVersion version,
 			CyProperty<Bookmarks> bookmarksProp, BookmarksUtil bookmarksUtil, GUITaskManager guiTaskManagerServiceRef
-			, CyProperty cytoscapePropertiesServiceRef, CyPluginAdapter adapter) {
+			, CyProperty cytoscapePropertiesServiceRef, CyPluginAdapter adapter, TaskFactory pluginLoaderTaskFactory) {
 				
 		super("Plugin Manager", appMgr);
 
@@ -91,6 +94,8 @@ public class PluginManagerAction extends AbstractCyAction {
 		this.theBookmarks = bookmarksProp.getProperties();	
 		this.bookmarksUtil = bookmarksUtil;
 		this.guiTaskManagerServiceRef = guiTaskManagerServiceRef;
+
+		this.pluginLoaderTaskFactory = 	pluginLoaderTaskFactory;
 
 		// Note: We need pass cyConfigDir = ".cytoscape" and cyConfigVerDir to PluginManager.java
 		this.cytoscapePropertiesServiceRef = cytoscapePropertiesServiceRef;
@@ -136,7 +141,7 @@ public class PluginManagerAction extends AbstractCyAction {
 	public void actionPerformed(ActionEvent e) {
 		
 		PluginManageDialog dlg = new PluginManageDialog(desktop.getJFrame(), theBookmarks, this.bookmarksUtil, 
-				this.guiTaskManagerServiceRef);
+				this.guiTaskManagerServiceRef, this.pluginLoaderTaskFactory);
 		
 		List<DownloadableInfo> Current = PluginManager.getPluginManager().getDownloadables(PluginStatus.CURRENT);
 		Map<String, List<DownloadableInfo>> InstalledInfo = ManagerUtil.sortByCategory(Current);				
