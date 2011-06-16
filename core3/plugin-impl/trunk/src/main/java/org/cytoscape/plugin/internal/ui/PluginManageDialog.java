@@ -787,6 +787,10 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         btnDeleteSite = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         lstDownloadSites = new javax.swing.JList();
+        pnlImportLocalPlugin = new javax.swing.JPanel();
+        lbSelectLocalFile = new javax.swing.JLabel();
+        tfLocalPluginFile = new javax.swing.JTextField();
+        btnImportLocalPlugin = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         availablePluginsLabel = new javax.swing.JLabel();
         versionCheck = new javax.swing.JCheckBox();
@@ -960,6 +964,39 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
         jTabbedPane1.addTab("Settings", pnlSettings);
 
+        pnlImportLocalPlugin.setLayout(new java.awt.GridBagLayout());
+
+        lbSelectLocalFile.setText("Please selct a plugin file");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(10, 20, 10, 0);
+        pnlImportLocalPlugin.add(lbSelectLocalFile, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 20, 20, 0);
+        pnlImportLocalPlugin.add(tfLocalPluginFile, gridBagConstraints);
+
+        btnImportLocalPlugin.setText("Select");
+        btnImportLocalPlugin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImportLocalPluginActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 20, 20, 30);
+        pnlImportLocalPlugin.add(btnImportLocalPlugin, gridBagConstraints);
+
+        jTabbedPane1.addTab("Import Local Plugin", pnlImportLocalPlugin);
+
         jSplitPane2.setLeftComponent(jTabbedPane1);
 
         jPanel3.setLayout(new java.awt.GridBagLayout());
@@ -974,7 +1011,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
         jPanel3.add(availablePluginsLabel, gridBagConstraints);
 
         versionCheck.setText("Show only plugins verified to work in this release");
-
         versionCheck.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         versionCheck.setMargin(new java.awt.Insets(0, 0, 0, 0));
         versionCheck.addItemListener(new java.awt.event.ItemListener() {
@@ -1081,7 +1117,11 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     }// </editor-fold>                        
 
     
-    
+    private void btnImportLocalPluginActionPerformed(java.awt.event.ActionEvent evt) {                                                     
+    	// TODO add your handling code here:
+    	
+    }                                                    
+
     private void btnDeleteSiteActionPerformed(java.awt.event.ActionEvent evt) {                                              
     	/*
     	DataSource theDataSource = (DataSource)this.lstDownloadSites.getSelectedValue();
@@ -1365,6 +1405,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnDeleteSite;
     private javax.swing.JButton btnEditSite;
+    private javax.swing.JButton btnImportLocalPlugin;
     private javax.swing.JButton btnSearch;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton closeButton;
@@ -1380,13 +1421,16 @@ public class PluginManageDialog extends javax.swing.JDialog implements
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lbSearchTitle;
+    private javax.swing.JLabel lbSelectLocalFile;
     private javax.swing.JList lstDownloadSites;
     private javax.swing.JLabel msgLabel;
     private javax.swing.JTextArea msgPanel;
     private javax.swing.JTree pluginTree;
+    private javax.swing.JPanel pnlImportLocalPlugin;
     private javax.swing.JPanel pnlSearch;
     private javax.swing.JPanel pnlSettings;
     private javax.swing.JPanel sitePanel;
+    private javax.swing.JTextField tfLocalPluginFile;
     private javax.swing.JTextField tfSearch;
     private javax.swing.JPanel topPane;
     private javax.swing.JScrollPane treeScrollPane;
