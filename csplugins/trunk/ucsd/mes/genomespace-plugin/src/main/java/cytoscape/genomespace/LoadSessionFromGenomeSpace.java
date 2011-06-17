@@ -58,7 +58,8 @@ public class LoadSessionFromGenomeSpace extends CytoscapeAction {
 			acceptableExtensions.add("cys");
 			final GSFileBrowserDialog dialog =
 				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
-							acceptableExtensions);
+							acceptableExtensions,
+							GSFileBrowserDialog.DialogType.FILE_SELECTION_DIALOG);
 			final GSFileMetadata fileMetadata = dialog.getSelectedFileMetadata();
 			if (fileMetadata == null)
 				return;

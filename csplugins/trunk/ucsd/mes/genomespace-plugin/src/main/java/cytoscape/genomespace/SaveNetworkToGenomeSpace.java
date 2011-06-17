@@ -20,11 +20,10 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import org.genomespace.client.ui.GSFileBrowserDialog;
 import org.genomespace.datamanager.core.GSFileMetadata;
 import org.genomespace.client.DataManagerClient;
 import org.genomespace.client.GsSession;
-import org.genomespace.client.User;
+import org.genomespace.client.ui.GSFileBrowserDialog;
 
 
 /**
@@ -62,7 +61,7 @@ public class SaveNetworkToGenomeSpace extends CytoscapeAction {
 			final GSFileBrowserDialog dialog =
 				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
 							acceptableExtensions,
-							/* isSaveAsDialog = */ true);
+							GSFileBrowserDialog.DialogType.SAVE_AS_DIALOG);
 
 			String saveFileName = dialog.getSaveFileName();
 			if (saveFileName == null)

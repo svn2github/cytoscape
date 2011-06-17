@@ -43,13 +43,14 @@ public class DownloadFileFromGenomeSpace extends CytoscapeAction {
 		setPreferredMenu("File.Import.GenomeSpace");
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		try {
 			final GsSession client = GSUtils.getSession(); 
 			final DataManagerClient dataManagerClient = client.getDataManagerClient();
 
 			final GSFileBrowserDialog dialog =
-				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient);
+				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
+							GSFileBrowserDialog.DialogType.FILE_SELECTION_DIALOG);
 			final GSFileMetadata fileMetadata = dialog.getSelectedFileMetadata();
 			if (fileMetadata == null)
 				return;

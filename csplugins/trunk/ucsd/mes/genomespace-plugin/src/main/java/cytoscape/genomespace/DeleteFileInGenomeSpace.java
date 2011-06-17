@@ -5,29 +5,24 @@ import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 import cytoscape.logger.CyLogger;
+
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import java.io.File;
-import java.awt.FileDialog;
-import java.util.List;
-import java.util.Map;
-import java.util.Collection;
-
 import org.genomespace.datamanager.core.GSFileMetadata;
-import org.genomespace.client.GsSession;
 import org.genomespace.client.DataManagerClient;
-import org.genomespace.client.User;
+import org.genomespace.client.GsSession;
+import org.genomespace.client.ui.GSFileBrowserDialog;
 
 
-/**
- * A simple action.  Change the names as appropriate and
- * then fill in your expected behavior in the actionPerformed()
- * method.
- */
 public class DeleteFileInGenomeSpace extends CytoscapeAction {
-
 	private static final long serialVersionUID = 4234432889999989L;
 	private static final CyLogger logger = CyLogger.getLogger(DeleteFileInGenomeSpace.class);
 
@@ -43,23 +38,12 @@ public class DeleteFileInGenomeSpace extends CytoscapeAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-
 		try {
-
-		GsSession client = GSUtils.getSession(); 
-		DataManagerClient dmc = client.getDataManagerClient();
-
-		// list the files present for this user
-		Map<String,GSFileMetadata> files = GSUtils.getFileNameMap( dmc.listDefaultDirectory().getContents() );
-
-		String selectedFile = getSelectedFile( files.keySet() ); 
-
-		// Delete the file from GenomeSpace
-		if (selectedFile != null && files.get(selectedFile) != null) {
-			logger.info("Deleting " + selectedFile);
-			dmc.delete(files.get(selectedFile));
-		}
-	
+			final GsSession session = GSUtils.getSession(); 
+			final DataManagerClient dataManagerClient = session.getDataManagerClient();
+			final GSFileBrowserDialog dialog =
+				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
+							GSFileBrowserDialog.DialogType.FILE_DELETION_DIALOG);
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed",ex);
 		}

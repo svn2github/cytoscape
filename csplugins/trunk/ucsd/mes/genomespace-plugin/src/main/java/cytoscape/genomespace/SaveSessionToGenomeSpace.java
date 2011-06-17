@@ -57,7 +57,7 @@ public class SaveSessionToGenomeSpace extends CytoscapeAction {
 			final GSFileBrowserDialog dialog =
 				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
 							acceptableExtensions,
-							/* isSaveAsDialog = */ true);
+							GSFileBrowserDialog.DialogType.SAVE_AS_DIALOG);
 			String saveFileName = dialog.getSaveFileName();
 			if (saveFileName == null)
 				return;
