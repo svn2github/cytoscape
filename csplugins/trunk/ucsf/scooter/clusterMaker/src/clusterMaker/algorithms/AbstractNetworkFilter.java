@@ -84,15 +84,15 @@ public abstract class AbstractNetworkFilter extends AbstractNetworkClusterer {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 		String netId = network.getIdentifier();
-		System.out.println("Network = "+netId);
+		// System.out.println("Network = "+netId);
 		if (!networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE)) {
 			clusterAttribute = null;
-			System.out.println("No "+ClusterMaker.CLUSTER_TYPE_ATTRIBUTE+" attribute");
+			// System.out.println("No "+ClusterMaker.CLUSTER_TYPE_ATTRIBUTE+" attribute");
 			return new Integer(0);
 		}
 
 		String cluster_type = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
-		System.out.println("cluster type = "+cluster_type);
+		// System.out.println("cluster type = "+cluster_type);
 		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE)) {
 			clusterAttribute = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE);
 			for (int i = 0; i < attributeArray.length; i++) {
