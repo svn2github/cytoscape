@@ -42,23 +42,20 @@ import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.C2CEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyNumberPropertyEditor;
 
-/**
- *
- */
 public class NumberVisualPropertyEditor<T extends Number> extends BasicVisualPropertyEditor<T> {
 
-    /**
-     * Creates a new DiscreteNumber object.
-     */
-    public NumberVisualPropertyEditor(Class<T> type, final CyTableManager manager,
-	    final CyApplicationManager appManager, final SelectedVisualStyleManager selectedManager,
-	    final EditorManager editorManager, final VisualMappingManager vmm) {
-	super(type, new CyNumberPropertyEditor<T>(type, null));
-	discreteTableCellRenderer = REG.getRenderer(type);
+	/**
+	 * Creates a new DiscreteNumber object.
+	 */
+	public NumberVisualPropertyEditor(Class<T> type, final CyTableManager manager,
+			final CyApplicationManager appManager, final SelectedVisualStyleManager selectedManager,
+			final EditorManager editorManager, final VisualMappingManager vmm) {
+		super(type, new CyNumberPropertyEditor<T>(type, null));
+		discreteTableCellRenderer = REG.getRenderer(type);
 
-	continuousEditor = new C2CEditor(manager, appManager, selectedManager, editorManager, vmm);
-	// FIXME
-	continuousTableCellRenderer = null;
-    }
+		continuousEditor = new C2CEditor(manager, appManager, selectedManager, editorManager, vmm);
+		// FIXME
+		continuousTableCellRenderer = null;
+	}
 
 }
