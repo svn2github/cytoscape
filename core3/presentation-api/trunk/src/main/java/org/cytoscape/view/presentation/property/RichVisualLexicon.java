@@ -170,6 +170,7 @@ public class RichVisualLexicon extends MinimalVisualLexicon {
 		addIdentifierMapping(CyNode.class, "nodeFontSize", NODE_LABEL_FONT_SIZE);
 		addIdentifierMapping(CyNode.class, "nodeToolTip", NODE_TOOLTIP);
 
+		addIdentifierMapping(CyEdge.class, "edgeColor", EDGE_STROKE_UNSELECTED_PAINT);
 		addIdentifierMapping(CyEdge.class, "edgeLineStyle", EDGE_LINE_TYPE);
 		addIdentifierMapping(CyEdge.class, "edgeToolTip", EDGE_TOOLTIP);
 		addIdentifierMapping(CyEdge.class, "edgeFont", EDGE_LABEL_FONT_FACE);
