@@ -28,6 +28,7 @@
  */
 package org.cytoscape.plugin.internal.ui;
 
+import org.cytoscape.plugin.internal.action.PluginManagerAction;
 import org.cytoscape.plugin.internal.util.CytoscapeVersion;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
@@ -97,7 +98,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	public static String CURRENTLY_INSTALLED = "Currently Installed";
 	public static String AVAILABLE_FOR_INSTALL = "Available for Install";
 	
-	private String defaultPluginSiteURL = "http://chianti.ucsd.edu/cyto_web/plugins/pluginx_test.xml";
+	private String defaultPluginSiteURL = PluginManagerAction.DefaultPluginUrl;
 	private String currentPluginSiteURL = defaultPluginSiteURL;
 	
 	private String HOWTOSEARCH = "You can use wildcard * or ? in your search words";
@@ -238,9 +239,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		PluginManagerInquireTaskFactory _taskFactory = new PluginManagerInquireTaskFactory(task);
 
 		this.guiTaskManagerServiceRef.execute(_taskFactory);
-		
-		System.out.println("PluginManagerDialog.refreshPluginTree()....");
-		
 	}
 	
 	/*

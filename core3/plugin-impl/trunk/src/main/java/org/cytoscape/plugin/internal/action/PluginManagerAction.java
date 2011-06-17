@@ -62,7 +62,7 @@ import org.cytoscape.work.TaskFactory;
 import java.util.List;
 import java.util.Map;
 import org.cytoscape.work.Task;
-
+import java.util.Properties;
 
 /**
  *
@@ -75,10 +75,10 @@ public class PluginManagerAction extends AbstractCyAction {
 	private GUITaskManager guiTaskManagerServiceRef;
 	private CyProperty cytoscapePropertiesServiceRef;
 	private TaskFactory pluginLoaderTaskFactory;
-	
-	// Hard-coded for now, should get system configuration
-	public static String cyConfigDir = ".cytoscape";
-	public static String cyConfigVerDir = "3.0.0";
+
+	public static String cyConfigVerDir;
+	public static String cyConfigDir = CyProperty.DEFAULT_CONFIG_DIR; //".cytoscape";
+	public static String DefaultPluginUrl = null;
 	
 	/**
 	 * Creates a new BookmarkAction object.
@@ -100,10 +100,12 @@ public class PluginManagerAction extends AbstractCyAction {
 		// Note: We need pass cyConfigDir = ".cytoscape" and cyConfigVerDir to PluginManager.java
 		this.cytoscapePropertiesServiceRef = cytoscapePropertiesServiceRef;
 				
+		DefaultPluginUrl = ((Properties)cytoscapePropertiesServiceRef.getProperties()).getProperty("defaultPluginDownloadUrl");
+		
 		// initialize version
 		org.cytoscape.plugin.internal.util.CytoscapeVersion.version = version.getVersion();
 		cyConfigVerDir = version.getVersion();
-
+		
 		setPreferredMenu("Plugins");
 		setMenuGravity(1.0f);
 	
@@ -150,11 +152,9 @@ public class PluginManagerAction extends AbstractCyAction {
 			dlg.addCategory(Category, InstalledInfo.get(Category),PluginManageDialog.PluginInstallStatus.INSTALLED);
 		}
 
-		// Get defaultURL from Cytoscape properties, hard-code for now
-		String DefaultUrl = "http://chianti.ucsd.edu/cyto_web/plugins3/plugins3.xml";//getDefaultUrl();
 		String DefaultTitle = "Cytoscape";
 		
-		Task task = new PluginManagerInquireTask(DefaultUrl, new ManagerAction(dlg, DefaultTitle, DefaultUrl));
+		Task task = new PluginManagerInquireTask(this.DefaultPluginUrl, new ManagerAction(dlg, DefaultTitle, this.DefaultPluginUrl));
 
 		PluginManagerInquireTaskFactory _taskFactory = new PluginManagerInquireTaskFactory(task);
 
