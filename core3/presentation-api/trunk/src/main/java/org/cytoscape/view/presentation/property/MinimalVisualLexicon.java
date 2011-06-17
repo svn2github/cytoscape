@@ -126,7 +126,7 @@ public class MinimalVisualLexicon extends AbstractVisualLexicon {
 			true, "NODE_VISIBLE", "Node Visible", CyNode.class);
 
 	public static final VisualProperty<Boolean> NODE_SELECTED = new BooleanVisualProperty(
-			false, "NODE_SELECTED", "Node Selected", CyNode.class);
+			false, "NODE_SELECTED", "Node Selected", true, CyNode.class);
 
 	// ///// Edge VP ///////
 	public static final VisualProperty<Paint> EDGE_PAINT = new PaintVisualProperty(
@@ -147,7 +147,7 @@ public class MinimalVisualLexicon extends AbstractVisualLexicon {
 			true, "EDGE_VISIBLE", "Edge Visible", CyEdge.class);
 
 	public static final VisualProperty<Boolean> EDGE_SELECTED = new BooleanVisualProperty(
-			false, "EDGE_SELECTED", "Edge Selected", CyEdge.class);
+			false, "EDGE_SELECTED", "Edge Selected", true, CyEdge.class);
 
 	// ////// Network VP ////////
 	public static final VisualProperty<Double> NETWORK_SCALE_FACTOR = new DoubleVisualProperty(

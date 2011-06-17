@@ -54,7 +54,12 @@ public class BooleanVisualProperty extends AbstractVisualProperty<Boolean> {
 	}
 	
 	public BooleanVisualProperty(final Boolean def, final String id, final String name, final Class<?> targetDataType) {
-		super(def, BOOLEAN_RANGE, id,name, targetDataType);
+		this(def, id, name, false, targetDataType);
+	}
+	
+	public BooleanVisualProperty(final Boolean def, final String id, final String name, final Boolean ignoreDefault, final Class<?> targetDataType) {
+		super(def, BOOLEAN_RANGE, id, name, targetDataType);
+		this.shouldIgnoreDefault = ignoreDefault;
 	}
 	
 	public String toSerializableString(final Boolean value) {
