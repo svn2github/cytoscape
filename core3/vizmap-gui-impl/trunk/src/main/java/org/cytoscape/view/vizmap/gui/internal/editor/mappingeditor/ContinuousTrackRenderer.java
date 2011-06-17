@@ -872,7 +872,7 @@ public class ContinuousTrackRenderer<K extends Number, V extends Number>
 		values.add(above);
 
 		for (Thumb<V> thumb : stops) {
-			floatProperty[i] = (Float) thumb.getObject();
+			floatProperty[i] = ((Number) thumb.getObject()).floatValue();
 			fractions[i] = thumb.getPosition();
 			values.add((V) thumb.getObject());
 			i++;

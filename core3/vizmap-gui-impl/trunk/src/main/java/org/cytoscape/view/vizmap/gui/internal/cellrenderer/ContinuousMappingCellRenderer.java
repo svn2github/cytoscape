@@ -1,12 +1,11 @@
 package org.cytoscape.view.vizmap.gui.internal.cellrenderer;
 
 import java.awt.Component;
-import java.awt.Paint;
 
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 
-import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.GradientEditor;
+import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.AbstractContinuousMappingEditor;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 
 import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
@@ -15,21 +14,25 @@ import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
  * Cell renderer for Continuous Color mapping
  * 
  */
-public class ColorContinuousMappingCellRenderer extends DefaultCellRenderer {
+public class ContinuousMappingCellRenderer extends DefaultCellRenderer {
 
 	private static final long serialVersionUID = -6734053848878359286L;
 
-	private final GradientEditor editor;
+	private final AbstractContinuousMappingEditor<?, ?> editor;
 	
-	public ColorContinuousMappingCellRenderer(final GradientEditor editor) {
+	public ContinuousMappingCellRenderer(final AbstractContinuousMappingEditor<?, ?> editor) {
+		if(editor == null)
+			throw new NullPointerException("Editor object is null.");
+		
 		this.editor = editor;
 	}
+	
 	
 	@Override public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
 		
 		if(value == null || value instanceof ContinuousMapping == false) {
-			this.setText("! (Unkonown Mapping)");
+			this.setText("Unkonown Mapping");
 			return this;
 		}
 				
@@ -40,7 +43,6 @@ public class ColorContinuousMappingCellRenderer extends DefaultCellRenderer {
 			setBackground(table.getBackground());
 			setForeground(table.getForeground());
 		}
-		
 		
 		final int height = table.getRowHeight(row);
 		final int width = table.getColumnModel().getColumn(column).getWidth();

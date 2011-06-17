@@ -63,6 +63,7 @@ import org.slf4j.LoggerFactory;
 
 import com.l2fprod.common.propertysheet.DefaultProperty;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
+import com.l2fprod.common.propertysheet.PropertyRendererFactory;
 import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
@@ -79,12 +80,10 @@ public class VizMapPropertyBuilder {
 	private EditorManager editorManager;
 
 	private CyNetworkManager cyNetworkManager;
-	private CyTableManager tableMgr;
 
 	public VizMapPropertyBuilder(CyNetworkManager cyNetworkManager, EditorManager editorManager, CyTableManager tableMgr) {
 		this.cyNetworkManager = cyNetworkManager;
 		this.editorManager = editorManager;
-		this.tableMgr = tableMgr;
 	}
 
 	/**
@@ -171,7 +170,7 @@ public class VizMapPropertyBuilder {
 		}
 
 		final VisualPropertyEditor<V> vpEditor = editorManager.getVisualPropertyEditor(vp);
-		logger.debug("vpEditor is " + vpEditor);
+		logger.debug("==========>>>>>> Setting vpEditor:" + vpEditor);
 
 		if (visualMapping instanceof DiscreteMapping && (attrName != null)) {
 			// Discrete Mapping
@@ -207,19 +206,22 @@ public class VizMapPropertyBuilder {
 
 		} else if (visualMapping instanceof ContinuousMapping && (attrName != null)) {
 
-			final VizMapperProperty<String, String, VisualMappingFunction<K, V>> graphicalView = new VizMapperProperty<String, String, VisualMappingFunction<K, V>>(
-					CellType.CONTINUOUS, AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW, String.class);
+			logger.debug("==========>>>>>> Setting Continuous:" + vpEditor);
+			
+			final VizMapperProperty<String, String, VisualMappingFunction<K, V>> graphicalView = 
+				new VizMapperProperty<String, String, VisualMappingFunction<K, V>>(CellType.CONTINUOUS, AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW, String.class);
 			graphicalView.setValue(visualMapping);
 			graphicalView.setDisplayName(AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW);
 			graphicalView.setParentProperty(topProperty);
 			topProperty.addSubProperty(graphicalView);
 
-			// FIXME
 			final TableCellRenderer continuousRenderer = vpEditor.getContinuousTableCellRenderer();
-
+			
+			//FIXME
 			final PropertySheetTable table = propertySheetPanel.getTable();
-			((PropertyRendererRegistry) table.getRendererFactory()).registerRenderer(graphicalView, continuousRenderer);
-
+			final PropertyRendererRegistry rendReg = (PropertyRendererRegistry) table.getRendererFactory();
+			rendReg.registerRenderer(graphicalView, continuousRenderer);
+			
 			final PropertyEditorRegistry cellEditorFactory = (PropertyEditorRegistry) table.getEditorFactory();
 			final PropertyEditor continuousCellEditor = editorManager.getVisualPropertyEditor(vp)
 					.getContinuousMappingEditor();

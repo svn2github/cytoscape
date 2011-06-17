@@ -7,6 +7,8 @@ import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+import org.cytoscape.view.vizmap.gui.internal.cellrenderer.ContinuousMappingCellRenderer;
+import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.AbstractContinuousMappingEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.C2DEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 
@@ -25,10 +27,11 @@ public class DiscreteValuePropertyEditor<T> extends BasicVisualPropertyEditor<T>
 		super(type, new CyComboBoxPropertyEditor());
 
 		discreteTableCellRenderer = REG.getRenderer(type);
-		// continuousTableCellRenderer = new IconCellRenderer<T>(icons);
+		
 
 		CyComboBoxPropertyEditor cbe = (CyComboBoxPropertyEditor) propertyEditor;
 		cbe.setAvailableValues(values.toArray());
 		continuousEditor = new C2DEditor<T>(manager, appManager, selectedManager, editorManager, vmm);
+		continuousTableCellRenderer = new ContinuousMappingCellRenderer((AbstractContinuousMappingEditor<?, ?>) continuousEditor);
 	}
 }

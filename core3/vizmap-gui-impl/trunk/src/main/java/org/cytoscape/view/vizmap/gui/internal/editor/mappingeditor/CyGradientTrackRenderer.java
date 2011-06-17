@@ -452,11 +452,7 @@ public class CyGradientTrackRenderer extends JComponent implements
 		return new ImageIcon(bi);
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
+	
 	public Double getSelectedThumbValue() {
 		final float position = slider.getModel()
 				.getThumbAt(slider.getSelectedIndex()).getPosition();

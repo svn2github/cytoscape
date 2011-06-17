@@ -42,7 +42,8 @@ import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
-import org.cytoscape.view.vizmap.gui.internal.cellrenderer.ColorContinuousMappingCellRenderer;
+import org.cytoscape.view.vizmap.gui.internal.cellrenderer.ContinuousMappingCellRenderer;
+import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.AbstractContinuousMappingEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.GradientEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyColorPropertyEditor;
 
@@ -65,8 +66,7 @@ public class ColorVisualPropertyEditor extends
 
 		discreteTableCellRenderer = REG.getRenderer(Color.class);
 		
-
 		continuousEditor = new GradientEditor(manager, appManager, selectedManager, editorManager, vmm);
-		continuousTableCellRenderer = new ColorContinuousMappingCellRenderer((GradientEditor) continuousEditor);
+		continuousTableCellRenderer = new ContinuousMappingCellRenderer((AbstractContinuousMappingEditor<?, ?>) continuousEditor);
 	}
 }
