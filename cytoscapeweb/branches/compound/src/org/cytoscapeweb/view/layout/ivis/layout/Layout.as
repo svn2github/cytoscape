@@ -504,9 +504,13 @@ public /*abstract*/ class Layout
 	private function randomlyPositionNodes(graph:LGraph):void
 	{
 		var childGraph:LGraph;
-
-		for each (var lNode:LNode in graph.getNodes())
+		
+		var iter:IIterator = graph.getNodes().iterator(); 
+		
+		while (iter.hasNext())
 		{
+			var lNode:LNode = iter.next() as LNode;
+				
 			childGraph = lNode.getChild();
 
 			if (childGraph == null)

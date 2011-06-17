@@ -67,7 +67,7 @@ package org.cytoscapeweb.util
 					lineColor: CompoundNodes.lineColor, 
 					lineWidth: CompoundNodes.lineWidth,
 					alpha: CompoundNodes.alpha,
-					"props.imageUrl": Nodes.imageUrl,
+					"props.compoundImageUrl": CompoundNodes.imageUrl,
 					visible: Nodes.visible,
 					buttonMode: true,
 					filters: CompoundNodes.filters,
@@ -268,6 +268,13 @@ package org.cytoscapeweb.util
 			}
 			
 			return filter;
+		}
+		
+		public static function imageUrl(n:NodeSprite):String
+		{
+			var propName:String = VisualProperties.C_NODE_IMAGE;
+			// TODO: selected/mouseover images
+			return style.getValue(propName, n.data);
 		}
 		
 		public static function paddingLeft(n:NodeSprite) : Number

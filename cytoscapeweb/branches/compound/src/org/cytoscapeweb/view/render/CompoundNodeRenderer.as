@@ -4,9 +4,14 @@ package org.cytoscapeweb.view.render
 	import flare.vis.data.DataSprite;
 	import flare.vis.data.NodeSprite;
 	
+	import flash.display.BitmapData;
 	import flash.display.Graphics;
 	import flash.display.Sprite;
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
+	import flash.utils.setTimeout;
+	
+	import mx.utils.StringUtil;
 	
 	import org.cytoscapeweb.util.GraphUtils;
 	import org.cytoscapeweb.util.NodeShapes;
@@ -26,6 +31,8 @@ package org.cytoscapeweb.view.render
 		 */
 		private static var _instance:CompoundNodeRenderer =
 			new CompoundNodeRenderer();
+		
+		private var _imgCache:ImageCache = ImageCache.instance;
 		
 		public static function get instance() : CompoundNodeRenderer
 		{
@@ -61,7 +68,7 @@ package org.cytoscapeweb.view.render
 					ns.bounds == null)
 				{
 					// no child or bounds set yet,
-					// render with default size & shape
+					// render with default size & shape					
 					super.render(d);
 				}
 				else
@@ -95,7 +102,7 @@ package org.cytoscapeweb.view.render
 						g.endFill();
 						
 						// TODO draw an image on top?
-						//drawImage(d, size);
+						drawImage(ns, this.adjustSize(ns));
 					}
 				}
 				
@@ -146,6 +153,50 @@ package org.cytoscapeweb.view.render
 			}
 		}
 		
+		private function drawImage(d:DataSprite, size:Number):void
+		{
+			var url:String = d.props.compoundImageUrl;
+			
+			if (size > 0 && url != null && StringUtil.trim(url).length > 0) {
+				// Load the image into the cache first?
+				if (!_imgCache.contains(url)) {trace("Will load IMAGE...");
+					_imgCache.loadImage(url);
+				}
+				if (_imgCache.isLoaded(url)) {trace(" .LOADED :-)");
+					draw();
+				} else {trace(" .NOT loaded :-(");
+					drawWhenLoaded();
+				}
+				
+				function drawWhenLoaded():void {
+					setTimeout(function():void {trace(" .TIMEOUT: Checking again...");
+						if (_imgCache.isLoaded(url)) draw();
+						else if (!_imgCache.isBroken(url)) drawWhenLoaded();
+					}, 50);
+				}
+				
+				function draw():void {trace("Will draw: " + d.data.id);
+					// Get the image from cache:
+					var bd:BitmapData = _imgCache.getImage(url);
+					
+					if (bd != null) {
+						var bmpSize:Number = Math.min(bd.height, bd.width);
+						var scale:Number = size/bmpSize;
+						
+						var m:Matrix = new Matrix();
+						m.scale(scale, scale);
+						m.translate(-(bd.width*scale)/2, -(bd.height*scale)/2);
+						
+						d.graphics.beginBitmapFill(bd, m, false, true);
+						//drawShape(d, d.shape, size);
+						drawShape(d,
+							d.shape,
+							adjustBounds(d as CompoundNodeSprite));
+						d.graphics.endFill();
+					}
+				}
+			}
+		}
 		/**
 		 * Adjusts the bounds of the given compound node by using local 
 		 * coordinates of the given compound node sprite. This function does
@@ -166,6 +217,19 @@ package org.cytoscapeweb.view.render
 			
 			// return adjusted bounds
 			return bounds;
+		}
+		
+		private function adjustSize(ns:CompoundNodeSprite) : Number
+		{
+			var size:Number = 0;
+			
+			if (ns.isInitialized())
+			{
+				size = Math.min(ns.bounds.width,
+					ns.bounds.height);
+			}
+			
+			return size;
 		}
 		
 		/**

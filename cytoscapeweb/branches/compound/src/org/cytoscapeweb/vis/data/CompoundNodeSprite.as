@@ -3,9 +3,6 @@ package org.cytoscapeweb.vis.data
 	import flare.vis.data.NodeSprite;
 	
 	import flash.geom.Rectangle;
-	
-	import org.cytoscapeweb.util.Anchors;
-	import org.cytoscapeweb.util.NodeShapes;
 
 	/**
 	 * This class represents a Compound Node with its child nodes, bounds and

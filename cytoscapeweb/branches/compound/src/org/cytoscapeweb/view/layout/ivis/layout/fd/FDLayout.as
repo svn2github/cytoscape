@@ -197,13 +197,13 @@ public /*abstract*/ class FDLayout extends Layout
 	 */
 	public function calcSpringForces():void
 	{
-		var lEdges:Array= this.getAllEdges();
-		var edge:FDLayoutEdge;
+		//var lEdges:Array= this.getAllEdges();
+		//var edge:FDLayoutEdge;
 
-		for (var i:int= 0; i < lEdges.length; i++)
+		//for (var i:int= 0; i < lEdges.length; i++)
+		for each (var edge:FDLayoutEdge in this.getAllEdges())
 		{
-			edge = FDLayoutEdge(lEdges[i]);
-
+			//edge = FDLayoutEdge(lEdges[i]);
 			this.calcSpringForce(edge, edge.idealLength);
 		}
 	}
@@ -290,12 +290,13 @@ public /*abstract*/ class FDLayout extends Layout
 	 */
 	public function moveNodes():void
 	{
-		var lNodes:Array= this.getAllNodes();
-		var node:FDLayoutNode;
+		//var lNodes:Array = this.getAllNodes();
+		//var node:FDLayoutNode;
 
-		for (var i:int= 0; i < lNodes.length; i++)
+		//for (var i:int= 0; i < lNodes.length; i++)
+		for each (var node:FDLayoutNode in this.getAllNodes())
 		{
-			node = FDLayoutNode(lNodes[i]);
+			//node = FDLayoutNode(lNodes[i]);
 			node.move();
 		}
 	}
@@ -719,8 +720,7 @@ public /*abstract*/ class FDLayout extends Layout
 		for (i = 0; i < nodeA.surrounding.length; i++)
 		{
 			this.calcRepulsionForce(nodeA, FDLayoutNode(nodeA.surrounding[i]));
-		}		
-		
+		}
 	}
 	
 	/**

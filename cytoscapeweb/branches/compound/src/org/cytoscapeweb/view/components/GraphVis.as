@@ -349,12 +349,8 @@ package org.cytoscapeweb.view.components {
                 evt.currentTarget.removeEventListener(evt.type, arguments.callee);
 
                 for each (layout in _appliedLayouts) layout.operate();
-                
-				if (_layoutName == Layouts.COSE)
-				{	
-					updateAllCompoundBounds();
-				}
-				else if (_layoutName != Layouts.PRESET)
+				
+				if (_layoutName != Layouts.PRESET)
 				{
 					realignGraph();
 				}
@@ -371,6 +367,9 @@ package org.cytoscapeweb.view.components {
                                                   !_config.nodeLabelsVisible,
                                                   !_config.edgeLabelsVisible);
                 }
+				
+				// update all compound bounds after the operation
+				updateAllCompoundBounds();
             });
 
             return seq;

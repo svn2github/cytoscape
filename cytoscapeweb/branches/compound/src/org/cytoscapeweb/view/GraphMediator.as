@@ -251,6 +251,8 @@ package org.cytoscapeweb.view {
             if (updateNodes) {
                 if (updateAllProperties) {
                     vis.data.nodes.setProperties(Nodes.properties);
+					vis.data.group(Groups.COMPOUND_NODES).setProperties(
+						CompoundNodes.properties);
                 } else {
                     for each (var n:NodeSprite in graphProxy.graphData.nodes) {
                         n.visible = Nodes.visible(n);

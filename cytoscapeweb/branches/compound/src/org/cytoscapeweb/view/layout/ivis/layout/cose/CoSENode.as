@@ -196,7 +196,7 @@ public class CoSENode extends FDLayoutNode
 			}
 		}
 
-		this.updateBounds();
+		//this.updateBounds();
 	}
 		
 // -----------------------------------------------------------------------------

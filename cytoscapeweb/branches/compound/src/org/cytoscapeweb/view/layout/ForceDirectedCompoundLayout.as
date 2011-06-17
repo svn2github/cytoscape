@@ -4,11 +4,6 @@ package org.cytoscapeweb.view.layout
 	import flare.vis.data.NodeSprite;
 	import flare.vis.operator.layout.Layout;
 	
-	import flash.geom.Rectangle;
-	import flash.net.getClassByAlias;
-	import flash.utils.Timer;
-	import flash.utils.getTimer;
-	
 	import org.cytoscapeweb.util.Groups;
 	import org.cytoscapeweb.view.layout.ivis.layout.LEdge;
 	import org.cytoscapeweb.view.layout.ivis.layout.LGraph;
@@ -51,16 +46,8 @@ package org.cytoscapeweb.view.layout
 			// DEBUG: print initial values
 			//visualization.data.nodes.visit(this.updateNode);
 			
-			var timer:Timer = new Timer(1000, 0);
-
-			timer.start();
-			
-			trace("before layout:" + getTimer());
-			
 			// run layout
 			this._ivisLayout.runLayout();
-			
-			trace("after layout:" + getTimer());
 			
 			// update sprites
 			//visualization.data.nodes.visit(this.updateNode);
@@ -68,10 +55,6 @@ package org.cytoscapeweb.view.layout
 			{
 				updateNode(ns);
 			}
-			
-			trace("after position update:" + getTimer());
-			
-			timer.stop();
 		}
 		
 		protected function updateNode(ns:NodeSprite):void
@@ -233,6 +216,5 @@ package org.cytoscapeweb.view.layout
 			
 			//var bendPoints:List= edge.getBendpoints();
 		}
-		
 	}
 }

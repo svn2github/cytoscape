@@ -56,7 +56,7 @@ var options = {
         	// regular nodes
         	size: 40,
         	color: "#8a1b0b",
-        	
+        	image: "http://www.cs.bilkent.edu.tr/~ssumer/cw/cw-logo.png",
         	// compound nodes
         	/*
         	compoundPaddingLeft: 20,
@@ -68,6 +68,7 @@ var options = {
         	compoundLabelFontSize: 15,
         	compoundLabelVerticalAnchor: "bottom"
         	*/
+        	compoundImage: "http://www.cs.bilkent.edu.tr/~ivis/images/ivis-logo.png",
         	compoundPaddingLeft: 10,
         	compoundPaddingRight: 10,
         	compoundPaddingTop: 10,
@@ -108,7 +109,9 @@ window.onload = function()
 	vis.ready(initContextMenu);
 	
 	//createMenu();
-	options.network = createObjectData();
+	//options.network = createObjectData();
+	options.network = createGraphmlData();
+	//options.network = createRandomMesh(5);
 	vis.draw(options);
 };
 
@@ -119,52 +122,364 @@ window.onload = function()
 function createGraphmlData()
 {
 	var data = '<graphml xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd" xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
-					'<key id="label" for="node" attr.name="label" attr.type="string"/>' +
-					'<key id="label" for="edge" attr.name="label" attr.type="string"/>' + 
-					'<key id="weight" for="edge" attr.name="weight" attr.type="double"/>' + 
-					'<graph edgedefault="undirected">' +
-						'<node id="n2">' +
-							'<data key="label">n2</data>' +
-						'</node>' +
-						'<node id="n1">' +
-							'<data key="label">n1</data>' +
-							'<graph>' +
-								'<node id="n12">' +
-									'<data key="label">n12</data>' +
-								'</node>' +
-								'<node id="n11">' +
-									'<data key="label">n11</data>' +
-								'</node>' +
-								'<node id="n13">' +
-									'<data key="label">n13</data>' +
-									'<graph>' +
-										'<node id="n131">' +
-											'<data key="label">n131</data>' +
-										'</node>' +
-									'</graph>' +
-								'</node>' +
-								'<edge id="e12" target="n12" source="n11">' +
-									'<data key="label">e12</data>' +
-									'<data key="weight">1.2</data>' +
-								'</edge>' +
-							'</graph>' +
-						'</node>' +
-						'<node id="n3">' +
-							'<data key="label">n3</data>' +
-							'<graph/>' +
-						'</node>' + 
-						'<edge id="e1" target="n2" source="n1">' +
-							'<data key="label">e1</data>' +
-							'<data key="weight">1.1</data>' +
-						'</edge>' +
-						'<edge id="e2" target="n12" source="n2">' +
-							'<data key="label">e2</data>' +
-							'<data key="weight">1.6</data>' +							
-						'</edge>' +
-					'</graph>' +
-				'</graphml>';
+	'<key id="label" for="node" attr.name="label" attr.type="string"/>' +
+	'<key id="weight" for="node" attr.name="weight" attr.type="double"/>' +
+	'<key id="name" for="node" attr.name="name" attr.type="string"/>' +
+	'<key id="" for="node" attr.name="" attr.type="string"/>' +
+	'<key id="label" for="edge" attr.name="label" attr.type="string"/>' +
+	'<key id="weight" for="edge" attr.name="weight" attr.type="double"/>' +
+	'<graph edgedefault="undirected">' +
+	'<node id="n2">' +
+	'<data key="label">n2</data>' +
+	'</node>' +
+	'<node id="n3">' +
+	'<data key="label">n3</data>' +
+	'</node>' +
+	'<node id="n4">' +
+	'<data key="label">n4</data>' +
+	'</node>' +
+	'<node id="n16">' +
+	'<data key="label">n16</data>' +
+	'</node>' +
+	'<node id="n17">' +
+	'<data key="label">n17</data>' +
+	'</node>' +
+	'<node id="n18">' +
+	'<data key="label">n18</data>' +
+	'</node>' +
+	'<node id="n19">' +
+	'<data key="label">n19</data>' +
+	'</node>' +
+	'<node id="n5">' +
+	'<data key="label">n5</data>' +
+	'<data key=""></data>' +
+	'<graph edgedefault="undirected">' +
+	'<node id="n22">' +
+	'<data key="label">n22</data>' +
+	'</node>' +
+	'<node id="n21">' +
+	'<data key="label">n21</data>' +
+	'</node>' +
+	'<node id="n23">' +
+	'<data key="label">n23</data>' +
+	'</node>' +
+	'<edge target="n21" source="n23" id="e15">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'<edge target="n22" source="n23" id="e16">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'<edge target="n21" source="n22" id="e17">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'</graph>' +
+	'</node>' +
+	'<node id="n1">' +
+	'<data key="label">n1</data>' +
+	'<data key=""></data>' +
+	'<graph edgedefault="undirected">' +
+	'<node id="n20">' +
+	'<data key="label">n20</data>' +
+	'</node>' +
+	'<node id="n11">' +
+	'<data key="label">n11</data>' +
+	'</node>' +
+	'<node id="n12">' +
+	'<data key="label">n12</data>' +
+	'</node>' +
+	'<node id="n13">' +
+	'<data key="label">n13</data>' +
+	'<data key=""></data>' +
+	'<graph edgedefault="undirected">' +
+	'<node id="n131">' +
+	'<data key="label">n131</data>' +
+	'</node>' +
+	'</graph>' +
+	'</node>' +
+	'<edge target="n12" source="n11" id="e12">' +
+	'<data key="label">e12</data>' +
+	'<data key="weight">1.2</data>' +
+	'</edge>' +
+	'<edge target="n11" source="n20" id="e13">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'<edge target="n11" source="n13" id="e20">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'</graph>' +
+	'</node>' +
+	'<node id="n6">' +
+	'<data key="label">n6</data>' +
+	'<data key=""></data>' +
+	'<graph edgedefault="undirected">' +
+	'<node id="n10">' +
+	'<data key="label">n10</data>' +
+	'</node>' +
+	'<node id="n8">' +
+	'<data key="label">n8</data>' +
+	'</node>' +
+	'<node id="n7">' +
+	'<data key="label">n7</data>' +
+	'</node>' +
+	'<node id="n9">' +
+	'<data key="label">n9</data>' +
+	'<data key=""></data>' +
+	'<graph edgedefault="undirected">' +
+	'<node id="n14">' +
+	'<data key="label">n14</data>' +
+	'</node>' +
+	'<node id="n15">' +
+	'<data key="label">n15</data>' +
+	'</node>' +
+	'<edge target="n14" source="n15" id="e18">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'</graph>' +
+	'</node>' +
+	'<edge target="n10" source="n8" id="e5">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'<edge target="n10" source="n7" id="e6">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'</graph>' +
+	'</node>' +
+	'<edge target="n2" source="n1" id="e1">' +
+	'<data key="label">e1</data>' +
+	'<data key="weight">1.1</data>' +
+	'</edge>' +
+	'<edge target="n12" source="n2" id="e2">' +
+	'<data key="label">e2</data>' +
+	'<data key="weight">1.6</data>' +
+	'</edge>' +
+	'<edge target="n3" source="n4" id="e3">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'<edge target="n3" source="n5" id="e4">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'<edge target="n10" source="n3" id="e7">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'<edge target="n19" source="n18" id="e8">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'<edge target="n17" source="n19" id="e9">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'<edge target="n16" source="n17" id="e10">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'<edge target="n1" source="n16" id="e11">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'<edge target="n18" source="n17" id="e14">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'<edge target="n7" source="n15" id="e19">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'<edge target="n4" source="n2" id="e21">' +
+	'<data key="label"></data>' +
+	'</edge>' +
+	'</graph>' +
+	'</graphml>';
 	
 	return data;
+}
+
+function createXgmmlData()
+{
+	var data = '<graph label="Cytoscape Web" directed="0" Graphic="1" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cy="http://www.cytoscape.org" xmlns="http://www.cs.rpi.edu/XGMML">' +
+	'<att name="documentVersion" value="0.1"/>' +
+	'<att type="string" name="backgroundColor" value="#ffffff"/>' +
+	'<att type="real" name="GRAPH_VIEW_ZOOM" value="1"/>' +
+	'<att type="real" name="GRAPH_VIEW_CENTER_X" value="463.23749999999995"/>' +
+	'<att type="real" name="GRAPH_VIEW_CENTER_Y" value="368.59999999999997"/>' +
+	'<node id="n2" label="n2">' +
+	'<graphics x="304.75" y="303.3" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n3" label="n3">' +
+	'<graphics x="465.95" y="177.95" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n4" label="n4">' +
+	'<graphics x="355.75" y="239.6" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n16" label="n16">' +
+	'<graphics x="317.3" y="580.8" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n17" label="n17">' +
+	'<graphics x="414.85" y="614.45" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n18" label="n18">' +
+	'<graphics x="560.75" y="618.5" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n19" label="n19">' +
+	'<graphics x="475.7" y="549.8" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n5" label="n5">' +
+	'<graphics x="457.3" y="400.85" cy:nodeLabelFont="Arial-0-11" type="RECTANGLE" labelanchor="s" fill="#f5f5f5" outline="#666666" cy:nodeTransparency="0.8" width="1" w="128.25" h="125.2"/>' +
+	'<att>' +
+	'<graph>' +
+	'<node id="n22" label="n22">' +
+	'<graphics x="445.8" y="438.35" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n21" label="n21">' +
+	'<graphics x="418.3" y="363.1" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n23" label="n23">' +
+	'<graphics x="496.55" y="370.6" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<edge target="n21" source="n23" id="e15" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n22" source="n23" id="e16" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n21" source="n22" id="e17" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'</graph>' +
+	'</att>' +
+	'</node>' +
+	'<node id="n1" label="n1">' +
+	'<graphics x="158.25" y="429.1" cy:nodeLabelFont="Arial-0-11" type="RECTANGLE" labelanchor="s" fill="#f5f5f5" outline="#666666" cy:nodeTransparency="0.8" width="1" w="168.1" h="257.3"/>' +
+	'<att>' +
+	'<graph>' +
+	'<node id="n20" label="n20">' +
+	'<graphics x="99.2" y="434.7" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n11" label="n11">' +
+	'<graphics x="178.05" y="407.4" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n12" label="n12">' +
+	'<graphics x="217.3" y="325.45" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n13" label="n13">' +
+	'<graphics x="177.9" y="501.3" cy:nodeLabelFont="Arial-0-11" type="RECTANGLE" labelanchor="s" fill="#f5f5f5" outline="#666666" cy:nodeTransparency="0.8" width="1" w="53.95" h="50"/>' +
+	'<att>' +
+	'<graph>' +
+	'<node id="n131" label="n131">' +
+	'<graphics x="177.9" y="501.3" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'</graph>' +
+	'</att>' +
+	'</node>' +
+	'<edge target="n12" source="n11" id="e12" label="e12" directed="false">' +
+	'<att name="weight" type="real" value="1.2"/>' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n11" source="n20" id="e13" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n11" source="n13" id="e20" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'</graph>' +
+	'</att>' +
+	'</node>' +
+	'<node id="n6" label="n6">' +
+	'<graphics x="729.95" y="248.05" cy:nodeLabelFont="Arial-0-11" type="RECTANGLE" labelanchor="s" fill="#f5f5f5" outline="#666666" cy:nodeTransparency="0.8" width="1" w="203.55" h="333.85"/>' +
+	'<att>' +
+	'<graph>' +
+	'<node id="n10" label="n10">' +
+	'<graphics x="653" y="390.55" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n8" label="n8">' +
+	'<graphics x="733.45" y="369.8" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n7" label="n7">' +
+	'<graphics x="686.25" y="299.05" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n9" label="n9">' +
+	'<graphics x="771.2" y="157.3" cy:nodeLabelFont="Arial-0-11" type="RECTANGLE" labelanchor="s" fill="#f5f5f5" outline="#666666" cy:nodeTransparency="0.8" width="1" w="96" h="127.2"/>' +
+	'<att>' +
+	'<graph>' +
+	'<node id="n14" label="n14">' +
+	'<graphics x="794.45" y="118.7" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<node id="n15" label="n15">' +
+	'<graphics x="748.2" y="195.9" cy:nodeLabelFont="Arial-0-11" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.8" w="24" fill="#f5f5f5" outline="#666666" h="24" width="1"/>' +
+	'</node>' +
+	'<edge target="n14" source="n15" id="e18" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'</graph>' +
+	'</att>' +
+	'</node>' +
+	'<edge target="n10" source="n8" id="e5" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n10" source="n7" id="e6" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'</graph>' +
+	'</att>' +
+	'</node>' +
+	'<edge target="n2" source="n1" id="e1" label="e1" directed="false">' +
+	'<att name="weight" type="real" value="1.1"/>' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n12" source="n2" id="e2" label="e2" directed="false">' +
+	'<att name="weight" type="real" value="1.6"/>' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n3" source="n4" id="e3" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n3" source="n5" id="e4" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n10" source="n3" id="e7" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n19" source="n18" id="e8" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n17" source="n19" id="e9" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n16" source="n17" id="e10" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n1" source="n16" id="e11" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n18" source="n17" id="e14" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n7" source="n15" id="e19" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'<edge target="n4" source="n2" id="e21" label="" directed="false">' +
+	'<graphics cy:edgeLineType="SOLID" cy:targetArrow="0" cy:sourceArrowColor="#000000" fill="#999999" cy:targetArrowColor="#000000" cy:sourceArrow="0" width="1"/>' +
+	'</edge>' +
+	'</graph>';
+	
+	return data;
+}
+
+function readDataFromFile(filename)
+{
+	var input = fopen(getScriptPath(filename), 0); // open file for reading
+	var content;
+	
+	// if the file is successfully opened
+	if(input != -1)
+	{
+		// read all file content
+	    var length = flength(input);     
+	    content = fread(input, length);	
+	    fclose(input);
+	    
+	    alert("file opened!");
+	}
+	else
+	{
+		alert("wrong input!");
+	}
+	
+	return content;
 }
 
 /**
@@ -202,6 +517,70 @@ function createObjectData()
 	return data;
 }
 
+function createRandomMesh(size)
+{	
+	var graphData = new Object();
+	var data = new Object();
+	var nodes = new Array();
+	var edges = new Array();
+	
+	var dataSchema = {
+		nodes: [ { name: "label", type: "string" } ],       
+		edges: [ { name: "label", type: "string" },
+		         { name: "weight", type: "number" } ]
+	};
+	
+	var i, j;
+	
+	// create nodes
+	for (i = 0; i < size*size; i++)
+	{
+		nodes[i] = { id: "n" + i, label: "n" + i};
+	}
+	
+	j = 0;
+	var edge;
+	
+	// create edges
+	for (i = 0; i < size*size; i++)
+	{
+		if ((i+1) % size != 0)
+		{
+			edge = new Object();
+			
+			edge.id = "e" + i;
+			edge.label = "e" + i;
+			edge.weight = 1;
+			edge.source = nodes[i].id;
+			edge.target = nodes[i+1].id;
+			
+			edges[j] = edge;
+			j++;
+		}
+	}
+	
+	for (i = 0; i < size*(size-1); i++)
+	{
+		edge = new Object();
+		
+		edge.id = "e" + i;
+		edge.label = "e" + i;
+		edge.weight = 1;
+		edge.source = nodes[i].id;
+		edge.target = nodes[i + size].id;
+		
+		edges[j] = edge;
+		j++;
+	}
+	
+	graphData.nodes = nodes;
+	graphData.edges = edges;
+	
+	data.dataSchema = dataSchema;
+	data.data = graphData;
+	
+	return data;
+}
 
 /*
 function createObjectData()
@@ -300,27 +679,37 @@ function initContextMenu()
 		var items = vis.selected();
 		if (items.length > 0) { vis.removeElements(items, true); }
 	});
-	
-	/*
-	vis.addContextMenuItem("Import", function(evt) {
-		//createOpen();
-	});
-	*/
-	
 }
 
 function initToolbar()
 {
-	/*
 	$("#load-file").click(function(evt) {
-		//new org.cytoscapeweb.demo.Importer("file_importer", null);
-		createOpen();
+		//var network = readDataFromFile("C:\\temp\\test.xml");
+        options.network = network;
+        vis.draw(options);
     });
-    */
+    
 	
-	$("#layout").click(function(evt) {
+	$("#cose").click(function(evt) {
         vis.layout("CoSE");
     });
+	
+	$("#fd").click(function(evt) {
+        vis.layout("ForceDirected");
+    });
+	
+	$("#circle").click(function(evt) {
+        vis.layout("Circle");
+    });
+	
+	$("#radial").click(function(evt) {
+        vis.layout("Radial");
+    });
+	
+	$("#tree").click(function(evt) {
+        vis.layout("Tree");
+    });
+	
 	
 	$("#in-object-model").click(function(evt) {
         var network = createObjectData();
@@ -331,6 +720,20 @@ function initToolbar()
 	$("#in-graphml").click(function(evt) {
         var network = createGraphmlData();
         options.network = network;
+        vis.draw(options);
+    });
+	
+	$("#in-xgmml").click(function(evt) {
+        var network = createXgmmlData();
+        options.network = network;
+        vis.draw(options);
+    });
+	
+	$("#create-mesh").click(function(evt) {
+        var size = document.getElementById("mesh-size").value;
+		var network = createRandomMesh(parseInt(size));
+        options.network = network;
+        options.layout = null;
         vis.draw(options);
     });
 	
@@ -359,92 +762,4 @@ function initToolbar()
     });
 }
 
-// TODO read from input file... 
-
-function createOpen(){
-    var opts = {
-            //swfPath: path("Importer"),
-            //flashInstallerPath: path("playerProductInstall"),
-            data: function(data){
-    			var network = data.string;
-				var new_graph_options = {
-					network: network,
-				    name: data.metadata.name,
-				    description: "",
-				    visualStyle: options.visualStyle,
-				    //visualStyle: GRAPH_STYLES["Default"],
-				    nodeLabelsVisible: true
-				};
-
-				openGraph(new_graph_options);
-			},
-			
-            ready: function(){
-                $("#open_file").trigger("available");
-            },
-            
-            typeFilter: function(){
-                return "*.graphml;*.xgmml;*.xml;*.sif";
-            },
-            binary: function(metadata){
-            	return false; // to return data.string and not data.bytes
-            	// TODO: if CYS support, check metadata.name.indexOf(".cys")
-            }
-        };
-        
-    new org.cytoscapeweb.demo.Importer("file_importer", opts);
-    //new org.cytoscapeweb.demo.Importer("open-file", opts);
-}
-
-function openGraph(opt)
-{
-	return;
-}
-
-function createMenu(){
-    $("#menu").children().remove(); // remove old menu if needed (we don't want two after a redraw)
-    $("#menu").append(      '<ul>\
-                                <li id="save_file"><label>Save file</label></li>\
-                                <li id="open_file"><label>Open file</label><span id="file_importer"></span></li>\
-                                \
-                                <li><label>Style</label>\
-                                    <ul>\
-                                        <li id="merge_edges" class="ui-menu-checkable"><label>Merge edges</label></li>\
-                                        <li id="show_node_labels" class="ui-menu-checkable"><label>Show node labels</label></li>\
-                                        <li id="show_edge_labels" class="ui-menu-checkable"><label>Show edge labels</label></li>\
-                                        <li>\
-                                            <label>Visualisation</label>\
-                                            <ul id="visual_style" class="ui-menu-one-checkable">\
-                                            </ul>\
-                                        </li>\
-                                    </ul>\
-                                </li>\
-                                \
-                                <li><label>Layout</label>\
-                                    <ul>\
-                                        <li id="recalculate_layout"><label>Recalculate layout</label></li>\
-                                        <li>\
-                                            <label>Mechanism</label>\
-                                            <ul id="layout_style" class="ui-menu-one-checkable">\
-                                            </ul>\
-                                        </li>\
-                                        <li id="layout_settings"><label>Settings...</label></li>\
-                                    </ul>\
-                                </li>\
-                            </ul>\
-                            ');
-
-    $("#menu").menu({
-    	menuItemMaxWidth: 180,
-    });
-    
-    /*                        
-    $("#save_file").click(function(){
-        show_save_menu();
-    });
-    */
-                            
-    // menu should not span
-    var last_top_lvl_item = $("#menu > ul > li:last");
-    $("#menu").css( "min-width", last_top_lvl_item.offset().left + last_top_lvl_item.outerWidth(true) );
-}
+// TODO read from input file...
