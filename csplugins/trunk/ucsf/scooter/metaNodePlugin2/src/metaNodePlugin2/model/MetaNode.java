@@ -78,6 +78,7 @@ public class MetaNode {
 	public static final String Y_HINT_ATTR = "__metanodeHintY";
 	public static final String CHILDREN_ATTR = "NumChildren";
 	public static final String DESCENDENTS_ATTR = "NumDescendents";
+	public static final String ISMETA_EDGE_ATTR = "__isMetaEdge";
 
 	private CyLogger logger = null;
 	private CyGroup metaGroup = null;
@@ -99,15 +100,16 @@ public class MetaNode {
 	 * Main constructor -- should this extend CyGroup????
 	 *
 	 * @param group the group to wrap the MetaNode around
+	 * @param ignoreMetaEdges if true, be careful with marked metaEdges
 	 */
-	protected MetaNode(CyGroup group) {
+	protected MetaNode(CyGroup group, boolean ignoreMetaEdges) {
 		metaGroup = group;
 		logger = CyLogger.getLogger(MetaNode.class);
 
-		logger.debug("Creating new metanode: "+group.getGroupNode());
+		// logger.debug("Creating new metanode: "+group.getGroupNode()+", ignoreMetaEdges = "+ignoreMetaEdges);
 
 		// This method does most of the work.
-		updateMetaEdges();
+		updateMetaEdges(ignoreMetaEdges);
 
 	}
 
@@ -123,12 +125,12 @@ public class MetaNode {
 	 * @param node the CyNode that was added
 	 */
 	public void nodeAdded(CyNode node) {
-		logger.debug("node added "+metaGroup);
+		// logger.debug("node added "+metaGroup);
 		// Recreate our meta-edges.  There might be more efficient ways of doing this
 		// than recreating everything, but the performance of updateMetaEdges isn't too
 		// bad, and the complexity of managing the state necessary to update meta-edges
 		// on a more granular basis isn't warranted.
-		updateMetaEdges();
+		updateMetaEdges(false);
 
 		// Now, if this node is a child of a different metaNode, we need to create
 		// metaEdges for that metaNode and this node.
@@ -148,9 +150,9 @@ public class MetaNode {
 	 * @param node the CyNode that was removed
 	 */
 	public void nodeRemoved(CyNode node) {
-		logger.debug("node removed "+metaGroup);
+		// logger.debug("node removed "+metaGroup);
 		// First step, we need to remove any new meta-edges
-		updateMetaEdges();
+		updateMetaEdges(false);
 		// Now, remove our member edge (if there is one)
 		if (membershipEdges != null && membershipEdges.containsKey(node))
 			membershipEdges.remove(node);
@@ -165,7 +167,7 @@ public class MetaNode {
 	 * @param view the view to use
 	 */
 	public void recollapse(CyNetworkView view) {
-		logger.debug("recollapse "+metaGroup);
+		// logger.debug("recollapse "+metaGroup);
 		if (view == null)
 			view = Cytoscape.getNetworkView(metaGroup.getNetwork().getIdentifier());
 		else
@@ -182,7 +184,7 @@ public class MetaNode {
 	 * @param updateNetwork if 'true', actually update the network
 	 */
 	public void collapse(CyNetworkView view) {
-		logger.debug("collapse "+metaGroup+": isCollapsed = "+isCollapsed()+" isHidden = "+isHidden()+" state = "+metaGroup.getState());
+		// logger.debug("collapse "+metaGroup+": isCollapsed = "+isCollapsed()+" isHidden = "+isHidden()+" state = "+metaGroup.getState());
 		if (isCollapsed())
 			return;
 
@@ -214,7 +216,7 @@ public class MetaNode {
 	 * @param update update the display?
 	 */
 	public void expand(CyNetworkView view) {
-		logger.debug("expand "+metaGroup+": isCollapsed = "+isCollapsed()+" isHidden = "+isHidden()+" state = "+metaGroup.getState());
+		// logger.debug("expand "+metaGroup+": isCollapsed = "+isCollapsed()+" isHidden = "+isHidden()+" state = "+metaGroup.getState());
 		if (!isCollapsed())
 			return;
 
@@ -280,8 +282,11 @@ public class MetaNode {
 	 * @return the created metaEdge
 	 */
 	public CyEdge createMetaEdge(String edgeName, CyNode source, CyNode target) {
-		logger.debug("Creating metaedge: meta-"+edgeName+" between "+source+" and "+target);
+		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+		// logger.debug("Creating metaedge: meta-"+edgeName+" between "+source+" and "+target);
 		CyEdge newEdge = createEdge("meta-", edgeName, source, target);
+		edgeAttributes.setAttribute(newEdge.getIdentifier(), ISMETA_EDGE_ATTR, Boolean.TRUE);
+		edgeAttributes.setUserVisible(ISMETA_EDGE_ATTR, false);
 		metaEdges.put(newEdge,newEdge);
 		return newEdge;
 	}
@@ -329,7 +334,7 @@ public class MetaNode {
  	 *
  	 * @return meta-edge list
  	 */
-	public Collection getMetaEdges() {
+	public Collection<CyEdge> getMetaEdges() {
 		return metaEdges.values();
 	}
 
@@ -502,7 +507,7 @@ public class MetaNode {
 	 *		if the partner is in a group:
 	 *			add ourselves to the group's meta edge list
  	 */
-	private void updateMetaEdges() {
+	private void updateMetaEdges(boolean ignoreMetaEdges) {
 		// Initialize our meta-edge map
 		metaEdges = new HashMap<CyEdge, CyEdge>();
 
@@ -514,8 +519,19 @@ public class MetaNode {
 			CyNode node = getPartner(edge);
 			// logger.debug("Outer edge = "+edge.getIdentifier());
 
-			// Create the meta-edge to the external node
-			CyEdge metaEdge = createMetaEdge(edge.getIdentifier(), metaGroup.getGroupNode(), node);
+			if (ignoreMetaEdges && isMeta(edge)) {
+				// logger.debug("...ignoring");
+				addMetaEdge(edge);
+				continue;
+			}
+
+			// Create the meta-edge to the external node, but maintain the directionality of the
+			// original edge
+			CyEdge metaEdge = null;
+			if (isIncoming(edge))
+				metaEdge = createMetaEdge(edge.getIdentifier(), node, metaGroup.getGroupNode());
+			else
+				metaEdge = createMetaEdge(edge.getIdentifier(), metaGroup.getGroupNode(), node);
 
 			MetaNode metaPartner = MetaNodeManager.getMetaNode(node);
 			if (metaPartner != null && metaPartner.metaGroup.getNetwork().equals(metaGroup.getNetwork())) { 
@@ -616,11 +632,26 @@ public class MetaNode {
 			  MetaNode partner = MetaNodeManager.getMetaNode(partnerGroup.getGroupNode());
 				if (partner != null) {
 					// Create a meta-meta edge
-					CyEdge metaMetaEdge = createMetaEdge(connectingEdge.getIdentifier(), metaGroup.getGroupNode(), 
-					                                     partnerGroup.getGroupNode());
+					CyEdge metaMetaEdge = null;
+					if (isIncoming(connectingEdge))
+						metaMetaEdge = createMetaEdge(connectingEdge.getIdentifier(), partnerGroup.getGroupNode(),
+					                                metaGroup.getGroupNode());
+					else
+						metaMetaEdge = createMetaEdge(connectingEdge.getIdentifier(), metaGroup.getGroupNode(), 
+					                                partnerGroup.getGroupNode());
 					partner.addMetaEdge(metaMetaEdge);
 					// Add our meta-edge to the partner group
 					partner.addMetaEdge(metaEdge);
+
+					// Now, get our partner's metaEdges and if any of them point to our children,
+					// add them to our outer edges
+					for (CyEdge outerEdge: partner.getMetaEdges()) {
+						// logger.debug("Looking at "+partnerNode+" edge "+outerEdge.getIdentifier());
+						if (isConnectingEdge(outerEdge)) {
+							// logger.debug("Adding edge "+outerEdge.getIdentifier()+" to our outer edge map");
+							metaGroup.addOuterEdge(outerEdge);
+						}
+					}
 				}
 			}
 		}
@@ -702,6 +733,34 @@ public class MetaNode {
 		if (source == metaGroup.getGroupNode() || metaGroup.getNodes().contains(source))
 			return source;
 		return target;
+	}
+
+	/**
+ 	 * Test the direction of the node
+ 	 *
+ 	 * @param edge the edge to test the direction of
+ 	 * @return true if the edge is directed towards us
+ 	 */
+	private boolean isIncoming(CyEdge edge) {
+		CyNode source = (CyNode)edge.getSource();
+		CyNode target = (CyNode)edge.getTarget();
+		if (source == metaGroup.getGroupNode() || metaGroup.getNodes().contains(source))
+			return false;
+		return true;
+	}
+
+	/**
+ 	 * See if this edge is a metaEdge
+ 	 *
+ 	 * @param edge the edge in question
+ 	 * @return true if this is a metaedge
+ 	 */
+	private boolean isMeta(CyEdge edge) {
+		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+		Boolean b = edgeAttributes.getBooleanAttribute(edge.getIdentifier(), ISMETA_EDGE_ATTR);
+		if (b != null && b.booleanValue())
+			return true;
+		return false;
 	}
 
 }

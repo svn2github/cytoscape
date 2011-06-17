@@ -91,7 +91,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	                                      GraphViewChangeListener {
 
 	public static final String viewerName = "metaNode";
-	public static final double VERSION = 1.5;
+	public static final double VERSION = 1.6;
 	public CyLogger logger = null;
 	public enum Command {
 		NONE("none"),

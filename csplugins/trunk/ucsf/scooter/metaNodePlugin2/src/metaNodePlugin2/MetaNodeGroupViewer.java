@@ -145,7 +145,7 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	public void groupCreated(CyGroup group) { 
 		// logger.debug("groupCreated("+group+")");
 		if (MetaNodeManager.getMetaNode(group) == null) {
-			MetaNode newNode = MetaNodeManager.createMetaNode(group);
+			MetaNode newNode = MetaNodeManager.createMetaNode(group, false);
 		}
 		// Update the attributes of the group node
 		logger.info("updating group panel for new group: "+group);
@@ -172,7 +172,7 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 				initializeGroups(myview);
 				return;
 			}
-			MetaNode newNode = MetaNodeManager.createMetaNode(group);
+			MetaNode newNode = MetaNodeManager.createMetaNode(group, true);
 
 			// We need to be a little tricky if we are restoring a collapsed
 			// metaNode from XGMML.  We essentially need to "recollapse" it,
@@ -326,9 +326,12 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 		if (metaGroups != null) {
 			for (CyGroup group: metaGroups) {
 				// Create the metanode
-				MetaNode newNode = MetaNodeManager.createMetaNode(group);
+				MetaNode newNode = MetaNodeManager.createMetaNode(group, true);
 				if (group.getState() == MetaNodePlugin2.COLLAPSED) {
 					newNode.recollapse(view);
+				} else {
+					CyNetwork network = view.getNetwork();
+					network.hideNode(group.getGroupNode());
 				}
 			}
 		}

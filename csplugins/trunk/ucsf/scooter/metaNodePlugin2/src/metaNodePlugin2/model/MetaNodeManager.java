@@ -86,8 +86,26 @@ public class MetaNodeManager {
 		return null;
 	}
 
+	/**
+ 	 * Create a new metanode
+ 	 *
+ 	 * @param metaGroup the CyGroup that we want to turn into a metanode
+ 	 */
 	static public MetaNode createMetaNode(CyGroup metaGroup) {
-		MetaNode mn = new MetaNode(metaGroup);
+		return createMetaNode(metaGroup, false);
+	}
+
+	/**
+ 	 * Create a new metanode.  This version is used when we're called
+ 	 * from the XGMML reader so that we can carefully deal with saved
+ 	 * meta-edges.
+ 	 *
+ 	 * @param metaGroup the CyGroup that we want to turn into a metanode
+ 	 * @param ignoreMetaEdges if true, be careful with metaedges that we've already saved
+ 	 */
+
+	static public MetaNode createMetaNode(CyGroup metaGroup, boolean ignoreMetaEdges) {
+		MetaNode mn = new MetaNode(metaGroup, ignoreMetaEdges);
 		metaMap.put(metaGroup.getGroupNode(), mn);
 		mn.setUseNestedNetworks(useNestedNetworksDefault);
 		mn.setHideMetaNode(hideMetanodeDefault);
