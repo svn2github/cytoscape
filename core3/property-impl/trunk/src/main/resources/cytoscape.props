@@ -19,5 +19,5 @@ cytoscape.version.number=3.0.0-beta1
 exportTextAsShape=true
 vizmapper.cntMapperUpperLimit=2000
 undo.limit=10
-defaultPluginDownloadUrl=http://cytoscape.org/plugins/plugins.xml
+defaultPluginDownloadUrl=http://chianti.ucsd.edu/cyto_web/plugins3/plugins3.xml
 showQuickStartAtStartup= false

@@ -359,7 +359,7 @@
 
 	<category name="plugins">
 		<dataSource name="Cytoscape"
-			xlink:href="http://cytoscape.org/plugins/plugins.xml"/>
+			xlink:href="http://chianti.ucsd.edu/cyto_web/plugins3/plugins3.xml"/>
 
 		<dataSource name="Test"
 			xlink:href="http://db.systemsbiology.net/cytoscape/skillcoyne/plugins.xml"/>
