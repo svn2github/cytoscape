@@ -75,13 +75,15 @@ import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
 import org.cytoscape.view.presentation.property.values.LineType;
 import org.cytoscape.view.presentation.property.values.NodeShape;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Ding implementation of node presentation.
  * 
  */
 public class DNodeView implements NodeView, Label {
-
+	
 	// Affects size of the nested network image relative to the node size:
 	private static final float NESTED_IMAGE_SCALE_FACTOR = 0.6f;
 
@@ -154,12 +156,6 @@ public class DNodeView implements NodeView, Label {
 	float m_hiddenYMin = Float.MIN_VALUE;
 	float m_hiddenXMax = Float.MAX_VALUE;
 	float m_hiddenYMax = Float.MAX_VALUE;
-
-	// // Node shapes
-	// List<Shape> m_graphicShapes;
-	//
-	// // Node Colors
-	// List<Paint> m_graphicPaints;
 
 	// Tool Tip text
 	private String m_toolTipText;
@@ -262,27 +258,19 @@ public class DNodeView implements NodeView, Label {
 		return m_inx;
 	}
 
+	
 	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param otherNodeView
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
+	 * Provides list of DING edge views.
 	 */
 	@Override
-	public List<EdgeView> getEdgeViewsList(NodeView otherNodeView) {
+	public List<EdgeView> getEdgeViewsList(final NodeView otherNodeView) {
 		synchronized (graphView.m_lock) {
 			return graphView.getEdgeViewsList(this.getNodeViewModel().getModel(), otherNodeView.getNodeViewModel()
 					.getModel());
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
+	
 	@Override
 	public int getShape() {
 		synchronized (graphView.m_lock) {
@@ -353,11 +341,7 @@ public class DNodeView implements NodeView, Label {
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
+	
 	@Override
 	public Paint getUnselectedPaint() {
 		return m_unselectedPaint;
@@ -866,7 +850,6 @@ public class DNodeView implements NodeView, Label {
 		else
 			unselect();
 
-		// TODO: Is this necessary???
 		return true;
 	}
 
@@ -875,12 +858,7 @@ public class DNodeView implements NodeView, Label {
 		return graphView.isHidden(this);
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param shape
-	 *            DOCUMENT ME!
-	 */
+	
 	@Override
 	public void setShape(final NodeShape shape) {
 		synchronized (graphView.m_lock) {
@@ -1190,128 +1168,6 @@ public class DNodeView implements NodeView, Label {
 		}
 	};
 
-	// /**
-	// * DOCUMENT ME!
-	// *
-	// * @param position
-	// * DOCUMENT ME!
-	// */
-	// public void setTextAnchor(int position) {
-	// synchronized (graphView.m_lock) {
-	// graphView.m_nodeDetails.overrideLabelTextAnchor(m_inx, 0, position);
-	// graphView.m_contentChanged = true;
-	// }
-	// }
-	//
-	// /**
-	// * DOCUMENT ME!
-	// *
-	// * @return DOCUMENT ME!
-	// */
-	// public int getTextAnchor() {
-	// synchronized (graphView.m_lock) {
-	// return DNodeDetails.convertND2G(graphView.m_nodeDetails
-	// .labelTextAnchor(m_inx, 0));
-	// }
-	// }
-	//
-	// /**
-	// * DOCUMENT ME!
-	// *
-	// * @param justify
-	// * DOCUMENT ME!
-	// */
-	// public void setJustify(int justify) {
-	// synchronized (graphView.m_lock) {
-	// graphView.m_nodeDetails.overrideLabelJustify(m_inx, 0, justify);
-	// graphView.m_contentChanged = true;
-	// }
-	// }
-	//
-	// /**
-	// * DOCUMENT ME!
-	// *
-	// * @return DOCUMENT ME!
-	// */
-	// public int getJustify() {
-	// synchronized (graphView.m_lock) {
-	// return DNodeDetails.convertND2G(graphView.m_nodeDetails.labelJustify(
-	// m_inx, 0));
-	// }
-	// }
-	//
-	// /**
-	// * DOCUMENT ME!
-	// *
-	// * @param x
-	// * DOCUMENT ME!
-	// */
-	// public void setLabelOffsetX(double x) {
-	// synchronized (graphView.m_lock) {
-	// graphView.m_nodeDetails.overrideLabelOffsetVectorX(m_inx, 0, x);
-	// graphView.m_contentChanged = true;
-	// }
-	// }
-	//
-	// /**
-	// * DOCUMENT ME!
-	// *
-	// * @return DOCUMENT ME!
-	// */
-	// public double getLabelOffsetX() {
-	// synchronized (graphView.m_lock) {
-	// return graphView.m_nodeDetails.labelOffsetVectorX(m_inx, 0);
-	// }
-	// }
-	//
-	// /**
-	// * DOCUMENT ME!
-	// *
-	// * @param y
-	// * DOCUMENT ME!
-	// */
-	// public void setLabelOffsetY(double y) {
-	// synchronized (graphView.m_lock) {
-	// graphView.m_nodeDetails.overrideLabelOffsetVectorY(m_inx, 0, y);
-	// graphView.m_contentChanged = true;
-	// }
-	// }
-	//
-	// /**
-	// * DOCUMENT ME!
-	// *
-	// * @return DOCUMENT ME!
-	// */
-	// public double getLabelOffsetY() {
-	// synchronized (graphView.m_lock) {
-	// return graphView.m_nodeDetails.labelOffsetVectorY(m_inx, 0);
-	// }
-	// }
-	//
-	// /**
-	// * DOCUMENT ME!
-	// *
-	// * @param position
-	// * DOCUMENT ME!
-	// */
-	// public void setNodeLabelAnchor(int position) {
-	// synchronized (graphView.m_lock) {
-	// graphView.m_nodeDetails.overrideLabelNodeAnchor(m_inx, 0, position);
-	// graphView.m_contentChanged = true;
-	// }
-	// }
-	//
-	// /**
-	// * DOCUMENT ME!
-	// *
-	// * @return DOCUMENT ME!
-	// */
-	// public int getNodeLabelAnchor() {
-	// synchronized (graphView.m_lock) {
-	// return DNodeDetails.convertND2G(graphView.m_nodeDetails
-	// .labelNodeAnchor(m_inx, 0));
-	// }
-	// }
 
 	public double getLabelWidth() {
 		synchronized (graphView.m_lock) {
@@ -1434,9 +1290,9 @@ public class DNodeView implements NodeView, Label {
 
 	@Override
 	public void setVisualPropertyValue(final VisualProperty<?> vpOriginal, final Object value) {
-
+		
 		final VisualProperty<?> vp;
-		VisualLexiconNode treeNode = lexicon.getVisualLexiconNode(vpOriginal);
+		final VisualLexiconNode treeNode = lexicon.getVisualLexiconNode(vpOriginal);
 		if (treeNode == null)
 			return;
 
@@ -1458,9 +1314,8 @@ public class DNodeView implements NodeView, Label {
 		if (treeNode.isDepend()) {
 			// Do not use this. Parent will be applied.
 			return;
-		} else {
+		} else
 			vp = vpOriginal;
-		}
 
 		if (vp == DVisualLexicon.NODE_SHAPE) {
 			setShape(((NodeShape) value));
@@ -1516,9 +1371,6 @@ public class DNodeView implements NodeView, Label {
 		} else if (vp instanceof CustomGraphicsVisualProperty) {
 			applyCustomGraphics(vp, (CyCustomGraphics<CustomGraphic>) value);
 		}
-		// } else if(DVisualLexicon.getGraphicsPositionVP().contains(vp)) {
-		// applyCustomGraphicsPosition(vp, (ObjectPosition) value);
-		// }
 	}
 
 	private void applyCustomGraphics(final VisualProperty<?> vp, final CyCustomGraphics<CustomGraphic> customGraphics) {
