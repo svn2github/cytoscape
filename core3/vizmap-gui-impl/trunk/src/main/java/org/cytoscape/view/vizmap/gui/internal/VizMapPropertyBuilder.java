@@ -208,15 +208,15 @@ public class VizMapPropertyBuilder {
 
 			logger.debug("==========>>>>>> Setting Continuous:" + vpEditor);
 			
-			final VizMapperProperty<String, String, VisualMappingFunction<K, V>> graphicalView = 
-				new VizMapperProperty<String, String, VisualMappingFunction<K, V>>(CellType.CONTINUOUS, AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW, String.class);
+			final VizMapperProperty<String, VisualMappingFunction, VisualMappingFunction<K, V>> graphicalView = 
+				new VizMapperProperty<String, VisualMappingFunction, VisualMappingFunction<K, V>>(CellType.CONTINUOUS, AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW, visualMapping.getClass());
 			graphicalView.setValue(visualMapping);
 			graphicalView.setDisplayName(AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW);
 			graphicalView.setParentProperty(topProperty);
 			topProperty.addSubProperty(graphicalView);
 
 			final TableCellRenderer continuousRenderer = vpEditor.getContinuousTableCellRenderer();
-			
+			logger.debug("@@@@@@@@@@@@@ Continuous renderer:" + continuousRenderer);
 			//FIXME
 			final PropertySheetTable table = propertySheetPanel.getTable();
 			final PropertyRendererRegistry rendReg = (PropertyRendererRegistry) table.getRendererFactory();

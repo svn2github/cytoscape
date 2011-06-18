@@ -30,7 +30,6 @@ import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.internal.event.CellType;
 import org.cytoscape.view.vizmap.gui.internal.theme.ColorManager;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
-import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +46,7 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
  */
 public class VizMapPropertySheetBuilder {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(VizMapPropertySheetBuilder.class);
+	private static final Logger logger = LoggerFactory.getLogger(VizMapPropertySheetBuilder.class);
 
 
 	private PropertySheetPanel propertySheetPanel;
@@ -90,9 +88,7 @@ public class VizMapPropertySheetBuilder {
 		this.editorManager = editorManager;
 
 		propertyMap = new HashMap<VisualStyle, List<Property>>();
-
-		vizMapPropertyBuilder = new VizMapPropertyBuilder(cyNetworkManager,
-				editorManager, tableMgr);
+		vizMapPropertyBuilder = new VizMapPropertyBuilder(cyNetworkManager, editorManager, tableMgr);
 	}
 
 
@@ -108,18 +104,13 @@ public class VizMapPropertySheetBuilder {
 		// Remove all.
 		for (Property item : propertySheetPanel.getProperties())
 			propertySheetPanel.removeProperty(item);
-
-		/*
-		 * Add properties to the property sheet.
-		 */
+		
 		final List<Property> propRecord = getPropertyListFromVisualStyle(style);
 
 		// Save it for later use.
 		propertyMap.put(style, propRecord);
 
-		/*
-		 * Finally, build unused list
-		 */
+		// Create unused prop section.
 		setUnused(propRecord, style);
 	}
 
@@ -337,44 +328,18 @@ public class VizMapPropertySheetBuilder {
 	public void updateTableView() {
 		logger.debug("Table update called:");
 		final PropertySheetTable table = propertySheetPanel.getTable();
-		VizMapperProperty<?, ?, ?> shownProp = null;
 		final DefaultTableCellRenderer empRenderer = new DefaultTableCellRenderer();
 
 		// Number of rows shown now.
 		int rowCount = table.getRowCount();
 
 		for (int i = 0; i < rowCount; i++) {
-			shownProp = (VizMapperProperty<?, ?, ?>) ((Item) table.getValueAt(i, 0)).getProperty();
+			
+			final VizMapperProperty<?, ?, ?> shownProp = (VizMapperProperty<?, ?, ?>) ((Item) table.getValueAt(i, 0)).getProperty();
 			if(shownProp == null)
 				continue;
-			
-//			if ((shownProp != null)) {
-////				
-////				 if(shownProp.getParentProperty() != null &&
-////						 shownProp.getParentProperty().getDisplayName().equals()) {
-////				 // This is label position cell. Need laeger cell.
-////				 table.setRowHeight(i, 50);
-//			} else if ((shownProp != null)
-			if(shownProp.getCellType().equals(CellType.CONTINUOUS)) {
-				
-				logger.debug("Continuous found: " + shownProp.getDisplayName());
+			if(shownProp.getCellType().equals(CellType.CONTINUOUS)) {				
 				table.setRowHeight(i, 80);
-
-
-					// FIXME!!
-
-//					 ContinuousMapping<?> mapping = (ContinuousMapping<?>)
-//					 type;
-//					
-//					
-//					 int wi = table.getCellRect(0, 1, true).width;
-//					 final TableCellRenderer cRenderer =
-//					 editorManager.getVisualPropertyEditor(vp)
-//					 .getContinuousCellRenderer((VisualProperty) type,
-//					 wi, 70);
-//					 rendReg.registerRenderer(shownProp, cRenderer);
-
-				
 			} else if ((shownProp.getCategory() != null)
 					&& shownProp.getCategory().equals(
 							AbstractVizMapperPanel.CATEGORY_UNUSED)) {
@@ -405,7 +370,6 @@ public class VizMapPropertySheetBuilder {
 				if (item.isVisible() == false) {
 					item.toggle();
 				}
-
 				return;
 			}
 		}

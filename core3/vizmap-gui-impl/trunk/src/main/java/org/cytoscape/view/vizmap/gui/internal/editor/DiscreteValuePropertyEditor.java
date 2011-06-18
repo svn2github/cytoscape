@@ -28,10 +28,9 @@ public class DiscreteValuePropertyEditor<T> extends BasicVisualPropertyEditor<T>
 
 		discreteTableCellRenderer = REG.getRenderer(type);
 		
-
 		CyComboBoxPropertyEditor cbe = (CyComboBoxPropertyEditor) propertyEditor;
 		cbe.setAvailableValues(values.toArray());
-		continuousEditor = new C2DEditor<T>(manager, appManager, selectedManager, editorManager, vmm);
-		continuousTableCellRenderer = new ContinuousMappingCellRenderer((AbstractContinuousMappingEditor<?, ?>) continuousEditor);
+		this.continuousEditor = new C2DEditor<T>(manager, appManager, selectedManager, editorManager, vmm);
+		this.continuousTableCellRenderer = new ContinuousMappingCellRenderer((AbstractContinuousMappingEditor<?, ?>) continuousEditor);
 	}
 }

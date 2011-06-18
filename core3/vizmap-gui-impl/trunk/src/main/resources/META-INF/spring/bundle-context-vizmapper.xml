@@ -132,7 +132,7 @@
 		<constructor-arg ref="stringClass" />
 	</bean>
 
-	<!-- VP Editors -->
+	<!-- Visual Property Editors -->
 	<bean id="colorPropertyEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.ColorVisualPropertyEditor">
 		<constructor-arg ref="paintClass" />

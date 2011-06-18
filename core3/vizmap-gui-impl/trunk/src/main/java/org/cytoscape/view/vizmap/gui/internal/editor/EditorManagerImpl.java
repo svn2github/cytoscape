@@ -45,7 +45,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
-import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -158,14 +157,7 @@ public class EditorManagerImpl implements EditorManager {
 		this.valueEditors.put(ve.getType(), ve);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#
-	 * removeEditorDisplayer(
-	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorDisplayer,
-	 * java.util.Map)
-	 */
+	
 	public void removeValueEditor(ValueEditor<?> valueEditor, @SuppressWarnings("rawtypes") Map properties) {
 		logger.debug("************* Removing Value Editor ****************");
 		valueEditors.remove(valueEditor.getType());
@@ -251,42 +243,7 @@ public class EditorManagerImpl implements EditorManager {
 		return ret;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#
-	 * getContinuousCellEditor
-	 * (org.cytoscape.application.swing.viewmodel.VisualProperty)
-	 */
-	public PropertyEditor getContinuousCellEditor(VisualProperty type) {
-		return null;
-		// return findEditor(type,
-		// EditorDisplayer.MappingType.VisualPropertyEditor)
-		// .getVisualPropertyEditor();
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * 
-	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#
-	 * getContinuousCellRenderer
-	 * (org.cytoscape.application.swing.viewmodel.VisualProperty, int, int)
-	 */
-	public TableCellRenderer getContinuousCellRenderer(VisualProperty type, int w, int h) {
-		return null;
-		// return findEditor(type,
-		// EditorDisplayer.MappingType.VisualPropertyEditor)
-		// .getCellRenderer(type, w, h);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#
-	 * getDefaultComboBoxEditor (java.lang.String)
-	 */
 	public PropertyEditor getDefaultComboBoxEditor(String editorName) {
 		PropertyEditor editor = comboBoxEditors.get(editorName);
 		if (editor == null) {

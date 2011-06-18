@@ -116,16 +116,8 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 		
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param e
-	 *            DOCUMENT ME!
-	 */
+
 	@Override public void mouseClicked(MouseEvent e) {
-		
-		logger.debug("====================> VizMapper GUI got mouse event: Click = " + e.getClickCount());
-		
 		
 		int selected = propertySheetPanel.getTable().getSelectedRow();
 		/*

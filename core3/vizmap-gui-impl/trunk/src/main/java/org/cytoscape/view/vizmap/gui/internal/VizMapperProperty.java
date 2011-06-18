@@ -11,7 +11,7 @@ import com.l2fprod.common.propertysheet.DefaultProperty;
  * Refactored for 3 to keep more information.
  * 
  */
-public final class VizMapperProperty<K, V, T> extends DefaultProperty {
+public class VizMapperProperty<K, V, T> extends DefaultProperty {
 	
 	private final static long serialVersionUID = 1202339868680341L;
 	
@@ -21,7 +21,7 @@ public final class VizMapperProperty<K, V, T> extends DefaultProperty {
 	private T internalValue;
 	
 
-	public VizMapperProperty(final CellType cellType, final K key, final Class<V> valueType) {
+	public <S extends V> VizMapperProperty(final CellType cellType, final K key, final Class<S> valueType) {
 		super();
 		
 		if(key == null)
@@ -55,9 +55,8 @@ public final class VizMapperProperty<K, V, T> extends DefaultProperty {
 		
 		super.setValue(original.getValue());
 		this.internalValue = original.getInternalValue();
-		
-		
 	}
+	
 	
 	/**
 	 * Make name immutable.
@@ -70,17 +69,6 @@ public final class VizMapperProperty<K, V, T> extends DefaultProperty {
 		return key.toString();
 	}
 	
-//	@Override public void setValue(Object value) {
-//		if(value == null)
-//			super.setValue(null);
-//		
-//		final Class<?> valClass = value.getClass();
-//		if(true )
-//			super.setValue(value);
-//		else
-//			throw new IllegalArgumentException("Cannot not set value: " + value.getClass() +".  Type should be " + this.getType());
-//			
-//	}
 	
 	public void setInternalValue(final T internalValue) {
 		this.internalValue = internalValue;

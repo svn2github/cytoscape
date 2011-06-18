@@ -64,9 +64,9 @@ public class ColorVisualPropertyEditor extends
 			final SelectedVisualStyleManager selectedManager, final EditorManager editorManager, final VisualMappingManager vmm) {
 		super(type, new CyColorPropertyEditor());
 
-		discreteTableCellRenderer = REG.getRenderer(Color.class);
+		this.discreteTableCellRenderer = REG.getRenderer(Color.class);
 		
-		continuousEditor = new GradientEditor(manager, appManager, selectedManager, editorManager, vmm);
-		continuousTableCellRenderer = new ContinuousMappingCellRenderer((AbstractContinuousMappingEditor<?, ?>) continuousEditor);
+		this.continuousEditor = new GradientEditor(manager, appManager, selectedManager, editorManager, vmm);
+		this.continuousTableCellRenderer = new ContinuousMappingCellRenderer((AbstractContinuousMappingEditor<?, ?>) continuousEditor);
 	}
 }

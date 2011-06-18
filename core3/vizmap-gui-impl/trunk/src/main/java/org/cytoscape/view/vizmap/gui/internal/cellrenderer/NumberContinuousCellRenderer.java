@@ -12,21 +12,17 @@ import org.slf4j.LoggerFactory;
 
 import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 
-/**
- * Cell renderer for continuous mappings
- * 
- */
-public class ContinuousMappingCellRenderer extends DefaultCellRenderer {
+public class NumberContinuousCellRenderer extends DefaultCellRenderer {
 
 	private static final long serialVersionUID = -6734053848878359286L;
 	
-	private static final Logger logger = LoggerFactory.getLogger(ContinuousMappingCellRenderer.class);
+	private static final Logger logger = LoggerFactory.getLogger(NumberContinuousCellRenderer.class);
 
 
 	private final AbstractContinuousMappingEditor<?, ?> editor;
 
 
-	public ContinuousMappingCellRenderer(final AbstractContinuousMappingEditor<?, ?> editor) {
+	public NumberContinuousCellRenderer(final AbstractContinuousMappingEditor<?, ?> editor) {
 		if(editor == null)
 			throw new NullPointerException("Editor object is null.");
 		
@@ -42,7 +38,7 @@ public class ContinuousMappingCellRenderer extends DefaultCellRenderer {
 			return this;
 		}
 		
-		logger.debug("!!!!!!!!! CM cell renderer called: " + value.toString());
+		logger.debug("!!!!!!!!! Number cell renderer called: " + value.toString());
 		
 		if (isSelected) {
 			setBackground(table.getSelectionBackground());
