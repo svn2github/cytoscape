@@ -43,11 +43,7 @@ import javax.swing.Icon;
 import javax.swing.table.TableCellRenderer;
 
 
-/**
- *
- *
- * @param <T>  DOCUMENT ME!
- */
+
 public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyEditor<T> {
 	
 	protected final Class<T> type;
@@ -72,11 +68,7 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 		return this.type;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
+	
 	@Override public PropertyEditor getPropertyEditor() {
 		return propertyEditor;
 	}
@@ -108,7 +100,7 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 
 
 	@Override public Icon getDefaultIcon(int width, int height) {
-		// By default, it does not return actual icon.  This should be implemented shild classes.
+		// By default, it does not return actual icon.  This should be implemented child classes.
 		return null;
 	}
 }
