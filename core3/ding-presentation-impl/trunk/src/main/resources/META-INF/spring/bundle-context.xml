@@ -39,14 +39,7 @@
 
 	<bean id="dingNavigationRenderingEngineFactory"
 		class="org.cytoscape.ding.impl.DingNavigationRenderingEngineFactory">
-		<constructor-arg ref="cyDataTableFactoryServiceRef" />
-		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
-		<constructor-arg ref="undoSupportServiceRef" />
-		<constructor-arg ref="spacialIndex2DFactoryServiceRef" />
 		<constructor-arg ref="dVisualLexicon" />
-		<constructor-arg ref="taskManagerServiceRef" />
-		<constructor-arg ref="cyServiceRegistrarRef" />
-		<constructor-arg ref="cyTableManagerServiceRef" />
 		<constructor-arg ref="renderingEngineManagerServiceRef" />
 		<constructor-arg ref="applicationManagerManagerServiceRef" />
 	</bean>
