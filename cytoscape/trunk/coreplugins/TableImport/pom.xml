@@ -39,9 +39,16 @@
 
   <build>
     <plugins>
-	  <plugin>
-        <artifactId>maven-assembly-plugin</artifactId> 
-	  </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Cytoscape-Plugin>edu.ucsd.bioeng.coreplugin.tableImport.TableImportPlugin</Cytoscape-Plugin>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

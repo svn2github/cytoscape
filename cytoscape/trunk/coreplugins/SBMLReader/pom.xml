@@ -39,9 +39,16 @@
 
   <build>
     <plugins>
-	  <plugin>
+      <plugin>
         <artifactId>maven-assembly-plugin</artifactId> 
-	  </plugin>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Cytoscape-Plugin>sbmlreader.SBMLReaderPlugin</Cytoscape-Plugin>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

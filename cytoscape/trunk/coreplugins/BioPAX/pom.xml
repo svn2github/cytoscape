@@ -39,9 +39,16 @@
 
   <build>
     <plugins>
-	  <plugin>
+      <plugin>
         <artifactId>maven-assembly-plugin</artifactId> 
-	  </plugin>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Cytoscape-Plugin>cytoscape.coreplugins.biopax.BiopaxPlugin</Cytoscape-Plugin>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
