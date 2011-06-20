@@ -15,7 +15,7 @@ class PayloadAccumulator<S,P,E extends CyPayloadEvent<S,P>> {
 	private Class<?> sourceClass;
 
 	PayloadAccumulator(S source, Class<E> eventType) throws NoSuchMethodException {
-		System.out.println(" payload accumulator: source.getClass():  " + source + "   " + source.getClass());
+		//System.out.println(" payload accumulator: source.getClass():  " + source + "   " + source.getClass());
 
 		for ( Constructor<?> cons : eventType.getConstructors() ) {
 			Class<?>[] params = cons.getParameterTypes();

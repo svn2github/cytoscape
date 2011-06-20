@@ -51,6 +51,7 @@ import java.lang.RuntimeException;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 
 
@@ -63,6 +64,7 @@ public class CyEventHelperTest extends AbstractCyEventHelperTest {
 	private ServiceReference fakeServiceRef;
 	private ServiceReference payloadServiceRef;
 	private BundleContext bc;
+	private CyEventHelperImpl helperImpl;
 
 	/**
 	 *  DOCUMENT ME!
@@ -112,6 +114,12 @@ public class CyEventHelperTest extends AbstractCyEventHelperTest {
 
 		CyListenerAdapter la = new CyListenerAdapter(bc);
 
-		helper = new CyEventHelperImpl(la);
+		helperImpl = new CyEventHelperImpl(la);
+		helper = helperImpl;
+	}
+	
+	@After
+	public void cleanup() {
+		helperImpl.cleanup();
 	}
 }

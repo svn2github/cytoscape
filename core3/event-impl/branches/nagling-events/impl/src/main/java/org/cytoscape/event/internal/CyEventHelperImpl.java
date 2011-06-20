@@ -38,14 +38,20 @@ import org.cytoscape.event.CyEvent;
 import org.cytoscape.event.CyPayloadEvent;
 import org.cytoscape.event.CyEventHelper;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Random;
+import java.util.Set;
 import java.lang.reflect.Constructor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,18 +62,28 @@ public class CyEventHelperImpl implements CyEventHelper {
 
 	private final CyListenerAdapter normal;
 	private final Map<Object,Map<Class<?>,PayloadAccumulator<?,?,?>>> sourceAccMap;
-	private final ScheduledExecutorService payloadEventMonitor; 
+	private final ScheduledExecutorService payloadEventMonitor;
+	private final Set<Object> silencedSources;
+	private boolean havePayload;
 
 	public CyEventHelperImpl(final CyListenerAdapter normal) {
+		//System.out.println("\n\n===================================================================================\n\n");
 		this.normal = normal;
 
-		sourceAccMap = Collections.synchronizedMap( new HashMap<Object,Map<Class<?>,PayloadAccumulator<?,?,?>>>());
+		sourceAccMap = new HashMap<Object,Map<Class<?>,PayloadAccumulator<?,?,?>>>();
 
 		payloadEventMonitor = Executors.newSingleThreadScheduledExecutor();
+		
+		silencedSources = new HashSet<Object>();
+		
+		havePayload = false;
 
         final Runnable firingAgent = new Runnable() {
             public void run() {
-                forceFirePayloadEvents();
+            	final int x = new Random().nextInt();
+            	//System.out.println("*************** begin firing check *************  " + x + "    " + Thread.currentThread() + "  " + havePayload + "  " + System.currentTimeMillis() + "   " + CyEventHelperImpl.this.hashCode() + "  " + this.hashCode());
+                flushPayloadEvents();
+            	//System.out.println("*************** end firing check ***************  " + x + "    " + Thread.currentThread());
             }
         };
         payloadEventMonitor.scheduleAtFixedRate(firingAgent, CyEventHelper.DEFAULT_PAYLOAD_WAIT_TIME_MILLIS, CyEventHelper.DEFAULT_PAYLOAD_WAIT_TIME_MILLIS, TimeUnit.MILLISECONDS);
@@ -75,7 +91,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 
 	@Override 
 	public <E extends CyEvent<?>> void fireEvent(final E event) {
-		System.out.println("firing event: " + event);
+		//System.out.println("firing event: " + event);
 		normal.fireEvent(event);
 	}
 
@@ -86,6 +102,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 			return;
 		logger.info("silencing event source: " + eventSource.toString());
 		normal.silenceEventSource(eventSource);
+		silencedSources.add(eventSource);
 	}
 
 	@Override 
@@ -94,59 +111,86 @@ public class CyEventHelperImpl implements CyEventHelper {
 			return;
 		logger.info("unsilencing event source: " + eventSource.toString());
 		normal.unsilenceEventSource(eventSource);
+		silencedSources.remove(eventSource);
 	}
 
 	@Override 
 	public <S,P,E extends CyPayloadEvent<S,P>> void addEventPayload(S source, P payload, Class<E> eventType) {
-		System.out.println("addEventPayload: " + source + "  " + payload + "  " + eventType);
 		if ( payload == null || source == null || eventType == null) {
 			logger.warn("improperly specified payload event with source: " + source + 
 			            "  with payload: " + payload + 
 						"  with event type: " + eventType);
 			return;
 		}
+		
+		if ( silencedSources.contains(source))
+			return;
 
-		Map<Class<?>,PayloadAccumulator<?,?,?>> cmap = sourceAccMap.get(source);
-		if ( cmap == null ) { 
-			cmap = Collections.synchronizedMap(new HashMap<Class<?>,PayloadAccumulator<?,?,?>>());
-			sourceAccMap.put(source,cmap);
-			System.out.println("  adding source to map: " + source);
-		}
-
-		PayloadAccumulator<S,P,E> acc = (PayloadAccumulator<S,P,E>) cmap.get(eventType);
-
-		if ( acc == null ) {
-			try {
-				acc = new PayloadAccumulator<S,P,E>(source, eventType);
-				cmap.put(eventType,acc);
-				System.out.println("  adding accumulator: " + source + " " + eventType);
-			} catch (NoSuchMethodException nsme) {
-				logger.warn("Unable to add payload to event, because of missing event constructor.", nsme);
-				return;
+		synchronized (this) {
+			Map<Class<?>,PayloadAccumulator<?,?,?>> cmap = sourceAccMap.get(source);
+			if ( cmap == null ) { 
+				cmap = new HashMap<Class<?>,PayloadAccumulator<?,?,?>>();
+				sourceAccMap.put(source,cmap);
 			}
-		}
-
-		System.out.println("   addEventPayload: " + source + "  " + payload + "  " + eventType);
-		acc.addPayload(payload);
-	}
-
-	public void forceFirePayloadEvents() {
-//		System.out.println("forceFirePayloadEvents in thread: " + Thread.currentThread());
-		for ( Object source : sourceAccMap.keySet() ) {
-//			System.out.println("   examining source: " + source);
-			for ( PayloadAccumulator<?,?,?> acc : sourceAccMap.get(source).values() ) {
-//				System.out.println("      found accumulator: " + acc);
+	
+			PayloadAccumulator<S,P,E> acc = (PayloadAccumulator<S,P,E>) cmap.get(eventType);
+	
+			if ( acc == null ) {
 				try {
-					CyPayloadEvent<?,?> event = acc.newEventInstance( source );
-					if ( event != null ) {
-						System.out.println("        -----------force firing event: " + event);
-						fireEvent(event);
-					}
-				} catch (Exception ie) {
-					logger.warn("Couldn't instantiate event for source: " + source, ie);
+					acc = new PayloadAccumulator<S,P,E>(source, eventType);
+					cmap.put(eventType,acc);
+				} catch (NoSuchMethodException nsme) {
+					logger.warn("Unable to add payload to event, because of missing event constructor.", nsme);
+					return;
 				}
 			}
+			
+			acc.addPayload(payload);
+			havePayload = true;
+			
+			//System.out.println("addEventPayload: " + source + "  " + payload + "  " + eventType + "  " + Thread.currentThread() + "  " + havePayload + "  " + System.currentTimeMillis());
+		}		
+	}
+
+	public void flushPayloadEvents() {
+		List<CyPayloadEvent<?,?>> flushList;
+		
+		synchronized (this) {
+			//System.out.println("trying forceFirePayloadEvents in thread: " + Thread.currentThread() + "   " + havePayload);
+			if ( !havePayload )
+				return;
+			
+			flushList = new ArrayList<CyPayloadEvent<?,?>>();
+			havePayload = false;
+			
+			//System.out.println("forceFirePayloadEvents in thread: " + Thread.currentThread());
+			for ( Object source : sourceAccMap.keySet() ) {
+				//System.out.println("   examining source: " + source);
+				for ( PayloadAccumulator<?,?,?> acc : sourceAccMap.get(source).values() ) {
+					//System.out.println("      found accumulator: " + acc);
+					try {
+						CyPayloadEvent<?,?> event = acc.newEventInstance( source );
+						if ( event != null ) {
+							//System.out.println("adding event to flush list " + event);
+							flushList.add(event);
+						}
+					} catch (Exception ie) {
+						logger.warn("Couldn't instantiate event for source: " + source, ie);
+					}
+				}
+			}
+			
+			//System.out.println("forceFirePayloadEvents finished collecting events: " + Thread.currentThread() + "    " + havePayload);
 		}
+		
+		for (CyPayloadEvent<?,?> event : flushList) {
+			//System.out.println("-----------force firing event: " + event);
+			fireEvent(event);
+		}	
+	}
+	
+	public void cleanup() {
+		payloadEventMonitor.shutdown();
 	}
 }
 
