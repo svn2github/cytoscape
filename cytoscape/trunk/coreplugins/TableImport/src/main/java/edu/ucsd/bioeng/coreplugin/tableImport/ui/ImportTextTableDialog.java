@@ -1600,7 +1600,11 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		try {
 			if ((dialogType == SIMPLE_ATTRIBUTE_IMPORT) || (dialogType == NETWORK_IMPORT)) {
-				setStatusBar(new URL(targetDataSourceTextField.getText()));
+				try {
+					setStatusBar(new URL(targetDataSourceTextField.getText()));
+				} catch (Exception e) {
+					setStatusBar(inputFiles[0].toURI().toURL());
+				}
 			} else {
 				setStatusBar(new URL(annotationUrlMap.get(annotationComboBox.getSelectedItem()
 				                                                            .toString())));
