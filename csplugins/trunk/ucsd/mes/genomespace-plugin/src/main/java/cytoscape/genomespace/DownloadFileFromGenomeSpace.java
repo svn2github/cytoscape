@@ -34,7 +34,7 @@ public class DownloadFileFromGenomeSpace extends CytoscapeAction {
 
 	public DownloadFileFromGenomeSpace() {
 		// Give your action a name here
-		super("Download File",
+		super("Download File...",
 		      new ImageIcon(DownloadFileFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
