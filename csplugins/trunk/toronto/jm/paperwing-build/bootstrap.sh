@@ -18,7 +18,7 @@ pushd "${TEMP_DIR}"
 for FILE in $(cat "${FILES_FILE}")
 do
     URL=${JOGL_BASE_URL}/jogl-${JOGL_VERSION}-${FILE}
-    curl -O "${URL}"
+    curl -C - -k -O "${URL}"
 done
 
 for FILE in *.7z
