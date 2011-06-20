@@ -32,27 +32,22 @@
  */
 package org.cytoscape.view.layout;
 
-import org.cytoscape.model.CyTableUtil;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
-
+import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Random;
 
-import java.awt.Dimension;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.work.TaskMonitor;
 
 
@@ -66,6 +61,7 @@ import org.cytoscape.work.TaskMonitor;
  * @version 0.9
  */
 public final class LayoutPartition {
+	
 	private ArrayList<LayoutNode> nodeList;
 	private ArrayList<LayoutEdge> edgeList;
 	private HashMap<CyNode, LayoutNode> nodeToLayoutNode; 
@@ -88,10 +84,6 @@ public final class LayoutPartition {
 	// Keep track of the number of locked nodes we have in
 	// this partition
 	private int lockedNodes = 0;
-
-	// private constants
-	private static final int m_NODE_HAS_NOT_BEEN_SEEN = 0;
-	private static final int m_NODE_HAS_BEEN_SEEN = 1;
 
 	protected TaskMonitor taskMonitor = null;
 	
@@ -121,9 +113,8 @@ public final class LayoutPartition {
 	 * @param nodeSet the nodes to be considered
 	 * @param edgeWeighter the weighter to use for edge weighting
 	 */
-	public LayoutPartition(CyNetworkView networkView, Collection<CyNode>nodeSet,
-	                       EdgeWeighter edgeWeighter) {
-		initialize(networkView,nodeSet,edgeWeighter);
+	public LayoutPartition(CyNetworkView networkView, Collection<CyNode> nodeSet, EdgeWeighter edgeWeighter) {
+		initialize(networkView, nodeSet, edgeWeighter);
 	}
 
 
@@ -136,8 +127,7 @@ public final class LayoutPartition {
 	 * @param selectedOnly if true, only include selected nodes in the partition
 	 * @param edgeWeighter the weighter to use for edge weighting
 	 */
-	public LayoutPartition(CyNetworkView networkView, boolean selectedOnly,
-	                       EdgeWeighter edgeWeighter) {
+	public LayoutPartition(CyNetworkView networkView, boolean selectedOnly, EdgeWeighter edgeWeighter) {
 		if (selectedOnly) {
 			initialize(networkView,CyTableUtil.getNodesInState(networkView.getModel(),"selected",true),edgeWeighter);
 		} else {
@@ -145,8 +135,7 @@ public final class LayoutPartition {
 		}
 	}
 
-	private void initialize(CyNetworkView networkView, Collection<CyNode>nodeSet,
-	                          EdgeWeighter edgeWeighter) {
+	private void initialize(CyNetworkView networkView, Collection<CyNode> nodeSet, EdgeWeighter edgeWeighter) {
 
 		this.edgeWeighter = edgeWeighter;
 
@@ -190,8 +179,8 @@ public final class LayoutPartition {
 		} else {
 			updateMinMax(nv.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION),
 						 nv.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
-			this.width += nv.getVisualProperty(MinimalVisualLexicon.NODE_WIDTH); 
-			this.height += nv.getVisualProperty(MinimalVisualLexicon.NODE_HEIGHT);
+			this.width += nv.getVisualProperty(MinimalVisualLexicon.NODE_WIDTH).doubleValue(); 
+			this.height += nv.getVisualProperty(MinimalVisualLexicon.NODE_HEIGHT).doubleValue();
 		}
 	}
 
@@ -460,7 +449,7 @@ public final class LayoutPartition {
 	 */
 	public Dimension getAverageLocation() {
 		int nodes = nodeCount() - lockedNodes;
-		Dimension result = new Dimension();
+		final Dimension result = new Dimension();
 		result.setSize(averageX / nodes, averageY / nodes);
 
 		return result;
@@ -503,22 +492,17 @@ public final class LayoutPartition {
 		averageY = 0;
 	}
 
-	/**
-	 * Private routines
-	 */
-	private void nodeListInitialize(CyNetworkView networkView,
-	                                Collection<CyNode> nodeSet) {
-		int nodeIndex = 0;
+	
+	private void nodeListInitialize(CyNetworkView networkView, Collection<CyNode> nodeSet) {
 		this.nodeList = new ArrayList<LayoutNode>(networkView.getModel().getNodeCount());
 
 		for (View<CyNode>nv: networkView.getNodeViews()){
-			CyNode node = nv.getModel();
+			final CyNode node = nv.getModel();
 
-			if (!nodeSet.contains(node)) {
+			if (!nodeSet.contains(node))
 				addNode(nv, true);
-			} else {
+			else
 				addNode(nv, false);
-			}
 		}
 	}
 
@@ -526,16 +510,17 @@ public final class LayoutPartition {
 		for (View<CyEdge>ev: networkView.getEdgeViews()){
 			CyEdge edge = ev.getModel();
 			// Make sure we clean up after any previous layouts
-			//ev.clearBends(); // FIXME: this will mean some cleanup in VisualProperty, right?
-
-			CyNode source = edge.getSource();
-			CyNode target = edge.getTarget();
+			//ev.clearBends(); 
+			
+			// FIXME: this will mean some cleanup in VisualProperty, right?
+			final CyNode source = edge.getSource();
+			final CyNode target = edge.getTarget();
 
 			if (source == target)
 				continue;
 
-			LayoutNode v1 = nodeToLayoutNode.get(source);
-			LayoutNode v2 = nodeToLayoutNode.get(target);
+			final LayoutNode v1 = nodeToLayoutNode.get(source);
+			final LayoutNode v2 = nodeToLayoutNode.get(target);
 
 			// Do we care about this edge?
 			if (v1.isLocked() && v2.isLocked())
@@ -568,7 +553,5 @@ public final class LayoutPartition {
 		if (edgeWeighter != null) {
 			edgeWeighter.setWeight(newEdge);
 		}
-
-		// System.out.println("Updating "+newEdge);
 	}
 }
