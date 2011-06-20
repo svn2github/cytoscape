@@ -231,22 +231,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 		setVisible(true);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.cytoscape.vizmap.gui.internal.DefaultViewEditor#getDefaultView(java
-	 * .lang.String)
-	 */
-	public JPanel getDefaultView(String vsName) {
-//		// TODO: update background color
-//		 mainView.updateBackgroungColor(vmm.getVisualStyle()
-//		 .getGlobalAppearanceCalculator().getDefaultBackgroundColor());
-//
-//		 mainView.updateView();
-
-		return mainView;
-	}
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -266,7 +250,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 		edgeList = new JXList();
 		edgeScrollPane = new javax.swing.JScrollPane();
 		globalScrollPane = new javax.swing.JScrollPane();
-		lockNodeSizeCheckBox = new javax.swing.JCheckBox();
 		applyButton = new javax.swing.JButton();
 
 		networkList = new JXList();
@@ -277,8 +260,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 		cancelButton = new javax.swing.JButton();
 		cancelButton.setVisible(false);
-
-		lockNodeSizeCheckBox.setOpaque(false);
 
 		nodeList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
@@ -335,19 +316,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 				.addComponent(defaultObjectTabbedPane,
 						GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE));
 
-		lockNodeSizeCheckBox.setFont(new java.awt.Font("SansSerif", 1, 12));
-		lockNodeSizeCheckBox.setText("Lock Node Width/Height");
-		lockNodeSizeCheckBox.setBorder(javax.swing.BorderFactory
-				.createEmptyBorder(0, 0, 0, 0));
-		lockNodeSizeCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
-		// TODO: fix lock
-		// lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
-		lockNodeSizeCheckBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				lockSize();
-			}
-		});
-
 		applyButton.setText("Apply");
 		applyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -383,11 +351,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 														.addGroup(
 																jXPanel1Layout
 																		.createSequentialGroup()
-																		.addComponent(
-																				lockNodeSizeCheckBox,
-																				GroupLayout.DEFAULT_SIZE,
-																				138,
-																				Short.MAX_VALUE)
 																		.addPreferredGap(
 																				LayoutStyle.ComponentPlacement.RELATED)
 																		.addComponent(
@@ -417,19 +380,13 @@ public class DefaultViewEditorImpl extends JDialog implements
 										.addContainerGap()
 										.addGroup(
 												jXPanel1Layout
-														.createParallelGroup(
-																GroupLayout.Alignment.TRAILING)
-														.addComponent(
-																jXTitledPanel1,
-																GroupLayout.Alignment.LEADING,
-																GroupLayout.DEFAULT_SIZE,
-																270,
-																Short.MAX_VALUE)
+														.createParallelGroup(GroupLayout.Alignment.TRAILING)
+														.addComponent(jXTitledPanel1, GroupLayout.Alignment.LEADING,
+																GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
 														.addGroup(
 																jXPanel1Layout
 																		.createSequentialGroup()
-																		.addComponent(
-																				mainView,
+																		.addComponent(mainView,
 																				GroupLayout.DEFAULT_SIZE,
 																				GroupLayout.DEFAULT_SIZE,
 																				Short.MAX_VALUE)
@@ -439,12 +396,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 																				jXPanel1Layout
 																						.createParallelGroup(
 																								GroupLayout.Alignment.BASELINE)
-																						.addComponent(
-																								lockNodeSizeCheckBox)
-																						.addComponent(
-																								cancelButton)
-																						.addComponent(
-																								applyButton))))
+																						.addComponent(cancelButton)
+																						.addComponent(applyButton))))
 										.addContainerGap()));
 
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -513,7 +466,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 	// Variables declaration - do not modify
 	private javax.swing.JButton applyButton;
 	private javax.swing.JButton cancelButton;
-	private javax.swing.JCheckBox lockNodeSizeCheckBox;
 	private javax.swing.JScrollPane nodeScrollPane;
 	private javax.swing.JScrollPane edgeScrollPane;
 	private javax.swing.JScrollPane globalScrollPane;
