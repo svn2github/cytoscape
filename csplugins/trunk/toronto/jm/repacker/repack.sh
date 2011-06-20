@@ -5,7 +5,7 @@ function abspath {
 }
 
 function rejar {
-    if [ -z `which cygpath` ]
+    if [ -z $(which cygpath) ]
     then
         jar cvf "$@"
     else

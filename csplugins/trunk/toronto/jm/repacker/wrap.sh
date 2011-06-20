@@ -2,16 +2,26 @@
 
 BND_CMD=bnd
 
+function fixpath {
+    if [ -z $(which cygpath) ]
+    then
+        echo "$@"
+    else
+        cygpath -w "$@"
+    fi
+}
+
 for FILE in "$@"
 do
     FRAGMENT_HOST=$(basename ${FILE} -natives.jar)
     echo ${FRAGMENT_HOST}
     ./genheaders.py ${FILE} ${FRAGMENT_HOST}
+    JAR=$(fixpath ${FILE})
     if [ -f "${FILE}.properties" ]
     then
-        ${BND_CMD} wrap -properties "${FILE}.properties" "${FILE}"
+        ${BND_CMD} wrap -properties "${JAR}.properties" "${JAR}"
     else
-        ${BND_CMD} wrap "${FILE}"
+        ${BND_CMD} wrap "${JAR}"
     fi
 done
 
