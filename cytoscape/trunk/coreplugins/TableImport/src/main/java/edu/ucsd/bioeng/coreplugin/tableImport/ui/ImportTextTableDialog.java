@@ -262,6 +262,79 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		this(parent, modal, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
 	}
 
+	public ImportTextTableDialog(final Frame parent, final File tableFile, final String tableFileName)
+		throws JAXBException, IOException
+	{
+		super(parent, /* modal = */ true);
+
+		// Default Attribute is node attr.
+		selectedAttributes = Cytoscape.getNodeAttributes();
+
+		this.objType = NODE;
+		this.dialogType = ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT;
+		this.listDelimiter = PIPE.toString();
+
+		this.aliasTableModelMap = new HashMap<String, AliasTableModel>();
+		this.aliasTableMap = new HashMap<String, JTable>();
+		this.primaryKeyMap = new HashMap<String, Integer>();
+
+		annotationUrlMap = new HashMap<String, String>();
+		annotationFormatMap = new HashMap<String, String>();
+		annotationAttributesMap = new HashMap<String, Map<String, String>>();
+
+		ontologyUrlMap = new HashMap<String, String>();
+		ontologyDescriptionMap = new HashMap<String, String>();
+		ontologyTypeMap = new HashMap<String, String>();
+
+		attributeDataTypes = new ArrayList<Byte>();
+		initComponents(true);
+		updateComponents();
+
+		previewPanel.addPropertyChangeListener(this);
+
+		logger = CyLogger.getLogger( ImportTextTableDialog.class );
+
+		final File multiSource[] = { tableFile };
+		fileLoadAction(multiSource, tableFileName);
+	}
+
+	private void fileLoadAction(final File[] multiSource, final String displayName) throws IOException {
+		// Pick the first one and show preview.
+		this.inputFiles = multiSource;
+
+		final File sourceFile = multiSource[0];
+
+		targetDataSourceTextField.setText(displayName);
+
+		// Set tooltip as HTML
+		StringBuilder builder = new StringBuilder();
+		builder.append("<html><body><strong text=\"red\">File(s) to be imported</strong><ul>");
+
+		builder.append("<li>" + displayName + "</li>");
+		for (int i = 1; i < multiSource.length; i++)
+			builder.append("<li>" + multiSource[i].getName() + "</li>");
+
+		builder.append("</ul></body></html>");
+		targetDataSourceTextField.setToolTipText(builder.toString());
+
+		readAnnotationForPreview(multiSource[0].toURI().toURL(), checkDelimiter());
+
+		if (previewPanel.getPreviewTable() == null) {
+			JLabel label = new JLabel("File is broken or empty!");
+			label.setForeground(Color.RED);
+			JOptionPane.showMessageDialog(this, label);
+
+			return;
+		}
+
+		columnHeaders = new String[previewPanel.getPreviewTable().getColumnCount()];
+		transferNameCheckBox.setEnabled(true);
+		transferNameCheckBox.setSelected(false);
+
+		ColumnResizer.adjustColumnPreferredWidths(previewPanel.getPreviewTable());
+		previewPanel.getPreviewTable().repaint();
+	}
+
 	public ImportTextTableDialog(Frame parent, boolean modal, int dialogType)
 	    throws JAXBException, IOException {
 		super(parent, modal);
@@ -286,7 +359,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		ontologyTypeMap = new HashMap<String, String>();
 
 		attributeDataTypes = new ArrayList<Byte>();
-		initComponents();
+		initComponents(false);
 		updateComponents();
 
 		previewPanel.addPropertyChangeListener(this);
@@ -391,7 +464,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	 */
 
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code">
-	private void initComponents() {
+	private void initComponents(final boolean fileHasBeenProvided) {
 		statusBar = new JStatusBar();
 
 		importAllCheckBox = new JCheckBox("Import everything (Key is always ID)");
@@ -447,7 +520,11 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		browseAnnotationButton = new javax.swing.JButton();
 
 		targetDataSourceTextField = new javax.swing.JTextField();
+		if (fileHasBeenProvided)
+			targetDataSourceTextField.setEnabled(false);
 		selectAttributeFileButton = new javax.swing.JButton();
+		if (fileHasBeenProvided)
+			selectAttributeFileButton.setEnabled(false);
 		advancedPanel = new javax.swing.JPanel();
 		advancedOptionCheckBox = new javax.swing.JCheckBox();
 		textImportCheckBox = new javax.swing.JCheckBox();
@@ -482,6 +559,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		simpleAttributeImportPanel = new javax.swing.JPanel();
 		attributeFileLabel = new javax.swing.JLabel();
+		if (fileHasBeenProvided)
+			attributeFileLabel.setEnabled(false);
 
 		startRowSpinner = new JSpinner();
 		startRowLabel = new JLabel();
@@ -817,8 +896,10 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 						try {
 							selectAttributeFileButtonActionPerformed(evt);
 						} catch (IOException e) {
-							
-							JOptionPane.showMessageDialog(ImportTextTableDialog.this, "<html>Could not read selected file.<p>See <b>Help->Error Dialog</b> for further details.</html>", "ERROR", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(
+										      ImportTextTableDialog.this,
+										      "<html>Could not read selected file.<p>See <b>Help->Error Dialog</b> for further details.</html>",
+										      "ERROR", JOptionPane.ERROR_MESSAGE);
 							logger.warn("Could not read selected file.", e);
 						}
 					}
@@ -2124,49 +2205,13 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	}
 
 	private void selectAttributeFileButtonActionPerformed(ActionEvent evt)
-	    throws IOException {
+	    throws IOException
+	{
 		final File[] multiSource = FileUtil.getFiles("Select local file", FileUtil.LOAD,
 		                                             new CyFileFilter[] {  });
-
 		if ((multiSource == null) || (multiSource[0] == null))
 			return;
-
-		// Pick the first one and show preview.
-		this.inputFiles = multiSource;
-
-		final File sourceFile = multiSource[0];
-
-		targetDataSourceTextField.setText(sourceFile.toURI().toURL().toString());
-
-		// Set tooltip as HTML
-		StringBuilder builder = new StringBuilder();
-		builder.append("<html><body><strong text=\"red\">File(s) to be imported</strong><ul>");
-
-		for (int i = 0; i < multiSource.length; i++) {
-			builder.append("<li>" + multiSource[i].getName() + "</li>");
-		}
-
-		builder.append("</ul></body></html>");
-		targetDataSourceTextField.setToolTipText(builder.toString());
-
-		final URL sourceURL = new URL(targetDataSourceTextField.getText());
-
-		readAnnotationForPreview(sourceURL, checkDelimiter());
-
-		if (previewPanel.getPreviewTable() == null) {
-			JLabel label = new JLabel("File is broken or empty!");
-			label.setForeground(Color.RED);
-			JOptionPane.showMessageDialog(this, label);
-
-			return;
-		}
-
-		columnHeaders = new String[previewPanel.getPreviewTable().getColumnCount()];
-		transferNameCheckBox.setEnabled(true);
-		transferNameCheckBox.setSelected(false);
-
-		ColumnResizer.adjustColumnPreferredWidths(previewPanel.getPreviewTable());
-		previewPanel.getPreviewTable().repaint();
+		fileLoadAction(multiSource, multiSource[0].toURI().toURL().toString());
 	}
 
 	private void delimiterCheckBoxActionPerformed(ActionEvent evt) throws IOException {
