@@ -262,7 +262,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		this(parent, modal, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
 	}
 
-	public ImportTextTableDialog(final Frame parent, final File tableFile, final String tableFileName)
+	public ImportTextTableDialog(final Frame parent, final File tableFile,
+				     final String tableFileName, final int dialogType)
 		throws JAXBException, IOException
 	{
 		super(parent, /* modal = */ true);
@@ -271,7 +272,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		selectedAttributes = Cytoscape.getNodeAttributes();
 
 		this.objType = NODE;
-		this.dialogType = ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT;
+		this.dialogType = dialogType;
 		this.listDelimiter = PIPE.toString();
 
 		this.aliasTableModelMap = new HashMap<String, AliasTableModel>();
