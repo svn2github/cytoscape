@@ -4,6 +4,15 @@ function abspath {
     python -c 'import os, sys; print os.path.realpath(sys.argv[1])' "$1"
 }
 
+function rejar {
+    if [ -z `which cygpath` ]
+    then
+        jar cvf "$@"
+    else
+        jar cvf $(cygpath -w "$@")
+    fi
+}
+
 BUNDLE_NAME=$1
 shift
 
@@ -29,11 +38,11 @@ do
 done
 
 pushd "${STAGING_DIR}"
-jar cvf "${JAR_DIR}/${BUNDLE_NAME}.jar" *
+rejar "${JAR_DIR}/${BUNDLE_NAME}.jar" *
 popd
 
 pushd "${NATIVES_DIR}"
-jar cvf "${JAR_DIR}/${BUNDLE_NAME}-natives.jar" *
+rejar "${JAR_DIR}/${BUNDLE_NAME}-natives.jar" *
 popd
 
 "${SCRIPT_DIR}/wrap.sh" "${JAR_DIR}"/*.jar
