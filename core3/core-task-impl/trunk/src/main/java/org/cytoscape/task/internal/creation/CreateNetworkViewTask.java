@@ -38,31 +38,33 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
 
 public class CreateNetworkViewTask extends AbstractNetworkTask {
-    
-    private final CyNetworkViewManager networkViewManager;
-    private final CyNetworkViewFactory viewFactory;
 
-    public CreateNetworkViewTask(final CyNetwork networkModel, final CyNetworkViewFactory viewFactory, final CyNetworkViewManager networkViewManager) {
-	super(networkModel);
-	this.viewFactory = viewFactory;
-	this.networkViewManager = networkViewManager;
-    }
+	private final CyNetworkViewManager networkViewManager;
+	private final CyNetworkViewFactory viewFactory;
 
-    public void run(TaskMonitor taskMonitor) throws Exception {
-	taskMonitor.setStatusMessage("Creating network view...");
-	taskMonitor.setProgress(-1.0);
-
-	try {
-	    // By calling this task, actual view will be created even if it's a large network.
-	    final CyNetworkView view = viewFactory.getNetworkView(network, false);
-	    networkViewManager.addNetworkView(view);
-	} catch (Exception e) {
-	    throw new Exception("Could not create network view for network: "
-		    + network.getCyRow().get(CyTableEntry.NAME, String.class), e);
+	public CreateNetworkViewTask(final CyNetwork networkModel, final CyNetworkViewFactory viewFactory,
+			final CyNetworkViewManager networkViewManager) {
+		super(networkModel);
+		this.viewFactory = viewFactory;
+		this.networkViewManager = networkViewManager;
 	}
 
-	taskMonitor.setProgress(1.0);
-	taskMonitor.setStatusMessage("Network view successfully create for:  "
-		+ network.getCyRow().get(CyTableEntry.NAME, String.class));
-    }
+	public void run(TaskMonitor taskMonitor) throws Exception {
+		taskMonitor.setStatusMessage("Creating network view...");
+		taskMonitor.setProgress(-1.0);
+
+		try {
+			// By calling this task, actual view will be created even if it's a
+			// large network.
+			final CyNetworkView view = viewFactory.getNetworkView(network, false);
+			networkViewManager.addNetworkView(view);
+		} catch (Exception e) {
+			throw new Exception("Could not create network view for network: "
+					+ network.getCyRow().get(CyTableEntry.NAME, String.class), e);
+		}
+
+		taskMonitor.setProgress(1.0);
+		taskMonitor.setStatusMessage("Network view successfully create for:  "
+				+ network.getCyRow().get(CyTableEntry.NAME, String.class));
+	}
 }
