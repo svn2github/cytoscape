@@ -29,7 +29,7 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 	private static final CyLogger logger = CyLogger.getLogger(LoadNetworkFromGenomeSpace.class);
 
 	public LoadNetworkFromGenomeSpace() {
-		super("Load Network",
+		super("Load Network...",
 		      new ImageIcon(LoadNetworkFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need

@@ -32,10 +32,15 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 		LoadNetworkFromGenomeSpace loadNetworkAction = new LoadNetworkFromGenomeSpace();
 		Cytoscape.getDesktop().getCyMenus().addAction(loadNetworkAction);
 
+		LoadTableNetworkFromGenomeSpace loadTableNetworkAction =
+			new LoadTableNetworkFromGenomeSpace();
+		Cytoscape.getDesktop().getCyMenus().addAction(loadTableNetworkAction);
+
 		LoadAttrsFromGenomeSpace loadAttrsAction = new LoadAttrsFromGenomeSpace();
 		Cytoscape.getDesktop().getCyMenus().addAction(loadAttrsAction);
 
-		LoadTableAttrsFromGenomeSpace loadTableAttrsAction = new LoadTableAttrsFromGenomeSpace();
+		LoadTableAttrsFromGenomeSpace loadTableAttrsAction =
+			new LoadTableAttrsFromGenomeSpace();
 		Cytoscape.getDesktop().getCyMenus().addAction(loadTableAttrsAction);
 
 		LoadSessionFromGenomeSpace loadSessionAction = new LoadSessionFromGenomeSpace();
@@ -46,5 +51,9 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 
 		SaveNetworkToGenomeSpace saveNetworkAction = new SaveNetworkToGenomeSpace();
 		Cytoscape.getDesktop().getCyMenus().addAction(saveNetworkAction);
+
+		LoadOntologyAndAnnotationFromGenomeSpace loadOntologyAndAnnotationFromGenomeSpace =
+			new LoadOntologyAndAnnotationFromGenomeSpace();
+		Cytoscape.getDesktop().getCyMenus().addAction(loadOntologyAndAnnotationFromGenomeSpace);
 	}
 }	

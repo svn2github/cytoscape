@@ -36,7 +36,7 @@ public class LoadSessionFromGenomeSpace extends CytoscapeAction {
 	static final CyLogger logger = CyLogger.getLogger(LoadNetworkFromGenomeSpace.class);
 
 	public LoadSessionFromGenomeSpace() {
-		super("Load Session",
+		super("Load Session...",
 		      new ImageIcon(LoadSessionFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need

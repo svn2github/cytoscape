@@ -24,12 +24,12 @@ import org.genomespace.client.ui.GSFileBrowserDialog;
 import org.genomespace.datamanager.core.GSFileMetadata;
 
 
-public class LoadTableAttrsFromGenomeSpace extends CytoscapeAction {
-	private static final long serialVersionUID = 7572758437487659L;
-	private static final CyLogger logger = CyLogger.getLogger(LoadTableAttrsFromGenomeSpace.class);
+public class LoadOntologyAndAnnotationFromGenomeSpace extends CytoscapeAction {
+	private static final long serialVersionUID = 7571788473486759L;
+	private static final CyLogger logger = CyLogger.getLogger(LoadOntologyAndAnnotationFromGenomeSpace.class);
 
-	public LoadTableAttrsFromGenomeSpace() {
-		super("Load Attributes from Table...",
+	public LoadOntologyAndAnnotationFromGenomeSpace() {
+		super("Load Ontology and Annotations...",
 		      new ImageIcon(LoadAttrsFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
@@ -55,13 +55,13 @@ public class LoadTableAttrsFromGenomeSpace extends CytoscapeAction {
 				return;
 
 			// Download the GenomeSpace file:
-			tempFile = File.createTempFile("temp", "cyattrs");
+			tempFile = File.createTempFile("temp", "ont");
 			dataManagerClient.downloadFile(fileMetadata, tempFile, true);
 
 			final ImportTextTableDialog dialog =
 				new ImportTextTableDialog(Cytoscape.getDesktop(), tempFile,
 							  fileMetadata.getName(),
-							  ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
+							  ImportTextTableDialog.ONTOLOGY_AND_ANNOTATION_IMPORT);
 			dialog.pack();
 			dialog.setLocationRelativeTo(Cytoscape.getDesktop());
 			dialog.setVisible(true);
