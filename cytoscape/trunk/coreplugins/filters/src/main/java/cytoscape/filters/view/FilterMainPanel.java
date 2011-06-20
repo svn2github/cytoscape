@@ -411,21 +411,18 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
 			
 			if (pNewFilter instanceof TopologyFilter) {
-				lbAttribute.setVisible(false);
 				btnAddFilterWidget.setVisible(false);
 				cmbAttributes.setVisible(false);	
 				pnlFilterDefinition.setBorder(javax.swing.BorderFactory
 						.createTitledBorder("Topology Filter Definition"));
 			}
 			else if (pNewFilter instanceof InteractionFilter) {
-				lbAttribute.setVisible(false);
 				btnAddFilterWidget.setVisible(false);
 				cmbAttributes.setVisible(false);	
 				pnlFilterDefinition.setBorder(javax.swing.BorderFactory
 						.createTitledBorder("Interaction Filter Definition"));				
 			}
 			else {
-				lbAttribute.setVisible(true);
 				btnAddFilterWidget.setVisible(true);
 				cmbAttributes.setVisible(true);								
 				pnlFilterDefinition.setBorder(javax.swing.BorderFactory
@@ -651,7 +648,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
         cmbAttributes.addPopupMenuListener(new WidestStringComboBoxPopupMenuListener());
 
 		btnAddFilterWidget = new javax.swing.JButton();
-		lbAttribute = new javax.swing.JLabel();
 		lbPlaceHolder = new javax.swing.JLabel();
 		pnlButton = new javax.swing.JPanel();
 		btnApplyFilter = new javax.swing.JButton();
@@ -712,14 +708,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 5);
 		pnlFilterDefinition.add(btnAddFilterWidget, gridBagConstraints);
-
-		lbAttribute.setText("Attribute/Filter");
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-		gridBagConstraints.insets = new java.awt.Insets(10, 5, 0, 0);
-		pnlFilterDefinition.add(lbAttribute, gridBagConstraints);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridy = 1;
@@ -808,8 +796,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private javax.swing.JComboBox cmbAttributes;
 
 	private javax.swing.JComboBox cmbSelectFilter;
-
-	private javax.swing.JLabel lbAttribute;
 
 	private javax.swing.JLabel lbPlaceHolder;
 
