@@ -42,7 +42,6 @@ public abstract class AbstractCyEvent<T> implements CyEvent<T> {
 
 	private final T source;
 	private final Class<?> listenerClass;
-	private final boolean synchronousOnly;
 
 	/** 
 	 * Constructor.
@@ -50,7 +49,7 @@ public abstract class AbstractCyEvent<T> implements CyEvent<T> {
 	 * @param listenerClass The Class that defines the listener interface. May NOT be null.
 	 * @param synchronousOnly Whether the event may only be fired synchronously.
 	 */
-	public AbstractCyEvent(final T source, Class<?> listenerClass, boolean synchronousOnly) {
+	public AbstractCyEvent(final T source, Class<?> listenerClass) {
 		if ( source == null )
 			throw new NullPointerException("event source is null");
 
@@ -59,7 +58,6 @@ public abstract class AbstractCyEvent<T> implements CyEvent<T> {
 
 		this.source = source;
 		this.listenerClass = listenerClass;
-		this.synchronousOnly = synchronousOnly;
 	}
 
 	/**
@@ -76,13 +74,5 @@ public abstract class AbstractCyEvent<T> implements CyEvent<T> {
 	@Override
 	public Class<?> getListenerClass() {
 		return listenerClass;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean synchronousOnly() {
-		return synchronousOnly;
 	}
 }

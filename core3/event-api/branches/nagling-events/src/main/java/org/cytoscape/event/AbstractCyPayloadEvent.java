@@ -44,7 +44,7 @@ public abstract class AbstractCyPayloadEvent<T,P> extends AbstractCyEvent<T> imp
 	private final Collection<P> payload;
 
 	public AbstractCyPayloadEvent(final T source, Class<?> listenerClass, Collection<P> payload) {
-		super(source, listenerClass, false);
+		super(source, listenerClass);
 
 		if ( payload == null )
 			throw new NullPointerException("Payload is null");

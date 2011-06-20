@@ -47,46 +47,33 @@ import static org.junit.Assert.assertEquals;
 public class AbstractCyEventTest {
 
 	private static class TestEvent<T> extends AbstractCyEvent<T> {
-		TestEvent(T src, Class<?> c, boolean s) {
-			super(src,c,s);
+		TestEvent(T src, Class<?> c) {
+			super(src,c);
 		}
 	}
 
 	@Test
 	public void testGetSource() {
 		Integer i = new Integer(1);
-		TestEvent<Integer> e = new TestEvent<Integer>(i,Integer.class,true);
+		TestEvent<Integer> e = new TestEvent<Integer>(i,Integer.class);
 		assertEquals( i, e.getSource() ); 
 	}
 
 	@Test
 	public void testGetListenerClass() {
 		Object i = new Object(); 
-		TestEvent<Object> e = new TestEvent<Object>(i,Object.class,false);
+		TestEvent<Object> e = new TestEvent<Object>(i,Object.class);
 		assertEquals( Object.class, e.getListenerClass() ); 
 	}
 
 	@Test(expected=NullPointerException.class)
 	public void testNullSource() {
-		new TestEvent<Object>(null, Object.class,true);
+		new TestEvent<Object>(null, Object.class);
 	}
 
 	@Test(expected=NullPointerException.class)
 	public void testNullListenerClass() {
-		new TestEvent<Object>(new Object(), null,false);
+		new TestEvent<Object>(new Object(), null);
 	}
 
-	@Test
-	public void testSynchronousTrue() {
-		Object i = new Object(); 
-		TestEvent<Object> e = new TestEvent<Object>(i,Object.class,true);
-		assertTrue( e.synchronousOnly() ); 
-	}
-
-	@Test
-	public void testSynchronousFalse() {
-		Object i = new Object(); 
-		TestEvent<Object> e = new TestEvent<Object>(i,Object.class,false);
-		assertFalse( e.synchronousOnly() ); 
-	}
 }

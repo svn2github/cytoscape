@@ -29,31 +29,22 @@ package org.cytoscape.event;
 
 
 public class DummyCyEventHelper implements CyEventHelper {
-	private Object lastSynchronousEvent;
-	private Object lastAsynchronousEvent;
+	private Object lastEvent;
 	private Object payload;
 
 	public DummyCyEventHelper() {
 	}
 	
 	public synchronized <E extends CyEvent<?>> void fireEvent(final E event) {
-		System.out.println("got event: " + event );
-		if ( event.synchronousOnly() )
-			lastSynchronousEvent = event;
-		else
-			lastAsynchronousEvent = event;
+		lastEvent = event;
 	}
 
 	public <S,P,E extends CyPayloadEvent<S,P>> void addEventPayload(S source, P p, Class<E> e) {
 		payload = p;
 	}
 
-	public synchronized Object getLastSynchronousEvent() {
-		return lastSynchronousEvent;
-	}
-
-	public Object getLastAsynchronousEvent() {
-		return lastAsynchronousEvent;
+	public Object getLastEvent() {
+		return lastEvent;
 	}
 	
 	public Object getLastPayload() {
@@ -66,6 +57,6 @@ public class DummyCyEventHelper implements CyEventHelper {
 	public void unsilenceEventSource(Object o) {
 	}
 
-	public void forceFirePayloadEvents() {
+	public void flushPayloadEvents() {
 	}
 }

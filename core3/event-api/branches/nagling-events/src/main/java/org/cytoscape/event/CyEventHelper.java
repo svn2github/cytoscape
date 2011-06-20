@@ -31,7 +31,7 @@ package org.cytoscape.event;
 /**
  * The basic event handling interface for Cytoscape.  All Cytoscape events
  * should be fired using these methods.  All listeners should be registered
- * as CyListener or CyMicroListener services.
+ * as CyListener services.
  */
 public interface CyEventHelper {
 	/**
@@ -64,16 +64,17 @@ public interface CyEventHelper {
 
 	/**
 	 * Forces accumulated payload events to be fired.  This is a useful method
-	 * that forces payload events, which are normally fired asynchronously to
-	 * be fired synchronously at a precise time. This method should NOT be called
-	 * as a course of habit, but can be used in special circumstances.
+	 * that flushes all accumulated payload events, which are normally fired 
+	 * asynchronously to be fired synchronously at a precise time. While this method
+	 * can be safely called at any time, it probably shouldn't be called as a force 
+	 * of habit.
 	 */
-	 void forceFirePayloadEvents();
+	 void flushPayloadEvents();
 
 	/**
 	 * This method will prevent any events fired from the specified source 
 	 * object from being propagated to listeners.  This applies to both
-	 * normal Listeners and MicroListeners.
+	 * normal events and accumulating event payloads.
 	 * @param eventSource The object that should have its events blocked 
 	 * from being sent.
 	 */
@@ -82,7 +83,7 @@ public interface CyEventHelper {
 	/**
 	 * This method will allow events fired from the specified source 
 	 * object to be propagated to listeners.  This applies to both
-	 * normal Listeners and MicroListeners.  This method only needs
+	 * normal events and accumulating event payloads.  This method only needs
 	 * to be called if the silenceEventSource(eventSource) method has
 	 * been called.  Otherwise, all events are by default propagated
 	 * normally.

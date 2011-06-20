@@ -37,7 +37,7 @@
 package org.cytoscape.event;
 
 public class FakeCyEvent extends AbstractCyEvent<Object> {
-	public FakeCyEvent(boolean b) {
-		super(new Object(), FakeCyListener.class, b);
+	public FakeCyEvent() {
+		super(new Object(), FakeCyListener.class);
 	}
 }	

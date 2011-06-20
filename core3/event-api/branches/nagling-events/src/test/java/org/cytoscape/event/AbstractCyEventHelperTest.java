@@ -51,71 +51,58 @@ public abstract class AbstractCyEventHelperTest {
 
 	@Test
 	public void testFireSynchronous() {
-		helper.fireEvent(new StubCyEvent("homer",true));
+		helper.fireEvent(new StubCyEvent("homer"));
 		assertEquals(1, service.getNumCalls());
 	}
 
 	@Test
 	public void testFireAsynchronous() {
 		try {
-		helper.fireEvent(new StubCyEvent("marge",false));
+		helper.fireEvent(new StubCyEvent("marge"));
 		Thread.sleep(500); // TODO is there a better way to wait?
 		assertEquals(1, service.getNumCalls());
 		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
 	}
 
-	// This is a performance test that counts the number of events fired in 1 second. 
-	// We verify that the microlistener approach is at least 3 times faster than the
+	// This is a performance test that counts the number of events fired in 1/5 second. 
+	// We verify that the payload approach is at least 3 times faster than the
 	// event/listener combo. 
-	/*
 	@Test
 	public void testLD1second() {
-		final long duration = 1000000000;
+		final long duration = 200000000;
 
 		long end = System.nanoTime() + duration;
 		int syncCount = 0;
 		while ( end > System.nanoTime() ) {
-			helper.fireEvent(new StubCyEvent("homer",true));
+			helper.fireEvent(new StubCyEvent("homer"));
 			syncCount++;
 		}
 
-		end = System.nanoTime() + duration;
-		int asyncCount = 0;
-		while ( end > System.nanoTime() ) {
-			helper.fireEvent(new StubCyEvent("homer",false));
-			asyncCount++;
-		}
-	
-		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
-		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
 
 		end = System.nanoTime() + duration;
-		int microCount = 0;
+		int payloadCount = 0;
 		while ( end > System.nanoTime() ) {
-			microEventSource.testFire( helper, 5 );
-			microCount++;
+			helper.addEventPayload("homer","marge",StubCyPayloadEvent.class);
+			payloadCount++;
 		}
+		helper.flushPayloadEvents();
 
-		System.out.println("syncCount  : " + syncCount);
-		System.out.println("asyncCount : " + asyncCount);
-		System.out.println("microCount : " + microCount);
-		System.out.println("speedup micro/sync : " + ((double)microCount/(double)syncCount));
-		System.out.println("speedup micro/async: " + ((double)microCount/(double)asyncCount));
-		System.out.println("speedup async/sync : " + ((double)asyncCount/(double)syncCount));
-
-		assertTrue( microCount > (syncCount*3) );
+		System.out.println("payloadCount: " + payloadCount);
+		System.out.println("syncCount:    " + syncCount);
+		System.out.println("diff:         " + (float)payloadCount/(float)syncCount);
+		
+		assertTrue( payloadCount > (syncCount*3) );
 	}
-	*/
 
 	@Test
 	public void testSynchronousNoInstances() {
-		helper.fireEvent(new FakeCyEvent(true));
+		helper.fireEvent(new FakeCyEvent());
 	}
 
 	@Test
 	public void testAsynchronousNoInstances() {
 		try {
-		helper.fireEvent(new FakeCyEvent(false));
+		helper.fireEvent(new FakeCyEvent());
 		Thread.sleep(500); // TODO is there a better way to wait?
 		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
 	}
@@ -124,7 +111,7 @@ public abstract class AbstractCyEventHelperTest {
 	public void testSynchronousSilenced() {
 		String source = "homer";
 		helper.silenceEventSource(source);
-		helper.fireEvent(new StubCyEvent(source,true));
+		helper.fireEvent(new StubCyEvent(source));
 		assertEquals(0, service.getNumCalls());
 	}
 
@@ -133,7 +120,7 @@ public abstract class AbstractCyEventHelperTest {
 		try {
 		String source = "homer";
 		helper.silenceEventSource(source);
-		helper.fireEvent(new StubCyEvent(source,false));
+		helper.fireEvent(new StubCyEvent(source));
 		Thread.sleep(500); // TODO is there a better way to wait?
 		assertEquals(0, service.getNumCalls());
 		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
@@ -143,10 +130,10 @@ public abstract class AbstractCyEventHelperTest {
 	public void testSynchronousSilencedThenUnsilenced() {
 		String source = "homer";
 		helper.silenceEventSource(source);
-		helper.fireEvent(new StubCyEvent(source,true));
+		helper.fireEvent(new StubCyEvent(source));
 		assertEquals(0, service.getNumCalls());
 		helper.unsilenceEventSource(source);
-		helper.fireEvent(new StubCyEvent(source,true));
+		helper.fireEvent(new StubCyEvent(source));
 		assertEquals(1, service.getNumCalls());
 	}
 
@@ -155,11 +142,11 @@ public abstract class AbstractCyEventHelperTest {
 		try {
 		String source = "homer";
 		helper.silenceEventSource(source);
-		helper.fireEvent(new StubCyEvent(source,false));
+		helper.fireEvent(new StubCyEvent(source));
 		Thread.sleep(500); // TODO is there a better way to wait?
 		assertEquals(0, service.getNumCalls());
 		helper.unsilenceEventSource(source);
-		helper.fireEvent(new StubCyEvent(source,false));
+		helper.fireEvent(new StubCyEvent(source));
 		Thread.sleep(500); // TODO is there a better way to wait?
 		assertEquals(1, service.getNumCalls());
 		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
@@ -172,6 +159,17 @@ public abstract class AbstractCyEventHelperTest {
 		helper.addEventPayload("source","marge",StubCyPayloadEvent.class);
 		Thread.sleep(500);
 		assertTrue( payloadService.getNumCalls() >= 1 );
+		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
+	}
+	
+	@Test
+	public void testAddEventPayloadSilencedSource() {
+		try {
+		helper.silenceEventSource("source");
+		helper.addEventPayload("source","homer",StubCyPayloadEvent.class);
+		helper.addEventPayload("source","marge",StubCyPayloadEvent.class);
+		Thread.sleep(500);
+		assertTrue( payloadService.getNumCalls() == 0 );
 		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
 	}
 
@@ -199,6 +197,19 @@ public abstract class AbstractCyEventHelperTest {
 		helper.addEventPayload("source","bart",null);
 		Thread.sleep(500);
 		assertEquals( 0, payloadService.getNumCalls() );
+		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
+	}
+
+	@Test
+	public void testDeadlock() {
+		// The use of a CyEventHelper in the listener to add other event 
+		// payload should not cause a deadlock.
+		payloadService.setEventHelper(helper);
+		try {
+		helper.addEventPayload("source","barney",StubCyPayloadEvent.class);
+		Thread.sleep(1100);
+		System.out.println("deadlock payloadService num calls:" + payloadService.getNumCalls());
+		assertTrue( payloadService.getNumCalls() > 1 );
 		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
 	}
 }

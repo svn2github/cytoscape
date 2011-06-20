@@ -55,15 +55,6 @@ public class AbstractCyPayloadEventTest {
 		}
 	}
 
-	@Test
-	public void testOnlyAnsynchronous() {
-		List<String> l = new ArrayList<String>();
-		l.add("homer");
-		l.add("marge");
-		Object source = new Object(); 
-		TestEvent<Object,String> e = new TestEvent<Object,String>(source,Object.class,l);
-		assertFalse( e.synchronousOnly() );	
-	}
 
 	@Test
 	public void testGetPayload() {

@@ -41,6 +41,7 @@ package org.cytoscape.event;
  */
 public class StubCyPayloadListenerImpl implements StubCyPayloadListener {
 	int called = 0;
+	CyEventHelper eh = null;
 
 	/**
 	 *  DOCUMENT ME!
@@ -48,7 +49,20 @@ public class StubCyPayloadListenerImpl implements StubCyPayloadListener {
 	 * @param e DOCUMENT ME!
 	 */
 	public void handleEvent(StubCyPayloadEvent e) {
+//		System.out.println("begin handle payload in thread " + Thread.currentThread());
+//		for (String payload : e.getPayloadCollection()) {
+//			System.out.print(payload + "  ");
+//		}
+//		System.out.println("");
 		called++;
+		if ( eh != null ) {
+			for ( int i = 0; i < 5; i++ ) {
+//				System.out.println("adding additional event payloads..." + i);
+				try { Thread.sleep(100); } catch (Exception ex) {}
+				eh.addEventPayload("listener","payload"+i,StubCyPayloadEvent.class);
+			}
+			eh = null; // so that we only call spew extra events once!
+		}
 	}
 
 	/**
@@ -62,5 +76,9 @@ public class StubCyPayloadListenerImpl implements StubCyPayloadListener {
 
 	public String toString() {
 		return "StubCyPayloadListenerImpl: " + Integer.toString(called);
+	}
+	
+	public void setEventHelper(CyEventHelper eh) {
+		this.eh = eh;
 	}
 }

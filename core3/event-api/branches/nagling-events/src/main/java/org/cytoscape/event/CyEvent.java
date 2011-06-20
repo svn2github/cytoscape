@@ -57,13 +57,4 @@ public interface CyEvent<T> {
 	 */
 	Class<?> getListenerClass();
 
-	/**
-	 * Returns whether the event may only be fired synchronously. If true, 
-	 * the event will only be fired synchronously in the same thread as the caller
-	 * of the fireEvent() method.  If false, the event will be fired in a separate
-	 * thread from the caller of the fireEvent() method.
-	 * 
-	 * @return Whether the event may only be fired synchronously. 
-	 */
-	boolean synchronousOnly();
 }

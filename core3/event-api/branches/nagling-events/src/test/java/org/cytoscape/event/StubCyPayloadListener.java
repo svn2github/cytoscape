@@ -54,4 +54,6 @@ public interface StubCyPayloadListener extends CyListener {
 	 * methods.
 	 */
 	public int getNumCalls();
+	
+	void setEventHelper(CyEventHelper eh);
 }
