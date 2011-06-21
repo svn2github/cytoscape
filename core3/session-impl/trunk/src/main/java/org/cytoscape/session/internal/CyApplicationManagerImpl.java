@@ -124,7 +124,7 @@ public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAb
 	    }
 	}
 	if (changed) {
-	    cyEventHelper.fireSynchronousEvent(new SetCurrentNetworkViewEvent(this, currentNetworkView));
+	    cyEventHelper.fireEvent(new SetCurrentNetworkViewEvent(this, currentNetworkView));
 	}
 
     }
@@ -158,7 +158,7 @@ public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAb
 	    }
 	}
 	if (changed) {
-	    cyEventHelper.fireSynchronousEvent(new SetCurrentNetworkViewEvent(this, currentNetworkView));
+	    cyEventHelper.fireEvent(new SetCurrentNetworkViewEvent(this, currentNetworkView));
 	}
     }
 
@@ -182,7 +182,7 @@ public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAb
 	}
 
 	logger.debug("Current network is set.  Firing SetCurrentNetworkEvent: Network ID = " + networkId);
-	cyEventHelper.fireSynchronousEvent(new SetCurrentNetworkEvent(this, currentNetwork));
+	cyEventHelper.fireEvent(new SetCurrentNetworkEvent(this, currentNetwork));
     }
 
     public synchronized CyNetworkView getCurrentNetworkView() {
@@ -214,7 +214,7 @@ public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAb
 	}
 
 	logger.debug("Current network view is set.  Firing SetCurrentNetworkViewEvent: View ID = " + view.getSUID());
-	cyEventHelper.fireSynchronousEvent(new SetCurrentNetworkViewEvent(this, currentNetworkView));
+	cyEventHelper.fireEvent(new SetCurrentNetworkViewEvent(this, currentNetworkView));
     }
 
     public synchronized List<CyNetworkView> getSelectedNetworkViews() {
@@ -242,7 +242,7 @@ public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAb
 	    }
 	}
 
-	cyEventHelper.fireSynchronousEvent(new SetSelectedNetworkViewsEvent(this, new ArrayList<CyNetworkView>(
+	cyEventHelper.fireEvent(new SetSelectedNetworkViewsEvent(this, new ArrayList<CyNetworkView>(
 		selectedNetworkViews)));
     }
 
@@ -269,7 +269,7 @@ public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAb
 		selectedNetworks.add(cn);
 	}
 
-	cyEventHelper.fireSynchronousEvent(new SetSelectedNetworksEvent(this,
+	cyEventHelper.fireEvent(new SetSelectedNetworksEvent(this,
 		new ArrayList<CyNetwork>(selectedNetworks)));
     }
 
@@ -280,7 +280,7 @@ public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAb
     public void setCurrentRenderingEngine(RenderingEngine<CyNetwork> engine) {
 	this.currentRenderer = engine;
 
-	cyEventHelper.fireSynchronousEvent(new SetCurrentRenderingEngineEvent(this, this.currentRenderer));
+	cyEventHelper.fireEvent(new SetCurrentRenderingEngineEvent(this, this.currentRenderer));
 
     }
     

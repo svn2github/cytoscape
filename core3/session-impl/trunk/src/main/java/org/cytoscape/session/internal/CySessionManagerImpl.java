@@ -107,7 +107,7 @@ public class CySessionManagerImpl implements CySessionManager {
 		// Plugins who want to save anything to a session will have to listen for this event
 		// and will then be responsible for adding files through SessionAboutToBeSavedEvent.addPluginFiles(..)
 		SessionAboutToBeSavedEvent savingEvent = new SessionAboutToBeSavedEvent(this);
-		cyEventHelper.fireSynchronousEvent(savingEvent);
+		cyEventHelper.fireEvent(savingEvent);
 
 		CysessionFactory cysessFactory = new CysessionFactory(netMgr, nvMgr, vmMgr);
 
@@ -245,7 +245,7 @@ public class CySessionManagerImpl implements CySessionManager {
 		currentSession = sess;
 		currentFileName = fileName;
 
-		cyEventHelper.fireSynchronousEvent(new SessionLoadedEvent(this, currentSession, getCurrentSessionFileName()));
+		cyEventHelper.fireEvent(new SessionLoadedEvent(this, currentSession, getCurrentSessionFileName()));
 	}
 
 	public String getCurrentSessionFileName() {
