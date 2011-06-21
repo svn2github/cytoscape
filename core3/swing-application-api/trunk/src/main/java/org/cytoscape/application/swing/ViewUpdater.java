@@ -27,70 +27,59 @@
  */
 package org.cytoscape.application.swing;
 
+import java.util.Map;
+
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.View;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.events.RowSetMicroListener;
+import org.cytoscape.model.events.RowSetRecord;
+import org.cytoscape.model.events.RowsSetEvent;
+import org.cytoscape.model.events.RowsSetListener;
 
 /**
- * A utility class that provides an implementation of
- * {@link RowSetMicroListener} for a particular {@link View} and
- * {@link VisualProperty}.
+ * A utility class that provides an implementation of {@link RowsSetListener}
+ * for a particular column and {@link VisualProperty}.
  */
-public class ViewUpdater<T, S> implements RowSetMicroListener {
+public class ViewUpdater<S> implements RowsSetListener {
 
-    protected final CyRow row;
-    protected final View<T> view;
-    protected final VisualProperty<S> vp;
-    protected final String columnName;
+	protected final VisualProperty<S> vp;
+	protected final String columnName;
+	private final Map<CyRow, View<?>> rowViewMap;
 
-    /**
-     * Constructor.
-     * 
-     * @param view
-     *            The view that the visual property should be set whne the row
-     *            is changed.
-     * @param vp
-     *            The visual property that should be set on the view when the
-     *            row is changed.
-     * @param row
-     *            The row that is being listened to.
-     * @param columnName
-     *            The name of the column within the row that is being listened
-     *            to.
-     */
-    public ViewUpdater(View<T> view, VisualProperty<S> vp, CyRow row, String columnName) {
-	this.view = view;
-	this.vp = vp;
-	this.row = row;
-	this.columnName = columnName;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param view The view that the visual property should be set whne the row
+	 * is changed.
+	 * @param vp The visual property that should be set on the view when the row
+	 * is changed.
+	 * @param row The row that is being listened to.
+	 * @param columnName The name of the column within the row that is being
+	 * listened to.
+	 */
+	public ViewUpdater(VisualProperty<S> vp, String columnName, Map<CyRow, View<?>> rowViewMap) {
+		this.vp = vp;
+		this.columnName = columnName;
+		this.rowViewMap = rowViewMap;
+	}
 
-    /**
-     * Returns the source of the event.
-     * 
-     * @return the source of the event.
-     */
-    public Object getEventSource() {
-	return row;
-    }
+	/**
+	 * Called whenever {@link CyRow}s are changed. Will attempt to set the
+	 * visual property on the view with the new value that has been set in the
+	 * row.
+	 * 
+	 * @param RowsSetEvent The event to be processed.
+	 */
+	@SuppressWarnings("unchecked")
+	public void handleEvent(RowsSetEvent e) {
+		for (RowSetRecord record : e.getPayloadCollection()) {
+			if (columnName != record.getColumn())
+				continue;
 
-    /**
-     * Called whenever the {@link CyRow} is changed. Will attempt to set the
-     * visual property on the view with the new value that has been set in the
-     * row.
-     * 
-     * @param columnName
-     *            The name of the column with the row that was changed.
-     * @param newValue
-     *            The new value that the row has been set to.
-     */
-    @SuppressWarnings("unchecked")
-    public void handleRowSet(final String columnName, final Object newValue, final Object newRawValue) {
-	if (!columnName.equals(this.columnName))
-	    return;
+			View<?> v = rowViewMap.get(record.getRow());
 
-	// Assume caller checks validity of value parameter.
-	view.setVisualProperty(vp, (S) newValue);
-    }
+			if (v != null)
+				v.setVisualProperty(vp, (S) record.getValue());
+		}
+	}
 }
