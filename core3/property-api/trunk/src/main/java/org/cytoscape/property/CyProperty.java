@@ -23,6 +23,11 @@ public interface CyProperty<P> {
 
 		/** This properties will be loaded from and saved to session files. */
 		SESSION_FILE,
+
+		/** This properties will be loaded from and saved to session files and the default
+		 *  config directory.  (Settings in a session file will overwrite those from the
+		 *  default config directory.) */
+                SESSION_FILE_AND_CONFIG_DIR
 	}
 
 	/**
