@@ -52,6 +52,9 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.events.SetCurrentRenderingEngineEvent;
 import org.cytoscape.session.events.SetCurrentRenderingEngineListener;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.events.NetworkViewAddedEvent;
+import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.model.events.NetworkViewDestroyedEvent;
 import org.cytoscape.view.model.events.NetworkViewDestroyedListener;
 import org.cytoscape.view.presentation.RenderingEngine;
@@ -66,8 +69,7 @@ import org.slf4j.LoggerFactory;
 public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 		NetworkViewDestroyedListener {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(BirdsEyeViewHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(BirdsEyeViewHandler.class);
 
 	private static final Dimension DEF_PANEL_SIZE = new Dimension(280, 280);
 	private static final Color DEF_BACKGROUND_COLOR = Color.WHITE;
@@ -165,7 +167,6 @@ public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 		bevFactory.getInstance(bevPanel, engine.getViewModel());
 		setFocus();
 		bevPanel.repaint();
-
 	}
 
 	@Override
@@ -176,5 +177,20 @@ public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 			bevPanel.removeAll();
 			bevPanel.repaint();
 		}
+	}
+
+
+	public void addView(final RenderingEngine<CyNetwork> newEngine) {
+		logger.debug("======== Got new view.  Creating new BEV =============");
+		
+			
+		engine = newEngine;
+		logger.debug("Got BEV New Network view = " + engine.getViewModel());
+		bevPanel.removeAll();
+		bevFactory.getInstance(bevPanel, engine.getViewModel());
+		setFocus();
+		bevPanel.repaint();
+		
+		logger.debug("======== BEV update done. =============");
 	}
 }

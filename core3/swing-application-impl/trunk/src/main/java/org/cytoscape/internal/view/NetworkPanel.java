@@ -137,6 +137,8 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	private final CyEventHelper eventHelper;
 	private final Map<CyNetwork, RowSetMicroListener> nameListeners;
 	private final CyTableRowUpdateService tableRowUpdateService;
+	
+	private final BirdsEyeViewHandler bird;
 
 	/**
 	 * Constructor for the Network Panel.
@@ -149,6 +151,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 			final CyTableRowUpdateService tableRowUpdateService) {
 		super();
 
+		this.bird = bird;
 		this.appManager = applicationManager;
 		this.netmgr = netmgr;
 		this.networkViewManager = networkViewManager;
@@ -291,9 +294,6 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 		return treeTable;
 	}
 
-	public JPanel getNavigatorPanel() {
-		return navigatorPanel;
-	}
 
 	/**
 	 * Remove a network from the panel.
@@ -402,11 +402,13 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
 
 	public void handleEvent(NetworkViewAddedEvent nde) {
-		logger.debug("Network view added to NetworkPanel: " + nde.getNetworkView().getModel().getSUID());
+		logger.debug("********** Network view added to NetworkPanel. View ID: " + nde.getNetworkView().getSUID());
 
 		// Set current network view to the new one.
 		appManager.setCurrentNetworkView(nde.getNetworkView().getModel().getSUID());
-
+		
+		// Update BEV
+		bird.addView(appManager.getCurrentRenderingEngine());
 		treeTable.getTree().updateUI();
 	}
 
