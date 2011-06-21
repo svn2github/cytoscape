@@ -7,7 +7,6 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.events.NodeViewChangeMicroListener;
 
 
 /**
@@ -62,8 +61,7 @@ public abstract class ViewImpl<M> implements View<M> {
 	}
 	
 
-	abstract public <T, V extends T> void setVisualProperty(
-			VisualProperty<? extends T> vp, V value);
+	abstract public <T, V extends T> void setVisualProperty(VisualProperty<? extends T> vp, V value);
 
 	
 	@SuppressWarnings("unchecked")
@@ -83,8 +81,7 @@ public abstract class ViewImpl<M> implements View<M> {
 	
 	// TODO: should I fire event?
 	@Override
-	public <T, V extends T> void setLockedValue(VisualProperty<? extends T> vp,
-			V value) {
+	public <T, V extends T> void setLockedValue(VisualProperty<? extends T> vp, V value) {
 		this.visualPropertyLocks.put(vp, value);
 	}
 	

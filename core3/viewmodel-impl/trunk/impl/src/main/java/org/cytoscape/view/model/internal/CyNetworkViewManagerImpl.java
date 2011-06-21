@@ -104,7 +104,7 @@ public class CyNetworkViewManagerImpl implements CyNetworkViewManager, NetworkAb
 			throw new IllegalArgumentException("network view is not recognized by this NetworkManager");
 
 		// let everyone know!
-		cyEventHelper.fireSynchronousEvent(new NetworkViewAboutToBeDestroyedEvent(this, view));
+		cyEventHelper.fireEvent(new NetworkViewAboutToBeDestroyedEvent(this, view));
 
 		synchronized (this) {
 			// do this again within the lock to be safe
@@ -114,7 +114,7 @@ public class CyNetworkViewManagerImpl implements CyNetworkViewManager, NetworkAb
 			networkViewMap.remove(viewID);
 		}
 
-		cyEventHelper.fireSynchronousEvent(new NetworkViewDestroyedEvent(this));
+		cyEventHelper.fireEvent(new NetworkViewDestroyedEvent(this));
 		view = null;
 		logger.debug("######### Network View deleted: " + viewID);
 	}
@@ -133,7 +133,7 @@ public class CyNetworkViewManagerImpl implements CyNetworkViewManager, NetworkAb
 		}
 
 		logger.debug("Firing event: NetworkViewAddedEvent");
-		cyEventHelper.fireSynchronousEvent(new NetworkViewAddedEvent(this, view));
+		cyEventHelper.fireEvent(new NetworkViewAddedEvent(this, view));
 		logger.debug("Done event: NetworkViewAddedEvent");
 	}
 }

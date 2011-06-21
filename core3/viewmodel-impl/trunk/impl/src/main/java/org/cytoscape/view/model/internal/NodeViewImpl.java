@@ -4,7 +4,8 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.events.NodeViewChangeMicroListener;
+import org.cytoscape.view.model.events.NodeViewsChangedEvent;
+import org.cytoscape.view.model.events.ViewChangeRecord;
 
 public class NodeViewImpl extends ViewImpl<CyNode> {
 
@@ -16,8 +17,7 @@ public class NodeViewImpl extends ViewImpl<CyNode> {
 	}
 	
 	@Override
-	public <T, V extends T> void setVisualProperty(
-			VisualProperty<? extends T> vp, V value) {
+	public <T, V extends T> void setVisualProperty(VisualProperty<? extends T> vp, V value) {
 		
 		if(value == null)
 			this.visualProperties.remove(vp);
@@ -25,7 +25,7 @@ public class NodeViewImpl extends ViewImpl<CyNode> {
 			this.visualProperties.put(vp, value);
 		
 		// getVisualProperty method call is REQUIRED to check bypass.
-		cyEventHelper.getMicroListener(NodeViewChangeMicroListener.class, parent).nodeVisualPropertySet(this, vp, this.getVisualProperty(vp));
+		cyEventHelper.addEventPayload(parent, new ViewChangeRecord<CyNode>(this,vp,getVisualProperty(vp)), NodeViewsChangedEvent.class);
 	}
 
 }
