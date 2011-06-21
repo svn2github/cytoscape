@@ -1,15 +1,7 @@
-
 /*
  File: CyOpertatingContextImpl.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,9 +26,9 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.internal;
+
 
 import java.util.Properties;
 import java.io.File;
@@ -48,6 +40,7 @@ import org.cytoscape.property.CyProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * Basic access to Cytoscape's operating context. 
  */
@@ -55,8 +48,6 @@ import org.slf4j.LoggerFactory;
 // dialog - this needs to be supported more generally on an application level, perhaps
 // on a shutdown event?
 public class CyOperatingContextImpl {
-
-	public static final String CONFIG_DIR = ".cytoscape";
 	public static final String PROPS = "cytoscape.props";
 
 	private static final Logger logger = LoggerFactory.getLogger(CyOperatingContextImpl.class);
@@ -74,12 +65,12 @@ public class CyOperatingContextImpl {
 
 	private void loadLocalProps() {
 		try {
-            File vmp = getConfigFile(PROPS);
+			File vmp = getConfigFile(PROPS);
 
-            if (vmp != null)
-                props.getProperties().load(new FileInputStream(vmp));
-            else
-                logger.warn("couldn't read " + PROPS + " from " + CONFIG_DIR);
+			if (vmp != null)
+				props.getProperties().load(new FileInputStream(vmp));
+			else
+				logger.warn("couldn't read " + PROPS + " from " + CyProperty.DEFAULT_CONFIG_DIR);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -98,19 +89,19 @@ public class CyOperatingContextImpl {
 	 * Returns a {@link File} pointing to the config directory.
 	 */
 	public File getConfigDirectory() {
-        try {
-            String dirName = props.getProperties().getProperty("alternative.config.dir", System.getProperty("user.home"));
-            File parent_dir = new File(dirName, CONFIG_DIR);
+		try {
+			String dirName = props.getProperties().getProperty("alternative.config.dir", System.getProperty("user.home"));
+			File parent_dir = new File(dirName, CyProperty.DEFAULT_CONFIG_DIR);
 
-            if (parent_dir.mkdir())
-                logger.warn("Parent_Dir: " + parent_dir + " created.");
+			if (parent_dir.mkdir())
+				logger.warn("Parent_Dir: " + parent_dir + " created.");
 
-            return parent_dir;
-        } catch (Exception e) {
-            logger.warn("error getting config directory");
-        }
+			return parent_dir;
+		} catch (Exception e) {
+			logger.warn("error getting config directory");
+		}
 
-        return null;
+		return null;
 	}
 
 	/**
