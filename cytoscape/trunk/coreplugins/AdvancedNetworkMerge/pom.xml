@@ -41,6 +41,13 @@
     <plugins>
 	  <plugin>
         <artifactId>maven-assembly-plugin</artifactId> 
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Cytoscape-Plugin>csplugins.network.merge.NetworkMergePlugin</Cytoscape-Plugin>
+            </manifestEntries>
+          </archive>
+        </configuration>
 	  </plugin>
     </plugins>
   </build>

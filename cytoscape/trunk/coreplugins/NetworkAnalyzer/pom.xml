@@ -41,6 +41,13 @@
     <plugins>
 	  <plugin>
         <artifactId>maven-assembly-plugin</artifactId> 
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Cytoscape-Plugin>de.mpg.mpi_inf.bioinf.netanalyzer.Plugin</Cytoscape-Plugin>
+            </manifestEntries>
+          </archive>
+        </configuration>
 	  </plugin>
     </plugins>
   </build>

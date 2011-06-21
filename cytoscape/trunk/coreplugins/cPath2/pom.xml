@@ -67,6 +67,13 @@
     <plugins>
 	  <plugin>
         <artifactId>maven-assembly-plugin</artifactId> 
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Cytoscape-Plugin>org.cytoscape.coreplugin.cpath.plugin.CPathPlugIn</Cytoscape-Plugin>
+            </manifestEntries>
+          </archive>
+        </configuration>
 	  </plugin>
       <plugin>
         <groupId>org.jvnet.jaxb2.maven2</groupId>

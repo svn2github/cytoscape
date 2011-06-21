@@ -41,6 +41,13 @@
     <plugins>
 	  <plugin>
         <artifactId>maven-assembly-plugin</artifactId> 
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Cytoscape-Plugin>cytoscape.editor.CytoscapeEditorPlugin</Cytoscape-Plugin>
+            </manifestEntries>
+          </archive>
+        </configuration>
 	  </plugin>
     </plugins>
   </build>
