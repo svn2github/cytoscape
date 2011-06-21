@@ -42,8 +42,6 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.events.RowsAboutToChangeEvent;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
@@ -102,10 +100,8 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 		CyNetwork network = cyNetworkFactory.getInstance();
 		final CyTable nodeTable = network.getDefaultNodeTable();
 		final CyTable edgeTable = network.getDefaultEdgeTable();
-		try {
+
 			// Generate bundled event to avoid too many events problem.
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, nodeTable));
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, edgeTable));
 
 			final String firstLine = br.readLine();
 			if (firstLine.contains(TAB))
@@ -133,10 +129,6 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 					continue;
 				}
 			}
-		} finally {
-			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, nodeTable));
-			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, edgeTable));
-		}
 
 		br.close();
 		tm.setStatusMessage("Network data loaded from data source.\nCreting Cytoscape network...");
