@@ -47,7 +47,6 @@ public abstract class AbstractCyEvent<T> implements CyEvent<T> {
 	 * Constructor.
 	 * @param source The source object that fires the event. May NOT be null.
 	 * @param listenerClass The Class that defines the listener interface. May NOT be null.
-	 * @param synchronousOnly Whether the event may only be fired synchronously.
 	 */
 	public AbstractCyEvent(final T source, Class<?> listenerClass) {
 		if ( source == null )

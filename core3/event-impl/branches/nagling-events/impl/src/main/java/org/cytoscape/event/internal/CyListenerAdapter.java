@@ -50,7 +50,6 @@ import org.slf4j.LoggerFactory;
  */
 public class CyListenerAdapter {
 	private static final Logger logger = LoggerFactory.getLogger(CyListenerAdapter.class);
-	private static final Executor EXEC = Executors.newCachedThreadPool();
 	private static final ServiceComparator serviceComparator = new ServiceComparator(); 
 
 	private final Map<Class<?>,ServiceTracker> serviceTrackers; 
@@ -85,21 +84,11 @@ public class CyListenerAdapter {
 		final Class<?> listenerClass = event.getListenerClass();
 		
 		final Object[] listeners = getListeners(listenerClass);
-		if ( listeners == null ) {
+		if ( listeners == null ) 
 			return;
-		} 
-
-	//	if ( event.synchronousOnly() )
-			fireSynchronousEvent(event,listenerClass,listeners);
-	//	else
-	//		fireAsynchronousEvent(event,listenerClass,listeners);
-	}
-
-
-
-	private <E extends CyEvent<?>> void fireSynchronousEvent(final E event, Class<?> listenerClass, Object[] listeners) {
-
+		
 		Object lastListener = null;
+		
 		try {
 			final Method method = listenerClass.getMethod("handleEvent", event.getClass());
 
@@ -118,30 +107,6 @@ public class CyListenerAdapter {
 		} catch (IllegalAccessException e) {
 			logger.error("Listener can't execute \"handleEvent\" method: "
 				     + listenerClass.getName(), e);
-		}
-	}
-
-	/**
-	 * Calls each listener found in the Service Registry identified by the listenerClass
-	 * and filter with the supplied event in a new thread.<p>This method should <b>ONLY</b>
-	 * ever be called with a thread safe event object!</p>
-	 *
-	 * @param <E> The type of event. 
-	 * @param event  The event object. 
-	 */
-	private <E extends CyEvent> void fireAsynchronousEvent(final E event, Class<?> listenerClass, Object[] listeners) {
-
-
-		try {
-			final Method method = listenerClass.getMethod("handleEvent", event.getClass());
-
-			for (final Object listener : listeners) {
-				EXEC.execute(new Runner(method, listener, event, listenerClass));
-			}
-		} catch (NoSuchMethodException e) {
-			// TODO should probably rethrow
-			logger.error("Listener doesn't implement \"handleEvent\" method: "
-			                   + listenerClass.getName(), e);
 		}
 	}
 
@@ -170,30 +135,4 @@ public class CyListenerAdapter {
 		silencedSources.remove(eventSource);
 	}
 
-
-	private static class Runner implements Runnable {
-		private final Method method;
-		private final Object listener;
-		private final Object event;
-		private final Class clazz;
-
-		public Runner(final Method method, final Object listener, final Object event, Class clazz) {
-			this.method = method;
-			this.listener = listener;
-			this.event = event;
-			this.clazz = clazz;
-		}
-
-		public void run() {
-			try {
-				method.invoke(clazz.cast(listener), event);
-			} catch (IllegalAccessException e) {
-				// TODO should rethrow as something
-				logger.error("Listener can't execute \"handleEvent\" method: " + clazz.getName(), e);
-			} catch (InvocationTargetException e) {
-				// TODO should rethrow as something
-				logger.error("Listener threw exception as part of \"handleEvent\" invocation: " + listener.toString(), e);
-			}
-		}
-	}
 }

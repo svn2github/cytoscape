@@ -37,7 +37,16 @@ package org.cytoscape.event;
 
 import java.util.Collection;
 
-public interface CyPayloadEvent<T,P> extends CyEvent<T> {
+/**
+ * An extension of CyEvent specifically for payload events.
+ * @param <S> The event source type.
+ * @param <P> The payload type.
+ */
+public interface CyPayloadEvent<S,P> extends CyEvent<S> {
 	
+	/**
+	 * Returns a collection of payload objects.
+	 * @return a collection of payload objects.
+	 */
 	Collection<P> getPayloadCollection();
 }

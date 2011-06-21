@@ -85,4 +85,15 @@ public class AbstractCyPayloadEventTest {
 		assertEquals(0,payload.size());
 		assertFalse(payload.contains("bart"));
 	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testCantModifyPayload() {
+		List<String> l = new ArrayList<String>();
+		l.add("homer");
+		l.add("marge");
+		Object source = new Object(); 
+		TestEvent<Object,String> e = new TestEvent<Object,String>(source,Object.class,l);
+		Collection<String> payload = e.getPayloadCollection();
+		payload.add("something");
+	}
 }

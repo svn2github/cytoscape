@@ -38,7 +38,7 @@ public interface CyEventHelper {
 	 * The default number of milliseconds to wait before the next
 	 * time that we will check for payload events to fire. 
 	 */
-	int DEFAULT_PAYLOAD_WAIT_TIME_MILLIS = 100;
+	int DEFAULT_PAYLOAD_INTERVAL_MILLIS = 100;
 	
 	/**
 	 * Calls each listener found in the Service Registry identified by the listenerClass
@@ -50,11 +50,12 @@ public interface CyEventHelper {
 	<E extends CyEvent<?>> void fireEvent(final E event);
 
 	/**
-	 * Adds a payload object to be accumulated in an event. The event is guaranteed
+	 * Adds a payload object to be accumulated in a CyPayloadEvent. The event is guaranteed
 	 * to be fired after a certain duration where the single event contains all payload
 	 * objects added to the event within that window of time.  Payload objects added
 	 * after an event has fired simply trigger a new event to fire at the next time
-	 * point.
+	 * point. All accumulated CyPayloadEvents are guaranteed to be fired before any
+	 * normal CyEvents are fired.
 	 * @param source The object firing the event.
 	 * @param payload The data payload to be added to the event that will
 	 * eventually be fired.

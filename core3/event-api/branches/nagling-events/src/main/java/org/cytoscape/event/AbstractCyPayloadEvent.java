@@ -35,6 +35,7 @@
 package org.cytoscape.event;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * A base implementation of CyPayloadEvent that can be used by events.
@@ -43,17 +44,24 @@ public abstract class AbstractCyPayloadEvent<T,P> extends AbstractCyEvent<T> imp
 
 	private final Collection<P> payload;
 
+	/**
+	 * Constructor.
+	 * @param source The event source object.
+	 * @param listenerClass The listener class for this event.
+	 * @param payload A collection of payload objects. May be empty, but not null!
+	 */
 	public AbstractCyPayloadEvent(final T source, Class<?> listenerClass, Collection<P> payload) {
 		super(source, listenerClass);
 
 		if ( payload == null )
 			throw new NullPointerException("Payload is null");
 
-		this.payload = payload;
+		this.payload = Collections.unmodifiableCollection(payload);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns an unmodifiable collection of payload objects.
+	 * @return an unmodifiable collection of payload objects.
 	 */
 	@Override
 	public Collection<P> getPayloadCollection() {

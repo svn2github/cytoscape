@@ -68,7 +68,7 @@ public abstract class AbstractCyEventHelperTest {
 	// We verify that the payload approach is at least 3 times faster than the
 	// event/listener combo. 
 	@Test
-	public void testLD1second() {
+	public void testLD1fifthsecond() {
 		final long duration = 200000000;
 
 		long end = System.nanoTime() + duration;
@@ -211,5 +211,16 @@ public abstract class AbstractCyEventHelperTest {
 		System.out.println("deadlock payloadService num calls:" + payloadService.getNumCalls());
 		assertTrue( payloadService.getNumCalls() > 1 );
 		} catch ( InterruptedException ie ) { throw new RuntimeException(ie); }
+	}
+	
+	@Test
+	public void testPayloadBeforeNormal() {
+		helper.addEventPayload("source","homer",StubCyPayloadEvent.class);
+		helper.addEventPayload("source","marge",StubCyPayloadEvent.class);
+		helper.fireEvent(new StubCyEvent("lisa"));
+		// This tests that any accumulated payload events get fired before
+		// normal events.
+		assertTrue(payloadService.getNumCalls() == 1);
+		assertTrue(service.getNumCalls() == 1);
 	}
 }

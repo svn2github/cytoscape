@@ -67,34 +67,32 @@ public class CyEventHelperImpl implements CyEventHelper {
 	private boolean havePayload;
 
 	public CyEventHelperImpl(final CyListenerAdapter normal) {
-		//System.out.println("\n\n===================================================================================\n\n");
 		this.normal = normal;
-
 		sourceAccMap = new HashMap<Object,Map<Class<?>,PayloadAccumulator<?,?,?>>>();
-
 		payloadEventMonitor = Executors.newSingleThreadScheduledExecutor();
-		
 		silencedSources = new HashSet<Object>();
-		
 		havePayload = false;
 
-        final Runnable firingAgent = new Runnable() {
+		// This thread just flushes any accumulated payload events.
+		// It is scheduled to run repeatedly at a fixed interval.
+        final Runnable payloadChecker = new Runnable() {
             public void run() {
-            	final int x = new Random().nextInt();
-            	//System.out.println("*************** begin firing check *************  " + x + "    " + Thread.currentThread() + "  " + havePayload + "  " + System.currentTimeMillis() + "   " + CyEventHelperImpl.this.hashCode() + "  " + this.hashCode());
                 flushPayloadEvents();
-            	//System.out.println("*************** end firing check ***************  " + x + "    " + Thread.currentThread());
             }
         };
-        payloadEventMonitor.scheduleAtFixedRate(firingAgent, CyEventHelper.DEFAULT_PAYLOAD_WAIT_TIME_MILLIS, CyEventHelper.DEFAULT_PAYLOAD_WAIT_TIME_MILLIS, TimeUnit.MILLISECONDS);
+        payloadEventMonitor.scheduleAtFixedRate(payloadChecker, CyEventHelper.DEFAULT_PAYLOAD_INTERVAL_MILLIS, CyEventHelper.DEFAULT_PAYLOAD_INTERVAL_MILLIS, TimeUnit.MILLISECONDS);
 	}	
 
 	@Override 
 	public <E extends CyEvent<?>> void fireEvent(final E event) {
-		//System.out.println("firing event: " + event);
+		// Before any external event is fired, flush any accumulated
+		// payload events.  Because addEventPayload() in synchronous,
+		// all payloads should be added by the time fireEvent() is
+		// called in the client code.  
+		flushPayloadEvents();
+		
 		normal.fireEvent(event);
 	}
-
 
 	@Override 
 	public void silenceEventSource(Object eventSource) {
@@ -147,8 +145,6 @@ public class CyEventHelperImpl implements CyEventHelper {
 			
 			acc.addPayload(payload);
 			havePayload = true;
-			
-			//System.out.println("addEventPayload: " + source + "  " + payload + "  " + eventType + "  " + Thread.currentThread() + "  " + havePayload + "  " + System.currentTimeMillis());
 		}		
 	}
 
@@ -156,22 +152,18 @@ public class CyEventHelperImpl implements CyEventHelper {
 		List<CyPayloadEvent<?,?>> flushList;
 		
 		synchronized (this) {
-			//System.out.println("trying forceFirePayloadEvents in thread: " + Thread.currentThread() + "   " + havePayload);
+
 			if ( !havePayload )
 				return;
 			
 			flushList = new ArrayList<CyPayloadEvent<?,?>>();
 			havePayload = false;
 			
-			//System.out.println("forceFirePayloadEvents in thread: " + Thread.currentThread());
 			for ( Object source : sourceAccMap.keySet() ) {
-				//System.out.println("   examining source: " + source);
 				for ( PayloadAccumulator<?,?,?> acc : sourceAccMap.get(source).values() ) {
-					//System.out.println("      found accumulator: " + acc);
 					try {
 						CyPayloadEvent<?,?> event = acc.newEventInstance( source );
 						if ( event != null ) {
-							//System.out.println("adding event to flush list " + event);
 							flushList.add(event);
 						}
 					} catch (Exception ie) {
@@ -180,15 +172,16 @@ public class CyEventHelperImpl implements CyEventHelper {
 				}
 			}
 			
-			//System.out.println("forceFirePayloadEvents finished collecting events: " + Thread.currentThread() + "    " + havePayload);
 		}
 		
+		// Actually fire the events outside of the synchronized block.
 		for (CyPayloadEvent<?,?> event : flushList) {
-			//System.out.println("-----------force firing event: " + event);
-			fireEvent(event);
+			normal.fireEvent(event);
 		}	
 	}
 	
+	// Used only for unit testing to prevent the confusion of multiple 
+	// threads running at once.
 	public void cleanup() {
 		payloadEventMonitor.shutdown();
 	}
