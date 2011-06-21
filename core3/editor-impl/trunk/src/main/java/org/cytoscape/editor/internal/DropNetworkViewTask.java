@@ -15,6 +15,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 
 import org.cytoscape.dnd.DropUtil;
+import org.cytoscape.event.CyEventHelper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +24,15 @@ public class DropNetworkViewTask extends AbstractNetworkViewTask {
 
 	private final Transferable t;
 	private final Point2D xformPt;
+	private final CyEventHelper eh;
 
 	private static final Logger logger = LoggerFactory.getLogger(DropNetworkViewTask.class);
 	
-	public DropNetworkViewTask(CyNetworkView view, Transferable t, Point2D xformPt) {
+	public DropNetworkViewTask(CyNetworkView view, Transferable t, Point2D xformPt, CyEventHelper eh) {
 		super(view);
 		this.t = t;
 		this.xformPt = xformPt;
+		this.eh = eh;
 	}
 
 	@Override
@@ -41,6 +44,7 @@ public class DropNetworkViewTask extends AbstractNetworkViewTask {
 
 		CyNetwork net = view.getModel();
 		CyNode n = net.addNode();
+		eh.flushPayloadEvents();
 		View<CyNode> nv = view.getNodeView(n);
 		nv.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION,xformPt.getX());
 		nv.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION,xformPt.getY());

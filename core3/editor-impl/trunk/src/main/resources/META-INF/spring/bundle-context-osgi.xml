@@ -13,6 +13,9 @@
 
 	<osgi:reference id="newEmptyNetworkViewFactoryServiceRef" 
 	                interface="org.cytoscape.task.creation.NewEmptyNetworkViewFactory"/>
+	                
+	<osgi:reference id="cyEventHelperServiceRef" 
+	                interface="org.cytoscape.event.CyEventHelper"/>
 
 	<osgi:service id="editorCytoPanelComponentService" ref="editorCytoPanelComponent"
 		interface="org.cytoscape.application.swing.CytoPanelComponent"/>

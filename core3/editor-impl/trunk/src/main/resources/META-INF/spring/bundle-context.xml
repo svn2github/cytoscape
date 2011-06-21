@@ -15,6 +15,7 @@
 
 	<bean id="dropNetworkViewTaskFactory"
 		class="org.cytoscape.editor.internal.DropNetworkViewTaskFactoryImpl">
+		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 
 	<bean id="dropNodeViewTaskFactory"
