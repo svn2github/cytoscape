@@ -31,7 +31,6 @@
 		<constructor-arg ref="compilerServiceRef" />
 		<constructor-arg ref="openBrowserServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="cyTableRowUpdateServiceRef" />
 		<constructor-arg ref="deleteTableTaskFactoryService" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 		<constructor-arg ref="popupMenuHelper" />

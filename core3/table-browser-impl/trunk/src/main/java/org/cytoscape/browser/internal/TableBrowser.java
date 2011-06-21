@@ -16,9 +16,6 @@ import javax.swing.Icon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
@@ -32,7 +29,6 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.CyTableMetadata;
-import org.cytoscape.model.CyTableRowUpdateService;
 import org.cytoscape.model.events.TableAboutToBeDeletedEvent;
 import org.cytoscape.model.events.TableAboutToBeDeletedListener;
 import org.cytoscape.service.util.CyServiceRegistrar;
@@ -53,7 +49,6 @@ public class TableBrowser
 	private final CyServiceRegistrar serviceRegistrar;
 	private final EquationCompiler compiler;
 	private final BrowserTable browserTable;
-	private final CyTableRowUpdateService tableRowUpdateService;
 	private final AttributeBrowserToolBar attributeBrowserToolBar;
 	private final TableChooser tableChooser;
 	private BrowserTableModel browserTableModel;
@@ -66,7 +61,6 @@ public class TableBrowser
 	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
 		     final EquationCompiler compiler, final OpenBrowser openBrowser,
 		     final CyNetworkManager networkManager,
-		     final CyTableRowUpdateService tableRowUpdateService,
 		     final TableTaskFactory deleteTableTaskFactoryService,
 		     final GUITaskManager guiTaskManagerServiceRef,
 		     final PopupMenuHelper popupMenuHelper,
@@ -82,7 +76,6 @@ public class TableBrowser
 		this.applicationManager = applicationManager;
 
 		this.browserTable = new BrowserTable(openBrowser, compiler, popupMenuHelper);
-		this.tableRowUpdateService = tableRowUpdateService;
 		this.attributeBrowserToolBar = new AttributeBrowserToolBar(serviceRegistrar, compiler,
 				this.deleteTableTaskFactoryService, this.guiTaskManagerServiceRef);
 		this.setLayout(new BorderLayout());
@@ -128,13 +121,11 @@ public class TableBrowser
 			return;
 
 		if (browserTableModel != null) {
-			browserTableModel.cleanup();
 			serviceRegistrar.unregisterAllServices(browserTableModel);
 		}
 
 		currentTable = table;
-		browserTableModel = new BrowserTableModel(browserTable, table, compiler,
-							  tableRowUpdateService);
+		browserTableModel = new BrowserTableModel(browserTable, table, compiler);
 		serviceRegistrar.registerAllServices(browserTableModel, new Properties());
 		browserTable.setUpdateComparators(false);
 		browserTable.setModel(browserTableModel);

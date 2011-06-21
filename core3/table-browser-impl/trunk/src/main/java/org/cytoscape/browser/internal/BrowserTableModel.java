@@ -14,7 +14,6 @@ import java.util.Set;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelEvent.*;
 
 import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.equations.Equation;
@@ -22,39 +21,38 @@ import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableRowUpdateService;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnCreatedListener;
 import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.ColumnDeletedListener;
 import org.cytoscape.model.events.ColumnNameChangedEvent;
 import org.cytoscape.model.events.ColumnNameChangedListener;
-import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
+import org.cytoscape.model.events.RowSetRecord;
+import org.cytoscape.model.events.RowsCreatedEvent;
+import org.cytoscape.model.events.RowsCreatedListener;
+import org.cytoscape.model.events.RowsSetEvent;
+import org.cytoscape.model.events.RowsSetListener;
 
 
 public final class BrowserTableModel extends AbstractTableModel
-	implements ColumnCreatedListener, ColumnDeletedListener, ColumnNameChangedListener, CyTableRowUpdateMicroListener
+	implements ColumnCreatedListener, ColumnDeletedListener, ColumnNameChangedListener, RowsSetListener, RowsCreatedListener
 {
+	private static final long serialVersionUID = -517521404005631245L;
 	private static final int EOF = -1;
 	private static final int MAX_INITIALLY_VSIBLE_ATTRS = 10;
 	private final JTable table;
 	private final CyTable attrs;
 	private final EquationCompiler compiler;
-	private final CyTableRowUpdateService tableRowUpdateService;
 	private boolean tableHasBooleanSelected;
 	private List<AttrNameAndVisibility> attrNamesAndVisibilities;
 
-	public BrowserTableModel(final JTable table, final CyTable attrs, final EquationCompiler compiler,
-				 final CyTableRowUpdateService tableRowUpdateService)
+	public BrowserTableModel(final JTable table, final CyTable attrs, final EquationCompiler compiler)
 	{
 		this.table = table;
 		this.attrs = attrs;
 		this.compiler = compiler;
-		this.tableRowUpdateService = tableRowUpdateService;
 		final CyColumn selectedColumn = attrs.getColumn(CyNetwork.SELECTED);
-		this.tableHasBooleanSelected =
-			selectedColumn != null && selectedColumn.getType() == Boolean.class;
-		tableRowUpdateService.startTracking(this, attrs);
+		this.tableHasBooleanSelected = selectedColumn != null && selectedColumn.getType() == Boolean.class;
 
 		initAttrNamesAndVisibilities();
 	}
@@ -89,7 +87,6 @@ public final class BrowserTableModel extends AbstractTableModel
 	public List<String> getVisibleAttributeNames() {
 		final List<String> visibleAttrNames = new ArrayList<String>();
 
-		final String primaryKey = attrs.getPrimaryKey().getName();
 		for (final AttrNameAndVisibility nameAndVisibility : attrNamesAndVisibilities) {
 			if (nameAndVisibility.isVisible())// && !nameAndVisibility.getName().equals(primaryKey))
 				visibleAttrNames.add(nameAndVisibility.getName());
@@ -292,17 +289,15 @@ public final class BrowserTableModel extends AbstractTableModel
 	}
 
 	@Override
-	public void handleRowCreations(final CyTable table, final List<CyRow> newRows) {
+	public void handleEvent(RowsCreatedEvent e) {
 		fireTableDataChanged();
 	}
 
 	@Override
-	public void handleRowSets(final CyTable table, final List<RowSet> rowSets) {
-		// The following is an optimisation hack to prevent excessive calls to
-		// fireTableDataChanged() in the case of multiple selection events:
+	public void handleEvent(RowsSetEvent e) {
 		if (tableHasBooleanSelected) {
 			boolean foundANonSelectedColumnName = false;
-			for (final RowSet rowSet : rowSets) {
+			for (final RowSetRecord rowSet : e.getPayloadCollection()) {
 				if (!rowSet.getColumn().equals(CyNetwork.SELECTED)) {
 					foundANonSelectedColumnName = true;
 					break;
@@ -315,9 +310,8 @@ public final class BrowserTableModel extends AbstractTableModel
 			}
 		}
 
-		for (final RowSet rowSet : rowSets)
-			handleRowValueUpdate(rowSet.getRow(), rowSet.getColumn(), rowSet.getValue(),
-					     rowSet.getRawValue());
+		for (final RowSetRecord rowSet : e.getPayloadCollection())
+			handleRowValueUpdate(rowSet.getRow(), rowSet.getColumn(), rowSet.getValue(), rowSet.getRawValue());
 	}
 
 	private void handleRowValueUpdate(final CyRow row, final String columnName, final Object newValue,
@@ -851,10 +845,6 @@ public final class BrowserTableModel extends AbstractTableModel
 	@Override
 	public boolean isCellEditable(final int rowIndex, final int columnIndex) {
 		return table.convertColumnIndexToModel(columnIndex) != 0;
-	}
-
-	public void cleanup() {
-		tableRowUpdateService.stopTracking(this, attrs);
 	}
 }
 
