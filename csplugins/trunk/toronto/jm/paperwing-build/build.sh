@@ -18,6 +18,11 @@ PATCH_DIR=$(abspath patches)
 rm -rf ${DIST_DIR}
 mkdir -p ${DIST_DIR}
 
+# Resolve dependencies
+pushd swing-application-impl
+mvn dependency:resolve
+popd
+
 # Build main bundle
 pushd paperwing-impl
 apply_patches "${PATCH_DIR}/paperwing-impl"
