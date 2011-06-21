@@ -39,6 +39,9 @@ import org.cytoscape.model.CyNode;
 
 import java.lang.RuntimeException;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +53,7 @@ import static org.mockito.Mockito.*;
 public abstract class AbstractCyNodeTest extends TestCase {
 	protected CyNetwork net;
 
+	
 	/**
 	 *  DOCUMENT ME!
 	 */
@@ -113,7 +117,7 @@ public abstract class AbstractCyNodeTest extends TestCase {
 		int n1i = n1.getIndex();
 		assertEquals(0,n0i);
 		assertEquals(1,n1i);
-		net.removeNode(n0);
+		net.removeNodes(Collections.singletonList(n0));
 		assertEquals(1,n1i);
 	}
 
@@ -127,7 +131,7 @@ public abstract class AbstractCyNodeTest extends TestCase {
 		assertEquals(1,n1i);
 		assertEquals(net.getNode(0),n0);
 		assertEquals(net.getNode(1),n1);
-		assertTrue( net.removeNode(n0) );
+		assertTrue( net.removeNodes(Collections.singletonList(n0)) );
 		assertNull(net.getNode(0));
 		assertEquals(n1,net.getNode(1));
 	}

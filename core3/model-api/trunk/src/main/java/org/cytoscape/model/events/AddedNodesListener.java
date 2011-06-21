@@ -1,5 +1,13 @@
+
 /*
- Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -25,45 +33,19 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
 package org.cytoscape.model.events;
 
-
-import org.cytoscape.model.CyTable;
-
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.mockito.Mockito.*;
+import org.cytoscape.event.CyListener;
 
 
-public class RowsAboutToChangeEventTest extends AbstractTableEventTest {
-	private RowsAboutToChangeEvent event;
-
-	@Before
-	public void setUp() {
-		final CyTable table = mock(CyTable.class); 
-		event = new RowsAboutToChangeEvent(this, table);
-	}
-
-	@Test
-	public void testGetSource() {
-		assertEquals("getSource() did *not* return the expected source!",
-			     event.getSource(), this);
-	}
-
-	@Test
-	public void testGetListenerClass() {
-		assertEquals("getListenerClass() did *not* return the expected class!",
-			     event.getListenerClass(), RowsAboutToChangeListener.class);
-	}
-
-	public void testNullTable() {
-		try {
-			RemovedEdgeEvent ev = new RemovedEdgeEvent(null);
-		} catch (NullPointerException npe) {
-			return;
-		}
-		fail("didn't catch expected npe for tablework");
-	}
+/**
+ * Listener for AddedEgeEvents.
+ */
+public interface AddedNodesListener extends CyListener {
+	/**
+	 * The method that should handle the specified event.
+	 * @param e The event to be handled.
+	 */
+	void handleEvent(AddedNodesEvent e);
 }

@@ -29,16 +29,14 @@ package org.cytoscape.model;
 
 
 import java.awt.Color;
-import java.lang.RuntimeException;
 import java.util.*;
 
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTable.Mutability;
-import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
-
-import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.events.RowSetRecord;
+import org.cytoscape.model.events.RowsCreatedEvent;
 import org.cytoscape.event.DummyCyEventHelper;
 
 import static org.junit.Assert.*;
@@ -213,14 +211,16 @@ public abstract class AbstractCyTableTest {
 		table.createColumn("someString", String.class, false);
 		attrs.set("someString", "apple");
 
-		assertTrue(eventHelper.getCalledMicroListeners().contains("handleRowSet"));
+		Object last = eventHelper.getLastPayload();
+		assertNotNull(last);
+		assertTrue(last instanceof RowSetRecord);
 	}
 
 	@Test
 	public void testColumnCreatedEvent() {
 		table.createColumn("someInt", Integer.class, false);
 
-		Object last = eventHelper.getLastSynchronousEvent();
+		Object last = eventHelper.getLastEvent();
 		assertNotNull( last );
 		assertTrue( last instanceof ColumnCreatedEvent );
 	}
@@ -230,7 +230,7 @@ public abstract class AbstractCyTableTest {
 		table.createColumn("someInt", Integer.class, false);
 		table.deleteColumn("someInt");
 
-		Object last = eventHelper.getLastSynchronousEvent();
+		Object last = eventHelper.getLastEvent();
 		assertNotNull( last );
 		assertTrue( last instanceof ColumnDeletedEvent );
 	}
@@ -530,8 +530,9 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testHandleRowCreatedMicroListener() {
-		final CyRow row = table.getRow(2L);
-		assertTrue(eventHelper.getCalledMicroListeners().contains("handleRowCreated"));
+		final CyRow row = table.getRow(2234L);
+		Object last = eventHelper.getLastPayload();
+		assertNotNull(last);
 	}
 
 	@Test

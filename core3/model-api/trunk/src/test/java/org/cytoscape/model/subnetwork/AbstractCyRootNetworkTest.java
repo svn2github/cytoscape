@@ -53,6 +53,7 @@ import org.cytoscape.model.DummyCyEdge;
 
 import java.lang.RuntimeException;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -310,7 +311,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertEquals("base node list size",6,root.getBaseNetwork().getNodeList().size());
 		assertTrue("root does contain node5",root.containsNode(n5));
 
-		boolean ret = root.removeNode(n5);
+		boolean ret = root.removeNodes(Collections.singletonList(n5));
 
 		assertTrue("removed node5", ret);
 		assertFalse("root doesn't contain node5",root.containsNode(n5));
@@ -318,7 +319,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertEquals("node list size",5,root.getNodeList().size());
 		assertEquals("base node list size",5,root.getBaseNetwork().getNodeList().size());
 
-		ret = root.removeNode(n6);
+		ret = root.removeNodes(Collections.singletonList(n6));
 		assertTrue("removed node6", ret);
 
 		assertEquals("node list size",4,root.getNodeList().size());

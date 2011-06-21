@@ -40,12 +40,12 @@ import org.cytoscape.event.CyListener;
 
 
 /**
- * Listener for AboutToRemoveNodeEvents. 
+ * Listener for RemovedEgeEvents.
  */
-public interface AboutToRemoveNodeListener extends CyListener {
+public interface RemovedEdgesListener extends CyListener {
 	/**
 	 * The method that should handle the specified event.
 	 * @param e The event to be handled.
 	 */
-	void handleEvent(AboutToRemoveNodeEvent e);
+	void handleEvent(RemovedEdgesEvent e);
 }

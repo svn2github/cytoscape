@@ -20,15 +20,9 @@ public class AbstractNetworkEventTest {
 			     network, event.getNetwork());
 	}
 
-	@Test
+	@Test(expected=NullPointerException.class)
 	public final void testNullNetworkConstructorFailure() {
 		final CyNetworkManager networkManager = mock(CyNetworkManager.class);
-		try {
-			final AbstractNetworkEvent event = new AbstractNetworkEvent(networkManager, Object.class, null);
-		} catch (final NullPointerException e) {
-			return;
-		}
-
-		fail("The expected NullPointerException was *not* triggered!");
+		new AbstractNetworkEvent(networkManager, Object.class, null);
 	}
 }

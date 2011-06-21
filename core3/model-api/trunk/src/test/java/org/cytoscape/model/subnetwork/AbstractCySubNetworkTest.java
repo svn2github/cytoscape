@@ -54,6 +54,7 @@ import org.cytoscape.model.DummyCyEdge;
 
 import java.lang.RuntimeException;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -248,7 +249,7 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		assertTrue("contains edge1",sub2.containsEdge(e1));
 		assertTrue("contains edge1",sub2.containsEdge(n1,n2));
 
-		sub2.removeNode(n4);
+		sub2.removeNodes(Collections.singletonList(n4));
 
 		assertEquals("num nodes",2,sub2.getNodeCount());
 		assertEquals("num edges",1,sub2.getEdgeCount());
@@ -258,7 +259,7 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		assertTrue("contains edge1",sub2.containsEdge(e1));
 		assertTrue("contains edge1",sub2.containsEdge(n1,n2));
 
-		sub2.removeNode(n1);
+		sub2.removeNodes(Collections.singletonList(n1));
 
 		assertEquals("num nodes",1,sub2.getNodeCount());
 		assertEquals("num edges",0,sub2.getEdgeCount());

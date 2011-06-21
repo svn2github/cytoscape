@@ -1,5 +1,13 @@
+
 /*
- Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -25,21 +33,24 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
 package org.cytoscape.model.events;
 
+import org.cytoscape.event.AbstractCyEvent;
 
-import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyNetwork;
 
 
-/** This event should be fired before a series of row sets.  After the row updates have been
- *  completed you must then fire a RowsFinishedChangingEvent!
+/**
+ * Just a signal in case anyone wants to 
+ * resync after an edge has been removed.
  */
-final public class RowsAboutToChangeEvent extends AbstractTableEvent {
+public final class RemovedEdgesEvent extends AbstractCyEvent<CyNetwork> {
 	/**
-	 *  @param source  who fired the event
-	 *  @param table   the table on which the row sets are about to take place
+	 * Constructs event.
+	 * @param source The network from which an edge was deleted.
 	 */
-	public RowsAboutToChangeEvent(final Object source, final CyTable table) {
-		super(source, RowsAboutToChangeListener.class, table);
+	public RemovedEdgesEvent(final CyNetwork source) {
+		super(source,RemovedEdgesListener.class);
 	}
 }

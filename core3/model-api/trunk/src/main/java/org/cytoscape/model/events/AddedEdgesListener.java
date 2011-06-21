@@ -1,5 +1,13 @@
+
 /*
- Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -25,20 +33,19 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
 package org.cytoscape.model.events;
 
-
-import org.cytoscape.event.CyMicroListener;
+import org.cytoscape.event.CyListener;
 
 
 /**
- * Listener for table entry set events. The event source for this listener
- * will the be CyTable that is being modified. 
+ * Listener for AddedEgeEvents.
  */
-public interface RowCreatedMicroListener extends CyMicroListener {
+public interface AddedEdgesListener extends CyListener {
 	/**
-	 * The method that should react to the changed table.
-	 * @param primaryKey The key of the row that will be created.
+	 * The method that should handle the specified event.
+	 * @param e The event to be handled.
 	 */
-	void handleRowCreated(final Object primaryKey);
+	void handleEvent(AddedEdgesEvent e);
 }

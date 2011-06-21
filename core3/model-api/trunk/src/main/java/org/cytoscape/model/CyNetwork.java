@@ -28,6 +28,7 @@
 package org.cytoscape.model;
 
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -77,7 +78,7 @@ public interface CyNetwork extends CyTableEntry {
 	 * @param node the node to be deleted
 	 * @return true if the node was successfully deleted
 	 */
-	boolean removeNode(CyNode node);
+	boolean removeNodes(Collection<CyNode> node);
 
 	/**
 	 * This method is used to create and add an edge to this network.
@@ -94,10 +95,10 @@ public interface CyNetwork extends CyTableEntry {
 	 * this network).  See {@link org.cytoscape.model.subnetwork.CyRootNetwork} 
 	 * for information about having the same edge in two networks.
 	 *
-	 * @param edge the edge to be deleted
+	 * @param edges the edges to be deleted
 	 * @return true if the edge was successfully deleted
 	 */
-	boolean removeEdge(CyEdge edge);
+	boolean removeEdges(Collection<CyEdge> edges);
 
 	/**
 	 * Return the number of nodes in this network.

@@ -36,30 +36,33 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.AbstractCyEvent;
+import java.util.Collection;
 
+import org.cytoscape.event.AbstractCyEvent;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
 
 
 /**
- * DOCUMENT ME!
-  */
-class AbstractNodeEvent extends AbstractCyEvent<CyNetwork> {
-	private final CyNode node;
-
-	AbstractNodeEvent(final CyNetwork source, final Class<?> listenerClass, final CyNode node) {
-		super(source, listenerClass);
-		if ( node == null )
-			throw new NullPointerException("node cannot be null");
-		this.node = node;
-	}
-
+ * Fired before an edge is actually removed so that listeners
+ * have a chance to clean up before the edge object disappaears.
+ */
+public final class AboutToRemoveEdgesEvent extends AbstractCyEvent<CyNetwork> {
+	
+	private final Collection<CyEdge> edges;
 	/**
-	 * Returns the CyNode for this event.
-	 * @return The CyNode for this event.
+	 * Constructs event.
+	 * @param source the network firing this event.
+	 * @param edge the collection of edges about to be removed. 
 	 */
-	public CyNode getNode() {
-		return node;
+	public AboutToRemoveEdgesEvent(final CyNetwork source, final Collection<CyEdge> edges) {
+		super(source, AboutToRemoveEdgesListener.class);
+		if ( edges == null )
+			throw new NullPointerException("edge collection may not be null");
+		this.edges = edges;
 	}
-}
+	
+	public Collection<CyEdge> getEdges() {
+			return edges;
+	}
+ }

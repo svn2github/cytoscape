@@ -36,6 +36,9 @@
 
 package org.cytoscape.model.events;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -51,18 +54,22 @@ import static org.mockito.Mockito.*;
  */
 public class AddedNodeEventTest extends TestCase {
 
-	AddedNodeEvent event;
-	CyNode node;
+	AddedNodesEvent event;
+	Collection<CyNode> nodeCollection;
 	CyNetwork net;
 
 	public void setUp() {
-		node = mock(CyNode.class); 
+		nodeCollection = new ArrayList<CyNode>();
+		nodeCollection.add( mock(CyNode.class));
+		nodeCollection.add( mock(CyNode.class));
+
 		net = mock(CyNetwork.class); 
-		event = new AddedNodeEvent(net,node);
+		event = new AddedNodesEvent(net,nodeCollection);
 	}
 
 	public void testGetNode() {
-		assertEquals( event.getNode(), node );
+		for ( CyNode n : event.getPayloadCollection() )
+			assertTrue( nodeCollection.contains(n));
 	}
 
 	public void testGetSource() {
@@ -70,12 +77,12 @@ public class AddedNodeEventTest extends TestCase {
 	}
 
 	public void testGetListenerClass() {
-		assertEquals( event.getListenerClass(), AddedNodeListener.class );
+		assertEquals( event.getListenerClass(), AddedNodesListener.class );
 	}
 
 	public void testNullNode() {
 		try {
-			AddedNodeEvent ev = new AddedNodeEvent(net, null);
+			AddedNodesEvent ev = new AddedNodesEvent(net, null);
 		} catch (NullPointerException npe) {
 			return;
 		}
@@ -84,7 +91,7 @@ public class AddedNodeEventTest extends TestCase {
 
 	public void testNullNetwork() {
 		try {
-			AddedNodeEvent ev = new AddedNodeEvent(null, node);
+			AddedNodesEvent ev = new AddedNodesEvent(null, nodeCollection);
 		} catch (NullPointerException npe) {
 			return;
 		}

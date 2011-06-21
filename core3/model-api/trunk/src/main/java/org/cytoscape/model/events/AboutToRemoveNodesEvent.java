@@ -36,16 +36,40 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyListener;
+import java.util.Collection;
+
+import org.cytoscape.event.AbstractCyEvent;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
 
 /**
- * Listener for RemovedEgeEvents.
+ * Fired before a node is actually removed so that listeners
+ * have a chance to clean up before the node object disappaears.
+ * Note that this event also <i>implies</i> an AboutToRemoveEdgesEvent
+ * for every edge adjacent to the node in question (because all
+ * adjacent edges are removed as a consequence of removing
+ * a node), even though the
+ * AboutToRemoveEdgesEvent is not actually fired.  If you only care
+ * about removing edges, be sure to listen for this event as well!
  */
-public interface RemovedEdgeListener extends CyListener {
+public final class AboutToRemoveNodesEvent extends AbstractCyEvent<CyNetwork> {
+	
+	private final Collection<CyNode> nodes;
+	
 	/**
-	 * The method that should handle the specified event.
-	 * @param e The event to be handled.
+	 * Constructs event.
+	 * @param source the network firing this event.
+	 * @param node the node about to be removed. 
 	 */
-	void handleEvent(RemovedEdgeEvent e);
+	public AboutToRemoveNodesEvent(final CyNetwork source, final Collection<CyNode> nodes) {
+		super( source, AboutToRemoveNodesListener.class);
+		if ( nodes == null )
+			throw new NullPointerException("node collection may not be null");
+		this.nodes = nodes;
+	}
+	
+	public Collection<CyNode> getNodes() {
+			return nodes;
+	}
 }

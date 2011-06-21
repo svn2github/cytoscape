@@ -36,58 +36,58 @@
 
 package org.cytoscape.model.events;
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyEdge;
 
 import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.Before;
 
 /**
  * DOCUMENT ME!
  */
-public class AboutToRemoveEdgeEventTest extends TestCase {
+public class AboutToRemoveEdgeEventTest {
 
-	AboutToRemoveEdgeEvent event;
-	CyEdge edge;
+	AboutToRemoveEdgesEvent event;
+	Collection<CyEdge> edgeCollection;
 	CyNetwork net;
 
+	@Before
 	public void setUp() {
-		edge = mock(CyEdge.class); 
+		edgeCollection = new ArrayList<CyEdge>();
+		edgeCollection.add( mock(CyEdge.class) );
+		edgeCollection.add( mock(CyEdge.class) );
+		
 		net = mock(CyNetwork.class); 
-		event = new AboutToRemoveEdgeEvent(net,edge);
+		event = new AboutToRemoveEdgesEvent(net,edgeCollection);
 	}
 
+	@Test
 	public void testGetEdge() {
-		assertEquals( event.getEdge(), edge );
+		assertEquals( event.getEdges(), edgeCollection );
 	}
 
+	@Test
 	public void testGetSource() {
 		assertEquals( event.getSource(), net );
 	}
 
+	@Test
 	public void testGetListenerClass() {
-		assertEquals( event.getListenerClass(), AboutToRemoveEdgeListener.class );
+		assertEquals( event.getListenerClass(), AboutToRemoveEdgesListener.class );
 	}
 
+	@Test(expected=NullPointerException.class)
 	public void testNullEdge() {
-		try {
-			AboutToRemoveEdgeEvent ev = new AboutToRemoveEdgeEvent(net, null);
-		} catch (NullPointerException npe) {
-			return;
-		}
-		fail("didn't catch expected npe for edge");
+		AboutToRemoveEdgesEvent ev = new AboutToRemoveEdgesEvent(net, null);
 	}
 
+	@Test(expected=NullPointerException.class)
 	public void testNullNetwork() {
-		try {
-			AboutToRemoveEdgeEvent ev = new AboutToRemoveEdgeEvent(null, edge);
-		} catch (NullPointerException npe) {
-			return;
-		}
-		fail("didn't catch expected npe for network");
+		AboutToRemoveEdgesEvent ev = new AboutToRemoveEdgesEvent(null, edgeCollection);
 	}
 }

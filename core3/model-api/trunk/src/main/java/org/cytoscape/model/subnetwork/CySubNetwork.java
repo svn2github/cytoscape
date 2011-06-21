@@ -36,6 +36,8 @@
 
 package org.cytoscape.model.subnetwork;
 
+import java.util.Collection;
+
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
@@ -102,7 +104,7 @@ public interface CySubNetwork extends CyNetwork {
 	 * @return true if the node was successfully removed from the specified subnetwork,
 	 * false otherwise.
 	 */
-	boolean removeNode(CyNode node);
+	boolean removeNodes(Collection<CyNode> node);
 
 	/**
 	 * Removes a edge from this {@link CySubNetwork} but not from the {@link CyRootNetwork}.  
@@ -112,5 +114,5 @@ public interface CySubNetwork extends CyNetwork {
 	 * @return true if the edge was successfully removed from the specified subnetwork,
 	 * false otherwise.
 	 */
-	boolean removeEdge(CyEdge edge);
+	boolean removeEdges(Collection<CyEdge> edge);
 }

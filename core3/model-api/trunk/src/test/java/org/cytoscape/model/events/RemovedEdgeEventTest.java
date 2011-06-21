@@ -51,12 +51,12 @@ import static org.mockito.Mockito.*;
  */
 public class RemovedEdgeEventTest extends TestCase {
 
-	RemovedEdgeEvent event;
+	RemovedEdgesEvent event;
 	CyNetwork net;
 
 	public void setUp() {
 		net = mock(CyNetwork.class); 
-		event = new RemovedEdgeEvent(net);
+		event = new RemovedEdgesEvent(net);
 	}
 
 	public void testGetSource() {
@@ -64,12 +64,12 @@ public class RemovedEdgeEventTest extends TestCase {
 	}
 
 	public void testGetListenerClass() {
-		assertEquals( event.getListenerClass(), RemovedEdgeListener.class );
+		assertEquals( event.getListenerClass(), RemovedEdgesListener.class );
 	}
 
 	public void testNullNetwork() {
 		try {
-			RemovedEdgeEvent ev = new RemovedEdgeEvent(null);
+			RemovedEdgesEvent ev = new RemovedEdgesEvent(null);
 		} catch (NullPointerException npe) {
 			return;
 		}

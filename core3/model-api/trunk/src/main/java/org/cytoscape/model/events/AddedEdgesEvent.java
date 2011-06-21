@@ -36,18 +36,26 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyMicroListener;
-import org.cytoscape.model.CyNode;
+
+import java.util.Collection;
+
+import org.cytoscape.event.AbstractCyPayloadEvent;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
 
 
 /**
- * A micro listener that will be called when a node is 
- * added to a network.
+ * An event fired when an edge is added to a network. 
  */
-public interface AddedNodeMicroListener extends CyMicroListener {
+public final class AddedEdgesEvent extends AbstractCyPayloadEvent<CyNetwork, CyEdge> {
+
 	/**
-	 * The method that should react to the added node.
-	 * @param n The node that was added to the network.
+	 * Constructs event.
+	 * @param source The CyNetwork the edge was added to.
+	 * @param edges The collection of CyEdge objects added to the network. 
 	 */
-	void handleAddedNode(CyNode n);
+	public AddedEdgesEvent(final CyNetwork source, final Collection<CyEdge> edges) {
+		super(source, AddedEdgesListener.class, edges);
+	}
+
 }

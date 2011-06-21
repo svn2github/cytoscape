@@ -36,58 +36,58 @@
 
 package org.cytoscape.model.events;
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 
 import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.Before;
 
 /**
  * DOCUMENT ME!
  */
-public class AboutToRemoveNodeEventTest extends TestCase {
+public class AboutToRemoveNodeEventTest  {
 
-	AboutToRemoveNodeEvent event;
-	CyNode node;
+	AboutToRemoveNodesEvent event;
+	Collection<CyNode> nodeCollection;
 	CyNetwork net;
 
+	@Before
 	public void setUp() {
-		node = mock(CyNode.class); 
+		nodeCollection = new ArrayList<CyNode>();
+		nodeCollection.add( mock(CyNode.class));
+		nodeCollection.add( mock(CyNode.class));
+
 		net = mock(CyNetwork.class); 
-		event = new AboutToRemoveNodeEvent(net,node);
+		event = new AboutToRemoveNodesEvent(net,nodeCollection);
 	}
 
+	@Test
 	public void testGetNode() {
-		assertEquals( event.getNode(), node );
+		assertEquals( event.getNodes(), nodeCollection );
 	}
 
+	@Test
 	public void testGetSource() {
 		assertEquals( event.getSource(), net );
 	}
 
+	@Test
 	public void testGetListenerClass() {
-		assertEquals( event.getListenerClass(), AboutToRemoveNodeListener.class );
+		assertEquals( event.getListenerClass(), AboutToRemoveNodesListener.class );
 	}
 
+	@Test(expected=NullPointerException.class)
 	public void testNullNode() {
-		try {
-			AboutToRemoveNodeEvent ev = new AboutToRemoveNodeEvent(net, null);
-		} catch (NullPointerException npe) {
-			return;
-		}
-		fail("didn't catch expected npe for node");
+		AboutToRemoveNodesEvent ev = new AboutToRemoveNodesEvent(net, null);
 	}
 
+	@Test(expected=NullPointerException.class)
 	public void testNullNetwork() {
-		try {
-			AboutToRemoveNodeEvent ev = new AboutToRemoveNodeEvent(null, node);
-		} catch (NullPointerException npe) {
-			return;
-		}
-		fail("didn't catch expected npe for network");
+		AboutToRemoveNodesEvent ev = new AboutToRemoveNodesEvent(null, nodeCollection);
 	}
 }

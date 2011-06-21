@@ -1,5 +1,13 @@
+
 /*
- Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -25,17 +33,28 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
 package org.cytoscape.model.events;
 
+import java.util.Collection;
 
-import org.cytoscape.event.CyListener;
+import org.cytoscape.event.AbstractCyPayloadEvent;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
 
-/** Listener for RowsAboutToChangeEvents. */
-public interface RowsAboutToChangeListener extends CyListener {
+/**
+ * Event for upper layers.  In general, network view models listen to this event
+ * and creates view model for the node.  This will be fired to ALL network view models.
+ */
+public final class AddedNodesEvent extends AbstractCyPayloadEvent<CyNetwork,CyNode> {
+
 	/**
-	 * The method that should handle the specified event.
-	 * @param e The event to be handled.
+	 * Constructs event.
+	 * @param source The CyNetwork the node was added to.
+	 * @param node The node that was added to the network.
 	 */
-	void handleEvent(RowsAboutToChangeEvent e);
+	public AddedNodesEvent(final CyNetwork source, final Collection<CyNode> nodes) {
+		super(source, AddedNodesListener.class, nodes);
+	}
 }

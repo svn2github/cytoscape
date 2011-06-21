@@ -1,5 +1,13 @@
+
 /*
- Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -25,48 +33,19 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
 package org.cytoscape.model.events;
 
-
-import java.util.List;
-
-import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.event.CyMicroListener;
+import org.cytoscape.event.CyListener;
 
 
-/** Listener for aggregated row updates. */
-public interface CyTableRowUpdateMicroListener extends CyMicroListener {
-	public final static class RowSet {
-		private final CyRow row;
-		private final String column;
-		private final Object value;
-		private final Object rawValue;
-
-		public RowSet(final CyRow row, final String column, final Object value,
-			       final Object rawValue)
-		{
-			this.row      = row;
-			this.column   = column;
-			this.value    = value;
-			this.rawValue = rawValue;
-		}
-
-		public CyRow getRow() { return row; }
-		public String getColumn() { return column; }
-		public Object getValue() { return value; }
-		public Object getRawValue() { return rawValue; }
-	}
-
+/**
+ * Listener for RemovedNodeEvents.
+ */
+public interface RemovedNodesListener extends CyListener {
 	/**
-	 * @param table    the table whose updates we would like to track
-	 * @param newRows  the list of new rows
+	 * The method that should handle the specified event.
+	 * @param e The event to be handled.
 	 */
-	void handleRowCreations(final CyTable table, final List<CyRow> newRows);
-
-	/**
-	 * @param table    the table whose updates we would like to track
-	 * @param rowSets  a list of row updates
-	 */
-	void handleRowSets(final CyTable table, final List<RowSet> rowSets);
+	void handleEvent(RemovedNodesEvent e);
 }

@@ -28,6 +28,9 @@
 package org.cytoscape.model;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -50,6 +53,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		// Doesn't make sense for subnetworks
 		//assertTrue("node index < num node", n.getIndex() < net.getNodeCount());
 	}
+	
 
 	/**
 	 *  DOCUMENT ME!
@@ -62,13 +66,13 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		// remove 1
 		assertEquals("num nodes == 3", 3, net.getNodeCount());
 
-		boolean rem1 = net.removeNode(n1);
+		boolean rem1 = net.removeNodes(Collections.singletonList(n1));
 		assertTrue("remove node 1 success", rem1);
 		assertEquals("num nodes == 2", 2, net.getNodeCount());
 
 		// create a dummy node and try removing that
 		CyNode n4 = new DummyCyNode(10);
-		boolean rem4 = net.removeNode(n4);
+		boolean rem4 = net.removeNodes(Collections.singletonList(n4));
 		assertFalse("remove dummy node 4 failure", rem4);
 		assertEquals("num nodes == 2", 2, net.getNodeCount());
 
@@ -77,20 +81,20 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("num nodes == 3", 3, net.getNodeCount());
 
 		// remove the rest of the nodes
-		boolean rem5 = net.removeNode(n5);
+		boolean rem5 = net.removeNodes(Collections.singletonList(n5));
 		assertTrue("remove node 5 success", rem5);
 		assertEquals("num nodes == 2", 2, net.getNodeCount());
 
-		boolean rem3 = net.removeNode(n3);
+		boolean rem3 = net.removeNodes(Collections.singletonList(n3));
 		assertTrue("remove node 3 success", rem3);
 		assertEquals("num nodes == 1", 1, net.getNodeCount());
 
-		boolean rem2 = net.removeNode(n2);
+		boolean rem2 = net.removeNodes(Collections.singletonList(n2));
 		assertTrue("remove node 2 success", rem2);
 		assertEquals("num nodes == 0", 0, net.getNodeCount());
 
 		// try redundant remove
-		rem2 = net.removeNode(n2);
+		rem2 = net.removeNodes(Collections.singletonList(n2));
 		assertFalse("remove node 2 again fails", rem2);
 		assertEquals("num nodes == 0", 0, net.getNodeCount());
 	}
@@ -114,12 +118,12 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("num nodes", 5, net.getNodeCount());
 		assertEquals("num edges", 5, net.getNodeCount());
 
-		boolean rem1 = net.removeNode(n1);
+		boolean rem1 = net.removeNodes(Collections.singletonList(n1));
 		assertTrue("successfully removed", rem1);
 		assertEquals("num nodes", 4, net.getNodeCount());
 		assertEquals("num edges", 3, net.getEdgeCount());
 
-		boolean rem2 = net.removeNode(n2);
+		boolean rem2 = net.removeNodes(Collections.singletonList(n2));
 		assertTrue("successfully removed", rem2);
 		assertEquals("num nodes", 3, net.getNodeCount());
 		assertEquals("num edges", 0, net.getEdgeCount());
@@ -224,18 +228,18 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("num edges == 3", 3, net.getEdgeCount());
 
 		// basic remove
-		boolean rem3 = net.removeEdge(e3);
+		boolean rem3 = net.removeEdges(Collections.singletonList(e3));
 		assertTrue("remove edge 3 success", rem3);
 		assertEquals("num edges == 2", 2, net.getEdgeCount());
 
 		// try to remove dummy edge
 		CyEdge e4 = new DummyCyEdge(n1, n2, true, 10);
-		boolean rem4 = net.removeEdge(e4);
+		boolean rem4 = net.removeEdges(Collections.singletonList(e4));
 		assertFalse("remove edge 4 failure", rem4);
 		assertEquals("num edges == 2", 2, net.getEdgeCount());
 
 		// try to remove null edge
-		boolean remn = net.removeEdge(null);
+		boolean remn = net.removeEdges(null);
 		assertFalse("remove null edge failure", remn);
 		assertEquals("num edges == 2", 2, net.getEdgeCount());
 
@@ -248,25 +252,25 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("num edges == 4", 4, net.getEdgeCount());
 
 		// remove self edge 
-		boolean rem6 = net.removeEdge(e6);
+		boolean rem6 = net.removeEdges(Collections.singletonList(e6));
 		assertTrue("remove edge 6 success", rem6);
 		assertEquals("num edges == 3", 3, net.getEdgeCount());
 
 		// remove the rest
-		boolean rem5 = net.removeEdge(e5);
+		boolean rem5 = net.removeEdges(Collections.singletonList(e5));
 		assertTrue("remove edge 5 success", rem5);
 		assertEquals("num edges == 2", 2, net.getEdgeCount());
 
-		boolean rem2 = net.removeEdge(e2);
+		boolean rem2 = net.removeEdges(Collections.singletonList(e2));
 		assertTrue("remove edge 2 success", rem2);
 		assertEquals("num edges == 1", 1, net.getEdgeCount());
 
-		boolean rem1 = net.removeEdge(e1);
+		boolean rem1 = net.removeEdges(Collections.singletonList(e1));
 		assertTrue("remove edge 1 success", rem1);
 		assertEquals("num edges == 0", 0, net.getEdgeCount());
 
 		// try redundant remove
-		rem1 = net.removeEdge(e1);
+		rem1 = net.removeEdges(Collections.singletonList(e1));
 		assertFalse("remove edge 1 again fails", rem1);
 		assertEquals("num edges == 0", 0, net.getEdgeCount());
 	}
@@ -287,11 +291,11 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		CyNode n3 = net.addNode();
 		assertEquals("num nodes == 3", 3, net.getNodeCount());
 
-		boolean rem3 = net.removeNode(n3);
+		boolean rem3 = net.removeNodes(Collections.singletonList(n3));
 		assertTrue("successfully removed node 3", rem3);
 		assertEquals("num nodes == 2", 2, net.getNodeCount());
 
-		rem3 = net.removeNode(n3);
+		rem3 = net.removeNodes(Collections.singletonList(n3));
 		assertFalse("unsuccessfully removed node 3 again", rem3);
 		assertEquals("num nodes == 2", 2, net.getNodeCount());
 
@@ -315,7 +319,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("num edges == 3", 3, net.getEdgeCount());
 
 		// basic remove
-		boolean rem3 = net.removeEdge(e3);
+		boolean rem3 = net.removeEdges(Collections.singletonList(e3));
 		assertTrue("remove edge 3 success", rem3);
 		assertEquals("num edges == 2", 2, net.getEdgeCount());
 	}
@@ -336,7 +340,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertTrue("contains node 3", l.contains(n3));
 
 		// remove a node and check again
-		boolean rem2 = net.removeNode(n2);
+		boolean rem2 = net.removeNodes(Collections.singletonList(n2));
 		l = net.getNodeList();
 		assertEquals("list size", 2, l.size());
 		assertTrue("contains node 1", l.contains(n1));
@@ -345,7 +349,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 
 		// remove a dummy node and check again
 		CyNode n4 = new DummyCyNode(10);
-		boolean rem4 = net.removeNode(n4);
+		boolean rem4 = net.removeNodes(Collections.singletonList(n4));
 		l = net.getNodeList();
 		assertEquals("list size", 2, l.size());
 	}
@@ -376,14 +380,14 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertTrue("contains edge 4", l.contains(e4));
 
 		// remove an edge and check again
-		boolean rem3 = net.removeEdge(e3);
+		boolean rem3 = net.removeEdges(Collections.singletonList(e3));
 		l = net.getEdgeList();
 		assertEquals("edge list size", 3, l.size());
 		assertFalse("contains edge 3", l.contains(e3));
 
 		// remove a dummy edge and check again
 		CyEdge e5 = new DummyCyEdge(n1, n2, true, 10);
-		boolean rem5 = net.removeEdge(e5);
+		boolean rem5 = net.removeEdges(Collections.singletonList(e5));
 		l = net.getEdgeList();
 		assertFalse("remove dummy edge 5 failure", rem5);
 		assertEquals("edge list size", 3, l.size());
@@ -758,7 +762,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertTrue("contains edge 5", l.contains(e5));
 
 		// between node 2 and 3 after deleting an edge
-		boolean rem5 = net.removeEdge(e5);
+		boolean rem5 = net.removeEdges(Collections.singletonList(e5));
 		assertTrue("removed successfully", rem5);
 		l = net.getConnectingEdgeList(n2, n3, CyEdge.Type.ANY);
 		assertEquals("connecting edges", 1, l.size());
