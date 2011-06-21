@@ -29,6 +29,7 @@ package org.cytoscape.model.internal;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -370,31 +371,28 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean removeNode(final CyNode n) {
+	public boolean removeNodes(final Collection<CyNode> nodes) {
 
 		synchronized (this) {
-			//System.out.println("removeNode root");
-			if (!containsNode(n))
-				return false;
-			//System.out.println(" attempting removeNode root");
-
 			// clean up subnetwork pointers
 			// this will remove the node from base	
 			for ( CySubNetwork sub : subNetworks )
-				sub.removeNode(n);
+				sub.removeNodes(nodes);
+			
+			for ( CyNode n : nodes ) {
+				if (!containsNode(n))
+					return false;
 
-			// remove adjacent edges from ROOT network
-			final List<CyEdge> edges = getAdjacentEdgeList(n, CyEdge.Type.ANY, ROOT);
-
-			for (final CyEdge e : edges)
-				removeEdge(e);
-
-			final NodePointer node = getNodePointer(n);
-			firstNode = node.remove(firstNode,ROOT);
-
-			nodePointers.set(n.getIndex(), null);
-
-			nodeCount--;
+				// remove adjacent edges from ROOT network
+				removeEdges(getAdjacentEdgeList(n, CyEdge.Type.ANY, ROOT));
+	
+				final NodePointer node = getNodePointer(n);
+				firstNode = node.remove(firstNode,ROOT);
+	
+				nodePointers.set(n.getIndex(), null);
+	
+				nodeCount--;
+			}
 		}
 
 		return true;
@@ -443,24 +441,28 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean removeEdge(final CyEdge edge) {
+	public boolean removeEdges(final Collection<CyEdge> edges) {
+		if ( edges == null || edges.isEmpty() )
+			return false;
 
 		synchronized (this) {
-			if (!containsEdge(edge))
-				return false;
-
 			// clean up subnetwork pointers
 			// this will remove the edge from base	
 			for ( CySubNetwork sub : subNetworks )
-				sub.removeEdge(edge);
+				sub.removeEdges(edges);
+			
+			for (CyEdge edge : edges) {
+				if (!containsEdge(edge))
+					return false;
+	
+				final EdgePointer e = getEdgePointer(edge);
+	
+				e.remove(ROOT);
+	
+				edgePointers.set(e.index, null);
 
-			final EdgePointer e = getEdgePointer(edge);
-
-			e.remove(ROOT);
-
-			edgePointers.set(e.index, null);
-
-			edgeCount--;
+				edgeCount--;
+			}
 		}
 
 		return true;
@@ -831,6 +833,7 @@ public class ArrayGraph implements CyRootNetwork {
  	/**
  	 * {@inheritDoc}
  	 */
+	@Override
 	public CySubNetwork addSubNetwork(final Iterable<CyNode> nodes, final Iterable<CyEdge> edges) {
 		// Only addSubNetwork() modifies the internal state of ArrayGraph (this object), 
 		// so because it's synchronized, we don't need to synchronize this method.
@@ -872,9 +875,7 @@ public class ArrayGraph implements CyRootNetwork {
 			throw new IllegalArgumentException("Subnetwork not a member of this RootNetwork " + sub);
 
 		// clean up pointers for nodes in subnetwork
-		final List<CyNode> subNodes = sub.getNodeList();
-		for ( CyNode node : subNodes )
-			sub.removeNode(node);
+		sub.removeNodes(sub.getNodeList());
 
 		subNetworks.remove( sub );
 	}

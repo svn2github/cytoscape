@@ -43,8 +43,6 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAddedEvent;
 import org.cytoscape.model.events.NetworkDestroyedEvent;
-import org.cytoscape.model.events.RowsAboutToChangeEvent;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +94,7 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 	    throw new IllegalArgumentException("network is not recognized by this NetworkManager");
 
 	// let everyone know!
-	cyEventHelper.fireSynchronousEvent(new NetworkAboutToBeDestroyedEvent(CyNetworkManagerImpl.this, network));
+	cyEventHelper.fireEvent(new NetworkAboutToBeDestroyedEvent(CyNetworkManagerImpl.this, network));
 
 	synchronized (this) {
 	    // check again within the lock in case something has changed
@@ -105,19 +103,11 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 
 	    CyTable nodeTable = network.getDefaultNodeTable();
 	    CyTable edgeTable = network.getDefaultEdgeTable();
-	    try {
-		cyEventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, nodeTable));
-		cyEventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, edgeTable));
 
 		for (CyNode n : network.getNodeList())
 		    n.getCyRow().set(CyNetwork.SELECTED, false);
 		for (CyEdge e : network.getEdgeList())
 		    e.getCyRow().set(CyNetwork.SELECTED, false);
-
-	    } finally {
-		cyEventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, nodeTable));
-		cyEventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, edgeTable));
-	    }
 
 	    networkMap.remove(networkId);
 	    
@@ -127,7 +117,7 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 	}
 
 	// let everyone know that some network is gone
-	cyEventHelper.fireSynchronousEvent(new NetworkDestroyedEvent(CyNetworkManagerImpl.this));
+	cyEventHelper.fireEvent(new NetworkDestroyedEvent(CyNetworkManagerImpl.this));
     }
 
     @Override
@@ -140,7 +130,7 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 	    networkMap.put(network.getSUID(), network);
 	}
 
-	cyEventHelper.fireSynchronousEvent(new NetworkAddedEvent(CyNetworkManagerImpl.this, network));
+	cyEventHelper.fireEvent(new NetworkAddedEvent(CyNetworkManagerImpl.this, network));
     }
 
     @Override

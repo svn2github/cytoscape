@@ -38,20 +38,22 @@ package org.cytoscape.model.internal;
 
 import org.cytoscape.event.CyEventHelper;
 
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.SUIDFactory;
-import org.cytoscape.model.events.AddedNodeEvent;
-import org.cytoscape.model.events.AddedEdgeEvent;
-import org.cytoscape.model.events.AboutToRemoveNodeEvent;
-import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
-import org.cytoscape.model.events.RemovedNodeEvent;
-import org.cytoscape.model.events.RemovedEdgeEvent;
+import org.cytoscape.model.events.AddedNodesEvent;
+import org.cytoscape.model.events.AddedEdgesEvent;
+import org.cytoscape.model.events.AboutToRemoveNodesEvent;
+import org.cytoscape.model.events.AboutToRemoveEdgesEvent;
+import org.cytoscape.model.events.RemovedNodesEvent;
+import org.cytoscape.model.events.RemovedEdgesEvent;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -133,7 +135,7 @@ class ArraySubGraph implements CySubNetwork {
 			internalNodeCount++;
 			nodeSet.add(ret);
 		}
-		eventHelper.fireSynchronousEvent(new AddedNodeEvent(this, ret));
+		eventHelper.addEventPayload((CyNetwork)this, ret, AddedNodesEvent.class);
 
 		return ret;
 	}
@@ -150,7 +152,7 @@ class ArraySubGraph implements CySubNetwork {
 			internalEdgeCount++;
 			edgeSet.add(ret);
 		}
-		eventHelper.fireSynchronousEvent(new AddedEdgeEvent(this, ret));
+		eventHelper.addEventPayload((CyNetwork)this, ret, AddedEdgesEvent.class);
 
 		return ret;
 	}
@@ -326,33 +328,33 @@ class ArraySubGraph implements CySubNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean removeNode(final CyNode n) {
-		if ( n == null )
+	@Override
+	public boolean removeNodes(final Collection<CyNode> nodes) {
+		if ( nodes == null || nodes.isEmpty() )
 			return false;
 
 		// Possible error if this node isn't contained in subnetwork, but
 		// since this is only a notification, maybe that's OK.
-		eventHelper.fireSynchronousEvent(new AboutToRemoveNodeEvent(this, n));
-		final List<CyEdge> edges; 
+		eventHelper.fireEvent(new AboutToRemoveNodesEvent(this, nodes));
 
 		synchronized (this) {
-			if (!containsNode(n))
-				return false;
-
-			// remove adjacent edges
-			edges = getAdjacentEdgeList(n, CyEdge.Type.ANY);
+			for (CyNode n : nodes) {
+				
+				if (!containsNode(n))
+					return false;
 	
-			for (final CyEdge e : edges)
-				removeEdgeInternal(e);
+				// remove adjacent edges
+				removeEdgesInternal(getAdjacentEdgeList(n, CyEdge.Type.ANY));
+		
+				final NodePointer node = parent.getNodePointer(n);
+				inFirstNode = node.remove(inFirstNode,internalId);
 	
-			final NodePointer node = parent.getNodePointer(n);
-			inFirstNode = node.remove(inFirstNode,internalId);
-
-			internalNodeCount--;
-			nodeSet.remove(n);
+				internalNodeCount--;
+				nodeSet.remove(n);
+			}
 		}
 		
-		eventHelper.fireAsynchronousEvent(new RemovedNodeEvent(this));
+		eventHelper.fireEvent(new RemovedNodesEvent(this));
 
 		return true;
 	}
@@ -360,35 +362,38 @@ class ArraySubGraph implements CySubNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean removeEdge(final CyEdge edge) {
-		if ( edge == null )
+	@Override
+	public boolean removeEdges(final Collection<CyEdge> edges) {
+		if ( edges == null || edges.isEmpty() )
 			return false;
 
-		// Possible error if this edge isn't contained in subnetwork, but
+		// Possible error if one of the edges isn't contained in subnetwork, but
 		// since this is only a notification, maybe that's OK.
-		eventHelper.fireSynchronousEvent(new AboutToRemoveEdgeEvent(this, edge));
+		eventHelper.fireEvent(new AboutToRemoveEdgesEvent(this, edges));
 
 		synchronized (this) {
-			if (!removeEdgeInternal(edge))
+			if (!removeEdgesInternal(edges))
 				return false;
 		}
 
-		eventHelper.fireAsynchronousEvent(new RemovedEdgeEvent(this));
+		eventHelper.fireEvent(new RemovedEdgesEvent(this));
 
 		return true;
 	}
 
 	// should be called from within a synchronized block
-	private boolean removeEdgeInternal(CyEdge edge) {
-		if (!containsEdge(edge))
-			return false;
-
-		final EdgePointer e = parent.getEdgePointer(edge);
-
-		e.remove(internalId);
-
-		internalEdgeCount--;
-		edgeSet.remove(edge);
+	private boolean removeEdgesInternal(Collection<CyEdge> edges) {
+		for (CyEdge edge : edges) {
+			if (!containsEdge(edge))
+				return false;
+	
+			final EdgePointer e = parent.getEdgePointer(edge);
+	
+			e.remove(internalId);
+	
+			internalEdgeCount--;
+			edgeSet.remove(edge);
+		}
 		return true;
 	}
 

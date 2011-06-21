@@ -88,8 +88,8 @@ class CyNodeImpl extends CyTableEntryImpl implements CyNode {
 		}
 
 		if (orig != null)
-			eventHelper.fireSynchronousEvent(new UnsetNestedNetworkEvent(this, orig));
+			eventHelper.fireEvent(new UnsetNestedNetworkEvent(this, orig));
 		if (nestedNet != null)
-			eventHelper.fireSynchronousEvent(new SetNestedNetworkEvent(this, nestedNet));
+			eventHelper.fireEvent(new SetNestedNetworkEvent(this, nestedNet));
 	}
 }

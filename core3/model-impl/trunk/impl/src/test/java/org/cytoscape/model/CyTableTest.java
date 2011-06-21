@@ -39,12 +39,10 @@ import org.cytoscape.equations.StringList;
 import org.cytoscape.equations.internal.EquationCompilerImpl;
 import org.cytoscape.equations.internal.EquationParserImpl;
 import org.cytoscape.equations.internal.interpreter.InterpreterImpl;
-import org.cytoscape.event.CyEvent;
-import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.event.CyMicroListener;
 import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.CyTable.SavePolicy;
 import org.cytoscape.model.internal.CyTableImpl;
+import org.cytoscape.model.events.RowSetRecord;
 
 import static org.junit.Assert.*;
 import org.junit.After;
@@ -128,7 +126,9 @@ public class CyTableTest extends AbstractCyTableTest {
 		compiler.compile("=\"one\"", new HashMap<String, Class<?>>());
 		final Equation eqn = compiler.getEquation();
 		attrs.set("strings", eqn);
-                assertTrue(eventHelper.getCalledMicroListeners().contains("handleRowSet"));
+		Object last = eventHelper.getLastPayload();
+		assertNotNull(last);
+		assertTrue(last instanceof RowSetRecord);
 	}
 
 	@Test
@@ -139,7 +139,9 @@ public class CyTableTest extends AbstractCyTableTest {
 		compiler.compile("=$a&\"one\"", varnameToTypeMap);
 		final Equation eqn = compiler.getEquation();
 		attrs.set("strings", eqn);
-                assertTrue(eventHelper.getCalledMicroListeners().contains("handleRowSet"));
+		Object last = eventHelper.getLastPayload();
+		assertNotNull(last);
+		assertTrue(last instanceof RowSetRecord);
 	}
 
 	@Test
@@ -178,7 +180,9 @@ public class CyTableTest extends AbstractCyTableTest {
 		varnameToTypeMap.put("a", Double.class);
 		compiler.compile("=$a+20", varnameToTypeMap);
 		attrs.set("b", compiler.getEquation());
-                assertTrue(eventHelper.getCalledMicroListeners().contains("handleRowSet"));
+		Object last = eventHelper.getLastPayload();
+		assertNotNull(last);
+		assertTrue(last instanceof RowSetRecord);
 
 		assertEquals(attrs.get("b", Double.class), 30.0, 0.00001);
 	}

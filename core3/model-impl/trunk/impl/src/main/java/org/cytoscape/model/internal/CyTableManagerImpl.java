@@ -164,7 +164,7 @@ public class CyTableManagerImpl implements CyTableManager, NetworkAboutToBeDestr
 		return;
 	}
 
-	eventHelper.fireSynchronousEvent(new TableAboutToBeDeletedEvent(this, table));
+	eventHelper.fireEvent(new TableAboutToBeDeletedEvent(this, table));
 
 	synchronized (this) {
 	    table = (CyTableImpl) tables.get(suid);
@@ -177,7 +177,7 @@ public class CyTableManagerImpl implements CyTableManager, NetworkAboutToBeDestr
 	    table.removeAllVirtColumns();
 	    tables.remove(suid);
 	}
-	eventHelper.fireSynchronousEvent(new TableDeletedEvent(this));
+	eventHelper.fireEvent(new TableDeletedEvent(this));
 	
 	logger.debug("CyTable removed: table ID = " + table.getSUID());
 	table = null;

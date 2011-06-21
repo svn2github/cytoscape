@@ -20,8 +20,6 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.model.events.RowCreatedMicroListener;
-import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.service.util.CyServiceRegistrar;
 
 import java.util.ArrayList;

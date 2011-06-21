@@ -49,8 +49,9 @@ import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.ColumnNameChangedEvent;
-import org.cytoscape.model.events.RowSetMicroListener;
-import org.cytoscape.model.events.RowCreatedMicroListener;
+import org.cytoscape.model.events.RowSetRecord;
+import org.cytoscape.model.events.RowsCreatedEvent;
+import org.cytoscape.model.events.RowsSetEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,7 +155,7 @@ public final class CyTableImpl implements CyTable {
 			types.remove(oldColumnName);
 		}
 
-		eventHelper.fireSynchronousEvent(new ColumnNameChangedEvent(this, oldColumnName,
+		eventHelper.fireEvent(new ColumnNameChangedEvent(this, oldColumnName,
 									    newColumnName));
 	}
 
@@ -264,7 +265,7 @@ public final class CyTableImpl implements CyTable {
 		}
 
 		// This event must be synchronous!
-		eventHelper.fireSynchronousEvent(new ColumnDeletedEvent(this, columnName));
+		eventHelper.fireEvent(new ColumnDeletedEvent(this, columnName));
 	}
 
 	@Override
@@ -300,7 +301,7 @@ public final class CyTableImpl implements CyTable {
 			reverse.put(columnName, new HashMap<Object, Set<Object>>());
 		}
 
-		eventHelper.fireSynchronousEvent(new ColumnCreatedEvent(this, columnName));
+		eventHelper.fireEvent(new ColumnCreatedEvent(this, columnName));
 	}
 
 	@Override
@@ -331,7 +332,7 @@ public final class CyTableImpl implements CyTable {
 			reverse.put(columnName, new HashMap<Object, Set<Object>>());
 		}
 
-		eventHelper.fireSynchronousEvent(new ColumnCreatedEvent(this, columnName));
+		eventHelper.fireEvent(new ColumnCreatedEvent(this, columnName));
 	}
 
 	synchronized <T> List<T> getColumnValues(final String columnName, final Class<? extends T> type) {
@@ -391,7 +392,7 @@ public final class CyTableImpl implements CyTable {
 			rows.put(key, row);
 		}
 
-		eventHelper.getMicroListener(RowCreatedMicroListener.class, this).handleRowCreated(key);
+		eventHelper.addEventPayload((CyTable)this, (Object)key, RowsCreatedEvent.class);
 		return row;
 	}
 
@@ -515,8 +516,8 @@ public final class CyTableImpl implements CyTable {
 			}
 		}
 
-		eventHelper.getMicroListener(RowSetMicroListener.class,
-					     getRow(key)).handleRowSet(columnName, newValue, newRawValue);
+		eventHelper.addEventPayload((CyTable)this, new RowSetRecord(getRow(key),columnName,newValue, newRawValue), RowsSetEvent.class);
+
 	}
 
 	private void addToReverseMap(final String columnName, final Object key,
@@ -585,8 +586,7 @@ public final class CyTableImpl implements CyTable {
 			}
 		}
 
-		eventHelper.getMicroListener(RowSetMicroListener.class,
-					     getRow(key)).handleRowSet(columnName, newValue, value);
+		eventHelper.addEventPayload((CyTable)this, new RowSetRecord(getRow(key),columnName,newValue, value), RowsSetEvent.class);
 	}
 
 	synchronized private void unSetX(final Object key, final String columnName) {
@@ -609,9 +609,7 @@ public final class CyTableImpl implements CyTable {
 				keyToValueMap.remove(key);
 			}
 		}
-
-		eventHelper.getMicroListener(RowSetMicroListener.class,
-					     getRow(key)).handleRowSet(columnName, null, null);
+		eventHelper.addEventPayload((CyTable)this, new RowSetRecord(getRow(key),columnName,null,null), RowsSetEvent.class);
 	}
 
 	private void removeFromReverseMap(final String columnName, final Object key, final Object value) {
@@ -806,7 +804,7 @@ public final class CyTableImpl implements CyTable {
 							       sourceJoinKeyName, targetJoinKeyName));
 		}
 
-		eventHelper.fireSynchronousEvent(new ColumnCreatedEvent(this, targetName));
+		eventHelper.fireEvent(new ColumnCreatedEvent(this, targetName));
 		return targetName;
 	}
 
