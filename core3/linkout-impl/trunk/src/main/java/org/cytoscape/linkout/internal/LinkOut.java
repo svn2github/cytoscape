@@ -2,6 +2,8 @@ package org.cytoscape.linkout.internal;
 
 
 import java.awt.Font;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -94,55 +96,16 @@ public class LinkOut {
 	 */
 
 	private void readProperties() {
-		// Set the properties to be Cytoscape's properties.
-		// This allows the linkout properties to be edited in
-		// the preferences editor.
-		// System.out.println(CytoscapeInit.getPropertiesLocation());
-		// props = CytoscapeInit.getProperties();
+		final String inputFileName =
+			System.getProperty("user.home") + "/" + CyProperty.DEFAULT_CONFIG_DIR + "/linkout.props";
 
-		
-
-		// Loop over the default props and see if any
-		// linkout urls have been specified. We don't want to
-		// override or even supplement what was set from the
-		// command line. Only use the defaults if nothing
-		// else can be found.
-		boolean linkoutFound = false;
-		boolean externalLinkNameFound = false;
-
-		Enumeration names = props.propertyNames();
-
-		while (names.hasMoreElements()) {
-			String name = (String) names.nextElement();
-			if (name.compareToIgnoreCase(linkMarker) == 0) {
-				externalLinkNameFound = true;
-				externalLinksAttribute = props.getProperty(linkMarker);
-				continue;
-			}
-			int p = name.lastIndexOf(nodeMarker);
-			int q = name.lastIndexOf(edgeMarker);
-
-			if (p != -1 || q != -1) {
-				linkoutFound = true;
-
-				break;
-			}
-		}
-
-		// If we don't have any linkout properties, load the defaults.
-		if (!linkoutFound) {
-			try {
-				System.out.println("loading defaults");
-
-				ClassLoader cl = LinkOut.class.getClassLoader();
-				props.load(cl.getResource("linkout.props").openStream());
-				if (!externalLinkNameFound) {
-					externalLinksAttribute = props.getProperty(linkMarker);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println("Couldn't load default linkout props");
-			}
+		try {
+			final File inputFile = new File(inputFileName);
+			if (inputFile.canRead())
+				props.load(new FileInputStream(inputFile));
+		} catch (Exception e) {
+			System.err.println("Couldn't load linkout props from \""
+					   + inputFileName + "\"!");
 		}
 	}
 
