@@ -1,7 +1,6 @@
 package org.cytoscape.io.read;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 
@@ -21,12 +20,4 @@ public interface CyNetworkReader extends Task {
 
 	CyNetworkView buildCyNetworkView(final CyNetwork network);
 
-//	/**
-//	 * Return an array of {@link org.cytoscape.view.vizmap.VisualStyle} objects.
-//	 * 
-//	 * @return An array of {@link org.cytoscape.view.vizmap.VisualStyle}
-//	 *         objects. The list may be empty if no VisualStyle is defined by
-//	 *         the input being read.
-//	 */
-//	VisualStyle[] getVisualStyles();
 }
