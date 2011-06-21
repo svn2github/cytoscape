@@ -16,6 +16,6 @@ public class XGMMLNetworkViewWriterFactory extends AbstractCyNetworkViewWriterFa
 
     @Override
     public CyWriter getWriterTask() {
-        return new XGMMLWriter(outputStream, renderingEngineManager, view, true);
+        return new XGMMLWriter(outputStream, renderingEngineManager, view);
     }
 }

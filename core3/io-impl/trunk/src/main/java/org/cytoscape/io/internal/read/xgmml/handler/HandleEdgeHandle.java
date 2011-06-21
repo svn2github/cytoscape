@@ -25,43 +25,40 @@ import org.xml.sax.SAXException;
  * handle the attributes directly.
  */
 public class HandleEdgeHandle extends AbstractHandler {
-	public ParseState handle(String tag, Attributes atts, ParseState current)
-			throws SAXException {
+	
+	@Override
+	public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 
-		if (ReadDataManager.documentVersion == 1.0) {
+		if (manager.documentVersion == 1.0) {
 			// This is the outer "handle" attribute
 			if (!attributeValueUtil.getAttribute(atts, "name").equals("handle")) {
 				// OK, this is one of our "data" attributes
 				if (attributeValueUtil.getAttributeValue(atts, "x") != null) {
-					manager.edgeBendX = attributeValueUtil.getAttributeValue(
-							atts, "x");
+					manager.edgeBendX = attributeValueUtil.getAttributeValue(atts, "x");
 				} else if (attributeValueUtil.getAttributeValue(atts, "y") != null) {
-					manager.edgeBendY = attributeValueUtil.getAttributeValue(
-							atts, "y");
+					manager.edgeBendY = attributeValueUtil.getAttributeValue(atts, "y");
 				} else {
-					throw new SAXException(
-							"expected x or y value for edgeBend handle - got "
-									+ atts.getValue("name"));
+					throw new SAXException("expected x or y value for edgeBend handle - got " + atts.getValue("name"));
 				}
 			}
 		} else {
 			// New format -- get the x and y values directly
-			if (attributeValueUtil.getAttribute(atts, "x") != null) {
+			if (attributeValueUtil.getAttribute(atts, "x") != null)
 				manager.edgeBendX = attributeValueUtil.getAttribute(atts, "x");
-			}
-			if (attributeValueUtil.getAttribute(atts, "y") != null) {
+			
+			if (attributeValueUtil.getAttribute(atts, "y") != null)
 				manager.edgeBendY = attributeValueUtil.getAttribute(atts, "y");
-			}
-			// System.out.println("x="+edgeBendX+" y="+edgeBendY);
+			
 			if (manager.edgeBendX != null && manager.edgeBendY != null) {
 				if (manager.handleList == null)
 					manager.handleList = new ArrayList<String>();
-				manager.handleList.add(manager.edgeBendX + ","
-						+ manager.edgeBendY);
+				
+				manager.handleList.add(manager.edgeBendX + "," + manager.edgeBendY);
 				manager.edgeBendX = null;
 				manager.edgeBendY = null;
 			}
 		}
+		
 		return current;
 	}
 }

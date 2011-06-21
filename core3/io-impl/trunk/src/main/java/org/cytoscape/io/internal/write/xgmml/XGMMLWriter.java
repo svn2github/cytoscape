@@ -28,15 +28,15 @@
 package org.cytoscape.io.internal.write.xgmml;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Paint;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.cytoscape.equations.Equation;
 import org.cytoscape.io.write.CyWriter;
@@ -92,6 +92,8 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
     // XML preamble information
     public static final String ENCODING = "UTF-8";
+    public static final float VERSION = 3.0f;
+    
     private static final String XML_STRING = "<?xml version=\"1.0\" encoding=\"" + ENCODING + "\" standalone=\"yes\"?>";
 
     private static final String[] NAMESPACES = { "xmlns:dc=\"http://purl.org/dc/elements/1.1/\"",
@@ -101,9 +103,6 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
     // File format version. For compatibility.
     private static final String FORMAT_VERSION = "documentVersion";
-    private static final float VERSION = (float) 1.1;
-    private static final String METADATA_NAME = "networkMetadata";
-    private static final String METADATA_ATTR_NAME = "Network Metadata";
 
     // Node types
     protected static final String NORMAL = "normal";
@@ -126,10 +125,8 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
     private final VisualLexicon visualLexicon;
     private final CyNetworkView networkView;
 
-    private boolean isMixed;
     private HashMap<CyNode, CyNode> nodeMap = new HashMap<CyNode, CyNode>();
     private HashMap<CyEdge, CyEdge> edgeMap = new HashMap<CyEdge, CyEdge>();
-    private boolean noCytoscapeGraphics = false;
 
     private int depth = 0; // XML
     // depth
@@ -137,15 +134,14 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
     private Writer writer = null;
 
     private boolean doFullEncoding;
+    private boolean sessionFormat;
 
     public XGMMLWriter(final OutputStream outputStream,
                        final RenderingEngineManager renderingEngineManager,
-                       final CyNetworkView networkView,
-                       final boolean noCytoscapeGraphics) {
+                       final CyNetworkView networkView) {
         this.outputStream = outputStream;
         this.networkView = networkView;
         this.network = networkView.getModel();
-        this.noCytoscapeGraphics = noCytoscapeGraphics;
         this.visualLexicon = renderingEngineManager.getDefaultVisualLexicon();
 
         // Create our indent string (480 blanks);
@@ -157,7 +153,6 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
     @Override
     public void run(TaskMonitor taskMonitor) throws Exception {
-
         writer = new OutputStreamWriter(outputStream);
 
         // write out the XGMML preamble
@@ -186,6 +181,14 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
     }
 
     /**
+     * To tell the writer whether or not the XGMML file will be saved as part of a Cytoscape session file.
+     * @param sessionFormat
+     */
+	public void setSessionFormat(boolean sessionFormat) {
+		this.sessionFormat = sessionFormat;
+	}
+
+	/**
      * Output the XML preamble.  This includes the XML line as well as the initial
      * &lt;graph&gt; element, along with all of our namespaces.
      *
@@ -222,16 +225,10 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
                 seen_undirected = true;
         }
 
-        if (seen_undirected && seen_directed)
-            isMixed = true;
-        else
-            isMixed = false;
-
         if ((!seen_directed) && seen_undirected)
             return "0"; // only undir. edges
         else
-            return "1"; // either only directed or mixed. For both cases, use
-        // dir. as default
+            return "1"; // either only directed or mixed. For both cases, use dir. as default
     }
 
     /**
@@ -295,11 +292,13 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
      */
     private void writeNetworkAttributes() throws IOException {
         if (networkView != null) {
-            // Get our background color
-            Paint paint = networkView.getVisualProperty(MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT);
-            String bgColor = paint2string(paint, Color.WHITE);
+            if (!sessionFormat) {
+				// Write the background color
+				Paint paint = networkView.getVisualProperty(MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT);
+				String bgColor = paint2string(paint, Color.WHITE);
 
-            writeElement("<att type=\"string\" name=\"" + BACKGROUND + "\" value=\"" + bgColor + "\"/>\n");
+				writeElement("<att type=\"string\" name=\"" + BACKGROUND + "\" value=\"" + bgColor + "\"/>\n");
+            }
 
             // Write the graph zoom
             final Double zoom = networkView.getVisualProperty(MinimalVisualLexicon.NETWORK_SCALE_FACTOR);
@@ -311,12 +310,6 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
             final Double cy = networkView.getVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_Y_LOCATION);
             writeAttributeXML(GRAPH_VIEW_CENTER_Y, ObjectType.REAL, cy, true);
-
-            // TODO: Figure out if our node height and width is locked
-            //            VisualStyle networkStyle = Cytoscape.getCurrentNetworkView().getVisualStyle();
-            //            VisualPropertyDependency vpd = networkStyle.getDependency();
-            //            if (vpd.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED))
-            //                writeAttributeXML(NODE_SIZE_LOCKED, ObjectType.BOOLEAN, Boolean.TRUE ,true);
         }
 
         // Now handle all of the other network attributes
@@ -351,14 +344,18 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
         nodeMap.put(node, node);
 
         // Output the node
-        writeElement("<node label=" + quote(node.getCyRow().get("name", String.class)));
-        writer.write(" id=" + quote(Integer.toString(node.getIndex())) + ">\n");
-        depth++;
+        String id = quote(Long.toString(node.getSUID()));
+		String label = quote(node.getCyRow().get("name", String.class));
 
-        // Output the node attributes
-        // TODO This isn't handling namespaces
-        for (final CyColumn column : node.getCyRow().getTable().getColumns())
-            writeAttribute(node.getCyRow(), column.getName());
+		writeElement("<node id=" + id + " label=" + label + ">\n");
+        depth++;
+        
+		if (!sessionFormat) {
+			// Output the node attributes
+			// TODO This isn't handling namespaces
+			for (final CyColumn column : node.getCyRow().getTable().getColumns())
+				writeAttribute(node.getCyRow(), column.getName());
+		}
 
         // TODO deal with groups
         //        if (groupList != null && groupList.size() > 0) {
@@ -374,7 +371,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
         //                    writeNode(childGroup.getGroupNode(), childGroup.getNodes());
         //                } else {
         //                    if (nodeMap.containsKey(childNode))
-        //                        writeElement("<node xlink:href=\"#" + childNode.getIndex() + "\"/>\n");
+        //                        writeElement("<node xlink:href=\"#" + childNode.getSUID() + "\"/>\n");
         //                    else
         //                        writeNode(childNode, null);
         //                }
@@ -439,51 +436,57 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
      * Output a Cytoscape edge as XGMML
      *
      * @param curEdge the edge to output
-     *
      * @throws IOException
      */
-    private void writeEdge(CyEdge curEdge) throws IOException {
-        // Write the edge
-        String target = quote(Integer.toString(curEdge.getTarget().getIndex()));
-        String source = quote(Integer.toString(curEdge.getSource().getIndex()));
+	private void writeEdge(CyEdge curEdge) throws IOException {
+		// Write the edge
+		String target = quote(Long.toString(curEdge.getTarget().getSUID()));
+		String source = quote(Long.toString(curEdge.getSource().getSUID()));
 
-        // Make sure these nodes exist
-        if (!nodeMap.containsKey(curEdge.getTarget()) || !nodeMap.containsKey(curEdge.getSource())) return;
+		// Make sure these nodes exist
+		if (!nodeMap.containsKey(curEdge.getTarget()) || !nodeMap.containsKey(curEdge.getSource())) return;
 
-        String directed = quote(curEdge.isDirected() ? "1" : "0");
+		String id = quote(Long.toString(curEdge.getSUID()));
+		String label = quote(curEdge.getCyRow().get("name", String.class));
+		String directed = quote(curEdge.isDirected() ? "1" : "0");
 
-        writeElement("<edge label=" + quote(curEdge.getCyRow().get("name", String.class)) + " source=" + source +
-                     " target=" + target + " cy:directed=" + directed + ">\n");
+		writeElement("<edge id=" + id + " label=" + label + " source=" + source + " target=" + target +
+					 " cy:directed=" + directed + ">\n");
+		depth++;
 
-        depth++;
+		if (!sessionFormat) {
+			// Write the edge attributes
+			// TODO This isn't handling namespaces
+			for (final CyColumn column : curEdge.getCyRow().getTable().getColumns())
+				writeAttribute(curEdge.getCyRow(), column.getName());
+		}
 
-        // Write the edge attributes
-        // TODO This isn't handling namespaces
-        for (final CyColumn column : curEdge.getCyRow().getTable().getColumns())
-            writeAttribute(curEdge.getCyRow(), column.getName());
+		// Write the edge graphics
+		if (networkView != null) writeGraphics(networkView.getEdgeView(curEdge));
 
-        // Write the edge graphics
-        if (networkView != null) writeGraphics(networkView.getEdgeView(curEdge));
+		depth--;
+		writeElement("</edge>\n");
+	}
 
-        depth--;
-        writeElement("</edge>\n");
-    }
-
-    private void writeGraphics(View<? extends CyTableEntry> view) throws IOException {
+    @SuppressWarnings("unchecked")
+	private void writeGraphics(View<? extends CyTableEntry> view) throws IOException {
         if (view == null) return;
         CyTableEntry element = view.getModel();
 
         writeElement("<graphics");
 
-        Set<VisualProperty<?>> visualProperties = visualLexicon.getAllVisualProperties();
+        VisualProperty<?> root  = (element instanceof CyNode) ? MinimalVisualLexicon.NODE : MinimalVisualLexicon.EDGE;
+        Collection<VisualProperty<?>> visualProperties = visualLexicon.getAllDescendants(root);
+        List<VisualProperty<?>> lockedProperties = new ArrayList<VisualProperty<?>>();
 
         for (VisualProperty vp : visualProperties) {
-            if (!vp.getTargetDataType().isAssignableFrom(element.getClass())) continue;
-
             String key = getGraphicsKey(vp);
             Object value = view.getVisualProperty(vp);
 
-            if (key != null && value != null) {
+            if (value != null && view.isValueLocked(vp))
+            	lockedProperties.add(vp);
+            
+            if (key != null && value != null && !ignoreGraphicsAttribute(element, key)) {
                 if (key.toLowerCase().contains("transparency") && value instanceof Integer) {
                     // Cytoscape's XGMML specifies transparency as between 0-1.0 when it is a <graphics> attribute!
                     float transparency  = ((Integer) value).floatValue();
@@ -492,14 +495,34 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
                     value = vp.toSerializableString(value);
                 }
                 
-                if (value != null) writeAttributePair(key, value);
+                if (value != null)
+                	writeAttributePair(key, value);
             }
+        }
+        
+        // serialize locked properties as <att> tags inside <graphics>
+        if (lockedProperties.size() > 0) {
+        	writer.write(">\n");
+            depth++;
+            
+            for (VisualProperty vp : lockedProperties) {
+            	Object value = view.getVisualProperty(vp);
+            	value = vp.toSerializableString(value);
+            	
+            	if (value != null)
+            		writeAttributeXML(vp.getIdString(), ObjectType.STRING, value, true);
+            }
+            
+            depth--;
+            writeElement("</graphics>\n");
+        } else {
+        	writer.write("/>\n");
         }
 
         // TODO: Handle bends
         if (element instanceof CyEdge) {
-            final CyEdge edge = (CyEdge) element;
-//            final Bend bendData = edge.getBend();
+			//   final CyEdge edge = (CyEdge) element;
+			//   final Bend bendData = edge.getBend();
             //   final List<Point2D> handles = new ArrayList<Point2D>(); //final List<Point2D> handles = bendData.getHandles();
             //
             //   if (handles.size() == 0) {
@@ -520,10 +543,20 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
             //       writeElement("</graphics>\n");
             //   }
         }
-
-        writer.write("/>\n");
     }
 
+    /**
+	 * @param element
+	 * @param attName
+	 * @return
+	 */
+    private boolean ignoreGraphicsAttribute(final CyTableEntry element, String attName) {
+		boolean b = (sessionFormat && (element instanceof CyNode) && !attName.matches("x|y"));
+		b = b || (sessionFormat && (element instanceof CyEdge));
+		
+		return b;
+	}
+    
     private String getGraphicsKey(VisualProperty<?> vp) {
         //Nodes
         if (vp.equals(MinimalVisualLexicon.NODE_X_LOCATION)) return "x";
@@ -543,12 +576,6 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
         if (vp.equals(RichVisualLexicon.EDGE_STROKE_UNSELECTED_PAINT)) return "fill";
         if (vp.equals(MinimalVisualLexicon.EDGE_LABEL)) return "cy:edgeLabelFont";
         if (vp.equals(RichVisualLexicon.EDGE_LINE_TYPE)) return "cy:edgeLineType";
-        // TODO:
-        //            "cy:sourceArrow"
-        //            "cy:targetArrow"
-        //            "cy:sourceArrowColor"
-        //            "cy:targetArrowColor"
-        //            "cy:curved"
 
         return null;
     }
@@ -742,18 +769,6 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
                 Integer.toHexString(256 + c.getRed()).substring(1) +
                 Integer.toHexString(256 + c.getGreen()).substring(1) + Integer.toHexString(256 + c.getBlue())
                 .substring(1));
-    }
-
-    /**
-     * Encode font into a human-readable string.<br>
-     *
-     * @param font
-     *            Font object.
-     * @return String extracted from the given Font object.
-     */
-    private String encodeFont(final Font font) {
-        // Encode font into "fontname-style-pointsize" string
-        return font.getName() + "-" + font.getStyle() + "-" + font.getSize();
     }
 
     /**

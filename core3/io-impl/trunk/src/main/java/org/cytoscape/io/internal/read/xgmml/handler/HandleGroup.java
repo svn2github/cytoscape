@@ -10,14 +10,18 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class HandleGroup extends AbstractHandler {
+	
+	@Override
 	public ParseState handle(String tag, Attributes atts, ParseState current)
 			throws SAXException {
 		if (manager.groupMap == null)
 			manager.groupMap = new HashMap<CyNode, List<CyNode>>();
 		if (manager.currentGroupNode != null)
 			manager.groupStack.push(manager.currentGroupNode);
+		
 		manager.currentGroupNode = manager.currentNode;
 		manager.groupMap.put(manager.currentGroupNode, new ArrayList<CyNode>());
+		
 		return current;
 	}
 }

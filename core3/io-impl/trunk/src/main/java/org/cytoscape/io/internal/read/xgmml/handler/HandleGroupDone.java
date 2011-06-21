@@ -5,14 +5,17 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class HandleGroupDone extends AbstractHandler {
+	
+	@Override
 	public ParseState handle(String tag, Attributes atts, ParseState current)
 			throws SAXException {
 		manager.currentNode = manager.currentGroupNode;
-		// logger.debug("Group "+currentNode+" done.");
+		
 		if (!manager.groupStack.empty())
 			manager.currentGroupNode = manager.groupStack.pop();
 		else
 			manager.currentGroupNode = null;
+		
 		return current;
 	}
 }

@@ -28,7 +28,6 @@
 package org.cytoscape.io.internal.read.session;
 
 import java.io.InputStream;
-import java.util.Properties;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.read.datatable.CSVCyReaderFactory;
@@ -36,33 +35,29 @@ import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyPropertyReaderManager;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.io.read.VizmapReaderManager;
-import org.cytoscape.property.CyProperty;
 import org.cytoscape.work.TaskIterator;
 
 public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 
 	private final CyFileFilter filter;
-	private final CyNetworkReaderManager netviewReaderMgr;
+	private final CyNetworkReaderManager networkReaderMgr;
 	private final CyPropertyReaderManager propertyReaderMgr;
 	private final VizmapReaderManager vizmapReaderMgr;
 	private final CSVCyReaderFactory csvCyReaderFactory;
-	private final CyProperty<Properties> properties;
 
 	private InputStream inputStream;
 	private String inputName;
 
-	public SessionReaderFactoryImpl(final CyFileFilter filter, 
-									final CyNetworkReaderManager netviewReaderMgr, 
+	public SessionReaderFactoryImpl(final CyFileFilter filter,
+									final CyNetworkReaderManager networkReaderMgr,
 									final CyPropertyReaderManager propertyReaderMgr,
 									final VizmapReaderManager vizmapReaderMgr,
-									final CSVCyReaderFactory csvCyReaderFactory,
-									final CyProperty<Properties> properties) {
+									final CSVCyReaderFactory csvCyReaderFactory) {
 		this.filter = filter;
-		this.netviewReaderMgr = netviewReaderMgr;
+		this.networkReaderMgr = networkReaderMgr;
 		this.propertyReaderMgr = propertyReaderMgr;
 		this.vizmapReaderMgr = vizmapReaderMgr;
 		this.csvCyReaderFactory = csvCyReaderFactory;
-		this.properties = properties;
 	}
 
 	public void setInputStream(InputStream is, String in) {
@@ -76,7 +71,7 @@ public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new SessionReaderImpl(inputStream, netviewReaderMgr, propertyReaderMgr,
-													  vizmapReaderMgr, csvCyReaderFactory, properties));
+		return new TaskIterator(new SessionReaderImpl(inputStream, networkReaderMgr, propertyReaderMgr,
+													  vizmapReaderMgr, csvCyReaderFactory));
 	}
 }

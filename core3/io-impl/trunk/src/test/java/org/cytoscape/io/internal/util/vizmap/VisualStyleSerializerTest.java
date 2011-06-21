@@ -27,9 +27,9 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-public class VizmapAdapterTest {
+public class VisualStyleSerializerTest {
 
-	private VizmapAdapter serializer;
+	private VisualStyleSerializer serializer;
 	private Map<VisualStyle, String> styleNames;
 	private Map<VisualStyle, Map<VisualProperty<?>, ?>> styleProperties;
 
@@ -60,7 +60,7 @@ public class VizmapAdapterTest {
 
 		final CalculatorConverterFactory calcFactory = new CalculatorConverterFactory();
 
-		serializer = new VizmapAdapter(calcFactory, visualStyleFactory, visualMappingManager, renderingEngineManager,
+		serializer = new VisualStyleSerializer(calcFactory, visualStyleFactory, visualMappingManager, renderingEngineManager,
 									   discreteMappingFactory, continuousMappingFactory, passthroughMappingFactory);
 	}
 

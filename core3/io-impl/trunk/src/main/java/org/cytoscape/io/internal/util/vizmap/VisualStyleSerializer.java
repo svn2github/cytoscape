@@ -77,7 +77,7 @@ import org.slf4j.LoggerFactory;
  * This is a utility interface used for converting collections of 
  * VisualStyle objects into serializable Vizmap objects and vice versa. 
  */
-public class VizmapAdapter {
+public class VisualStyleSerializer {
 
 	private final CalculatorConverterFactory calculatorConverterFactory;
 	private final VisualStyleFactory visualStyleFactory;
@@ -89,15 +89,15 @@ public class VizmapAdapter {
 
 	private VisualLexicon lexicon;
 
-	private static final Logger logger = LoggerFactory.getLogger(VizmapAdapter.class);
+	private static final Logger logger = LoggerFactory.getLogger(VisualStyleSerializer.class);
 
-	public VizmapAdapter(final CalculatorConverterFactory calculatorConverterFactory,
-						 final VisualStyleFactory visualStyleFactory,
-						 final VisualMappingManager visualMappingManager,
-						 final RenderingEngineManager renderingEngineManager,
-						 final VisualMappingFunctionFactory discreteMappingFactory,
-						 final VisualMappingFunctionFactory continuousMappingFactory,
-						 final VisualMappingFunctionFactory passthroughMappingFactory) {
+	public VisualStyleSerializer(final CalculatorConverterFactory calculatorConverterFactory,
+								 final VisualStyleFactory visualStyleFactory,
+								 final VisualMappingManager visualMappingManager,
+								 final RenderingEngineManager renderingEngineManager,
+								 final VisualMappingFunctionFactory discreteMappingFactory,
+								 final VisualMappingFunctionFactory continuousMappingFactory,
+								 final VisualMappingFunctionFactory passthroughMappingFactory) {
 		this.calculatorConverterFactory = calculatorConverterFactory;
 		this.visualStyleFactory = visualStyleFactory;
 		this.visualMappingManager = visualMappingManager;
@@ -248,6 +248,7 @@ public class VizmapAdapter {
 		return createVisualStyles(vizmap);
 	}
 
+	@SuppressWarnings("unchecked")
 	private <K, V> void createVizmapProperties(VisualStyle vs,
 											   VisualProperty<Visualizable> root,
 											   List<org.cytoscape.io.internal.util.vizmap.model.VisualProperty> vpModelList) {
@@ -337,6 +338,7 @@ public class VizmapAdapter {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private <K, V> void createVisualProperties(VisualStyle vs,
 											   Class<? extends CyTableEntry> targetType,
 											   List<org.cytoscape.io.internal.util.vizmap.model.VisualProperty> vpModelList) {

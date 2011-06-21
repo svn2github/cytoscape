@@ -5,7 +5,6 @@ import java.io.InputStream;
 import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
@@ -38,10 +37,4 @@ public abstract class AbstractNetworkReader extends AbstractTask implements CyNe
 	public CyNetwork[] getCyNetworks() {
 		return cyNetworks;
 	}
-	
-
-//	@Override
-//	public VisualStyle[] getVisualStyles() {
-//		return visualstyles;
-//	}
 }

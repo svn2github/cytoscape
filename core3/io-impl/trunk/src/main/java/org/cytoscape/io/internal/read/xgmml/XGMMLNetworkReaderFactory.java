@@ -27,19 +27,12 @@
  */
 package org.cytoscape.io.internal.read.xgmml;
 
-import java.util.Properties;
-
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.read.AbstractNetworkReaderFactory;
-import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.presentation.RenderingEngineManager;
-import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
-import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.work.TaskIterator;
 
 /**
@@ -49,37 +42,28 @@ import org.cytoscape.work.TaskIterator;
  * @since Cytoscape 2.3
  * @see cytoscape.data.writers.XGMMLWriter
  * @author kono
- * 
  */
 public class XGMMLNetworkReaderFactory extends AbstractNetworkReaderFactory {
 
 	private final RenderingEngineManager renderingEngineManager;
-	private VisualStyleFactory styleFactory;
-	private VisualMappingManager visMappingManager;
-	private XGMMLParser parser;
-	private ReadDataManager readDataManager;
-	private AttributeValueUtil attributeValueUtil;
-	private final CyProperty<Properties> properties;
+	private final XGMMLParser parser;
+	private final ReadDataManager readDataManager;
 
-	public XGMMLNetworkReaderFactory(CyFileFilter filter, RenderingEngineManager renderingEngineManager,
-			CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory,
-			ReadDataManager readDataManager, AttributeValueUtil attributeValueUtil, VisualStyleFactory styleFactory,
-			VisualMappingManager visMappingManager, VisualMappingFunctionFactory discreteMappingFactory,
-			XGMMLParser parser, final CyProperty<Properties> properties) {
+	public XGMMLNetworkReaderFactory(CyFileFilter filter,
+									 CyNetworkViewFactory cyNetworkViewFactory,
+									 CyNetworkFactory cyNetworkFactory,
+									 RenderingEngineManager renderingEngineManager,
+									 ReadDataManager readDataManager,
+									 XGMMLParser parser) {
 		super(filter, cyNetworkViewFactory, cyNetworkFactory);
 		this.renderingEngineManager = renderingEngineManager;
 		this.readDataManager = readDataManager;
-		this.attributeValueUtil = attributeValueUtil;
-		this.styleFactory = styleFactory;
-		this.visMappingManager = visMappingManager;
 		this.parser = parser;
-
-		this.properties = properties;
 	}
 
+	@Override
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new XGMMLNetworkReader(inputStream, renderingEngineManager, cyNetworkViewFactory,
-				cyNetworkFactory, readDataManager, attributeValueUtil, styleFactory, visMappingManager, parser,
-				properties));
+		return new TaskIterator(new XGMMLNetworkReader(inputStream, cyNetworkViewFactory, cyNetworkFactory,
+													   renderingEngineManager, readDataManager, parser));
 	}
 }

@@ -31,13 +31,13 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.cytoscape.io.internal.read.AbstractVizmapReader;
-import org.cytoscape.io.internal.util.vizmap.VizmapAdapter;
+import org.cytoscape.io.internal.util.vizmap.VisualStyleSerializer;
 import org.cytoscape.work.TaskMonitor;
 
 public class VizmapPropertiesReader extends AbstractVizmapReader {
 
-    public VizmapPropertiesReader(InputStream inputStream, VizmapAdapter vizmapAdapter) {
-        super(inputStream, vizmapAdapter);
+    public VizmapPropertiesReader(InputStream inputStream, VisualStyleSerializer visualStyleSerializer) {
+        super(inputStream, visualStyleSerializer);
     }
 
     public void run(TaskMonitor tm) throws Exception {
@@ -45,6 +45,6 @@ public class VizmapPropertiesReader extends AbstractVizmapReader {
         props.load(inputStream);
 
         // Convert properties to list of visual visualStyles:
-        this.visualStyles = vizmapAdapter.createVisualStyles(props);
+        this.visualStyles = visualStyleSerializer.createVisualStyles(props);
     }
 }

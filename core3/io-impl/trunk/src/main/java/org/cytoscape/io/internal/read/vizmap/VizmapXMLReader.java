@@ -33,7 +33,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.cytoscape.io.internal.read.AbstractVizmapReader;
-import org.cytoscape.io.internal.util.vizmap.VizmapAdapter;
+import org.cytoscape.io.internal.util.vizmap.VisualStyleSerializer;
 import org.cytoscape.io.internal.util.vizmap.model.Vizmap;
 import org.cytoscape.work.TaskMonitor;
 
@@ -41,8 +41,8 @@ public class VizmapXMLReader extends AbstractVizmapReader {
 
     private static final String VIZMAP_PACKAGE = Vizmap.class.getPackage().getName();
 
-    public VizmapXMLReader(InputStream is, VizmapAdapter vizmapAdapter) {
-        super(is, vizmapAdapter);
+    public VizmapXMLReader(InputStream is, VisualStyleSerializer visualStyleSerializer) {
+        super(is, visualStyleSerializer);
     }
 
     public void run(TaskMonitor tm) throws Exception {
@@ -55,6 +55,6 @@ public class VizmapXMLReader extends AbstractVizmapReader {
 
         Vizmap vizmap = (Vizmap) unmarshaller.unmarshal(inputStream);
         
-        this.visualStyles = vizmapAdapter.createVisualStyles(vizmap);
+        this.visualStyles = visualStyleSerializer.createVisualStyles(vizmap);
     }
 }

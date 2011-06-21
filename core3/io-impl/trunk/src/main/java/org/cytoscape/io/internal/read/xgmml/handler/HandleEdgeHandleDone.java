@@ -6,6 +6,7 @@ import org.xml.sax.SAXException;
 
 public class HandleEdgeHandleDone extends AbstractHandler {
 
+	@Override
 	public ParseState handle(String tag, Attributes atts, ParseState current)
 			throws SAXException {
 		if (manager.edgeBendX != null && manager.edgeBendY != null

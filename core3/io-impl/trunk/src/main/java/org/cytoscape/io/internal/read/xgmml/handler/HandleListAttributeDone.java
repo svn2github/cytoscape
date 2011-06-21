@@ -8,7 +8,6 @@ public class HandleListAttributeDone extends AbstractHandler {
 
     @Override
     public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-
         try {
             if (manager.listAttrHolder != null) {
                 manager.currentAttributes.set(manager.currentAttributeID, manager.listAttrHolder);

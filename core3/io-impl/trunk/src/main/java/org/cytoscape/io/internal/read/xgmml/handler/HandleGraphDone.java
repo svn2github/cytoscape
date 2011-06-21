@@ -14,6 +14,7 @@ import org.xml.sax.SAXException;
  */
 public class HandleGraphDone extends AbstractHandler {
 
+	@Override
 	public ParseState handle(String tag, Attributes atts, ParseState current)
 			throws SAXException {
 		// Resolve any unresolve node references

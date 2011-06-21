@@ -43,7 +43,7 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
-import org.cytoscape.io.internal.util.vizmap.VizmapAdapter;
+import org.cytoscape.io.internal.util.vizmap.VisualStyleSerializer;
 import org.cytoscape.io.internal.util.vizmap.model.Vizmap;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -55,12 +55,12 @@ public class VizmapWriterImpl extends AbstractTask implements CyWriter {
 	private static final String VIZMAP_VERSION = "3.0";
 	
 	private final OutputStream outputStream;
-	private final VizmapAdapter vizmapAdapter;
+	private final VisualStyleSerializer visualStyleSerializer;
 	private final Set<VisualStyle> visualStyles;
 
-	public VizmapWriterImpl(final OutputStream outputStream, final VizmapAdapter vizmapAdapter, final Object props) {
+	public VizmapWriterImpl(final OutputStream outputStream, final VisualStyleSerializer visualStyleSerializer, final Object props) {
 		this.outputStream = outputStream;
-		this.vizmapAdapter = vizmapAdapter;
+		this.visualStyleSerializer = visualStyleSerializer;
 
 		if (props instanceof Set<?>) {
 			this.visualStyles = (Set<VisualStyle>) props;
@@ -80,7 +80,7 @@ public class VizmapWriterImpl extends AbstractTask implements CyWriter {
 		String now = df.format(new Date());
 		String vizmapDocId = "VizMap-" + now;
 		
-		Vizmap vizmap = vizmapAdapter.createVizmap(visualStyles);
+		Vizmap vizmap = visualStyleSerializer.createVizmap(visualStyles);
 		vizmap.setId(vizmapDocId);
 		vizmap.setDocumentVersion(VIZMAP_VERSION);
 		

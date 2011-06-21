@@ -6,12 +6,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class HandleEdge extends AbstractHandler {
-	public ParseState handle(String tag, Attributes atts, ParseState current)
-			throws SAXException {
+
+	@Override
+	public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 		// Get the label, id, source and target
+		String id = atts.getValue("id");
 		String label = atts.getValue("label");
-		String source = atts.getValue("source");
-		String target = atts.getValue("target");
+		String sourceId = atts.getValue("source");
+		String targetId = atts.getValue("target");
 		String isDirected = atts.getValue("cy:directed");
 		String sourceAlias = null;
 		String targetAlias = null;
@@ -21,45 +23,49 @@ public class HandleEdge extends AbstractHandler {
 		// parts[0] = source alias
 		// parts[1] = interaction
 		// parts[2] = target alias
-		String[] parts = label.split("[()]");
-		if (parts.length == 3) {
-			sourceAlias = parts[0];
-			interaction = parts[1];
-			targetAlias = parts[2];
-			// System.out.println("Edge label parse: interaction = "+interaction);
+		if (label != null) {
+    		String[] parts = label.split("[()]");
+    
+    		if (parts.length == 3) {
+    			sourceAlias = parts[0];
+    			interaction = parts[1];
+    			targetAlias = parts[2];
+    		}
 		}
 
 		boolean directed;
+
 		if (isDirected == null) {
-			// xgmml files made by pre-3.0 cytoscape and strictly
-			// upstream-XGMML conforming files
-			// won't have directedness flag, in which case use the
-			// graph-global directedness setting.
+			// xgmml files made by pre-3.0 cytoscape and strictly upstream-XGMML conforming files
+			// won't have directedness flag, in which case use the graph-global directedness setting.
 			//
-			// (org.xml.sax.Attributes.getValue() returns null if attribute does
-			// not exists)
+			// (org.xml.sax.Attributes.getValue() returns null if attribute does not exists)
 			//
-			// This is the correct way to read the edge-directionality of
-			// non-cytoscape xgmml files as well.
-			directed = manager.currentNetworkisDirected;
+			// This is the correct way to read the edge-directionality of non-cytoscape xgmml files as well.
+			directed = manager.currentNetworkIsDirected;
 		} else { // parse directedness flag
-			if ("0".equals(isDirected)) {
-				directed = false;
-			} else {
-				directed = true;
-			}
+			directed = !"0".equals(isDirected);
 		}
-		if (manager.idMap.containsKey(source)
-				&& manager.idMap.containsKey(target)) {
-			CyNode sourceNode = manager.idMap.get(source);
-			CyNode targetNode = manager.idMap.get(target);
+
+		CyNode sourceNode = null;
+		CyNode targetNode = null;
+
+		if (sourceId != null) sourceNode = manager.idMap.get(sourceId);
+		if (targetId != null) targetNode = manager.idMap.get(targetId);
+
+		if (sourceNode == null && sourceAlias != null) sourceNode = manager.idMap.get(sourceAlias);
+		if (targetNode == null && targetAlias != null) targetNode = manager.idMap.get(targetAlias);
+
+		if (sourceNode != null && targetNode != null) {
 			manager.currentEdge = attributeValueUtil.createEdge(sourceNode,
-					targetNode, label, interaction, directed);
-		} else if (sourceAlias != null && targetAlias != null) {
-			CyNode sourceNode = manager.idMap.get(sourceAlias);
-			CyNode targetNode = manager.idMap.get(targetAlias);
-			manager.currentEdge = attributeValueUtil.createEdge(sourceNode,
-					targetNode, label, interaction, directed);
+																targetNode,
+																id,
+																label,
+																interaction,
+																directed);
+		} else {
+			throw new SAXException("Cannot create edge from XGMML (id=" + id + " label=" + label + " source=" +
+								   sourceId + " target=" + targetId + "): source or target node not found");
 		}
 
 		return current;

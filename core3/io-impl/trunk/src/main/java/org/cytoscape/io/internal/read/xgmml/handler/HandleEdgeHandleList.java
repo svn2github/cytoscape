@@ -1,15 +1,12 @@
 package org.cytoscape.io.internal.read.xgmml.handler;
 
-import java.util.Map;
-
 import org.cytoscape.io.internal.read.xgmml.ParseState;
-import org.cytoscape.model.CyEdge;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
 
 public class HandleEdgeHandleList extends AbstractHandler {
 
+	@Override
     public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
         if (manager.handleList != null) {
             String list = "";
@@ -22,14 +19,7 @@ public class HandleEdgeHandleList extends AbstractHandler {
                 }
             }
 
-            Map<CyEdge, Attributes> graphicsMap = manager.getEdgeGraphics();
-
-            // Add this as a graphics attribute to the end of our list
-            ((AttributesImpl) graphicsMap.get(manager.currentEdge)).addAttribute("",
-                                                                                 "",
-                                                                                 "edgeHandleList",
-                                                                                 "string",
-                                                                                 list);
+            manager.addGraphicsAttribute(manager.currentEdge, "edgeHandleList", list);
             manager.handleList = null;
         }
         return current;

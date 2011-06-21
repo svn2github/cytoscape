@@ -5,6 +5,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class HandleRDFFormat extends AbstractHandler {
+	
+	@Override
 	public ParseState handle(String tag, Attributes atts, ParseState current)
 			throws SAXException {
 		manager.RDFFormat = null;
