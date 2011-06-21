@@ -32,5 +32,6 @@ extern "C"
 /*   void spinGlassSingle(int target, int community[], int* community_size); //only compute community close to the target id */
   //Can also make a function to compute an array of ids, if possible in later versions.
 
+  void layoutCircle(double x[], double y[]);
 
 }

@@ -1,26 +1,28 @@
-/**
-* Copyright (C) Gerardo Huck, 2011
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published 
-* by the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*  
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*  
-* You should have received a copy of the GNU Lesser General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*/
+/**************************************************************************************
+Copyright (C) Gerardo Huck, 2011
+
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+**************************************************************************************/
 
 package cytoscape.plugins.igraph;
 
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.layout.CyLayouts;
 
 import giny.view.NodeView;
 import giny.view.Label;
@@ -63,15 +65,19 @@ public class IgraphPlugin extends CytoscapePlugin {
 
 // 	JOptionPane.showMessageDialog(Cytoscape.getDesktop(), IgraphInterface.nativeAdd(10, 20));	   
 
-	// Add elements in menu toolbar
-	NodeCount nodeCountAction = new NodeCount(this);
-	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) nodeCountAction);
+	// Create Igraph object
+	IgraphAPI igraph = new IgraphAPI();
 
-	IsConnected isConnectedAction1 = new IsConnected(this, "All nodes",false);
+	// Add elements in menu toolbar
+	IgraphAPI.IsConnected isConnectedAction1 = igraph.new IsConnected(this, "All nodes", false);
 	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction1);
 
-	IsConnected isConnectedAction2 = new IsConnected(this, "Selected Nodes", true);
+	IgraphAPI.IsConnected isConnectedAction2 = igraph.new IsConnected(this, "Selected Nodes", true);
 	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction2);
+
+	// Layouts
+	CyLayouts.addLayout(new CircleLayout(), "Igraph");
+		
     }
 
     private boolean isOldVersion(){

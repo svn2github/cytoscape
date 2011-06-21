@@ -21,10 +21,13 @@ public class IgraphInterface {
     
     public static native void createGraph(int edgeArray[], int length);
     
-    //Test whether the graph is connected
+    // Test whether the graph is connected
     public static native boolean isConnected();
     
-    //Simplify the graph for community ananlysis
+    // Simplify the graph
     public static native void simplify();
+
+    // Circle layout
+    public static native void layoutCircle(double x[], double y[]);
     
 }

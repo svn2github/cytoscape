@@ -311,21 +311,19 @@ int nodeCount(){
 // }
 
 
-// void layoutCircle(double x[], double y[]){
-// 	igraph_matrix_t locs;
-// 	igraph_matrix_init(&locs, 0, 0);
+void layoutCircle(double x[], double y[]){
+	igraph_matrix_t locs;
+	igraph_matrix_init(&locs, 0, 0);
 
-// 	igraph_layout_circle(&g, &locs);
+	igraph_layout_circle(&g, &locs);
 	
-// 	long int nRow = igraph_matrix_nrow(&locs);
-// 	long int nCol = igraph_matrix_ncol(&locs);
-// 	for(int i=0; i<nRow; i++){
-// 		x[i] = MATRIX(locs, i, 0);
-// 		y[i] = MATRIX(locs, i, 1);
-// 	}
-
-
-// }
+	long int nRow = igraph_matrix_nrow(&locs);
+	long int nCol = igraph_matrix_ncol(&locs);
+	for(int i=0; i<nRow; i++){
+		x[i] = MATRIX(locs, i, 0);
+		y[i] = MATRIX(locs, i, 1);
+	}
+}
 
 
 // void layoutRandom(double x[], double y[]){
