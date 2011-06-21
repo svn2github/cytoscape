@@ -56,24 +56,18 @@ import org.jdesktop.swingx.multislider.TrackRenderer;
  * </p>
  * 
  */
-public class C2CMappingEditor<V extends Number> extends
-		ContinuousMappingEditorPanel<Double, V> {
+public class C2CMappingEditor<V extends Number> extends ContinuousMappingEditorPanel<Double, V> {
 	
 	private final static long serialVersionUID = 1213748836613718L;
 
 	// Default value for below and above.
-	private final V DEF_BELOW_AND_ABOVE = (V) new Float(1f);
-	private final V FIVE = (V) new Float(5f);
+	private final V DEF_BELOW_AND_ABOVE = (V) new Double(1f);
+	private final V FIVE = (V) new Double(5f);
 
-	private final V FIRST_LOCATION = (V) new Float(10f);
-	private final V SECOND_LOCATION = (V) new Float(30f);
+	private final V FIRST_LOCATION = (V) new Double(10f);
+	private final V SECOND_LOCATION = (V) new Double(30f);
 
-	/**
-	 * Creates a new C2CMappingEditor object.
-	 * 
-	 * @param type
-	 *            DOCUMENT ME!
-	 */
+	
 	public C2CMappingEditor(
 			final VisualStyle style,
 			final ContinuousMapping<Double, V> mapping, final CyTable attr,
@@ -87,38 +81,12 @@ public class C2CMappingEditor<V extends Number> extends
 
 		// Add two sliders by default.
 		if (mapping.getPointCount() == 0) {
-			addSlider(0f, FIRST_LOCATION);
-			addSlider(100f, SECOND_LOCATION);
+			addSlider(0d, FIRST_LOCATION);
+			addSlider(100d, SECOND_LOCATION);
 		}
 	}
 
-	// TODO: move this to manager.
-	// /**
-	// * DOCUMENT ME!
-	// *
-	// * @param width DOCUMENT ME!
-	// * @param height DOCUMENT ME!
-	// * @param title DOCUMENT ME!
-	// * @param type DOCUMENT ME!
-	// */
-	// public static Object showDialog(final int width, final int height, final
-	// String title,
-	// VisualProperty type, Component parentComponent) {
-	// editor = new C2CMappingEditor(type);
-	// editor.setSize(new Dimension(width, height));
-	// editor.setTitle(title);
-	// editor.setAlwaysOnTop(true);
-	// editor.setLocationRelativeTo(parentComponent);
-	// editor.setVisible(true);
-	//
-	// return editor;
-	// }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
 	public ImageIcon getIcon(final int iconWidth, final int iconHeight) {
 
 		final TrackRenderer rend = slider.getTrackRenderer();
@@ -133,18 +101,7 @@ public class C2CMappingEditor<V extends Number> extends
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param width
-	 *            DOCUMENT ME!
-	 * @param height
-	 *            DOCUMENT ME!
-	 * @param type
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
+
 	public ImageIcon getLegend(final int width, final int height) {
 
 		final ContinuousTrackRenderer<Double, V> rend = (ContinuousTrackRenderer<Double, V>) slider
@@ -156,16 +113,16 @@ public class C2CMappingEditor<V extends Number> extends
 
 	// FIXME
 	// // Add slider to the editor.
-	private void addSlider(float position, V value) {
+	private void addSlider(Double position, V value) {
 
 		final Double maxValue = tracer.getMax(type);
 
 		BoundaryRangeValues<V> newRange;
 
 		if (mapping.getPointCount() == 0) {
-			slider.getModel().addThumb(position, value);
+			slider.getModel().addThumb(position.floatValue(), value);
 
-			V five = (V) new Float(5);
+			V five = (V) new Double(5);
 			newRange = new BoundaryRangeValues<V>(below, five, above);
 			final Double newKey = (maxValue / 2);
 			mapping.addPoint(newKey, newRange);
@@ -177,7 +134,7 @@ public class C2CMappingEditor<V extends Number> extends
 		}
 
 		// Add a new white thumb in the min.
-		slider.getModel().addThumb(position, value);
+		slider.getModel().addThumb(position.floatValue(), value);
 
 		// Update continuous mapping
 		final Double newVal = maxValue;
@@ -205,7 +162,7 @@ public class C2CMappingEditor<V extends Number> extends
 
 	@Override
 	protected void addButtonActionPerformed(ActionEvent evt) {
-		addSlider(100f, FIVE);
+		addSlider(100d, FIVE);
 	}
 
 	@Override
@@ -234,18 +191,17 @@ public class C2CMappingEditor<V extends Number> extends
 		double actualRange = tracer.getRange(type);
 
 		BoundaryRangeValues<V> bound;
-		Float fraction;
+		Double fraction;
 
-		if (allPoints == null) {
+		if (allPoints == null)
 			return;
-		}
 
 		for (ContinuousMappingPoint<Double, V> point : allPoints) {
 			bound = point.getRange();
 
 			fraction = ((Number) ((point.getValue() - minValue) / actualRange))
-					.floatValue() * 100;
-			slider.getModel().addThumb(fraction, bound.equalValue);
+					.floatValue() * 100d;
+			slider.getModel().addThumb(fraction.floatValue(), bound.equalValue);
 		}
 
 		if (allPoints.size() != 0) {
@@ -270,13 +226,7 @@ public class C2CMappingEditor<V extends Number> extends
 		slider.addMouseListener(new ThumbMouseListener());
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param evt
-	 *            DOCUMENT ME!
-	 */
-	// TODO: refactor event
+
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(
 				ContinuousMappingEditorPanel.BELOW_VALUE_CHANGED)) {
