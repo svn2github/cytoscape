@@ -45,8 +45,6 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.events.RowsAboutToChangeEvent;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
 
 final class SelectUtils {
 
@@ -68,13 +66,8 @@ final class SelectUtils {
 
 	private void setSelected(final Collection<? extends CyTableEntry> objects, final boolean select) {
 		final CyTable table = objects.iterator().next().getCyRow().getTable();
-		try {
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(eventSource, table));
 
-			for (final CyTableEntry nodeOrEdge : objects)
-				nodeOrEdge.getCyRow().set(CyNetwork.SELECTED, select);
-		} finally {
-			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(eventSource, table));
-		}
+		for (final CyTableEntry nodeOrEdge : objects)
+			nodeOrEdge.getCyRow().set(CyNetwork.SELECTED, select);
 	}
 }

@@ -85,10 +85,10 @@ abstract public class AbstractLoadNetworkTask extends AbstractTask {
 		taskMonitor.setProgress(0.0);
 		taskMonitor.setStatusMessage("Creating Cytoscape Network...");
 
-		
+		System.out.println("inserting generate network task");
 		insertTasksAfterCurrentTask(viewReader, new GenerateNetworkViewsTask(name, viewReader, networkManager,
 				networkViewManager, namingUtil, viewThreshold));
-		
+		System.out.println("finished inserting generate network task");
 		taskMonitor.setProgress(1.0);
 	}
 
@@ -129,18 +129,24 @@ class GenerateNetworkViewsTask extends AbstractTask {
 
 		taskMonitor.setProgress(0.0);
 		
+		System.out.println("asdf1");
+		
 		final CyNetwork[] networks = viewReader.getCyNetworks();
+		System.out.println("asdf2 " +networks.length);
 		
 		for (CyNetwork network : networks) {
 			
 			network.getCyRow().set(CyTableEntry.NAME, namingUtil.getSuggestedNetworkTitle(name));
+			System.out.println("set name");
 			networkManager.addNetwork(network);
+			System.out.println("added network)");
 
 			final int numGraphObjects = network.getNodeCount() + network.getEdgeCount();
 			if (numGraphObjects < viewThreshold) {
 				final CyNetworkView view = viewReader.buildCyNetworkView(network);
 				networkViewManager.addNetworkView(view);
 				view.fitContent();
+				System.out.println("created view");
 			}
 
 			

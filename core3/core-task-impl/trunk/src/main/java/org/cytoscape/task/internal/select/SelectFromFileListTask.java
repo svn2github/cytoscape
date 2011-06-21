@@ -40,8 +40,6 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.events.RowsAboutToChangeEvent;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
@@ -77,8 +75,6 @@ public class SelectFromFileListTask extends AbstractSelectTask {
 
 	    fin.close();
 
-	    try {
-		eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, network.getDefaultNodeTable()));
 
 		// loop through all the node of the graph selecting those in the
 		// file
@@ -87,9 +83,7 @@ public class SelectFromFileListTask extends AbstractSelectTask {
 		    if (fileNodes.contains(node.getCyRow().get(CyTableEntry.NAME, String.class)))
 			node.getCyRow().set("selected", true);
 		}
-	    } finally {
-		eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, network.getDefaultNodeTable()));
-	    }
+
 
 	    updateView();
 

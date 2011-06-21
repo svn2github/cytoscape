@@ -10,8 +10,6 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableUtil;
-import org.cytoscape.model.events.RowsAboutToChangeEvent;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
@@ -35,11 +33,6 @@ public class ConnectSelectedNodesTask extends AbstractTask {
 
 		final CyTable nodeTable = network.getDefaultNodeTable();
 		final CyTable edgeTable = network.getDefaultEdgeTable();
-		try {
-			// Generate bundled event to avoid too many events problem.
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, nodeTable));
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, edgeTable));
-			
 			final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(network, CyNetwork.SELECTED, true);
 			for (CyNode source : selectedNodes) {
 				for (CyNode target : selectedNodes) {
@@ -58,10 +51,6 @@ public class ConnectSelectedNodesTask extends AbstractTask {
 					}
 				}
 			}
-		} finally {
-			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, nodeTable));
-			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, edgeTable));
-		}
 	}
 
 }

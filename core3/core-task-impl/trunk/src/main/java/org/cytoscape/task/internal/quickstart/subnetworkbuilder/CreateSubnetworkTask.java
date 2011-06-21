@@ -10,8 +10,6 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.events.RowsAboutToChangeEvent;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.cytoscape.task.internal.quickstart.IDType;
 import org.cytoscape.task.internal.select.SelectFirstNeighborsTask;
 import org.cytoscape.work.AbstractTask;
@@ -95,8 +93,6 @@ public class CreateSubnetworkTask extends AbstractTask {
 
 		boolean found = false;
 		
-		try {
-			util.eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, nodeTable));
 
 			List<CyNode> nodeList = target.getNodeList();
 			for (final CyNode node : nodeList) {
@@ -117,9 +113,6 @@ public class CreateSubnetworkTask extends AbstractTask {
 					node.getCyRow().set(SEARCH_GENE_ATTR_NAME, state.getSearchTerms());
 				}
 			}
-		} finally {
-			util.eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, nodeTable));
-		}
 
 		if (!found) {
 			logger.error("Query genes were not found in the interactome.");

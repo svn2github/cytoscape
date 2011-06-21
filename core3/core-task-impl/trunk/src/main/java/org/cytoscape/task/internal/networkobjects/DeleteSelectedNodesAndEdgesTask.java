@@ -73,10 +73,8 @@ public class DeleteSelectedNodesAndEdgesTask extends AbstractTask {
 		new DeleteEdit(network, selectedNodes, selectedEdges, this, networkViewManager));
 
 	// Delete the actual nodes and edges:
-	for (CyNode selectedNode : selectedNodes)
-	    network.removeNode(selectedNode);
-	for (CyEdge selectedEdge : selectedEdges)
-	    network.removeEdge(selectedEdge);
+	network.removeNodes(selectedNodes);
+	network.removeEdges(selectedEdges);
 
 	myView.updateView();
     }

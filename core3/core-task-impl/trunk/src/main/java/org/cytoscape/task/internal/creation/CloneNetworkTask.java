@@ -42,8 +42,6 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.events.RowsAboutToChangeEvent;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -105,12 +103,6 @@ public class CloneNetworkTask extends AbstractCreationTask {
 		final CyTable nodeTable = newNet.getDefaultNodeTable();
 		final CyTable edgeTable = newNet.getDefaultEdgeTable();
 		final CyTable networkTable = newNet.getDefaultNetworkTable();
-
-		try {
-			// Generate bundled event to avoid too many events problem.
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, nodeTable));
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, edgeTable));
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, networkTable));
 			// copy default columns
 			cloneColumns(origNet.getDefaultNodeTable(), nodeTable);
 			cloneColumns(origNet.getDefaultEdgeTable(), edgeTable);
@@ -121,10 +113,6 @@ public class CloneNetworkTask extends AbstractCreationTask {
 
 			newNet.getCyRow().set(CyTableEntry.NAME,
 					naming.getSuggestedNetworkTitle(origNet.getCyRow().get(CyTableEntry.NAME, String.class)));
-		} finally {
-			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, nodeTable));
-			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, edgeTable));
-		}
 		return newNet;
 	}
 

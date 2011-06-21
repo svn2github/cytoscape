@@ -32,8 +32,6 @@ package org.cytoscape.task.internal.select;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.events.RowsAboutToChangeEvent;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
 
@@ -47,8 +45,6 @@ public class InvertSelectedEdgesTask extends AbstractSelectTask {
     }
 
     public void run(TaskMonitor tm) {
-	try {
-	    eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, network.getDefaultNodeTable()));
 
 	    for (final CyEdge e : network.getEdgeList()) {
 		if (e.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
@@ -56,9 +52,7 @@ public class InvertSelectedEdgesTask extends AbstractSelectTask {
 		else
 		    e.getCyRow().set(CyNetwork.SELECTED, true);
 	    }
-	} finally {
-	    eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, network.getDefaultNodeTable()));
-	}
+
 
 	updateView();
     }

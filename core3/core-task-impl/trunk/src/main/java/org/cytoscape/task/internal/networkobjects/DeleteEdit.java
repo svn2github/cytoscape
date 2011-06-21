@@ -70,10 +70,8 @@ class DeleteEdit extends CyAbstractEdit {
 	public void redo() {
 		super.redo();
 
-		for (CyNode n : nodes)
-			net.removeNode(n);
-		for (CyEdge e : edges)
-			net.removeEdge(e);
+		net.removeNodes(nodes);
+		net.removeEdges(edges);
 
 		CyNetworkView netView = netViewMgr.getNetworkView(net.getSUID());
 		

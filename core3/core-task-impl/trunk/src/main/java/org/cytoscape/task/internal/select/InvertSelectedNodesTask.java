@@ -32,35 +32,28 @@ package org.cytoscape.task.internal.select;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.events.RowsAboutToChangeEvent;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
 
 public class InvertSelectedNodesTask extends AbstractSelectTask {
-    private final CyEventHelper eventHelper;
+	private final CyEventHelper eventHelper;
 
-    public InvertSelectedNodesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
-	    final CyEventHelper eventHelper) {
-	super(net, networkViewManager, eventHelper);
-	this.eventHelper = eventHelper;
-    }
-
-    @Override
-    public void run(final TaskMonitor tm) {
-	try {
-	    eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, network.getDefaultNodeTable()));
-
-	    for (final CyNode n : network.getNodeList()) {
-		if (n.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
-		    n.getCyRow().set(CyNetwork.SELECTED, false);
-		else
-		    n.getCyRow().set(CyNetwork.SELECTED, true);
-	    }
-	} finally {
-	    eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, network.getDefaultNodeTable()));
+	public InvertSelectedNodesTask(final CyNetwork net,
+			final CyNetworkViewManager networkViewManager, final CyEventHelper eventHelper) {
+		super(net, networkViewManager, eventHelper);
+		this.eventHelper = eventHelper;
 	}
 
-	updateView();
-    }
+	@Override
+	public void run(final TaskMonitor tm) {
+
+		for (final CyNode n : network.getNodeList()) {
+			if (n.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
+				n.getCyRow().set(CyNetwork.SELECTED, false);
+			else
+				n.getCyRow().set(CyNetwork.SELECTED, true);
+		}
+
+		updateView();
+	}
 }
