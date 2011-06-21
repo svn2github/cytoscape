@@ -22,6 +22,6 @@ class StartupMostlyFinished {
 	public StartupMostlyFinished(final CyEventHelper eventHelper) {
 
 		// fire event "start up mostly finished"
-		eventHelper.fireAsynchronousEvent(new CytoscapeStartEvent(this));
+		eventHelper.fireEvent(new CytoscapeStartEvent(this));
 	}	
 }

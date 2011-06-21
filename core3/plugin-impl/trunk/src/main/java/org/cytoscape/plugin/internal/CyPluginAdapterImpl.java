@@ -28,7 +28,7 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
+import org.cytoscape.model.events.AboutToRemoveEdgesEvent;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.plugin.CyPlugin;
 import org.cytoscape.plugin.CyPluginAdapter;
@@ -46,7 +46,7 @@ import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.model.events.AboutToRemoveEdgeViewMicroListener;
+import org.cytoscape.view.model.events.AboutToRemoveEdgeViewsListener;
 import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.presentation.events.RenderingEngineAboutToBeRemovedEvent;
 import org.cytoscape.view.presentation.property.AbstractVisualLexicon;
@@ -120,8 +120,8 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	//
 	private SessionAboutToBeSavedEvent sessionAboutToBeSavedEvent;
 	private VisualStyleAboutToBeRemovedEvent visualStyleAboutToBeRemovedEvent;
-	private AboutToRemoveEdgeViewMicroListener aboutToRemoveEdgeViewMicroListener;
-	private AboutToRemoveEdgeEvent aboutToRemoveEdgeEvent;
+	private AboutToRemoveEdgeViewsListener aboutToRemoveEdgeViewsListener;
+	private AboutToRemoveEdgesEvent aboutToRemoveEdgesEvent;
 	private RenderingEngineAboutToBeRemovedEvent renderingEngineAboutToBeRemovedEvent;
 	private AbstractVisualLexicon abstractVisualLexicon;
 	private BasicCyProperty basicCyProperty;
