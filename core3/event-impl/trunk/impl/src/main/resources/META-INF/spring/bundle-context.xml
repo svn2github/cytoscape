@@ -19,11 +19,7 @@
 		<constructor-arg ref="bundleContext" />
 	</bean>
 
-	<bean id="cyMicroListenerAdapter" class="org.cytoscape.event.internal.CyMicroListenerAdapter">
-	</bean>
-
 	<bean id="cyEventHelper" class="org.cytoscape.event.internal.CyEventHelperImpl">
 		<constructor-arg ref="cyListenerAdapter" />
-		<constructor-arg ref="cyMicroListenerAdapter" />
 	</bean>
 </beans>

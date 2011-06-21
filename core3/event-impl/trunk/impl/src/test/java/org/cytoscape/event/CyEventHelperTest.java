@@ -51,6 +51,9 @@ import java.lang.RuntimeException;
 
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+
 
 /**
  * DOCUMENT ME!
@@ -59,16 +62,21 @@ public class CyEventHelperTest extends AbstractCyEventHelperTest {
 
 	private ServiceReference stubServiceRef;
 	private ServiceReference fakeServiceRef;
+	private ServiceReference payloadServiceRef;
 	private BundleContext bc;
+	private CyEventHelperImpl helperImpl;
 
 	/**
 	 *  DOCUMENT ME!
 	 */
+	@Before
 	public void setUp() {
 		service = new StubCyListenerImpl();
+		payloadService = new StubCyPayloadListenerImpl();
 
 		stubServiceRef = new MockServiceReference();
 		fakeServiceRef = new MockServiceReference();
+		payloadServiceRef = new MockServiceReference();
 
 		bc = new MockBundleContext() {
 				public ServiceReference getServiceReference(String clazz) {
@@ -76,6 +84,8 @@ public class CyEventHelperTest extends AbstractCyEventHelperTest {
 						return fakeServiceRef;
 					else if ( clazz.equals( StubCyListener.class.getName() ) )
 						return stubServiceRef;
+					else if ( clazz.equals( StubCyPayloadListener.class.getName() ) )
+						return payloadServiceRef;
 					else
 						return null;
 				}
@@ -86,6 +96,8 @@ public class CyEventHelperTest extends AbstractCyEventHelperTest {
 						return new ServiceReference[] { fakeServiceRef };
 					else if ( clazz.equals( StubCyListener.class.getName() ) )
 						return new ServiceReference[] { stubServiceRef };
+					else if ( clazz.equals( StubCyPayloadListener.class.getName() ) )
+						return new ServiceReference[] { payloadServiceRef };
 					else
 						return null;
 				}
@@ -93,14 +105,21 @@ public class CyEventHelperTest extends AbstractCyEventHelperTest {
 				public Object getService(ServiceReference ref) {
 					if ( ref == stubServiceRef )
 						return service;
+					else if ( ref == payloadServiceRef )
+						return payloadService;
 					else 
 						return null;
 				}
 			};
 
 		CyListenerAdapter la = new CyListenerAdapter(bc);
-		CyMicroListenerAdapter ma = new CyMicroListenerAdapter();
 
-		helper = new CyEventHelperImpl(la,ma);
+		helperImpl = new CyEventHelperImpl(la);
+		helper = helperImpl;
+	}
+	
+	@After
+	public void cleanup() {
+		helperImpl.cleanup();
 	}
 }
