@@ -54,12 +54,14 @@ public class ConfigDirPropertyWriter implements CytoscapeShutdownListener {
 	}
 
 	public void addCyProperty(final CyProperty newCyProperty, final Map properties) {
-		if (newCyProperty.getSavePolicy() == CyProperty.SavePolicy.CONFIG_DIR)
+		if (newCyProperty.getSavePolicy() == CyProperty.SavePolicy.CONFIG_DIR
+		    || newCyProperty.getSavePolicy() == CyProperty.SavePolicy.SESSION_FILE_AND_CONFIG_DIR)
 			configDirProperties.put(newCyProperty, properties);
 	}
 
 	public void removeCyProperty(final CyProperty oldCyProperty, final Map properties) {
-		if (oldCyProperty.getSavePolicy() == CyProperty.SavePolicy.CONFIG_DIR)
+		if (oldCyProperty.getSavePolicy() == CyProperty.SavePolicy.CONFIG_DIR
+		    || oldCyProperty.getSavePolicy() == CyProperty.SavePolicy.SESSION_FILE_AND_CONFIG_DIR)
 			configDirProperties.remove(oldCyProperty);
 		
 	}
