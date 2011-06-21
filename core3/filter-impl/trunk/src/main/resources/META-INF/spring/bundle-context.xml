@@ -25,7 +25,6 @@
           class="org.cytoscape.filter.internal.filters.view.FilterMainPanel">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="filterPlugin" />
-		<constructor-arg ref="cyTableRowUpdateServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyServiceRegistrarServiceRef" />
 	</bean>

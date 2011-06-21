@@ -76,7 +76,6 @@ import org.cytoscape.filter.internal.filters.NodeInteractionFilter;
 import org.cytoscape.filter.internal.filters.TopologyFilter;
 import org.cytoscape.filter.internal.filters.util.FilterUtil;
 import org.cytoscape.filter.internal.filters.util.SelectUtil;
-import org.cytoscape.filter.internal.filters.util.VisualPropertyUtil;
 import org.cytoscape.filter.internal.filters.util.WidestStringComboBoxModel;
 import org.cytoscape.filter.internal.filters.util.WidestStringComboBoxPopupMenuListener;
 import org.cytoscape.filter.internal.filters.util.WidestStringProvider;
@@ -84,20 +83,17 @@ import org.cytoscape.filter.internal.quickfind.util.CyAttributesUtil;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.CyTableRowUpdateService;
 import org.cytoscape.model.CyTableUtil;
-import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.events.NetworkAddedEvent;
 import org.cytoscape.model.events.NetworkAddedListener;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
-import org.cytoscape.model.events.RowsFinishedChangingListener;
+import org.cytoscape.model.events.RowSetRecord;
+import org.cytoscape.model.events.RowsCreatedEvent;
+import org.cytoscape.model.events.RowsCreatedListener;
+import org.cytoscape.model.events.RowsSetEvent;
+import org.cytoscape.model.events.RowsSetListener;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.events.SessionLoadedEvent;
@@ -106,17 +102,19 @@ import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.util.swing.DropDownMenuButton;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.RenderingEngine;
-import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 
 
 public class FilterMainPanel extends JPanel implements ActionListener,
 		ItemListener, SetCurrentNetworkViewListener, NetworkAddedListener,
-		NetworkAboutToBeDestroyedListener, SessionLoadedListener,
-		CyTableRowUpdateMicroListener, RowsFinishedChangingListener {
+		NetworkAboutToBeDestroyedListener, SessionLoadedListener, RowsSetListener,
+		RowsCreatedListener {
 
-    // String constants used for seperator entries in the attribute combobox
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6554492076361739485L;
+	// String constants used for separator entries in the attribute combobox
     private static final String filtersSeperator = "-- Filters --";
     private static final String attributesSeperator = "-- Attributes --";
 
@@ -149,23 +147,20 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	private final CyApplicationManager applicationManager;
 	private final FilterPlugin filterPlugin;
-	private final CyTableRowUpdateService rowUpdateService;
 	private final CyNetworkManager networkManager;
 	
 	private final CyServiceRegistrar serviceRegistrar;
 	
 	public FilterMainPanel(CyApplicationManager applicationManager, FilterPlugin filterPlugin, 
-			CyTableRowUpdateService rowUpdateService, CyNetworkManager networkManager,
+		CyNetworkManager networkManager,
 			 final CyServiceRegistrar serviceRegistrar) {
 		this.applicationManager = applicationManager;
 		this.filterPlugin = filterPlugin;
-		this.rowUpdateService = rowUpdateService;
 		this.networkManager = networkManager;
 		
 		this.serviceRegistrar = serviceRegistrar;
 		
 		final Dictionary emptyProps = new Hashtable();
-		serviceRegistrar.registerService(this, RowsFinishedChangingListener.class, emptyProps);
 		
 		//Initialize the option menu with menuItems
 		setupOptionMenu();
@@ -209,23 +204,14 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 
 	@Override
-	public void handleEvent(RowsFinishedChangingEvent e){
+	public void handleEvent(RowsSetEvent e) {
 		// Handle selection events
 		if (this.applicationManager.getCurrentNetworkView() == null){
 			return;
 		}
-		updateFeedbackTableModel();
-	}
-	
-	@Override
-	public void handleRowCreations(CyTable table, List<CyRow> newRows) {
-		handleAttributesChanged();
-	}
-	
-	@Override
-	public void handleRowSets(CyTable table, List<RowSet> rowSets) {
+		
 		boolean isSelection = true;
-		for (RowSet change : rowSets) {
+		for (RowSetRecord change : e.getPayloadCollection()) {
 			if (!change.getColumn().equals(CyNetwork.SELECTED)) {
 				isSelection = false;
 				break;
@@ -234,6 +220,13 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		if (isSelection) {
 			return;
 		}
+		handleAttributesChanged();	
+
+		updateFeedbackTableModel();
+	}
+	
+	@Override
+	public void handleEvent(RowsCreatedEvent e) {
 		handleAttributesChanged();
 	}
 	
@@ -292,10 +285,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		
 		enableForNetwork();
 		updateFeedbackTableModel();
-		
-		rowUpdateService.stopTracking(this, network.getDefaultNetworkTable());
-		rowUpdateService.stopTracking(this, network.getDefaultNodeTable());
-		rowUpdateService.stopTracking(this, network.getDefaultEdgeTable());
+	
 	}
 
 	@Override
@@ -307,10 +297,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 		enableForNetwork();
 		updateFeedbackTableModel();
-
-		rowUpdateService.startTracking(this, network.getDefaultNetworkTable());
-		rowUpdateService.startTracking(this, network.getDefaultNodeTable());
-		rowUpdateService.startTracking(this, network.getDefaultEdgeTable());
 	}
 
 	public void updateFeedbackTableModel(){		
@@ -1299,6 +1285,11 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 
 	class AttributeFilterRenderer extends JLabel implements ListCellRenderer {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -9137647911856857211L;
+
 		public AttributeFilterRenderer() {
 			setOpaque(true);
 		}
@@ -1330,6 +1321,11 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}// AttributeRenderer
 
 	class FilterRenderer extends JLabel implements ListCellRenderer {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2396393425644165756L;
+
 		public FilterRenderer() {
 			setOpaque(true);
 		}
@@ -1357,7 +1353,12 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}// FilterRenderer
 
     class FilterSelectWidestStringComboBoxModel extends WidestStringComboBoxModel {
-        public FilterSelectWidestStringComboBoxModel() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -1311538859326314189L;
+
+		public FilterSelectWidestStringComboBoxModel() {
             super();
         }
 
@@ -1376,7 +1377,12 @@ public class FilterMainPanel extends JPanel implements ActionListener,
     }
 
     class AttributeSelectWidestStringComboBoxModel extends WidestStringComboBoxModel {
-        public AttributeSelectWidestStringComboBoxModel() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -7287008568486671513L;
+
+		public AttributeSelectWidestStringComboBoxModel() {
             super();
         }
 

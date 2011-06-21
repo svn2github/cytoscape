@@ -64,18 +64,18 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.events.AddedEdgeEvent;
-import org.cytoscape.model.events.AddedEdgeListener;
-import org.cytoscape.model.events.AddedNodeEvent;
-import org.cytoscape.model.events.AddedNodeListener;
+import org.cytoscape.model.events.AddedEdgesEvent;
+import org.cytoscape.model.events.AddedEdgesListener;
+import org.cytoscape.model.events.AddedNodesEvent;
+import org.cytoscape.model.events.AddedNodesListener;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.events.NetworkAddedEvent;
 import org.cytoscape.model.events.NetworkAddedListener;
-import org.cytoscape.model.events.RemovedEdgeEvent;
-import org.cytoscape.model.events.RemovedEdgeListener;
-import org.cytoscape.model.events.RemovedNodeEvent;
-import org.cytoscape.model.events.RemovedNodeListener;
+import org.cytoscape.model.events.RemovedEdgesEvent;
+import org.cytoscape.model.events.RemovedEdgesListener;
+import org.cytoscape.model.events.RemovedNodesEvent;
+import org.cytoscape.model.events.RemovedNodesListener;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
@@ -97,9 +97,9 @@ import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
  *
  * @author Ethan Cerami.
  */
-public class QuickFindPlugIn implements QuickFindListener, AddedEdgeListener,
-										AddedNodeListener, RemovedEdgeListener,
-										RemovedNodeListener, NetworkAddedListener,
+public class QuickFindPlugIn implements QuickFindListener, AddedEdgesListener,
+										AddedNodesListener, RemovedEdgesListener,
+										RemovedNodesListener, NetworkAddedListener,
 										NetworkAboutToBeDestroyedListener,
 										NetworkViewAddedListener,
 										NetworkViewAboutToBeDestroyedListener,
@@ -475,22 +475,22 @@ public class QuickFindPlugIn implements QuickFindListener, AddedEdgeListener,
 	}
 
 	@Override
-	public void handleEvent(RemovedNodeEvent e) {
+	public void handleEvent(RemovedNodesEvent e) {
 		handleNetworkModified(e.getSource());
 	}
 
 	@Override
-	public void handleEvent(RemovedEdgeEvent e) {
+	public void handleEvent(RemovedEdgesEvent e) {
 		handleNetworkModified(e.getSource());
 	}
 
 	@Override
-	public void handleEvent(AddedNodeEvent e) {
+	public void handleEvent(AddedNodesEvent e) {
 		handleNetworkModified(e.getSource());
 	}
 
 	@Override
-	public void handleEvent(AddedEdgeEvent e) {
+	public void handleEvent(AddedEdgesEvent e) {
 		handleNetworkModified(e.getSource());
 	}
 
