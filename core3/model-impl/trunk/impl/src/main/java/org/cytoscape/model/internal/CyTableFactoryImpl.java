@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTable.SavePolicy;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.equations.Interpreter;
 import org.cytoscape.event.CyEventHelper;
@@ -61,7 +62,7 @@ public class CyTableFactoryImpl implements CyTableFactory {
 				   final boolean pub, final boolean isMutable)
 	{
 		CyTable table = new CyTableImpl(name, primaryKey, primaryKeyType, pub, isMutable,
-						help, interpreter);
+						SavePolicy.SESSION_FILE, help, interpreter);
 		tm.addTable(table);
 		return table;
 	}

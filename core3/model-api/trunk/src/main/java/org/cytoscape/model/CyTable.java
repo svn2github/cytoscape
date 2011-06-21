@@ -30,7 +30,6 @@ package org.cytoscape.model;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 
@@ -56,6 +55,11 @@ public interface CyTable extends Identifiable {
 
 		@Override
 		final public String toString() { return humanReadableRepresentation; }
+	}
+	
+	public static enum SavePolicy {
+		DO_NOT_SAVE,  /* i.e. this table should not be serialized */
+		SESSION_FILE,
 	}
 
 	/**
@@ -204,4 +208,16 @@ public interface CyTable extends Identifiable {
 	 */
 	void addVirtualColumns(CyTable sourceTable, String sourceJoinKey, String targetJoinKey,
 			       boolean isImmutable);
+	
+	/**
+	 * Returns how (or if) this CyTable should be saved.
+	 * @return how (or if) this CyTable should be saved.
+	 */
+	SavePolicy getSavePolicy();
+	
+	/**
+	 * Sets how (or if) this CyTable should be saved.
+	 * @param policy the policy to follow during the lifecycle of the CyTable.
+	 */
+	void setSavePolicy(SavePolicy policy);
 }

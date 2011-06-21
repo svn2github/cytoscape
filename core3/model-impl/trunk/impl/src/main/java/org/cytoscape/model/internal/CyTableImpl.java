@@ -88,11 +88,13 @@ public final class CyTableImpl implements CyTable {
 	private final Map<String, VirtualColumn> virtualColumnMap;
 	private int virtualColumnReferenceCount;
 
+	private SavePolicy savePolicy;
+	
 	/**
 	 * Creates a new CyTableImpl object.
 	 */
 	public CyTableImpl(final String title, final String primaryKey, Class<?> primaryKeyType,
-			   final boolean pub, final boolean isMutable, final CyEventHelper eventHelper,
+			   final boolean pub, final boolean isMutable, SavePolicy savePolicy, final CyEventHelper eventHelper,
 			   final Interpreter interpreter)
 	{
 		this.title = title;
@@ -102,6 +104,7 @@ public final class CyTableImpl implements CyTable {
 		this.suid = SUIDFactory.getNextSUID();
 		this.eventHelper = eventHelper;
 		this.interpreter = interpreter;
+		this.savePolicy = savePolicy;
 
 		currentlyActiveAttributes = new HashSet<String>();
 		attributes = new HashMap<String, Map<Object, Object>>();
@@ -874,6 +877,16 @@ public final class CyTableImpl implements CyTable {
 		}
 	}
 
+	@Override
+	public SavePolicy getSavePolicy() {
+		return savePolicy;
+	}
+	
+	@Override
+	public void setSavePolicy(SavePolicy policy) {
+		savePolicy = policy;
+	}
+	
 	private final class InternalRow implements CyRow {
 		private final Object key;
 		private final CyTable table;
