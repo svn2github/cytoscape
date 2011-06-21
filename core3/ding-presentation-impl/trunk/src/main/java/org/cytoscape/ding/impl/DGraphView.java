@@ -50,6 +50,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -104,13 +105,17 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.events.EdgeViewChangeMicroListener;
 import org.cytoscape.view.model.events.FitContentEvent;
 import org.cytoscape.view.model.events.FitContentEventListener;
 import org.cytoscape.view.model.events.FitSelectedEvent;
 import org.cytoscape.view.model.events.FitSelectedEventListener;
-import org.cytoscape.view.model.events.NetworkViewChangeMicroListener;
-import org.cytoscape.view.model.events.NodeViewChangeMicroListener;
+import org.cytoscape.view.model.events.NetworkViewChangedEvent;
+import org.cytoscape.view.model.events.NodeViewsChangedEvent;
+import org.cytoscape.view.model.events.EdgeViewsChangedEvent;
+import org.cytoscape.view.model.events.NetworkViewChangedListener;
+import org.cytoscape.view.model.events.NodeViewsChangedListener;
+import org.cytoscape.view.model.events.EdgeViewsChangedListener;
+import org.cytoscape.view.model.events.ViewChangeRecord;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.work.TaskManager;
@@ -132,8 +137,8 @@ import org.slf4j.LoggerFactory;
  * @author Nerius Landys
  */
 public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
-		Printable, NetworkViewChangeMicroListener,
-		NodeViewChangeMicroListener, EdgeViewChangeMicroListener,
+		Printable, NetworkViewChangedListener,
+		NodeViewsChangedListener, EdgeViewsChangedListener,
 		FitContentEventListener, FitSelectedEventListener {
 
 	private static final Logger logger = LoggerFactory
@@ -481,11 +486,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		// cyNetworkView.getVisualProperty(vp));
 
 		new FlagAndSelectionHandler(this, eventHelper);
-
-		// Register this presentation as listeners 
-		eventHelper.addMicroListener(this, NetworkViewChangeMicroListener.class, cyNetworkView);
-		eventHelper.addMicroListener(this, NodeViewChangeMicroListener.class, cyNetworkView);
-		eventHelper.addMicroListener(this, EdgeViewChangeMicroListener.class, cyNetworkView);
 
 		logger.debug("Phase 4: Everything created: time = " + (System.currentTimeMillis() - start));
 	}
@@ -947,7 +947,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			returnThis.unselectInternal();
 
 			// If this node was hidden, it won't be in m_drawPersp.
-			m_drawPersp.removeNode(nnode);
+			m_drawPersp.removeNodes(Collections.singletonList(nnode));
 			// m_structPersp.removeNode(nodeInx);
 			m_nodeDetails.unregisterNode(nodeInx);
 
@@ -1042,7 +1042,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		returnThis.unselectInternal();
 
 		// If this edge view was hidden, it won't be in m_drawPersp.
-		m_drawPersp.removeEdge(eedge);
+		m_drawPersp.removeEdges(Collections.singletonList(eedge)); 
 		// m_structPersp.hideEdge(edgeInx);
 		m_edgeDetails.unregisterEdge(edgeInx);
 
@@ -1369,7 +1369,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 				edge = ((DEdgeView) obj).getEdge();
 
 				edge.getCyRow("VIEW").set("hidden", true);
-				if (!m_drawPersp.removeEdge(edge))
+				if (!m_drawPersp.removeEdges(Collections.singletonList(edge)))
 					return false;
 
 				((DEdgeView) obj).unselectInternal();
@@ -1409,7 +1409,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 				nView.m_hiddenYMin = m_extentsBuff[1];
 				nView.m_hiddenXMax = m_extentsBuff[2];
 				nView.m_hiddenYMax = m_extentsBuff[3];
-				m_drawPersp.removeNode(nnode);
+				m_drawPersp.removeNodes(Collections.singletonList(nnode));
 				nnode.getCyRow("VIEW").set("hidden", true);
 				m_spacial.delete(nodeInx);
 				m_contentChanged = true;
@@ -2700,66 +2700,72 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		return l;
 	}
 
-	// // Micro event handlers ////
 	@Override
-	public void nodeVisualPropertySet(final View<CyNode> nodeView,
-			final VisualProperty<?> vp, final Object value) {
-		// Both objects should exist.
-		if (value == null || nodeView == null || nodeView.getModel() == null)
-			return;
-
-		// Convert to Ding's view object.
-		final Integer index = nodeView.getModel().getIndex();
-		if (m_nodeViewMap.containsKey(index))
-			m_nodeViewMap.get(index).setVisualPropertyValue(vp, value);
+	public void handleEvent(NodeViewsChangedEvent e) {
+		if ( e.getSource() != cyNetworkView )
+				return;
+		
+		for ( ViewChangeRecord<CyNode> record : e.getPayloadCollection()) {
+			final Integer index = record.getView().getModel().getIndex();
+			if (m_nodeViewMap.containsKey(index))
+				m_nodeViewMap.get(index).setVisualPropertyValue(record.getVisualProperty(), record.getValue());
+		}
 	}
 
 	/**
 	 * This should be called from DGraphView.
-	 *
 	 */
 	@Override
-	public void edgeVisualPropertySet(final View<CyEdge> edgeView,
-			final VisualProperty<?> vp, final Object value)
-	{
-		if (value == null || edgeView == null || edgeView.getModel() == null)
+	public void handleEvent(EdgeViewsChangedEvent e) {
+		if ( e.getSource() != cyNetworkView )
 			return;
-
-		// Convert to Ding's view object.
-		final Integer index = edgeView.getModel().getIndex();
-		if (m_edgeViewMap.containsKey(index))
-			m_edgeViewMap.get(index).setVisualPropertyValue(vp, value);
+	
+		for ( ViewChangeRecord<CyEdge> record : e.getPayloadCollection()) {
+			final Integer index = record.getView().getModel().getIndex();
+			if (m_nodeViewMap.containsKey(index))
+				m_nodeViewMap.get(index).setVisualPropertyValue(record.getVisualProperty(), record.getValue());
+		}
 	}
+
 
 	/**
 	 * Listener for all view change events.
-	 *
 	 */
 	@Override
-	public void networkVisualPropertySet(View<CyNetwork> target, VisualProperty<?> vp, Object value) {
-		if (value == null) return;
+	public void handleEvent(NetworkViewChangedEvent e) {
+		if ( e.getSource() != cyNetworkView )
+			return;
+	
+		for ( ViewChangeRecord<CyNetwork> record : e.getPayloadCollection() ) {
+			View<CyNetwork> target = record.getView();
+			VisualProperty<?> vp = record.getVisualProperty();
+			Object value = record.getValue();
+			
+			if (value == null) 
+				continue;
 
-		if (vp == DVisualLexicon.NETWORK_NODE_SELECTION) {
-			boolean b = ((Boolean) value).booleanValue();
-			if (b)
-				enableNodeSelection();
-			else
-				disableNodeSelection();
-		} else if (vp == DVisualLexicon.NETWORK_EDGE_SELECTION) {
-			boolean b = ((Boolean) value).booleanValue();
-			if (b)
-				enableEdgeSelection();
-			else
-				disableEdgeSelection();
-		} else if (vp == MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT) {
-			setBackgroundPaint((Paint) value);
-		} else if (vp == MinimalVisualLexicon.NETWORK_CENTER_X_LOCATION) {
-			setCenter(((Double) value).doubleValue(), m_networkCanvas.m_yCenter);
-		} else if (vp == MinimalVisualLexicon.NETWORK_CENTER_Y_LOCATION) {
-			setCenter(m_networkCanvas.m_xCenter, ((Double) value).doubleValue());
-		} else if (vp == MinimalVisualLexicon.NETWORK_SCALE_FACTOR) {
-			setZoom(((Double) value).doubleValue());
-		}
+			if (vp == DVisualLexicon.NETWORK_NODE_SELECTION) {
+				boolean b = ((Boolean) value).booleanValue();
+				if (b)
+					enableNodeSelection();
+				else
+					disableNodeSelection();
+			} else if (vp == DVisualLexicon.NETWORK_EDGE_SELECTION) {
+				boolean b = ((Boolean) value).booleanValue();
+				if (b)
+					enableEdgeSelection();
+				else
+					disableEdgeSelection();
+			} else if (vp == MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT) {
+				setBackgroundPaint((Paint) value);
+			} else if (vp == MinimalVisualLexicon.NETWORK_CENTER_X_LOCATION) {
+				setCenter(((Double) value).doubleValue(), m_networkCanvas.m_yCenter);
+			} else if (vp == MinimalVisualLexicon.NETWORK_CENTER_Y_LOCATION) {
+				setCenter(m_networkCanvas.m_xCenter, ((Double) value).doubleValue());
+			} else if (vp == MinimalVisualLexicon.NETWORK_SCALE_FACTOR) {
+				setZoom(((Double) value).doubleValue());
+			}
+		}	
 	}
 
 	// ////// The following implements Presentation API ////////////

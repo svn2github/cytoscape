@@ -23,8 +23,6 @@ import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
-import org.cytoscape.view.model.events.AboutToRemoveEdgeViewMicroListener;
-import org.cytoscape.view.model.events.AboutToRemoveNodeViewMicroListener;
 import org.cytoscape.view.model.events.UpdateNetworkPresentationEvent;
 import org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener;
 import org.cytoscape.view.presentation.RenderingEngine;
@@ -147,10 +145,6 @@ public class DingRenderingEngineFactory implements
 		registrar.registerAllServices(dgv, new Properties());
 		final AddDeleteHandler addDeleteHandler = new AddDeleteHandler(dgv);
 		registrar.registerAllServices(addDeleteHandler, new Properties());
-		eventHelper.addMicroListener(addDeleteHandler,
-				AboutToRemoveEdgeViewMicroListener.class, view);
-		eventHelper.addMicroListener(addDeleteHandler,
-				AboutToRemoveNodeViewMicroListener.class, view);
 
 		// Register engine to manager
 		this.renderingEngineManager.addRenderingEngine(dgv);

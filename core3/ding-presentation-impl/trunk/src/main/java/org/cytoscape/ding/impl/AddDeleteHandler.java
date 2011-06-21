@@ -32,36 +32,29 @@ package org.cytoscape.ding.impl;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
-
-
-import org.cytoscape.view.model.events.AddedEdgeViewEvent;
-import org.cytoscape.view.model.events.AddedNodeViewEvent;
-
-import org.cytoscape.view.model.events.AddedEdgeViewListener;
-import org.cytoscape.view.model.events.AddedNodeViewListener;
-import org.cytoscape.view.model.events.AboutToRemoveEdgeViewMicroListener;
-import org.cytoscape.view.model.events.AboutToRemoveNodeViewMicroListener;
-
+import org.cytoscape.view.model.events.AddedEdgeViewsEvent;
+import org.cytoscape.view.model.events.AddedNodeViewsEvent;
+import org.cytoscape.view.model.events.AboutToRemoveEdgeViewsEvent;
+import org.cytoscape.view.model.events.AboutToRemoveEdgeViewsListener;
+import org.cytoscape.view.model.events.AboutToRemoveNodeViewsEvent;
+import org.cytoscape.view.model.events.AboutToRemoveNodeViewsListener;
+import org.cytoscape.view.model.events.AddedEdgeViewsListener;
+import org.cytoscape.view.model.events.AddedNodeViewsListener;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 
 import org.cytoscape.ding.GraphView;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
 
 
 /**
  * Listens for Add/Delete Node/Edge events and updated a GraphView accordingly. 
  */
 public class AddDeleteHandler 
-	implements AddedEdgeViewListener, 
-	           AddedNodeViewListener,
-	           AboutToRemoveEdgeViewMicroListener, 
-	           AboutToRemoveNodeViewMicroListener
+	implements AddedEdgeViewsListener, 
+	           AddedNodeViewsListener,
+	           AboutToRemoveEdgeViewsListener, 
+	           AboutToRemoveNodeViewsListener
 {
 	private final GraphView view;
 	private final CyNetworkView networkView;
@@ -71,37 +64,43 @@ public class AddDeleteHandler
 		this.networkView = view.getViewModel();
 	}
 
-	public void handleEvent(final AddedEdgeViewEvent e) {
+	public void handleEvent(final AddedEdgeViewsEvent e) {
 		if ( networkView != e.getSource() )
 			return;
 
-		final View<CyEdge> ev = e.getEdgeView();
-		view.addEdgeView(ev.getModel());
+		for ( View<CyEdge> ev : e.getPayloadCollection() )
+			view.addEdgeView(ev.getModel());
+
 		view.updateView();
 	}
 
-	public void handleEvent(final AddedNodeViewEvent e) {
+	public void handleEvent(final AddedNodeViewsEvent e) {
 		if ( networkView != e.getSource() )
 			return;
 
-		final View<CyNode> nv = e.getNodeView();
-		view.addNodeView(nv.getModel());
+		for ( View<CyNode> nv : e.getPayloadCollection())
+			view.addNodeView(nv.getModel());
+		
 		view.updateView();
 	}
 
-	public void edgeViewAboutToBeRemoved(final View<CyEdge> edgeView, final CyNetworkView networkView) {
-		if (this.networkView != networkView || edgeView == null)
+	public void handleEvent(AboutToRemoveEdgeViewsEvent e) {
+		if ( e.getSource() != this.networkView )
 			return;
+		
+		for ( View<CyEdge> edgeView : e.getEdgeViews()) 
+			view.removeEdgeView(edgeView.getModel());
 
-		view.removeEdgeView(edgeView.getModel());
 		view.updateView();
 	}
 
-	public void nodeViewAboutToBeRemoved(final View<CyNode> nodeView, final CyNetworkView networkView) {
-		if (this.networkView != networkView || nodeView == null)
+	public void handleEvent(AboutToRemoveNodeViewsEvent e) {
+		if ( e.getSource() != this.networkView )
 			return;
+		
+		for ( View<CyNode> nodeView : e.getNodeViews()) 
+			view.removeNodeView(nodeView.getModel());
 
-		view.removeNodeView(nodeView.getModel());
 		view.updateView();
 	}
 }

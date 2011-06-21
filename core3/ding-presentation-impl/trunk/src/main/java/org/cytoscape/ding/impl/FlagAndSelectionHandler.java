@@ -46,8 +46,6 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.events.RowsAboutToChangeEvent;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,19 +137,15 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 		select(selectedEdges, true);
 	}
 
-	private void select(final Collection<? extends CyTableEntry> nodesOrEdges, final boolean selected) {
+	private void select(final Collection<? extends CyTableEntry> nodesOrEdges,
+			final boolean selected) {
 		if (nodesOrEdges.isEmpty())
 			return;
 
 		final CyTable table = nodesOrEdges.iterator().next().getCyRow().getTable();
-		try {
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, table));
 
-			for (final CyTableEntry nodeOrEdge : nodesOrEdges)
-				nodeOrEdge.getCyRow().set(CyNetwork.SELECTED, selected);
-		} finally {
-			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, table));
-		}
+		for (final CyTableEntry nodeOrEdge : nodesOrEdges)
+			nodeOrEdge.getCyRow().set(CyNetwork.SELECTED, selected);
 	}
 
 	/**
@@ -159,7 +153,7 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 	 * flagged state in the SelectFilter object.
 	 */
 	public void graphViewChanged(final GraphViewChangeEvent event) {
-		
+
 		// GINY bug: the event we get frequently has the correct indices
 		// but incorrect Node and Edge objects. For now we get around this
 		// by converting indices to graph objects ourselves
@@ -190,6 +184,7 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 			select(Arrays.asList(objIndecies), false);
 		}
 
-		logger.debug("Finished selection: Time = " + (System.currentTimeMillis() - start) + " msec.");
+		logger.debug("Finished selection: Time = " + (System.currentTimeMillis() - start)
+				+ " msec.");
 	}
 }
