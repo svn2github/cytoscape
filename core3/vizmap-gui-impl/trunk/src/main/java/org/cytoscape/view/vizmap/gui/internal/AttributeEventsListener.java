@@ -10,12 +10,13 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
-import org.cytoscape.model.events.RowSetMicroListener;
+import org.cytoscape.model.events.RowsSetEvent;
+import org.cytoscape.model.events.RowsSetListener;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 
 
-public class AttributeEventsListener  implements RowSetMicroListener {
+public class AttributeEventsListener  implements RowsSetListener {
 	private CyComboBoxPropertyEditor propEditor;
 	private Class<?> filter;
 	private final CyTable attr;
@@ -183,10 +184,9 @@ public class AttributeEventsListener  implements RowSetMicroListener {
 	}
 
 	@Override
-	public void handleRowSet(final String columnName, final Object newValue,
-				 final Object newRawValue)
-	{
+	public void handleEvent(RowsSetEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
+
 }

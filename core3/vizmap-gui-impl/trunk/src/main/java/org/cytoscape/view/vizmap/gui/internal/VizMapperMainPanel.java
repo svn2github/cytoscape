@@ -163,7 +163,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 				switchVS(style);
 				eventHelper
-						.fireSynchronousEvent(new SelectedVisualStyleSwitchedEvent(
+						.fireEvent(new SelectedVisualStyleSwitchedEvent(
 								this, lastStyle, style));
 				logger.debug("######## Event:  new selected style: " + style);
 			}
@@ -685,7 +685,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		}
 
 		switchVS(newStyle);
-		eventHelper.fireSynchronousEvent(new SelectedVisualStyleSwitchedEvent(
+		eventHelper.fireEvent(new SelectedVisualStyleSwitchedEvent(
 				this, currentStyle, newStyle));
 		logger.debug("######## Event: Got new style: " + newStyle);
 	}
@@ -733,7 +733,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		final CyNetworkView view = applicationManager.getCurrentNetworkView();
 		if (view != null)
 			vmm.setVisualStyle(defaultStyle, view);
-		eventHelper.fireSynchronousEvent(new SelectedVisualStyleSwitchedEvent(
+		eventHelper.fireEvent(new SelectedVisualStyleSwitchedEvent(
 				this, toBeRemoved, defaultStyle));
 		logger.debug("######## Event:  removed style: " + toBeRemoved);
 	}

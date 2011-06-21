@@ -92,9 +92,9 @@ public class DependencyTable extends JTable {
 		
 		// Update other GUI component
 		if(isDepend) {
-			this.cyEventHelper.fireSynchronousEvent(new LexiconStateChangedEvent(this, null, group));
+			this.cyEventHelper.fireEvent(new LexiconStateChangedEvent(this, null, group));
 		} else {
-			this.cyEventHelper.fireSynchronousEvent(new LexiconStateChangedEvent(this, group, null));
+			this.cyEventHelper.fireEvent(new LexiconStateChangedEvent(this, group, null));
 		}
 
 	}
