@@ -51,7 +51,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -60,7 +59,6 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.cytoscape.application.swing.CyAction;
-import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.internal.task.NetworkCollectionTaskFactoryTunableAction;
 import org.cytoscape.internal.task.NetworkTaskFactoryTunableAction;
 import org.cytoscape.internal.task.NetworkViewCollectionTaskFactoryTunableAction;
@@ -68,18 +66,14 @@ import org.cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
 import org.cytoscape.internal.task.TaskFactoryTunableAction;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.CyTableRowUpdateService;
-import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.events.NetworkAddedEvent;
 import org.cytoscape.model.events.NetworkAddedListener;
-import org.cytoscape.model.events.RowSetMicroListener;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
-import org.cytoscape.model.events.RowsFinishedChangingListener;
+import org.cytoscape.model.events.RowsSetEvent;
+import org.cytoscape.model.events.RowsSetListener;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.events.SetCurrentNetworkEvent;
 import org.cytoscape.session.events.SetCurrentNetworkListener;
@@ -101,9 +95,10 @@ import org.cytoscape.work.TaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCurrentNetworkViewListener,
-		CyTableRowUpdateMicroListener, SetCurrentNetworkListener, NetworkAddedListener, NetworkViewAddedListener,
-		NetworkAboutToBeDestroyedListener, NetworkViewAboutToBeDestroyedListener, RowsFinishedChangingListener {
+public class NetworkPanel extends JPanel implements TreeSelectionListener,
+		SetCurrentNetworkViewListener, SetCurrentNetworkListener,
+		NetworkAddedListener, NetworkViewAddedListener, NetworkAboutToBeDestroyedListener,
+		NetworkViewAboutToBeDestroyedListener, RowsSetListener {
 
 	private final static long serialVersionUID = 1213748836763243L;
 
@@ -133,31 +128,22 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	private final JPopupMenu popup;
 	private final Map<TaskFactory, JMenuItem> popupMap;
 	private final Map<TaskFactory, CyAction> popupActions;
-
-	private final CyEventHelper eventHelper;
-	private final Map<CyNetwork, RowSetMicroListener> nameListeners;
-	private final CyTableRowUpdateService tableRowUpdateService;
-	
-	private final BirdsEyeViewHandler bird;
+	private final Map<CyTable, CyNetwork> nameTables;
 
 	/**
 	 * Constructor for the Network Panel.
 	 * 
 	 * @param desktop
 	 */
-	public NetworkPanel(final CyApplicationManager applicationManager, final CyNetworkManager netmgr,
-			final CyNetworkViewManager networkViewManager, final BirdsEyeViewHandler bird,
-			final TaskManager taskManager, final CyEventHelper eventHelper,
-			final CyTableRowUpdateService tableRowUpdateService) {
+	public NetworkPanel(final CyApplicationManager applicationManager,
+			final CyNetworkManager netmgr, final CyNetworkViewManager networkViewManager,
+			final BirdsEyeViewHandler bird, final TaskManager taskManager) {
 		super();
 
-		this.bird = bird;
 		this.appManager = applicationManager;
 		this.netmgr = netmgr;
 		this.networkViewManager = networkViewManager;
 		this.taskManager = taskManager;
-		this.eventHelper = eventHelper;
-		this.tableRowUpdateService = tableRowUpdateService;
 
 		root = new NetworkTreeNode("Network Root", 0L);
 		treeTableModel = new NetworkTreeTableModel(this, root);
@@ -168,9 +154,9 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 		popup = new JPopupMenu();
 		popupMap = new HashMap<TaskFactory, JMenuItem>();
 		popupActions = new HashMap<TaskFactory, CyAction>();
+		nameTables = new HashMap<CyTable, CyNetwork>();
 
 		setNavigator(bird.getBirdsEyeView());
-		nameListeners = new HashMap<CyNetwork, RowSetMicroListener>();
 
 		/*
 		 * Remove CTR-A for enabling select all function in the main window.
@@ -249,34 +235,44 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
 
 	public void addNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
-		addFactory(factory, new NetworkCollectionTaskFactoryTunableAction(taskManager, factory, props, appManager));
+		addFactory(factory, new NetworkCollectionTaskFactoryTunableAction(taskManager, factory,
+				props, appManager));
 	}
 
 	public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
 		removeFactory(factory);
 	}
 
-	public void addNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
-		addFactory(factory, new NetworkViewCollectionTaskFactoryTunableAction(taskManager, factory, props, appManager));
+	public void addNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory,
+			Map props) {
+		addFactory(factory, new NetworkViewCollectionTaskFactoryTunableAction(taskManager, factory,
+				props, appManager));
 	}
 
-	public void removeNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
+	public void removeNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory,
+			Map props) {
 		removeFactory(factory);
 	}
 
-	public void addNetworkTaskFactory(NetworkTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
-		addFactory(factory, new NetworkTaskFactoryTunableAction(taskManager, factory, props, appManager));
+	public void addNetworkTaskFactory(NetworkTaskFactory factory,
+			@SuppressWarnings("rawtypes") Map props) {
+		addFactory(factory, new NetworkTaskFactoryTunableAction(taskManager, factory, props,
+				appManager));
 	}
 
-	public void removeNetworkTaskFactory(NetworkTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
+	public void removeNetworkTaskFactory(NetworkTaskFactory factory,
+			@SuppressWarnings("rawtypes") Map props) {
 		removeFactory(factory);
 	}
 
-	public void addNetworkViewTaskFactory(NetworkViewTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
-		addFactory(factory, new NetworkViewTaskFactoryTunableAction(taskManager, factory, props, appManager));
+	public void addNetworkViewTaskFactory(NetworkViewTaskFactory factory,
+			@SuppressWarnings("rawtypes") Map props) {
+		addFactory(factory, new NetworkViewTaskFactoryTunableAction(taskManager, factory, props,
+				appManager));
 	}
 
-	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
+	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory,
+			@SuppressWarnings("rawtypes") Map props) {
 		removeFactory(factory);
 	}
 
@@ -294,6 +290,9 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 		return treeTable;
 	}
 
+	public JPanel getNavigatorPanel() {
+		return navigatorPanel;
+	}
 
 	/**
 	 * Remove a network from the panel.
@@ -301,10 +300,6 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	 * @param network_id
 	 */
 	public void removeNetwork(final Long network_id) {
-		final CyNetwork network = netmgr.getNetwork(network_id);
-		tableRowUpdateService.stopTracking(this, network.getDefaultNodeTable());
-		tableRowUpdateService.stopTracking(this, network.getDefaultEdgeTable());
-
 		final NetworkTreeNode node = getNetworkNode(network_id);
 		final Enumeration children = node.children();
 		final List<NetworkTreeNode> removed_children = new ArrayList<NetworkTreeNode>();
@@ -333,7 +328,8 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 		if (treeTable.getTree().getSelectionPath() != null) { // user has
 			// selected
 			// something
-			treeTableModel.setValueAt(name, treeTable.getTree().getSelectionPath().getLastPathComponent(), 0);
+			treeTableModel.setValueAt(name, treeTable.getTree().getSelectionPath()
+					.getLastPathComponent(), 0);
 		} else { // no selection, means the title has been changed
 			// programmatically
 			NetworkTreeNode node = getNetworkNode(network.getSUID());
@@ -349,9 +345,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 		CyNetwork net = nde.getNetwork();
 		logger.debug("Network about to be destroyed " + net.getSUID());
 		removeNetwork(net.getSUID());
-		final RowSetMicroListener rsml = nameListeners.remove(net);
-		if (rsml != null)
-			eventHelper.removeMicroListener(rsml, RowSetMicroListener.class, net.getCyRow().getTable());
+		nameTables.remove(net.getDefaultNetworkTable());
 	}
 
 	public void handleEvent(NetworkAddedEvent e) {
@@ -359,13 +353,17 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 		logger.debug("Got NetworkAddedEvent.  Model ID = " + net.getSUID());
 
 		addNetwork(net.getSUID(), -1l);
-		RowSetMicroListener rsml = new AbstractNetworkNameListener(net) {
-			public void updateNetworkName(CyNetwork n, String name) {
-				updateTitle(n, name);
-			}
-		};
-		eventHelper.addMicroListener(rsml, RowSetMicroListener.class, net.getCyRow());
-		nameListeners.put(e.getNetwork(), rsml);
+		nameTables.put(net.getDefaultNetworkTable(), net);
+	}
+	
+	@Override
+	public void handleEvent(RowsSetEvent e) {
+		CyNetwork n = nameTables.get( e.getSource() );
+		if ( n == null )
+			return;
+		
+		final String title = n.getCyRow().get(CyTableEntry.NAME, String.class);
+		updateTitle(n, title); // this should updated the UI regardless...
 	}
 
 	@Override
@@ -373,6 +371,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 		final CyNetworkView view = e.getNetworkView();
 
 		if (view == null) {
+			logger.warn("Current network view is set to null.");
 			return;
 		}
 
@@ -397,47 +396,24 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
 
 	public void handleEvent(NetworkViewAboutToBeDestroyedEvent nde) {
-		logger.debug("Network view about to be destroyed " + nde.getNetworkView().getModel().getSUID());
+		logger.debug("Network view about to be destroyed "
+				+ nde.getNetworkView().getModel().getSUID());
 		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(NetworkViewAddedEvent nde) {
-		logger.debug("********** Network view added to NetworkPanel. View ID: " + nde.getNetworkView().getSUID());
+		logger.debug("Network view added to NetworkPanel: "
+				+ nde.getNetworkView().getModel().getSUID());
 
 		// Set current network view to the new one.
 		appManager.setCurrentNetworkView(nde.getNetworkView().getModel().getSUID());
-		
-		// Update BEV
-		bird.addView(appManager.getCurrentRenderingEngine());
+
 		treeTable.getTree().updateUI();
-	}
-
-	@Override
-	public void handleRowSets(final CyTable table, final List<RowSet> rowSets) {
-		// TODO is this necessary?
-	}
-
-	@Override
-	public void handleRowCreations(final CyTable table, final List<CyRow> newRows) {
-		treeTable.getTree().updateUI();
-	}
-
-	@Override
-	public void handleEvent(RowsFinishedChangingEvent e) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				treeTable.getTree().updateUI();
-			}
-		});
 	}
 
 	private void addNetwork(final Long network_id, final Long parent_id) {
 		// first see if it exists
 		if (getNetworkNode(network_id) == null) {
-			final CyNetwork network = netmgr.getNetwork(network_id);
-			tableRowUpdateService.startTracking(this, network.getDefaultNodeTable());
-			tableRowUpdateService.startTracking(this, network.getDefaultEdgeTable());
 
 			NetworkTreeNode dmtn = new NetworkTreeNode(netmgr.getNetwork(network_id).getCyRow()
 					.get(CyTableEntry.NAME, String.class), network_id);
@@ -492,8 +468,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	/**
 	 * This method highlights a network in the NetworkPanel.
 	 * 
-	 * @param e
-	 *            DOCUMENT ME!
+	 * @param e DOCUMENT ME!
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
 		// logger.debug("NetworkPanel: valueChanged - " +
@@ -563,7 +538,8 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 				if (row != -1) {
 					JTree tree = treeTable.getTree();
 					TreePath treePath = tree.getPathForRow(row);
-					Long networkID = ((NetworkTreeNode) treePath.getLastPathComponent()).getNetworkID();
+					Long networkID = ((NetworkTreeNode) treePath.getLastPathComponent())
+							.getNetworkID();
 
 					CyNetwork cyNetwork = netmgr.getNetwork(networkID);
 

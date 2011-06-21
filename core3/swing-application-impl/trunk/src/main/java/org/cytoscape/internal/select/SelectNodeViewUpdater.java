@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -39,12 +38,10 @@ import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.NODE
 
 import org.cytoscape.application.swing.ViewUpdater;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.view.model.View;
 
-public class SelectNodeViewUpdater extends ViewUpdater<CyNode, Boolean> {
+public class SelectNodeViewUpdater extends ViewUpdater<Boolean> {
 
-    public SelectNodeViewUpdater(View<CyNode> nv) {
-	super(nv, NODE_SELECTED, nv.getModel().getCyRow(), CyNetwork.SELECTED);
-    }
+	public SelectNodeViewUpdater(RowViewTracker tracker) {
+		super(NODE_SELECTED, CyNetwork.SELECTED, tracker.getRowViewMap());
+	}
 }

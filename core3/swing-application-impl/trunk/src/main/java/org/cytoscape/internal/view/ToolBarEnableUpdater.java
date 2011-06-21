@@ -39,8 +39,8 @@ import org.cytoscape.model.events.NetworkAddedEvent;
 import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.model.events.NetworkDestroyedEvent;
 import org.cytoscape.model.events.NetworkDestroyedListener;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
-import org.cytoscape.model.events.RowsFinishedChangingListener;
+import org.cytoscape.model.events.RowsSetEvent;
+import org.cytoscape.model.events.RowsSetListener;
 import org.cytoscape.session.events.SetCurrentNetworkEvent;
 import org.cytoscape.session.events.SetCurrentNetworkListener;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
@@ -56,51 +56,57 @@ import org.cytoscape.view.model.events.NetworkViewDestroyedListener;
  * selected, but since toolbars are always visible, we need to listen for the
  * actual events. This is less than ideal.
  */
-class ToolBarEnableUpdater implements NetworkAddedListener, NetworkDestroyedListener, NetworkViewAddedListener,
-	NetworkViewDestroyedListener, SetCurrentNetworkListener, SetCurrentNetworkViewListener,
-	RowsFinishedChangingListener {
+class ToolBarEnableUpdater implements NetworkAddedListener, NetworkDestroyedListener,
+		NetworkViewAddedListener, NetworkViewDestroyedListener, SetCurrentNetworkListener,
+		SetCurrentNetworkViewListener, RowsSetListener {
 
-    private final CytoscapeToolBar toolbar;
+	private final CytoscapeToolBar toolbar;
 
-    public ToolBarEnableUpdater(final CytoscapeToolBar toolbar) {
-	this.toolbar = toolbar;
-    }
+	public ToolBarEnableUpdater(final CytoscapeToolBar toolbar) {
+		this.toolbar = toolbar;
+	}
 
-    public void handleEvent(SetCurrentNetworkEvent e) {
-	updateToolbar();
-    }
+	@Override
+	public void handleEvent(SetCurrentNetworkEvent e) {
+		updateToolbar();
+	}
 
-    public void handleEvent(SetCurrentNetworkViewEvent e) {
-	updateToolbar();
-    }
+	@Override
+	public void handleEvent(SetCurrentNetworkViewEvent e) {
+		updateToolbar();
+	}
 
-    public void handleEvent(NetworkAddedEvent e) {
-	updateToolbar();
-    }
+	@Override
+	public void handleEvent(NetworkAddedEvent e) {
+		updateToolbar();
+	}
 
-    public void handleEvent(NetworkViewAddedEvent e) {
-	updateToolbar();
-    }
+	@Override
+	public void handleEvent(NetworkViewAddedEvent e) {
+		updateToolbar();
+	}
 
-    public void handleEvent(NetworkDestroyedEvent e) {
-	updateToolbar();
-    }
+	@Override
+	public void handleEvent(NetworkDestroyedEvent e) {
+		updateToolbar();
+	}
 
-    public void handleEvent(NetworkViewDestroyedEvent e) {
-	updateToolbar();
-    }
+	@Override
+	public void handleEvent(NetworkViewDestroyedEvent e) {
+		updateToolbar();
+	}
 
-    /**
-     * This is mainly for listening to node/edge selection events.
-     */
-    @Override
-    public void handleEvent(RowsFinishedChangingEvent e) {
-	updateToolbar();
-    }
+	/**
+	 * This is mainly for listening to node/edge selection events.
+	 */
+	@Override
+	public void handleEvent(RowsSetEvent e) {
+		updateToolbar();
+	}
 
-    private void updateToolbar() {
-	for (CyAction action : toolbar.getAllToolBarActions())
-	    action.updateEnableState();
-    }
+	private void updateToolbar() {
+		for (CyAction action : toolbar.getAllToolBarActions())
+			action.updateEnableState();
+	}
 
 }

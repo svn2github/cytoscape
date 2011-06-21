@@ -30,9 +30,6 @@
 	<osgi:reference id="taskManagerServiceRef"
 		interface="org.cytoscape.work.swing.GUITaskManager" />
 
-	<osgi:reference id="cyTableRowUpdateServiceRef"
-		interface="org.cytoscape.model.CyTableRowUpdateService" />
-
 	<!-- Rendering Engine factory for main network views -->
 	<osgi:reference id="dingRenderingEngineFactoryServiceRef"
 		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
@@ -300,16 +297,19 @@
 	</osgi:service>
 
 	<osgi:service id="networkPanelService" ref="networkPanel" auto-export="interfaces" />
+	
 	<osgi:service id="networkViewManagerService" ref="networkViewManager" auto-export="interfaces" />
 
-	<osgi:service id="birdsEyeViewHandlerService" ref="birdsEyeViewHandler"
-		auto-export="interfaces" />
+	<osgi:service id="birdsEyeViewHandlerService" ref="birdsEyeViewHandler" auto-export="interfaces" />
 
 	<osgi:service id="undoMonitorSetCurrentNetworkViewListenerService"
 		ref="undoMonitor" interface="org.cytoscape.session.events.SetCurrentNetworkViewListener" />
 
-	<osgi:service id="selectRegisterListenerService" ref="selectRegisterListener"
-		interface="org.cytoscape.view.model.events.NetworkViewAddedListener" />
+	<osgi:service id="rowViewTrackerService" ref="rowViewTracker" auto-export="interfaces"/>
+	
+	<osgi:service id="selectEdgeViewUpdaterService" ref="selecteEdgeViewUpdater" auto-export="interfaces"/>
+	
+	<osgi:service id="selectNodeViewUpdaterService" ref="selecteNodeViewUpdater" auto-export="interfaces"/>
 
 	<osgi:service id="sessionShutdownHandlerService" ref="sessionShutdownHandler"
 		interface="org.cytoscape.application.swing.events.CytoscapeShutdownListener" />

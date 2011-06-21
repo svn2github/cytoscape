@@ -39,13 +39,12 @@ package org.cytoscape.internal.select;
 import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.EDGE_SELECTED;
 
 import org.cytoscape.application.swing.ViewUpdater;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.view.model.View;
+import org.cytoscape.model.CyNetwork;
 
 
-public class SelectEdgeViewUpdater extends ViewUpdater<CyEdge,Boolean> {
+public class SelectEdgeViewUpdater extends ViewUpdater<Boolean> {
 
-	public SelectEdgeViewUpdater(View<CyEdge> ev) {
-		super(ev, EDGE_SELECTED, ev.getModel().getCyRow(), "selected");
+	public SelectEdgeViewUpdater(RowViewTracker tracker) {
+		super(EDGE_SELECTED, CyNetwork.SELECTED, tracker.getRowViewMap());
 	}
 }

@@ -755,14 +755,14 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 			// determine what event to fire
 			switch (notificationType) {
 				case NOTIFICATION_STATE_CHANGE:
-					cyEventHelper.fireSynchronousEvent(new CytoPanelStateChangedEvent(this,this,cytoPanelState));
+					cyEventHelper.fireEvent(new CytoPanelStateChangedEvent(this,this,cytoPanelState));
 
 					break;
 
 				case NOTIFICATION_COMPONENT_SELECTED:
 
 					int selectedIndex = tabbedPane.getSelectedIndex();
-					cyEventHelper.fireSynchronousEvent(new CytoPanelComponentSelectedEvent(this,this,selectedIndex));
+					cyEventHelper.fireEvent(new CytoPanelComponentSelectedEvent(this,this,selectedIndex));
 					//cytoPanelListener.onComponentSelected(selectedIndex);
 
 					break;

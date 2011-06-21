@@ -52,10 +52,11 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
 import org.cytoscape.application.swing.CyHelpBroker;
-import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.events.RowSetMicroListener;
+import org.cytoscape.model.events.RowsSetEvent;
+import org.cytoscape.model.events.RowsSetListener;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.session.Cysession;
 import org.cytoscape.property.session.Desktop;
@@ -73,13 +74,13 @@ import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedEvent;
 import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
-import org.cytoscape.view.model.events.NetworkViewChangeMicroListener;
+import org.cytoscape.view.model.events.NetworkViewChangedEvent;
+import org.cytoscape.view.model.events.NetworkViewChangedListener;
+import org.cytoscape.view.model.events.ViewChangeRecord;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
@@ -92,7 +93,7 @@ import org.slf4j.LoggerFactory;
  */
 public class NetworkViewManager extends InternalFrameAdapter implements NetworkViewAddedListener,
 		NetworkViewAboutToBeDestroyedListener, SetCurrentNetworkViewListener, SetCurrentNetworkListener,
-		SessionLoadedListener, SessionAboutToBeSavedListener {
+		SessionLoadedListener, SessionAboutToBeSavedListener, NetworkViewChangedListener, RowsSetListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(NetworkViewManager.class);
 
@@ -125,10 +126,7 @@ public class NetworkViewManager extends InternalFrameAdapter implements NetworkV
 	// UI to select presentation.
 	private static final String DEFAULT_PRESENTATION = "ding";
 
-	private final Map<CyNetworkView, NetworkViewChangeMicroListener> netViewChangeListeners;
-	private final Map<CyNetwork, RowSetMicroListener> nameListeners;
-
-	private final CyEventHelper eventHelper;
+	private final Map<CyTable, CyNetwork> nameTables;
 	private final CyNetworkViewManager networkViewManager;
 	private final CyApplicationManager applicationManager;
 
@@ -139,12 +137,10 @@ public class NetworkViewManager extends InternalFrameAdapter implements NetworkV
 	 *            DOCUMENT ME!
 	 */
 	public NetworkViewManager(CyApplicationManager appMgr, CyNetworkViewManager netViewMgr,
-			CyProperty<Properties> cyProps, CyHelpBroker help, CyEventHelper eventHelper) {
+			CyProperty<Properties> cyProps, CyHelpBroker help) {
 
 		if (appMgr == null)
 			throw new NullPointerException("CyApplicationManager is null.");
-		if (eventHelper == null)
-			throw new NullPointerException("CyEventHelper is null.");
 		if (netViewMgr == null)
 			throw new NullPointerException("CyNetworkViewManager is null.");
 
@@ -153,7 +149,6 @@ public class NetworkViewManager extends InternalFrameAdapter implements NetworkV
 		this.networkViewManager = netViewMgr;
 		this.applicationManager = appMgr;
 		this.props = cyProps.getProperties();
-		this.eventHelper = eventHelper;
 
 		this.desktopPane = new JDesktopPane();
 
@@ -165,8 +160,7 @@ public class NetworkViewManager extends InternalFrameAdapter implements NetworkV
 		iFrameMap = new HashMap<JInternalFrame, Long>();
 		currentPresentationContainerID = null;
 
-		netViewChangeListeners = new HashMap<CyNetworkView, NetworkViewChangeMicroListener>();
-		nameListeners = new HashMap<CyNetwork, RowSetMicroListener>();
+		nameTables = new HashMap<CyTable, CyNetwork>();
 	}
 
 	/**
@@ -327,14 +321,7 @@ public class NetworkViewManager extends InternalFrameAdapter implements NetworkV
 		}
 
 		presentationContainerMap.remove(view.getModel().getSUID());
-
-		NetworkViewChangeMicroListener nvcml = netViewChangeListeners.remove(view);
-		if (nvcml != null)
-			eventHelper.removeMicroListener(nvcml, NetworkViewChangeMicroListener.class, view);
-
-		RowSetMicroListener rsml = nameListeners.remove(view.getModel());
-		if (rsml != null)
-			eventHelper.removeMicroListener(rsml, RowSetMicroListener.class, view.getModel().getCyRow().getTable());
+		nameTables.remove(view.getModel().getDefaultNetworkTable());
 
 		logger.debug("Network View Model removed.");
 	}
@@ -427,36 +414,37 @@ public class NetworkViewManager extends InternalFrameAdapter implements NetworkV
 		iframe.setVisible(true);
 		iframe.addInternalFrameListener(this);
 
-		NetworkViewChangeMicroListener nvcml = new NetworkViewChangeMicroListener() {
-			@Override
-			public void networkVisualPropertySet(View<CyNetwork> target, VisualProperty<?> vp, Object value) {
-				Long id = target.getModel().getSUID();
-
-				if (vp.equals(MinimalVisualLexicon.NETWORK_WIDTH)) {
-					int w = ((Double) value).intValue();
-					int h = iframe.getSize().height;
-					updateNetworkSize(id, w, h);
-				} else if (vp.equals(MinimalVisualLexicon.NETWORK_HEIGHT)) {
-					int w = iframe.getSize().width;
-					int h = ((Double) value).intValue();
-					updateNetworkSize(id, w, h);
-				}
+		nameTables.put(view.getModel().getDefaultNetworkTable(), view.getModel());
+	}
+	
+	@Override
+	public void handleEvent(RowsSetEvent e) {
+		CyNetwork n = nameTables.get( e.getSource() );
+		if ( n == null )
+			return;
+		
+		final String title = n.getCyRow().get(CyTableEntry.NAME, String.class);
+		updateNetworkTitle(n.getSUID(), title);
+	}
+	
+	@Override
+	public void handleEvent(NetworkViewChangedEvent e) {
+		for ( ViewChangeRecord<CyNetwork> record : e.getPayloadCollection()) {
+			Long id = record.getView().getModel().getSUID();
+			JInternalFrame iframe = presentationContainerMap.get(id);
+			if ( iframe == null )
+				return;
+			
+			if (record.getVisualProperty().equals(MinimalVisualLexicon.NETWORK_WIDTH)) {
+				int w = ((Double) record.getValue()).intValue();
+				int h = iframe.getSize().height;
+				updateNetworkSize(id, w, h);
+			} else if (record.getVisualProperty().equals(MinimalVisualLexicon.NETWORK_HEIGHT)) {
+				int w = iframe.getSize().width;
+				int h = ((Double) record.getValue()).intValue();
+				updateNetworkSize(id, w, h);
 			}
-		};
-
-		eventHelper.addMicroListener(nvcml, NetworkViewChangeMicroListener.class, view);
-		netViewChangeListeners.put(view, nvcml);
-
-		RowSetMicroListener rsml = new AbstractNetworkNameListener(view.getModel()) {
-			@Override
-			public void updateNetworkName(CyNetwork net, String name) {
-				final String title = net.getCyRow().get(CyTableEntry.NAME, String.class);
-				updateNetworkTitle(net.getSUID(), title);
-			}
-		};
-
-		eventHelper.addMicroListener(rsml, RowSetMicroListener.class, view.getModel().getCyRow());
-		nameListeners.put(view.getModel(), rsml);
+		}
 	}
 
 	@Override

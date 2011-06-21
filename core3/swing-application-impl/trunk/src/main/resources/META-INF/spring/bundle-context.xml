@@ -82,7 +82,6 @@
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 		<constructor-arg ref="cyHelpBroker" />
-		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 
 	<bean name="birdsEyeViewHandler" class="org.cytoscape.internal.view.BirdsEyeViewHandler">
@@ -97,8 +96,6 @@
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="birdsEyeViewHandler" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
-		<constructor-arg ref="cyEventHelperServiceRef" />
-		<constructor-arg ref="cyTableRowUpdateServiceRef" />
 	</bean>
 
 
@@ -246,15 +243,21 @@
 		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 	</bean>
-
-	<bean id="selectRegisterListener" class="org.cytoscape.internal.select.SelectRegisterListener">
-		<constructor-arg ref="cyEventHelperServiceRef" />
+	
+	<bean id="rowViewTracker" class="org.cytoscape.internal.select.RowViewTracker">
 	</bean>
 
+	<bean id="selecteEdgeViewUpdater" class="org.cytoscape.internal.select.SelectEdgeViewUpdater">
+		<constructor-arg ref="rowViewTracker" />
+	</bean>
+
+	<bean id="selecteNodeViewUpdater" class="org.cytoscape.internal.select.SelectNodeViewUpdater">
+		<constructor-arg ref="rowViewTracker" />
+	</bean>
+	
 	<bean id="quickStartStartup" class="org.cytoscape.internal.QuickStartStartup">
 		<constructor-arg ref="quickStartRef" />
 		<constructor-arg ref="taskManagerServiceRef" />
 	</bean>
-
 
 </beans>

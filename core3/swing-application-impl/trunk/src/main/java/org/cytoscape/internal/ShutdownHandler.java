@@ -62,7 +62,7 @@ public class ShutdownHandler implements CytoscapeShutdown {
 	public void exit(int retVal) {
 		actuallyShutdown = true;
 		CytoscapeShutdownEvent ev =  new CytoscapeShutdownEvent(ShutdownHandler.this);
-		eh.fireSynchronousEvent( ev );
+		eh.fireEvent( ev );
 
 		// TODO figure out a way to do a clean shutdown of the OSGi container.
 		if ( ev.actuallyShutdown() )
