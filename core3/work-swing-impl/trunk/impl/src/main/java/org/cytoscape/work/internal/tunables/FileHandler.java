@@ -130,7 +130,7 @@ public class FileHandler extends AbstractGUITunableHandler {
 		//set title and textfield text for the file type
 		final String fileCategory = getFileCategory().toUpperCase();
 		fileTextField.setText("Please select a " + fileCategory.toLowerCase() + " file...");
-		titleLabel.setText("Import " + initialCaps(fileCategory) + " File");
+		titleLabel.setText((input ? "Load " : "Save ") + initialCaps(fileCategory) + " File");
 		
 		final List<FileChooserFilter> filters = fileTypesManager.getSupportedFileTypes(
 				DataCategory.valueOf(fileCategory), input);
