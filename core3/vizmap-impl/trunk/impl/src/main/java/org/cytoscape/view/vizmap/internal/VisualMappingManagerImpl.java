@@ -177,9 +177,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 			}
 		}
 		
-		cyEventHelper
-				.fireSynchronousEvent(new VisualStyleAboutToBeRemovedEvent(
-						this, vs));
+		cyEventHelper.fireEvent(new VisualStyleAboutToBeRemovedEvent(this, vs));
 		visualStyles.remove(vs);
 		vs = null;
 	}
@@ -193,7 +191,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	@Override
 	public void addVisualStyle(final VisualStyle vs) {
 		this.visualStyles.add(vs);
-		cyEventHelper.fireSynchronousEvent(new VisualStyleAddedEvent(this, vs));
+		cyEventHelper.fireEvent(new VisualStyleAddedEvent(this, vs));
 	}
 
 	/**

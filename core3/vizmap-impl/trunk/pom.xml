@@ -89,13 +89,13 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-api</artifactId>
-			<version>3.0.0-alpha3</version>
+			<version>3.0.0-alpha6-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
-			<version>3.0.0-alpha3</version>
+			<version>3.0.0-alpha5-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		
