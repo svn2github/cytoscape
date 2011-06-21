@@ -41,7 +41,7 @@ package org.cytoscape.event;
 public abstract class AbstractCyEvent<T> implements CyEvent<T> {
 
 	private final T source;
-	private final Class<?> listenerClass; 
+	private final Class<?> listenerClass;
 
 	/** 
 	 * Constructor.
@@ -60,17 +60,17 @@ public abstract class AbstractCyEvent<T> implements CyEvent<T> {
 	}
 
 	/**
-	 * The object that fired the event. 
-	 * @return The object that fired the event.
+	 * {@inheritDoc}
 	 */
+	@Override
 	public T getSource() {
 		return source;
 	}
 
 	/**
-	 * The Class of the listener that is expected to handle this event. 
-	 * @return The Class of the listener that is expected to handle this event. 
+	 * {@inheritDoc}
 	 */
+	@Override
 	public Class<?> getListenerClass() {
 		return listenerClass;
 	}

@@ -37,8 +37,8 @@
 package org.cytoscape.event;
 
 /**
- * DOCUMENT ME!
-  */
+ * A simple event stub for testing. 
+ */
 public class StubCyEvent extends AbstractCyEvent<String> {
 	public StubCyEvent(String source) {
 		super(source, StubCyListener.class);

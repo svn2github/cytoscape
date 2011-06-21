@@ -31,9 +31,15 @@ package org.cytoscape.event;
 /**
  * The basic event handling interface for Cytoscape.  All Cytoscape events
  * should be fired using these methods.  All listeners should be registered
- * as CyListener or CyMicroListener services.
+ * as CyListener services.
  */
 public interface CyEventHelper {
+	/**
+	 * The default number of milliseconds to wait before the next
+	 * time that we will check for payload events to fire. 
+	 */
+	int DEFAULT_PAYLOAD_INTERVAL_MILLIS = 100;
+	
 	/**
 	 * Calls each listener found in the Service Registry identified by the listenerClass
 	 * interface by the supplied CyEvent.
@@ -41,83 +47,49 @@ public interface CyEventHelper {
 	 * @param <E> The type of event fired. 
 	 * @param event The event to be fired. 
 	 */
-	public <E extends CyEvent<?>> void fireSynchronousEvent(final E event);
+	<E extends CyEvent<?>> void fireEvent(final E event);
 
 	/**
-	 * Calls each listener found in the Service Registry identified by the listenerClass
-	 * the supplied event in a new thread.
-	 * <p>This method should <b>ONLY</b> ever be called with a thread safe event object!</p>
-	 *
-	 * @param <E> The type of event fired. 
-	 * @param event The event to be fired. 
+	 * Adds a payload object to be accumulated in a CyPayloadEvent. The event is guaranteed
+	 * to be fired after a certain duration where the single event contains all payload
+	 * objects added to the event within that window of time.  Payload objects added
+	 * after an event has fired simply trigger a new event to fire at the next time
+	 * point. All accumulated CyPayloadEvents are guaranteed to be fired before any
+	 * normal CyEvents are fired.
+	 * @param source The object firing the event.
+	 * @param payload The data payload to be added to the event that will
+	 * eventually be fired.
+	 * @param eventType The type of the event that the payload will be added to. 
 	 */
-	public <E extends CyEvent<?>> void fireAsynchronousEvent(final E event);
+	<S,P,E extends CyPayloadEvent<S,P>> void addEventPayload(S source, P payload, Class<E> eventType);
 
 	/**
-	 * Returns a single instance of CyMicroListener that will in turn execute any method
-	 * executed on the returned object on all registered CyMicroListeners for the specified
-	 * event source object. So, executing the following code:
-	 * <code>
-	 * eventHelper.getMicroListener(SomeListener.class, this).someEvent(...);
-	 * </code>
-	 * will execute the "someEvent(...)" method on every registered SomeListener 
-	 * that is listening for events from "this" event source.
-	 * <br/>
-	 * In general, CyMicroListener should avoided in favor the CyEvent/CyListener combination
-	 * as that code provides more flexibility for backwards compatibility.  CyMicroListener
-	 * should <b>only</b> be used when high performance is absolutely necessary <b>and</b>
-	 * when CyEvent/CyListener has been demonstrated to be inadequate!
-	 *
-	 * @param <M> the type of micro listener requested.
-	 * @param m the class object for type M
-	 * @param source The source object that fires the event. 
-	 * @return A single instance CyMicroListener of type M that will in turn execute any
-	 * called methods on all registered CyMicroListeners.
+	 * Forces accumulated payload events to be fired.  This is a useful method
+	 * that flushes all accumulated payload events, which are normally fired 
+	 * asynchronously to be fired synchronously at a precise time. While this method
+	 * can be safely called at any time, it probably shouldn't be called as a force 
+	 * of habit.
 	 */
-	public <M extends CyMicroListener> M getMicroListener(Class<M> m, Object source);
-
-
-	/**
-	 * Registers an object as a CyMicroListener to the event source object.
-	 *
-	 * @param <M> The type of micro listener being registered.
-	 * @param listener The object implementing the specified micro listener interface. 
-	 * @param clazz The specific CyMicroListener class that the listener is being registered for.
-	 * This is necessary because the listener object may implement several CyMicroListener 
-	 * interfaces.
-	 * @param source The event source that the listener object should listen to.
-	 */
-	public <M extends CyMicroListener> void addMicroListener(M listener, Class<M> clazz, Object source);
-
-	/**
-	 * Unregisters an object as a CyMicroListener for all event sources. 
-	 *
-	 * @param <M> The type of micro listener being unregistered.
-	 * @param listener The object implementing the specified micro listener interface. 
-	 * @param clazz The specific CyMicroListener class that the listener is being unregistered for.
-	 * @param source The event source that the listener object should be removed from. 
-	 */
-	public <M extends CyMicroListener> void removeMicroListener(M listener, Class<M> clazz, Object source);
+	 void flushPayloadEvents();
 
 	/**
 	 * This method will prevent any events fired from the specified source 
 	 * object from being propagated to listeners.  This applies to both
-	 * normal Listeners and MicroListeners.
+	 * normal events and accumulating event payloads.
 	 * @param eventSource The object that should have its events blocked 
 	 * from being sent.
 	 */
-	public void silenceEventSource(Object eventSource);
+	void silenceEventSource(Object eventSource);
 
 	/**
 	 * This method will allow events fired from the specified source 
 	 * object to be propagated to listeners.  This applies to both
-	 * normal Listeners and MicroListeners.  This method only needs
+	 * normal events and accumulating event payloads.  This method only needs
 	 * to be called if the silenceEventSource(eventSource) method has
 	 * been called.  Otherwise, all events are by default propagated
 	 * normally.
 	 * @param eventSource The object that should have its events sent
 	 * to listeners.
 	 */
-	public void unsilenceEventSource(Object eventSource);
-
+	void unsilenceEventSource(Object eventSource);
 }

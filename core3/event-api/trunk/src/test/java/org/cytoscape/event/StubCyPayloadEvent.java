@@ -36,44 +36,12 @@
 
 package org.cytoscape.event;
 
-
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertEquals;
-
+import java.util.Collection;
 /**
+ * A simple event stub for testing. 
  */
-public class AbstractCyEventTest {
-
-	private static class TestEvent<T> extends AbstractCyEvent<T> {
-		TestEvent(T src, Class<?> c) {
-			super(src,c);
-		}
+public class StubCyPayloadEvent extends AbstractCyPayloadEvent<String,String> {
+	public StubCyPayloadEvent(String source, Collection<String> payload) {
+		super(source, StubCyPayloadListener.class, payload);
 	}
-
-	@Test
-	public void testGetSource() {
-		Integer i = new Integer(1);
-		TestEvent<Integer> e = new TestEvent<Integer>(i,Integer.class);
-		assertEquals( i, e.getSource() ); 
-	}
-
-	@Test
-	public void testGetListenerClass() {
-		Object i = new Object(); 
-		TestEvent<Object> e = new TestEvent<Object>(i,Object.class);
-		assertEquals( Object.class, e.getListenerClass() ); 
-	}
-
-	@Test(expected=NullPointerException.class)
-	public void testNullSource() {
-		new TestEvent<Object>(null, Object.class);
-	}
-
-	@Test(expected=NullPointerException.class)
-	public void testNullListenerClass() {
-		new TestEvent<Object>(new Object(), null);
-	}
-
 }

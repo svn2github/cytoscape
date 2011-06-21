@@ -41,39 +41,59 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
+import java.util.Collection;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  */
-public class AbstractCyEventTest {
+public class AbstractCyPayloadEventTest {
 
-	private static class TestEvent<T> extends AbstractCyEvent<T> {
-		TestEvent(T src, Class<?> c) {
-			super(src,c);
+	private static class TestEvent<T,P> extends AbstractCyPayloadEvent<T,P> {
+		TestEvent(T src, Class<?> c, Collection<P> payload) {
+			super(src,c,payload);
 		}
 	}
 
-	@Test
-	public void testGetSource() {
-		Integer i = new Integer(1);
-		TestEvent<Integer> e = new TestEvent<Integer>(i,Integer.class);
-		assertEquals( i, e.getSource() ); 
-	}
 
 	@Test
-	public void testGetListenerClass() {
-		Object i = new Object(); 
-		TestEvent<Object> e = new TestEvent<Object>(i,Object.class);
-		assertEquals( Object.class, e.getListenerClass() ); 
+	public void testGetPayload() {
+		List<String> l = new ArrayList<String>();
+		l.add("homer");
+		l.add("marge");
+		Object source = new Object(); 
+		TestEvent<Object,String> e = new TestEvent<Object,String>(source,Object.class,l);
+		Collection<String> payload = e.getPayloadCollection();
+		assertEquals(2,payload.size());
+		assertTrue(payload.contains("homer"));
+		assertTrue(payload.contains("marge"));
+		assertFalse(payload.contains("bart"));
 	}
 
 	@Test(expected=NullPointerException.class)
-	public void testNullSource() {
-		new TestEvent<Object>(null, Object.class);
+	public void testGetPayloadNull() {
+		Object source = new Object(); 
+		TestEvent<Object,String> e = new TestEvent<Object,String>(source,Object.class,null);
 	}
 
-	@Test(expected=NullPointerException.class)
-	public void testNullListenerClass() {
-		new TestEvent<Object>(new Object(), null);
+	@Test
+	public void testGetEmptyPayload() {
+		List<String> l = new ArrayList<String>();
+		Object source = new Object(); 
+		TestEvent<Object,String> e = new TestEvent<Object,String>(source,Object.class,l);
+		Collection<String> payload = e.getPayloadCollection();
+		assertEquals(0,payload.size());
+		assertFalse(payload.contains("bart"));
 	}
-
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testCantModifyPayload() {
+		List<String> l = new ArrayList<String>();
+		l.add("homer");
+		l.add("marge");
+		Object source = new Object(); 
+		TestEvent<Object,String> e = new TestEvent<Object,String>(source,Object.class,l);
+		Collection<String> payload = e.getPayloadCollection();
+		payload.add("something");
+	}
 }

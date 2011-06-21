@@ -36,44 +36,24 @@
 
 package org.cytoscape.event;
 
-
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertEquals;
-
 /**
- */
-public class AbstractCyEventTest {
+ * DOCUMENT ME!
+  */
+public interface StubCyPayloadListener extends CyListener {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void handleEvent(StubCyPayloadEvent e);
 
-	private static class TestEvent<T> extends AbstractCyEvent<T> {
-		TestEvent(T src, Class<?> c) {
-			super(src,c);
-		}
-	}
-
-	@Test
-	public void testGetSource() {
-		Integer i = new Integer(1);
-		TestEvent<Integer> e = new TestEvent<Integer>(i,Integer.class);
-		assertEquals( i, e.getSource() ); 
-	}
-
-	@Test
-	public void testGetListenerClass() {
-		Object i = new Object(); 
-		TestEvent<Object> e = new TestEvent<Object>(i,Object.class);
-		assertEquals( Object.class, e.getListenerClass() ); 
-	}
-
-	@Test(expected=NullPointerException.class)
-	public void testNullSource() {
-		new TestEvent<Object>(null, Object.class);
-	}
-
-	@Test(expected=NullPointerException.class)
-	public void testNullListenerClass() {
-		new TestEvent<Object>(new Object(), null);
-	}
-
+	/**
+	 * A special method for testing which returns the number of times
+	 * that the handleEvent() method had been called.  In general,
+	 * extensions of the CyListener interface should NOT define other 
+	 * methods.
+	 */
+	public int getNumCalls();
+	
+	void setEventHelper(CyEventHelper eh);
 }

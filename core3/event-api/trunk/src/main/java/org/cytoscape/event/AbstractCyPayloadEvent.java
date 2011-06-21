@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,33 +32,39 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.event;
 
+import java.util.Collection;
+import java.util.Collections;
+
 /**
- * DOCUMENT ME!
-  */
-public interface StubCyMicroListener extends CyMicroListener {
+ * A base implementation of CyPayloadEvent that can be used by events.
+ */
+public abstract class AbstractCyPayloadEvent<T,P> extends AbstractCyEvent<T> implements CyPayloadEvent<T,P> {
+
+	private final Collection<P> payload;
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * Constructor.
+	 * @param source The event source object.
+	 * @param listenerClass The listener class for this event.
+	 * @param payload A collection of payload objects. May be empty, but not null!
 	 */
-	public void handleMicroEvent(int x);
+	public AbstractCyPayloadEvent(final T source, Class<?> listenerClass, Collection<P> payload) {
+		super(source, listenerClass);
+
+		if ( payload == null )
+			throw new NullPointerException("Payload is null");
+
+		this.payload = Collections.unmodifiableCollection(payload);
+	}
 
 	/**
-	 * A special method for testing which returns the number of times
-	 * that the handleMicroEvent() method had been called.  In general,
-	 * extensions of the CyMicroListener interface should NOT define other 
-	 * methods.
+	 * Returns an unmodifiable collection of payload objects.
+	 * @return an unmodifiable collection of payload objects.
 	 */
-	public int getNumCalls();
-
-	/**
-	 * A special method for testing which returns the value set in
-	 * the handleMicroEvent() method.  In general, extensions of the CyMicroListener 
-	 * interface should NOT define other methods.
-	 */
-	public int getEventValue();
+	@Override
+	public Collection<P> getPayloadCollection() {
+		return payload;
+	}
 }

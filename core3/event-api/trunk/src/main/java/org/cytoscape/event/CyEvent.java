@@ -56,4 +56,5 @@ public interface CyEvent<T> {
 	 * @return The Class of the listener that is expected to handle this event. 
 	 */
 	Class<?> getListenerClass();
+
 }

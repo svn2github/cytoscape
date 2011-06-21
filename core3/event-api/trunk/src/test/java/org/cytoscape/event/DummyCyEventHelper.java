@@ -28,67 +28,35 @@
 package org.cytoscape.event;
 
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
-
-import java.util.ArrayList;
-import java.util.List;
-
-
 public class DummyCyEventHelper implements CyEventHelper {
-	private Object lastSynchronousEvent;
-	private Object lastAsynchronousEvent;
-	private Object lastMicroListener;
-	private List<String> calledMicroListenerMethods;
+	private Object lastEvent;
+	private Object payload;
 
 	public DummyCyEventHelper() {
-		calledMicroListenerMethods = new ArrayList<String>();
 	}
 	
-	public <E extends CyEvent<?>> void fireSynchronousEvent(final E event) {
-		lastSynchronousEvent = event;
+	public synchronized <E extends CyEvent<?>> void fireEvent(final E event) {
+		lastEvent = event;
 	}
 
-	public <E extends CyEvent<?>> void fireAsynchronousEvent(final E event) {
-		lastAsynchronousEvent = event;
+	public <S,P,E extends CyPayloadEvent<S,P>> void addEventPayload(S source, P p, Class<E> e) {
+		payload = p;
 	}
 
-	public <M extends CyMicroListener> M getMicroListener(Class<M> c, Object o) {
-		lastMicroListener = Proxy.newProxyInstance(this.getClass().getClassLoader(), 
-		                    new Class[] { c }, new DummyListenerHandler());
-		return c.cast( lastMicroListener ); 
+	public Object getLastEvent() {
+		return lastEvent;
 	}
-
-	public <M extends CyMicroListener> void addMicroListener(M m, Class<M> c, Object o) {
-	}
-
-	public <M extends CyMicroListener> void removeMicroListener(M m, Class<M> c, Object o) {
-	}
-
-	private class DummyListenerHandler implements InvocationHandler {
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			calledMicroListenerMethods.add(method.getName());
-			return null;
-		}
-	}
-
-	public List<String> getCalledMicroListeners() {
-		return calledMicroListenerMethods;
-	}
-
-	public Object getLastSynchronousEvent() {
-		return lastSynchronousEvent;
-	}
-
-	public Object getLastAsynchronousEvent() {
-		return lastAsynchronousEvent;
+	
+	public Object getLastPayload() {
+		return payload;
 	}
 
 	public void silenceEventSource(Object o) {
 	}
 
 	public void unsilenceEventSource(Object o) {
+	}
+
+	public void flushPayloadEvents() {
 	}
 }

@@ -33,12 +33,20 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.event;
 
-public class MicroEventSource {
+import java.util.Collection;
 
-	public void testFire(CyEventHelper eh, int value) {
-		eh.getMicroListener(StubCyMicroListener.class, this).handleMicroEvent(value);
-	}
+/**
+ * An extension of CyEvent specifically for payload events.
+ * @param <S> The event source type.
+ * @param <P> The payload type.
+ */
+public interface CyPayloadEvent<S,P> extends CyEvent<S> {
+	
+	/**
+	 * Returns a collection of payload objects.
+	 * @return a collection of payload objects.
+	 */
+	Collection<P> getPayloadCollection();
 }
