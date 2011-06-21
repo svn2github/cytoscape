@@ -42,8 +42,8 @@ import org.cytoscape.biopax.internal.view.BioPaxDetailsPanel;
 import org.cytoscape.biopax.util.BioPaxUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableRowUpdateService;
-import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
+import org.cytoscape.model.events.RowsSetEvent;
+import org.cytoscape.model.events.RowsSetListener;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.view.model.CyNetworkView;
@@ -61,30 +61,25 @@ import org.cytoscape.view.model.events.NetworkViewAddedListener;
  * @author Ethan Cerami / Benjamin Gross / Igor Rodchenkov.
  */
 public class NetworkListenerImpl implements NetworkListener, NetworkViewAddedListener,
-	NetworkViewAboutToBeDestroyedListener, SetCurrentNetworkViewListener {
+	NetworkViewAboutToBeDestroyedListener, SetCurrentNetworkViewListener, RowsSetListener {
 	
 	private final BioPaxDetailsPanel bpPanel;
 	private final BioPaxContainer bpContainer;
 	private final MapBioPaxToCytoscape mapBioPaxToCytoscape;
 
 	private final CyNetworkViewManager viewManager;
-	private final CyTableRowUpdateService rowUpdateService;
-	
-	private Map<CyNetworkView, CyTableRowUpdateMicroListener> rowUpdateListeners;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param bpPanel BioPaxDetails Panel Object.
 	 */
-	public NetworkListenerImpl(BioPaxDetailsPanel bpPanel, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapBioPaxToCytoscapeFactory, CyNetworkViewManager viewManager, CyTableRowUpdateService rowUpdateService) {
+	public NetworkListenerImpl(BioPaxDetailsPanel bpPanel, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapBioPaxToCytoscapeFactory, CyNetworkViewManager viewManager) {
 		this.bpPanel = bpPanel;
 		this.bpContainer = bpContainer;
 		this.mapBioPaxToCytoscape = mapBioPaxToCytoscapeFactory.getInstance(null, null);
 		this.viewManager = viewManager;
-		this.rowUpdateService = rowUpdateService;
 		
-		rowUpdateListeners = new HashMap<CyNetworkView, CyTableRowUpdateMicroListener>();
 	}
 
 	/**
@@ -106,8 +101,6 @@ public class NetworkListenerImpl implements NetworkListener, NetworkViewAddedLis
 		CyNetwork cyNetwork = view.getModel();
 		CyTable table = cyNetwork.getDefaultNodeTable();
 		DisplayBioPaxDetails rowUpdateListener = new DisplayBioPaxDetails(view, bpPanel, bpContainer, mapBioPaxToCytoscape);
-		rowUpdateListeners.put(view, rowUpdateListener);
-		rowUpdateService.startTracking(rowUpdateListener, table);
 		bpPanel.resetText();
 	}
 
@@ -227,10 +220,6 @@ public class NetworkListenerImpl implements NetworkListener, NetworkViewAddedLis
 		BioPaxUtil.removeNetworkModel(network.getSUID());
 		
 		CyTable table = network.getDefaultNodeTable();
-		CyTableRowUpdateMicroListener listener = rowUpdateListeners.get(view);
-		if (listener != null) {
-			rowUpdateService.stopTracking(listener, table);
-		}
 		
 		if (!networkViewsRemain()) {
 			onZeroNetworkViewsRemain();
@@ -261,6 +250,12 @@ public class NetworkListenerImpl implements NetworkListener, NetworkViewAddedLis
 	protected void onZeroNetworkViewsRemain() {
 		bpPanel.resetText("BioPAX Details not available.  Please load"
 		                  + " a BioPAX file to proceed.");
+	}
+
+	@Override
+	public void handleEvent(RowsSetEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

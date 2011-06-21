@@ -31,16 +31,14 @@
  **/
 package org.cytoscape.biopax.internal.action;
 
-import java.util.List;
 
 import org.cytoscape.biopax.BioPaxContainer;
 import org.cytoscape.biopax.MapBioPaxToCytoscape;
 import org.cytoscape.biopax.internal.view.BioPaxDetailsPanel;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyTable;
-import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
+import org.cytoscape.model.events.RowsSetEvent;
+import org.cytoscape.model.events.RowsSetListener;
 import org.cytoscape.view.model.CyNetworkView;
 
 
@@ -54,7 +52,7 @@ import org.cytoscape.view.model.CyNetworkView;
  *
  * @author Ethan Cerami
  */
-public class DisplayBioPaxDetails implements CyTableRowUpdateMicroListener {
+public class DisplayBioPaxDetails implements RowsSetListener {
 	private BioPaxDetailsPanel bpPanel;
 	private BioPaxContainer bpContainer;
 	private CyNetworkView view;
@@ -72,13 +70,10 @@ public class DisplayBioPaxDetails implements CyTableRowUpdateMicroListener {
 		this.view = view;
 		this.mapBioPaxToCytoscape = mapBioPaxToCytoscape;
 	}
-	
+
 	@Override
-	public void handleRowCreations(CyTable table, List<CyRow> newRows) {
-	}
+	public void handleEvent(RowsSetEvent e) {
 	
-	@Override
-	public void handleRowSets(CyTable table, List<RowSet> rowSets) {
 		try {
 			CyNode selected = null;
 			CyNetwork network = view.getModel();
