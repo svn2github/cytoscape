@@ -1,7 +1,10 @@
 
 package org.cytoscape.view.model.events;
 
+import java.util.Collection;
+
 import org.cytoscape.event.AbstractCyEvent;
+import org.cytoscape.event.AbstractCyPayloadEvent;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.model.CyEdge;
@@ -9,9 +12,8 @@ import org.cytoscape.model.CyEdge;
 /**
  * When edge {@linkplain View} is added to a {@linkplain CyNetworkView}, this event will be fired.
  */
-public final class AddedEdgeViewEvent extends AbstractCyEvent<CyNetworkView> {
+public final class AddedEdgeViewsEvent extends AbstractCyPayloadEvent<CyNetworkView,View<CyEdge>> {
 	
-	private View<CyEdge> edgeView;
 	
 	/**
 	 * Creates the event for a new edge view.
@@ -20,9 +22,8 @@ public final class AddedEdgeViewEvent extends AbstractCyEvent<CyNetworkView> {
 	 * @param edgeView Newly created view object for an edge.
 	 * 
 	 */
-	public AddedEdgeViewEvent(final CyNetworkView source, final View<CyEdge> edgeView) {
-		super(source, AddedEdgeViewListener.class);
-		this.edgeView = edgeView;
+	public AddedEdgeViewsEvent(final CyNetworkView source, final Collection<View<CyEdge>> edgeViews) {
+		super(source, AddedEdgeViewsListener.class, edgeViews);
 	}
 
 	/**
@@ -31,7 +32,7 @@ public final class AddedEdgeViewEvent extends AbstractCyEvent<CyNetworkView> {
 	 * @return new edge view added to the network view.
 	 * 
 	 */
-	public View<CyEdge> getEdgeView() {
-		return edgeView;
+	public Collection<View<CyEdge>> getEdgeViews() {
+		return getPayloadCollection();
 	}
 }

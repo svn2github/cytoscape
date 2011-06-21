@@ -1,6 +1,9 @@
 package org.cytoscape.view.model.events;
 
+import java.util.Collection;
+
 import org.cytoscape.event.AbstractCyEvent;
+import org.cytoscape.event.AbstractCyPayloadEvent;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.model.CyNode;
@@ -8,9 +11,8 @@ import org.cytoscape.model.CyNode;
 /**
  * When node {@linkplain View} is added to a {@linkplain CyNetworkView}, this event will be fired.
  */
-public final class AddedNodeViewEvent extends AbstractCyEvent<CyNetworkView> {
+public final class AddedNodeViewsEvent extends AbstractCyPayloadEvent<CyNetworkView,View<CyNode>> {
 
-	private final View<CyNode> nodeView;
 
 	/**
 	 * Creates the event for a new node view.
@@ -19,9 +21,8 @@ public final class AddedNodeViewEvent extends AbstractCyEvent<CyNetworkView> {
 	 * @param nodeView Newly created view object for a node.
 	 * 
 	 */
-	public AddedNodeViewEvent(final CyNetworkView source, final View<CyNode> nodeView) {
-		super(source, AddedNodeViewListener.class);
-		this.nodeView = nodeView;
+	public AddedNodeViewsEvent(final CyNetworkView source, final Collection<View<CyNode>> nodeViews) {
+		super(source, AddedNodeViewsListener.class,nodeViews);
 	}
 
 	/**
@@ -29,7 +30,7 @@ public final class AddedNodeViewEvent extends AbstractCyEvent<CyNetworkView> {
 	 * 
 	 * @return new node view
 	 */
-	public View<CyNode> getNodeView() {
-		return nodeView;
+	public Collection<View<CyNode>> getNodeViews() {
+		return getPayloadCollection();
 	}
 }

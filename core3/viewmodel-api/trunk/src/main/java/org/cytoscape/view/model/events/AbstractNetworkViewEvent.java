@@ -12,7 +12,7 @@ import org.cytoscape.view.model.CyNetworkView;
 class AbstractNetworkViewEvent extends AbstractCyEvent<CyNetworkViewManager> {
 	private final CyNetworkView view;
 
-	AbstractNetworkViewEvent(final CyNetworkViewManager source, final Class listenerClass, final CyNetworkView view) {
+	AbstractNetworkViewEvent(final CyNetworkViewManager source, final Class<?> listenerClass, final CyNetworkView view) {
 		super(source, listenerClass);
 
 		if (view == null)

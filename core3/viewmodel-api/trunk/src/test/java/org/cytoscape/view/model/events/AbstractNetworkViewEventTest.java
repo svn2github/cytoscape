@@ -15,22 +15,13 @@ public class AbstractNetworkViewEventTest {
 	public final void testGetNetworkView() {
 		final CyNetworkViewManager networkViewManager = mock(CyNetworkViewManager.class);
 		final CyNetworkView networkView = mock(CyNetworkView.class);
-		final AbstractNetworkViewEvent event =
-			new AbstractNetworkViewEvent(networkViewManager, Object.class, networkView);
-		assertEquals("Network returned by getNetworkView() is *not* the one passed into the constructor!",
-			     networkView, event.getNetworkView());
+		final AbstractNetworkViewEvent event = new AbstractNetworkViewEvent(networkViewManager, Object.class, networkView);
+		assertEquals("Network returned by getNetworkView() is *not* the one passed into the constructor!", networkView, event.getNetworkView());
 	}
 
-	@Test
+	@Test(expected=NullPointerException.class)
 	public final void testNullNetworkConstructorFailure() {
 		final CyNetworkViewManager networkViewManager = mock(CyNetworkViewManager.class);
-		try {
-			final AbstractNetworkViewEvent event =
-				new AbstractNetworkViewEvent(networkViewManager, Object.class, null);
-		} catch (final NullPointerException e) {
-			return;
-		}
-
-		fail("The expected NullPointerException was *not* triggered!");
+		final AbstractNetworkViewEvent event = new AbstractNetworkViewEvent(networkViewManager, Object.class, null);
 	}
 }
