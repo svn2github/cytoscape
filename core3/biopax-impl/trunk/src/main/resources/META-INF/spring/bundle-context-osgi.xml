@@ -31,9 +31,6 @@
 	<osgi:reference id="cyNetworkViewFactoryRef"
 		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 
-	<osgi:reference id="cyTableRowUpdateServiceRef"
-		interface="org.cytoscape.model.CyTableRowUpdateService" />
-	
 	<osgi:reference id="fileUtilRef"
 		interface="org.cytoscape.util.swing.FileUtil" />
 	
@@ -52,6 +49,10 @@
 	<osgi:service ref="bioPaxCytoPanelComponent"
 		interface="org.cytoscape.application.swing.CytoPanelComponent" />
 	
-	<osgi:service ref="networkListener"
-		interface="org.cytoscape.biopax.NetworkListener" />
+	<osgi:service ref="networkListener">
+		<osgi:interfaces>
+			<value>org.cytoscape.biopax.NetworkListener</value>
+			<value>org.cytoscape.model.events.RowsSetListener</value>
+		</osgi:interfaces>
+	</osgi:service>
 </beans>
