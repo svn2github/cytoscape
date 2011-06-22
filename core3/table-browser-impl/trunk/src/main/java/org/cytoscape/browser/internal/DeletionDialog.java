@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Set;
 
 import javax.swing.AbstractListModel;
@@ -17,11 +18,22 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 
 import org.cytoscape.browser.internal.BrowserTableModel;
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableUtil;
 
 
 public class DeletionDialog extends JDialog {
+	private static final class CaseInsensitiveCompare implements Comparator<String> {
+		public int compare(final String s1, final String s2) {
+			return s1.compareToIgnoreCase(s2);
+		}
+
+		public boolean equals(final Object other) {
+			return other instanceof CaseInsensitiveCompare;
+		}
+	}
+
 	private CyTable attributes;
 
 	/** Creates new form DeletionDialog */
@@ -49,15 +61,26 @@ public class DeletionDialog extends JDialog {
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		attributeList.setModel(new AbstractListModel() {
 				public int getSize() {
-					return attributes.getColumns().size();
+					int mutableCount = 0;
+					for (final CyColumn column : attributes.getColumns()) {
+						if (!column.isImmutable())
+							++mutableCount;
+					}
+
+					return mutableCount;
 				}
 
-				public Object getElementAt(int i) {
-					final Set<String> columnNames = CyTableUtil.getColumnNames(attributes);
-					final String[] sortedColumnNames = new String[columnNames.size()];
-					columnNames.toArray(sortedColumnNames);
-					Arrays.sort(sortedColumnNames);
-					return sortedColumnNames[i];
+				public Object getElementAt(final int i) {
+					final String[] columnNames = new String[getSize()];
+
+					int k = 0;
+					for (final CyColumn column : attributes.getColumns()) {
+                                                if (!column.isImmutable())
+							columnNames[k++] = column.getName();
+					}
+
+					Arrays.sort(columnNames, new CaseInsensitiveCompare());
+					return columnNames[i];
 				}
 			});
 		deletionPane.setViewportView(attributeList);
