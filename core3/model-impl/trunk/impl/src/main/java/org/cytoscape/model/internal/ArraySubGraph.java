@@ -127,7 +127,6 @@ class ArraySubGraph implements CySubNetwork {
 	 * {@inheritDoc}
 	 */
 	public CyNode addNode() {
-		//System.out.println("base addNode null");
 		final CyNode ret; 
 		synchronized (this) {
 			ret = parent.nodeAdd();
@@ -294,6 +293,7 @@ class ArraySubGraph implements CySubNetwork {
 			nodeSet.add(node);
 			updateNode(node);
 		}
+		eventHelper.addEventPayload((CyNetwork)this, node, AddedNodesEvent.class);
 
 		return true;
 	}
@@ -321,6 +321,7 @@ class ArraySubGraph implements CySubNetwork {
 			edgeSet.add(edge);
 			updateEdge(edge);
 		}
+		eventHelper.addEventPayload((CyNetwork)this, edge, AddedEdgesEvent.class);
 
 		return true;
 	}
