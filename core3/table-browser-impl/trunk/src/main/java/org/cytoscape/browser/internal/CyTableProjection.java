@@ -44,9 +44,10 @@ import org.cytoscape.model.CyTable;
  *  (This view is only immutable when going through the methods of this class!)
  */
 public final class CyTableProjection implements CyTable {
-	final CyTable underlyingTable;
-	final Set<String> columnNames;
-	final Set<Object> primaryKeys;
+	private final CyTable underlyingTable;
+	private final Set<String> columnNames;
+	private final Set<Object> primaryKeys;
+	private SavePolicy savePolicy;
 
 	/**
 	 *  @param underlyingTable  the reference table that we forward operations to.
@@ -295,5 +296,19 @@ public final class CyTableProjection implements CyTable {
 				      String targetJoinKey, boolean isImmutable)
 	{
 		throw new UnsupportedOperationException("addVirtualColumn() method not supported!");
+	}
+	
+	/**
+	 * Returns how (or if) this CyTable should be saved.
+	 * @return how (or if) this CyTable should be saved.
+	 */
+	public SavePolicy getSavePolicy() { return savePolicy; }
+	
+	/**
+	 * Sets how (or if) this CyTable should be saved.
+	 * @param policy the policy to follow during the lifecycle of the CyTable.
+	 */
+	public void setSavePolicy(final SavePolicy policy) {
+		savePolicy = policy;
 	}
 }
