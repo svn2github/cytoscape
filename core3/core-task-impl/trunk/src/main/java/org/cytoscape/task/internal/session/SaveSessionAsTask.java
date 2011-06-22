@@ -41,7 +41,7 @@ import java.io.File;
 
 
 public class SaveSessionAsTask extends AbstractTask {
-	@Tunable(description="Save Session as:")
+	@Tunable(description="Save Session As:", params="fileCategory=session;input=false")
 	public File file;
 
 	private final CySessionWriterManager writerMgr;
