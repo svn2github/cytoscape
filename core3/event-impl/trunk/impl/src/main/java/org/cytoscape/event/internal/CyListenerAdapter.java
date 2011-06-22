@@ -94,7 +94,10 @@ public class CyListenerAdapter {
 
 			for (final Object listener : listeners) {
 				lastListener = listener;
-				//System.out.println("event: " + event.getClass().getName() + "  listener: " + listener.getClass().getName());
+
+				if ( logger.isDebugEnabled() )
+					logger.debug("event: " + event.getClass().getName() + "  listener: " + listener.getClass().getName());
+
 				method.invoke(listenerClass.cast(listener), event);
 			}
 		} catch (NoSuchMethodException e) {
