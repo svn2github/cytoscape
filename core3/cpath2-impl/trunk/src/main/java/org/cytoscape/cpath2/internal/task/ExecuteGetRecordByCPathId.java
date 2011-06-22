@@ -14,7 +14,7 @@ import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import org.biopax.paxtools.io.simpleIO.SimpleReader;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.physicalEntity;
@@ -491,7 +491,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 				// StringReader reader = new StringReader(xml);
 				// BioPaxUtil bpUtil = new BioPaxUtil(reader, new
 				// NullTaskMonitor());
-				Model model = new SimpleReader().convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
+				Model model = new SimpleIOHandler().convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
 				// ArrayList peList = bpUtil.getPhysicalEntityList();
 				// Namespace ns =
 				// Namespace.getNamespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");

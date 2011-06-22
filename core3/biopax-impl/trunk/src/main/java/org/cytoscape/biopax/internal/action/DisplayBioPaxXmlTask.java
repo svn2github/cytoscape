@@ -5,7 +5,7 @@ import java.io.StringWriter;
 
 import javax.swing.JOptionPane;
 
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.cytoscape.biopax.internal.BioPaxFactory;
@@ -52,7 +52,7 @@ public final class DisplayBioPaxXmlTask implements Task {
 		if (bpe != null) {
 			log.info("printing " + bpe + " OWL");
 			try {
-				SimpleExporter simpleExporter = new SimpleExporter(m.getLevel());
+				SimpleIOHandler simpleExporter = new SimpleIOHandler(m.getLevel());
 				//TODO Fix: it prints '<:null' instead '<bp:' when using writeObject method!
 				simpleExporter.writeObject(writer, bpe);
 			} catch (Exception e) {

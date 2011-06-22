@@ -3,7 +3,7 @@ package org.cytoscape.biopax.internal.action;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.Model;
 import org.cytoscape.biopax.util.BioPaxUtil;
 import org.cytoscape.io.write.CyWriter;
@@ -34,7 +34,7 @@ class ExportAsBioPAXTask implements CyWriter {
             if(bpModel == null || bpModelStr == null )
                 throw new IllegalArgumentException("Invalid/empty BioPAX model.");
 
-            SimpleExporter simpleExporter = new SimpleExporter(bpModel.getLevel());
+            SimpleIOHandler simpleExporter = new SimpleIOHandler(bpModel.getLevel());
             simpleExporter.convertToOWL(bpModel, stream);
 
             stream.close();

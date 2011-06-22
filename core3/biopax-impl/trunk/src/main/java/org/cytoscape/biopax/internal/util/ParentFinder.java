@@ -30,7 +30,8 @@ public final class ParentFinder extends AbstractTraverser {
 			PropertyEditor editor) {
 		// skip if already found or it's not a object property
 		if(!found && value instanceof BioPAXElement) {
-			if(getCurrentParentsList().contains(query)) { // it is added there right before the visit method call
+			// TODO: Verify this change
+			if(getVisited().contains(query)) { // it is added there right before the visit method call
 				found = true;
 			} else {
 				// continue into the value's values:

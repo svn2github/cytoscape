@@ -43,6 +43,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.biopax.BioPaxContainer;
 import org.cytoscape.biopax.internal.MapBioPaxToCytoscapeImpl;
@@ -84,12 +85,12 @@ public class BioPaxContainerImpl extends JPanel implements BioPaxContainer {
      * @param factory 
      * @param applicationManager 
 	 */
-	private BioPaxContainerImpl(LaunchExternalBrowser browser, CyApplicationManager applicationManager, CyNetworkViewManager viewManager, BioPaxDetailsPanel bpDetailsPanel) {
+	private BioPaxContainerImpl(LaunchExternalBrowser browser, CyApplicationManager applicationManager, CyNetworkViewManager viewManager, BioPaxDetailsPanel bpDetailsPanel, CySwingApplication application) {
 		this.applicationManager = applicationManager;
 		
         cards = new JPanel(new CardLayout());
-        LegendPanel bioPaxLegendPanel = new LegendPanel(LegendPanel.BIOPAX_LEGEND);
-        LegendPanel binaryLegendPanel = new LegendPanel(LegendPanel.BINARY_LEGEND);
+        LegendPanel bioPaxLegendPanel = new LegendPanel(LegendPanel.BIOPAX_LEGEND, applicationManager, application);
+        LegendPanel binaryLegendPanel = new LegendPanel(LegendPanel.BINARY_LEGEND, applicationManager, application);
 
         cards.add (bpDetailsPanel, DETAILS_CARD);
         cards.add (bioPaxLegendPanel, LEGEND_BIOPAX_CARD);

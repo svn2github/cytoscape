@@ -41,7 +41,6 @@ import org.cytoscape.biopax.NetworkListener;
 import org.cytoscape.biopax.internal.view.BioPaxDetailsPanel;
 import org.cytoscape.biopax.util.BioPaxUtil;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.RowsSetEvent;
 import org.cytoscape.model.events.RowsSetListener;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
@@ -68,6 +67,7 @@ public class NetworkListenerImpl implements NetworkListener, NetworkViewAddedLis
 	private final MapBioPaxToCytoscape mapBioPaxToCytoscape;
 
 	private final CyNetworkViewManager viewManager;
+	private final Map<CyNetworkView, RowsSetListener> listeners;
 
 	/**
 	 * Constructor.
@@ -79,7 +79,7 @@ public class NetworkListenerImpl implements NetworkListener, NetworkViewAddedLis
 		this.bpContainer = bpContainer;
 		this.mapBioPaxToCytoscape = mapBioPaxToCytoscapeFactory.getInstance(null, null);
 		this.viewManager = viewManager;
-		
+		this.listeners = new HashMap<CyNetworkView, RowsSetListener>();
 	}
 
 	/**
@@ -98,9 +98,8 @@ public class NetworkListenerImpl implements NetworkListener, NetworkViewAddedLis
 	 * @param cyNetwork CyNetwork Object.
 	 */
 	private void registerNodeSelectionEvents(CyNetworkView view) {
-		CyNetwork cyNetwork = view.getModel();
-		CyTable table = cyNetwork.getDefaultNodeTable();
-		DisplayBioPaxDetails rowUpdateListener = new DisplayBioPaxDetails(view, bpPanel, bpContainer, mapBioPaxToCytoscape);
+		DisplayBioPaxDetails listener = new DisplayBioPaxDetails(view, bpPanel, bpContainer, mapBioPaxToCytoscape);
+		listeners.put(view, listener);
 		bpPanel.resetText();
 	}
 
@@ -218,8 +217,7 @@ public class NetworkListenerImpl implements NetworkListener, NetworkViewAddedLis
 		CyNetwork network = view.getModel();
 		// destroy the corresponding model
 		BioPaxUtil.removeNetworkModel(network.getSUID());
-		
-		CyTable table = network.getDefaultNodeTable();
+		listeners.remove(view);
 		
 		if (!networkViewsRemain()) {
 			onZeroNetworkViewsRemain();
@@ -254,8 +252,9 @@ public class NetworkListenerImpl implements NetworkListener, NetworkViewAddedLis
 
 	@Override
 	public void handleEvent(RowsSetEvent e) {
-		// TODO Auto-generated method stub
-		
+		for (RowsSetListener listener : listeners.values()) {
+			listener.handleEvent(e);
+		}
 	}
 
 }

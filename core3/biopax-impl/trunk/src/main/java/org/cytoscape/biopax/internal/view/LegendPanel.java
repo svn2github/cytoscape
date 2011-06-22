@@ -8,8 +8,12 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.biopax.internal.util.WebFileConnect;
+import org.cytoscape.session.CyApplicationManager;
 
 /**
  * Displays the Default Visual Style Legend for the BioPAX Mapper.
@@ -34,7 +38,7 @@ public class LegendPanel extends JPanel {
 	 * Constructor.
 	 *
 	 */
-	public LegendPanel(int mode) {
+	public LegendPanel(int mode, final CyApplicationManager applicationManager, final CySwingApplication swingApplication) {
 		this.setLayout(new BorderLayout());
 
 		JTextPane textPane = new JTextPane();
@@ -61,19 +65,16 @@ public class LegendPanel extends JPanel {
 		temp.append("</BODY></HTML>");
 		textPane.setText(temp.toString());
 
-        /*
 		textPane.addHyperlinkListener(new HyperlinkListener() {
             public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
                 if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     String name = hyperlinkEvent.getDescription();
                     if (name.equalsIgnoreCase("filter")) {
-                        EdgeFilterUi ui = new EdgeFilterUi(Cytoscape.getCurrentNetwork());
-                        //TODO No action or logic was here; is something missing?..
+                        new EdgeFilterUi(applicationManager.getCurrentNetwork(), swingApplication);
                     }
                 }
             }
         });
-        */
         
         BioPaxDetailsPanel.modifyStyleSheetForSingleDocument(textPane);
 

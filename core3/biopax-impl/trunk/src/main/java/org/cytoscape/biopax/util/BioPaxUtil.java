@@ -37,8 +37,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.biopax.paxtools.controller.EditorMap;
-import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
-import org.biopax.paxtools.io.simpleIO.SimpleReader;
+import org.biopax.paxtools.controller.SimpleEditorMap;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
@@ -198,7 +198,7 @@ public class BioPaxUtil {
 	 */
 	public static Model read(final InputStream in) throws FileNotFoundException {
 		try {
-			return new SimpleReader().convertFromOWL(in);
+			return new SimpleIOHandler().convertFromOWL(in);
 		} catch (Exception e) {
 			log.warn("Import failed: " + e);
 		}
