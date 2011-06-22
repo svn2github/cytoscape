@@ -1,7 +1,7 @@
 /*
  File: DeleteSelectedNodesAndEdgesTaskFactory.java
 
- Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2010, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -30,29 +30,39 @@
 package org.cytoscape.task.internal.networkobjects;
 
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 
 
 public class DeleteSelectedNodesAndEdgesTaskFactory implements TaskFactory {
 	private final UndoSupport undoSupport;
 	private final CyApplicationManager applicationManager;
 	private final CyNetworkViewManager networkViewManager;
+	private final VisualMappingManager visualMappingManager;
+	private final CyEventHelper eventHelper;
 
 	public DeleteSelectedNodesAndEdgesTaskFactory(final UndoSupport undoSupport,
 						      final CyApplicationManager applicationManager,
-						      final CyNetworkViewManager networkViewManager)
+						      final CyNetworkViewManager networkViewManager,
+						      final VisualMappingManager visualMappingManager,
+						      final CyEventHelper eventHelper)
 	{
-		this.undoSupport = undoSupport;
-		this.applicationManager = applicationManager;
-		this.networkViewManager = networkViewManager;
+		this.undoSupport          = undoSupport;
+		this.applicationManager   = applicationManager;
+		this.networkViewManager   = networkViewManager;
+		this.visualMappingManager = visualMappingManager;
+		this.eventHelper          = eventHelper;
 	}
 
 	public TaskIterator getTaskIterator() {
 		return new TaskIterator(
-			new DeleteSelectedNodesAndEdgesTask(undoSupport, applicationManager, networkViewManager));
+			new DeleteSelectedNodesAndEdgesTask(undoSupport, applicationManager,
+							    networkViewManager,
+							    visualMappingManager, eventHelper));
 	}
 }

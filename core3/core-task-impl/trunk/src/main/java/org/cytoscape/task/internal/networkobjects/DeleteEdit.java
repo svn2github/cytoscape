@@ -7,12 +7,14 @@ import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.NODE
 import java.util.List;
 import java.util.Set;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 
 import org.cytoscape.util.swing.CyAbstractEdit;
 
@@ -20,18 +22,22 @@ import org.cytoscape.util.swing.CyAbstractEdit;
 /**
  * An undoable edit that will undo and redo deletion of nodes and edges.
  */ 
-class DeleteEdit extends CyAbstractEdit {
-	final private List<CyNode> nodes;
-	final private Set<CyEdge> edges;
-	final private double[] xPos;
-	final private double[] yPos;
-	final private CySubNetwork net;
-	final private DeleteSelectedNodesAndEdgesTask deleteAction;
-	final private CyNetworkViewManager netViewMgr;
+final class DeleteEdit extends CyAbstractEdit {
+	private final List<CyNode> nodes;
+	private final Set<CyEdge> edges;
+	private final double[] xPos;
+	private final double[] yPos;
+	private final CySubNetwork net;
+	private final DeleteSelectedNodesAndEdgesTask deleteAction;
+	private final CyNetworkViewManager netViewMgr;
+	private final VisualMappingManager visualMappingManager;
+	private final CyEventHelper eventHelper;
 	
 	DeleteEdit(final CySubNetwork net, final List<CyNode> nodes, final Set<CyEdge> edges,
 		   final DeleteSelectedNodesAndEdgesTask deleteAction,
-		   final CyNetworkViewManager netViewMgr)
+		   final CyNetworkViewManager netViewMgr,
+		   final VisualMappingManager visualMappingManager,
+		   final CyEventHelper eventHelper)
 	{
 		super("Delete");
 
@@ -51,6 +57,14 @@ class DeleteEdit extends CyAbstractEdit {
 		if (edges == null)
 			throw new NullPointerException("edges is null");
 		this.edges = edges; 
+
+		if (visualMappingManager == null)
+			throw new NullPointerException("visualMappingManager is null");
+		this.visualMappingManager = visualMappingManager;
+
+		if (eventHelper == null)
+			throw new NullPointerException("eventHelper is null");
+		this.eventHelper = eventHelper;
 
 		// save the positions of the nodes
 		xPos = new double[nodes.size()]; 
@@ -87,16 +101,19 @@ class DeleteEdit extends CyAbstractEdit {
 		for (CyEdge e : edges)
 			net.addEdge(e);
 
+		eventHelper.flushPayloadEvents();
+
 		CyNetworkView netView = netViewMgr.getNetworkView(net.getSUID());
-		if ( netView != null ) {
+		if (netView != null) {
 			int i = 0;
-			for ( CyNode n : nodes ) {
-				View<CyNode> nv = netView.getNodeView(n);
-				nv.setVisualProperty(NODE_X_LOCATION, xPos[i]);
-				nv.setVisualProperty(NODE_Y_LOCATION, yPos[i] );
+			for (final CyNode node : nodes) {
+				View<CyNode> nodeView = netView.getNodeView(node);
+				nodeView.setVisualProperty(NODE_X_LOCATION, xPos[i]);
+				nodeView.setVisualProperty(NODE_Y_LOCATION, yPos[i] );
 				i++;
 			}
 		}
+		visualMappingManager.getVisualStyle(netView).apply(netView);
 
 		netView.updateView();
 	}
