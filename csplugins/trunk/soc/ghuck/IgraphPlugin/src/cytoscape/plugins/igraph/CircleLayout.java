@@ -13,7 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 **************************************************************************************/
 
@@ -167,10 +167,7 @@ public class CircleLayout extends AbstractGraphPartition
 	double[] y = new double[numNodes];	
 
 	// Load graph into native library
-	HashMap<Integer,Integer> mapping = loadGraphPartition(part);
-
-	// Simplify graph
-	IgraphInterface.simplify();
+	HashMap<Integer,Integer> mapping = loadGraphPartition(part, selectedOnly);
 
 	// Check whether it has been canceled by the user
 	if (canceled)
@@ -178,6 +175,9 @@ public class CircleLayout extends AbstractGraphPartition
 
 	// Show message on the task monitor
 	taskMonitor.setStatus("Calling native code: Partition: " + part.getPartitionNumber());
+
+	// Simplify graph
+	IgraphInterface.simplify();
 	
  	// Make native method call
 	IgraphInterface.layoutCircle(x, y);
@@ -185,11 +185,10 @@ public class CircleLayout extends AbstractGraphPartition
 	// Check whether it has been canceled by the user
 	if (canceled)
 	    return;
+
 	// Show message on the task monitor
 	taskMonitor.setStatus("Updating display");	
 	
-
-
 
 	// Find which ratio is required to 'scale up' the node positions so that nodes don't overlap
 	double upRatio = 0.0;
@@ -198,6 +197,9 @@ public class CircleLayout extends AbstractGraphPartition
 	for (LayoutEdge edge: part.getEdgeList()) {
 	    LayoutNode n1 = edge.getSource();
 	    LayoutNode n2 = edge.getTarget();
+
+	    if (n1.isLocked() || n2.isLocked())
+		continue;
 
 	    double n1Size = Math.max(n1.getHeight(), n1.getWidth());
 	    double n2Size = Math.max(n2.getHeight(), n2.getWidth());
@@ -218,10 +220,6 @@ public class CircleLayout extends AbstractGraphPartition
 
 	}
 	
-	//if (upRatio > 1000) 
-	//    upRatio =  Math.log(upRatio) + 1000;
-	//upRatio = Math.min(upRatio, 100.0);
-
 	// Check whether the ratio is not zero
 	if (upRatio < 1.0){   
 	    upRatio = 1.0;
@@ -229,9 +227,9 @@ public class CircleLayout extends AbstractGraphPartition
 
 	double oldUpRatio = upRatio;
 
-	//	logger.info("upRatio = " + upRatio);		    
-	//message = "upRatio = " + upRatio;
-	//JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
+	// logger.info("upRatio = " + upRatio);		    
+	// message = "upRatio = " + upRatio;
+	// JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
 
 
 	// Move nodes to their position
@@ -244,7 +242,7 @@ public class CircleLayout extends AbstractGraphPartition
 		double minY = y[0];
 		
 		// Get the 'offset' of the whole partition, so that we can eliminate it
-		for (int i = 1; i < numNodes; i++) {
+		for (int i = 1; i < mapping.size(); i++) {
 		    
 		    if (x[i] < minX)
 			minX = x[i];
@@ -258,9 +256,6 @@ public class CircleLayout extends AbstractGraphPartition
 		
 		// Reset the nodes so we get the new average location
 		part.resetNodes(); 
-
-		// Iterate over all nodes
-		int currentNode = 0;
 		
 		// Create an iterator for processing the nodes
 		Iterator<LayoutNode> iterator2 = part.getNodeList().iterator();
@@ -269,17 +264,17 @@ public class CircleLayout extends AbstractGraphPartition
 		    
 		    // Get next node
 		    LayoutNode node = (LayoutNode) iterator2.next();
-		
-		    // Set node's X and Y positions
-		    node.setX(upRatio * x[mapping.get(node.getIndex())] - minX);
-		    node.setY(upRatio * y[mapping.get(node.getIndex())] - minY);
 
-		    //logger.debug("moving node " + currentNode + "to:\nX = " + (upRatio * node_positions[currentNode][0]) + "\nY = " + (upRatio * node_positions[currentNode][1]));
-		    
-		    // Move node to desired location
-		    part.moveNodeToLocation(node);
-		    
-		    currentNode++;
+		    // If it is locked, skip it
+		    if (!node.isLocked()) {			
+
+			// Set node's X and Y positions
+			node.setX(upRatio * x[mapping.get(node.getIndex())] - minX);
+			node.setY(upRatio * y[mapping.get(node.getIndex())] - minY);
+
+			// Move node to desired location
+			part.moveNodeToLocation(node);
+		    }
 		}
 	
 	
@@ -315,44 +310,6 @@ public class CircleLayout extends AbstractGraphPartition
 
 	}//while(!success)
 
-
-
-
-
-
-
-	// Actually move the pieces around
-	// Note that we reset our min/max values before we start this
-	// so we can get an accurate min/max for paritioning
-// 	part.resetNodes();
-
-// 	for (LayoutNode v: part.getNodeList()) {
-// 	    // Set node's X and Y positions
-// 	    v.setX(x[mapping.get(v.getIndex())]);
-// 	    v.setY(y[mapping.get(v.getIndex())]);
-
-// 	    // Actually move the node
-// 	    part.moveNodeToLocation(v);
-// 	}
-
-// 	// Not quite done, yet.  If we're only laying out selected nodes, we need
-// 	// to migrate the selected nodes back to their starting position
-// 	if (selectedOnly) {
-// 	    double xDelta = 0.0;
-// 	    double yDelta = 0.0;
-// 	    Dimension finalLocation = part.getAverageLocation();
-// 	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
-// 	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
-
-// 	    for (LayoutNode v: part.getNodeList()) {
-// 		if (!v.isLocked()) {
-// 		    v.decrement(xDelta, yDelta);
-// 		    part.moveNodeToLocation(v);
-// 		}
-// 	    }
-// 	}
-
-
     }// layoutPartion(LayoutPartition part)
 
 
@@ -360,21 +317,35 @@ public class CircleLayout extends AbstractGraphPartition
      * This function loads a partition into igraph
      *
      */    
-    public static HashMap<Integer,Integer> loadGraphPartition(LayoutPartition part){
+    public static HashMap<Integer,Integer> loadGraphPartition(LayoutPartition part, boolean selectedOnly){
 
 	CyLogger logger = CyLogger.getLogger(CircleLayout.class);	    
 	
 	// Create a reverse mapping
 	int nodeCount = part.nodeCount();
 
-	HashMap<Integer, Integer> nodeIdMapping = new HashMap<Integer, Integer>(nodeCount);
+	HashMap<Integer, Integer> nodeIdMapping;
+	if (selectedOnly) 
+	    nodeIdMapping = new HashMap<Integer, Integer>(nodeCount - part.lockedNodeCount());
+	else
+	    nodeIdMapping = new HashMap<Integer, Integer>(nodeCount);
 	int j = 0;
 
-	Iterator<LayoutNode> nodeIt = part.getNodeList().iterator();	
-	while(nodeIt.hasNext()){            
-	    LayoutNode node = (LayoutNode) nodeIt.next();
-	    nodeIdMapping.put(node.getIndex(), j);
-	    j++;
+	Iterator<LayoutNode> nodeIt = part.nodeIterator();	
+	if (selectedOnly) {
+	    while(nodeIt.hasNext()) {            
+		LayoutNode node = (LayoutNode) nodeIt.next();
+		if (!node.isLocked()) {
+		    nodeIdMapping.put(node.getIndex(), j);
+		    j++;
+		}
+	    }
+	} else {
+	    while(nodeIt.hasNext()) {            
+		LayoutNode node = (LayoutNode) nodeIt.next();
+		nodeIdMapping.put(node.getIndex(), j);
+		j++;
+	    }
 	}
 		
 	// Write edges (as pairs of consecutive nodes) in edgeArray
@@ -383,20 +354,34 @@ public class CircleLayout extends AbstractGraphPartition
 	
 	Iterator<LayoutEdge> it = part.getEdgeList().iterator();
 
-	while (it.hasNext()) {
-	    LayoutEdge e = (LayoutEdge) it.next();
+	if (selectedOnly) {	
+	    while (it.hasNext()) {
+		LayoutEdge e = (LayoutEdge) it.next();
 
-	    LayoutNode source = e.getSource();
-	    LayoutNode target = e.getTarget();
+		LayoutNode source = e.getSource();
+		LayoutNode target = e.getTarget();
 
-	    edgeArray[i]     = nodeIdMapping.get(source.getIndex());
-	    edgeArray[i + 1] = nodeIdMapping.get(target.getIndex());
-	    i += 2;
-	    
+		if (source.isLocked() || target.isLocked())
+		    continue;
+
+		edgeArray[i]     = nodeIdMapping.get(source.getIndex());
+		edgeArray[i + 1] = nodeIdMapping.get(target.getIndex());
+		i += 2;	    
+	    }
+	} else {
+	    while (it.hasNext()) {
+		LayoutEdge e = (LayoutEdge) it.next();
+
+		LayoutNode source = e.getSource();
+		LayoutNode target = e.getTarget();
+
+		edgeArray[i]     = nodeIdMapping.get(source.getIndex());
+		edgeArray[i + 1] = nodeIdMapping.get(target.getIndex());
+		i += 2;	    
+	    }
 	}
 
 	IgraphInterface.createGraph(edgeArray, i);
-	//	IgraphInterface.simplify();
 
 	return nodeIdMapping;
     } // loadGraphPartition()
