@@ -8,6 +8,8 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import org.cytoscape.work.TunableHandlerFactory;
 import org.cytoscape.work.TunableValidator;
@@ -132,6 +134,12 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 		tunnableDialog = new TunnableDialog();
 		tunnableDialog.setLocationRelativeTo(parent);
 		tunnableDialog.setTitle("Set Parameters");
+
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			SwingUtilities.updateComponentTreeUI(tunnableDialog);
+		} catch (Exception e) { /* not really a problem if this fails */ }
+
 
 		tunnableDialog.addComponent(optionPanel);
 		tunnableDialog.setVisible(true);
