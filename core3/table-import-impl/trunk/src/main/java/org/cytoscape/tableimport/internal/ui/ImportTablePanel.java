@@ -212,6 +212,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 
 	private InputStream is;
 	private final String fileType;
+	private String inputName = null;
 	
 	private Workbook workbook = null;
 	
@@ -226,6 +227,15 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 	private final CyNetworkManager manager;
 	
 	private final CyTableFactory tableFactory;
+
+	public ImportTablePanel(int dialogType, final InputStream is, String fileType, String inputName,
+			final CyProperty<Bookmarks> bookmarksProp, final BookmarksUtil bkUtil, final TaskManager taskManager,
+			final InputStreamTaskFactory factory, final CyNetworkManager manager, final CyTableFactory tableFactory)
+	    throws JAXBException, IOException {
+
+		this(dialogType, is, fileType, bookmarksProp, bkUtil, taskManager, factory, manager, tableFactory);
+		this.inputName = inputName;
+	}
 	
 	public ImportTablePanel(int dialogType, final InputStream is, String fileType,
 			final CyProperty<Bookmarks> bookmarksProp, final BookmarksUtil bkUtil, final TaskManager taskManager,
@@ -247,7 +257,6 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 			this.bkUtil = bkUtil;
 			
 		}
-		
 		this.is = is;
 		this.fileType = fileType;
 		selectedAttributes = null;
@@ -256,7 +265,6 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		if (network != null){
 			selectedAttributes = CytoscapeServices.tblMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);			
 		}
-
 		this.objType = NODE;
 		this.dialogType = dialogType;
 		this.listDelimiter = PIPE.toString();
@@ -274,7 +282,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		ontologyTypeMap = new HashMap<String, String>();
 
 		attributeDataTypes = new ArrayList<Byte>();
-				
+
 		initComponents();
 		
 		// Hide two unwanted button
@@ -1599,7 +1607,6 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 				break;
 
 			case NETWORK_IMPORT:
-
 				/*
 				 * Case 3: read as network table (Network + Edge Attributes)
 				 */
@@ -1608,13 +1615,14 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 				/*
 				 * Now multiple files are supported.
 				 */
-				URL[] sources = new URL[inputFiles.length];
+				//URL[] sources = new URL[inputFiles.length];
 
-				for (int i = 0; i < sources.length; i++) {
-					sources[i] = inputFiles[i].toURI().toURL();
-				}
+				//for (int i = 0; i < sources.length; i++) {
+				//	sources[i] = inputFiles[i].toURI().toURL();
+				//}
 
-				final URL networkSource = new URL(targetDataSourceTextField.getText());
+				//final URL networkSource = new URL(targetDataSourceTextField.getText());
+				
 				final int sourceColumnIndex = networkImportPanel.getSourceIndex();
 				final int targetColumnIndex = networkImportPanel.getTargetIndex();
 
@@ -1632,21 +1640,31 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 				                                                                            targetColumnIndex,
 				                                                                            interactionColumnIndex,
 				                                                                            defaultInteraction);
-
 				NetworkTableReader reader;
 				String networkName;
-				boolean multi = true;
+				//boolean multi = false;
 
-				if (sources.length == 1)
-					multi = false;
+				//System.out.println("ImportTablePanel.importTable(): sources.length ="+ sources.length);
+				
+				//if (sources.length == 1)
+					//multi = false;
 
-				for (int i = 0; i < sources.length; i++) {
-					if (sources[i].toString().endsWith(SupportedFileType.EXCEL.getExtension()) || sources[i].toString().endsWith(SupportedFileType.OOXML.getExtension())) {
+				//for (int i = 0; i < sources.length; i++) {
+				//	if (sources[i].toString().endsWith(SupportedFileType.EXCEL.getExtension()) || sources[i].toString().endsWith(SupportedFileType.OOXML.getExtension())) {
+						
+				if (this.fileType.equalsIgnoreCase(SupportedFileType.EXCEL.getExtension()) || 
+								this.fileType.equalsIgnoreCase(SupportedFileType.OOXML.getExtension())) {
+
+					System.out.println("BBBBBBBBBBBB........3");
+
 						// Extract name from the sheet name.
-						InputStream is = null;
+						//InputStream is = null;
 						Workbook wb = null;
 						try {
-							is = sources[i].openStream();
+							//is = sources[i].openStream();
+							
+							System.out.println("\tis = "+ this.is);
+
 							wb = WorkbookFactory.create(is);
 						}
 						finally {
@@ -1655,43 +1673,43 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 							}
 						}
 						
+						System.out.println("BBBBBBBBBBBB........3.1");
 						
 						Sheet sheet = wb.getSheetAt(0);
 						networkName = wb.getSheetName(0);
 
 						reader = new ExcelNetworkSheetReader(networkName, sheet, nmp,
 						                                     startLineNumber);
-					} else {
+					} else {						
 						// Get name from URL.
 						if ((commentChar != null) && (commentChar.length() != 0)
 						    && transferNameCheckBox.isSelected()) {
 							startLineNumber++;
 						}
-
-						final String[] parts = sources[i].toString().split("/");
-						networkName = parts[parts.length - 1];
+						
+						//final String[] parts = sources[i].toString().split("/");
+						//networkName = parts[parts.length - 1];
+						networkName = this.inputName;
 						
 						
-						
-						reader = new NetworkTableReader(networkName, sources[i], nmp,
+						reader = new NetworkTableReader(networkName, this.is, nmp,
 						                                startLineNumber, commentChar);
 					}
+					loadNetwork(reader);
+				//}
 
-					loadNetwork(networkName, reader, sources[i], multi);
-				}
+				//if (multi) {
+					//StringBuilder builder = new StringBuilder();
+					//builder.append("The following networks are loaded:\n\n");
 
-				if (multi) {
-					StringBuilder builder = new StringBuilder();
-					builder.append("The following networks are loaded:\n\n");
+					//for (File f : inputFiles) {
+						//builder.append(f.getName() + "\n");
+					//}
 
-					for (File f : inputFiles) {
-						builder.append(f.getName() + "\n");
-					}
-
-					JOptionPane.showMessageDialog(this, builder.toString(),
-					                              "Multiple Networks Loaded",
-					                              JOptionPane.INFORMATION_MESSAGE);
-				}
+					//JOptionPane.showMessageDialog(this, builder.toString(),
+					//                              "Multiple Networks Loaded",
+					//                              JOptionPane.INFORMATION_MESSAGE);
+				//}
 
 				break;
 
@@ -1994,7 +2012,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 	 * @throws IOException
 	 */
 	protected void readAnnotationForPreview(URL sourceURL, List<String> delimiters) throws IOException {
-
+		
 		/*
 		 * Check number of lines we should load. if -1, load everything in the
 		 * file.
@@ -2005,7 +2023,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 			previewSize = -1;
 		else
 			previewSize = Integer.parseInt(counterSpinner.getValue().toString());
-		
+
 		/*
 		 * Load data from the given URL.
 		 */
@@ -2028,7 +2046,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 				}
 			}
 		}
-		
+
 		boolean is_isClosed = false;
 		try {
 			this.is.available();
@@ -2042,6 +2060,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 			this.is.mark(Integer.MAX_VALUE);
 		}
 		
+
 		previewPanel.setPreviewTable(workbook, this.is, this.fileType, sourceURL, delimiters, null, previewSize,
 				commentChar, startLine - 1);
 		
@@ -2063,14 +2082,17 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 
 		listDataTypes = previewPanel.getCurrentListDataTypes();
 
+		
 		if (dialogType == NETWORK_IMPORT) {
+
 			final String[] columnNames = new String[previewPanel.getPreviewTable().getColumnCount()];
 			for (int i = 0; i < columnNames.length; i++)
 				columnNames[i] = previewPanel.getPreviewTable().getColumnName(i);
-				
-			networkImportPanel.setComboBoxes(columnNames);
 
-			if (sourceURL.toString().endsWith(SupportedFileType.EXCEL.getExtension()) || sourceURL.toString().endsWith(SupportedFileType.OOXML.getExtension())) {
+			networkImportPanel.setComboBoxes(columnNames);
+			
+			if (this.fileType.equalsIgnoreCase(SupportedFileType.EXCEL.getExtension()) || 
+					this.fileType.equalsIgnoreCase(SupportedFileType.OOXML.getExtension())) {
 				switchDelimiterCheckBoxes(false);
 			} else {
 				switchDelimiterCheckBoxes(true);
@@ -2138,7 +2160,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 			 */
 			//setStatusBar(sourceURL);
 		}
-
+		
 		reloadButton.setEnabled(true);
 		startRowSpinner.setEnabled(true);
 		startRowLabel.setEnabled(true);
@@ -2556,15 +2578,14 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 	}
 
 
-	private void loadNetwork(final String networkName, final GraphReader reader, final URL source,
-	                         boolean multi) {
+	private void loadNetwork(final GraphReader reader) {
 		// Create LoadNetwork Task
-		ImportNetworkTask task = new ImportNetworkTask(networkName, reader, source);
+		ImportNetworkTask task = new ImportNetworkTask(reader);
 		this.loadTask = task;
 		//ImportNetworkTaskFactory taskFactory = new ImportNetworkTaskFactory(task);
 		//CytoscapeServices.guiTaskManagerServiceRef.execute(taskFactory);
 	}
-
+	
 	private void setStatusBar(String message1, String message2, String message3) {
 		statusBar.setLeftLabel(message1);
 		statusBar.setCenterLabel(message2);
