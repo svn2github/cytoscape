@@ -1,6 +1,6 @@
 package org.cytoscape.io.internal.write.graphics;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.awt.Graphics2D;
 import java.io.BufferedOutputStream;
@@ -11,12 +11,19 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.DefaultFontMapper;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.DefaultFontMapper;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfWriter;
+
+//import com.itextpdf.text.Document;
+//import com.itextpdf.text.PageSize;
+//import com.itextpdf.text.Rectangle;
+//import com.itextpdf.text.pdf.DefaultFontMapper;
+//import com.itextpdf.text.pdf.PdfContentByte;
+//import com.itextpdf.text.pdf.PdfWriter;
 
 
 public class PDFWriterTest {
@@ -45,11 +52,13 @@ public class PDFWriterTest {
 		logger.debug("Page W: " + pageWidth + " Page H: " + pageHeight);
 		final DefaultFontMapper fontMapper = new DefaultFontMapper();
 		logger.debug("FontMapper created = " + fontMapper);
-		final Graphics2D g = canvas.createGraphics(100f, 100f);
+		final Graphics2D g = canvas.createGraphics(pageWidth, pageHeight);
 		logger.debug("! G2D created = " + g);
+		
 		
 		assertNotNull(g);
 		g.dispose();
+		
 		document.close();
 		os.close();
 	}
