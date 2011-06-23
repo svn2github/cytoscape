@@ -12,6 +12,8 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -390,9 +392,7 @@ public class MCODEResultsPanel extends JPanel {
 					} else {
 						clusterArrayList.add(cluster.getClusterName());
 					}
-					Cytoscape.getNodeAttributes().setAttributeList(
-							n.getIdentifier(), "MCODE_Cluster",
-							clusterArrayList);
+					setAttributeList(Cytoscape.getNodeAttributes(), n.getIdentifier(), "MCODE_Cluster", clusterArrayList);
 
 					if (cluster.getSeedNode().intValue() == rgi) {
 						Cytoscape.getNodeAttributes().setAttribute(
@@ -409,6 +409,26 @@ public class MCODEResultsPanel extends JPanel {
 					alg.getNodeScore(n.getRootGraphIndex(), resultTitle));
 		}
 		return alg.getMaxScore(resultTitle);
+	}
+
+	/**
+	 * This method only exists due to an unfortunately renamed API method.
+	 */
+	private void setAttributeList(CyAttributes attributes, String identifier, String name, List list) {
+		// Try all variants of the renamed API
+		for (String methodName : new String[] {"getAttributeList", "getListAttribute"}) {
+			try {
+				Method method = attributes.getClass().getMethod(methodName, String.class, String.class, List.class);
+				method.invoke(identifier, name, list);
+				return;
+			} catch (SecurityException e) {
+			} catch (NoSuchMethodException e) {
+			} catch (IllegalArgumentException e) {
+			} catch (IllegalAccessException e) {
+			} catch (InvocationTargetException e) {
+			}
+		}
+		return;
 	}
 
 	/**
