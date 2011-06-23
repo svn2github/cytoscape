@@ -56,6 +56,7 @@ public class FileHandler extends AbstractGUITunableHandler {
 	private GroupLayout layout;
 	private SupportedFileTypesManager fileTypesManager;
 	private boolean input;
+	private List<FileChooserFilter> filters;
 
 	/**
 	 * Constructs the <code>GUIHandler</code> for the <code>File</code> type
@@ -70,29 +71,38 @@ public class FileHandler extends AbstractGUITunableHandler {
 	 * @param t tunable associated to <code>f</code>
 	 * @param fileTypesManager 
 	 */
-	protected FileHandler(Field f, Object o, Tunable t, final SupportedFileTypesManager fileTypesManager,
-			Properties props) {
+	protected FileHandler(Field f, Object o, Tunable t,
+			      final SupportedFileTypesManager fileTypesManager,
+			      final Properties props)
+	{
 		super(f, o, t);
 		this.fileTypesManager = fileTypesManager;
 		this.props = props;
-		init();
+		init(fileTypesManager);
 	}
 
-	protected FileHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable,
-			final SupportedFileTypesManager fileTypesManager, Properties props) {
+	protected FileHandler(final Method getter, final Method setter, final Object instance,
+			      final Tunable tunable,
+			      final SupportedFileTypesManager fileTypesManager,
+			      final Properties props)
+	{
 		super(getter, setter, instance, tunable);
 		this.fileTypesManager = fileTypesManager;
 		this.props = props;
-		init();
+		init(fileTypesManager);
 	}
 
-	private void init() {
+	private void init(final SupportedFileTypesManager fileTypesManager) {
 		//Construction of GUI
 		fileChooser = new JFileChooser();
 		input = isInput();
 		setGui();
 		setLayout();
 		panel.setLayout(layout);
+
+		final String fileCategory = getFileCategory();
+		filters = fileTypesManager.getSupportedFileTypes(DataCategory.valueOf(fileCategory),
+								 input);
 	}
 
 	/**
@@ -128,12 +138,10 @@ public class FileHandler extends AbstractGUITunableHandler {
 		chooseButton.addActionListener(new myFileActionListener());
 
 		//set title and textfield text for the file type
-		final String fileCategory = getFileCategory().toUpperCase();
+		final String fileCategory = getFileCategory();
 		fileTextField.setText("Please select a " + fileCategory.toLowerCase() + " file...");
 		titleLabel.setText((input ? "Load " : "Save ") + initialCaps(fileCategory) + " File");
 		
-		final List<FileChooserFilter> filters = fileTypesManager.getSupportedFileTypes(
-				DataCategory.valueOf(fileCategory), input);
 		for (FileChooserFilter filter : filters)
 			fileChooser.addChoosableFileFilter(filter);
 	}
@@ -232,6 +240,23 @@ try_again:              {
 			}
 			props.put(LAST_DIRECTORY, fileChooser.getCurrentDirectory().getAbsolutePath());
 		}
+	}
+
+	private static String getFileExtension(final String fileName) {
+		final int lastDotPos = fileName.lastIndexOf('.');
+		if (lastDotPos == -1 || lastDotPos == fileName.length() - 1)
+			return null;
+
+		return fileName.substring(lastDotPos + 1);
+	}
+
+	private static String addFileExtension(final String fileName, final String extension) {
+		if (fileName.isEmpty())
+			throw new IllegalArgumentException("\"fileName\" must not be empty!");
+		if (fileName.endsWith("."))
+			return fileName + extension;
+		else
+			return fileName + "." + extension;
 	}
 
 	//click on the field : removes its initial text
