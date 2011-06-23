@@ -83,4 +83,23 @@
 	<osgi:service id="ontologyActionService" ref="ontologyAction"
 		interface="org.cytoscape.application.swing.CyAction" />
 
+
+	<osgi:service id="importNetworkTableReaderFactoryService_txt" ref="importNetworkTableReaderFactory_txt"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="importNetworkTableTaskFactory" />
+			<entry key="readerId" value="networkTableReader_txt" />
+			<entry key="readerDescription" value="Network Table file reader" />
+		</osgi:service-properties>		
+	</osgi:service>
+
+	<osgi:service id="importNetworkTableReaderFactoryService_xls" ref="importNetworkTableReaderFactory_xls"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="importNetworkTableTaskFactory" />
+			<entry key="readerId" value="networkTableReader_xls" />
+			<entry key="readerDescription" value="Network Table file reader" />
+		</osgi:service-properties>		
+	</osgi:service>
+
 </beans>
