@@ -209,13 +209,21 @@
 		interface="org.cytoscape.io.write.CySessionWriterFactory">
 	</osgi:service>
 
+
+	<!-- Image Writers -->
 	<osgi:service id="pngWriterFactoryService" ref="pngWriterFactory"
 		interface="org.cytoscape.io.write.PresentationWriterFactory">
 	</osgi:service>
-
 	<osgi:service id="jpegWriterFactoryService" ref="jpegWriterFactory"
 		interface="org.cytoscape.io.write.PresentationWriterFactory">
 	</osgi:service>
+	<osgi:service id="pdfWriterFactoryService" ref="pdfWriterFactory"
+		interface="org.cytoscape.io.write.PresentationWriterFactory">
+	</osgi:service>
+	<osgi:service id="psWriterFactoryService" ref="psWriterFactory"
+		interface="org.cytoscape.io.write.PresentationWriterFactory">
+	</osgi:service>
+
 
 	<osgi:service id="cysessionWriterFactoryService" ref="cysessionWriterFactory"
 		interface="org.cytoscape.io.write.CyPropertyWriterFactory">

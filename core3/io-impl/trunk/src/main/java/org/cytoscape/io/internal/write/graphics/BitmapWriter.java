@@ -23,8 +23,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BitmapWriter extends AbstractTask implements CyWriter {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(BitmapWriter.class);
+	private static final Logger logger = LoggerFactory.getLogger(BitmapWriter.class);
 	
 	private static final int MAX_SIZE = 50000;
 
@@ -55,9 +54,9 @@ public class BitmapWriter extends AbstractTask implements CyWriter {
 		
 		width = new BoundedInteger(1, w, MAX_SIZE, false, false);
 		height = new BoundedInteger(1, h, MAX_SIZE, false, false);
-
 	}
 
+	
 	private void setExtension(Set<String> extensions) {
 
 		for (String format : ImageIO.getWriterFormatNames()) {
@@ -72,7 +71,11 @@ public class BitmapWriter extends AbstractTask implements CyWriter {
 				+ extensions.toString() + ") NOT supported by ImageIO");
 	}
 
+	
+	@Override
 	public void run(TaskMonitor tm) throws Exception {
+		logger.debug("Bitmap image rendering start.");
+		
 		final double scale = scaleFactor.getValue().doubleValue();
 		final int finalW = ((Number)(width.getValue()*scale)).intValue();
 		final int finalH = ((Number)(height.getValue()*scale)).intValue();
@@ -83,6 +86,8 @@ public class BitmapWriter extends AbstractTask implements CyWriter {
 		}
 		finally {
 			outStream.close();
-		}		
+		}
+		
+		logger.debug("Bitmap image rendering finished.");
 	}
 }

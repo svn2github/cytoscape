@@ -121,8 +121,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
+			<artifactId>presentation-api</artifactId>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
 			<artifactId>layout-api</artifactId>
-			<version>3.0.0-alpha2</version>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -137,7 +142,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-api</artifactId>
-			<version>3.0.0-alpha3</version>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -154,10 +159,13 @@
 			<artifactId>equations-api</artifactId>
 			<version>3.0.0-alpha2</version>
 		</dependency>
+		
+		<!-- 3rd party libraries -->
 		<dependency>
-			<groupId>com.lowagie.text</groupId>
-			<artifactId>com.springsource.com.lowagie.text</artifactId>
-			<version>2.0.8</version>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.1.1</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
@@ -168,6 +176,28 @@
 			<groupId>cytoscape-temp</groupId>
 			<artifactId>opencsv</artifactId>
 			<version>2.1</version>
+		</dependency>
+		
+		<!-- freehep -->
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>freehep-graphicsio</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>freehep-graphicsio-svg</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>freehep-graphics2d</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>freehep-graphicsio-ps</artifactId>
+			<version>2.1.1</version>
 		</dependency>
 
 		<!-- For Testing -->

@@ -21,11 +21,11 @@ public class PresentationWriterManagerImpl extends AbstractWriterManager<Present
 		super(DataCategory.IMAGE);
 	}
 
-	public CyWriter getWriter(View<?> view, RenderingEngine re, CyFileFilter filter, File outFile) throws Exception {
+	public CyWriter getWriter(View<?> view, RenderingEngine<?> re, CyFileFilter filter, File outFile) throws Exception {
 		return getWriter(view,re,filter,new FileOutputStream(outFile));
 	}
 
-	public CyWriter getWriter(View<?> view, RenderingEngine re, CyFileFilter filter, OutputStream os) throws Exception {
+	public CyWriter getWriter(View<?> view, RenderingEngine<?> re, CyFileFilter filter, OutputStream os) throws Exception {
 		PresentationWriterFactory tf = getMatchingFactory(filter,os);
 		if ( tf == null )
 			throw new NullPointerException("Couldn't find matching factory for filter: " + filter);

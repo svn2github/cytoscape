@@ -75,6 +75,44 @@
 			<ref bean="streamUtil" />
 		</constructor-arg>
 	</bean>
+	
+	<bean id="pdfFilter" class="org.cytoscape.io.BasicCyFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>pdf</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>image/pdf</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="PDF File" />
+		<constructor-arg type="org.cytoscape.io.DataCategory"
+			value="IMAGE" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="psFilter" class="org.cytoscape.io.BasicCyFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>ps</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>image/ps</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Post Script (PS) File" />
+		<constructor-arg type="org.cytoscape.io.DataCategory"
+			value="IMAGE" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil" />
+		</constructor-arg>
+	</bean>
 
 	<bean id="textTableFilter" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
@@ -400,6 +438,7 @@
 
 	<!-- Writer Factories -->
 	
+	<!-- Image Export -->
 	<bean id="pngWriterFactory"
 		class="org.cytoscape.io.internal.write.graphics.BitmapWriterFactory">
 		<constructor-arg ref="pngFilter" />
@@ -408,7 +447,17 @@
 		class="org.cytoscape.io.internal.write.graphics.BitmapWriterFactory">
 		<constructor-arg ref="jpegFilter" />
 	</bean>
+	<bean id="pdfWriterFactory"
+		class="org.cytoscape.io.internal.write.graphics.PDFWriterFactory">
+		<constructor-arg ref="pdfFilter" />
+	</bean>
+	<bean id="psWriterFactory"
+		class="org.cytoscape.io.internal.write.graphics.PSWriterFactory">
+		<constructor-arg ref="psFilter" />
+	</bean>
 
+
+	<!-- Network Writers -->
 	<bean id="sifNetworkViewWriterFactory"
 		class="org.cytoscape.io.internal.write.sif.SifNetworkWriterFactory">
 		<constructor-arg ref="sifFilter" />
