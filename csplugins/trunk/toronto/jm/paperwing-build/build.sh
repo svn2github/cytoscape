@@ -34,7 +34,7 @@ popd
 cp repacker/bundles/*.jar ${DIST_DIR}
 
 # Patch core so it doesn't look for ding
-for BUNDLE in swing-application-impl vizmap-gui-impl
+for BUNDLE in swing-application-impl vizmap-gui-impl presentation-impl
 do
     pushd ${BUNDLE}
     apply_patches "${PATCH_DIR}/${BUNDLE}"
