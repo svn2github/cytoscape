@@ -34,6 +34,7 @@ package metaNodePlugin2.model;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cytoscape.CyNetwork;
@@ -105,7 +106,11 @@ public class MetaNodeManager {
  	 */
 
 	static public MetaNode createMetaNode(CyGroup metaGroup, boolean ignoreMetaEdges) {
+		if (metaGroup.getNetwork() == null) {
+			metaGroup.setNetwork(Cytoscape.getCurrentNetwork(), false);
+		}
 		MetaNode mn = new MetaNode(metaGroup, ignoreMetaEdges);
+
 		metaMap.put(metaGroup.getGroupNode(), mn);
 		mn.setUseNestedNetworks(useNestedNetworksDefault);
 		mn.setHideMetaNode(hideMetanodeDefault);
@@ -113,9 +118,6 @@ public class MetaNodeManager {
 		mn.setChartType(chartTypeDefault);
 		mn.setNodeChartAttribute(nodeChartAttributeDefault);
 		mn.setAttributeManager(new AttributeManager(defaultAttributeManager));
-		if (metaGroup.getNetwork() == null) {
-			metaGroup.setNetwork(Cytoscape.getCurrentNetwork(), false);
-		}
 		return mn;
 	}
 

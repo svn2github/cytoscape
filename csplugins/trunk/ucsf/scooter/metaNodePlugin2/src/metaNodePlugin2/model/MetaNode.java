@@ -106,7 +106,7 @@ public class MetaNode {
 		metaGroup = group;
 		logger = CyLogger.getLogger(MetaNode.class);
 
-		// logger.debug("Creating new metanode: "+group.getGroupNode()+", ignoreMetaEdges = "+ignoreMetaEdges);
+		logger.debug("Creating new metanode: "+group.getGroupNode()+", ignoreMetaEdges = "+ignoreMetaEdges);
 
 		// This method does most of the work.
 		updateMetaEdges(ignoreMetaEdges);
@@ -125,7 +125,7 @@ public class MetaNode {
 	 * @param node the CyNode that was added
 	 */
 	public void nodeAdded(CyNode node) {
-		// logger.debug("node added "+metaGroup);
+		logger.debug("node "+node+" added to "+metaGroup);
 		// Recreate our meta-edges.  There might be more efficient ways of doing this
 		// than recreating everything, but the performance of updateMetaEdges isn't too
 		// bad, and the complexity of managing the state necessary to update meta-edges
@@ -150,7 +150,7 @@ public class MetaNode {
 	 * @param node the CyNode that was removed
 	 */
 	public void nodeRemoved(CyNode node) {
-		// logger.debug("node removed "+metaGroup);
+		logger.debug("node removed "+metaGroup);
 		// First step, we need to remove any new meta-edges
 		updateMetaEdges(false);
 		// Now, remove our member edge (if there is one)
@@ -167,7 +167,7 @@ public class MetaNode {
 	 * @param view the view to use
 	 */
 	public void recollapse(CyNetworkView view) {
-		// logger.debug("recollapse "+metaGroup);
+		logger.debug("recollapse "+metaGroup);
 		if (view == null)
 			view = Cytoscape.getNetworkView(metaGroup.getNetwork().getIdentifier());
 		else
@@ -184,7 +184,7 @@ public class MetaNode {
 	 * @param updateNetwork if 'true', actually update the network
 	 */
 	public void collapse(CyNetworkView view) {
-		// logger.debug("collapse "+metaGroup+": isCollapsed = "+isCollapsed()+" isHidden = "+isHidden()+" state = "+metaGroup.getState());
+		logger.debug("collapse "+metaGroup+": isCollapsed = "+isCollapsed()+" isHidden = "+isHidden()+" state = "+metaGroup.getState());
 		if (isCollapsed())
 			return;
 
@@ -216,7 +216,7 @@ public class MetaNode {
 	 * @param update update the display?
 	 */
 	public void expand(CyNetworkView view) {
-		// logger.debug("expand "+metaGroup+": isCollapsed = "+isCollapsed()+" isHidden = "+isHidden()+" state = "+metaGroup.getState());
+		logger.debug("expand "+metaGroup+": isCollapsed = "+isCollapsed()+" isHidden = "+isHidden()+" state = "+metaGroup.getState());
 		if (!isCollapsed())
 			return;
 
@@ -525,13 +525,20 @@ public class MetaNode {
 				continue;
 			}
 
+			CyNode groupNode = metaGroup.getGroupNode();
+
+			// If the edge is already on our group node, don't create a metaedge for it
+			if (edge.getSource() == groupNode || edge.getTarget() == groupNode)
+				continue;
+
+
 			// Create the meta-edge to the external node, but maintain the directionality of the
 			// original edge
 			CyEdge metaEdge = null;
 			if (isIncoming(edge))
-				metaEdge = createMetaEdge(edge.getIdentifier(), node, metaGroup.getGroupNode());
+				metaEdge = createMetaEdge(edge.getIdentifier(), node, groupNode);
 			else
-				metaEdge = createMetaEdge(edge.getIdentifier(), metaGroup.getGroupNode(), node);
+				metaEdge = createMetaEdge(edge.getIdentifier(), groupNode, node);
 
 			MetaNode metaPartner = MetaNodeManager.getMetaNode(node);
 			if (metaPartner != null && metaPartner.metaGroup.getNetwork().equals(metaGroup.getNetwork())) { 

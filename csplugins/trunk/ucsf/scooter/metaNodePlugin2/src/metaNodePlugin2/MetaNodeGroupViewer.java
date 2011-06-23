@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -143,14 +144,14 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	 * @param group the CyGroup that was just created
 	 */
 	public void groupCreated(CyGroup group) { 
-		// logger.debug("groupCreated("+group+")");
+		logger.debug("groupCreated("+group+")");
 		if (MetaNodeManager.getMetaNode(group) == null) {
 			MetaNode newNode = MetaNodeManager.createMetaNode(group, false);
 		}
 		// Update the attributes of the group node
 		logger.info("updating group panel for new group: "+group);
 		updateGroupPanel();
-		// logger.debug("done");
+		logger.debug("done");
 	}
 
 	/**
@@ -165,31 +166,24 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	 * @param view the CyNetworkView that is being created
 	 */
 	public void groupCreated(CyGroup group, CyNetworkView myview) { 
-		// logger.debug("groupCreated("+group+", view)");
+		logger.debug("groupCreated("+group+", view)");
 		if (MetaNodeManager.getMetaNode(group) == null) {
 			// Have we already been here?
 			if (MetaNodeManager.getMetaNodeCount() == 0) {
-				initializeGroups(myview);
-				return;
-			}
-			MetaNode newNode = MetaNodeManager.createMetaNode(group, true);
-
-			// We need to be a little tricky if we are restoring a collapsed
-			// metaNode from XGMML.  We essentially need to "recollapse" it,
-			// but we need to save the old hints
-			if (group.getState() == MetaNodePlugin2.COLLAPSED) {
-				// We are, we need to "fix up" the network
-				newNode.recollapse(myview);
+				// No, get all of our groups and create metanodes for them
+				List<CyGroup> metaGroups = CyGroupManager.getGroupList(this);
+				if (metaGroups != null) {
+					for (CyGroup mg: metaGroups) {
+						createMetaNode(mg, myview);
+					}
+				}
 			} else {
-				CyNetwork network = myview.getNetwork();
-				network.hideNode(group.getGroupNode());
+				// Yes, just handle this group
+				createMetaNode(group, myview);
 			}
 		}
-
-		// logger.debug("registering");
 		logger.info("updating group panel for new group: "+group);
 		updateGroupPanel();
-		// logger.debug("done");
 	}
 
 	/**
@@ -320,23 +314,31 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 		return;
 	}
 
-	// This method is called on the first notification that we have a group.
-	private void initializeGroups(CyNetworkView view) {
-		List<CyGroup> metaGroups = CyGroupManager.getGroupList(this);
-		if (metaGroups != null) {
-			for (CyGroup group: metaGroups) {
-				// Create the metanode
-				MetaNode newNode = MetaNodeManager.createMetaNode(group, true);
-				if (group.getState() == MetaNodePlugin2.COLLAPSED) {
-					newNode.recollapse(view);
-				} else {
-					CyNetwork network = view.getNetwork();
-					network.hideNode(group.getGroupNode());
-				}
+	// This method is called to create a single metanode
+	private void createMetaNode(CyGroup group, CyNetworkView view) {
+		// Create the metanode
+		MetaNode newNode = MetaNodeManager.createMetaNode(group, true);
+
+		// Get the group node
+		CyNode groupNode = group.getGroupNode();
+		// Grab any edges it currently has
+		List edgeList = view.getNetwork().getAdjacentEdgesList(groupNode, true, true, true);
+		// Add them to the "metaedge" list, if they are not already
+		if (edgeList != null && edgeList.size() > 0) {
+			for (Object e: edgeList) {
+				newNode.addMetaEdge((CyEdge)e);
 			}
 		}
-		logger.info("updating group panel");
-		updateGroupPanel();
+
+		// We need to be a little tricky if we are restoring a collapsed
+		// metaNode from XGMML.  We essentially need to "recollapse" it,
+		// but we need to save the old hints
+		if (group.getState() == MetaNodePlugin2.COLLAPSED) {
+			newNode.recollapse(view);
+		} else {
+			CyNetwork network = view.getNetwork();
+			network.hideNode(group.getGroupNode());
+		}
 	}
 
 	/**
