@@ -1655,28 +1655,25 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 				if (this.fileType.equalsIgnoreCase(SupportedFileType.EXCEL.getExtension()) || 
 								this.fileType.equalsIgnoreCase(SupportedFileType.OOXML.getExtension())) {
 
-					System.out.println("BBBBBBBBBBBB........3");
-
 						// Extract name from the sheet name.
 						//InputStream is = null;
-						Workbook wb = null;
-						try {
+						//Workbook wb = null;
+						//try {
 							//is = sources[i].openStream();
 							
-							System.out.println("\tis = "+ this.is);
-
-							wb = WorkbookFactory.create(is);
-						}
-						finally {
-							if (is != null) {
-								is.close();
-							}
-						}
+							//wb = WorkbookFactory.create(is);
+						//}
+						//catch (Exception e){
+						//	e.printStackTrace();
+						//}
+						//finally {
+						//	if (is != null) {
+						//		is.close();
+						//	}
+						//}
 						
-						System.out.println("BBBBBBBBBBBB........3.1");
-						
-						Sheet sheet = wb.getSheetAt(0);
-						networkName = wb.getSheetName(0);
+						Sheet sheet = workbook.getSheetAt(0);
+						networkName = workbook.getSheetName(0);
 
 						reader = new ExcelNetworkSheetReader(networkName, sheet, nmp,
 						                                     startLineNumber);
