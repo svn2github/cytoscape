@@ -37,8 +37,6 @@ cp repacker/bundles/*.jar ${DIST_DIR}
 for BUNDLE in swing-application-impl vizmap-gui-impl
 do
     pushd ${BUNDLE}
-    sed -i '' -E 's/filter="\(id=ding[^)]*\)"//' src/main/resources/META-INF/spring/bundle-context-osgi*.xml
-    
     apply_patches "${PATCH_DIR}/${BUNDLE}"
     mvn clean install
     popd
