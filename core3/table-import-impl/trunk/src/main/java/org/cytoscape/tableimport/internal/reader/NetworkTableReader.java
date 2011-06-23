@@ -71,12 +71,13 @@ import org.cytoscape.model.CyTable;
 public class NetworkTableReader extends AbstractGraphReader implements TextTableReader {
 	protected static final String COMMENT_CHAR = "!";
 	protected final NetworkTableMappingParameters nmp;
-	protected final URL sourceURL;
+	//protected final URL sourceURL;
 	protected final NetworkLineParser parser;
 	protected final List<Long> nodeList;
 	protected final List<Long> edgeList;
 	protected final int startLineNumber;
 	protected final String commentChar;
+	protected final InputStream is;
 
 	protected CyNetwork network;
 	
@@ -91,11 +92,12 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	 * @param startLineNumber  DOCUMENT ME!
 	 * @param commentChar  DOCUMENT ME!
 	 */
-	public NetworkTableReader(final String networkName, final URL sourceURL,
+	public NetworkTableReader(final String networkName, final InputStream is,
 	                          final NetworkTableMappingParameters nmp, final int startLineNumber,
 	                          final String commentChar) {
 		super(networkName);
-		this.sourceURL = sourceURL;
+		//this.sourceURL = sourceURL;
+		this.is = is;
 		this.nmp = nmp;
 		this.startLineNumber = startLineNumber;
 		this.nodeList = new ArrayList<Long>();
@@ -126,7 +128,7 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	 * @throws IOException DOCUMENT ME!
 	 */
 	public void readTable(CyTable table) throws IOException {
-		InputStream is = null;
+		//InputStream is = null;
 		String line;
 
 		network.getCyRow().set("name", this.getNetworkName());
@@ -135,7 +137,7 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 		try {
 			BufferedReader bufRd = null;
 
-			is = URLUtil.getInputStream(sourceURL);
+			//is = URLUtil.getInputStream(sourceURL);
 			try {
 				bufRd = new BufferedReader(new InputStreamReader(is));
 				/*
