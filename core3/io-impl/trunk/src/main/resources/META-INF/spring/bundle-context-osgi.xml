@@ -106,8 +106,11 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="sifNetworkViewWriterFactoryService" ref="sifNetworkViewWriterFactory"
-		interface="org.cytoscape.io.write.CyNetworkViewWriterFactory">
+	<osgi:service id="sifNetworkViewWriterFactoryService" ref="sifNetworkViewWriterFactory">
+		<interfaces>
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.CyNetworkViewWriterFactory</value>
+		</interfaces>
 	</osgi:service>
 
 	<osgi:service id="xgmmlNetworkViewReaderFactoryService"
@@ -120,8 +123,11 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="xgmmlNetworkViewWriterFactoryService"
-		ref="xgmmlNetworkViewWriterFactory" interface="org.cytoscape.io.write.CyNetworkViewWriterFactory">
+	<osgi:service id="xgmmlNetworkViewWriterFactoryService" ref="xgmmlNetworkViewWriterFactory">
+		<interfaces>
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.CyNetworkViewWriterFactory</value>
+		</interfaces>
 	</osgi:service>
 
 	<osgi:service id="attrsDataReaderFactoryService" ref="attrsDataReaderFactory"
@@ -205,48 +211,79 @@
         </osgi:service-properties>
     </osgi:service>
 
-	<osgi:service id="sessionWriterFactoryService" ref="sessionWriterFactory"
-		interface="org.cytoscape.io.write.CySessionWriterFactory">
+	<osgi:service id="sessionWriterFactoryService" ref="sessionWriterFactory">
+		<interfaces>
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.CySessionWriterFactory</value>
+		</interfaces>
 	</osgi:service>
 
 
 	<!-- Image Writers -->
-	<osgi:service id="pngWriterFactoryService" ref="pngWriterFactory"
-		interface="org.cytoscape.io.write.PresentationWriterFactory">
+	<osgi:service id="pngWriterFactoryService" ref="pngWriterFactory">
+		<interfaces>
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.PresentationWriterFactory</value>
+		</interfaces>
 	</osgi:service>
-	<osgi:service id="jpegWriterFactoryService" ref="jpegWriterFactory"
-		interface="org.cytoscape.io.write.PresentationWriterFactory">
+	<osgi:service id="jpegWriterFactoryService" ref="jpegWriterFactory">
+		<interfaces>
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.PresentationWriterFactory</value>
+		</interfaces>
 	</osgi:service>
-	<osgi:service id="pdfWriterFactoryService" ref="pdfWriterFactory"
-		interface="org.cytoscape.io.write.PresentationWriterFactory">
+	<osgi:service id="pdfWriterFactoryService" ref="pdfWriterFactory">
+		<interfaces>
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.PresentationWriterFactory</value>
+		</interfaces>
 	</osgi:service>
-	<osgi:service id="psWriterFactoryService" ref="psWriterFactory"
-		interface="org.cytoscape.io.write.PresentationWriterFactory">
+	<osgi:service id="psWriterFactoryService" ref="psWriterFactory">
+		<interfaces>
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.PresentationWriterFactory</value>
+		</interfaces>
+	</osgi:service>
+	<osgi:service id="cysessionWriterFactoryService" ref="cysessionWriterFactory">
+		<interfaces>
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.CyPropertyWriterFactory</value>
+		</interfaces>
 	</osgi:service>
 
-
-	<osgi:service id="cysessionWriterFactoryService" ref="cysessionWriterFactory"
-		interface="org.cytoscape.io.write.CyPropertyWriterFactory">
+	<osgi:service id="bookmarksWriterFactoryService" ref="bookmarksWriterFactory">
+		<interfaces>	
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.CyPropertyWriterFactory</value>
+		</interfaces>
 	</osgi:service>
 
-	<osgi:service id="bookmarksWriterFactoryService" ref="bookmarksWriterFactory"
-		interface="org.cytoscape.io.write.CyPropertyWriterFactory">
+	<osgi:service id="propertiesWriterFactoryService" ref="propertiesWriterFactory">
+		<interfaces>
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.CyPropertyWriterFactory</value>
+		</interfaces>
 	</osgi:service>
 
-	<osgi:service id="propertiesWriterFactoryService" ref="propertiesWriterFactory"
-		interface="org.cytoscape.io.write.CyPropertyWriterFactory">
+	<osgi:service id="csvTableWriterFactoryService" ref="csvTableWriterFactory">
+		<interfaces>
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.CyTableWriterFactory</value>
+		</interfaces>
 	</osgi:service>
 
-	<osgi:service id="csvTableWriterFactoryService" ref="csvTableWriterFactory"
-		interface="org.cytoscape.io.write.CyTableWriterFactory">
-	</osgi:service>
-
-	<osgi:service id="sessionTableWriterFactoryService" ref="sessionTableWriterFactory"
-		interface="org.cytoscape.io.write.CyTableWriterFactory">
+	<osgi:service id="sessionTableWriterFactoryService" ref="sessionTableWriterFactory">
+		<interfaces>
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.CyTableWriterFactory</value>
+		</interfaces>
 	</osgi:service>
 	
-	<osgi:service id="vizmapWriterFactoryService" ref="vizmapWriterFactory"
-		interface="org.cytoscape.io.write.VizmapWriterFactory">
+	<osgi:service id="vizmapWriterFactoryService" ref="vizmapWriterFactory">
+		<interfaces>
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.VizmapWriterFactory</value>
+		</interfaces>
 	</osgi:service>
 
 	<osgi:service id="streamUtilService" ref="streamUtil"
