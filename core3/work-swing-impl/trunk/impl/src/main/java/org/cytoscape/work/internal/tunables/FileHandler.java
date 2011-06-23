@@ -21,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
@@ -38,9 +39,7 @@ import org.cytoscape.work.swing.AbstractGUITunableHandler;
  * @author pasteur
  */
 public class FileHandler extends AbstractGUITunableHandler {
-	
 	private static final String DEF_DIRECTORY = System.getProperty("user.home");
-	
 	private static final String LAST_DIRECTORY = "directory.last";
 	
 	// Core Cytoscape props
@@ -61,7 +60,8 @@ public class FileHandler extends AbstractGUITunableHandler {
 	/**
 	 * Constructs the <code>GUIHandler</code> for the <code>File</code> type
 	 *
-	 * It creates the GUI which displays the path of the current file in a field, and provides access to a FileChooser with filtering parameters on
+	 * It creates the GUI which displays the path of the current file in a field, and provides
+	 * access to a FileChooser with filtering parameters on
 	 * <i>network</i>,<i>attributes</i>, or <i>session</i> (parameters are set in the <code>Tunable</code>'s annotations of the <code>File</code>)
 	 *
 	 *
@@ -185,10 +185,9 @@ public class FileHandler extends AbstractGUITunableHandler {
 						  .addContainerGap()));
 	}
 
-	//Click on the "open" button action listener
+	// Click on the "open" or "save" button action listener
 	private final class myFileActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent ae) {
-			
 			File file = null;
 			final String lastDir = props.getProperty(LAST_DIRECTORY, DEF_DIRECTORY);
 			
@@ -199,23 +198,36 @@ public class FileHandler extends AbstractGUITunableHandler {
 				lastDirFile = new File(DEF_DIRECTORY);
 			}
 			
-			if(!lastDirFile.isDirectory())
+			if (!lastDirFile.isDirectory())
 				lastDirFile = new File(DEF_DIRECTORY);
 			
 			fileChooser.setCurrentDirectory(lastDirFile);
 			
-			int ret = JFileChooser.CANCEL_OPTION;
-			if (ae.getActionCommand().equals("open"))
-				ret = fileChooser.showOpenDialog(panel);
-			else if (ae.getActionCommand().equals("save"))
-				ret = fileChooser.showSaveDialog(panel);
+try_again:              {
+				int ret = JFileChooser.CANCEL_OPTION;
+				if (ae.getActionCommand().equals("open"))
+					ret = fileChooser.showOpenDialog(panel);
+				else if (ae.getActionCommand().equals("save"))
+					ret = fileChooser.showSaveDialog(panel);
 			
-			if (ret == JFileChooser.APPROVE_OPTION) {
-				file = fileChooser.getSelectedFile();
-				if (file != null) {
-					fileTextField.setFont(new Font(null, Font.PLAIN, 10));
-					fileTextField.setText(file.getAbsolutePath());
-					fileTextField.removeMouseListener(mouseClick);
+				if (ret == JFileChooser.APPROVE_OPTION) {
+					file = fileChooser.getSelectedFile();
+					if (file != null) {
+						if (ae.getActionCommand().equals("save") && file.exists()) {
+							if (JOptionPane.showConfirmDialog(
+								panel,
+								"The file you selected already exists.  "
+								+ "Are you sure you want to overwrite it?",
+								"Confirmation",
+								JOptionPane.YES_NO_OPTION)
+							    == JOptionPane.NO_OPTION)
+								break try_again;
+						}
+
+						fileTextField.setFont(new Font(null, Font.PLAIN, 10));
+						fileTextField.setText(file.getAbsolutePath());
+						fileTextField.removeMouseListener(mouseClick);
+					}
 				}
 			}
 			props.put(LAST_DIRECTORY, fileChooser.getCurrentDirectory().getAbsolutePath());
