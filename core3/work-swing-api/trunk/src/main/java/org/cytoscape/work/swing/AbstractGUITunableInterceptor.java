@@ -134,14 +134,13 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 		tunnableDialog = new TunnableDialog();
 		tunnableDialog.setLocationRelativeTo(parent);
 		tunnableDialog.setTitle("Set Parameters");
+		tunnableDialog.addComponent(optionPanel);
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			SwingUtilities.updateComponentTreeUI(tunnableDialog);
 		} catch (Exception e) { /* not really a problem if this fails */ }
 
-
-		tunnableDialog.addComponent(optionPanel);
 		tunnableDialog.setVisible(true);
 		
 		String userInput = tunnableDialog.getUserInput();
