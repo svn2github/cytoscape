@@ -66,6 +66,8 @@ import javax.swing.JToolBar;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
+import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
 
 import java.math.BigInteger;
 import java.util.Dictionary;
@@ -157,7 +159,6 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication, Cyto
 		main_panel = new JPanel();
 		main_panel.setLayout(new BorderLayout());
 
-
 		// create the CytoscapeDesktop
 		BiModalJSplitPane masterPane = setupCytoPanels(networkPanel, networkViewManager);
 
@@ -168,6 +169,14 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication, Cyto
 		main_panel.add(statusToolBar, BorderLayout.SOUTH);
 
 		setJMenuBar(cyMenus.getJMenuBar());
+
+		// update look and feel
+		try {
+			final String laf = UIManager.getSystemLookAndFeelClassName();
+			logger.debug("setting look and feel to: " + laf);
+			UIManager.setLookAndFeel(laf);
+			SwingUtilities.updateComponentTreeUI(this);
+		} catch (Exception e) { /* not really a problem if this fails */ }
 
 		//don't automatically close window. Let shutdown.exit(returnVal)
 		//handle this
@@ -186,7 +195,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication, Cyto
 		
 		// Move it to the center
 		this.setLocationRelativeTo(null);
-	
+
 		// ...but don't actually show it!!!!
 		// Once the system has fully started the JFrame will be set to 
 		// visible by the StartupMostlyFinished class, found elsewhere.
