@@ -258,6 +258,7 @@
 	<bean id="quickStartStartup" class="org.cytoscape.internal.QuickStartStartup">
 		<constructor-arg ref="quickStartRef" />
 		<constructor-arg ref="taskManagerServiceRef" />
+		<constructor-arg ref="cytoscapeDesktop" />
 	</bean>
 
 </beans>
