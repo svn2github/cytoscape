@@ -141,9 +141,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		NodeViewsChangedListener, EdgeViewsChangedListener,
 		FitContentEventListener, FitSelectedEventListener {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(DGraphView.class);
-
+	private static final Logger logger = LoggerFactory.getLogger(DGraphView.class);
 	
 	private static enum ZOrder {
 		BACKGROUND_PANE, NETWORK_PANE, FOREGROUND_PANE;
@@ -414,6 +412,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		if (view == null)
 			throw new IllegalArgumentException(
 					"Network View Model cannot be null.");
+		
+		logger.debug("\n\n\n************** DING Presentation *******************\n\n\n");
 
 		this.props = new Properties();
 		
@@ -2873,12 +2873,18 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * Listener for update flag of snapshot image.
 	 *
-	 * @author kono
 	 *
 	 */
 	private final class DGraphViewContentChangeListener implements ContentChangeListener {
 		public void contentChanged() {
 			latest = false;
 		}
+	}
+
+	@Override
+	public void printCanvas(Graphics printCanvas) {
+		logger.debug("PrintCanvas called: " + printCanvas);
+		print(printCanvas);
+		logger.debug("PrintCanvas Done: ");
 	}
 }

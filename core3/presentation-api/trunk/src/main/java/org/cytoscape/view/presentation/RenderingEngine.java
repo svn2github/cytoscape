@@ -1,5 +1,6 @@
 package org.cytoscape.view.presentation;
 
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.print.Printable;
 import java.util.Properties;
@@ -81,4 +82,11 @@ public interface RenderingEngine<T> {
 	 */
 	public <V> Icon createIcon(final VisualProperty<V> vp, final V value, final int width, final int height);
 
+	/**
+	 * Render presentation on the given Java 2D Canvas.
+	 * 
+	 * @param printCanvas Graphics object provided by vector
+	 */
+	void printCanvas(final Graphics printCanvas);
+	
 }

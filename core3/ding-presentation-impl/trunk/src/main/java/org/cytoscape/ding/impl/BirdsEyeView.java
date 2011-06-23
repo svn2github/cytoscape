@@ -349,4 +349,10 @@ public class BirdsEyeView extends Component implements RenderingEngine<CyNetwork
 	public <V> Icon createIcon(VisualProperty<V> vp, V value, int width, int height) {
 		return dgv.createIcon(vp, value, width, height);
 	}
+
+
+	@Override
+	public void printCanvas(Graphics printCanvas) {
+		throw new UnsupportedOperationException("Printing is not supported for Bird's eye view.");
+	}
 }
