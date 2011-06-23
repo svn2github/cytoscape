@@ -93,16 +93,16 @@ public class FileHandler extends AbstractGUITunableHandler {
 	}
 
 	private void init(final SupportedFileTypesManager fileTypesManager) {
-		//Construction of GUI
 		fileChooser = new JFileChooser();
 		input = isInput();
+
+		final String fileCategory = getFileCategory();
+		filters = fileTypesManager.getSupportedFileTypes(DataCategory.valueOf(fileCategory.toUpperCase()),
+								 input);
+
 		setGui();
 		setLayout();
 		panel.setLayout(layout);
-
-		final String fileCategory = getFileCategory();
-		filters = fileTypesManager.getSupportedFileTypes(DataCategory.valueOf(fileCategory),
-								 input);
 	}
 
 	/**
@@ -221,6 +221,16 @@ try_again:              {
 				if (ret == JFileChooser.APPROVE_OPTION) {
 					file = fileChooser.getSelectedFile();
 					if (file != null) {
+						// Make sure the user-supplied file name has an extension:
+						final String fileName = file.getPath();
+						if (getFileExtension(fileName) == null) {
+							final String extension =
+								filters.get(0).getExtensions()[0];
+							final String nameWithExtension =
+								addFileExtension(fileName, extension);
+							file = new File(nameWithExtension);
+						}
+
 						if (ae.getActionCommand().equals("save") && file.exists()) {
 							if (JOptionPane.showConfirmDialog(
 								panel,

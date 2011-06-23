@@ -9,7 +9,7 @@ public class FileChooserFilter extends FileFilter {
     	private final String description;
     	private String[] extensions;
 
-    	public FileChooserFilter(final String description, final String extension){
+    	public FileChooserFilter(final String description, final String extension) {
     		super();
     		this.description = description;
     		this.extensions = new String[] { extension };
@@ -49,5 +49,15 @@ public class FileChooserFilter extends FileFilter {
 	
 	public String[] getExtensions() {
 	        return extensions;
+	}
+
+	static String toString(final String[] strings) {
+		final StringBuilder setAsString = new StringBuilder();
+		setAsString.append('{');
+		for (final String item : strings) {
+			setAsString.append(item + " ");
+		}
+		setAsString.append('}');
+		return setAsString.toString();
 	}
 }

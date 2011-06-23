@@ -37,11 +37,11 @@ public class SupportedFileTypesManager {
 		inputFactories.remove(factory);
 	}
 
-	public void addOutputStreamTaskFactory(CyWriterFactory factory, Map<?,?> properties) {
+	public void addCyWriterTaskFactory(CyWriterFactory factory, Map<?,?> properties) {
 		outputFactories.add(factory);
 	}
 
-	public void removeOutputStreamTaskFactory(CyWriterFactory factory, Map<?,?> properties) {
+	public void removeCyWriterTaskFactory(CyWriterFactory factory, Map<?,?> properties) {
 		outputFactories.remove(factory);
 	}
 
@@ -52,7 +52,9 @@ public class SupportedFileTypesManager {
 			return getSupportedFileTypes(category, outputFactories);
 	}
 
-	private List<FileChooserFilter> getSupportedFileTypes(final DataCategory category, final Set<CyFileFilterProvider> factories) {
+	private List<FileChooserFilter> getSupportedFileTypes(final DataCategory category,
+							      final Set<CyFileFilterProvider> factories)
+	{
 		List<FileChooserFilter> types = new ArrayList<FileChooserFilter>();
 
 		Set<String> allExtensions = new HashSet<String>();
@@ -84,7 +86,8 @@ public class SupportedFileTypesManager {
 		});
 
 		String description = String.format("All %1$s files", category.toString().toLowerCase());
-		types.add(new FileChooserFilter(description, new ArrayList<String>(allExtensions).toArray(new String[allExtensions.size()])));
+		types.add(new FileChooserFilter(description,
+						new ArrayList<String>(allExtensions).toArray(new String[allExtensions.size()])));
 		return types;
 	}
 }
