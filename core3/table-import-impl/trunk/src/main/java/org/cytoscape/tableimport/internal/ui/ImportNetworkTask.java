@@ -57,6 +57,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.InputStream;
 
 
 /**
@@ -66,10 +67,8 @@ public class ImportNetworkTask extends AbstractTask { //implements CyNetworkView
 
 	protected CyNetworkView[] cyNetworkViews;
 	protected VisualStyle[] visualstyles;
-
 	private final GraphReader reader;
-	private final URL source;
-
+	
 	final CyNetwork network = CytoscapeServices.cyNetworkFactoryServiceRef.getInstance();
 
 	/**
@@ -78,15 +77,13 @@ public class ImportNetworkTask extends AbstractTask { //implements CyNetworkView
 	 * @param reader  DOCUMENT ME!
 	 * @param source  DOCUMENT ME!
 	 */
-	public ImportNetworkTask(String networkName, final GraphReader reader, final URL source) {
+	public ImportNetworkTask(final GraphReader reader) {
 		this.reader = reader;
-		this.source = source;
 	}
 
 
 	@Override
 	public void run(TaskMonitor tm) throws IOException {
-
 		tm.setProgress(0.10);
 		this.reader.setNetwork(network);
 
