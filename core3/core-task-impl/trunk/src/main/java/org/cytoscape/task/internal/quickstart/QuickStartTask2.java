@@ -1,7 +1,6 @@
 package org.cytoscape.task.internal.quickstart;
 
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.task.internal.quickstart.subnetworkbuilder.SubnetworkBuilderTask;
 import org.cytoscape.task.internal.quickstart.subnetworkbuilder.SubnetworkBuilderUtil;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
@@ -24,7 +23,6 @@ public class QuickStartTask2 extends QuickStartTask {
 
 	public void run(TaskMonitor e) {
 		// Save the property value of showQuickStartAtStartup
-		System.out.println("showQuickStartAtStartup = "+ showQuickStartAtStartup);
 		importTaskUtil.getCyProperty().getProperties().setProperty(quickStartPropertyKey, new Boolean(showQuickStartAtStartup).toString());
 
 		doLoading();

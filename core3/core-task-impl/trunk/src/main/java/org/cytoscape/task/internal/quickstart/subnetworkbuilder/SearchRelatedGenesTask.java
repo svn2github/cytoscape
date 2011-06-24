@@ -21,7 +21,7 @@ public class SearchRelatedGenesTask extends AbstractTask {
 	private final SubnetworkBuilderState state;
 	private final SubnetworkBuilderUtil util;
 
-	SearchRelatedGenesTask(final SubnetworkBuilderUtil util, final SubnetworkBuilderState state) {
+	public SearchRelatedGenesTask(final SubnetworkBuilderUtil util, final SubnetworkBuilderState state) {
 		this.state = state;
 		this.util = util;
 	}

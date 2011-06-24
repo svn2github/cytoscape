@@ -50,9 +50,8 @@ public class QuickStartTask extends AbstractTask {
 	protected static final String LOAD_SUBNETWORK = "Create subnetwork from interactome";
 	
 	// @Tunable(description="What would you like to do today?\nCytoscape requires at the minimum a network to do anything.  A network and attributes makes life much better.  If you don't have a network, that's OK, we'll help you find one.")
-	@Tunable(description = "What would you like to do today?")
-	public ListSingleSelection<String> selection = new ListSingleSelection<String>(
-			LOAD_NETWORK, LOAD_TABLE, LOAD_SUBNETWORK);
+	//@Tunable(description = "What would you like to do today?")
+	//public ListSingleSelection<String> selection = new ListSingleSelection<String>(LOAD_NETWORK, LOAD_TABLE, LOAD_SUBNETWORK);
 
 	protected final QuickStartState state;
 	protected final ImportTaskUtil importTaskUtil;
@@ -74,13 +73,15 @@ public class QuickStartTask extends AbstractTask {
 	}
 	
 	protected void doLoading(){
-		String selected = selection.getSelectedValue();
-		if (selected == LOAD_NETWORK) {
-			insertTasksAfterCurrentTask(new LoadNetworkTask(state, importTaskUtil));
-		} else if (selected == LOAD_TABLE)
-			insertTasksAfterCurrentTask(new LoadTableTask(state, importTaskUtil));
-		 else if (selected == LOAD_SUBNETWORK) {
-			 insertTasksAfterCurrentTask(new SubnetworkBuilderTask(networkManager, subnetworkUtil));	 
-		}		
+		insertTasksAfterCurrentTask(importTaskUtil.getWebServiceImportTask());
+		// Old Tasks
+//		String selected = selection.getSelectedValue();
+//		if (selected == LOAD_NETWORK) {
+//			insertTasksAfterCurrentTask(new LoadNetworkTask(state, importTaskUtil));
+//		} else if (selected == LOAD_TABLE)
+//			insertTasksAfterCurrentTask(new LoadTableTask(state, importTaskUtil));
+//		 else if (selected == LOAD_SUBNETWORK) {
+//			 insertTasksAfterCurrentTask(new SubnetworkBuilderTask(networkManager, subnetworkUtil));	 
+//		}		
 	}
 }

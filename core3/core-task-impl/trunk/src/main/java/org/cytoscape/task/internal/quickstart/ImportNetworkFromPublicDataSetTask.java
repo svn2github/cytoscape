@@ -15,14 +15,24 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.internal.loadnetwork.AbstractLoadNetworkTask;
 import org.cytoscape.task.internal.quickstart.datasource.InteractionFilePreprocessor;
+import org.cytoscape.task.internal.quickstart.subnetworkbuilder.SearchRelatedGenesTask;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportNetworkFromPublicDataSetTask extends AbstractLoadNetworkTask {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ImportNetworkFromPublicDataSetTask.class);
+	
+	private static final String quickStartPropertyKey = "showQuickStartAtStartup";
+	
+	@Tunable(description="Show this dialog at Cytoscape start-up")
+	public boolean showQuickStartAtStartup; // get this value from system property
 
-	@Tunable(description = "Select Data Source")
+	@Tunable(description = "What kind of network do you need?")
 	public ListSingleSelection<String> dataSource;
 
 	private final Map<String, URL> sourceMap;
@@ -61,6 +71,8 @@ public class ImportNetworkFromPublicDataSetTask extends AbstractLoadNetworkTask 
 
 	@Override
 	public void run(TaskMonitor taskMonitor) throws Exception {
+		
+		props.setProperty(quickStartPropertyKey, new Boolean(showQuickStartAtStartup).toString());
 
 		taskMonitor.setStatusMessage("Update is done.");
 		final String selected = this.dataSource.getSelectedValue();
@@ -93,10 +105,11 @@ public class ImportNetworkFromPublicDataSetTask extends AbstractLoadNetworkTask 
 		if (reader == null)
 			throw new NullPointerException("Failed to find reader for specified URL: " + name);
 
+		
 		insertTasksAfterCurrentTask(new SetNetworkNameTask(reader, selected));
-
 		taskMonitor.setStatusMessage("Loading network...");
 		loadNetwork(reader);
+		
 	}
 
 }
