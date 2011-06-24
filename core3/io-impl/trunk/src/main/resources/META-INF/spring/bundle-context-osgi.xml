@@ -244,6 +244,13 @@
 			<value>org.cytoscape.io.write.PresentationWriterFactory</value>
 		</interfaces>
 	</osgi:service>
+	<osgi:service id="svgWriterFactoryService" ref="svgWriterFactory">
+		<interfaces>
+			<value>org.cytoscape.io.write.CyWriterFactory</value>
+			<value>org.cytoscape.io.write.PresentationWriterFactory</value>
+		</interfaces>
+	</osgi:service>
+	
 	<osgi:service id="cysessionWriterFactoryService" ref="cysessionWriterFactory">
 		<interfaces>
 			<value>org.cytoscape.io.write.CyWriterFactory</value>

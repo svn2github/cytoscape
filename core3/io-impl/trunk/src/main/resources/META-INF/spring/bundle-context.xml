@@ -113,6 +113,25 @@
 			<ref bean="streamUtil" />
 		</constructor-arg>
 	</bean>
+	
+	<bean id="svgFilter" class="org.cytoscape.io.BasicCyFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>svg</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>image/svg</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Scalable Vector Graphics (SVG) File" />
+		<constructor-arg type="org.cytoscape.io.DataCategory"
+			value="IMAGE" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil" />
+		</constructor-arg>
+	</bean>
 
 	<bean id="textTableFilter" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
@@ -454,6 +473,10 @@
 	<bean id="psWriterFactory"
 		class="org.cytoscape.io.internal.write.graphics.PSWriterFactory">
 		<constructor-arg ref="psFilter" />
+	</bean>
+	<bean id="svgWriterFactory"
+		class="org.cytoscape.io.internal.write.graphics.SVGWriterFactory">
+		<constructor-arg ref="svgFilter" />
 	</bean>
 
 
