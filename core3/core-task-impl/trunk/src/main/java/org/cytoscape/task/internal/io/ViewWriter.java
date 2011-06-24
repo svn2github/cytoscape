@@ -3,6 +3,7 @@ package org.cytoscape.task.internal.io;
 
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.work.Tunable;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.io.write.PresentationWriterManager;
@@ -41,5 +42,10 @@ public final class ViewWriter extends TunableAbstractCyWriter<PresentationWriter
 	 */
 	protected CyWriter getWriter(CyFileFilter filter, File file) throws Exception {
 		return writerManager.getWriter(view,re,filter,file);
+	}
+	
+	@Tunable(description="Save Image As:", params="fileCategory=image;input=false")
+	public  File getOutputFile() {	
+		return outputFile;
 	}
 }
