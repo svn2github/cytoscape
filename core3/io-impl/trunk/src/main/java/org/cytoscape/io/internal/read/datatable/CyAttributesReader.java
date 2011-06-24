@@ -67,7 +67,7 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 	@Tunable(description = "Map data table to:")
 	public final ListSingleSelection<TableType> dataTypeOptions;
 
-	private static int numImports = 0;
+	private static int nextTableNumber = 1;
 
 	public CyAttributesReader(InputStream inputStream, CyTableFactory tableFactory,
 			CyApplicationManager appMgr, CyNetworkManager netMgr) {
@@ -93,7 +93,7 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 	@Override
 	public void run(TaskMonitor tm) throws IOException {
 		final CyTable table = tableFactory.createTable(
-				"Table " + Integer.toString(numImports++), CyTableEntry.NAME,
+				"Table " + Integer.toString(nextTableNumber++), CyTableEntry.NAME,
 				String.class, true, true);
 		cyTables = new CyTable[] { table };
 
