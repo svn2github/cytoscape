@@ -158,7 +158,13 @@ public class FileHandler extends AbstractGUITunableHandler {
 
 			fileChooser.addChoosableFileFilter(filter);
 		}
-		fileChooser.setFileFilter(defaultFilter);
+
+		if (defaultFilter != null)
+			fileChooser.setFileFilter(defaultFilter); // Note: This will not work, if
+		                                                  // followed by a call to
+		                                                  // setAcceptAllFileFilterUsed(false)!
+		else
+			fileChooser.setAcceptAllFileFilterUsed(true);
 	}
 
 	private String getFileCategory() {
