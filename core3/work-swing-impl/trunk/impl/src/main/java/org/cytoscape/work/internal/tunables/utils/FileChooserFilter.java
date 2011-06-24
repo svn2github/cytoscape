@@ -25,7 +25,7 @@ public class FileChooserFilter extends FileFilter {
     	//accept or not the file from jfilechooser
     	public boolean accept(final File file) {
     		if (file.isDirectory())
-			return false;
+			return true;
 
     		String fileName = file.getName().toLowerCase();
 
