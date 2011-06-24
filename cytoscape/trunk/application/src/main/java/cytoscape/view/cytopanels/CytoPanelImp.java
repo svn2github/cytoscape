@@ -94,6 +94,16 @@ import javax.swing.event.ChangeListener;
 public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	
 	private static final long serialVersionUID = 8431678873343221338L;
+	
+	/**
+	 * Minimum standards for CytoPanels.
+	 */
+	private static final int WEST_MIN_WIDTH = 250;
+	private static final int WEST_MIN_HEIGHT = 500;
+	private static final int SOUTH_MIN_WIDTH = 500;
+	private static final int SOUTH_MIN_HEIGHT = 50;
+	private static final int EAST_MIN_WIDTH = 100;
+	private static final int EAST_MIN_HEIGHT = 500;
 
 	/**
 	 * The JTabbedPane we hide.
@@ -270,6 +280,20 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * @return component Component reference.
 	 */
 	public Component add(Component component) {
+		// override minSize to keep panels sane
+		if (compassDirection == SwingConstants.WEST)
+			component.setMinimumSize(new Dimension(
+					WEST_MIN_WIDTH, 
+					WEST_MIN_HEIGHT));
+		else if (compassDirection == SwingConstants.SOUTH)
+			component.setMinimumSize(new Dimension(
+					SOUTH_MIN_WIDTH, 
+					SOUTH_MIN_HEIGHT));
+		else if (compassDirection == SwingConstants.EAST)
+			component.setMinimumSize(new Dimension(
+					EAST_MIN_WIDTH, 
+					EAST_MIN_HEIGHT));
+		
 		// add tab to JTabbedPane (component)
 		Component c = tabbedPane.add(component);
 
@@ -288,6 +312,20 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * @return component Component reference.
 	 */
 	public Component add(Component component, int index) {
+		// override minSize to keep panels sane
+		if (compassDirection == SwingConstants.WEST)
+			component.setMinimumSize(new Dimension(
+					WEST_MIN_WIDTH, 
+					WEST_MIN_HEIGHT));
+		else if (compassDirection == SwingConstants.SOUTH)
+			component.setMinimumSize(new Dimension(
+					SOUTH_MIN_WIDTH, 
+					SOUTH_MIN_HEIGHT));
+		else if (compassDirection == SwingConstants.EAST)
+			component.setMinimumSize(new Dimension(
+					EAST_MIN_WIDTH, 
+					EAST_MIN_HEIGHT));
+		
 		// add tab to JTabbedPane (component, index)
 		Component c = tabbedPane.add(component, index);
 
@@ -306,6 +344,20 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * @return component Component reference.
 	 */
 	public Component add(String title, Component component) {
+		// override minSize to keep panels sane
+		if (compassDirection == SwingConstants.WEST)
+			component.setMinimumSize(new Dimension(
+					WEST_MIN_WIDTH, 
+					WEST_MIN_HEIGHT));
+		else if (compassDirection == SwingConstants.SOUTH)
+			component.setMinimumSize(new Dimension(
+					SOUTH_MIN_WIDTH, 
+					SOUTH_MIN_HEIGHT));
+		else if (compassDirection == SwingConstants.EAST)
+			component.setMinimumSize(new Dimension(
+					EAST_MIN_WIDTH, 
+					EAST_MIN_HEIGHT));
+		
 		// add tab to JTabbedPane (title, component)
 		Component c = tabbedPane.add(title, component);
 
@@ -324,6 +376,20 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * @param component Component reference.
 	 */
 	public void add(String title, Icon icon, Component component) {
+		// override minSize to keep panels sane
+		if (compassDirection == SwingConstants.WEST)
+			component.setMinimumSize(new Dimension(
+					WEST_MIN_WIDTH, 
+					WEST_MIN_HEIGHT));
+		else if (compassDirection == SwingConstants.SOUTH)
+			component.setMinimumSize(new Dimension(
+					SOUTH_MIN_WIDTH, 
+					SOUTH_MIN_HEIGHT));
+		else if (compassDirection == SwingConstants.EAST)
+			component.setMinimumSize(new Dimension(
+					EAST_MIN_WIDTH, 
+					EAST_MIN_HEIGHT));
+		
 		// add tab to JTabbedPane (title, icon, component)
 		tabbedPane.addTab(title, icon, component);
 
@@ -340,6 +406,20 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * @param tip       Component Tool tip text.
 	 */
 	public void add(String title, Icon icon, Component component, String tip) {
+		// override minSize to keep panels sane
+		if (compassDirection == SwingConstants.WEST)
+			component.setMinimumSize(new Dimension(
+					WEST_MIN_WIDTH, 
+					WEST_MIN_HEIGHT));
+		else if (compassDirection == SwingConstants.SOUTH)
+			component.setMinimumSize(new Dimension(
+					SOUTH_MIN_WIDTH, 
+					SOUTH_MIN_HEIGHT));
+		else if (compassDirection == SwingConstants.EAST)
+			component.setMinimumSize(new Dimension(
+					EAST_MIN_WIDTH, 
+					EAST_MIN_HEIGHT));
+		
 		// add tab to JTabbedPane (string, icon, component, tip)
 		tabbedPane.addTab(title, icon, component, tip);
 
@@ -357,6 +437,20 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * @param index     Component index.
 	 */
 	public void add(String title, Icon icon, Component component, String tip, int index) {
+		// override minSize to keep panels sane
+		if (compassDirection == SwingConstants.WEST)
+			component.setMinimumSize(new Dimension(
+					WEST_MIN_WIDTH, 
+					WEST_MIN_HEIGHT));
+		else if (compassDirection == SwingConstants.SOUTH)
+			component.setMinimumSize(new Dimension(
+					SOUTH_MIN_WIDTH, 
+					SOUTH_MIN_HEIGHT));
+		else if (compassDirection == SwingConstants.EAST)
+			component.setMinimumSize(new Dimension(
+					EAST_MIN_WIDTH, 
+					EAST_MIN_HEIGHT));
+		
 		// insert tab into JTabbedPane (string, icon, component, tip, index)
 		tabbedPane.insertTab(title, icon, component, tip, index);
 
@@ -885,6 +979,14 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 				case NOTIFICATION_COMPONENT_SELECTED:
 
+					/* 
+					 * Set default resize behavior based on the currently
+					 * selected panel's preferredSize setting
+					 * 
+					 */
+					Component panel = tabbedPane.getSelectedComponent();
+					setMinimumSize(panel.getPreferredSize());
+				
 					int selectedIndex = tabbedPane.getSelectedIndex();
 					cytoPanelListener.onComponentSelected(selectedIndex);
 
