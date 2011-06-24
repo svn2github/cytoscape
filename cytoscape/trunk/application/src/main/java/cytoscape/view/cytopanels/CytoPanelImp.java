@@ -285,10 +285,6 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 			component.setMinimumSize(new Dimension(
 					WEST_MIN_WIDTH, 
 					WEST_MIN_HEIGHT));
-		else if (compassDirection == SwingConstants.SOUTH)
-			component.setMinimumSize(new Dimension(
-					SOUTH_MIN_WIDTH, 
-					SOUTH_MIN_HEIGHT));
 		else if (compassDirection == SwingConstants.EAST)
 			component.setMinimumSize(new Dimension(
 					EAST_MIN_WIDTH, 
@@ -317,10 +313,6 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 			component.setMinimumSize(new Dimension(
 					WEST_MIN_WIDTH, 
 					WEST_MIN_HEIGHT));
-		else if (compassDirection == SwingConstants.SOUTH)
-			component.setMinimumSize(new Dimension(
-					SOUTH_MIN_WIDTH, 
-					SOUTH_MIN_HEIGHT));
 		else if (compassDirection == SwingConstants.EAST)
 			component.setMinimumSize(new Dimension(
 					EAST_MIN_WIDTH, 
@@ -349,10 +341,6 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 			component.setMinimumSize(new Dimension(
 					WEST_MIN_WIDTH, 
 					WEST_MIN_HEIGHT));
-		else if (compassDirection == SwingConstants.SOUTH)
-			component.setMinimumSize(new Dimension(
-					SOUTH_MIN_WIDTH, 
-					SOUTH_MIN_HEIGHT));
 		else if (compassDirection == SwingConstants.EAST)
 			component.setMinimumSize(new Dimension(
 					EAST_MIN_WIDTH, 
@@ -381,10 +369,6 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 			component.setMinimumSize(new Dimension(
 					WEST_MIN_WIDTH, 
 					WEST_MIN_HEIGHT));
-		else if (compassDirection == SwingConstants.SOUTH)
-			component.setMinimumSize(new Dimension(
-					SOUTH_MIN_WIDTH, 
-					SOUTH_MIN_HEIGHT));
 		else if (compassDirection == SwingConstants.EAST)
 			component.setMinimumSize(new Dimension(
 					EAST_MIN_WIDTH, 
@@ -411,10 +395,6 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 			component.setMinimumSize(new Dimension(
 					WEST_MIN_WIDTH, 
 					WEST_MIN_HEIGHT));
-		else if (compassDirection == SwingConstants.SOUTH)
-			component.setMinimumSize(new Dimension(
-					SOUTH_MIN_WIDTH, 
-					SOUTH_MIN_HEIGHT));
 		else if (compassDirection == SwingConstants.EAST)
 			component.setMinimumSize(new Dimension(
 					EAST_MIN_WIDTH, 
@@ -442,10 +422,6 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 			component.setMinimumSize(new Dimension(
 					WEST_MIN_WIDTH, 
 					WEST_MIN_HEIGHT));
-		else if (compassDirection == SwingConstants.SOUTH)
-			component.setMinimumSize(new Dimension(
-					SOUTH_MIN_WIDTH, 
-					SOUTH_MIN_HEIGHT));
 		else if (compassDirection == SwingConstants.EAST)
 			component.setMinimumSize(new Dimension(
 					EAST_MIN_WIDTH, 
@@ -984,8 +960,11 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 					 * selected panel's preferredSize setting
 					 * 
 					 */
-					Component panel = tabbedPane.getSelectedComponent();
-					setMinimumSize(panel.getPreferredSize());
+					if (compassDirection == SwingConstants.WEST 
+							|| compassDirection == SwingConstants.EAST){
+						Component panel = tabbedPane.getSelectedComponent();
+						setMinimumSize(panel.getPreferredSize());
+					}
 				
 					int selectedIndex = tabbedPane.getSelectedIndex();
 					cytoPanelListener.onComponentSelected(selectedIndex);
