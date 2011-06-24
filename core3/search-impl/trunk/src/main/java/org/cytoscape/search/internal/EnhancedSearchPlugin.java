@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -32,15 +24,18 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.search.internal;
 
+
+import java.awt.Component;
+
+import org.cytoscape.application.swing.AbstractToolBarComponent;
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
-import org.cytoscape.model.events.RowsAboutToChangeEvent;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.events.SessionLoadedEvent;
 import org.cytoscape.session.events.SessionLoadedListener;
@@ -49,27 +44,28 @@ import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.search.internal.ui.EnhancedSearchPanel;
 import org.cytoscape.work.swing.GUITaskManager;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.application.swing.AbstractToolBarComponent;
-import org.cytoscape.event.CyEventHelper;
 
-import java.awt.Component;
 
-public class EnhancedSearchPlugin extends AbstractToolBarComponent implements SetCurrentNetworkViewListener, NetworkAboutToBeDestroyedListener, 
-					SessionLoadedListener
+public class EnhancedSearchPlugin extends AbstractToolBarComponent
+	implements SetCurrentNetworkViewListener, NetworkAboutToBeDestroyedListener,
+	           SessionLoadedListener
 {
-	private EnhancedSearchManager searchMgr = null;
-	private EnhancedSearchPanel searchPnl = null; 
-	public static CyEventHelper eventHelper;
+	private final EnhancedSearchManager searchMgr;
+	private final EnhancedSearchPanel searchPnl; 
+	static CyEventHelper eventHelper;
 	
-	public EnhancedSearchPlugin(CySwingApplication desktopApp, CyApplicationManager netmgr, 
-			CyTableManager tableMgr, GUITaskManager taskMgr, final CyEventHelper eventHelper) {
+	public EnhancedSearchPlugin(final CySwingApplication desktopApp,
+	                            final CyApplicationManager netmgr, 
+	                            final CyTableManager tableMgr,
+	                            final GUITaskManager taskMgr,
+	                            final CyEventHelper eventHelper)
+	{
 		
 		searchMgr = new EnhancedSearchManager();
 		// Add a text-field and a search button on tool-bar
 		searchPnl = new EnhancedSearchPanel(netmgr, tableMgr, searchMgr, taskMgr);
 		this.setToolBarGravity(150.0f);
-		EnhancedSearchPlugin.eventHelper    = eventHelper;
+		EnhancedSearchPlugin.eventHelper = eventHelper;
 	}
 
 	@Override	

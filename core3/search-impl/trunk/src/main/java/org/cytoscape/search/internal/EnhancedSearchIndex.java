@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, 2010, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -96,7 +96,6 @@ public class EnhancedSearchIndex {
 	 * attribute fields
 	 */
 	private static Document createDocument(CyTableEntry graphObject, String graphObjectType, int index) {
-
 		Document doc = new Document();
 		String identifier = Integer.toString(index);
 		
@@ -146,9 +145,13 @@ public class EnhancedSearchIndex {
 				doc.add(new Field(attrIndexingName, attrValue, Field.Store.YES, Field.Index.ANALYZED));
 			} else if (valueType == List.class) {
 				List attrValueList = graphObject.getCyRow().get(attrName, List.class);
-				for (int j = 0; j < attrValueList.size(); j++) {
-					String attrValue = attrValueList.get(j).toString();
-					doc.add(new Field(attrIndexingName, attrValue, Field.Store.YES, Field.Index.ANALYZED));
+				if (attrValueList != null) {
+					for (int j = 0; j < attrValueList.size(); j++) {
+						String attrValue = attrValueList.get(j).toString();
+						doc.add(new Field(attrIndexingName, attrValue,
+								  Field.Store.YES,
+								  Field.Index.ANALYZED));
+					}
 				}
 			}
 		}
@@ -159,5 +162,4 @@ public class EnhancedSearchIndex {
 	public RAMDirectory getIndex() {
 		return idx;
 	}
-
 }

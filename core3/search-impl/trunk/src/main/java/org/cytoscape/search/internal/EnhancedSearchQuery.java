@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -31,38 +24,39 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.search.internal;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Searcher;
-import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.document.Document;
-import org.cytoscape.search.internal.util.EnhancedSearchUtils;
-import org.cytoscape.search.internal.util.CustomMultiFieldQueryParser;
-import org.cytoscape.search.internal.util.AttributeFields;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Scorer;
+import org.apache.lucene.search.Searcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.util.Version;
+
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
-import org.apache.lucene.util.Version;
-import org.apache.lucene.search.Collector;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.search.Scorer;
+import org.cytoscape.search.internal.util.AttributeFields;
+import org.cytoscape.search.internal.util.CustomMultiFieldQueryParser;
+import org.cytoscape.search.internal.util.EnhancedSearchUtils;
 
 
 public class EnhancedSearchQuery {
-
+	private final RAMDirectory idx;
+	private final CyNetwork network;
+	private final CyTableManager tableMgr;
 	private IdentifiersCollector hitCollector = null;
-
-	private RAMDirectory idx;
-	private CyNetwork network;
-	private Searcher searcher;
-	private  CyTableManager tableMgr;
+	private Searcher searcher = null;
 
 	public EnhancedSearchQuery(CyNetwork network, RAMDirectory index, CyTableManager tableMgr) {
 		this.network = network;
@@ -72,7 +66,6 @@ public class EnhancedSearchQuery {
 
 	public void executeQuery(String queryString) {
 		try {
-
 			// Define attribute fields in which the search is to be carried on
 			AttributeFields attFields = new AttributeFields(network, tableMgr);
 
@@ -94,32 +87,32 @@ public class EnhancedSearchQuery {
 	 * attributeName), search is carried out on all attribute fields. This
 	 * functionality is enabled with the use of MultiFieldQueryParser.
 	 */
-	private void search(String queryString, AttributeFields attFields)
-			throws IOException {
-		
+	private void search(final String queryString, final AttributeFields attFields)
+		throws IOException
+	{
 		// Build a Query object.
 		// CustomMultiFieldQueryParser is used to support range queries on numerical attribute fields.
-		CustomMultiFieldQueryParser queryParser = new CustomMultiFieldQueryParser(attFields, new StandardAnalyzer(Version.LUCENE_30));
+		final CustomMultiFieldQueryParser queryParser =
+			new CustomMultiFieldQueryParser(attFields, new StandardAnalyzer(Version.LUCENE_30));
 
 		try {
 			// Execute query
 			Query query = queryParser.parse(queryString);
-			
 			hitCollector = new IdentifiersCollector(searcher);
 			searcher.search(query, hitCollector);		    
-		} catch (ParseException pe) {
+		} catch (final ParseException pe) {
 			// Parse exceptions occur when colon appear in the query in an
 			// unexpected location, e.g. when attribute or value are
 			// missing in the query. In such case, the hitCollector
 			// variable will be null.
-			System.out.println("Invalid query '" + queryString + "'");
-			String message = pe.getMessage();
-			System.out.println(message);
-		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, pe.getMessage(),
+						      "Invalid query!",
+						      JOptionPane.ERROR_MESSAGE);
+		} catch (final Exception e) {
 			// Other types of exception may occur
-			System.out.println("Error during execution of query '" + queryString + "'");
-			String message = e.getMessage();
-			System.out.println(message);
+			JOptionPane.showMessageDialog(null, e.getMessage(),
+						      "Query execution error!",
+						      JOptionPane.ERROR_MESSAGE);
 		}			
 	}
 

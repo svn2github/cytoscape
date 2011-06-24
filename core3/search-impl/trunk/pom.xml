@@ -94,22 +94,22 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
-			<version>3.0.0-alpha3</version>
+			<version>3.0.0-alpha5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-api</artifactId>
-			<version>3.0.0-alpha4</version>
+			<version>3.0.0-alpha5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-api</artifactId>
-			<version>3.0.0-alpha3</version>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>session-api</artifactId>
-			<version>3.0.0-alpha3</version>
+			<version>3.0.0-alpha6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape.wrappers</groupId>
@@ -120,13 +120,13 @@
 		<dependency>
     		<groupId>org.cytoscape</groupId>
     		<artifactId>swing-application-api</artifactId>
-    		<version>3.0.0-alpha2</version>
+    		<version>3.0.0-alpha3-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-swing-api</artifactId>
-			<version>3.0.0-alpha2</version>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
 		</dependency>
 
 		<!-- dependencies specifically for unit testing -->

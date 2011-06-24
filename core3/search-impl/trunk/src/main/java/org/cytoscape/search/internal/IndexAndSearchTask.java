@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -31,41 +24,41 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.search.internal;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
+
 import org.apache.lucene.store.RAMDirectory;
+
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.work.TaskMonitor;
-//import org.cytoscape.work.Tunable;
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.model.events.RowsAboutToChangeEvent;
-import org.cytoscape.model.events.RowsFinishedChangingEvent;
+
 
 public class IndexAndSearchTask extends AbstractNetworkViewTask {
-
 	private boolean interrupted = false;
 	private EnhancedSearch enhancedSearch;
 	private CyNetwork network;
 	private CyTableManager tableMgr;
 
-	//@Tunable(description="Search for:")
 	public String query;
 
 	/**
-	 * The constructor. Any necessary data that is <i>not</i> provided by 
-	 * the user should be provided as arguments to the constructor.  
+	 * The constructor. Any necessary data that is <i>not</i> provided by
+	 * the user should be provided as arguments to the constructor.
 	 */
-	public IndexAndSearchTask(final CyNetworkView networkView, EnhancedSearch enhancedSearch, 
-			CyTableManager tableMgr, String query) {
+	public IndexAndSearchTask(final CyNetworkView networkView,
+	                          final EnhancedSearch enhancedSearch,
+	                          final CyTableManager tableMgr, String query)
+	{
 		// Will set a CyNetwork field called "net".
 		super(networkView);
 		network = networkView.getModel();
@@ -76,7 +69,6 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 
 	@Override
 	public void run(final TaskMonitor taskMonitor) {
-
 		// Give the task a title.
 		taskMonitor.setTitle("Searching the network");
 
@@ -85,49 +77,33 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 
 		String status = enhancedSearch.getNetworkIndexStatus(network);
 
-		if (status != null && status.equalsIgnoreCase(EnhancedSearch.INDEX_SET)) {
-			idx = enhancedSearch.getNetworkIndex(network);			
-		} else {
+		if (status != null && status.equalsIgnoreCase(EnhancedSearch.INDEX_SET))
+			idx = enhancedSearch.getNetworkIndex(network);
+		else {
 			taskMonitor.setStatusMessage("Indexing network");
 			EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(network);
 			idx = indexHandler.getIndex();
 			enhancedSearch.setNetworkIndex(network, idx);
 		}
 
-		if (interrupted) {
+		if (interrupted)
 			return;
-		}
 
 		// Execute query
 		taskMonitor.setStatusMessage("Executing query");
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(network, idx, tableMgr);
 		queryHandler.executeQuery(query);
 
-		if (interrupted) {
+		if (interrupted)
 			return;
-		}
-
-		if (network != null && network.getNodeList().size() > 0){
-			try {
-
-				EnhancedSearchPlugin.eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this,  network.getDefaultNodeTable()));
-				EnhancedSearchPlugin.eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this,  network.getDefaultEdgeTable()));
-
-				showResults(queryHandler, taskMonitor);
-			}
-			finally {
-				EnhancedSearchPlugin.eventHelper.fireAsynchronousEvent(new RowsFinishedChangingEvent(this, network.getDefaultNodeTable()));		
-				EnhancedSearchPlugin.eventHelper.fireAsynchronousEvent(new RowsFinishedChangingEvent(this, network.getDefaultEdgeTable()));							
-			}
-		}
 	}
 
-
-	private void showResults(EnhancedSearchQuery queryHandler, final TaskMonitor taskMonitor){
-		// Display results
-		if (network == null || network.getNodeList().size() == 0){
+	// Display results
+	private void showResults(final EnhancedSearchQuery queryHandler,
+	                         final TaskMonitor taskMonitor)
+	{
+		if (network == null || network.getNodeList().size() == 0)
 			return;
-		}
 
 		List<CyNode> nodeList = network.getNodeList();
 		for (CyNode n : nodeList) {
@@ -140,9 +116,8 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 
 		int nodeHitCount = queryHandler.getNodeHitCount();
 		int edgeHitCount = queryHandler.getEdgeHitCount();
-		if (nodeHitCount == 0 && edgeHitCount == 0) {
+		if (nodeHitCount == 0 && edgeHitCount == 0)
 			return;
-		}	
 
 		taskMonitor.setStatusMessage("Selecting " + nodeHitCount + " and " + edgeHitCount + " edges");
 
@@ -154,11 +129,10 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 		while (nodeIt.hasNext() && !interrupted) {
 			int currESPIndex = Integer.parseInt(nodeIt.next().toString());
 			CyNode currNode = network.getNode(currESPIndex);
-			if (currNode != null) {
+			if (currNode != null)
 				currNode.getCyRow().set("selected", true);
-			} else {
+			else
 				System.out.println("Unknown node identifier " + (currESPIndex));
-			}
 
 			taskMonitor.setProgress(numCompleted++ / nodeHitCount);
 		}
@@ -168,19 +142,17 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 		while (edgeIt.hasNext() && !interrupted) {
 			int currESPIndex = Integer.parseInt(edgeIt.next().toString());
 			CyEdge currEdge = network.getEdge(currESPIndex);
-			if (currEdge != null) {
+			if (currEdge != null)
 				currEdge.getCyRow().set("selected", true);
-			} else {
+			else
 				System.out.println("Unknown edge identifier " + (currESPIndex));
-			}
 
-			taskMonitor.setProgress(numCompleted++ / edgeHitCount);
+			taskMonitor.setProgress(++numCompleted / edgeHitCount);
 		}
 
 		// Refresh view to show selected nodes and edges
 		view.updateView();
 	}
-
 
 	@Override
 	public void cancel() {
