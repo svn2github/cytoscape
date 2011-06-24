@@ -29,7 +29,7 @@ public abstract class TunableAbstractCyWriter<T extends CyWriterManager> extends
 	 * @return The file to be written.
 	 */
 	@Tunable(description="Select the output file name")
-	public final File getOutputFile() {
+	public File getOutputFile() {
 		return outputFile;
 	}
 
