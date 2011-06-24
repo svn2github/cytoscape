@@ -2,12 +2,13 @@ package org.cytoscape.work.internal.tunables.utils;
 
 
 import java.io.File;
+import java.util.Arrays;
 import javax.swing.filechooser.FileFilter;
 
 
 public class FileChooserFilter extends FileFilter {
     	private final String description;
-    	private String[] extensions;
+    	private final String[] extensions;
 
     	public FileChooserFilter(final String description, final String extension) {
     		super();
@@ -50,6 +51,29 @@ public class FileChooserFilter extends FileFilter {
 	
 	public String[] getExtensions() {
 	        return extensions;
+	}
+
+	@Override
+	public boolean equals(final Object other) {
+		if (!(other instanceof FileChooserFilter))
+			return false;
+
+		final FileChooserFilter otherFilter = (FileChooserFilter)other;
+		if (!otherFilter.description.equals(description))
+			return false;
+
+		if (otherFilter.extensions.length != extensions.length)
+			return false;
+
+		Arrays.sort(otherFilter.extensions);
+		Arrays.sort(extensions);
+
+		for (int i = 0; i < extensions.length; ++i) {
+			if (!extensions[i].equals(otherFilter.extensions[i]))
+				return false;
+		}
+
+		return true;
 	}
 
 	static String toString(final String[] strings) {

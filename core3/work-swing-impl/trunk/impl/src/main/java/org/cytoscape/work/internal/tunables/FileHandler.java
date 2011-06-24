@@ -142,26 +142,23 @@ public class FileHandler extends AbstractGUITunableHandler {
 		fileTextField.setText("Please select a " + fileCategory.toLowerCase() + " file...");
 		titleLabel.setText((input ? "Load " : "Save ") + initialCaps(fileCategory) + " File");
 
+		fileChooser.setAcceptAllFileFilterUsed(false);
+
 		int i = 0;
-		boolean selectedDefault = false;
+		FileChooserFilter defaultFilter = null;
 		for (FileChooserFilter filter : filters) {
 			// If we're down to the last filter and we haven't yet selected a default,
 			// do it now!
-			if (++i == filters.size() && !selectedDefault)
-				fileChooser.setFileFilter(filter);
-
+			if (++i == filters.size() && defaultFilter == null)
+				defaultFilter = filter;
 			// If we haven't yet selected a default and our filter's description starts
 			// with "All ", make it the default.
-			else if (!selectedDefault && filter.getDescription().startsWith("All ")) {
-				fileChooser.setFileFilter(filter);
-				selectedDefault = true;
-			}
+			else if (defaultFilter == null && filter.getDescription().startsWith("All "))
+				defaultFilter = filter;
 
-			// Not a "special" filter, just add it to the list.
-			else 
-				fileChooser.addChoosableFileFilter(filter);
+			fileChooser.addChoosableFileFilter(filter);
 		}
-		fileChooser.setAcceptAllFileFilterUsed(false);
+		fileChooser.setFileFilter(defaultFilter);
 	}
 
 	private String getFileCategory() {
