@@ -4,33 +4,33 @@ import java.util.Set;
 
 public class SubnetworkBuilderState {
 
-    private Set<String> queryGenes;
-    private Set<String> diseaseGenes;
-    
-    private String searchTerms;
+	private Set<String> queryGenes;
+	private Set<String> diseaseGenes;
 
-    void setQueryGenes(final Set<String> idSet) {
-	this.queryGenes = idSet;
-    }
+	private String searchTerms;
 
-    void setDiseaseGenes(final Set<String> idSet) {
-	this.diseaseGenes = idSet;
-    }
+	void setQueryGenes(final Set<String> idSet) {
+		this.queryGenes = idSet;
+	}
 
-    Set<String> getQueryGenes() {
-	return this.queryGenes;
-    }
+	void setDiseaseGenes(final Set<String> idSet) {
+		this.diseaseGenes = idSet;
+	}
 
-    Set<String> getDiseaseGenes() {
-	return this.diseaseGenes;
-    }
-    
-    void setSearchTerms(final String searchTerms) {
-	this.searchTerms = searchTerms;
-    }
-    
-    String getSearchTerms() {
-	return this.searchTerms;
-    }
+	Set<String> getQueryGenes() {
+		return this.queryGenes;
+	}
+
+	Set<String> getDiseaseGenes() {
+		return this.diseaseGenes;
+	}
+
+	void setSearchTerms(final String searchTerms) {
+		this.searchTerms = searchTerms;
+	}
+
+	String getSearchTerms() {
+		return this.searchTerms;
+	}
 
 }
