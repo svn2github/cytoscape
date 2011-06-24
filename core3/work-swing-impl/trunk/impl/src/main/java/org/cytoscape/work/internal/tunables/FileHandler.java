@@ -41,12 +41,12 @@ import org.cytoscape.work.swing.AbstractGUITunableHandler;
 public class FileHandler extends AbstractGUITunableHandler {
 	private static final String DEF_DIRECTORY = System.getProperty("user.home");
 	private static final String LAST_DIRECTORY = "directory.last";
-	
+
 	// Core Cytoscape props
 	private final Properties props;
-	
+
 	private JFileChooser fileChooser;
-	
+
 	private JButton chooseButton;
 	private JTextField fileTextField;
 	private ImageIcon image;
@@ -69,7 +69,7 @@ public class FileHandler extends AbstractGUITunableHandler {
 	 * @param f field that has been annotated
 	 * @param o object contained in <code>f</code>
 	 * @param t tunable associated to <code>f</code>
-	 * @param fileTypesManager 
+	 * @param fileTypesManager
 	 */
 	protected FileHandler(Field f, Object o, Tunable t,
 			      final SupportedFileTypesManager fileTypesManager,
@@ -141,9 +141,27 @@ public class FileHandler extends AbstractGUITunableHandler {
 		final String fileCategory = getFileCategory();
 		fileTextField.setText("Please select a " + fileCategory.toLowerCase() + " file...");
 		titleLabel.setText((input ? "Load " : "Save ") + initialCaps(fileCategory) + " File");
-		
-		for (FileChooserFilter filter : filters)
-			fileChooser.addChoosableFileFilter(filter);
+
+		int i = 0;
+		boolean selectedDefault = false;
+		for (FileChooserFilter filter : filters) {
+			// If we're down to the last filter and we haven't yet selected a default,
+			// do it now!
+			if (++i == filters.size() && !selectedDefault)
+				fileChooser.setFileFilter(filter);
+
+			// If we haven't yet selected a default and our filter's description starts
+			// with "All ", make it the default.
+			else if (!selectedDefault && filter.getDescription().startsWith("All ")) {
+				fileChooser.setFileFilter(filter);
+				selectedDefault = true;
+			}
+
+			// Not a "special" filter, just add it to the list.
+			else 
+				fileChooser.addChoosableFileFilter(filter);
+		}
+		fileChooser.setAcceptAllFileFilterUsed(false);
 	}
 
 	private String getFileCategory() {
@@ -198,26 +216,26 @@ public class FileHandler extends AbstractGUITunableHandler {
 		public void actionPerformed(ActionEvent ae) {
 			File file = null;
 			final String lastDir = props.getProperty(LAST_DIRECTORY, DEF_DIRECTORY);
-			
+
 			File lastDirFile;
 			try {
 				lastDirFile = new File(lastDir);
 			} catch (Exception e){
 				lastDirFile = new File(DEF_DIRECTORY);
 			}
-			
+
 			if (!lastDirFile.isDirectory())
 				lastDirFile = new File(DEF_DIRECTORY);
-			
+
 			fileChooser.setCurrentDirectory(lastDirFile);
-			
+
 try_again:              {
 				int ret = JFileChooser.CANCEL_OPTION;
 				if (ae.getActionCommand().equals("open"))
 					ret = fileChooser.showOpenDialog(panel);
 				else if (ae.getActionCommand().equals("save"))
 					ret = fileChooser.showSaveDialog(panel);
-			
+
 				if (ret == JFileChooser.APPROVE_OPTION) {
 					file = fileChooser.getSelectedFile();
 					if (file != null) {
