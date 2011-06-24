@@ -1,13 +1,14 @@
 package org.cytoscape.task.internal.io;
 
 
-import org.cytoscape.view.model.CyNetworkView;
+import java.io.File;
+
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.write.CyNetworkViewWriterFactory;
 import org.cytoscape.io.write.CyNetworkViewWriterManager;
 import org.cytoscape.io.write.CyWriter;
-
-import java.io.File;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.work.Tunable;
 
 
 /**
@@ -34,5 +35,10 @@ public final class CyNetworkViewWriter extends TunableAbstractCyWriter<CyNetwork
 	 */
 	protected CyWriter getWriter(CyFileFilter filter, File file)  throws Exception{
 		return writerManager.getWriter(view,filter,file);
+	}
+	
+	@Tunable(description="Save Network As:", params="fileCategory=network;input=false")
+	public  File getOutputFile() {	
+		return outputFile;
 	}
 }
