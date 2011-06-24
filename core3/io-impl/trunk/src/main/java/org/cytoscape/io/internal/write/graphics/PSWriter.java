@@ -1,7 +1,10 @@
 package org.cytoscape.io.internal.write.graphics;
 
+import java.awt.Dimension;
+import java.io.OutputStream;
+import java.util.Properties;
+
 import org.cytoscape.io.write.CyWriter;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.work.AbstractTask;
@@ -10,18 +13,11 @@ import org.freehep.graphicsio.ps.PSGraphics2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Dimension;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Properties;
-
 public class PSWriter extends AbstractTask implements CyWriter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PDFWriter.class);
 
 	private boolean exportTextAsFont = true;
-
 
 	private final Double width;
 	private final Double height;
@@ -43,10 +39,6 @@ public class PSWriter extends AbstractTask implements CyWriter {
 		logger.debug("Post Script Writer created.");
 	}
 
-	public void setExportTextAsFont(boolean pExportTextAsFont) {
-		exportTextAsFont = pExportTextAsFont;
-	}
-
 
 	@Override
 	public void run(TaskMonitor taskMonitor) throws Exception {
@@ -64,7 +56,7 @@ public class PSWriter extends AbstractTask implements CyWriter {
 		g.setMultiPage(false); // true for PS file
 		g.setProperties(p);
 		g.startExport();
-		//view.print(g);
+		engine.printCanvas(g);
 		g.endExport();
 		
 		logger.debug("PS image created.");
