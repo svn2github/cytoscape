@@ -142,6 +142,9 @@ public class FileHandler extends AbstractGUITunableHandler {
 		fileTextField.setText("Please select a " + fileCategory.toLowerCase() + " file...");
 		titleLabel.setText((input ? "Load " : "Save ") + initialCaps(fileCategory) + " File");
 
+		if (filters.isEmpty())
+			return;
+
 		fileChooser.setAcceptAllFileFilterUsed(false);
 
 		int i = 0;
@@ -158,13 +161,7 @@ public class FileHandler extends AbstractGUITunableHandler {
 
 			fileChooser.addChoosableFileFilter(filter);
 		}
-
-		if (defaultFilter != null)
-			fileChooser.setFileFilter(defaultFilter); // Note: This will not work, if
-		                                                  // followed by a call to
-		                                                  // setAcceptAllFileFilterUsed(false)!
-		else
-			fileChooser.setAcceptAllFileFilterUsed(true);
+		fileChooser.setFileFilter(defaultFilter);
 	}
 
 	private String getFileCategory() {
