@@ -1,43 +1,30 @@
 package org.cytoscape.task.internal.quickstart.subnetworkbuilder;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.task.internal.quickstart.IDType;
 import org.cytoscape.task.internal.select.SelectFirstNeighborsTask;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.util.ListSingleSelection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CreateSubnetworkTask extends AbstractTask {
+public class CreateSubnetworkFromSearchTask extends AbstractTask {
 
-	private static final Logger logger = LoggerFactory.getLogger(CreateSubnetworkTask.class);
+	private static final Logger logger = LoggerFactory.getLogger(CreateSubnetworkFromSearchTask.class);
 
 	static final String QUERY_GENE_ATTR_NAME = "Gene Type";
 	static final String SEARCH_GENE_ATTR_NAME = "Search Term";
 
-	@Tunable(description = "Enter list of genes you are interested in (should be separated by space)")
-	public String queryGenes;
-
-	@Tunable(description = "Select ID Type")
-	public ListSingleSelection<IDType> selection = new ListSingleSelection<IDType>(IDType.GENE_SYMBOL, IDType.ENSEMBL,
-			IDType.ENTREZ_GENE, IDType.UNIPROT);
-
 	private final SubnetworkBuilderUtil util;
 	private final SubnetworkBuilderState state;
 
-	CreateSubnetworkTask(final SubnetworkBuilderUtil util, final SubnetworkBuilderState state) {
+	public CreateSubnetworkFromSearchTask(final SubnetworkBuilderUtil util, final SubnetworkBuilderState state) {
 		this.util = util;
 		this.state = state;
 	}
@@ -46,43 +33,14 @@ public class CreateSubnetworkTask extends AbstractTask {
 	public void run(TaskMonitor taskMonitor) throws Exception {
 		taskMonitor.setStatusMessage("Searching related genes in parent network...");
 		taskMonitor.setProgress(-1);
-
-		final IDType selected = selection.getSelectedValue();
-
-		final List<String> geneList;
 		
-		if (selected == IDType.ENTREZ_GENE) {
-			final String[] genes = queryGenes.split("\\s+");
-			logger.debug("Got gene list: " + genes.length);
-			for (final String gene : genes) {
-				logger.debug("Gene: " + gene);
-			}
-			geneList = Arrays.asList(genes);
-		} else {
-			geneList = new ArrayList<String>(convert(selected));
-		}
-
-		
-		selectGenes(geneList);
+		selectGenes(new ArrayList<String>());
 
 		taskMonitor.setProgress(1.0);
 
 	}
 
-	private Set<String> convert(IDType selected) throws IOException {
-		final boolean isGeneSymbol;
-
-		if (selected == IDType.GENE_SYMBOL)
-			isGeneSymbol = true;
-		else
-			isGeneSymbol = false;
-
-		final NCBISearchClient client = new NCBISearchClient();
-
-		return client.convert(queryGenes, isGeneSymbol);
-	}
-
-	private void selectGenes(final List<String> geneList) {
+	protected void selectGenes(final List<String> geneList) {
 		final CyNetwork target = util.appManager.getCurrentNetwork();
 		final CyTable nodeTable = target.getDefaultNodeTable();
 

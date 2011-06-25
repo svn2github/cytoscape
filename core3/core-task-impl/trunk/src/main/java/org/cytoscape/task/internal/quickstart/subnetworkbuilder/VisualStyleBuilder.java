@@ -13,7 +13,7 @@ import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 
-import static org.cytoscape.task.internal.quickstart.subnetworkbuilder.CreateSubnetworkTask.*;
+import static org.cytoscape.task.internal.quickstart.subnetworkbuilder.CreateSubnetworkFromSearchTask.*;
 
 /**
  * Builder for Visual Style

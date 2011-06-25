@@ -1,5 +1,6 @@
 package org.cytoscape.task.internal.quickstart.subnetworkbuilder;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class SubnetworkBuilderState {
@@ -18,11 +19,17 @@ public class SubnetworkBuilderState {
 	}
 
 	Set<String> getQueryGenes() {
-		return this.queryGenes;
+		if(queryGenes != null)
+			return this.queryGenes;
+		else
+			return new HashSet<String>();
 	}
 
 	Set<String> getDiseaseGenes() {
-		return this.diseaseGenes;
+		if(diseaseGenes != null)
+			return this.diseaseGenes;
+		else
+			return new HashSet<String>();
 	}
 
 	void setSearchTerms(final String searchTerms) {

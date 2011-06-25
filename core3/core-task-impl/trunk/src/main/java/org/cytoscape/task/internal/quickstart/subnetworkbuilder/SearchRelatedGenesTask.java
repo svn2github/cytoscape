@@ -32,7 +32,7 @@ public class SearchRelatedGenesTask extends AbstractTask {
 
 		tm.setProgress(0.0);
 
-		insertTasksAfterCurrentTask(new CreateSubnetworkTask(util, state));
+		insertTasksAfterCurrentTask(new CreateSubnetworkFromSearchTask(util, state));
 
 		final NCBISearchClient client = new NCBISearchClient();
 
