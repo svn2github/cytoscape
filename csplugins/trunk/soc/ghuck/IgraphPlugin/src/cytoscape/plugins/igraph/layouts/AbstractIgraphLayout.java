@@ -13,12 +13,13 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 **************************************************************************************/
 
-package cytoscape.plugins.igraph;
+package cytoscape.plugins.igraph.layout;
 
+import cytoscape.plugins.igraph.*;
 import cytoscape.Cytoscape;
 import cytoscape.layout.AbstractLayout;
 import cytoscape.layout.LayoutProperties;
@@ -42,32 +43,53 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.*;
 
-public class CircleLayout extends AbstractGraphPartition
-{
+
+public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
+
     private String message;
-    private LayoutProperties layoutProperties;
+    protected LayoutProperties layoutProperties;
 
 
-    /**
-     * Creates a new layout object.
-     */
-    public CircleLayout() {
+    public AbstractIgraphLayout() {
 	super();
-
-	logger = CyLogger.getLogger(CircleLayout.class);
+	
+	logger = CyLogger.getLogger(AbstractIgraphLayout.class);
 	// logger.setDebug(true);
-
-	layoutProperties = new LayoutProperties(getName());
-	initialize_properties();
+	
+// 	layoutProperties = new LayoutProperties(getName());
+// 	initialize_properties();
     }
 
+    // METHODS WHICH MUST BE OVERRIDEN IN CHILD CLASS
+
     /**
-     * This plugin supports laying out only selected nodes
+     * Do the layout on a graph alrealy loaded into igraph
+     */
+    public abstract int layout(double[] x, double[] y);
+
+    /**
+     * getName is used to construct property strings
+     * for this layout.
+     */
+    public abstract String getName();
+    
+    /**
+     * toString is used to get the user-visible name
+     * of the layout
+     */
+    public abstract String toString();
+
+    // END OF METHODS WHICH MUST BE OVERRIDEN
+
+    // METHODS WHICH MAY BE OVERRIDEN IN CHILD CLASS        
+
+    /**
+     * By default, igraph layouts support laying out only selected nodes
      */
     public boolean supportsSelectedOnly() {
-		return true;
+	return true;
     }
-    
+
     /**
      * Adds tunable objects for adjusting plugin parameters
      * Initializes default values for those parameters
@@ -82,37 +104,14 @@ public class CircleLayout extends AbstractGraphPartition
 	// Force the settings update
 	updateSettings(true);
     }
-    
-    /**
-     * getName is used to construct property strings
-     * for this layout.
-     */
-    public  String getName() {
-	return "Igraph Circle Layout";
-    }
-    
-    /**
-     * toString is used to get the user-visible name
-     * of the layout
-     */
-    public  String toString(){
-	return "Circle Layout";
-    }
-    
+
     /**
      * Overload updateSettings for using it without arguments
      */
     public void updateSettings() {
 	updateSettings(false);
     }
-    
-    /**
-     * Get new values from tunables and update parameters
-     */
-    public void updateSettings(boolean force) {
-	layoutProperties.updateValues();	
-    }
-    
+
     /**
      * Get the settings panel for this layout
      */
@@ -122,7 +121,16 @@ public class CircleLayout extends AbstractGraphPartition
 	
 	return panel;
     }
-    
+
+    // END OF METHODS WHICH MAY BE OVERRIDEN         
+
+    /**
+     * Get new values from tunables and update parameters
+     */
+    public void updateSettings(boolean force) {
+	layoutProperties.updateValues();	
+    }
+        
     /**
      * Revert previous settings
      */
@@ -136,8 +144,7 @@ public class CircleLayout extends AbstractGraphPartition
     public LayoutProperties getSettings() {
 	return layoutProperties;
     }
-	
-    
+
     /**
      * 
      */
@@ -176,11 +183,8 @@ public class CircleLayout extends AbstractGraphPartition
 	// Show message on the task monitor
 	taskMonitor.setStatus("Calling native code: Partition: " + part.getPartitionNumber());
 
-	// Simplify graph
-	IgraphInterface.simplify();
-	
- 	// Make native method call
-	IgraphInterface.layoutCircle(x, y);
+	// Do Layout
+	layout(x,y);
 
 	// Check whether it has been canceled by the user
 	if (canceled)
@@ -189,7 +193,13 @@ public class CircleLayout extends AbstractGraphPartition
 	// Show message on the task monitor
 	taskMonitor.setStatus("Updating display");	
 	
+	updateDisplay(part, mapping, x, y, initialLocation, selectedOnly);
 
+    }// layoutPartion(LayoutPartition part)
+
+
+
+    protected void updateDisplay(LayoutPartition part, HashMap<Integer,Integer> mapping, double[] x, double[] y, Dimension initialLocation, boolean selectedOnly) {
 	// Find which ratio is required to 'scale up' the node positions so that nodes don't overlap
 	double upRatio = 0.0;
 	double actualRatio = 0.0;
@@ -226,10 +236,6 @@ public class CircleLayout extends AbstractGraphPartition
 	}
 
 	double oldUpRatio = upRatio;
-
-	// logger.info("upRatio = " + upRatio);		    
-	// message = "upRatio = " + upRatio;
-	// JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
 
 
 	// Move nodes to their position
@@ -310,7 +316,7 @@ public class CircleLayout extends AbstractGraphPartition
 
 	}//while(!success)
 
-    }// layoutPartion(LayoutPartition part)
+    } //updateDisplay
 
 
     /**
@@ -319,7 +325,7 @@ public class CircleLayout extends AbstractGraphPartition
      */    
     public static HashMap<Integer,Integer> loadGraphPartition(LayoutPartition part, boolean selectedOnly){
 
-	CyLogger logger = CyLogger.getLogger(CircleLayout.class);	    
+	CyLogger logger = CyLogger.getLogger(AbstractIgraphLayout.class);	    
 	
 	// Create a reverse mapping
 	int nodeCount = part.nodeCount();
@@ -386,5 +392,5 @@ public class CircleLayout extends AbstractGraphPartition
 	return nodeIdMapping;
     } // loadGraphPartition()
 
-
 }
+

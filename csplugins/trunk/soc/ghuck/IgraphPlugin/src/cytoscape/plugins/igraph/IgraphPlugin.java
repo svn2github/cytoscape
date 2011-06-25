@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package cytoscape.plugins.igraph;
 
+import cytoscape.plugins.igraph.layout.*;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
@@ -53,12 +54,6 @@ public class IgraphPlugin extends CytoscapePlugin {
 	checkLib("igraphWrapper");
 	checkLib("igraph.0");
 
-	// Load igraph
-	//loadIgraph();
-
-	// Use JNA to print a simple message
-	//HelloWorld.hello();
-
         String userDir = System.getProperty("user.dir"); 
 // 	JOptionPane.showMessageDialog( Cytoscape.getDesktop(), "user dir:"+ userDir);	
  	NativeLibrary.addSearchPath("igraphWrapper", userDir + "/plugins");
@@ -77,6 +72,7 @@ public class IgraphPlugin extends CytoscapePlugin {
 
 	// Layouts
 	CyLayouts.addLayout(new CircleLayout(), "Igraph");
+
 		
     }
 
