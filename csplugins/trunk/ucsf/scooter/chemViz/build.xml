@@ -15,6 +15,7 @@
   <property name="doc.dir" location="doc" />
   <property name="test.dir" location="testData" />
   <property name="lib.dir" location="lib" />
+  <property name="jar.dir" location="jar" />
 
   <property name="cytoscape.dir" location="../../../../cytoscape/build" />
   <property name="cytoscape.plugin" value="${cytoscape.dir}/plugins" />
@@ -91,6 +92,7 @@
   <target name="clean" description="clean up">
     <!-- Delete the ${build} and ${src} directory trees -->
     <delete dir="${build.dir}" />
+    <delete dir="${jar.dir}" />
   </target>
 
   <!--
@@ -111,7 +113,7 @@
       <fileset file="${src.dir}/chemViz/*.props" />
    	  <fileset file="resources/plugin.props"/>
     </copy>
-    <jar jarfile="${build.dir}/chemViz.jar">
+    <jar jarfile="${jar.dir}/chemViz.jar">
       <manifest>
         <attribute name="Cytoscape-Plugin" value="chemViz.ChemViz" />
       </manifest>
