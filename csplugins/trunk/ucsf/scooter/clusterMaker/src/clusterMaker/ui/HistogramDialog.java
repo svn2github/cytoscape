@@ -29,7 +29,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
-import clusterMaker.algorithms.ThresholdHeuristic;
+import clusterMaker.algorithms.edgeConverters.ThresholdHeuristic;
 
 public class HistogramDialog extends JDialog implements ActionListener, ComponentListener, HistoChangeListener {
 	double[] inputArray;

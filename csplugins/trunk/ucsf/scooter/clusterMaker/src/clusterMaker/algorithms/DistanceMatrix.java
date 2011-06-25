@@ -18,6 +18,7 @@ import cern.colt.matrix.DoubleFactory2D;
 import cern.colt.matrix.DoubleMatrix2D;
 import cern.colt.matrix.impl.SparseDoubleMatrix2D;
 
+import clusterMaker.algorithms.edgeConverters.EdgeAttributeHandler;
 import clusterMaker.algorithms.edgeConverters.EdgeWeightConverter;
 
 public class DistanceMatrix {

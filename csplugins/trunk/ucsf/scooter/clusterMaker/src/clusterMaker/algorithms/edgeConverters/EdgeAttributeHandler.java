@@ -54,7 +54,7 @@ import clusterMaker.algorithms.edgeConverters.NegLogConverter;
 import clusterMaker.algorithms.edgeConverters.NoneConverter;
 import clusterMaker.algorithms.edgeConverters.SCPSConverter;
 
-import clusterMaker.algorithms.ThresholdHeuristic;
+import clusterMaker.algorithms.edgeConverters.ThresholdHeuristic;
 
 import clusterMaker.ui.HistogramDialog;
 import clusterMaker.ui.HistoChangeListener;
