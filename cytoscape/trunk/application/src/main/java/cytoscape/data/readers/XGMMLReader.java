@@ -714,6 +714,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		// we don't create views by default, but groups should still
 		// exist even when we don't create the view
 		Map<CyNode,List<CyNode>>groupMap = parser.getGroupMap();
+		Map<CyNode,List<CyEdge>>groupEdgeMap = parser.getGroupEdgeMap();
 		if (groupMap != null) {
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
@@ -722,6 +723,8 @@ public class XGMMLReader extends AbstractGraphReader {
 
 			for (CyNode groupNode : groupMap.keySet()) {
 				List<CyNode> childList = groupMap.get(groupNode);
+				List<CyEdge> edgeList = groupEdgeMap.get(groupNode);
+
 				viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(), CyGroup.GROUP_VIEWER_ATTR);
 				CyGroupViewer groupViewer = CyGroupManager.getGroupViewer(viewer);
 				boolean isLocal = false;
@@ -757,6 +760,14 @@ public class XGMMLReader extends AbstractGraphReader {
 					// we let the group viewer handle it
 					if (groupViewer == null)
 						network.hideNode(groupNode);
+				}
+
+				// OK, make sure we have all of our inner and outer edges added
+				for (CyEdge edge: edgeList) {
+					if (childList.contains(edge.getSource()) && childList.contains(edge.getTarget()))
+						newGroup.addInnerEdge(edge);
+					else
+						newGroup.addOuterEdge(edge);
 				}
 			}
 

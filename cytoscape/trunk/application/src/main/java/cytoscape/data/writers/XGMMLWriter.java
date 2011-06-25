@@ -665,10 +665,10 @@ public class XGMMLWriter {
 			}
 			for (CyEdge edge: group.getOuterEdges()) {
 				logger.debug("Writing outer edge "+edge.getIdentifier()+" for group "+group);
-				if (!edgeMap.containsKey(edge)) {
+				// if (!edgeMap.containsKey(edge)) {
 					edgeMap.put(edge,edge);
 					writeEdge(edge, false);
-				}
+				// }
 			}
 
 			depth--; writeElement("</graph>\n");

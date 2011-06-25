@@ -153,6 +153,7 @@ class XGMMLParser extends DefaultHandler {
 	private HashMap<String,CyNode> idMap = null;
 	/* Map of group nodes to children */
 	private HashMap<CyNode,List<CyNode>> groupMap = null;
+	private HashMap<CyNode,List<CyEdge>> groupEdgeMap = null;
 	/* List of nodes we weren't able to resolve */
 	private HashMap<CyNode, CyEdge> unresolvedNodeMap = null;
 	/* List of edges we weren't able to resolve */
@@ -623,6 +624,10 @@ class XGMMLParser extends DefaultHandler {
 		return groupMap;
 	}
 
+	HashMap<CyNode, List<CyEdge>> getGroupEdgeMap() {
+		return groupEdgeMap;
+	}
+
 
 	void setMetaData(CyNetwork network) {
 		MetadataParser mdp = new MetadataParser(network);
@@ -972,6 +977,13 @@ class XGMMLParser extends DefaultHandler {
 			} else if (sourceAlias != null && targetAlias != null) {
 				currentEdge = createEdge(sourceAlias, targetAlias, interaction, label);
 			}
+
+			// If we're part of a group, this edge needs to be remembered as (possibly) an
+			// inner or outer edge
+			if (currentGroupNode != null) {
+				List<CyEdge> groupEdges = groupEdgeMap.get(currentGroupNode);
+				groupEdges.add(currentEdge);
+			}
 			
 			return current;
 		}
@@ -1024,9 +1036,11 @@ class XGMMLParser extends DefaultHandler {
 	class handleGroup implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			if (groupMap == null) groupMap = new HashMap<CyNode, List<CyNode>>();
+			if (groupEdgeMap == null) groupEdgeMap = new HashMap<CyNode, List<CyEdge>>();
 			if (currentGroupNode != null) groupStack.push(currentGroupNode);
 			currentGroupNode = currentNode;
 			groupMap.put(currentGroupNode, new ArrayList<CyNode>());
+			groupEdgeMap.put(currentGroupNode, new ArrayList<CyEdge>());
 			// logger.debug("Found group: "+currentNode);
 			return current;
 		}
