@@ -1,9 +1,9 @@
 Index: src/main/resources/META-INF/spring/bundle-context-osgi.xml
 ===================================================================
---- src/main/resources/META-INF/spring/bundle-context-osgi.xml	2011-06-21 05:51:36.143000000 -0400
-+++ src/main/resources/META-INF/spring/bundle-context-osgi.xml	2011-06-21 07:50:08.281446200 -0400
-@@ -34,14 +34,14 @@
- 		interface="org.cytoscape.model.CyTableRowUpdateService" />
+--- src/main/resources/META-INF/spring/bundle-context-osgi.xml	(revision 25942)
++++ src/main/resources/META-INF/spring/bundle-context-osgi.xml	(working copy)
+@@ -31,14 +31,14 @@
+ 		interface="org.cytoscape.work.swing.GUITaskManager" />
  
  	<!-- Rendering Engine factory for main network views -->
 -	<osgi:reference id="dingRenderingEngineFactoryServiceRef"

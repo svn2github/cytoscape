@@ -1,7 +1,7 @@
 Index: src/main/java/org/cytoscape/internal/view/NetworkViewManager.java
 ===================================================================
---- src/main/java/org/cytoscape/internal/view/NetworkViewManager.java	2011-06-22 07:41:30.742000000 -0400
-+++ src/main/java/org/cytoscape/internal/view/NetworkViewManager.java	2011-06-22 08:39:28.721191500 -0400
+--- src/main/java/org/cytoscape/internal/view/NetworkViewManager.java	(revision 25942)
++++ src/main/java/org/cytoscape/internal/view/NetworkViewManager.java	(working copy)
 @@ -124,7 +124,7 @@
  
  	// TODO: for now, use this as default. But in the future, we should provide

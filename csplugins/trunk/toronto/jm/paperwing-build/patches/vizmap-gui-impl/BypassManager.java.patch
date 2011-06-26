@@ -16,7 +16,7 @@ Index: src/main/java/org/cytoscape/view/vizmap/gui/internal/bypass/BypassManager
  
  	public void addBypass(RenderingEngineFactory<?> factory, Map props) {
 -		if (props.containsValue("ding") == false)
-+		if (props.containsValue(DEF_RENDERER) == false)
++		if (props.containsValue("wind") == false)
  			return;
  
  		final VisualLexicon lexicon = factory.getVisualLexicon();

@@ -1,8 +1,8 @@
 Index: src/main/resources/META-INF/spring/bundle-context.xml
 ===================================================================
---- src/main/resources/META-INF/spring/bundle-context.xml	2011-06-20 22:58:52.766000000 -0400
-+++ src/main/resources/META-INF/spring/bundle-context.xml	2011-06-20 07:17:38.468000000 -0400
-@@ -88,7 +88,7 @@
+--- src/main/resources/META-INF/spring/bundle-context.xml	(revision 25942)
++++ src/main/resources/META-INF/spring/bundle-context.xml	(working copy)
+@@ -87,7 +87,7 @@
  	<bean name="birdsEyeViewHandler" class="org.cytoscape.internal.view.BirdsEyeViewHandler">
  		<constructor-arg ref="cyApplicationManagerServiceRef" />
  		<constructor-arg ref="networkViewManager" />
