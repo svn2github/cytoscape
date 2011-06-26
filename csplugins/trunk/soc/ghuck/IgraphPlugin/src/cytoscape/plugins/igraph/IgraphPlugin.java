@@ -73,6 +73,8 @@ public class IgraphPlugin extends CytoscapePlugin {
 	// Layouts
 	CyLayouts.addLayout(new CircleLayout(), "Igraph");
 
+	CyLayouts.addLayout(new StarLayout(), "Igraph");
+
 		
     }
 

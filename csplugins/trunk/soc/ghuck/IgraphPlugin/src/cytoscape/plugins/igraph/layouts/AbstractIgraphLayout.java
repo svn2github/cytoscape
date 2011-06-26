@@ -65,7 +65,10 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
     /**
      * Do the layout on a graph alrealy loaded into igraph
      */
-    public abstract int layout(double[] x, double[] y);
+    public abstract int layout(double[] x, 
+			       double[] y, 
+			       LayoutPartition part, 
+			       HashMap<Integer,Integer> mapping);
 
     /**
      * getName is used to construct property strings
@@ -184,7 +187,7 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
 	taskMonitor.setStatus("Calling native code: Partition: " + part.getPartitionNumber());
 
 	// Do Layout
-	layout(x,y);
+	layout(x,y, part, mapping);
 
 	// Check whether it has been canceled by the user
 	if (canceled)

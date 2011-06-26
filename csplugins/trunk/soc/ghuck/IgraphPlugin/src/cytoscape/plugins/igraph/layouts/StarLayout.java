@@ -26,11 +26,11 @@ import csplugins.layout.LayoutPartition;
 
 import java.util.*;
 
-public class CircleLayout extends AbstractIgraphLayout {
+public class StarLayout extends AbstractIgraphLayout {
 
-    public CircleLayout() {
+    public StarLayout() {
 	super();
-	logger = CyLogger.getLogger(CircleLayout.class);
+	logger = CyLogger.getLogger(StarLayout.class);
 	
 	layoutProperties = new LayoutProperties(getName());
 	initialize_properties();
@@ -43,11 +43,12 @@ public class CircleLayout extends AbstractIgraphLayout {
 		      double[] y, 
 		      LayoutPartition part, 
 		      HashMap<Integer,Integer> mapping) {
+
 	// Simplify graph
 	IgraphInterface.simplify();
 	
  	// Make native method call
-	IgraphInterface.layoutCircle(x, y);
+	IgraphInterface.starLayout(x, y, mapping.keySet().iterator().next());
 
 	return 1;
     }
@@ -57,7 +58,7 @@ public class CircleLayout extends AbstractIgraphLayout {
      * for this layout.
      */
     public String getName() {
-	return "Igraph Circle Layout";
+	return "Igraph Star Layout";
     }
     
     /**
@@ -65,7 +66,7 @@ public class CircleLayout extends AbstractIgraphLayout {
      * of the layout
      */
     public String toString() {
-	return "Circle Layout";
+	return "Star Layout";
     }
 
 }

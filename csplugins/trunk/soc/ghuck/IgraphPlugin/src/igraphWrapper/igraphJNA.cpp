@@ -12,12 +12,12 @@
 using namespace std;
 
 
-//Testing passing of an integer
-//Try global variables just in case
+// Testing passing of an integer
+// Try global variables just in case
 int count = 0;
 
-//use a global graph object
-//Make sure there's only one active graph @ a time to reduce confusions
+// Use a global graph object
+// Make sure there's only one active graph @ a time to reduce confusions
 igraph_t g;
 int existsGraph = 0;
 
@@ -43,14 +43,6 @@ void createGraph(int edgeArray[], int length){
   igraph_vector_destroy(&v);
 }
 
-//Boolean, test whether the current graph is simple
-//Can only be called when a graph has been loaded
-// bool isSimple(){
-// 	igraph_bool_t simple;
-// 	igraph_is_simple(&g, &simple);
-// 	return (bool)simple;
-// 	//return 1;
-// }
 
 bool isConnected(){
 	igraph_bool_t connected;
@@ -61,7 +53,89 @@ bool isConnected(){
 void simplify(){
   igraph_simplify(&g, 1, 1, 0);
 }
+
+
+
+void layoutCircle(double x[], double y[]){
+	igraph_matrix_t locs;
+	igraph_matrix_init(&locs, 0, 0);
+
+	// Execute layout
+	igraph_layout_circle(&g, &locs);
+	
+	long int nRow = igraph_matrix_nrow(&locs);
+	long int nCol = igraph_matrix_ncol(&locs);
+	for(int i=0; i<nRow; i++){
+		x[i] = MATRIX(locs, i, 0);
+		y[i] = MATRIX(locs, i, 1);
+	}
+}
+
+void starLayout(double x[], double y[], int centerId) {
+
+	igraph_matrix_t locs;
+	igraph_matrix_init(&locs, 0, 0);
+
+	// Execute layout
+	igraph_layout_star(&g, &locs, centerId, NULL);
+
+	long int nRow = igraph_matrix_nrow(&locs);
+	long int nCol = igraph_matrix_ncol(&locs);
+	for(int i=0; i<nRow; i++){
+		x[i] = MATRIX(locs, i, 0);
+		y[i] = MATRIX(locs, i, 1);
+	}
+
+
+}
+
+// Fruchterman - Reingold Layout
+// void layoutFruchterman(double x[], 
+// 		       double y[], 
+// 		       int iter, 
+// 		       double maxDelta, 
+// 		       double area, 
+// 		       double coolExp, 
+// 		       double repulserad, 
+// 		       bool useSeed){
+// 	long int vcount = igraph_vcount(&g);
+// 	igraph_matrix_t locs;
+// 	igraph_matrix_init(&locs, vcount, 2); 
+// 	for(int i=0; i<vcount; i++){
+// 		MATRIX(locs, i, 0) = x[i];
+// 		MATRIX(locs, i, 1) = y[i];
+// 	}
+
+// 	igraph_layout_fruchterman_reingold(&g, 
+// 					   &locs, 
+// 					   iter, 
+// 					   maxDelta, 
+// 					   area, 
+// 					   coolExp, 
+// 					   repulserad, 
+// 					   useSeed, 
+// 					   0);
+// 	for(int i=0; i<vcount; i++){
+// 		x[i] = MATRIX(locs, i, 0);
+// 		y[i] = MATRIX(locs, i, 1);
+// 	}	
+// }
+
+
+
+
 //////////////////////////////
+
+//Boolean, test whether the current graph is simple
+//Can only be called when a graph has been loaded
+// bool isSimple(){
+// 	igraph_bool_t simple;
+// 	igraph_is_simple(&g, &simple);
+// 	return (bool)simple;
+// 	//return 1;
+// }
+
+
 // void clusters(int membership[], int csize[], int* numCluster){
 // 	igraph_vector_t membership_v;
 // 	igraph_vector_t csize_v;
@@ -311,19 +385,15 @@ int nodeCount(){
 // }
 
 
-void layoutCircle(double x[], double y[]){
-	igraph_matrix_t locs;
-	igraph_matrix_init(&locs, 0, 0);
 
-	igraph_layout_circle(&g, &locs);
-	
-	long int nRow = igraph_matrix_nrow(&locs);
-	long int nCol = igraph_matrix_ncol(&locs);
-	for(int i=0; i<nRow; i++){
-		x[i] = MATRIX(locs, i, 0);
-		y[i] = MATRIX(locs, i, 1);
-	}
-}
+
+
+// int igraph_layout_fruchterman_reingold(const igraph_t *graph, igraph_matrix_t *res,
+// 				       igraph_integer_t niter, igraph_real_t maxdelta,
+// 				       igraph_real_t area, igraph_real_t coolexp, 
+// 				       igraph_real_t repulserad, igraph_bool_t use_seed,
+// 				       const igraph_vector_t *weight);
+
 
 
 // void layoutRandom(double x[], double y[]){
@@ -408,22 +478,6 @@ void layoutCircle(double x[], double y[]){
 	
 // }
 
-// ///
-// void layoutFruchterman(double x[], double y[], int iter, double maxDelta, double area, double coolExp, double repulserad, bool useSeed){
-// 	long int vcount = igraph_vcount(&g);
-// 	igraph_matrix_t locs;
-// 	igraph_matrix_init(&locs, vcount, 2); 
-// 	for(int i=0; i<vcount; i++){
-// 		MATRIX(locs, i, 0) = x[i];
-// 		MATRIX(locs, i, 1) = y[i];
-// 	}
-
-// 	igraph_layout_fruchterman_reingold(&g, &locs, iter, maxDelta, area, coolExp, repulserad, useSeed, 0);
-// 	for(int i=0; i<vcount; i++){
-// 		x[i] = MATRIX(locs, i, 0);
-// 		y[i] = MATRIX(locs, i, 1);
-// 	}	
-// }
 
 // //
 // void layoutKamadaKawai(double x[], double y[], int iter, double sigma, double initTemp, double coolExp, double kkConsts, bool useSeed){
