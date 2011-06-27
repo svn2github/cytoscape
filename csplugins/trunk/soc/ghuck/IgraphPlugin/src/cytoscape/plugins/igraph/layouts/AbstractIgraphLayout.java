@@ -157,6 +157,11 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
 	if (canceled)
 	    return;
 
+	// Check whether there are nodes to layout or not
+	if ( (selectedOnly && (part.nodeCount() - part.lockedNodeCount()) <= 1) 
+	     || part.nodeCount() <= 1 ) 
+	    return;
+
 	// Show message on the task monitor
 	taskMonitor.setStatus("Initializing: Partition: " + part.getPartitionNumber());
 	

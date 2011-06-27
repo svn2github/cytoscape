@@ -47,8 +47,11 @@ public class StarLayout extends AbstractIgraphLayout {
 	// Simplify graph
 	IgraphInterface.simplify();
 	
+	// Get center node ID
+	int centerId = mapping.values().iterator().next();
+
  	// Make native method call
-	IgraphInterface.starLayout(x, y, mapping.keySet().iterator().next());
+	IgraphInterface.starLayout(x, y, centerId);
 
 	return 1;
     }
