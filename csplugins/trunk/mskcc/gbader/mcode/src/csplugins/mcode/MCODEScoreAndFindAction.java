@@ -8,6 +8,7 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
 import giny.model.Node;
 
 import javax.swing.*;
@@ -241,9 +242,11 @@ public class MCODEScoreAndFindAction implements ActionListener {
             cytoPanel.setSelectedIndex(index);
             cytoPanel.setState(CytoPanelState.DOCK);
 
-            //We also make sure that the MCODE visual style is applied whenever new results are produced
+            // Add the MCODE visual style but don't make it active by default.
             VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+            VisualStyle currentStyle = vmm.getVisualStyle();
             vmm.setVisualStyle(MCODEVS);
+            vmm.setVisualStyle(currentStyle);
             vmm.applyAppearances();
         }
     }
