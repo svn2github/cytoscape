@@ -131,23 +131,23 @@ import org.slf4j.LoggerFactory;
 
 /**
  * MainUI for Table Import.
- * 
+ *
  * TODO: Refactor to make this more generic component.
  *
  */
 public class ImportTablePanel extends JPanel implements PropertyChangeListener, TableModelListener {
 
 	private static final long serialVersionUID = 7356378931577386260L;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ImportTablePanel.class);
 
 	/**
 	 * This dialog GUI will be switched based on the following parameters:
-	 * 
+	 *
 	 * SIMPLE_ATTRIBUTE_IMPORT: Import attributes in text table.
 	 * ONTOLOGY_AND_ANNOTATION_IMPORT: Load ontology and map attributes in text
 	 * table.
-	 * 
+	 *
 	 * NETWORK_IMPORT: Import text table as a network.
 	 */
 	public static final int SIMPLE_ATTRIBUTE_IMPORT = 1;
@@ -168,7 +168,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 	public static final String ATTRIBUTE_NAME_CHANGED = "aliasTableChanged";
 	public static final String SHEET_CHANGED = "sheetChanged";
 	public static final String NETWORK_IMPORT_TEMPLATE_CHANGED = "networkImportTemplateChanged";
-	
+
 	private static final String[] keyTable = { "Alias?", "Column (Attribute Name)", "Data Type" };
 	private static final String ID = "name";
 
@@ -181,7 +181,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 	// Data Type
 	private org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType objType;
 	private final int dialogType;
-	
+
 	protected Map<String, String> annotationUrlMap;
 	protected Map<String, String> annotationFormatMap;
 	protected Map<String, Map<String, String>> annotationAttributesMap;
@@ -207,25 +207,25 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 	private CyTable selectedAttributes;
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private File[] inputFiles;
-	
+
 	private CyNetwork network;
 
 	private InputStream is;
 	private final String fileType;
 	private String inputName = null;
-	
+
 	private Workbook workbook = null;
-	
+
 	private OntologyPanelBuilder panelBuilder;
-	
+
 	private CyProperty<Bookmarks> bookmarksProp;
 	private BookmarksUtil bkUtil;
-	
+
 	private final InputStreamTaskFactory factory;
 	private final TaskManager taskManager;
-	
+
 	private final CyNetworkManager manager;
-	
+
 	private final CyTableFactory tableFactory;
 
 	public ImportTablePanel(int dialogType, final InputStream is, String fileType, String inputName,
@@ -236,7 +236,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		this(dialogType, is, fileType, bookmarksProp, bkUtil, taskManager, factory, manager, tableFactory);
 		this.inputName = inputName;
 	}
-	
+
 	public ImportTablePanel(int dialogType, final InputStream is, String fileType,
 			final CyProperty<Bookmarks> bookmarksProp, final BookmarksUtil bkUtil, final TaskManager taskManager,
 			final InputStreamTaskFactory factory, final CyNetworkManager manager, final CyTableFactory tableFactory)
@@ -246,7 +246,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		this.factory = factory;
 		this.manager = manager;
 		this.tableFactory = tableFactory;
-		
+
 		if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
 			if (bookmarksProp == null)
 				throw new NullPointerException("Bookmark Property is null.");
@@ -255,15 +255,15 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 
 			this.bookmarksProp = bookmarksProp;
 			this.bkUtil = bkUtil;
-			
+
 		}
 		this.is = is;
 		this.fileType = fileType;
 		selectedAttributes = null;
-				
+
 		network = CytoscapeServices.appMgr.getCurrentNetwork();
 		if (network != null){
-			selectedAttributes = CytoscapeServices.tblMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);			
+			selectedAttributes = CytoscapeServices.tblMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);
 		}
 		this.objType = NODE;
 		this.dialogType = dialogType;
@@ -284,23 +284,23 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		attributeDataTypes = new ArrayList<Byte>();
 
 		initComponents();
-		
+
 		// Hide two unwanted button
 		this.importButton.setVisible(false);
-		this.cancelButton.setVisible(false);		
-		
+		this.cancelButton.setVisible(false);
+
 		updateComponents();
 
 		previewPanel.addPropertyChangeListener(this);
-		
+
 		//Don't know why this panel is disabled at start up
 		this.attributeNamePanel.setEnabled(true);
-		
+
 		// Hide input file and use inputStream
 		this.attributeFileLabel.setVisible(false);
 		this.selectAttributeFileButton.setVisible(false);
 		this.targetDataSourceTextField.setVisible(false);
-		
+
 		//Case import network
 		if (this.dialogType == NETWORK_IMPORT) {
 			this.edgeRadioButton.setVisible(false);
@@ -308,18 +308,15 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		}
 
 		// Case import node/edge attribute
-		if (this.dialogType == SIMPLE_ATTRIBUTE_IMPORT) {
+		if (this.dialogType == SIMPLE_ATTRIBUTE_IMPORT)
 			this.networkRadioButton.setVisible(false);
-			// we will handle edge attribute import late
-			this.edgeRadioButton.setVisible(false); 
-		}
-		
+
 		this.helpButton.setVisible(false);
-		
+
 		setPreviewPanel(null);
 	}
-	
-	
+
+
 	public void addPropertyChangeListener(PropertyChangeListener l) {
 		if(changes == null) return;
 		changes.addPropertyChangeListener(l);
@@ -646,7 +643,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 							.add(attribuiteLabel).add(nodeRadioButton).add(edgeRadioButton).add(networkRadioButton)));
 		}
 
-		
+
 		if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
 			panelBuilder = new OntologyPanelBuilder(this, bookmarksProp, bkUtil, taskManager, factory, manager, tableFactory);
 			panelBuilder.buildPanel();
@@ -663,7 +660,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 						try {
 							setPreviewPanel(evt);
 						} catch (IOException e) {
-							
+
 							JOptionPane.showMessageDialog(ImportTablePanel.this, "<html>Could not read selected file.<p>See <b>Help->Error Dialog</b> for further details.</html>", "ERROR", JOptionPane.ERROR_MESSAGE);
 							logger.warn("Could not read selected file.", e);
 						}
@@ -1251,7 +1248,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		// Update primary key index.
 		keyInFile = primaryKeyComboBox.getSelectedIndex();
 
-		// Update 
+		// Update
 		previewPanel.getPreviewTable()
 		            .setDefaultRenderer(Object.class, getRenderer(previewPanel.getFileType()));
 
@@ -1299,20 +1296,20 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 
 	private void attributeRadioButtonActionPerformed(ActionEvent evt) {
 		CyNetwork network = CytoscapeServices.appMgr.getCurrentNetwork();
-		
+
 		if (nodeRadioButton.isSelected()) {
 			//selectedAttributes = Cytoscape.getNodeAttributes();
 			if (network != null){
-				selectedAttributes = CytoscapeServices.tblMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);			
+				selectedAttributes = CytoscapeServices.tblMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);
 			}
-			
+
 			objType = NODE;
 		} else if (edgeRadioButton.isSelected()) {
 			//selectedAttributes = Cytoscape.getEdgeAttributes();
 			if (network != null){
-				selectedAttributes = CytoscapeServices.tblMgr.getTableMap(CyEdge.class, network).get(CyNetwork.DEFAULT_ATTRS);			
+				selectedAttributes = CytoscapeServices.tblMgr.getTableMap(CyEdge.class, network).get(CyNetwork.DEFAULT_ATTRS);
 			}
-			
+
 			objType = EDGE;
 		} else {
 			//selectedAttributes = Cytoscape.getNetworkAttributes();
@@ -1339,7 +1336,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 
 		JDialog dlg = (JDialog)this.getParent().getParent().getParent().getParent().getParent().getParent();
 		dlg.pack();
-		
+
 		//pack();
 	}
 
@@ -1364,7 +1361,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		setKeyList();
 	}
 
-	
+
 
 	private void transferNameCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		final DefaultTableModel model = (DefaultTableModel) previewPanel.getPreviewTable().getModel();
@@ -1416,7 +1413,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		repaint();
 	}
 
-	
+
 	/**
 	 * Load from the data source.<br>
 	 *
@@ -1426,7 +1423,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 	public void importTable() throws Exception {
 		if (checkDataSourceError() == false)
 			return;
-		
+
 		boolean importAll = importAllCheckBox.isSelected();
 
 		/*
@@ -1499,7 +1496,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		//final byte[] attributeTypes = new byte[previewPanel.getPreviewTable()
 		// .getColumnCount()];
 		final Byte[] test = previewPanel.getDataTypes(previewPanel.getSelectedSheetName());
-				
+
 		final Byte[] attributeTypes = new Byte[test.length];
 
 		for (int i = 0; i < test.length; i++) {
@@ -1547,10 +1544,10 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		switch (dialogType) {
 			case SIMPLE_ATTRIBUTE_IMPORT:
 				// Case 1: Attribute table import.
-				
+
 				// Extract URL from the text table.
 				//final URL source = new URL(targetDataSourceTextField.getText());
-				
+
 				// Make sure primary key index is up-to-date.
 				keyInFile = primaryKeyComboBox.getSelectedIndex();
 
@@ -1566,40 +1563,38 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 					del = checkDelimiter();
 				//}
 
-				//TODO -- Need to fix problem in AttributeMappingParameters				
+				//TODO -- Need to fix problem in AttributeMappingParameters
 				mapping = new AttributeMappingParameters(objType, del,
-														 listDelimiter, keyInFile,
-														 mappingAttribute, aliasList,
-														 attributeNames, attributeTypes,
-														 listDataTypes, importFlag,
-														 caseSensitive);
-				
-				//if (source.toString().endsWith(SupportedFileType.EXCEL.getExtension()) || 
-				//		source.toString().endsWith(SupportedFileType.OOXML.getExtension())) {
-				if (this.fileType.equalsIgnoreCase(SupportedFileType.EXCEL.getExtension()) || 
-							this.fileType.equalsIgnoreCase(SupportedFileType.OOXML.getExtension())) {
+									 listDelimiter, keyInFile,
+									 mappingAttribute, aliasList,
+									 attributeNames, attributeTypes,
+									 listDataTypes, importFlag,
+									 caseSensitive);
 
-					if(workbook == null)
-						throw new NullPointerException("Wrokbook object is null.");
-					
+				//if (source.toString().endsWith(SupportedFileType.EXCEL.getExtension()) ||
+				//		source.toString().endsWith(SupportedFileType.OOXML.getExtension())) {
+				if (this.fileType.equalsIgnoreCase(SupportedFileType.EXCEL.getExtension()) ||
+				    this.fileType.equalsIgnoreCase(SupportedFileType.OOXML.getExtension()))
+				{
+					if (workbook == null)
+						throw new NullPointerException("Wookbook object is null!");
+
 					// Load all sheets in the table
 					for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
 						final Sheet sheet = workbook.getSheetAt(i);
 
 						loadAnnotation(new ExcelAttributeSheetReader(sheet, mapping,
 						                                             startLineNumber,
-																	 importAll),
-																	 null);
-																	 //source.toString());
+											     importAll),
+							       null);
+						//source.toString());
 					}
 				} else {
 					loadAnnotation(new DefaultAttributeTableReader(null, mapping,
-																   startLineNumber,
-																   null, importAll, this.is),
-																   null);
-																   //source.toString());
+										       startLineNumber,
+										       null, importAll, this.is),
+						       null);
 				}
-
 				break;
 
 			case ONTOLOGY_AND_ANNOTATION_IMPORT:
@@ -1622,7 +1617,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 				//}
 
 				//final URL networkSource = new URL(targetDataSourceTextField.getText());
-				
+
 				final int sourceColumnIndex = networkImportPanel.getSourceIndex();
 				final int targetColumnIndex = networkImportPanel.getTargetIndex();
 
@@ -1645,81 +1640,44 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 				//boolean multi = false;
 
 				//System.out.println("ImportTablePanel.importTable(): sources.length ="+ sources.length);
-				
+
 				//if (sources.length == 1)
 					//multi = false;
 
 				//for (int i = 0; i < sources.length; i++) {
 				//	if (sources[i].toString().endsWith(SupportedFileType.EXCEL.getExtension()) || sources[i].toString().endsWith(SupportedFileType.OOXML.getExtension())) {
-						
-				if (this.fileType.equalsIgnoreCase(SupportedFileType.EXCEL.getExtension()) || 
-								this.fileType.equalsIgnoreCase(SupportedFileType.OOXML.getExtension())) {
 
-						// Extract name from the sheet name.
-						//InputStream is = null;
-						//Workbook wb = null;
-						//try {
-							//is = sources[i].openStream();
-							
-							//wb = WorkbookFactory.create(is);
-						//}
-						//catch (Exception e){
-						//	e.printStackTrace();
-						//}
-						//finally {
-						//	if (is != null) {
-						//		is.close();
-						//	}
-						//}
-						
-						Sheet sheet = workbook.getSheetAt(0);
-						networkName = workbook.getSheetName(0);
-
-						reader = new ExcelNetworkSheetReader(networkName, sheet, nmp,
+				if (this.fileType.equalsIgnoreCase(SupportedFileType.EXCEL.getExtension()) ||
+				    this.fileType.equalsIgnoreCase(SupportedFileType.OOXML.getExtension()))
+				{
+					Sheet sheet = workbook.getSheetAt(0);
+					networkName = workbook.getSheetName(0);
+					
+					reader = new ExcelNetworkSheetReader(networkName, sheet, nmp,
 						                                     startLineNumber);
-					} else {						
-						// Get name from URL.
-						if ((commentChar != null) && (commentChar.length() != 0)
-						    && transferNameCheckBox.isSelected()) {
-							startLineNumber++;
-						}
-						
-						//final String[] parts = sources[i].toString().split("/");
-						//networkName = parts[parts.length - 1];
-						networkName = this.inputName;
-						
-						
-						reader = new NetworkTableReader(networkName, this.is, nmp,
-						                                startLineNumber, commentChar);
-					}
-					loadNetwork(reader);
-				//}
+				} else {
+					// Get name from URL.
+					if ((commentChar != null) && (commentChar.length() != 0)
+					    && transferNameCheckBox.isSelected())
+						startLineNumber++;
 
-				//if (multi) {
-					//StringBuilder builder = new StringBuilder();
-					//builder.append("The following networks are loaded:\n\n");
-
-					//for (File f : inputFiles) {
-						//builder.append(f.getName() + "\n");
-					//}
-
-					//JOptionPane.showMessageDialog(this, builder.toString(),
-					//                              "Multiple Networks Loaded",
-					//                              JOptionPane.INFORMATION_MESSAGE);
-				//}
-
+					networkName = this.inputName;
+					reader = new NetworkTableReader(networkName, this.is, nmp,
+									startLineNumber, commentChar);
+				}
+				loadNetwork(reader);
 				break;
 
 			default:
 				return;
 		}
 	}
-	
+
 	private void setPreviewPanel(ActionEvent evt) throws IOException {
 
 		/*
 		final File[] multiSource = CytoscapeServices.fileUtil.getFiles(this,
-				"Select local file", 
+				"Select local file",
 				CytoscapeServices.fileUtil.LOAD);
 
 		if ((multiSource == null) || (multiSource[0] == null))
@@ -1749,7 +1707,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		readAnnotationForPreview(null, checkDelimiter());
 		transferNameCheckBox.setEnabled(true);
 		transferNameCheckBox.setSelected(false);
-		
+
 		if (previewPanel.getPreviewTable() == null) {
 //			JLabel label = new JLabel("File is broken or empty!");
 //			label.setForeground(Color.RED);
@@ -1777,7 +1735,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		//((JDialog)this.getParent().getParent().getParent().getParent().getParent().getParent()).pack();
 	}
 
-	
+
 	private void reloadButtonActionPerformed(java.awt.event.ActionEvent evt)
 	    throws IOException {
 		displayPreview();
@@ -1844,7 +1802,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		return aliasList;
 	}
 
-	
+
 	private void displayPreview() throws IOException {
 		final String selectedSourceName;
 		//final URL sourceURL;
@@ -1862,7 +1820,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 	}
 
 	private void updateComponents() throws JAXBException, IOException {
-		
+
 		if (dialogType == SIMPLE_ATTRIBUTE_IMPORT) {
 			//setTitle("Import Annotation File");
 			titleLabel.setText("Import Attribute from Table");
@@ -1872,7 +1830,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 			//setTitle("Import Ontology Data and Annotations");
 			titleLabel.setText("Import Ontology and Annotation");
 			ontology2annotationPanel.setVisible(false);
-			
+
 			// Update available file lists.
 			panelBuilder.setOntologyComboBox();
 			panelBuilder.setAnnotationComboBox();
@@ -1898,7 +1856,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 			// do nothing
 		}
 		else { // attribute import
-			updateMappingAttributeComboBox();			
+			updateMappingAttributeComboBox();
 		}
 
 		setStatusBar("-", "-", "File Size: Unknown");
@@ -1984,7 +1942,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 
 	private void setOntologyInAnnotationComboBox() {
 		final DefaultTableModel model = (DefaultTableModel) previewPanel.getPreviewTable().getModel();
-		
+
 		if ((model != null) && (model.getColumnCount() > 0)) {
 			ontologyInAnnotationComboBox.removeAllItems();
 
@@ -1998,18 +1956,18 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		ontologyInAnnotationComboBox.setEnabled(true);
 	}
 
-	
+
 
 
 	/**
 	 * Display preview table
-	 * 
+	 *
 	 * @param sourceURL
 	 * @param delimiters
 	 * @throws IOException
 	 */
 	protected void readAnnotationForPreview(URL sourceURL, List<String> delimiters) throws IOException {
-		
+
 		/*
 		 * Check number of lines we should load. if -1, load everything in the
 		 * file.
@@ -2026,7 +1984,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		 */
 		final String commentChar = commentLineTextField.getText();
 		final int startLine = Integer.parseInt(startRowSpinner.getValue().toString());
-		
+
 		// Load Spreadsheet data for preview.
 		if(fileType != null && (fileType.equalsIgnoreCase(
 				SupportedFileType.EXCEL.getExtension())
@@ -2056,11 +2014,11 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		if (!is_isClosed){
 			this.is.mark(Integer.MAX_VALUE);
 		}
-		
+
 
 		previewPanel.setPreviewTable(workbook, this.is, this.fileType, sourceURL, delimiters, null, previewSize,
 				commentChar, startLine - 1);
-		
+
 		// Reset the inputStream to the mark after preview
 		if (!is_isClosed){
 				this.is.reset();
@@ -2079,7 +2037,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 
 		listDataTypes = previewPanel.getCurrentListDataTypes();
 
-		
+
 		if (dialogType == NETWORK_IMPORT) {
 
 			final String[] columnNames = new String[previewPanel.getPreviewTable().getColumnCount()];
@@ -2087,8 +2045,8 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 				columnNames[i] = previewPanel.getPreviewTable().getColumnName(i);
 
 			networkImportPanel.setComboBoxes(columnNames);
-			
-			if (this.fileType.equalsIgnoreCase(SupportedFileType.EXCEL.getExtension()) || 
+
+			if (this.fileType.equalsIgnoreCase(SupportedFileType.EXCEL.getExtension()) ||
 					this.fileType.equalsIgnoreCase(SupportedFileType.OOXML.getExtension())) {
 				switchDelimiterCheckBoxes(false);
 			} else {
@@ -2101,10 +2059,10 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 			rend.setSourceIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
 			rend.setTargetIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
 			rend.setInteractionIndex(AttributePreviewTableCellRenderer.PARAMETER_NOT_EXIST);
-		} else {			
+		} else {
 			for (int i = 0; i < previewPanel.getTableCount(); i++) {
 				final int columnCount = previewPanel.getPreviewTable(i).getColumnCount();
-				
+
 				aliasTableModelMap.put(previewPanel.getSheetName(i),
 				                       new AliasTableModel(keyTable, columnCount));
 
@@ -2127,7 +2085,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 
 				updatePrimaryKeyComboBox();
 			}
-						
+
 			setOntologyInAnnotationComboBox();
 			/*
 			 * If this is not an Excel file, enable delimiter checkboxes.
@@ -2157,7 +2115,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 			 */
 			//setStatusBar(sourceURL);
 		}
-		
+
 		reloadButton.setEnabled(true);
 		startRowSpinner.setEnabled(true);
 		startRowLabel.setEnabled(true);
@@ -2199,13 +2157,13 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 
 	private FileTypes checkFileType(URL source) {
 		//String[] parts = source.toString().split("/");
-		
+
 		//final String fileName = parts[parts.length - 1];
 
 		//if (fileName.startsWith("gene_association")
 		//    && (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT)) {
 		//	return FileTypes.GENE_ASSOCIATION_FILE;
-		//} else 
+		//} else
 		if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
 			return FileTypes.CUSTOM_ANNOTATION_FILE;
 		} else if (dialogType == NETWORK_IMPORT) {
@@ -2261,9 +2219,9 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		}
 
 		if (CytoscapeServices.appMgr.getCurrentNetwork() == null){
-			return;	
+			return;
 		}
-		
+
 		String selectedKeyAttribute = mappingAttributeComboBox.getSelectedItem().toString();
 
 		Iterator it;
@@ -2272,7 +2230,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 
 		//TODO -- setKeyList
 		if (selectedKeyAttribute.equals(ID)) {
-			
+
 			if (objType == NODE) {
 				//it = Cytoscape.getRootGraph().nodesIterator();
 				it = network.getNodeList().iterator();
@@ -2294,11 +2252,11 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 				//}
 			}
 		} else {
-			
+
 			//TODO
 			/*
 			final byte attrType = selectedAttributes.getType(selectedKeyAttribute);
-			
+
 			Object value = null;
 
 			Iterator attrIt = selectedAttributes.getMultiHashMap()
@@ -2310,17 +2268,17 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 			Boolean boolValue = false;
 			List listValue = null;
 
-			
+
 			while (attrIt.hasNext()) {
 				value = attrIt.next();
 
-			
+
 				switch (attrType) {
 					case AttributeTypes.TYPE_STRING:
 						//stringValue = selectedAttributes.getStringAttribute((String) value,
 						//                                                    selectedKeyAttribute);
 						stringValue = selectedAttributes.getColumnValues(selectedKeyAttribute, String.class);
-						
+
 						valueSet.add(stringValue);
 
 						break;
@@ -2356,7 +2314,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 					default:
 						break;
 				}
-				
+
 			}
 			*/
 		}
@@ -2483,7 +2441,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 	}
 
 	private void updateMappingAttributeComboBox() {
-		
+
 		mappingAttributeComboBox.removeAllItems();
 
 		final ListCellRenderer lcr = mappingAttributeComboBox.getRenderer();
@@ -2508,13 +2466,13 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 
 		if (CytoscapeServices.appMgr.getCurrentNetwork() == null)
 			return;
-		
+
 		for (final CyColumn column : selectedAttributes.getColumns()) {
 			final String columnName = column.getName();
 			if (columnName.equalsIgnoreCase(ID))
 				continue;
-			
-			final Class<?> type = column.getType(); 
+
+			final Class<?> type = column.getType();
 			if (type == String.class || type == Integer.class || type == Double.class || type == List.class)
 				mappingAttributeComboBox.addItem(columnName);
 		}
@@ -2560,16 +2518,16 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 	 * @param source
 	 */
 	private void loadAnnotation(TextTableReader reader, String source) {
-		
+
 		// Create loadAnnotation Task
-		final ImportAttributeTableTaskFactory factory = new ImportAttributeTableTaskFactory(reader);		
+		final ImportAttributeTableTaskFactory factory = new ImportAttributeTableTaskFactory(reader);
 		this.loadTask = factory.getTaskIterator().next();
 		//ImportAttributeTableTaskFactory taskFactory = new ImportAttributeTableTaskFactory(task);
 		//CytoscapeServices.guiTaskManagerServiceRef.execute(taskFactory);
 	}
 
 	private Task loadTask = null;
-	
+
 	public Task getLoadTask(){
 		return loadTask;
 	}
@@ -2582,7 +2540,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		//ImportNetworkTaskFactory taskFactory = new ImportNetworkTaskFactory(task);
 		//CytoscapeServices.guiTaskManagerServiceRef.execute(taskFactory);
 	}
-	
+
 	private void setStatusBar(String message1, String message2, String message3) {
 		statusBar.setLeftLabel(message1);
 		statusBar.setCenterLabel(message2);
@@ -2862,7 +2820,7 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 			annotationAndOntologyImportPanel.setVisible(true);
 			attrTypePanel.setVisible(true);
 		} else if (dialogType == NETWORK_IMPORT) {
-			
+
 			layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING).add(
 					layout.createSequentialGroup()
 							.addContainerGap()
