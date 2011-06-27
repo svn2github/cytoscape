@@ -116,7 +116,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		CyEdge e5 = net.addEdge(n5, n2, false);
 
 		assertEquals("num nodes", 5, net.getNodeCount());
-		assertEquals("num edges", 5, net.getNodeCount());
+		assertEquals("num edges", 5, net.getEdgeCount());
 
 		boolean rem1 = net.removeNodes(Collections.singletonList(n1));
 		assertTrue("successfully removed", rem1);
