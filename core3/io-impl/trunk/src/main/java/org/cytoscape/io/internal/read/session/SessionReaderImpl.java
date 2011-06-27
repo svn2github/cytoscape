@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -31,8 +24,9 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.io.internal.read.session;
+
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -100,7 +94,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	public static final String CY_PROPS = "cytoscape.props";
 	public static final String XGMML_EXT = ".xgmml";
 	public static final String BOOKMARKS_FILE = "session_bookmarks.xml";
-	private static final String TABLE_EXT = ".table";
+	private static final String TABLE_EXT = ".cytable";
 	public static final String NETWORK_ROOT = "Network Root";
 	public static final int MAJOR_DOC_VERSION = 3;
 	public static final Pattern NETWORK_PATTERN = Pattern.compile(".*/([^/]+)[.]xgmml");

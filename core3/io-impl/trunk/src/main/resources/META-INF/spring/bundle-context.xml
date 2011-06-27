@@ -317,7 +317,7 @@
 	<bean id="sessionTableFilter" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
-				<value>table</value>
+				<value>cytable</value>
 			</set>
 		</constructor-arg>
 		<constructor-arg index="1">

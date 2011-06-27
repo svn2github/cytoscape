@@ -341,7 +341,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 			String fileName;
 			Set<CyNetwork> networks = metadata.getCyNetworks();
 			if (networks.size() == 0) {
-				fileName = String.format("global/%d-%s.table", table.getSUID(), tableTitle);
+				fileName = String.format("global/%d-%s.cytable", table.getSUID(), tableTitle);
 			} else {
 				CyNetwork network = findIntersection(includedNetworks, networks);
 				if (network == null) {
@@ -350,7 +350,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 				String networkFileName = getNetworkFileName(network);
 				String namespace = escape(metadata.getNamespace());
 				String type = escape(metadata.getType().getCanonicalName());
-				fileName = String.format("%s/%s-%s-%s.table", networkFileName, namespace, type, tableTitle);
+				fileName = String.format("%s/%s-%s-%s.cytable", networkFileName, namespace, type, tableTitle);
 			}
 			zos.putNextEntry(new ZipEntry(sessionDir + fileName));
 			try {
