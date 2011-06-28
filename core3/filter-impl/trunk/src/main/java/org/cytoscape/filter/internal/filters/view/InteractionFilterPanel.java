@@ -49,6 +49,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.filter.internal.filters.CompositeFilter;
 import org.cytoscape.filter.internal.filters.EdgeInteractionFilter;
 import org.cytoscape.filter.internal.filters.FilterPlugin;
@@ -64,11 +65,13 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 	private final InteractionFilter theFilter;
 	private final CyApplicationManager applicationManager;
 	private final FilterPlugin filterPlugin;
+	private final CyEventHelper eventHelper;
 
     /** Creates new form InteractionFilterPanel */
-    public InteractionFilterPanel(InteractionFilter pFilter, CyApplicationManager applicationManager, FilterPlugin filterPlugin) {
+    public InteractionFilterPanel(InteractionFilter pFilter, CyApplicationManager applicationManager, FilterPlugin filterPlugin, CyEventHelper eventHelper) {
     	this.applicationManager = applicationManager;
     	this.filterPlugin = filterPlugin;
+    	this.eventHelper = eventHelper;
     	theFilter = pFilter;
         setName(theFilter.getName());
     	
@@ -200,7 +203,7 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 		
 		// If network size is less than pre-defined threshold, apply theFilter automatically 
 		if (FilterUtil.isDynamicFilter(theFilter)) {
-			FilterUtil.doSelection(theFilter, applicationManager);					
+			FilterUtil.doSelection(theFilter, applicationManager, eventHelper);
 		}
 	}
 

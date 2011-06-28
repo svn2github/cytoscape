@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.filter.internal.filters.CompositeFilter;
 import org.cytoscape.filter.internal.filters.FilterPlugin;
 import org.cytoscape.filter.internal.quickfind.util.QuickFind;
@@ -19,7 +20,7 @@ import org.cytoscape.session.CyApplicationManager;
 public class FilterUtil {
 		
 	// do selection on given network
-	public static void doSelection(CompositeFilter pFilter, CyApplicationManager applicationManager) {
+	public static void doSelection(CompositeFilter pFilter, CyApplicationManager applicationManager, CyEventHelper eventHelper) {
 		//System.out.println("Entering FilterUtil.doSelection() ...");
 		
 //		// TODO: What do we do about CyInit*?
@@ -81,6 +82,8 @@ public class FilterUtil {
 			}
 			SelectUtil.setSelectedEdgeState(passedEdges, true);
 		}
+		
+		eventHelper.flushPayloadEvents();
 		applicationManager.getCurrentNetworkView().updateView();
 		
 //		// TODO: What do we do about CyInit*?

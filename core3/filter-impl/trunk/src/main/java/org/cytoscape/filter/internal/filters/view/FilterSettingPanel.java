@@ -62,6 +62,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.text.JTextComponent;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.filter.internal.filters.AtomicFilter;
 import org.cytoscape.filter.internal.filters.CompositeFilter;
 import org.cytoscape.filter.internal.filters.CyFilter;
@@ -111,9 +112,12 @@ public class FilterSettingPanel extends JPanel {
 	private InteractionFilterPanel interactionPanel = null;
 	private final Logger logger;
 	private final CyApplicationManager applicationManager;
+	private final CyEventHelper eventHelper;
 	
-	public FilterSettingPanel(FilterMainPanel pParent, Object pFilterObj, CyApplicationManager applicationManager, FilterPlugin filterPlugin) {
+	public FilterSettingPanel(FilterMainPanel pParent, Object pFilterObj, CyApplicationManager applicationManager, FilterPlugin filterPlugin, CyEventHelper eventHelper) {
 		this.applicationManager = applicationManager;
+		this.eventHelper = eventHelper;
+		
 		logger = LoggerFactory.getLogger(getClass());
 		theFilter = (CompositeFilter) pFilterObj;
         setName(theFilter.getName());
@@ -137,7 +141,7 @@ public class FilterSettingPanel extends JPanel {
 	        gridBagConstraints.weightx = 1.0;
 
 			pnlCustomSettings.removeAll();
-			topoPanel = new TopoFilterPanel((TopologyFilter)theFilter, applicationManager, filterPlugin);
+			topoPanel = new TopoFilterPanel((TopologyFilter)theFilter, applicationManager, filterPlugin, eventHelper);
 			pnlCustomSettings.add(topoPanel, gridBagConstraints);
 			//topoPanel.addParentPanelListener(); // Update passFilterCOM when shown
 			topoPanel.addParentPanelListener(this); // Update passFilterCOM when shown
@@ -162,7 +166,7 @@ public class FilterSettingPanel extends JPanel {
 	        gridBagConstraints.weightx = 1.0;
 
 			pnlCustomSettings.removeAll();
-			interactionPanel = new InteractionFilterPanel((InteractionFilter)theFilter, applicationManager, filterPlugin);
+			interactionPanel = new InteractionFilterPanel((InteractionFilter)theFilter, applicationManager, filterPlugin, eventHelper);
 			pnlCustomSettings.add(interactionPanel, gridBagConstraints);
 			//interactionPanel.addParentPanelListener(); // Update passFilterCOM when shown
 			interactionPanel.addParentPanelListener(this); // Update passFilterCOM when shown
@@ -457,7 +461,7 @@ public class FilterSettingPanel extends JPanel {
 					
 					//Update the selection on screen
 					theFilter.setNetwork(applicationManager.getCurrentNetwork());
-					FilterUtil.doSelection(theFilter, applicationManager);					
+					FilterUtil.doSelection(theFilter, applicationManager, eventHelper);
 				}
 			}
 		}
@@ -573,27 +577,20 @@ public class FilterSettingPanel extends JPanel {
 	}
 	
 	//user Clicked CheckBox_Not left-side of the child filter
-	private void updateNegationStatus(MouseEvent e) {
-		// Determine the child index in theFilter, 
-		// then update the negation value for that child filter
-		Object _actionObject = e.getSource();
+	private void updateNegationStatus(JCheckBox _chk) {
+		int widgetGridY = (new Integer(_chk.getName())).intValue();
+		int childIndex =widgetGridY/2;
 		
-		if (_actionObject instanceof JCheckBox) {
-			JCheckBox _chk = (JCheckBox) _actionObject;
-			int widgetGridY = (new Integer(_chk.getName())).intValue();
-			int childIndex =widgetGridY/2;
-			
-			CyFilter childFilter = theFilter.getChildren().get(childIndex);
-			if (childFilter instanceof CompositeFilter) {
-				CompositeFilter tmpFilter = (CompositeFilter)childFilter;
-				theFilter.setNotTable(tmpFilter, new Boolean(_chk.isSelected()));
-			}
-			else { // it is an AtomiCFilter
-				childFilter.setNegation(_chk.isSelected());				
-			}
-			//Update the selection on screen
-			doSelection();
+		CyFilter childFilter = theFilter.getChildren().get(childIndex);
+		if (childFilter instanceof CompositeFilter) {
+			CompositeFilter tmpFilter = (CompositeFilter)childFilter;
+			theFilter.setNotTable(tmpFilter, new Boolean(_chk.isSelected()));
 		}
+		else { // it is an AtomiCFilter
+			childFilter.setNegation(_chk.isSelected());				
+		}
+		//Update the selection on screen
+		doSelection();
 	}
 	
 	
@@ -635,15 +632,16 @@ public class FilterSettingPanel extends JPanel {
         pnlCustomSettings.add(theLabel_col0, gridBagConstraints);
     	
 		//Col 1 ---> chk box -- NOT
-        JCheckBox chkNot = new JCheckBox("Not");
+        final JCheckBox chkNot = new JCheckBox("Not");
         chkNot.setName(Integer.toString(pGridY));
         chkNot.setSelected(pFilter.getNegation());
-        chkNot.addMouseListener(
-                new MouseAdapter() {
-                    public void mouseClicked(MouseEvent e) {         	
-                    	updateNegationStatus(e);
-                    }
-                }
+        chkNot.addActionListener(
+        		new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						updateNegationStatus(chkNot);
+					}
+				}
             );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -791,7 +789,7 @@ public class FilterSettingPanel extends JPanel {
 	private void doSelection() {
 		// If network size is greater than pre-defined threshold, don't apply theFilter automatically 
 		if (FilterUtil.isDynamicFilter(theFilter)) {
-			FilterUtil.doSelection(theFilter, applicationManager);			
+			FilterUtil.doSelection(theFilter, applicationManager, eventHelper);
 		}		
 	}
 	

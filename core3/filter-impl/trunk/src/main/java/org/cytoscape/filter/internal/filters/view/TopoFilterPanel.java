@@ -53,6 +53,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.filter.internal.filters.CompositeFilter;
 import org.cytoscape.filter.internal.filters.FilterPlugin;
 import org.cytoscape.filter.internal.filters.TopologyFilter;
@@ -71,11 +72,15 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 	private final TopologyFilter theFilter;
 	private final CyApplicationManager applicationManager;
 	private final FilterPlugin filterPlugin;
+	private final CyEventHelper eventHelper;
  
-    /** Creates new form TopoFilterPanel */
-    public TopoFilterPanel(TopologyFilter pFilter, CyApplicationManager applicationManager, FilterPlugin filterPlugin) {
+    /** Creates new form TopoFilterPanel 
+     * @param eventHelper */
+    public TopoFilterPanel(TopologyFilter pFilter, CyApplicationManager applicationManager, FilterPlugin filterPlugin, CyEventHelper eventHelper) {
     	this.applicationManager = applicationManager;
     	this.filterPlugin = filterPlugin;
+    	this.eventHelper = eventHelper;
+    	
     	theFilter = pFilter;
         setName(theFilter.getName());
         initComponents();
@@ -191,7 +196,7 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 
 			// If network size is less than pre-defined threshold, apply theFilter automatically 
 			if (FilterUtil.isDynamicFilter(theFilter)) {
-				FilterUtil.doSelection(theFilter, applicationManager);					
+				FilterUtil.doSelection(theFilter, applicationManager, eventHelper);
 			}
 		}
 	}

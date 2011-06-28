@@ -68,6 +68,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.filter.internal.filters.CompositeFilter;
 import org.cytoscape.filter.internal.filters.EdgeInteractionFilter;
 import org.cytoscape.filter.internal.filters.FilterPlugin;
@@ -150,13 +151,14 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private final CyNetworkManager networkManager;
 	
 	private final CyServiceRegistrar serviceRegistrar;
+	private final CyEventHelper eventHelper;
 	
 	public FilterMainPanel(CyApplicationManager applicationManager, FilterPlugin filterPlugin, 
-		CyNetworkManager networkManager,
-			 final CyServiceRegistrar serviceRegistrar) {
+		CyNetworkManager networkManager, final CyServiceRegistrar serviceRegistrar, CyEventHelper eventHelper) {
 		this.applicationManager = applicationManager;
 		this.filterPlugin = filterPlugin;
 		this.networkManager = networkManager;
+		this.eventHelper = eventHelper;
 		
 		this.serviceRegistrar = serviceRegistrar;
 		
@@ -434,7 +436,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		currentFilterSettingPanel = next;
 		
 		if (currentFilterSettingPanel == null || currentFilterSettingPanel.hasNullIndexChildFilter()) {
-			currentFilterSettingPanel = new FilterSettingPanel(this, pNewFilter, applicationManager, filterPlugin);
+			currentFilterSettingPanel = new FilterSettingPanel(this, pNewFilter, applicationManager, filterPlugin, eventHelper);
 			//Update the HashMap
 			filter2SettingPanelMap.put(pNewFilter, currentFilterSettingPanel);			
 		}
@@ -871,7 +873,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 								
 				// If network size is greater than pre-defined threshold, don't apply it automatically 
 				if (FilterUtil.isDynamicFilter(selectedFilter)) {
-					FilterUtil.doSelection(selectedFilter, applicationManager);					
+					FilterUtil.doSelection(selectedFilter, applicationManager, eventHelper);
 				}
 				
 				refreshAttributeCMB();
@@ -912,7 +914,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				//System.out.println("\tThe Filter to apply is \n" + cmbSelectFilter.getSelectedItem().toString()+"\n");
 				CompositeFilter theFilterToApply = (CompositeFilter) cmbSelectFilter.getSelectedItem();
 				theFilterToApply.setNetwork(applicationManager.getCurrentNetwork());
-				FilterUtil.doSelection(theFilterToApply, applicationManager);
+				FilterUtil.doSelection(theFilterToApply, applicationManager, eventHelper);
 			}
 			if (_btn == btnAddFilterWidget) {
 				//btnAddFilterWidget is clicked!
@@ -1183,7 +1185,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		
 		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
 		allFilterVect.add(newFilter);
-		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter, applicationManager, filterPlugin);
+		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter, applicationManager, filterPlugin, eventHelper);
 		filter2SettingPanelMap.put(newFilter, newFilterSettingPanel);
 		
 		// set the new filter in the combobox selected
@@ -1272,7 +1274,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		
 		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
 		allFilterVect.add(newFilter);
-		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter, applicationManager, filterPlugin);
+		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter, applicationManager, filterPlugin, eventHelper);
 		filter2SettingPanelMap.put(newFilter, newFilterSettingPanel);
 
 		// set the new filter in the combobox selected
