@@ -18,14 +18,14 @@ extern "C"
   // Layouts
   void layoutCircle(double x[], double y[]);
   void starLayout(double x[], double y[], int centerId);
-/*   void layoutFruchterman(double x[],  */
-/* 			 double y[],  */
-/* 			 int iter,  */
-/* 			 double maxDelta,  */
-/* 			 double area,  */
-/* 			 double coolExp,  */
-/* 			 double repulserad,  */
-/* 			 bool useSeed); */
+  void layoutFruchterman(double x[],
+			 double y[],
+			 int iter,
+			 double maxDelta,
+			 double area,
+			 double coolExp,
+			 double repulserad,
+			 bool useSeed);
 
 
 /*   void fastGreedy(int membership[], double* modularity, int csize[], int * numCluster); */

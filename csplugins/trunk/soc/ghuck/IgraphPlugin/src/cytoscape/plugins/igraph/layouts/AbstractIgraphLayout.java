@@ -109,10 +109,10 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
     }
 
     /**
-     * Overload updateSettings for using it without arguments
+     * Get new values from tunables and update parameters
      */
-    public void updateSettings() {
-	updateSettings(false);
+    public void updateSettings(boolean force) {
+	layoutProperties.updateValues();	
     }
 
     /**
@@ -128,10 +128,10 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
     // END OF METHODS WHICH MAY BE OVERRIDEN         
 
     /**
-     * Get new values from tunables and update parameters
+     * Overload updateSettings for using it without arguments
      */
-    public void updateSettings(boolean force) {
-	layoutProperties.updateValues();	
+    public void updateSettings() {
+	updateSettings(false);
     }
         
     /**

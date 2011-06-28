@@ -71,9 +71,9 @@ public class IgraphPlugin extends CytoscapePlugin {
 	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction2);
 
 	// Layouts
-	CyLayouts.addLayout(new CircleLayout(), "Igraph");
-
-	CyLayouts.addLayout(new StarLayout(), "Igraph");
+	CyLayouts.addLayout(new CircleLayout()             , "Igraph");
+	CyLayouts.addLayout(new StarLayout()               , "Igraph");
+	CyLayouts.addLayout(new FruchtermanReingoldLayout(), "Igraph");
 
 		
     }

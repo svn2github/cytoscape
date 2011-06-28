@@ -89,37 +89,39 @@ void starLayout(double x[], double y[], int centerId) {
 
 }
 
-// Fruchterman - Reingold Layout
-// void layoutFruchterman(double x[], 
-// 		       double y[], 
-// 		       int iter, 
-// 		       double maxDelta, 
-// 		       double area, 
-// 		       double coolExp, 
-// 		       double repulserad, 
-// 		       bool useSeed){
-// 	long int vcount = igraph_vcount(&g);
-// 	igraph_matrix_t locs;
-// 	igraph_matrix_init(&locs, vcount, 2); 
-// 	for(int i=0; i<vcount; i++){
-// 		MATRIX(locs, i, 0) = x[i];
-// 		MATRIX(locs, i, 1) = y[i];
-// 	}
+//Fruchterman - Reingold Layout
+void layoutFruchterman(double x[], 
+		       double y[], 
+		       int iter, 
+		       double maxDelta, 
+		       double area, 
+		       double coolExp, 
+		       double repulserad, 
+		       bool useSeed){
+	long int vcount = igraph_vcount(&g);
+	igraph_matrix_t locs;
+	igraph_matrix_init(&locs, vcount, 2); 
+	for(int i = 0; i < vcount; i++){
+		MATRIX(locs, i, 0) = x[i];
+		MATRIX(locs, i, 1) = y[i];
+	}
 
-// 	igraph_layout_fruchterman_reingold(&g, 
-// 					   &locs, 
-// 					   iter, 
-// 					   maxDelta, 
-// 					   area, 
-// 					   coolExp, 
-// 					   repulserad, 
-// 					   useSeed, 
-// 					   0);
-// 	for(int i=0; i<vcount; i++){
-// 		x[i] = MATRIX(locs, i, 0);
-// 		y[i] = MATRIX(locs, i, 1);
-// 	}	
-// }
+	igraph_layout_fruchterman_reingold(&g, 
+					   &locs, 
+					   iter, 
+					   maxDelta, 
+					   area, 
+					   coolExp, 
+					   repulserad, 
+					   useSeed, 
+					   0, // weights 
+					   0, 
+					   0);
+	for(int i=0; i<vcount; i++){
+		x[i] = MATRIX(locs, i, 0);
+		y[i] = MATRIX(locs, i, 1);
+	}	
+}
 
 
 

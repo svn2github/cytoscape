@@ -35,13 +35,13 @@ public class IgraphInterface {
     public static native void starLayout(double x[], double y[], int centerId);
 
     // Fruchterman - Reingold Layout
-//     public static native void layoutFruchterman(double x[], 
-// 						double y[], 
-// 						int iter, 
-// 						double maxDelta, 
-// 						double area, 
-// 						double coolExp, 
-// 						double repulserad, 
-// 						boolean useSeed);
+    public static native void layoutFruchterman(double x[], 
+						double y[], 
+						int iter, 
+						double maxDelta, 
+						double area, 
+						double coolExp, 
+						double repulserad, 
+						boolean useSeed);
     
 }
