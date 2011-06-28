@@ -522,7 +522,7 @@ public class CoSELayout extends FDLayout
 	protected function positionNodesRadially(forest:ArrayList/*<ArrayList<LNode>>*/):void
 	{
 		// We tile the trees to a grid row by row; first tree starts at (0,0)
-		var currentStartingPoint:PointD = new PointD(0, 0); // TODO [refactor] Point to PointD
+		var currentStartingPoint:PointD = new PointD(0, 0); // (PointD instead of PointD)
 		var numberOfColumns:int = Math.ceil(Math.sqrt(forest.size));
 		var height:int = 0;
 		var currentY:int = 0;
@@ -573,11 +573,12 @@ public class CoSELayout extends FDLayout
 	}
 
 	/**
-	 * TODO [refactor] startingPoint:Point -> PointD
 	 * This method positions given nodes according to a simple radial layout
 	 * starting from the center node. The top-left of the final drawing is to be
 	 * at given location. It returns the bottom-right of the bounding rectangle
 	 * of the resulting tree drawing.
+	 * 
+	 * @param startingPoint		(PointD instead of Point)
 	 */
 	private static function radialLayout(tree:ArrayList/*<LNode>*/,
 		centerNode:LNode,
@@ -586,11 +587,11 @@ public class CoSELayout extends FDLayout
 		var radialSep:Number= Math.max(maxDiagonalInTree(tree),
 			CoSEConstants.DEFAULT_RADIAL_SEPARATION);
 		CoSELayout.branchRadialLayout(centerNode, null, 0, 359, 0, radialSep);
-		var bounds:RectangleD = LGraph.calculateBounds(tree); // TODO [refactor] Rectangle to RD
+		var bounds:RectangleD = LGraph.calculateBounds(tree); // Rectangle to RD
 
 		var transform:Transform= new Transform();
-		transform.setDeviceOrgX(bounds.getX()); // TODO [refactor] bounds.getMinX() -> bounds.getX()
-		transform.setDeviceOrgY(bounds.getY()); // TODO [refactor] bounds.getMinY() -> bounds.getY()
+		transform.setDeviceOrgX(bounds.getX()); // bounds.getMinX() -> bounds.getX()
+		transform.setDeviceOrgY(bounds.getY()); // bounds.getMinY() -> bounds.getY()
 		transform.setWorldOrgX(startingPoint.x);
 		transform.setWorldOrgY(startingPoint.y);
 
@@ -603,8 +604,8 @@ public class CoSELayout extends FDLayout
 			node.transform(transform);
 		}
 
-		// TODO [refactor] bounds.getMaxX() -> bounds.getX() + bounds.getWidth()
-		// TODO [refactor] bounds.getMaxY() -> bounds.getY() + bounds.getHeight()
+		// bounds.getMaxX() -> bounds.getX() + bounds.getWidth()
+		// bounds.getMaxY() -> bounds.getY() + bounds.getHeight()
 		var bottomRight:PointD=
 			new PointD(bounds.getX() + bounds.width, bounds.getY() + bounds.height);
 
@@ -675,7 +676,7 @@ public class CoSELayout extends FDLayout
 
 		if (parentOfNode != null)
 		{
-			// TODO [refactor] assert edges.size() == 1;
+			// assert edges.size() == 1;
 			
 			// find the index of edges.itemAt(0) in neighborEdges
 			
@@ -756,7 +757,7 @@ public class CoSELayout extends FDLayout
 	 */
 	public function uncoarsen():void
 	{
-		for (var obj:* in this.graphManager.getAllNodes())
+		for each (var obj:* in this.graphManager.getAllNodes())
 		{
 			var v:CoSENode= CoSENode(obj);
 			// set positions of v.pred1 and v.pred2

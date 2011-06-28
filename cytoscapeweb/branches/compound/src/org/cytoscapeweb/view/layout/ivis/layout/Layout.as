@@ -235,7 +235,7 @@ public /*abstract*/ class Layout
 		}
 		else
 		{
-			// TODO [refactor] calculate execution time
+			// TODO calculate execution time
 			var startTime:Number= 0;
 			
 			if (!this.isSubLayout)
@@ -280,7 +280,7 @@ public /*abstract*/ class Layout
 	 */
 	public function doPostLayout():void
 	{
-		// TODO [refactor] assert !isSubLayout : "Should not be called on sub-layout!";
+		// assert !isSubLayout : "Should not be called on sub-layout!";
 		// Propagate geometric changes to v-level objects
 		this.transform();
 		this.update();
@@ -459,7 +459,7 @@ public /*abstract*/ class Layout
 		// already included in calculation of left-top).
 
 		var trans:Transform = new Transform();
-		var leftTop:PointD = this.graphManager.getRoot().updateLeftTop(); // TODO [refactor] leftTop:Point -> PointD 
+		var leftTop:PointD = this.graphManager.getRoot().updateLeftTop(); // leftTop:Point -> PointD 
 
 		if (newLeftTop == null)
 		{
@@ -493,7 +493,7 @@ public /*abstract*/ class Layout
 	 */
 	public function positionNodesRandomly():void
 	{
-		// TODO [refactor] assert !this.incremental;
+		// assert !this.incremental;
 		this.randomlyPositionNodes(this.getGraphManager().getRoot());
 		this.getGraphManager().getRoot().updateBounds(true);
 	}
@@ -680,7 +680,7 @@ public /*abstract*/ class Layout
 		{
 			// create new dummy node
 			dummyNode = this.newNode(null);
-			dummyNode.setRect(new PointD(0,0), new DimensionD(1,1)); // TODO [refactor] Point & Dimension to PD & DD
+			dummyNode.setRect(new PointD(0,0), new DimensionD(1,1)); // Point & Dimension -> PD & DD
 			
 			graph.addNode(dummyNode);
 
@@ -855,7 +855,7 @@ public /*abstract*/ class Layout
 			node = iter.next() as LNode;
 			var degree:int = node.getNeighborsList().size;
 			
-			// TODO [refactor] put method can be implemented
+			// TODO put method can be implemented
 			// remainingDegrees.put(node , degree)
 			if(! remainingDegrees.add(node , degree))
 			{
@@ -877,7 +877,7 @@ public /*abstract*/ class Layout
 			tempList2.addAllAt(0, tempList.toArray());
 			
 			// removeAll is not same as it is in Java!!!
-			//tempList.removeAll(tempList); TODO [refactor] what about .clear() !
+			//tempList.removeAll(tempList);
 			
 			tempList.clear();
 
@@ -908,7 +908,7 @@ public /*abstract*/ class Layout
 							tempList.add(neighbor);
 						}
 
-						// TODO [refactor] put method can be implemented
+						// TODO put method can be implemented
 						//remainingDegrees.put(neighbor, newDegree);
 						if(! remainingDegrees.add(node , degree))
 						{

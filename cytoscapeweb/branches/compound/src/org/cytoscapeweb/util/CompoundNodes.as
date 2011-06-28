@@ -7,6 +7,7 @@ package org.cytoscapeweb.util
 	
 	import org.cytoscapeweb.ApplicationFacade;
 	import org.cytoscapeweb.model.ConfigProxy;
+	import org.cytoscapeweb.model.GraphProxy;
 	import org.cytoscapeweb.model.data.VisualStyleBypassVO;
 	import org.cytoscapeweb.model.data.VisualStyleVO;
 	import org.cytoscapeweb.view.render.CompoundNodeRenderer;
@@ -20,6 +21,7 @@ package org.cytoscapeweb.util
 		
 		private static var _properties:Object;
 		private static var _configProxy:ConfigProxy;
+		private static var _graphProxy:GraphProxy;
 		
 		private static function get configProxy() : ConfigProxy
 		{
@@ -30,6 +32,17 @@ package org.cytoscapeweb.util
 			}
 			
 			return _configProxy;
+		}
+		
+		private static function get graphProxy() : GraphProxy
+		{
+			if (_graphProxy == null)
+			{
+				_graphProxy = ApplicationFacade.getInstance().
+					retrieveProxy(GraphProxy.NAME) as GraphProxy;
+			}
+			
+			return _graphProxy;
 		}
 		
 		private static function get style() : VisualStyleVO
@@ -374,5 +387,75 @@ package org.cytoscapeweb.util
 			return children;
 		}
 		
+		/**
+		 * Populates an array of CompoundNodeSprite instances with the parents
+		 * of selected type for the given CompoundNodeSprite. All parents
+		 * up to root are collected by default, type can be selected and
+		 * non-selected parents.
+		 * 
+		 * @param cns	compound node sprite whose parents are collected 
+		 */
+		public static function getParents(cns:CompoundNodeSprite,
+										   type:String = CompoundNodes.ALL_CHILDREN) : Array
+		{
+			var parents:Array = new Array();
+			var condition:Boolean;
+			var parent:NodeSprite;
+			
+			if (cns != null)
+			{
+				//for each (var ns:NodeSprite in cns.getNodes())
+				while (cns.parentId != null)
+				{
+					// get parent
+					parent = graphProxy.getNode(cns.parentId);
+					
+					if (parent == null)
+					{
+						break;
+					}
+					
+					if (type === CompoundNodes.SELECTED_CHILDREN)
+					{
+						if (parent.props.$selected)
+						{
+							condition = true;
+						}
+						else
+						{
+							condition = false;
+						}
+					}
+					else if (type === CompoundNodes.NON_SELECTED_CHILDREN)
+					{
+						if (parent.props.$selected)
+						{
+							condition = false;
+						}
+						else
+						{
+							condition = true;
+						}
+					}
+					else
+					{
+						// default case is all parents (always true)
+						condition = true;
+					}
+					
+					// process the node if the condition meets
+					if (condition)
+					{
+						// add current node to the list
+						parents.push(parent);
+					}
+					
+					// advance to next node
+					cns = parent as CompoundNodeSprite;
+				}
+			}
+			
+			return parents;
+		}
 	}
 }

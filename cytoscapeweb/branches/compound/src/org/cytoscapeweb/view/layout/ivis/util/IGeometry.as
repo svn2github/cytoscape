@@ -336,7 +336,6 @@ import java.awt.Point;
 	}
 	
 	/**
-	 * TODO [refactor] using PointD instead of Point..
 	 * This method calculates the intersection of the two lines defined by
 	 * point pairs (s1,s2) and (f1,f2).
 	 */
@@ -431,7 +430,7 @@ import java.awt.Point;
 	public static function doIntersect(p1:PointD, p2:PointD,
 		p3:PointD, p4:PointD):Boolean
 	{
-		/* TODO [refactor] find a method for linesIntersect
+		/* TODO find a method for linesIntersect
 		var result:Boolean = Line2D.linesIntersect(p1.x, p1.y,
 			p2.x, p2.y, p3.x, p3.y,
 			p4.x, p4.y);

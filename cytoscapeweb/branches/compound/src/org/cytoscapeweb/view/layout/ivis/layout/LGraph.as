@@ -99,12 +99,6 @@ public class LGraph extends LGraphObject
 		{
 			this.graphManager = layout.getGraphManager();
 		}
-		
-		//TODO [refactor] init integer values
-		//top = 0;
-		//left = 0;
-		//bottom = 0;
-		//right = 0;
 	}
 
 	/*
@@ -215,7 +209,6 @@ public class LGraph extends LGraphObject
 	 */
 	public function addNode(newNode:LNode):LNode
 	{
-		// TODO [refactor] assertions
 		//assert (this.graphManager != null) : "Graph has no graph mgr!";
 		//assert (!this.getNodes().contains(newNode)) : "Node already in graph!";
 		newNode.setOwner(this);
@@ -230,7 +223,6 @@ public class LGraph extends LGraphObject
 	 */
 	public function addEdge(newEdge:LEdge, sourceNode:LNode, targetNode:LNode):LEdge
 	{
-		// TODO [refactor] assertions
 	//	assert (this.getNodes().contains(sourceNode) &&
 	//		(this.getNodes().contains(targetNode))) :
 	//			"Source or target not in graph!";
@@ -272,7 +264,6 @@ public class LGraph extends LGraphObject
 	 */
 	public function removeNode(node:LNode):void
 	{
-		// TODO [refactor] assertions
 	//	assert (node != null) : "Node is null!";
 	//	assert (node.owner != null && node.owner == this) :
 	//		"Owner graph is invalid!";
@@ -301,7 +292,7 @@ public class LGraph extends LGraphObject
 		}
 
 		// now the node itself
-		//assert (this.nodes.contains(node)) : "Node not in owner node list!"; TODO [refactor] assertion
+		//assert (this.nodes.contains(node)) : "Node not in owner node list!";
 		this.nodes.remove(node);
 	}
 
@@ -311,7 +302,6 @@ public class LGraph extends LGraphObject
 	 */
 	public function removeEdge(edge:LEdge):void
 	{
-		// TODO [refactor] assertions
 	//	assert (edge != null) : "Edge is null!";
 	//	assert (edge.source != null && edge.target != null) :
 	//		"Source and/or target is null!";
@@ -344,9 +334,10 @@ public class LGraph extends LGraphObject
 // Section: Remaining methods
 // -----------------------------------------------------------------------------
 	/**
-	 * TODO [refactor] using PointD instead of Point
 	 * This method calculates, updates and returns the left-top point of this
 	 * graph including margins.
+	 * 
+	 * @return		TODO (PointD instead of Point)
 	 */
 	public function updateLeftTop():PointD
 	{
@@ -445,7 +436,7 @@ public class LGraph extends LGraphObject
 			}
 		}
 
-		// TODO [refactor] Rectangle -> RectangleD
+		// TODO RectangleD instead of Rectangle
 		var boundingRect:RectangleD=
 			new RectangleD(left, top, right - left, bottom - top);
 
@@ -466,10 +457,11 @@ public class LGraph extends LGraphObject
 	}
 
 	/**
-	 * TODO [refactor] using RectangleD instead of java.awt.Rectangle
 	 * This method returns the bounding rectangle of the given list of nodes. No
 	 * margins are accounted for, and it returns a rectangle with top-left set
 	 * to Integer.MAX_VALUE if the list is empty.
+	 * 
+	 * @return		TODO (RectangleD instead of java.awt.Rectangle)
 	 */
 	public static function calculateBounds(nodes:IList/*<LNode>*/):RectangleD
 	{
@@ -542,7 +534,7 @@ public class LGraph extends LGraphObject
 	 */
 	public function getEstimatedSize():int
 	{
-		//assert this.estimatedSize != Integer.MIN_VALUE; TODO [refactor] assertion
+		//assert this.estimatedSize != Integer.MIN_VALUE;
 		return this.estimatedSize;
 	}
 

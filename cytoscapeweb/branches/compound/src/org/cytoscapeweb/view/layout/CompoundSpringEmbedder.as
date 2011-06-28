@@ -5,11 +5,15 @@ package org.cytoscapeweb.view.layout
 	import flare.vis.operator.layout.Layout;
 	
 	import org.cytoscapeweb.util.Groups;
+	import org.cytoscapeweb.view.layout.ivis.layout.CoSEOptions;
+	import org.cytoscapeweb.view.layout.ivis.layout.GeneralOptions;
 	import org.cytoscapeweb.view.layout.ivis.layout.LEdge;
 	import org.cytoscapeweb.view.layout.ivis.layout.LGraph;
 	import org.cytoscapeweb.view.layout.ivis.layout.LGraphManager;
 	import org.cytoscapeweb.view.layout.ivis.layout.LNode;
 	import org.cytoscapeweb.view.layout.ivis.layout.Layout;
+	import org.cytoscapeweb.view.layout.ivis.layout.LayoutConstants;
+	import org.cytoscapeweb.view.layout.ivis.layout.LayoutOptionsPack;
 	import org.cytoscapeweb.view.layout.ivis.layout.cose.CoSELayout;
 	import org.cytoscapeweb.vis.data.CompoundNodeSprite;
 
@@ -21,18 +25,92 @@ package org.cytoscapeweb.view.layout
 	 * Original algorithm, which is written in Java programming language, can be 
 	 * found on the project webpage http://sourceforge.net/projects/chisio/
 	 */
-	public class ForceDirectedCompoundLayout extends flare.vis.operator.layout.Layout
+	public class CompoundSpringEmbedder extends flare.vis.operator.layout.Layout
 	{
 		protected var _ivisLayout:org.cytoscapeweb.view.layout.ivis.layout.Layout;
 		protected var _cwToLayout:Object;
 		protected var _layoutToCw:Object;
 		
-		public function ForceDirectedCompoundLayout()
+		public function CompoundSpringEmbedder()
 		{
 			this._cwToLayout = new Object();
 			this._layoutToCw = new Object();
 			
 			this._ivisLayout = new CoSELayout();
+		}
+		
+		public function setOptions(options:Object):void
+		{
+			// set layout parameters
+			
+			var genOpts:GeneralOptions =
+				LayoutOptionsPack.getInstance().getGeneral();
+			
+			var coseOpts:CoSEOptions =
+				LayoutOptionsPack.getInstance().getCoSE();
+			
+			var quality:int;
+			
+			if (options.layoutQuality == "proof")
+			{
+				quality = LayoutConstants.PROOF_QUALITY;
+			}
+			else if (options.layoutQuality == "draft")
+			{
+				quality = LayoutConstants.DRAFT_QUALITY;
+			}
+			else
+			{
+				quality = LayoutConstants.DEFAULT_QUALITY;
+			}
+			
+			genOpts.setLayoutQuality(quality);
+			genOpts.setIncremental(options.incremental);
+			genOpts.setUniformLeafNodeSizes(options.uniformLeafNodeSizes);
+						
+			coseOpts.setSpringStrength(options.tension);			
+			coseOpts.setRepulsionStrength(options.repulsion);
+			coseOpts.setSmartRepulsionRangeCalc(options.smartDistance);
+			coseOpts.setGravityStrength(options.gravitation);
+			coseOpts.setGravityRange(options.gravityDistance);
+			coseOpts.setCompoundGravityStrength(options.compoundGravitation);
+			coseOpts.setCompoundGravityRange(options.compoundGravityDistance);
+			coseOpts.setIdealEdgeLength(options.restLength);
+			coseOpts.setSmartEdgeLengthCalc(options.smartRestLength);
+			coseOpts.setMultiLevelScaling(options.multiLevelScaling);
+			
+			/*
+			layoutQuality:			 "default",	// Layout Quality
+			incremental: 			 false,	// Incremental
+			uniformLeafNodeSizes: 	 false,	// Uniform Leaf Node Sizes
+			tension:				 50,	// Spring
+			repulsion:				 50,	// Repulsion
+			smartDistance:			 true,	// Smart Range Calculation
+			gravitation:			 50,	// Gravity
+			gravityDistance:		 50,	// Gravity Range
+			compoundGravitation:	 50,	// Compound Gravity
+			compoundGravityDistance: 50,	// Compound Gravity Range
+			restLength:				 50,	// Desired Edge Length
+			smartRestLength:		 true,	// Smart Edge Length Calculation
+			multiLevelScaling:		 false	// Multi-Level Scaling
+			*/
+			
+			/*
+			trace ("layoutQuality: " + options.layoutQuality);
+			trace ("incremental: " + options.incremental);
+			trace ("uniformLeafNodeSizes: " + options.uniformLeafNodeSizes);
+			
+			trace ("tension: " + options.tension);
+			trace ("repulsion: " + options.repulsion);
+			trace ("smartDistance: " + options.smartDistance);
+			trace ("gravitation: " + options.gravitation);
+			trace ("gravityDistance: " + options.gravityDistance);
+			trace ("compoundGravitation: " + options.compoundGravitation);
+			trace ("compoundGravityDistance: " + options.compoundGravityDistance);
+			trace ("restLength: " + options.restLength);
+			trace ("smartRestLength: " + options.smartRestLength);
+			trace ("multiLevelScaling: " + options.multiLevelScaling);
+			*/
 		}
 		
 		override protected function layout():void
@@ -122,14 +200,12 @@ package org.cytoscapeweb.view.layout
 		{
 			var lNode:LNode = layout.newNode(null/*node*/);
 			
-			// TODO [refactor] for debugging purposes
+			// for debugging purposes
 			lNode.label = node.data.id;
 			//trace("vNode [" + node.data.id + "]" + "x: " + node.x +
 			//	" y: " + node.y +
 			//	" w: " + node.width +
 			//	" h: " + node.height);
-			
-			//trace ("vNode [" + node.data.id + "]" + "(" + node.x + "," + node.y + ")");
 			
 			var rootGraph:LGraph = layout.getGraphManager().getRoot(); 
 			
@@ -171,13 +247,10 @@ package org.cytoscapeweb.view.layout
 			
 			if (node.isInitialized())
 			{
-				//var nodeIter:Iterator = compoundNode.getChildren().iterator();
-				
 				// add new LGraph to the graph manager for the compound node
 				layout.getGraphManager().addGraph(layout.newGraph(null), lNode);
 				
 				// for each NodeModel in the node set create an LNode
-				//while (nodeIter.hasNext())
 				for each (var cns:CompoundNodeSprite in node.getNodes())
 				{
 					this.createNode(cns,
@@ -189,11 +262,8 @@ package org.cytoscapeweb.view.layout
 			}
 			else
 			{
-				
 				lNode.setWidth(node.width);
 				lNode.setHeight(node.height);
-				//lNode.setWidth(40);
-				//lNode.setHeight(40);
 			}
 		}
 		

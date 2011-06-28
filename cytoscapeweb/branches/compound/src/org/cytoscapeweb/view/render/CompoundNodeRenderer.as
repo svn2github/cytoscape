@@ -101,7 +101,7 @@ package org.cytoscapeweb.view.render
 						
 						g.endFill();
 						
-						// TODO draw an image on top?
+						// draw an image on top
 						drawImage(ns, this.adjustSize(ns));
 					}
 				}

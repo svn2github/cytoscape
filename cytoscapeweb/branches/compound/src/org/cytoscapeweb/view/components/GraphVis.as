@@ -67,7 +67,7 @@ package org.cytoscapeweb.view.components {
     import org.cytoscapeweb.util.methods.$each;
     import org.cytoscapeweb.view.controls.TooltipControl;
     import org.cytoscapeweb.view.layout.CircleLayout;
-    import org.cytoscapeweb.view.layout.ForceDirectedCompoundLayout;
+    import org.cytoscapeweb.view.layout.CompoundSpringEmbedder;
     import org.cytoscapeweb.view.layout.ForceDirectedLayout;
     import org.cytoscapeweb.view.layout.NodeLinkTreeLayout;
     import org.cytoscapeweb.view.layout.PresetLayout;
@@ -652,10 +652,13 @@ package org.cytoscapeweb.view.components {
             }
 			else if (name === Layouts.COSE)
 			{
-				var cose:ForceDirectedCompoundLayout = new ForceDirectedCompoundLayout();
+				// create layout
+				var cose:CompoundSpringEmbedder = new CompoundSpringEmbedder();
 				
-				// TODO options?
+				// set layout options
+				cose.setOptions(options);
 				
+				// set current layout
 				layout = cose;
 			}
             

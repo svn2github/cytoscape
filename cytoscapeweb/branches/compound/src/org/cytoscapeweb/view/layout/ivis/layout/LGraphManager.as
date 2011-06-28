@@ -111,7 +111,6 @@ public class LGraphManager
 	 */
 	public function addGraph(newGraph:LGraph, parentNode:LNode):LGraph
 	{
-		// TODO [refactor] assertions
 	//	assert (newGraph != null) : "Graph is null!";
 	//	assert (parentNode != null) : "Parent node is null!";
 	//	assert (!this.graphs.contains(newGraph)) :
@@ -137,7 +136,6 @@ public class LGraphManager
 		var sourceGraph:LGraph = sourceNode.getOwner();
 		var targetGraph:LGraph = targetNode.getOwner();
 
-		// TODO [refactor] assertions
 	//	assert (sourceGraph != null && sourceGraph.getGraphManager() == this ) :
 	//		"Source not in this graph mgr!";
 	//	assert (targetGraph != null && targetGraph.getGraphManager() == this ) :
@@ -180,7 +178,6 @@ public class LGraphManager
 	 */
 	public function removeGraph(graph:LGraph):void
 	{
-		// TODO [refactor] assertions
 	//	assert (graph.getGraphManager() == this) :
 	//		"Graph not in this graph mgr";
 	//	assert (graph == this.rootGraph ||
@@ -231,7 +228,6 @@ public class LGraphManager
 	 */
 	public function removeEdge(edge:LEdge):void
 	{
-		// TODO [refactor] assertions
 	//	assert (edge != null) : "Edge is null!";
 	//	assert (edge.isInterGraph) : "Not an inter-graph edge!";
 	//	assert (edge.source != null && edge.target != null) :
@@ -294,15 +290,6 @@ public class LGraphManager
 		if (this.allNodes == null)
 		{
 			var nodeList:LinkedList = new LinkedList();
-
-			/*
-			for (var iterator:Iterator= this.getGraphs().iterator();
-				 iterator.hasNext();)
-			{
-				nodeList.addAll((LGraph(iterator.next())).getNodes());
-			}
-			*/
-			
 			var graphIter:IIterator = this.getGraphs().iterator();				
 			
 			//for each (var graph:LGraph in this.getGraphs())
@@ -414,7 +401,6 @@ public class LGraphManager
 	public function setAllNodesToApplyGravitation(nodeList:ICollection,
 		nodes:Array = null):void
 	{
-		// TODO [refactor] assertion
 	//	assert this.allNodesToApplyGravitation == null;
 
 		if (nodes == null)
@@ -428,14 +414,14 @@ public class LGraphManager
 	}
 
 	/**
-	 * // TODO [refactor] called by CiSE, not needed for CoSE
 	 * This method sets the array of all nodes to which gravitation should be
 	 * applied from the input array.
+	 * 
+	 * TODO called by CiSE, not needed for CoSE
 	 */
 	/*
 	public function setAllNodesToApplyGravitation(nodes:Array):void
 	{
-		// TODO [refactor] assertion
 	//	assert this.allNodesToApplyGravitation == null;
 	
 		this.allNodesToApplyGravitation = nodes;
@@ -458,7 +444,6 @@ public class LGraphManager
 	 */
 	public function setRootGraph(graph:LGraph):void
 	{
-		// TODO [refactor] assertion
 	//	assert (graph.getGraphManager() == this) : "Root not in this graph mgr!";
 
 		this.rootGraph = graph;
@@ -499,7 +484,6 @@ public class LGraphManager
 	public static function isOneAncestorOfOther(firstNode:LNode,
 		secondNode:LNode):Boolean
 	{
-		// TODO [refactor] assertion
 	//	assert firstNode != null && secondNode != null;
 
 		if (firstNode == secondNode)
@@ -607,7 +591,6 @@ public class LGraphManager
 						break;
 					}
 					
-					// TODO [refactor] assertion
 				//	assert edge.lca == null;
 					edge.targetInLca = targetAncestorGraph.getParent();
 					targetAncestorGraph = edge.targetInLca.getOwner();

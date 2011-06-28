@@ -58,9 +58,12 @@ public /*abstract*/ class FDLayoutNode extends LNode
 // -----------------------------------------------------------------------------
 // Section: Constructors and initialization
 // -----------------------------------------------------------------------------
+	
 	/**
-	 * TODO [refactor] using PointD and DimensionD instead of Point and Dimension
 	 * Constructor
+	 * 
+	 * @param loc	TODO (PointD instead of Point)
+	 * @param size	TODO (DimensionD instead of Dimension)
 	 */
 	public function FDLayoutNode(gm:LGraphManager,
 		vNode:*,//vNode:Object,
@@ -69,7 +72,7 @@ public /*abstract*/ class FDLayoutNode extends LNode
 	{
 		super(gm, vNode, loc, size);
 		
-		// TODO [refactor] init values
+		// init values
 		
 		springForceX = 0;
 		springForceY = 0;

@@ -489,7 +489,7 @@ public /*abstract*/ class FDLayout extends Layout
 	 */
 	protected function calcGravitationalForce(node:FDLayoutNode):void
 	{
-		//assert node.gravitationForceX == 0&& node.gravitationForceY == 0; TODO [refactor] assert
+		//assert node.gravitationForceX == 0&& node.gravitationForceY == 0;
 
 		var ownerGraph:LGraph;
 		var ownerCenterX:Number;
@@ -647,13 +647,6 @@ public /*abstract*/ class FDLayout extends Layout
 			for (var j:int = startY; j <= finishY; j++)
 			{
 				var vector:Array = grid[i][j] as Array;
-				
-				// TODO [refactor] should work without this check!
-				/*if (vector == null)
-				{
-					grid[i][j] = new Array();
-					vector = grid[i][j] as Array;
-				}*/
 				
 				vector.push(v);
 				v.setGridCoordinates(startX, finishX, startY, finishY); 

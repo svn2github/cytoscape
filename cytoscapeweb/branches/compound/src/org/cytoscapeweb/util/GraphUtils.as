@@ -46,6 +46,7 @@ package org.cytoscapeweb.util {
 	import org.cytoscapeweb.model.data.VisualStyleVO;
 	import org.cytoscapeweb.util.methods.$each;
 	import org.cytoscapeweb.view.layout.PackingAlgorithms;
+	import org.cytoscapeweb.vis.data.CompoundNodeSprite;
 	
 	
 	public class GraphUtils {
@@ -285,6 +286,34 @@ package org.cytoscapeweb.util {
                             }
                             return false;
                         });
+						
+						if (node is CompoundNodeSprite)
+						{
+							var cns:CompoundNodeSprite =
+								node as CompoundNodeSprite;
+							
+							// include all non-visited children
+							
+							for each (var child:NodeSprite in
+								CompoundNodes.getChildren(cns))
+							{
+								if (!visited[child])
+								{
+									toVisit.push(child);
+								}
+							}
+							
+							// include all non-visited parents
+							
+							for each (var parent:NodeSprite in
+								CompoundNodes.getParents(cns))
+							{
+								if (!visited[parent])
+								{
+									toVisit.push(parent);
+								}
+							}
+						}
                     }
                 }
             }

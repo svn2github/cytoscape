@@ -558,8 +558,13 @@ package org.cytoscapeweb.model.converters {
             var field:DataField, value:Object;
             var name:String = att.@[NAME].toString();
             
-            if (name == null) return;
-            
+			// an attribute without a name should be ignored
+            if (name == null ||
+				name.length == 0)
+			{
+				return;
+			}
+			
             var type:int = toCW_Type(att.@[TYPE].toString());
             
             // Add the attribute definition to the schema:

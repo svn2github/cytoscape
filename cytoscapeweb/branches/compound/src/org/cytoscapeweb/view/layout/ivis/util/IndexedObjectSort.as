@@ -55,7 +55,6 @@ public class IndexedObjectSort extends QuickSort
 	 */
 	override public function compare(a:*, b:*):Boolean
 	{
-		// TODO [refactor] assertion
 	//	assert indexMapping.get(b) != null && indexMapping.get(a) != null;
 		return indexMapping.itemFor(b) as Number > 
 			indexMapping.itemFor(a) as Number;

@@ -44,6 +44,7 @@ package org.cytoscapeweb.model.converters {
     import flash.utils.IDataInput;
     import flash.utils.IDataOutput;
     
+    import org.cytoscapeweb.model.data.GraphicsDataTable;
     import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.util.ErrorCodes;
     import org.cytoscapeweb.util.Groups;
@@ -193,10 +194,6 @@ package org.cytoscapeweb.model.converters {
 					
 					// add the current compound node as a child
 					parent.addNode(cns);
-					
-					// TODO:debug
-					trace("Node " + cns.data.id +
-						" added to " + cns.parentId);
 				}
 			}
 			
@@ -287,7 +284,8 @@ package org.cytoscapeweb.model.converters {
 			}
 		}
 		
-        public static function toExtNetworkModel(ds:DataSet):Object {
+		
+        public static function toExtSimpleNetworkModel(ds:DataSet):Object {
             var obj:Object = {};
             
             // Add schema
@@ -301,6 +299,116 @@ package org.cytoscapeweb.model.converters {
             return obj;
         }
         
+		
+		/**
+		 * Creates a network model object representing the nodes and edges in
+		 * the given data set.
+		 * 
+		 * @param ds	DataSet of nodes and edges
+		 * @return		object representing the given data set
+		 */
+		public static function toExtNetworkModel(ds:DataSet):Object
+		{
+			if (!(ds.nodes is GraphicsDataTable) ||
+				!(ds.edges is GraphicsDataTable))
+			{
+				return toExtSimpleNetworkModel(ds);
+			}
+			
+			var objectModel:Object = new Object();
+			var lookup:Object = new Object();
+			
+			// add schema
+			objectModel[SCHEMA] = toExtSchema(ds.nodes.schema, ds.edges.schema);
+			
+			// for each node, create an object and add it to the array of nodes
+			
+			var nodesTable:GraphicsDataTable = ds.nodes as GraphicsDataTable;
+			var nodesArray:Array = new Array();
+			var nodeObject:Object;
+			
+			for each (var ns:NodeSprite in nodesTable.dataSprites)
+			{
+				if (ns is CompoundNodeSprite)
+				{
+					var cns:CompoundNodeSprite = ns as CompoundNodeSprite;
+					
+					// process only parentless nodes, other nodes are processed
+					// during recursive calls
+					if (cns.parentId == null)
+					{
+						// create & store node object
+						nodeObject = toExtNodeObject(cns, lookup);
+						nodesArray.push(nodeObject);
+					}
+				}
+				else if (ns.data.parentId == null)
+				{
+					// create & store node object
+					nodeObject = toExtNodeObject(ns, lookup);
+					nodesArray.push(nodeObject);
+				}
+			}
+			
+			// for each edge
+			
+			var edgesTable:GraphicsDataTable = ds.edges as GraphicsDataTable;
+			var edgesArray:Array = new Array();
+			
+			for each (var es:EdgeSprite in edgesTable.dataSprites)
+			{
+				var sParentId:String;
+				var tParentId:String;
+				var compound:Object = null;
+				
+				if (es.source is CompoundNodeSprite
+					&& es.target is CompoundNodeSprite)
+				{
+					sParentId = (es.source as CompoundNodeSprite).parentId;
+					tParentId = (es.target as CompoundNodeSprite).parentId;
+					
+					// if both source and target parents are in the same
+					// subgraph (i.e. in the same compound), then the edge
+					// information will be written to the corresponding
+					// compound node object.
+					if (sParentId != null &&
+						tParentId != null &&
+						sParentId == tParentId)
+					{
+						// try to get the object corresponding to the parent
+						compound = lookup[sParentId];
+					}
+				}
+				
+				// check if the target compound is valid
+				if (compound != null)
+				{
+					// initialize array of edges if not initialized before
+					if (compound[NETWORK][Groups.EDGES] == null)
+					{
+						compound[NETWORK][Groups.EDGES] = new Array();
+					}
+					
+					// add edge to the array
+					(compound[NETWORK][Groups.EDGES] as Array).push(es.data);
+				}
+				// edge is either inter-graph edge, or a top-level edge
+				else
+				{
+					// add the edge data to the edges array
+					edgesArray.push(es.data);
+				}
+			}
+			
+			// add graph data
+			objectModel[DATA] = new Object();
+			objectModel[DATA][Groups.NODES] = nodesArray;
+			objectModel[DATA][Groups.EDGES] = edgesArray;
+			
+			return objectModel;
+		}
+		
+		
         public static function toExtElementsArray(dataSprites:*):Array {
             var arr:Array = null;
                      
@@ -446,6 +554,58 @@ package org.cytoscapeweb.model.converters {
         
         // -- static helpers --------------------------------------------------
         
+		/**
+		 * This function creates an object representing the given node sprite. 
+		 * If the given node is a compound node, then recursively creates
+		 * its sub-network as an array of objects.
+		 * 
+		 * @param ns		node to be converted to an object
+		 * @param lookup	lookup object to store compound nodes
+		 * @return			an object representing the given node sprite
+		 */
+		private static function toExtNodeObject(ns:NodeSprite,
+			lookup:Object) : Object
+		{
+			// create node object
+			
+			var nodeObject:Object = new Object();
+			var nodes:Array;
+			
+			// copy node data
+			for (var name:String in ns.data)
+			{
+				nodeObject[name] = ns.data[name];
+			}
+			
+			if (ns is CompoundNodeSprite)
+			{
+				var cns:CompoundNodeSprite = ns as CompoundNodeSprite;
+				
+				if (cns.isInitialized())
+				{
+					var childObj:Object;
+					
+					// recursively create sub network of the compound
+					
+					nodeObject[NETWORK] = new Object();
+					nodes = new Array();
+					
+					for each (var child:NodeSprite in cns.getNodes())
+					{
+						childObj = toExtNodeObject(child, lookup);
+						nodes.push(childObj);
+					}
+					
+					nodeObject[NETWORK][Groups.NODES] = nodes;
+					
+					// store compound node object
+					lookup[cns.data.id] = nodeObject;
+				}
+			}
+			
+			return nodeObject;
+		}
+		
         private static function toCW_Type(type:String):int {
             switch (type) {
                 case INT:

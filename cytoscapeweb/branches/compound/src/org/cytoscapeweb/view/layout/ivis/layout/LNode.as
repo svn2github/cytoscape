@@ -94,8 +94,8 @@ public class LNode extends LGraphObject
 	*/
 	
 	/*
-	 * TODO [refactor] using PointD and DimensionD instead of Point and Dimension
 	 * Alternative constructor
+	 * TODO using PointD and DimensionD instead of Point and Dimension
 	 */
 	public function LNode(gm:LGraphManager,
 		vNode:*, //vNode:Object,
@@ -170,7 +170,6 @@ public class LNode extends LGraphObject
 	 */
 	public function setChild(child:LGraph):void
 	{
-		// TODO [refactor] assertion
 	//	assert (child.getGraphManager() == this.graphManager) :
 	//		"Child has different graph mgr!";
 
@@ -182,7 +181,6 @@ public class LNode extends LGraphObject
 	 */
 	public function getOwner():LGraph
 	{
-		// TODO [refactor] assertion
 	//	assert (this.owner == null || this.owner.getNodes().contains(this));
 
 		return this.owner;
@@ -320,8 +318,10 @@ public class LNode extends LGraphObject
 	}
 
 	/**
-	 * TODO [refactor] using PointD and DimensionD instead of Point and Dimension
 	 * This method sets the geometry of this node.
+	 * 
+	 * @param upperLeft	TODO (PointD instead of Point)
+	 * @param dimension	TODO (DimensionD instead of Dimension)
 	 */
 	public function setRect(upperLeft:PointD, dimension:DimensionD):void
 	{
@@ -393,7 +393,6 @@ public class LNode extends LGraphObject
 			
 			if (edge.getTarget() == to)
 			{
-				// TODO [refactor] assertion
 			//	assert (edge.source == this) : "Incorrect edge source!";
 				
 				edgeList.add(edge);
@@ -416,7 +415,6 @@ public class LNode extends LGraphObject
 		while (iter.hasNext())
 		{
 			var edge:LEdge = iter.next() as LEdge;
-			// TODO [refactor] assertion
 		//	assert (edge.source == this || edge.target == this) :
 		//		"Incorrect edge source and/or target";
 
@@ -470,7 +468,6 @@ public class LNode extends LGraphObject
 			}
 			else
 			{
-				// TODO [refactor] assertion
 			//	assert (edge.target == (this)) : "Incorrect incidency!";
 				neighbors.add(edge.getSource());
 			}
@@ -493,7 +490,6 @@ public class LNode extends LGraphObject
 		{
 			var edge:LEdge = iter.next() as LEdge;
 			
-			// TODO [refactor] assertion
 		//	assert (edge.source == (this) || edge.target == (this)) :
 		//		"Incorrect incidency!";
 
@@ -545,7 +541,6 @@ public class LNode extends LGraphObject
 	 */
 	public function getEstimatedSize():int
 	{
-		// TODO [refactor] asertion
 	//	assert this.estimatedSize != Integer.MIN_VALUE;
 		return this.estimatedSize;
 	}
@@ -600,7 +595,6 @@ public class LNode extends LGraphObject
 	 */
 	public function updateBounds():void
 	{
-		// TODO [refactor] assertion
 	//	assert this.getChild() != null;
 
 		if (this.getChild().getNodes().size != 0)
@@ -626,7 +620,6 @@ public class LNode extends LGraphObject
 	 */
 	public function getInclusionTreeDepth():int
 	{
-		// TODO [refactor] assertion
 	//	assert this.inclusionTreeDepth != Integer.MAX_VALUE;
 		return this.inclusionTreeDepth;
 	}

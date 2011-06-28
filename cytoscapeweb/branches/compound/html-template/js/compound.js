@@ -15,7 +15,7 @@ var options = {
     //mouseDownToDragDelay: -1,
     network: { }, // initial empty network
     layout: {
-    	name: "CoSE",
+    	name: "CompoundSpringEmbedder",
     	options: { }
     },
     visualStyle: {
@@ -109,8 +109,8 @@ window.onload = function()
 	vis.ready(initContextMenu);
 	
 	//createMenu();
-	//options.network = createObjectData();
-	options.network = createGraphmlData();
+	options.network = createObjectData();
+	//options.network = createGraphmlData();
 	//options.network = createRandomMesh(5);
 	vis.draw(options);
 };
@@ -125,7 +125,6 @@ function createGraphmlData()
 	'<key id="label" for="node" attr.name="label" attr.type="string"/>' +
 	'<key id="weight" for="node" attr.name="weight" attr.type="double"/>' +
 	'<key id="name" for="node" attr.name="name" attr.type="string"/>' +
-	'<key id="" for="node" attr.name="" attr.type="string"/>' +
 	'<key id="label" for="edge" attr.name="label" attr.type="string"/>' +
 	'<key id="weight" for="edge" attr.name="weight" attr.type="double"/>' +
 	'<graph edgedefault="undirected">' +
@@ -152,7 +151,6 @@ function createGraphmlData()
 	'</node>' +
 	'<node id="n5">' +
 	'<data key="label">n5</data>' +
-	'<data key=""></data>' +
 	'<graph edgedefault="undirected">' +
 	'<node id="n22">' +
 	'<data key="label">n22</data>' +
@@ -176,7 +174,6 @@ function createGraphmlData()
 	'</node>' +
 	'<node id="n1">' +
 	'<data key="label">n1</data>' +
-	'<data key=""></data>' +
 	'<graph edgedefault="undirected">' +
 	'<node id="n20">' +
 	'<data key="label">n20</data>' +
@@ -189,7 +186,6 @@ function createGraphmlData()
 	'</node>' +
 	'<node id="n13">' +
 	'<data key="label">n13</data>' +
-	'<data key=""></data>' +
 	'<graph edgedefault="undirected">' +
 	'<node id="n131">' +
 	'<data key="label">n131</data>' +
@@ -210,7 +206,6 @@ function createGraphmlData()
 	'</node>' +
 	'<node id="n6">' +
 	'<data key="label">n6</data>' +
-	'<data key=""></data>' +
 	'<graph edgedefault="undirected">' +
 	'<node id="n10">' +
 	'<data key="label">n10</data>' +
@@ -223,7 +218,6 @@ function createGraphmlData()
 	'</node>' +
 	'<node id="n9">' +
 	'<data key="label">n9</data>' +
-	'<data key=""></data>' +
 	'<graph edgedefault="undirected">' +
 	'<node id="n14">' +
 	'<data key="label">n14</data>' +
@@ -491,7 +485,7 @@ function readDataFromFile(filename)
 function createObjectData()
 {
 	var data = {
-	    	dataSchema: {
+		dataSchema: {
 			nodes: [ { name: "label", type: "string" } ],       
 			edges: [ { name: "label", type: "string" },
 			         { name: "weight", type: "number" } ]
@@ -691,7 +685,7 @@ function initToolbar()
     
 	
 	$("#cose").click(function(evt) {
-        vis.layout("CoSE");
+        vis.layout("CompoundSpringEmbedder");
     });
 	
 	$("#fd").click(function(evt) {
@@ -713,6 +707,13 @@ function initToolbar()
 	
 	$("#in-object-model").click(function(evt) {
         var network = createObjectData();
+        options.network = network;
+        vis.draw(options);
+    });
+	
+	$("#json-test").click(function(evt) {
+        var network = vis.networkModel();
+        alert(JSON.stringify(network));
         options.network = network;
         vis.draw(options);
     });

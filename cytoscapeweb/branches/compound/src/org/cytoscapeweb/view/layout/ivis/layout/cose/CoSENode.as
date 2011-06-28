@@ -47,8 +47,10 @@ public class CoSENode extends FDLayoutNode
 // -----------------------------------------------------------------------------
 	
 	/**
-	 * TODO [refactor] using PointD and DimensionD instead of Point and Dimension
 	 * Constructor
+	 * 
+	 * @param loc	TODO (PointD instead of Point)
+	 * @param size	TODO (DimensionD instead of Dimension)
 	 */
 	public function CoSENode(gm:LGraphManager,
 		vNode:*/*vNode:Object*/,
@@ -74,7 +76,6 @@ public class CoSENode extends FDLayoutNode
 		this.displacementY = layout.coolingFactor *
 			(this.springForceY + this.repulsionForceY + this.gravitationForceY);
 
-		// TODO [refactor] debug
 		//var str:String = printf("\t%s@[%5.1f,%5.1f] s=(%5.1f,%5.1f) r=(%5.1f,%5.1f) g=(%5.1f,%5.1f)",
 		//	this.label,
 		//	this.getLeft(), this.getTop(),
