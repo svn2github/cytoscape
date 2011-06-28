@@ -387,7 +387,7 @@
 	<bean id="attrsDataReaderFactory"
 		class="org.cytoscape.io.internal.read.datatable.CyAttributesReaderFactory">
 		<constructor-arg ref="attrsFilter" />
-		<constructor-arg ref="cyDataTableFactoryServiceRef" />
+		<constructor-arg ref="cyTableFactoryServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
@@ -417,6 +417,7 @@
         <constructor-arg ref="renderingEngineManagerServiceRef" />
         <constructor-arg ref="readDataManager" />
         <constructor-arg ref="xgmmlParser" />
+        <constructor-arg ref="unrecognizedVisualPropertyManager" />
     </bean>
 
     <bean id="sessionReaderFactory"
@@ -490,6 +491,7 @@
 		class="org.cytoscape.io.internal.write.xgmml.XGMMLNetworkViewWriterFactory">
 		<constructor-arg ref="xgmmlFilter" />
 		<constructor-arg ref="renderingEngineManagerServiceRef" />
+		<constructor-arg ref="unrecognizedVisualPropertyManager" />
 	</bean>
 
 	<bean id="cysessionWriterFactory"
@@ -563,11 +565,16 @@
 		<constructor-arg ref="handlerFactory" />
 		<constructor-arg ref="readDataManager" />
 	</bean>
+	
+	<bean id="unrecognizedVisualPropertyManager" class="org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager">
+        <constructor-arg ref="cyTableFactoryServiceRef"/>
+        <constructor-arg ref="cyTableManagerServiceRef"/>
+	</bean>
 
 	<bean id="sessionTableReaderFactory" class="org.cytoscape.io.internal.read.datatable.CSVCyReaderFactory">
 		<constructor-arg ref="sessionTableFilter"/>
 		<constructor-arg value="true"/>
-		<constructor-arg ref="cyDataTableFactoryServiceRef"/>
+		<constructor-arg ref="cyTableFactoryServiceRef"/>
 	</bean>
 	
 	<!-- All Reader Managers -->

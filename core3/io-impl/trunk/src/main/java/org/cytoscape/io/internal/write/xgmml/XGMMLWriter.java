@@ -37,8 +37,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.cytoscape.equations.Equation;
+import org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyEdge;
@@ -124,6 +126,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
     private final CyNetwork network;
     private final VisualLexicon visualLexicon;
     private final CyNetworkView networkView;
+    private final UnrecognizedVisualPropertyManager unrecognizedVisualPropertyMgr;
 
     private HashMap<CyNode, CyNode> nodeMap = new HashMap<CyNode, CyNode>();
     private HashMap<CyEdge, CyEdge> edgeMap = new HashMap<CyEdge, CyEdge>();
@@ -138,9 +141,11 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
     public XGMMLWriter(final OutputStream outputStream,
                        final RenderingEngineManager renderingEngineManager,
-                       final CyNetworkView networkView) {
+                       final CyNetworkView networkView,
+                       final UnrecognizedVisualPropertyManager unrecognizedVisualPropertyMgr) {
         this.outputStream = outputStream;
         this.networkView = networkView;
+        this.unrecognizedVisualPropertyMgr = unrecognizedVisualPropertyMgr;
         this.network = networkView.getModel();
         this.visualLexicon = renderingEngineManager.getDefaultVisualLexicon();
 
@@ -381,7 +386,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
         //            depth--;
         //            writeElement("</att>\n");
         //        }
-
+		
         // Output the node graphics if we have a view
         if (networkView != null) writeGraphics(networkView.getNodeView(node));
 
@@ -500,17 +505,29 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
             }
         }
         
-        // serialize locked properties as <att> tags inside <graphics>
-        if (lockedProperties.size() > 0) {
-        	writer.write(">\n");
-            depth++;
+		Map<String, String> unrecognizedMap = unrecognizedVisualPropertyMgr
+				.getUnrecognizedVisualProperties(networkView, view);
+
+		if (lockedProperties.size() > 0 || unrecognizedMap.size() > 0) {
+			writer.write(">\n");
+			depth++;
             
+            // serialize locked properties as <att> tags inside <graphics>
             for (VisualProperty vp : lockedProperties) {
             	Object value = view.getVisualProperty(vp);
             	value = vp.toSerializableString(value);
             	
             	if (value != null)
             		writeAttributeXML(vp.getIdString(), ObjectType.STRING, value, true);
+            }
+            
+            // also save unrecognized visual properties
+            for (Map.Entry<String, String> entry : unrecognizedMap.entrySet()) {
+            	String key = entry.getKey();
+            	String value = entry.getValue();
+            	
+            	if (value != null)
+            		writeAttributeXML(key, ObjectType.STRING, value, true);
             }
             
             depth--;
@@ -551,7 +568,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 	 * @return
 	 */
     private boolean ignoreGraphicsAttribute(final CyTableEntry element, String attName) {
-		boolean b = (sessionFormat && (element instanceof CyNode) && !attName.matches("x|y"));
+		boolean b = (sessionFormat && (element instanceof CyNode) && !attName.matches("x|y|z"));
 		b = b || (sessionFormat && (element instanceof CyEdge));
 		
 		return b;
@@ -561,6 +578,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
         //Nodes
         if (vp.equals(MinimalVisualLexicon.NODE_X_LOCATION)) return "x";
         if (vp.equals(MinimalVisualLexicon.NODE_Y_LOCATION)) return "y";
+        if (vp.equals(RichVisualLexicon.NODE_Z_LOCATION)) return "z";
         if (vp.equals(MinimalVisualLexicon.NODE_WIDTH)) return "w";
         if (vp.equals(MinimalVisualLexicon.NODE_HEIGHT)) return "h";
         if (vp.equals(MinimalVisualLexicon.NODE_FILL_COLOR)) return "fill";

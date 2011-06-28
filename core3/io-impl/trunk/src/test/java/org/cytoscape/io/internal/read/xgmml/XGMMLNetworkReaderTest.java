@@ -10,10 +10,14 @@ import java.io.FileInputStream;
 import org.cytoscape.io.internal.read.AbstractNetworkViewReaderTester;
 import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
+import org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.model.CyTableManager;
+import org.cytoscape.test.support.DataTableTestSupport;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.presentation.RenderingEngineManager;
@@ -24,35 +28,43 @@ import org.junit.Test;
 
 public class XGMMLNetworkReaderTest extends AbstractNetworkViewReaderTester {
 
-	CyNetworkViewFactory cyNetworkViewFactory;
-	CyNetworkFactory cyNetworkFactory;
-	RenderingEngineManager renderingEngineManager;
-	ReadDataManager readDataManager;
+	CyNetworkViewFactory networkViewFactory;
+	CyNetworkFactory networkFactory;
+	CyTableFactory tableFactory;
+	RenderingEngineManager renderingEngineMgr;
+	ReadDataManager readDataMgr;
 	AttributeValueUtil attributeValueUtil;
+	UnrecognizedVisualPropertyManager unrecognizedVisualPropertyMgr;
 	XGMMLParser parser;
 	XGMMLNetworkReader reader;
 
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		renderingEngineManager = mock(RenderingEngineManager.class);
-		when(renderingEngineManager.getDefaultVisualLexicon())
+		renderingEngineMgr = mock(RenderingEngineManager.class);
+		when(renderingEngineMgr.getDefaultVisualLexicon())
 				.thenReturn(new MinimalVisualLexicon(new NullVisualProperty("MINIMAL_ROOT",
 																			"Minimal Root Visual Property")));
 
-		readDataManager = new ReadDataManager();
+		readDataMgr = new ReadDataManager();
 		ObjectTypeMap objectTypeMap = new ObjectTypeMap();
-		attributeValueUtil = new AttributeValueUtil(objectTypeMap, readDataManager);
-		HandlerFactory handlerFactory = new HandlerFactory(readDataManager, attributeValueUtil);
-		parser = new XGMMLParser(handlerFactory, readDataManager);
+		attributeValueUtil = new AttributeValueUtil(objectTypeMap, readDataMgr);
+		HandlerFactory handlerFactory = new HandlerFactory(readDataMgr, attributeValueUtil);
+		parser = new XGMMLParser(handlerFactory, readDataMgr);
 
-		cyNetworkViewFactory = mock(CyNetworkViewFactory.class);
-		cyNetworkFactory = mock(CyNetworkFactory.class);
+		networkViewFactory = mock(CyNetworkViewFactory.class);
+		networkFactory = mock(CyNetworkFactory.class);
+		
+		DataTableTestSupport tblTestSupport = new DataTableTestSupport();
+		tableFactory = tblTestSupport.getDataTableFactory();
 
-		ByteArrayInputStream is = new ByteArrayInputStream("".getBytes("UTF8")); // TODO: use XGMML string or load from file
+		ByteArrayInputStream is = new ByteArrayInputStream("".getBytes("UTF-8")); // TODO: use XGMML string or load from file
 
-		reader = new XGMMLNetworkReader(is, cyNetworkViewFactory, cyNetworkFactory, renderingEngineManager,
-										readDataManager, parser);
+		reader = new XGMMLNetworkReader(is, networkViewFactory, networkFactory, renderingEngineMgr, readDataMgr,
+										parser, unrecognizedVisualPropertyMgr);
+
+		CyTableManager tableMgr= mock(CyTableManager.class);
+		unrecognizedVisualPropertyMgr = new UnrecognizedVisualPropertyManager(tableFactory, tableMgr);
 	}
 
 	@Test
@@ -105,6 +117,7 @@ public class XGMMLNetworkReaderTest extends AbstractNetworkViewReaderTester {
 		CyNode node = mock(CyNode.class);
 		assertFalse(reader.isLockedVisualProperty(node, "x"));
 		assertFalse(reader.isLockedVisualProperty(node, "y"));
+		assertFalse(reader.isLockedVisualProperty(node, "z"));
 		assertTrue(reader.isLockedVisualProperty(node, "type"));
 		assertTrue(reader.isLockedVisualProperty(node, "w"));
 		assertTrue(reader.isLockedVisualProperty(node, "h"));
@@ -134,7 +147,8 @@ public class XGMMLNetworkReaderTest extends AbstractNetworkViewReaderTester {
 	private CyNetworkView[] getViews(String file) throws Exception {
 		File f = new File("./src/test/resources/testData/xgmml/" + file);
 		XGMMLNetworkReader snvp = new XGMMLNetworkReader(new FileInputStream(f), viewFactory, netFactory,
-														 renderingEngineManager, readDataManager, parser);
+														 renderingEngineMgr, readDataMgr, parser,
+														 unrecognizedVisualPropertyMgr);
 		snvp.run(taskMonitor);
 
 		final CyNetwork[] networks = snvp.getCyNetworks();

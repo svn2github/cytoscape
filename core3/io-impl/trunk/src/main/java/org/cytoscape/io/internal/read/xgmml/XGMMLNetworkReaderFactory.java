@@ -30,6 +30,7 @@ package org.cytoscape.io.internal.read.xgmml;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.read.AbstractNetworkReaderFactory;
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
+import org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.presentation.RenderingEngineManager;
@@ -45,25 +46,29 @@ import org.cytoscape.work.TaskIterator;
  */
 public class XGMMLNetworkReaderFactory extends AbstractNetworkReaderFactory {
 
-	private final RenderingEngineManager renderingEngineManager;
+	private final RenderingEngineManager renderingEngineMgr;
 	private final XGMMLParser parser;
-	private final ReadDataManager readDataManager;
+	private final ReadDataManager readDataMgr;
+	private final UnrecognizedVisualPropertyManager unrecognizedVisualPropertyMgr;
 
 	public XGMMLNetworkReaderFactory(CyFileFilter filter,
 									 CyNetworkViewFactory cyNetworkViewFactory,
 									 CyNetworkFactory cyNetworkFactory,
-									 RenderingEngineManager renderingEngineManager,
-									 ReadDataManager readDataManager,
-									 XGMMLParser parser) {
+									 RenderingEngineManager renderingEngineMgr,
+									 ReadDataManager readDataMgr,
+									 XGMMLParser parser,
+									 UnrecognizedVisualPropertyManager unrecognizedVisualPropertyMgr) {
 		super(filter, cyNetworkViewFactory, cyNetworkFactory);
-		this.renderingEngineManager = renderingEngineManager;
-		this.readDataManager = readDataManager;
+		this.renderingEngineMgr = renderingEngineMgr;
+		this.readDataMgr = readDataMgr;
 		this.parser = parser;
+		this.unrecognizedVisualPropertyMgr = unrecognizedVisualPropertyMgr;
 	}
 
 	@Override
 	public TaskIterator getTaskIterator() {
 		return new TaskIterator(new XGMMLNetworkReader(inputStream, cyNetworkViewFactory, cyNetworkFactory,
-													   renderingEngineManager, readDataManager, parser));
+													   renderingEngineMgr, readDataMgr, parser,
+													   unrecognizedVisualPropertyMgr));
 	}
 }

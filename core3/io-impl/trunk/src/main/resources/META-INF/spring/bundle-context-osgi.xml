@@ -17,7 +17,7 @@
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
 		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 
-	<osgi:reference id="cyDataTableFactoryServiceRef"
+	<osgi:reference id="cyTableFactoryServiceRef"
 		interface="org.cytoscape.model.CyTableFactory" />
 
 	<osgi:reference id="cyPropertyServiceRef" interface="org.cytoscape.property.CyProperty"
@@ -365,4 +365,8 @@
 		<osgi:listener bind-method="addCyWriterFactory"
 			unbind-method="removeCyWriterFactory" ref="vizmapWriterManager" />
 	</osgi:set>
+	
+	<!-- Export listeners -->
+	<osgi:service id="unrecognizedVisualPropertyManagerService" ref="unrecognizedVisualPropertyManager"
+        interface="org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener" />
 </beans>
