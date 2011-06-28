@@ -112,8 +112,8 @@ installation is.  Then run:
 
 	mvn install4j:compile
 
-	Note: to package with plugins, first copy plugins into:
-		distribution/target/cytoscape-#.#.#.dir/cytoscape-#.#.#/plugins/.
+	Note: to package with additional plugins, first copy plugins into:
+		distribution/target/cytoscape-#.#.#-null/cytoscape-#.#.#/plugins/.
 
 The installers will be created in the target/install4j subdirectory
 
