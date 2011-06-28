@@ -91,6 +91,18 @@ public class InterpreterTest extends TestCase {
 		assertEquals(new Double(12.0), interpreter.execute(compiler.getEquation(), nameToDescriptorMap));
 	}
 
+	public void testBinaryMinus() throws Exception {
+		final Map<String, Class<?>> attribNameToTypeMap = new HashMap<String, Class<?>>();
+		attribNameToTypeMap.put("attr1", Double.class);
+		attribNameToTypeMap.put("attr2", Double.class);
+		assertTrue(compiler.compile("=-17.8E-14", attribNameToTypeMap));
+		assertTrue(compiler.compile("=1-1.5", attribNameToTypeMap));
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new HashMap<String, IdentDescriptor>();
+		nameToDescriptorMap.put("attr1", new IdentDescriptor(5.5));
+		nameToDescriptorMap.put("attr2", new IdentDescriptor(6.5));
+		assertEquals(new Double(-0.5), interpreter.execute(compiler.getEquation(), nameToDescriptorMap));
+	}
+
 	public void testUnaryPlusAndMinus2() throws Exception {
 		final Map<String, Class<?>> attribNameToTypeMap = new HashMap<String, Class<?>>();
 		attribNameToTypeMap.put("attr1", Long.class);
