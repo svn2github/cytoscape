@@ -68,9 +68,10 @@ public class MCODEAboutDialog extends JDialog {
         }
 
         editorPane.setText(
-                "<html><body>"+logoCode+"<P align=center><b>MCODE (Molecular Complex Detection) v1.2 (Jan 2007)</b><BR>" +
+                "<html><body>"+logoCode+"<P align=center><b>MCODE (Molecular Complex Detection) v1.32 (Jun 2011)</b><BR>" +
                 "A Cytoscape PlugIn<BR><BR>" +
 
+                "Version 1.32 by <a href='http://www.baderlab.org/'>Bader Lab</a>, University of Toronto<BR>" +
                 "Version 1.2 by Vuk Pavlovic (<a href='http://www.baderlab.org/'>Bader Lab</a>, University of Toronto)<BR>" +
                 "Version 1.1 and 1.0 by Gary Bader (while in the <a href='http://cbio.mskcc.org/'>Sander Lab</a>,<BR>" +
                 "Memorial Sloan-Kettering Cancer Center)<BR><BR>" +
