@@ -60,6 +60,7 @@ import org.cytoscape.io.write.VizmapWriterManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableMetadata;
+import org.cytoscape.model.CyTable.SavePolicy;
 import org.cytoscape.property.session.Cysession;
 import org.cytoscape.session.CySession;
 import org.cytoscape.view.model.CyNetworkView;
@@ -324,35 +325,43 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 
 	private void zipGlobalTables() throws Exception {
 		Set<CyNetworkView> views = session.getNetworkViews();
-		Set<Long> excludedTables = new HashSet<Long>();
 		Set<CyNetwork> includedNetworks = new HashSet<CyNetwork>();
+		
 		for (CyNetworkView view : views) {
 			CyNetwork network = view.getModel();
 			includedNetworks.add(network);
 		}
+		
 		Set<CyTableMetadata> tableData = session.getTables();
+		
 		for (CyTableMetadata metadata : tableData) {
 			CyTable table = metadata.getCyTable();
-			if (excludedTables.contains(table.getSUID())) {
+			
+			if (table.getSavePolicy() == SavePolicy.DO_NOT_SAVE) {
 				continue;
 			}
 
 			String tableTitle = escape(table.getTitle());
 			String fileName;
 			Set<CyNetwork> networks = metadata.getCyNetworks();
+			
 			if (networks.size() == 0) {
 				fileName = String.format("global/%d-%s.cytable", table.getSUID(), tableTitle);
 			} else {
 				CyNetwork network = findIntersection(includedNetworks, networks);
+				
 				if (network == null) {
 					continue;
 				}
+				
 				String networkFileName = getNetworkFileName(network);
 				String namespace = escape(metadata.getNamespace());
 				String type = escape(metadata.getType().getCanonicalName());
 				fileName = String.format("%s/%s-%s-%s.cytable", networkFileName, namespace, type, tableTitle);
 			}
+			
 			zos.putNextEntry(new ZipEntry(sessionDir + fileName));
+			
 			try {
 				CyWriter writer = tableWriterMgr.getWriter(table, tableFilter, zos);
 				writer.run(taskMonitor);
