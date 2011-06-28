@@ -3,6 +3,8 @@ package org.cytoscape.io.internal.write.graphics;
 import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.NETWORK_HEIGHT;
 import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.NETWORK_WIDTH;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 import java.util.Set;
@@ -76,15 +78,20 @@ public class BitmapWriter extends AbstractTask implements CyWriter {
 	public void run(TaskMonitor tm) throws Exception {
 		logger.debug("Bitmap image rendering start.");
 		
+		// Extract size
 		final double scale = scaleFactor.getValue().doubleValue();
 		final int finalW = ((Number)(width.getValue()*scale)).intValue();
 		final int finalH = ((Number)(height.getValue()*scale)).intValue();
 
+		final BufferedImage image = new BufferedImage(finalW, finalH, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = (Graphics2D) image.getGraphics();
+		g.scale(scale, scale);
+		re.printCanvas(g);
+		g.dispose();
+		
 		try {
-			ImageIO.write(((BufferedImage) re.createImage(finalW, finalH)),
-					extension, outStream);			
-		}
-		finally {
+			ImageIO.write(image, extension, outStream);			
+		} finally {
 			outStream.close();
 		}
 		
