@@ -29,34 +29,34 @@ package org.cytoscape.search.internal;
 
 
 import java.io.IOException;
-
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyTable; 
-import org.cytoscape.model.CyTableUtil; 
-
-import org.cytoscape.search.internal.util.EnhancedSearchUtils;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import java.util.List;
 import java.util.Set;
 
-import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.CyRow;
-import java.util.List;
-import java.util.Map;
-import org.apache.lucene.util.Version;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.document.NumericField;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.Version;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.search.internal.util.EnhancedSearchUtils;
 
 
 public class EnhancedSearchIndex {
 	RAMDirectory idx;
 
 	// Index the given network
-	public EnhancedSearchIndex(CyNetwork network) {
+	public EnhancedSearchIndex(final CyNetwork network) {
+		if(network == null)
+			throw new NullPointerException("Network is null.");
+		
 		// Construct a RAMDirectory to hold the in-memory representation of the index.		
 		idx = new RAMDirectory();
 		BuildIndex(idx, network);

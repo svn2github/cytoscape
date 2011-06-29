@@ -29,25 +29,32 @@ package org.cytoscape.search.internal;
 
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.lucene.store.RAMDirectory;
-
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.task.AbstractNetworkViewTask;
-import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.task.AbstractNetworkTask;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.work.TaskMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
-public class IndexAndSearchTask extends AbstractNetworkViewTask {
+public class IndexAndSearchTask extends AbstractNetworkTask {
+	
+	private static final Logger logger = LoggerFactory.getLogger(IndexAndSearchTask.class);
+	
 	private boolean interrupted = false;
-	private EnhancedSearch enhancedSearch;
-	private CyNetwork network;
-	private CyTableManager tableMgr;
+	
+	private final EnhancedSearch enhancedSearch;
+	private final CyTableManager tableMgr;
+	private final CyNetworkViewManager viewManager;
 
 	public String query;
 
@@ -55,33 +62,36 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 	 * The constructor. Any necessary data that is <i>not</i> provided by
 	 * the user should be provided as arguments to the constructor.
 	 */
-	public IndexAndSearchTask(final CyNetworkView networkView,
-	                          final EnhancedSearch enhancedSearch,
-	                          final CyTableManager tableMgr, String query)
-	{
+	public IndexAndSearchTask(final CyNetwork network, final EnhancedSearch enhancedSearch,
+			final CyTableManager tableMgr, final String query, final CyNetworkViewManager viewManager) {
+		
 		// Will set a CyNetwork field called "net".
-		super(networkView);
-		network = networkView.getModel();
+		super(network);
 		this.enhancedSearch = enhancedSearch;
 		this.tableMgr = tableMgr;
 		this.query = query;
+		this.viewManager = viewManager;
 	}
 
 	@Override
 	public void run(final TaskMonitor taskMonitor) {
+		
+		logger.debug("Index and search start.");
+		
 		// Give the task a title.
 		taskMonitor.setTitle("Searching the network");
 
 		// Index the given network or use existing index
 		RAMDirectory idx = null;
 
-		String status = enhancedSearch.getNetworkIndexStatus(network);
-
+		final String status = enhancedSearch.getNetworkIndexStatus(network);
+		logger.debug("Index status = " + status);
+		
 		if (status != null && status.equalsIgnoreCase(EnhancedSearch.INDEX_SET))
 			idx = enhancedSearch.getNetworkIndex(network);
 		else {
 			taskMonitor.setStatusMessage("Indexing network");
-			EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(network);
+			final EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(network);
 			idx = indexHandler.getIndex();
 			enhancedSearch.setNetworkIndex(network, idx);
 		}
@@ -96,12 +106,23 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 
 		if (interrupted)
 			return;
+		
+		showResults(queryHandler, taskMonitor);
+		
+		updateView();
+	}
+
+	/**
+	 * If view(s) exists for the current network, update them.
+	 */
+	private void updateView() {
+		final CyNetworkView targetView = viewManager.getNetworkView(network.getSUID());
+		if(targetView != null)
+			targetView.updateView();
 	}
 
 	// Display results
-	private void showResults(final EnhancedSearchQuery queryHandler,
-	                         final TaskMonitor taskMonitor)
-	{
+	private void showResults(final EnhancedSearchQuery queryHandler, final TaskMonitor taskMonitor) {
 		if (network == null || network.getNodeList().size() == 0)
 			return;
 
@@ -151,7 +172,7 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 		}
 
 		// Refresh view to show selected nodes and edges
-		view.updateView();
+		//view.updateView();
 	}
 
 	@Override

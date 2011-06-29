@@ -1,19 +1,33 @@
 package org.cytoscape.search.internal.ui;
 
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.search.internal.EnhancedSearch;
+import org.cytoscape.search.internal.SearchTaskFactory;
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.search.internal.*;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.swing.GUITaskManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EnhancedSearchPanel extends javax.swing.JPanel {
 
-	private CyApplicationManager netmgr;
+	private static final long serialVersionUID = 3748296514173533886L;
+	
+	private static final Logger logger = LoggerFactory.getLogger(EnhancedSearchPanel.class);
+	
+	private CyApplicationManager appManager;
 	private CyTableManager tableMgr;
 	private EnhancedSearch searchMgr;
 	private GUITaskManager taskMgr;
+	
+	private final CyNetworkViewManager viewManager;
 
 	/** Creates new form NewJPanel */
-	public EnhancedSearchPanel(CyApplicationManager netmgr, CyTableManager tableMgr, EnhancedSearch searchMgr,
+	public EnhancedSearchPanel(CyApplicationManager appManager, final CyNetworkViewManager viewManager, CyTableManager tableMgr, EnhancedSearch searchMgr,
 			GUITaskManager taskMgr) {
 		initComponents();
 
@@ -21,12 +35,11 @@ public class EnhancedSearchPanel extends javax.swing.JPanel {
 		this.btnSearch.setVisible(false);
 		this.lbSearch.setVisible(true);
 
-		this.netmgr = netmgr;
+		this.appManager = appManager;
 		this.tableMgr = tableMgr;
 		this.searchMgr = searchMgr;
 		this.taskMgr = taskMgr;
-		// The following is for debug only
-		// this.tfSearchText.setText("TestNodeAttribute1:[0 to 5]");
+		this.viewManager = viewManager;
 	}
 
 	private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {
@@ -39,13 +52,18 @@ public class EnhancedSearchPanel extends javax.swing.JPanel {
 
 	// Do searching based on the query string from user on text-field
 	private void doSearching() {
-		if (this.netmgr.getCurrentNetworkView() != null) {
-			String queryStr = this.tfSearchText.getText().trim();
+		final String queryStr = this.tfSearchText.getText().trim();
+		logger.debug("Search Start.  Query text = " + queryStr);
 
-			SearchTaskFactory factory = new SearchTaskFactory(this.netmgr.getCurrentNetworkView(), searchMgr, tableMgr,
-					queryStr);
+		final CyNetwork currentNetwork = appManager.getCurrentNetwork();
+		if (currentNetwork != null) {
+			logger.debug("Target Network ID = " + currentNetwork.getSUID());
+
+			final SearchTaskFactory factory = new SearchTaskFactory(currentNetwork, searchMgr,
+					tableMgr, queryStr, viewManager);
 			this.taskMgr.execute(factory);
-		}
+		} else
+			logger.error("Could not find network for search");
 	}
 
 	/**
@@ -93,4 +111,25 @@ public class EnhancedSearchPanel extends javax.swing.JPanel {
 	private javax.swing.JTextField tfSearchText;
 	// End of variables declaration
 
+	
+	/**
+	 * Simply updates view if necessary.
+	 */
+	private final class UpdateViewTask extends AbstractTask {
+
+		private final CyApplicationManager appManager;
+		
+		UpdateViewTask(final CyApplicationManager appManager) {
+			this.appManager = appManager;
+		}
+		
+		@Override
+		public void run(TaskMonitor tm) throws Exception {
+			CyNetworkView view = appManager.getCurrentNetworkView();
+			
+			if(view != null)
+				view.updateView();
+		}
+		
+	}
 }

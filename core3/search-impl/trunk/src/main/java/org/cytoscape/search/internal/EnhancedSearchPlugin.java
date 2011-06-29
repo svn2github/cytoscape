@@ -43,6 +43,7 @@ import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.search.internal.ui.EnhancedSearchPanel;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.swing.GUITaskManager;
 
 
@@ -55,15 +56,15 @@ public class EnhancedSearchPlugin extends AbstractToolBarComponent
 	static CyEventHelper eventHelper;
 	
 	public EnhancedSearchPlugin(final CySwingApplication desktopApp,
-	                            final CyApplicationManager netmgr, 
+	                            final CyApplicationManager appManager, 
 	                            final CyTableManager tableMgr,
 	                            final GUITaskManager taskMgr,
-	                            final CyEventHelper eventHelper)
+	                            final CyEventHelper eventHelper, final CyNetworkViewManager viewManager)
 	{
 		
 		searchMgr = new EnhancedSearchManager();
 		// Add a text-field and a search button on tool-bar
-		searchPnl = new EnhancedSearchPanel(netmgr, tableMgr, searchMgr, taskMgr);
+		searchPnl = new EnhancedSearchPanel(appManager, viewManager, tableMgr, searchMgr, taskMgr);
 		this.setToolBarGravity(150.0f);
 		EnhancedSearchPlugin.eventHelper = eventHelper;
 	}

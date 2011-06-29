@@ -22,6 +22,9 @@
 	<osgi:reference id="guiTaskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager" />
 
     <osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
+    
+    <osgi:reference id="cyNetworkViewManagerServiceRef"
+		interface="org.cytoscape.view.model.CyNetworkViewManager" />
         
 	<!--
 	This code registers the bean we just created "sampleTaskFactory" as an 

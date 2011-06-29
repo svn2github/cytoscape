@@ -49,9 +49,14 @@ import org.cytoscape.model.CyTableManager;
 import org.cytoscape.search.internal.util.AttributeFields;
 import org.cytoscape.search.internal.util.CustomMultiFieldQueryParser;
 import org.cytoscape.search.internal.util.EnhancedSearchUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class EnhancedSearchQuery {
+	
+	private static final Logger logger = LoggerFactory.getLogger(EnhancedSearchQuery.class);
+	
 	private final RAMDirectory idx;
 	private final CyNetwork network;
 	private final CyTableManager tableMgr;
@@ -66,6 +71,8 @@ public class EnhancedSearchQuery {
 
 	public void executeQuery(String queryString) {
 		try {
+			logger.debug("Query start for: " + queryString);
+			
 			// Define attribute fields in which the search is to be carried on
 			AttributeFields attFields = new AttributeFields(network, tableMgr);
 
