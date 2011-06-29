@@ -2722,8 +2722,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	
 		for ( ViewChangeRecord<CyEdge> record : e.getPayloadCollection()) {
 			final Integer index = record.getView().getModel().getIndex();
-			if (m_nodeViewMap.containsKey(index))
-				m_nodeViewMap.get(index).setVisualPropertyValue(record.getVisualProperty(), record.getValue());
+			if (m_edgeViewMap.containsKey(index))
+				m_edgeViewMap.get(index).setVisualPropertyValue(record.getVisualProperty(), record.getValue());
 		}
 	}
 
