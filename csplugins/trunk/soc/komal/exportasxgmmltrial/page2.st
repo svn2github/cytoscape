@@ -1,7 +1,7 @@
 <html>
 <head>
 
-	<title> Title 20</title>
+	<title>$title$</title>
 
 	<link type="text/css" rel="stylesheet" href="css/layout-default-latest.css">
         <link type="text/css" rel="stylesheet" href="css/jquery.menubar.css"/>
@@ -13,64 +13,64 @@
 	<script type="text/javascript" src="js/jquery.menubar.js"></script>
 
 <script type="text/javascript">
-           $(document).ready(function(){
-                $("#menubar").menubar({
+           \$(document).ready(function(){
+                \$("#menubar").menubar({
                     items: [
                         {
                             name: "Network",
                             open: function(){
-                                $("#menubar-command").html("Network Menu");
+                                \$("#menubar-command").html("Network Menu");
                             },
                             items: [
 								{
                                     name: "Network 1",
                                     attr: { title: "This is Network 1" },
                                     selecton: function(){
-                                        $("#menubar-command").html("This is Network 1");
+                                        \$("#menubar-command").html("This is Network 1");
                                     }
                                 },{
                                     name: "Network 2",
                                     attr: { title: "This is Network 2" },
                                     selecton: function(){
-                                        $("#menubar-command").html("This is Network 2");
+                                        \$("#menubar-command").html("This is Network 2");
                                     }
                                 },{
                                     name: "Network 3",
                                     attr: { title: "This is Network 3" },
                                     selecton: function(){
-                                        $("#menubar-command").html("This is Network 3");
+                                        \$("#menubar-command").html("This is Network 3");
                                     }
                                 },{
                                     name: "Network 4",
                                     attr: { title: "This is Network 4" },
                                     selecton: function(){
-                                        $("#menubar-command").html("This is Network 4");
+                                        \$("#menubar-command").html("This is Network 4");
                                     }
 								}
                             ]
                         },{
                             name: "Layout",
                             open: function(){
-                                $("#menubar-command").html("Layout Menu");
+                                \$("#menubar-command").html("Layout Menu");
                             },
                             items: [
 								{
                                     name: "Layout 1",
                                     attr: { title: "This is Layout 1" },
                                     selecton: function(){
-                                        $("#menubar-command").html("This is Layout 1");
+                                        \$("#menubar-command").html("This is Layout 1");
                                     }
                                 },								{
                                     name: "Layout 2",
                                     attr: { title: "This is Layout 2" },
                                     selecton: function(){
-                                        $("#menubar-command").html("This is Layout 2");
+                                        \$("#menubar-command").html("This is Layout 2");
                                     }
                                 },								{
                                     name: "Layout 3",
                                     attr: { title: "This is Layout 3" },
                                     selecton: function(){
-                                        $("#menubar-command").html("This is Layout 3");
+                                        \$("#menubar-command").html("This is Layout 3");
                                     }
                                 }
 
@@ -78,26 +78,26 @@
                         },{
                             name: "Visual Style",
                             open: function(){
-                                $("#menubar-command").html("Visual Style Menu");
+                                \$("#menubar-command").html("Visual Style Menu");
                             },
                             items: [
 								{
                                     name: "Style 1",
                                     attr: { title: "This is Style 1" },
                                     selecton: function(){
-                                        $("#menubar-command").html("This is Style 1");
+                                        \$("#menubar-command").html("This is Style 1");
                                     }
                                 },								{
                                     name: "Style 2",
                                     attr: { title: "This is Style 2" },
                                     selecton: function(){
-                                        $("#menubar-command").html("This is Style 2");
+                                        \$("#menubar-command").html("This is Style 2");
                                     }
                                 },								{
                                     name: "Style 3",
                                     attr: { title: "This is Style 3" },
                                     selecton: function(){
-                                        $("#menubar-command").html("This is Style 3");
+                                        \$("#menubar-command").html("This is Style 3");
                                     }
                                 }
 
@@ -129,12 +129,12 @@
 
 	var myLayout;
 
-	$(document).ready(function () {
+	\$(document).ready(function () {
 
 		// this layout could be created with NO OPTIONS - but showing some here just as a sample...
-		// myLayout = $('body').layout(); -- syntax with No Options
+		// myLayout = \$('body').layout(); -- syntax with No Options
 
-		myLayout = $('body').layout({
+		myLayout = \$('body').layout({
 
 		//	reference only - these options are NOT required because 'true' is the default
 			closable:				false	// pane can open & close
@@ -150,7 +150,7 @@
 		});
 
 							// Tabs
-		$('#tabs').tabs();
+		\$('#tabs').tabs();
 
 		var div_id = "cytoscapeweb";
 
@@ -160,9 +160,9 @@
                 };
 
 				var vis = new org.cytoscapeweb.Visualization(div_id);
-				var url = 'C:\Users\Vampire\Desktop\Trial20';
+				var url = '$network$';
 
-                $.get(url, function(data) {
+                \$.get(url, function(data) {
                     if (typeof data !== "string") {
                         if (window.ActiveXObject) {
                             data = data.xml;
@@ -188,7 +188,7 @@
 <div class="ui-layout-north"  style="position: absolute; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; top: 0px; bottom: auto; left: 0px; right: 0px; width: auto; visibility: visible; display: block; z-index: 1; overflow-x: auto; overflow-y: auto; height: 60px; ">
 
 
-<center><h1><img src="C:\Users\Vampire\Desktop\Finger.png" height=70px alt="logo"/> Title 20</h1></center>
+<center><h1><img src="$logo$" height=70px alt="logo"/>$title$</h1></center>
 </div>
 
 
@@ -202,7 +202,7 @@ style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px;
 			</ul>
 			<div id="tabs-1"><p>Nodes</p></div>
 			<div id="tabs-2"><p>Edges</p></div>
-			<div id="tabs-3"><p>N 20 </p></div>
+			<div id="tabs-3"><p>$description$</p></div>
 		</div>
 </div>
 
@@ -214,7 +214,7 @@ style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px;
 
 
 </div>
-<div id="cytoscapeweb" style="width:600px;height:400px;border:solid;border-width:1px;"></div></div>
+<div id="cytoscapeweb" style="width:300px;height:200px;border:solid;border-width:1px;"></div></div>
 
 
 </body>

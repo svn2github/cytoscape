@@ -15,7 +15,7 @@ public class WebPage extends ExportToCytoscapeWeb {
     public static void main(String[] args) {
 
         StringTemplateGroup group = new StringTemplateGroup("myGroup", "C:/Users/Vampire/Documents/NetBeansProjects/ExportAsXGMMLTrial/src/exportasxgmmltrial", DefaultTemplateLexer.class);
-        StringTemplate obj = group.getInstanceOf("page1");
+        StringTemplate obj = group.getInstanceOf("page2");
 
         obj.setAttribute("title", titleofpage);
         obj.setAttribute("network", urlofxgmml);
