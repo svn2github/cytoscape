@@ -216,11 +216,13 @@ public class XGMMLNetworkReader extends AbstractNetworkReader {
 	protected void layoutGraphics(final View<? extends CyTableEntry> view, Map<String, String> atts) {
 		if (atts != null) {
 			CyTableEntry model = view.getModel();
-
 			Class<?> type = CyNetwork.class;
-			if (model instanceof CyNode)
+			
+			if (model instanceof CyNode) {
 				type = CyNode.class;
-			else if (model instanceof CyEdge) type = CyEdge.class;
+			} else if (model instanceof CyEdge) {
+				type = CyEdge.class;
+			}
 
 			Set<String> attSet = atts.keySet();
 
