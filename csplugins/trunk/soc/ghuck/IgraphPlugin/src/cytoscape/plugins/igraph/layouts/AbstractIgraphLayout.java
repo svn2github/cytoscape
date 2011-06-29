@@ -28,6 +28,7 @@ import cytoscape.CyNode;
 import cytoscape.logger.CyLogger;
 
 import cytoscape.view.CyNetworkView;
+import cytoscape.view.CyNodeView;
 import cytoscape.data.CyAttributes;
 
 import csplugins.layout.LayoutPartition;
@@ -42,6 +43,8 @@ import javax.swing.JPanel;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.*;
+
+import giny.view.*;
 
 
 public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
@@ -174,7 +177,7 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
 	    initialLocation = part.getAverageLocation();
 	}
 
-	// Get the number of edges and nodes
+	// Get the number of nodes
 	int numNodes = part.nodeCount();
 
 	// Allocate memory for storing graph edges information (to be used as arguments for JNI call)
@@ -183,6 +186,9 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
 
 	// Load graph into native library
 	HashMap<Integer,Integer> mapping = loadGraphPartition(part, selectedOnly);
+
+	// Store current node positions
+	loadPositions(part, mapping, x, y);
 
 	// Check whether it has been canceled by the user
 	if (canceled)
@@ -399,6 +405,21 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
 
 	return nodeIdMapping;
     } // loadGraphPartition()
+
+
+    // Store current node positions
+    public void loadPositions(LayoutPartition part, HashMap<Integer,Integer> mapping, double[] x, double[] y){
+	Iterator<LayoutNode> iterator = part.getNodeList().iterator();	
+	while (iterator.hasNext()){	    
+	    // Get next node
+	    LayoutNode node = (LayoutNode) iterator.next();
+	    
+	    if (!selectedOnly || !node.isLocked()) {				       
+		x[mapping.get(node.getIndex())] = node.getX();
+		y[mapping.get(node.getIndex())] = node.getY();		
+	    }	
+	}
+    }
 
 }
 
