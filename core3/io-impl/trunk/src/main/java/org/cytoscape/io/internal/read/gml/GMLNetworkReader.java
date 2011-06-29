@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.cytoscape.io.internal.read.AbstractNetworkReader;
+import org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -158,6 +159,7 @@ public class GMLNetworkReader extends AbstractNetworkReader {
 	Map<String, String> edgeShape;
 
 	private final RenderingEngineManager renderingEngineManager;
+	private final UnrecognizedVisualPropertyManager unrecognizedVisualPropertyMgr;
 
 	private CyNetworkView view;
 	private CyNetwork network;
@@ -165,9 +167,11 @@ public class GMLNetworkReader extends AbstractNetworkReader {
 	public GMLNetworkReader(InputStream inputStream,
 							CyNetworkFactory networkFactory,
 							CyNetworkViewFactory viewFactory,
-							RenderingEngineManager renderingEngineManager) {
+							RenderingEngineManager renderingEngineManager,
+							UnrecognizedVisualPropertyManager unrecognizedVisualPropertyMgr) {
 		super(inputStream, viewFactory, networkFactory);
 		this.renderingEngineManager = renderingEngineManager;
+		this.unrecognizedVisualPropertyMgr = unrecognizedVisualPropertyMgr;
 
 		// Set new style name
 		edge_names = new Vector<CyEdge>();
@@ -554,18 +558,22 @@ public class GMLNetworkReader extends AbstractNetworkReader {
 		CyTableEntry model = view.getModel();
 
 		for (KeyValue keyVal : list) {
-			VisualProperty<?> vp = lexicon.lookup(CyNode.class, keyVal.key);
+			String key = keyVal.key;
+			Object value = keyVal.value;
+			VisualProperty<?> vp = lexicon.lookup(CyNode.class, key);
 
 			if (vp != null) {
-				Object value = (Object) vp.parseSerializableString(keyVal.value.toString());
+				value = vp.parseSerializableString(keyVal.value.toString());
 
 				if (value != null) {
-					if (isLockedVisualProperty(model, keyVal.key)) {
+					if (isLockedVisualProperty(model, key)) {
 						view.setLockedValue(vp, value);
 					} else {
 						view.setVisualProperty(vp, value);
 					}
 				}
+			} else {
+				unrecognizedVisualPropertyMgr.addUnrecognizedVisualProperty(netView, view, key, value.toString());
 			}
 		}
 	}
@@ -616,22 +624,27 @@ public class GMLNetworkReader extends AbstractNetworkReader {
 		CyTableEntry model = view.getModel();
 
 		for (KeyValue keyVal : list) {
+			String key = keyVal.key;
+			Object value = keyVal.value;
+			
 			// This is a polyline obj. However, it will be translated into straight line.
-			if (keyVal.key.equals(LINE)) {
-				layoutEdgeGraphicsLine(netView, (List<KeyValue>) keyVal.value, view);
+			if (key.equals(LINE)) {
+				layoutEdgeGraphicsLine(netView, (List<KeyValue>) value, view);
 			} else {
-				VisualProperty<?> vp = lexicon.lookup(CyEdge.class, keyVal.key);
+				VisualProperty<?> vp = lexicon.lookup(CyEdge.class, key);
 
 				if (vp != null) {
-					Object value = (Object) vp.parseSerializableString(keyVal.value.toString());
+					value = vp.parseSerializableString(value.toString());
 
 					if (value != null) {
-						if (isLockedVisualProperty(model, keyVal.key)) {
+						if (isLockedVisualProperty(model, key)) {
 							view.setLockedValue(vp, value);
 						} else {
 							view.setVisualProperty(vp, value);
 						}
 					}
+				} else {
+					unrecognizedVisualPropertyMgr.addUnrecognizedVisualProperty(netView, view, key, value.toString());
 				}
 			}
 		}

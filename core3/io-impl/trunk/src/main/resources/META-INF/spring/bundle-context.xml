@@ -407,6 +407,7 @@
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 		<constructor-arg ref="renderingEngineManagerServiceRef" />
+		<constructor-arg ref="unrecognizedVisualPropertyManager" />
 	</bean>
 	
 	<bean id="xgmmlNetworkViewReaderFactory"
