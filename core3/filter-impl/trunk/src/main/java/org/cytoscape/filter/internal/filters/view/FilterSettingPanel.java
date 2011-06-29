@@ -461,10 +461,16 @@ public class FilterSettingPanel extends JPanel {
 					
 					//Update the selection on screen
 					theFilter.setNetwork(applicationManager.getCurrentNetwork());
-					FilterUtil.doSelection(theFilter, applicationManager, eventHelper);
+					FilterUtil.doSelection(theFilter, applicationManager);
+					updateView();
 				}
 			}
 		}
+	}
+
+	private void updateView() {
+		eventHelper.flushPayloadEvents();
+		applicationManager.getCurrentNetworkView().updateView();
 	}
 
 	private void adjustBoundValues(Vector<String> pBoundVect, String pDataType){
@@ -789,7 +795,8 @@ public class FilterSettingPanel extends JPanel {
 	private void doSelection() {
 		// If network size is greater than pre-defined threshold, don't apply theFilter automatically 
 		if (FilterUtil.isDynamicFilter(theFilter)) {
-			FilterUtil.doSelection(theFilter, applicationManager, eventHelper);
+			FilterUtil.doSelection(theFilter, applicationManager);
+			updateView();
 		}		
 	}
 	

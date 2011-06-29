@@ -873,9 +873,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 								
 				// If network size is greater than pre-defined threshold, don't apply it automatically 
 				if (FilterUtil.isDynamicFilter(selectedFilter)) {
-					FilterUtil.doSelection(selectedFilter, applicationManager, eventHelper);
+					FilterUtil.doSelection(selectedFilter, applicationManager);
 				}
 				
+				updateView();
 				refreshAttributeCMB();
 			}
 			else if (cmb == cmbAttributes) {
@@ -914,7 +915,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				//System.out.println("\tThe Filter to apply is \n" + cmbSelectFilter.getSelectedItem().toString()+"\n");
 				CompositeFilter theFilterToApply = (CompositeFilter) cmbSelectFilter.getSelectedItem();
 				theFilterToApply.setNetwork(applicationManager.getCurrentNetwork());
-				FilterUtil.doSelection(theFilterToApply, applicationManager, eventHelper);
+				FilterUtil.doSelection(theFilterToApply, applicationManager);
 			}
 			if (_btn == btnAddFilterWidget) {
 				//btnAddFilterWidget is clicked!
@@ -941,23 +942,12 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			if (_btn == btnSelectAll){
 				CyNetwork cyNetwork = applicationManager.getCurrentNetwork();
 				SelectUtil.selectAllNodes(cyNetwork);
-				
-				//System.out.println("Cytoscape.getCurrentNetwork().getClass() = "+Cytoscape.getCurrentNetwork().getClass());
-				
 				SelectUtil.selectAllEdges(cyNetwork);
-
-				CyNetworkView view = applicationManager.getCurrentNetworkView();
-				if (view != null) {
-					view.updateView();
-				}
 			}
 			if (_btn == btnDeSelect){
 				CyNetwork cyNetwork = applicationManager.getCurrentNetwork();
-				CyNetworkView view = applicationManager.getCurrentNetworkView();
-				
 				SelectUtil.unselectAllNodes(cyNetwork);
 				SelectUtil.unselectAllEdges(cyNetwork);
-				view.updateView();
 			}
 			
 		} // JButton event
@@ -973,19 +963,19 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				if (_menuItem == newTopologyFilterMenuItem) {
 					filterType = "Topology";
 					if (cyNetwork != null) {
-						SelectUtil.unselectAllNodes(cyNetwork);						
+						SelectUtil.unselectAllNodes(cyNetwork);
 					}
 				}
 				if (_menuItem == newNodeInteractionFilterMenuItem) {
 					filterType = "NodeInteraction";
 					if (cyNetwork != null) {
-						SelectUtil.unselectAllNodes(cyNetwork);						
+						SelectUtil.unselectAllNodes(cyNetwork);
 					}
 				}
 				if (_menuItem == newEdgeInteractionFilterMenuItem) {
 					filterType = "EdgeInteraction";
 					if (cyNetwork != null) {
-						SelectUtil.unselectAllNodes(cyNetwork);						
+						SelectUtil.unselectAllNodes(cyNetwork);
 					}
 				}
 				
@@ -1081,8 +1071,14 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		} // JMenuItem event
 		
 		updateInteractionMenuItemStatus();
+		updateView();
 	}
 	
+	private void updateView() {
+		eventHelper.flushPayloadEvents();
+		applicationManager.getCurrentNetworkView().updateView();
+	}
+
 	private void updateInteractionMenuItemStatus() {
 		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
 		//Disable interactionMenuItem if there is no other filters to depend on

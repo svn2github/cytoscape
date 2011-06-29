@@ -20,7 +20,7 @@ import org.cytoscape.session.CyApplicationManager;
 public class FilterUtil {
 		
 	// do selection on given network
-	public static void doSelection(CompositeFilter pFilter, CyApplicationManager applicationManager, CyEventHelper eventHelper) {
+	public static void doSelection(CompositeFilter pFilter, CyApplicationManager applicationManager) {
 		//System.out.println("Entering FilterUtil.doSelection() ...");
 		
 //		// TODO: What do we do about CyInit*?
@@ -82,9 +82,6 @@ public class FilterUtil {
 			}
 			SelectUtil.setSelectedEdgeState(passedEdges, true);
 		}
-		
-		eventHelper.flushPayloadEvents();
-		applicationManager.getCurrentNetworkView().updateView();
 		
 //		// TODO: What do we do about CyInit*?
 //		//Restore cursor

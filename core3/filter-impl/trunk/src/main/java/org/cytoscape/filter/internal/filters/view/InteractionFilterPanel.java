@@ -203,8 +203,14 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 		
 		// If network size is less than pre-defined threshold, apply theFilter automatically 
 		if (FilterUtil.isDynamicFilter(theFilter)) {
-			FilterUtil.doSelection(theFilter, applicationManager, eventHelper);
+			FilterUtil.doSelection(theFilter, applicationManager);
+			updateView();
 		}
+	}
+
+	private void updateView() {
+		eventHelper.flushPayloadEvents();
+		applicationManager.getCurrentNetworkView().updateView();
 	}
 
 	

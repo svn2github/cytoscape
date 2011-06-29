@@ -196,10 +196,17 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 
 			// If network size is less than pre-defined threshold, apply theFilter automatically 
 			if (FilterUtil.isDynamicFilter(theFilter)) {
-				FilterUtil.doSelection(theFilter, applicationManager, eventHelper);
+				FilterUtil.doSelection(theFilter, applicationManager);
+				updateView();
 			}
 		}
 	}
+	
+	private void updateView() {
+		eventHelper.flushPayloadEvents();
+		applicationManager.getCurrentNetworkView().updateView();
+	}
+
 	
     /** This method is called from within the constructor to
      * initialize the form.
