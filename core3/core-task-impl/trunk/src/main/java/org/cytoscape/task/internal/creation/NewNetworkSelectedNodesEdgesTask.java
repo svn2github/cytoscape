@@ -46,14 +46,14 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 
 public class NewNetworkSelectedNodesEdgesTask extends AbstractNetworkFromSelectionTask {
 
-    public NewNetworkSelectedNodesEdgesTask(final CyNetwork net, final CyRootNetworkFactory cyroot,
-	    final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
-	    final CyNetworkViewManager networkViewManager, final CyNetworkNaming cyNetworkNaming,
-	    final VisualMappingManager vmm, final CyApplicationManager appManager) {
-	super(net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming, vmm, appManager);
-    }
+	public NewNetworkSelectedNodesEdgesTask(final CyNetwork net, final CyRootNetworkFactory cyroot,
+			final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
+			final CyNetworkViewManager networkViewManager, final CyNetworkNaming cyNetworkNaming,
+			final VisualMappingManager vmm, final CyApplicationManager appManager) {
+		super(net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming, vmm, appManager);
+	}
 
-    Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes) {
-	return CyTableUtil.getEdgesInState(netx, CyNetwork.SELECTED, true);
-    }
+	Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes) {
+		return CyTableUtil.getEdgesInState(netx, CyNetwork.SELECTED, true);
+	}
 }
