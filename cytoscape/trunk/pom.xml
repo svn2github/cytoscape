@@ -25,6 +25,17 @@
       </modules>
     </profile>
     <profile>
+      <id>release</id>
+      <modules>
+       <module>corelibs</module>
+       <module>application</module>
+       <module>coreplugins</module>
+       <module>distribution</module>
+       <module>javadoc</module>
+       <module>packaging</module>
+      </modules>
+    </profile>
+    <profile>
       <id>all</id>
       <modules>
        <module>corelibs</module>
