@@ -145,7 +145,7 @@ public class FileHandler extends AbstractGUITunableHandler {
 		if (filters.isEmpty())
 			return;
 
-		fileChooser.setAcceptAllFileFilterUsed(false);
+		fileChooser.setAcceptAllFileFilterUsed(input);
 
 		int i = 0;
 		FileChooserFilter defaultFilter = null;
@@ -239,6 +239,7 @@ try_again:              {
 				if (ret == JFileChooser.APPROVE_OPTION) {
 					file = fileChooser.getSelectedFile();
 					if (file != null) {
+/*
 						// Make sure the user-supplied file name has an extension:
 						final String fileName = file.getPath();
 						if (getFileExtension(fileName) == null) {
@@ -259,7 +260,7 @@ try_again:              {
 							    == JOptionPane.NO_OPTION)
 								break try_again;
 						}
-
+*/
 						fileTextField.setFont(new Font(null, Font.PLAIN, 10));
 						fileTextField.setText(file.getAbsolutePath());
 						fileTextField.removeMouseListener(mouseClick);

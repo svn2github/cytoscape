@@ -8,6 +8,7 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.util.ListSingleSelection;
 
 import java.net.URL;
@@ -51,7 +52,7 @@ public class ProxySettingsTask extends AbstractTask implements TunableValidator 
 		this.streamUtil = streamUtil;
 	}
 
-	public boolean tunablesAreValid(final Appendable errMsg) {
+	public ValidationState getValidationState(final Appendable errMsg) {
 		storeProxySettings();
 
 		FutureTask<Exception> executor = new FutureTask<Exception>(new TestProxySettings(streamUtil));
@@ -69,7 +70,7 @@ public class ProxySettingsTask extends AbstractTask implements TunableValidator 
 		revertProxySettings();
 
 		if (result == null)
-			return true;
+			return ValidationState.OK;
 
 		try {
 			errMsg.append("Cytoscape was unable to connect to the internet because:\n\n" + result.getMessage());
@@ -77,7 +78,7 @@ public class ProxySettingsTask extends AbstractTask implements TunableValidator 
 			/* Intentionally ignored! */
 		}
 
-		return false;
+		return ValidationState.INVALID;
 	}
 
 	public void run(TaskMonitor taskMonitor) {

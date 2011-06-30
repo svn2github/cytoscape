@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2010, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,6 +34,7 @@ import org.cytoscape.task.AbstractTableColumnTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 
 
 public final class RenameColumnTask extends AbstractTableColumnTask implements TunableValidator {
@@ -50,13 +51,13 @@ public final class RenameColumnTask extends AbstractTableColumnTask implements T
 	}
 
 	@Override
-	public boolean tunablesAreValid(final Appendable errMsg) {
+	public ValidationState getValidationState(final Appendable errMsg) {
 		if (newColumnName == null || newColumnName.isEmpty()) {
 			try {
 				errMsg.append("You must provide a new column name!");
 			} catch (Exception e) {
 			}
-			return false;
+			return ValidationState.INVALID;
 		}
 
 		final CyTable table = column.getTable();
@@ -65,7 +66,7 @@ public final class RenameColumnTask extends AbstractTableColumnTask implements T
 				errMsg.append("Column name is a duplicate!");
 			} catch (Exception e) {
 			}
-			return false;
+			return ValidationState.INVALID;
 		}
 
 		if (column.isImmutable()) {
@@ -73,9 +74,9 @@ public final class RenameColumnTask extends AbstractTableColumnTask implements T
 				errMsg.append("Cannot rename an immutable column!");
 			} catch (Exception e) {
 			}
-			return false;
+			return ValidationState.INVALID;
 		}
 
-		return true;
+		return ValidationState.OK;
 	}
 }

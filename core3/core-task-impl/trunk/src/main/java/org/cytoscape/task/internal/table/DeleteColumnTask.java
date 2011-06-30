@@ -34,6 +34,7 @@ import org.cytoscape.task.AbstractTableColumnTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 
 
 public final class DeleteColumnTask extends AbstractTableColumnTask implements TunableValidator {
@@ -47,15 +48,15 @@ public final class DeleteColumnTask extends AbstractTableColumnTask implements T
 	}
 
 	@Override
-	public boolean tunablesAreValid(final Appendable errMsg) {
+	public ValidationState getValidationState(final Appendable errMsg) {
 		if (column.isImmutable()) {
 			try {
 				errMsg.append("Cannot delete an immutable column!");
 			} catch (Exception e) {
 			}
-			return false;
+			return ValidationState.INVALID;
 		}
 
-		return true;
+		return ValidationState.OK;
 	}
 }

@@ -19,6 +19,7 @@ import javax.swing.border.TitledBorder;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableHandlerFactory;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.swing.AbstractGUITunableInterceptor;
 import org.cytoscape.work.swing.GUITunableHandler;
 import org.cytoscape.work.internal.tunables.utils.CollapsablePanel;
@@ -323,13 +324,25 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 
 			final Appendable errMsg = new StringBuilder();
 			try {
-				if (!((TunableValidator)objectWithTunables).tunablesAreValid(errMsg)) {
+				final ValidationState validationState =
+					((TunableValidator)objectWithTunables).getValidationState(errMsg);
+				if (validationState == ValidationState.INVALID) {
 					JOptionPane.showMessageDialog(new JFrame(), errMsg.toString(),
 					                              "Input Validation Problem",
 					                              JOptionPane.ERROR_MESSAGE);
 					if (parentPanel == null)
 						displayGUI(panelMap.get(handlers));
 					return false;
+				} else if (validationState == ValidationState.REQUEST_CONFIRMATION) {
+					if (JOptionPane.showConfirmDialog(new JFrame(), errMsg.toString(),
+									  "Confirmation",
+									  JOptionPane.YES_NO_OPTION)
+					    == JOptionPane.NO_OPTION)
+					{
+						if (parentPanel == null)
+							displayGUI(panelMap.get(handlers));
+						return false;
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -2,6 +2,8 @@ package org.cytoscape.task.internal.io;
 
 
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.util.ListSingleSelection;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.write.AbstractCyWriter;
@@ -21,7 +23,9 @@ import java.util.ArrayList;
  * is meant to be extended for specific file types such that the appropriate
  * {@link org.cytoscape.io.write.CyWriter} can be identified.
  */
-public abstract class TunableAbstractCyWriter<T extends CyWriterManager> extends AbstractCyWriter<T> {
+public abstract class TunableAbstractCyWriter<T extends CyWriterManager>
+	extends AbstractCyWriter<T> implements TunableValidator
+{
 	/**
 	 * This method gets the file to be written.  This method should not
 	 * be called directly, but rather handled by the {@link org.cytoscape.work.Tunable}
@@ -54,6 +58,23 @@ public abstract class TunableAbstractCyWriter<T extends CyWriterManager> extends
 	public TunableAbstractCyWriter(T writerManager) {
 		super(writerManager);
 		options = new ListSingleSelection<String>(new ArrayList<String>(descriptionFilterMap.keySet()));
+	}
+
+	@Override
+	public final ValidationState getValidationState(final Appendable msg) {
+		// Make sure we have the right extension, if not, then force it:
+		if (!fileExtensionIsOk(outputFile))
+			outputFile = addOrReplaceExtension(outputFile);
+
+		if (outputFile.exists()) {
+			try {
+				msg.append("File already exists, are you sure you want to overwrite it?");
+			} catch (final Exception e) {
+				/* Intentionally empty! */
+			}
+			return ValidationState.REQUEST_CONFIRMATION;
+		} else
+			return ValidationState.OK;
 	}
 
 	protected final boolean fileExtensionIsOk(final File file) {

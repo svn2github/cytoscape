@@ -33,11 +33,17 @@ package org.cytoscape.work;
  *
  */
 public interface TunableValidator {
+	public enum ValidationState {
+		INVALID, OK, REQUEST_CONFIRMATION
+	}
+
 	/**
 	 * Executes the validation test on the annotated <code>Tunables</code>.
 	 * 
-	 * @param  errMsg  if the validation failed an explanatory message can be found here and accessed via <code>errMsg.toString()</code>
-	 * @return true if the test succeeded and false otherwise
+	 * @param  errMsg  if the validation failed an explanatory message can be found here and accessed via
+	 *                 <code>errMsg.toString()</code>
+	 * @return OK if the test succeeded and INVALID if it failed and REQUEST_CONFIRMATION if the user has
+	 *         to be asked for confirmation, e.g. if a file would have to be overwritten etc.
 	 */
-	boolean tunablesAreValid(final Appendable errMsg);
+	ValidationState getValidationState(final Appendable errMsg);
 }
