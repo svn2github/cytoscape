@@ -131,7 +131,7 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 			}
 
 		br.close();
-		tm.setStatusMessage("Network data loaded from data source.\nCreting Cytoscape network...");
+		tm.setStatusMessage("Network data loaded from data source.\nCreating Cytoscape network...");
 
 		nMap.clear();
 		nMap = null;
