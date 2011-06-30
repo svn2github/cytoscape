@@ -48,23 +48,23 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 
 public class NewNetworkSelectedNodesOnlyTask extends AbstractNetworkFromSelectionTask {
 
-    public NewNetworkSelectedNodesOnlyTask(final CyNetwork net, final CyRootNetworkFactory cyroot,
-	    final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
-	    final CyNetworkViewManager networkViewManager, final CyNetworkNaming cyNetworkNaming,
-	    final VisualMappingManager vmm, final CyApplicationManager appManager) {
-	super(net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming, vmm, appManager);
-    }
-
-    Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes) {
-	final Set<CyEdge> edges = new HashSet<CyEdge>();
-
-	for (int i = 0; i < nodes.size(); i++) {
-	    CyNode n1 = nodes.get(i);
-	    for (int j = i + 1; j < nodes.size(); j++) {
-		CyNode n2 = nodes.get(j);
-		edges.addAll(netx.getConnectingEdgeList(n1, n2, CyEdge.Type.ANY));
-	    }
+	public NewNetworkSelectedNodesOnlyTask(final CyNetwork net, final CyRootNetworkFactory cyroot,
+			final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
+			final CyNetworkViewManager networkViewManager, final CyNetworkNaming cyNetworkNaming,
+			final VisualMappingManager vmm, final CyApplicationManager appManager) {
+		super(net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming, vmm, appManager);
 	}
-	return edges;
-    }
+
+	Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes) {
+		final Set<CyEdge> edges = new HashSet<CyEdge>();
+
+		for (int i = 0; i < nodes.size(); i++) {
+			CyNode n1 = nodes.get(i);
+			for (int j = i + 1; j < nodes.size(); j++) {
+				CyNode n2 = nodes.get(j);
+				edges.addAll(netx.getConnectingEdgeList(n1, n2, CyEdge.Type.ANY));
+			}
+		}
+		return edges;
+	}
 }
