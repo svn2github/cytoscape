@@ -39,7 +39,12 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 
+import cytoscape.data.AttributeValueVisitor;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.data.attr.CountedIterator;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.MultiHashMapDefinition;
 
 import org.cytoscape.coreplugin.psi_mi.data_mapper.Mapper;
 import org.cytoscape.coreplugin.psi_mi.model.AttributeBag;
@@ -148,7 +153,7 @@ public class MapFromCytoscape implements Mapper {
 	 * Transfers all Node / Edge Attributes.
 	 */
 	private void transferAllAttributes(String[] attributeNames, CyAttributes attributes,
-	                                   String nodeName, AttributeBag bag) {
+	                                   String nodeName, final AttributeBag bag) {
 		List dbNames = null;
 		List dbIds = null;
 
@@ -160,8 +165,12 @@ public class MapFromCytoscape implements Mapper {
 			} else if (attributeName.equals(CommonVocab.XREF_DB_ID)) {
 				dbIds = attributes.getListAttribute(nodeName, attributeName);
 			} else {
-				String value = attributes.getStringAttribute(nodeName, attributeName);
-				bag.addAttribute(attributeName, value);
+				CyAttributesUtils.traverseAttributeValues(nodeName, attributeName, attributes, new AttributeValueVisitor() {
+					@Override
+					public void visitingAttributeValue(String objTraverseID, String attrName, CyAttributes attrs, Object[] keySpace, Object visitedValue) {
+						bag.addAttribute(attrName, visitedValue);
+					}
+				});
 			}
 		}
 
