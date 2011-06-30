@@ -1,19 +1,26 @@
 package org.cytoscape.io.internal.read.xgmml.handler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.io.internal.read.xgmml.ParseState;
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTableEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 
 public class ReadDataManager {
@@ -72,19 +79,22 @@ public class ReadDataManager {
 	
 	private Map<CyNode, Map<String/*att name*/, String/*att value*/>> nodeGraphics;
 	private Map<CyEdge, Map<String/*att name*/, String/*att value*/>> edgeGraphics;
+	
+	private Map<CyRow, Map<String/*column name*/, String/*equation*/>> equations;
 
 	protected Map<CyNode, List<CyNode>> groupMap;
 	
 	private boolean sessionFormat;
+	
+	private final EquationCompiler equationCompiler;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ReadDataManager.class);
 
-	public boolean isSessionFormat() {
-		return sessionFormat;
+	public ReadDataManager(final EquationCompiler equationCompiler) {
+		this.equationCompiler = equationCompiler;
+		initAllData();
 	}
 	
-	public void setSessionFormat(boolean sessionFormat) {
-		this.sessionFormat = sessionFormat;
-	}
-
 	public void initAllData() {
 		networkName = null;
 
@@ -110,6 +120,8 @@ public class ReadDataManager {
 		nodeGraphics = new LinkedHashMap<CyNode, Map<String, String>>();
 		edgeGraphics = new LinkedHashMap<CyEdge, Map<String, String>>();
 
+		equations = new Hashtable<CyRow, Map<String,String>>();
+		
 		currentNode = null;
 		currentEdge = null;
 		currentGroupNode = null;
@@ -132,10 +144,14 @@ public class ReadDataManager {
 		sessionFormat = false;
 	}
 
-	public ReadDataManager() {
-		initAllData();
+	public boolean isSessionFormat() {
+		return sessionFormat;
 	}
-
+	
+	public void setSessionFormat(boolean sessionFormat) {
+		this.sessionFormat = sessionFormat;
+	}
+	
 	public String getNetworkName() {
 		return networkName;
 	}
@@ -220,15 +236,57 @@ public class ReadDataManager {
 		return this.network;
 	}
 
-	public void addEquation(String columnName, CyRow row, String equationStr) {
-		// TODO: should just store all the equation strings per columnName/row?
-		// TODO: create all equations after all CyTables/CyColumns are loaded?
+	/**
+	 * Just stores all the equation strings per CyTableEntry and column name.
+	 * It does not create the real Equation objects yet.
+	 * @param row The network/node/edge row
+	 * @param columnName The name of the column
+	 * @param formula The equation formula
+	 */
+	public void addEquationString(CyRow row, String columnName, String formula) {
+		Map<String, String> colEquationMap = equations.get(row);
+		
+		if (colEquationMap == null) {
+			colEquationMap = new HashMap<String, String>();
+			equations.put(row, colEquationMap);
+		}
+		
+		colEquationMap.put(columnName, formula);
+	}
+	
+	/**
+	 * Should be called only after all XGMML attributes have been read.
+	 */
+	public void parseAllEquations() {
+		for (Map.Entry<CyRow, Map<String, String>> entry : equations.entrySet()) {
+			CyRow row = entry.getKey();
+			Map<String, String> colEquationMap = entry.getValue();
+			
+			Map<String, Class<?>> colNameTypeMap = new Hashtable<String, Class<?>>();
+			Collection<CyColumn> columns = row.getTable().getColumns();
+			
+			for (CyColumn col : columns) {
+				colNameTypeMap.put(col.getName(), col.getType());
+			}
+			
+			for (Map.Entry<String, String> colEqEntry : colEquationMap.entrySet()) {
+				String columnName = colEqEntry.getKey();
+				String formula = colEqEntry.getValue();
+
+				if (equationCompiler.compile(formula, colNameTypeMap)) {
+					Equation equation = equationCompiler.getEquation();
+					row.set(columnName, equation);
+				} else {
+					logger.error("Error parsing equation \"" + formula + "\": " + equationCompiler.getLastErrorMsg());
+				}
+			}
+		}
 	}
 	
 	/**
 	 * It controls which graphics attributes should be parsed.
-	 * @param element
-	 * @param attName
+	 * @param element The network, node or edge
+	 * @param attName The name of the XGMML attribute
 	 * @return
 	 */
 	protected boolean ignoreGraphicsAttribute(final CyTableEntry element, String attName) {

@@ -548,8 +548,9 @@
 	<bean id="objectTypeMap" class="org.cytoscape.io.internal.read.xgmml.ObjectTypeMap" />
 
 	<bean id="readDataManager"
-		class="org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager" />
-
+		class="org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager">
+		<constructor-arg ref="equationCompilerServiceRef" />
+	</bean>
 
 	<bean id="attributeValueUtil"
 		class="org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil">

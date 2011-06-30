@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
+import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.io.internal.read.AbstractNetworkViewReaderTester;
 import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
@@ -46,7 +47,7 @@ public class XGMMLNetworkReaderTest extends AbstractNetworkViewReaderTester {
 				.thenReturn(new MinimalVisualLexicon(new NullVisualProperty("MINIMAL_ROOT",
 																			"Minimal Root Visual Property")));
 
-		readDataMgr = new ReadDataManager();
+		readDataMgr = new ReadDataManager(mock(EquationCompiler.class));
 		ObjectTypeMap objectTypeMap = new ObjectTypeMap();
 		attributeValueUtil = new AttributeValueUtil(objectTypeMap, readDataMgr);
 		HandlerFactory handlerFactory = new HandlerFactory(readDataMgr, attributeValueUtil);

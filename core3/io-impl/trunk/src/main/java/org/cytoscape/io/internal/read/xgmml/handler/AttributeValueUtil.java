@@ -126,48 +126,55 @@ public class AttributeValueUtil {
     }
 
     public ParseState handleAttribute(Attributes atts, CyRow row) throws SAXParseException {
-        String name = atts.getValue("name");
+    	ParseState parseState = ParseState.NONE;
+    	
+    	String name = atts.getValue("name");
         String type = atts.getValue("type");
         String equationStr = atts.getValue("cy:equation");
+        boolean isEquation = equationStr != null ? Boolean.parseBoolean(equationStr) : false;
         
         ObjectType objType = typeMap.getType(type);
         CyColumn column = row.getTable().getColumn(name);
+        Object value = null;
 
-        if (equationStr == null) {
-            // Regular attribute value (NOT an equation)...
-            Object obj = getTypedAttributeValue(objType, atts);
-
-            switch (objType) {
-                case BOOLEAN:
-                    if (obj != null && name != null) setAttribute(row, name, (Boolean) obj);
-                    break;
-                case REAL:
-                    if (obj != null && name != null) setAttribute(row, name, (Double) obj);
-                    break;
-                case INTEGER:
-                    if (obj != null && name != null) setAttribute(row, name, (Integer) obj);
-                    break;
-                case STRING:
-                    if (obj != null && name != null) setAttribute(row, name, (String) obj);
-                    break;
-                // We need to be *very* careful. Because we duplicate attributes for
-                // each network we write out, we wind up reading and processing each
-                // attribute multiple times, once for each network. This isn't a problem
-                // for "base" attributes, but is a significant problem for attributes
-                // like LIST and MAP where we add to the attribute as we parse. So, we
-                // must make sure to clear out any existing values before we parse.
-                case LIST:
-                    manager.currentAttributeID = name;
-                    if (column != null && List.class.isAssignableFrom(column.getType())) row.set(name, null);
-                    return ParseState.LISTATT;
+        if (isEquation) {
+        	// It is an equation...
+        	String formula = atts.getValue("value");
+        	
+            if (name != null && formula != null) {
+            	manager.addEquationString(row, name, formula);
             }
         } else {
-            // It is an equation...
-            if (name != null) manager.addEquation(name, row, equationStr);
-            if (objType.equals(ObjectType.LIST)) return ParseState.LISTATT;
+        	// Regular attribute value...
+        	value = getTypedAttributeValue(objType, atts);
         }
 
-        return ParseState.NONE;
+		switch (objType) {
+			case BOOLEAN:
+				if (name != null) setAttribute(row, name, Boolean.class, (Boolean) value);
+				break;
+			case REAL:
+				if (name != null) setAttribute(row, name, Double.class, (Double) value);
+				break;
+			case INTEGER:
+				if (name != null) setAttribute(row, name, Integer.class, (Integer) value);
+				break;
+			case STRING:
+				if (name != null) setAttribute(row, name, String.class, (String) value);
+				break;
+			// We need to be *very* careful. Because we duplicate attributes for
+			// each network we write out, we wind up reading and processing each
+			// attribute multiple times, once for each network. This isn't a problem
+			// for "base" attributes, but is a significant problem for attributes
+			// like LIST and MAP where we add to the attribute as we parse. So, we
+			// must make sure to clear out any existing values before we parse.
+			case LIST:
+				manager.currentAttributeID = name;
+				if (column != null && List.class.isAssignableFrom(column.getType())) row.set(name, null);
+				return ParseState.LISTATT;
+		}
+
+        return parseState;
     }
 
     public CyNode createNode(String id, String label) {
@@ -223,18 +230,24 @@ public class AttributeValueUtil {
     
     		try {
     			Long id = new Long(strId);
-    			setAttribute(row, XGMMLNetworkReader.ORIGINAL_ID_COLUMN, id);
+    			setAttribute(row, XGMMLNetworkReader.ORIGINAL_ID_COLUMN, Long.class, id);
     		} catch (Exception e) {
     			logger.warn("Cannot convert node or edge id from string to long: " + strId);
     		}
 		}
     }
     
-    private <T> void setAttribute(CyRow row, String name, T value) {
-        if (name != null && value != null) {
+    private <T> void setAttribute(CyRow row, String name, Class<T> type, T value) {
+        if (name != null) {
             CyTable table = row.getTable();
-            if (table.getColumn(name) == null) table.createColumn(name, value.getClass(), false);
-            row.set(name, value);
+            
+            if (table.getColumn(name) == null) {
+            	table.createColumn(name, type, false);
+            }
+            
+            if (value != null) {
+            	row.set(name, value);
+            }
         }
     }
 }

@@ -623,6 +623,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
         if (attType == Double.class) {
             if (equation != null) {
+            	// TODO: Should Cy3 still save equations when exporting to XGMML?
                 writeEquationAttributeXML(attName, ObjectType.REAL, equation.toString(), true);
             } else {
                 Double dAttr = row.get(attName, Double.class);

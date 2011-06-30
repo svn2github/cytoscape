@@ -51,6 +51,9 @@
     <osgi:reference id="passthroughMappingFactoryServiceRef"
         interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory"
         filter="(mapping.type=passthrough)" />
+        
+    <osgi:reference id="equationCompilerServiceRef"
+        interface="org.cytoscape.equations.EquationCompiler" />
 
 	<!-- Export services -->
 	<osgi:service id="cyNetworkReaderManagerService" ref="cyNetworkReaderManager"
