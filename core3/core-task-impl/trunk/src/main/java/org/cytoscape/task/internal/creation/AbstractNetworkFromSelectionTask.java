@@ -53,90 +53,92 @@ import org.cytoscape.work.TaskMonitor;
 
 abstract class AbstractNetworkFromSelectionTask extends AbstractCreationTask {
 
-    protected final CyRootNetworkFactory rootNetworkFactory;
-    protected final CyNetworkViewFactory viewFactory;
-    protected final VisualMappingManager vmm;
-    protected final CyNetworkNaming cyNetworkNaming;
-    protected final CyApplicationManager appManager;
+	protected final CyRootNetworkFactory rootNetworkFactory;
+	protected final CyNetworkViewFactory viewFactory;
+	protected final VisualMappingManager vmm;
+	protected final CyNetworkNaming cyNetworkNaming;
+	protected final CyApplicationManager appManager;
 
-    public AbstractNetworkFromSelectionTask(final CyNetwork parentNetwork,
-	    final CyRootNetworkFactory rootNetworkFactory, final CyNetworkViewFactory viewFactory,
-	    final CyNetworkManager netmgr, final CyNetworkViewManager networkViewManager,
-	    final CyNetworkNaming cyNetworkNaming, final VisualMappingManager vmm, final CyApplicationManager appManager) {
-	super(parentNetwork, netmgr, networkViewManager);
-	this.rootNetworkFactory = rootNetworkFactory;
-	this.viewFactory = viewFactory;
-	this.cyNetworkNaming = cyNetworkNaming;
-	this.vmm = vmm;
-	this.appManager = appManager;
-    }
-
-    abstract Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes);
-
-    @Override
-    public void run(TaskMonitor tm) {
-	if (parentNetwork == null)
-	    throw new NullPointerException("Source network is null.");
-
-	final CyNetworkView curView = networkViewManager.getNetworkView(parentNetwork.getSUID());
-
-	// Get the selected nodes, but only create network if nodes are actually selected.
-	final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(parentNetwork, CyNetwork.SELECTED, true);
-
-	if (selectedNodes.size() <= 0)
-	    throw new IllegalArgumentException("No nodes are selected!");
-
-	// create subnetwork and add selected nodes and appropriate edges
-	final CySubNetwork newNet = rootNetworkFactory.convert(parentNetwork).addSubNetwork();
-
-	for (final CyNode node : selectedNodes)
-	    newNet.addNode(node);
-
-	for (final CyEdge edge : getEdges(parentNetwork, selectedNodes))
-	    newNet.addEdge(edge);
-
-	newNet.getCyRow().set(CyTableEntry.NAME, cyNetworkNaming.getSuggestedSubnetworkTitle(parentNetwork));
-
-	networkManager.addNetwork(newNet);
-	
-	appManager.setCurrentNetwork(newNet.getSUID());
-	
-	if (curView == null) {
-	    // Create view for the new network.
-	    final CreateNetworkViewTask createViewTask = new CreateNetworkViewTask(newNet, viewFactory, networkViewManager);
-	    insertTasksAfterCurrentTask(createViewTask);
-	    
-	    appManager.setCurrentNetworkView(newNet.getSUID());
-	    return;
+	public AbstractNetworkFromSelectionTask(final CyNetwork parentNetwork,
+			final CyRootNetworkFactory rootNetworkFactory, final CyNetworkViewFactory viewFactory,
+			final CyNetworkManager netmgr, final CyNetworkViewManager networkViewManager,
+			final CyNetworkNaming cyNetworkNaming, final VisualMappingManager vmm, final CyApplicationManager appManager) {
+		super(parentNetwork, netmgr, networkViewManager);
+		this.rootNetworkFactory = rootNetworkFactory;
+		this.viewFactory = viewFactory;
+		this.cyNetworkNaming = cyNetworkNaming;
+		this.vmm = vmm;
+		this.appManager = appManager;
 	}
 
-	// create new view
-	final CyNetworkView newView = viewFactory.getNetworkView(newNet);
+	abstract Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes);
 
-	networkViewManager.addNetworkView(newView);
+	@Override
+	public void run(TaskMonitor tm) {
+		if (parentNetwork == null)
+			throw new NullPointerException("Source network is null.");
 
-	// copy node location only.
-	for (View<CyNode> newNodeView : newView.getNodeViews()) {
-	    View<CyNode> origNodeView = curView.getNodeView(newNodeView.getModel());
-	    newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION,
-		    origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION));
-	    newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION,
-		    origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
+		final CyNetworkView curView = networkViewManager.getNetworkView(parentNetwork.getSUID());
 
-	    // FIXME
-	    // // Set lock (if necessary)
-	    // for ( VisualProperty<?> vp : vpSet ) {
-	    // if (origNodeView.isValueLocked(vp) )
-	    // newNodeView.setLockedValue(vp,
-	    // origNodeView.getVisualProperty(vp));
-	    // }
+		// Get the selected nodes, but only create network if nodes are actually
+		// selected.
+		final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(parentNetwork, CyNetwork.SELECTED, true);
+
+		if (selectedNodes.size() <= 0)
+			throw new IllegalArgumentException("No nodes are selected!");
+
+		// create subnetwork and add selected nodes and appropriate edges
+		final CySubNetwork newNet = rootNetworkFactory.convert(parentNetwork).addSubNetwork();
+
+		for (final CyNode node : selectedNodes)
+			newNet.addNode(node);
+
+		for (final CyEdge edge : getEdges(parentNetwork, selectedNodes))
+			newNet.addEdge(edge);
+
+		newNet.getCyRow().set(CyTableEntry.NAME, cyNetworkNaming.getSuggestedSubnetworkTitle(parentNetwork));
+
+		networkManager.addNetwork(newNet);
+
+		appManager.setCurrentNetwork(newNet.getSUID());
+
+		if (curView == null) {
+			// Create view for the new network.
+			final CreateNetworkViewTask createViewTask = new CreateNetworkViewTask(newNet, viewFactory,
+					networkViewManager);
+			insertTasksAfterCurrentTask(createViewTask);
+
+			appManager.setCurrentNetworkView(newNet.getSUID());
+			return;
+		}
+
+		// create new view
+		final CyNetworkView newView = viewFactory.getNetworkView(newNet);
+
+		networkViewManager.addNetworkView(newView);
+
+		// copy node location only.
+		for (View<CyNode> newNodeView : newView.getNodeViews()) {
+			View<CyNode> origNodeView = curView.getNodeView(newNodeView.getModel());
+			newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION,
+					origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION));
+			newNodeView.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION,
+					origNodeView.getVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION));
+
+			// FIXME
+			// // Set lock (if necessary)
+			// for ( VisualProperty<?> vp : vpSet ) {
+			// if (origNodeView.isValueLocked(vp) )
+			// newNodeView.setLockedValue(vp,
+			// origNodeView.getVisualProperty(vp));
+			// }
+		}
+
+		final VisualStyle style = vmm.getVisualStyle(curView);
+		vmm.setVisualStyle(vmm.getVisualStyle(curView), newView);
+		style.apply(newView);
+		newView.fitContent();
+
+		appManager.setCurrentNetworkView(newView.getModel().getSUID());
 	}
-
-	final VisualStyle style = vmm.getVisualStyle(curView);
-	vmm.setVisualStyle(vmm.getVisualStyle(curView), newView);
-	style.apply(newView);
-	newView.fitContent();
-	
-	appManager.setCurrentNetworkView(newView.getModel().getSUID());
-    }
 }
