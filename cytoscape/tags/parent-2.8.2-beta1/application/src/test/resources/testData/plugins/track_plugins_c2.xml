@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CytoscapePlugin>
+  <!-- Missing major element <CurrentPlugins> -->
+
+    <plugin>
+      <uniqueID>1</uniqueID>
+      <name>AutomaticLayout</name>
+      <description>Algorithms for automatic layout of networks.</description>
+      <cytoscapeVersion>2.5</cytoscapeVersion>
+      <url />
+      <downloadUrl>http://cytoscape.org/plugins/plugins.xml</downloadUrl>
+      <category>Core</category>
+      <releaseDate />
+      <pluginVersion>1.0</pluginVersion>
+      <classname>csplugins.layout.LayoutPlugin</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\AutomaticLayout.jar</installLocation>
+      <license>
+        <text />
+      </license>
+      <filelist>
+        <file>C:\eclipse\workspace\Cytoscape_Main\plugins\core\AutomaticLayout.jar</file>
+      </filelist>
+      <authorlist>
+        <author>
+          <name>Mike Smoot,Samad Lotia</name>
+          <institution>UCSD</institution>
+        </author>
+        <author>
+          <name>Scooter Morris</name>
+          <institution>UCSF</institution>
+        </author>
+        <author>
+          <name>Rowan Christmas</name>
+          <institution>Institute for Systems Biology</institution>
+        </author>
+        <author>
+          <name>Rob Sheridan</name>
+          <institution>Memorial Sloan-Kettering Cancer Center</institution>
+        </author>
+        <author>
+          <name>Jeffery Heer</name>
+          <institution>Prefuse Library</institution>
+        </author>
+        <author>
+          <name>jGraph</name>
+          <institution>jGraph Library</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    <plugin>
+      <uniqueID>3</uniqueID>
+      <name>Browser</name>
+      <description>Attribute browser</description>
+      <cytoscapeVersion>2.5</cytoscapeVersion>
+      <url />
+      <downloadUrl>http://cytoscape.org/plugins/plugins.xml</downloadUrl>
+      <category>Core</category>
+      <releaseDate />
+      <pluginVersion>0.7</pluginVersion>
+      <classname>browser.AttributeBrowserPlugin</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\browser.jar</installLocation>
+      <license>
+        <text />
+      </license>
+      <filelist>
+        <file>C:\eclipse\workspace\Cytoscape_Main\plugins\core\browser.jar</file>
+      </filelist>
+      <authorlist>
+        <author>
+          <name>Kei Ono</name>
+          <institution>UCSD</institution>
+        </author>
+        <author>
+          <name>Rowan Christmas</name>
+          <institution>Institute for Systems Biology</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    <plugin>
+      <uniqueID>4</uniqueID>
+      <name>cPath</name>
+      <description>A plugin that queries the cPath database for specified terms and returns interaction networks.</description>
+      <cytoscapeVersion>2.5</cytoscapeVersion>
+      <url />
+      <downloadUrl />
+      <category>Core</category>
+      <releaseDate />
+      <pluginVersion>1.0</pluginVersion>
+      <classname>org.cytoscape.coreplugin.cpath.plugin.CPathPlugIn</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\cPath.jar</installLocation>
+      <license>
+        <text />
+      </license>
+      <filelist>
+        <file>C:\eclipse\workspace\Cytoscape_Main\plugins\core\cPath.jar</file>
+      </filelist>
+      <authorlist>
+        <author>
+          <name>Ethan Cerami</name>
+          <institution>Memorial Sloan-Kettering Cancer Center</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    <plugin>
+      <uniqueID>5</uniqueID>
+      <name>CytoscapeEditor</name>
+      <description>Provides basic ability to edit nodes and edges in a network.</description>
+      <cytoscapeVersion>2.6</cytoscapeVersion>
+      <url />
+      <downloadUrl>http://cytoscape.org/plugins/plugins.xml</downloadUrl>
+      <category>Core</category>
+      <releaseDate>Oct 30, 2007</releaseDate>
+      <pluginVersion>2.53</pluginVersion>
+      <classname>cytoscape.editor.CytoscapeEditorPlugin</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\CytoscapeEditor.jar</installLocation>
+      <license>
+        <text />
+      </license>
+      <filelist>
+        <file>C:\eclipse\workspace\Cytoscape_Main\plugins\core\CytoscapeEditor.jar</file>
+      </filelist>
+      <authorlist>
+        <author>
+          <name>Allan Kuchinsky</name>
+          <institution>Agilent Technologies</institution>
+        </author>
+        <author>
+          <name>Michael Creech</name>
+          <institution>Blue Oak Software</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    <plugin>
+      <uniqueID>8</uniqueID>
+      <name>Filters</name>
+      <description>Select nodes and edges based on specific attributes</description>
+      <cytoscapeVersion>2.6</cytoscapeVersion>
+      <url />
+      <downloadUrl>http://cytoscape.org/plugins/plugins.xml</downloadUrl>
+      <category>Core</category>
+      <releaseDate />
+      <pluginVersion>0.2</pluginVersion>
+      <classname>cytoscape.filters.FilterPlugin</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\filters.jar</installLocation>
+      <license>
+        <text />
+      </license>
+      <filelist>
+        <file>C:\eclipse\workspace\Cytoscape_Main\plugins\core\filters.jar</file>
+      </filelist>
+      <authorlist>
+        <author>
+          <name>Peng-Liang Wang</name>
+          <institution>UCSD</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    <plugin>
+      <uniqueID>9</uniqueID>
+      <name>GraphMerge</name>
+      <description>Provides set operations (union, intersection, difference) for networks.</description>
+      <cytoscapeVersion>2.5</cytoscapeVersion>
+      <url />
+      <downloadUrl />
+      <category>Core</category>
+      <releaseDate />
+      <pluginVersion>1.0</pluginVersion>
+      <classname>GraphMerge.GraphMerge</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\GraphMerge.jar</installLocation>
+      <license>
+        <text />
+      </license>
+      <filelist>
+        <file>C:\eclipse\workspace\Cytoscape_Main\plugins\core\GraphMerge.jar</file>
+      </filelist>
+      <authorlist>
+        <author>
+          <name>Ryan Kelley</name>
+          <institution>UCSD</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    <plugin>
+      <uniqueID>10</uniqueID>
+      <name>LinkOut</name>
+      <description>Provides URLs that link to various biological databases based on query terms.</description>
+      <cytoscapeVersion>2.6</cytoscapeVersion>
+      <url />
+      <downloadUrl>http://cytoscape.org/plugins/plugins.xml</downloadUrl>
+      <category>Core</category>
+      <releaseDate />
+      <pluginVersion>2.01</pluginVersion>
+      <classname>linkout.LinkOutPlugin</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\linkout.jar</installLocation>
+      <license>
+        <text />
+      </license>
+      <filelist>
+        <file>C:\eclipse\workspace\Cytoscape_Main\plugins\core\linkout.jar</file>
+      </filelist>
+      <authorlist>
+        <author>
+          <name>Doron Betel</name>
+          <institution>MSKCC</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    <plugin>
+      <uniqueID>12</uniqueID>
+      <name>ManualLayout</name>
+      <description>User-defined positioning of layouts</description>
+      <cytoscapeVersion>2.5</cytoscapeVersion>
+      <url />
+      <downloadUrl />
+      <category>Core</category>
+      <releaseDate />
+      <pluginVersion>1.0</pluginVersion>
+      <classname>ManualLayout.ManualLayoutPlugin</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\ManualLayout.jar</installLocation>
+      <license>
+        <text />
+      </license>
+      <filelist>
+        <file>C:\eclipse\workspace\Cytoscape_Main\plugins\core\ManualLayout.jar</file>
+      </filelist>
+      <authorlist>
+        <author>
+          <name>Mike Smoot,Nerius Landys</name>
+          <institution>UCSD</institution>
+        </author>
+        <author>
+          <name>Alex Pico</name>
+          <institution>UCSF</institution>
+        </author>
+        <author>
+          <name>Allan Kuchinsky</name>
+          <institution>Agilent Technologies</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    <plugin>
+      <uniqueID>13</uniqueID>
+      <name>PSI-MI</name>
+      <description>Allows importing of PSI-MI 2.5 file format</description>
+      <cytoscapeVersion>2.5</cytoscapeVersion>
+      <url />
+      <downloadUrl />
+      <category>Core</category>
+      <releaseDate />
+      <pluginVersion>0.3</pluginVersion>
+      <classname>org.cytoscape.coreplugin.psi_mi.plugin.PsiMiPlugIn</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\psi_mi.jar</installLocation>
+      <license>
+        <text />
+      </license>
+      <filelist>
+        <file>C:\eclipse\workspace\Cytoscape_Main\plugins\core\psi_mi.jar</file>
+      </filelist>
+      <authorlist>
+        <author>
+          <name>Ethan Cerami</name>
+          <institution>Memorial Sloan-Kettering Cancer Center</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    <plugin>
+      <uniqueID>14</uniqueID>
+      <name>QuickFind</name>
+      <description>Provides a search dialog in the toolbar that can used to search for nodes and edges based on attributes.</description>
+      <cytoscapeVersion>2.5</cytoscapeVersion>
+      <url />
+      <downloadUrl>http://cytoscape.org/plugins/plugins.xml</downloadUrl>
+      <category>Core</category>
+      <releaseDate />
+      <pluginVersion>0.5</pluginVersion>
+      <classname>csplugins.quickfind.plugin.QuickFindPlugIn</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\quick_find.jar</installLocation>
+      <license>
+        <text />
+      </license>
+      <filelist>
+        <file>C:\eclipse\workspace\Cytoscape_Main\plugins\core\quick_find.jar</file>
+      </filelist>
+      <authorlist>
+        <author>
+          <name>Ethan Cerami</name>
+          <institution>Memorial Sloan-Kettering Cancer Center</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    <plugin>
+      <uniqueID>15</uniqueID>
+      <name>SBML Reader</name>
+      <description>Provides the ability to import SBML (Systems Biology Markup Language) formatted files.</description>
+      <cytoscapeVersion>2.5</cytoscapeVersion>
+      <url />
+      <downloadUrl />
+      <category>Core</category>
+      <releaseDate />
+      <pluginVersion>0.5</pluginVersion>
+      <classname>sbmlreader.SBMLReaderPlugin</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\SBMLReader.jar</installLocation>
+      <license>
+        <text />
+      </license>
+      <filelist>
+        <file>C:\eclipse\workspace\Cytoscape_Main\plugins\core\SBMLReader.jar</file>
+      </filelist>
+      <authorlist>
+        <author>
+          <name>Willem Ligtenberg</name>
+          <institution>Eindhoven University of Technology</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    <plugin>
+      <uniqueID>16</uniqueID>
+      <name>Table Import</name>
+      <description>Provides the ability to import network and attribute files from formatted text and Excel files.</description>
+      <cytoscapeVersion>2.5</cytoscapeVersion>
+      <url />
+      <downloadUrl>http://cytoscape.org/plugins/plugins.xml</downloadUrl>
+      <category>Core</category>
+      <releaseDate />
+      <pluginVersion>0.5</pluginVersion>
+      <classname>edu.ucsd.bioeng.coreplugin.tableImport.TableImportPlugin</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\TableImport.jar</installLocation>
+      <license>
+        <text />
+      </license>
+      <filelist>
+        <file>C:\eclipse\workspace\Cytoscape_Main\plugins\core\TableImport.jar</file>
+      </filelist>
+      <authorlist>
+        <author>
+          <name>Kei Ono</name>
+          <institution>UCSD</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    <plugin>
+      <uniqueID>105</uniqueID>
+      <name>HyperEdgeEditor</name>
+      <description>Add, remove, and modify HyperEdges in a Cytoscape Network.</description>
+      <cytoscapeVersion>2.6</cytoscapeVersion>
+      <url>http://chianti.ucsd.edu/cyto_web/plugins/pluginjardownload.php?id=57</url>
+      <downloadUrl>http://cytoscape.org/plugins/plugins.xml</downloadUrl>
+      <category>Functional Enrichment</category>
+      <releaseDate>January 17, 2008</releaseDate>
+      <pluginVersion>2.6</pluginVersion>
+      <classname>cytoscape.hyperedge.editor.HyperEdgeEditorPlugin</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\Documents and Settings\Administrator\.cytoscape\2.6\plugins\HyperEdgeEditor-2.6</installLocation>
+      <license>
+        <text />
+      </license>
+      <filelist>
+        <file>C:\Documents and Settings\Administrator\.cytoscape\2.6\plugins\HyperEdgeEditor-2.6\HyperEdgeEditor.jar</file>
+      </filelist>
+      <authorlist>
+        <author>
+          <name>Allan Kuchinsky and Aditya Vailaya</name>
+          <institution>Agilent Labs</institution>
+        </author>
+        <author>
+          <name>Michael Creech</name>
+          <institution>Blue Oak Software</institution>
+        </author>
+      </authorlist>
+    </plugin>
+    <!-- corrupt a single entry -->
+    <plugin>
+      <uniqueID>2</uniqueID>
+      <name>BioPAX</name>
+      <description>Enables import of BioPAX formatted files.</description>
+      <cytoscapeVersion>2.6</cytoscapeVersion>
+      <downloadUrl>http://cytoscape.org/plugins/plugins.xml</downloadUrl>
+      <category>Network and Attribute I/O</category>
+      <releaseDate>January 1, 2008</releaseDate>
+      <classname>org.mskcc.biopax_plugin.plugin.BioPaxPlugIn</classname>
+      <projectUrl />
+      <filetype>jar</filetype>
+      <installLocation>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\biopax.jar</installLocation>
+      <license>
+        <text />
+      </license>
+      <authorlist>
+        <author>
+          <name>Ethan Cerami, Benjamin Gross, Chris Sander</name>
+          <institution>Memorial Sloan-Kettering Cancer Center</institution>
+        </author>
+        <author>
+          <name>Gary Bader</name>
+          <institution>Uniersity of Toronto</institution>
+        </author>
+      </authorlist>
+      <filelist>
+        <file>C:\eclipse\workspace\Cytoscape_Main\build\cytoscape-v2.6.0-alpha\plugins\biopax.jar</file>
+      </filelist>
+    </plugin>
+  </CurrentPlugins>
+  <InstallPlugins />
+  <DeletePlugins />
+</CytoscapePlugin>
+
