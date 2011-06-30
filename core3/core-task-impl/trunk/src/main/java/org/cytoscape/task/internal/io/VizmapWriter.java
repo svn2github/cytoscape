@@ -21,6 +21,9 @@ public class VizmapWriter extends TunableAbstractCyWriter<VizmapWriterManager> {
 
 	@Override
 	protected CyWriter getWriter(CyFileFilter filter, File file) throws Exception {
+		if (!fileExtensionIsOk(file))
+			file = addOrReplaceExtension(outputFile);
+
 		Set<VisualStyle> styles = vmMgr.getAllVisualStyles();
 
 		return writerManager.getWriter(styles, filter, file);

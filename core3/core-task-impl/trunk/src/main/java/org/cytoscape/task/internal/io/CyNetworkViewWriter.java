@@ -34,6 +34,9 @@ public final class CyNetworkViewWriter extends TunableAbstractCyWriter<CyNetwork
 	 * {@inheritDoc}  
 	 */
 	protected CyWriter getWriter(CyFileFilter filter, File file)  throws Exception{
+		if (!fileExtensionIsOk(file))
+			file = addOrReplaceExtension(outputFile);
+
 		return writerManager.getWriter(view,filter,file);
 	}
 	

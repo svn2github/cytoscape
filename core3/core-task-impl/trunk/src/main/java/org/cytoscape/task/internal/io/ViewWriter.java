@@ -23,7 +23,7 @@ public final class ViewWriter extends TunableAbstractCyWriter<PresentationWriter
 	 * @param writerManager The {@link org.cytoscape.io.write.PresentationWriterManager} used to determine which type of
 	 * file should be written.
 	 * @param view The View object to be written to the specified file.
-	 * @param re The RenderingEngine used to generate the image to be written to the file.  
+	 * @param re The RenderingEngine used to generate the image to be written to the file.
 	 */
 	public ViewWriter(final PresentationWriterManager writerManager, final View<?> view, final RenderingEngine<?> re ) {
 		super(writerManager);
@@ -41,11 +41,13 @@ public final class ViewWriter extends TunableAbstractCyWriter<PresentationWriter
 	 * {@inheritDoc}
 	 */
 	protected CyWriter getWriter(CyFileFilter filter, File file) throws Exception {
+		if (!fileExtensionIsOk(file))
+			file = addOrReplaceExtension(outputFile);
 		return writerManager.getWriter(view,re,filter,file);
 	}
-	
+
 	@Tunable(description="Save Image As:", params="fileCategory=image;input=false")
-	public  File getOutputFile() {	
+	public File getOutputFile() {
 		return outputFile;
 	}
 }

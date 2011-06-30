@@ -21,7 +21,7 @@ public final class CyTableWriter extends TunableAbstractCyWriter<CyTableWriterMa
 	 * {@link org.cytoscape.io.write.CyTableWriterFactory} to use to write the file.
 	 * @param table The {@link org.cytoscape.model.CyTable} to be written out. 
  	 */
-    public CyTableWriter(CyTableWriterManager writerManager, CyTable table ) {
+	public CyTableWriter(CyTableWriterManager writerManager, CyTable table ) {
 		super(writerManager);
 		if ( table == null )
 			throw new NullPointerException("Table is null");
@@ -32,6 +32,9 @@ public final class CyTableWriter extends TunableAbstractCyWriter<CyTableWriterMa
 	 * {@inheritDoc}
 	 */
 	protected CyWriter getWriter(CyFileFilter filter, File file)  throws Exception{
+		if (!fileExtensionIsOk(file))
+			file = addOrReplaceExtension(outputFile);
+
 		return writerManager.getWriter(table,filter,file);
 	}
 }
