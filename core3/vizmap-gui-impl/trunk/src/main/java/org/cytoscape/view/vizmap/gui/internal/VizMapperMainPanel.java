@@ -56,7 +56,10 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.events.NetworkAddedEvent;
 import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.session.events.SetCurrentRenderingEngineEvent;
+import org.cytoscape.session.events.SetCurrentRenderingEngineListener;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.presentation.RenderingEngine;
@@ -98,7 +101,7 @@ import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		VisualStyleAddedListener, VisualStyleAboutToBeRemovedListener,
 		PopupMenuListener, NetworkViewAddedListener, NetworkAddedListener,
-		CytoPanelComponent, SelectedVisualStyleSwitchedListener {
+		CytoPanelComponent, SelectedVisualStyleSwitchedListener, SetCurrentRenderingEngineListener {
 
 	private final static long serialVersionUID = 1202339867854959L;
 
@@ -762,5 +765,19 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	public void handleEvent(SelectedVisualStyleSwitchedEvent e) {
 		final VisualStyle newStyle = e.getNewVisualStyle();
 		this.visualStyleComboBox.setSelectedItem(newStyle);
+	}
+
+	@Override
+	public void handleEvent(SetCurrentRenderingEngineEvent e) {
+		final RenderingEngine<CyNetwork> engine = e.getRenderingEngine();
+		CyNetworkView view = (CyNetworkView) engine.getViewModel();
+		final VisualStyle newStyle = vmm.getVisualStyle(view);
+		
+		if(visualStyleComboBox.getSelectedItem().equals(newStyle) == false) {
+			
+			logger.debug("Updating VS Combo Box to: " + newStyle.getTitle());
+			this.visualStyleComboBox.setSelectedItem(newStyle);
+			visualStyleComboBox.repaint();
+		}
 	}
 }
