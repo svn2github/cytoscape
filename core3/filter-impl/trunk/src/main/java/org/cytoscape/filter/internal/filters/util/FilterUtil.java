@@ -52,24 +52,18 @@ public class FilterUtil {
 
 		if (pFilter.getAdvancedSetting().isNodeChecked()&& (pFilter.getNodeBits() != null)) {
 			// Select nodes
-			final List<CyNode> passedNodes = new ArrayList<CyNode>();
-
 			CyNode node = null;
 
 			for (int i=0; i< pFilter.getNodeBits().length(); i++) {
 				int next_set_bit = pFilter.getNodeBits().nextSetBit(i);
 				
 				node = nodes_list.get(next_set_bit);
-								
-				passedNodes.add(node);
+				node.getCyRow().set(CyNetwork.SELECTED, true);
 				i = next_set_bit;
 			}
-			SelectUtil.setSelectedNodeState(passedNodes, true);
 		}
 		if (pFilter.getAdvancedSetting().isEdgeChecked()&& (pFilter.getEdgeBits() != null)) {
 			// Select edges
-			final List<CyEdge> passedEdges = new ArrayList<CyEdge>();
-
 			CyEdge edge = null;
 			for (int i=0; i< edges_list.size(); i++) {
 				int next_set_bit = pFilter.getEdgeBits().nextSetBit(i);
@@ -77,10 +71,9 @@ public class FilterUtil {
 					break;
 				}
 				edge = edges_list.get(next_set_bit);
-				passedEdges.add(edge);
+				edge.getCyRow().set(CyNetwork.SELECTED, true);
 				i = next_set_bit;
 			}
-			SelectUtil.setSelectedEdgeState(passedEdges, true);
 		}
 		
 //		// TODO: What do we do about CyInit*?
