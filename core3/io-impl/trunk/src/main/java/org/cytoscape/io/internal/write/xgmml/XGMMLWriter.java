@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.cytoscape.equations.Equation;
 import org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.model.CyColumn;
@@ -612,78 +611,57 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
      * @throws IOException
      */
     private void writeAttribute(final CyRow row, final String attName) throws IOException {
-        // create an attribute and its type:
-        final CyColumn column = row.getTable().getColumn(attName);
-        if (column == null) return;
-        final Class<?> attType = column.getType();
+    	// create an attribute and its type:
+		final CyColumn column = row.getTable().getColumn(attName);
+		if (column == null) return;
+		final Class<?> attType = column.getType();
 
-        Equation equation = null;
-        Object rawValue = row.getRaw(attName);
-        if (rawValue instanceof Equation) equation = (Equation) rawValue;
+		if (attType == Double.class) {
+			Double dAttr = row.get(attName, Double.class);
+			writeAttributeXML(attName, ObjectType.REAL, dAttr, true);
+		} else {
+			if (attType == Integer.class) {
+				Integer iAttr = row.get(attName, Integer.class);
+				writeAttributeXML(attName, ObjectType.INTEGER, iAttr, true);
+			} else if (attType == String.class) {
+				String sAttr = row.get(attName, String.class);
+				// Protect tabs and returns
+				if (sAttr != null) {
+					sAttr = sAttr.replace("\n", "\\n");
+					sAttr = sAttr.replace("\t", "\\t");
+				}
+				// TODO: nested networks
+				//                if (attName.equals(CyNode.NESTED_NETWORK_ID_ATTR)) {
+				//                    // This is a special attribute for nested network.
+				//                    sAttr = Cytoscape.getNetwork(sAttr).getTitle();
+				//                }
+				writeAttributeXML(attName, ObjectType.STRING, sAttr, true);
+			} else if (attType == Boolean.class) {
+				Boolean bAttr = row.get(attName, Boolean.class);
+				writeAttributeXML(attName, ObjectType.BOOLEAN, bAttr, true);
+			} else if (attType == List.class) {
+				final List<?> listAttr = row.getList(attName, column.getListElementType());
+				writeAttributeXML(attName, ObjectType.LIST, null, false);
 
-        if (attType == Double.class) {
-            if (equation != null) {
-            	// TODO: Should Cy3 still save equations when exporting to XGMML?
-                writeEquationAttributeXML(attName, ObjectType.REAL, equation.toString(), true);
-            } else {
-                Double dAttr = row.get(attName, Double.class);
-                writeAttributeXML(attName, ObjectType.REAL, dAttr, true);
-            }
-        } else {
-            if (attType == Integer.class) {
-                if (equation != null) {
-                    writeEquationAttributeXML(attName, ObjectType.INTEGER, equation.toString(), true);
-                } else {
-                    Integer iAttr = row.get(attName, Integer.class);
-                    writeAttributeXML(attName, ObjectType.INTEGER, iAttr, true);
-                }
-            } else if (attType == String.class) {
-                if (equation != null) {
-                    writeEquationAttributeXML(attName, ObjectType.STRING, equation.toString(), true);
-                } else {
-                    String sAttr = row.get(attName, String.class);
-                    // Protect tabs and returns
-                    if (sAttr != null) {
-                        sAttr = sAttr.replace("\n", "\\n");
-                        sAttr = sAttr.replace("\t", "\\t");
-                    }
-                    // TODO: nested networks
-                    //                if (attName.equals(CyNode.NESTED_NETWORK_ID_ATTR)) {
-                    //                    // This is a special attribute for nested network.
-                    //                    sAttr = Cytoscape.getNetwork(sAttr).getTitle();
-                    //                }
-                    writeAttributeXML(attName, ObjectType.STRING, sAttr, true);
-                }
-            } else if (attType == Boolean.class) {
-                if (equation != null) {
-                    writeEquationAttributeXML(attName, ObjectType.BOOLEAN, equation.toString(), true);
-                } else {
-                    Boolean bAttr = row.get(attName, Boolean.class);
-                    writeAttributeXML(attName, ObjectType.BOOLEAN, bAttr, true);
-                }
-            } else if (attType == List.class) {
-                final List<?> listAttr = row.getList(attName, column.getListElementType());
-                writeAttributeXML(attName, ObjectType.LIST, null, false);
-
-                if (listAttr != null) {
-                    depth++;
-                    // interate through the list
-                    for (Object obj : listAttr) {
-                        // Protect tabs and returns (if necessary)
-                        String sAttr = obj.toString();
-                        if (sAttr != null) {
-                            sAttr = sAttr.replace("\n", "\\n");
-                            sAttr = sAttr.replace("\t", "\\t");
-                        }
-                        // set child attribute value & label
-                        writeAttributeXML(attName, checkType(obj), sAttr, true);
-                    }
-                    depth--;
-                }
-                writeAttributeXML(null, null, null, true);
-            }
-        }
-    }
+				if (listAttr != null) {
+					depth++;
+					// interate through the list
+					for (Object obj : listAttr) {
+						// Protect tabs and returns (if necessary)
+						String sAttr = obj.toString();
+						if (sAttr != null) {
+							sAttr = sAttr.replace("\n", "\\n");
+							sAttr = sAttr.replace("\t", "\\t");
+						}
+						// set child attribute value & label
+						writeAttributeXML(attName, checkType(obj), sAttr, true);
+					}
+					depth--;
+				}
+				writeAttributeXML(null, null, null, true);
+			}
+		}
+	}
 
     /**
      * writeAttributeXML outputs an XGMML attribute
@@ -735,37 +713,6 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
             indentString = indentString + "                        ";
         writer.write(indentString, 0, depth * 2);
         writer.write(line);
-    }
-
-    /**
-     * writeEquationAttributeXML outputs an XGMML attribute
-     *
-     * @param name is the name of the attribute we are outputting
-     * @param type is the XGMML type of the attribute
-     * @param equation is the textual representation of the formula we're outputting
-     * @param end is a flag to tell us if the attribute should include a tag end
-     * @param hidden is a flag to tell us if the attribute should be hidden
-     * @param editable is a flag to tell us if the attribute should be user editable
-     *
-     * @throws IOException
-     */
-    private void writeEquationAttributeXML(final String name,
-                                           final ObjectType type,
-                                           final String equation,
-                                           final boolean end) throws IOException {
-        if (name == null && type == null)
-            writeElement("</att>\n");
-        else {
-            writeElement("<att type=" + quote(type.toString()));
-            if (name != null) writer.write(" name=" + quote(name));
-            writer.write(" value=" + quote(equation));
-            writer.write(" cy:equation=\"true\"");
-
-            if (end)
-                writer.write("/>\n");
-            else
-                writer.write(">\n");
-        }
     }
 
     /**
