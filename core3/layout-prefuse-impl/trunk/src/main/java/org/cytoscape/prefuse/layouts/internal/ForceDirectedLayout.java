@@ -1,5 +1,6 @@
 package org.cytoscape.prefuse.layouts.internal;
 
+
 import java.io.IOException;
 
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
@@ -7,6 +8,7 @@ import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.undo.UndoSupport;
 import org.cytoscape.work.util.ListSingleSelection;
 
@@ -14,6 +16,7 @@ import prefuse.util.force.EulerIntegrator;
 import prefuse.util.force.RungeKuttaIntegrator;
 import prefuse.util.force.Integrator;
 import org.cytoscape.work.util.ListSingleSelection;
+
 
 public class ForceDirectedLayout extends AbstractLayoutAlgorithm implements TunableValidator {
 	@Tunable(description="Number of Iterations", groups="Algorithm settings")
@@ -54,9 +57,11 @@ public class ForceDirectedLayout extends AbstractLayoutAlgorithm implements Tuna
 		super(un, "force-directed", "Force Directed Layout", true);
 	}
 
-	public boolean tunablesAreValid(final Appendable errMsg) {
+	@Override
+	public ValidationState getValidationState(final Appendable errMsg) {
 		return isPositive(numIterations) && isPositive(defaultSpringCoefficient)
-		       && isPositive(defaultSpringLength) && isPositive(defaultNodeMass);
+		       && isPositive(defaultSpringLength) && isPositive(defaultNodeMass)
+			? ValidationState.OK : ValidationState.INVALID;
 	}
 
 	private static boolean isPositive(final int n) {

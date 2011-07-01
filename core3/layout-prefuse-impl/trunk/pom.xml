@@ -78,22 +78,26 @@
 		</plugins>
 	</build>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.cytoscape</groupId>
-      <artifactId>model-api</artifactId>
-      <version>3.0.0-alpha5-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.cytoscape</groupId>
-      <artifactId>layout-api</artifactId>
-      <version>3.0.0-alpha3-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape-temp</groupId>
-      <artifactId>prefuse</artifactId>
-      <version>20071021</version>
-    </dependency>
-  </dependencies>
-
+	<dependencies>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>work-api</artifactId>
+			<version>3.0.0-alpha4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>model-api</artifactId>
+			<version>3.0.0-alpha5-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>layout-api</artifactId>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>prefuse</artifactId>
+			<version>20071021</version>
+		</dependency>
+	</dependencies>
 </project>
