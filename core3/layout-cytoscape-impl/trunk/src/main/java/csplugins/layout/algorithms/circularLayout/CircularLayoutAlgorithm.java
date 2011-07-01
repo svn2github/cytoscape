@@ -5,6 +5,7 @@ import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.undo.UndoSupport;
 
 
@@ -32,9 +33,9 @@ public class CircularLayoutAlgorithm extends AbstractLayoutAlgorithm implements 
 		super(un, "circular", "Circular Layout", false);
 	}
 
-	//TODO how to validate these values?
-	public boolean tunablesAreValid(final Appendable errMsg) {
-		return true;
+	@Override //TODO how to validate these values?
+	public ValidationState getValidationState(final Appendable errMsg) {
+		return ValidationState.OK;
 	}
 
 	

@@ -3,6 +3,7 @@
  */
 package csplugins.layout.algorithms.graphPartition;
 
+
 import java.util.Iterator;
 //import java.util.List;
 
@@ -10,11 +11,10 @@ import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.undo.UndoSupport;
 
-/**
- *
- */
+
 public class ISOMLayout extends AbstractLayoutAlgorithm implements TunableValidator {
 	@Tunable(description="Number of iterations")
 	public int maxEpoch = 5000;
@@ -42,9 +42,9 @@ public class ISOMLayout extends AbstractLayoutAlgorithm implements TunableValida
 		super(undoSupport,"isom", "Inverted Self-Organizing Map Layout", true);
 	}
 
-	// TODO
-	public boolean tunablesAreValid(final Appendable errMsg) {
-		return true;
+	@Override // TODO
+	public ValidationState getValidationState(final Appendable errMsg) {
+		return ValidationState.OK;
 	}
 	
 	public TaskIterator getTaskIterator() {

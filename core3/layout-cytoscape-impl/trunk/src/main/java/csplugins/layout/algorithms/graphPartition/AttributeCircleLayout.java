@@ -43,6 +43,7 @@ import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.undo.UndoSupport;
 import org.cytoscape.work.util.ListSingleSelection;
 
@@ -83,8 +84,8 @@ public class AttributeCircleLayout extends AbstractLayoutAlgorithm implements Tu
 	}
 
 	@Override
-	public boolean tunablesAreValid(final Appendable errMsg) {
-		return attribute.length() > 0 && spacing > 0.0;
+	public ValidationState getValidationState(final Appendable errMsg) {
+		return attribute.length() > 0 && spacing > 0.0 ? ValidationState.OK : ValidationState.INVALID;
 	}
 
 	@Override

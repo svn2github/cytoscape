@@ -41,6 +41,7 @@ import org.cytoscape.view.layout.LayoutPartition;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.undo.UndoSupport;
 
 
@@ -136,8 +137,8 @@ public class BioLayoutFRAlgorithm extends AbstractLayoutAlgorithm implements Tun
 				temperature, nIterations, supportWeights, singlePartition));
 	}
 	
-	// TODO
-	public boolean tunablesAreValid(final Appendable errMsg) {
-		return true;
+	@Override // TODO
+	public ValidationState getValidationState(final Appendable errMsg) {
+		return ValidationState.OK;
 	}
 }

@@ -17,6 +17,7 @@ import org.cytoscape.view.layout.LayoutPartition;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.undo.UndoSupport;
 
 
@@ -35,9 +36,9 @@ public class DegreeSortedCircleLayout extends AbstractLayoutAlgorithm implements
 		this.tableMgr = tableMgr;
 	}
 
-	// TODO
-	public boolean tunablesAreValid(final Appendable errMsg) {
-		return true;
+	@Override // TODO
+	public ValidationState getValidationState(final Appendable errMsg) {
+		return ValidationState.OK;
 	}
 
 	public TaskIterator getTaskIterator() {
