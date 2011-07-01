@@ -125,12 +125,15 @@ public class DingRenderingEngineFactory implements
 
 			if (presentationContainer instanceof JInternalFrame) {
 				final JInternalFrame inFrame = (JInternalFrame) presentationContainer;
-				//JDesktopPane desktopPane = inFrame.getDesktopPane();
+				
+				final InternalFrameComponent internalFrameComp = 
+					new InternalFrameComponent(inFrame.getLayeredPane(), dgv);
+				inFrame.getContentPane().add(internalFrameComp);
 
-				// TODO - not sure this layered pane bit is optimal
-				inFrame.setContentPane(dgv.getContainer(inFrame
-						.getLayeredPane()));
-				// dgv.addTransferComponent(desktopPane);
+//				// TODO - not sure this layered pane bit is optimal
+//				inFrame.setContentPane(dgv.getContainer(inFrame
+//						.getLayeredPane()));
+//				// dgv.addTransferComponent(desktopPane);
 			} else {
 				final JComponent component = (JComponent) presentationContainer;
 				component.setLayout(new BorderLayout());

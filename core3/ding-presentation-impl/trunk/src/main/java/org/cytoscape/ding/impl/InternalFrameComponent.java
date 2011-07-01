@@ -39,11 +39,14 @@ package org.cytoscape.ding.impl;
 
 // imports
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+
+import javax.swing.JComponent;
+import javax.swing.JLayeredPane;
 
 
 /**
@@ -54,8 +57,13 @@ import java.awt.print.PrinterException;
  */
 public class InternalFrameComponent extends JComponent implements Printable {
 	private final static long serialVersionUID = 1213747102972998L;
+	
 	/**
 	 * z-order enumeration
+	 * 
+	 * TODO: this breaks resize-handle on Mac OS X.
+	 * 	Need to do some research on this layring order.
+	 * 
 	 */
 	private static enum ZOrder {
 		BACKGROUND_PANE,
@@ -63,13 +71,13 @@ public class InternalFrameComponent extends JComponent implements Printable {
 		FOREGROUND_PANE;
 		int layer() {
 			if (this == BACKGROUND_PANE)
-				return -30000;
+				return 10;
 
 			if (this == NETWORK_PANE)
-				return 0;
+				return 20;
 
 			if (this == FOREGROUND_PANE)
-				return 301;
+				return 30;
 
 			return 0;
 		}
@@ -183,9 +191,6 @@ public class InternalFrameComponent extends JComponent implements Printable {
 	 * top - bottom: foreground, network, background
 	 */
 	private void initLayeredPane() {
-		// remove all canvases from layered pane
-		layeredPane.removeAll();
-
 		// foreground followed by network followed by background
 		layeredPane.add(backgroundCanvas, Integer.valueOf(ZOrder.BACKGROUND_PANE.layer()));
 		layeredPane.add(networkCanvas, Integer.valueOf(ZOrder.NETWORK_PANE.layer()));
