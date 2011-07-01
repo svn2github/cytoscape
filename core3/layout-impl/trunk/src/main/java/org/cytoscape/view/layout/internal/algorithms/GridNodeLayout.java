@@ -45,6 +45,7 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.undo.UndoSupport;
 
 
@@ -66,17 +67,18 @@ public class GridNodeLayout extends AbstractLayoutAlgorithm implements TunableVa
 		super(un,CyLayoutAlgorithmManager.DEFAULT_LAYOUT_NAME,"Grid Layout", true);
 	}
 
-	public boolean tunablesAreValid(final Appendable errMsg) {
+	@Override
+	public ValidationState getValidationState(final Appendable errMsg) {
 		if (nodeVerticalSpacing != 30.0 )
-			return true;
+			return ValidationState.OK;
 		else {
 			try {
 				errMsg.append("This is a test : I don't want 30.0 for nodeVerticalSpacing value\nProvide something else!!!!");
 			} catch (IOException e) {
 				e.printStackTrace();
-				return false;
+				return ValidationState.INVALID;
 			}
-			return false;
+			return ValidationState.INVALID;
 		}
 	}
 
