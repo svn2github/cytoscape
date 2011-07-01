@@ -77,8 +77,10 @@ import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
+import org.cytoscape.view.vizmap.gui.internal.task.ImportDefaultVizmapTaskFactory;
 import org.cytoscape.view.vizmap.gui.internal.theme.ColorManager;
 import org.cytoscape.view.vizmap.gui.internal.theme.IconManager;
+import org.cytoscape.work.TaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,7 +133,9 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			EditorWindowManager editorWindowManager,
 			CyApplicationManager applicationManager, CyEventHelper eventHelper,
-			final SelectedVisualStyleManager manager) {
+			final SelectedVisualStyleManager manager,
+			final ImportDefaultVizmapTaskFactory taskFactory,
+			final TaskManager tManager) {
 
 		super(vsFactory, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
 				editorFactory, propertySheetPanel, vizMapPropertySheetBuilder,
@@ -140,6 +144,9 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		// Initialize all components
 		this.defaultViewMouseListener = new DefaultViewMouseListener(defViewEditor, this, manager);
 		initPanel();
+		
+		// Load default style
+		tManager.execute(taskFactory);
 	}
 
 	private void initPanel() {

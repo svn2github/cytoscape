@@ -272,5 +272,8 @@
 			unbind-method="removeBypass" ref="bypassManager" />
 	</osgi:set>	
 	
+	
+	<osgi:reference id="vizmapReaderManagerServiceRef"
+		interface="org.cytoscape.io.read.VizmapReaderManager" />
 
 </beans>
