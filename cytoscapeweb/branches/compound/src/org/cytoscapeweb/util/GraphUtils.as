@@ -61,15 +61,67 @@ package org.cytoscapeweb.util {
         }
 
         // ========[ PUBLIC METHODS ]===============================================================
-
-        public static function bringToFront(d:DisplayObject):void {
-            if (d != null) {
-                var p:DisplayObjectContainer = d.parent;
-                if (p != null)
-                   p.setChildIndex(d, p.numChildren-1);
-            }
-        }
         
+		/**
+		 * Brings the given display object to the front of the stage. This
+		 * function does not taken compound nodes into account. Use bringToFront 
+		 * function for full compatibility with compound graphs.
+		 * 
+		 * @param d		DisplayObject to bring to front
+		 */
+		public static function toFront(d:DisplayObject):void {
+			if (d != null) {
+				var p:DisplayObjectContainer = d.parent;
+				if (p != null)
+					p.setChildIndex(d, p.numChildren-1);
+			}
+		}
+		
+		/**
+		 * Brings the given display object to the front of the stage. If the
+		 * given display object is a CompoundNodeSprite, also brings all
+		 * its children and edges inside the compound node to the front.
+		 * 
+		 * @param d		DisplayObject to bring to front 
+		 */ 
+		public static function bringToFront(d:DisplayObject):void
+		{
+			if (d != null)
+			{
+				if (d is CompoundNodeSprite)
+				{
+					var cns:CompoundNodeSprite = d as CompoundNodeSprite;
+					
+					// bring the compound node sprite as well as all its
+					// children and the edges inside the compound to the front.
+					
+					GraphUtils.toFront(cns);
+					
+					if (cns.isInitialized() &&
+						!cns.allChildrenInvisible())
+					{
+						for each (var ns:NodeSprite in cns.getNodes())
+						{
+							GraphUtils.toFront(ns);
+							
+							if (ns is CompoundNodeSprite)
+							{
+								GraphUtils.bringToFront(
+									ns as CompoundNodeSprite);
+							}
+							
+							ns.visitEdges(toFront);
+						}
+					}
+				}
+				else
+				{
+					GraphUtils.toFront(d);
+				}
+			}
+		}
+		
+		/*
         public static function isFilteredOut(ds:DataSprite):Boolean {
             var b:Boolean = ds.props.$filteredOut;
             
@@ -80,7 +132,52 @@ package org.cytoscapeweb.util {
             
             return b;
         }
-        
+        */
+		
+		/**
+		 * If the given data sprite is filtered out, returns true. If a 
+		 * NodeSprite itself is not filtered out, but at least one of its
+		 * parents is filtered out, then the node is also considered as
+		 * filtered out. Similarly, if an EdgeSprite is not filtered out, but
+		 * either its source or target is filtered out, then the edge is also
+		 * considered as filtered out.
+		 * 
+		 * @param ds	DataSprite to be checked
+		 * @return		true if filtered out, false otherwise
+		 */
+		public static function isFilteredOut(ds:DataSprite):Boolean
+		{
+			var filtered:Boolean = ds.props.$filteredOut;
+			
+			if (ds is EdgeSprite)
+			{
+				var e:EdgeSprite = EdgeSprite(ds);
+				
+				// if an edge is not filtered out, but either its target or
+				// its source is filtered out, then the edge should also be
+				// filtered out
+				filtered = filtered || isFilteredOut(e.source) ||
+					isFilteredOut(e.target);
+			}
+			else if (ds is NodeSprite)
+			{
+				// if a node is not filtered out, but at least one of its
+				// parents is filtered out, then the node should also be
+				// filtered out
+				for each (var parent:CompoundNodeSprite in
+					CompoundNodes.getParents(ds as NodeSprite))
+				{
+					if (parent.props.$filteredOut)
+					{
+						filtered = true;
+						break;
+					}
+				}
+			}
+			
+			return filtered;
+		}
+		
         public static function getBounds(data:Data, 
                                          ignoreNodeLabels:Boolean,
                                          ignoreEdgeLabels:Boolean):Rectangle {

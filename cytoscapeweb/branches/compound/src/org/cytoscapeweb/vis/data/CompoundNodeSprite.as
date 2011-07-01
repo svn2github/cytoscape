@@ -3,6 +3,8 @@ package org.cytoscapeweb.vis.data
 	import flare.vis.data.NodeSprite;
 	
 	import flash.geom.Rectangle;
+	
+	import org.cytoscapeweb.util.Nodes;
 
 	/**
 	 * This class represents a Compound Node with its child nodes, bounds and
@@ -145,6 +147,20 @@ package org.cytoscapeweb.vis.data
 			return initialized;
 		}
 		
+		public function allChildrenInvisible() : Boolean
+		{
+			var invisible:Boolean = true; 
+			
+			for each (var ns:NodeSprite in this.getNodes())
+			{
+				if (Nodes.visible(ns))
+				{
+					invisible = false;
+				}
+			}
+			
+			return invisible;
+		}
 		
 		/**
 		 * Adds the given node sprite to the child map of the compound node.
@@ -172,7 +188,7 @@ package org.cytoscapeweb.vis.data
 				else
 				{
 					// TODO what to do if a NodeSprite is added? 
-					ns.data.parentId = this.data.id;
+					ns.props.parentId = this.data.id;
 				}
 				
 			}
@@ -208,7 +224,7 @@ package org.cytoscapeweb.vis.data
 				}
 				else
 				{
-					ns.data.parentId = null;
+					ns.props.parentId = null;
 				}
 				
 				// remove the node from the list of child nodes 

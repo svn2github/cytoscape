@@ -4,6 +4,7 @@ package org.cytoscapeweb.view.layout
 	import flare.vis.data.NodeSprite;
 	import flare.vis.operator.layout.Layout;
 	
+	import org.cytoscapeweb.util.GraphUtils;
 	import org.cytoscapeweb.util.Groups;
 	import org.cytoscapeweb.view.layout.ivis.layout.CoSEOptions;
 	import org.cytoscapeweb.view.layout.ivis.layout.GeneralOptions;
@@ -39,6 +40,11 @@ package org.cytoscapeweb.view.layout
 			this._ivisLayout = new CoSELayout();
 		}
 		
+		/**
+		 * Sets the layout options provided by the options object. 
+		 * 
+		 * @param options	object that contains layout options.
+		 */
 		public function setOptions(options:Object):void
 		{
 			// set layout parameters
@@ -80,22 +86,6 @@ package org.cytoscapeweb.view.layout
 			coseOpts.setMultiLevelScaling(options.multiLevelScaling);
 			
 			/*
-			layoutQuality:			 "default",	// Layout Quality
-			incremental: 			 false,	// Incremental
-			uniformLeafNodeSizes: 	 false,	// Uniform Leaf Node Sizes
-			tension:				 50,	// Spring
-			repulsion:				 50,	// Repulsion
-			smartDistance:			 true,	// Smart Range Calculation
-			gravitation:			 50,	// Gravity
-			gravityDistance:		 50,	// Gravity Range
-			compoundGravitation:	 50,	// Compound Gravity
-			compoundGravityDistance: 50,	// Compound Gravity Range
-			restLength:				 50,	// Desired Edge Length
-			smartRestLength:		 true,	// Smart Edge Length Calculation
-			multiLevelScaling:		 false	// Multi-Level Scaling
-			*/
-			
-			/*
 			trace ("layoutQuality: " + options.layoutQuality);
 			trace ("incremental: " + options.incremental);
 			trace ("uniformLeafNodeSizes: " + options.uniformLeafNodeSizes);
@@ -135,12 +125,21 @@ package org.cytoscapeweb.view.layout
 			}
 		}
 		
+		/**
+		 * Updates the given node sprite by copying corresponding LNode's x and
+		 * y coordinates.
+		 * 
+		 * @param ns	node sprite to be updated
+		 */
 		protected function updateNode(ns:NodeSprite):void
 		{	
 			var node:LNode = this._cwToLayout[ns];
 			
-			ns.x = node.getCenterX();
-			ns.y = node.getCenterY();
+			if (node != null)
+			{
+				ns.x = node.getCenterX();
+				ns.y = node.getCenterY();
+			}
 		}
 		
 		/**
@@ -167,7 +166,9 @@ package org.cytoscapeweb.view.layout
 				{
 					cns = ns as CompoundNodeSprite;
 					
-					if (cns.parentId == null)
+					// ignore filtered-out nodes
+					if (cns.parentId == null &&
+						!GraphUtils.isFilteredOut(cns))
 					{
 						this.createNode(cns,
 							null,
@@ -181,7 +182,11 @@ package org.cytoscapeweb.view.layout
 			for each (var es:EdgeSprite in
 				visualization.data.group(Groups.REGULAR_EDGES))
 			{
-				this.createEdge(es, this._ivisLayout);
+				// ignore filtered-out edges
+				if (!GraphUtils.isFilteredOut(es))
+				{
+					this.createEdge(es, this._ivisLayout);
+				}
 			}
 			
 			gm.updateBounds();
@@ -253,9 +258,12 @@ package org.cytoscapeweb.view.layout
 				// for each NodeModel in the node set create an LNode
 				for each (var cns:CompoundNodeSprite in node.getNodes())
 				{
-					this.createNode(cns,
-						node,
-						layout);
+					if (!GraphUtils.isFilteredOut(cns))
+					{
+						this.createNode(cns,
+							node,
+							layout);
+					}
 				}
 				
 				lNode.updateBounds();

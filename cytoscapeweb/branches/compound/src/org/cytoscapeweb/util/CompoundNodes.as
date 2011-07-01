@@ -15,9 +15,9 @@ package org.cytoscapeweb.util
 
 	public class CompoundNodes
 	{
-		public static const ALL_CHILDREN:String = "all";
-		public static const SELECTED_CHILDREN:String = "selected";
-		public static const NON_SELECTED_CHILDREN:String = "non-selected";
+		public static const ALL:String = "all";
+		public static const SELECTED:String = "selected";
+		public static const NON_SELECTED:String = "non-selected";
 		
 		private static var _properties:Object;
 		private static var _configProxy:ConfigProxy;
@@ -331,7 +331,7 @@ package org.cytoscapeweb.util
 		 * @param cns	compound node sprite whose children are collected 
 		 */
 		public static function getChildren(cns:CompoundNodeSprite,
-			type:String = CompoundNodes.ALL_CHILDREN) : Array
+			type:String = CompoundNodes.ALL) : Array
 		{
 			var children:Array = new Array();
 			var condition:Boolean;
@@ -340,7 +340,7 @@ package org.cytoscapeweb.util
 			{
 				for each (var ns:NodeSprite in cns.getNodes())
 				{
-					if (type === CompoundNodes.SELECTED_CHILDREN)
+					if (type === CompoundNodes.SELECTED)
 					{
 						if (ns.props.$selected)
 						{
@@ -351,7 +351,7 @@ package org.cytoscapeweb.util
 							condition = false;
 						}
 					}
-					else if (type === CompoundNodes.NON_SELECTED_CHILDREN)
+					else if (type === CompoundNodes.NON_SELECTED)
 					{
 						if (ns.props.$selected)
 						{
@@ -393,29 +393,39 @@ package org.cytoscapeweb.util
 		 * up to root are collected by default, type can be selected and
 		 * non-selected parents.
 		 * 
-		 * @param cns	compound node sprite whose parents are collected 
+		 * @param ns	node sprite whose parents are collected 
 		 */
-		public static function getParents(cns:CompoundNodeSprite,
-										   type:String = CompoundNodes.ALL_CHILDREN) : Array
+		public static function getParents(ns:NodeSprite,
+										   type:String = CompoundNodes.ALL) : Array
 		{
 			var parents:Array = new Array();
 			var condition:Boolean;
 			var parent:NodeSprite;
+			var parentId:String;
 			
-			if (cns != null)
+			if (ns != null)
 			{
+				if (ns is CompoundNodeSprite)
+				{
+					parentId = (ns as CompoundNodeSprite).parentId;
+				}
+				else
+				{
+					parentId = ns.props.parentId;
+				}
+				
 				//for each (var ns:NodeSprite in cns.getNodes())
-				while (cns.parentId != null)
+				while (parentId != null)
 				{
 					// get parent
-					parent = graphProxy.getNode(cns.parentId);
+					parent = graphProxy.getNode(parentId);
 					
 					if (parent == null)
 					{
 						break;
 					}
 					
-					if (type === CompoundNodes.SELECTED_CHILDREN)
+					if (type === CompoundNodes.SELECTED)
 					{
 						if (parent.props.$selected)
 						{
@@ -426,7 +436,7 @@ package org.cytoscapeweb.util
 							condition = false;
 						}
 					}
-					else if (type === CompoundNodes.NON_SELECTED_CHILDREN)
+					else if (type === CompoundNodes.NON_SELECTED)
 					{
 						if (parent.props.$selected)
 						{
@@ -451,7 +461,7 @@ package org.cytoscapeweb.util
 					}
 					
 					// advance to next node
-					cns = parent as CompoundNodeSprite;
+					parentId = (parent as CompoundNodeSprite).parentId;
 				}
 			}
 			

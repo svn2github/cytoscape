@@ -327,9 +327,11 @@ package org.cytoscapeweb.view.components {
             }
         }
         
-        public function bringToFront(ds:DataSprite):void {
+        public function bringToFront(ds:DataSprite):void
+		{
             // Bring the node to front, too:
-            GraphUtils.bringToFront(ds);
+			GraphUtils.bringToFront(ds);
+			
             // Do not forget the node's label!
             GraphUtils.bringToFront(ds.props.label);
         }

@@ -341,7 +341,7 @@ package org.cytoscapeweb.model {
 						// get non-selected children of the current compound
 						children = CompoundNodes.getChildren(
 							(ns as CompoundNodeSprite),
-							CompoundNodes.NON_SELECTED_CHILDREN);
+							CompoundNodes.NON_SELECTED);
 						
 						// concat the new children with the map
 						for each (node in children)

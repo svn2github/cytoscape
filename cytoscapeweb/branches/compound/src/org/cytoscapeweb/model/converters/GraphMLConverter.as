@@ -511,7 +511,7 @@ package org.cytoscapeweb.model.converters {
 					// include only parentless nodes' data
 					if (parentId == null)
 					{
-						if (ds.data.parentId == null)
+						if (ds.props.parentId == null)
 						{
 							plainData.push(ds.data);
 						}

@@ -514,7 +514,8 @@ package org.cytoscapeweb.view.components {
 			var bounds:Rectangle;
 			var allChildren:Array = CompoundNodes.getChildren(cns);
 			
-			if (allChildren.length > 0)
+			if (allChildren.length > 0
+				&& !cns.allChildrenInvisible())
 			{
 				for each (var ns:NodeSprite in allChildren)
 				{
@@ -752,11 +753,11 @@ package org.cytoscapeweb.view.components {
 				if (ns is CompoundNodeSprite &&
 					(ns as CompoundNodeSprite).isInitialized())
 				{
-					updateAllBounds(ns as CompoundNodeSprite);
+					this.updateAllBounds(ns as CompoundNodeSprite);
 				}
 			}
 			
-			updateCompoundBounds(cns);
+			this.updateCompoundBounds(cns);
 			cns.render();
 		}
     }

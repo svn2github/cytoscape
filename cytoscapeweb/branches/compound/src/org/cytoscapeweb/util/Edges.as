@@ -156,12 +156,36 @@ package org.cytoscapeweb.util {
             return style.getValue(propName, e.data) as Number;
         }
         
-        public static function visible(e:EdgeSprite):Boolean {
-            var vis:Boolean = !GraphUtils.isFilteredOut(e);
-
+        public static function visible(e:EdgeSprite):Boolean
+		{
+			var vis:Boolean = true;
+			
+			if (GraphUtils.isFilteredOut(e))
+			{
+				vis = false;
+			}
+			/*
+			else if (!Nodes.visible(e.source) ||
+				!Nodes.visible(e.target))
+			{
+				vis = false;
+			}
+			*/
+			else
+			{
+				var merged:Boolean = configProxy.edgesMerged;
+				
+				vis = (merged && e.props.$merged) ||
+					(!merged && !e.props.$merged);
+			}
+			
+			/*
+			var vis:Boolean = !GraphUtils.isFilteredOut(e);
+			
             var merged:Boolean = configProxy.edgesMerged;
             vis = vis && ( (merged && e.props.$merged) || (!merged && !e.props.$merged) );
-            
+            */
+			
             return vis;
         }
         

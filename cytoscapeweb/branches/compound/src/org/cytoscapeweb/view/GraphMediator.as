@@ -276,6 +276,14 @@ package org.cytoscapeweb.view {
                 vis.updateLabels(Groups.EDGES);
             }
             separateDisconnected();
+			
+			// it is required to update compound bounds after filtering in order
+			// to keep compound bounds valid with respect to its children
+			vis.updateAllCompoundBounds();
+			
+			// it is also required to operate compound node labeler, to update
+			// compound node labels
+			vis.compoundNodeLabeler.operate();
         }
 
         public function resetDataSprite(ds:DataSprite):void
@@ -835,7 +843,7 @@ package org.cytoscapeweb.view {
 					{
 						// TODO we always use CompoundNodeSprite instances,
 						// so this condition will never be true
-						parentId = ns.data.parentId
+						parentId = ns.props.parentId
 					}
 					
 					while (parentId != null)

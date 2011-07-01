@@ -480,7 +480,7 @@ package org.cytoscapeweb.view {
 							{
 								childList = CompoundNodes.getChildren(
 									cNodeSprite,
-									CompoundNodes.NON_SELECTED_CHILDREN);
+									CompoundNodes.NON_SELECTED);
 							}
 							// otherwise add all children of the compound
 							// to the list of nodes to be removed
@@ -510,11 +510,11 @@ package org.cytoscapeweb.view {
 						{
 							parentId = (ns as CompoundNodeSprite).parentId;
 						}
-						else if (ns.data.parentId != null)
+						else if (ns.props.parentId != null)
 						{
 							// TODO we always use CompoundNodeSprites, so
 							// this condition will never be true
-							parentId = ns.data.parentId;
+							parentId = ns.props.parentId;
 						}
 						else
 						{

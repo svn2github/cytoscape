@@ -453,28 +453,7 @@ function createXgmmlData()
 	return data;
 }
 
-function readDataFromFile(filename)
-{
-	var input = fopen(getScriptPath(filename), 0); // open file for reading
-	var content;
-	
-	// if the file is successfully opened
-	if(input != -1)
-	{
-		// read all file content
-	    var length = flength(input);     
-	    content = fread(input, length);	
-	    fclose(input);
-	    
-	    alert("file opened!");
-	}
-	else
-	{
-		alert("wrong input!");
-	}
-	
-	return content;
-}
+
 
 /**
  * Creates a sample network object model data containing both simple and
@@ -616,6 +595,21 @@ function clickNodeToAddEdge(evt)
     }
 }
 
+function visibility(element)
+{
+	var selectedNodes = vis.selected();
+	
+	for (var i=0; i < selectedNodes.length; i++)
+	{
+		if (element.data.id == selectedNodes[i].data.id)
+		{
+			return false;
+		}
+	}
+	
+	return true;
+}
+
 /*
  * Add items to context menu
  */
@@ -718,6 +712,10 @@ function initToolbar()
         vis.draw(options);
     });
 	
+	$("#filter").click(function(evt) {
+        vis.filter('all', visibility, true);
+    });
+	
 	$("#in-graphml").click(function(evt) {
         var network = createGraphmlData();
         options.network = network;
@@ -762,5 +760,3 @@ function initToolbar()
 		vis.exportNetwork('sif', 'export.php?type=xml');
     });
 }
-
-// TODO read from input file...

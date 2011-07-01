@@ -65,7 +65,8 @@ package org.cytoscapeweb.view.render
 				ns = (d as CompoundNodeSprite);
 				
 				if (!ns.isInitialized() ||
-					ns.bounds == null)
+					ns.bounds == null ||
+					ns.allChildrenInvisible())
 				{
 					// no child or bounds set yet,
 					// render with default size & shape					
@@ -109,7 +110,8 @@ package org.cytoscapeweb.view.render
 				// bring (recursively) child nodes & edges inside the compound
 				// to the front, otherwise they remain on the back side of
 				// the compound node.
-				this.raiseChildren(ns);
+				//this.raiseChildren(ns);
+				GraphUtils.bringToFront(ns);
 			}
 			else
 			{

@@ -342,7 +342,7 @@ package org.cytoscapeweb.model.converters {
 						nodesArray.push(nodeObject);
 					}
 				}
-				else if (ns.data.parentId == null)
+				else if (ns.props.parentId == null)
 				{
 					// create & store node object
 					nodeObject = toExtNodeObject(ns, lookup);
