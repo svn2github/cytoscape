@@ -1,9 +1,12 @@
 package csplugins.layout;
 
+
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.undo.UndoSupport;
+
 import org.jgraph.plugins.layouts.AnnealingLayoutAlgorithm;
 import org.jgraph.plugins.layouts.CircleGraphLayout;
 import org.jgraph.plugins.layouts.GEMLayoutAlgorithm;
@@ -15,8 +18,8 @@ import org.jgraph.plugins.layouts.SpringEmbeddedLayoutAlgorithm;
 import org.jgraph.plugins.layouts.SugiyamaLayoutAlgorithm;
 import org.jgraph.plugins.layouts.TreeLayoutAlgorithm;
 
+
 public class JGraphLayoutWrapper extends AbstractLayoutAlgorithm implements TunableValidator {
-	
 	public static final int ANNEALING = 0;
 	public static final int MOEN = 1;
 	public static final int CIRCLE_GRAPH = 2;
@@ -84,9 +87,9 @@ public class JGraphLayoutWrapper extends AbstractLayoutAlgorithm implements Tuna
 		layoutSettings = layout.createSettings();
 	}
 
-	//TODO how to validate the parameter values?
-	public boolean tunablesAreValid(final Appendable errMsg) {		
-		return true;
+	@Override //TODO how to validate the parameter values?
+	public ValidationState getValidationState(final Appendable errMsg) {		
+		return ValidationState.OK;
 	}
 
 	public TaskIterator getTaskIterator() {
