@@ -41,9 +41,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.cytoscape.io.internal.util.vizmap.model.AttributeType;
 import org.cytoscape.io.internal.util.vizmap.model.DiscreteMappingEntry;
@@ -141,8 +141,8 @@ public class VisualStyleSerializer {
 	 * @param vizmap A Vizmap object containing a representation of VisualStyles.
 	 * @return A collection of VisualStyle objects.
 	 */
-	public Set<VisualStyle> createVisualStyles(Vizmap vizmap) {
-		Set<VisualStyle> styles = new HashSet<VisualStyle>();
+	public Set<VisualStyle> createVisualStyles(final Vizmap vizmap) {
+		final Set<VisualStyle> styles = new HashSet<VisualStyle>();
 		lexicon = renderingEngineManager.getDefaultVisualLexicon();
 
 		if (lexicon == null) {
@@ -151,24 +151,22 @@ public class VisualStyleSerializer {
 		}
 
 		if (vizmap != null) {
-			List<org.cytoscape.io.internal.util.vizmap.model.VisualStyle> vsModelList = vizmap.getVisualStyle();
+			final List<org.cytoscape.io.internal.util.vizmap.model.VisualStyle> vsModelList = vizmap.getVisualStyle();
 			VisualStyle defStyle = visualMappingManager.getDefaultVisualStyle();
 			final String DEFAULT_STYLE_NAME = defStyle.getTitle();
 
 			for (org.cytoscape.io.internal.util.vizmap.model.VisualStyle vsModel : vsModelList) {
-				String styleName = vsModel.getName();
+				final String styleName = vsModel.getName();
 				// Each new style should be created from the default one:
-				VisualStyle vs = null;
+				final VisualStyle vs;
 
 				if (styleName.equals(DEFAULT_STYLE_NAME)) {
 					// If loading the default style, do not create another one,
 					// but just modify the current default object!
 					vs = defStyle;
 					// TODO: delete mappings?
-				} else {
-					vs = visualStyleFactory.getInstance(defStyle);
-					vs.setTitle(styleName);
-				}
+				} else
+					vs = visualStyleFactory.getInstance(styleName);
 
 				// Set the visual properties and mappings:
 				if (vsModel.getNetwork() != null)
@@ -179,7 +177,8 @@ public class VisualStyleSerializer {
 					createVisualProperties(vs, CyEdge.class, vsModel.getEdge().getVisualProperty());
 
 				// Do not add the modified default style to the list!
-				if (!vs.equals(defStyle)) styles.add(vs);
+				if (!vs.equals(defStyle)) 
+					styles.add(vs);
 			}
 		}
 
