@@ -38,7 +38,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -46,8 +45,6 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.VisualLexicon;
-import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
@@ -71,12 +68,9 @@ public class VisualStyleImpl implements VisualStyle {
 	private String title;
 
 	/**
-	 * Creates a new VisualStyleImpl object.
 	 * 
-	 * @param eventHelper
-	 *            DOCUMENT ME!
-	 * @param rootLexicon
-	 *            DOCUMENT ME!
+	 * @param title Title of the new Visual Style
+	 * @param lexManager
 	 */
 	public VisualStyleImpl(final String title, final VisualLexiconManager lexManager) {
 
@@ -96,12 +90,7 @@ public class VisualStyleImpl implements VisualStyle {
 		logger.info("New Visual Style Created: Style Name = " + this.title);
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param c
-	 *            DOCUMENT ME!
-	 */
+	
 	@Override
 	public void addVisualMappingFunction(final VisualMappingFunction<?, ?> mapping) {
 		mappings.put(mapping.getVisualProperty(), mapping);

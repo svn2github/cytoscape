@@ -28,7 +28,7 @@ public class VisualStyleFactoryImpl implements VisualStyleFactory {
 	}
 
 	@Override
-	public VisualStyle getInstance(String title) {
+	public VisualStyle getInstance(final String title) {
 		return new VisualStyleImpl(title, lexManager);
 	}
 

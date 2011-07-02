@@ -316,9 +316,9 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	}
 
 	
-	void updateDefaultImage(final VisualStyle vs,
-			final RenderingEngine<CyNetwork> engine, final Dimension size) {
+	void updateDefaultImage(final VisualStyle vs, final RenderingEngine<CyNetwork> engine, final Dimension size) {
 
+		logger.debug("Creating Default Image for new visual style " + vs.getTitle());
 		Image image = defaultImageManager.remove(vs);
 
 		if (image != null) {
@@ -326,10 +326,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			image = null;
 		}
 
-		defaultImageManager.put(
-				vs,
-				engine.createImage((int) size.getWidth(),
-						(int) size.getHeight()));
+		defaultImageManager.put(vs, engine.createImage((int) size.getWidth(), (int) size.getHeight()));
 	}
 
 	public void updateAttributeList() {
@@ -673,31 +670,20 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			return;
 
 		vsComboBoxModel.addElement(newStyle);
-		visualStyleComboBox.setSelectedItem(newStyle);
-
-		final CyNetworkView currentView = applicationManager
-				.getCurrentNetworkView();
+		final CyNetworkView currentView = applicationManager.getCurrentNetworkView();
 
 		if (currentView != null)
 			vmm.setVisualStyle(newStyle, currentView);
 
 		// Update default panel
 		final Component defPanel = defViewEditor.getDefaultView(newStyle);
-		final RenderingEngine<CyNetwork> engine = ((DefaultViewPanelImpl) defPanel)
-				.getRenderingEngine();
+		final RenderingEngine<CyNetwork> engine = ((DefaultViewPanelImpl) defPanel).getRenderingEngine();
 		final Dimension panelSize = defaultViewImagePanel.getSize();
 
-		if (engine != null) {
-			logger.debug("Creating Default Image for new visual style "
-					+ newStyle.getTitle());
+		if (engine != null)
 			updateDefaultImage(newStyle, engine, panelSize);
-			setDefaultViewImagePanel(getDefaultImageManager().get(newStyle));
-		}
-
-		switchVS(newStyle);
-		eventHelper.fireEvent(new SelectedVisualStyleSwitchedEvent(
-				this, currentStyle, newStyle));
-		logger.debug("######## Event: Got new style: " + newStyle);
+		
+		// TODO: switch only if it is necessary
 	}
 
 	@Override
