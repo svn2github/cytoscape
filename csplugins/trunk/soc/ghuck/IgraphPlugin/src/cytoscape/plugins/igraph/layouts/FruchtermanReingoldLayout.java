@@ -132,15 +132,6 @@ public class FruchtermanReingoldLayout extends AbstractIgraphLayout {
 
     }
 
-//     /**
-//      * Get the settings panel for this layout
-//      */
-//     public JPanel getSettingsPanel() {
-// 	JPanel panel = new JPanel(new GridLayout(1, 1));
-// 	panel.add(layoutProperties.getTunablePanel());
-	
-// 	return panel;
-//     }
 
     /**
      * Do the layout on a graph alrealy loaded into igraph
@@ -151,9 +142,17 @@ public class FruchtermanReingoldLayout extends AbstractIgraphLayout {
 		      HashMap<Integer,Integer> mapping) {
 
 	
-	double maxDelta   = maxDeltaCoefficient * part.nodeCount();
-	double area       = areaCoefficient * part.nodeCount() * part.nodeCount();
-	double repulseRad = repulseRadCoefficient * area * part.nodeCount();
+	int numNodes = mapping.size();
+
+	double maxDelta   = maxDeltaCoefficient * numNodes;
+	double area       = areaCoefficient * numNodes * numNodes;
+	double repulseRad = repulseRadCoefficient * area * numNodes;
+	double[] weights = new double[numNodes];
+
+	// Store current node positions if necessary
+	if (!randomize) {
+	    loadPositions(part, mapping, x, y);
+	}
 	
  	// Make native method call
 	IgraphInterface.layoutFruchterman(x, 
@@ -163,7 +162,9 @@ public class FruchtermanReingoldLayout extends AbstractIgraphLayout {
 					  area, 
 					  coolExp, 
 					  repulseRad, 
-					  !randomize);
+					  !randomize,
+					  false,
+					  weights);
 	
 	return 1;
     }

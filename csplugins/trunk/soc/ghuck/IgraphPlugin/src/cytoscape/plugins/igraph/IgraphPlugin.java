@@ -55,10 +55,10 @@ public class IgraphPlugin extends CytoscapePlugin {
 	checkLib("igraph.0");
 
         String userDir = System.getProperty("user.dir"); 
-// 	JOptionPane.showMessageDialog( Cytoscape.getDesktop(), "user dir:"+ userDir);	
+ 	// JOptionPane.showMessageDialog( Cytoscape.getDesktop(), "user dir:"+ userDir);	
  	NativeLibrary.addSearchPath("igraphWrapper", userDir + "/plugins");
 
-// 	JOptionPane.showMessageDialog(Cytoscape.getDesktop(), IgraphInterface.nativeAdd(10, 20));	   
+ 	// JOptionPane.showMessageDialog(Cytoscape.getDesktop(), IgraphInterface.nativeAdd(10, 20));	   
 
 	// Create Igraph object
 	IgraphAPI igraph = new IgraphAPI();
@@ -123,54 +123,54 @@ public class IgraphPlugin extends CytoscapePlugin {
     } // checkLib
 
 
-    protected boolean loadIgraph() {
+//     protected boolean loadIgraph() {
 
-	boolean res = true;
+// 	boolean res = true;
 
-	// Reset the "sys_paths" field of the ClassLoader to null.
-	Class clazz = ClassLoader.class;
-	Field field;
-	try {
-	    field = clazz.getDeclaredField("sys_paths");
-	    boolean accessible = field.isAccessible();
-	    if (!accessible)
-		field.setAccessible(true);
-	    Object original = field.get(clazz);
+// 	// Reset the "sys_paths" field of the ClassLoader to null.
+// 	Class clazz = ClassLoader.class;
+// 	Field field;
+// 	try {
+// 	    field = clazz.getDeclaredField("sys_paths");
+// 	    boolean accessible = field.isAccessible();
+// 	    if (!accessible)
+// 		field.setAccessible(true);
+// 	    Object original = field.get(clazz);
 
-	    // Get original PATH
-	    String orig_path = System.getProperty("java.library.path");
+// 	    // Get original PATH
+// 	    String orig_path = System.getProperty("java.library.path");
 	    
-	    // Reset it to null so that whenever "System.loadLibrary" is called, it will be reconstructed with the changed value
-	    field.set(clazz, null);
-	    try {
-		// Change the value and load the library.
-		System.setProperty("java.library.path", "./plugins"  + ":" + orig_path);
-		//		System.loadLibrary("igraph.0");
-		System.loadLibrary("igraphWrapper");
-	    }
+// 	    // Reset it to null so that whenever "System.loadLibrary" is called, it will be reconstructed with the changed value
+// 	    field.set(clazz, null);
+// 	    try {
+// 		// Change the value and load the library.
+// 		System.setProperty("java.library.path", "./plugins"  + ":" + orig_path);
+// 		//		System.loadLibrary("igraph.0");
+// 		System.loadLibrary("igraphWrapper");
+// 	    }
 
-	    catch (UnsatisfiedLinkError error) {
-		String message = "Problem detected while loading library.\n"		    
-		    + error.getMessage() 
-		    + "\nPlease check your plugins folder.";
-		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
+// 	    catch (UnsatisfiedLinkError error) {
+// 		String message = "Problem detected while loading library.\n"		    
+// 		    + error.getMessage() 
+// 		    + "\nPlease check your plugins folder.";
+// 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
 				
-		res = false;
-	    }		
+// 		res = false;
+// 	    }		
 
-	    finally {
-		// Revert back the changes
-		field.set(clazz, original);
-		field.setAccessible(accessible);   
-	    }
-	}
-	catch (Exception exception) {
-	    res = false;
-	}
+// 	    finally {
+// 		// Revert back the changes
+// 		field.set(clazz, original);
+// 		field.setAccessible(accessible);   
+// 	    }
+// 	}
+// 	catch (Exception exception) {
+// 	    res = false;
+// 	}
 
-	finally {
-	    return res;
-	}
-    }
+// 	finally {
+// 	    return res;
+// 	}
+//     }
         
 }

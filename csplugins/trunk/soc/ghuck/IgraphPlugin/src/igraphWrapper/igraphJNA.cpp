@@ -69,6 +69,8 @@ void layoutCircle(double x[], double y[]){
 		x[i] = MATRIX(locs, i, 0);
 		y[i] = MATRIX(locs, i, 1);
 	}
+	// Clean up
+	igraph_matrix_destroy(&locs);
 }
 
 void starLayout(double x[], double y[], int centerId) {
@@ -85,8 +87,9 @@ void starLayout(double x[], double y[], int centerId) {
 		x[i] = MATRIX(locs, i, 0);
 		y[i] = MATRIX(locs, i, 1);
 	}
-
-
+	
+	// Clean up
+	igraph_matrix_destroy(&locs);
 }
 
 //Fruchterman - Reingold Layout
@@ -97,30 +100,71 @@ void layoutFruchterman(double x[],
 		       double area, 
 		       double coolExp, 
 		       double repulserad, 
-		       bool useSeed){
+		       bool useSeed, 
+		       bool isWeighted,
+		       double weights[]){
+
 	long int vcount = igraph_vcount(&g);
+
 	igraph_matrix_t locs;
 	igraph_matrix_init(&locs, vcount, 2); 
-	for(int i = 0; i < vcount; i++){
+	for (int i = 0; i < vcount; i++){
 		MATRIX(locs, i, 0) = x[i];
 		MATRIX(locs, i, 1) = y[i];
 	}
 
-	igraph_layout_fruchterman_reingold(&g, 
-					   &locs, 
-					   iter, 
-					   maxDelta, 
-					   area, 
-					   coolExp, 
-					   repulserad, 
-					   useSeed, 
-					   0, // weights 
-					   0, 
-					   0);
+	igraph_vector_t weights_vector;
+	if (isWeighted) {
+	  igraph_vector_init(&weights_vector, vcount);
+	  for (int i = 0; i < vcount; i++){
+	    VECTOR(weights_vector)[i] = weights[i];
+	  } 
+	}
+
+
+	if (isWeighted) {
+	  igraph_layout_fruchterman_reingold(&g, 
+					     &locs, 
+					     iter, 
+					     maxDelta, 
+					     area, 
+					     coolExp, 
+					     repulserad, 
+					     useSeed, 
+					     &weights_vector,
+					     0, 
+					     0);
+
+	} else {
+	  igraph_layout_fruchterman_reingold(&g, 
+					     &locs, 
+					     iter, 
+					     maxDelta, 
+					     area, 
+					     coolExp, 
+					     repulserad, 
+					     useSeed, 
+					     0, // weights 
+					     0, 
+					     0);
+	}
+
 	for(int i=0; i<vcount; i++){
 		x[i] = MATRIX(locs, i, 0);
 		y[i] = MATRIX(locs, i, 1);
 	}	
+
+	// Clean up
+	igraph_matrix_destroy(&locs);
+	igraph_vector_destroy(&weights_vector);	
+}
+
+extern "C"{
+  //Simple adding of two integers
+  int nativeAdd(int a, int b)
+  {
+    return( a + b );
+  }
 }
 
 
@@ -628,13 +672,6 @@ int nodeCount(){
 // }
 
 
-extern "C"{
-//Simple adding of two integers
-  int nativeAdd( int a, int b )
-  {
-    return( a + b );
-  }
-}
 // //Add one to the passed integer via pointer
 // void nativeIncrement(int* iptr){
 // 	*iptr += 1;

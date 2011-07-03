@@ -25,7 +25,9 @@ extern "C"
 			 double area,
 			 double coolExp,
 			 double repulserad,
-			 bool useSeed);
+			 bool useSeed,
+			 bool isWeighted,
+			 double weights[]);
 
 
 /*   void fastGreedy(int membership[], double* modularity, int csize[], int * numCluster); */
@@ -34,11 +36,10 @@ extern "C"
 /*   void edgeBetweenness(int membership[], double*modularity, int csize[], int * numCluster); */
 /*   void spinGlass(int membership[], double* modularity, int csize[], int* numCluster); */
 /*   void spinGlassSingle(int target, int community[], int* community_size); //only compute community close to the target id */
-  //Can also make a function to compute an array of ids, if possible in later versions.
-
+  
 
   //test functions
-/*   int nativeAdd( int a, int b ); */
+  int nativeAdd(int a, int b);
 /*   void nativeIncrement(int* iptr); */
 /*   int nativeArrayReset(int data[], int length); */
 /*   int nativeCountAdd(int value); */

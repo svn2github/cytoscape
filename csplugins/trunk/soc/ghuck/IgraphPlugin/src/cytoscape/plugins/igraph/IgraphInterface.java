@@ -17,7 +17,7 @@ public class IgraphInterface {
 	Native.register("igraphWrapper"); 
     }
     
-//     public static native int nativeAdd(int a, int b);
+    public static native int nativeAdd(int a, int b);
    
     // Create an igraph's graph
     public static native void createGraph(int edgeArray[], int length);
@@ -42,6 +42,9 @@ public class IgraphInterface {
 						double area, 
 						double coolExp, 
 						double repulserad, 
-						boolean useSeed);
+						boolean useSeed,
+						boolean isWeighted,
+						double weights[]);
     
 }
+

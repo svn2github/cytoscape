@@ -187,9 +187,6 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
 	// Load graph into native library
 	HashMap<Integer,Integer> mapping = loadGraphPartition(part, selectedOnly);
 
-	// Store current node positions
-	loadPositions(part, mapping, x, y);
-
 	// Check whether it has been canceled by the user
 	if (canceled)
 	    return;
@@ -341,6 +338,8 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
 
 	CyLogger logger = CyLogger.getLogger(AbstractIgraphLayout.class);	    
 	
+ 	// JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Load graph called!");	   
+
 	// Create a reverse mapping
 	int nodeCount = part.nodeCount();
 
