@@ -32,7 +32,5 @@
        <constructor-arg ref="cyTableManagerServiceRef" />
        <constructor-arg ref="visualMappingManagerServiceRef" />
        <constructor-arg ref="cyNetworkViewManagerServiceRef" />
-       <constructor-arg ref="cyPropertyServiceRef" />
-       <constructor-arg ref="bookmarkServiceRef" />
     </bean>
 </beans>

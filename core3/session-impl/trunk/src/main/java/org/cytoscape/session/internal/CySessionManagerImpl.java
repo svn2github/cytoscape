@@ -82,27 +82,24 @@ public class CySessionManagerImpl implements CySessionManager {
 	private final VisualMappingManager vmMgr;
 	private final CyNetworkViewManager nvMgr;
 
-	private final CyProperty<Properties> properties;
-	private final CyProperty<Bookmarks> bookmarks;
+	private final Map<CyProperty<?>, Map<String, String>> sessionProperties;
 
 	private static final Logger logger = LoggerFactory.getLogger(CySessionManagerImpl.class);
 
-	public CySessionManagerImpl(CyEventHelper cyEventHelper,
-								CyNetworkManager netMgr,
-								CyTableManager tblMgr,
-								VisualMappingManager vmMgr,
-								CyNetworkViewManager nvMgr,
-								CyProperty<Properties> props,
-								CyProperty<Bookmarks> bkmarks) {
+	public CySessionManagerImpl(final CyEventHelper cyEventHelper,
+	                            final CyNetworkManager netMgr,
+	                            final CyTableManager tblMgr,
+	                            final VisualMappingManager vmMgr,
+	                            final CyNetworkViewManager nvMgr) {
 		this.cyEventHelper = cyEventHelper;
 		this.netMgr = netMgr;
 		this.tblMgr = tblMgr;
 		this.vmMgr = vmMgr;
 		this.nvMgr = nvMgr;
-		this.properties = props;
-		this.bookmarks = bkmarks;
+		sessionProperties = new HashMap<CyProperty<?>, Map<String, String>>();
 	}
 
+	@Override
 	public CySession getCurrentSession() {
 		// Plugins who want to save anything to a session will have to listen for this event
 		// and will then be responsible for adding files through SessionAboutToBeSavedEvent.addPluginFiles(..)
@@ -110,7 +107,6 @@ public class CySessionManagerImpl implements CySessionManager {
 		cyEventHelper.fireEvent(savingEvent);
 
 		CysessionFactory cysessFactory = new CysessionFactory(netMgr, nvMgr, vmMgr);
-
 		Set<CyNetworkView> netViews = nvMgr.getNetworkViewSet();
 
 		// Visual Styles Map
@@ -132,8 +128,8 @@ public class CySessionManagerImpl implements CySessionManager {
 		Map<String, List<File>> pluginMap = savingEvent.getPluginFileListMap();
 		Set<CyTableMetadata> tables = tblMgr.getAllTables(true);
 		Set<VisualStyle> styles = vmMgr.getAllVisualStyles();
-		Properties props = properties != null ? properties.getProperties() : null;
-		Bookmarks bkmarks = bookmarks != null ? bookmarks.getProperties() : null;
+		Properties props = getProperties();
+		Bookmarks bkmarks = getBookmarks();
 
 		// Build the session
 		CySession sess = new CySession.Builder().cytoscapeProperties(props).bookmarks(bkmarks).cysession(cysess)
@@ -143,6 +139,7 @@ public class CySessionManagerImpl implements CySessionManager {
 		return sess;
 	}
 
+	@Override
 	public void setCurrentSession(CySession sess, String fileName) {
 		boolean emptySession = sess == null;
 
@@ -156,23 +153,13 @@ public class CySessionManagerImpl implements CySessionManager {
 			// Cysession info
 			Cysession cysess = new CysessionFactory(netMgr, nvMgr, vmMgr).createDefaultCysession();
 
-			Properties props = properties != null ? properties.getProperties() : new Properties();
-			Bookmarks bkmarks = bookmarks != null ? bookmarks.getProperties() : new Bookmarks();
+			Properties props = getProperties();
+			Bookmarks bkmarks = getBookmarks();
 
 			sess = new CySession.Builder().cytoscapeProperties(props).bookmarks(bkmarks).cysession(cysess)
 					.visualStyles(styles).build();
 		} else {
 			logger.debug("Restoring the session...");
-
-			// Restore tables
-			// ------------------------------------------------------------------------------
-			// TODO: add tables that are not associated with networks
-			// logger.debug("Restoring unattached tables...");
-			// Set<CyTable> tables = sess.getTables();
-			//			
-			// for (CyTable tbl : tables) {
-			// CyTableFactory.createTable();
-			// }
 
 			// Restore networks
 			logger.debug("Restoring networks...");
@@ -192,7 +179,7 @@ public class CySessionManagerImpl implements CySessionManager {
 				for (VisualStyle vs : styles) {
 					vmMgr.addVisualStyle(vs);
 					stylesMap.put(vs.getTitle(), vs);
-					// TODO: what if a style with the same name already exits?
+					// TODO: what if a style with the same name already exists?
 				}
 			}
 
@@ -248,10 +235,51 @@ public class CySessionManagerImpl implements CySessionManager {
 		cyEventHelper.fireEvent(new SessionLoadedEvent(this, currentSession, getCurrentSessionFileName()));
 	}
 
+	@Override
 	public String getCurrentSessionFileName() {
 		return currentFileName;
 	}
 
+	public void addCyProperty(final CyProperty<?> newCyProperty, final Map<String, String> properties) {
+		CyProperty.SavePolicy sp = newCyProperty.getSavePolicy();
+
+		if (sp == CyProperty.SavePolicy.SESSION_FILE || sp == CyProperty.SavePolicy.SESSION_FILE_AND_CONFIG_DIR)
+			sessionProperties.put(newCyProperty, properties);
+	}
+
+	public void removeCyProperty(final CyProperty<?> oldCyProperty, final Map<String, String> properties) {
+		CyProperty.SavePolicy sp = oldCyProperty.getSavePolicy();
+
+		if (sp == CyProperty.SavePolicy.SESSION_FILE || sp == CyProperty.SavePolicy.SESSION_FILE_AND_CONFIG_DIR)
+			sessionProperties.remove(oldCyProperty);
+	}
+
+	private Bookmarks getBookmarks() {
+		Bookmarks bookmarks = null;
+		
+		for (CyProperty<?> cyProps : sessionProperties.keySet()) {
+			if (cyProps.getProperties() instanceof Bookmarks) {
+				bookmarks = (Bookmarks) cyProps.getProperties();
+				break;
+			}
+		}
+		
+		return bookmarks;
+	}
+	
+	private Properties getProperties() {
+		Properties props = new Properties();
+		
+		for (CyProperty<?> cyProps : sessionProperties.keySet()) {
+			if (cyProps.getProperties() instanceof Properties) {
+				Properties p = (Properties) cyProps.getProperties();
+				props.putAll(p);
+			}
+		}
+		
+		return props;
+	}
+	
 	private void disposeCurrentSession(boolean removeVisualStyles) {
 		logger.debug("Disposing current session...");
 

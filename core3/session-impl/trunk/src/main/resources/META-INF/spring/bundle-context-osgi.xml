@@ -35,8 +35,9 @@
     
     <osgi:reference id="visualMappingManagerServiceRef" interface="org.cytoscape.view.vizmap.VisualMappingManager" />
     
-    <osgi:reference id="cyPropertyServiceRef" interface="org.cytoscape.property.CyProperty" filter="(cyPropertyName=coreSettings)" />
     
-    <osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty" filter="(cyPropertyName=bookmarks)" />
-    
+	<osgi:set id="cyPropertySet" interface="org.cytoscape.property.CyProperty" cardinality="0..N">
+		<osgi:listener bind-method="addCyProperty" unbind-method="removeCyProperty" ref="cySessionManager" />
+	</osgi:set>
+	
 </beans>
