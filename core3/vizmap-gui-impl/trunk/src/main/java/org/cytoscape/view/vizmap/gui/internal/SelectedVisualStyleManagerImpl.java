@@ -46,7 +46,6 @@ public class SelectedVisualStyleManagerImpl implements
 		
 		this.selectedStyle = style;
 		logger.debug("========= Selected Style Switched to " + selectedStyle.getTitle());
-
 	}
 
 	@Override

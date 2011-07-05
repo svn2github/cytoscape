@@ -59,7 +59,6 @@ import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.events.SetCurrentRenderingEngineEvent;
 import org.cytoscape.session.events.SetCurrentRenderingEngineListener;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.presentation.RenderingEngine;
@@ -147,6 +146,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		
 		// Load default style
 		tManager.execute(taskFactory);
+		
+		logger.info("######### Vzmap GUI initialized #########");
 	}
 
 	private void initPanel() {
@@ -340,25 +341,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		// mappingTypes.toArray());
 	}
 
-	/*
-	 * private Set<Object> loadKeys(final String attrName, final CyTable attrs,
-	 * final MappingCalculator mapping, final int nOre) { if
-	 * (attrName.equals("ID")) { return loadID(nOre); }
-	 * 
-	 * Map mapAttrs; mapAttrs = CyAttributesUtils.getAttribute(attrName, attrs);
-	 * 
-	 * if ((mapAttrs == null) || (mapAttrs.size() == 0)) return new
-	 * TreeSet<Object>();
-	 * 
-	 * List acceptedClasses = Arrays.asList(mapping.getAcceptedDataClasses());
-	 * Class mapAttrClass = CyAttributesUtils.getClass(attrName, attrs);
-	 * 
-	 * if ((mapAttrClass == null) || !(acceptedClasses.contains(mapAttrClass)))
-	 * return new TreeSet<Object>(); // Return empty set.
-	 * 
-	 * return loadKeySet(mapAttrs); }
-	 */
-
+	
 	/**
 	 * Loads the Key Set. private Set<Object> loadKeySet(final Map mapAttrs) {
 	 * final Set<Object> mappedKeys = new TreeSet<Object>();
@@ -401,21 +384,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		this.repaint();
 	}
 
-	/**
-	 * On/Off listeners. This is for performance.
-	 * 
-	 * @param on
-	 *            DOCUMENT ME!
-	 */
-	private void enableListeners(boolean on) {
-		// if (on) {
-		// vmm.addChangeListener(this);
-		// syncStyleBox();
-		// ignore = false;
-		// } else {
-		// vmm.removeChangeListener(this);
-		// }
-	}
 
 	/**
 	 * DOCUMENT ME!
@@ -505,123 +473,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		return;
 	}
 
-	/**
-	 * <p>
-	 * If user selects ID as controlling attributes name, cretate list of IDs
-	 * from actual list of nodes/edges.
-	 * </p>
-	 * 
-	 * @return
-	 */
-	/*
-	 * not used any more, but since code that did use it is present in this file
-	 * (commented out) I'll leave it here -- abeld private Set<Object>
-	 * loadID(final int nOre) { Set<Object> ids = new TreeSet<Object>();
-	 * 
-	 * List<? extends CyTableEntry> obj;
-	 * 
-	 * if (nOre == MappingCalculator.NODE_MAPPING) { obj =
-	 * applicationManager.getCurrentNetworkView
-	 * ().getGraphPerspective().getNodeList(); } else { obj =
-	 * applicationManager.getCurrentNetworkView
-	 * ().getGraphPerspective().getEdgeList(); }
-	 * 
-	 * for (CyTableEntry o : obj) { ids.add(o.attrs().get("name",
-	 * String.class)); }
-	 * 
-	 * return ids; }
-	 */
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param e
-	 *            DOCUMENT ME!
-	 */
-	// public void stateChanged(ChangeEvent e) {
-	// final VisualStyle selected = vsComboBox
-	// .getSelectedItem();
-	//
-	//
-	// final GraphView curView = applicationManager.getCurrentNetworkView();
-	//
-	// if (ignore)
-	// return;
-	//
-	// System.out.println("Got VMM Change event.  Cur VS in VMM: "
-	// + vmm.getVisualStyle().getName());
-	//
-	// if ((selectedName == null) || (currentName == null)
-	// || (curView == null))
-	// return;
-	//
-	// // Update GUI based on CalcCatalog's state.
-	// if (!findVSName(currentName)) {
-	// syncStyleBox();
-	// } else {
-	// // Bug fix: 0001802: if VS already existed in combobox, select it
-	// for (int i = 0; i < vsComboBox.getItemCount(); i++) {
-	// if (vsComboBox.getItemAt(i).equals(currentName)) {
-	// vsComboBox.setSelectedIndex(i);
-	//
-	// break;
-	// }
-	// }
-	// }
-	//
-	// // kono: should be placed here.
-	// // MLC 03/31/08 BEGIN:
-	// // Make fure we update the lastVSName based on anything that changes the
-	// // visual style:
-	// lastVSName = currentName;
-	//
-	// // MLC 03/31/08 END.
-	// }
-	// private void syncStyleBox() {
-	// String curStyleName = vmm.getVisualStyle().getName();
-	//
-	// String styleName;
-	// List<String> namesInBox = new ArrayList<String>();
-	// namesInBox.addAll(vmm.getCalculatorCatalog().getVisualStyleNames());
-	//
-	// for (int i = 0; i < vsComboBox.getItemCount(); i++) {
-	// styleName = vsComboBox.getItemAt(i).toString();
-	//
-	// if (vmm.getCalculatorCatalog().getVisualStyle(styleName) == null) {
-	// // No longer exists in the VMM. Remove.
-	// vsComboBox.removeItem(styleName);
-	// defaultImageManager.remove(styleName);
-	// vizMapPropertySheetBuilder.getPropertyMap().remove(styleName);
-	// }
-	// }
-	//
-	// Collections.sort(namesInBox);
-	//
-	// // Reset combobox items.
-	// vsComboBox.removeAllItems();
-	//
-	// for (String name : namesInBox)
-	// vsComboBox.addItem(name);
-	//
-	// // Bug fix: 0001721:
-	// // Note: Because vsNameComboBox.removeAllItems() will fire unwanted
-	// // event,
-	// // vmm.getVisualStyle().getName() will not be the same as curStyleName
-	// if ((curStyleName == null) || curStyleName.trim().equals(""))
-	// switchVS(vmm.getVisualStyle().getName());
-	// else
-	// switchVS(curStyleName);
-	// }
-	// return true iff 'match' is found as a name within the
-	// vsNameComboBox.
-	private boolean findVSName(String match) {
-		for (int i = 0; i < visualStyleComboBox.getItemCount(); i++) {
-			if (visualStyleComboBox.getItemAt(i).equals(match)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
 
 	/**
 	 * DOCUMENT ME!
@@ -664,10 +515,14 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 */
 	@Override
 	public void handleEvent(final VisualStyleAddedEvent e) {
-		final VisualStyle currentStyle = manager.getCurrentVisualStyle();
 		final VisualStyle newStyle = e.getVisualStyleAdded();
-		if (newStyle == null || newStyle.equals(currentStyle))
+		if(newStyle == null)
+			throw new NullPointerException("New Visual Style is null.");
+		
+		if(vsComboBoxModel.getIndexOf(newStyle) != -1) {
+			logger.info(newStyle.getTitle() + " is already in the combobox.");
 			return;
+		}
 
 		vsComboBoxModel.addElement(newStyle);
 		final CyNetworkView currentView = applicationManager.getCurrentNetworkView();
@@ -683,6 +538,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		if (engine != null)
 			updateDefaultImage(newStyle, engine, panelSize);
 		
+		logger.info("New Visual Style registered to combo box: " + newStyle.getTitle());
 		// TODO: switch only if it is necessary
 	}
 
