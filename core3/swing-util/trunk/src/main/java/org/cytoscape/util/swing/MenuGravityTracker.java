@@ -62,7 +62,7 @@ public final class MenuGravityTracker implements GravityTracker {
                 final int index = getInsertLocation(newMenuItem.getText(), gravity);
                 menu.insert(newMenuItem, index);
                 componentGravity.put(newMenuItem, gravity);
-                logger.info("Inserted menu item: " + newMenuItem + " with gravity: " + gravity);
+                logger.debug("Inserted menu item: " + newMenuItem + " with gravity: " + gravity);
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public final class MenuGravityTracker implements GravityTracker {
                 final int index = getInsertLocation(newSubmenu.getText(), gravity);
                 menu.insert(newSubmenu, index);
                 componentGravity.put(newSubmenu, gravity);
-                logger.info("Inserted menu: " + newSubmenu + " with gravity: " + gravity);
+                logger.debug("Inserted menu: " + newSubmenu + " with gravity: " + gravity);
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public final class MenuGravityTracker implements GravityTracker {
                 menu.insertSeparator(index);
                 final Component separator = menu.getMenuComponent(index);
                 componentGravity.put(separator, gravity);
-                logger.info("Inserted menu separator with gravity: " + gravity);
+                logger.debug("Inserted menu separator with gravity: " + gravity);
 	}
 
 	@Override
