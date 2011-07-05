@@ -123,8 +123,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>service-util</artifactId>
-			<version>3.0.0-alpha1</version>
+			<artifactId>service-api</artifactId>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
