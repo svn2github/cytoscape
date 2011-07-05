@@ -1,5 +1,6 @@
 package org.cytoscape.io.internal.write.datatable.csv;
 
+
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -17,17 +18,21 @@ import org.cytoscape.work.TaskMonitor;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
-public class CSVCyWriter implements CyWriter {
 
+public class CSVCyWriter implements CyWriter {
 	private final OutputStream outputStream;
 	private final CyTable table;
 	private final boolean writeSchema;
 	private boolean isCanceled;
+	private final boolean handleEquations;
 
-	public CSVCyWriter(OutputStream outputStream, CyTable table, boolean writeSchema) {
-		this.outputStream = outputStream;
-		this.table = table;
-		this.writeSchema = writeSchema;
+	public CSVCyWriter(final OutputStream outputStream, final CyTable table,
+			   final boolean writeSchema, final boolean handleEquations)
+	{
+		this.outputStream    = outputStream;
+		this.table           = table;
+		this.writeSchema     = writeSchema;
+		this.handleEquations = handleEquations;
 	}
 
 	@Override
@@ -62,7 +67,7 @@ public class CSVCyWriter implements CyWriter {
 			writer.flush();
 		}
 	}
-	
+
 	private void writeSchema(CSVWriter writer, List<CyColumn> columns) {
 		String[] values = new String[columns.size()];
 		for (int i = 0; i < columns.size(); i++) {
@@ -77,7 +82,7 @@ public class CSVCyWriter implements CyWriter {
 		writer.writeNext(values);
 		values = new String[2];
 		values[0] = table.getTitle();
-		
+
 		StringBuilder builder = new StringBuilder();
 		if (table.isPublic()) {
 			builder.append("public");
@@ -94,12 +99,22 @@ public class CSVCyWriter implements CyWriter {
 
 	private void writeValues(CSVWriter writer, Collection<CyColumn> columns) {
 		for (CyRow row : table.getAllRows()) {
-			if (isCanceled) {
+			if (isCanceled)
 				return;
-			}
+
 			String[] values = new String[columns.size()];
 			int index = 0;
 			for (CyColumn column : columns) {
+				if (handleEquations) {
+					final Object rawValue = row.getRaw(column.getName());
+					if (rawValue instanceof String
+					    && ((String)rawValue).startsWith("="))
+					{
+						values[index++] = (String)rawValue;
+						continue;
+					}
+				}
+
 				Class<?> type = column.getType();
 				if (type.equals(List.class)) {
 					StringBuilder builder = new StringBuilder();

@@ -1,14 +1,19 @@
 package org.cytoscape.io.internal.read.datatable;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.io.read.CyTableReader;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
@@ -17,24 +22,30 @@ import org.cytoscape.work.TaskMonitor;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-public class CSVCyReader implements CyTableReader {
 
-	private Pattern classPattern = Pattern.compile("([^<>]+)(<(.*?)>)?");
-	
+public class CSVCyReader implements CyTableReader {
+	private final static Pattern classPattern = Pattern.compile("([^<>]+)(<(.*?)>)?");
+
 	private final InputStream stream;
 	private final boolean readSchema;
+	private final boolean handleEquations;
 	private final CyTableFactory tableFactory;
-	
+	private final EquationCompiler compiler;
+
 	private boolean isCanceled;
 	private CyTable table;
 
-
-	public CSVCyReader(InputStream stream, boolean readSchema, CyTableFactory tableFactory) {
-		this.stream = stream;
-		this.readSchema = readSchema;
-		this.tableFactory = tableFactory;
+	public CSVCyReader(final InputStream stream, final boolean readSchema,
+			   final boolean handleEquations, final CyTableFactory tableFactory,
+			   final EquationCompiler compiler)
+	{
+		this.stream          = stream;
+		this.readSchema      = readSchema;
+		this.handleEquations = handleEquations;
+		this.tableFactory    = tableFactory;
+		this.compiler        = compiler;
 	}
-	
+
 	@Override
 	public void cancel() {
 		isCanceled = true;
@@ -48,9 +59,15 @@ public class CSVCyReader implements CyTableReader {
 	}
 
 	CyTable createTable(CSVReader reader, TableInfo info) throws IOException, SecurityException {
-		ColumnInfo[] columns = info.getColumns();
-		CyTable table = tableFactory.createTable(info.getTitle(), columns[0].getName(), columns[0].getType(), info.isPublic(), info.isMutable());
-		
+		final ColumnInfo[] columns = info.getColumns();
+		final CyTable table = tableFactory.createTable(info.getTitle(), columns[0].getName(),
+		                                               columns[0].getType(), info.isPublic(),
+		                                               info.isMutable());
+
+		final Map<String, Class<?>> variableNameToTypeMap = new HashMap<String, Class<?>>();
+		for (final ColumnInfo colInfo : columns)
+			variableNameToTypeMap.put(colInfo.getName(), colInfo.getType());
+
 		for (int i = 1; i < columns.length; i++) {
 			ColumnInfo column = columns[i];
 			Class<?> type = column.getType();
@@ -62,17 +79,33 @@ public class CSVCyReader implements CyTableReader {
 		}
 		String[] values = reader.readNext();
 		while (values != null) {
-			if (isCanceled) {
+			if (isCanceled)
 				return null;
-			}
+
 			Object key = parseValue(columns[0].getType(), null, values[0]);
 			CyRow row = table.getRow(key);
 			for (int i = 1; i < values.length; i++) {
 				ColumnInfo column = columns[i];
 				String name = column.getName();
-				Object value = parseValue(column.getType(), column.getListElementType(), values[i]);
-				if (value != null) {
-					row.set(name, value);
+				if (handleEquations && values[i].startsWith("=")) {
+					final Class<?> type = variableNameToTypeMap.remove(name);
+					try {
+						if (!compiler.compile(values[i],
+								      variableNameToTypeMap))
+							throw new IOException("Error while reading \""
+									      + info.getTitle()
+									      + "\" cant compile equation because: "
+									      + compiler.getLastErrorMsg());
+						final Equation equation = compiler.getEquation();
+						row.set(name, equation);
+					} catch (final Exception e) {
+						throw new IOException(e.getMessage(), e.getCause());
+					}
+					variableNameToTypeMap.put(name, type);
+				} else {
+					Object value = parseValue(column.getType(), column.getListElementType(), values[i]);
+					if (value != null)
+						row.set(name, value);
 				}
 			}
 			values = reader.readNext();
@@ -88,9 +121,9 @@ public class CSVCyReader implements CyTableReader {
 				list.add(parseValue(listElementType, null, item));
 			}
 			return list;
-		} else if (type.equals(String.class)) {
+		} else if (type.equals(String.class))
 			return value;
-		} else {
+		else {
 			try {
 				Method method = type.getMethod("valueOf", String.class);
 				return method.invoke(null, value);
@@ -99,7 +132,7 @@ public class CSVCyReader implements CyTableReader {
 			}
 		}
 	}
-	
+
 	TableInfo readHeader(CSVReader reader) throws IOException, ClassNotFoundException {
 		String[] values = reader.readNext();
 		TableInfo table = new TableInfo();

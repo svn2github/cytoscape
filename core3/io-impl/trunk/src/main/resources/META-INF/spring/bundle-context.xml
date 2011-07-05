@@ -514,11 +514,13 @@
 		class="org.cytoscape.io.internal.write.datatable.csv.CSVTableWriterFactory">
 		<constructor-arg ref="csvFilter" />
 		<constructor-arg value="false" type="boolean" />
+		<constructor-arg value="false" type="boolean" />
 	</bean>
 
 	<bean id="sessionTableWriterFactory"
 		class="org.cytoscape.io.internal.write.datatable.csv.CSVTableWriterFactory">
 		<constructor-arg ref="sessionTableFilter" />
+		<constructor-arg value="true" type="boolean" />
 		<constructor-arg value="true" type="boolean" />
 	</bean>
 	
@@ -576,7 +578,9 @@
 	<bean id="sessionTableReaderFactory" class="org.cytoscape.io.internal.read.datatable.CSVCyReaderFactory">
 		<constructor-arg ref="sessionTableFilter"/>
 		<constructor-arg value="true"/>
+		<constructor-arg value="true"/>
 		<constructor-arg ref="cyTableFactoryServiceRef"/>
+		<constructor-arg ref="compilerServiceRef"/>
 	</bean>
 	
 	<!-- All Reader Managers -->
