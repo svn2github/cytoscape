@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
@@ -45,6 +44,7 @@ public final class BrowserTableModel extends AbstractTableModel
 	private final EquationCompiler compiler;
 	private boolean tableHasBooleanSelected;
 	private List<AttrNameAndVisibility> attrNamesAndVisibilities;
+	private Collection<CyRow> selectedRows = null;
 
 	public BrowserTableModel(final JTable table, final CyTable attrs, final EquationCompiler compiler)
 	{
@@ -166,7 +166,9 @@ public final class BrowserTableModel extends AbstractTableModel
 
 	private CyRow mapRowIndexToRow(final int rowIndex) {
 		if (tableHasBooleanSelected) {
-			final Set<CyRow> selectedRows = attrs.getMatchingRows(CyNetwork.SELECTED, true);
+			if (selectedRows == null)
+				selectedRows = attrs.getMatchingRows(CyNetwork.SELECTED, true);
+
 			int count = 0;
 			CyRow cyRow = null;
 			for (final CyRow selectedRow : selectedRows) {
@@ -195,7 +197,9 @@ public final class BrowserTableModel extends AbstractTableModel
 
 		int index = 0;
 		if (tableHasBooleanSelected) {
-			final Set<CyRow> selectedRows = attrs.getMatchingRows(CyNetwork.SELECTED, true);
+			if (selectedRows == null)
+				selectedRows = attrs.getMatchingRows(CyNetwork.SELECTED, true);
+
 			for (final CyRow selectedRow : selectedRows) {
 				if (cyRow.get(primaryKey, primaryKeyType)
 				    .equals(selectedRow.get(primaryKey, primaryKeyType)))
@@ -220,6 +224,9 @@ public final class BrowserTableModel extends AbstractTableModel
 	private ValidatedObjectAndEditString getValidatedObjectAndEditString(final CyRow row,
 									     final String columnName)
 	{
+		if (row == null)
+			return null;
+
 		final Object raw = row.getRaw(columnName);
 		if (raw == null)
 			return null;
@@ -290,12 +297,14 @@ public final class BrowserTableModel extends AbstractTableModel
 
 	@Override
 	public void handleEvent(RowsCreatedEvent e) {
+		selectedRows = null;
 		fireTableDataChanged();
 	}
 
 	@Override
 	public void handleEvent(RowsSetEvent e) {
 		if (tableHasBooleanSelected) {
+			selectedRows = null;
 			boolean foundANonSelectedColumnName = false;
 			for (final RowSetRecord rowSet : e.getPayloadCollection()) {
 				if (!rowSet.getColumn().equals(CyNetwork.SELECTED)) {
@@ -317,6 +326,14 @@ public final class BrowserTableModel extends AbstractTableModel
 	private void handleRowValueUpdate(final CyRow row, final String columnName, final Object newValue,
 				  final Object newRawValue)
 	{
+		final int rowIndex = mapRowToRowIndex(row);
+		if (rowIndex == -1)
+			return;
+
+		final int columnIndex = mapColumnNameToColumnIndex(columnName);
+		if (columnIndex == -1)
+			return;
+
 		if (tableHasBooleanSelected && columnName.equals(CyNetwork.SELECTED)) {
 /*
 			final boolean selected = (Boolean)newValue;
@@ -324,16 +341,9 @@ public final class BrowserTableModel extends AbstractTableModel
 			if (!selected && rowIndex == -1)
 				return;
 */
+			selectedRows = null;
 			fireTableDataChanged();
 		} else {
-			final int rowIndex = mapRowToRowIndex(row);
-			if (rowIndex == -1)
-				return;
-
-			final int columnIndex = mapColumnNameToColumnIndex(columnName);
-			if (columnIndex == -1)
-				return;
-
 			final TableModelEvent event = new TableModelEvent(this, rowIndex, rowIndex, columnIndex);
 			fireTableChanged(event);
 		}
