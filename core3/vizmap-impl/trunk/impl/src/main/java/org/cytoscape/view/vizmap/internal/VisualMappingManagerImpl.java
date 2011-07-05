@@ -49,11 +49,16 @@ import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.events.VisualStyleAboutToBeRemovedEvent;
 import org.cytoscape.view.vizmap.events.VisualStyleAddedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class VisualMappingManagerImpl implements VisualMappingManager {
+	
+	private static final Logger logger = LoggerFactory.getLogger(VisualMappingManagerImpl.class);
+	
 	public static final String DEFAULT_STYLE_NAME = "default";
 	
 	// Default Style
@@ -107,12 +112,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	}
 
 	/**
-	 * Get VisualStyle for the given view model.
-	 * 
-	 * @param nv
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
+	 * Returns an associated Visual Style for the View Model.
 	 */
 	@Override
 	public VisualStyle getVisualStyle(CyNetworkView nv) {
@@ -177,20 +177,30 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 			}
 		}
 		
+		logger.info("Visual Style about to be removed from VMM: " + vs.getTitle());
 		cyEventHelper.fireEvent(new VisualStyleAboutToBeRemovedEvent(this, vs));
 		visualStyles.remove(vs);
 		vs = null;
+		
+		logger.info("Total Number of VS in VMM after remove = " + visualStyles.size());
 	}
 
+
 	/**
-	 * Add a new VisualStyle ot this manager. This will be called through OSGi
+	 * Add a new VisualStyle to this manager. This will be called through OSGi
 	 * service mechanism.
 	 * 
-	 * @param vs
+	 * @param vs new Visual Style to be added.
 	 */
 	@Override
 	public void addVisualStyle(final VisualStyle vs) {
+		if(vs == null)
+			throw new NullPointerException("Visual Style is null.");
+		
 		this.visualStyles.add(vs);
+		logger.info("New visual Style registered to VMM: " + vs.getTitle());
+		logger.info("Total Number of VS in VMM = " + visualStyles.size());
+		
 		cyEventHelper.fireEvent(new VisualStyleAddedEvent(this, vs));
 	}
 
