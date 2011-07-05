@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cytoscape Web: SVG prototype</title>
+		<style>
+			#container-div {
+				width: 400px;
+				margin: 30px auto;
+				background-color: #eee;
+			}
+		</style>
+		<script type="text/javascript" src="raphael-1.5.2-min.js"></script>
+		<script type="text/javascript">
+			/* Test of:
+			 * Arrow shapes
+			 */
+			var paper;
+			window.onload = function() {
+
+				paper = Raphael("container-div", 400, 400);
+				
+				var ax = 120;
+				var ay = 100;
+				
+				var bx = 200
+				var by = 215;
+				
+				paper.path(populateString("M %,% L %,%", [ax, ay, bx, by])).attr({"stroke-width": 3, "stroke": "grey"});
+
+				var dx = bx - ax;
+				var dy = by - ay;
+				
+				var theta = Math.atan2(dy, dx);
+				
+				var path = paper.path(populateString("M %,% l 3,12 -6,0 Z", [bx, by]));
+				path.rotate(Raphael.deg(theta) + 90, bx, by).scale(1.5, 1.5, bx, by);
+
+				path.attr({"fill": "gray", "stroke": "gray", "stroke-width": 3, "stroke-linejoin":"round"});
+				
+								
+		
+			};
+			
+
+			
+			function populateString(string, items) {
+				var i = 0;
+				return string.replace(/%/g, function() {
+					return items[i++];
+				}); 
+			}
+				
+
+		</script>
+	</head>
+	<body>
+		<div id="container-div"></div>
+	</body>
+</html>

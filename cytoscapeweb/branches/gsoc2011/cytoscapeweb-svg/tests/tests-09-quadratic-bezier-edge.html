@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cytoscape Web: SVG prototype</title>
+		<style>
+			#container-div {
+				width: 400px;
+				margin: 30px auto;
+				background-color: #eee;
+			}
+		</style>
+		<script type="text/javascript" src="raphael-1.5.2-min.js"></script>
+		<script type="text/javascript">
+			/* Test of:
+			 * Bezier curve edges
+			 */
+			var paper;
+			window.onload = function() {
+
+				paper = Raphael("container-div", 400, 400);
+				
+				var ax = 90;
+				var ay = 110;
+				var ar = 30;
+				var bx = 260;
+				var by = 225;
+				var br = 50;
+				
+				paper.circle(ax, ay, ar);
+				paper.circle(bx, by, br);
+				
+				curvedEdge(ax, ay, ar, bx, by, br, 0);
+				curvedEdge(ax, ay, ar, bx, by, br, 40);
+				curvedEdge(ax, ay, ar, bx, by, br, -40);
+				
+				curvedEdge(ax, ay, ar, bx, by, br, 80);
+				curvedEdge(ax, ay, ar, bx, by, br, -80);
+				
+				curvedEdge(ax, ay, ar, bx, by, br, 120);
+				curvedEdge(ax, ay, ar, bx, by, br, -120);
+				curvedEdge(ax, ay, ar, bx, by, br, 160);
+				curvedEdge(ax, ay, ar, bx, by, br, -160);
+								
+		
+			};
+			
+			function arrowHead(x, y, theta, scale) {
+				var path = paper.path(populateString("M %,% l 3,12 -6,0 Z", [x, y]));
+				path.rotate(Raphael.deg(theta) + 90, x, y).scale(scale, scale, x, y);
+				path.attr({fill: "black"});
+			}
+			
+			function curvedEdge(ax, ay, ar, bx, by, br, offset) {
+				
+				
+				// Margin
+				ar += 3;
+				br += 3;
+
+				// Vector between two points
+				var dx = bx - ax;
+				var dy = by - ay;
+				
+				// Halved vector
+				hdx = dx / 2;
+				hdy = dy / 2;
+				
+				// Perpendicular vector
+				pdx = -dy;
+				pdy = dx;
+				
+				// Normalized perpendicular vector
+				var pdlength = Math.sqrt(pdx * pdx + pdy * pdy);
+				pdx /= pdlength;
+				pdy /= pdlength;
+				
+				// Obtain the control point vector A
+				var acx = hdx + pdx * offset;
+				var acy = hdy + pdy * offset;
+				
+				// Obtain the control point
+				var cx = ax + acx;
+				var cy = ay + acy;
+				
+				// Obtain the control point vector B
+				var bcx = cx - bx;
+				var bcy = cy - by;
+				
+				// Obtain the A endpoint
+				var aclength = Math.sqrt(acx * acx + acy * acy);
+				acx *= ar / aclength;
+				acy *= ar / aclength;
+				var apx = ax + acx;
+				var apy = ay + acy;
+				
+				// Obtain the B endpoint
+				
+				bcx *= br / aclength;
+				bcy *= br / aclength;
+				var bpx = bx + bcx;
+				var bpy = by + bcy;
+				
+
+				arrowHead(apx, apy, Math.atan2(-acy, -acx), 1);
+				arrowHead(bpx, bpy, Math.atan2(-bcy, -bcx), 1);
+				
+				// Sketch the control point
+				paper.circle(cx, cy, 2);
+				//paper.circle(apx, apy, 2);
+				//paper.circle(bpx, bpy, 2);
+				
+				paper.path(populateString("M %,% Q %,% %,% %,%", [apx, apy, cx, cy, bpx, bpy]));
+				
+			
+			};
+			
+			function populateString(string, items) {
+				var i = 0;
+				return string.replace(/%/g, function() {
+					return items[i++];
+				}); 
+			}
+				
+
+		</script>
+	</head>
+	<body>
+		<div id="container-div"></div>
+	</body>
+</html>

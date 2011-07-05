@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cytoscape Web: SVG prototype</title>
+		<style>
+			#container-div {
+				width: 400px;
+				margin: 30px auto;
+				background-color: #eee;
+			}
+		</style>
+		<script type="text/javascript" src="raphael-1.5.2-min.js"></script>
+		<script type="text/javascript">
+			/* Test of:
+			 * Bezier curve edges (cubic)
+			 */
+			var paper;
+			window.onload = function() {
+
+				paper = Raphael("container-div", 400, 400);
+				
+				var ax = 90;
+				var ay = 110;
+				var ar = 30;
+				var bx = 260;
+				var by = 225;
+				var br = 50;
+				
+				paper.circle(ax, ay, ar);
+				paper.circle(bx, by, br);
+				
+				curvedEdge(ax, ay, ar, bx, by, br, 10);
+				curvedEdge(ax, ay, ar, bx, by, br, -10);
+				
+				curvedEdge(ax, ay, ar, bx, by, br, 30);
+				curvedEdge(ax, ay, ar, bx, by, br, -30);
+				
+				curvedEdge(ax, ay, ar, bx, by, br, 50);
+				curvedEdge(ax, ay, ar, bx, by, br, -50);
+				curvedEdge(ax, ay, ar, bx, by, br, 70);
+				curvedEdge(ax, ay, ar, bx, by, br, -70);
+								
+		
+			};
+			
+			function arrowHead(x, y, theta, scale) {
+				var path = paper.path(populateString("M %,% l 3,12 -6,0 Z", [x, y]));
+				path.rotate(Raphael.deg(theta) + 90, x, y).scale(scale, scale, x, y);
+				path.attr({fill: "black"});
+			}
+			
+			function curvedEdge(ax, ay, ar, bx, by, br, theta) {
+				
+				// ax ay ar		Circle A
+				// bx by br		Circle B
+				// dx dy		Vector A -> B
+				// arx ary		Rotated unit vector A
+				// brx bry 		Rotated unit vector B
+				// apx apy		Curve endpoint A
+				// bpx bpy		Curve endpoint B
+				// acx acy		Curve control point A
+				// bcx bcy		Curve control point B
+				
+				// Margin
+				ar += 3;
+				br += 3;
+				
+				
+				
+				// Vector between two points
+				var dx = bx - ax;
+				var dy = by - ay;
+				
+				// Normalized
+				var length = Math.sqrt(dx * dx + dy * dy);
+				dx /= length;
+				dy /= length;
+				
+				var curvatureFactor = 30 + Math.abs(theta);
+				
+				// Rotate the vector
+				theta = Raphael.rad(theta);
+				var arx = dx * Math.cos(theta) - dy * Math.sin(theta);
+				var ary = dx * Math.sin(theta) + dy * Math.cos(theta);
+				
+				var brx = (-dx) * Math.cos(-theta) - (-dy) * Math.sin(-theta);
+				var bry = (-dx) * Math.sin(-theta) + (-dy) * Math.cos(-theta);
+				
+				var apx = ax + arx * ar;
+				var apy = ay + ary * ar;
+				var bpx = bx + brx * br;
+				var bpy = by + bry * br;
+				
+				
+				
+				
+				var acx = ax + arx * (ar + curvatureFactor);
+				var acy = ay + ary * (ar + curvatureFactor);
+				var bcx = bx + brx * (br + curvatureFactor);
+				var bcy = by + bry * (br + curvatureFactor);
+				
+				
+				arrowHead(apx, apy, Math.atan2(-ary, -arx), 1.5);
+				arrowHead(bpx, bpy, Math.atan2(-bry, -brx), 1.5);
+				
+				paper.circle(acx, acy, 2);
+				paper.circle(bcx, bcy, 2);
+				
+				paper.path(populateString("M %,% C %,% %,% %,%", [apx, apy, acx, acy, bcx, bcy, bpx, bpy]));
+				
+			
+			};
+			
+			function populateString(string, items) {
+				var i = 0;
+				return string.replace(/%/g, function() {
+					return items[i++];
+				}); 
+			}
+				
+
+		</script>
+	</head>
+	<body>
+		<div id="container-div"></div>
+	</body>
+</html>

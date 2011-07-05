@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cytoscape Web: SVG prototype</title>
+		<style>
+			#container-div {
+				width: 400px;
+				margin: 30px auto;
+				background-color: #eee;
+			}
+		</style>
+		<script type="text/javascript" src="raphael-1.5.2-min.js"></script>
+		<script type="text/javascript">
+			/* Test of:
+			 * Line between two circle edges
+			 */
+			var paper;
+			window.onload = function() {
+
+				paper = Raphael("container-div", 400, 400);
+				
+				// first point
+				var ax = 300;
+				var ay = 120;
+				var ar = 40;
+				
+				// second point
+				var bx = 100;
+				var by = 300;
+				var br = 24;
+				
+				// Sketch the circles
+				paper.circle(ax, ay, ar);
+				paper.circle(bx, by, br);
+				
+				// Get vector & length	
+				var dx = bx - ax;
+				var dy = by - ay;
+				var length = Math.sqrt(dx * dx + dy * dy);
+				
+				// Normalize
+				dx /= length;
+				dy /= length;
+				
+				// Move the endpoints by the size of the radius
+				var nax = ax + dx * ar
+				var nay = ay + dy * ar;
+
+				var nbx = bx - dx * br;
+				var nby = by - dy * br;
+	
+				paper.path(populateString("M %,% L %,%", [nax, nay, nbx, nby])).attr("stroke-width", 4);
+				
+			}
+			
+			function populateString(string, items) {
+				var i = 0;
+				return string.replace(/%/g, function() {
+					return items[i++];
+				}); 
+			}
+				
+
+		</script>
+	</head>
+	<body>
+		<div id="container-div"></div>
+	</body>
+</html>
