@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.cytoscape</groupId>
 		<artifactId>parent</artifactId>
-		<version>3.0.0-alpha7</version>
+		<version>3.0.0-alpha8-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.cytoscape</groupId>
@@ -91,8 +91,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>service-util</artifactId>
-			<version>3.0.0-alpha1</version>
+			<artifactId>service-api</artifactId>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
