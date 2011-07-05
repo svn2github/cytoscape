@@ -1,7 +1,7 @@
 /*
  File: CytoPanelTaskFactoryTunableAction.java
 
- Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2010, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -30,7 +30,6 @@
 package org.cytoscape.internal.task;
 
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -52,6 +51,7 @@ import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.swing.GUITaskManager;
 import org.cytoscape.service.util.CyServiceRegistrar;
 
@@ -82,11 +82,19 @@ public class CytoPanelTaskFactoryTunableAction extends AbstractCyAction {
 			if (factory instanceof TunableValidator) {
 				final Appendable errMsg = new StringBuilder();
 				try {
-					if (!((TunableValidator)factory).tunablesAreValid(errMsg)) {
+					final ValidationState validationState =
+						((TunableValidator)factory).getValidationState(errMsg);
+					if (validationState == ValidationState.INVALID) {
 						JOptionPane.showMessageDialog(new JFrame(), errMsg.toString(),
 									      "Input Validation Problem",
 									      JOptionPane.ERROR_MESSAGE);
 						return;
+					} else if (validationState == ValidationState.REQUEST_CONFIRMATION) {
+						if (JOptionPane.showConfirmDialog(new JFrame(), errMsg.toString(),
+										  "Request Confirmation",
+										  JOptionPane.YES_NO_OPTION)
+						    == JOptionPane.NO_OPTION)
+							return;
 					}
 				} catch (final Exception e) {
 					e.printStackTrace();
