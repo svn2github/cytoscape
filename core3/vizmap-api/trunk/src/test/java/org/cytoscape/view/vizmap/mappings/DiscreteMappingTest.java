@@ -1,4 +1,4 @@
-package org.cytoscape.vizmap;
+package org.cytoscape.view.vizmap.mappings;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
