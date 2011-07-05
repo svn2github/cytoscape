@@ -3,48 +3,190 @@
 	<head>
 		<title>Cytoscape Web: SVG prototype</title>
 		<style>
-			#container-div {
-				width: 400px;
+			#page {
+				font-family: sans-serif;
+				color: #404040;
+				width: 440px;
 				margin: 30px auto;
 			}
 		</style>
-		<script type="text/javascript" src="raphael-1.5.2-min.js"></script>
+		<script type="text/javascript" src="raphael-1.5.2.js"></script>
 		<script type="text/javascript" src="cytoscapeweb-svg.js"></script>
 		<script type="text/javascript">
+		
+			var basicStyle = {
+				global: {
+					backgroundColor: "#eeeeee"
+				},
+				nodes: {
+					size: 16,
+					color: "#f5f5f5",
+					borderColor: "#666666",
+					borderWidth: 3,
+					opacity: 1,
+				},
+				edges: {
+					color: "#999999",
+					width: 3,
+					opacity: 0.8,
+				}
+			}
+		
+			var demoStyle = {
+				global: {
+					backgroundColor: "#fcfcfc"
+				},
+				nodes: {		
+					color: "#cccccc",
+					size: 14,
+					borderWidth: 2,
+					borderColor: "#707070"
+				},
+				edges: {
+					color: "#0b94b1",
+					width: 2
+				}
+			}
 			
+			var darkStyle = {
+				global: {
+					backgroundColor: "#202020"
+				},
+				nodes: {
+					color: "#d0d0d0",
+					opacity: 0.8,
+					borderWidth: 4,
+					borderColor: "#f8f8f8",
+				},
+				edges: {
+					color: "#ffffff",
+					opacity: 0.7,
+					width: 4
+				}
+			}
+		
+			var petersenGraph = {
+				nodes: [
+					{id: "nw2", x: -27, y: 97},
+					{id: "sw2", x: 24, y: 255},
+					{id: "se2", x: 210, y: 254},
+					{id: "ne2", x: 254, y: 90},
+					{id: "n2", x: 109, y: -10},
+					{id: "sw", x: 73, y: 190},
+					{id: "se", x: 154, y: 190},
+					{id: "nw", x: 46, y: 115},
+					{id: "ne", x: 176, y: 113},
+					{id: "n", x: 109, y: 65}
+				],
+				edges: [
+					{id: "e1", source: "nw2", target: "n2"},
+					{id: "e2", source: "nw2", target: "nw"},
+					{id: "e4", source: "sw2", target: "nw2"},
+					{id: "e5", source: "sw2", target: "sw"},
+					{id: "e6", source: "se2", target: "sw2"},
+					{id: "e7", source: "se2", target: "se"},
+					{id: "e8", source: "ne2", target: "se2"},
+					{id: "e9", source: "ne2", target: "ne"},
+					{id: "e10", source: "n2", target: "ne2"},
+					{id: "e11", source: "n2", target: "n"},
+					{id: "e12", source: "sw", target: "se"},
+					{id: "e13", source: "nw", target: "sw"},
+					{id: "e14", source: "nw", target: "se"},
+					{id: "e15", source: "nw", target: "ne"},
+					{id: "e16", source: "ne", target: "sw"},
+					{id: "e17", source: "ne", target: "se"},
+					{id: "e18", source: "n", target: "sw"},
+					{id: "e19", source: "n", target: "se"},
+					{id: "e20", source: "n", target: "nw"},
+					{id: "e21", source: "n", target: "ne"},
+				]	
+			}
+			
+			var ringGraph = {
+				"nodes": [
+					{"id":"n1","x":31,"y":150,"style":{size: 32, color: "teal", shape: "DIAMOND"}},
+					{"id":"n2","x":57,"y":44,"style":{size: 26, color: "pink"}},
+					{"id":"n3","x":171,"y":28,"style":{size: 16, borderColor: "green", shape: "RECTANGLE"}},
+					{"id":"n4","x":251,"y":132,"style":{size: 10, borderColor: "blue", shape: "DIAMOND"}},
+					{"id":"n5","x":156,"y":220,"style":{borderColor: "red"}}
+				],
+				"edges": [
+					{"id":"e1","source":"n1","target":"n2","style":{forwardArrowShape: "DELTA"}},
+					{"id":"e2","source":"n2","target":"n3","style":{forwardArrowShape: "DELTA", backwardArrowShape: "DELTA"}},
+					{"id":"e3","source":"n3","target":"n4","style":{color: "red", width: 1}},
+					{"id":"e4","source":"n4","target":"n5","style":{forwardArrowShape: "DELTA", color: "blue", width: 5}},
+					{"id":"e5","source":"n5","target":"n4","style":{forwardArrowShape: "DELTA", width: 5}},
+					{"id":"e6","source":"n5","target":"n1","style":{}}
+				]
+			}
+			var vis;
 			window.onload = function() {
 
-				var vis = new Visualization("container-div");
+				vis = new Visualization("container-div");
 				
-				// Using the network object model
-				var node1 = vis.addNode("n1");
-				node1.setPosition(70, 120);
-				var node2 = vis.addNode("n2");
-				node2.setPosition(220, 90);
-				var node3 = vis.addNode("n3");
-				node3.setPosition(280, 280);
-				var node4 = vis.addNode("n4");
-				node4.setPosition(290, 120);
-				
-				vis.addEdge("e1", node1, node2);
-				vis.addEdge("e2", node2, node3);
-				vis.addEdge("e3", node1, node3);
-				vis.addEdge("e4", node2, node4);
-				vis.addEdge("e5", node3, node4);
-				
-				// Using visualStyle
-				vis.visualStyle({edges: {color: "teal"}});
-				
-				vis.draw();
-				
-				window.vis = vis; // for console testing
-				
+				loadPetersen();
+				styleBasic();
+			
+								
+			
 			}
+			
+			function loadPetersen() {
+				vis.loadGraph(petersenGraph);
+				var nodes = vis.getNodes();
+				
+				var clickEvent = function() {
+					alert("Clicked node '" + this._id + "' at " + this._x + ", " + this._y);
+				}
+				
+				for (var i = 0; i < nodes.length; i++) {
+					nodes[i].addListener("click", clickEvent);
+				}
+				vis.draw();
+			}
+			function loadRing() {
+				vis.loadGraph(ringGraph);
+				vis.draw();
+			}
+			
+			function styleBasic() {
+				vis.loadStyles(basicStyle);
+				vis.draw();
+			}
+			
+			function styledemo() {
+				vis.loadStyles(demoStyle);
+				vis.draw();
+			}
+			
+			function styleDark() {
+				vis.loadStyles(darkStyle);
+				vis.draw();
+			}
+			
+			
 				
 
 		</script>
 	</head>
 	<body>
-		<div id="container-div"></div>
+		<div id="page">
+			<h1>Cytoscape Web &mdash; SVG</h1>
+			<p>By Marek Zaluski for GSoC 2011</p>
+			<div id="container-div"></div>
+			Load graph:
+			<select>
+				<option onclick="loadPetersen()">Petersen demo</option>
+				<option onclick="loadRing()">Shapes demo</option>
+			</select>
+			Load style:
+			<select>
+				<option onclick="styleBasic()">Basic Style</option>
+				<option onclick="styledemo()">Demo Style</option>
+				<option onclick="styleDark()">Dark style</option>
+				
+			</select>
+			
+		</div>
 	</body>
 </html>
