@@ -212,15 +212,6 @@
 			<name>Cytoscape Spring OSGi External Mirror</name>
 			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/spring-osgi-external/</url>
 		</repository>
-
-		<repository>
-			<id>neo4j-public-repository</id>
-			<name>Publically available Maven 2 repository for Neo4j</name>
-			<url>http://m2.neo4j.org</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
 		
 		<repository>
 			<id>itextpdf.com</id>
