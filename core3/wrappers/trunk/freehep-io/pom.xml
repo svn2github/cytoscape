@@ -5,8 +5,9 @@
 
 	<parent>
 		<artifactId>parent</artifactId>
-		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-alpha8-SNAPSHOT</version>
+		<groupId>org.cytoscape.wrappers</groupId>
+		<version>3.0.0-alpha1-SNAPSHOT</version>
+		<relativePath/>
 	</parent>
 
 	<properties>
