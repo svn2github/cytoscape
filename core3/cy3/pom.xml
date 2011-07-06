@@ -28,7 +28,7 @@
 		<module>work-swing-api</module>
 		<module>service-api</module>
 		<module>swing-util</module>
-		<module>work-spring-hack</module>
+		<module>work-spring-api</module>
 
 		<module>archetypes</module>
 
@@ -96,6 +96,5 @@
 		<module>webservice-ncbi-client-impl</module>
 		<module>work-headless-impl</module>
 		<module>work-swing-impl</module>
-		<module>work-tunable-props-impl</module>
 	</modules>
 </project> 
