@@ -24,7 +24,6 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
-import org.cytoscape.view.vizmap.mappings.DiscreteMappingFactory;
 import org.cytoscape.work.Task;
 
 public class SubnetworkBuilderUtil {
