@@ -32,4 +32,12 @@
 		<constructor-arg ref="visualLexiconManager" />
 	</bean>
 
+
+	<bean id="discreteMappingFactory"
+		class="org.cytoscape.view.vizmap.internal.mappings.DiscreteMappingFactory" />
+	<bean id="continuousMappingFactory"
+		class="org.cytoscape.view.vizmap.internal.mappings.ContinuousMappingFactory" />
+	<bean id="passthroughMappingFactory"
+		class="org.cytoscape.view.vizmap.internal.mappings.PassthroughMappingFactory" />
+
 </beans>
