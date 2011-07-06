@@ -341,7 +341,7 @@ public final class BrowserTableModel extends AbstractTableModel
 			if (!selected && rowIndex == -1)
 				return;
 */
-			selectedRows = null;
+//			selectedRows = null;
 			fireTableDataChanged();
 		} else {
 			final TableModelEvent event = new TableModelEvent(this, rowIndex, rowIndex, columnIndex);

@@ -431,13 +431,13 @@ public final class CyTableImpl implements CyTable {
 	}
 
 	@Override
-	synchronized public Set<CyRow> getMatchingRows(final String columnName, final Object value) {
+	synchronized public Collection<CyRow> getMatchingRows(final String columnName, final Object value) {
 		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
 		if (virtColumn != null)
 			return virtColumn.getMatchingRows(value);
 
-		final Set<CyRow> matchingRows = new HashSet<CyRow>();
 		if (columnName.equals(primaryKey)) {
+			final ArrayList<CyRow> matchingRows = new ArrayList<CyRow>(1);
 			final CyRow matchingRow = rows.get(value);
 			if (matchingRow != null)
 				matchingRows.add(matchingRow);
@@ -448,8 +448,9 @@ public final class CyTableImpl implements CyTable {
 
 		final Set<Object> keys = valueToKeysMap.get(value);
 		if (keys == null)
-			return new HashSet<CyRow>();
+			return new ArrayList<CyRow>();
 
+		final ArrayList<CyRow> matchingRows = new ArrayList<CyRow>(rows.size());
 		for (final Object key : keys)
 			matchingRows.add(rows.get(key));
 

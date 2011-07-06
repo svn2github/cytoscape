@@ -1,5 +1,6 @@
 package org.cytoscape.tableimport.internal.reader.ontology;
 
+
 import static org.cytoscape.tableimport.internal.reader.TextFileDelimiters.PIPE;
 import static org.cytoscape.tableimport.internal.reader.TextFileDelimiters.TAB;
 
@@ -9,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,14 +34,12 @@ import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GeneAssociationReader extends AbstractTask implements CyTableReader {
 
+public class GeneAssociationReader extends AbstractTask implements CyTableReader {
 	private static final Logger logger = LoggerFactory.getLogger(GeneAssociationReader.class);
 
 	private static final String COMPATIBLE_VERSION = "gaf-version: 2.0";
-
 	private static final String TAXON_RESOURCE_FILE = "tax_report.txt";
-
 	private static final String LIST_DELIMITER = "\\|";
 
 	// The following columns should be handled as List in GA v2 spec.
@@ -499,8 +499,8 @@ public class GeneAssociationReader extends AbstractTask implements CyTableReader
 	}
 	
 	private String convertToName(final String id) {
-		final Set<CyRow> rows = ontologyDAG.getDefaultNodeTable().getMatchingRows(CyTableEntry.NAME, id);
-		if(rows != null) {
+		final Collection<CyRow> rows = ontologyDAG.getDefaultNodeTable().getMatchingRows(CyTableEntry.NAME, id);
+		if (rows != null) {
 			final CyRow row = rows.iterator().next();
 			final String termName = row.get(OBOReader.TERM_NAME, String.class);
 			if(termName != null)

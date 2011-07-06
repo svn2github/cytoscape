@@ -492,7 +492,7 @@ public class FormulaBuilderDialog extends JDialog {
 			tableModel.setValueAt(formula, cellRow, cellColum);
 			break;
 		case CURRENT_SELECTION:
-			final Set<CyRow> selectedRows =
+			final Collection<CyRow> selectedRows =
 				tableModel.getAttributes().getMatchingRows(CyNetwork.SELECTED, true);
 			for (final CyRow selectedRow : selectedRows) {
 				if (!setAttribute(selectedRow, attribName, equation, errorMessage))

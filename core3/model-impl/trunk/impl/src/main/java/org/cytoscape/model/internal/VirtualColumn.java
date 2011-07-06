@@ -29,6 +29,7 @@ package org.cytoscape.model.internal;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -100,7 +101,7 @@ final class VirtualColumn {
 			targetTable.getValue(targetKey, targetJoinColumn.getName());
 		if (joinKey == null)
 			return null;
-		final Set<CyRow> sourceRows =
+		final Collection<CyRow> sourceRows =
 			sourceTable.getMatchingRows(sourceJoinColumn.getName(),
 						    joinKey);
 		if (sourceRows.size() != 1)
@@ -109,15 +110,15 @@ final class VirtualColumn {
 		return sourceRows.iterator().next();
 	}
 
-	Set<CyRow> getMatchingRows(final Object value) {
-		final Set<CyRow> sourceRows =
+	Collection<CyRow> getMatchingRows(final Object value) {
+		final Collection<CyRow> sourceRows =
 			sourceTable.getMatchingRows(sourceColumn.getName(), value);
 		final Set<CyRow> targetRows = new HashSet<CyRow>();
 		for (final CyRow sourceRow : sourceRows) {
 			final Object targetValue = sourceRow.get(sourceJoinColumn.getName(),
 								 sourceJoinColumn.getType());
 			if (targetValue != null) {
-				final Set<CyRow> rows =
+				final Collection<CyRow> rows =
 					targetTable.getMatchingRows(targetJoinColumn.getName(),
 								    targetValue);
 				targetRows.addAll(rows);
@@ -132,7 +133,7 @@ final class VirtualColumn {
 						    targetJoinColumn.getType());
 		List results = new ArrayList();
 		for (final Object targetJoinColumnValue : targetJoinColumnValues) {
-			final Set<CyRow> sourceRows =
+			final Collection<CyRow> sourceRows =
 				sourceTable.getMatchingRows(sourceJoinColumn.getName(),
 							    targetJoinColumnValue);
 			if (sourceRows.size() == 1) {

@@ -241,8 +241,8 @@ public final class CyTableProjection implements CyTable {
 	 *  @param value       the value for which we want the rows that contain it
 	 *  @return the rows, if any that contain the value "value" for the column "columnName"
 	 */
-	public Set<CyRow> getMatchingRows(final String columnName, final Object value) {
-		final Set<CyRow> matchingRows = new HashSet<CyRow>();
+	public Collection<CyRow> getMatchingRows(final String columnName, final Object value) {
+		final ArrayList<CyRow> matchingRows = new ArrayList<CyRow>();
 		final String primaryKey = underlyingTable.getPrimaryKey().getName();
 		final Class<?> primaryKeyType = underlyingTable.getPrimaryKey().getType();
 

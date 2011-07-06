@@ -30,7 +30,6 @@ package org.cytoscape.model;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 
 /** 
@@ -172,7 +171,7 @@ public interface CyTable extends Identifiable {
 	 *  @param value       the value for which we want the rows that contain it
 	 *  @return the rows, if any that contain the value "value" for the column "columnName"
 	 */
-	Set<CyRow> getMatchingRows(String columnName, Object value);
+	Collection<CyRow> getMatchingRows(String columnName, Object value);
 
 	/** Returns the number of rows in this table.
 	 *  @return The number if rows in the table.

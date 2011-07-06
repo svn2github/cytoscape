@@ -400,7 +400,7 @@ public abstract class AbstractCyTableTest {
 		row1.set("someLongs", 15L);
 		final CyRow row2 = table.getRow(2L);
 		row2.set("someLongs", -27L);
-		Set<CyRow> matchingRows = table.getMatchingRows("someLongs", 15L);
+		Collection<CyRow> matchingRows = table.getMatchingRows("someLongs", 15L);
 		assertTrue(matchingRows.size() == 1);
 		matchingRows = table.getMatchingRows("someLongs", -15L);
 		assertTrue(matchingRows.isEmpty());
@@ -630,7 +630,7 @@ public abstract class AbstractCyTableTest {
 		table.addVirtualColumn("s1", "s", table2, "x2", "x", true);
 		assertFalse(row1.isSet("s1"));
 		row2.set("s", "abc");
-		Set<CyRow> matchingRows = table.getMatchingRows("s1", "abc");
+		Collection<CyRow> matchingRows = table.getMatchingRows("s1", "abc");
 		assertEquals(matchingRows.size(), 1);
 		CyRow matchingRow = matchingRows.iterator().next();
 		assertEquals(matchingRow.get("s1", String.class), "abc");
