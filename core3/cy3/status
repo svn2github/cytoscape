@@ -1,2 +1,6 @@
 #!/bin/bash
+#
+# This command simply runs "svn status" and then omits
+# any uninformative lines.
+#
 svn status | grep -vE "^\s*$|Performing|^X"
