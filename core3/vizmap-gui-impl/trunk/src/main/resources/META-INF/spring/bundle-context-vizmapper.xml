@@ -41,6 +41,7 @@
 	<bean name="defaultVisualStyleBuilder"
 		class="org.cytoscape.view.vizmap.gui.internal.util.DefaultVisualStyleBuilder">
 		<constructor-arg ref="visualStyleFactoryServiceRef" />
+		<constructor-arg ref="passthroughMappingFactoryRef" />
 	</bean>
 
 	<!-- Property Sheet -->

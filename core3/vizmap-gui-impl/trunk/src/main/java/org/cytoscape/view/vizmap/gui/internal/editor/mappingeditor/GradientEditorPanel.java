@@ -169,16 +169,16 @@ public class GradientEditorPanel extends
 		slider.getModel().addThumb(100f, Color.white);
 
 		// Pick Up first point.
-		final ContinuousMappingPoint<Double, Color> previousPoint = mapping
-				.getPoint(mapping.getPointCount() - 1);
-		final BoundaryRangeValues<Color> previousRange = previousPoint
-				.getRange();
+		final ContinuousMappingPoint<Double, Color> previousPoint = mapping.getPoint(mapping.getPointCount() - 1);
+		final BoundaryRangeValues<Color> previousRange = previousPoint.getRange();
 
-		lowerRange = new BoundaryRangeValues<Color>(previousRange);
-		lowerRange.lesserValue = slider.getModel().getSortedThumbs()
-				.get(slider.getModel().getThumbCount() - 1).getObject();
-		lowerRange.equalValue = Color.white;
-		lowerRange.greaterValue = previousRange.greaterValue;
+		Color lesserVal = slider.getModel().getSortedThumbs()
+		                    .get(slider.getModel().getThumbCount() - 1).getObject();
+		Color equalVal = Color.white;
+		Color greaterVal = previousRange.greaterValue;
+
+		lowerRange = new BoundaryRangeValues<Color>(lesserVal, equalVal, greaterVal);
+
 		mapping.addPoint(maxValue, lowerRange);
 
 		updateMap();
@@ -210,30 +210,27 @@ public class GradientEditorPanel extends
 
 		int selected = getSelectedPoint(slider.getSelectedIndex());
 
-		mapping.getPoint(selected).getRange().equalValue = newColor;
+		Color lesserVal = mapping.getPoint(selected).getRange().lesserValue;
+		Color equalVal = newColor;
+		Color greaterVal = mapping.getPoint(selected).getRange().greaterValue;
 
-		final BoundaryRangeValues<Color> brv = new BoundaryRangeValues<Color>(
-				mapping.getPoint(selected).getRange().lesserValue, newColor,
-				mapping.getPoint(selected).getRange().greaterValue);
+		int numPoints = mapping.getAllPoints().size();
+		if (numPoints > 1) {
+			if (selected == 0)
+				greaterVal = newColor;
+			else if (selected == (numPoints - 1))
+				lesserVal = newColor;
+			else {
+				lesserVal = newColor;
+				greaterVal = newColor;
+			}
+		}
+
+		final BoundaryRangeValues<Color> brv = new BoundaryRangeValues<Color>(lesserVal, newColor, greaterVal);
 
 		mapping.getPoint(selected).setRange(brv);
 
-		int numPoints = mapping.getAllPoints().size();
-
-		// Update Values which are not accessible from UI
 		if (numPoints > 1) {
-			if (selected == 0)
-				brv.greaterValue = newColor;
-			else if (selected == (numPoints - 1))
-				brv.lesserValue = newColor;
-			else {
-				brv.lesserValue = newColor;
-				brv.greaterValue = newColor;
-			}
-
-			// mapping.fireStateChanged();
-
-			// Update view.
 			style.apply(appManager.getCurrentNetworkView());
 			appManager.getCurrentNetworkView().updateView();
 			slider.repaint();

@@ -158,17 +158,17 @@ public class C2DMappingEditor<V> extends
 				.getPoint(mapping.getPointCount() - 1);
 
 		final BoundaryRangeValues<V> previousRange = previousPoint.getRange();
-		newRange = new BoundaryRangeValues<V>(previousRange);
 
-		newRange.lesserValue = slider.getModel().getSortedThumbs()
-				.get(slider.getModel().getThumbCount() - 1).getObject();
-		newRange.equalValue = defValue;
-		newRange.greaterValue = previousRange.greaterValue;
+		V lesserVal = slider.getModel().getSortedThumbs()
+		                    .get(slider.getModel().getThumbCount() - 1).getObject();
+		V equalVal = defValue;
+		V greaterVal = previousRange.greaterValue;
+
+		newRange = new BoundaryRangeValues<V>(lesserVal, equalVal, greaterVal);
+
 		mapping.addPoint(maxValue, newRange);
 
 		updateMap();
-
-		// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
 
 		slider.repaint();
 		repaint();
@@ -187,12 +187,8 @@ public class C2DMappingEditor<V> extends
 
 		if (thumbs.size() == 1) {
 			// Special case: only one handle.
-			mapping.getPoint(0).getRange().equalValue = below;
-			mapping.getPoint(0).getRange().lesserValue = below;
-			mapping.getPoint(0).getRange().greaterValue = above;
-
-			newVal = ((thumbs.get(0).getPosition() / 100) * valRange)
-					+ minValue;
+			mapping.getPoint(0).setRange(new BoundaryRangeValues<V>(below, below, above));
+			newVal = ((thumbs.get(0).getPosition() / 100) * valRange) + minValue;
 			mapping.getPoint(0).setValue(newVal);
 
 			return;
@@ -201,24 +197,27 @@ public class C2DMappingEditor<V> extends
 		for (int i = 0; i < thumbs.size(); i++) {
 			t = thumbs.get(i);
 
+			V lesserVal;
+			V equalVal;
+			V greaterVal;
+
 			if (i == 0) {
 				// First thumb
-				mapping.getPoint(i).getRange().lesserValue = below;
-				mapping.getPoint(i).getRange().equalValue = below;
-				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i + 1)
-						.getObject();
+				lesserVal = below;
+				equalVal = below;
+				greaterVal = thumbs.get(i + 1).getObject();
 			} else if (i == (thumbs.size() - 1)) {
 				// Last thumb
-				mapping.getPoint(i).getRange().greaterValue = above;
-				mapping.getPoint(i).getRange().equalValue = t.getObject();
-				mapping.getPoint(i).getRange().lesserValue = t.getObject();
+				greaterVal = above;
+				equalVal = t.getObject();
+				lesserVal = t.getObject();
 			} else {
 				// Others
-				mapping.getPoint(i).getRange().lesserValue = t.getObject();
-				mapping.getPoint(i).getRange().equalValue = t.getObject();
-				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i + 1)
-						.getObject();
+				lesserVal = t.getObject();
+				equalVal = t.getObject();
+				greaterVal = thumbs.get(i + 1).getObject();
 			}
+			mapping.getPoint(i).setRange( new BoundaryRangeValues<V>(lesserVal, equalVal, greaterVal) );
 
 			newVal = ((t.getPosition() / 100) * valRange) + minValue;
 			mapping.getPoint(i).setValue(newVal);

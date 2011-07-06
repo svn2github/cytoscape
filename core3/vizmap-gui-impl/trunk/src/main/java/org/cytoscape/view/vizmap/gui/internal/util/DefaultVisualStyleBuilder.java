@@ -14,6 +14,7 @@ import java.util.Map;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,10 +62,13 @@ public class DefaultVisualStyleBuilder {
 	
 	// Each lexicon has its own defaults.
 	private final Map<VisualLexicon, VisualStyle> styleMap;
+	private final VisualMappingFunctionFactory passthroughMappingFactory; 
 	
 	
-	public DefaultVisualStyleBuilder(final VisualStyleFactory vsFactory) {
+	public DefaultVisualStyleBuilder(final VisualStyleFactory vsFactory, 
+	                                 final VisualMappingFunctionFactory passthroughMappingFactory) {
 		this.vsFactory = vsFactory;
+		this.passthroughMappingFactory = passthroughMappingFactory;
 		this.styleMap = new HashMap<VisualLexicon, VisualStyle>();
 	}
 	
@@ -101,8 +105,8 @@ public class DefaultVisualStyleBuilder {
 		newStyle.setDefaultValue(NETWORK_BACKGROUND_PAINT, DEFAULT_BACKGROUND_COLOR );
 		
 		// Create label mappings
-		final PassthroughMapping<String, String> labelMapping = new PassthroughMapping<String, String>(NAME, String.class, NODE_LABEL);
-		final PassthroughMapping<String, String> edgeLabelMapping = new PassthroughMapping<String, String>(INTERACTION, String.class, EDGE_LABEL);
+		final PassthroughMapping<String, String> labelMapping = (PassthroughMapping)passthroughMappingFactory.createVisualMappingFunction(NAME, String.class, NODE_LABEL);
+		final PassthroughMapping<String, String> edgeLabelMapping = (PassthroughMapping)passthroughMappingFactory.createVisualMappingFunction(INTERACTION, String.class, EDGE_LABEL);
 		
 		newStyle.addVisualMappingFunction(labelMapping);
 		newStyle.addVisualMappingFunction(edgeLabelMapping);

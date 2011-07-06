@@ -90,6 +90,11 @@
 
 	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager" />
 
+	<!-- passthrough mapping factory -->
+	<osgi:reference id="passthroughMappingFactoryRef" 
+		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory" 
+		filter="(mapping.type=passthrough)"/>
+
 	<!-- Pull-down menu items -->
 
 	<osgi:service id="createNewVisualStyleTaskFactoryService"

@@ -144,12 +144,14 @@ public class C2CMappingEditor<V extends Number> extends ContinuousMappingEditorP
 				.getPoint(mapping.getPointCount() - 1);
 
 		final BoundaryRangeValues<V> previousRange = previousPoint.getRange();
-		newRange = new BoundaryRangeValues<V>(previousRange);
 
-		newRange.lesserValue = slider.getModel().getSortedThumbs()
+		V lesserVal = slider.getModel().getSortedThumbs()
 				.get(slider.getModel().getThumbCount() - 1).getObject();
-		newRange.equalValue = FIVE;
-		newRange.greaterValue = previousRange.greaterValue;
+		V equalVal = FIVE;
+		V greaterVal = previousRange.greaterValue;
+
+		newRange = new BoundaryRangeValues<V>(lesserVal, equalVal, greaterVal);
+
 		mapping.addPoint(maxValue, newRange);
 
 		updateMap();

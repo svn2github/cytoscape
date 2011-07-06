@@ -480,10 +480,11 @@ public abstract class ContinuousMappingEditorPanel<K extends Number, V> extends 
 
 		if (thumbs.size() == 1) {
 			// Special case: only one handle.
-			mapping.getPoint(0).getRange().equalValue = thumbs.get(0)
-					.getObject();
-			mapping.getPoint(0).getRange().lesserValue = below;
-			mapping.getPoint(0).getRange().greaterValue = above;
+			V equalVal = thumbs.get(0).getObject();
+			V lesserVal = below;
+			V greaterVal = above;
+
+			mapping.getPoint(0).setRange( new BoundaryRangeValues<V>(equalVal, lesserVal, greaterVal) );
 
 			newVal = ((thumbs.get(0).getPosition() / 100) * range) + min;
 			mapping.getPoint(0).setValue((K) newVal);
@@ -493,27 +494,30 @@ public abstract class ContinuousMappingEditorPanel<K extends Number, V> extends 
 			return;
 		}
 
-		BoundaryRangeValues rg;
 		int size = thumbs.size();
 
 		for (int i = 0; i < size; i++) {
 			t = thumbs.get(i);
-			rg = mapping.getPoint(i).getRange();
+
+			V lesserVal;
+			V equalVal = (V)t.getObject();
+			V greaterVal;
 
 			if (i == 0) {
-				rg.lesserValue = below;
-				rg.greaterValue = t.getObject();
+				lesserVal = below;
+				greaterVal = (V)t.getObject();
 			} else if (i == (thumbs.size() - 1)) {
-				rg.greaterValue = above;
-				rg.lesserValue = t.getObject();
+				greaterVal = above;
+				lesserVal = (V)t.getObject();
 			} else {
-				rg.lesserValue = t.getObject();
-				rg.greaterValue = t.getObject();
+				lesserVal = (V)t.getObject();
+				greaterVal = (V)t.getObject();
 			}
+
+			mapping.getPoint(i).setRange( new BoundaryRangeValues<V>(lesserVal, equalVal, greaterVal));
 
 			newVal = ((t.getPosition() / 100) * range) + min;
 			mapping.getPoint(i).setValue((K) newVal);
-			rg.equalValue = t.getObject();
 		}
 		
 		// Apply it.

@@ -539,14 +539,10 @@ public class ContinuousTrackRenderer<K extends Number, V extends Number>
 
 				// updateMax();
 				V newVal = newY;
-				cMapping.getPoint(selectedIdx).getRange().equalValue = newVal;
+				//cMapping.getPoint(selectedIdx).getRange().equalValue = newVal;
 
-				final BoundaryRangeValues<V> brv = new BoundaryRangeValues<V>(
-						cMapping.getPoint(selectedIdx).getRange().lesserValue,
-						newVal,
-						cMapping.getPoint(selectedIdx).getRange().greaterValue);
-
-				cMapping.getPoint(selectedIdx).setRange(brv);
+				V lesserVal = cMapping.getPoint(selectedIdx).getRange().lesserValue;
+				V greaterVal = cMapping.getPoint(selectedIdx).getRange().greaterValue;
 
 				int numPoints = cMapping.getAllPoints().size();
 
@@ -554,14 +550,18 @@ public class ContinuousTrackRenderer<K extends Number, V extends Number>
 				// UI
 				if (numPoints > 1) {
 					if (selectedIdx == 0)
-						brv.greaterValue = newVal;
+						greaterVal = newVal;
 					else if (selectedIdx == (numPoints - 1))
-						brv.lesserValue = newVal;
+						lesserVal = newVal;
 					else {
-						brv.lesserValue = newVal;
-						brv.greaterValue = newVal;
+						lesserVal = newVal;
+						greaterVal = newVal;
 					}
 				}
+
+				final BoundaryRangeValues<V> brv = new BoundaryRangeValues<V>(lesserVal, newVal, greaterVal);
+
+				cMapping.getPoint(selectedIdx).setRange(brv);
 			}
 
 			// dragOrigin = e.getPoint();
@@ -599,33 +599,33 @@ public class ContinuousTrackRenderer<K extends Number, V extends Number>
 
 				updateMax();
 
-				cMapping.getPoint(selectedIdx).getRange().equalValue = newVal;
+				//cMapping.getPoint(selectedIdx).getRange().equalValue = newVal;
 
-				final BoundaryRangeValues<V> brv = new BoundaryRangeValues<V>(
-						cMapping.getPoint(selectedIdx).getRange().lesserValue,
-						newVal,
-						cMapping.getPoint(selectedIdx).getRange().greaterValue);
-
-				cMapping.getPoint(selectedIdx).setRange(brv);
-
-				int numPoints = cMapping.getAllPoints().size();
+				V lesserVal = cMapping.getPoint(selectedIdx).getRange().lesserValue;
+				V greaterVal = cMapping.getPoint(selectedIdx).getRange().greaterValue;
 
 				// Update Values which are not accessible from
 				// UI
+				int numPoints = cMapping.getAllPoints().size();
 				if (numPoints > 1) {
 					if (selectedIdx == 0)
-						brv.greaterValue = newVal;
+						greaterVal = newVal;
 					else if (selectedIdx == (numPoints - 1))
-						brv.lesserValue = newVal;
+						lesserVal = newVal;
 					else {
-						brv.lesserValue = newVal;
-						brv.greaterValue = newVal;
+						lesserVal = newVal;
+						greaterVal = newVal;
 					}
+				}
 
+				final BoundaryRangeValues<V> brv = new BoundaryRangeValues<V>(
+						lesserVal, newVal, greaterVal);
 
+				cMapping.getPoint(selectedIdx).setRange(brv);
+
+				if (numPoints > 1) {
 					style.apply(manager.getCurrentNetworkView());
 					manager.getCurrentNetworkView().updateView();
-					slider.repaint();
 				}
 
 				repaint();
@@ -652,8 +652,7 @@ public class ContinuousTrackRenderer<K extends Number, V extends Number>
 				BoundaryRangeValues<V> original;
 
 				original = cMapping.getPoint(0).getRange();
-				brv = new BoundaryRangeValues<V>(newValue, original.equalValue,
-						original.greaterValue);
+				brv = new BoundaryRangeValues<V>(newValue, original.equalValue, original.greaterValue);
 				cMapping.getPoint(0).setRange(brv);
 
 
@@ -687,8 +686,7 @@ public class ContinuousTrackRenderer<K extends Number, V extends Number>
 
 				original = cMapping.getPoint(cMapping.getPointCount() - 1)
 						.getRange();
-				brv = new BoundaryRangeValues<V>(original.lesserValue,
-						original.equalValue, above);
+				brv = new BoundaryRangeValues<V>(original.lesserValue,original.equalValue, above);
 				cMapping.getPoint(cMapping.getPointCount() - 1).setRange(brv);
 
 				// Update view.
@@ -698,9 +696,7 @@ public class ContinuousTrackRenderer<K extends Number, V extends Number>
 				slider.repaint();
 				repaint();
 
-				firePropertyChange(
-						ContinuousMappingEditorPanel.ABOVE_VALUE_CHANGED, null,
-						above);
+				firePropertyChange( ContinuousMappingEditorPanel.ABOVE_VALUE_CHANGED, null, above);
 			}
 		}
 
