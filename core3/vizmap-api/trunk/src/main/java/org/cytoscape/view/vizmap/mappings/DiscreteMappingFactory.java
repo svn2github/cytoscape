@@ -11,7 +11,7 @@ public class DiscreteMappingFactory implements
 	public <K, V> VisualMappingFunction<K, V> createVisualMappingFunction(final String attributeName,
 			Class<K> attrValueType, final VisualProperty<V> vp) {
 		
-		return new DiscreteMapping<K, V>(attributeName, attrValueType, vp);
+		return new DiscreteMappingImpl<K, V>(attributeName, attrValueType, vp);
 	}
 	
 	@Override public String toString() {

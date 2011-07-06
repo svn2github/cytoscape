@@ -59,27 +59,21 @@ package org.cytoscape.view.vizmap.mappings;
  * interpolation above and below the same domain value, plus allow a distinctly
  * different value for exact matches.
  */
-public class BoundaryRangeValues<T> {
+public final class BoundaryRangeValues<T> {
 	/**
 	 *
 	 */
-	public T lesserValue = null;
+	public final T lesserValue;
 
 	/**
 	 *
 	 */
-	public T equalValue = null;
+	public final T equalValue;
 
 	/**
 	 *
 	 */
-	public T greaterValue = null;
-
-	/**
-	 * Creates a new BoundaryRangeValues object.
-	 */
-	public BoundaryRangeValues() {
-	}
+	public final T greaterValue;
 
 	/**
 	 * Creates a new BoundaryRangeValues object.

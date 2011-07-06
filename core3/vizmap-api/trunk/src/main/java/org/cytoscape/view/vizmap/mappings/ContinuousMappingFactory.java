@@ -20,7 +20,7 @@ public class ContinuousMappingFactory implements VisualMappingFunctionFactory {
 		if(Number.class.isAssignableFrom(attrValueType) == false)
 			throw new IllegalArgumentException("ContinuousMapping can be used for numerical attributes only.");
 		
-		return new ContinuousMapping<K, V>(attributeName, attrValueType,  vp);
+		return new ContinuousMappingImpl<K, V>(attributeName, attrValueType,  vp);
 	}
 	
 	@Override public String toString() {

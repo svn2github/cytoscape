@@ -51,7 +51,7 @@ public class DiscreteMappingTest {
 		
 		final Class<String> type = String.class;
 
-		final DiscreteMapping<String, Paint> mapping = new DiscreteMapping<String, Paint>(attrName, type,
+		final DiscreteMapping<String, Paint> mapping = new DiscreteMappingImpl<String, Paint>(attrName, type,
 				MinimalVisualLexicon.NODE_FILL_COLOR);
 		
 		return mapping;

@@ -9,7 +9,7 @@ public class PassthroughMappingFactory implements VisualMappingFunctionFactory{
 	@Override
 	public <K, V> VisualMappingFunction<K, V> createVisualMappingFunction(final String attributeName,
 			Class<K> attrValueType, VisualProperty<V> vp) {
-		return new PassthroughMapping<K, V>(attributeName, attrValueType, vp);
+		return new PassthroughMappingImpl<K, V>(attributeName, attrValueType, vp);
 	}
 	
 	@Override public String toString() {

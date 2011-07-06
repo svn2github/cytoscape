@@ -50,7 +50,7 @@ import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
  * and associated BoundaryRangeValues.
  *
  */
-public class ContinuousMappingPoint<K, V> implements Cloneable {
+public final class ContinuousMappingPoint<K, V> {
 	private K value;
 	private BoundaryRangeValues<V> range;
 
@@ -60,8 +60,8 @@ public class ContinuousMappingPoint<K, V> implements Cloneable {
 	 * @param range BoundaryRangeValues object.
 	 */
 	public ContinuousMappingPoint(K value, BoundaryRangeValues<V> range) {
-		if(value instanceof Number == false)
-			throw new IllegalArgumentException("Value should be a number.");
+		if( value instanceof Number == false)
+			throw new IllegalArgumentException("Value must be a number.");
 		
 		this.value = value;
 		this.range = range;
@@ -99,17 +99,4 @@ public class ContinuousMappingPoint<K, V> implements Cloneable {
 		this.range = range;
 	}
 
-	/**
-	 * Clones the object. (Deep Copy)
-	 * @return Cloned Object.
-	 */
-	@Override public Object clone() {
-		
-		final BoundaryRangeValues<V> newRange = new BoundaryRangeValues<V>();
-		newRange.lesserValue = range.lesserValue;
-		newRange.equalValue = range.equalValue;
-		newRange.greaterValue = range.greaterValue;
-
-		return new ContinuousMappingPoint<K, V>(value, newRange);
-	}
 }
