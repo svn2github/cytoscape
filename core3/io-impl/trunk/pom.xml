@@ -150,12 +150,6 @@
 			<artifactId>property-api</artifactId>
 			<version>3.0.0-alpha4</version>
 		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>default-mappings</artifactId>
-			<version>3.0.0-alpha4-SNAPSHOT</version>
-		</dependency>
-
 		<!-- 3rd party libraries -->
 		<!-- <dependency>
 			<groupId>com.itextpdf</groupId>

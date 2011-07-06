@@ -2,7 +2,7 @@ package org.cytoscape.io.internal.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.Collection;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
@@ -64,7 +64,7 @@ public class UnrecognizedVisualPropertyManager implements NetworkViewAboutToBeDe
 			rendererTbl = rendererTablesMap.get(netView.getSUID());
 		}
 
-		Set<CyRow> rendererRows = rendererTbl.getMatchingRows("att_name", attName);
+		Collection<CyRow> rendererRows = rendererTbl.getMatchingRows("att_name", attName);
 		String targetType = getTargetType(view);
 		Long rendererId = null;
 
@@ -111,7 +111,7 @@ public class UnrecognizedVisualPropertyManager implements NetworkViewAboutToBeDe
 
 		if (rendererTbl != null && vpTbl != null) {
 			String targetType = getTargetType(view);
-			Set<CyRow> rows = vpTbl.getMatchingRows("target_id", view.getSUID());
+			Collection<CyRow> rows = vpTbl.getMatchingRows("target_id", view.getSUID());
 
 			for (CyRow r : rows) {
 				// also make sure the target type is the same

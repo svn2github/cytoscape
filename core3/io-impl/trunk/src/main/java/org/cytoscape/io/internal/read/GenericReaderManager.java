@@ -64,7 +64,7 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 	 */
 	public R getReader(URI uri, String inputName) {
 		
-		logger.debug("Number of factories: " + factories.size());
+		logger.debug("Number of tunableHandlerFactories: " + factories.size());
 		for (T factory : factories) {
 			
 			final CyFileFilter cff = factory.getCyFileFilter();
