@@ -27,7 +27,7 @@
 		<module>work-api</module>
 		<module>work-swing-api</module>
 		<module>service-api</module>
-		<module>swing-util</module>
+		<module>swing-util-api</module>
 		<module>work-spring-api</module>
 
 		<module>archetypes</module>
