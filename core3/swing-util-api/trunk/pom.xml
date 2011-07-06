@@ -9,13 +9,13 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.cytoscape.swing-util</bundle.symbolicName>
+    <bundle.symbolicName>org.cytoscape.swing-util-api</bundle.symbolicName>
     <bundle.namespace>org.cytoscape.util.swing</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
-  <artifactId>swing-util</artifactId>
+  <artifactId>swing-util-api</artifactId>
   <version>3.0.0-alpha3-SNAPSHOT</version>
 
   <name>${bundle.symbolicName}</name>
@@ -23,9 +23,9 @@
   <packaging>bundle</packaging>
 
     <scm>
-        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/swing-util/trunk</connection>
-        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/swing-util/trunk</developerConnection>
-        <url>http://chianti.ucsd.edu/svn/core3/swing-util/trunk</url>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/swing-util-api/trunk</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/swing-util-api/trunk</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/swing-util-api/trunk</url>
     </scm>
 
   <repositories>
