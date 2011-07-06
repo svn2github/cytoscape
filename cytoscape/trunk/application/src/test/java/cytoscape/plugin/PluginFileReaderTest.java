@@ -49,6 +49,9 @@ public class PluginFileReaderTest extends TestCase {
 		url = "file:///" + tempTestFile.getAbsolutePath();
 		reader = new PluginFileReader(url);
 		assertNotNull(reader);
+		// Make sture to strip all the extra crud from our version number
+		new CytoscapeVersion();
+		System.out.println("Version = "+CytoscapeVersion.version);
 	}
 
 	/*
