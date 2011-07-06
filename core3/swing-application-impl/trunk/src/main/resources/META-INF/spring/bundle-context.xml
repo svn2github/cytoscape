@@ -125,14 +125,6 @@
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cytoscapeShutdown" />
 	</bean>
-	<bean id="undoAction" class="org.cytoscape.internal.actions.UndoAction">
-		<constructor-arg ref="undoSupportServiceRef" />
-		<constructor-arg ref="cyApplicationManagerServiceRef" />
-	</bean>
-	<bean id="redoAction" class="org.cytoscape.internal.actions.RedoAction">
-		<constructor-arg ref="undoSupportServiceRef" />
-		<constructor-arg ref="cyApplicationManagerServiceRef" />
-	</bean>
 	<bean id="preferenceAction" class="org.cytoscape.internal.actions.PreferenceAction">
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />

@@ -93,10 +93,6 @@
 		interface="org.cytoscape.application.swing.CyAction" />
 	<osgi:service id="exitActionService" ref="exitAction"
 		interface="org.cytoscape.application.swing.CyAction" />
-	<osgi:service id="undoActionService" ref="undoAction"
-		interface="org.cytoscape.application.swing.CyAction" />
-	<osgi:service id="redoActionService" ref="redoAction"
-		interface="org.cytoscape.application.swing.CyAction" />
 	<osgi:service id="preferenceActionService" ref="preferenceAction"
 		interface="org.cytoscape.application.swing.CyAction" />
 	<osgi:service id="bookmarkActionService" ref="bookmarkAction"
