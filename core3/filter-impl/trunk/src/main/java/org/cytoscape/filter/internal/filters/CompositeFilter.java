@@ -438,8 +438,11 @@ public class CompositeFilter implements CyFilter {
 	/**
 	 * @return the string represention of this Filter.
 	 */
-	public String toString()
-	{
+	public String toString() {
+		return getLabel();
+	}
+	
+	public String toSerializedForm() {
 		String retStr = "<Composite>\n";
 		
 		retStr = retStr + "name=" + name + "\n";
@@ -470,7 +473,7 @@ public class CompositeFilter implements CyFilter {
 		}
 		CompositeFilter theOtherFilter = (CompositeFilter) other_object;
 		
-		if (theOtherFilter.toString().equalsIgnoreCase(this.toString())) {
+		if (theOtherFilter.toSerializedForm().equalsIgnoreCase(this.toSerializedForm())) {
 			return true;
 		}
 		return false;

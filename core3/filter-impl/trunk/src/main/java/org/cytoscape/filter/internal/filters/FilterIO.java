@@ -506,7 +506,7 @@ public class FilterIO {
                 if (globalFilters != null) {
                     for (int i = 0; i < globalFilters.length; i++) {
                         CompositeFilter theFilter = (CompositeFilter) globalFilters[i];
-                        writer.write(theFilter.toString());
+                        writer.write(theFilter.toSerializedForm());
                         writer.newLine();
                     }
                 }
@@ -572,7 +572,7 @@ public class FilterIO {
 
                 for (int i = 0; i < sessionFilters.length; i++) {
                     CompositeFilter theFilter = (CompositeFilter) sessionFilters[i];
-                    writer.write(theFilter.toString());
+                    writer.write(theFilter.toSerializedForm());
                     writer.newLine();
                 }
             }
