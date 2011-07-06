@@ -35,7 +35,7 @@ function Visualization(containerId) {
 			"borderColor": "#666666",
 			"borderWidth": 3,
 			"opacity": 1,
-			"hoverColor": null,
+			"hoverColor": "pink",
 			"hoverBorderColor": null,
 			"hoverOpacity": null,
 			"dragColor": null,
@@ -720,6 +720,7 @@ var Node = function(vis) {
 		this._selected = !this._selected;
 		this._draw();
 		this._triggerEvent("click");
+		this._hoverEnd(); // M
 	};
 
 
@@ -982,7 +983,7 @@ var Edge = function(vis) {
 				
 				if (this.getRenderedStyle("forwardArrowShape") == "DELTA") path += " " + Shapes.buildArrow(apx, apy, 6, 10, Math.atan2(-acy, -acx), 1);
 				if (this.getRenderedStyle("backwardArrowShape") == "DELTA") path += " " + Shapes.buildArrow(bpx, bpy, 6, 10, Math.atan2(-bcy, -bcx), 1);
-				console.log(path);
+				
 				return path;
 			
 	};

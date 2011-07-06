@@ -64,6 +64,37 @@
 					width: 4
 				}
 			}
+			
+			var simpleGraph = {
+				nodes: [
+					{id: "n1", x: 220, y: 30},
+					{id: "n2", x: 0, y: 97},
+					{id: "n3", x: 54, y: 185},
+					{id: "n4", x: 200, y: 191},
+					{id: "n5", x: 210, y: 254},
+					{id: "n6", x: 60, y: -5},
+					{id: "n7", x: 280, y: 170}
+				],
+				edges: [
+					{id: "e1", source: "n1", target: "n2", style: {forwardArrowShape: "DELTA"}},
+					{id: "e2", source: "n2", target: "n1", style: {forwardArrowShape: "DELTA"}},
+					{id: "e3", source: "n1", target: "n3", style: {forwardArrowShape: "DELTA"}},
+					{id: "e4", source: "n2", target: "n3", style: {forwardArrowShape: "DELTA"}},
+					{id: "e5", source: "n4", target: "n5", style: {forwardArrowShape: "DELTA"}},
+					{id: "e6", source: "n5", target: "n2", style: {forwardArrowShape: "DELTA"}},
+					{id: "e7", source: "n3", target: "n5", style: {forwardArrowShape: "DELTA"}},
+					{id: "e8", source: "n1", target: "n4", style: {forwardArrowShape: "DELTA"}},
+					{id: "e9", source: "n3", target: "n4", style: {forwardArrowShape: "DELTA"}},
+					{id: "e10", source: "n4", target: "n6", style: {forwardArrowShape: "DELTA"}},
+					{id: "e11", source: "n6", target: "n4",  style: {forwardArrowShape: "DELTA"}},
+					{id: "e12", source: "n3", target: "n6", style: {forwardArrowShape: "DELTA"}},
+					{id: "e14", source: "n4", target: "n7", style: {forwardArrowShape: "DELTA", backwardArrowShape: "DELTA"}},
+					{id: "e13", source: "n4", target: "n7", style: {forwardArrowShape: "DELTA"}},
+					{id: "e15", source: "n7", target: "n4", style: {forwardArrowShape: "DELTA"}},
+					
+					
+				]
+			}
 		
 			var petersenGraph = {
 				nodes: [
@@ -121,18 +152,13 @@
 			}
 			var vis;
 			window.onload = function() {
-
 				vis = new Visualization("container-div");
-				
-				loadPetersen();
-				styleBasic();
-			
-								
-			
+				load(simpleGraph);
+				setstyle(basicStyle);
 			}
 			
-			function loadPetersen() {
-				vis.loadGraph(petersenGraph);
+			function load(graph) {
+				vis.loadGraph(graph);
 				var nodes = vis.getNodes();
 				
 				var clickEvent = function() {
@@ -144,26 +170,12 @@
 				}
 				vis.draw();
 			}
-			function loadRing() {
-				vis.loadGraph(ringGraph);
+			
+			function setstyle(style) {
+				vis.loadStyles(style);
 				vis.draw();
 			}
-			
-			function styleBasic() {
-				vis.loadStyles(basicStyle);
-				vis.draw();
-			}
-			
-			function styledemo() {
-				vis.loadStyles(demoStyle);
-				vis.draw();
-			}
-			
-			function styleDark() {
-				vis.loadStyles(darkStyle);
-				vis.draw();
-			}
-			
+
 			
 				
 
@@ -176,14 +188,15 @@
 			<div id="container-div"></div>
 			Load graph:
 			<select>
-				<option onclick="loadPetersen()">Petersen demo</option>
-				<option onclick="loadRing()">Shapes demo</option>
+				<option onclick="load(simpleGraph)">Simple graph</option>
+				<option onclick="load(petersenGraph)">Petersen graph</option>
+				<option onclick="load(ringGraph)">Style demo</option>
 			</select>
 			Load style:
 			<select>
-				<option onclick="styleBasic()">Basic Style</option>
-				<option onclick="styledemo()">Demo Style</option>
-				<option onclick="styleDark()">Dark style</option>
+				<option onclick="setstyle(basicStyle)">Basic Style</option>
+				<option onclick="setstyle(demoStyle)">Classic Style</option>
+				<option onclick="setstyle(darkStyle)">Dark style</option>
 				
 			</select>
 			
