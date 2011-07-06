@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2010, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -53,7 +53,6 @@ public class AbstractTunableInterceptorTest {
 		hasAnnotatedField = new HasAnnotatedField();
 		hasAnnotatedSetterAndGetterMethods = new HasAnnotatedSetterAndGetterMethods();
 		providesGUI = new ProvidesGUIExample();
-		
 	}
 
 	@Test
@@ -91,6 +90,11 @@ public class AbstractTunableInterceptorTest {
 	}
 
 	@Test(expected=IllegalArgumentException.class)
+	public final void testInvalidAnnotatedType() {
+		interceptor.loadTunables(new HasInvalidAnotatedType());
+	}
+
+	@Test(expected=IllegalArgumentException.class)
 	public final void testInvalidProvidesGUIReturnType() {
 		interceptor.loadTunables(new HasInvalidProvidesGUIMethod());
 	}
@@ -121,6 +125,7 @@ public class AbstractTunableInterceptorTest {
 	}
 }
 
+
 class FakeTunableHandler extends AbstractTunableHandler {
 	public FakeTunableHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
@@ -131,8 +136,11 @@ class FakeTunableHandler extends AbstractTunableHandler {
 	public void handle() {}
 }
 
+
 class SimpleHandlerFactory implements TunableHandlerFactory<AbstractTunableHandler> {
 	public AbstractTunableHandler getHandler(final Field field, final Object instance, final Tunable tunable) {
+		if (field.getType() == Exception.class)
+			return null;
 		return new FakeTunableHandler(field, instance, tunable);
 	}
 
@@ -145,6 +153,7 @@ class SimpleHandlerFactory implements TunableHandlerFactory<AbstractTunableHandl
 class ConcreteTunableInterceptor extends AbstractTunableInterceptor {
 	ConcreteTunableInterceptor(final TunableHandlerFactory<AbstractTunableHandler> handlerFactory) {
 		super(handlerFactory);
+		setThrowExceptions(true);
 	}
 
 	public boolean validateAndWriteBackTunables(Object... objs) {
@@ -181,6 +190,13 @@ class HasInvalidSetter {
 
 	public void setStuff() { }
 }
+
+
+class HasInvalidAnotatedType {
+	@Tunable
+	public Exception e;
+}
+
 
 class SetterAnnotatedInsteadOfGetter {
 	public int getStuff() { return -1; }

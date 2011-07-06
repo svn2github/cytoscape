@@ -78,6 +78,8 @@ import org.slf4j.Logger;
  * @param <TH>  <code>TunableHandler</code>s created in the factory
  */
 public abstract class AbstractTunableInterceptor<TH extends TunableHandler> implements TunableInterceptor<TH> {
+	private boolean throwException;
+
 	/**
 	 *  Factory for Handlers
 	 */
@@ -103,9 +105,15 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 	 *  or <code>PropHandlerFactory</code> to get the <code>Handlers</code> for Properties.
 	 */
 	public AbstractTunableInterceptor(TunableHandlerFactory<TH> tunableHandlerFactory) {
+		this.throwException = false;
 		this.factory = tunableHandlerFactory;
 		handlerMap = new HashMap<Object, LinkedHashMap<String, TH>>();
 		guiProviderMap = new HashMap<Object, Method>();
+	}
+
+	/** Used for testing only! */
+	void setThrowExceptions(final boolean throwException) {
+		this.throwException = throwException;
 	}
 
 	/**
@@ -135,10 +143,19 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 						if (handler != null)
 							handlerList.put(field.getName(), handler);
 						else
-							System.out.println("No handler for type: " + field.getType().getName());
+							throw new Exception("No handler for type: "
+									    + field.getType().getName());
 					} catch (final Throwable ex) {
-						System.out.println("tunable field intercept failed: " + field.toString());
-						ex.printStackTrace();
+						final StringBuilder msg = new StringBuilder("tunable field intercept failed for "
+											    + field.toString() + "\r\n");
+						msg.append(ex.getMessage());
+						msg.append("\r\n");
+						for (final StackTraceElement ste : ex.getStackTrace()) {
+							msg.append(ste.toString());
+							msg.append("\r\n");
+						}
+
+						logOrThrowException(msg.toString());
 					}
 				}
 			}
@@ -170,10 +187,12 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 								"Can't find a setter compatible with the "
 								+ method.getName() + "() getter!");
 
-						// Get a handler with for get and set methods:
-						final TH handler = factory.getHandler(method, setter, obj, tunableMap.get(rootName));
+						// Get a handler for get and set methods:
+						final TH handler =
+							factory.getHandler(method, setter, obj,
+									   tunableMap.get(rootName));
 						if (handler == null)
-							throw new IllegalArgumentException(
+							logOrThrowException(
 								"Failed to create a handler for " + setter.getName() + "()!");
 						else
 							handlerList.put("getset" + rootName, handler);
@@ -265,5 +284,12 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 		}
 
 		return false;
+	}
+
+	private final void logOrThrowException(final String msg) {
+		if (throwException)
+			throw new IllegalArgumentException(msg);
+		else
+			logger.warn(msg);
 	}
 }
