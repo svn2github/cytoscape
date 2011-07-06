@@ -43,7 +43,6 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.view.vizmap.internal.mappings.interpolators;
 
-import org.cytoscape.view.vizmap.mappings.interpolators.NumberInterpolator;
 
 //----------------------------------------------------------------------------
 /**

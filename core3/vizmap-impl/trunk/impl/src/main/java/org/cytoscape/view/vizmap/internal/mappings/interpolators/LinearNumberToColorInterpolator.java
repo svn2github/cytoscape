@@ -40,7 +40,6 @@ package org.cytoscape.view.vizmap.internal.mappings.interpolators;
 
 import java.awt.*;
 
-import org.cytoscape.view.vizmap.mappings.interpolators.LinearNumberInterpolator;
 
 
 /**
