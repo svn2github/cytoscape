@@ -6,6 +6,7 @@
 		<groupId>org.cytoscape</groupId>
 		<artifactId>parent</artifactId>
 		<version>3.0.0-alpha7</version>
+		<relativePath>../parent</relativePath>
 	</parent>
 
 	<!-- These values should be used in child modules! -->
