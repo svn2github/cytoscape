@@ -16,11 +16,7 @@
 	<name>Wrappers Project POM</name>
 
 	<modules>
-		<module>blueprints-core</module>
-		<module>freehep-graphics-base</module>
-		<module>freehep-io</module>
 		<module>org.apache.lucene</module>
-		<module>org.processing.core</module>
 		<module>org.swinglabs.swing-layout</module>
 		<module>org.swinglabs.swingx</module>
 	</modules>
