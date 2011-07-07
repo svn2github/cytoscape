@@ -32,7 +32,7 @@ public class ISOMLayout extends AbstractLayoutAlgorithm implements TunableValida
 	public double sizeFactor = 100;
 	@Tunable(description="Cooling factor")
 	public double coolingFactor = 2;
-        @Tunable(description="Don't partition graph before layout", groups="Standard settings")
+	@Tunable(description="Don't partition graph before layout", groups="Standard settings")
 	public boolean singlePartition;
 
 	/**
