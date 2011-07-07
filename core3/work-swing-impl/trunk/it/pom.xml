@@ -25,6 +25,7 @@
 			<plugin>
 				<groupId>org.ops4j.pax.exam</groupId>
 				<artifactId>maven-paxexam-plugin</artifactId>
+				<version>${maven-paxexam-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>generate-config</id>
@@ -36,13 +37,15 @@
 				<configuration>
 					<options>
 						<platform>felix</platform>
-						<profiles>spring.dm</profiles>
+						<version>${felix.version}</version>
+						<profiles>spring.dm/${spring.osgi.version}</profiles>
 					</options>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
 				</configuration>
@@ -58,7 +61,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-swing-impl</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

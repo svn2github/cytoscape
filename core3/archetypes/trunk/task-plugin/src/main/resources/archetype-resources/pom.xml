@@ -14,7 +14,7 @@
 	<modelVersion>4.0.0</modelVersion>
     <groupId>${groupId}</groupId>
     <artifactId>${artifactId}</artifactId>
-	<version>${version}</version>
+	<version>${project.version}</version>
 
 #set( $dollar = "$" )
 #if( $symbolicName.equals($package) )
@@ -71,7 +71,7 @@
 					<instructions>
 #literal()
 						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-						<Bundle-Version>${pom.version}</Bundle-Version>
+						<Bundle-Version>${project.version}</Bundle-Version>
 #end
 						<_include>-osgi.bnd</_include>
 					</instructions>

@@ -9,16 +9,11 @@
 		<relativePath>../parent</relativePath>
 	</parent>
 
-	<!-- These values should be used in child modules! -->
-	<properties>
-		<parent.groupId>org.cytoscape</parent.groupId>
-		<parent.version>3.0.0-alpha2-SNAPSHOT</parent.version>
-	</properties>
 
 	<groupId>org.cytoscape</groupId>
 	<artifactId>archetypes-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>${parent.version}</version>
+	<version>3.0.0-alpha2-SNAPSHOT</version>
 	<name>Cytoscape 3 Plugin Archetypes Parent</name>
 
 	<modules>
