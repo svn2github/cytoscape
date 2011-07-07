@@ -32,12 +32,12 @@ public class BooleanHandler extends AbstractGUITunableHandler {
 	 * @param o object contained in <code>f</code>
 	 * @param t tunable associated to <code>f</code>
 	 */
-	protected BooleanHandler(Field f, Object o, Tunable t) {
+	public BooleanHandler(Field f, Object o, Tunable t) {
 		super(f, o, t);
 		init();
 	}
 
-	protected BooleanHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+	public BooleanHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		super(getter, setter, instance, tunable);
 		init();
 	}

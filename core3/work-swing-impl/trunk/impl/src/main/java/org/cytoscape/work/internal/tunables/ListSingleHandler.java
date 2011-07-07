@@ -32,12 +32,12 @@ public class ListSingleHandler<T> extends AbstractGUITunableHandler {
 	 * @param t tunable associated to <code>f</code>
 	 */
 	@SuppressWarnings("unchecked")
-	protected ListSingleHandler(Field f, Object o, Tunable t) {
+	public ListSingleHandler(Field f, Object o, Tunable t) {
 		super(f, o, t);
 		init();
 	}
 
-	protected ListSingleHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+	public ListSingleHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		super(getter, setter, instance, tunable);
 		init();
 	}

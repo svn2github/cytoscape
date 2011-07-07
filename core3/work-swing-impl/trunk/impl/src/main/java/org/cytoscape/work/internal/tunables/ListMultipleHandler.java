@@ -41,12 +41,12 @@ public class ListMultipleHandler<T> extends AbstractGUITunableHandler {
 	 * @param t tunable associated to <code>f</code>
 	 */
 	@SuppressWarnings("unchecked")
-	protected ListMultipleHandler(Field f, Object o, Tunable t) {
+	public ListMultipleHandler(Field f, Object o, Tunable t) {
 		super(f, o, t);
 		init();
 	}
 
-	protected ListMultipleHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+	public ListMultipleHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		super(getter, setter, instance, tunable);
 		init();
 	}

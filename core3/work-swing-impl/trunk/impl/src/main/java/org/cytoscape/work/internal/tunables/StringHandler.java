@@ -28,12 +28,12 @@ public class StringHandler extends AbstractGUITunableHandler {
 	 * @param o object contained in <code>f</code>
 	 * @param t tunable associated to <code>f</code>
 	 */
-	protected StringHandler(Field f, Object o, Tunable t) {
+	public StringHandler(Field f, Object o, Tunable t) {
 		super(f, o, t);
 		init();
 	}
 
-	protected StringHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+	public StringHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		super(getter, setter, instance, tunable);
 		init();
 	}

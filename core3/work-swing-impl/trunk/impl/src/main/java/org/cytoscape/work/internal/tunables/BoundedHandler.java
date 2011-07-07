@@ -58,7 +58,7 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGUITunabl
 		init();
 	}
 
-	protected BoundedHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+	public BoundedHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		super(getter, setter, instance, tunable);
 		init();
 	}

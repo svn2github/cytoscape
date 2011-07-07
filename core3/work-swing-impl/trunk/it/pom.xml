@@ -38,7 +38,7 @@
 					<options>
 						<platform>felix</platform>
 						<version>${felix.version}</version>
-						<profiles>spring.dm/${spring.osgi.version}</profiles>
+						<profiles>spring/${spring.version},spring.dm/${spring.osgi.version}</profiles>
 					</options>
 				</configuration>
 			</plugin>

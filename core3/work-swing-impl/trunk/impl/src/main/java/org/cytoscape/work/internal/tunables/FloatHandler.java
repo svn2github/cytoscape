@@ -25,12 +25,12 @@ public class FloatHandler extends AbstractGUITunableHandler {
 	 * @param o object containing <code>field</code>
 	 * @param t tunable annotating <code>field</code>
 	 */
-	protected FloatHandler(Field field, Object o, Tunable t) {
+	public FloatHandler(Field field, Object o, Tunable t) {
 		super(field, o, t);
 		init();
 	}
 
-	protected FloatHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+	public FloatHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		super(getter, setter, instance, tunable);
 		init();
 	}

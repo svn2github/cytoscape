@@ -40,7 +40,7 @@ public class IntegerHandler extends AbstractGUITunableHandler {
 		init();
 	}
 
-	protected IntegerHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+	public IntegerHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		super(getter, setter, instance, tunable);
 		init();
 	}

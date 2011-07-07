@@ -71,7 +71,7 @@ public class FileHandler extends AbstractGUITunableHandler {
 	 * @param t tunable associated to <code>f</code>
 	 * @param fileTypesManager
 	 */
-	protected FileHandler(Field f, Object o, Tunable t,
+	public FileHandler(Field f, Object o, Tunable t,
 			      final SupportedFileTypesManager fileTypesManager,
 			      final Properties props)
 	{
@@ -81,7 +81,7 @@ public class FileHandler extends AbstractGUITunableHandler {
 		init(fileTypesManager);
 	}
 
-	protected FileHandler(final Method getter, final Method setter, final Object instance,
+	public FileHandler(final Method getter, final Method setter, final Object instance,
 			      final Tunable tunable,
 			      final SupportedFileTypesManager fileTypesManager,
 			      final Properties props)

@@ -1,12 +1,12 @@
 package org.cytoscape.work; 
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.MavenConfiguredJUnit4TestRunner;
 
 import org.cytoscape.work.swing.GUITaskManager;
+import org.cytoscape.work.swing.GUITunableHandlerFactory;
 import org.cytoscape.work.swing.GUITunableInterceptor;
 import org.cytoscape.work.undo.UndoSupport;
 import org.cytoscape.integration.ServiceTestSupport;
@@ -36,7 +36,7 @@ public class ServiceConfigurationTest extends ServiceTestSupport {
 	public void testExpectedServices() {
 		checkService(GUITaskManager.class);
 		checkService(TaskManager.class);
-		checkService(TunableHandlerFactory.class);
+		checkService(GUITunableHandlerFactory.class);
 		checkService(TunableInterceptor.class);
 		checkService(GUITunableInterceptor.class);
 		checkService(UndoSupport.class);

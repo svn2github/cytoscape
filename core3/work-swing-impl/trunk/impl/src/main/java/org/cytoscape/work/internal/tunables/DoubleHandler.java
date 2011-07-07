@@ -31,12 +31,12 @@ public class DoubleHandler extends AbstractGUITunableHandler {
 	 * @param o object contained in <code>f</code>
 	 * @param t tunable associated to <code>f</code>
 	 */
-	protected DoubleHandler(Field f, Object o, Tunable t) {
+	public DoubleHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		init();
 	}
 
-	protected DoubleHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+	public DoubleHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		super(getter, setter, instance, tunable);
 		init();
 	}
