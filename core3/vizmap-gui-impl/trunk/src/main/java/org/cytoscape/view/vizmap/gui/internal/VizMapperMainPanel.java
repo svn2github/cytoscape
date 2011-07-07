@@ -162,7 +162,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	}
 	
 	
-
 	private void addVisualStyleChangeAction() {
 		visualStyleComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -616,17 +615,16 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		this.visualStyleComboBox.setSelectedItem(newStyle);
 	}
 
+	
 	@Override
 	public void handleEvent(SetCurrentRenderingEngineEvent e) {
 		final RenderingEngine<CyNetwork> engine = e.getRenderingEngine();
-		CyNetworkView view = (CyNetworkView) engine.getViewModel();
+		final CyNetworkView view = (CyNetworkView) engine.getViewModel();
 		final VisualStyle newStyle = vmm.getVisualStyle(view);
 		
-		if(visualStyleComboBox.getSelectedItem().equals(newStyle) == false) {
-			
-			logger.debug("Updating VS Combo Box to: " + newStyle.getTitle());
-			this.visualStyleComboBox.setSelectedItem(newStyle);
-			visualStyleComboBox.repaint();
-		}
+		this.visualStyleComboBox.setSelectedItem(newStyle);
+		visualStyleComboBox.repaint();
+
+		logger.info("$$$$$$$$$$$$ Updating VS Combo Box to: " + newStyle.getTitle());
 	}
 }

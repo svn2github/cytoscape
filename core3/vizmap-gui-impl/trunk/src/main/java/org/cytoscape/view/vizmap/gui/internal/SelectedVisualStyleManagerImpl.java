@@ -68,8 +68,5 @@ public class SelectedVisualStyleManagerImpl implements
 			selectedStyle = targetStyle;
 			logger.debug("Presentation switch ========= Selected Style Switched to " + selectedStyle.getTitle());
 		}
-			
-		
 	}
-
 }

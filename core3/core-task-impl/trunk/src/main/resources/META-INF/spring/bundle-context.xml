@@ -269,6 +269,7 @@
 		class="org.cytoscape.task.internal.session.OpenSessionTaskFactory">
 		<constructor-arg ref="cySessionManagerServiceRef" />
 		<constructor-arg ref="sessionReaderManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<bean id="saveSessionTaskFactory"

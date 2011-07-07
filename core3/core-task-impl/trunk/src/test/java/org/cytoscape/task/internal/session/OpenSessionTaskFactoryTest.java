@@ -2,8 +2,10 @@ package org.cytoscape.task.internal.session;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+
 import org.cytoscape.io.read.CySessionReaderManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
@@ -16,8 +18,9 @@ public class OpenSessionTaskFactoryTest {
 
 		CySessionManager mgr = mock(CySessionManager.class);;
 		CySessionReaderManager rmgr = mock(CySessionReaderManager.class);
+		CyApplicationManager appManager = mock(CyApplicationManager.class);
 
-		OpenSessionTaskFactory factory = new OpenSessionTaskFactory(mgr, rmgr);
+		OpenSessionTaskFactory factory = new OpenSessionTaskFactory(mgr, rmgr, appManager);
 		
 		TaskIterator ti = factory.getTaskIterator();
 		assertNotNull(ti);

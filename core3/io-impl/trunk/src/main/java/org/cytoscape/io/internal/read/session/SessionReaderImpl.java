@@ -231,26 +231,25 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		}
 	}
 
+
 	private void mergeNetworkTables() {
 		for (Entry<String, CyNetworkView[]> entry : networkViews.entrySet()) {
 			String entryName = entry.getKey();
 			Matcher matcher = NETWORK_PATTERN.matcher(entryName);
 
-			if (!matcher.matches()) {
+			if (!matcher.matches())
 				continue;
-			}
 
 			String name = matcher.group(1);
 			CyNetworkView view = entry.getValue()[0];
 			CyNetwork network = view.getModel();
 			Set<CyTableMetadataBuilder> builders = networkTableMap.get(name);
 
-			if (builders == null) {
+			if (builders == null)
 				continue;
-			}
 
 			for (CyTableMetadataBuilder builder : builders) {
-				Set<CyNetwork> networks = new HashSet<CyNetwork>();
+				final Set<CyNetwork> networks = new HashSet<CyNetwork>();
 				networks.add(network);
 				CyTableMetadata metadata = builder.setNetworks(networks).build();
 				mergeNetworkTable(network, metadata);
@@ -272,6 +271,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 			}
 		}
 	}
+
 
 	private void deleteOriginalIdColumn(CyTable table) {
 		if (table.getColumn(XGMMLNetworkReader.ORIGINAL_ID_COLUMN) != null)
@@ -513,9 +513,9 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	}
 
 	private void processNetworks() throws Exception {
-		if (cysession.getNetworkTree() == null) {
+		
+		if (cysession.getNetworkTree() == null)
 			return;
-		}
 
 		boolean isOldFormat = false;
 		String docVersion = cysession.getDocumentVersion();

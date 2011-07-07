@@ -30,18 +30,18 @@
 package org.cytoscape.task.internal.session; 
 
 
+import java.io.File;
+
+import org.cytoscape.io.read.CySessionReader;
+import org.cytoscape.io.read.CySessionReaderManager;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.session.CySession;
+import org.cytoscape.session.CySessionManager;
+import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.session.CySession;
-import org.cytoscape.session.CySessionManager;
-import org.cytoscape.io.read.CyNetworkReaderManager;
-import org.cytoscape.io.read.CySessionReader;
-import org.cytoscape.io.read.CySessionReaderManager;
-import org.cytoscape.io.read.CyTableReader;
-import org.cytoscape.io.DataCategory;
-
-import java.io.File;
 
 
 /**
@@ -49,8 +49,11 @@ import java.io.File;
  * setAcceleratorCombo(java.awt.event.KeyEvent.VK_O, ActionEvent.CTRL_MASK);
  */
 public class OpenSessionTask extends AbstractTask {
-	private CySessionManager sessionMgr;
-	private CySessionReaderManager readerMgr;
+	
+	private final CySessionManager sessionMgr;
+	private final CySessionReaderManager readerMgr;
+	
+	private final CyApplicationManager appManager;
 
 	@Tunable(description="Session file to load", params="fileCategory=session;input=true")
 	public File file;
@@ -59,9 +62,10 @@ public class OpenSessionTask extends AbstractTask {
 	 * Constructor.<br>
 	 * Add a menu item under "File" and set shortcut.
 	 */
-	public OpenSessionTask(CySessionManager mgr, CySessionReaderManager factory) {
+	public OpenSessionTask(final CySessionManager mgr, final CySessionReaderManager readerManager, final CyApplicationManager appManager) {
 		this.sessionMgr = mgr;
-		this.readerMgr = factory;
+		this.readerMgr = readerManager;
+		this.appManager = appManager;
 	}
 
 	/**
@@ -76,31 +80,36 @@ public class OpenSessionTask extends AbstractTask {
 			throw new NullPointerException("No file specified!");
 		
 		CySessionReader reader = readerMgr.getReader(file.toURI(),file.getName());
+		if (reader == null)
+			throw new NullPointerException("Failed to find appropriate reader for file: " + file);
 		reader.run(taskMonitor);
 
 		if (cancelled)
 			return;
 
-		if (reader == null)
-			throw new NullPointerException("Failed to find appropriate reader for file: " + file);
-	
 		insertTasksAfterCurrentTask(new LoadSessionTask(reader));
 	}
 	
 	
-	private class LoadSessionTask extends AbstractTask {
+	private final class LoadSessionTask extends AbstractTask {
 		CySessionReader reader;
+		
 		LoadSessionTask(CySessionReader reader) {
 			this.reader = reader;
 		}
 		
 		public void run(TaskMonitor taskMonitor) {
-			CySession newSession = reader.getCySession();
-			if ( newSession == null ) {
+			final CySession newSession = reader.getCySession();
+			if ( newSession == null )
 				throw new NullPointerException("Session could not be read for file: " + file);
-			}
 
 			sessionMgr.setCurrentSession(newSession, file.getAbsolutePath());
+			
+			// Set Current network: this is necessary to update GUI.
+			final RenderingEngine<CyNetwork> currentEngine = appManager.getCurrentRenderingEngine();
+			if(currentEngine != null)
+				appManager.setCurrentRenderingEngine(currentEngine);
+			
 			taskMonitor.setProgress(1.0);
 			taskMonitor.setStatusMessage("Session file " + file + " successfully loaded.");
 		}
