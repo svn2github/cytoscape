@@ -240,7 +240,7 @@ function Visualization(containerId) {
 		for (var edgeId in this._edges) {
 			this._edges[edgeId]._draw();
 		}
-		
+		this._canvas.safari();
 		return this;
 	};
 
@@ -288,7 +288,7 @@ function Visualization(containerId) {
 	this.addEdge = function(id, source, target) {
 
 		var newEdge = new Edge(this);
-		
+		if (source == null || target == null) throw "addEdge: Source and target are required arguments; got "+ source + " and " + target;
 		newEdge._id = id;
 		newEdge._source = source;
 		newEdge._target = target;
@@ -856,7 +856,7 @@ var Edge = function(vis) {
 
 		if (this._source == null || this._target == null) throw "Invalid edge members";
 		if (this._elem == null) {
-				this._elem = this._visualization._canvas.path(this._getSvgPath()).toBack();
+				this._elem = this._visualization._canvas.path(this._getSvgPath()).toBack().click(Util.delegate(this, "_onClick")).attr("cursor", "pointer");
 		}
 
 		var attr = {
@@ -871,6 +871,7 @@ var Edge = function(vis) {
 			"stroke-opacity": "opacity"
 		};
 
+		
 
 
 		for (var attrName in attrMap) {
@@ -879,6 +880,10 @@ var Edge = function(vis) {
 
 		this._elem.attr(attr);
 	};
+	
+	this._onClick = function() {
+		alert("Clicked edge '" + this._id + "' between '" + this._source._id + "' and '" + this._target._id + "'");
+	}
 
 	this.getModel = function() {
 		var model = {};

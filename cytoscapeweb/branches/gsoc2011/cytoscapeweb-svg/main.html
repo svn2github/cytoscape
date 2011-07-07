@@ -14,7 +14,10 @@
 		<script type="text/javascript" src="cytoscapeweb-svg.js"></script>
 		<script type="text/javascript">
 		
-			var basicStyle = {
+			var graphs = {};
+			var styles = {};
+			
+			styles.basicStyle = {
 				global: {
 					backgroundColor: "#eeeeee"
 				},
@@ -32,7 +35,7 @@
 				}
 			}
 		
-			var demoStyle = {
+			styles.demoStyle = {
 				global: {
 					backgroundColor: "#fcfcfc"
 				},
@@ -48,7 +51,7 @@
 				}
 			}
 			
-			var darkStyle = {
+			styles.darkStyle = {
 				global: {
 					backgroundColor: "#202020"
 				},
@@ -65,7 +68,7 @@
 				}
 			}
 			
-			var simpleGraph = {
+			graphs.simpleGraph = {
 				nodes: [
 					{id: "n1", x: 220, y: 30},
 					{id: "n2", x: 0, y: 97},
@@ -96,7 +99,7 @@
 				]
 			}
 		
-			var petersenGraph = {
+			graphs.petersenGraph = {
 				nodes: [
 					{id: "nw2", x: -27, y: 97},
 					{id: "sw2", x: 24, y: 255},
@@ -133,9 +136,9 @@
 				]	
 			}
 			
-			var ringGraph = {
+			graphs.ringGraph = {
 				"nodes": [
-					{"id":"n1","x":31,"y":150,"style":{size: 32, color: "teal", shape: "DIAMOND"}},
+					{"id":"n1","x":38,"y":219,"style":{size: 32, color: "teal", shape: "DIAMOND"}},
 					{"id":"n2","x":57,"y":44,"style":{size: 26, color: "pink"}},
 					{"id":"n3","x":171,"y":28,"style":{size: 16, borderColor: "green", shape: "RECTANGLE"}},
 					{"id":"n4","x":251,"y":132,"style":{size: 10, borderColor: "blue", shape: "DIAMOND"}},
@@ -150,15 +153,27 @@
 					{"id":"e6","source":"n5","target":"n1","style":{}}
 				]
 			}
+			
+			var pg = {nodes:[], edges:[]};
+			
+			for (var x = 0; x < 100; x++) {
+				pg.nodes.push({"id": "n"+x, "x": Math.floor(Math.random()*400)-86, "y": Math.floor(Math.random()*400)-50, "style": {"size": 6+ Math.floor(Math.random()*18)}});
+			}
+			
+			for (var y = 0; y < 300; y++) {
+				pg.edges.push({"id": "e"+y, "source": "n"+Math.floor(Math.random()*50), "target": "n"+ (50+Math.floor(Math.random()*50))});
+			}
+			graphs.pg = pg;
+			
 			var vis;
 			window.onload = function() {
 				vis = new Visualization("container-div");
-				load(simpleGraph);
-				setstyle(basicStyle);
+				load("simpleGraph");
+				setstyle("basicStyle");
 			}
 			
 			function load(graph) {
-				vis.loadGraph(graph);
+				vis.loadGraph(graphs[graph]);
 				var nodes = vis.getNodes();
 				
 				var clickEvent = function() {
@@ -172,7 +187,7 @@
 			}
 			
 			function setstyle(style) {
-				vis.loadStyles(style);
+				vis.loadStyles(styles[style]);
 				vis.draw();
 			}
 
@@ -187,16 +202,17 @@
 			<p>By Marek Zaluski for GSoC 2011</p>
 			<div id="container-div"></div>
 			Load graph:
-			<select>
-				<option onclick="load(simpleGraph)">Simple graph</option>
-				<option onclick="load(petersenGraph)">Petersen graph</option>
-				<option onclick="load(ringGraph)">Style demo</option>
+			<select onchange="load(this.options[selectedIndex].value)">
+				<option value="simpleGraph">Simple graph</option>
+				<option value="petersenGraph">Petersen graph</option>
+				<option value="ringGraph">Style demo</option>
+				<option value="pg">Large graph</option>
 			</select>
 			Load style:
-			<select>
-				<option onclick="setstyle(basicStyle)">Basic Style</option>
-				<option onclick="setstyle(demoStyle)">Classic Style</option>
-				<option onclick="setstyle(darkStyle)">Dark style</option>
+			<select onchange="setstyle(this.options[selectedIndex].value)">
+				<option value="basicStyle">Basic Style</option>
+				<option value="demoStyle">Classic Style</option>
+				<option value="darkStyle">Dark style</option>
 				
 			</select>
 			
