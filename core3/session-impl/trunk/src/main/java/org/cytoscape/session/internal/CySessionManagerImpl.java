@@ -171,10 +171,8 @@ public class CySessionManagerImpl implements CySessionManager {
 			}
 
 			// Restore visual styles
-			logger.debug("Restoring visual styles...");
-			Set<VisualStyle> styles = sess.getVisualStyles();
-			Map<String, VisualStyle> stylesMap = new HashMap<String, VisualStyle>();
-
+			final Set<VisualStyle> styles = sess.getVisualStyles();
+			final Map<String, VisualStyle> stylesMap = new HashMap<String, VisualStyle>();
 			if (styles != null) {
 				for (VisualStyle vs : styles) {
 					vmMgr.addVisualStyle(vs);
@@ -184,23 +182,23 @@ public class CySessionManagerImpl implements CySessionManager {
 			}
 
 			// Get network frames info
-			Cysession cysess = sess.getCysession();
+			final Cysession cysess = sess.getCysession();
 
 			if (cysess.getSessionState().getDesktop().getNetworkFrames() != null) {
 				List<NetworkFrame> frames = cysess.getSessionState().getDesktop().getNetworkFrames().getNetworkFrame();
 				Map<String, NetworkFrame> framesLookup = new Hashtable<String, NetworkFrame>();
 
-				for (NetworkFrame nf : frames) {
+				for (NetworkFrame nf : frames)
 					framesLookup.put(nf.getFrameID(), nf);
-				}
 
 				// Set visual styles to network views
-				Map<CyNetworkView, String> netStyleMap = sess.getViewVisualStyleMap();
-
+				
+				// This is a map from network view to Visual Style TITLE (may not be unique.  TODO: use ID?)
+				final Map<CyNetworkView, String> netStyleMap = sess.getViewVisualStyleMap();
 				for (Entry<CyNetworkView, String> entry : netStyleMap.entrySet()) {
-					CyNetworkView netView = entry.getKey();
-					String stName = entry.getValue();
-					VisualStyle vs = stylesMap.get(stName);
+					final CyNetworkView netView = entry.getKey();
+					final String stName = entry.getValue();
+					final VisualStyle vs = stylesMap.get(stName);
 
 					if (vs != null) {
 						vmMgr.setVisualStyle(vs, netView);

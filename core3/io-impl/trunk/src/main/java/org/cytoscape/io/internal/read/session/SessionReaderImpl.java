@@ -35,6 +35,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -144,6 +145,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		if (csvCyReaderFactory == null) throw new NullPointerException("table reader manager is null!");
 		this.csvCyReaderFactory = csvCyReaderFactory;
 	}
+
 
 	/**
 	 * Read a session file.
@@ -535,12 +537,12 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 			logger.warn("The Cysession has no document version!");
 		}
 
-		for (Network net : cysession.getNetworkTree().getNetwork()) {
+		for (final Network net : cysession.getNetworkTree().getNetwork()) {
 			// We no longer have the concept of a top-level network root,
 			// so let's ignore a network with that name, but only if the Cysession doc version is old.
 			if (isOldFormat && net.getId().equals(NETWORK_ROOT)) continue;
-
-			CyNetworkView view = getNetworkView(net.getFilename());
+			final String fileName = net.getFilename();
+			final CyNetworkView view = getNetworkView(fileName);
 
 			if (view == null) {
 				logger.warn("Failed to find network in session: " + net.getFilename());
@@ -566,9 +568,17 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		}
 	}
 
-	private CyNetworkView getNetworkView(String name) {
-		for (String s : networkViews.keySet()) {
-			if (s.endsWith("/" + name)) {
+	private CyNetworkView getNetworkView(final String name) {
+		for(String s : networkViews.keySet()) {
+			String decode = s;
+			try {
+				decode = URLDecoder.decode(s, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				return null;
+			}
+			
+			if (decode.endsWith("/" + name)) {
 				// this is OK since XGMML only ever reads one network
 				return networkViews.get(s)[0];
 			}
