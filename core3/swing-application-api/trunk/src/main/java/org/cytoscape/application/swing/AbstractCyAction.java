@@ -357,6 +357,8 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	    setEnabled(true);
 	else if (enableFor.equals("network"))
 	    enableForNetwork();
+	else if (enableFor.equals("networkWithoutView"))
+	    enableForNetworkWithoutView();
 	else if (enableFor.equals("networkAndView"))
 	    enableForNetworkAndView();
 	else if (enableFor.equals("selectedNodesOrEdges"))
@@ -391,6 +393,17 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	else
 	    setEnabled(true);
     }
+    
+	protected void enableForNetworkWithoutView() {
+		final CyNetwork n = applicationManager.getCurrentNetwork();
+		final CyNetworkView v = applicationManager.getCurrentNetworkView();
+		if (n == null)
+			setEnabled(false);
+		else if(n != null && v == null)
+			setEnabled(true);
+		else
+			setEnabled(false);
+	}
 
     /**
      * Enable the action if the current network and view exist and are not null.

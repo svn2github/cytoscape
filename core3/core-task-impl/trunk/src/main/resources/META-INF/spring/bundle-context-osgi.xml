@@ -508,7 +508,7 @@
 			<entry key="title" value="Create View" />
 			<entry key="preferredMenu" value="Edit" />
 			<entry key="menuGravity" value="3.0" />
-			<entry key="enableFor" value="network" />
+			<entry key="enableFor" value="networkWithoutView" />
 			<entry key="scope" value="limited" />
 		</osgi:service-properties>
 	</osgi:service>
