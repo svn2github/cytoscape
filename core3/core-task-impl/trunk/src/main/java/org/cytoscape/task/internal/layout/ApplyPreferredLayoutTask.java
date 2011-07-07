@@ -36,27 +36,27 @@ import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import java.util.Properties;
 
 public class ApplyPreferredLayoutTask extends AbstractNetworkViewTask {
-    
-    private static final String DEF_LAYOUT = "force-directed";
 
-    private final Properties props;
-    private final CyLayoutAlgorithmManager layouts;
+	private static final String DEF_LAYOUT = "force-directed";
 
-    public ApplyPreferredLayoutTask(CyNetworkView v, CyLayoutAlgorithmManager layouts, Properties props) {
-	super(v);
-	this.layouts = layouts;
-	this.props = props;
-    }
+	private final Properties props;
+	private final CyLayoutAlgorithmManager layouts;
 
-    public void run(TaskMonitor tm) {
-	final String pref = props.getProperty("preferredLayoutAlgorithm", DEF_LAYOUT);
-	final CyLayoutAlgorithm layout = layouts.getLayout(pref);
-	
-	if (layout != null) {
-	    layout.setNetworkView(view);
-	    insertTasksAfterCurrentTask(layout.getTaskIterator());
-	} else {
-	    throw new IllegalArgumentException("Couldn't find layout algorithm: " + pref);
+	public ApplyPreferredLayoutTask(CyNetworkView v, CyLayoutAlgorithmManager layouts, Properties props) {
+		super(v);
+		this.layouts = layouts;
+		this.props = props;
 	}
-    }
+
+	public void run(TaskMonitor tm) {
+		final String pref = props.getProperty("preferredLayoutAlgorithm", DEF_LAYOUT);
+		final CyLayoutAlgorithm layout = layouts.getLayout(pref);
+
+		if (layout != null) {
+			layout.setNetworkView(view);
+			insertTasksAfterCurrentTask(layout.getTaskIterator());
+		} else {
+			throw new IllegalArgumentException("Couldn't find layout algorithm: " + pref);
+		}
+	}
 }
