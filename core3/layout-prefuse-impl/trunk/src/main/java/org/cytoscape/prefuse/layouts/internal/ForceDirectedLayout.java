@@ -19,13 +19,13 @@ import org.cytoscape.work.util.ListSingleSelection;
 
 
 public class ForceDirectedLayout extends AbstractLayoutAlgorithm implements TunableValidator {
-	@Tunable(description="Number of Iterations", groups="Algorithm settings")
+	@Tunable(description="Number of Iterations")
 	public int numIterations = 100;
-	@Tunable(description="Default Spring Coefficient", groups="Algorithm settings")
+	@Tunable(description="Default Spring Coefficient")
 	public double defaultSpringCoefficient = 1e-4;
-	@Tunable(description="Default Spring Length", groups="Algorithm settings")
+	@Tunable(description="Default Spring Length")
 	public double defaultSpringLength = 50.0;
-	@Tunable(description="Default Node Mass", groups="Algorithm settings")
+	@Tunable(description="Default Node Mass")
 	public double defaultNodeMass = 3.0;
 	@Tunable(description="Don't partition graph before layout", groups="Standard settings")
 	public boolean singlePartition;
