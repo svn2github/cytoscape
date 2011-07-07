@@ -1,0 +1,219 @@
+<html>
+    <head>
+
+        <title> Phew</title>
+
+        <link type="text/css" rel="stylesheet" href="css/layout-default-latest.css">
+        <link type="text/css" rel="stylesheet" href="css/jquery.menubar.css"/>
+        <link type="text/css" href="css/smoothness/jquery-ui-1.8.13.custom.css" rel="stylesheet" />
+        <script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui-1.8.13.custom.min.js"></script>
+        <script type="text/javascript" src="js/jquery.layout-latest.js"></script>
+        <script type="text/javascript" src="js/debug.js"></script>
+        <script type="text/javascript" src="js/jquery.menubar.js"></script>
+        <script type="text/javascript" src="js/json2.js"></script>
+        <script type="text/javascript" src="js/AC_OETags.js"></script>
+        <script type="text/javascript" src="js/cytoscapeweb.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#menubar").menubar({
+                    items: [
+                        {
+                            name: "Network",
+                            open: function(){
+                                $("#menubar-command").html("Network Menu");
+                            },
+                            items: [
+                                {
+                                    name: "Network 1",
+                                    attr: { title: "This is Network 1" },
+                                    selecton: function(){
+                                        $("#menubar-command").html("This is Network 1");
+                                    }
+                                },{
+                                    name: "Network 2",
+                                    attr: { title: "This is Network 2" },
+                                    selecton: function(){
+                                        $("#menubar-command").html("This is Network 2");
+                                    }
+                                },{
+                                    name: "Network 3",
+                                    attr: { title: "This is Network 3" },
+                                    selecton: function(){
+                                        $("#menubar-command").html("This is Network 3");
+                                    }
+                                },{
+                                    name: "Network 4",
+                                    attr: { title: "This is Network 4" },
+                                    selecton: function(){
+                                        $("#menubar-command").html("This is Network 4");
+                                    }
+                                }
+                            ]
+                        },{
+                            name: "Layout",
+                            open: function(){
+                                $("#menubar-command").html("Layout Menu");
+                            },
+                            items: [
+                                {
+                                    name: "Layout 1",
+                                    attr: { title: "This is Layout 1" },
+                                    selecton: function(){
+                                        $("#menubar-command").html("This is Layout 1");
+                                    }
+                                },								{
+                                    name: "Layout 2",
+                                    attr: { title: "This is Layout 2" },
+                                    selecton: function(){
+                                        $("#menubar-command").html("This is Layout 2");
+                                    }
+                                },								{
+                                    name: "Layout 3",
+                                    attr: { title: "This is Layout 3" },
+                                    selecton: function(){
+                                        $("#menubar-command").html("This is Layout 3");
+                                    }
+                                }
+
+                            ]
+                        },{
+                            name: "Visual Style",
+                            open: function(){
+                                $("#menubar-command").html("Visual Style Menu");
+                            },
+                            items: [
+                                {
+                                    name: "Style 1",
+                                    attr: { title: "This is Style 1" },
+                                    selecton: function(){
+                                        $("#menubar-command").html("This is Style 1");
+                                    }
+                                },								{
+                                    name: "Style 2",
+                                    attr: { title: "This is Style 2" },
+                                    selecton: function(){
+                                        $("#menubar-command").html("This is Style 2");
+                                    }
+                                },								{
+                                    name: "Style 3",
+                                    attr: { title: "This is Style 3" },
+                                    selecton: function(){
+                                        $("#menubar-command").html("This is Style 3");
+                                    }
+                                }
+
+                            ]
+                        },
+
+
+                    ]
+                });
+            });
+        </script>
+
+        <style type="text/css">
+            body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50pax;}
+        </style>
+
+        <script type="text/javascript">
+            // set EVERY 'state' here so will undo ALL layout changes
+            // used by the 'Reset State' button: myLayout.loadState( stateResetSettings )
+            var stateResetSettings = {
+                north__size:		"auto"
+                ,	north__initClosed:	false
+                ,	north__initHidden:	false
+                ,	south__size:		"auto"
+                ,	south__initClosed:	false
+                ,	south__initHidden:	false
+                ,   center__size:       "auto"
+            };
+
+            var myLayout;
+
+            $(document).ready(function () {
+
+                // this layout could be created with NO OPTIONS - but showing some here just as a sample...
+                // myLayout = $('body').layout(); -- syntax with No Options
+
+                myLayout = $('body').layout({
+
+                    //	reference only - these options are NOT required because 'true' is the default
+                    closable:				false	// pane can open & close
+                    ,	resizable:				false	// when open, pane can be resized
+                    ,	slidable:				false	// when closed, pane can 'slide' open over other panes - closes on mouse-out
+
+                    //	some resizing/toggling settings
+                    ,	north__spacing_open:	0		// no resizer-bar when open (zero height)
+                    ,	north__spacing_closed:	0		// big resizer-bar when open (zero height)
+                    ,	south__spacing_open:	0		// no resizer-bar when open (zero height)
+                    ,	south__spacing_closed:	0		// big resizer-bar when open (zero height)
+
+                });
+
+                // Tabs
+                $('#tabs').tabs();
+
+                var div_id = "cytoscapeweb";
+
+                var options = {
+                    swfPath: "swf/CytoscapeWeb",
+                    flashInstallerPath: "swf/playerProductInstall"
+                };
+
+                $.get('file:///C:/Users/Vampire/Documents/NetBeansProjects/ExportAsXGMMLTrial/src/exportasxgmmltrial/Phew.xgmml',function(data) {
+                    if (typeof data !== "string") {
+                        if (window.ActiveXObject) { // IE
+                            data = data.xml;
+                        } else { // Other browsers
+                            data = (new XMLSerializer()).serializeToString(data);
+                        }
+                    }
+                    options.network = data;
+                    var vis = new org.cytoscapeweb.Visualization(div_id,options);
+                    vis.draw(options);
+                });
+
+            });
+        </script>
+
+
+    </head>
+
+
+    <body class="ui-layout-container" style="position: relative; height: 100%; overflow-x: hidden; overflow-y: hidden; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; ">
+
+        <div class="ui-layout-north"  style="position: absolute; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; top: 0px; bottom: auto; left: 0px; right: 0px; width: auto; visibility: visible; display: block; z-index: 1; overflow-x: auto; overflow-y: auto; height: 50px; ">
+
+
+            <center><h1><img src="img/cw.png" height=50px alt="logo"/>  Phew </h1></center>
+        </div>
+
+
+        <div class="ui-layout-south"
+             style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; bottom: 0px; left: 0px; right: 0px; width: auto; visibility: visible; display: block; position: absolute; top: auto; z-index: 1; height: 70px; ">
+            <div id="tabs">
+                <ul>
+                    <li><a href="#tabs-1">Nodes</a></li>
+                    <li><a href="#tabs-2">Edges</a></li>
+                    <li><a href="#tabs-3">Description</a></li>
+                </ul>
+                <div id="tabs-1"><p>Nodes</p></div>
+                <div id="tabs-2"><p>Edges</p></div>
+                <div id="tabs-3"><p> </p></div>
+            </div>
+        </div>
+
+
+
+        <div class="ui-layout-center" style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; left: 206px; right: 306px; top: 92px; bottom: 48px; height: 200px; width: 832px; position: absolute; visibility: visible; display: block; z-index: 1; ">
+
+            <div id="menubar"></div>
+            <div id="cytoscapeweb"></div>
+        </div>
+
+
+    </body>
+
+</html>

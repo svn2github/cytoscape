@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<graph label="Network" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cy="http://www.cytoscape.org" xmlns="http://www.cs.rpi.edu/XGMML"  directed="1">
+  <att name="documentVersion" value="1.1"/>
+  <att name="networkMetadata">
+    <rdf:RDF>
+      <rdf:Description rdf:about="http://www.cytoscape.org/">
+        <dc:type>Protein-Protein Interaction</dc:type>
+        <dc:description>N/A</dc:description>
+        <dc:identifier>N/A</dc:identifier>
+        <dc:date>2011-07-05 21:05:54</dc:date>
+        <dc:title>Network</dc:title>
+        <dc:source>http://www.cytoscape.org/</dc:source>
+        <dc:format>Cytoscape-XGMML</dc:format>
+      </rdf:Description>
+    </rdf:RDF>
+  </att>
+  <att type="string" name="backgroundColor" value="#ffffff"/>
+  <att type="real" name="GRAPH_VIEW_ZOOM" value="0.9561028996306457"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_X" value="18.25"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_Y" value="135.0"/>
+  <att type="boolean" name="NODE_SIZE_LOCKED" value="true"/>
+  <att type="list" name="org.genmapp.criteriaset.one">
+    <att type="string" name="org.genmapp.criteriaset.one" value="Node Color"/>
+    <att type="string" name="org.genmapp.criteriaset.one" value=" weight  &gt; :Label 1:#ffffff"/>
+    <att type="string" name="org.genmapp.criteriaset.one" value=":Label 2:#ffffff"/>
+    <att type="string" name="org.genmapp.criteriaset.one" value=":Label 3:#ffffff"/>
+  </att>
+  <att type="list" name="org.genmapp.criteriaset.three">
+    <att type="string" name="org.genmapp.criteriaset.three" value="Node Color"/>
+    <att type="string" name="org.genmapp.criteriaset.three" value=" Degree  = :Label 1:#ff3333"/>
+    <att type="string" name="org.genmapp.criteriaset.three" value=" AverageShortestPathLength  AND :Label 2:#ffcc66"/>
+    <att type="string" name="org.genmapp.criteriaset.three" value=" EdgeBetweenness :Label 3:#339900"/>
+    <att type="string" name="org.genmapp.criteriaset.three" value=":Label 4:#ffffff"/>
+  </att>
+  <att type="list" name="org.genmapp.criteriaset.two">
+    <att type="string" name="org.genmapp.criteriaset.two" value="Node Color"/>
+    <att type="string" name="org.genmapp.criteriaset.two" value=" Degree  = :Label 1:#ff3333"/>
+    <att type="string" name="org.genmapp.criteriaset.two" value=" AverageShortestPathLength  AND :Label 2:#ffcc66"/>
+  </att>
+  <att type="list" name="org.genmapp.criteriasets_1.0">
+    <att type="string" name="org.genmapp.criteriasets_1.0" value="one"/>
+    <att type="string" name="org.genmapp.criteriasets_1.0" value="two"/>
+    <att type="string" name="org.genmapp.criteriasets_1.0" value="three"/>
+  </att>
+  <node label="node0" id="-4">
+    <att type="real" name="AverageShortestPathLength" value="1.33333333"/>
+    <att type="real" name="BetweennessCentrality" value="0.0"/>
+    <att type="real" name="ClosenessCentrality" value="0.75"/>
+    <att type="real" name="ClusteringCoefficient" value="1.0"/>
+    <att type="integer" name="Degree" value="2"/>
+    <att type="integer" name="Eccentricity" value="2"/>
+    <att type="boolean" name="IsSingleNode" value="false"/>
+    <att type="string" name="NODE_TYPE" value="DefaultNode"/>
+    <att type="real" name="NeighborhoodConnectivity" value="3.0"/>
+    <att type="integer" name="NumberOfDirectedEdges" value="2"/>
+    <att type="integer" name="NumberOfUndirectedEdges" value="0"/>
+    <att type="integer" name="PartnerOfMultiEdgedNodePairs" value="0"/>
+    <att type="real" name="Radiality" value="0.83333333"/>
+    <att type="integer" name="SelfLoops" value="0"/>
+    <att type="real" name="Stress" value="0.0"/>
+    <att type="real" name="TopologicalCoefficient" value="1.0"/>
+    <att type="string" name="canonicalName" value="node0"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="36.0" y="0.0" fill="#666666" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Courier 10 Pitch Bold-0-18" cy:borderLineType="solid"/>
+  </node>
+  <node label="node1" id="-3">
+    <att type="real" name="AverageShortestPathLength" value="1.0"/>
+    <att type="real" name="BetweennessCentrality" value="0.16666667"/>
+    <att type="real" name="ClosenessCentrality" value="1.0"/>
+    <att type="real" name="ClusteringCoefficient" value="0.66666667"/>
+    <att type="integer" name="Degree" value="3"/>
+    <att type="integer" name="Eccentricity" value="1"/>
+    <att type="boolean" name="IsSingleNode" value="false"/>
+    <att type="string" name="NODE_TYPE" value="DefaultNode"/>
+    <att type="real" name="NeighborhoodConnectivity" value="2.33333333"/>
+    <att type="integer" name="NumberOfDirectedEdges" value="3"/>
+    <att type="integer" name="NumberOfUndirectedEdges" value="0"/>
+    <att type="integer" name="PartnerOfMultiEdgedNodePairs" value="0"/>
+    <att type="real" name="Radiality" value="1.0"/>
+    <att type="integer" name="SelfLoops" value="0"/>
+    <att type="real" name="Stress" value="2.0"/>
+    <att type="real" name="TopologicalCoefficient" value="0.77777778"/>
+    <att type="string" name="canonicalName" value="node1"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="18.25" y="90.0" fill="#666666" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Courier 10 Pitch Bold-0-18" cy:borderLineType="solid"/>
+  </node>
+  <node label="node2" id="-2">
+    <att type="real" name="AverageShortestPathLength" value="1.0"/>
+    <att type="real" name="BetweennessCentrality" value="0.16666667"/>
+    <att type="real" name="ClosenessCentrality" value="1.0"/>
+    <att type="real" name="ClusteringCoefficient" value="0.66666667"/>
+    <att type="integer" name="Degree" value="3"/>
+    <att type="integer" name="Eccentricity" value="1"/>
+    <att type="boolean" name="IsSingleNode" value="false"/>
+    <att type="string" name="NODE_TYPE" value="DefaultNode"/>
+    <att type="real" name="NeighborhoodConnectivity" value="2.33333333"/>
+    <att type="integer" name="NumberOfDirectedEdges" value="3"/>
+    <att type="integer" name="NumberOfUndirectedEdges" value="0"/>
+    <att type="integer" name="PartnerOfMultiEdgedNodePairs" value="0"/>
+    <att type="real" name="Radiality" value="1.0"/>
+    <att type="integer" name="SelfLoops" value="0"/>
+    <att type="real" name="Stress" value="2.0"/>
+    <att type="real" name="TopologicalCoefficient" value="0.77777778"/>
+    <att type="string" name="canonicalName" value="node2"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="36.0" y="270.0" fill="#666666" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Courier 10 Pitch Bold-0-18" cy:borderLineType="solid"/>
+  </node>
+  <node label="node3" id="-1">
+    <att type="real" name="AverageShortestPathLength" value="1.33333333"/>
+    <att type="real" name="BetweennessCentrality" value="0.0"/>
+    <att type="real" name="ClosenessCentrality" value="0.75"/>
+    <att type="real" name="ClusteringCoefficient" value="1.0"/>
+    <att type="integer" name="Degree" value="2"/>
+    <att type="integer" name="Eccentricity" value="2"/>
+    <att type="boolean" name="IsSingleNode" value="false"/>
+    <att type="string" name="NODE_TYPE" value="DefaultNode"/>
+    <att type="real" name="NeighborhoodConnectivity" value="3.0"/>
+    <att type="integer" name="NumberOfDirectedEdges" value="2"/>
+    <att type="integer" name="NumberOfUndirectedEdges" value="0"/>
+    <att type="integer" name="PartnerOfMultiEdgedNodePairs" value="0"/>
+    <att type="real" name="Radiality" value="0.83333333"/>
+    <att type="integer" name="SelfLoops" value="0"/>
+    <att type="real" name="Stress" value="0.0"/>
+    <att type="real" name="TopologicalCoefficient" value="1.0"/>
+    <att type="string" name="canonicalName" value="node3"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="0.5" y="180.0" fill="#666666" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Courier 10 Pitch Bold-0-18" cy:borderLineType="solid"/>
+  </node>
+  <edge label="node0 (DirectedEdge) node1" source="-4" target="-3">
+    <att type="real" name="EdgeBetweenness" value="3.0"/>
+    <att type="string" name="canonicalName" value="node0 (DirectedEdge) node1"/>
+    <att type="string" name="interaction" value="DirectedEdge" cy:editable="false"/>
+    <graphics width="12" fill="#cccccc" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="node0 (DirectedEdge) node2" source="-4" target="-2">
+    <att type="real" name="EdgeBetweenness" value="3.0"/>
+    <att type="string" name="canonicalName" value="node0 (DirectedEdge) node2"/>
+    <att type="string" name="interaction" value="DirectedEdge" cy:editable="false"/>
+    <graphics width="12" fill="#cccccc" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES">
+      <att name="edgeBend">
+        <att name="handle" x="60.5" y="75.0" />
+        <att name="handle" x="60.5" y="195.0" />
+      </att>
+    </graphics>
+  </edge>
+  <edge label="node1 (DirectedEdge) node3" source="-3" target="-1">
+    <att type="real" name="EdgeBetweenness" value="3.0"/>
+    <att type="string" name="canonicalName" value="node1 (DirectedEdge) node3"/>
+    <att type="string" name="interaction" value="DirectedEdge" cy:editable="false"/>
+    <graphics width="12" fill="#cccccc" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="node1 (DirectedEdge) node2" source="-3" target="-2">
+    <att type="real" name="EdgeBetweenness" value="2.0"/>
+    <att type="string" name="canonicalName" value="node1 (DirectedEdge) node2"/>
+    <att type="string" name="interaction" value="DirectedEdge" cy:editable="false"/>
+    <graphics width="12" fill="#cccccc" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES">
+      <att name="edgeBend">
+        <att name="handle" x="36.0" y="165.0" />
+      </att>
+    </graphics>
+  </edge>
+  <edge label="node3 (DirectedEdge) node2" source="-1" target="-2">
+    <att type="real" name="EdgeBetweenness" value="3.0"/>
+    <att type="string" name="canonicalName" value="node3 (DirectedEdge) node2"/>
+    <att type="string" name="interaction" value="DirectedEdge" cy:editable="false"/>
+    <graphics width="12" fill="#cccccc" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+</graph>

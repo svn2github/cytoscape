@@ -1,0 +1,8 @@
+<graphml>
+    <key id="shape" for="node" attr.name="shape" attr.type="string"/>
+    <graph edgedefault="undirected">
+        <node id="1">
+            <data key="shape">ELLIPSE</data>
+        </node>
+    </graph>
+</graphml> 
