@@ -314,6 +314,9 @@ public class ImportTablePanel extends JPanel implements PropertyChangeListener, 
 		this.helpButton.setVisible(false);
 
 		setPreviewPanel(null);
+		
+		// Hide the alias Panel, we will do the table join somewhere else, not in this GUI
+		aliasScrollPane.setVisible(false);
 	}
 
 
