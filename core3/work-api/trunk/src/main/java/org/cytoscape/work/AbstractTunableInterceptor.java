@@ -32,8 +32,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JPanel;
@@ -80,10 +82,6 @@ import org.slf4j.Logger;
 public abstract class AbstractTunableInterceptor<TH extends TunableHandler> implements TunableInterceptor<TH> {
 	private boolean throwException;
 
-	/**
-	 *  Factory for Handlers
-	 */
-	protected final TunableHandlerFactory<TH> factory;
 
 	/**
 	 *  Store the Handlers
@@ -95,6 +93,11 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 	 */
 	protected final Map<Object, Method> guiProviderMap;
 
+	/**
+	 * A list of TunableHandlerFactory services that have been registered.
+	 */
+	protected final List<TunableHandlerFactory<TH>> tunableHandlerFactories;
+
 	private final static Logger logger = LoggerFactory.getLogger(AbstractTunableInterceptor.class);
 
 	/**
@@ -104,11 +107,11 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 	 * 	<code>CLHandlerFactory</code> to get the <code>Handlers</code> that will create the <i>Options</i> for the <code>Tasks</code> runnable through the CommandLine Interface,
 	 *  or <code>PropHandlerFactory</code> to get the <code>Handlers</code> for Properties.
 	 */
-	public AbstractTunableInterceptor(TunableHandlerFactory<TH> tunableHandlerFactory) {
-		this.throwException = false;
-		this.factory = tunableHandlerFactory;
+	public AbstractTunableInterceptor() {
+		throwException = false;
 		handlerMap = new HashMap<Object, LinkedHashMap<String, TH>>();
 		guiProviderMap = new HashMap<Object, Method>();
+		tunableHandlerFactories = new ArrayList<TunableHandlerFactory<TH>>();
 	}
 
 	/** Used for testing only! */
@@ -137,25 +140,16 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 						final Tunable tunable = field.getAnnotation(Tunable.class);
 
 						// Get a Handler for this type of Tunable and...
-						TH handler = factory.getHandler(field, obj, tunable);
+						TH handler = getHandler(field, obj, tunable);
 
 						// ...add it to the list of Handlers
 						if (handler != null)
 							handlerList.put(field.getName(), handler);
 						else
-							throw new Exception("No handler for type: "
-									    + field.getType().getName());
+							logOrThrowException("No handler for type: " + field.getType().getName(), null);
 					} catch (final Throwable ex) {
-						final StringBuilder msg = new StringBuilder("tunable field intercept failed for "
-											    + field.toString() + "\r\n");
-						msg.append(ex.getMessage());
-						msg.append("\r\n");
-						for (final StackTraceElement ste : ex.getStackTrace()) {
-							msg.append(ste.toString());
-							msg.append("\r\n");
-						}
-
-						logOrThrowException(msg.toString());
+						logOrThrowException("tunable field intercept failed for "
+							    + field.toString(), ex);
 					}
 				}
 			}
@@ -169,49 +163,46 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 			for (final Method method : obj.getClass().getMethods()) {
 				// See if the method is annotated as a Tunable.
    				if (method.isAnnotationPresent(Tunable.class)) {
-					final Tunable tunable = method.getAnnotation(Tunable.class);
-					if (method.getName().startsWith("get")) {
-						if (!isValidGetter(method))
-							throw new IllegalArgumentException(
-								"Invalid getter method specified \"" + method.getName()
-								+ "\", maybe this method takes arguments or returns void?");
 
-						final String rootName = method.getName().substring(3);
-						getMethodsMap.put(rootName, method);
-						tunableMap.put(rootName, tunable);
+   					final Tunable tunable = method.getAnnotation(Tunable.class);
+   					if (method.getName().startsWith("get")) {
+   						if (!isValidGetter(method)) {
+   							throw new IllegalArgumentException("Invalid getter method specified \"" + method.getName()
+   									+ "\", maybe this method takes arguments or returns void?");
+   						}
 
-						final Class getterReturnType = method.getReturnType();
-						final Method setter = findCompatibleSetter(obj, rootName, getterReturnType);
-						if (setter == null)
-							throw new IllegalArgumentException(
-								"Can't find a setter compatible with the "
-								+ method.getName() + "() getter!");
+   						final String rootName = method.getName().substring(3);
+   						getMethodsMap.put(rootName, method);
+   						tunableMap.put(rootName, tunable);
 
-						// Get a handler for get and set methods:
-						final TH handler =
-							factory.getHandler(method, setter, obj,
-									   tunableMap.get(rootName));
-						if (handler == null)
-							logOrThrowException(
-								"Failed to create a handler for " + setter.getName() + "()!");
-						else
-							handlerList.put("getset" + rootName, handler);
-					} else
-						throw new IllegalArgumentException(
-							"the name of the method has to start with \"get\" but was "
-							+ method.getName() + "()!");
+   						final Class getterReturnType = method.getReturnType();
+   						final Method setter = findCompatibleSetter(obj, rootName, getterReturnType);
+   						if (setter == null) {
+   							throw new IllegalArgumentException("Can't find a setter compatible with the "
+   									+ method.getName() + "() getter!");
+   						}
 
+   						// Get a handler with for get and set methods:
+   						final TH handler = getHandler(method, setter, obj, tunableMap.get(rootName));
+   						if (handler == null) {
+   							logOrThrowException("Failed to create a handler for " + setter.getName() + "()!",null);
+   						} else {
+   							handlerList.put("getset" + rootName, handler);
+   						}
+   					} else {
+   						throw new IllegalArgumentException("the name of the method has to start with \"get\" but was "
+   								+ method.getName() + "()!");
+   					}
+
+   				// See if the method is annotated as providing a GUI...
 				} else if (method.isAnnotationPresent(ProvidesGUI.class)) {
-					if (!isJPanelOrJPanelDescendent(method.getReturnType()))
-						throw new IllegalArgumentException(
-							method.getName() + " annotated with @ProvidesGUI must return JPanel!");
-					else if (method.getParameterTypes().length != 0)
-						throw new IllegalArgumentException(
-							method.getName() + " annotated with @ProvidesGUI must take 0 arguments!");
-					else {
+					if (!isJPanelOrJPanelDescendent(method.getReturnType())) {
+						throw new IllegalArgumentException(method.getName() + " annotated with @ProvidesGUI must return JPanel!");
+					} else if (method.getParameterTypes().length != 0) {
+						throw new IllegalArgumentException(method.getName() + " annotated with @ProvidesGUI must take 0 arguments!");
+					} else {
 						if (!guiProviderMap.isEmpty())
-							throw new IllegalArgumentException(
-								"Classes must have at most a single @ProvidesGUI annotated method but + "
+							throw new IllegalArgumentException("Classes must have at most a single @ProvidesGUI annotated method but + "
 							        + method.getDeclaringClass().getName() + " has more than one!");
 						guiProviderMap.put(obj, method);
 					}
@@ -285,11 +276,48 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 
 		return false;
 	}
+	
+	private TH getHandler(Field field, Object instance, Tunable tunable) {
+		for ( TunableHandlerFactory<TH> thf : tunableHandlerFactories ) {
+			TH th = thf.getHandler(field, instance, tunable);
+			if ( th != null )
+				return th;
+		}
+		return null;
+	}
+	
+	private TH getHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+		for ( TunableHandlerFactory<TH> thf : tunableHandlerFactories ) {
+			TH th = thf.getHandler(getter, setter, instance, tunable);
+			if ( th != null )
+				return th;
+		}
+		return null;
+	}
+	
+	/**
+	 * Allows TunableHandlerFactory services to be added to the list of factories used to process Tunables.
+	 * @param thf The factory to be added.
+	 * @param properties OSGi service metadata.  May be null.
+	 */
+	public void addTunableHandlerFactory(TunableHandlerFactory<TH> thf, Map properties) {
+		if ( thf != null )
+			tunableHandlerFactories.add(thf);
+	}
 
-	private final void logOrThrowException(final String msg) {
+	/**
+	 * Allows TunableHandlerFactory services to be removed from the list of factories used to process Tunables.
+	 * @param thf The factory to be removed.
+	 * @param properties OSGi service metadata.  May be null.
+	 */
+	public void removeTunableHandlerFactory(TunableHandlerFactory<TH> thf, Map properties) {
+		tunableHandlerFactories.remove(thf);
+	}
+
+	private final void logOrThrowException(final String msg, Throwable ex) {
 		if (throwException)
-			throw new IllegalArgumentException(msg);
+			throw new IllegalArgumentException(msg, ex);
 		else
-			logger.warn(msg);
+			logger.warn(msg, ex);
 	}
 }

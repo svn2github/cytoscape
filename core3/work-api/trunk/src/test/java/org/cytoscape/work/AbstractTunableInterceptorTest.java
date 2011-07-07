@@ -29,6 +29,7 @@ package org.cytoscape.work;
 
 
 import java.lang.reflect.Field;
+
 import java.lang.reflect.Method;
 
 import javax.swing.JPanel;
@@ -36,23 +37,25 @@ import javax.swing.JPanel;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
-import static org.mockito.Mockito.*;
 
 
 public class AbstractTunableInterceptorTest {
-	private TunableInterceptor interceptor;
+	private AbstractTunableInterceptor interceptor;
 	private HasAnnotatedField hasAnnotatedField;
 	private HasAnnotatedSetterAndGetterMethods hasAnnotatedSetterAndGetterMethods;
 	private ProvidesGUIExample providesGUI;
 	
 	@Before
 	public void init() {
-		final TunableHandlerFactory<AbstractTunableHandler> handlerFactory = new SimpleHandlerFactory();
-		interceptor = new ConcreteTunableInterceptor(handlerFactory);
+		interceptor = new ConcreteTunableInterceptor();
+		interceptor.setThrowExceptions(true);
+		interceptor.addTunableHandlerFactory( new BasicTunableHandlerFactory(FakeTunableHandler.class,Object.class,int.class,Integer.class),null);
 		hasAnnotatedField = new HasAnnotatedField();
 		hasAnnotatedSetterAndGetterMethods = new HasAnnotatedSetterAndGetterMethods();
 		providesGUI = new ProvidesGUIExample();
+		
 	}
 
 	@Test
@@ -125,7 +128,6 @@ public class AbstractTunableInterceptorTest {
 	}
 }
 
-
 class FakeTunableHandler extends AbstractTunableHandler {
 	public FakeTunableHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
@@ -137,24 +139,18 @@ class FakeTunableHandler extends AbstractTunableHandler {
 }
 
 
-class SimpleHandlerFactory implements TunableHandlerFactory<AbstractTunableHandler> {
-	public AbstractTunableHandler getHandler(final Field field, final Object instance, final Tunable tunable) {
-		if (field.getType() == Exception.class)
-			return null;
-		return new FakeTunableHandler(field, instance, tunable);
-	}
-
-	public AbstractTunableHandler getHandler(final Method setter, final Method getter, final Object instance, final Tunable tunable) {
-		return new FakeTunableHandler(setter, getter, instance, tunable);
-	}
-}
+//class SimpleHandlerFactory implements TunableHandlerFactory<AbstractTunableHandler> {
+//	public AbstractTunableHandler getHandler(final Field field, final Object instance, final Tunable tunable) {
+//		return new FakeTunableHandler(field, instance, tunable);
+//	}
+//
+//	public AbstractTunableHandler getHandler(final Method setter, final Method getter, final Object instance, final Tunable tunable) {
+//		return new FakeTunableHandler(setter, getter, instance, tunable);
+//	}
+//}
 
 
 class ConcreteTunableInterceptor extends AbstractTunableInterceptor {
-	ConcreteTunableInterceptor(final TunableHandlerFactory<AbstractTunableHandler> handlerFactory) {
-		super(handlerFactory);
-		setThrowExceptions(true);
-	}
 
 	public boolean validateAndWriteBackTunables(Object... objs) {
 		return true;

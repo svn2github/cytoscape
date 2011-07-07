@@ -50,8 +50,8 @@ public class AbstractTaskManagerTest {
 	}
 
 	static private class SimpleTunableInterceptor<TH extends TunableHandler> extends AbstractTunableInterceptor {
-		SimpleTunableInterceptor(TunableHandlerFactory<TH> tunableHandlerFactory) {
-			super(tunableHandlerFactory);
+		SimpleTunableInterceptor() {
+			super();
 		}
 
 		public boolean execUI(Object... obs) {
@@ -74,7 +74,8 @@ public class AbstractTaskManagerTest {
 	@Test
 	public void testHasTunables() {
 		final TunableHandlerFactory<SimpleTunableHandler> handlerFactory= mock(TunableHandlerFactory.class);
-		final TunableInterceptor interceptor = new SimpleTunableInterceptor<SimpleTunableHandler>(handlerFactory);
+		final SimpleTunableInterceptor interceptor = new SimpleTunableInterceptor<SimpleTunableHandler>();
+		interceptor.addTunableHandlerFactory(handlerFactory, null);
 		final SimpleTaskMananger taskManager = new SimpleTaskMananger(interceptor);
 		assertFalse("This object has *no* Tunable annotation!", taskManager.hasTunables(new Object()));
 		assertTrue("This object has an annotated field!",
