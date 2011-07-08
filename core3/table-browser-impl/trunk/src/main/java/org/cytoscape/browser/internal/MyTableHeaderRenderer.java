@@ -77,8 +77,8 @@ final class MyTableHeaderRenderer extends JLabel implements TableCellRenderer {
 		
 		String toolTip = col.getType().getName();
 		if(col.isVirtual()){
-			this.setForeground(Color.cyan);
-			this.setBackground(Color.red);
+			this.setForeground(defaultForeground);
+			this.setBackground(Color.lightGray);
 			this.setOpaque(true);
 			toolTip = "<html>" + col.getType().getName()+ "<br />Virtual Column</html>";
 		}
