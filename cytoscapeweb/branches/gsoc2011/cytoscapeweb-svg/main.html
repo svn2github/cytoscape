@@ -27,11 +27,12 @@
 					borderColor: "#666666",
 					borderWidth: 3,
 					opacity: 1,
+					
 				},
 				edges: {
 					color: "#999999",
 					width: 3,
-					opacity: 0.8,
+					opacity: 0.8
 				}
 			}
 		
@@ -43,7 +44,8 @@
 					color: "#cccccc",
 					size: 14,
 					borderWidth: 2,
-					borderColor: "#707070"
+					borderColor: "#707070",
+					labelColor: "none"
 				},
 				edges: {
 					color: "#0b94b1",
@@ -203,14 +205,14 @@
 			<div id="container-div"></div>
 			Load graph:
 			<select onchange="load(this.options[selectedIndex].value)">
-				<option value="simpleGraph">Simple graph</option>
+				<option selected value="simpleGraph">Simple graph</option>
 				<option value="petersenGraph">Petersen graph</option>
 				<option value="ringGraph">Style demo</option>
 				<option value="pg">Large graph</option>
 			</select>
 			Load style:
 			<select onchange="setstyle(this.options[selectedIndex].value)">
-				<option value="basicStyle">Basic Style</option>
+				<option selected value="basicStyle">Basic Style</option>
 				<option value="demoStyle">Classic Style</option>
 				<option value="darkStyle">Dark style</option>
 				

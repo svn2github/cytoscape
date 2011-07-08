@@ -804,24 +804,25 @@ var Node = function(vis) {
 					.drag(Util.delegate(this, "_dragMove"), Util.delegate(this, "_dragStart"), Util.delegate(this, "_dragEnd"))
 					.click(Util.delegate(this, "_onClick"));
 		}
-		/*
+		
 		var label = this.getLabel();
 		if (label) {
 			var labelSize = this.getRenderedStyle("labelSize");
 			if (labelSize) {
 				if (this._elemLabel == null) {
-					this._elemLabel = this._visualization._canvas.text(0, 0, "").attr("font-weight", "bold");
+					this._elemLabel = this._visualization._canvas.text(0, 0, "").attr({"font-weight": "bold"});
+					this._elemLabel.node.setAttribute("pointer-events", "none");
 				}
 				this._elemLabel.attr({
 					"text": label,
 					"font-size": this.getRenderedStyle("labelSize"),
-					"color": this.getRenderedStyle("labelColor"),
-					"x": this._x,
-					"y": this._y,
-				});
+					"fill": this.getRenderedStyle("labelColor"),
+					"x": this._x + this._visualization._offsetX,
+					"y": this._y + this._visualization._offsetY,
+				}).toFront();
 			}
 		}
-		*/
+		
 		
 		var attrMap = {
 			"fill": "color",
@@ -864,6 +865,7 @@ var Node = function(vis) {
 	
 	this.remove = function() {
 		if (this._elem) this._elem.remove();
+		if (this._elemLabel) this._elemLabel.remove();
 	}
 }
 Node.prototype = new Element();
