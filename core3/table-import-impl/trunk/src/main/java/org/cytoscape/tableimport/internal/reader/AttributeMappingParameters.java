@@ -283,10 +283,6 @@ public class AttributeMappingParameters implements MappingParameter {
 				it = null;
 		}
 
-
-		if ((this.mappingAttribute != null) && !this.mappingAttribute.equals(ID)) {
-			buildAttribute2IDMap(it);
-		}
 	}
 
 	/**
@@ -444,73 +440,7 @@ public class AttributeMappingParameters implements MappingParameter {
 		return attr2id;
 	}
 
-	/**
-	 * Building hashmap for attribute <--> object ID mapping.
-	 *
-	 */
-	private void buildAttribute2IDMap(Iterator it) {
-		// Mapping from attribute value to object ID.
-		attr2id = new HashMap<String, List<String>>();
 
-		String objectID = null;
-		Object valObj = null;
-
-		while (it.hasNext()) {
-			switch (objectType) {
-				case NODE:
-
-					CyNode node = (CyNode) it.next();
-					objectID = Long.toString(node.getSUID()); //.getIdentifier();
-
-					//if (CyAttributesUtils.getClass(mappingAttribute, attributes) == List.class) {
-					//	valObj = attributes.getListAttribute(objectID, mappingAttribute);
-					//} else if (CyAttributesUtils.getClass(mappingAttribute, attributes) != Map.class) {
-					//	valObj = attributes.getAttribute(objectID, mappingAttribute);
-					//}
-
-					valObj = node.getCyRow(mappingAttribute);						
-
-					break;
-
-				case EDGE:
-
-					CyEdge edge = (CyEdge) it.next();
-					objectID = Long.toString(edge.getSUID()); //.getIdentifier();
-
-					//if (CyAttributesUtils.getClass(mappingAttribute, attributes) == List.class) {
-					//	valObj = attributes.getListAttribute(objectID, mappingAttribute);
-					//} else if (CyAttributesUtils.getClass(mappingAttribute, attributes) != Map.class) {
-					//	valObj = attributes.getAttribute(objectID, mappingAttribute);
-					//}
-
-					break;
-
-				case NETWORK:
-					// Not supported yet.
-					it.next();
-
-					break;
-
-				default:
-			}
-
-			// Put the <attribute value>-<object ID list> pair to the Map object.
-			if (valObj != null) {
-				if (valObj instanceof List) {
-					List keys = (List) valObj;
-
-					for (Object key : keys) {
-						if (key != null) {
-							putAttrValue(key.toString(), objectID);
-						}
-					}
-				} else {
-					putAttrValue(valObj.toString(), objectID);
-				}
-
-			}
-		}
-	}
 
 	private void putAttrValue(String attributeValue, String objectID) {
 		List<String> objIdList = null;
