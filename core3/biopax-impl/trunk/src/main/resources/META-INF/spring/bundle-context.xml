@@ -66,5 +66,16 @@
 		<constructor-arg ref="cyNetworkNamingRef"/>
 		<constructor-arg ref="bioPaxContainer"/>
 		<constructor-arg ref="networkListener"/>
+		<constructor-arg ref="visualMappingManagerRef"/>
+		<constructor-arg ref="bioPaxVisualStyleUtil"/>
 	</bean>
+	
+	<bean id="bioPaxVisualStyleUtil" class="org.cytoscape.biopax.util.BioPaxVisualStyleUtil">
+		<constructor-arg ref="visualStyleFactoryRef" />
+		<constructor-arg ref="visualMappingManagerRef" />
+		<constructor-arg ref="discreteMappingFunctionFactoryRef" />
+		<constructor-arg ref="passthroughMappingFunctionFactoryRef" />
+	</bean>
+	
+	
 </beans>

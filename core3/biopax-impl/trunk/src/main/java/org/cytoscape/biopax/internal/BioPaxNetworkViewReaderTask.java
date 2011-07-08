@@ -19,6 +19,8 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
@@ -40,15 +42,17 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 	private final CyNetworkFactory networkFactory;
 	private final CyNetworkViewFactory viewFactory;
 	private final CyNetworkNaming naming;
+	private final VisualMappingManager mappingManager;
+	private final BioPaxVisualStyleUtil bioPaxVisualStyleUtil;
 
 	private final BioPaxContainerImpl bpContainer;
 	private final NetworkListener networkListener;
 
-	private CyNetwork network;
-
 	private InputStream stream;
 
 	private String inputName;
+
+	private CyNetwork network;
 
 	/**
 	 * Constructor
@@ -66,7 +70,7 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 	 *
 	 * @param model PaxTools BioPAX Model
 	 */
-	public BioPaxNetworkViewReaderTask(InputStream stream, String inputName, CyNetworkFactory networkFactory, CyNetworkViewFactory viewFactory, CyNetworkNaming naming, BioPaxContainerImpl bpContainer, NetworkListener networkListener) {
+	public BioPaxNetworkViewReaderTask(InputStream stream, String inputName, CyNetworkFactory networkFactory, CyNetworkViewFactory viewFactory, CyNetworkNaming naming, BioPaxContainerImpl bpContainer, NetworkListener networkListener, VisualMappingManager mappingManager, BioPaxVisualStyleUtil bioPaxVisualStyleUtil) {
 		this.stream = stream;
 		this.inputName = inputName;
 		this.networkFactory = networkFactory;
@@ -74,6 +78,8 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 		this.naming = naming;
 		this.bpContainer = bpContainer;
 		this.networkListener = networkListener;
+		this.mappingManager = mappingManager;
+		this.bioPaxVisualStyleUtil = bioPaxVisualStyleUtil;
 	}
 	
 	public String getNetworkId() {
@@ -99,8 +105,6 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 		networkName = getNetworkName(model);
 		network = networkFactory.getInstance();
 		AttributeUtil.set(network, CyNetwork.NAME, networkName, String.class);
-		
-		//view = viewFactory.getNetworkView(network);
 		
 		// Map BioPAX Data to Cytoscape Nodes/Edges (run as task)
 		MapBioPaxToCytoscapeImpl mapper = new MapBioPaxToCytoscapeImpl(network, taskMonitor);
@@ -186,31 +190,6 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 		BioPaxUtil.addNetworkModel(cyNetwork.getSUID(), model);
 		String modelString = (inputName!=null) ? inputName : "";
 		AttributeUtil.set(cyNetwork, BioPaxUtil.BIOPAX_MODEL_STRING, modelString, String.class);
-		
-		//  Set-up the BioPax Visual Style
-		// TODO: VisualStyle
-//		VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
-//		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
-//		CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
-//        // set tooltips
-//		BioPaxVisualStyleUtil.setNodeToolTips(view);
-//		// set style
-//		view.setVisualStyle(bioPaxVisualStyle.getName());
-//		manager.setVisualStyle(bioPaxVisualStyle);
-//		view.applyVizmapper(bioPaxVisualStyle);
-
-		//  Set up BP UI
-//		CytoscapeWrapper.initBioPaxPlugInUI();
-//        bpContainer.showLegend();
-        
-        // add network listener
-//		networkListener.registerNetwork(view);
-		
-		// add node's context menu
-		// TODO: NodeViewTaskFactory?
-//		BiopaxNodeCtxMenuListener nodeCtxMenuListener = new BiopaxNodeCtxMenuListener();
-//		view.addNodeContextMenuListener(nodeCtxMenuListener);
-		
 	}
 
 	/**
@@ -248,6 +227,26 @@ public class BioPaxNetworkViewReaderTask extends AbstractTask implements CyNetwo
 	public CyNetworkView buildCyNetworkView(CyNetwork network) {
 		CyNetworkView view = viewFactory.getNetworkView(network);
 		networkListener.registerNetwork(view);
+		
+		//  Set-up the BioPax Visual Style
+		VisualStyle bioPaxVisualStyle = bioPaxVisualStyleUtil.getBioPaxVisualStyle();
+//        // set tooltips
+//		BioPaxVisualStyleUtil.setNodeToolTips(view);
+//		// set style
+		mappingManager.setVisualStyle(bioPaxVisualStyle, view);
+
+		//  Set up BP UI
+//		CytoscapeWrapper.initBioPaxPlugInUI();
+//        bpContainer.showLegend();
+        
+        // add network listener
+//		networkListener.registerNetwork(view);
+		
+		// add node's context menu
+		// TODO: NodeViewTaskFactory?
+//		BiopaxNodeCtxMenuListener nodeCtxMenuListener = new BiopaxNodeCtxMenuListener();
+//		view.addNodeContextMenuListener(nodeCtxMenuListener);
+
 		return view;
 	}
 }
