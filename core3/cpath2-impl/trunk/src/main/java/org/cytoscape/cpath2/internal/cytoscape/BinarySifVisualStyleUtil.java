@@ -37,7 +37,7 @@ public class BinarySifVisualStyleUtil {
 	private final static String COMPLEX = "Complex";
 	private static final String INTERACTION = "interaction"; // TODO: Double check this constant
 
-	static VisualStyle binarySifStyle;
+	VisualStyle binarySifStyle;
 
 	private final VisualStyleFactory styleFactory;
 	private final VisualMappingManager mappingManager;
@@ -62,7 +62,7 @@ public class BinarySifVisualStyleUtil {
 	// * @return VisualStyle Object.
 	// */
 	public VisualStyle getVisualStyle() {
-		synchronized (BinarySifVisualStyleUtil.class) {
+		synchronized (this) {
 			if (binarySifStyle == null) {
 				binarySifStyle = styleFactory
 						.getInstance(BINARY_SIF_VISUAL_STYLE);
