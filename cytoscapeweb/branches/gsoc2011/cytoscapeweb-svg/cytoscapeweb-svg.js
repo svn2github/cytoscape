@@ -12,14 +12,19 @@
  */
 function Visualization(containerId) {
 
-	this._canvas = Raphael(containerId);
+	this._width = 640;
+	this._height = 480;
+	this._canvas = Raphael(containerId, 640, 480);
 
 	this._edges = {};
 	this._nodes = {};
 	
+	this._dragX = 0;
+	this._dragY = 0;
+	
 	// Viewport offset
-	this._offsetX = 86;
-	this._offsetY = 50;
+	this._offsetX = 186;
+	this._offsetY = 100;
 
 	// Style defaults
 	this._style = {
@@ -42,7 +47,7 @@ function Visualization(containerId) {
 			"dragBorderColor": null,
 			"dragOpacity": null,
 			"selectedColor": null,
-			"selectedBorderColor": null,
+			"selectedBorderColor": "red",
 			"selectedOpacity": null,
 			"labelSize": 10,
 			"labelColor": "#000000"
@@ -59,6 +64,20 @@ function Visualization(containerId) {
 			"backwardArrowSize": 10
 		}
 	};
+	
+	this._bg = this._canvas.rect(0, 0, this._width, this._height).attr({"fill": this._style.global.backgroundColor, "stroke": "none", "cursor": "move"});
+	this._bg.drag(Util.delegate(this, "_dragMove"), Util.delegate(this, "_dragStart"));
+
+	this.deselect = function () {
+		
+		for (var nodeId in this._nodes) {
+			this._nodes[nodeId].deselect();
+		}
+		
+		for (var edgeId in this._edges) {
+			this._edges[edgeId].deselect();
+		}
+	}
 
 	/**
 	 * Get a global style property.
@@ -231,7 +250,6 @@ function Visualization(containerId) {
 	 * Draw the network visualization.
 	 */
 	this.draw = function() {
-		document.getElementById(containerId).style.backgroundColor = this._style.global.backgroundColor;
 
 		for (var nodeId in this._nodes) {
 			this._nodes[nodeId]._draw();
@@ -240,6 +258,9 @@ function Visualization(containerId) {
 		for (var edgeId in this._edges) {
 			this._edges[edgeId]._draw();
 		}
+		
+		this._bg.attr("fill", this._style.global.backgroundColor).toBack();
+
 		this._canvas.safari();
 		return this;
 	};
@@ -338,6 +359,19 @@ function Visualization(containerId) {
 			//edge.setLabel(edges[j].label);	
 		}
 	};
+	
+	this._dragStart = function(x, y) {
+		this._dragX = this._offsetX;
+		this._dragY = this._offsetY;
+	}
+	
+	this._dragMove = function(x, y) {
+		this._offsetX = this._dragX + x;
+		this._offsetY = this._dragY + y;
+		this.draw();
+	}
+	
+	
 }
 
 var Shapes = {};
@@ -410,6 +444,29 @@ var Element = function() {
 			"opacity": "selectedOpacity"
 		}
 	};
+	
+	this.toggleSelected = function() {
+		if (this._selected) {
+			this.deselect();
+		} else {
+			this.select();
+		}
+	}
+	
+	this.select = function() {
+		this._selected = true;
+		this._triggerEvent("selected");
+	}
+	
+	this.deselect = function() {
+		if (this._selected) {
+			
+			this._selected = false;
+			this._triggerEvent("deselected");
+			this._draw();
+		}
+	}
+	
 
 	this.setStyle = function(property, value) {
 		if (property in this._visualization._style[this._group]) {
@@ -582,11 +639,11 @@ var Node = function(vis) {
 		switch (this.getRenderedStyle("shape")) {
 			case "DIAMOND":
 			case "ELLIPSE":
-				radius = this.getRenderedStyle("size") * 1.1 + 2;
+				radius = this.getRenderedStyle("size") + 3;
 				break;
 			case "RECTANGLE":
 			default:
-				radius = this.getRenderedStyle("size") * 1.2 + 2;
+				radius = this.getRenderedStyle("size") * 1.3;
 				break;
 		}
 		return radius;
@@ -717,10 +774,11 @@ var Node = function(vis) {
 			this._justDragged = false;
 			return;
 		}
-		this._selected = !this._selected;
+		this._visualization.deselect();
+		this.toggleSelected();
 		this._draw();
 		this._triggerEvent("click");
-		this._hoverEnd(); // M
+		this._hoverEnd();
 	};
 
 
@@ -825,6 +883,7 @@ var Edge = function(vis) {
 	this._group = "edge";
 	this._offset = 0; // Offset used for drawing multiple edges between two nodes
 	this._label = "";
+	this._listeners = {};
 	
 	// Necessary values
 	this._id = null;
