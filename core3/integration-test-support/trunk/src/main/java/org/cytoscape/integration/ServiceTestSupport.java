@@ -69,7 +69,7 @@ public abstract class ServiceTestSupport {
 	protected void registerMockService(final Class<?> clazz, final Object mockObject,
 					   final Dictionary d)
 	{
-		if (mockObject.getClass() != clazz)
+		if (!clazz.isAssignableFrom(mockObject.getClass()))
 			throw new IllegalArgumentException("the mock object is an instance of the wrong class!");
 		bundleContext.registerService(clazz.getName(), mockObject, d);
 	}
