@@ -32,6 +32,8 @@ package org.cytoscape.task.internal.creation;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.task.AbstractNetworkTask;
+import org.cytoscape.task.internal.layout.ApplyPreferredLayoutTask;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
@@ -41,12 +43,16 @@ public class CreateNetworkViewTask extends AbstractNetworkTask {
 
 	private final CyNetworkViewManager networkViewManager;
 	private final CyNetworkViewFactory viewFactory;
+	
+	private final CyLayoutAlgorithmManager layouts;
 
 	public CreateNetworkViewTask(final CyNetwork networkModel, final CyNetworkViewFactory viewFactory,
-			final CyNetworkViewManager networkViewManager) {
+			final CyNetworkViewManager networkViewManager,
+			final CyLayoutAlgorithmManager layouts) {
 		super(networkModel);
 		this.viewFactory = viewFactory;
 		this.networkViewManager = networkViewManager;
+		this.layouts = layouts;
 	}
 
 	public void run(TaskMonitor taskMonitor) throws Exception {
@@ -58,11 +64,15 @@ public class CreateNetworkViewTask extends AbstractNetworkTask {
 			// large network.
 			final CyNetworkView view = viewFactory.getNetworkView(network, false);
 			networkViewManager.addNetworkView(view);
+			
+			// Apply layout only when it is necessary.
+			if(layouts != null)
+				this.insertTasksAfterCurrentTask(new ApplyPreferredLayoutTask(view, layouts));
 		} catch (Exception e) {
 			throw new Exception("Could not create network view for network: "
 					+ network.getCyRow().get(CyTableEntry.NAME, String.class), e);
 		}
-
+		
 		taskMonitor.setProgress(1.0);
 		taskMonitor.setStatusMessage("Network view successfully create for:  "
 				+ network.getCyRow().get(CyTableEntry.NAME, String.class));

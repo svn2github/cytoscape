@@ -105,7 +105,7 @@ abstract class AbstractNetworkFromSelectionTask extends AbstractCreationTask {
 		if (curView == null) {
 			// Create view for the new network.
 			final CreateNetworkViewTask createViewTask = new CreateNetworkViewTask(newNet, viewFactory,
-					networkViewManager);
+					networkViewManager, null);
 			insertTasksAfterCurrentTask(createViewTask);
 
 			appManager.setCurrentNetworkView(newNet.getSUID());

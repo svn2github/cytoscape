@@ -39,7 +39,7 @@ public class ApplyPreferredLayoutTask extends AbstractNetworkViewTask {
 
 	private static final String DEF_LAYOUT = "force-directed";
 
-	private final Properties props;
+	private Properties props;
 	private final CyLayoutAlgorithmManager layouts;
 
 	public ApplyPreferredLayoutTask(CyNetworkView v, CyLayoutAlgorithmManager layouts, Properties props) {
@@ -47,9 +47,18 @@ public class ApplyPreferredLayoutTask extends AbstractNetworkViewTask {
 		this.layouts = layouts;
 		this.props = props;
 	}
+	
+	public ApplyPreferredLayoutTask(final CyNetworkView v, final CyLayoutAlgorithmManager layouts) {
+		super(v);
+		this.layouts = layouts;
+	}
 
 	public void run(TaskMonitor tm) {
-		final String pref = props.getProperty("preferredLayoutAlgorithm", DEF_LAYOUT);
+		
+		String pref = CyLayoutAlgorithmManager.DEFAULT_LAYOUT_NAME;
+		if(props != null) 
+			pref = props.getProperty("preferredLayoutAlgorithm", DEF_LAYOUT);
+
 		final CyLayoutAlgorithm layout = layouts.getLayout(pref);
 
 		if (layout != null) {
