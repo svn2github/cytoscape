@@ -1,5 +1,5 @@
 
-package exportasxgmmltrial;
+package org.cytoscape.komal;
 
 import java.io.*;
 import java.awt.*;

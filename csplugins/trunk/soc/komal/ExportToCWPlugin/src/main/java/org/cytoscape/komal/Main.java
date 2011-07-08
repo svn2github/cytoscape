@@ -1,4 +1,4 @@
-package exportasxgmmltrial;
+package org.cytoscape.komal;
 
 import java.net.*;
 import java.net.URL;

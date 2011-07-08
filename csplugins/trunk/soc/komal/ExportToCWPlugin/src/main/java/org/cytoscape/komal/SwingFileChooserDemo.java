@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package exportasxgmmltrial;
+package org.cytoscape.komal;
 
 import java.awt.BorderLayout;
 import java.awt.Insets;
