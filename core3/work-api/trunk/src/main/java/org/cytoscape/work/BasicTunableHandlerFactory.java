@@ -1,10 +1,12 @@
 package org.cytoscape.work;
 
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * A convenience implementation of TunableHandlerFactory that will construct a TunableHandler
@@ -65,7 +67,8 @@ public class BasicTunableHandlerFactory<T extends TunableHandler> implements Tun
 			return null;
 	
 		try {
-			Constructor<T> con = tunableHandlerClass.getConstructor(Method.class, Method.class, Object.class, Tunable.class);
+			Constructor<T> con =
+				tunableHandlerClass.getConstructor(Method.class, Method.class, Object.class, Tunable.class);
 			return con.newInstance(getter, setter, instance, tunable);
 		} catch (Exception e) {
 			logger.warn("Failed to construct tunable handler. Missing Method based constructor for class: " + 
@@ -76,7 +79,7 @@ public class BasicTunableHandlerFactory<T extends TunableHandler> implements Tun
 	
 	private boolean properType(Class<?> c) {
 		for ( Class<?> allowed : allowedTypes ) 
-			if ( allowed == c )
+			if (allowed.isAssignableFrom(c))
 				return true;
 		return false;
 	}

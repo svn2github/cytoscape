@@ -51,7 +51,7 @@ public class AbstractTunableInterceptorTest {
 	public void init() {
 		interceptor = new ConcreteTunableInterceptor();
 		interceptor.setThrowExceptions(true);
-		interceptor.addTunableHandlerFactory( new BasicTunableHandlerFactory(FakeTunableHandler.class,Object.class,int.class,Integer.class),null);
+		interceptor.addTunableHandlerFactory( new BasicTunableHandlerFactory(FakeTunableHandler.class,int.class,Integer.class),null);
 		hasAnnotatedField = new HasAnnotatedField();
 		hasAnnotatedSetterAndGetterMethods = new HasAnnotatedSetterAndGetterMethods();
 		providesGUI = new ProvidesGUIExample();
