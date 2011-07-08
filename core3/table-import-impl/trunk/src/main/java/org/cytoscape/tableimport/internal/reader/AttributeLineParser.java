@@ -107,9 +107,6 @@ public class AttributeLineParser {
 	 */
 	public void parseEntry(CyTable table, String[] parts) {
 
-		//System.out.println("Entering AttributeLineParser.parseEntry()....");
-
-
 		/*
 		 * Split the line and extract values
 		 */
@@ -145,71 +142,26 @@ public class AttributeLineParser {
 		 * Case 1: use node ID as the key
 		 */
 		if (mapping.getMappingAttribute().equals(mapping.ID)) {
-
-			//System.out.println("AttributeLineParser.parseEntry(): case 1: use node ID as the key");
-
 			transfer2cyattributes(table, primaryKey, aliasSet, parts);
 		} else {
 			/*
 			 * Case 2: use an attribute as the key.
 			 */
+				
+			//String altKey = mapping.getAttributeNames()[mapping.getKeyIndex()];
 
-			//System.out.println("AttributeLineParser.parseEntry(): case 2: use an attribute as the key");
-
-			List<String> objectIDs = null;
-
-			for (String id : aliasSet) {
-				// Normal Mapping.  Case sensitive.
-
-				if (mapping.getAttributeToIDMap().containsKey(id)) {
-					objectIDs = mapping.toID(id);
-
-					for (String objectID : objectIDs) {
-						//mapping.getAlias().add(objectID, new ArrayList<String>(aliasSet));
-					}
-
-					break;
-				} else if (mapping.getCaseSensitive() == false) {
-
-					Set<String> keySet = mapping.getAttributeToIDMap().keySet();
-
-					String newKey = null;
-
-					for (String key : keySet) {
-						if (key.equalsIgnoreCase(id)) {
-							newKey = key;
-
-							break;
-						}
-					}
-
-					if (newKey != null) {
-						objectIDs = mapping.toID(newKey);
-
-						for (String objectID : objectIDs) {
-							//mapping.getAlias().add(objectID, new ArrayList<String>(aliasSet));
-						}
-
-						break;
-					}
-				}
-			}
-
-			if (objectIDs != null) {
-				for (String key : objectIDs) {
-					transfer2cyattributes(table, key, aliasSet, parts);
-				}
-			}
+			// load it the same as case 1 for now
+			transfer2cyattributes(table, primaryKey, aliasSet, parts);
 		}
 	}
 
 	private void transfer2cyattributes(CyTable table, String primaryKey, Set<String> aliasSet, String[] parts) {
 
-		//System.out.println("Entering AttributeLineParser.transfer2cyattributes()....");
-
-
 		String altKey = null;
 		String targetNetworkID = null;
+
+
+		altKey =primaryKey;
 
 		/*
 		 * Search the key
@@ -389,8 +341,14 @@ public class AttributeLineParser {
 				else if (altKey == null) {
 					mapAttribute(table, primaryKey, parts[i].trim(), i);
 				} else {
-					mapAttribute(table, altKey, parts[i].trim(), i);
+					//mapAttribute(table, altKey, parts[i].trim(), i);
 				}
+			}
+			
+			if (altKey != null) {
+				//System.out.println("\tuse altKey to mapAttribute ....");
+				mapAttribute(table, primaryKey, parts[i].trim(), i);			
+			
 			}
 		}
 
@@ -415,8 +373,6 @@ public class AttributeLineParser {
 	 * @param index
 	 */
 	private void mapAttribute(CyTable table, final String key, final String entry, final int index) {
-
-		//System.out.println("MapAttribute(): key ="+ key+"\tattributeName ="+ mapping.getAttributeNames()[index] + ", value = "+ entry);
 
 		final Byte type = mapping.getAttributeTypes()[index];
 
