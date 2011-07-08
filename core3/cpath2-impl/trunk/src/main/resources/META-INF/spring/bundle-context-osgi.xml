@@ -48,6 +48,20 @@
 
 	<osgi:reference id="networkListenerRef"
 		interface="org.cytoscape.biopax.NetworkListener" />
+
+	<osgi:reference id="visualMappingManagerRef"
+		interface="org.cytoscape.view.vizmap.VisualMappingManager"/>
 	
+	<osgi:reference id="visualStyleFactoryRef"
+		interface="org.cytoscape.view.vizmap.VisualStyleFactory"/>
+
+	<osgi:reference id="discreteMappingFactoryRef"
+		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory"
+		filter="(mapping.type=discrete)"/>
+		
+	<osgi:reference id="passthroughMappingFactoryRef"
+		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory"
+		filter="(mapping.type=passthrough)"/>
+
 	<osgi:service ref="cPathWebService" auto-export="interfaces" />
 </beans>

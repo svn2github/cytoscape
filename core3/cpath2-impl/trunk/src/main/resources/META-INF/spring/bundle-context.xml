@@ -31,9 +31,18 @@
 		<constructor-arg ref="bioPaxContainerRef" />
 		<constructor-arg ref="mapBioPaxToCytoscapeFactoryRef" />
 		<constructor-arg ref="networkListenerRef" />
+		<constructor-arg ref="binarySifVisualStyleUtil" />
+		<constructor-arg ref="visualMappingManagerRef" />
 	</bean>
 	
 	<bean id="cPathWebService" class="org.cytoscape.cpath2.internal.web_service.CytoscapeCPathWebService">
 		<constructor-arg ref="cPath2Factory" />
+	</bean>
+	
+	<bean id="binarySifVisualStyleUtil" class="org.cytoscape.cpath2.internal.cytoscape.BinarySifVisualStyleUtil">
+		<constructor-arg ref="visualStyleFactoryRef" />
+		<constructor-arg ref="visualMappingManagerRef" />
+		<constructor-arg ref="discreteMappingFactoryRef" />
+		<constructor-arg ref="passthroughMappingFactoryRef" />
 	</bean>
 </beans>

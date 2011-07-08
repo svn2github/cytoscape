@@ -1,161 +1,187 @@
 package org.cytoscape.cpath2.internal.cytoscape;
 
 import java.awt.Color;
+import java.awt.Paint;
 
+import org.cytoscape.biopax.MapBioPaxToCytoscape;
+import org.cytoscape.biopax.util.BioPaxVisualStyleUtil;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
+import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
+import org.cytoscape.view.presentation.property.RichVisualLexicon;
+import org.cytoscape.view.presentation.property.values.NodeShape;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.VisualStyleFactory;
+import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 
 /**
  * Binary SIF Visual Style.
- *
+ * 
  * @author Ethan Cerami.
  */
 public class BinarySifVisualStyleUtil {
-    public final static String BINARY_SIF_VISUAL_STYLE = "Binary_SIF_Version_1";
-    public final static String BINARY_NETWORK = "BINARY_NETWORK";
-    public final static String COMPONENT_OF = "COMPONENT_OF";
-    public final static String COMPONENT_IN_SAME = "IN_SAME_COMPONENT";
-    public final static String SEQUENTIAL_CATALYSIS = "SEQUENTIAL_CATALYSIS";
-    public final static String CONTROLS_STATE_CHANGE = "STATE_CHANGE";
-    public final static String CONTROLS_METABOLIC_CHANGE = "METABOLIC_CATALYSIS";
-    public final static String PARTICIPATES_CONVERSION = "REACTS_WITH";
-    public final static String PARTICIPATES_INTERACTION = "INTERACTS_WITH";
-    public final static String CO_CONTROL_INDEPENDENT_SIMILAR = "CO_CONTROL_INDEPENDENT_SIMILAR";
-    public final static String CO_CONTROL_INDEPENDENT_ANTI = "CO_CONTROL_INDEPENDENT_ANTI";
-    public final static String CO_CONTROL_DEPENDENT_SIMILAR = "CO_CONTROL_DEPENDENT_SIMILAR";
-    public final static String CO_CONTROL_DEPENDENT_ANTI = "CO_CONTROL_DEPENDENT_ANTI";
-    private final static String COMPLEX = "Complex"; 
+	public final static String BINARY_SIF_VISUAL_STYLE = "Binary_SIF_Version_1";
+	public final static String BINARY_NETWORK = "BINARY_NETWORK";
+	public final static String COMPONENT_OF = "COMPONENT_OF";
+	public final static String COMPONENT_IN_SAME = "IN_SAME_COMPONENT";
+	public final static String SEQUENTIAL_CATALYSIS = "SEQUENTIAL_CATALYSIS";
+	public final static String CONTROLS_STATE_CHANGE = "STATE_CHANGE";
+	public final static String CONTROLS_METABOLIC_CHANGE = "METABOLIC_CATALYSIS";
+	public final static String PARTICIPATES_CONVERSION = "REACTS_WITH";
+	public final static String PARTICIPATES_INTERACTION = "INTERACTS_WITH";
+	public final static String CO_CONTROL_INDEPENDENT_SIMILAR = "CO_CONTROL_INDEPENDENT_SIMILAR";
+	public final static String CO_CONTROL_INDEPENDENT_ANTI = "CO_CONTROL_INDEPENDENT_ANTI";
+	public final static String CO_CONTROL_DEPENDENT_SIMILAR = "CO_CONTROL_DEPENDENT_SIMILAR";
+	public final static String CO_CONTROL_DEPENDENT_ANTI = "CO_CONTROL_DEPENDENT_ANTI";
+	private final static String COMPLEX = "Complex";
+	private static final String INTERACTION = "interaction"; // TODO: Double check this constant
 
-//    /**
-//	 * Constructor.
-//	 * If an existing BioPAX Viz Mapper already exists, we use it.
-//	 * Otherwise, we create a new one.
-//	 *
-//	 * @return VisualStyle Object.
-//	 */
-//	public static VisualStyle getVisualStyle() {
-//		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
-//		CalculatorCatalog catalog = manager.getCalculatorCatalog();
-//
-//        VisualStyle visualStyle = catalog.getVisualStyle(BINARY_SIF_VISUAL_STYLE);
-//        if (visualStyle == null) {
-//            visualStyle = new VisualStyle(BINARY_SIF_VISUAL_STYLE);
-//
-//            NodeAppearanceCalculator nac = visualStyle.getNodeAppearanceCalculator();
-//
-//            //  set node opacity
-//            nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_OPACITY, 125);
-//            //  unlock node size
-//            visualStyle.getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,false);
-//
-//            createNodeShapes(nac);
-//            createNodeColors(nac);
-//            createNodeLabel(nac);
-//
-//            EdgeAppearanceCalculator eac = visualStyle.getEdgeAppearanceCalculator();
-//            eac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH,4.0);
-//            createEdgeColor (eac);
-//            createDirectedEdges (eac);
-//
-//            visualStyle.setNodeAppearanceCalculator(nac);
-//            visualStyle.setEdgeAppearanceCalculator(eac);
-//            GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator();
-//            gac.setDefaultBackgroundColor(Color.WHITE);
-//            visualStyle.setGlobalAppearanceCalculator(gac);
-//
-//            //  The visual style must be added to the Global Catalog
-//            //  in order for it to be written out to vizmap.props upon user exit
-//            catalog.addVisualStyle(visualStyle);
-//        }
-//        return visualStyle;
-//    }
-//
-//    private static void createNodeShapes(NodeAppearanceCalculator nac) {
-//        //  Default shape is an ellipse.
-//        nac.getDefaultAppearance().set(VisualPropertyType.NODE_SHAPE, NodeShape.ELLIPSE);
-//
-//        //  Complexes are Hexagons.
-//        DiscreteMapping discreteMapping = new DiscreteMapping(NodeShape.ELLIPSE,
-//            MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, ObjectMapping.NODE_MAPPING);
-//        discreteMapping.putMapValue(COMPLEX, NodeShape.HEXAGON);
-//        Calculator nodeShapeCalculator = new BasicCalculator("Node Shape",
-//            discreteMapping, VisualPropertyType.NODE_SHAPE);
-//		nac.setCalculator(nodeShapeCalculator);        
-//    }
-//
-//    private static void createNodeColors(NodeAppearanceCalculator nac) {
-//        Color color = new Color (255, 153, 153);
-//        nac.getDefaultAppearance().set(VisualPropertyType.NODE_FILL_COLOR, color);
-//
-//        //  Complexes are a Different Color.
-//        Color lightBlue = new Color (153, 153, 255);
-//        DiscreteMapping discreteMapping = new DiscreteMapping(color,
-//        		MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, ObjectMapping.NODE_MAPPING);
-//        discreteMapping.putMapValue(COMPLEX, lightBlue);
-//
-//        Calculator nodeShapeCalculator = new BasicCalculator("Node Color",
-//            discreteMapping, VisualPropertyType.NODE_FILL_COLOR);
-//		nac.setCalculator(nodeShapeCalculator);
-//    }
-//
-//    private static void createEdgeColor(EdgeAppearanceCalculator eac) {
-//		// create a discrete mapper, for mapping biopax node type
-//		// to a particular node color
-//		DiscreteMapping discreteMapping = new DiscreteMapping(Color.BLACK,
-//            Semantics.INTERACTION, ObjectMapping.EDGE_MAPPING);
-//
-//        discreteMapping.putMapValue(PARTICIPATES_CONVERSION, Color.decode("#ccc1da"));
-//        discreteMapping.putMapValue(PARTICIPATES_INTERACTION, Color.decode("#7030a0"));
-//        discreteMapping.putMapValue(CONTROLS_STATE_CHANGE, Color.decode("#0070c0"));
-//        discreteMapping.putMapValue(CONTROLS_METABOLIC_CHANGE, Color.decode("#00b0f0"));
-//        discreteMapping.putMapValue(SEQUENTIAL_CATALYSIS, Color.decode("#7f7f7f"));        
-//        discreteMapping.putMapValue(CO_CONTROL_DEPENDENT_ANTI, Color.decode("#ff0000"));
-//        discreteMapping.putMapValue(CO_CONTROL_INDEPENDENT_ANTI, Color.decode("#fd95a6"));
-//        discreteMapping.putMapValue(CO_CONTROL_DEPENDENT_SIMILAR, Color.decode("#00b050"));
-//        discreteMapping.putMapValue(CO_CONTROL_INDEPENDENT_SIMILAR, Color.decode("#92d050"));
-//        discreteMapping.putMapValue(COMPONENT_IN_SAME, Color.decode("#ffff00"));
-//        discreteMapping.putMapValue(COMPONENT_OF, Color.decode("#ffc000"));
-//
-//        // create and set edge label calculator in edge appearance calculator
-//		Calculator edgeColorCalculator = new BasicCalculator("Edge Color",
-//            discreteMapping, VisualPropertyType.EDGE_COLOR);
-//		eac.setCalculator(edgeColorCalculator);
-//
-//		// set default color
-//		eac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.EDGE_COLOR,
-//               Color.BLACK);
-//	}
-//
-//	private static void createDirectedEdges(EdgeAppearanceCalculator eac) {
+	static VisualStyle binarySifStyle;
+
+	private final VisualStyleFactory styleFactory;
+	private final VisualMappingManager mappingManager;
+	private final VisualMappingFunctionFactory discreteFactory;
+	private final VisualMappingFunctionFactory passthroughFactory;
+
+	public BinarySifVisualStyleUtil(VisualStyleFactory styleFactory,
+			VisualMappingManager mappingManager,
+			VisualMappingFunctionFactory discreteMappingFactory,
+			VisualMappingFunctionFactory passthroughFactory) {
+		this.styleFactory = styleFactory;
+		this.mappingManager = mappingManager;
+		this.discreteFactory = discreteMappingFactory;
+		this.passthroughFactory = passthroughFactory;
+	}
+
+	// /**
+	// * Constructor.
+	// * If an existing BioPAX Viz Mapper already exists, we use it.
+	// * Otherwise, we create a new one.
+	// *
+	// * @return VisualStyle Object.
+	// */
+	public VisualStyle getVisualStyle() {
+		synchronized (BinarySifVisualStyleUtil.class) {
+			if (binarySifStyle == null) {
+				binarySifStyle = styleFactory
+						.getInstance(BINARY_SIF_VISUAL_STYLE);
+
+				// set node opacity
+				binarySifStyle.setDefaultValue(
+						RichVisualLexicon.NODE_TRANSPARENCY, 125);
+				// unlock node size
+				// binarySifStyle.getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,false);
+
+				createNodeShapes(binarySifStyle);
+				createNodeColors(binarySifStyle);
+				createNodeLabel(binarySifStyle);
+
+				binarySifStyle.setDefaultValue(MinimalVisualLexicon.EDGE_WIDTH,
+						4.0);
+				createEdgeColor(binarySifStyle);
+				createDirectedEdges(binarySifStyle);
+
+				binarySifStyle
+						.setDefaultValue(
+								MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT,
+								Color.WHITE);
+
+				// The visual style must be added to the Global Catalog
+				// in order for it to be written out to vizmap.props upon user
+				// exit
+				mappingManager.addVisualStyle(binarySifStyle);
+			}
+		}
+		return binarySifStyle;
+	}
+
+	private void createNodeShapes(VisualStyle style) {
+		// Default shape is an ellipse.
+		style.setDefaultValue(RichVisualLexicon.NODE_SHAPE,
+				NodeShapeVisualProperty.ELLIPSE);
+
+		// Complexes are Hexagons.
+		DiscreteMapping<String, NodeShape> function = (DiscreteMapping<String, NodeShape>) discreteFactory
+				.createVisualMappingFunction(
+						MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, String.class,
+						RichVisualLexicon.NODE_SHAPE);
+		function.putMapValue(COMPLEX, NodeShapeVisualProperty.HEXAGON);
+		style.addVisualMappingFunction(function);
+	}
+
+	private void createNodeColors(VisualStyle style) {
+		Color color = new Color(255, 153, 153);
+		style.setDefaultValue(MinimalVisualLexicon.NODE_FILL_COLOR, color);
+
+		// Complexes are a Different Color.
+		Color lightBlue = new Color(153, 153, 255);
+		DiscreteMapping<String, Paint> function = (DiscreteMapping<String, Paint>) discreteFactory
+				.createVisualMappingFunction(
+						MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, String.class,
+						RichVisualLexicon.NODE_FILL_COLOR);
+		function.putMapValue(COMPLEX, lightBlue);
+		style.addVisualMappingFunction(function);
+	}
+
+	private void createEdgeColor(VisualStyle style) {
+		// create a discrete mapper, for mapping biopax node type
+		// to a particular node color
+		style.setDefaultValue(MinimalVisualLexicon.EDGE_PAINT, Color.BLACK);
+		DiscreteMapping<String, Paint> function = (DiscreteMapping<String, Paint>) discreteFactory
+				.createVisualMappingFunction(INTERACTION, String.class,
+						RichVisualLexicon.EDGE_PAINT);
+		
+		function.putMapValue(PARTICIPATES_CONVERSION,
+				Color.decode("#ccc1da"));
+		function.putMapValue(PARTICIPATES_INTERACTION,
+				Color.decode("#7030a0"));
+		function.putMapValue(CONTROLS_STATE_CHANGE,
+				Color.decode("#0070c0"));
+		function.putMapValue(CONTROLS_METABOLIC_CHANGE,
+				Color.decode("#00b0f0"));
+		function.putMapValue(SEQUENTIAL_CATALYSIS,
+				Color.decode("#7f7f7f"));
+		function.putMapValue(CO_CONTROL_DEPENDENT_ANTI,
+				Color.decode("#ff0000"));
+		function.putMapValue(CO_CONTROL_INDEPENDENT_ANTI,
+				Color.decode("#fd95a6"));
+		function.putMapValue(CO_CONTROL_DEPENDENT_SIMILAR,
+				Color.decode("#00b050"));
+		function.putMapValue(CO_CONTROL_INDEPENDENT_SIMILAR,
+				Color.decode("#92d050"));
+		function.putMapValue(COMPONENT_IN_SAME, Color.decode("#ffff00"));
+		function.putMapValue(COMPONENT_OF, Color.decode("#ffc000"));
+	}
+
+	private static void createDirectedEdges(VisualStyle style) {
+		// TODO: Arrow shape isn't part of the RichVisualLexicon yet...
 //		DiscreteMapping discreteMapping = new DiscreteMapping(ArrowShape.NONE,
-//            Semantics.INTERACTION, ObjectMapping.EDGE_MAPPING);
+//				Semantics.INTERACTION, ObjectMapping.EDGE_MAPPING);
 //
-//        discreteMapping.putMapValue(COMPONENT_OF, ArrowShape.ARROW);
-//        discreteMapping.putMapValue(CONTROLS_STATE_CHANGE, ArrowShape.ARROW);
-//        discreteMapping.putMapValue(CONTROLS_METABOLIC_CHANGE, ArrowShape.ARROW);
-//        discreteMapping.putMapValue(SEQUENTIAL_CATALYSIS, ArrowShape.ARROW);
+//		discreteMapping.putMapValue(COMPONENT_OF, ArrowShape.ARROW);
+//		discreteMapping.putMapValue(CONTROLS_STATE_CHANGE, ArrowShape.ARROW);
+//		discreteMapping
+//				.putMapValue(CONTROLS_METABOLIC_CHANGE, ArrowShape.ARROW);
+//		discreteMapping.putMapValue(SEQUENTIAL_CATALYSIS, ArrowShape.ARROW);
 //
-//        // create and set edge label calculator in edge appearance calculator
-//		Calculator edgeColorCalculator = new BasicCalculator("Edge Source Arrow Shape",
-//            discreteMapping, VisualPropertyType.EDGE_TGTARROW_SHAPE);
+//		// create and set edge label calculator in edge appearance calculator
+//		Calculator edgeColorCalculator = new BasicCalculator(
+//				"Edge Source Arrow Shape", discreteMapping,
+//				VisualPropertyType.EDGE_TGTARROW_SHAPE);
 //		eac.setCalculator(edgeColorCalculator);
 //
 //		// set default color
-//		eac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_SHAPE,
-//               ArrowShape.NONE);
-//	}
-//
-//    private static void createNodeLabel(NodeAppearanceCalculator nac) {
-//		// create pass through mapper for node labels
-//		PassThroughMapping passThroughMapping = new PassThroughMapping("",
-//		                                                               ObjectMapping.NODE_MAPPING);
-//		passThroughMapping.setControllingAttributeName(BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL,
-//                null, false);
-//
-//		// create and set node label calculator in node appearance calculator
-//		Calculator nodeLabelCalculator = new BasicCalculator("BioPAX Node Label",
-//		                                                     passThroughMapping,
-//		                                                     VisualPropertyType.NODE_LABEL);
-//		nac.setCalculator(nodeLabelCalculator);
-//	}
+//		eac.getDefaultAppearance().set(
+//				cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_SHAPE,
+//				ArrowShape.NONE);
+	}
+
+	private void createNodeLabel(VisualStyle style) {
+		// create pass through mapper for node labels
+		style.addVisualMappingFunction(passthroughFactory
+				.createVisualMappingFunction(
+						BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, String.class,
+						MinimalVisualLexicon.NODE_LABEL));
+	}
 }

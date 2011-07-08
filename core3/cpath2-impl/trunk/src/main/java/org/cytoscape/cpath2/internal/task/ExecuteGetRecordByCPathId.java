@@ -42,6 +42,8 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
@@ -69,8 +71,9 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	private final BioPaxContainer bpContainer;
 	private final MapBioPaxToCytoscapeFactory mapperFactory;
 	private final NetworkListener networkListener;
+	private final VisualMappingManager mappingManager;
 
-	/**
+	/**.
 	 * Constructor.
 	 * 
 	 * @param webApi
@@ -86,7 +89,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	 */
 	public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], CPathResponseFormat format,
 			String networkTitle, CPath2Factory cPathFactory, BioPaxContainer bpContainer,
-			MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener) {
+			MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener, VisualMappingManager mappingManager) {
 		this.webApi = webApi;
 		this.ids = ids;
 		this.format = format;
@@ -95,6 +98,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 		this.bpContainer = bpContainer;
 		this.mapperFactory = mapperFactory;
 		this.networkListener = networkListener;
+		this.mappingManager = mappingManager;
 	}
 
 	/**
@@ -117,7 +121,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	 */
 	public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], CPathResponseFormat format,
 			String networkTitle, CyNetwork mergedNetwork, CPath2Factory cPathFactory, BioPaxContainer bpContainer,
-			MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener) {
+			MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener, VisualMappingManager mappingManager) {
 		this.webApi = webApi;
 		this.ids = ids;
 		this.format = format;
@@ -127,6 +131,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 		this.bpContainer = bpContainer;
 		this.mapperFactory = mapperFactory;
 		this.networkListener = networkListener;
+		this.mappingManager = mappingManager;
 	}
 
 	/**
@@ -308,10 +313,6 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 					taskMonitor.setProgress(0);
 				}
 
-				// Set up the right visual style
-				// VisualStyle visualStyle =
-				// BinarySifVisualStyleUtil.getVisualStyle();
-
 				// Set up the right layout algorithm.
 				// LayoutUtil layoutAlgorithm = new LayoutUtil();
 
@@ -322,6 +323,8 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 				// (cyNetwork, cyNetwork.getCyRow().get(CyNetwork.NAME,
 				// String.class), layoutAlgorithm, null);
 
+				VisualStyle visualStyle = cPathFactory.getBinarySifVisualStyleUtil().getVisualStyle();
+				mappingManager.setVisualStyle(visualStyle, view);
 				networkListener.registerNetwork(view);
 
 				SwingUtilities.invokeLater(new Runnable() {
