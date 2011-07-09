@@ -155,9 +155,11 @@ public class KCluster {
 
 		// Sort the appropriate list (Nodes or Attributes)
 		Integer rowOrder[] = matrix.indexSort(clusters, clusters.length);
+		/*
     for (int i = 0; i < rowOrder.length; i++) {
       // logger.debug(""+i+": "+matrix.getRowLabel(rowOrder[i].intValue()));
     }
+		*/
 
 		// Update the network attributes
 		EisenCluster.updateAttributes(matrix, attrList, weightAttributes, rowOrder, "kmeans", false, false);
@@ -338,7 +340,7 @@ public class KCluster {
   	return ifound;
 	}
 
-	private void getClusterMeans(int nClusters, Matrix data, Matrix cdata, int[] clusterid) {
+	public static void getClusterMeans(int nClusters, Matrix data, Matrix cdata, int[] clusterid) {
 
 		double[][]cmask = new double[nClusters][cdata.nColumns()];
 

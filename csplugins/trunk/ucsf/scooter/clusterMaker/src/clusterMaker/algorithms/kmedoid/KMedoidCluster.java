@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package clusterMaker.algorithms.kmeans;
+package clusterMaker.algorithms.kmedoid;
 
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ import clusterMaker.ui.KnnView;
 
 // clusterMaker imports
 
-public class KMeansCluster extends AbstractClusterAlgorithm {
+public class KMedoidCluster extends AbstractClusterAlgorithm {
 	/**
 	 * Linkage types
 	 */
@@ -82,14 +82,14 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 	CyLogger logger = null;
 	KnnView knnView = null;
 
-	public KMeansCluster() {
+	public KMedoidCluster() {
 		super();
-		logger = CyLogger.getLogger(KMeansCluster.class);
+		logger = CyLogger.getLogger(KMedoidCluster.class);
 		initializeProperties();
 	}
 
-	public String getShortName() {return "kmeans";};
-	public String getName() {return "K-Means cluster";};
+	public String getShortName() {return "kmedoid";};
+	public String getName() {return "K-Medoid cluster";};
 
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
@@ -227,7 +227,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		this.monitor = monitor;
 		// Sanity check all of our settings
 		if (debug)
-			logger.debug("Performing k-means cluster with k="+kNumber+" using "+distanceMetric+" and attributes: "+dataAttributes);
+			logger.debug("Performing k-medoid cluster with k="+kNumber+" using "+distanceMetric+" and attributes: "+dataAttributes);
 
 		if (dataAttributes == null || dataAttributes.length() == 0) {
 			if (monitor != null) {
@@ -243,7 +243,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		// To make debugging easier, sort the attribute array
 		Arrays.sort(attributeArray);
 
-		KCluster algorithm = new KCluster(attributeArray, distanceMetric, logger, monitor);
+		KMCluster algorithm = new KMCluster(attributeArray, distanceMetric, logger, monitor);
 		algorithm.setCreateGroups(createGroups);
 		algorithm.setIgnoreMissing(ignoreMissing);
 		algorithm.setSelectedOnly(selectedOnly);
