@@ -34,20 +34,22 @@ import java.util.*;
 
 public class FruchtermanReingoldLayout extends AbstractIgraphLayout {
 
-    private int iterNumber               = 500;   // Number of iterations
-    private double maxDeltaCoefficient   = 1.0;   // Maximum distance to move a node in each iteration
-    private double areaCoefficient       = 1.0;   // Area parameter
-    private double coolExp               = 1.5;   // The cooling exponent of the simulated annealing
-    private double repulseRadCoefficient = 1.0;   // Determines the radius at which vertex-vertex repulsion cancels out attraction of adjacent vertices
-    private boolean randomize            = true;  // Randomize node position before layout
+    private int     iterNumber            = 500;   // Number of iterations
+    private double  maxDeltaCoefficient   = 1.0;   // Maximum distance to move a node in each iteration
+    private double  areaCoefficient       = 1.0;   // Area parameter
+    private double  coolExp               = 1.5;   // The cooling exponent of the simulated annealing
+    private double  repulseRadCoefficient = 1.0;   // Determines the radius at which vertex-vertex repulsion cancels out attraction of adjacent vertices
+    private boolean randomize             = true;  // Randomize node position before layout
 
 
-    public FruchtermanReingoldLayout() {
+    public FruchtermanReingoldLayout(boolean supportEdgeWeights) {
 	super();
 	logger = CyLogger.getLogger(FruchtermanReingoldLayout.class);
 	
+	supportWeights = supportEdgeWeights;
+
 	layoutProperties = new LayoutProperties(getName());
-	initialize_properties();
+	this.initialize_properties();
     }
 
     /**
@@ -55,7 +57,8 @@ public class FruchtermanReingoldLayout extends AbstractIgraphLayout {
      * Initializes default values for those parameters
      */
     protected void initialize_properties() {
-	
+	super.initialize_properties();
+
 	// Add new properties to layout 
 	layoutProperties.add(new Tunable("iterNumber", 
 					 "Number of Iterations", 
@@ -98,7 +101,7 @@ public class FruchtermanReingoldLayout extends AbstractIgraphLayout {
      * Get new values from tunables and update parameters
      */
     public void updateSettings(boolean force) {
-	layoutProperties.updateValues();	
+	super.updateSettings(force);
 
 	// Get initialNoIterations
 	Tunable t1 = layoutProperties.get("iterNumber");
@@ -130,6 +133,7 @@ public class FruchtermanReingoldLayout extends AbstractIgraphLayout {
 	if ((t6 != null) && (t6.valueChanged() || force))
 	    randomize = ((Boolean) t6.getValue()).booleanValue();
 
+	updateSettings(layoutProperties, force);
     }
 
 
@@ -139,7 +143,8 @@ public class FruchtermanReingoldLayout extends AbstractIgraphLayout {
     public int layout(double[] x, 
 		      double[] y, 
 		      LayoutPartition part, 
-		      HashMap<Integer,Integer> mapping) {
+		      HashMap<Integer,Integer> mapping, 		      
+		      double[] weights) {
 
 	
 	int numNodes = mapping.size();
@@ -147,7 +152,6 @@ public class FruchtermanReingoldLayout extends AbstractIgraphLayout {
 	double maxDelta   = maxDeltaCoefficient * numNodes;
 	double area       = areaCoefficient * numNodes * numNodes;
 	double repulseRad = repulseRadCoefficient * area * numNodes;
-	double[] weights = new double[numNodes];
 
 	// Store current node positions if necessary
 	if (!randomize) {
@@ -163,7 +167,7 @@ public class FruchtermanReingoldLayout extends AbstractIgraphLayout {
 					  coolExp, 
 					  repulseRad, 
 					  !randomize,
-					  false,
+					  supportWeights,
 					  weights);
 	
 	return 1;
@@ -174,7 +178,10 @@ public class FruchtermanReingoldLayout extends AbstractIgraphLayout {
      * for this layout.
      */
     public String getName() {
-	return "Igraph Fruchterman-Reingold Layout";
+	if (supportWeights)
+	    return "Igraph Edge-Weighted Fruchterman-Reingold Layout";
+	else
+	    return "Igraph Fruchterman-Reingold Layout";
     }
     
     /**
@@ -182,7 +189,10 @@ public class FruchtermanReingoldLayout extends AbstractIgraphLayout {
      * of the layout
      */
     public String toString() {
-	return "Fruchterman-Reingold Layout";
+	if (supportWeights)
+	    return "Edge-Weighted Fruchterman-Reingold Layout";
+	else
+	    return "Fruchterman-Reingold Layout";
     }
 
 }

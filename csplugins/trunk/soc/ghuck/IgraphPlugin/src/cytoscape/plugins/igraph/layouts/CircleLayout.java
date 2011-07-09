@@ -42,7 +42,8 @@ public class CircleLayout extends AbstractIgraphLayout {
     public int layout(double[] x, 
 		      double[] y, 
 		      LayoutPartition part, 
-		      HashMap<Integer,Integer> mapping) {
+		      HashMap<Integer,Integer> mapping, 
+		      double[] weights) {
 	// Simplify graph
 	IgraphInterface.simplify();
 	

@@ -53,14 +53,24 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
     protected LayoutProperties layoutProperties;
 
 
+    /**
+     * Value to set for doing unweighted layouts
+     */
+    public static final String UNWEIGHTEDATTRIBUTE = "(unweighted)";
+
+    /**
+     * Whether or not to use edge weights for layout
+     */
+    protected boolean supportWeights = false;
+    
     public AbstractIgraphLayout() {
 	super();
 	
-	logger = CyLogger.getLogger(AbstractIgraphLayout.class);
-	// logger.setDebug(true);
+	//logger = CyLogger.getLogger(AbstractIgraphLayout.class);
+	if (edgeWeighter == null)
+	    edgeWeighter = new EdgeWeighter();
 	
-// 	layoutProperties = new LayoutProperties(getName());
-// 	initialize_properties();
+ 	layoutProperties = new LayoutProperties(getName());
     }
 
     // METHODS WHICH MUST BE OVERRIDEN IN CHILD CLASS
@@ -71,7 +81,8 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
     public abstract int layout(double[] x, 
 			       double[] y, 
 			       LayoutPartition part, 
-			       HashMap<Integer,Integer> mapping);
+			       HashMap<Integer,Integer> mapping, 
+			       double[] weights);
 
     /**
      * getName is used to construct property strings
@@ -106,7 +117,11 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
 	
 	// Initialize layout properties
 	layoutProperties.initializeProperties();
-	
+
+	if (supportWeights) {
+	    edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
+	}	
+
 	// Force the settings update
 	updateSettings(true);
     }
@@ -116,6 +131,9 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
      */
     public void updateSettings(boolean force) {
 	layoutProperties.updateValues();	
+
+	if (supportWeights) 
+	    edgeWeighter.updateSettings(layoutProperties, force);
     }
 
     /**
@@ -129,6 +147,45 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
     }
 
     // END OF METHODS WHICH MAY BE OVERRIDEN         
+
+    // We don't support node attribute-based layouts
+    /**
+     *  Tells Cytoscape whether we support node attribute based layouts
+     *
+     * @return nulls, which indicates that we don't
+     */
+    public byte[] supportsNodeAttributes() {
+	return null;
+    }
+
+    // We do support edge attribute-based layouts
+    /**
+     *  Tells Cytoscape whether we support node attribute based layouts
+     *
+     * @return null if supportWeights is false, otherwise return the attribute
+     *         types that can be used for weights.
+     */
+    public byte[] supportsEdgeAttributes() {
+	if (!supportWeights)
+	    return null;
+
+	byte[] attrs = { CyAttributes.TYPE_INTEGER, CyAttributes.TYPE_FLOATING };
+
+	return attrs;
+    }
+
+    /**
+     * Returns "(unweighted)", which is the "attribute" we
+     * use to tell the algorithm not to use weights
+     *
+     * @returns List of our "special" weights
+     */
+    public List<String> getInitialAttributeList() {
+	ArrayList<String> list = new ArrayList<String>();
+	list.add(UNWEIGHTEDATTRIBUTE);
+
+	return list;
+    }
 
     /**
      * Overload updateSettings for using it without arguments
@@ -187,6 +244,14 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
 	// Load graph into native library
 	HashMap<Integer,Integer> mapping = loadGraphPartition(part, selectedOnly);
 
+	double[] weights;
+	// If performing a weighted layout, deal with weights
+	if (supportWeights) {
+	    weights = calculateWeights(part);
+	} else {
+	    weights = new double[1]; // not sure if leaving it uninitialized would cause problems
+	}
+
 	// Check whether it has been canceled by the user
 	if (canceled)
 	    return;
@@ -195,7 +260,7 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
 	taskMonitor.setStatus("Calling native code: Partition: " + part.getPartitionNumber());
 
 	// Do Layout
-	layout(x,y, part, mapping);
+	layout(x,y, part, mapping, weights);
 
 	// Check whether it has been canceled by the user
 	if (canceled)
@@ -334,7 +399,8 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
      * This function loads a partition into igraph
      *
      */    
-    public static HashMap<Integer,Integer> loadGraphPartition(LayoutPartition part, boolean selectedOnly){
+    public static HashMap<Integer,Integer> loadGraphPartition(LayoutPartition part, 
+							      boolean selectedOnly){
 
 	CyLogger logger = CyLogger.getLogger(AbstractIgraphLayout.class);	    
 	
@@ -418,6 +484,45 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
 		y[mapping.get(node.getIndex())] = node.getY();		
 	    }	
 	}
+    }
+
+
+    // Calculate edge weights
+    double[] calculateWeights(LayoutPartition part) {
+	part.calculateEdgeWeights();
+	
+	// Write edge weight in an array
+	double[] edgeWeights = new double[part.edgeCount()];
+	int i = 0;
+	
+	Iterator<LayoutEdge> it = part.getEdgeList().iterator();
+
+	if (selectedOnly) {	
+	    while (it.hasNext()) {
+		LayoutEdge e = (LayoutEdge) it.next();
+
+		LayoutNode source = e.getSource();
+		LayoutNode target = e.getTarget();
+
+		if (source.isLocked() || target.isLocked())
+		    continue;
+
+		edgeWeights[i] = e.getWeight();
+		i++;	    
+	    }
+	} else {
+	    while (it.hasNext()) {
+		LayoutEdge e = (LayoutEdge) it.next();
+
+		LayoutNode source = e.getSource();
+		LayoutNode target = e.getTarget();
+
+		edgeWeights[i] = e.getWeight();
+		i++;	    
+	    }
+	}
+
+	return edgeWeights;
     }
 
 }
