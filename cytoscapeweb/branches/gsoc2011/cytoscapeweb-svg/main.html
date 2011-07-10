@@ -140,19 +140,19 @@
 			
 			graphs.ringGraph = {
 				"nodes": [
-					{"id":"n1","x":38,"y":219,"style":{size: 32, color: "teal", shape: "DIAMOND"}},
-					{"id":"n2","x":57,"y":44,"style":{size: 26, color: "pink"}},
-					{"id":"n3","x":171,"y":28,"style":{size: 16, borderColor: "green", shape: "RECTANGLE"}},
-					{"id":"n4","x":251,"y":132,"style":{size: 10, borderColor: "blue", shape: "DIAMOND"}},
+					{"id":"n1","x":38,"y":219,"style":{size: 32, borderColor: "black", color: "teal", shape: "DIAMOND", borderWidth: 4}},
+					{"id":"n2","x":57,"y":44,"style":{size: 26, color: "chocolate", borderWidth: 6}},
+					{"id":"n3","x":171,"y":28,"style":{size: 16, borderColor: "green", shape: "RECTANGLE", borderWidth: 2}},
+					{"id":"n4","x":251,"y":132,"style":{size: 12, borderColor: "blue", shape: "DIAMOND", borderWidth:4}},
 					{"id":"n5","x":156,"y":220,"style":{borderColor: "red"}}
 				],
 				"edges": [
-					{"id":"e1","source":"n1","target":"n2","style":{forwardArrowShape: "DELTA"}},
-					{"id":"e2","source":"n2","target":"n3","style":{forwardArrowShape: "DELTA", backwardArrowShape: "DELTA"}},
-					{"id":"e3","source":"n3","target":"n4","style":{color: "red", width: 1}},
+					{"id":"e1","source":"n1","target":"n2","style":{forwardArrowShape: "DELTA", color: "#394", width: 3}},
+					{"id":"e2","source":"n2","target":"n3","style":{forwardArrowShape: "DELTA", backwardArrowShape: "DELTA", width: 3}},
+					{"id":"e3","source":"n3","target":"n4","style":{color: "red", width: 6, style: "DASH"}},
 					{"id":"e4","source":"n4","target":"n5","style":{forwardArrowShape: "DELTA", color: "blue", width: 5}},
 					{"id":"e5","source":"n5","target":"n4","style":{forwardArrowShape: "DELTA", width: 5}},
-					{"id":"e6","source":"n5","target":"n1","style":{}}
+					{"id":"e6","source":"n5","target":"n1","style":{style: "DOT"}}
 				]
 			}
 			

@@ -919,15 +919,26 @@ var Edge = function(vis) {
 		if (this._elem == null) {
 				this._elem = this._visualization._canvas.path(this._getSvgPath()).toBack().click(Util.delegate(this, "_onClick")).attr("cursor", "pointer");
 		}
+		
+		var dashArray = {
+			"SOLID": "",
+			"DASH": "-",
+			"DOT": ".",
+			"LONG_DASH": "--"
+		}[this.getRenderedStyle("style")];
+
 
 		var attr = {
 			// Update position
-			"path": this._getSvgPath()
+			"path": this._getSvgPath(),
+			"stroke-dasharray" : dashArray,
 		};
+		
 
 		var attrMap = {
 			"stroke": "color",
 			//"fill": "color",
+		
 			"stroke-width": "width",
 			"stroke-opacity": "opacity"
 		};
@@ -939,6 +950,7 @@ var Edge = function(vis) {
 			attr[attrName] =  this.getRenderedStyle(attrMap[attrName]);
 		}
 
+		
 		this._elem.attr(attr);
 	};
 	
