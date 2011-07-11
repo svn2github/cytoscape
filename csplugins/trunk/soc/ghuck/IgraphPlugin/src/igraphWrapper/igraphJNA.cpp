@@ -105,6 +105,7 @@ void layoutFruchterman(double x[],
 		       double weights[]){
 
 	long int vcount = igraph_vcount(&g);
+	long int ecount = igraph_ecount(&g);
 
 	igraph_matrix_t locs;
 	igraph_matrix_init(&locs, vcount, 2); 
@@ -115,8 +116,8 @@ void layoutFruchterman(double x[],
 
 	igraph_vector_t weights_vector;
 	if (isWeighted) {
-	  igraph_vector_init(&weights_vector, vcount);
-	  for (int i = 0; i < vcount; i++){
+	  igraph_vector_init(&weights_vector, ecount);
+	  for (int i = 0; i < ecount; i++){
 	    VECTOR(weights_vector)[i] = weights[i];
 	  } 
 	}
