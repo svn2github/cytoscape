@@ -53,14 +53,14 @@ public class EnhancedSearchPanel extends javax.swing.JPanel {
 	// Do searching based on the query string from user on text-field
 	private void doSearching() {
 		final String queryStr = this.tfSearchText.getText().trim();
-		logger.debug("Search Start.  Query text = " + queryStr);
+		logger.info("Search Start.  Query text = " + queryStr);
 
 		final CyNetwork currentNetwork = appManager.getCurrentNetwork();
 		if (currentNetwork != null) {
 			logger.debug("Target Network ID = " + currentNetwork.getSUID());
 
 			final SearchTaskFactory factory = new SearchTaskFactory(currentNetwork, searchMgr,
-					tableMgr, queryStr, viewManager);
+					tableMgr, queryStr, viewManager, appManager);
 			this.taskMgr.execute(factory);
 		} else
 			logger.error("Could not find network for search");
@@ -110,26 +110,4 @@ public class EnhancedSearchPanel extends javax.swing.JPanel {
 	private javax.swing.JLabel lbSearch;
 	private javax.swing.JTextField tfSearchText;
 	// End of variables declaration
-
-	
-	/**
-	 * Simply updates view if necessary.
-	 */
-	private final class UpdateViewTask extends AbstractTask {
-
-		private final CyApplicationManager appManager;
-		
-		UpdateViewTask(final CyApplicationManager appManager) {
-			this.appManager = appManager;
-		}
-		
-		@Override
-		public void run(TaskMonitor tm) throws Exception {
-			CyNetworkView view = appManager.getCurrentNetworkView();
-			
-			if(view != null)
-				view.updateView();
-		}
-		
-	}
 }

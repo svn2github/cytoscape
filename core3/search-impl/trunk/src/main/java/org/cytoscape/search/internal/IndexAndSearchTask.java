@@ -31,13 +31,13 @@ package org.cytoscape.search.internal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.lucene.store.RAMDirectory;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.task.AbstractNetworkTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
@@ -55,6 +55,7 @@ public class IndexAndSearchTask extends AbstractNetworkTask {
 	private final EnhancedSearch enhancedSearch;
 	private final CyTableManager tableMgr;
 	private final CyNetworkViewManager viewManager;
+	private final CyApplicationManager appManager;
 
 	public String query;
 
@@ -63,14 +64,16 @@ public class IndexAndSearchTask extends AbstractNetworkTask {
 	 * the user should be provided as arguments to the constructor.
 	 */
 	public IndexAndSearchTask(final CyNetwork network, final EnhancedSearch enhancedSearch,
-			final CyTableManager tableMgr, final String query, final CyNetworkViewManager viewManager) {
-		
+			final CyTableManager tableMgr, final String query, final CyNetworkViewManager viewManager,
+			final CyApplicationManager appManager) {
+
 		// Will set a CyNetwork field called "net".
 		super(network);
 		this.enhancedSearch = enhancedSearch;
 		this.tableMgr = tableMgr;
 		this.query = query;
 		this.viewManager = viewManager;
+		this.appManager = appManager;
 	}
 
 	@Override
@@ -108,7 +111,6 @@ public class IndexAndSearchTask extends AbstractNetworkTask {
 			return;
 		
 		showResults(queryHandler, taskMonitor);
-		
 		updateView();
 	}
 
@@ -119,6 +121,10 @@ public class IndexAndSearchTask extends AbstractNetworkTask {
 		final CyNetworkView targetView = viewManager.getNetworkView(network.getSUID());
 		if(targetView != null)
 			targetView.updateView();
+		
+		final CyNetworkView view = appManager.getCurrentNetworkView();
+		if(view != null )
+			view.updateView();
 	}
 
 	// Display results
@@ -128,11 +134,11 @@ public class IndexAndSearchTask extends AbstractNetworkTask {
 
 		List<CyNode> nodeList = network.getNodeList();
 		for (CyNode n : nodeList) {
-			n.getCyRow().set("selected",false);
+			n.getCyRow().set(CyNetwork.SELECTED,false);
 		}
 		List<CyEdge> edgeList = network.getEdgeList();
 		for (CyEdge e : edgeList) {
-			e.getCyRow().set("selected",false);
+			e.getCyRow().set(CyNetwork.SELECTED, false);
 		}
 
 		int nodeHitCount = queryHandler.getNodeHitCount();
@@ -145,34 +151,31 @@ public class IndexAndSearchTask extends AbstractNetworkTask {
 		ArrayList<String> nodeHits = queryHandler.getNodeHits();
 		ArrayList<String> edgeHits = queryHandler.getEdgeHits();
 
-		Iterator nodeIt = nodeHits.iterator();
+		final Iterator<String> nodeIt = nodeHits.iterator();
 		int numCompleted = 0;
 		while (nodeIt.hasNext() && !interrupted) {
 			int currESPIndex = Integer.parseInt(nodeIt.next().toString());
 			CyNode currNode = network.getNode(currESPIndex);
 			if (currNode != null)
-				currNode.getCyRow().set("selected", true);
+				currNode.getCyRow().set(CyNetwork.SELECTED, true);
 			else
 				System.out.println("Unknown node identifier " + (currESPIndex));
 
 			taskMonitor.setProgress(numCompleted++ / nodeHitCount);
 		}
 
-		Iterator edgeIt = edgeHits.iterator();
+		final Iterator<String> edgeIt = edgeHits.iterator();
 		numCompleted = 0;
 		while (edgeIt.hasNext() && !interrupted) {
 			int currESPIndex = Integer.parseInt(edgeIt.next().toString());
 			CyEdge currEdge = network.getEdge(currESPIndex);
 			if (currEdge != null)
-				currEdge.getCyRow().set("selected", true);
+				currEdge.getCyRow().set(CyNetwork.SELECTED, true);
 			else
 				System.out.println("Unknown edge identifier " + (currESPIndex));
 
 			taskMonitor.setProgress(++numCompleted / edgeHitCount);
 		}
-
-		// Refresh view to show selected nodes and edges
-		//view.updateView();
 	}
 
 	@Override
