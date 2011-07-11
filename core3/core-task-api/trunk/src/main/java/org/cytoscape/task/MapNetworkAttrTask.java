@@ -25,7 +25,20 @@ public final class MapNetworkAttrTask extends AbstractTask {
 	private final CyTable newGlobalTable;
 	private final CyNetworkManager networkManager;
 	final private CyApplicationManager applicationManager;
+	private String key = null;
+	private String mappingKey = null;
+	
+	public MapNetworkAttrTask(final Class<? extends CyTableEntry> type, final CyTable newGlobalTable,
+			String key, String mappingKey,
+			final CyNetworkManager networkManager,
+			final CyApplicationManager applicationManager)
+	{
+		this(type,newGlobalTable,networkManager, applicationManager);
+		this.key = key;
+		this.mappingKey = mappingKey;		
+	}
 
+	
 	public MapNetworkAttrTask(final Class<? extends CyTableEntry> type, final CyTable newGlobalTable,
 				  final CyNetworkManager networkManager,
 				  final CyApplicationManager applicationManager)
@@ -42,19 +55,26 @@ public final class MapNetworkAttrTask extends AbstractTask {
 	public void run(final TaskMonitor taskMonitor) throws Exception {
 		taskMonitor.setTitle("Mapping virtual columns");
 
-		final List<CyTable> targetTables = new ArrayList<CyTable>();
-		if (currentNetworkOnly) {
-			final CyNetwork currentNetwork = applicationManager.getCurrentNetwork();
-			targetTables.add(type == CyNode.class ? currentNetwork.getDefaultNodeTable()
-					                      : currentNetwork.getDefaultEdgeTable());
-		} else {
-			final Set<CyNetwork> networks = networkManager.getNetworkSet();
-			for (final CyNetwork network : networks)
-				targetTables.add(type == CyNode.class ? network.getDefaultNodeTable()
-						                      : network.getDefaultEdgeTable());
-		}
+		if (this.mappingKey == null){
+			final List<CyTable> targetTables = new ArrayList<CyTable>();
+			if (currentNetworkOnly) {
+				final CyNetwork currentNetwork = applicationManager.getCurrentNetwork();
+				targetTables.add(type == CyNode.class ? currentNetwork.getDefaultNodeTable()
+						                      : currentNetwork.getDefaultEdgeTable());
+			} else {
+				final Set<CyNetwork> networks = networkManager.getNetworkSet();
+				for (final CyNetwork network : networks)
+					targetTables.add(type == CyNode.class ? network.getDefaultNodeTable()
+							                      : network.getDefaultEdgeTable());
+			}
 
-		mapAll(targetTables);
+			mapAll(targetTables);
+		}
+		else{
+			System.out.println("MapNetworkAttrTask.run(): do different mapping...");
+			
+			
+		}
 	}
 
 	private void mapAll(final List<CyTable> targetTables) {
