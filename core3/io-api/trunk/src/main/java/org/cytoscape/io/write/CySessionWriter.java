@@ -50,7 +50,7 @@ public final class CySessionWriter extends AbstractTask implements CyWriter {
 			throw new IllegalArgumentException("Found too many session filters!");
 
 		if (!HasFileExtension(outputFile.getName()))
-			outputFile = new File(outputFile.getName() + ".cys");
+			outputFile = new File(outputFile.getPath() + ".cys");
 
 		CyWriter writer = writerMgr.getWriter(session,filters.get(0),outputFile); 
 		if ( writer == null )
