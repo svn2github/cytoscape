@@ -72,20 +72,17 @@ public class ImportAttributeTableTask extends AbstractTask implements
 	@Override
 	public void run(TaskMonitor tm) throws IOException {
 
-		final CyTable table = CytoscapeServices.tableFactory.createTable("AttrTable "
-				+ Integer.toString(numImports++), "name", String.class, true,
-				true);
-		cyTables = new CyTable[] { table };
-		
 		final Class<? extends CyTableEntry> type = getMappingClass();
-		
-		
+				
 		String primaryKey = reader.getMappingParameter().getAttributeNames()[reader.getMappingParameter().getKeyIndex()];
 		String mappingKey = reader.getMappingParameter().getMappingAttribute();
 		
-		//System.out.println("ImportAttributrTableTask.run()...primaryKey="+ primaryKey);
-		//System.out.println("ImportAttributrTableTask.run()...mappingKey="+ mappingKey);
+		final CyTable table = CytoscapeServices.tableFactory.createTable("AttrTable "
+				+ Integer.toString(numImports++), primaryKey, String.class, true,
+				true);
+		cyTables = new CyTable[] { table };
 
+		
 		if (CytoscapeServices.netMgr.getNetworkSet().size() > 0 && type != null) {
 			/*
 			 * Case 1: use node ID as the key
@@ -99,19 +96,13 @@ public class ImportAttributeTableTask extends AbstractTask implements
 				/*
 				 *  Case 2: use an attribute as the key.
 				 */
-				System.out.println("\tuse attribute as key");
 				final MapNetworkAttrTask task = new MapNetworkAttrTask(type, table, primaryKey, mappingKey,
 						CytoscapeServices.netMgr, CytoscapeServices.appMgr);
 				insertTasksAfterCurrentTask(task);
-		
-				
 			}
 		}
-				
-		
 
 		this.reader.readTable(table);
-		// loadAttributesInternal(table);
 	}
 
 
