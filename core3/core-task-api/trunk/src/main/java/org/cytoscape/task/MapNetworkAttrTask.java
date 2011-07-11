@@ -52,31 +52,27 @@ public final class MapNetworkAttrTask extends AbstractTask {
 			throw new IllegalArgumentException("\"type\" must be CyNode.class or CyEdge.class!");
 	}
 
+	
 	public void run(final TaskMonitor taskMonitor) throws Exception {
 		taskMonitor.setTitle("Mapping virtual columns");
 
-		if (this.mappingKey == null){
-			final List<CyTable> targetTables = new ArrayList<CyTable>();
-			if (currentNetworkOnly) {
-				final CyNetwork currentNetwork = applicationManager.getCurrentNetwork();
-				targetTables.add(type == CyNode.class ? currentNetwork.getDefaultNodeTable()
-						                      : currentNetwork.getDefaultEdgeTable());
-			} else {
-				final Set<CyNetwork> networks = networkManager.getNetworkSet();
-				for (final CyNetwork network : networks)
-					targetTables.add(type == CyNode.class ? network.getDefaultNodeTable()
-							                      : network.getDefaultEdgeTable());
-			}
+		final List<CyTable> targetTables = new ArrayList<CyTable>();
 
-			mapAll(targetTables);
+		if (currentNetworkOnly) {
+			final CyNetwork currentNetwork = applicationManager.getCurrentNetwork();
+			targetTables.add(type == CyNode.class ? currentNetwork.getDefaultNodeTable()
+					                      : currentNetwork.getDefaultEdgeTable());
+		} else {
+			final Set<CyNetwork> networks = networkManager.getNetworkSet();
+			for (final CyNetwork network : networks)
+				targetTables.add(type == CyNode.class ? network.getDefaultNodeTable()
+						                      : network.getDefaultEdgeTable());
 		}
-		else{
-			System.out.println("MapNetworkAttrTask.run(): do different mapping...");
-			
-			
-		}
+		
+		mapAll(targetTables);
 	}
 
+	
 	private void mapAll(final List<CyTable> targetTables) {
 		if (targetTables.isEmpty())
 			return;
@@ -88,8 +84,15 @@ public final class MapNetworkAttrTask extends AbstractTask {
 		for (final CyTable targetTable : targetTables) {
 			if (cancelled)
 				return;
-			targetTable.addVirtualColumns(newGlobalTable, sourceTableJoinColumn,
+			if (mappingKey == null){
+				// use primary key to do table join
+				targetTable.addVirtualColumns(newGlobalTable, sourceTableJoinColumn,
 						      CyTableEntry.NAME, false);
+			}
+			else {
+				// use alternative key
+				targetTable.addVirtualColumns(newGlobalTable, sourceTableJoinColumn, mappingKey, false);			
+			}
 		}
 	}
 }
