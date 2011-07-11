@@ -35,6 +35,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.tableimport.internal.reader.AttributeMappingParameters;
 import org.cytoscape.tableimport.internal.reader.TextTableReader;
 import org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
@@ -78,12 +79,36 @@ public class ImportAttributeTableTask extends AbstractTask implements
 		
 		final Class<? extends CyTableEntry> type = getMappingClass();
 		
+		
+		String primaryKey = reader.getMappingParameter().getAttributeNames()[reader.getMappingParameter().getKeyIndex()];
+		String mappingKey = reader.getMappingParameter().getMappingAttribute();
+		
+		//System.out.println("ImportAttributrTableTask.run()...primaryKey="+ primaryKey);
+		//System.out.println("ImportAttributrTableTask.run()...mappingKey="+ mappingKey);
+
 		if (CytoscapeServices.netMgr.getNetworkSet().size() > 0 && type != null) {
-			System.out.println("$$$$$$$ Mapping inserted.");
-			final MapNetworkAttrTask task = new MapNetworkAttrTask(type, table,
-					CytoscapeServices.netMgr, CytoscapeServices.appMgr);
-			insertTasksAfterCurrentTask(task);
+			/*
+			 * Case 1: use node ID as the key
+			 */
+			if (reader.getMappingParameter().getMappingAttribute().equals(AttributeMappingParameters.ID)) {
+					final MapNetworkAttrTask task = new MapNetworkAttrTask(type, table,
+							CytoscapeServices.netMgr, CytoscapeServices.appMgr);
+					insertTasksAfterCurrentTask(task);
+			}
+			else {
+				/*
+				 *  Case 2: use an attribute as the key.
+				 */
+				System.out.println("\tuse attribute as key");
+				final MapNetworkAttrTask task = new MapNetworkAttrTask(type, table, primaryKey, mappingKey,
+						CytoscapeServices.netMgr, CytoscapeServices.appMgr);
+				insertTasksAfterCurrentTask(task);
+		
+				
+			}
 		}
+				
+		
 
 		this.reader.readTable(table);
 		// loadAttributesInternal(table);
