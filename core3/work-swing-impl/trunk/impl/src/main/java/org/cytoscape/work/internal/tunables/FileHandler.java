@@ -19,16 +19,17 @@ import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
+import javax.swing.SwingUtilities;
 
 import org.cytoscape.io.DataCategory;
+import org.cytoscape.util.swing.FileChooserFilter;
+import org.cytoscape.util.swing.FileUtil;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.internal.tunables.utils.FileChooserFilter;
 import org.cytoscape.work.internal.tunables.utils.SupportedFileTypesManager;
 import org.cytoscape.work.swing.AbstractGUITunableHandler;
 
@@ -39,13 +40,7 @@ import org.cytoscape.work.swing.AbstractGUITunableHandler;
  * @author pasteur
  */
 public class FileHandler extends AbstractGUITunableHandler {
-	private static final String DEF_DIRECTORY = System.getProperty("user.home");
-	private static final String LAST_DIRECTORY = "directory.last";
-
-	// Core Cytoscape props
-	private final Properties props;
-
-	private JFileChooser fileChooser;
+	private final FileUtil fileUtil;
 
 	private JButton chooseButton;
 	private JTextField fileTextField;
@@ -63,37 +58,36 @@ public class FileHandler extends AbstractGUITunableHandler {
 	 *
 	 * It creates the GUI which displays the path of the current file in a field, and provides
 	 * access to a FileChooser with filtering parameters on
-	 * <i>network</i>,<i>attributes</i>, or <i>session</i> (parameters are set in the <code>Tunable</code>'s annotations of the <code>File</code>)
+	 * <i>network</i>,<i>attributes</i>, or <i>session</i> (parameters are set in the
+	 * <code>Tunable</code>'s annotations of the <code>File</code>)
 	 *
-	 *
-	 * @param f field that has been annotated
-	 * @param o object contained in <code>f</code>
-	 * @param t tunable associated to <code>f</code>
+	 * @param field the field that has been annotated
+	 * @param obj object contained in <code>field</code>
+	 * @param tunable the tunable associated to <code>field</code>
 	 * @param fileTypesManager
 	 */
-	public FileHandler(Field f, Object o, Tunable t,
+	public FileHandler(final Field field, final Object obj, final Tunable t,
 			      final SupportedFileTypesManager fileTypesManager,
-			      final Properties props)
+			      final FileUtil fileUtil)
 	{
-		super(f, o, t);
+		super(field, obj, t);
 		this.fileTypesManager = fileTypesManager;
-		this.props = props;
+		this.fileUtil = fileUtil;
 		init(fileTypesManager);
 	}
 
 	public FileHandler(final Method getter, final Method setter, final Object instance,
 			      final Tunable tunable,
 			      final SupportedFileTypesManager fileTypesManager,
-			      final Properties props)
+			      final FileUtil fileUtil)
 	{
 		super(getter, setter, instance, tunable);
 		this.fileTypesManager = fileTypesManager;
-		this.props = props;
+		this.fileUtil = fileUtil;
 		init(fileTypesManager);
 	}
 
 	private void init(final SupportedFileTypesManager fileTypesManager) {
-		fileChooser = new JFileChooser();
 		input = isInput();
 
 		final String fileCategory = getFileCategory();
@@ -141,27 +135,6 @@ public class FileHandler extends AbstractGUITunableHandler {
 		final String fileCategory = getFileCategory();
 		fileTextField.setText("Please select a " + fileCategory.toLowerCase() + " file...");
 		titleLabel.setText((input ? "Load " : "Save ") + initialCaps(fileCategory) + " File");
-
-		if (filters.isEmpty())
-			return;
-
-		fileChooser.setAcceptAllFileFilterUsed(input);
-
-		int i = 0;
-		FileChooserFilter defaultFilter = null;
-		for (FileChooserFilter filter : filters) {
-			// If we're down to the last filter and we haven't yet selected a default,
-			// do it now!
-			if (++i == filters.size() && defaultFilter == null)
-				defaultFilter = filter;
-			// If we haven't yet selected a default and our filter's description starts
-			// with "All ", make it the default.
-			else if (defaultFilter == null && filter.getDescription().startsWith("All "))
-				defaultFilter = filter;
-
-			fileChooser.addChoosableFileFilter(filter);
-		}
-		fileChooser.setFileFilter(defaultFilter);
 	}
 
 	private String getFileCategory() {
@@ -179,7 +152,7 @@ public class FileHandler extends AbstractGUITunableHandler {
 			return Character.toUpperCase(s.charAt(0)) + s.substring(1).toLowerCase();
 	}
 
-	//diplays the panel's component in a good view
+	// displays the panel's component in a good view
 	private void setLayout() {
 		layout = new GroupLayout(panel);
 
@@ -214,60 +187,16 @@ public class FileHandler extends AbstractGUITunableHandler {
 	// Click on the "open" or "save" button action listener
 	private final class myFileActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent ae) {
-			File file = null;
-			final String lastDir = props.getProperty(LAST_DIRECTORY, DEF_DIRECTORY);
-
-			File lastDirFile;
-			try {
-				lastDirFile = new File(lastDir);
-			} catch (Exception e){
-				lastDirFile = new File(DEF_DIRECTORY);
-			}
-
-			if (!lastDirFile.isDirectory())
-				lastDirFile = new File(DEF_DIRECTORY);
-
-			fileChooser.setCurrentDirectory(lastDirFile);
-
 try_again:              {
-				int ret = JFileChooser.CANCEL_OPTION;
-				if (ae.getActionCommand().equals("open"))
-					ret = fileChooser.showOpenDialog(panel);
-				else if (ae.getActionCommand().equals("save"))
-					ret = fileChooser.showSaveDialog(panel);
-
-				if (ret == JFileChooser.APPROVE_OPTION) {
-					file = fileChooser.getSelectedFile();
-					if (file != null) {
-/*
-						// Make sure the user-supplied file name has an extension:
-						final String fileName = file.getPath();
-						if (getFileExtension(fileName) == null) {
-							final String extension =
-								filters.get(0).getExtensions()[0];
-							final String nameWithExtension =
-								addFileExtension(fileName, extension);
-							file = new File(nameWithExtension);
-						}
-
-						if (ae.getActionCommand().equals("save") && file.exists()) {
-							if (JOptionPane.showConfirmDialog(
-								panel,
-								"The file you selected already exists.  "
-								+ "Are you sure you want to overwrite it?",
-								"Confirmation",
-								JOptionPane.YES_NO_OPTION)
-							    == JOptionPane.NO_OPTION)
-								break try_again;
-						}
-*/
-						fileTextField.setFont(new Font(null, Font.PLAIN, 10));
-						fileTextField.setText(file.getAbsolutePath());
-						fileTextField.removeMouseListener(mouseClick);
-					}
+				final int load_or_save = input ? FileUtil.LOAD : FileUtil.SAVE;
+				final File file = fileUtil.getFile(SwingUtilities.getWindowAncestor(panel),
+				                                   titleLabel.getText(), load_or_save, filters);
+				if (file != null) {
+					fileTextField.setFont(new Font(null, Font.PLAIN, 10));
+					fileTextField.setText(file.getAbsolutePath());
+					fileTextField.removeMouseListener(mouseClick);
 				}
 			}
-			props.put(LAST_DIRECTORY, fileChooser.getCurrentDirectory().getAbsolutePath());
 		}
 	}
 

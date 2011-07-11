@@ -39,12 +39,12 @@
 	</bean>
 	<bean id="integerHandlerFactory" class="org.cytoscape.work.swing.BasicGUITunableHandlerFactory">
 		<constructor-arg value="org.cytoscape.work.internal.tunables.IntegerHandler" />
-        <constructor-arg>
+		<constructor-arg>
 			<list>
 				<value>java.lang.Integer</value>
 				<util:constant static-field="java.lang.Integer.TYPE"/>
 			</list>
-        </constructor-arg>
+		</constructor-arg>
 	</bean>
 	<bean id="floatHandlerFactory" class="org.cytoscape.work.swing.BasicGUITunableHandlerFactory">
 		<constructor-arg value="org.cytoscape.work.internal.tunables.FloatHandler" />
@@ -53,7 +53,7 @@
 				<value>java.lang.Float</value>
 				<util:constant static-field="java.lang.Float.TYPE"/>
 			</list>
-        </constructor-arg>
+		</constructor-arg>
 	</bean>
 	<bean id="doubleHandlerFactory" class="org.cytoscape.work.swing.BasicGUITunableHandlerFactory">
 		<constructor-arg value="org.cytoscape.work.internal.tunables.DoubleHandler" />
@@ -62,7 +62,7 @@
 				<value>java.lang.Double</value>
 				<util:constant static-field="java.lang.Double.TYPE"/>
 			</list>
-        </constructor-arg>
+		</constructor-arg>
 	</bean>	
 	<bean id="longHandlerFactory" class="org.cytoscape.work.swing.BasicGUITunableHandlerFactory">
 		<constructor-arg value="org.cytoscape.work.internal.tunables.LongHandler" />
@@ -71,7 +71,7 @@
 				<value>java.lang.Long</value>
 				<util:constant static-field="java.lang.Long.TYPE"/>
 			</list>
-        </constructor-arg>
+		</constructor-arg>
 	</bean>		
 	<bean id="stringHandlerFactory" class="org.cytoscape.work.swing.BasicGUITunableHandlerFactory">
 		<constructor-arg value="org.cytoscape.work.internal.tunables.StringHandler" />
@@ -106,9 +106,7 @@
 		<constructor-arg ref="bookmarksUtilServiceRef" />
 	</bean>	
 	<bean id="fileHandlerFactory" class="org.cytoscape.work.internal.tunables.FileHandlerFactory">
-		<constructor-arg ref="cytoscapePropertiesServiceRef"/>
+		<constructor-arg ref="fileUtilRef"/>
 		<constructor-arg ref="supportedFileTypesManager" />
 	</bean>		
-	
-	
 </beans>

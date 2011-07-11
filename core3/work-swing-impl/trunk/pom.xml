@@ -75,6 +75,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
+			<artifactId>swing-util-api</artifactId>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
 			<artifactId>work-api</artifactId>
 			<version>3.0.0-alpha4-SNAPSHOT</version>
 			<scope>provided</scope>

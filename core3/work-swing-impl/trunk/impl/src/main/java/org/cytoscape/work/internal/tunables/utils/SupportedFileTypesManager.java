@@ -14,6 +14,7 @@ import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.CyFileFilterProvider;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.io.write.CyWriterFactory;
+import org.cytoscape.util.swing.FileChooserFilter;
 
 
 /**

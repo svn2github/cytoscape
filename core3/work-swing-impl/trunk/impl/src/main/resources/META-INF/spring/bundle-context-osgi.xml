@@ -5,10 +5,10 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
         default-lazy-init="false">
 
+	<!-- Services imported by this bundle -->
+	<osgi:reference id="fileUtilRef" interface="org.cytoscape.util.swing.FileUtil" />
+
 	<!-- Services provided by this bundle -->
-	
-	<osgi:reference id="cytoscapePropertiesServiceRef"
-		interface="org.cytoscape.property.CyProperty" filter="(cyPropertyName=coreSettings)" />
 
 	<osgi:service id="undoSupportService" ref="undoSupport"
 		interface="org.cytoscape.work.undo.UndoSupport">
