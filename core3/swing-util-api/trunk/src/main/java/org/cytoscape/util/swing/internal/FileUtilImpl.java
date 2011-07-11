@@ -1,14 +1,7 @@
 /*
   File: FileUtil.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -33,8 +26,9 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.util.swing.internal;
+
 
 import java.awt.Component;
 import java.awt.FileDialog;
@@ -43,38 +37,50 @@ import java.awt.Frame;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Properties;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.util.swing.FileChooserFilter;
 import org.cytoscape.util.swing.FileUtil;
 
+
 class FileUtilImpl implements FileUtil {
-	
-	private File mrud;
+	private final Properties coreProperties;
 
-	FileUtilImpl() {
-		mrud = new File(System.getProperty("user.dir"));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public File getFile(String title, int load_save_custom) {
-		return getFile(title, load_save_custom, null, null);
+	FileUtilImpl(final CyProperty<Properties> cyCoreProperty)
+	{
+		coreProperties = cyCoreProperty.getProperties();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public File getFile(String title, int load_save_custom, String start_dir,
-			String custom_approve_text) {
-		File[] result = getFiles(title, load_save_custom, start_dir,
-				custom_approve_text, false);
+	@Override
+	public File getFile(final Component parent, final String title, final int load_save_custom,
+	                    final Collection<FileChooserFilter> filters)
+	{
+		return getFile(parent, title, load_save_custom, null, null, filters);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public File getFile(final Component parent, final String title, final int load_save_custom,
+	                    final String start_dir, final String custom_approve_text,
+	                    final Collection<FileChooserFilter> filters)
+	{
+		File[] result = getFiles(parent, title, load_save_custom, start_dir,
+					 custom_approve_text, false, filters);
 
 		return ((result == null) || (result.length <= 0)) ? null : result[0];
 	}
@@ -82,83 +88,75 @@ class FileUtilImpl implements FileUtil {
 	/**
 	 * {@inheritDoc}
 	 */
-	public File[] getFiles(Component parent, String title, int load_save_custom) {
-		return getFiles(parent, title, load_save_custom, null, null, true);
+	@Override
+	public File[] getFiles(final Component parent, final String title,
+	                       final int load_save_custom,
+	                       final Collection<FileChooserFilter> filters)
+	{
+		return getFiles(parent, title, load_save_custom, null, null, true, filters);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public File[] getFiles(String title, int load_save_custom,
-			String start_dir, String custom_approve_text) {
-		return getFiles(null, title, load_save_custom, start_dir,
-				custom_approve_text, true);
+	@Override
+	public File[] getFiles(final Component parent, final String title,
+	                       final int load_save_custom, final String start_dir,
+	                       final String custom_approve_text,
+	                       final Collection<FileChooserFilter> filters)
+	{
+		return getFiles(parent, title, load_save_custom, start_dir,
+				custom_approve_text, true, filters);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public File[] getFiles(String title, int load_save_custom,
-			String start_dir, String custom_approve_text, boolean multiselect) {
-		return getFiles(null, title, load_save_custom, start_dir,
-				custom_approve_text, multiselect);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public File[] getFiles(Component parent, String title,
-			int load_save_custom, String start_dir, String custom_approve_text,
-			boolean multiselect) {
-
+	@Override
+	public File[] getFiles(final Component parent, final String title,
+			       final int load_save_custom, final String start_dir,
+			       final String custom_approve_text, final boolean multiselect,
+			       final Collection<FileChooserFilter> filters)
+	{
 		if (parent == null)
-			throw new NullPointerException("Parent component is null");
+			throw new NullPointerException("\"parent\" must not be null!");
 
 		File start = null;
 
 		if (start_dir == null)
-			start = getMRUD();
+			start = new File(coreProperties.getProperty(FileUtil.LAST_DIRECTORY,
+			                                            System.getProperty("user.dir")));
 		else
 			start = new File(start_dir);
 
 		String osName = System.getProperty("os.name");
 
-		// System.out.println( "Os name: "+osName );
-		/* TODO -- FIX THIS!
 		if (osName.startsWith("Mac")) {
-			// this is a Macintosh, use the AWT style file dialog
-			FileDialog chooser; 
-			if ( parent instanceof Frame ) 
+			// This is a Macintosh, use the AWT style file dialog
+			FileDialog chooser;
+			if (parent instanceof Frame)
 				chooser = new FileDialog((Frame) parent, title, load_save_custom);
-			else 
+			else
 				chooser = new FileDialog((Dialog) parent, title, load_save_custom);
 
-			// we can only set the one filter; therefore, create a special
-			// version of CyFileFilter that contains all extensions
-			// TODO fix this so we actually use the filters we're given
-			// CyFileFilter fileFilter = new CyFileFilter(new String[]{},new
-			// String[]{},"All network files");
-
-			// chooser.setFilenameFilter(fileFilter);
-
+			chooser.setFilenameFilter(new CombinedFilenameFilter(filters));
 			chooser.setVisible(true);
 
 			if (chooser.getFile() != null) {
-				File[] result = new File[1];
-				result[0] = new File(chooser.getDirectory() + "/"
-						+ chooser.getFile());
+				File[] results = new File[1];
+				results[0] = new File(chooser.getDirectory() + File.separator
+						      + chooser.getFile());
 
-				if (chooser.getDirectory() != null) {
-					setMRUD(new File(chooser.getDirectory()));
-				}
+				if (chooser.getDirectory() != null)
+					coreProperties.setProperty(FileUtil.LAST_DIRECTORY,
+								   chooser.getDirectory());
 
-				return result;
+				return results;
 			}
 
 			return null;
 		} else {
-		*/
-			// this is not a mac, use the Swing based file dialog
+			// this is not a Mac, use the Swing based file dialog
 			final JFileChooser chooser = new JFileChooser(start);
 
 			// set multiple selection, if applicable
@@ -167,48 +165,61 @@ class FileUtilImpl implements FileUtil {
 			// set the dialog title
 			chooser.setDialogTitle(title);
 
-			// add filters
-			// TODO: fix Filter
-			// for (int i = 0; i < filters.length; ++i) {
-			// chooser.addChoosableFileFilter(filters[i]);
-			// }
+			chooser.setAcceptAllFileFilterUsed(load_save_custom == LOAD);
 
-			File[] result = null;
+			int i = 0;
+			FileChooserFilter defaultFilter = null;
+			for (final FileChooserFilter filter : filters) {
+				// If we're down to the last filter and we haven't yet selected a default,
+				// do it now!
+				if (++i == filters.size() && defaultFilter == null)
+					defaultFilter = filter;
+
+				// If we haven't yet selected a default and our filter's description starts
+				// with "All ", make it the default.
+				else if (defaultFilter == null && filter.getDescription().startsWith("All "))
+					defaultFilter = filter;
+
+
+				chooser.addChoosableFileFilter(filter);
+			}
+
+			File[] results = null;
 			File tmp = null;
 
 			// set the dialog type
 			if (load_save_custom == LOAD) {
 				if (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
 					if (multiselect)
-						result = chooser.getSelectedFiles();
+						results = chooser.getSelectedFiles();
 					else if ((tmp = chooser.getSelectedFile()) != null) {
-						result = new File[1];
-						result[0] = tmp;
+						results = new File[1];
+						results[0] = tmp;
 					}
 				}
 			} else if (load_save_custom == SAVE) {
 				if (chooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
 					if (multiselect)
-						result = chooser.getSelectedFiles();
+						results = chooser.getSelectedFiles();
 					else if ((tmp = chooser.getSelectedFile()) != null) {
-						result = new File[1];
-						result[0] = tmp;
+						results = new File[1];
+						results[0] = tmp;
 					}
-					// FileDialog checks for overwrte, but JFileChooser does
-					// not, so we need to do
-					// so ourselves
-					for (int i = 0; i < result.length; i++) {
-						if (result[i].exists()) {
-							int answer = JOptionPane
-									.showConfirmDialog(
-											chooser,
-											"The file '"
-													+ result[i].getName()
-													+ "' already exists, are you sure you want to overwrite it?",
-											"File exists",
-											JOptionPane.YES_NO_OPTION,
-											JOptionPane.WARNING_MESSAGE);
-							if (answer == 1)
+
+					// FileDialog checks for overwrites, but JFileChooser does
+					// not, so we need to do so ourselves:
+					for (int k = 0; k < results.length; ++k) {
+						if (results[k].exists()) {
+							int answer =
+								JOptionPane.showConfirmDialog(
+									chooser,
+									"The file '"
+									+ results[k].getName()
+									+ "' already exists, are you sure you want to overwrite it?",
+									"File exists",
+									JOptionPane.YES_NO_OPTION,
+									JOptionPane.WARNING_MESSAGE);
+							if (answer == JOptionPane.YES_OPTION)
 								return null;
 						}
 					}
@@ -216,33 +227,38 @@ class FileUtilImpl implements FileUtil {
 			} else {
 				if (chooser.showDialog(parent, custom_approve_text) == JFileChooser.APPROVE_OPTION) {
 					if (multiselect)
-						result = chooser.getSelectedFiles();
+						results = chooser.getSelectedFiles();
 					else if ((tmp = chooser.getSelectedFile()) != null) {
-						result = new File[1];
-						result[0] = tmp;
+						results = new File[1];
+						results[0] = tmp;
 					}
 				}
 			}
 
-			if ((result != null) && (start_dir == null))
-				setMRUD(chooser.getCurrentDirectory());
+			if (results != null && start_dir == null)
+				coreProperties.setProperty(FileUtil.LAST_DIRECTORY,
+				                           chooser.getCurrentDirectory().getPath());
 
-			return result;
-		//}
+			return results;
+		}
 	}
 
-	/**
-	 * Get the most recently used directory.
-	 */
-	public synchronized File getMRUD() {
-		return mrud;
-	}
+	private static final class CombinedFilenameFilter implements FilenameFilter {
+		private final Collection<FileChooserFilter> filters;
 
-	/**
-	 * Set the most recently used directory.
-	 */
-	public synchronized void setMRUD(File mrud_new) {
-		if ( mrud_new != null )
-			mrud = mrud_new;
+		CombinedFilenameFilter(final Collection<FileChooserFilter> filters) {
+			this.filters = filters;
+		}
+
+		@Override
+		public boolean accept(final File dir, final String name) {
+			final File path = new File(dir, name);
+			for (final FileChooserFilter filter : filters) {
+				if (filter.accept(path))
+					return true;
+			}
+
+			return false;
+		}
 	}
 }

@@ -22,6 +22,7 @@
 	<context:annotation-config />
 
 	<bean name="fileUtil" class="org.cytoscape.util.swing.internal.FileUtilImpl">
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 	</bean>
 	
 	<bean name="openBrowser" class="org.cytoscape.util.swing.internal.OpenBrowserImpl">

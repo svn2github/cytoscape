@@ -5,7 +5,7 @@
     <groupId>org.cytoscape</groupId>
     <artifactId>parent</artifactId>
     <version>3.0.0-alpha7</version>
-		<relativePath>../parent</relativePath>
+    <relativePath>../parent</relativePath>
   </parent>
 
   <properties>
@@ -22,37 +22,37 @@
 
   <packaging>bundle</packaging>
 
-    <scm>
-        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/swing-util-api/trunk</connection>
-        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/swing-util-api/trunk</developerConnection>
-        <url>http://chianti.ucsd.edu/svn/core3/swing-util-api/trunk</url>
-    </scm>
+  <scm>
+    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/swing-util-api/trunk</connection>
+    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/swing-util-api/trunk</developerConnection>
+    <url>http://chianti.ucsd.edu/svn/core3/swing-util-api/trunk</url>
+  </scm>
 
   <repositories>
-      <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
-      <repository>
-          <id>cytoscape_snapshots</id>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-          <releases>
-            <enabled>false</enabled>
-          </releases>
-          <name>Cytoscape Snapshots</name>
-          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
-       </repository>
-       <!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
-       <repository>
-          <id>cytoscape_releases</id>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <name>Cytoscape Releases</name>
-          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
-       </repository>
+    <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
+    <repository>
+      <id>cytoscape_snapshots</id>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <name>Cytoscape Snapshots</name>
+      <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+    </repository>
+    <!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
+    <repository>
+      <id>cytoscape_releases</id>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <name>Cytoscape Releases</name>
+      <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+    </repository>
   </repositories>
 
   <build>
@@ -92,18 +92,17 @@
       </plugin>
     </plugins>
   </build>
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.4</version>
-            <scope>test</scope>
-        </dependency>
-     	<dependency>
-            <groupId>org.cytoscape</groupId>
-            <artifactId>property-api</artifactId>
-            <version>3.0.0-alpha4</version>
-        </dependency>
-    </dependencies>
-
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>property-api</artifactId>
+      <version>3.0.0-alpha4</version>
+    </dependency>
+  </dependencies>
 </project>

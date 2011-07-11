@@ -1,14 +1,7 @@
 /*
   File: FileUtil.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,11 +29,13 @@
 */
 package org.cytoscape.util.swing;
 
+
 import java.awt.Component;
 import java.awt.FileDialog;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 
 
 /**
@@ -49,6 +44,8 @@ import java.io.InputStream;
  * instead of the Swing FileChooser.
  */
 public interface FileUtil {
+	/** The Cytoscape property that stores the last save/load directory. */
+	final String LAST_DIRECTORY = "directory.last";
 
 	/**
 	 *
@@ -76,113 +73,88 @@ public interface FileUtil {
 	 * of rolling your own JFileChooser.
 	 *
 	 * @return the location of the selcted file
+	 * @param parent the parent of the JFileChooser or FileDialog
 	 * @param title the title of the dialog box
 	 * @param load_save_custom a flag for the type of file dialog
+	 * @param filters a non-empty collection of file filters 
 	 */
-	File getFile(String title, int load_save_custom);
+	File getFile(Component parent, String title, int load_save_custom,
+		     Collection<FileChooserFilter> filters);
 
 	/**
 	 * Returns a File object, this method should be used instead
 	 * of rolling your own JFileChooser.
 	 *
 	 * @return the location of the selcted file
+	 * @param parent the parent of the JFileChooser or FileDialog
 	 * @param title the title of the dialog box
 	 * @param load_save_custom a flag for the type of file dialog
-	 * @param filters an array of CyFileFilters that let you filter
+	 * @param filters an array of FileChooserFilters that let you filter
 	 *                based on extension
 	 * @param start_dir an alternate start dir, if null the default
 	 *                  cytoscape MUD will be used
 	 * @param custom_approve_text if this is a custom dialog, then
 	 *                            custom text should be on the approve
 	 *                            button.
+	 * @param filters a non-empty collection of file filters 
 	 */
-	File getFile(String title, int load_save_custom,
-	                           String start_dir, String custom_approve_text) ;
+	File getFile(Component parent, String title, int load_save_custom, String start_dir,
+		     String custom_approve_text, Collection<FileChooserFilter> filters);
 
-
-    /**
-     * Returns an array of File objects, this method should be used instead
-     * of rolling your own JFileChooser.
-     * @return the location of the selcted file
-     * @param parent the parent component of the JFileChooser dialog
-     * @param title the title of the dialog box
-     * @param load_save_custom a flag for the type of file dialog
-     * @param filters an array of CyFileFilters that let you filter
-     *                based on extension
-     */
-    File[] getFiles(Component parent, String title, int load_save_custom) ;
+	/**
+	 * Returns an array of File objects, this method should be used instead
+	 * of rolling your own JFileChooser.
+	 * @return the location of the selcted file
+	 * @param parent the parent of the JFileChooser or FileDialog
+	 * @param title the title of the dialog box
+	 * @param load_save_custom a flag for the type of file dialog
+	 * @param filters a non-empty collection of file filters 
+	 */
+	File[] getFiles(Component parent, String title, int load_save_custom,
+			Collection<FileChooserFilter> filters);
   
-
 	/**
 	 * Returns a list of File objects, this method should be used instead
 	 * of rolling your own JFileChooser.
 	 *
 	 * @return and array of selected files, or null if none are selected
+	 * @param parent the parent of the JFileChooser or FileDialog
 	 * @param title the title of the dialog box
 	 * @param load_save_custom a flag for the type of file dialog
-	 * @param filters an array of CyFileFilters that let you filter
+	 * @param filters an array of FileChooserFilters that let you filter
 	 *                based on extension
 	 * @param start_dir an alternate start dir, if null the default
 	 *                  cytoscape MUD will be used
 	 * @param custom_approve_text if this is a custom dialog, then
 	 *                            custom text should be on the approve
 	 *                            button.
+	 * @param filters a non-empty collection of file filters 
 	 */
-	File[] getFiles(String title, int load_save_custom,
-	                              String start_dir, String custom_approve_text) ;
-	 
-	/**
-	  * Returns a list of File objects, this method should be used instead
-	  * of rolling your own JFileChooser.
-	  *
-	  * @return and array of selected files, or null if none are selected
-	  * @param title the title of the dialog box
-	  * @param load_save_custom a flag for the type of file dialog
-	  * @param filters an array of CyFileFilters that let you filter
-	  *                based on extension
-	  * @param start_dir an alternate start dir, if null the default
-	  *                  cytoscape MUD will be used
-	  * @param custom_approve_text if this is a custom dialog, then
-	  *                            custom text should be on the approve
-	  *                            button.
-	  * @param multiselect Enable selection of multiple files (Macs are
-	  *                    still limited to a single file because we use
-	  *                    FileDialog there -- is this fixed in Java 1.5?)
-	  */	
-	File[] getFiles(String title, int load_save_custom,
-          String start_dir, String custom_approve_text, boolean multiselect) ;
-
-	/**
-	  * Returns a list of File objects, this method should be used instead
-	  * of rolling your own JFileChooser.
-	  *
-	  * @return and array of selected files, or null if none are selected
-	  * @param parent the parent of the JFileChooser dialog
-	  * @param title the title of the dialog box
-	  * @param load_save_custom a flag for the type of file dialog
-	  * @param filters an array of CyFileFilters that let you filter
-	  *                based on extension
-	  * @param start_dir an alternate start dir, if null the default
-	  *                  cytoscape MUD will be used
-	  * @param custom_approve_text if this is a custom dialog, then
-	  *                            custom text should be on the approve
-	  *                            button.
-	  * @param multiselect Enable selection of multiple files (Macs are
-	  *                    still limited to a single file because we use
-	  *                    FileDialog there -- is this fixed in Java 1.5?)
-	  */
 	File[] getFiles(Component parent, String title, int load_save_custom,
-	                              String start_dir, String custom_approve_text, boolean multiselect) ;
-
+			String start_dir, String custom_approve_text,
+			Collection<FileChooserFilter> filters);
+	
 	/**
-	 * Get the most recently used directory.
+	 * Returns a list of File objects, this method should be used instead
+	 * of rolling your own JFileChooser.
+	 *
+	 * @return and array of selected files, or null if none are selected
+	 * @param parent the parent of the JFileChooser or FileDialog
+	 * @param title the title of the dialog box
+	 * @param load_save_custom a flag for the type of file dialog
+	 * @param filters an array of FileChooserFilters that let you filter
+	 *                based on extension
+	 * @param start_dir an alternate start dir, if null the default
+	 *                  cytoscape MUD will be used
+	 * @param custom_approve_text if this is a custom dialog, then
+	 *                            custom text should be on the approve
+	 *                            button.
+	 * @param multiselect Enable selection of multiple files (Macs are
+	 *                    still limited to a single file because we use
+	 *                    FileDialog there -- is this fixed in Java 1.5?)
+	 * @param filters a non-empty collection of file filters 
 	 */
-	File getMRUD();
- 
-	/**
-	 * Set the most recently used directory.
-	 * @param mrud The most recently used directory. 
-	 */
-	void setMRUD(File mrud);
-
+	File[] getFiles(Component parent, String title, int load_save_custom,
+			String start_dir, String custom_approve_text, boolean multiselect,
+			Collection<FileChooserFilter> filters);
 }

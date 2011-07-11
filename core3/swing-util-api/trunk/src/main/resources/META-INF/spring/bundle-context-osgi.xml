@@ -5,7 +5,6 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-
 	<osgi:reference id="cytoscapePropertiesServiceRef" 
 		interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=coreSettings)" />
@@ -15,6 +14,4 @@
 		
 	<osgi:service id="openBrowserService" ref="openBrowser"
 		interface="org.cytoscape.util.swing.OpenBrowser" />		
-	
-		
 </beans>
