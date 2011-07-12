@@ -27,10 +27,13 @@
 
 package org.cytoscape.biopax.internal.action;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.swing.event.MenuEvent;
@@ -40,6 +43,7 @@ import org.cytoscape.biopax.internal.BioPaxFactory;
 import org.cytoscape.biopax.util.BioPaxUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.util.swing.FileChooserFilter;
 import org.cytoscape.util.swing.FileUtil;
 import org.cytoscape.work.TaskManager;
 import org.slf4j.Logger;
@@ -82,9 +86,11 @@ public class ExportAsBioPAXAction extends AbstractCyAction {
 	 */
     public void actionPerformed(ActionEvent event) {
     	FileUtil fileUtil = factory.getFileUtil();
-		File file = fileUtil.getFile(
+		Collection<FileChooserFilter> filters = new ArrayList<FileChooserFilter>();
+		filters.add(new FileChooserFilter("BioPAX format", "rdf"));
+		File file = fileUtil.getFile((Component) event.getSource(), 
 				"Save BioPAX Network (experimental feature)", 
-				FileUtil.SAVE);
+				FileUtil.SAVE, filters);
 		if (file != null) {
 			String fileName = file.getAbsolutePath();
 
