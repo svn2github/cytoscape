@@ -370,8 +370,15 @@
 		<osgi:listener bind-method="addCyWriterFactory"
 			unbind-method="removeCyWriterFactory" ref="vizmapWriterManager" />
 	</osgi:set>
-	
+
 	<!-- Export listeners -->
-	<osgi:service id="unrecognizedVisualPropertyManagerService" ref="unrecognizedVisualPropertyManager"
-        interface="org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener" />
+	<osgi:service id="unrecognizedVisualPropertyManagerService"
+		ref="unrecognizedVisualPropertyManager"
+		interface="org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener" />
+	
+	<!-- Export Session Tracker as a service -->
+	<osgi:service id="recentlyOpenedTrackerService" ref="recentlyOpenedTracker"
+		interface="org.cytoscape.io.util.RecentlyOpenedTracker">
+	</osgi:service>
+       
 </beans>

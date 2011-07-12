@@ -622,17 +622,22 @@
 	<!-- Other beans -->
 	
 	<bean id="calculatorConverterFactory"
-        class="org.cytoscape.io.internal.util.vizmap.CalculatorConverterFactory" />
-        
-    <bean id="visualStyleSerializer"
-        class="org.cytoscape.io.internal.util.vizmap.VisualStyleSerializer">
-        <constructor-arg ref="calculatorConverterFactory" />
-        <constructor-arg ref="visualStyleFactoryServiceRef" />
-        <constructor-arg ref="visualMappingManagerServiceRef" />
-        <constructor-arg ref="renderingEngineManagerServiceRef" />
-        <constructor-arg ref="discreteMappingFactoryServiceRef" />
-        <constructor-arg ref="continuousMappingFactoryServiceRef" />
-        <constructor-arg ref="passthroughMappingFactoryServiceRef" />
-    </bean>
+	class="org.cytoscape.io.internal.util.vizmap.CalculatorConverterFactory" />
+
+	<bean id="visualStyleSerializer"
+		class="org.cytoscape.io.internal.util.vizmap.VisualStyleSerializer">
+		<constructor-arg ref="calculatorConverterFactory" />
+		<constructor-arg ref="visualStyleFactoryServiceRef" />
+		<constructor-arg ref="visualMappingManagerServiceRef" />
+		<constructor-arg ref="renderingEngineManagerServiceRef" />
+		<constructor-arg ref="discreteMappingFactoryServiceRef" />
+		<constructor-arg ref="continuousMappingFactoryServiceRef" />
+		<constructor-arg ref="passthroughMappingFactoryServiceRef" />
+	</bean>
+	
+	<!-- For recent session files -->
+	<bean id="recentlyOpenedTracker" class="org.cytoscape.io.internal.util.RecentlyOpenedTrackerImpl" scope="singleton">
+		<constructor-arg value="tracker.recent.sessions" />
+	</bean>
 
 </beans>
