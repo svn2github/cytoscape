@@ -27,32 +27,32 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.task.internal.session; 
+package org.cytoscape.task.internal.session;
 
-
-import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.session.CySessionManager; 
-import org.cytoscape.io.read.CyNetworkReaderManager; 
 import org.cytoscape.io.read.CySessionReaderManager;
-
+import org.cytoscape.io.util.RecentlyOpenedTracker;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.session.CySessionManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
-
 
 public class OpenSessionTaskFactory implements TaskFactory {
 
 	private CySessionManager mgr;
 	private CySessionReaderManager rmgr;
-	
-	private final CyApplicationManager appManager;
 
-	public OpenSessionTaskFactory(CySessionManager mgr, CySessionReaderManager rmgr, final CyApplicationManager appManager) {
+	private final CyApplicationManager appManager;
+	private final RecentlyOpenedTracker tracker;
+
+	public OpenSessionTaskFactory(CySessionManager mgr, final CySessionReaderManager rmgr,
+			final CyApplicationManager appManager, final RecentlyOpenedTracker tracker) {
 		this.mgr = mgr;
 		this.rmgr = rmgr;
 		this.appManager = appManager;
+		this.tracker = tracker;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new OpenSessionTask(mgr, rmgr, appManager));
+		return new TaskIterator(new OpenSessionTask(mgr, rmgr, appManager, tracker));
 	}
 }

@@ -252,5 +252,15 @@
 		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="cytoscapeDesktop" />
 	</bean>
+	
+	<bean id="recentSessionManager" class="org.cytoscape.internal.actions.RecentSessionManager">
+		<constructor-arg ref="recentlyOpenedTrackerServiceRef" />
+		<constructor-arg ref="cyServiceRegistrarServiceRef" />
+		<constructor-arg ref="cySessionManagerServiceRef" />
+		<constructor-arg ref="sessionReaderManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		
+	
+	</bean>
 
 </beans>

@@ -270,6 +270,7 @@
 		<constructor-arg ref="cySessionManagerServiceRef" />
 		<constructor-arg ref="sessionReaderManagerServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="recentlyOpenedTrackerServiceRef" />
 	</bean>
 
 	<bean id="saveSessionTaskFactory"

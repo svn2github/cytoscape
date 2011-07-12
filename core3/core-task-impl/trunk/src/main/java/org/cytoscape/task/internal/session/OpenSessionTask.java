@@ -34,6 +34,7 @@ import java.io.File;
 
 import org.cytoscape.io.read.CySessionReader;
 import org.cytoscape.io.read.CySessionReaderManager;
+import org.cytoscape.io.util.RecentlyOpenedTracker;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CySession;
@@ -49,23 +50,26 @@ import org.cytoscape.work.Tunable;
  * setAcceleratorCombo(java.awt.event.KeyEvent.VK_O, ActionEvent.CTRL_MASK);
  */
 public class OpenSessionTask extends AbstractTask {
+
+	@Tunable(description="Session file to load", params="fileCategory=session;input=true")
+	public File file;
 	
 	private final CySessionManager sessionMgr;
 	private final CySessionReaderManager readerMgr;
 	
 	private final CyApplicationManager appManager;
-
-	@Tunable(description="Session file to load", params="fileCategory=session;input=true")
-	public File file;
+	private final RecentlyOpenedTracker tracker;
 
 	/**
 	 * Constructor.<br>
 	 * Add a menu item under "File" and set shortcut.
 	 */
-	public OpenSessionTask(final CySessionManager mgr, final CySessionReaderManager readerManager, final CyApplicationManager appManager) {
+	public OpenSessionTask(final CySessionManager mgr, final CySessionReaderManager readerManager,
+			final CyApplicationManager appManager, final RecentlyOpenedTracker tracker) {
 		this.sessionMgr = mgr;
 		this.readerMgr = readerManager;
 		this.appManager = appManager;
+		this.tracker = tracker;
 	}
 
 	/**
@@ -98,7 +102,8 @@ public class OpenSessionTask extends AbstractTask {
 			this.reader = reader;
 		}
 		
-		public void run(TaskMonitor taskMonitor) {
+		@Override
+		public void run(TaskMonitor taskMonitor) throws Exception {
 			final CySession newSession = reader.getCySession();
 			if ( newSession == null )
 				throw new NullPointerException("Session could not be read for file: " + file);
@@ -112,6 +117,9 @@ public class OpenSessionTask extends AbstractTask {
 			
 			taskMonitor.setProgress(1.0);
 			taskMonitor.setStatusMessage("Session file " + file + " successfully loaded.");
+			
+			// Add this session file URL as the most recent file.
+			tracker.add(file.toURI().toURL());
 		}
 	}
 }

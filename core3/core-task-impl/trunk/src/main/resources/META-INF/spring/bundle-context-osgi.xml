@@ -7,6 +7,8 @@
 
 	<!-- collect necessary services -->
 	<osgi:reference id="cyEventHelperRef" interface="org.cytoscape.event.CyEventHelper" />
+	
+	<osgi:reference id="recentlyOpenedTrackerServiceRef" interface="org.cytoscape.io.util.RecentlyOpenedTracker" />
 
 	<osgi:reference id="cyNetworkNamingServiceRef"
 		interface="org.cytoscape.session.CyNetworkNaming" />
