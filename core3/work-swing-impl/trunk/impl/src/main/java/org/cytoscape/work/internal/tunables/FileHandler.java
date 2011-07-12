@@ -13,6 +13,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import javax.swing.GroupLayout;
@@ -187,10 +188,22 @@ public class FileHandler extends AbstractGUITunableHandler {
 	// Click on the "open" or "save" button action listener
 	private final class myFileActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent ae) {
-try_again:              {
+				try_again:  {
+	
+				//We can not detect the filter current used, so we we use filter "All image files"
+				FileChooserFilter filter = null;
+				for (int i=0; i<filters.size(); i++){
+					filter = (FileChooserFilter)filters.get(i);
+					if (filter.getDescription().trim().equalsIgnoreCase("All image files")){
+						filters = new ArrayList();
+						filters.add(filter);
+						break;
+					}
+				}
+	
 				final int load_or_save = input ? FileUtil.LOAD : FileUtil.SAVE;
 				final File file = fileUtil.getFile(SwingUtilities.getWindowAncestor(panel),
-				                                   titleLabel.getText(), load_or_save, filters);
+						titleLabel.getText(), load_or_save, filters);
 				if (file != null) {
 					fileTextField.setFont(new Font(null, Font.PLAIN, 10));
 					fileTextField.setText(file.getAbsolutePath());
