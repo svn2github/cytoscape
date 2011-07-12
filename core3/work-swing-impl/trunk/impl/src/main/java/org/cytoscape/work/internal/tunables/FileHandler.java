@@ -190,20 +190,23 @@ public class FileHandler extends AbstractGUITunableHandler {
 		public void actionPerformed(ActionEvent ae) {
 				try_again:  {
 	
-				//We can not detect the filter current used, so we we use filter "All image files" or 
-				//"All network files" for the cases of image export or network export
-				FileChooserFilter filter = null;
-				for (int i=0; i<filters.size(); i++){
-					filter = (FileChooserFilter)filters.get(i);
-					if (filter.getDescription().trim().equalsIgnoreCase("All image files") ||
-							filter.getDescription().trim().equalsIgnoreCase("All network files")){
-						filters = new ArrayList();
-						filters.add(filter);
-						break;
+				final int load_or_save = input ? FileUtil.LOAD : FileUtil.SAVE;
+				
+				if (load_or_save == FileUtil.SAVE){
+					//In case of export, we can not detect the filter current used, so we we use filter "All image files" or 
+					//"All network files" when export image or network
+					FileChooserFilter filter = null;
+					for (int i=0; i<filters.size(); i++){
+						filter = (FileChooserFilter)filters.get(i);
+						if (filter.getDescription().trim().equalsIgnoreCase("All image files") ||
+								filter.getDescription().trim().equalsIgnoreCase("All network files")){
+							filters = new ArrayList();
+							filters.add(filter);
+							break;
+						}
 					}
 				}
-	
-				final int load_or_save = input ? FileUtil.LOAD : FileUtil.SAVE;
+				
 				final File file = fileUtil.getFile(SwingUtilities.getWindowAncestor(panel),
 						titleLabel.getText(), load_or_save, filters);
 				if (file != null) {
