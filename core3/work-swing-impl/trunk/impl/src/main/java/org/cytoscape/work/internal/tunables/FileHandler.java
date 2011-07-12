@@ -190,11 +190,13 @@ public class FileHandler extends AbstractGUITunableHandler {
 		public void actionPerformed(ActionEvent ae) {
 				try_again:  {
 	
-				//We can not detect the filter current used, so we we use filter "All image files"
+				//We can not detect the filter current used, so we we use filter "All image files" or 
+				//"All network files" for the cases of image export or network export
 				FileChooserFilter filter = null;
 				for (int i=0; i<filters.size(); i++){
 					filter = (FileChooserFilter)filters.get(i);
-					if (filter.getDescription().trim().equalsIgnoreCase("All image files")){
+					if (filter.getDescription().trim().equalsIgnoreCase("All image files") ||
+							filter.getDescription().trim().equalsIgnoreCase("All network files")){
 						filters = new ArrayList();
 						filters.add(filter);
 						break;
