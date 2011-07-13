@@ -37,15 +37,16 @@ import org.cytoscape.work.TaskIterator;
 
 
 public class ExportNetworkImageTaskFactory extends AbstractNetworkViewTaskFactory {
-	private final PresentationWriterManager viewWriterMgr; 
+	
+	private final PresentationWriterManager presentationWriterMgr; 
 	private final CyApplicationManager applicationManager;
 
-	public ExportNetworkImageTaskFactory(PresentationWriterManager viewWriterMgr, CyApplicationManager applicationManager) {
-		this.viewWriterMgr = viewWriterMgr;
+	public ExportNetworkImageTaskFactory(final PresentationWriterManager presentationWriterMgr, final CyApplicationManager applicationManager) {
+		this.presentationWriterMgr = presentationWriterMgr;
 		this.applicationManager = applicationManager;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator( new ViewWriter( viewWriterMgr, view, applicationManager.getCurrentRenderingEngine() ) );
+		return new TaskIterator( new ViewWriter( presentationWriterMgr, view, applicationManager.getCurrentRenderingEngine() ) );
 	}
 }

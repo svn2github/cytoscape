@@ -1,22 +1,23 @@
 package org.cytoscape.task.internal.io;
 
 
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.write.AbstractCyWriterTest;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.io.write.PresentationWriterManager;
 import org.cytoscape.view.model.View;
-import org.cytoscape.work.util.ListSingleSelection;
-
+import org.cytoscape.view.presentation.RenderingEngine;
 import org.junit.Before;
-
 import org.mockito.ArgumentMatcher;
-import static org.mockito.Mockito.*;
 
 
 public class ViewWriterTest extends AbstractCyWriterTest {
