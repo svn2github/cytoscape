@@ -55,6 +55,7 @@ import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.converter.ValueToStringConverterManager;
+import cytoscape.visual.customgraphic.CyCustomGraphics;
 
 
 /**
@@ -124,6 +125,11 @@ abstract class VizMapBypass {
 				
 				try {
 					obj = type.showDiscreteEditor(currentValue);
+					if (obj instanceof CyCustomGraphics) {
+						final CyCustomGraphics cg = (CyCustomGraphics)obj;
+						Cytoscape.getVisualMappingManager().getCustomGraphicsManager()
+							.setUsedInCurrentSession(cg, true);
+					}
 				} catch (Exception ex) {
 					logger.warn("Unable to show descrete editor", ex);
 					obj = null;

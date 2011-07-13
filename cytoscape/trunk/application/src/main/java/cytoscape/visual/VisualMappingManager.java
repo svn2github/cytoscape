@@ -42,9 +42,11 @@ import giny.view.NodeView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
@@ -57,6 +59,7 @@ import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.calculators.AbstractCalculator;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.calculators.GenericNodeCustomGraphicCalculator;
@@ -279,30 +282,53 @@ public class VisualMappingManager extends SubjectBase {
 	 * attributes are calculated by delegating to the NodeAppearanceCalculator
 	 * member of the current visual style.
 	 */
-	public void applyNodeAppearances(final CyNetwork network,
-			final CyNetworkView network_view) {
+	public void applyNodeAppearances(final CyNetwork network, final CyNetworkView network_view) {
 		final NodeAppearanceCalculator nodeAppearanceCalculator = activeVS
 				.getNodeAppearanceCalculator();
 
 		List<VisualPropertyType> bypassedVPs = getBypassedVPs("NODE", Cytoscape
 				.getNodeAttributes());
 
+		final Set<CyCustomGraphics> byPassedCustomGraphics = new HashSet<CyCustomGraphics>();
 		final Iterator<NodeView> itr = network_view.getNodeViewsIterator();
 		while (itr.hasNext()) {
 			final NodeView nodeView = itr.next();
-			final Node node = nodeView.getNode();			
+			final Node node = nodeView.getNode();
+
+			// Identify and collect the bypassed custom graphics:
+			final List<Object> bypassedProps =
+				getByPassedVisProps(nodeView, bypassedVPs);
+			for (final Object bypassedProp : bypassedProps) {
+				if (bypassedProp instanceof CyCustomGraphics)
+					byPassedCustomGraphics.add((CyCustomGraphics)bypassedProp);
+			}
+
 			nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node,
 					network, bypassedVPs);
 			myNodeApp.applyAppearance(nodeView, activeVS.getDependency());
 		}
 		
-		checkCustomGraphicsInUse();
+		checkCustomGraphicsInUse(byPassedCustomGraphics);
+	}
+
+	private static final List<Object> getByPassedVisProps(final NodeView nv,
+							      final List<VisualPropertyType> bypassedVPs)
+	{
+		final List<Object> bypassedProps = new ArrayList<Object>();
+		final CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
+		final String id = nv.getNode().getIdentifier();
+		for (final VisualPropertyType propType : bypassedVPs) {
+			final Object bypass = Appearance.getBypass(nodeAttrs, id, propType);
+			if (bypass != null)
+				bypassedProps.add(bypass);
+		}
+		return bypassedProps;
 	}
 	
 	/**
 	 * Reset status of used Custom Graphics
 	 */
-	private void checkCustomGraphicsInUse() {
+	private void checkCustomGraphicsInUse(final Set<CyCustomGraphics> byPassedCustomGraphics) {
 
 		// Set everything unused.
 		final Collection<CyCustomGraphics> allCG = manager.getAll();
@@ -361,6 +387,9 @@ public class VisualMappingManager extends SubjectBase {
 			}
 			
 		}
+
+		for (final CyCustomGraphics cg : byPassedCustomGraphics)
+			manager.setUsedInCurrentSession(cg, true);
 	}
 
 	/**
