@@ -10,9 +10,11 @@ import org.cytoscape.io.read.CyTableReaderManager;
 import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CyNetworkNaming;
+import org.cytoscape.task.internal.loaddatatable.LoadAttributesURLTask;
 import org.cytoscape.task.internal.loadnetwork.LoadNetworkFileTask;
 import org.cytoscape.task.internal.loadnetwork.LoadNetworkURLTask;
 import org.cytoscape.task.internal.quickstart.datasource.InteractionFilePreprocessor;
@@ -31,6 +33,7 @@ public class ImportTaskUtil {
 	
 	private final Set<InteractionFilePreprocessor> processors;
 	
+	private CyTableManager tblMgr;
 	private CyTableReaderManager tblReaderMgr;
 	
 	private final CyApplicationManager appManager;
@@ -41,7 +44,8 @@ public class ImportTaskUtil {
 		     CyNetworkManager netmgr,
 		     final CyNetworkViewManager networkViewManager,
 		     CyProperty<Properties> cyProps, CyNetworkNaming cyNetworkNaming,
-		     StreamUtil streamUtil, CyTableReaderManager tblReaderMgr, final CyApplicationManager appManager) {
+		     StreamUtil streamUtil, CyTableManager tblMgr,CyTableReaderManager tblReaderMgr, 
+		     final CyApplicationManager appManager) {
 		this.mgr = mgr;
 		this.netmgr = netmgr;
 		this.networkViewManager = networkViewManager;
@@ -49,6 +53,7 @@ public class ImportTaskUtil {
 		this.cyNetworkNaming = cyNetworkNaming;
 		this.streamUtil = streamUtil;
 		this.processors = new HashSet<InteractionFilePreprocessor>();
+		this.tblMgr = tblMgr;
 		this.tblReaderMgr = tblReaderMgr;
 		this.appManager = appManager;
 		this.cyProps = cyProps;
@@ -88,8 +93,7 @@ public class ImportTaskUtil {
 	}
 
 	public Task getURLImportTableTask() {
-		// TODO Auto-generated method stub
-		return null;
+		return new LoadAttributesURLTask(this.tblReaderMgr, this.tblMgr);
 	}
 	
 	public CyApplicationManager getAppManager() {
