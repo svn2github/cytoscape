@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cytoscape Web: SVG prototype</title>
+		<style>
+			#container-div {
+				width: 600px;
+				margin: 30px auto;
+				background-color: #eee;
+			}
+		</style>
+		<script type="text/javascript" src="../raphael-1.5.2.js"></script>
+		<script type="text/javascript">
+
+			var paper;
+			window.onload = function() {
+
+				paper = Raphael("container-div", 600, 600);
+			}
+			
+			function draw() {
+				for (var i = 0; i < 1000; i++) {
+				
+					var x = Math.floor(Math.random()*600);
+					var y = Math.floor(Math.random()*600);
+					var size = Math.floor(Math.random()*10)+10;
+					drawCircle(x, y, size);
+					
+				}
+			}
+				
+			function drawCircle(x, y, size) {
+				paper.circle(x, y, size)
+				.attr({fill: "#666", "stroke-width": 4, "stroke-color": "#000"});
+				
+			}
+				
+				
+
+		</script>
+	</head>
+	<body>
+		<div id="container-div"></div>
+		<button onclick="draw()">Draw</button>
+	</body>
+</html>

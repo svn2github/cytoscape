@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cytoscape Web: SVG prototype</title>
+		<style>
+			#container-div {
+				width: 600px;
+				margin: 30px auto;
+				background-color: #eee;
+			}
+		</style>
+		
+		<script type="text/javascript">
+
+			var svgElem;
+			window.onload = function() {
+				
+				 svgElem = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+				svgElem.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+				svgElem.setAttribute("version", "1.1");
+				svgElem.setAttribute("width", "600");
+				svgElem.setAttribute("height", "600");
+				svgElem.appendChild(document.createElementNS("http://www.w3.org/2000/svg", "desc"));
+				document.getElementById("container-div").appendChild(svgElem);
+			}
+			
+			function draw() {
+				for (var i = 0; i < 1000; i++) {
+				
+					var x = Math.floor(Math.random()*600);
+					var y = Math.floor(Math.random()*600);
+					var size = Math.floor(Math.random()*10)+10;
+					drawCircle(x, y, size);
+				}
+			}
+				
+			function drawCircle(x, y, size) {
+				var circleElem = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+				document.createElement
+				circleElem.setAttribute("cx", x);
+				circleElem.setAttribute("cy", y);
+				circleElem.setAttribute("r", size);
+				circleElem.setAttribute("fill", "#666");
+				circleElem.setAttribute("stroke", "#000");
+				circleElem.setAttribute("stroke-width", 4);
+				svgElem.appendChild(circleElem);
+				
+				
+			}
+				
+				
+
+		</script>
+	</head>
+	<body>
+		<div id="container-div"></div>
+		<button onclick="draw()">Draw</button>
+	</body>
+</html>
