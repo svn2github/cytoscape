@@ -1,0 +1,30 @@
+<assembly>
+    <id>distribution</id>
+    <formats>
+        <format>jar</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory></outputDirectory>
+            <outputFileNameMapping></outputFileNameMapping>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>cytoscape:cytoscape</exclude>
+                <exclude>cytoscape:cytoscape-task</exclude>
+                <exclude>cytoscape:giny</exclude>
+                <exclude>commons-httpclient:commons-httpclient</exclude>
+                <exclude>javax.persistence:persistence-api</exclude>
+                <exclude>org.aopalliance:*</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
+    <files>
+        <file>
+            <source>src/main/resources/org/cytoscape/komal/plugin.props</source>
+            <outputDirectory>org/cytoscape/komal</outputDirectory>
+            <filtered>true</filtered>
+        </file>
+    </files>
+</assembly>

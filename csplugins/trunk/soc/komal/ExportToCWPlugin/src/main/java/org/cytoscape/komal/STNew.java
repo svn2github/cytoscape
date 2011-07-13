@@ -1,4 +1,4 @@
-package main.java.org.cytoscape.komal;
+package org.cytoscape.komal;
 
 import java.io.*;
 import cytoscape.logger.CyLogger;
@@ -20,7 +20,7 @@ public class STNew extends ExportToCWPlugin {
         File dir = new File(currentdir);
         CyLogger.getLogger().info("Current Working Directory : " + dir);
 
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("main/resources/org/cytoscape/komal/page3.st");
+        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("org/cytoscape/komal/page3.st");
         StringBuffer sb = new StringBuffer();
         BufferedReader bf = null;
 

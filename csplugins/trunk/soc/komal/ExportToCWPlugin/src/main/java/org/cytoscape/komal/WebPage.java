@@ -23,7 +23,7 @@ public class WebPage extends ExportToCWPlugin {
         CyLogger.getLogger().info("Current Working Directory : "+ dir);
 
         StringTemplateGroup group = new StringTemplateGroup("myGroup", "./", DefaultTemplateLexer.class);
-        StringTemplate obj = group.getInstanceOf("page3");
+        StringTemplate obj = group.getInstanceOf("/st/page3");
 
         CyLogger.getLogger().info("String Template Group made");
 

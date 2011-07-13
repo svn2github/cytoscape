@@ -1,4 +1,4 @@
-package main.java.org.cytoscape.komal;
+package org.cytoscape.komal;
 
 import java.util.*;
 

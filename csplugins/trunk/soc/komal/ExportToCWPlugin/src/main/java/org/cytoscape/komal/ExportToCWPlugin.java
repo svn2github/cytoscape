@@ -48,7 +48,7 @@ import java.awt.event.ActionListener;
 public class ExportToCWPlugin extends CytoscapePlugin {
 
     //Main class ExportToCytoscapeWeb extends the CytoscapePlugin class
-    public static String titleofpage;   //Title input from user
+    public static String titleofpage = "";   //Title input from user
     public static String descriptionofnetwork;  //Description input from user
     public static String urlofxgmml;    //URL of XGMML
     public static String exportlocation;    //export location
@@ -140,7 +140,7 @@ public class ExportToCWPlugin extends CytoscapePlugin {
 
                         urlField.setText(name);
 
-                       // String thisstr = new File(name).toURI().toString();
+                        // String thisstr = new File(name).toURI().toString();
                         String thisstr = name.replace("\\", "/");
                         CyLogger.getLogger().info("PathWithName:" + thisstr);
                         HtmlPath = thisstr + ".html";
@@ -151,10 +151,6 @@ public class ExportToCWPlugin extends CytoscapePlugin {
 
                         exportlocation = new File(name).getParentFile().getPath();
                         CyLogger.getLogger().info("Path:" + exportlocation);
-
-                        //    URI xuri = new File(name).toURI();
-                        //   HtmlPath = "\"" + xuri.toString() + ".html" + "\"";
-                        //   CyLogger.getLogger().info("HtmlPath:" + HtmlPath);
 
                         if (!name.endsWith(".xgmml")) {
                             name = name + ".xgmml";
@@ -240,14 +236,15 @@ public class ExportToCWPlugin extends CytoscapePlugin {
                         CyLogger.getLogger().info("Export Button Clicked");
 
                         titleofpage = titleField.getText();
+                        if (titleofpage.length() == 0) {
+                            titleofpage = "Cytoscape Web";
+                        }
                         descriptionofnetwork = descriptionField.getText();
-                        //urlofxgmml = urlField.getText();
-                        //urlofxgmml = urlofxgmml + ".xgmml";
 
                         ExportToCWPlugin p = new ExportToCWPlugin();
 
                         p.call();
-                        CyLogger.getLogger().info("Calling function to call WebPage.java");
+
                     }
                 });
                 frame.setVisible(true);
@@ -262,9 +259,19 @@ public class ExportToCWPlugin extends CytoscapePlugin {
     }
 
     public void call() {
-        String why[] = {what};
-        CopyDir.main(why);
-        WebPage.main(why);
+        //String why[] = {what};
+        //CyLogger.getLogger().info("Calling CopyDir.java");
+        //CopyDir c = new CopyDir();
+        //c.copies();
+        //work whatif=new work();
+        // whatif.works();
+        //work.works();
+
+        CyLogger.getLogger().info("Calling STNew.java");
+        STNew stobj = new STNew();
+        stobj.STMake();
+
+
     }
 }
 
