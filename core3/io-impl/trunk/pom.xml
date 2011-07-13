@@ -107,7 +107,7 @@
 							<generatePackage>org.cytoscape.io.internal.util.vizmap.model</generatePackage>
 							<verbose>true</verbose>
 							<removeOldOutput>false</removeOldOutput>
-							<forceRegenerate>true</forceRegenerate>
+							<forceRegenerate>false</forceRegenerate>
 						</configuration>
 					</execution>
 				</executions>
