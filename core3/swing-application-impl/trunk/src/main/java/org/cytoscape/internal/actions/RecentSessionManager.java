@@ -105,7 +105,7 @@ public class RecentSessionManager implements SessionLoadedListener, CytoscapeShu
 		public DummyAction(CyApplicationManager applicationManager) {
 			super("(No recent session files)", applicationManager);
 			setPreferredMenu("File.Recent Files");
-			setMenuGravity(6.0f);
+			setMenuGravity(7.0f);
 			this.setEnabled(false);
 		}
 
