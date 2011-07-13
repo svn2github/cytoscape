@@ -30,11 +30,16 @@
 package org.cytoscape.equations.internal.functions;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.mockito.Mockito.*;
 
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.equations.Equation;
@@ -47,12 +52,10 @@ import org.cytoscape.equations.internal.interpreter.InterpreterImpl;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.events.AddedNodeEvent;
+import org.cytoscape.model.events.AddedNodesEvent;
 import org.cytoscape.session.CyApplicationManager;
-
-import static org.junit.Assert.*;
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 
 
 public class InDegreeTest {
@@ -70,8 +73,11 @@ public class InDegreeTest {
 		final CyNetwork network = mock(CyNetwork.class);
 		when(network.getAdjacentEdgeList(node, CyEdge.Type.INCOMING)).thenReturn(edgeList);
 
+		Collection<CyNode> nodes = new ArrayList<CyNode>(1);
+		nodes.add(node);
+		
 		suidToNodeMapper = new SUIDToNodeMapper();
-		suidToNodeMapper.handleEvent(new AddedNodeEvent(network, node));
+		suidToNodeMapper.handleEvent(new AddedNodesEvent(network, nodes));
 
 		applicationManager = mock(CyApplicationManager.class);
 		when(applicationManager.getCurrentNetwork()).thenReturn(network);

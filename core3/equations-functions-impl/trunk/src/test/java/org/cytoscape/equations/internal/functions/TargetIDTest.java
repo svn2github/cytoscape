@@ -30,11 +30,16 @@
 package org.cytoscape.equations.internal.functions;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.mockito.Mockito.*;
 
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.equations.Equation;
@@ -47,11 +52,9 @@ import org.cytoscape.equations.internal.interpreter.InterpreterImpl;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.events.AddedEdgeEvent;
-
-import static org.junit.Assert.*;
-import org.junit.Test;
+import org.cytoscape.model.events.AddedEdgesEvent;
 import org.junit.Before;
+import org.junit.Test;
 
 
 public class TargetIDTest {
@@ -71,8 +74,11 @@ public class TargetIDTest {
 		when(edge.getSUID()).thenReturn(11L);
 		when(edge.getTarget()).thenReturn(node);
 
+		Collection<CyEdge> edges = new ArrayList<CyEdge>(1);
+		edges.add(edge);
+
 		suidToEdgeMapper = new SUIDToEdgeMapper();
-		suidToEdgeMapper.handleEvent(new AddedEdgeEvent(network, edge));
+		suidToEdgeMapper.handleEvent(new AddedEdgesEvent(network, edges));
 	}
 
 	@Test
