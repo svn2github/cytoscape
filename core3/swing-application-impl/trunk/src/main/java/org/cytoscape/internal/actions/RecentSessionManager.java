@@ -1,5 +1,7 @@
 package org.cytoscape.internal.actions;
 
+import java.awt.event.ActionEvent;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.Dictionary;
 import java.util.HashSet;
@@ -7,6 +9,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
+import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.application.swing.CyAction;
+import org.cytoscape.application.swing.events.CytoscapeShutdownEvent;
+import org.cytoscape.application.swing.events.CytoscapeShutdownListener;
 import org.cytoscape.internal.task.OpenRecentSessionTaskFactory;
 import org.cytoscape.io.read.CySessionReaderManager;
 import org.cytoscape.io.util.RecentlyOpenedTracker;
@@ -15,12 +21,17 @@ import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.session.events.SessionLoadedEvent;
 import org.cytoscape.session.events.SessionLoadedListener;
+import org.cytoscape.work.TaskFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Update menu
  * 
  */
-public class RecentSessionManager implements SessionLoadedListener {
+public class RecentSessionManager implements SessionLoadedListener, CytoscapeShutdownListener {
+	
+	private static final Logger logger = LoggerFactory.getLogger(RecentSessionManager.class);
 
 	private final RecentlyOpenedTracker tracker;
 	private final CyServiceRegistrar registrar;
@@ -30,6 +41,8 @@ public class RecentSessionManager implements SessionLoadedListener {
 	private final CyApplicationManager appManager;
 
 	private final Set<OpenRecentSessionTaskFactory> currentMenuItems;
+	
+	private final DummyAction factory;
 
 	public RecentSessionManager(final RecentlyOpenedTracker tracker, final CyServiceRegistrar registrar,
 			final CySessionManager sessionManager, final CySessionReaderManager readerManager,
@@ -42,11 +55,21 @@ public class RecentSessionManager implements SessionLoadedListener {
 		
 		this.currentMenuItems = new HashSet<OpenRecentSessionTaskFactory>();
 
+		factory = new DummyAction(appManager);
+		
 		updateMenuItems();
 	}
 
 	private void updateMenuItems() {
+		
+		// If there is no recent items, add dummy menu.
+		if(tracker.getRecentlyOpenedURLs().size() == 0) {
+			registrar.registerService(factory, CyAction.class, new Hashtable<String, String>());
+			return;
+		}
+			
 		// Unregister services
+		registrar.unregisterService(factory, CyAction.class);
 		for (final OpenRecentSessionTaskFactory currentItem : currentMenuItems)
 			registrar.unregisterAllServices(currentItem);
 
@@ -56,10 +79,10 @@ public class RecentSessionManager implements SessionLoadedListener {
 
 		for (final URL url : urls) {
 			final Dictionary<String, String> dict = new Hashtable<String, String>();
-			dict.put("preferredMenu", "File");
+			dict.put("preferredMenu", "File.Recent");
 			dict.put("title", url.getFile());
 			final OpenRecentSessionTaskFactory factory = new OpenRecentSessionTaskFactory(sessionManager, readerManager, appManager, tracker, url);
-			registrar.registerService(factory, OpenRecentSessionTaskFactory.class, dict);
+			registrar.registerService(factory, TaskFactory.class, dict);
 
 			this.currentMenuItems.add(factory);
 		}
@@ -70,5 +93,37 @@ public class RecentSessionManager implements SessionLoadedListener {
 	public void handleEvent(SessionLoadedEvent e) {
 		updateMenuItems();
 	}
+	
+	
+	/**
+	 * Dummy action to add menu item when no entry is available.
+	 */
+	private final class DummyAction extends AbstractCyAction {
+
+		private static final long serialVersionUID = 4904285068314580548L;
+
+		public DummyAction(CyApplicationManager applicationManager) {
+			super("(No recent session files)", applicationManager);
+			setPreferredMenu("File.Recent Files");
+			setMenuGravity(6.0f);
+			this.setEnabled(false);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {}
+	}
+
+	@Override
+	public void handleEvent(CytoscapeShutdownEvent e) {
+		logger.info("Saving recently used session file list...");
+		try {
+			tracker.writeOut();
+		} catch (FileNotFoundException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException("Could not save recently opened session file list.", ex);
+		}
+	}
+	
+	
 
 }
