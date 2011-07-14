@@ -16,8 +16,12 @@ import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OpenRecentSessionTaskFactory implements TaskFactory {
+	
+	private static final Logger logger = LoggerFactory.getLogger(OpenRecentSessionTaskFactory.class);
 
 	private final CySessionManager sessionManager;
 	private final CySessionReaderManager readerManager;
@@ -48,7 +52,23 @@ public class OpenRecentSessionTaskFactory implements TaskFactory {
 		if(reader == null)
 			throw new NullPointerException("Could not find reader.");
 		
-		return new TaskIterator(new LoadRecentSessionTask(reader));
+		return new TaskIterator(new LoadSessionFromURLTask(reader), new LoadRecentSessionTask(reader));
+	}
+	
+	private final class LoadSessionFromURLTask extends AbstractTask {
+
+		private final CySessionReader reader;
+		
+		LoadSessionFromURLTask(final CySessionReader reader) {
+			logger.debug("First, load the session file");
+			this.reader = reader;
+		}
+		
+		@Override
+		public void run(TaskMonitor taskMonitor) throws Exception {
+			reader.run(taskMonitor);
+		}
+		
 	}
 
 	private final class LoadRecentSessionTask extends AbstractTask {
@@ -61,6 +81,8 @@ public class OpenRecentSessionTaskFactory implements TaskFactory {
 
 		@Override
 		public void run(TaskMonitor taskMonitor) throws Exception {
+			logger.debug("Post processiong for session...");
+
 			final CySession newSession = reader.getCySession();
 			if (newSession == null)
 				throw new NullPointerException("Session could not be read for file: " + targetSession.toString());

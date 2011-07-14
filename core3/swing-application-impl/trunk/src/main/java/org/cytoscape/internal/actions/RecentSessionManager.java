@@ -32,6 +32,8 @@ import org.slf4j.LoggerFactory;
 public class RecentSessionManager implements SessionLoadedListener, CytoscapeShutdownListener {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RecentSessionManager.class);
+	
+	private static final String MENU_CATEGORY = "File.Recent Session";
 
 	private final RecentlyOpenedTracker tracker;
 	private final CyServiceRegistrar registrar;
@@ -79,8 +81,9 @@ public class RecentSessionManager implements SessionLoadedListener, CytoscapeShu
 
 		for (final URL url : urls) {
 			final Dictionary<String, String> dict = new Hashtable<String, String>();
-			dict.put("preferredMenu", "File.Recent");
+			dict.put("preferredMenu", MENU_CATEGORY);
 			dict.put("title", url.getFile());
+			dict.put("menuGravity", "6.0");
 			final OpenRecentSessionTaskFactory factory = new OpenRecentSessionTaskFactory(sessionManager, readerManager, appManager, tracker, url);
 			registrar.registerService(factory, TaskFactory.class, dict);
 
@@ -104,8 +107,8 @@ public class RecentSessionManager implements SessionLoadedListener, CytoscapeShu
 
 		public DummyAction(CyApplicationManager applicationManager) {
 			super("(No recent session files)", applicationManager);
-			setPreferredMenu("File.Recent Files");
-			setMenuGravity(7.0f);
+			setPreferredMenu(MENU_CATEGORY);
+			setMenuGravity(6.0f);
 			this.setEnabled(false);
 		}
 
