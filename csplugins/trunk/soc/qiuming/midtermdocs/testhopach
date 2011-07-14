@@ -1,0 +1,5 @@
+a<-read.table(file="mydata.txt",header=T)
+aa<-as.matrix(a);
+b<-distancematrix(a,d="cosangle")
+c<-read.table(file="mydist.txt",header=F)
+result<-hopach(aa[,2:7],dmat=b)
