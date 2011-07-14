@@ -167,6 +167,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
+			<artifactId>test-support</artifactId>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.cytoscape</groupId>
 			<artifactId>event-api</artifactId>
 			<version>3.0.0-alpha6-SNAPSHOT</version>
 		</dependency>

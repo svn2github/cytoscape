@@ -38,15 +38,15 @@ import org.cytoscape.work.TaskMonitor;
 
 public class DestroyNetworkViewTask extends AbstractNetworkViewCollectionTask {
 
-    private final CyNetworkViewManager networkViewManager;
+	private final CyNetworkViewManager networkViewManager;
 
-    public DestroyNetworkViewTask(final Collection<CyNetworkView> views, final CyNetworkViewManager networkViewManager) {
-	super(views);
-	this.networkViewManager = networkViewManager;
-    }
+	public DestroyNetworkViewTask(final Collection<CyNetworkView> views, final CyNetworkViewManager networkViewManager) {
+		super(views);
+		this.networkViewManager = networkViewManager;
+	}
 
-    public void run(TaskMonitor tm) {
-	for (final CyNetworkView n : networkViews)
-	    networkViewManager.destroyNetworkView(n);
-    }
+	public void run(TaskMonitor tm) {
+		for (final CyNetworkView n : networkViews)
+			networkViewManager.destroyNetworkView(n);
+	}
 }

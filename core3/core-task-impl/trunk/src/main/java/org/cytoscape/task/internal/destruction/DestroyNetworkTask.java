@@ -30,19 +30,18 @@
 package org.cytoscape.task.internal.destruction;
 
 
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.task.AbstractNetworkCollectionTask;
-
 import java.util.Collection;
+
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.task.AbstractNetworkCollectionTask;
+import org.cytoscape.work.TaskMonitor;
 
 
 public class DestroyNetworkTask extends AbstractNetworkCollectionTask {
 	private final CyNetworkManager netmgr;
 
-	public DestroyNetworkTask(Collection<CyNetwork> nets, final CyNetworkManager netmgr) {
+	public DestroyNetworkTask(final Collection<CyNetwork> nets, final CyNetworkManager netmgr) {
 		super(nets);
 		this.netmgr = netmgr;
 	}
