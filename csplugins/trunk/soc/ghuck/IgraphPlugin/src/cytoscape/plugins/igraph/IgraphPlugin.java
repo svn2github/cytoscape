@@ -37,6 +37,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.sun.jna.*;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 /** ---------------------------IgraphPlugin-----------------------------
  * This plugin allows to call some of igraph functions from Cytoscape
@@ -50,48 +52,58 @@ public class IgraphPlugin extends CytoscapePlugin {
      */
     public IgraphPlugin() {
 
+	extractFileFromJar("libigraphWrapper.dylib");
+
  	// Make sure libraries are extracted in the plugins folder
-	checkLib("igraphWrapper");
-	checkLib("igraph.0");
+	if (extractFileFromJar("jna.jar")) {
+	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), "Igraph plugin succesfully installed!\nIt will be available the next time you run Cytoscape.");
+	    return;
+	}
 
-        String userDir = System.getProperty("user.dir"); 
- 	// JOptionPane.showMessageDialog( Cytoscape.getDesktop(), "user dir:"+ userDir);	
- 	NativeLibrary.addSearchPath("igraphWrapper", userDir + "/plugins");
+	String userDir = System.getProperty("user.dir"); 
+// 	JOptionPane.showMessageDialog( Cytoscape.getDesktop(), "user dir:"+ userDir);	
+ 	
+	try {
+	    NativeLibrary.addSearchPath("igraphWrapper", userDir + "/plugins");
+	    //JOptionPane.showMessageDialog(Cytoscape.getDesktop(), IgraphInterface.nativeAdd(10, 20));	   
+	    
+	    // Create Igraph object
+	    IgraphAPI igraph = new IgraphAPI();
+	    
+	    // Add elements in menu toolbar
+	    IgraphAPI.IsConnected isConnectedAction1 = igraph.new IsConnected(this, "All nodes", false);
+	    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction1);
+	    
+	    IgraphAPI.IsConnected isConnectedAction2 = igraph.new IsConnected(this, "Selected Nodes", true);
+	    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction2);
+	    
+	    // Layouts
+	    CyLayouts.addLayout(new CircleLayout(),                   "Igraph");
+	    CyLayouts.addLayout(new StarLayout(),                     "Igraph");
+	    CyLayouts.addLayout(new FruchtermanReingoldLayout(true),  "Igraph");
 
- 	// JOptionPane.showMessageDialog(Cytoscape.getDesktop(), IgraphInterface.nativeAdd(10, 20));	   
-
-	// Create Igraph object
-	IgraphAPI igraph = new IgraphAPI();
-
-	// Add elements in menu toolbar
-	IgraphAPI.IsConnected isConnectedAction1 = igraph.new IsConnected(this, "All nodes", false);
-	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction1);
-
-	IgraphAPI.IsConnected isConnectedAction2 = igraph.new IsConnected(this, "Selected Nodes", true);
-	Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction2);
-
-	// Layouts
-	CyLayouts.addLayout(new CircleLayout(),                   "Igraph");
-	CyLayouts.addLayout(new StarLayout(),                     "Igraph");
-	CyLayouts.addLayout(new FruchtermanReingoldLayout(true),  "Igraph");
-		
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    String message = "Error while initializing Igraph Plugin:\n" + e.getMessage(); 
+	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+	}       
     }
 
     private boolean isOldVersion(){
 	return false;
     }
 
-    private void checkLib(String lib) {
+    /**
+     * @return true if file was extracted, false otherwise
+     */
+    private boolean extractFileFromJar(String fileName) {
     // TODO: Make this cross-platform
-	File dynamicLib = new File ("./plugins/lib" + lib + ".dylib");
-	if (!dynamicLib.exists() || isOldVersion()){
-	    String message;	    
+	File file = new File ("./plugins/" + fileName);
+	boolean ret = false;
+	if (!file.exists() || isOldVersion()){
 	    try {
-		String home = getClass().getProtectionDomain().
-		    getCodeSource().getLocation().toString().
-		    substring(6);
 		JarFile jar = new JarFile("./plugins/igraphPlugin.jar");
-		ZipEntry entry = jar.getEntry("lib" + lib + ".dylib");
+		ZipEntry entry = jar.getEntry(fileName);
 		File efile = new File("./plugins/", entry.getName());
 	    
 		InputStream in = 
@@ -108,17 +120,17 @@ public class IgraphPlugin extends CytoscapePlugin {
 		out.close();
 		in.close();
 
-		message = lib + " library extracted!"; 
+		ret = true;
 	    }
 	    catch (Exception e) {
 		e.printStackTrace();
-		message = "Igraph Plugin: Error While extracting library from jar file:\n" + e.getMessage(); 
+		String message = "Igraph Plugin: Error While extracting file from igraph plugin jar :\n" + e.getMessage(); 
+		JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
 	    }
 
-	    //Show message
-	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);	   
+	    
 	}
-	return;
-    } // checkLib
+	return ret;
+    } // extractFileFromJar
         
 }

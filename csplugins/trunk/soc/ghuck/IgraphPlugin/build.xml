@@ -22,6 +22,7 @@
     <property name="src.dir" value="${root.dir}/src"/>
     <property name="build.dir" value="${root.dir}/build"/>
     <property name="manifest.dir" value="${root.dir}/manifest"/>
+    <property name="resources.dir" value="${root.dir}/resources"/>
 
     <!-- Define the Cytoscape directories -->
     <property name="cytoscape.dir" value="/Applications/Cytoscape_v2.8.1"/>
@@ -43,12 +44,13 @@
     <available file="${root.dir}/plugin.props" property="plugin.prop.present"/>
     <available file="${root.dir}/License.txt" property="license.present"/>
     <available file="${root.dir}/libigraphWrapper.dylib" property="igraphWrapper.lib.present"/>
-    <available file="${igraph.dir}/src/.libs/libigraph.0.dylib" property="igraph.lib.present"/>
+    <available file="${resources.dir}/jna.jar" property="jna.jar.present"/>
 
     <!-- Define the java class path -->
     <path id="project.class.path">
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
       <pathelement path="${java.class.path}/"/>
+      <pathelement location="${resources.dir}/jna.jar"/>
       <fileset dir="${cytoscape.plugin.dir}">
         <include name="**/*.jar"/>
       </fileset>
@@ -90,7 +92,7 @@
   <!-- Creates the plugin jar file                                           -->
   <!-- =================================================================== -->
   <target name="jar" depends="compile, copy_plugin_prop, copy_license,
-			      copy_igraphWrapper_lib, copy_igraph_lib">  
+			      copy_igraphWrapper_lib, copy_jna_jar">  
     <jar destfile="${project.jar}">
       <manifest> <attribute name="Cytoscape-Plugin" value="${plugin_class}"/> </manifest>
       <fileset dir="${build.dir}" includes="**"/>
@@ -120,13 +122,12 @@
   </target>
 
   <!-- =================================================================== -->
-  <!-- If igraph.lib exist, copy it to build directory  -->	
+  <!-- If jna.jar exists, copy it to build directory  -->	
   <!-- =================================================================== -->
-  <target name="copy_igraph_lib" if="igraph.lib.present">
-    <echo message="copying igraph lib to build dir"/>
-    <copy todir="${build.dir}/" file="${igraph.dir}/src/.libs/libigraph.0.dylib"/>	
+  <target name="copy_jna_jar" if="jna.jar.present">
+    <echo message="copying jna.jar to build dir"/>
+    <copy todir="${build.dir}/" file="${resources.dir}/jna.jar"/>	
   </target>
-
 
   <!-- =================================================================== -->
   <!-- Copy jar file to Cytoscape plugin folder                            -->
