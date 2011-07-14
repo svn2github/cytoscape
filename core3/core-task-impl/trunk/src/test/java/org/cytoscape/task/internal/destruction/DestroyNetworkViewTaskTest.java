@@ -42,7 +42,7 @@ public class DestroyNetworkViewTaskTest {
 		task.run(null);
 		
 		verify(viewManager, times(1)).destroyNetworkView(view1);
-		verify(viewManager, times(1)).destroyNetworkView(view1);
+		verify(viewManager, times(1)).destroyNetworkView(view2);
 	}
 	
 }
