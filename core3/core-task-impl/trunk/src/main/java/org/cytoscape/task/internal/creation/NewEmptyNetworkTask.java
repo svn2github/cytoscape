@@ -66,14 +66,14 @@ public class NewEmptyNetworkTask implements ValuedTask<CyNetworkView> {
 
 	public CyNetworkView run(TaskMonitor tm) {
 		final CyNetwork newNet = cnf.getInstance();
-		newNet.getCyRow().set(CyTableEntry.NAME,
-				      namingUtil.getSuggestedNetworkTitle("Network"));
+		newNet.getCyRow().set(CyTableEntry.NAME, namingUtil.getSuggestedNetworkTitle("Network"));
 		final CyNetworkView view = cnvf.getNetworkView(newNet);		
 		networkManager.addNetwork(newNet);
 		networkViewManager.addNetworkView(view);
 		return view;
 	}
 
+	@Override
 	public void cancel() {
 		cancel = true;
 	}
