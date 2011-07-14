@@ -304,28 +304,28 @@
 	</bean>
 
 	<bean id="exportNetworkImageTaskFactory"
-		class="org.cytoscape.task.internal.exportgraphics.ExportNetworkImageTaskFactory">
+		class="org.cytoscape.task.internal.export.graphics.ExportNetworkImageTaskFactory">
 		<constructor-arg ref="viewWriterManagerServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<bean id="exportNetworkViewTaskFactory"
-		class="org.cytoscape.task.internal.exportnetwork.ExportNetworkViewTaskFactory">
+		class="org.cytoscape.task.internal.export.network.ExportNetworkViewTaskFactory">
 		<constructor-arg ref="networkViewWriterManagerServiceRef" />
 	</bean>
 
 	<bean id="exportNodeTableTaskFactory"
-		class="org.cytoscape.task.internal.exporttable.ExportNodeTableTaskFactory">
+		class="org.cytoscape.task.internal.export.table.ExportNodeTableTaskFactory">
 		<constructor-arg ref="cyTableWriterManagerRef" />
 	</bean>
 
 	<bean id="exportEdgeTableTaskFactory"
-		class="org.cytoscape.task.internal.exporttable.ExportEdgeTableTaskFactory">
+		class="org.cytoscape.task.internal.export.table.ExportEdgeTableTaskFactory">
 		<constructor-arg ref="cyTableWriterManagerRef" />
 	</bean>
 
 	<bean id="exportCurrentTableTaskFactory"
-		class="org.cytoscape.task.internal.exporttable.ExportCurrentTableTaskFactory">
+		class="org.cytoscape.task.internal.export.table.ExportCurrentTableTaskFactory">
 		<constructor-arg ref="cyTableWriterManagerRef" />
 	</bean>
 	
@@ -353,7 +353,7 @@
 	</bean>
 	
 	<bean id="exportVizmapTaskFactory"
-        class="org.cytoscape.task.internal.exportvizmap.ExportVizmapTaskFactory">
+        class="org.cytoscape.task.internal.export.vizmap.ExportVizmapTaskFactory">
         <constructor-arg ref="vizmapWriterManagerServiceRef" />
         <constructor-arg ref="visualMappingManagerServiceRef" />
     </bean>

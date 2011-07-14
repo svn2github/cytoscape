@@ -1,4 +1,4 @@
-package org.cytoscape.task.internal.io;
+package org.cytoscape.task.internal.export;
 
 
 import org.cytoscape.view.model.View;

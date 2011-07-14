@@ -1,13 +1,13 @@
 
-package org.cytoscape.task.internal.io;
-
-import org.cytoscape.model.CyTable;
-import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.write.CyTableWriterFactory;
-import org.cytoscape.io.write.CyTableWriterManager;
-import org.cytoscape.io.write.CyWriter;
+package org.cytoscape.task.internal.export.table;
 
 import java.io.File;
+
+import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.write.CyTableWriterManager;
+import org.cytoscape.io.write.CyWriter;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.task.internal.export.TunableAbstractCyWriter;
 
 /**
  * A utility Task implementation specifically for writing {@link org.cytoscape.model.CyTable} objects.

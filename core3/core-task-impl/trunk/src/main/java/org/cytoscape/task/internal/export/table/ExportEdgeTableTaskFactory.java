@@ -1,22 +1,21 @@
-package org.cytoscape.task.internal.exporttable;
+package org.cytoscape.task.internal.export.table;
 
 import org.cytoscape.io.write.CyTableWriterManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.task.AbstractNetworkViewTaskFactory;
-import org.cytoscape.task.internal.io.CyTableWriter;
 import org.cytoscape.work.TaskIterator;
 
-public class ExportNodeTableTaskFactory extends AbstractNetworkViewTaskFactory {
+public class ExportEdgeTableTaskFactory extends AbstractNetworkViewTaskFactory {
 
 	private final CyTableWriterManager writerManager;
 
-	public ExportNodeTableTaskFactory(CyTableWriterManager writerManager) {
+	public ExportEdgeTableTaskFactory(CyTableWriterManager writerManager) {
 		this.writerManager = writerManager;
 	}
 	
 	@Override
 	public TaskIterator getTaskIterator() {
-		CyTable table = view.getModel().getDefaultNodeTable();
+		CyTable table = view.getModel().getDefaultEdgeTable();
 		return new TaskIterator(new CyTableWriter(writerManager, table));
 	}
 

@@ -1,20 +1,16 @@
-package org.cytoscape.task.internal.io;
+package org.cytoscape.task.internal.export;
 
 
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.TunableValidator;
-import org.cytoscape.work.TunableValidator.ValidationState;
-import org.cytoscape.work.util.ListSingleSelection;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.write.AbstractCyWriter;
 import org.cytoscape.io.write.CyWriterManager;
-
-import java.io.File;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.ArrayList;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.util.ListSingleSelection;
 
 
 /**
@@ -23,9 +19,8 @@ import java.util.ArrayList;
  * is meant to be extended for specific file types such that the appropriate
  * {@link org.cytoscape.io.write.CyWriter} can be identified.
  */
-public abstract class TunableAbstractCyWriter<T extends CyWriterManager>
-	extends AbstractCyWriter<T> implements TunableValidator
-{
+public abstract class TunableAbstractCyWriter<T extends CyWriterManager> extends AbstractCyWriter<T> implements
+		TunableValidator {
 	/**
 	 * This method gets the file to be written.  This method should not
 	 * be called directly, but rather handled by the {@link org.cytoscape.work.Tunable}

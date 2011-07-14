@@ -26,11 +26,11 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package org.cytoscape.task.internal.exportgraphics;
+package org.cytoscape.task.internal.export.graphics;
 
 
 import org.cytoscape.task.AbstractNetworkViewTaskFactory;
-import org.cytoscape.task.internal.io.ViewWriter;
+import org.cytoscape.task.internal.export.ViewWriter;
 import org.cytoscape.io.write.PresentationWriterManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskIterator;

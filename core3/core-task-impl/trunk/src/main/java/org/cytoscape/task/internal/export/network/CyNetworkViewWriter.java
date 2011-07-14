@@ -1,12 +1,12 @@
-package org.cytoscape.task.internal.io;
+package org.cytoscape.task.internal.export.network;
 
 
 import java.io.File;
 
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.write.CyNetworkViewWriterFactory;
 import org.cytoscape.io.write.CyNetworkViewWriterManager;
 import org.cytoscape.io.write.CyWriter;
+import org.cytoscape.task.internal.export.TunableAbstractCyWriter;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Tunable;
 
@@ -23,8 +23,9 @@ public final class CyNetworkViewWriter extends TunableAbstractCyWriter<CyNetwork
 	 * {@link org.cytoscape.io.write.CyNetworkViewWriterFactory} to use to write the file.
 	 * @param view The {@link org.cytoscape.view.model.CyNetworkView} to be written out. 
 	 */
-	public CyNetworkViewWriter(CyNetworkViewWriterManager writerManager, CyNetworkView view ) {
+	public CyNetworkViewWriter(final CyNetworkViewWriterManager writerManager, final CyNetworkView view ) {
 		super(writerManager);
+		
 		if (view == null)
 			throw new NullPointerException("View is null!");
 		this.view = view;
@@ -33,6 +34,7 @@ public final class CyNetworkViewWriter extends TunableAbstractCyWriter<CyNetwork
 	/**
 	 * {@inheritDoc}  
 	 */
+	@Override
 	protected CyWriter getWriter(CyFileFilter filter, File file)  throws Exception{
 		if (!fileExtensionIsOk(file))
 			file = addOrReplaceExtension(outputFile);
@@ -41,7 +43,7 @@ public final class CyNetworkViewWriter extends TunableAbstractCyWriter<CyNetwork
 	}
 	
 	@Tunable(description="Save Network As:", params="fileCategory=network;input=false")
-	public  File getOutputFile() {	
+	@Override public  File getOutputFile() {	
 		return outputFile;
 	}
 }

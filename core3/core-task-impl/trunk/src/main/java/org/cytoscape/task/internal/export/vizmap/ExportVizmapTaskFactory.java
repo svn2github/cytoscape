@@ -1,7 +1,6 @@
-package org.cytoscape.task.internal.exportvizmap;
+package org.cytoscape.task.internal.export.vizmap;
 
 import org.cytoscape.io.write.VizmapWriterManager;
-import org.cytoscape.task.internal.io.VizmapWriter;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;

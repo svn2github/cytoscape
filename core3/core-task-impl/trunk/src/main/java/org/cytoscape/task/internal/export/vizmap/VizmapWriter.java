@@ -1,4 +1,4 @@
-package org.cytoscape.task.internal.io;
+package org.cytoscape.task.internal.export.vizmap;
 
 import java.io.File;
 import java.util.Set;
@@ -6,6 +6,7 @@ import java.util.Set;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.io.write.VizmapWriterManager;
+import org.cytoscape.task.internal.export.TunableAbstractCyWriter;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 
