@@ -104,9 +104,9 @@ class TaskDialog extends JDialog {
 	 */
 	static final String ELAPSED_AND_REMAINING_FORMAT = "%s elapsed, %s remaining";
 
-	static final String CANCEL_LABEL = "   Cancel   ";
+	static final String CANCEL_LABEL = "Cancel";
 	static final String CANCELLING_LABEL = "   Cancelling...   ";
-	static final String CLOSE_LABEL = "   Close   ";
+	static final String CLOSE_LABEL = "Close";
 
 	// State variables
 	boolean haltRequested = false;

@@ -36,14 +36,30 @@
 
 package org.cytoscape.work.internal.task;
 
-import javax.swing.*;
-import javax.swing.text.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.JTree;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+import javax.swing.text.StyledEditorKit;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 
 /**
@@ -62,12 +78,12 @@ class ErrorPanel extends JPanel {
 	 */
 	private String userErrorMessage;
 
-    /**
-     * Hint to user as to how to fix the error.
-     */
-    private String tip;
+	/**
+	 * Hint to user as to how to fix the error.
+	 */
+	private String tip;
 
-    /**
+	/**
 	 * Flag to Show/Hide Error Details.
 	 */
 	private boolean showDetails = false;
@@ -85,7 +101,7 @@ class ErrorPanel extends JPanel {
 	/**
 	 * JDialog Owner.
 	 */
-	private JDialog owner;
+	private Window owner;
     private static final String SHOW_TEXT = "Show Error Details";
 	private static final String HIDE_TEXT = "Hide Error Details";
 
@@ -96,7 +112,7 @@ class ErrorPanel extends JPanel {
 	 * @param t                Throwable Object. May be null.
 	 * @param userErrorMessage User Readable Error Message. May be null.
 	 */
-	ErrorPanel(JDialog owner, Throwable t, String userErrorMessage) {
+	ErrorPanel(Window owner, Throwable t, String userErrorMessage) {
 		if (owner == null) {
 			throw new IllegalArgumentException("owner parameter is null.");
 		}
@@ -115,7 +131,7 @@ class ErrorPanel extends JPanel {
 	 * @param userErrorMessage User Readable Error Message. May be null.
      * @param tip              Tip for user on how to recover from the error.  May be null.
 	 */
-	ErrorPanel(JDialog owner, Throwable t, String userErrorMessage, String tip) {
+	ErrorPanel(Window owner, Throwable t, String userErrorMessage, String tip) {
 		if (owner == null) {
 			throw new IllegalArgumentException("owner parameter is null.");
 		}
@@ -285,7 +301,7 @@ class ErrorPanel extends JPanel {
 					public void actionPerformed(ActionEvent e) {
 						showDetails = !showDetails;
 						detailsPane.setVisible(showDetails);
-						owner.setResizable(showDetails);
+						((Dialog) owner).setResizable(showDetails);
 
 						if (showDetails) {
 							detailsButton.setText(HIDE_TEXT);

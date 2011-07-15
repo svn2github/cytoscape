@@ -41,7 +41,7 @@ class SwingTaskMonitor implements TaskMonitor {
 
 		dialog = new TaskDialog(parent, this);
 		dialog.setLocationRelativeTo(parent);
-		
+		dialog.setAlwaysOnTop(true);
 		
 		if (title != null)
 			dialog.setTaskTitle(title);

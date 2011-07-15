@@ -10,23 +10,20 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TunableHandlerFactory;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.TunableValidator.ValidationState;
+import org.cytoscape.work.internal.tunables.utils.CollapsablePanel;
+import org.cytoscape.work.internal.tunables.utils.XorPanel;
 import org.cytoscape.work.spring.SpringTunableInterceptor;
 import org.cytoscape.work.swing.GUITunableHandler;
 import org.cytoscape.work.swing.GUITunableInterceptor;
 import org.cytoscape.work.swing.TunnableDialog;
-import org.cytoscape.work.internal.tunables.utils.CollapsablePanel;
-import org.cytoscape.work.internal.tunables.utils.XorPanel;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
