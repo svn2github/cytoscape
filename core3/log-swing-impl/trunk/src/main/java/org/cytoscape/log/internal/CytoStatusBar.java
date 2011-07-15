@@ -100,7 +100,7 @@ class CytoStatusBar extends JPanel {
 		}
 	}
 
-	static final String[] MEMORY_SUFFIXES = { "b", "kb", "Mb", "Gb" };
+	static final String[] MEMORY_SUFFIXES = { "B", "KiB", "MiB", "GiB" };
 	static final double MEMORY_UNIT = 1024.0;
 	static String formatMemory(long freeMemory, long totalMemory) {
 		double free = (double) freeMemory;
