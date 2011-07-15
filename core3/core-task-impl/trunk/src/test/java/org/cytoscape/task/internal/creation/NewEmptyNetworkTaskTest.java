@@ -15,17 +15,19 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class NewEmptyNetworkTaskTest {
-	
+
 	private final NetworkTestSupport support = new NetworkTestSupport();
 	private final NetworkViewTestSupport viewSupport = new NetworkViewTestSupport();
-	
+
 	private CyNetworkFactory cnf = support.getNetworkFactory();
 	private CyNetworkViewFactory cnvf = viewSupport.getNetworkViewFactory();
-	
+
 	@Mock
 	private CyNetworkManager netmgr;
 	@Mock
@@ -33,13 +35,18 @@ public class NewEmptyNetworkTaskTest {
 	@Mock
 	private CyNetworkNaming namingUtil;
 
-	
+	@Before
+	public void initMocks() {
+		MockitoAnnotations.initMocks(this);
+	}
+
 	@Test
 	public void testNewEmptyNetworkTask() throws Exception {
+
 		final NewEmptyNetworkTask task = new NewEmptyNetworkTask(cnf, cnvf, netmgr, networkViewManager, namingUtil);
 		final TaskMonitor taskMonitor = mock(TaskMonitor.class);
 		task.run(taskMonitor);
-		
+
 		verify(netmgr, times(1)).addNetwork(any(CyNetwork.class));
 		verify(networkViewManager, times(1)).addNetworkView(any(CyNetworkView.class));
 	}
