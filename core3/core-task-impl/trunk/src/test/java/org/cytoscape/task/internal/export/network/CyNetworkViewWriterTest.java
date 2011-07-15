@@ -41,7 +41,6 @@ public class CyNetworkViewWriterTest extends AbstractCyWriterTest {
 		this.cyWriter = writer;
 		
 		when(writerManager.getWriter(eq(view), eq(dummyFilter), any(File.class))).thenReturn(writer, writer);
-		
 	}
 	
 	@Test
