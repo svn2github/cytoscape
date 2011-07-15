@@ -1,4 +1,4 @@
-package org.cytoscape.task.internal.exportgraphics;
+package org.cytoscape.task.internal.export.graphics;
 
 
 import static org.junit.Assert.assertNotNull;
