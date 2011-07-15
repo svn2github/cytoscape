@@ -3,18 +3,21 @@ package org.cytoscape.work.swing;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import java.awt.Component;
+import java.awt.Dialog;
 
 public class TunnableDialog extends JDialog {
+
+	private static final long serialVersionUID = 7438623438647443009L;
 
 	protected JPanel parentPanel = null;
 	private String userInput = "";
 
 	public TunnableDialog() {
-		this.setModal(true);
+		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		initComponents();
 	}
 
-	//
+
 	public void addComponent(Component optionPanel) {
 		jScrollPane1.setViewportView(optionPanel);
 		pack();
