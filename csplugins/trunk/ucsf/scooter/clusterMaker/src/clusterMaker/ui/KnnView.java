@@ -124,9 +124,11 @@ public class KnnView extends TreeView {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 		String netId = network.getIdentifier();
-		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE) &&
-		    !networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE).equals("kmeans")) {
-			return false;
+		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE)) {
+			String type = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
+			if (!networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE).equals("kmeans") &&
+          !networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE).equals("kmedoid"))
+				return false;
 		}
 
 		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_NODE_ATTRIBUTE) ||

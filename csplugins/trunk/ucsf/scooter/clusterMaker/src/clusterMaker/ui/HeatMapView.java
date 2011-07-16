@@ -174,8 +174,8 @@ public class HeatMapView extends TreeViewApp implements Observer,
 		if (attributeArray == null || attributeArray.length == 0)
 			throw new CyCommandException("No attributes specified");
 		// Clone ourselves
-		HeatMapView hmView = new HeatMapView();
-		hmView.startup();
+		// HeatMapView hmView = new HeatMapView();
+		startup();
 		result.addMessage("Heat Map View displayed");
 		return result;
 	}

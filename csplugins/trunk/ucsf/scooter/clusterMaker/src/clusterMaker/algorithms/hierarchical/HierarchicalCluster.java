@@ -261,7 +261,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		}
 
 		if (monitor != null)
-			monitor.setStatus("Initializaing");
+			monitor.setStatus("Initializing");
 
 		// Create a new clusterer
 		EisenCluster algorithm = new EisenCluster(attributeArray, distanceMetric, clusterMethod,
