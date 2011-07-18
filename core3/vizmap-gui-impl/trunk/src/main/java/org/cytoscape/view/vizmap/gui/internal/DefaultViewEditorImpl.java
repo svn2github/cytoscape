@@ -40,6 +40,7 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -50,12 +51,12 @@ import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -71,6 +72,8 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
+import org.cytoscape.view.vizmap.gui.VisualPropertyDependency;
+import org.cytoscape.view.vizmap.gui.VisualPropertyDependencyManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.LexiconStateChangedEvent;
 import org.cytoscape.view.vizmap.gui.event.LexiconStateChangedListener;
@@ -120,7 +123,12 @@ public class DefaultViewEditorImpl extends JDialog implements
 	
 	private final DefaultViewPanelImpl mainView;
 	
-	private final DependencyTable depTable;
+	private final VisualPropertyDependencyManager depManager;
+	private final CyEventHelper cyEventHelper;
+	
+	private DependencyTable depTable;
+	
+	private final Map<VisualStyle, Map<VisualPropertyDependency, Boolean>> depMap;
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -135,7 +143,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 			final CyApplicationManager cyApplicationManager,
 			final VisualMappingManager vmm,
 			final SelectedVisualStyleManager selectedManager,
-			final VizMapperUtil util, final DependencyTable depTable) {
+			final VizMapperUtil util, final VisualPropertyDependencyManager depManager, final CyEventHelper cyEventHelper) {
 		super();
 		
 		if(mainView == null)
@@ -144,7 +152,10 @@ public class DefaultViewEditorImpl extends JDialog implements
 		if(vmm == null)
 			throw new NullPointerException("Visual Mapping Manager is null.");
 		
-		this.depTable = depTable;
+		this.depManager = depManager;
+		this.cyEventHelper = cyEventHelper;
+		
+		depMap = new HashMap<VisualStyle, Map<VisualPropertyDependency, Boolean>>();
 		
 		this.vmm = vmm;
 		this.util = util;
@@ -224,11 +235,55 @@ public class DefaultViewEditorImpl extends JDialog implements
 	@Override public void showEditor(Component parent) {
 		updateVisualPropertyLists();
 		buildList();
+		
+		updateDependencyTable();
 
 		mainView.updateView();
 		setSize(900, 450);
 		setLocationRelativeTo(parent);
 		setVisible(true);
+	}
+	
+	
+	
+	private void updateDependencyTable() {
+		
+		final VisualStyle selectedStyle = selectedManager.getCurrentVisualStyle();
+		Map<VisualPropertyDependency, Boolean> depStateMap = depMap.get(selectedStyle);
+		
+		final Collection<VisualPropertyDependency> depList = depManager.getDependencies();
+		final DependencyTableModel depTableModel = new DependencyTableModel();
+		
+		if (depStateMap == null) {
+			logger.info("!!VS NOT Found: " + selectedStyle.getTitle());
+			
+			depStateMap = new HashMap<VisualPropertyDependency, Boolean>();
+			
+			for (VisualPropertyDependency dep : depManager.getDependencies()) {
+				final Object[] newRow = new Object[2];
+				newRow[0] = false;
+				newRow[1] = dep.getDisplayName();
+				depTableModel.addRow(newRow);
+				
+				depStateMap.put(dep, false);
+			}
+		} else {
+			logger.info("***VS Found: " + selectedStyle.getTitle());
+			
+			for (VisualPropertyDependency dep : depStateMap.keySet()) {
+				final Object[] newRow = new Object[2];
+				newRow[0] = depStateMap.get(dep);
+				newRow[1] = dep.getDisplayName();
+				depTableModel.addRow(newRow);
+			}
+		}
+		depTable = new DependencyTable(cyApplicationManager, cyEventHelper, depTableModel,
+				(List<VisualPropertyDependency>) depList, depStateMap);
+		depMap.put(selectedStyle, depStateMap);
+		dependencyScrollPane.setViewportView(depTable);
+		depTable.repaint();
+		
+		logger.info("Row count = " + depTable.getModel().getRowCount());
 	}
 
 

@@ -198,10 +198,6 @@
 		<constructor-arg ref="selectedVisualStyleManager" />
 	</bean>
 
-	<bean id="dependencyTable" class="org.cytoscape.view.vizmap.gui.internal.DependencyTable">
-		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="cyEventHelperServiceRef" />
-	</bean>
 		
 	<bean id="nodeSizeDep" class="org.cytoscape.view.vizmap.gui.dependency.NodeSizeDependency" />
 	
@@ -215,7 +211,8 @@
 		<constructor-arg ref="vmmServiceRef" />
 		<constructor-arg ref="selectedVisualStyleManager" />
 		<constructor-arg ref="vizMapperUtil" />
-		<constructor-arg ref="dependencyTable" />
+		<constructor-arg ref="vpDependencyManager" />
+		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 
 
@@ -361,5 +358,9 @@
 	<bean id="importDefaultVizmapTaskFactory" class="org.cytoscape.view.vizmap.gui.internal.task.ImportDefaultVizmapTaskFactory">
 		<constructor-arg ref="vizmapReaderManagerServiceRef"/>
 		<constructor-arg ref="vmmServiceRef"/>
+	</bean>
+	
+	
+	<bean id="vpDependencyManager" class="org.cytoscape.view.vizmap.gui.internal.VisualPropertyDependencyManagerImpl">
 	</bean>
 </beans>

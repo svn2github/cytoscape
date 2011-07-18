@@ -3,8 +3,6 @@ package org.cytoscape.view.vizmap.gui.internal;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,27 +24,33 @@ public class DependencyTable extends JTable {
 
 	private static final long serialVersionUID = -8052559216229363239L;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(DependencyTable.class);
+	private static final Logger logger = LoggerFactory.getLogger(DependencyTable.class);
 
 	private final DefaultTableModel model;
 
 	private final List<VisualPropertyDependency> depList;
 	private final CyApplicationManager appManager;
-	
-	final CyEventHelper cyEventHelper;
 
-	public DependencyTable(final CyApplicationManager appManager, final CyEventHelper cyEventHelper) {
+	final CyEventHelper cyEventHelper;
+	
+	private final Map<VisualPropertyDependency, Boolean> depStateMap;
+
+	public DependencyTable(final CyApplicationManager appManager, final CyEventHelper cyEventHelper,
+			final DefaultTableModel model, final List<VisualPropertyDependency> depList,
+			Map<VisualPropertyDependency, Boolean> depStateMap) {
 		if (appManager == null)
+			throw new NullPointerException();
+		if (cyEventHelper == null)
+			throw new NullPointerException();
+		if (model == null)
 			throw new NullPointerException();
 
 		this.appManager = appManager;
 		this.cyEventHelper = cyEventHelper;
-
-		model = new DependencyTableModel();
+		this.model = model;
+		this.depList = depList;
+		this.depStateMap = depStateMap;
 		this.setModel(model);
-
-		this.depList = new ArrayList<VisualPropertyDependency>();
 
 		setAppearence();
 
@@ -65,38 +69,20 @@ public class DependencyTable extends JTable {
 		final int selected = this.getSelectedRow();
 		final VisualPropertyDependency dep = depList.get(selected);
 		final boolean isDepend = (Boolean) model.getValueAt(selected, 0);
-
-		logger.debug("Updating Dep: " + isDepend);
-
-		final VisualLexicon lexicon = appManager.getCurrentRenderingEngine()
-				.getVisualLexicon();
-
-		// Validate
-		final Set<VisualProperty<?>> group = dep.getVisualProperties();
-//		VisualProperty<?> oldParent = null;
-//		for (final VisualProperty<?> vp : group) {
-//			VisualProperty<?> parent = lexicon.getVisualLexiconNode(vp)
-//					.getParent().getVisualProperty();
-//			logger.debug("VP: " + vp.getDisplayName() + " => "
-//					+ parent.getDisplayName());
-//			if (oldParent != null && parent != oldParent)
-//				throw new IllegalStateException(
-//						"Dependency is pointing to different parents.");
-//			else
-//				oldParent = parent;
-//		}
-
-		for (final VisualProperty<?> vp : group) {
-			lexicon.getVisualLexiconNode(vp).setDependency(isDepend);
-		}
 		
-		// Update other GUI component
-		if(isDepend) {
-			this.cyEventHelper.fireEvent(new LexiconStateChangedEvent(this, null, group));
-		} else {
-			this.cyEventHelper.fireEvent(new LexiconStateChangedEvent(this, group, null));
-		}
+		depStateMap.put(dep, isDepend);
 
+		final VisualLexicon lexicon = appManager.getCurrentRenderingEngine().getVisualLexicon();
+		final Set<VisualProperty<?>> group = dep.getVisualProperties();
+
+		for (final VisualProperty<?> vp : group)
+			lexicon.getVisualLexiconNode(vp).setDependency(isDepend);
+
+		// Update other GUI component
+		if (isDepend)
+			this.cyEventHelper.fireEvent(new LexiconStateChangedEvent(this, null, group));
+		else
+			this.cyEventHelper.fireEvent(new LexiconStateChangedEvent(this, group, null));
 	}
 
 	private void setAppearence() {
@@ -113,20 +99,4 @@ public class DependencyTable extends JTable {
 
 		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
-
-	public void addDependency(final VisualPropertyDependency dep, Map props) {
-		logger.debug("------------ New Dependency: " + dep.getDisplayName());
-		final Object[] newRow = new Object[2];
-		newRow[0] = false;
-		newRow[1] = dep.getDisplayName();
-
-		model.addRow(newRow);
-		depList.add(dep);
-
-	}
-
-	public void removeDependency(final VisualPropertyDependency dep, Map props) {
-
-	}
-
 }

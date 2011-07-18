@@ -250,12 +250,11 @@
 	<!-- Default dependencies -->
 	<osgi:service id="nodeSizeDepService" ref="nodeSizeDep" auto-export="interfaces" />
 	
-	<osgi:set id="dependencySet"
+	<osgi:set id="vpDependencySet"
 		interface="org.cytoscape.view.vizmap.gui.VisualPropertyDependency"
 		cardinality="0..N"  >
 		<osgi:listener bind-method="addDependency"
-			unbind-method="removeDependency" ref="dependencyTable" />
-			
+			unbind-method="removeDependency" ref="vpDependencyManager" />
 	</osgi:set>
 	
 	<osgi:set id="renderingEngineFactorySet"
