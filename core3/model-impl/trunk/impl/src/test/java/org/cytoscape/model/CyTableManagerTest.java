@@ -28,20 +28,15 @@
 package org.cytoscape.model;
 
 
-import java.util.Map;
-
-
-import org.cytoscape.model.CyTable.SavePolicy;
-import org.cytoscape.model.internal.CyTableManagerImpl;
-import org.cytoscape.model.internal.CyTableFactoryImpl;
-import org.cytoscape.model.internal.CyTableImpl;
-import org.cytoscape.model.internal.ArrayGraph;
 import org.cytoscape.equations.Interpreter;
 import org.cytoscape.equations.internal.interpreter.InterpreterImpl;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
-
-import org.junit.Test;
+import org.cytoscape.model.CyTable.SavePolicy;
+import org.cytoscape.model.internal.ArrayGraph;
+import org.cytoscape.model.internal.CyTableFactoryImpl;
+import org.cytoscape.model.internal.CyTableImpl;
+import org.cytoscape.model.internal.CyTableManagerImpl;
 
 
 public class CyTableManagerTest extends AbstractCyTableManagerTest {
@@ -83,7 +78,7 @@ public class CyTableManagerTest extends AbstractCyTableManagerTest {
 
 		table.createColumn("x", Long.class, false);
 		CyColumn column = table.getColumn("x");
-		assertNull(column.getVirtualTable());
+		assertNull(column.getVirtualColumnInfo().getSourceTable());
 		table2.createColumn("x2", Long.class, false);
 		table2.createListColumn("b", Boolean.class, false);
 		table.addVirtualColumn("b1", "b", table2, "x2", "x", true);

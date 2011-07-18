@@ -28,18 +28,25 @@
 package org.cytoscape.model;
 
 
-import java.awt.Color;
-import java.util.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import org.cytoscape.model.CyTable;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.CyTable.Mutability;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.RowSetRecord;
-import org.cytoscape.model.events.RowsCreatedEvent;
-import org.cytoscape.event.DummyCyEventHelper;
-
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 
@@ -681,9 +688,9 @@ public abstract class AbstractCyTableTest {
 		table2.createColumn("x2", Long.class, false);
 		table2.createListColumn("b", Boolean.class, false);
 		table.addVirtualColumn("b1", "b", table2, "x2", "x", true);
-		assertTrue(table.getColumn("b1").isVirtual());
-		assertFalse(table.getColumn("x").isVirtual());
-		assertFalse(table2.getColumn("b").isVirtual());
+		assertTrue(table.getColumn("b1").getVirtualColumnInfo().isVirtual());
+		assertFalse(table.getColumn("x").getVirtualColumnInfo().isVirtual());
+		assertFalse(table2.getColumn("b").getVirtualColumnInfo().isVirtual());
 	}
 
 	@Test
@@ -712,12 +719,12 @@ public abstract class AbstractCyTableTest {
 	public void testCyColumnGetVirtualTable() {
 		table.createColumn("x", Long.class, false);
 		CyColumn column = table.getColumn("x");
-		assertNull(column.getVirtualTable());
+		assertNull(column.getVirtualColumnInfo().getSourceTable());
 		table2.createColumn("x2", Long.class, false);
 		table2.createListColumn("b", Boolean.class, false);
 		table.addVirtualColumn("b1", "b", table2, "x2", "x", true);
 		CyColumn column2 = table.getColumn("b1");
-		assertEquals(table2, column2.getVirtualTable());
+		assertEquals(table2, column2.getVirtualColumnInfo().getSourceTable());
 	}
 
 	@Test

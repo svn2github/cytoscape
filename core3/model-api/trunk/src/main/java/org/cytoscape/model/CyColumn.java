@@ -48,9 +48,6 @@ public interface CyColumn {
 	/** @return the data type of the list elements if the column type is List.class otherwise null */
 	Class<?> getListElementType(); 
 
-	/** @return true if the column is virtual, otherwise false. */
-	boolean isVirtual();
-
 	/** @return true if the column is the primary key, otherwise false. */
 	boolean isPrimaryKey();
 
@@ -64,15 +61,15 @@ public interface CyColumn {
 	 */
 	CyTable getTable();
 
-	/** Returns the originating table for this column if this column is virtual.
-	 *  @return the actual table that this column originates at if it is virtual, or null if the
-	 *          column is not virtual
-	 */
-	CyTable getVirtualTable();
-
 	/** Returns all the values, some of which may be null, for this given column.
 	 *  @param type  the datatype of this column.  (You can use getType() to obtain it.)
 	 *  @return the values in this column in some arbitrary but consistent order
 	 */
 	<T> List<T> getValues(Class<? extends T> type);
+	
+	/**
+	 * Returns information about the virtual column definition of this column.
+	 * This method will return an instance even if the column is not virtual.
+	 */
+	VirtualColumnInfo getVirtualColumnInfo();
 }

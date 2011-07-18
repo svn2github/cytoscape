@@ -30,7 +30,6 @@ package org.cytoscape.model.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,20 +38,18 @@ import java.util.Set;
 
 import org.cytoscape.equations.Equation;
 import org.cytoscape.equations.Interpreter;
-
 import org.cytoscape.event.CyEventHelper;
-
 import org.cytoscape.model.CyColumn;
-import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.SUIDFactory;
+import org.cytoscape.model.VirtualColumnInfo;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.ColumnNameChangedEvent;
 import org.cytoscape.model.events.RowSetRecord;
 import org.cytoscape.model.events.RowsCreatedEvent;
 import org.cytoscape.model.events.RowsSetEvent;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,12 +110,12 @@ public final class CyTableImpl implements CyTable {
 		rows = new HashMap<Object, CyRow>();
 		types = new HashMap<String, CyColumn>();
 
+		VirtualColumnInfo virtualInfo = new VirtualColumnInfoImpl(false, null, null, null, null);
 		// Create the primary key column.  Do this explicitly
 		// so that we don't fire an event.
 		types.put(primaryKey, new CyColumnImpl(this, primaryKey, primaryKeyType,
 						       /* listElementType = */ null,
-						       /* isVirtual = */ false,
-						       /* virtTable = */ null,
+						       virtualInfo,
 						       /* isPrimaryKey = */ true,
 						       /* isImmutable = */ true));
 		attributes.put(primaryKey, new HashMap<Object, Object>());
@@ -255,7 +252,7 @@ public final class CyTableImpl implements CyTable {
 					final CyColumn cyColumn = types.get(columnName);
 					virtualColumnMap.remove(columnName);
 					types.remove(columnName);
-					--((CyTableImpl)cyColumn.getVirtualTable()).virtualColumnReferenceCount;
+					--((CyTableImpl)cyColumn.getVirtualColumnInfo().getSourceTable()).virtualColumnReferenceCount;
 				} else {
 					attributes.remove(columnName);
 					reverse.remove(columnName);
@@ -291,10 +288,10 @@ public final class CyTableImpl implements CyTable {
 
 			checkClass(type);
 
+			VirtualColumnInfo virtualInfo = new VirtualColumnInfoImpl(false, null, null, null, null);
 			types.put(columnName, new CyColumnImpl(this, columnName, type,
 							       /* listElementType = */ null,
-							       /* isVirtual = */ false,
-							       /* virtTable = */ null,
+							       virtualInfo ,
 							       /* isPrimaryKey = */ false,
 							       isImmutable));
 			attributes.put(columnName, new HashMap<Object, Object>());
@@ -322,10 +319,10 @@ public final class CyTableImpl implements CyTable {
 
 			checkClass(listElementType);
 
+			VirtualColumnInfo virtualInfo = new VirtualColumnInfoImpl(false, null, null, null, null);
 			types.put(columnName, new CyColumnImpl(this, columnName, List.class,
 							       listElementType,
-							       /* isVirtual = */ false,
-							       /* virtTable = */ null,
+							       virtualInfo,
 							       /* isPrimaryKey = */ false,
 							       isImmutable));
 			attributes.put(columnName, new HashMap<Object, Object>());
@@ -792,11 +789,11 @@ public final class CyTableImpl implements CyTable {
 				throw new IllegalArgumentException("\"sourceJoinKey\" has a different type from \"targetJoinKey\"!");
 
 			++((CyTableImpl)sourceTable).virtualColumnReferenceCount;
+			VirtualColumnInfo virtualInfo = new VirtualColumnInfoImpl(true, sourceTable, sourceColumnName, sourceJoinKeyName, targetJoinKeyName);
 			final CyColumn targetColumn =
 				new CyColumnImpl(this, virtualColumnName, sourceColumn.getType(),
 						 sourceColumn.getListElementType(),
-						 /* isVirtual = */ true,
-						 /* virtTable = */ sourceTable,
+						 virtualInfo,
 						 /* isPrimaryKey = */ false,
 						 isImmutable);
 			types.put(targetName, targetColumn);
@@ -833,7 +830,7 @@ public final class CyTableImpl implements CyTable {
 		for (final String columnName : virtualColumnMap.keySet()) {
 			final CyColumn column = types.get(columnName);
 			types.remove(columnName);
-			--((CyTableImpl)column.getVirtualTable()).virtualColumnReferenceCount;
+			--((CyTableImpl)column.getVirtualColumnInfo().getSourceTable()).virtualColumnReferenceCount;
 		}
 		virtualColumnMap.clear();
 	}

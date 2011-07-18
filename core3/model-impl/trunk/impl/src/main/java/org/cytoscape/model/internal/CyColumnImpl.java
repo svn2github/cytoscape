@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.VirtualColumnInfo;
 
 
 /** This class describes a column in a CyTable. */
@@ -40,30 +41,25 @@ final class CyColumnImpl implements CyColumn {
 	private String columnName;
 	private final Class<?> columnType;
 	private final Class<?> listElementType;
-	private final boolean isVirtual;
-	private final CyTable virtTable;
+	private final VirtualColumnInfo virtualInfo;
 	private final boolean isPrimaryKey;
 	private final boolean isImmutable;
 
 	CyColumnImpl(final CyTableImpl table, final String columnName, final Class<?> columnType,
-		     final Class<?> listElementType, final boolean isVirtual, final CyTable virtTable,
+		     final Class<?> listElementType, final VirtualColumnInfo virtualInfo,
 		     final boolean isPrimaryKey, final boolean isImmutable)
 	{
 		this.table           = table;
 		this.columnName      = columnName;
 		this.columnType      = columnType;
 		this.listElementType = listElementType;
-		this.isVirtual       = isVirtual;
-		this.virtTable       = virtTable;
+		this.virtualInfo     = virtualInfo;
 		this.isPrimaryKey    = isPrimaryKey;
 		this.isImmutable     = isImmutable;
 	}
 
 	@Override
 	public CyTable getTable() { return table; }
-
-	@Override
-	public CyTable getVirtualTable() { return virtTable; }
 
 	/** @return the name of the column. */
 	@Override
@@ -90,10 +86,6 @@ final class CyColumnImpl implements CyColumn {
 	@Override
 	public Class<?> getListElementType() { return listElementType; }
 
-	/** @return true if the column is virtual, otherwise false. */
-	@Override
-	public boolean isVirtual() { return isVirtual; }
-
 	/** @return true if the column is the primary key, otherwise false. */
 	@Override
 	public boolean isPrimaryKey() { return isPrimaryKey; }
@@ -110,5 +102,10 @@ final class CyColumnImpl implements CyColumn {
 			throw new IllegalArgumentException("expected " + columnType.getName()
 							   + " got " + type.getName() + "!");
 		return table.getColumnValues(columnName, type);
+	}
+	
+	@Override
+	public VirtualColumnInfo getVirtualColumnInfo() {
+		return virtualInfo;
 	}
 }

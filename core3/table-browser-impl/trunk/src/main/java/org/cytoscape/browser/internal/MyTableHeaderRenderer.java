@@ -76,7 +76,7 @@ final class MyTableHeaderRenderer extends JLabel implements TableCellRenderer {
 		CyColumn col = model.getAttributes().getColumn(value.toString());
 		
 		String toolTip = col.getType().getName();
-		if(col.isVirtual()){
+		if(col.getVirtualColumnInfo().isVirtual()){
 			this.setForeground(defaultForeground);
 			this.setBackground(Color.lightGray);
 			this.setOpaque(true);
