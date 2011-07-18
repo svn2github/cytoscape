@@ -35,15 +35,15 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskIterator;
 
 public class SelectAllNodesTaskFactory extends AbstractNetworkTaskFactory {
-    private CyNetworkViewManager networkViewManager;
-    private final CyEventHelper eventHelper;
+	private CyNetworkViewManager networkViewManager;
+	private final CyEventHelper eventHelper;
 
-    public SelectAllNodesTaskFactory(final CyNetworkViewManager networkViewManager, final CyEventHelper eventHelper) {
-	this.networkViewManager = networkViewManager;
-	this.eventHelper = eventHelper;
-    }
+	public SelectAllNodesTaskFactory(final CyNetworkViewManager networkViewManager, final CyEventHelper eventHelper) {
+		this.networkViewManager = networkViewManager;
+		this.eventHelper = eventHelper;
+	}
 
-    public TaskIterator getTaskIterator() {
-	return new TaskIterator(new SelectAllNodesTask(network, networkViewManager, eventHelper));
-    }
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(new SelectAllNodesTask(network, networkViewManager, eventHelper));
+	}
 }

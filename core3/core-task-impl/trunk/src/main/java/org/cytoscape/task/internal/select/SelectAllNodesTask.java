@@ -35,13 +35,13 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
 
 public class SelectAllNodesTask extends AbstractSelectTask {
-    public SelectAllNodesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
-	    final CyEventHelper eventHelper) {
-	super(net, networkViewManager, eventHelper);
-    }
+	public SelectAllNodesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
+			final CyEventHelper eventHelper) {
+		super(net, networkViewManager, eventHelper);
+	}
 
-    public void run(TaskMonitor tm) {
-	selectUtils.setSelectedNodes(network.getNodeList(), true);
-	updateView();
-    }
+	public void run(TaskMonitor tm) {
+		selectUtils.setSelectedNodes(network.getNodeList(), true);
+		updateView();
+	}
 }

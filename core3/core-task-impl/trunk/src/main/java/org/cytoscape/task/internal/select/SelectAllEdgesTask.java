@@ -35,13 +35,13 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
 
 public class SelectAllEdgesTask extends AbstractSelectTask {
-    public SelectAllEdgesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
-	    final CyEventHelper eventHelper) {
-	super(net, networkViewManager, eventHelper);
-    }
+	public SelectAllEdgesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
+			final CyEventHelper eventHelper) {
+		super(net, networkViewManager, eventHelper);
+	}
 
-    public void run(TaskMonitor tm) {
-	selectUtils.setSelectedEdges(network.getEdgeList(), true);
-	updateView();
-    }
+	public void run(TaskMonitor tm) {
+		selectUtils.setSelectedEdges(network.getEdgeList(), true);
+		updateView();
+	}
 }
