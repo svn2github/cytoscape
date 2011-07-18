@@ -38,17 +38,23 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 
 
 public abstract class AbstractSelectTask extends AbstractNetworkTask {
+	
 	private final CyNetworkViewManager networkViewManager;
 	
 	protected final SelectUtils selectUtils;
+	protected final CyEventHelper eventHelper;
 
 	public AbstractSelectTask(final CyNetwork net, final CyNetworkViewManager networkViewManager, final CyEventHelper eventHelper) {
 		super(net);
 		this.networkViewManager = networkViewManager;
-		this.selectUtils = new SelectUtils(eventHelper, this);
+		this.selectUtils = new SelectUtils();
+		this.eventHelper = eventHelper;
 	}
 
 	protected final void updateView() {
+		// This is necessary, otherwise, this does not update presentation!
+		eventHelper.flushPayloadEvents();
+		
 		final CyNetworkView view = networkViewManager.getNetworkView(network.getSUID());
 		if (view != null)
 			view.updateView();

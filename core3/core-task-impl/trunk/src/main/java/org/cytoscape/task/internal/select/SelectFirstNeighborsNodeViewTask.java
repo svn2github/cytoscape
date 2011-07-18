@@ -52,7 +52,7 @@ public class SelectFirstNeighborsNodeViewTask extends AbstractTask {
 	    final CyEventHelper eventHelper) {
 	this.nodeView = nodeView;
 	this.netView = netView;
-	this.selectUtils = new SelectUtils(eventHelper, this);
+	this.selectUtils = new SelectUtils();
     }
 
     public void run(TaskMonitor tm) throws Exception {

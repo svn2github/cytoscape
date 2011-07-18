@@ -39,22 +39,12 @@ package org.cytoscape.task.internal.select;
 
 import java.util.Collection;
 
-import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 
 final class SelectUtils {
-
-	private final CyEventHelper eventHelper;
-	private final Object eventSource;
-
-	SelectUtils(final CyEventHelper eventHelper, final Object eventSource) {
-		this.eventHelper = eventHelper;
-		this.eventSource = eventSource;
-	}
 
 	void setSelectedNodes(final Collection<CyNode> nodes, final boolean select) {
 		setSelected(nodes, select);
@@ -65,7 +55,6 @@ final class SelectUtils {
 	}
 
 	private void setSelected(final Collection<? extends CyTableEntry> objects, final boolean select) {
-		final CyTable table = objects.iterator().next().getCyRow().getTable();
 
 		for (final CyTableEntry nodeOrEdge : objects)
 			nodeOrEdge.getCyRow().set(CyNetwork.SELECTED, select);

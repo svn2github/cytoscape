@@ -40,7 +40,9 @@ public class SelectAllNodesTask extends AbstractSelectTask {
 		super(net, networkViewManager, eventHelper);
 	}
 
-	public void run(TaskMonitor tm) {
+	
+	@Override
+	public void run(TaskMonitor tm) throws Exception {
 		selectUtils.setSelectedNodes(network.getNodeList(), true);
 		updateView();
 	}
