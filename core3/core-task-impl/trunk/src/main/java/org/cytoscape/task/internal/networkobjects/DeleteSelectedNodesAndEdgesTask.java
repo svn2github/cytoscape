@@ -79,7 +79,7 @@ public class DeleteSelectedNodesAndEdgesTask extends AbstractTask {
 			selectedEdges.addAll(network.getAdjacentEdgeList(selectedNode, CyEdge.Type.ANY));
 
 		undoSupport.getUndoableEditSupport().postEdit(
-			new DeleteEdit(network, selectedNodes, selectedEdges, this,
+			new DeleteEdit(network, selectedNodes, selectedEdges,
 				       networkViewManager, visualMappingManager, eventHelper));
 
 		// Delete the actual nodes and edges:

@@ -28,20 +28,17 @@ final class DeleteEdit extends CyAbstractEdit {
 	private final double[] xPos;
 	private final double[] yPos;
 	private final CySubNetwork net;
-	private final DeleteSelectedNodesAndEdgesTask deleteAction;
 	private final CyNetworkViewManager netViewMgr;
 	private final VisualMappingManager visualMappingManager;
 	private final CyEventHelper eventHelper;
 	
 	DeleteEdit(final CySubNetwork net, final List<CyNode> nodes, final Set<CyEdge> edges,
-		   final DeleteSelectedNodesAndEdgesTask deleteAction,
 		   final CyNetworkViewManager netViewMgr,
 		   final VisualMappingManager visualMappingManager,
 		   final CyEventHelper eventHelper)
 	{
 		super("Delete");
 
-		this.deleteAction = deleteAction;
 		if (net == null)
 			throw new NullPointerException("network is null");
 		this.net = net;
