@@ -1132,6 +1132,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			
 			// Update view model.  Zoom Level should be modified.
 			this.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_SCALE_FACTOR, zoom);
+			this.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_X_LOCATION, m_networkCanvas.m_xCenter);
+			this.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_Y_LOCATION, m_networkCanvas.m_yCenter);
 		}
 		
 		if (updateView)
@@ -2024,6 +2026,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			
 			// Update view model.  Zoom Level should be modified.
 			this.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_SCALE_FACTOR, zoom);
+			this.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_X_LOCATION, m_networkCanvas.m_xCenter);
+			this.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_Y_LOCATION, m_networkCanvas.m_yCenter);
 		}
 		updateView();
 	}

@@ -1387,7 +1387,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 		@Override
 		void singleMiddleClick(MouseEvent e) {
-			//System.out.println("MouseDragged ----> singleMiddleClick");
 			double deltaX = e.getX() - m_lastXMousePos;
 			double deltaY = e.getY() - m_lastYMousePos;
 			m_lastXMousePos = e.getX();
@@ -1399,6 +1398,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			}
 	
 			m_view.m_viewportChanged = true;
+			m_view.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_X_LOCATION, m_xCenter);
+			m_view.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_Y_LOCATION, m_yCenter);
+			
 			repaint();
 		}
 
