@@ -44,7 +44,13 @@ public class CSVCyWriter implements CyWriter {
 	public void run(TaskMonitor taskMonitor) throws Exception {
 		CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream), ',', '"', "\r\n");
 		try {
-			List<CyColumn> columns = new ArrayList<CyColumn>(table.getColumns());
+			List<CyColumn> columns = new ArrayList<CyColumn>();
+			for (CyColumn column : table.getColumns()) {
+				if (column.getVirtualColumnInfo().isVirtual()) {
+					continue;
+				}
+				columns.add(column);
+			}
 			Collections.sort(columns, new Comparator<CyColumn>() {
 				@Override
 				public int compare(CyColumn o1, CyColumn o2) {

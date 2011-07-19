@@ -28,6 +28,19 @@
 package org.cytoscape.io.internal.read.session;
 
 
+import static org.cytoscape.io.internal.util.session.SessionUtil.BOOKMARKS_FILE;
+import static org.cytoscape.io.internal.util.session.SessionUtil.CYSESSION;
+import static org.cytoscape.io.internal.util.session.SessionUtil.CYTABLE_METADATA_FILE;
+import static org.cytoscape.io.internal.util.session.SessionUtil.CY_PROPS;
+import static org.cytoscape.io.internal.util.session.SessionUtil.GLOBAL_TABLE_PATTERN;
+import static org.cytoscape.io.internal.util.session.SessionUtil.NETWORK_PATTERN;
+import static org.cytoscape.io.internal.util.session.SessionUtil.NETWORK_ROOT;
+import static org.cytoscape.io.internal.util.session.SessionUtil.NETWORK_TABLE_PATTERN;
+import static org.cytoscape.io.internal.util.session.SessionUtil.TABLE_EXT;
+import static org.cytoscape.io.internal.util.session.SessionUtil.VIZMAP_PROPS;
+import static org.cytoscape.io.internal.util.session.SessionUtil.VIZMAP_XML;
+import static org.cytoscape.io.internal.util.session.SessionUtil.XGMML_EXT;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -44,11 +57,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -56,6 +68,8 @@ import org.cytoscape.io.internal.read.MarkSupportedInputStream;
 import org.cytoscape.io.internal.read.datatable.CSVCyReaderFactory;
 import org.cytoscape.io.internal.read.session.CyTableMetadataImpl.CyTableMetadataBuilder;
 import org.cytoscape.io.internal.read.xgmml.XGMMLNetworkReader;
+import org.cytoscape.io.internal.util.session.SessionUtil;
+import org.cytoscape.io.internal.util.session.VirtualColumnSerializer;
 import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyPropertyReader;
@@ -70,7 +84,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.session.Cysession;
@@ -84,23 +98,11 @@ import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 /**
  */
 public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 
-	public static final String CYSESSION = "cysession.xml";
-	public static final String VIZMAP_PROPS = "vizmap.props";
-	public static final String VIZMAP_XML = "vizmap.xml";
-	public static final String CY_PROPS = "cytoscape.props";
-	public static final String XGMML_EXT = ".xgmml";
-	public static final String BOOKMARKS_FILE = "session_bookmarks.xml";
-	private static final String TABLE_EXT = ".cytable";
-	public static final String NETWORK_ROOT = "Network Root";
 	public static final int MAJOR_DOC_VERSION = 3;
-	public static final Pattern NETWORK_PATTERN = Pattern.compile(".*/([^/]+)[.]xgmml");
-	public static final Pattern NETWORK_TABLE_PATTERN = Pattern.compile(".*/([^/]+)/([^/]+)-([^/]+)-([^/]+)[.]table");
-	public static final Pattern GLOBAL_TABLE_PATTERN = Pattern.compile(".*/(\\d+)-([^/]+)[.]table");
 
 	private static final Logger logger = LoggerFactory.getLogger(SessionReaderImpl.class);
 
@@ -115,12 +117,19 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	private final CyPropertyReaderManager propertyReaderMgr;
 	private final VizmapReaderManager vizmapReaderMgr;
 	private final CSVCyReaderFactory csvCyReaderFactory;
+	private final CyTableManager tableManager;
 
 	private Cysession cysession;
 	private Bookmarks bookmarks;
 	private TaskMonitor taskMonitor;
 	private Properties cytoscapeProps;
 	private Set<VisualStyle> visualStyles;
+	private Map<String, CyTable> filenameTableMap;
+	private Map<CyTableMetadataBuilder, String> builderFilenameMap;
+
+	private List<VirtualColumnSerializer> virtualColumns;
+
+
 
 	/**
 	 */
@@ -128,7 +137,8 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 							 final CyNetworkReaderManager networkReaderMgr,
 							 final CyPropertyReaderManager propertyReaderMgr,
 							 final VizmapReaderManager vizmapReaderMgr,
-							 final CSVCyReaderFactory csvCyReaderFactory) {
+							 final CSVCyReaderFactory csvCyReaderFactory,
+							 final CyTableManager tableManager) {
 
 		if (sourceInputStream == null) throw new NullPointerException("input stream is null!");
 		this.sourceInputStream = sourceInputStream;
@@ -144,6 +154,12 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		
 		if (csvCyReaderFactory == null) throw new NullPointerException("table reader manager is null!");
 		this.csvCyReaderFactory = csvCyReaderFactory;
+		
+		if (tableManager == null) throw new NullPointerException("table manager is null!");
+		this.tableManager = tableManager;
+
+		filenameTableMap = new HashMap<String, CyTable>();
+		builderFilenameMap = new HashMap<CyTableMetadataBuilder, String>();
 	}
 
 
@@ -156,6 +172,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		extractEntries();
 		processNetworks();
 		mergeNetworkTables();
+		restoreVirtualColumns();
 	}
 
 	public CySession getCySession() {
@@ -212,6 +229,8 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 						//System.out.println("   extracting bookmarks");
 					} else if (entryName.endsWith(TABLE_EXT)) {
 						extractTable(tmpIs, entryName);
+					} else if (entryName.endsWith(CYTABLE_METADATA_FILE)) {
+						extractCyTableMetadata(tmpIs, entryName);
 					} else {
 						logger.warn("Unknown entry found in session zip file!\n" + entryName);
 					}
@@ -231,8 +250,38 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		}
 	}
 
+	private void extractCyTableMetadata(InputStream tmpIs, String entryName) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(tmpIs, "UTF-8"));
+		virtualColumns = new ArrayList<VirtualColumnSerializer>();
+		try {
+			String line = reader.readLine();
+			while (line != null) {
+				virtualColumns.add(new VirtualColumnSerializer(line));
+				line = reader.readLine();
+			}
+		} finally {
+			reader.close();
+		}
+	}
 
-	private void mergeNetworkTables() {
+	private void restoreVirtualColumns() {
+		if (virtualColumns == null) {
+			return;
+		}
+		
+		for (VirtualColumnSerializer columnData : virtualColumns) {
+			CyTable targetTable = filenameTableMap.get(columnData.getTargetTable());
+			CyTable sourceTable = filenameTableMap.get(columnData.getSourceTable());
+			targetTable.addVirtualColumn(columnData.getName(),
+										 columnData.getSourceColumn(),
+										 sourceTable,
+										 columnData.getSourceJoinKey(),
+										 columnData.getTargetJoinKey(),
+										 columnData.isImmutable());
+		}
+	}
+
+	private void mergeNetworkTables() throws UnsupportedEncodingException {
 		for (Entry<String, CyNetworkView[]> entry : networkViews.entrySet()) {
 			String entryName = entry.getKey();
 			Matcher matcher = NETWORK_PATTERN.matcher(entryName);
@@ -251,23 +300,21 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 			for (CyTableMetadataBuilder builder : builders) {
 				final Set<CyNetwork> networks = new HashSet<CyNetwork>();
 				networks.add(network);
-				CyTableMetadata metadata = builder.setNetworks(networks).build();
-				mergeNetworkTable(network, metadata);
+				builder.setNetworks(networks);
+				mergeNetworkTable(network, builder);
+				CyTableMetadata metadata = builder.build();
 				tableMetadata.add(metadata);
+				
+				// Update filename<->table maps
+				String filename = builderFilenameMap.get(builder);
+				filenameTableMap.put(filename, metadata.getCyTable());
 			}
 			
-			// Delete original id columns
-			CyTable netTable = network.getCyRow(CyNetwork.HIDDEN_ATTRS).getTable();
-			deleteOriginalIdColumn(netTable);
-			
-			if (network.getNodeCount() > 0) {
-				CyTable nodeTable = network.getNodeList().get(0).getCyRow(CyNetwork.HIDDEN_ATTRS).getTable();
-				deleteOriginalIdColumn(nodeTable);
-			}
-			
-			if (network.getEdgeCount() > 0) {
-				CyTable edgeTable = network.getEdgeList().get(0).getCyRow(CyNetwork.HIDDEN_ATTRS).getTable();
-				deleteOriginalIdColumn(edgeTable);
+			// Delete mapping columns after merging everything.
+			for (CyTableMetadataBuilder builder : builders) {
+				if (builder.getNamespace().equals(CyNetwork.HIDDEN_ATTRS)) {
+					deleteOriginalIdColumn(builder.getCyTable());
+				}
 			}
 		}
 	}
@@ -278,53 +325,43 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 			table.deleteColumn(XGMMLNetworkReader.ORIGINAL_ID_COLUMN);
 	}
 
-	private void mergeNetworkTable(CyNetwork network, CyTableMetadata metadata) {
-		Class<?> type = metadata.getType();
-
-		if (type.equals(CyNetwork.class)) {
-			CyTable sourceTable = metadata.getCyTable();
-			String keyName = sourceTable.getPrimaryKey().getName();
-			// Network tables should only have one row.
-			CyRow sourceRow = null;
-
-			if (sourceTable.getRowCount() > 0) {
-				sourceRow = sourceTable.getAllRows().iterator().next();
-				CyRow targetRow = network.getCyRow(metadata.getNamespace());
-				mergeRow(keyName, sourceRow, targetRow);
-			} else {
-				logger.error("Cannot merge Network table \"" + sourceTable.getTitle() +
-							 "\": The source table has no rows.");
-			}
-		} else {
-			CyTableEntry entry = null;
-
-			if (type.equals(CyNode.class) && network.getNodeCount() > 0) {
-				entry = network.getNodeList().iterator().next();
-			} else if (type.equals(CyEdge.class) && network.getEdgeCount() > 0) {
-				entry = network.getEdgeList().iterator().next();
-			}
-
-			if (entry != null) {
-				if ("VIEW".equals(metadata.getNamespace())) return; // TODO: disabled due to timing conflicts with Ding. 
-
-				CyRow row = entry.getCyRow(metadata.getNamespace()); // so we can get the target table
-				CyRow hidenRow = entry.getCyRow(CyNetwork.HIDDEN_ATTRS); // so we can get the mapping table
-
-				Map<Long, Long> mappings = createSUIDMappings(hidenRow.getTable());
-				mergeTables(metadata.getCyTable(), row.getTable(), mappings);
-			}
+	void mergeNetworkTable(CyNetwork network, CyTableMetadataBuilder builder) {
+		Class<?> type = builder.getType();
+		String namespace = builder.getNamespace();
+		if ("VIEW".equals(namespace)) {
+			return; // TODO: disabled due to timing conflicts with Ding.
 		}
+		
+		Map<String, CyTable> tableMap = tableManager.getTableMap(type, network);
+		CyTable targetTable = tableMap.get(namespace);
+		CyTable mappingTable = tableMap.get(CyNetwork.HIDDEN_ATTRS);
+		CyTable sourceTable = builder.getCyTable();
+		Map<Long, Long> mappings = createSUIDMappings(type, network, sourceTable, mappingTable, targetTable);
+		mergeTables(sourceTable, targetTable, mappings);
+		builder.setCyTable(targetTable);
+		
+		tableManager.deleteTable(sourceTable.getSUID());
 	}
 
-	private Map<Long, Long> createSUIDMappings(CyTable mapping) {
-		if (mapping == null) {
+	private Map<Long, Long> createSUIDMappings(Class<?> type, CyNetwork network, CyTable sourceTable, CyTable mappingTable, CyTable targetTable) {
+		if (mappingTable == null) {
 			return Collections.emptyMap();
 		}
 
 		Map<Long, Long> mappings = new HashMap<Long, Long>();
-		String key = mapping.getPrimaryKey().getName();
+		String key = mappingTable.getPrimaryKey().getName();
+		
+		if (type.equals(CyNetwork.class)) {
+			if (sourceTable.getRowCount() == 0) {
+				return Collections.emptyMap();
+			}
+			Long oldSUID = sourceTable.getAllRows().iterator().next().get(key, Long.class);
+			Long newSUID = network.getSUID();
+			mappings.put(oldSUID, newSUID);
+		}
+		
 
-		for (CyRow row : mapping.getAllRows()) {
+		for (CyRow row : mappingTable.getAllRows()) {
 			Long oldSUID = row.get(XGMMLNetworkReader.ORIGINAL_ID_COLUMN, Long.class);
 			Long newSUID = row.get(key, Long.class);
 			mappings.put(oldSUID, newSUID);
@@ -394,10 +431,10 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 
 		Matcher matcher = NETWORK_TABLE_PATTERN.matcher(entryName);
 		if (matcher.matches()) {
-			String networkName = matcher.group(1);
-			String namespace = matcher.group(2);
-			Class<?> type = Class.forName(matcher.group(3));
-			String title = URLDecoder.decode(matcher.group(4), "UTF-8");
+			String networkName = SessionUtil.unescape(matcher.group(2));
+			String namespace = SessionUtil.unescape(matcher.group(3));
+			Class<?> type = Class.forName(SessionUtil.unescape(matcher.group(4)));
+			String title = SessionUtil.unescape(matcher.group(5));
 			table.setTitle(title);
 			CyTableMetadataBuilder builder = new CyTableMetadataBuilder().setCyTable(table).setNamespace(namespace)
 					.setType(type);
@@ -407,18 +444,24 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 				networkTableMap.put(networkName, builders);
 			}
 			builders.add(builder);
+			
+			String filename = matcher.group(1);
+			filenameTableMap.put(filename, table);
+			builderFilenameMap.put(builder, filename);
 			return;
 		}
 
 		matcher = GLOBAL_TABLE_PATTERN.matcher(entryName);
 		if (matcher.matches()) {
-			// table SUID is in group(1); we may need it when restoring
-			// equations/virtual columns
-			String title = URLDecoder.decode(matcher.group(2), "UTF-8");
+			String title = SessionUtil.unescape(matcher.group(3));
 			table.setTitle(title);
 			Set<CyNetwork> networks = Collections.emptySet();
 			CyTableMetadataBuilder builder = new CyTableMetadataBuilder().setCyTable(table).setNetworks(networks);
 			tableMetadata.add(builder.build());
+			
+			String filename = matcher.group(1);
+			filenameTableMap.put(filename, table);
+			builderFilenameMap.put(builder, filename);
 		}
 	}
 

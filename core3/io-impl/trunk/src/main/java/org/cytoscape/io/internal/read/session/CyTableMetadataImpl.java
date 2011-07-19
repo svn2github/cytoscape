@@ -40,7 +40,7 @@ public class CyTableMetadataImpl implements CyTableMetadata {
 		return namespace;
 	}
 
-	public static class CyTableMetadataBuilder {
+	public static class CyTableMetadataBuilder implements CyTableMetadata {
 		private Class<?> type;
 		private CyTable table;
 		private Set<CyNetwork> networks;
@@ -68,6 +68,26 @@ public class CyTableMetadataImpl implements CyTableMetadata {
 				
 		public CyTableMetadata build() {
 			return new CyTableMetadataImpl(this);
+		}
+
+		@Override
+		public CyTable getCyTable() {
+			return table;
+		}
+
+		@Override
+		public String getNamespace() {
+			return namespace;
+		}
+		
+		@Override
+		public Set<CyNetwork> getCyNetworks() {
+			return networks;
+		}
+		
+		@Override
+		public Class<?> getType() {
+			return type;
 		}
 	}
 }

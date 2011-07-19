@@ -62,7 +62,7 @@ public class CSVCyReader implements CyTableReader {
 		final ColumnInfo[] columns = info.getColumns();
 		final CyTable table = tableFactory.createTable(info.getTitle(), columns[0].getName(),
 		                                               columns[0].getType(), info.isPublic(),
-		                                               info.isMutable());
+		                                               true);
 
 		final Map<String, Class<?>> variableNameToTypeMap = new HashMap<String, Class<?>>();
 		for (final ColumnInfo colInfo : columns)

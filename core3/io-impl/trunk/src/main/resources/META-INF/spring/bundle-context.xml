@@ -428,6 +428,7 @@
         <constructor-arg ref="cyPropertyReaderManager" />
         <constructor-arg ref="vizmapReaderManager" />
         <constructor-arg ref="sessionTableReaderFactory" />
+        <constructor-arg ref="cyTableManagerServiceRef"/>
     </bean>
 
     <bean id="cysessionReaderFactory"
