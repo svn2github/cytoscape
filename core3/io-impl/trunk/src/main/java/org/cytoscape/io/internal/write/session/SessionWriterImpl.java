@@ -38,11 +38,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -51,16 +52,20 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.internal.util.session.SessionUtil;
+import org.cytoscape.io.internal.util.session.VirtualColumnSerializer;
 import org.cytoscape.io.internal.write.xgmml.XGMMLWriter;
 import org.cytoscape.io.write.CyNetworkViewWriterManager;
 import org.cytoscape.io.write.CyPropertyWriterManager;
 import org.cytoscape.io.write.CyTableWriterManager;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.io.write.VizmapWriterManager;
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.model.CyTable.SavePolicy;
+import org.cytoscape.model.CyTableMetadata;
+import org.cytoscape.model.VirtualColumnInfo;
 import org.cytoscape.property.session.Cysession;
 import org.cytoscape.session.CySession;
 import org.cytoscape.view.model.CyNetworkView;
@@ -85,9 +90,6 @@ import org.cytoscape.work.TaskMonitor;
  *
  */
 public class SessionWriterImpl extends AbstractTask implements CyWriter {
-
-	// These values will be replaced.
-	private static final char[] INVALID_CHAR = { '[', '\\', '/', ':', '*', '?', '"', '<', '>', '|', ']'};
 
 	// Enumerate types (node & edge)
 	public static final int NODE = 1;
@@ -122,6 +124,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	private final CyFileFilter propertiesFilter;
 	private final CyFileFilter tableFilter;
 	private final CyFileFilter vizmapFilter;
+	private Map<Long, String> tableFilenamesBySUID;
 
 	public SessionWriterImpl(final OutputStream outputStream, 
 	                         final CySession session, 
@@ -169,7 +172,8 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 
 		for (CyNetworkView netView : session.getNetworkViews())
 			zipNetwork(netView);
-		zipGlobalTables();
+		zipTables();
+		zipVirtualColumns();
 		zipCySession();
 		zipVizmap();
 		zipCytoscapeProps();
@@ -177,6 +181,39 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 		zipFileListMap();
 
 		zos.close();
+	}
+
+	private void zipVirtualColumns() throws IOException {
+		zos.putNextEntry(new ZipEntry(sessionDir + SessionUtil.CYTABLE_METADATA_FILE));
+		PrintWriter writer = new PrintWriter(new OutputStreamWriter(zos, "UTF-8"));
+		try {
+			for (CyTableMetadata metadata : session.getTables()) {
+				CyTable table = metadata.getCyTable();
+				String targetTable = tableFilenamesBySUID.get(table.getSUID());
+				if (targetTable == null) {
+					continue;
+				}
+				for (CyColumn column : table.getColumns()) {
+					VirtualColumnInfo info = column.getVirtualColumnInfo();
+					if (!info.isVirtual()) {
+						continue;
+					}
+					String sourceTable = tableFilenamesBySUID.get(info.getSourceTable().getSUID());
+					VirtualColumnSerializer serializer = new VirtualColumnSerializer(
+						column.getName(),
+						sourceTable,
+						targetTable,
+						info.getSourceColumn(),
+						info.getSourceJoinKey(),
+						info.getTargetJoinKey(),
+						info.isImmutable());
+					serializer.serialize(writer);
+				}
+			}
+		} finally {
+			writer.flush();
+			zos.closeEntry();
+		}
 	}
 
 	/**
@@ -227,7 +264,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	private void zipNetwork(final CyNetworkView view) throws Exception {
 		final CyNetwork network = view.getModel();
 
-		String xgmmlFile = getNetworkFileName(network) + XGMML_EXT;
+		String xgmmlFile = SessionUtil.getNetworkFileName(network) + XGMML_EXT;
 		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile) );
 		
 		CyWriter writer = networkViewWriterMgr.getWriter(view, xgmmlFilter, zos);
@@ -241,10 +278,6 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 
 		zos.closeEntry();
 		writer = null;
-	}
-
-	private String getNetworkFileName(CyNetwork network) throws UnsupportedEncodingException {
-		return escape(network.getCyRow().get("name", String.class));
 	}
 
 	/**
@@ -307,23 +340,8 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 		}
 	}
 
-	/**
-	 * Utility to replace invalid chars in the XGMML file name.<br>
-	 *
-	 * @param fileName Original file name directly taken from the title.
-	 * @return Modified file name without invalid chars.
-	 */
-	private String getValidFileName(String fileName) {
-		String newFileName = fileName;
-		Integer i = 0;
-		
-		for(Character ch : INVALID_CHAR) 
-			newFileName = newFileName.replace(ch.toString(), (i++).toString());
-		
-		return newFileName;
-	}
-
-	private void zipGlobalTables() throws Exception {
+	private void zipTables() throws Exception {
+		tableFilenamesBySUID = new HashMap<Long, String>();
 		Set<CyNetworkView> views = session.getNetworkViews();
 		Set<CyNetwork> includedNetworks = new HashSet<CyNetwork>();
 		
@@ -341,7 +359,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 				continue;
 			}
 
-			String tableTitle = escape(table.getTitle());
+			String tableTitle = SessionUtil.escape(table.getTitle());
 			String fileName;
 			Set<CyNetwork> networks = metadata.getCyNetworks();
 			
@@ -354,12 +372,10 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 					continue;
 				}
 				
-				String networkFileName = getNetworkFileName(network);
-				String namespace = escape(metadata.getNamespace());
-				String type = escape(metadata.getType().getCanonicalName());
-				fileName = String.format("%s/%s-%s-%s.cytable", networkFileName, namespace, type, tableTitle);
+				fileName = SessionUtil.getNetworkTableFilename(network, metadata);
 			}
 			
+			tableFilenamesBySUID.put(table.getSUID(), fileName);
 			zos.putNextEntry(new ZipEntry(sessionDir + fileName));
 			
 			try {
@@ -379,9 +395,4 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 		}
 		return null;
 	}
-
-	private String escape(String text) throws UnsupportedEncodingException {
-		return URLEncoder.encode(text, "UTF-8").replace("-", "%2D");
-	}
-
 }
