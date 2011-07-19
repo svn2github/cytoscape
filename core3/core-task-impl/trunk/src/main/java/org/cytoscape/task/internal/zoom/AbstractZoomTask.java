@@ -1,14 +1,7 @@
 /*
   File: AbstractZoomTask.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -34,29 +27,34 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.task.internal.zoom;
+
 
 import static org.cytoscape.view.presentation.property.MinimalVisualLexicon.NETWORK_SCALE_FACTOR;
 
 import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 abstract class AbstractZoomTask extends AbstractNetworkViewTask {
+	private final UndoSupport undoSupport;
+	private final double factor;
 
-	protected double factor;
-
-	AbstractZoomTask(CyNetworkView v, double factor) {
+	AbstractZoomTask(final UndoSupport undoSupport, final CyNetworkView v, final double factor) {
 		super(v);
+		this.undoSupport = undoSupport;
 		this.factor = factor;
 	}
 
 	public void run(TaskMonitor tm) {
-		view.setVisualProperty(NETWORK_SCALE_FACTOR, 
-		view.getVisualProperty(NETWORK_SCALE_FACTOR).doubleValue() * factor);
-		
+		final double oldFactor = view.getVisualProperty(NETWORK_SCALE_FACTOR).doubleValue();
+		view.setVisualProperty(NETWORK_SCALE_FACTOR, oldFactor * factor);
+
 		view.updateView();
+
+		undoSupport.getUndoableEditSupport().postEdit(
+			new ZoomEdit(view, factor));
 	}
 }

@@ -32,11 +32,17 @@ package org.cytoscape.task.internal.zoom;
 
 import org.cytoscape.task.AbstractNetworkViewTaskFactory;  
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 public class ZoomOutTaskFactory extends AbstractNetworkViewTaskFactory {
+	private final UndoSupport undoSupport;
+
+	public ZoomOutTaskFactory(final UndoSupport undoSupport) {
+		this.undoSupport = undoSupport;
+	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new ZoomOutTask(view));
+		return new TaskIterator(new ZoomOutTask(undoSupport, view));
 	} 
 }

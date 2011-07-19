@@ -60,6 +60,8 @@ public class CreateNetworkViewTask extends AbstractNetworkTask {
 		taskMonitor.setProgress(-1.0);
 
 		try {
+System.err.println("************************************* start network view creation");
+long start=System.currentTimeMillis();
 			// By calling this task, actual view will be created even if it's a
 			// large network.
 			final CyNetworkView view = viewFactory.getNetworkView(network, false);
@@ -67,7 +69,12 @@ public class CreateNetworkViewTask extends AbstractNetworkTask {
 			
 			// Apply layout only when it is necessary.
 			if(layouts != null)
+				{
+System.err.println("************************************* inserting layout task");
 				this.insertTasksAfterCurrentTask(new ApplyPreferredLayoutTask(view, layouts));
+				}
+long end=System.currentTimeMillis();
+System.err.println("************************************* end network view creation"+(end-start)+"ms");
 		} catch (Exception e) {
 			throw new Exception("Could not create network view for network: "
 					+ network.getCyRow().get(CyTableEntry.NAME, String.class), e);

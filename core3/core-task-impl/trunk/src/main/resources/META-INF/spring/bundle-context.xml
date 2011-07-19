@@ -248,9 +248,11 @@
 
 	<!-- zoom -->
 	<bean id="zoomInTaskFactory" class="org.cytoscape.task.internal.zoom.ZoomInTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 	</bean>
 
 	<bean id="zoomOutTaskFactory" class="org.cytoscape.task.internal.zoom.ZoomOutTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 	</bean>
 
 	<bean id="fitSelectedTaskFactory" class="org.cytoscape.task.internal.zoom.FitSelectedTaskFactory">

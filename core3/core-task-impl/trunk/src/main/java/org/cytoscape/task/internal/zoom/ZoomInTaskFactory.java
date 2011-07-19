@@ -1,7 +1,7 @@
 /*
  File: ZoomInTaskFactory.java
 
- Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -32,11 +32,17 @@ package org.cytoscape.task.internal.zoom;
 
 import org.cytoscape.task.AbstractNetworkViewTaskFactory;  
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 public class ZoomInTaskFactory extends AbstractNetworkViewTaskFactory {
+	private final UndoSupport undoSupport;
+
+	public ZoomInTaskFactory(final UndoSupport undoSupport) {
+		this.undoSupport = undoSupport;
+	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new ZoomInTask(view));
+		return new TaskIterator(new ZoomInTask(undoSupport, view));
 	} 
 }
