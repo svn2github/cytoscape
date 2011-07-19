@@ -1129,10 +1129,13 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 				m_networkCanvas.m_scaleFactor = 1.0;
 			}
 			m_viewportChanged = true;
+			
+			// Update view model.  Zoom Level should be modified.
+			this.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_SCALE_FACTOR, zoom);
 		}
-		if (updateView) {
+		
+		if (updateView)
 			this.updateView();
-		}
 	}
 	
 	/**
@@ -2018,6 +2021,9 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			m_networkCanvas.m_scaleFactor = checkZoom(zoom,
 					m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
+			
+			// Update view model.  Zoom Level should be modified.
+			this.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_SCALE_FACTOR, zoom);
 		}
 		updateView();
 	}
