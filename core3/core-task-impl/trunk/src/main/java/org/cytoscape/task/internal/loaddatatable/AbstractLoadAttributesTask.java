@@ -2,15 +2,12 @@ package org.cytoscape.task.internal.loaddatatable;
 
 
 import java.net.URI;
-import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableManager;
-import org.cytoscape.io.read.CyTableReaderManager;
+
 import org.cytoscape.io.read.CyTableReader;
+import org.cytoscape.io.read.CyTableReaderManager;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
-import java.util.Set;
-import java.util.Iterator;
 
 
 abstract class AbstractLoadAttributesTask extends AbstractTask {

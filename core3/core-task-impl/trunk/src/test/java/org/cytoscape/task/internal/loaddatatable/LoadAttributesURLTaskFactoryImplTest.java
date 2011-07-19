@@ -2,27 +2,49 @@ package org.cytoscape.task.internal.loaddatatable;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+
+import java.net.URL;
+
 import org.cytoscape.io.read.CyTableReaderManager;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TaskMonitor;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class LoadAttributesURLTaskFactoryImplTest {
-	@Test
-	public void testRun() throws Exception {
+	
+	@Mock
+	private CyTableReaderManager rmgr;
+	
+	@Mock
+	private CyTableManager tmgr;
+	
+	@Mock
+	private TaskMonitor tm;
+	
+	@Before
+	public void initMocks() {
+		MockitoAnnotations.initMocks(this);
 		
-		CyTableReaderManager rmgr = mock(CyTableReaderManager.class);;
-		CyTableManager tmgr = mock(CyTableManager.class);;
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void testLoadAttributesURLTaskFactory() throws Exception {
 
-		LoadAttributesURLTaskFactoryImpl factory = new LoadAttributesURLTaskFactoryImpl(rmgr, tmgr);
+		final LoadAttributesURLTaskFactoryImpl factory = new LoadAttributesURLTaskFactoryImpl(rmgr, tmgr);
 		
-		TaskIterator ti = factory.getTaskIterator();
+		final TaskIterator ti = factory.getTaskIterator();
 		assertNotNull(ti);
 		
 		assertTrue( ti.hasNext() );
 		Task t = ti.next();
-		assertNotNull( t );				
+		assertNotNull( t );	
+		
+		((LoadAttributesURLTask)t).url = new URL("http://chianti.ucsd.edu/kono/data/galFiltered.sif");
+		t.run(tm);
 	}
 }
