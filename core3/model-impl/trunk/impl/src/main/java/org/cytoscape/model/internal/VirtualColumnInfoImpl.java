@@ -10,13 +10,15 @@ public class VirtualColumnInfoImpl implements VirtualColumnInfo {
 	private final String sourceColumn;
 	private final String sourceJoinKey;
 	private final String targetJoinKey;
+	private final boolean isImmutable;
 
-	public VirtualColumnInfoImpl(boolean isVirtual, CyTable sourceTable, String sourceColumn, String sourceJoinKey, String targetJoinKey) {
+	public VirtualColumnInfoImpl(boolean isVirtual, CyTable sourceTable, String sourceColumn, String sourceJoinKey, String targetJoinKey, boolean isImmutable) {
 		this.isVirtual = isVirtual;
 		this.sourceTable = sourceTable;
 		this.sourceColumn = sourceColumn;
 		this.sourceJoinKey = sourceJoinKey;
 		this.targetJoinKey = targetJoinKey;
+		this.isImmutable = isImmutable;
 	}
 	
 	@Override
@@ -44,4 +46,8 @@ public class VirtualColumnInfoImpl implements VirtualColumnInfo {
 		return sourceTable;
 	}
 
+	@Override
+	public boolean isImmutable() {
+		return isImmutable;
+	}
 }

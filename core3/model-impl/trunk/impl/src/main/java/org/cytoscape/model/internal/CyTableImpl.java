@@ -110,7 +110,7 @@ public final class CyTableImpl implements CyTable {
 		rows = new HashMap<Object, CyRow>();
 		types = new HashMap<String, CyColumn>();
 
-		VirtualColumnInfo virtualInfo = new VirtualColumnInfoImpl(false, null, null, null, null);
+		VirtualColumnInfo virtualInfo = new VirtualColumnInfoImpl(false, null, null, null, null, true);
 		// Create the primary key column.  Do this explicitly
 		// so that we don't fire an event.
 		types.put(primaryKey, new CyColumnImpl(this, primaryKey, primaryKeyType,
@@ -288,7 +288,7 @@ public final class CyTableImpl implements CyTable {
 
 			checkClass(type);
 
-			VirtualColumnInfo virtualInfo = new VirtualColumnInfoImpl(false, null, null, null, null);
+			VirtualColumnInfo virtualInfo = new VirtualColumnInfoImpl(false, null, null, null, null, isImmutable);
 			types.put(columnName, new CyColumnImpl(this, columnName, type,
 							       /* listElementType = */ null,
 							       virtualInfo ,
@@ -319,7 +319,7 @@ public final class CyTableImpl implements CyTable {
 
 			checkClass(listElementType);
 
-			VirtualColumnInfo virtualInfo = new VirtualColumnInfoImpl(false, null, null, null, null);
+			VirtualColumnInfo virtualInfo = new VirtualColumnInfoImpl(false, null, null, null, null, isImmutable);
 			types.put(columnName, new CyColumnImpl(this, columnName, List.class,
 							       listElementType,
 							       virtualInfo,
@@ -789,7 +789,7 @@ public final class CyTableImpl implements CyTable {
 				throw new IllegalArgumentException("\"sourceJoinKey\" has a different type from \"targetJoinKey\"!");
 
 			++((CyTableImpl)sourceTable).virtualColumnReferenceCount;
-			VirtualColumnInfo virtualInfo = new VirtualColumnInfoImpl(true, sourceTable, sourceColumnName, sourceJoinKeyName, targetJoinKeyName);
+			VirtualColumnInfo virtualInfo = new VirtualColumnInfoImpl(true, sourceTable, sourceColumnName, sourceJoinKeyName, targetJoinKeyName, isImmutable);
 			final CyColumn targetColumn =
 				new CyColumnImpl(this, virtualColumnName, sourceColumn.getType(),
 						 sourceColumn.getListElementType(),
