@@ -1,7 +1,7 @@
 /*
   File: EditNetworkTitleTaskFactory.java
 
-  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
+  Copyright (c) 2006, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -32,11 +32,17 @@ package org.cytoscape.task.internal.title;
 
 import org.cytoscape.task.AbstractNetworkTaskFactory;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 public class EditNetworkTitleTaskFactory extends AbstractNetworkTaskFactory {
+	private final UndoSupport undoSupport;
+
+	EditNetworkTitleTaskFactory(final UndoSupport undoSupport) {
+		this.undoSupport = undoSupport;
+	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new EditNetworkTitleTask(network));
+		return new TaskIterator(new EditNetworkTitleTask(undoSupport, network));
 	} 
 }

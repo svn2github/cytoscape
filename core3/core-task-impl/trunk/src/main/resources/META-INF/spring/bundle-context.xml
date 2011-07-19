@@ -294,6 +294,7 @@
 
 	<bean id="editNetworkTitleTaskFactory"
 		class="org.cytoscape.task.internal.title.EditNetworkTitleTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 	</bean>
 
 	<bean id="createNetworkViewTaskFactory"
