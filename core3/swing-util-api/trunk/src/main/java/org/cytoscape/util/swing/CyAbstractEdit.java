@@ -1,15 +1,7 @@
-
 /*
   File: CyAbstractEdit.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -35,41 +27,42 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.util.swing;
+
 
 import javax.swing.undo.AbstractUndoableEdit;
 
-/** 
+
+/**
  * A small convenience class that can be used to create new edits.  All
  * you should have to do is implement the undo() and redo() methods. The
  * benefit is that you don't need to worry about setting up names.
  */
 public abstract class CyAbstractEdit extends AbstractUndoableEdit {
+	protected String desc;
 
-		protected String desc;
+	public CyAbstractEdit(String desc) {
+		super();
+		this.desc = desc;
+	}
 
-		public CyAbstractEdit(String desc) {
-			this.desc = desc;
-		}
+	public String getPresentationName() {
+		return desc;
+	}
 
-		public String getPresentationName() {
-			return desc;
-		}
+	public String getRedoPresentationName() {
+		return "Redo: " + desc;
+	}
 
-		public String getRedoPresentationName() {
-			return "Redo: " + desc;
-		}
+	public String getUndoPresentationName() {
+		return "Undo: " + desc;
+	}
 
-		public String getUndoPresentationName() {
-			return "Undo: " + desc;
-		}
+	public void undo() {
+		super.undo();
+	}
 
-		public void undo() {
-			super.undo();
-		}
-
-		public void redo() {
-			super.redo();
-		}
+	public void redo() {
+		super.redo();
+	}
 }
