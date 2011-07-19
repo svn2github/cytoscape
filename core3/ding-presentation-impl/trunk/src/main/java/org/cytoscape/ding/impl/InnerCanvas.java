@@ -296,12 +296,11 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		return isPrinting; 
 	}
 
-	//
-	// MouseWheelListener
-	//
-
+	/**
+	 * 
+	 */
 	public void mouseWheelMoved(MouseWheelEvent e) {
-        adjustZoom( e.getWheelRotation() );
+		adjustZoom(e.getWheelRotation());
 	}
 
 	//
@@ -883,31 +882,26 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 
 	private void adjustZoom(int notches) {
-        double factor; 
-
-		// scroll up, zoom in
-        if (notches < 0) {
-			factor = 1.1;
-
-		// scroll down, zoom out
-        } else {
-			factor = 0.9;
-        }
+		
+		final double factor;
+		
+		if (notches < 0)
+			factor = 1.1; // scroll up, zoom in
+		else
+			factor = 0.9; // scroll down, zoom out
 
 		synchronized (m_lock) {
 			m_scaleFactor = m_scaleFactor * factor;
 		}
 
 		m_view.m_viewportChanged = true;
+		
+		// Update view model.
+		m_view.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_SCALE_FACTOR, m_scaleFactor);
 		repaint();
 	}
 
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public int getLastRenderDetail() {
 		return m_lastRenderDetail;
 	}

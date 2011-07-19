@@ -29,59 +29,15 @@ package org.cytoscape.ding.impl;
 
 
 import java.awt.Color;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetListener;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.swing.JComponent;
-import javax.swing.TransferHandler;
-
-import org.cytoscape.ding.EdgeView;
-import org.cytoscape.ding.GraphViewChangeListener;
-import org.cytoscape.ding.NodeView;
-import org.cytoscape.ding.ViewChangeEdit;
-import org.cytoscape.graph.render.export.ImageImposter;
-import org.cytoscape.graph.render.immed.EdgeAnchors;
-import org.cytoscape.graph.render.immed.GraphGraphics;
-import org.cytoscape.graph.render.stateful.GraphLOD;
-import org.cytoscape.graph.render.stateful.GraphRenderer;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.util.intr.IntEnumerator;
-import org.cytoscape.util.intr.IntHash;
-import org.cytoscape.util.intr.IntStack;
-import org.cytoscape.work.undo.UndoSupport;
-
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * This class is designed to keep track of the state of AddEdgeTasks throughout ding.
