@@ -69,11 +69,11 @@ To build cytoscape:
  a. in the top level directory: 
 
 	mvn install
-
-	Note: If this does not work from within Eclipse, you can run on command line
+	
+	Note: this may not work from within Eclipse; run on command line
 	Note: you may need to bump up your memory allocation:
 		export MAVEN_OPTS=-Xmx1024m
-
+		
  b. skip tests and javadocs for quick-and-dirty builds:
 	
 	mvn install -Dmaven.javadoc.skip=true -Dmaven.test.skip=true
@@ -82,6 +82,10 @@ To build cytoscape:
 
 	mvn -T 4  (4 threads)
 	mvn -T 1C (1 thread per core)
+
+ d. to build for release, be sure to specify a profile that includes packaging, e.g.,
+
+	mvn install -Prelease 
 
 3.  To run cytoscape (assuming you've run mvn install):
  a. you'll find the normal cytoscape distribution directory here:
@@ -111,6 +115,9 @@ pom.xml to change the <executable> for install4jc to where your install4j
 installation is.  Then run:
 
 	mvn install4j:compile
+	
+	Note: to package with plugins, first copy plugins into:
+		packaging/target/cytoscape-#.#.#/plugins/.
 
 	Note: to package with additional plugins, first copy plugins into:
 		distribution/target/cytoscape-#.#.#-null/cytoscape-#.#.#/plugins/.
