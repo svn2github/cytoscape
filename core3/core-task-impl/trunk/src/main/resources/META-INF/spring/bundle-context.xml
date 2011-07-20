@@ -259,6 +259,7 @@
 	</bean>
 
 	<bean id="fitContentTaskFactory" class="org.cytoscape.task.internal.zoom.FitContentTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 	</bean>
 
 	<!-- session -->
