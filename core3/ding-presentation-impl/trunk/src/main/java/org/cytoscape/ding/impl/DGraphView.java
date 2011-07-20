@@ -1954,6 +1954,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			m_networkCanvas.m_xCenter = x;
 			m_networkCanvas.m_yCenter = y;
 			m_viewportChanged = true;
+			
+			// Update view model
+			this.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_X_LOCATION, m_networkCanvas.m_xCenter);
+			this.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_Y_LOCATION, m_networkCanvas.m_yCenter);
 		}
 
 		// updateView();
