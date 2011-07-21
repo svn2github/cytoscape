@@ -341,6 +341,7 @@
 
 	<bean id="deleteColumnTaskFactory"
 		class="org.cytoscape.task.internal.table.DeleteColumnTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 	</bean>
 
 	<bean id="renameColumnTaskFactory"

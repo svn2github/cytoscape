@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -28,42 +28,49 @@
 package org.cytoscape.task.internal.table;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.cytoscape.model.CyColumn;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.task.AbstractTableColumnTask;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.TunableValidator;
-import org.cytoscape.work.TunableValidator.ValidationState;
-import org.cytoscape.work.undo.UndoSupport;
 
 
-public final class DeleteColumnTask extends AbstractTableColumnTask implements TunableValidator {
-	private final UndoSupport undoSupport;
+/** A helper class used by various "edit" classes. */
+final class SaveColumn {
+	final List<PrimaryKeyAndValue> keysAndValues;
 
-	DeleteColumnTask(final UndoSupport undoSupport, final CyColumn column) {
-		super(column);
-		this.undoSupport = undoSupport;
-	}
-
-	@Override
-	public void run(final TaskMonitor taskMonitor) throws Exception {
-		undoSupport.getUndoableEditSupport().postEdit(
-			new DeleteColumnEdit(column));
-
-		column.getTable().deleteColumn(column.getName());
-	}
-
-	@Override
-	public ValidationState getValidationState(final Appendable errMsg) {
-		if (column.isImmutable()) {
-			try {
-				errMsg.append("Cannot delete an immutable column!");
-			} catch (Exception e) {
-			}
-			return ValidationState.INVALID;
+	SaveColumn(final CyTable table, final String columnName) {
+		keysAndValues = new ArrayList<PrimaryKeyAndValue>(table.getRowCount());
+		final String primarykeyName = table.getPrimaryKey().getName();
+		for (final CyRow row : table.getAllRows()) {
+			final Object primaryKey = row.getRaw(primarykeyName);
+			final Object value      = row.getRaw(columnName);
+			keysAndValues.add(new PrimaryKeyAndValue(primaryKey, value));
 		}
+	}
 
-		return ValidationState.OK;
+	void restoreColumn(final CyTable table, final String columnName) {
+		for (final PrimaryKeyAndValue keyAndValue : keysAndValues)
+			table.getRow(keyAndValue.getPrimaryKey()).set(columnName, keyAndValue.getValue());
+	}
+}
+
+
+final class PrimaryKeyAndValue {
+	final Object primaryKey;
+	final Object value;
+
+	PrimaryKeyAndValue(final Object primaryKey, final Object value) {
+		this.primaryKey = primaryKey;
+		this.value      = value;
+	}
+
+	Object getPrimaryKey() {
+		return primaryKey;
+	}
+
+	Object getValue() {
+		return value;
 	}
 }

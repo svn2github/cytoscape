@@ -29,13 +29,20 @@ package org.cytoscape.task.internal.table;
 
 
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 public final class DeleteColumnTaskFactory extends AbstractTableColumnTaskFactory {
+	private final UndoSupport undoSupport;
+
+	public DeleteColumnTaskFactory(final UndoSupport undoSupport) {
+		this.undoSupport = undoSupport;
+	}
+
 	@Override
 	public TaskIterator getTaskIterator() {
 		if (column == null)
 			throw new IllegalStateException("you forgot to set the CyColumn on this task factory!");
-		return new TaskIterator(new DeleteColumnTask(column));
+		return new TaskIterator(new DeleteColumnTask(undoSupport, column));
 	}
 }
