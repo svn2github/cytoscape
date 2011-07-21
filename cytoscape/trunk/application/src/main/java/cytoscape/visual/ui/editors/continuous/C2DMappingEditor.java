@@ -163,7 +163,8 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 			newRange = new BoundaryRangeValues(below, defValue, above);
 			mapping.addPoint(maxValue / 2, newRange);
-			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+
+			selectThumbAtPosition(50f);
 
 			slider.repaint();
 			repaint();
@@ -172,7 +173,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		}
 
 		// Add a new thumb with default value
-		slider.getModel().addThumb(100f, defValue);
+		slider.getModel().addThumb(75f, defValue);
 
 		// Pick Up first point.
 		final ContinuousMappingPoint previousPoint = mapping.getPoint(mapping.getPointCount() - 1);
@@ -187,9 +188,10 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		mapping.addPoint(maxValue, newRange);
 
 		updateMap();
+		updateCytoscape();
 
-		//		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
-		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		// Make this slider the selected one
+		selectThumbAtPosition(75f);
 
 		slider.repaint();
 		repaint();
@@ -250,9 +252,9 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 			slider.getModel().removeThumb(selectedIndex);
 			mapping.removePoint(selectedIndex);
 			updateMap();
+			updateCytoscape();
 			mapping.fireStateChanged();
 
-			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
 			repaint();
 		}
 	}
@@ -265,10 +267,8 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 		slider.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
-					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e
-					                                                                                                                                                                                                                                                   .getX(),
-					                                                                           e
-					                                                                                                                                                                                                                                                     .getY());
+					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e.getX(),
+					                                                                           e.getY());
 
 					Object newValue = null;
 
@@ -294,11 +294,11 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 						}
 
 						updateMap();
+						updateCytoscape();
 
 						slider.setTrackRenderer(new DiscreteTrackRenderer(type, below, above));
 						slider.repaint();
 
-						Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
 					}
 				}
 			});

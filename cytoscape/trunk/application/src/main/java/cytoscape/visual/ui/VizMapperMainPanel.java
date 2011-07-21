@@ -1189,7 +1189,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					type = (VisualPropertyType) ((VizMapperProperty) curProp).getHiddenObject();
 				else if (curProp.getParentProperty() != null)
 					type = (VisualPropertyType) ((VizMapperProperty) curProp.getParentProperty())
-					                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .getHiddenObject();
+					                                                        .getHiddenObject();
 				else
 
 					return;
@@ -1855,8 +1855,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			updateTableView();
 
 			// Finally, update graph view and focus.
-			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+			// vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
+			// Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 
 			return;
 		}
@@ -2068,17 +2068,22 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private void redraw(final CyNetworkView view) {
 		// Create Task
 		RedrawTask task = new RedrawTask(view);
+		Thread redrawThread = new Thread(task);
+		redrawThread.run();
+
+		/*
 		// Configure JTask Dialog Pop-Up Box
 		final JTaskConfig jTaskConfig = new JTaskConfig();
 
 		jTaskConfig.displayCancelButton(false);
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		jTaskConfig.displayCloseButton(false);
-		jTaskConfig.displayStatus(true);
+		jTaskConfig.displayStatus(false);
 		jTaskConfig.setAutoDispose(true);
 
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
+		*/
 	}
 	
 

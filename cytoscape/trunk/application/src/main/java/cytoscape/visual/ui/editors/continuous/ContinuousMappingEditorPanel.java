@@ -56,11 +56,13 @@ import org.jdesktop.swingx.multislider.Thumb;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 
 import java.beans.PropertyChangeListener;
 
@@ -68,9 +70,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -109,14 +114,17 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected VisualPropertyType type;
 	protected Calculator calculator;
 	protected ContinuousMapping mapping;
+	protected ContinuousMapping savedMapping;
 	protected List<ContinuousMappingPoint> allPoints;
-	private SpinnerNumberModel spinnerModel;
 	protected Object below;
 	protected Object above;
 	
 	private CyAttributes attrs;
 	
 	protected static ContinuousMappingEditorPanel editor;
+
+	protected static boolean updatePending = false;
+	protected static boolean updating = false;
 	
 	protected double lastSpinnerNumber = 0;
 
@@ -125,13 +133,11 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		super(Cytoscape.getDesktop());
 		this.type = type;
 		initComponents();
-		setVisualPropLabel();
 
 		initRangeValues();
-		setSpinner();
+		setSpinners();
 		this.addWindowListener(new WindowAdapter() {
 				public void windowOpened(WindowEvent e) {
-					CyLogger.getLogger().info("windowOpened");
 					firePropertyChange(EDITOR_WINDOW_OPENED, null, type);
 				}
 
@@ -162,15 +168,28 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		}
 	}
 
+	protected void setSpinners() {
+		final Class dataType = type.getDataType();
+		setSpinner();
+		if (dataType == Color.class) {
+		} else if (dataType == Number.class) {
+			setPropertySpinner();
+		} else {
+		}
+	}
+
 	protected void setSpinner() {
-		spinnerModel = new SpinnerNumberModel(0.0d, Float.NEGATIVE_INFINITY,
-		                                      Float.POSITIVE_INFINITY, 0.01d);
-		spinnerModel.addChangeListener(new SpinnerChangeListener());
+		SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0.0d, Float.NEGATIVE_INFINITY,
+		                                                         Float.POSITIVE_INFINITY, 0.01d);
+		spinnerModel.addChangeListener(new SpinnerChangeListener(spinnerModel));
 		valueSpinner.setModel(spinnerModel);
 	}
 
-	protected void setVisualPropLabel() {
-		this.visualPropertyLabel.setText("Visual Property: " + type.getName());
+	protected void setPropertySpinner() {
+		SpinnerNumberModel propertySpinnerModel = new SpinnerNumberModel(0.0d, Float.NEGATIVE_INFINITY,
+		                                                                 Float.POSITIVE_INFINITY, 0.01d);
+		propertySpinnerModel.addChangeListener(new PropertySpinnerChangeListener(propertySpinnerModel));
+		propertySpinner.setModel(propertySpinnerModel);
 	}
 
 	/**
@@ -192,51 +211,55 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		belowPanel.setPreferredSize(new Dimension(16, 1));
 
 		rangeSettingPanel = new javax.swing.JPanel();
-		pivotLabel = new javax.swing.JLabel();
 		addButton = new javax.swing.JButton();
 		deleteButton = new javax.swing.JButton();
 
 		// New in 2.6
 		minMaxButton = new javax.swing.JButton();
 
-		colorButton = new javax.swing.JButton();
-		rangeEditorPanel = new javax.swing.JPanel();
-		slider = new org.jdesktop.swingx.JXMultiThumbSlider();
-		attrNameLabel = new javax.swing.JLabel();
+		okButton = new javax.swing.JButton();
+		cancelButton = new javax.swing.JButton();
+
+		slider = new JXMultiThumbSlider();
 		iconPanel = new YValueLegendPanel(type);
-		visualPropertyLabel = new javax.swing.JLabel();
 
 		valueSpinner = new JSpinner();
 		valueSpinner.setEnabled(false);
+		valueLabel = new JLabel("Attribute Value");
+		valueLabel.setLabelFor(valueSpinner);
+
+		Class dataType = this.type.getDataType();
+		if (dataType == Number.class) {
+			propertySpinner = new JSpinner();
+			propertySpinner.setEnabled(false);
+			propertyComponent = propertySpinner;
+			propertyLabel = new JLabel(type.getName());
+			propertyLabel.setLabelFor(propertyComponent);
+		} else if (dataType == Color.class) {
+			// We use the colorButton for both discrete and color
+			colorButton = new javax.swing.JButton("Change");
+			colorButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
+			colorButton.setEnabled(false);
+			propertyComponent = colorButton;
+			propertyLabel = new JLabel(type.getName());
+			propertyLabel.setLabelFor(propertyComponent);
+		} else {
+			propertyComponent = new JLabel();
+			propertyLabel = new JLabel("Double-click on icon to change "+type.getName());
+		}
 
 		rotaryEncoder = new JXMultiThumbSlider();
 
 		iconPanel.setPreferredSize(new Dimension(25, 1));
 
-		mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
-		                                                                 "Continuous Mapping for "
-		                                                                 + type.getName(),
-		                                                                 javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-		                                                                 javax.swing.border.TitledBorder.DEFAULT_POSITION,
-		                                                                 new java.awt.Font("SansSerif",
-		                                                                                   Font.BOLD,
-		                                                                                   12),
-		                                                                 new java.awt.Color(0, 0, 0)));
+		mainPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5,5,5,5));
 
 		rangeSettingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
-		                                                                         "Range Setting",
+		                                                                         "Handle Settings",
 		                                                                         javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
 		                                                                         javax.swing.border.TitledBorder.DEFAULT_POSITION,
-		                                                                         new java.awt.Font("SansSerif",
-		                                                                                           1,
-		                                                                                           10),
-		                                                                         new java.awt.Color(0,
-		                                                                                            0,
-		                                                                                            0)));
-		pivotLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
-		pivotLabel.setForeground(java.awt.Color.darkGray);
-		pivotLabel.setText("Pivot:");
-
+		                                                                         new java.awt.Font("SansSerif", 1, 10),
+		                                                                         new java.awt.Color(0, 0, 0)));
 		addButton.setText("Add");
 		addButton.setPreferredSize(new Dimension(100, 10));
 		addButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -265,16 +288,28 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 				}
 			});
 
-		rangeEditorPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
-		                                                                        "Range Editor",
-		                                                                        javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-		                                                                        javax.swing.border.TitledBorder.DEFAULT_POSITION,
-		                                                                        new java.awt.Font("SansSerif",
-		                                                                                          1,
-		                                                                                          10),
-		                                                                        new java.awt.Color(0,
-		                                                                                           0,
-		                                                                                           0)));
+		cancelButton.setText("Cancel");
+		cancelButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
+		cancelButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					calculator.getMappings().set(0,savedMapping);
+					Cytoscape.getVisualMappingManager().applyAppearances();
+					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+					firePropertyChange(EDITOR_WINDOW_CLOSED, this, type);
+					setVisible(false);
+				}
+			});
+
+		okButton.setText("OK");
+		// okButton.setPreferredSize(new Dimension(50, 30));
+		okButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
+		okButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					firePropertyChange(EDITOR_WINDOW_CLOSED, this, type);
+					setVisible(false);
+				}
+			});
+
 		slider.setMaximumValue(100.0F);
 		rotaryEncoder.setMaximumValue(100.0F);
 
@@ -285,10 +320,6 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		sliderLayout.setVerticalGroup(sliderLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                          .add(0, 116, Short.MAX_VALUE));
 
-		attrNameLabel.setFont(new java.awt.Font("SansSerif", 1, 14));
-		attrNameLabel.setForeground(java.awt.Color.darkGray);
-		attrNameLabel.setText("Attribute Name");
-
 		org.jdesktop.layout.GroupLayout jXMultiThumbSlider1Layout = new org.jdesktop.layout.GroupLayout(rotaryEncoder);
 		rotaryEncoder.setLayout(jXMultiThumbSlider1Layout);
 		jXMultiThumbSlider1Layout.setHorizontalGroup(jXMultiThumbSlider1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -298,17 +329,19 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		                                                                    .add(0, 65,
 		                                                                         Short.MAX_VALUE));
 
-		visualPropertyLabel.setFont(new java.awt.Font("SansSerif", 1, 14));
-		visualPropertyLabel.setForeground(java.awt.Color.darkGray);
-
 		org.jdesktop.layout.GroupLayout rangeSettingPanelLayout = new org.jdesktop.layout.GroupLayout(rangeSettingPanel);
 		rangeSettingPanel.setLayout(rangeSettingPanelLayout);
 		rangeSettingPanelLayout.setHorizontalGroup(rangeSettingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                                                  .add(rangeSettingPanelLayout.createSequentialGroup()
 		                                                                                              .addContainerGap()
+		                                                                                              .add(valueLabel,
+		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                                              .add(valueSpinner,
 		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                                   67,
+		                                                                                                   100,
 		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 		                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
 		                                                                                                               118,
@@ -324,23 +357,55 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 		                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                                              .add(deleteButton)
-		                                                                                              .add(10,
-		                                                                                                   10,
-		                                                                                                   10)));
-		rangeSettingPanelLayout.setVerticalGroup(rangeSettingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                                                              .add(10, 10, 10))
+		                                                                  .add(rangeSettingPanelLayout.createSequentialGroup()
+		                                                                                              .addContainerGap()
+		                                                                                              .add(propertyLabel,
+		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                              .add(propertyComponent,
+		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                   100,
+		                                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+
+		rangeSettingPanelLayout.setVerticalGroup(rangeSettingPanelLayout.createSequentialGroup()
 		                                                                .add(rangeSettingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+		                                                                                            .add(valueLabel)
 		                                                                                            .add(valueSpinner,
 		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 		                                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 		                                                                                            .add(minMaxButton)
 		                                                                                            .add(deleteButton)
-		                                                                                            .add(addButton)));
+		                                                                                            .add(addButton))
+		                                                                .add(rangeSettingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+		                                                                                            .add(propertyLabel)
+		                                                                                            .add(propertyComponent,
+		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(mainPanel);
 		mainPanel.setLayout(layout);
 
 		layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                .add(layout.createSequentialGroup()
+		                                     .addContainerGap()
+		                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
+		                                                      118,
+		                                                      Short.MAX_VALUE)
+		                                     .add(cancelButton,
+		                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+                                              100,
+		                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                     .add(okButton,
+		                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+                                              100,
+		                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                         .add(10, 10, 10))
 		                                .add(rangeSettingPanel,
 		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
@@ -361,6 +426,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		                                                org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 		                                                org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                                org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+
 		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                              .add(layout.createSequentialGroup()
 		                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -387,7 +453,16 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		                                         .add(rangeSettingPanel,
 		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                     .add(cancelButton,
+		                                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                          org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                         .add(okButton,
+		                                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                          org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))));
 
 		// add the main panel to the dialog.
 		this.getContentPane().add(mainPanel);
@@ -404,8 +479,8 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		EditorValueRangeTracer.getTracer().setMin(type, newVal[0]);
 		EditorValueRangeTracer.getTracer().setMax(type, newVal[1]);
 		updateMap();
-		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 		this.repaint();
+		updateCytoscape();
 	}
 
 	abstract protected void deleteButtonActionPerformed(java.awt.event.ActionEvent evt);
@@ -429,7 +504,9 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 		// Assume this calc only returns cont. mapping.
 		if (calculator.getMapping(0).getClass() == ContinuousMapping.class) {
-			mapping = (ContinuousMapping) calculator.getMapping(0);
+			mapping = (ContinuousMapping)calculator.getMapping(0);
+
+			savedMapping = (ContinuousMapping)(mapping.clone());
 
 			final String controllingAttrName = mapping.getControllingAttributeName();
 
@@ -483,18 +560,18 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 	// Variables declaration - do not modify
 	protected javax.swing.JButton addButton;
-	private javax.swing.JLabel attrNameLabel;
-
-	//    private javax.swing.JComboBox attributeComboBox;
 	protected javax.swing.JButton colorButton;
 	protected javax.swing.JButton deleteButton;
+	protected javax.swing.JButton okButton;
+	protected javax.swing.JButton cancelButton;
 	protected javax.swing.JPanel iconPanel;
-	private javax.swing.JLabel pivotLabel;
-	private javax.swing.JPanel rangeEditorPanel;
 	private javax.swing.JPanel rangeSettingPanel;
 	protected JXMultiThumbSlider slider;
 	protected JSpinner valueSpinner;
-	private javax.swing.JLabel visualPropertyLabel;
+	private JLabel valueLabel;
+	private JLabel propertyLabel;
+	protected JSpinner propertySpinner = null;
+	protected JComponent propertyComponent;
 	protected JXMultiThumbSlider rotaryEncoder;
 	protected JButton minMaxButton;
 
@@ -507,15 +584,60 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected int getSelectedPoint(int selectedIndex) {
 		final List<Thumb<?>> thumbs = slider.getModel().getSortedThumbs();
 		Thumb<?> selected = slider.getModel().getThumbAt(selectedIndex);
-		int i;
-
-		for (i = 0; i < thumbs.size(); i++) {
+		for (int i = 0; i < thumbs.size(); i++) {
 			if (thumbs.get(i) == selected) {
 				return i;
 			}
 		}
 
 		return -1;
+	}
+
+	protected void selectThumbAtPosition(float position) {
+		int selectedIndex = getThumbIndexAtPosition(position);
+		if (selectedIndex != -1) {
+			TriangleThumbRenderer renderer = (TriangleThumbRenderer)slider.getThumbRenderer();
+			renderer.setSelectedIndex(selectedIndex);
+			enableSpinner(selectedIndex);
+		}
+	}
+
+	protected int getThumbIndexAtPosition(float position) {
+		final List<Thumb<?>> thumbs = slider.getModel().getSortedThumbs();
+		for (int i = 0; i < thumbs.size(); i++) {
+			if (slider.getModel().getThumbAt(i).getPosition() == position) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	protected void setButtonColor(Color newColor) {
+		final int iconWidth = 10;
+		final int iconHeight = 10;
+		final BufferedImage bi = new BufferedImage(iconWidth, iconHeight, BufferedImage.TYPE_INT_RGB);
+		final Graphics2D g2 = bi.createGraphics();
+
+		/*
+		 * Fill background
+		 */
+		g2.setColor(newColor);
+		g2.fillRect(0, 0, iconWidth, iconHeight);
+
+		Icon colorIcon = new ImageIcon(bi);
+		colorButton.setIcon(colorIcon);
+		colorButton.setIconTextGap(6);
+	
+	}
+
+	protected void updateCytoscape() {
+		// TODO: We only want to do this for relatively small graphs....
+		// Start a thread???
+		updatePending = true;
+		if (!updating) {
+			UpdaterThread u = new UpdaterThread();
+			new Thread(u).start();
+		}
 	}
 
 	protected void updateMap() {
@@ -561,28 +683,48 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		}
 	}
 
+	protected void enableSpinner(int selectedIndex) {
+		final Class dataType = type.getDataType();
+		valueSpinner.setEnabled(true);
+		Thumb selectedThumb = slider.getModel().getThumbAt(selectedIndex);
+		Double newVal = ((selectedThumb.getPosition() / 100) * EditorValueRangeTracer.getTracer().getRange(type))
+				            + EditorValueRangeTracer.getTracer().getMin(type);
+		valueSpinner.setValue(newVal);
+		updateMap();
+
+		if (dataType == Number.class) {
+			propertySpinner.setEnabled(true);
+			BoundaryRangeValues rg = mapping.getPoint(selectedIndex-1).getRange();
+			propertySpinner.setValue(rg.equalValue);
+		} else if (dataType == Color.class) {
+			colorButton.setEnabled(true);
+			setButtonColor((Color)selectedThumb.getObject());
+		}
+
+	}
+
+	protected void disableSpinner() {
+		Class dataType = type.getClass();
+		valueSpinner.setEnabled(false);
+		valueSpinner.setValue(0);
+		if (dataType == Number.class) {
+			propertySpinner.setEnabled(false);
+			propertySpinner.setValue(0);
+		}
+	}
+
 	// End of variables declaration
 	protected class ThumbMouseListener extends MouseAdapter {
 		public void mouseReleased(MouseEvent e) {
-			int selectedIndex = slider.getSelectedIndex();
+			int selectedIndex = ((TriangleThumbRenderer)slider.getThumbRenderer()).getSelectedIndex();
 
 			if ((0 <= selectedIndex) && (slider.getModel().getThumbCount() > 0)) {
-				valueSpinner.setEnabled(true);
-
-				Double newVal = ((slider.getModel().getThumbAt(selectedIndex).getPosition() / 100) * EditorValueRangeTracer.getTracer()
-				                                                                                                           .getRange(type))
-				                + EditorValueRangeTracer.getTracer().getMin(type);
-				valueSpinner.setValue(newVal);
-
-				updateMap();
-
+				enableSpinner(selectedIndex);
 				slider.repaint();
 				repaint();
-
-				Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+				updateCytoscape();
 			} else {
-				valueSpinner.setEnabled(false);
-				valueSpinner.setValue(0);
+				disableSpinner();
 			}
 		}
 	}
@@ -594,10 +736,15 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	 *
 	 */
 	class SpinnerChangeListener implements ChangeListener {
+		SpinnerNumberModel spinnerModel;
+		public SpinnerChangeListener(SpinnerNumberModel model) {
+			this.spinnerModel = model;
+		}
+
 		public void stateChanged(ChangeEvent e) {
 			
 			final Number newVal = spinnerModel.getNumber();
-			final int selectedIndex = slider.getSelectedIndex();
+			final int selectedIndex = ((TriangleThumbRenderer)slider.getThumbRenderer()).getSelectedIndex();
 
 			if ((0 <= selectedIndex) && (slider.getModel().getThumbCount() >= 1)) {
 				
@@ -618,20 +765,57 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 				                      - EditorValueRangeTracer.getTracer().getMin(type)) / EditorValueRangeTracer.getTracer()
 				                                                                                                 .getRange(type));
 				
+				JComponent selectedThumb = ((TriangleThumbRenderer)slider.getThumbRenderer()).getSelectedThumb();
 				slider.getModel().getThumbAt(selectedIndex)
 				      .setPosition(newPosition.floatValue() * 100);
-				slider.getSelectedThumb()
-				      .setLocation((int) ((slider.getSize().width - 12) * newPosition), 0);
+
+				selectedThumb.setLocation((int) ((slider.getSize().width - 12) * newPosition), 0);
 
 				updateMap();
-				Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
 
-				slider.getSelectedThumb().repaint();
+				selectedThumb.repaint();
 				slider.getParent().repaint();
 				slider.repaint();
 
+				updateCytoscape();
+
 				lastSpinnerNumber = newVal.doubleValue();
 			}
+		}
+	}
+
+	class PropertySpinnerChangeListener implements ChangeListener {
+		SpinnerNumberModel spinnerModel;
+		public PropertySpinnerChangeListener(SpinnerNumberModel model) {
+			this.spinnerModel = model;
+		}
+
+		public void stateChanged(ChangeEvent e) {
+			final Float newVal = new Float(spinnerModel.getNumber().doubleValue());
+			final int selectedIndex = ((TriangleThumbRenderer)slider.getThumbRenderer()).getSelectedIndex();
+			ContinuousTrackRenderer trackRenderer = (ContinuousTrackRenderer)slider.getTrackRenderer();
+			trackRenderer.setSelectedIndex(selectedIndex);
+
+			trackRenderer.setSelectedValue(newVal);
+
+			slider.repaint();
+			repaint();
+			updateCytoscape();
+
+		}
+	}
+
+	class UpdaterThread implements Runnable {
+		public UpdaterThread() {
+		}
+
+		public void run() {
+			updating = true;
+			while (updatePending) {
+				updatePending = false;
+				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+			}
+			updating = false;
 		}
 	}
 }

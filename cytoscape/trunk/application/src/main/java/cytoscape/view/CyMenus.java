@@ -33,6 +33,7 @@ package cytoscape.view;
 import giny.view.GraphViewChangeEvent;
 import giny.view.GraphViewChangeListener;
 
+import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
@@ -43,13 +44,14 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.List;
+
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenu;
-import javax.swing.JSeparator;
-import javax.swing.JOptionPane;
-import javax.swing.Action;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JSeparator;
 
 import org.jdesktop.swingx.JXTitledSeparator;
 
@@ -64,6 +66,7 @@ import cytoscape.util.CytoscapeToolBar;
 import cytoscape.util.RecentlyOpenedTracker;
 import cytoscape.util.undo.RedoAction;
 import cytoscape.util.undo.UndoAction;
+import cytoscape.util.swing.SwingMenuSorter;
 import cytoscape.view.cytopanels.CytoPanelName;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
@@ -136,6 +139,11 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 		layoutMenu = menuBar.getMenu("Layout");
 		opsMenu = menuBar.getMenu("Plugins");
 		helpMenu = menuBar.getMenu("Help");
+
+		// Add a listener to sort the Layout and Plugins menus after the separator
+		opsMenu.addMenuListener(new SwingMenuSorter(opsMenu, 1));
+		layoutMenu.addMenuListener(new SwingMenuSorter(layoutMenu, 2));
+		
 	}
 
 	private void initRecentlyOpenedSubMenu() {
@@ -678,4 +686,5 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 
 		recentlyOpenedSubMenu.add(new JMenuItem(new OpenRecentAction(mostRecentlyAddedSession)));
 	}
+
 }

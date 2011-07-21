@@ -41,15 +41,18 @@ import cytoscape.CytoscapeInit;
 import cytoscape.init.CyInitParams;
 
 import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayoutAlgorithmComparator;
 import cytoscape.layout.CyLayouts;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.JMenu;
 import javax.swing.event.MenuEvent;
@@ -157,7 +160,9 @@ public class LayoutMenuManager implements MenuListener {
 	 * @return a List of all layouts associated with this menu (could be null)
 	 */
 	static List<CyLayoutAlgorithm> getLayoutsInMenu(String menu) {
-		return menuAlgorithmMap.get(menu);
+		List<CyLayoutAlgorithm> unsorted = menuAlgorithmMap.get(menu);
+
+		return sortLayoutList(unsorted);
 	}
 
 	/**
@@ -166,6 +171,12 @@ public class LayoutMenuManager implements MenuListener {
 	 * @return a Collection of Strings representing each of the menus
 	 */
 	static Set<String> getLayoutMenuNames() {
-		return menuAlgorithmMap.keySet();
+		return new TreeSet<String>(menuAlgorithmMap.keySet());
+	}
+
+	protected static List<CyLayoutAlgorithm> sortLayoutList(List<CyLayoutAlgorithm> unsorted) {
+		CyLayoutAlgorithm[] sorted = unsorted.toArray(new CyLayoutAlgorithm[1]);
+		Arrays.sort(sorted, new CyLayoutAlgorithmComparator());
+		return Arrays.asList(sorted);
 	}
 }

@@ -25,6 +25,10 @@ public class TriangleThumbRenderer extends JComponent
     private static final Color BACKGROUND_COLOR = Color.white;
     private JXMultiThumbSlider slider;
     private boolean selected;
+    private boolean grabbed = false;
+		private int index = -1;
+		private int selectedIndex = -1;
+		private JComponent selectedComponent = null;
 
     /**
      * Creates a new TriangleThumbRenderer object.
@@ -48,17 +52,16 @@ public class TriangleThumbRenderer extends JComponent
         /*
          * Draw small triangle
          */
-        if (selected) {
-           
+        if (selectedIndex == index) {
             final Polygon outline = new Polygon();
             outline.addPoint(0, 0);
-            outline.addPoint(0, 4);
-            outline.addPoint(4, 9);
-            outline.addPoint(8, 4);
-            outline.addPoint(8, 0);
+            outline.addPoint(0, 5);
+            outline.addPoint(5, 10);
+            outline.addPoint(9, 5);
+            outline.addPoint(9, 0);
             g.fillPolygon(outline);
             g.setColor(Color.blue);
-            ((Graphics2D) g).setStroke(new BasicStroke(1.0f));
+            ((Graphics2D) g).setStroke(new BasicStroke(2.0f));
             g.drawPolygon(outline);
         } else {
             final Polygon thumb = new Polygon();
@@ -87,9 +90,13 @@ public class TriangleThumbRenderer extends JComponent
      *
      * @return DOCUMENT ME!
      */
-    public JComponent getThumbRendererComponent(JXMultiThumbSlider slider,
-        int index, boolean selected) {
-        this.selected = selected;
+    public JComponent getThumbRendererComponent(JXMultiThumbSlider slider, int index, boolean selected) {
+        this.grabbed = selected;
+				this.index = index;
+				if (selected) {
+					selectedIndex = index;
+					selectedComponent = this;
+				}
 
         final Object obj = slider.getModel()
                                  .getThumbAt(index)
@@ -98,7 +105,7 @@ public class TriangleThumbRenderer extends JComponent
         if (obj.getClass() == Color.class)
             this.setForeground((Color) obj);
         else {
-            if (selected)
+            if (grabbed)
                 this.setForeground(SELECTED_COLOR);
             else
                 this.setForeground(DEFAULT_COLOR);
@@ -106,6 +113,23 @@ public class TriangleThumbRenderer extends JComponent
 
         return this;
     }
-    
+
+		/**
+		 * Return the value for the currently selected index
+		 *
+		 * @return index of the currently selected thumb
+		 */
+		public int getSelectedIndex() { return this.selectedIndex; }
+		public JComponent getSelectedThumb() { return this.selectedComponent; }
+
+		/**
+		 * Set the the currently selected index
+		 *
+		 * @param index the currently selected thumb
+		 */
+		public void setSelectedIndex(int index) { 
+			this.selectedIndex = index; 
+			this.selectedComponent = this;
+		}
     
 }

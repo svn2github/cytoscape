@@ -71,12 +71,8 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	private final Font SMALL_FONT = new Font("SansSerif", Font.BOLD, 16);
 	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 
-	//private Paint checker_paint;
 	private JXMultiThumbSlider<Color> slider;
 
-	//	private double minValue;
-	//	private double maxValue;
-	//	private double range;
 	private Color below;
 	private Color above;
 	private String attrName;
@@ -89,14 +85,9 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	 *            DOCUMENT ME!
 	 */
 	public CyGradientTrackRenderer(VisualPropertyType type, Color below, Color above, String title) {
-		//checker_paint = ColorUtil.getCheckerPaint();
 		this.below = below;
 		this.above = above;
-		//		this.minValue = minValue;
-		//		this.maxValue = maxValue;
 		this.attrName = title;
-
-		//		this.range = Math.abs(maxValue - minValue);
 		this.type = type;
 	}
 

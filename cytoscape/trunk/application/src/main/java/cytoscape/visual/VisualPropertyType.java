@@ -569,14 +569,14 @@ public enum VisualPropertyType {
 		final EditorDisplayer editor = EditorDisplayer.getEditor(this, EditorType.CONTINUOUS);
 
 		if (editor == EditorDisplayer.CONTINUOUS_COLOR)
-			editor.setParameters(new Object[] { 450, 180, "Gradient Editor for " + this.calcName, this });
+			editor.setParameters(new Object[] { 550, 180, "Gradient Editor for " + this.calcName, this });
 		else if (editor == EditorDisplayer.CONTINUOUS_CONTINUOUS)
 			editor.setParameters(new Object[] {
-			                         450, 350, "Continuous Editor for " + this.calcName, this
+			                         550, 350, "Continuous Editor for " + this.calcName, this
 			                     });
 		else
 			editor.setParameters(new Object[] {
-			                         450, 300, "Continuous Editor for " + this.calcName, this
+			                         550, 300, "Continuous Editor for " + this.calcName, this
 			                     });
 
 		return showEditor(editor, null);

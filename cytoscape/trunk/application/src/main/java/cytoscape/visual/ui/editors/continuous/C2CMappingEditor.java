@@ -42,10 +42,13 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
+import org.jdesktop.swingx.multislider.Thumb;
 import org.jdesktop.swingx.multislider.TrackRenderer;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+
+import java.util.List;
 
 import java.beans.PropertyChangeEvent;
 
@@ -150,8 +153,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	                                  final VisualPropertyType type) {
 		editor = new C2CMappingEditor(type);
 
-		final ContinuousTrackRenderer rend = (ContinuousTrackRenderer) editor.slider
-		                                                                                                                                       .getTrackRenderer();
+		final ContinuousTrackRenderer rend = (ContinuousTrackRenderer) editor.slider.getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
 
 		return rend.getLegend(width, height);
@@ -160,8 +162,6 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	
 	// Add slider to the editor.
 	private void addSlider(float position, float value) {
-		CyLogger.getLogger().info("Adding slider\n");
-
 		final double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
 
 		BoundaryRangeValues newRange;
@@ -171,7 +171,9 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 
 			newRange = new BoundaryRangeValues(below, 5f, above);
 			mapping.addPoint(maxValue / 2, newRange);
-			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+
+			if (position != DEFAULT_MIN && position != DEFAULT_MAX)
+				selectThumbAtPosition(position);
 
 			slider.repaint();
 			repaint();
@@ -179,9 +181,8 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 			return;
 		}
 
-		// Add a new white thumb in the min.
+		// Add a new white thumb 
 		slider.getModel().addThumb(position, value);
-
 
 		// Pick Up first point.
 		final ContinuousMappingPoint previousPoint = mapping.getPoint(mapping.getPointCount() - 1);
@@ -191,14 +192,18 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 
 		newRange.lesserValue = slider.getModel().getSortedThumbs()
 		                             .get(slider.getModel().getThumbCount() - 1);
-		CyLogger.getLogger().info("EQ color = " + newRange.lesserValue);
 		newRange.equalValue = 5f;
 		newRange.greaterValue = previousRange.greaterValue;
 		mapping.addPoint(maxValue, newRange);
 
 		updateMap();
 
-		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+		if (position != DEFAULT_MIN && position != DEFAULT_MAX) {
+			updateCytoscape();
+
+			// Make this slider the selected one
+			selectThumbAtPosition(position);
+		}
 
 		slider.repaint();
 		repaint();
@@ -206,7 +211,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 
 	@Override
 	protected void addButtonActionPerformed(ActionEvent evt) {
-		addSlider(100f, 5f);
+		addSlider(51f, 5f);
 	}
 
 	
@@ -216,8 +221,8 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	@Override protected void deleteButtonActionPerformed(ActionEvent evt) {
 		if(slider.getModel().getThumbCount() <=0)
 			return;
-		
-		final int selectedIndex = slider.getSelectedIndex();
+
+		final int selectedIndex = ((TriangleThumbRenderer)slider.getThumbRenderer()).getSelectedIndex();
 		
 		if(selectedIndex<0)
 			return;
@@ -226,11 +231,11 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		mapping.removePoint(selectedIndex);
 
 		updateMap();
+		updateCytoscape();
 		((ContinuousTrackRenderer) slider.getTrackRenderer()).removeSquare(selectedIndex);
 
 		mapping.fireStateChanged();
 
-		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
 		repaint();	
 	}
 
@@ -268,7 +273,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
 
 		ContinuousTrackRenderer cRend = new ContinuousTrackRenderer(type,
-		                                                            (Number) below, (Number) above);
+		                                                            (Number) below, (Number) above, mapping, slider);
 		cRend.addPropertyChangeListener(this);
 
 		slider.setThumbRenderer(thumbRend);

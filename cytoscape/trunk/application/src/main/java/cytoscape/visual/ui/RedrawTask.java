@@ -1,5 +1,6 @@
 package cytoscape.visual.ui;
 
+import cytoscape.logger.CyLogger;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.view.CyNetworkView;
@@ -14,18 +15,18 @@ public class RedrawTask implements Task {
 	}
 
 	public void run() {
-		taskMonitor.setStatus("Updating network view.  Please wait...");
-		taskMonitor.setPercentCompleted(-1);
+		setStatus("Updating network view.  Please wait...");
+		setPercentCompleted(-1);
 
 		try {
 			view.redrawGraph(false, true);
 		} catch (Exception e) {
-			taskMonitor.setException(e,
+			setException(e,
 					"Could not update network view for network: "
 							+ view.getTitle());
 		}
 
-		taskMonitor.setPercentCompleted(100);
+		setPercentCompleted(100);
 	}
 
 	public void halt() {
@@ -38,6 +39,22 @@ public class RedrawTask implements Task {
 
 	public String getTitle() {
 		return "Updating Network View";
+	}
+
+	private void setStatus(String status) {
+		if (taskMonitor != null)
+			taskMonitor.setStatus(status);
+	}
+
+	private void setPercentCompleted(int pc) {
+		if (taskMonitor != null)
+			taskMonitor.setPercentCompleted(pc);
+	}
+
+	private void setException(Throwable e, String s) {
+		if (taskMonitor != null)
+			taskMonitor.setException(e,s);
+		CyLogger.getLogger("Network Redraw").warning(s,e);
 	}
 
 }
