@@ -23,7 +23,7 @@ import org.cytoscape.work.internal.tunables.utils.XorPanel;
 import org.cytoscape.work.spring.SpringTunableInterceptor;
 import org.cytoscape.work.swing.GUITunableHandler;
 import org.cytoscape.work.swing.GUITunableInterceptor;
-import org.cytoscape.work.swing.TunnableDialog;
+import org.cytoscape.work.swing.TunableDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +69,7 @@ public class GUITunableInterceptorImpl extends SpringTunableInterceptor<GUITunab
 
 	private Window parent = null;
 	
-	private TunnableDialog tunnableDialog = null;
+	private TunableDialog tunnableDialog = null;
 
 
 	/**
@@ -127,7 +127,7 @@ public class GUITunableInterceptorImpl extends SpringTunableInterceptor<GUITunab
 	 */
 	private boolean displayGUI(final JPanel optionPanel, Object... proxyObjs) {
 		
-		tunnableDialog = new TunnableDialog();
+		tunnableDialog = new TunableDialog();
 		tunnableDialog.setLocationRelativeTo(parent);
 		tunnableDialog.setTitle("Set Parameters");
 
