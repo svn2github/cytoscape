@@ -134,6 +134,11 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 
 		return map.get(id.toLowerCase());
 	}
+	
+	@Override
+	public boolean isSupported(VisualProperty<?> vp) {
+		return visualPropertyMap.containsKey(vp);
+	}
 
 	protected final void addIdentifierMapping(final Class<?> type, final String id, final VisualProperty<?> vp) {
 		if ( type == null ) {

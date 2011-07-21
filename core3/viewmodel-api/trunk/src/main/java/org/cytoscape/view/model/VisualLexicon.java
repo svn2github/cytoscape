@@ -99,5 +99,14 @@ public interface VisualLexicon {
 	 * @return Collection of visual properties for the type.
 	 */
 	Collection<VisualProperty<?>> getAllDescendants(final VisualProperty<?> prop);
+	
+	
+	/**
+	 * Test the given Visual Property is supported in this Lexicon.
+	 * 
+	 * @param vp visual property to be tested.
+	 * @return true if this lexicon supports the given vp.
+	 */
+	boolean isSupported(final VisualProperty<?> vp);
 		
 }
