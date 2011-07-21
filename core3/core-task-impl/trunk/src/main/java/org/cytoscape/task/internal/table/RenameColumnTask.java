@@ -35,18 +35,24 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.TunableValidator.ValidationState;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 public final class RenameColumnTask extends AbstractTableColumnTask implements TunableValidator {
+	private final UndoSupport undoSupport;
+
 	@Tunable(description="New column name:")
 	public String newColumnName;
 
-	RenameColumnTask(final CyColumn column) {
+	RenameColumnTask(final UndoSupport undoSupport, final CyColumn column) {
 		super(column);
+		this.undoSupport = undoSupport;
 	}
 
 	@Override
 	public void run(final TaskMonitor taskMonitor) throws Exception {
+		undoSupport.getUndoableEditSupport().postEdit(new RenameColumnEdit(column));
+
 		column.setName(newColumnName);
 	}
 

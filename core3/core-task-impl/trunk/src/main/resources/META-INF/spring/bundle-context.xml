@@ -345,6 +345,7 @@
 
 	<bean id="renameColumnTaskFactory"
 		class="org.cytoscape.task.internal.table.RenameColumnTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 	</bean>
 
 	<bean id="copyValueToEntireColumnTaskFactory"
