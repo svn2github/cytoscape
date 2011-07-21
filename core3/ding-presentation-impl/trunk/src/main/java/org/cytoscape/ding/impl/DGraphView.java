@@ -1940,15 +1940,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		return false;
 	}
 
-	// Auxillary methods specific to this GraphView implementation:
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param x
-	 *            DOCUMENT ME!
-	 * @param y
-	 *            DOCUMENT ME!
-	 */
+	// Auxiliary methods specific to this GraphView implementation:
+	
 	public void setCenter(double x, double y) {
 		synchronized (m_lock) {
 			m_networkCanvas.m_xCenter = x;
@@ -1959,19 +1952,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			this.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_X_LOCATION, m_networkCanvas.m_xCenter);
 			this.cyNetworkView.setVisualProperty(MinimalVisualLexicon.NETWORK_CENTER_Y_LOCATION, m_networkCanvas.m_yCenter);
 		}
-
-		// updateView();
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
+	
 	public Point2D getCenter() {
 		synchronized (m_lock) {
-			return new Point2D.Double(m_networkCanvas.m_xCenter,
-					m_networkCanvas.m_yCenter);
+			return new Point2D.Double(m_networkCanvas.m_xCenter, m_networkCanvas.m_yCenter);
 		}
 	}
 
@@ -2751,8 +2737,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			return;
 	
 		for ( ViewChangeRecord<CyNetwork> record : e.getPayloadCollection() ) {
-			View<CyNetwork> target = record.getView();
-			VisualProperty<?> vp = record.getVisualProperty();
+			final VisualProperty<?> vp = record.getVisualProperty();
 			Object value = record.getValue();
 			
 			if (value == null) 
@@ -2773,9 +2758,13 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			} else if (vp == MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT) {
 				setBackgroundPaint((Paint) value);
 			} else if (vp == MinimalVisualLexicon.NETWORK_CENTER_X_LOCATION) {
-				setCenter(((Double) value).doubleValue(), m_networkCanvas.m_yCenter);
+				final double x = (Double) value;
+				if(x != m_networkCanvas.m_xCenter)
+					setCenter(x, m_networkCanvas.m_yCenter);
 			} else if (vp == MinimalVisualLexicon.NETWORK_CENTER_Y_LOCATION) {
-				setCenter(m_networkCanvas.m_xCenter, ((Double) value).doubleValue());
+				final double y = (Double) value;
+				if(y != m_networkCanvas.m_yCenter)
+					setCenter(m_networkCanvas.m_xCenter, y);
 			} else if (vp == MinimalVisualLexicon.NETWORK_SCALE_FACTOR) {
 				setZoom(((Double) value).doubleValue());
 			}
