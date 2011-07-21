@@ -5,7 +5,7 @@ import org.cytoscape.model.CyColumn;
 import org.cytoscape.util.swing.CyAbstractEdit;
 
 
-/** An undoable edit that will undo and redo the zooming of a network view. */
+/** An undoable edit that will undo and redo the renaming of a column. */
 final class RenameColumnEdit extends CyAbstractEdit {
 	private final CyColumn column;
 	private String oldName;
