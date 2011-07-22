@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<properties>
-						<bundle.symbolicName>cytoscape.genomespace-plugin-cytoscape3</bundle.symbolicName>
+		<bundle.symbolicName>cytoscape.genomespace-plugin-cytoscape3</bundle.symbolicName>
 		<bundle.namespace>cytoscape</bundle.namespace>
 	</properties>
 
@@ -13,16 +13,12 @@
 	<packaging>bundle</packaging>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
 		<!-- Cytoscape requires Java 1.6 -->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -38,6 +34,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.7.1</version>
 				<configuration>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
 				</configuration>
@@ -48,29 +45,6 @@
 				<version>1.5</version>
 				<extensions>true</extensions>
 			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2-beta-5</version>
-				<configuration>
-					<archive>
-						<manifestEntries>
-							<Cytoscape-Plugin>cytoscape.genomespace.GenomeSpacePlugin</Cytoscape-Plugin>
-						</manifestEntries>
-					</archive>
-					<descriptors>
-						<descriptor>src/main/assembly/src.xml</descriptor>
-					</descriptors>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-				    			<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<!-- Generates the OSGi metadata based on the osgi.bnd file. -->
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -78,9 +52,8 @@
 				<version>2.3.4</version>
 				<configuration>
 					<instructions>
-												<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-						<Bundle-Version>${pom.version}</Bundle-Version>
-												<_include>-osgi.bnd</_include>
+						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+						<Bundle-Version>${project.version}</Bundle-Version>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -147,11 +120,6 @@
 		</dependency>
 
 		<!-- dependencies specifically for unit testing -->
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-json</artifactId>
-			<version>1.5-ea09</version>
-		</dependency>
 		<dependency>
 			<groupId>org.genomespace</groupId>
 			<artifactId>clientdevelopmentkit</artifactId>
