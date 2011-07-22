@@ -4,17 +4,71 @@
  *
  * Google Summer of Code 2011
  */
- 
- 
+
+
 /**
  * Network visualization instance.
  * Represents an instance of the network visualization.
  */
-function Visualization(containerId) {
+function Visualization(container, height, width) {
 
-	this._width = 640;
-	this._height = 480;
-	this._canvas = Raphael(containerId, 640, 480);
+	this._width = height;
+	this._height = width;
+	//this._canvas = Raphael(containerId, 640, 480);
+	
+	// -------- SVG --------
+	this._containerElem = typeof container == "string" ? document.getElementById(container) : container;
+	this._svgNamespace = "http://www.w3.org/2000/svg";
+	
+	this._createSvgElement = function(tag, parent, attributes) {
+		attributes = attributes || {};
+		var elem = document.createElementNS(this._svgNamespace, tag);
+		this._setElementAttributes(elem, attributes);
+		if (parent) parent.appendChild(elem);
+		return elem;
+	};
+	
+	this._setElementAttributes = function(elem, attributeMap) {
+		for (var attribute in attributeMap) {
+			elem.setAttribute(attribute, attributeMap[attribute]);
+		}
+	};
+	
+	this._svgElem = this._createSvgElement("svg", this._containerElem, {
+		"xmlns": this._svgNamespace,
+		"version": "1.1",
+		"height": height,
+		"width": width
+	});
+	
+	this._svgEdgeGroup = this._createSvgElement("g", this._svgElem);
+	this._svgNodeGroup = this._createSvgElement("g", this._svgElem);	
+	this._svgLabelGroup = this._createSvgElement("g", this._svgElem);
+	
+	this._createNodeGroup = function() {
+		
+	}
+	
+	this._createLabelElement = function () {
+		return this._createSvgElement("text", this._svgLabelGroup);
+	};
+	
+	this._createEdgePathElement = function() {
+		return this._createSvgElement("path", this._svgEdgeGroup);
+	}
+	
+	this._createNodePathElement = function() {
+		return this._createSvgElement("path", this._svgNodeGroup);
+	}
+	
+	this._removeNodePathElement = function(elem) {
+		this._svgNodeGroup.removeChild(elem);
+	}
+	
+	this._removeEdgePathElement = function(elem) {
+		this._svgEdgeGroup.removeChild(elem);
+	}
+	// --------
 
 	this._edges = {};
 	this._nodes = {};
@@ -65,8 +119,8 @@ function Visualization(containerId) {
 		}
 	};
 	
-	this._bg = this._canvas.rect(0, 0, this._width, this._height).attr({"fill": this._style.global.backgroundColor, "stroke": "none", "cursor": "move"});
-	this._bg.drag(Util.delegate(this, "_dragMove"), Util.delegate(this, "_dragStart"));
+	//this._bg = this._canvas.rect(0, 0, this._width, this._height).attr({"fill": this._style.global.backgroundColor, "stroke": "none", "cursor": "move"});
+	//this._bg.drag(Util.delegate(this, "_dragMove"), Util.delegate(this, "_dragStart"));
 
 	this.deselect = function () {
 		
@@ -259,35 +313,12 @@ function Visualization(containerId) {
 			this._edges[edgeId]._draw();
 		}
 		
-		this._bg.attr("fill", this._style.global.backgroundColor).toBack();
+		//this._bg.attr("fill", this._style.global.backgroundColor).toBack();
 
-		this._canvas.safari();
 		return this;
 	};
 
-	/**
-	 * Get all the edges from the network.
-	 * @return {array} List of edges.
-	 */
-	this.getEdges = function() {
-		var result = [];
-		for (var id in this._edges) {
-			result.push(this._edges[id]);
-		}
-		return result;
-	};
-
-	/**
-	 * Get all the nodes from the network.
-	 * @return {array} List of nodes.
-	 */
-	this.getEdges = function() {
-		var result = [];
-		for (var id in this._nodes) {
-			result.push(this._nodes[id]);
-		}
-		return result;
-	}
+	
 
 	/**
 	 * Create a new node and add it to the network view.
@@ -466,7 +497,6 @@ var Element = function() {
 			this._draw();
 		}
 	}
-	
 
 	this.setStyle = function(property, value) {
 		if (property in this._visualization._style[this._group]) {
@@ -798,13 +828,15 @@ var Node = function(vis) {
 
 	this._draw = function() {
 		if (this._elem == null) {
-				this._elem = this._visualization._canvas.path("")
-					.attr({"cursor":"pointer"})
-					.hover(Util.delegate(this, "_hoverStart"), Util.delegate(this, "_hoverEnd"))
-					.drag(Util.delegate(this, "_dragMove"), Util.delegate(this, "_dragStart"), Util.delegate(this, "_dragEnd"))
-					.click(Util.delegate(this, "_onClick"));
+			this._elem = this._visualization._createNodePathElement();
+			this._dirty = true;
+					//.attr({"cursor":"pointer"})
+					//hover(Util.delegate(this, "_hoverStart"), Util.delegate(this, "_hoverEnd"))
+					//.drag(Util.delegate(this, "_dragMove"), Util.delegate(this, "_dragStart"), Util.delegate(this, "_dragEnd"))
+					//.click(Util.delegate(this, "_onClick"));
 		}
 		
+		/*
 		var label = this.getLabel();
 		if (label) {
 			var labelSize = this.getRenderedStyle("labelSize");
@@ -818,10 +850,11 @@ var Node = function(vis) {
 					"font-size": this.getRenderedStyle("labelSize"),
 					"fill": this.getRenderedStyle("labelColor"),
 					"x": this._x + this._visualization._offsetX,
-					"y": this._y + this._visualization._offsetY,
+					"y": this._y + this._visualization._offsetY
 				}).toFront();
 			}
 		}
+		*/
 		
 		
 		var attrMap = {
@@ -833,7 +866,9 @@ var Node = function(vis) {
 
 		var attrList = ["fill", "stroke", "stroke-width", "opacity"];
 
-		var attr = {"path": this._getPath()};
+		var attr = {
+			"d": this._getPath()
+		};
 
 		for (var attrName in attrMap) {
 			attr[attrName] =  this.getRenderedStyle(attrMap[attrName]);
@@ -843,7 +878,7 @@ var Node = function(vis) {
 			this._edges[i]._draw();
 		}
 
-		this._elem.attr(attr);
+		this._visualization._setElementAttributes(this._elem, attr);
 
 	};
 	
@@ -864,8 +899,12 @@ var Node = function(vis) {
 
 	
 	this.remove = function() {
-		if (this._elem) this._elem.remove();
-		if (this._elemLabel) this._elemLabel.remove();
+		if (this._elem) {
+			this._visualization._removeNodePathElement(this._elem);
+			
+		}
+		//if (this._elemLabel) this._elemLabel.remove();
+		
 	}
 }
 Node.prototype = new Element();
@@ -898,7 +937,9 @@ var Edge = function(vis) {
 	this._style = {};
 	
 	this.remove = function() {
-		if (this._elem) this._elem.remove();
+		if (this._elem) {
+			this._visualization._removeEdgePathElement(this._elem);
+		}
 		this._source = null;
 		this._target = null;
 	};
@@ -917,7 +958,8 @@ var Edge = function(vis) {
 
 		if (this._source == null || this._target == null) throw "Invalid edge members";
 		if (this._elem == null) {
-				this._elem = this._visualization._canvas.path(this._getSvgPath()).toBack().click(Util.delegate(this, "_onClick")).attr("cursor", "pointer");
+				this._elem = this._visualization._createEdgePathElement();
+				//this._elem = this._visualization._canvas.path(this._getSvgPath()).toBack().click(Util.delegate(this, "_onClick")).attr("cursor", "pointer");
 		}
 		
 		var dashArray = {
@@ -927,17 +969,21 @@ var Edge = function(vis) {
 			"LONG_DASH": "--"
 		}[this.getRenderedStyle("style")];
 
-
+		var paths = this._getSvgPath();
+		
 		var attr = {
 			// Update position
-			"path": this._getSvgPath(),
+			"d": paths[0],
 			"stroke-dasharray" : dashArray,
+			"fill": "none"
 		};
+		// TODO: render paths[1] and paths[2], which are the arrows.
 		
 
 		var attrMap = {
 			"stroke": "color",
-			//"fill": "color",
+			//"fill": "color", // this is not applicable for curved paths
+			
 		
 			"stroke-width": "width",
 			"stroke-opacity": "opacity"
@@ -950,8 +996,8 @@ var Edge = function(vis) {
 			attr[attrName] =  this.getRenderedStyle(attrMap[attrName]);
 		}
 
-		
-		this._elem.attr(attr);
+		this._visualization._setElementAttributes(this._elem, attr);
+		//this._elem.attr(attr);
 	};
 	
 	this._onClick = function() {
@@ -998,10 +1044,11 @@ var Edge = function(vis) {
 				var nbx = b.x - dx * br;
 				var nby = b.y - dy * br;
 	
-				var path = populateString("M %,% L %,%", [nax, nay, nbx, nby]);
+				var path = [];
+				path.push(populateString("M %,% L %,%", [nax, nay, nbx, nby]));
 	
-				if (this.getRenderedStyle("forwardArrowShape") == "DELTA") path += " " + Shapes.buildArrow(nax, nay, 6, 10, Math.atan2(-dy, -dx), 1);
-				if (this.getRenderedStyle("backwardArrowShape") == "DELTA") path += " " + Shapes.buildArrow(nbx, nby, 6, 10, Math.atan2(dy, dx), 1);
+				if (this.getRenderedStyle("forwardArrowShape") == "DELTA") path.push(Shapes.buildArrow(nax, nay, 6, 10, Math.atan2(-dy, -dx), 1));
+				if (this.getRenderedStyle("backwardArrowShape") == "DELTA") path.push(Shapes.buildArrow(nbx, nby, 6, 10, Math.atan2(dy, dx), 1));
 				return path
 	};
 	
@@ -1057,10 +1104,11 @@ var Edge = function(vis) {
 				var bpy = b.y + bcy;
 				
 
-				var path = populateString("M %,% Q %,% %,%", [apx, apy, cx, cy, bpx, bpy]);
+				var path = [];
+				path.push(populateString("M %,% Q %,% %,%", [apx, apy, cx, cy, bpx, bpy]));
 				
-				if (this.getRenderedStyle("forwardArrowShape") == "DELTA") path += " " + Shapes.buildArrow(apx, apy, 6, 10, Math.atan2(-acy, -acx), 1);
-				if (this.getRenderedStyle("backwardArrowShape") == "DELTA") path += " " + Shapes.buildArrow(bpx, bpy, 6, 10, Math.atan2(-bcy, -bcx), 1);
+				if (this.getRenderedStyle("forwardArrowShape") == "DELTA") path.push(Shapes.buildArrow(apx, apy, 6, 10, Math.atan2(-acy, -acx), 1));
+				if (this.getRenderedStyle("backwardArrowShape") == "DELTA") path.push(Shapes.buildArrow(bpx, bpy, 6, 10, Math.atan2(-bcy, -bcx), 1));
 				
 				return path;
 			

@@ -28,19 +28,46 @@
 					
 				}
 			}
-				
-			function drawCircle(x, y, size) {
-				paper.circle(x, y, size)
-				.attr({fill: "#666", "stroke-width": 4, "stroke-color": "#000"});
-				
+			
+			function draw2() {
+				var e = drawCircle(100, 100, 10);
+				for (var i = 0; i < 1000; i++) {
+					
+						var x = Math.floor(Math.random()*600);
+						var y = Math.floor(Math.random()*600);
+						var size = Math.floor(Math.random()*10)+10;
+						changeCircle(e, x, y, size);
+						
+					}
 			}
 				
+			function drawCircle(x, y, size) {
+				return paper.circle(x, y, size)
+				.attr({
+					"fill": "#666",
+					"stroke": "#000",
+					"stroke-width": 4
+				});	
+			}
+				
+			function changeCircle(e, x, y, size) {
+				e.attr({
+					"cx": x,
+					"cy": y,
+					"r": size,
+					"fill": "#666",
+					"stroke": "#000",
+					"stroke-width": 4
+				});
+			}
 				
 
 		</script>
 	</head>
 	<body>
-		<div id="container-div"></div>
 		<button onclick="draw()">Draw</button>
+		<button onclick="draw2()">Draw2</button>
+
+		<div id="container-div"></div>
 	</body>
 </html>

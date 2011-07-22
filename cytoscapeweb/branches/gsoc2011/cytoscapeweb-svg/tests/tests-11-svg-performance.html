@@ -12,16 +12,24 @@
 		
 		<script type="text/javascript">
 
-			var svgElem;
+			var svgElem, g, e;
 			window.onload = function() {
 				
-				 svgElem = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+				svgElem = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 				svgElem.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 				svgElem.setAttribute("version", "1.1");
 				svgElem.setAttribute("width", "600");
 				svgElem.setAttribute("height", "600");
-				svgElem.appendChild(document.createElementNS("http://www.w3.org/2000/svg", "desc"));
+				//svgElem.appendChild(document.createElementNS("http://www.w3.org/2000/svg", "desc"));
 				document.getElementById("container-div").appendChild(svgElem);
+				
+				g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+				svgElem.appendChild(g);
+				svgElem.addEventListener("click", function(event) {
+				
+					console.log(event.clientX - svgElem.offsetTopX);
+				}, false);
+			
 			}
 			
 			function draw() {
@@ -30,30 +38,66 @@
 					var x = Math.floor(Math.random()*600);
 					var y = Math.floor(Math.random()*600);
 					var size = Math.floor(Math.random()*10)+10;
-					drawCircle(x, y, size);
+					drawCircle(g, x, y, size);
+				}
+			}
+			
+			function draw2() {
+				e = drawCircle(g, 100, 100, 10);
+				
+				for (var i = 0; i < 1000; i++) {
+				
+					var x = Math.floor(Math.random()*600);
+					var y = Math.floor(Math.random()*600);
+					var size = Math.floor(Math.random()*10)+10;
+					changeCircle(e, x, y, size);
 				}
 			}
 				
-			function drawCircle(x, y, size) {
+			function drawCircle(parent, x, y, size) {
 				var circleElem = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-				document.createElement
-				circleElem.setAttribute("cx", x);
-				circleElem.setAttribute("cy", y);
-				circleElem.setAttribute("r", size);
-				circleElem.setAttribute("fill", "#666");
-				circleElem.setAttribute("stroke", "#000");
-				circleElem.setAttribute("stroke-width", 4);
-				svgElem.appendChild(circleElem);
 				
+				setAttributes(circleElem, {
+					"cx": x,
+					"cy": y,
+					"r": size,
+					"fill": "#666",
+					"stroke": "#000",
+					"stroke-width": 4
+				});
+				
+		
+				parent.appendChild(circleElem);
+				return circleElem;
 				
 			}
+			
+			function changeCircle(e, x, y, size) {
+				setAttributes(e, {
+					"cx": x,
+					"cy": y,
+					"r": size,
+					"fill": "#666",
+					"stroke": "#000",
+					"stroke-width": 4
+				});
+			}
+			
+			function setAttributes(elem, attributeMap) {
+				for (var attribute in attributeMap) {
+					elem.setAttribute(attribute, attributeMap[attribute])
+			}
+}
+
 				
 				
 
 		</script>
 	</head>
 	<body>
-		<div id="container-div"></div>
 		<button onclick="draw()">Draw</button>
+		<button onclick="draw2()">Draw2</button>
+
+		<div id="container-div"></div>
 	</body>
 </html>

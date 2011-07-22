@@ -10,8 +10,9 @@
 				margin: 30px auto;
 			}
 		</style>
-		<script type="text/javascript" src="raphael-1.5.2.js"></script>
 		<script type="text/javascript" src="cytoscapeweb-svg.js"></script>
+		<script type="text/javascript" src="jquery-1.6.2.js"></script>
+		<script type="text/javascript" src="arbor.js"></script>
 		<script type="text/javascript">
 		
 			var graphs = {};
@@ -169,15 +170,38 @@
 			
 			var vis;
 			window.onload = function() {
-				vis = new Visualization("container-div");
+				vis = new Visualization("container-div", 640, 640);
 				load("simpleGraph");
 				setstyle("basicStyle");
 			}
-			
+			var ps;
 			function load(graph) {
 				vis.loadGraph(graphs[graph]);
-				var nodes = vis.getNodes();
 				
+				if (ps) {
+					ps.renderer.delete();
+					ps.stop();
+					ps = null;
+				}
+				ps = arbor.ParticleSystem(800, 600, 0.5);
+				ps.parameters({gravity: true});
+				ps.renderer = new Renderer(vis);
+				
+				var nodes = vis.getNodes();
+				for (var i = 0; i < nodes.length; i++) {
+					ps.addNode(nodes[i]._id); 
+				}
+				
+				var edges = vis.getEdges();
+				
+				for (var i = 0; i < edges.length; i++) {
+					
+					ps.addEdge(edges[i]._source._id,
+					 edges[i]._target._id); 
+				}
+				
+				
+				/*
 				var clickEvent = function() {
 					alert("Clicked node '" + this._id + "' at " + this._x + ", " + this._y);
 				}
@@ -185,6 +209,7 @@
 				for (var i = 0; i < nodes.length; i++) {
 					nodes[i].addListener("click", clickEvent);
 				}
+				*/
 				vis.draw();
 			}
 			
@@ -193,6 +218,29 @@
 				vis.draw();
 			}
 
+			function Renderer(vis) {
+				this.vis = vis;
+				
+				this.init = function(ps) {
+					this.ps = ps;
+					ps.screenSize(320, 320);
+					ps.screenPadding(10);
+				}
+				
+				this.redraw = function() {
+					this.ps.eachNode(function(node, pt) {
+						vis.getNode(node.name).setPosition(pt.x, pt.y);
+					});
+				}
+				
+				this.delete = function() {
+					this.vis = null;
+					this.ps = null;
+				}
+			}
+
+
+			
 			
 				
 
