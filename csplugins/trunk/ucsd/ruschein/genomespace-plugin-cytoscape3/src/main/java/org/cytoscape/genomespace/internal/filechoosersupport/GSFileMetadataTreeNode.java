@@ -1,4 +1,4 @@
-package cytoscape.genomespace.filechoosersupport;
+package org.cytoscape.genomespace.internal.filechoosersupport;
 
 
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package cytoscape.genomespace;
+package org.cytoscape.genomespace.internal;
 
 
 import java.awt.BorderLayout;

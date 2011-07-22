@@ -1,4 +1,4 @@
-package cytoscape.genomespace;
+package org.cytoscape.genomespace.internal;
 
 
 import java.awt.BorderLayout;
@@ -17,8 +17,8 @@ import javax.swing.JScrollPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
-import cytoscape.genomespace.filechoosersupport.GenomeSpaceTree;
-import cytoscape.genomespace.filechoosersupport.GSFileMetadataTreeNode;
+import org.cytoscape.genomespace.internal.filechoosersupport.GenomeSpaceTree;
+import org.cytoscape.genomespace.internal.filechoosersupport.GSFileMetadataTreeNode;
 
 import org.genomespace.client.DataManagerClient;
 import org.genomespace.datamanager.core.GSFileMetadata;

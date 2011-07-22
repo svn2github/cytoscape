@@ -1,8 +1,8 @@
-package cytoscape.genomespace;
+package org.cytoscape.genomespace.internal;
 
 
 import cytoscape.Cytoscape;
-import cytoscape.genomespace.filechoosersupport.GenomeSpaceTree;
+import org.cytoscape.genomespace.internal.filechoosersupport.GenomeSpaceTree;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 import cytoscape.logger.CyLogger;
