@@ -1,13 +1,11 @@
 package org.cytoscape.genomespace.internal;
 
 
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.readers.CyAttributesReader;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.cytoscape.application.swing.AbstractCyAction;
-
-import edu.ucsd.bioeng.coreplugin.tableImport.ui.ImportTextTableDialog;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -26,11 +24,15 @@ import org.genomespace.datamanager.core.GSFileMetadata;
 
 public class LoadOntologyAndAnnotationFromGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 7571788473486759L;
-	private static final CyLogger logger = CyLogger.getLogger(LoadOntologyAndAnnotationFromGenomeSpace.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoadOntologyAndAnnotationFromGenomeSpace.class);
+	private final CySwingApplication app;
 
-	public LoadOntologyAndAnnotationFromGenomeSpace() {
-		super("Load Ontology and Annotations...",
-		      new ImageIcon(LoadAttrsFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
+	public LoadOntologyAndAnnotationFromGenomeSpace(CyApplicationManager appMgr, CySwingApplication app) {
+		super("Load Ontology and Annotations...",appMgr);
+		this.app = app;
+
+		// TODO
+//		      new ImageIcon(LoadAttrsFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
@@ -47,7 +49,7 @@ public class LoadOntologyAndAnnotationFromGenomeSpace extends AbstractCyAction {
 			// Select the GenomeSpace file:
 			final List<String> acceptableExtensions = new ArrayList<String>();
 			final GSFileBrowserDialog browserDialog =
-				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
+				new GSFileBrowserDialog(app.getJFrame(), dataManagerClient,
 							acceptableExtensions,
 							GSFileBrowserDialog.DialogType.FILE_SELECTION_DIALOG);
 			final GSFileMetadata fileMetadata = browserDialog.getSelectedFileMetadata();
@@ -57,17 +59,18 @@ public class LoadOntologyAndAnnotationFromGenomeSpace extends AbstractCyAction {
 			// Download the GenomeSpace file:
 			tempFile = File.createTempFile("temp", "ont");
 			dataManagerClient.downloadFile(fileMetadata, tempFile, true);
-
+/* TODO
 			final ImportTextTableDialog dialog =
-				new ImportTextTableDialog(Cytoscape.getDesktop(), tempFile,
+				new ImportTextTableDialog(app.getJFrame(), tempFile,
 							  fileMetadata.getName(),
 							  ImportTextTableDialog.ONTOLOGY_AND_ANNOTATION_IMPORT);
 			dialog.pack();
-			dialog.setLocationRelativeTo(Cytoscape.getDesktop());
+			dialog.setLocationRelativeTo(app.getJFrame());
 			dialog.setVisible(true);
+			*/
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed", ex);
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+			JOptionPane.showMessageDialog(app.getJFrame(),
 						      ex.getMessage(), "GenomeSpace Error",
 						      JOptionPane.ERROR_MESSAGE);
 		} finally {

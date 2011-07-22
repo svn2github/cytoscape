@@ -1,14 +1,12 @@
 package org.cytoscape.genomespace.internal;
 
 
-import cytoscape.Cytoscape;
-import cytoscape.data.readers.GraphReader;
-import cytoscape.data.readers.GMLReader;
-import cytoscape.data.readers.InteractionsReader;
-import cytoscape.data.readers.XGMMLReader;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.cytoscape.application.swing.AbstractCyAction;
-import cytoscape.util.FileUtil;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -26,11 +24,15 @@ import org.genomespace.datamanager.core.GSFileMetadata;
 
 public class LoadNetworkFromGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 7577788473487659L;
-	private static final CyLogger logger = CyLogger.getLogger(LoadNetworkFromGenomeSpace.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoadNetworkFromGenomeSpace.class);
+	private final CySwingApplication app;
 
-	public LoadNetworkFromGenomeSpace() {
-		super("Load Network...",
-		      new ImageIcon(LoadNetworkFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
+	public LoadNetworkFromGenomeSpace(CyApplicationManager appMgr, CySwingApplication app) {
+		super("Load Network...", appMgr);
+		this.app = app;
+
+		// TODO
+//		      new ImageIcon(LoadNetworkFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
@@ -50,7 +52,7 @@ public class LoadNetworkFromGenomeSpace extends AbstractCyAction {
 			acceptableExtensions.add("xgmml");
 			acceptableExtensions.add("gml");
 			final GSFileBrowserDialog dialog =
-				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
+				new GSFileBrowserDialog(app.getJFrame(), dataManagerClient,
 							acceptableExtensions,
 							GSFileBrowserDialog.DialogType.FILE_SELECTION_DIALOG);
 			final GSFileMetadata fileMetadata = dialog.getSelectedFileMetadata();
@@ -62,6 +64,7 @@ public class LoadNetworkFromGenomeSpace extends AbstractCyAction {
 			dataManagerClient.downloadFile(fileMetadata, tempFile, true);
 
 			// Select the type of network reader:
+			/* TODO
 			final String origFileName = fileMetadata.getName();
 			final String extension = getExtension(origFileName);
 			final GraphReader reader;
@@ -72,11 +75,12 @@ public class LoadNetworkFromGenomeSpace extends AbstractCyAction {
 			else
 				reader = new XGMMLReader(tempFile.getPath());
 
-			Cytoscape.createNetwork(reader, /* create_view */ true, /* parent = */ null)
+			Cytoscape.createNetwork(reader, true, null)
 				.setTitle(getNetworkTitle(origFileName));
+				*/
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed", ex);
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+			JOptionPane.showMessageDialog(app.getJFrame(),
 						      ex.getMessage(), "GenomeSpace Error",
 						      JOptionPane.ERROR_MESSAGE);
 		} finally {

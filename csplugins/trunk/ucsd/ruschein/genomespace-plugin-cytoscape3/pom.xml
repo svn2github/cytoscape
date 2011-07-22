@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<properties>
-		<bundle.symbolicName>cytoscape.genomespace-plugin-cytoscape3</bundle.symbolicName>
-		<bundle.namespace>cytoscape</bundle.namespace>
+		<bundle.symbolicName>GenomeSpace-Plugin</bundle.symbolicName>
+		<bundle.namespace>org.cytoscape.genomespace</bundle.namespace>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -54,6 +54,7 @@
 					<instructions>
 						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
+						<Private-Package>${bundle.namespace}.*</Private-Package>
 					</instructions>
 				</configuration>
 			</plugin>

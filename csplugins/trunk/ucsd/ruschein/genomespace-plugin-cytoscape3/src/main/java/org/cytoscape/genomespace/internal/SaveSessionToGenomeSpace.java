@@ -1,15 +1,10 @@
 package org.cytoscape.genomespace.internal;
 
-
-import cytoscape.Cytoscape;
-import cytoscape.data.writers.CytoscapeSessionWriter;
 import org.slf4j.Logger;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
+import org.slf4j.LoggerFactory;
 import org.cytoscape.application.swing.AbstractCyAction;
-import cytoscape.util.FileUtil;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
 
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -34,12 +29,16 @@ import org.genomespace.client.User;
  */
 public class SaveSessionToGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 9988760123456789L;
-	private static final CyLogger logger = CyLogger.getLogger(UploadFileToGenomeSpace.class);
+	private static final Logger logger = LoggerFactory.getLogger(UploadFileToGenomeSpace.class);
+	private final CySwingApplication app;
 
-	public SaveSessionToGenomeSpace() {
+	public SaveSessionToGenomeSpace(CyApplicationManager appMgr, CySwingApplication app) {
 		// Give your action a name here
-		super("Save Session As",
-		      new ImageIcon(SaveSessionToGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
+		super("Save Session As",appMgr);
+		this.app = app;
+
+		// TODO
+		// new ImageIcon(SaveSessionToGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
@@ -55,7 +54,7 @@ public class SaveSessionToGenomeSpace extends AbstractCyAction {
 			final List<String> acceptableExtensions = new ArrayList<String>();
 			acceptableExtensions.add("cys");
 			final GSFileBrowserDialog dialog =
-				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
+				new GSFileBrowserDialog(app.getJFrame(), dataManagerClient,
 							acceptableExtensions,
 							GSFileBrowserDialog.DialogType.SAVE_AS_DIALOG);
 			String saveFileName = dialog.getSaveFileName();
@@ -68,6 +67,7 @@ public class SaveSessionToGenomeSpace extends AbstractCyAction {
 
 			// Create Task
 			final File tempFile = File.createTempFile("temp", "cysession");
+			/* TODO
 			final Task task = new SaveSessionTask(tempFile.getPath(), saveFileName,
 							      dataManagerClient);
 
@@ -75,16 +75,17 @@ public class SaveSessionToGenomeSpace extends AbstractCyAction {
 			JTaskConfig jTaskConfig = new JTaskConfig();
 
 			jTaskConfig.displayCancelButton(false);
-			jTaskConfig.setOwner(Cytoscape.getDesktop());
+			jTaskConfig.setOwner(app.getJFrame());
 			jTaskConfig.displayCloseButton(true);
 			jTaskConfig.displayStatus(true);
 			jTaskConfig.setAutoDispose(true);
 
 			// Execute Task in New Thread; pop open JTask Dialog Box.
 			TaskManager.executeTask(task, jTaskConfig);
+			*/
 		} catch (final Exception ex) {
 			logger.error("GenomeSpace failed", ex);
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+			JOptionPane.showMessageDialog(app.getJFrame(),
 						      ex.getMessage(), "GenomeSpace Error",
 						      JOptionPane.ERROR_MESSAGE);
 		}
@@ -104,7 +105,6 @@ public class SaveSessionToGenomeSpace extends AbstractCyAction {
  *
  * @author kono
  *
- */
 class SaveSessionTask implements Task {
 	private final String localFileName;
 	private final String uploadPath;
@@ -112,12 +112,6 @@ class SaveSessionTask implements Task {
 	private final CytoscapeSessionWriter sw;
 	private TaskMonitor taskMonitor;
 
-	/**
-	 * Constructor.<br>
-	 *
-	 * @param localFileName  Absolute path to the Session file.
-	 * @param uploadPath     The path in the GenomeSpace S3 file system
-	 */
 	SaveSessionTask(final String localFileName, final String uploadPath,
 			final DataManagerClient dataManagerClient)
 	{
@@ -127,9 +121,6 @@ class SaveSessionTask implements Task {
 		sw = new CytoscapeSessionWriter(localFileName);
 	}
 
-	/**
-	 * Execute task.<br>
-	 */
 	public void run() {
 		taskMonitor.setStatus("Saving Cytoscape Session.\n\nIt may take a while.  Please wait...");
 		taskMonitor.setPercentCompleted(-1);
@@ -159,28 +150,14 @@ class SaveSessionTask implements Task {
 		Cytoscape.getDesktop().setTitle("Cytoscape Desktop (Session: " + shortName + ")");
 	}
 
-	/**
-	 * Halts the Task: Not Currently Implemented.
-	 */
 	public void halt() {
 		// Task can not currently be halted.
 	}
 
-	/**
-	 * Sets the Task Monitor.
-	 *
-	 * @param taskMonitor
-	 *            TaskMonitor Object.
-	 */
 	public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
 		this.taskMonitor = taskMonitor;
 	}
 
-	/**
-	 * Gets the Task Title.
-	 *
-	 * @return Task Title.
-	 */
 	public String getTitle() {
 		return "Saving Cytoscape Session";
 	}
@@ -198,3 +175,4 @@ class SaveSessionTask implements Task {
 		return lastSlashPos == -1 ? path : path.substring(lastSlashPos + 1);
 	}
 }
+ */

@@ -1,7 +1,6 @@
 package org.cytoscape.genomespace.internal;
 
 
-import cytoscape.Cytoscape;
 
 import java.awt.Dialog;
 import java.util.List;
@@ -54,13 +53,13 @@ final class GSUtils {
 				session.login(userName, password);
 				return true;
 			} catch (final AuthorizationException e) {
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+				JOptionPane.showMessageDialog(null,
 							      "Invalid user name or password!",
 							      "Login Error",
 							      JOptionPane.ERROR_MESSAGE);
 				continue;
 			} catch (final Exception e) {
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+				JOptionPane.showMessageDialog(null,
 							      e.getMessage(),
 							      "Login Error",
 							      JOptionPane.ERROR_MESSAGE);

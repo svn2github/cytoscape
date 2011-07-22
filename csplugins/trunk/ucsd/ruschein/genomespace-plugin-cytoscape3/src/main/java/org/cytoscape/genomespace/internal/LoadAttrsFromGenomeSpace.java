@@ -1,11 +1,11 @@
 package org.cytoscape.genomespace.internal;
 
 
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.readers.CyAttributesReader;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -23,11 +23,15 @@ import org.genomespace.datamanager.core.GSFileMetadata;
 
 public class LoadAttrsFromGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 7577788473487659L;
-	private static final CyLogger logger = CyLogger.getLogger(LoadNetworkFromGenomeSpace.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoadNetworkFromGenomeSpace.class);
+	private final CySwingApplication app;
 
-	public LoadAttrsFromGenomeSpace() {
-		super("Load Attributes...",
-		      new ImageIcon(LoadAttrsFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
+	public LoadAttrsFromGenomeSpace(CyApplicationManager appMgr, CySwingApplication app) {
+		super("Load Attributes...",appMgr);
+		this.app = app;
+
+		// TODO
+		 //     new ImageIcon(LoadAttrsFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
@@ -43,7 +47,7 @@ public class LoadAttrsFromGenomeSpace extends AbstractCyAction {
 
 			// Select the GenomeSpace file:
 			final AttrFileSelectionDialog dialog =
-				new AttrFileSelectionDialog(Cytoscape.getDesktop(),
+				new AttrFileSelectionDialog(app.getJFrame(),
 							    dataManagerClient);
 			final GSFileMetadata fileMetadata = dialog.getSelectedFileMetadata();
 			if (fileMetadata == null)
@@ -54,12 +58,15 @@ public class LoadAttrsFromGenomeSpace extends AbstractCyAction {
 			dataManagerClient.downloadFile(fileMetadata, tempFile, true);
 
 			final boolean useNodeAttrs = dialog.useNodeAttrs();
-			final CyAttributes attrs = useNodeAttrs ? Cytoscape.getNodeAttributes()
-			                                        : Cytoscape.getEdgeAttributes();
-			CyAttributesReader.loadAttributes(attrs, new FileReader(tempFile));
+			// TODO
+			// load an attr table
+			// get task factory injected?  
+//			final CyAttributes attrs = useNodeAttrs ? Cytoscape.getNodeAttributes()
+//			                                        : Cytoscape.getEdgeAttributes();
+//			CyAttributesReader.loadAttributes(attrs, new FileReader(tempFile));
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed", ex);
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+			JOptionPane.showMessageDialog(app.getJFrame(),
 						      ex.getMessage(), "GenomeSpace Error",
 						      JOptionPane.ERROR_MESSAGE);
 		} finally {

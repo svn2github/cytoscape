@@ -1,11 +1,12 @@
 package org.cytoscape.genomespace.internal;
 
 
-import cytoscape.Cytoscape;
 import org.cytoscape.genomespace.internal.filechoosersupport.GenomeSpaceTree;
 import org.cytoscape.application.swing.AbstractCyAction;
-import cytoscape.util.FileUtil;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -38,12 +39,15 @@ import org.genomespace.client.User;
  */
 public class ListFilesInGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 1234487711999989L;
-	private static final CyLogger logger = CyLogger.getLogger(ListFilesInGenomeSpace.class);
+	private static final Logger logger = LoggerFactory.getLogger(ListFilesInGenomeSpace.class);
+	private final CySwingApplication app;
 
-	public ListFilesInGenomeSpace() {
+	public ListFilesInGenomeSpace(CyApplicationManager appMgr, CySwingApplication app) {
 		// Give your action a name here
-		super("List Available Files in GenomeSpace",
-		      new ImageIcon(ListFilesInGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
+		super("List Available Files in GenomeSpace",appMgr);
+		this.app = app;
+		// TODO
+//		      new ImageIcon(ListFilesInGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
@@ -69,7 +73,7 @@ public class ListFilesInGenomeSpace extends AbstractCyAction {
 		scrollPane.setPreferredSize(new Dimension(350, 600));
 		JPanel jp = new JPanel();
 		jp.add(scrollPane);
-		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), jp);
+		JOptionPane.showMessageDialog(app.getJFrame(), jp);
 	}
 }
 

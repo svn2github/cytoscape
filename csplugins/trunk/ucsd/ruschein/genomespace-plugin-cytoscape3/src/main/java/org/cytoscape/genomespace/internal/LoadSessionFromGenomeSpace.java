@@ -1,17 +1,12 @@
 package org.cytoscape.genomespace.internal;
 
 
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.readers.CyAttributesReader;
-import cytoscape.data.readers.CytoscapeSessionReader;
-import cytoscape.data.readers.XGMMLException;
 import org.slf4j.Logger;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
+import org.slf4j.LoggerFactory;
+
 import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -33,11 +28,15 @@ import org.genomespace.datamanager.core.GSFileMetadata;
 
 public class LoadSessionFromGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 7577788473487659L;
-	static final CyLogger logger = CyLogger.getLogger(LoadNetworkFromGenomeSpace.class);
+	static final Logger logger = LoggerFactory.getLogger(LoadNetworkFromGenomeSpace.class);
+	private final CySwingApplication app;
 
-	public LoadSessionFromGenomeSpace() {
-		super("Load Session...",
-		      new ImageIcon(LoadSessionFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
+	public LoadSessionFromGenomeSpace(CyApplicationManager appMgr, CySwingApplication app) {
+		super("Load Session...",appMgr);
+		this.app = app;
+
+		// TODO
+//		      new ImageIcon(LoadSessionFromGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
@@ -47,7 +46,7 @@ public class LoadSessionFromGenomeSpace extends AbstractCyAction {
 
 	public void actionPerformed(ActionEvent e) {
 		try {
-			if (!destroyCurrentSession(Cytoscape.getDesktop()))
+			if (!destroyCurrentSession(app.getJFrame()))
 				return;
 
 			final GsSession client = GSUtils.getSession(); 
@@ -57,7 +56,7 @@ public class LoadSessionFromGenomeSpace extends AbstractCyAction {
 			final List<String> acceptableExtensions = new ArrayList<String>();
 			acceptableExtensions.add("cys");
 			final GSFileBrowserDialog dialog =
-				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
+				new GSFileBrowserDialog(app.getJFrame(), dataManagerClient,
 							acceptableExtensions,
 							GSFileBrowserDialog.DialogType.FILE_SELECTION_DIALOG);
 			final GSFileMetadata fileMetadata = dialog.getSelectedFileMetadata();
@@ -67,7 +66,7 @@ public class LoadSessionFromGenomeSpace extends AbstractCyAction {
 			// Download the GenomeSpace file:
 			final File tempFile = File.createTempFile("temp", "cysession");
 			dataManagerClient.downloadFile(fileMetadata, tempFile, true);
-
+/* TODO
 			// Close all networks in the workspace.
 			Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
 			Cytoscape.createNewSession();
@@ -79,7 +78,7 @@ public class LoadSessionFromGenomeSpace extends AbstractCyAction {
 
 			// Configure JTask Dialog Pop-Up Box
 			final JTaskConfig jTaskConfig = new JTaskConfig();
-			jTaskConfig.setOwner(Cytoscape.getDesktop());
+			jTaskConfig.setOwner(app.getJFrame());
 			jTaskConfig.displayCloseButton(true);
 			jTaskConfig.displayCancelButton(false);
 			jTaskConfig.displayStatus(true);
@@ -87,16 +86,17 @@ public class LoadSessionFromGenomeSpace extends AbstractCyAction {
 
 			// Execute Task in New Thread; pop open JTask Dialog Box.
 			TaskManager.executeTask(task, jTaskConfig);
+			*/
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed", ex);
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+			JOptionPane.showMessageDialog(app.getJFrame(),
 						      ex.getMessage(), "GenomeSpace Error",
 						      JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	private static boolean destroyCurrentSession(final Frame parent) {
-		final int currentNetworkCount = Cytoscape.getNetworkSet().size();
+		final int currentNetworkCount =  0; /// TODO netManager.getNetworkSet().size();
 		if (currentNetworkCount == 0)
 			return true;
 
@@ -108,7 +108,7 @@ public class LoadSessionFromGenomeSpace extends AbstractCyAction {
 		return result == JOptionPane.YES_OPTION;
 	}
 }
-
+/*
 
 class OpenSessionTask implements Task {
 	private final File localFile;
@@ -120,12 +120,6 @@ class OpenSessionTask implements Task {
 		this.origFileName = origFileName;
 	}
 
-	/**
-	 * Executes Task
-	 *
-	 * @throws
-	 * @throws Exception
-	 */
 	public void run() {
 		taskMonitor.setStatus("Opening Session File.\n\nIt may take a while.\nPlease wait...");
 		taskMonitor.setPercentCompleted(0);
@@ -155,7 +149,7 @@ class OpenSessionTask implements Task {
 								+ e.getMessage(), e);
 		} finally {
 			sr = null;
-			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
+			app.getJFrame().getVizMapperUI().initVizmapperGUI();
 			System.gc();
 		}
 
@@ -171,9 +165,6 @@ class OpenSessionTask implements Task {
 		localFile.delete();
 	}
 
-	/**
-	 * Halts the Task: Not Currently Implemented.
-	 */
 	public void halt() {
 		// Task can not currently be halted.
 		
@@ -182,22 +173,12 @@ class OpenSessionTask implements Task {
 		taskMonitor.setStatus("Failed!!!");
 	}
 
-	/**
-	 * Sets the Task Monitor.
-	 *
-	 * @param taskMonitor
-	 *            TaskMonitor Object.
-	 */
 	public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
 		this.taskMonitor = taskMonitor;
 	}
 
-	/**
-	 * Gets the Task Title.
-	 *
-	 * @return Task Title.
-	 */
 	public String getTitle() {
 		return "Opening Session File";
 	}
 }
+*/

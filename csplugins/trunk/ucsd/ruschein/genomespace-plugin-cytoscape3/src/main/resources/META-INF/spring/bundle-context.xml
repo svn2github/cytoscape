@@ -8,11 +8,76 @@
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-	<!-- Create an instance (bean) of the class -->
-	<bean id="menuAction" class="cytoscape.internal.MenuAction">
-		<!-- Inject an OSGi service as a constructor argument -->
+	<bean id="deleteFileInGenomeSpace" 
+		class="org.cytoscape.genomespace.internal.DeleteFileInGenomeSpace">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg  value="Hello World Plugin" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
+	<bean id="downloadFileFromGenomeSpace" 
+		class="org.cytoscape.genomespace.internal.DownloadFileFromGenomeSpace">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
+	<bean id="listFilesInGenomeSpace" 
+		class="org.cytoscape.genomespace.internal.ListFilesInGenomeSpace">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
+	<bean id="loadAttrsFromGenomeSpace" 
+		class="org.cytoscape.genomespace.internal.LoadAttrsFromGenomeSpace">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
+	<bean id="loadNetworkFromGenomeSpace" 
+		class="org.cytoscape.genomespace.internal.LoadNetworkFromGenomeSpace">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
+	<bean id="loadOntologyAndAnnotationFromGenomeSpace" 
+		class="org.cytoscape.genomespace.internal.LoadOntologyAndAnnotationFromGenomeSpace">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
+	<bean id="loadSessionFromGenomeSpace" 
+		class="org.cytoscape.genomespace.internal.LoadSessionFromGenomeSpace">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
+	<bean id="loadTableAttrsFromGenomeSpace" 
+		class="org.cytoscape.genomespace.internal.LoadTableAttrsFromGenomeSpace">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
+	<bean id="loadTableNetworkFromGenomeSpace" 
+		class="org.cytoscape.genomespace.internal.LoadTableNetworkFromGenomeSpace">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
+	<bean id="saveNetworkToGenomeSpace" 
+		class="org.cytoscape.genomespace.internal.SaveNetworkToGenomeSpace">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
+	<bean id="saveSessionToGenomeSpace" 
+		class="org.cytoscape.genomespace.internal.SaveSessionToGenomeSpace">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
+	<bean id="uploadFileToGenomeSpace" 
+		class="org.cytoscape.genomespace.internal.UploadFileToGenomeSpace">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
 	</bean>
 
 </beans>

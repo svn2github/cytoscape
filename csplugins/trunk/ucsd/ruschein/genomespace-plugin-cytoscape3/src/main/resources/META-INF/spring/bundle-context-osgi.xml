@@ -8,19 +8,47 @@
 		http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-
-	<!-- ================= Import =========================== -->
-
-	<!-- Import OSGi service from service registry -->
 	<osgi:reference id="cyApplicationManagerServiceRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
-		
-	
-	<!-- ================= Export =========================== -->
-	
-	<!-- Export the instance as an OSGi service -->
-	<osgi:service id="menuActionService" ref="menuAction"
+	<osgi:reference id="cySwingApplicationServiceRef"
+		interface="org.cytoscape.application.swing.CySwingApplication" />
+
+	<osgi:service id="deleteFileInGenomeSpaceService" ref="deleteFileInGenomeSpace"
 		interface="org.cytoscape.application.swing.CyAction" />
+
+	<osgi:service id="ownloadFileFromGenomeSpaceService" ref="downloadFileFromGenomeSpace"
+		interface="org.cytoscape.application.swing.CyAction" />
+
+	<osgi:service id="listFilesInGenomeSpaceService" ref="listFilesInGenomeSpace"
+		interface="org.cytoscape.application.swing.CyAction" />
+
+	<osgi:service id="loadAttrsFromGenomeSpaceService" ref="loadAttrsFromGenomeSpace"
+		interface="org.cytoscape.application.swing.CyAction" />
+
+	<osgi:service id="loadNetworkFromGenomeSpaceService" ref="loadNetworkFromGenomeSpace"
+		interface="org.cytoscape.application.swing.CyAction" />
+
+	<osgi:service id="loadOntologyAndAnnotationFromGenomeSpaceService" ref="loadOntologyAndAnnotationFromGenomeSpace"
+		interface="org.cytoscape.application.swing.CyAction" />
+
+	<osgi:service id="loadSessionFromGenomeSpaceService" ref="loadSessionFromGenomeSpace"
+		interface="org.cytoscape.application.swing.CyAction" />
+
+	<osgi:service id="loadTableAttrsFromGenomeSpaceService" ref="loadTableAttrsFromGenomeSpace"
+		interface="org.cytoscape.application.swing.CyAction" />
+
+	<osgi:service id="loadTableNetworkFromGenomeSpaceService" ref="loadTableNetworkFromGenomeSpace"
+		interface="org.cytoscape.application.swing.CyAction" />
+
+	<osgi:service id="saveNetworkToGenomeSpaceService" ref="saveNetworkToGenomeSpace"
+		interface="org.cytoscape.application.swing.CyAction" />
+
+	<osgi:service id="saveSessionToGenomeSpaceService" ref="saveSessionToGenomeSpace"
+		interface="org.cytoscape.application.swing.CyAction" />
+
+	<osgi:service id="uploadFileToGenomeSpaceService" ref="uploadFileToGenomeSpace"
+		interface="org.cytoscape.application.swing.CyAction" />
+
 
 
 </beans>

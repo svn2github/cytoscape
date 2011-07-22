@@ -1,15 +1,11 @@
 package org.cytoscape.genomespace.internal;
 
 
-import cytoscape.Cytoscape;
-import cytoscape.data.writers.CytoscapeSessionWriter;
 import org.slf4j.Logger;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
+import org.slf4j.LoggerFactory;
 import org.cytoscape.application.swing.AbstractCyAction;
-import cytoscape.util.FileUtil;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
 
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -33,12 +29,16 @@ import org.genomespace.client.ui.GSFileBrowserDialog;
  */
 public class SaveNetworkToGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 9988760123456789L;
-	private static final CyLogger logger = CyLogger.getLogger(UploadFileToGenomeSpace.class);
+	private static final Logger logger = LoggerFactory.getLogger(UploadFileToGenomeSpace.class);
+	private final CySwingApplication app;
 
-	public SaveNetworkToGenomeSpace() {
+	public SaveNetworkToGenomeSpace(CyApplicationManager appMgr, CySwingApplication app) {
 		// Give your action a name here
-		super("Save Network As",
-		      new ImageIcon(SaveNetworkToGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
+		super("Save Network As",appMgr);
+		this.app = app;
+
+		// TODO
+		// new ImageIcon(SaveNetworkToGenomeSpace.class.getResource("/images/genomespace_icon.gif")));
 
 		// Set the menu you'd like here.  Plugins don't need
 		// to live in the Plugins menu, so choose whatever
@@ -49,7 +49,7 @@ public class SaveNetworkToGenomeSpace extends AbstractCyAction {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			String networkType =
-				(new NetworkTypeSelectionDialog(Cytoscape.getDesktop())).getNetworkType();
+				(new NetworkTypeSelectionDialog(app.getJFrame())).getNetworkType();
 			if (networkType == null)
 				return;
 			networkType = networkType.toLowerCase();
@@ -59,7 +59,7 @@ public class SaveNetworkToGenomeSpace extends AbstractCyAction {
 			final List<String> acceptableExtensions = new ArrayList<String>();
 			acceptableExtensions.add(networkType.toLowerCase());
 			final GSFileBrowserDialog dialog =
-				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
+				new GSFileBrowserDialog(app.getJFrame(), dataManagerClient,
 							acceptableExtensions,
 							GSFileBrowserDialog.DialogType.SAVE_AS_DIALOG);
 
@@ -80,7 +80,7 @@ public class SaveNetworkToGenomeSpace extends AbstractCyAction {
 			JTaskConfig jTaskConfig = new JTaskConfig();
 
 			jTaskConfig.displayCancelButton(false);
-			jTaskConfig.setOwner(Cytoscape.getDesktop());
+			jTaskConfig.setOwner(app.getJFrame());
 			jTaskConfig.displayCloseButton(true);
 			jTaskConfig.displayStatus(true);
 			jTaskConfig.setAutoDispose(true);
@@ -90,7 +90,7 @@ public class SaveNetworkToGenomeSpace extends AbstractCyAction {
 */
 		} catch (final Exception ex) {
 			logger.error("GenomeSpace failed", ex);
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+			JOptionPane.showMessageDialog(app.getJFrame(),
 						      ex.getMessage(), "GenomeSpace Error",
 						      JOptionPane.ERROR_MESSAGE);
 		}
