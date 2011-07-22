@@ -4,8 +4,8 @@ package org.cytoscape.genomespace.internal;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.readers.CyAttributesReader;
-import cytoscape.logger.CyLogger;
-import cytoscape.util.CytoscapeAction;
+import org.slf4j.Logger;
+import org.cytoscape.application.swing.AbstractCyAction;
 
 import edu.ucsd.bioeng.coreplugin.tableImport.ui.ImportTextTableDialog;
 
@@ -24,7 +24,7 @@ import org.genomespace.client.ui.GSFileBrowserDialog;
 import org.genomespace.datamanager.core.GSFileMetadata;
 
 
-public class LoadOntologyAndAnnotationFromGenomeSpace extends CytoscapeAction {
+public class LoadOntologyAndAnnotationFromGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 7571788473486759L;
 	private static final CyLogger logger = CyLogger.getLogger(LoadOntologyAndAnnotationFromGenomeSpace.class);
 

@@ -2,8 +2,8 @@ package org.cytoscape.genomespace.internal;
 
 
 import cytoscape.Cytoscape;
-import cytoscape.logger.CyLogger;
-import cytoscape.util.CytoscapeAction;
+import org.slf4j.Logger;
+import org.cytoscape.application.swing.AbstractCyAction;
 import cytoscape.util.FileUtil;
 
 import java.awt.FileDialog;
@@ -25,7 +25,7 @@ import org.genomespace.client.User;
  * then fill in your expected behavior in the actionPerformed()
  * method.
  */
-public class UploadFileToGenomeSpace extends CytoscapeAction {
+public class UploadFileToGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 9988760123456789L;
 	private static final CyLogger logger = CyLogger.getLogger(UploadFileToGenomeSpace.class);
 

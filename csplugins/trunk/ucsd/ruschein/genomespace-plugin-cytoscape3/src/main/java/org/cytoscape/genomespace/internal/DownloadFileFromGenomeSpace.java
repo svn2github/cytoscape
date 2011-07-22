@@ -2,8 +2,8 @@ package org.cytoscape.genomespace.internal;
 
 
 import cytoscape.Cytoscape;
-import cytoscape.logger.CyLogger;
-import cytoscape.util.CytoscapeAction;
+import org.slf4j.Logger;
+import org.cytoscape.application.swing.AbstractCyAction;
 
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -28,7 +28,7 @@ import org.genomespace.datamanager.core.GSFileMetadata;
  * then fill in your expected behavior in the actionPerformed()
  * method.
  */
-public class DownloadFileFromGenomeSpace extends CytoscapeAction {
+public class DownloadFileFromGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 7777788473487659L;
 	private static final CyLogger logger = CyLogger.getLogger(DownloadFileFromGenomeSpace.class);
 

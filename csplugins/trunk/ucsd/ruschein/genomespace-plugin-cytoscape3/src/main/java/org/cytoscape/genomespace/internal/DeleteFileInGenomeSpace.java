@@ -2,9 +2,9 @@ package org.cytoscape.genomespace.internal;
 
 
 import cytoscape.Cytoscape;
-import cytoscape.util.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import cytoscape.util.FileUtil;
-import cytoscape.logger.CyLogger;
+import org.slf4j.Logger;
 
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -22,7 +22,7 @@ import org.genomespace.client.GsSession;
 import org.genomespace.client.ui.GSFileBrowserDialog;
 
 
-public class DeleteFileInGenomeSpace extends CytoscapeAction {
+public class DeleteFileInGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 4234432889999989L;
 	private static final CyLogger logger = CyLogger.getLogger(DeleteFileInGenomeSpace.class);
 

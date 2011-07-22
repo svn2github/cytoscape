@@ -6,8 +6,8 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.GMLReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.readers.XGMMLReader;
-import cytoscape.logger.CyLogger;
-import cytoscape.util.CytoscapeAction;
+import org.slf4j.Logger;
+import org.cytoscape.application.swing.AbstractCyAction;
 import cytoscape.util.FileUtil;
 
 import java.awt.event.ActionEvent;
@@ -24,7 +24,7 @@ import org.genomespace.client.User;
 import org.genomespace.datamanager.core.GSFileMetadata;
 
 
-public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
+public class LoadNetworkFromGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 7577788473487659L;
 	private static final CyLogger logger = CyLogger.getLogger(LoadNetworkFromGenomeSpace.class);
 

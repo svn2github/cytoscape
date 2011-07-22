@@ -3,9 +3,9 @@ package org.cytoscape.genomespace.internal;
 
 import cytoscape.Cytoscape;
 import org.cytoscape.genomespace.internal.filechoosersupport.GenomeSpaceTree;
-import cytoscape.util.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import cytoscape.util.FileUtil;
-import cytoscape.logger.CyLogger;
+import org.slf4j.Logger;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -36,7 +36,7 @@ import org.genomespace.client.User;
  * then fill in your expected behavior in the actionPerformed()
  * method.
  */
-public class ListFilesInGenomeSpace extends CytoscapeAction {
+public class ListFilesInGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 1234487711999989L;
 	private static final CyLogger logger = CyLogger.getLogger(ListFilesInGenomeSpace.class);
 

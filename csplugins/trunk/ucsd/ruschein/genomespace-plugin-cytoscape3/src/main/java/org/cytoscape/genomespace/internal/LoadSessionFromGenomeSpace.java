@@ -6,12 +6,12 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.data.readers.XGMMLException;
-import cytoscape.logger.CyLogger;
+import org.slf4j.Logger;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.util.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -31,7 +31,7 @@ import org.genomespace.client.User;
 import org.genomespace.datamanager.core.GSFileMetadata;
 
 
-public class LoadSessionFromGenomeSpace extends CytoscapeAction {
+public class LoadSessionFromGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 7577788473487659L;
 	static final CyLogger logger = CyLogger.getLogger(LoadNetworkFromGenomeSpace.class);
 

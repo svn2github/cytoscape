@@ -3,12 +3,12 @@ package org.cytoscape.genomespace.internal;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.writers.CytoscapeSessionWriter;
-import cytoscape.logger.CyLogger;
+import org.slf4j.Logger;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.util.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import cytoscape.util.FileUtil;
 
 import java.awt.FileDialog;
@@ -32,7 +32,7 @@ import org.genomespace.client.User;
  * then fill in your expected behavior in the actionPerformed()
  * method.
  */
-public class SaveSessionToGenomeSpace extends CytoscapeAction {
+public class SaveSessionToGenomeSpace extends AbstractCyAction {
 	private static final long serialVersionUID = 9988760123456789L;
 	private static final CyLogger logger = CyLogger.getLogger(UploadFileToGenomeSpace.class);
 
