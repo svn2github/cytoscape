@@ -6,9 +6,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.DefaultComboBoxModel;
@@ -36,10 +36,10 @@ import org.cytoscape.work.swing.AbstractGUITunableHandler;
  * @author pasteur
  */
 public class URLHandler extends AbstractGUITunableHandler {
+	
 	private BookmarksUtil bkUtil;
 	private Bookmarks theBookmarks;
-	private String bookmarkCategory = "network";
-	private String urlString;
+	private final String bookmarkCategory;
 	private BookmarkComboBoxEditor bookmarkEditor;
 	private JComboBox networkFileComboBox;
 	private JLabel titleLabel;
@@ -58,13 +58,17 @@ public class URLHandler extends AbstractGUITunableHandler {
 	 */
 	public URLHandler(Field f, Object o, Tunable t, Bookmarks bookmarks, BookmarksUtil bkUtil) {
 		super(f, o, t);
+		final Properties props = getParams();
+		bookmarkCategory = props.getProperty("fileCategory");
 		init(bookmarks, bkUtil);
 	}
 
+
 	public URLHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable,
-			  final Bookmarks bookmarks, final BookmarksUtil bkUtil)
-	{
+			final Bookmarks bookmarks, final BookmarksUtil bkUtil) {
 		super(getter, setter, instance, tunable);
+		final Properties props = getParams();
+		bookmarkCategory = props.getProperty("fileCategory");
 		init(bookmarks, bkUtil);
 	}
 
@@ -175,9 +179,8 @@ public class URLHandler extends AbstractGUITunableHandler {
 		// Extract the URL entries
 		List<DataSource> theDataSourceList = bkUtil.getDataSourceList(bookmarkCategory,theBookmarks.getCategory());
 		if (theDataSourceList != null) {
-			for (int i = 0; i < theDataSourceList.size(); i++) {
+			for (int i = 0; i < theDataSourceList.size(); i++)
 				theModel.addElement(theDataSourceList.get(i));
-			}
 		}
 		networkFileComboBox.setModel(theModel);
 	}

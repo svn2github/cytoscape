@@ -47,7 +47,7 @@ import org.cytoscape.work.Tunable;
  * Specific instance of AbstractLoadNetworkTask that loads a URL.
  */
 public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
-	@Tunable(description="The URL to load")
+	@Tunable(description="The URL to load", params = "fileCategory=network;input=true")
 	public URL url;
 	
 	StreamUtil streamUtil;

@@ -356,6 +356,12 @@
 			xlink:href="http://cytoscape.org/datasets/ptacek.sif"
 			format="sif" />
 	</category>
+	
+	<category name="table">
+		<dataSource name="Sample table for galFiltered.sif network"
+			xlink:href="http://chianti.ucsd.edu/~kono/data/galFiltered.attrs"
+			format="attrs" />
+	</category>
 
 	<category name="plugins">
 		<dataSource name="Cytoscape"
