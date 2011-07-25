@@ -37,33 +37,12 @@ import com.sun.jna.Platform;
 
 
 public class IgraphAPI {
-
-    public class IsConnected extends CytoscapeAction {
-	
-	Boolean selectedOnly;
-	
-	public IsConnected(IgraphPlugin myPlugin, String name, boolean selectedOnly) {
-	    super(name);
-	    setPreferredMenu("Plugins.Igraph.IsConnected");
-	    this.selectedOnly = new Boolean(selectedOnly);
-	}
-	
-	public void actionPerformed(ActionEvent e) {
-	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Is Connected?: " + isConnected(this.selectedOnly));
-	}
-	
-	public boolean isConnected(boolean selectedOnly) {
-	    loadGraph(selectedOnly);
-	    return IgraphInterface.isConnected(); 
-	}
-
-    }	
 	
     /**
      * This function loads the current graph into Igraph.
      *
      */    
-    public static HashMap<Integer,Integer> loadGraph(boolean selectedOnly){
+    public static HashMap<Integer,Integer> loadGraph(boolean selectedOnly, boolean directed){
 	    
 	CyNetwork network = Cytoscape.getCurrentNetwork();
 	
@@ -108,8 +87,13 @@ public class IgraphAPI {
 	    }
 	}
 
-	IgraphInterface.createGraph(edgeArray, i);
-	//	IgraphInterface.simplify();
+	int directedInt;
+	if (directed)
+	    directedInt = 1;
+	else
+	    directedInt = 0;
+
+	IgraphInterface.createGraph(edgeArray, i, directedInt);
 
 	return nodeIdMapping;
     } // loadGraph()

@@ -466,7 +466,7 @@ public abstract class AbstractIgraphLayout extends AbstractGraphPartition {
 	    }
 	}
 
-	IgraphInterface.createGraph(edgeArray, i);
+	IgraphInterface.createGraph(edgeArray, i, 0); // no need for directed graph
 
 	return nodeIdMapping;
     } // loadGraphPartition()

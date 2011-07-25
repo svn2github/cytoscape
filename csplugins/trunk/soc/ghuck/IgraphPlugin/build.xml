@@ -156,9 +156,9 @@
   <!-- =================================================================== -->
   <!-- Clean up libraries extracted in plugins folder                      -->
   <!-- =================================================================== -->
-  <target name="clean-libs" depends="init">
+  <target name="clean-libs" depends="init, clean">
     <delete file="${cytoscape.plugin.dir}/libigraphWrapper.dylib"/>
-    <delete file="${cytoscape.plugin.dir}/libigraph.0.dylib"/>
+    <delete file="${cytoscape.plugin.dir}/jna.jar"/>
   </target>
 
 

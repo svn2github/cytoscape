@@ -1,8 +1,23 @@
-//Author Gang Su
-//sugang@umich.edu
+/**************************************************************************************
+Copyright (C) Gerardo Huck, 2011
+Copyright (C) Gang Su, 2009
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+**************************************************************************************/
 
 
-/*include this igraph.h first*/
 #include "igraph.h"
 #include "igraphJNA.h"
 #include <iostream>
@@ -11,23 +26,15 @@
 
 using namespace std;
 
-
-// Testing passing of an integer
-// Try global variables just in case
-int count = 0;
-
 // Use a global graph object
-// Make sure there's only one active graph @ a time to reduce confusions
+// Make sure there's only one active graph at a time to reduce confusions
 igraph_t g;
 int existsGraph = 0;
 
-void createGraph(int edgeArray[], int length){
+void createGraph(int edgeArray[], int length, int directed){
 
   // Destroy old graph if it exists
-  if (existsGraph) {
-    igraph_destroy(&g);
-    existsGraph = 0;
-  }
+  destroy_graph();
 
   igraph_vector_t v;
   igraph_vector_init(&v, length);
@@ -35,7 +42,7 @@ void createGraph(int edgeArray[], int length){
     VECTOR(v)[i] = edgeArray[i];
   }
 
-  igraph_create(&g, &v, 0, 0);
+  igraph_create(&g, &v, 0, directed);
   existsGraph = 1;
   printf("Graph created! Number of nodes: %d\n", nodeCount());
 
@@ -44,52 +51,63 @@ void createGraph(int edgeArray[], int length){
 }
 
 
-bool isConnected(){
-	igraph_bool_t connected;
-	igraph_is_connected(&g, &connected, IGRAPH_STRONG);
-	return (bool)connected;
+// Destroy graph if it exists
+void destroy_graph() {
+  if (existsGraph) {
+    igraph_destroy(&g);
+    existsGraph = 0;
+  }
 }
+
+
+bool isConnected(){
+  igraph_bool_t connected;
+  igraph_is_connected(&g, &connected, IGRAPH_STRONG);
+  return (bool)connected;
+  destroy_graph();
+}
+
 
 void simplify(){
   igraph_simplify(&g, 1, 1, 0);
 }
 
 
-
 void layoutCircle(double x[], double y[]){
-	igraph_matrix_t locs;
-	igraph_matrix_init(&locs, 0, 0);
+  igraph_matrix_t locs;
+  igraph_matrix_init(&locs, 0, 0);
 
-	// Execute layout
-	igraph_layout_circle(&g, &locs);
+  // Execute layout
+  igraph_layout_circle(&g, &locs);
 	
-	long int nRow = igraph_matrix_nrow(&locs);
-	long int nCol = igraph_matrix_ncol(&locs);
-	for(int i=0; i<nRow; i++){
-		x[i] = MATRIX(locs, i, 0);
-		y[i] = MATRIX(locs, i, 1);
-	}
-	// Clean up
-	igraph_matrix_destroy(&locs);
+  long int nRow = igraph_matrix_nrow(&locs);
+  long int nCol = igraph_matrix_ncol(&locs);
+  for(int i=0; i<nRow; i++){
+    x[i] = MATRIX(locs, i, 0);
+    y[i] = MATRIX(locs, i, 1);
+  }
+  // Clean up
+  igraph_matrix_destroy(&locs);
 }
 
 void starLayout(double x[], double y[], int centerId) {
 
-	igraph_matrix_t locs;
-	igraph_matrix_init(&locs, 0, 0);
+  igraph_matrix_t locs;
+  igraph_matrix_init(&locs, 0, 0);
 
-	// Execute layout
-	igraph_layout_star(&g, &locs, centerId, NULL);
+  // Execute layout
+  igraph_layout_star(&g, &locs, centerId, NULL);
 
-	long int nRow = igraph_matrix_nrow(&locs);
-	long int nCol = igraph_matrix_ncol(&locs);
-	for(int i=0; i<nRow; i++){
-		x[i] = MATRIX(locs, i, 0);
-		y[i] = MATRIX(locs, i, 1);
-	}
+  long int nRow = igraph_matrix_nrow(&locs);
+  long int nCol = igraph_matrix_ncol(&locs);
+  for(int i=0; i<nRow; i++){
+    x[i] = MATRIX(locs, i, 0);
+    y[i] = MATRIX(locs, i, 1);
+  }
 	
-	// Clean up
-	igraph_matrix_destroy(&locs);
+  // Clean up
+  igraph_matrix_destroy(&locs);
+  destroy_graph();
 }
 
 //Fruchterman - Reingold Layout
@@ -104,61 +122,93 @@ void layoutFruchterman(double x[],
 		       bool isWeighted,
 		       double weights[]){
 
-	long int vcount = igraph_vcount(&g);
-	long int ecount = igraph_ecount(&g);
+  long int vcount = igraph_vcount(&g);
+  long int ecount = igraph_ecount(&g);
 
-	igraph_matrix_t locs;
-	igraph_matrix_init(&locs, vcount, 2); 
-	for (int i = 0; i < vcount; i++){
-		MATRIX(locs, i, 0) = x[i];
-		MATRIX(locs, i, 1) = y[i];
-	}
+  igraph_matrix_t locs;
+  igraph_matrix_init(&locs, vcount, 2); 
+  for (int i = 0; i < vcount; i++){
+    MATRIX(locs, i, 0) = x[i];
+    MATRIX(locs, i, 1) = y[i];
+  }
 
-	igraph_vector_t weights_vector;
-	if (isWeighted) {
-	  igraph_vector_init(&weights_vector, ecount);
-	  for (int i = 0; i < ecount; i++){
-	    VECTOR(weights_vector)[i] = weights[i];
-	  } 
-	}
+  igraph_vector_t weights_vector;
+  if (isWeighted) {
+    igraph_vector_init(&weights_vector, ecount);
+    for (int i = 0; i < ecount; i++){
+      VECTOR(weights_vector)[i] = weights[i];
+    } 
+  }
 
 
-	if (isWeighted) {
-	  igraph_layout_fruchterman_reingold(&g, 
-					     &locs, 
-					     iter, 
-					     maxDelta, 
-					     area, 
-					     coolExp, 
-					     repulserad, 
-					     useSeed, 
-					     &weights_vector,
-					     0, 
-					     0);
+  if (isWeighted) {
+    igraph_layout_fruchterman_reingold(&g, 
+				       &locs, 
+				       iter, 
+				       maxDelta, 
+				       area, 
+				       coolExp, 
+				       repulserad, 
+				       useSeed, 
+				       &weights_vector,
+				       0, 
+				       0);
 
-	} else {
-	  igraph_layout_fruchterman_reingold(&g, 
-					     &locs, 
-					     iter, 
-					     maxDelta, 
-					     area, 
-					     coolExp, 
-					     repulserad, 
-					     useSeed, 
-					     0, // weights 
-					     0, 
-					     0);
-	}
+  } else {
+    igraph_layout_fruchterman_reingold(&g, 
+				       &locs, 
+				       iter, 
+				       maxDelta, 
+				       area, 
+				       coolExp, 
+				       repulserad, 
+				       useSeed, 
+				       0, // weights 
+				       0, 
+				       0);
+  }
 
-	for(int i=0; i<vcount; i++){
-		x[i] = MATRIX(locs, i, 0);
-		y[i] = MATRIX(locs, i, 1);
-	}	
+  for(int i=0; i<vcount; i++){
+    x[i] = MATRIX(locs, i, 0);
+    y[i] = MATRIX(locs, i, 1);
+  }	
 
-	// Clean up
-	igraph_matrix_destroy(&locs);
-	igraph_vector_destroy(&weights_vector);	
+  // Clean up
+  igraph_matrix_destroy(&locs);
+  igraph_vector_destroy(&weights_vector);	
+  destroy_graph();
 }
+
+int minimum_spanning_tree_unweighted(int res[]) {
+
+  igraph_t mst;  
+  int from, to;
+
+  // Calculate MST
+  igraph_minimum_spanning_tree_unweighted(&g, &mst);
+
+  // Copy results
+  int e = igraph_ecount(&mst);
+  printf("Number of edges in MST: %d\n", e);
+  
+  for(int i = 0; i < e ; i++) {
+    igraph_edge(&mst, i, &from, &to);    
+    res[2 * i]     = from;
+    res[2 * i + 1] = to;
+  }
+  
+  // Clean up
+  igraph_destroy(&mst);
+  destroy_graph();
+
+  return e;
+}
+
+
+// int igraph_minimum_spanning_tree(const igraph_t *graph, igraph_vector_t *res,
+//         const igraph_vector_t *weights);
+// int igraph_minimum_spanning_tree_prim(const igraph_t *graph, igraph_t *mst,
+// 				      const igraph_vector_t *weights);
 
 extern "C"{
   //Simple adding of two integers
@@ -169,49 +219,15 @@ extern "C"{
 }
 
 
+int nodeCount(){
+	return (int)igraph_vcount(&g);
+}
 
 
 //////////////////////////////
 
-//Boolean, test whether the current graph is simple
-//Can only be called when a graph has been loaded
-// bool isSimple(){
-// 	igraph_bool_t simple;
-// 	igraph_is_simple(&g, &simple);
-// 	return (bool)simple;
-// 	//return 1;
-// }
-
-
-// void clusters(int membership[], int csize[], int* numCluster){
-// 	igraph_vector_t membership_v;
-// 	igraph_vector_t csize_v;
-// 	igraph_integer_t numCluster_v = 0;
-
-// 	igraph_vector_init(&membership_v, 0);
-// 	igraph_vector_init(&csize_v, 0);
-
-// 	//last argument is ignored
-// 	//The problem here is that the length of the array is unknown
-// 	igraph_clusters(&g, &membership_v, &csize_v, &numCluster_v, IGRAPH_WEAK);
-
-// 	*numCluster = (int)numCluster_v;
-	
-// 	//Convert data back
-// 	for(int i=0; i<igraph_vector_size(&membership_v); i++){
-// 		membership[i] = VECTOR(membership_v)[i];
-// 	}
-
-// 	for(int i=0; i<igraph_vector_size(&csize_v); i++){
-// 		csize[i] = VECTOR(csize_v)[i];
-// 	}
-	
-// }
 
 //get nodeCount and edgeCount of the current loaded graph
-int nodeCount(){
-	return (int)igraph_vcount(&g);
-}
 
 // int edgeCount(){
 // 	return (int)igraph_ecount(&g);

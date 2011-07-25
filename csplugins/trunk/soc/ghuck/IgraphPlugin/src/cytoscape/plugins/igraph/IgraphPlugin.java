@@ -56,7 +56,7 @@ public class IgraphPlugin extends CytoscapePlugin {
 
  	// Make sure libraries are extracted in the plugins folder
 	if (extractFileFromJar("jna.jar")) {
-	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), "Igraph plugin succesfully installed!\nIt will be available the next time you run Cytoscape.");
+	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Igraph plugin succesfully installed!\nIt will be available the next time you run Cytoscape.");
 	    return;
 	}
 
@@ -68,20 +68,27 @@ public class IgraphPlugin extends CytoscapePlugin {
 	    //JOptionPane.showMessageDialog(Cytoscape.getDesktop(), IgraphInterface.nativeAdd(10, 20));	   
 	    
 	    // Create Igraph object
-	    IgraphAPI igraph = new IgraphAPI();
+	    // IgraphAPI igraph = new IgraphAPI();
 	    
 	    // Add elements in menu toolbar
-	    IgraphAPI.IsConnected isConnectedAction1 = igraph.new IsConnected(this, "All nodes", false);
+	    IsConnected isConnectedAction1 = new IsConnected(this, "All nodes", false);
 	    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction1);
 	    
-	    IgraphAPI.IsConnected isConnectedAction2 = igraph.new IsConnected(this, "Selected Nodes", true);
+	    IsConnected isConnectedAction2 = new IsConnected(this, "Selected Nodes", true);
 	    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction2);
+
+	    MinimumSpanningTreeUnweighted mst = new MinimumSpanningTreeUnweighted(this, "All nodes", false);
+	    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) mst);
+
+	    MinimumSpanningTreeUnweighted mst2 = new MinimumSpanningTreeUnweighted(this, "Selected Nodes", true);
+	    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) mst2);
 	    
 	    // Layouts
 	    CyLayouts.addLayout(new CircleLayout(),                   "Igraph");
 	    CyLayouts.addLayout(new StarLayout(),                     "Igraph");
 	    CyLayouts.addLayout(new FruchtermanReingoldLayout(true),  "Igraph");
 
+	    
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    String message = "Error while initializing Igraph Plugin:\n" + e.getMessage(); 
@@ -125,7 +132,7 @@ public class IgraphPlugin extends CytoscapePlugin {
 	    catch (Exception e) {
 		e.printStackTrace();
 		String message = "Igraph Plugin: Error While extracting file from igraph plugin jar :\n" + e.getMessage(); 
-		JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message);
 	    }
 
 	    

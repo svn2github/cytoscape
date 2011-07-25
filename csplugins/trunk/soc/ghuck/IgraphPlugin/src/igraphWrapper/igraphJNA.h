@@ -1,19 +1,33 @@
-//Author Gang Su.
-//sugang@umich.edu
+/**************************************************************************************
+Copyright (C) Gerardo Huck, 2011
+Copyright (C) Gang Su, 2009
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+**************************************************************************************/
 
 
 extern "C"
 {
-
+  // Basic functions
+  void createGraph(int edgeArray[], int length, int directed);
+  void destroy_graph();
 
   // Igraph functions
-  void createGraph(int edgeArray[], int length);
   bool isConnected();
   void simplify();
   int nodeCount();
-  /*   bool isSimple(); */
-  /*   int edgeCount(); */
-  /*   void clusters(int membership[], int csize[], int* numCluster); */
 
   // Layouts
   void layoutCircle(double x[], double y[]);
@@ -29,24 +43,12 @@ extern "C"
 			 bool isWeighted,
 			 double weights[]);
 
+  // Minimum spanning tree - unweighted
+  int minimum_spanning_tree_unweighted(int res[]);
 
-/*   void fastGreedy(int membership[], double* modularity, int csize[], int * numCluster); */
-/*   void labelPropagation(int membership[], double* modularity); */
-/*   void walkTrap(int membership[], double*modularity, int csize[], int * numCluster); */
-/*   void edgeBetweenness(int membership[], double*modularity, int csize[], int * numCluster); */
-/*   void spinGlass(int membership[], double* modularity, int csize[], int* numCluster); */
-/*   void spinGlassSingle(int target, int community[], int* community_size); //only compute community close to the target id */
   
 
   //test functions
   int nativeAdd(int a, int b);
-/*   void nativeIncrement(int* iptr); */
-/*   int nativeArrayReset(int data[], int length); */
-/*   int nativeCountAdd(int value); */
-/*   void nativeArrayTest(int data[]); */
-/*   void nativeMemoryAllocate(int **data, int *length); //pointer to pointer reference */
-/*   void nativePointerMemoryAllocate(int *data, int *length); //single pointer reference */
-/*   void nativeListAllocate(int*** data, int** list_lengths, int* data_length); //Return a zig-zag type */
-/*   void nativeMatrixAllocate(int** data, int* nrow, int* ncol); */
 
 }
