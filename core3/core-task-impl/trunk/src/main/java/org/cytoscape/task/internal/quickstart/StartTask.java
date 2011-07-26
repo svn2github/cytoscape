@@ -21,10 +21,10 @@ public class StartTask extends ImportNetworkFromPublicDataSetTask {
 	@Tunable(description = "Disease/Phynotype (Optional)")
 	public String phynotype;
 	
-	@Tunable(description = "Enter list of genes you are interested in (should be separated by space)")
+	@Tunable(description = "List of genes you are interested in (Optional. Separated by space)")
 	public String queryGenes;
 
-	@Tunable(description = "Select ID Type")
+	@Tunable(description = "Gene ID Type (Optional)")
 	public ListSingleSelection<IDType> selection = new ListSingleSelection<IDType>(IDType.GENE_SYMBOL, IDType.ENSEMBL,
 			IDType.ENTREZ_GENE, IDType.UNIPROT);
 
