@@ -2,6 +2,7 @@ package org.cytoscape.work.internal.tunables;
 
 
 import java.awt.Color;
+import java.awt.Dialog;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,9 +128,11 @@ public class GUITunableInterceptorImpl extends SpringTunableInterceptor<GUITunab
 	 */
 	private boolean displayGUI(final JPanel optionPanel, Object... proxyObjs) {
 		
-		tunnableDialog = new TunableDialog();
+		tunnableDialog = new TunableDialog(parent);
 		tunnableDialog.setLocationRelativeTo(parent);
 		tunnableDialog.setTitle("Set Parameters");
+		tunnableDialog.setModal(true);
+		tunnableDialog.setAlwaysOnTop(true);
 
 		tunnableDialog.addComponent(optionPanel);
 		tunnableDialog.setVisible(true);

@@ -129,7 +129,6 @@ class TaskDialog extends JDialog {
 
 	public TaskDialog(final Window parentFrame, final SwingTaskMonitor parentTaskMonitor) {
 		super(parentFrame);
-		this.setAlwaysOnTop(true);
 		this.parentTaskMonitor = parentTaskMonitor;
 		initComponents();
 		initTimer();

@@ -4,6 +4,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.Window;
 
 public class TunableDialog extends JDialog {
 
@@ -12,7 +13,8 @@ public class TunableDialog extends JDialog {
 	protected JPanel parentPanel = null;
 	private String userInput = "";
 
-	public TunableDialog() {
+	public TunableDialog(final Window parent) {
+		super(parent);
 		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		initComponents();
 	}

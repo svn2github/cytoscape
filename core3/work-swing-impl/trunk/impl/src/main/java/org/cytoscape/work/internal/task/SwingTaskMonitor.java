@@ -1,6 +1,7 @@
 package org.cytoscape.work.internal.task;
 
 
+import java.awt.Dialog.ModalityType;
 import java.awt.Window;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -41,7 +42,7 @@ class SwingTaskMonitor implements TaskMonitor {
 
 		dialog = new TaskDialog(parent, this);
 		dialog.setLocationRelativeTo(parent);
-		dialog.setAlwaysOnTop(true);
+		
 		
 		if (title != null)
 			dialog.setTaskTitle(title);
