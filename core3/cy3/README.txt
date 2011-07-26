@@ -62,6 +62,16 @@ directory.
 
 
 
+Editing the Subversion Configuration
+------------------------------------
 
+This project is controlled using the svn:externals property, which essentially
+tells svn to checkout other repositories when this one is checked out.  To
+see the other repositories, list the property:
 
+	svn propget svn:externals
+
+To edit the list of properties:
+
+	svn propedit svn:externals .
 
