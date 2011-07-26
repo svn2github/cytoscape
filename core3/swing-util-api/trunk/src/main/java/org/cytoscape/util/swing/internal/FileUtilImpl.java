@@ -41,7 +41,6 @@ import java.util.Properties;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.util.swing.FileChooserFilter;
@@ -108,56 +107,50 @@ class FileUtilImpl implements FileUtil {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public File[] getFiles(final Component parent,
-						   final String title,
-						   final int load_save_custom,
-						   String start_dir,
-						   final String custom_approve_text,
-						   final boolean multiselect,
-						   final Collection<FileChooserFilter> filters)
-	{
+	public File[] getFiles(final Component parent, final String title, final int load_save_custom, String start_dir,
+			final String custom_approve_text, final boolean multiselect, final Collection<FileChooserFilter> filters) {
+		
 		if (parent == null)
 			throw new NullPointerException("\"parent\" must not be null!");
 
 		if (start_dir == null)
-			start_dir = coreProperties.getProperty(FileUtil.LAST_DIRECTORY,
-		                                           System.getProperty("user.dir"));
+			start_dir = coreProperties.getProperty(FileUtil.LAST_DIRECTORY, System.getProperty("user.dir"));
 		
-		String osName = System.getProperty("os.name");
-
+		final String osName = System.getProperty("os.name");
+		
 		if (osName.startsWith("Mac")) {
 			// This is a Macintosh, use the AWT style file dialog
 			
-			String fileDialogForDirectories = System.getProperty("apple.awt.fileDialogForDirectories");
+			final String fileDialogForDirectories = System.getProperty("apple.awt.fileDialogForDirectories");
 			System.setProperty("apple.awt.fileDialogForDirectories", "false");
-			
+
 			try {
-    			final FileDialog chooser;
-    			
-    			if (parent instanceof Frame)
-    				chooser = new FileDialog((Frame) parent, title, load_save_custom);
-    			else
-    				chooser = new FileDialog((Dialog) parent, title, load_save_custom);
-    
-    			if (start_dir != null)
-    				chooser.setDirectory(start_dir);
-    			
-    			chooser.setFilenameFilter(new CombinedFilenameFilter(filters));
-    			chooser.setVisible(true);
-    
-    			if (chooser.getFile() != null) {
-    				File[] results = new File[1];
-    				results[0] = new File(chooser.getDirectory() + File.separator + chooser.getFile());
-    
-    				if (chooser.getDirectory() != null)
-    					coreProperties.setProperty(FileUtil.LAST_DIRECTORY, chooser.getDirectory());
-    
-    				return results;
-    			}
+				final FileDialog chooser;
+				if (parent instanceof Frame)
+					chooser = new FileDialog((Frame) parent, title, load_save_custom);
+				else
+					chooser = new FileDialog((Dialog) parent, title, load_save_custom);
+
+				if (start_dir != null)
+					chooser.setDirectory(start_dir);
+				
+				chooser.setModal(true);
+				chooser.setFilenameFilter(new CombinedFilenameFilter(filters));
+				chooser.setVisible(true);
+
+				if (chooser.getFile() != null) {
+					File[] results = new File[1];
+					results[0] = new File(chooser.getDirectory() + File.separator + chooser.getFile());
+
+					if (chooser.getDirectory() != null)
+						coreProperties.setProperty(FileUtil.LAST_DIRECTORY, chooser.getDirectory());
+
+					return results;
+				}
 			} finally {
 				System.setProperty("apple.awt.fileDialogForDirectories", fileDialogForDirectories);
 			}
-			
+
 			return null;
 		} else {
 			// this is not a Mac, use the Swing based file dialog

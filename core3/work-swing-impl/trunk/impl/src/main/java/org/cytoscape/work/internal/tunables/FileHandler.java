@@ -1,9 +1,7 @@
 package org.cytoscape.work.internal.tunables;
 
 
-import java.awt.FileDialog;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -12,16 +10,14 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Properties;
+import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
@@ -33,6 +29,8 @@ import org.cytoscape.util.swing.FileUtil;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.internal.tunables.utils.SupportedFileTypesManager;
 import org.cytoscape.work.swing.AbstractGUITunableHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -41,6 +39,11 @@ import org.cytoscape.work.swing.AbstractGUITunableHandler;
  * @author pasteur
  */
 public class FileHandler extends AbstractGUITunableHandler {
+	
+	private static final Logger logger = LoggerFactory.getLogger(FileHandler.class);
+	
+	private static final Font FILE_NAME_FONT = new Font("SansSerif", Font.PLAIN, 10);
+	
 	private final FileUtil fileUtil;
 
 	private JButton chooseButton;
@@ -68,20 +71,16 @@ public class FileHandler extends AbstractGUITunableHandler {
 	 * @param fileTypesManager
 	 */
 	public FileHandler(final Field field, final Object obj, final Tunable t,
-			      final SupportedFileTypesManager fileTypesManager,
-			      final FileUtil fileUtil)
-	{
+			final SupportedFileTypesManager fileTypesManager, final FileUtil fileUtil) {
 		super(field, obj, t);
 		this.fileTypesManager = fileTypesManager;
 		this.fileUtil = fileUtil;
 		init(fileTypesManager);
 	}
 
-	public FileHandler(final Method getter, final Method setter, final Object instance,
-			      final Tunable tunable,
-			      final SupportedFileTypesManager fileTypesManager,
-			      final FileUtil fileUtil)
-	{
+
+	public FileHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable,
+			final SupportedFileTypesManager fileTypesManager, final FileUtil fileUtil) {
 		super(getter, setter, instance, tunable);
 		this.fileTypesManager = fileTypesManager;
 		this.fileUtil = fileUtil;
@@ -197,42 +196,24 @@ public class FileHandler extends AbstractGUITunableHandler {
 					//"All network files" when export image or network
 					FileChooserFilter filter = null;
 					for (int i=0; i<filters.size(); i++){
-						filter = (FileChooserFilter)filters.get(i);
+						filter = filters.get(i);
 						if (filter.getDescription().trim().equalsIgnoreCase("All image files") ||
 								filter.getDescription().trim().equalsIgnoreCase("All network files")){
-							filters = new ArrayList();
+							filters = new ArrayList<FileChooserFilter>();
 							filters.add(filter);
 							break;
 						}
 					}
 				}
 				
-				final File file = fileUtil.getFile(SwingUtilities.getWindowAncestor(panel),
-						titleLabel.getText(), load_or_save, filters);
+				final File file = fileUtil.getFile(SwingUtilities.getWindowAncestor(panel), titleLabel.getText(), load_or_save, filters);
 				if (file != null) {
-					fileTextField.setFont(new Font(null, Font.PLAIN, 10));
+					fileTextField.setFont(FILE_NAME_FONT);
 					fileTextField.setText(file.getAbsolutePath());
 					fileTextField.removeMouseListener(mouseClick);
 				}
 			}
 		}
-	}
-
-	private static String getFileExtension(final String fileName) {
-		final int lastDotPos = fileName.lastIndexOf('.');
-		if (lastDotPos == -1 || lastDotPos == fileName.length() - 1)
-			return null;
-
-		return fileName.substring(lastDotPos + 1);
-	}
-
-	private static String addFileExtension(final String fileName, final String extension) {
-		if (fileName.isEmpty())
-			throw new IllegalArgumentException("\"fileName\" must not be empty!");
-		if (fileName.endsWith("."))
-			return fileName + extension;
-		else
-			return fileName + "." + extension;
 	}
 
 	//click on the field : removes its initial text
