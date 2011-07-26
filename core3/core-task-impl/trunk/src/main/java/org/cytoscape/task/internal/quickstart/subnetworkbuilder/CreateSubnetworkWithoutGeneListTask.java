@@ -8,25 +8,20 @@ import java.util.Set;
 
 import org.cytoscape.task.internal.quickstart.IDType;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.util.ListSingleSelection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CreateSubnetworkWithoutGeneListTask extends CreateSubnetworkFromSearchTask {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CreateSubnetworkWithoutGeneListTask.class);
-
 	
-	@Tunable(description = "Enter list of genes you are interested in (should be separated by space)")
-	public String queryGenes;
+	private final String queryGenes;
+	private final IDType idType;
 
-	@Tunable(description = "Select ID Type")
-	public ListSingleSelection<IDType> selection = new ListSingleSelection<IDType>(IDType.GENE_SYMBOL, IDType.ENSEMBL,
-			IDType.ENTREZ_GENE, IDType.UNIPROT);
-
-	public CreateSubnetworkWithoutGeneListTask(SubnetworkBuilderUtil util, SubnetworkBuilderState state) {
+	public CreateSubnetworkWithoutGeneListTask(SubnetworkBuilderUtil util, SubnetworkBuilderState state, final String queryGenes, final IDType idType) {
 		super(util, state);
+		this.idType = idType;
+		this.queryGenes = queryGenes;
 	}
 	
 	@Override
@@ -34,16 +29,14 @@ public class CreateSubnetworkWithoutGeneListTask extends CreateSubnetworkFromSea
 		taskMonitor.setStatusMessage("Searching related genes in parent network...");
 		taskMonitor.setProgress(-1);
 
-		final IDType selected = selection.getSelectedValue();
-
 		final List<String> geneList;
 		
-		if (selected == IDType.ENTREZ_GENE) {
+		if (idType == IDType.ENTREZ_GENE) {
 			final String[] genes = queryGenes.split("\\s+");
 			logger.debug("Got gene list: " + genes.length);
 			geneList = Arrays.asList(genes);
 		} else {
-			geneList = new ArrayList<String>(convert(selected));
+			geneList = new ArrayList<String>(convert(idType));
 		}
 		
 		for (final String gene : geneList)

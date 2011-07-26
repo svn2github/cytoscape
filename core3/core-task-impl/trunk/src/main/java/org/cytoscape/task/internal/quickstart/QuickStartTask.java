@@ -43,6 +43,7 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.task.internal.quickstart.subnetworkbuilder.SubnetworkBuilderUtil;
 import org.cytoscape.task.internal.quickstart.subnetworkbuilder.SubnetworkBuilderTask;
 
+// Currently not in use.  StartTask is the actual Task.
 public class QuickStartTask extends AbstractTask {
 
 	protected static final String LOAD_NETWORK = "Load a Network";

@@ -4,7 +4,6 @@ import java.util.Set;
 
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,18 +11,17 @@ public class SearchRelatedGenesTask extends AbstractTask {
 
 	private static final Logger logger = LoggerFactory.getLogger(SearchRelatedGenesTask.class);
 
-	@Tunable(description = "Gene Ontology")
-	public String go;
-
-	@Tunable(description = "Disease/Phynotype")
-	public String phynotype;
+	private final String go;
+	private final String phynotype;
 
 	private final SubnetworkBuilderState state;
 	private final SubnetworkBuilderUtil util;
 
-	public SearchRelatedGenesTask(final SubnetworkBuilderUtil util, final SubnetworkBuilderState state) {
+	public SearchRelatedGenesTask(final SubnetworkBuilderUtil util, final SubnetworkBuilderState state, final String go, final String phynotype) {
 		this.state = state;
 		this.util = util;
+		this.go = go;
+		this.phynotype = phynotype;
 	}
 
 	@Override

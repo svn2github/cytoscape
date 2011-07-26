@@ -39,7 +39,7 @@ public class SubnetworkBuilderTask extends AbstractTask {
 
 		final String selected = selection.getSelectedValue();
 
-		insertTasksAfterCurrentTask(new SearchRelatedGenesTask(util, state));
+		//insertTasksAfterCurrentTask(new SearchRelatedGenesTask(util, state));
 
 		if (selected == LOAD_NEW_NETWORK) {
 			insertTasksAfterCurrentTask(util.getWebServiceImportTask());

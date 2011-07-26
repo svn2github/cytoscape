@@ -23,21 +23,21 @@ import org.cytoscape.work.Task;
 
 public class ImportTaskUtil {
 	
-	private CyNetworkReaderManager mgr;
-	private CyNetworkManager netmgr;
-	private final CyNetworkViewManager networkViewManager;
-	private Properties props;
-	private StreamUtil streamUtil;
+	protected CyNetworkReaderManager mgr;
+	protected CyNetworkManager netmgr;
+	protected final CyNetworkViewManager networkViewManager;
+	protected Properties props;
+	protected StreamUtil streamUtil;
 
-	private CyNetworkNaming cyNetworkNaming;
+	protected CyNetworkNaming cyNetworkNaming;
 	
-	private final Set<InteractionFilePreprocessor> processors;
+	protected final Set<InteractionFilePreprocessor> processors;
 	
-	private CyTableManager tblMgr;
-	private CyTableReaderManager tblReaderMgr;
+	protected CyTableManager tblMgr;
+	protected CyTableReaderManager tblReaderMgr;
 	
-	private final CyApplicationManager appManager;
-	private CyProperty<Properties> cyProps;
+	protected final CyApplicationManager appManager;
+	protected CyProperty<Properties> cyProps;
 
 	public ImportTaskUtil(
 			CyNetworkReaderManager mgr,

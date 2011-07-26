@@ -30,9 +30,9 @@ public class SelectNextTask extends AbstractTask {
 		final String selected = selection.getSelectedValue();
 		
 		if(selected == SEARCH2_OPTION) {
-			insertTasksAfterCurrentTask(new SearchRelatedGenesTask(subnetworkUtil, new SubnetworkBuilderState()));
+			//insertTasksAfterCurrentTask(new SearchRelatedGenesTask(subnetworkUtil, new SubnetworkBuilderState()));
 		} else if(selected == SEARCH1_OPTION) {
-			insertTasksAfterCurrentTask(new CreateSubnetworkWithoutGeneListTask(subnetworkUtil, new SubnetworkBuilderState()));
+			//insertTasksAfterCurrentTask(new CreateSubnetworkWithoutGeneListTask(subnetworkUtil, new SubnetworkBuilderState()));
 		}
 	}
 

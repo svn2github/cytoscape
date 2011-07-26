@@ -12,7 +12,6 @@ public class QuickStartTaskFactory2 extends QuickStartTaskFactory {
 	}
 	
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new SimplifiedQuickStartTask(subnetworkUtil));
-//		return new TaskIterator(new QuickStartTask2(new QuickStartState(), util, networkManager, subnetworkUtil));
+		return new TaskIterator(new StartTask(new QuickStartState(), util, networkManager, subnetworkUtil));
 	} 
 }
