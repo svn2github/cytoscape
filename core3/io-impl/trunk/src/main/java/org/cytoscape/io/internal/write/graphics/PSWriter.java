@@ -9,6 +9,7 @@ import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.Tunable;
 import org.freehep.graphicsio.ps.PSGraphics2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,8 @@ public class PSWriter extends AbstractTask implements CyWriter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PDFWriter.class);
 
-	private boolean exportTextAsFont = true;
+	@Tunable(description="Export text as font")
+	public boolean exportTextAsFont = true;
 
 	private final Double width;
 	private final Double height;

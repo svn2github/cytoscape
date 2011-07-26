@@ -19,6 +19,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import org.cytoscape.work.Tunable;
 
 //import com.itextpdf.text.Document;
 //import com.itextpdf.text.DocumentException;
@@ -36,7 +37,9 @@ public class PDFWriter extends AbstractTask implements CyWriter {
 
 	private static final Logger logger = LoggerFactory.getLogger(PDFWriter.class);
 
-	private boolean exportTextAsFont = true;
+	@Tunable(description="Export text as font")
+	public boolean exportTextAsFont = true;
+	
 	private final Double width;
 	private final Double height;
 	private final RenderingEngine<?> engine;
@@ -87,6 +90,8 @@ public class PDFWriter extends AbstractTask implements CyWriter {
 		logger.debug("FontMapper created = " + fontMapper);
 		Graphics2D g = null;
 		logger.debug("!!!!! Enter block 2");
+		
+		engine.getProperties().setProperty("exportTextAsShape", new Boolean(!exportTextAsFont).toString());
 		
 		if (exportTextAsFont) {
 			g = canvas.createGraphics(pageWidth, pageHeight, new DefaultFontMapper());
