@@ -29,8 +29,11 @@ import cytoscape.data.*;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.logger.CyLogger;
-
 import giny.model.*;
+
+import giny.view.NodeView;
+import cytoscape.view.CyNodeView;
+import cytoscape.view.CyNetworkView;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
@@ -77,6 +80,7 @@ public class MinimumSpanningTreeUnweighted extends CytoscapeAction {
 	    logger.info("Nodes: "+ nodesString);
 
 	    /*          Create new network & networkView          */
+	    CyNetworkView oldView = Cytoscape.getCurrentNetworkView();
 
 	    // Prepare nodes
 	    int[] nodes = new int[numNodes];	
@@ -175,7 +179,30 @@ public class MinimumSpanningTreeUnweighted extends CytoscapeAction {
 
 
 	    /*          Set node positions          */
+	    CyNetworkView newView = Cytoscape.getCurrentNetworkView();	    
 
+	    Iterator<Node> newNodesIt = newNetwork.nodesIterator();
+
+	    while(newNodesIt.hasNext()){            
+		Node node = newNodesIt.next();
+		NodeView newNodeView = newView.getNodeView(node);
+		NodeView oldNodeView = oldView.getNodeView(node);
+
+		//oldNodeView.;
+
+		// Set X and Y positions
+		newNodeView.setXPosition(oldNodeView.getXPosition());
+		newNodeView.setYPosition(oldNodeView.getYPosition());
+
+		// Set label position
+		newNodeView.setLabelPosition(oldNodeView.getLabelPosition());
+	    }
+
+	    // Redraw the whole network
+	    newView.updateView();
+	    newView.redrawGraph(true, true);	    
+	    newView.fitContent();
+	    
 
 	} catch (Exception ex) {
 	    ex.printStackTrace();

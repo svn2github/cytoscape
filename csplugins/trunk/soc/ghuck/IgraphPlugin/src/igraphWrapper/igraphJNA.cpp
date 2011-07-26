@@ -44,7 +44,7 @@ void createGraph(int edgeArray[], int length, int directed){
 
   igraph_create(&g, &v, 0, directed);
   existsGraph = 1;
-  printf("Graph created! Number of nodes: %d\n", nodeCount());
+  //  printf("Graph created! Number of nodes: %d\n", nodeCount());
 
   // Free resources no longer needed
   igraph_vector_destroy(&v);
@@ -189,7 +189,8 @@ int minimum_spanning_tree_unweighted(int res[]) {
 
   // Copy results
   int e = igraph_ecount(&mst);
-  printf("Number of edges in MST: %d\n", e);
+
+  //  printf("Number of edges in MST: %d\n", e);
   
   for(int i = 0; i < e ; i++) {
     igraph_edge(&mst, i, &from, &to);    
