@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2008, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -863,5 +863,18 @@ public abstract class AbstractCyTableTest {
         attrs.set("simpson",ls);
         List res = attrs.get("simpson",List.class);
         assertEquals(ls,res);
+	}
+
+	@Test
+	public void testSwap() {
+		table.createColumn("someInt", Integer.class, false);
+		table2.createColumn("someOtherInt", Integer.class, false);
+		final String title = table.getTitle();
+		final String title2 = table2.getTitle();
+		table.swap(table2);
+		assertEquals(title, table2.getTitle());
+		assertEquals(title2, table.getTitle());
+		assertNotNull(table.getColumn("someOtherInt"));
+		assertNotNull(table2.getColumn("someInt"));
 	}
 }

@@ -57,33 +57,33 @@ import org.slf4j.LoggerFactory;
 public final class CyTableImpl implements CyTable {
 	private static final Logger logger = LoggerFactory.getLogger(CyTableImpl.class);
 
-	private final Set<String> currentlyActiveAttributes;
-	private final Map<String, Map<Object, Object>> attributes; // Maps column names to (key,value) pairs, where "key" is the primary key.
-	private final Map<String, Map<Object, Set<Object>>> reverse;
-	private final Map<Object, CyRow> rows; // Maps the primary key to CyRow.
+	private Set<String> currentlyActiveAttributes;
+	private Map<String, Map<Object, Object>> attributes; // Maps column names to (key,value) pairs, where "key" is the primary key.
+	private Map<String, Map<Object, Set<Object>>> reverse;
+	private Map<Object, CyRow> rows; // Maps the primary key to CyRow.
 
-	private final Map<String, CyColumn> types;
+	private Map<String, CyColumn> types;
 
 	// This is not unique and might be changed by user.
 	private String title;
 
 	// Visibility value is immutable.
-	private final boolean pub;
+	private boolean pub;
 
-	private final boolean isImmutable;
+	private boolean isImmutable;
 
 	// Unique ID.
 	private final long suid;
 
 	// name of the primary key column
-	private final String primaryKey;
+	private String primaryKey;
 
 	private final CyEventHelper eventHelper;
 	private final Interpreter interpreter;
 
 	String lastInternalError = null;
 
-	private final Map<String, VirtualColumn> virtualColumnMap;
+	private Map<String, VirtualColumn> virtualColumnMap;
 	private int virtualColumnReferenceCount;
 
 	private SavePolicy savePolicy;
@@ -123,6 +123,63 @@ public final class CyTableImpl implements CyTable {
 
 		virtualColumnMap = new HashMap<String, VirtualColumn>();
 		virtualColumnReferenceCount = 0;
+	}
+
+	@Override
+	public synchronized void swap(final CyTable otherTable) {
+		final CyTableImpl other = (CyTableImpl)otherTable;
+
+		final Set<String> tempCurrentlyActiveAttributes = currentlyActiveAttributes;
+		currentlyActiveAttributes = other.currentlyActiveAttributes;
+		other.currentlyActiveAttributes = tempCurrentlyActiveAttributes;
+
+		final Map<String, Map<Object, Object>> tempAttributes = attributes;
+		attributes = other.attributes;
+		other.attributes = attributes;
+
+		final Map<String, Map<Object, Set<Object>>> tempReverse = reverse;
+		reverse = other.reverse;
+		other.reverse = tempReverse;
+
+		final Map<Object, CyRow> tempRows = rows;
+		rows = other.rows;
+		other.rows = tempRows;
+
+		final Map<String, CyColumn> tempTypes = types;
+		types = other.types;
+		other.types = tempTypes;
+
+		final String tempTitle = title;
+		title = other.title;
+		other.title = tempTitle;
+
+		final boolean tempPub = pub;
+		pub = other.pub;
+		other.pub = tempPub;
+
+		final boolean tempIsImmutable = isImmutable;
+		isImmutable = other.isImmutable;
+		other.isImmutable = tempIsImmutable;
+
+		final String tempPrimaryKey = primaryKey;
+		primaryKey = other.primaryKey;
+		other.primaryKey = tempPrimaryKey;
+
+		final String tempLastInternalError= lastInternalError;
+		lastInternalError = other.lastInternalError;
+		other.lastInternalError = tempLastInternalError;
+
+		final Map<String, VirtualColumn> tempVirtualColumnMap = virtualColumnMap;
+		virtualColumnMap = other.virtualColumnMap;
+		other.virtualColumnMap = tempVirtualColumnMap;
+
+		final int tempVirtualColumnReferenceCount = virtualColumnReferenceCount;
+		virtualColumnReferenceCount = other.virtualColumnReferenceCount;
+		other.virtualColumnReferenceCount = tempVirtualColumnReferenceCount;
+		
+		final SavePolicy tempSavePolicy = savePolicy;
+		savePolicy = other.savePolicy;
+		other.savePolicy = tempSavePolicy;
 	}
 
 	void updateColumnName(final String oldColumnName, final String newColumnName) {

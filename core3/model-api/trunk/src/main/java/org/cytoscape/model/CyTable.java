@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2008, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -219,4 +219,11 @@ public interface CyTable extends Identifiable {
 	 * @param policy the policy to follow during the lifecycle of the CyTable.
 	 */
 	void setSavePolicy(SavePolicy policy);
+
+	/** Swaps the contents and properties, like mutability etc. of "otherTable" with this table.
+	 *  @param otherTable  the table that we're being swapped with.
+	 *  Note: the one "property" that is not being swapped is the SUID!  Also, no events are being
+	 *        fired to give any listners a chance to react to the exchange!
+	 */
+	void swap(CyTable otherTable);
 }
