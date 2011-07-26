@@ -89,7 +89,6 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 
 		secondaryTunableInterceptors = new ArrayList<TunableInterceptor>();
 
-		parent = null;
 		taskExecutorService = Executors.newCachedThreadPool();
 		addShutdownHook(taskExecutorService);
 		

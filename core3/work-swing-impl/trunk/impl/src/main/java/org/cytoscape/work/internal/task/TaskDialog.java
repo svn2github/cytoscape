@@ -128,7 +128,8 @@ class TaskDialog extends JDialog {
 	Date startTime = new Date();
 
 	public TaskDialog(final Window parentFrame, final SwingTaskMonitor parentTaskMonitor) {
-		super();
+		super(parentFrame);
+		this.setAlwaysOnTop(true);
 		this.parentTaskMonitor = parentTaskMonitor;
 		initComponents();
 		initTimer();
@@ -139,14 +140,13 @@ class TaskDialog extends JDialog {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				setTitle(taskTitle);
-				// descriptionLabel.setText(StringUtils.truncateOrPadString(taskTitle));
-				// descriptionLabel2.setText(StringUtils.truncateOrPadString(taskTitle));
 				descriptionLabel.setText(taskTitle);
 				descriptionLabel2.setText(taskTitle);
 				pack();
 			}
 		});
 	}
+
 
 	public void setPercentCompleted(final int percent) {
 		if (haltRequested)
