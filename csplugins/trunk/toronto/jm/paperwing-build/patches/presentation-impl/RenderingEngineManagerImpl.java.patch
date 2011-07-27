@@ -52,7 +52,7 @@ Index: src/main/java/org/cytoscape/view/presentation/internal/RenderingEngineMan
  	public RenderingEngine<?> getRendringEngine(final View<?> viewModel) {
  		return renderingEngineMap.get(viewModel);
  	}
-@@ -49,12 +58,18 @@
+@@ -49,12 +58,20 @@
  	public void addRenderingEngine(final RenderingEngine<?> renderingEngine) {
  		final View<?> viewModel = renderingEngine.getViewModel();
  		this.renderingEngineMap.put(viewModel, renderingEngine);
@@ -64,6 +64,8 @@ Index: src/main/java/org/cytoscape/view/presentation/internal/RenderingEngineMan
  	@Override
  	public void removeRenderingEngine(RenderingEngine<?> renderingEngine) {
  		final View<?> viewModel = renderingEngine.getViewModel();
++		
++		System.out.println("Engine about to be removed, firing event..");
 +		
 +		// Event fired before actual removal
 +		cyEventHelper.fireEvent(new RenderingEngineAboutToBeRemovedEvent(this, renderingEngine));
