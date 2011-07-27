@@ -406,9 +406,15 @@ public class CytoscapeSessionReader {
 		// First, restore image-based custom graphics
 		for (String id : imageMap.keySet()) {
 			
+			String origId = id;
+			
+			int lastSlashPos = id.lastIndexOf('/');
+			if (lastSlashPos != -1)
+					id = id.substring(lastSlashPos + 1);
+						
 			// Create Custom Graphics with specified ID.
 			final CyCustomGraphics graphics = new URLImageCustomGraphics(Long.parseLong(id),
-					imageMap.get(id).toString());
+					imageMap.get(origId).toString());
 			
 			// This property contains display name and tags.
 			final String propEntry = imageProps.getProperty(id);
