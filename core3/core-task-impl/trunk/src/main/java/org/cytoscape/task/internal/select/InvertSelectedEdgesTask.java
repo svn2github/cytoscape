@@ -1,7 +1,7 @@
 /*
  File: InvertSelectedEdgesTask.java
 
- Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -26,34 +26,44 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.task.internal.select;
+
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.undo.UndoSupport;
+
 
 public class InvertSelectedEdgesTask extends AbstractSelectTask {
-    private final CyEventHelper eventHelper;
+	private final UndoSupport undoSupport;
 
-    public InvertSelectedEdgesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
-	    final CyEventHelper eventHelper) {
-	super(net, networkViewManager, eventHelper);
-	this.eventHelper = eventHelper;
-    }
+	public InvertSelectedEdgesTask(final UndoSupport undoSupport, final CyNetwork net,
+	                               final CyNetworkViewManager networkViewManager,
+	                               final CyEventHelper eventHelper)
+	{
+		super(net, networkViewManager, eventHelper);
+		this.undoSupport = undoSupport;
+	}
 
-    public void run(TaskMonitor tm) {
+	public void run(final TaskMonitor tm) {
+		final CyNetworkView view = networkViewManager.getNetworkView(network.getSUID());
+		undoSupport.getUndoableEditSupport().postEdit(
+			new SelectionEdit(eventHelper, "Invert Selected Edges", network, view,
+			                  SelectionEdit.SelectionFilter.EDGES_ONLY));
 
-	    for (final CyEdge e : network.getEdgeList()) {
-		if (e.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
-		    e.getCyRow().set(CyNetwork.SELECTED, false);
-		else
-		    e.getCyRow().set(CyNetwork.SELECTED, true);
-	    }
+		for (final CyEdge e : network.getEdgeList()) {
+			if (e.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
+				e.getCyRow().set(CyNetwork.SELECTED, false);
+			else
+				e.getCyRow().set(CyNetwork.SELECTED, true);
+		}
 
-
-	updateView();
-    }
+		eventHelper.flushPayloadEvents();
+		updateView();
+	}
 }

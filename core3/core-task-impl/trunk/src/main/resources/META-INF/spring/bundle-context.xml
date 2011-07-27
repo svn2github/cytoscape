@@ -145,6 +145,7 @@
 
 	<bean id="invertSelectedEdgesTaskFactory"
 		class="org.cytoscape.task.internal.select.InvertSelectedEdgesTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperRef" />
 	</bean>

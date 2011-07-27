@@ -82,7 +82,7 @@ public class AllFactoryTest {
 
 	@Test
 	public void testInvertSelectedEdgesTaskFactory() {
-		executeTest(new InvertSelectedEdgesTaskFactory(networkViewManager, eventHelper));
+		executeTest(new InvertSelectedEdgesTaskFactory(undoSupport, networkViewManager, eventHelper));
 	}
 
 	@Test
