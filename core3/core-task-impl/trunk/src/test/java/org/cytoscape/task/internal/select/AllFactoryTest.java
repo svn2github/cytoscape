@@ -59,8 +59,6 @@ public class AllFactoryTest {
 	@Before
 	public void setUp() throws Exception {
 		net = mock(CyNetwork.class);
-		edgeTable = mock(CyTable.class);
-		when(net.getDefaultEdgeTable()).thenReturn(edgeTable);
 		netmgr = mock(CyNetworkManager.class);
 		networkViewManager = mock(CyNetworkViewManager.class);
 		eventHelper = mock(CyEventHelper.class);
