@@ -985,7 +985,10 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 					 * 
 					 */
 					Component panel = tabbedPane.getSelectedComponent();
-					setMinimumSize(panel.getPreferredSize());
+					// Make sure we're not being notified that we've deleted
+					// the last panel
+					if (panel != null)
+						setMinimumSize(panel.getPreferredSize());
 				
 					int selectedIndex = tabbedPane.getSelectedIndex();
 					cytoPanelListener.onComponentSelected(selectedIndex);
