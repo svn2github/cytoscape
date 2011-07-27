@@ -87,6 +87,7 @@ public final class CyTableProjection implements CyTable {
 	/** Warning: This returns the SUID of the underlying reference table!
 	 *  @return the SUID of the underlying table
 	 */
+	@Override
 	public long getSUID() {
 		return underlyingTable.getSUID();
 	}
@@ -102,18 +103,21 @@ public final class CyTableProjection implements CyTable {
 	 *
 	 * @return Whether or not this CyTable should be publicly accessible.
 	 */
+	@Override
 	public boolean isPublic() { return false; }
 
 	/** The table can be deleted if this returns Mutability.MUTABLE, otherwise it cannot be
 	 *  deleted!
 	 *  @return the current mutablity state
 	 */
+	@Override
 	public CyTable.Mutability getMutability() { return CyTable.Mutability.PERMANENTLY_IMMUTABLE; }
 
 	/**
 	 * Returns a human readable name for the CyTable.
 	 * @return A human readable name for the CyTable.
 	 */
+	@Override
 	public String getTitle() { return underlyingTable.getTitle(); }
 
 	/**
@@ -122,6 +126,7 @@ public final class CyTableProjection implements CyTable {
 	 * @param title The human readable title for the CyTable suitable for use in a user
 	 *        interface.
 	 */
+	@Override
 	public void setTitle(final String title) {
 		throw new UnsupportedOperationException("setTitle() method not supported!");
 	}
@@ -130,6 +135,7 @@ public final class CyTableProjection implements CyTable {
 	 * Returns the column type of the primary key for this table.
 	 * @return The column type of the primary key for this table.
 	 */
+	@Override
 	public CyColumn getPrimaryKey() {
 		return underlyingTable.getPrimaryKey();
 	}
@@ -140,6 +146,7 @@ public final class CyTableProjection implements CyTable {
 	 * @return The column type of the column whose column name was provided, or null if there is
 	 *         no column named "columnName".
 	 */
+	@Override
 	public CyColumn getColumn(final String columnName) {
 		return columnNames.contains(columnName) ? underlyingTable.getColumn(columnName) : null;
 	}
@@ -148,6 +155,7 @@ public final class CyTableProjection implements CyTable {
 	 * Returns the column types for all columns in this table.
 	 * @return A set of {@link CyColumn} objects that describe all columns in this table.
 	 */
+	@Override
 	public Collection<CyColumn> getColumns() {
 		final List<CyColumn> columns = new ArrayList<CyColumn>(columnNames.size());
 		for (final String columnName : columnNames)
@@ -160,6 +168,7 @@ public final class CyTableProjection implements CyTable {
 	 * Will delete the column of the specified name.
 	 * @param columnName The name identifying the attribute.
 	 */
+	@Override
 	public void deleteColumn(String columnName) {
 		throw new UnsupportedOperationException("deleteColumn() method not supported!");
 	}
@@ -171,6 +180,7 @@ public final class CyTableProjection implements CyTable {
 	 * @param type The type of the column.
 	 * @param isImmutable  if true, this column can never be deleted
 	 */
+	@Override
 	public <T> void createColumn(String columnName, Class<?extends T> type,
 	                             boolean isImmutable)
 	{
@@ -184,6 +194,7 @@ public final class CyTableProjection implements CyTable {
 	 * @param listElementType The type of the elements of the list.
 	 * @param isImmutable  if true, this column can never be deleted
 	 */
+	@Override
 	public <T> void createListColumn(String columnName, Class<T> listElementType,
 	                                 boolean isImmutable)
 	{
@@ -198,6 +209,7 @@ public final class CyTableProjection implements CyTable {
 	 * @return The {@link CyRow} identified by the specified key or a new
 	 * row identified by the key if one did not already exist.
 	 */
+	@Override
 	public CyRow getRow(Object primaryKey) {
 		if (!rowExists(primaryKey))
 			throw new UnsupportedOperationException("row creation is not supported by CyTableProjection!");
@@ -210,6 +222,7 @@ public final class CyTableProjection implements CyTable {
 	 * @param primaryKey The primary key index of the row.
 	 * @return True if a row exists for the specified primary key and false otherwise. 
 	 */
+	@Override
 	public boolean rowExists(final Object primaryKey) {
 		return primaryKeys.contains(primaryKey);
 	}
@@ -218,6 +231,7 @@ public final class CyTableProjection implements CyTable {
 	 * Return a list of all the rows stored in this data table.
 	 * @return a list of all the rows stored in this data table.
 	 */
+	@Override
 	public List<CyRow> getAllRows() {
 		final List<CyRow> rows = new ArrayList<CyRow>();
 
@@ -232,6 +246,7 @@ public final class CyTableProjection implements CyTable {
 	 * note that only the very last message will be retrieved.
 	 * @return if available, a message describing an internal error, otherwise null
 	 */
+	@Override
 	public String getLastInternalError() {
 		return underlyingTable.getLastInternalError();
 	}
@@ -241,6 +256,7 @@ public final class CyTableProjection implements CyTable {
 	 *  @param value       the value for which we want the rows that contain it
 	 *  @return the rows, if any that contain the value "value" for the column "columnName"
 	 */
+	@Override
 	public Collection<CyRow> getMatchingRows(final String columnName, final Object value) {
 		final ArrayList<CyRow> matchingRows = new ArrayList<CyRow>();
 		final String primaryKey = underlyingTable.getPrimaryKey().getName();
@@ -257,6 +273,7 @@ public final class CyTableProjection implements CyTable {
 	/** Returns the number of rows in this table.
 	 *  @return The number if rows in the table.
 	 */
+	@Override
 	public int getRowCount() 
 	{
 		return primaryKeys.size();
@@ -276,6 +293,7 @@ public final class CyTableProjection implements CyTable {
 	 *  @return the actual name of the new virtual column
 	 *  Note: The types of "sourceJoinKey" and "targetJoinKey" have to be identical.
 	 */
+	@Override
 	public String addVirtualColumn(String virtualColumn, String sourceColumn,
 				       CyTable sourceTable, String sourceJoinKey,
 				       String targetJoinKey, boolean isImmutable)
@@ -292,6 +310,7 @@ public final class CyTableProjection implements CyTable {
 	 *  Note: The types of "sourceJoinKey" and "targetJoinKey" have to be identical.  Also none
 	 *        of the column names in "sourceTable" must exist in the current table!
 	 */
+	@Override
 	public void addVirtualColumns(CyTable sourceTable, String sourceJoinKey,
 				      String targetJoinKey, boolean isImmutable)
 	{
@@ -302,13 +321,25 @@ public final class CyTableProjection implements CyTable {
 	 * Returns how (or if) this CyTable should be saved.
 	 * @return how (or if) this CyTable should be saved.
 	 */
+	@Override
 	public SavePolicy getSavePolicy() { return savePolicy; }
 	
 	/**
 	 * Sets how (or if) this CyTable should be saved.
 	 * @param policy the policy to follow during the lifecycle of the CyTable.
 	 */
+	@Override
 	public void setSavePolicy(final SavePolicy policy) {
 		savePolicy = policy;
+	}
+
+	/** Swaps the contents and properties, like mutability etc. of "otherTable" with this table.
+	 *  @param otherTable  the table that we're being swapped with.
+	 *  Note: the one "property" that is not being swapped is the SUID!  Also, no events are being
+	 *        fired to give any listners a chance to react to the exchange!
+	 */
+	@Override
+	public void swap(final CyTable otherTable) {
+		underlyingTable.swap(otherTable);
 	}
 }
