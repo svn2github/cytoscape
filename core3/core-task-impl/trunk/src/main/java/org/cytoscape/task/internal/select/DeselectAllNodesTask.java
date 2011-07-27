@@ -1,7 +1,7 @@
 /*
  File: DeselectAllNodesTask.java
 
- Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -26,22 +26,35 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.task.internal.select;
 
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 public class DeselectAllNodesTask extends AbstractSelectTask {
-	public DeselectAllNodesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager, final CyEventHelper eventHelper) {
-		super(net,networkViewManager, eventHelper);
+	private final UndoSupport undoSupport;
+
+	public DeselectAllNodesTask(final UndoSupport undoSupport, final CyNetwork net,
+				    final CyNetworkViewManager networkViewManager,
+				    final CyEventHelper eventHelper)
+	{
+		super(net, networkViewManager, eventHelper);
+		this.undoSupport = undoSupport;
 	}
 
-	public void run(TaskMonitor tm) {
+	public void run(final TaskMonitor tm) {
+		final CyNetworkView view = networkViewManager.getNetworkView(network.getSUID());
+		undoSupport.getUndoableEditSupport().postEdit(
+			new SelectionEdit(eventHelper, "Deselect All Nodes", network, view,
+			                  SelectionEdit.SelectionFilter.NODES_ONLY));
+
 		selectUtils.setSelectedNodes( network.getNodeList(), false);
 		updateView();
 	}

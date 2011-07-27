@@ -72,12 +72,12 @@ public class AllFactoryTest {
 
 	@Test
 	public void testDeselectAllNodesTaskFactory() {
-		executeTest(new DeselectAllNodesTaskFactory(networkViewManager, eventHelper));
+		executeTest(new DeselectAllNodesTaskFactory(undoSupport, networkViewManager, eventHelper));
 	}
 
 	@Test
 	public void testDeselectAllTaskFactory() {
-		executeTest(new DeselectAllTaskFactory(networkViewManager, eventHelper));
+		executeTest(new DeselectAllTaskFactory(undoSupport, networkViewManager, eventHelper));
 	}
 
 	@Test

@@ -124,6 +124,7 @@
 
 	<bean id="deselectAllTaskFactory"
 		class="org.cytoscape.task.internal.select.DeselectAllTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
@@ -137,6 +138,7 @@
 
 	<bean id="deselectAllNodesTaskFactory"
 		class="org.cytoscape.task.internal.select.DeselectAllNodesTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
