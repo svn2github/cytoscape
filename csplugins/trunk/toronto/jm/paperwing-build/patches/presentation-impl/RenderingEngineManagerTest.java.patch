@@ -1,0 +1,21 @@
+Index: src/test/java/org/cytoscape/view/presentation/RenderingEngineManagerTest.java
+===================================================================
+--- src/test/java/org/cytoscape/view/presentation/RenderingEngineManagerTest.java	(revision 26266)
++++ src/test/java/org/cytoscape/view/presentation/RenderingEngineManagerTest.java	(working copy)
+@@ -10,6 +10,7 @@
+ import java.util.Collection;
+ import java.util.Set;
+ 
++import org.cytoscape.event.CyEventHelper;
+ import org.cytoscape.model.CyNetwork;
+ import org.cytoscape.view.model.CyNetworkView;
+ import org.cytoscape.view.presentation.internal.RenderingEngineManagerImpl;
+@@ -24,7 +25,7 @@
+ 	@Before
+ 	public void setUp() throws Exception {
+ 		
+-		manager = new RenderingEngineManagerImpl();
++		manager = new RenderingEngineManagerImpl(mock(CyEventHelper.class));
+ 	}
+ 
+ 	@After
