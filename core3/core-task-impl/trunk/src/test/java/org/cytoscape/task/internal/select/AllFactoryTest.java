@@ -88,7 +88,7 @@ public class AllFactoryTest {
 	@Test
 	public void testInvertSelectedNodesTaskFactory() {
 		final CyEventHelper eventHelper = mock(CyEventHelper.class);
-		executeTest(new InvertSelectedNodesTaskFactory(networkViewManager, eventHelper));
+		executeTest(new InvertSelectedNodesTaskFactory(undoSupport, networkViewManager, eventHelper));
 	}
 
 	@Test

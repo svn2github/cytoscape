@@ -1,7 +1,7 @@
 /*
  File: InvertSelectedNodesTaskFactory.java
 
- Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -35,21 +35,25 @@ import org.cytoscape.task.AbstractNetworkTaskFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 public class InvertSelectedNodesTaskFactory extends AbstractNetworkTaskFactory {
+	private final UndoSupport undoSupport;
 	private CyNetworkViewManager networkViewManager;
 	private final CyEventHelper eventHelper;
 
-	public InvertSelectedNodesTaskFactory(final CyNetworkViewManager networkViewManager,
-					      final CyEventHelper eventHelper)
+	public InvertSelectedNodesTaskFactory(final UndoSupport undoSupport,
+	                                      final CyNetworkViewManager networkViewManager,
+	                                      final CyEventHelper eventHelper)
 	{
+		this.undoSupport        = undoSupport;
 		this.networkViewManager = networkViewManager;
-		this.eventHelper = eventHelper;
+		this.eventHelper        = eventHelper;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(
-				new InvertSelectedNodesTask(network, networkViewManager, eventHelper));
+		return new TaskIterator(new InvertSelectedNodesTask(undoSupport, network,
+		                                                    networkViewManager, eventHelper));
 	} 
 }
