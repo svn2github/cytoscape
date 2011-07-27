@@ -135,7 +135,7 @@ public final class CyTableImpl implements CyTable {
 
 		final Map<String, Map<Object, Object>> tempAttributes = attributes;
 		attributes = other.attributes;
-		other.attributes = attributes;
+		other.attributes = tempAttributes;
 
 		final Map<String, Map<Object, Set<Object>>> tempReverse = reverse;
 		reverse = other.reverse;
