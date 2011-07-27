@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -31,15 +31,23 @@ package org.cytoscape.task.internal.table;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.task.AbstractTableCellTaskFactory;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 final class CopyValueToEntireColumnTaskFactory extends AbstractTableCellTaskFactory {
+	private final UndoSupport undoSupport;
+
+	public CopyValueToEntireColumnTaskFactory(final UndoSupport undoSupport) {
+		this.undoSupport = undoSupport;
+	}
+
 	@Override
 	public TaskIterator getTaskIterator() {
 		if (column == null)
 			throw new IllegalStateException("\"column\" was not set!");
 		if (primaryKeyValue == null)
 			throw new IllegalStateException("\"primaryKeyValue\" was not set!");
-		return new TaskIterator(new CopyValueToEntireColumnTask(column, primaryKeyValue));
+		return new TaskIterator(new CopyValueToEntireColumnTask(undoSupport, column,
+									primaryKeyValue));
 	}
 }

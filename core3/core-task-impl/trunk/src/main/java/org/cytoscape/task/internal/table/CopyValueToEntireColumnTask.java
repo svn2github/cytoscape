@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -35,11 +35,17 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.task.AbstractTableCellTask;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 final class CopyValueToEntireColumnTask extends AbstractTableCellTask {
-	CopyValueToEntireColumnTask(final CyColumn column, final Object primaryKeyValue) {
+	private final UndoSupport undoSupport;
+
+	CopyValueToEntireColumnTask(final UndoSupport undoSupport, final CyColumn column,
+				    final Object primaryKeyValue)
+	{
 		super(column, primaryKeyValue);
+		this.undoSupport = undoSupport;
 	}
 
 	@Override
@@ -49,6 +55,9 @@ final class CopyValueToEntireColumnTask extends AbstractTableCellTask {
 		final CyRow sourceRow = column.getTable().getRow(primaryKeyValue);
 		final String columnName = column.getName();
 		final Object sourceValue = sourceRow.getRaw(columnName);
+
+		undoSupport.getUndoableEditSupport().postEdit(
+			new CopyValueToEntireColumnEdit(column, sourceValue));
 
 		final List<CyRow> rows = column.getTable().getAllRows();
 		final int total = rows.size() - 1;

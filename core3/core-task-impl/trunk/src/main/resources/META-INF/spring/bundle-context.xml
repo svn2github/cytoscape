@@ -130,6 +130,7 @@
 
 	<bean id="deselectAllEdgesTaskFactory"
 		class="org.cytoscape.task.internal.select.DeselectAllEdgesTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
@@ -351,6 +352,7 @@
 
 	<bean id="copyValueToEntireColumnTaskFactory"
 		class="org.cytoscape.task.internal.table.CopyValueToEntireColumnTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 	</bean>
 
 	<bean id="deleteTableTaskFactory"
