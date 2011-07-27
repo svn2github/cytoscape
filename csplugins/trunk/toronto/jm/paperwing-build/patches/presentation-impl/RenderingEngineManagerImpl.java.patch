@@ -1,8 +1,22 @@
 Index: src/main/java/org/cytoscape/view/presentation/internal/RenderingEngineManagerImpl.java
 ===================================================================
---- src/main/java/org/cytoscape/view/presentation/internal/RenderingEngineManagerImpl.java	(revision 25942)
+--- src/main/java/org/cytoscape/view/presentation/internal/RenderingEngineManagerImpl.java	(revision 26266)
 +++ src/main/java/org/cytoscape/view/presentation/internal/RenderingEngineManagerImpl.java	(working copy)
-@@ -15,7 +15,7 @@
+@@ -4,37 +4,46 @@
+ import java.util.HashMap;
+ import java.util.Map;
+ 
++import org.cytoscape.event.CyEventHelper;
+ import org.cytoscape.view.model.View;
+ import org.cytoscape.view.model.VisualLexicon;
+ import org.cytoscape.view.presentation.RenderingEngine;
+ import org.cytoscape.view.presentation.RenderingEngineFactory;
+ import org.cytoscape.view.presentation.RenderingEngineManager;
++import org.cytoscape.view.presentation.events.RenderingEngineAboutToBeRemovedEvent;
++import org.cytoscape.view.presentation.events.RenderingEngineAddedEvent;
+ 
+ public class RenderingEngineManagerImpl implements RenderingEngineManager {
+ 
  	private final Map<View<?>, RenderingEngine<?>> renderingEngineMap;
  	
  	private static final String FACTORY_ID_TAG = "id";
@@ -11,3 +25,49 @@ Index: src/main/java/org/cytoscape/view/presentation/internal/RenderingEngineMan
  	
  	private VisualLexicon defaultLexicon;
  
+ 	private final Map<String, RenderingEngineFactory<?>> factoryMap;
+-	
+ 
++	private CyEventHelper cyEventHelper;
++
+ 	/**
+ 	 * Create an instance of rendering engine manager. This implementation
+ 	 * listens to Presentation events and update its map based on them.
+ 	 */
+-	public RenderingEngineManagerImpl() {
++	public RenderingEngineManagerImpl(CyEventHelper cyEventHelper) {
+ 		this.renderingEngineMap = new HashMap<View<?>, RenderingEngine<?>>();
+ 		this.factoryMap = new HashMap<String, RenderingEngineFactory<?>>();
++		
++		this.cyEventHelper = cyEventHelper;
++		
++		System.out.println("Updated renderingEngineManager found");
+ 	}
+ 
+ 	/**
+ 	 * This method never returns null.
+ 	 */
+ 	@Override
++	// TODO: name should be getRenderingEngine for correct spelling
+ 	public RenderingEngine<?> getRendringEngine(final View<?> viewModel) {
+ 		return renderingEngineMap.get(viewModel);
+ 	}
+@@ -49,12 +58,18 @@
+ 	public void addRenderingEngine(final RenderingEngine<?> renderingEngine) {
+ 		final View<?> viewModel = renderingEngine.getViewModel();
+ 		this.renderingEngineMap.put(viewModel, renderingEngine);
++		
++		cyEventHelper.fireEvent(new RenderingEngineAddedEvent(this, renderingEngine));
+ 	}
+ 	
+ 
+ 	@Override
+ 	public void removeRenderingEngine(RenderingEngine<?> renderingEngine) {
+ 		final View<?> viewModel = renderingEngine.getViewModel();
++		
++		// Event fired before actual removal
++		cyEventHelper.fireEvent(new RenderingEngineAboutToBeRemovedEvent(this, renderingEngine));
++		
+ 		this.renderingEngineMap.remove(viewModel);
+ 	}
+ 	

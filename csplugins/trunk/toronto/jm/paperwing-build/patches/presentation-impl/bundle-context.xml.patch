@@ -1,0 +1,12 @@
+Index: src/main/resources/META-INF/spring/bundle-context.xml
+===================================================================
+--- src/main/resources/META-INF/spring/bundle-context.xml	(revision 26266)
++++ src/main/resources/META-INF/spring/bundle-context.xml	(working copy)
+@@ -12,6 +12,7 @@
+ 	<!-- Rendering Engine Manager service bean -->
+ 	<bean id="renderingEngineManager"
+ 		class="org.cytoscape.view.presentation.internal.RenderingEngineManagerImpl">
++		<constructor-arg ref="cyEventHelperServiceRef" />
+ 	</bean>
+ 
+ </beans>
