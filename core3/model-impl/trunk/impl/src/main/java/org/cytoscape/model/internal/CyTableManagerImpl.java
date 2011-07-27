@@ -44,6 +44,7 @@ import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.events.TableAboutToBeDeletedEvent;
+import org.cytoscape.model.events.TableAddedEvent;
 import org.cytoscape.model.events.TableDeletedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,11 +109,15 @@ public class CyTableManagerImpl implements CyTableManager, NetworkAboutToBeDestr
 	    tmap.put(network, tm);
     }
 
-    public synchronized void addTable(final CyTable t) {
-	if (t == null)
-	    throw new NullPointerException("added table is null");
-	tables.put(t.getSUID(), t);
-    }
+
+	public synchronized void addTable(final CyTable t) {
+		if (t == null)
+			throw new NullPointerException("added table is null");
+		
+		tables.put(t.getSUID(), t);
+		eventHelper.fireEvent(new TableAddedEvent(this, t));
+	}
+
 
     @Override
     public synchronized Set<CyTableMetadata> getAllTables(final boolean includePrivate) {
