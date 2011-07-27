@@ -5,7 +5,11 @@
  * Google Summer of Code 2011
  */
 
-
+/* TODO
+ * - Move SVG DOM functions into a separate class
+ * - Move create*Element methods into the objects that use them
+ * - Switch some hand-built paths to generic ones with SVG transforms applied
+ */
 /**
  * Network visualization instance.
  * Represents an instance of the network visualization.
@@ -30,7 +34,9 @@ function Visualization(container, height, width) {
 	
 	this._setElementAttributes = function(elem, attributeMap) {
 		for (var attribute in attributeMap) {
-			elem.setAttribute(attribute, attributeMap[attribute]);
+			var value = attributeMap[attribute];
+			if (value != null)
+			elem.setAttribute(attribute, value);
 		}
 	};
 	
@@ -45,29 +51,33 @@ function Visualization(container, height, width) {
 	this._svgNodeGroup = this._createSvgElement("g", this._svgElem);	
 	this._svgLabelGroup = this._createSvgElement("g", this._svgElem);
 	
-	this._createNodeGroup = function() {
-		
-	}
-	
 	this._createLabelElement = function () {
 		return this._createSvgElement("text", this._svgLabelGroup);
 	};
 	
 	this._createEdgePathElement = function() {
 		return this._createSvgElement("path", this._svgEdgeGroup);
-	}
+	};
 	
 	this._createNodePathElement = function() {
 		return this._createSvgElement("path", this._svgNodeGroup);
-	}
+	};
 	
 	this._removeNodePathElement = function(elem) {
 		this._svgNodeGroup.removeChild(elem);
-	}
+	};
 	
 	this._removeEdgePathElement = function(elem) {
 		this._svgEdgeGroup.removeChild(elem);
-	}
+	};
+	
+	this._createLabelElement = function() {
+		return this._createSvgElement("text", this._svgLabelGroup);
+	};
+	
+	this._removeLabelElement = function(elem) {
+		this._svgLabelGroup.removeChild(elem);
+	};
 	// --------
 
 	this._edges = {};
@@ -79,6 +89,13 @@ function Visualization(container, height, width) {
 	// Viewport offset
 	this._offsetX = 186;
 	this._offsetY = 100;
+
+
+	this._styleDefaults = {
+		global: {},
+		node: {},
+		edge: {}
+	};
 
 	// Style defaults
 	this._style = {
@@ -114,8 +131,10 @@ function Visualization(container, height, width) {
 			"style": "SOLID",
 			"forwardArrowShape": "",
 			"forwardArrowSize": 10,
+			"forwardArrowColor": "red",
 			"backwardArrowShape": "",
-			"backwardArrowSize": 10
+			"backwardArrowSize": 10,
+			"backwardArrowColor": "black"
 		}
 	};
 	
@@ -616,7 +635,7 @@ var Node = function(vis) {
 
 	this._visualization = vis;
 	this._elem = null;
-	this._elemLabel = null;
+	this._labelElem = null;
 	this._group = "node";
 	this._listeners = {};
 	this._eventTypes = ["dragStart", "dragEnd", "hoverStart", "hoverEnd", "click", "select", "deselect"];
@@ -901,6 +920,7 @@ var Node = function(vis) {
 	this.remove = function() {
 		if (this._elem) {
 			this._visualization._removeNodePathElement(this._elem);
+			if (this._labelElem) this._visualization._removeLabelElement(this._labelElem);
 			
 		}
 		//if (this._elemLabel) this._elemLabel.remove();
@@ -919,8 +939,8 @@ var Edge = function(vis) {
 	this._visualization = vis;
 	this._elem = null;
 	this._elemLabel = null;
-	this._elemArrowForward = null;
-	this._elemArrowBackward = null;
+	this._forwardArrowElem = null;
+	this._backwardArrowElem = null;
 	this._group = "edge";
 	this._offset = 0; // Offset used for drawing multiple edges between two nodes
 	this._label = "";
@@ -939,6 +959,12 @@ var Edge = function(vis) {
 	this.remove = function() {
 		if (this._elem) {
 			this._visualization._removeEdgePathElement(this._elem);
+		}
+		if (this._forwardArrowElem) {
+			this._visualization._removeEdgePathElement(this._forwardArrowElem);
+		}
+		if (this._backwardArrowElem) {
+			this._visualization._removeEdgePathElement(this._backwardArrowElem);
 		}
 		this._source = null;
 		this._target = null;
@@ -960,6 +986,8 @@ var Edge = function(vis) {
 		if (this._elem == null) {
 				this._elem = this._visualization._createEdgePathElement();
 				//this._elem = this._visualization._canvas.path(this._getSvgPath()).toBack().click(Util.delegate(this, "_onClick")).attr("cursor", "pointer");
+				this._forwardArrowElem = this._visualization._createEdgePathElement();
+				this._backwardArrowElem = this._visualization._createEdgePathElement();
 		}
 		
 		var dashArray = {
@@ -975,16 +1003,14 @@ var Edge = function(vis) {
 			// Update position
 			"d": paths[0],
 			"stroke-dasharray" : dashArray,
-			"fill": "none"
+			"fill": "none",
+			"stroke-linecap": "square"
 		};
 		// TODO: render paths[1] and paths[2], which are the arrows.
 		
 
 		var attrMap = {
 			"stroke": "color",
-			//"fill": "color", // this is not applicable for curved paths
-			
-		
 			"stroke-width": "width",
 			"stroke-opacity": "opacity"
 		};
@@ -997,7 +1023,35 @@ var Edge = function(vis) {
 		}
 
 		this._visualization._setElementAttributes(this._elem, attr);
-		//this._elem.attr(attr);
+		
+		// Arrow head attributes
+		// 1. Forward arrow
+		var forwardArrowColor = this.getRenderedStyle("forwardArrowColor") || attr["stroke"];
+		var forwardArrowAttr = {
+			"fill":  forwardArrowColor,
+			"stroke": forwardArrowColor,
+			"stroke-width": attr["stroke-width"],
+			"stroke-opacity": attr["stroke-opacity"], // TODO: change to rely only on fill, rather than on stroke
+			// because opacity
+			"opacity": attr["stroke-opacity"],
+			"d": paths[1] || null
+		};
+		
+		this._visualization._setElementAttributes(this._forwardArrowElem, forwardArrowAttr);
+		
+		// 2. Backward arrow
+		var backwardArrowColor = this.getRenderedStyle("backwardArrowColor") || attr["stroke"];
+		var backwardArrowAttr = {
+			"fill": backwardArrowColor,
+			"stroke": backwardArrowColor,
+			"stroke-width": attr["stroke-width"],
+			"stroke-opacity": attr["stroke-opacity"],
+			"opacity": attr["stroke-opacity"],
+			"d": paths[2] || null
+		};
+		this._visualization._setElementAttributes(this._backwardArrowElem, backwardArrowAttr);
+
+		
 	};
 	
 	this._onClick = function() {
@@ -1104,11 +1158,11 @@ var Edge = function(vis) {
 				var bpy = b.y + bcy;
 				
 
-				var path = [];
-				path.push(populateString("M %,% Q %,% %,%", [apx, apy, cx, cy, bpx, bpy]));
+				var path = new Array(3);
+				path[0] = (populateString("M %,% Q %,% %,%", [apx, apy, cx, cy, bpx, bpy]));
 				
-				if (this.getRenderedStyle("forwardArrowShape") == "DELTA") path.push(Shapes.buildArrow(apx, apy, 6, 10, Math.atan2(-acy, -acx), 1));
-				if (this.getRenderedStyle("backwardArrowShape") == "DELTA") path.push(Shapes.buildArrow(bpx, bpy, 6, 10, Math.atan2(-bcy, -bcx), 1));
+				if (this.getRenderedStyle("forwardArrowShape") == "DELTA") path[1] = (Shapes.buildArrow(apx, apy, 6, 10, Math.atan2(-acy, -acx), 1));
+				if (this.getRenderedStyle("backwardArrowShape") == "DELTA") path[2] = (Shapes.buildArrow(bpx, bpy, 6, 10, Math.atan2(-bcy, -bcx), 1));
 				
 				return path;
 			
@@ -1200,3 +1254,76 @@ function populateString(string, items) {
 	});
 }
 
+
+/**
+ * Arbor.js Renderer
+ */
+ 
+function ArborRenderer(vis) {
+	this.vis = vis;
+	
+	this.init = function(ps) {
+		this.ps = ps;
+		ps.screenSize(320, 320);
+		ps.screenPadding(10);
+	}
+	
+	this.redraw = function() {
+		this.ps.eachNode(function(node, pt) {
+			vis.getNode(node.name).setPosition(pt.x, pt.y);
+		});
+	}
+	
+	this.die = function() {
+		this.vis = null;
+		this.ps = null;
+	}
+}
+
+/**
+ * Springy.js renderer
+ */
+
+var SpringyRenderer = function() {
+	var vis;
+	var graph;
+	var layout;
+	
+		this.stop = function() {
+			if (layout.intervalId) {
+				layout.stop();
+			}
+		}
+		
+		this.render = function(v) {
+			vis = v;
+			graph = new Graph();
+			var nodes = vis.getNodes();
+			for (var i = 0; i < nodes.length; i++) {
+				graph.newNodeM(nodes[i]._id); 
+			}
+			var edges = vis.getEdges();
+			for (var i = 0; i < edges.length; i++) {
+				graph.newEdgeM(edges[i]._source._id,
+				 edges[i]._target._id); 
+			}
+			if (layout) layout.stop();
+			layout = new Layout.ForceDirected(graph, 200, 200, 0.3);
+			
+			
+			
+			renderer = new Renderer(10, layout,
+			function clear() {
+
+			},
+			function drawEdge(edge, p1, p2) {
+				
+			},
+			function drawNode(node, p) {
+				//console.log(p);
+				//alert(JSON.stringify(p));
+				vis.getNode(node.data.label).setPosition(p.x * 100 + 200,  p.y * 100 +200);
+			});
+			renderer.start();
+		}
+};
