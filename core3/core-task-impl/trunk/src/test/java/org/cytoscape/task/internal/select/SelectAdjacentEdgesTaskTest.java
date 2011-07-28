@@ -1,12 +1,5 @@
 /*
-  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -31,10 +24,13 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.task.internal.select;
 
+
+import javax.swing.undo.UndoableEditSupport;
+
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,30 +39,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.work.Task;
+import org.cytoscape.work.undo.UndoSupport;
+
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class SelectAdjacentEdgesTaskTest extends AbstractSelectTaskTester {
-    @Before
-    public void setUp() throws Exception {
-	super.setUp();
-    }
+	@Before
+	public void setUp() throws Exception {
+		super.setUp();
+	}
 
-    @Test
-    public void testRun() throws Exception {
-	when(r3.get("selected", Boolean.class)).thenReturn(true);
-	when(r4.get("selected", Boolean.class)).thenReturn(false);
+	@Test
+	public void testRun() throws Exception {
+		final CyTable edgeTable = mock(CyTable.class);
+		when(net.getDefaultEdgeTable()).thenReturn(edgeTable);
+		UndoableEditSupport undoableEditSupport = mock(UndoableEditSupport.class);
+		UndoSupport undoSupport = mock(UndoSupport.class);
+		when(undoSupport.getUndoableEditSupport()).thenReturn(undoableEditSupport);
 
-	List<CyEdge> el = new ArrayList<CyEdge>();
-	el.add(e1);
-	when(net.getAdjacentEdgeList(e3, CyEdge.Type.ANY)).thenReturn(el);
+		when(r3.get("selected", Boolean.class)).thenReturn(true);
+		when(r4.get("selected", Boolean.class)).thenReturn(false);
 
-	// run the task
-	Task t = new SelectAdjacentEdgesTask(net, networkViewManager, eventHelper);
-	t.run(tm);
+		List<CyEdge> el = new ArrayList<CyEdge>();
+		el.add(e1);
+		when(net.getAdjacentEdgeList(e3, CyEdge.Type.ANY)).thenReturn(el);
 
-	// check that the expected rows were set
-	verify(r1, times(1)).set("selected", true);
-    }
+		// run the task
+		Task t = new SelectAdjacentEdgesTask(undoSupport, net, networkViewManager, eventHelper);
+		t.run(tm);
+
+		// check that the expected rows were set
+		verify(r1, times(1)).set("selected", true);
+	}
 }

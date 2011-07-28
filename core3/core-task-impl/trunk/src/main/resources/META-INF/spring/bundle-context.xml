@@ -106,6 +106,7 @@
 
 	<bean id="selectAdjacentEdgesTaskFactory"
 		class="org.cytoscape.task.internal.select.SelectAdjacentEdgesTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperRef" />
 	</bean>

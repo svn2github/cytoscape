@@ -93,7 +93,7 @@ public class AllFactoryTest {
 
 	@Test
 	public void testSelectAdjacentEdgesTaskFactory() {
-		executeTest(new SelectAdjacentEdgesTaskFactory(networkViewManager, eventHelper));
+		executeTest(new SelectAdjacentEdgesTaskFactory(undoSupport, networkViewManager, eventHelper));
 	}
 
 	@Test
