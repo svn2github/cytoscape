@@ -98,12 +98,12 @@ public class AllFactoryTest {
 
 	@Test
 	public void testSelectAllEdgesTaskFactory() {
-		executeTest(new SelectAllEdgesTaskFactory(networkViewManager, eventHelper));
+		executeTest(new SelectAllEdgesTaskFactory(undoSupport, networkViewManager, eventHelper));
 	}
 
 	@Test
 	public void testSelectAllNodesTaskFactory() {
-		executeTest(new SelectAllNodesTaskFactory(networkViewManager, eventHelper));
+		executeTest(new SelectAllNodesTaskFactory(undoSupport, networkViewManager, eventHelper));
 	}
 
 	@Test

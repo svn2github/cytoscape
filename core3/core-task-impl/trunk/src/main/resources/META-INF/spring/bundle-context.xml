@@ -94,12 +94,14 @@
 
 	<bean id="selectAllEdgesTaskFactory"
 		class="org.cytoscape.task.internal.select.SelectAllEdgesTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
 
 	<bean id="selectAllNodesTaskFactory"
 		class="org.cytoscape.task.internal.select.SelectAllNodesTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
