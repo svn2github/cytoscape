@@ -179,6 +179,8 @@
 	<!-- show/hide -->
 	<bean id="hideSelectedTaskFactory"
 		class="org.cytoscape.task.internal.hide.HideSelectedTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
+		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
 
 	<bean id="hideSelectedNodesTaskFactory"
