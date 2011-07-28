@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+  Copyright (c) 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -24,10 +24,13 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.task.internal.select;
 
+
+import javax.swing.undo.UndoableEditSupport;
+
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,31 +40,41 @@ import java.util.List;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.work.Task;
+import org.cytoscape.work.undo.UndoSupport;
+
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class SelectFirstNeighborsTaskTest extends AbstractSelectTaskTester {
-    @Before
-    public void setUp() throws Exception {
-	super.setUp();
-    }
+	@Before
+	public void setUp() throws Exception {
+		super.setUp();
+	}
 
-    @Test
-    public void testRun() throws Exception {
-	// more setup
-	when(r3.get("selected", Boolean.class)).thenReturn(true);
-	when(r4.get("selected", Boolean.class)).thenReturn(false);
+	@Test
+	public void testRun() throws Exception {
+		final CyTable nodeTable = mock(CyTable.class);
+		when(net.getDefaultNodeTable()).thenReturn(nodeTable);
+		UndoableEditSupport undoableEditSupport = mock(UndoableEditSupport.class);
+		UndoSupport undoSupport = mock(UndoSupport.class);
+		when(undoSupport.getUndoableEditSupport()).thenReturn(undoableEditSupport);
 
-	List<CyNode> nl = new ArrayList<CyNode>();
-	nl.add(e4);
-	when(net.getNeighborList(e3, CyEdge.Type.ANY)).thenReturn(nl);
+		// more setup
+		when(r3.get("selected", Boolean.class)).thenReturn(true);
+		when(r4.get("selected", Boolean.class)).thenReturn(false);
 
-	// run the task
-	Task t = new SelectFirstNeighborsTask(net, networkViewManager, eventHelper);
-	t.run(tm);
+		List<CyNode> nl = new ArrayList<CyNode>();
+		nl.add(e4);
+		when(net.getNeighborList(e3, CyEdge.Type.ANY)).thenReturn(nl);
 
-	// check that the expected rows were set
-	verify(r4, times(1)).set("selected", true);
-    }
+		// run the task
+		Task t = new SelectFirstNeighborsTask(undoSupport, net, networkViewManager, eventHelper);
+		t.run(tm);
+
+		// check that the expected rows were set
+		verify(r4, times(1)).set("selected", true);
+	}
 }

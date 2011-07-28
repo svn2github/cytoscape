@@ -1,5 +1,6 @@
 package org.cytoscape.task.internal.quickstart.subnetworkbuilder;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,8 +15,8 @@ import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CreateSubnetworkFromSearchTask extends AbstractTask {
 
+public class CreateSubnetworkFromSearchTask extends AbstractTask {
 	private static final Logger logger = LoggerFactory.getLogger(CreateSubnetworkFromSearchTask.class);
 
 	static final String QUERY_GENE_ATTR_NAME = "Gene Type";
@@ -37,7 +38,6 @@ public class CreateSubnetworkFromSearchTask extends AbstractTask {
 		selectGenes(new ArrayList<String>());
 
 		taskMonitor.setProgress(1.0);
-
 	}
 
 	protected void selectGenes(final List<String> geneList) {
@@ -50,27 +50,25 @@ public class CreateSubnetworkFromSearchTask extends AbstractTask {
 			nodeTable.createColumn(SEARCH_GENE_ATTR_NAME, String.class, false);
 
 		boolean found = false;
-		
+		List<CyNode> nodeList = target.getNodeList();
+		for (final CyNode node : nodeList) {
+			final String nodeName = node.getCyRow().get(CyTableEntry.NAME, String.class);
 
-			List<CyNode> nodeList = target.getNodeList();
-			for (final CyNode node : nodeList) {
-				final String nodeName = node.getCyRow().get(CyTableEntry.NAME, String.class);
-
-				if (geneList.contains(nodeName) && state.getDiseaseGenes().contains(nodeName)) {
-					node.getCyRow().set(CyNetwork.SELECTED, true);
-					node.getCyRow().set(QUERY_GENE_ATTR_NAME, "query and disease");
-					node.getCyRow().set(SEARCH_GENE_ATTR_NAME, state.getSearchTerms());
-					found = true;
-				} else if (geneList.contains(nodeName)) {
-					node.getCyRow().set(CyNetwork.SELECTED, true);
-					node.getCyRow().set(QUERY_GENE_ATTR_NAME, "query");
-					found = true;
-				} else if (state.getDiseaseGenes().contains(nodeName)) {
-					node.getCyRow().set(CyNetwork.SELECTED, true);
-					node.getCyRow().set(QUERY_GENE_ATTR_NAME, "disease");
-					node.getCyRow().set(SEARCH_GENE_ATTR_NAME, state.getSearchTerms());
-				}
+			if (geneList.contains(nodeName) && state.getDiseaseGenes().contains(nodeName)) {
+				node.getCyRow().set(CyNetwork.SELECTED, true);
+				node.getCyRow().set(QUERY_GENE_ATTR_NAME, "query and disease");
+				node.getCyRow().set(SEARCH_GENE_ATTR_NAME, state.getSearchTerms());
+				found = true;
+			} else if (geneList.contains(nodeName)) {
+				node.getCyRow().set(CyNetwork.SELECTED, true);
+				node.getCyRow().set(QUERY_GENE_ATTR_NAME, "query");
+				found = true;
+			} else if (state.getDiseaseGenes().contains(nodeName)) {
+				node.getCyRow().set(CyNetwork.SELECTED, true);
+				node.getCyRow().set(QUERY_GENE_ATTR_NAME, "disease");
+				node.getCyRow().set(SEARCH_GENE_ATTR_NAME, state.getSearchTerms());
 			}
+		}
 
 		if (!found) {
 			logger.error("Query genes were not found in the interactome.");
@@ -84,8 +82,9 @@ public class CreateSubnetworkFromSearchTask extends AbstractTask {
 		Task createNetworkTask = util.getNewNetworkSelectedNodesOnlyTask(target);
 		this.insertTasksAfterCurrentTask(createNetworkTask);
 
-		SelectFirstNeighborsTask nextTask = new SelectFirstNeighborsTask(target, util.networkViewManager,
-				util.eventHelper);
+		SelectFirstNeighborsTask nextTask =
+			new SelectFirstNeighborsTask(util.getUndoSupport(), target, util.networkViewManager,
+			                             util.eventHelper);
 		this.insertTasksAfterCurrentTask(nextTask);
 	}
 }

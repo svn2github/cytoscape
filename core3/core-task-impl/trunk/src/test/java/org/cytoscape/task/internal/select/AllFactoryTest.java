@@ -118,7 +118,7 @@ public class AllFactoryTest {
 
 	@Test
 	public void testSelectFirstNeighborsTaskFactory() {
-		executeTest(new SelectFirstNeighborsTaskFactory(networkViewManager, eventHelper));
+		executeTest(new SelectFirstNeighborsTaskFactory(undoSupport, networkViewManager, eventHelper));
 	}
 
 	@Test

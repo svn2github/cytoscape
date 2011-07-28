@@ -125,6 +125,7 @@
 		class="org.cytoscape.task.internal.select.SelectFirstNeighborsTaskFactory">
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperRef" />
+		<constructor-arg ref="undoSupportServiceRef" />
 	</bean>
 
 	<bean id="deselectAllTaskFactory"
@@ -425,7 +426,7 @@
 		<constructor-arg ref="visualMappingManagerServiceRef" />
 		<constructor-arg ref="visualStyleFactoryServiceRef" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
-
+		<constructor-arg ref="undoSupportServiceRef" />
 	</bean>
 	
 	<bean id="connectSelectedNodesTaskFactory"

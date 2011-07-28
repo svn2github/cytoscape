@@ -1,5 +1,6 @@
 package org.cytoscape.task.internal.quickstart.subnetworkbuilder;
 
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
@@ -24,9 +25,10 @@ import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.work.Task;
+import org.cytoscape.work.undo.UndoSupport;
+
 
 public class SubnetworkBuilderUtil {
-
 	private CyNetworkReaderManager mgr;
 	private CyNetworkManager netmgr;
 	protected final CyNetworkViewManager networkViewManager;
@@ -52,12 +54,15 @@ public class SubnetworkBuilderUtil {
 	private VisualMappingFunctionFactory ptFactory;
 	private final CyLayoutAlgorithmManager layouts;
 
+	private final UndoSupport undoSupport;
+
 	public SubnetworkBuilderUtil(CyNetworkReaderManager mgr, CyNetworkManager netmgr,
 			final CyNetworkViewManager networkViewManager, CyProperty<Properties> cyProps,
 			CyNetworkNaming cyNetworkNaming, StreamUtil streamUtil, final CyEventHelper eventHelper,
 			final CyApplicationManager appManager, CyRootNetworkFactory crnf, CyNetworkViewFactory cnvf,
-			VisualMappingManager vmm, final VisualStyleFactory vsFactory, final CyLayoutAlgorithmManager layouts) {
-
+			final VisualMappingManager vmm, final VisualStyleFactory vsFactory,
+			final CyLayoutAlgorithmManager layouts, final UndoSupport undoSupport)
+	{
 		this.mgr = mgr;
 		this.netmgr = netmgr;
 		this.networkViewManager = networkViewManager;
@@ -72,6 +77,7 @@ public class SubnetworkBuilderUtil {
 		this.appManager = appManager;
 		this.vsFactory = vsFactory;
 		this.layouts = layouts;
+		this.undoSupport = undoSupport;
 	}
 
 	public void addProcessor(InteractionFilePreprocessor processor, Map props) {
@@ -84,6 +90,8 @@ public class SubnetworkBuilderUtil {
 			this.processors.remove(processor);
 
 	}
+
+	UndoSupport getUndoSupport() { return undoSupport; }
 
 	public Task getWebServiceImportTask() {
 		return new ImportNetworkFromPublicDataSetTask(processors, mgr, netmgr, networkViewManager, props,
