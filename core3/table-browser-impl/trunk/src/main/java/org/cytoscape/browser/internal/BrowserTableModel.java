@@ -36,6 +36,7 @@ import org.cytoscape.model.events.RowsSetListener;
 public final class BrowserTableModel extends AbstractTableModel implements ColumnCreatedListener,
 		ColumnDeletedListener, ColumnNameChangedListener, RowsSetListener, RowsCreatedListener {
 	private static final long serialVersionUID = -517521404005631245L;
+	
 	private static final int EOF = -1;
 	private static final int MAX_INITIALLY_VSIBLE_ATTRS = 10;
 	private final JTable table;

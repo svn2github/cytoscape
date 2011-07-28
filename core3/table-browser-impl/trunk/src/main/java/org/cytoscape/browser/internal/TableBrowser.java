@@ -205,7 +205,7 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 	}
 
 	/**
-	 * Switch selected table.
+	 * Switch to new table when it is registered to the table manager.
 	 */
 	@Override
 	public void handleEvent(TableAddedEvent e) {
