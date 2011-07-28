@@ -123,7 +123,7 @@ public class AllFactoryTest {
 
 	@Test
 	public void testSelectFromFileListTaskFactory() {
-		executeTest(new SelectFromFileListTaskFactory(networkViewManager, eventHelper));
+		executeTest(new SelectFromFileListTaskFactory(undoSupport, networkViewManager, eventHelper));
 	}
 
 	private void executeTest(NetworkTaskFactory ntf) {

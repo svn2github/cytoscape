@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+  Copyright (c) 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -28,6 +28,8 @@
 package org.cytoscape.task.internal.select;
 
 
+import javax.swing.undo.UndoableEditSupport;
+
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -41,21 +43,29 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.undo.UndoSupport;
 
 import java.io.File;
 
 
 public class SelectFromFileListTaskTest extends AbstractSelectTaskTester {
 	CyEventHelper eventHelper;
+	UndoSupport undoSupport;
 
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
 		this.eventHelper = mock(CyEventHelper.class);
+		final CyTable nodeTable = mock(CyTable.class);
+		when(net.getDefaultNodeTable()).thenReturn(nodeTable);
+		UndoableEditSupport undoableEditSupport = mock(UndoableEditSupport.class);
+		this.undoSupport = mock(UndoSupport.class);
+		when(undoSupport.getUndoableEditSupport()).thenReturn(undoableEditSupport);
 	}
 
 	@Test
@@ -64,8 +74,9 @@ public class SelectFromFileListTaskTest extends AbstractSelectTaskTester {
 		when(r4.get("name",String.class)).thenReturn("marge");
 
 		// run the task
-		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager,
-								      eventHelper);
+		SelectFromFileListTask t =
+			new SelectFromFileListTask(undoSupport, net, networkViewManager,
+			                           eventHelper);
 		t.file = new File("./src/test/resources/node_names.txt");
 		t.run(tm);
 
@@ -77,14 +88,16 @@ public class SelectFromFileListTaskTest extends AbstractSelectTaskTester {
 	@Test(expected=NullPointerException.class)
 	public void testRunWithoutFileSpecified() throws Exception {
 		// run the task
-		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager, eventHelper);
+		SelectFromFileListTask t =
+			new SelectFromFileListTask(undoSupport, net, networkViewManager, eventHelper);
 		t.run(tm);
 	}
 
 	@Test(expected=Exception.class)
-	public void testNonExistantFile() throws Exception {
+	public void testNonExistentFile() throws Exception {
 		// run the task
-		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager, eventHelper);
+		SelectFromFileListTask t =
+			new SelectFromFileListTask(undoSupport, net, networkViewManager, eventHelper);
 		t.file = new File("./src/test/resources/does-not-exist.txt");
 		t.run(tm);
 	}
@@ -92,7 +105,8 @@ public class SelectFromFileListTaskTest extends AbstractSelectTaskTester {
 	@Test
 	public void testRunEmptyFile() throws Exception {
 		// run the task
-		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager, eventHelper);
+		SelectFromFileListTask t =
+			new SelectFromFileListTask(undoSupport, net, networkViewManager, eventHelper);
 		t.file = new File("./src/test/resources/empty.txt");
 		t.run(tm);
 
@@ -104,7 +118,8 @@ public class SelectFromFileListTaskTest extends AbstractSelectTaskTester {
 	@Test
 	public void testRunNamesDontMatch() throws Exception {
 		// run the task
-		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager, eventHelper);
+		SelectFromFileListTask t =
+			new SelectFromFileListTask(undoSupport, net, networkViewManager, eventHelper);
 		t.file = new File("./src/test/resources/bad_names.txt");
 		t.run(tm);
 
@@ -112,5 +127,4 @@ public class SelectFromFileListTaskTest extends AbstractSelectTaskTester {
 		verify(r3, never()).set("selected",true);
 		verify(r4, never()).set("selected",true);
 	}
-
 }

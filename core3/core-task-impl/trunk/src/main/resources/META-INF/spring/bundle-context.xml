@@ -165,6 +165,7 @@
 
 	<bean id="selectFromFileListTaskFactory"
 		class="org.cytoscape.task.internal.select.SelectFromFileListTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
