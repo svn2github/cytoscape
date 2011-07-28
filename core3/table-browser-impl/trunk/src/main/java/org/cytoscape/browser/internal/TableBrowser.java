@@ -31,6 +31,8 @@ import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.CyTableMetadata;
 import org.cytoscape.model.events.TableAboutToBeDeletedEvent;
 import org.cytoscape.model.events.TableAboutToBeDeletedListener;
+import org.cytoscape.model.events.TableAddedEvent;
+import org.cytoscape.model.events.TableAddedListener;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.events.SetCurrentNetworkEvent;
@@ -40,11 +42,11 @@ import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.work.swing.GUITaskManager;
 
 
-@SuppressWarnings("serial")
-public class TableBrowser
-	extends JPanel implements CytoPanelComponent, ActionListener, TableAboutToBeDeletedListener,
-				  SetCurrentNetworkListener
-{
+public class TableBrowser extends JPanel implements CytoPanelComponent, ActionListener, TableAboutToBeDeletedListener,
+		SetCurrentNetworkListener, TableAddedListener {
+	
+	private static final long serialVersionUID = 1968196123280466989L;
+	
 	private final CyTableManager tableManager;
 	private final CyServiceRegistrar serviceRegistrar;
 	private final EquationCompiler compiler;
@@ -200,5 +202,15 @@ public class TableBrowser
 				tableToSelect = currentNetwork.getDefaultNodeTable();
 			comboBoxModel.addAndSetSelectedItem(tableToSelect);
 		}
+	}
+
+	/**
+	 * Switch selected table.
+	 */
+	@Override
+	public void handleEvent(TableAddedEvent e) {
+		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
+		final CyTable newTable = e.getTable();
+		comboBoxModel.addAndSetSelectedItem(newTable);
 	}
 }

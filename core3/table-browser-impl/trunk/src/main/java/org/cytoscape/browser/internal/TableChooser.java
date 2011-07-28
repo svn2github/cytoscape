@@ -16,6 +16,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
@@ -26,6 +27,9 @@ import org.cytoscape.model.CyTableMetadata;
 
 
 public class TableChooser extends JComboBox {
+	
+	private static final long serialVersionUID = 5141179419574773453L;
+	
 	private final Map<CyTable, String> tableToStringMap;
 
 	TableChooser(final CyTableManager tableManager, final CyNetworkManager networkManager) {
@@ -36,11 +40,16 @@ public class TableChooser extends JComboBox {
 }
 
 
-class MyComboBoxModel extends DefaultComboBoxModel {
-	final static Comparator<CyTable> tableComparator = new TableComparator();
+final class MyComboBoxModel extends DefaultComboBoxModel {
+	
+	private static final long serialVersionUID = -5435833047656563358L;
+	
+	private final static Comparator<CyTable> tableComparator = new TableComparator();
+	
 	private final CyTableManager tableManager;
 	private final CyNetworkManager networkManager;
 	private final Map<CyTable, String> tableToStringMap;
+	
 	private List<CyTable> tables;
 	private Set<CyTable> oldSet;
 
@@ -106,9 +115,14 @@ class MyComboBoxModel extends DefaultComboBoxModel {
 			updateTableToStringMap();
 			fireContentsChanged(this, 0, oldSet.size() - 1);
 		}
-		setSelectedItem(newTable);
+		
+		// This is necessary to avoid deadlock!
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				setSelectedItem(newTable);
+			}
+		});		
 	}
-	
 	
 	public void removeItem(CyTable deletedTable){
 		
@@ -132,8 +146,7 @@ class MyComboBoxModel extends DefaultComboBoxModel {
 	}
 }
 
-
-class TableComparator implements Comparator<CyTable> {
+final class TableComparator implements Comparator<CyTable> {
 	public int compare(final CyTable table1, final CyTable table2) {
 		return table1.getTitle().compareTo(table2.getTitle());
 	}
