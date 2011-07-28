@@ -1,14 +1,7 @@
 /*
   File: HideSelectedEdgesTask.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -34,31 +27,42 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.task.internal.hide;
+
 
 import java.util.List;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 public class HideSelectedEdgesTask extends AbstractNetworkViewTask {
+	private final UndoSupport undoSupport;
+	private final CyEventHelper eventHelper;
 
-	public HideSelectedEdgesTask(CyNetworkView v) {
+	public HideSelectedEdgesTask(final UndoSupport undoSupport,
+	                             final CyEventHelper eventHelper, final CyNetworkView v)
+	{
 		super(v);
+		this.undoSupport = undoSupport;
+		this.eventHelper = eventHelper;
 	}
 
 	public void run(TaskMonitor e) {
-		
-		final CyNetwork curr = view.getModel(); 
-		final List<CyEdge> selectedEdges = CyTableUtil.getEdgesInState(curr,CyNetwork.SELECTED, true); 
+		final CyNetwork network = view.getModel(); 
+		undoSupport.getUndoableEditSupport().postEdit(
+			new HideEdit(eventHelper, "Hide Selected Edges", network, view));
 
-		HideUtils.setVisibleEdges( selectedEdges, false, view );
+		final List<CyEdge> selectedEdges =
+			CyTableUtil.getEdgesInState(network, CyNetwork.SELECTED, true); 
+
+		HideUtils.setVisibleEdges(selectedEdges, false, view);
 		
 		view.updateView();
 	} 
