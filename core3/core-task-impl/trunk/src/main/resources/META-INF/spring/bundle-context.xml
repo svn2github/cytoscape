@@ -116,6 +116,7 @@
 
 	<bean id="selectConnectedNodesTaskFactory"
 		class="org.cytoscape.task.internal.select.SelectConnectedNodesTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperRef" />
 	</bean>

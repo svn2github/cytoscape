@@ -1,7 +1,7 @@
 /*
  File: SelectConnectedNodesTask.java
 
- Copyright (c) 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2007, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -26,38 +26,52 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.task.internal.select;
+
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.undo.UndoSupport;
+
 
 public class SelectConnectedNodesTask extends AbstractSelectTask {
-    public SelectConnectedNodesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager,
-	    final CyEventHelper eventHelper) {
-	super(net, networkViewManager, eventHelper);
-    }
+	private final UndoSupport undoSupport;
 
-    public void run(TaskMonitor tm) {
-	final List<CyEdge> selectedEdges = CyTableUtil.getEdgesInState(network, "selected", true);
-	final Set<CyNode> nodes = new HashSet<CyNode>();
-
-	for (CyEdge edge : selectedEdges) {
-	    nodes.add(edge.getSource());
-	    nodes.add(edge.getTarget());
+	public SelectConnectedNodesTask(final UndoSupport undoSupport, final CyNetwork net,
+	                                final CyNetworkViewManager networkViewManager,
+	                                final CyEventHelper eventHelper)
+	{
+		super(net, networkViewManager, eventHelper);
+		this.undoSupport = undoSupport;
 	}
 
-	selectUtils.setSelectedNodes(nodes, true);
-	updateView();
-    }
+	public void run(TaskMonitor tm) {
+		final CyNetworkView view = networkViewManager.getNetworkView(network.getSUID());
+		undoSupport.getUndoableEditSupport().postEdit(
+			new SelectionEdit(eventHelper, "Select Nodes Connected by Selected Edges",
+			                  network, view, SelectionEdit.SelectionFilter.NODES_ONLY));
+
+		final List<CyEdge> selectedEdges = CyTableUtil.getEdgesInState(network, "selected", true);
+		final Set<CyNode> nodes = new HashSet<CyNode>();
+
+		for (CyEdge edge : selectedEdges) {
+			nodes.add(edge.getSource());
+			nodes.add(edge.getTarget());
+		}
+
+		selectUtils.setSelectedNodes(nodes, true);
+		updateView();
+	}
 }

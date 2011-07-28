@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+  Copyright (c) 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -113,7 +113,7 @@ public class AllFactoryTest {
 
 	@Test
 	public void testSelectConnectedNodesTaskFactory() {
-		executeTest(new SelectConnectedNodesTaskFactory(networkViewManager, eventHelper));
+		executeTest(new SelectConnectedNodesTaskFactory(undoSupport, networkViewManager, eventHelper));
 	}
 
 	@Test
