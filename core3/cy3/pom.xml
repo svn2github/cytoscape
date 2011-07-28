@@ -50,11 +50,7 @@
 		<module>integration-test-support</module>
 		<module>test-support</module>
 
-		<module>ding-customgraphics-manager-impl</module>
-		<module>ding-presentation-impl</module>
-		<module>graph-render</module>
-		<module>spacial</module>
-		<module>util-intr</module>
+		<module>ding-impl</module>
 
 		<module>biopax-impl</module>
 		<module>command-executor-impl</module>
