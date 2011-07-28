@@ -183,6 +183,8 @@
 
 	<bean id="hideSelectedNodesTaskFactory"
 		class="org.cytoscape.task.internal.hide.HideSelectedNodesTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
+		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
 
 	<bean id="hideSelectedEdgesTaskFactory"
