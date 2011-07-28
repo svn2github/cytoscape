@@ -14,7 +14,6 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.property.CyProperty;
-import org.cytoscape.test.support.NetworkViewTestSupport;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
@@ -40,10 +39,6 @@ public abstract class AbstractVisualStyleTest {
 	
 	protected VisualLexicon lexicon;
 	
-//	protected DiscreteMapping<String, Paint> colorMapping1;
-//	protected DiscreteMapping<String, Paint> colorMapping2;
-	
-	
 	// Simple test network
 	protected CyNode node1;
 	protected CyNode node2;
@@ -51,46 +46,6 @@ public abstract class AbstractVisualStyleTest {
 	protected CyEdge edge;
 	protected CyNetwork network;
 	protected CyNetworkView networkView;
-	
-	
-	@Before
-	public void setUp() throws Exception {
-		
-		final Class<String> type = String.class;
-//		colorMapping1 = new DiscreteMapping<String, Paint>(attrName, type,
-//				MinimalVisualLexicon.NODE_PAINT);
-//		colorMapping2 = new DiscreteMapping<String, Paint>(attrName, type,
-//				MinimalVisualLexicon.NODE_FILL_COLOR);
-//		
-//		colorMapping1.putMapValue("red", RED2);
-//		colorMapping1.putMapValue("green", GREEN2);
-//		colorMapping1.putMapValue("blue", Color.BLUE);
-//		
-//		colorMapping2.putMapValue("red", RED1);
-//		colorMapping2.putMapValue("green", GREEN1);
-//		colorMapping2.putMapValue("blue", Color.BLUE);
-		
-		CyProperty<Properties> cyProperties = mock(CyProperty.class);
-		NetworkViewTestSupport nvts = new NetworkViewTestSupport(cyProperties);
-		network = nvts.getNetworkFactory().getInstance();
-		
-		node1 = network.addNode();
-		node2 = network.addNode();
-		node3 = network.addNode();
-		
-		edge = network.addEdge(node1, node2, true);
-		CyTable nodeTable = network.getDefaultNodeTable();
-		nodeTable.createColumn(attrName, String.class, true);
-		nodeTable.getRow(node1.getSUID()).set(attrName, "red");
-		nodeTable.getRow(node2.getSUID()).set(attrName, "green");
-		nodeTable.getRow(node3.getSUID()).set(attrName, "foo");
-		
-		networkView = nvts.getNetworkViewFactory().getNetworkView(network);
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
 	
 	
 	@Test
