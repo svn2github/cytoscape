@@ -108,7 +108,7 @@ public class AllFactoryTest {
 
 	@Test
 	public void testSelectAllTaskFactory() {
-		executeTest(new SelectAllTaskFactory(networkViewManager, eventHelper));
+		executeTest(new SelectAllTaskFactory(undoSupport, networkViewManager, eventHelper));
 	}
 
 	@Test
