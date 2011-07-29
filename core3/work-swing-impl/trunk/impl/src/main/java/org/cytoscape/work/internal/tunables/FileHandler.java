@@ -187,31 +187,30 @@ public class FileHandler extends AbstractGUITunableHandler {
 	// Click on the "open" or "save" button action listener
 	private final class myFileActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent ae) {
-				try_again:  {
-	
-				final int load_or_save = input ? FileUtil.LOAD : FileUtil.SAVE;
+			final int load_or_save = input ? FileUtil.LOAD : FileUtil.SAVE;
 				
-				if (load_or_save == FileUtil.SAVE){
-					//In case of export, we can not detect the filter current used, so we we use filter "All image files" or 
-					//"All network files" when export image or network
-					FileChooserFilter filter = null;
-					for (int i=0; i<filters.size(); i++){
-						filter = filters.get(i);
-						if (filter.getDescription().trim().equalsIgnoreCase("All image files") ||
-								filter.getDescription().trim().equalsIgnoreCase("All network files")){
-							filters = new ArrayList<FileChooserFilter>();
-							filters.add(filter);
-							break;
-						}
+			if (load_or_save == FileUtil.SAVE){
+				//In case of export, we can not detect the filter current used, so we we use filter "All image files" or 
+				//"All network files" when export image or network
+				FileChooserFilter filter = null;
+				for (int i=0; i<filters.size(); i++){
+					filter = filters.get(i);
+					if (filter.getDescription().trim().equalsIgnoreCase("All image files") ||
+					    filter.getDescription().trim().equalsIgnoreCase("All network files")){
+						filters = new ArrayList<FileChooserFilter>();
+						filters.add(filter);
+						break;
 					}
 				}
+			}
 				
-				final File file = fileUtil.getFile(SwingUtilities.getWindowAncestor(panel), titleLabel.getText(), load_or_save, filters);
-				if (file != null) {
-					fileTextField.setFont(FILE_NAME_FONT);
-					fileTextField.setText(file.getAbsolutePath());
-					fileTextField.removeMouseListener(mouseClick);
-				}
+			final File file =
+				fileUtil.getFile(SwingUtilities.getWindowAncestor(panel),
+				                 titleLabel.getText(), load_or_save, filters);
+			if (file != null) {
+				fileTextField.setFont(FILE_NAME_FONT);
+				fileTextField.setText(file.getAbsolutePath());
+				fileTextField.removeMouseListener(mouseClick);
 			}
 		}
 	}
