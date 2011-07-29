@@ -359,6 +359,8 @@
 	
 	<bean id="applyPreferredLayoutTaskFactory"
 		class="org.cytoscape.task.internal.layout.ApplyPreferredLayoutTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
+		<constructor-arg ref="cyEventHelperRef" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>

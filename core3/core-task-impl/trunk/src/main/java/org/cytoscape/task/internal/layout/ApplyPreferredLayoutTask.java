@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -24,37 +24,56 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.task.internal.layout;
 
+
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.task.AbstractNetworkViewTask;
-import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.undo.UndoSupport;
+
 import java.util.Properties;
 
-public class ApplyPreferredLayoutTask extends AbstractNetworkViewTask {
 
+public class ApplyPreferredLayoutTask extends AbstractNetworkViewTask {
 	private static final String DEF_LAYOUT = "force-directed";
 
+	private final UndoSupport undoSupport;
+	private final CyEventHelper eventHelper;
 	private Properties props;
 	private final CyLayoutAlgorithmManager layouts;
 
-	public ApplyPreferredLayoutTask(CyNetworkView v, CyLayoutAlgorithmManager layouts, Properties props) {
+	public ApplyPreferredLayoutTask(final UndoSupport undoSupport,
+	                                final CyEventHelper eventHelper,
+	                                final CyNetworkView v,
+	                                final CyLayoutAlgorithmManager layouts,
+	                                final Properties props)
+	{
 		super(v);
-		this.layouts = layouts;
-		this.props = props;
+		this.undoSupport = undoSupport;
+		this.eventHelper = eventHelper;
+		this.layouts     = layouts;
+		this.props       = props;
 	}
 	
-	public ApplyPreferredLayoutTask(final CyNetworkView v, final CyLayoutAlgorithmManager layouts) {
+	public ApplyPreferredLayoutTask(final CyNetworkView v,
+	                                final CyLayoutAlgorithmManager layouts)
+	{
 		super(v);
+		this.undoSupport = null;
+		this.eventHelper = null;
 		this.layouts = layouts;
 	}
 
 	public void run(TaskMonitor tm) {
-		
+		if (undoSupport != null)
+			undoSupport.getUndoableEditSupport().postEdit(new LayoutEdit(eventHelper,
+			                                                             view));
+
 		String pref = CyLayoutAlgorithmManager.DEFAULT_LAYOUT_NAME;
 		if(props != null) 
 			pref = props.getProperty("preferredLayoutAlgorithm", DEF_LAYOUT);
