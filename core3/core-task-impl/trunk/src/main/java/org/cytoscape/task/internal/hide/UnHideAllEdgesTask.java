@@ -54,7 +54,7 @@ public class UnHideAllEdgesTask extends AbstractNetworkViewTask {
 	public void run(TaskMonitor e) {
 		final CyNetwork network = view.getModel();
 		undoSupport.getUndoableEditSupport().postEdit(
-			new HideEdit(eventHelper, "Unhide All Edges", network, view));
+			new HideEdit(eventHelper, "Show All Edges", network, view));
 
 		HideUtils.setVisibleEdges(network.getEdgeList(), true, view);
 
