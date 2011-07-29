@@ -1,14 +1,7 @@
 /*
   File: UnHideAllTask.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -37,22 +30,33 @@
 package org.cytoscape.task.internal.hide;
 
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 public class UnHideAllTask extends AbstractNetworkViewTask {
-	public UnHideAllTask(CyNetworkView v) {
+	private final UndoSupport undoSupport;
+	private final CyEventHelper eventHelper;
+
+	public UnHideAllTask(final UndoSupport undoSupport, final CyEventHelper eventHelper,
+	                     final CyNetworkView v)
+	{
 		super(v);
+		this.undoSupport = undoSupport;
+		this.eventHelper = eventHelper;
 	}
 
 	public void run(TaskMonitor e) {
-		final CyNetwork curr = view.getModel();
+		final CyNetwork network = view.getModel();
+		undoSupport.getUndoableEditSupport().postEdit(
+			new HideEdit(eventHelper, "Show All Nodes And Edges", network, view));
 
-		HideUtils.setVisibleNodes( curr.getNodeList(), true, view );
-		HideUtils.setVisibleEdges( curr.getEdgeList(), true, view );
+		HideUtils.setVisibleNodes(network.getNodeList(), true, view);
+		HideUtils.setVisibleEdges(network.getEdgeList(), true, view);
 
 		view.updateView();
 	} 
