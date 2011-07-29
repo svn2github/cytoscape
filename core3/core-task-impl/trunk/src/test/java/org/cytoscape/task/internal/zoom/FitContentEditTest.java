@@ -23,7 +23,7 @@ public class FitContentEditTest {
 		when(view.getVisualProperty(NETWORK_CENTER_X_LOCATION)).thenReturn(100.0);
 		when(view.getVisualProperty(NETWORK_CENTER_Y_LOCATION)).thenReturn(400.0);
 
-		final FitContentEdit zoomEdit = new FitContentEdit(view);
+		final FitContentEdit zoomEdit = new FitContentEdit("XYZ", view);
 		when(view.getVisualProperty(NETWORK_SCALE_FACTOR)).thenReturn(1.0);
 		when(view.getVisualProperty(NETWORK_CENTER_X_LOCATION)).thenReturn(200.0);
 		when(view.getVisualProperty(NETWORK_CENTER_Y_LOCATION)).thenReturn(300.0);

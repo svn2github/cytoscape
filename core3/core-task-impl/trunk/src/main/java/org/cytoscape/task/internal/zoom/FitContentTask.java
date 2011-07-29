@@ -31,9 +31,9 @@ package org.cytoscape.task.internal.zoom;
 
 
 import org.cytoscape.task.AbstractNetworkViewTask;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.undo.UndoSupport;
-import org.cytoscape.view.model.CyNetworkView;
 
 
 public class FitContentTask extends AbstractNetworkViewTask {
@@ -45,7 +45,8 @@ public class FitContentTask extends AbstractNetworkViewTask {
 	}
 
 	public void run(TaskMonitor tm) {
-		undoSupport.getUndoableEditSupport().postEdit(new FitContentEdit(view));
+		undoSupport.getUndoableEditSupport().postEdit(new FitContentEdit("Fit Content",
+		                                                                 view));
 
 		view.fitContent();
 	}

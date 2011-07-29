@@ -17,8 +17,8 @@ final class FitContentEdit extends CyAbstractEdit {
 	private final double networkCenterXLocation;
 	private final double networkCenterYLocation;
 
-	FitContentEdit(final CyNetworkView view) {
-		super("Fit Content");
+	FitContentEdit(final String description, final CyNetworkView view) {
+		super(description);
 
 		this.view = view;
 		networkScaleFactor = view.getVisualProperty(NETWORK_SCALE_FACTOR);

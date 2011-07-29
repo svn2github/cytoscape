@@ -280,6 +280,7 @@
 	</bean>
 
 	<bean id="fitSelectedTaskFactory" class="org.cytoscape.task.internal.zoom.FitSelectedTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
 	</bean>
 
 	<bean id="fitContentTaskFactory" class="org.cytoscape.task.internal.zoom.FitContentTaskFactory">
