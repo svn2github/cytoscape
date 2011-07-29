@@ -250,6 +250,9 @@ class FileUtilImpl implements FileUtil {
 
 		@Override
 		public boolean accept(final File dir, final String name) {
+			if (filters.isEmpty())
+				return true;
+
 			final File path = new File(dir, name);
 			for (final FileChooserFilter filter : filters) {
 				if (filter.accept(path))
