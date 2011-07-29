@@ -96,7 +96,6 @@ import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
 import org.openscience.cdk.modeling.builder3d.TemplateHandler3D;
 import org.openscience.cdk.renderer.AtomContainerRenderer;
-import org.openscience.cdk.renderer.ChemModelRenderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.font.AWTFontManager;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
