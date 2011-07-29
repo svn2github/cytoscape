@@ -200,6 +200,8 @@
 
 	<bean id="unHideAllNodesTaskFactory"
 		class="org.cytoscape.task.internal.hide.UnHideAllNodesTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
+		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
 
 	<bean id="unHideAllEdgesTaskFactory"
