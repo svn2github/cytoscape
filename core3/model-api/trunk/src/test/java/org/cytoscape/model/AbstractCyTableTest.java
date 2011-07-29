@@ -249,23 +249,12 @@ public abstract class AbstractCyTableTest {
 		assertEquals(table.getColumn("someInt").getType(), Integer.class );
 	}
 
-	@Test
 	public void testColumnDelete() {
 		table.createColumn("someInt", Integer.class, false);
 		assertTrue(collectionContains(table.getColumns(), "someInt"));
 		
 		table.deleteColumn("someInt");
 		assertFalse(collectionContains(table.getColumns(), "someInt"));
-
-		table.createColumn("someInt2", Integer.class, true);
-		assertTrue(collectionContains(table.getColumns(), "someInt2"));
-		boolean failed = false;
-		try {
-			table.deleteColumn("someInt2");
-		} catch (Exception e) {
-			failed = true;
-		}
-		assertTrue(failed);
 	}
 
 	private static boolean collectionContains(final Collection<CyColumn> columns,
