@@ -205,6 +205,38 @@ int minimum_spanning_tree_unweighted(int res[]) {
   return e;
 }
 
+int minimum_spanning_tree_weighted(int res[], double weights[]) {
+  igraph_t mst;  
+  int from, to;
+  long int ecount = igraph_ecount(&g);
+  igraph_vector_t weights_vector;
+
+  igraph_vector_init(&weights_vector, ecount);
+  for (int i = 0; i < ecount; i++) 
+    VECTOR(weights_vector)[i] = weights[i];    
+  
+  // Calculate MST
+  igraph_minimum_spanning_tree_prim(&g, &mst, &weights_vector);
+
+  // Copy results
+  int e = igraph_ecount(&mst);
+
+  //  printf("Number of edges in MST: %d\n", e);
+  
+  for(int i = 0; i < e ; i++) {
+    igraph_edge(&mst, i, &from, &to);    
+    res[2 * i]     = from;
+    res[2 * i + 1] = to;
+  }
+  
+  // Clean up
+  igraph_destroy(&mst);
+  destroy_graph();
+  igraph_vector_destroy(&weights_vector);	
+
+  return e;
+}
+
 
 // int igraph_minimum_spanning_tree(const igraph_t *graph, igraph_vector_t *res,
 //         const igraph_vector_t *weights);

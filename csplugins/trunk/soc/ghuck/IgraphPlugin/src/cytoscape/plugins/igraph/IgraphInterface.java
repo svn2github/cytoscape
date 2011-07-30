@@ -68,5 +68,8 @@ public class IgraphInterface {
     // Minimum spanning tree - unweighted
     public static native int minimum_spanning_tree_unweighted(int res[]);
 
+    // Minimum spanning tree - weighted
+    public static native int minimum_spanning_tree_weighted(int res[], double weights[]);
+
 }
 

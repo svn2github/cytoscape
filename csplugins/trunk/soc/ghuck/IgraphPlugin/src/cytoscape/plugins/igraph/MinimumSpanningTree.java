@@ -40,19 +40,28 @@ import com.sun.jna.Native;
 import com.sun.jna.Platform;
 
 
-public class MinimumSpanningTreeUnweighted extends CytoscapeAction {
+public class MinimumSpanningTree extends CytoscapeAction {
     
     Boolean selectedOnly;
+    Boolean isWeighted;
     
-    public MinimumSpanningTreeUnweighted(IgraphPlugin myPlugin, String name, boolean selectedOnly) {
+    public MinimumSpanningTree(IgraphPlugin myPlugin, 
+					 String name, 
+					 boolean selectedOnly, 
+					 boolean isWeighted) {
 	super(name);
-	setPreferredMenu("Plugins.Igraph.Minimum Spanning Tree (Unweighted)");
 	this.selectedOnly = new Boolean(selectedOnly);
+	this.isWeighted = new Boolean(isWeighted);
+	if (isWeighted)
+	    setPreferredMenu("Plugins.Igraph.Minimum Spanning Tree (Weighted)");
+	else
+	    setPreferredMenu("Plugins.Igraph.Minimum Spanning Tree (Unweighted)");
+
     }
 	
     public void actionPerformed(ActionEvent e) {
 
-	CyLogger logger = CyLogger.getLogger(MinimumSpanningTreeUnweighted.class);
+	CyLogger logger = CyLogger.getLogger(MinimumSpanningTree.class);
 
 	try {
 	    CyNetwork network = Cytoscape.getCurrentNetwork();
@@ -67,17 +76,28 @@ public class MinimumSpanningTreeUnweighted extends CytoscapeAction {
 
 	    /*          Prepare variables to hold results from native call          */
 	    int[] mst = new int[2 * numNodes - 2];	
-	    int numEdges;
-	    
-	    /*          Compute MST          */
-	    numEdges = IgraphInterface.minimum_spanning_tree_unweighted(mst);
+	    int numEdges;	   
 
-	    logger.info("Nodes in MST: " + numNodes);
-	    logger.info("Edges in MST: " + numEdges);
-	    String nodesString = new String();
-	    for (int i = 0; i < 2 * numEdges; i++)
-		nodesString = nodesString + mst[i] + ", ";
-	    logger.info("Nodes: "+ nodesString);
+	    /*          Compute MST          */
+	    if (isWeighted) {
+		// Compute weights
+		double[] weights;
+		weights = new double[mapping.size()];		
+
+		// TODO: Compute weights!!!
+
+		numEdges = IgraphInterface.minimum_spanning_tree_weighted(mst, weights);
+
+	    } else {
+		numEdges = IgraphInterface.minimum_spanning_tree_unweighted(mst);
+	    }
+
+// 	    logger.info("Nodes in MST: " + numNodes);
+// 	    logger.info("Edges in MST: " + numEdges);
+// 	    String nodesString = new String();
+// 	    for (int i = 0; i < 2 * numEdges; i++)
+// 		nodesString = nodesString + mst[i] + ", ";
+// 	    logger.info("Nodes: "+ nodesString);
 
 	    /*          Create new network & networkView          */
 	    CyNetworkView oldView = Cytoscape.getCurrentNetworkView();
@@ -144,30 +164,6 @@ public class MinimumSpanningTreeUnweighted extends CytoscapeAction {
 		return;
 	    }
 		
-
-// 	    Iterator<Edge> edgeIt = network.edgesIterator();
-// 	    while(edgeIt.hasNext()){            
-// 		Edge edge = (CyEdge) edgeIt.next();		
-// 		Node source = edge.getSource();
-// 		Node target = edge.getTarget();
-		
-// 		int n1 = mapping.get(source.getRootGraphIndex());
-// 		int n2 = mapping.get(target.getRootGraphIndex());
-
-// 		logger.info("N1 = " + n1 + " N2 = " + n2);
-
-// 		for(int k = 0; k < 2 * numEdges; k += 2) {
-// 		    if (mst[k] == n1 && mst[k + 1] == n2){
-// 			edges[i] = edge.getRootGraphIndex();
-// 			logger.info("Edge: " + edges[i] + ", i = " + i);
-// 			i++;
-// 			break;
-// 		    }		
-// 		}		
-// 	    }
-	    
-// 	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "i = " + i + " , numEdges = " + numEdges);
-
 			
 	    String newNetworkName = "Minimum Spanning Tree (" + network.getTitle() + ")";
 
@@ -209,7 +205,6 @@ public class MinimumSpanningTreeUnweighted extends CytoscapeAction {
 	    String message = "Error:\n" + ex.getMessage(); 
 	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
 	}
-
 
     }
 

@@ -77,11 +77,17 @@ public class IgraphPlugin extends CytoscapePlugin {
 	    IsConnected isConnectedAction2 = new IsConnected(this, "Selected Nodes", true);
 	    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction2);
 
-	    MinimumSpanningTreeUnweighted mst = new MinimumSpanningTreeUnweighted(this, "All nodes", false);
+	    MinimumSpanningTree mst = new MinimumSpanningTree(this, "All nodes", false, false);
 	    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) mst);
 
-	    MinimumSpanningTreeUnweighted mst2 = new MinimumSpanningTreeUnweighted(this, "Selected Nodes", true);
+	    MinimumSpanningTree mst2 = new MinimumSpanningTree(this, "Selected Nodes", true, false);
 	    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) mst2);
+
+	    MinimumSpanningTree mst3 = new MinimumSpanningTree(this, "All nodes", false, true);
+	    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) mst3);
+
+	    MinimumSpanningTree mst4 = new MinimumSpanningTree(this, "Selected Nodes", true, true);
+	    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) mst4);
 	    
 	    // Layouts
 	    CyLayouts.addLayout(new CircleLayout(),                   "Igraph");

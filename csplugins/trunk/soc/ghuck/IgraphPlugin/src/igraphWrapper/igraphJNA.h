@@ -46,6 +46,9 @@ extern "C"
   // Minimum spanning tree - unweighted
   int minimum_spanning_tree_unweighted(int res[]);
 
+  // Minimum spanning tree - weighted
+  int minimum_spanning_tree_weighted(int res[], double weights[]);
+
   
 
   //test functions
