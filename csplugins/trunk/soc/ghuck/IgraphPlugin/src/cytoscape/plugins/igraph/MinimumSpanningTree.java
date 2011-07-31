@@ -81,13 +81,17 @@ public class MinimumSpanningTree extends CytoscapeAction {
 	    /*          Compute MST          */
 	    if (isWeighted) {			       		
 		String attribute = chooseEdgeAttribute();
-		double[] weights = IgraphAPI.computeWeights(attribute, 
-							    mapping, 
-							    selectedOnly);
-
-		numEdges = IgraphInterface.minimum_spanning_tree_weighted(mst, weights);
-
-	    } else {
+		if (attribute == "") {
+		    // This means that no suitable attribute was found, so we fall back to the unweighted computation
+		    numEdges = IgraphInterface.minimum_spanning_tree_unweighted(mst);
+		} else {
+		    double[] weights = IgraphAPI.computeWeights(attribute, 
+								mapping, 
+								selectedOnly);
+		
+		    numEdges = IgraphInterface.minimum_spanning_tree_weighted(mst, weights);
+		}
+	    } else { // Unweighted case
 		numEdges = IgraphInterface.minimum_spanning_tree_unweighted(mst);
 	    }
 
@@ -156,8 +160,7 @@ public class MinimumSpanningTree extends CytoscapeAction {
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "ERROR! Edges found: " + i + " , should be: " + numEdges);		
 		return;
 	    }
-		
-			
+					
 	    String newNetworkName = "Minimum Spanning Tree (" + network.getTitle() + ")";
 
 	    CyNetwork newNetwork = Cytoscape.createNetwork(nodes,
@@ -216,7 +219,7 @@ public class MinimumSpanningTree extends CytoscapeAction {
 	    if (type == CyAttributes.TYPE_INTEGER || type == CyAttributes.TYPE_FLOATING)
 		attrVector.add(attrArr[i]);
 	}
-
+ 
 	if (attrVector.size() == 0) {
 	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "No suitable (numeric) edge attribute found.\nWill perform unweighted Minimum Spanning Tree computation instead.");
 	    attribute = "";

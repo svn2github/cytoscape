@@ -124,8 +124,6 @@ public class IgraphAPI {
 
 		if (!selectedOnly || 
 		    (network.isSelected(source) && network.isSelected(target)) ){
-		    // 		int s = nodeIdMapping.get(source.getRootGraphIndex());
-		    // 		int t = nodeIdMapping.get(target.getRootGraphIndex());
 
 		    Integer a = edgeAttributes.getIntegerAttribute(e.getIdentifier(), attrName);
 		    if (null == a) {
@@ -133,7 +131,7 @@ public class IgraphAPI {
 			    weights[i] = defaultValue;
 			} else {
 			    while (true) {
-				String inputValue = JOptionPane.showInputDialog("Found an edge without attribute. Please enter a default value to be used for all edges without attribute " + attrName);
+				String inputValue = JOptionPane.showInputDialog("Found an edge without attribute.\nPlease enter a default value to be used for all edges without attribute " + attrName);
 				try {
 				    Double d = Double.parseDouble(inputValue);
 				    defaultValue = d.doubleValue();
@@ -143,7 +141,7 @@ public class IgraphAPI {
 				    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Please enter a valid number");	    
 				}
 			    }
-			    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "default: " + defaultValue);
+
 			}
 
 		    } else {
@@ -170,7 +168,7 @@ public class IgraphAPI {
 			    weights[i] = defaultValue;
 			} else {
 			    while (true) {
-				String inputValue = JOptionPane.showInputDialog("Found an edge without attribute. Please enter a default value to be used for all edges without attribute " + attrName);
+				String inputValue = JOptionPane.showInputDialog("Found an edge without attribute.\nPlease enter a default value to be used for all edges without attribute " + attrName);
 				try {
 				    Double d = Double.parseDouble(inputValue);
 				    defaultValue = d.doubleValue();
@@ -182,7 +180,6 @@ public class IgraphAPI {
 				}
 			    }
 
-			    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "default: " + defaultValue);
 			}
 		    } else {
 			weights[i] = a.doubleValue();
@@ -192,14 +189,7 @@ public class IgraphAPI {
 	    } // while
 	    	    
 	} 
-	
-    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "i = " + i);	    
-	// if (i != mapping.size())
-// 	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "ERROR! \nNumber of edge attributes do not match number of edges!!");	    
-// 	else
-// 	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Weights OK!");	    
 
  	return weights;
     }
-
 }
