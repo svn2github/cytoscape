@@ -79,12 +79,11 @@ public class MinimumSpanningTree extends CytoscapeAction {
 	    int numEdges;	   
 
 	    /*          Compute MST          */
-	    if (isWeighted) {
-		// Compute weights
-		double[] weights;
-		weights = new double[mapping.size()];		
-
-		// TODO: Compute weights!!!
+	    if (isWeighted) {			       		
+		String attribute = chooseEdgeAttribute();
+		double[] weights = IgraphAPI.computeWeights(attribute, 
+							    mapping, 
+							    selectedOnly);
 
 		numEdges = IgraphInterface.minimum_spanning_tree_weighted(mst, weights);
 
@@ -92,12 +91,6 @@ public class MinimumSpanningTree extends CytoscapeAction {
 		numEdges = IgraphInterface.minimum_spanning_tree_unweighted(mst);
 	    }
 
-// 	    logger.info("Nodes in MST: " + numNodes);
-// 	    logger.info("Edges in MST: " + numEdges);
-// 	    String nodesString = new String();
-// 	    for (int i = 0; i < 2 * numEdges; i++)
-// 		nodesString = nodesString + mst[i] + ", ";
-// 	    logger.info("Nodes: "+ nodesString);
 
 	    /*          Create new network & networkView          */
 	    CyNetworkView oldView = Cytoscape.getCurrentNetworkView();
@@ -206,6 +199,39 @@ public class MinimumSpanningTree extends CytoscapeAction {
 	    JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
 	}
 
+    }
+
+
+    protected static String chooseEdgeAttribute() {
+
+	String attribute;
+
+	// Create a list with all Integer or Double edge attributes
+	CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+	String[] attrArr = edgeAttributes.getAttributeNames();
+	Vector attrVector = new Vector();
+	
+	for (int i = 0; i < attrArr.length; i++) {
+	    byte type = edgeAttributes.getType(attrArr[i]);
+	    if (type == CyAttributes.TYPE_INTEGER || type == CyAttributes.TYPE_FLOATING)
+		attrVector.add(attrArr[i]);
+	}
+
+	if (attrVector.size() == 0) {
+	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "No suitable (numeric) edge attribute found.\nWill perform unweighted Minimum Spanning Tree computation instead.");
+	    attribute = "";
+	} else {
+	    Object[] possibleValues = attrVector.toArray();
+	    attribute = (String) JOptionPane.showInputDialog(Cytoscape.getDesktop(),
+							     "Choose which edge attribute will be used as weight", 
+							     "Minimum Spanning Tree (Weighted)",
+							     JOptionPane.INFORMATION_MESSAGE, null,
+							     possibleValues, possibleValues[0]);	    
+	}
+	
+	// JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Edge attributes:\n" +  attribute);
+
+	return attribute;
     }
 
 }

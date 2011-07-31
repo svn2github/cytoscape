@@ -98,6 +98,108 @@ public class IgraphAPI {
 	return nodeIdMapping;
     } // loadGraph()
 	
+    public static double[] computeWeights(String attrName, 
+					  HashMap<Integer,Integer> mapping, 
+					  boolean selectedOnly) {
+	
+	CyNetwork network = Cytoscape.getCurrentNetwork();
+	CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+	double[] weights = new double[network.getEdgeCount() * 2];		
 
+	boolean defaultSet = false;
+	double defaultValue = 0.0;
+
+	int i = 0;	
+	byte type = edgeAttributes.getType(attrName);
+	Iterator<Edge> it = network.edgesIterator();
+
+	if (type == CyAttributes.TYPE_INTEGER) { 
+
+	    while (it.hasNext()) {
+		Edge e = (CyEdge) it.next();
+
+		Node source = e.getSource();
+		Node target = e.getTarget();
+
+
+		if (!selectedOnly || 
+		    (network.isSelected(source) && network.isSelected(target)) ){
+		    // 		int s = nodeIdMapping.get(source.getRootGraphIndex());
+		    // 		int t = nodeIdMapping.get(target.getRootGraphIndex());
+
+		    Integer a = edgeAttributes.getIntegerAttribute(e.getIdentifier(), attrName);
+		    if (null == a) {
+			if (defaultSet) {
+			    weights[i] = defaultValue;
+			} else {
+			    while (true) {
+				String inputValue = JOptionPane.showInputDialog("Found an edge without attribute. Please enter a default value to be used for all edges without attribute " + attrName);
+				try {
+				    Double d = Double.parseDouble(inputValue);
+				    defaultValue = d.doubleValue();
+				    defaultSet = true;
+				    break;
+				} catch (Exception ex) {
+				    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Please enter a valid number");	    
+				}
+			    }
+			    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "default: " + defaultValue);
+			}
+
+		    } else {
+			weights[i] = a.doubleValue();
+		    }
+		    i++;
+
+		}
+	    } // while
+	    
+	} else { // (type == CyAttributes.TYPE_FLOATING) 
+	    while (it.hasNext()) {
+		Edge e = (CyEdge) it.next();
+
+		Node source = e.getSource();
+		Node target = e.getTarget();
+
+		if (!selectedOnly || 
+		    (network.isSelected(source) && network.isSelected(target)) ){
+
+		    Double a = edgeAttributes.getDoubleAttribute(e.getIdentifier(), attrName);
+		    if (null == a) {
+			if (defaultSet) {
+			    weights[i] = defaultValue;
+			} else {
+			    while (true) {
+				String inputValue = JOptionPane.showInputDialog("Found an edge without attribute. Please enter a default value to be used for all edges without attribute " + attrName);
+				try {
+				    Double d = Double.parseDouble(inputValue);
+				    defaultValue = d.doubleValue();
+				    defaultSet = true;
+				    break;
+				
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Please enter a valid number");	    
+				}
+			    }
+
+			    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "default: " + defaultValue);
+			}
+		    } else {
+			weights[i] = a.doubleValue();
+		    }
+		    i++;
+		}
+	    } // while
+	    	    
+	} 
+	
+    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "i = " + i);	    
+	// if (i != mapping.size())
+// 	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "ERROR! \nNumber of edge attributes do not match number of edges!!");	    
+// 	else
+// 	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Weights OK!");	    
+
+ 	return weights;
+    }
 
 }
