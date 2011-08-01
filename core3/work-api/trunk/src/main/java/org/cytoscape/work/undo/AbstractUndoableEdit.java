@@ -30,19 +30,18 @@
 package org.cytoscape.work.undo;
 
 
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.CannotRedoException;
-
-
 /** 
  * A small convenience class that can be used to create new undo/redo edits.  All
  * you should have to do is implement the undo() and redo() methods. The
  * benefit is that you don't need to worry about setting up names.
  */
 public abstract class AbstractUndoableEdit extends javax.swing.undo.AbstractUndoableEdit {
+	
+	private static final long serialVersionUID = -8072738992232559637L;
+	
 	private final String presentationName;
 
-	/** Initialises an UndoableEdit.
+	/** Initializes an UndoableEdit.
 	 *
 	 *  @param presentationName  the name that will represent the undoable action
 	 */
