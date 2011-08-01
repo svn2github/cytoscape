@@ -9,6 +9,7 @@
  * - Move SVG DOM functions into a separate class
  * - Move create*Element methods into the objects that use them
  * - Switch some hand-built paths to generic ones with SVG transforms applied
+ * - Fix stroke-dasharray style attribute
  */
 /**
  * Network visualization instance.
@@ -47,9 +48,11 @@ function Visualization(container, height, width) {
 		"width": width
 	});
 	
-	this._svgEdgeGroup = this._createSvgElement("g", this._svgElem);
-	this._svgNodeGroup = this._createSvgElement("g", this._svgElem);	
-	this._svgLabelGroup = this._createSvgElement("g", this._svgElem);
+	this._svgMainGroup = this._createSvgElement("g", this._svgElem, {"transform": "scale(0.5) translate(200, 200)"});
+	
+	this._svgEdgeGroup = this._createSvgElement("g", this._svgMainGroup);
+	this._svgNodeGroup = this._createSvgElement("g", this._svgMainGroup);	
+	this._svgLabelGroup = this._createSvgElement("g", this._svgMainGroup);
 	
 	this._createLabelElement = function () {
 		return this._createSvgElement("text", this._svgLabelGroup);
@@ -89,7 +92,87 @@ function Visualization(container, height, width) {
 	// Viewport offset
 	this._offsetX = 186;
 	this._offsetY = 100;
+	this._zoom = 1;
+	
+	// Dragging 
+	this._dragElem = null;
+	this._dragged = false;
+	this._justDropped = false;
+	this._holding = false;
+	this._absDragOriginX = 0;
+	this._absDragOriginY = 0;
+	
+	this._panningDragOriginX = 0;
+	this._panningDragOriginY = 0;
+	this._mousemoveListenerRef = null;
 
+				
+	this._onMouseup = function(event) {
+		//console.log("mouse up"); 
+		if (this._holding) {
+			this._holding = false;
+			if (this._dragged) {
+				//console.log("drop");
+				document.documentElement.removeEventListener("mousemove", this._mousemoveListenerRef, false);
+				this._dragElem = null;
+				this._dragged = false;
+				this._justDropped = true;
+			}
+		}
+	};
+				
+			
+	this._onClick = function(event) {
+		if (this._justDropped) {
+			this._justDropped = false;
+			return;
+		}
+		console.log("click");
+	};
+		
+	this._onMousedown = function(event) {
+		event.preventDefault();
+		//console.log("mouse down");
+		this._holding = true;
+		this._absDragOriginX = event.clientX + document.documentElement.scrollLeft;
+		this._absDragOriginY = event.clientY + document.documentElement.scrollTop;
+		this._relDragOriginX = this._offsetX;
+		this._relDragOriginY = this._offsetY;
+		this._dragElem = this;
+		// A reference to the listener must be kept in order to be able to remove it later.
+		this._mousemoveListenerRef = Util.delegate(this, "_onMousemove");
+		document.documentElement.addEventListener("mousemove", this._mousemoveListenerRef, false);
+		
+
+	};
+				
+	this._onMousemove = function(event) {
+	
+		var dx = event.clientX + document.documentElement.scrollLeft - this._absDragOriginX;
+		var dy = event.clientY + document.documentElement.scrollTop - this._absDragOriginY ;
+		
+		
+		//console.log("mousemove", dx, dy);
+		this._dragged = true;
+		//Dom.setAttributes(this, {"cx": draggingElem.relDragOriginX + dx, "cy": draggingElem.relDragOriginY + dy});
+		this._offsetX = this._relDragOriginX + dx;
+		this._offsetY = this._relDragOriginY + dy;
+		
+		//console.log(dx, dy);
+		this.draw();
+	
+	};
+	
+		//this._svgElem.addEventListener("mousedown", onMousedown, true);
+	this._svgElem.addEventListener("mousedown", Util.delegate(this, "_onMousedown"), false);
+	console.log("added listner");
+	this._svgElem.addEventListener("click", Util.delegate(this, "_onClick"), true);
+	document.documentElement.addEventListener("mouseup", Util.delegate(this, "_onMouseup"), false);
+
+
+	this._getTransform = function(offsetX, offsetY, scale) {
+		return "translate(" + offsetX + "," + offsetY + ") scale(" + scale + ")";
+	};
 
 	this._styleDefaults = {
 		global: {},
@@ -332,6 +415,7 @@ function Visualization(container, height, width) {
 			this._edges[edgeId]._draw();
 		}
 		
+		this._setElementAttributes(this._svgMainGroup, {"transform": this._getTransform(this._offsetX, this._offsetY, this._zoom)});
 		//this._bg.attr("fill", this._style.global.backgroundColor).toBack();
 
 		return this;
@@ -650,7 +734,7 @@ var Node = function(vis) {
 	this._edgeSpacing = 40;
 	
 	this._getRenderedPosition = function() {
-		return {x: this._x + this._visualization._offsetX, y: this._y + this._visualization._offsetY};
+		return {x: this._x, y: this._y};
 	}
 	
 	this._calculateEdgeOffsets = function(otherNode) {
@@ -848,6 +932,8 @@ var Node = function(vis) {
 	this._draw = function() {
 		if (this._elem == null) {
 			this._elem = this._visualization._createNodePathElement();
+			this._labelElem = this._visualization._createLabelElement();
+			this._visualization._setElementAttributes(this._labelElem, {"pointer-events": "none"});
 			this._dirty = true;
 					//.attr({"cursor":"pointer"})
 					//hover(Util.delegate(this, "_hoverStart"), Util.delegate(this, "_hoverEnd"))
@@ -896,9 +982,11 @@ var Node = function(vis) {
 		for (var i = 0, len = this._edges.length; i < len; i++) {
 			this._edges[i]._draw();
 		}
-
+		
 		this._visualization._setElementAttributes(this._elem, attr);
-
+		
+		this._labelElem.textContent = this.getLabel();
+		this._visualization._setElementAttributes(this._labelElem, {"x": this._x, "y": this._y, "dominant-baseline": "middle", "text-anchor": "middle"});
 	};
 	
 
@@ -992,9 +1080,9 @@ var Edge = function(vis) {
 		
 		var dashArray = {
 			"SOLID": "",
-			"DASH": "-",
-			"DOT": ".",
-			"LONG_DASH": "--"
+			"DASH": "5 5",
+			"DOT": "1 5",
+			"LONG_DASH": "10 5"
 		}[this.getRenderedStyle("style")];
 
 		var paths = this._getSvgPath();
@@ -1032,7 +1120,7 @@ var Edge = function(vis) {
 			"stroke": forwardArrowColor,
 			"stroke-width": attr["stroke-width"],
 			"stroke-opacity": attr["stroke-opacity"], // TODO: change to rely only on fill, rather than on stroke
-			// because opacity
+			// because opacity apparenly behaves differently on stroke and on fill
 			"opacity": attr["stroke-opacity"],
 			"d": paths[1] || null
 		};
