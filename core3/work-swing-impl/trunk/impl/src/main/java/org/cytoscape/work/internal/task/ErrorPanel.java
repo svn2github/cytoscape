@@ -60,6 +60,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 
 /**
@@ -125,21 +126,25 @@ class ErrorPanel extends JPanel {
 
 	/**
 	 * Private Constructor.
-	 *
-	 * @param owner            Window owner.
-	 * @param t                Throwable Object. May be null.
-	 * @param userErrorMessage User Readable Error Message. May be null.
-     * @param tip              Tip for user on how to recover from the error.  May be null.
+	 * 
+	 * @param owner
+	 *            Window owner.
+	 * @param t
+	 *            Throwable Object. May be null.
+	 * @param userErrorMessage
+	 *            User Readable Error Message. May be null.
+	 * @param tip
+	 *            Tip for user on how to recover from the error. May be null.
 	 */
-	ErrorPanel(Window owner, Throwable t, String userErrorMessage, String tip) {
-		if (owner == null) {
+	ErrorPanel(final Window owner, final Throwable t, final String userErrorMessage, final String tip) {
+		if (owner == null)
 			throw new IllegalArgumentException("owner parameter is null.");
-		}
+		
 		this.owner = owner;
 		this.t = t;
 		this.userErrorMessage = userErrorMessage;
-        this.tip = tip;
-        initUI();
+		this.tip = tip;
+		initUI();
 	}
 
     /**
@@ -235,27 +240,27 @@ class ErrorPanel extends JPanel {
         return tipPane;
     }
 
-    private void convertThrowable(Throwable exception, DefaultMutableTreeNode root)
-    {
-    	if (exception == null || exception.getStackTrace() == null)
-		return;
+	private void convertThrowable(final Throwable exception, DefaultMutableTreeNode root) {
+		if (exception == null || exception.getStackTrace() == null)
+			return;
 
-    	final String message;
-	if (exception.getMessage() != null && exception.getMessage().length() != 0)
-		message = String.format("%s: %s", exception.getClass().getName(), exception.getMessage());
-	else
-		message = exception.getClass().getName();
-    	
-	DefaultMutableTreeNode node = new DefaultMutableTreeNode(message);
-	root.add(node);
-	
-	StackTraceElement[] st = exception.getStackTrace();
-	if (st != null)
-		for (int i = 0; i < st.length; i++)
-			node.add(new DefaultMutableTreeNode(st[i]));
-    	
-	convertThrowable(exception.getCause(), root);
-    }
+		final String message;
+		if (exception.getMessage() != null && exception.getMessage().length() != 0)
+			message = String.format("%s: %s", exception.getClass().getName(), exception.getMessage());
+		else
+			message = exception.getClass().getName();
+
+		final DefaultMutableTreeNode node = new DefaultMutableTreeNode(message);
+		root.add(node);
+
+		StackTraceElement[] st = exception.getStackTrace();
+		if (st != null)
+			for (int i = 0; i < st.length; i++)
+				node.add(new DefaultMutableTreeNode(st[i]));
+
+		// Dig until the root of this exception.
+		convertThrowable(exception.getCause(), root);
+	}
 
     /**
 	 * Creates Center Panel with Error Details.
@@ -265,15 +270,18 @@ class ErrorPanel extends JPanel {
 	private JScrollPane createCenterPanel() {
 		detailsPane = new JScrollPane();
 
-
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 		convertThrowable(t, root);
 		//  Create a JTree Object
-		JTree tree = new JTree(root);
+		final JTree tree = new JTree(root);
 		tree.setRootVisible(false);
 
 		//  Open all Nodes
-		//tree.scrollPathToVisible(new TreePath(current.getPath()));
+		int row = 0;
+		while (row < tree.getRowCount()) {
+			tree.expandRow(row);
+			row++;
+		}
 		tree.setBorder(new EmptyBorder(4, 10, 10, 10));
 		detailsPane.setViewportView(tree);
 		detailsPane.setPreferredSize(new Dimension(10, 150));
