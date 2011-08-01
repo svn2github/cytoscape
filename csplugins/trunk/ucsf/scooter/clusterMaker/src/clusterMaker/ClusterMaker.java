@@ -38,12 +38,15 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 // Cytoscape imports
 import cytoscape.Cytoscape;
@@ -88,7 +91,7 @@ import clusterMaker.algorithms.clusterFilters.DensityFilter;
  */
 public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListener {
 	static final double VERSION = 1.10;
-	HashMap<JMenuItem,ClusterViz> vizMenus;
+	TreeMap<JMenuItem,ClusterViz> vizMenus;
 	HashMap<String, ClusterViz> vizMap;
 	HashMap<String, ClusterAlgorithm> algMap;
 	HashMap<JMenuItem,ClusterAlgorithm> filterMenus;
@@ -116,19 +119,22 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		if (ClusterMaker.clusterMakerInstance == null) 
 			clusterMakerInstance = this;
 
-		vizMenus = new HashMap<JMenuItem, ClusterViz>();
+		vizMenus = new TreeMap<JMenuItem, ClusterViz>(new JMenuComparator());
 		vizMap = new HashMap<String, ClusterViz>();
 		algMap = new HashMap<String, ClusterAlgorithm>();
 		filterMenus = new HashMap<JMenuItem, ClusterAlgorithm>();
 		menuList = new ArrayList<JMenuItem>();
 		JMenu menu = new JMenu("Cluster");
+		addCategory(menu, "-- Attribute Clustering Algorithms --");
+		addClusterAlgorithm(menu, new AutoSOMECluster(true));
+		addClusterAlgorithm(menu, new FeatureVectorCluster());
 		addClusterAlgorithm(menu, new HierarchicalCluster());
 		addClusterAlgorithm(menu, new KMeansCluster());
 		addClusterAlgorithm(menu, new KMedoidCluster());
-		addClusterAlgorithm(menu, new FeatureVectorCluster());
-		addClusterAlgorithm(menu, new AutoSOMECluster(true));
 		// addClusterAlgorithm(menu, new QTCluster());
+
 		menu.addSeparator();
+		addCategory(menu, "-- Network Clustering Algorithms --");
 		addClusterAlgorithm(menu, new APCluster());
 		addClusterAlgorithm(menu, new AutoSOMECluster(false));
 		addClusterAlgorithm(menu, new ConnectedComponentsCluster());
@@ -141,36 +147,37 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		addClusterAlgorithm(menu, new TransClustCluster());
 		// addClusterAlgorithm(new HOPACHCluster());
 		menu.addSeparator();
-		addClusterFilter(menu, new HairCutFilter());
-		addClusterFilter(menu, new DensityFilter());
+		addCategory(menu, "-- Post-cluster Filters --");
 		addClusterFilter(menu, new CuttingEdgeFilter());
+		addClusterFilter(menu, new DensityFilter());
+		addClusterFilter(menu, new HairCutFilter());
 		menu.addSeparator();
-
-		// Add the visualization menu items
-		for (JMenuItem item: vizMenus.keySet()) {
-			menu.add(item);
-		}
+		addCategory(menu, "-- Visualizations --");
 
 		HeatMapView hmViz = new HeatMapView();
-		addVizBuiltIn(menu, hmViz);
+		addVizBuiltIn(hmViz);
 		vizMap.put(hmViz.getShortName(), hmViz);
 
-		addVizBuiltIn(menu, new NewNetworkView());
+		addVizBuiltIn(new NewNetworkView());
 
 		// Add the nested network visualization
 		NestedNetworkView viz3 = new NestedNetworkView();
-		addVizBuiltIn(menu, viz3);
+		addVizBuiltIn(viz3);
 
 		// Because this overlaps with the new network visualization, it doesn't show
 		// up in our vizMap automatically -- add it here so it will show up in our
 		// command list.
 		vizMap.put(viz3.getShortName(), viz3);
 
+		// Add the visualization menu items
+		for (JMenuItem item: vizMenus.keySet()) {
+			menu.add(item);
+		}
+
 		// Finally, add the "Link networks" menu item.  Note that this is a little
 		// different in that it's a boolean
 		menu.addSeparator();
 		menu.add(new ClusterMakerLinkNetworks());
-		
 		
 		// Catch new network loaded and change events so we can update our visualization menus
 		Cytoscape.getPropertyChangeSupport()
@@ -271,7 +278,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 	private void updateVizMenus() {
 		for (JMenuItem item: vizMenus.keySet()) {
 			ClusterViz viz = vizMenus.get(item);
-			if (!viz.isAvailable())
+			if (!viz.isAvailable() && !menuList.contains(item))
 				item.setEnabled(false);
 			else
 				item.setEnabled(true);
@@ -297,12 +304,18 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		}
 	}
 
-	private void addVizBuiltIn(JMenu menu, ClusterViz viz) {
+	private void addVizBuiltIn(ClusterViz viz) {
 		JMenuItem item = new JMenuItem(viz.getName());
 		item.addActionListener(new ClusterMakerCommandListener((ClusterAlgorithm)viz));
 		item.setEnabled(false);
 		menuList.add(item);
-		menu.add(item);
+		vizMenus.put(item, viz);
+	}
+
+	private void addCategory(JMenu menu, String category) {
+		JLabel label = new JLabel(category, javax.swing.SwingConstants.CENTER);
+		label.setEnabled(false);
+		menu.add(label);
 	}
 
 	/**
@@ -333,6 +346,16 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 					// Shouldn't happen
 				}
 			}
+		}
+	}
+
+	class JMenuComparator implements Comparator<JMenuItem> {
+		public int compare(JMenuItem o1, JMenuItem o2) {
+			return o1.getText().compareTo(o2.getText());
+		}
+
+		public boolean equals(JMenuItem o1, JMenuItem o2) {
+			return o1.getText().equals(o2.getText());
 		}
 	}
 }
