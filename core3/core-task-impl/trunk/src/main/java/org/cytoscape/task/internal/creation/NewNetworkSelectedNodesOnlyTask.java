@@ -1,7 +1,7 @@
 /*
  File: NewNetworkSelectedNodesOnlyTask.java
 
- Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -26,15 +26,16 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.task.internal.creation;
+
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
@@ -45,14 +46,22 @@ import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.work.undo.UndoSupport;
+
 
 public class NewNetworkSelectedNodesOnlyTask extends AbstractNetworkFromSelectionTask {
-
-	public NewNetworkSelectedNodesOnlyTask(final CyNetwork net, final CyRootNetworkFactory cyroot,
-			final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
-			final CyNetworkViewManager networkViewManager, final CyNetworkNaming cyNetworkNaming,
-			final VisualMappingManager vmm, final CyApplicationManager appManager) {
-		super(net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming, vmm, appManager);
+	public NewNetworkSelectedNodesOnlyTask(final UndoSupport undoSupport, final CyNetwork net,
+	                                       final CyRootNetworkFactory cyroot,
+	                                       final CyNetworkViewFactory cnvf,
+	                                       final CyNetworkManager netmgr,
+	                                       final CyNetworkViewManager networkViewManager,
+	                                       final CyNetworkNaming cyNetworkNaming,
+	                                       final VisualMappingManager vmm,
+	                                       final CyApplicationManager appManager,
+	                                       final CyEventHelper eventHelper)
+	{
+		super(undoSupport, net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming,
+		      vmm, appManager, eventHelper);
 	}
 
 	Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes) {

@@ -1,7 +1,7 @@
 /*
  File: NewNetworkSelectedNodesOnlyTaskFactory.java
 
- Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -26,9 +26,11 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.task.internal.creation;
 
+
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.session.CyApplicationManager;
@@ -38,30 +40,45 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.undo.UndoSupport;
+
 
 public class NewNetworkSelectedNodesOnlyTaskFactory extends AbstractNetworkTaskFactory {
-    private CyNetworkManager netmgr;
-    private final CyNetworkViewManager networkViewManager;
-    private CyRootNetworkFactory crnf;
-    private CyNetworkViewFactory cnvf;
-    private CyNetworkNaming naming;
-    private VisualMappingManager vmm;
-    private final CyApplicationManager appManager;
+	private final UndoSupport undoSupport;
+	private final CyNetworkManager netmgr;
+	private final CyNetworkViewManager networkViewManager;
+	private final CyRootNetworkFactory crnf;
+	private final CyNetworkViewFactory cnvf;
+	private final CyNetworkNaming naming;
+	private final VisualMappingManager vmm;
+	private final CyApplicationManager appManager;
+	private final CyEventHelper eventHelper;
 
-    public NewNetworkSelectedNodesOnlyTaskFactory(CyRootNetworkFactory crnf, CyNetworkViewFactory cnvf,
-	    CyNetworkManager netmgr, final CyNetworkViewManager networkViewManager, CyNetworkNaming naming,
-	    VisualMappingManager vmm, final CyApplicationManager appManager) {
-	this.netmgr = netmgr;
-	this.networkViewManager = networkViewManager;
-	this.crnf = crnf;
-	this.cnvf = cnvf;
-	this.naming = naming;
-	this.vmm = vmm;
-	this.appManager = appManager;
-    }
+	public NewNetworkSelectedNodesOnlyTaskFactory(final UndoSupport undoSupport,
+	                                              final CyRootNetworkFactory crnf,
+						      final CyNetworkViewFactory cnvf,
+						      final CyNetworkManager netmgr,
+						      final CyNetworkViewManager networkViewManager,
+						      final CyNetworkNaming naming,
+						      final VisualMappingManager vmm,
+						      final CyApplicationManager appManager,
+	                                              final CyEventHelper eventHelper)
+	{
+		this.undoSupport        = undoSupport;
+		this.netmgr             = netmgr;
+		this.networkViewManager = networkViewManager;
+		this.crnf               = crnf;
+		this.cnvf               = cnvf;
+		this.naming             = naming;
+		this.vmm                = vmm;
+		this.appManager         = appManager;
+		this.eventHelper        = eventHelper;
+	}
 
-    public TaskIterator getTaskIterator() {
-	return new TaskIterator(new NewNetworkSelectedNodesOnlyTask(network, crnf, cnvf, netmgr, networkViewManager,
-		naming, vmm, appManager));
-    }
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(
+			new NewNetworkSelectedNodesOnlyTask(undoSupport, network, crnf, cnvf, netmgr,
+			                                    networkViewManager, naming, vmm,
+			                                    appManager, eventHelper));
+	}
 }

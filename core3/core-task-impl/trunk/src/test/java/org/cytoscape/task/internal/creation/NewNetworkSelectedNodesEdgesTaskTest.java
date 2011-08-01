@@ -1,7 +1,9 @@
 package org.cytoscape.task.internal.creation;
 
+
 import static org.mockito.Mockito.mock;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
@@ -15,11 +17,13 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.undo.UndoSupport;
+
 import org.junit.Before;
 import org.junit.Test;
 
-public class NewNetworkSelectedNodesEdgesTaskTest {
 
+public class NewNetworkSelectedNodesEdgesTaskTest {
 	private final NetworkTestSupport support = new NetworkTestSupport();
 	private final NetworkViewTestSupport viewSupport = new NetworkViewTestSupport();
 
@@ -38,6 +42,7 @@ public class NewNetworkSelectedNodesEdgesTaskTest {
 
 	@Test
 	public void testNewNetworkSelectedNodesEdgesTask() throws Exception {
+		final UndoSupport undoSupport = mock(UndoSupport.class);
 
 		final CyNode node1 = net.addNode();
 		final CyNode node2 = net.addNode();
@@ -45,10 +50,13 @@ public class NewNetworkSelectedNodesEdgesTaskTest {
 		
 		final CyTable nodeTable = net.getDefaultNodeTable();
 		node1.getCyRow().set(CyNetwork.SELECTED, true);
-		
-		
-		final NewNetworkSelectedNodesEdgesTask task = new NewNetworkSelectedNodesEdgesTask(net, cyroot, cnvf, netmgr,
-				networkViewManager, cyNetworkNaming, vmm, appManager);
+
+		CyEventHelper eventHelper = mock(CyEventHelper.class);
+
+		final NewNetworkSelectedNodesEdgesTask task =
+			new NewNetworkSelectedNodesEdgesTask(undoSupport, net, cyroot, cnvf, netmgr,
+			                                     networkViewManager, cyNetworkNaming,
+			                                     vmm, appManager, eventHelper);
 		
 		TaskMonitor tm = mock(TaskMonitor.class);
 		

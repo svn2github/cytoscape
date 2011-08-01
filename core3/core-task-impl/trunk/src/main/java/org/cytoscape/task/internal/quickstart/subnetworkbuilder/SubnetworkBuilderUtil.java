@@ -99,8 +99,9 @@ public class SubnetworkBuilderUtil {
 	}
 
 	Task getNewNetworkSelectedNodesOnlyTask(final CyNetwork network) {
-		return new NewNetworkSelectedNodesOnlyTask(network, crnf, cnvf, netmgr, networkViewManager, cyNetworkNaming,
-				vmm, appManager);
+		return new NewNetworkSelectedNodesOnlyTask(undoSupport, network, crnf, cnvf, netmgr,
+							   networkViewManager, cyNetworkNaming, vmm,
+		                                           appManager, eventHelper);
 	}
 
 	Task getApplLayoutTask() {

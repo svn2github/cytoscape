@@ -1,7 +1,7 @@
 /*
  File: CreateNetworkViewTaskFactory.java
 
- Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -26,31 +26,42 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.task.internal.creation;
 
+
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.undo.UndoSupport;
+
 
 public class CreateNetworkViewTaskFactory extends AbstractNetworkTaskFactory {
-
+	private final UndoSupport undoSupport;
 	private final CyNetworkViewManager networkViewManager;
 	private final CyNetworkViewFactory viewFactory;
-
 	private final CyLayoutAlgorithmManager layouts;
+	private final CyEventHelper eventHelper;
 
-	CreateNetworkViewTaskFactory(final CyNetworkViewFactory viewFactory, final CyNetworkViewManager networkViewManager,
-			final CyLayoutAlgorithmManager layouts) {
-		super();
-		this.viewFactory = viewFactory;
+	CreateNetworkViewTaskFactory(final UndoSupport undoSupport,
+	                             final CyNetworkViewFactory viewFactory,
+	                             final CyNetworkViewManager networkViewManager,
+	                             final CyLayoutAlgorithmManager layouts,
+	                             final CyEventHelper eventHelper)
+	{
+		this.undoSupport        = undoSupport;
+		this.viewFactory        = viewFactory;
 		this.networkViewManager = networkViewManager;
-		this.layouts = layouts;
+		this.layouts            = layouts;
+		this.eventHelper        = eventHelper;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new CreateNetworkViewTask(network, viewFactory, networkViewManager, layouts));
+		return new TaskIterator(new CreateNetworkViewTask(undoSupport, network, viewFactory,
+		                                                  networkViewManager, layouts,
+		                                                  eventHelper));
 	}
 }
