@@ -37,7 +37,9 @@ import java.awt.Frame;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -136,11 +138,18 @@ class FileUtilImpl implements FileUtil {
 				
 				chooser.setModal(true);
 				chooser.setFilenameFilter(new CombinedFilenameFilter(filters));
+				chooser.setLocationRelativeTo(parent);
 				chooser.setVisible(true);
 
 				if (chooser.getFile() != null) {
-					File[] results = new File[1];
-					results[0] = new File(chooser.getDirectory() + File.separator + chooser.getFile());
+					//TODO: how can we select multiple files on Mac?
+					final File[] results = new File[1];
+					String newFileName = chooser.getFile();
+					
+					if (load_save_custom == SAVE)
+						newFileName = addFileExt(filters, newFileName);
+					
+					results[0] = new File(chooser.getDirectory() + File.separator + newFileName);
 
 					if (chooser.getDirectory() != null)
 						coreProperties.setProperty(FileUtil.LAST_DIRECTORY, chooser.getDirectory());
@@ -162,7 +171,6 @@ class FileUtilImpl implements FileUtil {
 
 			// set the dialog title
 			chooser.setDialogTitle(title);
-
 			chooser.setAcceptAllFileFilterUsed(load_save_custom == LOAD);
 
 			int i = 0;
@@ -177,8 +185,6 @@ class FileUtilImpl implements FileUtil {
 				// with "All ", make it the default.
 				else if (defaultFilter == null && filter.getDescription().startsWith("All "))
 					defaultFilter = filter;
-
-
 				chooser.addChoosableFileFilter(filter);
 			}
 
@@ -239,6 +245,25 @@ class FileUtilImpl implements FileUtil {
 
 			return results;
 		}
+	}
+	
+	private String addFileExt(final Collection<FileChooserFilter> filters, final String fileName) {
+		final Set<String> extSet = new HashSet<String>();
+		for(final FileChooserFilter filter: filters) {
+			final String[] exts = filter.getExtensions();
+			for(String ext:exts)
+				extSet.add(ext);
+		}
+		
+		// Check file name has  
+		final String upperName = fileName.toUpperCase();
+		for(String ext: extSet) {
+			if(upperName.endsWith("." + ext.toUpperCase()))
+				return fileName;
+		}
+		
+		// Need to add ext
+		return fileName + "." + extSet.iterator().next();
 	}
 
 	private static final class CombinedFilenameFilter implements FilenameFilter {

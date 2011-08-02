@@ -33,8 +33,6 @@ package org.cytoscape.util.swing;
 import java.awt.Component;
 import java.awt.FileDialog;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 
 
