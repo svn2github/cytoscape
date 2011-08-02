@@ -40,7 +40,8 @@ package org.cytoscape.network.merge.internal.conflict;
 import java.util.List;
 import java.util.Map;
 
-import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyColumn;
 
 /**
  *
@@ -65,14 +66,13 @@ public class AttributeConflictManager {
 
         public void handleConflicts() {
 
-                Map<String,String> mapToIDToAttr = conflictCollector.getMapToIDAttr();
-                for (Map.Entry<String,String> entryToIDToAttr : mapToIDToAttr.entrySet()) {
-                        String toID = entryToIDToAttr.getKey();
-                        String toAttr = entryToIDToAttr.getValue();
-                        Map<String,String> mapFromIDFromAttr = conflictCollector.getConflicts(toID, toAttr);
-                        CyTable attrs = conflictCollector.getCyAttributes(toID, toAttr);
+                Map<CyTableEntry,CyColumn> mapToIDToAttr = conflictCollector.getMapToGOAttr();
+                for (Map.Entry<CyTableEntry,CyColumn> entryToIDToAttr : mapToIDToAttr.entrySet()) {
+                        CyTableEntry toID = entryToIDToAttr.getKey();
+                        CyColumn toAttr = entryToIDToAttr.getValue();
+                        Map<CyTableEntry,CyColumn> mapFromIDFromAttr = conflictCollector.getConflicts(toID, toAttr);
                         for (AttributeConflictHandler handler : conflictHandlers) {
-                                if (handler.handleIt(toID,toAttr,mapFromIDFromAttr,attrs)) {
+                                if (handler.handleIt(toID,toAttr,mapFromIDFromAttr)) {
                                         conflictCollector.removeConflicts(toID, toAttr);
                                         break;
                                 }

@@ -40,7 +40,10 @@ package org.cytoscape.network.merge.internal.model;
 import java.util.Set;
 import java.util.Map;
 
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
+
+import org.cytoscape.network.merge.internal.util.ColumnType;
 
 /**
  * Instore the information how to mapping the attributes 
@@ -54,7 +57,7 @@ public interface AttributeMapping {
      *
      * @return CyAttributes
      */
-    public CyTable getCyAttributes();
+    public CyTable getCyTable(CyNetwork net);
 
     /**
      *
@@ -88,14 +91,14 @@ public interface AttributeMapping {
      * @param index
      * @return the ith merged attribute type
      */
-    public Class<?> getMergedAttributeType(int index);
+    public ColumnType getMergedAttributeType(int index);
 
     /**
      *
      * @param mergedAttributeName
      * @return type for attribute mergedAttributeName
      */
-    public Class<?> getMergedAttributeType(String mergedAttributeName);
+    public ColumnType getMergedAttributeType(String mergedAttributeName);
 
     /**
      * Set the ith merged attribute type
@@ -103,7 +106,7 @@ public interface AttributeMapping {
      * @param type
      * @return true if successful; false otherwise
      */
-    public boolean setMergedAttributeType(int index, Class<?> type);
+    public boolean setMergedAttributeType(int index, ColumnType type);
 
     /**
      * Set type for mergedAttributeName
@@ -111,7 +114,7 @@ public interface AttributeMapping {
      * @param type
      * @return true if successful; false otherwise
      */
-    public boolean setMergedAttributeType(String mergedAttributeName, Class<?> type);
+    public boolean setMergedAttributeType(String mergedAttributeName, ColumnType type);
 
     /**
      *
@@ -124,7 +127,7 @@ public interface AttributeMapping {
      *
      * @return all network titles
      */
-    public Set<String> getNetworkSet();
+    public Set<CyNetwork> getNetworkSet();
 
     /**
      *
@@ -138,7 +141,7 @@ public interface AttributeMapping {
      * @param mergedAttributeName
      * @return the original attribute if exist, null otherwise
      */
-    public String getOriginalAttribute(String netID, String mergedAttributeName);
+    public String getOriginalAttribute(CyNetwork net, String mergedAttributeName);
 
     /**
      * Get the original attribute name before merged, corresponding to the ith merged attribute
@@ -146,21 +149,21 @@ public interface AttributeMapping {
      * @param index
      * @return the original attribute if exist, null otherwise
      */
-    public String getOriginalAttribute(String netID, int index);
+    public String getOriginalAttribute(CyNetwork net, int index);
 
     /**
      * Get the original attribute name in the network before merged, corresponding to the merged attribute
      * @param mergedAttributeName
      * @return the original attribute if exist, null otherwise
      */
-    public Map<String,String> getOriginalAttributeMap(String mergedAttributeName);
+    public Map<CyNetwork,String> getOriginalAttributeMap(String mergedAttributeName);
 
     /**
      * Get the original attribute name before merged, corresponding to the ith merged attribute
      * @param index
      * @return the original attribute if exist, null otherwise
      */
-    public Map<String,String> getOriginalAttributeMap(int index);   
+    public Map<CyNetwork,String> getOriginalAttributeMap(int index);   
 
     /**
      * Set attribute mapping
@@ -169,7 +172,7 @@ public interface AttributeMapping {
      * @param mergedAttributeName
      * @return the original attribute
      */
-    public String setOriginalAttribute(String netID, String attributeName, String mergedAttributeName);
+    public String setOriginalAttribute(CyNetwork net, String attributeName, String mergedAttributeName);
 
     /**
      * Set attribute mapping
@@ -178,7 +181,7 @@ public interface AttributeMapping {
      * @param index
      * @return the original attribute
      */
-    public String setOriginalAttribute(String netID, String attributeName, int index);
+    public String setOriginalAttribute(CyNetwork net, String attributeName, int index);
 
     /**
      * Remove original attribute
@@ -186,7 +189,7 @@ public interface AttributeMapping {
      * @param mergedAttributeName
      * @return the removed attribute if successful; null otherwise
      */
-    public String removeOriginalAttribute(String netID, String mergedAttributeName);
+    public String removeOriginalAttribute(CyNetwork net, String mergedAttributeName);
     
     /**
      * Remove original attribute
@@ -194,7 +197,7 @@ public interface AttributeMapping {
      * @param index
      * @return the removed attribute if successful; null otherwise
      */
-    public String removeOriginalAttribute(String netID, int index);
+    public String removeOriginalAttribute(CyNetwork net, int index);
 
     /**
      * Remove merged attribute, along with the corresponding origianl attribute
@@ -216,7 +219,7 @@ public interface AttributeMapping {
      * @param mergedAttrName
      * @return the added attribute name; it could be different from mergedAttrName
      */
-    public String addAttributes(Map<String,String> mapNetIDAttributeName, String mergedAttrName);
+    public String addAttributes(Map<CyNetwork,String> mapNetAttributeName, String mergedAttrName);
 
     /**
      * Add new attribute at the ith for the current network
@@ -225,18 +228,18 @@ public interface AttributeMapping {
      * @param index
      * @return the added attribute name; it could be different from mergedAttrName
      */
-    public String addAttributes(Map<String,String> mapNetIDAttributeName, String mergedAttrName, int index);
+    public String addAttributes(Map<CyNetwork,String> mapNetAttributeName, String mergedAttrName, int index);
 
     /**
      *
      * @param netID
      */
-    public void addNetwork(String netID);
+    public void addNetwork(CyNetwork net, CyTable cyTable);
 
     /**
      *
      * @param netID
      */
-    public void removeNetwork(String netID);
+    public void removeNetwork(CyNetwork net);
        
 }

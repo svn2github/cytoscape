@@ -37,7 +37,8 @@
 
 package org.cytoscape.network.merge.internal.conflict;
 
-import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyColumn;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -51,129 +52,117 @@ import java.util.HashMap;
 public class AttributeConflictCollectorImpl implements AttributeConflictCollector {
 
         protected class Conflicts {
-                public final CyTable cyAttributes;
-                public Map<String,String> mapFromIDFromAttr;
+                //public final CyTable cyAttributes;
+                public Map<CyTableEntry,CyColumn> mapFromGOFromAttr;
 
-                public Conflicts(final CyTable cyAttributes) {
-                        this.cyAttributes = cyAttributes;
-                        mapFromIDFromAttr = new HashMap<String,String>();
+                public Conflicts() {
+                        //this.cyAttributes = cyAttributes;
+                        mapFromGOFromAttr = new HashMap<CyTableEntry,CyColumn>();
                 }
 
-                public void addConflict(final String fromID, final String fromAttr) {
-                        mapFromIDFromAttr.put(fromID, fromAttr);
+                public void addConflict(final CyTableEntry from, final CyColumn fromAttr) {
+                        mapFromGOFromAttr.put(from, fromAttr);
                 }
 
-                public boolean removeConflict(final String fromID, final String fromAttr) {
-                        String attr = mapFromIDFromAttr.get(fromID);
-                        if (attr==null || attr.compareTo(fromAttr)!=0) {
+                public boolean removeConflict(final CyTableEntry from, final CyColumn fromAttr) {
+                        CyColumn attr = mapFromGOFromAttr.get(from);
+                        if (attr==null || attr!=fromAttr) {
                                 return false;
                         }
 
-                        mapFromIDFromAttr.remove(fromID);
+                        mapFromGOFromAttr.remove(from);
                         return true;
                 }
         }
 
-        protected Map<String,Map<String,Conflicts>> mapToIDToAttrConflicts;
+        protected Map<CyTableEntry,Map<CyColumn,Conflicts>> mapToGOToAttrConflicts;
 
         public AttributeConflictCollectorImpl() {
-                this.mapToIDToAttrConflicts = new HashMap<String,Map<String,Conflicts>>();
+                this.mapToGOToAttrConflicts = new HashMap<CyTableEntry,Map<CyColumn,Conflicts>>();
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        
+        @Override
         public boolean isEmpty() {
-                return mapToIDToAttrConflicts.isEmpty();
+                return mapToGOToAttrConflicts.isEmpty();
         }
 
-        /**
-         * {@inheritDoc}
-         */
-        public Map<String,String> getMapToIDAttr() {
-                Map<String,String> mapToIDAttr = new HashMap<String,String>();
-                for (Map.Entry<String,Map<String,Conflicts>> entry : mapToIDToAttrConflicts.entrySet()) {
-                        String id = entry.getKey();
-                        for (String attr : entry.getValue().keySet()) {
-                                mapToIDAttr.put(id,attr);
+        @Override
+        public Map<CyTableEntry,CyColumn> getMapToGOAttr() {
+                Map<CyTableEntry,CyColumn> mapToGOAttr = new HashMap<CyTableEntry,CyColumn>();
+                for (Map.Entry<CyTableEntry,Map<CyColumn,Conflicts>> entry : mapToGOToAttrConflicts.entrySet()) {
+                        CyTableEntry go = entry.getKey();
+                        for (CyColumn attr : entry.getValue().keySet()) {
+                                mapToGOAttr.put(go,attr);
                         }
                 }
 
-                return mapToIDAttr;
+                return mapToGOAttr;
         }
 
-        /**
-         * {@inheritDoc}
-         */
-        public Map<String,String> getConflicts(final String toID, final String toAttr){
-                if (toID==null || toAttr==null) {
+        @Override
+        public Map<CyTableEntry,CyColumn> getConflicts(final CyTableEntry to, final CyColumn toAttr){
+                if (to==null || toAttr==null) {
                         throw new java.lang.NullPointerException();
                 }
 
-                Map<String,Conflicts> mapToAttrConflicts = mapToIDToAttrConflicts.get(toID);
+                Map<CyColumn,Conflicts> mapToAttrConflicts = mapToGOToAttrConflicts.get(to);
                 if (mapToAttrConflicts==null) {
                         return null;
                 }
 
-                return mapToAttrConflicts.get(toAttr).mapFromIDFromAttr;
+                return mapToAttrConflicts.get(toAttr).mapFromGOFromAttr;
         }
 
-        /**
-         * {@inheritDoc}
-         */
-        public CyTable getCyAttributes(final String toID, final String toAttr) {
-                if (toID==null || toAttr==null) {
+//        @Override
+//        public CyTable getCyAttributes(final CyTableEntry to, final String toAttr) {
+//                if (to==null || toAttr==null) {
+//                        throw new java.lang.NullPointerException();
+//                }
+//
+//                Map<String,Conflicts> mapToAttrConflicts = mapToGOToAttrConflicts.get(to);
+//                if (mapToAttrConflicts==null) {
+//                        return null;
+//                }
+//
+//                return mapToAttrConflicts.get(toAttr).cyAttributes;
+//        }
+
+        @Override
+        public void addConflict(final CyTableEntry from,
+                                        final CyColumn fromAttr,
+                                        final CyTableEntry to,
+                                        final CyColumn toAttr) {
+                if (from==null || fromAttr==null || to==null || toAttr==null) {
                         throw new java.lang.NullPointerException();
                 }
 
-                Map<String,Conflicts> mapToAttrConflicts = mapToIDToAttrConflicts.get(toID);
+                Map<CyColumn,Conflicts> mapToAttrConflicts = mapToGOToAttrConflicts.get(to);
                 if (mapToAttrConflicts==null) {
-                        return null;
-                }
-
-                return mapToAttrConflicts.get(toAttr).cyAttributes;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void addConflict(final String fromID,
-                                        final String fromAttr,
-                                        final String toID,
-                                        final String toAttr,
-                                        final CyTable cyAttributes) {
-                if (fromID==null || fromAttr==null || toID==null || toAttr==null || cyAttributes==null) {
-                        throw new java.lang.NullPointerException();
-                }
-
-                Map<String,Conflicts> mapToAttrConflicts = mapToIDToAttrConflicts.get(toID);
-                if (mapToAttrConflicts==null) {
-                        mapToAttrConflicts = new HashMap<String,Conflicts>();
-                        mapToIDToAttrConflicts.put(toID, mapToAttrConflicts);
+                        mapToAttrConflicts = new HashMap<CyColumn,Conflicts>();
+                        mapToGOToAttrConflicts.put(to, mapToAttrConflicts);
                 }
 
                 Conflicts conflicts = mapToAttrConflicts.get(toAttr);
                 if (conflicts==null) {
-                        conflicts = new Conflicts(cyAttributes);
+                        conflicts = new Conflicts();
                         mapToAttrConflicts.put(toAttr, conflicts);
                 } else {
-                        if (conflicts.cyAttributes!=cyAttributes) {
-                                throw new java.lang.IllegalArgumentException("CyAttributes are different!");
-                        }
+//                        if (conflicts.cyAttributes!=cyAttributes) {
+//                                throw new java.lang.IllegalArgumentException("CyAttributes are different!");
+//                        }
                 }
 
-                conflicts.addConflict(fromID, fromAttr);
+                conflicts.addConflict(from, fromAttr);
         }
 
-        /**
-         * {@inheritDoc}
-         */
-        public boolean removeConflicts(String toID, String toAttr) {
-                if (toID==null || toAttr==null) {
+    @Override
+        public boolean removeConflicts(CyTableEntry to, CyColumn toAttr) {
+                if (to==null || toAttr==null) {
                         throw new java.lang.NullPointerException();
                 }
 
-                Map<String,Conflicts> mapToAttrConflicts = mapToIDToAttrConflicts.get(toID);
+                Map<CyColumn,Conflicts> mapToAttrConflicts = mapToGOToAttrConflicts.get(to);
                 if (mapToAttrConflicts==null) {
                         return false;
                 }
@@ -186,15 +175,13 @@ public class AttributeConflictCollectorImpl implements AttributeConflictCollecto
                 return true;
         }
 
-        /**
-         * {@inheritDoc}
-         */
-        public boolean removeConflict(final String fromID, final String fromAttr, final String toID, final String toAttr) {
-                if (fromID==null || fromAttr==null || toID==null || toAttr==null) {
+        @Override
+        public boolean removeConflict(final CyTableEntry from, final CyColumn fromAttr, final CyTableEntry to, final CyColumn toAttr) {
+                if (from==null || fromAttr==null || to==null || toAttr==null) {
                         throw new java.lang.NullPointerException();
                 }
 
-                Map<String,Conflicts> mapToAttrConflicts = mapToIDToAttrConflicts.get(toID);
+                Map<CyColumn,Conflicts> mapToAttrConflicts = mapToGOToAttrConflicts.get(to);
                 if (mapToAttrConflicts==null) {
                         return false;
                 }
@@ -204,11 +191,11 @@ public class AttributeConflictCollectorImpl implements AttributeConflictCollecto
                         return false;
                 }
 
-                boolean ret = conflicts.removeConflict(fromID, fromAttr);
-                if (ret && conflicts.mapFromIDFromAttr.isEmpty()) {
+                boolean ret = conflicts.removeConflict(from, fromAttr);
+                if (ret && conflicts.mapFromGOFromAttr.isEmpty()) {
                         mapToAttrConflicts.remove(toAttr);
                         if (mapToAttrConflicts.isEmpty()) {
-                                mapToIDToAttrConflicts.remove(toID);
+                                mapToGOToAttrConflicts.remove(to);
                         }
                 }
 

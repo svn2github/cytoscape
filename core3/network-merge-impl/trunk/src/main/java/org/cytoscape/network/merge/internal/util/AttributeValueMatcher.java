@@ -36,7 +36,8 @@
 
 package org.cytoscape.network.merge.internal.util;
 
-import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyColumn;
+import org.cytoscape.model.CyTableEntry;
 
 /**
  * Match attribute values
@@ -45,15 +46,14 @@ import org.cytoscape.model.CyTable;
  */
 public interface AttributeValueMatcher {
 
-        /**
-         * Check whether two attributes of two nodes/edges are "match"
-         * @param id1
-         * @param attr1
-         * @param id2
-         * @param attr2
-         * @param cyAttributes
-         * @return true if matched; false otherwise
-         */
-        public boolean matched(String id1, String attr1,
-                String id2, String attr2, CyTable cyAttributes);
+    /**
+     * Check whether two attributes of two nodes/edges are "match"
+     * @param entry1
+     * @param attr1
+     * @param entry2
+     * @param attr2
+     * @return 
+     */
+    public boolean matched(CyTableEntry entry1, CyColumn attr1, 
+                CyTableEntry entry2, CyColumn attr2);
 }

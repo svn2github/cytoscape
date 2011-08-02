@@ -36,15 +36,16 @@
 
 package org.cytoscape.network.merge.internal.util;
 
+import org.cytoscape.model.CyColumn;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.network.merge.internal.conflict.AttributeConflictCollector;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
-import java.util.Arrays;
-import java.util.Set;
 
 /**
  *
@@ -61,150 +62,98 @@ public class DefaultAttributeMerger implements AttributeMerger {
         /**
          * Merge one attribute into another
          * @param fromIDs
-         * @param fromAttrName
+         * @param fromAttr
          * @param toID
          * @param toAttrName
          * @param attrs
          * @param conflictCollector
          */
         //@Override
-        public void mergeAttribute(final Map<String,String> mapGOAttr,
-                                     final String toID,
-                                     final String toAttrName,
-                                     final CyTable attrs) {
-                if ((mapGOAttr == null) || (toID == null) || (toAttrName == null) || (attrs==null)) {
+        public <T extends CyTableEntry> void mergeAttribute(Map<T,CyColumn> mapGOAttr,
+                                     T toGO, CyColumn toAttr) {
+                if ((mapGOAttr == null) || (toGO == null) || (toAttr == null)) {
                     throw new java.lang.IllegalArgumentException("Null argument.");
                 }
+                
+                CyRow cyRow = toGO.getCyRow(toAttr.getTable().getTitle());
+                CyTable cyTable = cyRow.getTable();
+                ColumnType colType = ColumnType.getType(toAttr);
 
-                final Set<String> attrNames = attrs.getColumnTypeMap().keySet();
+                for (Map.Entry<T,CyColumn> entryGOAttr : mapGOAttr.entrySet()) {
+                        T from = entryGOAttr.getKey();
+                        CyColumn fromAttr = entryGOAttr.getValue();
+                        CyRow fromCyRow = from.getCyRow(fromAttr.getTable().getTitle());
+                        ColumnType fromColType = ColumnType.getType(fromAttr);
 
-                Iterator<Map.Entry<String,String>> itEntryGOAttr = mapGOAttr.entrySet().iterator();
-                while (itEntryGOAttr.hasNext()) {
-                        Map.Entry<String,String> entryGOAttr = itEntryGOAttr.next();
-                        String fromID = entryGOAttr.getKey();
-                        String fromAttrName = entryGOAttr.getValue();
-
-                        if (!attrNames.contains(fromAttrName)||!attrNames.contains(toAttrName)) { // toAttrName must be defined before calling this method
-                            throw new java.lang.IllegalArgumentException("'"+fromAttrName+"' or '"+toAttrName+"' not exists");
-                        }
-
-                        if (!AttributeValueCastUtils.isAttributeTypeConvertable(fromAttrName,toAttrName,attrs)) {
-                            throw new java.lang.IllegalArgumentException("'"+fromAttrName+"' cannot be converted to '"+toAttrName+"'");
-                        }
-
-                        if (toID.compareTo(fromID)==0 && toAttrName.compareTo(fromAttrName)==0) {
-                            //TODO: if local attribute is realized, process here
-                            continue;
-                        }
-
-                        if (!attrs.hasAttribute(fromID, fromAttrName)) {
-                            continue;
-                        }
-
-                        //byte type1 = attrs.getType(fromAttrName);
-                        Class<?> type2 = attrs.getType(toAttrName);
-
-                        if (type2 == String.class) { // the case of inconvertable attributes and simple attributes to String
-                            Object o1 = attrs.getAttribute(fromID, fromAttrName); //Correct??
-                            String o2 = attrs.getStringAttribute(toID, toAttrName);
+                        if (colType == ColumnType.STRING) { // the case of inconvertable attributes and simple attributes to String
+                            Object o1 = fromCyRow.getRaw(fromAttr.getName()); //Correct??
+                            String o2 = cyRow.get(toAttr.getName(), String.class);
                             if (o2==null||o2.length()==0) { //null or empty attribute
-                                attrs.setAttribute(toID, toAttrName, o1.toString());
-                                //continue;
-                            } else if (o1.equals(o2)) {
-                                //continue;// the same, do nothing
+                                cyRow.set(toAttr.getName(), o1.toString());
+                            } else if (o1.equals(o2)) { //TODO: neccessary?
+                                // the same, do nothing
                             } else { // attribute conflict
                                 
                                 // add to conflict collector
-                                conflictCollector.addConflict(fromID, fromAttrName, toID, toAttrName,attrs);
-                                //continue;
+                                conflictCollector.addConflict(from, fromAttr, toGO, toAttr);
+                                
                             }
-                        } else if ( type2 < 0  && type2!=List.class) { // only support matching between simple types
-                                                                                     // and simple lists for now
-                                                                                     //TODO: support simple and complex map?
-                            Object o1 = attrs.getAttribute(fromID, fromAttrName); //Correct??
-                            Object o2 = attrs.getAttribute(toID, toAttrName);
+                        } else if (!colType.isList()) { // simple type (Integer, Long, Double, Boolean)
+                            Object o1 = fromCyRow.get(fromAttr.getName(), fromColType.getType());
+                            if (fromColType!=colType) {
+                                o1 = colType.castService(o1);
+                            }
+
+                            Object o2 = cyRow.get(toAttr.getName(), colType.getType());
                             if (o2==null) {
-                                CopyingAttributeValueVisitor copyVisitor = new CopyingAttributeValueVisitor(toID,toAttrName);
-                                CyAttributesUtils.traverseAttributeValues(fromID, fromAttrName, attrs, copyVisitor);
+                                cyRow.set(toAttr.getName(), o1);
                                 //continue;
                             } else if (o1.equals(o2)) {
                                 //continue; // the same, do nothing
                             } else { // attribute conflict
 
                                 // add to conflict collector
-                                conflictCollector.addConflict(fromID, fromAttrName, toID, toAttrName,attrs);
-                                //continue;
-                            }
-                        } else if (type2 == Integer.class || type2 == Double.class || type2 == Boolean.class || type2 == Long.class) { // simple type (type1>0) (Integer, Double, Boolean)
-                            Object o1 = attrs.getAttribute(fromID, fromAttrName);
-                            Class<?> type1 = attrs.getType(fromAttrName);
-                            if (type1!=type2) {
-                                o1 = AttributeValueCastUtils.attributeValueCast(type2,o1);
-                            }
-
-                            Object o2 = attrs.getAttribute(toID, toAttrName);
-                            if (o2==null) {
-                                attrs.getMultiHashMap().setAttributeValue(toID, toAttrName, o1, null);
-                                //continue;
-                            } else if (o1.equals(o2)) {
-                                //continue; // the same, do nothing
-                            } else { // attribute conflict
-
-                                // add to conflict collector
-                                conflictCollector.addConflict(fromID, fromAttrName, toID, toAttrName,attrs);
+                                conflictCollector.addConflict(from, fromAttr, toGO, toAttr);
                                 //continue;
                             }
                         } else { // toattr is list type
                             //TODO: use a conflict handler to handle this part?
+                            ColumnType plainType = colType.toPlain();
 
-                            type2 = attrs.getMultiHashMapDefinition().getAttributeValueType(toAttrName);
-                            Class<?> type1 = attrs.getType(fromAttrName);
-                            if (type1>0) {
-                                Object o1 = attrs.getAttribute(fromID, fromAttrName);
-                                if (type1!=type2) {
-                                    o1 = AttributeValueCastUtils.attributeValueCast(type2,o1);
-                                }
-
-                                List<Object> l2 = attrs.getListAttribute(toID, toAttrName);
-                                if (l2 == null) {
-                                    //l2 = new Vector();
-                                    throw new java.lang.IllegalStateException("Define '"+toAttrName+"' first");
+                            List l2 = cyRow.getList(toAttr.getName(), plainType.getType());
+                            if (l2 == null) {
+                                l2 = new ArrayList();
+                            }
+                            
+                            if (!fromColType.isList()) { // from plain
+                                Object o1 = fromCyRow.get(fromAttr.getName(), fromColType.getType());
+                                if (plainType!=fromColType) {
+                                    o1 = plainType.castService(o1);
                                 }
 
                                 if (!l2.contains(o1)) {
                                     l2.add(o1);
                                 }
 
-                                attrs.setListAttribute(toID, toAttrName, l2);
+                                cyRow.set(toAttr.getName(), l2);
+                            } else { // from list
+                                ColumnType fromPlain = fromColType.toPlain();
 
-                                //continue;
-                            } else if (type1==List.class) {
-                                type1 = attrs.getMultiHashMapDefinition().getAttributeValueType(fromAttrName);
-
-                                List<Object> l1 = attrs.getListAttribute(fromID, fromAttrName);
-                                List<Object> l2 = attrs.getListAttribute(toID, toAttrName);
-                                if (l2 == null) {
-                                    //l2 = new Vector();
-                                    throw new java.lang.IllegalStateException("Define '"+toAttrName+"' first");
-                                }
+                                List l1 = fromCyRow.getList(fromAttr.getName(), fromPlain.getType());
 
                                 int nl1 = l1.size();
                                 for (int il1=0; il1<nl1; il1++) {
                                     Object o1 = l1.get(il1);
-                                    if (type1!=type2) {
-                                        o1 = AttributeValueCastUtils.attributeValueCast(type2,o1);
+                                    if (plainType!=fromColType) {
+                                        o1 = plainType.castService(o1);
                                     }
                                     if (!l2.contains(o1)) {
                                         l2.add(o1);
                                     }
                                 }
-
-                                attrs.setListAttribute(toID, toAttrName, l2);
-
-                                //continue;
-                            } else {
-                                throw new java.lang.IllegalStateException("Wrong type");
                             }
+                            
+                            cyRow.set(toAttr.getName(), l2);
                         }
                 }
 

@@ -64,10 +64,11 @@ public interface NetworkMerge {
     
     /**
      * Merge networks into one.
-     * @param networks networks to be merged
+     * @param toNetwork merge to this network
+     * @param fromNetworks networks to be merged
      * @param op operation
      * @param title title of the merged network
      * @return the merged network.
      */
-    public CyNetwork mergeNetwork(List<CyNetwork> networks, Operation op, String title);
+    public CyNetwork mergeNetwork(CyNetwork toNetwork, List<CyNetwork> fromNetworks, Operation op);
 }

@@ -38,10 +38,10 @@ package org.cytoscape.network.merge.internal.util;
 
 
 import java.util.List;
-import java.util.Arrays;
-import java.util.Set;
 
-import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyColumn;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTableEntry;
 
 /**
  * Match attribute values
@@ -50,72 +50,42 @@ import org.cytoscape.model.CyTable;
  */
 public class DefaultAttributeValueMatcher implements AttributeValueMatcher {
 
-        /**
-         * Check whether two attributes of two nodes/edges are "match"
-         * @param id1
-         * @param attr1
-         * @param id2
-         * @param attr2
-         * @param cyAttributes
-         * @return true if matched; false otherwise
-         */
-        //@Override
-        public boolean matched(String id1, String attr1,
-                String id2, String attr2, CyTable cyAttributes) {
-                if ((id1 == null) || (attr1 == null) || (id2 == null) || (attr2==null) || (cyAttributes == null)) {
+        
+        @Override
+        public boolean matched(CyTableEntry entry1, CyColumn attr1,
+                CyTableEntry entry2, CyColumn attr2) {
+            
+                if ((entry1 == null) || (attr1 == null) || (entry2 == null) || (attr2==null)) {
                     throw new java.lang.IllegalArgumentException("Null argument.");
                 }
 
-                final Set<String> attrNames = cyAttributes.getColumnTypeMap().keySet();
-                if (!attrNames.contains(attr1) || !attrNames.contains(attr2)) {
-                    throw new java.lang.IllegalArgumentException("'"+attr1+"' or/and '"+attr2+"' not exists");
-                }
 
-                if (id1.compareTo(id2)==0 && attr1.compareTo(attr2)==0) {
+                if (entry1==entry2 && attr1==attr2) {
                         return true;
                 }
+                
+                CyRow row1 = entry1.getCyRow(attr1.getTable().getTitle());
+                CyRow row2 = entry2.getCyRow(attr2.getTable().getTitle());
+                
+                Class<?> type1 = attr1.getType(); 
+                Class<?> type2 = attr2.getType();
 
-                if (!cyAttributes.hasAttribute(id1, attr1)
-                        || !cyAttributes.hasAttribute(id2, attr2)) { // Is it neccessary to handle empty string?
-                    return false; // return false for null attribute
-                }
 
-                //CmpAttributeValueVisitor cmpVisitor = new CmpAttributeValueVisitor(id1,attr1);
-
-                //CyAttributesUtils.traverseAttributeValues(id2, attr2, cyAttributes, cmpVisitor);
-
-                //return cmpVisitor.getIsSame();
-
-                byte type1 = cyAttributes.getType(attr1);
-                byte type2 = cyAttributes.getType(attr2);
-
-                if ((type1<0&&type1!=List.class)
-                        ||(type2<0&&type2!=List.class)) { // only support matching between simple types
-                                                                             // and simple lists for now
-                                                                             //TODO: support simple and complex map?
-                    Object o1 = cyAttributes.getAttribute(id1, attr1);
-                    Object o2 = cyAttributes.getAttribute(id2, attr2);
-
-                    type1 = cyAttributes.getMultiHashMapDefinition().getAttributeValueType(attr1);
-                    type2 = cyAttributes.getMultiHashMapDefinition().getAttributeValueType(attr2);
-
-                    return o1.equals(o2) && type1==type2; // must be the same type for complex map
-                }
-
-                if (type1>0&&type2>0) { // simple type
-                    Object o1 = cyAttributes.getAttribute(id1, attr1);
-                    Object o2 = cyAttributes.getAttribute(id2, attr2);
-                    return o1.equals(o2); //TODO: idmapping
+                // only support matching between simple types and simple lists
+                if (!List.class.isAssignableFrom(type1) &&
+                        !List.class.isAssignableFrom(type2)) { // simple type
+                    return row1.get(attr1.getName(), type1).equals(row2.get(attr2.getName(), type2)); //TODO: idmapping
                 } else {
-                    if (type1>0||type2>0) { // then one is simple type; the other is simple list
+                    if (!List.class.isAssignableFrom(type1) ||
+                        !List.class.isAssignableFrom(type2)) { // then one is simple type; the other is simple list
                         Object o;
                         List l;
-                        if (type1>0) { // then type2 is simple list
-                            o = cyAttributes.getAttribute(id1, attr1);
-                            l = cyAttributes.getListAttribute(id2, attr2);
-                        } else { // type2 is simple type and type 1 is simple list
-                            l = cyAttributes.getListAttribute(id1, attr1);
-                            o = cyAttributes.getAttribute(id2, attr2);
+                        if (List.class.isAssignableFrom(type1)) { // then type1 is simple list
+                            l = row1.get(attr1.getName(), List.class);
+                            o = row2.get(attr2.getName(), type2);
+                        } else { // type1 is simple type and type 2 is simple list
+                            l = row2.get(attr2.getName(), List.class);
+                            o = row1.get(attr1.getName(), type1);
                         }
 
                         int nl = l.size();
@@ -129,8 +99,8 @@ public class DefaultAttributeValueMatcher implements AttributeValueMatcher {
                         return false; // if no value match
                     } else { // both of them are simple lists
                         //TODO: use a list comparator?
-                        List l1 = cyAttributes.getListAttribute(id1, attr1);
-                        List l2 = cyAttributes.getListAttribute(id2, attr2);
+                        List l1 = row1.get(attr1.getName(), List.class);
+                        List l2 = row2.get(attr2.getName(), List.class);
                         int nl1 = l1.size();
                         int nl2 = l2.size();
                         for (int il1=0; il1<nl1; il1++) {

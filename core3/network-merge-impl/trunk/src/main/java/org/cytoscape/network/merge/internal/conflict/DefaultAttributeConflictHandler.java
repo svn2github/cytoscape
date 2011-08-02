@@ -40,7 +40,11 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Map;
 
-import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyColumn;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTableEntry;
+
+import org.cytoscape.network.merge.internal.util.ColumnType;
 
 /**
  *
@@ -56,26 +60,27 @@ public class DefaultAttributeConflictHandler implements AttributeConflictHandler
          * @return
          *      true if successful, false if failed
          */
-        public boolean handleIt(final String toID,
-                                final String toAttr,
-                                final Map<String,String> mapFromIDFromAttr,
-                                final CyTable attrs) {
+        public boolean handleIt(final CyTableEntry to,
+                                final CyColumn toAttr,
+                                final Map<CyTableEntry,CyColumn> mapFromGOFromAttr) {
                 //TODO: write a reasonable default one
-                if (toID==null || toAttr==null || mapFromIDFromAttr==null || attrs==null) {
+                if (to==null || toAttr==null || mapFromGOFromAttr==null) {
                         throw new java.lang.NullPointerException();
                 }
 
-                Class<?> type = attrs.getType(toAttr);
+                CyRow row = to.getCyRow(toAttr.getTable().getTitle());
                 
-                if (type == String.class) {
-                        final String toValue = attrs.getStringAttribute(toID, toAttr);
+                ColumnType type = ColumnType.getType(toAttr);
+                
+                if (type == ColumnType.STRING) {
+                        final String toValue = row.get(toAttr.getName(), String.class);
                         Set<String> values = new TreeSet<String>();
                         values.add(toValue);
 
-                        for (Map.Entry<String,String> entry : mapFromIDFromAttr.entrySet()) {
-                                String fromID = entry.getKey();
-                                String fromAttr = entry.getValue();
-                                Object fromValue = attrs.getAttribute(fromID, fromAttr);
+                        for (Map.Entry<CyTableEntry,CyColumn> entry : mapFromGOFromAttr.entrySet()) {
+                                CyTableEntry from = entry.getKey();
+                                CyColumn fromAttr = entry.getValue();
+                                Object fromValue = from.getCyRow(fromAttr.getTable().getTitle()).getRaw(fromAttr.getName());
                                 if (fromValue!=null) {
                                         values.add(fromValue.toString());
                                 }
@@ -88,7 +93,7 @@ public class DefaultAttributeConflictHandler implements AttributeConflictHandler
                         
                         str.deleteCharAt(str.length()-1);
                         
-                        attrs.setAttribute(toID, toAttr, str.toString());
+                        row.set(toAttr.getName(), str.toString());
 
                         return true;
                 }

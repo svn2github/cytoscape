@@ -37,7 +37,8 @@
 
 package org.cytoscape.network.merge.internal.conflict;
 
-import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyColumn;
 
 import java.util.Map;
 
@@ -57,7 +58,7 @@ public interface AttributeConflictCollector {
          *
          * @return all map of to node id to attribute
          */
-        public Map<String,String> getMapToIDAttr();
+        public Map<CyTableEntry,CyColumn> getMapToGOAttr();
 
         /**
          * Get conflicts for a specific toID and toAttribute
@@ -65,32 +66,15 @@ public interface AttributeConflictCollector {
          * @param toAttr
          * @return conflict map from id to attrs if exist, null otherwise
          */
-        public Map<String,String> getConflicts(String toID, String toAttr);
+        public Map<CyTableEntry,CyColumn> getConflicts(CyTableEntry toGO, CyColumn toAttr);
 
-        /**
-         *
-         * @param toID
-         * @param toAttr
-         * @return
-         */
-        public CyTable getCyAttributes(String toID, String toAttr);
-
-        /**
-         *
-         * @param fromID
-         * @param fromAttr
-         * @param toID
-         * @param toAttr
-         */
-        public void addConflict(String fromID, String fromAttr, String toID, String toAttr, CyTable cyAttributes);
-
-        /**
-         *
-         * @param toID
-         * @param toAttr
-         * @return
-         */
-        public boolean removeConflicts(String toID, String toAttr);
+//        /**
+//         *
+//         * @param toID
+//         * @param toAttr
+//         * @return
+//         */
+//        public CyTable getCyAttributes(CyTableEntry to, String toAttr);
 
         /**
          *
@@ -98,7 +82,24 @@ public interface AttributeConflictCollector {
          * @param fromAttr
          * @param toID
          * @param toAttr
+         */
+        public void addConflict(CyTableEntry from, CyColumn fromAttr, CyTableEntry to, CyColumn toAttr);
+
+        /**
+         *
+         * @param toID
+         * @param toAttr
          * @return
          */
-        public boolean removeConflict(String fromID, String fromAttr, String toID, String toAttr);
+        public boolean removeConflicts(CyTableEntry to, CyColumn toAttr);
+
+        /**
+         *
+         * @param fromID
+         * @param fromAttr
+         * @param toID
+         * @param toAttr
+         * @return
+         */
+        public boolean removeConflict(CyTableEntry from, CyColumn fromAttr, CyTableEntry to, CyColumn toAttr);
 }

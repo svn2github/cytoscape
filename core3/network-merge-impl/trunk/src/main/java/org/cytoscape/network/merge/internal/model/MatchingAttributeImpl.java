@@ -37,12 +37,12 @@
 package org.cytoscape.network.merge.internal.model;
 
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyColumn;
+import org.cytoscape.model.CyNetwork;
 
 /**
  * Class to store the information which attribute to be used 
@@ -51,93 +51,66 @@ import org.cytoscape.model.CyTable;
  * 
  */
 public class MatchingAttributeImpl implements MatchingAttribute {
-    private Map<String,String> attributeForMatching; // network name to attribute name
-    private CyTable cyAttributes; // use map if local attribute realized
+    private Map<CyNetwork,CyColumn> attributeForMatching; // network to attribute name
     
-    public MatchingAttributeImpl(final CyTable cyAttributes) {
-        this.cyAttributes = cyAttributes;
-        attributeForMatching = new HashMap<String,String>();
+    public MatchingAttributeImpl() {
+        attributeForMatching = new HashMap<CyNetwork,CyColumn>();
     }
 
     /**
      * {@inheritDoc}
      */
-    public Map<String,String> getNetAttrMap() {
+    public Map<CyNetwork,CyColumn> getNetAttrMap() {
         return attributeForMatching;
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public String getAttributeForMatching(final String netID) {
-        if (netID == null) {
+    @Override
+    public CyColumn getAttributeForMatching(final CyNetwork net) {
+        if (net == null) {
             throw new java.lang.NullPointerException();
         }
         
-        return attributeForMatching.get(netID);
+        return attributeForMatching.get(net);
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public void putAttributeForMatching(final String netID, final String attributeName) {
-        if (netID==null || attributeName==null) {
+    @Override
+    public void putAttributeForMatching(final CyNetwork net, final CyColumn col) {
+        if (net==null || col==null) {
             throw new java.lang.NullPointerException();
         }
         
-        attributeForMatching.put(netID, attributeName);
+        attributeForMatching.put(net, col);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void addNetwork(final String netID) {
-        if (netID == null) {
+    @Override
+    public void addNetwork(final CyNetwork net) {
+        if (net == null) {
             throw new java.lang.NullPointerException();
         }
         
-        final Set<String> attributeNames = cyAttributes.getColumnTypeMap().keySet();
-        final Collection<String> values = attributeForMatching.values();
-        for ( String attr : attributeNames) {
-            if (values.contains(attr)) {
-                putAttributeForMatching(netID,attr);
-                return;
-            }
-        }
-        //TODO remove in Cytoscape3
-        putAttributeForMatching(netID,"canonicalName");
-        
-        //putAttributeForMatching(netID,attributeNames[i]); //use in Cytoscape3
+        putAttributeForMatching(net,net.getDefaultNodeTable().getPrimaryKey());
     }
             
-    /**
-     * {@inheritDoc}
-     */
-    public String removeNetwork(final String netID) {
-        if (netID == null) {
+    @Override
+    public CyColumn removeNetwork(final CyNetwork net) {
+        if (net == null) {
             throw new java.lang.NullPointerException();
         }
         
-        return attributeForMatching.remove(netID);
+        return attributeForMatching.remove(net);
     }
     
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public int getSizeNetwork() {
         return attributeForMatching.size();
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public Set<String> getNetworkSet() {
+    @Override
+    public Set<CyNetwork> getNetworkSet() {
         return attributeForMatching.keySet();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void clear() {
         attributeForMatching.clear();
     }

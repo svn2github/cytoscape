@@ -52,7 +52,7 @@ public class NetworkMergeAction extends AbstractCyAction {
 
 	public NetworkMergeAction(CyApplicationManager appMgr,
 			CySwingApplication swingApp) {
-		super("Network Merge", appMgr);
+		super("CyMerge", appMgr);
 		setPreferredMenu("Plugins");
 		this.swingApp = swingApp;
 	}

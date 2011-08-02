@@ -40,6 +40,9 @@ package org.cytoscape.network.merge.internal.model;
 import java.util.Set;
 import java.util.Map;
 
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyColumn;
+
 /**
  * Information which attribute to be used for matching nodes
  * 
@@ -51,36 +54,36 @@ public interface MatchingAttribute {
      * 
      * @return map of network to attribute
      */
-    public Map<String,String> getNetAttrMap();
+    public Map<CyNetwork,CyColumn> getNetAttrMap();
 
     /**
      * 
      * @param netID
      * @return the attribute of network for matching node
      */
-    public String getAttributeForMatching(String netID);
+    public CyColumn getAttributeForMatching(CyNetwork net);
     
     /**
      *
      * Set the attribute of network for matching node
      *
-     * @param netID
+     * @param net
      * @param attributeName
      */
-    public void putAttributeForMatching(String netID, String attributeName);
+    public void putAttributeForMatching(CyNetwork net, CyColumn col);
     
     /**
      * add/select the attribute of network for matching node
-     * @param netID
+     * @param net
      */
-    public void addNetwork(String netID);
+    public void addNetwork(CyNetwork net);
     
     /**
      * Remove the network, return the attribute
-     * @param netID
+     * @param net
      * @return
      */
-    public String removeNetwork(String netID);
+    public CyColumn removeNetwork(CyNetwork net);
     
     /**
      *
@@ -92,7 +95,7 @@ public interface MatchingAttribute {
      *
      * @return
      */
-    public Set<String> getNetworkSet();
+    public Set<CyNetwork> getNetworkSet();
 
     /**
      * 
