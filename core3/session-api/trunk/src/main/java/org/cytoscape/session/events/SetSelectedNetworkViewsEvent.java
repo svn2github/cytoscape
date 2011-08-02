@@ -1,11 +1,11 @@
 package org.cytoscape.session.events;
 
 
-import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.event.AbstractCyEvent;
-import org.cytoscape.view.model.CyNetworkView;
-
 import java.util.List;
+
+import org.cytoscape.event.AbstractCyEvent;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.CyNetworkView;
 
 
 /**

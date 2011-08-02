@@ -20,6 +20,7 @@ import org.cytoscape.session.CySessionManager;
  * state before that state is interrogated by the CySessionManager. 
  */
 public final class SessionAboutToBeSavedEvent extends AbstractCyEvent<CySessionManager> {
+	
 	private final Map<String,List<File>> pluginFileListMap;
 	private final List<Cytopanel> cytopanels;
 	private Desktop desktop;
@@ -42,20 +43,20 @@ public final class SessionAboutToBeSavedEvent extends AbstractCyEvent<CySessionM
 	 * @param pluginName The name of the plugin that these files should be stored for.
 	 * @param files The list of File objects to be stored in the session file.
 	 */
-	public void addPluginFiles(final String pluginName, List<File> files) throws Exception {
+	public void addPluginFiles(final String pluginName, final List<File> files) throws Exception {
 		// Throw checked Exceptions here to force plugin authors to deal with
 		// problems they might create.
 		if ( pluginName == null )
-			throw new Exception("plugin name is null");
+			throw new NullPointerException("plugin name is null");
 			
 		if ( pluginName == "" )
-			throw new Exception("plugin name is empty");
+			throw new IllegalArgumentException("plugin name is empty");
 
 		if ( pluginFileListMap.containsKey( pluginName ) )
-			throw new Exception("The plugin file list already contains a list of files identified by the name: " + pluginName);
+			throw new IllegalArgumentException("The plugin file list already contains a list of files identified by the name: " + pluginName);
 
 		if ( files == null )
-			throw new Exception("file list is null");
+			throw new NullPointerException("file list is null");
 
 		// allow empty lists
 		pluginFileListMap.put(pluginName, new ArrayList<File>(files));
@@ -108,7 +109,9 @@ public final class SessionAboutToBeSavedEvent extends AbstractCyEvent<CySessionM
 	 * @param cytopanel
 	 */
 	public void addCytopanel(Cytopanel cytopanel) throws Exception {
-		if ( cytopanel == null ) throw new Exception("cytopanel is null");
+		if (cytopanel == null)
+			throw new NullPointerException("cytopanel is null");
+		
 		cytopanels.add(cytopanel);
 	}
 	

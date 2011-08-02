@@ -1,12 +1,11 @@
 package org.cytoscape.session.events;
 
 
-import org.cytoscape.session.CyApplicationManager;
+import java.util.List;
+
 import org.cytoscape.event.AbstractCyEvent;
 import org.cytoscape.model.CyNetwork;
-
-
-import java.util.List;
+import org.cytoscape.session.CyApplicationManager;
 
 /**
  * An event indicating the a collection of networks has been selected.

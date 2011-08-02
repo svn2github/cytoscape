@@ -1,10 +1,9 @@
 
 package org.cytoscape.session.events;
 
+import org.cytoscape.event.AbstractCyEvent;
 import org.cytoscape.session.CySession;
 import org.cytoscape.session.CySessionManager;
-
-import org.cytoscape.event.AbstractCyEvent;
 
 /**
  * This event is fired after a new session has been set in the 
@@ -22,7 +21,7 @@ public final class SessionLoadedEvent extends AbstractCyEvent<CySessionManager> 
 	 * @param source The CySessionManager that is the source of this event.
 	 * @param session The CySession object that was just loaded.
 	 */
-	public SessionLoadedEvent(final CySessionManager source, CySession session, String fileName) {
+	public SessionLoadedEvent(final CySessionManager source, final CySession session, final String fileName) {
 		super(source,SessionLoadedListener.class);
 		this.session = session;
 		this.fileName = fileName;

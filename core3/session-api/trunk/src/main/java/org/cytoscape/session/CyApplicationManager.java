@@ -31,7 +31,6 @@ package org.cytoscape.session;
 
 
 import java.util.List;
-import java.util.Set;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;

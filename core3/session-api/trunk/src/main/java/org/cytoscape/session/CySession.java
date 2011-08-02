@@ -28,19 +28,19 @@
  */
 package org.cytoscape.session;
 
-import org.cytoscape.model.CyTableMetadata;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.property.bookmark.Bookmarks;
-import org.cytoscape.property.session.Cysession;
+import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.io.File;
 
+import org.cytoscape.model.CyTableMetadata;
+import org.cytoscape.property.bookmark.Bookmarks;
+import org.cytoscape.property.session.Cysession;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

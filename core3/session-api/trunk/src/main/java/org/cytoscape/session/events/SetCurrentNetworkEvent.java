@@ -1,9 +1,9 @@
 package org.cytoscape.session.events;
 
 
-import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.event.AbstractCyEvent;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.session.CyApplicationManager;
 
 
 /**

@@ -1,11 +1,13 @@
 package org.cytoscape.session.events;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
 
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.junit.Test;
-import static org.mockito.Mockito.*;
 
 public class SetCurrentNetworkViewEventTest {
 
