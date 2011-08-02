@@ -73,6 +73,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -98,11 +99,13 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	/**
 	 * Minimum standards for CytoPanels.
 	 */
-	private static final int WEST_MIN_WIDTH = 250;
+	private static final int WEST_MIN_WIDTH = 100;
+	private static final int WEST_MAX_WIDTH = 400;
 	private static final int WEST_MIN_HEIGHT = 500;
 	private static final int SOUTH_MIN_WIDTH = 500;
 	private static final int SOUTH_MIN_HEIGHT = 50;
 	private static final int EAST_MIN_WIDTH = 100;
+	private static final int EAST_MAX_WIDTH = 500;
 	private static final int EAST_MIN_HEIGHT = 100;
 
 	/**
@@ -987,8 +990,15 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 					Component panel = tabbedPane.getSelectedComponent();
 					// Make sure we're not being notified that we've deleted
 					// the last panel
-					if (panel != null)
-						setMinimumSize(panel.getPreferredSize());
+					if (panel != null && cytoPanelContainer instanceof JSplitPane) {
+						int width = panel.getPreferredSize().width;
+						if (compassDirection == SwingConstants.WEST && width > WEST_MAX_WIDTH)
+							width = WEST_MAX_WIDTH;
+						else if (compassDirection == SwingConstants.EAST && width > EAST_MAX_WIDTH)
+							width = EAST_MAX_WIDTH;
+
+						((JSplitPane)cytoPanelContainer).setDividerLocation(width);
+					}
 				
 					int selectedIndex = tabbedPane.getSelectedIndex();
 					cytoPanelListener.onComponentSelected(selectedIndex);
