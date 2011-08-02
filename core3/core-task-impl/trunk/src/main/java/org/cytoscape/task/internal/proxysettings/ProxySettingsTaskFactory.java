@@ -8,15 +8,14 @@ import org.cytoscape.io.util.StreamUtil;
 
 
 public class ProxySettingsTaskFactory implements TaskFactory {
-	private TaskManager taskManager;
-	private StreamUtil streamUtil;
 	
-	public ProxySettingsTaskFactory(TaskManager taskManager, StreamUtil streamUtil) {
-		this.taskManager = taskManager;
+	private final StreamUtil streamUtil;
+	
+	public ProxySettingsTaskFactory(StreamUtil streamUtil) {
 		this.streamUtil = streamUtil;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new ProxySettingsTask(taskManager, streamUtil));
+		return new TaskIterator(new ProxySettingsTask(streamUtil));
 	}
 }

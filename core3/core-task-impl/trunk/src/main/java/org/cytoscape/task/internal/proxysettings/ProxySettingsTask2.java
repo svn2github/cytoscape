@@ -1,36 +1,32 @@
 package org.cytoscape.task.internal.proxysettings;
 
 
-import org.cytoscape.io.util.StreamUtil;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
-import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.util.ListSingleSelection;
-
-import java.net.URL;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.TimeUnit;
 
 
 /**
  * Dialog for assigning proxy settings.
- * @author Pasteur
  */
 public class ProxySettingsTask2 extends AbstractTask implements TunableValidator {
-	static final List<String> KEYS = Arrays.asList("http.proxyHost", "http.proxyPort", "socks.proxyHost", "socks.proxyPort");
+	
+	private static final List<String> KEYS = Arrays.asList("http.proxyHost", "http.proxyPort", "socks.proxyHost", "socks.proxyPort");
 
 	@Tunable(description="Type")
 	public ListSingleSelection<String> type = new ListSingleSelection<String>("direct", "http", "socks");
@@ -41,19 +37,19 @@ public class ProxySettingsTask2 extends AbstractTask implements TunableValidator
 	@Tunable(description="Port",groups={"param"},dependsOn="type!=direct",params="alignments=horizontal;displayState=hidden")
 	public int port=0;
 
-	final TaskManager taskManager;
-	final StreamUtil streamUtil;
+	private final StreamUtil streamUtil;
 
-	final Map<String,String> oldSettings = new HashMap<String,String>();
-	final Properties properties = System.getProperties();
+	private final Map<String,String> oldSettings;
+	private final Properties properties;
 
-	public ProxySettingsTask2(final TaskManager taskManager, final StreamUtil streamUtil) {
-		this.taskManager = taskManager;
+	public ProxySettingsTask2(final StreamUtil streamUtil) {
 		this.streamUtil = streamUtil;
+		oldSettings = new HashMap<String,String>();
+		properties = System.getProperties();
 	}
 
 	public ValidationState getValidationState(final Appendable errMsg) {
-		
+	
 		storeProxySettings();
 
 		FutureTask<Exception> executor = new FutureTask<Exception>(new TestProxySettings(streamUtil));
@@ -134,7 +130,7 @@ public class ProxySettingsTask2 extends AbstractTask implements TunableValidator
 }
 
 
-class TestProxySettings implements Callable<Exception> {
+final class TestProxySettings implements Callable<Exception> {
 	static final String TEST_URL = "http://www.google.com";
 	final StreamUtil streamUtil;
 

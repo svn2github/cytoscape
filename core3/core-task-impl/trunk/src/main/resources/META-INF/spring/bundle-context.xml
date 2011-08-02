@@ -318,7 +318,6 @@
 	<!-- Misc -->
 	<bean id="proxySettingsTaskFactory"
 		class="org.cytoscape.task.internal.proxysettings.ProxySettingsTaskFactory">
-		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="streamUtilRef" />
 	</bean>
 
