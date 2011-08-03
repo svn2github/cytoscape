@@ -128,7 +128,7 @@ public class ShapePalette extends JPanel {
 		
 		JEditorPane instructionsArea = new JEditorPane("text/html",instructions);
 		// 32767 ????
-		instructionsArea.setPreferredSize(new java.awt.Dimension(32767, 400));
+		instructionsArea.setPreferredSize(new java.awt.Dimension(300, 400));
 		instructionsArea.setBackground(Cytoscape.getDesktop().getBackground());
 		_controlPane.add(instructionsArea);
 		_controlPane.setBackground(Cytoscape.getDesktop().getBackground());
