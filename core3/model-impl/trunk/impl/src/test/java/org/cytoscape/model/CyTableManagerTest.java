@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2008, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -28,6 +28,11 @@
 package org.cytoscape.model;
 
 
+import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import org.cytoscape.equations.Interpreter;
 import org.cytoscape.equations.internal.interpreter.InterpreterImpl;
 import org.cytoscape.event.CyEventHelper;
@@ -42,22 +47,25 @@ import org.cytoscape.model.internal.CyTableManagerImpl;
 public class CyTableManagerTest extends AbstractCyTableManagerTest {
 	CyTableManagerImpl mgrImpl;
 
+	@Before
 	public void setUp() {
 		super.setUp();
 		CyEventHelper eh = new DummyCyEventHelper();
 		mgrImpl = new CyTableManagerImpl(eh);
-		mgr = mgrImpl; 
+		mgr = mgrImpl;
 		final Interpreter interpreter = new InterpreterImpl();
 		goodNetwork =
 			new ArrayGraph(eh, mgrImpl,
 				       new CyTableFactoryImpl(eh, mgrImpl, interpreter), true).getBaseNetwork();
 	}
 
+	@After
 	public void tearDown() {
 		mgr = null;
 		goodNetwork = null;
 	}
 
+	@Test
 	public void immutableTableTest() {
 		boolean exceptionWasThrown = false;
 		try {
@@ -68,6 +76,7 @@ public class CyTableManagerTest extends AbstractCyTableManagerTest {
 		assertTrue(exceptionWasThrown);
 	}
 
+	@Test
 	public void tableWithVirtColumnDeletionTest() {
 		CyEventHelper eventHelper = new DummyCyEventHelper();
 		final Interpreter interpreter = new InterpreterImpl();
@@ -83,10 +92,10 @@ public class CyTableManagerTest extends AbstractCyTableManagerTest {
 		table2.createListColumn("b", Boolean.class, false);
 		table.addVirtualColumn("b1", "b", table2, "x2", "x", true);
 
-		mgrImpl.addTable(table);
+		mgrImpl.addTable(table2);
 		boolean caughtException = false;
 		try {
-			mgr.deleteTable(table.getSUID());
+			mgr.deleteTable(table2.getSUID());
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
 		}

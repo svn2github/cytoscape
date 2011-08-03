@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,13 +25,11 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyEdge;
@@ -54,15 +44,10 @@ import java.util.List;
 import java.util.Map;
 
 
-/**
- * DOCUMENT ME!
-  */
-public abstract class AbstractGraphObjectTest extends TestCase {
+public abstract class AbstractGraphObjectTest {
 	protected CyNetwork net;
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testGetNullNamespace() {
 		CyNode n1 = net.addNode();
 
@@ -76,9 +61,7 @@ public abstract class AbstractGraphObjectTest extends TestCase {
 		fail("didn't catch what was thrown");
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testBadNamespace() {
 		CyNode n1 = net.addNode();
 
@@ -92,9 +75,7 @@ public abstract class AbstractGraphObjectTest extends TestCase {
 		fail("didn't catch what was thrown");
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testGetCyRow() {
 		// As long as the object is not null and is an instance of CyRow, we
 		// should be satisfied.  Don't test any other properties of CyRow.
@@ -116,9 +97,7 @@ public abstract class AbstractGraphObjectTest extends TestCase {
 		assertTrue("cyattrs is CyRow", e2.getCyRow("USER") instanceof CyRow);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testAttrs() {
 		CyNode n1 = net.addNode();
 		assertNotNull("cyattrs exists", n1.getCyRow());
@@ -126,9 +105,7 @@ public abstract class AbstractGraphObjectTest extends TestCase {
 		assertTrue("attrs equals getCyRow", n1.getCyRow().equals(n1.getCyRow("USER")));
 	}
 
-	/**
-	 *
-	 */
+	@Test
 	public void testEqualsInstanceOf() {
 		CyNode n1 = net.addNode();
 		Object n2 = new Object();

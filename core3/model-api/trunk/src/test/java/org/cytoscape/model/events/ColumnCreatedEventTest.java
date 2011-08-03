@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,11 +25,12 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model.events;
 
-import junit.framework.Assert;
-import junit.framework.Test;
+
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -45,32 +38,34 @@ import org.cytoscape.model.CyTable;
 
 import static org.mockito.Mockito.*;
 
-/**
- * DOCUMENT ME!
- */
-public class ColumnCreatedEventTest extends TestCase {
 
+public class ColumnCreatedEventTest extends TestCase {
 	ColumnCreatedEvent event;
 	CyTable table;
 	final String columnName = "asdf";
 
+	@Before
 	public void setUp() {
-		table = mock(CyTable.class); 
+		table = mock(CyTable.class);
 		event = new ColumnCreatedEvent(table,columnName);
 	}
 
+	@Test
 	public void testGetColumnName() {
 		assertEquals( event.getColumnName(), columnName );
 	}
 
+	@Test
 	public void testGetSource() {
 		assertEquals( event.getSource(), table );
 	}
 
+	@Test
 	public void testGetListenerClass() {
 		assertEquals( event.getListenerClass(), ColumnCreatedListener.class );
 	}
 
+	@Test
 	public void testNullColumn() {
 		try {
 			ColumnCreatedEvent ev = new ColumnCreatedEvent(table, null);
@@ -80,6 +75,7 @@ public class ColumnCreatedEventTest extends TestCase {
 		fail("didn't catch expected npe for column");
 	}
 
+	@Test
 	public void testNullTable() {
 		try {
 			ColumnCreatedEvent ev = new ColumnCreatedEvent(null, columnName);

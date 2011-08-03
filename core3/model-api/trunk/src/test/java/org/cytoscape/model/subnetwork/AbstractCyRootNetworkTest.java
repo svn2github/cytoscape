@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,13 +25,15 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model.subnetwork;
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Arrays;
 
 import org.cytoscape.event.CyEvent;
 import org.cytoscape.event.CyEventHelper;
@@ -51,23 +45,15 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.DummyCyNode;
 import org.cytoscape.model.DummyCyEdge;
 
-import java.lang.RuntimeException;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Arrays;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 
-/**
- * DOCUMENT ME!
-  */
-public abstract class AbstractCyRootNetworkTest extends TestCase {
+public abstract class AbstractCyRootNetworkTest {
 	protected CyRootNetwork root;
 	protected CyRootNetwork root2;
 
+	@Test
 	public void testInitialRootNetworkState() {
 		System.out.println("---> testInitialRootNetworkState");
 		List<CySubNetwork> subnets = root.getSubNetworkList();
@@ -80,6 +66,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertTrue("subnetwork list contains base",root.getSubNetworkList().contains(base));
 	}
 
+	@Test
 	public void testAddSubNetwork() {
 		System.out.println("---> testAddSubNetwork");
 		CyNode n1 = root.addNode();
@@ -107,6 +94,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertEquals("base edges", 1, s1.getEdgeList().size());
 	}
 
+	@Test
 	public void testRemoveSubNetwork() {
 		System.out.println("---> testRemoveSubNetwork");
 
@@ -161,6 +149,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertEquals("num subnetworks",1,root.getSubNetworkList().size());
 	}
 
+	@Test
 	public void testGetAllNodes() {
 		System.out.println("---> testGetAllNodes");
 		CyNode n1 = root.getBaseNetwork().addNode();
@@ -189,6 +178,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertEquals("s2 node count",3,s2.getNodeCount());
 	}
 
+	@Test
 	public void testGetAllEdges() {
 		System.out.println("---> testGetAllEdges");
 		CyNode n1 = root.getBaseNetwork().addNode();
@@ -213,6 +203,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertEquals("s1 edge count",1,s1.getEdgeCount());
 	}
 
+	@Test
 	public void testJustRootAddNode() {
 		CyNode n1 = root.addNode();
 
@@ -224,6 +215,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertEquals("base node count", 1, root.getBaseNetwork().getNodeCount());
 	}
 
+	@Test
 	public void testJustRootAddEdge() {
 		CyNode n1 = root.addNode();
 		CyNode n2 = root.addNode();
@@ -241,6 +233,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertEquals("base edge count", 1, root.getBaseNetwork().getEdgeCount());
 	}
 
+	@Test
 	public void testEdgesCantCrossRootAndSubNetwork() {
 		CyNode n1 = root.addNode();
 		CyNode n2 = root.addNode();
@@ -258,6 +251,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		fail("edges can't cross subnetworks");
 	}
 
+	@Test
 	public void testEdgesCantCrossSubNetworks() {
 		CySubNetwork s1 = root.addSubNetwork();
 		CyNode n1 = s1.addNode();
@@ -274,7 +268,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		fail("edges can't cross subnetworks");
 	}
 
-
+	@Test
 	public void testAddNode() {
 		System.out.println("---> testAddNode");
 		CyNode n1 = root.getBaseNetwork().addNode();
@@ -326,6 +320,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertEquals("base node list size",4,root.getBaseNetwork().getNodeList().size());
 	}
 
+	@Test
 	public void testRemoveBaseNetwork() {
 		CySubNetwork base = root.getBaseNetwork();
 		try {
@@ -336,6 +331,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		fail("can't remove the base network from a root network");
 	}
 
+	@Test
 	public void testGetSubNetworkList() {
 		System.out.println("---> testGetSubNetworkList");
 		CyNode n1 = root.addNode();
@@ -363,7 +359,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 
 		CySubNetwork s2 = root.addSubNetwork();
 
-		// list of size 3 
+		// list of size 3
 		List<CySubNetwork> mnodes2 = root.getSubNetworkList();
 		assertNotNull(mnodes2);
 		assertEquals("subnet node list size",3,mnodes2.size());
@@ -380,6 +376,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertFalse("not contains s1",mnodes3.contains(s1));
 	}
 
+	@Test
 	public void testGetBaseNetwork() {
 		System.out.println("---> testGetBaseNetwork");
 
@@ -404,7 +401,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertEquals("num nodes",4,base2.getNodeCount());
 		assertEquals("num edges",3,base2.getEdgeCount());
 
-		// now add a subnetwork 
+		// now add a subnetwork
 		CySubNetwork s1 = root.addSubNetwork();
 
 		CySubNetwork base3 = root.getBaseNetwork();
@@ -412,8 +409,8 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertEquals("num nodes",4,base3.getNodeCount());
 		assertEquals("num edges",3,base3.getEdgeCount());
 	}
-	
 
+	@Test
 	public void testAddSubNetworkNodes() {
 		System.out.println("---> testAddSubNetworkNodes");
 		CyNode n1 = root.addNode();
@@ -476,7 +473,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertFalse("s2 contains e5",s2.containsEdge(e5));
 	}
 
-
+	@Test
 	public void testRemoveSubNetwork2() {
 		System.out.println("---> testRemoveSubNetwork");
 		CyNode n1 = root.addNode();
@@ -511,10 +508,11 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertFalse("subnetwork contains s1",subs.contains(s1));
 	}
 
+	@Test
 	public void testRemoveBadSubNetwork() {
 		CySubNetwork s1 = root.addSubNetwork();
 		CySubNetwork s2 = root2.addSubNetwork();
-	
+
 		assertNotNull(s1);
 		assertNotNull(s2);
 
@@ -527,6 +525,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		fail("shouldn't be able to remove subnetwork that isn't yours!");
 	}
 
+	@Test
 	public void testRemoveNullSubNetwork() {
 		try {
 			root.removeSubNetwork(null);
@@ -535,20 +534,24 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testContainsNetwork() {
 		CySubNetwork s1 = root.addSubNetwork();
 		assertTrue(root.containsNetwork(s1));
 	}
 
+	@Test
 	public void testNotContainsNetwork() {
 		CySubNetwork s2 = root2.addSubNetwork();
 		assertFalse(root.containsNetwork(s2));
 	}
 
+	@Test
 	public void testNullContainsNetwork() {
 		assertFalse(root.containsNetwork(null));
 	}
 
+	@Test
 	public void testAddSubNetworkWithGoodNodesAndGoodEdges() {
 		CyNode n1 = root.addNode();
 		CyNode n2 = root.addNode();
@@ -566,6 +569,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertTrue( n.containsEdge(e1) );
 	}
 
+	@Test
 	public void testAddSubNetworkWithNullNodesAndGoodEdges() {
 		CyNode n1 = root.addNode();
 		CyNode n2 = root.addNode();
@@ -580,6 +584,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertTrue(n.containsEdge(e1) );
 	}
 
+	@Test
 	public void testAddSubNetworkWithGoodNodesAndNullEdges() {
 		CyNode n1 = root.addNode();
 		CyNode n2 = root.addNode();
@@ -594,12 +599,13 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertTrue( n.containsNode(n3) );
 	}
 
+	@Test
 	public void testAddSubNetworkWithEmptyNodesAndGoodEdges() {
 		CyNode n1 = root.addNode();
 		CyNode n2 = root.addNode();
 		CyEdge e1 = root.addEdge(n1,n2,false);
 
-		List<CyNode> nodes = new ArrayList<CyNode>(); 
+		List<CyNode> nodes = new ArrayList<CyNode>();
 		List<CyEdge> edges = Arrays.asList( e1 );
 
 		CySubNetwork n = root.addSubNetwork(nodes, edges);
@@ -609,13 +615,14 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertTrue( n.containsEdge(e1) );
 	}
 
+	@Test
 	public void testAddSubNetworkWithGoodNodesAndEmptyEdges() {
 		CyNode n1 = root.addNode();
 		CyNode n2 = root.addNode();
 		CyNode n3 = root.addNode();
 
 		List<CyNode> nodes = Arrays.asList( n1, n2, n3 );
-		List<CyEdge> edges = new ArrayList<CyEdge>(); 
+		List<CyEdge> edges = new ArrayList<CyEdge>();
 
 		CySubNetwork n = root.addSubNetwork(nodes, edges);
 
@@ -624,6 +631,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertTrue( n.containsNode(n3) );
 	}
 
+	@Test
 	public void testAddSubNetworkWithInvalidNodesAndGoodEdges() {
 		CyNode n1 = root.addNode();
 		CyNode n2 = root.addNode();
@@ -643,11 +651,12 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		fail("shouldn't allow nodes not in root network to be used");
 	}
 
+	@Test
 	public void testAddSubNetworkWithGoodNodesAndInvalidEdges() {
 		CyNode n1 = root.addNode();
 		CyNode n2 = root.addNode();
 		CyNode n3 = root.addNode();
-		
+
 		CyEdge ex = new DummyCyEdge(null,null,false,50);
 		List<CyNode> nodes = Arrays.asList( n1, n2, n3 );
 		List<CyEdge> edges = Arrays.asList( ex );

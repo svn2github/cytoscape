@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,14 +25,15 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model.events;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import junit.framework.Assert;
-import junit.framework.Test;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -49,37 +42,39 @@ import org.cytoscape.model.CyEdge;
 
 import static org.mockito.Mockito.*;
 
-/**
- * DOCUMENT ME!
- */
-public class AddedEdgeEventTest extends TestCase {
 
+public class AddedEdgeEventTest extends TestCase {
 	AddedEdgesEvent event;
 	Collection<CyEdge> edgeCollection;
 	CyNetwork net;
 
+	@Before
 	public void setUp() {
 		edgeCollection = new ArrayList<CyEdge>();
 		edgeCollection.add( mock(CyEdge.class));
 		edgeCollection.add( mock(CyEdge.class));
 
-		net = mock(CyNetwork.class); 
+		net = mock(CyNetwork.class);
 		event = new AddedEdgesEvent(net,edgeCollection);
 	}
 
+	@Test
 	public void testGetEdge() {
 		for ( CyEdge e : event.getPayloadCollection())
 			assertTrue( edgeCollection.contains(e) );
 	}
 
+	@Test
 	public void testGetSource() {
 		assertEquals( event.getSource(), net );
 	}
 
+	@Test
 	public void testGetListenerClass() {
 		assertEquals( event.getListenerClass(), AddedEdgesListener.class );
 	}
 
+	@Test
 	public void testNullEdge() {
 		try {
 			AddedEdgesEvent ev = new AddedEdgesEvent(net, null);
@@ -89,6 +84,7 @@ public class AddedEdgeEventTest extends TestCase {
 		fail("didn't catch expected npe for edge");
 	}
 
+	@Test
 	public void testNullNetwork() {
 		try {
 			AddedEdgesEvent ev = new AddedEdgesEvent(null, edgeCollection);

@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,14 +25,15 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model.events;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import junit.framework.Assert;
-import junit.framework.Test;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -49,37 +42,39 @@ import org.cytoscape.model.CyNode;
 
 import static org.mockito.Mockito.*;
 
-/**
- * DOCUMENT ME!
- */
-public class AddedNodeEventTest extends TestCase {
 
+public class AddedNodeEventTest extends TestCase {
 	AddedNodesEvent event;
 	Collection<CyNode> nodeCollection;
 	CyNetwork net;
 
+	@Before
 	public void setUp() {
 		nodeCollection = new ArrayList<CyNode>();
 		nodeCollection.add( mock(CyNode.class));
 		nodeCollection.add( mock(CyNode.class));
 
-		net = mock(CyNetwork.class); 
+		net = mock(CyNetwork.class);
 		event = new AddedNodesEvent(net,nodeCollection);
 	}
 
+	@Test
 	public void testGetNode() {
 		for ( CyNode n : event.getPayloadCollection() )
 			assertTrue( nodeCollection.contains(n));
 	}
 
+	@Test
 	public void testGetSource() {
 		assertEquals( event.getSource(), net );
 	}
 
+	@Test
 	public void testGetListenerClass() {
 		assertEquals( event.getListenerClass(), AddedNodesListener.class );
 	}
 
+	@Test
 	public void testNullNode() {
 		try {
 			AddedNodesEvent ev = new AddedNodesEvent(net, null);
@@ -89,6 +84,7 @@ public class AddedNodeEventTest extends TestCase {
 		fail("didn't catch expected npe for node");
 	}
 
+	@Test
 	public void testNullNetwork() {
 		try {
 			AddedNodesEvent ev = new AddedNodesEvent(null, nodeCollection);

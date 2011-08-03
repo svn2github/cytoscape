@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -36,25 +28,21 @@
 
 package org.cytoscape.model.subnetwork;
 
+
 import org.cytoscape.model.TestCyNetworkFactory;
 
+import org.junit.After;
+import org.junit.Before;
 
-/**
- * DOCUMENT ME!
-  */
+
 public class CySubNetworkTest extends AbstractCySubNetworkTest {
-
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Before
 	public void setUp() {
-		root = TestCyNetworkFactory.getPublicRootInstance(); 
-		root2 = TestCyNetworkFactory.getPublicRootInstance(); 
+		root = TestCyNetworkFactory.getPublicRootInstance();
+		root2 = TestCyNetworkFactory.getPublicRootInstance();
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@After
 	public void tearDown() {
 		root = null;
 		root2 = null;

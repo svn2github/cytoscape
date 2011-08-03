@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,13 +25,11 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -52,16 +42,10 @@ import java.util.List;
 import java.util.Map;
 
 
-/**
- * DOCUMENT ME!
- */
-public abstract class AbstractIdentifiableTest extends TestCase {
-
+public abstract class AbstractIdentifiableTest {
 	protected CyNetwork net;
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testGetSUID() {
 		CyNode n1 = net.addNode();
 		assertTrue("suid >= 0", n1.getSUID() >= 0);

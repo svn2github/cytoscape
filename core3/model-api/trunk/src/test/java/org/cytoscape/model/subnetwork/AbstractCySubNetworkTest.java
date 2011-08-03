@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,13 +25,12 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model.subnetwork;
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import org.cytoscape.event.CyEvent;
 import org.cytoscape.event.CyEventHelper;
@@ -65,8 +56,7 @@ import java.util.Set;
 /**
  * DOCUMENT ME!
  */
-public abstract class AbstractCySubNetworkTest extends TestCase {
-
+public abstract class AbstractCySubNetworkTest {
 	protected CyRootNetwork root;
 	protected CyRootNetwork root2;
 
@@ -84,25 +74,20 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 	private CyEdge e3;
 
 	private CyEdge ex1;
-
 	private CySubNetwork sub;
 
-
-	/**
-	 *  DOCUMENT ME!
-	 */
 	private void defaultSetup() {
-        n1 = root.addNode();
-        n2 = root.addNode();
-        n3 = root.addNode();
-        n4 = root.addNode();
-        n5 = root.addNode();
+		n1 = root.addNode();
+		n2 = root.addNode();
+		n3 = root.addNode();
+		n4 = root.addNode();
+		n5 = root.addNode();
 
 		e1 = root.addEdge(n1,n2,true);
 		e2 = root.addEdge(n3,n2,true);
 		e3 = root.addEdge(n1,n3,false);
 
-        sub = root.addSubNetwork();
+		sub = root.addSubNetwork();
 		sub.addNode(n1);
 		sub.addNode(n2);
 		sub.addEdge(e1);
@@ -111,12 +96,8 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		nx2 = root2.addNode();
 	}
 
-
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testAddNode() {
-
 		defaultSetup();
 
 		assertNotNull("subnetwork is not null",sub);
@@ -149,10 +130,12 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		assertFalse("contains edge2",sub.containsEdge(e2));
 		assertFalse("contains edge3",sub.containsEdge(e3));
 
-    }
+	}
 
+	@Test
 	public void testNullAddNode() {
 		defaultSetup();
+
 		try {
 			sub.addNode(null);
 		} catch (Exception e) {
@@ -164,13 +147,15 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		fail();
 	}
 
+	@Test
 	public void testAlreadyAddedAddNode() {
 		defaultSetup();
 
 		assertFalse("node already exists", sub.addNode( n1 ) );
 		noChangeChecks();
-    }
+	}
 
+	@Test
 	public void testNodeFromDifferntRootAddNode() {
 		defaultSetup();
 
@@ -183,8 +168,9 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 
 		// if we don't get an exception
 		fail();
-    }
+	}
 
+	@Test
 	public void testNullEdgeAdd() {
 		defaultSetup();
 
@@ -199,15 +185,18 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		fail();
 	}
 
+	@Test
 	public void testAlreadyAddedAddEdge() {
 		defaultSetup();
 
 		assertFalse("edge already exists", sub.addEdge( e1 ) );
 		noChangeChecks();
-    }
+	}
 
+	@Test
 	public void testEdgeFromDifferntRootAddEdge() {
 		defaultSetup();
+
 		ex1 = root2.addEdge(nx1,nx2,true);
 
 		try {
@@ -219,7 +208,7 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 
 		// if we don't get an exception
 		fail();
-    }
+	}
 
 	private void noChangeChecks() {
 		assertNotNull("subnetwork is not null",sub);
@@ -231,16 +220,17 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 	}
 
 
+	@Test
 	public void testRemoveNode() {
 		defaultSetup();
 
-        CySubNetwork sub2 = root.addSubNetwork();
+		CySubNetwork sub2 = root.addSubNetwork();
 		sub2.addNode(n1);
 		sub2.addNode(n2);
 		sub2.addNode(n4);
 		sub2.addEdge(e1);
 
-        assertNotNull("subnetwork is not null",sub2);
+		assertNotNull("subnetwork is not null",sub2);
 		assertEquals("num nodes",3,sub2.getNodeCount());
 		assertEquals("num edges",1,sub2.getEdgeCount());
 		assertTrue("contains node1",sub2.containsNode(n1));
@@ -267,14 +257,15 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		assertTrue("contains node2",sub2.containsNode(n2));
 		assertFalse("contains edge1",sub2.containsEdge(e1));
 		assertFalse("contains edge1",sub2.containsEdge(n1,n2));
-    }
+	}
 
+	@Test
 	public void testInvalidRemoveFromNetwork() {
 		defaultSetup();
 
 		checkInvalidRemove(sub,nx1);
 		checkInvalidRemove(sub,null);
-    }
+	}
 
 	private void checkInvalidRemove(CySubNetwork s, CyNode n) {
 		try {
@@ -294,8 +285,10 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		fail();
 	}
 
+	@Test
 	public void testGetRootNetwork() {
 		defaultSetup();
+
 		CyRootNetwork r2 = sub.getRootNetwork();
 		assertNotNull("root is not null",r2);
 		assertTrue("r2 equals root",r2.equals(root));
@@ -303,19 +296,25 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		assertEquals("edge list size",r2.getEdgeList().size(),root.getEdgeList().size());
 	}
 
+	@Test
 	public void testAddEdgeNotYetAddedSource() {
 		defaultSetup();
+
 		assertTrue(sub.addEdge(e3));
 	}
 
+	@Test
 	public void testAddEdgeNotYetAddedTarget() {
 		defaultSetup();
+
 		CyEdge e4 = root.addEdge(n4,n1,true);
 		assertTrue(sub.addEdge(e4));
 	}
 
+	@Test
 	public void testAddEdgeBadEdge() {
 		defaultSetup();
+
 		CyEdge ex = new DummyCyEdge(null,null,true,100);
 		try {
 			sub.addEdge(ex);
@@ -325,6 +324,7 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testAddNodeInSubNetwork() {
 		defaultSetup();
 
@@ -337,6 +337,7 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 	/**
 	 * Checks that getNeighbors works as expected for CySubNetwork
 	 */
+	@Test
 	public void testNodeAddedInSubnetworkSubGetNeighbors() {
 		defaultSetup();
 
@@ -352,7 +353,7 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		List<CyNode> nl4 = root.getNeighborList(nz1,CyEdge.Type.ANY);
 		assertEquals(1,nl4.size());
 
-        CySubNetwork sub2 = root.addSubNetwork();
+		CySubNetwork sub2 = root.addSubNetwork();
 		sub2.addNode(n1);
 		sub2.addNode(n2);
 		// no edges in sub2, so no neighbors!
@@ -361,7 +362,7 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		assertEquals(0,nl.size());
 	}
 
-	// TODO 
+	// TODO
 	// add tests that are similar to getNeighbors for getAdjacentEdges and getConnectingEdges
 	//
 }

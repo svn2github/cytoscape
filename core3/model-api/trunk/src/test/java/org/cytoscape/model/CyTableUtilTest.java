@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,36 +25,33 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.ArrayList;
 
-/**
- * DOCUMENT ME!
- */
-public class CyTableUtilTest extends TestCase {
 
+public class CyTableUtilTest {
 	CyNetwork net;
 
-	CyRow row1; 
-	CyNode node1; 
-	CyEdge edge1; 
+	CyRow row1;
+	CyNode node1;
+	CyEdge edge1;
 
-	CyRow row2; 
-	CyNode node2; 
-	CyEdge edge2; 
+	CyRow row2;
+	CyNode node2;
+	CyEdge edge2;
 
 	final String columnName = "asdf";
 
+	@Before
 	public void setUp() {
 		row1 = mock(CyRow.class);
 		when(row1.get(columnName,Boolean.class)).thenReturn(true);
@@ -95,6 +84,7 @@ public class CyTableUtilTest extends TestCase {
 		when(net.getEdgeList()).thenReturn(elist);
 	}
 
+	@Test
 	public void testGetTrueNodes() {
 		List<CyNode> nodes = CyTableUtil.getNodesInState(net,columnName,true);
 		assertNotNull(nodes);
@@ -102,6 +92,7 @@ public class CyTableUtilTest extends TestCase {
 		assertEquals( 1, nodes.size() );
 	}
 
+	@Test
 	public void testGetFalseNodes() {
 		List<CyNode> nodes = CyTableUtil.getNodesInState(net,columnName,false);
 		assertNotNull(nodes);
@@ -109,6 +100,7 @@ public class CyTableUtilTest extends TestCase {
 		assertEquals( 1, nodes.size() );
 	}
 
+	@Test
 	public void testGetTrueEdges() {
 		List<CyEdge> edges = CyTableUtil.getEdgesInState(net,columnName,true);
 		assertNotNull(edges);
@@ -116,6 +108,7 @@ public class CyTableUtilTest extends TestCase {
 		assertEquals( 1, edges.size() );
 	}
 
+	@Test
 	public void testGetFalseEdges() {
 		List<CyEdge> edges = CyTableUtil.getEdgesInState(net,columnName,false);
 		assertNotNull(edges);
@@ -123,6 +116,7 @@ public class CyTableUtilTest extends TestCase {
 		assertEquals( 1, edges.size() );
 	}
 
+	@Test
 	public void testNullNetworkNodes() {
 		try {
 		List<CyNode> nodes = CyTableUtil.getNodesInState(null,columnName,false);
@@ -132,6 +126,7 @@ public class CyTableUtilTest extends TestCase {
 		fail("didn't catch expected npe");
 	}
 
+	@Test
 	public void testNullNetworkEdges() {
 		try {
 		List<CyEdge> nodes = CyTableUtil.getEdgesInState(null,columnName,false);

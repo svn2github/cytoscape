@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,40 +25,40 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model.events;
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 
 import static org.mockito.Mockito.*;
 
-/**
- * DOCUMENT ME!
- */
-public class RemovedNodeEventTest extends TestCase {
 
+public class RemovedNodeEventTest {
 	RemovedNodesEvent event;
 	CyNetwork net;
 
+	@Before
 	public void setUp() {
-		net = mock(CyNetwork.class); 
+		net = mock(CyNetwork.class);
 		event = new RemovedNodesEvent(net);
 	}
 
+	@Test
 	public void testGetSource() {
 		assertEquals( event.getSource(), net );
 	}
 
+	@Test
 	public void testGetListenerClass() {
 		assertEquals( event.getListenerClass(), RemovedNodesListener.class );
 	}
 
+	@Test
 	public void testNullNetwork() {
 		try {
 			RemovedNodesEvent ev = new RemovedNodesEvent(null);

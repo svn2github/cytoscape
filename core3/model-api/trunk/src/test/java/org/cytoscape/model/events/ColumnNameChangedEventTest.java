@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -28,43 +28,48 @@
 package org.cytoscape.model.events;
 
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import org.cytoscape.model.CyTable;
 
 import static org.mockito.Mockito.*;
 
 
-public class ColumnNameChangedEventTest extends TestCase {
+public class ColumnNameChangedEventTest {
 	ColumnNameChangedEvent event;
 	CyTable table;
 	final String oldColumnName = "asdf";
 	final String newColumnName = "xyz";
 
+	@Before
 	public void setUp() {
-		table = mock(CyTable.class); 
+		table = mock(CyTable.class);
 		event = new ColumnNameChangedEvent(table, oldColumnName, newColumnName);
 	}
 
+	@Test
 	public void testGetOldColumnName() {
 		assertEquals(event.getOldColumnName(), oldColumnName);
 	}
 
+	@Test
 	public void testGetNewColumnName() {
 		assertEquals(event.getNewColumnName(), newColumnName);
 	}
 
+	@Test
 	public void testGetSource() {
 		assertEquals(event.getSource(), table);
 	}
 
+	@Test
 	public void testGetListenerClass() {
 		assertEquals(event.getListenerClass(), ColumnNameChangedListener.class);
 	}
 
+	@Test
 	public void testNullOldColumn() {
 		try {
 			ColumnNameChangedEvent ev =
@@ -75,6 +80,7 @@ public class ColumnNameChangedEventTest extends TestCase {
 		fail("didn't catch expected npe for old column name");
 	}
 
+	@Test
 	public void testNullNewColumn() {
 		try {
 			ColumnNameChangedEvent ev =
@@ -85,6 +91,7 @@ public class ColumnNameChangedEventTest extends TestCase {
 		fail("didn't catch expected npe for new column name");
 	}
 
+	@Test
 	public void testNullTable() {
 		try {
 			ColumnNameChangedEvent ev =

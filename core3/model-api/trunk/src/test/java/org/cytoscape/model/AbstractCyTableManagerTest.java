@@ -29,11 +29,15 @@ package org.cytoscape.model;
 
 
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
+
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.Map;
 
 
-public abstract class AbstractCyTableManagerTest extends TestCase {
+public abstract class AbstractCyTableManagerTest {
 	/**
 	 * Must be supplied by implementer.
 	 */
@@ -46,22 +50,26 @@ public abstract class AbstractCyTableManagerTest extends TestCase {
 
 	private CyNetwork badNetwork;
 
+	@Before
 	public void setUp() {
 		badNetwork = mock(CyNetwork.class);
 	}
 
+	@Test
 	public void testGoodNetwork() {
 		assertNotNull( mgr.getTableMap(CyNetwork.class, goodNetwork) );
 		assertNotNull( mgr.getTableMap(CyNode.class, goodNetwork) );
 		assertNotNull( mgr.getTableMap(CyEdge.class, goodNetwork) );
 	}
 
+	@Test
 	public void testBadNetwork() {
 		assertNull( mgr.getTableMap(CyNetwork.class,badNetwork) );
 		assertNull( mgr.getTableMap(CyNode.class,badNetwork) );
 		assertNull( mgr.getTableMap(CyEdge.class,badNetwork) );
 	}
 
+	@Test
 	public void testNullNetwork() {
 		assertNull( mgr.getTableMap(CyNetwork.class,null) );
 		assertNull( mgr.getTableMap(CyNode.class,null) );
@@ -81,17 +89,7 @@ public abstract class AbstractCyTableManagerTest extends TestCase {
 		assertTrue(tableMap.keySet().contains(CyNetwork.HIDDEN_ATTRS));
 	}
 
-/*
-	public void testGetAllTables() {
-	}
-
-	public void testGetValidTable() {
-	}
-
-	public void testGetInvalidTable() {
-	}
-	*/
-
+	@Test
 	public void testReset() {
 		assertFalse(mgr.getAllTables(true).isEmpty());
 		mgr.reset();
