@@ -132,15 +132,14 @@ public class GroupPanel extends JPanel implements ActionListener {
 
 		depthBox = new JPanel();
 		depthBox.setLayout(new BoxLayout(depthBox, BoxLayout.X_AXIS));
+		TitledBorder depthBorder = BorderFactory.createTitledBorder("Expansion depth:");
+		depthBorder.setTitlePosition(TitledBorder.LEFT);
+		depthBorder.setTitlePosition(TitledBorder.ABOVE_TOP);
+		depthBox.setBorder(depthBorder);
 		depthGroup = new ButtonGroup();
 		addDepthButtons(1);
 
-		controlPanel.add(new javax.swing.JLabel("<html><b>Expansion Depth</b></html>"));
 		// Border it
-		TitledBorder depthBorder = BorderFactory.createTitledBorder("");
-		depthBorder.setTitlePosition(TitledBorder.LEFT);
-		depthBorder.setTitlePosition(TitledBorder.TOP);
-		depthBox.setBorder(depthBorder);
 		controlPanel.add(depthBox);
 
 		add(controlPanel, BorderLayout.NORTH);
@@ -284,6 +283,7 @@ public class GroupPanel extends JPanel implements ActionListener {
 		newButton.setActionCommand(command);
 		newButton.addActionListener(this);
 		newButton.setEnabled(enabled);
+		newButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 		return newButton;
 	}
 
