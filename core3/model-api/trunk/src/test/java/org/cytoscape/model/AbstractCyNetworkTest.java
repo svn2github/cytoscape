@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2008, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,31 +33,25 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 
-/**
- * DOCUMENT ME!
- */
-public abstract class AbstractCyNetworkTest extends TestCase {
+public abstract class AbstractCyNetworkTest {
 	protected CyNetwork net;
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testAddNode() {
 		CyNode n = net.addNode();
 		assertNotNull("node is not null", n);
 		assertTrue("node index >= 0", n.getIndex() >= 0);
-	
+
 		// Doesn't make sense for subnetworks
 		//assertTrue("node index < num node", n.getIndex() < net.getNodeCount());
 	}
-	
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+
+	@Test
 	public void testRemoveNode() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -99,9 +93,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("num nodes == 0", 0, net.getNodeCount());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testRemoveNodeWithEdges() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -129,9 +121,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("num edges", 0, net.getEdgeCount());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testAddEdge() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -213,9 +203,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("edge count", 8, net.getEdgeCount());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testRemoveEdge() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -251,7 +239,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		CyEdge e6 = net.addEdge(n1, n1, true);
 		assertEquals("num edges == 4", 4, net.getEdgeCount());
 
-		// remove self edge 
+		// remove self edge
 		boolean rem6 = net.removeEdges(Collections.singletonList(e6));
 		assertTrue("remove edge 6 success", rem6);
 		assertEquals("num edges == 3", 3, net.getEdgeCount());
@@ -276,9 +264,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	}
 
 	// this is functionality is tested elsewhere too
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testGetNodeCount() {
 		assertEquals("num nodes == 0", 0, net.getNodeCount());
 
@@ -304,9 +290,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	}
 
 	// this is functionality is tested elsewhere too
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testGetEdgeCount() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -324,9 +308,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("num edges == 2", 2, net.getEdgeCount());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testGetNodeList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -354,9 +336,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("list size", 2, l.size());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testGetEdgeList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -393,9 +373,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("edge list size", 3, l.size());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testIsNode() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = new DummyCyNode(20);
@@ -403,9 +381,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertFalse("node 2 is not", net.containsNode(n2));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testIsEdgeFromEdge() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -417,9 +393,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertFalse("edge 2 is not", net.containsEdge(e2));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testIsEdgeFromNodes() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -436,9 +410,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertFalse("bad source node", net.containsEdge(n4, n1));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testBasicGetNeighborList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -475,9 +447,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("two neighbors", 2, l.size());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testBadNodeNeighborList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -494,9 +464,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		}
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testUndirectedGetNeighborList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -536,9 +504,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("node 2 neighbors", 0, l.size());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testDirectedGetNeighborList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -585,9 +551,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertTrue("contains node 3", l.contains(n3));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testBasicGetAdjacentEdgeList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -619,9 +583,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("one adjacent edge?", 1, l.size());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testBadNodeAdjacentEdgeList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -638,9 +600,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		}
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testUndirectedGetAdjacentEdgeList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -680,9 +640,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertEquals("node 2 adjacent edges", 0, l.size());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testDirectedGetAdjacentEdgeList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -729,9 +687,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertTrue("contains edge 2", l.contains(e2));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testBasicGetConnectingEdgeList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -769,9 +725,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertTrue("contains edge 2", l.contains(e2));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testBadTargetNodeConnectingEdgeList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -788,9 +742,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		}
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testBadSourceNodeConnectingEdgeList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -807,9 +759,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		}
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testUndirectedBasicGetConnectingEdgeList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -827,9 +777,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertTrue("contains edge 3", l.contains(e3));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testDirectedBasicGetConnectingEdgeList() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -849,9 +797,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertTrue("contains edge 4", l.contains(e4));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testGetNode() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -871,9 +817,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertNull("node is null ", net.getNode(-1));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testGetEdge() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -895,20 +839,16 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		assertNull("edge is null ", net.getEdge(-1));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testGetCyRow() {
 		// As long as the object is not null and is an instance of CyRow, we
-		// should be satisfied.  Don't test any other properties of CyRow.  
+		// should be satisfied.  Don't test any other properties of CyRow.
 		// Leave that to the CyRow unit tests.
 		assertNotNull("cyattrs exists", net.getCyRow("USER"));
 		assertTrue("cyattrs is CyRow", net.getCyRow("USER") instanceof CyRow);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testGetCyRowNullNamespace() {
 		try {
 			net.getCyRow(null);
@@ -920,9 +860,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		fail("didn't catch what was thrown");
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testCyRowBadNamespace() {
 		try {
 			net.getCyRow("homeradfasdf");
@@ -934,23 +872,24 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		fail("didn't catch what was thrown");
 	}
 
-	/**
-	 * Make sure the proper default attributes are created 
-	 */
+	@Test
 	public void testDefaultAttributes() {
 		assertEquals(String.class, net.getCyRow().getTable().getColumn("name").getType());
 	}
 
+	@Test
 	public void testGetDefaultNetworkTable() {
 		assertNotNull(net.getDefaultNetworkTable());
 		assertEquals(String.class, net.getDefaultNetworkTable().getColumn("name").getType());
 	}
 
+	@Test
 	public void testGetDefaultNodeTable() {
 		assertNotNull(net.getDefaultNodeTable());
 		assertEquals(String.class, net.getDefaultNodeTable().getColumn("name").getType());
 	}
 
+	@Test
 	public void testGetDefaultEdgeTable() {
 		assertNotNull(net.getDefaultEdgeTable());
 		assertEquals(String.class, net.getDefaultEdgeTable().getColumn("name").getType());

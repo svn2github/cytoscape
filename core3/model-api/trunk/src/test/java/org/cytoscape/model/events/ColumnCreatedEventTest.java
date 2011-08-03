@@ -31,15 +31,13 @@ package org.cytoscape.model.events;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import org.cytoscape.model.CyTable;
 
 import static org.mockito.Mockito.*;
 
 
-public class ColumnCreatedEventTest extends TestCase {
+public class ColumnCreatedEventTest {
 	ColumnCreatedEvent event;
 	CyTable table;
 	final String columnName = "asdf";

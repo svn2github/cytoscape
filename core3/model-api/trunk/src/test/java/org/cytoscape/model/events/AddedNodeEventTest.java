@@ -34,8 +34,6 @@ import java.util.Collection;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -43,7 +41,7 @@ import org.cytoscape.model.CyNode;
 import static org.mockito.Mockito.*;
 
 
-public class AddedNodeEventTest extends TestCase {
+public class AddedNodeEventTest {
 	AddedNodesEvent event;
 	Collection<CyNode> nodeCollection;
 	CyNetwork net;

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2008, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -28,10 +28,11 @@
 package org.cytoscape.model;
 
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 
-public abstract class AbstractCyEdgeTest extends TestCase {
+public abstract class AbstractCyEdgeTest {
 	protected CyNetwork net;
 
 	private CyEdge eDir;
@@ -50,18 +51,21 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 		eUndir = net.addEdge(n2, n3, false);
 	}
 
+	@Test
 	public void testIsDirected() {
 		defaultSetUp();
 		assertTrue("eDir is directed", eDir.isDirected());
 		assertFalse("eUndir is undirected", eUndir.isDirected());
 	}
 
+	@Test
 	public void testGetIndex() {
 		defaultSetUp();
 		assertTrue("edge index >= 0", eDir.getIndex() >= 0);
 		assertTrue("edge index >= 0", eUndir.getIndex() >= 0);
 	}
 
+	@Test
 	public void testGetSource() {
 		defaultSetUp();
 		assertNotNull("source exists", eDir.getSource());
@@ -77,6 +81,7 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 		assertTrue("source for eUndir", ((eUndir.getSource() == n3) || (eUndir.getSource() == n2)));
 	}
 
+	@Test
 	public void testGetTarget() {
 		defaultSetUp();
 		assertNotNull("target exists", eDir.getTarget());
@@ -92,6 +97,7 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 		assertTrue("target for eUndir", ((eUndir.getTarget() == n3) || (eUndir.getTarget() == n2)));
 	}
 
+	@Test
 	public void testToString() {
 		defaultSetUp();
 		assertNotNull("string is not null", eDir.toString());
@@ -100,6 +106,7 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 		assertTrue("string has non zero length", eUndir.toString().length() > 0);
 	}
 
+	@Test
 	public void testDefaultAttributes() {
 		defaultSetUp();
 

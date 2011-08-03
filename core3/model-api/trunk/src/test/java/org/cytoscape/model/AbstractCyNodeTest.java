@@ -28,10 +28,8 @@
 package org.cytoscape.model;
 
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -50,13 +48,10 @@ import static org.mockito.Mockito.*;
 
 
 /** Base class for CyNode tests. */
-public abstract class AbstractCyNodeTest extends TestCase {
+public abstract class AbstractCyNodeTest {
 	protected CyNetwork net;
 
-	
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testGetIndex() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
@@ -64,6 +59,7 @@ public abstract class AbstractCyNodeTest extends TestCase {
 		assertTrue("index >= 0", n2.getIndex() >= 0);
 	}
 
+	@Test
 	public void testDefaultAttributes() {
 		CyNode n1 = net.addNode();
 		assertEquals(String.class,
@@ -73,11 +69,13 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	}
 
 	// by default a node should have a null nested network
+	@Test
 	public void testInitGetNestedNetwork() {
 		CyNode n1 = net.addNode();
 		assertNull(n1.getNetwork());
 	}
 
+	@Test
 	public void testSetNestedNetwork() {
 		CyNode n1 = net.addNode();
 		CyNetwork net2 = mock(CyNetwork.class);
@@ -87,6 +85,7 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	}
 
 	// self nested networks are allowed
+	@Test
 	public void testSetSelfNestedNetwork() {
 		CyNode n1 = net.addNode();
 		n1.setNetwork( net );
@@ -95,20 +94,22 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	}
 
 	// null nested networks are allowed
+	@Test
 	public void testSetNullNestedNetwork() {
 		CyNode n1 = net.addNode();
 
-		// put a real network here first 
+		// put a real network here first
 		CyNetwork net2 = mock(CyNetwork.class);
 		n1.setNetwork( net2 );
 		assertNotNull(n1.getNetwork());
 		assertEquals(net2, n1.getNetwork());
-	
+
 		// now put a null network to verify that we've "unset" things
 		n1.setNetwork( null );
 		assertNull(n1.getNetwork());
 	}
 
+	@Test
 	public void testRemoveNodeIndexStaysConstant() {
 		assertEquals(0,net.getNodeCount());
 		CyNode n0 = net.addNode();
@@ -121,6 +122,7 @@ public abstract class AbstractCyNodeTest extends TestCase {
 		assertEquals(1,n1i);
 	}
 
+	@Test
 	public void testRemoveNodeGetNodeFromIndex() {
 		assertEquals(0,net.getNodeCount());
 		CyNode n0 = net.addNode();
