@@ -117,6 +117,11 @@ public class NamedSelection extends CytoscapePlugin
 		groupPanel = new GroupPanel();
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add("Groups", groupPanel);
 
+		// Register with CyGroup
+		groupViewer = new NamedSelectionGroupViewer(groupPanel, myLogger);
+		CyGroupManager.registerGroupViewer(groupViewer);
+		groupPanel.addViewer(groupViewer);
+
 		// Create our main plugin menu
 		JMenu menu = new JMenu("Named Selection Tool");
 		menu.addMenuListener(new NamedSelectionMenuListener(null, groupPanel));
@@ -126,11 +131,6 @@ public class NamedSelection extends CytoscapePlugin
 
 		// We want to listen for graph perspective changes (primarily SELECT/UNSELECT)
 		Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(groupPanel.getTree());
-
-		// Register with CyGroup
-		groupViewer = new NamedSelectionGroupViewer(groupPanel, myLogger);
-		CyGroupManager.registerGroupViewer(groupViewer);
-		groupPanel.addViewer(groupViewer);
 
 		// Finally, register our commands (which are pretty sparse...)
 		new NamedSelectionCommandHandler("namedselection", myLogger, groupPanel);

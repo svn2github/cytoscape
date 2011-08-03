@@ -103,7 +103,7 @@ public class GroupPanel extends JPanel implements ActionListener {
 		super();
 		viewerList = new ArrayList();
 
-		setPreferredSize(new Dimension(200,-1));
+		setPreferredSize(new Dimension(350,-1));
 		setLayout(new BorderLayout());
 
 		// Create a separate JPanel for our various controls
@@ -114,6 +114,8 @@ public class GroupPanel extends JPanel implements ActionListener {
 
 		// Create a button box at the top 
 		JPanel buttonBox = new JPanel();
+		buttonBox.setLayout(new BoxLayout(buttonBox, BoxLayout.X_AXIS));
+
 		// Create clear selection button
 		buttonBox.add(createButton("Clear Selection", CLEAR, true));
 
@@ -125,19 +127,20 @@ public class GroupPanel extends JPanel implements ActionListener {
 		buttonBox.add(deleteButton);
 
 		// Border it
-		buttonBox.setBorder(BorderFactory.createEtchedBorder());
+		buttonBox.setBorder(BorderFactory.createTitledBorder(""));
 		controlPanel.add(buttonBox);
 
 		depthBox = new JPanel();
+		depthBox.setLayout(new BoxLayout(depthBox, BoxLayout.X_AXIS));
 		depthGroup = new ButtonGroup();
 		addDepthButtons(1);
 
+		controlPanel.add(new javax.swing.JLabel("<html><b>Expansion Depth</b></html>"));
 		// Border it
-		Border depthBorder = BorderFactory.createEtchedBorder();
-		TitledBorder dTitleBorder = BorderFactory.createTitledBorder(depthBorder, "Expansion Depth");
-		dTitleBorder.setTitlePosition(TitledBorder.LEFT);
-		dTitleBorder.setTitlePosition(TitledBorder.TOP);
-		depthBox.setBorder(dTitleBorder);
+		TitledBorder depthBorder = BorderFactory.createTitledBorder("");
+		depthBorder.setTitlePosition(TitledBorder.LEFT);
+		depthBorder.setTitlePosition(TitledBorder.TOP);
+		depthBox.setBorder(depthBorder);
 		controlPanel.add(depthBox);
 
 		add(controlPanel, BorderLayout.NORTH);
@@ -148,7 +151,7 @@ public class GroupPanel extends JPanel implements ActionListener {
 		reload();
 
 		JScrollPane treeView = new JScrollPane(navTree);
-		treeView.setBorder(BorderFactory.createEtchedBorder());
+		treeView.setBorder(BorderFactory.createTitledBorder(""));
 		treeView.setBackground(Cytoscape.getDesktop().getBackground());
 
 		add(treeView, BorderLayout.CENTER);
