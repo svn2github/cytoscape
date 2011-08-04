@@ -1,49 +1,41 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+  Copyright (c) 2008, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or
+  any later version.
 
- This library is free software; you can redistribute it and/or modify it
- under the terms of the GNU Lesser General Public License as published
- by the Free Software Foundation; either version 2.1 of the License, or
- any later version.
+  This library is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+  documentation provided hereunder is on an "as is" basis, and the
+  Institute for Systems Biology and the Whitehead Institute
+  have no obligations to provide maintenance, support,
+  updates, enhancements or modifications.  In no event shall the
+  Institute for Systems Biology and the Whitehead Institute
+  be liable to any party for direct, indirect, special,
+  incidental or consequential damages, including lost profits, arising
+  out of the use of this software and its documentation, even if the
+  Institute for Systems Biology and the Whitehead Institute
+  have been advised of the possibility of such damage.  See
+  the GNU Lesser General Public License for more details.
 
- This library is distributed in the hope that it will be useful, but
- WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute
- have no obligations to provide maintenance, support,
- updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute
- be liable to any party for direct, indirect, special,
- incidental or consequential damages, including lost profits, arising
- out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute
- have been advised of the possibility of such damage.  See
- the GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this library; if not, write to the Free Software Foundation,
- Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 package org.cytoscape.model.internal;
 
 
 import org.cytoscape.model.CyEdge;
 
+
 /**
  * Element of the edge linked list used in {@link ArrayGraph}.
  * You should only touch this if you know what you're doing.
  */
-class EdgePointer {
-
+final class EdgePointer {
 	final CyEdge cyEdge;
 	final int index;
 	final boolean directed;
@@ -60,7 +52,7 @@ class EdgePointer {
 		source = s;
 		target = t;
 		directed = dir;
-		cyEdge = edge; 
+		cyEdge = edge;
 
 		nextOutEdge[0] = null;
 		prevOutEdge[0] = null;
@@ -81,11 +73,11 @@ class EdgePointer {
 		prevInEdge = expandEdgePointerArray(prevInEdge, x);
 	}
 
-    static EdgePointer[] expandEdgePointerArray(final EdgePointer[] np, final int n) {
-        final EdgePointer[] nnp = new EdgePointer[n+1];
-        System.arraycopy(np,0,nnp,0,np.length);
-        return nnp;
-    }
+	static EdgePointer[] expandEdgePointerArray(final EdgePointer[] np, final int n) {
+		final EdgePointer[] nnp = new EdgePointer[n+1];
+		System.arraycopy(np,0,nnp,0,np.length);
+		return nnp;
+	}
 
 	void insert(final int inId) {
 		nextOutEdge[inId] = source.firstOutEdge[inId];
@@ -102,62 +94,61 @@ class EdgePointer {
 
 		target.firstInEdge[inId] = this;
 
-        if (directed) {
-            source.outDegree[inId]++;
-            target.inDegree[inId]++;
-        } else {
-            source.undDegree[inId]++;
-            target.undDegree[inId]++;
-        }
+		if (directed) {
+			source.outDegree[inId]++;
+			target.inDegree[inId]++;
+		} else {
+			source.undDegree[inId]++;
+			target.undDegree[inId]++;
+		}
 
-        // Self-edge
-        if (source == target) {
-            if (directed) {
-                source.selfEdges[inId]++;
-            } else {
-                source.undDegree[inId]--;
-            }
-        }
+		// Self-edge
+		if (source == target) {
+			if (directed) {
+				source.selfEdges[inId]++;
+			} else {
+				source.undDegree[inId]--;
+			}
+		}
 	}
 
 	void remove(final int inId) {
-        if (prevOutEdge[inId] != null)
-            prevOutEdge[inId].nextOutEdge[inId] = nextOutEdge[inId];
-        else
-            source.firstOutEdge[inId] = nextOutEdge[inId];
+		if (prevOutEdge[inId] != null)
+			prevOutEdge[inId].nextOutEdge[inId] = nextOutEdge[inId];
+		else
+			source.firstOutEdge[inId] = nextOutEdge[inId];
 
-        if (nextOutEdge[inId] != null)
-            nextOutEdge[inId].prevOutEdge[inId] = prevOutEdge[inId];
+		if (nextOutEdge[inId] != null)
+			nextOutEdge[inId].prevOutEdge[inId] = prevOutEdge[inId];
 
-        if (prevInEdge[inId] != null)
-            prevInEdge[inId].nextInEdge[inId] = nextInEdge[inId];
-        else
-            target.firstInEdge[inId] = nextInEdge[inId];
+		if (prevInEdge[inId] != null)
+			prevInEdge[inId].nextInEdge[inId] = nextInEdge[inId];
+		else
+			target.firstInEdge[inId] = nextInEdge[inId];
 
-        if (nextInEdge[inId] != null)
-            nextInEdge[inId].prevInEdge[inId] = prevInEdge[inId];
+		if (nextInEdge[inId] != null)
+			nextInEdge[inId].prevInEdge[inId] = prevInEdge[inId];
 
-        if (directed) {
-            source.outDegree[inId]--;
-            target.inDegree[inId]--;
-        } else {
-            source.undDegree[inId]--;
-            target.undDegree[inId]--;
-        }
+		if (directed) {
+			source.outDegree[inId]--;
+			target.inDegree[inId]--;
+		} else {
+			source.undDegree[inId]--;
+			target.undDegree[inId]--;
+		}
 
 		// Self-edge.
-        if (source == target) { 
-			// TODO are these correct?
-            if (directed) {
-                source.selfEdges[inId]++;
-            } else {
-                source.undDegree[inId]++;
-            }
-        }
+		if (source == target) {
+			if (directed) {
+				source.selfEdges[inId]--;
+			} else {
+				source.undDegree[inId]--;
+			}
+		}
 
-        nextOutEdge[inId] = null; // ?? wasn't here in DynamicGraph
-        prevOutEdge[inId] = null;
-        nextInEdge[inId] = null;
-        prevInEdge[inId] = null;
+		nextOutEdge[inId] = null; // ?? wasn't here in DynamicGraph
+		prevOutEdge[inId] = null;
+		nextInEdge[inId] = null;
+		prevInEdge[inId] = null;
 	}
 }
