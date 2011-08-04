@@ -1,14 +1,7 @@
 /*
   File: ExpressionData.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -34,19 +27,13 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-//ExpressionData.java
-
-//--------------------------------------------------------------------
-// $Revision: 13142 $
-// $Date: 2008-02-21 22:25:56 -0800 (Thu, 21 Feb 2008) $
-// $Author: mes $
-//--------------------------------------------------------------------
 package org.cytoscape.io.internal.read.expression;
+
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.FileReader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +45,7 @@ import java.util.Vector;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.work.TaskMonitor;
 
 
@@ -149,7 +137,7 @@ public class ExpressionData implements Serializable {
 	 * Significance value: UNKNOWN.
 	 */
 	public static final int UNKNOWN = 3;
-	private static final String DEFAULT_KEY_ATTRIBUTE = "ID";
+	private static final String DEFAULT_KEY_ATTRIBUTE = CyTableEntry.NAME;
 	protected int significanceType = 3;
 
 	/*
@@ -174,7 +162,6 @@ public class ExpressionData implements Serializable {
 	double minSig;
 	double maxSig;
 	Vector<Vector<mRNAMeasurement>> allMeasurements;
-///	FileUtil fileUtil;
 
 	/**
 	 * Constructor. Creates an empty Expression Data object with no data.
@@ -353,42 +340,45 @@ public class ExpressionData implements Serializable {
 
 		if (filename == null)
 			return false;
+		final BufferedReader input = new BufferedReader(new FileReader(filename));
 
 		boolean mappingByKeyAttribute = false;
 
-		if (!keyAttributeName.equals(DEFAULT_KEY_ATTRIBUTE)) {
+		if (keyAttributeName != DEFAULT_KEY_ATTRIBUTE) {
 			mappingByKeyAttribute = true;
 			attributeToId = getAttributeToIdList(keyAttributeName);
 		}
 
-		// TODO parser not implemented - needs to read an input stream 
-		String rawText = ""; //fileUtil.getInputString(filename);
-		String[] lines = rawText.split(System.getProperty("line.separator"));
-
 		int lineCount = 0;
+		String line;
 
 		// allow file to start with an arbitrary number
 		// of comment lines starting with '#' symbol
-		while (lines[lineCount].startsWith("#")) ++lineCount;
+		while ((line = input.readLine()) != null && line.startsWith("#"))
+			++lineCount;
 
-		String headerLine = lines[lineCount++];
+		String headerLine = input.readLine();
+		++lineCount;
 
-		if ((headerLine == null) || (headerLine.length() == 0))
+		if (headerLine == null || headerLine.length() == 0)
 			return false;
 
 		if (isHeaderLineMTXHeader(headerLine)) {
 			// for sure we know that the file contains lambdas
-			this.significanceType = this.LAMBDA;
-			headerLine = lines[lineCount++];
+			significanceType = LAMBDA;
+			headerLine = input.readLine();
+			++lineCount;
+			if (headerLine == null)
+				return false;
 		}
 
-		boolean hasCOMMON = doesHeaderLineHasCOMMON(headerLine);
-		boolean expectPvals = doesHeaderLineHaveDuplicates(headerLine, hasCOMMON);
+		final boolean hasCOMMON = doesHeaderLineHasCOMMON(headerLine);
+		final boolean expectPvals = doesHeaderLineHaveDuplicates(headerLine, hasCOMMON);
 
-		if ((this.significanceType != this.LAMBDA) && !expectPvals) {
+		if ((significanceType != LAMBDA) && !expectPvals) {
 			// we know that we don't have a lambda header and we don't
 			// have significance values
-			this.significanceType = this.NONE;
+			significanceType = NONE;
 		}
 
 		StringTokenizer headerTok = new StringTokenizer(headerLine);
@@ -429,7 +419,7 @@ public class ExpressionData implements Serializable {
 		}
 
 		// Since COMMON is optional, it may not exist
-		if (!hasCOMMON) {			
+		if (!hasCOMMON) {
 			if (expectPvals) {
 				if (tmpI == tmpF) {
 					numberOfConditions = (numTokens - 2) / 2;
@@ -442,11 +432,11 @@ public class ExpressionData implements Serializable {
 				numberOfConditions = numTokens - 1;
 			}
 		}
-		
+
 		/* eat the first two tokens from the header line */
 		headerTok.nextToken();
 		if (hasCOMMON) {
-			headerTok.nextToken();			
+			headerTok.nextToken();
 		}
 
 		/* the next numConds tokens are the condition names */
@@ -461,48 +451,46 @@ public class ExpressionData implements Serializable {
 		 */
 		if (expectPvals) {
 			for (int i = 0; i < numberOfConditions; i++) {
-				String title = headerTok.nextToken();
+				final String title = headerTok.nextToken();
 
-				if (!(title.equals(cNames.get(i)))) {
-					StringBuffer msg = new StringBuffer();
-					msg.append("Expecting both ratios and p-values.\n");
-					msg.append("Condition name mismatch in header line" + " of data file "
-					           + filename + ": " + cNames.get(i) + " vs. " + title);
-					throw new IOException(msg.toString());
-				} // if !title
-			} // for i
-		} // if expectPvals
+				if (!title.equals(cNames.get(i))) {
+					final String msg = "Expecting both ratios and p-values.\n"
+					                   +"Condition name mismatch in header line" + " of data file "
+					                   + filename + ": " + cNames.get(i) + " vs. " + title;
+					throw new IOException(msg);
+				}
+			}
+		}
 
-		/* OK, we have a reasonable header; clobber all old information */
+		/*
+		 * OK, we have a reasonable header; clobber all old information
+		 */
 		this.filename = filename;
 		this.numConds = numberOfConditions;
 		this.extraTokens = haveExtraTokens;
 		this.haveSigValues = expectPvals;
+
 		/* wipe old data */
 		initDataStructures();
+
 		/* store condition names */
 		condNames = cNames;
 
-		for (int i = 0; i < numConds; i++) {
+		for (int i = 0; i < numConds; i++)
 			condNameToIndex.put(condNames.get(i), Integer.valueOf(i));
-		}
 
 		/* parse rest of file line by line */
-		if (taskMonitor != null) {
+		if (taskMonitor != null)
 			taskMonitor.setStatusMessage("Reading in Data...");
-		}
 
-		for (int ii = lineCount; ii < lines.length; ii++) {
-			if (taskMonitor != null) {
-				double percentComplete = ((double) ii / lines.length) * 100.0;
-				taskMonitor.setProgress(percentComplete);
-			}
-
-			parseOneLine(lines[ii], ii, expectPvals, mappingByKeyAttribute, attributeToId, hasCOMMON);
+		while ((line = input.readLine()) != null) {
+			++lineCount;
+			parseOneLine(line, lineCount, expectPvals, mappingByKeyAttribute, attributeToId, hasCOMMON);
 		}
+		taskMonitor.setProgress(100.0);
 
 		/* save numGenes and build hash of gene names to indices */
-		this.numGenes = geneNames.size();
+		numGenes = geneNames.size();
 
 		for (int i = 0; i < geneNames.size(); i++) {
 			if (geneNames.get(i) != null) {
@@ -557,15 +545,15 @@ public class ExpressionData implements Serializable {
 		}
 
 		headerTok.nextToken();
-		String secondColHeader = headerTok.nextToken(); 
-		
+		String secondColHeader = headerTok.nextToken();
+
 		if (secondColHeader.equalsIgnoreCase("COMMON")||secondColHeader.equalsIgnoreCase("DESCRIPT")) {
 			return true;
 		}
-		return false;		
+		return false;
 	}
 
-	
+
 	private boolean doesHeaderLineHaveDuplicates(String hline, boolean hasCOMMON) {
 		boolean retval = false;
 
@@ -574,14 +562,14 @@ public class ExpressionData implements Serializable {
 
 		int minTokens =2;
 		if (hasCOMMON) {
-			minTokens =3;			
+			minTokens =3;
 		}
 		if (numTokens < minTokens) {
 			retval = false;
 		} else {
 			headerTok.nextToken();
 			if (hasCOMMON) {
-				headerTok.nextToken();				
+				headerTok.nextToken();
 			}
 
 			HashMap<Object,Object> names = new HashMap<Object,Object>();
@@ -635,7 +623,7 @@ public class ExpressionData implements Serializable {
 	private void parseOneLine(String oneLine, int lineCount, boolean sig_vals,
 	                          boolean mappingByAttribute, Map<String,List<String>> attributeToId, boolean hasCOMMON)
 	    throws IOException {
-		// 
+		//
 		// Step 1: divide the line into input tokens, and parse through
 		// the input tokens.
 		//
@@ -653,7 +641,7 @@ public class ExpressionData implements Serializable {
 			return;
 		}
 
-		int numPreCols = 2; // Number of columns before data columns 
+		int numPreCols = 2; // Number of columns before data columns
 		if (!hasCOMMON) {
 			numPreCols = 1;
 		}
@@ -667,7 +655,7 @@ public class ExpressionData implements Serializable {
 		if (hasCOMMON) {
 			geneDescript = strtok.nextToken();
 		}
-		
+
 		String[] expData = new String[numConds];
 
 		for (int i = 0; i < numConds; i++) {
@@ -734,7 +722,7 @@ public class ExpressionData implements Serializable {
 			}
 
 			if ((this.significanceType != this.LAMBDA) && sig_vals && (minSig > 0)) {
-				// We are probably not looking at lambdas, since no 
+				// We are probably not looking at lambdas, since no
 				// significance value was > 1
 				// and the header is not a LAMBDA header
 				this.significanceType = this.PVAL;
@@ -752,8 +740,8 @@ public class ExpressionData implements Serializable {
 			for ( mRNAMeasurement m : v ) {
 				double pval = ExpressionData.getPvalueFromLambda(m.getSignificance());
 				m.setSignificance(pval);
-			} 
-		} 
+			}
+		}
 	} // convertPValsToLambdas
 
 	/**

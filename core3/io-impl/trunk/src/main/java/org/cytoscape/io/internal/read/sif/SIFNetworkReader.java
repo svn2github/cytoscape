@@ -80,7 +80,11 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 	@Override
 	public void run(TaskMonitor tm) throws IOException {
 		try {
+System.err.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ in SIFNetworkReader.run(), before readInput()");
+long start=System.currentTimeMillis();
 			readInput(tm);
+long end=System.currentTimeMillis();
+System.err.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ in SIFNetworkReader.run(), before readInput()="+(end-start)+"ms");
 		} finally {
 			if (inputStream != null) {
 				inputStream.close();
