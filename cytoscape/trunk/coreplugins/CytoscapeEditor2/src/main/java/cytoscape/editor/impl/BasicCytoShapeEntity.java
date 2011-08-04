@@ -270,6 +270,7 @@ public class BasicCytoShapeEntity extends JComponent implements DragGestureListe
 		// MLC 12/04/06 BEGIN:
 		// force height to be at least
 		// CytoscapeShapeIcon.DEFAULT_HEIGHT but larger if needed:
+		/*
 		Dimension mySize = new Dimension(((JPanel) Cytoscape.getDesktop()
 		                                                    .getCytoPanel(SwingConstants.WEST))
 		                                                                                                                                                                                                                                         .getSize().width
@@ -277,9 +278,16 @@ public class BasicCytoShapeEntity extends JComponent implements DragGestureListe
 		                                 Math.max(_image.getIconHeight(),
 		                                          CytoShapeIcon.DEFAULT_HEIGHT)
 		                                 + CytoShapeIcon.DEFAULT_HEIGHT);
+		*/
+		Dimension mySize = new Dimension(32767,
+		                                 Math.max(_image.getIconHeight(), CytoShapeIcon.DEFAULT_HEIGHT)
+		                                 +(int)((double)CytoShapeIcon.DEFAULT_HEIGHT/.75));
 
 		this.setMaximumSize(mySize);
-		this.setMinimumSize(mySize);
+
+		mySize = new Dimension(300,
+		                       Math.max(_image.getIconHeight(), CytoShapeIcon.DEFAULT_HEIGHT)
+		                       +(int)((double)CytoShapeIcon.DEFAULT_HEIGHT/.75));
 		this.setPreferredSize(mySize);
 
 
