@@ -992,12 +992,21 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 					// the last panel
 					if (panel != null && cytoPanelContainer instanceof JSplitPane) {
 						int width = panel.getPreferredSize().width;
-						if (compassDirection == SwingConstants.WEST && width > WEST_MAX_WIDTH)
-							width = WEST_MAX_WIDTH;
-						else if (compassDirection == SwingConstants.EAST && width > EAST_MAX_WIDTH)
-							width = EAST_MAX_WIDTH;
+						JSplitPane jsp = (JSplitPane)cytoPanelContainer;
 
-						((JSplitPane)cytoPanelContainer).setDividerLocation(width);
+						if (compassDirection == SwingConstants.WEST) {
+							if (width > WEST_MAX_WIDTH)
+								width = WEST_MAX_WIDTH;
+							jsp.setDividerLocation(width+jsp.getInsets().left);
+						} else if (compassDirection == SwingConstants.EAST) {
+							if (width > EAST_MAX_WIDTH)
+								width = EAST_MAX_WIDTH;
+							jsp.setDividerLocation(jsp.getSize().width
+							                       -jsp.getInsets().right
+							                       -jsp.getDividerSize()
+							                       -width);
+						}
+						// TODO: What's the right thing to do with SOUTH?
 					}
 				
 					int selectedIndex = tabbedPane.getSelectedIndex();
