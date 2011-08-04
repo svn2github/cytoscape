@@ -6,11 +6,31 @@
  */
 
 /* TODO
- * - Move SVG DOM functions into a separate class
+ * - [done] Move SVG DOM functions into a separate class
  * - Move create*Element methods into the objects that use them
- * - Switch some hand-built paths to generic ones with SVG transforms applied
+ * - [done] Switch some hand-built paths to generic ones with SVG transforms applied
  * - Fix stroke-dasharray style attribute
  */
+
+var SvgTool = {
+	createSvgElement: function(tag, parent, attributes) {
+		attributes = attributes || {};
+		var elem = document.createElementNS("http://www.w3.org/2000/svg", tag);
+		this.setElementAttributes(elem, attributes);
+		if (parent) parent.appendChild(elem);
+		return elem;
+	},
+	
+	setElementAttributes: function(elem, attributeMap) {
+		for (var attribute in attributeMap) {
+			var value = attributeMap[attribute];
+			if (value != null)
+			elem.setAttribute(attribute, value);
+		}
+	}
+
+};
+ 
 /**
  * Network visualization instance.
  * Represents an instance of the network visualization.
@@ -23,47 +43,32 @@ function Visualization(container, height, width) {
 	
 	// -------- SVG --------
 	this._containerElem = typeof container == "string" ? document.getElementById(container) : container;
-	this._svgNamespace = "http://www.w3.org/2000/svg";
+
+
 	
-	this._createSvgElement = function(tag, parent, attributes) {
-		attributes = attributes || {};
-		var elem = document.createElementNS(this._svgNamespace, tag);
-		this._setElementAttributes(elem, attributes);
-		if (parent) parent.appendChild(elem);
-		return elem;
-	};
-	
-	this._setElementAttributes = function(elem, attributeMap) {
-		for (var attribute in attributeMap) {
-			var value = attributeMap[attribute];
-			if (value != null)
-			elem.setAttribute(attribute, value);
-		}
-	};
-	
-	this._svgElem = this._createSvgElement("svg", this._containerElem, {
-		"xmlns": this._svgNamespace,
+	this._svgElem = SvgTool.createSvgElement("svg", this._containerElem, {
+		"xmlns": "http://www.w3.org/2000/svg",
 		"version": "1.1",
 		"height": height,
 		"width": width
 	});
 	
-	this._svgMainGroup = this._createSvgElement("g", this._svgElem, {"transform": "scale(0.5) translate(200, 200)"});
+	this._svgMainGroup = SvgTool.createSvgElement("g", this._svgElem, {"transform": "scale(0.5) translate(200, 200)"});
 	
-	this._svgEdgeGroup = this._createSvgElement("g", this._svgMainGroup);
-	this._svgNodeGroup = this._createSvgElement("g", this._svgMainGroup);	
-	this._svgLabelGroup = this._createSvgElement("g", this._svgMainGroup);
+	this._svgEdgeGroup = SvgTool.createSvgElement("g", this._svgMainGroup);
+	this._svgNodeGroup = SvgTool.createSvgElement("g", this._svgMainGroup);	
+	this._svgLabelGroup = SvgTool.createSvgElement("g", this._svgMainGroup);
 	
 	this._createLabelElement = function () {
-		return this._createSvgElement("text", this._svgLabelGroup);
+		return SvgTool.createSvgElement("text", this._svgLabelGroup);
 	};
 	
 	this._createEdgePathElement = function() {
-		return this._createSvgElement("path", this._svgEdgeGroup);
+		return SvgTool.createSvgElement("path", this._svgEdgeGroup);
 	};
 	
 	this._createNodePathElement = function() {
-		return this._createSvgElement("path", this._svgNodeGroup);
+		return SvgTool.createSvgElement("path", this._svgNodeGroup);
 	};
 	
 	this._removeNodePathElement = function(elem) {
@@ -75,7 +80,7 @@ function Visualization(container, height, width) {
 	};
 	
 	this._createLabelElement = function() {
-		return this._createSvgElement("text", this._svgLabelGroup);
+		return SvgTool.createSvgElement("text", this._svgLabelGroup);
 	};
 	
 	this._removeLabelElement = function(elem) {
@@ -165,7 +170,7 @@ function Visualization(container, height, width) {
 	
 		//this._svgElem.addEventListener("mousedown", onMousedown, true);
 	this._svgElem.addEventListener("mousedown", Util.delegate(this, "_onMousedown"), false);
-	console.log("added listner");
+
 	this._svgElem.addEventListener("click", Util.delegate(this, "_onClick"), true);
 	document.documentElement.addEventListener("mouseup", Util.delegate(this, "_onMouseup"), false);
 
@@ -192,7 +197,7 @@ function Visualization(container, height, width) {
 			"size": 18,
 			"color": "#f5f5f5",
 			"borderColor": "#666666",
-			"borderWidth": 3,
+			"borderWidth": 1,
 			"opacity": 1,
 			"hoverColor": "pink",
 			"hoverBorderColor": null,
@@ -208,16 +213,16 @@ function Visualization(container, height, width) {
 		},
 
 		edge: {
-			"color": "#999999",
+			"color": "black",
 			"width": 3,
-			"opacity": 0.8,
+			"opacity": 1,
 			"style": "SOLID",
-			"forwardArrowShape": "",
-			"forwardArrowSize": 10,
-			"forwardArrowColor": "red",
-			"backwardArrowShape": "",
-			"backwardArrowSize": 10,
-			"backwardArrowColor": "black"
+			"targetArrowShape": "DELTA",
+			"targetArrowSize": 1,
+			"targetArrowColor": "black",
+			"sourceArrowShape": "T",
+			"sourceArrowSize": 1,
+			"sourceArrowColor": "black"
 		}
 	};
 	
@@ -415,7 +420,13 @@ function Visualization(container, height, width) {
 			this._edges[edgeId]._draw();
 		}
 		
-		this._setElementAttributes(this._svgMainGroup, {"transform": this._getTransform(this._offsetX, this._offsetY, this._zoom)});
+		SvgTool.setElementAttributes(this._svgMainGroup, {
+			"transform": this._getTransform(this._offsetX, this._offsetY, this._zoom),
+		});
+		
+		SvgTool.setElementAttributes(this._svgElem, {
+			"viewport-fill": "#ff00f0" // Why does viewport-fill not work?
+		});
 		//this._bg.attr("fill", this._style.global.backgroundColor).toBack();
 
 		return this;
@@ -508,6 +519,15 @@ function Visualization(container, height, width) {
 	
 }
 
+var Paths = {
+	ellipse: "M 0,-10, a 10,10 0 1 1 -0.01,0 z",
+	diamond: "M -10,0 0,-10 10,0 0,10 z",
+	rectangle: "M -10,-10 -10,10 10,10 10,-10 z",
+	delta: "M 0,0 -10,-5, -10,5 z",
+	t: "M 0,-5 0,5 -2,5 -2,-5 z"
+
+};
+/**
 var Shapes = {};
 
 Shapes.buildEllipse = function(x, y, w, h) {
@@ -540,7 +560,7 @@ Shapes.buildDiamond = function(x, y, w, h) {
 Shapes.buildRectangle = function(x, y, w, h) {
 	return this.buildPolygon(x, y, [[-w, -h], [-w, h], [w, h], [w, -h]]);
 }
-
+*/
 var Util = {};
 
 /**
@@ -772,7 +792,7 @@ var Node = function(vis) {
 		switch (this.getRenderedStyle("shape")) {
 			case "DIAMOND":
 			case "ELLIPSE":
-				radius = this.getRenderedStyle("size") + 3;
+				radius = (this.getRenderedStyle("size") + this.getRenderedStyle("borderWidth"));
 				break;
 			case "RECTANGLE":
 			default:
@@ -782,23 +802,27 @@ var Node = function(vis) {
 		return radius;
 	}
 	
+	this._getTransform = function() {
+		return "translate(" + this._x + "," + this._y + ")" + "scale(" + (this.getRenderedStyle("size")/10) + ")" ;
+	};
+	
 	this._getPath = function() {
 		var path;
-		var shape = this.getRenderedStyle("shape");
-		var size = this.getRenderedStyle("size");
-		var position = this._getRenderedPosition();
+	
 		switch (this.getRenderedStyle("shape")) {
+		
 			case "ELLIPSE":
-				path = Shapes.buildEllipse(position.x, position.y, size, size * this.getRenderedStyle("ratio"));
+				path = Paths.ellipse;
 				break;
 				
 			case "RECTANGLE":
-				path = Shapes.buildRectangle(position.x, position.y, size, size * this.getRenderedStyle("ratio"));
+				path = Paths.rectangle;
 				break;
 			
 			case "DIAMOND":
-				path = Shapes.buildDiamond(position.x, position.y, size, size * this.getRenderedStyle("ratio"));
+				path = Paths.diamond
 				break;
+
 		}
 		
 		return path;
@@ -917,7 +941,6 @@ var Node = function(vis) {
 
 	this._hoverStart = function(e, f) {
 
-
 		this._hover = true;
 		this._draw();
 		this._triggerEvent("hoverStart");
@@ -933,34 +956,11 @@ var Node = function(vis) {
 		if (this._elem == null) {
 			this._elem = this._visualization._createNodePathElement();
 			this._labelElem = this._visualization._createLabelElement();
-			this._visualization._setElementAttributes(this._labelElem, {"pointer-events": "none"});
-			this._dirty = true;
-					//.attr({"cursor":"pointer"})
-					//hover(Util.delegate(this, "_hoverStart"), Util.delegate(this, "_hoverEnd"))
-					//.drag(Util.delegate(this, "_dragMove"), Util.delegate(this, "_dragStart"), Util.delegate(this, "_dragEnd"))
-					//.click(Util.delegate(this, "_onClick"));
+			SvgTool.setElementAttributes(this._labelElem, {
+				"pointer-events": "none"
+			});
 		}
-		
-		/*
-		var label = this.getLabel();
-		if (label) {
-			var labelSize = this.getRenderedStyle("labelSize");
-			if (labelSize) {
-				if (this._elemLabel == null) {
-					this._elemLabel = this._visualization._canvas.text(0, 0, "").attr({"font-weight": "bold"});
-					this._elemLabel.node.setAttribute("pointer-events", "none");
-				}
-				this._elemLabel.attr({
-					"text": label,
-					"font-size": this.getRenderedStyle("labelSize"),
-					"fill": this.getRenderedStyle("labelColor"),
-					"x": this._x + this._visualization._offsetX,
-					"y": this._y + this._visualization._offsetY
-				}).toFront();
-			}
-		}
-		*/
-		
+
 		
 		var attrMap = {
 			"fill": "color",
@@ -969,10 +969,9 @@ var Node = function(vis) {
 			"opacity": "opacity"
 		};
 
-		var attrList = ["fill", "stroke", "stroke-width", "opacity"];
-
 		var attr = {
-			"d": this._getPath()
+			"d": this._getPath(),
+			"transform": this._getTransform()
 		};
 
 		for (var attrName in attrMap) {
@@ -983,10 +982,14 @@ var Node = function(vis) {
 			this._edges[i]._draw();
 		}
 		
-		this._visualization._setElementAttributes(this._elem, attr);
+		SvgTool.setElementAttributes(this._elem, attr);
 		
 		this._labelElem.textContent = this.getLabel();
-		this._visualization._setElementAttributes(this._labelElem, {"x": this._x, "y": this._y, "dominant-baseline": "middle", "text-anchor": "middle"});
+		SvgTool.setElementAttributes(this._labelElem, {
+			"x": this._x,
+			"y": this._y,
+			"dominant-baseline": "middle",
+			"text-anchor": "middle"});
 	};
 	
 
@@ -1027,8 +1030,8 @@ var Edge = function(vis) {
 	this._visualization = vis;
 	this._elem = null;
 	this._elemLabel = null;
-	this._forwardArrowElem = null;
-	this._backwardArrowElem = null;
+	this._targetArrowElem = null;
+	this._sourceArrowElem = null;
 	this._group = "edge";
 	this._offset = 0; // Offset used for drawing multiple edges between two nodes
 	this._label = "";
@@ -1048,25 +1051,29 @@ var Edge = function(vis) {
 		if (this._elem) {
 			this._visualization._removeEdgePathElement(this._elem);
 		}
-		if (this._forwardArrowElem) {
-			this._visualization._removeEdgePathElement(this._forwardArrowElem);
+		if (this._targetArrowElem) {
+			this._visualization._removeEdgePathElement(this._targetArrowElem);
 		}
-		if (this._backwardArrowElem) {
-			this._visualization._removeEdgePathElement(this._backwardArrowElem);
+		if (this._sourceArrowElem) {
+			this._visualization._removeEdgePathElement(this._sourceArrowElem);
 		}
 		this._source = null;
 		this._target = null;
 	};
 	
 
-	this._getSvgPath = function() {
-
-		if (this._offset == 0) {
-			return this._getStraightPath();
-		} else {
-			return this._getCurvedPath(this._offset);
-		}
+	this._dashArrays = {
+		"SOLID": "",
+		"DASH": "5 5",
+		"DOT": "1 5",
+		"LONG_DASH": "10 5"
 	};
+	
+	this._arrowShapes = {
+		"DELTA": Paths.delta,
+		"T": Paths.t
+	};
+
 
 	this._draw = function() {
 
@@ -1074,70 +1081,66 @@ var Edge = function(vis) {
 		if (this._elem == null) {
 				this._elem = this._visualization._createEdgePathElement();
 				//this._elem = this._visualization._canvas.path(this._getSvgPath()).toBack().click(Util.delegate(this, "_onClick")).attr("cursor", "pointer");
-				this._forwardArrowElem = this._visualization._createEdgePathElement();
-				this._backwardArrowElem = this._visualization._createEdgePathElement();
+				this._targetArrowElem = this._visualization._createEdgePathElement();
+				this._sourceArrowElem = this._visualization._createEdgePathElement();
+		}
+
+
+		if (this._offset == 0) {
+			var points = this._getStraightPath();	
+			var path = ["M", points[0], points[1], "L", points[4], points[5]].join(" ");
+		} else {
+			var points = this._getCurvedPath(this._offset);
+			var path = ["M", points[0], points[1], "Q", points[2], points[3], points[4], points[5]].join(" "); 
+			
 		}
 		
-		var dashArray = {
-			"SOLID": "",
-			"DASH": "5 5",
-			"DOT": "1 5",
-			"LONG_DASH": "10 5"
-		}[this.getRenderedStyle("style")];
-
-		var paths = this._getSvgPath();
 		
 		var attr = {
-			// Update position
-			"d": paths[0],
-			"stroke-dasharray" : dashArray,
+			"d": path,
+			"stroke-dasharray" : this._dashArrays[this.getRenderedStyle("style")],
 			"fill": "none",
 			"stroke-linecap": "square"
 		};
-		// TODO: render paths[1] and paths[2], which are the arrows.
-		
 
+	
+		// Mapping of SVG attribute names to visual style property names.
 		var attrMap = {
 			"stroke": "color",
 			"stroke-width": "width",
 			"stroke-opacity": "opacity"
 		};
 
-		
-
 
 		for (var attrName in attrMap) {
 			attr[attrName] =  this.getRenderedStyle(attrMap[attrName]);
 		}
 
-		this._visualization._setElementAttributes(this._elem, attr);
+		SvgTool.setElementAttributes(this._elem, attr);
+		
 		
 		// Arrow head attributes
-		// 1. Forward arrow
-		var forwardArrowColor = this.getRenderedStyle("forwardArrowColor") || attr["stroke"];
-		var forwardArrowAttr = {
-			"fill":  forwardArrowColor,
-			"stroke": forwardArrowColor,
-			"stroke-width": attr["stroke-width"],
-			"stroke-opacity": attr["stroke-opacity"], // TODO: change to rely only on fill, rather than on stroke
+		var targetArrowPath = this._arrowShapes[this.getRenderedStyle("targetArrowShape")] || "none";
+		var targetArrowAttr = {
+			"fill": this.getRenderedStyle("targetArrowColor") || attr["stroke"],
+			"stroke": "none",
+			//"stroke-opacity": attr["stroke-opacity"], // TODO: change to rely only on fill, rather than on stroke
 			// because opacity apparenly behaves differently on stroke and on fill
 			"opacity": attr["stroke-opacity"],
-			"d": paths[1] || null
+			"d": targetArrowPath,
+			"transform": [ "rotate(", points[7] * 180 / Math.PI, points[4], points[5],")", "translate(", points[4], points[5], ")", "scale(", this.getRenderedStyle("targetArrowSize"), ")",].join(" ")
 		};
+		SvgTool.setElementAttributes(this._targetArrowElem, targetArrowAttr);
 		
-		this._visualization._setElementAttributes(this._forwardArrowElem, forwardArrowAttr);
-		
-		// 2. Backward arrow
-		var backwardArrowColor = this.getRenderedStyle("backwardArrowColor") || attr["stroke"];
-		var backwardArrowAttr = {
-			"fill": backwardArrowColor,
-			"stroke": backwardArrowColor,
-			"stroke-width": attr["stroke-width"],
-			"stroke-opacity": attr["stroke-opacity"],
+		var sourceArrowPath = this._arrowShapes[this.getRenderedStyle("sourceArrowShape")] || "none";
+		var sourceArrowAttr = {
+			"fill":  this.getRenderedStyle("sourceArrowColor") || attr["stroke"],
+			"stroke": "none",
 			"opacity": attr["stroke-opacity"],
-			"d": paths[2] || null
+			"d": sourceArrowPath,
+			"transform": [ "rotate(", points[6] * 180 / Math.PI, points[0], points[1],")", "translate(", points[0], points[1], ")", "scale(", this.getRenderedStyle("sourceArrowSize"), ")",].join(" ")
 		};
-		this._visualization._setElementAttributes(this._backwardArrowElem, backwardArrowAttr);
+		SvgTool.setElementAttributes(this._sourceArrowElem, sourceArrowAttr);
 
 		
 	};
@@ -1188,10 +1191,9 @@ var Edge = function(vis) {
 	
 				var path = [];
 				path.push(populateString("M %,% L %,%", [nax, nay, nbx, nby]));
-	
-				if (this.getRenderedStyle("forwardArrowShape") == "DELTA") path.push(Shapes.buildArrow(nax, nay, 6, 10, Math.atan2(-dy, -dx), 1));
-				if (this.getRenderedStyle("backwardArrowShape") == "DELTA") path.push(Shapes.buildArrow(nbx, nby, 6, 10, Math.atan2(dy, dx), 1));
-				return path
+
+				var angle = Math.atan2(dy, dx);
+				return [nax, nay, null, null, nbx, nby, Math.atan2(-dy, -dx), Math.atan2(dy, dx)];
 	};
 	
 	this._getCurvedPath = function(offset) {
@@ -1244,16 +1246,10 @@ var Edge = function(vis) {
 				bcy *= br / aclength;
 				var bpx = b.x + bcx;
 				var bpy = b.y + bcy;
-				
 
-				var path = new Array(3);
-				path[0] = (populateString("M %,% Q %,% %,%", [apx, apy, cx, cy, bpx, bpy]));
-				
-				if (this.getRenderedStyle("forwardArrowShape") == "DELTA") path[1] = (Shapes.buildArrow(apx, apy, 6, 10, Math.atan2(-acy, -acx), 1));
-				if (this.getRenderedStyle("backwardArrowShape") == "DELTA") path[2] = (Shapes.buildArrow(bpx, bpy, 6, 10, Math.atan2(-bcy, -bcx), 1));
-				
-				return path;
-			
+				// Format of result array:
+				// [point1-x, point1-y, control-point-x, control-point-y, point2-x, point2-y, angle1, angle2]
+				return [apx, apy, cx, cy, bpx, bpy, Math.atan2(-acy, -acx), Math.atan2(-bcy, -bcx)];
 	};
 			/*
 	this._getCurvedPathCubic = function(theta) {

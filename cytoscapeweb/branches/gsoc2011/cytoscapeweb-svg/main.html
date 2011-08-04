@@ -25,16 +25,14 @@
 					backgroundColor: "#eeeeee"
 				},
 				nodes: {
-					size: 16,
+					size: 20,
 					color: "#f5f5f5",
 					borderColor: "#666666",
-					borderWidth: 3,
+					borderWidth: 1.8,
 					opacity: 1,
 				},
 				edges: {
-					color: "#999999",
-					width: 3,
-					opacity: 0.8
+
 				}
 			}
 			
@@ -112,106 +110,106 @@
 					source: "n1",
 					target: "n2",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, {
 					id: "e2",
 					source: "n2",
 					target: "n1",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, {
 					id: "e3",
 					source: "n1",
 					target: "n3",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, {
 					id: "e4",
 					source: "n2",
 					target: "n3",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, {
 					id: "e5",
 					source: "n4",
 					target: "n5",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, {
 					id: "e6",
 					source: "n5",
 					target: "n2",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, {
 					id: "e7",
 					source: "n3",
 					target: "n5",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, {
 					id: "e8",
 					source: "n1",
 					target: "n4",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, {
 					id: "e9",
 					source: "n3",
 					target: "n4",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, {
 					id: "e10",
 					source: "n4",
 					target: "n6",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, {
 					id: "e11",
 					source: "n6",
 					target: "n4",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, {
 					id: "e12",
 					source: "n3",
 					target: "n6",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, {
 					id: "e14",
 					source: "n4",
 					target: "n7",
 					style: {
-						forwardArrowShape: "DELTA",
-						backwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA",
+						sourceArrowShape: "DELTA"
 					}
 				}, {
 					id: "e13",
 					source: "n4",
 					target: "n7",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, {
 					id: "e15",
 					source: "n7",
 					target: "n4",
 					style: {
-						forwardArrowShape: "DELTA"
+						targetArrowShape: "DELTA"
 					}
 				}, ]
 			}
@@ -395,7 +393,7 @@
 					"source": "n1",
 					"target": "n2",
 					"style": {
-						forwardArrowShape: "DELTA",
+						targetArrowShape: "DELTA",
 						color: "#394",
 						width: 3
 					}
@@ -404,8 +402,8 @@
 					"source": "n2",
 					"target": "n3",
 					"style": {
-						forwardArrowShape: "DELTA",
-						backwardArrowShape: "DELTA",
+						targetArrowShape: "DELTA",
+						sourceArrowShape: "DELTA",
 						width: 3
 					}
 				}, {
@@ -422,7 +420,7 @@
 					"source": "n4",
 					"target": "n5",
 					"style": {
-						forwardArrowShape: "DELTA",
+						targetArrowShape: "DELTA",
 						color: "blue",
 						width: 5
 					}
@@ -431,7 +429,7 @@
 					"source": "n5",
 					"target": "n4",
 					"style": {
-						forwardArrowShape: "DELTA",
+						targetArrowShape: "DELTA",
 						width: 5
 					}
 				}, {
@@ -511,12 +509,6 @@
 				vis.draw();
 			}
 
-
-
-
-			
-			
-				
 
 		</script>
 	</head>
