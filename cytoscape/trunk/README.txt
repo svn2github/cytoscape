@@ -101,8 +101,8 @@ version numbers, tagging the release, incrementing the version numbers again,
 and then building the tagged version of the release and deploying properly 
 versioned artifacts is accomplished as follows:
 
-	mvn release:prepare
-	mvn release:perform
+	mvn release:prepare -Prelease
+	mvn release:perform -Prelease
 
 The next step is to copy the downloadable artifacts to the Cytoscape website.
 Everything to be copied over can be found in the packaging/target/install4j 
