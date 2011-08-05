@@ -104,11 +104,6 @@
 
 	<osgi:service id="sifNetworkViewReaderFactoryService" ref="sifNetworkViewReaderFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
-		<osgi:service-properties>
-			<entry key="serviceType" value="sifNetworkViewReaderFactory" />
-			<entry key="readerId" value="sifNetworkViewReader" />
-			<entry key="readerDescription" value="Simple Interaction Format (SIF) file reader" />
-		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="sifNetworkViewWriterFactoryService" ref="sifNetworkViewWriterFactory">
@@ -120,12 +115,6 @@
 
 	<osgi:service id="xgmmlNetworkViewReaderFactoryService"
 		ref="xgmmlNetworkViewReaderFactory" interface="org.cytoscape.io.read.InputStreamTaskFactory">
-		<osgi:service-properties>
-			<entry key="serviceType" value="xgmmlNetworkViewReaderFactory" />
-			<entry key="readerId" value="xgmmlNetworkViewReader" />
-			<entry key="readerDescription"
-				value="eXtensible Graph Markup and Modeling Language (XGMML) file reader" />
-		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="xgmmlNetworkViewWriterFactoryService" ref="xgmmlNetworkViewWriterFactory">
@@ -137,92 +126,42 @@
 
 	<osgi:service id="attrsDataReaderFactoryService" ref="attrsDataReaderFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
-		<osgi:service-properties>
-			<entry key="serviceType" value="attrsDataReaderFactory" />
-			<entry key="readerId" value="attrsDataReader" />
-			<entry key="readerDescription" value="Attribute data producer" />
-		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="gmlNetworkViewReaderFactoryService" ref="gmlNetworkViewReaderFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
-		<osgi:service-properties>
-			<entry key="serviceType" value="gmlNetworkViewReaderFactory" />
-			<entry key="readerId" value="gmlNetworkViewReader" />
-			<entry key="readerDescription" value="GML file reader" />
-		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="sessionReaderFactoryService" ref="sessionReaderFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
-		<osgi:service-properties>
-			<entry key="serviceType" value="sessionReaderFactory" />
-			<entry key="readerId" value="sessionReaderFactory" />
-			<entry key="readerDescription" value="Cytoscape Session Reader" />
-		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="cysessionReaderFactoryService" ref="cysessionReaderFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
-		<osgi:service-properties>
-			<entry key="serviceType" value="cysessionReaderFactory" />
-			<entry key="readerId" value="cysessionReaderFactory" />
-			<entry key="readerDescription" value="Cysession XML Reader" />
-		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="bookmarkReaderFactoryService" ref="bookmarkReaderFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
-		<osgi:service-properties>
-			<entry key="serviceType" value="bookmarkReaderFactory" />
-			<entry key="readerId" value="bookmarkReaderFactory" />
-			<entry key="readerDescription" value="Bookmarks XML Reader" />
-		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="propertiesReaderFactoryService" ref="propertiesReaderFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
-		<osgi:service-properties>
-			<entry key="serviceType" value="propertiesReaderFactory" />
-			<entry key="readerId" value="propertiesReaderFactory" />
-			<entry key="readerDescription" value="Java Properties File Reader" />
-		</osgi:service-properties>
 	</osgi:service>
 	
 	<osgi:service id="vizmapPropertiesReaderFactoryService" ref="vizmapPropertiesReaderFactory"
 		      interface="org.cytoscape.io.read.InputStreamTaskFactory">
-          <osgi:service-properties>
-            <entry key="serviceType" value="vizmapPropertiesReaderFactory" />
-            <entry key="readerId" value="vizmapPropertiesReaderFactory" />
-            <entry key="readerDescription" value="Vizmap Properties File Reader" />
-          </osgi:service-properties>
 	</osgi:service>
     
 	<osgi:service id="vizmapXMLReaderFactoryService" ref="vizmapXMLReaderFactory"
 		      interface="org.cytoscape.io.read.InputStreamTaskFactory">
-          <osgi:service-properties>
-            <entry key="serviceType" value="vizmapXMLReaderFactory" />
-            <entry key="readerId" value="vizmapXMLReaderFactory" />
-            <entry key="readerDescription" value="Vizmap XML File Reader" />
-          </osgi:service-properties>
 	</osgi:service>
 	
 	<osgi:service id="sessionTableReaderFactoryService" ref="sessionTableReaderFactory"
-        interface="org.cytoscape.io.read.InputStreamTaskFactory">
-          <osgi:service-properties>
-            <entry key="serviceType" value="sessionTableReaderFactory" />
-            <entry key="readerId" value="sessionTableReaderFactory" />
-            <entry key="readerDescription" value="Session Table File Reader" />
-          </osgi:service-properties>
+		      interface="org.cytoscape.io.read.InputStreamTaskFactory">
 	</osgi:service>
 	
 	<osgi:service id="expressionMatrixReaderFactoryService" ref="expressionReaderFactory"
-        interface="org.cytoscape.io.read.InputStreamTaskFactory">
-          <osgi:service-properties>
-            <entry key="serviceType" value="attrsDataReaderFactory" />
-            <entry key="readerId" value="expressionMatrixReader" />
-            <entry key="readerDescription" value="Expression Matrix File Reader" />
-          </osgi:service-properties>
+		      interface="org.cytoscape.io.read.InputStreamTaskFactory">
 	</osgi:service>
 
 	<osgi:service id="sessionWriterFactoryService" ref="sessionWriterFactory">
