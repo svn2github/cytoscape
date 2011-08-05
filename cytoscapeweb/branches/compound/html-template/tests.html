@@ -81,6 +81,21 @@
             options2.network = xml;
             vis2.draw(options2);
         });
+
+        var options3 = {
+                panZoomControlVisible: true,
+                edgesMerged: false,
+                nodeLabelsVisible: true,
+                nodeTooltipsEnabled: false,
+                edgeTooltipsEnabled: true
+            };
+        var vis3 = new org.cytoscapeweb.Visualization("cytoweb3");
+        vis3.ready(function() { runGraphTests("Vis-3", vis3, options3); });
+
+        $.get("fixtures/test3.graphml", function(xml){
+            options3.network = xml;
+            vis3.draw(options3);
+        });
     });
 </script>
 </head>
@@ -94,6 +109,8 @@
         <div id="image_cytoweb1">PNG Image</div>
         <div id="cytoweb2"></div>
         <div id="image_cytoweb2">PNG Image</div>
+        <div id="cytoweb3"></div>
+        <div id="image_cytoweb3">PNG Image</div>
     </div>
 
     <ol id="qunit-tests"></ol>

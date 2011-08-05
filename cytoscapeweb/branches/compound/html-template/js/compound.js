@@ -597,11 +597,11 @@ function clickNodeToAddEdge(evt)
 
 function visibility(element)
 {
-	var selectedNodes = vis.selected();
+	var selectedElements = vis.selected();
 	
-	for (var i=0; i < selectedNodes.length; i++)
+	for (var i=0; i < selectedElements.length; i++)
 	{
-		if (element.data.id == selectedNodes[i].data.id)
+		if (element.data.id == selectedElements[i].data.id)
 		{
 			return false;
 		}
