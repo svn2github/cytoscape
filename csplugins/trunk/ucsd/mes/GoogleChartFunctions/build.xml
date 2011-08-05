@@ -9,7 +9,7 @@
     <property name="name" value="GoogleChartFunctions"/>
 
 	<!-- to support plugin.props, make sure the version is only two digits!-->
-    <property name="version" value="1.0"/>
+    <property name="version" value="1.1"/>
 
     <echo message="Building ${name} version ${version} ..."/>
 

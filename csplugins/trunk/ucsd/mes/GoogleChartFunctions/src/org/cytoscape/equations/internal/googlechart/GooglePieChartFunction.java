@@ -114,27 +114,22 @@ public class GooglePieChartFunction extends AbstractGoogleChartFunction {
 	@Override
 	public Class validateArgTypes(final Class[] argTypes) {
 		// Two lists is the minimum required arguments
-		if (argTypes.length < 2)
+		if (argTypes.length < 2 || argTypes.length > 6)
 			return null;
 
 		// Labels and percentages
-		if (!FunctionUtil.isSomeKindOfList(argTypes[0])
-				|| !FunctionUtil.isSomeKindOfList(argTypes[1]))
+		if (!FunctionUtil.isSomeKindOfList(argTypes[0]) 
+		    || !FunctionUtil.isSomeKindOfList(argTypes[1]))
 			return null;
 
 		// Contains required parameters only.
 		if (argTypes.length == 2)
 			return String.class;
 
-		int nextArg = MINIMUM_NUM_ARGUMENTS;
-		int argLen = argTypes.length;
-		while (FunctionUtil.isSomeKindOfList(argTypes[nextArg])) {
-			nextArg++;
-			if (nextArg == argLen)
-				return String.class;
-		}
-
+		//
 		// Title and extra arguments for query URL
+		//
+
 		if (argTypes[2] != String.class)
 			return null;
 
