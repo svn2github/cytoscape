@@ -16,8 +16,26 @@
 
 	<context:annotation-config />
 
-    <!-- File Filters -->
-    
+	<!-- File Filters -->
+
+	<bean id="expressionFilter" class="org.cytoscape.io.BasicCyFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>pvalue</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>text/plain</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Cytoscape Expression Matrix (.pvalue) File" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="TABLE" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil" />
+		</constructor-arg>
+	</bean>
+
 	<bean id="cysFilter" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
@@ -75,7 +93,7 @@
 			<ref bean="streamUtil" />
 		</constructor-arg>
 	</bean>
-	
+
 	<bean id="pdfFilter" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
@@ -94,7 +112,7 @@
 			<ref bean="streamUtil" />
 		</constructor-arg>
 	</bean>
-	
+
 	<bean id="psFilter" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
@@ -113,7 +131,7 @@
 			<ref bean="streamUtil" />
 		</constructor-arg>
 	</bean>
-	
+
 	<bean id="svgFilter" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
@@ -201,7 +219,7 @@
 			<set>
 				<value>text/xgmml</value>
 				<value>text/xgmml+xml</value>
-				<!-- content types should be exact - don't add possible matches! <value>text/plain</value> 
+				<!-- content types should be exact - don't add possible matches! <value>text/plain</value>
 					<value>text/xml</value> <value>application/xml</value> -->
 			</set>
 		</constructor-arg>
@@ -241,7 +259,7 @@
 		</constructor-arg>
 		<constructor-arg index="1">
 			<set>
-				<!-- content types should be exact - don't add possible matches! <value>text/xml</value> 
+				<!-- content types should be exact - don't add possible matches! <value>text/xml</value>
 					<value>application/xml</value> -->
 			</set>
 		</constructor-arg>
@@ -262,7 +280,7 @@
 		</constructor-arg>
 		<constructor-arg index="1">
 			<set>
-				<!-- content types should be exact - don't add possible matches! <value>text/xml</value> 
+				<!-- content types should be exact - don't add possible matches! <value>text/xml</value>
 					<value>application/xml</value> -->
 			</set>
 		</constructor-arg>
@@ -332,50 +350,50 @@
 			<ref bean="streamUtil" />
 		</constructor-arg>
 	</bean>
-	
+
 	<bean id="vizmapXMLFilter"
         class="org.cytoscape.io.internal.read.vizmap.VizmapXMLFileFilter">
         <constructor-arg index="0">
             <set>
-                <value>xml</value>
+              <value>xml</value>
             </set>
         </constructor-arg>
         <constructor-arg index="1">
-            <set>
-                <!-- content types should be exact - don't add possible matches! <value>text/plain</value> -->
-            </set>
+          <set>
+            <!-- content types should be exact - don't add possible matches! <value>text/plain</value> -->
+          </set>
         </constructor-arg>
         <constructor-arg value="Vizmap XML files" />
         <constructor-arg type="org.cytoscape.io.DataCategory"
-            value="VIZMAP" />
+			 value="VIZMAP" />
         <constructor-arg type="org.cytoscape.io.util.StreamUtil">
-            <ref bean="streamUtil" />
+          <ref bean="streamUtil" />
         </constructor-arg>
-    </bean>
-    
+	</bean>
+
 	<bean id="vizmapPropertiesFilter"
-        class="org.cytoscape.io.internal.read.vizmap.VizmapPropertiesFileFilter">
-        <constructor-arg index="0">
+              class="org.cytoscape.io.internal.read.vizmap.VizmapPropertiesFileFilter">
+          <constructor-arg index="0">
             <set>
-                <value>props</value>
-                <value>properties</value>
+              <value>props</value>
+              <value>properties</value>
             </set>
-        </constructor-arg>
-        <constructor-arg index="1">
+          </constructor-arg>
+          <constructor-arg index="1">
             <set>
-                <!-- content types should be exact - don't add possible matches! <value>text/plain</value> -->
+              <!-- content types should be exact - don't add possible matches! <value>text/plain</value> -->
             </set>
-        </constructor-arg>
-        <constructor-arg value="Vizmap Java Properties files" />
-        <constructor-arg type="org.cytoscape.io.DataCategory"
-            value="VIZMAP" />
-        <constructor-arg type="org.cytoscape.io.util.StreamUtil">
+          </constructor-arg>
+          <constructor-arg value="Vizmap Java Properties files" />
+          <constructor-arg type="org.cytoscape.io.DataCategory"
+			   value="VIZMAP" />
+          <constructor-arg type="org.cytoscape.io.util.StreamUtil">
             <ref bean="streamUtil" />
-        </constructor-arg>
-    </bean>
+          </constructor-arg>
+	</bean>
 
 	<!-- Utility for Stream/Proxy management -->
-	
+
 	<bean id="readUtil" class="org.cytoscape.io.internal.util.ReadUtils">
 		<constructor-arg ref="streamUtil" />
 	</bean>
@@ -383,7 +401,13 @@
 	<bean id="streamUtil" class="org.cytoscape.io.internal.util.StreamUtilImpl" />
 
 	<!-- Reader Factories -->
-	
+
+	<bean id="expressionReaderFactory"
+		class="org.cytoscape.io.internal.read.expression.ExpressionReaderFactory">
+		<constructor-arg ref="expressionFilter" />
+		<constructor-arg ref="cyTableFactoryServiceRef" />
+	</bean>
+
 	<bean id="attrsDataReaderFactory"
 		class="org.cytoscape.io.internal.read.datatable.CyAttributesReaderFactory">
 		<constructor-arg ref="attrsFilter" />
@@ -409,7 +433,7 @@
 		<constructor-arg ref="renderingEngineManagerServiceRef" />
 		<constructor-arg ref="unrecognizedVisualPropertyManager" />
 	</bean>
-	
+
 	<bean id="xgmmlNetworkViewReaderFactory"
         class="org.cytoscape.io.internal.read.xgmml.XGMMLNetworkReaderFactory">
         <constructor-arg ref="xgmmlFilter" />
@@ -445,13 +469,13 @@
         class="org.cytoscape.io.internal.read.properties.PropertiesReaderFactory">
         <constructor-arg ref="propertiesFilter" />
     </bean>
-    
+
     <bean id="vizmapXMLReaderFactory"
         class="org.cytoscape.io.internal.read.vizmap.VizmapXMLReaderFactory">
         <constructor-arg ref="vizmapXMLFilter" />
         <constructor-arg ref="visualStyleSerializer" />
     </bean>
-    
+
     <bean id="vizmapPropertiesReaderFactory"
         class="org.cytoscape.io.internal.read.vizmap.VizmapPropertiesReaderFactory">
         <constructor-arg ref="vizmapPropertiesFilter" />
@@ -459,7 +483,7 @@
     </bean>
 
 	<!-- Writer Factories -->
-	
+
 	<!-- Image Export -->
 	<bean id="pngWriterFactory"
 		class="org.cytoscape.io.internal.write.graphics.BitmapWriterFactory">
@@ -524,13 +548,13 @@
 		<constructor-arg value="true" type="boolean" />
 		<constructor-arg value="true" type="boolean" />
 	</bean>
-	
+
 	<bean id="vizmapWriterFactory"
         class="org.cytoscape.io.internal.write.vizmap.VizmapWriterFactoryImpl">
         <constructor-arg ref="vizmapXMLFilter" />
         <constructor-arg ref="visualStyleSerializer" />
     </bean>
-    
+
     <bean id="sessionWriterFactory"
         class="org.cytoscape.io.internal.write.session.SessionWriterFactoryImpl">
         <constructor-arg ref="cysFilter" />
@@ -545,7 +569,7 @@
         <constructor-arg ref="tableWriterManager" />
         <constructor-arg ref="vizmapWriterManager" />
     </bean>
-	
+
 	<!-- Utilities for XGMML Reader -->
 
 	<bean id="objectTypeMap" class="org.cytoscape.io.internal.read.xgmml.ObjectTypeMap" />
@@ -570,7 +594,7 @@
 		<constructor-arg ref="handlerFactory" />
 		<constructor-arg ref="readDataManager" />
 	</bean>
-	
+
 	<bean id="unrecognizedVisualPropertyManager" class="org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager">
         <constructor-arg ref="cyTableFactoryServiceRef"/>
         <constructor-arg ref="cyTableManagerServiceRef"/>
@@ -583,9 +607,9 @@
 		<constructor-arg ref="cyTableFactoryServiceRef"/>
 		<constructor-arg ref="compilerServiceRef"/>
 	</bean>
-	
+
 	<!-- All Reader Managers -->
-	
+
 	<bean id="cyNetworkReaderManager"
 		class="org.cytoscape.io.internal.read.CyNetworkReaderManagerImpl" />
 
@@ -616,12 +640,12 @@
 
 	<bean id="tableWriterManager"
 		class="org.cytoscape.io.internal.write.CyTableWriterManagerImpl" />
-	
+
 	<bean id="vizmapWriterManager"
 		class="org.cytoscape.io.internal.write.VizmapWriterManagerImpl" />
-	
+
 	<!-- Other beans -->
-	
+
 	<bean id="calculatorConverterFactory"
 	class="org.cytoscape.io.internal.util.vizmap.CalculatorConverterFactory" />
 
@@ -635,7 +659,7 @@
 		<constructor-arg ref="continuousMappingFactoryServiceRef" />
 		<constructor-arg ref="passthroughMappingFactoryServiceRef" />
 	</bean>
-	
+
 	<!-- For recent session files -->
 	<bean id="recentlyOpenedTracker" class="org.cytoscape.io.internal.util.RecentlyOpenedTrackerImpl" scope="singleton">
 		<constructor-arg value="tracker.recent.sessions" />

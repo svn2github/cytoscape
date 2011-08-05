@@ -1,5 +1,5 @@
 /*
-  File: ExpressionData.java
+  File: ExpressionReader.java
 
   Copyright (c) 2006, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,9 +32,10 @@ package org.cytoscape.io.internal.read.expression;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.FileReader;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,10 +43,12 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.cytoscape.io.internal.read.AbstractTableReader;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.work.TaskMonitor;
 
 
@@ -109,10 +112,7 @@ import org.cytoscape.work.TaskMonitor;
  * significant genes in that condition.
  * <P>
  */
-public class ExpressionData implements Serializable {
-	private final static long serialVersionUID = 1202339866255109L;
-	private TaskMonitor taskMonitor;
-
+public class ExpressionReader extends AbstractTableReader {
 	/**
 	 *
 	 */
@@ -137,17 +137,9 @@ public class ExpressionData implements Serializable {
 	 * Significance value: UNKNOWN.
 	 */
 	public static final int UNKNOWN = 3;
-	private static final String DEFAULT_KEY_ATTRIBUTE = CyTableEntry.NAME;
 	protected int significanceType = 3;
 
-	/*
-	 * the key attribute name is the attribute by which the expression data is
-	 * matched to the node name.  For instance, this might be a commercial
-	 * probe set ID.
-	 */
-	String keyAttributeName = DEFAULT_KEY_ATTRIBUTE;
 	private boolean mappingByAttribute = false;
-	String filename;
 	int numGenes;
 	int numConds;
 	int extraTokens;
@@ -162,118 +154,24 @@ public class ExpressionData implements Serializable {
 	double minSig;
 	double maxSig;
 	Vector<Vector<mRNAMeasurement>> allMeasurements;
+	private boolean isCancelled;
+	private CyTable table;
 
-	/**
-	 * Constructor. Creates an empty Expression Data object with no data.
-	public ExpressionData(FileUtil fileUtil) {
-		this.fileUtil = fileUtil;
-		filename = null;
-		keyAttributeName = DEFAULT_KEY_ATTRIBUTE;
+	public ExpressionReader(final InputStream stream, final CyTableFactory tableFactory) {
+		super(stream, tableFactory);
+		
+		isCancelled = false;
+		table = null;
 		numGenes = 0;
 		numConds = 0;
 		extraTokens = 0;
 		haveSigValues = false;
-		this.initDataStructures();
-	}
-	 */
-
-	/**
-	 * Constructor. Loads the specified filename into memory.
-	 *
-	 * @param filename Name of Expression Data File.
-	 * @throws IOException Error opening/parsing the expression data file.
-	 */
-	public ExpressionData(String filename) throws IOException {
-		this.filename = null;
-		numGenes = 0;
-		numConds = 0;
-		extraTokens = 0;
-		haveSigValues = false;
-		this.initDataStructures();
-		this.loadData(filename, DEFAULT_KEY_ATTRIBUTE);
+		initDataStructures();
 	}
 
-	/**
-	 * Constructor. Loads the specified filename into memory.
-	 *
-	 * @param filename Name of Expression Data File.
-	 * @throws IOException Error opening/parsing the expression data file.
-	 */
-	public ExpressionData(String filename, String keyAttributeName) throws IOException {
-		this.filename = null;
-		numGenes = 0;
-		numConds = 0;
-		extraTokens = 0;
-		haveSigValues = false;
-		this.initDataStructures();
-		this.loadData(filename, keyAttributeName);
-	}
-
-	/**
-	 * Constructor. Loads the specified file into memory, and reports its
-	 * progress to the specified TaskMonitor Object. This option is useful for
-	 * displaying a progress bar to the end-user, while expression data is being
-	 * parsed.
-	 *
-	 * @param filename    Name of Expression Data File.
-	 * @param taskMonitor TaskMonitor for reporting/monitoring progress.
-	 * @throws IOException Error opening/parsing the expression data file.
-	 */
-	public ExpressionData(String filename, TaskMonitor taskMonitor) throws IOException {
-		this.taskMonitor = taskMonitor;
-		this.filename = null;
-		numGenes = 0;
-		numConds = 0;
-		extraTokens = 0;
-		haveSigValues = false;
-		this.initDataStructures();
-		this.loadData(filename, DEFAULT_KEY_ATTRIBUTE);
-	}
-
-	/**
-	 * Constructor. Loads the specified file into memory, and reports its
-	 * progress to the specified TaskMonitor Object. This option is useful for
-	 * displaying a progress bar to the end-user, while expression data is being
-	 * parsed.
-	 *
-	 * @param filename    Name of Expression Data File.
-	 * @param keyAttributeName  Identifies an attribute to use in mapping
-	 *                          the data to the nodes.
-	 * @param taskMonitor TaskMonitor for reporting/monitoring progress.
-	 * @throws IOException Error opening/parsing the expression data file.
-	 */
-	public ExpressionData(String filename, String keyAttributeName, TaskMonitor taskMonitor)
-	    throws IOException {
-		this.taskMonitor = taskMonitor;
-		this.filename = null;
-		numGenes = 0;
-		numConds = 0;
-		extraTokens = 0;
-		haveSigValues = false;
-		this.initDataStructures();
-		this.loadData(filename, keyAttributeName);
-	}
-
-	/**
-	 * Gets the Name of the Expression Data File.
-	 *
-	 * @return File String, as it was originally passed to the constructor, or
-	 *         null, if no filename is available.
-	 */
-	public String getFileName() {
-		return filename;
-	}
-
-	/**
-	 * Gets the File representation of the Expression Data Object. This File
-	 * object can be queried for a full path to the file, etc.
-	 *
-	 * @return File Object.
-	 */
-	public File getFullPath() {
-		File file = new File(filename);
-
-		return file.getAbsoluteFile();
+	@Override
+	public void cancel() {
+		isCancelled = true;
 	}
 
 	/**
@@ -328,182 +226,174 @@ public class ExpressionData implements Serializable {
 		allMeasurements = new Vector<Vector<mRNAMeasurement>>(0, expand);
 	}
 
-	/**
-	 * Loads the Specified File into memory.
-	 *
-	 * @param filename Name of Expression Data File.
-	 * @return always returns true, indicating succesful load.
-	 * @throws IOException Error loading / parsing the Expression Data File.
-	 */
-	public boolean loadData(String filename, String keyAttributeName) throws IOException {
-		Map<String,List<String>> attributeToId = new HashMap<String,List<String>>();
+	@Override
+	public void run(TaskMonitor taskMonitor) throws Exception {
+		final BufferedReader input = new BufferedReader(new InputStreamReader(inputStream));
 
-		if (filename == null)
-			return false;
-		final BufferedReader input = new BufferedReader(new FileReader(filename));
+		try {
+			int lineCount = 0;
+			String line;
 
-		boolean mappingByKeyAttribute = false;
+			// allow file to start with an arbitrary number
+			// of comment lines starting with '#' symbol
+			while ((line = input.readLine()) != null && line.startsWith("#"))
+				++lineCount;
 
-		if (keyAttributeName != DEFAULT_KEY_ATTRIBUTE) {
-			mappingByKeyAttribute = true;
-			attributeToId = getAttributeToIdList(keyAttributeName);
-		}
-
-		int lineCount = 0;
-		String line;
-
-		// allow file to start with an arbitrary number
-		// of comment lines starting with '#' symbol
-		while ((line = input.readLine()) != null && line.startsWith("#"))
+			String headerLine = input.readLine();
 			++lineCount;
 
-		String headerLine = input.readLine();
-		++lineCount;
-
-		if (headerLine == null || headerLine.length() == 0)
-			return false;
-
-		if (isHeaderLineMTXHeader(headerLine)) {
-			// for sure we know that the file contains lambdas
-			significanceType = LAMBDA;
-			headerLine = input.readLine();
-			++lineCount;
-			if (headerLine == null)
-				return false;
-		}
-
-		final boolean hasCOMMON = doesHeaderLineHasCOMMON(headerLine);
-		final boolean expectPvals = doesHeaderLineHaveDuplicates(headerLine, hasCOMMON);
-
-		if ((significanceType != LAMBDA) && !expectPvals) {
-			// we know that we don't have a lambda header and we don't
-			// have significance values
-			significanceType = NONE;
-		}
-
-		StringTokenizer headerTok = new StringTokenizer(headerLine);
-		int numTokens = headerTok.countTokens();
-
-		// if we don't expect p-values, 3 is the minimum number with COMMON column, 2 if without COMMON.
-		// if we expect p-values, 4 is the minimum number with COMMON column, 3 if without COMMON.
-		int minTokens = 2;
-		if (hasCOMMON) {
-			minTokens = 3;
-		}
-		if ((numTokens < minTokens) || ((numTokens < (minTokens+1)) && expectPvals)) {
-			StringBuffer msg = new StringBuffer("Invalid header format in data file.");
-			msg.append("\nNumber of tokens parsed: " + numTokens);
-
-			for (int i = 0; i < numTokens; i++) {
-				msg.append("\nToken " + i + ": " + headerTok.nextToken());
+			if (headerLine == null || headerLine.length() == 0) {
+				taskMonitor.setStatusMessage("Missing header in input file!");
+				return;
 			}
 
-			throw new IOException(msg.toString());
-		}
+			if (isHeaderLineMTXHeader(headerLine)) {
+				// for sure we know that the file contains lambdas
+				significanceType = LAMBDA;
+				headerLine = input.readLine();
+				++lineCount;
+				if (headerLine == null) {
+					taskMonitor.setStatusMessage("Missing header in input file!");
+					return;
+				}
+			}
 
-		double tmpF = numTokens / 2.0;
-		int tmpI = (int) Math.rint(tmpF);
-		int numberOfConditions;
-		int haveExtraTokens = 0;
+			final boolean hasCOMMON = doesHeaderLineHasCOMMON(headerLine);
+			final boolean expectPvals = doesHeaderLineHaveDuplicates(headerLine, hasCOMMON);
 
-		if (expectPvals) {
-			if (tmpI == tmpF) { // missing numSigConds field
-				numberOfConditions = (numTokens - 2) / 2;
-				haveExtraTokens = 0;
-			} else {
-				numberOfConditions = (numTokens - 3) / 2;
-				haveExtraTokens = 1;
-			} // else
-		} else {
-			numberOfConditions = numTokens - 2;
-		}
+			if ((significanceType != LAMBDA) && !expectPvals) {
+				// we know that we don't have a lambda header and we don't
+				// have significance values
+				significanceType = NONE;
+			}
 
-		// Since COMMON is optional, it may not exist
-		if (!hasCOMMON) {
+			StringTokenizer headerTok = new StringTokenizer(headerLine);
+			int numTokens = headerTok.countTokens();
+
+			// if we don't expect p-values, 3 is the minimum number with COMMON column, 2 if without COMMON.
+			// if we expect p-values, 4 is the minimum number with COMMON column, 3 if without COMMON.
+			int minTokens = 2;
+			if (hasCOMMON) {
+				minTokens = 3;
+			}
+			if ((numTokens < minTokens) || ((numTokens < (minTokens+1)) && expectPvals)) {
+				StringBuffer msg = new StringBuffer("Invalid header format in data file.");
+				msg.append("\nNumber of tokens parsed: " + numTokens);
+
+				for (int i = 0; i < numTokens; i++) {
+					msg.append("\nToken " + i + ": " + headerTok.nextToken());
+				}
+
+				throw new IOException(msg.toString());
+			}
+
+			double tmpF = numTokens / 2.0;
+			int tmpI = (int) Math.rint(tmpF);
+			int numberOfConditions;
+			int haveExtraTokens = 0;
+
 			if (expectPvals) {
-				if (tmpI == tmpF) {
+				if (tmpI == tmpF) { // missing numSigConds field
 					numberOfConditions = (numTokens - 2) / 2;
-					haveExtraTokens = 1;
-				} else {
-					numberOfConditions = (numTokens - 1) / 2;
 					haveExtraTokens = 0;
-				}
+				} else {
+					numberOfConditions = (numTokens - 3) / 2;
+					haveExtraTokens = 1;
+				} // else
 			} else {
-				numberOfConditions = numTokens - 1;
+				numberOfConditions = numTokens - 2;
 			}
-		}
 
-		/* eat the first two tokens from the header line */
-		headerTok.nextToken();
-		if (hasCOMMON) {
-			headerTok.nextToken();
-		}
-
-		/* the next numConds tokens are the condition names */
-		Vector<String> cNames = new Vector<String>(numberOfConditions);
-
-		for (int i = 0; i < numberOfConditions; i++)
-			cNames.add(headerTok.nextToken());
-
-		/*
-		 * the next numConds tokens should duplicate the previous list of
-		 * condition names
-		 */
-		if (expectPvals) {
-			for (int i = 0; i < numberOfConditions; i++) {
-				final String title = headerTok.nextToken();
-
-				if (!title.equals(cNames.get(i))) {
-					final String msg = "Expecting both ratios and p-values.\n"
-					                   +"Condition name mismatch in header line" + " of data file "
-					                   + filename + ": " + cNames.get(i) + " vs. " + title;
-					throw new IOException(msg);
+			// Since COMMON is optional, it may not exist
+			if (!hasCOMMON) {
+				if (expectPvals) {
+					if (tmpI == tmpF) {
+						numberOfConditions = (numTokens - 2) / 2;
+						haveExtraTokens = 1;
+					} else {
+						numberOfConditions = (numTokens - 1) / 2;
+						haveExtraTokens = 0;
+					}
+				} else {
+					numberOfConditions = numTokens - 1;
 				}
 			}
-		}
 
-		/*
-		 * OK, we have a reasonable header; clobber all old information
-		 */
-		this.filename = filename;
-		this.numConds = numberOfConditions;
-		this.extraTokens = haveExtraTokens;
-		this.haveSigValues = expectPvals;
-
-		/* wipe old data */
-		initDataStructures();
-
-		/* store condition names */
-		condNames = cNames;
-
-		for (int i = 0; i < numConds; i++)
-			condNameToIndex.put(condNames.get(i), Integer.valueOf(i));
-
-		/* parse rest of file line by line */
-		if (taskMonitor != null)
-			taskMonitor.setStatusMessage("Reading in Data...");
-
-		while ((line = input.readLine()) != null) {
-			++lineCount;
-			parseOneLine(line, lineCount, expectPvals, mappingByKeyAttribute, attributeToId, hasCOMMON);
-		}
-		taskMonitor.setProgress(100.0);
-
-		/* save numGenes and build hash of gene names to indices */
-		numGenes = geneNames.size();
-
-		for (int i = 0; i < geneNames.size(); i++) {
-			if (geneNames.get(i) != null) {
-				geneNameToIndex.put(geneNames.get(i), Integer.valueOf(i));
+			/* eat the first two tokens from the header line */
+			headerTok.nextToken();
+			if (hasCOMMON) {
+				headerTok.nextToken();
 			}
+
+			/* the next numConds tokens are the condition names */
+			Vector<String> cNames = new Vector<String>(numberOfConditions);
+
+			for (int i = 0; i < numberOfConditions; i++)
+				cNames.add(headerTok.nextToken());
+
+			/*
+			 * the next numConds tokens should duplicate the previous list of
+			 * condition names
+			 */
+			if (expectPvals) {
+				for (int i = 0; i < numberOfConditions; i++) {
+					final String title = headerTok.nextToken();
+
+					if (!title.equals(cNames.get(i))) {
+						final String msg = "Expecting both ratios and p-values.\n"
+							+"Condition name mismatch in header line" + " of expression matrix data file "
+							+ ":" + cNames.get(i) + " vs. " + title;
+						throw new IOException(msg);
+					}
+				}
+			}
+
+			/*
+			 * OK, we have a reasonable header; clobber all old information
+			 */
+			this.numConds = numberOfConditions;
+			this.extraTokens = haveExtraTokens;
+			this.haveSigValues = expectPvals;
+
+			/* wipe old data */
+			initDataStructures();
+
+			/* store condition names */
+			condNames = cNames;
+
+			for (int i = 0; i < numConds; i++)
+				condNameToIndex.put(condNames.get(i), Integer.valueOf(i));
+
+			/* parse rest of file line by line */
+			if (taskMonitor != null)
+				taskMonitor.setStatusMessage("Reading in Data...");
+
+			final boolean mappingByKeyAttribute = false; // FIXME: I just made this up!
+			final Map<String, List<String>> attributeToId = new HashMap<String, List<String>>(); // FIXME: I just made this up!
+			while ((line = input.readLine()) != null) {
+				++lineCount;
+				parseOneLine(line, lineCount, expectPvals, mappingByKeyAttribute, attributeToId, hasCOMMON);
+				if (isCancelled)
+					return;
+			}
+			taskMonitor.setProgress(100.0);
+
+			/* save numGenes and build hash of gene names to indices */
+			numGenes = geneNames.size();
+
+			for (int i = 0; i < geneNames.size(); i++) {
+				if (geneNames.get(i) != null) {
+					geneNameToIndex.put(geneNames.get(i), Integer.valueOf(i));
+				}
+			}
+
+			/* trim capacity of data structures for efficiency */
+			geneNames.trimToSize();
+			geneDescripts.trimToSize();
+			allMeasurements.trimToSize();
+		} finally {
+			input.close();
 		}
-
-		/* trim capacity of data structures for efficiency */
-		geneNames.trimToSize();
-		geneDescripts.trimToSize();
-		allMeasurements.trimToSize();
-
-		return true;
 	}
 
 	private Map<String,List<String>> getAttributeToIdList(String keyAttributeName) throws IOException {
@@ -589,15 +479,6 @@ public class ExpressionData implements Serializable {
 		return retval;
 	}
 
-	private boolean isHeaderLineNull(String hline, BufferedReader input, String filename)
-	    throws IOException {
-		if (hline == null) {
-			throw new IOException("Could not read header line from data file: " + filename);
-		}
-
-		return false;
-	}
-
 	// added by iliana on 11.25.2002
 	// it is convenient for users to load their MTX files as they are
 	// the current code requires them to remove the first line
@@ -609,69 +490,47 @@ public class ExpressionData implements Serializable {
 		return b;
 	}
 
-	private String readOneLine(BufferedReader f) {
-		String s = null;
-
-		try {
-			s = f.readLine();
-		} catch (IOException e) {
-		}
-
-		return s;
-	}
-
-	private void parseOneLine(String oneLine, int lineCount, boolean sig_vals,
-	                          boolean mappingByAttribute, Map<String,List<String>> attributeToId, boolean hasCOMMON)
-	    throws IOException {
+	private void parseOneLine(final String line, final int lineCount, final boolean sig_vals,
+	                          boolean mappingByAttribute, Map<String,List<String>> attributeToId,
+	                          boolean hasCOMMON)
+		throws IOException
+	{
 		//
 		// Step 1: divide the line into input tokens, and parse through
 		// the input tokens.
 		//
-		StringTokenizer strtok = new StringTokenizer(oneLine);
+		StringTokenizer strtok = new StringTokenizer(line);
 		int numTokens = strtok.countTokens();
-
-		if (numTokens == 0) {
+		if (numTokens == 0)
 			return;
-		}
 
 		/* first token is gene name (or identifying attribute), or NumSigGenes */
 		String firstToken = strtok.nextToken();
-
-		if (firstToken.startsWith("NumSigGenes")) {
+		if (firstToken.startsWith("NumSigGenes"))
 			return;
-		}
 
-		int numPreCols = 2; // Number of columns before data columns
-		if (!hasCOMMON) {
-			numPreCols = 1;
-		}
+		final int numPreCols = hasCOMMON ? 2 : 1; // Number of columns before data columns
+
 		if ((sig_vals && (numTokens < ((2 * numConds) + numPreCols)))
-		    || ((!sig_vals) && (numTokens < (numConds + numPreCols)))) {
+		    || ((!sig_vals) && (numTokens < (numConds + numPreCols))))
 			throw new IOException("Warning: parse error on line " + lineCount + "  tokens read: "
 			                      + numTokens);
-		}
 
-		String geneDescript = "";
-		if (hasCOMMON) {
-			geneDescript = strtok.nextToken();
-		}
+		final String geneDescript = hasCOMMON ? strtok.nextToken() : "";
 
 		String[] expData = new String[numConds];
 
-		for (int i = 0; i < numConds; i++) {
+		for (int i = 0; i < numConds; i++)
 			expData[i] = strtok.nextToken();
-		}
 
 		String[] sigData = new String[numConds];
 
 		if (sig_vals) {
-			for (int i = 0; i < numConds; i++) {
+			for (int i = 0; i < numConds; i++)
 				sigData[i] = strtok.nextToken();
-			}
 		} else {
-			for (int i = 0; i < numConds; i++) {
+			for (int i = 0; i < numConds; i++)
 				sigData[i] = expData[i];
-			}
 		}
 
 		List<String> gNames = new ArrayList<String>();
@@ -738,7 +597,7 @@ public class ExpressionData implements Serializable {
 	public void convertLambdasToPvals() {
 		for ( Vector<mRNAMeasurement> v : allMeasurements ) {
 			for ( mRNAMeasurement m : v ) {
-				double pval = ExpressionData.getPvalueFromLambda(m.getSignificance());
+				double pval = getPvalueFromLambda(m.getSignificance());
 				m.setSignificance(pval);
 			}
 		}
@@ -776,52 +635,6 @@ public class ExpressionData implements Serializable {
 	 */
 	public int getSignificanceType() {
 		return this.significanceType;
-	}
-
-	/**
-	 * Returns a text description of this data object.
-	 *
-	 * @return Text Decription of this Data Object.
-	 */
-	public String getDescription() {
-		String lineSep = System.getProperty("line.separator");
-		StringBuffer sb = new StringBuffer();
-		File file = new File(filename);
-
-		sb.append("Data read from: " + file.getName() + lineSep);
-		sb.append(lineSep);
-		sb.append("Number of genes = " + getNumberOfGenes() + lineSep);
-		sb.append("Number of conditions = " + getNumberOfConditions() + lineSep);
-		sb.append("Significance values: ");
-
-		if (this.haveSigValues) {
-			sb.append("yes");
-		} else {
-			sb.append("no");
-		}
-
-		sb.append(lineSep).append(lineSep);
-		sb.append("MinExp: " + minExp + "    MaxExp: " + maxExp + lineSep);
-
-		if (this.haveSigValues) {
-			sb.append("MinSig: " + minSig + "    MaxSig: " + maxSig + lineSep);
-
-			String sigType = null;
-
-			if (this.significanceType == this.UNKNOWN) {
-				sigType = "unknown";
-			} else if (this.significanceType == this.LAMBDA) {
-				sigType = "lambda values";
-			} else if (this.significanceType == this.PVAL) {
-				sigType = "p-values";
-			} else if (this.significanceType == this.NONE) {
-				sigType = "none";
-			}
-
-			sb.append("Type of significance: " + sigType + lineSep);
-		}
-
-		return sb.toString();
 	}
 
 	/**
@@ -1079,5 +892,12 @@ public class ExpressionData implements Serializable {
 				}
 			}
 		}
+	}
+
+	@Override
+	public CyTable[] getCyTables() {
+		if (table == null)
+			return null;
+		return new CyTable[] { table };
 	}
 }
