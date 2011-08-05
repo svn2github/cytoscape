@@ -2,16 +2,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>parent</artifactId>
+		<artifactId>support-parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-alpha7</version>
-		<relativePath>../parent</relativePath>
+		<version>3.0.0-alpha6-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.cytoscape</groupId>
 	<artifactId>test-support</artifactId>
 	<packaging>jar</packaging>
-	<version>3.0.0-alpha3-SNAPSHOT</version>
 	<name>test-support</name>
 
 	<scm>

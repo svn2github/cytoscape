@@ -3,16 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>parent</artifactId>
+		<artifactId>support-parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-alpha8-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
+		<version>3.0.0-alpha6-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.cytoscape.wrappers</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>3.0.0-alpha1-SNAPSHOT</version>
 	<name>Wrappers Project POM</name>
 
 	<modules>

@@ -4,9 +4,8 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<parent>
 		<groupId>org.cytoscape</groupId>
-		<artifactId>parent</artifactId>
-		<version>3.0.0-alpha7</version>
-		<relativePath>../parent</relativePath>
+		<artifactId>support-parent</artifactId>
+		<version>3.0.0-alpha6-SNAPSHOT</version>
 	</parent>
 	<properties>
 		<bundle.symbolicName>org.cytoscape.cy-commons-cli</bundle.symbolicName>
@@ -15,7 +14,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>cy-commons-cli</artifactId>
-	<version>1.0-SNAPSHOT</version>
 	<name>${bundle.symbolicName}</name>
 	<packaging>bundle</packaging>
 	<repositories>
