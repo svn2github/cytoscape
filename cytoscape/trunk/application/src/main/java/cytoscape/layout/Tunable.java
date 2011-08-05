@@ -552,8 +552,17 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 							((JList)inputField).setSelectedIndices(intArray);
 					}
 				} else {
+					// Two possibilities -- could be an Integer, or could be a string that matches something
+					// in the list.  We need to check both
 					if (value.getClass() == String.class)
-						this.value = new Integer((String) value);
+						try {
+							this.value = new Integer((String) value);
+						} catch (NumberFormatException e) {
+							// OK, probably a string that we need to match (if possible)
+							if (lowerBound == null || value == null)
+								return;
+							this.value = getSelectedValue((Object [])lowerBound,(String)value);
+						}
 					else
 						this.value = value;
 
@@ -1038,6 +1047,15 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			selVals[i] = attrs.indexOf(values[i]);
 		}
 		return selVals;
+	}
+
+	private Integer getSelectedValue(Object []valueList, String value) {
+		if (valueList == null || value == null) return null;
+		for (int i = 0; i < valueList.length; i++) {
+			if (value.equals(valueList[i].toString()))
+				return new Integer(i);
+		}
+		return null;
 	}
 
 	private int[] decodeIntegerArray(String value) {
