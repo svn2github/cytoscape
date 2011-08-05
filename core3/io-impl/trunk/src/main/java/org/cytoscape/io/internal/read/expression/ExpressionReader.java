@@ -239,7 +239,7 @@ public class ExpressionReader extends AbstractTableReader {
 			while ((line = input.readLine()) != null && line.startsWith("#"))
 				++lineCount;
 
-			String headerLine = input.readLine();
+			String headerLine = line;
 			++lineCount;
 
 			if (headerLine == null || headerLine.length() == 0) {
