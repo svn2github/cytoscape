@@ -60,6 +60,7 @@ public class MetaNodeManager {
 	protected static boolean hideMetanodeDefault = true;
 	protected static double metanodeOpacityDefault = 255.;
 	protected static boolean useNestedNetworksDefault = false;
+	protected static boolean dontExpandEmptyDefault = true;
 	protected static String chartTypeDefault = null;
 	protected static String nodeChartAttributeDefault = null;
 	protected static AttributeManager defaultAttributeManager = new AttributeManager();
@@ -113,6 +114,7 @@ public class MetaNodeManager {
 
 		metaMap.put(metaGroup.getGroupNode(), mn);
 		mn.setUseNestedNetworks(useNestedNetworksDefault);
+		mn.setDontExpandEmpty(dontExpandEmptyDefault);
 		mn.setHideMetaNode(hideMetanodeDefault);
 		mn.setMetaNodeOpacity(metanodeOpacityDefault);
 		mn.setChartType(chartTypeDefault);
@@ -258,11 +260,9 @@ public class MetaNodeManager {
 	}
 
 	/**
-	 * Sets whether or not we size the metnode to the bounding box
-	 * of all of the children when we expand the network.  NOTE:
-	 * this only makes sense if hideMetanode is false.
+	 * Sets whether or not we use the nested network viewer
 	 *
-	 * @param useNestedNetworks if 'true' we use nexted networks when we collapse
+	 * @param useNestedNetworks if 'true' we use nested networks when we collapse
 	 */
 	static public void setUseNestedNetworksDefault(boolean useNestedNetworks) {
 		MetaNodeManager.useNestedNetworksDefault = useNestedNetworks;
@@ -276,6 +276,24 @@ public class MetaNodeManager {
 	 */
 	static public boolean getUseNestedNetworksDefault() {
 		return MetaNodeManager.useNestedNetworksDefault;
+	}
+
+	/**
+ 	 * Sets whether or not we expand empty metanodes
+	 *
+	 * @param dontExpandEmpty if 'true' we won't expand empty metanodes
+	 */
+	static public void setDontExpandEmptyDefault(boolean dontExpandEmpty) {
+		MetaNodeManager.dontExpandEmptyDefault = dontExpandEmpty;
+	}
+
+	/**
+	 * Returns 'true' if we don't expand empty metanodes.
+	 *
+	 * @return 'true' if we don't expand empty metanodes.
+	 */
+	static public boolean getDontExpandEmptyDefault() {
+		return MetaNodeManager.dontExpandEmptyDefault;
 	}
 
 	/**

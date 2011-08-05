@@ -258,11 +258,13 @@ public class ViewUtils {
  	 * @param view the CyNetworkView
  	 */
 	public static void hideEdges(CyGroup metaGroup, Collection<CyEdge>edgeList, CyNetworkView view) {
+		/*
 		CyNetwork network = metaGroup.getNetwork();
 		for (CyEdge edge: edgeList) {
 			if (network.containsEdge(edge))
 				network.hideEdge(edge);
 		}
+		*/
 	}
 
 	/**

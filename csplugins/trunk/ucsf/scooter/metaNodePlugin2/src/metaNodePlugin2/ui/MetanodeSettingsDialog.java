@@ -56,6 +56,7 @@ import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroupViewer;
 import cytoscape.layout.Tunable;
 import cytoscape.layout.TunableListener;
+import cytoscape.logger.CyLogger;
 import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualStyle;
 
@@ -100,6 +101,7 @@ public class MetanodeSettingsDialog extends JDialog
 	private List<Tunable>tunableEnablers = null;
 	private List<Tunable>nodeChartEnablers = null;
 	private boolean hideMetaNode = true;
+	private boolean dontExpandEmpty = true;
   private boolean enableHandling = false;
   private boolean useNestedNetworks = false;
 	private double metanodeOpacity = 255.0f;
@@ -208,13 +210,29 @@ public class MetanodeSettingsDialog extends JDialog
 
 		
 		metanodeProperties.add(new Tunable("appearanceGroup", "Metanode Appearance",
-		                                   Tunable.GROUP, new Integer(2),
+		                                   Tunable.GROUP, new Integer(4),
 		                                   new Boolean(true), null, Tunable.COLLAPSABLE));
 		{
 			{
 				Tunable t = new Tunable("useNestedNetworks",
 				                        "Create a nested network for collapsed metanodes",
 				                        Tunable.BOOLEAN, new Boolean(false), 0);
+				t.addTunableValueListener(this);
+				metanodeProperties.add(t);
+			}
+
+			{
+				Tunable t = new Tunable("hideMetaNodes",
+				                        "Hide metanodes when expanded",
+				                        Tunable.BOOLEAN, new Boolean(true), 0);
+				t.addTunableValueListener(this);
+				metanodeProperties.add(t);
+			}
+
+			{
+				Tunable t = new Tunable("dontExpandEmpty",
+				                        "Don't expand empty metanodes",
+				                        Tunable.BOOLEAN, new Boolean(true), 0);
 				t.addTunableValueListener(this);
 				metanodeProperties.add(t);
 			}
@@ -306,9 +324,6 @@ public class MetanodeSettingsDialog extends JDialog
 			tunableEnablers.add(t);
 		}
 
-		// We only really care about the property settings for our defaults
-		metanodeProperties.initializeProperties();
-
 		metanodeProperties.add(new Tunable("attributesGroup",
 		                                    "Overrides for Specific Attributes",
 		                                    Tunable.GROUP, new Integer(3),
@@ -336,6 +351,8 @@ public class MetanodeSettingsDialog extends JDialog
 			// Update
 			tunableChanged(attrList);
 		}
+
+		reloadSettings();
 		updateSettings(true);
 	}
 
@@ -355,6 +372,13 @@ public class MetanodeSettingsDialog extends JDialog
 		if ((t != null) && (t.valueChanged() || force)) {
       hideMetaNode = ((Boolean) t.getValue()).booleanValue();
 			MetaNodeManager.setHideMetaNodeDefault(hideMetaNode);
+			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
+		}
+
+		t = metanodeProperties.get("dontExpandEmpty");
+		if ((t != null) && (t.valueChanged() || force)) {
+      dontExpandEmpty = ((Boolean) t.getValue()).booleanValue();
+			MetaNodeManager.setHideMetaNodeDefault(dontExpandEmpty);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
@@ -430,6 +454,17 @@ public class MetanodeSettingsDialog extends JDialog
 	 */
 	public MetanodeProperties getSettings() {
 		return metanodeProperties;
+	}
+
+	/**
+ 	 * Reload our properties (used when a new session is loaded)
+ 	 */
+	public void reloadSettings() {
+		try {
+			metanodeProperties.initializeProperties();
+		} catch (Exception e) {
+			CyLogger.getLogger("metaNodePlugin").warning("Exception when initializing properties: '"+e.getMessage()+"' -- continuing");
+		}
 	}
 
 	/**
@@ -598,6 +633,7 @@ public class MetanodeSettingsDialog extends JDialog
 
 	public void updateMetaNodeSettings(MetaNode mn) {
 		mn.setUseNestedNetworks(useNestedNetworks);
+		mn.setDontExpandEmpty(dontExpandEmpty);
 		// mn.setSizeToBoundingBox(sizeToBoundingBox);
 		mn.setHideMetaNode(hideMetaNode);
 		// System.out.println("setting opacity for "+mn+" to "+metanodeOpacity);
@@ -611,6 +647,9 @@ public class MetanodeSettingsDialog extends JDialog
 		if (t.getName().equals("hideMetanodes")) {
       hideMetaNode = ((Boolean) t.getValue()).booleanValue();
 			MetaNodeManager.setHideMetaNodeDefault(hideMetaNode);
+		} else if (t.getName().equals("dontExpandEmpty")) {
+      dontExpandEmpty = ((Boolean) t.getValue()).booleanValue();
+			MetaNodeManager.setDontExpandEmptyDefault(dontExpandEmpty);
 		} else if (t.getName().equals("useNestedNetworks")) {
       useNestedNetworks = ((Boolean) t.getValue()).booleanValue();
 			MetaNodeManager.setUseNestedNetworksDefault(useNestedNetworks);

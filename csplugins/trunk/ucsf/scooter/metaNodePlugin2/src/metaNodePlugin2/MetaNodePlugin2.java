@@ -147,6 +147,9 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			Cytoscape.getPropertyChangeSupport()
 			          .addPropertyChangeListener( Cytoscape.CYTOSCAPE_INITIALIZED, this);
 
+			Cytoscape.getPropertyChangeSupport()
+			          .addPropertyChangeListener( Cytoscape.SESSION_LOADED, this);
+
 			// Add our context menu
 			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
 			Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(this);
@@ -188,7 +191,10 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			// Handle interaction with other plugins
 			groupViewer.registerWithGroupPanel();
 			groupViewer.haveNodeCharts();
+			groupViewer.getSettingsDialog().reloadSettings();
 			groupViewer.getSettingsDialog().updateNodeChartTypes();
+		} else if (e.getPropertyName() == Cytoscape.SESSION_LOADED) {
+			groupViewer.getSettingsDialog().reloadSettings();
 		}
 	}
 

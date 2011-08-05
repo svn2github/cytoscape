@@ -85,6 +85,7 @@ public class MetaNode {
 
 	private AttributeManager attributeManager = null;
 	private boolean hideMetanode = true;
+	private boolean dontExpandEmpty = true;
 	private double metanodeOpacity = 0.;
 	private boolean useNestedNetworks = false;
 	private String nodeChartAttribute = null;
@@ -218,6 +219,9 @@ public class MetaNode {
 	public void expand(CyNetworkView view) {
 		logger.debug("expand "+metaGroup+": isCollapsed = "+isCollapsed()+" isHidden = "+isHidden()+" state = "+metaGroup.getState());
 		if (!isCollapsed())
+			return;
+
+		if (dontExpandEmpty && metaGroup.getNodes().size() == 0)
 			return;
 
 		// Handle the case where we're hidden by a collapsed parent
@@ -365,6 +369,15 @@ public class MetaNode {
 	 */
 	public void setUseNestedNetworks(boolean nestedNetwork) {
 		this.useNestedNetworks = nestedNetwork;
+	}
+
+	/**
+	 * Sets whether or not we should expand empty metanodes.
+	 *
+	 * @param dontExpandEmpty if 'true' we will use nested networks
+	 */
+	public void setDontExpandEmpty(boolean dontExpandEmpty) {
+		this.dontExpandEmpty = dontExpandEmpty;
 	}
 
 	/**
@@ -517,10 +530,10 @@ public class MetaNode {
 		while(iterator.hasNext()) {
 			CyEdge edge = iterator.next();
 			CyNode node = getPartner(edge);
-			// logger.debug("Outer edge = "+edge.getIdentifier());
+			logger.debug("Outer edge = "+edge.getIdentifier());
 
 			if (ignoreMetaEdges && isMeta(edge)) {
-				// logger.debug("...ignoring");
+				logger.debug("...ignoring");
 				addMetaEdge(edge);
 				continue;
 			}
@@ -530,7 +543,6 @@ public class MetaNode {
 			// If the edge is already on our group node, don't create a metaedge for it
 			if (edge.getSource() == groupNode || edge.getTarget() == groupNode)
 				continue;
-
 
 			// Create the meta-edge to the external node, but maintain the directionality of the
 			// original edge
