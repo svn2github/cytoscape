@@ -691,9 +691,10 @@ public class ExpressionReader extends AbstractTableReader {
 	private void copyToAttribs(TaskMonitor taskMonitor) {
 		String[] condNames = getConditionNames();
 
-		// first set up the columns
-		table.createColumn("geneName", String.class, false);
+		table = tableFactory.createTable("Expression Matrix", "geneName", String.class,
+						 /* public = */ true, /* mutable = */ true);
 
+		// first set up the columns
 		for (int condNum = 0; condNum < condNames.length; condNum++) {
 			String condName = condNames[condNum];
 			String eStr = condName + "exp";
