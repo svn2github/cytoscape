@@ -190,31 +190,40 @@
 	</osgi:service>
 	
 	<osgi:service id="vizmapPropertiesReaderFactoryService" ref="vizmapPropertiesReaderFactory"
-        interface="org.cytoscape.io.read.InputStreamTaskFactory">
-        <osgi:service-properties>
+		      interface="org.cytoscape.io.read.InputStreamTaskFactory">
+          <osgi:service-properties>
             <entry key="serviceType" value="vizmapPropertiesReaderFactory" />
             <entry key="readerId" value="vizmapPropertiesReaderFactory" />
             <entry key="readerDescription" value="Vizmap Properties File Reader" />
-        </osgi:service-properties>
-    </osgi:service>
+          </osgi:service-properties>
+	</osgi:service>
     
 	<osgi:service id="vizmapXMLReaderFactoryService" ref="vizmapXMLReaderFactory"
-        interface="org.cytoscape.io.read.InputStreamTaskFactory">
-        <osgi:service-properties>
+		      interface="org.cytoscape.io.read.InputStreamTaskFactory">
+          <osgi:service-properties>
             <entry key="serviceType" value="vizmapXMLReaderFactory" />
             <entry key="readerId" value="vizmapXMLReaderFactory" />
             <entry key="readerDescription" value="Vizmap XML File Reader" />
-        </osgi:service-properties>
-    </osgi:service>
-
+          </osgi:service-properties>
+	</osgi:service>
+	
 	<osgi:service id="sessionTableReaderFactoryService" ref="sessionTableReaderFactory"
         interface="org.cytoscape.io.read.InputStreamTaskFactory">
-        <osgi:service-properties>
+          <osgi:service-properties>
             <entry key="serviceType" value="sessionTableReaderFactory" />
             <entry key="readerId" value="sessionTableReaderFactory" />
             <entry key="readerDescription" value="Session Table File Reader" />
-        </osgi:service-properties>
-    </osgi:service>
+          </osgi:service-properties>
+	</osgi:service>
+	
+	<osgi:service id="expressionMatrixReaderFactoryService" ref="expressionReaderFactory"
+        interface="org.cytoscape.io.read.InputStreamTaskFactory">
+          <osgi:service-properties>
+            <entry key="serviceType" value="attrsDataReaderFactory" />
+            <entry key="readerId" value="expressionMatrixReader" />
+            <entry key="readerDescription" value="Expression Matrix File Reader" />
+          </osgi:service-properties>
+	</osgi:service>
 
 	<osgi:service id="sessionWriterFactoryService" ref="sessionWriterFactory">
 		<interfaces>

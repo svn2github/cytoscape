@@ -382,15 +382,16 @@ public class ExpressionReader extends AbstractTableReader {
 			numGenes = geneNames.size();
 
 			for (int i = 0; i < geneNames.size(); i++) {
-				if (geneNames.get(i) != null) {
-					geneNameToIndex.put(geneNames.get(i), Integer.valueOf(i));
-				}
+				if (geneNames.get(i) != null)
+					geneNameToIndex.put(geneNames.get(i), i);
 			}
 
 			/* trim capacity of data structures for efficiency */
 			geneNames.trimToSize();
 			geneDescripts.trimToSize();
 			allMeasurements.trimToSize();
+
+			copyToAttribs(taskMonitor);
 		} finally {
 			input.close();
 		}
@@ -629,172 +630,12 @@ public class ExpressionReader extends AbstractTableReader {
 	} // getPvalueFromLambda
 
 	/**
-	 * Gets the Significance Type.
-	 *
-	 * @return one of NONE, UNKNOWN, PVAL, LAMBDA
-	 */
-	public int getSignificanceType() {
-		return this.significanceType;
-	}
-
-	/**
-	 * Sets a List of Gene Names. This clobbers the old list of gene names, if
-	 * it exists.
-	 *
-	 * @param newNames Vector of String Objects.
-	 */
-	public void setGeneNames(Vector<String> newNames) {
-		geneNames = newNames;
-		geneNameToIndex.clear();
-
-		for (int i = 0; i < geneNames.size(); i++) {
-			geneNameToIndex.put(geneNames.get(i), Integer.valueOf(i));
-		}
-	}
-
-	/**
-	 * Gets an Array of GeneDescriptors.
-	 *
-	 * @return Array of String Objects.
-	 */
-	public String[] getGeneDescriptors() {
-		return (String[]) geneDescripts.toArray(new String[0]);
-	}
-
-	/**
-	 * Gets a Vector Gene Descriptors.
-	 *
-	 * @return Vector of String Objects.
-	 */
-	public Vector<String> getGeneDescriptorsVector() {
-		return geneDescripts;
-	}
-
-	/**
-	 * Sets a List of Gene Descriptors. This clobbers the old list of gene
-	 * descriptors, if it exists.
-	 *
-	 * @param newDescripts Vector of String Objects.
-	 */
-	public void setGeneDescriptors(Vector<String> newDescripts) {
-		geneDescripts = newDescripts;
-	}
-
-	/**
 	 * Gets an Array of All Experimental Conditions.
 	 *
 	 * @return Array of String Objects.
 	 */
-	public String[] getConditionNames() {
+	private String[] getConditionNames() {
 		return (String[]) condNames.toArray(new String[0]);
-	}
-
-	/**
-	 * Gets the index value of the specified experimenal conditon.
-	 *
-	 * @param condition Name of experimental condition.
-	 * @return index value of the specified experimenal conditon.
-	 */
-	public int getConditionIndex(String condition) {
-		return ((Integer) this.condNameToIndex.get(condition)).intValue();
-	}
-
-	/**
-	 * Gets the Gene Descriptor for the specified gene.
-	 *
-	 * @param gene Gene Name.
-	 * @return Gene Descriptor String.
-	 */
-	public String getGeneDescriptor(String gene) {
-		Integer geneIndex = (Integer) geneNameToIndex.get(gene);
-
-		if (geneIndex == null) {
-			return null;
-		}
-
-		return (String) geneDescripts.get(geneIndex.intValue());
-	}
-
-	/**
-	 * Indicates whether the expression data has significance values.
-	 *
-	 * @return true or false.
-	 */
-	public boolean hasSignificanceValues() {
-		return haveSigValues;
-	}
-
-	/**
-	 * Gets all Measurements.
-	 *
-	 * @return A Vector of Vectors. The embedded Vector contains mRNAMeasurement
-	 *         Objects.
-	 */
-	public Vector<Vector<mRNAMeasurement>> getAllMeasurements() {
-		return allMeasurements;
-	}
-
-	/**
-	 * Gets a List of All Gene Names. Same as getGeneNamesVector(), except this
-	 * method returns an Array of String Objects.
-	 *
-	 * @return Array of Strings.
-	 */
-	public String[] getGeneNames() {
-		return (String[]) geneNames.toArray(new String[0]);
-	}
-
-	/**
-	 * Gets a List of All Gene Names. Same as getGeneNames(), except this method
-	 * returns a Vector of String Objects.
-	 *
-	 * @return Vector of String Objects.
-	 */
-	public Vector<String> getGeneNamesVector() {
-		return geneNames;
-	}
-
-	/**
-	 * Gets Total Number of Experimental Conditions. This corresponds to the
-	 * number of condition columns in the original expression data file.
-	 *
-	 * @return total number of experimental conditions.
-	 */
-	public int getNumberOfConditions() {
-		return numConds;
-	}
-
-	/**
-	 * Gets Total Number of Genes. This corresponds to the number of rows of
-	 * data in the original expression data file.
-	 *
-	 * @return total number of genes.
-	 */
-	public int getNumberOfGenes() {
-		return numGenes;
-	}
-
-	/**
-	 * Returns a 2D Matrix of Extreme Values. The matrix is set to the
-	 * following:
-	 * <p/>
-	 * <PRE>
-	 * <p/>
-	 * maxVals[0][0] = minExp; maxVals[0][1] = maxExp; maxVals[1][0] = minSig;
-	 * maxVals[0][1] = maxSig;
-	 * <p/>
-	 * </PRE>
-	 *
-	 * @return a 2D Matrix of double values.
-	 */
-	public double[][] getExtremeValues() {
-		double[][] maxVals = new double[2][2];
-		maxVals[0][0] = minExp;
-		maxVals[0][1] = maxExp;
-		maxVals[1][0] = minSig;
-		maxVals[1][1] = maxSig;
-
-		return maxVals;
 	}
 
 	/**
@@ -803,20 +644,15 @@ public class ExpressionReader extends AbstractTableReader {
 	 * @param gene Gene Name.
 	 * @return Vector of mRNAMeasurement Objects.
 	 */
-	public Vector<mRNAMeasurement> getMeasurements(String gene) {
-		if (gene == null) {
+	private Vector<mRNAMeasurement> getMeasurements(String gene) {
+		if (gene == null)
 			return null;
-		}
 
-		Integer geneIndex = geneNameToIndex.get(gene);
-
-		if (geneIndex == null) {
+		final Integer geneIndex = geneNameToIndex.get(gene);
+		if (geneIndex == null)
 			return null;
-		}
 
-		Vector<mRNAMeasurement> measurements = this.getAllMeasurements().get(geneIndex.intValue());
-
-		return measurements;
+		return allMeasurements.get(geneIndex);
 	}
 
 	/**
@@ -828,7 +664,7 @@ public class ExpressionReader extends AbstractTableReader {
 	 *                  expression data file.)
 	 * @return an mRNAMeasurement Object.
 	 */
-	public mRNAMeasurement getMeasurement(String gene, String condition) {
+	private mRNAMeasurement getMeasurement(String gene, String condition) {
 		Integer condIndex = condNameToIndex.get(condition);
 
 		if (condIndex == null) {
@@ -852,7 +688,7 @@ public class ExpressionReader extends AbstractTableReader {
 	 * @param nodeAttribs Node Attributes CyTable.
 	 * @param taskMonitor Task Monitor. Can be null.
 	 */
-	public void copyToAttribs(CyTable table, TaskMonitor taskMonitor) {
+	private void copyToAttribs(TaskMonitor taskMonitor) {
 		String[] condNames = getConditionNames();
 
 		// first set up the columns
