@@ -129,8 +129,8 @@ public class HeatMapView extends TreeViewApp implements Observer,
 	public HeatMapView() {
 		super();
 		// setExitOnWindowsClosed(false);
-		selectedNodes = new ArrayList();
-		selectedArrays = new ArrayList();
+		selectedNodes = new ArrayList<CyNode>();
+		selectedArrays = new ArrayList<CyNode>();
 		myLogger = CyLogger.getLogger(HeatMapView.class);
 		clusterProperties = new ClusterProperties(getShortName());
 		pcs = new PropertyChangeSupport(new Object());
@@ -139,8 +139,8 @@ public class HeatMapView extends TreeViewApp implements Observer,
 
 	public HeatMapView(PropertyConfig propConfig) {
 		super(propConfig);
-		selectedNodes = new ArrayList();
-		selectedArrays = new ArrayList();
+		selectedNodes = new ArrayList<CyNode>();
+		selectedArrays = new ArrayList<CyNode>();
 		// setExitOnWindowsClosed(false);
 		myLogger = CyLogger.getLogger(TreeView.class);
 		clusterProperties = new ClusterProperties(getShortName());
@@ -207,7 +207,7 @@ public class HeatMapView extends TreeViewApp implements Observer,
 				nodeArray[index++] = ((CyNode)node).getIdentifier();
 		} else {
 			if (attributeArray.length == 1 && attributeArray[0].startsWith("edge.")) {
-				HashMap<CyNode,CyNode>nodeMap = new HashMap();
+				HashMap<CyNode,CyNode>nodeMap = new HashMap<CyNode, CyNode>();
 				for (Object edge:myNetwork.getSelectedEdges()) {
 					CyNode node1 = (CyNode)((CyEdge)edge).getSource();
 					CyNode node2 = (CyNode)((CyEdge)edge).getTarget();
@@ -416,7 +416,7 @@ public class HeatMapView extends TreeViewApp implements Observer,
 		myView.removeGraphViewChangeListener(this); // For efficiency reasons, remove our listener for now
 		myNetwork.unselectAllEdges();
 
-		HashMap<CyEdge,CyEdge>edgesToSelect = new HashMap();
+		HashMap<CyEdge,CyEdge>edgesToSelect = new HashMap<CyEdge, CyEdge>();
 		for (CyNode node1: selectedNodes) {
 			int [] nodes = new int[2];
 			nodes[0] = node1.getRootGraphIndex();
