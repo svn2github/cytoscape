@@ -14,12 +14,12 @@ To build the a project (e.g. "model-api") you can enter the project directory
 and run whatever commands you want or from the top level directory, use the 
 maven "project list" feature:
 
-	mvn install -pl model-api
+	mvn install -pl api/model-api
 
 To build the "model-api" project as well as everything that depends on it,
 run the command:
 
-	mvn install -pl model-api -amd
+	mvn install -pl api/model-api -amd
 
 This will result in a large number of projects building because nearly
 all projects depend on the classes and interfaces in model-api.  Use
@@ -28,7 +28,7 @@ that depends on the project you changed.
 
 To build the "model-api" project and everything that it requires to work:
 
-	mvn install -pl model-api -am 
+	mvn install -pl api/model-api -am 
 
 This command should result in maven first building the event-api project
 followed by model-api.  This is because model-api has a dependency on
