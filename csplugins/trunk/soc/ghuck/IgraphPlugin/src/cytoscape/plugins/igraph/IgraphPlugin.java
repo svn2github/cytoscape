@@ -25,9 +25,6 @@ import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.layout.CyLayouts;
 
-import giny.view.NodeView;
-import giny.view.Label;
-
 import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.jar.*;
@@ -66,10 +63,7 @@ public class IgraphPlugin extends CytoscapePlugin {
 	try {
 	    NativeLibrary.addSearchPath("igraphWrapper", userDir + "/plugins");
 	    //JOptionPane.showMessageDialog(Cytoscape.getDesktop(), IgraphInterface.nativeAdd(10, 20));	   
-	    
-	    // Create Igraph object
-	    // IgraphAPI igraph = new IgraphAPI();
-	    
+	    	    
 	    // Add elements in menu toolbar
 	    IsConnected isConnectedAction1 = new IsConnected(this, "All nodes", false);
 	    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction((CytoscapeAction) isConnectedAction1);
