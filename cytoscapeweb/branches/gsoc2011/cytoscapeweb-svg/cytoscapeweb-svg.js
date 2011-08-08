@@ -79,9 +79,7 @@ function Visualization(container, height, width) {
 		this._svgEdgeGroup.removeChild(elem);
 	};
 	
-	this._createLabelElement = function() {
-		return SvgTool.createSvgElement("text", this._svgLabelGroup);
-	};
+
 	
 	this._removeLabelElement = function(elem) {
 		this._svgLabelGroup.removeChild(elem);
@@ -515,52 +513,22 @@ function Visualization(container, height, width) {
 		this._offsetY = this._dragY + y;
 		this.draw();
 	}
-	
-	
+
 }
-
-var Paths = {
-	ellipse: "M 0,-10, a 10,10 0 1 1 -0.01,0 z",
-	diamond: "M -10,0 0,-10 10,0 0,10 z",
-	rectangle: "M -10,-10 -10,10 10,10 10,-10 z",
-	delta: "M 0,0 -10,-5, -10,5 z",
-	t: "M 0,-5 0,5 -2,5 -2,-5 z"
-
-};
 /**
-var Shapes = {};
+ * Paths are in SVG PathData format. See http://www.w3.org/TR/SVG/paths.html#PathData
+ */
+var Paths = {
+	// Node shapes
+	ellipse: 	"M 0,-10, a 10,10 0 1 1 -0.01,0 z", // This is the path equivalent of a <circle> element
+	diamond: 	"M -10,0 0,-10 10,0 0,10 z",
+	rectangle: 	"M -10,-10 -10,10 10,10 10,-10 z",
+	// Arrow shapes
+	delta: 		"M 0,0 -10,-5, -10,5 z",
+	t: 		"M 0,-5 0,5 -2,5 -2,-5 z"
 
-Shapes.buildEllipse = function(x, y, w, h) {
-	return populateString("M %,% a %,% % % % %,% z", [x, y - w, w, h, 0, 1, 1, -0.01, 0]);
-}
-
-
-Shapes.buildPolygon= function(x, y, points, angle, scale) {
-	scale = scale || 1;
-	angle = angle || 0;
-	var cos = Math.cos(angle);
-	var sin = Math.sin(angle);
-	var pathPoints = [];
-	for (var i = 0, len = points.length; i < len; i++) {
-		pathPoints.push(((points[i][0] * cos - points[i][1] * sin) * scale) + x);
-		pathPoints.push(((points[i][0] * sin + points[i][1] * cos) * scale) + y);
-	}
-	return "M " + pathPoints[0] + " " + pathPoints[1] + " L " + pathPoints.slice(2).join(" ") + " z";
 };
 
-
-Shapes.buildArrow = function(x, y, w, h, angle, scale) {
-	return this.buildPolygon(x, y, [[0,0], [-h, -w/2], [-h, w/2]], angle, scale);
-}
-
-Shapes.buildDiamond = function(x, y, w, h) {
-	return this.buildPolygon(x, y, [[-w, 0], [0, -h], [w, 0], [0, h]]);
-}
-
-Shapes.buildRectangle = function(x, y, w, h) {
-	return this.buildPolygon(x, y, [[-w, -h], [-w, h], [w, h], [w, -h]]);
-}
-*/
 var Util = {};
 
 /**
@@ -802,6 +770,9 @@ var Node = function(vis) {
 		return radius;
 	}
 	
+	/**
+	 * Generate the string for the svg transform attribute. Performs a translate and scale of the source path.
+	 */
 	this._getTransform = function() {
 		return "translate(" + this._x + "," + this._y + ")" + "scale(" + (this.getRenderedStyle("size")/10) + ")" ;
 	};
@@ -838,9 +809,6 @@ var Node = function(vis) {
 
 	this._data = {};
 	this._style = {};
-
-
-
 
 	// Temporary vars for dragging
 	this._dragOriginX = null;
@@ -914,13 +882,7 @@ var Node = function(vis) {
 		var newX = this._dragOriginX + x;
 		var newY = this._dragOriginY + y;
 
-		/*
-		// Clamp coordinates to canvas size (hardcoded for this test demo)
-		if (newX < 0) newX = 0;
-		if (newX > 400) newX = 400;
-		if (newY < 0) newY = 0;
-		if (newY > 400) newY = 400;
-		*/
+
 		this._x = newX;
 		this._y = newY;
 		this._draw();
@@ -1029,12 +991,12 @@ var Edge = function(vis) {
 
 	this._visualization = vis;
 	this._elem = null;
-	this._elemLabel = null;
+	this._labelElem = null;
 	this._targetArrowElem = null;
 	this._sourceArrowElem = null;
 	this._group = "edge";
 	this._offset = 0; // Offset used for drawing multiple edges between two nodes
-	this._label = "";
+	this._label = function() {return this._id};
 	this._listeners = {};
 	
 	// Necessary values
@@ -1056,6 +1018,9 @@ var Edge = function(vis) {
 		}
 		if (this._sourceArrowElem) {
 			this._visualization._removeEdgePathElement(this._sourceArrowElem);
+		}
+		if (this._labelElem) {
+			this._visualization._removeLabelElement(this._labelElem);
 		}
 		this._source = null;
 		this._target = null;
@@ -1083,6 +1048,7 @@ var Edge = function(vis) {
 				//this._elem = this._visualization._canvas.path(this._getSvgPath()).toBack().click(Util.delegate(this, "_onClick")).attr("cursor", "pointer");
 				this._targetArrowElem = this._visualization._createEdgePathElement();
 				this._sourceArrowElem = this._visualization._createEdgePathElement();
+				this._labelElem = this._visualization._createLabelElement();
 		}
 
 
@@ -1118,6 +1084,13 @@ var Edge = function(vis) {
 
 		SvgTool.setElementAttributes(this._elem, attr);
 		
+		SvgTool.setElementAttributes(this._labelElem, {
+			"x": points[8],
+			"y": points[9],
+			"text-anchor": "middle",
+			"dominant-baseline": "middle"
+		});
+		this._labelElem.textContent = this.getLabel();
 		
 		// Arrow head attributes
 		var targetArrowPath = this._arrowShapes[this.getRenderedStyle("targetArrowShape")] || "none";
@@ -1161,6 +1134,14 @@ var Edge = function(vis) {
 		if (styles) model.styles = styles;
 		return model;
 	};
+
+	this.getLabel = function(value) {
+		if (typeof this._label == "function") {
+			return this._label();
+		} else {
+			return this._label;
+		}
+	};
 	
 
 			
@@ -1178,6 +1159,10 @@ var Edge = function(vis) {
 				var dy = b.y - a.y;
 				var length = Math.sqrt(dx * dx + dy * dy);
 				
+				// Obtain midpoint
+				var mpx = a.x + dx / 2;
+				var mpy = a.y + dy / 2;				
+				
 				// Normalize
 				dx /= length;
 				dy /= length;
@@ -1188,12 +1173,13 @@ var Edge = function(vis) {
 
 				var nbx = b.x - dx * br;
 				var nby = b.y - dy * br;
+				
 	
 				var path = [];
 				path.push(populateString("M %,% L %,%", [nax, nay, nbx, nby]));
 
 				var angle = Math.atan2(dy, dx);
-				return [nax, nay, null, null, nbx, nby, Math.atan2(-dy, -dx), Math.atan2(dy, dx)];
+				return [nax, nay, null, null, nbx, nby, Math.atan2(-dy, -dx), Math.atan2(dy, dx), mpx, mpy];
 	};
 	
 	this._getCurvedPath = function(offset) {
@@ -1247,83 +1233,17 @@ var Edge = function(vis) {
 				var bpx = b.x + bcx;
 				var bpy = b.y + bcy;
 
+				// Obtain the midpoint of the curve
+				var mdx = hdx + (pdx * offset) / 2;
+				var mdy = hdy + (pdy * offset) / 2;
+				var mpx = a.x + mdx;
+				var mpy = a.y + mdy;				
+
 				// Format of result array:
-				// [point1-x, point1-y, control-point-x, control-point-y, point2-x, point2-y, angle1, angle2]
-				return [apx, apy, cx, cy, bpx, bpy, Math.atan2(-acy, -acx), Math.atan2(-bcy, -bcx)];
+				// [point1-x, point1-y, control-point-x, control-point-y, point2-x, point2-y, angle1, angle2, midpoint-x, midpoint-y]
+				return [apx, apy, cx, cy, bpx, bpy, Math.atan2(-acy, -acx), Math.atan2(-bcy, -bcx), mpx, mpy];
 	};
-			/*
-	this._getCurvedPathCubic = function(theta) {
-				
-				var ax = this._source._x;
-				var ay = this._source._y;
-				var ar = this._source.getRenderedStyle("size");
-				
-				var bx = this._target._x;
-				var by = this._target._y;
-				var br = this._target.getRenderedStyle("size");
-				
-				// ax ay ar		Circle A
-				// bx by br		Circle B
-				// dx dy		Vector A -> B
-				// arx ary		Rotated unit vector A
-				// brx bry 		Rotated unit vector B
-				// apx apy		Curve endpoint A
-				// bpx bpy		Curve endpoint B
-				// acx acy		Curve control point A
-				// bcx bcy		Curve control point B
-				
-				// Margin
-				ar += 3;
-				br += 3;
-				
-				
-				
-				// Vector between two points
-				var dx = bx - ax;
-				var dy = by - ay;
-				
-				// Normalized
-				var length = Math.sqrt(dx * dx + dy * dy);
-				dx /= length;
-				dy /= length;
-				
-				//var curvatureFactor = 30 + Math.abs(theta);
-				var curvatureFactor = length / 10 + Math.abs(theta);
-				
-				// Rotate the vector
-				theta = Raphael.rad(theta);
-				var arx = dx * Math.cos(theta) - dy * Math.sin(theta);
-				var ary = dx * Math.sin(theta) + dy * Math.cos(theta);
-				
-				var brx = (-dx) * Math.cos(-theta) - (-dy) * Math.sin(-theta);
-				var bry = (-dx) * Math.sin(-theta) + (-dy) * Math.cos(-theta);
-				
-				var apx = ax + arx * ar;
-				var apy = ay + ary * ar;
-				var bpx = bx + brx * br;
-				var bpy = by + bry * br;
-				
-				
-				
-				//ar = br = 1;
-				var acx = ax + arx * (ar + curvatureFactor);
-				var acy = ay + ary * (ar + curvatureFactor);
-				var bcx = bx + brx * (br + curvatureFactor);
-				var bcy = by + bry * (br + curvatureFactor);
-				
-				var thetaA = Math.atan(bry, brx);
-				
-				//arrowHead(apx, apy, Math.atan2(-ary, -arx), 1.5);
-				//arrowHead(bpx, bpy, Math.atan2(-bry, -brx), 1.5);
-				
-				//paper.circle(acx, acy, 3);
-				//paper.circle(bcx, bcy, 3);
-				
-				return populateString("M %,% C %,% %,% %,%", [apx, apy, acx, acy, bcx, bcy, bpx, bpy]);
-				
-			
-			};
-	*/
+
 	
 }
 Edge.prototype = new Element();
