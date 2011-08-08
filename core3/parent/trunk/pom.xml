@@ -32,6 +32,11 @@
 		<maven-surefire-plugin.version>2.7.1</maven-surefire-plugin.version>
 		<maven-assembly-plugin.version>2.2</maven-assembly-plugin.version>
 		<maven-enforcer-plugin.version>1.0</maven-enforcer-plugin.version>
+
+		<scm.connection.root>scm:svn:http://chianti.ucsd.edu/svn/core3</scm.connection.root>
+		<scm.dev.connection.root>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3</scm.dev.connection.root>
+		<scm.url.root>http://chianti.ucsd.edu/svn/core3</scm.url.root>
+
 	</properties>
 
 	<distributionManagement>
