@@ -27,7 +27,6 @@
 		<module>splash-updater-impl</module>
 		<module>taglets</module>
 		<module>task-testing-impl</module>
-		<module>test-support</module>
 		<module>wrappers</module>
 	</modules>
 
