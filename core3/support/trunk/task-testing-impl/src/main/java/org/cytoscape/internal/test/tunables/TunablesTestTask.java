@@ -42,6 +42,7 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.ProvidesGUI;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.work.util.BoundedFloat;
 import org.cytoscape.work.util.BoundedInteger;
@@ -130,14 +131,14 @@ public class TunablesTestTask extends AbstractTask implements TunableValidator {
 
 	public void setInt(final Integer newValue) { getterSetterInt = newValue; }
 
-	public boolean tunablesAreValid(final Appendable errMsg) {
+	public ValidationState getValidationState(final Appendable errMsg) {
 		if (vt != null && vt.equals("valid"))
-			return true;
+			return ValidationState.OK;
 
 		try {
 			errMsg.append("Bad input (" + vt + "): \"valid\" expected!");
 		} finally {
-			return false;
+			return ValidationState.INVALID;
 		}
 	}
 
