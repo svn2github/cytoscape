@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 **************************************************************************************/
 
-
 #include "igraph.h"
 #include "igraphJNA.h"
 #include <iostream>
@@ -166,6 +165,73 @@ void layoutFruchterman(double x[],
 				       0, // weights 
 				       0, 
 				       0);
+  }
+
+  for(int i=0; i<vcount; i++){
+    x[i] = MATRIX(locs, i, 0);
+    y[i] = MATRIX(locs, i, 1);
+  }	
+
+  // Clean up
+  igraph_matrix_destroy(&locs);
+  igraph_vector_destroy(&weights_vector);	
+  destroy_graph();
+}
+
+void layoutFruchtermanGrid(double x[],
+			   double y[],
+			   int iter,
+			   double maxDelta,
+			   double area,
+			   double coolExp,
+			   double repulserad,
+			   bool useSeed,
+			   bool isWeighted,
+			   double weights[],
+			   double cellSize) {
+
+
+  long int vcount = igraph_vcount(&g);
+  long int ecount = igraph_ecount(&g);
+
+  igraph_matrix_t locs;
+  igraph_matrix_init(&locs, vcount, 2); 
+  for (int i = 0; i < vcount; i++){
+    MATRIX(locs, i, 0) = x[i];
+    MATRIX(locs, i, 1) = y[i];
+  }
+
+  igraph_vector_t weights_vector;
+  if (isWeighted) {
+    igraph_vector_init(&weights_vector, ecount);
+    for (int i = 0; i < ecount; i++){
+      VECTOR(weights_vector)[i] = weights[i];
+    } 
+  }
+
+  if (isWeighted) {
+    igraph_layout_grid_fruchterman_reingold(&g, 
+					    &locs, 
+					    iter, 
+					    maxDelta, 
+					    area, 
+					    coolExp, 
+					    repulserad,
+					    cellSize,
+					    useSeed, 
+					    &weights_vector);
+
+  } else {
+    igraph_layout_grid_fruchterman_reingold(&g, 
+					    &locs, 
+					    iter, 
+					    maxDelta, 
+					    area, 
+					    coolExp, 
+					    repulserad,
+					    cellSize, 
+					    useSeed, 
+					    0);   // weights
   }
 
   for(int i=0; i<vcount; i++){

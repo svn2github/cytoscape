@@ -22,16 +22,21 @@ extern "C"
 {
   // Basic functions
   void createGraph(int edgeArray[], int length, int directed);
+
   void destroy_graph();
 
   // Igraph functions
   bool isConnected();
+
   void simplify();
+
   int nodeCount();
 
   // Layouts
   void layoutCircle(double x[], double y[]);
+
   void starLayout(double x[], double y[], int centerId);
+
   void layoutFruchterman(double x[],
 			 double y[],
 			 int iter,
@@ -43,12 +48,24 @@ extern "C"
 			 bool isWeighted,
 			 double weights[]);
 
+  void layoutFruchtermanGrid(double x[],
+			     double y[],
+			     int iter,
+			     double maxDelta,
+			     double area,
+			     double coolExp,
+			     double repulserad,
+			     bool useSeed,
+			     bool isWeighted,
+			     double weights[],
+			     double cellSize);
+
+
   // Minimum spanning tree - unweighted
   int minimum_spanning_tree_unweighted(int res[]);
 
   // Minimum spanning tree - weighted
   int minimum_spanning_tree_weighted(int res[], double weights[]);
-
   
 
   //test functions

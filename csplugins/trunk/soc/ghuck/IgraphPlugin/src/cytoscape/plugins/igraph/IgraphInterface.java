@@ -64,6 +64,18 @@ public class IgraphInterface {
 						boolean useSeed,
 						boolean isWeighted,
 						double weights[]);
+    // Fruchterman - Reingold Grid Layout
+    public static native void layoutFruchtermanGrid(double x[], 
+						    double y[], 
+						    int iter, 
+						    double maxDelta, 
+						    double area, 
+						    double coolExp, 
+						    double repulserad, 
+						    boolean useSeed,
+						    boolean isWeighted,
+						    double weights[], 
+						    double cellSize);
     
     // Minimum spanning tree - unweighted
     public static native int minimum_spanning_tree_unweighted(int res[]);
