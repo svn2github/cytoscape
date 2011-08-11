@@ -2,13 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<groupId>org.cytoscape</groupId>
-		<artifactId>parent</artifactId>
-		<version>3.0.0-alpha7</version>
-		<relativePath>../parent</relativePath>
+		<artifactId>impl-parent</artifactId>
+		<version>3.0.0-alpha6-SNAPSHOT</version>
 	</parent>
 	<properties>
-		<bundle.symbolicName>org.cytoscape.cpathsquared-impl</bundle.symbolicName>
 		<bundle.namespace>org.cytoscape.cpathsquared</bundle.namespace>
+		<cytoscape.impl.version>3.0.0-alpha6-SNAPSHOT</cytoscape.impl.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
@@ -25,61 +26,55 @@
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>model-api</artifactId>
-            <version>3.0.0-alpha4</version>
+            <version>${cytoscape.api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>io-api</artifactId>
-            <version>3.0.0-alpha3</version>
+            <version>${cytoscape.api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>webservice-api</artifactId>
-            <version>3.0.0-alpha2</version>
+            <version>${cytoscape.api.version}</version>
         </dependency>
         <dependency>
         	<groupId>org.cytoscape</groupId>
         	<artifactId>viewmodel-api</artifactId>
-        	<version>3.0.0-alpha4</version>
-        	<scope>compile</scope>
+        	<version>${cytoscape.api.version}</version>
         </dependency>
         <dependency>
         	<groupId>org.cytoscape</groupId>
         	<artifactId>layout-api</artifactId>
-        	<version>3.0.0-alpha2</version>
+        	<version>${cytoscape.api.version}</version>
         </dependency>
         <dependency>
         	<groupId>org.cytoscape</groupId>
         	<artifactId>presentation-api</artifactId>
-        	<version>3.0.0-alpha4-SNAPSHOT</version>
+        	<version>${cytoscape.api.version}</version>
         </dependency>
         <dependency>
         	<groupId>org.cytoscape</groupId>
         	<artifactId>swing-util-api</artifactId>
-        	<version>3.0.0-alpha3-SNAPSHOT</version>
+        	<version>${cytoscape.api.version}</version>
         </dependency>
         <dependency>
         	<groupId>org.cytoscape</groupId>
         	<artifactId>swing-application-api</artifactId>
-        	<version>3.0.0-alpha2</version>
+        	<version>${cytoscape.api.version}</version>
         </dependency>
 
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>biopax-impl</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>${parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>vizmap-api</artifactId>
-			<version>3.0.0-alpha6-SNAPSHOT</version>
+			<version>${cytoscape.api.version}</version>
 		</dependency>
 		
-		<dependency>
-			<groupId>cytoscape-temp</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
-		</dependency>
 
         <dependency>
             <groupId>org.jdom</groupId>
@@ -106,6 +101,11 @@
             <artifactId>mockito-all</artifactId>
             <version>1.8.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+        	<groupId>org.springframework</groupId>
+        	<artifactId>org.springframework.web</artifactId>
+        	<version>${spring.version}</version>
         </dependency>
 	</dependencies>
 	
@@ -173,15 +173,10 @@
 			    </executions>
 			</plugin>
 			<plugin>
-				<groupId>org.ops4j</groupId>
-				<artifactId>maven-pax-plugin</artifactId>
-				<version>${maven-pax-plugin.version}</version>
-				<extensions>true</extensions>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<version>${maven-bundle-plugin.version}</version>
+				<extensions>true</extensions>
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
@@ -189,7 +184,7 @@
 						<_include>-osgi.bnd</_include>
 					</instructions>
 				</configuration>
-			</plugin>
+			</plugin>			
 		</plugins>
 	</build>
 </project>

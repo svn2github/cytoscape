@@ -17,7 +17,6 @@ import javax.swing.SwingUtilities;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
-import org.biopax.paxtools.model.level2.physicalEntity;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.cytoscape.biopax.BioPaxContainer;
 import org.cytoscape.biopax.MapBioPaxToCytoscape;
@@ -55,7 +54,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Controller for Executing a Get Record(s) by CPath ID(s) command.
  * 
- * @author Ethan Cerami.
+ * @author Ethan Cerami, Jason Montojo, Igor Rodchenkov.
  */
 public class ExecuteGetRecordByCPathId extends AbstractTask {
 	private CPathWebService webApi;
@@ -246,7 +245,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 			TaskFactory tf = layoutManager.getDefaultLayout();
 			TaskIterator ti = tf.getTaskIterator();
 			Task task = ti.next();
-			insertTasksAfterCurrentTask(task);
+			insertTasksAfterCurrentTask(new Task[] {task});
 
 		} catch (IOException e) {
 			throw new Exception("Failed to retrieve records.", e);
@@ -499,7 +498,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 				// Namespace ns =
 				// Namespace.getNamespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 				// for (int j=0; j<peList.size(); j++) {
-				for (BioPAXElement pe : BioPaxUtil.getObjects(model, physicalEntity.class, PhysicalEntity.class)) {
+				for (BioPAXElement pe : model.getObjects(PhysicalEntity.class)) {
 					// Element element = (Element) peList.get(j);
 					// String id = element.getAttributeValue("ID", ns);
 					String id = BioPaxUtil.getLocalPartRdfId(pe);
@@ -546,51 +545,15 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 		return masterList;
 	}
 
-	// private CyNetworkView createNetworkView (CyNetwork network, String title,
-	// CyLayoutAlgorithm
-	// layout, VisualStyle vs) {
-	//
-	// if (viewManager.viewExists((network.getSUID()))) {
-	// return Cytoscape.getNetworkView(network.getIdentifier());
-	// }
-	//
-	// final DingNetworkView view = new DingNetworkView(network, title);
-	// view.setGraphLOD(new CyGraphLOD());
-	// view.setIdentifier(network.getIdentifier());
-	// view.setTitle(network.getTitle());
-	// Cytoscape.getNetworkViewMap().put(network.getIdentifier(), view);
-	// Cytoscape.setSelectionMode(Cytoscape.getSelectionMode(), view);
-	//
-	// VisualMappingManager VMM = Cytoscape.getVisualMappingManager();
-	// if (vs != null) {
-	// view.setVisualStyle(vs.getName());
-	// VMM.setVisualStyle(vs);
-	// VMM.setNetworkView(view);
-	// }
-	//
-	// if (layout == null) {
-	// layout = CyLayouts.getDefaultLayout();
-	// }
-	//
-	// Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED,
-	// null, view);
-	// layout.doLayout(view);
-	// view.fitContent();
-	// view.redrawGraph(false, true);
-	// return view;
-	// }
 }
 
 class NullTaskMonitor implements TaskMonitor {
-	@Override
 	public void setProgress(double arg0) {
 	}
 
-	@Override
 	public void setStatusMessage(String arg0) {
 	}
 
-	@Override
 	public void setTitle(String arg0) {
 	}
 }
