@@ -16,7 +16,6 @@
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.cytoscape.wrappers</groupId>
 	<artifactId>org.swinglabs.swingx</artifactId>
 	<version>${wrapped.version}</version>
 

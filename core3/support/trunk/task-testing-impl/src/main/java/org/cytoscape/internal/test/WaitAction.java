@@ -37,7 +37,7 @@ package org.cytoscape.internal.test;
 
 import java.awt.event.ActionEvent;
 
-import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.work.*;
 

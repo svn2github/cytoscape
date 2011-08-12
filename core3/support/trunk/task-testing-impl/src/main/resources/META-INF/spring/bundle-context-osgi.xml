@@ -8,7 +8,7 @@
 	<!-- Import OSGi services -->
 
 	<osgi:reference id="cyApplicationManagerServiceRef"
-		interface="org.cytoscape.session.CyApplicationManager" />
+		interface="org.cytoscape.application.CyApplicationManager" />
 
 	<osgi:reference id="taskManagerServiceRef" 
 		interface="org.cytoscape.work.TaskManager" />
