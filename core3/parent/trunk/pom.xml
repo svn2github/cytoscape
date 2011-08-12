@@ -78,7 +78,7 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${maven-javadoc-plugin.version}</version>
 				<configuration>
-					<skip>true</skip>
+					<skip>false</skip>
 					<encoding>UTF-8</encoding>
 					<locale>en</locale>
 					<javadocVersion>1.6</javadocVersion>
@@ -97,7 +97,6 @@
 						</tagletArtifact>
 					</tagletArtifacts>
 				</configuration>
-
 			</plugin>
 			<plugin>
 				<inherited>true</inherited>
