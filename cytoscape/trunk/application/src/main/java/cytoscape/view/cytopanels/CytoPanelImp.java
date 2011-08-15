@@ -567,6 +567,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	public void setSelectedIndex(int index) {
 		// set selected index
 		tabbedPane.setSelectedIndex(index);
+		resizeSelectedComponent();
 
 		// do not have to sent out notification - the tabbedPane will let us know.
 	}
@@ -646,6 +647,9 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * to determine when new tab has been selected
 	 */
 	public void stateChanged(ChangeEvent e) {
+		// Handle the resize
+		resizeSelectedComponent();
+
 		// let our listeners know
 		notifyListeners(NOTIFICATION_COMPONENT_SELECTED);
 	}
@@ -981,33 +985,6 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 					break;
 
 				case NOTIFICATION_COMPONENT_SELECTED:
-
-					/* 
-					 * Set default resize behavior based on the currently
-					 * selected panel's preferredSize setting
-					 * 
-					 */
-					Component panel = tabbedPane.getSelectedComponent();
-					// Make sure we're not being notified that we've deleted
-					// the last panel
-					if (panel != null && cytoPanelContainer instanceof JSplitPane) {
-						int width = panel.getPreferredSize().width;
-						JSplitPane jsp = (JSplitPane)cytoPanelContainer;
-
-						if (compassDirection == SwingConstants.WEST) {
-							if (width > WEST_MAX_WIDTH)
-								width = WEST_MAX_WIDTH;
-							jsp.setDividerLocation(width+jsp.getInsets().left);
-						} else if (compassDirection == SwingConstants.EAST) {
-							if (width > EAST_MAX_WIDTH)
-								width = EAST_MAX_WIDTH;
-							jsp.setDividerLocation(jsp.getSize().width
-							                       -jsp.getInsets().right
-							                       -jsp.getDividerSize()
-							                       -width);
-						}
-						// TODO: What's the right thing to do with SOUTH?
-					}
 				
 					int selectedIndex = tabbedPane.getSelectedIndex();
 					cytoPanelListener.onComponentSelected(selectedIndex);
@@ -1024,6 +1001,42 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 					break;
 			}
+		}
+	}
+
+	/**
+ 	 * Size the divider to the currently selected panel's preferredSize
+ 	 */
+	private void resizeSelectedComponent() {
+		/* 
+		 * Set default resize behavior based on the currently
+		 * selected panel's preferredSize setting
+		 * 
+		 */
+		Component panel = tabbedPane.getSelectedComponent();
+		// Make sure we're not being notified that we've deleted
+		// the last panel
+		if (panel != null && cytoPanelContainer instanceof JSplitPane) {
+			int width = panel.getPreferredSize().width;
+			JSplitPane jsp = (JSplitPane)cytoPanelContainer;
+				if (compassDirection == SwingConstants.WEST) {
+				if (width > WEST_MAX_WIDTH)
+					width = WEST_MAX_WIDTH;
+				else if (width < WEST_MIN_WIDTH)
+					width = WEST_MIN_WIDTH;
+				jsp.setDividerLocation(width+jsp.getInsets().left+jsp.getInsets().right+5);
+			} else if (compassDirection == SwingConstants.EAST) {
+				if (width > EAST_MAX_WIDTH)
+					width = EAST_MAX_WIDTH;
+				else if (width < EAST_MIN_WIDTH)
+					width = EAST_MIN_WIDTH;
+				jsp.setDividerLocation(jsp.getSize().width
+				                       -jsp.getInsets().right
+				                       -jsp.getInsets().left
+				                       -jsp.getDividerSize()
+				                       -width-5);
+			}
+			// TODO: What's the right thing to do with SOUTH?
 		}
 	}
 

@@ -328,8 +328,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// Calculate panel sizes based on current window size.
 		calculateProperPanelSize();
 		
-		// Set the width of Cytopanel West
-		masterPane.setDividerLocation(defaultControlPanelWidth);
+		/* Set the width of Cytopanel West
+		 * ...now handled in CytoPanelImpl
+		 * masterPane.setDividerLocation(defaultControlPanelWidth);
+		*/
 		rightPane.setDividerLocation(getSize().height - defaultDataPanelHeight);
 		masterPane.setDividerSize(DEVIDER_SIZE);
 		
@@ -749,6 +751,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		
 		// set the cytopanel container
 		cytoPanelWest.setCytoPanelContainer(splitPane);
+
+		// We want to make sure that the networkPanel is selected (and resized)
+		int index = cytoPanelWest.indexOfComponent(networkPanel);
+		cytoPanelWest.setSelectedIndex(index);
 
 		// outta here
 		return splitPane;
