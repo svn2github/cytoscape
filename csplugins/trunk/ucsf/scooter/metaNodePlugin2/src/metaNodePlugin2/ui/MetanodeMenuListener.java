@@ -81,6 +81,8 @@ public class MetanodeMenuListener implements MenuListener {
 		this.overNode = nv;
 		if (nv != null)
 			this.contextNode = (CyNode)overNode.getNode();
+		else
+			this.contextNode = null;
 
 		this.groupViewer = groupViewer;
 		this.logger = logger;
@@ -115,7 +117,7 @@ public class MetanodeMenuListener implements MenuListener {
 		// Add our menu items
 		{
 		  JMenuItem item = new JMenuItem("Create new metanode");
-			MetanodeCommandListener l = new MetanodeCommandListener(Command.NEW, null,null,groupViewer);
+			MetanodeCommandListener l = new MetanodeCommandListener(Command.NEW, null, null, groupViewer);
 			item.addActionListener(l);
 			if (currentNodes.size() > 0) {
 				item.setEnabled(true);
@@ -138,9 +140,19 @@ public class MetanodeMenuListener implements MenuListener {
 		}
 		m.add(new JSeparator());
 		{
-		  JMenuItem item = new JMenuItem("Metanode Settings...");
-			MetanodeCommandListener l = new MetanodeCommandListener(Command.SETTINGS, null,null,groupViewer);
-			item.addActionListener(l);
+		  JMenuItem item = null;
+			if (contextNode != null && MetaNodeManager.getMetaNode(contextNode) == null) {
+		  	item = new JMenuItem("Metanode Settings...");
+				item.setEnabled(false);
+			} else {
+				if (contextNode == null) {
+		  		item = new JMenuItem("Metanode Settings...");
+				} else {
+		  		item = new JMenuItem("Metanode Settings for "+contextNode+"...");
+				}
+				MetanodeCommandListener l = new MetanodeCommandListener(Command.SETTINGS, null, contextNode, groupViewer);
+				item.addActionListener(l);
+			}
 			m.add(item);
 		}
 	}

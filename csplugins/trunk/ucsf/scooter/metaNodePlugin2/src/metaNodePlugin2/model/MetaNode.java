@@ -372,6 +372,16 @@ public class MetaNode {
 	}
 
 	/**
+	 * gets whether or not we create a nested network when we
+	 * collapse the metanode
+	 *
+	 * @return nestedNetwork if 'true' we will use nested networks
+	 */
+	public boolean getUseNestedNetworks() {
+		return this.useNestedNetworks;
+	}
+
+	/**
 	 * Sets whether or not we should expand empty metanodes.
 	 *
 	 * @param dontExpandEmpty if 'true' we will use nested networks
@@ -381,12 +391,30 @@ public class MetaNode {
 	}
 
 	/**
+	 * Gets whether or not we should expand empty metanodes.
+	 *
+	 * @return dontExpandEmpty if 'true' we will use nested networks
+	 */
+	public boolean getDontExpandEmpty() {
+		return this.dontExpandEmpty;
+	}
+
+	/**
 	 * Sets the metanode opacity
 	 *
 	 * @param opacity the metanode opacity
 	 */
 	public void setMetaNodeOpacity(double opacity) {
 		this.metanodeOpacity = opacity;
+	}
+
+	/**
+	 * Gets the metanode opacity
+	 *
+	 * @return opacity the metanode opacity
+	 */
+	public double getMetaNodeOpacity() {
+		return this.metanodeOpacity;
 	}
 
 	/**
@@ -436,6 +464,16 @@ public class MetaNode {
 	}
 
 	/**
+	 * Returns 'true' if we hide the metnode when we expand the
+	 * network.
+	 *
+	 * @return 'true' if we hide the metanode upon expansion
+	 */
+	public boolean getHideMetaNode() {
+		return this.hideMetanode;
+	}
+
+	/**
 	 * Set the attribute manager (for attribute aggregation) that
 	 * we're supposed to use.
 	 *
@@ -453,16 +491,6 @@ public class MetaNode {
 	 */
 	public AttributeManager getAttributeManager() {
 		return attributeManager;
-	}
-
-	/**
-	 * Returns 'true' if we hide the metnode when we expand the
-	 * network.
-	 *
-	 * @return 'true' if we hide the metanode upon expansion
-	 */
-	public boolean getHideMetaNode() {
-		return this.hideMetanode;
 	}
 
 	/**

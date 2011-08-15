@@ -279,7 +279,7 @@ public class ViewUtils {
 		if (nView != null) {
 			final Color oldPaint = (Color) nView.getUnselectedPaint();
 			Integer tp = oldPaint.getAlpha();
-			Integer newTp = new Integer((int)opacity);
+			Integer newTp = new Integer((int)(opacity*255/100));
 			if (tp != newTp) {
 				nView.setUnselectedPaint(new Color(oldPaint.getRed(), oldPaint.getGreen(),
 				                                   oldPaint.getBlue(), newTp));

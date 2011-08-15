@@ -177,6 +177,10 @@ public class AttributeManager {
 		
 		// Update our list of overrides in the network attributes
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+
+		// Make sure we have a network to work with
+		if (network == null)
+			network = Cytoscape.getCurrentNetwork();
 		if (networkAttributes.hasAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE)) {
 			Map<String,String> attrMap = (Map<String,String>)networkAttributes.getMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE);
 			attrMap.put(attribute, handlerType.toString());
@@ -275,6 +279,11 @@ public class AttributeManager {
 	public void setDefault(byte attributeType, AttributeHandlingType type) {
 		if (attributeType < 0) attributeType += 10;
 		defaultHandling[attributeType] = type;
+	}
+
+	public AttributeHandlingType getDefault(byte attributeType) {
+		if (attributeType < 0) attributeType += 10;
+		return defaultHandling[attributeType];
 	}
 
 	public AttributeHandler getDefaultHandler(byte attributeType, String attribute) {

@@ -58,7 +58,7 @@ public class MetaNodeManager {
 	// Static variables
 	private static Map<CyNode,MetaNode> metaMap = new HashMap<CyNode, MetaNode>();
 	protected static boolean hideMetanodeDefault = true;
-	protected static double metanodeOpacityDefault = 255.;
+	protected static double metanodeOpacityDefault = 100.0;
 	protected static boolean useNestedNetworksDefault = false;
 	protected static boolean dontExpandEmptyDefault = true;
 	protected static String chartTypeDefault = null;
@@ -82,7 +82,23 @@ public class MetaNodeManager {
 	 * @return the associated MetaNode or null of there is none
 	 */
 	static public MetaNode getMetaNode(CyGroup metaGroup) {
+		if (metaGroup == null) return null;
 		CyNode groupNode = metaGroup.getGroupNode();
+		if (metaMap.containsKey(groupNode))
+			return (MetaNode)metaMap.get(groupNode);
+		return null;
+	}
+
+	/**
+	 * Return the MetaNode associated with this group node
+	 *
+	 * @param groupNode the CyNode to use to search for the 
+	 * associated MetaNode.
+	 * @return the associated MetaNode or null of there is none
+	 */
+	static public MetaNode getMetaNode(CyNode groupNode) {
+		if (groupNode == null)
+			return null;
 		if (metaMap.containsKey(groupNode))
 			return (MetaNode)metaMap.get(groupNode);
 		return null;
@@ -107,6 +123,8 @@ public class MetaNodeManager {
  	 */
 
 	static public MetaNode createMetaNode(CyGroup metaGroup, boolean ignoreMetaEdges) {
+		if (metaGroup == null) return null;
+
 		if (metaGroup.getNetwork() == null) {
 			metaGroup.setNetwork(Cytoscape.getCurrentNetwork(), false);
 		}
@@ -121,19 +139,6 @@ public class MetaNodeManager {
 		mn.setNodeChartAttribute(nodeChartAttributeDefault);
 		mn.setAttributeManager(new AttributeManager(defaultAttributeManager));
 		return mn;
-	}
-
-	/**
-	 * Return the MetaNode associated with this group node
-	 *
-	 * @param groupNode the CyNode to use to search for the 
-	 * associated MetaNode.
-	 * @return the associated MetaNode or null of there is none
-	 */
-	static public MetaNode getMetaNode(CyNode groupNode) {
-		if (metaMap.containsKey(groupNode))
-			return (MetaNode)metaMap.get(groupNode);
-		return null;
 	}
 
 	/**
@@ -250,6 +255,15 @@ public class MetaNodeManager {
 	}
 
 	/**
+	 * Gets the opacity of a metanode if we don't hide on expansion.
+	 *
+	 * @return opacity the opacity (between 0 and 100)
+	 */
+	static public double getExpandedOpacityDefault() {
+		return metanodeOpacityDefault;
+	}
+
+	/**
 	 * Returns 'true' if we hide the metnode when we expand the
 	 * network.
 	 *
@@ -339,5 +353,14 @@ public class MetaNodeManager {
 	 */
 	static public AttributeManager getDefaultAttributeManager () {
 		return MetaNodeManager.defaultAttributeManager;
+	}
+
+	/**
+	 * Sets the default attribute manager
+	 *
+	 * @param newDefault the default attribute manager object
+	 */
+	static public void setDefaultAttributeManager (AttributeManager newDefault) {
+		MetaNodeManager.defaultAttributeManager = newDefault;
 	}
 }

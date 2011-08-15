@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import cytoscape.CyNetwork;
@@ -49,6 +50,7 @@ import cytoscape.groups.CyGroupManager;
 
 import metaNodePlugin2.model.MetaNode;
 import metaNodePlugin2.model.MetaNodeManager;
+import metaNodePlugin2.ui.MetanodeSettingsDialog;
 import metaNodePlugin2.view.ViewUtils;
 import metaNodePlugin2.MetaNodeGroupViewer;
 import metaNodePlugin2.MetaNodePlugin2;
@@ -103,8 +105,14 @@ public class MetanodeCommandListener implements ActionListener {
 		} else if (command == Command.COLLAPSEALL) {
 			collapseAll();
 		} else if (command == Command.SETTINGS) {
-			// Bring up the settings dialog
-			groupViewer.getSettingsDialog().setVisible(true);
+			if (node == null) {
+				// Bring up the settings dialog
+				groupViewer.getSettingsDialog().setVisible(true);
+			} else {
+				// Create a new settings dialog
+				JDialog dialog = new MetanodeSettingsDialog(groupViewer, node);
+				dialog.setVisible(true);
+			}
 		}
 	}
 
