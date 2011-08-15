@@ -54,7 +54,6 @@ public class DistanceMatrix {
 			edges = network.getConnectingEdges(nodes);
 		}
 
-		// double[][] graph = new double[this.nodes.size()][this.nodes.size()];
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 
 		edgeWeights = new double[edges.size()];
@@ -176,6 +175,7 @@ public class DistanceMatrix {
 		return getDistanceMatrix();
 	}
 
+	// TODO: relax symmetrical constraint?
 	public DoubleMatrix2D getDistanceMatrix() {
 		if (matrix != null)
 			return matrix;

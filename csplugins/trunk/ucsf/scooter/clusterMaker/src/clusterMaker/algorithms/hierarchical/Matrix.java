@@ -52,6 +52,7 @@ public class Matrix {
 	private int nRows;
 	private int nColumns;
 	private Double matrix[][];
+	// private DoubleMatrix2D matrix = null;
 	private double colWeights[];
 	private double rowWeights[];
 	private double maxAttribute;
@@ -326,6 +327,8 @@ public class Matrix {
 		for (int row = 0; row < nRows; row++) {
 			System.out.print(rowLabels[row]+"\t");
 			for (int col = 0; col < nColumns; col++) {
+				// Double val = matrix.get(row, column);
+				// if (val != null)
 				if (matrix[row][col] != null)
 					System.out.print(matrix[row][col]+"\t");
 				else
@@ -370,6 +373,7 @@ public class Matrix {
 		}
 	}
 
+	// XXX Isn't this the same as clusterMaker.algorithms.DistanceMatrix?
 	private void buildSymmetricalMatrix(CyNetwork network, String weight, 
 	                                    boolean ignoreMissing, boolean selectedOnly) {
 
@@ -383,6 +387,7 @@ public class Matrix {
 		this.nRows = nodeList.size();
 		this.nColumns = this.nRows;
 		this.matrix = new Double[nRows][nColumns];
+		// this.matrix = DoubleFactory2D.sparse.make(nRows,nColumns);
 		this.rowLabels = new String[nRows];
 		this.columnLabels = new String[nColumns];
 		this.rowNodes = new CyNode[nRows];
@@ -420,14 +425,15 @@ public class Matrix {
 				if (val != null) {
 					found = true;
 					maxAttribute = Math.max(maxAttribute, val);
-				}
-
-				if (edge.getSource() == node) {
-					column = nodeList.indexOf(edge.getTarget());
-					matrix[index][column] = val;
-				} else {
-					column = nodeList.indexOf(edge.getSource());
-					matrix[index][column] = val;
+					if (edge.getSource() == node) {
+						column = nodeList.indexOf(edge.getTarget());
+						matrix[index][column] = val;
+						//matrix.set(index,column,val);
+					} else {
+						column = nodeList.indexOf(edge.getSource());
+						matrix[index][column] = val;
+						// matrix.set(index,column,val);
+					}
 				}
 			}
 			if ((!ignoreMissing || found) && (!selectedOnly || hasSelectedEdge))
@@ -442,19 +448,20 @@ public class Matrix {
 		}
 	}
 
+	// XXX Do we need a new constructor to clusterMaker.algorithms.DistanceMatrix?
 	private void buildGeneArrayMatrix(CyNetwork network, String[] weightAttributes, 
 	                                  boolean transpose, boolean ignoreMissing,
 	                                  boolean selectedOnly) {
 		// Get the list of nodes
 		List<CyNode>nodeList = network.nodesList();
 
-		if (selectedOnly) nodeList = new ArrayList(network.getSelectedNodes());
+		if (selectedOnly) nodeList = new ArrayList<CyNode>(network.getSelectedNodes());
 
 		// For debugging purposes, sort the node list by identifier
 		nodeList = sortNodeList(nodeList);
 
 		// Make a map of the conditions, indexed by CyNode
-		HashMap<CyNode,HashMap<String,Double>>nodeCondMap = new HashMap();
+		HashMap<CyNode,HashMap<String,Double>>nodeCondMap = new HashMap<CyNode,HashMap<String,Double>>();
 
 		// Make a map of the conditions, by name
 		List<String>condList = Arrays.asList(weightAttributes);
@@ -465,7 +472,7 @@ public class Matrix {
 		// Iterate over all of our nodes, getting the conditions attributes
 		for (CyNode node: nodeList) {
 			// Create the map for this node
-			HashMap<String,Double>thisCondMap = new HashMap();
+			HashMap<String,Double>thisCondMap = new HashMap<String,Double>();
 
 			for (int attrIndex = 0; attrIndex < weightAttributes.length; attrIndex++) {
 				String attr = weightAttributes[attrIndex];
@@ -495,6 +502,7 @@ public class Matrix {
 			this.nRows = condList.size();
 			this.nColumns = nodeCondMap.size();
 			this.matrix = new Double[nRows][nColumns];
+			// this.matrix = DoubleFactory2D.sparse.make(nRows,nColumns);
 			this.rowLabels = new String[nRows];
 			this.columnLabels = new String[nColumns];
 			this.columnNodes = new CyNode[nColumns];
@@ -512,6 +520,7 @@ public class Matrix {
 					String rowLabel = this.rowLabels[row];
 					if (thisCondMap.containsKey(rowLabel)) {
 						matrix[row][column] = thisCondMap.get(rowLabel);
+						// matrix.set(row,column,thisCondMap.get(rowLabel));
 					}
 				}
 				column++;
@@ -523,6 +532,7 @@ public class Matrix {
 			this.rowNodes = new CyNode[nRows];
 			this.columnLabels = new String[nColumns];
 			this.matrix = new Double[nRows][nColumns];
+			// this.matrix = DoubleFactory2D.sparse.make(nRows,nColumns);
 			assignColumnLabels(condList);
 
 			int row = 0;
@@ -537,6 +547,7 @@ public class Matrix {
 					if (thisCondMap.containsKey(columnLabel)) {
 						// System.out.println("Setting matrix["+rowLabels[row]+"]["+columnLabel+"] to "+thisCondMap.get(columnLabel));
 						matrix[row][column] = thisCondMap.get(columnLabel);
+						// matrix.set(row,column,thisCondMap.get(columnLabel));
 					}
 				}
 				row++;
@@ -560,7 +571,7 @@ public class Matrix {
 
 	// sortNodeList does an alphabetical sort on the names of the nodes.
 	private List<CyNode>sortNodeList(List<CyNode>nodeList) {
-		HashMap<String,CyNode>nodeMap = new HashMap();
+		HashMap<String,CyNode>nodeMap = new HashMap<String, CyNode>();
 		// First build a string array
 		String nodeNames[] = new String[nodeList.size()];
 		int index = 0;
@@ -571,7 +582,7 @@ public class Matrix {
 		// Sort it
 		Arrays.sort(nodeNames);
 		// Build the node list again
-		ArrayList<CyNode>newList = new ArrayList(nodeList.size());
+		ArrayList<CyNode>newList = new ArrayList<CyNode>(nodeList.size());
 		for (index = 0; index < nodeNames.length; index++) {
 			newList.add(nodeMap.get(nodeNames[index]));
 		}

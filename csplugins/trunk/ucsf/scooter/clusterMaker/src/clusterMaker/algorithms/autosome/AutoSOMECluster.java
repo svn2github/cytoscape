@@ -168,6 +168,22 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		/**
 		 * Tuning values
 		 */
+		//data input tunables
+		clusterProperties.add(new Tunable("tunables_panel3",
+						  "Data Input",
+						  Tunable.GROUP, new Integer(3)));
+		attributeArray = getAllAttributes();
+		clusterProperties.add(new Tunable("attributeList",
+						  "Array Sources (Node Attributes)",
+						  Tunable.LIST, "",
+						  (Object)attributeArray, (Object)null, Tunable.MULTISELECT));
+
+		clusterProperties.add(new Tunable("selectedOnly", "Only use selected nodes for clustering",
+						  Tunable.BOOLEAN, new Boolean(false)));
+
+		clusterProperties.add(new Tunable("ignoreMissing", "Ignore nodes/edges with no data",
+						  Tunable.BOOLEAN, new Boolean(true)));
+
 		clusterProperties.add(new Tunable("tunables_panel",
 						  "AutoSOME Basic Tuning",
 						  Tunable.GROUP, new Integer(4)));
@@ -196,8 +212,6 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 						  "Number of Threads (No. CPUs)",
 						  Tunable.INTEGER, new Integer(Runtime.getRuntime().availableProcessors()),
 						  new Integer(1), (Object)null, 0));
-
-
 
 		//normalization tunables
 		clusterProperties.add(new Tunable("tunables_panel2",
@@ -238,8 +252,9 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		clusterProperties.add(new Tunable("fuzzyclustering", "Fuzzy Cluster Network Settings",
 						  Tunable.GROUP, new Integer(4),
 						  new Boolean(false), null, Tunable.COLLAPSABLE));
+
 		Tunable fcn = new Tunable("enableFCN", "Perform Fuzzy Clustering",
-						  Tunable.BOOLEAN, new Boolean(false));
+						  Tunable.BOOLEAN, new Boolean(true));
 		fcn.addTunableValueListener(this);
 		clusterProperties.add(fcn);
 
@@ -267,9 +282,9 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 	       clusterProperties.add(mxedges);
 
 		//advanced settings
-		clusterProperties.add(new Tunable("advancedAut", "Additional Settings",
-						  Tunable.GROUP, new Integer(1),
-						  new Boolean(true), null, Tunable.COLLAPSABLE));
+		// clusterProperties.add(new Tunable("advancedAut", "Additional Settings",
+		// 				  Tunable.GROUP, new Integer(1),
+		// 				  new Boolean(false), null, Tunable.COLLAPSABLE));
 
 		
 		/*
@@ -280,27 +295,11 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		*/
 
 
-		//data input tunables
-		clusterProperties.add(new Tunable("tunables_panel3",
-						  "Data Input",
-						  Tunable.GROUP, new Integer(3)));
-		attributeArray = getAllAttributes();
-		clusterProperties.add(new Tunable("attributeList",
-						  "Array Sources (Node Attributes)",
-						  Tunable.LIST, "",
-						  (Object)attributeArray, (Object)null, Tunable.MULTISELECT));
-
-		clusterProperties.add(new Tunable("selectedOnly", "Only use selected nodes for clustering",
-						  Tunable.BOOLEAN, new Boolean(false)));
-
-		clusterProperties.add(new Tunable("ignoreMissing", "Ignore nodes/edges with no data",
-						  Tunable.BOOLEAN, new Boolean(true)));
-
 	      
-	       //output tunables
-	       clusterProperties.add(new Tunable("tunables_panel4",
-						  "Data Output",
-						  Tunable.GROUP, new Integer(2)));
+	  //output tunables
+	  clusterProperties.add(new Tunable("tunables_panel4",
+	                                    "Data Output",
+	                                    Tunable.GROUP, new Integer(2)));
 
 		Tunable data_output = new Tunable("cluster_output",
 						  "Choose Visualization",
