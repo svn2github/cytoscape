@@ -101,7 +101,7 @@ public class NamedSelection extends CytoscapePlugin
 		try {
 			// Listen for network and session load events
 			Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_LOADED, this);
-			Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.SESSION_LOADED, this);
+			// Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.SESSION_LOADED, this);
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 				.addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this );
 
@@ -154,8 +154,11 @@ public class NamedSelection extends CytoscapePlugin
 			CyNetworkView netView = Cytoscape.getNetworkView(network.getIdentifier());
 			if (!netView.equals(Cytoscape.getNullNetworkView())) {
 				netView.addGraphViewChangeListener(groupPanel.getTree());
+				netView.removeNodeContextMenuListener(this);
 				netView.addNodeContextMenuListener(this);
+				System.out.println("NETWORK_LOADED: "+network.getTitle());
 			}
+/*
 		} else if (e.getPropertyName() == Cytoscape.SESSION_LOADED &&
 		           e.getNewValue() != null) {
 			List<String> netList = (List<String>) e.getNewValue();
@@ -164,11 +167,16 @@ public class NamedSelection extends CytoscapePlugin
 				CyNetworkView netView = Cytoscape.getNetworkView(net.getIdentifier());
 				if (!netView.equals(Cytoscape.getNullNetworkView())) {
 					netView.addGraphViewChangeListener(groupPanel.getTree());
+					netView.removeNodeContextMenuListener(this);
 					netView.addNodeContextMenuListener(this);
+					System.out.println("SESSION_LOADED: "+network);
 				}
 			}
+*/
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+			System.out.println("NETWORK_VIEW_CREATED: "+((CyNetworkView)e.getNewValue()).getNetwork().getTitle());
 			// Add menu to the context dialog
+			((CyNetworkView)e.getNewValue()).removeNodeContextMenuListener(this);
 			((CyNetworkView)e.getNewValue()).addNodeContextMenuListener(this);
 		}
 
