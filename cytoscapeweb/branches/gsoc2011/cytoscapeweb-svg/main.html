@@ -463,8 +463,9 @@
 			
 			// Load a graph
 			var ps; // arbor.ParticleSystem
-			var sr; // springyrenderer
+
 			function load(graph) {
+				vis._clearSimulation();
 				vis.loadGraph(graphs[graph]);
 				vis._startSimulating();
 
@@ -486,6 +487,7 @@
 			<p>By Marek Zaluski for GSoC 2011</p>
 			<button onclick="vis.changeZoom(10);">+</button><button onclick="vis.changeZoom(-10)">-</button>
 			<div id="container-div"></div>
+			
 			Load graph:
 			<select onchange="load(this.options[selectedIndex].value)">
 				<option selected value="simpleGraph">Simple graph</option>
@@ -493,6 +495,7 @@
 				<option value="ringGraph">Style demo</option>
 				<option value="pg">Large graph</option>
 			</select>
+			
 			Load style:
 			<select onchange="setstyle(this.options[selectedIndex].value)">
 				<option selected value="basicStyle">Basic Style</option>

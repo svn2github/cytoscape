@@ -157,6 +157,14 @@ function Visualization(container, height, width) {
 	this._particleSystem = null;
 	this._autoStoppedSimulating = false;
 	
+	this._clearSimulation = function() {
+		this._simulating = false;
+		if (this._particleSystem) {
+			this._particleSystem.stop();
+			this._particleSystem = null;
+		}
+	};
+	
 	this._startSimulating = function(repulsion, stiffness, friction) {
 		this._simulating = true;
 		if (!this._particleSystem) {
