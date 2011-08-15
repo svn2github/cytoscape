@@ -10,9 +10,7 @@
 				margin: 30px auto;
 			}
 		</style>
-		<script type="text/javascript" src="springy.js"></script>
 		<script type="text/javascript" src="cytoscapeweb-svg.js"></script>
-		<script type="text/javascript" src="xxx-jquery-1.6.2.js"></script>
 		<script type="text/javascript" src="hermetic.js"></script>
 		<script type="text/javascript" src="arbor.js"></script>
 		
@@ -459,8 +457,7 @@
 			var vis;
 			window.onload = function() {
 				vis = new Visualization("container-div", 640, 640);
-				sr = new SpringyRenderer();
-				load("simpleGraph");
+				load("petersenGraph");
 				setstyle("basicStyle");
 			}
 			
@@ -469,46 +466,16 @@
 			var sr; // springyrenderer
 			function load(graph) {
 				vis.loadGraph(graphs[graph]);
-				
-				if (ps) {
-					ps.renderer.die();
-					ps.stop();
-					ps = null;
-				}
-				ps = arbor.ParticleSystem(800, 600, 0.5);
-				ps.parameters({gravity: true});
-				ps.renderer = new ArborRenderer(vis);
-				
-				var nodes = vis.getNodes();
-				for (var i = 0; i < nodes.length; i++) {
-					ps.addNode(nodes[i]._id); 
-				}
-				
-				var edges = vis.getEdges();
-				
-				for (var i = 0; i < edges.length; i++) {
-					
-					ps.addEdge(edges[i]._source._id,
-					 edges[i]._target._id); 
-				}
-				
-				//sr.render(vis);
-				/*
-				var clickEvent = function() {
-					alert("Clicked node '" + this._id + "' at " + this._x + ", " + this._y);
-				}
-				
-				for (var i = 0; i < nodes.length; i++) {
-					nodes[i].addListener("click", clickEvent);
-				}
-				*/
-				vis.draw();
+				vis._startSimulating();
+
 			}
 			
 			function setstyle(style) {
 				vis.loadStyles(styles[style]);
 				vis.draw();
 			}
+			
+
 
 
 		</script>
@@ -517,6 +484,7 @@
 		<div id="page">
 			<h1>Cytoscape Web &mdash; SVG</h1>
 			<p>By Marek Zaluski for GSoC 2011</p>
+			<button onclick="vis.changeZoom(10);">+</button><button onclick="vis.changeZoom(-10)">-</button>
 			<div id="container-div"></div>
 			Load graph:
 			<select onchange="load(this.options[selectedIndex].value)">

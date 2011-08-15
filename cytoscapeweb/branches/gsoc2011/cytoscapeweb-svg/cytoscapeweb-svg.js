@@ -5,13 +5,6 @@
  * Google Summer of Code 2011
  */
 
-/* TODO
- * - [done] Move SVG DOM functions into a separate class
- * - Move create*Element methods into the objects that use them
- * - [done] Switch some hand-built paths to generic ones with SVG transforms applied
- * - Fix stroke-dasharray style attribute
- */
-
 var SvgTool = {
 	createSvgElement: function(tag, parent, attributes) {
 		attributes = attributes || {};
@@ -31,6 +24,70 @@ var SvgTool = {
 
 };
  
+ 
+/** Drag & click events */
+function MouseEventHandler() {
+	this._onMouseup = function(event) {
+
+		if (this._dragging) {
+			this._onDragEnd();
+		} else {
+			this._onClick();
+		}
+		document.documentElement.removeEventListener("mousemove", this._mousemoveListenerRef, false);
+		document.documentElement.removeEventListener("mouseup", this._mouseupListenerRef, false);
+		this._dragging = false;
+		this._justDropped = true;
+	};
+				
+
+	this._onMousedown = function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+
+		this._dragOriginX = event.clientX + document.documentElement.scrollLeft;
+		this._dragOriginY = event.clientY + document.documentElement.scrollTop;
+
+		// A reference to the listener must be kept in order to be able to remove it later.
+		this._mousemoveListenerRef = Util.delegate(this, "_onMousemove");
+		document.documentElement.addEventListener("mousemove", this._mousemoveListenerRef, false);
+		this._mouseupListenerRef = Util.delegate(this, "_onMouseup");		
+		document.documentElement.addEventListener("mouseup", this._mouseupListenerRef, false);
+		return false;
+	};
+				
+	this._onMousemove = function(event) {
+	
+		var dx = event.clientX + document.documentElement.scrollLeft - this._dragOriginX;
+		var dy = event.clientY + document.documentElement.scrollTop - this._dragOriginY ;
+		
+		
+		if (!this._dragging) {
+			this._onDragStart();
+		}
+		
+		this._onDragMove(dx, dy);
+
+
+		this._dragging = true;
+
+	};
+	
+		this._onClick = function () {
+		alert("Clicked on node " + this._id);
+	};
+	
+	this._onDragStart = function() {};
+	
+	this._onDragMove = function(dx, dy) {};
+	
+	this._onDragEnd = function() {};
+	
+	this._enableMouseEvents = function(elem) {
+		elem.addEventListener("mousedown", Util.delegate(this, "_onMousedown"), false);
+	};
+	
+ };
 /**
  * Network visualization instance.
  * Represents an instance of the network visualization.
@@ -79,8 +136,6 @@ function Visualization(container, height, width) {
 		this._svgEdgeGroup.removeChild(elem);
 	};
 	
-
-	
 	this._removeLabelElement = function(elem) {
 		this._svgLabelGroup.removeChild(elem);
 	};
@@ -93,84 +148,115 @@ function Visualization(container, height, width) {
 	this._dragY = 0;
 	
 	// Viewport offset
-	this._offsetX = 186;
-	this._offsetY = 100;
+	this._offsetX = 0;
+	this._offsetY = 0;
 	this._zoom = 1;
+	
+	// FDL simulation
+	this._simulating = false;
+	this._particleSystem = null;
+	this._autoStoppedSimulating = false;
+	
+	this._startSimulating = function(repulsion, stiffness, friction) {
+		this._simulating = true;
+		if (!this._particleSystem) {
+			this._particleSystem = this._particleSystem = arbor.ParticleSystem();
+			var nodes = vis.getNodes();
+			for (var i = 0; i < nodes.length; i++) {
+				this._particleSystem.addNode(nodes[i]._id); 
+			}
+		
+			var edges = vis.getEdges();
+			for (var i = 0; i < edges.length; i++) {
+				this._particleSystem.addEdge(edges[i]._source._id, edges[i]._target._id); 
+			}
+		}
+		
+		this._particleSystem.screenSize(this._width, this._height);
+		this._particleSystem.screenPadding(25);
+		this._particleSystem.parameters({
+			repulsion: repulsion || 1000,
+			stiffness: stiffness || 300,
+			fricton: friction || 0.3,	
+			gravity: false
+		});
+		this._particleSystem.renderer = {
+			init: function() {},
+			redraw: Util.delegate(this, "_arborRedraw")
+		};
+
+		this._particleSystem.start();
+	};
+	
+	this._stopSimulating = function() {
+		this._simulating = false;
+		this._particleSystem.stop();
+	};
+	
+	this._autoStartSimulating = function() {
+		if (this._autoStoppedSimulating) {
+			this._startSimulating();
+		}
+	};
+	
+	this._autoStopSimulating = function() {
+		if (this._simulating) {
+			this._autoStoppedSimulating = true;
+			this._stopSimulating();
+		}
+	};
+	
+	this._arborRedraw = function() {
+		var t = this;
+		this._particleSystem.eachNode(function(node, pt) {
+			var n = t.getNode(node.name);
+			n._x = pt.x;
+			n._y = pt.y;
+			pt.x = pt.x;
+			pt.y = pt.y;
+		});
+		this.draw();
+	};
+	
+	
+	this.changeZoom = function(i) {
+		this._zoom += i/100;
+		if (this._zoom < 0.01) this._zoom = 0.01;
+		this.draw();
+	};
 	
 	// Dragging 
 	this._dragElem = null;
-	this._dragged = false;
+	this._dragging = false;
 	this._justDropped = false;
 	this._holding = false;
-	this._absDragOriginX = 0;
-	this._absDragOriginY = 0;
+	this._dragOriginX = 0;
+	this._dragOriginY = 0;
 	
-	this._panningDragOriginX = 0;
-	this._panningDragOriginY = 0;
+	this._panningOriginX = 0;
+	this._panningOriginY = 0;
 	this._mousemoveListenerRef = null;
 
-				
-	this._onMouseup = function(event) {
-		//console.log("mouse up"); 
-		if (this._holding) {
-			this._holding = false;
-			if (this._dragged) {
-				//console.log("drop");
-				document.documentElement.removeEventListener("mousemove", this._mousemoveListenerRef, false);
-				this._dragElem = null;
-				this._dragged = false;
-				this._justDropped = true;
-			}
-		}
+	this._onDragStart = function() {
+		this._panningOriginX = this._offsetX;
+		this._panningOriginY = this._offsetY;
 	};
-				
-			
-	this._onClick = function(event) {
-		if (this._justDropped) {
-			this._justDropped = false;
-			return;
-		}
-		console.log("click");
-	};
-		
-	this._onMousedown = function(event) {
-		event.preventDefault();
-		//console.log("mouse down");
-		this._holding = true;
-		this._absDragOriginX = event.clientX + document.documentElement.scrollLeft;
-		this._absDragOriginY = event.clientY + document.documentElement.scrollTop;
-		this._relDragOriginX = this._offsetX;
-		this._relDragOriginY = this._offsetY;
-		this._dragElem = this;
-		// A reference to the listener must be kept in order to be able to remove it later.
-		this._mousemoveListenerRef = Util.delegate(this, "_onMousemove");
-		document.documentElement.addEventListener("mousemove", this._mousemoveListenerRef, false);
-		
 
-	};
-				
-	this._onMousemove = function(event) {
-	
-		var dx = event.clientX + document.documentElement.scrollLeft - this._absDragOriginX;
-		var dy = event.clientY + document.documentElement.scrollTop - this._absDragOriginY ;
-		
-		
-		//console.log("mousemove", dx, dy);
-		this._dragged = true;
-		//Dom.setAttributes(this, {"cx": draggingElem.relDragOriginX + dx, "cy": draggingElem.relDragOriginY + dy});
-		this._offsetX = this._relDragOriginX + dx;
-		this._offsetY = this._relDragOriginY + dy;
-		
-		//console.log(dx, dy);
+	this._onDragMove = function(dx, dy) {
+		this._offsetX = this._panningOriginX + dx;
+		this._offsetY = this._panningOriginY + dy;
 		this.draw();
-	
 	};
-	
-		//this._svgElem.addEventListener("mousedown", onMousedown, true);
-	this._svgElem.addEventListener("mousedown", Util.delegate(this, "_onMousedown"), false);
 
-	this._svgElem.addEventListener("click", Util.delegate(this, "_onClick"), true);
-	document.documentElement.addEventListener("mouseup", Util.delegate(this, "_onMouseup"), false);
+	this._onDragEnd = function() {
+
+	};
+
+	this._onClick = function() {
+		alert("You clicked on the visualisation");
+	};
+
+	this._enableMouseEvents(this._svgElem);
 
 
 	this._getTransform = function(offsetX, offsetY, scale) {
@@ -506,15 +592,21 @@ function Visualization(container, height, width) {
 	this._dragStart = function(x, y) {
 		this._dragX = this._offsetX;
 		this._dragY = this._offsetY;
-	}
+	};
 	
 	this._dragMove = function(x, y) {
 		this._offsetX = this._dragX + x;
 		this._offsetY = this._dragY + y;
 		this.draw();
-	}
+	};
+	
+	this._dragEnd = function() {
 
+	};
 }
+Visualization.prototype = new MouseEventHandler();
+
+
 /**
  * Paths are in SVG PathData format. See http://www.w3.org/TR/SVG/paths.html#PathData
  */
@@ -695,9 +787,23 @@ var Element = function() {
 			return this._label;
 		}
 	};
+	
+	this._data = {};
+	this._dataProxyFields = {"id": "_id", "x": "_x", "y": "_y"};
+	this.data = function(field, value) {
+		if (arguments.length >= 2) {
+			if (field in this._dataProxyFields) {
+				throw "Cannot modify field"
+			}
+			this._data[field] = value;
+		};
+		if (arguments.length == 1) {
+			return this._data[field];
+		}
+	};
 
 };
-
+Element.prototype = new MouseEventHandler();
 
 /**
  * Node object
@@ -720,6 +826,34 @@ var Node = function(vis) {
 
 	this._edges = [];
 	this._edgeSpacing = 40;
+	
+	this._onClick = function () {
+		alert("Clicked on node " + this._id);
+	};
+	
+	this._onDragStart = function() {
+		if (this._visualization._simulating) {
+			this._visualization._particleSystem.getNode(this._id).fixed = true;
+			this._visualization._particleSystem.screenStep(0);	
+		}
+		this._dragStartX = this._x;
+		this._dragStartY = this._y;
+		//this._visualization._autoStopSimulating();
+	};
+	
+	this._onDragMove = function(dx, dy) {
+		this.setPosition(this._dragStartX + dx, this._dragStartY + dy);
+		this._visualization._particleSystem.start();
+	};
+	
+	this._onDragEnd = function() {
+		if (this._visualization._simulating) {
+			this._visualization._particleSystem.getNode(this._id).fixed = false;
+			this._visualization._particleSystem.screenStep(0.01);
+		}
+	};
+	
+
 	
 	this._getRenderedPosition = function() {
 		return {x: this._x, y: this._y};
@@ -858,46 +992,12 @@ var Node = function(vis) {
 	this.setPosition = function(x, y) {
 		this._x = x;
 		this._y = y;
-		this._draw();
-	};
-	
-
-
-	this._dragStart = function() {
-		this._dragOriginX = this._x;
-		this._dragOriginY = this._y;
-		this._elem.toFront();
-		this._drag = true;
-		this._triggerEvent("dragStart");
-	};
-
-	this._dragEnd = function() {
-		this._drag = false;
-
-		this._triggerEvent("dragEnd");
-	};
-
-	this._dragMove = function(x, y) {
-		this._justDragged = true;
-		var newX = this._dragOriginX + x;
-		var newY = this._dragOriginY + y;
-
-
-		this._x = newX;
-		this._y = newY;
-		this._draw();
-	};
-
-	this._onClick = function() {
-		if (this._justDragged) {
-			this._justDragged = false;
-			return;
+		if (this._visualization._simulating) {
+			var node = this._visualization._particleSystem.getNode(this._id);
+			var p =  this._visualization._particleSystem.fromScreen(arbor.Point(x, y));
+			node.p = p;
 		}
-		this._visualization.deselect();
-		this.toggleSelected();
 		this._draw();
-		this._triggerEvent("click");
-		this._hoverEnd();
 	};
 
 
@@ -917,6 +1017,7 @@ var Node = function(vis) {
 	this._draw = function() {
 		if (this._elem == null) {
 			this._elem = this._visualization._createNodePathElement();
+			this._enableMouseEvents(this._elem);
 			this._labelElem = this._visualization._createLabelElement();
 			SvgTool.setElementAttributes(this._labelElem, {
 				"pointer-events": "none"
@@ -1173,10 +1274,6 @@ var Edge = function(vis) {
 
 				var nbx = b.x - dx * br;
 				var nby = b.y - dy * br;
-				
-	
-				var path = [];
-				path.push(populateString("M %,% L %,%", [nax, nay, nbx, nby]));
 
 				var angle = Math.atan2(dy, dx);
 				return [nax, nay, null, null, nbx, nby, Math.atan2(-dy, -dx), Math.atan2(dy, dx), mpx, mpy];
@@ -1248,86 +1345,14 @@ var Edge = function(vis) {
 }
 Edge.prototype = new Element();
 
-/**
- * Replace each instance of the placeholder token with a successive item from a list.
- */
-function populateString(string, items) {
-	var i = 0;
-	return string.replace(/%/g, function() {
-		return items[i++];
-	});
+
+function ContinuousVisualMapper(fieldName, inputMin, inputMax, outputMin, outputMax) {
+	return function(data) {
+		var input = data[fieldName];
+		var p = (input - min)/max;
+		if (p < 0) p = 0;
+		if (p > 1) p = 1; 
+		return (p * outputMax) + outputMin;
+	};
 }
 
-
-/**
- * Arbor.js Renderer
- */
- 
-function ArborRenderer(vis) {
-	this.vis = vis;
-	
-	this.init = function(ps) {
-		this.ps = ps;
-		ps.screenSize(320, 320);
-		ps.screenPadding(10);
-	}
-	
-	this.redraw = function() {
-		this.ps.eachNode(function(node, pt) {
-			vis.getNode(node.name).setPosition(pt.x, pt.y);
-		});
-	}
-	
-	this.die = function() {
-		this.vis = null;
-		this.ps = null;
-	}
-}
-
-/**
- * Springy.js renderer
- */
-
-var SpringyRenderer = function() {
-	var vis;
-	var graph;
-	var layout;
-	
-		this.stop = function() {
-			if (layout.intervalId) {
-				layout.stop();
-			}
-		}
-		
-		this.render = function(v) {
-			vis = v;
-			graph = new Graph();
-			var nodes = vis.getNodes();
-			for (var i = 0; i < nodes.length; i++) {
-				graph.newNodeM(nodes[i]._id); 
-			}
-			var edges = vis.getEdges();
-			for (var i = 0; i < edges.length; i++) {
-				graph.newEdgeM(edges[i]._source._id,
-				 edges[i]._target._id); 
-			}
-			if (layout) layout.stop();
-			layout = new Layout.ForceDirected(graph, 200, 200, 0.3);
-			
-			
-			
-			renderer = new Renderer(10, layout,
-			function clear() {
-
-			},
-			function drawEdge(edge, p1, p2) {
-				
-			},
-			function drawNode(node, p) {
-				//console.log(p);
-				//alert(JSON.stringify(p));
-				vis.getNode(node.data.label).setPosition(p.x * 100 + 200,  p.y * 100 +200);
-			});
-			renderer.start();
-		}
-};
