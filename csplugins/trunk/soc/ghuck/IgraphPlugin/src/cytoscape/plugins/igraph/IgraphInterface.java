@@ -77,6 +77,16 @@ public class IgraphInterface {
 						    double weights[], 
 						    double cellSize);
     
+    // lgl Layout
+    public static native void layoutLGL(double x[], 
+					double y[], 
+					int maxIt, 
+					double maxDelta, 
+					double area, 
+					double coolExp, 
+					double repulserad, 
+					double cellSize);
+    
     // Minimum spanning tree - unweighted
     public static native int minimum_spanning_tree_unweighted(int res[]);
 

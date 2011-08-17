@@ -88,7 +88,7 @@ public class IgraphPlugin extends CytoscapePlugin {
 	    CyLayouts.addLayout(new StarLayout(),                         "Igraph");
 	    CyLayouts.addLayout(new FruchtermanReingoldLayout(true),      "Igraph");
 	    CyLayouts.addLayout(new FruchtermanReingoldGridLayout(true),  "Igraph");
-
+	    CyLayouts.addLayout(new LGLLayout(),                          "Igraph");
 	    
 	} catch (Exception e) {
 	    e.printStackTrace();
