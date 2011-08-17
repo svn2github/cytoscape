@@ -74,7 +74,7 @@ function MouseEventHandler() {
 	};
 	
 		this._onClick = function () {
-		alert("Clicked on node " + this._id);
+		message("Clicked on node " + this._id);
 	};
 	
 	this._onDragStart = function() {};
@@ -261,7 +261,7 @@ function Visualization(container, height, width) {
 	};
 
 	this._onClick = function() {
-		alert("You clicked on the visualisation");
+		message("You clicked on the visualisation");
 	};
 
 	this._enableMouseEvents(this._svgElem);
@@ -310,16 +310,12 @@ function Visualization(container, height, width) {
 			"opacity": 1,
 			"style": "SOLID",
 			"targetArrowShape": "DELTA",
-			"targetArrowSize": 1,
 			"targetArrowColor": "black",
 			"sourceArrowShape": "T",
-			"sourceArrowSize": 1,
 			"sourceArrowColor": "black"
 		}
 	};
 	
-	//this._bg = this._canvas.rect(0, 0, this._width, this._height).attr({"fill": this._style.global.backgroundColor, "stroke": "none", "cursor": "move"});
-	//this._bg.drag(Util.delegate(this, "_dragMove"), Util.delegate(this, "_dragStart"));
 
 	this.deselect = function () {
 		
@@ -620,7 +616,7 @@ Visualization.prototype = new MouseEventHandler();
  */
 var Paths = {
 	// Node shapes
-	ellipse: 	"M 0,-10, a 10,10 0 1 1 -0.01,0 z", // This is the path equivalent of a <circle> element
+	ellipse: 	"M 0,-10 a 10,10 0 1 1 -0.01,0 z", // This is the path equivalent of a <circle> element
 	diamond: 	"M -10,0 0,-10 10,0 0,10 z",
 	rectangle: 	"M -10,-10 -10,10 10,10 10,-10 z",
 	// Arrow shapes
@@ -722,12 +718,16 @@ var Element = function() {
 
 	this.getAppliedStyle = function(property) {
 		if (property in this._style) {
-			return this._style[property];
+			var prop = this._style[property];
 		} else if (property in this._visualization._style[this._group]) {
-			return this._visualization._style[this._group][property];
+			var prop = this._visualization._style[this._group][property];
 		} else {
 			throw "No such property: " + property;
 		}
+		if (typeof prop == "function") {
+			prop = prop(this);
+		}
+		return prop;
 	};
 
 	this.getAppliedStyles = function() {
@@ -836,7 +836,7 @@ var Node = function(vis) {
 	this._edgeSpacing = 40;
 	
 	this._onClick = function () {
-		alert("Clicked on node " + this._id);
+		message("Clicked on node " + this._id);
 	};
 	
 	this._onDragStart = function() {
@@ -850,6 +850,8 @@ var Node = function(vis) {
 	};
 	
 	this._onDragMove = function(dx, dy) {
+		dx /= this._visualization._zoom;
+		dy /= this._visualization._zoom;
 		this.setPosition(this._dragStartX + dx, this._dragStartY + dy);
 		this._visualization._particleSystem.start();
 	};
@@ -1210,7 +1212,7 @@ var Edge = function(vis) {
 			// because opacity apparenly behaves differently on stroke and on fill
 			"opacity": attr["stroke-opacity"],
 			"d": targetArrowPath,
-			"transform": [ "rotate(", points[7] * 180 / Math.PI, points[4], points[5],")", "translate(", points[4], points[5], ")", "scale(", this.getRenderedStyle("targetArrowSize"), ")",].join(" ")
+			"transform": [ "rotate(", points[7] * 180 / Math.PI, points[4], points[5],")", "translate(", points[4], points[5], ")", "scale(", this.getRenderedStyle("width")/2, ")",].join(" ")
 		};
 		SvgTool.setElementAttributes(this._targetArrowElem, targetArrowAttr);
 		
@@ -1220,15 +1222,15 @@ var Edge = function(vis) {
 			"stroke": "none",
 			"opacity": attr["stroke-opacity"],
 			"d": sourceArrowPath,
-			"transform": [ "rotate(", points[6] * 180 / Math.PI, points[0], points[1],")", "translate(", points[0], points[1], ")", "scale(", this.getRenderedStyle("sourceArrowSize"), ")",].join(" ")
-		};
+			"transform": [ "rotate(", points[6] * 180 / Math.PI, points[0], points[1],")", "translate(", points[0], points[1], ")", "scale(", this.getRenderedStyle("width")/2, ")",].join(" ")
+		}
 		SvgTool.setElementAttributes(this._sourceArrowElem, sourceArrowAttr);
 
 		
 	};
 	
 	this._onClick = function() {
-		alert("Clicked edge '" + this._id + "' between '" + this._source._id + "' and '" + this._target._id + "'");
+		message("Clicked edge '" + this._id + "' between '" + this._source._id + "' and '" + this._target._id + "'");
 	}
 
 	this.getModel = function() {
@@ -1364,3 +1366,4 @@ function ContinuousVisualMapper(fieldName, inputMin, inputMax, outputMin, output
 	};
 }
 
+function message() {}

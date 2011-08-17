@@ -8,6 +8,15 @@
 				color: #404040;
 				width: 640px;
 				margin: 30px auto;
+				
+			}
+			
+			#message-box {
+				height: 25px;
+			}
+			
+			svg {
+				border: 2px solid gray;
 			}
 		</style>
 		<script type="text/javascript" src="cytoscapeweb-svg.js"></script>
@@ -446,7 +455,7 @@
 			var pg = {nodes:[], edges:[]};
 			
 			for (var x = 0; x < 100; x++) {
-				pg.nodes.push({"id": "n"+x, "x": Math.floor(Math.random()*400)-86, "y": Math.floor(Math.random()*400)-50, "style": {"size": 6+ Math.floor(Math.random()*18)}});
+				pg.nodes.push({"id": "n"+x, "x": Math.floor(Math.random()*400)-86, "y": Math.floor(Math.random()*400)-50, "style": {"color": distanceMapper, "size": 6+ Math.floor(Math.random()*18)}});
 			}
 			
 			for (var y = 0; y < 300; y++) {
@@ -477,6 +486,31 @@
 				vis.draw();
 			}
 			
+			function message(s) {
+				
+				var box = document.getElementById("message-box");
+				if (box) {
+					box.textContent = s;
+				}
+			}
+			
+			function lengthMapper (i) {
+				var dx = i._source._x - i._target._x;
+				var sy = i._source._y - i._target._y;
+				dist = Math.floor(Math.sqrt(dx*dx + dy*dy));
+				if (dist < 0) dist = 0;
+				if (dist > 255) dist = 255;
+				return "rgb(128, 128, " + dist + ")";
+			}
+			function distanceMapper(i) {
+				var dist = Math.sqrt(i._x * i._x + i._y * i._y);
+				dist /= 6;
+				Math.floor(dist);
+				if (dist < 0) dist = 0;
+				if (dist > 255) dist = 255;
+				return "rgb(128, 128, " + dist + ")";
+			}
+			
 
 
 
@@ -487,12 +521,13 @@
 			<h1>Cytoscape Web &mdash; SVG</h1>
 			<p>By Marek Zaluski for GSoC 2011</p>
 			<button onclick="vis.changeZoom(10);">+</button><button onclick="vis.changeZoom(-10)">-</button>
+			<div id="message-box"></div>
 			<div id="container-div"></div>
 			
 			Load graph:
 			<select onchange="load(this.options[selectedIndex].value)">
-				<option selected value="simpleGraph">Simple graph</option>
 				<option value="petersenGraph">Petersen graph</option>
+				<option value="simpleGraph">Simple graph</option>
 				<option value="ringGraph">Style demo</option>
 				<option value="pg">Large graph</option>
 			</select>
