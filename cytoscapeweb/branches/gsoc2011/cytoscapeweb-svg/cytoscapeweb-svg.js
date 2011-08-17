@@ -287,7 +287,7 @@ function Visualization(container, height, width) {
 			"shape": "ELLIPSE",
 			"ratio": 1,
 			"size": 18,
-			"color": "#f5f5f5",
+			"color": "#e0e0e0",
 			"borderColor": "#666666",
 			"borderWidth": 1,
 			"opacity": 1,
@@ -306,7 +306,7 @@ function Visualization(container, height, width) {
 		},
 
 		edge: {
-			"color": "black",
+			"color": "#404040",
 			"width": 3,
 			"opacity": 1,
 			"style": "SOLID",
@@ -1209,7 +1209,7 @@ var Edge = function(vis) {
 		// Arrow head attributes
 		var targetArrowPath = this._arrowShapes[this.getRenderedStyle("targetArrowShape")] || "none";
 		var targetArrowAttr = {
-			"fill": this.getRenderedStyle("targetArrowColor") || attr["stroke"],
+			"fill": attr["stroke"],
 			"stroke": "none",
 			"opacity": attr["stroke-opacity"],
 			"d": targetArrowPath,
@@ -1219,7 +1219,7 @@ var Edge = function(vis) {
 		
 		var sourceArrowPath = this._arrowShapes[this.getRenderedStyle("sourceArrowShape")] || "none";
 		var sourceArrowAttr = {
-			"fill":  this.getRenderedStyle("sourceArrowColor") || attr["stroke"],
+			"fill": attr["stroke"],
 			"stroke": "none",
 			"opacity": attr["stroke-opacity"],
 			"d": sourceArrowPath,
