@@ -51,32 +51,31 @@
 					backgroundColor: "#fcfcfc"
 				},
 				nodes: {
-					color: "#cccccc",
+					color: distanceMapper,
 					size: 14,
 					borderWidth: 2,
 					borderColor: "#707070",
 					labelColor: "none"
 				},
 				edges: {
-					color: "#0b94b1",
-					width: 2
+					width: 3,
+					color: "#909090",
 				}
 			}
 			
 			
 			styles.darkStyle = {
 				global: {
-					backgroundColor: "#202020"
+					
 				},
 				nodes: {
-					color: "#d0d0d0",
+					color: "#d0d0f0",
 					opacity: 0.8,
 					borderWidth: 4,
-					borderColor: "#f8f8f8",
+					borderColor: "#303060",
 				},
 				edges: {
-					color: "#ffffff",
-					opacity: 0.7,
+					color: lengthMapper,
 					width: 4
 				}
 			}
@@ -455,7 +454,7 @@
 			var pg = {nodes:[], edges:[]};
 			
 			for (var x = 0; x < 100; x++) {
-				pg.nodes.push({"id": "n"+x, "x": Math.floor(Math.random()*400)-86, "y": Math.floor(Math.random()*400)-50, "style": {"color": distanceMapper, "size": 6+ Math.floor(Math.random()*18)}});
+				pg.nodes.push({"id": "n"+x, "x": Math.floor(Math.random()*400)-86, "y": Math.floor(Math.random()*400)-50, "style": {"size": 6+ Math.floor(Math.random()*18)}});
 			}
 			
 			for (var y = 0; y < 300; y++) {
@@ -496,21 +495,28 @@
 			
 			function lengthMapper (i) {
 				var dx = i._source._x - i._target._x;
-				var sy = i._source._y - i._target._y;
-				dist = Math.floor(Math.sqrt(dx*dx + dy*dy));
+				var dy = i._source._y - i._target._y;
+				dist = Math.floor(Math.sqrt(dx*dx + dy*dy) / 2.5);
+
 				if (dist < 0) dist = 0;
 				if (dist > 255) dist = 255;
-				return "rgb(128, 128, " + dist + ")";
+				return ("rgb(" + dist + ",  " + dist + ", " + dist + ")");
 			}
 			function distanceMapper(i) {
-				var dist = Math.sqrt(i._x * i._x + i._y * i._y);
+				var dist = Math.floor(Math.sqrt(i._x * i._x + i._y * i._y));
 				dist /= 6;
-				Math.floor(dist);
+				dist = Math.floor(dist);
 				if (dist < 0) dist = 0;
 				if (dist > 255) dist = 255;
-				return "rgb(128, 128, " + dist + ")";
+				
+				return "rgb(" + dist + ",  " + dist + ", " + dist + ")";
 			}
 			
+			function toggleLabels() {
+				vis.setNodeStyle("labelDisplay", !vis.getNodeStyle("labelDisplay"));
+				vis.setEdgeStyle("labelDisplay", !vis.getEdgeStyle("labelDisplay"));  
+				vis.draw();
+			}
 
 
 
@@ -520,7 +526,8 @@
 		<div id="page">
 			<h1>Cytoscape Web &mdash; SVG</h1>
 			<p>By Marek Zaluski for GSoC 2011</p>
-			<button onclick="vis.changeZoom(10);">+</button><button onclick="vis.changeZoom(-10)">-</button>
+			<button onclick="vis.changeZoom(10)">+</button><button onclick="vis.changeZoom(-10)">-</button>
+			<button onclick="toggleLabels()">Toggle Labels</button>
 			<div id="message-box"></div>
 			<div id="container-div"></div>
 			
@@ -535,8 +542,8 @@
 			Load style:
 			<select onchange="setstyle(this.options[selectedIndex].value)">
 				<option selected value="basicStyle">Basic Style</option>
-				<option value="demoStyle">Classic Style</option>
-				<option value="darkStyle">Dark style</option>
+				<option value="demoStyle">Style with node visual mapper</option>
+				<option value="darkStyle">Style with edge length mapper</option>
 				
 			</select>
 			

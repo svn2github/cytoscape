@@ -300,6 +300,7 @@ function Visualization(container, height, width) {
 			"selectedColor": null,
 			"selectedBorderColor": "red",
 			"selectedOpacity": null,
+			"labelDisplay": false,
 			"labelSize": 10,
 			"labelColor": "#000000"
 		},
@@ -309,6 +310,7 @@ function Visualization(container, height, width) {
 			"width": 3,
 			"opacity": 1,
 			"style": "SOLID",
+			"labelDisplay": false,
 			"targetArrowShape": "DELTA",
 			"targetArrowColor": "black",
 			"sourceArrowShape": "T",
@@ -1059,6 +1061,7 @@ var Node = function(vis) {
 		
 		this._labelElem.textContent = this.getLabel();
 		SvgTool.setElementAttributes(this._labelElem, {
+			"visibility": this.getRenderedStyle("labelDisplay") ? "visible" : "hidden",
 			"x": this._x,
 			"y": this._y,
 			"dominant-baseline": "middle",
@@ -1087,7 +1090,6 @@ var Node = function(vis) {
 			if (this._labelElem) this._visualization._removeLabelElement(this._labelElem);
 			
 		}
-		//if (this._elemLabel) this._elemLabel.remove();
 		
 	}
 }
@@ -1196,6 +1198,7 @@ var Edge = function(vis) {
 		SvgTool.setElementAttributes(this._elem, attr);
 		
 		SvgTool.setElementAttributes(this._labelElem, {
+			"visibility": this.getRenderedStyle("labelDisplay") ? "visible" : "hidden",
 			"x": points[8],
 			"y": points[9],
 			"text-anchor": "middle",
@@ -1208,8 +1211,6 @@ var Edge = function(vis) {
 		var targetArrowAttr = {
 			"fill": this.getRenderedStyle("targetArrowColor") || attr["stroke"],
 			"stroke": "none",
-			//"stroke-opacity": attr["stroke-opacity"], // TODO: change to rely only on fill, rather than on stroke
-			// because opacity apparenly behaves differently on stroke and on fill
 			"opacity": attr["stroke-opacity"],
 			"d": targetArrowPath,
 			"transform": [ "rotate(", points[7] * 180 / Math.PI, points[4], points[5],")", "translate(", points[4], points[5], ")", "scale(", this.getRenderedStyle("width")/2, ")",].join(" ")
