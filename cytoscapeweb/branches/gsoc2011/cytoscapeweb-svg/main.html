@@ -38,11 +38,11 @@
 					size: 20,
 					color: "#d0d0f0",
 					borderColor: "#666666",
-					borderWidth: 1.8,
+					borderWidth: 2,
 					opacity: 1,
 				},
 				edges: {
-
+					width: 2
 				}
 			}
 			
@@ -52,15 +52,15 @@
 					backgroundColor: "#fcfcfc"
 				},
 				nodes: {
-					color: distanceMapper,
-					size: 14,
+					color: "#f0f8ff",
+					size: ContinuousVisualMapper("weight", 0, 100, 8, 20),
 					borderWidth: 2,
 					borderColor: "#707070",
 					labelColor: "none"
 				},
 				edges: {
-					width: 3,
-					color: "#909090",
+					width: 2,
+					color: "#909090"
 				}
 			}
 			
@@ -71,13 +71,14 @@
 				},
 				nodes: {
 					color: "#d0d0f0",
-					opacity: 0.8,
-					borderWidth: 4,
+					size: 14,
+					opacity: 0.5,
+					borderWidth: 2,
 					borderColor: "#303060",
 				},
 				edges: {
-					color: lengthMapper,
-					width: 4
+					color: "#a0a0a0",
+					width: ContinuousVisualMapper("weight", 0, 100, 1, 4)
 				}
 			}
 			
@@ -468,12 +469,25 @@
 			window.onload = function() {
 				vis = new Visualization("container-div", 640, 640);
 				load("petersenGraph");
+				addRandomData();
 				setstyle("basicStyle");
 			}
 			
-			// Load a graph
-			var ps; // arbor.ParticleSystem
+			function addRandomData() {
+				var nodes = vis.getNodes();
+				for (var i = 0; i < nodes.length; i++) {
+					nodes[i].data("weight", Math.floor(Math.random() * 100));
+				}
+				var edges = vis.getEdges();
+				for (var i = 0; i < edges.length; i++) {
+					edges[i].data("weight", Math.floor(Math.random() * 100));
+				}
+			}
+						
 
+			var ps; // arbor.ParticleSystem
+			
+			// Load a graph
 			function load(graph) {
 				vis._clearSimulation();
 				vis.loadGraph(graphs[graph]);
@@ -495,7 +509,7 @@
 			}
 			
 			
-			
+			/*
 			function lengthMapper (i) {
 				var dx = i._source._x - i._target._x;
 				var dy = i._source._y - i._target._y;
@@ -514,6 +528,7 @@
 				
 				return "rgb(" + dist + ",  " + dist + ", " + dist + ")";
 			}
+			*/
 			
 			
 			
@@ -547,8 +562,8 @@
 			Load style:
 			<select onchange="setstyle(this.options[selectedIndex].value)">
 				<option selected value="basicStyle">Basic Style</option>
-				<option value="demoStyle">Style with node visual mapper</option>
-				<option value="darkStyle">Style with edge length mapper</option>
+				<option value="demoStyle">Style with node size mapper</option>
+				<option value="darkStyle">Style with edge width mapper</option>
 				
 			</select>
 			

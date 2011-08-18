@@ -21,7 +21,6 @@ var SvgTool = {
 			elem.setAttribute(attribute, value);
 		}
 	}
-
 };
  
  
@@ -583,7 +582,7 @@ function Visualization(container, height, width) {
 			var node = this.addNode(nodes[i].id);
 			node.setStyles(nodes[i].style);
 			node.setPosition(nodes[i].x, nodes[i].y);
-			//node.setLabel(nodes[i].label);
+			node._data = nodes[i].data || {};
 		}
 		
 		for (var j = 0, len = edges.length; j < len; j++) {
@@ -591,7 +590,7 @@ function Visualization(container, height, width) {
 			var target = this.getNode(edges[j].target);
 			var edge = this.addEdge(edges[j].id, source, target);
 			edge.setStyles(edges[j].style);
-			//edge.setLabel(edges[j].label);	
+			edge._data = edges[i].data || {};
 		}
 	};
 	
@@ -727,7 +726,7 @@ var Element = function() {
 			throw "No such property: " + property;
 		}
 		if (typeof prop == "function") {
-			prop = prop(this);
+			prop = prop(this._data);
 		}
 		return prop;
 	};
@@ -798,13 +797,8 @@ var Element = function() {
 		}
 	};
 	
-	this._data = {};
-	this._dataProxyFields = {"id": "_id", "x": "_x", "y": "_y"};
 	this.data = function(field, value) {
 		if (arguments.length >= 2) {
-			if (field in this._dataProxyFields) {
-				throw "Cannot modify field"
-			}
 			this._data[field] = value;
 		};
 		if (arguments.length == 1) {
@@ -825,6 +819,7 @@ var Node = function(vis) {
 	this._elem = null;
 	this._labelElem = null;
 	this._group = "node";
+	this._data = {};
 	this._listeners = {};
 	this._eventTypes = ["dragStart", "dragEnd", "hoverStart", "hoverEnd", "click", "select", "deselect"];
 	this._label = function() { return this._id; };
@@ -1110,6 +1105,7 @@ var Edge = function(vis) {
 	this._group = "edge";
 	this._offset = 0; // Offset used for drawing multiple edges between two nodes
 	this._label = function() {return this._id};
+	this._data = {};
 	this._listeners = {};
 	
 	// Necessary values
@@ -1360,10 +1356,12 @@ Edge.prototype = new Element();
 function ContinuousVisualMapper(fieldName, inputMin, inputMax, outputMin, outputMax) {
 	return function(data) {
 		var input = data[fieldName];
-		var p = (input - min)/max;
+		var p = (input - inputMin)/inputMax;
 		if (p < 0) p = 0;
 		if (p > 1) p = 1; 
+
 		return (p * outputMax) + outputMin;
+
 	};
 }
 
