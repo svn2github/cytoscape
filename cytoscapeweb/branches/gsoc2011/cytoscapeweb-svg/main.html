@@ -17,6 +17,7 @@
 			
 			svg {
 				border: 2px solid gray;
+				overflow: hidden;
 			}
 		</style>
         
@@ -493,6 +494,8 @@
 				}
 			}
 			
+			
+			
 			function lengthMapper (i) {
 				var dx = i._source._x - i._target._x;
 				var dy = i._source._y - i._target._y;
@@ -511,6 +514,8 @@
 				
 				return "rgb(" + dist + ",  " + dist + ", " + dist + ")";
 			}
+			
+			
 			
 			function toggleLabels() {
 				vis.setNodeStyle("labelDisplay", !vis.getNodeStyle("labelDisplay"));
