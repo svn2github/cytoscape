@@ -12,7 +12,7 @@ import javax.swing.JScrollPane;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.CPathNetworkImportTask;
-import org.cytoscape.cpathsquared.internal.plugin.CPathPlugIn2;
+import org.cytoscape.cpathsquared.internal.CPathPlugIn2;
 import org.cytoscape.cpathsquared.internal.view.TabUi;
 import org.cytoscape.cpathsquared.internal.view.cPathSearchPanel;
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;

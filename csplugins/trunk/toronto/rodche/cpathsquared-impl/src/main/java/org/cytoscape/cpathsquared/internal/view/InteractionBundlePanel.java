@@ -32,10 +32,6 @@ import org.cytoscape.cpathsquared.internal.filters.ChainedFilter;
 import org.cytoscape.cpathsquared.internal.filters.DataSourceFilter;
 import org.cytoscape.cpathsquared.internal.filters.EntityTypeFilter;
 import org.cytoscape.cpathsquared.internal.schemas.summary_response.BasicRecordType;
-import org.cytoscape.cpathsquared.internal.view.model.InteractionBundleModel;
-import org.cytoscape.cpathsquared.internal.view.model.RecordList;
-import org.cytoscape.cpathsquared.internal.view.tree.CheckNode;
-import org.cytoscape.cpathsquared.internal.view.tree.JTreeWithCheckNodes;
 import org.cytoscape.model.CyNetwork;
 
 /**

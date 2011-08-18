@@ -25,8 +25,8 @@ import org.cytoscape.biopax.NetworkListener;
 import org.cytoscape.biopax.util.BioPaxUtil;
 import org.cytoscape.biopax.util.BioPaxVisualStyleUtil;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.cytoscape.BinarySifVisualStyleUtil;
 import org.cytoscape.cpathsquared.internal.util.AttributeUtil;
+import org.cytoscape.cpathsquared.internal.util.BinarySifVisualStyleUtil;
 import org.cytoscape.cpathsquared.internal.util.SelectUtil;
 import org.cytoscape.cpathsquared.internal.web_service.CPathException;
 import org.cytoscape.cpathsquared.internal.web_service.CPathProperties;
@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ExecuteGetRecordByCPathId extends AbstractTask {
 	private CPathWebService webApi;
-	private long ids[];
+	private String ids[];
 	private String networkTitle;
 	private boolean haltFlag = false;
 	private CyNetwork mergedNetwork;
@@ -86,7 +86,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	 * @param bpContainer
 	 * @param application
 	 */
-	public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], CPathResponseFormat format,
+	public ExecuteGetRecordByCPathId(CPathWebService webApi, String[] ids, CPathResponseFormat format,
 			String networkTitle, CPath2Factory cPathFactory, BioPaxContainer bpContainer,
 			MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener, VisualMappingManager mappingManager) {
 		this.webApi = webApi;
@@ -118,7 +118,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	 * @param viewManager
 	 * @param application
 	 */
-	public ExecuteGetRecordByCPathId(CPathWebService webApi, long ids[], CPathResponseFormat format,
+	public ExecuteGetRecordByCPathId(CPathWebService webApi, String[] ids, CPathResponseFormat format,
 			String networkTitle, CyNetwork mergedNetwork, CPath2Factory cPathFactory, BioPaxContainer bpContainer,
 			MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener, VisualMappingManager mappingManager) {
 		this.webApi = webApi;
@@ -147,7 +147,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	 * @return Task Title.
 	 */
 	public String getTitle() {
-		return "Retrieving " + networkTitle + " from " + CPathProperties.getInstance().getCPathServerName() + "...";
+		return "Retrieving " + networkTitle + " from " + CPathProperties.serverName + "...";
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	 * @throws Exception
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		String title = "Retrieving " + networkTitle + " from " + CPathProperties.getInstance().getCPathServerName()
+		String title = "Retrieving " + networkTitle + " from " + CPathProperties.serverName
 				+ "...";
 		taskMonitor.setTitle(title);
 		try {
@@ -265,9 +265,8 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	 *            CyNetwork.
 	 */
 	private void addLinksToCPathInstance(CyNetwork cyNetwork) {
-		CPathProperties props = CPathProperties.getInstance();
-		String serverName = props.getCPathServerName();
-		String serverURL = props.getCPathUrl();
+		String serverName = CPathProperties.serverName;
+		String serverURL = CPathProperties.cPathUrl;
 		CyRow row = cyNetwork.getCyRow();
 		String cPathServerDetailsUrl = row.get(ExecuteGetRecordByCPathId.CPATH_SERVER_DETAILS_URL, String.class);
 		if (cPathServerDetailsUrl == null) {
@@ -480,27 +479,18 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 			}
 			List<CyNode> currentList = batchList.get(i);
 			logger.debug("Getting node details, batch:  " + i);
-			long ids[] = new long[currentList.size()];
+			String ids[] = new String[currentList.size()];
 			Map<String, CyNode> nodes = new HashMap<String, CyNode>();
 			for (int j = 0; j < currentList.size(); j++) {
 				CyNode node = currentList.get(j);
 				String name = node.getCyRow().get(CyNode.NAME, String.class);
 				nodes.put(name, node);
-				ids[j] = Long.valueOf(name);
+				ids[j] = name;
 			}
 			try {
 				final String xml = webApi.getRecordsByIds(ids, CPathResponseFormat.BIOPAX, new NullTaskMonitor());
-				// StringReader reader = new StringReader(xml);
-				// BioPaxUtil bpUtil = new BioPaxUtil(reader, new
-				// NullTaskMonitor());
 				Model model = new SimpleIOHandler().convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
-				// ArrayList peList = bpUtil.getPhysicalEntityList();
-				// Namespace ns =
-				// Namespace.getNamespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-				// for (int j=0; j<peList.size(); j++) {
 				for (BioPAXElement pe : model.getObjects(PhysicalEntity.class)) {
-					// Element element = (Element) peList.get(j);
-					// String id = element.getAttributeValue("ID", ns);
 					String id = BioPaxUtil.getLocalPartRdfId(pe);
 					if (id != null) {
 						id = id.replaceAll("CPATH-", "");

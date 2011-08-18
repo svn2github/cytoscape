@@ -1,6 +1,5 @@
-package org.cytoscape.cpathsquared.internal.view.tree;
+package org.cytoscape.cpathsquared.internal.view;
 
-import org.cytoscape.cpathsquared.internal.view.GradientHeader;
 
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.*;

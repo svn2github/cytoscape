@@ -1,50 +1,39 @@
 package org.cytoscape.cpathsquared.internal;
 
-import java.net.URL;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.undo.UndoableEdit;
 
+import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.biopax.BioPaxContainer;
 import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
 import org.cytoscape.biopax.NetworkListener;
-import org.cytoscape.cpathsquared.internal.cytoscape.BinarySifVisualStyleUtil;
-import org.cytoscape.cpathsquared.internal.cytoscape.MergeNetworkEdit;
+import org.cytoscape.cpath.service.jaxb.SearchHitType;
 import org.cytoscape.cpathsquared.internal.mapping.MapCPathToCytoscape;
-import org.cytoscape.cpathsquared.internal.schemas.summary_response.BasicRecordType;
 import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
-import org.cytoscape.cpathsquared.internal.task.MergeNetworkTaskFactory;
-import org.cytoscape.cpathsquared.internal.util.NetworkMergeUtil;
+import org.cytoscape.cpathsquared.internal.util.BinarySifVisualStyleUtil;
 import org.cytoscape.cpathsquared.internal.util.NetworkUtil;
 import org.cytoscape.cpathsquared.internal.view.DownloadDetails;
+import org.cytoscape.cpathsquared.internal.view.InteractionBundleModel;
 import org.cytoscape.cpathsquared.internal.view.InteractionBundlePanel;
-import org.cytoscape.cpathsquared.internal.view.MergePanel;
+import org.cytoscape.cpathsquared.internal.view.PathwayTableModel;
 import org.cytoscape.cpathsquared.internal.view.PhysicalEntityDetailsPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchBoxPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchDetailsPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchHitsPanel;
-import org.cytoscape.cpathsquared.internal.view.model.InteractionBundleModel;
-import org.cytoscape.cpathsquared.internal.view.model.PathwayTableModel;
 import org.cytoscape.cpathsquared.internal.web_service.CPathResponseFormat;
 import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
 import org.cytoscape.io.read.CyNetworkReaderManager;
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -88,12 +77,12 @@ public class CPath2Factory {
 		this.mappingManager = mappingManager;
 	}
 	
-	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(CPathWebService webApi, long[] ids, CPathResponseFormat format, String networkTitle, CyNetwork networkToMerge) {
+	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(CPathWebService webApi, String[] ids, CPathResponseFormat format, String networkTitle, CyNetwork networkToMerge) {
 		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, networkTitle, networkToMerge, this, bpContainer, mapperFactory, networkListener, mappingManager);
 	}
 
 	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(
-			CPathWebService webApi, long[] ids, CPathResponseFormat format, String title) {
+			CPathWebService webApi, String[] ids, CPathResponseFormat format, String title) {
 		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, null, this, bpContainer, mapperFactory, networkListener, mappingManager);
 	}
 
@@ -111,10 +100,6 @@ public class CPath2Factory {
 		return new SearchHitsPanel(interactionBundleModel, pathwayTableModel, webApi, this);
 	}
 
-	public MergePanel createMergePanel() {
-		return new MergePanel(this);
-	}
-
 	public CySwingApplication getCySwingApplication() {
 		return application;
 	}
@@ -123,7 +108,7 @@ public class CPath2Factory {
 		return taskManager;
 	}
 
-	public DownloadDetails createDownloadDetails(List<BasicRecordType> passedRecordList, String physicalEntityName) {
+	public DownloadDetails createDownloadDetails(List<SearchHitType> passedRecordList, String physicalEntityName) {
 		return new DownloadDetails(passedRecordList, physicalEntityName, this);
 	}
 
@@ -135,10 +120,6 @@ public class CPath2Factory {
 			InteractionBundleModel interactionBundleModel, CyNetwork network,
 			JDialog dialog) {
 		return new InteractionBundlePanel(interactionBundleModel, network, dialog, this);
-	}
-
-	public NetworkMergeUtil getNetworkMergeUtil() {
-		return new NetworkMergeUtil(this);
 	}
 
 	public PhysicalEntityDetailsPanel createPhysicalEntityDetailsPanel(SearchHitsPanel searchHitsPanel) {
@@ -185,14 +166,6 @@ public class CPath2Factory {
 
 	public UndoSupport getUndoSupport() {
 		return undoSupport;
-	}
-
-	public TaskFactory createMergeNetworkTaskFactory(URL cpathURL, CyNetwork cyNetwork) {
-		return new MergeNetworkTaskFactory(cpathURL, cyNetwork, this);
-	}
-
-	public UndoableEdit createMergeNetworkEdit(CyNetwork cyNetwork, Collection<CyNode> cyNodes, Set<CyEdge> cyEdges) {
-		return new MergeNetworkEdit(cyNetwork, cyNodes, cyEdges, this);
 	}
 
 	public CPathNetworkImportTask createCPathNetworkImportTask(String query, CPathWebService client, CPathResponseFormat format) {

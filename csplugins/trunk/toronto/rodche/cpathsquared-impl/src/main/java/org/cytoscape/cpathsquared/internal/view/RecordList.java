@@ -1,11 +1,8 @@
-package org.cytoscape.cpathsquared.internal.view.model;
+package org.cytoscape.cpathsquared.internal.view;
 
 import java.util.List;
 import java.util.TreeMap;
 
-import org.cytoscape.cpathsquared.internal.schemas.summary_response.BasicRecordType;
-import org.cytoscape.cpathsquared.internal.schemas.summary_response.DataSourceType;
-import org.cytoscape.cpathsquared.internal.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.cpathsquared.internal.util.BioPaxEntityTypeMap;
 
 /**

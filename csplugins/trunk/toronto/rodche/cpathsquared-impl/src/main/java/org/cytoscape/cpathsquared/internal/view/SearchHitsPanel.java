@@ -32,9 +32,6 @@ import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpath.service.jaxb.*;
 import org.cytoscape.cpathsquared.internal.task.SelectPhysicalEntity;
 import org.cytoscape.cpathsquared.internal.view.model.ExtendedRecordWrapper;
-import org.cytoscape.cpathsquared.internal.view.model.InteractionBundleModel;
-import org.cytoscape.cpathsquared.internal.view.model.PathwayTableModel;
-import org.cytoscape.cpathsquared.internal.view.model.RecordList;
 import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
 import org.cytoscape.cpathsquared.internal.web_service.CPathWebServiceListener;
 
@@ -171,12 +168,12 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
         }
     }
 
-    public void requestInitiatedForParentSummaries(long primaryId) {
+    public void requestInitiatedForParentSummaries(String primaryId) {
         //  Currently no-op
     }
 
-    public void requestCompletedForParentSummaries(long primaryId,
-            SummaryResponseType summaryResponse) {
+    public void requestCompletedForParentSummaries(String primaryId,
+            List<Entity> summaryResponse) {
         //  Store parent summaries for later reference
 
         RecordList recordList = new RecordList(summaryResponse);

@@ -113,29 +113,22 @@ public class NetworkUtil extends Thread {
      */
     public void run() {
 
-        try {
-            URL cpathURL = new URL(cPathRequest);
-
-            // are we merging ?
-            if (merging) {
-                // start merge network task
-                factory.getTaskManager().execute(factory.createMergeNetworkTaskFactory(cpathURL, cyNetwork));
-                postProcess(cyNetwork, true);
-            } else {
-                // the biopax graph reader is going to be called
-                // it will look for the network view title
-                // via system properties, so lets set it now
-                if (networkTitle != null && networkTitle.length() > 0) {
-                    System.setProperty("biopax.network_view_title", networkTitle);
-                }
-                LoadNetworkFromUrlTaskFactory taskFactory = new LoadNetworkFromUrlTaskFactory(cpathURL, factory);
-                factory.getTaskManager().execute(taskFactory);
-                postProcess(factory.getCyApplicationManager().getCurrentNetwork(), false);
-            }
-        }
-        catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+		try {
+			URL cpathURL = new URL(cPathRequest); //may contain a list of URIs, not only one
+			// the biopax plugin is going to be called;
+			// it will look for the network view title
+			// via system properties, so lets set it now
+			if (networkTitle != null && networkTitle.length() > 0) {
+				System.setProperty("biopax.network_view_title", networkTitle);
+			}
+			LoadNetworkFromUrlTaskFactory taskFactory = 
+					new LoadNetworkFromUrlTaskFactory(cpathURL, factory);
+			factory.getTaskManager().execute(taskFactory);
+			postProcess(factory.getCyApplicationManager()
+					.getCurrentNetwork(), false);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
     }
 
     /**
@@ -147,7 +140,7 @@ public class NetworkUtil extends Thread {
     private void parseRequest(String cpathRequest) {
 
         // web services url
-        int indexToStartOfPC = cpathRequest.indexOf("/pc");
+        int indexToStartOfPC = cpathRequest.indexOf("/pc2");
         if (indexToStartOfPC > 0) {
             this.webServicesURL = cpathRequest.substring(7, indexToStartOfPC + 3);
         }
@@ -197,22 +190,6 @@ public class NetworkUtil extends Thread {
         return value;
     }
 
-// TODO: Port this?
-//    /**
-//     * Method to setup cytoscape task
-//     */
-//    private JTaskConfig setupTask() {
-//
-//        // configure JTask Dialog Pop-Up Box
-//        JTaskConfig jTaskConfig = new JTaskConfig();
-//        jTaskConfig.setOwner(Cytoscape.getDesktop());
-//        jTaskConfig.displayStatus(true);
-//        jTaskConfig.setAutoDispose(true);
-//
-//        // outta here
-//        return jTaskConfig;
-//    }
-
     /**
      * Method for any post processing of recently loaded network.
      *
@@ -224,14 +201,6 @@ public class NetworkUtil extends Thread {
         // ref to view used below
         CyNetworkView view = factory.getCyNetworkViewManager().getNetworkView(cyNetwork.getSUID());
 
-        // if do layout, do it
-// TODO: Port this?    
-//        if (doLayout) {
-//            LayoutUtil layoutUtil = new LayoutUtil();
-//            layoutUtil.doLayout(view);
-//            view.fitContent();
-//        }
-
         // setup web services url to pc attribute  - used by nodeContextMenuListener
         if (webServicesURL != null) {
         	AttributeUtil.set(cyNetwork, "biopax.web_services_url", webServicesURL, String.class);
@@ -241,9 +210,6 @@ public class NetworkUtil extends Thread {
         if (dataSources != null) {
         	AttributeUtil.set(cyNetwork, "biopax.data_sources", dataSources, String.class);
         }
-
-        // setup the context menu
-        //view.addNodeContextMenuListener(nodeContextMenuListener);
 
         // set focus current
         factory.getCyApplicationManager().setCurrentNetworkView(cyNetwork.getSUID());

@@ -1,4 +1,4 @@
-package org.cytoscape.cpathsquared.internal.view.model;
+package org.cytoscape.cpathsquared.internal.view;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.Vector;

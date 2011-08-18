@@ -14,7 +14,7 @@ import org.cytoscape.work.TaskIterator;
 public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory {
 
 	private final CPathWebService webApi;
-	private final long[] ids;
+	private final String[] ids;
 	private final CPathResponseFormat format;
 	private final String networkTitle;
 	private final CyNetwork networkToMerge;
@@ -25,7 +25,7 @@ public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory {
 	private final VisualMappingManager mappingManager;
 
 	public ExecuteGetRecordByCPathIdTaskFactory(CPathWebService webApi,
-			long[] ids, CPathResponseFormat format, String networkTitle,
+			String[] ids, CPathResponseFormat format, String networkTitle,
 			CyNetwork networkToMerge, CPath2Factory cPathFactory, BioPaxContainer bpContainer,
 			MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener, VisualMappingManager mappingManager) {
 		this.webApi = webApi;

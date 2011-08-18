@@ -9,9 +9,9 @@ import javax.swing.JTextPane;
 import javax.swing.text.Document;
 
 import org.cytoscape.cpath.service.jaxb.*;
-import org.cytoscape.cpathsquared.internal.view.model.InteractionBundleModel;
-import org.cytoscape.cpathsquared.internal.view.model.PathwayTableModel;
-import org.cytoscape.cpathsquared.internal.view.model.RecordList;
+import org.cytoscape.cpathsquared.internal.view.InteractionBundleModel;
+import org.cytoscape.cpathsquared.internal.view.PathwayTableModel;
+import org.cytoscape.cpathsquared.internal.view.RecordList;
 
 /**
  * Indicates that the user has selected a physical entity from the list of search results.
@@ -44,15 +44,16 @@ public class SelectPhysicalEntity {
             pathwayTableModel, Document summaryDocumentModel,
             JTextPane textPane, JComponent textPaneOwner) {
         if (peSearchResponse != null) {
-            java.util.List<ExtendedRecordType> searchHits = peSearchResponse.getSearchHit();
-            ExtendedRecordType searchHit = searchHits.get(selectedIndex);
+            java.util.List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
+            SearchHitType searchHit = searchHits.get(selectedIndex);
 
             StringBuffer html = new StringBuffer();
             html.append("<html>");
 
             html.append ("<h2>" + searchHit.getName() + "</h2>");
 
-            OrganismType organism = searchHit.getOrganism();
+            List<String> organism = searchHit.getOrganism();
+            //TODO get BioSource by id, get name
             if (organism != null) {
                 String speciesName = organism.getSpeciesName();
                 html.append ("<H3>" + speciesName + "</H3>");

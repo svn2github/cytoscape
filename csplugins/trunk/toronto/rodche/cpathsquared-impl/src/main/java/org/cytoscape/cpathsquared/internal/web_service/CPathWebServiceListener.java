@@ -1,5 +1,8 @@
 package org.cytoscape.cpathsquared.internal.web_service;
 
+import java.util.List;
+
+import org.biopax.paxtools.model.level3.Entity;
 import org.cytoscape.cpath.service.jaxb.SearchResponseType;
 
 /**
@@ -29,14 +32,14 @@ public interface CPathWebServiceListener {
      *
      * @param primaryId     Primary ID of Child.
      */
-    public void requestInitiatedForParentSummaries (long primaryId);
+    public void requestInitiatedForParentSummaries (String primaryId);
 
     /**
      * Indicates that a request for parent summaries has completed.
      *
      * @param primaryId         Primary ID of Child.
-     * @param summaryResponse   Summary Response Object.
+     * @param parents
      */
-    public void requestCompletedForParentSummaries (long primaryId,
-            SummaryResponseType summaryResponse);
+    public void requestCompletedForParentSummaries (String primaryId,
+            List<Entity> parents);
 }

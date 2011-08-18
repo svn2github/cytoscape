@@ -11,7 +11,6 @@ import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,9 +19,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.cytoscape.cpath.service.jaxb.SearchHitType;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.schemas.summary_response.BasicRecordType;
-import org.cytoscape.cpathsquared.internal.view.model.NetworkWrapper;
 import org.cytoscape.cpathsquared.internal.web_service.CPathProperties;
 import org.cytoscape.cpathsquared.internal.web_service.CPathResponseFormat;
 import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
@@ -36,8 +34,7 @@ import org.cytoscape.work.TaskManager;
  * @author Ethan Cerami
  */
 public class DownloadDetails extends JDialog {
-    private MergePanel mergePanel;
-    private long ids[];
+    private String ids[];
     private String peName;
     private final CPath2Factory factory;
     
@@ -47,7 +44,7 @@ public class DownloadDetails extends JDialog {
      * @param peName                Name of Physical Entity.
      * @param bpContainer 
      */
-    public DownloadDetails(List<BasicRecordType> passedRecordList, String peName, CPath2Factory factory) {    	
+    public DownloadDetails(List<SearchHitType> passedRecordList, String peName, CPath2Factory factory) {    	
         super();
         this.factory = factory;
         
@@ -79,32 +76,28 @@ public class DownloadDetails extends JDialog {
         table.setAutoCreateColumnsFromModel(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        ids = new long[passedRecordList.size()];
+        ids = new String[passedRecordList.size()];
         int i = 0;
-        for (BasicRecordType record : passedRecordList) {
-            if (record.getName().equalsIgnoreCase("N/A")) {
-                record.setName("---");
+        for (SearchHitType record : passedRecordList) {
+            if (record.getName().isEmpty()) {
+                record.getName().add("---");
             }
             tableModel.setValueAt(record.getName(), i, 0);
-            tableModel.setValueAt(record.getEntityType(), i, 1);
+            tableModel.setValueAt(record.getBiopaxClass(), i, 1);
             if (record.getDataSource() != null) {
-                tableModel.setValueAt(record.getDataSource().getName(), i, 2);
+                tableModel.setValueAt(record.getDataSource(), i, 2);
             } else {
                 tableModel.setValueAt("---", i, 3);
             }
-            ids[i++] = record.getPrimaryId();
+            ids[i++] = record.getUri();
         }
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.add(scrollPane, BorderLayout.CENTER);
 
         JPanel buttonPanel = createButtonPanel(this);
-        mergePanel = factory.createMergePanel();
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        if (mergePanel != null) {
-            panel.add(mergePanel);
-        }
         panel.add(buttonPanel);
         contentPane.add(panel, BorderLayout.SOUTH);
         pack();
@@ -145,13 +138,6 @@ public class DownloadDetails extends JDialog {
      */
     private void downloadInteractions() {
         CyNetwork networkToMerge = null;
-        JComboBox networkComboBox = mergePanel.getNetworkComboBox();
-        if (networkComboBox != null) {
-            NetworkWrapper netWrapper = (NetworkWrapper) networkComboBox.getSelectedItem();
-            if (netWrapper != null) {
-                networkToMerge = netWrapper.getNetwork();
-            }
-        }
         downloadInteractions(networkToMerge);
     }
 
@@ -160,8 +146,7 @@ public class DownloadDetails extends JDialog {
         CPathWebService webApi = CPathWebServiceImpl.getInstance();
 
         CPathResponseFormat format;
-        CPathProperties config = CPathProperties.getInstance();
-        if (config.getDownloadMode() == CPathProperties.DOWNLOAD_FULL_BIOPAX) {
+        if (CPathProperties.downloadMode == CPathProperties.DOWNLOAD_FULL_BIOPAX) {
             format = CPathResponseFormat.BIOPAX;
         } else {
             format = CPathResponseFormat.BINARY_SIF;

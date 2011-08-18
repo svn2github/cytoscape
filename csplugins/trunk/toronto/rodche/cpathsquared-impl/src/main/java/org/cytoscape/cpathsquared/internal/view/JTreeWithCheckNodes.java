@@ -1,4 +1,4 @@
-package org.cytoscape.cpathsquared.internal.view.tree;
+package org.cytoscape.cpathsquared.internal.view;
 
 import javax.swing.*;
 import javax.swing.tree.TreeNode;

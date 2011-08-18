@@ -29,7 +29,7 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-package org.cytoscape.cpathsquared.internal.plugin;
+package org.cytoscape.cpathsquared.internal;
 
 // imports
 
@@ -39,7 +39,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.Properties;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
@@ -49,8 +48,6 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.http.HTTPServer;
 import org.cytoscape.cpathsquared.internal.web_service.CPathProperties;
 
 /**
@@ -65,25 +62,6 @@ public class CPathPlugIn2 {
      * Constructor.
      */
     public CPathPlugIn2(CPath2Factory factory) throws IOException {
-    	String debugProperty = System.getProperty("DEBUG");
-        Boolean debug = (debugProperty != null && debugProperty.length() > 0) &&
-                new Boolean(debugProperty.toLowerCase());
-        initProperties();
-
-        // create our http server and start its thread
-        new HTTPServer(HTTPServer.DEFAULT_PORT, factory.createMapCPathToCytoscape(), debug).start();
-
-        //  Register Web Service
-//        // TODO: Wire this up with OSGi
-//        WebServiceClientManager.registerClient(CytoscapeCPathWebService.getClient());
-    }
-
-    private void initProperties() throws IOException {
-    	// TODO: Port this
-//        PluginProperties pluginProperties = new PluginProperties(this);
-    	Properties pluginProperties = new Properties();
-        CPathProperties cpathProperties = CPathProperties.getInstance();
-        cpathProperties.initProperties(pluginProperties);
     }
 
     public static JScrollPane createConfigPanel() {
@@ -148,14 +126,12 @@ public class CPathPlugIn2 {
 
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                CPathProperties config = CPathProperties.getInstance();
-                config.setDownloadMode(CPathProperties.DOWNLOAD_FULL_BIOPAX);
+                CPathProperties.downloadMode = CPathProperties.DOWNLOAD_FULL_BIOPAX;
             }
         });
         button2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                CPathProperties config = CPathProperties.getInstance();
-                config.setDownloadMode(CPathProperties.DOWNLOAD_REDUCED_BINARY_SIF);
+                CPathProperties.downloadMode = CPathProperties.DOWNLOAD_REDUCED_BINARY_SIF;
             }
         });
         JScrollPane scrollPane = new JScrollPane(configPanel);

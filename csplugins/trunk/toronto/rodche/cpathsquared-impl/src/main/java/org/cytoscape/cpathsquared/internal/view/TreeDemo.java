@@ -1,6 +1,5 @@
-package org.cytoscape.cpathsquared.internal.view.tree;
+package org.cytoscape.cpathsquared.internal.view;
 
-import org.cytoscape.cpathsquared.internal.view.CollapsablePanel;
 
 import java.util.*;
 import java.awt.*;

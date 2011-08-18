@@ -1,4 +1,4 @@
-package org.cytoscape.cpathsquared.internal.view.model;
+package org.cytoscape.cpathsquared.internal.view;
 
 import java.util.Observable;
 

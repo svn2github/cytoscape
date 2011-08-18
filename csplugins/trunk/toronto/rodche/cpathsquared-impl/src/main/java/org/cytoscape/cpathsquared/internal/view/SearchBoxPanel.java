@@ -31,7 +31,6 @@ import javax.swing.event.HyperlinkListener;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskFactory;
 import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskFactory.ResultHandler;
-import org.cytoscape.cpathsquared.internal.view.model.Organism;
 import org.cytoscape.cpathsquared.internal.web_service.CPathProperties;
 import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
 

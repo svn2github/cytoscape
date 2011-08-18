@@ -9,38 +9,23 @@ import java.net.Proxy;
 import java.net.SocketException;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethodBase;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.cytoscape.work.TaskMonitor;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 /**
- * Utility Class for Connecting to the cPath Web Service API.
+ * Utility Class for Connecting to the cPathSquared Web Service API.
  *
- * @author Ethan Cerami
+ * @author Ethan Cerami, Igor Rodchenkov
  */
 public class CPathProtocol {
-
-    /**
-     * The CPath Web Service Path.
-     */
-    public static final String WEB_SERVICE_PATH = "webservice.do";
-
-    /**
-     * Command Argument.
-     */
-    public static final String ARG_COMMAND = "cmd";
-
     /**
      * Query Argument.
      */
@@ -67,24 +52,9 @@ public class CPathProtocol {
     public static final String ARG_START_INDEX = "startIndex";
 
     /**
-     * Version Argument.
-     */
-    public static final String ARG_VERSION = "version";
-
-    /**
-     * Count Only Format.
-     */
-    public static final String FORMAT_COUNT_ONLY = "count_only";
-
-    /**
-     * Currently Supported Version.
-     */
-    public static final String CURRENT_VERSION = "3.0";
-
-    /**
      * Get Records By Keyword.
      */
-    public static final String COMMAND_SEARCH ="search";
+    public static final String COMMAND_SEARCH ="entity/find";
 
     /**
      * Gets Parent Summaries.
@@ -124,14 +94,14 @@ public class CPathProtocol {
     /**
      * Get Top Level Pathway List.
      */
+    //TODO cPathSquared WS API does not currently support this
     public static final String COMMAND_GET_TOP_LEVEL_PATHWAY_LIST =
             "get_top_level_pathway_list";
 
     /**
      * Get Patheway record by CPath ID.
      */
-    public static final String COMMAND_GET_RECORD_BY_CPATH_ID =
-            "get_record_by_cpath_id";
+    public static final String COMMAND_GET = "get";
 
     /**
      * Default for Max Hits.
@@ -158,18 +128,24 @@ public class CPathProtocol {
     private int startIndex;
     private String format;
     private String baseUrl;
-    private volatile HttpMethodBase method;
     private boolean cancelledByUser = false;
     private static boolean debug = false;
-		private Logger logger = LoggerFactory.getLogger(CPathProtocol.class);
+	private Logger logger = LoggerFactory.getLogger(CPathProtocol.class);
+	
+	private RestTemplate template;
 
     /**
      * Constructor.
      */
     public CPathProtocol() {
-        this.baseUrl = CPathProperties.getInstance().getCPathUrl();
+        this.baseUrl = CPathProperties.cPathUrl;
         this.maxHits = DEFAULT_MAX_HITS;
         this.taxonomyId = NOT_SPECIFIED;
+   		template = new RestTemplate();
+   		List<HttpMessageConverter<?>> msgCovs = new ArrayList<HttpMessageConverter<?>>();
+   		msgCovs.add(new FormHttpMessageConverter());
+   		msgCovs.add(new StringHttpMessageConverter());
+   		template.setMessageConverters(msgCovs);
     }
 
     /**
@@ -226,15 +202,6 @@ public class CPathProtocol {
         this.startIndex = startIndex;
     }
 
-    /**
-     * Abort the Request.
-     */
-    public void abort() {
-        if (method != null) {
-            cancelledByUser = true;
-            method.abort();
-        }
-    }
 
     /**
      * Connects to cPath Web Service API.
@@ -243,6 +210,7 @@ public class CPathProtocol {
      * @throws CPathException    Indicates Error connecting.
      * @throws EmptySetException All went all, but no results found.
      */
+    //TODO use Spring RestTemplate and MultiValueMap
     public String connect (TaskMonitor taskMonitor) throws CPathException, EmptySetException {
         try {
             NameValuePair[] nvps;
@@ -393,7 +361,7 @@ public class CPathProtocol {
      */
     private String createURI (String url, NameValuePair[] nvps) {
         StringBuffer buf = new StringBuffer(url);
-        buf.append("?");
+        buf.append(command + "?");
         for (int i = 0; i < nvps.length; i++) {
             buf.append(nvps[i].getName() + "=" + nvps[i].getValue() + "&");
         }
@@ -403,36 +371,27 @@ public class CPathProtocol {
     private NameValuePair[] createNameValuePairs (boolean post) {
         NameValuePair nvps[] = null;
         if (taxonomyId == NOT_SPECIFIED) {
-            nvps = new NameValuePair[6];
+            nvps = new NameValuePair[5];
         } else {
-            nvps = new NameValuePair[7];
-            nvps[6] = new NameValuePair(ARG_ORGANISM,
+            nvps = new NameValuePair[6];
+            nvps[5] = new NameValuePair(ARG_ORGANISM,
                     Integer.toString(taxonomyId));
         }
-        nvps[0] = new NameValuePair(ARG_COMMAND, command);
         try {
             if (!post) {
-                nvps[1] = new NameValuePair(ARG_QUERY, URLEncoder.encode(query, "UTF-8"));
+                nvps[0] = new NameValuePair(ARG_QUERY, URLEncoder.encode(query, "UTF-8"));
             } else {
-                nvps[1] = new NameValuePair(ARG_QUERY, query); 
+                nvps[0] = new NameValuePair(ARG_QUERY, query); 
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        nvps[2] = new NameValuePair(ARG_FORMAT, format);
-        nvps[3] = new NameValuePair(ARG_VERSION, CURRENT_VERSION);
-        nvps[4] = new NameValuePair(ARG_MAX_HITS, Integer.toString(maxHits));
-        nvps[5] = new NameValuePair(ARG_START_INDEX,
+        nvps[1] = new NameValuePair(ARG_FORMAT, format);
+        nvps[2] = new NameValuePair(ARG_VERSION, CURRENT_VERSION);
+        nvps[3] = new NameValuePair(ARG_MAX_HITS, Integer.toString(maxHits));
+        nvps[4] = new NameValuePair(ARG_START_INDEX,
                 Integer.toString(startIndex));
         return nvps;
-    }
-
-    private void checkHttpStatusCode (int statusCode)
-            throws CPathException {
-        if (statusCode != 200) {
-            throw new CPathException(CPathException.ERROR_HTTP, "HTTP Status Code:  " + statusCode
-                + ":  " + HttpStatus.getStatusText(statusCode) + ".");
-        }
     }
 
     private void checkForErrors (Document document)

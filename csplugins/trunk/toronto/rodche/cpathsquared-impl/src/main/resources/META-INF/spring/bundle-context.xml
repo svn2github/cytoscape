@@ -39,7 +39,7 @@
 		<constructor-arg ref="cPath2Factory" />
 	</bean>
 	
-	<bean id="binarySifVisualStyleUtil" class="org.cytoscape.cpathsquared.internal.cytoscape.BinarySifVisualStyleUtil">
+	<bean id="binarySifVisualStyleUtil" class="org.cytoscape.cpathsquared.internal.util.BinarySifVisualStyleUtil">
 		<constructor-arg ref="visualStyleFactoryRef" />
 		<constructor-arg ref="visualMappingManagerRef" />
 		<constructor-arg ref="discreteMappingFactoryRef" />

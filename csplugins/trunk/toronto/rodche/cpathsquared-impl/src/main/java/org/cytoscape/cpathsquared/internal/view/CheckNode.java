@@ -1,4 +1,4 @@
-package org.cytoscape.cpathsquared.internal.view.tree;
+package org.cytoscape.cpathsquared.internal.view;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.Enumeration;

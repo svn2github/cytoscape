@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 
+import org.biopax.paxtools.model.level3.Entity;
 import org.cytoscape.cpath.service.jaxb.*;
 import org.cytoscape.work.TaskMonitor;
 
@@ -99,7 +100,7 @@ public class CPathWebServiceImpl implements CPathWebService {
      * @throws CPathException       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
-    public SummaryResponseType getParentSummaries (long primaryId, TaskMonitor taskMonitor)
+    public List<Entity> getParentSummaries (String primaryId, TaskMonitor taskMonitor)
             throws CPathException, EmptySetException {
         // Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
@@ -146,10 +147,10 @@ public class CPathWebServiceImpl implements CPathWebService {
      * @throws CPathException       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
-    public String getRecordsByIds(long[] ids, CPathResponseFormat format,
+    public String getRecordsByIds(String[] ids, CPathResponseFormat format,
             TaskMonitor taskMonitor) throws CPathException, EmptySetException {
         protocol = new CPathProtocol();
-        protocol.setCommand(CPathProtocol.COMMAND_GET_RECORD_BY_CPATH_ID);
+        protocol.setCommand(CPathProtocol.COMMAND_GET);
         protocol.setFormat(format);
         StringBuffer q = new StringBuffer();
         for (int i=0; i<ids.length; i++) {
@@ -164,7 +165,7 @@ public class CPathWebServiceImpl implements CPathWebService {
      * Abort the Request.
      */
     public void abort() {
-        protocol.abort();
+        //TODO
     }
 
     private SearchResponseType createDummySearchResults() {
@@ -225,7 +226,7 @@ public class CPathWebServiceImpl implements CPathWebService {
      *
      * @return ArrayList of Organism Type Objects.
      */
-    public ArrayList<OrganismType> getOrganismList() {
+    public List<BioSource> getOrganismList() {
         throw new UnsupportedOperationException("getOrganismList() is not yet implemented.");
     }
 

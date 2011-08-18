@@ -1,7 +1,10 @@
 package org.cytoscape.cpathsquared.internal.web_service;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.biopax.paxtools.model.level3.BioSource;
+import org.biopax.paxtools.model.level3.Entity;
 import org.cytoscape.cpath.service.jaxb.*;
 import org.cytoscape.work.TaskMonitor;
 
@@ -39,11 +42,11 @@ public interface CPathWebService {
      *
      * @param primaryId     Primary ID of Record.
      * @param taskMonitor   Task Monitor Object.
-     * @return SummaryResponse Object.
+     * @return List			of parent BioPAX Entities
      * @throws CPathException       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
-    public SummaryResponseType getParentSummaries (long primaryId, TaskMonitor taskMonitor)
+    public List<Entity> getParentSummaries (String primaryId, TaskMonitor taskMonitor)
             throws CPathException, EmptySetException;
 
     /**
@@ -58,15 +61,15 @@ public interface CPathWebService {
      * @throws CPathException       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
-    public String getRecordsByIds(long[] ids, CPathResponseFormat format, TaskMonitor taskMonitor)
+    public String getRecordsByIds(String[] ids, CPathResponseFormat format, TaskMonitor taskMonitor)
             throws CPathException, EmptySetException;
 
     /**
      * Gets a list of all Organisms currently available within the cPath instance.
      *
-     * @return ArrayList of Organism Type Objects.
+     * @return List of Organism (BioSource) Objects.
      */
-    public ArrayList<OrganismType> getOrganismList();
+    public List<BioSource> getOrganismList();
 
     /**
      * Abort the Request.
