@@ -54,8 +54,6 @@ import clusterMaker.treeview.DataModel;
 import clusterMaker.treeview.HeaderInfo;
 import clusterMaker.treeview.model.TVModel;
 
-import clusterMaker.algorithms.hierarchical.EisenCluster;
-
 /**
  * The ClusterVizModel provides the data that links the results of a cluster run
  * in Cytoscape with the Java TreeView code

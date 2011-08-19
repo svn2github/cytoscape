@@ -56,10 +56,10 @@ import cytoscape.task.util.TaskManager;
 import clusterMaker.ClusterMaker;
 import clusterMaker.ui.ClusterSettingsDialog;
 import clusterMaker.ui.ClusterTask;
-import clusterMaker.algorithms.AbstractNetworkClusterer;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.ClusterProperties;
 import clusterMaker.algorithms.ClusterResults;
+import clusterMaker.algorithms.networkClusterers.AbstractNetworkClusterer;
 
 enum BuiltIn {
 	HASCLUSTER("hascluster", "Test to see if this network has a cluster of the requested type", "type"),

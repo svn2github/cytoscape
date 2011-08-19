@@ -189,8 +189,8 @@ public class PropertyConfig {
 		protected HashMap<String,Object> attributes;
 
 		public PropertyConfigNode(String name) {
-			children = new HashMap();
-			attributes = new HashMap();
+			children = new HashMap<String, List<PropertyConfigNode>>();
+			attributes = new HashMap<String, Object>();
 			this.name = name;
 		}
 
@@ -359,7 +359,7 @@ public class PropertyConfig {
 		public String getName() { return name; }
 
 		public List<String> getChildKeys() { 
-			List<String> list = new ArrayList();
+			List<String> list = new ArrayList<String>();
 			list.addAll(children.keySet());
 			return list;
 		}
@@ -368,7 +368,7 @@ public class PropertyConfig {
 			if (children.containsKey(key))
 				return children.get(key);
 			else
-				return new ArrayList();
+				return new ArrayList<PropertyConfigNode>();
 		}
 
 		public String getStartElement() {

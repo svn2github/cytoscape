@@ -45,7 +45,6 @@ import cytoscape.logger.CyLogger;
 
 import giny.model.GraphPerspective;
 
-import clusterMaker.algorithms.AbstractNetworkFilter;
 import clusterMaker.algorithms.ClusterResults;
 import clusterMaker.algorithms.NodeCluster;
 import clusterMaker.ui.ClusterViz;

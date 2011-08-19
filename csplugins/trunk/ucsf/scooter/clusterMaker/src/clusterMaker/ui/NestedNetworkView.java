@@ -82,7 +82,7 @@ import giny.view.EdgeView;
 
 // ClusterMaker imports
 import clusterMaker.ClusterMaker;
-import clusterMaker.algorithms.AbstractNetworkClusterer;
+import clusterMaker.algorithms.networkClusterers.AbstractNetworkClusterer;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.ClusterProperties;
 import clusterMaker.algorithms.ClusterResults;

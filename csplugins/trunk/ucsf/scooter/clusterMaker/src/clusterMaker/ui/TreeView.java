@@ -115,15 +115,15 @@ public class TreeView extends TreeViewApp implements Observer,
 	public TreeView() {
 		super();
 		// setExitOnWindowsClosed(false);
-		selectedNodes = new ArrayList();
-		selectedArrays = new ArrayList();
+		selectedNodes = new ArrayList<CyNode>();
+		selectedArrays = new ArrayList<CyNode>();
 		myLogger = CyLogger.getLogger(TreeView.class);
 	}
 
 	public TreeView(PropertyConfig propConfig) {
 		super(propConfig);
-		selectedNodes = new ArrayList();
-		selectedArrays = new ArrayList();
+		selectedNodes = new ArrayList<CyNode>();
+		selectedArrays = new ArrayList<CyNode>();
 		// setExitOnWindowsClosed(false);
 		myLogger = CyLogger.getLogger(TreeView.class);
 	}
@@ -290,7 +290,7 @@ public class TreeView extends TreeViewApp implements Observer,
 		myView.removeGraphViewChangeListener(this); // For efficiency reasons, remove our listener for now
 		myNetwork.unselectAllEdges();
 
-		HashMap<CyEdge,CyEdge>edgesToSelect = new HashMap();
+		HashMap<CyEdge,CyEdge>edgesToSelect = new HashMap<CyEdge,CyEdge>();
 		for (CyNode node1: selectedNodes) {
 			int [] nodes = new int[2];
 			nodes[0] = node1.getRootGraphIndex();

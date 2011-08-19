@@ -55,26 +55,14 @@ import cytoscape.task.TaskMonitor;
 
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
 import clusterMaker.algorithms.ClusterAlgorithm;
-import clusterMaker.algorithms.hierarchical.DistanceMetric;
-import clusterMaker.algorithms.hierarchical.EisenCluster;
-import clusterMaker.algorithms.hierarchical.Matrix;
+import clusterMaker.algorithms.attributeClusterers.AbstractAttributeClusterAlgorithm;
+import clusterMaker.algorithms.attributeClusterers.DistanceMetric;
+import clusterMaker.algorithms.attributeClusterers.Matrix;
 import clusterMaker.ui.ClusterViz;
 
 // clusterMaker imports
 
 public class FeatureVectorCluster extends AbstractClusterAlgorithm implements TunableListener {
-	/**
-	 * Linkage types
-	 */
-	DistanceMetric[] distanceTypes = { DistanceMetric.EUCLIDEAN,
-	                                   DistanceMetric.CITYBLOCK,
-	                                   DistanceMetric.CORRELATION,
-	                                   DistanceMetric.ABS_CORRELATION,
-	                                   DistanceMetric.UNCENTERED_CORRELATION,
-	                                   DistanceMetric.ABS_UNCENTERED_CORRELATION,
-	                                   DistanceMetric.SPEARMANS_RANK,
-	                                   DistanceMetric.KENDALLS_TAU,
-	                                   DistanceMetric.VALUE_IS_CORRELATION };
 	String[] attributeArray = new String[1];
 
 	DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN;
@@ -101,7 +89,7 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm implements Tu
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
 		Tunable attributeTunable = clusterProperties.get("attributeList");
-		attributeArray = EisenCluster.getNodeAttributes();
+		attributeArray = AbstractAttributeClusterAlgorithm.getNodeAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
 
 		return clusterProperties.getTunablePanel();
@@ -122,14 +110,14 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm implements Tu
 		clusterProperties.add(new Tunable("dMetric",
 		                                  "Distance Metric",
 		                                  Tunable.LIST, new Integer(0),
-		                                  (Object)distanceTypes, (Object)null, 0));
+		                                  (Object)Matrix.distanceTypes, (Object)null, 0));
 
 		clusterProperties.add(new Tunable("attributeListGroup",
 		                                  "Source for array data",
 		                                  Tunable.GROUP, new Integer(1)));
 
 		// The attribute to use to get the weights
-		attributeArray = EisenCluster.getNodeAttributes();
+		attributeArray = AbstractAttributeClusterAlgorithm.getNodeAttributes();
 		clusterProperties.add(new Tunable("attributeList",
 		                                  "Array sources",
 		                                  Tunable.LIST, "",
@@ -203,7 +191,7 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm implements Tu
 
 		Tunable t = clusterProperties.get("dMetric");
 		if ((t != null) && (t.valueChanged() || force))
-			distanceMetric = distanceTypes[((Integer) t.getValue()).intValue()];
+			distanceMetric = Matrix.distanceTypes[((Integer) t.getValue()).intValue()];
 
 		t = clusterProperties.get("selectedOnly");
 		if ((t != null) && (t.valueChanged() || force))

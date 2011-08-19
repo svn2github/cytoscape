@@ -128,7 +128,7 @@ public class ClusterResults {
 		List<Edge> innerEdges = network.getConnectingEdges(cluster);
 
 		// Make a map out of the inner edges
-		Map<Edge,Edge> edgeMap = new HashMap();
+		Map<Edge,Edge> edgeMap = new HashMap<Edge,Edge>();
 		for (Edge edge: innerEdges) {
 			edgeMap.put(edge, edge);
 		}
