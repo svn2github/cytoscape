@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package clusterMaker.algorithms.FeatureVector;
+package clusterMaker.algorithms.attributeClusterers.FeatureVector;
 
 import java.awt.GridLayout;
 import java.util.ArrayList;
