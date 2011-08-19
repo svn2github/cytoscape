@@ -47,8 +47,7 @@ import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 
 import clusterMaker.algorithms.ClusterAlgorithm;
-import clusterMaker.algorithms.AbstractClusterAlgorithm;
-import clusterMaker.algorithms.attributeClusterers.AbstractAttributeClusterAlgorithm;
+import clusterMaker.algorithms.attributeClusterers.AbstractAttributeClusterer;
 import clusterMaker.algorithms.attributeClusterers.DistanceMetric;
 import clusterMaker.algorithms.attributeClusterers.Matrix;
 import clusterMaker.ui.ClusterViz;
@@ -56,19 +55,9 @@ import clusterMaker.ui.KnnView;
 
 // clusterMaker imports
 
-public class KMeansCluster extends AbstractClusterAlgorithm {
-	String[] attributeArray = new String[1];
-
+public class KMeansCluster extends AbstractAttributeClusterer {
 	int kNumber = 0;
 	int rNumber = 0;
-	DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN;
-	boolean clusterAttributes = false;
-	boolean createGroups = true;
-	boolean ignoreMissing = false;
-	boolean selectedOnly = false;
-	String dataAttributes = null;
-	TaskMonitor monitor = null;
-	CyLogger logger = null;
 	KnnView knnView = null;
 
 	public KMeansCluster() {
@@ -83,7 +72,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
 		Tunable attributeTunable = clusterProperties.get("attributeList");
-		attributeArray = AbstractAttributeClusterAlgorithm.getAllAttributes();
+		attributeArray = getAllAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
 
 		// We also want to update the number our "guestimate" for k
@@ -140,7 +129,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		                                  Tunable.GROUP, new Integer(1)));
 
 		// The attribute to use to get the weights
-		attributeArray = AbstractAttributeClusterAlgorithm.getAllAttributes();
+		attributeArray = getAllAttributes();
 		clusterProperties.add(new Tunable("attributeList",
 		                                  "Array sources",
 		                                  Tunable.LIST, "",
@@ -256,16 +245,4 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
 	}
 
-	public boolean isAvailable() {
-		return AbstractAttributeClusterAlgorithm.isAvailable(getShortName());
-	}
-
-	private String[] getAttributeArray(String dataAttributes) {
-		String indices[] = dataAttributes.split(",");
-		String selectedAttributes[] = new String[indices.length];
-		for (int i = 0; i < indices.length; i++) {
-			selectedAttributes[i] = attributeArray[Integer.parseInt(indices[i])];
-		}
-		return selectedAttributes;
-	}
 }

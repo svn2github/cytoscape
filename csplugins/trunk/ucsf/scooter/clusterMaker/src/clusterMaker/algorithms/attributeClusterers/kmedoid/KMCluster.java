@@ -97,26 +97,9 @@ public class KMCluster extends AbstractAttributeClusterAlgorithm {
 
 		// Cluster
 		int ifound = kmedoid(nClusters, nIterations, matrix, metric, clusters);
-
-		groupMap = new HashMap<String,List<CyNode>>();
-		attrList = new ArrayList<String>(matrix.nRows());
-		// Create the attribute list
-		for (int cluster = 0; cluster < nClusters; cluster++) {
-			List<CyNode> memberList = new ArrayList<CyNode>();
-			for (int i = 0; i < matrix.nRows(); i++) {
-				if (clusters[i] == cluster) {
-					attrList.add(matrix.getRowLabel(i)+"\t"+cluster);
-					if (debug)
-						logger.debug(matrix.getRowLabel(i)+"\t"+cluster);
-					memberList.add(matrix.getRowNode(i));
-				}
-			}
-			groupMap.put("Cluster_"+cluster, memberList);
-		}
-
 		if (!interimRun) {
 			if (!matrix.isTransposed())
-				createGroups();
+				createGroups(nClusters, clusters);
 			rowOrder = matrix.indexSort(clusters, clusters.length);
 			updateAttributes("kmedoid");
 		}

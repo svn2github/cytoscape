@@ -34,8 +34,10 @@ package clusterMaker.algorithms.attributeClusterers;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.groups.CyGroup;
@@ -174,7 +176,53 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		}
 	}
 
-	protected void createGroups() {
+	protected void createGroups(int nClusters, int[] clusters) {
+		if (matrix.isTransposed()) {
+			return;
+		}
+
+		if (monitor != null) 
+			monitor.setStatus("Creating groups");
+
+		HashMap<String,List<CyNode>> groupMap = new HashMap<String,List<CyNode>>();
+		attrList = new ArrayList<String>(matrix.nRows());
+		// Create the attribute list
+		for (int cluster = 0; cluster < nClusters; cluster++) {
+			List<CyNode> memberList = new ArrayList<CyNode>();
+			for (int i = 0; i < matrix.nRows(); i++) {
+				if (clusters[i] == cluster) {
+					attrList.add(matrix.getRowLabel(i)+"\t"+cluster);
+					if (debug)
+						logger.debug(matrix.getRowLabel(i)+"\t"+cluster);
+					memberList.add(matrix.getRowNode(i));
+				}
+			}
+			groupMap.put("Cluster_"+cluster, memberList);
+		}
+
+		List<String> groupNames = new ArrayList<String>();
+
+		if (createGroups) {
+			// Create our groups
+			CyGroup group = null;
+			for (String clusterName: groupMap.keySet()) {
+				List<CyNode> memberList = groupMap.get(clusterName);
+				groupNames.add(clusterName);
+
+				if (debug)
+					logger.debug("Creating group: "+clusterName);
+
+				// Create the group
+				group = CyGroupManager.createGroup(clusterName, memberList, null);
+				if (group != null) 
+					CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), false);
+			}
+			CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
+		}
+
+		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
+		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
+		netAttr.setListAttribute(netID, ClusterMaker.GROUP_ATTRIBUTE, groupNames);
 	}
 
 	public static boolean isAvailable(String type) {
@@ -198,31 +246,5 @@ public abstract class AbstractAttributeClusterAlgorithm {
 
 		return true;
 	}
-	
-	public static void getAttributesList(List<String>attributeList, CyAttributes attributes, 
-	                              String prefix) {
-		String[] names = attributes.getAttributeNames();
-		for (int i = 0; i < names.length; i++) {
-			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING ||
-			    attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER) {
-				attributeList.add(prefix+names[i]);
-			}
-		}
-	}
 
-	public static String[] getAllAttributes() {
-		// Create the list by combining node and edge attributes into a single list
-		List<String> attributeList = new ArrayList<String>();
-		getAttributesList(attributeList, Cytoscape.getNodeAttributes(),"node.");
-		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(),"edge.");
-		Collections.sort(attributeList);
-		return attributeList.toArray(new String[1]);
-	}
-
-	public static String[] getNodeAttributes() {
-		List<String> attributeList = new ArrayList<String>();
-		getAttributesList(attributeList, Cytoscape.getNodeAttributes(),"node.");
-		Collections.sort(attributeList);
-		return attributeList.toArray(new String[1]);
-	}
 }

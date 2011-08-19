@@ -47,7 +47,7 @@ import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 
 import clusterMaker.algorithms.ClusterAlgorithm;
-import clusterMaker.algorithms.AbstractClusterAlgorithm;
+import clusterMaker.algorithms.attributeClusterers.AbstractAttributeClusterer;
 import clusterMaker.algorithms.attributeClusterers.DistanceMetric;
 import clusterMaker.algorithms.attributeClusterers.Matrix;
 import clusterMaker.ui.ClusterViz;
@@ -55,7 +55,7 @@ import clusterMaker.ui.TreeView;
 
 // clusterMaker imports
 
-public class HierarchicalCluster extends AbstractClusterAlgorithm {
+public class HierarchicalCluster extends AbstractAttributeClusterer {
 	/**
 	 * Linkage types
 	 */
@@ -64,19 +64,8 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	                                 ClusterMethod.MAXIMUM_LINKAGE,
 	                                 ClusterMethod.CENTROID_LINKAGE };
 
-	String[] attributeArray = new String[1];
 
 	ClusterMethod clusterMethod =  ClusterMethod.AVERAGE_LINKAGE;
-	DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN;
-	boolean clusterAttributes = false;
-	boolean createGroups = true;
-	boolean ignoreMissing = false;
-	boolean selectedOnly = false;
-	boolean adjustDiagonals = false;
-	boolean zeroMissing = false;
-	String dataAttributes = null;
-	TaskMonitor monitor = null;
-	CyLogger logger = null;
 	TreeView treeView = null;
 
 	public HierarchicalCluster() {
@@ -91,7 +80,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
 		Tunable attributeTunable = clusterProperties.get("attributeList");
-		attributeArray = EisenCluster.getAllAttributes();
+		attributeArray = getAllAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
 
 		return clusterProperties.getTunablePanel();
@@ -128,7 +117,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		                                  Tunable.GROUP, new Integer(1)));
 
 		// The attribute to use to get the weights
-		attributeArray = EisenCluster.getAllAttributes();
+		attributeArray = getAllAttributes();
 		clusterProperties.add(new Tunable("attributeList",
 		                                  "Array sources",
 		                                  Tunable.LIST, "",
@@ -280,10 +269,6 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
 	}
 
-	public boolean isAvailable() {
-		return EisenCluster.isAvailable(getShortName());
-	}
-
 	private void setParameters(EisenCluster algorithm) {
 		algorithm.setCreateGroups(createGroups);
 		algorithm.setIgnoreMissing(ignoreMissing);
@@ -292,12 +277,4 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		algorithm.setZeroMissing(zeroMissing);
 	}
 
-	private String[] getAttributeArray(String dataAttributes) {
-		String indices[] = dataAttributes.split(",");
-		String selectedAttributes[] = new String[indices.length];
-		for (int i = 0; i < indices.length; i++) {
-			selectedAttributes[i] = attributeArray[Integer.parseInt(indices[i])];
-		}
-		return selectedAttributes;
-	}
 }

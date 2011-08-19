@@ -55,26 +55,19 @@ import cytoscape.task.TaskMonitor;
 
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
 import clusterMaker.algorithms.ClusterAlgorithm;
-import clusterMaker.algorithms.attributeClusterers.AbstractAttributeClusterAlgorithm;
+import clusterMaker.algorithms.attributeClusterers.AbstractAttributeClusterer;
 import clusterMaker.algorithms.attributeClusterers.DistanceMetric;
 import clusterMaker.algorithms.attributeClusterers.Matrix;
 import clusterMaker.ui.ClusterViz;
 
 // clusterMaker imports
 
-public class FeatureVectorCluster extends AbstractClusterAlgorithm implements TunableListener {
-	String[] attributeArray = new String[1];
+public class FeatureVectorCluster extends AbstractAttributeClusterer implements TunableListener {
 
-	DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN;
-	boolean ignoreMissing = true;
-	boolean selectedOnly = false;
-	boolean zeroMissing = false;
 	boolean createEdges = false;
 	double edgeCutoff = 0.5;
 	String dataAttributes = null;
 	String edgeAttribute = null;
-	TaskMonitor monitor = null;
-	CyLogger logger = null;
 	final static String interaction = "distance";
 
 	public FeatureVectorCluster() {
@@ -89,7 +82,7 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm implements Tu
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
 		Tunable attributeTunable = clusterProperties.get("attributeList");
-		attributeArray = AbstractAttributeClusterAlgorithm.getNodeAttributes();
+		attributeArray = getNodeAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
 
 		return clusterProperties.getTunablePanel();
@@ -117,7 +110,7 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm implements Tu
 		                                  Tunable.GROUP, new Integer(1)));
 
 		// The attribute to use to get the weights
-		attributeArray = AbstractAttributeClusterAlgorithm.getNodeAttributes();
+		attributeArray = getNodeAttributes();
 		clusterProperties.add(new Tunable("attributeList",
 		                                  "Array sources",
 		                                  Tunable.LIST, "",
@@ -367,7 +360,6 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm implements Tu
 	}
 
 	public boolean isAvailable() {
-		// return EisenCluster.isAvailable(getShortName());
 		return false;
 	}
 
@@ -390,14 +382,5 @@ public class FeatureVectorCluster extends AbstractClusterAlgorithm implements Tu
 		edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION, interaction);
 		edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME, edge_name);
 		return edge;
-	}
-
-	private String[] getAttributeArray(String dataAttributes) {
-		String indices[] = dataAttributes.split(",");
-		String selectedAttributes[] = new String[indices.length];
-		for (int i = 0; i < indices.length; i++) {
-			selectedAttributes[i] = attributeArray[Integer.parseInt(indices[i])];
-		}
-		return selectedAttributes;
 	}
 }

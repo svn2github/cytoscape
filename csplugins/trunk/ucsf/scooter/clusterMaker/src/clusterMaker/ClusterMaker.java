@@ -69,8 +69,8 @@ import clusterMaker.algorithms.attributeClusterers.autosome.AutoSOMECluster;
 import clusterMaker.algorithms.attributeClusterers.hierarchical.HierarchicalCluster;
 import clusterMaker.algorithms.attributeClusterers.kmeans.KMeansCluster;
 import clusterMaker.algorithms.attributeClusterers.kmedoid.KMedoidCluster;
+import clusterMaker.algorithms.attributeClusterers.FeatureVector.FeatureVectorCluster;
 
-import clusterMaker.algorithms.FeatureVector.FeatureVectorCluster;
 import clusterMaker.algorithms.networkClusterers.TransClust.TransClustCluster;
 import clusterMaker.algorithms.networkClusterers.MCL.MCLCluster;
 import clusterMaker.algorithms.networkClusterers.MCODE.MCODECluster;
@@ -81,6 +81,7 @@ import clusterMaker.algorithms.networkClusterers.SCPS.SCPSCluster;
 // import clusterMaker.algorithms.Spectral.SpectralCluster;
 // import clusterMaker.algorithms.CP.CPCluster;
 import clusterMaker.algorithms.networkClusterers.AP.APCluster;
+
 import clusterMaker.algorithms.clusterFilters.AbstractNetworkFilter;
 import clusterMaker.algorithms.clusterFilters.HairCutFilter;
 import clusterMaker.algorithms.clusterFilters.CuttingEdgeFilter;

@@ -527,33 +527,6 @@ public class EisenCluster extends AbstractAttributeClusterAlgorithm {
 		return nodeList;
 	}
 
-	public static void getAttributesList(List<String>attributeList, CyAttributes attributes, 
-	                              String prefix) {
-		String[] names = attributes.getAttributeNames();
-		for (int i = 0; i < names.length; i++) {
-			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING ||
-			    attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER) {
-				attributeList.add(prefix+names[i]);
-			}
-		}
-	}
-
-	public static String[] getAllAttributes() {
-		// Create the list by combining node and edge attributes into a single list
-		List<String> attributeList = new ArrayList<String>();
-		getAttributesList(attributeList, Cytoscape.getNodeAttributes(),"node.");
-		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(),"edge.");
-		Collections.sort(attributeList);
-		return attributeList.toArray(new String[1]);
-	}
-
-	public static String[] getNodeAttributes() {
-		List<String> attributeList = new ArrayList<String>();
-		getAttributesList(attributeList, Cytoscape.getNodeAttributes(),"node.");
-		Collections.sort(attributeList);
-		return attributeList.toArray(new String[1]);
-	}
-		
 	/**
  	 * This function searches the distance matrix to find the pair with the shortest
  	 * distance between them. The indices of the pair are returned in ip and jp; the
