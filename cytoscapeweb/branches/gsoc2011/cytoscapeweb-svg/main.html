@@ -490,7 +490,9 @@
 			// Load a graph
 			function load(graph) {
 				vis._clearSimulation();
+				setstyle("basicStyle");
 				vis.loadGraph(graphs[graph]);
+				addRandomData();
 				vis._startSimulating();
 
 			}
@@ -498,6 +500,7 @@
 			function setstyle(style) {
 				vis.loadStyles(styles[style]);
 				vis.draw();
+				document.getElementById("styleSelect").value = style;
 			}
 			
 			function message(s) {
@@ -560,7 +563,7 @@
 			</select>
 			
 			Load style:
-			<select onchange="setstyle(this.options[selectedIndex].value)">
+			<select id="styleSelect" onchange="setstyle(this.options[selectedIndex].value)">
 				<option selected value="basicStyle">Basic Style</option>
 				<option value="demoStyle">Style with node size mapper</option>
 				<option value="darkStyle">Style with edge width mapper</option>

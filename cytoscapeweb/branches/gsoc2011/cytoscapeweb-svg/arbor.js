@@ -624,19 +624,19 @@
 
    // some magic attrs to make the Node objects phone-home their physics-relevant changes
 
-   var defineProperty = Object.defineProperty != null ? 
-	 function (obj, name, desc){
-	    if(!obj.hasOwnProperty(name)){
-	    	Object.defineProperty(obj, name, desc);
-	    }
-     }
-		   :
-     function (obj, name, desc) {
-       if (desc.get)
-         obj.__defineGetter__(name, desc.get)
-       if (desc.set)
-         obj.__defineSetter__(name, desc.set)
-     };
+   var defineProperty = (window.__defineGetter__ == null || window.__defineSetter__ == null) ? 
+	  function (obj, name, desc){
+        if(!obj.hasOwnProperty(name)){
+	      Object.defineProperty(obj, name, desc);
+        }
+      }
+        :
+      function (obj, name, desc) {
+        if (desc.get)
+          obj.__defineGetter__(name, desc.get)
+        if (desc.set)
+          obj.__defineSetter__(name, desc.set)
+      };
 
    var RoboPoint = function (n) {
      this._n = n;

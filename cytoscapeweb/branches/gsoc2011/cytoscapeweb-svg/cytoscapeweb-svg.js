@@ -1366,8 +1366,6 @@
 		};
 	}
 
-	function message() {}
-
 	window.Visualization = Visualization;
 	window.ContinuousVisualMapper = ContinuousVisualMapper;
 	
