@@ -117,7 +117,7 @@ public class KMCluster extends AbstractAttributeClusterAlgorithm {
 		// Start by calculating the pairwise distances
 		double[][] distances = new double[matrix.nRows()][matrix.nRows()];
 		for (int i = 0; i < matrix.nRows(); i++) {
-			for (int j = i; j < matrix.nRows(); j++) {
+			for (int j = 0; j < matrix.nRows(); j++) {
 				distances[i][j] = metric.getMetric(matrix, matrix, matrix.getWeights(), i, j);
 			}
 		}
@@ -182,8 +182,10 @@ public class KMCluster extends AbstractAttributeClusterAlgorithm {
 		for (int row = 0; row < matrix.nRows(); row++) {
 			if (clusterid[row] == cluster) {
 				double distance = metric.getMetric(matrix, cdata, matrix.getWeights(), row, cluster);
-				if (distance < minDistance)
+				if (distance < minDistance) {
 					medoid = row;
+					minDistance = distance;
+				}
 			}
 		}
 		return medoid;

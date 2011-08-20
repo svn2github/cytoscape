@@ -146,10 +146,12 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 		                                  "Cluster attributes as well as nodes", 
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
+/*
 		// For expression data, we might want to exclude missing data
 		clusterProperties.add(new Tunable("ignoreMissing",
 		                                  "Ignore nodes with no data",
 		                                  Tunable.BOOLEAN, new Boolean(false)));
+*/
 
 		// Whether or not to create groups
 		clusterProperties.add(new Tunable("createGroups",
@@ -188,9 +190,11 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 		if ((t != null) && (t.valueChanged() || force))
 			selectedOnly = ((Boolean) t.getValue()).booleanValue();
 
+/*
 		t = clusterProperties.get("ignoreMissing");
 		if ((t != null) && (t.valueChanged() || force))
 			ignoreMissing = ((Boolean) t.getValue()).booleanValue();
+*/
 
 		t = clusterProperties.get("createGroups");
 		if ((t != null) && (t.valueChanged() || force))
@@ -224,7 +228,7 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 
 		KMCluster algorithm = new KMCluster(attributeArray, distanceMetric, logger, monitor);
 		algorithm.setCreateGroups(createGroups);
-		algorithm.setIgnoreMissing(ignoreMissing);
+		algorithm.setIgnoreMissing(true);	// KMedoid doesn't handle missing data well
 		algorithm.setSelectedOnly(selectedOnly);
 		algorithm.setDebug(debug);
 

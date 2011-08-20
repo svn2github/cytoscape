@@ -145,10 +145,12 @@ public class KMeansCluster extends AbstractAttributeClusterer {
 		                                  "Cluster attributes as well as nodes", 
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
+/*
 		// For expression data, we might want to exclude missing data
 		clusterProperties.add(new Tunable("ignoreMissing",
 		                                  "Ignore nodes with no data",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		                                  Tunable.BOOLEAN, new Boolean(true)));
+*/
 
 		// Whether or not to create groups
 		clusterProperties.add(new Tunable("createGroups",
@@ -187,9 +189,11 @@ public class KMeansCluster extends AbstractAttributeClusterer {
 		if ((t != null) && (t.valueChanged() || force))
 			selectedOnly = ((Boolean) t.getValue()).booleanValue();
 
+/*
 		t = clusterProperties.get("ignoreMissing");
 		if ((t != null) && (t.valueChanged() || force))
 			ignoreMissing = ((Boolean) t.getValue()).booleanValue();
+*/
 
 		t = clusterProperties.get("createGroups");
 		if ((t != null) && (t.valueChanged() || force))
@@ -223,7 +227,7 @@ public class KMeansCluster extends AbstractAttributeClusterer {
 
 		KCluster algorithm = new KCluster(attributeArray, distanceMetric, logger, monitor);
 		algorithm.setCreateGroups(createGroups);
-		algorithm.setIgnoreMissing(ignoreMissing);
+		algorithm.setIgnoreMissing(true);
 		algorithm.setSelectedOnly(selectedOnly);
 		algorithm.setDebug(debug);
 
