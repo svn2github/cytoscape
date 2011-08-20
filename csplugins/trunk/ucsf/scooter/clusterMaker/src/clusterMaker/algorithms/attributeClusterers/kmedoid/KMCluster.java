@@ -40,6 +40,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JPanel;
 
 // Cytoscape imports
@@ -71,6 +75,7 @@ public class KMCluster extends AbstractAttributeClusterAlgorithm {
 		resetAttributes();
 	}
 
+/*
 	public String cluster(int nClusters, int nIterations, boolean transpose) {
 		String keyword = "GENE";
 		if (transpose) keyword = "ARRY";
@@ -106,8 +111,9 @@ public class KMCluster extends AbstractAttributeClusterAlgorithm {
 
 		return "Complete";
 	}
+*/
 
-	public int kmedoid(int nClusters, int nIterations, Matrix matrix, DistanceMetric metric, int[] clusterId) {
+	public int kcluster(int nClusters, int nIterations, Matrix matrix, DistanceMetric metric, int[] clusterId) {
 
 		if (monitor != null)
 			monitor.setPercentCompleted(0);

@@ -56,7 +56,6 @@ import clusterMaker.ui.KnnView;
 // clusterMaker imports
 
 public class KMeansCluster extends AbstractAttributeClusterer {
-	int kNumber = 0;
 	int rNumber = 0;
 	KnnView knnView = null;
 
@@ -75,19 +74,8 @@ public class KMeansCluster extends AbstractAttributeClusterer {
 		attributeArray = getAllAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
 
-		// We also want to update the number our "guestimate" for k
-		double nodeCount = (double)Cytoscape.getCurrentNetwork().getNodeCount();
-		Tunable kTunable = clusterProperties.get("knumber");
-		if (selectedOnly) {
-			int selNodes = Cytoscape.getCurrentNetwork().getSelectedNodes().size();
-			if (selNodes > 0) nodeCount = (double)selNodes;
-		}
-
-		double kinit = Math.sqrt(nodeCount/2);
-		if (kinit > 1)
-			kTunable.setValue((int)kinit);
-		else
-			kTunable.setValue(1);
+		// We also want to update the number our "guestimate" for k and kMax
+		updateKEstimates();
 
 		return clusterProperties.getTunablePanel();
 	}
@@ -107,16 +95,13 @@ public class KMeansCluster extends AbstractAttributeClusterer {
 		 */
 
 		// K
-		clusterProperties.add(new Tunable("knumber",
-		                                  "Number of clusters",
-		                                  Tunable.INTEGER, new Integer(10),
-		                                  (Object)kNumber, (Object)null, 0));
+		addKTunables();
 
 		// Number of iterations
 		clusterProperties.add(new Tunable("iterations",
 		                                  "Number of iterations",
-		                                  Tunable.INTEGER, new Integer(10),
-		                                  (Object)rNumber, (Object)null, 0));
+		                                  Tunable.INTEGER, new Integer(50),
+		                                  (Object)new Integer(rNumber), (Object)null, 0));
 
 		// The distance metric to use
 		clusterProperties.add(new Tunable("dMetric",
@@ -163,17 +148,16 @@ public class KMeansCluster extends AbstractAttributeClusterer {
 
 	public void updateSettings() {
 		updateSettings(false);
+		updateKTunables(false);
+		
 	}
 
 	public void updateSettings(boolean force) {
 		clusterProperties.updateValues();
 		super.updateSettings(force);
+		updateKTunables(force);
 
-		Tunable t = clusterProperties.get("knumber");
-		if ((t != null) && (t.valueChanged() || force))
-			kNumber = ((Integer) t.getValue()).intValue();
-
-		t = clusterProperties.get("iterations");
+		Tunable t = clusterProperties.get("iterations");
 		if ((t != null) && (t.valueChanged() || force))
 			rNumber = ((Integer) t.getValue()).intValue();
 
@@ -231,19 +215,21 @@ public class KMeansCluster extends AbstractAttributeClusterer {
 		algorithm.setSelectedOnly(selectedOnly);
 		algorithm.setDebug(debug);
 
+		String resultsString = "K-Means results:";
+
 		// Cluster the attributes, if requested
 		if (clusterAttributes && attributeArray.length > 1) {
 			if (monitor != null)
 				monitor.setStatus("Clustering attributes");
-			algorithm.cluster(kNumber, rNumber, true);
+			resultsString = "\nAttributes: " + algorithm.cluster(kNumber, rNumber, true, "kmeans");
 		}
 
 		// Cluster the nodes
 		if (monitor != null)
 			monitor.setStatus("Clustering nodes");
-		algorithm.cluster(kNumber, rNumber, false);
+		resultsString = "\nNodes: "+algorithm.cluster(kNumber, rNumber, false, "kmeans");
 		if (monitor != null)
-			monitor.setStatus("Clustering complete");
+			monitor.setStatus(resultsString);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

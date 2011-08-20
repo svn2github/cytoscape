@@ -57,7 +57,6 @@ import clusterMaker.ui.KnnView;
 // clusterMaker imports
 
 public class KMedoidCluster extends AbstractAttributeClusterer {
-	int kNumber = 0;
 	int rNumber = 0;
 	KnnView knnView = null;
 
@@ -76,19 +75,8 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 		attributeArray = getAllAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
 
-		// We also want to update the number our "guestimate" for k
-		double nodeCount = (double)Cytoscape.getCurrentNetwork().getNodeCount();
-		Tunable kTunable = clusterProperties.get("knumber");
-		if (selectedOnly) {
-			int selNodes = Cytoscape.getCurrentNetwork().getSelectedNodes().size();
-			if (selNodes > 0) nodeCount = (double)selNodes;
-		}
-
-		double kinit = Math.sqrt(nodeCount/2);
-		if (kinit > 1)
-			kTunable.setValue((int)kinit);
-		else
-			kTunable.setValue(1);
+		// We also want to update the number our "guestimate" for k and kMax
+		updateKEstimates();
 
 		return clusterProperties.getTunablePanel();
 	}
@@ -108,10 +96,7 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 		 */
 
 		// K
-		clusterProperties.add(new Tunable("knumber",
-		                                  "Number of clusters",
-		                                  Tunable.INTEGER, new Integer(10),
-		                                  (Object)kNumber, (Object)null, 0));
+		addKTunables();
 
 		// Number of iterations
 		clusterProperties.add(new Tunable("iterations",
@@ -164,17 +149,15 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 
 	public void updateSettings() {
 		updateSettings(false);
+		updateKTunables(false);
 	}
 
 	public void updateSettings(boolean force) {
 		clusterProperties.updateValues();
 		super.updateSettings(force);
+		updateKTunables(force);
 
-		Tunable t = clusterProperties.get("knumber");
-		if ((t != null) && (t.valueChanged() || force))
-			kNumber = ((Integer) t.getValue()).intValue();
-
-		t = clusterProperties.get("iterations");
+		Tunable t = clusterProperties.get("iterations");
 		if ((t != null) && (t.valueChanged() || force))
 			rNumber = ((Integer) t.getValue()).intValue();
 
@@ -232,19 +215,21 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 		algorithm.setSelectedOnly(selectedOnly);
 		algorithm.setDebug(debug);
 
+		String resultsString = "K-Medoid results:";
+
 		// Cluster the attributes, if requested
 		if (clusterAttributes && attributeArray.length > 1) {
 			if (monitor != null)
 				monitor.setStatus("Clustering attributes");
-			algorithm.cluster(kNumber, rNumber, true);
+			resultsString = "\nAttributes: " + algorithm.cluster(kNumber, rNumber, true, "kmedoid");
 		}
 
 		// Cluster the nodes
 		if (monitor != null)
 			monitor.setStatus("Clustering nodes");
-		algorithm.cluster(kNumber, rNumber, false);
+		resultsString = "\nNodes: "+algorithm.cluster(kNumber, rNumber, false, "kmedoid");
 		if (monitor != null)
-			monitor.setStatus("Clustering complete");
+			monitor.setStatus(resultsString);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

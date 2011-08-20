@@ -33,9 +33,15 @@
 package clusterMaker.algorithms.attributeClusterers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -46,6 +52,8 @@ import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 
 import clusterMaker.ClusterMaker;
+import clusterMaker.algorithms.attributeClusterers.silhouette.SilhouetteResult;
+import clusterMaker.algorithms.attributeClusterers.silhouette.SilhouetteUtil;
 
 /**
  * This abstract class is the base class for all of the attribute clusterers provided by
@@ -61,6 +69,8 @@ public abstract class AbstractAttributeClusterAlgorithm {
 	protected TaskMonitor monitor;
 	protected Integer[] rowOrder;
 	protected String weightAttributes[] = null;
+	protected int kMax = -1;
+	private SilhouetteResult[] silhouetteResults = null;
 
 	protected boolean adjustDiagonals = false;
 	protected boolean debug = false;
@@ -69,8 +79,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 	protected boolean interimRun = false;
 	protected boolean selectedOnly = false;
 	protected boolean zeroMissing = false;
-
-	abstract public String cluster(int nClusters, int nIterations, boolean transpose);
+	protected boolean useSilhouette = false;
 
 	public Matrix getMatrix() { return matrix; }
 	public DistanceMetric getMetric() { return metric; }
@@ -81,8 +90,15 @@ public abstract class AbstractAttributeClusterAlgorithm {
 	public void setAdjustDiagonals(boolean val) { adjustDiagonals = val; }
 	public void setZeroMissing(boolean val) { zeroMissing = val; }
 	public void setDebug(boolean val) { debug = val; }
-	public void setInterimRun(boolean val) { interimRun = val; }
+	public void setUseSilhouette(boolean val) { useSilhouette = val; }
+	public void setKMax(int val) { kMax = val; }
 
+	/**
+ 	 * This method is called by all of the attribute cluster algorithms to update the
+ 	 * results attributes in the network.
+ 	 *
+ 	 * @param cluster_type the cluster type to indicate write into the CLUSTER_TYPE_ATTRIBUTE
+ 	 */
 	protected void updateAttributes(String cluster_type) {
 		// Update the network attribute and make it hidden
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
@@ -144,6 +160,10 @@ public abstract class AbstractAttributeClusterAlgorithm {
 
 	}
 
+	/**
+ 	 * This method resets (clears) all of the existing network attributes.
+ 	 */
+	@SuppressWarnings("unchecked")
 	protected void resetAttributes() {
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
@@ -176,6 +196,42 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		}
 	}
 
+	/**
+ 	 * This method is used to determine if the current network has data corresponding to a
+ 	 * particular cluster type.
+ 	 *
+ 	 * @param type the cluster type to check for
+ 	 * @return 'true' if this network has data for the designated type
+ 	 */
+	public static boolean isAvailable(String type) {
+		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
+		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
+		if (!netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE))
+			return false;
+
+		if (!netAttr.getStringAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE).equals(type))
+			return false;
+
+		// OK, we need either a node list or an attribute list
+		if (!netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_ATTR_ATTRIBUTE) && 
+		    !netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE))
+			return false;
+
+		// Finally, we need to have the cluster attributes themselves
+		if (!netAttr.hasAttribute(netID, ClusterMaker.NODE_ORDER_ATTRIBUTE) &&
+		    !netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE))
+			return false;
+
+		return true;
+	}
+
+	/**
+ 	 * This protected method is called to create all of our groups (if desired).
+ 	 * It is used by all of the k-clustering algorithms.
+ 	 *
+ 	 * @param nClusters the number of clusters we created
+ 	 * @param cluster the list of values and the assigned clusters
+ 	 */
 	protected void createGroups(int nClusters, int[] clusters) {
 		if (matrix.isTransposed()) {
 			return;
@@ -225,26 +281,187 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		netAttr.setListAttribute(netID, ClusterMaker.GROUP_ATTRIBUTE, groupNames);
 	}
 
-	public static boolean isAvailable(String type) {
-		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
-		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
-		if (!netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE))
-			return false;
 
-		if (!netAttr.getStringAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE).equals(type))
-			return false;
+	/**
+ 	 * Common code for the k-cluster algorithms with silhouette
+ 	 */
 
-		// OK, we need either a node list or an attribute list
-		if (!netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_ATTR_ATTRIBUTE) && 
-		    !netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE))
-			return false;
+	// This should be overridden by any k-cluster implementation
+	protected int kcluster(int nClusters, int nIterations, Matrix matrix, 
+	                       DistanceMetric metric, int[] clusters) {
+		return 0;
+	}
+	/**
+ 	 * This is the common entry point for k-cluster algorithms.
+ 	 *
+ 	 * @param nClusters the number of clusters (k)
+ 	 * @param nIterations the number of iterations to use
+ 	 * @param transpose whether we're doing rows (GENE) or columns (ARRY)
+ 	 * @param algorithm the algorithm type
+ 	 * @return a string with all of the results
+ 	 */
+	public String cluster(int nClusters, int nIterations, boolean transpose, String algorithm) {
+		String keyword = "GENE";
+		if (transpose) keyword = "ARRY";
 
-		// Finally, we need to have the cluster attributes themselves
-		if (!netAttr.hasAttribute(netID, ClusterMaker.NODE_ORDER_ATTRIBUTE) &&
-		    !netAttr.hasAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE))
-			return false;
+		for (int att = 0; att < weightAttributes.length; att++)
+			if (debug)
+				logger.debug("Attribute: '"+weightAttributes[att]+"'");
 
-		return true;
+		if (monitor != null) 
+			monitor.setStatus("Creating distance matrix");
+
+		// Create the matrix
+		matrix = new Matrix(weightAttributes, transpose, ignoreMissing, selectedOnly);
+		logger.info("cluster matrix has "+matrix.nRows()+" rows");
+
+		// Create a weight vector of all ones (we don't use individual weighting, yet)
+		matrix.setUniformWeights();
+
+		if (monitor != null) 
+			monitor.setStatus("Clustering...");
+
+		if (useSilhouette) {
+			TaskMonitor saveMonitor = monitor;
+			monitor = null;
+
+			silhouetteResults = new SilhouetteResult[kMax];
+
+			int nThreads = Runtime.getRuntime().availableProcessors()-1;
+			if (nThreads > 1)
+				runThreadedSilhouette(kMax, nIterations, nThreads);
+			else
+				runLinearSilhouette(kMax, nIterations);
+
+			// Now get the results and find our best k
+			double maxSil = Double.MIN_VALUE;
+			for (int kEstimate = 2; kEstimate < kMax; kEstimate++) {
+				double sil = silhouetteResults[kEstimate].getAverageSilhouette();
+				// System.out.println("Average silhouette for "+kEstimate+" clusters is "+sil);
+				if (sil > maxSil) {
+					maxSil = sil;
+					nClusters = kEstimate;
+				}
+			}
+			monitor = saveMonitor;
+			// System.out.println("maxSil = "+maxSil+" nClusters = "+nClusters);
+		}
+
+		int[] clusters = new int[matrix.nRows()];
+		// Cluster
+		int ifound = kcluster(nClusters, nIterations, matrix, metric, clusters);
+
+		// OK, now run our silhouette on our final result
+		SilhouetteResult sResult = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
+		// System.out.println("Average silhouette = "+sResult.getAverageSilhouette());
+		// SilhouetteUtil.printSilhouette(sResult, clusters);
+
+		if (!matrix.isTransposed())
+			createGroups(nClusters, clusters);
+
+	/*
+ 		Ideally, we would sort our clusters based on size, but for some reason
+		this isn't working...
+		renumberClusters(nClusters, clusters);
+	*/
+
+		rowOrder = matrix.indexSort(clusters, clusters.length);
+		System.out.println(Arrays.toString(rowOrder));
+		// Update the network attributes
+		updateAttributes(algorithm);
+
+		String resultString =  "Created "+nClusters+" clusters with average silhouette = "+sResult.getAverageSilhouette();
+		logger.info(resultString);
+		return resultString;
 	}
 
+	private void renumberClusters(int nClusters, int [] clusters) {
+		int[] clusterSizes = new int[nClusters];
+		Arrays.fill(clusterSizes, 0);
+		for (int row = 0; row < clusters.length; row++) {
+			clusterSizes[clusters[row]] += 1;
+		}
+
+		Integer[] sortedClusters = new Integer[nClusters];
+		for (int cluster = 0; cluster < nClusters; cluster++) {
+			sortedClusters[cluster] = cluster;
+		}
+
+
+		// OK, now sort
+		Arrays.sort(sortedClusters, new SizeComparator(clusterSizes));
+		int[] clusterIndex = new int[nClusters];
+		for (int cluster = 0; cluster < nClusters; cluster++) {
+			clusterIndex[sortedClusters[cluster]] = cluster;
+		}
+		for (int row = 0; row < clusters.length; row++) {
+			// System.out.println("Setting cluster for row "+ row+" to "+sortedClusters[clusters[row]]+" was "+clusters[row]);
+			clusters[row] = clusterIndex[clusters[row]];
+		}
+		
+	}
+
+	class SizeComparator implements Comparator <Integer> {
+		int[] sizeArray = null;
+		public SizeComparator(int[] a) { this.sizeArray = a; }
+
+		public int compare(Integer o1, Integer o2) {
+			if (sizeArray[o1] > sizeArray[o2]) return 1;
+			if (sizeArray[o1] < sizeArray[o2]) return -1;
+			return 0;
+		}
+	}
+
+	private void runThreadedSilhouette(int kMax, int nIterations, int nThreads) {
+		// Set up the thread pools
+		ExecutorService[] threadPools = new ExecutorService[nThreads];
+		for (int pool = 0; pool < threadPools.length; pool++)
+			threadPools[pool] = Executors.newFixedThreadPool(1);
+
+		// Dispatch a kmeans calculation to each pool
+		for (int kEstimate = 2; kEstimate < kMax; kEstimate++) {
+			int[] clusters = new int[matrix.nRows()];
+			Runnable r = new RunKMeans(matrix, clusters, kEstimate, nIterations);
+			threadPools[(kEstimate-2)%nThreads].submit(r);
+			// threadPools[0].submit(r);
+		}
+
+		// OK, now wait for each thread to complete
+		for (int pool = 0; pool < threadPools.length; pool++) {
+			threadPools[pool].shutdown();
+			try {
+				boolean result = threadPools[pool].awaitTermination(7, TimeUnit.DAYS);
+			} catch (Exception e) {}
+		}
+	}
+
+	private void runLinearSilhouette(int kMax, int nIterations) {
+		for (int kEstimate = 2; kEstimate < kMax; kEstimate++) {
+			int[] clusters = new int[matrix.nRows()];
+			int ifound = kcluster(kEstimate, nIterations, matrix, metric, clusters);
+			silhouetteResults[kEstimate] = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
+		}
+	}
+
+	private class RunKMeans implements Runnable {
+		Matrix matrix;
+		int[] clusters;
+		int kEstimate;
+		int nIterations;
+
+		public RunKMeans (Matrix matrix, int[] clusters, int k, int nIterations) {
+			this.matrix = matrix;
+			this.clusters = clusters;
+			this.kEstimate = k;
+			this.nIterations = nIterations;
+		}
+
+		public void run() {
+			int[] clusters = new int[matrix.nRows()];
+			int ifound = kcluster(kEstimate, nIterations, matrix, metric, clusters);
+			try {
+				silhouetteResults[kEstimate] = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
+			} catch (Exception e) { e.printStackTrace(); }
+		}
+	}
 }

@@ -30,8 +30,8 @@ public class SilhouetteResult {
 
     /**
      * add a value in the silhouette list
-	 * @para value is the silhouette value
-	 * @para the nearest cluster of the sample
+		 * @param value is the silhouette value
+		 * @param the nearest cluster of the sample
      */
     public void addSilhouettevalue(double value, Integer label)
     {
@@ -42,7 +42,7 @@ public class SilhouetteResult {
 
     /**
      * delete a silhouette at a given index
-	 * @para index the position of the sample you want to delete (0~ size-1)
+		 * @param index the position of the sample you want to delete (0~ size-1)
      */
     public void deleteSilhouettevalue(int index)
     {
@@ -53,8 +53,8 @@ public class SilhouetteResult {
 
     /**
      * get the value for the silhouette at a given index
-	 * @para index the position of the sample you want to delete (0~ size-1)
-	 * return the value for the silhouette at
+		 * @param index the position of the sample you want to delete (0~ size-1)
+		 * return the value for the silhouette at
      */
     public double getSilhouettevalue(int index)
     {
@@ -64,8 +64,8 @@ public class SilhouetteResult {
 
     /**
      * This function is to get the neighbor cluster of current sample (the given index)
-	 * @para index the position of the sample you want to delete (0~ size-1)
-	 * return the neighbor cluster of current sample
+		 * @param index the position of the sample you want to delete (0~ size-1)
+		 * return the neighbor cluster of current sample
      */
     public Integer getSilhouetteneighborlabel(int index)
     {
@@ -79,10 +79,12 @@ public class SilhouetteResult {
      */
     public double getAverageSilhouette()
     {
+				// System.out.println("Have "+silhouetteValues.size()+" values");
         double avgS = 0;
         for (Double v: silhouetteValues) {
             avgS = avgS+v.doubleValue();
         }
+				// System.out.println("avgS = "+avgS+" average = "+avgS/(double)silhouetteValues.size());
         return avgS/(double)silhouetteValues.size();
     }
     

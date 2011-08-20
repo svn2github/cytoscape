@@ -36,6 +36,10 @@ import java.awt.GridLayout;
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +61,8 @@ import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.attributeClusterers.AbstractAttributeClusterAlgorithm;
 import clusterMaker.algorithms.attributeClusterers.DistanceMetric;
 import clusterMaker.algorithms.attributeClusterers.Matrix;
+// import clusterMaker.algorithms.attributeClusterers.silhouette.SilhouetteResult;
+// import clusterMaker.algorithms.attributeClusterers.silhouette.SilhouetteUtil;
 
 public class KCluster extends AbstractAttributeClusterAlgorithm {
 	Random random = null;
@@ -70,6 +76,7 @@ public class KCluster extends AbstractAttributeClusterAlgorithm {
 		resetAttributes();
 	}
 
+/*
 	public String cluster(int nClusters, int nIterations, boolean transpose) {
 		String keyword = "GENE";
 		if (transpose) keyword = "ARRY";
@@ -88,13 +95,43 @@ public class KCluster extends AbstractAttributeClusterAlgorithm {
 		// Create a weight vector of all ones (we don't use individual weighting, yet)
 		matrix.setUniformWeights();
 
-		int[] clusters = new int[matrix.nRows()];
-
 		if (monitor != null) 
 			monitor.setStatus("Clustering...");
 
+		if (useSilhouette) {
+			TaskMonitor saveMonitor = monitor;
+			monitor = null;
+
+			silhouetteResults = new SilhouetteResult[kMax];
+
+			int nThreads = Runtime.getRuntime().availableProcessors()-1;
+			if (nThreads > 1)
+				runThreadedSilhouette(kMax, nIterations, nThreads);
+			else
+				runLinearSilhouette(kMax, nIterations);
+
+			// Now get the results and find our best k
+			double maxSil = Double.MIN_VALUE;
+			for (int kEstimate = 2; kEstimate < kMax; kEstimate++) {
+				double sil = silhouetteResults[kEstimate].getAverageSilhouette();
+				// System.out.println("Average silhouette for "+kEstimate+" clusters is "+sil);
+				if (sil > maxSil) {
+					maxSil = sil;
+					nClusters = kEstimate;
+				}
+			}
+			monitor = saveMonitor;
+			// System.out.println("maxSil = "+maxSil+" nClusters = "+nClusters);
+		}
+
+		int[] clusters = new int[matrix.nRows()];
 		// Cluster
 		int ifound = kmeans(nClusters, nIterations, matrix, metric, clusters);
+
+		// OK, now run our silhouette on our final result
+		SilhouetteResult sResult = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
+		// System.out.println("Average silhouette = "+sResult.getAverageSilhouette());
+		// SilhouetteUtil.printSilhouette(sResult, clusters);
 
 		if (!interimRun) {
 			if (!matrix.isTransposed())
@@ -104,14 +141,47 @@ public class KCluster extends AbstractAttributeClusterAlgorithm {
 			updateAttributes("kmeans");
 		}
 
-		return "Complete";
+		return "Created "+nClusters+" clusters with average silhouette = "+sResult.getAverageSilhouette();
 	}
 
-	public int kmeans(int nClusters, int nIterations, Matrix matrix, DistanceMetric metric, int[] clusterID) {
+	private void runThreadedSilhouette(int kMax, int nIterations, int nThreads) {
+		// Set up the thread pools
+		ExecutorService[] threadPools = new ExecutorService[nThreads];
+		for (int pool = 0; pool < threadPools.length; pool++)
+			threadPools[pool] = Executors.newFixedThreadPool(1);
 
+		// Dispatch a kmeans calculation to each pool
+		for (int kEstimate = 2; kEstimate < kMax; kEstimate++) {
+			int[] clusters = new int[matrix.nRows()];
+			Runnable r = new RunKMeans(matrix, clusters, kEstimate, nIterations);
+			threadPools[(kEstimate-2)%nThreads].submit(r);
+			// threadPools[0].submit(r);
+		}
+
+		// OK, now wait for each thread to complete
+		for (int pool = 0; pool < threadPools.length; pool++) {
+			threadPools[pool].shutdown();
+			try {
+				boolean result = threadPools[pool].awaitTermination(7, TimeUnit.DAYS);
+			} catch (Exception e) {}
+		}
+	}
+
+	private void runLinearSilhouette(int kMax, int nIterations) {
+		for (int kEstimate = 2; kEstimate < kMax; kEstimate++) {
+			int[] clusters = new int[matrix.nRows()];
+			int ifound = kmeans(kEstimate, nIterations, matrix, metric, clusters);
+			silhouetteResults[kEstimate] = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
+		}
+	}
+*/
+
+	// The kmeans implementation of a k-clusterer
+	public int kcluster(int nClusters, int nIterations, Matrix matrix, DistanceMetric metric, int[] clusterID) {
 		if (monitor != null)
 			monitor.setPercentCompleted(0);
 
+		random = null;
 		int nelements = matrix.nRows();
 		int ifound = 1;
 
@@ -492,9 +562,35 @@ public class KCluster extends AbstractAttributeClusterAlgorithm {
 */
 	private double uniform() {
 		if (random == null) {
-			Date date = new Date();
-			random = new Random(date.getTime());
+			// Date date = new Date();
+			// random = new Random(date.getTime());
+			// Use an unseeded random so that our silhouette results are comparable
+			random = new Random();
 		}
 		return random.nextDouble();
 	}
+
+/*
+	class RunKMeans implements Runnable {
+		Matrix matrix;
+		int[] clusters;
+		int kEstimate;
+		int nIterations;
+
+		public RunKMeans (Matrix matrix, int[] clusters, int k, int nIterations) {
+			this.matrix = matrix;
+			this.clusters = clusters;
+			this.kEstimate = k;
+			this.nIterations = nIterations;
+		}
+
+		public void run() {
+			int[] clusters = new int[matrix.nRows()];
+			int ifound = kmeans(kEstimate, nIterations, matrix, metric, clusters);
+			try {
+				silhouetteResults[kEstimate] = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
+			} catch (Exception e) { e.printStackTrace(); }
+		}
+	}
+*/
 }

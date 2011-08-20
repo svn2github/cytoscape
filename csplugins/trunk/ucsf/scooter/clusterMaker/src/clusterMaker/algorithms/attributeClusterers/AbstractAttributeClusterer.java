@@ -38,17 +38,21 @@ import java.util.List;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.layout.Tunable;
+import cytoscape.layout.TunableListener;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
 
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
+import clusterMaker.ui.ClusterTask;
 
 /**
  * This abstract class is the base class for all of the attribute clusterers provided by
  * clusterMaker.  Fundamentally, an attribute clusterer is an algorithm which functions to
  * partition nodes or node attributes based on properties of the attributes.
  */
-public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorithm {
+public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorithm implements TunableListener {
 	// Common instance variables
 	protected String[] attributeArray = new String[1];
 	protected String dataAttributes = null;
@@ -59,6 +63,9 @@ public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorith
 	protected boolean selectedOnly = false;
 	protected boolean adjustDiagonals = false;
 	protected boolean zeroMissing = false;
+	protected boolean useSilhouette = true;
+	protected int kMax = 0;
+	protected int kNumber = 0;
 	protected TaskMonitor monitor = null;
 	protected CyLogger logger = null;
 
@@ -99,6 +106,78 @@ public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorith
 
 	public boolean isAvailable() {
 		return AbstractAttributeClusterAlgorithm.isAvailable(getShortName());
+	}
+
+	// We don't want to autodispose our task monitors
+	public JTaskConfig getDefaultTaskConfig() { return ClusterTask.getDefaultTaskConfig(true); }
+
+	protected void addKTunables() {
+		Tunable t = new Tunable("useSilhouette",
+		                        "Estimate k using silhouette",
+		                        Tunable.BOOLEAN, Boolean.TRUE,
+		                        (Object)new Boolean(useSilhouette), (Object)null, 0);
+		t.addTunableValueListener(this);
+		clusterProperties.add(t);
+
+		t = new Tunable("kMax",
+		                "Maximum number of clusters",
+		                Tunable.INTEGER, new Integer(0),
+		                (Object)new Integer(kMax), (Object)null, 0);
+		if (!useSilhouette) t.setFlag(Tunable.IMMUTABLE);
+		clusterProperties.add(t);
+
+		t = new Tunable("kNumber",
+		                "Number of clusters (k)",
+		                Tunable.INTEGER, new Integer(10),
+		                (Object)new Integer(kNumber), (Object)null, 0);
+		if (useSilhouette) t.setFlag(Tunable.IMMUTABLE);
+		clusterProperties.add(t);
+	}
+
+	protected void updateKTunables(boolean force) {
+		Tunable t = clusterProperties.get("useSilhouette");
+		if ((t != null) && (t.valueChanged() || force))
+			useSilhouette = ((Boolean) t.getValue()).booleanValue();
+
+		t = clusterProperties.get("kMax");
+		if ((t != null) && (t.valueChanged() || force))
+			kMax = ((Integer) t.getValue()).intValue();
+
+		t = clusterProperties.get("kNumber");
+		if ((t != null) && (t.valueChanged() || force))
+			kNumber = ((Integer) t.getValue()).intValue();
+	}
+
+	protected void updateKEstimates() {
+		// We also want to update the number our "guestimate" for k
+		double nodeCount = (double)Cytoscape.getCurrentNetwork().getNodeCount();
+		if (selectedOnly) {
+			int selNodes = Cytoscape.getCurrentNetwork().getSelectedNodes().size();
+			if (selNodes > 0) nodeCount = (double)selNodes;
+		}
+
+		Tunable kTunable = clusterProperties.get("kNumber");
+		double kinit = Math.sqrt(nodeCount/2);
+		if (kinit > 1)
+			kTunable.setValue((int)kinit);
+		else
+			kTunable.setValue(1);
+
+		Tunable kMaxTunable = clusterProperties.get("kMax");
+		kMaxTunable.setValue((int)kinit*2); // Double our kNumber estimate
+	}
+
+	public void tunableChanged(Tunable t) {
+		if (t.getName().equals("useSilhouette")) {
+			useSilhouette = ((Boolean) t.getValue()).booleanValue();
+			if (useSilhouette) {
+				clusterProperties.get("kMax").clearFlag(Tunable.IMMUTABLE);
+				clusterProperties.get("kNumber").setFlag(Tunable.IMMUTABLE);
+			} else {
+				clusterProperties.get("kMax").setFlag(Tunable.IMMUTABLE);
+				clusterProperties.get("kNumber").clearFlag(Tunable.IMMUTABLE);
+			}
+		}
 	}
 
 }

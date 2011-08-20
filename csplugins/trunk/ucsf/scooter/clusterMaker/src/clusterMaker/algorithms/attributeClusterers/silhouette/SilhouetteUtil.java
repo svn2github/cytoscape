@@ -10,6 +10,9 @@ import clusterMaker.algorithms.attributeClusterers.Matrix;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.Iterator;
 
 
@@ -30,7 +33,7 @@ public class SilhouetteUtil {
      * @param labels the labels for each of clusters
      * @return the resulting silhouette
      */
-    public static SilhouetteResult SilhouetteCalculator(Matrix matrix, DistanceMetric metric, Integer[] labels)
+    public static SilhouetteResult SilhouetteCalculator(Matrix matrix, DistanceMetric metric, int[] labels)
     {
         double[][] distanceMatrix = matrix.getDistanceMatrix(metric);
         return SilhouetteCalculator(distanceMatrix, labels);
@@ -42,7 +45,7 @@ public class SilhouetteUtil {
      * @para labels the labels for each of clusters
      * @return the resulting silhouette
      */
-    public static SilhouetteResult SilhouetteCalculator(double[][] distancematrix, Integer[] labels)
+    public static SilhouetteResult SilhouetteCalculator(double[][] distancematrix, int[] labels)
     {
  
         SilhouetteResult silresult = new SilhouetteResult();
@@ -62,73 +65,88 @@ public class SilhouetteUtil {
             }
         }
 
+        // The number of classes (clusters) that we have
+        int classnum = classlabels.size();
+
         // OK, now calculate the silhouete
-        for(int i=0;i<labels.length;i++)
+        for(int i=0;i<samplenum;i++)
         {
             double silhouettevalue=0;
             double a=0;
             double b=0;
-            int classnum = classlabels.size();
             Integer classlabel = labels[i];
+            // System.out.println("Row "+i+" is in cluster "+classlabel);
         
             //initializing
             HashMap<Integer, Double> bvalues = new HashMap<Integer, Double>();
-            for(int k=0; k<classnum; k++)
-            {
-                Set<Integer> labelset = classlabels.keySet();
-                for (Integer label: labelset)
-                {
-                    bvalues.put(label, Double.valueOf(0));
-                }
-            }
         
-            //calculate distance by differnt classes
+            //calculate distance by different classes
             for(int j=0;j<samplenum;j++)
             {
+                // System.out.println("Distance from "+i+" to "+j+" is "+distancematrix[i][j]);
                 if (i == j) continue;
                 Integer currentclasslabel = labels[j];
-                double distancevalue = bvalues.get(currentclasslabel).doubleValue();
+            		// System.out.println("Row "+j+" is in cluster "+currentclasslabel);
+                double distancevalue = 0.0;
+                if(bvalues.containsKey(currentclasslabel))
+                    distancevalue = bvalues.get(currentclasslabel).doubleValue();
                 distancevalue = distancevalue + distancematrix[i][j];
+                // System.out.println("Cumulative distance from "+i+" to cluster "+currentclasslabel+" is "+distancevalue);
                 bvalues.put(currentclasslabel, Double.valueOf(distancevalue));
             }
-        
+
             //calculate a b and silhouette
-            for(int k=0;k<classnum;k++)
+            double mindis = Double.MAX_VALUE;
+            Integer minlabel = null;
+            for(Integer kLabel: bvalues.keySet())
             {
-                double mindis = Double.MAX_VALUE;
-                Integer minlabel = null;
-                Set<Integer> labelset = classlabels.keySet();
-                for (Integer label: labelset)
-                {
-                    int count = classlabels.get(label).intValue();
-                    double value = bvalues.get(label).doubleValue();
-
-                    if(label.equals(classlabel))
-                        a = value/count;
-                    else {
-                     
-                        double avedistance = value/count;
-                        if(avedistance<mindis)
-                        {
-                            mindis = avedistance;
-                            minlabel = label;
-                        }
-                    }
-                }    
-                b = mindis;
-
-                if(a>b) {
-                    silhouettevalue = (b-a)/a;
-                } else  {
-                    silhouettevalue = (b-a)/b;
+                int count = classlabels.get(kLabel).intValue();
+                double value = bvalues.get(kLabel).doubleValue();
+                if (kLabel.equals(classlabel))
+                    a = value/count;
+                else if (value/count < mindis) {
+                    mindis = value/count;
+                    minlabel = kLabel;
                 }
-            
-                silresult.addSilhouettevalue(silhouettevalue, minlabel);
-            
             }
+            b = mindis;
+
+            if(a>b) {
+                silhouettevalue = (b-a)/a;
+            } else  {
+                silhouettevalue = (b-a)/b;
+            }
+						// System.out.println("silhouetteValue for "+i+" = "+silhouettevalue+", a = "+a+", b = "+b);
+            
+            silresult.addSilhouettevalue(silhouettevalue, minlabel);
+            
         }
-    
         return silresult;
+    }
+
+    /**
+     * This method prints out the silhouette profile for a given result.  In typical silhouette display,
+     * the values are organized by cluster with the silhouette values ranked largest to smallest.
+     *
+     * @param result the result that we're displaying
+     * @param labels the clustering
+     */
+    public static void printSilhouette(SilhouetteResult result, int[] labels) {
+        // Divide the indices into clusters
+        TreeMap<Integer, SortedSet<Double>> clusters = new TreeMap<Integer, SortedSet<Double>>();
+        for (int row = 0; row < labels.length; row++) {
+            if (!clusters.containsKey(labels[row]))
+                clusters.put(labels[row], new TreeSet<Double>());
+            clusters.get(labels[row]).add(result.getSilhouettevalue(row));
+        }
+        // For each cluster, output the profile
+        for (Integer cluster: clusters.keySet()) {
+            System.out.println("Cluster #"+cluster);
+            for (Double sil: clusters.get(cluster)) {
+            	System.out.println("Silhouette "+sil);
+            }
+				}
+
     }
     
 }

@@ -322,10 +322,12 @@ public class Matrix {
 
 	public double[][] getDistanceMatrix(DistanceMetric metric) {
 		double[][] result = new double[this.nRows][this.nRows];
-		for (int row = 1; row < this.nRows; row++) {
-			for (int column = 0; column < row; column++) {
+		for (int row = 0; row < this.nRows; row++) {
+			for (int column = row; column < this.nRows; column++) {
 				result[row][column] = 
 				   metric.getMetric(this, this, this.getWeights(), row, column);
+				if (row != column)
+					result[column][row] = result[row][column];  // Assumes symmetrical distances
 				// System.out.println("distanceMatrix["+row+"]["+column+"] = "+result[row][column]);
 			}
 		}
