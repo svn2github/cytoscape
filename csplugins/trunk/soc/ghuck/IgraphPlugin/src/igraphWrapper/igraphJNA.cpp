@@ -257,8 +257,10 @@ void layoutLGL(double x[],
 	       double cellSize) {
 
   long int vcount = igraph_vcount(&g);
+
   igraph_matrix_t locs;
   igraph_matrix_init(&locs, vcount, 2); 
+
   for(int i = 0; i < vcount; i++) {
     MATRIX(locs, i, 0) = x[i];
     MATRIX(locs, i, 1) = y[i];
@@ -278,7 +280,10 @@ void layoutLGL(double x[],
     x[i] = MATRIX(locs, i, 0);
     y[i] = MATRIX(locs, i, 1);
   }
-  
+
+  // Clean up
+  igraph_matrix_destroy(&locs);
+  destroy_graph();  
 }
 
 
@@ -352,38 +357,5 @@ extern "C"{
 
 
 int nodeCount(){
-	return (int)igraph_vcount(&g);
+  return (int)igraph_vcount(&g);
 }
-
-
-
-
-
-
-// ///////////////////////////////////////////////////////////////////////////////
-// //Shortest path function
-
-// //Calculate shortest path as the distance matrix
-// void distMatrix(double dist1d[]){
-
-// 	//This will just map back the data to dist
-// 	long nodeCount = igraph_vcount(&g);
-// 	igraph_matrix_t dist;
-// 	igraph_matrix_init(&dist,nodeCount, nodeCount); 
-
-// 	igraph_vs_t nodes;
-// 	igraph_vs_all(&nodes);
-
-// 	//This idea is to get all the nodes.
-// 	igraph_shortest_paths(&g, &dist, nodes, IGRAPH_ALL);
-
-// 	int counter = 0;
-// 	for(int i=0; i<nodeCount; i++){
-// 		for(int j=0; j<nodeCount; j++){
-// 			dist1d[counter] = MATRIX(dist, i, j);
-// 			counter++;
-// 		}
-// 	}
-
-// }
-
