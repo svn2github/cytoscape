@@ -100,7 +100,8 @@ public class EdgeAttributeHandler
 		converters.add(new SCPSConverter());
 		converter = converters.get(0); // Initialize to the None converter
 
-		initializeTunables(clusterProperties);
+		if (clusterProperties != null)
+			initializeTunables(clusterProperties);
 	}
 
 	public void initializeTunables(ClusterProperties clusterProperties) {
@@ -315,6 +316,27 @@ public class EdgeAttributeHandler
 			matrix.adjustLoops();
 
 		return this.matrix;
+	}
+
+	public void setParams(List<String> params) {
+		if (adjustLoops)
+			params.add("adjustLoops");
+		if (edgeCutOff != null)
+			params.add("edgeCutOff="+edgeCutOff.toString());
+		if (selectedOnly)
+			params.add("selectedOnly");
+		if (undirectedEdges)
+			params.add("undirectedEdges");
+		params.add("converter="+converter.getShortName());
+		params.add("dataAttribute="+dataAttribute);
+	}
+
+	public EdgeWeightConverter getConverter(String converterName) {
+		for (EdgeWeightConverter ewc: converters) {
+			if (converterName.equals(ewc.getShortName()))
+				return ewc;
+		}
+		return null;
 	}
 
 	private void getAttributesList(List<String>attributeList, CyAttributes attributes) {

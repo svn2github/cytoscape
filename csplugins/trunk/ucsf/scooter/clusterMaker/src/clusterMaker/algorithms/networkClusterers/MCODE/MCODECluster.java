@@ -78,9 +78,6 @@ public class MCODECluster extends AbstractNetworkClusterer  {
 
 	RunMCODE runMCODE;
 
-	TaskMonitor monitor = null;
-	CyLogger logger = null;
-
 	public MCODECluster() {
 		super();
 		clusterAttributeName = Cytoscape.getCurrentNetwork().getIdentifier()+"_MCODE_cluster";
@@ -283,5 +280,17 @@ public class MCODECluster extends AbstractNetworkClusterer  {
 	public void halt() {
 		canceled = true;
 		runMCODE.halt();
+	}
+
+	public void setParams(List<String>params) {
+		params.add("scope="+currentParamsCopy.getScope());
+		params.add("includeLoops="+currentParamsCopy.isIncludeLoops());
+		params.add("degreeCutoff="+currentParamsCopy.getDegreeCutoff());
+		params.add("kCore="+currentParamsCopy.getKCore());
+		params.add("maxDepth="+currentParamsCopy.getMaxDepthFromStart());
+		params.add("nodeScoreCutoff="+currentParamsCopy.getNodeScoreCutoff());
+		params.add("fluff="+currentParamsCopy.isFluff());
+		params.add("haircut="+currentParamsCopy.isHaircut());
+		super.setParams(params);
 	}
 }

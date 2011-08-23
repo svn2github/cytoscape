@@ -79,6 +79,8 @@ import giny.view.EdgeView;
 
 // ClusterMaker imports
 import clusterMaker.ClusterMaker;
+import clusterMaker.algorithms.edgeConverters.EdgeAttributeHandler;
+import clusterMaker.algorithms.edgeConverters.EdgeWeightConverter;
 import clusterMaker.algorithms.networkClusterers.AbstractNetworkClusterer;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.ClusterProperties;
@@ -258,13 +260,25 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 
 	public PropertyChangeSupport getPropertyChangeSupport() {return pcs;}
 
+	@SuppressWarnings("unchecked")
 	private void createClusteredNetwork(String clusterAttribute) {
 		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
+
+		// Get the clustering parameters
+		List<String> params = null;
+		if (netAttributes.hasAttribute(currentNetwork.getIdentifier(), ClusterMaker.CLUSTER_PARAMS_ATTRIBUTE))
+			params = netAttributes.getListAttribute(currentNetwork.getIdentifier(), 
+			                                        ClusterMaker.CLUSTER_PARAMS_ATTRIBUTE);
+		else
+			params = new ArrayList<String>();
 
 		// Create the new network
 		CyNetwork net = Cytoscape.createNetwork(currentNetwork.getTitle()+"--clustered",currentNetwork,false);
+		if (params.size() > 0)
+			netAttributes.setListAttribute(net.getIdentifier(), ClusterMaker.CLUSTER_PARAMS_ATTRIBUTE, params);
 
 		// Create the cluster Map
 		HashMap<Object, List<CyNode>> clusterMap = new HashMap<Object, List<CyNode>>();
@@ -287,18 +301,38 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 				}
 				// System.out.println("Adding node "+node+" to "+cluster.toString());
 				clusterMap.get(cluster).add(node);
-				net.addNode(node);
+			}
+			net.addNode(node);
+		}
+
+		// Special handling for edge weight thresholds
+		EdgeWeightConverter converter = null;
+		String dataAttribute = null;
+		double cutOff = 0.0;
+		for (String param: params) {
+			if (param.startsWith("converter")) {
+				String[] conv = param.split("=");
+				converter = new EdgeAttributeHandler(null, false).getConverter(conv[1]);
+			} else if (param.startsWith("edgeCutOff")) {
+				String[] cut = param.split("=");
+				cutOff = Double.parseDouble(cut[1]);
+			} else if (param.startsWith("dataAttribute")) {
+				String[] attr = param.split("=");
+				dataAttribute = attr[1];
 			}
 		}
 
 		HashMap<CyEdge,CyEdge> edgeMap = new HashMap<CyEdge,CyEdge>();
-
 		for (Object cluster: clusterMap.keySet()) {
 			// Get the list of nodes
 			List<CyNode> nodeList = clusterMap.get(cluster); 
 			// Get the list of edges
 			List<CyEdge> edgeList = currentNetwork.getConnectingEdges(nodeList);
 			for (CyEdge edge: edgeList) { 
+				if (converter != null && dataAttribute != null) {
+					if (edgeWeightCheck(edgeAttributes, edge, dataAttribute, converter, cutOff)) 
+						continue;
+				}
 				net.addEdge(edge); 
 				edgeMap.put(edge,edge);
 				// Add the cluster attribute to the edge so we can style it later
@@ -346,6 +380,26 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 		return;
 	}
 
+	private boolean edgeWeightCheck(CyAttributes edgeAttributes, CyEdge edge, String dataAttribute,
+	                                EdgeWeightConverter converter, double cutoff) {
+		if (!edgeAttributes.hasAttribute(edge.getIdentifier(), dataAttribute))
+			return false;
+		byte type = edgeAttributes.getType(dataAttribute);
+		double val;
+		if (type == CyAttributes.TYPE_FLOATING)
+			val = edgeAttributes.getDoubleAttribute(edge.getIdentifier(), dataAttribute).doubleValue();
+		else if (type == CyAttributes.TYPE_INTEGER)
+			val = edgeAttributes.getIntegerAttribute(edge.getIdentifier(), dataAttribute).doubleValue();
+		else
+			return false;
+
+		if (converter.convert(val, 0.0, Double.MAX_VALUE) > cutoff)
+			return false;
+
+		return true;
+	}
+
+	@SuppressWarnings("deprecation")
 	private VisualStyle createNewStyle(String attribute, String suffix) { 
 		boolean newStyle = false;
 

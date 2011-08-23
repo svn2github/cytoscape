@@ -62,8 +62,6 @@ import clusterMaker.ui.NewNetworkView;
 
 public class GLayCluster extends AbstractNetworkClusterer  {
 	
-	TaskMonitor monitor = null;
-	CyLogger logger = null;
 	FastGreedyAlgorithm fa = null;
 	boolean selectedOnly = false;
 	boolean createNewNetwork = false;
@@ -198,5 +196,9 @@ public class GLayCluster extends AbstractNetworkClusterer  {
 	public void halt() {
 		if (fa != null)
 			fa.halt();
+	}
+
+	public void setParams(List<String>params) {
+		super.setParams(params);
 	}
 }

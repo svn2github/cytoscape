@@ -70,10 +70,6 @@ public class APCluster extends AbstractNetworkClusterer  {
 	double lambda = .5;
 	int rNumber = 8;
 	double preference = -1;
-	EdgeAttributeHandler edgeAttributeHandler = null;
-
-	TaskMonitor monitor = null;
-	CyLogger logger = null;
 	RunAP runAP = null;
 
 	public APCluster() {
@@ -199,4 +195,10 @@ public class APCluster extends AbstractNetworkClusterer  {
 		runAP.halt();
 	}
 
+	public void setParams(List<String>params) {
+		params.add("lambda="+lambda);
+		params.add("rNumber="+rNumber);
+		params.add("preference="+preference);
+		super.setParams(params);
+	}
 }

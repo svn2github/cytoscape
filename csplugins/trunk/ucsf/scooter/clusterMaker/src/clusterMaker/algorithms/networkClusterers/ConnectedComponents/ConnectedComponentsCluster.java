@@ -68,12 +68,6 @@ import clusterMaker.ui.NewNetworkView;
 // clusterMaker imports
 
 public class ConnectedComponentsCluster extends AbstractNetworkClusterer  {
-	
-	EdgeAttributeHandler edgeAttributeHandler = null;
-
-	TaskMonitor monitor = null;
-	CyLogger logger = null;
-
 	public ConnectedComponentsCluster() {
 		super();
 		clusterAttributeName = Cytoscape.getCurrentNetwork().getIdentifier()+"_CC_cluster";

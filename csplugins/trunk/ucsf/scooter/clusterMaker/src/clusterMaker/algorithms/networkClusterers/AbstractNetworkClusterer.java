@@ -39,6 +39,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.layout.Tunable;
+import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 
@@ -55,6 +56,7 @@ import clusterMaker.ClusterMaker;
 import clusterMaker.ui.ClusterTask;
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
 import clusterMaker.algorithms.NodeCluster;
+import clusterMaker.algorithms.edgeConverters.EdgeAttributeHandler;
 
 /**
  * This abstract class is the base class for all of the network clusterers provided by
@@ -62,7 +64,11 @@ import clusterMaker.algorithms.NodeCluster;
  * partition a network based on properties of the relationships between nodes.
  */
 public abstract class AbstractNetworkClusterer extends AbstractClusterAlgorithm {
-
+	// Shared instance variables
+	protected EdgeAttributeHandler edgeAttributeHandler = null;
+	protected TaskMonitor monitor = null;
+	protected CyLogger logger = null;
+	protected List<String>params = null;
 
 	// For simple divisive clustering, these routines will do the group handling
 	@SuppressWarnings("unchecked")
@@ -131,13 +137,22 @@ public abstract class AbstractNetworkClusterer extends AbstractClusterAlgorithm 
 		// Save the network attribute so we remember which groups are ours
 		netAttributes.setListAttribute(networkID, GROUP_ATTRIBUTE, groupList);
 
+		// Add parameters to our list
+		params = new ArrayList<String>();
+		setParams(params);
+		
 		// Set up the appropriate attributes
-		netAttributes.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
-		                           ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, getShortName());
-		netAttributes.setAttribute(Cytoscape.getCurrentNetwork().getIdentifier(), 
-		                           ClusterMaker.CLUSTER_ATTRIBUTE, clusterAttributeName);
+		String netId = Cytoscape.getCurrentNetwork().getIdentifier();
+		netAttributes.setAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, getShortName());
+		netAttributes.setAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE, clusterAttributeName);
+		netAttributes.setListAttribute(netId, ClusterMaker.CLUSTER_PARAMS_ATTRIBUTE, params);
 	
 		return clusterList;
+	}
+
+	protected void setParams(List<String> params) {
+		if (edgeAttributeHandler != null)
+			edgeAttributeHandler.setParams(params);
 	}
 
 	public boolean isAvailable() {

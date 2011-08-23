@@ -69,12 +69,7 @@ public class SCPSCluster extends AbstractNetworkClusterer  {
 	
 	double epsilon = 1.02;
 	int rNumber = 50;
-        int knumber = -1;
-       
-	EdgeAttributeHandler edgeAttributeHandler = null;
-
-	TaskMonitor monitor = null;
-	CyLogger logger = null;
+	int knumber = -1;
 	RunSCPS runSCPS = null;
 
 	public SCPSCluster() {
@@ -201,4 +196,10 @@ public class SCPSCluster extends AbstractNetworkClusterer  {
 		runSCPS.halt();
 	}
 
+	public void setParams(List<String>params) {
+		params.add("epsilon="+epsilon);
+		params.add("rNumber="+rNumber);
+		params.add("knumber="+knumber);
+		super.setParams(params);
+	}
 }

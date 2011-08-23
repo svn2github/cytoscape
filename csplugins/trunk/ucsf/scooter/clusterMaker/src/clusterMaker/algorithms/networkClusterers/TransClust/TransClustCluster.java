@@ -25,12 +25,7 @@ import cytoscape.task.TaskMonitor;
 
 
 public class TransClustCluster extends AbstractNetworkClusterer{
-	private CyLogger logger = null;
-	private	TaskMonitor monitor = null;
-
 	private List<CyNode> nodes;
-	
-	EdgeAttributeHandler edgeAttributeHandler = null;
 	
 	private static final long serialVersionUID = 1L;
 	private String groupAttribute = "__TransClustGroups";
@@ -292,4 +287,11 @@ public class TransClustCluster extends AbstractNetworkClusterer{
 		runTransClust.halt();
 	}
 	
+	public void setParams(List<String>params) {
+		params.add("mergeSimilar="+mergeSimilar);
+		params.add("mergeThreshold="+mergeThreshold);
+		params.add("maxSubclusterSize="+maxSubclusterSize);
+		params.add("maxTime="+maxTime);
+		super.setParams(params);
+	}
 }

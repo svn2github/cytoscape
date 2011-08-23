@@ -72,10 +72,6 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 	double clusteringThresh = 1e-15;
 	double maxResidual = 0.001;
 	int maxThreads = 0;
-	EdgeAttributeHandler edgeAttributeHandler = null;
-
-	TaskMonitor monitor = null;
-	CyLogger logger = null;
 	RunMCL runMCL = null;
 
 	public MCLCluster() {
@@ -231,5 +227,13 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		canceled = true;
 		if (runMCL != null)
 			runMCL.halt();
+	}
+
+	public void setParams(List<String>params) {
+		params.add("inflation_parameter="+inflation_parameter);
+		params.add("rNumber="+rNumber);
+		params.add("clusteringThresh="+clusteringThresh);
+		params.add("maxResidual="+maxResidual);
+		super.setParams(params);
 	}
 }

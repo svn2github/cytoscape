@@ -389,6 +389,7 @@ public class Matrix {
 	}
 
 	// XXX Isn't this the same as clusterMaker.algorithms.DistanceMatrix?
+	@SuppressWarnings("unchecked")
 	private void buildSymmetricalMatrix(CyNetwork network, String weight, 
 	                                    boolean ignoreMissing, boolean selectedOnly) {
 
@@ -464,6 +465,7 @@ public class Matrix {
 	}
 
 	// XXX Do we need a new constructor to clusterMaker.algorithms.DistanceMatrix?
+	@SuppressWarnings("unchecked")
 	private void buildGeneArrayMatrix(CyNetwork network, String[] weightAttributes, 
 	                                  boolean transpose, boolean ignoreMissing,
 	                                  boolean selectedOnly) {
