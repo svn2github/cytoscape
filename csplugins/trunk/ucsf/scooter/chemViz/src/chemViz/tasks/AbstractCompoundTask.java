@@ -84,7 +84,7 @@ abstract public class AbstractCompoundTask implements Task {
 	public JTaskConfig getDefaultTaskConfig() {
 		JTaskConfig result = new JTaskConfig();
 
-		result.displayCancelButton(false);
+		result.displayCancelButton(true);
 		result.displayCloseButton(false);
 		result.displayStatus(true);
 		result.displayTimeElapsed(false);

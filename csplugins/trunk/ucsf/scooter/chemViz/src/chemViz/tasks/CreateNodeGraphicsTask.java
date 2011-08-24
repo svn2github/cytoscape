@@ -199,10 +199,14 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		monitor.setPercentCompleted(0);
 
 		if (removeCustomGraphics) {
 			ArrayList<NodeView> removeList = new ArrayList<NodeView>(graphMap.keySet());
+			totalObjects = removeList.size();
+			objectCount = 0;
 			for (NodeView nv: removeList) {
+				updateMonitor();
 				if (nodeSelection == null || nodeSelection.contains(nv.getNode())) {
 					// System.out.println("Removing cg for "+nv.getNode().getIdentifier());
 					CustomGraphic cg = graphMap.get(nv);
@@ -223,6 +227,8 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 			return;
 		}
 
+		totalObjects = nodeSelection.size();
+		objectCount = 0;
 		List<Compound>cList = getCompounds(nodeSelection, nodeAttributes,
 					   							             settingsDialog.getCompoundAttributes("node",AttriType.smiles),
 						   						             settingsDialog.getCompoundAttributes("node",AttriType.inchi));

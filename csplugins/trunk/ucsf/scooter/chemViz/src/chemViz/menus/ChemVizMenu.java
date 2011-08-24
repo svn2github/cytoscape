@@ -94,6 +94,7 @@ public class ChemVizMenu implements MenuListener {
 		Component[] subMenus = m.getMenuComponents();
 		for (int i = 0; i < subMenus.length; i++) { m.remove(subMenus[i]); }
 		new DepictionMenus(m, systemProps, settingsDialog, null);
+		new NodeGraphicsMenus(m, systemProps, settingsDialog, null);
 		new SimilarityMenu(m, systemProps, settingsDialog);
 		new AttributesMenu(m, systemProps, settingsDialog, null);
 		new SettingsMenu(m, systemProps, settingsDialog);
