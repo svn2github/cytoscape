@@ -156,7 +156,7 @@ public class NamedSelection extends CytoscapePlugin
 				netView.addGraphViewChangeListener(groupPanel.getTree());
 				netView.removeNodeContextMenuListener(this);
 				netView.addNodeContextMenuListener(this);
-				System.out.println("NETWORK_LOADED: "+network.getTitle());
+				// System.out.println("NETWORK_LOADED: "+network.getTitle());
 			}
 /*
 		} else if (e.getPropertyName() == Cytoscape.SESSION_LOADED &&
@@ -174,7 +174,7 @@ public class NamedSelection extends CytoscapePlugin
 			}
 */
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
-			System.out.println("NETWORK_VIEW_CREATED: "+((CyNetworkView)e.getNewValue()).getNetwork().getTitle());
+			// System.out.println("NETWORK_VIEW_CREATED: "+((CyNetworkView)e.getNewValue()).getNetwork().getTitle());
 			// Add menu to the context dialog
 			((CyNetworkView)e.getNewValue()).removeNodeContextMenuListener(this);
 			((CyNetworkView)e.getNewValue()).addNodeContextMenuListener(this);
