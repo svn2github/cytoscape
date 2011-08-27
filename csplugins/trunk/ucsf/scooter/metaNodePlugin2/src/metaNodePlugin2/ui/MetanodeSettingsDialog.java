@@ -475,7 +475,7 @@ public class MetanodeSettingsDialog extends JDialog
 	 * @param network the network we're updating our override values for
 	 */
 	public void updateOverrides(CyNetwork network) {
-		myAttributeManager.loadHandlerMappings(network);
+		myAttributeManager.loadHandlerMappings(network, metaContext);
 	}
 
 	/**
@@ -674,6 +674,7 @@ public class MetanodeSettingsDialog extends JDialog
 		this.chartType = context.getChartType();
 		this.nodeChartAttribute = context.getNodeChartAttribute();
 		this.myAttributeManager = new AttributeManager(context.getAttributeManager());
+		myAttributeManager.loadHandlerMappings(Cytoscape.getCurrentNetwork(), context);
   	this.enableHandling = myAttributeManager.getEnable();
 	}
 
@@ -685,6 +686,7 @@ public class MetanodeSettingsDialog extends JDialog
 		mn.setChartType(chartType);
 		mn.setNodeChartAttribute(nodeChartAttribute);
 		mn.setAttributeManager(myAttributeManager);
+		myAttributeManager.updateAttributes(mn);
 	}
 
 	private void updateDefaultSettings() {
@@ -747,7 +749,7 @@ public class MetanodeSettingsDialog extends JDialog
 			AttributeHandlingType handlerType = (AttributeHandlingType)getListValue(t);
 
 			// Create the handler
-			myAttributeManager.addHandler(attributeWP, handlerType);
+			myAttributeManager.addHandler(metaContext, attributeWP, handlerType);
 		}
 		repaint();
 	}

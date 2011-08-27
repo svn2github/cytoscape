@@ -627,7 +627,7 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 			String aggrType = args.get(AGGREGATION).toString();
 			AttributeHandlingType aggr = getAggregation(type, aggrType);
 			AttributeManager manager = MetaNodeManager.getDefaultAttributeManager();
-			manager.addHandler(attr, aggr);
+			manager.addHandler(null, attr, aggr);
 			result.addMessage("metanode: set attribute aggretion for "+attr+" to "+aggr.toString());
 		}
 

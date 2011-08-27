@@ -55,6 +55,7 @@ import java.util.Map;
  */
 public class AttributeManager {
 	static public final String OVERRIDE_ATTRIBUTE = "__MetanodeAggregation";
+	static public final String ENABLE_ATTRIBUTE = "__MetanodeAggregationEnabled";
 	static public final String CHILDREN_ATTRIBUTE = "NumChildren";
 	static public final String DESCENDENTS_ATTRIBUTE = "NumDescendents";
 
@@ -163,10 +164,11 @@ public class AttributeManager {
  	 * Add a new handler to our internal map for aggregating the designated
  	 * attribute and handlerType
  	 *
+ 	 * @param metaContext the metanode context for this handler
  	 * @param attribute the attribute this handler is for
  	 * @param handlerType the aggregation method for use by the handler
  	 */
-	public void addHandler(String attribute, AttributeHandlingType handlerType) {
+	public void addHandler(MetaNode metaContext, String attribute, AttributeHandlingType handlerType) {
 		if (handlerMap == null) handlerMap = new HashMap();
 
 		if (handlerMap.containsKey(attribute)) {
@@ -174,17 +176,27 @@ public class AttributeManager {
 		} else {
 			handlerMap.put(attribute, new AttributeHandler(attribute, handlerType));
 		}
-		
-		// Update our list of overrides in the network attributes
-		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 
-		// Make sure we have a network to work with
-		if (network == null)
-			network = Cytoscape.getCurrentNetwork();
-		if (networkAttributes.hasAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE)) {
-			Map<String,String> attrMap = (Map<String,String>)networkAttributes.getMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE);
-			attrMap.put(attribute, handlerType.toString());
-			networkAttributes.setMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE, attrMap);
+		if (metaContext == null) {
+			// Update our list of overrides in the network attributes
+			CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+
+			// Make sure we have a network to work with
+			if (network == null)
+				network = Cytoscape.getCurrentNetwork();
+			if (networkAttributes.hasAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE)) {
+				Map<String,String> attrMap = (Map<String,String>)networkAttributes.getMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE);
+				attrMap.put(attribute, handlerType.toString());
+				networkAttributes.setMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE, attrMap);
+			}
+		} else {
+			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+			String metaNode = metaContext.getGroupNode().getIdentifier();
+			if (nodeAttributes.hasAttribute(metaNode, OVERRIDE_ATTRIBUTE)) {
+				Map<String,String> attrMap = (Map<String,String>)nodeAttributes.getMapAttribute(metaNode, OVERRIDE_ATTRIBUTE);
+				attrMap.put(attribute, handlerType.toString());
+				nodeAttributes.setMapAttribute(metaNode, OVERRIDE_ATTRIBUTE, attrMap);
+			}
 		}
 	}
 
@@ -246,14 +258,34 @@ public class AttributeManager {
  	 * the network attributes for this network.
  	 *
  	 * @param network the CyNetwork we're going to read our options from
+ 	 * @param metaContext the metaNode we're referring to.  If null, we want the network.
  	 */
-	public void loadHandlerMappings(CyNetwork network) {
+	public void loadHandlerMappings(CyNetwork network, MetaNode metaContext) {
+		// Load the network defaults
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 		this.network = network;
 		if (networkAttributes.hasAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE)) {
 			Map<String,String> attrMap = (Map<String,String>)networkAttributes.getMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE);
 			for (String attr: attrMap.keySet()) {
 				handlerMap.put(attr, new AttributeHandler(attr, stringToType(attrMap.get(attr))));
+			}
+		}
+		if (metaContext == null) return;
+
+		// Now load our specific overrides
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		String metaNode = metaContext.getGroupNode().getIdentifier();
+		if (nodeAttributes.hasAttribute(metaNode, OVERRIDE_ATTRIBUTE)) {
+			Map<String,String> attrMap = (Map<String,String>)nodeAttributes.getMapAttribute(metaNode, OVERRIDE_ATTRIBUTE);
+			for (String attr: attrMap.keySet()) {
+				handlerMap.put(attr, new AttributeHandler(attr, stringToType(attrMap.get(attr))));
+			}
+		}
+		this.aggregating = false;
+		if (nodeAttributes.hasAttribute(metaNode, ENABLE_ATTRIBUTE)) {
+			// System.out.println(ENABLE_ATTRIBUTE+" for "+metaNode+" is "+nodeAttributes.getBooleanAttribute(metaNode, ENABLE_ATTRIBUTE));
+			if (nodeAttributes.getBooleanAttribute(metaNode, ENABLE_ATTRIBUTE)) {
+				this.aggregating = true;
 			}
 		}
 	}
@@ -310,7 +342,7 @@ public class AttributeManager {
 	}
 
 	/**
- 	 * Update all of the attributes for a particular metanode.  This includes the inform
+ 	 * Update all of the attributes for a particular metanode.  This includes the info
  	 * on the number of children and the number of descendents as well as handling all of the 
  	 * attribute aggregation.
  	 *
@@ -346,6 +378,12 @@ public class AttributeManager {
 		if (getEnable()) {
 			// Update all of the node attributes
 			assignAttributes(nodeAttributes, metaNodeName);
+			nodeAttributes.setAttribute(metaNodeName, DESCENDENTS_ATTRIBUTE, new Integer(nDescendents));
+			nodeAttributes.setAttribute(metaNodeName, ENABLE_ATTRIBUTE, Boolean.TRUE);
+			// System.out.println("Setting "+ENABLE_ATTRIBUTE+" for "+metaNodeName+" to "+Boolean.TRUE);
+		} else {
+			// System.out.println("Setting "+ENABLE_ATTRIBUTE+" for "+metaNodeName+" to "+Boolean.FALSE);
+			nodeAttributes.setAttribute(metaNodeName, ENABLE_ATTRIBUTE, Boolean.FALSE);
 		}
 
 		// Update our special attributes
@@ -402,6 +440,9 @@ public class AttributeManager {
 	                                AttributeHandler handler,
 	                                String source,
 	                                MetaNode recurse) {
+
+		if (handler == null) 
+			return;
 
 		if (recurse == null) {
 			Object value = handler.aggregateAttribute(attrMap, source, 1);

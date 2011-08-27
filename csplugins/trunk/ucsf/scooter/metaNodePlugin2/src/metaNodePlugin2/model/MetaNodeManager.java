@@ -138,6 +138,7 @@ public class MetaNodeManager {
 		mn.setChartType(chartTypeDefault);
 		mn.setNodeChartAttribute(nodeChartAttributeDefault);
 		mn.setAttributeManager(new AttributeManager(defaultAttributeManager));
+		mn.getAttributeManager().loadHandlerMappings(metaGroup.getNetwork(), mn);
 		return mn;
 	}
 

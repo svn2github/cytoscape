@@ -173,6 +173,7 @@ public class MetaNode {
 			view = Cytoscape.getNetworkView(metaGroup.getNetwork().getIdentifier());
 		else
 			collapsed = true;
+
 		expand(view);
 		collapse(view);
 	}
