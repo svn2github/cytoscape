@@ -292,37 +292,7 @@ public class MetanodeSettingsDialog extends JDialog
 			metanodeProperties.add(t);
 		}
 
-		// If we have nodeCharts, provide chart options for aggregated attributes
-		{
-			Tunable t = new Tunable("nodeChartsGroup", "Node Chart Options",
-			                        Tunable.GROUP, new Integer(2),
-		                          new Boolean(true), null, Tunable.COLLAPSABLE);
-			metanodeProperties.add(t);
-		 	t.setImmutable(true);
-			nodeChartEnablers.add(t);
-
-			{
-				// Get the attribute to map
-				nodeChartAttrList = new Tunable("nodeChartAttribute", "Attribute to use for node chart",
-		 	 	                                Tunable.LIST, new Integer(0),
-		 	 	                                getNodeAttributes(), null, 0);
-				nodeChartEnablers.add(nodeChartAttrList);
-				metanodeProperties.add(nodeChartAttrList);
-				nodeChartAttrList.addTunableValueListener(this);
-		 		nodeChartAttrList.setImmutable(true);
-
-				// Get the chart type (might change depending on the chart type)
-				nodeChartTypeList = new Tunable("chartType", "Chart type",
-		 	 	                                Tunable.LIST, new Integer(0),
-		 	 	                                getChartTypes(), null, 0);
-				nodeChartEnablers.add(nodeChartTypeList);
-				metanodeProperties.add(nodeChartTypeList);
-				nodeChartTypeList.addTunableValueListener(this);
-				nodeChartTypeList.setImmutable(true);
-			}
-		}
-
-		metanodeProperties.add(new Tunable("defaultsGroup", "Defaults",
+		metanodeProperties.add(new Tunable("defaultsGroup", "Attribute Aggregation Defaults",
 		                                   Tunable.GROUP, new Integer(5),
 		                                   new Boolean(true), null, Tunable.COLLAPSABLE));
 		{
@@ -359,6 +329,36 @@ public class MetanodeSettingsDialog extends JDialog
 			tunableEnablers.add(typeList);
 			// Update
 			tunableChanged(attrList);
+		}
+
+		// If we have nodeCharts, provide chart options for aggregated attributes
+		{
+			Tunable t = new Tunable("nodeChartsGroup", "Node Chart Options",
+			                        Tunable.GROUP, new Integer(2),
+		                          new Boolean(true), null, Tunable.COLLAPSABLE);
+			metanodeProperties.add(t);
+		 	t.setImmutable(true);
+			nodeChartEnablers.add(t);
+
+			{
+				// Get the attribute to map
+				nodeChartAttrList = new Tunable("nodeChartAttribute", "Attribute to use for node chart",
+		 	 	                                Tunable.LIST, new Integer(0),
+		 	 	                                getNodeAttributes(), null, 0);
+				nodeChartEnablers.add(nodeChartAttrList);
+				metanodeProperties.add(nodeChartAttrList);
+				nodeChartAttrList.addTunableValueListener(this);
+		 		nodeChartAttrList.setImmutable(true);
+
+				// Get the chart type (might change depending on the chart type)
+				nodeChartTypeList = new Tunable("chartType", "Chart type",
+		 	 	                                Tunable.LIST, new Integer(0),
+		 	 	                                getChartTypes(), null, 0);
+				nodeChartEnablers.add(nodeChartTypeList);
+				metanodeProperties.add(nodeChartTypeList);
+				nodeChartTypeList.addTunableValueListener(this);
+				nodeChartTypeList.setImmutable(true);
+			}
 		}
 		updateSettings(true);
 	}
