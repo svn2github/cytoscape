@@ -110,7 +110,8 @@ public class MetanodeCommandListener implements ActionListener {
 				groupViewer.getSettingsDialog().setVisible(true);
 			} else {
 				// Create a new settings dialog
-				JDialog dialog = new MetanodeSettingsDialog(groupViewer, node);
+				MetanodeSettingsDialog dialog = new MetanodeSettingsDialog(groupViewer, node);
+				dialog.updateNodeChartTypes();
 				dialog.setVisible(true);
 			}
 		}

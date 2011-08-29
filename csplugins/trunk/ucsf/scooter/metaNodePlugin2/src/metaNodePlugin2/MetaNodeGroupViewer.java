@@ -292,7 +292,7 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	 */
 	public boolean checkNodeCharts() {
 		try {
-			CyCommandManager.getCommand(NODECHARTS, "clear");
+			CyCommandManager.getCommand(NODECHARTS, "list");
 		} catch (RuntimeException e) {
 			return false;
 		}
