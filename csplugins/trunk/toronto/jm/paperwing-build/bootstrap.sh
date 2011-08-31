@@ -38,9 +38,11 @@ pushd repacker
 popd
 
 # Check out bundles that need to be patched
+svn co http://chianti.ucsd.edu/svn/core3/gui-distribution/trunk gui-distribution
+
 for BUNDLE in gui-distribution swing-application-impl vizmap-gui-impl presentation-impl
 do
-    svn co http://chianti.ucsd.edu/svn/core3/${BUNDLE}/trunk ${BUNDLE}
+    svn co http://chianti.ucsd.edu/svn/core3/impl/trunk/${BUNDLE}
 done
 
 # Check out paperwing-impl
