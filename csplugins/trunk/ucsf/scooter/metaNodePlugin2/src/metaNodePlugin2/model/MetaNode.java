@@ -234,13 +234,15 @@ public class MetaNode {
 		// Get our list of edges in case anyone has addded a new edge to us
 		CyNode groupNode = metaGroup.getGroupNode();
 		List edgeList = view.getNetwork().getAdjacentEdgesList(metaGroup.getGroupNode(), true, true, true);
-		for (Object e: edgeList) {
-			CyEdge edge = (CyEdge)e;
-			// Add any new edges.
-			if (!metaEdges.containsKey(edge)) {
-				// logger.debug("  found new edge: "+edge.getIdentifier());
-				metaEdges.put(edge, edge);
-				metaGroup.addOuterEdge(edge);
+		if (edgeList != null) {
+			for (Object e: edgeList) {
+				CyEdge edge = (CyEdge)e;
+				// Add any new edges.
+				if (!metaEdges.containsKey(edge)) {
+					// logger.debug("  found new edge: "+edge.getIdentifier());
+					metaEdges.put(edge, edge);
+					metaGroup.addOuterEdge(edge);
+				}
 			}
 		}
 

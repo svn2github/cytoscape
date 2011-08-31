@@ -239,6 +239,7 @@ public class ViewUtils {
  	 */
 	public static void restoreEdges(CyGroup metaGroup, Collection<CyEdge>edgeList, CyNetworkView view) {
 		CyNetwork network = metaGroup.getNetwork();
+		if (edgeList == null) return;
 		for (CyEdge edge: edgeList) {
 			// System.out.println("Restoring edge "+edge.getIdentifier());
 			if (network.containsNode(edge.getSource()) && network.containsNode(edge.getTarget())) {

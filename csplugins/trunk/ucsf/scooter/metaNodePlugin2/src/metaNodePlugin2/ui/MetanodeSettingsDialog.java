@@ -378,14 +378,12 @@ public class MetanodeSettingsDialog extends JDialog
 		t = metanodeProperties.get("hideMetanodes");
 		if ((t != null) && (t.valueChanged() || force)) {
       hideMetaNode = ((Boolean) t.getValue()).booleanValue();
-			MetaNodeManager.setHideMetaNodeDefault(hideMetaNode);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
 		t = metanodeProperties.get("dontExpandEmpty");
 		if ((t != null) && (t.valueChanged() || force)) {
       dontExpandEmpty = ((Boolean) t.getValue()).booleanValue();
-			MetaNodeManager.setHideMetaNodeDefault(dontExpandEmpty);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
