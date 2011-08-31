@@ -17,12 +17,6 @@
 	  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<scm>
-	  <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/taglets/trunk</connection>
-	  <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/taglets/trunk</developerConnection>
-	  <url>http://chianti.ucsd.edu/svn/core3/taglets/trunk</url>
-	</scm>
-
 	<dependencies>
 	  <dependency>
 	    <groupId>junit</groupId>

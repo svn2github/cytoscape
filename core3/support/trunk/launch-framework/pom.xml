@@ -14,12 +14,6 @@
 
 	<packaging>pom</packaging>
 
-	<scm>
-          <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/launch-framework/trunk</connection>
-          <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/launch-framework/trunk</developerConnection>
-          <url>http://chianti.ucsd.edu/svn/core3/launch-framework/trunk</url>
-	</scm>
-
 	<build>
           <plugins>
             <plugin>

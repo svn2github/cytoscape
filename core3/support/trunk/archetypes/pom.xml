@@ -20,12 +20,6 @@
 		<module>cyaction-plugin</module>
 	</modules>
 
-	<scm>
-		<connection>scm:svn:http://chianti.ucsd.edu/svn/core3/archetypes/trunk</connection>
-		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/archetypes/trunk</developerConnection>
-		<url>http://chianti.ucsd.edu/svn/core3/archetypes/trunk</url>
-	</scm>
-
 	<repositories>
 		<!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
 		<repository>
