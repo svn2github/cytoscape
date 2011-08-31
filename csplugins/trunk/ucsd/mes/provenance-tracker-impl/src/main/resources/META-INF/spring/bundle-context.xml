@@ -25,9 +25,10 @@
 	<context:annotation-config/>
 
 	<bean id="provenanceInterceptor" class="org.cytoscape.provenance.internal.ProvenanceInterceptor">
-	<!-- 
-		<constructor-arg ref="tunableProperties" />
-	--> 
 	</bean>
+
+	<bean id="provenanceHandlerFactory" class="org.cytoscape.provenance.internal.ProvenanceHandlerFactory">
+	</bean>
+
 
 </beans>

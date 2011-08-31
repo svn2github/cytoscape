@@ -18,7 +18,7 @@ public class BasicProvenanceHandler extends AbstractTunableHandler implements Pr
 		super(getter, setter, instance, tunable);
 	}
 
-	public void record() {
+	public void handle() {
 		Object o;
 		try {
 			o = getValue();

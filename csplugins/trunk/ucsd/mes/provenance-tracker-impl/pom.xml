@@ -12,6 +12,7 @@
 	<properties>
 		<bundle.symbolicName>org.cytoscape.provenance-tracker-impl</bundle.symbolicName>
 		<bundle.namespace>org.cytoscape.provenance.internal</bundle.namespace>
+		<cytoscape.api.version>3.0.0-alpha6-SNAPSHOT</cytoscape.api.version>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -77,13 +78,13 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-api</artifactId>
-			<version>3.0.0-alpha2</version>
+			<version>${cytoscape.api.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>work-spring-hack</artifactId>
-			<version>3.0.0-alpha1</version>
+			<artifactId>di-util-api</artifactId>
+			<version>${cytoscape.api.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

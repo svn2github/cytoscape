@@ -12,4 +12,8 @@
 		ref="provenanceInterceptor" interface="org.cytoscape.work.TunableInterceptor">
 	</osgi:service>
 
+	<osgi:service id="provenanceHandlerFactoryService"
+		ref="provenanceHandlerFactory" interface="org.cytoscape.work.TunableHandlerFactory">
+	</osgi:service>
+
 </beans>

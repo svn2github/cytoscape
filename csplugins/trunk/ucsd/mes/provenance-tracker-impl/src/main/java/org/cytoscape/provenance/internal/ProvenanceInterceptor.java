@@ -4,17 +4,18 @@ import java.util.*;
 
 import javax.swing.JPanel;
 
-import org.cytoscape.work.spring.SpringTunableInterceptor;
+import org.cytoscape.work.AbstractTunableInterceptor;
+import org.cytoscape.di.util.DIUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ProvenanceInterceptor extends SpringTunableInterceptor<ProvenanceHandler> {
+public class ProvenanceInterceptor extends AbstractTunableInterceptor<ProvenanceHandler> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProvenanceInterceptor.class);
 
 	public ProvenanceInterceptor() {
-		super(new ProvenanceHandlerFactory());
+		super();
 	}
 
 	public boolean execUI(Object... pobjs) {
@@ -22,7 +23,7 @@ public class ProvenanceInterceptor extends SpringTunableInterceptor<ProvenanceHa
 	}
 	
 	public boolean validateAndWriteBackTunables(Object... pobjs) {
-		Object[] objs = convertSpringProxyObjs(pobjs);
+		Object[] objs = DIUtil.stripProxies(pobjs);
 		for (final Object o : objs) {
 			System.out.println("PROVENANCE: Execute task: " + o);
 			if ( !handlerMap.containsKey( o ) ) {
@@ -33,7 +34,7 @@ public class ProvenanceInterceptor extends SpringTunableInterceptor<ProvenanceHa
 			final Collection<ProvenanceHandler> handlers = handlerMap.get(o).values();
 			
 			for (final ProvenanceHandler p : handlers)
-				p.record();
+				p.handle();
 		}
 		return true;
 	}
