@@ -188,6 +188,7 @@ public class AttributeManager {
 				Map<String,String> attrMap = (Map<String,String>)networkAttributes.getMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE);
 				attrMap.put(attribute, handlerType.toString());
 				networkAttributes.setMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE, attrMap);
+				networkAttributes.setUserVisible(OVERRIDE_ATTRIBUTE, false);
 			}
 		} else {
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -196,6 +197,7 @@ public class AttributeManager {
 				Map<String,String> attrMap = (Map<String,String>)nodeAttributes.getMapAttribute(metaNode, OVERRIDE_ATTRIBUTE);
 				attrMap.put(attribute, handlerType.toString());
 				nodeAttributes.setMapAttribute(metaNode, OVERRIDE_ATTRIBUTE, attrMap);
+				nodeAttributes.setUserVisible(OVERRIDE_ATTRIBUTE, false);
 			}
 		}
 	}
@@ -380,10 +382,12 @@ public class AttributeManager {
 			assignAttributes(nodeAttributes, metaNodeName);
 			nodeAttributes.setAttribute(metaNodeName, DESCENDENTS_ATTRIBUTE, new Integer(nDescendents));
 			nodeAttributes.setAttribute(metaNodeName, ENABLE_ATTRIBUTE, Boolean.TRUE);
+			nodeAttributes.setUserVisible(ENABLE_ATTRIBUTE, false);
 			// System.out.println("Setting "+ENABLE_ATTRIBUTE+" for "+metaNodeName+" to "+Boolean.TRUE);
 		} else {
 			// System.out.println("Setting "+ENABLE_ATTRIBUTE+" for "+metaNodeName+" to "+Boolean.FALSE);
 			nodeAttributes.setAttribute(metaNodeName, ENABLE_ATTRIBUTE, Boolean.FALSE);
+			nodeAttributes.setUserVisible(ENABLE_ATTRIBUTE, false);
 		}
 
 		// Update our special attributes

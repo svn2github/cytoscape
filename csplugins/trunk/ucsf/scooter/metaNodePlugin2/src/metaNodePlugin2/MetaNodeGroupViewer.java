@@ -315,6 +315,7 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	}
 
 	// This method is called to create a single metanode
+	@SuppressWarnings("deprecation")
 	private void createMetaNode(CyGroup group, CyNetworkView view) {
 		// Create the metanode
 		MetaNode newNode = MetaNodeManager.createMetaNode(group, true);

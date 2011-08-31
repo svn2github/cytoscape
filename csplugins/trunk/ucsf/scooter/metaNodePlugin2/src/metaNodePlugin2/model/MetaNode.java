@@ -217,6 +217,7 @@ public class MetaNode {
 	 * @param view the CyNetworkView
 	 * @param update update the display?
 	 */
+	@SuppressWarnings("deprecation")
 	public void expand(CyNetworkView view) {
 		logger.debug("expand "+metaGroup+": isCollapsed = "+isCollapsed()+" isHidden = "+isHidden()+" state = "+metaGroup.getState());
 		if (!isCollapsed())
