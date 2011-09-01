@@ -66,6 +66,7 @@ public class ChemViz extends CytoscapePlugin implements PropertyChangeListener {
 
 	private Properties systemProps = null;
 	private ChemInfoSettingsDialog settingsDialog = null; 
+	private boolean sessionLock = false;
 	
 	/**
  	 * This is the main constructor, which will be called by Cytoscape's Plugin Manager.
@@ -97,10 +98,15 @@ public class ChemViz extends CytoscapePlugin implements PropertyChangeListener {
 		}
 
 		try {
-			// Set ourselves up to listen for new networks
+			// Set ourselves up to listen for new networks, and protect against session loading issues
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
-					.addPropertyChangeListener(
-							CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
+			         .addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
+
+			Cytoscape.getPropertyChangeSupport()
+			         .addPropertyChangeListener(Cytoscape.SESSION_LOADED, this);
+
+			Cytoscape.getPropertyChangeSupport()
+			         .addPropertyChangeListener(Integer.toString(Cytoscape.SESSION_OPENED), this);
 
 			((DGraphView) Cytoscape.getCurrentNetworkView())
 					.addNodeContextMenuListener(new ChemVizContextMenu(systemProps, settingsDialog));
@@ -118,25 +124,38 @@ public class ChemViz extends CytoscapePlugin implements PropertyChangeListener {
 	 * menu listener to nodes within this network
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+		if (evt.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
+			sessionLock = true;
+		} else if (evt.getPropertyName() == Cytoscape.SESSION_LOADED) {
+			sessionLock = false;
+		} else if (evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
 			CyNetworkView view = (CyNetworkView)evt.getNewValue();
-			// Add menu to the context dialog
-			view.addNodeContextMenuListener(new ChemVizContextMenu(systemProps, settingsDialog));
-			view.addEdgeContextMenuListener(new ChemVizContextMenu(systemProps, settingsDialog));
-			// Check to see if this view has custom graphics
-			if (CreateNodeGraphicsTask.hasCustomGraphics(view.getNetwork())) {
-				List<Node> selection = 
-				  CreateNodeGraphicsTask.getCustomGraphicsNodes(view);
+			updateNetworkView(view);
+		}
+	}
 
-				CreateNodeGraphicsTask loader = null;
-				loader = CreateNodeGraphicsTask.getCustomGraphicsTask(view);
-				if (loader == null) {
-					loader = new CreateNodeGraphicsTask(selection, settingsDialog, false);
-				} else {
-					loader.setSelection(selection);
-					loader.setRemove(false);
-				}
+	private void updateNetworkView(CyNetworkView view) {
+		// Add menu to the context dialog
+		view.addNodeContextMenuListener(new ChemVizContextMenu(systemProps, settingsDialog));
+		view.addEdgeContextMenuListener(new ChemVizContextMenu(systemProps, settingsDialog));
+		// Check to see if this view has custom graphics
+		if (CreateNodeGraphicsTask.hasCustomGraphics(view.getNetwork())) {
+			List<Node> selection = 
+			  CreateNodeGraphicsTask.getCustomGraphicsNodes(view);
+
+			CreateNodeGraphicsTask loader = null;
+			loader = CreateNodeGraphicsTask.getCustomGraphicsTask(view);
+			if (loader == null) {
+				loader = new CreateNodeGraphicsTask(selection, settingsDialog, false);
+			} else {
+				loader.setSelection(selection);
+				loader.setRemove(false);
+			}
+			if (!sessionLock)
 				TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
+			else {
+				loader.setTaskMonitor(null);
+				loader.run();
 			}
 		}
 	}

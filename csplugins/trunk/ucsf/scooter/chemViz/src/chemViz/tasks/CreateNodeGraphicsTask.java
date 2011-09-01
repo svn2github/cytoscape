@@ -199,7 +199,8 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
-		monitor.setPercentCompleted(0);
+		if (monitor != null)
+			monitor.setPercentCompleted(0);
 
 		if (removeCustomGraphics) {
 			ArrayList<NodeView> removeList = new ArrayList<NodeView>(graphMap.keySet());
