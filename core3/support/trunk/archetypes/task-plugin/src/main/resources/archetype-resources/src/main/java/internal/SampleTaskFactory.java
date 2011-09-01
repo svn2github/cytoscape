@@ -3,7 +3,7 @@ package ${package}.internal;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
-import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskIterator;
 
 /**
  * The TaskFactory is a Singleton object whose sole purpose is to
@@ -27,8 +27,8 @@ public class SampleTaskFactory extends AbstractNetworkTaskFactory {
 	 * method is <i>assumed</i> to have already called the setNetwork() 
 	 * method which will set the "net" variable.
 	 */
-	public Task getTask() {
-		return new SampleTask( net );
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator( new SampleTask( network ) );
 	}
 }
 

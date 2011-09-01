@@ -68,10 +68,10 @@ public class SampleTask extends AbstractNetworkTask {
 		if ( numNodesToSelect < 0 )
 			throw new IllegalArgumentException("The number of nodes to select is less than 0");
 
-		if ( numNodesToSelect > net.getNodeCount() )
+		if ( numNodesToSelect > network.getNodeCount() )
 			throw new IllegalArgumentException("The number of nodes to select " + 
 			                                   "is greater than the number of available nodes (" + 
-											   net.getNodeCount() + ")");
+											   network.getNodeCount() + ")");
 
 		// Give the task a title.
 		taskMonitor.setTitle("Selecting " + numNodesToSelect + " nodes.");
@@ -79,13 +79,13 @@ public class SampleTask extends AbstractNetworkTask {
 		int alreadySelected = 0;
 
 		// Loop over all nodes in the network.
-		for ( CyNode node : net.getNodeList() ) {
+		for ( CyNode node : network.getNodeList() ) {
 
-			// cancelTask is inherited from AbstractTask and is
+			// cancelled is inherited from AbstractTask and is
 			// set when the cancel() method is called.
 			// Also consider calling a cleanup method to 
 			// undo anyting already accomplished!
-			if ( cancelTask )
+			if ( cancelled )
 				break;
 
 			// Pay attention to how many nodes we've already 
@@ -96,7 +96,7 @@ public class SampleTask extends AbstractNetworkTask {
 
 			// DO THE ACTUAL WORK!!!
 			// Set the selected attribute to true for the given node.
-			node.attrs().set("selected",true);
+			node.getCyRow().set("selected",true);
 
 
 			// Update the progress bar with the percent complete

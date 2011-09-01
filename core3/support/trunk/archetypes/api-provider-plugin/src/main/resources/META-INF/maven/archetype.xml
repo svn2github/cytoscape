@@ -4,9 +4,6 @@
     <source>src/main/java/internal/SampleAnalyzerImpl.java</source>
     <source>src/main/java/SampleAnalyzer.java</source>
   </sources>
-  <testSources>
-    <source>src/test/java/internal/SampleAnalyzerImplTest.java</source>
-  </testSources>
   <resources>
     <resource>src/main/resources/META-INF/spring/bundle-context-osgi.xml</resource>
     <resource>src/main/resources/META-INF/spring/bundle-context.xml</resource>
