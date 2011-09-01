@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.cytoscape.wrappers</groupId>
 		<artifactId>parent</artifactId>
-		<version>3.0.0-alpha6</version>
+		<version>3.0.0-alpha7-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -15,7 +15,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>org.swinglabs.swingx</artifactId>
-	<version>3.0.0-alpha6</version>
+	<version>1.6.1</version>
 
 	<name>${bundle.symbolicName} ${wrapped.version} [osgi]</name>
 

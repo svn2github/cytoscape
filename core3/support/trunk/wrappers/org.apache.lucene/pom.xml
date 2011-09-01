@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.cytoscape.wrappers</groupId>
-		<version>3.0.0-alpha6</version>
+		<version>3.0.0-alpha7-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -16,7 +16,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape.wrappers</groupId>
 	<artifactId>org.apache.lucene</artifactId>
-	<version>3.0.0-alpha6</version>
+	<version>3.0.2</version>
 
 	<name>${bundle.symbolicName} ${wrapped.version} [osgi]</name>
 
