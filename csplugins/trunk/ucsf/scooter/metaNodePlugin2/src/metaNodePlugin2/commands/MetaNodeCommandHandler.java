@@ -67,7 +67,6 @@ import metaNodePlugin2.model.MetanodeProperties;
 import metaNodePlugin2.ui.MetanodeSettingsDialog;
 
 enum Command {
-
 	ADD("add node",
 	       "Add a node to a metanode",
 	       "metanode|node|nodelist"),
@@ -80,6 +79,9 @@ enum Command {
 	COLLAPSEALL("collapse all",
 	         "Collapse all metanodes",
 	         "networkview=current"),
+	DELETE("delete",
+	       "Delete a metanode",
+	       "metanode"),
 	EXPAND("expand",
 	       "Expand a metanode",
 	       "metanode|networkview=current"),
@@ -103,7 +105,7 @@ enum Command {
 	          "metanode|enabled=true|string=csv|integer=sum|double=sum|list=none|boolean=or"),
 	MODIFYAPP("modify appearance",
 	          "Modify the appearance of a metanode",
-	          "metanode|usenestednetworks=false|opacity=100|nodechart=none|chartattribute=non"),
+	          "metanode|usenestednetworks=false|opacity=100|nodechart=none|chartattribute=none"),
 	MODIFYAGGOVERRIDE("modify overrides", 
 	                  "Modify aggregation overrides for specific attributes in a metanode",
 	                  "metanode|attribute|aggregation"),
@@ -113,12 +115,6 @@ enum Command {
 	SETDEFAULTAPP("set default appearance",
 	              "Set the default appearance options",
 	              "usenestednetworks=false|opacity=100|nodechart=none|chartattribute=none"),
-	APPLYTOALL(	"apply to all",
-	      	 	"Apply setting to all metanodes",
-	      	 	""),	       
-	APPLYTOSELECTED("apply to selected",
-					"Apply settings to selected metanodes",
-	      		 	""),	       
 	SETAGGOVERRIDE("set default overrides",
 	               "Override defailt aggregation for specific attributes",
 	               "attribute|aggregation");
@@ -310,11 +306,10 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 			metanodeViewer.collapse(metaNode, view);
 			result.addMessage("Metanode "+metaGroup.toString()+" was collapsed in view "+view.getIdentifier());
 
-		// 
-		//	EXPAND("expand",
-		//	       "Expand a metanode",
-		//	       "metanode|networkview=current"),
-		// 
+		//
+		// COLLAPSEALL("collapse all",
+	 	//         "Collapse all metanodes",
+	 	//         "networkview=current"),
 		} else if (Command.COLLAPSEALL.equals(command)){
 			// Get the network view
 			CyNetworkView view = Cytoscape.getCurrentNetworkView();
@@ -324,7 +319,26 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 					throw new RuntimeException("metanode: can't find a network view for "+args.get(NETWORKVIEW));
 			}
 			MetaNodeManager.collapseAll(view);
+			result.addMessage("All metanodes were collapsed in "+view.getIdentifier());
 
+		//
+		// DELETE("delete",
+		//        "Delete a metanode",
+		//        "metanode"),
+		//
+		} else if (Command.DELETE.equals(command)) {
+			if (metaNode == null) {
+				throw new RuntimeException("metanode: delete requires a metanode");
+			}
+			String groupName = metaGroup.toString();
+			metaNode.expand(Cytoscape.getCurrentNetworkView());
+			CyGroupManager.removeGroup(metaGroup);
+			result.addMessage("Metanode "+groupName+" was removed");
+		// 
+		//	EXPAND("expand",
+		//	       "Expand a metanode",
+		//	       "metanode|networkview=current"),
+		// 
 		} else if (Command.EXPAND.equals(command)) {
 			if (metaNode == null) {
 				throw new RuntimeException("metanode: expand requires a metanode");
@@ -592,30 +606,6 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		//	               "Override defailt aggregation for specific attributes",
 		//	               "attribute|aggregation");
 		// 
-		} else if (Command.APPLYTOALL.equals(command)){
-			List<CyGroup> groupList = CyGroupManager.getGroupList(settingsDialog.groupViewer);
-			if (groupList != null && groupList.size() > 0) {
-				// Update them
-				for (CyGroup group: groupList) 	{
-					MetaNode mn = MetaNodeManager.getMetaNode(group);
-					if (mn != null) {
-						settingsDialog.updateMetaNodeSettings(mn);
-					}
-				}
-			}
-			
-		} else if (Command.APPLYTOSELECTED.equals(command)){	
-			Set<CyNode> nodeList = Cytoscape.getCurrentNetwork().getSelectedNodes();
-			for (CyNode node: nodeList) {
-				MetaNode mn = MetaNodeManager.getMetaNode(node);
-				if (mn != null) {
-					settingsDialog.updateMetaNodeSettings(mn);
-				} else if (node.getGroups() != null) {
-					for (CyGroup gn :node.getGroups()){
-						settingsDialog.updateMetaNodeSettings(MetaNodeManager.getMetaNode(gn));
-					}
-				}
-			}
 		} else if (Command.SETAGGOVERRIDE.equals(command)) {
 			if (!args.containsKey(ATTRIBUTE))
 				throw new RuntimeException("metanode: "+command+" requires an attribute");
