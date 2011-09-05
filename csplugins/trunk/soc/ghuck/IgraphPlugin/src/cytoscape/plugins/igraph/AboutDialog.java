@@ -31,48 +31,22 @@ import cytoscape.util.CytoscapeAction;
 
 import giny.model.*;
 
-import com.sun.jna.Library;
-import com.sun.jna.Native;
-import com.sun.jna.Platform;
 
-
-public class IsConnected extends CytoscapeAction {
+public class AboutDialog extends CytoscapeAction {
     
-    Boolean selectedOnly;
-    
-    public IsConnected(IgraphPlugin myPlugin, String name, boolean selectedOnly) {
-	super(name);
-	setPreferredMenu("Plugins.Igraph.IsConnected");
-	this.selectedOnly = new Boolean(selectedOnly);
+    public AboutDialog() {
+	super("About");
+	setPreferredMenu("Plugins.Igraph");
     }
 	
     public void actionPerformed(ActionEvent e) {
-	// Check whether there are any nodes to analyze
-	CyNetwork network = Cytoscape.getCurrentNetwork();
-	int numNodes;
-	
-	if (selectedOnly) 	    
-	    numNodes = network.getSelectedNodes().size();
-	else 
-	    numNodes = network.getNodeCount();
 
-	if (numNodes == 0) {
-	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
-					  "No nodes selected!");
-	    return;
-	}
-
-	boolean res = isConnected(this.selectedOnly);
-	
-	if (res)
-	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "The nodes are connected!");
-	else 
-	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "The nodes are NOT connected!");
+	String message = "This plugin was developed as part of Google Summer of Code 2011 by Gerardo Huck\n" + 
+	                 "You may find further information at the following address:\n" +
+	                 "http://plato.cgl.ucsf.edu/trac/GenMAPP/wiki/GerardoHuck";	    
+	    
+	JOptionPane.showMessageDialog( Cytoscape.getDesktop(), message);
     }
     
-    public boolean isConnected(boolean selectedOnly) {
-	IgraphAPI.loadGraph(selectedOnly, false);
-	return IgraphInterface.isConnected(); 
-    }
     
 }	

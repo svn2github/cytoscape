@@ -71,6 +71,12 @@ public class MinimumSpanningTree extends CytoscapeAction {
 	    else
 		numNodes = network.getNodeCount();
 
+	    /*          Check that there are any nodes          */
+	    if (numNodes == 0) {
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "ERROR: No nodes selected or empty network!");
+		return;
+	    }
+
 	    /*          Load graph into Igraph library          */
 	    HashMap<Integer,Integer> mapping = IgraphAPI.loadGraph(selectedOnly, false);
 
