@@ -7,7 +7,7 @@ use Cwd;
 use File::Find;
 use File::Copy;
 
-die "USAGE: $0 <property.id> <new.version>\n" if $#ARGV != 2;
+die "USAGE: $0 <property.id> <new.version>\n" if $#ARGV != 1;
 
 my $property_name=$ARGV[0];
 my $new_version=$ARGV[1];
