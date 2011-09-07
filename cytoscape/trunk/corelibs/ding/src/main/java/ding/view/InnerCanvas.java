@@ -299,6 +299,16 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	private boolean m_button1NodeDrag = false;
 
 	/**
+ 	 * This method exposes the JComponent processMouseEvent so that
+ 	 * canvases on top of us can pass events they don't want down.
+ 	 *
+ 	 * @param e the MouseEvent to process
+ 	 */
+	public void processMouseEvent(MouseEvent e) {
+		super.processMouseEvent(e);
+	}
+
+	/**
 	 * DOCUMENT ME!
 	 *
 	 * @param e DOCUMENT ME!
