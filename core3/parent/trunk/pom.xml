@@ -92,7 +92,7 @@
 						<tagletArtifact>
 							<groupId>org.cytoscape</groupId>
 							<artifactId>taglets</artifactId>
-							<version>3.0.0-alpha1</version>
+							<version>3.0.0-alpha7-SNAPSHOT</version>
 						</tagletArtifact>
 					</tagletArtifacts>
 				</configuration>
@@ -319,7 +319,7 @@
 						<tagletArtifact>
 							<groupId>org.cytoscape</groupId>
 							<artifactId>taglets</artifactId>
-							<version>3.0.0-alpha1</version>
+							<version>3.0.0-alpha7-SNAPSHOT</version>
 						</tagletArtifact>
 					</tagletArtifacts>
 				</configuration>
