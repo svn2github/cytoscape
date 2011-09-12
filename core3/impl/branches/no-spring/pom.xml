@@ -244,6 +244,11 @@
 				<version>${cytoscape.api.version}</version> 
 				<type>test-jar</type>
 			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.core</artifactId>
+				<version>${osgi.api.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
