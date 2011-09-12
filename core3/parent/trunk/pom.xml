@@ -222,7 +222,16 @@
 			<name>Maven Repository for iText</name>
 			<url>http://maven.itextpdf.com/</url>
 		</repository>
-		
+		<repository>
+			<id>zodiac-repository</id>
+			<name>Zodiac Release Repository (Gemini Blueprint) Mirror</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/zodiac-release/</url>
+		</repository>
+		<repository>
+			<id>zodiac-milestone-repository</id>
+			<name>Zodiac Milestone Repository (Gemini Blueprint) Mirror</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/zodiac-milestone/</url>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
