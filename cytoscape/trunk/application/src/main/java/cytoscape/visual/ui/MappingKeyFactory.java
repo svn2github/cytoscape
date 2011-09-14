@@ -68,7 +68,9 @@ public class MappingKeyFactory {
 		final Set<Object> mappedKeys = new TreeSet<Object>();
 
 		for (final Object attrValue : id2AttrMap.values()) {
-
+			if(attrValue == null)
+				continue;
+				
 			if (attrValue instanceof List<?>) {
 				// This is list, but contents of list is unknown
 				List<?> list = (List<?>) attrValue;
