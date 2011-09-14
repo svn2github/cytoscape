@@ -1138,6 +1138,7 @@ public class CyAttributesImpl implements CyAttributes {
 			currentlyActiveAttributes.add(attribName);
 
 		final Collection<String> attribReferences = equation.getAttribReferences();
+		final Map<String, Object> defaultValues = equation.getDefaultValues();
 
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new TreeMap<String, IdentDescriptor>();
 		for (final String attribRef : attribReferences) {
@@ -1146,14 +1147,19 @@ public class CyAttributesImpl implements CyAttributes {
 				continue;
 			}
 
-			final Object attribValue = getAttribute(id, attribRef);
+			Object attribValue = getAttribute(id, attribRef);
 			if (attribValue == null) {
-				currentlyActiveAttributes.clear();
-				errorMessage.append("Missing value for referenced attribute \"" + attribRef + "\"!");
-				logger.warn("Missing value for \"" + attribRef
-				            + "\" while evaluating an equation (ID:" + id
-				            + ", attribute name:" + attribName + ")");
-				return null;
+				final Object defaultValue = defaultValues.get(attribRef);
+				if (defaultValue != null)
+					attribValue = defaultValue;
+				else {
+					currentlyActiveAttributes.clear();
+					errorMessage.append("Missing value for referenced attribute \"" + attribRef + "\"!");
+					logger.warn("Missing value for \"" + attribRef
+						    + "\" while evaluating an equation (ID:" + id
+						    + ", attribute name:" + attribName + ")");
+					return null;
+				}
 			}
 
 			try {

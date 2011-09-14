@@ -1,7 +1,7 @@
 /*
   File: EqnParserImpl.java
 
-  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+  Copyright (c) 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import org.cytoscape.equations.parse_tree.*;
 
@@ -47,6 +48,7 @@ class EqnParserImpl implements EqnParser {
 	private Node parseTree;
 	private Map<String, Class> variableNameToTypeMap;
 	private Set<String> variableReferences;
+	private Map<String, Object> defaultValues;
 	private Set<Function> registeredFunctions;
 
 	public EqnParserImpl() {
@@ -92,6 +94,7 @@ class EqnParserImpl implements EqnParser {
 		this.formula = formula;
 		this.variableNameToTypeMap = variableNameToTypeMap;
 		this.variableReferences = new TreeSet<String>();
+		this.defaultValues = new TreeMap<String, Object>();
 		this.tokeniser = new Tokeniser(formula.substring(1));
 		this.lastErrorMessage = null;
 
@@ -130,6 +133,8 @@ class EqnParserImpl implements EqnParser {
 	public String getErrorMsg() { return lastErrorMessage; }
 
 	public Set<String> getVariableReferences() { return variableReferences; }
+
+	public Map<String, Object> getDefaultValues() { return defaultValues; }
 
 	/**
 	 *  @return the parse tree.  Must only be called if parse() returns true!
@@ -232,11 +237,12 @@ class EqnParserImpl implements EqnParser {
 			if (token != Token.IDENTIFIER)
 				throw new IllegalStateException(sourceLocation + ": identifier expected!");
 
-			final Class varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
+			final String ident = tokeniser.getIdent();
+			final Class varRefType = variableNameToTypeMap.get(ident);
 			if (varRefType == null)
 				throw new IllegalStateException(sourceLocation + ": unknown variable reference name: \""
-				                                + tokeniser.getIdent() + "\"!");
-			variableReferences.add(tokeniser.getIdent());
+				                                + ident + "\"!");
+			variableReferences.add(ident);
 
 			Object defaultValue = null;
 			if (usingOptionalBraces) {
@@ -265,6 +271,8 @@ class EqnParserImpl implements EqnParser {
 
 				if (token != Token.CLOSE_BRACE)
 					throw new IllegalStateException(sourceLocation + ": closing brace expected!");
+
+				defaultValues.put(ident, defaultValue);
 			}
 
 			return new IdentNode(varRefStartPos, tokeniser.getIdent(), defaultValue, varRefType);

@@ -71,7 +71,9 @@ public class EqnCompiler {
 			code[i]            = codeAndSourceLocation.getCode();
 			sourceLocations[i] = codeAndSourceLocation.getSourceLocation();
 		}
-		this.equation = new Equation(equation, parser.getVariableReferences(), code, sourceLocations, parser.getType());
+		this.equation = new Equation(equation, parser.getVariableReferences(),
+		                             parser.getDefaultValues(), code, sourceLocations,
+		                             parser.getType());
 
 		errorMsg = null;
 		return true;

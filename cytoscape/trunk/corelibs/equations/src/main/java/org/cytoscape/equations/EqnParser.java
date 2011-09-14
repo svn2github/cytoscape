@@ -77,6 +77,11 @@ public interface EqnParser {
 	public Set<String> getVariableReferences();
 
 	/**
+	 *  @return a map from variable names to their default values, if any
+	 */
+	public Map<String, Object> getDefaultValues();
+
+	/**
 	 *  @return the parse tree.  Must only be called if parse() returns true!
 	 */
 	public Node getParseTree();

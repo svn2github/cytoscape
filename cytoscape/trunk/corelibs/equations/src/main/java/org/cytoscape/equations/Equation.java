@@ -38,6 +38,7 @@ import java.util.Set;
 public class Equation {
 	private final String equation;
 	private final Set<String> attribReferences;
+	private final Map<String, Object> defaultValues;
 	private final Object[] code;
 	private final int[] sourceLocations;
 	private final Class type;
@@ -45,14 +46,17 @@ public class Equation {
 	/**
 	 *  @param equation          the string representing this equation
 	 *  @param attribReferences  other attributes that are referenced by this equation
+	 *  @param defaultValues     default values for attribute references, if any
 	 *  @param code              the instruction sequence representing the compiled equation
 	 *  @param type              the type of the equation, String.class, Boolean.class or Double.class
 	 */
-	Equation(final String equation, final Set<String> attribReferences, final Object[] code,
+	Equation(final String equation, final Set<String> attribReferences,
+	         final Map<String, Object> defaultValues, final Object[] code,
 	         final int[] sourceLocations, final Class type)
 	{
 		this.equation         = equation;
 		this.attribReferences = attribReferences;
+		this.defaultValues    = defaultValues;
 		this.code             = code;
 		this.sourceLocations  = sourceLocations;
 		this.type             = type;
@@ -69,6 +73,7 @@ public class Equation {
 	}
 
 	public Set<String> getAttribReferences() { return attribReferences; }
+	public Map<String, Object> getDefaultValues() { return defaultValues; }
 	public Object[] getCode() { return code; }
 	public int[] getSourceLocations() { return sourceLocations; }
 	public Class getType() { return type; }
@@ -88,7 +93,8 @@ public class Equation {
 
 		final Equation errorEquation = compiler.getEquation();
 
-		return new Equation(equation, errorEquation.attribReferences, errorEquation.code,
+		return new Equation(equation, errorEquation.attribReferences,
+		                    errorEquation.defaultValues, errorEquation.code,
 		                    errorEquation.sourceLocations, type);
 	}
 
