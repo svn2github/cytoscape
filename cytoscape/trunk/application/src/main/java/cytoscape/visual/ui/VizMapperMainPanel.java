@@ -1299,6 +1299,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private final void buildProperty(Calculator calc, VizMapperProperty calculatorTypeProp,
 	                                 String rootCategory) {
 		final VisualPropertyType type = calc.getVisualPropertyType();
+
 		/*
 		 * Set one calculator
 		 */
@@ -1670,6 +1671,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		Item selectedItem = (Item) visualPropertySheetPanel.getTable().getValueAt(selected, 0);
 		VizMapperProperty prop = (VizMapperProperty) selectedItem.getProperty();
+		if (prop == null)
+			return;
 
 		VisualPropertyType type = null;
 		String ctrAttrName = null;
@@ -1683,10 +1686,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			typeRootProp = (VizMapperProperty) prop;
 			type = (VisualPropertyType) ((VizMapperProperty) prop).getHiddenObject();
 			ctrAttrName = (String) e.getNewValue();
+			logger.debug("Controlling attribute for: " + prop.getHiddenObject() + " changed to: "+ctrAttrName);
 		} else if ((prop.getParentProperty() == null) && (e.getNewValue() == null)) {
 			/*
 			 * Empty cell selected. no need to change anything.
 			 */
+			logger.debug("Empty cell selected");
 			return;
 		} else {
 			typeRootProp = (VizMapperProperty) prop.getParentProperty();
@@ -1694,8 +1699,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (prop.getParentProperty() == null)
 				return;
 
-			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty())
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             .getHiddenObject();
+			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty()).getHiddenObject();
 		}
 
 		/*
@@ -1793,6 +1797,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			final Byte dataType = attrForTest.getType(ctrAttrName);
+			final Class dataClass = CyAttributesUtils.getClass(ctrAttrName, attrForTest);
 
 			// This part is for Continuous Mapping.
 			if (mapping instanceof ContinuousMapping) {
@@ -1821,8 +1826,23 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final Map saved = discMapBuffer.get(newMappingName);
 
 				if (saved == null) {
+					// Save the current mapping
 					discMapBuffer.put(curMappingName, ((DiscreteMapping) mapping).getAll());
-					mapping.setControllingAttributeName(ctrAttrName);
+					// Create a new mapping
+					if (type.isNodeProp()) {
+						vmm.getVisualStyle().getNodeAppearanceCalculator().removeCalculator(type);
+					} else {
+						vmm.getVisualStyle().getEdgeAppearanceCalculator().removeCalculator(type);
+					}
+					vmm.getCalculatorCatalog().removeCalculator(curCalc);
+					NewMappingBuilder.createNewCalculator(type, "Discrete Mapper", curCalc.toString(), ctrAttrName);
+					Calculator newCalc = vmm.getCalculatorCatalog().getCalculator(type, curCalc.toString());
+					newCalc.getMapping(0).setControllingAttributeName(ctrAttrName);
+					if (type.isNodeProp()) {
+						vmm.getVisualStyle().getNodeAppearanceCalculator().setCalculator(newCalc);
+					} else {
+						vmm.getVisualStyle().getEdgeAppearanceCalculator().setCalculator(newCalc);
+					}
 				} else if (saved != null) {
 					// Mapping exists
 					discMapBuffer.put(curMappingName, ((DiscreteMapping) mapping).getAll());
