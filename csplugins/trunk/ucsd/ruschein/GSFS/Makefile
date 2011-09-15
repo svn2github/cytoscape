@@ -1,14 +1,17 @@
 CXX         = g++-mp-4.4
-CCFLAGS     = -W -Wall -Werror -Iinclude -DGDB='"/Developer/usr/bin/gdb"'
+CXXFLAGS    = -W -Wall -Werror -Iinclude -DGDB='"/Developer/usr/bin/gdb"'
 SRCS        = src/*.cc
 TEMP        = $(addprefix objs/,$(notdir $(wildcard src/*.cc)))
 OBJS        = $(TEMP:.cc=.o)
 
-all: $(OBJS)
+
+lib/libiViaCoreSubset.a: $(OBJS)
+	@echo "Linking $@..."
+	@ar cqs $@ $^
 
 objs/%.o: src/%.cc
 	@echo "Compiling $<..."
-	@$(CXX) $(CCFLAGS) $< -c -o $@
+	@$(CXX) $(CXXFLAGS) $< -c -o $@
 
 clean:
 	rm -f objs/*
