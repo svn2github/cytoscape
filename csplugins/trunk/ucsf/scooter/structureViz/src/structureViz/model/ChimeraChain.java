@@ -114,6 +114,24 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	public boolean isSelected() { return selected; }
 
 	/**
+ 	 * Return the list of selected residues
+ 	 *
+ 	 * @return all selected residues
+ 	 */
+	public List<ChimeraResidue> getSelectedResidues() {
+		List<ChimeraResidue>residueList =  new ArrayList<ChimeraResidue>();
+		if (selected) {
+			residueList.addAll(getResidues());
+		} else {
+			for (ChimeraResidue residue: getResidues()) {
+				if (residue.isSelected())
+					residueList.add(residue);
+			}
+		}
+		return residueList;
+	}
+
+	/**
 	 * Add a residue to the chain.
 	 *
 	 * @param residue the ChimeraResidue to add to the chain.

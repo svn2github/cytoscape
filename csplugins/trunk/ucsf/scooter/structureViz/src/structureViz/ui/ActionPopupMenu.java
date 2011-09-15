@@ -434,7 +434,7 @@ public class ActionPopupMenu extends JPopupMenu {
 					ChimeraModel model = obj.getChimeraModel();
 					List<String> residueL = model.getStructure().getResidueList();
 					if (residueL == null) return;
-					// The residue list is of the form RRRnnn,RRRnnn.  We want
+					// The residue list may be of the form RRRnnn,RRRnnn.  We want
 					// to reformat this to nnn,nnn
 					String residues = new String();
 					for (String residue: residueL) {

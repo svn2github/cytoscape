@@ -125,8 +125,8 @@ public class ModelNavigatorDialog
 	 * this dialog
 	 */
 	protected ModelNavigatorDialog (Frame parent, Chimera object) {
-		// super(parent, false);
-		super(Cytoscape.getDesktop(), "Cytoscape Molecular Structure Navigator");
+		// super(Cytoscape.getDesktop(), "Cytoscape Molecular Structure Navigator");
+		super((Frame)null, "Cytoscape Molecular Structure Navigator");
 		chimeraObject = object;
 		initComponents();
 		status = false;

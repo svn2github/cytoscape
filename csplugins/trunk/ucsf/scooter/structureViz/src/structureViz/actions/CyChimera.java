@@ -41,6 +41,10 @@ import java.util.Map;
 import java.util.Properties;
 
 // giny imports
+import giny.model.Edge;
+import giny.model.GraphObject;
+import giny.model.Node;
+import giny.view.EdgeView;
 import giny.view.NodeView;
 
 // Cytoscape imports
@@ -57,7 +61,9 @@ import structureViz.StructureViz;
 import structureViz.actions.Chimera;
 import structureViz.model.Structure;
 import structureViz.model.Sequence;
+import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraModel;
+import structureViz.model.ChimeraResidue;
 
 
 /**
@@ -76,7 +82,7 @@ public class CyChimera {
 	private static CyAttributes cyAttributes;
 	private static CyLogger logger = null;
 
-	static List<NodeView> selectedList = null;
+	static List<GraphObject> selectedList = null;
 
   static { 
 		String structureAttribute = getProperty("structureAttribute");
@@ -261,7 +267,7 @@ public class CyChimera {
 			if (sList != null && sList.size() > 0)
 				return sList.get(0);
 		}
-		Structure s =  new Structure(name, null, Structure.StructureType.PDB_MODEL);
+		Structure s =  Structure.getStructure(name, (CyNode)null, Structure.StructureType.PDB_MODEL);
 		pdbStructureMap.put(name, s);
 		return s;
 	}
@@ -339,14 +345,40 @@ public class CyChimera {
 	 * with ChimeraModels as the keys
 	 * @param chimeraModels the list of ChimeraModels we currently have open
 	 */
-	public static void selectCytoscapeNodes(CyNetworkView networkView, Map<ChimeraModel,ChimeraModel> modelsToSelect,
+	public static void selectCytoscapeNodes(CyNetworkView networkView, 
+	                                        Map<ChimeraModel,ChimeraModel> modelsToSelect,
 																					List<ChimeraModel> chimeraModels) {
 		CyNetwork network = networkView.getNetwork();
 
-		if (selectedList == null) selectedList = new ArrayList<NodeView>();
+		if (selectedList == null) selectedList = new ArrayList<GraphObject>();
+
+		// We need to do this in two passes since some parts of a structure might be
+		// selected and some might not.  Our selection model (unfortunately) only tells
+		// us that something has changed, not what...
+		List<GraphObject> graphObjectList = new ArrayList<GraphObject>();
+		for (ChimeraModel model: chimeraModels) {
+			if (model == null) continue;
+			Structure st = model.getStructure();
+			if (!modelsToSelect.containsKey(model)) {
+				// Deselect everything in this structure
+				graphObjectList.addAll(st.getGraphObjectList());
+			}
+		}
+		setSelectedState(networkView, graphObjectList, false);
+		graphObjectList.clear();
 
 		for (ChimeraModel model: chimeraModels) {
 			if (model == null) continue;
+			Structure st = model.getStructure();
+			if (modelsToSelect.containsKey(model)) {
+				// Select the appropriate things
+				List<ChimeraResidue>residueList = model.getSelectedResidues();
+				graphObjectList.addAll(st.getGraphObjectList(residueList));
+			}
+		}
+		setSelectedState(networkView, graphObjectList, true);
+
+/*
 			CyNode node = model.getStructure().node();
 			if (node == null) continue;
 			NodeView nodeView = networkView.getNodeView(node);
@@ -371,6 +403,7 @@ public class CyChimera {
 				}
 			}
 		}
+*/
 
 		networkView.updateView();
 	}
@@ -416,7 +449,8 @@ public class CyChimera {
 		return structure;
 	}
 
-	private static List<Structure> getStructures(CyNode node, List<Structure> structureList, String matchName) {
+	private static List<Structure> getStructures(CyNode node, 
+	                                             List<Structure> structureList, String matchName) {
 		if (structureList == null) {
 			structureList = new ArrayList<Structure>();
 		}
@@ -425,7 +459,8 @@ public class CyChimera {
 		if (chemStruct != null && chemStruct.length() > 0) {
 				String[] structList = chemStruct.split(",");
 				for (int i = 0; i < structList.length; i++) {
-					Structure s = new Structure(structList[i].trim() ,node , Structure.StructureType.SMILES);
+					Structure s = Structure.getStructure(structList[i].trim(), node, 
+					                                     Structure.StructureType.SMILES);
 					smilesStructureMap.put(structList[i].trim(), s);
 					structureList.add(s);
 				}
@@ -444,10 +479,11 @@ public class CyChimera {
 		if (sList != null && sList.length > 0) {
 			// It does, so add them all
 			for (int i = 0; i < sList.length; i++) {
-				Structure s = new Structure(sList[i].trim(),node, Structure.StructureType.PDB_MODEL);
+				Structure s = Structure.getStructure(sList[i].trim(),node, 
+				                                     Structure.StructureType.PDB_MODEL);
 				pdbStructureMap.put(sList[i].trim(), s);
 				// System.out.println("Setting residue list for "+s);
-				s.setResidueList(residues);
+				s.setResidueList(node, residues);
 				if (matchName != null && matchName.equals(sList[i].trim())) {
 					structureList.add(s);
 					return structureList;
@@ -455,12 +491,25 @@ public class CyChimera {
 					structureList.add(s);
 			}
 		} else if (structure != null) {
-			Structure s = new Structure(structure,node, Structure.StructureType.PDB_MODEL);
+			Structure s = Structure.getStructure(structure,node, Structure.StructureType.PDB_MODEL);
 			pdbStructureMap.put(structure, s);
-			s.setResidueList(residues);
+			s.setResidueList(node, residues);
 			if (matchName != null && matchName.equals(structure))
       	structureList.add(s);
 		}
 		return structureList;
+	}
+
+	private static void setSelectedState(CyNetworkView view, List<GraphObject> goList, boolean state) {
+		for (GraphObject obj: goList) {
+			if (obj instanceof Node) {
+				// Handle secondary paint??
+				view.getNodeView((Node)obj).setSelected(state);
+			} else if (obj instanceof Edge) {
+				view.getEdgeView((Edge)obj).setSelected(state);
+			}
+			if (selectedList.contains(obj))
+				selectedList.remove(obj);
+		}
 	}
 }

@@ -121,7 +121,7 @@ public class StructureCommands {
 			structureType = Structure.StructureType.SMILES;
 		}
 
-		Structure st = new Structure(name, null, structureType);
+		Structure st = Structure.getStructure(name, (CyNode)null, structureType);
 		chimera.open(st);
 
 		// To make sure, see if we can get the Chimera model

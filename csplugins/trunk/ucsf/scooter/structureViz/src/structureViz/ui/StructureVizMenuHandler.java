@@ -185,7 +185,7 @@ public class StructureVizMenuHandler
 		String ident = node.getIdentifier();
 		if (ident.startsWith("gi"))
 			ident = ident.substring(2);
-		Structure struct = new Structure(ident, node, Structure.StructureType.MODBASE_MODEL);
+		Structure struct = Structure.getStructure(ident, node, Structure.StructureType.MODBASE_MODEL);
 		userData = struct;
 		openAction(ident, null, false);
 	}

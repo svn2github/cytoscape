@@ -32,21 +32,26 @@
  */
 package structureViz.model;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import cytoscape.CyNode;
+import giny.model.GraphObject;
+
+import structureViz.model.ChimeraResidue;
 
 /**
  * The Structure class provides a link between the Chimera data
  * and the Cytoscape data.
  */
 public class Structure {
-	static int nStructures = 0;
 	static int nextModel = 0;
+	static Map<String, Structure> structureMap = new HashMap<String, Structure>();
 	String structureName;
-	List<String> residueList;
-	CyNode cytoscapeNode;
+	Map<GraphObject, List<String>> residueMap;
+	List<GraphObject> graphObjectList;
 	int modelNumber;
 	int subModelNumber;
 	StructureType type;
@@ -60,24 +65,38 @@ public class Structure {
 	 */
 	public static int getNextModel() {return nextModel++;}
 
+	public static Structure getStructure(String name, CyNode node, StructureType type) {
+		if (structureMap.containsKey(name)) {
+			Structure s = structureMap.get(name);
+			s.addGraphObject(node);
+			return s;
+		}
+		return new Structure(name, node, type);
+	}
+
 	/**
  	 * Create a new Structure
 	 *
 	 * @param name the name of the structure
 	 * @param node the CyNode that this structure points to
 	 */
-	public Structure (String name, CyNode node, StructureType type) {
+	protected Structure (String name, CyNode node, StructureType type) {
+		this(name, new ArrayList<GraphObject>(), type);
+		if (node != null)
+			this.setNode(node);
+	}
+
+	protected Structure (String name, List<GraphObject> nodeList, StructureType type) {
 		this.structureName = name;
-		this.cytoscapeNode = node;
 		this.modelNumber = nextModel;
 		this.subModelNumber = 0;
-		this.residueList = null;
+		this.residueMap = new HashMap<GraphObject, List<String>>();
 		this.type = type;
+		this.graphObjectList = nodeList;
 	}
 
 	public Structure makeSubModel(int subModelNumber) {
-		System.out.println("Makeing sub-model");
-		Structure st = new Structure(this.structureName, this.cytoscapeNode, this.type);
+		Structure st = new Structure(this.structureName, this.graphObjectList, this.type);
 		st.setModelNumber(this.modelNumber, subModelNumber);
 		return st;
 	}
@@ -94,14 +113,63 @@ public class Structure {
 	 *
 	 * @return the CyNode this structure is an attribute of
 	 */
-	public CyNode node() {return this.cytoscapeNode;}
+	public CyNode node() {
+		if (graphObjectList.get(0) instanceof CyNode)
+			return (CyNode)graphObjectList.get(0);
+		return null;
+	}
 
 	/**
 	 * Set the CyNode this structure is associated with
 	 *
 	 * @param node the CyNode this structure is an attribute of
 	 */
-	public void setNode(CyNode node) {this.cytoscapeNode = node;}
+	public void setNode(CyNode node) {this.graphObjectList.add(0,node);}
+
+	/**
+ 	 * Add a CyNode or CyEdge to the list of graph objects this structure is associated with
+ 	 *
+	 * @param node the GraphObject this structure is an attribute of
+	 */
+	public void addGraphObject(GraphObject go) {this.graphObjectList.add(go);}
+
+	/**
+ 	 * Remove a Graph Object from the list of objects this structure is associated with
+ 	 *
+	 * @param node the Graph Object to remove from this structure's list
+	 */
+	public void removeGraphObject(GraphObject go) {
+		if (graphObjectList.contains(go))
+			graphObjectList.remove(go);
+	}
+
+	/**
+ 	 * Get the list of GraphObjects for this structure
+ 	 *
+	 * @return objList the GraphObjects this structure is an attribute of
+	 */
+	public List<GraphObject> getGraphObjectList() {return this.graphObjectList;}
+
+	/**
+ 	 * Get the list of GraphObjects for this structure that match a list
+ 	 * of residues.
+ 	 *
+ 	 * @param residueList the list of residues we're matching
+	 * @return objList the GraphObjects this structure is an attribute of
+	 */
+	public List<GraphObject> getGraphObjectList(List<ChimeraResidue> residueList) {
+		List<GraphObject>goList = new ArrayList<GraphObject>();
+		if (residueList == null || residueList.size() == 0)
+			return goList;
+
+		for (GraphObject obj: graphObjectList) {
+			if (residuesMatch(obj, residueList)) {
+				// System.out.println("Found match for "+obj.getIdentifier());
+				goList.add(obj);
+			}
+		}
+		return goList;
+	}
 
 	/**
 	 * Get the modelNumber for this structure
@@ -132,12 +200,15 @@ public class Structure {
 	 * Get the identifier of the cytoscape node this structure
 	 * is an attribute of.
 	 *
-	 * @return identifier of the CyNode as a String
+	 * @return identifier of the Graph Object as a String
 	 */
 	public String getIdentifier() {
-		if (cytoscapeNode == null)
+		if (graphObjectList == null || graphObjectList.size() == 0)
 			return "(none)";
-		return cytoscapeNode.getIdentifier();
+		else if (graphObjectList.size() == 1)
+			return graphObjectList.get(0).getIdentifier();
+		else
+			return constructListOfGraphObjects(graphObjectList);
 	}
 
 	/**
@@ -159,11 +230,27 @@ public class Structure {
 	}
 
 	/**
-	 * Return the "active site" or "special" residues
+	 * Return the "active site" or "special" residues for a single node or edge
+	 *
+	 * @param graphObject the Graph Object this list applies to
+	 * @return String representation of the residues (comma separated)
+	 */
+	public List<String> getResidueList(GraphObject obj) {
+		if (residueMap.containsKey(obj))
+			return residueMap.get(obj);
+		return null;
+	}
+
+	/**
+	 * Return the "active site" or "special" residues for all nodes or edges
 	 *
 	 * @return String representation of the residues (comma separated)
 	 */
 	public List<String> getResidueList() {
+		List<String> residueList = new ArrayList<String>();
+		for (GraphObject obj: residueMap.keySet()) {
+			residueList.addAll(getResidueList(obj));
+		}
 		return residueList;
 	}
 
@@ -172,8 +259,8 @@ public class Structure {
 	 *
 	 * @param residues String representation of the residues (comma separated)
 	 */
-	public void setResidueList(String residues) {
-		this.residueList = new ArrayList<String>();
+	public void setResidueList(GraphObject obj, String residues) {
+		List<String> residueList = new ArrayList<String>();
 		if (residues == null) {
 			return;
 		}
@@ -194,21 +281,59 @@ public class Structure {
 			if (residue == null || residue.equals("") || residue.length() == 0)
 				continue;
 			String[] range = residue.split("-",2);
+			String chain = null;
 			for (int res = 0; res < range.length; res++) {
-				if (res == 1) resRange = resRange.concat("-");
+				if (res == 1) {
+					resRange = resRange.concat("-");
+					if (chain != null && range[res].indexOf('.') == -1)
+						range[res] = range[res].concat("."+chain);
+				}
+
+				if (res == 0 && range.length >= 2 && range[res].indexOf('.') > 0) {
+					// This is a range spec with the leading residue containing a chain spec
+					String[] resChain = range[res].split("\\.");
+					chain = resChain[1];
+					range[res] = resChain[0];
+				}
 				// Convert to legal atom-spec
-				if (Character.isDigit(residue.charAt(0))) {
+				if (Character.isDigit(range[res].charAt(0))) {
 					resRange = resRange.concat(range[res]);
-				} else if (Character.isDigit(residue.charAt(1))) {
+				} else if (Character.isDigit(range[res].charAt(1))) {
 					resRange = resRange.concat(range[res].substring(1));
-				} else if (residue.charAt(0) == '.') {
+				} else if (range[res].charAt(0) == '.') {
 					// Do we have a chain spec?
 					resRange = resRange.concat(range[res]);
 				} else {
 					resRange = resRange.concat(range[res].substring(3));
 				}
 			}
-			this.residueList.add(resRange);
+			residueList.add(resRange);
 		}
+		residueMap.put(obj, residueList);
+	}
+
+	private String constructListOfGraphObjects(List<GraphObject> objList) {
+		String list = null;
+		for (GraphObject obj: objList) {
+			if (list == null)
+				list = ""+obj.getIdentifier();
+			else
+				list += ";"+obj.getIdentifier();
+		}
+		return list;
+	}
+
+	private boolean residuesMatch(GraphObject obj, List<ChimeraResidue>residueList) {
+		if (!residueMap.containsKey(obj))
+			return true;
+
+		List<String>residues = residueMap.get(obj);
+		for (ChimeraResidue res: residueList) {
+			for (String atomSpec: residues) {
+				if (res.matchesAtomSpec(atomSpec))
+					return true;
+			}
+		}
+		return false;
 	}
 }

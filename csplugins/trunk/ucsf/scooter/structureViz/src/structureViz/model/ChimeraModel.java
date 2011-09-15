@@ -77,9 +77,9 @@ public class ChimeraModel implements ChimeraStructuralObject {
 			this.modelNumber = structure.modelNumber();
 			this.subModelNumber = structure.subModelNumber();
 		}
-		this.chains = new TreeMap();
-		this.residues = new TreeMap();
-		this.residueMap = new HashMap();
+		this.chains = new TreeMap<String,ChimeraChain>();
+		this.residues = new TreeMap<String,ChimeraResidue>();
+		this.residueMap = new HashMap<String,ChimeraResidue>();
 		this.structure = structure;
 		this.modelColor = color;
 	}
@@ -114,9 +114,9 @@ public class ChimeraModel implements ChimeraStructuralObject {
 			this.structure = structure.makeSubModel(this.subModelNumber);
 
 		this.structure.setModelNumber(this.modelNumber, this.subModelNumber);
-		this.chains = new TreeMap();
-		this.residues = new TreeMap();
-		this.residueMap = new HashMap();
+		this.chains = new TreeMap<String,ChimeraChain>();
+		this.residues = new TreeMap<String,ChimeraResidue>();
+		this.residueMap = new HashMap<String,ChimeraResidue>();
 	}
 
 	/**
@@ -134,6 +134,23 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	 * @return the selected state
 	 */
 	public boolean isSelected() { return selected; }
+
+	/**
+ 	 * Return the list of selected residues
+ 	 *
+ 	 * @return all selected residues
+ 	 */
+	public List<ChimeraResidue> getSelectedResidues() {
+		List<ChimeraResidue>residueList =  new ArrayList<ChimeraResidue>();
+		if (selected) {
+			residueList.addAll(getResidues());
+		} else {
+			for (ChimeraChain chain: getChains())
+				residueList.addAll(chain.getSelectedResidues());
+		}
+		return residueList;
+		
+	}
 
 	/**
 	 * Get the list of chain names associated with this model

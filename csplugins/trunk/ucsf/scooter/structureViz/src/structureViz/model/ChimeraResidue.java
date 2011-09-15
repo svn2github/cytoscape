@@ -213,6 +213,56 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	}
 
 	/**
+ 	 * Return true if this residue is included in the atom
+ 	 * spec passed to it...
+ 	 *
+ 	 * @param atomSpec the Chimera atom spec
+ 	 * @return true if this residue is addressed by this atom spec
+ 	 */
+	public boolean matchesAtomSpec(String atomSpec) {
+		// We need to parse the atom spec to see if it includes this residue
+		// Possibilities:
+		// 	1) Atom spec is just a residue -- compare and return result
+		// 	2) Atom spec is a range, need to see if this residue is in that range
+		// 	3) Atom spec is a chain -- see if this residue is part of that chain
+		if (atomSpec.charAt(0) == '.') {
+			// System.out.println("Chain match: chainId = "+chainId+" atomSpec = "+atomSpec);
+			// We have a chain
+			if (atomSpec.substring(1).equalsIgnoreCase(chainId))
+				return true;
+		} else if (atomSpec.indexOf("-") > 0) {
+			// We have a range
+			String range[] = atomSpec.split("-");
+			if (range[1].indexOf('.') > 0) {
+				String chainSpec[] = range[1].split("\\.");
+				if (!chainSpec[1].equalsIgnoreCase(chainId))
+					return false;
+				range[1] = chainSpec[0];
+			}
+			// System.out.println("Residue match: index = "+index+" range = "+range[0]+"-"+range[1]);
+			int thisResidue = Integer.parseInt(index);
+			int rangeStart = Integer.parseInt(range[0]);
+			int rangeEnd = Integer.parseInt(range[1]);
+			if (rangeStart <= thisResidue && rangeEnd >= thisResidue)
+				return true;
+		} else {
+			// Residue
+			if (atomSpec.indexOf('.') > 0) {
+				// We've got a chain -- make sure it's our chain
+				// System.out.println("Chain match: chainId = "+chainId+" atomSpec = "+atomSpec);
+				String chainSpec[] = atomSpec.split("\\.");
+				if (!chainSpec[1].equalsIgnoreCase(chainId))
+					return false;
+				atomSpec = chainSpec[0];
+			}
+			// System.out.println("Residue match: index = "+index+" atomSpec = "+atomSpec);
+			if (index.equals(atomSpec))
+				return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Get the index of this residue
 	 *
 	 * @return residue index
