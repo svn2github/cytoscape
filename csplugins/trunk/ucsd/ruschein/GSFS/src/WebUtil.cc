@@ -28,6 +28,7 @@
 
 #include <WebUtil.h>
 #include <algorithm>
+#include <memory>
 #include <sstream>
 #include <cctype>
 #include <cerrno>
@@ -45,7 +46,6 @@
 #include <DnsUtil.h>
 #include <FileDescriptor.h>
 #include <FileUtil.h>
-#include <GoogleWebAPI.h>
 #include <HttpHeader.h>
 #include <HtmlUtil.h>
 #include <IniFile.h>
@@ -54,7 +54,6 @@
 #include <MsgUtil.h>
 #include <SocketUtil.h>
 #include <StringUtil.h>
-#include <SystemAndUserTimer.h>
 #include <TextUtil.h>
 #include <TimeUtil.h>
 #include <UrlUtil.h>
@@ -64,6 +63,15 @@
 
 
 namespace {
+
+
+std::string GetBinDir() {
+#ifdef __MACH__
+	return MiscUtil::GetEnv("HOME") + "/bin";
+#else
+	return BIN_DIR;
+#endif
+}
 
 
 // ShellEscapeSingleQuotes -- assumes "*s" are the contents of a single-quoted string.
@@ -365,19 +373,6 @@ std::string Google(const std::string &query, const unsigned max_no_of_results, c
 
 
 } // unnamed namespace
-
-
-unsigned Query(const std::string &query, const unsigned max_no_of_results, std::list<std::string> * const result_urls,
-	       const std::string &restrict_domain_to)
-{
-	result_urls->clear();
-	while (result_urls->size() < max_no_of_results
-	       and GoogleWebAPI::Query(query, max_no_of_results-result_urls->size(), false, 1 + result_urls->size(),
-				       result_urls, restrict_domain_to))
-		/* intentionally empty! */;
-
-	return result_urls->size();
-}
 
 
 // ParseMultiPartFormDataHeader -- parses a multipart/form-data header.
@@ -871,7 +866,7 @@ bool PrecacheURLs(const std::list<std::string> &url_list, const std::string &use
 			argv[index++] = ::strdup(arg->c_str());
 		argv[index] = NULL;
 
-		const std::string executable_path(BIN_DIR "/iViaCore-page-cacher");
+		const std::string executable_path(GetBinDir() + "/iViaCore-page-cacher");
 		::execv(executable_path.c_str(), argv);
 		if (logger.get() != NULL)
 			logger->log("Files open after executing " + executable_path + ": "
@@ -981,46 +976,6 @@ void ExtractSomeJavaScriptLinks(const std::string &document_source, std::vector<
 
 
 } // unnamed namespace
-
-
-namespace {
-
-
-SystemAndUserTimer get_referers_timer(SystemAndUserTimer::CUMULATIVE, "GetReferersTimer");
-
-
-} // unnamed namespace
-
-
-// GetReferers -- retrieves referers "referer_urls" for URL "url" starting at index "start_index"
-//                up to index "start_index+max_count-1"
-//
-unsigned GetReferers(const std::string &url, const unsigned start_index, const unsigned max_count,
-		     std::list<std::string> * const referer_urls, const std::string &restrict_domain_to,
-		     const bool trace)
-{
-	MSG_UTIL_ASSERT(start_index >= 1);
-
-	get_referers_timer.start();
-
-	referer_urls->clear();
-	while (referer_urls->size() < max_count and
-	       GoogleWebAPI::Query(url, max_count-referer_urls->size(), true, start_index + referer_urls->size(),
-				   referer_urls, restrict_domain_to, trace))
-		/* intentionally empty! */;
-
-	size_t count(referer_urls->size());
-	get_referers_timer.stop();
-
-	return count;
-}
-
-
-void GetRefererTimes(double * const user_time, double * const system_time)
-{
-	*user_time   = get_referers_timer.getUserTime();
-	*system_time = get_referers_timer.getSystemTime();
-}
 
 
 // CanonizeUrlList -- Canonize a list of URLs.

@@ -105,16 +105,6 @@ void GetMultiPartArgs(ValueListMap * const post_args, const bool save_file_to_di
 void GetAllCgiArgs(ValueListMap * const cgi_args, int argc = 1, char *argv[] = NULL);
 
 
-/** \brief  Retrieve results from a search engine.
- *  \param  query               The query string.
- *  \param  max_no_of_results   Up to how many results we want. (We may get less!)
- *  \param  result_urls         The URLs returned by the search engine.
- *  \param  restrict_domain_to  If non-empty, restrict searches to this domain, e.g. "www.example.org" or "edu".
- */
-unsigned Query(const std::string &query, const unsigned max_no_of_results, std::list<std::string> * const result_urls,
-	       const std::string &restrict_domain_to = "");
-
-
 const unsigned MAX_MULIT_PART_FORM_RANDOM_NUMBER_LENGTH = 200;
 
 
@@ -408,29 +398,6 @@ void ExtractURLs(const std::string &document_source, const std::string &default_
 		 std::vector<UrlAndAnchorTexts> * const urls_and_anchor_texts, const unsigned flags = DEFAULT_EXTRACT_URL_FLAGS,
 		 const std::string &user_agent_string = "", const unsigned page_cacher_max_fanout = 50,
 		 const unsigned page_cacher_timeout = DEFAULT_DOWNLOAD_TIMEOUT, unsigned long * const overall_timeout = NULL);
-
-
-/** \brief  Retrieves referers "referer_urls" for URL "url" starting at index "start_index"
- *          up to index "start_index+max_count-1".
- *  \param  url                  The URL for which we would like to get referers (inlinks).
- *  \param  start_index          The index of the next referer that we want (Note: 1-based).
- *  \param  max_count            Up to how many new referers we would like to get.
- *  \param  referer_urls         Where to put the URLs of the Web sites referring to "url".
- *  \param  restrict_domain_to   Restrict searches to a domain like "example.org" or "edu".
- *  \param  trace                If true we get reports on stdout about the inner workings.
- *  \return How may referers we found.
- */
-unsigned GetReferers(const std::string &url, const unsigned start_index, const unsigned max_count,
-		     std::list<std::string> * const referer_urls, const std::string &restrict_domain_to = "",
-		     const bool trace = false);
-
-
-/** \brief  Provides cumulative user and system times for all calls so far
- *          to GetReferers.
- *  \param  user_time    The cumulative user time in microseconds.
- *  \param  system_time  The cumulative system time in microseconds.
- */
-void GetRefererTimes(double * const user_time, double * const system_time);
 
 
 /** \brief  Canonize a list of URL's.

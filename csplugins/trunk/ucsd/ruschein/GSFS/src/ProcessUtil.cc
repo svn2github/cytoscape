@@ -33,6 +33,7 @@
 #include <fcntl.h>
 #include <libgen.h>
 #include <signal.h>
+#include <sys/ioctl.h>
 #include <sys/resource.h>
 #include <termios.h>
 #ifndef	TIOCGWINSZ // This *must* follow the <termios.h> include statement!
@@ -544,6 +545,11 @@ pid_t PtyFork(int * const master_fd, std::string * const slave_pty_name, const t
 
 
 typedef char *CharPtr;
+
+
+#ifdef __MACH__
+extern char **environ;
+#endif
 
 
 int PtyExec(const std::vector<std::string> &args, pid_t * const child_pid,

@@ -163,13 +163,13 @@ SSL_CTX *SslConnection::InitContext(const Method method, const ClientServerMode 
 	ContextInfo new_context_info(method, client_server_mode);
 	switch (client_server_mode) {
 	case CLIENT:
-		new_context_info.ssl_context_ = SslConnection::InitClient(method);
+		new_context_info.ssl_context_ = const_cast<SSL_CTX *>(SslConnection::InitClient(method));
 		break;
 	case SERVER:
-		new_context_info.ssl_context_ = SslConnection::InitServer(method);
+		new_context_info.ssl_context_ = const_cast<SSL_CTX *>(SslConnection::InitServer(method));
 		break;
 	case CLIENT_AND_SERVER:
-		new_context_info.ssl_context_ = SslConnection::InitClientAndServer(method);
+		new_context_info.ssl_context_ = const_cast<SSL_CTX *>(SslConnection::InitClientAndServer(method));
 		break;
 	default:
 		throw Exception("in SslConnection::InitContext: unknown client/server mode!");
@@ -208,9 +208,9 @@ void SslConnection::ReleaseContext(const SSL_CTX * const ssl_context)
 }
 
 
-SSL_CTX *SslConnection::InitClient(const Method method)
+const SSL_CTX *SslConnection::InitClient(const Method method)
 {
-	SSL_METHOD *ssl_method;
+	const SSL_METHOD *ssl_method;
 
 	switch (method) {
 	case SSL_V2:
@@ -236,9 +236,9 @@ SSL_CTX *SslConnection::InitClient(const Method method)
 }
 
 
-SSL_CTX *SslConnection::InitServer(const Method method)
+const SSL_CTX *SslConnection::InitServer(const Method method)
 {
-	SSL_METHOD *ssl_method;
+	const SSL_METHOD *ssl_method;
 
 	switch (method) {
 	case SSL_V2:
@@ -264,9 +264,9 @@ SSL_CTX *SslConnection::InitServer(const Method method)
 }
 
 
-SSL_CTX *SslConnection::InitClientAndServer(const Method method)
+const SSL_CTX *SslConnection::InitClientAndServer(const Method method)
 {
-	SSL_METHOD *ssl_method;
+	const SSL_METHOD *ssl_method;
 
 	switch (method) {
 	case SSL_V2:

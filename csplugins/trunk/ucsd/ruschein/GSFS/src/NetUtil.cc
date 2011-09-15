@@ -191,11 +191,6 @@ std::string NetworkAddressAndMaskToString(const in_addr_t network_address, const
 namespace {
 
 
-#ifndef __linux__
-#      error "You need to implement a new method of finding the list of network interfaces!"
-#endif
-
-
 void GetInterfaces(std::list<ifreq> * const interface_requests)
 {
 	interface_requests->clear();

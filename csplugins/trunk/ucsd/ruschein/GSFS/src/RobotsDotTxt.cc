@@ -28,10 +28,7 @@
 #include <sstream>
 #include <cstring>
 #include <Compiler.h>
-#include <DbConnection.h>
-#include <DbRow.h>
 #include <GnuHash.h>
-#include <SqlUtil.h>
 #include <StringUtil.h>
 
 
@@ -516,60 +513,4 @@ void RobotsDotTxtCache::nonThreadSafeClear()
 	}
 
 	hostname_to_robots_dot_txt_map_.clear();
-}
-
-
-void PersistentRobotsDotTxtCache::insert(const std::string &new_hostname, const std::string &new_robots_dot_txt, const time_t expire_time)
-{
-	const std::string quoted_host(SqlUtil::Quote(new_hostname));
-	const std::string expiration(SqlUtil::Quote(SqlUtil::TimeTToDatetime(expire_time)));
-	const std::string contents("E" + SqlUtil::Quote(new_robots_dot_txt));
-	DbRows db_rows(db_connection_->execSql("SELECT robots_id FROM robots_dot_txts WHERE canonical_hostname=" + quoted_host));
-	if (db_rows.empty()) { // insert
-		SqlUtil::TransactionGuard guard(db_connection_);
-		DbRows next_id_val(db_connection_->execSql("SELECT nextval('robots_dot_txts_robots_id_seq')"));
-		std::string next_id(next_id_val.front().getColumn(0));
-		db_connection_->execSql("INSERT INTO robots_dot_txts (robots_id, canonical_hostname, expiration, contents) "
-					"VALUES (" + next_id + "," + quoted_host + "," + expiration + "," + contents + ") RETURNING robots_id");
-	}
-	else // update
-		db_connection_->execSql("UPDATE robots_dot_txts SET canonical_hostname=" + quoted_host + ", expiration=" + expiration + ", contents="
-					+ contents + " WHERE robots_id=" + std::string(db_rows.front().getColumn(0)));
-}
-
-
-void PersistentRobotsDotTxtCache::addAlias(const std::string &original_hostname, const std::string &new_hostname)
-{
-	const std::string quoted_alias(SqlUtil::Quote(new_hostname));
-	const std::string quoted_host(SqlUtil::Quote(original_hostname));
-	DbRows original_exists(db_connection_->execSql("SELECT robots_id FROM robots_dot_txts WHERE canonical_hostname=" + quoted_host));
-	if (not original_exists.empty()) {
-		SqlUtil::TransactionGuard guard(db_connection_);
-		DbRows alias_exists(db_connection_->execSql("SELECT robots_id FROM aliases_and_canonical_hostnames WHERE alias=" + quoted_alias));
-		if (alias_exists.empty()) {
-			const std::string robots_id(original_exists.front().getColumn(0));
-			db_connection_->execSql("INSERT INTO aliases_and_canonical_hostnames VALUES (" + quoted_alias + "," + robots_id + ")");
-		}
-	}
-	else
-		throw Exception("in PersistentRobotsDotTxtCache::addAlias: can't add an additional hostname reference for a non-existent entry!");
-}
-
-
-bool PersistentRobotsDotTxtCache::hasHostname(const std::string &hostname) const
-{
-	DbRows original_exists(db_connection_->execSql("SELECT robots_id FROM robots_dot_txts WHERE canonical_hostname=" + SqlUtil::Quote(hostname)));
-	return not original_exists.empty();
-}
-
-
-bool PersistentRobotsDotTxtCache::getRobotsDotTxt(const std::string &hostname, RobotsDotTxt * const robots_dot_txt) const
-{
-	const DbRows db_rows(db_connection_->execSql("SELECT contents FROM robots_dot_txts WHERE canonical_hostname=" + SqlUtil::Quote(hostname)));
-	if (db_rows.empty())
-		return false;
-
-	RobotsDotTxt new_robots_dot_txt(db_rows.front().getColumn(0));
-	robots_dot_txt->swap(new_robots_dot_txt);
-	return true;
 }

@@ -93,7 +93,11 @@ Mutex::Mutex()
 {
 	pthread_mutexattr_t mutex_attributes;
 	::pthread_mutexattr_init(&mutex_attributes);
+#ifdef __linux__
 	if (unlikely(::pthread_mutexattr_settype(&mutex_attributes, PTHREAD_MUTEX_ERRORCHECK_NP))) // Linux-only!
+#else
+	if (unlikely(::pthread_mutexattr_settype(&mutex_attributes, PTHREAD_MUTEX_ERRORCHECK)))
+#endif
 		throw Exception("in ThreadUtil::Mutex::lock: :pthread_mutexattr_settype(3) failed!");
 	if (unlikely((errno = ::pthread_mutex_init(&mutex_, &mutex_attributes)) != 0))
 		throw Exception("in ThreadUtil::Mutex::lock: pthread_mutex_init(3) failed (" + MsgUtil::ErrnoToString() + ")!");
@@ -333,55 +337,6 @@ void Logger::internalLogAndDie(const std::string &message)
 	}
 
 	std::exit(EXIT_FAILURE);
-}
-
-
-Spinlock::Spinlock(const Scope scope)
-{
-	const int pshared(scope == PROCESS_LOCAL ? PTHREAD_PROCESS_PRIVATE : PTHREAD_PROCESS_SHARED);
-	if (unlikely((errno = ::pthread_spin_init(&spinlock_, pshared)) != 0))
-		throw Exception("in ThreadUtil::Spinlock::Spinlock: pthread_spin_init(3) failed (" + MsgUtil::ErrnoToString() + ")!");
-}
-
-
-Spinlock::~Spinlock()
-{
-	if (unlikely((errno = ::pthread_spin_destroy(&spinlock_)) != 0)) {
-		if (std::uncaught_exception())
-			return;
-                throw Exception("in ThreadUtil::Spinlock::~Spinlock: pthread_spin_destroy(3) failed (" + MsgUtil::ErrnoToString() + ")!");
-	}
-}
-
-
-void Spinlock::lock()
-{
-	if (unlikely((errno = ::pthread_spin_lock(&spinlock_)) != 0))
-                throw Exception("in ThreadUtil::Spinlock::lock: pthread_spin_lock(3) failed (" + MsgUtil::ErrnoToString() + ")!");
-}
-
-
-bool Spinlock::tryLock()
-{
-	errno = ::pthread_spin_trylock(&spinlock_);
-	if (likely(errno == 0)) // Since we're supposed to use spinlocks for non-contended, short critical sections,
-		return true;    // this should be the common case!
-
-	if (unlikely(errno != EBUSY))
-                throw Exception("in ThreadUtil::Spinlock::trylock: pthread_spin_trylock(3) failed (" + MsgUtil::ErrnoToString() + ")!");
-
-	// If we got here, the error was EBUSY and we therefore failed to acquire the lock:
-	return false; // Lock is busy, i.e. currently held by another process!
-}
-
-
-void Spinlock::unlock()
-{
-	if (unlikely((errno = ::pthread_spin_unlock(&spinlock_)) != 0)) {
-		if (std::uncaught_exception())
-			return;
-                throw Exception("in ThreadUtil::Spinlock::unlock: pthread_spin_unlock(3) failed (" + MsgUtil::ErrnoToString() + ")!");
-	}
 }
 
 

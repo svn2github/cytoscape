@@ -188,35 +188,4 @@ private:
 };
 
 
-/** \class  PersistentRobotsDotTxtCache
- *  \brief  Implements a cache of robots.txt objects as an SQL database.
- */
-class PersistentRobotsDotTxtCache {
-	DbConnection *db_connection_;
-public:
-	/** \brief  Constructor.
-	 *  \param  connection  The database connection.
-	 */
-	explicit PersistentRobotsDotTxtCache(DbConnection * const connection): db_connection_(connection) { }
-
-	/** \brief  Associates a robots.txt entry with a hostname.
-	 *  \param  new_hostname        The hostname (key) to associate with "new_robots_dot_txt."
-	 *  \param  new_robots_dot_txt  The contents of a robots.txt file.
-	 */
-	void insert(const std::string &new_hostname, const std::string &new_robots_dot_txt, const time_t expire_time);
-
-	/** Adds a robots.txt reference for the robots.txt associated with "original_hostname".  Throws an
-	    exception if no robots.txt entry can be found for "original_hostname." */
-	void addAlias(const std::string &original_hostname, const std::string &new_hostname);
-
-	bool hasHostname(const std::string &hostname) const;
-
-	/** Returns the RobotsDotTxt for "hostname" in "robots_dot_txt", if found. */
-	bool getRobotsDotTxt(const std::string &hostname, RobotsDotTxt * const robots_dot_txt) const;
-private:
-	PersistentRobotsDotTxtCache(const PersistentRobotsDotTxtCache &rhs);                  // Intentionally unimplemented!
-	const PersistentRobotsDotTxtCache &operator=(const PersistentRobotsDotTxtCache &rhs); // Intentionally unimplemented!
-};
-
-
 #endif // ifndef ROBOTS_DOT_TXT_H

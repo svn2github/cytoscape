@@ -35,6 +35,10 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <sys/wait.h>
+#ifndef __linux__
+#       include <sys/types.h>
+#       include <sys/sysctl.h>
+#endif
 #include <unistd.h>
 #include <DnsUtil.h>
 #include <MsgUtil.h>
@@ -45,11 +49,6 @@
 
 
 #define DIM(array)	(sizeof(array) / sizeof(array[0]))
-
-
-#ifndef __MACH__
-#       define "/Developer/usr/bin/gdb"
-#endif
 
 
 namespace MiscUtil {
@@ -414,10 +413,7 @@ std::string GetCurrencyString(const double amount)
 
 unsigned GetCpuCount()
 {
-        #ifndef __linux__
-        #               error Need to reimplement GetCpuCount for your OS platform!
-        #endif
-
+#ifndef __linux__
 	std::ifstream proc_cpuinfo("/proc/cpuinfo");
 	if (unlikely(proc_cpuinfo.fail()))
 		throw Exception("in MiscUtil::GetCpuCount: can't open \"/proc/cpuinfo\" for reading!");
@@ -435,6 +431,27 @@ unsigned GetCpuCount()
 	}
 
 	return cpu_count;
+#else
+	int mib[4];
+	size_t len = sizeof(numCPU); 
+
+	/* set the mib for hw.ncpu */
+	mib[0] = CTL_HW;
+	mib[1] = HW_AVAILCPU;  // alternatively, try HW_NCPU;
+
+	/* get the number of CPUs from the system */
+	::sysctl(mib, 2, &numCPU, &len, NULL, 0);
+
+	if (numCPU < 1) {
+		mib[1] = HW_NCPU;
+		::sysctl(mib, 2, &numCPU, &len, NULL, 0);
+
+		if (numCPU < 1)
+			numCPU = 1;
+	}
+
+	return numCPU;
+#endif
 }
 
 
@@ -660,225 +677,6 @@ void FdSetToFdVector(const fd_set &set, std::vector<int> * const vector)
 		if (FD_ISSET(fd, &set))
 			vector->push_back(fd);
 	}
-}
-
-
-std::string Block::getName() const
-{
-	std::string name;
-	for (const_iterator cut_node(begin()); cut_node != end(); ++cut_node)
-		name += StringUtil::ToString(&*cut_node);
-	return name;
-}
-
-
-void Block::addCutNode(const XYCutNode &cut_node)
-{
-	const double x_min(std::min(cut_node.x0_, cut_node.x1_));
-	const double x_max(std::max(cut_node.x0_, cut_node.x1_));
-	const double y_min(std::min(cut_node.y0_, cut_node.y1_));
-	const double y_max(std::max(cut_node.y0_, cut_node.y1_));
-
-	x_min_ = std::min(x_min_, x_min);
-	x_max_ = std::max(x_max_, x_max);
-	y_min_ = std::min(y_min_, y_min);
-	y_max_ = std::max(y_max_, y_max);
-
-	cut_node_set_.insert(&cut_node);
-}
-
-
-namespace {
-
-
-inline bool CompareOnY(const XYCutNode * const node1, const XYCutNode * const node2)
-{
-	const double min1(std::min(node1->y0_, node1->y1_));
-	const double min2(std::min(node2->y0_, node2->y1_));
-	return min1 < min2;
-}
-
-
-inline bool CompareOnX(const XYCutNode * const node1, const XYCutNode * const node2)
-{
-	const double min1(std::min(node1->x0_, node1->x1_));
-	const double min2(std::min(node2->x0_, node2->x1_));
-	return min1 < min2;
-}
-
-
-void GenerateXYCutTreeVerticalHelper(const double separation_threshold, TreeNode<XYCutNodeSet> * const parent)
-{
-	// Sanity check:
-	if (unlikely(parent->getData().size() < 2))
-		return;
-
-	std::vector<const XYCutNode *> node_ptrs;
-	node_ptrs.reserve(parent->getData().size());
-	for (XYCutNodeSet::const_iterator node_ptr(parent->getData().begin()); node_ptr != parent->getData().end(); ++node_ptr)
-		node_ptrs.push_back(*node_ptr);
-
-	std::sort(node_ptrs.begin(), node_ptrs.end(), CompareOnY);
-
-	std::vector<const XYCutNode * const *> section_starts;
-	double next_boundary(std::max(node_ptrs.front()->y0_, node_ptrs.front()->y1_));
-	for (std::vector<const XYCutNode *>::const_iterator node_ptr(node_ptrs.begin()); node_ptr != node_ptrs.end(); ++node_ptr) {
-		const double y_min(std::min((*node_ptr)->y0_, (*node_ptr)->y1_));
-		const double y_max(std::max((*node_ptr)->y0_, (*node_ptr)->y1_));
-
-		if (y_min >= next_boundary + separation_threshold) {
-			section_starts.push_back(&*node_ptr);
-			next_boundary = y_max;
-		}
-		else if (y_max > separation_threshold)
-			next_boundary = y_max;
-	}
-
-	// Partition the bounding boxes in the parent into new child nodes:
-	if (not section_starts.empty()) {
-		parent->getData().clear();
-		std::vector<const XYCutNode * const *>::const_iterator section_start(section_starts.begin());
-		XYCutNodeSet new_set;
-		for (std::vector<const XYCutNode *>::const_iterator node_ptr(node_ptrs.begin()); node_ptr != node_ptrs.end(); ++node_ptr) {
-			if (&*node_ptr == *section_start) {
-				parent->addChild(new_set);
-				new_set.clear();
-
-				++section_start;
-				if (section_start == section_starts.end()) {
-					while (node_ptr != node_ptrs.end()) {
-						new_set.insert(*node_ptr);
-						++node_ptr;
-					}
-					parent->addChild(new_set);
-					break;
-				}
-			}
-
-			new_set.insert(*node_ptr);
-		}
-	}
-}
-
-
-void GenerateXYCutTreeHorizontalHelper(const double separation_threshold, TreeNode<XYCutNodeSet> * const parent)
-{
-	std::vector<const XYCutNode *> node_ptrs;
-	node_ptrs.reserve(parent->getData().size());
-	for (XYCutNodeSet::const_iterator node_ptr(parent->getData().begin()); node_ptr != parent->getData().end(); ++node_ptr)
-		node_ptrs.push_back(*node_ptr);
-
-	std::sort(node_ptrs.begin(), node_ptrs.end(), CompareOnX);
-
-	std::vector<const XYCutNode * const *> section_starts;
-	double next_boundary(std::max(node_ptrs.front()->x0_, node_ptrs.front()->x1_));
-	for (std::vector<const XYCutNode *>::const_iterator node_ptr(node_ptrs.begin()); node_ptr != node_ptrs.end(); ++node_ptr) {
-		const double x_min(std::min((*node_ptr)->x0_, (*node_ptr)->x1_));
-		const double x_max(std::max((*node_ptr)->x0_, (*node_ptr)->x1_));
-		if (x_min >= next_boundary + separation_threshold) {
-			section_starts.push_back(&*node_ptr);
-			next_boundary = x_max;
-		}
-		else if (x_max > separation_threshold)
-			next_boundary = x_max;
-	}
-
-	// Partition the bounding boxes in the parent into new child nodes:
-	if (not section_starts.empty()) {
-		parent->getData().clear();
-		std::vector<const XYCutNode * const *>::const_iterator section_start(section_starts.begin());
-		XYCutNodeSet new_set;
-		for (std::vector<const XYCutNode *>::const_iterator node_ptr(node_ptrs.begin()); node_ptr != node_ptrs.end(); ++node_ptr) {
-			if (&*node_ptr == *section_start) {
-				parent->addChild(new_set);
-				new_set.clear();
-
-				++section_start;
-				if (section_start == section_starts.end()) {
-					while (node_ptr != node_ptrs.end()) {
-						new_set.insert(*node_ptr);
-						++node_ptr;
-					}
-					parent->addChild(new_set);
-					break;
-				}
-			}
-
-			new_set.insert(*node_ptr);
-		}
-	}
-}
-
-
-enum SplitDirection { VERTICAL, HORIZONTAL };
-
-
-void GenerateXYCutTreeHelper(const SplitDirection &split_direction, const double separation_threshold, TreeNode<XYCutNodeSet> * const parent)
-{
-	if (split_direction == VERTICAL)
-		GenerateXYCutTreeVerticalHelper(separation_threshold, parent);
-	else
-		GenerateXYCutTreeHorizontalHelper(separation_threshold, parent);
-
-	const SplitDirection child_split_direction(split_direction == VERTICAL ? HORIZONTAL : VERTICAL);
-	for (TreeNode<XYCutNodeSet>::iterator child(parent->begin()); child != parent->end(); ++child) {
-		if ((*child)->getData().size() > 1)
-			GenerateXYCutTreeHelper(child_split_direction, separation_threshold, *child);
-	}
-}
-
-
-} // unnamed namespace
-
-
-void GenerateXYCutTree(const std::vector<XYCutNode> &bounding_boxes, const double separation_threshold, TreeNode<XYCutNodeSet> * const x_y_cut_tree)
-{
-	XYCutNodeSet root_set;
-	for (std::vector<XYCutNode>::const_iterator bounding_box(bounding_boxes.begin()); bounding_box != bounding_boxes.end(); ++bounding_box)
-		root_set.insert(&*bounding_box);
-
-	x_y_cut_tree->setData(root_set);
-	GenerateXYCutTreeHelper(VERTICAL, separation_threshold, x_y_cut_tree);
-}
-
-
-namespace {
-
-
-uint64_t EncodePathEndpointsAndSubset(const uint16_t node1, const uint16_t node2, const uint32_t connecting_subset)
-{
-	uint64_t result(node1);
-	result <<= 16u;
-	result |= node2;
-	result <<= 16u;
-	result |= connecting_subset;
-
-	return result;
-}
-
-
-} // unnamed namespace
-
-
-bool HasHamiltonianPath(const SparseMatrix &link_matrix)
-{
-	GNU_HASH_SET<uint64_t> path_endpoints_and_subsets;
-
-	// Seed with the existing direct links:
-	for (unsigned row_no(0); row_no < link_matrix.size(); ++row_no) {
-		for (unsigned col_no(0); col_no < link_matrix.size(); ++col_no) {
-			// Ignore self-loops:
-			if (row_no == col_no)
-				continue;
-
-			if (link_matrix.getValue(row_no, col_no)) {
-				uint32_t connecting_subset((1u << row_no) | (1u << col_no));
-				path_endpoints_and_subsets.insert(EncodePathEndpointsAndSubset(row_no, col_no, connecting_subset));
-			}
-		}
-	}
-
-	return true;
 }
 
 

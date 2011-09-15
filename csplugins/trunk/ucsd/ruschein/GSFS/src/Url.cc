@@ -33,6 +33,7 @@
 #include <Compiler.h>
 #include <DnsUtil.h>
 #include <Downloader.h>
+#include <MiscUtil.h> // for __MACH__
 #include <HttpHeader.h>
 #include <IniFile.h>
 #include <StringUtil.h>
@@ -44,6 +45,21 @@
 
 
 std::string Url::default_user_agent_;
+
+
+namespace {
+
+
+std::string GetEtcDir() {
+#ifdef __MACH__
+	return MiscUtil::GetEnv("HOME") + std::string("/etc");
+#else
+	return ETC_DIR;
+#endif
+}
+
+
+} // unnamed namespace
 
 
 Url::Url(const std::string &url, const std::string &default_base_url, const unsigned creation_flags, const RobotsDotTxtOption robots_dot_txt_option,
@@ -1048,7 +1064,7 @@ bool Url::isBlacklisted() const
 //
 std::string Url::UrlBlacklistConfFile()
 {
-	return ETC_DIR "/UrlBlacklist.conf";
+	return GetEtcDir() + "/UrlBlacklist.conf";
 }
 
 
@@ -1624,7 +1640,7 @@ void LoadUrlConfigFile()
 {
 	url_config_file_loaded = true;
 
-	const std::string config_filename(ETC_DIR + std::string("/UrlGetSite.conf"));
+	const std::string config_filename(GetEtcDir() + std::string("/UrlGetSite.conf"));
 	std::ifstream input(config_filename.c_str());
 	if (input.fail())
 		throw Exception("in LoadUrlConfigFile (Url.cc): can't open \"" + config_filename
@@ -1962,7 +1978,7 @@ std::string UrlMaps::map(const std::string &url) const
 
 void LoadUrlMaps(UrlMaps * const url_maps)
 {
-	const std::string CONF_FILENAME(ETC_DIR + std::string("/UrlMaps.conf"));
+	const std::string CONF_FILENAME(GetEtcDir() + std::string("/UrlMaps.conf"));
 	std::ifstream url_maps_conf(CONF_FILENAME.c_str());
  	if (url_maps_conf.fail())
 	        return;

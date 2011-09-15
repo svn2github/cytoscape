@@ -77,9 +77,9 @@ private:
 	const SslConnection &operator=(const SslConnection &rhs); // Intentionally unimplemented!
 	static SSL_CTX *InitContext(const Method method, const ClientServerMode client_server_mode);
 	static void ReleaseContext(const SSL_CTX * const ssl_context);
-	static SSL_CTX *InitClient(const Method method);
-	static SSL_CTX *InitServer(const Method method);
-	static SSL_CTX *InitClientAndServer(const Method method);
+	static const SSL_CTX *InitClient(const Method method);
+	static const SSL_CTX *InitServer(const Method method);
+	static const SSL_CTX *InitClientAndServer(const Method method);
 };
 
 

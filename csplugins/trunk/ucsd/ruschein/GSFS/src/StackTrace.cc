@@ -32,7 +32,11 @@
 #include <vector>
 #include <execinfo.h>
 #include <fcntl.h>
-#include <wait.h>
+#ifdef __MACH__
+#       include <sys/wait.h>
+#else
+#       include <wait.h>
+#endif
 #include <FileUtil.h>
 #include <StringUtil.h>
 #include <PerlCompatRegExp.h>

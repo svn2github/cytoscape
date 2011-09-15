@@ -28,12 +28,16 @@
 
 #include <MsgUtil.h>
 #include <iostream>
+#include <stdexcept> // Needed for __MACH__
 #include <cstdarg>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
 #include <cerrno>
 #include <unistd.h>
+#ifdef __MACH__
+#      include <mach-o/dyld.h>
+#endif
 #include <StringUtil.h>
 #include <SysLogger.h>
 
@@ -64,6 +68,13 @@ int InitProgname()
 		if (last_slash_pos != std::string::npos)
 			progname = progname.substr(last_slash_pos + 1);
 	}
+#elif defined(__MACH__)
+	char path[2044];
+	uint32_t size = sizeof(path);
+	if (_NSGetExecutablePath(path, &size) == 0)
+		progname = path;
+	else
+		throw std::runtime_error("in MiscUtil::InitProgname: failed to get program name!");
 #else
 #       error You must fix MsgUtil::InitProgname for your operating system!
 #endif
@@ -305,7 +316,8 @@ void HtmlInformation(const std::string &message)
 std::string ErrnoToString(const int error_code)
 {
 	char buf[1024];
-	return strerror_r(error_code, buf, sizeof buf); // GNU version of strerror_r.
+	::strerror_r(error_code, buf, sizeof buf);
+	return buf;
 }
 
 

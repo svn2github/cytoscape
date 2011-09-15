@@ -1,5 +1,5 @@
 CXX         = g++-mp-4.4
-CCFLAGS     = -W -Wall -Werror -Iinclude
+CCFLAGS     = -W -Wall -Werror -Iinclude -DGDB='"/Developer/usr/bin/gdb"'
 SRCS        = src/*.cc
 TEMP        = $(addprefix objs/,$(notdir $(wildcard src/*.cc)))
 OBJS        = $(TEMP:.cc=.o)
