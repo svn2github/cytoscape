@@ -248,18 +248,15 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		BoundaryRangeValues bound;
 		Float fraction;
 
-		if (allPoints == null) {
-			return;
-		}
+		if (allPoints != null && allPoints.size() != 0) {
 
-		for (ContinuousMappingPoint point : allPoints) {
-			bound = point.getRange();
+			for (ContinuousMappingPoint point : allPoints) {
+				bound = point.getRange();
+	
+				fraction = ((Number) ((point.getValue().doubleValue() - minValue) / actualRange)).floatValue() * 100;
+				slider.getModel().addThumb(fraction, ((Number) bound.equalValue).floatValue());
+			}
 
-			fraction = ((Number) ((point.getValue().doubleValue() - minValue) / actualRange)).floatValue() * 100;
-			slider.getModel().addThumb(fraction, ((Number) bound.equalValue).floatValue());
-		}
-
-		if (allPoints.size() != 0) {
 			below = (Number) allPoints.get(0).getRange().lesserValue;
 			above = (Number) allPoints.get(allPoints.size() - 1).getRange().greaterValue;
 		} else {
