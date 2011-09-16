@@ -92,7 +92,7 @@ public class CyActivator extends AbstractCyActivator {
 		registerServiceListener(bc,supportedFileTypesManager,"addInputStreamTaskFactory","removeInputStreamTaskFactory",InputStreamTaskFactory.class);
 		registerServiceListener(bc,supportedFileTypesManager,"addCyWriterTaskFactory","removeCyWriterTaskFactory",CyWriterFactory.class);
 		registerServiceListener(bc,swingTaskManager,"addTunableInterceptor","removeTunableInterceptor",TunableInterceptor.class);
-		registerServiceListener(bc,guiTunableInterceptor,"addTunableHandlerFactory","removeTunableHandlerFactory",TunableHandlerFactory.class);
+		registerServiceListener(bc,guiTunableInterceptor,"addTunableHandlerFactory","removeTunableHandlerFactory",GUITunableHandlerFactory.class, TunableHandlerFactory.class);
 
 
 	}
