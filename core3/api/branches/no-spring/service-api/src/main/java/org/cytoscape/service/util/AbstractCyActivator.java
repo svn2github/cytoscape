@@ -49,7 +49,7 @@ public abstract class AbstractCyActivator implements BundleActivator {
 	 * using normal calls to the OSGi API, you will need to clean everything up 
 	 * yourself!
 	 */
-	public void stop(BundleContext bc) {
+	public final void stop(BundleContext bc) {
 		// unregister and clear all services registered 
 		for ( Map<Object,ServiceRegistration> registrations : serviceRegistrations.values() )  {
 			for ( ServiceRegistration reg : registrations.values() ) 
@@ -77,7 +77,7 @@ public abstract class AbstractCyActivator implements BundleActivator {
 	 * @return A reference to a service of type serviceClass.
 	 * @throws RuntimeException If the requested service can't be found.
 	 */
-	protected <S> S getService(BundleContext bc, Class<S> serviceClass) {
+	protected final <S> S getService(BundleContext bc, Class<S> serviceClass) {
 		try {
 			ServiceReference ref = bc.getServiceReference(serviceClass.getName());
 			if ( ref == null ) 
@@ -101,7 +101,7 @@ public abstract class AbstractCyActivator implements BundleActivator {
 	 * @return A reference to a service of type serviceClass that passes the specified filter.
 	 * @throws RuntimeException If the requested service can't be found.
 	 */
-	protected <S> S getService(BundleContext bc, Class<S> serviceClass, String filter) {
+	protected final <S> S getService(BundleContext bc, Class<S> serviceClass, String filter) {
 		try { 
 			ServiceReference[] refs = bc.getServiceReferences(serviceClass.getName(),filter);
 			if ( refs == null ) 
@@ -127,7 +127,7 @@ public abstract class AbstractCyActivator implements BundleActivator {
 	 * erasure that the serviceClass is a subclass of the class used by the registration method,
 	 * in which case, this extra argument allows that class to be specified. 
 	 */
-	protected void registerServiceListener(final BundleContext bc, final Object listener, final String registerMethodName, final String unregisterMethodName, final Class<?> serviceClass, final Class<?> methodClass) {
+	protected final void registerServiceListener(final BundleContext bc, final Object listener, final String registerMethodName, final String unregisterMethodName, final Class<?> serviceClass, final Class<?> methodClass) {
 		try {
 			CyServiceListener serviceListener = new CyServiceListener(bc, listener, registerMethodName, unregisterMethodName, serviceClass, methodClass);
 			serviceListener.open();
@@ -147,7 +147,7 @@ public abstract class AbstractCyActivator implements BundleActivator {
 	 * @param unregisterMethodName The name of the method to be called when a service is unregistered.
 	 * @param serviceClass The class defining the type of service desired.
 	 */
-	protected void registerServiceListener(final BundleContext bc, final Object listener, final String registerMethodName, final String unregisterMethodName, final Class<?> serviceClass) {
+	protected final void registerServiceListener(final BundleContext bc, final Object listener, final String registerMethodName, final String unregisterMethodName, final Class<?> serviceClass) {
 		registerServiceListener(bc,listener,registerMethodName,unregisterMethodName,serviceClass,serviceClass);
 	}
 
@@ -159,7 +159,7 @@ public abstract class AbstractCyActivator implements BundleActivator {
 	 * @param service The object to be registered as one or more services.
 	 * @param props The service properties to be registered with each service. 
 	 */
-	protected void registerAllServices(final BundleContext bc, final Object service, final Properties props) {
+	protected final void registerAllServices(final BundleContext bc, final Object service, final Properties props) {
 		List<Class<?>> interfaces = RegisterUtil.getAllInterfaces(service.getClass());
 		logger.debug("attempting to register " + interfaces.size() + " services for: " + service.toString());
 		for ( Class<?> c : interfaces ) 
@@ -174,7 +174,7 @@ public abstract class AbstractCyActivator implements BundleActivator {
 	 * @param serviceClass The class defining the type of service to be registered.
 	 * @param props The service properties to be registered with each service. 
 	 */
-	protected void registerService(final BundleContext bc, final Object service, final Class<?> serviceClass, final Properties props) {
+	protected final void registerService(final BundleContext bc, final Object service, final Class<?> serviceClass, final Properties props) {
 		if ( service == null )
 			throw new NullPointerException( "service object is null" );
 		if ( serviceClass == null )
