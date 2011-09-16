@@ -13,6 +13,7 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.cytoscape.service.util.internal.CyServiceListener;
+import org.cytoscape.service.util.internal.RegisterUtil;
 
 /**
  * A simple BundleActivator with convenience methods for registering
@@ -81,7 +82,6 @@ public abstract class AbstractCyActivator implements BundleActivator {
 			ServiceReference ref = bc.getServiceReference(serviceClass.getName());
 			if ( ref == null ) 
 				throw new NullPointerException("ServiceReference is null for: " + serviceClass.getName());
-
 			gottenServices.add(ref);	
 			return serviceClass.cast( bc.getService(ref) );
 
@@ -123,16 +123,34 @@ public abstract class AbstractCyActivator implements BundleActivator {
 	 * @param registerMethodName The name of the method to be called when a service is registered.
 	 * @param unregisterMethodName The name of the method to be called when a service is unregistered.
 	 * @param serviceClass The class defining the type of service desired.
+	 * @param methodClass There are situations where, because of the use of generics and type
+	 * erasure that the serviceClass is a subclass of the class used by the registration method,
+	 * in which case, this extra argument allows that class to be specified. 
 	 */
-	protected void registerServiceListener(final BundleContext bc, final Object listener, final String registerMethodName, final String unregisterMethodName, final Class<?> serviceClass) {
+	protected void registerServiceListener(final BundleContext bc, final Object listener, final String registerMethodName, final String unregisterMethodName, final Class<?> serviceClass, final Class<?> methodClass) {
 		try {
-			CyServiceListener serviceListener = new CyServiceListener(bc, listener, registerMethodName, unregisterMethodName, serviceClass);
+			CyServiceListener serviceListener = new CyServiceListener(bc, listener, registerMethodName, unregisterMethodName, serviceClass, methodClass);
 			serviceListener.open();
 			serviceListeners.add( serviceListener );
 		} catch (Exception e) {
 			throw new RuntimeException("Could not listen to services for object: " + listener + " with methods: " + registerMethodName + " and " + unregisterMethodName + " and service type: " + serviceClass, e); 
 		}
 	}
+
+	/**
+	 * A method that will cause the specified register/unregister methods on the listener
+	 * object to be called any time that a service of the specified type is registered or
+	 * unregistered. 
+	 * @param bc The BundleContext used to find services.
+	 * @param listener Your object listening for service registrations.
+	 * @param registerMethodName The name of the method to be called when a service is registered.
+	 * @param unregisterMethodName The name of the method to be called when a service is unregistered.
+	 * @param serviceClass The class defining the type of service desired.
+	 */
+	protected void registerServiceListener(final BundleContext bc, final Object listener, final String registerMethodName, final String unregisterMethodName, final Class<?> serviceClass) {
+		registerServiceListener(bc,listener,registerMethodName,unregisterMethodName,serviceClass,serviceClass);
+	}
+
 
 	/**
 	 * A utility method that registers the specified service object as an OSGi service for
@@ -142,7 +160,9 @@ public abstract class AbstractCyActivator implements BundleActivator {
 	 * @param props The service properties to be registered with each service. 
 	 */
 	protected void registerAllServices(final BundleContext bc, final Object service, final Properties props) {
-		for ( Class<?> c : service.getClass().getInterfaces() ) 
+		List<Class<?>> interfaces = RegisterUtil.getAllInterfaces(service.getClass());
+		logger.debug("attempting to register " + interfaces.size() + " services for: " + service.toString());
+		for ( Class<?> c : interfaces ) 
 			registerService(bc, service, c, props);
 	}
 

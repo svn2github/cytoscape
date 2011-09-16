@@ -58,13 +58,15 @@ public class CyServiceListener extends ServiceTracker {
 	private final Method registerMethod;
 	private final Method unregisterMethod;
 	private final Class<?> serviceClass;
+	private final Class<?> methodClass;
 	private static final Logger logger = LoggerFactory.getLogger(CyServiceListener.class);
 	
-	public CyServiceListener(BundleContext bc, Object target, String registerMethodName, String unregisterMethodName, Class<?> serviceClass) throws NoSuchMethodException {
+	public CyServiceListener(BundleContext bc, Object target, String registerMethodName, String unregisterMethodName, Class<?> serviceClass, Class<?> methodClass) throws NoSuchMethodException {
 		super(bc, serviceClass.getName(), null);
 		this.bc = bc;
 		this.target = target;
 		this.serviceClass = serviceClass;
+		this.methodClass = methodClass;
 		this.registerMethod = getMethod(registerMethodName);
 		this.unregisterMethod = getMethod(unregisterMethodName);
 	}
@@ -75,12 +77,12 @@ public class CyServiceListener extends ServiceTracker {
 	private Method getMethod(String name) throws NoSuchMethodException {
 		Method m; 
 		try {
-			m = target.getClass().getMethod(name, serviceClass, Dictionary.class);
+			m = target.getClass().getMethod(name, methodClass, Dictionary.class);
 		} catch (NoSuchMethodException e) {
 			// Ignore exception and try different signature.
 			// If we throw an exception here, we WANT it to 
 			// propagate, because that signals an error.
-			m = target.getClass().getMethod(name, serviceClass, Map.class);
+			m = target.getClass().getMethod(name, methodClass, Map.class);
 		}
 		return m;
 	}
@@ -118,8 +120,8 @@ public class CyServiceListener extends ServiceTracker {
 	 */
 	private Properties getProperties(ServiceReference ref) {
 		Properties props = new Properties();
-		for ( String key : ref.getPropertyKeys() )
-			props.setProperty(key,(String)(ref.getProperty(key)));
+		for ( String key : ref.getPropertyKeys() ) 
+			props.setProperty(key,ref.getProperty(key).toString());
 		return props;
 	}
 }
