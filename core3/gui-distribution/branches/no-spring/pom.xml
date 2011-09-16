@@ -104,6 +104,18 @@
         <module>startlevel-1</module>
         <module>startlevel-2</module>
         <module>startlevel-3</module>
+        <module>startlevel-10</module>
+        <module>startlevel-15</module>
+        <module>startlevel-20</module>
+        <module>startlevel-25</module>
+        <module>startlevel-30</module>
+        <module>startlevel-32</module>
+        <module>startlevel-35</module>
+        <module>startlevel-40</module>
+        <module>startlevel-42</module>
+        <module>startlevel-43</module>
+        <module>startlevel-45</module>
+        <module>startlevel-50</module>
         <module>distribution</module>
       </modules>
     </profile>
@@ -114,6 +126,18 @@
         <module>startlevel-1</module>
         <module>startlevel-2</module>
         <module>startlevel-3</module>
+        <module>startlevel-10</module>
+        <module>startlevel-15</module>
+        <module>startlevel-20</module>
+        <module>startlevel-25</module>
+        <module>startlevel-30</module>
+        <module>startlevel-32</module>
+        <module>startlevel-35</module>
+        <module>startlevel-40</module>
+        <module>startlevel-42</module>
+        <module>startlevel-43</module>
+        <module>startlevel-45</module>
+        <module>startlevel-50</module>
         <module>distribution</module>
       </modules>
     </profile>
