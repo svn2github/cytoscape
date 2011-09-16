@@ -4,5 +4,5 @@
 
 
 Bundle-Activator: ${bundle.namespace}.CyActivator
-Private-Package: ${bundle.namespace},${bundle.namespace}.*
+Private-Package: ${bundle.namespace}.*
 
