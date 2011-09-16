@@ -626,6 +626,7 @@ public class CyActivator extends AbstractCyActivator {
 		quickStartTaskFactory2Props.setProperty("scope","startup");
 		quickStartTaskFactory2Props.setProperty("id","QuickStart2");
 		registerService(bc,quickStartTaskFactory2,TaskFactory.class, quickStartTaskFactory2Props);
+
 		registerAllServices(bc,bioGridPreprocessor, new Properties());
 
 		Properties connectSelectedNodesTaskFactoryProps = new Properties();

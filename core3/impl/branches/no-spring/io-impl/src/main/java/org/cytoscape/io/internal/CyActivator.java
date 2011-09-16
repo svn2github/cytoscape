@@ -96,6 +96,7 @@ import org.cytoscape.io.write.CyPropertyWriterFactory;
 import org.cytoscape.io.write.CyNetworkViewWriterFactory;
 import org.cytoscape.io.write.VizmapWriterFactory;
 import org.cytoscape.io.write.CySessionWriterFactory;
+import org.cytoscape.io.write.CyWriterFactory;
 
 import org.osgi.framework.BundleContext;
 
@@ -236,13 +237,12 @@ public class CyActivator extends AbstractCyActivator {
 		registerServiceListener(bc,cySessionReaderManager,"addInputStreamTaskFactory","removeInputStreamTaskFactory",InputStreamTaskFactory.class);
 		registerServiceListener(bc,cyPropertyReaderManager,"addInputStreamTaskFactory","removeInputStreamTaskFactory",InputStreamTaskFactory.class);
 		registerServiceListener(bc,vizmapReaderManager,"addInputStreamTaskFactory","removeInputStreamTaskFactory",InputStreamTaskFactory.class);
-		registerServiceListener(bc,viewWriterManager,"addCyWriterFactory","removeCyWriterFactory",PresentationWriterFactory.class);
-		registerServiceListener(bc,networkViewWriterManager,"addCyWriterFactory","removeCyWriterFactory",CyNetworkViewWriterFactory.class);
-		registerServiceListener(bc,sessionWriterManager,"addCyWriterFactory","removeCyWriterFactory",CySessionWriterFactory.class);
-		registerServiceListener(bc,propertyWriterManager,"addCyWriterFactory","removeCyWriterFactory",CyPropertyWriterFactory.class);
-		registerServiceListener(bc,tableWriterManager,"addCyWriterFactory","removeCyWriterFactory",CyTableWriterFactory.class);
-		registerServiceListener(bc,vizmapWriterManager,"addCyWriterFactory","removeCyWriterFactory",VizmapWriterFactory.class);
-
+		registerServiceListener(bc,viewWriterManager,"addCyWriterFactory","removeCyWriterFactory",PresentationWriterFactory.class,CyWriterFactory.class);
+		registerServiceListener(bc,networkViewWriterManager,"addCyWriterFactory","removeCyWriterFactory",CyNetworkViewWriterFactory.class,CyWriterFactory.class);
+		registerServiceListener(bc,sessionWriterManager,"addCyWriterFactory","removeCyWriterFactory",CySessionWriterFactory.class,CyWriterFactory.class);
+		registerServiceListener(bc,propertyWriterManager,"addCyWriterFactory","removeCyWriterFactory",CyPropertyWriterFactory.class,CyWriterFactory.class);
+		registerServiceListener(bc,tableWriterManager,"addCyWriterFactory","removeCyWriterFactory",CyTableWriterFactory.class,CyWriterFactory.class);
+		registerServiceListener(bc,vizmapWriterManager,"addCyWriterFactory","removeCyWriterFactory",VizmapWriterFactory.class,CyWriterFactory.class);
 
 	}
 }

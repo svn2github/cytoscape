@@ -20,6 +20,7 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 import org.cytoscape.work.swing.GUITunableHandlerFactory;
 import org.cytoscape.work.TunableInterceptor;
+import org.cytoscape.work.TunableHandlerFactory;
 import org.cytoscape.work.swing.GUITaskManager;
 import org.cytoscape.work.swing.GUITunableInterceptor;
 import org.cytoscape.work.util.*;
@@ -91,7 +92,7 @@ public class CyActivator extends AbstractCyActivator {
 		registerServiceListener(bc,supportedFileTypesManager,"addInputStreamTaskFactory","removeInputStreamTaskFactory",InputStreamTaskFactory.class);
 		registerServiceListener(bc,supportedFileTypesManager,"addCyWriterTaskFactory","removeCyWriterTaskFactory",CyWriterFactory.class);
 		registerServiceListener(bc,swingTaskManager,"addTunableInterceptor","removeTunableInterceptor",TunableInterceptor.class);
-		registerServiceListener(bc,guiTunableInterceptor,"addTunableHandlerFactory","removeTunableHandlerFactory",GUITunableHandlerFactory.class);
+		registerServiceListener(bc,guiTunableInterceptor,"addTunableHandlerFactory","removeTunableHandlerFactory",TunableHandlerFactory.class);
 
 
 	}

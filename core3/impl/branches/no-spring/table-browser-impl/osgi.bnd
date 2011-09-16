@@ -3,6 +3,6 @@
 #-----------------------------------------------------------------
 
 
-Bundle-Activator: ${bundle.namespace}.internal.CyActivator
-Private-Package: ${bundle.namespace}.*
+Bundle-Activator: ${bundle.namespace}.CyActivator
+Private-Package: ${bundle.namespace},${bundle.namespace}.*
 
