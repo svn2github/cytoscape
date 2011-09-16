@@ -253,8 +253,10 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 		g.setFont(new Font("SansSerif", Font.BOLD, 10));
 		g.setColor(Color.black);
-		int strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), title);
-		g.drawString(title, (track_width / 2) - (strWidth / 2), arrowBarPosition - 25);
+		String label = title;
+		if (label == null) label = "(none)";
+		int strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), label);
+		g.drawString(label, (track_width / 2) - (strWidth / 2), arrowBarPosition - 25);
 
 		g.drawLine(track_width, arrowBarPosition, track_width - 15, arrowBarPosition + 30);
 		g.drawLine(track_width - 15, arrowBarPosition + 30, track_width - 25, arrowBarPosition + 30);
@@ -977,9 +979,12 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 			g.setFont(TITLE_FONT);
 
-			final int titleWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), title);
+			String label = title;
+			if (label == null)
+				label = "(none)";
+			final int titleWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), label);
 			g.setColor(Color.black);
-			g.drawString(title, (iconWidth / 2) - (titleWidth / 2), iconHeight - 5);
+			g.drawString(label, (iconWidth / 2) - (titleWidth / 2), iconHeight - 5);
 
 			Polygon p = new Polygon();
 			p.addPoint(iconWidth, iconHeight - 9);
@@ -1012,7 +1017,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			g.setColor(Color.DARK_GRAY);
 			g.setFont(new Font("SansSerif", Font.BOLD, 10));
 
-			final String label = type.getName();
+			label = type.getName();
 			final int width = SwingUtilities.computeStringWidth(g.getFontMetrics(), label);
 			AffineTransform af = new AffineTransform();
 			af.rotate(Math.PI + (Math.PI / 2));

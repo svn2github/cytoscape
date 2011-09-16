@@ -222,9 +222,12 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 
 		g.setFont(TITLE_FONT);
 
-		final int titleWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), attrName);
+		String legendName = attrName;
+		if (legendName == null)
+			legendName = "(none)";
+		final int titleWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), legendName);
 		g.setColor(Color.black);
-		g.drawString(attrName, ((int) rect.getBounds2D().getWidth() / 2) - (titleWidth / 2),
+		g.drawString(legendName, ((int) rect.getBounds2D().getWidth() / 2) - (titleWidth / 2),
 		             (int) rect.getBounds2D().getMaxY() + 33);
 
 		// draw a border
