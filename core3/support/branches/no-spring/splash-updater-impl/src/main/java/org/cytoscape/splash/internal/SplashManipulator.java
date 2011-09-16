@@ -8,13 +8,13 @@ import org.osgi.framework.BundleEvent;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.FrameworkListener;
-import org.springframework.osgi.context.event.OsgiBundleContextRefreshedEvent;
-import org.springframework.osgi.context.event.OsgiBundleApplicationContextEvent;
-import org.springframework.osgi.context.event.OsgiBundleApplicationContextListener;
+//import org.springframework.osgi.context.event.OsgiBundleContextRefreshedEvent;
+//import org.springframework.osgi.context.event.OsgiBundleApplicationContextEvent;
+//import org.springframework.osgi.context.event.OsgiBundleApplicationContextListener;
 import java.awt.Font;
 
 public class SplashManipulator implements 
-	OsgiBundleApplicationContextListener,
+	//OsgiBundleApplicationContextListener,
 	BundleListener,
 	FrameworkListener {
 
@@ -42,10 +42,10 @@ public class SplashManipulator implements
 			renderSplashFrame("OSGi finished!");
 	}
 
-	public void onOsgiApplicationEvent(OsgiBundleApplicationContextEvent event) {
-		if ( event instanceof OsgiBundleContextRefreshedEvent )
-			renderSplashFrame( event.getBundle().getSymbolicName() + " refreshed");
-	}
+//	public void onOsgiApplicationEvent(OsgiBundleApplicationContextEvent event) {
+//		if ( event instanceof OsgiBundleContextRefreshedEvent )
+//			renderSplashFrame( event.getBundle().getSymbolicName() + " refreshed");
+//	}
 
     private synchronized void renderSplashFrame(String message) {
 		if ( g == null || splash == null || !splash.isVisible() )

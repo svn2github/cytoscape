@@ -77,11 +77,13 @@
       <version>${osgi.api.version}</version>
       <scope>provided</scope>
     </dependency>
+	<!--
     <dependency>
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-extender</artifactId>
       <version>${spring.osgi.version}</version>
     </dependency>
+	-->
   </dependencies>
 
 </project>

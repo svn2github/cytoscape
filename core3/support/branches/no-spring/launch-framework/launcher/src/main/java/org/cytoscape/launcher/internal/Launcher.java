@@ -46,7 +46,7 @@ public class Launcher {
 		try {
 			Map config = new HashMap();
 			config.putAll(System.getProperties());
-			config.put("org.osgi.framework.startlevel.beginning", "6");
+			config.put("org.osgi.framework.startlevel.beginning", "100");
 			config.put("org.osgi.framework.storage", "bundles/cache");
 			config.put("org.osgi.framework.storage.clean", "onFirstInit");
 			
