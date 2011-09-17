@@ -154,6 +154,20 @@ public class Chimera {
 	}
 
 	/**
+ 	 * Return true if this structure is currently open
+ 	 *
+ 	 * @param structure the Structure we're inquiring about
+ 	 * @return true if open
+ 	 */
+	public boolean isOpen(Structure structure) {
+		// Get the model number
+		int modelNumber = structure.modelNumber();
+		if (modelHash.containsKey(modelNumber))
+			return true;
+		return false;
+	}
+
+	/**
 	 * Return our network view
 	 *
 	 * @return the network view we were created with
@@ -537,7 +551,7 @@ public class Chimera {
 				model.setStructure(s);
 			} else {
 				// This will return a new Structure if we don't know about it
-				Structure s = CyChimera.findStructureForModel(networkView, model.getModelName());
+				Structure s = CyChimera.findStructureForModel(networkView, model.getModelName(), true);
 				s.setModelNumber(model.getModelNumber(), model.getSubModelNumber());
 				model.setStructure(s);
 			}

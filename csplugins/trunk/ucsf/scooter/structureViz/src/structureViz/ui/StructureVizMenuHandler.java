@@ -56,9 +56,12 @@ import cytoscape.logger.CyLogger;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
 
+import giny.model.GraphObject;
+
 // structureViz imports
 import structureViz.StructureViz;
 import structureViz.actions.Chimera;
+import structureViz.actions.CyChimera;
 import structureViz.actions.OpenTask;
 import structureViz.model.Structure;
 import structureViz.ui.ModelNavigatorDialog;
@@ -77,12 +80,21 @@ public class StructureVizMenuHandler
 	private int command;
 	private static boolean showModelWarning = true;
 	private Object userData = null; // Either a Structure or an ArrayList
+	private GraphObject context = null; // Usually a node or edge context
 	private CyLogger logger;
 	private	OpenTask openTask = null;
 
 	public StructureVizMenuHandler(int command, Object userData, CyLogger logger) {
 		this.command = command;
 		this.userData = userData;
+		this.logger = logger;
+	}
+
+	public StructureVizMenuHandler(int command, Object userData, 
+	                               GraphObject context, CyLogger logger) {
+		this.command = command;
+		this.userData = userData;
+		this.context = context;
 		this.logger = logger;
 	}
 
@@ -185,8 +197,9 @@ public class StructureVizMenuHandler
 		String ident = node.getIdentifier();
 		if (ident.startsWith("gi"))
 			ident = ident.substring(2);
-		Structure struct = Structure.getStructure(ident, node, Structure.StructureType.MODBASE_MODEL);
-		userData = struct;
+		Structure structure = Structure.getStructure(ident, node, 
+		                                          Structure.StructureType.MODBASE_MODEL);
+		userData = structure;
 		openAction(ident, null, false);
 	}
 
@@ -205,12 +218,12 @@ public class StructureVizMenuHandler
  	 * structures.
  	 */
 	private void selectResiduesAction() {
-		List<Structure> structuresList = (List<Structure>)userData;
+		List<Structure>structuresList =  (List<Structure>)userData;
 
 		String command = "select ";
 		for (Structure structure: structuresList) {
 			// Select the residues
-			List<String> residueL = structure.getResidueList();
+			List<String> residueL = structure.getResidueList(context);
 			if (residueL == null || residueL.size() == 0) continue;
 
 			// OK, we have a residue list, make sure the structure is open
@@ -282,7 +295,8 @@ public class StructureVizMenuHandler
 	/**
 	 * Open a pdb model in Chimera
 	 */
-	private void openAction(String commandLabel, Object dataOverride, boolean wait) {
+	private void openAction(String commandLabel, Object dataOverride, 
+	                        boolean wait) {
 		// Make sure chimera is launched
 		if (chimera == null || !chimera.isLaunched())
 			chimera = launchChimera();

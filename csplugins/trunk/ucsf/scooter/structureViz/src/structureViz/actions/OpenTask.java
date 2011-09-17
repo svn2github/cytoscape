@@ -59,24 +59,19 @@ public class OpenTask implements Runnable {
 			structList.add((Structure)userData);
 		}
 
-		// Get the list of structures we already have open
-		List<Structure>openStructs = chimera.getOpenStructs();
-
     // Send initial commands
     for (Structure structure: structList) {
-			boolean open = false;
 			String structureName = structure.name();
-			for (Structure openStructure: openStructs) {
-				if (structureName.equals(openStructure.name())) {
-					// Map the model numbers
-					structure.setModelNumber(openStructure.modelNumber(), openStructure.subModelNumber());
-					open = true;
-					break;
-				}
+			// System.out.println("Looking at structure "+structure.name());
+			// See if this structure is already open somewhere
+			Structure s = CyChimera.findStructureForModel(null, structureName, false);
+			if (s != null) {
+				// System.out.println("Found existing structure: "+s.toString());
+				s.addStructure(structure);
+				structure = s;
 			}
-			if (open == false) {
+			if (!chimera.isOpen(structure))
 				chimera.open(structure);
-			}
 		}
 	}
 }

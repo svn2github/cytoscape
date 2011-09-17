@@ -109,7 +109,8 @@ public class CyChimera {
 	 * @param overNodeOnly only look for structures in the node we're over
 	 * @return a list of Structures associated with this node
 	 */
-	public static List<Structure>getSelectedStructures(NodeView nodeView, boolean overNodeOnly) {
+	public static List<Structure>getSelectedStructures(NodeView nodeView, 
+	                                                   boolean overNodeOnly) {
 		List<Structure>structureList = new ArrayList<Structure>();
     //get the network object; this contains the graph
     CyNetwork network = Cytoscape.getCurrentNetwork();
@@ -118,7 +119,9 @@ public class CyChimera {
     //get the list of node attributes
     cyAttributes = Cytoscape.getNodeAttributes();
     //can't continue if any of these is null
-    if (network == null || view == null || cyAttributes == null) {return structureList;}
+    if (network == null || view == null || cyAttributes == null) {
+			return structureList;
+		}
 
 		List<NodeView> selectedNodes = null;
 		if (!overNodeOnly || nodeView == null)
@@ -250,15 +253,19 @@ public class CyChimera {
 	 *
 	 * @param networkView the CyNetworkView that contains the nodes
 	 * @param name the model name we're looking for
+	 * @param create if true, create a structure if one doesn't exist
 	 * @return the Structure object containing the name and referending the node
 	 */
-	public static Structure findStructureForModel(CyNetworkView networkView, String name) {
+	public static Structure findStructureForModel(CyNetworkView networkView, 
+	                                              String name, boolean create) {
 		// Do we already know about this model?
 		if (pdbStructureMap.containsKey(name))
 			return pdbStructureMap.get(name);
 
 		if (smilesStructureMap.containsKey(name))
 			return smilesStructureMap.get(name);
+
+		if (!create) return null;
 
 		// Apparently not.  Iterate over all of our nodes and get the structures
 		cyAttributes = Cytoscape.getNodeAttributes();
@@ -267,7 +274,11 @@ public class CyChimera {
 			if (sList != null && sList.size() > 0)
 				return sList.get(0);
 		}
-		Structure s =  Structure.getStructure(name, (CyNode)null, Structure.StructureType.PDB_MODEL);
+		
+		// We don't know anything about this structure -- assume it's a PDB file loaded
+		// into Chimera
+		Structure s = Structure.getStructure(name, (CyNode)null,
+				                                 Structure.StructureType.PDB_MODEL);
 		pdbStructureMap.put(name, s);
 		return s;
 	}
@@ -359,7 +370,7 @@ public class CyChimera {
 		for (ChimeraModel model: chimeraModels) {
 			if (model == null) continue;
 			Structure st = model.getStructure();
-			if (!modelsToSelect.containsKey(model)) {
+			if (modelsToSelect.containsKey(model)) {
 				// Deselect everything in this structure
 				graphObjectList.addAll(st.getGraphObjectList());
 			}
@@ -450,7 +461,8 @@ public class CyChimera {
 	}
 
 	private static List<Structure> getStructures(CyNode node, 
-	                                             List<Structure> structureList, String matchName) {
+	                                             List<Structure> structureList, 
+	                                             String matchName) {
 		if (structureList == null) {
 			structureList = new ArrayList<Structure>();
 		}
@@ -500,7 +512,8 @@ public class CyChimera {
 		return structureList;
 	}
 
-	private static void setSelectedState(CyNetworkView view, List<GraphObject> goList, boolean state) {
+	private static void setSelectedState(CyNetworkView view, List<GraphObject> goList, 
+	                                     boolean state) {
 		for (GraphObject obj: goList) {
 			if (obj instanceof Node) {
 				// Handle secondary paint??

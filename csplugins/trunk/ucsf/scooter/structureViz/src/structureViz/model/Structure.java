@@ -33,6 +33,7 @@
 package structureViz.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class Structure {
 	static Map<String, Structure> structureMap = new HashMap<String, Structure>();
 	String structureName;
 	Map<GraphObject, List<String>> residueMap;
-	List<GraphObject> graphObjectList;
+	Map<GraphObject, GraphObject> graphObjectMap;
 	int modelNumber;
 	int subModelNumber;
 	StructureType type;
@@ -65,9 +66,12 @@ public class Structure {
 	 */
 	public static int getNextModel() {return nextModel++;}
 
-	public static Structure getStructure(String name, CyNode node, StructureType type) {
+	public static Structure getStructure(String name, CyNode node, 
+	                                     StructureType type) {
+		// System.out.println("Getting structure for "+name);
 		if (structureMap.containsKey(name)) {
 			Structure s = structureMap.get(name);
+			// System.out.println("Already have it: "+s.toString());
 			s.addGraphObject(node);
 			return s;
 		}
@@ -80,24 +84,29 @@ public class Structure {
 	 * @param name the name of the structure
 	 * @param node the CyNode that this structure points to
 	 */
-	protected Structure (String name, CyNode node, StructureType type) {
-		this(name, new ArrayList<GraphObject>(), type);
+	protected Structure (String name, GraphObject node, StructureType type) {
+		this(name, new HashMap<GraphObject, GraphObject>(), type);
 		if (node != null)
 			this.setNode(node);
 	}
 
-	protected Structure (String name, List<GraphObject> nodeList, StructureType type) {
+	protected Structure (String name, Map<GraphObject, GraphObject> goMap, 
+	                     StructureType type) {
 		this.structureName = name;
 		this.modelNumber = nextModel;
 		this.subModelNumber = 0;
 		this.residueMap = new HashMap<GraphObject, List<String>>();
 		this.type = type;
-		this.graphObjectList = nodeList;
+		if (goMap != null)
+			this.graphObjectMap = goMap;
+		else
+			this.graphObjectMap = new HashMap<GraphObject, GraphObject>();
+		structureMap.put(name,this);
 	}
 
 	public Structure makeSubModel(int subModelNumber) {
-		Structure st = new Structure(this.structureName, this.graphObjectList, this.type);
-		st.setModelNumber(this.modelNumber, subModelNumber);
+		Structure st = new Structure(structureName, graphObjectMap, type);
+		st.setModelNumber(modelNumber, subModelNumber);
 		return st;
 	}
 
@@ -114,8 +123,10 @@ public class Structure {
 	 * @return the CyNode this structure is an attribute of
 	 */
 	public CyNode node() {
-		if (graphObjectList.get(0) instanceof CyNode)
-			return (CyNode)graphObjectList.get(0);
+		for (GraphObject obj: graphObjectMap.keySet()) {
+			if (obj instanceof CyNode)
+				return (CyNode)obj;
+		}
 		return null;
 	}
 
@@ -124,14 +135,36 @@ public class Structure {
 	 *
 	 * @param node the CyNode this structure is an attribute of
 	 */
-	public void setNode(CyNode node) {this.graphObjectList.add(0,node);}
+	public void setNode(GraphObject node) {
+		graphObjectMap.put(node,node);
+	}
 
 	/**
  	 * Add a CyNode or CyEdge to the list of graph objects this structure is associated with
  	 *
 	 * @param node the GraphObject this structure is an attribute of
 	 */
-	public void addGraphObject(GraphObject go) {this.graphObjectList.add(go);}
+	public void addGraphObject(GraphObject go) {
+		// System.out.println("Adding "+go.getIdentifier()+" to "+this.toString());
+		if (!graphObjectMap.containsKey(go))
+			graphObjectMap.put(go, go);
+	}
+
+	/**
+ 	 * Add the Objects and residues from a Structure to this Structure
+ 	 *
+ 	 * @param structure the structure we're adding
+ 	 */
+	public void addStructure(Structure structure) {
+		// Add any graph objects...
+		for (GraphObject obj: structure.getGraphObjectList()) {
+			if (!graphObjectMap.containsKey(obj)) {
+				// New graph object -- add the object and it's residues
+				graphObjectMap.put(obj, obj);
+				residueMap.put(obj, structure.getResidueList(obj));
+			}
+		}
+	}
 
 	/**
  	 * Remove a Graph Object from the list of objects this structure is associated with
@@ -139,8 +172,8 @@ public class Structure {
 	 * @param node the Graph Object to remove from this structure's list
 	 */
 	public void removeGraphObject(GraphObject go) {
-		if (graphObjectList.contains(go))
-			graphObjectList.remove(go);
+		if (graphObjectMap.containsKey(go))
+			graphObjectMap.remove(go);
 	}
 
 	/**
@@ -148,7 +181,9 @@ public class Structure {
  	 *
 	 * @return objList the GraphObjects this structure is an attribute of
 	 */
-	public List<GraphObject> getGraphObjectList() {return this.graphObjectList;}
+	public List<GraphObject> getGraphObjectList() {
+		return new ArrayList<GraphObject>(graphObjectMap.values());
+	}
 
 	/**
  	 * Get the list of GraphObjects for this structure that match a list
@@ -162,7 +197,7 @@ public class Structure {
 		if (residueList == null || residueList.size() == 0)
 			return goList;
 
-		for (GraphObject obj: graphObjectList) {
+		for (GraphObject obj: graphObjectMap.values()) {
 			if (residuesMatch(obj, residueList)) {
 				// System.out.println("Found match for "+obj.getIdentifier());
 				goList.add(obj);
@@ -203,12 +238,18 @@ public class Structure {
 	 * @return identifier of the Graph Object as a String
 	 */
 	public String getIdentifier() {
-		if (graphObjectList == null || graphObjectList.size() == 0)
+		if (graphObjectMap == null || graphObjectMap.size() == 0)
 			return "(none)";
-		else if (graphObjectList.size() == 1)
-			return graphObjectList.get(0).getIdentifier();
-		else
-			return constructListOfGraphObjects(graphObjectList);
+		else if (graphObjectMap.size() == 1) {
+			// Weird construct, but no easy way to get the value...
+			String id = "";
+			for (GraphObject obj: graphObjectMap.keySet()) {
+				id = obj.getIdentifier();
+				break;
+			}
+			return id;
+		}
+		return constructListOfGraphObjects(graphObjectMap.values());
 	}
 
 	/**
@@ -312,7 +353,7 @@ public class Structure {
 		residueMap.put(obj, residueList);
 	}
 
-	private String constructListOfGraphObjects(List<GraphObject> objList) {
+	private String constructListOfGraphObjects(Collection<GraphObject> objList) {
 		String list = null;
 		for (GraphObject obj: objList) {
 			if (list == null)
@@ -323,7 +364,8 @@ public class Structure {
 		return list;
 	}
 
-	private boolean residuesMatch(GraphObject obj, List<ChimeraResidue>residueList) {
+	private boolean residuesMatch(GraphObject obj, 
+	                              List<ChimeraResidue>residueList) {
 		if (!residueMap.containsKey(obj))
 			return true;
 

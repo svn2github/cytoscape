@@ -130,7 +130,9 @@ public class StructureVizMenuListener implements MenuListener {
 					if (structures.size() > 0) {
 		  			JMenuItem item = new JMenuItem("Select residues");
 						StructureVizMenuHandler l = 
-						    new StructureVizMenuHandler(StructureViz.SELECTRES, structures, logger);
+						    new StructureVizMenuHandler(StructureViz.SELECTRES, 
+						                                structures, (CyNode)overNode.getNode(),
+						                                logger);
 						item.addActionListener(l);
 						m.add(item);
 					}
