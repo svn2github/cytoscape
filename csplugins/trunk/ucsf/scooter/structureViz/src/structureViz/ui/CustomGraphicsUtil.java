@@ -76,8 +76,9 @@ public class CustomGraphicsUtil {
 		CalculatorCatalog catalog = vmm.getCalculatorCatalog();
 		String path = null;
 		CyCustomGraphics cg = null;
+		File tmpFile = null;
 		try {
-			File tmpFile = File.createTempFile("structureViz", ".png");
+			tmpFile = File.createTempFile("structureViz", ".png");
 			path = tmpFile.getAbsolutePath();
 			// Not really a select command, but it does cause us to wait....
 			chimera.select("copy file "+path+" png ");
@@ -124,6 +125,11 @@ public class CustomGraphicsUtil {
 			catalog.addCalculator(cgcalc);
 		}
 		nac.setCalculator(cgcalc);
-		vmm.applyNodeAppearances();
+		vmm.applyAppearances();
+
+		// Now, delete the temp file we created
+		tmpFile.delete();
+		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+
 	}
 }
