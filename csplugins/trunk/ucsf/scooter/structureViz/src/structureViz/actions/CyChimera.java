@@ -81,6 +81,7 @@ public class CyChimera {
 	private static Map<String, Structure> smilesStructureMap = null;
 	private static CyAttributes cyAttributes;
 	private static CyLogger logger = null;
+	private static boolean enableNodeSelection = true;
 
 	static List<GraphObject> selectedList = null;
 
@@ -363,6 +364,8 @@ public class CyChimera {
 
 		if (selectedList == null) selectedList = new ArrayList<GraphObject>();
 
+		enableNodeSelection = false;
+
 		// We need to do this in two passes since some parts of a structure might be
 		// selected and some might not.  Our selection model (unfortunately) only tells
 		// us that something has changed, not what...
@@ -417,6 +420,7 @@ public class CyChimera {
 */
 
 		networkView.updateView();
+		enableNodeSelection = true;
 	}
 
 	/**
@@ -458,6 +462,14 @@ public class CyChimera {
 			structure = structure.concat(struct);
 		}
 		return structure;
+	}
+
+	public static boolean selectionEnabled() {
+		return enableNodeSelection;
+	}
+
+	public static void setSelectionEnabled(boolean enable) {
+		enableNodeSelection = enable;
 	}
 
 	private static List<Structure> getStructures(CyNode node, 

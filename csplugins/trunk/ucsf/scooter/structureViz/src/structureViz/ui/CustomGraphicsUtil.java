@@ -129,7 +129,7 @@ public class CustomGraphicsUtil {
 
 		// Now, delete the temp file we created
 		tmpFile.delete();
-		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		Cytoscape.getCurrentNetworkView().updateView();
 
 	}
 }

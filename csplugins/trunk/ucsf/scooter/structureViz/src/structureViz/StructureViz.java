@@ -61,6 +61,7 @@ import cytoscape.view.CytoscapeDesktop;
 // structureViz imports
 import structureViz.commands.StructureVizCommandHandler;
 import structureViz.ui.StructureVizMenuListener;
+import structureViz.ui.GraphObjectSelectionListener;
 
 /**
  * The StructureViz class provides the primary interface to the
@@ -82,12 +83,15 @@ public class StructureViz extends CytoscapePlugin
 	public static final int GETIMAGE = 9;
 
 	private CyLogger logger = null;
+	private GraphObjectSelectionListener gvcListener = null;
 
   /**
    * Create our action and add it to the plugins menu
    */
   public StructureViz() {
 		logger = CyLogger.getLogger(StructureViz.class);
+		gvcListener = new GraphObjectSelectionListener(logger);
+		
 
 		try {
 			// Set ourselves up to listen for new networks
@@ -96,6 +100,7 @@ public class StructureViz extends CytoscapePlugin
 	
 			// Add ourselves to the current network context menu
 			((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
+			Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(gvcListener);
 		} catch (ClassCastException e) {
 			logger.error(e.getMessage());
 		}
@@ -119,8 +124,12 @@ public class StructureViz extends CytoscapePlugin
  	 */
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+			CyNetworkView view = (CyNetworkView)evt.getNewValue();
 			// Add menu to the context dialog
-			((CyNetworkView)evt.getNewValue()).addNodeContextMenuListener(this);
+			view.addNodeContextMenuListener(this);
+			// Add our graph view change listener
+			view.removeGraphViewChangeListener(gvcListener);
+			view.addGraphViewChangeListener(gvcListener);
 		}
 	}
 
