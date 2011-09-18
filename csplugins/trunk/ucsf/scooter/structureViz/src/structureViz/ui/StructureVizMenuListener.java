@@ -112,6 +112,15 @@ public class StructureVizMenuListener implements MenuListener {
 			m.add(item);
 		}
 		{
+			if (overNode != null) {
+		  	JMenuItem item = new JMenuItem("Find modelled structures");
+				StructureVizMenuHandler l = 
+			 	   new StructureVizMenuHandler(StructureViz.FINDMODELS, (CyNode)overNode.getNode(), logger);
+				item.addActionListener(l);
+				m.add(item);
+			}
+		}
+		{
 			JMenuItem item = new JMenuItem("Align structures");
 			List<Structure> structures = CyChimera.getSelectedStructures(overNode, false);
 			StructureVizMenuHandler l = new StructureVizMenuHandler(StructureViz.ALIGN, structures, logger);
@@ -140,12 +149,14 @@ public class StructureVizMenuListener implements MenuListener {
 			}
 		}
 		{
-			if (overNode != null) {
-		  	JMenuItem item = new JMenuItem("Find modelled structures");
+			if (overNode != null && chimera.isLaunched()) {
+		  	JMenuItem item = new JMenuItem("Paint Chimera image onto node");
 				StructureVizMenuHandler l = 
-			 	   new StructureVizMenuHandler(StructureViz.FINDMODELS, (CyNode)overNode.getNode(), logger);
-				item.addActionListener(l);
-				m.add(item);
+				    new StructureVizMenuHandler(StructureViz.GETIMAGE, 
+				                                null, (CyNode)overNode.getNode(),
+				                                logger);
+						item.addActionListener(l);
+						m.add(item);
 			}
 		}
 		{

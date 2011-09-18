@@ -498,6 +498,23 @@ public class Chimera {
 
 		return listener.getResponse(command);
   }
+
+  public void chimeraSendNoReply(String command) {
+  	if (chimera == null)
+  		return;
+
+		// System.out.println("To Chimera --> "+command);
+		listener.clearResponse(command);
+		String text = command.concat("\n");
+		try {
+  		// send the command
+  		chimera.getOutputStream().write(text.getBytes());
+  		chimera.getOutputStream().flush();
+		} catch (IOException e) {
+			CyLogger.getLogger(Chimera.class).warning("Unable to execute command: "+text);
+		}
+		return;
+	}
   
   /**
    * Terminate the running Chimera process

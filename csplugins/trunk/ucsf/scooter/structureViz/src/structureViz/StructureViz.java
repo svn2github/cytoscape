@@ -79,6 +79,7 @@ public class StructureViz extends CytoscapePlugin
 	public static final int SALIGN = 6;
 	public static final int SELECTRES = 7;
 	public static final int FINDMODELS = 8;
+	public static final int GETIMAGE = 9;
 
 	private CyLogger logger = null;
 

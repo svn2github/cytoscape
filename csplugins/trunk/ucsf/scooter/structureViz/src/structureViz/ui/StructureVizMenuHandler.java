@@ -40,6 +40,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -55,6 +56,10 @@ import cytoscape.CyNode;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
+
+import cytoscape.visual.customgraphic.CyCustomGraphics;
+import cytoscape.visual.customgraphic.ImageUtil;
+import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 
 import giny.model.GraphObject;
 
@@ -119,6 +124,8 @@ public class StructureVizMenuHandler
 			seqAlignAction(label);
 		} else if (command == StructureViz.COMPARE) {
 			seqCompareAction(label);
+		} else if (command == StructureViz.GETIMAGE) {
+			CustomGraphicsUtil.applyImage(logger, chimera, context);
 		}
 	}
 
