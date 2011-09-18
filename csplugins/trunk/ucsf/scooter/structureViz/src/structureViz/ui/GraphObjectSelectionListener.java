@@ -36,7 +36,11 @@ import structureViz.actions.Chimera;
 import structureViz.actions.CyChimera;
 import structureViz.model.Structure;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
@@ -52,9 +56,11 @@ import giny.view.GraphViewChangeListener;
  */
 public class GraphObjectSelectionListener implements GraphViewChangeListener {
 	private CyLogger logger;
+	private Map<GraphObject, String>selectionMap = null;
 
 	public GraphObjectSelectionListener(CyLogger logger) {
 		this.logger = logger;
+		selectionMap = new HashMap<GraphObject, String>();
 	}
 	
 	public void graphViewChanged(GraphViewChangeEvent event) {
@@ -65,11 +71,11 @@ public class GraphObjectSelectionListener implements GraphViewChangeListener {
 		if (event.isEdgesSelectedType()) {
 			setSelection(view, event.getSelectedEdges(), true);
 		} else if (event.isEdgesUnselectedType()) {
-			setSelection(view, event.getSelectedEdges(), false);
+			setSelection(view, event.getUnselectedEdges(), false);
 		} else if (event.isNodesSelectedType()) {
 			setSelection(view, event.getSelectedNodes(), true);
 		} else if (event.isNodesUnselectedType()) {
-			setSelection(view, event.getSelectedNodes(), false);
+			setSelection(view, event.getUnselectedNodes(), false);
 		}
 		CyChimera.setSelectionEnabled(true);
 	}
@@ -83,37 +89,64 @@ public class GraphObjectSelectionListener implements GraphViewChangeListener {
 		// Get all of the open structures
 		List<Structure> structureList = chimera.getOpenStructs();
 
+		String command = null;
+
 		// For each graph object, see if the selection has changed
 		for (Structure structure: structureList) {
+			List<String> residueList = new ArrayList<String>();
 			List<GraphObject> objList = structure.getGraphObjectList();
 			for (int index = 0; index < goArray.length; index++ ) {
 				GraphObject object = goArray[index];
 				if (objList.contains(object) && structure.getResidueList(object) != null) {
-					setResidueSelection(chimera, structure, object, selected);
+					if (selected) {
+						String selString = getSelectionString(chimera, structure, object);
+						if (selString != null) {
+							selectionMap.put(object, selString);
+							// System.out.println("Adding "+object+" to the selection: "+selString);
+						} else
+							selectionMap.remove(object);
+					} else {
+						// System.out.println("Removing "+object+" from the selection");
+						selectionMap.remove(object);
+					}
 				} 
 			}
 		}
+		// System.out.println("SelectionMap has "+selectionMap.size()+ " values");
+		setResidueSelection(chimera, selectionMap.values());
 		chimera.modelChanged();
 	}
 
-	private void setResidueSelection(Chimera chimera, Structure structure, 
-	                                 GraphObject object, boolean selected) {
-		String command = "select ";
-		if (!selected)
-			command = "~select ";
+	private String getSelectionString(Chimera chimera, Structure structure, 
+	                                  GraphObject object) {
 
 		List<String> residueList = structure.getResidueList(object);
-		if (residueList == null || residueList.size() == 0) return;
+		if (residueList == null || residueList.size() == 0) return null;
 
 		int model = structure.modelNumber();
-		if (chimera.getChimeraModel(model) == null) return;
+		if (chimera.getChimeraModel(model) == null) return null;
 
 		String residues = "";
 		for (String residue: residueList) {
 			residues = residues.concat(residue+",");
 		}
 		residues = residues.substring(0,residues.length()-1);
-		command = command.concat(" #"+structure.modelNumber()+":"+residues);
+		return " #"+structure.modelNumber()+":"+residues;
+	}
+
+	private void setResidueSelection(Chimera chimera, Collection<String> selStrs) {
+		if (selStrs == null || selStrs.size() == 0)
+			return;
+
+		String command = null;
+		for (String selStr: selStrs) {
+			System.out.println("selStr = "+selStr);
+			if (command == null) 
+				command = "select "+selStr;
+			else
+				command = command.concat(" | "+selStr);
+		}
+		// System.out.println("Selection command: "+command);
 		chimera.select(command);
 	}
 }
