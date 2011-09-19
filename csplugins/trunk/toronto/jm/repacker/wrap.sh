@@ -1,6 +1,11 @@
 #!/bin/bash
 
-BND_CMD=bnd
+BND_CMD="java -jar bnd.jar"
+
+if [[ ! -s bnd.jar ]]
+then
+    curl http://dl.dropbox.com/u/2590603/bnd/biz.aQute.bnd.jar > bnd.jar
+fi
 
 function fixpath {
     if [ -z $(which cygpath) ]
