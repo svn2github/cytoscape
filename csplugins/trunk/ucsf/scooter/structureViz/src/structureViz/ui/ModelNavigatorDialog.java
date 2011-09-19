@@ -95,6 +95,7 @@ public class ModelNavigatorDialog
 	private static final int COLLAPSEALL = 19;
 	private static final int EXPANDMODELS = 20;
 	private static final int EXPANDCHAINS = 21;
+	private static final int CREATENETWORK = 22;
 	private boolean ignoreSelection = false;
 	private int residueDisplay = ChimeraResidue.THREE_LETTER;
 	private boolean isCollapsing = false;
@@ -147,6 +148,7 @@ public class ModelNavigatorDialog
 			alignMenu.setEnabled(false);
 		chimeraObject.updateSelection();
 		ignoreSelection = false;
+		pack();
 	}
 
 	/**
@@ -422,17 +424,26 @@ public class ModelNavigatorDialog
 		JMenu clashMenu = new JMenu("Clash detection");
 		addMenuItem(clashMenu, "Find all clashes", FINDCLASH, "findclash sel continuous true");
 		addMenuItem(clashMenu, "Find clashes within models", FINDCLASH, "findclash sel test model continuous true");
-		addMenuItem(clashMenu, "Clear clashes", COMMAND, "~findclash");
+		addMenuItem(clashMenu, "Clear clashes and contacts", COMMAND, "~findclash");
 		chimeraMenu.add(clashMenu);
+
+		JMenu contactMenu = new JMenu("Contact detection");
+		addMenuItem(contactMenu, "Find all contacts", FINDCLASH, "findclash sel overlapCutoff -0.4 hbondAllowance 0.0");
+		addMenuItem(contactMenu, "Find contacts within models", FINDCLASH, "findclash sel test model overlapCutoff -0.4 hbondAllowance 0.0");
+		addMenuItem(contactMenu, "Clear clashes and contacts", COMMAND, "~findclash");
+		chimeraMenu.add(contactMenu);
 
 		JMenu hBondMenu = new JMenu("Hydrogen bond detection");
 		JMenu fHBondMenu = new JMenu("Find hydrogen bonds");
-		addMenuItem(fHBondMenu, "Between models", FINDHBOND, "findhbond sel any intermodel true intramodel false");
-		addMenuItem(fHBondMenu, "Within models", FINDHBOND, "findhbond sel any intermodel false intramodel true");
-		addMenuItem(fHBondMenu, "Both", FINDHBOND, "findhbond sel any intermodel true intramodel true");
+		addMenuItem(fHBondMenu, "Between models", FINDHBOND, "findhbond selRestrict any intermodel true intramodel false");
+		addMenuItem(fHBondMenu, "Within models", FINDHBOND, "findhbond selRestrict any intermodel false intramodel true");
+		addMenuItem(fHBondMenu, "Both", FINDHBOND, "findhbond selRestrict any intermodel true intramodel true");
 		hBondMenu.add(fHBondMenu);
 		addMenuItem(hBondMenu, "Clear hydrogen bonds", COMMAND, "~findhbond");
 		chimeraMenu.add(hBondMenu);
+
+		chimeraMenu.add(new JSeparator());
+		addMenuItem(chimeraMenu, "Create interaction network from structure...", CREATENETWORK, null);
 
 		chimeraMenu.add(new JSeparator());
 
@@ -669,11 +680,20 @@ public class ModelNavigatorDialog
  					JOptionPane.showMessageDialog(dialog, "You must select something to find hydrogen bonds", 
 					                              "Nothing Selected", JOptionPane.ERROR_MESSAGE); 
 				}
+			} else if (type == CREATENETWORK) {
+				launchNewNetworkDialog();
 			} else {
 				residueDisplay = type;
 				treeModel.setResidueDisplay(type);
 				chimeraObject.modelChanged();
 			}
+		}
+
+		private void launchNewNetworkDialog() 
+		{
+			CreateNetworkDialog dialog = new CreateNetworkDialog(null, chimeraObject);
+			dialog.pack();
+			dialog.setVisible(true);
 		}
 
 		/**

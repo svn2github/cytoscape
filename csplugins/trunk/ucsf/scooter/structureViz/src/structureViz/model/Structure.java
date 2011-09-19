@@ -361,6 +361,11 @@ public class Structure {
 			else
 				list += ";"+obj.getIdentifier();
 		}
+
+		// We really don't want this to be too long -- truncate, if necessary
+		if (list.length() > 14) {
+			list = list.substring(0, 13).concat("...");
+		}
 		return list;
 	}
 

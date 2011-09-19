@@ -140,7 +140,6 @@ public class GraphObjectSelectionListener implements GraphViewChangeListener {
 
 		String command = null;
 		for (String selStr: selStrs) {
-			System.out.println("selStr = "+selStr);
 			if (command == null) 
 				command = "select "+selStr;
 			else

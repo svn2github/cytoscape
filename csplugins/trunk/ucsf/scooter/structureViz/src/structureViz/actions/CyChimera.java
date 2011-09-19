@@ -529,9 +529,13 @@ public class CyChimera {
 		for (GraphObject obj: goList) {
 			if (obj instanceof Node) {
 				// Handle secondary paint??
-				view.getNodeView((Node)obj).setSelected(state);
+				NodeView nv = view.getNodeView((Node)obj);
+				if (nv != null)
+					nv.setSelected(state);
 			} else if (obj instanceof Edge) {
-				view.getEdgeView((Edge)obj).setSelected(state);
+				EdgeView ev = view.getEdgeView((Edge)obj);
+				if (ev != null)
+					ev.setSelected(state);
 			}
 			if (selectedList.contains(obj))
 				selectedList.remove(obj);

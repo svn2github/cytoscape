@@ -236,17 +236,13 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	 * @return String representation of chain
 	 */
 	public String toString() { 
-		String nodeName = "{none}";
-		Structure structure = chimeraModel.getStructure();
-		if (structure != null && structure.getIdentifier() != null)
-			nodeName = structure.getIdentifier();
 		String displayName = chimeraModel.getModelName();
 		if (displayName.length() > 14)
 			displayName = displayName.substring(0,13)+"...";
 		if (chainId.equals("_")) {
-			return (nodeName+"; "+displayName+" Chain (no ID) ("+getResidueCount()+" residues)"); 
+			return (displayName+" Chain (no ID) ("+getResidueCount()+" residues)"); 
 		} else {
-			return (nodeName+"; "+displayName+" Chain "+chainId+" ("+getResidueCount()+" residues)"); 
+			return (displayName+" Chain "+chainId+" ("+getResidueCount()+" residues)"); 
 		}
 	}
 

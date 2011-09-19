@@ -358,18 +358,23 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	 * Return a string representation for the model
 	 */
 	public String toString() { 
-		String nodeName = "{none}";
-		if (structure != null && structure.getIdentifier() != null)
+		String nodeName = " {none}";
+		if (structure != null && structure.getIdentifier() != null) {
 			nodeName = structure.getIdentifier();
+			if (structure.getGraphObjectList().size() > 1)
+				nodeName = "s {"+nodeName+"}";
+			else
+				nodeName = " "+nodeName;
+		}
 		String displayName = name;
 		if (name.length() > 14)
 			displayName = name.substring(0,13)+"...";
 		if (getChainCount() > 0) {
-			return ("Node "+nodeName+" [Model "+toSpec()+" "+displayName+" ("+getChainCount()+" chains, "+getResidueCount()+" residues)]"); 
+			return ("Node"+nodeName+" [Model "+toSpec()+" "+displayName+" ("+getChainCount()+" chains, "+getResidueCount()+" residues)]"); 
 		} else if (getResidueCount() > 0) {
-			return ("Node "+nodeName+" [Model "+toSpec()+" "+displayName+" ("+getResidueCount()+" residues)]"); 
+			return ("Node"+nodeName+" [Model "+toSpec()+" "+displayName+" ("+getResidueCount()+" residues)]"); 
 		} else {
-			return ("Node "+nodeName+" [Model "+toSpec()+" "+displayName+"]"); 
+			return ("Node"+nodeName+" [Model "+toSpec()+" "+displayName+"]"); 
 		}
 	}
 
