@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.application.CyApplicationManager;
 
 import java.awt.event.ActionEvent;
 import java.io.File;

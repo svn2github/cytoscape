@@ -3,7 +3,7 @@ package org.cytoscape.genomespace.internal;
 
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.application.CyApplicationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
