@@ -81,8 +81,8 @@ namespace StringUtil {
 
 #if defined(__linux__)
 const std::string IVIA_STANDARD_LOCALE("en_US.ISO-8859-15");
-#elif defined(__APPLE__)
-const std::string IVIA_STANDARD_LOCALE("en_US.ISO-8859-15");
+#elif defined(__MACH__)
+const std::string IVIA_STANDARD_LOCALE("en_US.ISO8859-15");
 #else
 #      error Your OS is not supported!
 #endif

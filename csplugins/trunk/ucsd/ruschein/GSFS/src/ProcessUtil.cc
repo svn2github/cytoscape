@@ -547,6 +547,7 @@ pid_t PtyFork(int * const master_fd, std::string * const slave_pty_name, const t
 typedef char *CharPtr;
 
 
+	/*
 #ifdef __MACH__
 extern char **environ;
 #endif
@@ -565,7 +566,7 @@ int PtyExec(const std::vector<std::string> &args, pid_t * const child_pid,
 		char **argv = (char **)::alloca((args.size() + 1) * sizeof(char *));
 		argv[0] = ::strdup(::basename(::strdup(args[0].c_str())));
 		unsigned arg_no = 1;
-		for (/* Empty! */; arg_no < args.size(); ++arg_no)
+		for (; arg_no < args.size(); ++arg_no)
 			argv[arg_no] = ::strdup(args[arg_no].c_str());
 		argv[arg_no] = NULL;
 
@@ -581,7 +582,7 @@ int PtyExec(const std::vector<std::string> &args, pid_t * const child_pid,
 	// If we make it here, we're the parent process:
 	*child_pid = pid;
 	return master_fd;
-}
+}*/
 
 
 namespace {

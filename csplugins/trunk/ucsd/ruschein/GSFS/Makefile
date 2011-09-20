@@ -14,4 +14,5 @@ objs/%.o: src/%.cc
 	@$(CXX) $(CXXFLAGS) $< -c -o $@
 
 clean:
-	rm -f objs/*
+	rm -f objs/* lib/*.a
+

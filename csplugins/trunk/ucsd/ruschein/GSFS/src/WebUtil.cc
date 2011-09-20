@@ -1578,4 +1578,16 @@ std::string ConvertToLatin9(const HttpHeader &http_header, const std::string &or
 }
 
 
+// ExtractURLs -- extracts all links from "document_source" and returns them in "urls".  "root_url" is used to turn relative URLs into absolute URLs if
+//                requested.
+//
+void ExtractURLs(const std::string &/*document_source*/, const std::string &/*default_base_url*/,
+		 const ExtractedUrlForm /*extracted_url_form*/, std::vector<UrlAndAnchorTexts> * const /*urls_and_anchor_texts*/,
+		 const unsigned /*flags*/, const std::string &/*user_agent_string*/, const unsigned /*page_cacher_max_fanout*/,
+		 const unsigned /*individual_page_timeout*/, unsigned long * const /*overall_timeout*/)
+{
+	throw std::runtime_error("WebUtil::ExtractURLs() has not been implemented!");
+}
+
+
 } // namespace WebUtil
