@@ -18,5 +18,8 @@ GSAuth: GSAuth.o
 GSAuth.o: GSAuth.cc
 	$(CXX) $(CXXFLAGS) -c $<
 
+GsSession.o: GsSession.cc GsSession.h
+	$(CXX) $(CXXFLAGS) -I. -c $<
+
 clean:
 	rm -f *.o *~ $(PROGS)
