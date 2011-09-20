@@ -33,10 +33,11 @@
 package structureViz.ui;
 
 // System imports
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -66,7 +67,9 @@ import giny.view.NodeView;
 
 // StructureViz imports
 import structureViz.actions.Chimera;
+import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraModel;
+import structureViz.model.ChimeraResidue;
 
 /**
  */
@@ -77,12 +80,19 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
 	boolean includeContacts = true;
 	boolean includeClashes = false;
 	boolean includeHBonds = false;
+	boolean includeConnectivity = false;
 	int interactionBetween = 2; // Between selection & other models
 	static final int BETWEENMODELS = 0;
 	static final int BETWEENSELMODELS = 1;
 	static final int BETWEENALL = 2;
 	static final String[] interactionArray = {"Between models", "Between selection & other models", "Between selection and all atoms"};
 	static final String CLASHCOMMAND = "findclash sel makePseudobonds false log true namingStyle command";
+	static final String DISTANCE_ATTR = "MinimumDistance";
+	static final String OVERLAP_ATTR = "MaximumOverlap";
+	static final String RESIDUE_ATTR = "FunctionalResidues";
+	static final String SEED_ATTR = "SeedResidue";
+	static final String BACKBONE_ATTR = "BackboneInteraction";
+	static final String SIDECHAIN_ATTR = "SideChainInteraction";
 
 	/**
 	 * Create a CreateNetworkDialog
@@ -139,6 +149,8 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
 		                           Tunable.BOOLEAN, includeClashes));
 		properties.add(new Tunable("includeHBonds", "Include hydrogen bonds (overlaps with contacts)", 
 		                           Tunable.BOOLEAN, includeHBonds));
+		properties.add(new Tunable("includeConnectivity", "Include connectivity",
+		                           Tunable.BOOLEAN, includeConnectivity));
 		properties.add(new Tunable("interaction", "Include interactions",
 		                           Tunable.LIST, new Integer(interactionBetween),
 		                           (Object) interactionArray, (Object) null, 0));
@@ -157,6 +169,10 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
 		if ((t != null) && (t.valueChanged() || force))
 			includeHBonds = ((Boolean) t.getValue()).booleanValue();
 
+		t = properties.get("includeConnectivity");
+		if ((t != null) && (t.valueChanged() || force))
+			includeConnectivity = ((Boolean) t.getValue()).booleanValue();
+
 		t = properties.get("interaction");
 		if ((t != null) && (t.valueChanged() || force))
 			interactionBetween = ((Integer) t.getValue()).intValue();
@@ -173,7 +189,8 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
 		}
 		if ("create".equals(e.getActionCommand())) {
 			updateTunables(true);
-			List<String> edgeList = null;
+			List<CyEdge> edgeList = null;
+			List<CyNode> nodeList = new ArrayList<CyNode>();
 			String cutoff = "";
 			String type = "Clashes";
 			// Send the commands to Chimera and get the results
@@ -190,40 +207,51 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
 					command = command.concat(" test model");
 				
 				List<String>replyList = chimeraObject.commandReply(command);
-				printReply(replyList);
-				edgeList = parseClashReplies(replyList, type);
+				// printReply(replyList);
+				edgeList = parseClashReplies(replyList, nodeList, type);
 			}
 			if (includeHBonds) {
-				String command = null;
+				String command = 
+					"findhbond selRestrict any intermodel true makePseudobonds false log true namingStyle command";
 				if (interactionBetween == BETWEENMODELS) {
 				} else if (interactionBetween == BETWEENSELMODELS)
-					command = "findhbond selRestrict any intermodel true intramodel false makePseudobonds false log true namingStyle command";
+					command = command.concat(" intramodel false");
 				else if (interactionBetween == BETWEENALL)
-					command = "findhbond selRestrict any intermodel true intramodel true makePseudobonds false log true namingStyle command";
+					command = command.concat(" intramodel true");
 				List<String>replyList = chimeraObject.commandReply(command);
 				if (edgeList == null)
-					edgeList = parseHBondReplies(replyList);
+					edgeList = parseHBondReplies(replyList, nodeList);
 				else
-					edgeList.addAll(parseHBondReplies(replyList));
-				printReply(replyList);
+					edgeList.addAll(parseHBondReplies(replyList, nodeList));
+				// printReply(replyList);
 			}
-			// We've got a list of edges, now we need to create the nodes and edges
-			// and assign the attributes we want, then we can create the network as a child of the current network
-			System.out.println("edgeList has "+edgeList.size()+" entries");
+
 			int[] edges = new int[edgeList.size()];
 			int[] nodes = new int[edgeList.size()*2];
 			int edgeCount = 0;
-			for (String edge: edgeList) {
-				System.out.println("Edge "+(edgeCount+1)+": "+edge);
-				createNodesAndEdge(edge, nodes, edges, edgeCount);
+			for (CyEdge edge: edgeList) {
+				edges[edgeCount] = edge.getRootGraphIndex();
+				nodes[edgeCount*2] = edge.getSource().getRootGraphIndex();
+				nodes[edgeCount*2+1] = edge.getTarget().getRootGraphIndex();
 				edgeCount++;
 			}
 
-			CyNetwork network = Cytoscape.getCurrentNetwork();
-			String name = network.getTitle();
+			// Add seed information (from selection)
 
 			// Create the network
-			Cytoscape.createNetwork(nodes, edges, "Interaction from "+name, network, true);
+			CyNetwork network = Cytoscape.getCurrentNetwork();
+			String name = network.getTitle();
+			CyNetwork newNetwork = Cytoscape.createNetwork(nodes, edges, "Interaction from "+name, network, true);
+			
+			// Set vizmap
+
+			// Do a layout
+
+			// Make it current
+			Cytoscape.setCurrentNetwork(newNetwork.getIdentifier());
+			Cytoscape.setCurrentNetworkView(newNetwork.getIdentifier());
+
+			// Activate structureViz on this network
 
 			setVisible(false);
 			return;
@@ -250,13 +278,12 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
  	 * and the clash lines look like:
  	 *	:2470.A@N    :323.A@OD2  -0.394  3.454
  	 */
-	private List<String> parseClashReplies(List<String> replyLog, String type) {
+	private List<CyEdge> parseClashReplies(List<String> replyLog, List<CyNode>nodes, String type) {
 		// Scan for our header line
 		boolean foundHeader = false;
 		int index = 0;
 		for (index = 0; index < replyLog.size(); index++) {
 			String str = replyLog.get(index);
-			System.out.println("Line "+index+": "+str);
 			if (str.trim().startsWith("atom1")) {
 				foundHeader = true;
 				break;
@@ -264,19 +291,26 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
 		}
 		if (!foundHeader) return null;
 
-		List<String> edgeList = new ArrayList<String>();
-
+		Map<CyEdge, Double> distanceMap = new HashMap<CyEdge, Double>();
+		Map<CyEdge, Double> overlapMap = new HashMap<CyEdge, Double>();
 		for (++index; index < replyLog.size(); index++) {
-			System.out.println("Line "+index+": "+replyLog.get(index));
 			String[] line = replyLog.get(index).trim().split("\\s+");
 			if (line.length != 4) continue;
-			
-			System.out.println("atom1 = "+line[0]+" atom2 = "+line[1]+" overlap = "+line[2]+" distance = "+line[3]);
-			edgeList.add(fixResidue(line[0])+"\t"+type+"\t"+fixResidue(line[1])+"\t"+line[2]+"\t"+line[3]);
+
+			CyEdge edge = createEdge(nodes, line[0], line[1], type);
+
+			updateMap(distanceMap, edge, line[3], -1); // We want the smallest distance
+			updateMap(overlapMap, edge, line[2], 1); // We want the largest overlap
 		}
 
-		return edgeList;
-		
+		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+		// OK, now update the edge attributes we want
+		for (CyEdge edge: distanceMap.keySet()) {
+			edgeAttributes.setAttribute(edge.getIdentifier(), DISTANCE_ATTR, distanceMap.get(edge));
+			edgeAttributes.setAttribute(edge.getIdentifier(), OVERLAP_ATTR, overlapMap.get(edge));
+		}
+
+		return new ArrayList<CyEdge>(distanceMap.keySet());
 	}
 
 
@@ -306,13 +340,12 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
  	 * 	HOH 2541.A O  GLU 2471.A OE1  no hydrogen  2.746  N/A
  	 * 	HOH 2577.A O  GLU 2471.A O    no hydrogen  2.989  N/A
  	 */
-	private List<String> parseHBondReplies(List<String> replyLog) {
+	private List<CyEdge> parseHBondReplies(List<String> replyLog, List<CyNode>nodes) {
 		// Scan for our header line
 		boolean foundHeader = false;
 		int index = 0;
 		for (index = 0; index < replyLog.size(); index++) {
 			String str = replyLog.get(index);
-			System.out.println("Line "+index+": "+str);
 			if (str.trim().startsWith("H-bonds")) {
 				foundHeader = true;
 				break;
@@ -320,60 +353,127 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
 		}
 		if (!foundHeader) return null;
 
-		List<String> edgeList = new ArrayList<String>();
-
+		Map<CyEdge, Double> distanceMap = new HashMap<CyEdge, Double>();
 		for (++index; index < replyLog.size(); index++) {
-			System.out.println("Line "+index+": "+replyLog.get(index));
 			String[] line = replyLog.get(index).trim().split("\\s+");
 			if (line.length != 6 && line.length != 7) continue;
 			
-			String atom1 = line[0];
-			String atom2 = line[1];
+			CyEdge edge = createEdge(nodes, line[0], line[1], "HBond");
+
 			String distance = line[3];
 			if (line[2].equals("no") && line[3].equals("hydrogen"))
 				distance = line[4];
-			edgeList.add(fixResidue(atom1)+"\tHBond\t"+fixResidue(atom2)+"\t\t"+distance);
+			updateMap(distanceMap, edge, distance, -1); // We want the smallest distance
 		}
-		return edgeList;
-	}
 
-	private String fixResidue(String residue) {
-		int atIndex = residue.indexOf('@');
-		if (atIndex == -1) return residue;
-		return residue.substring(0, atIndex);
-	}
-
-	private void createNodesAndEdge(String edgeSpec, int[] nodes, int[] edges, int edgeCount) {
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+		// OK, now update the edge attributes we want
+		for (CyEdge edge: distanceMap.keySet()) {
+			edgeAttributes.setAttribute(edge.getIdentifier(), DISTANCE_ATTR, distanceMap.get(edge));
+		}
 
-		String[] edgeParts = edgeSpec.split("\t");
-		CyNode node1 = Cytoscape.getCyNode(makeFunctionalResidue(edgeParts[0]), true);
-		CyNode node2 = Cytoscape.getCyNode(makeFunctionalResidue(edgeParts[2]), true);
-		nodeAttributes.setAttribute(node1.getIdentifier(), "FunctionalResidues", node1.getIdentifier());
-		nodeAttributes.setAttribute(node2.getIdentifier(), "FunctionalResidues", node2.getIdentifier());
-		CyEdge edge = Cytoscape.getCyEdge(node1, node2, Semantics.INTERACTION, edgeParts[1], true);
-		if (edgeParts[3] != null && edgeParts[3].length() > 0)
-			edgeAttributes.setAttribute(edge.getIdentifier(), "Overlap", Double.valueOf(edgeParts[3]));
-		edgeAttributes.setAttribute(edge.getIdentifier(), "Distance", Double.valueOf(edgeParts[4]));
-		edges[edgeCount] = edge.getRootGraphIndex();
-		nodes[edgeCount*2] = node1.getRootGraphIndex();
-		nodes[edgeCount*2+1] = node2.getRootGraphIndex();
+		return new ArrayList<CyEdge>(distanceMap.keySet());
 	}
 
-	private String makeFunctionalResidue(String alias) {
+	private CyEdge createEdge(List<CyNode>nodes, String sourceAlias, String targetAlias, String type) {
+		// Create our two nodes.  Note that makeResidueNode also adds three attributes:
+		//  1) FunctionalResidues
+		//  2) Seed
+		//  3) SideChainOnly
+		CyNode source = makeResidueNode(sourceAlias);
+		CyNode target = makeResidueNode(targetAlias);
+		nodes.add(source);
+		nodes.add(target);
+
+		// Create our edge
+		return Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, type, true);
+	}
+
+	private CyNode makeResidueNode(String alias) {
+		// alias is a atomSpec of the form [#model]:residueNumber@atom
+		// We want to convert that to a node identifier of [pdbid#]ABC nnn
+		// and add FunctionalResidues and BackboneOnly attributes
+		boolean singleModel = false;
+		ChimeraModel model = getModel(alias);
+		if (model == null) {
+			model = chimeraObject.getChimeraModels().get(0);
+			singleModel = true;
+		}
+		ChimeraResidue residue = getResidue(alias, model);
+		boolean backbone = isBackbone(alias);
+
+		int displayType = ChimeraResidue.getDisplayType();
+		ChimeraResidue.setDisplayType(ChimeraResidue.THREE_LETTER);
+		// OK, now we have everything we need, create the node
+		String nodeName = residue.toString().trim()+"."+residue.getChainId();
+		ChimeraResidue.setDisplayType(displayType);
+
+		if (!singleModel)
+			nodeName = model.getModelName()+"#"+nodeName;
+
+		// Create the node
+		CyNode node = Cytoscape.getCyNode(nodeName, true);
+
+		// Add our attributes
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		nodeAttributes.setAttribute(nodeName, RESIDUE_ATTR, model.getModelName()+"#"+residue.getIndex()+"."+residue.getChainId());
+		nodeAttributes.setAttribute(nodeName, SEED_ATTR, Boolean.valueOf(residue.isSelected()));
+		if (backbone)
+			nodeAttributes.setAttribute(nodeName, BACKBONE_ATTR, Boolean.TRUE);
+		else
+			nodeAttributes.setAttribute(nodeName, SIDECHAIN_ATTR, Boolean.TRUE);
+
+		return node;
+	}
+
+	private ChimeraModel getModel(String alias) {
+		String[] split = alias.split(":");
+		// No model specified....
+		if (split[0].length() == 0) return null;
+
 		int model = 0;
 		int submodel = 0;
-		String[] modelSplit = alias.split(":");
-		if (modelSplit[0].length() > 0) {
-			String[] subSplit = modelSplit[0].substring(1).split(".");
-			model = Integer.parseInt(subSplit[0]);
-			if (subSplit.length > 1)
-				submodel = Integer.parseInt(subSplit[1]);
+		String[] subSplit = split[0].substring(1).split(".");
+		model = Integer.parseInt(subSplit[0]);
+		if (subSplit.length > 1)
+			submodel = Integer.parseInt(subSplit[1]);
+
+		return chimeraObject.getChimeraModel(model, submodel);
+	}
+
+	private ChimeraResidue getResidue(String alias, ChimeraModel model) {
+		String[] split = alias.split(":|@");
+
+		// Split into residue and chain
+		String[] residueChain = split[1].split("\\.");
+
+		if (residueChain.length == 1)
+			return model.getResidue(residueChain[0]); // No chain...
+
+		ChimeraChain chain = model.getChain(residueChain[1]);
+		return chain.getResidue(residueChain[0]);
+	}
+
+	private boolean isBackbone(String alias) {
+		String[] split = alias.split("@");
+		String atom = split[1];
+		if (atom.equals("C") || atom.equals("CA") || atom.equals("N") || atom.equals("H") ||
+		    atom.equals("O"))
+			return true;
+		return false;
+	}
+
+	private void updateMap(Map<CyEdge, Double>map, CyEdge edge, String value, int comparison) {
+		// Save the minimum distance between atoms
+		Double v = Double.valueOf(value);
+		if (map.containsKey(edge)) {
+			if (comparison < 0 && map.get(edge).compareTo(v) > 0)
+				map.put(edge, v);
+			else if (comparison > 0 && map.get(edge).compareTo(v) < 0)
+				map.put(edge, v);
+		} else {
+			map.put(edge, v);
 		}
-		// Get the model
-		ChimeraModel cModel = chimeraObject.getChimeraModel(model, submodel);
-		return "#"+cModel.getModelName()+":"+modelSplit[1];
 	}
 }
 

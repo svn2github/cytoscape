@@ -100,6 +100,7 @@ public class StructureVizMenuListener implements MenuListener {
 		{
 		  JMenu item = new JMenu("Open structure(s)");
 			List<Structure>structures =  CyChimera.getSelectedStructures(overNode, false);
+			// System.out.println("Found: "+structures.size()+" structures for node "+overNode.getNode().getIdentifier());
 			if (structures.size() == 0) {
 				item.setEnabled(false);
 			} else {

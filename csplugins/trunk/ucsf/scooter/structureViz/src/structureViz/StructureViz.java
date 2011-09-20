@@ -139,7 +139,6 @@ public class StructureViz extends CytoscapePlugin
 	 * @param pmenu the popup menu
 	 */
 	public void addNodeContextMenuItems (NodeView nodeView, JPopupMenu pmenu) {
-
 		if (pmenu == null) {
 			pmenu = new JPopupMenu();
 		}

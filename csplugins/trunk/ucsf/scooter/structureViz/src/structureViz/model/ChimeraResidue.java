@@ -200,6 +200,7 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 		}
 	}
 
+
 	/**
 	 * Return the Chimera specification for this Residue
 	 *
@@ -373,6 +374,8 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	public static void setDisplayType (int type) {
 		displayType = type;
 	}
+
+	public static int getDisplayType() {return displayType;}
 
 	/**
 	 * Convert the amino acid type to a full name
