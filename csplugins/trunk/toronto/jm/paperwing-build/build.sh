@@ -12,9 +12,11 @@ function apply_patches {
     done
 }
 
-DIST_DIR=$(abspath dist)
+BUILD_DIR=$(abspath build)
+DIST_DIR=$(abspath build/dist)
 PATCH_DIR=$(abspath patches)
 
+pushd ${BUILD_DIR}
 rm -rf ${DIST_DIR}
 mkdir -p ${DIST_DIR}
 
@@ -34,7 +36,7 @@ popd
 cp repacker/bundles/*.jar ${DIST_DIR}
 
 # Patch core so it doesn't look for ding
-for BUNDLE in swing-application-impl vizmap-gui-impl presentation-impl
+for BUNDLE in swing-application-impl vizmap-gui-impl presentation-impl viewmodel-impl
 do
     pushd ${BUNDLE}
     apply_patches "${PATCH_DIR}/${BUNDLE}"
@@ -56,4 +58,5 @@ cp ${DIST_DIR}/*.jar bundles/plugins
 rm bundles/startlevel-3/ding-*
 popd
 
+popd
 popd
