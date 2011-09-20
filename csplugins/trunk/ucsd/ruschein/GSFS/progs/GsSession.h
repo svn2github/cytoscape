@@ -14,17 +14,10 @@ class GsSession {
 
 	bool isInitialised_;
 
-	std::string identityServiceUrl_;
 	std::string dataManagerServiceUrl_;
 public:
-	/**
-	 * Basic constructor uses the default URL for the Identity Service.
-	 */
 	GsSession();
-
-	GsSession(const std::string &token);
-
-	bool login(const std::string &username, const std::string &password);
+	inline const std::string getSessionToken() { return token_; }
 private:
 	void initialise();
 };
