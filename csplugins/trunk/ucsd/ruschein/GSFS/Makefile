@@ -5,6 +5,8 @@ TEMP        = $(addprefix objs/,$(notdir $(wildcard src/*.cc)))
 OBJS        = $(TEMP:.cc=.o)
 
 
+all: lib/libiViaCoreSubset.a
+
 lib/libiViaCoreSubset.a: $(OBJS)
 	@echo "Linking $@..."
 	@ar cqs $@ $^
