@@ -67,9 +67,12 @@ import giny.view.NodeView;
 
 // StructureViz imports
 import structureViz.actions.Chimera;
+import structureViz.actions.CyChimera;
 import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraResidue;
+import structureViz.model.Structure;
+import structureViz.model.Structure.StructureType;
 
 /**
  */
@@ -225,6 +228,11 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
 					edgeList.addAll(parseHBondReplies(replyList, nodeList));
 				// printReply(replyList);
 			}
+			if (includeConnectivity) {
+				String command = "listphysicalchains";
+				List<String>replyList = chimeraObject.commandReply(command);
+				edgeList.addAll(parseConnectivityReplies(replyList, nodeList));
+			}
 
 			int[] edges = new int[edgeList.size()];
 			int[] nodes = new int[edgeList.size()*2];
@@ -235,8 +243,6 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
 				nodes[edgeCount*2+1] = edge.getTarget().getRootGraphIndex();
 				edgeCount++;
 			}
-
-			// Add seed information (from selection)
 
 			// Create the network
 			CyNetwork network = Cytoscape.getCurrentNetwork();
@@ -251,7 +257,14 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
 			Cytoscape.setCurrentNetwork(newNetwork.getIdentifier());
 			Cytoscape.setCurrentNetworkView(newNetwork.getIdentifier());
 
-			// Activate structureViz on this network
+			// Activate structureViz for all of our nodes
+			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+			for (CyNode node: nodeList) {
+				String residueSpec = nodeAttributes.getStringAttribute(node.getIdentifier(), RESIDUE_ATTR);
+				String structure = CyChimera.findStructures(residueSpec);
+				Structure s = Structure.getStructure(structure, node, StructureType.PDB_MODEL);
+				s.setResidueList(node, residueSpec);
+			}
 
 			setVisible(false);
 			return;
@@ -375,6 +388,35 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
 		return new ArrayList<CyEdge>(distanceMap.keySet());
 	}
 
+	/**
+ 	 * Parse the connectivity information from Chimera.  The data is of the form:
+ 	 * physical chain #0:283.A #0:710.A
+ 	 * physical chain #0:283.B #0:710.B
+ 	 * physical chain #0:283.C #0:710.C
+ 	 *
+ 	 * We don't use this data to create new nodes -- only new edges.  If two nodes are within the
+ 	 * same physical chain, we connect them with a "Connected" edge
+ 	 */
+	private List<CyEdge> parseConnectivityReplies(List<String> replyLog, List<CyNode>nodes) {
+		List<ChimeraResidue[]> rangeList = new ArrayList<ChimeraResidue[]>();
+		for (String line: replyLog) {
+			String[] tokens = line.split(" ");
+			if (tokens.length != 4) continue;
+			String start = tokens[2];
+			String end = tokens[3];
+
+			ChimeraResidue[] range = new ChimeraResidue[2];
+
+			// Get the residues from the reside spec
+			range[0] = ChimeraResidue.getResidueFromSpec(chimeraObject, start, false);
+			range[1] = ChimeraResidue.getResidueFromSpec(chimeraObject, end, false);
+			rangeList.add(range);
+		}
+
+		// Now, make the edges based on whether any pair of nodes are in the same range
+		return null;
+	}
+
 	private CyEdge createEdge(List<CyNode>nodes, String sourceAlias, String targetAlias, String type) {
 		// Create our two nodes.  Note that makeResidueNode also adds three attributes:
 		//  1) FunctionalResidues
@@ -416,7 +458,8 @@ public class CreateNetworkDialog extends JDialog implements ActionListener {
 
 		// Add our attributes
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		nodeAttributes.setAttribute(nodeName, RESIDUE_ATTR, model.getModelName()+"#"+residue.getIndex()+"."+residue.getChainId());
+		nodeAttributes.setAttribute(nodeName, RESIDUE_ATTR, 
+		   model.getModelName()+"#"+residue.getIndex()+"."+residue.getChainId());
 		nodeAttributes.setAttribute(nodeName, SEED_ATTR, Boolean.valueOf(residue.isSelected()));
 		if (backbone)
 			nodeAttributes.setAttribute(nodeName, BACKBONE_ATTR, Boolean.TRUE);

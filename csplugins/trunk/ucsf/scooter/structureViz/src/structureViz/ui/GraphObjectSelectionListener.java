@@ -135,17 +135,18 @@ public class GraphObjectSelectionListener implements GraphViewChangeListener {
 	}
 
 	private void setResidueSelection(Chimera chimera, Collection<String> selStrs) {
-		if (selStrs == null || selStrs.size() == 0)
-			return;
-
 		String command = null;
-		for (String selStr: selStrs) {
-			if (command == null) 
-				command = "select "+selStr;
-			else
-				command = command.concat(" | "+selStr);
+		if (selStrs == null || selStrs.size() == 0) {
+			command = "~select";
+		} else {
+			for (String selStr: selStrs) {
+				if (command == null) 
+					command = "select "+selStr;
+				else
+					command = command.concat(" | "+selStr);
+			}
 		}
 		// System.out.println("Selection command: "+command);
-		chimera.select(command);
+		chimera.selectNoReply(command);
 	}
 }

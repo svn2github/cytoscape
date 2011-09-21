@@ -472,7 +472,7 @@ public class CyChimera {
 		enableNodeSelection = enable;
 	}
 
-	private static List<Structure> getStructures(CyNode node, 
+	public static List<Structure> getStructures(CyNode node, 
 	                                             List<Structure> structureList, 
 	                                             String matchName) {
 		if (structureList == null) {

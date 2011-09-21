@@ -468,6 +468,10 @@ public class Chimera {
 		chimeraSend("listen stop select; "+command+"; listen start select");
 	}
 
+	public void selectNoReply(String command) {
+		chimeraSendNoReply("listen stop select; "+command+"; listen start select");
+	}
+
 	public List<String> commandReply(String text) {
 		List<String> r = chimeraSend(text);
 		if (r == null) 
