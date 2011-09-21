@@ -61,6 +61,7 @@ GNU_HASH_MAP<std::string, RobotsDotTxt> Downloader::url_to_robots_dot_txt_map_;
 const std::string Downloader::DEFAULT_ACCEPTABLE_LANGUAGES("en,eng,english");
 std::string Downloader::DENIED_BY_ROBOTS_DOT_TXT_ERROR_MSG("Disallowed by robots.txt.");
 std::string Downloader::default_user_agent_string_;
+bool Downloader::debug_(false);
 
 
 Downloader::Params::Params(const std::string &user_agent, const std::string &acceptable_languages, const long max_redirect_count,
@@ -78,14 +79,27 @@ Downloader::Params::Params(const std::string &user_agent, const std::string &acc
 }
 
 
-Downloader::Downloader(const Url &url, const Params &params, const TimeLimit &time_limit): multi_mode_(false), additional_http_headers_(NULL), params_(params)
+Downloader::Downloader(const Url &url, const Params &params, const TimeLimit &time_limit)
+	: multi_mode_(false), additional_http_headers_(NULL), params_(params)
 {
 	init();
 	newUrl(url, time_limit);
 }
 
 
-Downloader::Downloader(const std::string &url, const Params &params, const TimeLimit &time_limit, bool multimode): multi_mode_(multimode), additional_http_headers_(NULL), params_(params)
+Downloader::Downloader(const Url &url, const SList<std::string> &additional_http_headers, const Params &params,
+                       const TimeLimit &time_limit): multi_mode_(false), additional_http_headers_(NULL), params_(params)
+{
+	for (SList<std::string>::const_iterator header = additional_http_headers.begin(); header != additional_http_headers.end();
+	     ++header)
+		additional_http_headers_ = curl_slist_append(additional_http_headers_, header->c_str());
+	init();
+	newUrl(url, time_limit);
+}
+
+
+Downloader::Downloader(const std::string &url, const Params &params, const TimeLimit &time_limit, bool multimode)
+	: multi_mode_(multimode), additional_http_headers_(NULL), params_(params)
 {
 	init();
 	newUrl(url, time_limit);
@@ -142,6 +156,9 @@ bool Downloader::newUrl(const Url &url, const TimeLimit &time_limit)
 
 	header_.clear();
 	body_.clear();
+
+	// Turn debug output on stderr or or off:
+	::curl_easy_setopt(easy_handle_, CURLOPT_VERBOSE, debug_ ? 1 : 0);
 
 	for (;;) {
 		// Too many redirects?

@@ -35,6 +35,7 @@
 #include <HttpHeader.h>
 #include <RobotsDotTxt.h>
 #include <PerlCompatRegExp.h>
+#include <SList.h>
 #include <ThreadUtil.h>
 #include <Url.h>
 
@@ -57,6 +58,7 @@ class Downloader {
 	static ThreadUtil::Mutex *cookie_mutex_;
 	static ThreadUtil::Mutex *robots_dot_txt_mutex_;
 	static GNU_HASH_MAP<std::string, RobotsDotTxt> url_to_robots_dot_txt_map_;
+	static bool debug_;
 protected:
 	bool multi_mode_;
 public:
@@ -109,6 +111,8 @@ public:
 	typedef int (*DebugFunc)(CURL *handle, curl_infotype infotype, char *data, size_t size, void *this_pointer);
 public:
 	explicit Downloader(const Params &params = Params()): multi_mode_(false), additional_http_headers_(NULL), params_(params) { init(); }
+	explicit Downloader(const Url &url, const SList<std::string> &additional_http_headers, const Params &params = Params(),
+	                    const TimeLimit &time_limit = DEFAULT_TIME_LIMIT);
 	explicit Downloader(const Url &url, const Params &params = Params(), const TimeLimit &time_limit = DEFAULT_TIME_LIMIT);
 	explicit Downloader(const std::string &url, const Params &params = Params(), const TimeLimit &time_limit = DEFAULT_TIME_LIMIT, bool multimode = false);
 	virtual ~Downloader();
@@ -147,13 +151,14 @@ public:
 
 	static const std::string &GetDefaultUserAgentString();
 
+	/** Turn debug output on stderr or or off. */
+	static void setDebugMode(const bool on) { Downloader::debug_ = on; }
 protected:
 	void setMultiMode(const bool multi) { multi_mode_ = multi; }
 
 	bool getMultiMode() const { return multi_mode_ ; }
 
 	CURL *getEasyHandle() const { return easy_handle_; }
-
 private:
 	static void InitCurlEasyHandle(const long dns_cache_timeout, const char * const error_buffer, const bool debugging,
 				       WriteFunc write_func, LockFunc lock_func, UnlockFunc unlock_func, HeaderFunc header_func, DebugFunc debug_func,
