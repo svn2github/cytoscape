@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Compiling and Running</title>
+</head>
+
+<body>
+<h1>Compiling and Running</h1>
+<h2>Compiling</h2>
+<p>The only point of interest in compiling BBFS (and other FUSE
+filesystems) is its use of the <code>pkg-config</code> command.
+<code>pkg-config</code> is a system to maintain the necessary options
+to use a library.  It appears twice:  in compiling the source code,
+and in linking the object files.
+</p>
+<blockquote><code><pre>
+`pkg-config fuse --cflags`
+</pre></code></blockquote>
+<p>says to use <code>pkg-config</code> to determine what C
+compiler flags are necessary to compile a source file that makes use
+of FUSE.  The back-quotes around the command are important &mdash;
+they take the output of the command and insert it into the
+command-line as command-line operations (note  &mdash; it's important
+those are back-quotes aka accent graves.  They can't be forward quotes,
+nor double quotes).  The other place it's used,
+<blockquote><code><pre>
+`pkg-config fuse --libs`
+</pre></code></blockquote>
+<p>
+gives the extra command-line arguments to link the program with
+<code>libfuse</code>
+</p>
+
+<p>
+The <code>Makefile</code> in the <code>src</code> directory gives
+examples of using the <code>pkg-config</code> command.
+</p>
+<p>
+The <code>bbfs</code> filesystem is compiled by going
+into the <code>src</code> subdirectory and executing the command
+</p>
+<blockquote><code><pre>
+% make
+</pre></code></blockquote>
+<h2>Mounting a BBFS Filesystem</h2>
+<p>
+You mount a BBFS filesystem by running the command <code>bbfs</code>
+(in general, a FUSE filesystem is implemented by a program, and you
+mount it by running that program).
+<code>bbfs</code> has two required arguments:  the root directory (which
+contains the actual directory data) and the mount directory.  The
+tutorial tarball includes an <code>example</code> directory, which
+contains two subdirectories named <code>rootdir</code> and
+<code>mountdir</code>.  You can verify that <code>rootdir</code>
+contains a single file named <code>bogus.txt</code>, while
+<code>mountdir</code> is empty
+</p>
+<p>Now, if you go into the <code>example</code> directory and execute</p>
+<blockquote><code><pre>
+../src/bbfs rootdir mountdir
+</pre></code></blockquote>
+<p>all of the files that are really in <code>rootdir</code> appear to also
+be in <code>mountdir</code>.  But, every time you perform any file
+operation in <code>mountdir</code>, the operation (and a whole bunch
+of both relevant and irrelevant stuff) gets logged to a new file in the
+current working directory called <code>bbfs.log</code>  If you execute</p>
+<blockquote><code><pre>
+tail -F bbfslog
+</pre></code></blockquote>
+<p>in another terminal window, you can watch the operations get
+logged.</p>
+<p>Finally, if you execute the</p>
+<blockquote><pre><code>
+% mount
+</code></pre></blockquote>
+<p>
+command, one of the resulting lines of output will look something like
+this:
+</p>
+<blockquote><pre><code>
+bbfs on /home/pfeiffer/fuse-tutorial/example/mountdir type fuse.bbfs (rw,nosuid,nodev,user=pfeiffer)
+</code></pre></blockquote>
+<h2>Unmounting</h2>
+<p>Finally, you can unmount the filesystem with</p>
+<blockquote><code><pre>
+fusermount -u mountdir
+</pre></code></blockquote>
+<p>(note that <code>fusermount</code> isn't part of this tutorial
+&mdash; it comes along with FUSE).</p>
+<p>
+<a href="callbacks.html" >Next:  Callbacks and
+<code>struct&nbsp;fuse_operations</code></a></p>
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Mon Jan 10 17:33:11 MST 2011 <!-- hhmts end -->
+</body> </html>

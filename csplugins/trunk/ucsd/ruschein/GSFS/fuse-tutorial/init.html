@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Parsing the Command Line and Initializing FUSE</title>
+</head>
+
+<body>
+<h1>Parsing the Command Line and Initializing FUSE</h1>
+<p>
+You actually have to do very little command-line parsing:  FUSE
+understands a large number of command-line arguments, and parses
+them itself.  Most importantly, FUSE expects the mountpoint to be one
+of the members of the <code>argv[]</code> array.
+</p>
+<p>
+However, if there are arguments that your code needs to parse and
+understand, you need to parse them before starting FUSE.  We can see
+an example of this in BBFS:  the underlying directory that is being
+watched is interacted with by BBFS, not by FUSE.  Consequently, I need to
+examine the command-line arguments and find that file.  Borrowing from
+the <code>mount</code> command, I decided that the underlying
+directory should be the first argument on the line that didn't have a
+dash in front of it.  The
+code for this is in <code>main()</code>; it looks like this:
+</p>
+<blockquote>
+<code><pre>
+for (i = 1; (i < argc) && (argv[i][0] == '-'); i++)
+    if (argv[i][1] == 'o') i++; // -o takes a parameter; need to
+  			        // skip it too.  This doesn't
+				// handle "squashed" parameters
+    
+if ((argc - i) != 2) bb_usage();
+
+bb_data->rootdir = realpath(argv[i], NULL);
+
+argv[i] = argv[i+1];
+argc--;
+
+fprintf(stderr, "about to call fuse_main\n");
+fuse_stat = fuse_main(argc, argv, &bb_oper, bb_data);
+</pre></code>
+</blockquote>
+<p>
+The <code>for</code>-loop goes past any options, assuming
+<code>libfuse</code> will know what to do with them.  If I
+had any options interpreted by my code (for instance, if I allowed the
+user to change the name of the log file), this is where I'd parse
+them.  For that matter, if the parsing were even slightly more
+complicated than this I'd use <code>getopt()</code>).
+</p>
+<p>
+Once I'm past the options, I should have exactly two arguments left:
+the root directory and the mountpoint.  If I don't, I print a usage
+message and exit.  If I do, I call the C library
+<code>realpath()</code> function to canonicalize the directory name,
+and point <code>bb_data->rootdir</code> to it (of course,
+<code>bb_data</code> has been <code>calloc()</code>ed before
+this code is reached).
+</p>
+<p>
+After I've done that, I remove the root directory from the argument
+vector and reduce the argument count.  I don't need to look
+for the mountpoint, since FUSE will find that for itself.
+</p>
+<p>
+Once I'm ready to start the filesystem, I call
+<code>fuse_main()</code>.  Its parameters are <code>argc</code> and
+<code>argv</code> (as modified by my <code>main()</code> function),
+the <code>bb_oper</code> struct containing pointers to my
+re-implementations of the POSIX file operations, and a
+<code>struct&nbsp;bb_data</code>, used for storing private data.
+Private data will be discussed in the next section.
+</p>
+<p><code>fuse_main()</code> parses the rest of the command line,
+mounts the directory specified on the command line, and performs other
+initializations.  Then, it calls an initialization function to
+perform any initialization defined by my code.  <code>bb_oper->init</code>
+points to my <code>bb_init()</code> function, so it is called next.
+My <code>bb_init()</code> function is really small; all it does is
+calls a function called <code>log_open()</code> and then log the fact
+that it has been called.  <code>log_open()</code> depends heavily on
+the private data I passed in <code>bb_data</code>, so we'll wait to
+duscuss it until the next section.
+</p>
+<a href="private.html" >Next: Private Data</a>
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Mon Jan 10 17:42:23 MST 2011 <!-- hhmts end -->
+</body> </html>
