@@ -4,7 +4,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.BundleListener;
-import org.springframework.osgi.context.event.OsgiBundleApplicationContextListener;
+//import org.springframework.osgi.context.event.OsgiBundleApplicationContextListener;
 import java.util.Properties;
 
 /**
@@ -20,7 +20,7 @@ public final class SplashActivator implements BundleActivator {
 		SplashManipulator splash = new SplashManipulator();
 		bc.addFrameworkListener(splash);
 		bc.addBundleListener(splash);
-		bc.registerService(OsgiBundleApplicationContextListener.class.getName(),splash,new Properties());
+//		bc.registerService(OsgiBundleApplicationContextListener.class.getName(),splash,new Properties());
     }
 
     /**
