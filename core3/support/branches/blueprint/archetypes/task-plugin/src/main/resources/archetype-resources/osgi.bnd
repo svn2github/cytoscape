@@ -1,0 +1,8 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+#literal()
+Import-Package: *
+Private-Package: ${bundle.namespace}.internal.*
+#end
