@@ -30,7 +30,7 @@ GsSessionTest: GsSessionTest.o GsSession.o
 ParseDirectory.o: ParseDirectory.cc
 	$(CXX) $(CXXFLAGS) -I. -c $<
 
-ParseDirectory: ParseDirectory.o
+ParseDirectory: ParseDirectory.o JSONScanner.o
 	$(CXX) -o $@ $^ $(LIBS)
 
 JSONScanner.o: JSONScanner.cc JSONScanner.h

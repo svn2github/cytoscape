@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstdlib>
 #include <FileUtil.h>
+#include "JSONScanner.h"
 
 
 void Usage() {
@@ -14,72 +15,77 @@ class DirEntry {
 };
 
 
-bool Expect(std::string::const_iterator &ch, const std::string::const_iterator &end, const char * const expected_string) {
-	const char *next_expected_char = expected_string;
-	while (*next_expected_char != '\0') {
-		if (ch == end)
-			return false;
-		if (*ch != *next_expected_char)
-			return false;
-		++ch, ++next_expected_char;
-	}
-
-	return true;
-}
-
-
-bool ParseBoolean(std::string::const_iterator &ch, const std::string::const_iterator &end, bool * const value) {
-	if (*ch != 't' && *ch != 'f')
+static bool SkipBraceBlock(JSONScanner * const scanner) {
+	JSONScanner::TokenType token = scanner->getToken();
+	if (token != JSONScanner::OPEN_BRACE)
 		return false;
 
-	if (*ch == 't') {
-		if (!Expect(ch, end, "true"))
+	unsigned open_brace_count(1);
+	while (open_brace_count != 0) {
+		token = scanner->getToken();
+		if (token == JSONScanner::END_OF_INPUT)
 			return false;
-		*value = true;
-	} else {
-		if (!Expect(ch, end, "false"))
-			return false;
-		*value = false;
+		else if (token == JSONScanner::OPEN_BRACE)
+			++open_brace_count;
+		else if (token == JSONScanner::CLOSE_BRACE)
+			--open_brace_count;
 	}
 
 	return true;
 }
 
 
-// Assumes that "ch" points to the first character of the string.
-bool ParseString(std::string::const_iterator &ch, const std::string::const_iterator &end, std::string * const value) {
-	value->clear();
+static bool SkipBracketBlock(JSONScanner * const scanner) {
+	JSONScanner::TokenType token = scanner->getToken();
+	if (token != JSONScanner::OPEN_BRACKET)
+		return false;
 
-	for (;;) {
-		if (ch == end)
+	unsigned open_bracket_count(1);
+	while (open_bracket_count != 0) {
+		token = scanner->getToken();
+		if (token == JSONScanner::END_OF_INPUT)
 			return false;
-
-		if (*ch == '"') {
-			++ch;
-			return true;
-		}
-			
-		if (*ch == '\\') { // escaped character (we're ignoring unicode values for now
-			++ch;
-			if (*ch == 'u') {
-				std::cerr << "*** unicode char support not implemented!\n";
-				return false;
-			}
-			*value += *ch;
-			++ch;
-		} else {
-			*value += *ch;
-			++ch;
-		}
+		else if (token == JSONScanner::OPEN_BRACKET)
+			++open_bracket_count;
+		else if (token == JSONScanner::CLOSE_BRACKET)
+			--open_bracket_count;
 	}
+
+	return true;
 }
 
 
 bool ParseListing(const std::string &listing, std::vector<DirEntry> * const entries) {
 	entries->clear();
 
-	for (std::string::const_iterator ch = listing.begin(); ch != listing.end(); ++ch) {
-	}
+	JSONScanner scanner(listing);
+
+	// top-level opening brace
+	if (scanner.getToken() != JSONScanner::OPEN_BRACE)
+		return false;
+
+	if (scanner.getToken() != JSONScanner::STRING_CONSTANT)
+		return false;
+	if (scanner.getLastString() != "directory")
+		return false;
+
+	if (!SkipBraceBlock(&scanner))
+		return false;
+
+	if (scanner.getToken() != JSONScanner::STRING_CONSTANT)
+		return false;
+	if (scanner.getLastString() != "contents")
+		return false;
+
+	if (!SkipBracketBlock(&scanner))
+		return false;
+
+	if (scanner.getToken() != JSONScanner::COMMA)
+                return false;
+
+	// top-level closing brace
+	if (scanner.getToken() != JSONScanner::CLOSE_BRACE)
+		return false;
 
 	return true;
 }
@@ -95,5 +101,6 @@ int main(int argc, char *argv[]) {
 		std::exit(EXIT_FAILURE);
 	}
 
-	std::cout << json_directory_listing << '\n';
+	std::vector<DirEntry> dir_entries;
+	std::cout << "ParseListing() returned " << ParseListing(json_directory_listing, &dir_entries) << '\n';
 }
