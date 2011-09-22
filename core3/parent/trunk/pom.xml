@@ -232,6 +232,18 @@
 			<name>Zodiac Milestone Repository (Gemini Blueprint) Mirror</name>
 			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/zodiac-milestone/</url>
 		</repository>
+		<repository>
+			<id>sonatype-oss</id> 
+			<snapshots> 
+				<enabled>false</enabled> 
+			</snapshots> 
+			<releases> 
+				<enabled>true</enabled> 
+			</releases> 
+			<name>Sonatype OSS Release Mirror</name> 
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/sonatype-oss/</url> 
+		</repository> 
+
 	</repositories>
 
 	<pluginRepositories>
