@@ -52,10 +52,10 @@ mvn clean install
 pushd distribution/target/cytoscape-*/cytoscape-*/
 
 # Copy over our bundles
-cp ${DIST_DIR}/*.jar bundles/plugins
+cp ${DIST_DIR}/*.jar bundles/startlevel-55
 
 # Remove ding bundles
-rm bundles/startlevel-3/ding-*
+rm bundles/startlevel-*/ding-*
 popd
 
 popd

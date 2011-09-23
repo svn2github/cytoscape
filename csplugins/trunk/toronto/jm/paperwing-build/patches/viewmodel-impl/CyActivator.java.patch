@@ -1,0 +1,22 @@
+Index: impl/src/main/java/org/cytoscape/view/model/internal/CyActivator.java
+===================================================================
+--- impl/src/main/java/org/cytoscape/view/model/internal/CyActivator.java	(revision 26946)
++++ impl/src/main/java/org/cytoscape/view/model/internal/CyActivator.java	(working copy)
+@@ -6,7 +6,6 @@
+ 
+ import org.cytoscape.view.model.internal.CyNetworkViewManagerImpl;
+ 
+-import org.cytoscape.view.model.CyNetworkViewFactory;
+ 
+ 
+ import org.osgi.framework.BundleContext;
+@@ -27,6 +26,9 @@
+ 		CyEventHelper cyEventHelperServiceRef = getService(bc,CyEventHelper.class);
+ 		CyServiceRegistrar cyServiceRegistrarRef = getService(bc,CyServiceRegistrar.class);
+ 		
++		NetworkViewFactoryImpl networkViewFactoryImpl = new NetworkViewFactoryImpl(cyEventHelperServiceRef, cyServiceRegistrarRef);
++		registerAllServices(bc, networkViewFactoryImpl, new Properties());
++		
+ 		CyNetworkViewManagerImpl cyNetworkViewManager = new CyNetworkViewManagerImpl(cyEventHelperServiceRef);
+ 		
+ 		registerAllServices(bc,cyNetworkViewManager, new Properties());

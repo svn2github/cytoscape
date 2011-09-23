@@ -1,0 +1,15 @@
+Index: src/main/java/org/cytoscape/view/vizmap/gui/internal/CyActivator.java
+===================================================================
+--- src/main/java/org/cytoscape/view/vizmap/gui/internal/CyActivator.java	(revision 26946)
++++ src/main/java/org/cytoscape/view/vizmap/gui/internal/CyActivator.java	(working copy)
+@@ -88,8 +88,8 @@
+ 		CyApplicationConfiguration cyApplicationConfigurationServiceRef = getService(bc,CyApplicationConfiguration.class);
+ 		GUITaskManager taskManagerServiceRef = getService(bc,GUITaskManager.class);
+ 		VisualStyleFactory visualStyleFactoryServiceRef = getService(bc,VisualStyleFactory.class);
+-		VisualLexicon dingVisualLexiconServiceRef = getService(bc,VisualLexicon.class,"(id=ding)");
+-		RenderingEngineFactory dingRenderingEngineFactoryServiceRef = getService(bc,RenderingEngineFactory.class,"(id=ding)");
++		VisualLexicon dingVisualLexiconServiceRef = getService(bc,VisualLexicon.class,"(id=wind)");
++		RenderingEngineFactory dingRenderingEngineFactoryServiceRef = getService(bc,RenderingEngineFactory.class,"(id=wind)");
+ 		VisualMappingManager vmmServiceRef = getService(bc,VisualMappingManager.class);
+ 		CyNetworkManager cyNetworkManagerServiceRef = getService(bc,CyNetworkManager.class);
+ 		CyApplicationManager cyApplicationManagerServiceRef = getService(bc,CyApplicationManager.class);

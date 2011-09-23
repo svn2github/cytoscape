@@ -1,0 +1,30 @@
+Index: src/main/java/org/cytoscape/internal/CyActivator.java
+===================================================================
+--- src/main/java/org/cytoscape/internal/CyActivator.java	(revision 26946)
++++ src/main/java/org/cytoscape/internal/CyActivator.java	(working copy)
+@@ -170,12 +170,12 @@
+ 		CyNetworkManager cyNetworkManagerServiceRef = getService(bc, CyNetworkManager.class);
+ 		CyNetworkNaming cyNetworkNamingServiceRef = getService(bc, CyNetworkNaming.class);
+ 		GUITaskManager taskManagerServiceRef = getService(bc, GUITaskManager.class);
+-		RenderingEngineFactory dingRenderingEngineFactoryServiceRef = getService(bc,
++		RenderingEngineFactory windRenderingEngineFactoryServiceRef = getService(bc,
+ 		                                                                         RenderingEngineFactory.class,
+-		                                                                         "(id=ding)");
+-		RenderingEngineFactory dingNavigationPresentationFactoryServiceRef = getService(bc,
++		                                                                         "(id=wind)");
++		RenderingEngineFactory windNavigationPresentationFactoryServiceRef = getService(bc,
+ 		                                                                                RenderingEngineFactory.class,
+-		                                                                                "(id=dingNavigation)");
++		                                                                                "(id=windMap)");
+ 		GUITunableInterceptor tunableGUIInterceptorServiceRef = getService(bc,
+ 		                                                                   GUITunableInterceptor.class);
+ 		CyProperty bookmarkServiceRef = getService(bc, CyProperty.class,
+@@ -218,7 +218,7 @@
+ 		                                                               cyHelpBroker);
+ 		BirdsEyeViewHandler birdsEyeViewHandler = new BirdsEyeViewHandler(cyApplicationManagerServiceRef,
+ 		                                                                  networkViewManager,
+-		                                                                  dingNavigationPresentationFactoryServiceRef);
++		                                                                  windNavigationPresentationFactoryServiceRef);
+ 		NetworkPanel networkPanel = new NetworkPanel(cyApplicationManagerServiceRef,
+ 		                                             cyNetworkManagerServiceRef,
+ 		                                             cyNetworkViewManagerServiceRef,

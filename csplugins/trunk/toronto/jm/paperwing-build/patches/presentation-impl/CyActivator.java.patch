@@ -1,0 +1,13 @@
+Index: src/main/java/org/cytoscape/view/presentation/internal/CyActivator.java
+===================================================================
+--- src/main/java/org/cytoscape/view/presentation/internal/CyActivator.java	(revision 26946)
++++ src/main/java/org/cytoscape/view/presentation/internal/CyActivator.java	(working copy)
+@@ -18,7 +18,7 @@
+ 
+ 		CyEventHelper cyEventHelperServiceRef = getService(bc,CyEventHelper.class);
+ 		
+-		RenderingEngineManagerImpl renderingEngineManager = new RenderingEngineManagerImpl();
++		RenderingEngineManagerImpl renderingEngineManager = new RenderingEngineManagerImpl(cyEventHelperServiceRef);
+ 		
+ 		Properties renderingEngineManagerProps = new Properties();
+ 		renderingEngineManagerProps.setProperty("service.type","manager");
