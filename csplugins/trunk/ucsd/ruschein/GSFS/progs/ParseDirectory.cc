@@ -66,22 +66,25 @@ bool ParseListing(const std::string &listing, std::vector<DirEntry> * const entr
 
 	if (scanner.getToken() != JSONScanner::STRING_CONSTANT)
 		return false;
+	if (scanner.getToken() != JSONScanner::COLON)
+		return false;
 	if (scanner.getLastString() != "directory")
 		return false;
 
 	if (!SkipBraceBlock(&scanner))
 		return false;
 
+	if (scanner.getToken() != JSONScanner::COMMA)
+		return false;
 	if (scanner.getToken() != JSONScanner::STRING_CONSTANT)
 		return false;
 	if (scanner.getLastString() != "contents")
 		return false;
+	if (scanner.getToken() != JSONScanner::COLON)
+		return false;
 
 	if (!SkipBracketBlock(&scanner))
 		return false;
-
-	if (scanner.getToken() != JSONScanner::COMMA)
-                return false;
 
 	// top-level closing brace
 	if (scanner.getToken() != JSONScanner::CLOSE_BRACE)
