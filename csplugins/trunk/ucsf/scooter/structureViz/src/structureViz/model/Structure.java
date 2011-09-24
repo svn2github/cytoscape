@@ -78,6 +78,13 @@ public class Structure {
 		return new Structure(name, node, type);
 	}
 
+	public static Structure getStructure(String name) {
+		if (structureMap.containsKey(name))
+			return structureMap.get(name);
+
+		return null;
+	}
+
 	/**
  	 * Create a new Structure
 	 *

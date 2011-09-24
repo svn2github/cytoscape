@@ -66,12 +66,6 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	private static int displayType = THREE_LETTER; // the current display type
 	private boolean selected = false; // the selection state
 
-	// Return the ChimeraResidue that matches this spec.  If create is true, and we don't have that
-	// residue, create it.
-	public static ChimeraResidue getResidueFromSpec(Chimera chimeraObject, String spec, boolean create) {
-		return null;
-	}
-
 	/**
 	 * Constructor to create a new ChimeraResidue
 	 *

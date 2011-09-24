@@ -101,6 +101,7 @@ public class ModelNavigatorDialog
 	private boolean isCollapsing = false;
 	private TreePath collapsingPath = null;
 	private boolean isExpanding = false;
+	private List<JMenuItem> selectionDependentMenus = null;
 
 	// Dialog components
 	private JLabel titleLabel;
@@ -149,6 +150,9 @@ public class ModelNavigatorDialog
 		chimeraObject.updateSelection();
 		ignoreSelection = false;
 		pack();
+	}
+
+	private void updateMenuItems() {
 	}
 
 	/**
@@ -290,8 +294,11 @@ public class ModelNavigatorDialog
 			selSpec = selSpec.concat(nodeInfo.toSpec());
 			modelsToSelect.put(model,model);
 			if (i < selectedObjects.size()-1) selSpec.concat("|");
-			// Add the model to be selected (if it's not already)
+			
 		}
+
+		enableMenuItems(selectedObjects.size());
+
 		if (!ignoreSelection && selected)
 			chimeraObject.select(selSpec);
 		else if (!ignoreSelection && selectedObjects.size() == 0) {
@@ -385,6 +392,7 @@ public class ModelNavigatorDialog
 	 * in the dialog.
 	 */
 	private void initComponents() {
+		selectionDependentMenus = new ArrayList<JMenuItem>();
 		int modelCount = chimeraObject.getChimeraModels().size();
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -422,28 +430,36 @@ public class ModelNavigatorDialog
 		chimeraMenu.add(new JSeparator());
 
 		JMenu clashMenu = new JMenu("Clash detection");
-		addMenuItem(clashMenu, "Find all clashes", FINDCLASH, "findclash sel continuous true");
-		addMenuItem(clashMenu, "Find clashes within models", FINDCLASH, "findclash sel test model continuous true");
+		JMenuItem item = addMenuItem(clashMenu, "Find all clashes", FINDCLASH, "findclash sel continuous true");
+		selectionDependentMenus.add(item);
+		item = addMenuItem(clashMenu, "Find clashes within models", FINDCLASH, "findclash sel test model continuous true");
+		selectionDependentMenus.add(item);
 		addMenuItem(clashMenu, "Clear clashes and contacts", COMMAND, "~findclash");
 		chimeraMenu.add(clashMenu);
 
 		JMenu contactMenu = new JMenu("Contact detection");
-		addMenuItem(contactMenu, "Find all contacts", FINDCLASH, "findclash sel overlapCutoff -0.4 hbondAllowance 0.0");
-		addMenuItem(contactMenu, "Find contacts within models", FINDCLASH, "findclash sel test model overlapCutoff -0.4 hbondAllowance 0.0");
+		item = addMenuItem(contactMenu, "Find all contacts", FINDCLASH, "findclash sel overlapCutoff -0.4 hbondAllowance 0.0");
+		selectionDependentMenus.add(item);
+		item = addMenuItem(contactMenu, "Find contacts within models", FINDCLASH, "findclash sel test model overlapCutoff -0.4 hbondAllowance 0.0");
+		selectionDependentMenus.add(item);
 		addMenuItem(contactMenu, "Clear clashes and contacts", COMMAND, "~findclash");
 		chimeraMenu.add(contactMenu);
 
 		JMenu hBondMenu = new JMenu("Hydrogen bond detection");
 		JMenu fHBondMenu = new JMenu("Find hydrogen bonds");
-		addMenuItem(fHBondMenu, "Between models", FINDHBOND, "findhbond selRestrict any intermodel true intramodel false");
-		addMenuItem(fHBondMenu, "Within models", FINDHBOND, "findhbond selRestrict any intermodel false intramodel true");
-		addMenuItem(fHBondMenu, "Both", FINDHBOND, "findhbond selRestrict any intermodel true intramodel true");
+		item = addMenuItem(fHBondMenu, "Between models", FINDHBOND, "findhbond selRestrict any intermodel true intramodel false");
+		selectionDependentMenus.add(item);
+		item = addMenuItem(fHBondMenu, "Within models", FINDHBOND, "findhbond selRestrict any intermodel false intramodel true");
+		selectionDependentMenus.add(item);
+		item = addMenuItem(fHBondMenu, "Both", FINDHBOND, "findhbond selRestrict any intermodel true intramodel true");
+		selectionDependentMenus.add(item);
 		hBondMenu.add(fHBondMenu);
 		addMenuItem(hBondMenu, "Clear hydrogen bonds", COMMAND, "~findhbond");
 		chimeraMenu.add(hBondMenu);
 
 		chimeraMenu.add(new JSeparator());
-		addMenuItem(chimeraMenu, "Create interaction network from structure...", CREATENETWORK, null);
+		item = addMenuItem(chimeraMenu, "Create interaction network from structure...", CREATENETWORK, null);
+		selectionDependentMenus.add(item);
 
 		chimeraMenu.add(new JSeparator());
 
@@ -506,6 +522,8 @@ public class ModelNavigatorDialog
 		JScrollPane treeView = new JScrollPane(navigationTree);
 
 		setContentPane(treeView);
+
+		enableMenuItems(0);
 	}
 
 	/**
@@ -585,6 +603,14 @@ public class ModelNavigatorDialog
 			row--;
 		}
 		return;
+	}
+
+	private void enableMenuItems(int count) {
+		boolean enable = true;
+		if (count == 0) enable = false;
+		for (JMenuItem item: selectionDependentMenus) {
+			item.setEnabled(enable);
+		}
 	}
 
 	// Embedded classes
@@ -681,7 +707,12 @@ public class ModelNavigatorDialog
 					                              "Nothing Selected", JOptionPane.ERROR_MESSAGE); 
 				}
 			} else if (type == CREATENETWORK) {
-				launchNewNetworkDialog();
+				if (selectedObjects.size() > 0) {
+					launchNewNetworkDialog();
+				} else {
+ 					JOptionPane.showMessageDialog(dialog, "You must select something to create a network", 
+					                              "Nothing Selected", JOptionPane.ERROR_MESSAGE); 
+				}
 			} else {
 				residueDisplay = type;
 				treeModel.setResidueDisplay(type);
