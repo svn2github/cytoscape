@@ -546,7 +546,7 @@ int bb_fsync(const char *path, int datasync, struct fuse_file_info *fi)
     return retstat;
 }
 
-/** Set extended attributes */
+/*
 int bb_setxattr(const char *path, const char *name, const char *value, size_t size, int flags)
 {
     int retstat = 0;
@@ -563,7 +563,7 @@ int bb_setxattr(const char *path, const char *name, const char *value, size_t si
     return retstat;
 }
 
-/** Get extended attributes */
+
 int bb_getxattr(const char *path, const char *name, char *value, size_t size)
 {
     int retstat = 0;
@@ -582,7 +582,7 @@ int bb_getxattr(const char *path, const char *name, char *value, size_t size)
     return retstat;
 }
 
-/** List extended attributes */
+
 int bb_listxattr(const char *path, char *list, size_t size)
 {
     int retstat = 0;
@@ -605,7 +605,6 @@ int bb_listxattr(const char *path, char *list, size_t size)
     return retstat;
 }
 
-/** Remove extended attributes */
 int bb_removexattr(const char *path, const char *name)
 {
     int retstat = 0;
@@ -621,6 +620,7 @@ int bb_removexattr(const char *path, const char *name)
     
     return retstat;
 }
+*/
 
 /** Open directory
  *
@@ -928,10 +928,10 @@ struct fuse_operations bb_oper = {
   .flush = bb_flush,
   .release = bb_release,
   .fsync = bb_fsync,
-  .setxattr = bb_setxattr,
-  .getxattr = bb_getxattr,
-  .listxattr = bb_listxattr,
-  .removexattr = bb_removexattr,
+  .setxattr = NULL,//bb_setxattr,
+  .getxattr = NULL,//bb_getxattr,
+  .listxattr = NULL,//bb_listxattr,
+  .removexattr = NULL,//bb_removexattr,
   .opendir = bb_opendir,
   .readdir = bb_readdir,
   .releasedir = bb_releasedir,
