@@ -1,0 +1,4 @@
+Bundle-Activator: ${bundle.namespace}.internal.CyActivator
+Private-Package: ${bundle.namespace}.internal.*
+Export-Package: !${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${pom.version}"
+Import-Package: com.sun.xml.internal.bind,*
