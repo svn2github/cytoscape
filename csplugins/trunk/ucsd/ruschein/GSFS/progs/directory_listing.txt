@@ -32,17 +32,17 @@
 				{"id":"test",
 				 "name":"test",
 				 "type":"User"},
-				"size":225,
-				"lastModified":"2011-08-23T16:36:57Z",
-				"isDirectory":false,
-				"dataFormat":{"name":"gct","version":"0.0.0","url":"http:\/\/www.genomespace.org\/datamanager\/dataformat\/gct\/0.0.0","fileExtension":"gct"},
-				"availableDataFormats":
+			 "size":225,
+			 "lastModified":"2011-08-23T16:36:57Z",
+			 "isDirectory":false,
+			 "dataFormat":{"name":"gct","version":"0.0.0","url":"http:\/\/www.genomespace.org\/datamanager\/dataformat\/gct\/0.0.0","fileExtension":"gct"},
+			 "availableDataFormats":
 					[
 						{"name":"genomicatab","version":"0.0.0","url":"http:\/\/www.genomespace.org\/datamanager\/dataformat\/genomicatab\/0.0.0","fileExtension":"tab"},
 						{"name":"gxp","version":"0.0.0","url":"http:\/\/www.genomespace.org\/datamanager\/dataformat\/gxp\/0.0.0","fileExtension":"gxp"},
 						{"name":"gct","version":"0.0.0","url":"http:\/\/www.genomespace.org\/datamanager\/dataformat\/gct\/0.0.0","fileExtension":"gct"}
 					],
-				"effectiveAcl":
+			 "effectiveAcl":
 					{"objectId":"\/users\/test\/FileProcessorTestData_twoRecords.gct",
 					 "objectType":"DataManagerFileObject",
 					 "accessControlEntries":
@@ -135,4 +135,17 @@
 			 "owner":{"id":"test","name":"test","type":"User"},
 			 "size":0,
 			 "isDirectory":true,
-			 "effectiveAcl":{"objectId":"\/users\/test\/atm-test","objectType":"DataManagerFileObject","accessControlEntries":[{"sid":{"id":"test","name":"test","type":"User"},"permission":"R"},{"sid":{"id":"test","name":"test","type":"User"},"permission":"W"}]}}]}
+			 "effectiveAcl":
+				{"objectId":"\/users\/test\/atm-test",
+				 "objectType":"DataManagerFileObject",
+				 "accessControlEntries":
+					[
+						{"sid":{"id":"test","name":"test","type":"User"},
+						 "permission":"R"},
+						{"sid":{"id":"test","name":"test","type":"User"},
+						 "permission":"W"}
+					 ]
+				}
+			}
+		]
+	}
