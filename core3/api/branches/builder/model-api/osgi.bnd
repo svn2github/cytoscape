@@ -2,4 +2,4 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Export-Package: ${bundle.namespace},${bundle.namespace}.events,${bundle.namespace}.subnetwork
+Export-Package: ${bundle.namespace},${bundle.namespace}.events,${bundle.namespace}.subnetwork,${bundle.namespace}.builder

@@ -27,6 +27,7 @@
 */
 package org.cytoscape.model;
 
+import org.cytoscape.model.builder.CyNetworkBuilder;
 
 /**
  * A singleton factory object used for instantiating CyNetwork 
@@ -39,6 +40,10 @@ public interface CyNetworkFactory {
 	 * @return A new, empty {@link CyNetwork} object. 
 	 */
 	CyNetwork getInstance();
+
+	CyNetworkBuilder getBuilder();
+
+	CyNetwork getInstance(CyNetworkBuilder builder);
 
 	/**
 	 * Returns a new, empty {@link CyNetwork} object where the associated default tables are private. 
