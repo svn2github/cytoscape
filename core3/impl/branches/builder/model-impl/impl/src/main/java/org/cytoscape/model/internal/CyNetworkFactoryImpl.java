@@ -29,10 +29,13 @@ package org.cytoscape.model.internal;
 
 
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.CyTableFactory;
-import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.model.builder.CyNetworkBuilder;
+import org.cytoscape.model.internal.builder.CyNetworkBuilderImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,6 +89,18 @@ public class CyNetworkFactoryImpl implements CyNetworkFactory {
 		logger.info("CyNetwork w/ public tables created: Base Graph ID = " +  net.getBaseNetwork().getSUID());
 		return net.getBaseNetwork(); 
 	}
+
+	public CyNetwork getInstance(CyNetworkBuilder nb) {
+		ArrayGraph net = new ArrayGraph(help, mgr, networkTableMgr, tableFactory, serviceRegistrar, true);
+		ArraySubGraph sub = (ArraySubGraph)(net.getBaseNetwork()); 
+		sub.initialize(nb);
+		return sub;
+	}
+
+	public CyNetworkBuilder getBuilder() {
+		return new CyNetworkBuilderImpl();
+	}
+
 
 	/**
 	 * {@inheritDoc}

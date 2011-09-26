@@ -30,10 +30,6 @@ package org.cytoscape.model.internal;
 
 import org.cytoscape.event.CyEventHelper;
 
-//import org.cytoscape.model.builder.CyNetworkBuilder;
-//import org.cytoscape.model.builder.CyNodeBuilder;
-//import org.cytoscape.model.builder.CyEdgeBuilder;
-
 import org.cytoscape.di.util.DIUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
@@ -52,6 +48,9 @@ import org.cytoscape.model.events.RemovedNodesEvent;
 import org.cytoscape.model.events.RemovedEdgesEvent;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
+import org.cytoscape.model.builder.CyNetworkBuilder;
+import org.cytoscape.model.builder.CyNodeBuilder;
+import org.cytoscape.model.builder.CyEdgeBuilder;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -100,32 +99,32 @@ final class ArraySubGraph implements CySubNetwork, NetworkAddedListener {
 		internalEdgeCount = 0;
 		fireAddedNodesAndEdgesEvents = false;
 	}
-//
-//	public synchronized void initialize(CyNetworkBuilder networkBuilder) {
-//		Map<CyNodeBuilder,CyNode> nodeMap = new HashMap<CyNodeBuilder,CyNode>();
-//
-//		for ( CyNodeBuilder nb : networkBuilder.getNodes() ) {
-//			CyNodeImpl rootNode = parent.nodeAdd(nb.getSUID());
-//			updateNode(rootNode);
-//			internalNodeCount++;
-//			CySubNodeImpl ret = new CySubNodeImpl(rootNode,nodeTables);
-//			subNodeMap.put(rootNode,ret);
-//			nodeMap.put(nb,ret);
-//		}
-//
-//		for ( CyEdgeBuilder eb : networkBuilder.getEdges() ) {
-//			CyEdgeImpl rootEdge = parent.edgeAdd(eb.getSUID(),nodeMap.get(eb.getSource()), nodeMap.get(eb.getTarget()), eb.isDirected(), this); 
-//			updateEdge(rootEdge);
-//			internalEdgeCount++;
-//			CySubEdgeImpl ret = new CySubEdgeImpl(rootEdge,edgeTables,subNodeMap);
-//			subEdgeMap.put(rootEdge,ret);
-//		}	
-//
-//		((CyTableImpl)(nodeTables.get(CyNetwork.DEFAULT_ATTRS))).loadData( networkBuilder.getNodeTable() );
-//		((CyTableImpl)(edgeTables.get(CyNetwork.DEFAULT_ATTRS))).loadData( networkBuilder.getEdgeTable() );
-//		((CyTableImpl)(netTables.get(CyNetwork.DEFAULT_ATTRS))).loadData( networkBuilder.getNetworkTable() );
-//	}
-//
+
+	public synchronized void initialize(CyNetworkBuilder networkBuilder) {
+		Map<CyNodeBuilder,CyNode> nodeMap = new HashMap<CyNodeBuilder,CyNode>();
+
+		for ( CyNodeBuilder nb : networkBuilder.getNodes() ) {
+			CyNodeImpl rootNode = parent.nodeAdd(nb.getSUID());
+			updateNode(rootNode);
+			internalNodeCount++;
+			CySubNodeImpl ret = new CySubNodeImpl(rootNode,nodeTables);
+			subNodeMap.put(rootNode,ret);
+			nodeMap.put(nb,ret);
+		}
+
+		for ( CyEdgeBuilder eb : networkBuilder.getEdges() ) {
+			CyEdgeImpl rootEdge = parent.edgeAdd(eb.getSUID(),nodeMap.get(eb.getSource()), nodeMap.get(eb.getTarget()), eb.isDirected(), this); 
+			updateEdge(rootEdge);
+			internalEdgeCount++;
+			CySubEdgeImpl ret = new CySubEdgeImpl(rootEdge,edgeTables,subNodeMap);
+			subEdgeMap.put(rootEdge,ret);
+		}	
+
+		((CyTableImpl)(nodeTables.get(CyNetwork.DEFAULT_ATTRS))).initializeColumns( networkBuilder.getNodeTable() );
+		((CyTableImpl)(edgeTables.get(CyNetwork.DEFAULT_ATTRS))).initializeColumns( networkBuilder.getEdgeTable() );
+		((CyTableImpl)(netTables.get(CyNetwork.DEFAULT_ATTRS))).initializeColumns( networkBuilder.getNetworkTable() );
+	}
+
 
 
 	private void updateNode(final CyNode n) {

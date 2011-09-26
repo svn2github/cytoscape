@@ -53,6 +53,8 @@ import org.cytoscape.model.events.RowsCreatedEvent;
 import org.cytoscape.model.events.RowsSetEvent;
 import org.cytoscape.model.events.TableAddedEvent;
 import org.cytoscape.model.events.TableAddedListener;
+import org.cytoscape.model.builder.CyTableBuilder;
+import org.cytoscape.model.internal.builder.CyTableBuilderImpl;
 
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.HashMultimap;
@@ -136,6 +138,35 @@ public final class CyTableImpl implements CyTable, TableAddedListener {
 		virtualColumnReferenceCount = 0;
 	}
 
+	public synchronized void initializeColumns(CyTableBuilder tableBuilder) {
+		for (String colName : tableBuilder.getColumnNames() ) {
+			
+			if ( colName.equals(tableBuilder.getPrimaryKeyColumnName()) )
+				continue;
+
+			Class<?> type = tableBuilder.getColumnType(colName);
+			CyColumn col = types.get(colName);
+			if ( col == null ) {
+				boolean isImmutable= tableBuilder.getColumnMutability(colName);
+				VirtualColumnInfo virtualInfo = new VirtualColumnInfoImpl(false, null, null, null, null, isImmutable);
+				types.put(colName, new CyColumnImpl(this, colName, type, null, virtualInfo , false, isImmutable, null));
+			} else if ( attributes.get(colName).size() > 0 ) {
+				throw new RuntimeException("column : " + colName + " is already populated!");
+			}
+
+			attributes.put(colName, tableBuilder.getColumnData(colName));
+
+			// a hack so that we don't expose SetMultimap in the CyTableBuilder API
+			if ( tableBuilder instanceof CyTableBuilderImpl ) 
+				reverse.put(colName,((CyTableBuilderImpl)tableBuilder).getColumnIndex(colName));
+		}
+
+		for ( Object key : tableBuilder.getPrimaryKeys() ) {
+			CyRow row = new InternalRow(key);
+			rows.put(key, row);
+		}
+	}
+	
 
 	@Override
 	public synchronized void swap(final CyTable otherTable) {

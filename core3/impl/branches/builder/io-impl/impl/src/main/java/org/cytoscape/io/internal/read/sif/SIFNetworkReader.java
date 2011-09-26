@@ -44,6 +44,9 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.builder.CyNetworkBuilder;
+import org.cytoscape.model.builder.CyNodeBuilder;
+import org.cytoscape.model.builder.CyEdgeBuilder;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
@@ -92,31 +95,31 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 	}
 
 	private void readInput(TaskMonitor tm) throws IOException {
+		System.out.println("using modified SIF reader");
 		this.parentTaskMonitor = tm;
 //		tm.setProgress(0.0);
 
 		String line;
 		final BufferedReader br =
 			new BufferedReader(new InputStreamReader(inputStream), 128*1024);
-		Map<String, CyNode> nMap = new HashMap<String, CyNode>(10000);
+		Map<String, CyNodeBuilder> nMap = new HashMap<String, CyNodeBuilder>(10000);
 
-		CyNetwork network = cyNetworkFactory.getInstance();
-		final CyTable nodeTable = network.getDefaultNodeTable();
-		final CyTable edgeTable = network.getDefaultEdgeTable();
+		CyNetworkBuilder networkBuilder = cyNetworkFactory.getBuilder(); 
 
 		// Generate bundled event to avoid too many events problem.
 
 		final String firstLine = br.readLine();
 		if (firstLine.contains(TAB))
 			delimiter = TAB;
-		createEdge(new Interaction(firstLine.trim(), delimiter), network, nMap);
+		//createEdge(new Interaction(firstLine.trim(), delimiterPattern), networkBuilder, nMap);
+		createEdge(new Interaction(firstLine, delimiter), networkBuilder, nMap);
 
 		while ((line = br.readLine()) != null) {
 			if (cancelled) {
 				// Cancel called. Clean up the garbage.
 				nMap.clear();
 				nMap = null;
-				network = null;
+				networkBuilder = null;
 				br.close();
 				return;
 			}
@@ -125,8 +128,9 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 				continue;
 
 			try {
+				//final Interaction itr = new Interaction(line, delimiterPattern);
 				final Interaction itr = new Interaction(line, delimiter);
-				createEdge(itr, network, nMap);
+				createEdge(itr, networkBuilder, nMap);
 			} catch (Exception e) {
 				// Simply ignore invalid lines.
 				continue;
@@ -139,6 +143,8 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 		nMap.clear();
 		nMap = null;
 
+		CyNetwork network = cyNetworkFactory.getInstance(networkBuilder);
+
 		this.cyNetworks = new CyNetwork[] {network};
 		
 //		tm.setProgress(1.0);
@@ -146,24 +152,24 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 		logger.debug("SIF file loaded: ID = " + network.getSUID());
 	}
 
-	private void createEdge(final Interaction itr, final CyNetwork network, final Map<String, CyNode> nMap) {
-		CyNode sourceNode = nMap.get(itr.getSource());
+	private void createEdge(final Interaction itr, final CyNetworkBuilder networkBuilder, final Map<String, CyNodeBuilder> nMap) {
+		CyNodeBuilder sourceNode = nMap.get(itr.getSource());
 		if (sourceNode == null) {
-			sourceNode = network.addNode();
-			sourceNode.getCyRow().set(CyTableEntry.NAME, itr.getSource());
+			sourceNode = networkBuilder.addNode();
+			sourceNode.getCyRowBuilder().set(CyTableEntry.NAME, itr.getSource());
 			nMap.put(itr.getSource(), sourceNode);
 		}
 
 		for (final String target : itr.getTargets()) {
-			CyNode targetNode = nMap.get(target);
+			CyNodeBuilder targetNode = nMap.get(target);
 			if (targetNode == null) {
-				targetNode = network.addNode();
-				targetNode.getCyRow().set(CyTableEntry.NAME, target);
+				targetNode = networkBuilder.addNode();
+				targetNode.getCyRowBuilder().set(CyTableEntry.NAME, target);
 				nMap.put(target, targetNode);
 			}
-			final CyEdge edge = network.addEdge(sourceNode, targetNode, true);
-			edge.getCyRow().set(CyTableEntry.NAME, getEdgeName(itr,target));
-			edge.getCyRow().set(CyEdge.INTERACTION, itr.getType());
+			final CyEdgeBuilder edge = networkBuilder.addEdge(sourceNode, targetNode, true);
+			edge.getCyRowBuilder().set(CyTableEntry.NAME, getEdgeName(itr,target));
+			edge.getCyRowBuilder().set(CyEdge.INTERACTION, itr.getType());
 		}
 	}
 
@@ -176,7 +182,6 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 		edgeNameBuilder.append(target);
 		return edgeNameBuilder.toString();
 	}
-	
 
 	@Override
 	public CyNetworkView buildCyNetworkView(CyNetwork network) {
@@ -187,11 +192,13 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 		
 		// Force to run this task here to avoid concurrency problem.
 		TaskIterator itr = layout.getTaskIterator();
-		Task nextTask = itr.next();
-		try {
-			nextTask.run(parentTaskMonitor);
-		} catch (Exception e) {
-			throw new RuntimeException("Could not finish layout", e);
+		if ( itr.hasNext() ) {
+			Task nextTask = itr.next();
+			try {
+				nextTask.run(parentTaskMonitor);
+			} catch (Exception e) {
+				throw new RuntimeException("Could not finish layout", e);
+			}
 		}
 
 		return view;
