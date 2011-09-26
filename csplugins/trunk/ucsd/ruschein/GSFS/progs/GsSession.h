@@ -6,20 +6,25 @@
 
 
 class GsSession {
+	bool isInitialised_;
+
 	/*
 	 * The GenomeSpace login token. It contains the username and an expiration
 	 * date/time.
 	 */
 	std::string token_;
 
-	bool isInitialised_;
-
-	std::string dataManagerServiceUrl_;
+	std::string username_;
+	std::string data_manager_root_;
+	std::string domain_;
 public:
 	GsSession();
-	inline const std::string getSessionToken() { return token_; }
+
+	/** \return empty string if an error occurred, otherwise the message body of the message sent by the server. */
+	std::string getServerResponse(const std::string &relative_url);
 private:
 	void initialise();
+	inline const std::string getSessionToken() { return token_; }
 };
 
 

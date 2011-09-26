@@ -14,29 +14,38 @@ void Usage() {
 }
 
 
-class DirEntry {
+class GSDirEntry {
 	std::string name_;
 	std::string url_;
 	std::string owner_;
 	bool is_directory_;
-	bool owner_has_read_premission_;
+	bool owner_has_read_permission_;
 	bool owner_has_write_permission_;
 	time_t last_modified_;
 	uint64_t size_;
 public:
-	DirEntry(const std::string &name, const std::string &url, const std::string &owner, const bool is_directory,
-		 const bool owner_has_read_premission, const bool owner_has_write_permission, const time_t last_modified,
+	GSDirEntry(const std::string &name, const std::string &url, const std::string &owner, const bool is_directory,
+		 const bool owner_has_read_permission, const bool owner_has_write_permission, const time_t last_modified,
 		 const uint64_t size)
 		: name_(name), url_(url), owner_(owner), is_directory_(is_directory),
-		  owner_has_read_premission_(owner_has_read_premission), owner_has_write_permission_(owner_has_write_permission),
+		  owner_has_read_permission_(owner_has_read_permission), owner_has_write_permission_(owner_has_write_permission),
 		  last_modified_(last_modified), size_(size) { }
 	std::string toString() const;
+
+	const std::string &getName() const { return name_; }
+	const std::string &getUrl() const { return url_; }
+	const std::string &getOwner() const { return owner_; }
+	bool isDirectory() const { return is_directory_; }
+	bool ownerHasReadPermission() const { return owner_has_read_permission_; }
+	bool ownerHasWritePermission() const { return owner_has_write_permission_; }
+	time_t getLastModified() const { return last_modified_; }
+	uint64_t getSize() const { return size_; }
 };
 
 
-std::string DirEntry::toString() const {
+std::string GSDirEntry::toString() const {
 	return name_ + "(" + url_ + "), " + std::string(is_directory_ ? "directory, " : "ordinary file, ")
-	       + "owner=" + owner_ + ", " + std::string(owner_has_read_premission_ ? "r" : "-")
+	       + "owner=" + owner_ + ", " + std::string(owner_has_read_permission_ ? "r" : "-")
 	       + std::string(owner_has_write_permission_ ? "w" : "-") + ", size=" + StringUtil::ToString(size_);
 }
 
@@ -85,13 +94,13 @@ static bool SkipUntil(JSONScanner * const scanner, const JSONScanner::TokenType 
 
 
 bool ParseEffectiveACL(const std::string &owner, JSONScanner * const scanner,
-                       bool * const owner_has_read_premission, bool * const owner_has_write_premission)
+                       bool * const owner_has_read_permission, bool * const owner_has_write_permission)
 {
 	if (not SkipUntil(scanner, JSONScanner::OPEN_BRACKET))
 		return false;
 
-	*owner_has_read_premission  = false;
-	*owner_has_write_premission = false;
+	*owner_has_read_permission  = false;
+	*owner_has_write_permission = false;
 
 	JSONScanner::TokenType token;
         token = scanner->getToken();
@@ -145,9 +154,9 @@ bool ParseEffectiveACL(const std::string &owner, JSONScanner * const scanner,
 		if (id == owner) {
 			const std::string permission = scanner->getLastString();
 			if (permission == "W")
-				*owner_has_read_premission = true;
+				*owner_has_read_permission = true;
 			else if (permission == "R")
-				*owner_has_write_premission = true;
+				*owner_has_write_permission = true;
 		}
 		token = scanner->getToken();
 		if (token != JSONScanner::CLOSE_BRACE)
@@ -166,7 +175,7 @@ bool ParseEffectiveACL(const std::string &owner, JSONScanner * const scanner,
 }
 
 
-bool ProcessFileList(JSONScanner * const scanner, std::vector<DirEntry> * const entries) {
+bool ProcessFileList(JSONScanner * const scanner, std::vector<GSDirEntry> * const entries) {
 	JSONScanner::TokenType token;
 	token = scanner->getToken();
 	if (token == JSONScanner::CLOSE_BRACKET)
@@ -350,16 +359,16 @@ availableDataFormats:
 		token = scanner->getToken();
 		if (token != JSONScanner::COLON)
 			return false;
-		bool owner_has_read_premission, owner_has_write_premission;
-		if (not ParseEffectiveACL(owner, scanner, &owner_has_read_premission, &owner_has_write_premission))
+		bool owner_has_read_permission, owner_has_write_permission;
+		if (not ParseEffectiveACL(owner, scanner, &owner_has_read_permission, &owner_has_write_permission))
 			return false;
 
 		token = scanner->getToken();
 		if (token != JSONScanner::CLOSE_BRACE)
 			return false;
 
-		entries->push_back(DirEntry(name, url, owner, is_directory, owner_has_read_premission,
-		                            owner_has_write_premission, last_modified, size));
+		entries->push_back(GSDirEntry(name, url, owner, is_directory, owner_has_read_permission,
+		                            owner_has_write_permission, last_modified, size));
 
 		token = scanner->getToken();
 		if (token == JSONScanner::COMMA)
@@ -368,7 +377,7 @@ availableDataFormats:
 }
 
 
-bool ParseListing(const std::string &listing, std::vector<DirEntry> * const entries) {
+bool ParseListing(const std::string &listing, std::vector<GSDirEntry> * const entries) {
 	entries->clear();
 
 	JSONScanner scanner(listing);
@@ -420,9 +429,9 @@ int main(int argc, char *argv[]) {
 		std::exit(EXIT_FAILURE);
 	}
 
-	std::vector<DirEntry> dir_entries;
+	std::vector<GSDirEntry> dir_entries;
 	ParseListing(json_directory_listing, &dir_entries);
-	for (std::vector<DirEntry>::const_iterator entry(dir_entries.begin());
+	for (std::vector<GSDirEntry>::const_iterator entry(dir_entries.begin());
 	     entry != dir_entries.end(); ++entry)
 		std::cout << entry->toString() << '\n';
 }
