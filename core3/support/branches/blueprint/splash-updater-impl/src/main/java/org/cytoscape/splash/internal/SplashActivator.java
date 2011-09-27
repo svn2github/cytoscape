@@ -2,9 +2,7 @@ package org.cytoscape.splash.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkListener;
-import org.osgi.framework.BundleListener;
-import org.springframework.osgi.context.event.OsgiBundleApplicationContextListener;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextListener;
 import java.util.Properties;
 
 /**

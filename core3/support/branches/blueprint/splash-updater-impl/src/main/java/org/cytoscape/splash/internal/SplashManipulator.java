@@ -3,14 +3,13 @@ package org.cytoscape.splash.internal;
 import java.awt.SplashScreen;
 import java.awt.Graphics2D;
 import java.awt.Color;
-import java.awt.AlphaComposite;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.FrameworkListener;
-import org.springframework.osgi.context.event.OsgiBundleContextRefreshedEvent;
-import org.springframework.osgi.context.event.OsgiBundleApplicationContextEvent;
-import org.springframework.osgi.context.event.OsgiBundleApplicationContextListener;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextRefreshedEvent;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextEvent;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextListener;
 import java.awt.Font;
 
 public class SplashManipulator implements 
