@@ -45,7 +45,7 @@ import org.cytoscape.event.internal.*;
 
 import org.osgi.framework.*;
 
-import org.springframework.osgi.mock.*;
+import org.eclipse.gemini.blueprint.mock.*;
 
 import java.lang.RuntimeException;
 
