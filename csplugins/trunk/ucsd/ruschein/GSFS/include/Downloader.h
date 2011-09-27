@@ -151,7 +151,7 @@ public:
 
 	static const std::string &GetDefaultUserAgentString();
 
-	/** Turn debug output on stderr or or off. */
+	/** Turn debug output on stderr on or off.  (This affects all future Downloader instances.) */
 	static void setDebugMode(const bool on) { Downloader::debug_ = on; }
 protected:
 	void setMultiMode(const bool multi) { multi_mode_ = multi; }
