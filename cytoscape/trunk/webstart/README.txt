@@ -6,3 +6,12 @@ Cytoscape as a webstart. To generate things run:
 
 Note that the "-Dwebstart.url=http://example.com" argument is manadatory to 
 provide the jnlp file with a codebase.
+
+
+If this is your first time using Webstart you must create a keystore:
+
+	keytool -genkey -alias cytoscape -keypass secret
+	enter "secret" for the password.
+
+The actual keystore file created is assumed to be in:  ${user.home}/.keystore
+
