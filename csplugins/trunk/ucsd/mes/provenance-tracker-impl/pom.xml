@@ -12,7 +12,7 @@
 	<properties>
 		<bundle.symbolicName>org.cytoscape.provenance-tracker-impl</bundle.symbolicName>
 		<bundle.namespace>org.cytoscape.provenance.internal</bundle.namespace>
-		<cytoscape.api.version>3.0.0-alpha7</cytoscape.api.version>
+		<cytoscape.api.version>3.0.0-alpha8-SNAPSHOT</cytoscape.api.version>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -91,6 +91,18 @@
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-api</artifactId>
 			<version>1.5.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>service-api</artifactId>
+			<version>${cytoscape.api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>${osgi.api.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
