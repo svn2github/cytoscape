@@ -37,7 +37,7 @@
    print('"/>');
 ?>
      $dependencies
-  <resources>
+  </resources>
   <application-desc main-class="$mainClass">
 <?php
 	# either load a session
