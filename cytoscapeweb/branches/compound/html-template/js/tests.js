@@ -151,6 +151,12 @@ function runJSTests(vis) {
 function runGraphTests(moduleName, vis, options) {
 	module(moduleName);
 
+	var _errId;
+    var _onError = function(evt) {
+    	_errId = evt.value.id;
+    }
+    vis.addListener("error", _onError);
+	
 	test("Initialization Parameters", function() {
         same(vis.panZoomControlVisible(), options.panZoomControlVisible, "Pan-zoom control visible?");
         same(vis.nodeLabelsVisible(),     options.nodeLabelsVisible,     "Node Labels visible?");
@@ -502,7 +508,7 @@ function runGraphTests(moduleName, vis, options) {
     
     test("Visual Style", function() {
 		vis.visualStyle(style);
-    	var nodes = vis.nodes, edges = vis.edges();
+    	var nodes = vis.nodes(), edges = vis.edges();
     	var s = vis.visualStyle();
     	
     	same(s.global.backgroundColor, style.global.backgroundColor);
@@ -529,6 +535,28 @@ function runGraphTests(moduleName, vis, options) {
 			same(e.color, s.edges.color, "Edge color");
 		});
 
+    });
+    
+    test("Visual Style--transparent nodes", function() {
+    	vis.visualStyle({ 
+    		global: { backgroundColor: "transparent" },
+    		nodes: { color: "transparent" },
+    		edges: { color: "transparent" }
+    	});
+    	same(vis.visualStyle().global.backgroundColor, "#ffffff", "Visual Style backgroundColor color");
+    	same(vis.visualStyle().nodes.color, "transparent", "Visual Style nodes color");
+    	same(vis.visualStyle().edges.color, "#ffffff", "Visual Style edges color");
+    	
+    	var nodes = vis.nodes(), edges = vis.edges();
+    	
+    	$.each(nodes, function(i, n) {
+    		same(n.color, "transparent", "Node color");
+    	});
+    	$.each(edges, function(i, e) {
+    		same(e.color, "#ffffff", "Edge color");
+    	});
+    	
+    	vis.visualStyle(style);
     });
     
     test("Get empty Visual Style Bypass", function() {
@@ -607,6 +635,23 @@ function runGraphTests(moduleName, vis, options) {
 		var count = 0;
 		for (var k in bp.edges) { count++; }
 		ok(count === 0, "No more edges bypass props");
+    });
+    
+    test("Bypass--transparent nodes", function() {
+    	var n = vis.nodes()[0];
+    	var e = vis.edges()[0];
+    	var bypass = { nodes: {}, edges: {} };
+    	bypass.nodes[n.data.id] = { color: "transparent" };
+    	bypass.edges[e.data.id] = { color: "transparent" }; // should be converted to white!
+    	
+    	vis.visualStyleBypass(bypass);
+    	
+    	same(vis.visualStyleBypass().nodes[n.data.id].color, "transparent", "Visual Style nodes color");
+    	same(vis.visualStyleBypass().edges[e.data.id].color, "#ffffff", "Visual Style edges color");
+    	same(vis.node(n.data.id).color, "transparent", "Node color");
+    	same(vis.edge(e.data.id).color, "#ffffff", "Edge color");
+    	
+    	vis.visualStyleBypass({});
     });
     
     asyncTest("Preset Layout", function() {
@@ -853,12 +898,20 @@ function runGraphTests(moduleName, vis, options) {
     	n = vis.addNode(30, 45, { id: "NN1", label: "New Node 1", weight: 4 }, true);
     	same(n.data.id, "NN1", "New node has correct ID");
     	same(n.data.label, "New Node 1", "New node has correct label");
-    	same(n.x, 30, "New node x");
-    	same(n.y, 45, "New node y");
+    	same(Math.round(n.x), 30, "New node - x");
+    	same(Math.round(n.y), 45, "New node - y");
     	ok(n.size > style.nodes.size.continuousMapper.minValue + n.borderWidth, "Node size updated");
     	same(vis.nodes().length, ++count, "New nodes length");
+    });
+    
+    test("Add Node: accepts null number attribute", function() {
+    	vis.addDataField("nodes", { name: "null_number_attr", type: "number" }); 
     	
-    	// TODO: test duplicate ID (FireFox does not catch Flash exceptions...)
+    	var n = vis.addNode({ label: "New Node - null number", null_number_attr: null });
+    	same(n.data.null_number_attr, null, "New node added: 'null_number_attr' still null");
+    	
+    	vis.removeElements([n], true);
+    	vis.removeDataField("nodes", "null_number_attr");
     });
     
     test("Add Edge", function() {
@@ -883,6 +936,18 @@ function runGraphTests(moduleName, vis, options) {
     	same(e.data.source, src.data.id, "New edge target ID");
     	same(e.data.target, tgt.data.id, "New edge target ID");
     	same(vis.edges().length, ++count, "New edges length");
+    });
+    
+    test("Add Edge: accepts null number attribute", function() {
+    	vis.addDataField("edges", { name: "null_number_attr", type: "number" }); 
+    	
+    	var nodes = vis.nodes();
+    	var src = nodes[0], tgt = nodes[3];
+    	var e = vis.addEdge({ source: src.data.id, target: tgt.data.id, null_number_attr: null });
+    	same(e.data.null_number_attr, null, "New edge added: 'null_number_attr' still null");
+    	
+    	vis.removeElements([e], true);
+    	vis.removeDataField("edges", "null_number_attr");
     });
     
     test("Remove Edges", function() {
@@ -971,7 +1036,7 @@ function runGraphTests(moduleName, vis, options) {
     	
     	// Exporting data/image should not throw errors:
     	ok(vis.pdf().indexOf("JVBERi0xLjUKMSAwIG9iago8PC9UeXBlIC9QYWd") === 0, "PDF image");
-    	ok(vis.png().indexOf("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAA") === 0, "PNG image");
+    	ok(vis.png().indexOf("iVBORw0KGgoAAAANSUhEUgAAAA") === 0, "PNG image");
     	
     	same(vis.sif(), "", "SIF is empty");
     	
@@ -998,13 +1063,12 @@ function runGraphTests(moduleName, vis, options) {
     	var ids = [];
     	
     	// 1: Update all nodes and edges (same data):
-        var data = { weight: 1/*, new_attr: "ignore it!"*/ };
+        var data = { weight: 1 };
         vis.updateData(data);
     	
         all = vis.nodes().concat(vis.edges());
         $.each(all, function(i, el) {
     		same(el.data.weight, 1, "weight updated ("+el.data.id+")");
-//    		same(el.data.new_attr, undefined, "New attribute ignored ("+el.data.id+")");
     	});
         
         // 2: Update more than one node and edge at once (by ID - ALL groups - same data):
@@ -1094,23 +1158,16 @@ function runGraphTests(moduleName, vis, options) {
         ok(vis.node(id).data.weight === null, "Node weight should be null");
         
         // Test Errors:
-        var errId;
-        var onError = function(evt) {
-        	errId = evt.value.id;
-        }
-        vis.addListener("error", onError);
         
-        // 7: Update a field with type 'int' to null (should set 0 as default):
+        // 7: Update a field with type 'int' to null => ERROR:
         vis.updateData("nodes", [id], { ranking: null });
-        same(errId, "dat001", "node.data.ranking (error: int type with null value)");
-        errId = null;
+        same(_errId, "dat001", "node.data.ranking (error: int type with null value)");
+        _errId = null;
         
-        // 8: Update a field with type 'boolean' to null (should set false as default):
+        // 8: Update a field with type 'boolean' to null => ERROR:
         vis.updateData("nodes", [id], { special: null });
-        same(errId, "dat001", "node.data.special (error: boolean type with null value)");
-        errId = null;
-        
-        vis.removeListener("error", onError);
+        same(_errId, "dat001", "node.data.special (error: boolean type with null value)");
+        _errId = null;
     });
     
     test("Get Data Schema", function() {
@@ -1143,15 +1200,23 @@ function runGraphTests(moduleName, vis, options) {
     	});
         
         // 2: Add new field to nodes only:
-        vis.addDataField("nodes", { name: "new_node_attr_1", type: "number", defValue: " 0.234" /*Should convert string to number*/ }) 
-           .addDataField("nodes", { name: "new_node_attr_2", type: "boolean" })
-           .addDataField("nodes", { name: "new_node_attr_3", type: "int" });
+        vis.addDataField("nodes", { name: "new_node_attr_1", type: "number", defValue: 0.234 }) 
+           .addDataField("nodes", { name: "new_node_attr_2", type: "number"  })
+           .addDataField("nodes", { name: "new_node_attr_3", type: "boolean", defValue: true })
+           .addDataField("nodes", { name: "new_node_attr_4", type: "boolean", defValue: null  })
+           .addDataField("nodes", { name: "new_node_attr_5", type: "int" })
+           .addDataField("nodes", { name: "new_node_attr_6", type: "string", defValue: "DEF_VAL" })
+           .addDataField("nodes", { name: "new_node_attr_7", type: "string" });
 
         nodes = vis.nodes();
         $.each(nodes, function(i, el) {
     		same(el.data["new_node_attr_1"], 0.234, "New field [number] added to nodes ("+el.data.id+")");
-    		same(el.data["new_node_attr_2"], false, "New field [boolean] added to nodes ("+el.data.id+")");
-    		same(el.data["new_node_attr_3"], 0, "New field [int] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_2"], null, "New field [number] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_3"], true, "New field [boolean] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_4"], false, "New field [boolean] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_5"], 0, "New field [int] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_6"], "DEF_VAL", "New field [string] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_7"], null, "New field [string] added to nodes ("+el.data.id+")");
     	});
         edges = vis.edges();
         $.each(edges, function(i, el) {
@@ -1279,16 +1344,19 @@ function runGraphTests(moduleName, vis, options) {
     test("SIF", function() {
     	var sif = vis.sif();
     	var edges = vis.edges();
+    	// Default fields:
     	$.each(edges, function(i, e) {
     		var inter = e.data.interaction ? e.data.interaction : e.data.id;
     		var line = e.data.source + "\t" + inter + "\t" + e.data.target; 
     		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
     	});
-    	// Now replace the default interaction field:
-    	var sif = vis.sif("type");
+    	// Now replace the default node and interaction fields:
+    	var sif = vis.sif({ nodeAttr: "name", interactionAttr: "type" });
     	var edges = vis.edges();
     	$.each(edges, function(i, e) {
-    		var line = e.data.source + "\t" + e.data.type + "\t" + e.data.target; 
+    		var src = vis.node(e.data.source).data.name;
+    		var tgt = vis.node(e.data.target).data.name;
+    		var line = src + "\t" + e.data.type + "\t" + tgt; 
     		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
     	});
     });
@@ -1328,23 +1396,26 @@ function runGraphTests(moduleName, vis, options) {
     	var base64 = vis.pdf();
     	var beginning = "JVBERi0xLjUKMSAwIG9iago8PC9UeXBlIC9QYWdlcwovS2lkcyBbMyAwIFJdCi9Db3VudCAxPj4K";
 
-    	ok(base64.length > 13000, "PDF string has compatible length ("+base64.length+")");
+    	ok(base64.length > 9000, "PDF string has compatible length ("+base64.length+")");
     	same(base64.indexOf(beginning), 0, "PDF begins with correct chars");
     });
     
     test("SVG", function() {
-    	var svg = $(vis.svg());
-    	var nodes = vis.nodes();
-    	var edges = vis.edges();
-
-    	same(svg.find(".cw-background").length, 1, "Background rectangle");
-    	same(svg.find(".cw-node").length, nodes.length, "Number of SVG nodes");
-    	same(svg.find(".cw-node .cw-node-shape").length, nodes.length, "Number of SVG node shapes");
-    	same(svg.find(".cw-edge").length, edges.length, "Number of SVG edges");
-    	same(svg.find(".cw-edge .cw-edge-line").length, edges.length, "Number of SVG edge lines");
-    	
-    	// TODO: test node images
-    	// TODO: test edge arrows
+    	if (!$.browser.msie) {
+    		// TODO: make test work on IE
+	    	var svg = $(vis.svg());
+	    	var nodes = vis.nodes();
+	    	var edges = vis.edges();
+	
+	    	same(svg.find(".cw-background").length, 1, "Background rectangle");
+	    	same(svg.find(".cw-node").length, nodes.length, "Number of SVG nodes");
+	    	same(svg.find(".cw-node-shape").length, nodes.length, "Number of SVG node shapes");
+	    	same(svg.find(".cw-edge").length, edges.length, "Number of SVG edges");
+	    	same(svg.find(".cw-edge-line").length, edges.length, "Number of SVG edge lines");
+	    	
+	    	// TODO: test node images
+	    	// TODO: test edge arrows
+    	}
     });
     
     // TODO: test selection styles

@@ -154,7 +154,12 @@ package org.cytoscapeweb.model.converters {
                                 default: mandatoryDefValue = null;
                             }
                             
-                            defValue = normalizeDataValue(obj[DEF_VALUE], type, mandatoryDefValue);
+                            try {
+                                defValue = normalizeDataValue(obj[DEF_VALUE], type, mandatoryDefValue);
+                            } catch (err:Error) {
+                                throw new CWError("Invalid default value of '" + name + "'--" + err.message,
+                                                  ErrorCodes.INVALID_DATA_CONVERSION);
+                            }
                             
                             schema.addField(new DataField(name, type, defValue, name));
                         }
@@ -409,21 +414,24 @@ package org.cytoscapeweb.model.converters {
 		}
 		
 		
-        public static function toExtElementsArray(dataSprites:*):Array {
+        public static function toExtElementsArray(dataSprites:*, zoom:Number):Array {
             var arr:Array = null;
                      
             if (dataSprites is DataList || dataSprites is Array) {
                 arr = [];
                 for each (var ds:DataSprite in dataSprites) {
-                    arr.push(toExtElement(ds));
+                    arr.push(toExtElement(ds, zoom));
                 }
             }
 
             return arr;
         }
         
-        public static function toExtElement(ds:DataSprite):Object {
+        public static function toExtElement(ds:DataSprite, zoom:Number):Object {
             var obj:Object = null;
+            var p:Point;
+            var n:NodeSprite, e:EdgeSprite;
+            var scale:Number;
 
             if (ds != null) {
                 // Data (attributes):
@@ -434,21 +442,31 @@ package org.cytoscapeweb.model.converters {
                 obj.visible = ds.visible;
                 
                 if (ds is NodeSprite) {
+                    n = ds as NodeSprite;
+                    
                     obj.group = Groups.NODES;
-                    obj.shape = ds.shape;
-                    obj.size = ds.height;
-                    obj.color = Utils.rgbColorAsString(ds.fillColor);
-                    obj.borderColor = Utils.rgbColorAsString(ds.lineColor);
-                    obj.borderWidth = ds.lineWidth;
+                    obj.shape = n.shape;
+                    obj.size = Math.max(n.width, n.height);
+                    obj.width = n.width;
+                    obj.height = n.height;
+                    obj.color = n.props.transparent ? "transparent" : Utils.rgbColorAsString(n.fillColor);
+                    obj.borderColor = Utils.rgbColorAsString(n.lineColor);
+                    obj.borderWidth = n.lineWidth;
+//                    obj.degree = n.degree;
+//                    obj.indegree = n.inDegree;
+//                    obj.outdegree = n.outDegree;
                     
                     // Global coordinates:
-                    var p:Point = getGlobalCoordinate(ds as NodeSprite);
+                    p = getGlobalCoordinate(n);
                     obj.x = p.x;
                     obj.y = p.y;
+                    
+                    obj.rawX = p.x / zoom;
+                    obj.rawY = p.y / zoom;
                 } else {
                     obj.group = Groups.EDGES;
 
-                    var e:EdgeSprite = EdgeSprite(ds);
+                    e = EdgeSprite(ds);
                     obj.color = Utils.rgbColorAsString(e.lineColor);
                     obj.width = ds.lineWidth;
                     obj.sourceArrowShape = e.props.sourceArrowShape;
@@ -460,7 +478,7 @@ package org.cytoscapeweb.model.converters {
                     
                     if (e.props.$merged) {
                         var ee:Array = e.props.$edges;
-                        ee = toExtElementsArray(ee);
+                        ee = toExtElementsArray(ee, zoom);
                         obj.edges = ee;
                     }
                 }
@@ -472,6 +490,7 @@ package org.cytoscapeweb.model.converters {
         public static function getGlobalCoordinate(n:NodeSprite):Point {
             var p:Point = new Point(n.x, n.y);
             if (n.parent) p = n.parent.localToGlobal(p);
+            
             return p;
         }
         
@@ -509,7 +528,13 @@ package org.cytoscapeweb.model.converters {
                 field = schema.getFieldAt(i);
                 name = field.name;
                 value = data[name];
-                data[name] = normalizeDataValue(value, field.type, field.defaultValue);
+                
+                try {
+                    data[name] = normalizeDataValue(value, field.type, field.defaultValue);
+                } catch (err:Error) {
+                    throw new CWError("Invalid value of '" + field.name + "'--" + err.message,
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
+                }
             }
             
             // Look for missing fields:

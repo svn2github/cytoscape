@@ -37,15 +37,16 @@ package org.cytoscapeweb.view.render {
     import flare.vis.data.DataList;
     import flare.vis.data.DataSprite;
     import flare.vis.data.EdgeSprite;
-    import flare.vis.data.NodeSprite;
     import flare.vis.operator.label.Labeler;
     
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.geom.Point;
     import flash.text.TextFormat;
+    import flash.text.TextFormatAlign;
     
     import org.cytoscapeweb.util.Groups;
+	import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.methods.$each;
     
@@ -181,8 +182,7 @@ package org.cytoscapeweb.view.render {
                 label.text = getLabelText(d);
                 label.visible = visible;
 
-                updateTextFormat(d);
-                label.applyFormat(textFormat);
+                updateLabel(d, label);
                 _access.setValue(d, label);
                 
                 if (_policy == LAYER) {
@@ -201,18 +201,9 @@ package org.cytoscapeweb.view.render {
                 }
             } else if (label && !cacheText) {
                 label.text = getLabelText(d);
-                
-                updateTextFormat(d);
-                label.applyFormat(textFormat);
+                updateLabel(d, label);
             }
             
-            label.textMode = textMode;
-            label.horizontalAnchor = horizontalAnchor;
-            label.verticalAnchor = verticalAnchor;           
-
-            if (hAnchor != null) label.horizontalAnchor = hAnchor(d);
-            if (vAnchor != null) label.verticalAnchor = vAnchor(d);
-			
             return label;
         }
 
@@ -261,6 +252,11 @@ package org.cytoscapeweb.view.render {
                 else if (label.horizontalAnchor == TextSprite.RIGHT) myXOffset -= d.width/2;
                 if      (label.verticalAnchor == TextSprite.TOP)     myYOffset += d.height/2;
                 else if (label.verticalAnchor == TextSprite.BOTTOM)  myYOffset -= d.height/2;
+                
+                if (d.props.autoSize) {
+                    d.render();
+                    if (d.shape == NodeShapes.TRIANGLE) myYOffset += d.height/4;
+                }
             }
             
             label.x = x + myXOffset;
@@ -269,12 +265,28 @@ package org.cytoscapeweb.view.render {
             label.render();
         }
 
-        protected function updateTextFormat(d:DataSprite):void {
+        protected function updateLabel(d:DataSprite, label:TextSprite):void {
+            label.textMode = textMode;
+            label.horizontalAnchor = horizontalAnchor;
+            label.verticalAnchor = verticalAnchor;           
+
+            if (hAnchor != null) label.horizontalAnchor = hAnchor(d);
+            if (vAnchor != null) label.verticalAnchor = vAnchor(d);
+
             if (fontName != null) textFormat.font = fontName(d);
             if (fontColor != null) textFormat.color = fontColor(d);
             if (fontSize != null) textFormat.size = fontSize(d);
             if (fontWeight != null) textFormat.bold = (fontWeight(d) === "bold");
             if (fontStyle != null) textFormat.italic = (fontStyle(d) === "italic");
+            
+            if (label.horizontalAnchor === TextSprite.CENTER)
+                textFormat.align = TextFormatAlign.CENTER;
+            if (label.horizontalAnchor === TextSprite.RIGHT)
+                textFormat.align = TextFormatAlign.RIGHT;
+            if (label.horizontalAnchor === TextSprite.LEFT)
+                textFormat.align = TextFormatAlign.LEFT;
+                
+            label.applyFormat(textFormat);
         }
         
         // ========[ PRIVATE METHODS ]==============================================================

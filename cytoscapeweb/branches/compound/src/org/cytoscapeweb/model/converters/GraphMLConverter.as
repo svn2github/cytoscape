@@ -216,11 +216,15 @@ package org.cytoscapeweb.model.converters {
                 attrName = key.@[ATTRNAME].toString();
                 type     = toCW_Type(key.@[ATTRTYPE].toString());
                 def = key[DEFAULT].toString();
-                def = def != null && def.length > 0
-                    ? DataUtil.parseValue(def, type) : null;
-                    
-                // Patch: accept "all" for node and edge schemas:
-                // ############################################
+                def = def != null && def.length > 0 ? DataUtil.parseValue(def, type) : null;
+                
+                if (def == null) {
+                	switch (type) {
+	                    case DataUtil.BOOLEAN: def = false; break;
+	                    case DataUtil.INT:     def = 0;     break;
+                    }
+                }
+                
                 if (group === NODE || group === ALL)
                     nodeSchema.addField(new DataField(attrName, type, def, id));
                 if (group === EDGE || group === ALL)
@@ -636,7 +640,8 @@ package org.cytoscapeweb.model.converters {
 		// -- static helpers --------------------------------------------------
 		
 		private static function toString(o:Object, type:int):String {
-			return o.toString(); // TODO: formatting control?
+			if (o is Array) return (o as Array).join(",");
+			return o != null ? o.toString() : ""; // TODO: formatting control?
 		}
 		
 		private static function toCW_Type(type:String):int {

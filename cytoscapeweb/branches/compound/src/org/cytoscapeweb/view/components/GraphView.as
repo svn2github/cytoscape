@@ -70,6 +70,19 @@ package org.cytoscapeweb.view.components {
         // ========[ PUBLIC PROPERTIES ]============================================================
 
         public var vis:GraphVis;
+        
+        public function get viewCenter():Point {
+            var vc:Point = new Point(stage.stageWidth/2, stage.stageHeight/2); // canvas center
+            vc = vis.globalToLocal(vc); // in case vis is not positioned in (0,0)
+            
+            var b:Rectangle = vis.getRealBounds();
+            vc.x -= b.x;
+            vc.y -= b.y;
+            vc.x *= vis.scaleX;
+            vc.y *= vis.scaleX;
+            
+            return vc;
+        }
 
 		// ========[ CONSTRUCTOR ]==================================================================
 
@@ -83,7 +96,8 @@ package org.cytoscapeweb.view.components {
 		
 		// ========[ PUBLIC METHODS ]===============================================================
 
-        public function draw(data:Data, config:ConfigVO, style:VisualStyleVO):void {
+        public function draw(data:Data, config:ConfigVO, style:VisualStyleVO,
+                             scale:Number, viewCenter:Point):void {
             this._config = config;
             this._style = style;
         	hitArea = Sprite(parent);
@@ -93,6 +107,9 @@ package org.cytoscapeweb.view.components {
 
             createVisualization(data, config.currentLayout.name);
 
+            if (scale !== 1.0)
+                scale = zoomTo(scale);
+            
             // -----------------------------
             var par:Parallel = applyLayout(config.currentLayout);
             
@@ -100,17 +117,34 @@ package org.cytoscapeweb.view.components {
             	evt.currentTarget.removeEventListener(evt.type, arguments.callee);
             	evt.currentTarget.dispose();
                 dispatchEvent(new GraphViewEvent(GraphViewEvent.RENDER_COMPLETE));
+                
+                // Set the view center:
+                if (viewCenter != null) {
+                    var cc:Point = new Point(stage.stageWidth/2, stage.stageHeight/2); // canvas center
+                    cc = vis.globalToLocal(cc); // in case vis is not positioned in (0,0)
+                    
+                    var vc:Point = vis.globalToLocal(viewCenter);
+                    
+                    // We cannot assume the graph was aligned at (0,0)!
+                    var gb:Rectangle = vis.getRealBounds();
+                    vc.x -= gb.x;
+                    vc.y -= gb.y;
+                    
+                    // Move the center of the viewport to the specified position (it actually moves vis)
+                    var dx:Number = (cc.x - vc.x)*scale;
+                    var dy:Number = (cc.y - vc.y)*scale;
+                    panGraph(dx, dy);
+                }
             });
             par.play();
         }
 
         public function applyLayout(layout:Object):Parallel {
             dispatchEvent(new GraphViewEvent(GraphViewEvent.LAYOUT_INITIALIZE));
-            
             resize();
             
             var par:Parallel = new Parallel();
-            vis.bounds = GraphUtils.calculateGraphDimension(vis.data.nodes, name, _style);
+            vis.bounds = GraphUtils.calculateGraphDimension(vis.data.nodes, name);
             var t:Transition = vis.applyLayout(layout);
             par.add(t);
           
@@ -135,7 +169,7 @@ package org.cytoscapeweb.view.components {
         * Zoom the "camera" until it reaches the required scale.
         * @return The actual scale value after the zooming is executed.
         */
-        public function zoomTo(scale:Number):void { trace("-> Zoom to: " + scale);
+        public function zoomTo(scale:Number):Number { trace("-> Zoom to: " + scale);
        		if (scale < _config.minZoom)
                 scale = _config.minZoom;
             else if (scale > _config.maxZoom)
@@ -143,6 +177,8 @@ package org.cytoscapeweb.view.components {
        		
        		var delta:Number = scale / vis.scaleX;
        		zoomBy(delta);
+       		
+       		return scale;
         }
         
         public function zoomToFit():Number {
@@ -410,11 +446,10 @@ package org.cytoscapeweb.view.components {
 		
 		private function createVisualization(data:Data, layoutName:String):GraphVis {
 		    vis = new GraphVis(data, _config);
-		    var b:Rectangle = GraphUtils.calculateGraphDimension(data.nodes, layoutName, _style);
-            vis.bounds = b;
-
             addChild(vis);
+            
             vis.refreshVisualProperties(_style);
+            vis.bounds = GraphUtils.calculateGraphDimension(data.nodes, layoutName);
             
             return vis;
 		}

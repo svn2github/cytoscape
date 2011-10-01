@@ -71,6 +71,9 @@ package org.cytoscapeweb.util
 				CompoundNodes._properties =
 				{
 					shape: CompoundNodes.shape,
+					//"props.compoundWidth": Nodes.width,
+					//"props.compoundHeight": Nodes.height,
+					//"props.compoundAutoSize": Nodes.autoSize,
 					size: CompoundNodes.size,
 					paddingLeft: CompoundNodes.paddingLeft,
 					paddingRight: CompoundNodes.paddingRight,
@@ -80,6 +83,7 @@ package org.cytoscapeweb.util
 					lineColor: CompoundNodes.lineColor, 
 					lineWidth: CompoundNodes.lineWidth,
 					alpha: CompoundNodes.alpha,
+					"props.compoundTransparent": CompoundNodes.transparent,
 					"props.compoundImageUrl": CompoundNodes.imageUrl,
 					visible: Nodes.visible,
 					buttonMode: true,
@@ -150,13 +154,13 @@ package org.cytoscapeweb.util
 				style.hasVisualProperty(
 					VisualProperties.C_NODE_HOVER_LINE_WIDTH))
 			{
-				propName = VisualProperties.NODE_HOVER_LINE_WIDTH;
+				propName = VisualProperties.C_NODE_HOVER_LINE_WIDTH;
 			}
 			else if (n.props.$selected &&
 				style.hasVisualProperty(
 					VisualProperties.C_NODE_SELECTION_LINE_WIDTH))
 			{
-				propName = VisualProperties.NODE_SELECTION_LINE_WIDTH;
+				propName = VisualProperties.C_NODE_SELECTION_LINE_WIDTH;
 			}
 			
 			return style.getValue(propName, n.data);
@@ -201,6 +205,20 @@ package org.cytoscapeweb.util
 			return style.getValue(propName, n.data);
 		}
 		
+		public static function transparent(n:NodeSprite):Boolean
+		{
+			var propName:String = VisualProperties.C_NODE_COLOR;
+			
+			if (n.props.$selected &&
+				style.hasVisualProperty(
+					VisualProperties.C_NODE_SELECTION_COLOR))
+			{
+				propName = VisualProperties.C_NODE_SELECTION_COLOR;
+			}
+			
+			return style.getValue(propName, n.data) < 0;
+		}
+		
 		public static function selectionAlpha(n:NodeSprite):Number
 		{
 			var propName:String = VisualProperties.C_NODE_ALPHA;
@@ -242,19 +260,20 @@ package org.cytoscapeweb.util
 		public static function selectionGlow(n:NodeSprite) : GlowFilter
 		{
 			var filter:GlowFilter = null;
-			var alpha:Number = style.getDefaultValue(
-				VisualProperties.C_NODE_SELECTION_GLOW_ALPHA);
-			var blur:Number = style.getDefaultValue(
-				VisualProperties.C_NODE_SELECTION_GLOW_BLUR);
-			var strength:Number = style.getDefaultValue(
-				VisualProperties.C_NODE_SELECTION_GLOW_STRENGTH);
+			var data:Object = n.data;
+			var alpha:Number = style.getValue(
+				VisualProperties.C_NODE_SELECTION_GLOW_ALPHA, data);			
+			var blur:Number = style.getValue(
+				VisualProperties.C_NODE_SELECTION_GLOW_BLUR, data);
+			var strength:Number = style.getValue(
+				VisualProperties.C_NODE_SELECTION_GLOW_STRENGTH, data);
 			
 			if (alpha > 0 &&
 				blur > 0 &&
 				strength > 0)
 			{
-				var color:uint = style.getDefaultValue(
-					VisualProperties.C_NODE_SELECTION_GLOW_COLOR);           
+				var color:uint = style.getValue(
+					VisualProperties.C_NODE_SELECTION_GLOW_COLOR, data);           
 				
 				filter = new GlowFilter(color, alpha, blur, blur, strength);
 			}
@@ -265,17 +284,18 @@ package org.cytoscapeweb.util
 		public static function hoverGlow(n:NodeSprite) : GlowFilter
 		{
 			var filter:GlowFilter = null;
-			var alpha:Number = style.getDefaultValue(
-				VisualProperties.C_NODE_HOVER_GLOW_ALPHA);
-			var blur:Number = style.getDefaultValue(
-				VisualProperties.C_NODE_HOVER_GLOW_BLUR);
-			var strength:Number = style.getDefaultValue(
-				VisualProperties.C_NODE_HOVER_GLOW_STRENGTH);
+			var data:Object = n.data;
+			var alpha:Number = style.getValue(
+				VisualProperties.C_NODE_HOVER_GLOW_ALPHA, data);
+			var blur:Number = style.getValue(
+				VisualProperties.C_NODE_HOVER_GLOW_BLUR, data);
+			var strength:Number = style.getValue(
+				VisualProperties.C_NODE_HOVER_GLOW_STRENGTH, data);
 			
 			if (alpha > 0 && blur > 0 && strength > 0)
 			{
-				var color:uint = style.getDefaultValue(
-					VisualProperties.C_NODE_HOVER_GLOW_COLOR);
+				var color:uint = style.getValue(
+					VisualProperties.C_NODE_HOVER_GLOW_COLOR, data);
 				
 				filter = new GlowFilter(color, alpha, blur, blur, strength);
 			}

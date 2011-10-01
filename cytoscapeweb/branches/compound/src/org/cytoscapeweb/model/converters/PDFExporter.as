@@ -142,7 +142,7 @@ package org.cytoscapeweb.model.converters {
             var orientation:String = Orientation.PORTRAIT;
             
             // Create the PFD document with 1 page:
-            var pdf:PDF = new PDF(orientation, Unit.POINT, true, size);
+            var pdf:PDF = new PDF(orientation, Unit.POINT, size);
             pdf.setDisplayMode(Display.FULL_PAGE, Layout.SINGLE_PAGE);
             var page:Page = new Page(orientation, Unit.POINT, size);
             pdf.addPage(page);
@@ -305,7 +305,7 @@ package org.cytoscapeweb.model.converters {
                         // So we just draw a bigger shape behind the node:
                         pdf.lineStyle(gc, gw, 0, Math.min(glow.alpha, n.alpha),
                                       WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.ROUND, Joint.ROUND);
-                        drawNode(pdf, n.shape, np.x, np.y, nw, nh);
+                        drawNodeShape(pdf, n.shape, np.x, np.y, nw, nh);
                     }
                 }
                 
@@ -315,13 +315,22 @@ package org.cytoscapeweb.model.converters {
                 
                 pdf.lineStyle(new RGBColor(n.lineColor), n.lineWidth*_scale, 0, n.alpha,
                               WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.ROUND, Joint.ROUND);
-                pdf.beginFill(new RGBColor(n.fillColor));
-                drawNode(pdf, n.shape, np.x, np.y, nw, nh);
-                pdf.endFill();
+                
+                if (!n.props.transparent) pdf.beginFill(new RGBColor(n.fillColor));
+                drawNodeShape(pdf, n.shape, np.x, np.y, nw, nh);
+                if (!n.props.transparent) pdf.endFill();
             }
         }
         
         private function drawLabels(pdf:PDF, data:DataList):void {
+            var hAnchor:String = Anchors.CENTER;
+            var vAnchor:String = Anchors.MIDDLE;
+            var xOffset:Number = 0;
+            var yOffset:Number = 0;
+            const HPAD:Number = 2 * _scale;
+            const VPAD:Number = 2 * _scale;
+            var p:Point;
+            
             for each (var d:DataSprite in data) {
                 var lbl:TextSprite = d.props.label;
                 
@@ -331,7 +340,8 @@ package org.cytoscapeweb.model.converters {
                     
                     if (text == null || text === "" || lblSize < 1) continue;
                     var field:TextField = lbl.textField;
-
+                    var lines:Array = text.split("\r");
+                    
                     // ATTENTION!!!
                     // It seems that Flash does not convert points to pixels correctly. 
                     // See: - http://alarmingdevelopment.org/?p=66
@@ -341,45 +351,67 @@ package org.cytoscapeweb.model.converters {
                     // in the generated PDF:
                     // I found out that Arial's height is usually 28% smaller than the font size.
                     // Another possible solution would be to embed fonts, but it did not work for me.
-                    var textHeight:Number = lbl.size * 0.72;
-                    var textWidth:Number = field.textWidth;
-
+                    var textHeight:Number = lbl.size * 0.72 * _scale;
+                    var textWidth:Number = field.textWidth * _scale;
+					
                     // Get the Global label point (relative to the stage):
-                    var p:Point = toImagePoint(new Point(lbl.x, lbl.y), lbl);
-                    var hAnchor:String = Anchors.CENTER;
-                    var vAnchor:String = Anchors.MIDDLE;
                     
 					if (d is CompoundNodeSprite
 						&& (d as CompoundNodeSprite).isInitialized())
 					{
 						hAnchor = _style.getValue(VisualProperties.C_NODE_LABEL_HANCHOR, d.data);
 						vAnchor = _style.getValue(VisualProperties.C_NODE_LABEL_VANCHOR, d.data);
+						xOffset = _style.getValue(VisualProperties.C_NODE_LABEL_XOFFSET, d.data) * _scale;
+						yOffset = _style.getValue(VisualProperties.C_NODE_LABEL_YOFFSET, d.data) * _scale;
 					}
 					else if (d is NodeSprite)
 					{
+						// If node, calculate the label position from scratch
                         hAnchor = _style.getValue(VisualProperties.NODE_LABEL_HANCHOR, d.data);
                         vAnchor = _style.getValue(VisualProperties.NODE_LABEL_VANCHOR, d.data);
+                        xOffset = _style.getValue(VisualProperties.NODE_LABEL_XOFFSET, d.data) * _scale;
+                        yOffset = _style.getValue(VisualProperties.NODE_LABEL_YOFFSET, d.data) * _scale;
+					}
+					
+					if (d is NodeSprite)
+					{
+                        p = toImagePoint(new Point(d.x, d.y), d);
+                        // Flare's label cordinates is relative to the label's upper-left corner (x,y)=(0,0),
+                        // but AlivePDF uses the bottom-left corner instead (x,y)=(0,fonSize):
+                        p.y += (textHeight + yOffset);
+                        p.x += xOffset;
+                        
+                        switch (hAnchor) {
+                            case Anchors.LEFT:
+                                p.x += (HPAD + d.width/2);
+                                break;
+                            case Anchors.CENTER:
+                                p.x -= (textWidth/2);
+                                break;
+                            case Anchors.RIGHT:
+                                p.x -= (HPAD + textWidth +  + d.width/2);
+                                break;
+                        }
+                        switch (vAnchor) {
+                            case Anchors.TOP:
+                                p.y += (VPAD + d.height/2);
+                                break;
+                            case Anchors.MIDDLE:
+                                p.y -= (VPAD + (textHeight*lines.length)/2);
+                                break;
+                            case Anchors.BOTTOM:
+                                p.y -= (VPAD + d.height/2 + textHeight*lines.length);
+                                break;
+                        }
                     }
-
-                    var hpad:Number = 2;
-                    switch (hAnchor) {
-                        case Anchors.LEFT:   p.x += hpad * _scale; break;
-                        case Anchors.CENTER: p.x -= (textWidth/2)*_scale; break;
-                        case Anchors.RIGHT:  p.x -= (textWidth + hpad)*_scale; break;
+					else
+					{
+                        // If edge, just get the actual label position--its always middle-center!
+                        p = toImagePoint(new Point(lbl.x, lbl.y), lbl);
+                        p.x -= textWidth/2;
+                        p.y += textHeight;
+                        p.y -= (textHeight * lines.length/2);
                     }
-                    // Vertical anchor:
-                    // The label height is different from the real text height, because
-                    // there is a margin between the text and the text field border:
-                    var vpad:Number = 2;
-                    switch (vAnchor) {
-                        case Anchors.TOP:    p.y += (field.height - textHeight)/2 * _scale; break;
-                        case Anchors.MIDDLE: p.y -= textHeight/2 * _scale; break;
-                        case Anchors.BOTTOM: p.y -= (vpad + textHeight) * _scale; break;
-                    }
-                    
-                    // Flare's label cordinates is relative to the label's upper-left corner (x,y)=(0,0),
-                    // but AlivePDF uses the bottom-left corner instead (x,y)=(0,fonSize):
-                    p.y += textHeight*_scale;
 
                     var style:String = lbl.bold ?
                                        (lbl.italic ? Style.BOLD_ITALIC : Style.BOLD) :
@@ -394,20 +426,26 @@ package org.cytoscapeweb.model.converters {
                     // TODO: set BOLD/ITALIC
                     pdf.textStyle(new RGBColor(lbl.color), lbl.alpha);
                     pdf.setFont(font, lblSize);
-                    pdf.addText(text, p.x, p.y);
+                    
+                    for (var i:int = 0; i < lines.length; i++) {
+                        var ln:String = lines[i];
+                        var y:Number = p.y + textHeight * i;
+                        pdf.addText(ln, p.x, y);
+                    }
                 }
             }
         }
         
-        private function drawNode(pdf:PDF, shape:String, x:Number, y:Number, w:Number, h:Number):void {
+        private function drawNodeShape(pdf:PDF, shape:String, x:Number, y:Number, w:Number, h:Number):void {
                 var r:Rectangle = new Rectangle(x-w/2, y-h/2, w, h);
                 
                 switch (shape) {
                     case NodeShapes.ELLIPSE:
-                        pdf.drawCircle(x, y, h/2);
+                        pdf.drawEllipse(x, y, w/2, h/2);
                         break;
                     case NodeShapes.ROUND_RECTANGLE:
-                        pdf.drawRoundRect(r, w/4);
+                        var ew:Number = NodeShapes.getRoundRectCornerRadius(w, h);
+                        pdf.drawRoundRect(r, ew);
                         break;
                     default:
                         var points:Array = NodeShapes.getDrawPoints(r, shape);
@@ -452,7 +490,7 @@ package org.cytoscapeweb.model.converters {
                 if (shape === ArrowShapes.CIRCLE) {
                     var center:Point = points[0];
                     pdf.drawCircle(center.x, center.y, diameter/2);
-                    pdf.end(false);
+                    pdf.end();
                 } else if (shape === ArrowShapes.ARROW) {
                     var p1:Point = points[0];
                     var c1:Point = points[1];

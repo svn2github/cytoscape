@@ -78,11 +78,15 @@ package org.cytoscapeweb.util {
             if (_properties == null) {
                 _properties = {
                     shape: shape,
+                    "props.width": width,
+                    "props.height": height,
+                    "props.autoSize": autoSize,
                     size: size,
                     fillColor: fillColor,
                     lineColor: lineColor, 
                     lineWidth: lineWidth,
                     alpha: alpha,
+                    "props.transparent": transparent,
                     "props.imageUrl": imageUrl,
                     visible: visible,
                     buttonMode: true,
@@ -101,9 +105,26 @@ package org.cytoscapeweb.util {
         }
         
         public static function size(n:NodeSprite):Number {
-            var size:Number = style.getValue(VisualProperties.NODE_SIZE, n.data);
+            var size:* = style.getValue(VisualProperties.NODE_SIZE, n.data);
             // Flare size is a relative value:
-            return size / _properties.renderer.defaultSize;
+            return size < 0 ? -1 : size/_properties.renderer.defaultSize;
+        }
+        
+        public static function width(n:NodeSprite):Number {
+            var w:Number = style.getValue(VisualProperties.NODE_WIDTH, n.data);
+            return w;
+        }
+        
+        public static function height(n:NodeSprite):Number {
+            var h:Number = style.getValue(VisualProperties.NODE_HEIGHT, n.data);
+            return h;
+        }
+        
+        public static function autoSize(n:NodeSprite):Boolean {
+            var size:Number = style.getValue(VisualProperties.NODE_SIZE, n.data);
+            var wrap:Boolean = size === -1;
+            
+            return wrap;
         }
         
         public static function fillColor(n:NodeSprite):uint {
@@ -158,10 +179,18 @@ package org.cytoscapeweb.util {
 
             return style.getValue(propName, n.data);
         }
+        
+        public static function transparent(n:NodeSprite):Boolean {
+            var propName:String = VisualProperties.NODE_COLOR;
+            
+            if (n.props.$selected && style.hasVisualProperty(VisualProperties.NODE_SELECTION_COLOR))
+                propName = VisualProperties.NODE_SELECTION_COLOR;
+            
+            return style.getValue(propName, n.data) < 0;
+        }
 
         public static function imageUrl(n:NodeSprite):String {
             var propName:String = VisualProperties.NODE_IMAGE;
-            // TODO: selected/mouseover images
             return style.getValue(propName, n.data);
         }
         
@@ -181,8 +210,8 @@ package org.cytoscapeweb.util {
         
         public static function filters(n:NodeSprite, selectNow:Boolean=false):Array {
             var filters:Array = [];
-
             var glow:GlowFilter = null;
+
             if (!selectNow && n.props.$hover)
                 glow = hoverGlow(n);
             if (glow == null && n.props.$selected)
@@ -196,12 +225,13 @@ package org.cytoscapeweb.util {
         
         public static function selectionGlow(n:NodeSprite):GlowFilter {
             var filter:GlowFilter = null;
-            var alpha:Number = style.getDefaultValue(VisualProperties.NODE_SELECTION_GLOW_ALPHA);
-            var blur:Number = style.getDefaultValue(VisualProperties.NODE_SELECTION_GLOW_BLUR);
-            var strength:Number = style.getDefaultValue(VisualProperties.NODE_SELECTION_GLOW_STRENGTH);
+            var data:Object = n.data;
+            var alpha:Number = style.getValue(VisualProperties.NODE_SELECTION_GLOW_ALPHA, data);
+            var blur:Number = style.getValue(VisualProperties.NODE_SELECTION_GLOW_BLUR, data);
+            var strength:Number = style.getValue(VisualProperties.NODE_SELECTION_GLOW_STRENGTH, data);
             
             if (alpha > 0 && blur > 0 && strength > 0) {
-                var color:uint = style.getDefaultValue(VisualProperties.NODE_SELECTION_GLOW_COLOR);           
+                var color:uint = style.getValue(VisualProperties.NODE_SELECTION_GLOW_COLOR, data);           
                 filter = new GlowFilter(color, alpha, blur, blur, strength);
             }
             
@@ -210,12 +240,13 @@ package org.cytoscapeweb.util {
         
         public static function hoverGlow(n:NodeSprite):GlowFilter {
             var filter:GlowFilter = null;
-            var alpha:Number = style.getDefaultValue(VisualProperties.NODE_HOVER_GLOW_ALPHA);
-            var blur:Number = style.getDefaultValue(VisualProperties.NODE_HOVER_GLOW_BLUR);
-            var strength:Number = style.getDefaultValue(VisualProperties.NODE_HOVER_GLOW_STRENGTH);
+            var data:Object = n.data;
+            var alpha:Number = style.getValue(VisualProperties.NODE_HOVER_GLOW_ALPHA, data);
+            var blur:Number = style.getValue(VisualProperties.NODE_HOVER_GLOW_BLUR, data);
+            var strength:Number = style.getValue(VisualProperties.NODE_HOVER_GLOW_STRENGTH, data);
             
             if (alpha > 0 && blur > 0 && strength > 0) {
-                var color:uint = style.getDefaultValue(VisualProperties.NODE_HOVER_GLOW_COLOR);
+                var color:uint = style.getValue(VisualProperties.NODE_HOVER_GLOW_COLOR, data);
                 filter = new GlowFilter(color, alpha, blur, blur, strength);
             }
             

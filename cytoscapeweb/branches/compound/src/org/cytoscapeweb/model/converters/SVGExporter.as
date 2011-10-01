@@ -43,6 +43,7 @@ package org.cytoscapeweb.model.converters {
     import flash.geom.Point;
     import flash.geom.Rectangle;
     import flash.text.TextField;
+    import flash.text.TextFormatAlign;
     import flash.utils.ByteArray;
     
     import mx.graphics.codec.PNGEncoder;
@@ -309,7 +310,7 @@ package org.cytoscapeweb.model.converters {
                         // The current version of AlivePDF does not support glows, gradients, etc.
                         // So we just draw a bigger shape behind the node:
                         svg += '<g fill="none" stroke="'+lc+'" stroke-linejoin="round" stroke-width="'+lw+'" stroke-linecap="butt" stroke-opacity="'+a+'">';
-                        svg += drawNodeShape(n.shape, np.x, np.y, w, h);
+                        svg += drawNodeShape(n.shape, np.x, np.y, w, h, true);
                         svg += '</g>';
                     }
                 }
@@ -322,10 +323,10 @@ package org.cytoscapeweb.model.converters {
                 w = (n.width - n.lineWidth) * _scale;
                 h = (n.height - n.lineWidth) * _scale;
  
-                svg += '<g class="'+NODE_SHAPE_CLASS+'" fill="'+c+'" fill-opacity="'+a+'" stroke="'+lc+'" stroke-linejoin="round" stroke-width="'+lw+'" stroke-linecap="butt" stroke-opacity="'+a+'">';
+                svg += '<g class="'+NODE_SHAPE_CLASS+'" fill="'+c+'" opacity="'+a+'" stroke="'+lc+'" stroke-linejoin="round" stroke-width="'+lw+'" stroke-linecap="butt" stroke-opacity="'+a+'">';
                 
                 // Basic node shape
-                svg += (nodeSvgShape = drawNodeShape(n.shape, np.x, np.y, w, h));
+                svg += (nodeSvgShape = drawNodeShape(n.shape, np.x, np.y, w, h, n.props.transparent));
                 
                 // Node image, if any:
                 img = _imgCache.getImage(n.props.imageUrl);
@@ -369,15 +370,18 @@ package org.cytoscapeweb.model.converters {
                     var lblSize:int = Math.round(lbl.size*_scale);
                     
                     if (text == null || text === "" || lblSize < 1) continue;
+                    
                     var field:TextField = lbl.textField;
+                    var lines:Array = text.split("\r");
 
                     // ATTENTION!!!
                     // It seems that Flash does not convert points to pixels correctly. 
                     // See: - http://alarmingdevelopment.org/?p=66
                     //      - http://www.actionscript.org/forums/showthread.php3?p=821842
                     // I found out that the text height is usually 28% smaller than the label size.
-                    var textHeight:Number = lbl.size * 0.72;
-                    var textWidth:Number = field.textWidth;
+                    var textHeight:Number = lbl.size * 0.72 * _scale;
+                    textHeight *= 1.25; // vertical spacing between lines
+                    var textWidth:Number = field.textWidth * _scale;
 
                     // Get the Global label point (relative to the stage):
                     var p:Point = toImagePoint(new Point(lbl.x, lbl.y), lbl);
@@ -396,25 +400,29 @@ package org.cytoscapeweb.model.converters {
                         vAnchor = _style.getValue(VisualProperties.NODE_LABEL_VANCHOR, d.data);
                     }
 
-                    var hpad:Number = 2;
+                    var hpad:Number = 2 * _scale;
                     switch (hAnchor) {
-                        case Anchors.LEFT:   p.x += hpad * _scale; break;
-                        case Anchors.CENTER: p.x -= (textWidth/2)*_scale; break;
-                        case Anchors.RIGHT:  p.x -= (textWidth + hpad)*_scale; break;
+                        case Anchors.LEFT:   p.x += hpad; break;
+                        case Anchors.RIGHT:  p.x -= hpad; break;
                     }
+                    
                     // Vertical anchor:
                     // The label height is different from the real text height, because
                     // there is a margin between the text and the text field border:
-                    var vpad:Number = 2;
+                    var vpad:Number = 2 * _scale;
                     switch (vAnchor) {
-                        case Anchors.TOP:    p.y += (field.height - textHeight)/2 * _scale; break;
-                        case Anchors.MIDDLE: p.y -= textHeight/2 * _scale; break;
-                        case Anchors.BOTTOM: p.y -= (vpad + textHeight) * _scale; break;
+                        case Anchors.TOP:
+                            p.y -= textHeight/2;
+                            p.y += ( textHeight/4 + vpad );
+                            break;
+                        case Anchors.MIDDLE:
+                            p.y -= ( (textHeight/2) * lines.length );
+                            p.y -= textHeight/6;
+                            break;
+                        case Anchors.BOTTOM:
+                            p.y -= ( (textHeight * lines.length) + vpad );
+                            break;
                     }
-                    
-                    // Flare's label cordinates is relative to the label's upper-left corner (x,y)=(0,0),
-                    // but AlivePDF uses the bottom-left corner instead (x,y)=(0,fonSize):
-                    p.y += textHeight*_scale;
 
                     var style:String = lbl.italic ? 'italic': 'normal';
                     var weight:String = lbl.bold ? 'bold' : 'normal';
@@ -426,26 +434,39 @@ package org.cytoscapeweb.model.converters {
                     else if (family == Fonts.TYPEWRITER) family = 'courier';
                     
                     var c:String = Utils.rgbColorAsString(lbl.color);
-                    var a:Number = lbl.alpha;
-                    
+                    var a:Number = d.alpha;
+                    var ta:String = getTextAnchor(lbl);
+
                     svg += '<text font-family="'+family+'" font-style="'+style+'" font-weight="'+weight+'" stroke="none" fill="'+c+'"' +
-                                ' fill-opacity="'+a+'" font-size="'+lblSize+'" x="'+p.x+'" y="'+p.y+'">' + text+ '</text>';
+                                ' fill-opacity="'+a+'" font-size="'+lblSize+'" x="'+p.x+'" y="'+p.y+'" style="text-anchor:'+ta+';">';
+                    
+                    if (lines.length > 0) {
+                        for (var i:int = 0; i < lines.length; i++) {
+                            var ln:String = lines[i];
+                            svg += '<tspan style="text-anchor:'+ta+';" x="'+p.x+'" dy="'+textHeight+'">'+ln+'</tspan>';
+                        }
+                    } else {
+                        svg += text;
+                    }
+                    
+                    svg += '</text>';
                 }
             }
             
             return svg;
         }
         
-        private function drawNodeShape(shape:String, x:Number, y:Number, w:Number, h:Number):String {
+        private function drawNodeShape(shape:String, x:Number, y:Number, w:Number, h:Number, transparent:Boolean):String {
             var svg:String = '';
             var r:Rectangle = new Rectangle(x-w/2, y-h/2, w, h);
+            var fillOpacity:String = transparent ?  ' fill-opacity="0"' : '';
             
             switch (shape) {
                 case NodeShapes.ELLIPSE:
-                    svg += '<circle cx="'+x+'" cy="'+y+'" r="'+(h/2)+'"/>';
+                    svg += '<ellipse cx="'+x+'" cy="'+y+'" rx="'+(w/2)+'" ry="'+(h/2)+'"'+fillOpacity+'/>';
                     break;
                 case NodeShapes.RECTANGLE:
-                    svg += '<rect x="'+(x-w/2)+'" y="'+(y-h/2)+'" width="'+w+'" height="'+h+'"/>';
+                    svg += '<rect x="'+(x-w/2)+'" y="'+(y-h/2)+'" width="'+w+'" height="'+h+'"'+fillOpacity+'/>';
                     break;
                 case NodeShapes.ROUND_RECTANGLE:
                     // corners (and control points), clockwise:
@@ -454,7 +475,8 @@ package org.cytoscapeweb.model.converters {
                     var x3:Number = x2,      y3:Number = y + h/2;
                     var x4:Number = x1,      y4:Number = y3;
                     // rounded corner width/height:
-                    var w4:Number = w/4, h4:Number = h/4;
+                    var w4:Number = NodeShapes.getRoundRectCornerRadius(w, h);
+                    var h4:Number = w4;
                     
                     svg += '<path d="M'+(x1+w4)+','+(y1) +
                                    ' L'+(x2-w4)+','+(y2) +
@@ -464,13 +486,14 @@ package org.cytoscapeweb.model.converters {
                                    ' L'+(x4+w4)+','+(y4) +
                                    ' Q'+(x4)+','+(y4)+' '+(x4)+','+(y4-h4) +
                                    ' L'+(x1)+','+(y1+h4) +
-                                   ' Q'+(x1)+','+(y1)+' '+(x1+w4)+','+(y1)+'"/>';
+                                   ' Q'+(x1)+','+(y1)+' '+(x1+w4)+','+(y1)+'"'+
+                                   fillOpacity+'/>';
                     break;
                 default:
                     var points:Array = NodeShapes.getDrawPoints(r, shape);
                     var pp:String = '';
                     for (var i:int = 0; i < points.length; i += 2) pp += (points[i]+','+points[i+1]+' ');
-                    svg += '<polygon points="'+pp+'"/>';
+                    svg += '<polygon points="'+pp+'"'+fillOpacity+'/>';
             }
             
             return svg;
@@ -614,6 +637,15 @@ package org.cytoscapeweb.model.converters {
             }
      
             return pageEdge / graphEdge;
+        }
+        
+        private function getTextAnchor(lbl:TextSprite):String {
+            var ta:String = 'middle';
+     
+            if (lbl.textFormat.align === TextFormatAlign.LEFT) ta = 'start';
+            else if (lbl.textFormat.align === TextFormatAlign.RIGHT) ta = 'end';
+     
+            return ta;
         }
     }
 }

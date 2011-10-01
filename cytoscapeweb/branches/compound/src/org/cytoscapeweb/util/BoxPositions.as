@@ -28,57 +28,54 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.util {
-    import flare.vis.data.DataSprite;
-    import flare.vis.data.EdgeSprite;
-    import flare.vis.data.NodeSprite;
-    
     import mx.utils.StringUtil;
     
     
-    
     /**
-     * Abstract utility class defining constants for the groups of network elements.
+     * Abstract utility class defining names of positions for boxes.
      */
-    public class Groups {
+    public class BoxPositions {
         
         // ========[ CONSTANTS ]====================================================================
         
-        public static const NODES:String = "nodes";
-		public static const COMPOUND_NODES:String = "compoundNodes";
-        public static const EDGES:String = "edges";
-        public static const NONE:String = "none";
+        public static const TOP_LEFT:String = "topLeft";
+        public static const TOP_CENTER:String = "topCenter";
+        public static const TOP_RIGHT:String = "topRight";
         
-        public static const REGULAR_EDGES:String = "regularEdges";
-        public static const MERGED_EDGES:String = "mergedEdges";
-        public static const SELECTED_NODES:String = "selectedNodes";
-        public static const SELECTED_EDGES:String = "selectedEdges";
-        public static const FILTERED_NODES:String = "filteredNodes";
-        public static const FILTERED_EDGES:String = "filteredEdges";
+        public static const MIDDLE_LEFT:String = "middleLeft";
+        public static const MIDDLE_CENTER:String = "middleCenter";
+        public static const MIDDLE_RIGHT:String = "middleRight";
+
+        public static const BOTTOM_LEFT:String = "bottomLeft";
+        public static const BOTTOM_CENTER:String = "bottomCenter";
+        public static const BOTTOM_RIGHT:String = "bottomRight";
         
         // ========[ CONSTRUCTOR ]==================================================================
         
         /**
          * This constructor will throw an error, as this is an abstract class. 
          */
-        public function Groups() {
+        public function BoxPositions() {
             throw new Error("This is an abstract class.");
         }
         
         // ========[ PUBLIC METHODS ]===============================================================
-        
-        public static function groupOf(ds:DataSprite):String {
-            var gr:String = NONE;
-            if (ds is NodeSprite) gr = NODES;
-            else if (ds is EdgeSprite) gr = EDGES;
-            return gr;
-        }
-        
-        public static function parse(gr:String):String {
-            if (gr != null) gr = StringUtil.trim(gr.toLowerCase());
-            if (gr === NODES) return NODES;
-            if (gr === EDGES) return EDGES;
-            
-            return null;
+
+        public static function parse(s:String):String {
+            if (s != null) s = StringUtil.trim(s.toLowerCase());
+
+            switch (s) {
+                case TOP_LEFT.toLowerCase():      return TOP_LEFT;
+                case TOP_CENTER.toLowerCase():    return TOP_CENTER;
+                case TOP_RIGHT.toLowerCase():     return TOP_RIGHT;
+                case MIDDLE_LEFT.toLowerCase():   return MIDDLE_LEFT;
+                case MIDDLE_CENTER.toLowerCase(): return MIDDLE_CENTER;
+                case MIDDLE_RIGHT.toLowerCase():  return MIDDLE_RIGHT;
+                case BOTTOM_LEFT.toLowerCase():   return BOTTOM_LEFT;
+                case BOTTOM_CENTER.toLowerCase(): return BOTTOM_CENTER;
+                case BOTTOM_RIGHT.toLowerCase():
+                default:                          return BOTTOM_RIGHT;
+            }
         }
         
         // ========[ PRIVATE METHODS ]==============================================================

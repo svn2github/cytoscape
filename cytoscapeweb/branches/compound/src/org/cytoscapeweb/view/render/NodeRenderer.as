@@ -28,6 +28,7 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.view.render {
+	import flare.display.TextSprite;
 	import flare.util.Shapes;
 	import flare.vis.data.DataSprite;
 	import flare.vis.data.EdgeSprite;
@@ -46,10 +47,15 @@ package org.cytoscapeweb.view.render {
 	import org.cytoscapeweb.ApplicationFacade;
 	import org.cytoscapeweb.model.ConfigProxy;
 	import org.cytoscapeweb.model.GraphProxy;
+	import org.cytoscapeweb.model.error.CWError;
+	import org.cytoscapeweb.model.methods.error;
+	import org.cytoscapeweb.util.ErrorCodes;
 	import org.cytoscapeweb.util.NodeShapes;
 	
 
     public class NodeRenderer extends ShapeRenderer {
+    	
+    	private static const WRAP_PAD:Number = 5;
     	
         private static var _instance:NodeRenderer = new NodeRenderer();
         public static function get instance():NodeRenderer { return _instance; }
@@ -82,51 +88,98 @@ package org.cytoscapeweb.view.render {
         
         /** @inheritDoc */
         public override function render(d:DataSprite):void {trace("RENDER NODE: " + d.data.id);
-            var lineAlpha:Number = d.lineAlpha;
-            var fillAlpha:Number = d.fillAlpha;
-            var size:Number = d.size * defaultSize;
-            
-            var g:Graphics = d.graphics;
-            g.clear();
-            
-            // Just to prevent rendering issues when drawing large bitmaps on small nodes:
-            d.cacheAsBitmap = d.props.imageUrl != null;
-            
-            if (lineAlpha > 0 && d.lineWidth > 0) {
-                var pixelHinting:Boolean = d.shape === NodeShapes.ROUND_RECTANGLE;
-                g.lineStyle(d.lineWidth, d.lineColor, lineAlpha, pixelHinting);
-            }
-            
-            if (fillAlpha > 0) {
-                // 1. Draw the background color:
+            try {
                 // Using a bit mask to avoid transparent mdes when fillcolor=0xffffffff.
                 // See https://sourceforge.net/forum/message.php?msg_id=7393265
-                g.beginFill(0xffffff & d.fillColor, fillAlpha);
-                drawShape(d, d.shape, size);
+                var fillColor:uint = 0xffffff & d.fillColor;
+                var fillAlpha:Number = d.fillAlpha;
+                var size:Number = d.size * defaultSize;
+                
+                var lineColor:uint = d.lineColor;
+                var lineAlpha:Number = d.lineAlpha;
+                var lineWidth:Number = d.lineWidth;
+                
+                var w:Number = d.props.width;
+                var h:Number = d.props.height;
+                
+                if (d.props.autoSize) {
+                    var lbl:TextSprite = d.props.label;
+                    var hf:Number = 1, wf:Number = 1;
+                    
+                    if (lbl != null && lbl.visible) {
+                        w = isNaN(lbl.width) ? 0 : lbl.width;
+                        h = isNaN(lbl.height) ? 0 : lbl.height;
+                        
+                        // TODO: it is just an approximation--calculate more size accurately
+                        switch (d.shape) {
+                            case NodeShapes.TRIANGLE:      hf = wf = 2.0; break;
+                            case NodeShapes.V:             hf = wf = 3.2; break;
+                            case NodeShapes.OCTAGON:       hf = wf = 1.4; break;
+                            case NodeShapes.HEXAGON:       hf = wf = 1.6; break;
+                            case NodeShapes.PARALLELOGRAM: wf = 2.6;      break;
+                            case NodeShapes.DIAMOND:       hf = wf = 2.0; break;
+                            case NodeShapes.ELLIPSE:       hf = wf = 1.4; break;
+                        }
+                        
+                        w *= wf;
+                        h *= hf;
+                    } else {
+                        w = h = 3 * WRAP_PAD;
+                    }
+                    
+                    w += 2 * WRAP_PAD;
+                    h += 2 * WRAP_PAD;
+                } else {
+                    if (isNaN(w) || w < 0) w = size;
+                    if (isNaN(h) || h < 0) h = size;
+                }
+                
+                var g:Graphics = d.graphics;
+                g.clear();
+                
+                // Just to prevent rendering issues when drawing large bitmaps on small nodes:
+                d.cacheAsBitmap = d.props.imageUrl != null;
+                
+                if (isNaN(w) || isNaN(h) || w <= 0 || h <= 0) return;
+                
+                if (lineAlpha > 0 && lineWidth > 0) {
+                    var pixelHinting:Boolean = d.shape === NodeShapes.ROUND_RECTANGLE;
+                    g.lineStyle(lineWidth, lineColor, lineAlpha, pixelHinting);
+                }
+                
+                // 1. Draw the background color:
+                // Even if "transparent", we still need to draw a shape,
+                // or the node will not receive mouse events
+                if (d.props.transparent) fillAlpha = 0;
+                g.beginFill(fillColor, fillAlpha);
+                drawShape(d, d.shape, w, h);
                 g.endFill();
                 
                 // 2. Draw an image on top:
-                drawImage(d, size);
+                drawImage(d, w, h);
+                
+                // To prevent gaps between the node and its edges when the node has the
+                // border width changed on mouseover or selection
+                NodeSprite(d).visitEdges(function(e:EdgeSprite):Boolean {
+                   e.dirty();
+                   return false; 
+                }, NodeSprite.GRAPH_LINKS);
+            } catch (err:Error) {
+                error(new CWError("Error rendering Node '" + d.data.id +"': " + err.message,
+                                  ErrorCodes.RENDERING_ERROR));
             }
-            
-            // To prevent gaps between the node and its edges when the node has the
-            // border width changed on mouseover or selection
-            NodeSprite(d).visitEdges(function(e:EdgeSprite):Boolean {
-               e.dirty();
-               return false; 
-            }, NodeSprite.GRAPH_LINKS);
         }
         
         // ========[ PRIVATE METHODS ]==============================================================
         
-        private function drawShape(s:Sprite, shape:String, size:Number):void {
+        private function drawShape(s:Sprite, shape:String, width:Number, height:Number):void {
             var g:Graphics = s.graphics;
             
             switch (shape) {
                 case null:
                     break;
                 case NodeShapes.RECTANGLE:
-                    g.drawRect(-size/2, -size/2, size, size);
+                    g.drawRect(-width/2, -height/2, width, height);
                     break;
                 case NodeShapes.TRIANGLE:
                 case NodeShapes.DIAMOND:
@@ -134,23 +187,27 @@ package org.cytoscapeweb.view.render {
                 case NodeShapes.OCTAGON:
                 case NodeShapes.PARALLELOGRAM:
                 case NodeShapes.V:
-                    var r:Rectangle = new Rectangle(-size/2, -size/2, size, size);
+                    var r:Rectangle = new Rectangle(-width/2, -height/2, width, height);
                     var points:Array = NodeShapes.getDrawPoints(r, shape);
                     Shapes.drawPolygon(g, points);
                     break;
                 case NodeShapes.ROUND_RECTANGLE:
-                    g.drawRoundRect(-size/2, -size/2, size, size, size/2, size/2);
+                    var eh:Number = NodeShapes.getRoundRectCornerRadius(width, height) * 2;
+                    g.drawRoundRect(-width/2, -height/2, width, height, eh, eh);
                     break;
                 case NodeShapes.ELLIPSE:
                 default:
-                    Shapes.drawCircle(g, size/2);
+                    if (width == height)
+                        Shapes.drawCircle(g, width/2);
+                    else
+                        g.drawEllipse(-width/2, -height/2, width, height);
             }
         }
         
-        private function drawImage(d:DataSprite, size:Number):void {
+        private function drawImage(d:DataSprite, w:Number, h:Number):void {
             var url:String = d.props.imageUrl;
             
-            if (size > 0 && url != null && StringUtil.trim(url).length > 0) {
+            if (w > 0 && h > 0 && url != null && StringUtil.trim(url).length > 0) {
                 // Load the image into the cache first?
                 if (!_imgCache.contains(url)) {trace("Will load IMAGE...");
                     _imgCache.loadImage(url);
@@ -174,14 +231,14 @@ package org.cytoscapeweb.view.render {
                     
                     if (bd != null) {
                         var bmpSize:Number = Math.min(bd.height, bd.width);
-                        var scale:Number = size/bmpSize;
+                        var scale:Number = Math.max(w, h)/bmpSize;
 
                         var m:Matrix = new Matrix();
                         m.scale(scale, scale);
                         m.translate(-(bd.width*scale)/2, -(bd.height*scale)/2);
                         
                         d.graphics.beginBitmapFill(bd, m, false, true);
-                        drawShape(d, d.shape, size);
+                        drawShape(d, d.shape, w, h);
                         d.graphics.endFill();
                     }
                 }

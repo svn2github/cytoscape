@@ -29,8 +29,6 @@
 */
 package org.cytoscapeweb.controller {
     import flare.vis.data.DataSprite;
-    import flare.vis.data.EdgeSprite;
-    import flare.vis.data.NodeSprite;
     
     import org.cytoscapeweb.ApplicationFacade;
     import org.cytoscapeweb.model.converters.ExternalObjectConverter;
@@ -40,49 +38,34 @@ package org.cytoscapeweb.controller {
     
 
     /**
-     * Take the necessary actions after a node or edge was rolled-over/rolled-out.
-     * The target DataSprite (node or edge) must be sent as the notification body.
+     * Take the necessary actions after a drag event has started or sttoped.
+     * The target node must be sent as the target of the notification body.
      */
-    public class HandleHoverCommand extends BaseSimpleCommand {
+    public class HandleDragCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
-            var ds:DataSprite = notification.getBody() as DataSprite;
-            var action:String = notification.getName();
-            var group:String = Groups.groupOf(ds);
+            var body:Object = notification.getBody();
+            var ds:DataSprite;
             
-            var type:String = action === ApplicationFacade.ROLLOVER_EVENT ? "mouseover" : "mouseout";
-            var previousDs:DataSprite;
-            
-            switch (action) {
-                case ApplicationFacade.ROLLOVER_EVENT:
-                    if (ds is NodeSprite) {
-                        previousDs = graphProxy.rolledOverNode;
-                        graphProxy.rolledOverNode = NodeSprite(ds);
-                    } else if (ds is EdgeSprite) {
-                        previousDs = graphProxy.rolledOverEdge;
-                        graphProxy.rolledOverEdge = EdgeSprite(ds);
-                    }
-                    break;
-                case ApplicationFacade.ROLLOUT_EVENT:
-                    if (ds is NodeSprite) {
-                        previousDs = graphProxy.rolledOverNode;
-                        graphProxy.rolledOverNode = null;
-                    } else if (ds is EdgeSprite) {
-                        previousDs = graphProxy.rolledOverEdge;
-                        graphProxy.rolledOverEdge = null;
-                    }
+            if (body != null) {
+                ds = body.target as DataSprite;
             }
             
-            // Reset visual properties:
-            if (previousDs != null) graphMediator.resetDataSprite(previousDs);
-            if (ds != null) graphMediator.resetDataSprite(ds);
-                
+            var action:String = notification.getName();
+            var group:String = Groups.groupOf(ds); 
+            
+            var type:String = "drag";
+            if (action === ApplicationFacade.DRAG_START_EVENT) type = "dragstart";
+            else if (action === ApplicationFacade.DRAG_STOP_EVENT) type = "dragstop";
+            trace(type);
             // Call external listener:            
             if (extMediator.hasListener(type, group)) {
                 var target:Object = ExternalObjectConverter.toExtElement(ds, graphProxy.zoom);
-
-                var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
-                                    argument: { type: type, group: group, target: target } };
+                
+                body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
+                         argument: { type: type,
+                                     group: group, 
+                                     target: target } };
                 
                 sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);
             }

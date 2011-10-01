@@ -61,10 +61,17 @@
         vis1.ready(function() { runGraphTests("Vis-1", vis1, options1); });
         runJSTests(vis1);
 
-        $.get("fixtures/test1.graphml", function(xml){
-            options1.network = xml;
-            options1.layout = { name: "circle", options: {} };
-            vis1.draw(options1);
+        $.ajax({
+            url: "fixtures/test1.graphml",
+            dataType: "text",
+            success: function(xml){
+                options1.network = xml;
+                options1.layout = { name: "circle", options: {} };
+                vis1.draw(options1);
+            },
+            error: function(){
+                alert("Error loading file 1");
+            }
         });
         
         var options2 = {
@@ -77,9 +84,16 @@
         var vis2 = new org.cytoscapeweb.Visualization("cytoweb2", { resourceBundleUrl: "fixtures/bundle_test.properties" });
         vis2.ready(function() { runGraphTests("Vis-2", vis2, options2); });
 
-        $.get("fixtures/test2.xgmml", function(xml){
-            options2.network = xml;
-            vis2.draw(options2);
+        $.ajax({
+            url: "fixtures/test2.xgmml",
+            dataType: "text",
+            success: function(xml){
+                options2.network = xml;
+                vis2.draw(options2);
+            },
+            error: function(){
+                alert("Error loading file 2");
+            }
         });
 
         var options3 = {
@@ -92,9 +106,16 @@
         var vis3 = new org.cytoscapeweb.Visualization("cytoweb3");
         vis3.ready(function() { runGraphTests("Vis-3", vis3, options3); });
 
-        $.get("fixtures/test3.graphml", function(xml){
-            options3.network = xml;
-            vis3.draw(options3);
+        $.ajax({
+            url: "fixtures/test3.graphml",
+            dataType: "text",
+            success: function(xml){
+        		options3.network = xml;
+            	vis3.draw(options3);
+            },
+            error: function(){
+                alert("Error loading file 3");
+            }
         });
     });
 </script>

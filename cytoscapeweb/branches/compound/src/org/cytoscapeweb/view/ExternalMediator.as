@@ -32,15 +32,14 @@ package org.cytoscapeweb.view {
     
     import flare.data.DataSchema;
     import flare.data.DataSet;
+    import flare.vis.data.DataSprite;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     
     import flash.external.ExternalInterface;
     import flash.geom.Point;
-    import flash.net.getClassByAlias;
     import flash.utils.ByteArray;
     
-    import mx.styles.ISimpleStyleClient;
     import mx.utils.Base64Encoder;
     
     import org.cytoscapeweb.ApplicationFacade;
@@ -49,6 +48,7 @@ package org.cytoscapeweb.view {
     import org.cytoscapeweb.model.data.GraphicsDataTable;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.Anchors;
     import org.cytoscapeweb.util.CompoundNodes;
@@ -136,6 +136,7 @@ package org.cytoscapeweb.view {
                 }
                 
                 functionName = "_cytoscapeWebInstances." + configProxy.id + "." + functionName;
+                
                 try {
                     if (desigFunction != null)
                         return ExternalInterface.call(functionName, desigFunction, argument);
@@ -285,7 +286,7 @@ package org.cytoscapeweb.view {
                 
                 if (nodes != null && nodes.length > 0) {
                     var fn:FirstNeighborsVO  = new FirstNeighborsVO(nodes, ignoreFilteredOut);
-                    obj = fn.toObject();
+                    obj = fn.toObject(graphProxy.zoom);
                     obj = JSON.encode(obj);
                 }
             }
@@ -294,39 +295,44 @@ package org.cytoscapeweb.view {
         }
 
         private function getNodeById(id:String):String {
-            var obj:Object = ExternalObjectConverter.toExtElement(graphProxy.getNode(id));
+            var obj:Object = ExternalObjectConverter.toExtElement(graphProxy.getNode(id),
+                                                                  graphProxy.zoom);
             return JSON.encode(obj);
         }
         
         private function getEdgeById(id:String):String {
-            var obj:Object = ExternalObjectConverter.toExtElement(graphProxy.getEdge(id));
+            var obj:Object = ExternalObjectConverter.toExtElement(graphProxy.getEdge(id),
+                                                                  graphProxy.zoom);
             return JSON.encode(obj);
         }
         
         private function getNodes():String {
-            var arr:Array = ExternalObjectConverter.toExtElementsArray(graphProxy.graphData.nodes);
+            var arr:Array = ExternalObjectConverter.toExtElementsArray(graphProxy.graphData.nodes,
+                                                                       graphProxy.zoom);
             return JSON.encode(arr);
         }
         
         private function getEdges():String {
             var edges:Array = graphProxy.edges;
-            var arr:Array = ExternalObjectConverter.toExtElementsArray(edges);
+            var arr:Array = ExternalObjectConverter.toExtElementsArray(edges, graphProxy.zoom);
             return JSON.encode(arr);
         }
         
         private function getMergedEdges():String {
             var edges:Array = graphProxy.mergedEdges;
-            var arr:Array = ExternalObjectConverter.toExtElementsArray(edges);
+            var arr:Array = ExternalObjectConverter.toExtElementsArray(edges, graphProxy.zoom);
             return JSON.encode(arr);
         }
         
         private function getSelectedNodes():String {
-            var arr:Array = ExternalObjectConverter.toExtElementsArray(graphProxy.selectedNodes);
+            var arr:Array = ExternalObjectConverter.toExtElementsArray(graphProxy.selectedNodes,
+                                                                       graphProxy.zoom);
             return JSON.encode(arr);
         }
         
         private function getSelectedEdges():String {
-            var arr:Array = ExternalObjectConverter.toExtElementsArray(graphProxy.selectedEdges);
+            var arr:Array = ExternalObjectConverter.toExtElementsArray(graphProxy.selectedEdges,
+                                                                       graphProxy.zoom);
             return JSON.encode(arr);
         }
         
@@ -359,6 +365,72 @@ package org.cytoscapeweb.view {
             var obj:Object = configProxy.visualStyleBypass.toObject();
             return JSON.encode(obj);
         }
+		
+		// TODO [merge] adapt for compound nodes ..
+		private function addElements(items:Array, updateVisualMappers:Boolean=false):Array {
+			var newAll:Array = [], newNodes:Array = [], newEdges:Array = [], ret:Array = [];
+			var edgesToAdd:Array = [];
+			var gr:String, newElement:DataSprite, o:Object;
+			
+			try {                
+				// Create element:
+				for each (o in items) {
+					gr = Groups.parse(o.group);
+					
+					if (gr == null)
+						throw new CWError("The 'group' field of the new element  must be either '" + 
+							Groups.NODES + "' or '" + Groups.EDGES + "'.");
+					
+					if (gr === Groups.NODES) {
+						// Create nodes first!
+						newElement = graphProxy.addNode(o.data);
+						// Position it:
+						var p:Point = new Point(o.x, o.y);
+						p = graphMediator.vis.globalToLocal(p);
+						newElement.x = p.x;
+						newElement.y = p.y;
+						
+						newNodes.push(newElement);
+						newAll.push(newElement);
+					} else {
+						// Just store the edge,
+						// so it can be added after all new nodes have been created first:
+						edgesToAdd.push(o);
+					}
+				}
+				
+				// Now it is safe to add the edges:
+				for each (o in edgesToAdd) {
+					newElement = graphProxy.addEdge(o.data);
+					newEdges.push(newElement);
+					newAll.push(newElement);
+				}
+				
+				// Set listeners, styles, etc:
+				graphMediator.initialize(Groups.NODES, newNodes);
+				graphMediator.initialize(Groups.EDGES, newEdges);
+				
+				// Do it before converting the Nodes/Edges to plain objects,
+				// in order to get the rendered visual properties:
+				if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
+				
+				// Finally convert the items to a plain objects that can be returned:
+				for each (newElement in newAll) {
+					o = ExternalObjectConverter.toExtElement(newElement, graphProxy.zoom);
+					ret.push(o);
+				}
+			} catch (err:Error) {
+				trace("[ERROR]: addElements: " + err.getStackTrace());
+				
+				// Rollback--delete any new item:
+				removeElements(Groups.NONE, newAll, updateVisualMappers);
+				ret = [];
+				
+				error(err);
+			}
+			
+			return ret;
+		}
 		
 		private function addNode(x:Number, y:Number, 
 			data:Object,
@@ -403,7 +475,7 @@ package org.cytoscapeweb.view {
 				}
 				
 				// convert to external object
-				extObj = ExternalObjectConverter.toExtElement(ns);
+				extObj = ExternalObjectConverter.toExtElement(ns, graphProxy.zoom);
 			}
 			catch (err:Error)
 			{
@@ -424,7 +496,7 @@ package org.cytoscapeweb.view {
                 graphMediator.initialize(Groups.EDGES, [e]);
                 
                 if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
-                o = ExternalObjectConverter.toExtElement(e);
+                o = ExternalObjectConverter.toExtElement(e, graphProxy.zoom);
                 
             } catch (err:Error) {
                 trace("[ERROR]: addEdge: " + err.getStackTrace());
@@ -569,7 +641,7 @@ package org.cytoscapeweb.view {
                 sendNotification(ApplicationFacade.UPDATE_DATA, { group: group, items: items, data: data });
         }
         
-        private function getNetworkModel():Object {
+        private function getNetworkModel():String {
         	var data:Object = graphProxy.graphData;
         	var nodesSchema:DataSchema = graphProxy.nodesSchema;
         	var edgesSchema:DataSchema = graphProxy.edgesSchema;
@@ -577,17 +649,20 @@ package org.cytoscapeweb.view {
         	var nodesTable:GraphicsDataTable = new GraphicsDataTable(data.nodes, nodesSchema);
             var edgesTable:GraphicsDataTable = new GraphicsDataTable(data.group(Groups.REGULAR_EDGES), edgesSchema);
             var ds:DataSet = new DataSet(nodesTable, edgesTable);
+            
+            var model:Object = ExternalObjectConverter.toExtNetworkModel(ds);
         	
-            return ExternalObjectConverter.toExtNetworkModel(ds);
+            return JSON.encode(model);
         }
         
         private function getNetworkAsText(format:String="xgmml", options:Object=null):String {
-            return graphProxy.getDataAsText(format, options);
+            var viewCenter:Point = graphMediator.getViewCenter();
+            return graphProxy.getDataAsText(format, viewCenter, options);
         }
         
         private function getNetworkAsImage(format:String="pdf", options:Object=null):String {
             if (options == null) options = {};
-            // TODO: Refactor - proxy should NOT use a mediator!!!
+            
             var appMediator:ApplicationMediator = facade.retrieveMediator(ApplicationMediator.NAME) as ApplicationMediator;
             var img:* = appMediator.getGraphImage(format, options.width, options.height);
             
@@ -628,7 +703,7 @@ package org.cytoscapeweb.view {
                                         "getLayout", "applyLayout", 
                                         "setVisualStyle", "getVisualStyle", 
                                         "getVisualStyleBypass", "setVisualStyleBypass",
-                                        "addNode", "addEdge", "removeElements",
+                                        "addElements", "addNode", "addEdge", "removeElements",
                                         "getDataSchema", "addDataField", "removeDataField", "updateData",
                                         "getNetworkModel", "getNetworkAsText", "getNetworkAsImage", 
                                         "exportNetwork" ];

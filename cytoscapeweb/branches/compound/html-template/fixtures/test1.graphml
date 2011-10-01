@@ -1,9 +1,11 @@
 <graphml>
+  <key id="label" for="all" attr.name="label" attr.type="string"/>
+  <key id="name" for="all" attr.name="name" attr.type="string"/>
+
   <key id="weight" for="node" attr.name="weight" attr.type="double"/>
   <key id="ranking" for="node" attr.name="ranking" attr.type="int"/>
   <key id="type" for="node" attr.name="type" attr.type="string"/>
   <key id="shape" for="node" attr.name="shape" attr.type="string"/>
-  <key id="label" for="node" attr.name="label" attr.type="string"/>
   <key id="special" for="node" attr.name="special" attr.type="boolean"/>
   
   <key id="type" for="edge" attr.name="type" attr.type="string"/>
@@ -18,7 +20,8 @@
     <node id="1">
       <data key="weight">0.45</data>
       <data key="ranking">1</data>
-      <data key="label">n1</data>
+      <data key="label">n1&#xA;TEST LINE BREAK</data>
+      <data key="name">Node 1</data>
       <data key="type">1</data>
       <data key="shape">ELLIPSE</data>
       <data key="special">false</data>
@@ -27,6 +30,7 @@
       <data key="weight">0.22</data>
       <data key="ranking">2</data>
       <data key="label">n2</data>
+      <data key="name">Node 2</data>
       <data key="type">2</data>
       <data key="shape">TRIANGLE</data>
       <data key="special">true</data>
@@ -35,6 +39,7 @@
       <data key="weight">0.09</data>
       <data key="ranking">3</data>
       <data key="label">n3</data>
+      <data key="name">Node 3</data>
       <data key="type">1</data>
       <data key="shape">OCTAGON</data>
       <data key="special">false</data>
@@ -43,6 +48,7 @@
       <data key="weight">0.03</data>
       <data key="ranking">4</data>
       <data key="label">n4</data>
+      <data key="name">Node 4</data>
       <data key="type">1</data>
       <data key="shape">DIAMOND</data>
       <data key="special">false</data>
@@ -50,6 +56,7 @@
     <node id="5">
       <data key="weight">0.10</data>
       <data key="ranking">5</data>
+      <data key="name">Node 5</data>
       <data key="label">n5</data>
       <data key="type">3</data>
       <data key="shape">PARALLELOGRAM</data>

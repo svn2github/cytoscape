@@ -43,7 +43,8 @@ package org.cytoscapeweb.view {
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
     import flash.events.TimerEvent;
-    import flash.geom.Rectangle;
+    import flash.geom.Point;
+	import flash.geom.Rectangle;
     import flash.ui.Keyboard;
     import flash.utils.Timer;
     
@@ -52,7 +53,8 @@ package org.cytoscapeweb.view {
     import org.cytoscapeweb.events.GraphViewEvent;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
-    import org.cytoscapeweb.util.CompoundNodes;
+    import org.cytoscapeweb.model.error.CWError;
+	import org.cytoscapeweb.util.CompoundNodes;
     import org.cytoscapeweb.util.Edges;
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.Groups;
@@ -79,6 +81,7 @@ package org.cytoscapeweb.view {
         // ========[ PRIVATE PROPERTIES ]===========================================================
 
         private var _isMouseOverView:Boolean;
+        private var _mouseDownViewCounter:uint;
         private var _draggingNode:Boolean;
         private var _draggingGraph:Boolean;
         private var _draggingComponent:Boolean;
@@ -92,7 +95,7 @@ package org.cytoscapeweb.view {
             if (_dragControl == null) {
                 _dragControl = new EventDragControl(NodeSprite);
 	            _dragControl.addEventListener(DragEvent.START, onDragNodeStart);
-	            _dragControl.addEventListener(DragEvent.STOP, onDragNodeEnd);
+	            _dragControl.addEventListener(DragEvent.STOP, onDragNodeStop);
 	            _dragControl.addEventListener(DragEvent.DRAG, onDragNode);
             }
             
@@ -178,7 +181,11 @@ package org.cytoscapeweb.view {
         }
         
         public function drawGraph():void {
-            graphView.draw(graphProxy.graphData, configProxy.config, configProxy.visualStyle);
+            graphView.draw(graphProxy.graphData,
+                           configProxy.config,
+                           configProxy.visualStyle, 
+                           graphProxy.zoom,
+                           graphProxy.viewCenter);
         }
         
         public function applyVisualStyle(style:VisualStyleVO):void {
@@ -320,7 +327,7 @@ package org.cytoscapeweb.view {
 			{
                 Arrays.setProperty(items, name, props[name], null);
             }
-			
+            
             vis.updateLabels(gr);
             addListeners(items);
             separateDisconnected();
@@ -347,21 +354,15 @@ package org.cytoscapeweb.view {
         
         public function zoomGraphTo(scale:Number):void {
             graphView.zoomTo(scale);
-            if (graphProxy.rolledOverNode != null) {
-                // If zooming while mouse still over a node (e.g. using the keyboard to zoom),
-                // its label size may be wrong, so let's reset it:
-                rescaleNodeLabel(graphProxy.rolledOverNode, true);
-            }
         }
         
         public function zoomGraphToFit():void {
             graphView.zoomToFit();
             graphView.centerGraph();
-            if (graphProxy.rolledOverNode != null) {
-                // If zooming while mouse still over a node (e.g. using the keyboard to zoom),
-                // its label size may be wrong, so let's reset it:
-                rescaleNodeLabel(graphProxy.rolledOverNode, true);
-            }
+        }
+        
+        public function getViewCenter():Point {
+            return graphView.viewCenter;
         }
 		
 		/**
@@ -552,6 +553,8 @@ package org.cytoscapeweb.view {
                 // DRAGGING the whole graph...
                 startDragGraph();
             } else if (!configProxy.grabToPanEnabled) {
+                _mouseDownViewCounter++;
+                
                 if (configProxy.mouseDownToDragDelay >= 0) {
                     _dragAllTimer = new Timer(configProxy.mouseDownToDragDelay, 1);
                     _dragAllTimer.addEventListener(TimerEvent.TIMER, function(te:TimerEvent):void {
@@ -611,11 +614,13 @@ package org.cytoscapeweb.view {
         }
         
         private function onDoubleClickView(evt:MouseEvent):void { trace("* 2-CLICK [View]");
-            if (!_shiftDown && configProxy.grabToPanEnabled)
-                sendNotification(ApplicationFacade.DESELECT_ALL);
-                
-            sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT,
-                             { mouseX: evt.stageX, mouseY: evt.stageY });
+            if (_mouseDownViewCounter > 1) {
+                if (!_shiftDown && configProxy.grabToPanEnabled)
+                    sendNotification(ApplicationFacade.DESELECT_ALL);
+                    
+                sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT,
+                                 { mouseX: evt.stageX, mouseY: evt.stageY });
+            }
         }
         
         private function onDragSelectionStart(evt:MouseEvent):void { trace("* Drag Selection START [View]");
@@ -624,6 +629,7 @@ package org.cytoscapeweb.view {
             graphView.stage.addEventListener(MouseEvent.MOUSE_UP, onDragSelectionEnd, false, 0, true);
             graphView.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUpToDeselect);
             graphView.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUpToClick);
+            _mouseDownViewCounter = 0;
 
             // If SHIFT key is pressed, keep the previously selected elements.
             // Otherwise, deselect everything first:
@@ -648,9 +654,6 @@ package org.cytoscapeweb.view {
             
             sendNotification(ApplicationFacade.ROLLOVER_EVENT, n);
             updateCursor();
-            
-            // When zoom < 100%, increase the label size to make it readable:
-            if (_graphScale < 1) rescaleNodeLabel(n);
         }
         
         private function onRollOutNode(evt:MouseEvent):void {
@@ -662,8 +665,6 @@ package org.cytoscapeweb.view {
             n.removeEventListener(MouseEvent.ROLL_OUT, onRollOutNode);
             updateCursor();
             evt.stopImmediatePropagation();
-
-            rescaleNodeLabel(n, true);
         }
         
         private function onMouseDownNode(evt:MouseEvent):void { trace("** Mouse DOWN [node]");
@@ -744,10 +745,12 @@ package org.cytoscapeweb.view {
                 updateCursor();
 				this.graphProxy.resetMissingChildren();
             }
+            
             evt.node.removeEventListener(MouseEvent.CLICK, onClickNode);
+            sendNotification(ApplicationFacade.DRAG_START_EVENT, { target: evt.node });
         }
         
-        private function onDragNodeEnd(evt:DragEvent):void { trace("== END Drag Node");
+        private function onDragNodeStop(evt:DragEvent):void { trace("== STOP Drag Node");
             if (_draggingComponent) vis.hideDragRectangle();
             _draggingNode = false;
             _draggingComponent = false;
@@ -758,6 +761,8 @@ package org.cytoscapeweb.view {
             if (evt.node.hasEventListener(MouseEvent.MOUSE_UP)) {
                 evt.node.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP));
             }
+            
+            sendNotification(ApplicationFacade.DRAG_STOP_EVENT, { target: evt.node });
         }
         
         private function onDragNode(evt:DragEvent):void
@@ -974,12 +979,14 @@ package org.cytoscapeweb.view {
         
         private function startDragGraph():void {
             _draggingGraph = true;
+            _mouseDownViewCounter = 0;
             updateCursor();
             selectionControl.enabled = false;
             vis.startDrag();
             graphView.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUpToStopPanning, false, 0, true);
         }
         
+		// TODO no more needed?
         private function rescaleNodeLabel(n:NodeSprite, reset:Boolean=false):void
 		{
             if (n != null && configProxy.config.nodeLabelsVisible)
@@ -1045,20 +1052,21 @@ package org.cytoscapeweb.view {
             
             // Set visual properties according to current style:
             if (style.hasVisualProperty(VisualProperties.SELECTION_FILL_COLOR))
-                _selectionControl.fillColor = style.getDefaultValue(VisualProperties.SELECTION_FILL_COLOR) as uint;
+                _selectionControl.fillColor = style.getValue(VisualProperties.SELECTION_FILL_COLOR) as uint;
             if (style.hasVisualProperty(VisualProperties.SELECTION_FILL_ALPHA))
-                _selectionControl.fillAlpha = style.getDefaultValue(VisualProperties.SELECTION_FILL_ALPHA) as Number;
+                _selectionControl.fillAlpha = style.getValue(VisualProperties.SELECTION_FILL_ALPHA) as Number;
             if (style.hasVisualProperty(VisualProperties.SELECTION_LINE_COLOR))
-                _selectionControl.lineColor = style.getDefaultValue(VisualProperties.SELECTION_LINE_COLOR) as uint;
+                _selectionControl.lineColor = style.getValue(VisualProperties.SELECTION_LINE_COLOR) as uint;
             if (style.hasVisualProperty(VisualProperties.SELECTION_LINE_ALPHA))
-                _selectionControl.lineAlpha = style.getDefaultValue(VisualProperties.SELECTION_LINE_ALPHA) as Number;
+                _selectionControl.lineAlpha = style.getValue(VisualProperties.SELECTION_LINE_ALPHA) as Number;
             if (style.hasVisualProperty(VisualProperties.SELECTION_LINE_WIDTH))
-                _selectionControl.lineWidth = style.getDefaultValue(VisualProperties.SELECTION_LINE_WIDTH) as Number;
+                _selectionControl.lineWidth = style.getValue(VisualProperties.SELECTION_LINE_WIDTH) as Number;
         }
         
         private function disposeDataSprite(ds:DataSprite):void {
             // Force a roll-out, to keep things in a good state:
-            ds.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT));
+            if (graphProxy.rolledOverNode === ds || graphProxy.rolledOverEdge === ds)
+                ds.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT));
             
             // Remove event listeners:
             if (ds is NodeSprite) {

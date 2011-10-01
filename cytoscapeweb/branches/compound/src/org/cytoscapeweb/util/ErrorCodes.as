@@ -37,7 +37,9 @@ package org.cytoscapeweb.util {
         // ========[ CONSTANTS ]====================================================================
 
         public static const INVALID_DATA_CONVERSION:String = "dat001";
+        public static const MISSING_DATA_FIELD:String = "dat002";
         public static const BROKEN_IMAGE:String = "img001";
+        public static const RENDERING_ERROR:String = "vis001";
 
         // ========[ CONSTRUCTOR ]==================================================================
         

@@ -28,6 +28,8 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.controller {
+    import flash.geom.Point;
+    
     import mx.utils.StringUtil;
     
     import org.cytoscapeweb.model.methods.error;
@@ -54,8 +56,9 @@ package org.cytoscapeweb.controller {
                     // Get the image bytes from the graph mediator class:
                     data = appMediator.getGraphImage(format, w, h);
                 } else {
-                    // Get the XML:
-                    data = graphProxy.getDataAsText(format, options);
+                    // Get the text:
+                    var viewCenter:Point = graphMediator.getViewCenter();
+                    data = graphProxy.getDataAsText(format, viewCenter, options);
                 }
                 
                 // Export:

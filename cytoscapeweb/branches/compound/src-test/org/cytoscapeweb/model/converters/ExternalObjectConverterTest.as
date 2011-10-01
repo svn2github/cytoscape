@@ -265,11 +265,13 @@ package org.cytoscapeweb.model.converters {
             var data:Data = Fixtures.getData(Fixtures.GRAPHML_SIMPLE);
             var o:Object, k:*;
             
-            var props:Array = ["data","shape","borderColor","borderWidth","opacity","visible","color","x","y"];
+            // NODES
+            var props:Array = ["data","shape","borderColor","borderWidth","opacity","visible","color",
+                               "x","y","rawX","rawY","size","width","height"/*, "degree", "indegree", "outdegree"*/];
             var attrs:Array = ["id"];
             
             for each (var n:NodeSprite in data.nodes) {
-                o = ExternalObjectConverter.toExtElement(n);
+                o = ExternalObjectConverter.toExtElement(n, 1);
                 assertEquals(Groups.NODES, o.group);
                 
                 for each (k in props) assertTrue("Node property: " + k, o.hasOwnProperty(k));
@@ -278,12 +280,13 @@ package org.cytoscapeweb.model.converters {
                 assertEquals(n.data.id, o.data.id);
             }
             
+            // EDGES
             props = ["data","color","width","opacity","visible","sourceArrowShape","targetArrowShape",
                      "sourceArrowColor","targetArrowColor","curvature","merged"];
             attrs = ["id","source","target","directed"];
             
             for each (var e:EdgeSprite in data.edges) {
-                o = ExternalObjectConverter.toExtElement(e);
+                o = ExternalObjectConverter.toExtElement(e, 1);
                 assertEquals(Groups.EDGES, o.group);
                 
                 for each (k in props) assertTrue("Edge property: " + k, o.hasOwnProperty(k));

@@ -320,7 +320,7 @@ package org.cytoscapeweb.view.components {
                     for (var i:uint = 0; i < _dataList.length; i++) {
                         var d:Data = _dataList[i];
                         if (d.nodes.length > 1) {
-                            var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, _layoutName, _style); 
+                            var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, _layoutName); 
                             var root:NodeSprite = Layouts.rootNode(d);
                             
                             layout = createLayout(layoutObj, d, rect, root);
@@ -423,6 +423,7 @@ package org.cytoscapeweb.view.components {
             data.visit(function(ds:DataSprite):Boolean {
                 var lb:TextSprite = labels.getValue(ds);
                 if (lb != null) lb.visible = visible && ds.visible;
+                if (ds is NodeSprite && ds.props.autoSize) ds.dirty();
                 return false;
             }, group);
         }
@@ -456,7 +457,10 @@ package org.cytoscapeweb.view.components {
             });
             if (_config.edgeLabelsVisible) edgeLabeler.operate();
 
-            var bounds:Rectangle = GraphUtils.getBounds(d, !_config.nodeLabelsVisible, !_config.edgeLabelsVisible);
+            var bounds:Rectangle = GraphUtils.getBounds(d.nodes,
+                                                        d.edges,
+                                                        !_config.nodeLabelsVisible,
+                                                        !_config.edgeLabelsVisible);
             
             return bounds;
         }

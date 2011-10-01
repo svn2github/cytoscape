@@ -57,6 +57,8 @@ package org.cytoscapeweb.model.data {
 					// regular nodes
                     shape: NodeShapes.ELLIPSE,
                     size: 24,
+//                    width: -1,
+//                    height: -1,
                     color: "#f5f5f5",
                     opacity: 0.8,
                     borderColor: "#666666",
@@ -211,14 +213,6 @@ package org.cytoscapeweb.model.data {
 			delete properties[visPropName];
 		}
 		
-		public function getDefaultValue(visPropName:String):* {
-			var value:* = null;
-			var vp:VisualPropertyVO = getVisualProperty(visPropName);
-			if (vp != null) value = vp.defaultValue;
-			
-			return value;
-		}
-		
 		public function getValue(visPropName:String, data:Object=null):* {
 			var value:*;
 			
@@ -232,8 +226,13 @@ package org.cytoscapeweb.model.data {
     			if (vp != null) {
     			    var mapper:VizMapperVO = vp.vizMapper;
     			    
-                    if (data != null && mapper != null)
+                    if (data != null && mapper != null) {
                         value = mapper.getValue(data);
+                        
+                        if (mapper is ContinuousVizMapperVO && isNaN(value))
+                            value = null;
+                    }
+                    
                     if (value == null)
                         value = vp.defaultValue;
     			}
@@ -277,7 +276,7 @@ package org.cytoscapeweb.model.data {
 		
 		public static function fromObject(obj:Object):VisualStyleVO {
 			var grName:String, pName:String, props:Object, dprops:Object, dp:Object, p:Object;
-			
+
 			if (obj != null && obj !== _DEFAULT_OBJ) {
 			    var defObj:Object = Utils.clone(_DEFAULT_OBJ);
 			    

@@ -621,8 +621,7 @@ function initContextMenu()
 		
 		var n = vis.addNode(evt.mouseX,
 					evt.mouseY,
-					{ weight: Math.random(),
-					  label: label},
+					{label: label},
 					true,
 					evt.target);
 	});

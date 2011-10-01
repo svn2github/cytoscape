@@ -178,29 +178,31 @@ package org.cytoscapeweb.util {
 			return filtered;
 		}
 		
-        public static function getBounds(data:Data, 
+        public static function getBounds(nodes:*, edges:*,
                                          ignoreNodeLabels:Boolean,
                                          ignoreEdgeLabels:Boolean):Rectangle {
-
             var bounds:Rectangle = new Rectangle();
             
-            if (data != null && data.nodes.length > 0) {
-                var minX:Number = Number.POSITIVE_INFINITY, minY:Number = Number.POSITIVE_INFINITY;
-                var maxX:Number = Number.NEGATIVE_INFINITY, maxY:Number = Number.NEGATIVE_INFINITY;
-                var lbl:TextSprite;
-                var fld:TextField;
-    
+            const PAD:Number = 2;
+            var minX:Number = Number.POSITIVE_INFINITY, minY:Number = Number.POSITIVE_INFINITY;
+            var maxX:Number = Number.NEGATIVE_INFINITY, maxY:Number = Number.NEGATIVE_INFINITY;
+            var lbl:TextSprite;
+            var fld:TextField;
+
+            if (nodes != null && nodes.length > 0) {
                 // First, consider the NODES bounds:
-                $each(data.nodes, function(i:uint, n:NodeSprite):void {
+                $each(nodes, function(i:uint, n:NodeSprite):void {
                     if (!isFilteredOut(n)) {
-                        // The node size
-                        var nsh:Number = n.height;
-						var nsw:Number = n.width;
+                        // The node size (its shape must have the same height and width; e.g. a circle)
+                        var w:Number = n.width;
+                        var h:Number = n.height;
+                        var w2:Number = w/2, h2:Number = h/2;
+                        
                         // Verify MIN and MAX x/y again:
-                        minX = Math.min(minX, (n.x - nsw/2));
-                        minY = Math.min(minY, (n.y - nsh/2));
-                        maxX = Math.max(maxX, (n.x + nsw/2));
-                        maxY = Math.max(maxY, (n.y + nsh/2));
+                        minX = Math.min(minX, (n.x - w2));
+                        minY = Math.min(minY, (n.y - h2));
+                        maxX = Math.max(maxX, (n.x + w2));
+                        maxY = Math.max(maxY, (n.y + h2));
                         
                         // Consider the LABELS bounds, too:
                         var lbl:TextSprite = n.props.label;
@@ -214,8 +216,11 @@ package org.cytoscapeweb.util {
                         }
                     }
                 });
-                
-                $each(data.edges, function(i:uint, e:EdgeSprite):void {
+            }
+            
+            if (edges != null && edges.length > 0) {
+                // Also mesure edge bounds:
+                $each(edges, function(i:uint, e:EdgeSprite):void {
                     if (!isFilteredOut(e)) {
                         // Edge LABELS first, to avoid checking edges that are already inside the bounds:
                         lbl = e.props.label;
@@ -237,7 +242,7 @@ package org.cytoscapeweb.util {
                                 var p2:Point = e.props.$points.end;
                                 // Alwasys check a few points along the bezier curve to see
                                 // if any of them is out of the bounds:
-                                var fractions:Array, mp:Point, f:Number;
+                                var mp:Point, f:Number;
                                 
                                 if (e.source === e.target) {
                                     // Loop...
@@ -247,9 +252,7 @@ package org.cytoscapeweb.util {
                                     mp = new Point();
                                     var w:Number = e.lineWidth/2;
                                     
-                                    fractions = [0.1, 0.2, 0.4, 0.6, 0.8, 0.9];
-                                    
-                                    for each (f in fractions) {
+                                    for (f = 0.1; f < 1.0; f += 0.1) {
                                         Geometry.cubicCoeff(p1, c2, c1, p2, cc1, cc2, cc3);
                                         mp = Geometry.cubic(f, p1, cc1, cc2, cc3, mp);
                                         minX = Math.min(minX, mp.x - w);
@@ -258,9 +261,7 @@ package org.cytoscapeweb.util {
                                         maxY = Math.max(maxY, mp.y + w);
                                     }
                                 } else {
-                                    fractions = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-                                    
-                                    for each (f in fractions) {
+                                    for (f = 0.1; f < 1.0; f += 0.1) {
                                         mp = Utils.bezierPoint(p1, p2, c1, f);
                                         minX = Math.min(minX, mp.x);
                                         maxX = Math.max(maxX, mp.x);
@@ -272,13 +273,17 @@ package org.cytoscapeweb.util {
                         }
                     }
                 });
-                
-                const PAD:Number = 2;
-                bounds.x = minX - PAD;
-                bounds.y = minY - PAD;
-                bounds.width = maxX - bounds.x + PAD;
-                bounds.height = maxY - bounds.y + PAD;
             }
+            
+            if (minX === Number.POSITIVE_INFINITY) minX = 0;
+            if (minY === Number.POSITIVE_INFINITY) minY = 0;
+            if (maxX === Number.NEGATIVE_INFINITY) maxX = 0;
+            if (maxY === Number.NEGATIVE_INFINITY) maxY = 0;
+            
+            bounds.x = minX - PAD;
+            bounds.y = minY - PAD;
+            bounds.width = maxX - bounds.x + PAD;
+            bounds.height = maxY - bounds.y + PAD;
             
             return bounds;
         }
@@ -292,10 +297,12 @@ package org.cytoscapeweb.util {
             var boundsList:Array = [];
             var lookup:Dictionary = new Dictionary();
             var data:Data;
+            var area:Number = 0;
            
             for each (data in dataList) {
                 // The real subgraph bounds:
-                var b:Rectangle = getBounds(data, ignoreNodeLabels, ignoreEdgeLabels);
+                var b:Rectangle = getBounds(data.nodes, data.edges,
+                                            ignoreNodeLabels, ignoreEdgeLabels);
                 boundsList.push(b);
 
                 // Just to get the correct subgraph later:
@@ -304,11 +311,16 @@ package org.cytoscapeweb.util {
                 // If there is a subgraph that is wider than the whole canvas,
                 // use its width in the packing bounds:
                 if (b.width > width) width = b.width;
+                area += b.width * b.height;
             }
             
             boundsList.sort(function(a:Rectangle, b:Rectangle):int {
                 return a.width < b.width ? -1 : (a.width > b.width ? 1 : 0);
             }, Array.DESCENDING);
+            
+            // Adjust the bounds width:
+            if (dataList.length > 50)
+                width = Math.max(width, 1.4 * Math.sqrt(area));
             
             // More than 8 subgraphs decreases performance when using "fill by stripes":
             if (boundsList.length <= 7)
@@ -416,7 +428,7 @@ package org.cytoscapeweb.util {
             }
         }
         
-        public static function calculateGraphDimension(nodes:DataList, layout:String, style:VisualStyleVO):Rectangle {            
+        public static function calculateGraphDimension(nodes:DataList, layout:String):Rectangle {            
             // The minimum square edge when we have only one node:
             var side:Number = 40;
             var numNodes:Number = nodes.length;
@@ -428,34 +440,34 @@ package org.cytoscapeweb.util {
             
             if (numNodes > 1) {
                 if (layout === Layouts.CIRCLE || layout === Layouts.RADIAL) {
-                    if (numNodes === 2) {
-                        side *= 1.5;
-                    } else {
-                        // Based on the desired distance between the adjacent nodes, imagine an inscribed 
-                        // regular polygon that has N sides, and then calculate the circle radius:
-                        // 1. number of sides = number of nodes:
-                        var N:Number = nodes.length;
-                        // 2. Each side should have a desired size (distance between the adjacent nodes):
-                        var S:Number = 0;
-                        for each (n in nodes) {
-                            if (!GraphUtils.isFilteredOut(n))
-                                S = Math.max(S, style.getValue(VisualProperties.NODE_SIZE, n.data));
+                    // Based on the desired distance between the adjacent nodes, imagine an inscribed 
+                    // regular polygon that has N sides, and then calculate the circle radius:
+                    // 1. number of sides = number of nodes:
+                    var N:Number = nodes.length;
+                    // 2. Each side should have a desired size (distance between the adjacent nodes):
+                    var S:Number = 0;
+                    for each (n in nodes) {
+                        if (!GraphUtils.isFilteredOut(n)) {
+                            S = Math.max(n.width, n.height);
                         }
-                        S /= 2;
+                    }
+                    if (isNaN(S)) S = 40;
+                    
+                    if (numNodes === 2) {
+                        side = 2.1 * S;
+                    } else {
                         // 3. If we connect two adjacent vertices to the center, the angle between these two 
                         // lines is 360/N degrees, or 2*pi/N radians:
                         var theta:Number = 2 * Math.PI / N;
-                        // 4. To find the circle radius, using Trigonometry:
+                        // 4. To find the circle diameter, using Trigonometry:
                         // sin(theta/2) = opposite/hypotenuse
-                        var r:Number = S / Math.sin(theta/2) * 2;
-                        // 5. Finally, the square side should be the circle diameter (2r):
-                        side = 2 * r;
+                        side = (2 * S) / Math.sin(theta/2);
                     }
                 } else if (layout === Layouts.FORCE_DIRECTED) {
                     var area:Number = 0;
                     for each (n in nodes) {
                         if (!GraphUtils.isFilteredOut(n)) {
-                            var s:Number = style.getValue(VisualProperties.NODE_SIZE, n.data);
+                            var s:Number = Math.max(n.width, n.height);
                             area += 9 * s * s;
                         }
                     }

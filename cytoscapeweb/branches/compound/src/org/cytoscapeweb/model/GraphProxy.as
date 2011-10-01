@@ -39,13 +39,14 @@ package org.cytoscapeweb.model {
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	import flash.net.navigateToURL;
 	import flash.utils.IDataOutput;
 	
-	import mx.styles.ISimpleStyleClient;
 	import mx.utils.StringUtil;
 	
 	import org.cytoscapeweb.ApplicationFacade;
@@ -57,6 +58,9 @@ package org.cytoscapeweb.model {
 	import org.cytoscapeweb.model.data.GraphicsDataTable;
 	import org.cytoscapeweb.model.data.InteractionVO;
 	import org.cytoscapeweb.model.data.VisualStyleVO;
+	import org.cytoscapeweb.model.error.CWError;
+	import org.cytoscapeweb.util.ErrorCodes;
+	import org.cytoscapeweb.util.GraphUtils;
 	import org.cytoscapeweb.util.CompoundNodes;
 	import org.cytoscapeweb.util.Groups;
 	import org.cytoscapeweb.util.Layouts;
@@ -90,6 +94,8 @@ package org.cytoscapeweb.model {
 		
         /** Scale factor, between 0 and 1 */
         private var _zoom:Number = 1;
+        /** The viewport center */
+        private var _viewCenter:Point;
 
         private var _configProxy:ConfigProxy;
         
@@ -109,6 +115,9 @@ package org.cytoscapeweb.model {
             return data as Data;
         }
         
+        /**
+         * @param data It has to be a flare.vis.data.Data instance.
+         */
         public override function setData(data:Object):void {
             super.setData(data);
 
@@ -213,7 +222,7 @@ package org.cytoscapeweb.model {
             }
             return arr;
         }
-		
+
         /**
          * @param value Array of edge data objects. 
          */
@@ -239,7 +248,7 @@ package org.cytoscapeweb.model {
 	        
 	        for (var key:String in _interactions) {
     	        var inter:InteractionVO = _interactions[key];
-    	        inter.update();
+    	        inter.update(edgesSchema);
             }
             
             if (value == null) graphData.removeGroup(Groups.FILTERED_EDGES);
@@ -305,7 +314,15 @@ package org.cytoscapeweb.model {
         public function set zoom(value:Number):void {
             _zoom = value;
         }
-		
+        
+        public function get viewCenter():Point {
+            return _viewCenter;
+        }
+ 
+        public function set viewCenter(value:Point):void {
+            _viewCenter = value;
+        }
+
 		/**
 		 * Finds non-selected children of the compound nodes in the given
 		 * node array, and returns the collected children in an array of nodes.
@@ -413,15 +430,22 @@ package org.cytoscapeweb.model {
                 
                 if (schema.getFieldById(name) == null) {
                     // This field is not duplicated...
-                    var v:*;
+                    if (defValue == null) {
+                    	switch (type) {
+                    		case DataUtil.BOOLEAN: defValue = false; break;
+                    		case DataUtil.INT: defValue = 0; break;
+                            default: defValue = null;
+                        }
+                    } else {
+	                    try {
+	                        defValue = ExternalObjectConverter.normalizeDataValue(defValue, type, null);
+	                    } catch (err:Error) {
+	                        throw new CWError("Cannot add data field '"+name+"':" + err.message,
+	                                          ErrorCodes.INVALID_DATA_CONVERSION);
+	                    }
+	                }
                     
-                    if (!(defValue == null && type === DataUtil.STRING))
-                        v = DataUtil.parseValue(defValue, type);
-                    
-                    if (isNaN(v) && (type === DataUtil.INT || type === DataUtil.NUMBER))
-                        throw new Error("Attempt to convert default value '"+defValue+"' to NUMBER while creating data field");
-                    
-                    var field:DataField = new DataField(name, type, v);
+                    var field:DataField = new DataField(name, type, defValue);
                     schema.addField(field);
                     added = true;
                     
@@ -430,6 +454,9 @@ package org.cytoscapeweb.model {
                     for each (var ds:DataSprite in items) {
                         ds.data[field.name] = field.defaultValue;
                     }
+                } else {
+                	throw new CWError("Cannot add data field '"+name+"': data field name already existis",
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
                 }
             }
             
@@ -484,19 +511,41 @@ package org.cytoscapeweb.model {
         
         public function updateData(ds:DataSprite, data:Object):void {
             if (ds != null && data != null) {
+                if (ds is EdgeSprite && ds.props.$merged) {
+                    throw new CWError("It is not allowed to update a merged edge data: " + ds.data.id);
+                }
+                
                 var schema:DataSchema = ds is NodeSprite ? _nodesSchema : _edgesSchema;
+                var updated:Boolean = false;
                 
                 for (var k:String in data) {
                     if ( k !== "id" && !(ds is EdgeSprite && (k === "source" || k === "target")) ) {
                         var f:DataField = schema.getFieldByName(k);
+                        
                         if (f != null) {
                             var v:* = data[k];
-                            v = ExternalObjectConverter.normalizeDataValue(v, f.type, f.defaultValue);
+                            
+                            try {
+                                v = ExternalObjectConverter.normalizeDataValue(v, f.type, f.defaultValue);
+                            } catch (err:Error) {
+                                throw new CWError("Cannot update data for '"+k+"':" + err.message,
+                                                  ErrorCodes.INVALID_DATA_CONVERSION);
+                            }
+                            
                             ds.data[k] = v;
+                            updated = true;
                         } else {
-                            throw new Error("Cannot update data: there is no Data Field for '"+k+".");
+                            throw new CWError("Cannot update data: there is no Data Field for '"+k+"'.",
+                                              ErrorCodes.MISSING_DATA_FIELD);
                         }
                     }
+                }
+                
+                if (ds is EdgeSprite && updated) {
+                    // Update the merged edge data
+                    var edge:EdgeSprite = EdgeSprite(ds);
+                    var interaction:InteractionVO = getInteraction(edge.source, edge.target);
+                    interaction.update(edgesSchema);
                 }
             }
         }
@@ -607,7 +656,8 @@ package org.cytoscapeweb.model {
                     }
                 }
 
-                for (var key:String in interactions) interactions[key].update();
+                for (var key:String in interactions)
+                    interactions[key].update(edgesSchema, false);
             }
             
             return changed;
@@ -616,15 +666,10 @@ package org.cytoscapeweb.model {
         public function addNode(data:Object):NodeSprite {
             if (data == null) data = {};
             
+            normalizeData(data, Groups.NODES);
+            
             if (data.id == null) data.id = nextId(Groups.NODES);
             else if (hasId(Groups.NODES, data.id)) throw new Error("Duplicate node id ('"+data.id+"')");
-            
-            addMissingDataFields(Groups.NODES, data);
-            
-            // Set default values :
-            for each (var f:DataField in _nodesSchema.fields) {
-                if (data[f.name] == null) data[f.name] = f.defaultValue;
-            }
 
             var n:NodeSprite = graphData.addNode(data);
             createCache(n);
@@ -655,18 +700,7 @@ package org.cytoscapeweb.model {
 				throw new Error("Duplicate node id ('"+data.id+"')");
 			}
 			
-			// add missing fields?
-			this.addMissingDataFields(Groups.NODES, data);
-			
-			// Set default values :
-			
-			for each (var f:DataField in _nodesSchema.fields)
-			{
-				if (data[f.name] == null)
-				{
-					data[f.name] = f.defaultValue;
-				}
-			}
+			normalizeData(data, Groups.NODES);
 			
 			// create a new CompoundNodeSprite
 			var cNodeSprite : CompoundNodeSprite = new CompoundNodeSprite();
@@ -707,8 +741,12 @@ package org.cytoscapeweb.model {
 		}
 		
         public function addEdge(data:Object):EdgeSprite {
-            if (data == null) throw new Error("The 'data' argument is mandatory");
+            if (data == null) throw new CWError("The 'data' argument is mandatory",
+                                                ErrorCodes.INVALID_DATA_CONVERSION);
             trace("add edge: " + data.id);
+            
+            normalizeData(data, Groups.EDGES);
+            
             var src:NodeSprite = getNode(data.source);
             var tgt:NodeSprite = getNode(data.target);
             
@@ -717,13 +755,6 @@ package org.cytoscapeweb.model {
             
             if (data.id == null) data.id = nextId(Groups.EDGES);
             else if (hasId(Groups.EDGES, data.id)) throw new Error("Duplicate edge id ('"+data.id+"')");
-            
-            addMissingDataFields(Groups.EDGES, data);
-            
-            // Set default values :
-            for each (var f:DataField in _edgesSchema.fields) {
-                if (data[f.name] == null) data[f.name] = f.defaultValue;
-            }
 
             // Create edge:
             var e:EdgeSprite = graphData.addEdgeFor(src, tgt, data.directed, data);
@@ -738,7 +769,7 @@ package org.cytoscapeweb.model {
             if (inter == null) {
                 inter = createInteraction(e.source, e.target);
             } else {
-                inter.update();
+                inter.update(edgesSchema);
             }
             
             return e;
@@ -766,7 +797,7 @@ package org.cytoscapeweb.model {
             
             var filterList:DataList = graphData.group(Groups.FILTERED_NODES);
             if (filterList != null) filterList.remove(n);
-			
+       
             // Also remove its linked edges:
             var edges:Array = [];
             n.visitEdges(function(e:EdgeSprite):Boolean {
@@ -800,7 +831,7 @@ package org.cytoscapeweb.model {
                     var edgeCount:int = inter.edges.length;
                     
                     if (edgeCount > 0) {
-                        inter.update();
+                        inter.update(edgesSchema);
                     } else {
                         delete _interactions[inter.key];
                         removeEdge(inter.mergedEdge);
@@ -829,6 +860,9 @@ package org.cytoscapeweb.model {
                             
                             var xgmmlConverter:XGMMLConverter = new XGMMLConverter(style);
                             ds = xgmmlConverter.parse(xml);
+                            
+                            this.zoom = xgmmlConverter.zoom;
+                            this.viewCenter = xgmmlConverter.viewCenter;
                             
                             var points:Object = xgmmlConverter.points;
 							
@@ -881,7 +915,9 @@ package org.cytoscapeweb.model {
             }
         }
         
-        public function getDataAsText(format:String="xgmml", options:Object=null):String
+        public function getDataAsText(format:String="xgmml",
+                                      viewCenter:Point=null,
+                                      options:Object=null):String
 		{
             var out:IDataOutput,
 				nodesTable:DataTable,
@@ -907,8 +943,18 @@ package org.cytoscapeweb.model {
 				
 				if (format === "xgmml")
 				{
-                	out = new XGMMLConverter(
-						configProxy.visualStyle).write(dtSet);
+					var bounds:Rectangle = GraphUtils.getBounds(nodes, edges,
+						!configProxy.nodeLabelsVisible,
+						!configProxy.edgeLabelsVisible);
+					
+					out = new XGMMLConverter(configProxy.visualStyle,
+						zoom,
+						viewCenter,
+						bounds).write(dtSet);
+					
+					// old initialization
+					//out = new XGMMLConverter(
+					//	configProxy.visualStyle).write(dtSet);
 				}
 				else
 				{
@@ -992,6 +1038,7 @@ package org.cytoscapeweb.model {
 				
                 fl = graphData.group(Groups.FILTERED_NODES);
                 if (fl != null) fl.remove(ds);
+                
             } else if (ds is EdgeSprite) {
                 delete _edgesMap[ds.data.id];
 
@@ -1042,7 +1089,7 @@ package org.cytoscapeweb.model {
             var inter:InteractionVO;
             
             if (getInteraction(source, target) == null) {
-                inter = new InteractionVO(source, target);
+                inter = new InteractionVO(source, target, edgesSchema);
                 _interactions[inter.key] = inter;
                 
                 var me:EdgeSprite = inter.mergedEdge;
@@ -1054,21 +1101,34 @@ package org.cytoscapeweb.model {
             return inter;
         }
         
-        private function addMissingDataFields(group:String, data:Object):void {
-            for (var k:String in data) {
-				var schema:DataSchema = group === Groups.NODES ? nodesSchema : edgesSchema;
-                var f:DataField = schema.getFieldById(k);
+        private function normalizeData(data:Object, gr:String):void {
+            var schema:DataSchema = gr === Data.NODES ? nodesSchema : edgesSchema;
+            var f:DataField;
+            var k:String, v:*;
+            
+            // Check data types:
+            for (k in data) {
+                v = data[k];
+                f = schema.getFieldById(k);
                 
                 if (f == null) {
-                    var v:* = data[k];
-                    var type:int = DataUtil.OBJECT;
-					
-                    if (v is Boolean)      type = DataUtil.BOOLEAN;
-                    else if (v is Number)  type = DataUtil.NUMBER;
-                    else if (v is String)  type = DataUtil.STRING;
-
-                    addDataField(group, k, type);
+                	throw new CWError("Undefined data field: '"+k+"'",
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
                 }
+                
+                try {
+                    v = ExternalObjectConverter.normalizeDataValue(v, f.type, f.defaultValue);
+                } catch (err:Error) {
+                    throw new CWError("Invalid data value ('"+k+"'): "+err.message,
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
+                }
+                
+                data[k] == v;
+            }
+            
+            // Set default values :
+            for each (f in schema.fields) {
+                if (data[f.name] == null) data[f.name] = f.defaultValue;
             }
         }
     }
