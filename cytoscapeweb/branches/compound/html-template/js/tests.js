@@ -1348,7 +1348,7 @@ function runGraphTests(moduleName, vis, options) {
     	$.each(edges, function(i, e) {
     		var inter = e.data.interaction ? e.data.interaction : e.data.id;
     		var line = e.data.source + "\t" + inter + "\t" + e.data.target; 
-    		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
+    		ok(sif.indexOf(line) > -1, "SIF (A) text should have the line: '"+line+"'");
     	});
     	// Now replace the default node and interaction fields:
     	var sif = vis.sif({ nodeAttr: "name", interactionAttr: "type" });
@@ -1357,7 +1357,7 @@ function runGraphTests(moduleName, vis, options) {
     		var src = vis.node(e.data.source).data.name;
     		var tgt = vis.node(e.data.target).data.name;
     		var line = src + "\t" + e.data.type + "\t" + tgt; 
-    		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
+    		ok(sif.indexOf(line) > -1, "SIF (B) text should have the line: '"+line+"'");
     	});
     });
     

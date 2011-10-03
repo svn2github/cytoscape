@@ -329,8 +329,7 @@ package org.cytoscapeweb.model {
 		 * 
 		 * @return		array of nodes
 		 */
-		public function get missingChildren() : Array
-		{
+		public function get missingChildren():Array {
 			// this map is used to avoid duplicates
 			var childMap:Object;
 			var children:Array;
@@ -339,30 +338,22 @@ package org.cytoscapeweb.model {
 			
 			// if missing children is set before, just return the
 			// previously collected children
-			if (_missingChildren != null)
-			{
+			if (_missingChildren != null) {
 				children = _missingChildren;
-			}
-			// collect non-selected children of all selected compound nodes
-			else
-			{
+			} else {
+                // collect non-selected children of all selected compound nodes
 				childMap = new Object();
 				
-				// for each node sprite in the selected nodes, search for
-				// missing children
-				
-				for each (var ns:NodeSprite in nodes)
-				{
-					if (ns is CompoundNodeSprite)
-					{
+				// for each node sprite in the selected nodes, search for missing children
+				for each (var ns:NodeSprite in nodes) {
+					if (ns is CompoundNodeSprite) {
 						// get non-selected children of the current compound
 						children = CompoundNodes.getChildren(
 							(ns as CompoundNodeSprite),
 							CompoundNodes.NON_SELECTED);
 						
 						// concat the new children with the map
-						for each (node in children)
-						{
+						for each (node in children) {
 							// assuming the node.data.id is not null
 							childMap[node.data.id] = node;
 						}
@@ -372,8 +363,7 @@ package org.cytoscapeweb.model {
 				// convert child map to an array
 				children = new Array();
 				
-				for each (node in childMap)
-				{
+				for each (node in childMap) {
 					children.push(node);
 				}
 				
@@ -684,19 +674,14 @@ package org.cytoscapeweb.model {
 		 * @param data	data associated with the compound node
 		 * @return		newly created NodeSprite
 		 */
-		public function addCompoundNode(data:Object) : NodeSprite
-		{
-			if (data == null)
-			{
+		public function addCompoundNode(data:Object):NodeSprite {
+			if (data == null) {
 				data = {};
 			}
 			
-			if (data.id == null)
-			{
+			if (data.id == null) {
 				data.id = nextId(Groups.NODES);
-			}
-			else if (hasId(Groups.NODES, data.id))
-			{
+			} else if (hasId(Groups.NODES, data.id)) {
 				throw new Error("Duplicate node id ('"+data.id+"')");
 			}
 			
@@ -705,13 +690,11 @@ package org.cytoscapeweb.model {
 			// create a new CompoundNodeSprite
 			var cNodeSprite : CompoundNodeSprite = new CompoundNodeSprite();
 			
-			if (data != null)
-			{
+			if (data != null) {
 				cNodeSprite.data = data;
 				
 				// init the CompoundNodeSprite if it has a network field
-				if (data.network != null)
-				{
+				if (data.network != null) {
 					cNodeSprite.initialize();
 				}
 			}
@@ -867,8 +850,7 @@ package org.cytoscapeweb.model {
                             var points:Object = xgmmlConverter.points;
 							
 							// update node positions & layout info
-							if (points != null)
-							{
+							if (points != null) {
                                 if (layout == null) layout = {};
                                 if (layout is String) layout = { name: layout };
                                 
@@ -898,17 +880,13 @@ package org.cytoscapeweb.model {
 				
 				// add compound nodes to the corresponding data group
 				
-				for each (var ns:NodeSprite in data.nodes)
-				{
-					if (ns is CompoundNodeSprite)
-					{
-						if ((ns as CompoundNodeSprite).isInitialized())
-						{
+				for each (var ns:NodeSprite in data.nodes) {
+					if (ns is CompoundNodeSprite) {
+						if ((ns as CompoundNodeSprite).isInitialized()) {
 							data.group(Groups.COMPOUND_NODES).add(ns);
 						}
 					}
 				}
-				
             } catch (err:Error) {
                 trace("[ERROR]: onLoadGraph_result: " + err.getStackTrace());
                 throw err;
@@ -917,63 +895,32 @@ package org.cytoscapeweb.model {
         
         public function getDataAsText(format:String="xgmml",
                                       viewCenter:Point=null,
-                                      options:Object=null):String
-		{
-            var out:IDataOutput,
-				nodesTable:DataTable,
-				edgesTable:DataTable,
-				dtSet:DataSet;
-            
-			format = StringUtil.trim(format.toLowerCase());
-
-            if (format === "xgmml" ||
-				format === "graphml")
-			{
-				// GraphicsDataTable is needed for both graphML and XGMML
-				// formats, since we also require the information contained
-				// in the DataSprite instances in addition to the raw data.
-				
-                nodesTable = new GraphicsDataTable(graphData.nodes,
-					nodesSchema);
-				
-                edgesTable = new GraphicsDataTable(
-					graphData.group(Groups.REGULAR_EDGES), edgesSchema);
-				
-                dtSet = new DataSet(nodesTable, edgesTable);
-				
-				if (format === "xgmml")
-				{
-					var bounds:Rectangle = GraphUtils.getBounds(nodes, edges,
-						!configProxy.nodeLabelsVisible,
-						!configProxy.edgeLabelsVisible);
-					
-					out = new XGMMLConverter(configProxy.visualStyle,
-						zoom,
-						viewCenter,
-						bounds).write(dtSet);
-					
-					// old initialization
-					//out = new XGMMLConverter(
-					//	configProxy.visualStyle).write(dtSet);
-				}
-				else
-				{
-					out = new GraphMLConverter().write(dtSet);
-				}
-            }
-			else // convert to SIF (TODO: is it possible to support compounds?)
-			{
-                nodesTable = new DataTable(graphData.nodes.toDataArray(),
-					nodesSchema);
-				
-				edgesTable = new DataTable(
-					graphData.group(Groups.REGULAR_EDGES).toDataArray(),
-						edgesSchema);
-				
+                                      options:Object=null):String {
+            var out:IDataOutput, nodesTable:DataTable, edgesTable:DataTable, dtSet:DataSet;
+            format = StringUtil.trim(format.toLowerCase());
+                        
+            if (format === "xgmml" || format === "graphml") {
+				// GraphicsDataTable is needed for both graphML and XGMML formats,
+				// since we also require the information contained in the DataSprite instances
+				// in addition to the raw data.
+                nodesTable = new GraphicsDataTable(graphData.nodes, nodesSchema);
+                edgesTable = new GraphicsDataTable(graphData.group(Groups.REGULAR_EDGES), edgesSchema);
                 dtSet = new DataSet(nodesTable, edgesTable);
                 
-				var interaction:String =  options != null ? options.interactionAttr : null;
-				out = new SIFConverter(interaction).write(dtSet);
+				if (format === "xgmml") {
+    				var bounds:Rectangle = GraphUtils.getBounds(nodes, edges,
+                                                                !configProxy.nodeLabelsVisible,
+                                                                !configProxy.edgeLabelsVisible);
+                    out = new XGMMLConverter(configProxy.visualStyle, zoom, viewCenter, bounds).write(dtSet);
+                } else {
+                    out = new GraphMLConverter().write(dtSet);
+                }
+            } else {
+                // convert to SIF (it does not support compounds!)
+                nodesTable = new DataTable(graphData.nodes.toDataArray(), nodesSchema);
+                edgesTable = new DataTable(graphData.group(Groups.REGULAR_EDGES).toDataArray(), edgesSchema);
+                dtSet = new DataSet(nodesTable, edgesTable);
+                out = new SIFConverter(options).write(dtSet);
             }
 
             return "" + out;
