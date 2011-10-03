@@ -366,10 +366,9 @@ package org.cytoscapeweb.view {
             return JSON.encode(obj);
         }
 		
-		// TODO [merge] adapt for compound nodes ..
 		private function addElements(items:Array, updateVisualMappers:Boolean=false):Array {
 			var newAll:Array = [], newNodes:Array = [], newEdges:Array = [], ret:Array = [];
-			var edgesToAdd:Array = [];
+			var edgesToAdd:Array = [], childrenToAdd:Array = [];
 			var gr:String, newElement:DataSprite, o:Object;
 			
 			try {                
@@ -381,14 +380,28 @@ package org.cytoscapeweb.view {
 						throw new CWError("The 'group' field of the new element  must be either '" + 
 							Groups.NODES + "' or '" + Groups.EDGES + "'.");
 					
-					if (gr === Groups.NODES) {
+					if (gr === Groups.NODES)
+					{
 						// Create nodes first!
-						newElement = graphProxy.addNode(o.data);
+						// (instantiate every node as a compound node)
+						newElement = graphProxy.addCompoundNode(o.data);
+						
 						// Position it:
 						var p:Point = new Point(o.x, o.y);
 						p = graphMediator.vis.globalToLocal(p);
 						newElement.x = p.x;
 						newElement.y = p.y;
+						
+						// check if current node will be added into a compound
+						if (o.parent != null)
+						{
+							// hold a reference for the new created sprite
+							// for fast access during compound node update
+							o.sprite = newElement;
+							
+							// add to the list of child nodes to be added 
+							childrenToAdd.push(o);
+						}
 						
 						newNodes.push(newElement);
 						newAll.push(newElement);
@@ -409,6 +422,14 @@ package org.cytoscapeweb.view {
 				// Set listeners, styles, etc:
 				graphMediator.initialize(Groups.NODES, newNodes);
 				graphMediator.initialize(Groups.EDGES, newEdges);
+				
+				// process child nodes to add, and update corresponding parent
+				// compound nodes
+				for each (o in childrenToAdd)
+				{
+					var parent:NodeSprite = this.graphProxy.getNode(o.parent);
+					this.graphMediator.updateCompoundNode(parent, o.sprite);
+				}
 				
 				// Do it before converting the Nodes/Edges to plain objects,
 				// in order to get the rendered visual properties:
