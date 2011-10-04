@@ -875,6 +875,14 @@ public class PluginManager {
 		// the creation of the class loader automatically loads the plugins
 		classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 
+
+		// Note: For the case of websatart, we should use the following statement to get classLoader
+		// The URLs will be a list of URLs pointed to the jars at source website. This may solve the 
+		//Class not found exception, because webstart does not have access to the local jar files
+		// in the class path.
+		//classLoader = (URLClassLoader)this.getClass().getClassLoader();
+		
+		
 		// iterate through the given jar files and find classes that are
 		// assignable from CytoscapePlugin
 		for (int i = 0; i < urls.length; ++i) {
