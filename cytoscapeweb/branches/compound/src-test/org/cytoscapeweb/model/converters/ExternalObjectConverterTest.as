@@ -246,6 +246,7 @@ package org.cytoscapeweb.model.converters {
             assertEquals(network.data.edges.length, ed.length);
             
             for each (var n:Object in nd) {
+                if (n is NodeSprite) n = n.data;
                 assertTrue(n.id is String);
                 assertTrue(n.label is String);
                 assertTrue(n.score is Number);

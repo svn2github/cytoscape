@@ -34,6 +34,7 @@ package org.cytoscapeweb.model.converters {
     import flare.data.DataTable;
     import flare.data.DataUtil;
     import flare.data.converters.IDataConverter;
+    import flare.vis.data.NodeSprite;
     
     import flash.utils.ByteArray;
     import flash.utils.IDataInput;
@@ -127,6 +128,7 @@ package org.cytoscapeweb.model.converters {
                 var id:*, src:String, tgt:String, inter:String;
                 
                 for each (n in nodes) {
+                    if (n is NodeSprite) n = n.data;
                     id = n.hasOwnProperty(_nodeAttr) ? n[_nodeAttr] : n.id;
                     nodeIds[n.id] = id;
                 }
@@ -142,6 +144,7 @@ package org.cytoscapeweb.model.converters {
                 }
                 
                 for each (n in nodes) {
+                    if (n is NodeSprite) n = n.data;
                     id = nodeIds[n.id];
                     
                     if (!writtenNodes[id]) {

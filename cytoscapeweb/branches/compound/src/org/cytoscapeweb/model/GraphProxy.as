@@ -653,20 +653,6 @@ package org.cytoscapeweb.model {
             return changed;
         }
         
-        public function addNode(data:Object):NodeSprite {
-            if (data == null) data = {};
-            
-            normalizeData(data, Groups.NODES);
-            
-            if (data.id == null) data.id = nextId(Groups.NODES);
-            else if (hasId(Groups.NODES, data.id)) throw new Error("Duplicate node id ('"+data.id+"')");
-
-            var n:NodeSprite = graphData.addNode(data);
-            createCache(n);
-            
-            return n;
-        }
-        
 		/**
 		 * Creates and adds a new CompoundNodeSprite to the graph data. Also,
 		 * sets the given data object as the data property of the sprite.
@@ -674,7 +660,7 @@ package org.cytoscapeweb.model {
 		 * @param data	data associated with the compound node
 		 * @return		newly created NodeSprite
 		 */
-		public function addCompoundNode(data:Object):NodeSprite {
+		public function addNode(data:Object):NodeSprite {
 			if (data == null) {
 				data = {};
 			}
@@ -688,7 +674,7 @@ package org.cytoscapeweb.model {
 			normalizeData(data, Groups.NODES);
 			
 			// create a new CompoundNodeSprite
-			var cNodeSprite : CompoundNodeSprite = new CompoundNodeSprite();
+			var cNodeSprite:CompoundNodeSprite = new CompoundNodeSprite();
 			
 			if (data != null) {
 				cNodeSprite.data = data;
@@ -702,13 +688,11 @@ package org.cytoscapeweb.model {
 			// and newly created CompoundNodeSprite to the graph data, but do
 			// not add it to the list of compound nodes. It will be added to
 			// that list when a child node is added into the compound.
-			
 			var nodeSprite:NodeSprite = this.graphData.addNode(cNodeSprite);
 			
 			// postponed until the first child node
 			//var list:DataList = this.graphData.group(Groups.COMPOUND_NODES);			
 			//list.add(nodeSprite);
-			
 			this.createCache(nodeSprite);
 			
 			return nodeSprite;
@@ -718,8 +702,7 @@ package org.cytoscapeweb.model {
 		 * Resets the missing children array in order to enable re-calculation
 		 * of missing child nodes in the getter method of missingChildren.
 		 */ 
-		public function resetMissingChildren() : void
-		{
+		public function resetMissingChildren():void {
 			_missingChildren = null;
 		}
 		

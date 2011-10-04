@@ -223,38 +223,35 @@ package org.cytoscapeweb.model.converters {
 		 * @param lookup		lookup map (by id) for nodes
 		 * @param parentId		optional parent id for recursive calls 
 		 */
-		private static function readData(extNodesData:Array, extEdgesData:Array,
-			nodes:Array, edges:Array,
-			nodeSchema:DataSchema, edgeSchema:DataSchema,
-			lookup:Object,
-			parentId: String = null) : void
-		{
+		private static function readData(extNodesData:Array,
+		                                 extEdgesData:Array,
+			                             nodes:Array,
+			                             edges:Array,
+			                             nodeSchema:DataSchema,
+			                             edgeSchema:DataSchema,
+			                             lookup:Object,
+			                             parentId:String=null):void {
 			var obj:Object;
 			var id:String, sid:String, tid:String;
 			var cns:CompoundNodeSprite;
 			
 			// Nodes
-			for each (obj in extNodesData)
-			{
+			for each (obj in extNodesData) {
 				cns = new CompoundNodeSprite();
 				
 				// check for a sub-network. If the sub network exists,
 				// recursively read sub-network data.
-				if (obj[NETWORK] != null)
-				{
+				if (obj[NETWORK] != null) {
 					// initialize compound node in order to add child nodes
 					cns.initialize();
 					
-					readData(obj[NETWORK][Groups.NODES],
-						obj[NETWORK][Groups.EDGES],
-						nodes, edges,
-						nodeSchema, edgeSchema,
-						lookup,
-						obj[ID]);
+					readData(obj[NETWORK][Groups.NODES], obj[NETWORK][Groups.EDGES],
+						     nodes, edges,
+						     nodeSchema, edgeSchema,
+						     lookup, obj[ID]);
 				
 					// delete the sub-network field after processing
 					delete obj[NETWORK];
-					//obj[NETWORK] = null;
 				}
 				
 				normalizeData(obj, nodeSchema)
@@ -263,8 +260,7 @@ package org.cytoscapeweb.model.converters {
 				lookup[id] = cns;
 				
 				// update parent id of the current node
-				if (parentId != null)
-				{
+				if (parentId != null) {
 					cns.parentId = parentId;
 				}
 				
@@ -273,8 +269,7 @@ package org.cytoscapeweb.model.converters {
 			}
 			
 			// Edges
-			for each (obj in extEdgesData)
-			{
+			for each (obj in extEdgesData) {
 				normalizeData(obj, edgeSchema);
 				id  = obj[ID];
 				sid = obj[SOURCE];
@@ -430,7 +425,7 @@ package org.cytoscapeweb.model.converters {
         public static function toExtElement(ds:DataSprite, zoom:Number):Object {
             var obj:Object = null;
             var p:Point;
-            var n:NodeSprite, e:EdgeSprite;
+            var n:CompoundNodeSprite, e:EdgeSprite;
             var scale:Number;
 
             if (ds != null) {
@@ -441,8 +436,8 @@ package org.cytoscapeweb.model.converters {
                 obj.opacity = ds.alpha;
                 obj.visible = ds.visible;
                 
-                if (ds is NodeSprite) {
-                    n = ds as NodeSprite;
+                if (ds is CompoundNodeSprite) {
+                    n = ds as CompoundNodeSprite;
                     
                     obj.group = Groups.NODES;
                     obj.shape = n.shape;
@@ -452,6 +447,7 @@ package org.cytoscapeweb.model.converters {
                     obj.color = n.props.transparent ? "transparent" : Utils.rgbColorAsString(n.fillColor);
                     obj.borderColor = Utils.rgbColorAsString(n.lineColor);
                     obj.borderWidth = n.lineWidth;
+                    obj.parent = n.parentId; // TODO: should be a data field?
 //                    obj.degree = n.degree;
 //                    obj.indegree = n.inDegree;
 //                    obj.outdegree = n.outDegree;
