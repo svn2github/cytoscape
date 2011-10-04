@@ -188,7 +188,7 @@ public class MapBioPaxToCytoscapeImpl implements MapBioPaxToCytoscape {
 		AttributeUtil.set(network, CyNetwork.NAME, networkName, String.class);
 		
 		// an attribute which indicates this network is a BioPAX network
-		AttributeUtil.set(network, MapBioPaxToCytoscapeImpl.BIOPAX_NETWORK, Boolean.TRUE, Boolean.class);
+		AttributeUtil.set(network, MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE, Boolean.class);
 	
 		//  default Quick Find Index
 		AttributeUtil.set(network, "quickfind.default_index", CyNode.NAME, String.class);
