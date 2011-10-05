@@ -42,17 +42,6 @@
 						<goals>
 							<goal>testCompile</goal>
 						</goals>
-						<configuration>
-							<source>1.6</source>
-							<target>1.6</target>
-							<optimize>true</optimize>
-							<showWarnings>true</showWarnings>
-							<showDeprecation>true</showDeprecation>
-							<compilerArguments>
-								<Xmaxwarns>10000</Xmaxwarns>
-								<Xmaxerrs>10000</Xmaxerrs>
-							</compilerArguments>
-						</configuration>
 					</execution>
 					<execution>
 						<id>default-compile</id>
@@ -60,17 +49,6 @@
 						<goals>
 							<goal>compile</goal>
 						</goals>
-						<configuration>
-							<source>1.6</source>
-							<target>1.6</target>
-							<optimize>true</optimize>
-							<showWarnings>true</showWarnings>
-							<showDeprecation>true</showDeprecation>
-							<compilerArguments>
-								<Xmaxwarns>10000</Xmaxwarns>
-								<Xmaxerrs>10000</Xmaxerrs>
-							</compilerArguments>
-						</configuration>
 					</execution>
 				</executions>
 				<configuration>
