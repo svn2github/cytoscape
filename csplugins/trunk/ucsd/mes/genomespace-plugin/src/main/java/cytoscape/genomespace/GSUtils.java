@@ -24,11 +24,13 @@ final class GSUtils {
 
 	private static GsSession session = null;
 
-	public static GsSession getSession() {
+	public static synchronized GsSession getSession() {
 		if (session == null || !session.isLoggedIn()) {
 			try {
-				session = new GsSession();
-				if (session.isLoggedIn() && !loginToGenomeSpace())
+				// Session won't be logged after this because
+				// token parameter is null!
+				session = new GsSession(null);
+				if (!loginToGenomeSpace())
 					throw new GSClientException("failed to login!", null);
 			} catch (Exception e) {
 				throw new GSClientException("failed to login", e);
@@ -37,8 +39,20 @@ final class GSUtils {
 		return session;
 	}
 
-	public static boolean loginToGenomeSpace() {
-		org.genomespace.client.ConfigurationUrls.init("test");
+	public static synchronized void reloginToGenomeSpace() {
+		if ( session != null && session.isLoggedIn() ) {
+			try { 
+				session.logout();
+			} catch (Exception e) { }
+			session = null;
+		}
+
+		getSession();
+	}
+
+	public static synchronized boolean loginToGenomeSpace() {
+		String gsenv = System.getProperty("genomespace.environment","test").toString();
+		org.genomespace.client.ConfigurationUrls.init(gsenv);
 		for (;;) {
 			final GSLoginDialog loginDialog =
 				new GSLoginDialog(null, Dialog.ModalityType.APPLICATION_MODAL);
@@ -46,7 +60,6 @@ final class GSUtils {
 			final String userName = loginDialog.getUsername();
 			final String password = loginDialog.getPassword();
 			if (userName == null || userName.isEmpty() || password == null || password.isEmpty()) {
-				System.out.println("no login info");
 				return false;
 			}
 

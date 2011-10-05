@@ -55,5 +55,8 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 		LoadOntologyAndAnnotationFromGenomeSpace loadOntologyAndAnnotationFromGenomeSpace =
 			new LoadOntologyAndAnnotationFromGenomeSpace();
 		Cytoscape.getDesktop().getCyMenus().addAction(loadOntologyAndAnnotationFromGenomeSpace);
+
+		LoginToGenomeSpace loginToGenomeSpace = new LoginToGenomeSpace();
+		Cytoscape.getDesktop().getCyMenus().addAction(loginToGenomeSpace);
 	}
 }	
