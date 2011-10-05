@@ -6,4 +6,5 @@
 Import-Package: *
 Private-Package: ${bundle.namespace}.internal.*
 Export-Package: ${bundle.namespace}
+Bundle-Activator: ${bundle.namespace}.internal.CyActivator
 #end
