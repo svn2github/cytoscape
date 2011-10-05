@@ -96,6 +96,7 @@ public class ModelNavigatorDialog
 	private static final int EXPANDMODELS = 20;
 	private static final int EXPANDCHAINS = 21;
 	private static final int CREATENETWORK = 22;
+	private static final int SELECT = 23;
 	private boolean ignoreSelection = false;
 	private int residueDisplay = ChimeraResidue.THREE_LETTER;
 	private boolean isCollapsing = false;
@@ -566,7 +567,7 @@ public class ModelNavigatorDialog
 			JMenuItem menuItem = new JMenuItem(label);
 			{
 				String command = "preset apply "+com[0];
-				MenuActionListener va = new MenuActionListener(this, COMMAND, command);
+				MenuActionListener va = new MenuActionListener(this, SELECT, command);
 				menuItem.addActionListener(va);
 			}
 			menu.add(menuItem);
@@ -646,6 +647,8 @@ public class ModelNavigatorDialog
 			List<ChimeraStructuralObject> selectedObjects = chimeraObject.getSelectionList();
 			if (type == COMMAND) {
 				// System.out.println("Command: "+command);
+				chimeraObject.chimeraSend(command);
+			} else if (type == SELECT) {
 				chimeraObject.select(command);
 			} else if (type == CLEAR) {
 				chimeraObject.select("~select");
