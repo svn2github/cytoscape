@@ -366,7 +366,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 	*/
 
 		rowOrder = matrix.indexSort(clusters, clusters.length);
-		System.out.println(Arrays.toString(rowOrder));
+		// System.out.println(Arrays.toString(rowOrder));
 		// Update the network attributes
 		updateAttributes(algorithm);
 

@@ -123,14 +123,14 @@ public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorith
 		                "Maximum number of clusters",
 		                Tunable.INTEGER, new Integer(0),
 		                (Object)new Integer(kMax), (Object)null, 0);
-		if (!useSilhouette) t.setFlag(Tunable.IMMUTABLE);
+		// if (!useSilhouette) t.setFlag(Tunable.IMMUTABLE);
 		clusterProperties.add(t);
 
 		t = new Tunable("kNumber",
 		                "Number of clusters (k)",
 		                Tunable.INTEGER, new Integer(10),
 		                (Object)new Integer(kNumber), (Object)null, 0);
-		if (useSilhouette) t.setFlag(Tunable.IMMUTABLE);
+		// if (useSilhouette) t.setFlag(Tunable.IMMUTABLE);
 		clusterProperties.add(t);
 	}
 
@@ -168,6 +168,7 @@ public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorith
 	}
 
 	public void tunableChanged(Tunable t) {
+		System.out.println("Tunable changed");
 		if (t.getName().equals("useSilhouette")) {
 			useSilhouette = ((Boolean) t.getValue()).booleanValue();
 			if (useSilhouette) {

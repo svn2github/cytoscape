@@ -214,6 +214,8 @@ public class KMeansCluster extends AbstractAttributeClusterer {
 		algorithm.setIgnoreMissing(true);
 		algorithm.setSelectedOnly(selectedOnly);
 		algorithm.setDebug(debug);
+		algorithm.setUseSilhouette(useSilhouette);
+		algorithm.setKMax(kMax);
 
 		String resultsString = "K-Means results:";
 

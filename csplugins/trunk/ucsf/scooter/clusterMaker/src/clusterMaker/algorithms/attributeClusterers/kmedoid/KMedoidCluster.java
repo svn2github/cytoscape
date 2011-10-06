@@ -214,6 +214,8 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 		algorithm.setIgnoreMissing(true);	// KMedoid doesn't handle missing data well
 		algorithm.setSelectedOnly(selectedOnly);
 		algorithm.setDebug(debug);
+		algorithm.setUseSilhouette(useSilhouette);
+		algorithm.setKMax(kMax);
 
 		String resultsString = "K-Medoid results:";
 
