@@ -10,8 +10,8 @@
     header("Content-Type: application/x-java-jnlp-file");
     $MAXHEAP=htmlspecialchars($_GET['maxHeapSize']);
     $NETWORK=htmlspecialchars($_GET['network']);
-    $TABLE=htmlspecialchars($_GET['table']);
     $SESSION=htmlspecialchars($_GET['session']);
+    $GSENV=htmlspecialchars($_GET['gsenv']);
 	print('<?xml version="1.0" encoding="utf-8"?>');
 ?>
 <jnlp codebase="$project.Url">
@@ -42,21 +42,22 @@
 <?php
 	# either load a session
     if($SESSION != null && $SESSION != "") {
-        print("	<argument>-P</argument>\n");
-        print("	<argument>gssession=$SESSION</argument>\n");
+        print("	<argument>-s</argument>\n");
+        print("	<argument>$SESSION</argument>\n");
 	
 	# or load network and/or attributes
     } else {
 		if ($NETWORK != null && $NETWORK != "") {
-        	print("	<argument>-P</argument>\n");
-        	print("	<argument>gsnetwork=$NETWORK</argument>\n");
-		}
-
-		if ($TABLE != null && $TABLE != "") {
-        	print("	<argument>-P</argument>\n");
-        	print("	<argument>gstable=$TABLE</argument>\n");
+        	print("	<argument>-N</argument>\n");
+        	print("	<argument>$NETWORK</argument>\n");
 		}
     }
+
+	# set the genomespace environment
+	if ($GSENV != null && $GSENV != "") {
+       	print("	<argument>-P</argument>\n");
+       	print("	<argument>genomespace.environment=$GSENV</argument>\n");
+	}
 ?>
     <argument>-p</argument>
     <argument>csplugins.network.merge.NetworkMergePlugin</argument>
