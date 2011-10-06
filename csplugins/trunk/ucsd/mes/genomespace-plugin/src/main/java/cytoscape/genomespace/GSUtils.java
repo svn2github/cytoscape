@@ -2,6 +2,7 @@ package cytoscape.genomespace;
 
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 
 import java.awt.Dialog;
 import java.util.List;
@@ -51,7 +52,7 @@ final class GSUtils {
 	}
 
 	public static synchronized boolean loginToGenomeSpace() {
-		String gsenv = System.getProperty("genomespace.environment","test").toString();
+		String gsenv = CytoscapeInit.getProperties().getProperty("genomespace.environment","test").toString();
 		org.genomespace.client.ConfigurationUrls.init(gsenv);
 		for (;;) {
 			final GSLoginDialog loginDialog =
