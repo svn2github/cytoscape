@@ -203,8 +203,7 @@ package org.cytoscapeweb.util {
             return style.getValue(propName, n.data);
         }
         
-        public static function visible(n:NodeSprite):Boolean
-		{
+        public static function visible(n:NodeSprite):Boolean {
             return !GraphUtils.isFilteredOut(n);
         }
         

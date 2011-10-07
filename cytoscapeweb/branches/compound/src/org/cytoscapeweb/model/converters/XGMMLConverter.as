@@ -54,6 +54,7 @@ package org.cytoscapeweb.model.converters {
     import org.cytoscapeweb.model.data.VisualPropertyVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.util.ArrowShapes;
+    import org.cytoscapeweb.util.DataSchemaUtils;
     import org.cytoscapeweb.util.Fonts;
     import org.cytoscapeweb.util.LineStyles;
     import org.cytoscapeweb.util.NodeShapes;
@@ -281,23 +282,18 @@ package org.cytoscapeweb.model.converters {
             // Let's just check for explicit false statements, as if the default were true,
             // because Cytoscape never creates this attribute, but has graphics info.
             _noGraphicInfo = String(xgmml.@[GRAPHIC_INFO]) === FALSE;
+            var directed:Boolean = TRUE == xgmml.@[DIRECTED] ? true : false;
             
-            var nodeSchema:DataSchema = new DataSchema();
-            var edgeSchema:DataSchema = new DataSchema();
+            var nodeSchema:DataSchema = DataSchemaUtils.minimumNodeSchema();
+            var edgeSchema:DataSchema = DataSchemaUtils.minimumEdgeSchema(directed);
             
             // set schema defaults
-            nodeSchema.addField(new DataField(ID, DataUtil.STRING));
             nodeSchema.addField(new DataField(LABEL, DataUtil.STRING));
             nodeSchema.addField(new DataField(WEIGHT, DataUtil.NUMBER));
             nodeSchema.addField(new DataField(NAME, DataUtil.STRING));
             
-            edgeSchema.addField(new DataField(ID, DataUtil.STRING));
-            edgeSchema.addField(new DataField(SOURCE, DataUtil.STRING));
-            edgeSchema.addField(new DataField(TARGET, DataUtil.STRING));
             edgeSchema.addField(new DataField(LABEL, DataUtil.STRING)); // Edge label cannot be an ID!
             edgeSchema.addField(new DataField(WEIGHT, DataUtil.NUMBER));
-            var directed:Boolean = TRUE == xgmml.@[DIRECTED] ? true : false;
-            edgeSchema.addField(new DataField(DIRECTED, DataUtil.BOOLEAN, directed));
 
             // Parse Global
             // ------------------------------------------------------
@@ -331,15 +327,11 @@ package org.cytoscapeweb.model.converters {
          
 			// for each node in the node list create a CompoundNodeSprite
 			// instance and add it to the nodeSprites array.
-			
-            for each (node in nodesList)
-			{
+            for each (node in nodesList) {
                 id = StringUtil.trim("" + node.@[ID]);
                 
-				if (id === "")
-				{
-					throw new Error(
-						"The 'id' attribute is mandatory for 'node' tags");
+				if (id === "") {
+					throw new Error( "The 'id' attribute is mandatory for 'node' tags");
 				}
 				
                 //lookup[id] = (n = parseData(node, nodeSchema));
@@ -358,19 +350,15 @@ package org.cytoscapeweb.model.converters {
 			
 			// for each subgraph in the XML, initialize the CompoundNodeSprite
 			// owning that subgraph.
-			
-			for each (graph in graphList)
-			{
+			for each (graph in graphList) {
 				// if the parent is undefined,
 				// then the node is in the root graph.
-				if (graph.parent() !== undefined)
-				{
+				if (graph.parent() !== undefined) {
 					compound = graph.parent().parent(); // parent is <att>
 					id = compound.@[ID].toString();
 					cns = lookup[id] as CompoundNodeSprite;
 					
-					if (cns != null)
-					{
+					if (cns != null) {
 						cns.initialize();
 					}
 				}
@@ -378,43 +366,36 @@ package org.cytoscapeweb.model.converters {
 			
 			// add each node to its parent if it is not a node in the root
 			
-			for each (node in nodesList)
-			{
+			for each (node in nodesList) {
 				graph = node.parent();
 				
 				// if the parent is undefined,
 				// then the node is in the root graph.
-				if (graph.parent() !== undefined)
-				{
+				if (graph.parent() !== undefined) {
 					compound = graph.parent().parent();
 					id = compound.@[ID].toString();
 					cns = lookup[id] as CompoundNodeSprite;
 					id = node.@[ID].toString();
 					
-					if (cns != null)
-					{
+					if (cns != null) {
 						cns.addNode(lookup[id] as CompoundNodeSprite);
 					}
 				}
 			}
 			
 			// parse graphics
-			
-			for each (node in nodesList)
-			{
+			for each (node in nodesList) {
 				id = StringUtil.trim("" + node.@[ID]);
 				cns = lookup[id] as CompoundNodeSprite;
 				
-				if (cns.isInitialized())
-				{
+				if (cns.isInitialized()) {
 					parseGraphics(id, node, C_NODE_GRAPHICS_ATTR);
 					
 					// separately set width and height values for compound
 					// bounds, since bounds are not visual styles.
 					var g:XML = node[GRAPHICS][0];
 
-					if (!(g == null || _noGraphicInfo))
-					{
+					if (!(g == null || _noGraphicInfo)) {
 						var bounds:Rectangle = new Rectangle();
 						
 						bounds.width = Number(g.@["w"]);
@@ -422,21 +403,17 @@ package org.cytoscapeweb.model.converters {
 						
 						cns.bounds = bounds;
 					}
-				}
-				else
-				{
+				} else {
 					parseGraphics(id, node, NODE_GRAPHICS_ATTR);
 				}
 			}
 			
 			// set position values for compound bounds
 			
-			for each (var point:Object in points)
-			{
+			for each (var point:Object in points) {
 				cns = lookup[point.id] as CompoundNodeSprite;
 				
-				if (cns.isInitialized())
-				{
+				if (cns.isInitialized()) {
 					cns.bounds.x = point.x - cns.bounds.width/2;
 					cns.bounds.y = point.y - cns.bounds.height/2;
 				}
@@ -574,13 +551,8 @@ package org.cytoscapeweb.model.converters {
             var name:String = att.@[NAME].toString();
             var def:* = null;
             
-			
-            
-            
 			// an attribute without a name should be ignored
-            if (name == null ||
-				name.length == 0)
-			{
+            if (name == null || name.length == 0) {
 				return;
 			}
 			
@@ -655,25 +627,23 @@ package org.cytoscapeweb.model.converters {
 								 dtset:DataSet,
 								 tagName:String,
 								 lookup:Object,
-								 parentId:String = null):void
-		{
+								 parentId:String = null):void {
 			var attrs:Object;
 			var graphAttrs:Object;
 			var table:DataTable;
 			var nx:Number, ny:Number;
+			var cns:CompoundNodeSprite;
 			
 			// xml used when creating subgraphs for compound nodes
 			var childXml:XML = null;
 			
 			var appendChild:Function = function(i:uint,
 												tuple:Object,
-												target:XML = null):void
-			{
+												target:XML = null):void {
 				var data:Object = (tuple is DataSprite) ? DataSprite(tuple).data : table.data;
 				var x:XML = <{tagName}/>;
 				
-				for (var name:String in data)
-				{
+				for (var name:String in data) {
 					var field:DataField = schema.getFieldByName(name);
 					
 					if (attrs.hasOwnProperty(name) &&
@@ -691,15 +661,13 @@ package org.cytoscapeweb.model.converters {
 				if (data[LABEL] === undefined) x.@[LABEL] = toString(data[ID], DataUtil.STRING);
 				
 				// Write graphics tag:
-				if (tuple is DataSprite)
-				{
+				if (tuple is DataSprite) {
 					var ds:DataSprite = tuple as DataSprite;
 					var graphics:XML = <{GRAPHICS}/>;
 					var p:Point;
 					
 					// Node position:
-					if (ds is NodeSprite)
-					{
+					if (ds is NodeSprite) {
 						var n:NodeSprite = ds as NodeSprite;
 						nx = n.x;
 						ny = n.y;
@@ -713,21 +681,16 @@ package org.cytoscapeweb.model.converters {
 						graphics.@y = ny;
 					}
 					
-					if (ds is CompoundNodeSprite)
-					{
-						if ((ds as CompoundNodeSprite).isInitialized())
-						{
+					if (ds is CompoundNodeSprite) {
+						if ((ds as CompoundNodeSprite).isInitialized()) {
 							graphAttrs = C_NODE_GRAPHICS_ATTR;
-						}
-						else
-						{
+						} else {
 							graphAttrs = NODE_GRAPHICS_ATTR;
 						}
 					}
 					
 					// Styles (color, width...):
-					for (var k:String in graphAttrs)
-					{
+					for (var k:String in graphAttrs) {
 						addGraphicsAtt(graphics, k, graphAttrs[k], ds.data);
 					}
 					
@@ -736,8 +699,7 @@ package org.cytoscapeweb.model.converters {
 					// visual style "size" does not work for compounds
 					
 					if ((ds is CompoundNodeSprite) &&
-						(ds as CompoundNodeSprite).isInitialized())
-					{
+						(ds as CompoundNodeSprite).isInitialized()) {
 						graphics.@["w"] = ds.width;
 						graphics.@["h"] = ds.height;
 					}
@@ -745,13 +707,10 @@ package org.cytoscapeweb.model.converters {
 					x.appendChild(graphics);
 				}
 				
-				if (target == null)
-				{
+				if (target == null) {
 					// append to the root xml
 					xml.appendChild(x);
-				}
-				else
-				{
+				} else {
 					// append to the given xml
 					target.appendChild(x);
 				}
@@ -759,14 +718,11 @@ package org.cytoscapeweb.model.converters {
 				childXml = x;
 			}
 			
-			if (tagName == NODE)
-			{
+			if (tagName == NODE) {
 				table = dtset.nodes;
 				attrs = NODE_ATTR;
 				graphAttrs = NODE_GRAPHICS_ATTR;
-			}
-			else
-			{
+			} else {
 				table = dtset.edges;
 				attrs = EDGE_ATTR;
 				graphAttrs = EDGE_GRAPHICS_ATTR;
@@ -782,107 +738,64 @@ package org.cytoscapeweb.model.converters {
 			// array of sprites (for both edges and simple nodes)
 			var sprites:Array = new Array();
 			
-			if (table is GraphicsDataTable)
-			{
+			if (table is GraphicsDataTable) {
 				tuples = (table as GraphicsDataTable).dataSprites;
 				
 				// separate compound nodes and simple nodes if tuples are nodes.
 				// separate intra-graph edges and inter-graph edges if
 				// tuples are edges.
 				
-				for each (var ds:DataSprite in tuples)
-				{
-					if (ds is CompoundNodeSprite)
-					{
+				for each (var ds:DataSprite in tuples) {
+					if (ds is CompoundNodeSprite) {
 						// check if compound node is initialized
-						if ((ds as CompoundNodeSprite).isInitialized())
-						{
+						if ((ds as CompoundNodeSprite).isInitialized()) {
 							// if no parent id is provided, then we are
 							// iterating the root graph. Include only
 							// 'parentless' compounds  
-							if (parentId == null)
-							{
-								if((ds as CompoundNodeSprite).parentId == null)
-								{
+							if (parentId == null) {
+								if (ds.data.parent == null) {
 									compoundNodes.push(ds);
 								}
-							}
-							// if parent id is provided, it is safe to include 
-							// all initialized compound nodes.
-							else
-							{
+							} else {
+							    // if parent id is provided, it is safe to include 
+                                // all initialized compound nodes.
 								compoundNodes.push(ds);
 							}
-						}
-						else
-						{
+						} else {
 							// If no parent id is provided include only
 							// parentless nodes' data.
-							if (parentId == null)
-							{
-								if((ds as CompoundNodeSprite).parentId == null)
-								{
+							if (parentId == null) {
+								if (ds.data.parent == null) {
 									sprites.push(ds);
 								}
-							}
-							// if parent id is provided, it is safe to include
-							// data
-							else
-							{
+							} else {
+							    // if parent id is provided, it is safe to include data
 								sprites.push(ds);
 							}
 						}
-					}
-					else if (ds is NodeSprite)
-					{
-						// include only parentless nodes' data
-						if (parentId == null)
-						{
-							if (ds.props.parentId == null)
-							{
-								sprites.push(ds);
-							}
-						}
-						// safe to include node data
-						else
-						{
-							sprites.push(ds);
-						}
-					}
-					else if (ds is EdgeSprite)
-					{
+					} else if (ds is EdgeSprite) {
 						var es:EdgeSprite =  ds as EdgeSprite;
 						var target:XML = null;
 						var sParentId:String;
 						var tParentId:String;
 						
-						if (es.source is CompoundNodeSprite
-							&& es.target is CompoundNodeSprite)
-						{
-							sParentId = (es.source as CompoundNodeSprite).parentId;
-							tParentId = (es.target as CompoundNodeSprite).parentId;
-							
-							// if both source and target parents are in the same
-							// subgraph (i.e. in the same compound), then the
-							// edge information will be written to the
-							// corresponding subgraph.
-							if (sParentId != null &&
-								tParentId != null &&
-								sParentId == tParentId)
-							{
-								// try to get the XML corresponding to the
-								// parent
-								target = lookup[sParentId] as XML;
-							}
+						sParentId = es.source.data.parent;
+						tParentId = es.target.data.parent;
+						
+						// if both source and target parents are in the same
+						// subgraph (i.e. in the same compound), then the
+						// edge information will be written to the
+						// corresponding subgraph.
+						if (sParentId != null && tParentId != null && sParentId == tParentId) {
+							// try to get the XML corresponding to the
+							// parent
+							target = lookup[sParentId] as XML;
 						}
 						
 						// check if the target parent compound is valid
-						if (target != null)
-						{
+						if (target != null) {
 							appendChild(0, es, target);
-						}
-						else
-						{
+						} else {
 							// add the edge data to the array of data to be
 							// added to the root graph
 							sprites.push(es);
@@ -896,8 +809,7 @@ package org.cytoscapeweb.model.converters {
 				// for each compound node sprite, recursively write child node
 				// information into a new subgraph
 				
-				for each (var cns:CompoundNodeSprite in compoundNodes)
-				{
+				for each (cns in compoundNodes) {
 					// sub graph for child nodes & edges
 					var subgraph:XML = new XML(<graph/>);
 					
@@ -913,108 +825,26 @@ package org.cytoscapeweb.model.converters {
 					
 					var subList:DataList = new DataList("children");
 					
-					for each (var ns:NodeSprite in cns.getNodes())
-					{
+					for each (var ns:NodeSprite in cns.getNodes()) {
 						subList.add(ns);
 					}
 					
 					var subDtSet:DataSet = new DataSet(
-						new GraphicsDataTable(subList, table.schema));
+					       new GraphicsDataTable(subList, table.schema));
 					
 					// recursively add child node data
-					addTags(subgraph,
-						subDtSet,
-						tagName,
-						lookup,
-						cns.data.id);
+					addTags(subgraph, subDtSet, tagName, lookup, cns.data.id);
 					
 					// add subgraph information to the current graph
 					var att:XML = new XML(<{ATTRIBUTE}/>);
 					att.appendChild(subgraph);
 					childXml.appendChild(att);
 				}
-			}
-			else
-			{
+			} else {
 				tuples = table.data;
 				$each(tuples, appendChild);
 			}	
 		}
-		
-		/*
-        private function addTags(xml:XML, dtset:DataSet, tagName:String):void {
-            var attrs:Object;
-            var graphAttrs:Object;
-            var table:DataTable;
-            var nx:Number, ny:Number;
-            
-            if (tagName == NODE) {
-            	table = dtset.nodes;
-            	attrs = NODE_ATTR;
-            	graphAttrs = NODE_GRAPHICS_ATTR;
-            } else {
-            	table = dtset.edges;
-            	attrs = EDGE_ATTR;
-            	graphAttrs = EDGE_GRAPHICS_ATTR;
-            }
-
-            var schema:DataSchema = table.schema;
-            var tuples:Object = (table is GraphicsDataTable) ? GraphicsDataTable(table).dataSprites : table.data;
-            
-            $each(tuples, function(i:uint, obj:Object):void {
-            	var data:Object = (obj is DataSprite) ? DataSprite(obj).data : table.data;
-                var x:XML = <{tagName}/>;
-                
-                for (var name:String in data) {
-                    var field:DataField = schema.getFieldByName(name);
-                    
-                    if (attrs.hasOwnProperty(name) &&
-                        name !== WEIGHT) { // Cytoscape won't parse regular weight attributes...
-                        // add as attribute
-                        x.@[name] = toString(data[name], field.type);
-                    } else {
-                        if (data[name] != null) {
-                            addAtt(x, name, schema, data[name]);
-                        }
-                    }
-                }
-                
-                // Cytoscape requires unique labels:
-                if (data[LABEL] === undefined) x.@[LABEL] = toString(data[ID], DataUtil.STRING);
-                
-                // Write graphics tag:
-                if (obj is DataSprite) {
-                    var ds:DataSprite = DataSprite(obj);
-                    var graphics:XML = <{GRAPHICS}/>;
-                    var p:Point;
-                    
-                    // Node position:
-                    if (ds is NodeSprite) {
-                        var n:NodeSprite = ds as NodeSprite;
-                        nx = n.x;
-                        ny = n.y;
-                        
-                        if (_bounds != null) {
-                            nx -= _bounds.x;
-                            ny -= _bounds.y;
-                        }
-                        
-                        graphics.@x = nx;
-                        graphics.@y = ny;
-                    }
-                    
-                    // Styles (color, width...):
-                    for (var k:String in graphAttrs) {
-                        addGraphicsAtt(graphics, k, graphAttrs[k], ds.data);
-                    }
-
-                    x.appendChild(graphics);
-                }
-                
-                xml.appendChild(x);
-            });
-        }
-        */
 		
         private function addAtt(xml:XML, name:String, schema:DataSchema, value:*):void {
             var field:DataField = schema.getFieldByName(name);

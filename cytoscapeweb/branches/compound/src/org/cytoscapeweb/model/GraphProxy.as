@@ -165,7 +165,8 @@ package org.cytoscapeweb.model {
         
         public function get nodes():Array {
             var arr:Array = [];
-            for each (var n:NodeSprite in graphData.nodes) arr.push(n);
+            var n:NodeSprite;
+            for each (n in graphData.nodes) arr.push(n);
             return arr;
         }
         
@@ -183,10 +184,11 @@ package org.cytoscapeweb.model {
 
         public function get filteredNodes():Array {
             var arr:Array = null;
+            var n:NodeSprite;
             var list:DataList = graphData.group(Groups.FILTERED_NODES);
             if (list != null) {
                 arr = [];
-                for each (var n:NodeSprite in list) arr.push(n);
+                for each (n in list) arr.push(n);
             }
             return arr;
         }
@@ -389,7 +391,7 @@ package org.cytoscapeweb.model {
 
         // ========[ PUBLIC METHODS ]===============================================================
 
-        public function getNode(id:String):NodeSprite {
+        public function getNode(id:String):CompoundNodeSprite {
             return _nodesMap[id];
         }
         
@@ -589,11 +591,12 @@ package org.cytoscapeweb.model {
          */
         public function changeNodesSelection(nodes:Array, select:Boolean):Array {
             var changed:Array = [];
+            var n:NodeSprite;
             
             if (nodes != null && nodes.length > 0) {
                 var list:DataList = graphData.group(Groups.SELECTED_NODES);
                 
-                for each (var n:NodeSprite in nodes) {
+                for each (n in nodes) {
 	                if (n.props.$selected !== select) {
                         n.props.$selected = select;
                         if (select) list.add(n)
@@ -615,6 +618,7 @@ package org.cytoscapeweb.model {
             var changed:Array = [];
             var interactions:Object = {}; // to update...
             var list:DataList = graphData.group(Groups.SELECTED_EDGES);
+            var e:EdgeSprite;
             
             var change:Function = function(e:EdgeSprite):void {
                 e.props.$selected = select;
@@ -624,7 +628,7 @@ package org.cytoscapeweb.model {
             }
             
             if (edges != null && edges.length > 0) {
-                for each (var e:EdgeSprite in edges) {
+                for each (e in edges) {
                     var update:Boolean = false;
                     
                     if (e.props.$merged) {
@@ -660,7 +664,7 @@ package org.cytoscapeweb.model {
 		 * @param data	data associated with the compound node
 		 * @return		newly created NodeSprite
 		 */
-		public function addNode(data:Object):NodeSprite {
+		public function addNode(data:Object):CompoundNodeSprite {
 			if (data == null) {
 				data = {};
 			}
@@ -674,28 +678,28 @@ package org.cytoscapeweb.model {
 			normalizeData(data, Groups.NODES);
 			
 			// create a new CompoundNodeSprite
-			var cNodeSprite:CompoundNodeSprite = new CompoundNodeSprite();
+			var cns:CompoundNodeSprite = new CompoundNodeSprite();
 			
 			if (data != null) {
-				cNodeSprite.data = data;
+				cns.data = data;
 				
 				// init the CompoundNodeSprite if it has a network field
 				if (data.network != null) {
-					cNodeSprite.initialize();
+					cns.initialize();
 				}
 			}
 						
 			// and newly created CompoundNodeSprite to the graph data, but do
 			// not add it to the list of compound nodes. It will be added to
 			// that list when a child node is added into the compound.
-			var nodeSprite:NodeSprite = this.graphData.addNode(cNodeSprite);
+			this.graphData.addNode(cns);
 			
 			// postponed until the first child node
 			//var list:DataList = this.graphData.group(Groups.COMPOUND_NODES);			
 			//list.add(nodeSprite);
-			this.createCache(nodeSprite);
+			this.createCache(cns);
 			
-			return nodeSprite;
+			return cns;
 		}
 		
 		/**
@@ -713,8 +717,8 @@ package org.cytoscapeweb.model {
             
             normalizeData(data, Groups.EDGES);
             
-            var src:NodeSprite = getNode(data.source);
-            var tgt:NodeSprite = getNode(data.target);
+            var src:CompoundNodeSprite = getNode(data.source);
+            var tgt:CompoundNodeSprite = getNode(data.target);
             
             if (src == null) throw new Error("Cannot find source node with id '"+data.source+"'");
             if (tgt == null) throw new Error("Cannot find target node with id '"+data.target+"'");
@@ -862,7 +866,6 @@ package org.cytoscapeweb.model {
 				setData(data);
 				
 				// add compound nodes to the corresponding data group
-				
 				for each (var ns:NodeSprite in data.nodes) {
 					if (ns is CompoundNodeSprite) {
 						if ((ns as CompoundNodeSprite).isInitialized()) {

@@ -1,17 +1,39 @@
-package org.cytoscapeweb.view.render
-{
-	import flare.util.Shapes;
+/*
+  This file is part of Cytoscape Web.
+  Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+    - Agilent Technologies
+    - Institut Pasteur
+    - Institute for Systems Biology
+    - Memorial Sloan-Kettering Cancer Center
+    - National Center for Integrative Biomedical Informatics
+    - Unilever
+    - University of California San Diego
+    - University of California San Francisco
+    - University of Toronto
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+*/
+package org.cytoscapeweb.view.render {
 	import flare.vis.data.DataSprite;
 	import flare.vis.data.NodeSprite;
 	
-	import flash.display.BitmapData;
 	import flash.display.Graphics;
 	import flash.display.Sprite;
-	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
-	import flash.utils.setTimeout;
-	
-	import mx.utils.StringUtil;
 	
 	import org.cytoscapeweb.util.GraphUtils;
 	import org.cytoscapeweb.util.NodeShapes;
@@ -24,23 +46,19 @@ package org.cytoscapeweb.view.render
 	 * 
 	 * @author Selcuk Onur Sumer
 	 */
-	public class CompoundNodeRenderer extends NodeRenderer
-	{
+	public class CompoundNodeRenderer extends NodeRenderer {
 		/**
 		 * Singleton instance. 
 		 */
-		private static var _instance:CompoundNodeRenderer =
-			new CompoundNodeRenderer();
+		private static var _instance:CompoundNodeRenderer = new CompoundNodeRenderer();
 		
 		private var _imgCache:ImageCache = ImageCache.instance;
 		
-		public static function get instance() : CompoundNodeRenderer
-		{
+		public static function get instance():CompoundNodeRenderer {
 			return _instance;
 		}
 		
-		public function CompoundNodeRenderer(defaultSize:Number = 6)
-		{
+		public function CompoundNodeRenderer(defaultSize:Number = 6) {
 			super(defaultSize);
 		}
 		
@@ -52,69 +70,48 @@ package org.cytoscapeweb.view.render
 		 * 
 		 * @param d	data sprite to be rendered
 		 */
-		public override function render(d:DataSprite) : void
-		{
+		public override function render(d:DataSprite):void {
 			var ns:CompoundNodeSprite;
 			var points:Array;
 			var g:Graphics = d.graphics;
 			var lineAlpha:Number = d.lineAlpha;
 			var fillAlpha:Number = d.fillAlpha;
 			
-			if (d is CompoundNodeSprite)
-			{
+			if (d is CompoundNodeSprite) {
 				ns = (d as CompoundNodeSprite);
 				
-				if (!ns.isInitialized() ||
-					ns.bounds == null ||
-					ns.allChildrenInvisible())
-				{
-					// no child or bounds set yet,
-					// render with default size & shape					
+				if (!ns.isInitialized() || ns.bounds == null || ns.allChildrenInvisible()) {
+					// no child or bounds set yet, render with default size & shape					
 					super.render(d);
-				}
-				else
-				{
+				} else {
 					g.clear();
 					
-					if (lineAlpha > 0 && d.lineWidth > 0)
-					{
-						var pixelHinting:Boolean =
-							d.shape === NodeShapes.ROUND_RECTANGLE;
-						
-						g.lineStyle(d.lineWidth,
-							d.lineColor,
-							lineAlpha,
-							pixelHinting);
+					if (lineAlpha > 0 && d.lineWidth > 0) {
+						var pixelHinting:Boolean = d.shape === NodeShapes.ROUND_RECTANGLE;
+						g.lineStyle(d.lineWidth, d.lineColor, lineAlpha, pixelHinting);
 					}
 					
-					if (fillAlpha > 0)
-					{
+					if (fillAlpha > 0) {
 						// draw the background color:
 						// Using a bit mask to avoid transparent mdes when fillcolor=0xffffffff.
 						// See https://sourceforge.net/forum/message.php?msg_id=7393265
 						g.beginFill(0xffffff & d.fillColor, fillAlpha);
-						
 						// draw shape
-						
-						this.drawShape(ns,
-							ns.shape,
-							this.adjustBounds(ns));
-						
+						this.drawShape(ns, ns.shape, this.adjustBounds(ns));
 						g.endFill();
 						
 						// draw an image on top
-						drawImage(ns, this.adjustSize(ns));
+						if (ns.isInitialized()) {
+                            drawImage(ns, ns.bounds.width, ns.bounds.height);
+						}
 					}
 				}
 				
 				// bring (recursively) child nodes & edges inside the compound
 				// to the front, otherwise they remain on the back side of
 				// the compound node.
-				//this.raiseChildren(ns);
 				GraphUtils.bringToFront(ns);
-			}
-			else
-			{
+			} else {
 				// if the data sprite is not a compound node, then just call
 				// the superclass renderer function.
 				super.render(d);
@@ -122,10 +119,7 @@ package org.cytoscapeweb.view.render
 		}
 		
 		/**
-		 * Draws the shape of the given sprite. The main difference of this
-		 * function from the NodeRenderer's drawShape function is using bounds
-		 * instead of size. Therefore, width and height can take different
-		 * values for rectangular shapes. In addition, this method only support
+		 * This method only support
 		 * two shapes: NodeShapes.RECTANGLE and NodeShapes.ROUND_RECTANGLE. No
 		 * other shapes are supported for compound nodes (for consistency). 
 		 * 
@@ -133,72 +127,19 @@ package org.cytoscapeweb.view.render
 		 * @param shape		shape name as a string
 		 * @param bounds	rectangular bounds for the sprite s
 		 */
-		private function drawShape(s:Sprite,
-								   shape:String,
-								   bounds:Rectangle) : void
-		{
-			var g:Graphics = s.graphics;
-			
-			switch (shape)
-			{
-				case null:
-					break;
+		override protected function drawShape(s:Sprite, shape:String, bounds:Rectangle):void {
+			switch (shape) {
 				case NodeShapes.ROUND_RECTANGLE:
-					g.drawRoundRect(bounds.x, bounds.y,
-						bounds.width, bounds.height,
-						bounds.width / 4, bounds.height / 4);
-					break;
 				case NodeShapes.RECTANGLE:
+				    // these are the only supported compound node shapes!
+				    break;
 				default:
-					g.drawRect(bounds.x, bounds.y,
-						bounds.width, bounds.height);
+					shape = NodeShapes.RECTANGLE;
 			}
+			
+			super.drawShape(s, shape, bounds);
 		}
 		
-		private function drawImage(d:DataSprite, size:Number):void
-		{
-			var url:String = d.props.compoundImageUrl;
-			
-			if (size > 0 && url != null && StringUtil.trim(url).length > 0) {
-				// Load the image into the cache first?
-				if (!_imgCache.contains(url)) {trace("Will load IMAGE...");
-					_imgCache.loadImage(url);
-				}
-				if (_imgCache.isLoaded(url)) {trace(" .LOADED :-)");
-					draw();
-				} else {trace(" .NOT loaded :-(");
-					drawWhenLoaded();
-				}
-				
-				function drawWhenLoaded():void {
-					setTimeout(function():void {trace(" .TIMEOUT: Checking again...");
-						if (_imgCache.isLoaded(url)) draw();
-						else if (!_imgCache.isBroken(url)) drawWhenLoaded();
-					}, 50);
-				}
-				
-				function draw():void {trace("Will draw: " + d.data.id);
-					// Get the image from cache:
-					var bd:BitmapData = _imgCache.getImage(url);
-					
-					if (bd != null) {
-						var bmpSize:Number = Math.min(bd.height, bd.width);
-						var scale:Number = size/bmpSize;
-						
-						var m:Matrix = new Matrix();
-						m.scale(scale, scale);
-						m.translate(-(bd.width*scale)/2, -(bd.height*scale)/2);
-						
-						d.graphics.beginBitmapFill(bd, m, false, true);
-						//drawShape(d, d.shape, size);
-						drawShape(d,
-							d.shape,
-							adjustBounds(d as CompoundNodeSprite));
-						d.graphics.endFill();
-					}
-				}
-			}
-		}
 		/**
 		 * Adjusts the bounds of the given compound node by using local 
 		 * coordinates of the given compound node sprite. This function does
@@ -208,8 +149,7 @@ package org.cytoscapeweb.view.render
 		 * @param ns	compound node whose bounds will be adjusted
 		 * @return		adjusted bounds as a Rectangle instance
 		 */
-		private function adjustBounds(ns:CompoundNodeSprite) : Rectangle
-		{
+		private function adjustBounds(ns:CompoundNodeSprite):Rectangle {
 			// create a copy of original node bounds
 			var bounds:Rectangle = ns.bounds.clone();
 			
@@ -219,40 +159,6 @@ package org.cytoscapeweb.view.render
 			
 			// return adjusted bounds
 			return bounds;
-		}
-		
-		private function adjustSize(ns:CompoundNodeSprite) : Number
-		{
-			var size:Number = 0;
-			
-			if (ns.isInitialized())
-			{
-				size = Math.min(ns.bounds.width,
-					ns.bounds.height);
-			}
-			
-			return size;
-		}
-		
-		/**
-		 * Brings all child node sprites of the given compound node sprite as
-		 * well as the edges inside the compound node to the front.
-		 * 
-		 * @param cns	compound node sprite whose children are brougt to front
-		 */
-		private function raiseChildren(cns:CompoundNodeSprite) : void
-		{
-			for each (var ns:NodeSprite in cns.getNodes())
-			{
-				GraphUtils.bringToFront(ns);
-				
-				if (ns is CompoundNodeSprite)
-				{
-					this.raiseChildren(ns as CompoundNodeSprite);
-				}
-				
-				ns.visitEdges(GraphUtils.bringToFront);
-			}
 		}
 	}
 }

@@ -43,7 +43,6 @@ package org.cytoscapeweb.util {
 	import flash.text.TextField;
 	import flash.utils.Dictionary;
 	
-	import org.cytoscapeweb.model.data.VisualStyleVO;
 	import org.cytoscapeweb.util.methods.$each;
 	import org.cytoscapeweb.view.layout.PackingAlgorithms;
 	import org.cytoscapeweb.vis.data.CompoundNodeSprite;
@@ -145,30 +144,22 @@ package org.cytoscapeweb.util {
 		 * @param ds	DataSprite to be checked
 		 * @return		true if filtered out, false otherwise
 		 */
-		public static function isFilteredOut(ds:DataSprite):Boolean
-		{
+		public static function isFilteredOut(ds:DataSprite):Boolean {
 			var filtered:Boolean = ds.props.$filteredOut;
+			var cn:CompoundNodeSprite, parent:CompoundNodeSprite;
 			
-			if (ds is EdgeSprite)
-			{
+			if (ds is EdgeSprite) {
 				var e:EdgeSprite = EdgeSprite(ds);
 				
 				// if an edge is not filtered out, but either its target or
-				// its source is filtered out, then the edge should also be
-				// filtered out
-				filtered = filtered || isFilteredOut(e.source) ||
-					isFilteredOut(e.target);
-			}
-			else if (ds is NodeSprite)
-			{
+				// its source is filtered out, then the edge should also  filtered out
+				filtered = filtered || isFilteredOut(e.source) || isFilteredOut(e.target);
+			} else if (ds is CompoundNodeSprite) {
+				cn = ds as CompoundNodeSprite;
 				// if a node is not filtered out, but at least one of its
-				// parents is filtered out, then the node should also be
-				// filtered out
-				for each (var parent:CompoundNodeSprite in
-					CompoundNodes.getParents(ds as NodeSprite))
-				{
-					if (parent.props.$filteredOut)
-					{
+				// parents is filtered out, then the node should also be filtered out
+				for each (parent in CompoundNodes.getParents(cn)) {
+					if (parent.props.$filteredOut) {
 						filtered = true;
 						break;
 					}

@@ -601,13 +601,19 @@
         },
         
         /**
-         * <p>Get all nodes from the network.</p>
+         * <p>Get all nodes from the network or from another node.
+         * In order to retrieve the children of a compound node, simply pass the parent node object or its <code>id</code>.</p>
+         * @param {Object} [parent] Optional parent node object or ID. If <code>null</code> or undefined,
+         *                          it returns all the nodes that exist in the network.
          * @return {Array} List of nodes.
          * @see org.cytoscapeweb.Visualization#edges
          * @see org.cytoscapeweb.Visualization#node
          */
-        nodes: function () {
-            var str = this.swf().getNodes();
+        nodes: function (parent) {
+        	if (parent && typeof parent === "object" && parent.hasOwnProperty("data")) {
+        		if (typeof parent.data === "object") { parent = parent.data.id; }
+        	}
+            var str = this.swf().getNodes(parent);
             return this._parseJSON(str);
         },
 
@@ -692,7 +698,8 @@
             if (arguments.length > 1 && typeof arguments[1] === "boolean") {
             	updateVisualMappers = arguments[1];
             }
-            return this.swf().addElements(items, updateVisualMappers);
+            var s = this.swf().addElements(items, updateVisualMappers);
+            return this._parseJSON(s);
         },
         
         /**
@@ -713,42 +720,31 @@
          * @param {Object} x The horizontal coordinate of the node.
          * @param {Object} y The vertical coordinate of the node.
          * @param {Object} [data] The object that contains the node attributes.
+         * @param {Object} [parentId] Optional parent node's ID. 
          * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
          *                                        to the network view after adding the node.
          *                                        The default value is <code>false</code>.
-         * @param {Object} [eventTarget] Target object of the click action. 
          * @return {org.cytoscapeweb.Node} The new created node object.
          * @see org.cytoscapeweb.Visualization#addEdge
          * @see org.cytoscapeweb.Visualization#addElements
          * @see org.cytoscapeweb.Visualization#removeElements
          */
-        addNode: function (x, y/*, data, updateVisualMappers, eventTarget*/)
-        {
+        addNode: function (x, y/*, data, parentId, updateVisualMappers*/) {
             var data;
             var updateVisualMappers = false;
-            var eventTarget = null;
+            var parentId = null;
             var i = 2;
-            
-            if (arguments.length > i && typeof arguments[i] === "object")
-            {
+            if (arguments.length > i && (typeof arguments[i] === "object" || arguments[i] == null)) {
             	data = arguments[i++];
             }
-            
-            if (arguments.length > i && typeof arguments[i] === "boolean")
-            {
-            	updateVisualMappers = arguments[i++];
+            if (arguments.length > i && (typeof arguments[i] === "string" || arguments[i] == null)) {
+            	parentId = arguments[i++];
             }
+            if (arguments.length > i && typeof arguments[i] === "boolean") { updateVisualMappers = arguments[i++]; }
+            console.log(data +","+ parentId+","+updateVisualMappers);
             
-            if (arguments.length > i)
-            {
-            	eventTarget = arguments[i];
-            	i++;
-            }
-            
-            return this.swf().addNode(x, y,
-            	data,
-            	updateVisualMappers,
-            	eventTarget);
+            var n = this.swf().addNode(x, y, data, parentId, updateVisualMappers);
+            return this._parseJSON(n);
         },
          
         /**
@@ -785,7 +781,8 @@
             if (data.source == null) { throw("The 'source' node ID mandatory."); }
             if (data.target == null) { throw("The 'target' node ID mandatory."); }
             if (arguments.length > 1) { updateVisualMappers = arguments[1]; }
-            return this.swf().addEdge(data, updateVisualMappers);
+            var e = this.swf().addEdge(data, updateVisualMappers);
+            return this._parseJSON(e);
         },
         
         /**
@@ -901,7 +898,7 @@
          * @see org.cytoscapeweb.Visualization#updateData
          */
         dataSchema: function () {
-            return this.swf().getDataSchema();
+            return this._parseJSON(this.swf().getDataSchema());
         },
         
         /**

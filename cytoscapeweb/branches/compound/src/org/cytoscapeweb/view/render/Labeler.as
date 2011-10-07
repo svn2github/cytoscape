@@ -46,9 +46,10 @@ package org.cytoscapeweb.view.render {
     import flash.text.TextFormatAlign;
     
     import org.cytoscapeweb.util.Groups;
-	import org.cytoscapeweb.util.NodeShapes;
+    import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.methods.$each;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     
     
     public class Labeler extends flare.vis.operator.label.Labeler {
@@ -73,16 +74,12 @@ package org.cytoscapeweb.view.render {
         // ========[ CONSTRUCTOR ]==================================================================
 
         public function Labeler(source:*=null, group:String=Data.NODES, 
-                                format:TextFormat=null, filter:*=null)
-		{
+                                format:TextFormat=null, filter:*=null) {
 			var policy:String;
 			
-			if ((group === Data.NODES) || (group === Groups.COMPOUND_NODES))
-			{
+			if ((group === Data.NODES) || (group === Groups.COMPOUND_NODES)) {
 				policy = LAYER;
-			}
-			else
-			{
+			} else {
 				policy = CHILD;
 			}
 			
@@ -105,20 +102,14 @@ package org.cytoscapeweb.view.render {
             }
             
             // IMPORTANT: When dragging nodes, the labeler might need to be updated:
-            if (_policy === CHILD)
-			{
+            if (_policy === CHILD) {
                 var elements:DataList;
 				
-				if (group === Data.NODES)
-				{
+				if (group === Data.NODES) {
 					elements = visualization.data.nodes;
-				}
-				else if (group === Groups.COMPOUND_NODES)
-				{
+				} else if (group === Groups.COMPOUND_NODES) {
 					elements = visualization.data.group(Groups.COMPOUND_NODES);
-				}
-				else
-				{
+				} else {
 					elements = visualization.data.edges;
 				}
 					
@@ -135,16 +126,11 @@ package org.cytoscapeweb.view.render {
                 var f:Function = Filter.$(filter);
                 var list:DataList;
 
-				if (group === Data.NODES)
-				{
+				if (group === Data.NODES) {
 					list = visualization.data.nodes;
-				}
-				else if (group === Groups.COMPOUND_NODES)
-				{
+				} else if (group === Groups.COMPOUND_NODES) {
 					list = visualization.data.group(Groups.COMPOUND_NODES);
-				}
-				else
-				{
+				} else {
 					list = visualization.data.edges;
 				}
 				
@@ -254,8 +240,10 @@ package org.cytoscapeweb.view.render {
                 else if (label.verticalAnchor == TextSprite.BOTTOM)  myYOffset -= d.height/2;
                 
                 if (d.props.autoSize) {
-                    d.render();
-                    if (d.shape == NodeShapes.TRIANGLE) myYOffset += d.height/4;
+                    if (! (d is CompoundNodeSprite && (d as CompoundNodeSprite).nodesCount > 0)) {
+                        d.render();
+                        if (d.shape == NodeShapes.TRIANGLE) myYOffset += d.height/4;
+                    }
                 }
             }
             

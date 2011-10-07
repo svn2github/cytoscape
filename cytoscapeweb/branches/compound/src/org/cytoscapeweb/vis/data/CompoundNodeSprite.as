@@ -1,5 +1,33 @@
-package org.cytoscapeweb.vis.data
-{
+/*
+  This file is part of Cytoscape Web.
+  Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+    - Agilent Technologies
+    - Institut Pasteur
+    - Institute for Systems Biology
+    - Memorial Sloan-Kettering Cancer Center
+    - National Center for Integrative Biomedical Informatics
+    - Unilever
+    - University of California San Diego
+    - University of California San Francisco
+    - University of Toronto
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+*/
+package org.cytoscapeweb.vis.data {
 	import flare.vis.data.NodeSprite;
 	
 	import flash.geom.Rectangle;
@@ -13,8 +41,8 @@ package org.cytoscapeweb.vis.data
 	 * 
 	 * @author Selcuk Onur Sumer
 	 */ 
-	public class CompoundNodeSprite extends NodeSprite
-	{
+	public class CompoundNodeSprite extends NodeSprite {
+	    
 		// ==================== [ PRIVATE PROPERTIES ] =========================
 		
 		/**
@@ -23,7 +51,7 @@ package org.cytoscapeweb.vis.data
 		 */
 		private var _nodesMap:Object;
 		
-		private var _parentId:String;
+		private var _nodesCount:int;
 		private var _bounds:Rectangle;
 		private var _paddingLeft:Number;
 		private var _paddingRight:Number;
@@ -32,93 +60,70 @@ package org.cytoscapeweb.vis.data
 		
 		// ===================== [ PUBLIC PROPERTIES ] =========================
 
+        public function get nodesCount():int {
+            return _nodesCount;
+        }
+
 		/**
 		 * Bounds enclosing children of the compound node.
 		 */
-		public function get bounds():Rectangle
-		{
+		public function get bounds():Rectangle {
 			return _bounds;
 		}
 		
-		public function set bounds(rect:Rectangle):void
-		{
+		public function set bounds(rect:Rectangle):void {
 			_bounds = rect;
 		}
 		
 		/**
 		 * Width of the right padding of the compound node
 		 */
-		public function get paddingRight():Number
-		{
+		public function get paddingRight():Number {
 			return _paddingRight;
 		}
 
-		public function set paddingRight(value:Number):void
-		{
+		public function set paddingRight(value:Number):void {
 			_paddingRight = value;
 		}
 
 		/**
 		 * Height of the top padding of the compound node
 		 */
-		public function get paddingTop():Number
-		{
+		public function get paddingTop():Number {
 			return _paddingTop;
 		}
 
-		public function set paddingTop(value:Number):void
-		{
+		public function set paddingTop(value:Number):void {
 			_paddingTop = value;
 		}
 
 		/**
 		 * Height of the bottom padding of the compound node
 		 */
-		public function get paddingBottom():Number
-		{
+		public function get paddingBottom():Number {
 			return _paddingBottom;
 		}
 
-		public function set paddingBottom(value:Number):void
-		{
+		public function set paddingBottom(value:Number):void {
 			_paddingBottom = value;
 		}
 
 		/**
 		 * Width of the left padding of the compound node
 		 */
-		public function get paddingLeft():Number
-		{
+		public function get paddingLeft():Number {
 			return _paddingLeft;
 		}
 
-		public function set paddingLeft(value:Number):void
-		{
+		public function set paddingLeft(value:Number):void {
 			_paddingLeft = value;
 		}
-
-		/**
-		 * ID of the parent node containing this node sprite
-		 */
-		public function get parentId():String
-		{
-			return _parentId;
-		}
-		
-		public function set parentId(value:String):void
-		{
-			_parentId = value;
-		}
-		
-		
 		
 		// ========================= [ CONSTRUCTOR ] ===========================
 		
-		public function CompoundNodeSprite()
-		{
+		public function CompoundNodeSprite() {
 			this._nodesMap = null;
 			this._bounds = null;
-			this._parentId = null;
 		}
 		
 		// ====================== [ PUBLIC FUNCTIONS ] =========================
@@ -126,36 +131,21 @@ package org.cytoscapeweb.vis.data
 		/**
 		 * Initializes the map of children for this compound node.
 		 */
-		public function initialize() : void
-		{
+		public function initialize():void {
 			this._nodesMap = new Object();
 		}
 		
-		public function isInitialized() : Boolean
-		{
-			var initialized:Boolean;
-			
-			if (this._nodesMap == null)
-			{
-				initialized = false;
-			}
-			else
-			{
-				initialized = true;
-			}
-			
-			return initialized;
+		public function isInitialized():Boolean {
+			return this._nodesMap != null;
 		}
 		
-		public function allChildrenInvisible() : Boolean
-		{
+		public function allChildrenInvisible():Boolean {
 			var invisible:Boolean = true; 
 			
-			for each (var ns:NodeSprite in this.getNodes())
-			{
-				if (Nodes.visible(ns))
-				{
+			for each (var ns:CompoundNodeSprite in this._nodesMap) {
+				if (Nodes.visible(ns)) {
 					invisible = false;
+					break;
 				}
 			}
 			
@@ -164,71 +154,34 @@ package org.cytoscapeweb.vis.data
 		
 		/**
 		 * Adds the given node sprite to the child map of the compound node.
-		 * This function assumes that the given node sprite has an id in its
-		 * data field.
-		 * 
+		 * This function assumes that the given node sprite has an id in its data field.
 		 * @param ns	child node sprite to be added
 		 */
-		public function addNode(ns:NodeSprite) : void
-		{
+		public function addNode(ns:NodeSprite):void {
 			// check if the node is initialized
-			if (this._nodesMap != null)
-			{
+			if (this._nodesMap != null) {
 				// add the node to the child node list of this node
 				this._nodesMap[ns.data.id] = ns;
-			
 				// set the parent id of the added node
-				
-				if (ns is CompoundNodeSprite)
-				{
-					// if a CompoundNodeSprite instance is added set the 
-					// corresponding field for parent id.
-					(ns as CompoundNodeSprite).parentId = this.data.id; 
-				}
-				else
-				{
-					// TODO what to do if a NodeSprite is added? 
-					ns.props.parentId = this.data.id;
-				}
-				
+				ns.data.parent = this.data.id;
+				_nodesCount++;
 			}
 		}
 		
 		/**
-		 * Removes the given node sprite from the child list of the compound
-		 * node.
-		 * 
+		 * Removes the given node sprite from the child list of the compound node.
 		 * @param ns	child node sprite to be removed
 		 */ 
-		public function removeNode(ns:NodeSprite) : void
-		{
-			var parentId:String;
-			
-			if (ns is CompoundNodeSprite)
-			{
-				parentId = (ns as CompoundNodeSprite).parentId;
-			}
-			else
-			{
-				parentId = ns.data.id;
-			}
+		public function removeNode(ns:NodeSprite):void {
+			var parentId:String = ns.data.parent;
 			
 			// check if given node is a child of this compound
-			if (this._nodesMap != null &&
-				parentId == this.data.id)
-			{
+			if (this._nodesMap != null && parentId == this.data.id) {
 				// reset the parent id of the removed node
-				if (ns is CompoundNodeSprite)
-				{
-					(ns as CompoundNodeSprite).parentId = null;
-				}
-				else
-				{
-					ns.props.parentId = null;
-				}
-				
+				delete ns.data.parent;
 				// remove the node from the list of child nodes 
 				delete this._nodesMap[ns.data.id];
+				_nodesCount--;
 			}
 		}
 		
@@ -236,14 +189,11 @@ package org.cytoscapeweb.vis.data
 		 * Returns (one-level) child nodes of this compound node. If the map
 		 * of children is not initialized, then returns an empty array.
 		 */
-		public function getNodes() : Array
-		{
+		public function getNodes():Array {
 			var nodeList:Array = new Array();
 			
-			if (this._nodesMap != null)
-			{
-				for each (var ns:NodeSprite in this._nodesMap)
-				{
+			if (this._nodesMap != null) {
+				for each (var ns:CompoundNodeSprite in this._nodesMap) {
 					nodeList.push(ns);
 				}
 			}
@@ -251,8 +201,7 @@ package org.cytoscapeweb.vis.data
 			return nodeList;
 		}
 		
-		public function updateBounds(bounds:Rectangle) : void
-		{
+		public function updateBounds(bounds:Rectangle):void {
 			// extend bounds by adding padding width & height
 			bounds.x -= this.paddingLeft;
 			bounds.y -= this.paddingTop;
@@ -268,8 +217,7 @@ package org.cytoscapeweb.vis.data
 			this.y = bounds.y + (bounds.height / 2);
 		}
 		
-		public function resetBounds() : void
-		{
+		public function resetBounds():void {
 			_bounds = null;
 		}
 		

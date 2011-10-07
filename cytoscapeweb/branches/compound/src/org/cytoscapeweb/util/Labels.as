@@ -107,12 +107,18 @@ package org.cytoscapeweb.util {
         }
         
         public static function labelHAnchor(d:DataSprite):int {
-            if (d is NodeSprite && d.props.autoSize) return TextSprite.CENTER;
+            if (d is NodeSprite && d.props.autoSize) {
+                if (! (d is CompoundNodeSprite && (d as CompoundNodeSprite).nodesCount > 0))
+                    return TextSprite.CENTER;
+            }
 			return Anchors.toFlareAnchor(style.getValue(_$(VisualProperties.NODE_LABEL_HANCHOR, d), d.data));
         }
         
         public static function labelVAnchor(d:DataSprite):int {
-			if (d is NodeSprite && d.props.autoSize) return TextSprite.MIDDLE;
+           if (d is NodeSprite && d.props.autoSize) {
+                if (! (d is CompoundNodeSprite && (d as CompoundNodeSprite).nodesCount > 0))
+                    return TextSprite.MIDDLE;
+            }
             return Anchors.toFlareAnchor(style.getValue(_$(VisualProperties.NODE_LABEL_VANCHOR, d), d.data));
         }
         

@@ -202,12 +202,8 @@ package org.cytoscapeweb.view.components {
             // Nodes & Edges properties:
             // ---------------------------------------------------------
             data.nodes.setProperties(Nodes.properties);
+            data.group(Groups.COMPOUND_NODES).setProperties(CompoundNodes.properties);
             data.edges.setProperties(Edges.properties);
-			
-			// Compound node properties:
-			// ---------------------------------------------------------
-			data.group(Groups.COMPOUND_NODES).setProperties(
-				CompoundNodes.properties);
             
             // Node labels:
             // ---------------------------------------------------------
@@ -255,16 +251,13 @@ package org.cytoscapeweb.view.components {
             edgeLabeler.filters = Labels.filters;
             edgeLabeler.textFunction = Labels.text;
 
-            if (!firstTime)
-			{
-                if (_config.nodeLabelsVisible)
-				{
+            if (!firstTime) {
+                if (_config.nodeLabelsVisible) {
 					updateLabels(Data.NODES);
 					updateLabels(Groups.COMPOUND_NODES);
 				}
                 
-				if (_config.edgeLabelsVisible)
-				{
+				if (_config.edgeLabelsVisible) {
 					updateLabels(Data.EDGES);
 				}
             }
@@ -292,14 +285,10 @@ package org.cytoscapeweb.view.components {
             
             var layout:Layout, fdl:ForceDirectedLayout;
             
-            if (_layoutName === Layouts.PRESET
-				|| _layoutName === Layouts.COSE)
-			{
+            if (_layoutName === Layouts.PRESET || _layoutName === Layouts.COSE) {
                 layout = createLayout(layoutObj, data);
                 _appliedLayouts.push(layout);
-            }
-			else
-			{
+            } else {
                 if (_layoutName === Layouts.FORCE_DIRECTED) {
                     // If the previous layout is ForceDirected, we need to set the nodes' particles and
                     // the edges' springs to null, otherwise the layout may not render very well
@@ -350,8 +339,7 @@ package org.cytoscapeweb.view.components {
 
                 for each (layout in _appliedLayouts) layout.operate();
 				
-				if (_layoutName != Layouts.PRESET)
-				{
+				if (_layoutName != Layouts.PRESET) {
 					realignGraph();
 				}
 
@@ -359,17 +347,18 @@ package org.cytoscapeweb.view.components {
                 updateLabels();
                 
                 var repack:Boolean = (_layoutName !== Layouts.PRESET) &&
-					(_layoutName !== Layouts.COSE);
+                                     (_layoutName !== Layouts.COSE);
 
-                if ( repack && _dataList != null && _dataList.length > 0) {
+                if (repack && _dataList != null && _dataList.length > 0) {
+                    updateAllCompoundBounds();
                     GraphUtils.repackDisconnected(_dataList,
                                                   stage.stageWidth,
                                                   !_config.nodeLabelsVisible,
                                                   !_config.edgeLabelsVisible);
                 }
-				
-				// update all compound bounds after the operation
-				updateAllCompoundBounds();
+                
+                // update all compound bounds again after the operation
+                updateAllCompoundBounds();
             });
 
             return seq;
@@ -384,18 +373,13 @@ package org.cytoscapeweb.view.components {
                 var visible:Boolean;
                 var labeler:Labeler;
     
-                if (group === Groups.NODES)
-				{
+                if (group === Groups.NODES) {
                     visible = _config.nodeLabelsVisible;
                     labeler = nodeLabeler;
-                }
-				else if (group === Groups.COMPOUND_NODES)
-				{
+                } else if (group === Groups.COMPOUND_NODES) {
 					visible = _config.nodeLabelsVisible;
 					labeler = compoundNodeLabeler;
-				}
-				else
-				{
+				} else {
                     visible = _config.edgeLabelsVisible && !_config.edgesMerged;
                     labeler = edgeLabeler;
                 }
@@ -423,7 +407,11 @@ package org.cytoscapeweb.view.components {
             data.visit(function(ds:DataSprite):Boolean {
                 var lb:TextSprite = labels.getValue(ds);
                 if (lb != null) lb.visible = visible && ds.visible;
-                if (ds is NodeSprite && ds.props.autoSize) ds.dirty();
+                if (ds is NodeSprite && ds.props.autoSize) {
+                    if (! (ds is CompoundNodeSprite && (ds as CompoundNodeSprite).nodesCount > 0)) {
+                        ds.dirty();
+                    }
+                }
                 return false;
             }, group);
         }
@@ -445,8 +433,7 @@ package org.cytoscapeweb.view.components {
             if (d == null) d = data;
             
             // It's necessary to operate labeler first, so each label's text sprite is well placed!
-            if (_config.nodeLabelsVisible)
-			{
+            if (_config.nodeLabelsVisible) {
 				nodeLabeler.operate();
 				compoundNodeLabeler.operate();
 			}
@@ -512,40 +499,33 @@ package org.cytoscapeweb.view.components {
 		 * 
 		 * @param cns	compound node sprite
 		 */
-		public function updateCompoundBounds(cns:CompoundNodeSprite) : void
-		{
+		public function updateCompoundBounds(cns:CompoundNodeSprite):void {
+			var ns:NodeSprite;
 			var children:Data = new Data();
 			var bounds:Rectangle;
 			var allChildren:Array = CompoundNodes.getChildren(cns);
 			
-			if (allChildren.length > 0
-				&& !cns.allChildrenInvisible())
-			{
-				for each (var ns:NodeSprite in allChildren)
-				{
+			if (allChildren.length > 0 && !cns.allChildrenInvisible()) {
+				for each (ns in allChildren) {
 					children.addNode(ns);
 				}
 				
 				// calculate&update bounds of the compound node 
 				bounds = this.getRealBounds(children);
 				cns.updateBounds(bounds);
-			}
-			else
-			{
+			} else {
 				// empty compound, so reset bounds
 				cns.resetBounds();
 			}
 		}
 		
-		public function updateAllCompoundBounds() : void
-		{
+		public function updateAllCompoundBounds():void {
+		    var cns:CompoundNodeSprite;
+		    
 			// find all parentless compounds, and recursively update bounds
 			// in a bottom-up manner.
-			for each (var cns:CompoundNodeSprite in
-				data.group(Groups.COMPOUND_NODES))
-			{
-				if (cns.isInitialized() && cns.parentId == null)
-				{
+			for each (cns in data.group(Groups.COMPOUND_NODES)) {
+				if (cns.isInitialized() && cns.data.parent == null) {
 					updateAllBounds(cns);
 				}
 			}
@@ -654,15 +634,11 @@ package org.cytoscapeweb.view.components {
                 }
                 
                 layout = psl;
-            }
-			else if (name === Layouts.COSE)
-			{
+            } else if (name === Layouts.COSE) {
 				// create layout
 				var cose:CompoundSpringEmbedder = new CompoundSpringEmbedder();
-				
 				// set layout options
 				cose.setOptions(options);
-				
 				// set current layout
 				layout = cose;
 			}
@@ -750,13 +726,9 @@ package org.cytoscapeweb.view.components {
             return text;
         }
 		
-		private function updateAllBounds(cns:CompoundNodeSprite) : void
-		{	
-			for each (var ns:NodeSprite in cns.getNodes())
-			{
-				if (ns is CompoundNodeSprite &&
-					(ns as CompoundNodeSprite).isInitialized())
-				{
+		private function updateAllBounds(cns:CompoundNodeSprite):void {	
+			for each (var ns:NodeSprite in cns.getNodes()) {
+				if (ns is CompoundNodeSprite && (ns as CompoundNodeSprite).isInitialized()) {
 					this.updateAllBounds(ns as CompoundNodeSprite);
 				}
 			}

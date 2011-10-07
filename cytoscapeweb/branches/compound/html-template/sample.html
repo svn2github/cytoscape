@@ -28,12 +28,14 @@
                     },
                     nodes: {
                         shape: "ELLIPSE",
+                        compoundShape: "ROUND_RECTANGLE",
                         color: { defaultValue: "#cccccc", continuousMapper: { attrName: "weight", minValue: "#ffffff", maxValue: "#0b94b1" } },
                         opacity: 0.9,
-                        size: { defaultValue: 20, continuousMapper: { attrName: "weight",  minValue: 20, maxValue: 40 } },
+                        //size: "auto",//{ defaultValue: 20, continuousMapper: { attrName: "weight",  minValue: 20, maxValue: 40 } },
                         borderWidth: 2,
                         borderColor: "#707070",
-                        image: "http://chart.apis.google.com/chart?chs=300x300&cht=p&chd=e0:U-gh..bR",
+                        //image: "http://chart.apis.google.com/chart?chs=300x300&cht=p&chd=e0:U-gh..bR",
+                        //compoundImage: "http://chart.apis.google.com/chart?chxr=0,0,160&chxt=x&chbh=a&chs=440x220&cht=bhs&chco=4D89F9,C6D9FD&chd=s:GflxYlS,fl9YSYS",
                         labelFontSize: { defaultValue: 12, continuousMapper: { attrName: "weight",  minValue: 10, maxValue: 24 } },
                         tooltipText: { customMapper: { functionName: "onNodeTooltip" } },
                         selectionGlowOpacity: 0,
@@ -129,7 +131,17 @@
                         vis.removeEdge(evt.target.data.id, true);
                     })
                     .addContextMenuItem("Add new node", function(evt) {
-                        var n = vis.addNode(evt.mouseX, evt.mouseY, { weight: Math.random() }, true);
+                        var x = evt.mouseX;
+                        var y = evt.mouseY;
+                        var parentId;
+                        if (evt.target != null && evt.target.group == "nodes") {
+                            parentId = evt.target.data.id;
+                            x = evt.target.x;
+                            y = evt.target.y;
+                            x += Math.random() * (evt.target.width/2) * (Math.round(x)%2==0 ? 1 : -1);
+                            y += Math.random() * (evt.target.height/2) * (Math.round(y)%2==0 ? 1 : -1);
+                        }
+                        var n = vis.addNode(x, y, { weight: Math.random(), label: "NEW" }, parentId, true);
                     })
                     .addContextMenuItem("Add new edge", "nodes", function(evt) {
                     	_srcId = evt.target.data.id;
@@ -285,7 +297,7 @@
                                 <option value="arrow_curves.xgmml">CURVES</option>
                                 <option value="arrows.xgmml">Arrows</option>
                                 <option value="sample.cys">CYS</option>
-                                <option value="sample2.xml">Sample 2</option>
+                                <option value="sample2.xml" selected="selected">Sample 2</option>
                                 <option value="sample3.xml">Sample 3</option>
                                 <option value="sample4.xml">Sample 4</option>
                                 <option value="sample5.sif">Sample 5 (SIF)</option>
@@ -315,6 +327,7 @@
                             <select id="layouts">
                                 <option value="ForceDirected" selected="selected">Force Directed</option>
                                 <option value="Circle">Circle</option>
+                                <option value="CompoundSpringEmbedder">CoSE</option>
                                 <option value="Radial">Radial</option>
                                 <option value="Tree">Tree</option>
                                 <option value="Preset">Preset</option>

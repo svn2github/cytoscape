@@ -1,5 +1,34 @@
-package org.cytoscapeweb.util
-{
+/*
+  This file is part of Cytoscape Web.
+  Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+    - Agilent Technologies
+    - Institut Pasteur
+    - Institute for Systems Biology
+    - Memorial Sloan-Kettering Cancer Center
+    - National Center for Integrative Biomedical Informatics
+    - Unilever
+    - University of California San Diego
+    - University of California San Francisco
+    - University of Toronto
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+*/
+package org.cytoscapeweb.util {
+    
 	import flare.util.IEvaluable;
 	import flare.vis.data.NodeSprite;
 	
@@ -13,8 +42,8 @@ package org.cytoscapeweb.util
 	import org.cytoscapeweb.view.render.CompoundNodeRenderer;
 	import org.cytoscapeweb.vis.data.CompoundNodeSprite;
 
-	public class CompoundNodes
-	{
+	public class CompoundNodes {
+	    
 		public static const ALL:String = "all";
 		public static const SELECTED:String = "selected";
 		public static const NON_SELECTED:String = "non-selected";
@@ -23,10 +52,8 @@ package org.cytoscapeweb.util
 		private static var _configProxy:ConfigProxy;
 		private static var _graphProxy:GraphProxy;
 		
-		private static function get configProxy() : ConfigProxy
-		{
-			if (_configProxy == null)
-			{
+		private static function get configProxy():ConfigProxy {
+			if (_configProxy == null) {
 				_configProxy = ApplicationFacade.getInstance().
 					retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 			}
@@ -34,10 +61,8 @@ package org.cytoscapeweb.util
 			return _configProxy;
 		}
 		
-		private static function get graphProxy() : GraphProxy
-		{
-			if (_graphProxy == null)
-			{
+		private static function get graphProxy():GraphProxy {
+			if (_graphProxy == null) {
 				_graphProxy = ApplicationFacade.getInstance().
 					retrieveProxy(GraphProxy.NAME) as GraphProxy;
 			}
@@ -45,18 +70,15 @@ package org.cytoscapeweb.util
 			return _graphProxy;
 		}
 		
-		private static function get style() : VisualStyleVO
-		{
+		private static function get style():VisualStyleVO {
 			return configProxy.visualStyle;
 		}
 		
-		private static function get bypass() : VisualStyleBypassVO
-		{
+		private static function get bypass():VisualStyleBypassVO {
 			return configProxy.visualStyleBypass;
 		}
 		
-		public function CompoundNodes()
-		{
+		public function CompoundNodes() {
 			throw new Error("This is an abstract class.");
 		}
 		
@@ -64,47 +86,41 @@ package org.cytoscapeweb.util
 		 * This method returns visual style properties which are specific to 
 		 * compound nodes.
 		 */
-		public static function get properties() : Object
-		{
-			if (CompoundNodes._properties == null)
-			{
-				CompoundNodes._properties =
-				{
-					shape: CompoundNodes.shape,
-					//"props.compoundWidth": Nodes.width,
-					//"props.compoundHeight": Nodes.height,
-					//"props.compoundAutoSize": Nodes.autoSize,
-					size: CompoundNodes.size,
-					paddingLeft: CompoundNodes.paddingLeft,
-					paddingRight: CompoundNodes.paddingRight,
-					paddingTop: CompoundNodes.paddingTop,
-					paddingBottom: CompoundNodes.paddingBottom,
-					fillColor: CompoundNodes.fillColor,
-					lineColor: CompoundNodes.lineColor, 
-					lineWidth: CompoundNodes.lineWidth,
-					alpha: CompoundNodes.alpha,
-					"props.compoundTransparent": CompoundNodes.transparent,
-					"props.compoundImageUrl": CompoundNodes.imageUrl,
-					visible: Nodes.visible,
-					buttonMode: true,
-					filters: CompoundNodes.filters,
-					renderer: CompoundNodeRenderer.instance
-				};
+		public static function get properties():Object {
+			if (CompoundNodes._properties == null) {
+				CompoundNodes._properties = {
+    					shape: CompoundNodes.shape,
+    					//"props.compoundWidth": Nodes.width,
+    					//"props.compoundHeight": Nodes.height,
+    					//"props.compoundAutoSize": Nodes.autoSize,
+    					size: CompoundNodes.size,
+    					paddingLeft: CompoundNodes.paddingLeft,
+    					paddingRight: CompoundNodes.paddingRight,
+    					paddingTop: CompoundNodes.paddingTop,
+    					paddingBottom: CompoundNodes.paddingBottom,
+    					fillColor: CompoundNodes.fillColor,
+    					lineColor: CompoundNodes.lineColor, 
+    					lineWidth: CompoundNodes.lineWidth,
+    					alpha: CompoundNodes.alpha,
+    					"props.compoundTransparent": CompoundNodes.transparent,
+    					"props.imageUrl": CompoundNodes.imageUrl,
+    					visible: Nodes.visible,
+    					buttonMode: true,
+    					filters: CompoundNodes.filters,
+    					renderer: CompoundNodeRenderer.instance
+                };
 			}
 			
 			return _properties;
 		}
 		
-		public static function shape(n:NodeSprite) : String
-		{
-			var shape:String = CompoundNodes.style.getValue(
-				VisualProperties.C_NODE_SHAPE, n.data);
+		public static function shape(n:NodeSprite):String {
+			var shape:String = CompoundNodes.style.getValue(VisualProperties.C_NODE_SHAPE, n.data);
 			
 			return NodeShapes.parse(shape);
 		}
 		
-		public static function size(n:NodeSprite) : Number
-		{
+		public static function size(n:NodeSprite):Number {
 			// set size as double size of a simple node
 			var size:Number = style.getValue(
 				VisualProperties.NODE_SIZE, n.data) * 2;
@@ -112,62 +128,46 @@ package org.cytoscapeweb.util
 			return size / _properties.renderer.defaultSize;
 		}
 		
-		public static function fillColor(n:NodeSprite) : uint
-		{
+		public static function fillColor(n:NodeSprite):uint {
 			var propName:String = VisualProperties.C_NODE_COLOR;
 			
-			if (n.props.$selected &&
-				style.hasVisualProperty(
-					VisualProperties.C_NODE_SELECTION_COLOR))
-			{
+			if (n.props.$selected && 
+			    style.hasVisualProperty(VisualProperties.C_NODE_SELECTION_COLOR)) {
 				propName = VisualProperties.C_NODE_SELECTION_COLOR;
 			}
 			
 			return style.getValue(propName, n.data);
 		}
 		
-		public static function lineColor(n:NodeSprite) : uint
-		{
+		public static function lineColor(n:NodeSprite):uint {
 			var propName:String = VisualProperties.C_NODE_LINE_COLOR;
 			
 			if (n.props.$hover &&
-				style.hasVisualProperty(
-					VisualProperties.C_NODE_HOVER_LINE_COLOR))
-			{
+				style.hasVisualProperty(VisualProperties.C_NODE_HOVER_LINE_COLOR)) {
 				propName = VisualProperties.C_NODE_HOVER_LINE_COLOR;
-			}
-			else if (n.props.$selected &&
-				style.hasVisualProperty(
-					VisualProperties.C_NODE_SELECTION_LINE_COLOR))
-			{
+			} else if (n.props.$selected &&
+			           style.hasVisualProperty( VisualProperties.C_NODE_SELECTION_LINE_COLOR)) {
 				propName = VisualProperties.C_NODE_SELECTION_LINE_COLOR;
 			}
 			
 			return style.getValue(propName, n.data);
 		}
 		
-		public static function lineWidth(n:NodeSprite) : Number
-		{
+		public static function lineWidth(n:NodeSprite):Number {
 			var propName:String = VisualProperties.C_NODE_LINE_WIDTH;
 			
 			if (n.props.$hover &&
-				style.hasVisualProperty(
-					VisualProperties.C_NODE_HOVER_LINE_WIDTH))
-			{
+				style.hasVisualProperty( VisualProperties.C_NODE_HOVER_LINE_WIDTH)) {
 				propName = VisualProperties.C_NODE_HOVER_LINE_WIDTH;
-			}
-			else if (n.props.$selected &&
-				style.hasVisualProperty(
-					VisualProperties.C_NODE_SELECTION_LINE_WIDTH))
-			{
+			} else if (n.props.$selected &&
+			           style.hasVisualProperty( VisualProperties.C_NODE_SELECTION_LINE_WIDTH)) {
 				propName = VisualProperties.C_NODE_SELECTION_LINE_WIDTH;
 			}
 			
 			return style.getValue(propName, n.data);
 		}
 		
-		public static function selectionLineWidth(n:NodeSprite) : Number
-		{
+		public static function selectionLineWidth(n:NodeSprite):Number {
 			var propName:String = VisualProperties.C_NODE_LINE_WIDTH;
 			
 			if (style.hasVisualProperty(
@@ -351,55 +351,30 @@ package org.cytoscapeweb.util
 		 * @param cns	compound node sprite whose children are collected 
 		 */
 		public static function getChildren(cns:CompoundNodeSprite,
-			type:String = CompoundNodes.ALL) : Array
-		{
+		                                   type:String=CompoundNodes.ALL):Array {
 			var children:Array = new Array();
 			var condition:Boolean;
 			
-			if (cns != null)
-			{
-				for each (var ns:NodeSprite in cns.getNodes())
-				{
-					if (type === CompoundNodes.SELECTED)
-					{
-						if (ns.props.$selected)
-						{
-							condition = true;
-						}
-						else
-						{
-							condition = false;
-						}
-					}
-					else if (type === CompoundNodes.NON_SELECTED)
-					{
-						if (ns.props.$selected)
-						{
-							condition = false;
-						}
-						else
-						{
-							condition = true;
-						}
-					}
-					else
-					{
+			if (cns != null) {
+				for each (var ns:NodeSprite in cns.getNodes()) {
+					if (type === CompoundNodes.SELECTED) {
+						condition = ns.props.$selected;
+					} else if (type === CompoundNodes.NON_SELECTED) {
+						condition = !ns.props.$selected;
+					} else {
 						// default case is all children (always true)
 						condition = true;
 					}
 					
 					// process the node if the condition meets
-					if (condition)
-					{
+					if (condition) {
 						// add current node to the list
 						children.push(ns);
 					}
 					
-					if (ns is CompoundNodeSprite)
-					{
+					if (ns is CompoundNodeSprite) {
 						// recursively collect child nodes
-						children = children.concat(
-							getChildren(ns as CompoundNodeSprite, type));
+						children = children.concat(getChildren(ns as CompoundNodeSprite, type));
 					}
 				}
 			}
@@ -415,73 +390,42 @@ package org.cytoscapeweb.util
 		 * 
 		 * @param ns	node sprite whose parents are collected 
 		 */
-		public static function getParents(ns:NodeSprite,
-										   type:String = CompoundNodes.ALL) : Array
-		{
+		public static function getParents(ns:CompoundNodeSprite,
+										  type:String = CompoundNodes.ALL):Array {
 			var parents:Array = new Array();
 			var condition:Boolean;
 			var parent:NodeSprite;
 			var parentId:String;
 			
-			if (ns != null)
-			{
-				if (ns is CompoundNodeSprite)
-				{
-					parentId = (ns as CompoundNodeSprite).parentId;
-				}
-				else
-				{
-					parentId = ns.props.parentId;
-				}
+			if (ns != null) {
+				parentId = ns.data.parent;
 				
 				//for each (var ns:NodeSprite in cns.getNodes())
-				while (parentId != null)
-				{
+				while (parentId != null) {
 					// get parent
 					parent = graphProxy.getNode(parentId);
 					
-					if (parent == null)
-					{
+					if (parent == null) {
 						break;
 					}
 					
-					if (type === CompoundNodes.SELECTED)
-					{
-						if (parent.props.$selected)
-						{
-							condition = true;
-						}
-						else
-						{
-							condition = false;
-						}
-					}
-					else if (type === CompoundNodes.NON_SELECTED)
-					{
-						if (parent.props.$selected)
-						{
-							condition = false;
-						}
-						else
-						{
-							condition = true;
-						}
-					}
-					else
-					{
+					if (type === CompoundNodes.SELECTED) {
+						condition = parent.props.$selected;
+					} else if (type === CompoundNodes.NON_SELECTED) {
+						condition = !parent.props.$selected;
+					} else {
 						// default case is all parents (always true)
 						condition = true;
 					}
 					
 					// process the node if the condition meets
-					if (condition)
-					{
+					if (condition) {
 						// add current node to the list
 						parents.push(parent);
 					}
 					
 					// advance to next node
-					parentId = (parent as CompoundNodeSprite).parentId;
+					parentId = parent.data.parent;
 				}
 			}
 			

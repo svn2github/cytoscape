@@ -40,6 +40,7 @@ package org.cytoscapeweb.model.converters {
     
     import org.cytoscapeweb.fixtures.Fixtures;
     import org.cytoscapeweb.model.error.CWError;
+    import org.cytoscapeweb.util.DataSchemaUtils;
     import org.cytoscapeweb.util.Groups;
     
     public class ExternalObjectConverterTest extends TestCase {
@@ -230,12 +231,12 @@ package org.cytoscapeweb.model.converters {
             // Edges schema
             assertMinEdgesSchema(es, true);
             
-            assertTrue(null === es.getFieldByName(ExternalObjectConverter.SOURCE).defaultValue);
+            assertTrue(null === es.getFieldByName(DataSchemaUtils.SOURCE).defaultValue);
             
             assertEquals(DataUtil.NUMBER, es.getFieldByName("weight").type);
             assertTrue(null === es.getFieldByName("weight").defaultValue);
             
-            assertEquals(DataUtil.BOOLEAN, es.getFieldByName(ExternalObjectConverter.DIRECTED).type);
+            assertEquals(DataUtil.BOOLEAN, es.getFieldByName(DataSchemaUtils.DIRECTED).type);
             
             // Test Data:
             // --------------------
@@ -300,15 +301,15 @@ package org.cytoscapeweb.model.converters {
         }
         
         private function assertMinNodesSchema(s:DataSchema):void {
-            assertEquals(DataUtil.STRING, s.getFieldByName(ExternalObjectConverter.ID).type);
+            assertEquals(DataUtil.STRING, s.getFieldByName(DataSchemaUtils.ID).type);
         }
         
         private function assertMinEdgesSchema(s:DataSchema, directed:Boolean=false):void {
-            assertEquals(DataUtil.STRING, s.getFieldByName(ExternalObjectConverter.ID).type);
-            assertEquals(DataUtil.STRING, s.getFieldByName(ExternalObjectConverter.SOURCE).type);
-            assertEquals(DataUtil.STRING, s.getFieldByName(ExternalObjectConverter.TARGET).type);
-            assertEquals(DataUtil.BOOLEAN, s.getFieldByName(ExternalObjectConverter.DIRECTED).type);
-            assertEquals(directed, s.getFieldByName(ExternalObjectConverter.DIRECTED).defaultValue);
+            assertEquals(DataUtil.STRING, s.getFieldByName(DataSchemaUtils.ID).type);
+            assertEquals(DataUtil.STRING, s.getFieldByName(DataSchemaUtils.SOURCE).type);
+            assertEquals(DataUtil.STRING, s.getFieldByName(DataSchemaUtils.TARGET).type);
+            assertEquals(DataUtil.BOOLEAN, s.getFieldByName(DataSchemaUtils.DIRECTED).type);
+            assertEquals(directed, s.getFieldByName(DataSchemaUtils.DIRECTED).defaultValue);
         }
         
         private function assertEmptyGraph(ds:DataSet):void {

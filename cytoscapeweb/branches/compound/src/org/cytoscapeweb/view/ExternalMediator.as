@@ -50,11 +50,9 @@ package org.cytoscapeweb.view {
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.model.methods.error;
-    import org.cytoscapeweb.util.Anchors;
     import org.cytoscapeweb.util.CompoundNodes;
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.Groups;
-    import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     import org.puremvc.as3.interfaces.INotification;
         
@@ -278,7 +276,7 @@ package org.cytoscapeweb.view {
                              { group: group, updateVisualMappers: updateVisualMappers });
         }
         
-        private function firstNeighbors(rootNodes:Array, ignoreFilteredOut:Boolean=false):Object {
+        private function firstNeighbors(rootNodes:Array, ignoreFilteredOut:Boolean=false):String {
             var obj:Object = {};
             
             if (rootNodes != null && rootNodes.length > 0) {
@@ -287,11 +285,10 @@ package org.cytoscapeweb.view {
                 if (nodes != null && nodes.length > 0) {
                     var fn:FirstNeighborsVO  = new FirstNeighborsVO(nodes, ignoreFilteredOut);
                     obj = fn.toObject(graphProxy.zoom);
-                    obj = JSON.encode(obj);
                 }
             }
             
-            return obj;
+            return JSON.encode(obj);
         }
 
         private function getNodeById(id:String):String {
@@ -306,9 +303,20 @@ package org.cytoscapeweb.view {
             return JSON.encode(obj);
         }
         
-        private function getNodes():String {
-            var arr:Array = ExternalObjectConverter.toExtElementsArray(graphProxy.graphData.nodes,
-                                                                       graphProxy.zoom);
+        private function getNodes(parentId:String=null):String {
+            var nodes:*, arr:Array = [];
+            
+            if (parentId != null) {
+                var cn:CompoundNodeSprite = graphProxy.getNode(parentId);
+                if (cn != null) nodes = cn.getNodes();
+            } else {
+                // TODO: return only top-level nodes (no children)?
+                nodes = graphProxy.graphData.nodes;
+            }
+            
+            if (nodes != null)
+                arr = ExternalObjectConverter.toExtElementsArray(nodes, graphProxy.zoom);
+            
             return JSON.encode(arr);
         }
         
@@ -366,10 +374,10 @@ package org.cytoscapeweb.view {
             return JSON.encode(obj);
         }
 		
-		private function addElements(items:Array, updateVisualMappers:Boolean=false):Array {
+		private function addElements(items:Array, updateVisualMappers:Boolean=false):String {
 			var newAll:Array = [], newNodes:Array = [], newEdges:Array = [], ret:Array = [];
 			var edgesToAdd:Array = [], childrenToAdd:Array = [];
-			var gr:String, newElement:DataSprite, o:Object;
+			var gr:String, newElement:DataSprite, parent:CompoundNodeSprite, o:Object;
 			
 			try {                
 				// Create element:
@@ -424,7 +432,7 @@ package org.cytoscapeweb.view {
 				// process child nodes to add, and update corresponding parent
 				// compound nodes
 				for each (o in childrenToAdd) {
-					var parent:NodeSprite = this.graphProxy.getNode(o.parent);
+					parent = this.graphProxy.getNode(o.parent);
 					this.graphMediator.updateCompoundNode(parent, o.sprite);
 				}
 				
@@ -448,17 +456,17 @@ package org.cytoscapeweb.view {
 				error(err);
 			}
 			
-			return ret;
+			return JSON.encode(ret);
 		}
 		
 		private function addNode(x:Number, y:Number, data:Object,
-		                         updateVisualMappers:Boolean=false,
-		                         eventTarget:Object=null):Object {
+		                         parentId:String=null, updateVisualMappers:Boolean=false):String {
 			var extObj:Object = null;
 			
 			try {
 				// create node (always create a CompoundNode instance)
-				var ns:NodeSprite = graphProxy.addNode(data);
+				var ns:CompoundNodeSprite = graphProxy.addNode(data);
+				var parent:CompoundNodeSprite = parentId != null ? graphProxy.getNode(parentId) : null;
 				
 				// position the node
 				var p:Point = new Point(x, y);
@@ -466,11 +474,8 @@ package org.cytoscapeweb.view {
 				ns.x = p.x;
 				ns.y = p.y;
 				
-				
 				// set listeners, styles, etc.
-				
-				if ((ns is CompoundNodeSprite) &&
-					(ns as CompoundNodeSprite).isInitialized()) {
+				if (ns.isInitialized()) {
 					// initialize the node as a compound node
 					this.graphMediator.initialize(Groups.COMPOUND_NODES, [ns]);
 				} else {
@@ -478,9 +483,10 @@ package org.cytoscapeweb.view {
 					this.graphMediator.initialize(Groups.NODES, [ns]);
 				}
 				
-				// update parent compound node if the event target is a compound
-				// node sprite
-				this.graphMediator.updateCompoundNode(eventTarget, ns);
+				// update parent compound node if adding a node to another one
+				if (parent != null) {
+				    this.graphMediator.updateCompoundNode(parent, ns);
+				}
 				
 				if (updateVisualMappers) {
 					this.sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
@@ -493,10 +499,10 @@ package org.cytoscapeweb.view {
 				error(err);
 			}
 			
-			return extObj;
+			return JSON.encode(extObj);
 		}
         
-        private function addEdge(data:Object, updateVisualMappers:Boolean=false):Object {
+        private function addEdge(data:Object, updateVisualMappers:Boolean=false):String {
             var o:Object;
             
             try {
@@ -513,7 +519,7 @@ package org.cytoscapeweb.view {
                 error(err);
             }
             
-            return o;
+            return JSON.encode(o);
         }
         
         private function removeElements(group:String=Groups.NONE,
@@ -521,7 +527,7 @@ package org.cytoscapeweb.view {
                                         updateVisualMappers:Boolean=false):void {
             var id:*;
 			var ns:NodeSprite;
-			var cNodeSprite:CompoundNodeSprite;
+			var cns:CompoundNodeSprite;
 			
 			var childMap:Object = new Object();
 			var childList:Array;
@@ -545,18 +551,18 @@ package org.cytoscapeweb.view {
 					
 					if (ns != null) {
 						if (ns is CompoundNodeSprite) {
-							cNodeSprite = (ns as CompoundNodeSprite);
+							cns = (ns as CompoundNodeSprite);
 							
 							// if ns is also selected then add non-selected
 							// children of the compound to the list of nodes
 							// to be removed
 							if (ns.props.$selected) {
-								childList = CompoundNodes.getChildren(cNodeSprite,
+								childList = CompoundNodes.getChildren(cns,
 									                                  CompoundNodes.NON_SELECTED);
 							} else {
 							    // otherwise add all children of the compound
                                 // to the list of nodes to be removed
-								childList = CompoundNodes.getChildren( cNodeSprite);
+								childList = CompoundNodes.getChildren( cns);
 							}
 							
 							//update map of child nodes to be removed
@@ -565,35 +571,26 @@ package org.cytoscapeweb.view {
 								childMap[node.data.id] = node;
 							}
 							
-							for each (node in cNodeSprite.getNodes()) {
+							for each (node in cns.getNodes()) {
 								// remove each node from the compound node,
 								// this also resets the parent id of the node
-								cNodeSprite.removeNode(node);
+								cns.removeNode(node);
 							}
 						}
 						
-						if (ns is CompoundNodeSprite
-							&& (ns as CompoundNodeSprite).parentId != null) {
-							parentId = (ns as CompoundNodeSprite).parentId;
-						} else if (ns.props.parentId != null) {
-							// TODO we always use CompoundNodeSprites, so
-							// this condition will never be true
-							parentId = ns.props.parentId;
-						} else {
-							parentId = null;
-						}
+						parentId = ns.data.parent;
 						
 						// remove ns from its parent compound's children list 
 						// if it is in a compound
 											
 						if (parentId != null) {
 							// get the parent node
-							cNodeSprite = this.graphProxy.getNode(parentId)
+							cns = this.graphProxy.getNode(parentId)
 								as CompoundNodeSprite;
 							
 							// remove current node from the compound node
-							if (cNodeSprite != null) {
-								cNodeSprite.removeNode(ns);
+							if (cns != null) {
+								cns.removeNode(ns);
 							}
 						}
 						
@@ -610,9 +607,9 @@ package org.cytoscapeweb.view {
                              { group: group, items: items, updateVisualMappers: updateVisualMappers });
         }
         
-        private function getDataSchema():Object {
+        private function getDataSchema():String {
             var obj:Object = ExternalObjectConverter.toExtSchema(graphProxy.nodesSchema, graphProxy.edgesSchema);
-            return obj;
+            return JSON.encode(obj);
         }
         
         private function addDataField(group:String, dataField:Object):void {
