@@ -114,7 +114,7 @@ public class GraphObjectSelectionListener implements GraphViewChangeListener {
 		}
 		// System.out.println("SelectionMap has "+selectionMap.size()+ " values");
 		setResidueSelection(chimera, selectionMap.values());
-		chimera.modelChanged();
+		// chimera.modelChanged();
 	}
 
 	private String getSelectionString(Chimera chimera, Structure structure, 
@@ -147,6 +147,6 @@ public class GraphObjectSelectionListener implements GraphViewChangeListener {
 			}
 		}
 		// System.out.println("Selection command: "+command);
-		chimera.selectNoReply(command);
+		chimera.chimeraSendNoReply(command);
 	}
 }

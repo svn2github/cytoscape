@@ -62,9 +62,24 @@ public class Structure {
 	/**
 	 * Get the next available model number
 	 *
+	 * TODO: This really should be a table of models based
+	 * on what the Chimera module tells us.
+	 *
 	 * @return the next model number
 	 */
 	public static int getNextModel() {return nextModel++;}
+
+	public static void closeAll() {
+		nextModel = 0;
+		structureMap.clear();
+	}
+
+	public static void close(Structure structure) {
+		if (structureMap.containsKey(structure.name()))
+			structureMap.remove(structure.name());
+
+		if (structureMap.size() == 0) nextModel = 0;
+	}
 
 	public static Structure getStructure(String name, CyNode node, 
 	                                     StructureType type) {

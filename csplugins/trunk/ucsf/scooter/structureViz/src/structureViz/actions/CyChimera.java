@@ -528,7 +528,7 @@ public class CyChimera {
 	                                     boolean state) {
 		for (GraphObject obj: goList) {
 			if (obj instanceof Node) {
-				// Handle secondary paint??
+				// TODO: Handle secondary paint??
 				NodeView nv = view.getNodeView((Node)obj);
 				if (nv != null)
 					nv.setSelected(state);

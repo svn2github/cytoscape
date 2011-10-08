@@ -66,7 +66,7 @@ public class OpenTask implements Runnable {
 			// See if this structure is already open somewhere
 			Structure s = CyChimera.findStructureForModel(null, structureName, false);
 			if (s != null) {
-				// System.out.println("Found existing structure: "+s.toString());
+				// System.out.println("Found existing structure: "+s.toString()+", model = "+s.modelNumber());
 				s.addStructure(structure);
 				structure = s;
 			}

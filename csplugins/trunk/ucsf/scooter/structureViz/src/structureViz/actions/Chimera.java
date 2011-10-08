@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.io.*;
-import javax.swing.JOptionPane;
 import java.awt.Color;
 
 import cytoscape.Cytoscape;
@@ -456,6 +455,7 @@ public class Chimera {
 			chimeraSend("listen stop models; listen stop select; close #"+model+"."+subModel);
 		}
 		chimeraSend("listen start models; listen start select");
+		Structure.close(structure);
 		return;
 	}
 
@@ -498,6 +498,10 @@ public class Chimera {
   		chimera.getOutputStream().flush();
 		} catch (IOException e) {
 			CyLogger.getLogger(Chimera.class).warning("Unable to execute command: "+text);
+			CyLogger.getLogger(Chimera.class).warning("Exiting...");
+			chimera = null;
+			if (mnDialog != null)
+				mnDialog.lostChimera();
 		}
 
 		return listener.getResponse(command);
@@ -516,6 +520,10 @@ public class Chimera {
   		chimera.getOutputStream().flush();
 		} catch (IOException e) {
 			CyLogger.getLogger(Chimera.class).warning("Unable to execute command: "+text);
+			CyLogger.getLogger(Chimera.class).warning("Exiting...");
+			chimera = null;
+			if (mnDialog != null)
+				mnDialog.lostChimera();
 		}
 		return;
 	}
@@ -538,6 +546,8 @@ public class Chimera {
 
 		if (mnDialog != null)
 			mnDialog.setVisible(false);
+
+		Structure.closeAll();
   }
 
 	/**

@@ -120,6 +120,7 @@ public class ModelNavigatorDialog
 		return mnDialog;
 	}
 
+
 	/**
 	 * Create a new ModelNavigatorDialog.
 	 *
@@ -133,6 +134,17 @@ public class ModelNavigatorDialog
 		chimeraObject = object;
 		initComponents();
 		status = false;
+	}
+
+	/**
+ 	 * We lost our connection to Chimera!  Tell the user and exit.
+ 	 */
+	public void lostChimera() {
+ 		JOptionPane.showMessageDialog(this, 
+		                              "Lost connection to Chimera! structureViz must exit",
+		                              "Lost connection",
+		                              JOptionPane.ERROR_MESSAGE);
+		chimeraObject.exit();
 	}
 
 	/**
