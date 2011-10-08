@@ -73,7 +73,7 @@ import structureViz.model.ChimeraResidue;
  * @author scooter
  */
 public class CyChimera {
-	public static final String[] structureKeys = {"Structure","pdb","pdbFileName","PDB ID","structure","biopax.xref.PDB",null};
+	public static final String[] structureKeys = {"Structure","pdb","pdbFileName","PDB ID","structure","biopax.xref.PDB","pdb_ids",null};
 	public static final String[] chemStructKeys = {"Smiles","smiles","SMILES",null};
 	public static final String[] residueKeys = {"FunctionalResidues","ResidueList",null};
 	public static final String[] sequenceKeys = {"sequence",null};

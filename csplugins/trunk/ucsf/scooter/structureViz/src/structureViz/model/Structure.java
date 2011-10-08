@@ -358,6 +358,15 @@ public class Structure {
 					chain = resChain[1];
 					range[res] = resChain[0];
 				}
+				// Fix weird SFLD syntax...
+				if (range[res].indexOf('|') > 0 && 
+				    Character.isDigit(range[res].charAt(0))) {
+					int offset = range[res].indexOf('|');
+					String str = range[res].substring(offset+1) + 
+					             range[res].substring(0, offset);
+					range[res] = str;
+				}
+
 				// Convert to legal atom-spec
 				if (Character.isDigit(range[res].charAt(0))) {
 					resRange = resRange.concat(range[res]);
