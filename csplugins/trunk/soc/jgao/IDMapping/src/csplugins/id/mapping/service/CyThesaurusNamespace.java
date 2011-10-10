@@ -38,6 +38,7 @@ import csplugins.id.mapping.IDMapperClientManager;
 import csplugins.id.mapping.ui.IDMappingSourceConfigDialog;
 import csplugins.id.mapping.ui.CyThesaurusDialog;
 import csplugins.id.mapping.AttributeBasedIDMappingImpl;
+import csplugins.id.mapping.util.DataSourceUtil;
 import csplugins.id.mapping.util.DataSourceWrapper;
 import csplugins.id.mapping.util.IDMapperWrapper;
 import csplugins.id.mapping.util.XrefWrapper;
@@ -771,7 +772,7 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
             Set<DataSource> dss = DataSourcePatterns.getDataSourceMatches(id);
             dss.retainAll(selectedDss);
             for (DataSource ds : dss)
-                types.add(ds.getFullName());
+                types.add(DataSourceUtil.getName(ds));
         }
 
         result.addResult(types);

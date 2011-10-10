@@ -41,6 +41,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
 import csplugins.id.mapping.IDMapperClientManager;
+import csplugins.id.mapping.util.DataSourceUtil;
 import csplugins.id.mapping.util.DataSourceWrapper;
 
 import giny.model.Node;
@@ -239,7 +240,7 @@ public class SourceAttributeSelectionTable extends JTable{
         for (String id : srcIds) {
             Set<DataSource> dss = DataSourcePatterns.getDataSourceMatches(id);
             for (DataSource ds : dss) {
-                DataSourceWrapper dsw = DataSourceWrapper.getInstance(ds.getFullName(),
+                DataSourceWrapper dsw = DataSourceWrapper.getInstance(DataSourceUtil.getName(ds),
                         DataSourceWrapper.DsAttr.DATASOURCE, false);
                 if (dsw!=null && supportedIDType.contains(dsw)) {
                     result.add(dsw);

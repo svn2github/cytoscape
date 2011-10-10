@@ -298,7 +298,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         lrButtonPanel.setLayout(new java.awt.GridLayout(0, 1, 0, 2));
 
-        rightButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/right16.gif"))); // NOI18N
+        rightButton.setText(">");
         rightButton.setEnabled(false);
         rightButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -333,7 +333,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         });
         lrButtonPanel.add(rightButton);
 
-        leftButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/left16.gif"))); // NOI18N
+        leftButton.setText("<");
         leftButton.setEnabled(false);
         leftButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

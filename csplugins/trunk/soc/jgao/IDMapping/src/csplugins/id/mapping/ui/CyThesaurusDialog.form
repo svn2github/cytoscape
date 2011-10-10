@@ -293,9 +293,7 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="rightButton">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/images/right16.gif"/>
-                </Property>
+                <Property name="text" type="java.lang.String" value="&gt;"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <AuxValues>
@@ -304,9 +302,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="leftButton">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/images/left16.gif"/>
-                </Property>
+                <Property name="text" type="java.lang.String" value="&lt;"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <AuxValues>

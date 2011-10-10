@@ -41,6 +41,7 @@ import csplugins.id.mapping.FinalStaticValues;
 import csplugins.id.mapping.IDMapperClient;
 import csplugins.id.mapping.IDMapperClientImplTunables;
 import csplugins.id.mapping.IDMapperClientManager;
+import csplugins.id.mapping.util.DataSourceUtil;
 import csplugins.id.mapping.util.DataSourceWrapper;
 
 import csplugins.id.mapping.ui.CyThesaurusDialog;
@@ -401,13 +402,13 @@ public class IDMappingServiceSuppport {
 
         Set<String> srcTypes = new HashSet();
         for(DataSource ds : srcDataSources) {
-            srcTypes.add(ds.getFullName());
+            srcTypes.add(DataSourceUtil.getName(ds));
         }
         content.put(SOURCE_ID_TYPE, srcTypes);
 
         Set<String> tgtTypes = new HashSet();
         for(DataSource ds : tgtDataSources) {
-            tgtTypes.add(ds.getFullName());
+            tgtTypes.add(DataSourceUtil.getName(ds));
         }
         content.put(TARGET_ID_TYPE, tgtTypes);
 
@@ -477,7 +478,7 @@ public class IDMappingServiceSuppport {
         for (String id : srcIDs) {
             Set<DataSource> dss = DataSourcePatterns.getDataSourceMatches(id);
             for (DataSource ds : dss)
-                types.add(ds.getFullName());
+                types.add(DataSourceUtil.getName(ds));
         }
 
         Map content = new HashMap();
@@ -627,9 +628,9 @@ public class IDMappingServiceSuppport {
             } else {
                 Set<String> supportedSrcTypes = new HashSet(srcDataSources.size());
                 for (DataSource ds : srcDataSources) {
-                    String fullName = ds.getFullName();
+                    String fullName = DataSourceUtil.getName(ds);
                     if (fullName!=null) {
-                        supportedSrcTypes.add(ds.getFullName());
+                        supportedSrcTypes.add(DataSourceUtil.getName(ds));
                     } else {
                         // TODO: how to deal?
                     }
@@ -637,9 +638,9 @@ public class IDMappingServiceSuppport {
 
                 Set<String> supportedTgtTypes = new HashSet(tgtDataSources.size());
                 for (DataSource ds : tgtDataSources) {
-                    String fullName = ds.getFullName();
+                    String fullName = DataSourceUtil.getName(ds);
                     if (fullName!=null) {
-                        supportedTgtTypes.add(ds.getFullName());
+                        supportedTgtTypes.add(DataSourceUtil.getName(ds));
                     } else {
                         // TODO: how to deal?
                     }

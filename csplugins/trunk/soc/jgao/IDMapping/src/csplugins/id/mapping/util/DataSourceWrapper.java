@@ -100,6 +100,9 @@ public class DataSourceWrapper implements Comparable<DataSourceWrapper> {
                     attributeWrappers.put(value, wrapper);
                 }
             }
+            
+            if (wrapper==null)
+                return null;
 
             return wrapper;
         }
@@ -123,6 +126,8 @@ public class DataSourceWrapper implements Comparable<DataSourceWrapper> {
         }
 
         public int compareTo(DataSourceWrapper dsw) {
+            if(dsw==null)
+                return 1;
             if (da != dsw.da)
                 return da==DsAttr.DATASOURCE?-1:1;
             return value.compareTo(dsw.value);

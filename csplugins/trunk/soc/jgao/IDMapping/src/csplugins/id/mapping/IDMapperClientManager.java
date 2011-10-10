@@ -36,6 +36,7 @@
 package csplugins.id.mapping;
 
 import csplugins.id.mapping.util.BridgeRestUtil;
+import csplugins.id.mapping.util.DataSourceUtil;
 import csplugins.id.mapping.util.DataSourceWrapper;
 
 import cytoscape.CytoscapeInit;
@@ -562,7 +563,7 @@ public class IDMapperClientManager {
                     if (srcs!=null) {
                         for (DataSource ds : srcs) {
                             srcTypes.add(DataSourceWrapper.getInstance(
-                                    ds.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
+                                    DataSourceUtil.getName(ds), DataSourceWrapper.DsAttr.DATASOURCE));
                         }
                     }
 
@@ -570,7 +571,7 @@ public class IDMapperClientManager {
                     if (tgts!=null) {
                         for (DataSource ds : tgts) {
                             tgtTypes.add(DataSourceWrapper.getInstance(
-                                    ds.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
+                                    DataSourceUtil.getName(ds), DataSourceWrapper.DsAttr.DATASOURCE));
                         }
                     }
 

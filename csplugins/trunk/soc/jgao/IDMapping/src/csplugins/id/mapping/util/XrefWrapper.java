@@ -48,7 +48,7 @@ public class XrefWrapper {
 
     public XrefWrapper(final Xref xref) {
         this(xref.getId(),DataSourceWrapper.getInstance(
-                xref.getDataSource().getFullName(),
+                DataSourceUtil.getName(xref.getDataSource()),
                 DataSourceWrapper.DsAttr.DATASOURCE));
     }
 
