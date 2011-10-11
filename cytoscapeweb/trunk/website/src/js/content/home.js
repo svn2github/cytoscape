@@ -46,7 +46,7 @@ $(function(){
 			edgeTooltipsEnabled: false,
 			swfPath: "/swf/CytoscapeWeb",
 			flashInstallerPath: "/swf/playerProductInstall",
-	        layout: "Preset"
+	        layout: { name: "Preset", fitToScreen: true }
 	    };
 	    
 	    var vis = new org.cytoscapeweb.Visualization("viz", options);

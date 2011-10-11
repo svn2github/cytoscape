@@ -24,7 +24,7 @@
         "tutorial" => "Tutorial",
         "faq" => "FAQ",
         "documentation" => "Documentation",
-        "demo" => "Demo",
+        "demos" => "Demos",
         "news" => "News",
         "about" => "About",
         "contact" => "Contact"
@@ -64,6 +64,11 @@
 	// include
 	if($include == "") {
 	    $include = "php/content/$navigation_link" . (($page_link != "") ? ("/$page_link") : ("")) . ".php";
+	}
+	
+	// default to parent if child does not exist
+	if( !file_exists($include) ){
+		$include = "php/content/$navigation_link" . ".php";
 	}
 	
 	switch( $content_style ) {

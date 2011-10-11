@@ -15,6 +15,8 @@
         header('Content-type: image/svg+xml');
     } elseif ($type == 'xml') {
         header('Content-type: text/xml');
+    } elseif ($type == 'txt') {
+        header('Content-type: text/plain');
     }
 
     # To force the browser to download the file:
