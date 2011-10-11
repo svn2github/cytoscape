@@ -68,11 +68,6 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.2-beta-5</version>
 				<configuration>
-					<archive>
-						<manifestEntries>
-							<Cytoscape-Plugin>cytoscape.genomespace.libs.GenomeSpaceLibsPlugin</Cytoscape-Plugin>
-						</manifestEntries>
-					</archive>
 					<descriptors>
 						<descriptor>src/main/assembly/src.xml</descriptor>
 					</descriptors>
