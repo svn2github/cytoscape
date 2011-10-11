@@ -31,7 +31,7 @@ public class CyTableReaderAction extends CytoscapeAction {
 
     public void actionPerformed(ActionEvent e) {
     
-        CyFileFilter nf = new CyFileFilter(".cytable");
+        CyFileFilter nf = new CyFileFilter("cytable");
 
         File[] files = FileUtil.getFiles("Import " + type + " Attribute CyTable", FileUtil.LOAD,
                                          new CyFileFilter[] { nf });
