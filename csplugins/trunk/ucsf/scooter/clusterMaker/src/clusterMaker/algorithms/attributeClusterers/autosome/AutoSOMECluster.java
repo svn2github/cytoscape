@@ -254,13 +254,13 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 						  new Boolean(false), null, Tunable.COLLAPSABLE));
 
 		Tunable fcn = new Tunable("enableFCN", "Perform Fuzzy Clustering",
-						  Tunable.BOOLEAN, new Boolean(true));
+						  Tunable.BOOLEAN, new Boolean(false));
 		fcn.addTunableValueListener(this);
 		clusterProperties.add(fcn);
 
 	       fcnInput = new Tunable("FCNInput",
 						  "Source Data",
-						  Tunable.LIST, 0,
+						  Tunable.LIST, new Integer(1),
 						  new Object[]{"Nodes (Genes)", "Attributes (Arrays)"}, (Object)null, 0);
 	       fcnInput.setImmutable(true);
 	       clusterProperties.add(fcnInput);
