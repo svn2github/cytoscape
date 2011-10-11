@@ -12,6 +12,8 @@
     $NETWORK=htmlspecialchars($_GET['network']);
     $SESSION=htmlspecialchars($_GET['session']);
     $GSENV=htmlspecialchars($_GET['gsenv']);
+    $NODETABLE=htmlspecialchars($_GET['nodeTable']);
+    $EDGETABLE=htmlspecialchars($_GET['edgeTable']);
 	print('<?xml version="1.0" encoding="utf-8"?>');
 ?>
 <jnlp codebase="$project.Url">
@@ -50,6 +52,14 @@
 		if ($NETWORK != null && $NETWORK != "") {
         	print("	<argument>-N</argument>\n");
         	print("	<argument>$NETWORK</argument>\n");
+		}
+		if ($NODETABLE != null && $NODETABLE != "") {
+        	print("	<argument>-P</argument>\n");
+        	print("	<argument>node.cytable=$NODETABLE</argument>\n");
+		}
+		if ($EDGETABLE != null && $EDGETABLE != "") {
+        	print("	<argument>-P</argument>\n");
+        	print("	<argument>edge.cytable=$EDGETABLE</argument>\n");
 		}
     }
 
@@ -98,9 +108,23 @@
     <argument>-p</argument>
     <argument>yfiles.YFilesLayoutPlugin</argument>
     <argument>-p</argument>
+    <argument>cytoscape.gxp.GXPReaderPlugin</argument>
+    <argument>-p</argument>
+    <argument>cytoscape.cytable.CyTableReaderPlugin</argument>
+    <argument>-p</argument>
     <argument>cytoscape.genomespace.libs.GenomeSpaceLibsPlugin</argument>
     <argument>-p</argument>
     <argument>cytoscape.genomespace.GenomeSpacePlugin</argument>
+    <argument>-p</argument>
+    <argument>csplugins.mcode.MCODEPlugin</argument>
+    <argument>-p</argument>
+    <argument>BiNGO.BiNGOplugin</argument>
+    <argument>-p</argument>
+    <argument>csplugins.enhanced.search.EnhancedSearchPlugin</argument>
+    <argument>-p</argument>
+    <argument>csplugins.jActiveModules.ActiveModulesUI</argument>
+    <argument>-p</argument>
+    <argument>csplugins.mrsva.shortestpath.ShortestPathPlugin</argument>
   </application-desc>
 </jnlp>
 
