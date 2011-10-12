@@ -234,10 +234,10 @@ package org.cytoscapeweb.view.render {
                 }
             } else {
                 // The offset should be based on each node's size (not just from the node's center):
-                if      (label.horizontalAnchor == TextSprite.LEFT)  myXOffset += d.width/2;
-                else if (label.horizontalAnchor == TextSprite.RIGHT) myXOffset -= d.width/2;
-                if      (label.verticalAnchor == TextSprite.TOP)     myYOffset += d.height/2;
-                else if (label.verticalAnchor == TextSprite.BOTTOM)  myYOffset -= d.height/2;
+                if      (label.horizontalAnchor === TextSprite.LEFT)  myXOffset += d.width/2;
+                else if (label.horizontalAnchor === TextSprite.RIGHT) myXOffset -= d.width/2;
+                if      (label.verticalAnchor === TextSprite.TOP)     myYOffset += d.height/2;
+                else if (label.verticalAnchor === TextSprite.BOTTOM)  myYOffset -= d.height/2;
                 
                 if (d.props.autoSize) {
                     if (! (d is CompoundNodeSprite && (d as CompoundNodeSprite).nodesCount > 0)) {

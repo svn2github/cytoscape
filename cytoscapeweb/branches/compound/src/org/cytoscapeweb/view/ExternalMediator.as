@@ -436,7 +436,10 @@ package org.cytoscapeweb.view {
 				
 				for each (o in childrenToAdd) {
                     parent = this.graphProxy.getNode(o.data.parent);
-                    this.graphMediator.updateCompoundNode(parent, o.sprite);
+                    
+                    if (parent != null) {
+                        this.graphMediator.updateCompoundNode(parent, o.sprite);
+                    }
                 }
 				
 				// Do it before converting the Nodes/Edges to plain objects,

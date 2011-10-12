@@ -555,13 +555,12 @@ function createRandomMesh(size)
 	return data;
 }
 
-function sampleElements()
-{
-	var array = [ { group: "nodes", x: 20, y: 70, data: { id: "cn03", label: "cn03"}, parent: "cn01" },
-	    { group: "nodes", x: 100, y:150 , data: { id: "cn07", label: "cn07"}, parent: "cn04" },
-	    { group: "nodes", x: 45, y: 95, data: { id: "cn05", label: "cn05"}, parent: "cn01" },
-	    { group: "nodes", x: 90, y: 130, data: { id: "cn04", label: "cn04"}, parent: "cn02" },
-	    { group: "nodes", x: 120, y: 150, data: { id: "cn06", label: "cn06"}, parent: "cn02" },
+function sampleElements() {
+	var array = [ { group: "nodes", x: 20, y: 70, data: { id: "cn03", label: "cn03", parent: "cn01"} },
+	    { group: "nodes", x: 100, y:150 , data: { id: "cn07", label: "cn07", parent: "cn04"} },
+	    { group: "nodes", x: 45, y: 95, data: { id: "cn05", label: "cn05", parent: "cn01"} },
+	    { group: "nodes", x: 90, y: 130, data: { id: "cn04", label: "cn04", parent: "cn02"} },
+	    { group: "nodes", x: 120, y: 150, data: { id: "cn06", label: "cn06", parent: "cn02"} },
 	    { group: "nodes", x: 10, y: 35, data: { id: "cn01", label: "cn01" } },
 	    { group: "nodes", x: 20, y: 70, data: { id: "cn02", label: "cn02"} },
 	    { group: "edges", data: { source: "cn01", target: "cn02" } },

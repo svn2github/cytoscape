@@ -179,6 +179,8 @@ package org.cytoscapeweb.view.render {
             var x:Number = bounds.x;
             var y:Number = bounds.y;
             
+            if (isNaN(w) || isNaN(h)) return;
+            
             switch (shape) {
                 case null:
                     break;

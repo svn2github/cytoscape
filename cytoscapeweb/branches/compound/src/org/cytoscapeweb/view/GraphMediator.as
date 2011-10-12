@@ -297,26 +297,8 @@ package org.cytoscapeweb.view {
         
         public function initialize(gr:String, items:Array):void {
             addListeners(items);
-            updateDataSprites(gr, items)
-        }
-        
-        public function updateDataSprites(gr:String, items:Array):void {
-            var props:Object; 
-			
-			if (gr === Groups.NODES) {
-				props = Nodes.properties;
-			} else if (gr === Groups.COMPOUND_NODES) {
-				props = CompoundNodes.properties;
-			} else {
-				props = Edges.properties;
-			}
-			
-            for (var name:String in props) {
-                Arrays.setProperty(items, name, props[name], null);
-            }
-            
+            updateDataSprites(gr, items);
             vis.updateLabels(gr);
-            separateDisconnected();
         }
         
         public function separateDisconnected():void {
@@ -395,6 +377,24 @@ package org.cytoscapeweb.view {
 		}
 		
         // ========[ PRIVATE METHODS ]==============================================================
+
+        private function updateDataSprites(gr:String, items:Array):void {
+            var props:Object; 
+            
+            if (gr === Groups.NODES) {
+                props = Nodes.properties;
+            } else if (gr === Groups.COMPOUND_NODES) {
+                props = CompoundNodes.properties;
+            } else {
+                props = Edges.properties;
+            }
+            
+            for (var name:String in props) {
+                Arrays.setProperty(items, name, props[name], null);
+            }
+            
+            separateDisconnected();
+        }
 
         private function onRenderInitialize(evt:GraphViewEvent):void {
             graphView.addEventListener(GraphViewEvent.LAYOUT_INITIALIZE, onLayoutInitialize, false, 0, true);
