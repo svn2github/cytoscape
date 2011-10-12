@@ -33,7 +33,7 @@ $(function(){
         <div class="tools">\
         	<input type="button" id="reapplyLayout" value="Reapply layout"/>\
             <label for="showNodeLabels">Node Labels</label>\
-            <input type="checkbox" id="showNodeLabels" checked="checked"/> \
+            <input type="checkbox" id="showNodeLabels"/> \
         </div>\
         <div id="cytoscapeweb" width="*">\
             Cytoscape Web will replace the contents of this div with your graph.\
@@ -47,9 +47,7 @@ $(function(){
     var options = {
         nodeTooltipsEnabled: true,
         edgeTooltipsEnabled: true,
-        nodeTooltipsEnabled: true,
         edgesMerged: false,
-        //mouseDownToDragDelay: -1,
         visualStyle: {
             global: {
                 backgroundColor: "#fefefe",
@@ -58,17 +56,13 @@ $(function(){
             nodes: {
                 shape: "ELLIPSE",
                 compoundShape: "RECTANGLE",
-                color: { defaultValue: "#cccccc", continuousMapper: { attrName: "weight", minValue: "#ffffff", maxValue: "#0b94b1" } },
                 opacity: 0.9,
                 size: 30,
                 borderWidth: 2,
                 borderColor: "#707070",
                 compoundBorderColor: "#abcfd6",
                 compoundBorderWidth: 2,
-                //image: "http://chart.apis.google.com/chart?chs=300x300&cht=p&chd=e0:U-gh..bR",
-                //compoundImage: "http://chart.apis.google.com/chart?chxr=0,0,160&chxt=x&chbh=a&chs=440x220&cht=bhs&chco=4D89F9,C6D9FD&chd=s:GflxYlS,fl9YSYS",
-                labelFontSize: { defaultValue: 12, continuousMapper: { attrName: "weight",  minValue: 10, maxValue: 24 } },
-                tooltipText: { customMapper: { functionName: "onNodeTooltip" } },
+                labelFontColor: "#505050",
                 selectionGlowOpacity: 0,
                 selectionBorderColor: "ff0000",
                 hoverBorderWidth: 4
@@ -137,15 +131,17 @@ $(function(){
         .addContextMenuItem("Add new node", function(evt) {
             var x = evt.mouseX;
             var y = evt.mouseY;
-            var parentId;console.log(evt)
+            var parentId;
             if (evt.target != null && evt.target.group == "nodes") {
                 parentId = evt.target.data.id;
                 x = evt.target.x;
                 y = evt.target.y;
-                x += Math.random() * (evt.target.width/2) * (Math.round(x)%2==0 ? 1 : -1);
-                y += Math.random() * (evt.target.height/2) * (Math.round(y)%2==0 ? 1 : -1);
+                x += Math.random() * (evt.target.width/3) * (Math.round(Math.random()*100)%2==0 ? 1 : -1);
+                y += Math.random() * (evt.target.height/3) * (Math.round(Math.random()*100)%2==0 ? 1 : -1);
             }
-            var n = vis.addNode(x, y, { weight: Math.random(), label: "New" }, parentId, true);
+            var n = vis.addNode(x, y, { parent: parentId }, true);
+            n.data.label = n.data.id;
+            vis.updateData([n]);
         })
         .addContextMenuItem("Add new edge", "nodes", function(evt) {
         	_srcId = evt.target.data.id;

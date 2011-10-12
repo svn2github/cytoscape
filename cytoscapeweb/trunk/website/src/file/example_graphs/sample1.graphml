@@ -63,16 +63,16 @@
       <data key="shape">VEE</data>
     </node>
  
-    <edge target="a05" source="a05" directed="false">
+    <edge target="a08" source="a08" directed="false">
       <data key="network">15</data>
       <data key="weight">0.2</data>
-      <data key="label">a05 (15) a05</data>
+      <data key="label">a08 (15) a08</data>
       <data key="lineStyle">SOLID</data>
     </edge>
-    <edge target="a05" source="a05" directed="false">
+    <edge target="a08" source="a08" directed="false">
       <data key="network">25</data>
       <data key="weight">0.4</data>
-      <data key="label">a05 (25) a05</data>
+      <data key="label">a08 (25) a08</data>
       <data key="lineStyle">DOT</data>
     </edge>
     <edge target="a01" source="a02" directed="true">
@@ -90,14 +90,6 @@
       <data key="sourceArrowShape">delta</data>
       <data key="targetArrowShape">T</data>
       <data key="lineStyle">DOT</data>
-    </edge>
-    <edge target="a04" source="a01" directed="true">
-      <data key="network">25</data>
-      <data key="weight">0.2</data>
-      <data key="label">a01 (25) a04</data>
-      <data key="sourceArrowShape">circle</data>
-      <data key="targetArrowShape">circle</data>
-      <data key="lineStyle">EQUAL_DASH</data>
     </edge>
     <edge target="a02" source="a03" directed="true">
       <data key="network">15</data>
@@ -123,10 +115,10 @@
       <data key="targetArrowShape">none</data>
       <data key="lineStyle">EQUAL_DASH</data>
     </edge>
-    <edge target="a03" source="a04" directed="true">
+    <edge target="a08" source="a09" directed="true">
       <data key="network">15</data>
       <data key="weight">0.1</data>
-      <data key="label">a03 (24) a04</data>
+      <data key="label">a08 (24) a09</data>
       <data key="sourceArrowShape">diamond</data>
       <data key="targetArrowShape">T</data>
       <data key="lineStyle">DOT</data>

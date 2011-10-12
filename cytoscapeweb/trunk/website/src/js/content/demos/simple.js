@@ -53,41 +53,32 @@ $(function(){
     var options = {
         nodeTooltipsEnabled: true,
         edgeTooltipsEnabled: true,
-        nodeTooltipsEnabled: true,
+        panZoomControlVisible: true,
         edgesMerged: false,
-        //mouseDownToDragDelay: -1,
         visualStyle: {
             global: {
-                backgroundColor: "#fefefe",
-                tooltipDelay: 1000
+                backgroundColor: "#fefefe"
             },
             nodes: {
-                shape: "ELLIPSE",
-                compoundShape: "ROUND_RECTANGLE",
+            	shape: { passthroughMapper: { attrName: "shape" } },
                 color: { defaultValue: "#cccccc", continuousMapper: { attrName: "weight", minValue: "#ffffff", maxValue: "#0b94b1" } },
+                size: { defaultValue: 20, continuousMapper: { attrName: "weight",  minValue: 25, maxValue: 50 } },
                 opacity: 0.9,
-                size: { defaultValue: 20, continuousMapper: { attrName: "weight",  minValue: 20, maxValue: 40 } },
                 borderWidth: 2,
                 borderColor: "#707070",
-                //image: "http://chart.apis.google.com/chart?chs=300x300&cht=p&chd=e0:U-gh..bR",
-                //compoundImage: "http://chart.apis.google.com/chart?chxr=0,0,160&chxt=x&chbh=a&chs=440x220&cht=bhs&chco=4D89F9,C6D9FD&chd=s:GflxYlS,fl9YSYS",
-                labelFontSize: { defaultValue: 12, continuousMapper: { attrName: "weight",  minValue: 10, maxValue: 24 } },
-                tooltipText: { customMapper: { functionName: "onNodeTooltip" } },
+                labelFontColor: "#303030",
                 selectionGlowOpacity: 0,
                 selectionBorderColor: "ff0000",
                 hoverBorderWidth: 4
             },
             edges: {
             	color: "#0b94b1",
-                width: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 8 } },
-                mergeWidth: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 8 } },
-                mergeColor: "#0b94b1",
-                opacity: 0.7,
-                labelFontSize: 10,
-                labelFontWeight: "bold",
-                selectionGlowOpacity: 0,
-                selectionColor: "ff0000",
-                tooltipText: "${weight}"
+            	mergeColor: "#0b94b1",
+            	width: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 6 } },
+            	style: { defaultValue: "SOLID", passthroughMapper: { attrName: "lineStyle" } },
+            	sourceArrowShape: { passthroughMapper: { attrName: "sourceArrowShape" } },
+				targetArrowShape: { passthroughMapper: { attrName: "targetArrowShape" } },
+                labelFontSize: 10
              }
         }   
     };
@@ -96,22 +87,14 @@ $(function(){
     	$("input, select").attr("disabled", true);
 
         if (data) {
-			var layout = { name: "ForceDirected" };
-
-            if (data.indexOf("</graphml>") === -1 && data.indexOf("</graph>") > -1) { // XGMML...
-            	layout = { name: "Preset", options: { fitToScreen: true } };
-            } else { // GraphML or SIF
-                layout = { name: $("#layouts").val(), options: { weightAttr: "weight", restLength: 50, autoStabilize: false } };
-			}
-
-			options.layout = layout;
+			options.layout = { name: "ForceDirected" };
         	options.network = data;
             options.nodeLabelsVisible = $("#showNodeLabels").is(":checked");
 
         	d1 = new Date();
         	vis.draw(options);
         } else {
-            var url = "/file/example_graphs/sample3.graphml";
+            var url = "/file/example_graphs/sample1.graphml";
             $.get(url, function(dt) {
                 if (typeof dt !== "string") {
                     if (window.ActiveXObject) {
@@ -125,15 +108,6 @@ $(function(){
         }
     }
 
-    var _srcId;
-    function clickNodeToAddEdge(evt) {
-        if (_srcId != null) {
-        	vis.removeListener("click", "nodes", clickNodeToAddEdge);
-        	var e = vis.addEdge({ source: _srcId, target: evt.target.data.id, }, true);
-        	_srcId = null;
-        }
-    }
-    
     $("input").attr("disabled", true);
 
     // init and draw
@@ -144,35 +118,6 @@ $(function(){
         $("#layouts").val(layout.name);
         $("input, select").attr("disabled", false);
         $("#showNodeLabels").attr("checked", vis.nodeLabelsVisible());
-        
-        vis.addContextMenuItem("Delete node", "nodes", function(evt) {
-            vis.removeNode(evt.target.data.id, true);
-        })
-        .addContextMenuItem("Delete edge", "edges", function(evt) {
-            vis.removeEdge(evt.target.data.id, true);
-        })
-        .addContextMenuItem("Add new node", function(evt) {
-            var x = evt.mouseX;
-            var y = evt.mouseY;
-            var parentId;console.log(evt)
-            if (evt.target != null && evt.target.group == "nodes") {
-                parentId = evt.target.data.id;
-                x = evt.target.x;
-                y = evt.target.y;
-                x += Math.random() * (evt.target.width/2) * (Math.round(x)%2==0 ? 1 : -1);
-                y += Math.random() * (evt.target.height/2) * (Math.round(y)%2==0 ? 1 : -1);
-            }
-            var n = vis.addNode(x, y, { weight: Math.random(), label: "New" }, parentId, true);
-        })
-        .addContextMenuItem("Add new edge", "nodes", function(evt) {
-        	_srcId = evt.target.data.id;
-            vis.removeListener("click", "nodes", clickNodeToAddEdge);
-            vis.addListener("click", "nodes", clickNodeToAddEdge);
-        })
-        .addContextMenuItem("Delete selected", function(evt) {
-            var items = vis.selected();
-            if (items.length > 0) { vis.removeElements(items, true); }
-        });
     });
     
     vis.addListener("error", function(err) {
