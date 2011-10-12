@@ -389,7 +389,7 @@ public class Matrix {
 	}
 
 	// XXX Isn't this the same as clusterMaker.algorithms.DistanceMatrix?
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked","deprecation"})
 	private void buildSymmetricalMatrix(CyNetwork network, String weight, 
 	                                    boolean ignoreMissing, boolean selectedOnly) {
 

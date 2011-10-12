@@ -48,14 +48,15 @@ import cytoscape.task.TaskMonitor;
 
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
 import clusterMaker.algorithms.ClusterAlgorithm;
+import clusterMaker.algorithms.attributeClusterers.AbstractAttributeClusterer;
 import clusterMaker.algorithms.attributeClusterers.DistanceMetric;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.KnnView;
 
 
 /**
- * HopachCluster implements the HOPACH algorithm of van der Laan
- * and Pollard. The algorithm can be basically outlined as:
+ * HopachCluster implements the HOPACH (Hierarchical Ordered Partitioning and Collapsing Hybrid) 
+ * algorithm of van der Laan and Pollard. The algorithm can be basically outlined as:
  * while (minClusterSize &gt; 3)
  *		foreach (level)
  *			k = averageSilhouette(K);	// Get the average silhouette for k=2,...,K
@@ -68,18 +69,23 @@ import clusterMaker.ui.KnnView;
  * algorithm (we actually use our k-medoid implementation)
  *
  * User inputs: 
- *	K - the maximum number of clusters
+ *	K - the maximum number of levels in the tree (15)
+ *	kmax - the maximum number of children at at each node in the tree (1-9)
+ *	coll - collapse approach
  *	attributeList - the names of the features to cluster on
  *	metric - the distance metric (Euclidean distance is used in HOPACH)
- *	maxDepth - the maximum number of times to descend
- *	minSize - the minimum size of a cluster
  *
  * Output:
  *	Ordered cluster tree
  *
+ *	Reference: 
+ *		M.J. van der Laan, K.S. Pollard (2001). Hybrid clustering of gene expression 
+ *		data with visualization and the bootstrap. Journal of Statistical Planning and 
+ *		Inference, 2003, 117: 275-303
+ *
  * TODO: Get R source code to figure out exact algorithm
  */
-public class HopachCluster extends AbstractClusterAlgorithm {
+public class HopachCluster extends AbstractAttributeClusterer {
 
 	String[] attributeArray = new String[1];
 

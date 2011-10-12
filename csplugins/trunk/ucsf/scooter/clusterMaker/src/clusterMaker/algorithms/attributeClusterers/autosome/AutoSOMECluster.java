@@ -110,8 +110,9 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 	private String[] attributeArray = new String[1];
 	private String dataAttribute;
 	private boolean heatmap=false;
+	private int cluster_output=0;
 	private boolean finishedClustering = false;
-	private boolean ignoreMissing = false;
+	private boolean ignoreMissing = true;
 	private boolean selectedNodes = false;
 	private List<CyEdge> edges;
 	private int MAXEDGES = 2000;
@@ -122,7 +123,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 	private CyLogger logger = null;
 	private RunAutoSOME runAutoSOME = null;
 
-	private Tunable logscaling, unitVar, medCent, sumSqr, ensembleRuns, fcnInput, fcnDM, mxedges;
+	private Tunable logscaling, unitVar, medCent, sumSqr, ensembleRuns, fcnInput, fcnDM, fillMV, mxedges;
 
 	private List<NodeCluster> nodeCluster;
 
@@ -134,15 +135,13 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		super();
 		clusterAttributeName = Cytoscape.getCurrentNetwork().getIdentifier()+"_AutoSOME_cluster";
 		logger = CyLogger.getLogger(AutoSOMECluster.class);
-		initializeProperties();
 		this.heatmap = heatmap;
+		if (heatmap) cluster_output = 1;
+		initializeProperties();
 	}
 
 	public String getShortName() {
-		if (heatmap)
-			return "autosome_heatmap";
-		else
-			return "autosome_network";
+		return (heatmap) ? "autosome_heatmap" : "autosome_network";
 	};
 
 	public String getName() {return "AutoSOME "+((settings.distMatrix) ? "Fuzzy " : "")+"Clustering";};
@@ -181,8 +180,10 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		clusterProperties.add(new Tunable("selectedOnly", "Only use selected nodes for clustering",
 						  Tunable.BOOLEAN, new Boolean(false)));
 
-		clusterProperties.add(new Tunable("ignoreMissing", "Ignore nodes/edges with no data",
-						  Tunable.BOOLEAN, new Boolean(true)));
+		Tunable ign = new Tunable("ignoreMissing", "Ignore nodes/edges with no data",
+														  Tunable.BOOLEAN, ignoreMissing);
+		ign.addTunableValueListener(this);
+		clusterProperties.add(ign);
 
 		clusterProperties.add(new Tunable("tunables_panel",
 						  "AutoSOME Basic Tuning",
@@ -251,7 +252,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		//fuzzy clustering tunables
 		clusterProperties.add(new Tunable("fuzzyclustering", "Fuzzy Cluster Network Settings",
 						  Tunable.GROUP, new Integer(4),
-						  new Boolean(false), null, Tunable.COLLAPSABLE));
+						  new Boolean(true), null, Tunable.COLLAPSABLE));
 
 		Tunable fcn = new Tunable("enableFCN", "Perform Fuzzy Clustering",
 						  Tunable.BOOLEAN, new Boolean(false));
@@ -287,14 +288,11 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		// 				  new Boolean(false), null, Tunable.COLLAPSABLE));
 
 		
-		/*
-		clusterProperties.add(new Tunable("fillMV",
-						  "Missing value handling",
+		fillMV = new Tunable("fillMV", "Missing value handling",
 						  Tunable.LIST, 0,
-						  new Object[]{"Row Mean", "Row Median", "Column Mean", "Column Median"}, (Object)null, 0));
-		*/
-
-
+						  new Object[]{"Row Mean", "Row Median", "Column Mean", "Column Median"}, (Object)null, 0);
+		if (ignoreMissing) fillMV.setImmutable(true);
+		clusterProperties.add(fillMV);
 	      
 	  //output tunables
 	  clusterProperties.add(new Tunable("tunables_panel4",
@@ -303,7 +301,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 
 		Tunable data_output = new Tunable("cluster_output",
 						  "Choose Visualization",
-						  Tunable.LIST, 0,
+						  Tunable.LIST, new Integer(cluster_output),
 						  new Object[]{"Network", "Heatmap"}, (Object)null, 0);
 		data_output.addTunableValueListener(this);
 		clusterProperties.add(data_output);
@@ -314,6 +312,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 						  "",
 						  Tunable.BUTTON, "Display",
 						  this, null, Tunable.IMMUTABLE);
+		nwbutton.setImmutable(true);
 		clusterProperties.add(nwbutton);
 
  
@@ -418,11 +417,12 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		 t = clusterProperties.get("ignoreMissing");
 		 if ((t != null) && (t.valueChanged() || force)){
 		    ignoreMissing = ((Boolean) t.getValue()).booleanValue();
+				settings.fillMissing = !ignoreMissing;
 		 }
 
 		  t = clusterProperties.get("selectedOnly");
 		  if ((t != null) && (t.valueChanged() || force)){
-		    ignoreMissing = ((Boolean) t.getValue()).booleanValue();
+		    selectedNodes = ((Boolean) t.getValue()).booleanValue();
 		  }
 		
 		 t = clusterProperties.get("enableFCN");
@@ -452,6 +452,24 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		    }
 		}
 
+		t = clusterProperties.get("fillMV");
+		if ((t != null) && (t.valueChanged() || force)){
+		    String val = (t.getValue()).toString();
+		    if(val.equals("0")){
+					settings.mvMedian=false;
+					settings.mvCol=false;
+		    } else if(val.equals("1")){
+					settings.mvMedian=true;
+					settings.mvCol=false;
+		    } else if(val.equals("2")){
+					settings.mvMedian=false;
+					settings.mvCol=true;
+		    } else if (val.equals("3")) {
+					settings.mvMedian=true;
+					settings.mvCol=true;
+				}
+		}
+
 
 		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
@@ -460,16 +478,8 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 
 		t = clusterProperties.get("cluster_output");
 		if ((t != null) && (t.valueChanged() || force))
-			heatmap = ((t.getValue()).toString().equals("1")) ? true : false;
+			cluster_output = ((Integer) t.getValue()).intValue();
 
-		if (dataAttribute != null) {
-				Tunable et = clusterProperties.get("showDisplay");
-				et.clearFlag(Tunable.IMMUTABLE);
-				//et = clusterProperties.get("maxEdges");
-				//et.clearFlag(Tunable.IMMUTABLE);
-			}
-
-		//edgeAttributeHandler.updateSettings(force);
 	}
 
 	public void doCluster(TaskMonitor monitor) {
@@ -479,8 +489,6 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 
 		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-
-		
 
 		//Cluster the nodes
 		runAutoSOME = new RunAutoSOME(dataAttribute, attributeArray,settings,logger);
@@ -503,8 +511,6 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 
 		logger.info("Removing groups");
 
-
-
 		// Remove any leftover groups from previous runs
 		removeGroups(netAttributes, networkID);
 
@@ -519,10 +525,15 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		attrOrderList = runAutoSOME.attrOrderList;
 		nodeOrderList = runAutoSOME.nodeOrderList;
 
+		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
+		netAttributes.setListAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE, attrList);
+		netAttributes.setListAttribute(netID, ClusterMaker.ARRAY_ORDER_ATTRIBUTE, attrOrderList);
+		netAttributes.setListAttribute(netID, ClusterMaker.NODE_ORDER_ATTRIBUTE, nodeOrderList);
+		netAttributes.setAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, getShortName());
+
 		List<List<CyNode>> nodeClusters;
 
 		if(!settings.distMatrix) {
-
 			nodeClusters =
 				createGroups(netAttributes, networkID, nodeAttributes, nodeCluster);		   
 			ClusterResults results = new ClusterResults(network, nodeClusters);
@@ -540,7 +551,11 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 			}
 	   */
 		}
+
 		monitor.setStatus("Done.  AutoSOME results:\n"+nodeCluster.size()+" clusters found.");
+
+		Tunable t = clusterProperties.get("showDisplay");
+		t.setImmutable(false);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
@@ -577,7 +592,6 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		updateSettings(false);
 
 		Tunable t = clusterProperties.get("norm_mode");
-		t.clearFlag(Tunable.IMMUTABLE);
 		switch(Integer.valueOf((t.getValue().toString()))){
 		    case 1:
 			logscaling.setValue(Boolean.FALSE);
@@ -599,17 +613,8 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 			break;
 		}
 
-		Tunable t3 = clusterProperties.get("showDisplay");
-		t3.clearFlag(Tunable.IMMUTABLE);
-
-
-		Tunable t2 = clusterProperties.get("cluster_output");
-		t2.clearFlag(Tunable.IMMUTABLE);
-		heatmap = (Integer.valueOf((t2.getValue().toString()))==0) ? false : true;
-
-		Tunable t4 = clusterProperties.get("mode");
-		t4.clearFlag(Tunable.IMMUTABLE);
-		int c = Integer.valueOf((t4.getValue().toString()));
+		t = clusterProperties.get("mode");
+		int c = Integer.valueOf((t.getValue().toString()));
 		switch (c){
 		    case 0:
 			ensembleRuns.setValue(50);
@@ -622,8 +627,8 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		    break;
 		}
 
-		Tunable t5 = clusterProperties.get("enableFCN");
-		String s = t5.getValue().toString();
+		t = clusterProperties.get("enableFCN");
+		String s = t.getValue().toString();
 		if(s.equals("true")){
 		    fcnInput.setImmutable(false);
 		    fcnDM.setImmutable(false);
@@ -634,45 +639,50 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		    mxedges.setImmutable(true);
 		}
 
+		t = clusterProperties.get("ignoreMissing");
+		ignoreMissing = ((Boolean) t.getValue()).booleanValue();
+		if (ignoreMissing) 
+			fillMV.setImmutable(true);
+		else
+			fillMV.setImmutable(false);
+
 	}
 
 	public void actionPerformed(ActionEvent e){
-	    if(finishedClustering){
+		if(!finishedClustering) {
+			return;
+		}
+
 		Tunable t = clusterProperties.get("maxEdges");
 		MAXEDGES = Integer.valueOf((t.getValue().toString()));
 		Tunable t2 = clusterProperties.get("cluster_output");
-		heatmap = (Integer.valueOf((t2.getValue().toString()))==0) ? false : true;
+		cluster_output = ((Integer) t2.getValue()).intValue();
 
-		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
-		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
-		netAttr.setListAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE, attrList);
-		netAttr.setListAttribute(netID, ClusterMaker.ARRAY_ORDER_ATTRIBUTE, attrOrderList);
-		netAttr.setListAttribute(netID, ClusterMaker.NODE_ORDER_ATTRIBUTE, nodeOrderList);
-
-		if(heatmap){
-		    netAttr.setAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, "kmeans");
-		    KnnView tv = new KnnView();
-		    try {
-		    	tv.startViz();
-		    	tv.setVisible(true);
-		    } catch (CyCommandException cce) {
-		      // Shouldn't happen
-		    }
-		}else{
-		    if(!settings.distMatrix){
+		if(cluster_output == 1){
+			CyAttributes netAttr = Cytoscape.getNetworkAttributes();
+			String netID = Cytoscape.getCurrentNetwork().getIdentifier();
+			netAttr.setAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE, "autosome_heatmap");
+			KnnView tv = new KnnView();
 			try {
-			    NewNetworkView nnv = new NewNetworkView(true);
-			    nnv.startViz();
-			    nnv.setVisible(true);
+				tv.startViz();
+				tv.setVisible(true);
 			} catch (CyCommandException cce) {
-			  // Shouldn't happen
+			// Shouldn't happen
 			}
-		    }else{
-			edges=runAutoSOME.getEdges(MAXEDGES);
-			createClusteredNetwork();
-		    }
+		}else{
+			if(!settings.distMatrix){
+				try {
+					NewNetworkView nnv = new NewNetworkView(true);
+					nnv.startViz();
+					nnv.setVisible(true);
+				} catch (CyCommandException cce) {
+					// Shouldn't happen
+				}
+			}else{
+				edges=runAutoSOME.getEdges(MAXEDGES);
+				createClusteredNetwork();
+			}
 		}
-	    }
 	}
 
 	private void createClusteredNetwork() {

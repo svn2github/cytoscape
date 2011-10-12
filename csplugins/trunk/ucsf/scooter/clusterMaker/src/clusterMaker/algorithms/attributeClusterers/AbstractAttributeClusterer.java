@@ -63,7 +63,7 @@ public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorith
 	protected boolean selectedOnly = false;
 	protected boolean adjustDiagonals = false;
 	protected boolean zeroMissing = false;
-	protected boolean useSilhouette = true;
+	protected boolean useSilhouette = false;
 	protected int kMax = 0;
 	protected int kNumber = 0;
 	protected TaskMonitor monitor = null;
@@ -114,23 +114,23 @@ public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorith
 	protected void addKTunables() {
 		Tunable t = new Tunable("useSilhouette",
 		                        "Estimate k using silhouette",
-		                        Tunable.BOOLEAN, Boolean.TRUE,
-		                        (Object)new Boolean(useSilhouette), (Object)null, 0);
+		                        Tunable.BOOLEAN, (Object)new Boolean(useSilhouette),
+		                        (Object) null, (Object) null, 0);
 		t.addTunableValueListener(this);
 		clusterProperties.add(t);
 
 		t = new Tunable("kMax",
 		                "Maximum number of clusters",
-		                Tunable.INTEGER, new Integer(0),
-		                (Object)new Integer(kMax), (Object)null, 0);
-		// if (!useSilhouette) t.setFlag(Tunable.IMMUTABLE);
+		                Tunable.INTEGER, new Integer(kMax),
+		                (Object)null, (Object)null, 0);
+		if (!useSilhouette) t.setImmutable(true);
 		clusterProperties.add(t);
 
 		t = new Tunable("kNumber",
 		                "Number of clusters (k)",
-		                Tunable.INTEGER, new Integer(10),
-		                (Object)new Integer(kNumber), (Object)null, 0);
-		// if (useSilhouette) t.setFlag(Tunable.IMMUTABLE);
+		                Tunable.INTEGER, new Integer(kNumber),
+		                (Object)null, (Object)null, 0);
+		if (useSilhouette) t.setImmutable(true);
 		clusterProperties.add(t);
 	}
 
@@ -172,11 +172,11 @@ public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorith
 		if (t.getName().equals("useSilhouette")) {
 			useSilhouette = ((Boolean) t.getValue()).booleanValue();
 			if (useSilhouette) {
-				clusterProperties.get("kMax").clearFlag(Tunable.IMMUTABLE);
-				clusterProperties.get("kNumber").setFlag(Tunable.IMMUTABLE);
+				clusterProperties.get("kMax").setImmutable(false);
+				clusterProperties.get("kNumber").setImmutable(true);
 			} else {
-				clusterProperties.get("kMax").setFlag(Tunable.IMMUTABLE);
-				clusterProperties.get("kNumber").clearFlag(Tunable.IMMUTABLE);
+				clusterProperties.get("kMax").setImmutable(true);
+				clusterProperties.get("kNumber").setImmutable(false);
 			}
 		}
 	}
