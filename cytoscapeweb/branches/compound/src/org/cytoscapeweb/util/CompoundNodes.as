@@ -400,7 +400,6 @@ package org.cytoscapeweb.util {
 			if (ns != null) {
 				parentId = ns.data.parent;
 				
-				//for each (var ns:NodeSprite in cns.getNodes())
 				while (parentId != null) {
 					// get parent
 					parent = graphProxy.getNode(parentId);
@@ -424,8 +423,12 @@ package org.cytoscapeweb.util {
 						parents.push(parent);
 					}
 					
-					// advance to next node
-					parentId = parent.data.parent;
+					// advance to next node (avoid circular dependencies)
+					if (parent.data.parent !== ns.data.id) {
+                        parentId = parent.data.parent;
+					} else {
+					    parentId = null;
+					}
 				}
 			}
 			

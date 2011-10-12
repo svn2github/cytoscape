@@ -400,11 +400,10 @@ package org.cytoscapeweb.view {
 						newElement.y = p.y;
 						
 						// check if current node will be added into a compound
-						if (o.parent != null) {
+						if (o.data != null && o.data.parent) {
 							// hold a reference for the new created sprite
 							// for fast access during compound node update
 							o.sprite = newElement;
-							
 							// add to the list of child nodes to be added 
 							childrenToAdd.push(o);
 						}
@@ -425,16 +424,20 @@ package org.cytoscapeweb.view {
 					newAll.push(newElement);
 				}
 				
-				// Set listeners, styles, etc:
-				graphMediator.initialize(Groups.NODES, newNodes);
-				graphMediator.initialize(Groups.EDGES, newEdges);
-				
-				// process child nodes to add, and update corresponding parent
-				// compound nodes
+				// process child nodes to add, and update corresponding parent compound nodes
 				for each (o in childrenToAdd) {
-					parent = this.graphProxy.getNode(o.parent);
-					this.graphMediator.updateCompoundNode(parent, o.sprite);
+					parent = this.graphProxy.getNode(o.data.parent);
+					this.graphProxy.addToParent(o.sprite, parent);
 				}
+				
+				// Set listeners, styles, etc:
+                graphMediator.initialize(Groups.NODES, newNodes);
+                graphMediator.initialize(Groups.EDGES, newEdges);
+				
+				for each (o in childrenToAdd) {
+                    parent = this.graphProxy.getNode(o.data.parent);
+                    this.graphMediator.updateCompoundNode(parent, o.sprite);
+                }
 				
 				// Do it before converting the Nodes/Edges to plain objects,
 				// in order to get the rendered visual properties:
@@ -459,9 +462,12 @@ package org.cytoscapeweb.view {
 			return JSON.encode(ret);
 		}
 		
-		private function addNode(x:Number, y:Number, data:Object,
-		                         parentId:String=null, updateVisualMappers:Boolean=false):String {
+		private function addNode(x:Number,
+		                         y:Number,
+		                         data:Object,
+		                         updateVisualMappers:Boolean=false):String {
 			var extObj:Object = null;
+			var parentId:String = data != null ? data.parent : null;
 			
 			try {
 				// create node (always create a CompoundNode instance)
@@ -476,8 +482,8 @@ package org.cytoscapeweb.view {
 				
 				// set listeners, styles, etc.
 				if (ns.isInitialized()) {
-					// initialize the node as a compound node
-					this.graphMediator.initialize(Groups.COMPOUND_NODES, [ns]);
+//					// initialize the node as a compound node
+//					this.graphMediator.initialize(Groups.COMPOUND_NODES, [ns]);
 				} else {
 					// initialize the node as a non-compound node
 					this.graphMediator.initialize(Groups.NODES, [ns]);
@@ -485,6 +491,7 @@ package org.cytoscapeweb.view {
 				
 				// update parent compound node if adding a node to another one
 				if (parent != null) {
+				    this.graphProxy.addToParent(ns, parent);
 				    this.graphMediator.updateCompoundNode(parent, ns);
 				}
 				

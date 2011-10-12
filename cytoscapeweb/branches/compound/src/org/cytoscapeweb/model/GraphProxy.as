@@ -59,9 +59,9 @@ package org.cytoscapeweb.model {
 	import org.cytoscapeweb.model.data.InteractionVO;
 	import org.cytoscapeweb.model.data.VisualStyleVO;
 	import org.cytoscapeweb.model.error.CWError;
+	import org.cytoscapeweb.util.CompoundNodes;
 	import org.cytoscapeweb.util.ErrorCodes;
 	import org.cytoscapeweb.util.GraphUtils;
-	import org.cytoscapeweb.util.CompoundNodes;
 	import org.cytoscapeweb.util.Groups;
 	import org.cytoscapeweb.util.Layouts;
 	import org.cytoscapeweb.vis.data.CompoundNodeSprite;
@@ -676,17 +676,10 @@ package org.cytoscapeweb.model {
 			}
 			
 			normalizeData(data, Groups.NODES);
-			
-			// create a new CompoundNodeSprite
-			var cns:CompoundNodeSprite = new CompoundNodeSprite();
+            var cns:CompoundNodeSprite = new CompoundNodeSprite();
 			
 			if (data != null) {
 				cns.data = data;
-				
-				// init the CompoundNodeSprite if it has a network field
-				if (data.network != null) {
-					cns.initialize();
-				}
 			}
 						
 			// and newly created CompoundNodeSprite to the graph data, but do
@@ -700,6 +693,22 @@ package org.cytoscapeweb.model {
 			this.createCache(cns);
 			
 			return cns;
+		}
+		
+		public function addToParent(ns:NodeSprite, parent:CompoundNodeSprite):void {
+	       var group:DataList = this.graphData.group(Groups.COMPOUND_NODES);
+            
+            // initialize the compound node if it is not initialized,
+            // yet. Also, add the compound to the compound node data group
+            if (!parent.isInitialized()) {
+                // initialize child node list
+                parent.initialize();
+                // add to the data group
+                group.add(parent);
+            }
+            
+            // add node into the target compound node
+            parent.addNode(ns);
 		}
 		
 		/**

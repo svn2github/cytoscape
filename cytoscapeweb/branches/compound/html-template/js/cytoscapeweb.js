@@ -704,6 +704,7 @@
         
         /**
          * <p>Create a new node and add it to the network view.<p>
+         * <p>You can also add a node as a child of another node, by setting the parent node ID to the "parent" data attribute.<p>
          * <p>If the node <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
          * <p>If the data contains attributes that have not been previously defined in the {@link org.cytoscapeweb.DataSchema},
          * Cytoscape Web will throw an error. To prevent that, you simply add the new fields to the schema first, 
@@ -711,16 +712,19 @@
          * <p>Keep in mind that {@link org.cytoscapeweb.Visualization#addElements} is much faster if you have to
          * add more than one element at once.</p>
          * @example
+         * // 1. Add a new node to the network (here we assume that the data fields for
+         * // "label" and "weight" already exists in the node schema):
          * var data = { id: "n4",
          *              label: "MYO2 (Yeast)",
          *              weight: 0.54 };
+         * var node1 = vis.addNode(240, 360, data, true);
          * 
-         * var node = vis.addNode(240, 360, data, true);
-         * 
+         * // 2. Add a new node as a child of another (compound) node:
+         * var node2 = vis.addNode(node1.x, node1.y, { parent: "n4" }, true);
+         *
          * @param {Object} x The horizontal coordinate of the node.
          * @param {Object} y The vertical coordinate of the node.
          * @param {Object} [data] The object that contains the node attributes.
-         * @param {Object} [parentId] Optional parent node's ID. 
          * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
          *                                        to the network view after adding the node.
          *                                        The default value is <code>false</code>.
@@ -729,7 +733,7 @@
          * @see org.cytoscapeweb.Visualization#addElements
          * @see org.cytoscapeweb.Visualization#removeElements
          */
-        addNode: function (x, y/*, data, parentId, updateVisualMappers*/) {
+        addNode: function (x, y/*, data, updateVisualMappers*/) {
             var data;
             var updateVisualMappers = false;
             var parentId = null;
@@ -737,12 +741,10 @@
             if (arguments.length > i && (typeof arguments[i] === "object" || arguments[i] == null)) {
             	data = arguments[i++];
             }
-            if (arguments.length > i && (typeof arguments[i] === "string" || arguments[i] == null)) {
-            	parentId = arguments[i++];
+            if (arguments.length > i && typeof arguments[i] === "boolean") {
+            	updateVisualMappers = arguments[i++];
             }
-            if (arguments.length > i && typeof arguments[i] === "boolean") { updateVisualMappers = arguments[i++]; }
-            
-            var n = this.swf().addNode(x, y, data, parentId, updateVisualMappers);
+            var n = this.swf().addNode(x, y, data, updateVisualMappers);
             return this._parseJSON(n);
         },
          
@@ -2481,7 +2483,8 @@
      *     <li><code>Circle</code></li>
      *     <li><code>Radial</code></li>
      *     <li><code>Tree</code></li>
-     *     <li><code>Preset</code></li></ul>
+     *     <li><code>Preset</code></li>
+     *     <li><code>CompoundSpringEmbedder</code>: use this option when the network is a compound graph</li></ul>
      * @property
      * @name name
      * @type String

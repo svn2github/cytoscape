@@ -55,8 +55,8 @@ var options = {
         nodes: {
         	// regular nodes
         	size: 40,
-        	color: "#8a1b0b",
-        	image: "http://www.cs.bilkent.edu.tr/~ssumer/cw/cw-logo.png",
+        	color: "#dafbab",
+        	//image: "http://www.cs.bilkent.edu.tr/~ssumer/cw/cw-logo.png",
         	// compound nodes
         	/*
         	compoundPaddingLeft: 20,
@@ -68,7 +68,7 @@ var options = {
         	compoundLabelFontSize: 15,
         	compoundLabelVerticalAnchor: "bottom"
         	*/
-        	compoundImage: "http://www.cs.bilkent.edu.tr/~ivis/images/ivis-logo.png",
+        	//compoundImage: "http://www.cs.bilkent.edu.tr/~ivis/images/ivis-logo.png",
         	compoundPaddingLeft: 10,
         	compoundPaddingRight: 10,
         	compoundPaddingTop: 10,

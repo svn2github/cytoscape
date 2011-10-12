@@ -30,7 +30,6 @@
 package org.cytoscapeweb.view {
     import flare.animate.Parallel;
     import flare.display.DirtySprite;
-    import flare.display.TextSprite;
     import flare.util.Arrays;
     import flare.vis.data.Data;
     import flare.vis.data.DataList;
@@ -297,7 +296,11 @@ package org.cytoscapeweb.view {
         }
         
         public function initialize(gr:String, items:Array):void {
-			// Set properties:
+            addListeners(items);
+            updateDataSprites(gr, items)
+        }
+        
+        public function updateDataSprites(gr:String, items:Array):void {
             var props:Object; 
 			
 			if (gr === Groups.NODES) {
@@ -313,7 +316,6 @@ package org.cytoscapeweb.view {
             }
             
             vis.updateLabels(gr);
-            addListeners(items);
             separateDisconnected();
         }
         
@@ -360,21 +362,8 @@ package org.cytoscapeweb.view {
 		 */
 		public function updateCompoundNode(parent:CompoundNodeSprite, ns:NodeSprite):void {
 			if (parent != null) {
-				var group:DataList = this.graphProxy.graphData.group(Groups.COMPOUND_NODES);
-				
-				// initialize the compound node if it is not initialized,
-				// yet. Also, add the compound to the compound node data group
-				if (!parent.isInitialized()) {
-					// initialize visual properties
-					this.initialize(Groups.COMPOUND_NODES, [parent]);
-					// initialize child node list
-					parent.initialize();
-					// add to the data group
-					group.add(parent);
-				}
-				
-				// add node into the target compound node
-				parent.addNode(ns);
+                // initialize visual properties
+                this.updateDataSprites(Groups.COMPOUND_NODES, [parent]);
 				
 				// update bounds of the target compound node up to  the root
 				while (parent != null) {

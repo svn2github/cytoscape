@@ -32,6 +32,7 @@ package org.cytoscapeweb.vis.data {
 	
 	import flash.geom.Rectangle;
 	
+	import org.cytoscapeweb.model.error.CWError;
 	import org.cytoscapeweb.util.Nodes;
 
 	/**
@@ -158,14 +159,31 @@ package org.cytoscapeweb.vis.data {
 		 * @param ns	child node sprite to be added
 		 */
 		public function addNode(ns:NodeSprite):void {
-			// check if the node is initialized
-			if (this._nodesMap != null) {
-				// add the node to the child node list of this node
-				this._nodesMap[ns.data.id] = ns;
-				// set the parent id of the added node
-				ns.data.parent = this.data.id;
-				_nodesCount++;
-			}
+		    var descendent:CompoundNodeSprite = ns as CompoundNodeSprite;
+		    var stack:Array = [descendent];
+		    var id:String = ns.data.id;
+		    
+		    // check for circular dependencies:
+		    do {
+                descendent = stack.pop();
+                
+                if (descendent.data.id === this.data.parent) {
+                    throw new CWError("Cannot add child node '"+ns.data.id+"' to node '" + this.data.id + 
+                                      "', because it would create a circular dependency.");
+                }
+                
+                for each (descendent in descendent.getNodes()) {
+                    stack.push(descendent);
+                }
+			} while (stack.length > 0);
+		    
+		    if (!isInitialized()) initialize();
+		    
+			// add the node to the child node list of this node
+			this._nodesMap[ns.data.id] = ns;
+			// set the parent id of the added node
+			ns.data.parent = this.data.id;
+			_nodesCount++;
 		}
 		
 		/**

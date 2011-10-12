@@ -523,23 +523,24 @@ package org.cytoscapeweb.model.converters {
         private function parseData(tag:XML, schema:DataSchema):Object {
             var data:Object = {};
             var name:String, field:DataField, value:Object;
+            var i:int, att:XML;
             
             // set default values
-            for (var i:int = 0; i < schema.numFields; ++i) {
+            for (i = 0; i < schema.numFields; ++i) {
                 field = schema.getFieldAt(i);
                 data[field.name] = field.defaultValue;
             }
             
             // get attribute values
-            for each (var attribute:XML in tag.@*) {
-                name = attribute.name().toString();
+            for each (att in tag.@*) {
+                name = att.name().toString();
                 field = schema.getFieldByName(name);
                 if (field != null)
-                    data[name] = parseAttValue(attribute[0].toString(), field.type);
+                    data[name] = parseAttValue(att[0].toString(), field.type);
             }
             
             // get "att" tags:
-            for each (var att:XML in tag.att) {
+            for each (att in tag.att) {
             	parseAtt(att, schema, data);
             }
             
