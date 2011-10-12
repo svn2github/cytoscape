@@ -470,20 +470,15 @@ function createObjectData()
 			         { name: "weight", type: "number" } ]
 		},
 		data: {
-			nodes: [ { id: "n1", label: "n1", network: {
-							nodes: [ { id: "n11", label: "n11"},
-							         { id: "n12", label: "n12"},
-							         { id: "n13", label: "n13", network: {
-							        	 nodes: [{id: "n131", label: "n131"}]
-							         	}
-							         }],
-						    edges: [ { id: "e12", label: "e12", weight: 1.2, source: "n11", target: "n12" } ]
-						}
-					},
-			         { id: "n2", label: "n2"}/*,
-			         { id: "n3", label: "n3", network: { } }*/ ],
+			nodes: [ { id: "n1",   label: "n1" },
+			         { id: "n2",   label: "n2" },
+			         { id: "n11",  label: "n11",  parent: "n1" },
+			         { id: "n12",  label: "n12",  parent: "n1" },
+			         { id: "n13",  label: "n13",  parent: "n1" },
+			         { id: "n131", label: "n131", parent: "n13" } ],
 			edges: [ { id: "e1", label: "e1", weight: 1.1, source: "n1", target: "n2" },
-			         { id: "e2", label: "e2", weight: 1.6, source: "n2", target: "n12" }]
+			         { id: "e2", label: "e2", weight: 1.6, source: "n2", target: "n12" },
+			         { id: "e12", label: "e12", weight: 1.2, source: "n11", target: "n12" }]
 		}
 	};
 	
@@ -572,36 +567,8 @@ function sampleElements() {
 	return array;
 }
 
-/*
-function createObjectData()
-{
-	var data = {
-	    	dataSchema: {
-			nodes: [ { name: "label", type: "string" } ],       
-			edges: [ { name: "label", type: "string" },
-			         { name: "weight", type: "number" } ]
-		},
-		data: {
-			nodes: [ { id: "n0", label: "n0"},
-			         { id: "n1", label: "n1"},
-			         { id: "n2", label: "n2", network: { nodes: [ { id: "n2:n0", label: "n2:n0"} ]} }],			         
-			edges: [ { id: "e0", label: "e0", weight: 1.1, source: "n1", target: "n0" },
-			         { id: "e1", label: "e1", weight: 1.1, source: "n2:n0", target: "n0" },
-			         { id: "e2", label: "e2", weight: 1.1, source: "n1", target: "n2" }]
-		}
-	};
-	
-	return data;
-}
-*/
-
-/*
- *
- */
-function clickNodeToAddEdge(evt)
-{
-    if (_srcId != null)
-    {
+function clickNodeToAddEdge(evt) {
+    if (_srcId != null) {
     	vis.removeListener("click", "nodes", clickNodeToAddEdge);
     	var e = vis.addEdge({ source: _srcId,
     		target: evt.target.data.id,
@@ -630,17 +597,13 @@ function visibility(element)
 /*
  * Add items to context menu
  */
-function initContextMenu()
-{
+function initContextMenu() {
+	
 	vis.addContextMenuItem("Add new node", function(evt) {
 		var label = "node " + autoLabel;
 		autoLabel++;
 		
-		var n = vis.addNode(evt.mouseX,
-					evt.mouseY,
-					{label: label},
-					true,
-					evt.target);
+		var n = vis.addNode(evt.mouseX, evt.mouseY, {label: label}, true, evt.target);
 	});
 
 	vis.addContextMenuItem("Toggle node labels", function(evt) {
