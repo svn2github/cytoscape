@@ -49,6 +49,7 @@ import javax.swing.border.*;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Dialog;
 import java.awt.GridLayout;
 import java.awt.GridBagLayout;
@@ -102,7 +103,7 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 	 * @param object the Chimera interface object
 	 * @param structures the List of structures open in Chimera
 	 */
-	public AlignStructuresDialog (Dialog parent, Chimera object, List structures) {
+	public AlignStructuresDialog (Frame parent, Chimera object, List structures) {
 		super(parent, false);
 		chimeraObject = object;
 		this.structures = structures;

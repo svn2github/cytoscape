@@ -77,7 +77,7 @@ import structureViz.ui.PopupMenuListener;
  * structureViz.
  */
 public class ModelNavigatorDialog 
-			extends JDialog 
+			extends JFrame 
 			implements TreeSelectionListener, TreeExpansionListener, TreeWillExpandListener {
 
 	private Chimera chimeraObject;
@@ -130,7 +130,7 @@ public class ModelNavigatorDialog
 	 */
 	protected ModelNavigatorDialog (Frame parent, Chimera object) {
 		// super(Cytoscape.getDesktop(), "Cytoscape Molecular Structure Navigator");
-		super((Frame)null, "Cytoscape Molecular Structure Navigator");
+		super("Cytoscape Molecular Structure Navigator");
 		chimeraObject = object;
 		initComponents();
 		status = false;
