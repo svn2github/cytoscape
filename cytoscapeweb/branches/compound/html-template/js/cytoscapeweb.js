@@ -1237,9 +1237,7 @@
             } else if (this._typeof(filter) === "array") {
             	arr = filter;
             }
-            if (arr != null && arr.length > 0) {
-            	this.swf().filter(gr, arr, updateVisualMappers);
-            }
+            this.swf().filter(gr, arr, updateVisualMappers);
             return this;
         },
 
