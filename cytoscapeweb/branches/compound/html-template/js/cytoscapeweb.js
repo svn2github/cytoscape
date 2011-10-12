@@ -741,7 +741,6 @@
             	parentId = arguments[i++];
             }
             if (arguments.length > i && typeof arguments[i] === "boolean") { updateVisualMappers = arguments[i++]; }
-            console.log(data +","+ parentId+","+updateVisualMappers);
             
             var n = this.swf().addNode(x, y, data, parentId, updateVisualMappers);
             return this._parseJSON(n);
@@ -1186,10 +1185,16 @@
          * // 1. Hide all edges that have a weight that is lower than 0.4:
          * vis.filter("edges", function(edge) {
          *     return edge.data.weight >= 0.4;
-         * });
+         * }, true);
          *
          * // 2. Hide all nodes, except two of them, by id:
          * vis.filter("nodes", ['n01', 'n02']);
+         *
+         * // 3. Hide all nodes (and edges, of course):
+         * vis.filter("nodes", []);
+         *
+         * // 4. This also hides everything:
+         * vis.filter();
          *
          * @param {org.cytoscapeweb.Group} [gr] The group of network elements to filter.
          *                                       If <code>null</code>, filter both nodes and edges.
