@@ -79,23 +79,4 @@
         </fileSet>
 
     </fileSets>
-
-    <files>
-        <!--
-        <file>
-            <source>/home/jbonofre/workspace/karaf/karaf-2.2.2/manual/target/dependencies/apache-karaf-2.2.2/bin/karaf</source>
-            <outputDirectory>/bin/</outputDirectory>
-            <destName>my-custom</destName>
-            <fileMode>0755</fileMode>
-            <lineEnding>unix</lineEnding>
-        </file>
-        <file>
-            <source>/home/jbonofre/workspace/karaf/karaf-2.2.2/manual/target/classes/features.xml</source>
-            <outputDirectory>/system/my.groupid/my-features/2.2.2</outputDirectory>
-            <destName>my-features-2.2.2-features.xml</destName>
-            <fileMode>0644</fileMode>
-            <lineEnding>unix</lineEnding>
-        </file>
-        -->
-    </files>
 </assembly>
