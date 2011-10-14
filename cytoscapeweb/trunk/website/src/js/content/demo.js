@@ -169,7 +169,7 @@ $(function(){
 
     $("body").html('\
                         <div id="header" class="slice">\
-                            <a href="/"><div id="logo"></div></a>\
+                            <a href="/"><div id="logo">Cytoscape Web</div></a>\
                             <div class="message">\
                             	<h2>Feature Showcase Demo</h2>\
                             	<p>This is a separate demo application, built around the Cytoscape Web visualization.\

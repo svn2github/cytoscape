@@ -109,6 +109,37 @@
     
     
     
+    <h1>Compound Nodes</h1>
+    
+    <p>With Cytoscape Web it is very easy to create compound nodes (i.e. nodes within nodes), and you can choose one of the folowing options:
+    	<ol>
+    		<li><a href="http://www.cs.rpi.edu/research/groups/pb/punin/public_html/XGMML/draft-xgmml-20010628.html#NodeA" rel="external">XGMML</a>: 
+                This XML format supports subgraphs by allowing <code>&lt;graph&gt;</code> tags to be nested into a node's <code>&lt;att&gt;</code> tag.</li>
+    		<li><a href="http://graphml.graphdrawing.org/primer/graphml-primer.html#Nested" rel="external">GraphML</a>: also supports nested graphs.</li>
+    		<li><a href="/documentation/elements#section/NetworkModel">NetworkModel</a>: Cytoscape Web's native format is a simple option.
+    		    You just need to set the parent node ID in the nodes' data, like in the example bellow.</li>
+    		<li>At any moment, you can create compound nodes by <a href="/documentation/visualization#section/addNode">adding new nodes</a> to another node.</li>
+    	</ol>
+    </p>
+    
+    <?php print_code("file/example_code/compound_nodes.html"); ?>
+    <?php embed_code("file/example_code/compound_nodes.html"); ?>
+    
+    <p>To learn more about how to work with compound nodes, take a look at these related API functions and options:
+    	<ul>
+    		<li><a href="/documentation/visualization#section/addElements">addElements()</a></li>
+    		<li><a href="/documentation/visualization#section/nodes">nodes()</a></li>
+    		<li><a href="/documentation/visualization#section/parentNodes">parentNodes()</a></li>
+    		<li><a href="/documentation/visualization#section/childNodes">childNodes()</a></li>
+    		<li><code>CompoundSpringEmbedder</code> <a href="/documentation/layout">layout</a></li>
+    	</ul>
+    </p>
+    
+    <p>You can also play with the <a href="/demos/compound">compound nodes demo</a>.</p>
+    
+    
+    
+    
     <h1>Conclusion</h1>
     
     <p>This tutorial should allow you to have Cytoscape Web up and running and interacting with

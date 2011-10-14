@@ -7,9 +7,16 @@
 the <a href="http://www.thedonnellycentre.utoronto.ca/" rel="external">Donnelly Centre for Cellular and Biomolecular Research</a>,
 in the labs of <a href="http://baderlab.org/" rel="external">Gary Bader</a> and
 <a href="http://morrislab.med.utoronto.ca/" rel="external">Quaid Morris</a>.
-Cytoscape Web development is funded by <a href="http://www.genomecanada.ca/" rel="external">Genome Canada</a>, through the
+Cytoscape Web development was originally funded by <a href="http://www.genomecanada.ca/" rel="external">Genome Canada</a>, through the
 <a href="http://www.ontariogenomics.ca/" rel="external">Ontario Genomics Institute</a> (2007-OGI-TD-05).
-It is now actively developed as part of the <a href="http://www.cytoscape.org">Cytoscape</a> project.</p>
+It is now actively developed as part of the <a href="http://www.cytoscape.org">Cytoscape</a> project which is funded by 
+grants from the <a href="http://www.nih.gov/" rel="external">U.S. National Institutes of Health (NIH)</a>,
+under award number GM070743-01 (U.S. National Institute of General Medical Sciences (NIGMS)) 
+and number RR031228 (NIH National Center for Research Resources (NCRR) Biomedical Technology Research Center (BTRC)).</p>
+
+<p>The <a href="http://www.cs.bilkent.edu.tr/~ivis" rel="external">i-Vis Information Visualization Research Group</a>
+of <a href="http://www.bilkent.edu.tr/index.html" rel="external">Bilkent University</a> implemented the compound graph feature, 
+including the <a href="http://dx.doi.org/10.1016/j.ins.2008.11.017" rel="external">Compound Spring Embedder</a> layout algorithm.</p>
 
 <p>Cytoscape Web was created as a result of the need for a visualization interface for the
 <a href="http://www.genemania.org/" rel="external">GeneMANIA</a> project at the University of Toronto.
@@ -25,17 +32,19 @@ We chose Flex/Flash because were not able to find any other solutions to the pro
 <h1>Client applications</h1>
 
 <p>Cytoscape Web is currently being used by a gene function prediction server,
-<a id="link_genemania" href="http://www.genemania.org/" rel="external">GeneMANIA</a>.
+<a id="link_genemania" href="http://www.genemania.org/search/human/pcna" rel="external">GeneMANIA</a>.
 The data provided to Cytoscape Web in GeneMANIA is unique to every user query, and easily
 modified with each new query. The rendering speed of Cytoscape Web allows for dynamic user
 interaction.</p>
 
-<p><a id="link_irefweb" href="http://wodaklab.org/iRefWeb/" rel="external">iRefWeb</a> is an interface to a relational database containing the latest build
+<p><a id="link_irefweb" href="http://wodaklab.org/netility/network/show/id/180156" rel="external">iRefWeb</a> is an interface to a relational database containing the latest build
 of the interaction Reference Index (iRefIndex) which integrates protein interaction data from ten different interaction databases: 
 BioGRID, BIND, CORUM, DIP, HPRD, INTACT, MINT, MPPI, MPACT and OPHID.</p>
 
 <p><a id="link_pathguide" href="http://www.pathguide.org/interactions.php" rel="external">Pathguide</a> is a meta-database that provides an overview of more than 
 300 web-accessible biological pathway and network databases. It uses Cytoscape Web to display networks that illustrate the interactions among different resources.</p>
+
+<p><a id="link_more" href="http://scholar.google.ca/scholar?cites=16497398434959260707&as_sdt=2005&sciodt=0,5&hl=en " rel="external">Many more...</a></p>
 
 <h1>Linking back to Cytoscape Web</h1>
 
@@ -65,7 +74,12 @@ BioGRID, BIND, CORUM, DIP, HPRD, INTACT, MINT, MPPI, MPACT and OPHID.</p>
    
 <h1>Developers</h1>
 
-<p>Cytoscape Web is developed by <i>Christian Lopes</i> and <i>Max Franz</i>.</p> 
+<p>Cytoscape Web is maintained by <i>Christian Lopes</i> and <i>Max Franz</i>,
+   from the <a href="http://www.thedonnellycentre.utoronto.ca/" rel="external">Donnelly Centre for Cellular and Biomolecular Research</a>.</p> 
+<p><i>Selcuk Onur Sumer</i> and <i><a href="http://www.cs.bilkent.edu.tr/~ugur" rel="external">Ugur Dogrusoz</a></i>, 
+   from the <a href="http://www.cs.bilkent.edu.tr/~ivis" rel="external">i-Vis Information Visualization Research Group</a>
+   of <a href="http://www.bilkent.edu.tr/index.html" rel="external">Bilkent University</a>, 
+   were responsible for the compound graph support.</p> 
    
 <h1>Credits</h1>
 

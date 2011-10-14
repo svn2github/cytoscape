@@ -27,7 +27,7 @@
 	    </div>
 	    
 	    <div class="link">
-	        <a href="/demo"><div id="live_demo" class="button">View showcase demo</div></a>
+	        <a href="/demos"><div id="live_demo" class="button">View demos</div></a>
 	    </div>
 	    
 	    <div class="link">

@@ -3,6 +3,7 @@
 	$page_links = array(
         "simple"   => "Simple",
         "compound" => "Compound Nodes",
+        "showcase" => "Showcase"
     );
     
     $content_style="half_and_half";
