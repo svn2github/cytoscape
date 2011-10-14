@@ -619,7 +619,7 @@
         },
         
         /**
-         * <p>Get all nodes that belong to another node.</p>
+         * <p>Get all nodes that belong to a compound node.</p>
          * @param {Object} parent The parent node object or the parent ID (String).
          * @return {Array} List of {@link org.cytoscapeweb.Node} objects.
          * @see org.cytoscapeweb.Visualization#edges
@@ -2681,7 +2681,8 @@
      */
     /**
      * <p>An object that defines visual styles for nodes.</p>
-     * <p>The possible node properties are:</p>
+     * <p>The possible node properties are as follows.  Each property can be prefixed by "compound"
+     * and the first letter of the term is correspondingly capitalized (e.g. "color" becomes "compoundColor") for compound nodes.</p>
      * <ul class="options"><li><code>shape</code> {{@link org.cytoscapeweb.NodeShape}}: Node shape name. The default value is "ELLIPSE".</li>
      *     <li><code>size</code> {Number}: Node size, in pixels.
      *                                     It has the same effect of setting the same value (or mapper) to both <code>width</code> and <code>height</code>.

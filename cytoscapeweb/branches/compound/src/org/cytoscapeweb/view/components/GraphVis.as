@@ -55,6 +55,7 @@ package org.cytoscapeweb.view.components {
     
     import org.cytoscapeweb.model.data.ConfigVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.util.CompoundNodes;
     import org.cytoscapeweb.util.Edges;
     import org.cytoscapeweb.util.GraphUtils;
@@ -642,6 +643,8 @@ package org.cytoscapeweb.view.components {
 				// set current layout
 				layout = cose;
 			}
+            
+            if (layout == null) throw new CWError("Invalid layout: " + name);
             
             layout.layoutBounds = layoutBounds;
             layout.layoutRoot = layoutRoot;

@@ -40,6 +40,7 @@ package org.cytoscapeweb.model {
     import org.cytoscapeweb.model.data.VisualPropertyVO;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Layouts;
     import org.puremvc.as3.patterns.proxy.Proxy;
@@ -184,6 +185,7 @@ package org.cytoscapeweb.model {
                     case Layouts.RADIAL.toLowerCase():         name = Layouts.RADIAL; break;
                     case Layouts.TREE.toLowerCase():           name = Layouts.TREE; break;
 					case Layouts.COSE.toLowerCase():           name = Layouts.COSE; break;
+					default:                                   throw new CWError("Invalid layout: " + name);
                 }
                 
                 options = Layouts.mergeOptions(name, options);
