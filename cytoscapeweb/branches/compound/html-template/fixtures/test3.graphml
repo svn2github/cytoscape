@@ -19,7 +19,7 @@
       <data key="label">n3</data>
       <data key="name">Node 3</data>
       <data key="shape">OCTAGON</data>
-      <data key="weight">0.09</data>
+      <data key="weight">0.6</data>
       <data key="ranking">3</data>
       <data key="type">1</data>
     </node>
@@ -28,7 +28,7 @@
       <data key="label">n1</data>
       <data key="name">Node 1</data>
       <data key="shape">RECTANGLE</data>
-      <data key="weight">0.45</data>
+      <data key="weight">0.3</data>
       <data key="ranking">1</data>
       <data key="type">1</data>
       <graph edgedefault="undirected">
@@ -37,7 +37,7 @@
           <data key="label">n4</data>
           <data key="name">Node 4</data>
           <data key="shape">ELLIPSE</data>
-          <data key="weight">0.25</data>
+          <data key="weight">0.34</data>
           <data key="ranking">4</data>
           <data key="type">1</data>
         </node>
@@ -46,7 +46,7 @@
           <data key="label">n2</data>
           <data key="name">Node 2</data>
           <data key="shape">RECTANGLE</data>
-          <data key="weight">0.6</data>
+          <data key="weight">0.2</data>
           <data key="ranking">2</data>
           <data key="type">1</data>
           <graph edgedefault="undirected">
@@ -55,7 +55,7 @@
               <data key="label">n5</data>
               <data key="name">Node 5</data>
               <data key="shape">ELLIPSE</data>
-              <data key="weight">0.35</data>
+              <data key="weight">0.01</data>
               <data key="ranking">5</data>
               <data key="type">1</data>
             </node>

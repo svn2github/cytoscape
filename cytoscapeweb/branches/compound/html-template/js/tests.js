@@ -35,7 +35,7 @@ var style = {
 	nodes: {
 		shape: "RECTANGLE",
 		opacity: 0.75,
-		size: { defaultValue: 12, continuousMapper: { attrName: "weight", minValue: 12, maxValue: 36 } },
+		size: { defaultValue: 12, continuousMapper: { attrName: "weight", minValue: 12, maxValue: 48 } },
 		borderColor: "#333333",
 		borderWidth: 4,
 		selectionBorderColor: "#ff0000",
@@ -281,7 +281,6 @@ function runGraphTests(moduleName, vis, options) {
     });
     
     asyncTest("Select Nodes by ID", function() {
-    	expect(6);
     	var nodes = vis.nodes();
     	var sel = [nodes[0].data.id, nodes[1].data.id];
     	
@@ -794,7 +793,9 @@ function runGraphTests(moduleName, vis, options) {
 	    		ok(n.data.weight > 0.03 && n.data.weight < 0.4, "Node '"+n.data.id+"' correctly filtered ("+j+")");
 	    		ok(n.visible, "Filtered node '"+n.data.id+"' is visible ("+j+")");
 	    		// When updateVisualMappers == false:
-	    		same(n.size, nlookup[n.data.id].size, "The node size should not change ("+n.data.id+")");
+	    		if (n.nodesCount == 0) { // ignore compound nodes
+	    			same(n.size, nlookup[n.data.id].size, "The node size should not change ("+n.data.id+")");
+	    		}
 	    	});
     	});
     	$.each(nodes, function(i, n) {
@@ -859,37 +860,41 @@ function runGraphTests(moduleName, vis, options) {
     	same(fAllList, null, "Return of listener for 'none' after removing filter by 'none'");
     });
     
-    asyncTest("Filter nodes and update mappers automatically", function() {
-    	expect(2);
-    	
-    	vis.addListener("filter", "nodes", function(evt) {
-        	start();
-        	vis.removeListener("filter", "nodes");
-
-        	var maxVal = -1, minVal = 999999;
-        	var larger, smaller;
-
-	    	$.each(evt.target, function(i, n) {
-	    		var size = n.size - n.borderWidth;
-	    		if (size > maxVal) {
-	    			larger = n;
-	    			maxVal = size;
-	    		} else if (size < minVal) {
-	    			smaller = n;
-	    			minVal = size;
-	    		}
-	    	});
-
-        	same(minVal, style.nodes.size.continuousMapper.minValue, "The node "+smaller.data.id+" should be smaller now");
-	    	same(maxVal, style.nodes.size.continuousMapper.maxValue, "The node "+larger.data.id+" should be bigger now");
+    var isCompoundGraph = vis.parentNodes().length > 0;
+    
+    if (!isCompoundGraph) { // continuous mapper for node size is hard to test because parent nodes' auto size! 
+	    asyncTest("Filter nodes and update mappers automatically", function() {
+	    	expect(2);
 	    	
-	    	vis.removeFilter("nodes");
-	    	stop();
-        });
-        
-        // Filter nodes and ask to update mappers:
-        vis.filter("nodes", nfilter, true);
-    });
+	    	vis.addListener("filter", "nodes", function(evt) {
+	        	start();
+	        	vis.removeListener("filter", "nodes");
+	
+	        	var maxVal = -1, minVal = 999999;
+	        	var larger, smaller;
+	
+		    	$.each(evt.target, function(i, n) {
+		    		var size = n.size - n.borderWidth;
+		    		if (size > maxVal) {
+		    			larger = n;
+		    			maxVal = size;
+		    		} else if (size < minVal) {
+		    			smaller = n;
+		    			minVal = size;
+		    		}
+		    	});
+	        	
+	        	same(minVal, style.nodes.size.continuousMapper.minValue, "The node "+smaller.data.id+" should be smaller now");
+	        	same(maxVal, style.nodes.size.continuousMapper.maxValue, "The node "+larger.data.id+" should be bigger now");
+		    	
+		    	vis.removeFilter("nodes", true);
+		    	stop();
+	        });
+	        
+	        // Filter nodes and ask to update mappers:
+	        vis.filter("nodes", nfilter, true);
+	    });
+    }
     
     test("Add Node", function() {
     	var nodes = vis.nodes();
@@ -1345,14 +1350,14 @@ function runGraphTests(moduleName, vis, options) {
     	var xml = $(vis.xgmml());
     	var nodes = vis.nodes();
     	var edges = vis.edges();
-    	var parents = vis.parentNodes();console.log(xml)
+    	var parents = vis.parentNodes();
     	
     	same(xml[0].tagName.toLowerCase(), "graph", "<graph> tag");
-    	same(xml.find("att graph").length, parents.length, "nested <graph> tags"); // compound graphs only
+    	same(xml.find("att > graph").length, parents.length, "nested <graph> tags"); // compound graphs only
     	same(xml.find("node").length, nodes.length, "Number of nodes");
-    	same(xml.find("node graphics").length, nodes.length, "Number of node graphics");
+    	same(xml.find("node > graphics").length, nodes.length, "Number of node graphics");
     	same(xml.find("edge").length, edges.length, "Number of edges");
-    	same(xml.find("edge graphics").length, edges.length, "Number of edge graphics");
+    	same(xml.find("edge > graphics").length, edges.length, "Number of edge graphics");
     });
     
     test("SIF", function() {

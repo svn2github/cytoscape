@@ -1270,7 +1270,7 @@
             	if (list.length > 0) {
 	                for (var i = 0; i < list.length; i++) {
 	                    var obj = list[i];
-	                	if (filter(obj)) { arr.push(obj); }
+	                	if (filter(obj)) { arr.push(obj.data.id); }
 	                }
                 }
             } else if (this._typeof(filter) === "array") {
