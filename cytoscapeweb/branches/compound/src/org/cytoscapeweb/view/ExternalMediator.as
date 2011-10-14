@@ -304,7 +304,7 @@ package org.cytoscapeweb.view {
             return JSON.encode(obj);
         }
         
-        private function getNodes(topLevelOnly:Boolean):String {
+        private function getNodes(topLevelOnly:Boolean=false):String {
             var nodes:* = graphProxy.graphData.nodes;
             var arr:*, n:NodeSprite;
             
