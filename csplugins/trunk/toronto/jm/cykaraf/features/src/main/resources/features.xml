@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features>
-  <feature name="cytoscape-gui" version="${version}">
+  <feature name="cytoscape-gui" version="${project.version}">
   
     <bundle start-level="1">mvn:org.slf4j/slf4j-api/1.5.8</bundle>
     <bundle start-level="1">mvn:org.slf4j/slf4j-simple/1.5.8</bundle>
