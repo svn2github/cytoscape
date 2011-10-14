@@ -32,6 +32,7 @@ package org.cytoscapeweb.view {
     
     import flare.data.DataSchema;
     import flare.data.DataSet;
+    import flare.vis.data.DataList;
     import flare.vis.data.DataSprite;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
@@ -303,21 +304,40 @@ package org.cytoscapeweb.view {
             return JSON.encode(obj);
         }
         
-        private function getNodes(parentId:String=null):String {
-            var nodes:*, arr:Array = [];
+        private function getNodes(topLevelOnly:Boolean):String {
+            var nodes:* = graphProxy.graphData.nodes;
+            var arr:*, n:NodeSprite;
             
-            if (parentId != null) {
-                var cn:CompoundNodeSprite = graphProxy.getNode(parentId);
-                if (cn != null) nodes = cn.getNodes();
+            if (topLevelOnly) {
+                arr = [];
+                for each (n in nodes) {
+                    if (n.data.parent == null) arr.push(n);
+                }
             } else {
-                // TODO: return only top-level nodes (no children)?
-                nodes = graphProxy.graphData.nodes;
+                arr = nodes != null ? nodes : [];
             }
             
+            arr = ExternalObjectConverter.toExtElementsArray(arr, graphProxy.zoom);
+            return JSON.encode(arr);
+        }
+        
+        private function getChildNodes(parentId:String):String {
+            var nodes:*, arr:Array = [];
+            var cn:CompoundNodeSprite = graphProxy.getNode(parentId);
+            
+            if (cn != null)
+                nodes = cn.getNodes();
             if (nodes != null)
                 arr = ExternalObjectConverter.toExtElementsArray(nodes, graphProxy.zoom);
             
             return JSON.encode(arr);
+        }
+        
+        private function getParentNodes():String {
+            var nodes:DataList = graphProxy.graphData.group(Groups.COMPOUND_NODES);
+            var list:* = nodes != null ? nodes : [];
+            list = ExternalObjectConverter.toExtElementsArray(list, graphProxy.zoom);
+            return JSON.encode(list);
         }
         
         private function getEdges():String {
@@ -691,7 +711,8 @@ package org.cytoscapeweb.view {
                                         "zoomTo", "zoomToFit", "getZoom", 
                                         "filter", "removeFilter", 
                                         "firstNeighbors", 
-                                        "getNodes", "getEdges", "getMergedEdges", 
+                                        "getNodes", "getParentNodes", "getChildNodes",
+                                        "getEdges", "getMergedEdges", 
                                         "getNodeById", "getEdgeById",
                                         "getSelectedNodes", "getSelectedEdges", 
                                         "getLayout", "applyLayout", 

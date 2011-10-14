@@ -1,10 +1,10 @@
 <graphml xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd" xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <key id="name" for="all" attr.name="name" attr.type="string"/>
-  <key id="weight" for="node" attr.name="weight" attr.type="double"/>
+  <key id="label" for="all" attr.name="label" attr.type="string"/>
+  <key id="weight" for="all" attr.name="weight" attr.type="double"/>
   <key id="ranking" for="node" attr.name="ranking" attr.type="int"/>
   <key id="type" for="node" attr.name="type" attr.type="string"/>
   <key id="shape" for="node" attr.name="shape" attr.type="string"/>
-  <key id="label" for="node" attr.name="label" attr.type="string"/>
   <key id="special" for="node" attr.name="special" attr.type="boolean"/>
   <key id="type" for="edge" attr.name="type" attr.type="string"/>
   <key id="interaction" for="edge" attr.name="interaction" attr.type="string">

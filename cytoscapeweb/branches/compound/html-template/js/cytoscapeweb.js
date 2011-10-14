@@ -601,20 +601,52 @@
         },
         
         /**
-         * <p>Get all nodes from the network or from another node.
+         * <p>Get all nodes from the network.</p>
+         * <p>If the <code>topLevelOnly</code> parameter is <code>true</code>, child nodes are not returned in the list.</p>
          * In order to retrieve the children of a compound node, simply pass the parent node object or its <code>id</code>.</p>
-         * @param {Object} [parent] Optional parent node object or ID. If <code>null</code> or undefined,
-         *                          it returns all the nodes that exist in the network.
-         * @return {Array} List of nodes.
+         * @param {Boolean} [topLevelOnly] It is optional and the default value is <code>false</code>, which means that all existing nodes
+                                           are returned as a flat list, no matter whether or not they are regular, child or parent ones.
+                                           If <code>false</code>, nodes that are children of other nodes are not included in the list. 
+         * @return {Array} List of {@link org.cytoscapeweb.Node} objects.
          * @see org.cytoscapeweb.Visualization#edges
          * @see org.cytoscapeweb.Visualization#node
+         * @see org.cytoscapeweb.Visualization#parentNodes
+         * @see org.cytoscapeweb.Visualization#childNodes
          */
-        nodes: function (parent) {
-        	if (parent && typeof parent === "object" && parent.hasOwnProperty("data")) {
+        nodes: function (topLevelOnly) {
+            var str = this.swf().getNodes(topLevelOnly);
+            return this._parseJSON(str);
+        },
+        
+        /**
+         * <p>Get all nodes that belong to another node.</p>
+         * @param {Object} parent The parent node object or the parent ID (String).
+         * @return {Array} List of {@link org.cytoscapeweb.Node} objects.
+         * @see org.cytoscapeweb.Visualization#edges
+         * @see org.cytoscapeweb.Visualization#nodes
+         * @see org.cytoscapeweb.Visualization#parentNodes
+         * @see org.cytoscapeweb.Visualization#node
+         */
+        childNodes: function (parent) {
+        	if (parent == null) { throw("The 'parent' parameter is mandatory."); }
+        	if (typeof parent === "object" && parent.hasOwnProperty("data")) {
         		if (typeof parent.data === "object") { parent = parent.data.id; }
         	}
-            var str = this.swf().getNodes(parent);
-            return this._parseJSON(str);
+        	var str = this.swf().getChildNodes(parent);
+        	return this._parseJSON(str);
+        },
+        
+        /**
+         * <p>Get only the compound nodes from the network, if there is any.</p>
+         * @return {Array} List of {@link org.cytoscapeweb.Node} objects that contain one or more child nodes.
+         * @see org.cytoscapeweb.Visualization#edges
+         * @see org.cytoscapeweb.Visualization#nodes
+         * @see org.cytoscapeweb.Visualization#childNodes
+         * @see org.cytoscapeweb.Visualization#node
+         */
+        parentNodes: function () {
+        	var str = this.swf().getParentNodes();
+        	return this._parseJSON(str);
         },
 
         /**
@@ -1821,7 +1853,7 @@
                     "quality", "high",
                     "bgcolor", "#ffffff",
                     "name", this.id,
-                    "allowScriptAccess","sameDomain",
+                    "allowScriptAccess","always",
                     "type", "application/x-shockwave-flash",
                     "pluginspage", "http://www.adobe.com/go/getflashplayer"
                 );
