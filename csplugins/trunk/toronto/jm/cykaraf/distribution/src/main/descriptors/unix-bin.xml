@@ -9,7 +9,7 @@
         <!-- Expanded Karaf Standard Distribution -->
         <fileSet>
             <directory>target/dependencies/apache-karaf-${karaf.version}</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/framework</outputDirectory>
             <excludes>
                 <exclude>**/demos/**</exclude>
                 <exclude>bin/**</exclude>
@@ -29,35 +29,43 @@
         <!-- Copy over bin/* separately to get the correct file mode -->
         <fileSet>
             <directory>target/dependencies/apache-karaf-${karaf.version}</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/framework</outputDirectory>
             <includes>
+                <!--
                 <include>bin/admin</include>
-                <include>bin/karaf</include>
                 <include>bin/start</include>
                 <include>bin/stop</include>
+                -->
+                <include>bin/karaf</include>
             </includes>
             <fileMode>0755</fileMode>
         </fileSet>
 
-        <!-- Copy over jar files -->
-        <!--
         <fileSet>
-            <directory>target/dependencies</directory>
+            <directory>src/main/bin</directory>
+            <outputDirectory>/</outputDirectory>
             <includes>
-                <include>my-custom.jar</include>
+                <include>cytoscape.sh</include>
             </includes>
-            <outputDirectory>/lib/</outputDirectory>
+            <fileMode>0755</fileMode>
         </fileSet>
-        -->
+
+        <fileSet>
+            <directory>target/dependencies/splash-launcher/images</directory>
+            <includes>
+                <include>CytoscapeSplashScreen.png</include>
+            </includes>
+            <outputDirectory>/framework</outputDirectory>
+        </fileSet>
 
         <fileSet>
             <directory>src/main/distribution</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/framework</outputDirectory>
             <fileMode>0644</fileMode>
         </fileSet>
         <fileSet>
             <directory>target/classes/etc</directory>
-            <outputDirectory>/etc/</outputDirectory>
+            <outputDirectory>/framework/etc/</outputDirectory>
             <lineEnding>unix</lineEnding>
             <fileMode>0644</fileMode>
             <excludes>
@@ -67,7 +75,7 @@
 
         <fileSet>
             <directory>target/features-repo</directory>
-            <outputDirectory>/system</outputDirectory>
+            <outputDirectory>/framework/system</outputDirectory>
         </fileSet>
 
     </fileSets>

@@ -89,6 +89,24 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>unpack-splash-launcher</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+ 							<artifactItems>
+ 								<artifactItem>
+										<groupId>org.cytoscape.gui-distribution</groupId>
+										<artifactId>splash-launcher</artifactId>
+										<version>${project.version}</version>
+										<type>jar</type>
+										<outputDirectory>target/dependencies/splash-launcher</outputDirectory>
+ 								</artifactItem>
+ 							</artifactItems>
+						</configuration>
+					</execution>
+					<execution>
 						<!-- Uncompress the standard Karaf distribution -->
 						<id>unpack</id>
 						<phase>generate-resources</phase>
