@@ -52,6 +52,7 @@ import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 
 import clusterMaker.ClusterMaker;
+import clusterMaker.algorithms.AbstractClusterAlgorithm;
 import clusterMaker.algorithms.attributeClusterers.silhouette.SilhouetteResult;
 import clusterMaker.algorithms.attributeClusterers.silhouette.SilhouetteUtil;
 
@@ -80,6 +81,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 	protected boolean selectedOnly = false;
 	protected boolean zeroMissing = false;
 	protected boolean useSilhouette = false;
+	protected AbstractClusterAlgorithm clusterAlgorithm = null;
 
 	public Matrix getMatrix() { return matrix; }
 	public DistanceMetric getMetric() { return metric; }
@@ -92,6 +94,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 	public void setDebug(boolean val) { debug = val; }
 	public void setUseSilhouette(boolean val) { useSilhouette = val; }
 	public void setKMax(int val) { kMax = val; }
+	public void setClusterInterface(AbstractClusterAlgorithm alg) { clusterAlgorithm = alg; }
 
 	/**
  	 * This method is called by all of the attribute cluster algorithms to update the
@@ -329,9 +332,11 @@ public abstract class AbstractAttributeClusterAlgorithm {
 
 			int nThreads = Runtime.getRuntime().availableProcessors()-1;
 			if (nThreads > 1)
-				runThreadedSilhouette(kMax, nIterations, nThreads);
+				runThreadedSilhouette(kMax, nIterations, nThreads, saveMonitor);
 			else
-				runLinearSilhouette(kMax, nIterations);
+				runLinearSilhouette(kMax, nIterations, saveMonitor);
+
+			if (halted()) return "Halted by user";
 
 			// Now get the results and find our best k
 			double maxSil = Double.MIN_VALUE;
@@ -348,8 +353,12 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		}
 
 		int[] clusters = new int[matrix.nRows()];
+
+		if (halted()) return "Halted by user";
+
 		// Cluster
 		int ifound = kcluster(nClusters, nIterations, matrix, metric, clusters);
+		if (halted()) return "Halted by user";
 
 		// OK, now run our silhouette on our final result
 		SilhouetteResult sResult = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
@@ -412,7 +421,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		}
 	}
 
-	private void runThreadedSilhouette(int kMax, int nIterations, int nThreads) {
+	private void runThreadedSilhouette(int kMax, int nIterations, int nThreads, TaskMonitor saveMonitor) {
 		// Set up the thread pools
 		ExecutorService[] threadPools = new ExecutorService[nThreads];
 		for (int pool = 0; pool < threadPools.length; pool++)
@@ -421,7 +430,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		// Dispatch a kmeans calculation to each pool
 		for (int kEstimate = 2; kEstimate < kMax; kEstimate++) {
 			int[] clusters = new int[matrix.nRows()];
-			Runnable r = new RunKMeans(matrix, clusters, kEstimate, nIterations);
+			Runnable r = new RunKMeans(matrix, clusters, kEstimate, nIterations, saveMonitor);
 			threadPools[(kEstimate-2)%nThreads].submit(r);
 			// threadPools[0].submit(r);
 		}
@@ -435,12 +444,20 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		}
 	}
 
-	private void runLinearSilhouette(int kMax, int nIterations) {
+	private void runLinearSilhouette(int kMax, int nIterations, TaskMonitor saveMonitor) {
 		for (int kEstimate = 2; kEstimate < kMax; kEstimate++) {
 			int[] clusters = new int[matrix.nRows()];
+			if (halted()) return;
+			if (saveMonitor != null) saveMonitor.setStatus("Getting silhouette with a k estimate of "+kEstimate);
 			int ifound = kcluster(kEstimate, nIterations, matrix, metric, clusters);
 			silhouetteResults[kEstimate] = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
 		}
+	}
+
+	private boolean halted() {
+		if (clusterAlgorithm != null)
+			return clusterAlgorithm.halted();
+		return false;
 	}
 
 	private class RunKMeans implements Runnable {
@@ -448,16 +465,20 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		int[] clusters;
 		int kEstimate;
 		int nIterations;
+		TaskMonitor saveMonitor = null;
 
-		public RunKMeans (Matrix matrix, int[] clusters, int k, int nIterations) {
+		public RunKMeans (Matrix matrix, int[] clusters, int k, int nIterations, TaskMonitor saveMonitor) {
 			this.matrix = matrix;
 			this.clusters = clusters;
 			this.kEstimate = k;
 			this.nIterations = nIterations;
+			this.saveMonitor = saveMonitor;
 		}
 
 		public void run() {
 			int[] clusters = new int[matrix.nRows()];
+			if (halted()) return;
+			if (saveMonitor != null) saveMonitor.setStatus("Getting silhouette with a k estimate of "+kEstimate);
 			int ifound = kcluster(kEstimate, nIterations, matrix, metric, clusters);
 			try {
 				silhouetteResults[kEstimate] = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);

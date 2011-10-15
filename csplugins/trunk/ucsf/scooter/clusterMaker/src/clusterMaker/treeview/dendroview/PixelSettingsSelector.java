@@ -123,6 +123,7 @@ public class PixelSettingsSelector extends JPanel implements SettingsPanel {
 
 			// color stuff...
 			gbc.gridy += 1;
+			gbc.gridx = 0;
 			add(new JLabel("Colors:"), gbc);
 			JPanel temp2 = new JPanel();
 			temp2.setBorder(border);
@@ -132,7 +133,10 @@ public class PixelSettingsSelector extends JPanel implements SettingsPanel {
 			temp2.add(colorExtractorEditor);
 			temp2.add(new CEEButtons());
 			colorPresetsPanel = new ColorPresetsPanel();
-			temp2.add(new JScrollPane(colorPresetsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS));
+			// temp2.add(colorPresetsPanel);
+			JScrollPane colorScrollPane = new JScrollPane(colorPresetsPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			colorScrollPane.setMinimumSize(new Dimension(100,60));
+			temp2.add(colorScrollPane);
 			gbc.gridx = 1;
 			add(temp2, gbc);
 		}
@@ -399,9 +403,11 @@ public class PixelSettingsSelector extends JPanel implements SettingsPanel {
 		ColorPresetsPanel() {
 			redoLayout();
 		}
+		// TODO: Need to use a layout smarter than simple JPanel
 		public void redoLayout() {
 			removeAll();
 			int nPresets = m_presets.getNumPresets();
+			// setLayout(new GridLayout((nPresets/4)+1, 4));
 			JButton [] buttons = new JButton[nPresets];
 			for (int i = 0; i < nPresets; i++) {
 				JButton presetButton = new JButton((m_presets.getPresetNames()) [i]);

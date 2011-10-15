@@ -104,10 +104,16 @@ public class ColorPresets implements ConfigNodePersistent {
 	public static ColorSet[] defaultColorSets;
 
 	static {
-		defaultColorSets = new ColorSet[2];
-		defaultColorSets[0] = new ColorSet("RedGreen", "#FF0000", "#000000", "#00FF00", "#909090", "#FFFFFF");
-		defaultColorSets[1] = new ColorSet("YellowCyan",
-				"#FEFF00", "#000000", "#1BB7E5", "#909090", "#FFFFFF");
+		defaultColorSets = new ColorSet[7];
+		defaultColorSets[0] = new ColorSet("RedYellow", "#FF0000", "#000000", "#FEFF00", "#909090", "#FFFFFF");
+		defaultColorSets[1] = new ColorSet("YellowCyan", "#FEFF00", "#000000", "#1BB7E5", "#909090", "#FFFFFF");
+		defaultColorSets[2] = new ColorSet("YellowPurple", "#FEFF00", "#000000", "#CC00CC", "#909090", "#FFFFFF");
+		defaultColorSets[3] = new ColorSet("GreenPurple", "#00FF00", "#000000", "#CC00CC", "#909090", "#FFFFFF");
+		defaultColorSets[4] = new ColorSet("YellowBlue", "#FEFF00", "#000000", "#0000FF", "#909090", "#FFFFFF");
+		defaultColorSets[5] = new ColorSet("OrangeBlue", "#FF7F00", "#000000", "#0000FF", "#909090", "#FFFFFF");
+		defaultColorSets[6] = new ColorSet("RedGreen", "#FF0000", "#000000", "#00FF00", "#909090", "#FFFFFF");
+		// defaultColorSets[7] = new ColorSet("OrangePurple", "#FF7F00", "#000000", "#CC00CC", "#909090", "#FFFFFF");
+		// defaultColorSets[8] = new ColorSet("YellowGreen", "#FEFF00", "#000000", "#00FF00", "#909090", "#FFFFFF");
 	}
 
 

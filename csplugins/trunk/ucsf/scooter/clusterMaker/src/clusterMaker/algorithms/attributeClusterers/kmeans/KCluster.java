@@ -181,6 +181,8 @@ public class KCluster extends AbstractAttributeClusterAlgorithm {
 		if (monitor != null)
 			monitor.setPercentCompleted(0);
 
+		// System.out.println("RUnning kmeans with "+nClusters+" clusters");
+
 		random = null;
 		int nelements = matrix.nRows();
 		int ifound = 1;

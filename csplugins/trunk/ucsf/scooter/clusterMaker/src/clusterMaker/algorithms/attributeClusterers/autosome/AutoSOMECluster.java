@@ -206,18 +206,19 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		clusterProperties.add(new Tunable("pvalueThresh",
 						  "P-Value Threshold",
 						  Tunable.DOUBLE, new Double(0.05),
-						  new Integer(0), new Integer(1), 0));
+						  new Double(0), new Double(1), 0));
 
 		// Number of iterations
 		clusterProperties.add(new Tunable("numThreads",
 						  "Number of Threads (No. CPUs)",
 						  Tunable.INTEGER, new Integer(Runtime.getRuntime().availableProcessors()),
 						  new Integer(1), (Object)null, 0));
+	      
 
 		//normalization tunables
 		clusterProperties.add(new Tunable("tunables_panel2",
 						  "Data Normalization",
-						  Tunable.GROUP, new Integer(5), new Boolean(true), null, Tunable.COLLAPSABLE));
+						  Tunable.GROUP, new Integer(6), new Boolean(true), null, Tunable.COLLAPSABLE));
 
 		Tunable norm_mode = new Tunable("norm_mode",
 						  "Normalization mode",
@@ -226,6 +227,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 
 		norm_mode.addTunableValueListener(this);
 		clusterProperties.add(norm_mode);
+
 		logscaling = new Tunable("logScaling",
 						  "Log2 Scaling",
 						  Tunable.BOOLEAN, new Boolean(false));
@@ -247,6 +249,12 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 						  Tunable.LIST, 0,
 						  new Object[]{"None", "Genes", "Arrays", "Both"}, (Object)null, 0);
 		clusterProperties.add(sumSqr);
+
+		fillMV = new Tunable("fillMV", "Missing value handling",
+						  Tunable.LIST, 0,
+						  new Object[]{"Row Mean", "Row Median", "Column Mean", "Column Median"}, (Object)null, 0);
+		if (ignoreMissing) fillMV.setImmutable(true);
+		clusterProperties.add(fillMV);
 
 
 		//fuzzy clustering tunables
@@ -288,12 +296,6 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		// 				  new Boolean(false), null, Tunable.COLLAPSABLE));
 
 		
-		fillMV = new Tunable("fillMV", "Missing value handling",
-						  Tunable.LIST, 0,
-						  new Object[]{"Row Mean", "Row Median", "Column Mean", "Column Median"}, (Object)null, 0);
-		if (ignoreMissing) fillMV.setImmutable(true);
-		clusterProperties.add(fillMV);
-	      
 	  //output tunables
 	  clusterProperties.add(new Tunable("tunables_panel4",
 	                                    "Data Output",

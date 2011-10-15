@@ -122,6 +122,8 @@ public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 
 	public void halt() { canceled = true; }
 
+	public boolean halted() { return canceled; }
+
 	public ClusterResults getResults() { return results; }
 
 	public PropertyChangeSupport getPropertyChangeSupport() {return pcs;}

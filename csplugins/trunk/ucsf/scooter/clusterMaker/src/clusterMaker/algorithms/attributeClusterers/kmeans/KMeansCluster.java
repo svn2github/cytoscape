@@ -193,7 +193,8 @@ public class KMeansCluster extends AbstractAttributeClusterer {
 		this.monitor = monitor;
 		// Sanity check all of our settings
 		if (debug)
-			logger.debug("Performing k-means cluster with k="+kNumber+" using "+distanceMetric+" and attributes: "+dataAttributes);
+			logger.debug("Performing k-means cluster with k="+kNumber+" using "+
+			             distanceMetric+" and attributes: "+dataAttributes);
 
 		if (dataAttributes == null || dataAttributes.length() == 0) {
 			if (monitor != null) {
@@ -216,6 +217,7 @@ public class KMeansCluster extends AbstractAttributeClusterer {
 		algorithm.setDebug(debug);
 		algorithm.setUseSilhouette(useSilhouette);
 		algorithm.setKMax(kMax);
+		algorithm.setClusterInterface(this);
 
 		String resultsString = "K-Means results:";
 

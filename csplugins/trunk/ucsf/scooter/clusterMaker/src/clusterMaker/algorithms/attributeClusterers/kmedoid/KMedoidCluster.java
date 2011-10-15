@@ -216,6 +216,7 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 		algorithm.setDebug(debug);
 		algorithm.setUseSilhouette(useSilhouette);
 		algorithm.setKMax(kMax);
+		algorithm.setClusterInterface(this);
 
 		String resultsString = "K-Medoid results:";
 

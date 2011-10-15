@@ -168,7 +168,7 @@ public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorith
 	}
 
 	public void tunableChanged(Tunable t) {
-		System.out.println("Tunable changed");
+		// System.out.println("Tunable changed");
 		if (t.getName().equals("useSilhouette")) {
 			useSilhouette = ((Boolean) t.getValue()).booleanValue();
 			if (useSilhouette) {
