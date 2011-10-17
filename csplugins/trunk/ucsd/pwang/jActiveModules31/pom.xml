@@ -69,6 +69,12 @@
 			<groupId>org.cytoscape</groupId>
 			<artifactId>service-api</artifactId>
 		</dependency>
+				<dependency>
+			<groupId>org.cytoscape.wrappers</groupId>
+			<artifactId>org.swinglabs.swing-layout</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+		
 	</dependencies>
 	
 	<repositories>
