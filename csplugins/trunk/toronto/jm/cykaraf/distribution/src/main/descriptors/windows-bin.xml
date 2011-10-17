@@ -2,13 +2,13 @@
     <id></id>
 
     <formats>
-        <format>tar.gz</format>
+        <format>zip</format>
     </formats>
 
     <fileSets>
         <!-- Expanded Karaf Standard Distribution -->
         <fileSet>
-            <directory>target/dependencies/unix/apache-karaf-${karaf.version}</directory>
+            <directory>target/dependencies/windows/apache-karaf-${karaf.version}</directory>
             <outputDirectory>/framework</outputDirectory>
             <excludes>
                 <exclude>**/demos/**</exclude>
@@ -30,10 +30,10 @@
 
         <!-- Copy over bin/* separately to get the correct file mode -->
         <fileSet>
-            <directory>target/dependencies/unix/apache-karaf-${karaf.version}</directory>
+            <directory>target/dependencies/windows/apache-karaf-${karaf.version}</directory>
             <outputDirectory>/framework</outputDirectory>
             <includes>
-                <include>bin/karaf</include>
+                <include>bin/karaf.bat</include>
             </includes>
             <fileMode>0755</fileMode>
         </fileSet>
@@ -41,10 +41,11 @@
         <fileSet>
             <directory>src/main/bin</directory>
             <outputDirectory>/</outputDirectory>
-            <lineEnding>unix</lineEnding>
+            <lineEnding>dos</lineEnding>
             <fileMode>0755</fileMode>
             <includes>
                 <include>cytoscape.sh</include>
+                <include>cytoscape.bat</include>
             </includes>
         </fileSet>
 
@@ -72,7 +73,7 @@
         <fileSet>
             <directory>target/classes/etc</directory>
             <outputDirectory>/framework/etc/</outputDirectory>
-            <lineEnding>unix</lineEnding>
+            <lineEnding>dos</lineEnding>
             <fileMode>0644</fileMode>
             <excludes>
                 <exclude>**/*.formatted</exclude>

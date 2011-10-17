@@ -26,6 +26,12 @@
 			<type>tar.gz</type>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.karaf</groupId>
+			<artifactId>apache-karaf</artifactId>
+			<version>${karaf.version}</version>
+			<type>zip</type>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.karaf.assemblies.features</groupId>
 			<artifactId>standard</artifactId>
 			<version>${karaf.version}</version>
@@ -95,6 +101,24 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>copy-dependencies</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+ 							<artifactItems>
+ 								<artifactItem>
+									<groupId>org.cytoscape</groupId>
+									<artifactId>branding</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<outputDirectory>target/dependencies/branding</outputDirectory>
+ 								</artifactItem>
+ 							</artifactItems>
+						</configuration>
+					</execution>
+					<execution>
 						<id>unpack-splash-launcher</id>
 						<phase>generate-resources</phase>
 						<goals>
@@ -103,18 +127,17 @@
 						<configuration>
  							<artifactItems>
  								<artifactItem>
-										<groupId>org.cytoscape.gui-distribution</groupId>
-										<artifactId>splash-launcher</artifactId>
-										<version>${project.version}</version>
-										<type>jar</type>
-										<outputDirectory>target/dependencies/splash-launcher</outputDirectory>
+									<groupId>org.cytoscape.gui-distribution</groupId>
+									<artifactId>splash-launcher</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<outputDirectory>target/dependencies/splash-launcher</outputDirectory>
  								</artifactItem>
  							</artifactItems>
 						</configuration>
 					</execution>
 					<execution>
-						<!-- Uncompress the standard Karaf distribution -->
-						<id>unpack</id>
+						<id>unpack-unix</id>
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>unpack</goal>
@@ -125,7 +148,24 @@
 									<groupId>org.apache.karaf</groupId>
 									<artifactId>apache-karaf</artifactId>
 									<type>tar.gz</type>
-									<outputDirectory>target/dependencies</outputDirectory>
+									<outputDirectory>target/dependencies/unix</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+					<execution>
+						<id>unpack-windows</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.apache.karaf</groupId>
+									<artifactId>apache-karaf</artifactId>
+									<type>zip</type>
+									<outputDirectory>target/dependencies/windows</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
@@ -148,6 +188,19 @@
 							</descriptors>
 							<finalName>${project.artifactId}-${project.version}</finalName>
 							<tarLongFileMode>gnu</tarLongFileMode>
+						</configuration>
+					</execution>
+					<execution>
+						<id>windows-bin</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/descriptors/windows-bin.xml</descriptor>
+							</descriptors>
+							<finalName>${project.artifactId}-${project.version}</finalName>
 						</configuration>
 					</execution>
 				</executions>
