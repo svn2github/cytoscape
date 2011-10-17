@@ -2,6 +2,5 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Bundle-Activator: ${bundle.namespace}.CyActivator
-Private-Package: ${bundle.namespace}.*
-Export-Package: !${bundle.namespace}.*,${bundle.namespace}.*;version="${pom.version}"
+Import-Package: *
+Bundle-Activator: csplugins.jActiveModules.CyActivator
