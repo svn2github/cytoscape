@@ -2580,6 +2580,22 @@
      *         <li><code>breadthSpace</code> {Number}: The space between siblings in the tree.</li>
      *         <li><code>subtreeSpace</code> {Number}: The space between different sub-trees.</li>
      *     </ul>
+     * <li><b>CompoundSpringEmbedder:</b></li>
+     *     <ul class="options">
+     *         <li><code>layoutQuality</code> {String}: Can be one of the following: <code>"default"</code>, <code>"draft"</code>, <code>"proof"</code>. A better quality layout requires more iterations, taking longer.</li>
+     *         <li><code>incremental</code> {Boolean}: If <code>true</code>, layout is applied incrementally by taking current positions of nodes into account.</li>
+     *         <li><code>tension</code> {Number}: The default spring tension (spring constant) for edges.</li>
+     *         <li><code>restLength</code> {Number}: The default spring rest length (desired length) for edges.</li>
+     *         <li><code>smartRestLength</code> {Boolean}: Whether or not smart calculation of ideal rest length should be performed for inter-graph edges. When this is enabled, we calculate the number of nesting levels each edge spans and calculate the desired edge length accordingly.</li>
+     *         <li><code>gravitation</code> {Number}: The gravitational attraction (or repulsion, for negative values) force between nodes.</li>
+     *         <li><code>smartDistance</code> {Boolean}: If <code>true</code>, gravitational repulsion forces are calculated only when node pairs are in a certain range, resulting in faster layout at the relatively minimal cost of layout quality.</li>
+     *         <li><code>centralGravitation</code> {Number}: All nodes are assumed to be pulled slightly towards the center of the network by a central gravitational force (gravitational constant) during layout. This is done to avoid arbitrary separation of disconnected parts of a network.</li>
+     *         <li><code>centralGravityDistance</code> {Number}: The radius of the region in the center of the drawing, in which central gravitation is not exerted.</li>
+     *         <li><code>compoundCentralGravitation</code> {Number}: The central gravitational constant for compound nodes. Contents of each compound node have a separate center of gravity.</li>
+     *         <li><code>compoundCentralGravityDistance</code> {Number}: The radius of the region in the center of a compound node, over which central gravity force is exerted.</li>
+     *         <li><code>multiLevelScaling</code> {Boolean}: If <code>true</code>, multi-level scaling algorithm is applied both to better capture the overall structure of the network and to save time on large networks.</li>
+     *         <li><code>uniformLeafNodeSizes</code> {Boolean}: If <code>true</code>, leaf (non-compound or simple) node dimensions are assumed to be uniform, resulting in faster layout.</li>
+     *     </ul>
      * <li><b>Preset:</b></li>
      *     <ul class="options">
      *         <li><code>fitToScreen</code> {Boolean}: If <code>true</code>, the network is centered, and can be zoomed out to fit the screen.</li>
