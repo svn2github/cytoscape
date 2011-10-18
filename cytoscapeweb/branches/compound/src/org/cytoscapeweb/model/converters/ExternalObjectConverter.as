@@ -311,6 +311,7 @@ package org.cytoscapeweb.model.converters {
                 // Common Visual properties:
                 obj.opacity = ds.alpha;
                 obj.visible = ds.visible;
+                obj.zIndex = ds.parent != null ? ds.parent.getChildIndex(ds) : -1;
                 
                 if (ds is CompoundNodeSprite) {
                     n = ds as CompoundNodeSprite;
@@ -332,7 +333,6 @@ package org.cytoscapeweb.model.converters {
                     p = getGlobalCoordinate(n);
                     obj.x = p.x;
                     obj.y = p.y;
-                    
                     obj.rawX = p.x / zoom;
                     obj.rawY = p.y / zoom;
                 } else {

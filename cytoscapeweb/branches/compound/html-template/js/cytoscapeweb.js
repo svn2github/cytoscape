@@ -2355,6 +2355,13 @@
      * @type Number
      * @memberOf org.cytoscapeweb.Node#
      */
+    /**
+     * The stacking order of the element.
+     * @property
+     * @name zIndex
+     * @type Number
+     * @memberOf org.cytoscapeweb.Node#
+     */
     
      // ===[ Edge ]=================================================================================
     
@@ -2491,6 +2498,13 @@
      * @property
      * @name visible
      * @type Boolean
+     * @memberOf org.cytoscapeweb.Edge#
+     */
+    /**
+     * The stacking order of the element.
+     * @property
+     * @name zIndex
+     * @type Number
      * @memberOf org.cytoscapeweb.Edge#
      */
      
@@ -2699,7 +2713,9 @@
      * <p>An object that defines visual styles for nodes.</p>
      * <p>The possible node properties are as follows.  Each property can be prefixed by "compound"
      * and the first letter of the term is correspondingly capitalized (e.g. "color" becomes "compoundColor") for compound nodes.</p>
-     * <ul class="options"><li><code>shape</code> {{@link org.cytoscapeweb.NodeShape}}: Node shape name. The default value is "ELLIPSE".</li>
+     * <ul class="options">
+     *     <li><code>shape</code> {{@link org.cytoscapeweb.NodeShape}}: Node shape name. The default value for regular nodes is <code>"ELLIPSE"</code>.
+     *         Compound nodes can only be <code>"RECTANGLE"</code> or <code>"ROUNDRECT"</code>, and the former is the default <code>compoundShape</code>.</li>
      *     <li><code>size</code> {Number}: Node size, in pixels.
      *                                     It has the same effect of setting the same value (or mapper) to both <code>width</code> and <code>height</code>.
      *                                     The default value is 24.</li>

@@ -31,7 +31,7 @@
                         compoundShape: "ROUND_RECTANGLE",
                         color: { defaultValue: "#cccccc", continuousMapper: { attrName: "weight", minValue: "#ffffff", maxValue: "#0b94b1" } },
                         opacity: 0.9,
-                        //size: "auto",//{ defaultValue: 20, continuousMapper: { attrName: "weight",  minValue: 20, maxValue: 40 } },
+                        size: { defaultValue: 20, continuousMapper: { attrName: "weight",  minValue: 20, maxValue: 40 } },
                         borderWidth: 2,
                         borderColor: "#707070",
                         image: "http://chart.apis.google.com/chart?chs=300x300&cht=p&chd=e0:U-gh..bR",
@@ -112,7 +112,7 @@
                 $("input").attr("disabled", true);
 
                 // init and draw
-                vis = new org.cytoscapeweb.Visualization(div_id, options);
+                vis = new org.cytoscapeweb.Visualization(div_id);
                 
                 vis.ready(function() {
                     showElapsedTime();
@@ -142,7 +142,9 @@
                             x += Math.random() * (evt.target.width/2) * (Math.round(x)%2==0 ? 1 : -1);
                             y += Math.random() * (evt.target.height/2) * (Math.round(y)%2==0 ? 1 : -1);
                         }
-                        var n = vis.addNode(x, y, { weight: Math.random(), label: "NEW", parent: parentId }, true);
+                        var n = vis.addNode(x, y, { weight: Math.random(), parent: parentId }, true);
+                        n.data.label = n.data.id;
+                        vis.updateData([n]);
                     })
                     .addContextMenuItem("Add new edge", "nodes", function(evt) {
                     	_srcId = evt.target.data.id;

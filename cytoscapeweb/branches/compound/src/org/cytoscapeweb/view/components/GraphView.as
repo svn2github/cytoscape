@@ -286,13 +286,9 @@ package org.cytoscapeweb.view.components {
             }
         }
         
-        public function resetNode(n:NodeSprite):void
-		{
-            if (n != null)
-			{
-				if (n is CompoundNodeSprite &&
-					(n as CompoundNodeSprite).isInitialized())
-				{
+        public function resetNode(n:NodeSprite):void {
+            if (n != null) {
+				if (n is CompoundNodeSprite && (n as CompoundNodeSprite).isInitialized()) {
 					n.size = CompoundNodes.size(n);
 					n.fillColor = CompoundNodes.fillColor(n);
 					n.lineWidth = CompoundNodes.lineWidth(n);
@@ -300,9 +296,7 @@ package org.cytoscapeweb.view.components {
 					n.alpha = CompoundNodes.alpha(n);
 					n.shape = CompoundNodes.shape(n);
 					n.filters = CompoundNodes.filters(n);
-				}
-				else
-				{
+				} else {
 	                n.size = Nodes.size(n);
 	                n.fillColor = Nodes.fillColor(n);
 	                n.lineWidth = Nodes.lineWidth(n);
@@ -312,8 +306,7 @@ package org.cytoscapeweb.view.components {
 	                n.filters = Nodes.filters(n);
 				}
 				
-				if (n.props.label != null)
-				{
+				if (n.props.label != null) {
 					n.props.label.alpha = n.alpha;
 				}
             }
@@ -363,11 +356,9 @@ package org.cytoscapeweb.view.components {
             }
         }
         
-        public function bringToFront(ds:DataSprite):void
-		{
+        public function bringToFront(ds:DataSprite):void {
             // Bring the node to front, too:
 			GraphUtils.bringToFront(ds);
-			
             // Do not forget the node's label!
             GraphUtils.bringToFront(ds.props.label);
         }
@@ -387,21 +378,15 @@ package org.cytoscapeweb.view.components {
 		
         // ========[ PRIVATE METHODS ]==============================================================
 		
-		private function highlightSelectedNode(n:NodeSprite):void
-		{
-            if (n != null)
-			{
-				if (n is CompoundNodeSprite &&
-					(n as CompoundNodeSprite).isInitialized())
-				{
+		private function highlightSelectedNode(n:NodeSprite):void {
+            if (n != null) {
+				if (n is CompoundNodeSprite && (n as CompoundNodeSprite).isInitialized()) {
 					n.fillColor = CompoundNodes.fillColor(n);
 	                n.lineWidth = CompoundNodes.selectionLineWidth(n);
 	                n.lineColor = CompoundNodes.lineColor(n);
 	                n.alpha = CompoundNodes.selectionAlpha(n);
 	                n.filters = CompoundNodes.filters(n, true);
-				}
-				else
-				{
+				} else {
 					n.fillColor = Nodes.fillColor(n);
 					n.lineWidth = Nodes.selectionLineWidth(n);
 					n.lineColor = Nodes.lineColor(n);
@@ -409,8 +394,7 @@ package org.cytoscapeweb.view.components {
 					n.filters = Nodes.filters(n, true);
 				}
 				
-				if (n.props.label != null)
-				{
+				if (n.props.label != null) {
 					n.props.label.alpha = n.alpha;
 				}
             }

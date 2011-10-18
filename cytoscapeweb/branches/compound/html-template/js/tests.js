@@ -1340,7 +1340,7 @@ function runGraphTests(moduleName, vis, options) {
     	var parents = vis.parentNodes();
     	
     	same(xml[0].tagName.toLowerCase(), "graphml", "<graphml> tag");
-    	same(xml.find("graph").length, parents.length + 1, "<graph> tag");
+    	same(xml.find("node > graph").length, parents.length, "<graph> tag");
     	same(xml.find("key").length, (schema.nodes.length + schema.edges.length - ignoredFields), "Number <key> tags");
     	same(xml.find("node").length, nodes.length, "Number of nodes");
     	same(xml.find("edge").length, edges.length, "Number of edges");

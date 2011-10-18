@@ -83,55 +83,31 @@ package org.cytoscapeweb.util {
 		 * 
 		 * @param d		DisplayObject to bring to front 
 		 */ 
-		public static function bringToFront(d:DisplayObject):void
-		{
-			if (d != null)
-			{
-				if (d is CompoundNodeSprite)
-				{
+		public static function bringToFront(d:DisplayObject):void {
+			if (d != null) {
+				if (d is CompoundNodeSprite) {
 					var cns:CompoundNodeSprite = d as CompoundNodeSprite;
 					
 					// bring the compound node sprite as well as all its
 					// children and the edges inside the compound to the front.
-					
 					GraphUtils.toFront(cns);
 					
-					if (cns.isInitialized() &&
-						!cns.allChildrenInvisible())
-					{
-						for each (var ns:NodeSprite in cns.getNodes())
-						{
+					if (cns.isInitialized() && !cns.allChildrenInvisible()) {
+						for each (var ns:NodeSprite in cns.getNodes()) {
 							GraphUtils.toFront(ns);
 							
-							if (ns is CompoundNodeSprite)
-							{
-								GraphUtils.bringToFront(
-									ns as CompoundNodeSprite);
+							if (ns is CompoundNodeSprite) {
+								GraphUtils.bringToFront(ns as CompoundNodeSprite);
 							}
 							
 							ns.visitEdges(toFront);
 						}
 					}
-				}
-				else
-				{
+				} else {
 					GraphUtils.toFront(d);
 				}
 			}
 		}
-		
-		/*
-        public static function isFilteredOut(ds:DataSprite):Boolean {
-            var b:Boolean = ds.props.$filteredOut;
-            
-            if (ds is EdgeSprite) {
-                var e:EdgeSprite = EdgeSprite(ds);
-                b = b || e.source.props.$filteredOut || e.target.props.$filteredOut;
-            }
-            
-            return b;
-        }
-        */
 		
 		/**
 		 * If the given data sprite is filtered out, returns true. If a 
@@ -387,29 +363,19 @@ package org.cytoscapeweb.util {
                             return false;
                         });
 						
-						if (node is CompoundNodeSprite)
-						{
-							var cns:CompoundNodeSprite =
-								node as CompoundNodeSprite;
+						if (node is CompoundNodeSprite) {
+							var cns:CompoundNodeSprite = node as CompoundNodeSprite;
 							
 							// include all non-visited children
-							
-							for each (var child:NodeSprite in
-								CompoundNodes.getChildren(cns))
-							{
-								if (!visited[child])
-								{
+							for each (var child:NodeSprite in CompoundNodes.getChildren(cns)) {
+								if (!visited[child]) {
 									toVisit.push(child);
 								}
 							}
 							
 							// include all non-visited parents
-							
-							for each (var parent:NodeSprite in
-								CompoundNodes.getParents(cns))
-							{
-								if (!visited[parent])
-								{
+							for each (var parent:NodeSprite in CompoundNodes.getParents(cns)) {
+								if (!visited[parent]) {
 									toVisit.push(parent);
 								}
 							}

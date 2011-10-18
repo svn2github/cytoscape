@@ -269,8 +269,8 @@ package org.cytoscapeweb.model.converters {
             
             // NODES
             var props:Array = ["data","shape","borderColor","borderWidth","opacity","visible","color",
-                               "x","y","rawX","rawY","size","width","height"/*, "degree", "indegree", "outdegree"*/];
-            var attrs:Array = ["id"];
+                               "x","y","rawX","rawY","size","width","height","zIndex"/*, "degree", "indegree", "outdegree"*/];
+            var attrs:Array = ["id","parent"];
             
             for each (var n:NodeSprite in data.nodes) {
                 o = ExternalObjectConverter.toExtElement(n, 1);
@@ -284,7 +284,7 @@ package org.cytoscapeweb.model.converters {
             
             // EDGES
             props = ["data","color","width","opacity","visible","sourceArrowShape","targetArrowShape",
-                     "sourceArrowColor","targetArrowColor","curvature","merged"];
+                     "sourceArrowColor","targetArrowColor","curvature","merged","zIndex"];
             attrs = ["id","source","target","directed"];
             
             for each (var e:EdgeSprite in data.edges) {
