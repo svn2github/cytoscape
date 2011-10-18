@@ -2060,6 +2060,16 @@
      *     <tr><td><code>edges</code></td><td>{@link org.cytoscapeweb.Edge}</td><td><code>undefined</code></td></tr>
      *     <tr><td><code>none</code>: double-clicking the visualization background</td><td><code>undefined</code></td><td><code>undefined</code></td></tr>
      * </Table>
+     * <p><label><strong>dragstart:</strong></label> Fired when the user starts dragging a node.</p>
+     * <table>
+     *     <tr><th>group</th><th>target</th><th>value</th></tr>
+     *     <tr><td><code>nodes</code></td><td>{@link org.cytoscapeweb.Node}</td><td><code>undefined</code></td></tr>
+     * </Table>
+     * <p><label><strong>dragstop:</strong></label> Fired when the user stops dragging a node.</p>
+     * <table>
+     *     <tr><th>group</th><th>target</th><th>value</th></tr>
+     *     <tr><td><code>nodes</code></td><td>{@link org.cytoscapeweb.Node}</td><td><code>undefined</code></td></tr>
+     * </Table>
      * <p><label><strong>mouseover:</strong></label> Fired when the user moves the mouse over an element that belongs to the <code>group</code> you registered. 
      * If you don't specify any group or if the group is <code>none</code>, the event will be fired any time the cursor enters the visualization rectangle.</p>
      * <table>
@@ -3222,8 +3232,11 @@
      * ({@link org.cytoscapeweb.Visualization#addListener}, {@link org.cytoscapeweb.Visualization#hasListener} and
      * {@link org.cytoscapeweb.Visualization#removeListener}).</p>
      * <p>Its value must be one of:</p>
-     *     <ul class="options"><li><code>click</code>:</strong> For mouse click events on nodes, edges or the visualization background.</li>
+     *     <ul class="options">
+     *         <li><code>click</code>:</strong> For mouse click events on nodes, edges or the visualization background.</li>
      *         <li><code>dblclick</code>:</strong> For double-click events on nodes, edges or the visualization background.</li>
+     *         <li><code>dragstart</code>:</strong> For drag-start events on nodes.</li>
+     *         <li><code>dragstop</code>:</strong> For drag-stop events on nodes.</li>
      *         <li><code>mouseover</code>:</strong> For mouse-over events on nodes, edges or the visualization background.</li>
      *         <li><code>mouseout</code>:</strong> For mouse-out events on nodes, edges or the visualization background.</li>
      *         <li><code>select</code>:</strong> For events dispatched after nodes or edges are selected (e.g. by direct mouse clicking or by drag-selecting).</li>
