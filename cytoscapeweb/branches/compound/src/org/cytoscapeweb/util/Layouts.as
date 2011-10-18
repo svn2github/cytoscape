@@ -86,19 +86,19 @@ package org.cytoscapeweb.util {
                 fitToScreen: true
             },
 			CompoundSpringEmbedder : {
-				layoutQuality:			 "default",	// Layout Quality
-				incremental: 			 false,	// Incremental
-				uniformLeafNodeSizes: 	 false,	// Uniform Leaf Node Sizes
-				tension:				 50,	// Spring
-				repulsion:				 50,	// Repulsion
-				smartDistance:			 true,	// Smart Range Calculation
-				gravitation:			 -50,	// Gravity
-				gravityDistance:		 50,	// Gravity Range
-				compoundGravitation:	 50,	// Compound Gravity
-				compoundGravityDistance: 50,	// Compound Gravity Range
-				restLength:				 50,	// Desired Edge Length
-				smartRestLength:		 true,	// Smart Edge Length Calculation
-				multiLevelScaling:		 false	// Multi-Level Scaling
+				layoutQuality:					"default", // Layout Quality
+				incremental:					false, // Incremental
+				uniformLeafNodeSizes:			false, // Uniform Leaf Node Sizes
+				tension:						50,	// Spring
+				gravitation:					-50, // Repulsion or Attraction
+				smartDistance:					true, // Smart Range Calculation
+				centralGravitation:				50, // Central Gravity
+				centralGravityDistance:			50, // Gravity Range
+				compoundCentralGravitation:		50, // Compound Gravity
+				compoundCentralGravityDistance: 50, // Compound Gravity Range
+				restLength:						50, // Desired Edge Length
+				smartRestLength:				true, // Smart Edge Length Calculation
+				multiLevelScaling:				false // Multi-Level Scaling
 			}
         };
         
