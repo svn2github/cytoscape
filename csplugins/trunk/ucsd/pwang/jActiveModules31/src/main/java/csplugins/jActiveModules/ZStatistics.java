@@ -4,8 +4,9 @@ package csplugins.jActiveModules;
 
 //imported packages
 import java.io.Serializable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import cytoscape.logger.CyLogger;
 
 /**
  * This code was mostly appropriated from the activeModules C++
@@ -19,6 +20,7 @@ public class ZStatistics implements Serializable{
     private double [][] zs;
     private int maxRank, hthsMax, tthsMax, onesMax;
     private int hthsMaxInd, tthsMaxInd, onesMaxInd;
+	private static final Logger logger = LoggerFactory.getLogger(ZStatistics.class);
         
     public ZStatistics(int rank){
 	//this(rank, 10,50,150);
@@ -115,7 +117,7 @@ public class ZStatistics implements Serializable{
 	    throw new RuntimeException("z-score ("+zScore+") produced an f_index (" + f_index + 
 	                               ") less than zero.");
 	if(f_index > onesMaxInd) {
-	    CyLogger.getLogger(ZStatistics.class).warn("The extremely large z-score (" + zScore + ") generated an f_index ("+
+	    logger.warn("The extremely large z-score (" + zScore + ") generated an f_index ("+
 	                       f_index+") that is too large, so using onesMaxInd instead: " + onesMaxInd );
 	    f_index = onesMaxInd;
 	}
