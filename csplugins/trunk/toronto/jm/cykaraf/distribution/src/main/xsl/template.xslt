@@ -1,14 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsl:stylesheet version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    exclude-result-prefixes="xs">
+    
+    <xsl:output indent="yes"/>
+    
+    <xsl:template match="/">
 <assembly>
     <id></id>
 
     <formats>
-        <format>tar.gz</format>
+        <format><xsl:value-of select="/config/output-format"/></format>
     </formats>
 
     <fileSets>
-        <!-- Expanded Karaf Standard Distribution -->
         <fileSet>
-            <directory>target/dependencies/unix/apache-karaf-${karaf.version}</directory>
+            <directory><xsl:value-of select="/config/karaf/distribution/@base"/></directory>
             <outputDirectory>/framework</outputDirectory>
             <excludes>
                 <exclude>**/demos/**</exclude>
@@ -29,22 +37,28 @@
         </fileSet>
 
         <!-- Copy over bin/* separately to get the correct file mode -->
-        <fileSet>
-            <directory>target/dependencies/unix/apache-karaf-${karaf.version}</directory>
-            <outputDirectory>/framework</outputDirectory>
-            <includes>
-                <include>bin/karaf</include>
-            </includes>
-            <fileMode>0755</fileMode>
-        </fileSet>
+        <xsl:for-each select="/config/karaf/distribution">
+            <fileSet>
+                <directory><xsl:value-of select="@base"/></directory>
+                <outputDirectory>/framework</outputDirectory>
+                <includes>
+                    <xsl:for-each select="scripts/script">
+                        <include><xsl:value-of select="."/></include>
+                    </xsl:for-each>
+                </includes>
+                <fileMode>0755</fileMode>
+            </fileSet>
+        </xsl:for-each>
 
         <fileSet>
             <directory>src/main/bin</directory>
             <outputDirectory>/</outputDirectory>
-            <lineEnding>unix</lineEnding>
+            <lineEnding><xsl:value-of select="/config/line-ending"/></lineEnding>
             <fileMode>0755</fileMode>
             <includes>
-                <include>cytoscape.sh</include>
+                <xsl:for-each select="/config/cytoscape/scripts/script">
+                    <include><xsl:value-of select="."/></include>
+                </xsl:for-each>
             </includes>
         </fileSet>
 
@@ -72,7 +86,7 @@
         <fileSet>
             <directory>target/classes/etc</directory>
             <outputDirectory>/framework/etc/</outputDirectory>
-            <lineEnding>unix</lineEnding>
+            <lineEnding><xsl:value-of select="/config/line-ending"/></lineEnding>
             <fileMode>0644</fileMode>
             <excludes>
                 <exclude>**/*.formatted</exclude>
@@ -80,9 +94,12 @@
         </fileSet>
 
         <fileSet>
-            <directory>target/features-repo</directory>
+            <directory><xsl:value-of select="/config/karaf/feature-repository"/></directory>
             <outputDirectory>/framework/system</outputDirectory>
         </fileSet>
 
     </fileSets>
 </assembly>
+
+</xsl:template>
+</xsl:stylesheet>

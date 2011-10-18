@@ -58,6 +58,30 @@
 		</resources>
 		<plugins>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>xml-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-descriptors</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>transform</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<transformationSets>
+						<transformationSet>
+							<dir>src/main/descriptors</dir>
+							<includes>
+								<include>config-*.xml</include>
+							</includes>
+							<stylesheet>src/main/xsl/template.xslt</stylesheet>
+						</transformationSet>
+					</transformationSets>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.5</version>
@@ -77,22 +101,38 @@
 				<version>${karaf.version}</version>
 				<executions>
 					<execution>
- 					<id>add-features-to-repo</id>
- 					<phase>generate-resources</phase>
- 					<goals>
- 						<goal>add-features-to-repo</goal>
- 					</goals>
- 					<configuration>
-							<descriptors>
-								<descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
-								<descriptor>mvn:org.cytoscape/features/${project.version}/xml/features</descriptor>
-							</descriptors>
-							<features>
-								<feature>cytoscape-gui</feature>
-							</features>
-							<includeMvnBasedDescriptors>true</includeMvnBasedDescriptors>
-							<repository>target/features-repo</repository>
- 					</configuration>
+						<id>add-features-to-repo</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>add-features-to-repo</goal>
+						</goals>
+						<configuration>
+								<descriptors>
+									<descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
+									<descriptor>mvn:org.cytoscape/features/${project.version}/xml/features</descriptor>
+								</descriptors>
+								<features>
+									<feature>cytoscape-gui</feature>
+								</features>
+								<includeMvnBasedDescriptors>true</includeMvnBasedDescriptors>
+								<repository>target/features-repo</repository>
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-features-to-repo-dev</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>add-features-to-repo</goal>
+						</goals>
+						<configuration>
+								<descriptors>
+									<descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
+									<descriptor>mvn:org.cytoscape/features/${project.version}/xml/features</descriptor>
+								</descriptors>
+								<features/>
+								<includeMvnBasedDescriptors>true</includeMvnBasedDescriptors>
+								<repository>target/features-repo-dev</repository>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -177,6 +217,20 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>directory</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>directory-single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>target/generated-resources/xml/xslt/config-dev.xml</descriptor>
+							</descriptors>
+							<finalName>${project.artifactId}-${project.version}</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+						</configuration>
+					</execution>
+					<execution>
 						<id>unix-bin</id>
 						<phase>package</phase>
 						<goals>
@@ -184,7 +238,7 @@
 						</goals>
 						<configuration>
 							<descriptors>
-								<descriptor>src/main/descriptors/unix-bin.xml</descriptor>
+								<descriptor>target/generated-resources/xml/xslt/config-windows.xml</descriptor>
 							</descriptors>
 							<finalName>${project.artifactId}-${project.version}</finalName>
 							<tarLongFileMode>gnu</tarLongFileMode>
@@ -198,7 +252,7 @@
 						</goals>
 						<configuration>
 							<descriptors>
-								<descriptor>src/main/descriptors/windows-bin.xml</descriptor>
+								<descriptor>target/generated-resources/xml/xslt/config-unix.xml</descriptor>
 							</descriptors>
 							<finalName>${project.artifactId}-${project.version}</finalName>
 						</configuration>
