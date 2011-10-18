@@ -69,10 +69,16 @@
 			<groupId>org.cytoscape</groupId>
 			<artifactId>service-api</artifactId>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>org.cytoscape.wrappers</groupId>
 			<artifactId>org.swinglabs.swing-layout</artifactId>
 			<version>1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>cytoscape-sun</groupId>
+			<artifactId>jhall</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
 		</dependency>
 		
 	</dependencies>
