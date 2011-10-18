@@ -16,7 +16,19 @@ var options = {
     network: { }, // initial empty network
     layout: {
     	name: "CompoundSpringEmbedder",
-    	options: { }
+    	options: { /*layoutQuality: "default",
+    		incremental: false,
+    		uniformLeafNodeSizes: false,
+    		tension: 50,
+    		gravitation: -50,
+    		smartDistance: true,
+    		centralGravitation: 50,
+    		centralGravityDistance: 50,
+    		compoundCentralGravitation: 50,
+    		compoundCentralGravityDistance: 50,
+    		restLength: 50,
+    		smartRestLength: true,
+    		multiLevelScaling: false*/}
     },
     visualStyle: {
         global: {
@@ -603,7 +615,10 @@ function initContextMenu() {
 		var label = "node " + autoLabel;
 		autoLabel++;
 		
-		var n = vis.addNode(evt.mouseX, evt.mouseY, {label: label}, true, evt.target);
+		var n = vis.addNode(evt.mouseX,
+			evt.mouseY,
+			{label: label, parent: evt.target.data.id},
+			true);
 	});
 
 	vis.addContextMenuItem("Toggle node labels", function(evt) {

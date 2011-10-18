@@ -102,14 +102,14 @@ package org.cytoscapeweb.view.layout
 			genOpts.setLayoutQuality(quality);
 			genOpts.setIncremental(options.incremental);
 			genOpts.setUniformLeafNodeSizes(options.uniformLeafNodeSizes);
-						
+			
+			coseOpts.setRepulsionStrength(-1 * options.gravitation);
 			coseOpts.setSpringStrength(options.tension);			
-			coseOpts.setRepulsionStrength(options.repulsion);
 			coseOpts.setSmartRepulsionRangeCalc(options.smartDistance);
-			coseOpts.setGravityStrength(options.gravitation);
-			coseOpts.setGravityRange(options.gravityDistance);
-			coseOpts.setCompoundGravityStrength(options.compoundGravitation);
-			coseOpts.setCompoundGravityRange(options.compoundGravityDistance);
+			coseOpts.setGravityStrength(options.centralGravitation);
+			coseOpts.setGravityRange(options.centralGravityDistance);
+			coseOpts.setCompoundGravityStrength(options.compoundCentralGravitation);
+			coseOpts.setCompoundGravityRange(options.compoundCentralGravityDistance);
 			coseOpts.setIdealEdgeLength(options.restLength);
 			coseOpts.setSmartEdgeLengthCalc(options.smartRestLength);
 			coseOpts.setMultiLevelScaling(options.multiLevelScaling);

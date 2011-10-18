@@ -92,7 +92,7 @@ package org.cytoscapeweb.util {
 				tension:				 50,	// Spring
 				repulsion:				 50,	// Repulsion
 				smartDistance:			 true,	// Smart Range Calculation
-				gravitation:			 50,	// Gravity
+				gravitation:			 -50,	// Gravity
 				gravityDistance:		 50,	// Gravity Range
 				compoundGravitation:	 50,	// Compound Gravity
 				compoundGravityDistance: 50,	// Compound Gravity Range
