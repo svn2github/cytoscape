@@ -8,8 +8,8 @@
 		<version>3.0.0-alpha9-SNAPSHOT</version>
 	</parent>
 	
-	<groupId>org.cytoscape</groupId>
-	<artifactId>cykaraf</artifactId>
+	<groupId>org.cytoscape.distribution</groupId>
+	<artifactId>cytoscape</artifactId>
 	<version>3.0.0-M4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Cytoscape Karaf Distribution</name>
@@ -109,7 +109,7 @@
 						<configuration>
 								<descriptors>
 									<descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
-									<descriptor>mvn:org.cytoscape/features/${project.version}/xml/features</descriptor>
+									<descriptor>mvn:org.cytoscape.distribution/features/${project.version}/xml/features</descriptor>
 								</descriptors>
 								<features>
 									<feature>cytoscape-gui</feature>
@@ -149,7 +149,7 @@
 						<configuration>
  							<artifactItems>
  								<artifactItem>
-									<groupId>org.cytoscape</groupId>
+									<groupId>org.cytoscape.distribution</groupId>
 									<artifactId>branding</artifactId>
 									<version>${project.version}</version>
 									<type>jar</type>
