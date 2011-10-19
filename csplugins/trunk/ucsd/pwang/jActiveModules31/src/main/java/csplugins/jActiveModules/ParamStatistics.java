@@ -3,7 +3,9 @@
 package csplugins.jActiveModules;
 
 //imported packages
-import giny.model.Node;
+
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.model.CyNode;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -12,7 +14,9 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
 
-import cytoscape.logger.CyLogger;
+import org.cytoscape.application.swing.AbstractCyAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -24,6 +28,9 @@ import cytoscape.logger.CyLogger;
  * networks so that larger networks do not dominate
  */
 public class ParamStatistics implements Serializable{
+	
+	private static final Logger logger = LoggerFactory.getLogger(ParamStatistics.class);
+	
   /**
    * means[i] is the mean of networks of size i+1
    */
@@ -76,7 +83,7 @@ public class ParamStatistics implements Serializable{
    * @param nodes Array of nodes to use for the determination
    * @param trials Number of times to repeat the scoring process to determine the stats
    */
-  public void calculateMeanAndStd(Node [] nodes,int trials, int maxThreads, MyProgressMonitor progress){
+  public void calculateMeanAndStd(CyNode [] nodes,int trials, int maxThreads, MyProgressMonitor progress){
     double [] overall_tallyx = new double[nodes.length];
     double [] overall_tallyx_2 = new double[nodes.length];
     means = new double[nodes.length];
@@ -111,7 +118,7 @@ public class ParamStatistics implements Serializable{
       try{
 	((Thread)it.next()).join();
       }catch(Exception e){
-	CyLogger.getLogger(ParamStatistics.class).error("Unable to join worker thread",e);
+	logger.error("Unable to join worker thread",e);
 	return;	
       }
     }
@@ -251,10 +258,10 @@ class MeanAndStdThread extends Thread{
   private double [] overall_tallyx_2;
   private int total_trials;
   private static int current_trials = 0;
-  private Node[] nodes;
+  private CyNode[] nodes;
   private MyProgressMonitor progress;
   private Random rand;
-  public MeanAndStdThread(double [] overall_tallyx,double [] overall_tallyx_2,int total_trials,Node [] nodes,MyProgressMonitor progress,Random rand){
+  public MeanAndStdThread(double [] overall_tallyx,double [] overall_tallyx_2,int total_trials,CyNode [] nodes,MyProgressMonitor progress,Random rand){
     this.overall_tallyx = overall_tallyx;
     this.overall_tallyx_2 = overall_tallyx_2;
     this.total_trials = total_trials;
@@ -296,7 +303,7 @@ class MeanAndStdThread extends Thread{
       Iterator it = nodeList.iterator();
       int i = 0;
       while(it.hasNext()){
-	comp.addNode((Node)it.next());
+	comp.addNode((CyNode)it.next());
 	double score = comp.calculateSimpleScore();
 	tallyx[i] += score;
 	tallyx_2[i] += score*score;
