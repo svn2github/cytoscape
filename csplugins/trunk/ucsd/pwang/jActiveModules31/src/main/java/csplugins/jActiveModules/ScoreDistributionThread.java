@@ -10,21 +10,28 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.ExpressionData;
-import cytoscape.logger.CyLogger;
+
+import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.model.CyNetwork;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+//import cytoscape.data.ExpressionData;
+
 
 public class ScoreDistributionThread extends Thread{
 
-  private static CyLogger logger = CyLogger.getLogger( ScoreDistributionThread.class );
+  private static final Logger logger = LoggerFactory.getLogger(ScoreDistributionThread.class);
   CyNetwork cyNetwork;
   ActivePaths activePaths;
   ActivePathFinderParameters apfParams;
-  public ScoreDistributionThread(CyNetwork cyNetwork,
+  private final JFrame desktopFrame;
+  
+  public ScoreDistributionThread(JFrame desktopFrame, CyNetwork cyNetwork,
 				 ActivePaths activePaths,
 				 ActivePathFinderParameters apfParams){
-    this.cyNetwork = cyNetwork;
+    this.desktopFrame = desktopFrame;
+	this.cyNetwork = cyNetwork;
     this.activePaths = activePaths;
     this.apfParams = apfParams;
   }
@@ -38,14 +45,13 @@ public class ScoreDistributionThread extends Thread{
    */
   public void run() {
     int i;
-    JFrame mainFrame = Cytoscape.getDesktop();
     
     int numberOfRuns = 100;
     if(apfParams.getRun()){
 	numberOfRuns = apfParams.getRandomIterations();
     }
     else{
-	String inputValue = JOptionPane.showInputDialog(mainFrame, "Number of runs");
+	String inputValue = JOptionPane.showInputDialog(desktopFrame, "Number of runs");
 	numberOfRuns = Integer.parseInt(inputValue);
     }
     PrintStream p = null;	
@@ -56,7 +62,7 @@ public class ScoreDistributionThread extends Thread{
 	}
 	else{
 	    JFileChooser chooser = new JFileChooser();
-	    int result = chooser.showSaveDialog(mainFrame);
+	    int result = chooser.showSaveDialog(desktopFrame);
 	    if(result == JFileChooser.APPROVE_OPTION){
 		FileOutputStream out = new FileOutputStream(chooser.getSelectedFile());
 		p = new PrintStream(out);
@@ -86,7 +92,7 @@ public class ScoreDistributionThread extends Thread{
       apfParams.setToUseMCFile(true);
       apfParams.setMcFileName("last.mc");
     }
-				MyProgressMonitor monitor = new MyProgressMonitor(mainFrame,"Running random trials","",0,numberOfRuns);
+				MyProgressMonitor monitor = new MyProgressMonitor(desktopFrame,"Running random trials","",0,numberOfRuns);
     for (i=1; i<numberOfRuns; i++) {
       t = new Thread(activePaths);
       t.start();
