@@ -107,7 +107,7 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 
 		// Inflation Parameter
 		clusterProperties.add(new Tunable("inflation_parameter",
-		                                  "Granularity Parameter (inflation value)",
+		                                  "Granularity parameter (inflation value)",
 		                                  Tunable.DOUBLE, new Double(2.0),
 		                                  (Object)null, (Object)null, 0));
 
@@ -119,7 +119,7 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		                                  new Boolean(true), null, Tunable.COLLAPSABLE));
 		// Clustering Threshold
 		clusterProperties.add(new Tunable("clusteringThresh",
-		                                  "Weak EdgeWeight Pruning Threshold",
+		                                  "Weak edge weight pruning threshold",
 		                                  Tunable.DOUBLE, new Double(1e-15),
 		                                  (Object)null, (Object)null, 0));
 
@@ -131,13 +131,13 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 
 		// Number of iterations
 		clusterProperties.add(new Tunable("maxResidual",
-		                                  "The maximum residual value",
+		                                  "Maximum residual value",
 		                                  Tunable.DOUBLE, new Double(.0001),
 		                                  (Object)null, (Object)null, 0));
 
 		// Maximum number of CPU's to use
 		clusterProperties.add(new Tunable("maxThreads",
-		                                  "The maximum number of threads",
+		                                  "Maximum number of threads",
 		                                  Tunable.INTEGER, new Integer(0),
 		                                  (Object)null, (Object)null, 0));
 
