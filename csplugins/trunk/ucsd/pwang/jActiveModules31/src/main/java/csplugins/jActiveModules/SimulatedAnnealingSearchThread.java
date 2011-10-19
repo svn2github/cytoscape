@@ -1,24 +1,28 @@
 package csplugins.jActiveModules;
 //------------------------------------------------------------------------------
 
-import giny.model.GraphPerspective;
-import giny.model.Node;
-
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
 
+import org.cytoscape.application.swing.AbstractCyAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
-import cytoscape.logger.CyLogger;
 
 public class SimulatedAnnealingSearchThread extends SearchThread{
-    MyProgressMonitor progress;
-    public SimulatedAnnealingSearchThread(GraphPerspective graph, Vector resultPaths, Node [] nodes, ActivePathFinderParameters apfParams, MyProgressMonitor progress){
+   
+	private static final Logger logger = LoggerFactory.getLogger(SimulatedAnnealingSearchThread.class);
+	MyProgressMonitor progress;
+    public SimulatedAnnealingSearchThread(CyNetwork graph, Vector resultPaths, CyNode [] nodes, ActivePathFinderParameters apfParams, MyProgressMonitor progress){
 	super(graph,resultPaths,nodes,apfParams);
 	this.progress = progress;
-	super.nodeSet = new HashSet(graph.nodesList());
+	super.nodeSet = new HashSet(graph.getNodeList());
     }
 
     /**
@@ -39,18 +43,18 @@ public class SimulatedAnnealingSearchThread extends SearchThread{
        
 	boolean hubFinding = apfParams.getMinHubSize() > 0;
 	if(hubFinding){
-	    CyLogger.getLogger( SimulatedAnnealingSearchThread.class).info("Using hub finding: "+apfParams.getMinHubSize());
+	    logger.info("Using hub finding: "+apfParams.getMinHubSize());
 	}
 
 	
 
 	//NodeList [] components = GraphConnectivity.connectedComponents(graph);
 	ComponentFinder cf = new ComponentFinder(graph,nodeSet);
-	//Vector components = cf.getComponents(new Vector(graph.nodesList()));
+	//Vector components = cf.getComponents(new Vector(graph.getNodeList()));
 
 	//why is a new vector being creater here?
 	//Iterator compIt = cf.getComponents(new Vector(graph.nodesList())).iterator();
-	Iterator compIt = cf.getComponents(graph.nodesList()).iterator();
+	Iterator compIt = cf.getComponents(graph.getNodeList()).iterator();
 	while(compIt.hasNext()){
 	    //Component tempComponent = new Component((Vector)compIt.next());
 	    oldPaths.sortedAdd((Component)compIt.next());
@@ -89,7 +93,7 @@ public class SimulatedAnnealingSearchThread extends SearchThread{
 	    hiddenNodes.clear();
 	    
 	    //select a node
-	    Node current_node = nodes[rand.nextInt(nodes.length)];
+	    CyNode current_node = nodes[rand.nextInt(nodes.length)];
 	    //toggle the state of that node, it we are doing hubfinding, this may
 	    //also involve toggling the state of the surrrounding nodes
 					if(hubFinding){
@@ -159,7 +163,7 @@ public class SimulatedAnnealingSearchThread extends SearchThread{
 		    if(hubFinding){
 			it = hiddenNodes.iterator();
 			while(it.hasNext()){
-			    toggleNode((Node)it.next());
+			    toggleNode((CyNode)it.next());
 			}
 		    }
 		}
@@ -169,7 +173,7 @@ public class SimulatedAnnealingSearchThread extends SearchThread{
 		if(hubFinding){
 		    it = hiddenNodes.iterator();
 		    while(it.hasNext()){
-			toggleNode((Node)it.next());
+			toggleNode((CyNode)it.next());
 		    }
 		}
 	    }
