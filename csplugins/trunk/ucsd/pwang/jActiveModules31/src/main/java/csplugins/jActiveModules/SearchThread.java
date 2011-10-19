@@ -1,8 +1,9 @@
 package csplugins.jActiveModules;
 //------------------------------------------------------------------------------
 
-import giny.model.GraphPerspective;
-import giny.model.Node;
+import org.cytoscape.model.CyEdge.Type;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,16 +15,16 @@ import java.util.Vector;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 
 public abstract class SearchThread extends Thread{
-  protected GraphPerspective graph;
+  protected CyNetwork graph;
   protected SortedVector oldPaths,newPaths;
   protected Vector resultPaths;
   protected Vector hiddenNodes;
   protected HashSet nodeSet;
   //protected HashMap node2edges;
-  protected Node [] nodes;
+  protected CyNode [] nodes;
   protected HashMap node2component;
   protected ActivePathFinderParameters apfParams;
-  public SearchThread(GraphPerspective graph, Vector resultPaths,Node [] nodes, ActivePathFinderParameters apfParams){
+  public SearchThread(CyNetwork graph, Vector resultPaths,CyNode [] nodes, ActivePathFinderParameters apfParams){
     this.graph = graph;
     this.resultPaths = resultPaths;
     //this.node2edges = node2edges;
@@ -40,7 +41,7 @@ public abstract class SearchThread extends Thread{
    * be present if we toggled the state of Node current
    * @return A vector of new Components created by applying this change
    */
-  protected Vector updatePaths(Node current){
+  protected Vector updatePaths(CyNode current){
     //first make a (shallow) copy of oldPaths as our newPaths
     //this copy will be update in upate_remove and update_add
     newPaths = (SortedVector)((SortedVector)oldPaths).clone();
@@ -69,7 +70,7 @@ public abstract class SearchThread extends Thread{
    * @param current The node which was just added
    * @return A vector of newly generated components
    */
-  protected Vector update_add(Node current){
+  protected Vector update_add(CyNode current){
     //get a list of components
     //for the neighboring nodes
     //first get the list of neighboring nodes
@@ -78,10 +79,10 @@ public abstract class SearchThread extends Thread{
     Set nComponents = new HashSet();
     //Iterator it = graph.nodesIterator();
 				//CHANGE HERE
-				Iterator it = graph.neighborsList(current).iterator();
+				Iterator it = graph.getNeighborList(current, Type.ANY).iterator(); //.neighborsList(current).iterator();
 				while(it.hasNext()){
       //check for self loops
-      Node myNode = (Node)it.next();
+      CyNode myNode = (CyNode)it.next();
       if(current != myNode && nodeSet.contains(myNode)){
 	nComponents.add(node2component.get(myNode));
       }
@@ -117,7 +118,7 @@ public abstract class SearchThread extends Thread{
    * @param removed The node which was removed
    * @return A vector of newly created components
    */
-  protected Vector update_remove(Node removed){
+  protected Vector update_remove(CyNode removed){
     Vector temp = new Vector();
     temp.add(removed);
     return update_remove(temp);
@@ -187,7 +188,7 @@ public abstract class SearchThread extends Thread{
    *it will also reinsert any possible associated edges
    * @param toggle The node to be toggled.
    */
-  protected void toggleNode(Node toggle){
+  protected void toggleNode(CyNode toggle){
     //If the graph contains the node, remove it
     //this will also automatically remove any
     //associated edges
@@ -220,7 +221,7 @@ public abstract class SearchThread extends Thread{
    *It sets a global vector of nodes that were hidden
    * @param toggle The node to be toggled
    */
-  protected void toggleNodeWithHiding(Node toggle){
+  protected void toggleNodeWithHiding(CyNode toggle){
     //If the graph contains the node, we dont' have to do
     //anything special
     if(nodeSet.contains(toggle)){
@@ -228,7 +229,7 @@ public abstract class SearchThread extends Thread{
     }
     else{
       nodeSet.add(toggle);
-      List neighborList = graph.neighborsList(toggle);
+      List neighborList = graph.getNeighborList(toggle, Type.ANY); //.neighborsList(toggle);
       //check if it is a hub according ot the user's 
       //parameters
       if(neighborList.size() >= apfParams.getMinHubSize()){
@@ -249,7 +250,7 @@ public abstract class SearchThread extends Thread{
 	//score is low, then that node gets that axe.
 	double min_score = ((Component)it.next()).getScore();
 	for(Iterator neighborIt = neighborList.iterator();neighborIt.hasNext();){
-	  Node neighbor = (Node)neighborIt.next();
+	  CyNode neighbor = (CyNode)neighborIt.next();
 	  //make sure to include a check for self edges here
 	  if(!neighbor.equals(toggle) && nodeSet.contains(neighbor)){
 	    //get the component that this node belongs to
