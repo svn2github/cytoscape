@@ -1,8 +1,9 @@
 package csplugins.jActiveModules;
 //------------------------------------------------------------------------------
 
-import giny.model.GraphPerspective;
-import giny.model.Node;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,9 +20,12 @@ import java.util.Vector;
 
 import javax.swing.JFrame;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
-import cytoscape.CyNetwork;
-import cytoscape.logger.CyLogger;
+import csplugins.jActiveModules.util.SelectUtil;
+
 
 /**
  * This class contains the main logic for finding Active Paths The important
@@ -30,8 +34,9 @@ import cytoscape.logger.CyLogger;
  */
 public class ActivePathsFinder {
 
-	private static CyLogger logger = CyLogger.getLogger( ActivePathsFinder.class );
 
+	private static final Logger logger = LoggerFactory.getLogger(ActivePathsFinder.class);
+	
 	/**
 	 * See constructor
 	 */
@@ -47,7 +52,7 @@ public class ActivePathsFinder {
 	/**
 	 * an array containing all of the nodes initially in the graph
 	 */
-	private Node[] nodes;
+	private CyNode[] nodes;
 	/**
 	 * This is a hashmap which maps from nodes to an array of edges (Edge []).
 	 * This is used to determine which edges belonged to which nodes before any
@@ -129,7 +134,7 @@ public class ActivePathsFinder {
 	 * actually done
 	 */
 	private void setupScoring() {
-		GraphPerspective perspective = cyNetwork;
+		CyNetwork perspective = cyNetwork;
 		// Here we initialize the z table. We use this data structure when we
 		// want to get an adjusted z score
 		// based on how many conditions we are looking at.
@@ -137,8 +142,8 @@ public class ActivePathsFinder {
 		Component.zStats = new ZStatistics(attrNames.length);
 		logger.info("Done initializing Z Table");
 
-		nodes = new Node[1];
-		nodes = (Node[]) (perspective.nodesList().toArray(nodes));
+		nodes = new CyNode[1];
+		nodes = (CyNode[]) (perspective.getNodeList().toArray(nodes));
 
 		// Edge [] e_array;
 		// This has is used to store all the edges that were connected
@@ -347,9 +352,9 @@ public class ActivePathsFinder {
 	 */
 	private void runGreedySearch() {
 		if (apfParams.getSearchFromNodes()) {
-			runGreedySearch(cyNetwork.getSelectedNodes());
+			runGreedySearch(SelectUtil.getSelectedNodes(cyNetwork)); //cyNetwork.getSelectedNodes());
 		} else {
-			runGreedySearch(cyNetwork.nodesList());
+			runGreedySearch(cyNetwork.getNodeList());
 		}
 	}
 
