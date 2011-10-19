@@ -1,21 +1,25 @@
 package csplugins.jActiveModules;
 //------------------------------------------------------------------------------
 
-import giny.model.GraphPerspective;
-import giny.model.Node;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge.Type;
+
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
-import cytoscape.logger.CyLogger;
+
 
 public class GreedySearchThread extends Thread {
 
-	private static CyLogger logger = CyLogger.getLogger(GreedySearchThread.class);
+	private static final Logger logger = LoggerFactory.getLogger(GreedySearchThread.class);
 	
 	int max_depth, search_depth;
 	ActivePathFinderParameters apfParams;
@@ -49,11 +53,11 @@ public class GreedySearchThread extends Thread {
 	 * Determines which nodes are within max depth of the starting point
 	 */
 	HashSet withinMaxDepth;
-	Node[] nodes;
-	GraphPerspective graph;
-	public GreedySearchThread(GraphPerspective graph, ActivePathFinderParameters apfParams,
+	CyNode[] nodes;
+	CyNetwork graph;
+	public GreedySearchThread(CyNetwork graph, ActivePathFinderParameters apfParams,
 			Collection nodeList, MyProgressMonitor tpm, HashMap temp_hash,
-			Node[] node_array) {
+			CyNode[] node_array) {
 		this.apfParams = apfParams;
 		max_depth = apfParams.getMaxDepth();
 		search_depth = apfParams.getSearchDepth();
@@ -68,12 +72,12 @@ public class GreedySearchThread extends Thread {
 	/**
 	 * Recursively find the nodes within a max depth
 	 */
-	private void initializeMaxDepth(Node current, int depth) {
+	private void initializeMaxDepth(CyNode current, int depth) {
 		withinMaxDepth.add(current);
 		if (depth > 0) {
-			Iterator listIt = graph.neighborsList(current).iterator();
+			Iterator listIt = graph.getNeighborList(current,Type.ANY).iterator(); //.neighborsList(current).iterator();
 			while (listIt.hasNext()) {
-				Node myNode = (Node) listIt.next();
+				CyNode myNode = (CyNode) listIt.next();
 				if (!withinMaxDepth.contains(myNode)) {
 					initializeMaxDepth(myNode, depth - 1);
 				}
@@ -87,10 +91,10 @@ public class GreedySearchThread extends Thread {
 	 */
 	public void run() {
 		boolean done = false;
-		Node seed = null;
+		CyNode seed = null;
 		synchronized (nodeIterator) {
 			if (nodeIterator.hasNext()) {
-				seed = (Node) nodeIterator.next();
+				seed = (CyNode) nodeIterator.next();
 			} else {
 				done = true;
 			}
@@ -135,7 +139,7 @@ public class GreedySearchThread extends Thread {
 				// node2BestComponent.put(seed,component);
 				// }
 				while (it.hasNext()) {
-					Node current = (Node) it.next();
+					CyNode current = (CyNode) it.next();
 					Component oldBest = (Component) node2BestComponent
 							.get(current);
 					if (oldBest == null
@@ -152,7 +156,7 @@ public class GreedySearchThread extends Thread {
 
 			synchronized (nodeIterator) {
 				if (nodeIterator.hasNext()) {
-					seed = (Node) nodeIterator.next();
+					seed = (CyNode) nodeIterator.next();
 				} else {
 					done = true;
 				}
@@ -180,7 +184,7 @@ public class GreedySearchThread extends Thread {
 	 *            Nodes that can be removed. 
 	 */
 	private boolean runGreedySearchRecursive(int depth, Component component,
-			Node lastAdded, HashSet removableNodes) {
+			CyNode lastAdded, HashSet removableNodes) {
 		boolean improved = false;
 		// score this component, check and see if the global top scores should
 		// be updated, if we have found a better score, then return true
@@ -194,12 +198,12 @@ public class GreedySearchThread extends Thread {
 			// if depth > 0, otherwise we are out of depth and the recursive
 			// calls will end
 			// Get an iterator of nodes which are next to the
-			Iterator nodeIt = graph.neighborsList(lastAdded).iterator();
+			Iterator nodeIt = graph.getNeighborList(lastAdded, Type.ANY).iterator(); //.neighborsList(lastAdded).iterator();
 			boolean anyCallImproved = false;
 			removableNodes.remove(lastAdded);
 			int dependentCount = 0;
 			while (nodeIt.hasNext()) {
-				Node newNeighbor = (Node) nodeIt.next();
+				CyNode newNeighbor = (CyNode) nodeIt.next();
 				// this node is only a new neighbor if it is not currently
 				// in the component.
 				if (withinMaxDepth.contains(newNeighbor)
@@ -233,12 +237,12 @@ public class GreedySearchThread extends Thread {
 			HashSet removableNodes) {
 		LinkedList list = new LinkedList(removableNodes);
 		while (!list.isEmpty()) {
-			Node current = (Node) list.removeFirst();
+			CyNode current = (CyNode) list.removeFirst();
 			component.removeNode(current);
 			double score = component.getScore();
 			if (score > bestScore) {
 				bestScore = score;
-				Node predecessor = (Node) node2Predecessor.get(current);
+				CyNode predecessor = (CyNode) node2Predecessor.get(current);
 				int dependentCount = ((Integer) node2DependentCount
 						.get(predecessor)).intValue();
 				dependentCount -= 1;
