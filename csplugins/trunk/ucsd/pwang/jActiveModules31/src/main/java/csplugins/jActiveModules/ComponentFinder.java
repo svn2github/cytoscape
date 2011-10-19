@@ -1,8 +1,9 @@
 package csplugins.jActiveModules;
 //------------------------------------------------------------------------------
 
-import giny.model.GraphPerspective;
-import giny.model.Node;
+import org.cytoscape.model.CyEdge.Type;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,7 +22,7 @@ public class ComponentFinder{
   /**
    *The graph which contains the nodes we are searching on
    */
-  GraphPerspective graph;
+	CyNetwork graph;
   /**
    *A list of nodes that have been found in the current component search.
    */
@@ -40,7 +41,7 @@ public class ComponentFinder{
    * Make a new component finder with the specified graph
    * @param g the graph on which to search
    */
-  public ComponentFinder(GraphPerspective g,HashSet valid){
+  public ComponentFinder(CyNetwork g,HashSet valid){
     graph = g;
     this.valid = valid;
   }
@@ -71,10 +72,10 @@ public class ComponentFinder{
       //call back to postVisit after it is done searching any node. This is
       //where we will update the status of that node
       if(!valid.contains(nodes.get(start))){
-	throw new RuntimeException("Starting node for a component search was not present in the graph, this is an ActiveModules bug."+((Node)nodes.get(start)).getIdentifier());
+	throw new RuntimeException("Starting node for a component search was not present in the graph, this is an ActiveModules bug."+((CyNode)nodes.get(start)).getCyRow().get("name", String.class)); //.getIdentifier());
 	}
 						
-      search((Node)nodes.get(start));
+      search((CyNode)nodes.get(start));
       result.add(new Component(current));
       finalSize += current.size();
       while(start<nodes.size() && reached.contains(nodes.get(start))){
@@ -88,12 +89,12 @@ public class ComponentFinder{
     return result;
   }
 
-  private void search(Node root){
+  private void search(CyNode root){
     current.add(root);
     reached.add(root);
-    Iterator nodeIt = graph.neighborsList(root).iterator();
+    Iterator nodeIt = graph.getNeighborList(root, Type.ANY).iterator(); //.neighborsList(root).iterator();
     while(nodeIt.hasNext()){
-      Node myNode = (Node)nodeIt.next();
+      CyNode myNode = (CyNode)nodeIt.next();
       if(valid.contains(myNode) && !reached.contains(myNode)){
 	search(myNode);
       }
