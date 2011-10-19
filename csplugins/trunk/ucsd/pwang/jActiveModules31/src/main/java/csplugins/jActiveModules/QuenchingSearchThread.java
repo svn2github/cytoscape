@@ -1,9 +1,6 @@
 package csplugins.jActiveModules;
-//------------------------------------------------------------------------------
-
-import giny.model.GraphPerspective;
-import giny.model.Node;
-
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,7 +9,7 @@ import java.util.Vector;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 
 public class QuenchingSearchThread extends SearchThread{
-    public QuenchingSearchThread(GraphPerspective graph, Vector resultPaths, Node [] nodes, ActivePathFinderParameters apfParams, SortedVector oldPaths){
+    public QuenchingSearchThread(CyNetwork graph, Vector resultPaths, CyNode [] nodes, ActivePathFinderParameters apfParams, SortedVector oldPaths){
 	super(graph,resultPaths,nodes,apfParams);
 	super.oldPaths = oldPaths;
 	HashSet temp = new HashSet();
@@ -63,7 +60,7 @@ public class QuenchingSearchThread extends SearchThread{
 	while(quench){
 	    
 	    //select a node
-	    Node current_node = nodes[count++];
+	    CyNode current_node = nodes[count++];
 	    toggleNode(current_node);
 	    Vector newComps = updatePaths(current_node);
 	    
