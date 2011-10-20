@@ -6,8 +6,9 @@
 //-----------------------------------------------------------------------------------
 package csplugins.jActiveModules;
 //-----------------------------------------------------------------------------------
-import giny.model.GraphPerspective;
-import giny.model.Node;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge.Type;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -17,11 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
-
-import cern.colt.list.IntArrayList;
-import cern.colt.map.OpenIntDoubleHashMap;
-import cytoscape.Cytoscape;
-import cytoscape.data.Semantics;
+import java.util.ArrayList;
+//import cytoscape.data.Semantics;
 //-----------------------------------------------------------------------------------
 /**
  * This object represent a set of connected nodes that we wish to score for signficance.
@@ -117,7 +115,7 @@ public class Component implements Comparable{
    * regional scoring
    */
   //public static HashMap node2edges;
-  public static GraphPerspective graph;
+  public static CyNetwork graph;
     
   /**
    * Creates an empty components
@@ -145,7 +143,7 @@ public class Component implements Comparable{
    * @param nComponents the neighboring components
    * @param current the node which is next to all these components
    */
-  public Component(Set nComponents, Node current){
+  public Component(Set nComponents, CyNode current){
     nodes = new Vector();
     contains = new HashSet();
     scored = false;
@@ -182,10 +180,10 @@ public class Component implements Comparable{
       //add the nodes of the current node to the iterator
       //Edge [] e_array = (Edge [])node2edges.get(current);
       //for(int i = 0;i<e_array.length;i++){
-      for(Iterator neighborIt = graph.neighborsList(current).iterator();neighborIt.hasNext();){
+      for(Iterator neighborIt = graph.getNeighborList(current, Type.ANY).iterator();neighborIt.hasNext();){
 	//Node currentNeighbor = e_array[i].opposite(current);
 	//Node currentNeighbor = (e_array[i].getSource().equals(current) ? e_array[i].getTarget() : e_array[i].getSource());
-	Node currentNeighbor = (Node)neighborIt.next();
+	CyNode currentNeighbor = (CyNode)neighborIt.next();
 	if(!contains.contains(currentNeighbor)){
 	  //this neighbor is not in the component, so it
 	  //must be in the neighborhood. Add it in and add in
@@ -206,7 +204,7 @@ public class Component implements Comparable{
 	//is not in the neighborhood
 	Iterator neighborIt = neighbor.neighborhood.iterator();
 	while(neighborIt.hasNext()){
-	  Node nodeNeighbor = (Node)neighborIt.next();
+	  CyNode nodeNeighbor = (CyNode)neighborIt.next();
 	  if(!neighborhood.add(nodeNeighbor)){
 	    //the neighborhood didn't change as a result of this
 	    //update, that means it must have been added before
@@ -273,13 +271,14 @@ public class Component implements Comparable{
       neighborhood = new HashSet();
       it = nodes.iterator();
       while(it.hasNext()){
-	Node current = (Node)it.next();
+	CyNode current = (CyNode)it.next();
 	//Edge [] e_array = (Edge [])node2edges.get(current);
 	//for(int i=0;i<e_array.length;i++){
 	//Node neighbor = e_array[i].opposite(current);
 	//    Node neighbor = (e_array[i].getSource().equals(current) ? e_array[i].getTarget() : e_array[i].getSource());
-	for(Iterator neighborIt = graph.neighborsList(current).iterator();neighborIt.hasNext();){
-	  Node neighbor = (Node)neighborIt.next();
+	
+	for(Iterator neighborIt = graph.getNeighborList(current, Type.ANY).iterator();neighborIt.hasNext();){
+	  CyNode neighbor = (CyNode)neighborIt.next();
 	  if(!contains.contains(neighbor) && !neighborhood.contains(neighbor)){
 	    //found a new neighbor, add its score into the mix
 	    //and add it to the neighbor hash
@@ -304,7 +303,7 @@ public class Component implements Comparable{
    *in this path.
    * @param node The node be added to this component
    */
-  public void addNode(Node node){	
+  public void addNode(CyNode node){	
     scored = false;
     nodes.add(node);
     contains.add(node);
@@ -331,8 +330,8 @@ public class Component implements Comparable{
       //Edge [] e_array = (Edge[])node2edges.get(node);
       //for(int i=0;i<e_array.length;i++){
       //Node neighbor = e_array[i].opposite(node);
-      for(Iterator neighborIt = graph.neighborsList(node).iterator();neighborIt.hasNext();){
-	Node neighbor = (Node)neighborIt.next();
+      for(Iterator neighborIt = graph.getNeighborList(node, Type.ANY).iterator();neighborIt.hasNext();){
+	CyNode neighbor = (CyNode)neighborIt.next();
 	//Node neighbor = (e_array[i].getSource().equals(node) ? e_array[i].getTarget() : e_array[i].getSource());
 	//if this is a new neighbor, need to add in its score
 	if(!contains.contains(neighbor) && !neighborhood.contains(neighbor)){
@@ -353,7 +352,7 @@ public class Component implements Comparable{
    * connected component, or even if this node belong to this particular
    * component.
    */
-  public void removeNode(Node node){
+  public void removeNode(CyNode node){
     scored = false;
 	
     if(!regionScoring){
@@ -371,8 +370,8 @@ public class Component implements Comparable{
       //it's neighbors and see if any of them are in the component
       //Edge [] e_array = (Edge [])node2edges.get(node);
       //for(int i=0;i<e_array.length;i++){
-      for(Iterator neighborIt = graph.neighborsList(node).iterator();neighborIt.hasNext();){
-	Node nextNeighbor = (Node)neighborIt.next();
+      for(Iterator neighborIt = graph.getNeighborList(node, Type.ANY).iterator();neighborIt.hasNext();){
+	CyNode nextNeighbor = (CyNode)neighborIt.next();
 	//Node nextNeighbor = e_array[i].opposite(node);
 	//Node nextNeighbor = (e_array[i].getSource().equals(node) ? e_array[i].getTarget() : e_array[i].getSource());
 	//only do this for nodes that are in the component
@@ -380,9 +379,9 @@ public class Component implements Comparable{
 	  //Edge [] next_array = (Edge [])node2edges.get(nextNeighbor);
 	  boolean stillNeighbor=false;
 	  //int j = 0;
-	  for(Iterator nextIt = graph.neighborsList(nextNeighbor).iterator();nextIt.hasNext() && !stillNeighbor;){
+	  for(Iterator nextIt = graph.getNeighborList(nextNeighbor, Type.ANY).iterator();nextIt.hasNext() && !stillNeighbor;){
 	    //while(!stillNeighbor && j<next_array.length){
-	    Node myNode = (Node)nextIt.next();
+	    CyNode myNode = (CyNode)nextIt.next();
 	    //Node myNode = (next_array[j].getSource().equals(nextNeighbor) ? next_array[j].getTarget() : next_array[j].getSource());
 	    if(contains.contains(myNode)){
 	      stillNeighbor = true;
@@ -409,7 +408,7 @@ public class Component implements Comparable{
    * @param node The specified node
    * @return true if the component contains node
    */
-  public boolean contains(Node node){
+  public boolean contains(CyNode node){
     return contains.contains(node);
   }
   /**
@@ -588,7 +587,7 @@ public class Component implements Comparable{
     Iterator it = displayNodes.iterator();
     for(int i=0;i<result.length;i++){
       //result[i] = (String)Cytoscape.getNodeAttributeValue((Node)it.next(),Semantics.CANONICAL_NAME);
-      result[i] = ((Node)it.next()).getIdentifier();
+      result[i] = ((CyNode)it.next()).getCyRow().get("name", String.class); //.getIdentifier();
     }
     return result;
 	
@@ -616,12 +615,12 @@ public class Component implements Comparable{
 	  return displayNodes;
   }
 
-  public List<Node> getDisplayNodesGeneric()
+  public List<CyNode> getDisplayNodesGeneric()
   {
-  	List<Node> list = new java.util.ArrayList(displayNodes.size());
+  	List<CyNode> list = new java.util.ArrayList(displayNodes.size());
 	Iterator iterator = displayNodes.iterator();
 	while (iterator.hasNext())
-		list.add((Node) iterator.next());
+		list.add((CyNode) iterator.next());
 	return list;
   }
   
@@ -661,10 +660,10 @@ public class Component implements Comparable{
 		  OpenIntDoubleHashMap node2Increase = new OpenIntDoubleHashMap(neighborhood.size());
 		  double previous_score = tempComponent.getScore();
 		  for(Iterator nodeIt = neighborhood.iterator();nodeIt.hasNext();){
-			  Node current = (Node)nodeIt.next();
+			  CyNode current = (CyNode)nodeIt.next();
 			  tempComponent.addNode(current);
 			  double new_score = tempComponent.getScore();
-			  node2Increase.put(current.getRootGraphIndex(),new_score-previous_score);
+			  node2Increase.put(current.getSUID() /*.getRootGraphIndex()*/,new_score-previous_score);
 			  tempComponent.removeNode(current);
 		  }
 		  
@@ -675,7 +674,7 @@ public class Component implements Comparable{
 		  int idy = 0;
 		  double score_increase = 1.0;
 		  while(idy < neighborNodes.size() && score_increase > 0){
-			  Node current = graph.getNode(neighborNodes.get(idy));
+			  CyNode current = graph.getNode(neighborNodes.get(idy));
 			  tempComponent.addNode(current);
 			  double new_score = tempComponent.getScore();
 			  score_increase = new_score - previous_score;
@@ -699,6 +698,49 @@ public class Component implements Comparable{
 	  }
 	  
 	 
+  }
+  
+    // replace "cern.colt.list.OpenIntDoubleHashMap"
+  private class OpenIntDoubleHashMap {
+	  private HashMap hashMap = new HashMap();
+	  private int size =-1;
+	  
+	  public OpenIntDoubleHashMap(int size){
+		  this.size = size;
+	  }
+	  
+	  public void put(Long index, double score){
+		  this.hashMap.put(index, score);
+	  }
+	  
+	  public void keysSortedByValue(IntArrayList arrayList){
+		  //???????????????
+	  }
+  }
+  
+  // replace "cern.colt.list.IntArrayList"
+  private class IntArrayList {
+	  private ArrayList<Integer> intArray;
+	  public IntArrayList(int size){
+		  this.intArray = new ArrayList<Integer>(size);
+	  }
+	  
+	  public int size(){
+		  return intArray.size();
+	  }
+	  
+	  public int get(int index){
+		  return this.intArray.get(index);
+	  }
+	  
+	  public void reverse(){
+		  int size = this.intArray.size();
+		  ArrayList<Integer> tmpList = new ArrayList<Integer>(size);
+		  for (int i=0; i< size; i++){
+			  tmpList.set(i, this.intArray.get(size-1-i));
+		  }
+		  this.intArray = tmpList;
+	  }
   }
 
 }
