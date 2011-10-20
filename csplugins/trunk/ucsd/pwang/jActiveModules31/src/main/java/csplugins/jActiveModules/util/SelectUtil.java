@@ -4,10 +4,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTable;
+
 
 public class SelectUtil {
 
@@ -26,4 +29,13 @@ public class SelectUtil {
 		return entries;
 	}
 
+	static String[] getColumnNames(CyTable tbl) {
+        CyColumn[] cols = (CyColumn[])tbl.getColumns().toArray();
+        String[] names = new String[cols.length];
+
+        for (int i=0; i< cols.length; i++){
+        	names[i] = cols[i].getName();
+        }
+        return names;
+	}
 }
