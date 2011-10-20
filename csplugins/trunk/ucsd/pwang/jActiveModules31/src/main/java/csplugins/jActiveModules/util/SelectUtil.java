@@ -29,7 +29,7 @@ public class SelectUtil {
 		return entries;
 	}
 
-	static String[] getColumnNames(CyTable tbl) {
+	public static String[] getColumnNames(CyTable tbl) {
         CyColumn[] cols = (CyColumn[])tbl.getColumns().toArray();
         String[] names = new String[cols.length];
 
