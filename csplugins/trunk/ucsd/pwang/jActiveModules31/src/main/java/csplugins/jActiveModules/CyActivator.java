@@ -2,9 +2,14 @@
 package csplugins.jActiveModules;
 
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.property.CyProperty;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.application.swing.CySwingApplication;
@@ -18,7 +23,7 @@ import org.cytoscape.service.util.AbstractCyActivator;
 import java.util.Properties;
 import csplugins.jActiveModules.dialogs.ActivePathsParameterPanel;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
-
+import org.cytoscape.util.swing.NetworkSelectorPanel;
 
 public class CyActivator extends AbstractCyActivator {
 	public CyActivator() {
@@ -36,20 +41,35 @@ public class CyActivator extends AbstractCyActivator {
 		CyEventHelper cyEventHelperServiceRef = getService(bc,CyEventHelper.class);
 		TaskManager taskManagerServiceRef = getService(bc,TaskManager.class);
 		
-		CyProperty<?> cytoscapePropertiesServiceRef = getService(bc, CyProperty.class,
+		CyProperty<Properties> cytoscapePropertiesServiceRef = getService(bc, CyProperty.class,
         "(cyPropertyName=cytoscape3.props)");
+		VisualMappingManager visualMappingManagerRef = getService(bc,VisualMappingManager.class);
+		CyNetworkFactory cyNetworkFactoryServiceRef = getService(bc,CyNetworkFactory.class);
+
+		CyRootNetworkFactory cyRootNetworkFactory = getService(bc,CyRootNetworkFactory.class);
+		CyNetworkViewFactory cyNetworkViewFactoryServiceRef = getService(bc,CyNetworkViewFactory.class);
+		CyLayoutAlgorithmManager cyLayoutsServiceRef = getService(bc,CyLayoutAlgorithmManager.class);
+
 		
 		ActivePathFinderParameters apfParams = new ActivePathFinderParameters(cytoscapePropertiesServiceRef);
-		ActivePathsParameterPanel mainPanel = new ActivePathsParameterPanel(apfParams);
+
+		NetworkSelectorPanel networkSelectorPanel = new NetworkSelectorPanel(cyApplicationManagerServiceRef, cyNetworkManagerServiceRef);
+
+		ActivePathsParameterPanel mainPanel = new ActivePathsParameterPanel(apfParams, cySwingApplicationServiceRef,
+				cyApplicationManagerServiceRef,cyNetworkManagerServiceRef, networkSelectorPanel);
 
 		ActiveModulesCytoPanelComponent activeModulesCytoPanelComponent = new ActiveModulesCytoPanelComponent(mainPanel);
 
 		ActiveModulesUI activeModulesUI = new ActiveModulesUI(cyApplicationManagerServiceRef,cySwingApplicationServiceRef,
-				apfParams, mainPanel);
+				cytoscapePropertiesServiceRef, cyNetworkManagerServiceRef,cyNetworkViewManagerServiceRef, visualMappingManagerRef, 
+				cyRootNetworkFactory, cyNetworkViewFactoryServiceRef,cyLayoutsServiceRef,taskManagerServiceRef,apfParams, mainPanel);
 
 		ActiveModulesPanelSelectedListener activeModulesPanelSelectedListener = new ActiveModulesPanelSelectedListener(mainPanel);
 		
 		
+		
+		registerAllServices(bc,networkSelectorPanel, new Properties());
+				
 		registerService(bc,activeModulesCytoPanelComponent,CytoPanelComponent.class, new Properties());
 		
 		registerAllServices(bc, activeModulesUI, new Properties());
