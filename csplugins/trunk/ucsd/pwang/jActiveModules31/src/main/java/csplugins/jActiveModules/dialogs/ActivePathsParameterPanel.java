@@ -54,19 +54,22 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.jdesktop.layout.GroupLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.JTable;
 
 import csplugins.jActiveModules.ActiveModulesUI;
+import csplugins.jActiveModules.CyHelpBrokerImpl;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-import cytoscape.logger.CyLogger;
-import cytoscape.view.CyHelpBroker;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.util.swing.NetworkSelectorPanel;
+import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyTable;
+//import cytoscape.view.CyHelpBroker;
+import org.cytoscape.util.swing.NetworkSelectorPanel;
 
 import java.awt.Component;
 import javax.swing.table.TableColumn;
@@ -81,16 +84,20 @@ import javax.swing.JOptionPane;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import java.util.Comparator;
-import cytoscape.util.swing.ColumnResizer;
+import org.cytoscape.util.swing.ColumnResizer;
 //import cytoscape.util.swing.CyCollapsiblePanel;
+import org.cytoscape.model.CyColumn;
+import java.util.Iterator;
+import org.cytoscape.model.CyTableUtil;
 
 
-public class ActivePathsParameterPanel extends JPanel {
+public class ActivePathsParameterPanel extends JPanel implements ItemListener {
 
 	private static final long serialVersionUID = -6759180275710507653L;
 
-	private static final CyLogger logger = CyLogger.getLogger(ActivePathsParameterPanel.class);
-
+	private static final Logger logger = LoggerFactory.getLogger(ActivePathsParameterPanel.class);
+	
+	
 	JTextField readout;
 
 	ActivePathFinderParameters apfParams;
@@ -164,22 +171,28 @@ public class ActivePathsParameterPanel extends JPanel {
 	private ActiveModulesUI pluginMainClass;
 	JDialog helpDialog;
 	
-	private NetworkSelectorPanel networkPanel = new NetworkSelectorPanel();
+	private NetworkSelectorPanel networkPanel;
 	
-
+	private final CySwingApplication cySwingApplicationServiceRef;
+	private CyHelpBrokerImpl cyHelpBroker = new CyHelpBrokerImpl();
+	
 	// -----------------------------------------------------------------------------
 	public ActivePathsParameterPanel(
-			ActivePathFinderParameters incomingApfParams,
-			ActiveModulesUI parentUI) {
+			ActivePathFinderParameters incomingApfParams, CySwingApplication cySwingApplicationServiceRef,
+			CyApplicationManager cyApplicationManager, CyNetworkManager cyNetworkManager,
+			NetworkSelectorPanel networkSelectorPanel){
 
+		this.cySwingApplicationServiceRef = cySwingApplicationServiceRef;
 		// Set global parameters
 		this.setLayout(new BorderLayout());
 		this.setMinimumSize(new Dimension(320, 420));
 		this.setPreferredSize(new Dimension(320, 420));
 
+		this.networkPanel = networkSelectorPanel;
+		this.networkPanel.getJCombobox().addItemListener(this);
+		
 		// uses copy constructor so that changes aren't committed if you dismiss.
 		apfParams = incomingApfParams;
-		this.pluginMainClass = parentUI;
 
 		if (apfParams == null)
 			throw new IllegalStateException(
@@ -237,13 +250,11 @@ public class ActivePathsParameterPanel extends JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        //networkPanel = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         attrSelectionPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblAttrSelection = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        //collapsiblePanel = new javax.swing.JPanel();
         buttonPanel = new javax.swing.JPanel();
         helpButton = new javax.swing.JButton();
         aboutButton = new javax.swing.JButton();
@@ -298,7 +309,7 @@ public class ActivePathsParameterPanel extends JPanel {
         buttonPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         helpButton.setText("Help");
         helpButton.setPreferredSize(new java.awt.Dimension(67, 23));
-	CyHelpBroker.getHelpBroker().enableHelpOnButton(helpButton, "jActiveModules", null);
+	//cyHelpBroker.getHelpBroker().enableHelpOnButton(helpButton, "jActiveModules", null);
 
         buttonPanel.add(helpButton);
 
@@ -486,34 +497,45 @@ public class ActivePathsParameterPanel extends JPanel {
 	
 	
 	private Vector<Object[]> getDataVect(){
+		
+		
 		Vector<Object[]> dataVect = new Vector<Object[]>();
-		
-		CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
-		String[] names = nodeAttrs.getAttributeNames();
-		
-		for ( String name : names ) {
-			if ( nodeAttrs.getType(name) == CyAttributes.TYPE_FLOATING ) {
-				Map attrMap = CyAttributesUtils.getAttribute(name,nodeAttrs);
 
-				if ( attrMap == null ) 
+		if (this.networkPanel.getSelectedNetwork() == null){
+			return dataVect;
+		}
+
+		System.out.println("Entering ActivePathsParameterPanel.getDataVector()...");
+
+		
+		CyTable table = this.networkPanel.getSelectedNetwork().getDefaultNodeTable();
+					
+		String[] names = (String[]) CyTableUtil.getColumnNames(table).toArray();
+
+		for (String name: names){
+			
+			CyColumn col = table.getColumn(name);
+			
+			if ( col.getType() == Float.class || col.getType() == Double.class) {
+				List<Float> vals = (List<Float>) col.getValues(Float.class);
+				
+				if ( vals == null ) 
 					continue; // no values have been defined for the attr yet
 
 				Object[] row = new Object[5];
 				row[0] = name;
 				
 				boolean isPValue = true;
-				for ( Object value : attrMap.values() ) {
-					double d = ((Double)value).doubleValue();
-					if ( d < 0 || d > 1 ) {
+				for ( Object value : vals ) {
+					double d = ((Double)value).doubleValue();	
+				if ( d < 0 || d > 1 ) {
 						isPValue = false;
 						break;
 					}
 				}
-				
-				Collection<Double> values = attrMap.values();
 
-				row[1] = Collections.min(values);
-				row[2] = Collections.max(values);
+				row[1] = Collections.min(vals);
+				row[2] = Collections.max(vals);
 				row[3] = false;
 
 				if (!isPValue) {
@@ -1095,11 +1117,11 @@ public class ActivePathsParameterPanel extends JPanel {
 	} // createRegionalScoringController
 
 	private void createHelpDialog() {
-		helpDialog = new JDialog(Cytoscape.getDesktop(), "jActiveModules Help");
+		helpDialog = new JDialog(this.cySwingApplicationServiceRef.getJFrame(), "jActiveModules Help");
 		helpDialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		try {
-			JEditorPane helpPane = new JEditorPane(pluginMainClass.getClass()
-					.getResource("/help.html"));
+			
+			JEditorPane helpPane = new JEditorPane(getClass().getResource("/help/help.html"));
 			helpPane.setEditable(false);
 			JScrollPane scrollPane = new JScrollPane(helpPane);
 			helpDialog.setContentPane(scrollPane);
@@ -1668,9 +1690,9 @@ public class ActivePathsParameterPanel extends JPanel {
 
 		public void actionPerformed(ActionEvent e) {
 			// listener.cancelActivePathsFinding ();
-			CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(
-					SwingConstants.WEST);
-			cytoPanel.remove(ActivePathsParameterPanel.this);
+			//CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(
+			//		SwingConstants.WEST);
+			//cytoPanel.remove(ActivePathsParameterPanel.this);
 		}
 
 	} // DismissAction
@@ -1714,5 +1736,21 @@ public class ActivePathsParameterPanel extends JPanel {
 			// do nothing
 		}
 	}
+	
+	public void handlePanelSelected(){
+	}
+	
+	public void setPluginMainClass(ActiveModulesUI ui){
+		pluginMainClass = ui;
+	}
+
+	public void itemStateChanged(ItemEvent e) {
+		updateAttributePanel();
+	}
+	
+	private void updateAttributePanel(){
+		System.out.println("Entering ActivePathParameterpanel.updateAttributePanel()...");
+	}
+	
 } // class ActivePathsParametersPopupDialog
 
