@@ -278,6 +278,7 @@ $(function(){
     layout_names["Circle"] = "Circle";
     layout_names["Radial"] = "Radial";
     layout_names["Tree"] = "Tree";
+    layout_names["CompoundSpringEmbedder"] = "Compound";
     
 //    var edgeFieldsFn = function() {
 //	    var edgeAttrList = [""];
@@ -321,6 +322,21 @@ $(function(){
         { id: "breadthSpace", label: "Breadth space", value: 30, tip: "The space between siblings in the tree." },
         { id: "subtreeSpace", label: "Angle width",   value: 5,  tip: "The space between different sub-trees." }
     ];
+    layout_options["CompoundSpringEmbedder"] = [
+		{ id: "gravitation",                    label: "Gravitation",                       value: -50,   tip: "The gravitational constant. Negative values produce a repulsive force." },
+		{ id: "centralGravitation",             label: "Central gravitation",               value: 50,    tip: "All nodes are assumed to be pulled slightly towards the center of the network by a central gravitational force (gravitational constant) during layout." },
+		{ id: "centralGravityDistance",         label: "Central gravity distance",          value: 50,    tip: "The radius of the region in the center of the drawing, in which central gravitation is not exerted." },
+		{ id: "compoundCentralGravitation",     label: "Compound central gravitation",      value: 50,    tip: " The central gravitational constant for compound nodes." },
+		{ id: "compoundCentralGravityDistance", label: "Compound central gravity distance", value: 50,    tip: " The central gravitational constant for compound nodes. " },
+		{ id: "tension",              label: "Edge tension",            value: 50,     tip: "The default spring tension for edges." },
+		{ id: "restLength",           label: "Edge rest length",        value: 50,     tip: "The default spring rest length for edges." },
+		{ id: "smartRestLength",      label: "Smart rest length",       value: true,   tip: "Whether or not smart calculation of ideal rest length should be performed for inter-graph edges." },
+		{ id: "layoutQuality",        label: "Layout quality",          value: ["default","draft","proof"], tip: "A better quality layout requires more iterations, taking longer." },
+		{ id: "incremental",          label: "Incremental",             value: false,      tip: " If true, layout is applied incrementally by taking current positions of nodes into account." },
+		{ id: "uniformLeafNodeSizes", label: "Uniform leaf node sizes", value: false,  tip: " If true, leaf (non-compound or simple) node dimensions are assumed to be uniform, resulting in faster layout." },
+		{ id: "smartDistance",        label: "Smart distance",          value: true,  tip: "If true, gravitational repulsion forces are calculated only when node pairs are in a certain range, resulting in faster layout at the relatively minimal cost of layout quality." },
+		{ id: "multiLevelScaling",    label: "Multi level scaling",     value: false,  tip: " If true, multi-level scaling algorithm is applied both to better capture the overall structure of the network and to save time on large networks." }
+	];
     
     // create tabs
     $("#side").tabs({
@@ -1335,7 +1351,19 @@ $(function(){
             	update_with_loader();
             })
         	.addContextMenuItem("Add new node", function(evt) {
-        		vis.addNode(evt.mouseX, evt.mouseY, { }, true);
+        		var x = evt.mouseX;
+                var y = evt.mouseY;
+                var parentId;
+                if (evt.target != null && evt.target.group == "nodes") {
+                    parentId = evt.target.data.id;
+                    x = evt.target.x;
+                    y = evt.target.y;
+                    x += Math.random() * (evt.target.width/3) * (Math.round(Math.random()*100)%2==0 ? 1 : -1);
+                    y += Math.random() * (evt.target.height/3) * (Math.round(Math.random()*100)%2==0 ? 1 : -1);
+                }
+                var n = vis.addNode(x, y, { parent: parentId }, true);
+                n.data.label = n.data.id;
+                vis.updateData([n]);
         		updateContextMenu();
         		dirty_graph_state();
         	})

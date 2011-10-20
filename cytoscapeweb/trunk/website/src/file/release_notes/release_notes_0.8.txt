@@ -2,14 +2,14 @@
     This release adds some great new features, such as:
 </p>
 <ul>
-    <li>Compound nodes supports, thanks to the
+    <li>Compound nodes (i.e. nodes within nodes), thanks to the
     <a href="http://www.cs.bilkent.edu.tr/~ivis" rel="external">i-Vis Information Visualization Research Group</a>
     of <a href="http://www.bilkent.edu.tr/index.html" rel="external">Bilkent University</a>.</li>
     <li>Set different width and height values to nodes (e.g. creating ellipses, and not just circles).</li>
     <li>Nodes can be totally transparent now but still display a background image or the border.
         You simply need to set <code>"transparent"</code> to the node <code>color</code> visual property in a
         <code>VisualStyle</code> or <code>VisualStyleBypass</code> object.</li>
-    <li>The built-in pan-zoom control is also a bit more flexible now,
+    <li>The built-in pan-zoom control is also a bit more flexible,
         as you can choose the position where it is placed when Cytoscape Web starts.</li>
     <li>The new addElements() function is much faster than using addNode() to add many nodes.</li>
     <li>And more! See the release notes for more details.</li>
@@ -23,8 +23,10 @@
         <li><span class="bug_id">2481</span>: Add "nodeAttr" and "interactionAttr" options to exportNetwork() function.</li>
         <li><span class="bug_id">2487</span>: Add option for setting the pan-zoom control position.</li>
         <li><span class="bug_id">2566</span>: Node shape transparency with background image.</li>
+        <li><span class="bug_id">2585</span>: dragstart &amp; dragstop events.</li>
         <li><span class="bug_id">2591</span>: Autosize node according to label.</li>
         <li><span class="bug_id">2592</span>: Compound nodes.</li>
+        <li><span class="bug_id">2601</span>: Add zIndex to Node and Edge.</li>
     </ul>
     <ul class="bug_fixes">
         <li><span class="bug_id">2480</span>: Handle List-type attributes when exporting to GraphML.</li>
@@ -42,5 +44,6 @@
         <li><span class="bug_id">2587</span>: Edge end does not intercept ellipse node border when the edge is a loop.</li>
         <li><span class="bug_id">2588</span>: Restore zoom from XGMML.</li>
         <li><span class="bug_id">2590</span>: XGMML: Restore and save view center correctly.</li>
+        <li><span class="bug_id">2602</span>: Added merged edge cannot be selected.</li>
     </ul>
 </div>

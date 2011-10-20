@@ -98,6 +98,7 @@ $(function(){
 			},
 			nodes: {
 				shape: "ELLIPSE",
+				compoundShape: "ELLIPSE",
 				color: { defaultValue: "#fbfbfb", discreteMapper: nodeColorMapper },
 				opacity: 1,
 				size: { defaultValue: 12, continuousMapper: { attrName: "weight", minValue: 12, maxValue: 36 } },
@@ -149,6 +150,7 @@ $(function(){
 			},
 			nodes: {
 				shape: "RECTANGLE",
+				compoundShape: "RECTANGLE",
 				color: "#fefefe",
 				borderColor:"#374A70",
 				labelFontColor: "#374A70",
@@ -284,6 +286,7 @@ $(function(){
 	
 	GRAPH_STYLES["Shapes"] = {
 			nodes: {
+				compoundShape: "ROUNDRECT",
 				size: 32,
 				selectionColor: "#aaaaff",
 				selectionOpacity: 1,
