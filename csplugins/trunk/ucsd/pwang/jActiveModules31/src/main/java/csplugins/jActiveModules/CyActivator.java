@@ -62,7 +62,8 @@ public class CyActivator extends AbstractCyActivator {
 
 		ActiveModulesUI activeModulesUI = new ActiveModulesUI(cyApplicationManagerServiceRef,cySwingApplicationServiceRef,
 				cytoscapePropertiesServiceRef, cyNetworkManagerServiceRef,cyNetworkViewManagerServiceRef, visualMappingManagerRef, 
-				cyRootNetworkFactory, cyNetworkViewFactoryServiceRef,cyLayoutsServiceRef,taskManagerServiceRef,apfParams, mainPanel);
+				cyNetworkFactoryServiceRef, cyRootNetworkFactory, cyNetworkViewFactoryServiceRef,cyLayoutsServiceRef,
+				taskManagerServiceRef,cyEventHelperServiceRef,apfParams, mainPanel);
 
 		ActiveModulesPanelSelectedListener activeModulesPanelSelectedListener = new ActiveModulesPanelSelectedListener(mainPanel);
 		
