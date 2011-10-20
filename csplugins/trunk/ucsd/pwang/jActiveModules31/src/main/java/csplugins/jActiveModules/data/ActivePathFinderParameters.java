@@ -16,15 +16,21 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Enumeration;
 
-import cytoscape.Cytoscape;
-import cytoscape.CyNode;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-import cytoscape.logger.CyLogger;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.property.CyProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyColumn;
+import csplugins.jActiveModules.util.SelectUtil;
+import org.cytoscape.model.CyTableUtil;
 
 //---------------------------------------------------------------------------------------
 public class ActivePathFinderParameters {
 
+	private static final Logger logger = LoggerFactory.getLogger(ActivePathFinderParameters.class);
+	
 	double initialTemperature = 1.0;
 	double finalTemperature = 0.01;
 	double hubAdjustment = 0;
@@ -59,9 +65,11 @@ public class ActivePathFinderParameters {
     	
     List<Boolean> switchSigs = new ArrayList<Boolean>();
     List<String> scalingMethods = new ArrayList<String>();
+    private CyNetwork network;
     
 	// ---------------------------------------------------------------------------------------
-    public ActivePathFinderParameters(Properties properties){
+    public ActivePathFinderParameters(CyProperty<?> cytoscapePropertiesServiceRef){
+    	Properties properties = (Properties) cytoscapePropertiesServiceRef.getProperties();
 	for (Enumeration e = properties.propertyNames() ; e.hasMoreElements() ;) {
 	    String name = (String)e.nextElement();
 	    if(name.startsWith("AP")){
@@ -142,7 +150,7 @@ public class ActivePathFinderParameters {
 		    overlapThreshold = Double.valueOf(property);
 		}
 		else{
-		    CyLogger.getLogger(ActivePathFinderParameters.class).warn("Unrecognized option "+name);
+		    logger.warn("Unrecognized option "+name);
 		}
 	    }
 
@@ -413,25 +421,30 @@ public class ActivePathFinderParameters {
 
 		possibleExpressionAttrs.clear();
 
+		if (this.network == null){
+			return;
+		}
 		// find all of the double type parameters
-                CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
-                String[] names = nodeAttrs.getAttributeNames();
-                for ( String name : names ) {
-                        if ( nodeAttrs.getType(name) == CyAttributes.TYPE_FLOATING ) {
-				Map attrMap = CyAttributesUtils.getAttribute(name,nodeAttrs);
+		CyTable nodeAttrs = this.network.getDefaultNodeTable();
+		String[] names = (String[])CyTableUtil.getColumnNames(nodeAttrs).toArray();
 
-				if ( attrMap == null ) 
+		for ( String name : names ) {
+			if ( nodeAttrs.getColumn(name).getType() == Float.class ||nodeAttrs.getColumn(name).getType() == Double.class) {
+
+				List<Float>  values =nodeAttrs.getColumn(name).getValues(Float.class);
+				
+				if ( values == null ) 
 					continue; // no values have been defined for the attr yet
 
 				boolean isPValue = true;
-				for ( Object value : attrMap.values() ) {
+				for ( Object value : values ) {
 					double d = ((Double)value).doubleValue();
 					if ( d < 0 || d > 1 ) {
 						isPValue = false;
 						break;
 					}
 				}
-					
+
 				if ( isPValue )
 					possibleExpressionAttrs.add(name);
 			}
@@ -506,5 +519,8 @@ public class ActivePathFinderParameters {
 
 	} // toString
 
+	public void setNetwork(CyNetwork network){
+		this.network = network;
+	}
 } // class ActivePathFinderParameters
 
