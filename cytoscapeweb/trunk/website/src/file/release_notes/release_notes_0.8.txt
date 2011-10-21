@@ -5,24 +5,16 @@
     <li>Compound nodes (i.e. nodes within nodes), thanks to the
     <a href="http://www.cs.bilkent.edu.tr/~ivis" rel="external">i-Vis Information Visualization Research Group</a>
     of <a href="http://www.bilkent.edu.tr/index.html" rel="external">Bilkent University</a>.</li>
-    <li>Set different width and height values to nodes (e.g. creating ellipses, and not just circles).</li>
-    <li>Nodes can be totally transparent now but still display a background image or the border.
-        You simply need to set <code>"transparent"</code> to the node <code>color</code> visual property in a
-        <code>VisualStyle</code> or <code>VisualStyleBypass</code> object.</li>
-    <li>The built-in pan-zoom control is also a bit more flexible,
-        as you can choose the position where it is placed when Cytoscape Web starts.</li>
-    <li>The new addElements() function is much faster than using addNode() to add many nodes.</li>
+    <li>The new <code>addElements()</code> function is much faster than using <code>addNode()</code> and <code>addEdge()</code> to add many elements.</li>
+    <li>Filter elements by ID, which is faster.</li>
     <li>And more! See the release notes for more details.</li>
 </ul>
 <div class="relase_details">
     <ul class="new_features">
-        <li><span class="bug_id">2299</span>: Allow a node to have different width/height values.</li>
         <li><span class="bug_id">2461</span>: Filter nodes/edges by ID (new API function).</li>
         <li><span class="bug_id">2462</span>: Add multiple nodes/edges (new API function).</li>
         <li><span class="bug_id">2463</span>: Add "nodeAttr" option to sif function.</li>
         <li><span class="bug_id">2481</span>: Add "nodeAttr" and "interactionAttr" options to exportNetwork() function.</li>
-        <li><span class="bug_id">2487</span>: Add option for setting the pan-zoom control position.</li>
-        <li><span class="bug_id">2566</span>: Node shape transparency with background image.</li>
         <li><span class="bug_id">2585</span>: dragstart &amp; dragstop events.</li>
         <li><span class="bug_id">2591</span>: Autosize node according to label.</li>
         <li><span class="bug_id">2592</span>: Compound nodes.</li>
@@ -30,15 +22,7 @@
     </ul>
     <ul class="bug_fixes">
         <li><span class="bug_id">2480</span>: Handle List-type attributes when exporting to GraphML.</li>
-        <li><span class="bug_id">2498</span>: PDF and SVG: Line breaks in labels.</li>
-        <li><span class="bug_id">2534</span>: SVG breaks with too many elements.</li>
-        <li><span class="bug_id">2538</span>: Incorrect validation of data types when adding new edges.</li>
-        <li><span class="bug_id">2539</span>: Drag select then click = dblclick.</li>
-        <li><span class="bug_id">2563</span>: Weighted FDL does not work if the edge attribute is NOT called 'weight'.</li>
         <li><span class="bug_id">2552</span>: CytoscapeWeb edge filtering bug.</li>
-        <li><span class="bug_id">2564</span>: Bypass lost after call to vis.visualStyle.</li>
-        <li><span class="bug_id">2567</span>: SVG Export: node image opacity should be affected by the node opacity.</li>
-        <li><span class="bug_id">2571</span>: JSON error when string values have line breaks.</li>
         <li><span class="bug_id">2571</span>: Error sizing nodes when layout changes.</li>
         <li><span class="bug_id">2576</span>: When adding field, default value null is replaced by 0.</li>
         <li><span class="bug_id">2587</span>: Edge end does not intercept ellipse node border when the edge is a loop.</li>

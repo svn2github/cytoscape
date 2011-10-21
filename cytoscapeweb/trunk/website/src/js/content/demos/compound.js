@@ -34,7 +34,7 @@ $(function(){
         	<button id="reapplyLayout">Reapply layout</button>\
             <label for="showNodeLabels">Node Labels</label>\
             <input type="checkbox" id="showNodeLabels"/> \
-            <label class="warning"><small>You can use the right-clik context menu to add and remove elements</small></label>\
+            <label class="warning"><small>You can use the right-click context menu to add and remove elements</small></label>\
         </div>\
         <div id="cytoscapeweb" width="*">\
             Cytoscape Web will replace the contents of this div with your graph.\

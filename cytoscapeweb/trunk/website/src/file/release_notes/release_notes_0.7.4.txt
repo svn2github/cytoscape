@@ -1,19 +1,28 @@
 <p>
-    This release of Cytoscape Web focuses on bug fixes, most important of which is a fix to
-    support Firefox 4.  If you've been running into JavaScript errors on Firefox 4, this version
-    should fix your issue.
+    This release fixes some bugs and adds a few features which some users have been asking for:
 </p>
+<ul>
+    <li>It is now possible to set different width and height values to nodes (e.g. creating ellipses, and not just circles).</li>
+    <li>Nodes can be totally transparent now but still display a background image or the border, if necessary.
+        You simply need to set <code>"transparent"</code> to the node <code>color</code> visual property in a
+        <code>VisualStyle</code> or <code>VisualStyleBypass</code> object.</li>
+    <li>The built-in pan-zoom control is also a bit more flexible now,
+        as you can choose the position where it is placed when Cytoscape Web starts.</li>
+</ul>
 <div class="relase_details">
-    <ul class="bug_fixes">
-        <li><span class="bug_id">2493</span>: Issues with '\n' in node/edge data values.</li>
-        <li><span class="bug_id">2500</span>: "#0002015 error" when exporting to PNG.</li>
-        <li><span class="bug_id">2501</span>: JavaScript errors on Firefox 4.</li>
-        <li><span class="bug_id">2518</span>: Tree and Radial layouts not applied to disconnected components.</li>
-        <li><span class="bug_id">2519</span>: Radial and Tree layouts change node opacity.</li>
-        <li><span class="bug_id">2523</span>: Rendering issue when using high resolution image as node background.</li>
-        <li><span class="bug_id">2525</span>: Glow properties cannot be bypassed.</li>
+    <ul class="new_features">
+        <li><span class="bug_id">2299</span>: Allow a node to have different width/height values.</li>
+        <li><span class="bug_id">2487</span>: Add option for setting the pan-zoom control position.</li>
+        <li><span class="bug_id">2566</span>: Node shape transparency with background image.</li>
     </ul>
-    <ul class="other_changes">
-        <li>Cytoscape Web now requires Flash version 10 or higher.</li>
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2498</span>: PDF and SVG: Line breaks in labels.</li>
+        <li><span class="bug_id">2534</span>: SVG breaks with too many elements.</li>
+        <li><span class="bug_id">2538</span>: Incorrect validation of data types when adding new edges.</li>
+        <li><span class="bug_id">2539</span>: Drag select then click = dblclick.</li>
+        <li><span class="bug_id">2563</span>: Weighted FDL does not work if the edge attribute is NOT called 'weight'.</li>
+        <li><span class="bug_id">2564</span>: Bypass lost after call to vis.visualStyle.</li>
+        <li><span class="bug_id">2567</span>: SVG Export: node image opacity should be affected by the node opacity.</li>
+        <li><span class="bug_id">2571</span>: JSON error when string values have line breaks.</li>
     </ul>
 </div>
