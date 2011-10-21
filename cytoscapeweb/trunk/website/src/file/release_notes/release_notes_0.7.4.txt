@@ -1,0 +1,19 @@
+<p>
+    This release of Cytoscape Web focuses on bug fixes, most important of which is a fix to
+    support Firefox 4.  If you've been running into JavaScript errors on Firefox 4, this version
+    should fix your issue.
+</p>
+<div class="relase_details">
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2493</span>: Issues with '\n' in node/edge data values.</li>
+        <li><span class="bug_id">2500</span>: "#0002015 error" when exporting to PNG.</li>
+        <li><span class="bug_id">2501</span>: JavaScript errors on Firefox 4.</li>
+        <li><span class="bug_id">2518</span>: Tree and Radial layouts not applied to disconnected components.</li>
+        <li><span class="bug_id">2519</span>: Radial and Tree layouts change node opacity.</li>
+        <li><span class="bug_id">2523</span>: Rendering issue when using high resolution image as node background.</li>
+        <li><span class="bug_id">2525</span>: Glow properties cannot be bypassed.</li>
+    </ul>
+    <ul class="other_changes">
+        <li>Cytoscape Web now requires Flash version 10 or higher.</li>
+    </ul>
+</div>
