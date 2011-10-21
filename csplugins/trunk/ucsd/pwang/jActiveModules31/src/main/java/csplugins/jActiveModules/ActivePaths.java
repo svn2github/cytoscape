@@ -150,7 +150,12 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		this.cyApplicationManagerService = cyApplicationManagerService;
 		this.cyEventHelperService = cyEventHelperService;
 
-		MAX_NETWORK_VIEWS = new Integer(this.cytoscapeProperties.getProperties().getProperty("defaultPluginDownloadUrl")).intValue();
+		try {			
+			MAX_NETWORK_VIEWS = new Integer(this.cytoscapeProperties.getProperties().getProperty("moduleNetworkViewCreationThreshold")).intValue();			
+		}
+		catch (Exception e){
+			MAX_NETWORK_VIEWS = 5;
+		}
 		layoutAlgorithm = this.cyLayoutsService.getLayout("force-directed");
 		//if (!eventFired){
 		//	this.cyEventHelperService.fireEvent();
@@ -416,7 +421,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		logger.info("Processing Expression Data into Hash");
 		HashMap tempHash = new HashMap();
 		logger.info("Do some testing of the ExpressionData object");
-		CyTable nodeAttributes = this.cyNetwork.getDefaultNodeTable(); //Cytoscape.getNodeAttributes();
+		CyTable nodeAttributes = this.cyNetwork.getDefaultNodeTable();
 
 		// Create two identical lists of genes
 		List<CyNode> geneList = new ArrayList<CyNode>();
@@ -435,12 +440,14 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		final Map<String, Integer> geneNameToIndexMap = new HashMap<String, Integer>();
 		for (int i = 0; i < geneList.size(); i++) {
 			final String geneName = geneList.get(i).getCyRow().get("name", String.class); //.getIdentifier();
+			
 			geneNameToIndexMap.put(geneName, new Integer(i));
 			for (int j = 0; j < attrNames.length; j++)
 			{
 				//attribValues[j][i] = nodeAttributes.get.getDoubleAttribute(geneName, attrNames[j]);
-				Collection<CyRow> rows = nodeAttributes.getMatchingRows(attrNames[j], geneName);
+				Collection<CyRow> rows = nodeAttributes.getMatchingRows("name", geneName);
 				Object[] objs = rows.toArray();
+				// We assume name is unique, we expect one row returned for each name
 				CyRow row = (CyRow) objs[0];
 				attribValues[j][i] = row.get(attrNames[j], Double.class);
 			}
