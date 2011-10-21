@@ -108,7 +108,6 @@
 						</goals>
 						<configuration>
 								<descriptors>
-									<descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
 									<descriptor>mvn:org.cytoscape.distribution/features/${project.version}/xml/features</descriptor>
 								</descriptors>
 								<features>
@@ -126,8 +125,7 @@
 						</goals>
 						<configuration>
 								<descriptors>
-									<descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
-									<descriptor>mvn:org.cytoscape/features/${project.version}/xml/features</descriptor>
+									<descriptor>mvn:org.cytoscape.distribution/features/${project.version}/xml/features</descriptor>
 								</descriptors>
 								<features/>
 								<includeMvnBasedDescriptors>true</includeMvnBasedDescriptors>
