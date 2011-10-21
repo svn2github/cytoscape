@@ -214,7 +214,15 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 
 	public void startFindActivePaths(CyNetwork network) {
 		try {
-			//activePaths = new ActivePaths(network, apfParams, this);
+			
+			activePaths = new ActivePaths(network, apfParams, this, 
+					this.desktopApp, this.cytoscapeProperties,
+					this.cyNetworkManager, this.cyNetworkViewManager,
+					this.visualMappingManager, this.cyNetworkFactory, this.cyRootNetworkFactory, 
+					this.cyNetworkViewFactory, this.cyLayoutsService,
+					this.taskManagerService, this.cyApplicationManagerService,
+					this.cyEventHelperService);
+			
 		} catch (final Exception e) {
 			e.printStackTrace(System.err);
 			JOptionPane.showMessageDialog(this.desktopApp.getJFrame(),
