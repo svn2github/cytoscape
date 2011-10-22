@@ -133,6 +133,7 @@ public class Component implements Comparable{
       neighborhood = new HashSet();
     }
   }
+  
     
   /**
    *this builds a new component off of a node and the neighboring
@@ -717,30 +718,32 @@ public class Component implements Comparable{
 	  }
 	  
 	  public void keysSortedByValue(IntArrayList arrayList){
-		  //???????????????
 		  this.arrayList = arrayList; 
-		  // Check for empty or null array
-		  if (this.arrayList ==null || this.arrayList.size()==0){
-			  return;
+		  
+		  Iterator<Integer> it =hashMap.keySet().iterator();
+		  while(it.hasNext()){
+			  this.arrayList.add(it.next());
 		  }
-		  quicksort(0, this.arrayList.size() - 1);
+		  		  
+		  quicksort(0, this.size - 1);
 	  }
 	  
 	  private void quicksort(int low, int high) {
 		  int i = low, j = high;
 		  // Get the pivot element from the middle of the list
-		  Double pivot = this.hashMap.get(new Long(low + (high-low)/2));
+		  Double pivot = this.hashMap.get(this.arrayList.get(new Integer(low + (high-low)/2)));
 
 		  // Divide into two lists
 		  while (i <= j) {
 			  // If the current value from the left list is smaller then the pivot
 			  // element then get the next element from the left list
-			  while (this.hashMap.get(i) < pivot) {
+			  
+			  while (this.hashMap.get(this.arrayList.get(i)) < pivot) {
 				  i++;
 			  }
 			  // If the current value from the right list is larger then the pivot
 			  // element then get the next element from the right list
-			  while (this.hashMap.get(j) > pivot) {
+			  while (this.hashMap.get(this.arrayList.get(j)) > pivot) {
 				  j--;
 			  }
 
@@ -787,28 +790,55 @@ public class Component implements Comparable{
 		  return this.intArray.get(index);
 	  }
 
-	  public int set(int index, int value){
-		  return this.intArray.set(index, new Integer(value));
+	  public void add(int value){
+		  this.intArray.add(value);
+	  }
+	  
+	  public void set(int index, int value){
+		  this.intArray.set(index, new Integer(value));
 	  }
 
 	  
 	  public void reverse(){
+		  		  
 		  int size = this.intArray.size();
 		  ArrayList<Integer> tmpList = new ArrayList<Integer>(size);
 		  for (int i=0; i< size; i++){
-			  tmpList.set(i, this.intArray.get(size-1-i));
+			  tmpList.add(this.intArray.get(size-1-i));
 		  }
 		  this.intArray = tmpList;
 	  }
   }
 
 
-//////////////////
+/////For test only /////////////
 	public static void main(String [] args){
-
-		
-
+		Component cmt = new Component(1.0);
 	}
-  
+	
+	// For test only -- test the inner class OpenIntDoubleHashMap
+	  public Component(double d){
+			IntArrayList intArrayList = new IntArrayList(3);
+			
+			OpenIntDoubleHashMap map = new OpenIntDoubleHashMap(3);
+			map.put(4, 0.5);
+			map.put(8, 0.6);
+			map.put(1, 0.2);
+			
+			map.keysSortedByValue(intArrayList);
+
+			// Expect output, 1,4,8
+			System.out.println(intArrayList.get(0));
+			System.out.println(intArrayList.get(1));
+			System.out.println(intArrayList.get(2));
+			
+			intArrayList.reverse();
+			// Expect output, 8,4,1
+			System.out.println("\nAfter reverse\n"+intArrayList.get(0));
+			System.out.println(intArrayList.get(1));
+			System.out.println(intArrayList.get(2));
+						
+			
+	  }
 }
 
