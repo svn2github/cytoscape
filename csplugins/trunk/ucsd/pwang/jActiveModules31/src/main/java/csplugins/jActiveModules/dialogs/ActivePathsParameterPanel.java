@@ -190,6 +190,7 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener {
 
 		this.networkPanel = networkSelectorPanel;
 		this.networkPanel.getJCombobox().addItemListener(this);
+		this.networkPanel.setBorder(BorderFactory.createTitledBorder("Target Network"));
 		
 		// uses copy constructor so that changes aren't committed if you dismiss.
 		apfParams = incomingApfParams;
@@ -200,8 +201,6 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener {
 		
 		initComponents();
 
-		networkPanel.setBorder(BorderFactory.createTitledBorder("Target Network"));
-
 		populateAttributeTable();
 		
 		createHelpDialog();
@@ -209,7 +208,7 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener {
 		
 		/////
 		final JPanel mainPanel = new JPanel(new BorderLayout());
-
+		
 		readout = new JTextField(new String("seed: "
 				+ apfParams.getRandomSeed()));
 		RandomSeedTextListener readoutListener = new RandomSeedTextListener();
@@ -498,26 +497,28 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener {
 	
 	private Vector<Object[]> getDataVect(){
 		
-		
 		Vector<Object[]> dataVect = new Vector<Object[]>();
 
 		if (this.networkPanel.getSelectedNetwork() == null){
 			return dataVect;
 		}
-
-		System.out.println("Entering ActivePathsParameterPanel.getDataVector()...");
-
 		
 		CyTable table = this.networkPanel.getSelectedNetwork().getDefaultNodeTable();
 					
-		String[] names = (String[]) CyTableUtil.getColumnNames(table).toArray();
+		Object[] objs = CyTableUtil.getColumnNames(table).toArray();
+		
+		String[] names = new String[objs.length];
+
+		for (int i=0; i< objs.length; i++){
+			names[i] = objs[i].toString();
+		}
 
 		for (String name: names){
 			
 			CyColumn col = table.getColumn(name);
 			
-			if ( col.getType() == Float.class || col.getType() == Double.class) {
-				List<Float> vals = (List<Float>) col.getValues(Float.class);
+			if ( col.getType() == Double.class) {
+				List<Double> vals = (List<Double>) col.getValues(Double.class);
 				
 				if ( vals == null ) 
 					continue; // no values have been defined for the attr yet
@@ -1704,7 +1705,6 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			
 			int[] selectedIndices = ActivePathsParameterPanel.this.tblAttrSelection.getSelectedRows();
 	
 			final AttrSelectionTableModel model = (AttrSelectionTableModel) ActivePathsParameterPanel.this.tblAttrSelection.getModel();
@@ -1749,7 +1749,8 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener {
 	}
 	
 	private void updateAttributePanel(){
-		System.out.println("Entering ActivePathParameterpanel.updateAttributePanel()...");
+		AttrSelectionTableModel tableModel = new AttrSelectionTableModel(getDataVect());
+		this.tblAttrSelection.setModel(tableModel);
 	}
 	
 } // class ActivePathsParametersPopupDialog
