@@ -663,7 +663,8 @@ public class Component implements Comparable{
 			  CyNode current = (CyNode)nodeIt.next();
 			  tempComponent.addNode(current);
 			  double new_score = tempComponent.getScore();
-			  node2Increase.put(current.getSUID() /*.getRootGraphIndex()*/,new_score-previous_score);
+			  int index = (int)current.getSUID();
+			  node2Increase.put(index /*.getRootGraphIndex()*/,new_score-previous_score);
 			  tempComponent.removeNode(current);
 		  }
 		  
@@ -700,22 +701,75 @@ public class Component implements Comparable{
 	 
   }
   
-    // replace "cern.colt.list.OpenIntDoubleHashMap"
+
+  // replace "cern.colt.list.OpenIntDoubleHashMap"
   private class OpenIntDoubleHashMap {
-	  private HashMap hashMap = new HashMap();
+	  private HashMap<Integer, Double> hashMap = new HashMap<Integer, Double>();
 	  private int size =-1;
+	  private IntArrayList arrayList;
 	  
 	  public OpenIntDoubleHashMap(int size){
 		  this.size = size;
 	  }
 	  
-	  public void put(Long index, double score){
+	  public void put(Integer index, double score){
 		  this.hashMap.put(index, score);
 	  }
 	  
 	  public void keysSortedByValue(IntArrayList arrayList){
 		  //???????????????
+		  this.arrayList = arrayList; 
+		  // Check for empty or null array
+		  if (this.arrayList ==null || this.arrayList.size()==0){
+			  return;
+		  }
+		  quicksort(0, this.arrayList.size() - 1);
 	  }
+	  
+	  private void quicksort(int low, int high) {
+		  int i = low, j = high;
+		  // Get the pivot element from the middle of the list
+		  Double pivot = this.hashMap.get(new Long(low + (high-low)/2));
+
+		  // Divide into two lists
+		  while (i <= j) {
+			  // If the current value from the left list is smaller then the pivot
+			  // element then get the next element from the left list
+			  while (this.hashMap.get(i) < pivot) {
+				  i++;
+			  }
+			  // If the current value from the right list is larger then the pivot
+			  // element then get the next element from the right list
+			  while (this.hashMap.get(j) > pivot) {
+				  j--;
+			  }
+
+			  // If we have found a values in the left list which is larger then
+			  // the pivot element and if we have found a value in the right list
+			  // which is smaller then the pivot element then we exchange the
+			  // values.
+			  // As we are done we can increase i and j
+			  if (i <= j) {
+				  swap(i, j);
+				  i++;
+				  j--;
+			  }
+		  }
+		  // Recursion
+		  if (low < j)
+			  quicksort(low, j);
+		  if (i < high)
+			  quicksort(i, high);
+	  }
+
+	  private void swap(int i, int j) {
+		  Integer temp = this.arrayList.get(i); 
+		  this.arrayList.set(i, this.arrayList.get(j));
+		  
+		  this.arrayList.set(j, temp);
+		  
+	  }
+
   }
   
   // replace "cern.colt.list.IntArrayList"
@@ -732,6 +786,11 @@ public class Component implements Comparable{
 	  public int get(int index){
 		  return this.intArray.get(index);
 	  }
+
+	  public int set(int index, int value){
+		  return this.intArray.set(index, new Integer(value));
+	  }
+
 	  
 	  public void reverse(){
 		  int size = this.intArray.size();
@@ -743,5 +802,13 @@ public class Component implements Comparable{
 	  }
   }
 
+
+//////////////////
+	public static void main(String [] args){
+
+		
+
+	}
+  
 }
 
