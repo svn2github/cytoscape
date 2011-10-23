@@ -123,7 +123,7 @@ public class DensityFilter extends AbstractNetworkFilter {
 		int nodeCount = indices.length;
 
 		// Calculate the density
-		double density = (double)edgeCount/(double)(nodeCount * (nodeCount-1));
+		double density = (double)(edgeCount*2)/(double)(nodeCount * (nodeCount-1));
 		if (density >= minimumDensity)
 			return new NodeCluster(nodeList);
 		return null;
