@@ -98,11 +98,11 @@ public class GLayCluster extends AbstractNetworkClusterer  {
 
 		// Whether or not to create a new network from the results
 		clusterProperties.add(new Tunable("selectedOnly","Cluster only selected nodes",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		                                  Tunable.BOOLEAN, new Boolean(selectedOnly)));
 
 		//Whether or not to assume the edges are undirected
 		clusterProperties.add(new Tunable("undirectedEdges","Assume edges are undirected",
-		                                  Tunable.BOOLEAN, new Boolean(true)));
+		                                  Tunable.BOOLEAN, new Boolean(undirectedEdges)));
 
 		clusterProperties.add(new Tunable("results_panel",
 		                                  "Results",

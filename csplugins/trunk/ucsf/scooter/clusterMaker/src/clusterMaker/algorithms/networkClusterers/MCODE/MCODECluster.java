@@ -74,6 +74,16 @@ public class MCODECluster extends AbstractNetworkClusterer  {
 	final static int INTERRUPTION = 3;
 	int analyze = FIRST_TIME;
 
+	boolean includeLoops = false;
+	boolean haircut = true;
+	boolean fluff = false;
+	double scoreCutoff = 0.2;
+	boolean selectedOnly = false;
+	int degreeCutoff = 2;
+	int kCore = 2;
+	int maxDepth = 100;
+
+
 	MCODEParameterSet currentParamsCopy;
 
 	RunMCODE runMCODE;
@@ -110,7 +120,7 @@ public class MCODECluster extends AbstractNetworkClusterer  {
 		{
 			clusterProperties.add(new Tunable("selectedOnly",
 			                                  "Cluster only selected nodes", 
-			                                  Tunable.BOOLEAN, new Boolean(false)));
+			                                  Tunable.BOOLEAN, new Boolean(selectedOnly)));
 
 			clusterProperties.add(new Tunable("advanced_panel",
 			                                  "Advanced Tuning Options",
@@ -126,11 +136,11 @@ public class MCODECluster extends AbstractNetworkClusterer  {
 				{
 					clusterProperties.add(new Tunable("includeLoops",
 					                                  "Include loops", 
-					                                  Tunable.BOOLEAN, new Boolean(false)));
+					                                  Tunable.BOOLEAN, new Boolean(includeLoops)));
 
 					clusterProperties.add(new Tunable("degreeCutoff",
 					                                  "Degree Cutoff", 
-					                                  Tunable.INTEGER, new Integer(2)));
+					                                  Tunable.INTEGER, new Integer(degreeCutoff)));
 				}
 
 				clusterProperties.add(new Tunable("cluster_panel",
@@ -141,23 +151,23 @@ public class MCODECluster extends AbstractNetworkClusterer  {
 				{
 					clusterProperties.add(new Tunable("haircut",
 					                                  "Haircut", 
-					                                  Tunable.BOOLEAN, new Boolean(true)));
+					                                  Tunable.BOOLEAN, new Boolean(haircut)));
 
 					clusterProperties.add(new Tunable("fluff",
 					                                  "Fluff", 
-					                                  Tunable.BOOLEAN, new Boolean(false)));
+					                                  Tunable.BOOLEAN, new Boolean(fluff)));
 
 					clusterProperties.add(new Tunable("scoreCutoff",
 					                                  "Node Score Cutoff", 
-					                                  Tunable.DOUBLE, new Double(0.2)));
+					                                  Tunable.DOUBLE, new Double(scoreCutoff)));
 
 					clusterProperties.add(new Tunable("kCore",
 					                                  "K-Core", 
-					                                  Tunable.INTEGER, new Integer(2)));
+					                                  Tunable.INTEGER, new Integer(kCore)));
 
 					clusterProperties.add(new Tunable("maxDepth",
 					                                  "Max Depth", 
-					                                  Tunable.INTEGER, new Integer(100)));
+					                                  Tunable.INTEGER, new Integer(maxDepth)));
 
 				}
 			}
@@ -178,7 +188,7 @@ public class MCODECluster extends AbstractNetworkClusterer  {
 
 		Tunable t = clusterProperties.get("selectedOnly");
 		if ((t != null) && (t.valueChanged() || force)) {
-			boolean selectedOnly = ((Boolean) t.getValue()).booleanValue();
+			selectedOnly = ((Boolean) t.getValue()).booleanValue();
 			if (selectedOnly)
 				currentParamsCopy.setScope(MCODEParameterSet.SELECTION);
 			else
@@ -187,43 +197,43 @@ public class MCODECluster extends AbstractNetworkClusterer  {
 
 		t = clusterProperties.get("includeLoops");
 		if ((t != null) && (t.valueChanged() || force)) {
-			boolean includeLoops = ((Boolean) t.getValue()).booleanValue();
+			includeLoops = ((Boolean) t.getValue()).booleanValue();
 			currentParamsCopy.setIncludeLoops(includeLoops);
 		}
 
 		t = clusterProperties.get("degreeCutoff");
 		if ((t != null) && (t.valueChanged() || force)) {
-			int degreeCutoff = ((Integer) t.getValue()).intValue();
+			degreeCutoff = ((Integer) t.getValue()).intValue();
 			currentParamsCopy.setDegreeCutoff(degreeCutoff);
 		}
 
 		t = clusterProperties.get("haircut");
 		if ((t != null) && (t.valueChanged() || force)) {
-			boolean haircut = ((Boolean) t.getValue()).booleanValue();
+			haircut = ((Boolean) t.getValue()).booleanValue();
 			currentParamsCopy.setHaircut(haircut);
 		}
 
 		t = clusterProperties.get("fluff");
 		if ((t != null) && (t.valueChanged() || force)) {
-			boolean fluff = ((Boolean) t.getValue()).booleanValue();
+			fluff = ((Boolean) t.getValue()).booleanValue();
 			currentParamsCopy.setFluff(fluff);
 		}
 
 		t = clusterProperties.get("scoreCutoff");
 		if ((t != null) && (t.valueChanged() || force)) {
-			double scoreCutoff = ((Double) t.getValue()).doubleValue();
+			scoreCutoff = ((Double) t.getValue()).doubleValue();
 			currentParamsCopy.setNodeScoreCutoff(scoreCutoff);
 		}
 
 		t = clusterProperties.get("kCore");
 		if ((t != null) && (t.valueChanged() || force)) {
-			int kCore = ((Integer) t.getValue()).intValue();
+			kCore = ((Integer) t.getValue()).intValue();
 			currentParamsCopy.setKCore(kCore);
 		}
 
 		t = clusterProperties.get("maxDepth");
 		if ((t != null) && (t.valueChanged() || force)) {
-			int maxDepth = ((Integer) t.getValue()).intValue();
+			maxDepth = ((Integer) t.getValue()).intValue();
 			currentParamsCopy.setMaxDepthFromStart(maxDepth);
 		}
 

@@ -48,9 +48,12 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
 import cytoscape.layout.Tunable;
 import cytoscape.layout.TunableListener;
 import cytoscape.logger.CyLogger;
+import cytoscape.view.CyNetworkView;
 import cytoscape.task.TaskMonitor;
 
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
@@ -64,8 +67,8 @@ import clusterMaker.ui.ClusterViz;
 
 public class FeatureVectorCluster extends AbstractAttributeClusterer implements TunableListener {
 
-	boolean createEdges = false;
-	double edgeCutoff = 0.5;
+	boolean createNewNetwork = true;
+	double edgeCutoff = 0.001;
 	String dataAttributes = null;
 	String edgeAttribute = null;
 	final static String interaction = "distance";
@@ -77,7 +80,7 @@ public class FeatureVectorCluster extends AbstractAttributeClusterer implements 
 	}
 
 	public String getShortName() {return "featurevector";};
-	public String getName() {return "Create Edges from Node Attributes";};
+	public String getName() {return "Create Correlation Network from Node Attributes";};
 
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
@@ -123,24 +126,25 @@ public class FeatureVectorCluster extends AbstractAttributeClusterer implements 
 		// Whether or not to only cluster selected nodes/edges
 		clusterProperties.add(new Tunable("selectedOnly",
 		                                  "Only use selected nodes/edges for cluster",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		                                  Tunable.BOOLEAN, new Boolean(selectedOnly)));
 
 		// For expression data, we might want to exclude missing data
 		clusterProperties.add(new Tunable("ignoreMissing",
 		                                  "Ignore nodes/edges with no data",
-		                                  Tunable.BOOLEAN, new Boolean(true)));
+		                                  Tunable.BOOLEAN, new Boolean(ignoreMissing)));
 
 		// Whether to create a new network or add values to existing network
-		Tunable t = new Tunable("createEdges",
-		                        "Create edges if they don't exist",
-		                        Tunable.BOOLEAN, new Boolean(false));
+		Tunable t = new Tunable("createNewNetwork",
+		                        "Create a new network",
+		                        Tunable.BOOLEAN, new Boolean(createNewNetwork));
 		t.addTunableValueListener(this);
 		clusterProperties.add(t);
 
 		// If we're creating edges, do we have a cut-off value?
 		t = new Tunable("edgeCutoff", "Only create edges if nodes are closer than this",
-		                Tunable.DOUBLE, new Double(0.5));
-		t.setImmutable(true);
+		                Tunable.DOUBLE, new Double(edgeCutoff));
+		if (!createNewNetwork)
+			t.setImmutable(true);
 		clusterProperties.add(t);
 
 		clusterProperties.add(new Tunable("advancedParametersGroup",
@@ -157,7 +161,7 @@ public class FeatureVectorCluster extends AbstractAttributeClusterer implements 
 		// How to handle missing data
 		clusterProperties.add(new Tunable("zeroMissing",
 		                                  "Set missing data to zero (not common)",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		                                  Tunable.BOOLEAN, new Boolean(zeroMissing)));
 
 		clusterProperties.initializeProperties();
 		updateSettings(true);
@@ -168,10 +172,10 @@ public class FeatureVectorCluster extends AbstractAttributeClusterer implements 
 	}
 
 	public void tunableChanged(Tunable tunable) {
-		if (tunable.getName().equals("createEdges")) {
-			createEdges = ((Boolean) tunable.getValue()).booleanValue();
+		if (tunable.getName().equals("createNewNetwork")) {
+			createNewNetwork = ((Boolean) tunable.getValue()).booleanValue();
 			Tunable t = clusterProperties.get("edgeCutoff");
-			if (createEdges)
+			if (createNewNetwork)
 				t.setImmutable(false);
 			else
 				t.setImmutable(true);
@@ -190,6 +194,10 @@ public class FeatureVectorCluster extends AbstractAttributeClusterer implements 
 		if ((t != null) && (t.valueChanged() || force))
 			selectedOnly = ((Boolean) t.getValue()).booleanValue();
 
+		t = clusterProperties.get("ignoreMissing");
+		if ((t != null) && (t.valueChanged() || force))
+			ignoreMissing = ((Boolean) t.getValue()).booleanValue();
+
 		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
 			dataAttributes = (String) t.getValue();
@@ -203,9 +211,9 @@ public class FeatureVectorCluster extends AbstractAttributeClusterer implements 
 		if ((t != null) && (t.valueChanged() || force))
 			edgeAttribute = (String) t.getValue();
 
-		t = clusterProperties.get("createEdges");
+		t = clusterProperties.get("createNewNetwork");
 		if ((t != null) && (t.valueChanged() || force))
-			createEdges = ((Boolean) t.getValue()).booleanValue();
+			createNewNetwork = ((Boolean) t.getValue()).booleanValue();
 
 		t = clusterProperties.get("edgeCutoff");
 		if ((t != null) && (t.valueChanged() || force))
@@ -258,8 +266,8 @@ public class FeatureVectorCluster extends AbstractAttributeClusterer implements 
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 
 		// For each node, get the distance to all other nodes
-		double maxdistance = 0.0;
-		double mindistance = 0.0;
+		double maxdistance = Double.MIN_VALUE;
+		double mindistance = Double.MAX_VALUE;
 
 		double distanceMatrix[][] = new double[nNodes][nNodes];
 		for (int i = 0; i < nNodes; i++) {
@@ -280,7 +288,7 @@ public class FeatureVectorCluster extends AbstractAttributeClusterer implements 
 		}
 
 		int[] nodeArray = new int[2];
-		Map<CyEdge, Double> edgeList = new HashMap<CyEdge, Double>();
+		List<CyEdge> edgeList = new ArrayList<CyEdge>();
 		double scale = maxdistance - mindistance;
 
 		/* Performance tuning -- what's taking all the time!
@@ -296,7 +304,7 @@ public class FeatureVectorCluster extends AbstractAttributeClusterer implements 
 		for (int i = 0; i < nNodes; i++) {
 			for (int j = i+1; j < nNodes; j++) {
 				// time = System.currentTimeMillis();
-				double distance = distanceMatrix[i][j]/scale;
+				double distance = (distanceMatrix[i][j]-mindistance)/scale;
 				CyNode source = Cytoscape.getCyNode(matrix.getRowLabel(i));
 				CyNode target = Cytoscape.getCyNode(matrix.getRowLabel(j));
 				nodeArray[0] = source.getRootGraphIndex();
@@ -304,34 +312,25 @@ public class FeatureVectorCluster extends AbstractAttributeClusterer implements 
 
 				// nodeFetchTime += System.currentTimeMillis()-time;
 
-				if (createEdges == true && distance > edgeCutoff)
+				if (createNewNetwork == true && distance > edgeCutoff)
 					continue;
 
 				// time = System.currentTimeMillis();
-
 				CyEdge edge;
-				int[] edgeArray = network.getConnectingEdgeIndicesArray(nodeArray);
-				// edgeFetchTime += System.currentTimeMillis()-time;
-				// time = System.currentTimeMillis();
-
-				if ((edgeArray == null || edgeArray.length == 0) && createEdges == true) {
+				if (createNewNetwork == true) {
 					edge = myCreateEdge(source, target, edgeAttributes);
-
-					// edgeCreateTime += System.currentTimeMillis()-time;
-					// System.out.println("Creating edge between "+source+" and "+target);
-					if (edge != null) {
-						// System.out.println("Adding edge "+edge.getIdentifier()+" to network");
-						// time = System.currentTimeMillis();
-						network.addEdge(edge);
-						// networkAddTime += System.currentTimeMillis()-time;
-					}
-				} else if (edgeArray == null || edgeArray.length == 0) {
-					continue;
+					edgeList.add(edge);
 				} else {
-					edge = (CyEdge)network.getEdge(edgeArray[0]);
+					int[] edgeArray = network.getConnectingEdgeIndicesArray(nodeArray);
 					// edgeFetchTime += System.currentTimeMillis()-time;
+					// time = System.currentTimeMillis();
+					if (edgeArray == null || edgeArray.length == 0) {
+						continue;
+					} else {
+						edge = (CyEdge)network.getEdge(edgeArray[0]);
+						// edgeFetchTime += System.currentTimeMillis()-time;
+					}
 				}
-
 				if (edge == null) continue;
 				// time = System.currentTimeMillis();
 				edgeAttributes.setAttribute(edge.getIdentifier(), edgeAttribute, distance);
@@ -341,6 +340,18 @@ public class FeatureVectorCluster extends AbstractAttributeClusterer implements 
 				if (canceled) return;
 				monitor.setPercentCompleted((int)(25 + (75 * (double)i/(double)nNodes)));
 			}
+		}
+
+		// If we're supposed to, create the new network
+		if (createNewNetwork) {
+			List nodeList = network.nodesList();
+			CyNetwork net = Cytoscape.createNetwork(nodeList, edgeList, network.getTitle()+"--clustered",network,false);
+			// Create the network view
+			CyNetworkView view = Cytoscape.createNetworkView(net);
+			// If available, do a force-directed layout
+			CyLayoutAlgorithm alg = CyLayouts.getLayout("force-directed");
+			if (alg != null)
+				view.applyLayout(alg);
 		}
 
 		/*

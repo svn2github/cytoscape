@@ -76,7 +76,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 	protected boolean adjustDiagonals = false;
 	protected boolean debug = false;
 	protected boolean createGroups = false;
-	protected boolean ignoreMissing = false;
+	protected boolean ignoreMissing = true;
 	protected boolean interimRun = false;
 	protected boolean selectedOnly = false;
 	protected boolean zeroMissing = false;

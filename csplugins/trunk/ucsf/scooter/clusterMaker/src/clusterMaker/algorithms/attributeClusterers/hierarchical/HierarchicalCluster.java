@@ -130,17 +130,17 @@ public class HierarchicalCluster extends AbstractAttributeClusterer {
 		// Whether or not to only cluster selected nodes/edges
 		clusterProperties.add(new Tunable("selectedOnly",
 		                                  "Only use selected nodes/edges for cluster",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		                                  Tunable.BOOLEAN, new Boolean(selectedOnly)));
 
 		// Whether or not to cluster attributes as well as nodes
 		clusterProperties.add(new Tunable("clusterAttributes",
 		                                  "Cluster attributes as well as nodes", 
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		                                  Tunable.BOOLEAN, new Boolean(clusterAttributes)));
 
 		// For expression data, we might want to exclude missing data
 		clusterProperties.add(new Tunable("ignoreMissing",
 		                                  "Ignore nodes/edges with no data",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		                                  Tunable.BOOLEAN, new Boolean(ignoreMissing)));
 
 		clusterProperties.add(new Tunable("advancedParametersGroup",
 		                                  "Advanced Parameters",
@@ -151,17 +151,17 @@ public class HierarchicalCluster extends AbstractAttributeClusterer {
 		// How to handle missing data
 		clusterProperties.add(new Tunable("zeroMissing",
 		                                  "Set missing data to zero (not common)",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		                                  Tunable.BOOLEAN, new Boolean(zeroMissing)));
 
 		// Adjust loops
 		clusterProperties.add(new Tunable("adjustDiagonals",
 		                                  "Adjust loops (not common)",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		                                  Tunable.BOOLEAN, new Boolean(adjustDiagonals)));
 
 		// Whether or not to create groups
 		clusterProperties.add(new Tunable("createGroups",
 		                                  "Create groups from clusters", 
-		                                  Tunable.BOOLEAN, new Boolean(true)));
+		                                  Tunable.BOOLEAN, new Boolean(createGroups)));
 
 		clusterProperties.initializeProperties();
 		updateSettings(true);

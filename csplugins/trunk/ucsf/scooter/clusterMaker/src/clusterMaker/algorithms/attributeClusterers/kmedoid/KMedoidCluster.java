@@ -57,7 +57,7 @@ import clusterMaker.ui.KnnView;
 // clusterMaker imports
 
 public class KMedoidCluster extends AbstractAttributeClusterer {
-	int rNumber = 0;
+	int rNumber = 10;
 	KnnView knnView = null;
 
 	public KMedoidCluster() {
@@ -101,7 +101,7 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 		// Number of iterations
 		clusterProperties.add(new Tunable("iterations",
 		                                  "Number of iterations",
-		                                  Tunable.INTEGER, new Integer(10),
+		                                  Tunable.INTEGER, new Integer(rNumber),
 		                                  (Object)rNumber, (Object)null, 0));
 
 		// The distance metric to use
@@ -124,12 +124,12 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 		// Whether or not to only cluster selected nodes/edges
 		clusterProperties.add(new Tunable("selectedOnly",
 		                                  "Only use selected nodes/edges for cluster",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		                                  Tunable.BOOLEAN, new Boolean(selectedOnly)));
 
 		// Whether or not to cluster attributes as well as nodes
 		clusterProperties.add(new Tunable("clusterAttributes",
 		                                  "Cluster attributes as well as nodes", 
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		                                  Tunable.BOOLEAN, new Boolean(clusterAttributes)));
 
 /*
 		// For expression data, we might want to exclude missing data
@@ -141,7 +141,7 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 		// Whether or not to create groups
 		clusterProperties.add(new Tunable("createGroups",
 		                                  "Create groups from clusters", 
-		                                  Tunable.BOOLEAN, new Boolean(true)));
+		                                  Tunable.BOOLEAN, new Boolean(createGroups)));
 
 		clusterProperties.initializeProperties();
 		updateSettings(true);

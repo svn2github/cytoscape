@@ -106,18 +106,18 @@ public class APCluster extends AbstractNetworkClusterer  {
 		// Lambda Parameter
 		clusterProperties.add(new Tunable("lambda",
 		                                  "Lambda Parameter",
-		                                  Tunable.DOUBLE, new Double(.5),
+		                                  Tunable.DOUBLE, new Double(lambda),
 		                                  (Object)null, (Object)null, 0));
 		// Clustering Threshold
 		clusterProperties.add(new Tunable("preference",
 		                                  "Preference Parameter (Set to Avg Edge Weight if < 0)",
-		                                  Tunable.DOUBLE, new Double(-1),
+		                                  Tunable.DOUBLE, new Double(preference),
 		                                  (Object)null, (Object)null, 0));
 
 		// Number of iterations
 		clusterProperties.add(new Tunable("iterations",
 		                                  "Number of iterations",
-		                                  Tunable.INTEGER, new Integer(10),
+		                                  Tunable.INTEGER, new Integer(rNumber),
 		                                  (Object)null, (Object)null, 0));
 
 	       

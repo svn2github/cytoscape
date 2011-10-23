@@ -106,21 +106,21 @@ public class SCPSCluster extends AbstractNetworkClusterer  {
 		// Lambda Parameter
 		clusterProperties.add(new Tunable("epsilon",
 		                                  "epsilon Parameter",
-		                                  Tunable.DOUBLE, new Double(1.02),
+		                                  Tunable.DOUBLE, new Double(epsilon),
 		                                  (Object)null, (Object)null, 0));
 	      
 
 		// Number of iterations
 		clusterProperties.add(new Tunable("iterations",
 		                                  "Number of iterations",
-		                                  Tunable.INTEGER, new Integer(50),
+		                                  Tunable.INTEGER, new Integer(rNumber),
 		                                  (Object)null, (Object)null, 0));
 
 		
 		// K. Trumps epsilon if set to greater then zero
                 clusterProperties.add(new Tunable("knumber",
                                                   "Number of clusters",
-                                                  Tunable.INTEGER, new Integer(-1),
+                                                  Tunable.INTEGER, new Integer(knumber),
                                                   (Object)null, (Object)null, 0));
 
 	       

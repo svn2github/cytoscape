@@ -32,12 +32,13 @@
  */
 package clusterMaker.algorithms.attributeClusterers;
 
-import java.util.List;
-import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.lang.Exception;
 
 import cytoscape.CyNode;
@@ -478,7 +479,7 @@ public class Matrix {
 		nodeList = sortNodeList(nodeList);
 
 		// Make a map of the conditions, indexed by CyNode
-		HashMap<CyNode,HashMap<String,Double>>nodeCondMap = new HashMap<CyNode,HashMap<String,Double>>();
+		Map<CyNode,Map<String,Double>>nodeCondMap = new HashMap<CyNode,Map<String,Double>>();
 
 		// Make a map of the conditions, by name
 		List<String>condList = Arrays.asList(weightAttributes);
@@ -489,7 +490,7 @@ public class Matrix {
 		// Iterate over all of our nodes, getting the conditions attributes
 		for (CyNode node: nodeList) {
 			// Create the map for this node
-			HashMap<String,Double>thisCondMap = new HashMap<String,Double>();
+			Map<String,Double>thisCondMap = new HashMap<String,Double>();
 
 			for (int attrIndex = 0; attrIndex < weightAttributes.length; attrIndex++) {
 				String attr = weightAttributes[attrIndex];
@@ -505,6 +506,7 @@ public class Matrix {
 					continue; // At some point, handle lists?
 				}
 				if (!ignoreMissing || value != null) {
+					// System.out.println("Node = "+node.getIdentifier()+", attribute = "+attr+", ignoreMissing = "+ignoreMissing+" value = "+value);
 					// Set it
 					thisCondMap.put(attr, value);
 				}
@@ -530,7 +532,7 @@ public class Matrix {
 				if (!nodeCondMap.containsKey(node))
 					continue;
 
-				HashMap<String,Double>thisCondMap = nodeCondMap.get(node);
+				Map<String,Double>thisCondMap = nodeCondMap.get(node);
 				this.columnLabels[column] = node.getIdentifier();
 				this.columnNodes[column] = node;
 				for (int row=0; row < this.nRows; row++) {
@@ -558,7 +560,7 @@ public class Matrix {
 					continue;
 				this.rowLabels[row] = node.getIdentifier();
 				this.rowNodes[row] = node;
-				HashMap<String,Double>thisCondMap = nodeCondMap.get(node);
+				Map<String,Double>thisCondMap = nodeCondMap.get(node);
 				for (int column=0; column < this.nColumns; column++) {
 					String columnLabel = this.columnLabels[column];
 					if (thisCondMap.containsKey(columnLabel)) {
@@ -588,7 +590,7 @@ public class Matrix {
 
 	// sortNodeList does an alphabetical sort on the names of the nodes.
 	private List<CyNode>sortNodeList(List<CyNode>nodeList) {
-		HashMap<String,CyNode>nodeMap = new HashMap<String, CyNode>();
+		Map<String,CyNode>nodeMap = new HashMap<String, CyNode>();
 		// First build a string array
 		String nodeNames[] = new String[nodeList.size()];
 		int index = 0;

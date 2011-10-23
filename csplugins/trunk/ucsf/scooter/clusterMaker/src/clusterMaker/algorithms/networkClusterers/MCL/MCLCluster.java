@@ -68,7 +68,7 @@ import clusterMaker.ui.NewNetworkView;
 public class MCLCluster extends AbstractNetworkClusterer  {
 	
 	double inflation_parameter = 2.0;
-	int rNumber = 8;
+	int rNumber = 16;
 	double clusteringThresh = 1e-15;
 	double maxResidual = 0.001;
 	int maxThreads = 0;
@@ -108,7 +108,7 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		// Inflation Parameter
 		clusterProperties.add(new Tunable("inflation_parameter",
 		                                  "Granularity parameter (inflation value)",
-		                                  Tunable.DOUBLE, new Double(2.0),
+		                                  Tunable.DOUBLE, new Double(inflation_parameter),
 		                                  (Object)null, (Object)null, 0));
 
 		// Use the standard edge attribute handling stuff....
@@ -120,25 +120,25 @@ public class MCLCluster extends AbstractNetworkClusterer  {
 		// Clustering Threshold
 		clusterProperties.add(new Tunable("clusteringThresh",
 		                                  "Weak edge weight pruning threshold",
-		                                  Tunable.DOUBLE, new Double(1e-15),
+		                                  Tunable.DOUBLE, new Double(clusteringThresh),
 		                                  (Object)null, (Object)null, 0));
 
 		// Number of iterations
 		clusterProperties.add(new Tunable("iterations",
 		                                  "Number of iterations",
-		                                  Tunable.INTEGER, new Integer(16),
+		                                  Tunable.INTEGER, new Integer(rNumber),
 		                                  (Object)null, (Object)null, 0));
 
 		// Number of iterations
 		clusterProperties.add(new Tunable("maxResidual",
 		                                  "Maximum residual value",
-		                                  Tunable.DOUBLE, new Double(.0001),
+		                                  Tunable.DOUBLE, new Double(maxResidual),
 		                                  (Object)null, (Object)null, 0));
 
 		// Maximum number of CPU's to use
 		clusterProperties.add(new Tunable("maxThreads",
 		                                  "Maximum number of threads",
-		                                  Tunable.INTEGER, new Integer(0),
+		                                  Tunable.INTEGER, new Integer(maxThreads),
 		                                  (Object)null, (Object)null, 0));
 
 		super.advancedProperties();

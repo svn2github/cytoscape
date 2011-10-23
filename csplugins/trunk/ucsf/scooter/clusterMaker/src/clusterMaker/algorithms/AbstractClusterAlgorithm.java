@@ -93,9 +93,9 @@ public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 		clusterProperties.add(new Tunable("clusterAttrName", "Cluster attribute", 
 		                                  Tunable.STRING, clusterAttributeName));
 		clusterProperties.add(new Tunable("createGroups", "Create metanodes with results", 
-		                                  Tunable.BOOLEAN, new Boolean(false)));
+		                                  Tunable.BOOLEAN, new Boolean(createGroups)));
 		clusterProperties.add(new Tunable("debug", "Enable debugging", 
-		                                   Tunable.BOOLEAN, new Boolean(false))); 
+		                                   Tunable.BOOLEAN, new Boolean(debug))); 
 	}
 
 	public void updateSettings(boolean force) {

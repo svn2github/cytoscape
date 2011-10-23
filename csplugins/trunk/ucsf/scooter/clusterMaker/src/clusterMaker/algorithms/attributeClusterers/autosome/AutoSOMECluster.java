@@ -137,6 +137,15 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		logger = CyLogger.getLogger(AutoSOMECluster.class);
 		this.heatmap = heatmap;
 		if (heatmap) cluster_output = 1;
+
+		// Initialize our settings
+		settings.ensemble_runs = 50;
+		settings.mst_pval = 0.05;
+		settings.threads = Runtime.getRuntime().availableProcessors();
+		settings.logNorm = false;
+		settings.unitVar = false;
+		settings.distMatrix = false;
+
 		initializeProperties();
 	}
 
@@ -178,7 +187,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 						  (Object)attributeArray, (Object)null, Tunable.MULTISELECT));
 
 		clusterProperties.add(new Tunable("selectedOnly", "Only use selected nodes for clustering",
-						  Tunable.BOOLEAN, new Boolean(false)));
+						  Tunable.BOOLEAN, new Boolean(selectedNodes)));
 
 		Tunable ign = new Tunable("ignoreMissing", "Ignore nodes/edges with no data",
 														  Tunable.BOOLEAN, ignoreMissing);
@@ -198,20 +207,20 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		// Clustering Threshold
 		ensembleRuns = new Tunable("ensembleRuns",
 						  "Number of Ensemble Runs",
-						  Tunable.INTEGER, new Integer(50),
+						  Tunable.INTEGER, new Integer(settings.ensemble_runs),
 						  new Integer(1), (Object)null, 0);
 		clusterProperties.add(ensembleRuns);
 
 		// Number of iterations
 		clusterProperties.add(new Tunable("pvalueThresh",
 						  "P-Value Threshold",
-						  Tunable.DOUBLE, new Double(0.05),
+						  Tunable.DOUBLE, new Double(settings.mst_pval),
 						  new Double(0), new Double(1), 0));
 
 		// Number of iterations
 		clusterProperties.add(new Tunable("numThreads",
 						  "Number of Threads (No. CPUs)",
-						  Tunable.INTEGER, new Integer(Runtime.getRuntime().availableProcessors()),
+						  Tunable.INTEGER, new Integer(settings.threads),
 						  new Integer(1), (Object)null, 0));
 	      
 
@@ -230,12 +239,12 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 
 		logscaling = new Tunable("logScaling",
 						  "Log2 Scaling",
-						  Tunable.BOOLEAN, new Boolean(false));
+						  Tunable.BOOLEAN, new Boolean(settings.logNorm));
 		clusterProperties.add(logscaling);
 
 		unitVar = new Tunable("unitVariance",
 						  "Unit Variance",
-						  Tunable.BOOLEAN, new Boolean(false));
+						  Tunable.BOOLEAN, new Boolean(settings.unitVar));
 		clusterProperties.add(unitVar);
 
 		medCent = new Tunable("medCenter",
@@ -263,7 +272,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 						  new Boolean(true), null, Tunable.COLLAPSABLE));
 
 		Tunable fcn = new Tunable("enableFCN", "Perform Fuzzy Clustering",
-						  Tunable.BOOLEAN, new Boolean(false));
+						  Tunable.BOOLEAN, new Boolean(settings.distMatrix));
 		fcn.addTunableValueListener(this);
 		clusterProperties.add(fcn);
 

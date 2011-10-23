@@ -58,8 +58,8 @@ public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorith
 	protected String dataAttributes = null;
 	protected DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN;
 	protected boolean clusterAttributes = false;
-	protected boolean createGroups = true;
-	protected boolean ignoreMissing = false;
+	protected boolean createGroups = false;
+	protected boolean ignoreMissing = true;
 	protected boolean selectedOnly = false;
 	protected boolean adjustDiagonals = false;
 	protected boolean zeroMissing = false;
