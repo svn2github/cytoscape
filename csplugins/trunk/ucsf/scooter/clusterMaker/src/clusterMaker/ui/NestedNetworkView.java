@@ -128,9 +128,9 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 
 	public String getName() { 
 		if (checkForAvailability) {
-			return "Create New Network with nested clusters";
+			return "Create New Network with Nested Clusters";
 		} else {
-			return "Create New Network with nested networks from attribute"; 
+			return "Create New Network with Nested Networks from Attribute"; 
 		}
 	}
 
