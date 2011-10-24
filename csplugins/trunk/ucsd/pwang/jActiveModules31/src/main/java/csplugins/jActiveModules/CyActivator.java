@@ -63,9 +63,6 @@ public class CyActivator extends AbstractCyActivator {
 				cytoscapePropertiesServiceRef, cyNetworkManagerServiceRef,cyNetworkViewManagerServiceRef, visualMappingManagerRef, 
 				cyNetworkFactoryServiceRef, cyRootNetworkFactory, cyNetworkViewFactoryServiceRef,cyLayoutsServiceRef,
 				taskManagerServiceRef,cyEventHelperServiceRef,apfParams, mainPanel);
-
-		ActiveModulesPanelSelectedListener activeModulesPanelSelectedListener = new ActiveModulesPanelSelectedListener(mainPanel);
-		
 		
 		registerAllServices(bc,mainPanel, new Properties());
 		
@@ -73,9 +70,7 @@ public class CyActivator extends AbstractCyActivator {
 				
 		registerService(bc,activeModulesCytoPanelComponent,CytoPanelComponent.class, new Properties());
 		
-		registerAllServices(bc, activeModulesUI, new Properties());
-		
-		registerService(bc,activeModulesPanelSelectedListener,CytoPanelComponentSelectedListener.class, new Properties());
+		registerAllServices(bc, activeModulesUI, new Properties());		
 	}
 }
 
