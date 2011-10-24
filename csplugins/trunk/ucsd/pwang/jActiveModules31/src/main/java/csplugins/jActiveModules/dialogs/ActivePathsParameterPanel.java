@@ -77,7 +77,6 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.AbstractCellEditor;
-import javax.swing.table.TableCellEditor;
 import javax.swing.DefaultCellEditor;
 import java.util.Collection;
 import javax.swing.JOptionPane;
@@ -85,23 +84,18 @@ import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import java.util.Comparator;
 import org.cytoscape.util.swing.ColumnResizer;
-//import cytoscape.util.swing.CyCollapsiblePanel;
 import org.cytoscape.model.CyColumn;
 import java.util.Iterator;
 import org.cytoscape.model.CyTableUtil;
-import org.cytoscape.model.events.RowsSetEvent;
-import org.cytoscape.model.events.RowsSetListener;
-import org.cytoscape.model.events.TableAddedListener;
-import org.cytoscape.model.events.TableAddedEvent;
-import org.cytoscape.model.events.RowsCreatedEvent;
-import org.cytoscape.model.events.RowsCreatedListener;
+import org.cytoscape.model.events.ColumnCreatedEvent;
+import org.cytoscape.model.events.ColumnCreatedListener;
 import org.cytoscape.application.swing.events.CytoPanelComponentSelectedListener;
 import org.cytoscape.application.swing.events.CytoPanelComponentSelectedEvent;
 import org.cytoscape.application.swing.CytoPanelComponent;
 
 
 public class ActivePathsParameterPanel extends JPanel implements ItemListener,
-		RowsSetListener, RowsCreatedListener, CytoPanelComponentSelectedListener {
+		ColumnCreatedListener, CytoPanelComponentSelectedListener {
 
 	private static final long serialVersionUID = -6759180275710507653L;
 
@@ -1729,6 +1723,7 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener,
 				scalingMethods.add((String)model.getRow(selectedIndices[i])[4]);
 			}
 		
+			apfParams.setNetwork(networkPanel.getSelectedNetwork());
 			apfParams.setExpressionAttributes(selectedNames);
 			apfParams.setSwitchSigs(switchSigs);
 			apfParams.setScalingMethods(scalingMethods);
@@ -1762,34 +1757,27 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener,
 		if (!this.cytoPanel_jActiveModules_isSelected){
 			return;
 		}
-		
+
 		this.populateAttributeTable(this.getDataVect());
 		
+		apfParams.setNetwork(networkPanel.getSelectedNetwork());
 		apfParams.reloadExpressionAttributes();
 	}
 	
 	@Override
-	public void handleEvent(RowsSetEvent e) {
-		System.out.println("RowsSetEvent received ....asdfghjkl");
-		updateAttributePanel();
-	}
-
-
-	@Override
-	public void handleEvent(RowsCreatedEvent e) {
-		System.out.println("RowsCreatedEvent received ....asdfghjkl");
+	public void handleEvent(ColumnCreatedEvent e) {
 		updateAttributePanel();
 	}
 
 	public void handleEvent(CytoPanelComponentSelectedEvent e){
 		if (e.getCytoPanel().getSelectedComponent() == this){
 			this.cytoPanel_jActiveModules_isSelected = true;
+			updateAttributePanel();
 		}
 		else {
 			this.cytoPanel_jActiveModules_isSelected = false;
 		}
 	}
-
 
 	private boolean cytoPanel_jActiveModules_isSelected = false;
 
