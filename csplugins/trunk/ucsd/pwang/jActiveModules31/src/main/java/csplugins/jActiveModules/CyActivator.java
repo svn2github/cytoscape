@@ -1,4 +1,3 @@
-
 package csplugins.jActiveModules;
 
 import org.cytoscape.work.TaskManager;
@@ -68,6 +67,7 @@ public class CyActivator extends AbstractCyActivator {
 		ActiveModulesPanelSelectedListener activeModulesPanelSelectedListener = new ActiveModulesPanelSelectedListener(mainPanel);
 		
 		
+		registerAllServices(bc,mainPanel, new Properties());
 		
 		registerAllServices(bc,networkSelectorPanel, new Properties());
 				
