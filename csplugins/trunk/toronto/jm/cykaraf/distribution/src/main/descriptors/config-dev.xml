@@ -3,13 +3,9 @@
     <line-ending>keep</line-ending>
     <karaf>
         <feature-repository>target/features-repo-dev</feature-repository>
-        <distribution base="target/dependencies/windows/apache-karaf-${karaf.version}">
-            <scripts>
-                <script>bin/karaf.bat</script>
-            </scripts>
-        </distribution>
         <distribution base="target/dependencies/unix/apache-karaf-${karaf.version}">
             <scripts>
+                <script>bin/karaf.bat</script>
                 <script>bin/karaf</script>
             </scripts>
         </distribution>

@@ -8,6 +8,7 @@
     
     <bundle start-level="1">mvn:org.cytoscape/splash-updater-impl/${cytoscape.support.version}</bundle>
     
+    <bundle start-level="10">mvn:org.cytoscape/cmdline/${cytoscape.support.version}</bundle>
     <bundle start-level="10">mvn:org.cytoscape/equations-api/${cytoscape.api.version}</bundle>
     <bundle start-level="10">mvn:org.cytoscape/di-util-api/${cytoscape.api.version}</bundle>
     <bundle start-level="10">mvn:org.cytoscape/model-api/${cytoscape.api.version}</bundle>
@@ -29,10 +30,11 @@
     <bundle start-level="10">mvn:org.cytoscape/webservice-api/${cytoscape.api.version}</bundle>
     <bundle start-level="10">mvn:org.cytoscape/application-api/${cytoscape.api.version}</bundle>
     
+    <bundle start-level="15">mvn:org.cytoscape/cmdline-impl/${cytoscape.support.version}</bundle>
     <bundle start-level="15">mvn:org.cytoscape/property-impl/${cytoscape.impl.version}</bundle>
-    <bundle start-level="15">mvn:org.cytoscape/graph-render/3.0.0-alpha8-SNAPSHOT</bundle>
-    <bundle start-level="15">mvn:org.cytoscape/util-intr/3.0.0-alpha8-SNAPSHOT</bundle>
-    <bundle start-level="15">mvn:org.cytoscape/spacial/3.0.0-alpha8-SNAPSHOT</bundle>
+    <bundle start-level="15">mvn:org.cytoscape/graph-render/${cytoscape.impl.version}</bundle>
+    <bundle start-level="15">mvn:org.cytoscape/util-intr/${cytoscape.impl.version}</bundle>
+    <bundle start-level="15">mvn:org.cytoscape/spacial/${cytoscape.impl.version}</bundle>
     
     <bundle start-level="2">mvn:cytoscape-temp/l2fprod-common-sheet/7.3</bundle>
     
@@ -112,14 +114,10 @@
     <bundle start-level="70">mvn:org.cytoscape/editor-impl/${cytoscape.impl.version}</bundle>
     <bundle start-level="70">mvn:org.cytoscape/layout-prefuse-impl/${cytoscape.impl.version}</bundle>
     <bundle start-level="70">mvn:org.cytoscape/linkout-impl/${cytoscape.impl.version}</bundle>
-    <!--
     <bundle start-level="70">mvn:org.cytoscape/psi-mi-impl/${cytoscape.impl.version}</bundle>
-    -->
     <bundle start-level="70">mvn:org.cytoscape/network-analyzer-impl/${cytoscape.impl.version}</bundle>
     <bundle start-level="70">mvn:org.cytoscape/table-import-impl/${cytoscape.impl.version}</bundle>
-    <!--
     <bundle start-level="70">mvn:org.cytoscape/webservice-biomart-client-impl/${cytoscape.impl.version}</bundle>
-    -->
     <bundle start-level="70">mvn:org.cytoscape/webservice-ncbi-client-impl/${cytoscape.impl.version}</bundle>
     <bundle start-level="70">mvn:org.cytoscape/filter-impl/${cytoscape.impl.version}</bundle>
     <bundle start-level="70">mvn:org.cytoscape/sbml-impl/${cytoscape.impl.version}</bundle>

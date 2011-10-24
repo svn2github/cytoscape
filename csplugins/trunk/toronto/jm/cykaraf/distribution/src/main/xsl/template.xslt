@@ -37,18 +37,16 @@
         </fileSet>
 
         <!-- Copy over bin/* separately to get the correct file mode -->
-        <xsl:for-each select="/config/karaf/distribution">
-            <fileSet>
-                <directory><xsl:value-of select="@base"/></directory>
-                <outputDirectory>/framework</outputDirectory>
-                <includes>
-                    <xsl:for-each select="scripts/script">
-                        <include><xsl:value-of select="."/></include>
-                    </xsl:for-each>
-                </includes>
-                <fileMode>0755</fileMode>
-            </fileSet>
-        </xsl:for-each>
+        <fileSet>
+            <directory>target/dependencies/launcher</directory>
+            <outputDirectory>/framework</outputDirectory>
+            <includes>
+                <xsl:for-each select="scripts/script">
+                    <include><xsl:value-of select="."/></include>
+                </xsl:for-each>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
 
         <fileSet>
             <directory>src/main/bin</directory>
@@ -64,6 +62,14 @@
 
         <fileSet>
             <directory>target/dependencies/branding</directory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+            <outputDirectory>/framework/lib</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>target/dependencies/launcher</directory>
             <includes>
                 <include>*.jar</include>
             </includes>
