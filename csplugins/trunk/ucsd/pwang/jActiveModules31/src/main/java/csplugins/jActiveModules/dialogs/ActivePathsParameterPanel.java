@@ -89,9 +89,19 @@ import org.cytoscape.util.swing.ColumnResizer;
 import org.cytoscape.model.CyColumn;
 import java.util.Iterator;
 import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.model.events.RowsSetEvent;
+import org.cytoscape.model.events.RowsSetListener;
+import org.cytoscape.model.events.TableAddedListener;
+import org.cytoscape.model.events.TableAddedEvent;
+import org.cytoscape.model.events.RowsCreatedEvent;
+import org.cytoscape.model.events.RowsCreatedListener;
+import org.cytoscape.application.swing.events.CytoPanelComponentSelectedListener;
+import org.cytoscape.application.swing.events.CytoPanelComponentSelectedEvent;
+import org.cytoscape.application.swing.CytoPanelComponent;
 
 
-public class ActivePathsParameterPanel extends JPanel implements ItemListener {
+public class ActivePathsParameterPanel extends JPanel implements ItemListener,
+		RowsSetListener, RowsCreatedListener, CytoPanelComponentSelectedListener {
 
 	private static final long serialVersionUID = -6759180275710507653L;
 
@@ -201,7 +211,7 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener {
 		
 		initComponents();
 
-		populateAttributeTable();
+		populateAttributeTable(this.getDataVect());
 		
 		createHelpDialog();
 		addButtonEventListeners();
@@ -338,9 +348,9 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener {
     private javax.swing.JPanel attrSelectionPanel;
     private javax.swing.JTable tblAttrSelection;
 	
-	private void populateAttributeTable() {
+	private void populateAttributeTable(Vector<Object[]> dataVect) {
 
-		AttrSelectionTableModel tableModel = new AttrSelectionTableModel(getDataVect());
+		AttrSelectionTableModel tableModel = new AttrSelectionTableModel(dataVect);
 		this.tblAttrSelection.setModel(tableModel);
 		
 		// Add a exclamation point if attribute is not p-value 
@@ -1749,9 +1759,39 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener {
 	}
 	
 	private void updateAttributePanel(){
-		AttrSelectionTableModel tableModel = new AttrSelectionTableModel(getDataVect());
-		this.tblAttrSelection.setModel(tableModel);
+		if (!this.cytoPanel_jActiveModules_isSelected){
+			return;
+		}
+		
+		this.populateAttributeTable(this.getDataVect());
+		
+		apfParams.reloadExpressionAttributes();
 	}
 	
+	@Override
+	public void handleEvent(RowsSetEvent e) {
+		System.out.println("RowsSetEvent received ....asdfghjkl");
+		updateAttributePanel();
+	}
+
+
+	@Override
+	public void handleEvent(RowsCreatedEvent e) {
+		System.out.println("RowsCreatedEvent received ....asdfghjkl");
+		updateAttributePanel();
+	}
+
+	public void handleEvent(CytoPanelComponentSelectedEvent e){
+		if (e.getCytoPanel().getSelectedComponent() == this){
+			this.cytoPanel_jActiveModules_isSelected = true;
+		}
+		else {
+			this.cytoPanel_jActiveModules_isSelected = false;
+		}
+	}
+
+
+	private boolean cytoPanel_jActiveModules_isSelected = false;
+
 } // class ActivePathsParametersPopupDialog
 
