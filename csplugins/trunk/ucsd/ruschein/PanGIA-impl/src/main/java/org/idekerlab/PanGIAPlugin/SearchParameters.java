@@ -1,7 +1,7 @@
 package org.idekerlab.PanGIAPlugin;
 
 
-import cytoscape.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 //import cytoscape.util.ScalingMethod;
 
 
