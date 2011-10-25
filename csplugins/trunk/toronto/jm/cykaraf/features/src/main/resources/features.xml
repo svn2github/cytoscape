@@ -30,7 +30,7 @@
     <bundle start-level="10">mvn:org.cytoscape/webservice-api/${cytoscape.api.version}</bundle>
     <bundle start-level="10">mvn:org.cytoscape/application-api/${cytoscape.api.version}</bundle>
     
-    <bundle start-level="15">mvn:org.cytoscape/cmdline-impl/${cytoscape.support.version}</bundle>
+    <bundle start-level="15">mvn:org.cytoscape.distribution/cmdline-impl/${project.version}</bundle>
     <bundle start-level="15">mvn:org.cytoscape/property-impl/${cytoscape.impl.version}</bundle>
     <bundle start-level="15">mvn:org.cytoscape/graph-render/${cytoscape.impl.version}</bundle>
     <bundle start-level="15">mvn:org.cytoscape/util-intr/${cytoscape.impl.version}</bundle>
