@@ -2,17 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
-		<groupId>org.cytoscape</groupId>
+		<groupId>org.cytoscape.distribution</groupId>
 		<artifactId>parent</artifactId>
-		<version>3.0.0-alpha9-SNAPSHOT</version>
+		<version>3.0.0-M4-SNAPSHOT</version>
+		<relativePath>..</relativePath>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.cytoscape</groupId>
 	<artifactId>cmdline-impl</artifactId>
-	<version>3.0.0-alpha7-SNAPSHOT</version>
 
-	<name>Command Line Provider Implementation</name>
+	<name>Cytoscape Command Line Provider Implementation</name>
 
 	<properties>
 		<bundle.symbolicName>org.cytoscape.cmdline-impl</bundle.symbolicName>
@@ -31,17 +30,17 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>service-api</artifactId>
-			<version>3.0.0-alpha8-SNAPSHOT</version>
+			<version>${cytoscape.api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape.distribution</groupId>
-			<artifactId>launcher</artifactId>
-			<version>3.0.0-alpha7-SNAPSHOT</version>
+			<artifactId>karaf-launcher</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>cmdline</artifactId>
-			<version>3.0.0-alpha7-SNAPSHOT</version>
+			<version>${cytoscape.support.version}</version>
 		</dependency>
 	</dependencies>
 	

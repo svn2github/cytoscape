@@ -1,5 +1,6 @@
 <config>
-    <output-format>tar.gz</output-format>
+    <id>dev</id>
+    <output-format>dir</output-format>
     <line-ending>keep</line-ending>
     <karaf>
         <feature-repository>target/features-repo-dev</feature-repository>

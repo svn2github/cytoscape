@@ -8,8 +8,12 @@
     
     <xsl:template match="/">
 <assembly>
-    <id></id>
+    <id><xsl:value-of select="/config/id"/></id>
 
+    <xsl:if test="/config/id = 'dev'">
+        <includeBaseDirectory>false</includeBaseDirectory>
+    </xsl:if>
+    
     <formats>
         <format><xsl:value-of select="/config/output-format"/></format>
     </formats>
@@ -45,6 +49,9 @@
                     <include><xsl:value-of select="."/></include>
                 </xsl:for-each>
             </includes>
+            <excludes>
+                <exclude>*.jar</exclude>
+            </excludes>
             <fileMode>0755</fileMode>
         </fileSet>
 

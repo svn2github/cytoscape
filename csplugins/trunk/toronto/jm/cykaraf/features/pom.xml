@@ -3,22 +3,22 @@
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	 
-	<groupId>org.cytoscape.distribution</groupId>
+	<parent>
+		<groupId>org.cytoscape.distribution</groupId>
+		<artifactId>parent</artifactId>
+		<version>3.0.0-M4-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+
 	<artifactId>features</artifactId>
 	<packaging>pom</packaging>
-	<version>3.0.0-M4-SNAPSHOT</version>
 	<name>Cytoscape Feature Repository</name>
 	
-	<properties>
-		<cytoscape.api.version>3.0.0-alpha8-SNAPSHOT</cytoscape.api.version>
-		<cytoscape.impl.version>3.0.0-alpha8-SNAPSHOT</cytoscape.impl.version>
-		<cytoscape.support.version>3.0.0-alpha7-SNAPSHOT</cytoscape.support.version>
-	</properties>
 	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.4.3</version>
+				<version>${maven-resources-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>copy-resources</id>
