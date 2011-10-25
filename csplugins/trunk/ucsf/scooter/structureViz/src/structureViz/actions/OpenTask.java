@@ -65,12 +65,12 @@ public class OpenTask implements Runnable {
 			// System.out.println("Looking at structure "+structure.name());
 			// See if this structure is already open somewhere
 			Structure s = CyChimera.findStructureForModel(null, structureName, false);
-			if (s != null) {
+			if (s != null && s.modelNumber() >= 0) {
 				// System.out.println("Found existing structure: "+s.toString()+", model = "+s.modelNumber());
 				s.addStructure(structure);
 				structure = s;
 			}
-			if (!chimera.isOpen(structure))
+			if (!chimera.containsModel(structure))
 				chimera.open(structure);
 		}
 	}

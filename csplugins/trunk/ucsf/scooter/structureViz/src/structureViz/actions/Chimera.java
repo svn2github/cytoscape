@@ -153,20 +153,6 @@ public class Chimera {
 	}
 
 	/**
- 	 * Return true if this structure is currently open
- 	 *
- 	 * @param structure the Structure we're inquiring about
- 	 * @return true if open
- 	 */
-	public boolean isOpen(Structure structure) {
-		// Get the model number
-		int modelNumber = structure.modelNumber();
-		if (modelHash.containsKey(modelNumber))
-			return true;
-		return false;
-	}
-
-	/**
 	 * Return our network view
 	 *
 	 * @return the network view we were created with
@@ -228,6 +214,19 @@ public class Chimera {
 	 */
 	public boolean containsModel(int modelNumber, int subModelNumber) {
 		return modelHash.containsKey(makeModelKey(modelNumber, subModelNumber));
+	}
+
+	/**
+ 	 * Return true if this structure is currently open
+ 	 *
+ 	 * @param structure the Structure we're inquiring about
+ 	 * @return true if open
+ 	 */
+	public boolean containsModel(Structure structure) {
+		// Get the model number
+		int modelNumber = structure.modelNumber();
+		int subModelNumber = structure.subModelNumber();
+		return containsModel(modelNumber, subModelNumber);
 	}
 
 	/**

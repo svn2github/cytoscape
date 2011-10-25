@@ -115,7 +115,7 @@ public class Structure {
 	protected Structure (String name, Map<GraphObject, GraphObject> goMap, 
 	                     StructureType type) {
 		this.structureName = name;
-		this.modelNumber = nextModel;
+		this.modelNumber = -1;
 		this.subModelNumber = 0;
 		this.residueMap = new HashMap<GraphObject, List<String>>();
 		this.type = type;
