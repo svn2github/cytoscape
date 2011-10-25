@@ -1,4 +1,5 @@
 <config>
+    <id>unix</id>
     <output-format>tar.gz</output-format>
     <line-ending>unix</line-ending>
     <karaf>

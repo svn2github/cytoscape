@@ -1,4 +1,5 @@
 <config>
+    <id>windows</id>
     <output-format>zip</output-format>
     <line-ending>dos</line-ending>
     <karaf>
