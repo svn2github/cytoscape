@@ -1,6 +1,6 @@
 package org.idekerlab.PanGIAPlugin;
 
-import cytoscape.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 public class PanGIAOutput
 {
