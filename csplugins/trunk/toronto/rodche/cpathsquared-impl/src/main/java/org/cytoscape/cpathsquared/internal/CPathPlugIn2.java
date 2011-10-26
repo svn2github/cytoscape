@@ -48,7 +48,7 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import org.cytoscape.cpathsquared.internal.web_service.CPathProperties;
+import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
 
 /**
  * The cPath plugin class.  It gets called by Cytoscape's plugin manager

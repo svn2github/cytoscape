@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.cytoscape.biopax.MapBioPaxToCytoscape;
-import org.cytoscape.cpathsquared.internal.web_service.CPathProperties;
+import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 

@@ -31,8 +31,8 @@ import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.filters.ChainedFilter;
 import org.cytoscape.cpathsquared.internal.filters.DataSourceFilter;
 import org.cytoscape.cpathsquared.internal.filters.EntityTypeFilter;
-import org.cytoscape.cpathsquared.internal.schemas.summary_response.BasicRecordType;
-import org.cytoscape.model.CyNetwork;
+
+import cpath.service.jaxb.SearchHit;
 
 /**
  * Interaction Bundle Panel.
@@ -48,20 +48,12 @@ public class InteractionBundlePanel extends JPanel {
     private JTreeWithCheckNodes tree;
     private CollapsablePanel filterPanel;
     private JDialog dialog;
-    private CyNetwork mergeNetwork;
 	private final CPath2Factory factory;
 
     public InteractionBundlePanel(InteractionBundleModel
             interactionBundleModel, JDialog dialog, CPath2Factory factory) {
         this(interactionBundleModel, factory);
         this.dialog = dialog;
-    }
-
-    public InteractionBundlePanel(InteractionBundleModel
-            interactionBundleModel, CyNetwork mergeNetwork, JDialog dialog, CPath2Factory factory) {
-        this(interactionBundleModel, factory);
-        this.dialog = dialog;
-        this.mergeNetwork = mergeNetwork;
     }
 
     public InteractionBundlePanel(InteractionBundleModel
@@ -183,7 +175,7 @@ public class InteractionBundlePanel extends JPanel {
                      * @param treeModelEvent Tree Model Event Object.
                      */
                     public void treeNodesChanged(TreeModelEvent treeModelEvent) {
-                        java.util.List<BasicRecordType> passedRecordList = executeFilter();
+                        java.util.List<SearchHit> passedRecordList = executeFilter();
                         if (passedRecordList != null) {
                             matchingInteractionsLabel.setText("Matching Interactions:  "
                                     + passedRecordList.size());
@@ -225,7 +217,7 @@ public class InteractionBundlePanel extends JPanel {
         retrieveButton = new JButton("Retrieve Interactions");
         retrieveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
-                List<BasicRecordType> passedRecordList = executeFilter();
+                List<SearchHit> passedRecordList = executeFilter();
                 if (passedRecordList.size() == 0) {
                     JOptionPane.showMessageDialog(factory.getCySwingApplication().getJFrame(),
                             "Your current filter settings result in 0 matching interactions.  "
@@ -241,18 +233,14 @@ public class InteractionBundlePanel extends JPanel {
                                 }
                             });
                     }
-                    if (mergeNetwork == null) {
-                        detailsFrame.setVisible(true);
-                    } else {
-                        detailsFrame.downloadInteractions(mergeNetwork);
-                    }
+                    detailsFrame.setVisible(true);
                 }
             }
         });
         footer.add(retrieveButton);
     }
 
-    private List<BasicRecordType> executeFilter() {
+    private List<SearchHit> executeFilter() {
         Set<String> dataSourceSet = new HashSet<String>();
         Set<String> entityTypeSet = new HashSet<String>();
         int childCount = dataSourceFilter.getChildCount();
@@ -278,10 +266,10 @@ public class InteractionBundlePanel extends JPanel {
         EntityTypeFilter entityTypeFilter = new EntityTypeFilter(entityTypeSet);
         chainedFilter.addFilter(dataSourceFilter);
         chainedFilter.addFilter(entityTypeFilter);
-        List<BasicRecordType> passedRecordList;
+        List<SearchHit> passedRecordList;
         try {
             passedRecordList = chainedFilter.filter(interactionBundleModel.getRecordList().
-                    getSummaryResponse().getRecord());
+                    getSummaryResponse().getSearchHit());
         } catch (NullPointerException e) {
             passedRecordList = null;
         }

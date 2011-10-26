@@ -6,8 +6,6 @@ import java.util.List;
 import javax.swing.JList;
 import javax.swing.ListModel;
 
-import org.cytoscape.cpath.service.jaxb.*;
-import org.cytoscape.cpathsquared.internal.view.model.ExtendedRecordWrapper;
 
 /**
  * Extension to JList to Support Tool Tips.

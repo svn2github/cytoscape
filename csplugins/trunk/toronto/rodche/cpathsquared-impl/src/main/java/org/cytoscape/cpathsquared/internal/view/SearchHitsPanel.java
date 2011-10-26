@@ -29,11 +29,12 @@ import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.application.swing.events.CytoPanelStateChangedEvent;
 import org.cytoscape.application.swing.events.CytoPanelStateChangedListener;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpath.service.jaxb.*;
 import org.cytoscape.cpathsquared.internal.task.SelectPhysicalEntity;
-import org.cytoscape.cpathsquared.internal.view.model.ExtendedRecordWrapper;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebServiceListener;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebServiceListener;
+
+import cpath.service.jaxb.SearchHit;
+import cpath.service.jaxb.SearchResponse;
 
 /**
  * Search Hits Panel.
@@ -43,7 +44,7 @@ import org.cytoscape.cpathsquared.internal.web_service.CPathWebServiceListener;
 public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, CytoPanelStateChangedListener {
     private DefaultListModel peListModel;
     private JList peList;
-    private SearchResponseType peSearchResponse;
+    private SearchResponse peSearchResponse;
     private Document summaryDocument;
     private String currentKeyword;
     private InteractionBundleModel interactionBundleModel;
@@ -51,7 +52,7 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
     private JTextPane summaryTextPane;
     private PhysicalEntityDetailsPanel peDetailsPanel;
 	private JLayeredPane appLayeredPane;
-    private HashMap <Long, RecordList> parentRecordsMap;
+    private HashMap <String, RecordList> parentRecordsMap;
 	private CytoPanelState cytoPanelState;
     private JFrame detailsFrame;
 	private final CPath2Factory factory;
@@ -76,12 +77,6 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
         peDetailsPanel = factory.createPhysicalEntityDetailsPanel(this);
         summaryDocument = peDetailsPanel.getDocument();
         summaryTextPane = peDetailsPanel.getTextPane();
-
-		// create popup window
-//		modalPanel = new ModalPanel();
-//		popup = new PopupPanel(appLayeredPane, peDetailsPanel, modalPanel);
-//		appLayeredPane.add(modalPanel, 1000);
-//		appLayeredPane.add(popup, 1000);
 
         //  Create the Hit List
         peListModel = new DefaultListModel();
@@ -138,23 +133,22 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
      *
      * @param peSearchResponse PhysicalEntitySearchResponse Object.
      */
-    public void searchCompletedForPhysicalEntities(final SearchResponseType peSearchResponse) {
+    public void searchCompletedForPhysicalEntities(final SearchResponse peSearchResponse) {
 
-        if (peSearchResponse.getTotalNumHits() > 0) {
+        if (!peSearchResponse.isEmpty()) {
 
             //  Reset parent summary map
-            parentRecordsMap = new HashMap<Long, RecordList>();
+            parentRecordsMap = new HashMap<String, RecordList>();
             
             //  store for later reference
             this.peSearchResponse = peSearchResponse;
 
             //  Populate the hit list
-            List<ExtendedRecordType> searchHits = peSearchResponse.getSearchHit();
+            List<SearchHit> searchHits = peSearchResponse.getSearchHit();
             peListModel.setSize(searchHits.size());
             int i = 0;
-            for (ExtendedRecordType searchHit : searchHits) {
-                ExtendedRecordWrapper wrapper = new ExtendedRecordWrapper (searchHit);
-                peListModel.setElementAt(wrapper, i++);
+            for (SearchHit searchHit : searchHits) {
+                peListModel.setElementAt(searchHit.toString(), i++);
             }
         } else {
             SwingUtilities.invokeLater(new Runnable(){
@@ -172,8 +166,9 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
         //  Currently no-op
     }
 
-    public void requestCompletedForParentSummaries(String primaryId,
-            List<Entity> summaryResponse) {
+
+    public void requestCompletedForParentSummaries(String primaryId, SearchResponse summaryResponse) 
+    {
         //  Store parent summaries for later reference
 
         RecordList recordList = new RecordList(summaryResponse);
@@ -181,10 +176,10 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
 
         //  If we have just received parent summaries for the first search hit, select it.
         if (peSearchResponse != null) {
-            List <ExtendedRecordType> searchHits = peSearchResponse.getSearchHit();
-            if (searchHits.size() > 0) {
-                ExtendedRecordType searchHit = searchHits.get(0);
-                if (primaryId == searchHit.getPrimaryId()) {
+            List <SearchHit> searchHits = peSearchResponse.getSearchHit();
+            if (!searchHits.isEmpty()) {
+            	SearchHit searchHit = searchHits.get(0);
+                if (primaryId == searchHit.getUri()) {
                     peList.setSelectedIndex(0);
                     SelectPhysicalEntity selectTask = new SelectPhysicalEntity(parentRecordsMap);
                     selectTask.selectPhysicalEntity(peSearchResponse, 0,

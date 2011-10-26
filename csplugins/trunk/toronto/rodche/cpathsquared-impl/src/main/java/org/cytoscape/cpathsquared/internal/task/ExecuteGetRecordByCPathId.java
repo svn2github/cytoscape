@@ -28,11 +28,11 @@ import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.util.AttributeUtil;
 import org.cytoscape.cpathsquared.internal.util.BinarySifVisualStyleUtil;
 import org.cytoscape.cpathsquared.internal.util.SelectUtil;
-import org.cytoscape.cpathsquared.internal.web_service.CPathException;
-import org.cytoscape.cpathsquared.internal.web_service.CPathProperties;
-import org.cytoscape.cpathsquared.internal.web_service.CPathResponseFormat;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
-import org.cytoscape.cpathsquared.internal.web_service.EmptySetException;
+import org.cytoscape.cpathsquared.internal.webservice.CPathException;
+import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
+import org.cytoscape.cpathsquared.internal.webservice.CPathResponseFormat;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
+import org.cytoscape.cpathsquared.internal.webservice.EmptySetException;
 import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -490,10 +490,17 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 			try {
 				final String xml = webApi.getRecordsByIds(ids, CPathResponseFormat.BIOPAX, new NullTaskMonitor());
 				Model model = new SimpleIOHandler().convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
+				
+// new PC2/CPath2 API only supports L3 -
+//				// to L3
+//				if(BioPAXLevel.L2.equals(model.getLevel())) {
+//					model = new OneTwoThree().filter(model);
+//				}
+				
 				for (BioPAXElement pe : model.getObjects(PhysicalEntity.class)) {
 					String id = BioPaxUtil.getLocalPartRdfId(pe);
 					if (id != null) {
-						id = id.replaceAll("CPATH-", "");
+						//id = id.replaceAll("CPATH-", "");
 						mapBioPaxToCytoscape.mapNodeAttribute(pe, model, cyNetwork, nodes.get(id));
 					}
 				}

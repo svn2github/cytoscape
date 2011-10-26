@@ -2,13 +2,14 @@ package org.cytoscape.cpathsquared.internal.task;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.JComponent;
 import javax.swing.JTextPane;
 import javax.swing.text.Document;
 
-import org.cytoscape.cpath.service.jaxb.*;
+import cpath.service.jaxb.*;
+
+import org.apache.commons.lang.StringUtils;
 import org.cytoscape.cpathsquared.internal.view.InteractionBundleModel;
 import org.cytoscape.cpathsquared.internal.view.PathwayTableModel;
 import org.cytoscape.cpathsquared.internal.view.RecordList;
@@ -19,14 +20,14 @@ import org.cytoscape.cpathsquared.internal.view.RecordList;
  * @author Ethan Cerami.
  */
 public class SelectPhysicalEntity {
-    private HashMap<Long, RecordList> parentRecordsMap;
+    private HashMap<String, RecordList> parentRecordsMap;
 
     /**
      * Constructor.
      *
      * @param parentRecordsMap  RecordList.
      */
-    public SelectPhysicalEntity (HashMap<Long, RecordList> parentRecordsMap) {
+    public SelectPhysicalEntity (HashMap<String, RecordList> parentRecordsMap) {
         this.parentRecordsMap = parentRecordsMap;
     }
 
@@ -39,13 +40,13 @@ public class SelectPhysicalEntity {
      * @param pathwayTableModel     Pathway Table Model.
      * @param summaryDocumentModel  Summary Document Model.
      */
-    public void selectPhysicalEntity(SearchResponseType peSearchResponse,
+    public void selectPhysicalEntity(SearchResponse peSearchResponse,
             int selectedIndex, InteractionBundleModel interactionBundleModel, PathwayTableModel
             pathwayTableModel, Document summaryDocumentModel,
             JTextPane textPane, JComponent textPaneOwner) {
         if (peSearchResponse != null) {
-            java.util.List<SearchHitType> searchHits = peSearchResponse.getSearchHit();
-            SearchHitType searchHit = searchHits.get(selectedIndex);
+            java.util.List<SearchHit> searchHits = peSearchResponse.getSearchHit();
+            SearchHit searchHit = searchHits.get(selectedIndex);
 
             StringBuffer html = new StringBuffer();
             html.append("<html>");
@@ -53,71 +54,15 @@ public class SelectPhysicalEntity {
             html.append ("<h2>" + searchHit.getName() + "</h2>");
 
             List<String> organism = searchHit.getOrganism();
-            //TODO get BioSource by id, get name
-            if (organism != null) {
-                String speciesName = organism.getSpeciesName();
-                html.append ("<H3>" + speciesName + "</H3>");
+            if (organism != null && !organism.isEmpty()) {
+                html.append ("<H3>" + StringUtils.join(organism, ",") + "</H3>");
             }
 
-            //  Next, add synonyms
-            List <String> synList = searchHit.getSynonym();
-            StringBuffer synBuffer = new StringBuffer();
-            if (synList != null && synList.size() > 0) {
-                for (String synonym:  synList) {
-                    if (!synonym.equalsIgnoreCase(searchHit.getName())) {
-                        synBuffer.append("<LI>- " + synonym + "</LI>");
-                    }
-                }
-                if (synBuffer.length() > 0) {
-                    html.append("<h4>Synonyms:</h4>");
-                    html.append("<UL>");
-                    html.append(synBuffer.toString());
-                    html.append("</UL>");
-                }
+            String primeExcerpt = searchHit.getExcerpt();
+            if (primeExcerpt != null) {
+                html.append("<H4>Matching Excerpt(s):</H4>");
+                html.append("<span class='excerpt'>" + primeExcerpt + "</span><BR>") ;
             }
-
-            //  Next, add XRefs
-            List <XRefType> xrefList = searchHit.getXref();
-            if (xrefList != null && xrefList.size() > 0) {
-                html.append("<H4>Links:</H4>");
-                html.append("<UL>");
-                for (XRefType xref:  xrefList) {
-                    String url = xref.getUrl();
-                    if (url != null && url.length() > 0) {
-                        html.append("<LI>- <a class=\"link\" href=\"" + url + "\">"
-                                + xref.getDb() + ":  "
-                                + xref.getId() + "</a></LI>") ;
-                    } else {
-                        html.append("<LI>- " + xref.getDb() + ":  " + xref.getId() + "</LI>");
-                    }
-                }
-                html.append("</UL>");
-            }
-
-            List <String> excerptList = searchHit.getExcerpt();
-            if (excerptList != null && excerptList.size() > 0) {
-                String primeExcerpt = null;
-                for (String excerpt:  excerptList) {
-                    if (primeExcerpt == null || excerpt.length() > primeExcerpt.length()) {
-                        if (!excerpt.equalsIgnoreCase(searchHit.getName())) {
-                            primeExcerpt = excerpt;
-                        }
-                    }
-                }
-                if (primeExcerpt != null) {
-                    html.append("<H4>Matching Excerpt(s):</H4>");
-                    html.append("<span class='excerpt'>" + primeExcerpt + "</span><BR>") ;
-                }
-            }
-
-            //  Temporarily removed comments.
-            //java.util.List<String> commentList = searchHit.getComment();
-            //if (commentList != null) {
-            //    html.append("<BR><B>Description:</B>");
-            //    for (int i = commentList.size() - 1; i >= 0; i--) {
-            //        html.append("<BR>" + commentList.get(i) + "<BR>");
-            //   }
-            //}
 
             html.append ("</html>");
             textPane.setText(html.toString());
@@ -134,13 +79,13 @@ public class SelectPhysicalEntity {
      * @param searchHit             Search Hit Object.
      * @param interactionBundleModel Interaction Bundle Model.
      */
-    private void updateInteractionData(ExtendedRecordType searchHit, InteractionBundleModel
+    private void updateInteractionData(SearchHit searchHit, InteractionBundleModel
             interactionBundleModel) {
-        RecordList recordList = parentRecordsMap.get(searchHit.getPrimaryId());
+        RecordList recordList = parentRecordsMap.get(searchHit.getUri());
         if (recordList != null) {
             interactionBundleModel.setRecordList(recordList);
         } else {
-            SummaryResponseType summaryResponseType = new SummaryResponseType();
+            SearchResponse summaryResponseType = new SearchResponse();
             recordList = new RecordList(summaryResponseType);
             interactionBundleModel.setRecordList(recordList);
         }
@@ -153,14 +98,13 @@ public class SelectPhysicalEntity {
      * @param searchHit         SearchHit Object.
      * @param pathwayTableModel Pathway Table Model.
      */
-    private void updatePathwayData(ExtendedRecordType searchHit, PathwayTableModel
-            pathwayTableModel) {
-        List<PathwayType> pathwayList = searchHit.getPathwayList().getPathway();
+    private void updatePathwayData(SearchHit searchHit, PathwayTableModel pathwayTableModel) 
+    {
+        List<String> pathwayList = searchHit.getPathway();
 
-        Vector dataVector = pathwayTableModel.getDataVector();
-        dataVector.removeAllElements();
+        pathwayTableModel.getDataVector().removeAllElements();
 
-        if (pathwayList != null) {
+        if (!pathwayList.isEmpty()) {
             pathwayTableModel.setRowCount(pathwayList.size());
             pathwayTableModel.resetInternalIds(pathwayList.size());
             //  Only set the column count, if it is not already set.
@@ -173,10 +117,11 @@ public class SelectPhysicalEntity {
                 pathwayTableModel.setValueAt("No pathways found.", 0, 0);    
             } else {
                 for (int i = 0; i < pathwayList.size(); i++) {
-                    PathwayType pathway = pathwayList.get(i);
-                    pathwayTableModel.setValueAt(pathway.getName(), i, 0);
-                    pathwayTableModel.setValueAt(pathway.getDataSource().getName(), i, 1);
-                    pathwayTableModel.setInternalId(i, pathway.getPrimaryId());
+                    String pathway = pathwayList.get(i);
+                    //TODO get pathway's name, datasource, etc
+                    pathwayTableModel.setValueAt("TODO: name", i, 0);
+                    pathwayTableModel.setValueAt("TODO: datasource", i, 1);
+                    pathwayTableModel.setInternalId(i, pathway);
                 }
             }
         }

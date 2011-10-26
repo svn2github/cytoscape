@@ -31,8 +31,8 @@ import javax.swing.event.HyperlinkListener;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskFactory;
 import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskFactory.ResultHandler;
-import org.cytoscape.cpathsquared.internal.web_service.CPathProperties;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
+import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
 
 /**
  * Search Box Panel.
@@ -118,11 +118,10 @@ public class SearchBoxPanel extends JPanel {
      * @return JComboBox Object.
      */
     private JComboBox createOrganismComboBox() {
-        //  Organism List is currently hard-coded.
+        //  TODO Organism List is currently hard-coded; try get it from the server
         Vector organismList = new Vector();
         organismList.add(new Organism("All Organisms", -1));
-        CPathProperties props = CPathProperties.getInstance();
-        organismList.addAll(props.getOrganismList());
+        organismList.addAll(CPathProperties.organismList);
         DefaultComboBoxModel organismComboBoxModel = new DefaultComboBoxModel(organismList);
         JComboBox organismComboBox = new JComboBox(organismComboBoxModel);
         organismComboBox.setToolTipText("Select Organism");
@@ -171,7 +170,6 @@ public class SearchBoxPanel extends JPanel {
     private JButton createSearchButton(final JTextField searchField) {
         URL url = GradientHeader.class.getResource("resources/run_tool.gif");
         ImageIcon icon = new ImageIcon(url);
-        //searchButton = new JButton(icon);
         searchButton = new JButton("Search");
         searchButton.setToolTipText("Execute Search");
         searchButton.addActionListener(new ActionListener() {

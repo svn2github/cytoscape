@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.cytoscape.cpath.service.jaxb.*;
 import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskFactory.ResultHandler;
-import org.cytoscape.cpathsquared.internal.web_service.CPathException;
-import org.cytoscape.cpathsquared.internal.web_service.CPathProperties;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
-import org.cytoscape.cpathsquared.internal.web_service.EmptySetException;
+import org.cytoscape.cpathsquared.internal.webservice.CPathException;
+import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
+import org.cytoscape.cpathsquared.internal.webservice.EmptySetException;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 

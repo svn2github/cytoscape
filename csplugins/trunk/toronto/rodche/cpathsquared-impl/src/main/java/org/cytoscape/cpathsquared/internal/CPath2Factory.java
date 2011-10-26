@@ -10,8 +10,6 @@ import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.biopax.BioPaxContainer;
 import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
 import org.cytoscape.biopax.NetworkListener;
-import org.cytoscape.cpath.service.jaxb.SearchHitType;
-import org.cytoscape.cpathsquared.internal.mapping.MapCPathToCytoscape;
 import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
 import org.cytoscape.cpathsquared.internal.util.BinarySifVisualStyleUtil;
 import org.cytoscape.cpathsquared.internal.util.NetworkUtil;
@@ -23,8 +21,8 @@ import org.cytoscape.cpathsquared.internal.view.PhysicalEntityDetailsPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchBoxPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchDetailsPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchHitsPanel;
-import org.cytoscape.cpathsquared.internal.web_service.CPathResponseFormat;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
+import org.cytoscape.cpathsquared.internal.webservice.CPathResponseFormat;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -36,6 +34,8 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
+
+import cpath.service.jaxb.SearchHit;
 
 // TODO: This is a "God" object.  Probably shouldn't exist, but it's better than having to
 //       propagate all of the injected dependencies throughout all the implementation classes.
@@ -77,13 +77,9 @@ public class CPath2Factory {
 		this.mappingManager = mappingManager;
 	}
 	
-	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(CPathWebService webApi, String[] ids, CPathResponseFormat format, String networkTitle, CyNetwork networkToMerge) {
-		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, networkTitle, networkToMerge, this, bpContainer, mapperFactory, networkListener, mappingManager);
-	}
-
 	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(
 			CPathWebService webApi, String[] ids, CPathResponseFormat format, String title) {
-		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, null, this, bpContainer, mapperFactory, networkListener, mappingManager);
+		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, this, bpContainer, mapperFactory, networkListener, mappingManager);
 	}
 
 	public SearchBoxPanel createSearchBoxPanel(CPathWebService webApi) {
@@ -108,7 +104,7 @@ public class CPath2Factory {
 		return taskManager;
 	}
 
-	public DownloadDetails createDownloadDetails(List<SearchHitType> passedRecordList, String physicalEntityName) {
+	public DownloadDetails createDownloadDetails(List<SearchHit> passedRecordList, String physicalEntityName) {
 		return new DownloadDetails(passedRecordList, physicalEntityName, this);
 	}
 
@@ -119,7 +115,7 @@ public class CPath2Factory {
 	public InteractionBundlePanel createInteractionBundlePanel(
 			InteractionBundleModel interactionBundleModel, CyNetwork network,
 			JDialog dialog) {
-		return new InteractionBundlePanel(interactionBundleModel, network, dialog, this);
+		return new InteractionBundlePanel(interactionBundleModel, dialog, this);
 	}
 
 	public PhysicalEntityDetailsPanel createPhysicalEntityDetailsPanel(SearchHitsPanel searchHitsPanel) {
@@ -156,10 +152,6 @@ public class CPath2Factory {
 		return new NetworkUtil(cpathRequest, network, merging, this);
 	}
 
-	public MapCPathToCytoscape createMapCPathToCytoscape() {
-		return new MapCPathToCytoscape(this);
-	}
-
 	public CyNetworkFactory getCyNetworkFactory() {
 		return networkFactory;
 	}
@@ -183,4 +175,5 @@ public class CPath2Factory {
 	public BinarySifVisualStyleUtil getBinarySifVisualStyleUtil() {
 		return binarySifVisualStyleUtil;
 	}
+
 }

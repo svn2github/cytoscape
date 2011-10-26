@@ -19,14 +19,14 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import org.cytoscape.cpath.service.jaxb.SearchHitType;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.web_service.CPathProperties;
-import org.cytoscape.cpathsquared.internal.web_service.CPathResponseFormat;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebServiceImpl;
-import org.cytoscape.model.CyNetwork;
+import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
+import org.cytoscape.cpathsquared.internal.webservice.CPathResponseFormat;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebServiceImpl;
 import org.cytoscape.work.TaskManager;
+
+import cpath.service.jaxb.SearchHit;
 
 /**
  * Download Details Frame.
@@ -44,7 +44,7 @@ public class DownloadDetails extends JDialog {
      * @param peName                Name of Physical Entity.
      * @param bpContainer 
      */
-    public DownloadDetails(List<SearchHitType> passedRecordList, String peName, CPath2Factory factory) {    	
+    public DownloadDetails(List<SearchHit> passedRecordList, String peName, CPath2Factory factory) {    	
         super();
         this.factory = factory;
         
@@ -78,10 +78,7 @@ public class DownloadDetails extends JDialog {
 
         ids = new String[passedRecordList.size()];
         int i = 0;
-        for (SearchHitType record : passedRecordList) {
-            if (record.getName().isEmpty()) {
-                record.getName().add("---");
-            }
+        for (SearchHit record : passedRecordList) {
             tableModel.setValueAt(record.getName(), i, 0);
             tableModel.setValueAt(record.getBiopaxClass(), i, 1);
             if (record.getDataSource() != null) {
@@ -136,12 +133,7 @@ public class DownloadDetails extends JDialog {
     /**
      * Downloads interaction bundles in a new thread.
      */
-    private void downloadInteractions() {
-        CyNetwork networkToMerge = null;
-        downloadInteractions(networkToMerge);
-    }
-
-    public void downloadInteractions(CyNetwork networkToMerge) {
+    public void downloadInteractions() {
         String networkTitle = peName + ":  Network";
         CPathWebService webApi = CPathWebServiceImpl.getInstance();
 
@@ -153,7 +145,7 @@ public class DownloadDetails extends JDialog {
         }
 
         TaskManager taskManager = factory.getTaskManager();
-        taskManager.execute(factory.createExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, networkTitle, networkToMerge));
+        taskManager.execute(factory.createExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, networkTitle));
     }
 }
 

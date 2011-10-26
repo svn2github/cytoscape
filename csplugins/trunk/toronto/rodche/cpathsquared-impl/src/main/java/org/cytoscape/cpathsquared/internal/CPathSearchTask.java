@@ -1,10 +1,11 @@
 package org.cytoscape.cpathsquared.internal;
 
-import org.cytoscape.cpath.service.jaxb.SearchResponseType;
 import org.cytoscape.cpathsquared.internal.util.NullTaskMonitor;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
+
+import cpath.service.jaxb.SearchResponse;
 
 public class CPathSearchTask implements Task {
 
@@ -25,9 +26,9 @@ public class CPathSearchTask implements Task {
 
     @Override
 	public void run(TaskMonitor taskMonitor) throws Exception {
-        SearchResponseType response = client.searchPhysicalEntities(query, taxonomyId,
+    	SearchResponse response = client.searchPhysicalEntities(query, taxonomyId,
                 new NullTaskMonitor());
-        Integer totalNumHits = response.getTotalNumHits().intValue();
+//        Integer totalNumHits = response.getSearchHit().size();
 	}
 
 	@Override

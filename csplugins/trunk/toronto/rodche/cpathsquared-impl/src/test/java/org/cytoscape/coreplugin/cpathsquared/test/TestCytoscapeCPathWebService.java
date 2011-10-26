@@ -22,7 +22,7 @@ public class TestCytoscapeCPathWebService extends TestCase {
 //            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //        }
 //        //  First, create the client and register it.
-//        WebServiceClient wsClient = CytoscapeCPathWebService.getClient();
+//        WebServiceClient wsClient = CPathCytoscapeWebService.getClient();
 //        WebServiceClientManager.registerClient(wsClient);
 //
 //        //  Get the client back from the manager
@@ -57,7 +57,7 @@ public class TestCytoscapeCPathWebService extends TestCase {
 //    private void validateSearchEvent(WebServiceClient wsClient, CyWebServiceEventSupport eventManager) {
 //        //  Set Organism Filter
 //        ModuleProperties props = wsClient.getProps();
-//        props.add(new Tunable(CytoscapeCPathWebService.NCBI_TAXONOMY_ID_FILTER,
+//        props.add(new Tunable(CPathCytoscapeWebService.NCBI_TAXONOMY_ID_FILTER,
 //                "Filter by Organism - NCBI Taxonomy ID",
 //                Tunable.INTEGER, new Integer(9606)));
 //        CyWebServiceEvent wsEvent = new CyWebServiceEvent

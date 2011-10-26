@@ -3,7 +3,9 @@ package org.cytoscape.cpathsquared.internal.view;
 import java.util.List;
 import java.util.TreeMap;
 
-import org.cytoscape.cpathsquared.internal.util.BioPaxEntityTypeMap;
+import cpath.service.jaxb.SearchHit;
+import cpath.service.jaxb.SearchResponse;
+
 
 /**
  * List of BioPAX Records.
@@ -11,16 +13,16 @@ import org.cytoscape.cpathsquared.internal.util.BioPaxEntityTypeMap;
  * @author Ethan Cerami.
  */
 public class RecordList {
-    private SummaryResponseType summaryResponse;
+    private SearchResponse response;
     TreeMap<String, Integer> dataSourceMap = new TreeMap<String, Integer>();
     TreeMap<String, Integer> interactionTypeMap = new TreeMap<String, Integer>();
 
     /**
      * Constructor.
-     * @param summaryResponse   SummaryResponseType Object.
+     * @param response 
      */
-    public RecordList (SummaryResponseType summaryResponse) {
-        this.summaryResponse = summaryResponse;
+    public RecordList (SearchResponse response) {
+        this.response = response;
         catalogInteractions();
     }
 
@@ -29,8 +31,8 @@ public class RecordList {
      * @return number of records.
      */
     public int getNumRecords() {
-        if (summaryResponse != null && summaryResponse.getRecord() != null) {
-            return summaryResponse.getRecord().size();
+        if (response != null && !response.isEmpty()) {
+            return response.getSearchHit().size();
         } else {
             return -1;
         }
@@ -38,10 +40,10 @@ public class RecordList {
 
     /**
      * Gets the Summary Response XML.
-     * @return SummaryResponse Object.
+     * @return 
      */
-    public SummaryResponseType getSummaryResponse() {
-        return summaryResponse;
+    public SearchResponse getSummaryResponse() {
+        return response;
     }
 
     /**
@@ -61,9 +63,9 @@ public class RecordList {
     }
 
     private void catalogInteractions() {
-        List<BasicRecordType> recordList = summaryResponse.getRecord();
+        List<SearchHit> recordList = response.getSearchHit();
         if (recordList != null) {
-            for (BasicRecordType record:  recordList) {
+            for (SearchHit record:  recordList) {
                 catalogDataSource(record.getDataSource());
                 catalogInteractionType(record);
                 //  TODO:  additional catalogs, as needed.
@@ -71,24 +73,20 @@ public class RecordList {
         }
     }
 
-    private void catalogDataSource(DataSourceType dataSource) {
-        String name = dataSource.getName();
-        Integer count = dataSourceMap.get(name);
-        if (count != null) {
-            count = count + 1;
-        } else {
-            count = 1;
-        }
-        dataSourceMap.put(name, count);
+    private void catalogDataSource(List<String> dataSources) {
+		for (String name : dataSources) {
+			Integer count = dataSourceMap.get(name);
+			if (count != null) {
+				count = count + 1;
+			} else {
+				count = 1;
+			}
+			dataSourceMap.put(name, count);
+		}
     }
 
-    private void catalogInteractionType(BasicRecordType record) {
-        String type = record.getEntityType();
-        BioPaxEntityTypeMap map = BioPaxEntityTypeMap.getInstance();
-        if (map.containsKey(type)) {
-            type = (String) map.get(type);
-            record.setEntityType(type);
-        }
+    private void catalogInteractionType(SearchHit record) {
+        String type = record.getBiopaxClass();
         Integer count = interactionTypeMap.get(type);
         if (count != null) {
             count = count + 1;

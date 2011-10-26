@@ -1,9 +1,9 @@
 package org.cytoscape.cpathsquared.internal;
 
 import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
-import org.cytoscape.cpathsquared.internal.web_service.CPathProperties;
-import org.cytoscape.cpathsquared.internal.web_service.CPathResponseFormat;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
+import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
+import org.cytoscape.cpathsquared.internal.webservice.CPathResponseFormat;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
@@ -25,9 +25,9 @@ public class CPathNetworkImportTask implements Task {
 	@Override
 	public void run(TaskMonitor taskMonitor) throws Exception {
         String idStrs[] = query.split(" ");
-        long ids[] = new long[idStrs.length];
+        String ids[] = new String[idStrs.length];
         for (int i = 0; i < ids.length; i++) {
-            ids[i] = Long.parseLong(idStrs[i]);
+            ids[i] = idStrs[i].trim();
         }
 
 //        ModuleProperties properties = this.getProps();
@@ -38,7 +38,7 @@ public class CPathNetworkImportTask implements Task {
 //        }
 
         //  Create the task
-        ExecuteGetRecordByCPathIdTaskFactory taskFactory = factory.createExecuteGetRecordByCPathIdTaskFactory(client, ids, format, CPathProperties.getInstance().getCPathServerName());
+        ExecuteGetRecordByCPathIdTaskFactory taskFactory = factory.createExecuteGetRecordByCPathIdTaskFactory(client, ids, format, CPathProperties.serverName);
         TaskIterator iterator = taskFactory.getTaskIterator();
         while (iterator.hasNext()) {
         	Task task = iterator.next();

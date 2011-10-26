@@ -9,17 +9,18 @@ import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpath.service.jaxb.*;
-import org.cytoscape.cpathsquared.internal.web_service.CPathProperties;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebServiceListener;
+import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebServiceListener;
+
+import cpath.service.jaxb.SearchResponse;
 
 /**
  * Main GUI Panel for Searching a cPath Instance.
  *
  * @author Ethan Cerami.
  */
-public class cPathSearchPanel extends JPanel implements CPathWebServiceListener {
+public class CPathSearchPanel extends JPanel implements CPathWebServiceListener {
     protected InteractionBundleModel interactionBundleModel;
     protected PathwayTableModel pathwayTableModel;
     protected CPathWebService webApi;
@@ -33,7 +34,7 @@ public class cPathSearchPanel extends JPanel implements CPathWebServiceListener 
      *
      * @param webApi CPathWebService API.
      */
-    public cPathSearchPanel(CPathWebService webApi, CPath2Factory factory) {
+    public CPathSearchPanel(CPathWebService webApi, CPath2Factory factory) {
     	this.factory = factory;
     	
         //  Store the web API model
@@ -73,7 +74,7 @@ public class cPathSearchPanel extends JPanel implements CPathWebServiceListener 
 
         aboutPanel.add(header, BorderLayout.NORTH);
         JTextPane textPane = PhysicalEntityDetailsPanel.createHtmlTextPane(factory.getOpenBrowser());
-        textPane.setText(CPathProperties.getInstance().getCPathBlurb());
+        textPane.setText(CPathProperties.blurb);
         aboutPanel.add(textPane, BorderLayout.CENTER);
         return aboutPanel;
     }
@@ -81,8 +82,8 @@ public class cPathSearchPanel extends JPanel implements CPathWebServiceListener 
     public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId) {
     }
 
-    public void searchCompletedForPhysicalEntities(SearchResponseType peSearchResponse) {
-        if (peSearchResponse.getTotalNumHits() > 0) {
+    public void searchCompletedForPhysicalEntities(SearchResponse peSearchResponse) {
+        if (!peSearchResponse.isEmpty()) {
             if (!searchHitsPanel.isVisible()) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
@@ -94,11 +95,6 @@ public class cPathSearchPanel extends JPanel implements CPathWebServiceListener 
     }
 
     public void requestInitiatedForParentSummaries(String primaryId) {
-        //  Currently no-op
-    }
-
-    public void requestCompletedForParentSummaries(String primaryId,
-            List<Entity> summaryResponse) {
         //  Currently no-op
     }
 
@@ -120,4 +116,8 @@ public class cPathSearchPanel extends JPanel implements CPathWebServiceListener 
                 this.pathwayTableModel, webApi);
         return hitListPanel;
     }
+
+	public void requestCompletedForParentSummaries(String primaryId,
+			SearchResponse parents) {
+	}
 }

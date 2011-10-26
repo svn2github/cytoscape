@@ -4,9 +4,8 @@ import org.cytoscape.biopax.BioPaxContainer;
 import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
 import org.cytoscape.biopax.NetworkListener;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.web_service.CPathResponseFormat;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
-import org.cytoscape.model.CyNetwork;
+import org.cytoscape.cpathsquared.internal.webservice.CPathResponseFormat;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
@@ -17,7 +16,6 @@ public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory {
 	private final String[] ids;
 	private final CPathResponseFormat format;
 	private final String networkTitle;
-	private final CyNetwork networkToMerge;
 	private final CPath2Factory cPathFactory;
 	private final BioPaxContainer bpContainer;
 	private final MapBioPaxToCytoscapeFactory mapperFactory;
@@ -26,13 +24,12 @@ public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory {
 
 	public ExecuteGetRecordByCPathIdTaskFactory(CPathWebService webApi,
 			String[] ids, CPathResponseFormat format, String networkTitle,
-			CyNetwork networkToMerge, CPath2Factory cPathFactory, BioPaxContainer bpContainer,
+			CPath2Factory cPathFactory, BioPaxContainer bpContainer,
 			MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener, VisualMappingManager mappingManager) {
 		this.webApi = webApi;
 		this.ids = ids;
 		this.format = format;
 		this.networkTitle = networkTitle;
-		this.networkToMerge = networkToMerge;
 		this.cPathFactory = cPathFactory;
 		this.bpContainer = bpContainer;
 		this.mapperFactory = mapperFactory;
@@ -42,7 +39,7 @@ public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory {
 
 	@Override
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new ExecuteGetRecordByCPathId(webApi, ids, format, networkTitle, networkToMerge, cPathFactory, bpContainer, mapperFactory, networkListener, mappingManager));
+		return new TaskIterator(new ExecuteGetRecordByCPathId(webApi, ids, format, networkTitle, cPathFactory, bpContainer, mapperFactory, networkListener, mappingManager));
 	}
 
 }

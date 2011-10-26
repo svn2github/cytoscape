@@ -1,6 +1,6 @@
 package org.cytoscape.cpathsquared.internal.task;
 
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 

@@ -9,10 +9,10 @@ import org.cytoscape.cpathsquared.internal.schemas.summary_response.SummaryRespo
 import org.cytoscape.cpathsquared.internal.view.InteractionBundleModel;
 import org.cytoscape.cpathsquared.internal.view.InteractionBundlePanel;
 import org.cytoscape.cpathsquared.internal.view.RecordList;
-import org.cytoscape.cpathsquared.internal.web_service.CPathException;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebServiceImpl;
-import org.cytoscape.cpathsquared.internal.web_service.EmptySetException;
+import org.cytoscape.cpathsquared.internal.webservice.CPathException;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebServiceImpl;
+import org.cytoscape.cpathsquared.internal.webservice.EmptySetException;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.work.Task;

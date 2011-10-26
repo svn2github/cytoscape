@@ -15,12 +15,10 @@ import javax.swing.ListSelectionModel;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
-import org.cytoscape.cpathsquared.internal.util.NetworkMergeUtil;
-import org.cytoscape.cpathsquared.internal.view.model.NetworkWrapper;
-import org.cytoscape.cpathsquared.internal.web_service.CPathProperties;
-import org.cytoscape.cpathsquared.internal.web_service.CPathResponseFormat;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebService;
-import org.cytoscape.cpathsquared.internal.web_service.CPathWebServiceImpl;
+import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
+import org.cytoscape.cpathsquared.internal.webservice.CPathResponseFormat;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
+import org.cytoscape.cpathsquared.internal.webservice.CPathWebServiceImpl;
 
 /**
  * Search Details Panel.
@@ -101,41 +99,27 @@ public class SearchDetailsPanel extends JPanel {
      */
     private void downloadPathway(int[] rows, PathwayTableModel pathwayTableModel) {
         try {
-            NetworkWrapper mergeNetwork = null;
-            NetworkMergeUtil mergeUtil = factory.getNetworkMergeUtil();
-            if (mergeUtil.mergeNetworksExist()) {
-                mergeNetwork = mergeUtil.promptForNetworkToMerge();
-                if (mergeNetwork == null) {
-                    return;
-                }
-            }
-
-            long internalId = pathwayTableModel.getInternalId(rows[0]);
+            String internalId = pathwayTableModel.getInternalId(rows[0]);
             String title = pathwayTableModel.getValueAt(rows[0], 0)
                     + " (" + pathwayTableModel.getValueAt(rows[0], 1) + ")";
-            long ids[] = new long[1];
-            ids[0] = internalId;
 
             CPathWebService webApi = CPathWebServiceImpl.getInstance();
             ExecuteGetRecordByCPathIdTaskFactory taskFactory;
 
             CPathResponseFormat format;
-            CPathProperties config = CPathProperties.getInstance();
-            if (config.getDownloadMode() == CPathProperties.DOWNLOAD_FULL_BIOPAX) {
+            if (CPathProperties.downloadMode == CPathProperties.DOWNLOAD_FULL_BIOPAX) {
                 format = CPathResponseFormat.BIOPAX;
             } else {
                 format = CPathResponseFormat.BINARY_SIF;
             }
 
-            if (mergeNetwork != null && mergeNetwork.getNetwork() != null) {
-                taskFactory = factory.createExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format,
-                        title, mergeNetwork.getNetwork());
-            } else {
-                taskFactory = factory.createExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title);
-            }
+            taskFactory = factory.createExecuteGetRecordByCPathIdTaskFactory(
+            	webApi, new String[]{internalId}, format, title);
+            
             factory.getTaskManager().execute(taskFactory);
+            
         } catch (IndexOutOfBoundsException e) {
-            //  Ignore
+            //  Ignore TODO strange...
         }
     }
 }
