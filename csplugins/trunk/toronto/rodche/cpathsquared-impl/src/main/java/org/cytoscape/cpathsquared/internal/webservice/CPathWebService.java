@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.biopax.paxtools.model.level3.BioSource;
 import org.biopax.paxtools.model.level3.Entity;
-import cpath.service.jaxb.*;
+
+import cpath.service.OutputFormat;
+import cpath.service.jaxb.SearchResponse;
+
 import org.cytoscape.work.TaskMonitor;
 
 /**
@@ -61,7 +64,7 @@ public interface CPathWebService {
      * @throws CPathException       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
-    public String getRecordsByIds(String[] ids, CPathResponseFormat format, TaskMonitor taskMonitor)
+    public String getRecordsByIds(String[] ids, OutputFormat format, TaskMonitor taskMonitor)
             throws CPathException, EmptySetException;
 
     /**

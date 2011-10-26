@@ -21,11 +21,11 @@ import javax.swing.table.DefaultTableModel;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
-import org.cytoscape.cpathsquared.internal.webservice.CPathResponseFormat;
 import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
 import org.cytoscape.cpathsquared.internal.webservice.CPathWebServiceImpl;
 import org.cytoscape.work.TaskManager;
 
+import cpath.service.OutputFormat;
 import cpath.service.jaxb.SearchHit;
 
 /**
@@ -137,11 +137,12 @@ public class DownloadDetails extends JDialog {
         String networkTitle = peName + ":  Network";
         CPathWebService webApi = CPathWebServiceImpl.getInstance();
 
-        CPathResponseFormat format;
+        OutputFormat format;
+        //TODO EXTENDED_BINARY_SIF?
         if (CPathProperties.downloadMode == CPathProperties.DOWNLOAD_FULL_BIOPAX) {
-            format = CPathResponseFormat.BIOPAX;
+            format = OutputFormat.BIOPAX;
         } else {
-            format = CPathResponseFormat.BINARY_SIF;
+            format = OutputFormat.BINARY_SIF;
         }
 
         TaskManager taskManager = factory.getTaskManager();

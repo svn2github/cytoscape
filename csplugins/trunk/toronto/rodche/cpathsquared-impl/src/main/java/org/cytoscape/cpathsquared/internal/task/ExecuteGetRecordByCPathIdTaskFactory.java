@@ -4,17 +4,18 @@ import org.cytoscape.biopax.BioPaxContainer;
 import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
 import org.cytoscape.biopax.NetworkListener;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.webservice.CPathResponseFormat;
 import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
+import cpath.service.OutputFormat;
+
 public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory {
 
 	private final CPathWebService webApi;
 	private final String[] ids;
-	private final CPathResponseFormat format;
+	private final OutputFormat format;
 	private final String networkTitle;
 	private final CPath2Factory cPathFactory;
 	private final BioPaxContainer bpContainer;
@@ -23,7 +24,7 @@ public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory {
 	private final VisualMappingManager mappingManager;
 
 	public ExecuteGetRecordByCPathIdTaskFactory(CPathWebService webApi,
-			String[] ids, CPathResponseFormat format, String networkTitle,
+			String[] ids, OutputFormat format, String networkTitle,
 			CPath2Factory cPathFactory, BioPaxContainer bpContainer,
 			MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener, VisualMappingManager mappingManager) {
 		this.webApi = webApi;

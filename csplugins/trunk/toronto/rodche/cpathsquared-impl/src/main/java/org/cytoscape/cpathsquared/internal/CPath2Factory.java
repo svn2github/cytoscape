@@ -21,7 +21,6 @@ import org.cytoscape.cpathsquared.internal.view.PhysicalEntityDetailsPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchBoxPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchDetailsPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchHitsPanel;
-import org.cytoscape.cpathsquared.internal.webservice.CPathResponseFormat;
 import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.model.CyNetwork;
@@ -35,6 +34,7 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 
+import cpath.service.OutputFormat;
 import cpath.service.jaxb.SearchHit;
 
 // TODO: This is a "God" object.  Probably shouldn't exist, but it's better than having to
@@ -78,8 +78,10 @@ public class CPath2Factory {
 	}
 	
 	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(
-			CPathWebService webApi, String[] ids, CPathResponseFormat format, String title) {
-		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, this, bpContainer, mapperFactory, networkListener, mappingManager);
+			CPathWebService webApi, String[] ids, OutputFormat format, String title) 
+	{
+		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, 
+			this, bpContainer, mapperFactory, networkListener, mappingManager);
 	}
 
 	public SearchBoxPanel createSearchBoxPanel(CPathWebService webApi) {
@@ -160,7 +162,7 @@ public class CPath2Factory {
 		return undoSupport;
 	}
 
-	public CPathNetworkImportTask createCPathNetworkImportTask(String query, CPathWebService client, CPathResponseFormat format) {
+	public CPathNetworkImportTask createCPathNetworkImportTask(String query, CPathWebService client, OutputFormat format) {
 		return new CPathNetworkImportTask(query, client, format, this);
 	}
 

@@ -16,9 +16,10 @@ import javax.swing.ListSelectionModel;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
 import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
-import org.cytoscape.cpathsquared.internal.webservice.CPathResponseFormat;
 import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
 import org.cytoscape.cpathsquared.internal.webservice.CPathWebServiceImpl;
+
+import cpath.service.OutputFormat;
 
 /**
  * Search Details Panel.
@@ -106,11 +107,12 @@ public class SearchDetailsPanel extends JPanel {
             CPathWebService webApi = CPathWebServiceImpl.getInstance();
             ExecuteGetRecordByCPathIdTaskFactory taskFactory;
 
-            CPathResponseFormat format;
+            OutputFormat format;
+            //TODO add EXTENDED_BINARY_SIF
             if (CPathProperties.downloadMode == CPathProperties.DOWNLOAD_FULL_BIOPAX) {
-                format = CPathResponseFormat.BIOPAX;
+                format = OutputFormat.BIOPAX;
             } else {
-                format = CPathResponseFormat.BINARY_SIF;
+                format = OutputFormat.BINARY_SIF;
             }
 
             taskFactory = factory.createExecuteGetRecordByCPathIdTaskFactory(

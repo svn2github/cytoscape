@@ -10,7 +10,7 @@ import javax.swing.JScrollPane;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.CPathNetworkImportTask;
-import org.cytoscape.cpathsquared.internal.CPathPlugIn2;
+import org.cytoscape.cpathsquared.internal.view.GuiUtils;
 import org.cytoscape.cpathsquared.internal.view.TabUi;
 import org.cytoscape.cpathsquared.internal.view.CPathSearchPanel;
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
@@ -19,6 +19,8 @@ import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
+
+import cpath.service.OutputFormat;
 
 /**
  * CPath Web Service, integrated into the Cytoscape Web Services Framework.
@@ -39,7 +41,11 @@ public class CPathCytoscapeWebService extends AbstractWebServiceClient implement
     public static final String RESPONSE_FORMAT = "response_format";
 
 	@Tunable(description="Filter by Organism - NCBI Taxonomy ID")
-	Integer taxonomyId = -1;
+	Integer taxonomyId = -1; //TODO consider several values (logical 'OR')
+	@Tunable(description="Filter by BioPAX Class")
+	String biopaxType = null;
+	@Tunable(description="Filter by Data Source")
+	String dataSource = null; //TODO consider several values (logical 'OR')
 	
     private JPanel mainPanel;
 
@@ -67,8 +73,7 @@ public class CPathCytoscapeWebService extends AbstractWebServiceClient implement
     @Override
     public TaskIterator getTaskIterator() {
     	String query = "";
-		CPathResponseFormat format = CPathResponseFormat.BINARY_SIF;
-		CPathNetworkImportTask task = factory.createCPathNetworkImportTask(query, webApi, format);
+		CPathNetworkImportTask task = factory.createCPathNetworkImportTask(query, webApi, OutputFormat.BINARY_SIF);
     	return new TaskIterator(task);
     }
     
@@ -90,7 +95,7 @@ public class CPathCytoscapeWebService extends AbstractWebServiceClient implement
         TabUi tabbedPane = TabUi.getInstance();
         tabbedPane.add("Search", cpathPanel);
 
-        JScrollPane configPanel = CPathPlugIn2.createConfigPanel();
+        JScrollPane configPanel = GuiUtils.createConfigPanel();
         tabbedPane.add("Options", configPanel);
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
     }
