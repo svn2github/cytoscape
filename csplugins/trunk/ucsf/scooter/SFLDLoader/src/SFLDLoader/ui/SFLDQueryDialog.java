@@ -313,19 +313,23 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 		}
 		infoTextPanel.removeAll();
 		JEditorPane description = null;
-		try {
-			if (group == null) 
-				description = new JEditorPane("text/plain",null);
-			else
-				description = new JEditorPane(URI);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
-		JScrollPane scrollPane = new JScrollPane(description);
+		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
 		scrollPane.setPreferredSize(new Dimension(800, 300));
 		scrollPane.setMinimumSize(new Dimension(700, 10));
 		infoTextPanel.add(scrollPane);
+		try {
+			if (group == null) 
+				description = new JEditorPane("text/plain",null);
+			else {
+				description = new JEditorPane("text/plain", "Fetching page...");
+				fetchContent(infoTextPanel, scrollPane, URI);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return;
+		}
+		scrollPane.setViewportView(description);
 		pack();
 		setVisible(true);
 		infoTextPanel.repaint();
@@ -384,6 +388,31 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 			return CyLayouts.getDefaultLayout();
 		}
 		return layoutAlgorithm;
+	}
+
+	private void fetchContent(JPanel infoTextPanel, JScrollPane scrollPane, String uri) {
+		Thread t = new PageFetch(infoTextPanel, scrollPane, uri);
+		t.start();
+
+	}
+
+	private class PageFetch extends Thread {
+		JScrollPane scrollPane;
+		String uri;
+		public PageFetch(JPanel infoTextPanel, JScrollPane scrollPane, String uri) {
+			this.scrollPane = scrollPane;
+			this.uri = uri;
+		}
+		
+		public void run() {
+			JEditorPane jep = null;
+			try {
+				jep = new JEditorPane(uri);
+			} catch (Exception e) {
+				jep = new JEditorPane("text/plain", "Unable to fetch page: "+e.getMessage());
+			}
+			scrollPane.setViewportView(jep);
+		}
 	}
 
 	public class BrowseTableModel extends AbstractTableModel 
@@ -536,12 +565,13 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 						Family fam = selSubgroup.getFamily(selectedRows[0]);
 						if (selFamilies.size() > 0 && selFamilies.contains(fam)) {
 							// Deselect
-							selFamilies.add(fam);
+							selFamilies.remove(fam);
 						} else {
 							selFamilies.add(fam);
 						}
 					} else {
 						for (int i = 0; i < selectedRows.length; i++) {
+							System.out.println("Selecting row "+i);
 							selFamilies.add(selSubgroup.getFamily(selectedRows[i]));
 						}
 					}
@@ -553,6 +583,7 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 						descTitleBorder.setTitle("Multiple families");
 						getDescription(null);
 					}
+					fireTableDataChanged();
 				}
 				loadNetworkButton.setEnabled(true);
 				repaint();
