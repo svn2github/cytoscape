@@ -1,0 +1,8 @@
+This is BiNGO version 2.44
+
+Annotations version : Default Annotations version parsed from the following files: 
+gene2go, gene2unigene, gene_info, available from the NCBI at ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/
+genes_uniprot.list, genes_ncbi-geneid.list available from KEGG at ftp://ftp.genome.jp/pub/kegg/linkdb/genes
+acindex.txt, yeast.txt available from Uniprot at ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/docs
+version August 1th 2010
+Ontology version : GO, August 1th 2010
