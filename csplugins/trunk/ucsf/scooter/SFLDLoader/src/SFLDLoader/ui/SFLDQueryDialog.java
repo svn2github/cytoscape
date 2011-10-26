@@ -510,7 +510,7 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 					selFamilies = new ArrayList<Family>();
 					if (selectedRows.length == 1) {
 						Subgroup sg = selSuper.getSubgroup(selectedRows[0]);
-						if (selSubgroups.size() > 1 && selSubgroups.contains(sg)) {
+						if (selSubgroups.size() > 0 && selSubgroups.contains(sg)) {
 							// Deselect
 							selSubgroups.remove(sg);
 						} else {
@@ -534,7 +534,7 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 					Subgroup selSubgroup = selSubgroups.get(0);
 					if (selectedRows.length == 1) {
 						Family fam = selSubgroup.getFamily(selectedRows[0]);
-						if (selFamilies.size() > 1 && selFamilies.contains(fam)) {
+						if (selFamilies.size() > 0 && selFamilies.contains(fam)) {
 							// Deselect
 							selFamilies.add(fam);
 						} else {
@@ -585,7 +585,7 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 				                                                     row, col);
 				return cell;
 			}
-			return null;
+			return super.getTableCellRendererComponent(table, null, false, false, row, col);
 		}
 	}
 
@@ -617,7 +617,8 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 				                                                     row, col);
 				return cell;
 			}
-			return null;
+			return super.getTableCellRendererComponent(table, null, false, false, row, col);
+			// return null;
 		}
 	}
 
@@ -643,7 +644,7 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 				                                                     row, col);
 				return cell;
 			}
-			return null;
+			return super.getTableCellRendererComponent(table, null, false, false, row, col);
 		}
 	}
 }
