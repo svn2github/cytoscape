@@ -66,6 +66,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.plugin.CyPluginAdapter;
 import org.cytoscape.view.model.CyNetworkView;
 
 import BiNGO.Browser;
@@ -169,6 +170,8 @@ public class ResultPanel extends JPanel implements ResultAndStartPanel {
 	final static int SELECT_COLUMN = 0;
 	final static int GO_TERM_COLUMN = 1;
 	final static int DESCRIPTION_COLUMN = 2;
+	
+	private final CyPluginAdapter adapter;
 
 	/**
 	 * Creates a new instance of ResultPanel
@@ -178,9 +181,10 @@ public class ResultPanel extends JPanel implements ResultAndStartPanel {
 			Map mapBigN, String alphaString, Annotation annotation, Map alias, Ontology ontology,
 			String annotationFile, String ontologyFile, String testString, String correctionString,
 			String overUnderString, String dirName, String fileNam, String clusterVsString, String catString,
-			Set selectedCanonicalNameVector, CyNetwork currentNetwork, CyNetworkView currentNetworkview, GoBin goB) {
+			Set selectedCanonicalNameVector, CyNetwork currentNetwork, CyNetworkView currentNetworkview, GoBin goB, final CyPluginAdapter adapter) {
 		this.fileName = fileNam.substring(0, fileNam.length() - 4);
-
+		
+		this.adapter = adapter;
 		this.testMap = testMap;
 		this.correctionMap = correctionMap;
 		this.mapSmallX = mapSmallX;
@@ -376,7 +380,7 @@ public class ResultPanel extends JPanel implements ResultAndStartPanel {
 		constr.weightx = 100;
 		constr.anchor = constr.EAST;
 		JButton jButton4 = new JButton("Select nodes");
-		jButton4.addActionListener(new ZSelectNodes((ResultAndStartPanel) this));
+		jButton4.addActionListener(new ZSelectNodes((ResultAndStartPanel) this, adapter));
 		jPanelApplyButtons.add(jButton4, constr);
 
 		jPanelDeBase.add(jPanelApplyButtons, java.awt.BorderLayout.SOUTH);

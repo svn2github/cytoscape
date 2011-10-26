@@ -59,6 +59,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 
 import BiNGO.ontology.Ontology;
@@ -216,8 +217,13 @@ public class DisplayBiNGOWindow {
 		buildNodeAttributes(network);
 		buildEdgeAttributes(network);
 		
-		final CyNetworkViewFactory viewFactory = adapter.getCyNetworkViewFactory();
-		final CyNetworkView bingoCyNetworkView = viewFactory.getNetworkView(network);
+		
+		// Create View
+		final TaskManager tm = adapter.getTaskManager();
+		tm.execute(new GenericTaskFactory(new CreateViewTask(network)));
+		
+//		final CyNetworkViewFactory viewFactory = adapter.getCyNetworkViewFactory();
+//		final CyNetworkView bingoCyNetworkView = viewFactory.getNetworkView(network);
 //		
 //		// from MCODE plugin, MCODEResultsDialog class layout graph and fit it to window
 //		// randomize node positions before layout so that they don't all layout in a line

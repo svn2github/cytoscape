@@ -1059,7 +1059,7 @@ public class SettingsPanelActionListener implements ActionListener {
 				display.makeWindow();
 			}
 			if ((goBin == null) || goBin.isWindowClosed()) {
-				goBin = new BiNGO.GOlorize.GoBin(settingsPanel, startNetworkView);
+				goBin = new BiNGO.GOlorize.GoBin(settingsPanel, startNetworkView, adapter);
 			}
 
 			if (params.getAnnotationFile() == null) {

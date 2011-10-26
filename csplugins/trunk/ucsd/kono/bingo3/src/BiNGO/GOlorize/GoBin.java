@@ -47,6 +47,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.plugin.CyPluginAdapter;
 import org.cytoscape.view.model.CyNetworkView;
 
 import BiNGO.SettingsPanel;
@@ -92,9 +93,11 @@ public class GoBin extends javax.swing.JFrame {
 	// private JFrame bingoWindow = new JFrame("BiNGO Settings");
 	private SettingsPanel settingsPanel;
 	private CyNetworkView networkView;
+	
+	private final CyPluginAdapter adapter;
 
-	public GoBin(BiNGO.SettingsPanel settingsPanel, CyNetworkView networkView) {
-
+	public GoBin(BiNGO.SettingsPanel settingsPanel, CyNetworkView networkView, final CyPluginAdapter adapter) {
+		this.adapter = adapter;
 		this.setTitle("BiNGO output");
 		this.settingsPanel = settingsPanel;
 		this.networkView = networkView;
@@ -289,7 +292,7 @@ public class GoBin extends javax.swing.JFrame {
 		ResultPanel result = new ResultPanel(testMap, correctionMap, mapSmallX, mapSmallN, mapBigX, mapBigN,
 				alphaString, annotation, alias, ontology, annotationFile, ontologyFile, testString, correctionString,
 				overUnderString, dirName, fileName, clusterVsString, catString, selectedCanonicalNameVector,
-				currentNetwork, currentNetworkview, this);
+				currentNetwork, currentNetworkview, this, adapter);
 
 		if (getResultPanelCount() != 0)
 			result.setTabName(trouveBonNom(result.getTabName()));

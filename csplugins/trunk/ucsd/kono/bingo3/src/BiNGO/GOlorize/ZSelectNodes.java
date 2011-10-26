@@ -45,8 +45,11 @@ import javax.swing.JTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.plugin.CyPluginAdapter;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
+
+import com.sun.xml.internal.bind.v2.model.core.Adapter;
 
 import BiNGO.ontology.Annotation;
 
@@ -55,69 +58,81 @@ public class ZSelectNodes implements ActionListener {
 	ResultAndStartPanel result;
 	Annotation annotation;
 
+	private final CyPluginAdapter adapter;
+	
 	/** Creates a new instance of ZSelectNodes */
-	public ZSelectNodes(ResultAndStartPanel result) {
+	public ZSelectNodes(ResultAndStartPanel result, final CyPluginAdapter adapter) {
 		this.result = result;
-
+		this.adapter = adapter;
 	}
 
 	public void actionPerformed(ActionEvent ev) {
 		
-		// TODO:  FIXME 
-		System.out.println("Not implemented yet!!");
+		System.out.println("Selection start!!");
 		
-//		this.annotation = result.getAnnotation();
-//		Map<String, HashSet<String>> alias = result.getAlias();
-//		JTable jTable = result.getJTable();
-//		// goSelected = ZDisplayGoNodes3.getSelectedGoSet(jTable);
-//		goSelected = getSelectedGoSet(jTable);
-//		CyNetworkView currentNetworkView = result.getNetworkView();
-//		if (currentNetworkView != null) {
-//			final CyNetwork model = currentNetworkView.getModel();
-//			final List<CyNode> nodes = model.getNodeList();
-//			for (final CyNode node : nodes)
-//				node.getCyRow().set(CyNetwork.SELECTED, false);
-//
-//			currentNetworkView.updateView();
-//
-//			HashSet selectedNodesSet = new HashSet();
-//
-//			if (result instanceof ResultPanel) {
-//				this.annotation = result.getAnnotation();
-//				final Collection<View<CyNode>> nodeViews = currentNetworkView.getNodeViews();				
-//				for(View<CyNode> nodeView: nodeViews) {
-//					Set goAnnot = new HashSet();
-//					
-//					String nodeName = nodeView.getNode().getIdentifier().toUpperCase();
-//					HashSet identifiers = alias.get(node);
-//					if (identifiers != null) {
-//						Iterator it = identifiers.iterator();
-//						while (it.hasNext()) {
-//							int[] goID = annotation.getClassifications(it.next() + "");
-//							for (int t = 0; t < goID.length; t++) {
-//								goAnnot.add(goID[t] + "");
-//							}
-//						}
-//					}
-//
-//					if (goAnnot != null) {
-//						Iterator it = goAnnot.iterator();
-//						while (it.hasNext()) {
-//							if (goSelected.contains((new Integer(it.next() + "")).toString())) {
-//								selectedNodesSet.add(nodeView.getNode());
-//								continue;
-//							}
-//						}
-//					}
-//
-//					// this.annotation=null;
-//				}
-//				currentNetworkView.getNetwork().setSelectedNodeState(selectedNodesSet, true);
-//				currentNetworkView.updateView();
-//			}
-//
-//			this.annotation = null;
-//		}
+		this.annotation = result.getAnnotation();
+		Map<String, Set<String>> alias = result.getAlias();
+		JTable jTable = result.getJTable();
+		goSelected = getSelectedGoSet(jTable);
+		CyNetworkView currentNetworkView = result.getNetworkView();
+		if (currentNetworkView != null) {
+			final CyNetwork model = currentNetworkView.getModel();
+			final List<CyNode> nodes = model.getNodeList();
+			for (final CyNode node : nodes)
+				node.getCyRow().set(CyNetwork.SELECTED, false);
+
+			//currentNetworkView.updateView();
+
+			System.out.println("Selection cleared!!----------" + model.getCyRow().get(CyTableEntry.NAME, String.class));
+			
+			final Set<CyNode> selectedNodesSet = new HashSet<CyNode>();
+
+			if (result instanceof ResultPanel) {
+				this.annotation = result.getAnnotation();
+				final Collection<View<CyNode>> nodeViews = currentNetworkView.getNodeViews();				
+				for(View<CyNode> nodeView: nodeViews) {
+					Set goAnnot = new HashSet();
+					
+					final CyNode node = nodeView.getModel();
+					final String nodeName = node.getCyRow().get(CyTableEntry.NAME, String.class);
+					Set identifiers = alias.get(nodeName);
+					if (identifiers != null) {
+						Iterator it = identifiers.iterator();
+						while (it.hasNext()) {
+							int[] goID = annotation.getClassifications(it.next() + "");
+							for (int t = 0; t < goID.length; t++) {
+								goAnnot.add(goID[t] + "");
+							}
+						}
+						System.out.println("Selected Node name = " + nodeName);
+					}
+
+					
+					if (goAnnot != null) {
+						Iterator it = goAnnot.iterator();
+						while (it.hasNext()) {
+							if (goSelected.contains((new Integer(it.next() + "")).toString())) {
+								selectedNodesSet.add(nodeView.getModel());
+								continue;
+							}
+						}
+					}
+					// this.annotation=null;
+				}
+				
+				System.out.println("Nodes selected = " + selectedNodesSet.size());
+
+				for(final CyNode node: selectedNodesSet)
+					node.getCyRow().set(CyNetwork.SELECTED, true);
+
+				adapter.getCyEventHelper().flushPayloadEvents();
+				currentNetworkView.updateView();
+			}
+
+			this.annotation = null;
+		}
+		
+		System.out.println("Selection DONE!!");
 	}
 
 	private HashSet getSelectedGoSet(JTable jTable1) {
