@@ -11,8 +11,6 @@ import java.awt.Point;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Set;
@@ -27,28 +25,32 @@ import javax.swing.border.EtchedBorder;
 import org.idekerlab.PanGIAPlugin.PanGIAPlugin;
 import org.idekerlab.PanGIAPlugin.SearchParameters;
 import org.idekerlab.PanGIAPlugin.SearchTask;
+import org.idekerlab.PanGIAPlugin.ServicesUtil;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.attr.MultiHashMapDefinitionListener;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
-import cytoscape.view.CyHelpBroker;
-import cytoscape.view.cytopanels.CytoPanel;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
+//import cytoscape.view.CyHelpBroker;
 import org.idekerlab.PanGIAPlugin.ScalingMethodX;
 import org.idekerlab.PanGIAPlugin.utilities.CyCollapsiblePanel;
 
-import com.lowagie.text.Font;
-
+//import com.lowagie.text.Font;
+import org.cytoscape.model.events.ColumnCreatedEvent;
+import org.cytoscape.model.events.ColumnCreatedListener;
+import org.cytoscape.util.swing.NetworkSelectorPanel;
+import java.util.Properties;
+import org.cytoscape.model.CyColumn;
+import java.util.Collection;
+import java.util.Iterator;
+import org.cytoscape.model.CyTableUtil;
+import org.idekerlab.PanGIAPlugin.SearchTaskFactoryImpl;
 
 /**
  * @author kono, ghannum
  * 
  * 5/25/10: Removed restrictions on machine-generated sections. (Greg) 
  */
-public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitionListener, PropertyChangeListener {
+public class SearchPropertyPanel extends JPanel implements ColumnCreatedListener,
+			ItemListener {
 	private static final long serialVersionUID = -3352470909434196700L;
 
 	private static final double DEF_ALPHA = 1.6;
@@ -65,7 +67,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 
 	/** Creates new form SearchPropertyPanel */
-	public SearchPropertyPanel() {
+	public SearchPropertyPanel(/*NetworkSelectorPanel physicalNetworkPanel, NetworkSelectorPanel geneticNetworkPanel*/) {
+
+		this.physicalNetworkPanel = physicalNetworkPanel;
+		this.geneticNetworkPanel = geneticNetworkPanel;
+		
 		initComponents(); // the main panel
 		initComponents2(); // parameter panel
 
@@ -99,9 +105,6 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		 
 		// about button is a place holder for now, hide it
 		this.aboutButton.setVisible(true);
-		
-		Cytoscape.getNodeAttributes().getMultiHashMapDefinition().addDataDefinitionListener(this);
-		Cytoscape.getEdgeAttributes().getMultiHashMapDefinition().addDataDefinitionListener(this);
 
 		updateAttributeLists();
 		updateScalingMethods();
@@ -113,13 +116,17 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		this.complexRewardTextField.setText(Double.toString(DEF_COMPLEX_REWARD));
 		this.degreeTextField.setText(DEF_DEGREE);
 		this.edgeFilterTextField.setText(Double.toString(DEF_PVALUE_THRESHOLD));
-	
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
+			
+		ServicesUtil.cyServiceRegistrarServiceRef.registerAllServices(this.physicalNetworkPanel, new Properties());
+		ServicesUtil.cyServiceRegistrarServiceRef.registerAllServices(this.geneticNetworkPanel, new Properties());
+
+		this.physicalNetworkPanel.getJCombobox().addItemListener(this);
+		this.geneticNetworkPanel.getJCombobox().addItemListener(this);
+
 	}
 
-	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED))
-			this.updateAttributeLists();
+	public void itemStateChanged(ItemEvent itemEvent){
+		updateAttributeLists();
 	}
 	
 	public SearchParameters getParameters() {
@@ -164,7 +171,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         topPane.add(lbPhysicalNetwork, gridBagConstraints);
 
-        physicalNetworkPanel.setComboBoxToolTip("Choose a network which contains edges representing physical interactions.");
+        physicalNetworkPanel.getJCombobox().setToolTipText("Choose a network which contains edges representing physical interactions.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -233,7 +240,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         edgeAttributePanel.add(lbGeneticNetwork, gridBagConstraints);
 
-        geneticNetworkPanel.setComboBoxToolTip("Choose a network which contains edges representing genetic interactions.");
+        geneticNetworkPanel.getJCombobox().setToolTipText("Choose a network which contains edges representing genetic interactions.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -307,7 +314,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         parameterErrorTextArea.setWrapStyleWord(true);
         parameterErrorTextArea.setEditable(false);
         parameterErrorTextArea.setForeground(Color.blue);
-        parameterErrorTextArea.setFont(parameterErrorTextArea.getFont().deriveFont(Font.BOLD));
+//        parameterErrorTextArea.setFont(parameterErrorTextArea.getFont().deriveFont(Font.BOLD));
         parameterErrorTextArea.setToolTipText("This issue must be addressed before a search can be performed.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 5;
@@ -902,31 +909,26 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     }                        
   
 	private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		physicalNetworkPanel.establishSelected();
-		geneticNetworkPanel.establishSelected();
+//		physicalNetworkPanel.establishSelected();
+//		geneticNetworkPanel.establishSelected();
 		
 		// Build parameter object
 		if (buildSearchParameters() == false)
 			return;
 
 		// Run search algorithm
-		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.displayCancelButton(true);
-		jTaskConfig.displayCloseButton(true);
-		jTaskConfig.displayStatus(true);
-		jTaskConfig.displayTimeElapsed(true);
-		jTaskConfig.displayTimeRemaining(false);
-		jTaskConfig.setAutoDispose(false);
-		jTaskConfig.setModal(false);
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
-		TaskManager.executeTask(new SearchTask(parameters), jTaskConfig);
+		SearchTask task = new SearchTask(parameters);
+		SearchTaskFactoryImpl factory = new SearchTaskFactoryImpl(task);
+		ServicesUtil.taskManagerServiceRef.execute(factory);
 	}
 
 
 	private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		
+		System.out.println("Entering SearchPropertyPanel.closeButtonActionPerformed()....");
 		// Close parent tab
-		final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
-		cytoPanel.remove(this.getParent().getParent());
+//		final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+//		cytoPanel.remove(this.getParent().getParent());
 	}
 
 	private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
@@ -1186,8 +1188,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     // End of variables declaration                     
                
   
-	private NetworkSelectorPanelX physicalNetworkPanel = new NetworkSelectorPanelX();
-	private NetworkSelectorPanelX geneticNetworkPanel = new NetworkSelectorPanelX();
+	private NetworkSelectorPanel physicalNetworkPanel = new NetworkSelectorPanel(ServicesUtil.cyApplicationManagerServiceRef, ServicesUtil.cyNetworkManagerServiceRef);
+	private NetworkSelectorPanel geneticNetworkPanel = new NetworkSelectorPanel(ServicesUtil.cyApplicationManagerServiceRef, ServicesUtil.cyNetworkManagerServiceRef);
 	
 	public void updateAttributeLists() {
 		// Save current selection
@@ -1203,72 +1205,133 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		annotationAttribComboBox.removeAllItems();
 
 		nodeAttrComboBox.addItem("canonicalName");
-		physicalEdgeAttribComboBox.addItem(DEFAULT_ATTRIBUTE);
-		geneticEdgeAttribComboBox.addItem(DEFAULT_ATTRIBUTE);
-		
+		physicalEdgeAttribComboBox.addItem(DEFAULT_ATTRIBUTE); // none
+		geneticEdgeAttribComboBox.addItem(DEFAULT_ATTRIBUTE);  // none
+
 		//Populate the node boxes
-		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
-		final Set<String> nodeAttrNames = new TreeSet<String>(Arrays.asList(nodeAttr.getAttributeNames()));
+		CyTable nodeAttr_phy = null;
+		Set<String> nodeAttrNames_phy = null;
+		if (this.physicalNetworkPanel.getSelectedNetwork() != null){
+			nodeAttr_phy = this.physicalNetworkPanel.getSelectedNetwork().getDefaultNodeTable();
+			nodeAttrNames_phy = CyTableUtil.getColumnNames(nodeAttr_phy);			
+		}
 
+		CyTable nodeAttr_gen = null;
+		Set<String> nodeAttrNames_gen = null;
+		if (this.geneticNetworkPanel.getSelectedNetwork() != null){
+			nodeAttr_gen = this.geneticNetworkPanel.getSelectedNetwork().getDefaultNodeTable();
+			nodeAttrNames_gen = CyTableUtil.getColumnNames(nodeAttr_gen);			
+		}
+		
+		// Find common nodeAttr names for both network
+		Set<String> nodeAttrNames = null;
+		if (nodeAttrNames_phy != null){
+			nodeAttrNames = new TreeSet<String>();
+			Iterator<String> it = nodeAttrNames_phy.iterator();
+			while (it.hasNext()){
+				String name = it.next();
+				if (nodeAttrNames_gen.contains(name)){
+					nodeAttrNames.add(name);
+				}
+			}			
+		}
+		
 		boolean isNodeSelectedExist = false;
-		for (String name : nodeAttrNames)
-		{
-			// Use only double or int attributes
-			final byte attribType = nodeAttr.getMultiHashMapDefinition().getAttributeValueType(name);
-			
-			if (attribType == MultiHashMapDefinition.TYPE_STRING && nodeAttr.getUserVisible(name) && !name.equals("canonicalName"))
+		if (nodeAttrNames != null){
+			for (String name : nodeAttrNames)
 			{
-				nodeAttrComboBox.addItem(name);
+				// Use only double or int attributes
+				Class<?> attribType_phy = nodeAttr_phy.getColumn(name).getType();
+				Class<?> attribType_gen = nodeAttr_gen.getColumn(name).getType();
+				if (attribType_phy != attribType_gen){
+					continue;
+				}
 				
-				if (name.equals(nodeSelected)) isNodeSelectedExist = true;
+				if (name.equals("canonicalName")){
+					continue;
+				}
+				
+				//final byte attribType = nodeAttr.getMultiHashMapDefinition().getAttributeValueType(name);
+				//if (attribType == MultiHashMapDefinition.TYPE_STRING && nodeAttr.getUserVisible(name) && !name.equals("canonicalName"))
+				
+				if (attribType_phy == Double.class || attribType_phy == Float.class || attribType_phy == Integer.class)
+				{
+					nodeAttrComboBox.addItem(name);				
+					if (name.equals(nodeSelected)) isNodeSelectedExist = true;
+				}
 			}
+			
+			if (isNodeSelectedExist) nodeAttrComboBox.setSelectedItem(nodeSelected);			
 		}
 		
-		if (isNodeSelectedExist) nodeAttrComboBox.setSelectedItem(nodeSelected);
+		//Populate the edge box -- physical
+		CyTable edgeAttr_phy = null;
+		Set<String> edgeAttrNames_phy = null;
+		if (this.physicalNetworkPanel.getSelectedNetwork() != null){
+			edgeAttr_phy = this.physicalNetworkPanel.getSelectedNetwork().getDefaultEdgeTable();
+			edgeAttrNames_phy = CyTableUtil.getColumnNames(edgeAttr_phy);
+		}
+				
 		
-		
-		//Populate the edge boxes
-		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
-		final Set<String> edgeAttrNames = new TreeSet<String>(Arrays.asList(edgeAttr.getAttributeNames()));
-
-		boolean isGeneticEdgeSelectedExist = false;
 		boolean isPhysicalEdgeSelectedExist = false;
-		for (String name : edgeAttrNames)
-		{
-			// Use only double or int attributes
-			final byte attribType = edgeAttr.getMultiHashMapDefinition().getAttributeValueType(name);
-			
-			if ((attribType == MultiHashMapDefinition.TYPE_FLOATING_POINT || attribType == MultiHashMapDefinition.TYPE_INTEGER) && edgeAttr.getUserVisible(name))
+		if (edgeAttrNames_phy != null){
+			for (String name : edgeAttrNames_phy)
 			{
-				geneticEdgeAttribComboBox.addItem(name);
-				physicalEdgeAttribComboBox.addItem(name);
-				
-				if (name.equals(geneticEdgeSelected)) isGeneticEdgeSelectedExist = true;
-				if (name.equals(physicalEdgeSelected)) isPhysicalEdgeSelectedExist = true;
+				// Use only double or int attributes
+				if (edgeAttr_phy.getColumn(name).getType() == Double.class || edgeAttr_phy.getColumn(name).getType() == Float.class
+						||edgeAttr_phy.getColumn(name).getType() == Integer.class)	
+				{
+					physicalEdgeAttribComboBox.addItem(name);				
+					if (name.equals(physicalEdgeSelected)) isPhysicalEdgeSelectedExist = true;
+				}
 			}
+			if (isPhysicalEdgeSelectedExist) physicalEdgeAttribComboBox.setSelectedItem(physicalEdgeSelected);			
+		}
+
+		//Populate the edge box -- genetic		
+		CyTable edgeAttr_gen = null;
+		Set<String> edgeAttrNames_gen = null;
+		
+		if (this.geneticNetworkPanel.getSelectedNetwork() != null){
+			edgeAttr_gen = this.geneticNetworkPanel.getSelectedNetwork().getDefaultEdgeTable();
+			edgeAttrNames_gen = CyTableUtil.getColumnNames(edgeAttr_gen);			
 		}
 		
-		if (isGeneticEdgeSelectedExist) geneticEdgeAttribComboBox.setSelectedItem(geneticEdgeSelected);
-		if (isPhysicalEdgeSelectedExist) physicalEdgeAttribComboBox.setSelectedItem(physicalEdgeSelected);
 		
+		boolean isGeneticEdgeSelectedExist = false;
+		
+		if (edgeAttrNames_gen != null){
+			for (String name : edgeAttrNames_gen)
+			{
+				// Use only double or int attributes
+				if (edgeAttr_gen.getColumn(name).getType() == Double.class || edgeAttr_gen.getColumn(name).getType() == Float.class
+						||edgeAttr_gen.getColumn(name).getType() == Integer.class)	
+				{
+					geneticEdgeAttribComboBox.addItem(name);
+					
+					if (name.equals(geneticEdgeSelected)) isGeneticEdgeSelectedExist = true;
+				}
+			}
+			if (isGeneticEdgeSelectedExist) geneticEdgeAttribComboBox.setSelectedItem(geneticEdgeSelected);			
+		}
 		
 		
 		//Populate the annotation box
 		boolean isAnnotSelectedExist = false;
-		for (String name : nodeAttrNames)
-		{
-			// Use only string attributes
-			final byte attribType = nodeAttr.getMultiHashMapDefinition().getAttributeValueType(name);
-			if (attribType == MultiHashMapDefinition.TYPE_STRING && nodeAttr.getUserVisible(name) && !name.equals("canonicalName"))
+		if (nodeAttrNames != null){
+			for (String name : nodeAttrNames)
 			{
-				annotationAttribComboBox.addItem(name);
-				
-				if (name.equals(geneticEdgeSelected)) isAnnotSelectedExist = true;
+				// Use only string attributes
+				Class<?> attribType = nodeAttr_phy.getColumn(name).getType();
+				if (attribType == String.class && !name.equals("canonicalName")){
+					annotationAttribComboBox.addItem(name);				
+					if (name.equals(geneticEdgeSelected)) isAnnotSelectedExist = true;
+				}
 			}
-		}
 
-		if (isAnnotSelectedExist)
-			annotationAttribComboBox.setSelectedItem(annotSelected);
+			if (isAnnotSelectedExist)
+				annotationAttribComboBox.setSelectedItem(annotSelected);			
+		}
 
 		updateSearchButtonState();
 	}
@@ -1460,8 +1523,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		
 		
 		String physicalSelected = physicalEdgeAttribComboBox.getSelectedItem().toString();
-		if (!physicalSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) && (Cytoscape.getEdgeAttributes().getType(physicalSelected) != CyAttributes.TYPE_INTEGER &&
-			     Cytoscape.getEdgeAttributes().getType(physicalSelected) != CyAttributes.TYPE_FLOATING))
+		Class<?> attrType = this.physicalNetworkPanel.getSelectedNetwork().getDefaultEdgeTable().getColumn(physicalSelected).getType();
+		
+		if (!physicalSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) && (attrType != Integer.class &&
+			     attrType != Double.class))
 		{
 			searchButton.setEnabled(false);
 			parameterErrorTextArea.setText("Please choose physical edge scores of type integer or float.");
@@ -1469,12 +1534,18 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		}
 		
 		String geneticSelected = geneticEdgeAttribComboBox.getSelectedItem().toString();
-		if (!geneticSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) && (Cytoscape.getEdgeAttributes().getType(geneticSelected) != CyAttributes.TYPE_INTEGER &&
-			     Cytoscape.getEdgeAttributes().getType(geneticSelected) != CyAttributes.TYPE_FLOATING))
-		{
-			searchButton.setEnabled(false);
-			parameterErrorTextArea.setText("Please choose genetic edge scores of type integer or float.");
-			return;
+		if (this.geneticNetworkPanel.getSelectedNetwork() != null &&
+				this.geneticNetworkPanel.getSelectedNetwork().getDefaultEdgeTable().getColumn(geneticSelected) != null){
+
+			Class<?> attrType2 = this.geneticNetworkPanel.getSelectedNetwork().getDefaultEdgeTable().getColumn(geneticSelected).getType();
+			
+			if (!geneticSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) && (attrType2 != Integer.class &&
+				     attrType2 != Double.class))
+			{
+				searchButton.setEnabled(false);
+				parameterErrorTextArea.setText("Please choose genetic edge scores of type integer or float.");
+				return;
+			}			
 		}
 		
 		if ((annotationCheckBox.isSelected() || trainingCheckBox.isSelected()) && annotationAttribComboBox.getSelectedIndex()<0)
@@ -1482,7 +1553,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			searchButton.setEnabled(false);
 			parameterErrorTextArea.setText("To use annotation, please choose an annotation node attribute.");
 			return;
-		}
+		}			
 		
 		
 		//TextField validity
@@ -1611,5 +1682,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		
 		parameterErrorTextArea.setText("");
 		searchButton.setEnabled(true);
+	}
+	
+	public void handleEvent(ColumnCreatedEvent e){
+		updateAttributeLists();		
 	}
 }
