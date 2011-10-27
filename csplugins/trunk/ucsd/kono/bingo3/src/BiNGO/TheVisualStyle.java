@@ -184,10 +184,8 @@ public class TheVisualStyle {
 
 	public VisualStyle createVisualStyle(final CyNetwork network) {
 		final VisualStyleFactory vsFactory = adapter.getVisualStyleFactory();
-		final VisualMappingManager vmm = adapter.getVisualMappingManager();
 		final VisualStyle visualStyle = vsFactory.getInstance(bingoVSName);
 		adaptVisualStyle(visualStyle, network);
-		vmm.addVisualStyle(visualStyle);
 		return visualStyle;
 	}
 }

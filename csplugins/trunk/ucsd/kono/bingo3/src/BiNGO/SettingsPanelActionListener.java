@@ -640,7 +640,6 @@ public class SettingsPanelActionListener implements ActionListener {
 			final String canonicalName = node.getCyRow().get(CyTableEntry.NAME, String.class);
 //			String canonicalName = node.getIdentifier().toUpperCase();
 			if (canonicalName != null && canonicalName.length() != 0 && !canonicalNameVector.contains(canonicalName)) {
-				System.out.println("Alias Size = " + params.getAlias().size());
 				if (mapNames.contains(params.getAlias().get(canonicalName))) {
 					redundantIDs.put(canonicalName,
 							(HashSet<String>) params.getAlias().get(canonicalName));

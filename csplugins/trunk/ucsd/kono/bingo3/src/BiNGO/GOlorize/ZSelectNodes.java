@@ -68,8 +68,6 @@ public class ZSelectNodes implements ActionListener {
 
 	public void actionPerformed(ActionEvent ev) {
 		
-		System.out.println("Selection start!!");
-		
 		this.annotation = result.getAnnotation();
 		Map<String, Set<String>> alias = result.getAlias();
 		JTable jTable = result.getJTable();
@@ -80,10 +78,6 @@ public class ZSelectNodes implements ActionListener {
 			final List<CyNode> nodes = model.getNodeList();
 			for (final CyNode node : nodes)
 				node.getCyRow().set(CyNetwork.SELECTED, false);
-
-			//currentNetworkView.updateView();
-
-			System.out.println("Selection cleared!!----------" + model.getCyRow().get(CyTableEntry.NAME, String.class));
 			
 			final Set<CyNode> selectedNodesSet = new HashSet<CyNode>();
 
@@ -104,7 +98,6 @@ public class ZSelectNodes implements ActionListener {
 								goAnnot.add(goID[t] + "");
 							}
 						}
-						System.out.println("Selected Node name = " + nodeName);
 					}
 
 					
@@ -120,7 +113,6 @@ public class ZSelectNodes implements ActionListener {
 					// this.annotation=null;
 				}
 				
-				System.out.println("Nodes selected = " + selectedNodesSet.size());
 
 				for(final CyNode node: selectedNodesSet)
 					node.getCyRow().set(CyNetwork.SELECTED, true);
@@ -132,7 +124,6 @@ public class ZSelectNodes implements ActionListener {
 			this.annotation = null;
 		}
 		
-		System.out.println("Selection DONE!!");
 	}
 
 	private HashSet getSelectedGoSet(JTable jTable1) {

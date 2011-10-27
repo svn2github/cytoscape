@@ -326,44 +326,19 @@ public class DisplayBiNGOWindow {
 			layout.setNetworkView(view);
 			insertTasksAfterCurrentTask(layout.getTaskIterator());
 			
-
-			System.out.println("====DONE#");
-			System.out.println("==========Create View START =========: " + view);
 			TheVisualStyle vs = new TheVisualStyle(adapter, clusterName, Double.parseDouble(alpha));
 			final VisualMappingManager vmm = adapter.getVisualMappingManager();
 			final VisualStyle newStyle = vs.createVisualStyle(view.getModel());
+			vmm.addVisualStyle(newStyle);
 			vmm.setVisualStyle(vs.createVisualStyle(view.getModel()), view);
 			newStyle.apply(view);
-			System.out.println("==========Create View Done!!");
-			
 			
 			taskMonitor.setProgress(1.0);
 			taskMonitor.setStatusMessage("Network view successfully create for:  "
 					+ network.getCyRow().get(CyTableEntry.NAME, String.class));
 		}
-
 	}
 
-	private final class ApplyStyleTask extends AbstractTask {
-
-		private final CyNetworkView view;
-		
-		ApplyStyleTask(final CyNetworkView view) {
-			this.view = view;
-		}
-		
-		@Override
-		public void run(TaskMonitor arg0) throws Exception {
-			System.out.println("==========Create View START ========= !!");
-			TheVisualStyle vs = new TheVisualStyle(adapter, clusterName, Double.parseDouble(alpha));
-			final VisualMappingManager vmm = adapter.getVisualMappingManager();
-			final VisualStyle newStyle = vs.createVisualStyle(view.getModel());
-			vmm.setVisualStyle(newStyle, view);
-			newStyle.apply(view);
-			System.out.println("==========Create View Done!!");
-		}
-
-	}
 
 	/**
 	 * Method that builds up the new network.
