@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.jws.soap.SOAPBinding.Style;
 import javax.swing.JFrame;
 
 import org.cytoscape.model.CyEdge;
@@ -58,9 +59,13 @@ import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
+
+import sun.management.VMManagement;
 
 import BiNGO.ontology.Ontology;
 
@@ -112,23 +117,22 @@ public class DisplayBiNGOWindow {
 	 * scale for BigDecimal
 	 */
 	private static final int SCALE_RESULT = 100;
-	
 
 	/**
 	 * hasmap with key termID and value pvalue.
 	 */
 	private Map<Integer, String> testMap;
-	
+
 	/**
 	 * hasmap with key termID and value corrected pvalue.
 	 */
 	private Map correctionMap;
-	
+
 	/**
 	 * hashmap with key termID and value x.
 	 */
 	private Map mapSmallX;
-	
+
 	/**
 	 * hashmap with key termID and value n.
 	 */
@@ -157,9 +161,8 @@ public class DisplayBiNGOWindow {
 	 * the ontology.
 	 */
 	private Ontology ontology;
-	
-	private final CyPluginAdapter adapter;
 
+	private final CyPluginAdapter adapter;
 
 	/**
 	 * Constructor for an overrepresentation visualization with correction.
@@ -186,12 +189,12 @@ public class DisplayBiNGOWindow {
 	 *            String with option what categories should be displayed.
 	 */
 	public DisplayBiNGOWindow(Map<Integer, String> testMap, Map correctionMap, Map mapSmallX, Map mapSmallN,
-			Map mapBigX, Map mapBigN, String alpha, Ontology ontology, String clusterName,
-			String categoriesString, final CyPluginAdapter adapter) {
+			Map mapBigX, Map mapBigN, String alpha, Ontology ontology, String clusterName, String categoriesString,
+			final CyPluginAdapter adapter) {
 
-		if(adapter == null)
+		if (adapter == null)
 			throw new NullPointerException("Plugin Adapter is null.");
-		
+
 		this.adapter = adapter;
 		this.testMap = testMap;
 		this.correctionMap = correctionMap;
@@ -205,7 +208,6 @@ public class DisplayBiNGOWindow {
 		this.categoriesString = categoriesString;
 	}
 
-
 	/**
 	 * Method that builds up the new CyNetwork and shows it to the user.
 	 */
@@ -213,65 +215,74 @@ public class DisplayBiNGOWindow {
 		// Create ontology DAG as CyNetwork
 		final CyNetwork network = buildNetwork();
 		adapter.getCyNetworkManager().addNetwork(network);
-		
+
 		buildNodeAttributes(network);
 		buildEdgeAttributes(network);
-		
-		
+
 		// Create View
 		final TaskManager tm = adapter.getTaskManager();
 		tm.execute(new GenericTaskFactory(new CreateViewTask(network)));
-		
-//		final CyNetworkViewFactory viewFactory = adapter.getCyNetworkViewFactory();
-//		final CyNetworkView bingoCyNetworkView = viewFactory.getNetworkView(network);
-//		
-//		// from MCODE plugin, MCODEResultsDialog class layout graph and fit it to window
-//		// randomize node positions before layout so that they don't all layout in a line
-//		// (so they don't fall into a local minimum for the SpringEmbedder)
-//		// If the SpringEmbedder implementation changes, this code may need to
-//		// be removed
-//		final Collection<View<CyNode>> nodeViews = bingoCyNetworkView.getNodeViews();
-//		for (final View<CyNode> nv:nodeViews) {
-//			nv.setXPosition(nv.getXPosition() * Math.random());
-//			// height is small for many default drawn graphs, thus +100
-//			nv.setYPosition((nv.getYPosition() + 100) * Math.random());
-//		}
-//
-//		// apply spring embedded layout...
-//		SpringEmbeddedLayouter spring = new SpringEmbeddedLayouter(bingoCyNetworkView);
-//		// Configure JTask
-//		JTaskConfig config = new JTaskConfig();
-//
-//		// Show Cancel/Close Buttons
-//		config.displayCancelButton(true);
-//		config.displayStatus(true);
-//
-//		// Execute Task via TaskManager
-//		// This automatically pops-open a JTask Dialog Box.
-//		// This method will block until the JTask Dialog Box is disposed.
-//		boolean success = TaskManager.executeTask(spring, config);
 
-//		Cytoscape.getDesktop().toFront();
-//		bingoCyNetworkView.fitContent();
-//		// create visual style with ID dependent on clusterName
-//		TheVisualStyle vs = new TheVisualStyle(clusterName, (new Double(alpha)).doubleValue());
-//		VisualStyle visualStyle = vs.createVisualStyle(network);
-//		CytoscapeDesktop cytoscapedesktop = Cytoscape.getDesktop();
-//		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-//		try {
-//			vmm.getCalculatorCatalog().addVisualStyle(visualStyle);
-//			// VisualStyle oldStyle = vmm.setVisualStyle(visualStyle.getName());
-//			bingoCyNetworkView.applyVizmapper(visualStyle);
-//			// bingoCyNetworkView.setVisualStyle(visualStyle.getName());
-//		} catch (Exception e) {
-//			JOptionPane.showMessageDialog(cytoscapedesktop,
-//					"A visual style already exists for the cluster name you specified." + "\n"
-//							+ "The existing style will be overwritten.");
-//			vs.adaptVisualStyle(vmm.getCalculatorCatalog().getVisualStyle(visualStyle.getName()), network);
-//			// VisualStyle oldStyle = vmm.setVisualStyle(visualStyle.getName());
-//			bingoCyNetworkView.applyVizmapper(vmm.getCalculatorCatalog().getVisualStyle(visualStyle.getName()));
-//			// bingoCyNetworkView.setVisualStyle(visualStyle.getName());
-//		}
+		// final CyNetworkViewFactory viewFactory =
+		// adapter.getCyNetworkViewFactory();
+		// final CyNetworkView bingoCyNetworkView =
+		// viewFactory.getNetworkView(network);
+		//
+		// // from MCODE plugin, MCODEResultsDialog class layout graph and fit
+		// it to window
+		// // randomize node positions before layout so that they don't all
+		// layout in a line
+		// // (so they don't fall into a local minimum for the SpringEmbedder)
+		// // If the SpringEmbedder implementation changes, this code may need
+		// to
+		// // be removed
+		// final Collection<View<CyNode>> nodeViews =
+		// bingoCyNetworkView.getNodeViews();
+		// for (final View<CyNode> nv:nodeViews) {
+		// nv.setXPosition(nv.getXPosition() * Math.random());
+		// // height is small for many default drawn graphs, thus +100
+		// nv.setYPosition((nv.getYPosition() + 100) * Math.random());
+		// }
+		//
+		// // apply spring embedded layout...
+		// SpringEmbeddedLayouter spring = new
+		// SpringEmbeddedLayouter(bingoCyNetworkView);
+		// // Configure JTask
+		// JTaskConfig config = new JTaskConfig();
+		//
+		// // Show Cancel/Close Buttons
+		// config.displayCancelButton(true);
+		// config.displayStatus(true);
+		//
+		// // Execute Task via TaskManager
+		// // This automatically pops-open a JTask Dialog Box.
+		// // This method will block until the JTask Dialog Box is disposed.
+		// boolean success = TaskManager.executeTask(spring, config);
+
+		// Cytoscape.getDesktop().toFront();
+		// bingoCyNetworkView.fitContent();
+		// // create visual style with ID dependent on clusterName
+		// TheVisualStyle vs = new TheVisualStyle(clusterName, (new
+		// Double(alpha)).doubleValue());
+		// VisualStyle visualStyle = vs.createVisualStyle(network);
+		// CytoscapeDesktop cytoscapedesktop = Cytoscape.getDesktop();
+		// VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+		// try {
+		// vmm.getCalculatorCatalog().addVisualStyle(visualStyle);
+		// // VisualStyle oldStyle = vmm.setVisualStyle(visualStyle.getName());
+		// bingoCyNetworkView.applyVizmapper(visualStyle);
+		// // bingoCyNetworkView.setVisualStyle(visualStyle.getName());
+		// } catch (Exception e) {
+		// JOptionPane.showMessageDialog(cytoscapedesktop,
+		// "A visual style already exists for the cluster name you specified." +
+		// "\n"
+		// + "The existing style will be overwritten.");
+		// vs.adaptVisualStyle(vmm.getCalculatorCatalog().getVisualStyle(visualStyle.getName()),
+		// network);
+		// // VisualStyle oldStyle = vmm.setVisualStyle(visualStyle.getName());
+		// bingoCyNetworkView.applyVizmapper(vmm.getCalculatorCatalog().getVisualStyle(visualStyle.getName()));
+		// // bingoCyNetworkView.setVisualStyle(visualStyle.getName());
+		// }
 
 		// add color scale panel
 		JFrame window = new JFrame(clusterName + " Color Scale");
@@ -290,10 +301,10 @@ public class DisplayBiNGOWindow {
 		window.setVisible(true);
 		window.setResizable(false);
 	}
-	
+
 	private final class CreateViewTask extends AbstractTask {
 		private final CyNetwork network;
-		
+
 		CreateViewTask(final CyNetwork network) {
 			this.network = network;
 		}
@@ -306,25 +317,52 @@ public class DisplayBiNGOWindow {
 
 			final CyNetworkViewFactory viewFactory = adapter.getCyNetworkViewFactory();
 			final CyNetworkViewManager networkViewManager = adapter.getCyNetworkViewManager();
-			try {
-				final CyNetworkView view = viewFactory.getNetworkView(network, false);
-				networkViewManager.addNetworkView(view);
-				
-				// Apply layout only when it is necessary.
-				final CyLayoutAlgorithm layout = adapter.getCyLayouts().getLayout("force-directed");
-				layout.setNetworkView(view);
-				insertTasksAfterCurrentTask(layout.getTaskIterator());
-				
-			} catch (Exception e) {
-				throw new Exception("Could not create network view for network: "
-					+ network.getCyRow().get(CyTableEntry.NAME, String.class), e);
-			}
+
+			final CyNetworkView view = viewFactory.getNetworkView(network, false);
+			networkViewManager.addNetworkView(view);
+
+			// Apply layout only when it is necessary.
+			final CyLayoutAlgorithm layout = adapter.getCyLayouts().getLayout("force-directed");
+			layout.setNetworkView(view);
+			insertTasksAfterCurrentTask(layout.getTaskIterator());
+			
+
+			System.out.println("====DONE#");
+			System.out.println("==========Create View START =========: " + view);
+			TheVisualStyle vs = new TheVisualStyle(adapter, clusterName, Double.parseDouble(alpha));
+			final VisualMappingManager vmm = adapter.getVisualMappingManager();
+			final VisualStyle newStyle = vs.createVisualStyle(view.getModel());
+			vmm.setVisualStyle(vs.createVisualStyle(view.getModel()), view);
+			newStyle.apply(view);
+			System.out.println("==========Create View Done!!");
+			
 			
 			taskMonitor.setProgress(1.0);
 			taskMonitor.setStatusMessage("Network view successfully create for:  "
 					+ network.getCyRow().get(CyTableEntry.NAME, String.class));
 		}
+
+	}
+
+	private final class ApplyStyleTask extends AbstractTask {
+
+		private final CyNetworkView view;
 		
+		ApplyStyleTask(final CyNetworkView view) {
+			this.view = view;
+		}
+		
+		@Override
+		public void run(TaskMonitor arg0) throws Exception {
+			System.out.println("==========Create View START ========= !!");
+			TheVisualStyle vs = new TheVisualStyle(adapter, clusterName, Double.parseDouble(alpha));
+			final VisualMappingManager vmm = adapter.getVisualMappingManager();
+			final VisualStyle newStyle = vs.createVisualStyle(view.getModel());
+			vmm.setVisualStyle(newStyle, view);
+			newStyle.apply(view);
+			System.out.println("==========Create View Done!!");
+		}
+
 	}
 
 	/**
@@ -334,26 +372,28 @@ public class DisplayBiNGOWindow {
 	 */
 	public CyNetwork buildNetwork() {
 		final Set<Integer> set;
-		
+
 		if (testMap != null)
 			set = new HashSet<Integer>(testMap.keySet());
 		else
 			set = new HashSet<Integer>(mapSmallX.keySet());
-		
+
 		// put the edges in a set of Strings
 		final Set<String> sifSet = new HashSet<String>();
-		
-		// some GO labels might have multiple termIds, which need to be canonicalized.
-		// (for safety, has also been taken care of in BiNGOOntologyFlatFilereader)
+
+		// some GO labels might have multiple termIds, which need to be
+		// canonicalized.
+		// (for safety, has also been taken care of in
+		// BiNGOOntologyFlatFilereader)
 		Map nameMap = new HashMap();
 
 		final CyNetworkFactory networkFactory = adapter.getCyNetworkFactory();
 		final CyNetwork network = networkFactory.getInstance();
 		network.getCyRow().set(CyTableEntry.NAME, clusterName);
-		//CyNetwork network = Cytoscape.createNetwork(clusterName);
+		// CyNetwork network = Cytoscape.createNetwork(clusterName);
 
-		for(final Integer termID: set) {
-//			final int termID = Integer.parseInt(value);
+		for (final Integer termID : set) {
+			// final int termID = Integer.parseInt(value);
 			// ifs for determining GO coverage of graphs.
 			if (categoriesString.equals(CATEGORY_ALL)
 					|| (categoriesString.equals(CATEGORY_BEFORE_CORRECTION) && new BigDecimal(testMap.get(
@@ -387,14 +427,13 @@ public class DisplayBiNGOWindow {
 		// canonicalize nodes.
 		Map termIdMap = makeTermIdMap(nameMap);
 
-		
 		// canonicalize edges and build network.
-		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();		
-		for(final String writeString: sifSet) {
+		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
+		for (final String writeString : sifSet) {
 			final StringTokenizer st = new StringTokenizer(writeString);
 			final String firstTermId = termIdMap.get(st.nextToken()).toString();
 			CyNode node1 = nodeMap.get(firstTermId);
-			if(node1 == null) {
+			if (node1 == null) {
 				node1 = network.addNode();
 				node1.getCyRow().set(CyTableEntry.NAME, firstTermId);
 				nodeMap.put(firstTermId, node1);
@@ -403,17 +442,17 @@ public class DisplayBiNGOWindow {
 			if (st.hasMoreTokens()) {
 				st.nextToken(); // Skip
 				final String secondTermId = termIdMap.get(st.nextToken()).toString();
-				
+
 				CyNode node2 = nodeMap.get(secondTermId);
-				if(node2 == null) {
+				if (node2 == null) {
 					node2 = network.addNode();
 					node2.getCyRow().set(CyTableEntry.NAME, secondTermId);
 					nodeMap.put(secondTermId, node2);
 				}
-				
+
 				final CyEdge edge = network.addEdge(node1, node2, true);
 				edge.getCyRow().set(CyEdge.INTERACTION, "pp");
-				edge.getCyRow().set(CyTableEntry.NAME, firstTermId +" (pp) " + secondTermId);
+				edge.getCyRow().set(CyTableEntry.NAME, firstTermId + " (pp) " + secondTermId);
 			}
 		}
 		nodeMap.clear();
@@ -435,7 +474,7 @@ public class DisplayBiNGOWindow {
 		final Set<String> set = new HashSet<String>(nameMap.keySet());
 		final Map resultMap = new HashMap();
 
-		for(final String val: set) {
+		for (final String val : set) {
 			// first substring null deleted at beginning of every string
 			String valueIDs = nameMap.get(val).toString().substring(5);
 			StringTokenizer st = new StringTokenizer(valueIDs);
@@ -452,11 +491,11 @@ public class DisplayBiNGOWindow {
 	 * Method that creates the node attributes (size, color, ...).
 	 */
 	public void buildNodeAttributes(CyNetwork network) {
-		
+
 		createNodeColumn(network);
-		
+
 		final List<CyNode> nodeList = network.getNodeList();
-		for(final CyNode node: nodeList) {
+		for (final CyNode node : nodeList) {
 			String termID = node.getCyRow().get(CyTableEntry.NAME, String.class);
 			String shape;
 			String description;
@@ -536,7 +575,7 @@ public class DisplayBiNGOWindow {
 			} catch (Exception e) {
 				size = DEFAULT_SIZE;
 			}
-			
+
 			node.getCyRow().set("pValue_" + clusterName, pValue);
 			node.getCyRow().set("adjustedPValue_" + clusterName, adj_pValue);
 			node.getCyRow().set("x_" + clusterName, smallX);
@@ -550,14 +589,14 @@ public class DisplayBiNGOWindow {
 			node.getCyRow().set("nodeFontSize_" + clusterName, 14);
 		}
 	}
-	
+
 	private void createNodeColumn(final CyNetwork network) {
 		final CyTable nodeTable = network.getDefaultNodeTable();
-		for(final String colName: NODE_COL_NAMES) {
-			if(nodeTable.getColumn(colName) == null) {
-				if(colName.equals("nodeFillColor") || colName.equals("nodeSize"))
+		for (final String colName : NODE_COL_NAMES) {
+			if (nodeTable.getColumn(colName) == null) {
+				if (colName.equals("nodeFillColor") || colName.equals("nodeSize"))
 					nodeTable.createColumn(colName + "_" + clusterName, Double.class, false);
-				else if(colName.equals("nodeFontSize"))
+				else if (colName.equals("nodeFontSize"))
 					nodeTable.createColumn(colName + "_" + clusterName, Integer.class, false);
 				else
 					nodeTable.createColumn(colName + "_" + clusterName, String.class, false);
@@ -572,9 +611,9 @@ public class DisplayBiNGOWindow {
 	public void buildEdgeAttributes(final CyNetwork network) {
 		final CyTable edgeTable = network.getDefaultEdgeTable();
 		edgeTable.createColumn("edgeType_" + clusterName, String.class, false);
-		
+
 		final List<CyEdge> edgeList = network.getEdgeList();
-		for(final CyEdge edge: edgeList)
+		for (final CyEdge edge : edgeList)
 			edge.getCyRow().set("edgeType_" + clusterName, "black");
 	}
 }
