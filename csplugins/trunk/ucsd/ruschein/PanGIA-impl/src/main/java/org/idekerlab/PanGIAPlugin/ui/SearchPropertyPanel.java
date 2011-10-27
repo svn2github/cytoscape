@@ -1523,29 +1523,36 @@ public class SearchPropertyPanel extends JPanel implements ColumnCreatedListener
 		
 		
 		String physicalSelected = physicalEdgeAttribComboBox.getSelectedItem().toString();
-		Class<?> attrType = this.physicalNetworkPanel.getSelectedNetwork().getDefaultEdgeTable().getColumn(physicalSelected).getType();
 		
-		if (!physicalSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) && (attrType != Integer.class &&
-			     attrType != Double.class))
-		{
-			searchButton.setEnabled(false);
-			parameterErrorTextArea.setText("Please choose physical edge scores of type integer or float.");
-			return;
+		if (this.physicalNetworkPanel.getSelectedNetwork() != null && 
+				this.physicalNetworkPanel.getSelectedNetwork().getDefaultEdgeTable().getColumn(physicalSelected) != null){
+			Class<?> attrType = this.physicalNetworkPanel.getSelectedNetwork().getDefaultEdgeTable().getColumn(physicalSelected).getType();
+			
+			if (!physicalSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) && (attrType != Integer.class &&
+				     attrType != Double.class))
+			{
+				searchButton.setEnabled(false);
+				parameterErrorTextArea.setText("Please choose physical edge scores of type integer or float.");
+				return;
+			}			
 		}
 		
 		String geneticSelected = geneticEdgeAttribComboBox.getSelectedItem().toString();
 		if (this.geneticNetworkPanel.getSelectedNetwork() != null &&
 				this.geneticNetworkPanel.getSelectedNetwork().getDefaultEdgeTable().getColumn(geneticSelected) != null){
 
-			Class<?> attrType2 = this.geneticNetworkPanel.getSelectedNetwork().getDefaultEdgeTable().getColumn(geneticSelected).getType();
-			
-			if (!geneticSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) && (attrType2 != Integer.class &&
-				     attrType2 != Double.class))
-			{
-				searchButton.setEnabled(false);
-				parameterErrorTextArea.setText("Please choose genetic edge scores of type integer or float.");
-				return;
-			}			
+			if (this.geneticNetworkPanel.getSelectedNetwork() != null &&
+					this.geneticNetworkPanel.getSelectedNetwork().getDefaultEdgeTable().getColumn(geneticSelected) != null){
+				Class<?> attrType2 = this.geneticNetworkPanel.getSelectedNetwork().getDefaultEdgeTable().getColumn(geneticSelected).getType();
+				
+				if (!geneticSelected.trim().equalsIgnoreCase(DEFAULT_ATTRIBUTE) && (attrType2 != Integer.class &&
+					     attrType2 != Double.class))
+				{
+					searchButton.setEnabled(false);
+					parameterErrorTextArea.setText("Please choose genetic edge scores of type integer or float.");
+					return;
+				}							
+			}
 		}
 		
 		if ((annotationCheckBox.isSelected() || trainingCheckBox.isSelected()) && annotationAttribComboBox.getSelectedIndex()<0)
