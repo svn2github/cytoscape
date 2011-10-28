@@ -1,7 +1,9 @@
 package org.idekerlab.PanGIAPlugin;
 
-import giny.model.Node;
-import giny.view.NodeView;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.view.model.View;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,11 +15,11 @@ import java.util.Map.Entry;
 
 import org.idekerlab.PanGIAPlugin.data.DoubleVector;
 
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.layout.CyLayoutAlgorithm;
-import cytoscape.layout.CyLayouts;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
+import java.util.Iterator;
 
 public class DetailedViewLayout
 {
@@ -36,41 +38,71 @@ public class DetailedViewLayout
 		view.redrawGraph(true, true);
 		*/
 		//Get values of Parent Module attribute
-		CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
-		Map<String,Set<Node>> module_nodes = new HashMap<String,Set<Node>>();
-		for (int ni : view.getNetwork().getNodeIndicesArray())
-		{
-			String nodeID = view.getNetwork().getNode(ni).getIdentifier();
-			String parent = nodeAttr.getAttribute(nodeID, VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME).toString();
-			
-			Set<Node> sset = module_nodes.get(parent);
+		CyTable nodeAttr = view.getModel().getDefaultNodeTable(); //Cytoscape.getNodeAttributes();
+		Map<String,Set<CyNode>> module_nodes = new HashMap<String,Set<CyNode>>();
+		
+		Iterator<CyNode> nodeIt = view.getModel().getNodeList().iterator();
+		while (nodeIt.hasNext()){
+			CyNode node = nodeIt.next();
+		
+			String nodeID = node.getCyRow().get("name", String.class);
+			//String parent = nodeAttr.getAttribute(nodeID, VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME).toString();
+			String parent = node.getCyRow().get(VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME, String.class);
+						
+			Set<CyNode> sset = module_nodes.get(parent);
 			if (sset==null)
 			{
-				sset = new HashSet<Node>();
-				sset.add(view.getNetwork().getNode(ni));
+				sset = new HashSet<CyNode>();
+				//sset.add(view.getModel().getNode(ni));
+				sset.add(node);
+
 				module_nodes.put(parent, sset);
-			}else sset.add(view.getNetwork().getNode(ni));
+			}
+			else
+			{	
+				//sset.add(view.getModel().getNode(ni));
+				sset.add(node);
+			}
 		}
 		
+		
 		//For each parent module
-		CyLayoutAlgorithm fd = CyLayouts.getLayout("force-directed");
+		CyLayoutAlgorithm fd = ServicesUtil.cyLayoutsServiceRef.getLayout("force-directed");
 		fd.setSelectedOnly(true);
-		for (Entry<String,Set<Node>> e : module_nodes.entrySet())
+		for (Entry<String,Set<CyNode>> e : module_nodes.entrySet())
 		{
 			//Select all nodes with this attribute value
-			view.getNetwork().unselectAllNodes();
-			view.getNetwork().setSelectedNodeState(e.getValue(), true);
+			//view.getModel().unselectAllNodes();
+			Iterator<CyNode> it = view.getModel().getNodeList().iterator();
+			while (it.hasNext()){
+				it.next().getCyRow().set(CyNetwork.SELECTED, false);
+			}
+			
+			//view.getModel().setSelectedNodeState(e.getValue(), true);
+			Set<CyNode> nodeSet = e.getValue();
+			Iterator<CyNode> nodeSetIt= nodeSet.iterator();
+			while (nodeSetIt.hasNext()){
+				nodeSetIt.next().getCyRow().set(CyNetwork.SELECTED, true);
+			}
 			
 			//Perform force-directed layout of just the selected
 			
-			fd.getSettings().updateValues();
-			fd.updateSettings();
-			view.applyLayout(fd);
+			//fd.getSettings().updateValues();
+			//fd.updateSettings();
 			
-			view.redrawGraph(true, true);
+			fd.setNetworkView(view);
+			ServicesUtil.taskManagerServiceRef.execute(fd);
+			
+			view.updateView();
 		}
 		fd.setSelectedOnly(false);
-		view.getNetwork().unselectAllNodes();
+		
+		//view.getModel().unselectAllNodes();
+		Iterator<CyNode> it = view.getModel().getNodeList().iterator();
+		while (it.hasNext()){
+			it.next().getCyRow().set(CyNetwork.SELECTED, false);
+		}
+
 		
 		//Get the meanPosition and radius of each group
 		List<String> moduleList = new ArrayList<String>(module_nodes.keySet());
@@ -80,7 +112,7 @@ public class DetailedViewLayout
 		
 		for (int i=0;i<moduleList.size();i++)
 		{
-			Set<Node> nodes = module_nodes.get(moduleList.get(i));
+			Set<CyNode> nodes = module_nodes.get(moduleList.get(i));
 			
 			if (nodes.size()<=1)
 			{
@@ -93,11 +125,11 @@ public class DetailedViewLayout
 			double minY = Double.MAX_VALUE;
 			double maxY = Double.MIN_VALUE;
 			
-			for (Node n : nodes)
+			for (CyNode n : nodes)
 			{
-				NodeView nv = view.getNodeView(n); 
-				double x = nv.getXPosition();
-				double y = nv.getYPosition();
+				View<CyNode> nv = view.getNodeView(n); 
+				double x = nv.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
+				double y= nv.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
 				
 				if (x<minX) minX = x;
 				else if (x>maxX) maxX = x;
@@ -118,15 +150,17 @@ public class DetailedViewLayout
 		
 		
 		//Get the map from module to overview node
-		Map<String,NodeView> module_overviewNode = new HashMap<String,NodeView>(module_nodes.size(),1);
+		Map<String,View<CyNode>> module_overviewNode = new HashMap<String,View<CyNode>>(module_nodes.size(),1);
 		
 		@SuppressWarnings("rawtypes")
-		List overviewNodes = overview.getSelectedNodes();
+		//List overviewNodes = overview.getSelectedNodes();
+		List<CyNode> overviewNodes =  CyTableUtil.getNodesInState(overview.getModel(), "selected", true);
+		
 		for (String mod : module_nodes.keySet())
 			for (Object n : overviewNodes)
-				if (((NodeView)n).getNode().getIdentifier().equals(mod))
+				if (((View<CyNode>)n).getModel().getCyRow().get("name", String.class).equals(mod))
 				{
-					module_overviewNode.put(mod, (NodeView)n);
+					module_overviewNode.put(mod, (View<CyNode>)n);
 					break;
 				}
 		
@@ -152,9 +186,9 @@ public class DetailedViewLayout
 		
 		for (int i=0;i<radius.length;i++)
 		{
-			NodeView on = module_overviewNode.get(moduleList.get(i));
-			double x = on.getXPosition();
-			double y = on.getYPosition();
+			View<CyNode> on = module_overviewNode.get(moduleList.get(i));
+			double x = on.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
+			double y= on.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
 			
 			newCenterX[i] = x;
 			newCenterY[i] = y;
@@ -222,11 +256,18 @@ public class DetailedViewLayout
 		
 		for (int i=0;i<radius.length;i++)
 		{
-			for (Node n : module_nodes.get(moduleList.get(i)))
+			for (CyNode n : module_nodes.get(moduleList.get(i)))
 			{
-				NodeView on = view.getNodeView(n);
-				on.setXPosition(on.getXPosition()+shiftX[i]);
-				on.setYPosition(on.getYPosition()+shiftY[i]);
+				View<CyNode> on = view.getNodeView(n);
+
+				double x = on.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
+				double y= on.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
+
+				x = x + shiftX[i];				
+				y = y+ shiftY[i];
+				
+				on.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION, x);
+				on.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION, y);				
 			}
 		}
 		
