@@ -23,15 +23,16 @@ import javax.swing.SwingConstants;
 import org.idekerlab.PanGIAPlugin.ui.SearchPropertyPanel;
 import org.idekerlab.PanGIAPlugin.utilities.files.FileUtil;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.view.CyHelpBroker;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelState;
-import cytoscape.view.cytopanels.BiModalJSplitPane;
+import org.cytoscape.model.CyNetwork;
+//import cytoscape.view.CyHelpBroker;
+//import cytoscape.view.cytopanels.CytoPanel;
+//import cytoscape.view.cytopanels.CytoPanelImp;
+//import cytoscape.view.cytopanels.CytoPanelState;
+//import cytoscape.view.cytopanels.BiModalJSplitPane;
+import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.application.swing.CytoPanel;
+import org.cytoscape.application.swing.CytoPanelName;
+import org.cytoscape.application.swing.CytoPanelState;
 
 /**
  * PanGIA Plugin main class.
@@ -42,7 +43,7 @@ import cytoscape.view.cytopanels.BiModalJSplitPane;
  * @author kono, ruschein, ghannum
  *
  */
-public class PanGIAPlugin extends CytoscapePlugin {
+public class PanGIAPlugin extends AbstractCyAction {
 
 	// Main GUI Panel for this plugin.  Should be a singleton.
 	private JScrollPane scrollPane;
@@ -52,19 +53,42 @@ public class PanGIAPlugin extends CytoscapePlugin {
 	private static final String PLUGIN_NAME = "PanGIA";
 	public static final String VERSION = "1.1";
 	public static final Map<String,PanGIAOutput> output = new HashMap<String,PanGIAOutput>();
+	private final CytoPanel cytoPanelWest;
 
-	public PanGIAPlugin() {
+	private SearchPropertyPanel searchPanel;
+	
+	public PanGIAPlugin(SearchPropertyPanel searchPanel) {
+		super(PLUGIN_NAME, ServicesUtil.cyApplicationManagerServiceRef);
+		this.setPreferredMenu("Plugins");
 		vsObserver = new VisualStyleObserver();
-		addHelp();
-		final JMenuItem menuItem = new JMenuItem(PLUGIN_NAME);
-		menuItem.addActionListener(new PluginAction());
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins.Module Finders...").add(menuItem);
-		
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_CREATED,new PanGIANetworkListener());
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_DESTROYED,new PanGIANetworkListener());
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_TITLE_MODIFIED,new PanGIANetworkListener());
+		this.searchPanel = searchPanel;
+		cytoPanelWest = ServicesUtil.cySwingApplicationServiceRef.getCytoPanel(CytoPanelName.WEST);
+
+		addHelp();		
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 */
+	public void actionPerformed(ActionEvent e) {
+		// If the state of the cytoPanelEast is HIDE, show it
+		if (cytoPanelWest.getState() == CytoPanelState.HIDE) {
+			cytoPanelWest.setState(CytoPanelState.DOCK);
+		}	
+
+		// Select the jActiveModules panel
+		int index = cytoPanelWest.indexOfComponent(searchPanel);
+		if (index == -1) {
+			return;
+		}
+		
+		cytoPanelWest.setSelectedIndex(index);		
+		
+	}
+	
+	
 	/**
 	 *  Hook plugin help into the Cytoscape main help system:
 	 */
@@ -75,33 +99,33 @@ public class PanGIAPlugin extends CytoscapePlugin {
 		try {
 			helpSetURL = HelpSet.findHelpSet(classLoader, HELP_SET_NAME);
 			final HelpSet newHelpSet = new HelpSet(classLoader, helpSetURL);
-			CyHelpBroker.getHelpSet().add(newHelpSet);
+			//CyHelpBroker.getHelpSet().add(newHelpSet);
 		} catch (final Exception e) {
 			System.err.println("PanGIA: Could not find help set: \"" + HELP_SET_NAME + "!");
 		}
 	}
 
-	class PluginAction implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			final CytoPanelImp cytoPanel = (CytoPanelImp)Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
-			int index = cytoPanel.indexOfComponent(scrollPane);
-			if (index < 0) {
-				final SearchPropertyPanel searchPanel = new SearchPropertyPanel();
-				scrollPane = new JScrollPane(searchPanel);
-				searchPanel.setContainer(scrollPane);
-				searchPanel.updateAttributeLists();
-				searchPanel.setVisible(true);
-				scrollPane.setMinimumSize(new Dimension(400,400));
-				cytoPanel.add(PLUGIN_NAME, scrollPane);
-				index = cytoPanel.indexOfComponent(scrollPane);
-				
-				BiModalJSplitPane bmj = (BiModalJSplitPane)cytoPanel.getParent();
-				bmj.setDividerLocation(400);				
-			}
-			cytoPanel.setSelectedIndex(index);
-			cytoPanel.setState(CytoPanelState.DOCK);
-		}
-	}
+//	class PluginAction implements ActionListener {
+//		public void actionPerformed(ActionEvent e) {
+//			final CytoPanelImp cytoPanel = (CytoPanelImp)Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+//			int index = cytoPanel.indexOfComponent(scrollPane);
+//			if (index < 0) {
+//				final SearchPropertyPanel searchPanel = new SearchPropertyPanel();
+//				scrollPane = new JScrollPane(searchPanel);
+//				searchPanel.setContainer(scrollPane);
+//				searchPanel.updateAttributeLists();
+//				searchPanel.setVisible(true);
+//				scrollPane.setMinimumSize(new Dimension(400,400));
+//				cytoPanel.add(PLUGIN_NAME, scrollPane);
+//				index = cytoPanel.indexOfComponent(scrollPane);
+//				
+//				BiModalJSplitPane bmj = (BiModalJSplitPane)cytoPanel.getParent();
+//				bmj.setDividerLocation(400);				
+//			}
+//			cytoPanel.setSelectedIndex(index);
+//			cytoPanel.setState(CytoPanelState.DOCK);
+//		}
+//	}
 	
 	public static void setModuleLabels(String nattr)
 	{
@@ -118,9 +142,9 @@ public class PanGIAPlugin extends CytoscapePlugin {
 			
 			for (Entry<String,PanGIAOutput> e : output.entrySet())
 			{
-				bw.write(e.getValue().getOverviewNetwork().getTitle()+"\n");
-				bw.write(e.getValue().getOrigPhysNetwork().getTitle()+"\n");
-				bw.write(e.getValue().getOrigGenNetwork().getTitle()+"\n");
+				bw.write(e.getValue().getOverviewNetwork().getCyRow().get("name", String.class)+"\n");
+				bw.write(e.getValue().getOrigPhysNetwork().getCyRow().get("name", String.class)+"\n");
+				bw.write(e.getValue().getOrigGenNetwork().getCyRow().get("name", String.class)+"\n");
 				bw.write(e.getValue().getNodeAttrName()+"\n");
 				bw.write(e.getValue().getPhysEdgeAttrName()+"\n");
 				bw.write(e.getValue().getGenEdgeAttrName()+"\n");
@@ -170,7 +194,7 @@ public class PanGIAPlugin extends CytoscapePlugin {
 				String physEdgeAttr = in.readLine();
 				String genEdgeAttr = in.readLine();
 				boolean isSigned = Boolean.valueOf(in.readLine());
-				output.put(overviewNet.getIdentifier(),new PanGIAOutput(overviewNet, physNet, genNet, nodeAttr, physEdgeAttr, genEdgeAttr, isSigned));
+				//output.put(overviewNet.getIdentifier(),new PanGIAOutput(overviewNet, physNet, genNet, nodeAttr, physEdgeAttr, genEdgeAttr, isSigned));
 			}		
 			
 			in.close();
@@ -184,9 +208,11 @@ public class PanGIAPlugin extends CytoscapePlugin {
 	
 	private static CyNetwork getNetworkFromTitle(String title)
 	{
-		for (CyNetwork net : Cytoscape.getNetworkSet())
-			if (net.getTitle().equals(title)) return net;
-		
+		for (CyNetwork net : ServicesUtil.cyNetworkManagerServiceRef.getNetworkSet())
+		{
+			String title1 = net.getCyRow().get("name", String.class);
+			if (title1.equals(title)) return net;
+		}
 		return null;
 	}
 }
