@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.cytoscape.work.TaskMonitor;
 import org.idekerlab.PanGIAPlugin.SearchTask;
 import org.idekerlab.PanGIAPlugin.data.DoubleVector;
 import org.idekerlab.PanGIAPlugin.networks.SFEdge;
@@ -22,9 +23,6 @@ import org.idekerlab.PanGIAPlugin.utilities.MemoryReporter;
 import org.idekerlab.PanGIAPlugin.utilities.NumberFormatter;
 import org.idekerlab.PanGIAPlugin.utilities.ThreadPriorityFactory;
 
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-
 
 public class HCSearch2 {
 
@@ -32,7 +30,7 @@ public class HCSearch2 {
 	 *  @param percentAllocated up to what point to advance the task monitor progress bar
 	 */
 	public static TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> search(
-		SFNetwork pnet, SFNetwork gnet, HCScoringFunction sfunc, final TaskMonitor taskMonitor,
+		SFNetwork pnet, SFNetwork gnet, HCScoringFunction sfunc, TaskMonitor taskMonitor,
 		final float percentAllocated, SearchTask parentTask)
 	{
 		// The scoring function needs to load several lookup matricies for the
@@ -41,7 +39,7 @@ public class HCSearch2 {
 		MemoryReporter.reportMemoryUsage();
 
 		// Need to construct the ONetwork<HyperModule<String>,BFEdge> object.
-		taskMonitor.setStatus("1. Building merged network.");
+		taskMonitor.setStatusMessage("1. Building merged network.");
 
 		TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results = constructBaseNetwork(
 				pnet, gnet);
@@ -52,7 +50,7 @@ public class HCSearch2 {
 		MemoryReporter.reportMemoryUsage();
 
 		// Get the first-pass scores
-		taskMonitor.setStatus("2. Obtaining primary scores.");
+		taskMonitor.setStatusMessage("2. Obtaining primary scores.");
 		computePrimaryScores(results, sfunc);
 
 		if (parentTask.needsToHalt()) return null;
@@ -61,7 +59,7 @@ public class HCSearch2 {
 		MemoryReporter.reportMemoryUsage();
 
 		// Merge best tree-pairs together
-		taskMonitor.setStatus("3. Forming clusters...");
+		taskMonitor.setStatusMessage("3. Forming clusters...");
 
 		// MemoryReporter.reportMemoryUsage();
 
@@ -166,8 +164,8 @@ public class HCSearch2 {
 				for (TypedLinkNodeModule<String, BFEdge> m : allc)
 					csizes.add(m.size());
 				final int percentCompleted = Math.round((INITIAL_NODE_COUNT - results.numNodes()) * percentAllocated / INITIAL_NODE_COUNT);
-				taskMonitor.setPercentCompleted(percentCompleted);
-				taskMonitor.setStatus("3. Forming clusters (# of clusters: "
+				taskMonitor.setProgress(percentCompleted/100.0);
+				taskMonitor.setStatusMessage("3. Forming clusters (# of clusters: "
 				                      + results.numNodes() + ", largest cluster size: "
 						      + csizes.max(false) + ")");
 			}
@@ -175,7 +173,7 @@ public class HCSearch2 {
 			iter++;
 		}
 
-		taskMonitor.setPercentCompleted(Math.round(percentAllocated));
+		taskMonitor.setProgress(Math.round(percentAllocated/100.0));
 		System.out.println("Best score: " + global_scores.max(true));
 		System.out.println("Best score index: " + global_scores.maxI());
 		System.out.println("Number of edges before filtering: "+results.numEdges());
