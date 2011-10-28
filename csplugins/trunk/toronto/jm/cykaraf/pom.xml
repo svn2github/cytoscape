@@ -6,6 +6,7 @@
 		<groupId>org.cytoscape</groupId>
 		<artifactId>parent</artifactId>
 		<version>3.0.0-alpha9-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
 	</parent>
 	
 	<groupId>org.cytoscape.distribution</groupId>
