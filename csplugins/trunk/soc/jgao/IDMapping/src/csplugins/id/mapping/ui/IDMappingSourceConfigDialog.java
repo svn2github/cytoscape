@@ -38,6 +38,7 @@ package csplugins.id.mapping.ui;
 import csplugins.id.mapping.IDMapperClient;
 import csplugins.id.mapping.IDMapperClientManager;
 
+import csplugins.id.mapping.util.DataSourceUtil;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -414,7 +415,7 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
             }
             desc.append("\t");
 
-            String fullName = dataSource.getFullName();
+            String fullName = DataSourceUtil.getName(dataSource);
             if (fullName!=null) {
                 desc.append(fullName);
             }

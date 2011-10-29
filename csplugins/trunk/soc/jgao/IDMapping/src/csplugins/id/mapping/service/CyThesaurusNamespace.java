@@ -198,7 +198,7 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
         if (command.equals(ADD_RESOURCE))
             return addResource(command, args);
         if (command.equals(REMOVE_RESOURCE))
-            removeResource(command, args);
+            return removeResource(command, args);
         if (command.equals(SELECT_RESOURCE))
             return selectResource(command, args);
         if (command.equals(DESELECT_RESOURCE))

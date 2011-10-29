@@ -226,7 +226,8 @@ public class IDMapperClientImplTunables implements IDMapperClient {
                     }
                 });
 
-                if (executor.awaitTermination(1, TimeUnit.SECONDS)) {
+                //TODO: how to set waiting time?
+                if (executor.awaitTermination(5, TimeUnit.SECONDS)) {
                     executor.shutdown();
                 }
 

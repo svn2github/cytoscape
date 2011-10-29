@@ -82,9 +82,45 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
 
         Cytoscape.getDesktop().getCyMenus().getOperationsMenu()
                         .add(new IDMappingAction());
+        
+//        Cytoscape.getDesktop().getCyMenus().getOperationsMenu()
+//                        .add(new IDMappingTestAction());
 
 //        Cytoscape.getDesktop().getCyMenus().getOperationsMenu()
 //                        .add(new CyThesurrusServiceAttributeBasedIDMappingAction());
+    }
+    
+    
+
+    final class IDMappingTestAction extends CytoscapeAction {
+
+        public IDMappingTestAction() {
+            super("CyThesaurus test");
+        }
+
+        /**
+         * This method is called when the user selects the menu item.
+         */
+        @Override
+        public void actionPerformed(final ActionEvent ae) {
+            java.util.List<String> nodeIds = new java.util.ArrayList<String>();
+            for (cytoscape.CyNode cn : (java.util.List<cytoscape.CyNode>) cytoscape.Cytoscape.getCurrentNetwork().nodesList()) {
+                nodeIds.add(cn.getIdentifier());
+            }
+            Map<String, Object> args = new java.util.HashMap<String, Object>();
+            args.put("sourceid", nodeIds);
+            args.put("sourcetype", "HGNC");
+            args.put("targettype", "Ensembl Human");
+            cytoscape.command.CyCommandResult result = null;
+            try {
+                result = cytoscape.command.CyCommandManager.execute(
+                        "idmapping", "general mapping", args);
+                System.out.println("message:"+result.getMessages().get(0));
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 
     private void addListeners() {

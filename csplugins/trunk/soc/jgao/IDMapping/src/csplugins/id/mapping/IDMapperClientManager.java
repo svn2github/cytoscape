@@ -588,9 +588,9 @@ public class IDMapperClientManager {
                                 if (spt) {
                                     List<DataSourceWrapper> dsws = new ArrayList<DataSourceWrapper>(2);
                                     dsws.add(DataSourceWrapper.getInstance(
-                                        src.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
+                                        DataSourceUtil.getName(src), DataSourceWrapper.DsAttr.DATASOURCE));
                                     dsws.add(DataSourceWrapper.getInstance(
-                                        tgt.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
+                                        DataSourceUtil.getName(tgt), DataSourceWrapper.DsAttr.DATASOURCE));
                                     supportedMapping.add(dsws);
                                 }
                             }
