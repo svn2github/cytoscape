@@ -24,6 +24,10 @@ import org.idekerlab.PanGIAPlugin.ui.SearchPropertyPanel;
 import org.idekerlab.PanGIAPlugin.utilities.files.FileUtil;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.task.AbstractNodeViewTaskFactory;
+import org.cytoscape.task.NodeViewTaskFactory;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 //import cytoscape.view.CyHelpBroker;
 //import cytoscape.view.cytopanels.CytoPanel;
@@ -38,9 +42,12 @@ import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.model.events.NetworkViewDestroyedEvent;
 import org.cytoscape.view.model.events.NetworkViewDestroyedListener;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.model.events.NetworkDestroyedListener;
 import org.cytoscape.model.events.NetworkDestroyedEvent;
-
+import org.cytoscape.view.model.CyNetworkView;
 
 
 /**
@@ -72,6 +79,17 @@ public class PanGIAPlugin extends AbstractCyAction implements NetworkViewAddedLi
 		vsObserver = new VisualStyleObserver();
 		this.searchPanel = searchPanel;
 		cytoPanelWest = ServicesUtil.cySwingApplicationServiceRef.getCytoPanel(CytoPanelName.WEST);
+
+		
+//		// Node right-click menu
+//		Dictionary<String, String> dict = new Hashtable<String, String>();
+//		dict.put("preferredMenu", "PanGIA");
+//		
+//		NodeViewTaskFactory nvtf = new PanGIANodeViewTaskFactory();
+//		ServicesUtil.cyServiceRegistrarServiceRef.registerService(nvtf, NodeViewTaskFactory.class, dict);
+//		
+//		// Edge right-click menu
+		
 
 		addHelp();		
 	}
@@ -228,17 +246,10 @@ public class PanGIAPlugin extends AbstractCyAction implements NetworkViewAddedLi
 	//
 	
 	public void handleEvent(NetworkViewAddedEvent e){
-//      final CyNetworkView view = (CyNetworkView) event.getNewValue();
-		//
-//		                // Node right-click menu
-//		                final PanGIANodeContextMenuListener nodeMenuListener = new PanGIANodeContextMenuListener(view);
-//		                Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(nodeMenuListener);
-//		                
-//		                // Edge right-click menu
-//		                final PanGIAEdgeContextMenuListener edgeMenuListener = new PanGIAEdgeContextMenuListener(view);
-//		                Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(edgeMenuListener);
 
+		
 	}
+
 
 	public void handleEvent(NetworkDestroyedEvent e){
 //      {
