@@ -24,6 +24,7 @@ import org.idekerlab.PanGIAPlugin.ui.SearchPropertyPanel;
 import org.idekerlab.PanGIAPlugin.utilities.files.FileUtil;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 //import cytoscape.view.CyHelpBroker;
 //import cytoscape.view.cytopanels.CytoPanel;
 //import cytoscape.view.cytopanels.CytoPanelImp;
@@ -33,6 +34,14 @@ import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CytoPanel;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.application.swing.CytoPanelState;
+import org.cytoscape.view.model.events.NetworkViewAddedEvent;
+import org.cytoscape.view.model.events.NetworkViewAddedListener;
+import org.cytoscape.view.model.events.NetworkViewDestroyedEvent;
+import org.cytoscape.view.model.events.NetworkViewDestroyedListener;
+import org.cytoscape.model.events.NetworkDestroyedListener;
+import org.cytoscape.model.events.NetworkDestroyedEvent;
+
+
 
 /**
  * PanGIA Plugin main class.
@@ -43,7 +52,7 @@ import org.cytoscape.application.swing.CytoPanelState;
  * @author kono, ruschein, ghannum
  *
  */
-public class PanGIAPlugin extends AbstractCyAction {
+public class PanGIAPlugin extends AbstractCyAction implements NetworkViewAddedListener, NetworkDestroyedListener{
 
 	// Main GUI Panel for this plugin.  Should be a singleton.
 	private JScrollPane scrollPane;
@@ -215,5 +224,54 @@ public class PanGIAPlugin extends AbstractCyAction {
 		}
 		return null;
 	}
+	
+	//
+	
+	public void handleEvent(NetworkViewAddedEvent e){
+//      final CyNetworkView view = (CyNetworkView) event.getNewValue();
+		//
+//		                // Node right-click menu
+//		                final PanGIANodeContextMenuListener nodeMenuListener = new PanGIANodeContextMenuListener(view);
+//		                Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(nodeMenuListener);
+//		                
+//		                // Edge right-click menu
+//		                final PanGIAEdgeContextMenuListener edgeMenuListener = new PanGIAEdgeContextMenuListener(view);
+//		                Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(edgeMenuListener);
+
+	}
+
+	public void handleEvent(NetworkDestroyedEvent e){
+//      {
+//    	CyNetwork net = Cytoscape.getNetwork((String)event.getNewValue());
+//    	
+//    	if (PanGIAPlugin.output.containsKey(net.getTitle())) System.out.println("Removing PanGIA result: "+net.getTitle());
+//    	PanGIAPlugin.output.remove(net.getIdentifier());
+//    }
+//    
+//    if (Cytoscape.NETWORK_TITLE_MODIFIED.equals(event.getPropertyName()))
+//    {
+//    	CyNetworkTitleChange ctc = (CyNetworkTitleChange)event.getNewValue();
+//    	String newName = Cytoscape.getNetwork(ctc.getNetworkIdentifier()).getTitle();
+//    	
+//    	for (CyNetwork net : Cytoscape.getNetworkSet())
+//    		if (net.getTitle().equals(newName) && !net.getIdentifier().equals(ctc.getNetworkIdentifier()) && (PanGIAPlugin.output.containsKey(net.getIdentifier()) || PanGIAPlugin.output.containsKey(ctc.getNetworkIdentifier())))
+//    			System.out.println("PanGIA WARNING: Two overview networks have the same name!");
+//    		
+//    		
+//    	//CyNetworkTitleChange ctc = (CyNetworkTitleChange)event.getNewValue();
+//    	//ctc.getNetworkTitle()
+//    	
+//    	//String oldName = Cytoscape.getNetwork(ctc.getNetworkIdentifier()).getTitle();
+//    	//String newName = Cytoscape.getNetwork(ctc.getNetworkIdentifier()).getTitle();
+//    	
+//    	/*
+//    	String oldName = ((CyNetworkTitleChange)event.getOldValue()).getNetworkTitle();
+//    	String newName = ((CyNetworkTitleChange)event.getNewValue()).getNetworkTitle();
+//    	System.out.println("Changing: "+oldName+" to "+newName);
+//    	
+//    	*/
+
+	}
+
 }
 
