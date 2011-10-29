@@ -12,18 +12,17 @@ import javax.swing.JPopupMenu;
 import org.idekerlab.PanGIAPlugin.utilities.collections.HashMapUtil;
 import org.idekerlab.PanGIAPlugin.utilities.files.FileUtil;
 
-import giny.model.Edge;
-import giny.model.Node;
-import giny.view.EdgeView;
-import giny.view.GraphView;
-import giny.view.NodeView;
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CyNode;
-import cytoscape.data.CyAttributes;
-import cytoscape.view.CyNetworkView;
-import ding.view.NodeContextMenuListener;
+//import giny.model.Edge;
+//import giny.model.Node;
+//import giny.view.EdgeView;
+//import giny.view.GraphView;
+//import giny.view.NodeView;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.view.model.CyNetworkView;
+//import ding.view.NodeContextMenuListener;
 
 import java.util.*;
 

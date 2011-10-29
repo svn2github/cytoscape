@@ -3,22 +3,22 @@ package org.idekerlab.PanGIAPlugin;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import giny.view.EdgeView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.model.CyEdge;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.view.CyNetworkView;
-import ding.view.EdgeContextMenuListener;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.view.model.CyNetworkView;
+//import ding.view.EdgeContextMenuListener;
 
-public class PanGIAEdgeContextMenuListener implements EdgeContextMenuListener
+public class PanGIAEdgeContextMenuListener implements EdgeContextMenuListener 
 {
 	 private final CyNetworkView view;
-	 private CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
+	 private CyTable edgeAttr = view.getModel().getDefaultEdgeTable();
 
 
      public PanGIAEdgeContextMenuListener(CyNetworkView view)
@@ -26,7 +26,7 @@ public class PanGIAEdgeContextMenuListener implements EdgeContextMenuListener
          this.view = view;
      }
 
-     public void addEdgeContextMenuItems(EdgeView ev, JPopupMenu menu)
+     public void addEdgeContextMenuItems(View<CyEdge> ev, JPopupMenu menu)
      {
     	 PanGIANodeContextMenuListener.addContextMenuItems(view, ev.getGraphView(), menu);
     	 
