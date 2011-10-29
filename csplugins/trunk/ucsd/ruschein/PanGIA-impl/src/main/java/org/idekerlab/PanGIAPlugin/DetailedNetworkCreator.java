@@ -75,109 +75,109 @@ public class DetailedNetworkCreator
 		//networkAttr.setUserVisible(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, false);
 		//networkAttr.setUserEditable(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, false);
 		
-		//Populate network
-		//Nodes
-		//for (int ni : selected)
-		for (CyNode ni: nodes_selected2)
-		{	
-			CyNetwork nn = ni.getNetwork();
-			if (nn!=null)
-			{
-				for (int ni2 : nn.getNodeIndicesArray())
-					detailedNetwork.addNode(ni2);
-				
-//				List<CyNode> nn_nodelist = nn.getNodeList();
-//				for (CyNode nn_node: nn_nodelist){
-//					detailedNetwork.addNode(nn_node.getSUID());
+//		//Populate network
+//		//Nodes
+//		//for (int ni : selected)
+//		for (CyNode ni: nodes_selected2)
+//		{	
+//			CyNetwork nn = ni.getNetwork();
+//			if (nn!=null)
+//			{
+//				for (int ni2 : nn.getNodeIndicesArray())
+//					detailedNetwork.addNode(ni2);
+//				
+////				List<CyNode> nn_nodelist = nn.getNodeList();
+////				for (CyNode nn_node: nn_nodelist){
+////					detailedNetwork.addNode(nn_node.getSUID());
+////				}
+//			}
+//		}
+//		
+//		//Edges
+//		final CyTable edgeAttributes = Cytoscape.getEdgeAttributes();
+//		
+//		List<CyNode> nodes = detailedNetwork.getNodeList();
+//		
+//		// Add the edges induced by "origPhysNetwork" to our new nested network.
+//		List<CyEdge> edges = (List<CyEdge>) origPhysNetwork.getConnectingEdges(getIntersectingNodes(origPhysNetwork, nodes));
+//		for (final CyEdge edge : edges)
+//		{
+//			//final Double attrValue = edgeAttributes.getDoubleAttribute(edge.getCyRow().get("name", String.class), physEdgeAttrName);
+//			final Double attrValue =edge.getCyRow().get(physEdgeAttrName, Double.class);
+//			if (attrValue != null)
+//			{
+//				detailedNetwork.addEdge(edge);
+//				//edgeAttributes.setAttribute(edge.getCyRow().get("name", String.class), "PanGIA.Interaction Type", "Physical");
+//				edge.getCyRow().set("PanGIA.Interaction Type", "Physical");
+//			}
+//		}
+//
+//		// Add the edges induced by "origGenNetwork" to our new nested network.
+//		edges = (List<CyEdge>) origGenNetwork.getConnectingEdges(getIntersectingNodes(origGenNetwork, nodes));
+//		for (final CyEdge edge : edges)
+//		{
+//			//final Double attrValue = edgeAttributes.getDoubleAttribute(edge.getCyRow().get("name", String.class), genEdgeAttrName);
+//			final Double attrValue =edge.getCyRow().get(genEdgeAttrName, Double.class);
+//			if (attrValue != null)
+//			{
+//				detailedNetwork.addEdge(edge);
+//				//Object existingAttribute = edgeAttributes.getAttribute(edge.getCyRow().get("name", String.class), "PanGIA.Interaction Type");
+//				Object existingAttribute = edge.getCyRow().get("PanGIA.Interaction Type", String.class);
+//				if (existingAttribute==null || !existingAttribute.equals("Physical"))  
+//				{
+//					if (output.isSigned())
+//					{
+//						if (attrValue<0) { 
+//							//edgeAttributes.setAttribute(edge.getCyRow().get("name",String.class), "PanGIA.Interaction Type", "Genetic(negative)");
+//							edge.getCyRow().set("PanGIA.Interaction Type", "Genetic(negative)");
+//						}
+//						else { 
+//							//edgeAttributes.setAttribute(edge.getCyRow().get("name", String.class), "PanGIA.Interaction Type", "Genetic(positive)");
+//							edge.getCyRow().set("PanGIA.Interaction Type", "Genetic(positive)");
+//						}
+//					}else {
+//						//edgeAttributes.setAttribute(edge.getCyRow().get("name", String.class), "PanGIA.Interaction Type", "Genetic");
+//						edge.getCyRow().set("PanGIA.Interaction Type", "Genetic");
+//					}
 //				}
-			}
-		}
-		
-		//Edges
-		final CyTable edgeAttributes = Cytoscape.getEdgeAttributes();
-		
-		List<CyNode> nodes = detailedNetwork.getNodeList();
-		
-		// Add the edges induced by "origPhysNetwork" to our new nested network.
-		List<CyEdge> edges = (List<CyEdge>) origPhysNetwork.getConnectingEdges(getIntersectingNodes(origPhysNetwork, nodes));
-		for (final CyEdge edge : edges)
-		{
-			//final Double attrValue = edgeAttributes.getDoubleAttribute(edge.getCyRow().get("name", String.class), physEdgeAttrName);
-			final Double attrValue =edge.getCyRow().get(physEdgeAttrName, Double.class);
-			if (attrValue != null)
-			{
-				detailedNetwork.addEdge(edge);
-				//edgeAttributes.setAttribute(edge.getCyRow().get("name", String.class), "PanGIA.Interaction Type", "Physical");
-				edge.getCyRow().set("PanGIA.Interaction Type", "Physical");
-			}
-		}
-
-		// Add the edges induced by "origGenNetwork" to our new nested network.
-		edges = (List<CyEdge>) origGenNetwork.getConnectingEdges(getIntersectingNodes(origGenNetwork, nodes));
-		for (final CyEdge edge : edges)
-		{
-			//final Double attrValue = edgeAttributes.getDoubleAttribute(edge.getCyRow().get("name", String.class), genEdgeAttrName);
-			final Double attrValue =edge.getCyRow().get(genEdgeAttrName, Double.class);
-			if (attrValue != null)
-			{
-				detailedNetwork.addEdge(edge);
-				//Object existingAttribute = edgeAttributes.getAttribute(edge.getCyRow().get("name", String.class), "PanGIA.Interaction Type");
-				Object existingAttribute = edge.getCyRow().get("PanGIA.Interaction Type", String.class);
-				if (existingAttribute==null || !existingAttribute.equals("Physical"))  
-				{
-					if (output.isSigned())
-					{
-						if (attrValue<0) { 
-							//edgeAttributes.setAttribute(edge.getCyRow().get("name",String.class), "PanGIA.Interaction Type", "Genetic(negative)");
-							edge.getCyRow().set("PanGIA.Interaction Type", "Genetic(negative)");
-						}
-						else { 
-							//edgeAttributes.setAttribute(edge.getCyRow().get("name", String.class), "PanGIA.Interaction Type", "Genetic(positive)");
-							edge.getCyRow().set("PanGIA.Interaction Type", "Genetic(positive)");
-						}
-					}else {
-						//edgeAttributes.setAttribute(edge.getCyRow().get("name", String.class), "PanGIA.Interaction Type", "Genetic");
-						edge.getCyRow().set("PanGIA.Interaction Type", "Genetic");
-					}
-				}
-				else 
-					if (output.isSigned())
-					{
-						if (attrValue<0) 
-							{
-							//edgeAttributes.setAttribute(edge.getCyRow().get("name", String.class), "PanGIA.Interaction Type", "Physical&Genetic(negative)");
-							edge.getCyRow().set("PanGIA.Interaction Type", "Physical&Genetic(negative)");
-							}
-						else 
-							{
-							//edgeAttributes.setAttribute(edge.getCyRow().get("name", String.class), "PanGIA.Interaction Type", "Physical&Genetic(positive)");
-							edge.getCyRow().set("PanGIA.Interaction Type", "Physical&Genetic(positive)");
-							}
-					}else
-					{
-						//edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic");
-						edge.getCyRow().set("PanGIA.Interaction Type", "Physical&Genetic");
-					}
-				
-				//if (existingAttribute==null || !existingAttribute.equals("Physical"))  edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic");
-				//else edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic");
-			}
-		}
-		
-
-		
-		CyNetworkView theView = ServicesUtil.cyNetworkViewFactoryServiceRef.getNetworkView(detailedNetwork, false);
-		
-		
-		DetailedViewLayout.layout(theView, view);
-		
-		//theView.setVisualStyle(VisualStyleObserver.VS_MODULE_NAME);
-
-//		VisualStyle vs = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VisualStyleObserver.VS_MODULE_NAME);
-//		ServicesUtil.visualMappingManagerRef.setVisualStyle(vs, theView);
-		//Cytoscape.getVisualMappingManager().setVisualStyle();
-		
-		theView.updateView(); //.redrawGraph(false, true);	
+//				else 
+//					if (output.isSigned())
+//					{
+//						if (attrValue<0) 
+//							{
+//							//edgeAttributes.setAttribute(edge.getCyRow().get("name", String.class), "PanGIA.Interaction Type", "Physical&Genetic(negative)");
+//							edge.getCyRow().set("PanGIA.Interaction Type", "Physical&Genetic(negative)");
+//							}
+//						else 
+//							{
+//							//edgeAttributes.setAttribute(edge.getCyRow().get("name", String.class), "PanGIA.Interaction Type", "Physical&Genetic(positive)");
+//							edge.getCyRow().set("PanGIA.Interaction Type", "Physical&Genetic(positive)");
+//							}
+//					}else
+//					{
+//						//edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic");
+//						edge.getCyRow().set("PanGIA.Interaction Type", "Physical&Genetic");
+//					}
+//				
+//				//if (existingAttribute==null || !existingAttribute.equals("Physical"))  edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic");
+//				//else edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic");
+//			}
+//		}
+//		
+//
+//		
+//		CyNetworkView theView = ServicesUtil.cyNetworkViewFactoryServiceRef.getNetworkView(detailedNetwork, false);
+//		
+//		
+//		DetailedViewLayout.layout(theView, view);
+//		
+//		//theView.setVisualStyle(VisualStyleObserver.VS_MODULE_NAME);
+//
+////		VisualStyle vs = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VisualStyleObserver.VS_MODULE_NAME);
+////		ServicesUtil.visualMappingManagerRef.setVisualStyle(vs, theView);
+//		//Cytoscape.getVisualMappingManager().setVisualStyle();
+//		
+//		theView.updateView(); //.redrawGraph(false, true);	
 	}
 	
 	public static void goToNestedNetwork(CyNode n)
