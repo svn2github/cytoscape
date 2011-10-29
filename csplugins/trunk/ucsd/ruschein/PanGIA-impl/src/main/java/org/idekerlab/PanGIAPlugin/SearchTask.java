@@ -23,30 +23,33 @@ import org.idekerlab.PanGIAPlugin.utilities.collections.HashMapUtil;
 import org.idekerlab.PanGIAPlugin.utilities.collections.ListOps;
 import org.idekerlab.PanGIAPlugin.utilities.collections.SetUtil;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyEdge.Type;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskMonitor;
 //import cytoscape.util.ProbabilityScaler;
 //import cytoscape.util.ScalingMethod;
 import org.idekerlab.PanGIAPlugin.util.Scaler;
 import org.idekerlab.PanGIAPlugin.util.ScalerFactory;
 
 import javax.swing.*;
+import java.util.Iterator;
+import org.cytoscape.model.CyNode;
 
 /**
  * @author kono, ruschein, ghannum
  */
-public class SearchTask implements Task {
+public class SearchTask extends AbstractTask {
 	
 	private static final float SEARCH_PERCENTAGE      = 40.0f; // Progress bar should go up to here for the search part.
 	private static final float COMPUTE_SIG_PERCENTAGE = 95.0f; // Progress bar should go up to here for the permutations part.
 	
 	protected static final String EDGE_TYPE_ATTR_NAME = "Module Finder.Interaction Type";
 	
-	private TaskMonitor taskMonitor = null;
+//	private TaskMonitor taskMonitor = null;
 	boolean needsToHalt = false;
 	static int numOfRuns = 1;
 
@@ -59,10 +62,17 @@ public class SearchTask implements Task {
 
 	private long startTime;
 	
-	public void run() {
+	private TaskMonitor taskMonitor;
+	
+	@Override
+	public void run(TaskMonitor taskMonitor) throws Exception {
+		this.taskMonitor = taskMonitor;
+		this.taskMonitor.setTitle("Executing PanGIA task...");
+
+		
 		startTime = System.nanoTime();
-		taskMonitor.setPercentCompleted(1);
-		taskMonitor.setStatus("Searching for modules...");
+		taskMonitor.setProgress(0.01);
+		taskMonitor.setStatusMessage("Searching for modules...");
 		
 		if (needsToHalt) return;
 		
@@ -90,13 +100,27 @@ public class SearchTask implements Task {
 		List<SNodeModule> trainingComplexes = null;
 		if (parameters.getComplexTrainingPhysical() || parameters.getComplexTrainingGenetic() || parameters.getComplexAnnotation())
 		{
-			final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+			final CyTable nodeAttr = geneticInputNetwork.getDefaultNodeTable();  //Cytoscape.getNodeAttributes();
 			Map<String,Set<String>> annot_node = new HashMap<String,Set<String>>(1000);
 			
-			for (String gnode : geneticNetwork.nodeIterator())
-				for (Object annot : nodeAttr.getListAttribute(gnode, parameters.getAnnotationAttrName()))
-					HashMapUtil.updateMapSet(annot_node, annot.toString(), String.valueOf(nodeAttr.getAttribute(gnode,parameters.getNodeAttrName())));
-							
+//			for (String gnode : geneticNetwork.nodeIterator()) {
+//				for (Object annot : nodeAttr.getListAttribute(gnode, parameters.getAnnotationAttrName())) {
+//					HashMapUtil.updateMapSet(annot_node, annot.toString(), String.valueOf(nodeAttr.getAttribute(gnode,parameters.getNodeAttrName())));					
+//				}
+//			}
+			
+			Iterator<CyNode> it = geneticInputNetwork.getNodeList().iterator();
+			while(it.hasNext()){
+				CyNode node = it.next();
+				
+				List<String> attList = node.getCyRow().get(parameters.getAnnotationAttrName(), List.class);
+				for (Object annot :attList)
+				{
+					HashMapUtil.updateMapSet(annot_node, annot.toString(), String.valueOf(node.getCyRow().get(parameters.getNodeAttrName(), List.class)));
+				}
+				
+			}
+			
 			trainingComplexes = new ArrayList<SNodeModule>(annot_node.size());
 			
 			for (String annot : annot_node.keySet())
@@ -295,13 +319,13 @@ public class SearchTask implements Task {
 		PanGIAPlugin.setModuleLabels(parameters.getNodeAttrName());
 		
 		String networkName = "Module Overview Network";
-		final NestedNetworkCreator nnCreator = new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork, pNet, gNet, pValueThreshold, taskMonitor, 100.0f - COMPUTE_SIG_PERCENTAGE, module_name, networkName,isGNetSigned, parameters.getNodeAttrName(), parameters.getGeneticEdgeAttrName());
+		final NestedNetworkCreator nnCreator = new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork, pNet, gNet, pValueThreshold, this.taskMonitor, 100.0f - COMPUTE_SIG_PERCENTAGE, module_name, networkName,isGNetSigned, parameters.getNodeAttrName(), parameters.getGeneticEdgeAttrName());
 
 		setStatus("Search finished!\n\n" + "Number of modules = " + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n" + HCSearch2.report(results));
 
 		setPercentCompleted(100);
 				
-		PanGIAPlugin.output.put(nnCreator.getOverviewNetwork().getIdentifier(),new PanGIAOutput(nnCreator.getOverviewNetwork(), physicalInputNetwork, geneticInputNetwork,parameters.getNodeAttrName(),parameters.getPhysicalEdgeAttrName(),parameters.getGeneticEdgeAttrName(),isGNetSigned));
+		PanGIAPlugin.output.put(nnCreator.getOverviewNetwork().getCyRow().get("name", String.class),new PanGIAOutput(nnCreator.getOverviewNetwork(), physicalInputNetwork, geneticInputNetwork,parameters.getNodeAttrName(),parameters.getPhysicalEdgeAttrName(),parameters.getGeneticEdgeAttrName(),isGNetSigned));
 		
 		/*
 		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
@@ -367,17 +391,17 @@ public class SearchTask implements Task {
 
 	private void setPercentCompleted(int percent) {
 		if (taskMonitor != null)
-			taskMonitor.setPercentCompleted(percent);
+			taskMonitor.setProgress(percent/100.0);
 	}
 
 	private void setStatus(String message) {
 		if (taskMonitor != null)
-			taskMonitor.setStatus(message);
+			taskMonitor.setStatusMessage(message);
 	}
 
 	private void setException(Throwable t, String message) {
-		if (taskMonitor != null)
-			taskMonitor.setException(t, message);
+//		if (taskMonitor != null)
+//			taskMonitor.setException(t, message);
 	}
 
 	//This function compute a p-value for each edge in the complex-complex network
@@ -385,7 +409,7 @@ public class SearchTask implements Task {
 	                               final double pValueThreshold, final int numberOfSamples, final TaskMonitor taskMonitor, final float startProgressPercentage,
 	                               final float endProgressPercentage)
 	{
-		taskMonitor.setStatus("4. Computing permutations...");
+		taskMonitor.setStatusMessage("4. Computing permutations...");
 
 		Map<Integer,DoubleVector> numLinks2empiricalDist = new HashMap<Integer,DoubleVector>(30);
 		TypedLinkNetwork<String,Float> gn = gnet.asTypedLinkNetwork();
@@ -451,8 +475,8 @@ public class SearchTask implements Task {
 			
 			final float permutationsFraction = (float)currentEdgeNum / TOTAL_NUM_EDGES;
 			final float percentCompleted = startProgressPercentage + (endProgressPercentage - startProgressPercentage) * permutationsFraction;
-			taskMonitor.setPercentCompleted(Math.round(percentCompleted));
-			taskMonitor.setStatus("4. Computing permutations: " + Math.round(permutationsFraction * 100.0f) + "% completed.");
+			taskMonitor.setProgress(Math.round(percentCompleted/100.0));
+			taskMonitor.setStatusMessage("4. Computing permutations: " + Math.round(permutationsFraction * 100.0f) + "% completed.");
 		}
 		results.removeAllEdgesWNodeUpdate(deleteSet);
 	}
@@ -466,14 +490,17 @@ public class SearchTask implements Task {
 	private SFNetwork convertCyNetworkToSFNetwork(final CyNetwork inputNetwork, String nodeAttrName, final String numericAttrName, final ScalingMethodX scalingMethod)
 		throws IllegalArgumentException, ClassCastException
 	{
-		CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+		CyTable nodeAttr = inputNetwork.getDefaultNodeTable(); //Cytoscape.getNodeAttributes();
 		
-		@SuppressWarnings("unchecked") List<CyEdge> startingEdges = (List<CyEdge>)inputNetwork.edgesList();
+		@SuppressWarnings("unchecked") List<CyEdge> startingEdges = (List<CyEdge>)inputNetwork.getEdgeList();
 		
 		List<CyEdge> netEdges = new ArrayList<CyEdge>(startingEdges.size());
-		for (final CyEdge edge : startingEdges)
-			if (nodeAttr.hasAttribute(edge.getSource().getIdentifier(), nodeAttrName) && nodeAttr.hasAttribute(edge.getTarget().getIdentifier(), nodeAttrName))
+		for (final CyEdge edge : startingEdges){
+//			if (nodeAttr.hasAttribute(edge.getSource().getCyRow().get("name", String.class), nodeAttrName) && nodeAttr.hasAttribute(edge.getTarget().getCyRow().get("name", String.class), nodeAttrName))
+//				netEdges.add(edge);			
+			if ( edge.getSource().getCyRow().getRaw(nodeAttrName) != null &&edge.getTarget().getCyRow().getRaw(nodeAttrName) != null) 
 				netEdges.add(edge);
+		}
 				
 		final FloatHashNetwork outputNetwork = new FloatHashNetwork(/* selfOk = */false, /* directed = */false, /* startsize = */1);
 
@@ -487,31 +514,37 @@ public class SearchTask implements Task {
 			float defaultScore = -(float)Math.log(netEdges.size()/((float)numNodes*(numNodes-1)/2.0f));
 			
 			for (final CyEdge edge : netEdges)
-				outputNetwork.add(edge.getSource().getIdentifier(), edge.getTarget().getIdentifier(), defaultScore);
+				outputNetwork.add(edge.getSource().getCyRow().get("name", String.class), edge.getTarget().getCyRow().get("name", String.class), defaultScore);
 		} else
 		{
 			// Validate that "numericAttrName" is a known numeric edge attribute.
-			final CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-			final byte edgeAttribType = edgeAttributes.getType(numericAttrName);
-			if (edgeAttribType != CyAttributes.TYPE_FLOATING && edgeAttribType != CyAttributes.TYPE_INTEGER)
+			final CyTable edgeAttributes = inputNetwork.getDefaultEdgeTable(); //Cytoscape.getEdgeAttributes();
+			//final byte edgeAttribType = edgeAttributes.getType(numericAttrName);
+			Class<?> edgeAttribType = edgeAttributes.getColumn(numericAttrName).getType();
+			
+			if (edgeAttribType != Double.class && edgeAttribType != Integer.class)
 				throw new IllegalArgumentException("\"" + numericAttrName
 				                                   + "\" is not the name of a known numeric edge attribute!");
 
 			List<CyEdge> edges = new ArrayList<CyEdge>(netEdges.size());
-			for (CyEdge e : netEdges)
-				if (edgeAttributes.getAttribute(e.getIdentifier(), numericAttrName)!=null) edges.add(e);
+			for (CyEdge e : netEdges) {
+				//if (edgeAttributes.getAttribute(e.getCyRow().get("name", String.class), numericAttrName)!=null) edges.add(e);
+				if (e.getCyRow().isSet(numericAttrName)){
+					edges.add(e);
+				}
+			}
 			
 			// Collect edge attribute values:
 			final float[] edgeAttribValues = new float[edges.size()];
 			int edgeIndex = 0;
 			for (final CyEdge edge : edges) {
-				final String edgeID = edge.getIdentifier();
-				if (edgeAttribType == CyAttributes.TYPE_FLOATING) {
-					final Double attrValue = edgeAttributes.getDoubleAttribute(edgeID, numericAttrName);
+				final String edgeID = edge.getCyRow().get("name", String.class);
+				if (edgeAttribType == Double.class) {
+					final Double attrValue = edge.getCyRow().get(numericAttrName,Double.class); //edgeAttributes.getDoubleAttribute(edgeID, numericAttrName);
 					if (attrValue != null) edgeAttribValues[edgeIndex] = (float)(double)attrValue;
 					
 				} else { // Assume we have an integer attribute.
-					final Integer attrValue = edgeAttributes.getIntegerAttribute(edgeID, numericAttrName);
+					final Integer attrValue = edge.getCyRow().get(numericAttrName, Integer.class); //edgeAttributes.getIntegerAttribute(edgeID, numericAttrName);
 					if (attrValue != null)
 						edgeAttribValues[edgeIndex] = (float)(int)attrValue;
 				}
@@ -525,9 +558,10 @@ public class SearchTask implements Task {
 
 			edgeIndex = 0;
 			for (final CyEdge edge : edges) {
-				final String edgeID = edge.getIdentifier();
-				if (edgeAttributes.getAttribute(edgeID, numericAttrName) != null)
-					outputNetwork.add(edge.getSource().getIdentifier(), edge.getTarget().getIdentifier(), scaledEdgeAttribValues[edgeIndex]);
+				//final String edgeID = edge.getCyRow().get("name", String.class);
+				//if (edgeAttributes.getAttribute(edgeID, numericAttrName) != null)
+				if (edge.getCyRow().get(numericAttrName, Double.class) != null ||edge.getCyRow().get(numericAttrName, Integer.class) != null)
+					outputNetwork.add(edge.getSource().getCyRow().get("name", String.class), edge.getTarget().getCyRow().get("name", String.class), scaledEdgeAttribValues[edgeIndex]);
 				++edgeIndex;
 			}
 		}
@@ -586,7 +620,7 @@ public class SearchTask implements Task {
 		b.add(networkName);
 		b.add("");
 		b.add("Physical network:");
-		b.add(parameters.getPhysicalNetwork().getIdentifier());
+		b.add(parameters.getPhysicalNetwork().getCyRow().get("name", String.class));
 		boolean isBinary = parameters.getPhysicalEdgeAttrName() == null || parameters.getPhysicalEdgeAttrName().length() == 0;
 		if (isBinary) b.add(parameters.getPhysicalEdgeAttrName()+"  (binary)");
 		else b.add("Edge score: "+parameters.getPhysicalEdgeAttrName()+"  (numeric, scaling="+parameters.getPhysicalScalingMethod()+")");
@@ -597,7 +631,7 @@ public class SearchTask implements Task {
 		b.add("");
 		
 		b.add("Genetic network:");
-		b.add(parameters.getGeneticNetwork().getIdentifier());
+		b.add(parameters.getGeneticNetwork().getCyRow().get("name", String.class));
 		isBinary = parameters.getGeneticEdgeAttrName() == null || parameters.getGeneticEdgeAttrName().length() == 0;
 		if (isBinary) b.add(parameters.getGeneticEdgeAttrName()+"  (binary)");
 		else b.add("Edge score: "+parameters.getGeneticEdgeAttrName()+"  (numeric, scaling="+parameters.getGeneticScalingMethod()+")");
@@ -703,11 +737,19 @@ public class SearchTask implements Task {
 		for (SNodeModule m : annots)
 			nodes.addAll(m.getMemberData());
 		
-		for (int i : geneticNetwork.getNodeIndicesArray())
-			nodes.add(geneticNetwork.getNode(i).getIdentifier());
+//		for (int i : geneticNetwork.getNodeIndicesArray())
+//			nodes.add(geneticNetwork.getNode(i).getIdentifier());		
+		Iterator<CyNode> nodeIt = geneticNetwork.getNodeList().iterator();
+		while (nodeIt.hasNext()){
+			nodes.add(nodeIt.next().getCyRow().get("name", String.class));
+		}
 		
-		for (int i : physicalNetwork.getNodeIndicesArray())
-			nodes.add(physicalNetwork.getNode(i).getIdentifier());
+//		for (int i : physicalNetwork.getNodeIndicesArray())
+//			nodes.add(physicalNetwork.getNode(i).getCyRow().get("name", String.class));		
+		Iterator<CyNode> nodeIt2 = physicalNetwork.getNodeList().iterator();
+		while (nodeIt2.hasNext()){
+			nodes.add(nodeIt2.next().getCyRow().get("name", String.class));
+		}
 		
 		int possible = nodes.size()*(nodes.size()-1)/2;
 		
