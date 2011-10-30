@@ -17,6 +17,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.model.CyRow;
 
 
 /**
@@ -118,16 +119,16 @@ public class NestedNetworkCreator {
 	private CyNetwork overviewNetwork = null;
 	private Map<TypedLinkNodeModule<String, BFEdge>, CyNode> moduleToCyNodeMap;
 	private int maxSize = 0;
-	private final int MAX_NETWORK_VIEWS = PropUtil.getInt(CytoscapeInit
-			.getProperties(), "moduleNetworkViewCreationThreshold", 0);
+	private int MAX_NETWORK_VIEWS = 5 ; //PropUtil.getInt(CytoscapeInit
+			//.getProperties(), "moduleNetworkViewCreationThreshold", 0);
 	private final PriorityQueue<NetworkAndScore> networksOrderedByScores = new PriorityQueue(
 			100);
 
 //	VisualStyle moduleVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().
 //								getVisualStyle(VisualStyleObserver.VS_MODULE_NAME);
 
-	private final CyTable nodeAttribs = Cytoscape.getNodeAttributes();
-	private final CyTable edgeAttribs = Cytoscape.getEdgeAttributes();
+//	private final CyTable nodeAttribs = Cytoscape.getNodeAttributes();
+//	private final CyTable edgeAttribs = Cytoscape.getEdgeAttributes();
 	
 	public static List<String> getEdgeAttributeNames()
 	{
@@ -171,8 +172,15 @@ public class NestedNetworkCreator {
 			String geneticEdgeAttrName
 			)
 	{
+		try {			
+			MAX_NETWORK_VIEWS = new Integer(ServicesUtil.cytoscapePropertiesServiceRef.getProperties().getProperty("moduleNetworkViewCreationThreshold")).intValue();			
+		}
+		catch (Exception e){
+			MAX_NETWORK_VIEWS = 5;
+		}
+
 		// Network attributes created here is required for managing Visual Styles.
-		final CyTable networkAttr = Cytoscape.getNetworkAttributes();
+		//final CyTable networkAttr = Cytoscape.getNetworkAttributes();
 		
 		moduleToCyNodeMap = new HashMap<TypedLinkNodeModule<String, BFEdge>, CyNode>();
 
@@ -195,8 +203,8 @@ public class NestedNetworkCreator {
 			final TypedLinkNodeModule<String, BFEdge> sourceModule = edge.source().value();
 			CyNode sourceNode = moduleToCyNodeMap.get(sourceModule);
 			if (sourceNode == null) {
-				final String nodeName = getNodeName(sourceModule,nodeIndex,module_name,nodeAttrName);
-				sourceNode = makeOverviewNode(nodeName, sourceModule,nodeAttribs,physicalNetwork,geneticNetwork);
+				final String nodeName = getNodeName(overviewNetwork, sourceModule,nodeIndex,module_name,nodeAttrName);
+				sourceNode = makeOverviewNode(nodeName, sourceModule,physicalNetwork,geneticNetwork);
 				//moduleToCyNodeMap.put(sourceModule, sourceNode);
 				++nodeIndex;
 			}
@@ -204,8 +212,8 @@ public class NestedNetworkCreator {
 			final TypedLinkNodeModule<String, BFEdge> targetModule = edge.target().value();
 			CyNode targetNode = moduleToCyNodeMap.get(targetModule);
 			if (targetNode == null) {
-				final String nodeName = getNodeName(targetModule,nodeIndex,module_name,nodeAttrName);
-				targetNode = makeOverviewNode(nodeName, targetModule,nodeAttribs,physicalNetwork,geneticNetwork);
+				final String nodeName = getNodeName(overviewNetwork, targetModule,nodeIndex,module_name,nodeAttrName);
+				targetNode = makeOverviewNode(nodeName, targetModule,physicalNetwork,geneticNetwork);
 				//moduleToCyNodeMap.put(targetModule, targetNode);
 				++nodeIndex;
 			}
@@ -213,7 +221,7 @@ public class NestedNetworkCreator {
 			
 			//final CyEdge newEdge = Cytoscape.getCyEdge(sourceNode, targetNode, Semantics.INTERACTION, COMPLEX_INTERACTION_TYPE, /* create = */true);
 			CyEdge newEdge = overviewNetwork.addEdge(sourceNode, targetNode, false);
-			newEdge.getCyRow().set(Semantics.INTERACTION, COMPLEX_INTERACTION_TYPE);
+			newEdge.getCyRow().set("interaction", COMPLEX_INTERACTION_TYPE);
 
 			//edgeAttribs.setAttribute(newEdge.getIdentifier(), REFERENCE_NETWORK_NAME_ATTRIB, origPhysNetwork.getTitle()	+ "/" + origGenNetwork.getTitle());
 			newEdge.getCyRow().set(REFERENCE_NETWORK_NAME_ATTRIB, origPhysNetwork.getCyRow().get("name", String.class) + "/" + origGenNetwork.getCyRow().get("name", String.class));
@@ -259,9 +267,24 @@ public class NestedNetworkCreator {
 		float percentCompleted = 100.0f - remainingPercentage;
 		while ((network = networksOrderedByScores.poll()) != null) {
 			final boolean createView = networkViewCount++ < MAX_NETWORK_VIEWS;
-			final CyNetwork nestedNetwork = generateNestedNetwork(network.getNodeName(), network.getGenes(), origPhysNetwork, origGenNetwork, physicalNetwork,geneticNetwork, createView, networkAttr, isGNetSigned, geneticEdgeAttrName);
-			final CyNode node = Cytoscape.getCyNode(network.getNodeName(), false);
-			node.setNetwork(nestedNetwork);
+			final CyNetwork nestedNetwork = generateNestedNetwork(network.getNodeName(), network.getGenes(), origPhysNetwork, origGenNetwork, physicalNetwork,geneticNetwork, createView, isGNetSigned, geneticEdgeAttrName);
+			
+			
+			Collection<CyRow> rows = overviewNetwork.getDefaultNodeTable().getMatchingRows("name", network.getNodeName());
+			
+			Iterator<CyNode> nodeIt= overviewNetwork.getNodeList().iterator();
+			
+			while (nodeIt.hasNext()){
+				CyNode aNode = nodeIt.next();
+				String nodeName = aNode.getCyRow().get("name", String.class);
+				if (nodeName.equalsIgnoreCase(network.getNodeName())){
+					aNode.setNetwork(nestedNetwork);	
+					break;
+				}
+			}
+			
+			//final CyNode node = Cytoscape.getCyNode(network.getNodeName(), false);
+			//node.setNetwork(nestedNetwork);				
 
 			percentCompleted += percentIncrement;
 			taskMonitor.setProgress(Math.round(percentCompleted)/100.0);
@@ -274,7 +297,7 @@ public class NestedNetworkCreator {
 		
 	}
 
-	private String getNodeName(TypedLinkNodeModule<String, BFEdge> module, int nodeIndex, Map<TypedLinkNodeModule<String, BFEdge>,String> module_name, String nodeAttrName)
+	private String getNodeName(CyNetwork network, TypedLinkNodeModule<String, BFEdge> module, int nodeIndex, Map<TypedLinkNodeModule<String, BFEdge>,String> module_name, String nodeAttrName)
 	{
 		
 		
@@ -282,19 +305,31 @@ public class NestedNetworkCreator {
 		if (module.size()<=2) 
 		{
 			Iterator<String> genes = module.getMemberValues().iterator();
-			String newName = "["+String.valueOf(nodeAttribs.getAttribute(genes.next(),nodeAttrName));
-			while (genes.hasNext()) newName+=", "+String.valueOf(nodeAttribs.getAttribute(genes.next(),nodeAttrName));
-			return findNextAvailableNodeName(newName+"]");
+
+			
+			//String newName = "["+String.valueOf(nodeAttribs.getAttribute(genes.next(),nodeAttrName));
+			CyRow[] rows= (CyRow[]) network.getDefaultNodeTable().getMatchingRows(nodeAttrName, genes.next()).toArray();
+			String newName = "["+String.valueOf(rows[0]);
+			
+			while (genes.hasNext()) 
+			{
+				//newName+=", "+String.valueOf(nodeAttribs.getAttribute(genes.next(),nodeAttrName));
+				CyRow[] rows1= (CyRow[]) network.getDefaultNodeTable().getMatchingRows(nodeAttrName, genes.next()).toArray();
+				String newName1 = "["+String.valueOf(rows1[0]);
+				
+				newName+=", "+String.valueOf(newName1);
+			}
+			return findNextAvailableNodeName(network, newName+"]");
 		}
 		
 		//Annotate large complexes
 		if (module_name!=null)
 		{
 			String name = module_name.get(module);
-			if (name!=null) return findNextAvailableNodeName(name);
+			if (name!=null) return findNextAvailableNodeName(network, name);
 		}
 		
-		return findNextAvailableNodeName("Module" + nodeIndex);
+		return findNextAvailableNodeName(network, "Module" + nodeIndex);
 	}
 	
 	CyNetwork getOverviewNetwork() {
@@ -306,14 +341,18 @@ public class NestedNetworkCreator {
 	 */
 	private CyNode makeOverviewNode(final String nodeName,
 			final TypedLinkNodeModule<String, BFEdge> module,
-			final CyTable nodeAttribs, TypedLinkNetwork<String, Float> physicalNetwork, TypedLinkNetwork<String, Float> geneticNetwork) {
+			TypedLinkNetwork<String, Float> physicalNetwork, TypedLinkNetwork<String, Float> geneticNetwork) {
 		
 		
-		final CyNode newNode = Cytoscape.getCyNode(nodeName, true); // create=true
+		//final CyNode newNode = Cytoscape.getCyNode(nodeName, true); // create=true
+		
+		CyNode newNode = overviewNetwork.addNode();
+		newNode.getCyRow().set("name", nodeName);
+		
 		
 		moduleToCyNodeMap.put(module, newNode);
 		
-		overviewNetwork.addNode(newNode);
+		//overviewNetwork.addNode(newNode);
 		
 		//Add attributes
 		final Set<String> genes = module.getMemberValues();
@@ -352,43 +391,47 @@ public class NestedNetworkCreator {
 	private CyNetwork generateNestedNetwork(final String networkName,
 			final Set<String> nodeNames, final CyNetwork origPhysNetwork,
 			final CyNetwork origGenNetwork, TypedLinkNetwork<String, Float> physicalNetwork, TypedLinkNetwork<String, Float> geneticNetwork, final boolean createNetworkView,
-			final CyTable networkAttr, boolean isGNetSigned, String geneticEdgeAttrName)
+			boolean isGNetSigned, String geneticEdgeAttrName)
 	{
 		if (nodeNames.isEmpty())
 			return null;
 
 		// First, create network without view.
-		final CyNetwork nestedNetwork = Cytoscape.createNetwork(networkName, overviewNetwork, false);
+		//final CyNetwork nestedNetwork = Cytoscape.createNetwork(networkName, overviewNetwork, false);
+		final CyNetwork nestedNetwork = ServicesUtil.cyNetworkFactoryServiceRef.getInstance();
 		
 		//networkAttr.setAttribute(nestedNetwork.getIdentifier(),	VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.MODULE.name());
-		nestedNetwork.getCyRow().set(	VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.MODULE.name());
+		nestedNetwork.getCyRow().set(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.MODULE.name());
 		
-		CyTable nodeAttributes = Cytoscape.getNodeAttributes();
+		//CyTable nodeAttributes = Cytoscape.getNodeAttributes();
 		
 		// Add the nodes to our new nested network.
 		final List<CyNode> nodes = new ArrayList<CyNode>();
 		for (final String nodeName : nodeNames) {
-			final CyNode node = Cytoscape.getCyNode(nodeName, /* create = */false);
+			final CyNode node = nestedNetwork.addNode(); //Cytoscape.getCyNode(nodeName, /* create = */false);
+			node.getCyRow().set("name", nodeName);
 			if (node == null) {
 				System.err.println("in NestedNetworkCreator.generateNestedNetwork() (in the PanGIA plug-in): unknown node: \"" + nodeName + "\"!");
 				throw new IllegalStateException("unknown node: \"" + nodeName + "\"!");
 			}
-			nestedNetwork.addNode(node);
+			//nestedNetwork.addNode(node);
 			nodes.add(node);
 			//nodeAttributes.setAttribute(node.getIdentifier(), VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME, networkName);
 			node.getCyRow().set(VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME, networkName);
 		}
 
 		
-		CyTable cyEdgeAttrs = Cytoscape.getEdgeAttributes();
+		//CyTable cyEdgeAttrs = Cytoscape.getEdgeAttributes();
 				
 		// Add the edges induced by "origPhysNetwork" to our new nested network.
 		List<CyEdge> edges = (List<CyEdge>) origPhysNetwork.getConnectingEdgeList(getIntersectingNodes(origPhysNetwork, nodes));
+		
 		for (final CyEdge edge : edges)
 		{
 			if (physicalNetwork.containsEdge(edge.getSource().getCyRow().get("name", String.class),edge.getTarget().getCyRow().get("name", String.class)))
 			{
-				nestedNetwork.addEdge(edge);
+				//nestedNetwork.addEdge(edge);
+				nestedNetwork.addEdge(edge.getSource(), edge.getTarget(), false);
 				//cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical");
 				edge.getCyRow().set("PanGIA.Interaction Type", "Physical");
 			}
@@ -400,7 +443,8 @@ public class NestedNetworkCreator {
 		{
 			if (geneticNetwork.containsEdge(edge.getSource().getCyRow().get("name", String.class),edge.getTarget().getCyRow().get("name", String.class)))
 			{
-				nestedNetwork.addEdge(edge);
+				//nestedNetwork.addEdge(edge);
+				nestedNetwork.addEdge(edge.getSource(), edge.getTarget(), false);
 				//Object existingAttribute = cyEdgeAttrs.getAttribute(edge.getIdentifier(), "PanGIA.Interaction Type");
 				Object existingAttribute = edge.getCyRow().getRaw("PanGIA.Interaction Type");
 				if (existingAttribute==null || !existingAttribute.equals("Physical"))  
@@ -489,17 +533,21 @@ public class NestedNetworkCreator {
 	 *            The node name we'd like to use, if it is available. If not we
 	 *            use it as a prefix instead.
 	 */
-	private String findNextAvailableNodeName(final String initialPreference) {
+	private String findNextAvailableNodeName(CyNetwork network, final String initialPreference) {
 		// Try the preferred choice first:
-		CyNode node = Cytoscape
-				.getCyNode(initialPreference, /* create = */false);
-		if (node == null)
+		//CyNode node = Cytoscape
+		//		.getCyNode(initialPreference, /* create = */false);
+		
+		if (network.getDefaultNodeTable().getMatchingRows("name", initialPreference).isEmpty())
+		//if (node == null)
 			return initialPreference;
 
 		for (int suffix = 1; true; ++suffix) {
 			final String titleCandidate = initialPreference + "-" + suffix;
-			node = Cytoscape.getCyNode(titleCandidate, /* create = */false);
-			if (node == null)
+			
+			if (network.getDefaultNodeTable().getMatchingRows("name", titleCandidate).isEmpty())			
+			//node = Cytoscape.getCyNode(titleCandidate, /* create = */false);
+			//if (node == null)
 				return titleCandidate;
 		}
 	}
