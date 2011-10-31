@@ -18,6 +18,7 @@ import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.subnetwork.CyRootNetwork;
 
 
 /**
@@ -398,53 +399,76 @@ public class NestedNetworkCreator {
 
 		// First, create network without view.
 		//final CyNetwork nestedNetwork = Cytoscape.createNetwork(networkName, overviewNetwork, false);
-		final CyNetwork nestedNetwork = ServicesUtil.cyNetworkFactoryServiceRef.getInstance();
-		
-		//networkAttr.setAttribute(nestedNetwork.getIdentifier(),	VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.MODULE.name());
-		nestedNetwork.getCyRow().set(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.MODULE.name());
-		
-		//CyTable nodeAttributes = Cytoscape.getNodeAttributes();
-		
+		//final CyNetwork nestedNetwork = ServicesUtil.cyNetworkFactoryServiceRef.getInstance();
+
+				
 		// Add the nodes to our new nested network.
-		final List<CyNode> nodes = new ArrayList<CyNode>();
-		for (final String nodeName : nodeNames) {
-			final CyNode node = nestedNetwork.addNode(); //Cytoscape.getCyNode(nodeName, /* create = */false);
-			node.getCyRow().set("name", nodeName);
-			if (node == null) {
-				System.err.println("in NestedNetworkCreator.generateNestedNetwork() (in the PanGIA plug-in): unknown node: \"" + nodeName + "\"!");
-				throw new IllegalStateException("unknown node: \"" + nodeName + "\"!");
-			}
-			//nestedNetwork.addNode(node);
-			nodes.add(node);
-			//nodeAttributes.setAttribute(node.getIdentifier(), VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME, networkName);
-			node.getCyRow().set(VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME, networkName);
-		}
+//		final List<CyNode> nodes = new ArrayList<CyNode>();
+//		for (final String nodeName : nodeNames) {
+//			final CyNode node = nestedNetwork.addNode(); //Cytoscape.getCyNode(nodeName, /* create = */false);
+//			node.getCyRow().set("name", nodeName);
+//			if (node == null) {
+//				System.err.println("in NestedNetworkCreator.generateNestedNetwork() (in the PanGIA plug-in): unknown node: \"" + nodeName + "\"!");
+//				throw new IllegalStateException("unknown node: \"" + nodeName + "\"!");
+//			}
+//			//nestedNetwork.addNode(node);
+//			nodes.add(node);
+//			//nodeAttributes.setAttribute(node.getIdentifier(), VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME, networkName);
+//			node.getCyRow().set(VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME, networkName);
+//		}
 
 		
-		//CyTable cyEdgeAttrs = Cytoscape.getEdgeAttributes();
+		// Find the list of nodes
+		
+		HashMap<String,CyNode> name_node_map = new HashMap<String,CyNode>();
+		Iterator<CyNode> node_it = origPhysNetwork.getNodeList().iterator();
+		while(node_it.hasNext()){
+			CyNode node = node_it.next();
+			String name = node.getCyRow().get("name", String.class);
+			name_node_map.put(name, node);
+		}
+		
+		final List<CyNode> nodes = new ArrayList<CyNode>();
+		for (final String nodeName : nodeNames) {
+			CyNode node = name_node_map.get(nodeName);
+			nodes.add(node);	
+		}
+		
+		List<CyNode> nodeList = getIntersectingNodes(origPhysNetwork, nodes);
+		Iterator<CyNode> it = nodeList.iterator();
+		while(it.hasNext()){
+
+			CyNode node = it.next(); 
+			node.getCyRow().set(VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME, networkName);
+		}
+		
 				
 		// Add the edges induced by "origPhysNetwork" to our new nested network.
-		List<CyEdge> edges = (List<CyEdge>) origPhysNetwork.getConnectingEdgeList(getIntersectingNodes(origPhysNetwork, nodes));
-		
+		//List<CyEdge> edges = (List<CyEdge>) origPhysNetwork..getConnectingEdgeList(nodeList);
+		List<CyEdge> edges = getConnectingEdges(origPhysNetwork,nodeList);
+
 		for (final CyEdge edge : edges)
 		{
 			if (physicalNetwork.containsEdge(edge.getSource().getCyRow().get("name", String.class),edge.getTarget().getCyRow().get("name", String.class)))
 			{
 				//nestedNetwork.addEdge(edge);
-				nestedNetwork.addEdge(edge.getSource(), edge.getTarget(), false);
 				//cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical");
 				edge.getCyRow().set("PanGIA.Interaction Type", "Physical");
 			}
 		}
 
 		// Add the edges induced by "origGenNetwork" to our new nested network.
-		edges = (List<CyEdge>) origGenNetwork.getConnectingEdges(getIntersectingNodes(origGenNetwork, nodes));
-		for (final CyEdge edge : edges)
+		//edges = (List<CyEdge>) origGenNetwork.getConnectingEdges(getIntersectingNodes(origGenNetwork, nodes));
+		
+		List<CyNode> nodeList2 = getIntersectingNodes(origGenNetwork, nodes);
+		List<CyEdge >edges2 =  getConnectingEdges(origGenNetwork, nodeList2);
+		
+		
+		for (final CyEdge edge : edges2)
 		{
 			if (geneticNetwork.containsEdge(edge.getSource().getCyRow().get("name", String.class),edge.getTarget().getCyRow().get("name", String.class)))
 			{
 				//nestedNetwork.addEdge(edge);
-				nestedNetwork.addEdge(edge.getSource(), edge.getTarget(), false);
 				//Object existingAttribute = cyEdgeAttrs.getAttribute(edge.getIdentifier(), "PanGIA.Interaction Type");
 				Object existingAttribute = edge.getCyRow().getRaw("PanGIA.Interaction Type");
 				if (existingAttribute==null || !existingAttribute.equals("Physical"))  
@@ -486,6 +510,16 @@ public class NestedNetworkCreator {
 			}
 		}
 
+		//Merge two edge list
+		edges.addAll(edges2);
+		
+		//
+		CyRootNetwork rootNetwork = ServicesUtil.cyRootNetworkFactory.convert(origPhysNetwork);		
+		CyNetwork nestedNetwork = rootNetwork.addSubNetwork(getIntersectingNodes(origPhysNetwork, nodes), edges);
+
+		nestedNetwork.getCyRow().set(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.MODULE.name());
+
+		
 		if (createNetworkView) {
 			CyNetworkView theView = ServicesUtil.cyNetworkViewFactoryServiceRef.getNetworkView(nestedNetwork);
 			
@@ -604,4 +638,19 @@ public class NestedNetworkCreator {
 
 		return commonNodes;
 	}
+	
+	private List<CyEdge> getConnectingEdges(CyNetwork network,List<CyNode> nodeList)
+	{
+		HashSet<CyEdge> edgeSet = new HashSet<CyEdge>();
+		Iterator<CyNode> it = nodeList.iterator();
+		while(it.hasNext()){
+			CyNode node = it.next();
+			List<CyEdge> edgeList = network.getAdjacentEdgeList(node, CyEdge.Type.ANY);
+			edgeSet.addAll(edgeList);
+		}
+		
+		return new ArrayList<CyEdge>(edgeSet);
+	}
+	
+	
 }
