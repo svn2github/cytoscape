@@ -161,17 +161,17 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		//	this.cyEventHelperService.fireEvent();
 		//}
 
-		Set<VisualStyle> visualStyles = this.visualMappingManager.getAllVisualStyles(); 
-		Iterator<VisualStyle> it = visualStyles.iterator();
-		while (it.hasNext()){
-			VisualStyle vs = it.next();
-			if (vs.getTitle().equalsIgnoreCase(VS_OVERVIEW_NAME)){
-				overviewVS = vs;
-			}
-			if (vs.getTitle().equalsIgnoreCase(VS_MODULE_NAME)){
-				moduleVS = vs;
-			}
-		}
+//		Set<VisualStyle> visualStyles = this.visualMappingManager.getAllVisualStyles(); 
+//		Iterator<VisualStyle> it = visualStyles.iterator();
+//		while (it.hasNext()){
+//			VisualStyle vs = it.next();
+//			if (vs.getTitle().equalsIgnoreCase(VS_OVERVIEW_NAME)){
+//				overviewVS = vs;
+//			}
+//			if (vs.getTitle().equalsIgnoreCase(VS_MODULE_NAME)){
+//				moduleVS = vs;
+//			}
+//		}
 		
 			
 		if (cyNetwork == null || cyNetwork.getNodeCount() == 0) {
@@ -226,6 +226,10 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			newNode.setNetwork(subnetworks[i]);
 			// create an attribute for this new node
 			//Cytoscape.getNodeAttributes().setAttribute(newNode.getIdentifier(), NODE_SCORE, new Double(activePaths[i].getScore()));
+			
+			if (overview.getDefaultNodeTable().getColumn(NODE_SCORE)== null){
+				overview.getDefaultNodeTable().createColumn(NODE_SCORE, Double.class, false);
+			}
 			newNode.getCyRow().set(NODE_SCORE, new Double(activePaths[i].getScore()));
 		}
 		
@@ -235,6 +239,12 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 		
 		//3. Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
+		
+		overview.getDefaultEdgeTable().createColumn("jActiveModules_nodeCount_min_two", Integer.class, false);
+		overview.getDefaultEdgeTable().createColumn("jActiveModules_nodeOverlapCount", Integer.class, false);
+		overview.getDefaultEdgeTable().createColumn(EDGE_SCORE, Double.class, false);
+		
+		
 		CyTable cyEdgeAttrs = this.cyNetwork.getDefaultEdgeTable(); //Cytoscape.getEdgeAttributes();
 		Iterator it = path_edges.iterator();
 		while(it.hasNext()){
@@ -263,7 +273,13 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		newView.updateView();
 		
 		// Create view for top n modules
-		int n = new Integer(this.cytoscapeProperties.getProperties().getProperty(ActiveModulesUI.JACTIVEMODULES_TOP_N_MODULE)).intValue();
+		int n = -1;
+		try {
+			n= new Integer(this.cytoscapeProperties.getProperties().getProperty(ActiveModulesUI.JACTIVEMODULES_TOP_N_MODULE)).intValue();			
+		}
+		catch(Exception e){
+			n= 5;
+		}
 
 		 if (n> subnetworks.length){
 			 n = subnetworks.length;
@@ -391,8 +407,8 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 				//final CyNetworkView moduleView = Cytoscape.createNetworkView(subnetworks[i], subnetworks[i].getTitle(), tuning());
 				final CyNetworkView moduleView = this.cyNetworkViewManager.getNetworkView(subnetworks2[i].getSUID());
 				//moduleView.setVisualStyle(moduleVS.getTitle()); //.getName());
-				this.visualMappingManager.setVisualStyle(moduleVS, moduleView); //Cytoscape.getVisualMappingManager().setVisualStyle(moduleVS);
-				moduleView.updateView(); //.redrawGraph(false, true);
+
+//				moduleView.updateView(); //.redrawGraph(false, true);
 			} 
 		}
 		
