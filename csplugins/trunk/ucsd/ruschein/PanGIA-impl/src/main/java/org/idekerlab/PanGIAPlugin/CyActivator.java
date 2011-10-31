@@ -62,6 +62,8 @@ public class CyActivator extends AbstractCyActivator {
 		ServicesUtil.cyNetworkFactoryServiceRef = cyNetworkFactoryServiceRef;
 		ServicesUtil.cyRootNetworkFactory = cyRootNetworkFactory;
 		ServicesUtil.cyNetworkViewFactoryServiceRef = cyNetworkViewFactoryServiceRef;
+		ServicesUtil.cyLayoutsServiceRef = cyLayoutsServiceRef;
+		
 //		ServicesUtil.loadVisualStylesFromFileFactory = loadVisualStylesFromFileFactory;
 
 		//		
