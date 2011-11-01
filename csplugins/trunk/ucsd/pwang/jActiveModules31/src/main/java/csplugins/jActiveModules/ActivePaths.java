@@ -199,7 +199,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	}
 
 	public void run() {
-
+		
 	    System.gc();
 		//long start = System.currentTimeMillis();
 		HashMap expressionMap = generateExpressionMap();
@@ -213,6 +213,10 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		// create nested networks
 		//1 . create subnetwork for each path
 		CyNetwork[] subnetworks = createSubnetworks();
+		
+		for (int i=0; i<subnetworks.length; i++){
+			this.cyNetworkManager.addNetwork(subnetworks[i]);			
+		}
 		
 		//2. create an overview network for all nested network
 		final CyNetwork overview = this.cyNetworkFactory.getInstance();
@@ -232,6 +236,8 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			}
 			newNode.getCyRow().set(NODE_SCORE, new Double(activePaths[i].getScore()));
 		}
+
+		this.cyNetworkManager.addNetwork(overview);
 		
 		//Edges indicate that nodes in nested networks exist in both nested networks
 		Set<CyEdge>  path_edges = getPathEdges(overview, path_nodes); //new HashSet<CyEdge>();
@@ -243,7 +249,6 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		overview.getDefaultEdgeTable().createColumn("jActiveModules_nodeCount_min_two", Integer.class, false);
 		overview.getDefaultEdgeTable().createColumn("jActiveModules_nodeOverlapCount", Integer.class, false);
 		overview.getDefaultEdgeTable().createColumn(EDGE_SCORE, Double.class, false);
-		
 		
 		CyTable cyEdgeAttrs = this.cyNetwork.getDefaultEdgeTable(); //Cytoscape.getEdgeAttributes();
 		Iterator it = path_edges.iterator();
@@ -264,13 +269,21 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			//cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), EDGE_SCORE, overlapScore);
 			aEdge.getCyRow().set(EDGE_SCORE, overlapScore);
 		}
-				
+
 		//4. Create an view for overview network and apply visual style
 		//Cytoscape.createNetworkView(overview, overview.getIdentifier(), tuning(), null);
 		final CyNetworkView newView = this.cyNetworkViewFactory.getNetworkView(overview);
+		this.cyNetworkViewManager.addNetworkView(newView);
 		
-		this.visualMappingManager.setVisualStyle(overviewVS, newView);
-		newView.updateView();
+//		this.visualMappingManager.setVisualStyle(overviewVS, newView);
+
+		//newView.updateView();
+
+		// Apply layout for overview
+		CyLayoutAlgorithm alg = this.cyLayoutsService.getLayout("force-directed");
+		alg.setNetworkView(newView);
+		this.taskManagerService.execute(alg);				
+
 		
 		// Create view for top n modules
 		int n = -1;
@@ -287,14 +300,15 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 		 for (int i=0; i<n; i++){
 				CyNetworkView theView = this.cyNetworkViewFactory.getNetworkView(subnetworks[i]);
+				this.cyNetworkViewManager.addNetworkView(theView);
 				
-				this.visualMappingManager.setVisualStyle(moduleVS, theView);
-				theView.updateView();
+//				this.visualMappingManager.setVisualStyle(moduleVS, theView);
+//				theView.updateView();
 				
-				CyLayoutAlgorithm alg = this.cyLayoutsService.getLayout("force-directed");
+				CyLayoutAlgorithm alg_f = this.cyLayoutsService.getLayout("force-directed");
 				alg.setNetworkView(theView);
 				
-				this.taskManagerService.execute(alg);				
+				this.taskManagerService.execute(alg_f);				
 		 }
 	}
 	
