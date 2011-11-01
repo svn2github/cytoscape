@@ -14,10 +14,10 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
+import org.cytoscape.cpathsquared.internal.CPathProperties;
+import org.cytoscape.cpathsquared.internal.CPathWebService;
+import org.cytoscape.cpathsquared.internal.CPathWebServiceImpl;
 import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
-import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebServiceImpl;
 
 import cpath.service.OutputFormat;
 
@@ -109,7 +109,7 @@ public class SearchDetailsPanel extends JPanel {
 
             OutputFormat format;
             //TODO add EXTENDED_BINARY_SIF
-            if (CPathProperties.downloadMode == CPathProperties.DOWNLOAD_FULL_BIOPAX) {
+            if (CPathProperties.downloadMode == CPathProperties.DOWNLOAD_BIOPAX) {
                 format = OutputFormat.BIOPAX;
             } else {
                 format = OutputFormat.BINARY_SIF;

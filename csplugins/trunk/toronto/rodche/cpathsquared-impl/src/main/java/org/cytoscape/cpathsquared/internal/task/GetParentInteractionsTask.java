@@ -3,32 +3,32 @@ package org.cytoscape.cpathsquared.internal.task;
 import javax.swing.JDialog;
 
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.biopax.util.BioPaxVisualStyleUtil;
+import org.cytoscape.biopax.MapBioPaxToCytoscape;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.schemas.summary_response.SummaryResponseType;
+import org.cytoscape.cpathsquared.internal.CPathException;
+import org.cytoscape.cpathsquared.internal.CPathWebService;
+import org.cytoscape.cpathsquared.internal.CPathWebServiceImpl;
+import org.cytoscape.cpathsquared.internal.util.EmptySetException;
 import org.cytoscape.cpathsquared.internal.view.InteractionBundleModel;
 import org.cytoscape.cpathsquared.internal.view.InteractionBundlePanel;
 import org.cytoscape.cpathsquared.internal.view.RecordList;
-import org.cytoscape.cpathsquared.internal.webservice.CPathException;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebServiceImpl;
-import org.cytoscape.cpathsquared.internal.webservice.EmptySetException;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
-public class GetParentInteractions implements Task {
-    private long cpathId;
+import cpath.service.jaxb.SearchResponse;
+
+public class GetParentInteractionsTask implements Task {
+    private String uri;
     private CPathWebService webApi = CPathWebServiceImpl.getInstance();
     private InteractionBundleModel interactionBundleModel;
 	private final CyNetwork network;
     private final CyNode node;
 	private final CPath2Factory factory;
 
-    public GetParentInteractions (CyNetwork network, CyNode node, CPath2Factory factory) {
-    	// TODO: Investigate what alternatives we can use for getIdentifier()
-        this.cpathId = node.getSUID();
+    public GetParentInteractionsTask (CyNetwork network, CyNode node, CPath2Factory factory) {
+        this.uri = node.getCyRow().get(MapBioPaxToCytoscape.BIOPAX_RDF_ID, String.class);
         this.node = node;
         this.network = network;
         this.factory = factory;
@@ -43,7 +43,7 @@ public class GetParentInteractions implements Task {
     	taskMonitor.setTitle("Getting neighbors...");
         try {
             taskMonitor.setStatusMessage("Retrieving neighborhood summary.");
-            SummaryResponseType response = webApi.getParentSummaries(cpathId, taskMonitor);
+            SearchResponse response = webApi.getParentSummaries(uri, taskMonitor);
             RecordList recordList = new RecordList(response);
             interactionBundleModel = new InteractionBundleModel();
             interactionBundleModel.setRecordList(recordList);
@@ -52,7 +52,7 @@ public class GetParentInteractions implements Task {
             CySwingApplication application = factory.getCySwingApplication();
             JDialog dialog = new JDialog(application.getJFrame());
 
-            String nodeLabel = node.getCyRow().get(BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, String.class);
+            String nodeLabel = node.getCyRow().get(CyNode.NAME, String.class);
             if (nodeLabel != null) {
                 dialog.setTitle(nodeLabel);
             } else {

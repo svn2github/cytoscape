@@ -1,4 +1,4 @@
-package org.cytoscape.cpathsquared.internal.task;
+package org.cytoscape.cpathsquared.internal.view;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,9 +10,6 @@ import javax.swing.text.Document;
 import cpath.service.jaxb.*;
 
 import org.apache.commons.lang.StringUtils;
-import org.cytoscape.cpathsquared.internal.view.InteractionBundleModel;
-import org.cytoscape.cpathsquared.internal.view.PathwayTableModel;
-import org.cytoscape.cpathsquared.internal.view.RecordList;
 
 /**
  * Indicates that the user has selected a physical entity from the list of search results.

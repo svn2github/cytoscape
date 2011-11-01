@@ -18,6 +18,6 @@ public class GetParentInteractionsTaskFactory extends AbstractNodeViewTaskFactor
 	public TaskIterator getTaskIterator() {
 		CyNetwork network = netView.getModel();
 		CyNode node = nodeView.getModel();
-		return new TaskIterator(new GetParentInteractions(network, node, factory));
+		return new TaskIterator(new GetParentInteractionsTask(network, node, factory));
 	}	
 }

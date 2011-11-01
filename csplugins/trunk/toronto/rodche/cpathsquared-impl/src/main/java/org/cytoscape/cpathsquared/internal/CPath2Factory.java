@@ -10,9 +10,9 @@ import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.biopax.BioPaxContainer;
 import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
 import org.cytoscape.biopax.NetworkListener;
+import org.cytoscape.cpathsquared.internal.task.CPathNetworkImportTask;
 import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
-import org.cytoscape.cpathsquared.internal.util.BinarySifVisualStyleUtil;
-import org.cytoscape.cpathsquared.internal.util.NetworkUtil;
+import org.cytoscape.cpathsquared.internal.view.BinarySifVisualStyleFactory;
 import org.cytoscape.cpathsquared.internal.view.DownloadDetails;
 import org.cytoscape.cpathsquared.internal.view.InteractionBundleModel;
 import org.cytoscape.cpathsquared.internal.view.InteractionBundlePanel;
@@ -21,7 +21,6 @@ import org.cytoscape.cpathsquared.internal.view.PhysicalEntityDetailsPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchBoxPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchDetailsPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchHitsPanel;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -55,10 +54,10 @@ public class CPath2Factory {
 	private final BioPaxContainer bpContainer;
 	private final MapBioPaxToCytoscapeFactory mapperFactory;
 	private final NetworkListener networkListener;
-	private final BinarySifVisualStyleUtil binarySifVisualStyleUtil;
+	private final BinarySifVisualStyleFactory binarySifVisualStyleUtil;
 	private final VisualMappingManager mappingManager;
 	
-	public CPath2Factory(CySwingApplication application, TaskManager taskManager, OpenBrowser openBrowser, CyNetworkManager networkManager, CyApplicationManager applicationManager, CyNetworkViewManager networkViewManager, CyNetworkReaderManager networkViewReaderManager, CyNetworkNaming naming, CyNetworkFactory networkFactory, CyLayoutAlgorithmManager layouts, UndoSupport undoSupport, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener, BinarySifVisualStyleUtil binarySifVisualStyleUtil, VisualMappingManager mappingManager) {
+	public CPath2Factory(CySwingApplication application, TaskManager taskManager, OpenBrowser openBrowser, CyNetworkManager networkManager, CyApplicationManager applicationManager, CyNetworkViewManager networkViewManager, CyNetworkReaderManager networkViewReaderManager, CyNetworkNaming naming, CyNetworkFactory networkFactory, CyLayoutAlgorithmManager layouts, UndoSupport undoSupport, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener, BinarySifVisualStyleFactory binarySifVisualStyleUtil, VisualMappingManager mappingManager) {
 		this.application = application;
 		this.taskManager = taskManager;
 		this.openBrowser = openBrowser;
@@ -150,10 +149,6 @@ public class CPath2Factory {
 		return naming;
 	}
 
-	public Thread createNetworkUtil(String cpathRequest, CyNetwork network, boolean merging) {
-		return new NetworkUtil(cpathRequest, network, merging, this);
-	}
-
 	public CyNetworkFactory getCyNetworkFactory() {
 		return networkFactory;
 	}
@@ -174,7 +169,7 @@ public class CPath2Factory {
 		return layoutManager;
 	}
 	
-	public BinarySifVisualStyleUtil getBinarySifVisualStyleUtil() {
+	public BinarySifVisualStyleFactory getBinarySifVisualStyleUtil() {
 		return binarySifVisualStyleUtil;
 	}
 

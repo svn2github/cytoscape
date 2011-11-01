@@ -3,12 +3,12 @@ package org.cytoscape.cpathsquared.internal.filters;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cytoscape.cpathsquared.internal.schemas.summary_response.BasicRecordType;
+import cpath.service.jaxb.SearchHit;
 
 /**
  * Chained Filter.
  *
- * @author Ethan Cerami
+ * @author Ethan Cerami, Igor Rodchenkov
  */
 public class ChainedFilter implements Filter {
     private ArrayList<Filter> filterList = new ArrayList<Filter>();
@@ -25,10 +25,10 @@ public class ChainedFilter implements Filter {
      * Filters the record list.  Those items which pass the filter
      * are included in the returned list.
      *
-     * @param recordList List of RecordType Objects.
-     * @return List of RecordType Objects.
+     * @param recordList
+     * @return
      */    
-    public List<BasicRecordType> filter(List<BasicRecordType> recordList) {
+    public List<SearchHit> filter(List<SearchHit> recordList) {
         for (Filter filter:  filterList) {
             recordList = filter.filter(recordList);
         }

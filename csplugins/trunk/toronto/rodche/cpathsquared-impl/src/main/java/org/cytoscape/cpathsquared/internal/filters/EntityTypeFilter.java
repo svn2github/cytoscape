@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.cytoscape.cpathsquared.internal.schemas.summary_response.BasicRecordType;
-import org.cytoscape.cpathsquared.internal.util.BioPaxEntityTypeMap;
+import cpath.service.jaxb.SearchHit;
 
 /**
  * EntityType Filter.
  *
- * @author Ethan Cerami
+ * @author Ethan Cerami, Igor Rodchenkov
  */
 public class EntityTypeFilter implements Filter {
     Set<String> entityTypeSet;
@@ -28,18 +27,14 @@ public class EntityTypeFilter implements Filter {
      * Filters the record list.  Those items which pass the filter
      * are included in the returned list.
      *
-     * @param recordList List of RecordType Objects.
-     * @return List of RecordType Objects.
+     * @param recordList
+     * @return
      */
-    public List<BasicRecordType> filter(List<BasicRecordType> recordList) {
-        BioPaxEntityTypeMap bpMap = BioPaxEntityTypeMap.getInstance();
-        ArrayList<BasicRecordType> passedList = new ArrayList<BasicRecordType>();
-        for (BasicRecordType record : recordList) {
-            String type = record.getEntityType();
+    public List<SearchHit> filter(List<SearchHit> recordList) {
+        ArrayList<SearchHit> passedList = new ArrayList<SearchHit>();
+        for (SearchHit record : recordList) {
+            String type = record.getBiopaxClass();
             if (type != null) {
-                if (bpMap.containsKey(type)) {
-                    type = (String) bpMap.get(type);
-                }
                 if (entityTypeSet.contains(type)) {
                     passedList.add(record);
                 }

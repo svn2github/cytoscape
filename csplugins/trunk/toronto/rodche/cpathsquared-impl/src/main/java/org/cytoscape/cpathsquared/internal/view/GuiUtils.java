@@ -8,7 +8,7 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
+import org.cytoscape.cpathsquared.internal.CPathProperties;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -97,12 +97,12 @@ public class GuiUtils {
 
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                CPathProperties.downloadMode = CPathProperties.DOWNLOAD_FULL_BIOPAX;
+                CPathProperties.downloadMode = CPathProperties.DOWNLOAD_BIOPAX;
             }
         });
         button2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                CPathProperties.downloadMode = CPathProperties.DOWNLOAD_REDUCED_BINARY_SIF;
+                CPathProperties.downloadMode = CPathProperties.DOWNLOAD_BINARY_SIF;
             }
         });
         JScrollPane scrollPane = new JScrollPane(configPanel);

@@ -22,12 +22,12 @@ import org.cytoscape.biopax.MapBioPaxToCytoscape;
 import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
 import org.cytoscape.biopax.NetworkListener;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
+import org.cytoscape.cpathsquared.internal.CPathException;
+import org.cytoscape.cpathsquared.internal.CPathProperties;
+import org.cytoscape.cpathsquared.internal.CPathWebService;
 import org.cytoscape.cpathsquared.internal.util.AttributeUtil;
-import org.cytoscape.cpathsquared.internal.util.BinarySifVisualStyleUtil;
-import org.cytoscape.cpathsquared.internal.webservice.CPathException;
-import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
-import org.cytoscape.cpathsquared.internal.webservice.EmptySetException;
+import org.cytoscape.cpathsquared.internal.util.EmptySetException;
+import org.cytoscape.cpathsquared.internal.view.BinarySifVisualStyleFactory;
 import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -239,7 +239,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 		AttributeUtil.set(cyNetwork, "quickfind.default_index", "biopax.node_label", String.class);
 
 		// Specify that this is a BINARY_NETWORK
-		AttributeUtil.set(cyNetwork, BinarySifVisualStyleUtil.BINARY_NETWORK, Boolean.TRUE, Boolean.class);
+		AttributeUtil.set(cyNetwork, BinarySifVisualStyleFactory.BINARY_NETWORK, Boolean.TRUE, Boolean.class);
 
 		// Get all node details.
 		getNodeDetails(cyNetwork, taskMonitor);

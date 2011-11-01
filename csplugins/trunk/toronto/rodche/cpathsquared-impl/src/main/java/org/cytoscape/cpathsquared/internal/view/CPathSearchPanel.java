@@ -9,9 +9,9 @@ import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebServiceListener;
+import org.cytoscape.cpathsquared.internal.CPathProperties;
+import org.cytoscape.cpathsquared.internal.CPathWebService;
+import org.cytoscape.cpathsquared.internal.CPathWebServiceListener;
 
 import cpath.service.jaxb.SearchResponse;
 

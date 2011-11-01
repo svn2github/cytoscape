@@ -20,9 +20,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebServiceImpl;
+import org.cytoscape.cpathsquared.internal.CPathProperties;
+import org.cytoscape.cpathsquared.internal.CPathWebService;
+import org.cytoscape.cpathsquared.internal.CPathWebServiceImpl;
 import org.cytoscape.work.TaskManager;
 
 import cpath.service.OutputFormat;
@@ -139,7 +139,7 @@ public class DownloadDetails extends JDialog {
 
         OutputFormat format;
         //TODO EXTENDED_BINARY_SIF?
-        if (CPathProperties.downloadMode == CPathProperties.DOWNLOAD_FULL_BIOPAX) {
+        if (CPathProperties.downloadMode == CPathProperties.DOWNLOAD_BIOPAX) {
             format = OutputFormat.BIOPAX;
         } else {
             format = OutputFormat.BINARY_SIF;

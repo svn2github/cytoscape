@@ -18,8 +18,7 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 
-import org.cytoscape.cpathsquared.internal.webservice.CPathCytoscapeWebService;
-import org.cytoscape.cpathsquared.internal.util.BinarySifVisualStyleUtil;
+import org.cytoscape.cpathsquared.internal.view.BinarySifVisualStyleFactory;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 
 
@@ -59,7 +58,7 @@ public class CyActivator extends AbstractCyActivator {
 		VisualMappingFunctionFactory discreteMappingFactoryRef = getService(bc,VisualMappingFunctionFactory.class,"(mapping.type=discrete)");
 		VisualMappingFunctionFactory passthroughMappingFactoryRef = getService(bc,VisualMappingFunctionFactory.class,"(mapping.type=passthrough)");
 		
-		BinarySifVisualStyleUtil binarySifVisualStyleUtil = new BinarySifVisualStyleUtil(visualStyleFactoryRef,visualMappingManagerRef,discreteMappingFactoryRef,passthroughMappingFactoryRef);
+		BinarySifVisualStyleFactory binarySifVisualStyleUtil = new BinarySifVisualStyleFactory(visualStyleFactoryRef,visualMappingManagerRef,discreteMappingFactoryRef,passthroughMappingFactoryRef);
 		CPath2Factory cPath2Factory = new CPath2Factory(
 				cySwingApplicationRef,
 				taskManagerRef,

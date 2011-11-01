@@ -1,4 +1,4 @@
-package org.cytoscape.cpathsquared.internal.util;
+package org.cytoscape.cpathsquared.internal.view;
 
 import java.awt.Color;
 import java.awt.Paint;
@@ -18,9 +18,9 @@ import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 /**
  * Binary SIF Visual Style.
  * 
- * @author Ethan Cerami.
+ * @author Ethan Cerami, Igor Rodchenkov
  */
-public class BinarySifVisualStyleUtil {
+public class BinarySifVisualStyleFactory {
 	public final static String BINARY_SIF_VISUAL_STYLE = "Binary_SIF_Version_1";
 	public final static String BINARY_NETWORK = "BINARY_NETWORK";
 	public final static String COMPONENT_OF = "COMPONENT_OF";
@@ -44,7 +44,7 @@ public class BinarySifVisualStyleUtil {
 	private final VisualMappingFunctionFactory discreteFactory;
 	private final VisualMappingFunctionFactory passthroughFactory;
 
-	public BinarySifVisualStyleUtil(VisualStyleFactory styleFactory,
+	public BinarySifVisualStyleFactory(VisualStyleFactory styleFactory,
 			VisualMappingManager mappingManager,
 			VisualMappingFunctionFactory discreteMappingFactory,
 			VisualMappingFunctionFactory passthroughFactory) {

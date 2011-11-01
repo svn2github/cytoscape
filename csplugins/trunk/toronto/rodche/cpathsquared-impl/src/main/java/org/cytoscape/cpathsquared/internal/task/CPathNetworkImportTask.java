@@ -1,8 +1,8 @@
-package org.cytoscape.cpathsquared.internal;
+package org.cytoscape.cpathsquared.internal.task;
 
-import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
-import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
+import org.cytoscape.cpathsquared.internal.CPath2Factory;
+import org.cytoscape.cpathsquared.internal.CPathProperties;
+import org.cytoscape.cpathsquared.internal.CPathWebService;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;

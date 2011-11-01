@@ -29,9 +29,8 @@ import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.application.swing.events.CytoPanelStateChangedEvent;
 import org.cytoscape.application.swing.events.CytoPanelStateChangedListener;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.task.SelectPhysicalEntity;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebServiceListener;
+import org.cytoscape.cpathsquared.internal.CPathWebService;
+import org.cytoscape.cpathsquared.internal.CPathWebServiceListener;
 
 import cpath.service.jaxb.SearchHit;
 import cpath.service.jaxb.SearchResponse;
@@ -41,7 +40,9 @@ import cpath.service.jaxb.SearchResponse;
  *
  * @author Ethan Cerami.
  */
-public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, CytoPanelStateChangedListener {
+public class SearchHitsPanel extends JPanel 
+implements CPathWebServiceListener, CytoPanelStateChangedListener 
+{
     private DefaultListModel peListModel;
     private JList peList;
     private SearchResponse peSearchResponse;
@@ -62,9 +63,12 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
      * @param interactionBundleModel    Interaction Table Model.
      * @param pathwayTableModel         Pathway Table Model.
      * @param webApi                    cPath Web API.
+     * @param factory					CPath2Factory
      */
-    public SearchHitsPanel(InteractionBundleModel interactionBundleModel, PathwayTableModel
-            pathwayTableModel, CPathWebService webApi, CPath2Factory factory) {
+    public SearchHitsPanel(InteractionBundleModel interactionBundleModel, 
+    		PathwayTableModel pathwayTableModel, CPathWebService webApi, 
+    		CPath2Factory factory) 
+    {
     	this.factory = factory;
         this.interactionBundleModel = interactionBundleModel;
         this.pathwayTableModel = pathwayTableModel;
@@ -80,7 +84,9 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
 
         //  Create the Hit List
         peListModel = new DefaultListModel();
-        peList = createHitJList(peListModel);
+        peList = new JListWithToolTips(peListModel);
+        peList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        peList.setPrototypeCellValue("12345678901234567890");
 
         JPanel hitListPane = new JPanel();
         hitListPane.setLayout(new BorderLayout());
@@ -95,12 +101,12 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
         hitListPane.add(internalPanel, BorderLayout.CENTER);
 
         //  Create Search Details Panel
-        SearchDetailsPanel detailsPanel = factory.createSearchDetailsPanel(interactionBundleModel,
-                pathwayTableModel);
+        SearchDetailsPanel detailsPanel = factory
+        	.createSearchDetailsPanel(interactionBundleModel, pathwayTableModel);
 
         //  Create the Split Pane
-        JSplitPane splitPane = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT, hitListPane,
-                detailsPanel);
+        JSplitPane splitPane = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT, 
+        	hitListPane, detailsPanel);
         splitPane.setDividerLocation(200);
         splitPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(splitPane);
@@ -109,13 +115,6 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
 		// listener for cytopanel events
 		CytoPanel cytoPanel = application.getCytoPanel(CytoPanelName.EAST);
 		cytoPanelState = cytoPanel.getState();
-    }
-
-    private JList createHitJList(DefaultListModel peListModel) {
-        JList peList = new JListWithToolTips(peListModel);
-        peList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        peList.setPrototypeCellValue("12345678901234567890");
-        return peList;
     }
 
     /**
@@ -155,7 +154,7 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
                 public void run() {
                     Window window = SwingUtilities.getWindowAncestor(SearchHitsPanel.this);
                     JOptionPane.showMessageDialog(window, "No matches found for:  "
-                            + currentKeyword + ".  Please try again.", "Search Results",
+                        + currentKeyword + ".  Please try again.", "Search Results",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
             });

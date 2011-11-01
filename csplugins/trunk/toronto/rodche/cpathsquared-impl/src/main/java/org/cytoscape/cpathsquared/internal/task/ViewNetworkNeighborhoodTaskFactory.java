@@ -1,4 +1,4 @@
-package org.cytoscape.cpathsquared.internal;
+package org.cytoscape.cpathsquared.internal.task;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.task.NodeViewTaskFactory;

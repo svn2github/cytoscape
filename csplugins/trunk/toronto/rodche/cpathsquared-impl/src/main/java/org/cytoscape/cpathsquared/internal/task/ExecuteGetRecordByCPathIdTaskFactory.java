@@ -4,7 +4,7 @@ import org.cytoscape.biopax.BioPaxContainer;
 import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
 import org.cytoscape.biopax.NetworkListener;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
+import org.cytoscape.cpathsquared.internal.CPathWebService;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;

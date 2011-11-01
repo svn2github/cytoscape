@@ -35,11 +35,11 @@
 		<constructor-arg ref="visualMappingManagerRef" />
 	</bean>
 	
-	<bean id="cPathWebService" class="org.cytoscape.cpathsquared.internal.webservice.CPathCytoscapeWebService">
+	<bean id="cPathWebService" class="org.cytoscape.cpathsquared.internal.CPathCytoscapeWebService">
 		<constructor-arg ref="cPath2Factory" />
 	</bean>
 	
-	<bean id="binarySifVisualStyleUtil" class="org.cytoscape.cpathsquared.internal.util.BinarySifVisualStyleUtil">
+	<bean id="binarySifVisualStyleUtil" class="org.cytoscape.cpathsquared.internal.view.BinarySifVisualStyleFactory">
 		<constructor-arg ref="visualStyleFactoryRef" />
 		<constructor-arg ref="visualMappingManagerRef" />
 		<constructor-arg ref="discreteMappingFactoryRef" />

@@ -2,21 +2,23 @@ package org.cytoscape.cpathsquared.internal.task;
 
 import java.util.List;
 
-import org.cytoscape.cpath.service.jaxb.*;
+import org.cytoscape.cpathsquared.internal.CPathException;
+import org.cytoscape.cpathsquared.internal.CPathProperties;
+import org.cytoscape.cpathsquared.internal.CPathWebService;
 import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskFactory.ResultHandler;
-import org.cytoscape.cpathsquared.internal.webservice.CPathException;
-import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
-import org.cytoscape.cpathsquared.internal.webservice.EmptySetException;
+import org.cytoscape.cpathsquared.internal.util.EmptySetException;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
+
+import cpath.service.jaxb.SearchHit;
+import cpath.service.jaxb.SearchResponse;
 
 /**
  * Controller for Executing a Physical Entity Search.
  *
- * @author Ethan Cerami.
+ * @author Ethan Cerami, Igor Rodchenkov
  */
-public class ExecutePhysicalEntitySearch implements Task {
+public class ExecutePhysicalEntitySearchTask implements Task {
     private CPathWebService webApi;
     private String keyword;
     private int ncbiTaxonomyId;
@@ -30,7 +32,7 @@ public class ExecutePhysicalEntitySearch implements Task {
      * @param ncbiTaxonomyId NCBI Taxonomy ID.
      * @param result 
      */
-    public ExecutePhysicalEntitySearch(CPathWebService webApi, String keyword,
+    public ExecutePhysicalEntitySearchTask(CPathWebService webApi, String keyword,
             int ncbiTaxonomyId, ResultHandler result) {
         this.webApi = webApi;
         this.keyword = keyword;
@@ -51,7 +53,7 @@ public class ExecutePhysicalEntitySearch implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return "Searching " + CPathProperties.getInstance().getCPathServerName() + "...";
+        return "Searching " + CPathProperties.serverName + "...";
     }
 
     /**
@@ -66,18 +68,18 @@ public class ExecutePhysicalEntitySearch implements Task {
             taskMonitor.setStatusMessage("Executing Search");
 
             //  Execute the Search
-            SearchResponseType searchResponse = webApi.searchPhysicalEntities(keyword,
+            SearchResponse searchResponse = webApi.searchPhysicalEntities(keyword,
                     ncbiTaxonomyId, taskMonitor);
-            List<ExtendedRecordType> searchHits = searchResponse.getSearchHit();
+            List<SearchHit> searchHits = searchResponse.getSearchHit();
 
             numHits = searchHits.size();
             int numRetrieved = 1;
             taskMonitor.setProgress(0.01);
-            for (ExtendedRecordType hit:  searchHits) {
+            for (SearchHit hit:  searchHits) {
                 taskMonitor.setStatusMessage("Retrieving interaction details for:  " +
                     hit.getName());
                 try {
-                    webApi.getParentSummaries(hit.getPrimaryId(), taskMonitor);
+                    webApi.getParentSummaries(hit.getUri(), taskMonitor);
                 } catch (EmptySetException e) {
                 }
                 double progress = numRetrieved++ / (double) numHits;

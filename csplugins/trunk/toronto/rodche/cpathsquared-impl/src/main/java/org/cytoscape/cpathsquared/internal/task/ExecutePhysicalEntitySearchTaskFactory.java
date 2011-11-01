@@ -1,6 +1,6 @@
 package org.cytoscape.cpathsquared.internal.task;
 
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
+import org.cytoscape.cpathsquared.internal.CPathWebService;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
@@ -8,7 +8,7 @@ public class ExecutePhysicalEntitySearchTaskFactory implements TaskFactory {
 	private final CPathWebService webApi;
 	private final String keyword;
 	private final int ncbiTaxonomyId;
-	private ExecutePhysicalEntitySearch task;
+	private ExecutePhysicalEntitySearchTask task;
 	private ResultHandler result;
 
 	public ExecutePhysicalEntitySearchTaskFactory(CPathWebService webApi, String keyword, int ncbiTaxonomyId, ResultHandler result) {
@@ -20,7 +20,7 @@ public class ExecutePhysicalEntitySearchTaskFactory implements TaskFactory {
 
 	@Override
 	public TaskIterator getTaskIterator() {
-		task = new ExecutePhysicalEntitySearch(webApi, keyword, ncbiTaxonomyId, result);
+		task = new ExecutePhysicalEntitySearchTask(webApi, keyword, ncbiTaxonomyId, result);
 		return new TaskIterator(task);
 	}
 

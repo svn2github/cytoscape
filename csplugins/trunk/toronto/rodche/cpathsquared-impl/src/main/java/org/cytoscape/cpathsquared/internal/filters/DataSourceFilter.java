@@ -4,16 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.cytoscape.cpathsquared.internal.schemas.summary_response.BasicRecordType;
-import org.cytoscape.cpathsquared.internal.schemas.summary_response.DataSourceType;
+import cpath.service.jaxb.SearchHit;
 
 /**
  * Data Source Filter.
  *
- * @author Ethan Cerami
+ * @author Ethan Cerami, Igor Rodchenkov
  */
 public class DataSourceFilter implements Filter {
-    Set<String> dataSourceSet;
+    private final Set<String> dataSourceSet;
 
     /**
      * Constructor.
@@ -28,21 +27,19 @@ public class DataSourceFilter implements Filter {
      * Filters the record list.  Those items which pass the filter
      * are included in the returned list.
      *
-     * @param recordList List of RecordType Objects.
-     * @return List of RecordType Objects.
+     * @param recordList
+     * @return
      */
-    public List<BasicRecordType> filter(List<BasicRecordType> recordList) {
-        ArrayList<BasicRecordType> passedList = new ArrayList<BasicRecordType>();
-        for (BasicRecordType record : recordList) {
-            DataSourceType dataSource = record.getDataSource();
-            if (dataSource != null) {
-                String dataSourceName = dataSource.getName();
-                if (dataSourceName != null) {
-                    if (dataSourceSet.contains(dataSourceName)) {
-                        passedList.add(record);
-                    }
+    public List<SearchHit> filter(List<SearchHit> recordList) {
+        ArrayList<SearchHit> passedList = new ArrayList<SearchHit>();
+        for (SearchHit record : recordList) {
+            List<String> dataSources = record.getDataSource();
+            if (dataSources != null && !dataSources.isEmpty()) {
+            	dataSources.retainAll(dataSourceSet); // intersection
+                if (!dataSources.isEmpty()) {
+                    passedList.add(record);
                 }
-            }
+           }
         }
         return passedList;
     }

@@ -29,10 +29,10 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
+import org.cytoscape.cpathsquared.internal.CPathProperties;
+import org.cytoscape.cpathsquared.internal.CPathWebService;
 import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskFactory;
 import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskFactory.ResultHandler;
-import org.cytoscape.cpathsquared.internal.webservice.CPathProperties;
-import org.cytoscape.cpathsquared.internal.webservice.CPathWebService;
 
 /**
  * Search Box Panel.
@@ -85,7 +85,6 @@ public class SearchBoxPanel extends JPanel {
         label.setOpaque(false);
         label.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         label.addHyperlinkListener(new HyperlinkListener() {
-
             // Update search box with activated example.
             public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
                 if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
