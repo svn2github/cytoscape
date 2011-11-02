@@ -1,13 +1,23 @@
 package org.idekerlab.PanGIAPlugin;
 
-import org.cytoscape.task.AbstractNodeViewTaskFactory;
-import org.cytoscape.work.TaskIterator;
 
-public class PanGIANodeViewTaskFactory extends AbstractNodeViewTaskFactory {
+import org.cytoscape.model.CyNode;
+import org.cytoscape.task.NodeViewTaskFactory;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+
+
+public class PanGIANodeViewTaskFactory extends DynamicSupport implements NodeViewTaskFactory {
+
 	public PanGIANodeViewTaskFactory() {
-		super();
+		//super();
+	}	
+	
+	
+	public void setNodeView(View<CyNode> nodeView, CyNetworkView netView) {
+		setViews(nodeView, netView);
 	}
-	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new PanGIANodeViewTask(this.netView, this.nodeView));
-	}
+
 }
+
+
