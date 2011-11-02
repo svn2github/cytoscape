@@ -11,19 +11,20 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.view.model.CyNetworkView;
 
 public class PanGIANodeViewTask extends AbstractTask {
 	
 	private View<CyNode> nodeView;
-	private CyNetworkView networkView;
+	private CyNetwork network;
 
-	public PanGIANodeViewTask(CyNetworkView networkview, View<CyNode> nodeView) {
+	public PanGIANodeViewTask(CyNetworkView netView, View<CyNode> nodeView, String acton) {
 		this.nodeView = nodeView;
-		this.networkView = networkView;
+		this.network = network;
 	}
 
 	@Override
