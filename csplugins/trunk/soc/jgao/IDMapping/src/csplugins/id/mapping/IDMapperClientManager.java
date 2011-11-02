@@ -133,6 +133,7 @@ public class IDMapperClientManager {
     }
 
     private static void fireIDMapperChange() {
+        resetCache();
         for (IDMapperChangeListener listener : listeners) {
             listener.changed();
         }
@@ -386,6 +387,7 @@ public class IDMapperClientManager {
         }
 
         clientConnectionStringMap.remove(client.getConnectionString());
+        selectedClients.remove(client);
 
         if (removeSessionProps &&
                 client instanceof IDMapperClientImplTunables) {
