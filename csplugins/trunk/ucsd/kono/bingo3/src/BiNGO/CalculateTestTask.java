@@ -35,6 +35,8 @@ package BiNGO;
 
 import java.util.Map;
 
+import org.cytoscape.work.TaskMonitor;
+
 /**
  * Classes that perform statistical tests can implement this interface so that
  * they can be monitored by a GUI like a

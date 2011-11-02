@@ -88,9 +88,11 @@ public class BinomialTestCalculateUnder implements CalculateTestTask {
 	 * constructor with as arguments the selected cluster, the reference set
 	 * (from graph or annotation file), the annotation, the ontology and the
 	 * significance threshold.
+	 * @throws InterruptedException 
 	 */
-	public BinomialTestCalculateUnder(DistributionCount dc) {
-
+	public BinomialTestCalculateUnder(DistributionCount dc, TaskMonitor tm) throws InterruptedException {
+		this.taskMonitor = tm;
+		this.taskMonitor.setTitle("Calculating Binomial Distribution");
 		// calculates x (#genes in selection assigned to each GO class), X
 		// (total #genes in selection),
 		// n (# genes in reference set assigned to each GO class) and N (total #
@@ -110,7 +112,6 @@ public class BinomialTestCalculateUnder implements CalculateTestTask {
 	 * @throws InterruptedException
 	 */
 	public void calculate() throws InterruptedException {
-
 		BinomialDistributionUnder bt;
 		binomialTestMap = new HashMap();
 
@@ -188,11 +189,4 @@ public class BinomialTestCalculateUnder implements CalculateTestTask {
 	public void cancel() {
 		this.interrupted = true;
 	}
-
-	public void run(TaskMonitor tm) throws Exception {
-		this.taskMonitor = tm;
-		this.taskMonitor.setTitle("Calculating Binomial Distribution");
-		calculate();
-	}
-
 }

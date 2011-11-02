@@ -86,8 +86,11 @@ public class BinomialTestCalculate implements CalculateTestTask {
 	 * constructor with as arguments the selected cluster, the reference set
 	 * (from graph or annotation file), the annotation, the ontology and the
 	 * significance threshold.
+	 * @throws InterruptedException 
 	 */
-	public BinomialTestCalculate(DistributionCount dc) {
+	public BinomialTestCalculate(DistributionCount dc, TaskMonitor tm) throws InterruptedException {
+		taskMonitor = tm;
+		taskMonitor.setTitle("Calculating Binomial Distribution");
 		// calculates x (#genes in selection assigned to each GO class), X
 		// (total #genes in selection),
 		// n (# genes in reference set assigned to each GO class) and N (total #
@@ -100,11 +103,6 @@ public class BinomialTestCalculate implements CalculateTestTask {
 		this.maxValue = mapSmallX.size();
 	}
 
-
-//	public void run(TaskMonitor tm) throws Exception {
-//		this.taskMonitor = tm;
-//		calculate();
-//	}
 	
 	public void cancel() {
 		this.interrupted = true;
@@ -118,7 +116,7 @@ public class BinomialTestCalculate implements CalculateTestTask {
 	 * @throws InterruptedException
 	 */
 	public void calculate() throws InterruptedException {
-
+		
 		BinomialDistribution bt;
 		binomialTestMap = new HashMap<Integer, String>();
 
@@ -195,35 +193,6 @@ public class BinomialTestCalculate implements CalculateTestTask {
 
 	public Map getMapBigN() {
 		return mapBigN;
-	}
-
-	/**
-	 * Non-blocking call to interrupt the task.
-	 */
-	public void halt() {
-		
-	}
-
-	/**
-	 * Sets the Task Monitor.
-	 * 
-	 * @param taskMonitor
-	 *            TaskMonitor Object.
-	 */
-	public void setTaskMonitor(TaskMonitor taskMonitor) {
-		if (this.taskMonitor != null) {
-			throw new IllegalStateException("Task Monitor is already set.");
-		}
-		this.taskMonitor = taskMonitor;
-	}
-
-	/**
-	 * Gets the Task Title.
-	 * 
-	 * @return human readable task title.
-	 */
-	public String getTitle() {
-		return new String("Calculating Binomial Distribution");
 	}
 
 }

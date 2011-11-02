@@ -97,7 +97,10 @@ public class ParentChildIntersectionCount implements DistributionCount {
 	private boolean interrupted = false;
 
 
-	public ParentChildIntersectionCount(Annotation annotation, Ontology ontology, Set selectedNodes, Set refNodes, Map alias) {
+	public ParentChildIntersectionCount(Annotation annotation, Ontology ontology, Set selectedNodes, Set refNodes, Map alias, TaskMonitor tm) {
+		this.taskMonitor = tm;
+		tm.setTitle("Counting genes in GO categories...");
+		
 		this.annotation = annotation;
 		this.ontology = ontology;
 		this.alias = alias;
@@ -135,17 +138,6 @@ public class ParentChildIntersectionCount implements DistributionCount {
 		}
 		return classifications;
 	}
-
-	/**
-	 * method for recursing through tree to root
-	 */
-
-	/*
-	 * public void up (int goID, HashSet classifications){ OntologyTerm child =
-	 * ontology.getTerm(goID); int [] parents = child.getParentsAndContainers
-	 * (); for(int t = 0; t < parents.length; t++){
-	 * classifications.add(parents[t] + ""); up(parents[t],classifications); } }
-	 */
 
 	/**
 	 * method for making the hashmap for small n.
@@ -289,10 +281,4 @@ public class ParentChildIntersectionCount implements DistributionCount {
 	public void cancel() {
 		this.interrupted = true;
 	}
-
-//	public void run(TaskMonitor tm) throws Exception {
-//		this.taskMonitor = tm;
-//		tm.setTitle("Counting genes in GO categories...");
-//		calculate();
-//	}
 }

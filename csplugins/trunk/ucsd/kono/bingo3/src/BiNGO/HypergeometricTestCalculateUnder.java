@@ -90,9 +90,11 @@ public class HypergeometricTestCalculateUnder implements CalculateTestTask {
 	/**
 	 * constructor with as argument the selected cluster and the annotation,
 	 * ontology and alpha.
+	 * @throws InterruptedException 
 	 */
-	public HypergeometricTestCalculateUnder(DistributionCount dc) {
-
+	public HypergeometricTestCalculateUnder(DistributionCount dc, TaskMonitor tm) throws InterruptedException {
+		this.taskMonitor = tm;
+		this.taskMonitor.setTitle("Calculating Hypergeometric Distribution");
 		dc.calculate();
 		this.mapSmallN = dc.getMapSmallN();
 		this.mapSmallX = dc.getMapSmallX();
@@ -108,6 +110,7 @@ public class HypergeometricTestCalculateUnder implements CalculateTestTask {
 	 * @throws InterruptedException
 	 */
 	public void calculate() throws InterruptedException {
+		
 		HypergeometricDistributionUnder hd;
 		hypergeometricTestMap = new HashMap();
 
@@ -205,11 +208,4 @@ public class HypergeometricTestCalculateUnder implements CalculateTestTask {
 	public void cancel() {
 		this.interrupted = true;
 	}
-
-	public void run(TaskMonitor tm) throws Exception {
-		this.taskMonitor = tm;
-		this.taskMonitor.setTitle("Calculating Hypergeometric Distribution");
-		calculate();
-	}
-
 }

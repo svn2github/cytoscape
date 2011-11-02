@@ -51,6 +51,4 @@ public interface DistributionCount extends CalculateTestTask {
 	 */
 	void countBigX();
 
-	void calculate();
-
 }

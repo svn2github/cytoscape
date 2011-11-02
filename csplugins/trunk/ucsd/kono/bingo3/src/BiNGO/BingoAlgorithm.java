@@ -3,6 +3,8 @@ package BiNGO;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.cytoscape.work.TaskMonitor;
+
 /**
  * Created by User: risserlin Date: Jun 13, 2006 Time: 1:00:50 PM
  */
@@ -61,7 +63,7 @@ public class BingoAlgorithm {
 		this.params = params;
 	}
 
-	public CalculateTestTask calculate_distribution() {
+	public CalculateTestTask calculate_distribution(TaskMonitor tm) throws InterruptedException {
 		CalculateTestTask test = null;
 		HashMap testMap = null;
 
@@ -71,39 +73,27 @@ public class BingoAlgorithm {
 		} else if (params.getTest().equals(HYPERGEOMETRIC)) {
 			if (params.getOverOrUnder().equals(OVERSTRING)) {
 				test = new HypergeometricTestCalculate(new StandardDistributionCount(params.getAnnotation(),
-						params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
+						params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()), tm);
 			} else {
 				test = new HypergeometricTestCalculateUnder(new StandardDistributionCountNeg(params.getAnnotation(),
-						params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
+						params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()), tm);
 			}
 		} else if (params.getTest().equals(BINOMIAL)) {
 			if (params.getOverOrUnder().equals(OVERSTRING)) {
 				test = new BinomialTestCalculate(new StandardDistributionCount(params.getAnnotation(),
-						params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
+						params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()), tm);
 			} else {
 				test = new BinomialTestCalculateUnder(new StandardDistributionCountNeg(params.getAnnotation(),
-						params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
+						params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()), tm);
 			}
 		} else if (params.getTest().equals(PARENT_CHILD_INTERSECTION)) {
 			if (params.getOverOrUnder().equals(OVERSTRING)) {
 				test = new HypergeometricTestCalculate(new ParentChildIntersectionCount(params.getAnnotation(),
-						params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
+						params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias(), tm), tm);
 			} else {
 				// to be implemented
 			}
 		}
-
-		// Configure JTask
-		/*
-		 * JTaskConfig config = new JTaskConfig();
-		 * 
-		 * // Show Cancel/Close Buttons config.displayCancelButton(true);
-		 * config.displayStatus(true);
-		 */
-		// Execute Task via TaskManager
-		// This automatically pops-open a JTask Dialog Box.
-		// This method will block until the JTask Dialog Box is disposed.
-		// boolean success = TaskManager.executeTask(test, config);
 		return test;
 	}
 
@@ -120,19 +110,6 @@ public class BingoAlgorithm {
 			} else {
 				correctionMap = null;
 			}
-			// Configure JTask
-			/*
-			 * JTaskConfig config = new JTaskConfig();
-			 * 
-			 * // Show Cancel/Close Buttons config.displayCancelButton(true);
-			 * config.displayStatus(true);
-			 */
-
-			// Execute Task via TaskManager
-			// This automatically pops-open a JTask Dialog Box.
-			// This method will block until the JTask Dialog Box is disposed.
-			// only perform if a correction method has been chosen
-
 		}
 		return correction;
 	}

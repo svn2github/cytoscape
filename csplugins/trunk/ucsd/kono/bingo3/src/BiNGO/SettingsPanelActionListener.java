@@ -106,9 +106,12 @@ public class SettingsPanelActionListener implements ActionListener {
 	/**
 	 * constant string for the none-label in the combobox.
 	 */
-	private final String CATEGORY_BEFORE_CORRECTION = BingoAlgorithm.CATEGORY_BEFORE_CORRECTION;
-	private final String CATEGORY_CORRECTION = BingoAlgorithm.CATEGORY_CORRECTION;
+	private static final String CATEGORY_BEFORE_CORRECTION = BingoAlgorithm.CATEGORY_BEFORE_CORRECTION;
+	private static final String CATEGORY_CORRECTION = BingoAlgorithm.CATEGORY_CORRECTION;
 
+	
+	private TaskMonitor tMonitor;
+	
 	/**
 	 * Constructor with all the settings of the settingspanel as arguments.
 	 */
@@ -281,6 +284,7 @@ public class SettingsPanelActionListener implements ActionListener {
 										"Some genes in the text input panel are not defined in the reference set. Please check your input settings"
 												+ "\n");
 							}
+							
 							if (consistencyCheck) {
 								int[] testData = getClassificationsFromVector(params.getSelectedNodes(),
 										noClassificationsSet);
@@ -934,79 +938,6 @@ public class SettingsPanelActionListener implements ActionListener {
 		// Execute task here!
 		final TaskManager tm = adapter.getTaskManager();
 		tm.execute(new GenericTaskFactory(calc));
-
-//		Map testMap = null;
-//		Map correctionMap = null;
-//		Map mapSmallX = null;
-//		Map mapSmallN = null;
-//		Map mapBigX = null;
-//		Map mapBigN = null;
-//
-//		BingoAlgorithm algorithm = new BingoAlgorithm(params);
-//		CalculateTestTask test = algorithm.calculate_distribution();
-//
-//		// Execute task here!
-//		final TaskManager tm = adapter.getTaskManager();
-//		tm.execute(new GenericTaskFactory(test));
-//		
-//		testMap = test.getTestMap();
-//		CalculateCorrectionTask correction = algorithm.calculate_corrections(testMap);
-//		
-//		if ((correction != null) && (!params.getTest().equals(NONE))) {
-//			tm.execute(new GenericTaskFactory(correction));
-//			correctionMap = correction.getCorrectionMap();
-//		}
-//		mapSmallX = test.getMapSmallX();
-//		mapSmallN = test.getMapSmallN();
-//		mapBigX = test.getMapBigX();
-//		mapBigN = test.getMapBigN();
-//
-//		DisplayBiNGOWindow display;
-//		CreateBiNGOFile file;
-//
-//		if (params.getVisualization().equals(VIZSTRING)) {
-//			display = new DisplayBiNGOWindow(testMap, correctionMap, mapSmallX, mapSmallN, mapBigX, mapBigN, params
-//					.getSignificance().toString(), params.getOntology(), params.getCluster_name(), params.getCategory()
-//					+ "", adapter);
-//
-//			// displaying the BiNGO CyNetwork.
-//			display.makeWindow();
-//		}
-//		if ((goBin == null) || goBin.isWindowClosed()) {
-//			goBin = new BiNGO.GOlorize.GoBin(settingsPanel, startNetworkView);
-//		}
-//
-//		if (params.getAnnotationFile() == null) {
-//			params.setAnnotationFile("Cytoscape loaded annotation: " + params.getAnnotation().toString());
-//		}
-//
-//		if (params.getOntologyFile() == null) {
-//			params.setOntologyFile("Cytoscape loaded ontology: " + params.getOntology().toString());
-//		}
-//
-//		goBin.createResultTab(testMap, correctionMap, mapSmallX, mapSmallN, mapBigX, mapBigN, params.getSignificance()
-//				.toString(), params.getAnnotation(), params.getAlias(), params.getOntology(), params
-//				.getAnnotationFile().toString(), params.getOntologyFile().toString(), params.getTest() + "",
-//				params.getCorrection() + "", params.getOverOrUnder() + "", params.getFileoutput_dir(),
-//				params.getCluster_name() + ".bgo", params.getReferenceSet() + "", params.getCategory() + "",
-//				selectedNodes, startNetwork, startNetworkView);
-//
-//		if (params.isFileoutput()) {
-//			file = new CreateBiNGOFile(testMap, correctionMap, mapSmallX, mapSmallN, mapBigX, mapBigN, params
-//					.getSignificance().toString(), params.getAnnotation(), params.getDeleteCodes(), params.getAlias(),
-//					params.getOntology(), params.getAnnotationFile().toString(), params.getOntologyFile().toString(),
-//					params.getTest() + "", params.getCorrection() + "", params.getOverOrUnder() + "",
-//					params.getFileoutput_dir(), params.getCluster_name() + ".bgo", params.getReferenceSet() + "",
-//					params.getCategory() + "", selectedNodes, noClassificationsSet);
-//			file.makeFile();
-//
-//			if (params.getTest().equals(NONE) && params.getCorrection().equals(NONE)) {
-//				CreateAnnotationFile file2 = new CreateAnnotationFile(params.getAnnotation(), params.getAlias(),
-//						params.getOntology(), params.getFileoutput_dir(), params.getCluster_name() + ".anno",
-//						selectedNodes);
-//				file2.makeFile();
-//			}
-//		}
 	}
 	
 	private final class PostProcessTask extends AbstractTask {
@@ -1031,7 +962,7 @@ public class SettingsPanelActionListener implements ActionListener {
 			Map mapBigN = null;
 
 			BingoAlgorithm algorithm = new BingoAlgorithm(params);
-			CalculateTestTask test = algorithm.calculate_distribution();
+			CalculateTestTask test = algorithm.calculate_distribution(tm);
 			test.calculate();
 			
 			testMap = test.getTestMap();

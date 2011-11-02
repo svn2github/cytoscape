@@ -350,14 +350,6 @@ public class SettingsPanel extends JPanel {
 		gridbag.setConstraints(clusterVsPanel, c);
 		add(clusterVsPanel);
 
-		/*
-		 * if (bdsAnnot.isThereAnnotInMemorie()){ JLabel jl = new
-		 * JLabel("Use Annotation/Ontology of BioDataServer in Memory :");
-		 * gridbag.setConstraints(jl, c); add(jl);
-		 * 
-		 * gridbag.setConstraints(bdsAnnot, c); add(bdsAnnot); }
-		 */
-
 		gridbag.setConstraints(ontologyLabel, c);
 		add(ontologyLabel);
 

@@ -104,7 +104,7 @@ public class TheVisualStyle {
 		//FIXME
 //		style.getDependency().set(Definition.NODE_SIZE_LOCKED, true);
 		
-		style.setDefaultValue(RichVisualLexicon.NODE_LABEL_FONT_SIZE, 14);
+		style.setDefaultValue(RichVisualLexicon.NODE_LABEL_FONT_SIZE, 11);
 		style.setDefaultValue(RichVisualLexicon.NODE_WIDTH, 40d);
 		style.setDefaultValue(RichVisualLexicon.NODE_HEIGHT, 40d);
 		style.setDefaultValue(RichVisualLexicon.NODE_BORDER_WIDTH, 2d);
@@ -114,7 +114,8 @@ public class TheVisualStyle {
 //		style.getNodeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.NODE_BORDER_OPACITY, 120);
 
 		// Edge default appearence definitions
-		//FIXME
+		
+		//FIXME: These are DING-dependent VP 
 //		style.getEdgeAppearanceCalculator().getDefaultAppearance().set(
 //				VisualPropertyType.EDGE_TGTARROW_SHAPE, ArrowShape.DELTA);
 //		style.getEdgeAppearanceCalculator().getDefaultAppearance().set(
@@ -123,8 +124,10 @@ public class TheVisualStyle {
 //				VisualPropertyType.EDGE_SRCARROW_SHAPE, ArrowShape.NONE);
 		
 		style.setDefaultValue(RichVisualLexicon.EDGE_LINE_TYPE, LineTypeVisualProperty.SOLID);
-		style.setDefaultValue(RichVisualLexicon.EDGE_WIDTH, 4d);
+		style.setDefaultValue(RichVisualLexicon.EDGE_WIDTH, 2d);
 		style.setDefaultValue(RichVisualLexicon.EDGE_STROKE_UNSELECTED_PAINT, Color.DARK_GRAY);
+		style.setDefaultValue(RichVisualLexicon.EDGE_TRANSPARENCY, 190);
+		
 		style.setDefaultValue(RichVisualLexicon.NETWORK_BACKGROUND_PAINT, Color.WHITE);
 
 		// Display NODE_LABEL as a label
@@ -145,41 +148,24 @@ public class TheVisualStyle {
 		double cols2 = -(Math.log(alpha) / Math.log(10)) + 5.0;
 		final BoundaryRangeValues<Paint> colbrVal2 = new BoundaryRangeValues<Paint>(COL_MAX, COL_MAX, COL_MAX);
 		
-		// FIXME This section should be called, but never happens.
 		if (nodeColorMapping instanceof ContinuousMapping) {
-			System.out.println("##### This is ContinuousMapping");
 			((ContinuousMapping<Double, Paint>) nodeColorMapping).addPoint(cols1, colbrVal1);
 			((ContinuousMapping<Double, Paint>) nodeColorMapping).addPoint(cols2, colbrVal2);
 		}
 
-//		// Node Size Mapping
-//		//TODO: Update when 2.8 released.
-//		final ContinuousMapping wMapping = new ContinuousMapping(
-//				DEF_NODE_SIZE, ObjectMapping.NODE_MAPPING);
-//		wMapping.setControllingAttributeName(NODE_SIZE, network, false);
-//		final ContinuousMapping hMapping = new ContinuousMapping(
-//				DEF_NODE_SIZE, ObjectMapping.NODE_MAPPING);
-//		hMapping.setControllingAttributeName(NODE_SIZE, network, false);
-//
-//		// The following code defines the range of values
-//
-//		BoundaryRangeValues brVals;
-//		int j;
-//		for (j = 0; j <= 1; j++) {
-//			brVals = new BoundaryRangeValues();
-//			final double size = 380d * j + 20d;
-//			final double s = 99 * j + 1;
-//			brVals.lesserValue = size;
-//			brVals.equalValue = size;
-//			brVals.greaterValue = size;
-//			wMapping.addPoint(s, brVals);
-//			hMapping.addPoint(s, brVals);
-//		}
-//
-//		final Calculator nodeSizeCalculator = new BasicCalculator(
-//				"Bingo Node Size_" + networkName, wMapping,
-//				VisualPropertyType.NODE_SIZE);
-//		style.getNodeAppearanceCalculator().setCalculator(nodeSizeCalculator);
+		// Node Size Mapping
+		final ContinuousMapping<Double, Double> nodeWidthMapping = (ContinuousMapping<Double, Double>) continuousF.createVisualMappingFunction(NODE_SIZE, Double.class, RichVisualLexicon.NODE_WIDTH);
+		style.addVisualMappingFunction(nodeWidthMapping);
+		final ContinuousMapping<Double, Double> nodeHeightMapping = (ContinuousMapping<Double, Double>) continuousF.createVisualMappingFunction(NODE_SIZE, Double.class, RichVisualLexicon.NODE_HEIGHT);
+		style.addVisualMappingFunction(nodeHeightMapping);
+		
+		for (int j = 0; j <= 1; j++) {		
+			final double size = 380d * j + 20d;
+			final double s = 99 * j + 1;
+			final BoundaryRangeValues<Double> brVals = new BoundaryRangeValues<Double>(size, size, size);
+			nodeWidthMapping.addPoint(s, brVals);
+			nodeHeightMapping.addPoint(s, brVals);
+		}
 	}
 
 	public VisualStyle createVisualStyle(final CyNetwork network) {

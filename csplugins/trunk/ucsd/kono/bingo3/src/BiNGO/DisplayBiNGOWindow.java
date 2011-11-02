@@ -223,67 +223,6 @@ public class DisplayBiNGOWindow {
 		final TaskManager tm = adapter.getTaskManager();
 		tm.execute(new GenericTaskFactory(new CreateViewTask(network)));
 
-		// final CyNetworkViewFactory viewFactory =
-		// adapter.getCyNetworkViewFactory();
-		// final CyNetworkView bingoCyNetworkView =
-		// viewFactory.getNetworkView(network);
-		//
-		// // from MCODE plugin, MCODEResultsDialog class layout graph and fit
-		// it to window
-		// // randomize node positions before layout so that they don't all
-		// layout in a line
-		// // (so they don't fall into a local minimum for the SpringEmbedder)
-		// // If the SpringEmbedder implementation changes, this code may need
-		// to
-		// // be removed
-		// final Collection<View<CyNode>> nodeViews =
-		// bingoCyNetworkView.getNodeViews();
-		// for (final View<CyNode> nv:nodeViews) {
-		// nv.setXPosition(nv.getXPosition() * Math.random());
-		// // height is small for many default drawn graphs, thus +100
-		// nv.setYPosition((nv.getYPosition() + 100) * Math.random());
-		// }
-		//
-		// // apply spring embedded layout...
-		// SpringEmbeddedLayouter spring = new
-		// SpringEmbeddedLayouter(bingoCyNetworkView);
-		// // Configure JTask
-		// JTaskConfig config = new JTaskConfig();
-		//
-		// // Show Cancel/Close Buttons
-		// config.displayCancelButton(true);
-		// config.displayStatus(true);
-		//
-		// // Execute Task via TaskManager
-		// // This automatically pops-open a JTask Dialog Box.
-		// // This method will block until the JTask Dialog Box is disposed.
-		// boolean success = TaskManager.executeTask(spring, config);
-
-		// Cytoscape.getDesktop().toFront();
-		// bingoCyNetworkView.fitContent();
-		// // create visual style with ID dependent on clusterName
-		// TheVisualStyle vs = new TheVisualStyle(clusterName, (new
-		// Double(alpha)).doubleValue());
-		// VisualStyle visualStyle = vs.createVisualStyle(network);
-		// CytoscapeDesktop cytoscapedesktop = Cytoscape.getDesktop();
-		// VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-		// try {
-		// vmm.getCalculatorCatalog().addVisualStyle(visualStyle);
-		// // VisualStyle oldStyle = vmm.setVisualStyle(visualStyle.getName());
-		// bingoCyNetworkView.applyVizmapper(visualStyle);
-		// // bingoCyNetworkView.setVisualStyle(visualStyle.getName());
-		// } catch (Exception e) {
-		// JOptionPane.showMessageDialog(cytoscapedesktop,
-		// "A visual style already exists for the cluster name you specified." +
-		// "\n"
-		// + "The existing style will be overwritten.");
-		// vs.adaptVisualStyle(vmm.getCalculatorCatalog().getVisualStyle(visualStyle.getName()),
-		// network);
-		// // VisualStyle oldStyle = vmm.setVisualStyle(visualStyle.getName());
-		// bingoCyNetworkView.applyVizmapper(vmm.getCalculatorCatalog().getVisualStyle(visualStyle.getName()));
-		// // bingoCyNetworkView.setVisualStyle(visualStyle.getName());
-		// }
-
 		// add color scale panel
 		JFrame window = new JFrame(clusterName + " Color Scale");
 		String alpha1 = SignificantFigures.sci_format(alpha, 3);
