@@ -16,9 +16,8 @@ import java.net.URL;
 import java.util.*;
 import java.util.Map.Entry;
 
-import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
+
 
 import org.idekerlab.PanGIAPlugin.ui.SearchPropertyPanel;
 import org.idekerlab.PanGIAPlugin.utilities.files.FileUtil;
@@ -26,6 +25,7 @@ import org.idekerlab.PanGIAPlugin.utilities.files.FileUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.task.AbstractNodeViewTaskFactory;
+import org.cytoscape.task.EdgeViewTaskFactory;
 import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
@@ -81,15 +81,25 @@ public class PanGIAPlugin extends AbstractCyAction implements NetworkViewAddedLi
 		cytoPanelWest = ServicesUtil.cySwingApplicationServiceRef.getCytoPanel(CytoPanelName.WEST);
 
 		
-//		// Node right-click menu
-//		Dictionary<String, String> dict = new Hashtable<String, String>();
-//		dict.put("preferredMenu", "PanGIA");
-//		
+		// Node right-click menu
+		Properties ndict = new Properties();
+		ndict.setProperty("preferredTaskManager","menu");
+		ndict.setProperty("title","PanGIA");
+		// menu titles are generated dynamically
+		NodeViewTaskFactory nodeViewTF = new PanGIANodeViewTaskFactory();
+		ServicesUtil.cyServiceRegistrarServiceRef.registerService(nodeViewTF, NodeViewTaskFactory.class, ndict);
+
+		//		
 //		NodeViewTaskFactory nvtf = new PanGIANodeViewTaskFactory();
 //		ServicesUtil.cyServiceRegistrarServiceRef.registerService(nvtf, NodeViewTaskFactory.class, dict);
 //		
 //		// Edge right-click menu
-		
+//		Properties edict = new Properties();
+//		edict.setProperty("preferredTaskManager","menu");
+//		ndict.setProperty("title","PanGIA");
+		// menu titles are generated dynamically		
+//		EdgeViewTaskFactory edgeViewTF = new PanGIAEdgeViewTaskFactory();
+//		ServicesUtil.cyServiceRegistrarServiceRef.registerService(edgeViewTF, NodeViewTaskFactory.class, ndict);
 
 		addHelp();		
 	}
