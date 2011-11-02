@@ -19,10 +19,13 @@ import org.cytoscape.application.swing.CyAction;
 
 import org.osgi.framework.BundleContext;
 import org.cytoscape.service.util.AbstractCyActivator;
+import org.cytoscape.task.creation.LoadVisualStyles;
+
 import java.util.Properties;
 import csplugins.jActiveModules.dialogs.ActivePathsParameterPanel;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import org.cytoscape.util.swing.NetworkSelectorPanel;
+import org.cytoscape.task.creation.LoadVisualStyles;
 
 public class CyActivator extends AbstractCyActivator {
 	public CyActivator() {
@@ -49,6 +52,9 @@ public class CyActivator extends AbstractCyActivator {
 		CyNetworkViewFactory cyNetworkViewFactoryServiceRef = getService(bc,CyNetworkViewFactory.class);
 		CyLayoutAlgorithmManager cyLayoutsServiceRef = getService(bc,CyLayoutAlgorithmManager.class);
 
+		LoadVisualStyles loadVizmapFileTaskFactory =  getService(bc,LoadVisualStyles.class);
+
+		//
 		
 		ActivePathFinderParameters apfParams = new ActivePathFinderParameters(cytoscapePropertiesServiceRef);
 
@@ -62,7 +68,7 @@ public class CyActivator extends AbstractCyActivator {
 		ActiveModulesUI activeModulesUI = new ActiveModulesUI(cyApplicationManagerServiceRef,cySwingApplicationServiceRef,
 				cytoscapePropertiesServiceRef, cyNetworkManagerServiceRef,cyNetworkViewManagerServiceRef, visualMappingManagerRef, 
 				cyNetworkFactoryServiceRef, cyRootNetworkFactory, cyNetworkViewFactoryServiceRef,cyLayoutsServiceRef,
-				taskManagerServiceRef,cyEventHelperServiceRef,apfParams, mainPanel);
+				taskManagerServiceRef,cyEventHelperServiceRef,loadVizmapFileTaskFactory,apfParams, mainPanel);
 		
 		registerAllServices(bc,mainPanel, new Properties());
 		

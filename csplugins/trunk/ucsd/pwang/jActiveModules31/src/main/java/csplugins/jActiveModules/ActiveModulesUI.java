@@ -28,6 +28,7 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.property.CyProperty;
+import org.cytoscape.task.creation.LoadVisualStyles;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
@@ -69,12 +70,13 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 	private TaskManager taskManagerService;
 	private CyApplicationManager cyApplicationManagerService;
 	private CyEventHelper cyEventHelperService;
+	private LoadVisualStyles loadVizmapFileTaskFactory;
 	
 	public ActiveModulesUI(CyApplicationManager appMgr, CySwingApplication desktopApp,CyProperty<Properties> cytoscapeProperties,
 			CyNetworkManager cyNetworkManager, CyNetworkViewManager cyNetworkViewManager, VisualMappingManager visualMappingManager,
 			CyNetworkFactory cyNetworkFactory, CyRootNetworkFactory cyRootNetworkFactory, 
 			CyNetworkViewFactory cyNetworkViewFactory,CyLayoutAlgorithmManager cyLayoutsService, 
-			TaskManager taskManagerService, CyEventHelper cyEventHelperService, 
+			TaskManager taskManagerService, CyEventHelper cyEventHelperService, LoadVisualStyles loadVizmapFileTaskFactory,
 			ActivePathFinderParameters apfParams, ActivePathsParameterPanel mainPanel) {
 		
 		super("jActiveModules...", appMgr);
@@ -92,6 +94,7 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 		this.taskManagerService = taskManagerService;
 		this.cyApplicationManagerService = appMgr;
 		this.cyEventHelperService = cyEventHelperService;
+		this.loadVizmapFileTaskFactory = loadVizmapFileTaskFactory;
 		
 		this.cytoscapeProperties = cytoscapeProperties;
 		this.mainPanel = mainPanel;
@@ -160,7 +163,8 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 						this.cyNetworkManager, this.cyNetworkViewManager, this.visualMappingManager, 
 						this.cyNetworkFactory, this.cyRootNetworkFactory, 
 						this.cyNetworkViewFactory, this.cyLayoutsService, this.taskManagerService, 
-						this.cyApplicationManagerService, this.cyEventHelperService);
+						this.cyApplicationManagerService, this.cyEventHelperService,
+						this.loadVizmapFileTaskFactory);
 				Thread t = new Thread(activePaths);
 				t.start();
 			}
@@ -221,7 +225,7 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 					this.visualMappingManager, this.cyNetworkFactory, this.cyRootNetworkFactory, 
 					this.cyNetworkViewFactory, this.cyLayoutsService,
 					this.taskManagerService, this.cyApplicationManagerService,
-					this.cyEventHelperService);
+					this.cyEventHelperService, this.loadVizmapFileTaskFactory);
 			
 		} catch (final Exception e) {
 			e.printStackTrace(System.err);
@@ -278,7 +282,7 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 					ActiveModulesUI.this.visualMappingManager, ActiveModulesUI.this.cyNetworkFactory, ActiveModulesUI.this.cyRootNetworkFactory, 
 					ActiveModulesUI.this.cyNetworkViewFactory, ActiveModulesUI.this.cyLayoutsService,
 					ActiveModulesUI.this.taskManagerService, ActiveModulesUI.this.cyApplicationManagerService,
-					ActiveModulesUI.this.cyEventHelperService);
+					ActiveModulesUI.this.cyEventHelperService,ActiveModulesUI.this.loadVizmapFileTaskFactory );
 			activePaths.scoreActivePath();
 		}
 	}
@@ -288,7 +292,7 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 				this.cyNetworkManager, this.cyNetworkViewManager, ActiveModulesUI.this.visualMappingManager,
 				ActiveModulesUI.this.cyNetworkFactory, ActiveModulesUI.this.cyRootNetworkFactory, ActiveModulesUI.this.cyNetworkViewFactory,
 				ActiveModulesUI.this.cyLayoutsService, this.taskManagerService, this.cyApplicationManagerService,
-				ActiveModulesUI.this.cyEventHelperService);
+				ActiveModulesUI.this.cyEventHelperService, ActiveModulesUI.this.loadVizmapFileTaskFactory);
 		Thread t = new ScoreDistributionThread(desktopApp.getJFrame(), network, activePaths, apfParams);
 		t.setUncaughtExceptionHandler(xHandler);
 		t.start();

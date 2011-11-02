@@ -45,6 +45,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.property.CyProperty;
 //import cytoscape.data.Semantics;
+import org.cytoscape.task.creation.LoadVisualStyles;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
@@ -60,6 +61,7 @@ import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.model.CyRow;
 import java.util.Collection;
+import java.io.File;
 
 //-----------------------------------------------------------------------------------
 public class ActivePaths implements ActivePathViewer, Runnable {
@@ -127,6 +129,8 @@ public class ActivePaths implements ActivePathViewer, Runnable {
     private TaskManager taskManagerService;
 	private CyApplicationManager cyApplicationManagerService;
 	private CyEventHelper cyEventHelperService;
+	private LoadVisualStyles loadVizmapFileTaskFactory;
+	private static boolean visualStylesLoaded = false;
 	
 	// ----------------------------------------------------------------
 	public ActivePaths(CyNetwork cyNetwork, ActivePathFinderParameters apfParams, ActiveModulesUI parentUI,
@@ -134,7 +138,8 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			CyNetworkViewManager cyNetworkViewManager, VisualMappingManager visualMappingManager, 
 			CyNetworkFactory cyNetworkFactory, CyRootNetworkFactory cyRootNetworkFactory, CyNetworkViewFactory cyNetworkViewFactory, 
 			CyLayoutAlgorithmManager cyLayoutsService, TaskManager taskManagerService,	
-			CyApplicationManager cyApplicationManagerService, CyEventHelper cyEventHelperService) {
+			CyApplicationManager cyApplicationManagerService, CyEventHelper cyEventHelperService,
+			LoadVisualStyles loadVizmapFileTaskFactory) {
 		this.apfParams = apfParams;
 		this.cytoscapeProperties = cytoscapeProperties;
 		this.desktopApp = desktopApp;
@@ -149,6 +154,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		this.taskManagerService = taskManagerService;
 		this.cyApplicationManagerService = cyApplicationManagerService;
 		this.cyEventHelperService = cyEventHelperService;
+		this.loadVizmapFileTaskFactory = loadVizmapFileTaskFactory;
 
 		try {			
 			MAX_NETWORK_VIEWS = new Integer(this.cytoscapeProperties.getProperties().getProperty("moduleNetworkViewCreationThreshold")).intValue();			
@@ -162,18 +168,32 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		//}
 
 //		Set<VisualStyle> visualStyles = this.visualMappingManager.getAllVisualStyles(); 
-//		Iterator<VisualStyle> it = visualStyles.iterator();
-//		while (it.hasNext()){
-//			VisualStyle vs = it.next();
-//			if (vs.getTitle().equalsIgnoreCase(VS_OVERVIEW_NAME)){
-//				overviewVS = vs;
-//			}
-//			if (vs.getTitle().equalsIgnoreCase(VS_MODULE_NAME)){
-//				moduleVS = vs;
-//			}
-//		}
-		
+
+		// Load jActiveModules defined Visual styles if not loaded yet
+		Set<VisualStyle> visualStyles= null;
+		if (!visualStylesLoaded){			
+			File f = new File(vizmapPropsLocation.toString());
+			visualStyles = this.loadVizmapFileTaskFactory.loadStyles(f);
+			visualStylesLoaded = true;
+		}
+
+		// Get the styles for overview and module
+		Iterator<VisualStyle> it = visualStyles.iterator();
+		while (it.hasNext()){
+			VisualStyle vs = it.next();
+			if (vs.getTitle().equalsIgnoreCase(VS_OVERVIEW_NAME)){
+				overviewVS = vs;
+			}
+			if (vs.getTitle().equalsIgnoreCase(VS_MODULE_NAME)){
+				moduleVS = vs;
+			}
+		}
 			
+		System.out.println("overviewVS = "+ overviewVS);
+		System.out.println("moduleVS = "+ moduleVS);
+			
+		
+		//
 		if (cyNetwork == null || cyNetwork.getNodeCount() == 0) {
 			throw new IllegalArgumentException("Please select a network");
 		}
