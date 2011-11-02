@@ -93,10 +93,10 @@ public class DynamicSupport {
 
 
 	public TaskIterator getTaskIterator() {
-		String url = "none found"; 
+		String action = "none found"; 
 		synchronized (this) {
 			//System.out.println("Selected menu: " + menuTitleSelection.getSelectedValue());
-			url = menuTitleActionMap.get( menuTitleSelection.getSelectedValue() );	
+			action = menuTitleActionMap.get( menuTitleSelection.getSelectedValue() );	
 		}
 			//System.out.println("url for LinkoutTask: " + url);
 		return new TaskIterator(new PanGIANodeViewTask(this.netView, this.nodeView, action));
