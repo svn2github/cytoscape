@@ -66,8 +66,8 @@ public class BiNGO {
 	private boolean interrupted = false;
 
 	// constructor
-	public BiNGO(ModuleNetwork M, BingoParameters bp) throws IOException, InterruptedException {
-
+	public BiNGO(ModuleNetwork M, BingoParameters bp, TaskMonitor tm) throws IOException, InterruptedException {
+		this.taskMonitor = tm;
 		this.maxValue = -1;
 		this.M = M;
 		this.bp = bp;
@@ -184,7 +184,7 @@ public class BiNGO {
 
 		// Use bing function
 		algorithm = new BingoAlgorithm(bp);
-		CalculateTestTask test = algorithm.calculate_distribution();
+		CalculateTestTask test = algorithm.calculate_distribution(taskMonitor);
 		test.calculate();
 
 		testMap = test.getTestMap();

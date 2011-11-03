@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TaskMonitor;
 
 import BiNGO.BingoAlgorithm;
 import BiNGO.BingoParameters;
@@ -81,8 +82,10 @@ public class PingoAnalysis {
 	private HashMap<TestInstance, Integer> bigN;
 	private HashMap<TestInstance, HashSet<Gene>> neighbors;
 
+	private TaskMonitor taskMonitor;
 
-	public PingoAnalysis(PingoParameters pp) throws InterruptedException, IOException {
+	public PingoAnalysis(PingoParameters pp, TaskMonitor tm) throws InterruptedException, IOException {
+		this.taskMonitor = tm;
 		this.pp = pp;
 		M = new ModuleNetwork(pp);
 
@@ -155,7 +158,7 @@ public class PingoAnalysis {
 			}
 
 			BingoParameters bp = makeBingoParameters(pp);
-			BiNGO b = new BiNGO(M, bp);
+			BiNGO b = new BiNGO(M, bp, taskMonitor);
 			b.calculate();
 			pred = new HashMap<OntologyTerm, HashSet<Gene>>();
 

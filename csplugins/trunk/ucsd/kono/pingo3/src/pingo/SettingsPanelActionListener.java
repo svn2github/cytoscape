@@ -60,9 +60,13 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.RichVisualLexicon;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TaskMonitor;
 
 import BiNGO.AnnotationParser;
 import BiNGO.BingoAlgorithm;
+import BiNGO.GenericTaskFactory;
 
 /**
  * ********************************************************************
@@ -180,7 +184,9 @@ public class SettingsPanelActionListener implements ActionListener {
 					}
 				}
 				if (consistencyCheck == true) {
-					performCalculations();
+					final CalculationTask calc = new CalculationTask();
+					final TaskManager tm = adapter.getTaskManager();
+					tm.execute(new GenericTaskFactory(calc));
 				}
 
 			} catch (Exception e) {
@@ -807,6 +813,7 @@ public class SettingsPanelActionListener implements ActionListener {
 
 	}
 
+
 	/**
 	 * Method that redirects the calculations of the distribution and the
 	 * correction. Redirects the visualization of the network and redirects the
@@ -814,27 +821,140 @@ public class SettingsPanelActionListener implements ActionListener {
 	 * @throws IOException 
 	 * @throws InterruptedException 
 	 */
+	private class CalculationTask extends AbstractTask {
+		
+		@Override
+		public void run(TaskMonitor tm) throws Exception {
+			// TODO Auto-generated method stub
+			PingoAnalysis gcb = new PingoAnalysis(params, tm);
+			ModuleNetwork M = gcb.getModuleNetwork();
+			if (M.moduleSet == null) {
+				JOptionPane.showMessageDialog(settingsPanel, "There are no test genes in the network after filtering.");
+			} else {
+				
+				System.out.println("######Viz String = " + params.getVisualization());
+				
+				if (params.getTabMode().equals(VizPanel.TABSTRING)) {
+					String[] goCats = params.getTargetGoCats().split("\\s+");
+					for (String s : goCats) {
+						Integer cat = new Integer(s);
+						Map<PingoAnalysis.TestInstance, Double> pvals = gcb.getPvalues(cat);
+						Map<PingoAnalysis.TestInstance, Integer> smallX = gcb.getSmallX(cat);
+						Map<PingoAnalysis.TestInstance, Integer> smallN = gcb.getSmallN(cat);
+						Map<PingoAnalysis.TestInstance, Integer> bigX = gcb.getBigX(cat);
+						Map<PingoAnalysis.TestInstance, Integer> bigN = gcb.getBigN(cat);
+						Map<PingoAnalysis.TestInstance, Set<Gene>> neighbors = gcb.getNeighbors(cat);
+						DisplayPingoWindow display;
+						Set<Gene> predictedGenesSet = new HashSet<Gene>();
+						Set<Gene> graphNodes = new HashSet<Gene>();
+						Map<Gene, Map<Gene, Double>> graph = new HashMap<Gene, Map<Gene, Double>>();
+						for (PingoAnalysis.TestInstance t : pvals.keySet()) {
+							predictedGenesSet.add(M.geneMap.get(t.m.name));
+							graphNodes.add(M.geneMap.get(t.m.name));
+							for (Gene g : neighbors.get(t)) {
+								if (!graph.containsKey(M.geneMap.get(t.m.name))) {
+									graph.put(M.geneMap.get(t.m.name), new HashMap<Gene, Double>());
+								}
+								graph.get(M.geneMap.get(t.m.name)).put(g, 0.0);
+								graphNodes.add(g);
+							}
+						}
+						// if not starmode, add interconnections between neighbors
+						if (params.getStarMode().equals(VizPanel.NOSTARSTRING)) {
+							for (Gene g1 : graphNodes) {
+								for (Gene g2 : graphNodes) {
+									// G is double-linked hashmap
+									if ((M.G.containsKey(g1) && M.G.get(g1).containsKey(g2))
+											&& (graph.containsKey(g2) && !graph.get(g2).containsKey(g1))) {
+										if (!graph.containsKey(g1)) {
+											graph.put(g1, new HashMap<Gene, Double>());
+										}
+										graph.get(g1).put(g2, 0.0);
+									}
+								}
+							}
+						}
 
-	public void performCalculations() throws InterruptedException, IOException {
-		PingoAnalysis gcb = new PingoAnalysis(params);
-		ModuleNetwork M = gcb.getModuleNetwork();
-		if (M.moduleSet == null) {
-			JOptionPane.showMessageDialog(settingsPanel, "There are no test genes in the network after filtering.");
-		} else {
-			if (params.getTabMode().equals(VizPanel.TABSTRING)) {
-				String[] goCats = params.getTargetGoCats().split("\\s+");
-				for (String s : goCats) {
-					Integer cat = new Integer(s);
-					Map<PingoAnalysis.TestInstance, Double> pvals = gcb.getPvalues(cat);
-					Map<PingoAnalysis.TestInstance, Integer> smallX = gcb.getSmallX(cat);
-					Map<PingoAnalysis.TestInstance, Integer> smallN = gcb.getSmallN(cat);
-					Map<PingoAnalysis.TestInstance, Integer> bigX = gcb.getBigX(cat);
-					Map<PingoAnalysis.TestInstance, Integer> bigN = gcb.getBigN(cat);
-					Map<PingoAnalysis.TestInstance, Set<Gene>> neighbors = gcb.getNeighbors(cat);
+						if (params.getVisualization().equals(VIZSTRING) && params.isCytoscapeInput()) {
+
+							final Set<CyNode> selectedNodesSet = new HashSet<CyNode>();
+							final Collection<View<CyNode>> nodeViews = startNetworkView.getNodeViews();
+							for (final View<CyNode> nodeView : nodeViews) {
+								final String node = nodeView.getModel().getCyRow().get(CyTableEntry.NAME, String.class);
+								if (graphNodes.contains(M.geneMap.get(node))) {
+									selectedNodesSet.add(nodeView.getModel());
+								}
+							}
+
+							final Set<CyEdge> selectedEdgesSet = new HashSet<CyEdge>();
+							final Collection<View<CyEdge>> edgeViews = startNetworkView.getEdgeViews();
+							for (View<CyEdge> edgeView : edgeViews) {
+								final String sourceNode = edgeView.getModel().getSource().getCyRow()
+										.get(CyTableEntry.NAME, String.class);
+								final String targetNode = edgeView.getModel().getTarget().getCyRow()
+										.get(CyTableEntry.NAME, String.class);
+								if (graphNodes.contains(M.geneMap.get(sourceNode))
+										&& graphNodes.contains(M.geneMap.get(targetNode))) {
+									if (params.getStarMode().equals(VizPanel.STARSTRING)) {
+										if (predictedGenesSet.contains(M.geneMap.get(sourceNode))
+												|| predictedGenesSet.contains(M.geneMap.get(targetNode))) {
+											selectedEdgesSet.add(edgeView.getModel());
+										}
+									} else {
+										selectedEdgesSet.add(edgeView.getModel());
+									}
+								}
+							}
+
+							setSelected(startNetworkView.getModel().getNodeList(), false);
+							setSelected(startNetworkView.getModel().getEdgeList(), false);
+							setSelected(selectedNodesSet, true);
+							setSelected(selectedEdgesSet, true);
+							adapter.getCyEventHelper().flushPayloadEvents();
+							startNetworkView.updateView();
+							
+							newWindowSelectedNodesEdges(s);
+
+						} else if (params.getVisualization().equals(VIZSTRING)) {
+							display = new DisplayPingoWindow(M, graph, pvals, smallX, smallN, bigX, bigN, params
+									.getSignificance().toString(), params.getCluster_name() + "_" + s, adapter);
+
+							// displaying the Pingo CyNetwork.
+							display.makeWindow();
+						}
+						
+						if ((goBin == null) || goBin.isWindowClosed())
+							goBin = new pingo.GOlorize.GoBin(settingsPanel, startNetworkView, adapter);
+
+						CyNetwork curNetwork = adapter.getCyApplicationManager().getCurrentNetwork();
+						CyNetworkView curNetworkView = adapter.getCyApplicationManager().getCurrentNetworkView();
+						goBin.createResultTab(M, pvals, smallX, smallN, bigX, bigN, neighbors, params.getCluster_name()
+								+ "_" + s, params.getAnnotationFile().toString(), params.getOntologyFile().toString(),
+								params.getTest() + "", params.getCorrection() + "", curNetwork, curNetworkView);
+					}
+				} else {
+					String[] goCats = params.getTargetGoCats().split("\\s+");
+
+					Map<PingoAnalysis.TestInstance, Double> pvals = new HashMap<PingoAnalysis.TestInstance, Double>();
+					Map<PingoAnalysis.TestInstance, Integer> smallX = new HashMap<PingoAnalysis.TestInstance, Integer>();
+					Map<PingoAnalysis.TestInstance, Integer> smallN = new HashMap<PingoAnalysis.TestInstance, Integer>();
+					Map<PingoAnalysis.TestInstance, Integer> bigX = new HashMap<PingoAnalysis.TestInstance, Integer>();
+					Map<PingoAnalysis.TestInstance, Integer> bigN = new HashMap<PingoAnalysis.TestInstance, Integer>();
+					Map<PingoAnalysis.TestInstance, Set<Gene>> neighbors = new HashMap<PingoAnalysis.TestInstance, Set<Gene>>();
 					DisplayPingoWindow display;
 					Set<Gene> predictedGenesSet = new HashSet<Gene>();
 					Set<Gene> graphNodes = new HashSet<Gene>();
 					Map<Gene, Map<Gene, Double>> graph = new HashMap<Gene, Map<Gene, Double>>();
+					for (String s : goCats) {
+						Integer cat = new Integer(s);
+						pvals.putAll(gcb.getPvalues(cat));
+						smallX.putAll(gcb.getSmallX(cat));
+						smallN.putAll(gcb.getSmallN(cat));
+						bigX.putAll(gcb.getBigX(cat));
+						bigN.putAll(gcb.getBigN(cat));
+						neighbors.putAll(gcb.getNeighbors(cat));
+					}
+
 					for (PingoAnalysis.TestInstance t : pvals.keySet()) {
 						predictedGenesSet.add(M.geneMap.get(t.m.name));
 						graphNodes.add(M.geneMap.get(t.m.name));
@@ -846,6 +966,7 @@ public class SettingsPanelActionListener implements ActionListener {
 							graphNodes.add(g);
 						}
 					}
+
 					// if not starmode, add interconnections between neighbors
 					if (params.getStarMode().equals(VizPanel.NOSTARSTRING)) {
 						for (Gene g1 : graphNodes) {
@@ -864,7 +985,7 @@ public class SettingsPanelActionListener implements ActionListener {
 
 					if (params.getVisualization().equals(VIZSTRING) && params.isCytoscapeInput()) {
 
-						final Set<CyNode> selectedNodesSet = new HashSet();
+						final Set<CyNode> selectedNodesSet = new HashSet<CyNode>();
 						final Collection<View<CyNode>> nodeViews = startNetworkView.getNodeViews();
 						for (final View<CyNode> nodeView : nodeViews) {
 							final String node = nodeView.getModel().getCyRow().get(CyTableEntry.NAME, String.class);
@@ -872,7 +993,6 @@ public class SettingsPanelActionListener implements ActionListener {
 								selectedNodesSet.add(nodeView.getModel());
 							}
 						}
-
 						final Set<CyEdge> selectedEdgesSet = new HashSet<CyEdge>();
 						final Collection<View<CyEdge>> edgeViews = startNetworkView.getEdgeViews();
 						for (View<CyEdge> edgeView : edgeViews) {
@@ -893,139 +1013,38 @@ public class SettingsPanelActionListener implements ActionListener {
 							}
 						}
 
-						this.setSelected(startNetworkView.getModel().getNodeList(), false);
-						this.setSelected(startNetworkView.getModel().getEdgeList(), false);
-						this.setSelected(selectedNodesSet, true);
-						this.setSelected(selectedEdgesSet, true);
+						setSelected(startNetworkView.getModel().getNodeList(), false);
+						setSelected(startNetworkView.getModel().getEdgeList(), false);
+						setSelected(selectedNodesSet, true);
+						setSelected(selectedEdgesSet, true);
 
 						startNetworkView.updateView();
-						newWindowSelectedNodesEdges(s);
+						newWindowSelectedNodesEdges("");
 
 					} else if (params.getVisualization().equals(VIZSTRING)) {
 						display = new DisplayPingoWindow(M, graph, pvals, smallX, smallN, bigX, bigN, params
-								.getSignificance().toString(), params.getCluster_name() + "_" + s, adapter);
+								.getSignificance().toString(), params.getCluster_name(), adapter);
 
 						// displaying the BiNGO CyNetwork.
 						display.makeWindow();
 					}
-					if ((goBin == null) || goBin.isWindowClosed())
+					if ((goBin == null) || goBin.isWindowClosed()) {
 						goBin = new pingo.GOlorize.GoBin(settingsPanel, startNetworkView, adapter);
-
-					CyNetwork curNetwork = adapter.getCyApplicationManager().getCurrentNetwork();
-					CyNetworkView curNetworkView = adapter.getCyApplicationManager().getCurrentNetworkView();
-					goBin.createResultTab(M, pvals, smallX, smallN, bigX, bigN, neighbors, params.getCluster_name()
-							+ "_" + s, params.getAnnotationFile().toString(), params.getOntologyFile().toString(),
-							params.getTest() + "", params.getCorrection() + "", curNetwork, curNetworkView);
-				}
-			} else {
-				String[] goCats = params.getTargetGoCats().split("\\s+");
-
-				Map<PingoAnalysis.TestInstance, Double> pvals = new HashMap<PingoAnalysis.TestInstance, Double>();
-				Map<PingoAnalysis.TestInstance, Integer> smallX = new HashMap<PingoAnalysis.TestInstance, Integer>();
-				Map<PingoAnalysis.TestInstance, Integer> smallN = new HashMap<PingoAnalysis.TestInstance, Integer>();
-				Map<PingoAnalysis.TestInstance, Integer> bigX = new HashMap<PingoAnalysis.TestInstance, Integer>();
-				Map<PingoAnalysis.TestInstance, Integer> bigN = new HashMap<PingoAnalysis.TestInstance, Integer>();
-				Map<PingoAnalysis.TestInstance, Set<Gene>> neighbors = new HashMap<PingoAnalysis.TestInstance, Set<Gene>>();
-				DisplayPingoWindow display;
-				Set<Gene> predictedGenesSet = new HashSet<Gene>();
-				Set<Gene> graphNodes = new HashSet<Gene>();
-				Map<Gene, Map<Gene, Double>> graph = new HashMap<Gene, Map<Gene, Double>>();
-				for (String s : goCats) {
-					Integer cat = new Integer(s);
-					pvals.putAll(gcb.getPvalues(cat));
-					smallX.putAll(gcb.getSmallX(cat));
-					smallN.putAll(gcb.getSmallN(cat));
-					bigX.putAll(gcb.getBigX(cat));
-					bigN.putAll(gcb.getBigN(cat));
-					neighbors.putAll(gcb.getNeighbors(cat));
-				}
-
-				for (PingoAnalysis.TestInstance t : pvals.keySet()) {
-					predictedGenesSet.add(M.geneMap.get(t.m.name));
-					graphNodes.add(M.geneMap.get(t.m.name));
-					for (Gene g : neighbors.get(t)) {
-						if (!graph.containsKey(M.geneMap.get(t.m.name))) {
-							graph.put(M.geneMap.get(t.m.name), new HashMap<Gene, Double>());
-						}
-						graph.get(M.geneMap.get(t.m.name)).put(g, 0.0);
-						graphNodes.add(g);
-					}
-				}
-
-				// if not starmode, add interconnections between neighbors
-				if (params.getStarMode().equals(VizPanel.NOSTARSTRING)) {
-					for (Gene g1 : graphNodes) {
-						for (Gene g2 : graphNodes) {
-							// G is double-linked hashmap
-							if ((M.G.containsKey(g1) && M.G.get(g1).containsKey(g2))
-									&& (graph.containsKey(g2) && !graph.get(g2).containsKey(g1))) {
-								if (!graph.containsKey(g1)) {
-									graph.put(g1, new HashMap<Gene, Double>());
-								}
-								graph.get(g1).put(g2, 0.0);
-							}
-						}
-					}
-				}
-
-				if (params.getVisualization().equals(VIZSTRING) && params.isCytoscapeInput()) {
-
-					final Set<CyNode> selectedNodesSet = new HashSet<CyNode>();
-					final Collection<View<CyNode>> nodeViews = startNetworkView.getNodeViews();
-					for (final View<CyNode> nodeView : nodeViews) {
-						final String node = nodeView.getModel().getCyRow().get(CyTableEntry.NAME, String.class);
-						if (graphNodes.contains(M.geneMap.get(node))) {
-							selectedNodesSet.add(nodeView.getModel());
-						}
-					}
-					final Set<CyEdge> selectedEdgesSet = new HashSet<CyEdge>();
-					final Collection<View<CyEdge>> edgeViews = startNetworkView.getEdgeViews();
-					for (View<CyEdge> edgeView : edgeViews) {
-						final String sourceNode = edgeView.getModel().getSource().getCyRow()
-								.get(CyTableEntry.NAME, String.class);
-						final String targetNode = edgeView.getModel().getTarget().getCyRow()
-								.get(CyTableEntry.NAME, String.class);
-						if (graphNodes.contains(M.geneMap.get(sourceNode))
-								&& graphNodes.contains(M.geneMap.get(targetNode))) {
-							if (params.getStarMode().equals(VizPanel.STARSTRING)) {
-								if (predictedGenesSet.contains(M.geneMap.get(sourceNode))
-										|| predictedGenesSet.contains(M.geneMap.get(targetNode))) {
-									selectedEdgesSet.add(edgeView.getModel());
-								}
-							} else {
-								selectedEdgesSet.add(edgeView.getModel());
-							}
-						}
 					}
 
-					this.setSelected(startNetworkView.getModel().getNodeList(), false);
-					this.setSelected(startNetworkView.getModel().getEdgeList(), false);
-					this.setSelected(selectedNodesSet, true);
-					this.setSelected(selectedEdgesSet, true);
-
-					startNetworkView.updateView();
-					newWindowSelectedNodesEdges("");
-
-				} else if (params.getVisualization().equals(VIZSTRING)) {
-					display = new DisplayPingoWindow(M, graph, pvals, smallX, smallN, bigX, bigN, params
-							.getSignificance().toString(), params.getCluster_name(), adapter);
-
-					// displaying the BiNGO CyNetwork.
-					display.makeWindow();
+					goBin.createResultTab(M, pvals, smallX, smallN, bigX, bigN, neighbors, params.getCluster_name(), params
+							.getAnnotationFile().toString(), params.getOntologyFile().toString(), params.getTest() + "",
+							params.getCorrection() + "", adapter.getCyApplicationManager().getCurrentNetwork(), adapter
+									.getCyApplicationManager().getCurrentNetworkView());
 				}
-				if ((goBin == null) || goBin.isWindowClosed()) {
-					goBin = new pingo.GOlorize.GoBin(settingsPanel, startNetworkView, adapter);
-				}
-
-				goBin.createResultTab(M, pvals, smallX, smallN, bigX, bigN, neighbors, params.getCluster_name(), params
-						.getAnnotationFile().toString(), params.getOntologyFile().toString(), params.getTest() + "",
-						params.getCorrection() + "", adapter.getCyApplicationManager().getCurrentNetwork(), adapter
-								.getCyApplicationManager().getCurrentNetworkView());
 			}
 		}
 	}
 
 	public void newWindowSelectedNodesEdges(final String name) {
+		System.out.println("new Window called: " + name);
+		
+		
 		// keep ref to current state
 		CyNetwork current_network = startNetwork;
 		CyNetworkView current_network_view = startNetworkView;
@@ -1042,11 +1061,12 @@ public class SettingsPanelActionListener implements ActionListener {
 		else
 			networkName = params.getCluster_name();
 
+		
+		System.out.println("Creating network: " + networkName);
 		final CyNetwork new_network = adapter.getCyNetworkFactory().getInstance();
 		new_network.getCyRow().set(CyTableEntry.NAME, networkName);
-		// Add nodes
 		final Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
-		for (CyNode node : nodes) {
+		for (final CyNode node : nodes) {
 			final String nodeName = node.getCyRow().get(CyTableEntry.NAME, String.class);
 			CyNode newNode = nodeMap.get(nodeName);
 			if (newNode == null) {
@@ -1070,6 +1090,8 @@ public class SettingsPanelActionListener implements ActionListener {
 				edgeMap.put(edgeName, newEdge);
 			}
 		}
+		
+		adapter.getCyNetworkManager().addNetwork(new_network);
 
 		final CyNetworkView new_network_view = adapter.getCyNetworkViewFactory().getNetworkView(new_network);
 
@@ -1098,6 +1120,8 @@ public class SettingsPanelActionListener implements ActionListener {
 
 			adapter.getVisualMappingManager().setVisualStyle(newVS, new_network_view);
 		}
+		
+		adapter.getCyNetworkViewManager().addNetworkView(new_network_view);
 
 	}
 

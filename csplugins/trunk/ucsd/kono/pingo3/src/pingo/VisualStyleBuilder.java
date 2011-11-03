@@ -60,7 +60,7 @@ import org.cytoscape.view.vizmap.VisualStyleFactory;
  * 
  * ******************************************************************
  */
-public class TheVisualStyle {
+public class VisualStyleBuilder {
 
 	private static final Color NADA = Color.white;
 	private static final Color COL_MIN = new Color(255, 255, 0);
@@ -80,7 +80,7 @@ public class TheVisualStyle {
 	
 	private final CyPluginAdapter adapter;
 
-	public TheVisualStyle(final CyPluginAdapter adapter, final String networkName, double alpha) {
+	public VisualStyleBuilder(final CyPluginAdapter adapter, final String networkName, double alpha) {
 		this.adapter = adapter;
 		this.networkName = networkName;
 		this.alpha = alpha;
@@ -91,7 +91,7 @@ public class TheVisualStyle {
 		this.EDGE_COLOR = "edgeType_" + networkName;
 	}
 
-	public void adaptVisualStyle(VisualStyle style, CyNetwork network) {
+	private void adaptVisualStyle(VisualStyle style, CyNetwork network) {
 
 		// Node default appearance definitions
 		style.setDefaultValue(RichVisualLexicon.NODE_SHAPE, NodeShapeVisualProperty.ELLIPSE);

@@ -63,7 +63,6 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 
 import BiNGO.GenericTaskFactory;
-import BiNGO.TheVisualStyle;
 
 /**
  * *****************************************************************
@@ -169,6 +168,10 @@ public class DisplayPingoWindow {
 	 * Method that builds up the new CyNetwork and shows it to the user.
 	 */
 	public void makeWindow() {
+		
+		System.out.println("MAKE Window called: ");
+
+		
 		final CyNetwork network = buildNetwork();
 		buildNodeAttributes(network);
 		buildEdgeAttributes(network);
@@ -219,7 +222,7 @@ public class DisplayPingoWindow {
 			layout.setNetworkView(view);
 			insertTasksAfterCurrentTask(layout.getTaskIterator());
 			
-			TheVisualStyle vs = new TheVisualStyle(adapter, pingoName, Double.parseDouble(alpha));
+			final VisualStyleBuilder vs = new VisualStyleBuilder(adapter, pingoName, Double.parseDouble(alpha));
 			final VisualMappingManager vmm = adapter.getVisualMappingManager();
 			final VisualStyle newStyle = vs.createVisualStyle(view.getModel());
 			vmm.addVisualStyle(newStyle);
