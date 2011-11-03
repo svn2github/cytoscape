@@ -54,49 +54,17 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 	public static String JACTIVEMODULES_TOP_N_MODULE = "jactivemodules_top_n_modules";
 	public static String JACTIVEMODULES_TOP_N_MODULE_DEFAULT = "5";
 	
-	private CySwingApplication desktopApp;
 	private final CytoPanel cytoPanelWest;
 	private static final Logger logger = LoggerFactory.getLogger(ActiveModulesUI.class);
 	private CyHelpBrokerImpl cyHelpBroker = new CyHelpBrokerImpl();
 
-	private CyProperty<Properties> cytoscapeProperties;
-	private CyNetworkManager cyNetworkManager;
-	private CyNetworkViewManager cyNetworkViewManager;
-	private VisualMappingManager visualMappingManager;
-	private CyRootNetworkFactory cyRootNetworkFactory;
-	private CyNetworkViewFactory cyNetworkViewFactory;
-	private CyNetworkFactory cyNetworkFactory;
-	private CyLayoutAlgorithmManager cyLayoutsService;
-	private TaskManager taskManagerService;
-	private CyApplicationManager cyApplicationManagerService;
-	private CyEventHelper cyEventHelperService;
-	private LoadVisualStyles loadVizmapFileTaskFactory;
 	
-	public ActiveModulesUI(CyApplicationManager appMgr, CySwingApplication desktopApp,CyProperty<Properties> cytoscapeProperties,
-			CyNetworkManager cyNetworkManager, CyNetworkViewManager cyNetworkViewManager, VisualMappingManager visualMappingManager,
-			CyNetworkFactory cyNetworkFactory, CyRootNetworkFactory cyRootNetworkFactory, 
-			CyNetworkViewFactory cyNetworkViewFactory,CyLayoutAlgorithmManager cyLayoutsService, 
-			TaskManager taskManagerService, CyEventHelper cyEventHelperService, LoadVisualStyles loadVizmapFileTaskFactory,
-			ActivePathFinderParameters apfParams, ActivePathsParameterPanel mainPanel) {
+	public ActiveModulesUI(ActivePathFinderParameters apfParams, ActivePathsParameterPanel mainPanel) {
 		
-		super("jActiveModules...", appMgr);
+		super("jActiveModules...", ServicesUtil.cyApplicationManagerServiceRef);
 		setPreferredMenu("Plugins.jActiveModules");
 		//setMenuGravity(2.0f);
 		
-		this.desktopApp = desktopApp;
-		this.cyNetworkManager = cyNetworkManager;
-		this.cyNetworkViewManager = cyNetworkViewManager;
-		this.visualMappingManager = visualMappingManager;
-		this.cyNetworkFactory = cyNetworkFactory;
-		this.cyRootNetworkFactory = cyRootNetworkFactory;
-		this.cyNetworkViewFactory = cyNetworkViewFactory;
-		this.cyLayoutsService = cyLayoutsService;
-		this.taskManagerService = taskManagerService;
-		this.cyApplicationManagerService = appMgr;
-		this.cyEventHelperService = cyEventHelperService;
-		this.loadVizmapFileTaskFactory = loadVizmapFileTaskFactory;
-		
-		this.cytoscapeProperties = cytoscapeProperties;
 		this.mainPanel = mainPanel;
 		this.mainPanel.setPluginMainClass(this);
 		
@@ -111,7 +79,7 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 		//xHandler = new ThreadExceptionHandler();
 		//Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 		
-		cytoPanelWest = desktopApp.getCytoPanel(CytoPanelName.WEST);
+		cytoPanelWest = ServicesUtil.cySwingApplicationServiceRef.getCytoPanel(CytoPanelName.WEST);
 		addHelp();
 	}
 
@@ -159,12 +127,7 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 				startRandomizeAndRun(mainPanel.getTargetNetwork());
 			} else {
 				activePaths = new ActivePaths(mainPanel.getTargetNetwork(),
-						apfParams, this, ActiveModulesUI.this.desktopApp, ActiveModulesUI.this.cytoscapeProperties,
-						this.cyNetworkManager, this.cyNetworkViewManager, this.visualMappingManager, 
-						this.cyNetworkFactory, this.cyRootNetworkFactory, 
-						this.cyNetworkViewFactory, this.cyLayoutsService, this.taskManagerService, 
-						this.cyApplicationManagerService, this.cyEventHelperService,
-						this.loadVizmapFileTaskFactory);
+						apfParams, this);
 				Thread t = new Thread(activePaths);
 				t.start();
 			}
@@ -186,8 +149,7 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 		public void actionPerformed(ActionEvent e) {
 			if (apfParams.getPossibleExpressionAttributes().size() == 0) {
 				JOptionPane
-						.showMessageDialog(
-								ActiveModulesUI.this.desktopApp.getJFrame(),
+						.showMessageDialog(ServicesUtil.cySwingApplicationServiceRef.getJFrame(),
 								"JActiveModules cannot start because it cannot find\n"
 										+ "any p-value attributes! JActiveModules requires at\n"
 										+ "least one node attribute with values ranging between\n"
@@ -219,17 +181,11 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 	public void startFindActivePaths(CyNetwork network) {
 		try {
 			
-			activePaths = new ActivePaths(network, apfParams, this, 
-					this.desktopApp, this.cytoscapeProperties,
-					this.cyNetworkManager, this.cyNetworkViewManager,
-					this.visualMappingManager, this.cyNetworkFactory, this.cyRootNetworkFactory, 
-					this.cyNetworkViewFactory, this.cyLayoutsService,
-					this.taskManagerService, this.cyApplicationManagerService,
-					this.cyEventHelperService, this.loadVizmapFileTaskFactory);
+			activePaths = new ActivePaths(network, apfParams, this);
 			
 		} catch (final Exception e) {
 			e.printStackTrace(System.err);
-			JOptionPane.showMessageDialog(this.desktopApp.getJFrame(),
+			JOptionPane.showMessageDialog(ServicesUtil.cySwingApplicationServiceRef.getJFrame(),
 					"Error running jActiveModules (1)!  " + e.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
 			return;
@@ -259,7 +215,7 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 			e.printStackTrace(System.err);
 			logger.warn("Non-fatal exception in Thread " + t.getName(), e);
 			logger.warn("The previous exception was non-fatal - Don't panic!");
-			JOptionPane.showMessageDialog(ActiveModulesUI.this.desktopApp.getJFrame(),
+			JOptionPane.showMessageDialog(ServicesUtil.cySwingApplicationServiceRef.getJFrame(),
 					"Error running jActiveModules (2)!  " + e.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
 		}
@@ -276,24 +232,14 @@ public class ActiveModulesUI extends AbstractCyAction implements CytoscapeStartL
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			activePaths = new ActivePaths(mainPanel.getTargetNetwork(), apfParams, ActiveModulesUI.this, 
-					ActiveModulesUI.this.desktopApp, ActiveModulesUI.this.cytoscapeProperties,
-					ActiveModulesUI.this.cyNetworkManager, ActiveModulesUI.this.cyNetworkViewManager,
-					ActiveModulesUI.this.visualMappingManager, ActiveModulesUI.this.cyNetworkFactory, ActiveModulesUI.this.cyRootNetworkFactory, 
-					ActiveModulesUI.this.cyNetworkViewFactory, ActiveModulesUI.this.cyLayoutsService,
-					ActiveModulesUI.this.taskManagerService, ActiveModulesUI.this.cyApplicationManagerService,
-					ActiveModulesUI.this.cyEventHelperService,ActiveModulesUI.this.loadVizmapFileTaskFactory );
+			activePaths = new ActivePaths(mainPanel.getTargetNetwork(), apfParams, ActiveModulesUI.this);
 			activePaths.scoreActivePath();
 		}
 	}
 
 	public void startRandomizeAndRun(CyNetwork network) {
-		activePaths = new ActivePaths(network, apfParams, ActiveModulesUI.this, ActiveModulesUI.this.desktopApp, ActiveModulesUI.this.cytoscapeProperties,
-				this.cyNetworkManager, this.cyNetworkViewManager, ActiveModulesUI.this.visualMappingManager,
-				ActiveModulesUI.this.cyNetworkFactory, ActiveModulesUI.this.cyRootNetworkFactory, ActiveModulesUI.this.cyNetworkViewFactory,
-				ActiveModulesUI.this.cyLayoutsService, this.taskManagerService, this.cyApplicationManagerService,
-				ActiveModulesUI.this.cyEventHelperService, ActiveModulesUI.this.loadVizmapFileTaskFactory);
-		Thread t = new ScoreDistributionThread(desktopApp.getJFrame(), network, activePaths, apfParams);
+		activePaths = new ActivePaths(network, apfParams, ActiveModulesUI.this);
+		Thread t = new ScoreDistributionThread(ServicesUtil.cySwingApplicationServiceRef.getJFrame(), network, activePaths, apfParams);
 		t.setUncaughtExceptionHandler(xHandler);
 		t.start();
 	}
