@@ -92,7 +92,7 @@ import org.cytoscape.model.events.ColumnCreatedListener;
 import org.cytoscape.application.swing.events.CytoPanelComponentSelectedListener;
 import org.cytoscape.application.swing.events.CytoPanelComponentSelectedEvent;
 import org.cytoscape.application.swing.CytoPanelComponent;
-
+import csplugins.jActiveModules.ServicesUtil;
 
 public class ActivePathsParameterPanel extends JPanel implements ItemListener,
 		ColumnCreatedListener, CytoPanelComponentSelectedListener {
@@ -177,16 +177,12 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener,
 	
 	private NetworkSelectorPanel networkPanel;
 	
-	private final CySwingApplication cySwingApplicationServiceRef;
+	//private final CySwingApplication cySwingApplicationServiceRef;
 	private CyHelpBrokerImpl cyHelpBroker = new CyHelpBrokerImpl();
 	
 	// -----------------------------------------------------------------------------
-	public ActivePathsParameterPanel(
-			ActivePathFinderParameters incomingApfParams, CySwingApplication cySwingApplicationServiceRef,
-			CyApplicationManager cyApplicationManager, CyNetworkManager cyNetworkManager,
-			NetworkSelectorPanel networkSelectorPanel){
+	public ActivePathsParameterPanel(ActivePathFinderParameters incomingApfParams,NetworkSelectorPanel networkSelectorPanel){
 
-		this.cySwingApplicationServiceRef = cySwingApplicationServiceRef;
 		// Set global parameters
 		this.setLayout(new BorderLayout());
 		this.setMinimumSize(new Dimension(320, 420));
@@ -1122,7 +1118,7 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener,
 	} // createRegionalScoringController
 
 	private void createHelpDialog() {
-		helpDialog = new JDialog(this.cySwingApplicationServiceRef.getJFrame(), "jActiveModules Help");
+		helpDialog = new JDialog(ServicesUtil.cySwingApplicationServiceRef.getJFrame(), "jActiveModules Help");
 		helpDialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		try {
 			
