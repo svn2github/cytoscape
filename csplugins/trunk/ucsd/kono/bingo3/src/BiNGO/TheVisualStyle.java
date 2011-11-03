@@ -41,9 +41,11 @@ import java.lang.reflect.Method;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.plugin.CyPluginAdapter;
+import org.cytoscape.view.presentation.property.ArrowShapeVisualProperty;
 import org.cytoscape.view.presentation.property.LineTypeVisualProperty;
 import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
 import org.cytoscape.view.presentation.property.RichVisualLexicon;
+import org.cytoscape.view.presentation.property.values.ArrowShape;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -112,16 +114,9 @@ public class TheVisualStyle {
 		style.setDefaultValue(RichVisualLexicon.NODE_TRANSPARENCY, 210);
 		//FIXME
 //		style.getNodeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.NODE_BORDER_OPACITY, 120);
-
-		// Edge default appearence definitions
 		
-		//FIXME: These are DING-dependent VP 
-//		style.getEdgeAppearanceCalculator().getDefaultAppearance().set(
-//				VisualPropertyType.EDGE_TGTARROW_SHAPE, ArrowShape.DELTA);
-//		style.getEdgeAppearanceCalculator().getDefaultAppearance().set(
-//				VisualPropertyType.EDGE_TGTARROW_COLOR, Color.DARK_GRAY);
-//		style.getEdgeAppearanceCalculator().getDefaultAppearance().set(
-//				VisualPropertyType.EDGE_SRCARROW_SHAPE, ArrowShape.NONE);
+		style.setDefaultValue(RichVisualLexicon.EDGE_TARGET_ARROW_SHAPE, ArrowShapeVisualProperty.DELTA);
+		style.setDefaultValue(RichVisualLexicon.EDGE_SOURCE_ARROW_SHAPE, ArrowShapeVisualProperty.NONE);
 		
 		style.setDefaultValue(RichVisualLexicon.EDGE_LINE_TYPE, LineTypeVisualProperty.SOLID);
 		style.setDefaultValue(RichVisualLexicon.EDGE_WIDTH, 2d);
