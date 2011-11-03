@@ -116,53 +116,19 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	
 	private static CyLayoutAlgorithm layoutAlgorithm; // = CyLayouts.getLayout("force-directed");
 	
-	private CySwingApplication desktopApp;
-	private CyProperty<Properties> cytoscapeProperties;
-	
-	private CyNetworkManager cyNetworkManager;
-	private CyNetworkViewManager cyNetworkViewManager;
-	private VisualMappingManager visualMappingManager;
-	private CyNetworkFactory cyNetworkFactory;
-	private CyRootNetworkFactory cyRootNetworkFactory;
-    private final CyNetworkViewFactory cyNetworkViewFactory;
-    private final CyLayoutAlgorithmManager cyLayoutsService;
-    private TaskManager taskManagerService;
-	private CyApplicationManager cyApplicationManagerService;
-	private CyEventHelper cyEventHelperService;
-	private LoadVisualStyles loadVizmapFileTaskFactory;
 	private static boolean visualStylesLoaded = false;
 	
 	// ----------------------------------------------------------------
-	public ActivePaths(CyNetwork cyNetwork, ActivePathFinderParameters apfParams, ActiveModulesUI parentUI,
-			CySwingApplication desktopApp,CyProperty<Properties> cytoscapeProperties, CyNetworkManager cyNetworkManager, 
-			CyNetworkViewManager cyNetworkViewManager, VisualMappingManager visualMappingManager, 
-			CyNetworkFactory cyNetworkFactory, CyRootNetworkFactory cyRootNetworkFactory, CyNetworkViewFactory cyNetworkViewFactory, 
-			CyLayoutAlgorithmManager cyLayoutsService, TaskManager taskManagerService,	
-			CyApplicationManager cyApplicationManagerService, CyEventHelper cyEventHelperService,
-			LoadVisualStyles loadVizmapFileTaskFactory) {
+	public ActivePaths(CyNetwork cyNetwork, ActivePathFinderParameters apfParams, ActiveModulesUI parentUI) {
 		this.apfParams = apfParams;
-		this.cytoscapeProperties = cytoscapeProperties;
-		this.desktopApp = desktopApp;
-
-		this.cyNetworkManager = cyNetworkManager;
-		this.cyNetworkViewManager = cyNetworkViewManager;
-		this.visualMappingManager = visualMappingManager;
-		this.cyNetworkFactory = cyNetworkFactory;
-		this.cyRootNetworkFactory = cyRootNetworkFactory;
-		this.cyNetworkViewFactory = cyNetworkViewFactory;
-		this.cyLayoutsService = cyLayoutsService;
-		this.taskManagerService = taskManagerService;
-		this.cyApplicationManagerService = cyApplicationManagerService;
-		this.cyEventHelperService = cyEventHelperService;
-		this.loadVizmapFileTaskFactory = loadVizmapFileTaskFactory;
 
 		try {			
-			MAX_NETWORK_VIEWS = new Integer(this.cytoscapeProperties.getProperties().getProperty("moduleNetworkViewCreationThreshold")).intValue();			
+			MAX_NETWORK_VIEWS = new Integer(ServicesUtil.cytoscapePropertiesServiceRef.getProperties().getProperty("moduleNetworkViewCreationThreshold")).intValue();			
 		}
 		catch (Exception e){
 			MAX_NETWORK_VIEWS = 5;
 		}
-		layoutAlgorithm = this.cyLayoutsService.getLayout("force-directed");
+		layoutAlgorithm = ServicesUtil.cyLayoutsServiceRef.getLayout("force-directed");
 		//if (!eventFired){
 		//	this.cyEventHelperService.fireEvent();
 		//}
@@ -170,27 +136,27 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 //		Set<VisualStyle> visualStyles = this.visualMappingManager.getAllVisualStyles(); 
 
 		// Load jActiveModules defined Visual styles if not loaded yet
-		Set<VisualStyle> visualStyles= null;
-		if (!visualStylesLoaded){			
-			File f = new File(vizmapPropsLocation.toString());
-			visualStyles = this.loadVizmapFileTaskFactory.loadStyles(f);
-			visualStylesLoaded = true;
-		}
-
-		// Get the styles for overview and module
-		Iterator<VisualStyle> it = visualStyles.iterator();
-		while (it.hasNext()){
-			VisualStyle vs = it.next();
-			if (vs.getTitle().equalsIgnoreCase(VS_OVERVIEW_NAME)){
-				overviewVS = vs;
-			}
-			if (vs.getTitle().equalsIgnoreCase(VS_MODULE_NAME)){
-				moduleVS = vs;
-			}
-		}
-			
-		System.out.println("overviewVS = "+ overviewVS);
-		System.out.println("moduleVS = "+ moduleVS);
+//		Set<VisualStyle> visualStyles= null;
+//		if (!visualStylesLoaded){			
+//			File f = new File(vizmapPropsLocation.toString());
+//			visualStyles = this.loadVizmapFileTaskFactory.loadStyles(f);
+//			visualStylesLoaded = true;
+//		}
+//
+//		// Get the styles for overview and module
+//		Iterator<VisualStyle> it = visualStyles.iterator();
+//		while (it.hasNext()){
+//			VisualStyle vs = it.next();
+//			if (vs.getTitle().equalsIgnoreCase(VS_OVERVIEW_NAME)){
+//				overviewVS = vs;
+//			}
+//			if (vs.getTitle().equalsIgnoreCase(VS_MODULE_NAME)){
+//				moduleVS = vs;
+//			}
+//		}
+//			
+//		System.out.println("overviewVS = "+ overviewVS);
+//		System.out.println("moduleVS = "+ moduleVS);
 			
 		
 		//
@@ -203,8 +169,8 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		if (attrNames.length == 0) {
 			throw new RuntimeException("No expression data selected!");
 		}
-		menubar = desktopApp.getJMenuBar();
-		mainFrame = desktopApp.getJFrame(); //Cytoscape.getDesktop();
+		menubar = ServicesUtil.cySwingApplicationServiceRef.getJMenuBar();
+		mainFrame = ServicesUtil.cySwingApplicationServiceRef.getJFrame(); //Cytoscape.getDesktop();
 		this.cyNetwork = cyNetwork;
 		this.parentUI = parentUI;
 		
@@ -219,7 +185,9 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	}
 
 	public void run() {
-		
+
+		System.out.println("\nEntering ActivePaths.run()....");
+
 	    System.gc();
 		//long start = System.currentTimeMillis();
 		HashMap expressionMap = generateExpressionMap();
@@ -230,16 +198,22 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 					      randomize ? null : mainFrame, parentUI);
 		activePaths = apf.findActivePaths();
 
+		System.out.println("\tactivePaths.length = "+activePaths.length);
+		for (int i=0; i< activePaths.length; i++){
+			System.out.println("\t\tactivePaths[i].nodes.size() = "+activePaths[i].nodes.size());			
+		}
+		
+		
 		// create nested networks
 		//1 . create subnetwork for each path
 		CyNetwork[] subnetworks = createSubnetworks();
 		
 		for (int i=0; i<subnetworks.length; i++){
-			this.cyNetworkManager.addNetwork(subnetworks[i]);			
+			ServicesUtil.cyNetworkManagerServiceRef.addNetwork(subnetworks[i]);			
 		}
 		
 		//2. create an overview network for all nested network
-		final CyNetwork overview = this.cyNetworkFactory.getInstance();
+		final CyNetwork overview = ServicesUtil.cyNetworkFactoryServiceRef.getInstance();
 		overview.getCyRow().set("name", "jActiveModules Search Result "+ runCount++);
 		
 		Set<CyNode>  path_nodes = new HashSet<CyNode>();
@@ -257,7 +231,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			newNode.getCyRow().set(NODE_SCORE, new Double(activePaths[i].getScore()));
 		}
 
-		this.cyNetworkManager.addNetwork(overview);
+		ServicesUtil.cyNetworkManagerServiceRef.addNetwork(overview);
 		
 		//Edges indicate that nodes in nested networks exist in both nested networks
 		Set<CyEdge>  path_edges = getPathEdges(overview, path_nodes); //new HashSet<CyEdge>();
@@ -292,44 +266,44 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 		//4. Create an view for overview network and apply visual style
 		//Cytoscape.createNetworkView(overview, overview.getIdentifier(), tuning(), null);
-		final CyNetworkView newView = this.cyNetworkViewFactory.getNetworkView(overview);
-		this.cyNetworkViewManager.addNetworkView(newView);
+		final CyNetworkView newView = ServicesUtil.cyNetworkViewFactoryServiceRef.getNetworkView(overview);
+		ServicesUtil.cyNetworkViewManagerServiceRef.addNetworkView(newView);
 		
 //		this.visualMappingManager.setVisualStyle(overviewVS, newView);
 
 		//newView.updateView();
 
-		// Apply layout for overview
-		CyLayoutAlgorithm alg = this.cyLayoutsService.getLayout("force-directed");
-		alg.setNetworkView(newView);
-		this.taskManagerService.execute(alg);				
+//		// Apply layout for overview
+//		CyLayoutAlgorithm alg = this.cyLayoutsService.getLayout("force-directed");
+//		alg.setNetworkView(newView);
+//		this.taskManagerService.execute(alg);				
 
 		
 		// Create view for top n modules
-		int n = -1;
-		try {
-			n= new Integer(this.cytoscapeProperties.getProperties().getProperty(ActiveModulesUI.JACTIVEMODULES_TOP_N_MODULE)).intValue();			
-		}
-		catch(Exception e){
-			n= 5;
-		}
-
-		 if (n> subnetworks.length){
-			 n = subnetworks.length;
-		 }
-
-		 for (int i=0; i<n; i++){
-				CyNetworkView theView = this.cyNetworkViewFactory.getNetworkView(subnetworks[i]);
-				this.cyNetworkViewManager.addNetworkView(theView);
-				
-//				this.visualMappingManager.setVisualStyle(moduleVS, theView);
-//				theView.updateView();
-				
-				CyLayoutAlgorithm alg_f = this.cyLayoutsService.getLayout("force-directed");
-				alg.setNetworkView(theView);
-				
-				this.taskManagerService.execute(alg_f);				
-		 }
+//		int n = -1;
+//		try {
+//			n= new Integer(this.cytoscapeProperties.getProperties().getProperty(ActiveModulesUI.JACTIVEMODULES_TOP_N_MODULE)).intValue();			
+//		}
+//		catch(Exception e){
+//			n= 5;
+//		}
+//
+//		 if (n> subnetworks.length){
+//			 n = subnetworks.length;
+//		 }
+//
+//		 for (int i=0; i<n; i++){
+//				CyNetworkView theView = this.cyNetworkViewFactory.getNetworkView(subnetworks[i]);
+//				this.cyNetworkViewManager.addNetworkView(theView);
+//				
+////				this.visualMappingManager.setVisualStyle(moduleVS, theView);
+////				theView.updateView();
+//				
+//				CyLayoutAlgorithm alg_f = this.cyLayoutsService.getLayout("force-directed");
+//				alg.setNetworkView(theView);
+//				
+//				this.taskManagerService.execute(alg_f);				
+//		 }
 	}
 	
 
@@ -409,7 +383,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 		CySubNetwork[] subnetworks2 = new CySubNetwork[activePaths.length];
 		
-		CyRootNetwork rootNetwork = this.cyRootNetworkFactory.convert(cyNetwork);
+		CyRootNetwork rootNetwork = ServicesUtil.cyRootNetworkFactory.convert(cyNetwork);
 		
 		for (int i = 0; i < activePaths.length; i++) {
 			Component thePath = activePaths[i];
@@ -437,13 +411,13 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			subnetworks2[i] = rootNetwork.addSubNetwork(nodeSet, edgeSet);
 			subnetworks2[i].getCyRow().set("name", pathName);
 			
-			if(i < MAX_NETWORK_VIEWS) {
-				//final CyNetworkView moduleView = Cytoscape.createNetworkView(subnetworks[i], subnetworks[i].getTitle(), tuning());
-				final CyNetworkView moduleView = this.cyNetworkViewManager.getNetworkView(subnetworks2[i].getSUID());
-				//moduleView.setVisualStyle(moduleVS.getTitle()); //.getName());
-
-//				moduleView.updateView(); //.redrawGraph(false, true);
-			} 
+//			if(i < MAX_NETWORK_VIEWS) {
+//				//final CyNetworkView moduleView = Cytoscape.createNetworkView(subnetworks[i], subnetworks[i].getTitle(), tuning());
+//				final CyNetworkView moduleView = this.cyNetworkViewManager.getNetworkView(subnetworks2[i].getSUID());
+//				//moduleView.setVisualStyle(moduleVS.getTitle()); //.getName());
+//
+////				moduleView.updateView(); //.redrawGraph(false, true);
+//			} 
 		}
 		
 		return subnetworks2;
@@ -688,7 +662,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		}
 		
 		// cyNetwork.setFlaggedNodes(activePath.getNodes(),true);
-		this.cyNetworkViewManager.getNetworkView(this.cyApplicationManagerService.getCurrentNetwork().getSUID()).updateView(); 
+		ServicesUtil.cyNetworkViewManagerServiceRef.getNetworkView(ServicesUtil.cyApplicationManagerServiceRef.getCurrentNetwork().getSUID()).updateView(); 
 		//Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
 	// ------------------------------------------------------------------------------
