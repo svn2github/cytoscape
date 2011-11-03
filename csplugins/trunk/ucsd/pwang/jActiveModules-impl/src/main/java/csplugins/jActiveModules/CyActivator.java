@@ -55,20 +55,32 @@ public class CyActivator extends AbstractCyActivator {
 		LoadVisualStyles loadVizmapFileTaskFactory =  getService(bc,LoadVisualStyles.class);
 
 		//
+		ServicesUtil.cySwingApplicationServiceRef = cySwingApplicationServiceRef;
+		ServicesUtil.cyApplicationManagerServiceRef = cyApplicationManagerServiceRef;
+		ServicesUtil.cyNetworkViewManagerServiceRef = cyNetworkViewManagerServiceRef;
+		ServicesUtil.cyNetworkManagerServiceRef = cyNetworkManagerServiceRef;
+		ServicesUtil.cyServiceRegistrarServiceRef = cyServiceRegistrarServiceRef;
+		ServicesUtil.cyEventHelperServiceRef = cyEventHelperServiceRef;
+		ServicesUtil.taskManagerServiceRef = taskManagerServiceRef;
+		ServicesUtil.cytoscapePropertiesServiceRef = cytoscapePropertiesServiceRef;
+		ServicesUtil.visualMappingManagerRef = visualMappingManagerRef;
+		ServicesUtil.cyNetworkFactoryServiceRef = cyNetworkFactoryServiceRef;
+		ServicesUtil.cyRootNetworkFactory = cyRootNetworkFactory;
+		ServicesUtil.cyNetworkViewFactoryServiceRef = cyNetworkViewFactoryServiceRef;
+		ServicesUtil.cyLayoutsServiceRef = cyLayoutsServiceRef;
+		ServicesUtil.loadVizmapFileTaskFactory = loadVizmapFileTaskFactory;
+
+		//
 		
 		ActivePathFinderParameters apfParams = new ActivePathFinderParameters(cytoscapePropertiesServiceRef);
 
 		NetworkSelectorPanel networkSelectorPanel = new NetworkSelectorPanel(cyApplicationManagerServiceRef, cyNetworkManagerServiceRef);
 
-		ActivePathsParameterPanel mainPanel = new ActivePathsParameterPanel(apfParams, cySwingApplicationServiceRef,
-				cyApplicationManagerServiceRef,cyNetworkManagerServiceRef, networkSelectorPanel);
+		ActivePathsParameterPanel mainPanel = new ActivePathsParameterPanel(apfParams, networkSelectorPanel);
 
 		ActiveModulesCytoPanelComponent activeModulesCytoPanelComponent = new ActiveModulesCytoPanelComponent(mainPanel);
 
-		ActiveModulesUI activeModulesUI = new ActiveModulesUI(cyApplicationManagerServiceRef,cySwingApplicationServiceRef,
-				cytoscapePropertiesServiceRef, cyNetworkManagerServiceRef,cyNetworkViewManagerServiceRef, visualMappingManagerRef, 
-				cyNetworkFactoryServiceRef, cyRootNetworkFactory, cyNetworkViewFactoryServiceRef,cyLayoutsServiceRef,
-				taskManagerServiceRef,cyEventHelperServiceRef,loadVizmapFileTaskFactory,apfParams, mainPanel);
+		ActiveModulesUI activeModulesUI = new ActiveModulesUI(apfParams, mainPanel);
 		
 		registerAllServices(bc,mainPanel, new Properties());
 		
