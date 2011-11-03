@@ -426,12 +426,19 @@ public class ActivePathFinderParameters {
 		}
 		// find all of the double type parameters
 		CyTable nodeAttrs = this.network.getDefaultNodeTable();
-		String[] names = (String[])CyTableUtil.getColumnNames(nodeAttrs).toArray();
+		Object[] objs = CyTableUtil.getColumnNames(nodeAttrs).toArray();
+		
+		String[] names = new String[objs.length];//(String[])CyTableUtil.getColumnNames(nodeAttrs).toArray();
 
+		for (int i=0; i<objs.length; i++){
+			names[i] = (String)objs[i];
+		}
+		
+		
 		for ( String name : names ) {
 			if ( nodeAttrs.getColumn(name).getType() == Float.class ||nodeAttrs.getColumn(name).getType() == Double.class) {
 
-				List<Float>  values =nodeAttrs.getColumn(name).getValues(Float.class);
+				List<Double>  values =nodeAttrs.getColumn(name).getValues(Double.class);
 				
 				if ( values == null ) 
 					continue; // no values have been defined for the attr yet
