@@ -341,30 +341,31 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	private static void initNames() {
 		// Create our residue name table
 		aaNames = new HashMap();
-		aaNames.put("ALA","A Ala Alanine");
-		aaNames.put("ARG","R Arg Arginine");
-		aaNames.put("ASN","N Asn Asparagine");
-		aaNames.put("ASP","D Asp Aspartic_acid");
-		aaNames.put("CYS","C Cys Cysteine");
-		aaNames.put("GLN","Q Gln Glutamine");
-		aaNames.put("GLU","E Glu Glumatic_acid");
-		aaNames.put("GLY","G Gly Glycine");
-		aaNames.put("HIS","H His Histidine");
-		aaNames.put("ILE","I Ile Isoleucine");
-		aaNames.put("LEU","L Leu Leucine");
-		aaNames.put("LYS","K Lys Lysine");
-		aaNames.put("MET","M Met Methionine");
-		aaNames.put("PHE","F Phe Phenylalanine");
-		aaNames.put("PRO","P Pro Proline");
-		aaNames.put("SER","S Ser Serine");
-		aaNames.put("THR","T Thr Threonine");
-		aaNames.put("TRP","W Trp Tryptophan");
-		aaNames.put("TYR","Y Tyr Tyrosine");
-		aaNames.put("VAL","V Val Valine");
+		aaNames.put("ALA","A Ala Alanine N[C@@H](C)C(O)=O");
+		aaNames.put("ARG","R Arg Arginine N[C@@H](CCCNC(N)=N)C(O)=O");
+		aaNames.put("ASN","N Asn Asparagine N[C@@H](CC(N)=O)C(O)=O");
+		aaNames.put("ASP","D Asp Aspartic_acid N[C@@H](CC(O)=O)C(O)=O");
+		aaNames.put("CYS","C Cys Cysteine N[C@@H](CS)C(O)=O");
+		aaNames.put("GLN","Q Gln Glutamine N[C@H](C(O)=O)CCC(N)=O");
+		aaNames.put("GLU","E Glu Glumatic_acid N[C@H](C(O)=O)CCC(O)=O");
+		aaNames.put("GLY","G Gly Glycine NCC(O)=O");
+		aaNames.put("HIS","H His Histidine N[C@@H](CC1=CN=CN1)C(O)=O");
+		aaNames.put("ILE","I Ile Isoleucine N[C@]([C@H](C)CC)([H])C(O)=O");
+		aaNames.put("LEU","L Leu Leucine N[C@](CC(C)C)([H])C(O)=O");
+		aaNames.put("LYS","K Lys Lysine N[C@](CCCCN)([H])C(O)=O");
+		aaNames.put("DLY","K Dly D-Lysine NCCCC[C@@H](N)C(O)=O");
+		aaNames.put("MET","M Met Methionine N[C@](CCSC)([H])C(O)=O");
+		aaNames.put("PHE","F Phe Phenylalanine N[C@](CC1=CC=CC=C1)([H])C(O)=O");
+		aaNames.put("PRO","P Pro Proline OC([C@@]1([H])NCCC1)=O");
+		aaNames.put("SER","S Ser Serine OC[C@](C(O)=O)([H])N");
+		aaNames.put("THR","T Thr Threonine O[C@H](C)[C@](C(O)=O)([H])N");
+		aaNames.put("TRP","W Trp Tryptophan N[C@@]([H])(CC1=CN([H])C2=C1C=CC=C2)C(O)=O");
+		aaNames.put("TYR","Y Tyr Tyrosine N[C@@](C(O)=O)([H])CC1=CC=C(O)C=C1");
+		aaNames.put("VAL","V Val Valine N[C@@](C(O)=O)([H])C(C)C");
 		aaNames.put("ASX","B Asx Aspartic_acid_or_Asparagine");
 		aaNames.put("GLX","Z Glx Glutamine_or_Glutamic_acid");
 		aaNames.put("XAA","X Xaa Any_or_unknown_amino_acid");
-		aaNames.put("HOH","HOH HOH Water");
+		aaNames.put("HOH","HOH HOH Water [H]O[H]");
 	}
 
 	/**
@@ -384,7 +385,7 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	 * @param aaType the residue type to convert
 	 * @return the full name of the residue
 	 */
-	private static String toFullName(String aaType) {
+	public static String toFullName(String aaType) {
 		if (!aaNames.containsKey(aaType))
 			return aaType;
 		String[] ids = ((String)aaNames.get(aaType)).split(" ");
@@ -397,7 +398,7 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	 * @param aaType the residue type to convert
 	 * @return the single letter representation of the residue
 	 */
-	private static String toSingleLetter(String aaType) {
+	public static String toSingleLetter(String aaType) {
 		if (!aaNames.containsKey(aaType))
 			return aaType;
 		String[] ids = ((String)aaNames.get(aaType)).split(" ");
@@ -410,10 +411,24 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	 * @param aaType the residue type to convert
 	 * @return the three letter representation of the residue
 	 */
-	private static String toThreeLetter(String aaType) {
+	public static String toThreeLetter(String aaType) {
 		if (!aaNames.containsKey(aaType))
 			return aaType;
 		String[] ids = ((String)aaNames.get(aaType)).split(" ");
 		return ids[1];
+	}
+
+	/**
+	 * Convert the amino acid type to its SMILES string
+	 *
+	 * @param aaType the residue type to convert
+	 * @return the SMILES representation of the residue
+	 */
+	public static String toSMILES(String aaType) {
+		if (!aaNames.containsKey(aaType))
+			return null;
+		String[] ids = ((String)aaNames.get(aaType)).split(" ");
+		if (ids.length < 4) return null;
+		return ids[3];
 	}
 }

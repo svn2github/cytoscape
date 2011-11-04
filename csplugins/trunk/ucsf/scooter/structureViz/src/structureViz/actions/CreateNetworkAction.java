@@ -85,6 +85,7 @@ public class CreateNetworkAction implements Task {
 	static final String SEED_ATTR = "SeedResidue";
 	static final String BACKBONE_ATTR = "BackboneInteraction";
 	static final String SIDECHAIN_ATTR = "SideChainInteraction";
+	static final String SMILES_ATTR = "SMILES";
 
 	public CreateNetworkAction(Chimera chimeraObject) {
 		this.chimeraObject = chimeraObject;
@@ -159,12 +160,10 @@ public class CreateNetworkAction implements Task {
 			// printReply(replyList);
 		}
 		if (includeConnectivity) {
-			System.out.println("Getting Connectivity");
 			monitor.setStatus("Getting Connectivity");
 			String command = "listphysicalchains";
 			List<String>replyList = chimeraObject.commandReply(command);
 			if (canceled) return;
-			System.out.println("Getting Connectivity Edges");
 			edgeList.addAll(parseConnectivityReplies(replyList, new ArrayList<CyNode>(nodeMap.keySet())));
 		}
 
@@ -202,6 +201,19 @@ public class CreateNetworkAction implements Task {
 			String structure = CyChimera.findStructures(residueSpec);
 			Structure s = Structure.getStructure(structure, node, StructureType.PDB_MODEL);
 			s.setResidueList(node, residueSpec);
+			if (residueSpec.indexOf('-') < 0 && residueSpec.indexOf(',') < 0) {
+				String[] r = node.getIdentifier().split(" ");
+				String smiles = ChimeraResidue.toSMILES(r[0].toUpperCase());
+				if (smiles != null) {
+					if (nodeAttributes.getType(SMILES_ATTR) == CyAttributes.TYPE_SIMPLE_LIST) {
+						List l = new ArrayList();
+						l.add(smiles);
+						nodeAttributes.setListAttribute(node.getIdentifier(), SMILES_ATTR, l);
+					} else {
+						nodeAttributes.setAttribute(node.getIdentifier(), SMILES_ATTR, smiles);
+					}
+				}
+			}
 		}
 	}
 
