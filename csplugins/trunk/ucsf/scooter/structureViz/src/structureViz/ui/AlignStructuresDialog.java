@@ -103,7 +103,7 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 	 * @param object the Chimera interface object
 	 * @param structures the List of structures open in Chimera
 	 */
-	public AlignStructuresDialog (Frame parent, Chimera object, List structures) {
+	public AlignStructuresDialog (JDialog parent, Chimera object, List structures) {
 		super(parent, false);
 		chimeraObject = object;
 		this.structures = structures;
