@@ -3,6 +3,8 @@ package csplugins.jActiveModules;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.work.TaskMonitor;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,13 +17,13 @@ import org.slf4j.LoggerFactory;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 
-public class SimulatedAnnealingSearchThread extends SearchThread{
+public class SimulatedAnnealingSearchThread extends SearchThread {
    
 	private static final Logger logger = LoggerFactory.getLogger(SimulatedAnnealingSearchThread.class);
-	MyProgressMonitor progress;
-    public SimulatedAnnealingSearchThread(CyNetwork graph, Vector resultPaths, CyNode [] nodes, ActivePathFinderParameters apfParams, MyProgressMonitor progress){
+	//MyProgressMonitor progress;
+    public SimulatedAnnealingSearchThread(CyNetwork graph, Vector resultPaths, CyNode [] nodes, ActivePathFinderParameters apfParams /*, MyProgressMonitor progress */){
 	super(graph,resultPaths,nodes,apfParams);
-	this.progress = progress;
+	//this.progress = progress;
 	super.nodeSet = new HashSet(graph.getNodeList());
     }
 
@@ -31,7 +33,8 @@ public class SimulatedAnnealingSearchThread extends SearchThread{
      *the determined active paths. After the simulated annealing run
      *the activePaths are found in oldPaths
      */
-    public void run(){
+	public void run(TaskMonitor taskMonitor) {
+
 	int timeout = 0;//current number of iterations
 	double T = apfParams.getInitialTemperature();
 	double temp_step = 1 - Math.pow((apfParams.getFinalTemperature()/apfParams.getInitialTemperature()),(1.0/apfParams.getTotalIterations()));
@@ -83,9 +86,9 @@ public class SimulatedAnnealingSearchThread extends SearchThread{
 	int display_step = ActivePathsFinder.DISPLAY_STEP;
 	while(timeout < apfParams.getTotalIterations()){
 	    timeout++;
-	    if(progress != null && timeout%display_step == 0){
-		progress.update();
-	    }
+//	    if(progress != null && timeout%display_step == 0){
+//		progress.update();
+//	    }
 	    T *= 1 - temp_step;
 	    //when using hub finding, don't accidentally specifiy nodes
 	    //for removal.
