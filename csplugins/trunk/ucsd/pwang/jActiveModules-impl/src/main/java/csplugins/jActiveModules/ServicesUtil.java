@@ -16,6 +16,7 @@ import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.work.SynchronousTaskManager;
 import org.cytoscape.work.TaskManager;
 
 public class ServicesUtil {
@@ -40,5 +41,7 @@ public class ServicesUtil {
 	public static CyLayoutAlgorithmManager cyLayoutsServiceRef;
 
 	public static LoadVisualStyles loadVizmapFileTaskFactory;
+	
+	public static SynchronousTaskManager synchronousTaskManagerServiceRef;
 	
 }
