@@ -23,6 +23,8 @@ import org.slf4j.LoggerFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyColumn;
+
+import csplugins.jActiveModules.ServicesUtil;
 import csplugins.jActiveModules.util.SelectUtil;
 import org.cytoscape.model.CyTableUtil;
 
@@ -68,8 +70,8 @@ public class ActivePathFinderParameters {
     private CyNetwork network;
     
 	// ---------------------------------------------------------------------------------------
-    public ActivePathFinderParameters(CyProperty<?> cytoscapePropertiesServiceRef){
-    	Properties properties = (Properties) cytoscapePropertiesServiceRef.getProperties();
+    public ActivePathFinderParameters(){
+    	Properties properties = (Properties) ServicesUtil.cytoscapePropertiesServiceRef.getProperties();
 	for (Enumeration e = properties.propertyNames() ; e.hasMoreElements() ;) {
 	    String name = (String)e.nextElement();
 	    if(name.startsWith("AP")){
@@ -156,8 +158,8 @@ public class ActivePathFinderParameters {
 
 	}
     }
-	public ActivePathFinderParameters() {
-	}
+//	public ActivePathFinderParameters() {
+//	}
 
 	// ---------------------------------------------------------------------------------------
 	/*
