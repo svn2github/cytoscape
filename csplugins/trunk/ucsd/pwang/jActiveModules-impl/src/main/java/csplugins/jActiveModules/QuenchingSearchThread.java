@@ -1,6 +1,8 @@
 package csplugins.jActiveModules;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.work.TaskMonitor;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,7 +37,7 @@ public class QuenchingSearchThread extends SearchThread{
      * components currently in oldPaths (components found in the simulated
      * annealing run)
      */
-    public void run(){
+	public void run(TaskMonitor taskMonitor) {
 	//are we still quenching?
 	boolean quench = true;
 	//have we made a positive change in this cycle?
