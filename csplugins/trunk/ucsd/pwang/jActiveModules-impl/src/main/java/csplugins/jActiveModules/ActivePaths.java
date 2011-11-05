@@ -62,9 +62,13 @@ import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.model.CyRow;
 import java.util.Collection;
 import java.io.File;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskMonitor;
+import csplugins.jActiveModules.ServicesUtil;
+
 
 //-----------------------------------------------------------------------------------
-public class ActivePaths implements ActivePathViewer, Runnable {
+public class ActivePaths extends AbstractTask implements ActivePathViewer {
 
 	private static final Logger logger = LoggerFactory.getLogger(ActivePaths.class);
 
@@ -76,6 +80,8 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	protected JMenu expressionConditionsMenu;
 	protected String currentCondition = "none";
 	protected Component[] activePaths;
+	private Vector<Component> activePathsVect= new Vector<Component>();
+	
 	protected String[] attrNames;
 	protected static boolean activePathsFindingIsAvailable;
 	protected JButton activePathToolbarButton;
@@ -184,10 +190,13 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		this.activePaths = null;
 	}
 
-	public void run() {
+	public void run(TaskMonitor taskMonitor) {
 
-		System.out.println("\nEntering ActivePaths.run()....");
+//		System.out.println("\nEntering ActivePaths.run()....");
+//
+//		System.out.println("\napfParams.toString()=\n"+apfParams.toString()+"\n");
 
+		
 	    System.gc();
 		//long start = System.currentTimeMillis();
 		HashMap expressionMap = generateExpressionMap();
@@ -195,14 +204,17 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 		// run the path finding algorithm
 		final ActivePathsFinder apf =
 			new ActivePathsFinder(expressionMap, attrNames, cyNetwork, apfParams,
-					      randomize ? null : mainFrame, parentUI);
-		activePaths = apf.findActivePaths();
-
-		System.out.println("\tactivePaths.length = "+activePaths.length);
-		for (int i=0; i< activePaths.length; i++){
-			System.out.println("\t\tactivePaths[i].nodes.size() = "+activePaths[i].nodes.size());			
-		}
+					      randomize ? null : mainFrame, parentUI, this.activePathsVect);
 		
+		//activePaths = apf.findActivePaths();
+		   
+		ActivePathsTaskFactory factory = new ActivePathsTaskFactory(apf);
+		ServicesUtil.synchronousTaskManagerServiceRef.execute(factory);
+				
+		activePaths = new Component[activePathsVect.size()];
+		for (int i=0; i< activePathsVect.size(); i++){
+			activePaths[i] = activePathsVect.get(i);
+		}		
 		
 		// create nested networks
 		//1 . create subnetwork for each path
@@ -273,37 +285,37 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 
 		//newView.updateView();
 
-//		// Apply layout for overview
-//		CyLayoutAlgorithm alg = this.cyLayoutsService.getLayout("force-directed");
-//		alg.setNetworkView(newView);
-//		this.taskManagerService.execute(alg);				
+		// Apply layout for overview
+		//CyLayoutAlgorithm alg = ServicesUtil.cyLayoutsServiceRef.getLayout("force-directed");
+		layoutAlgorithm.setNetworkView(newView);
+		ServicesUtil.taskManagerServiceRef.execute(layoutAlgorithm);				
 
 		
 		// Create view for top n modules
-//		int n = -1;
-//		try {
-//			n= new Integer(this.cytoscapeProperties.getProperties().getProperty(ActiveModulesUI.JACTIVEMODULES_TOP_N_MODULE)).intValue();			
-//		}
-//		catch(Exception e){
-//			n= 5;
-//		}
-//
-//		 if (n> subnetworks.length){
-//			 n = subnetworks.length;
-//		 }
-//
-//		 for (int i=0; i<n; i++){
-//				CyNetworkView theView = this.cyNetworkViewFactory.getNetworkView(subnetworks[i]);
-//				this.cyNetworkViewManager.addNetworkView(theView);
-//				
-////				this.visualMappingManager.setVisualStyle(moduleVS, theView);
-////				theView.updateView();
-//				
-//				CyLayoutAlgorithm alg_f = this.cyLayoutsService.getLayout("force-directed");
-//				alg.setNetworkView(theView);
-//				
-//				this.taskManagerService.execute(alg_f);				
-//		 }
+		int n = -1;
+		try {
+			n= new Integer(ServicesUtil.cytoscapePropertiesServiceRef.getProperties().getProperty(ActiveModulesUI.JACTIVEMODULES_TOP_N_MODULE)).intValue();			
+		}
+		catch(Exception e){
+			n= 5;
+		}
+
+		 if (n> subnetworks.length){
+			 n = subnetworks.length;
+		 }
+
+		 for (int i=0; i<n; i++){
+				CyNetworkView theView = ServicesUtil.cyNetworkViewFactoryServiceRef.getNetworkView(subnetworks[i]);
+				ServicesUtil.cyNetworkViewManagerServiceRef.addNetworkView(theView);
+				
+//				this.visualMappingManager.setVisualStyle(moduleVS, theView);
+//				theView.updateView();
+				
+//				CyLayoutAlgorithm alg_f = ServicesUtil.cyLayoutsServiceRef.getLayout("force-directed");
+				layoutAlgorithm.setNetworkView(theView);
+				
+				ServicesUtil.taskManagerServiceRef.execute(layoutAlgorithm);				
+		 }
 	}
 	
 
@@ -585,25 +597,25 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 	 * Scores the currently selected nodes in the graph, and pops up a window
 	 * with the result
 	 */
-	protected void scoreActivePath() {
-		String callerID = "jActiveModules";
-		ActivePathsFinder apf = new ActivePathsFinder(generateExpressionMap(),
-				attrNames, cyNetwork, apfParams, mainFrame, parentUI);
-
-		long start = System.currentTimeMillis();
-		Vector result = new Vector();
-		Iterator it = SelectUtil.getSelectedNodes(cyNetwork).iterator();
-		while (it.hasNext()) {
-			result.add(it.next());
-		}
-
-		double score = apf.scoreList(result);
-		long duration = System.currentTimeMillis() - start;
-		logger.info("-------------- back from score: " + duration
-				+ " msecs");
-		logger.info("-------------- score: " + score + " \n");
-		JOptionPane.showMessageDialog(mainFrame, "Score: " + score);
-	} // scoreActivePath
+//	protected void scoreActivePath() {
+//		String callerID = "jActiveModules";
+//		ActivePathsFinder apf = new ActivePathsFinder(generateExpressionMap(),
+//				attrNames, cyNetwork, apfParams, mainFrame, parentUI);
+//
+//		long start = System.currentTimeMillis();
+//		Vector result = new Vector();
+//		Iterator it = SelectUtil.getSelectedNodes(cyNetwork).iterator();
+//		while (it.hasNext()) {
+//			result.add(it.next());
+//		}
+//
+//		double score = apf.scoreList(result);
+//		long duration = System.currentTimeMillis() - start;
+//		logger.info("-------------- back from score: " + duration
+//				+ " msecs");
+//		logger.info("-------------- score: " + score + " \n");
+//		JOptionPane.showMessageDialog(mainFrame, "Score: " + score);
+//	} // scoreActivePath
 
 	/*
 	protected class ActivePathControllerLauncherAction extends AbstractAction {

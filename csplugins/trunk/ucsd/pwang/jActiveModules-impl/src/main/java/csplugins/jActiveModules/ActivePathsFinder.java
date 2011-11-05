@@ -3,6 +3,8 @@ package csplugins.jActiveModules;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskMonitor;
 
 
 import java.io.FileInputStream;
@@ -32,7 +34,7 @@ import csplugins.jActiveModules.util.SelectUtil;
  * function is findActivePaths() which calls the simulated annealing subroutine
  * to find the active paths
  */
-public class ActivePathsFinder {
+public class ActivePathsFinder extends AbstractTask {
 
 
 	private static final Logger logger = LoggerFactory.getLogger(ActivePathsFinder.class);
@@ -74,6 +76,9 @@ public class ActivePathsFinder {
 	JFrame parentFrame;
 	ActiveModulesUI parentUI;
 	protected static int DISPLAY_STEP = 50;
+	
+	private Component[] activePaths = null;
+	 Vector<Component> activePathsVect;
 
 	/**
 	 * This is the only constructor for ActivePathsFinder. In order to find the
@@ -92,14 +97,15 @@ public class ActivePathsFinder {
 	 */
 	public ActivePathsFinder(HashMap expressionMap, String[] attrNames,
 			CyNetwork cyNetwork, ActivePathFinderParameters apfp,
-			JFrame parentFrame, ActiveModulesUI parentUI) {
+			JFrame parentFrame, ActiveModulesUI parentUI, Vector<Component> activePathsVect/*Component[] activePaths*/) {
 		this.expressionMap = expressionMap;
 		this.parentFrame = parentFrame;
 		this.attrNames = attrNames;
 		this.cyNetwork = cyNetwork;
 		this.parentUI = parentUI;
 		apfParams = apfp;
-
+		//this.activePaths = activePaths;
+		this.activePathsVect = activePathsVect;
 	}
 
 	/**
@@ -231,19 +237,28 @@ public class ActivePathsFinder {
 		}
 
 	}
+	
+	public void run(TaskMonitor taskMonitor) {
+		
+		activePaths = findActivePaths();
+
+		for (int i=0; i< activePaths.length; i++){
+			activePathsVect.add(activePaths[i]);			
+		}		
+	}
 
 	/**
-	 * This is hte method called to determine the activePaths. Its operation
+	 * This is the method called to determine the activePaths. Its operation
 	 * depends on the parameters specified in hte activePathsFinderParameters
 	 * object passed into the constructor.
 	 */
-	public Component[] findActivePaths() {
+	private Component[] findActivePaths() {
 		setupScoring();
 		Vector comps;
 		if(apfParams.getGreedySearch()){
 		//if (apfParams.getSearchDepth() > 0) {
 			// this will read the parameters out of apfParams and
-			// store the result into bestComponnet
+			// store the result into bestComponnet			
 			logger.info("Starting greedy search");
 			runGreedySearch();
 			logger.info("Greedy search finished");
@@ -254,44 +269,57 @@ public class ActivePathsFinder {
 			// so that there are no duplicates.
 			comps = new Vector(new HashSet(node2BestComponent.values()));
 
-		} else {
+		} else {			
 			logger.info("Starting simulated annealing");
 			Vector resultPaths = new Vector();
-			MyProgressMonitor progress = null;
-			if (parentFrame != null) {
-				progress = new MyProgressMonitor(parentFrame,
-						"Running Simulated Annealing", "", 0, (int) Math
-								.ceil(apfParams.getTotalIterations()
-										/ (double) DISPLAY_STEP));
-			} // end of if ()
-			Thread thread = new SimulatedAnnealingSearchThread(cyNetwork,
-					resultPaths, nodes, apfParams,
-					progress);
-			thread.start();
-			try {
-				thread.join();
-			} catch (Exception e) {
-				logger.error("Failed to rejoin simulated annealing search thread",e);
-				return new Component[0];	
-			}
-			if (progress != null) {
-				progress.close();
-			} // end of if ()
+//			MyProgressMonitor progress = null;
+//			if (parentFrame != null) {
+//				progress = new MyProgressMonitor(parentFrame,
+//						"Running Simulated Annealing", "", 0, (int) Math
+//								.ceil(apfParams.getTotalIterations()
+//										/ (double) DISPLAY_STEP));
+//			} // end of if ()
+			
+			SimulatedAnnealingSearchThread thread = new SimulatedAnnealingSearchThread(cyNetwork,
+					resultPaths, nodes, apfParams);
+//			thread.start();
+//			try {
+//				thread.join();
+//			} catch (Exception e) {
+//				logger.error("Failed to rejoin simulated annealing search thread",e);
+//				return new Component[0];	
+//			}
+//			if (progress != null) {
+//				progress.close();
+//			} // end of if ()
+			
+			
+			//this.insertTasksAfterCurrentTask(thread);
+			
+			ActivePathsTaskFactory factory = new ActivePathsTaskFactory(thread);
+			ServicesUtil.synchronousTaskManagerServiceRef.execute(factory);
+			
+			
 			logger.info("Finished simulated annealing run");
 			if (apfParams.getToQuench()) {
 				logger.info("Starting quenching run");
 				SortedVector oldPaths = new SortedVector(resultPaths);
 				resultPaths = new Vector();
-				thread = new QuenchingSearchThread(cyNetwork,
+				QuenchingSearchThread thread_2 = new QuenchingSearchThread(cyNetwork,
 						resultPaths, nodes, apfParams,
 						oldPaths);
-				thread.start();
-				try {
-					thread.join();
-				} catch (Exception e) {
-					logger.error("Failed to rejoin Quenching Search Thread",e);
-					return new Component[0];	
-				}
+//				thread.start();
+//				try {
+//					thread.join();
+//				} catch (Exception e) {
+//					logger.error("Failed to rejoin Quenching Search Thread",e);
+//					return new Component[0];	
+//				}
+				//this.insertTasksAfterCurrentTask(thread_2);
+				
+				ActivePathsTaskFactory factory2 = new ActivePathsTaskFactory(thread_2);
+				ServicesUtil.synchronousTaskManagerServiceRef.execute(factory2);
+				
 				logger.info("Quenching run finished");
 
 			}
@@ -300,8 +328,22 @@ public class ActivePathsFinder {
 		}
 
 		Collections.sort(comps);
-		comps = filterResults(comps);
 
+
+		comps = filterResults(comps);
+		
+//		for (int i=0; i< comps.size(); i++){
+//			Component comp = (Component)comps.get(i);
+//			System.out.println("comp.getScore()="+ comp.getScore());
+//			String[] names =comp.getNodeNames();
+//			
+//			for(int j=0; j<names.length; j++){
+//				System.out.print(names[j] + " ");
+//			}	
+//			System.out.print( "\n");
+//		}
+
+		
 		/*
 		 * Finalize the display information
 		 */
@@ -375,34 +417,48 @@ public class ActivePathsFinder {
 
 		// run a greedy search using each node in our starting
 		// list in a starting point
-		MyProgressMonitor progressMonitor = null;
-		if (parentFrame != null) {
-			progressMonitor = new MyProgressMonitor(parentFrame,
-					"Performing Greedy Search", "", 0, seedList.size());
-		}
+//		MyProgressMonitor progressMonitor = null;
+//		if (parentFrame != null) {
+//			progressMonitor = new MyProgressMonitor(parentFrame,
+//					"Performing Greedy Search", "", 0, seedList.size());
+//		}
+		
+		
+		
 		int number_threads = apfParams.getMaxThreads();
-		Vector threadVector = new Vector();
+
+		System.out.println("runGreedySearch(): seedList.size()= "+ seedList.size());
+		System.out.println("runGreedySearch(): number_threads = "+ number_threads);
+
+		//		Vector threadVector = new Vector();
 		for (int i = 0; i < number_threads; i++) {
 			GreedySearchThread gst = new GreedySearchThread(cyNetwork,
-					apfParams, seedList, progressMonitor,
+					apfParams, seedList,
 					node2BestComponent, nodes);
-			gst.start();
-			threadVector.add(gst);
+			
+			//gst.start();
+			//threadVector.add(gst);
+			ActivePathsTaskFactory factory = new ActivePathsTaskFactory(gst);
+			ServicesUtil.synchronousTaskManagerServiceRef.execute(factory);
 		}
 
-		// wait for the threads to finish
-		Iterator it = threadVector.iterator();
-		while (it.hasNext()) {
-			try {
-				((Thread) it.next()).join();
-			} catch (Exception e) {
-				logger.error("Failed to join thread",e);
-				return;	
-			}
-		}
-		if (progressMonitor != null) {
-			progressMonitor.close();
-		}
+//		// wait for the threads to finish
+//		Iterator it = threadVector.iterator();
+//		while (it.hasNext()) {
+//			try {
+//				((Thread) it.next()).join();
+//			} catch (Exception e) {
+//				logger.error("Failed to join thread",e);
+//				return;	
+//			}
+//		}
+//		if (progressMonitor != null) {
+//			progressMonitor.close();
+//		}
+//		
+		
+//		System.out.println("runGreedySearch(): node2BestComponent.size()= "+ node2BestComponent.size());
+//		System.out.println("runGreedySearch(): nodes.length= = "+ nodes.length+ "\n");
+
 	}
-
 }
