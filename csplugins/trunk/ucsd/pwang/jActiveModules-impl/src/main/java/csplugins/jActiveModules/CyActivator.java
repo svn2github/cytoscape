@@ -1,5 +1,6 @@
 package csplugins.jActiveModules;
 
+import org.cytoscape.work.SynchronousTaskManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
@@ -53,6 +54,7 @@ public class CyActivator extends AbstractCyActivator {
 		CyLayoutAlgorithmManager cyLayoutsServiceRef = getService(bc,CyLayoutAlgorithmManager.class);
 
 		LoadVisualStyles loadVizmapFileTaskFactory =  getService(bc,LoadVisualStyles.class);
+		SynchronousTaskManager synchronousTaskManagerServiceRef = getService(bc,SynchronousTaskManager.class);
 
 		//
 		ServicesUtil.cySwingApplicationServiceRef = cySwingApplicationServiceRef;
@@ -69,10 +71,11 @@ public class CyActivator extends AbstractCyActivator {
 		ServicesUtil.cyNetworkViewFactoryServiceRef = cyNetworkViewFactoryServiceRef;
 		ServicesUtil.cyLayoutsServiceRef = cyLayoutsServiceRef;
 		ServicesUtil.loadVizmapFileTaskFactory = loadVizmapFileTaskFactory;
+		ServicesUtil.synchronousTaskManagerServiceRef = synchronousTaskManagerServiceRef;
 
 		//
 		
-		ActivePathFinderParameters apfParams = new ActivePathFinderParameters(cytoscapePropertiesServiceRef);
+		ActivePathFinderParameters apfParams = new ActivePathFinderParameters();
 
 		NetworkSelectorPanel networkSelectorPanel = new NetworkSelectorPanel(cyApplicationManagerServiceRef, cyNetworkManagerServiceRef);
 
