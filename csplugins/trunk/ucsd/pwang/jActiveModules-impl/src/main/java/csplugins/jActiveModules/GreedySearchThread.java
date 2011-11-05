@@ -4,6 +4,8 @@ package csplugins.jActiveModules;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge.Type;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskMonitor;
 
 
 import java.util.Collection;
@@ -17,14 +19,14 @@ import org.slf4j.LoggerFactory;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 
 
-public class GreedySearchThread extends Thread {
+public class GreedySearchThread extends AbstractTask { //extends Thread {
 
 	private static final Logger logger = LoggerFactory.getLogger(GreedySearchThread.class);
 	
 	int max_depth, search_depth;
 	ActivePathFinderParameters apfParams;
 	Iterator nodeIterator;
-	MyProgressMonitor pm;
+	//MyProgressMonitor pm;
 	HashMap node2BestComponent;
 	/**
 	 * Track the best score generated from the current starting point
@@ -56,13 +58,13 @@ public class GreedySearchThread extends Thread {
 	CyNode[] nodes;
 	CyNetwork graph;
 	public GreedySearchThread(CyNetwork graph, ActivePathFinderParameters apfParams,
-			Collection nodeList, MyProgressMonitor tpm, HashMap temp_hash,
+			Collection nodeList, HashMap temp_hash,
 			CyNode[] node_array) {
 		this.apfParams = apfParams;
 		max_depth = apfParams.getMaxDepth();
 		search_depth = apfParams.getSearchDepth();
 		this.nodeIterator = nodeList.iterator();
-		pm = tpm;
+		//pm = tpm;
 		node2BestComponent = temp_hash;
 		nodes = node_array;
 		this.graph = graph;
@@ -89,7 +91,9 @@ public class GreedySearchThread extends Thread {
 	 * Runs the greedy search algorithm. This function will run a greedy search
 	 * iteratively using each node of the graph as a starting point
 	 */
-	public void run() {
+	public void run(TaskMonitor taskMonitor) {
+		
+		taskMonitor.setStatusMessage("Runs the greedy search algorithm...");
 		boolean done = false;
 		CyNode seed = null;
 		synchronized (nodeIterator) {
@@ -117,7 +121,7 @@ public class GreedySearchThread extends Thread {
 				// recursively find the nodes within a max depth
 				initializeMaxDepth(seed, max_depth);
 			}
-
+			
 			// set the neighborhood of nodes to initially be only
 			// the single node we are starting the search from
 			Component component = new Component();
@@ -148,11 +152,14 @@ public class GreedySearchThread extends Thread {
 					}
 				}
 			}
-			if (pm != null) {
-				synchronized (pm) {
-					pm.update();
-				}
-			}
+			
+			
+
+//			if (pm != null) {
+//				synchronized (pm) {
+//					pm.update();
+//				}
+//			}
 
 			synchronized (nodeIterator) {
 				if (nodeIterator.hasNext()) {
@@ -233,7 +240,7 @@ public class GreedySearchThread extends Thread {
 		return improved;
 	}
 
-	public void runGreedyRemovalSearch(Component component,
+	private void runGreedyRemovalSearch(Component component,
 			HashSet removableNodes) {
 		LinkedList list = new LinkedList(removableNodes);
 		while (!list.isEmpty()) {
