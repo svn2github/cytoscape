@@ -4,6 +4,7 @@ package csplugins.jActiveModules;
 import org.cytoscape.model.CyEdge.Type;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.work.AbstractTask;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +15,7 @@ import java.util.Vector;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 
-public abstract class SearchThread extends Thread{
+public abstract class SearchThread extends AbstractTask { //extends Thread{
   protected CyNetwork graph;
   protected SortedVector oldPaths,newPaths;
   protected Vector resultPaths;
@@ -33,7 +34,6 @@ public abstract class SearchThread extends Thread{
     hiddenNodes = new Vector();
   }
 
-  public abstract void run();
 
   /**
    * This function will update the status of newPaths
