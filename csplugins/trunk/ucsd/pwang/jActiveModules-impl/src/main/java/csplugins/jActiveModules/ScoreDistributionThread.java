@@ -13,13 +13,15 @@ import csplugins.jActiveModules.data.ActivePathFinderParameters;
 
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 //import cytoscape.data.ExpressionData;
 
 
-public class ScoreDistributionThread extends Thread{
+public class ScoreDistributionThread extends AbstractTask { //extends Thread{
 
   private static final Logger logger = LoggerFactory.getLogger(ScoreDistributionThread.class);
   CyNetwork cyNetwork;
@@ -40,10 +42,10 @@ public class ScoreDistributionThread extends Thread{
 
 /**
    * This will iteratively run the activePaths algorithm
-   * randomizing hte network before each iteration. The top
+   * randomizing the network before each iteration. The top
    * score from each trial is recorded into a file
    */
-  public void run() {
+	public void run(TaskMonitor taskMonitor) {
     int i;
     
     int numberOfRuns = 100;
@@ -79,33 +81,45 @@ public class ScoreDistributionThread extends Thread{
     activePaths.showTable = false;
     activePaths.hideOthers = false;
     activePaths.randomize = true;
-    Thread t = new Thread(activePaths);
-    t.start();
-    try{
-      t.join();
-      p.println(""+activePaths.getHighScoringPath().getScore());
-    }catch(Exception e){
-      logger.error("Failed to join thread",e);
-   	  return; 
-    }
+    
+//    Thread t = new Thread(activePaths);
+//    t.start();
+//    try{
+//      t.join();
+//      p.println(""+activePaths.getHighScoringPath().getScore());
+//    }catch(Exception e){
+//      logger.error("Failed to join thread",e);
+//   	  return; 
+//    }
+    
+    this.insertTasksAfterCurrentTask(activePaths);
+    
     if(!(apfParams.getToUseMCFile())) {
       apfParams.setToUseMCFile(true);
       apfParams.setMcFileName("last.mc");
     }
-				MyProgressMonitor monitor = new MyProgressMonitor(desktopFrame,"Running random trials","",0,numberOfRuns);
-    for (i=1; i<numberOfRuns; i++) {
-      t = new Thread(activePaths);
-      t.start();
-      try{
-	t.join();
-	p.println(""+activePaths.getHighScoringPath().getScore());
-      }catch(Exception e){
-	logger.error("Failed to join thread",e);
-	return;	
-      }
-      monitor.update();
+	//MyProgressMonitor monitor = new MyProgressMonitor(desktopFrame,"Running random trials","",0,numberOfRuns);
+    
+	taskMonitor.setStatusMessage("Running random trials "+numberOfRuns);
+	
+	for (i=1; i<numberOfRuns; i++) {
+//      t = new Thread(activePaths);
+//      t.start();
+//      try{
+//	t.join();
+//	p.println(""+activePaths.getHighScoringPath().getScore());
+//      }catch(Exception e){
+//	logger.error("Failed to join thread",e);
+//	return;	
+//      }
+//      monitor.update();
+		
+		this.insertTasksAfterCurrentTask(activePaths);
     }
-    monitor.close();
+    //monitor.close();
+    
+    
+    
     try{
 	p.close();
     }catch(Exception e){
