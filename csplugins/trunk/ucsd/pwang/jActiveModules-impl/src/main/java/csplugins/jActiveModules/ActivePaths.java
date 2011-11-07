@@ -276,21 +276,18 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 			aEdge.getCyRow().set(EDGE_SCORE, overlapScore);
 		}
 
-		//4. Create an view for overview network and apply visual style
+		//4. Create a view for overview network and apply visual style
 		//Cytoscape.createNetworkView(overview, overview.getIdentifier(), tuning(), null);
 		final CyNetworkView newView = ServicesUtil.cyNetworkViewFactoryServiceRef.getNetworkView(overview);
 		ServicesUtil.cyNetworkViewManagerServiceRef.addNetworkView(newView);
 		
-//		this.visualMappingManager.setVisualStyle(overviewVS, newView);
-
-		//newView.updateView();
-
 		// Apply layout for overview
-		//CyLayoutAlgorithm alg = ServicesUtil.cyLayoutsServiceRef.getLayout("force-directed");
 		layoutAlgorithm.setNetworkView(newView);
-		ServicesUtil.taskManagerServiceRef.execute(layoutAlgorithm);				
+		this.insertTasksAfterCurrentTask(layoutAlgorithm.getTaskIterator());
+				
+//		this.visualMappingManager.setVisualStyle(overviewVS, newView);
+//		newView.updateView();
 
-		
 		// Create view for top n modules
 		int n = -1;
 		try {
@@ -307,14 +304,12 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 		 for (int i=0; i<n; i++){
 				CyNetworkView theView = ServicesUtil.cyNetworkViewFactoryServiceRef.getNetworkView(subnetworks[i]);
 				ServicesUtil.cyNetworkViewManagerServiceRef.addNetworkView(theView);
-				
+								
+				layoutAlgorithm.setNetworkView(theView);
+				this.insertTasksAfterCurrentTask(layoutAlgorithm.getTaskIterator());				
+
 //				this.visualMappingManager.setVisualStyle(moduleVS, theView);
 //				theView.updateView();
-				
-//				CyLayoutAlgorithm alg_f = ServicesUtil.cyLayoutsServiceRef.getLayout("force-directed");
-				layoutAlgorithm.setNetworkView(theView);
-				
-				ServicesUtil.taskManagerServiceRef.execute(layoutAlgorithm);				
 		 }
 	}
 	
