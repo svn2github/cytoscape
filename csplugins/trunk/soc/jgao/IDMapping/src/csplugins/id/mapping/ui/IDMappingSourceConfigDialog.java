@@ -193,6 +193,8 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(sourceConfPanel, gridBagConstraints);
 
+        defaultPanel.setVisible(false);
+
         loadDefaultButton.setText("Load default resources");
         loadDefaultButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -241,6 +243,13 @@ public class IDMappingSourceConfigDialog extends javax.swing.JDialog {
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         setVisible(false);
         this.dispose();
+        try {
+            if (srcTree.isModified())
+                IDMapperClientManager.saveCurrentToCytoscapeGlobalProperties();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to save the current resources.");
+        }
 }//GEN-LAST:event_closeButtonActionPerformed
 
     private void saveAsDefaultButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsDefaultButtonActionPerformed

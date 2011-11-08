@@ -36,7 +36,7 @@
 package csplugins.id.mapping.ui;
 
 import csplugins.id.mapping.IDMapperClient;
-import csplugins.id.mapping.IDMapperClientImplTunables;
+import csplugins.id.mapping.IDMapperClientImpl;
 import csplugins.id.mapping.util.BridgeRestUtil;
 
 import cytoscape.task.Task;
@@ -979,7 +979,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         String className = strs[1];
         String displayName = strs[2];
 
-        return new IDMapperClientImplTunables
+        return new IDMapperClientImpl
                         .Builder(connStr, className)
                         .displayName(displayName)
                         .build();

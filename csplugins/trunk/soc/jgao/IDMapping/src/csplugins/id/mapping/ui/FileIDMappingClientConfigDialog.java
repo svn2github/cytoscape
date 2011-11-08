@@ -36,7 +36,7 @@
 package csplugins.id.mapping.ui;
 
 import csplugins.id.mapping.IDMapperClient;
-import csplugins.id.mapping.IDMapperClientImplTunables;
+import csplugins.id.mapping.IDMapperClientImpl;
 
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
@@ -836,7 +836,7 @@ public class FileIDMappingClientConfigDialog extends javax.swing.JDialog {
             throws IDMapperException, ClassNotFoundException {
         String url = textFileTextField.getText();
 
-        return new IDMapperClientImplTunables
+        return new IDMapperClientImpl
                         .Builder(getConnectionString(), "org.bridgedb.file.IDMapperText")
                         .displayName(url)
                         .build();

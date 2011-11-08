@@ -33,7 +33,7 @@ package csplugins.id.mapping.service;
 
 import csplugins.id.mapping.CyThesaurusPlugin;
 import csplugins.id.mapping.IDMapperClient;
-import csplugins.id.mapping.IDMapperClientImplTunables;
+import csplugins.id.mapping.IDMapperClientImpl;
 import csplugins.id.mapping.IDMapperClientManager;
 import csplugins.id.mapping.ui.IDMappingSourceConfigDialog;
 import csplugins.id.mapping.ui.CyThesaurusDialog;
@@ -292,7 +292,7 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
             displayName = connString;
 
         try {
-            IDMapperClient client = new IDMapperClientImplTunables
+            IDMapperClient client = new IDMapperClientImpl
                             .Builder(connString, classPath)
                             .displayName(displayName)
                             .build();

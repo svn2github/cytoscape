@@ -111,7 +111,7 @@ public class IDMapperClientManager {
 
     private static ExecutorService executor = null;
 
-    private static int waitSeconds = 1;
+    private static int waitSeconds = 5;
 
     static {
 //        new IDMapperClientManager();
@@ -216,7 +216,7 @@ public class IDMapperClientManager {
                 } else if (line.compareTo(CLIENT_END)==0) {
                     if (classStr!=null && connStr!=null) {
                         try {
-                            IDMapperClient client = new IDMapperClientImplTunables
+                            IDMapperClient client = new IDMapperClientImpl
                                     .Builder(connStr, classStr)
                                     .displayName(display)
                                     .id(clientId)
@@ -285,7 +285,7 @@ public class IDMapperClientManager {
         String connStr = "idmapper-bridgerest:"+BridgeRestUtil.defaultBaseUrl+"/"+newDefaultSpecies;
         IDMapperClient client;
         try {
-            client = new IDMapperClientImplTunables
+            client = new IDMapperClientImpl
                                 .Builder(connStr, classPath)
                                 .displayName("BridgeDb("+BridgeRestUtil.defaultBaseUrl+"/"+newDefaultSpecies+")")
                                 .selected(true)
@@ -455,9 +455,7 @@ public class IDMapperClientManager {
             changed = selectedClients.remove(client);
 
         if (changed) {
-            if (client instanceof IDMapperClientImplTunables) {
-                ((IDMapperClientImplTunables)client).setSelected(select);
-            }
+            client.setSelected(select);
             fireIDMapperChange();
         }
     }
@@ -521,127 +519,134 @@ public class IDMapperClientManager {
     }
 
     public static void cache() {
-        if (cacheStatus == CacheStatus.CACHED)
-            return;
+        synchronized(cacheStatus) {
+            if (cacheStatus == CacheStatus.CACHED)
+                return;
 
-        if (cacheStatus == CacheStatus.CACHING) {
-            if (executor.isTerminated()) {
-                cacheStatus = CacheStatus.CACHED;
+            if (cacheStatus == CacheStatus.CACHING) {
+                if (executor.isTerminated()) {
+                    cacheStatus = CacheStatus.CACHED;
+                }
+                return;
             }
-            return;
-        }
 
-        cacheStatus = CacheStatus.CACHING;
+            cacheStatus = CacheStatus.CACHING;
+        }
 
         selectedIDMapperStack = new IDMapperStack();
         srcTypes = Collections.synchronizedSet(new HashSet<DataSourceWrapper>());
         tgtTypes = Collections.synchronizedSet(new HashSet<DataSourceWrapper>());
         supportedMapping = Collections.synchronizedSet(new HashSet<List<DataSourceWrapper>>());
 
-        executor = Executors.newCachedThreadPool();
+        try {
+            executor = Executors.newCachedThreadPool();
 
-        for (IDMapperClient client : selectedClients()) {
-            final IDMapper idMapper = client.getIDMapper();
-            if (idMapper==null)
-                continue;
+            for (IDMapperClient client : selectedClients()) {
+                final IDMapper idMapper = client.getIDMapper();
+                if (idMapper==null)
+                    continue;
 
-            //selectedIDMapperStack
-            selectedIDMapperStack.addIDMapper(idMapper);
+                //selectedIDMapperStack
+                selectedIDMapperStack.addIDMapper(idMapper);
 
-            executor.execute(new Runnable() {
-                public void run() {
-                    IDMapperCapabilities caps = idMapper.getCapabilities();
+                executor.execute(new Runnable() {
+                    public void run() {
+                        IDMapperCapabilities caps = idMapper.getCapabilities();
 
-                    Set<DataSource> srcs, tgts;
-                    try {
-                        srcs = caps.getSupportedSrcDataSources();
-                        tgts = caps.getSupportedTgtDataSources();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return;
-                    }
-
-                    // srcTypes
-                    if (srcs!=null) {
-                        for (DataSource ds : srcs) {
-                            srcTypes.add(DataSourceWrapper.getInstance(
-                                    DataSourceUtil.getName(ds), DataSourceWrapper.DsAttr.DATASOURCE));
-                        }
-                    }
-
-                    // tgtTypes
-                    if (tgts!=null) {
-                        for (DataSource ds : tgts) {
-                            tgtTypes.add(DataSourceWrapper.getInstance(
-                                    DataSourceUtil.getName(ds), DataSourceWrapper.DsAttr.DATASOURCE));
-                        }
-                    }
-
-                    // mapping from type to type
-                    if (srcs!=null && tgts!=null) {
-                        for (DataSource src : srcs) {
-                            for (DataSource tgt : tgts) {
-                                boolean spt = false;
-                                try {
-                                    spt = caps.isMappingSupported(src, tgt);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                if (spt) {
-                                    List<DataSourceWrapper> dsws = new ArrayList<DataSourceWrapper>(2);
-                                    dsws.add(DataSourceWrapper.getInstance(
-                                        DataSourceUtil.getName(src), DataSourceWrapper.DsAttr.DATASOURCE));
-                                    dsws.add(DataSourceWrapper.getInstance(
-                                        DataSourceUtil.getName(tgt), DataSourceWrapper.DsAttr.DATASOURCE));
-                                    supportedMapping.add(dsws);
-                                }
-                            }
-                        }
-                    }
-
-                    // AttributeMapper
-                    if (!(idMapper instanceof AttributeMapper))
-                        return;
-
-                    AttributeMapper attrMapper = (AttributeMapper)idMapper;
-                    Set<String> attrs = null;
-                    try {
-                        attrs = attrMapper.getAttributeSet();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    if (attrs==null)
-                        return;
-                    
-                    for (String attr : attrs) {
-                        DataSourceWrapper dsw = DataSourceWrapper.getInstance(attr, DataSourceWrapper.DsAttr.ATTRIBUTE);
-                        if (attrMapper.isFreeAttributeSearchSupported()) {
-                            srcTypes.add(dsw);
-                            if (tgts!=null) {
-                                for (DataSource tgt : tgts) {
-                                    List<DataSourceWrapper> dsws = new ArrayList<DataSourceWrapper>(2);
-                                    dsws.add(dsw);
-                                    dsws.add(DataSourceWrapper.getInstance(
-                                        tgt.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
-                                    supportedMapping.add(dsws);
-                                }
-                            }
+                        Set<DataSource> srcs, tgts;
+                        try {
+                            srcs = caps.getSupportedSrcDataSources();
+                            tgts = caps.getSupportedTgtDataSources();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return;
                         }
 
-                        tgtTypes.add(dsw);
+                        // srcTypes
                         if (srcs!=null) {
+                            for (DataSource ds : srcs) {
+                                srcTypes.add(DataSourceWrapper.getInstance(
+                                        DataSourceUtil.getName(ds), DataSourceWrapper.DsAttr.DATASOURCE));
+                            }
+                        }
+
+                        // tgtTypes
+                        if (tgts!=null) {
+                            for (DataSource ds : tgts) {
+                                tgtTypes.add(DataSourceWrapper.getInstance(
+                                        DataSourceUtil.getName(ds), DataSourceWrapper.DsAttr.DATASOURCE));
+                            }
+                        }
+
+                        // mapping from type to type
+                        if (srcs!=null && tgts!=null) {
                             for (DataSource src : srcs) {
-                                List<DataSourceWrapper> dsws = new ArrayList<DataSourceWrapper>(2);
-                                dsws.add(DataSourceWrapper.getInstance(
-                                    src.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
-                                dsws.add(dsw);
-                                supportedMapping.add(dsws);
+                                for (DataSource tgt : tgts) {
+                                    boolean spt = false;
+                                    try {
+                                        spt = caps.isMappingSupported(src, tgt);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    if (spt) {
+                                        List<DataSourceWrapper> dsws = new ArrayList<DataSourceWrapper>(2);
+                                        dsws.add(DataSourceWrapper.getInstance(
+                                            DataSourceUtil.getName(src), DataSourceWrapper.DsAttr.DATASOURCE));
+                                        dsws.add(DataSourceWrapper.getInstance(
+                                            DataSourceUtil.getName(tgt), DataSourceWrapper.DsAttr.DATASOURCE));
+                                        supportedMapping.add(dsws);
+                                    }
+                                }
+                            }
+                        }
+
+                        // AttributeMapper
+                        if (!(idMapper instanceof AttributeMapper))
+                            return;
+
+                        AttributeMapper attrMapper = (AttributeMapper)idMapper;
+                        Set<String> attrs = null;
+                        try {
+                            attrs = attrMapper.getAttributeSet();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        if (attrs==null)
+                            return;
+
+                        for (String attr : attrs) {
+                            DataSourceWrapper dsw = DataSourceWrapper.getInstance(attr, DataSourceWrapper.DsAttr.ATTRIBUTE);
+                            if (attrMapper.isFreeAttributeSearchSupported()) {
+                                srcTypes.add(dsw);
+                                if (tgts!=null) {
+                                    for (DataSource tgt : tgts) {
+                                        List<DataSourceWrapper> dsws = new ArrayList<DataSourceWrapper>(2);
+                                        dsws.add(dsw);
+                                        dsws.add(DataSourceWrapper.getInstance(
+                                            tgt.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
+                                        supportedMapping.add(dsws);
+                                    }
+                                }
+                            }
+
+                            tgtTypes.add(dsw);
+                            if (srcs!=null) {
+                                for (DataSource src : srcs) {
+                                    List<DataSourceWrapper> dsws = new ArrayList<DataSourceWrapper>(2);
+                                    dsws.add(DataSourceWrapper.getInstance(
+                                        src.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
+                                    dsws.add(dsw);
+                                    supportedMapping.add(dsws);
+                                }
                             }
                         }
                     }
-                }
-            });
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            cacheStatus = CacheStatus.UNCACHED;
         }
     }
 }

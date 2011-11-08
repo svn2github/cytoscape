@@ -81,7 +81,7 @@ public interface IDMapperClient {
 
     public ClientType getClientType();
 
-//    boolean isSelected();
-//
-//    void setSelected(boolean selected);
+    boolean isSelected();
+
+    void setSelected(boolean selected);
 }

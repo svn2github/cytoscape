@@ -39,7 +39,7 @@ import csplugins.id.mapping.AttributeBasedIDMappingImpl;
 import csplugins.id.mapping.CyThesaurusPlugin;
 import csplugins.id.mapping.FinalStaticValues;
 import csplugins.id.mapping.IDMapperClient;
-import csplugins.id.mapping.IDMapperClientImplTunables;
+import csplugins.id.mapping.IDMapperClientImpl;
 import csplugins.id.mapping.IDMapperClientManager;
 import csplugins.id.mapping.util.DataSourceUtil;
 import csplugins.id.mapping.util.DataSourceWrapper;
@@ -265,7 +265,7 @@ public class IDMappingServiceSuppport {
         } else {
             IDMapperClient client = null;
             try {
-                client = new IDMapperClientImplTunables
+                client = new IDMapperClientImpl
                                 .Builder(connStr, classPath)
                                 .displayName(display)
                                 .build();

@@ -65,7 +65,7 @@ import java.util.Map;
  */
 public final class CyThesaurusPlugin extends CytoscapePlugin {
     public static Map mapSrcAttrIDTypes = null;
-    public static double VERSION = 1.20;
+    public static double VERSION = 1.31;
 
     public CyThesaurusPlugin() {
         try {
@@ -136,38 +136,38 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
             }
         });
 
-        pcs.addPropertyChangeListener(Cytoscape.SESSION_SAVED,
-                new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                // remove the old client but not the session properties
-                IDMapperClientManager.removeAllClients(false);
+//        pcs.addPropertyChangeListener(Cytoscape.SESSION_SAVED,
+//                new PropertyChangeListener() {
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                // remove the old client but not the session properties
+//                IDMapperClientManager.removeAllClients(false);
+//
+//                // reload the clients for this session (change the prop prefix)
+//                IDMapperClientManager.reloadFromCytoscapeSessionProperties();
+//                IDMapperClientManager.reCache();
+//            }
+//        });
 
-                // reload the clients for this session (change the prop prefix)
-                IDMapperClientManager.reloadFromCytoscapeSessionProperties();
-                IDMapperClientManager.reCache();
-            }
-        });
-
-        pcs.addPropertyChangeListener(Cytoscape.SESSION_LOADED,
-                new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                // remove the old client include session properties
-                IDMapperClientManager.removeAllClients(true);
-
-                // reload the clients for this session
-                IDMapperClientManager.reloadFromCytoscapeSessionProperties();
-
-                if (IDMapperClientManager.countClients()==0) {
-                    // load the default clients if no client
-//                    IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
-                    registerDefaultClients();
-                }
-
-                IDMapperClientManager.reCache();
-
-                mapSrcAttrIDTypes = null;
-            }
-        });
+//        pcs.addPropertyChangeListener(Cytoscape.SESSION_LOADED,
+//                new PropertyChangeListener() {
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                // remove the old client include session properties
+//                IDMapperClientManager.removeAllClients(true);
+//
+//                // reload the clients for this session
+//                IDMapperClientManager.reloadFromCytoscapeSessionProperties();
+//
+//                if (IDMapperClientManager.countClients()==0) {
+//                    // load the default clients if no client
+////                    IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
+//                    registerDefaultClients();
+//                }
+//
+//                IDMapperClientManager.reCache();
+//
+//                mapSrcAttrIDTypes = null;
+//            }
+//        });
 
 //        pcs.addPropertyChangeListener(Cytoscape.PREFERENCE_MODIFIED,
 //                new PropertyChangeListener() {
@@ -183,9 +183,6 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
 
     private void registerDefaultClients() {
         IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
-//        if (IDMapperClientManager.countClients()==0) {
-//            IDMapperClientManager.registerDefaultClient();
-//        }
     }
 
     class IDMappingAction extends CytoscapeAction {
