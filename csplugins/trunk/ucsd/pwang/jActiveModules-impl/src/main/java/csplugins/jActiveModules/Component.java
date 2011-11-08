@@ -664,8 +664,7 @@ public class Component implements Comparable{
 			  CyNode current = (CyNode)nodeIt.next();
 			  tempComponent.addNode(current);
 			  double new_score = tempComponent.getScore();
-			  int index = (int)current.getSUID();
-			  node2Increase.put(index /*.getRootGraphIndex()*/,new_score-previous_score);
+			  node2Increase.put(current.getIndex() /*.getRootGraphIndex()*/,new_score-previous_score);
 			  tempComponent.removeNode(current);
 		  }
 		  
@@ -699,8 +698,8 @@ public class Component implements Comparable{
 		  
 	  }
 	  
-	 
   }
+
   
 
   // replace "cern.colt.list.OpenIntDoubleHashMap"
