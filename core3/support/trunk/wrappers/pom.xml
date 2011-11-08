@@ -17,5 +17,7 @@
 		<module>org.apache.lucene</module>
 		<module>org.swinglabs.swing-layout</module>
 		<module>org.swinglabs.swingx</module>
+		<module>org.biopax.paxtools.biopax-converter</module>
+		<module>org.biopax.paxtools.core</module>
 	</modules>
 </project> 
