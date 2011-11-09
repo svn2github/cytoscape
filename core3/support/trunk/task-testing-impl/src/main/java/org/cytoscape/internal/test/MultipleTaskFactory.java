@@ -9,6 +9,6 @@ public class MultipleTaskFactory implements TaskFactory {
 	public MultipleTaskFactory() { }
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new SingleTask(), new SingleTask(), new SingleTask(), new SingleTask());
+		return new TaskIterator(new SingleTask(true), new SingleTask(true), new SingleTask(false), new SingleTask(true));
 	}
 }

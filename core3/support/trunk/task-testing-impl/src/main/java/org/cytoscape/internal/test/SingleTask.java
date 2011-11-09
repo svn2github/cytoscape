@@ -7,14 +7,22 @@ import org.cytoscape.work.TaskMonitor;
 
 
 public class SingleTask extends AbstractTask {
+	private boolean showProgress;
+
+	public SingleTask(boolean s) {
+		showProgress = s;
+	}
 
 	public void run(final TaskMonitor taskMonitor) throws Exception {
+		if ( !showProgress )
+			taskMonitor.setProgress(-1.0);
+
 		double progress = 0.0;
-		taskMonitor.setProgress(progress);
+		if ( showProgress ) taskMonitor.setProgress(progress);
 		taskMonitor.setStatusMessage("Excuting task...");
 		while(progress < 1.0){ 
-			taskMonitor.setStatusMessage("executing step: " + progress);
-			taskMonitor.setProgress(progress);
+			if ( showProgress ) taskMonitor.setStatusMessage("executing step: " + progress);
+			if ( showProgress ) taskMonitor.setProgress(progress);
 			Thread.sleep(200);
 			progress += 0.1;
 		}
