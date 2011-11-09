@@ -18,16 +18,21 @@ import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cpath.service.OutputFormat;
 
 /**
  * CPath Web Service, integrated into the Cytoscape Web Services Framework.
  */
-public class CPathCytoscapeWebService extends AbstractWebServiceClient implements NetworkImportWebServiceClient, SearchWebServiceClient<Object> {
-    // Display name of this client.
-    private static final String DISPLAY_NAME = CPathProperties.serverName +
-            " Web Service Client";
+public class CPathCytoscapeWebService extends AbstractWebServiceClient 
+	implements NetworkImportWebServiceClient, SearchWebServiceClient<Object> 
+{
+    private static final Logger LOGGER = LoggerFactory.getLogger(CPathCytoscapeWebService.class);
+	
+	// Display name of this client.
+    private static final String DISPLAY_NAME = CPathProperties.serverName + " Client";
 
     /**
      * NCBI Taxonomy ID Filter.
@@ -41,10 +46,10 @@ public class CPathCytoscapeWebService extends AbstractWebServiceClient implement
 
 	@Tunable(description="Filter by Organism - NCBI Taxonomy ID")
 	Integer taxonomyId = -1; //TODO consider several values (logical 'OR')
-	@Tunable(description="Filter by BioPAX Class")
-	String biopaxType = null;
-	@Tunable(description="Filter by Data Source")
-	String dataSource = null; //TODO consider several values (logical 'OR')
+//	@Tunable(description="Filter by BioPAX Class")
+//	String biopaxType = null;
+//	@Tunable(description="Filter by Data Source")
+//	String dataSource = null; //TODO consider several values (logical 'OR')
 	
     private JPanel mainPanel;
 
@@ -97,6 +102,9 @@ public class CPathCytoscapeWebService extends AbstractWebServiceClient implement
         JScrollPane configPanel = GuiUtils.createConfigPanel();
         tabbedPane.add("Options", configPanel);
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
+        
+    	if(LOGGER.isDebugEnabled())
+    		LOGGER.debug("CPathCytoscapeWebService created!");
     }
 
     private static String makeDescription() {

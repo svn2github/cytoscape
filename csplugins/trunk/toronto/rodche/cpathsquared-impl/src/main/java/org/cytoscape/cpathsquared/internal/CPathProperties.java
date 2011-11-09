@@ -32,9 +32,9 @@ public class CPathProperties {
             "information collected from public pathway databases, which you can " +
             "browse or search. <BR><BR>Pathways include biochemical reactions, complex " +
             "assembly, transport and catalysis events, and physical interactions " +
-            "involving proteins, DNA, RNA, small molecules and complexes.";
+            "involving proteins, DNA, RNA, small molecules and complexes. Now using BioPAX Level3!";
     
-    public static String iconToolTip  = "Retrieve Pathway Data from PathwayCommons.org";
+    public static String iconToolTip  = "Import Pathway Data from new PathwayCommons.org";
     
     public static String iconFileName = "pc.png";
     

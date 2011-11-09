@@ -90,6 +90,8 @@ public class ExecutePhysicalEntitySearchTask implements Task {
             if (e.getErrorCode() != CPathException.ERROR_CANCELED_BY_USER) {
             	throw e;
             }
+        } catch (Throwable e) { // - helps with optional/unresolved runtime dependencies!
+            	throw new RuntimeException(e);
         } finally {
             taskMonitor.setStatusMessage("Done");
             taskMonitor.setProgress(1);

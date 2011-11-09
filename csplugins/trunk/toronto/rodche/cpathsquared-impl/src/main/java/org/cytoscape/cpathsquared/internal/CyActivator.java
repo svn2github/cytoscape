@@ -58,7 +58,12 @@ public class CyActivator extends AbstractCyActivator {
 		VisualMappingFunctionFactory discreteMappingFactoryRef = getService(bc,VisualMappingFunctionFactory.class,"(mapping.type=discrete)");
 		VisualMappingFunctionFactory passthroughMappingFactoryRef = getService(bc,VisualMappingFunctionFactory.class,"(mapping.type=passthrough)");
 		
-		BinarySifVisualStyleFactory binarySifVisualStyleUtil = new BinarySifVisualStyleFactory(visualStyleFactoryRef,visualMappingManagerRef,discreteMappingFactoryRef,passthroughMappingFactoryRef);
+		BinarySifVisualStyleFactory binarySifVisualStyleUtil = new BinarySifVisualStyleFactory(
+				visualStyleFactoryRef,
+				visualMappingManagerRef,
+				discreteMappingFactoryRef,
+				passthroughMappingFactoryRef);
+		
 		CPath2Factory cPath2Factory = new CPath2Factory(
 				cySwingApplicationRef,
 				taskManagerRef,
@@ -76,9 +81,10 @@ public class CyActivator extends AbstractCyActivator {
 				networkListenerRef,
 				binarySifVisualStyleUtil,
 				visualMappingManagerRef);
+		
 		CPathCytoscapeWebService cPathWebService = new CPathCytoscapeWebService(cPath2Factory);
 		
-		registerAllServices(bc,cPathWebService, new Properties());
+		registerAllServices(bc, cPathWebService, new Properties());
 	}
 }
 

@@ -1,6 +1,5 @@
 package org.cytoscape.cpathsquared.internal;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,9 +7,10 @@ import java.util.List;
 import org.biopax.paxtools.io.pathwayCommons.PathwayCommons2Client;
 import org.biopax.paxtools.io.pathwayCommons.util.PathwayCommonsException;
 import org.biopax.paxtools.model.level3.BioSource;
-import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.cytoscape.cpathsquared.internal.util.EmptySetException;
 import org.cytoscape.work.TaskMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cpath.service.OutputFormat;
 import cpath.service.jaxb.SearchResponse;
@@ -23,7 +23,8 @@ import cpath.service.jaxb.SearchResponse;
 public class CPathWebServiceImpl implements CPathWebService {
     private static ArrayList<CPathWebServiceListener> listeners = new ArrayList<CPathWebServiceListener>();
     private static CPathWebService webApi;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(CPathWebServiceImpl.class);
+    
     /**
      * Gets a singleton instance of the cPath2 web service handler.
      * @return CPathWebService Object.
@@ -51,13 +52,19 @@ public class CPathWebServiceImpl implements CPathWebService {
     public SearchResponse searchPhysicalEntities(String keyword, int ncbiTaxonomyId,
             TaskMonitor taskMonitor) throws CPathException, EmptySetException {
 
-        // Notify all listeners of start
+    	if(LOGGER.isDebugEnabled())
+    		LOGGER.debug("searchPhysicalEntities: query=" + keyword);
+    	
+    	// Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
             CPathWebServiceListener listener = listeners.get(i);
             listener.searchInitiatedForPhysicalEntities(keyword, ncbiTaxonomyId);
         }
 
         PathwayCommons2Client client = new PathwayCommons2Client();
+    	if(LOGGER.isDebugEnabled())
+    		LOGGER.debug("cPath2Url=" + client.getEndPointURL());
+    	
         client.setOrganisms(Collections.singleton(String.valueOf(ncbiTaxonomyId)));
         //protocol.setCommand(CPathProtocol.COMMAND_SEARCH);
         client.setType("PhysicalEntity");
