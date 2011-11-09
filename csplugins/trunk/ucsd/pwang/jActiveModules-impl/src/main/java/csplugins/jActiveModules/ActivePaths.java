@@ -80,7 +80,6 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 	protected JMenu expressionConditionsMenu;
 	protected String currentCondition = "none";
 	protected Component[] activePaths;
-	private Vector<Component> activePathsVect= new Vector<Component>();
 	
 	protected String[] attrNames;
 	protected static boolean activePathsFindingIsAvailable;
@@ -191,20 +190,17 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 	}
 
 	public void run(TaskMonitor taskMonitor) {
-
-//		System.out.println("\nEntering ActivePaths.run()....");
-//
-//		System.out.println("\napfParams.toString()=\n"+apfParams.toString()+"\n");
-
 		
 	    System.gc();
 		//long start = System.currentTimeMillis();
 		HashMap expressionMap = generateExpressionMap();
 
+		Vector<Component> activePathsVect= new Vector<Component>();
+
 		// run the path finding algorithm
 		final ActivePathsFinder apf =
 			new ActivePathsFinder(expressionMap, attrNames, cyNetwork, apfParams,
-					      randomize ? null : mainFrame, parentUI, this.activePathsVect);
+					      randomize ? null : mainFrame, parentUI, activePathsVect);
 		
 		//activePaths = apf.findActivePaths();
 		   
@@ -214,7 +210,7 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 		activePaths = new Component[activePathsVect.size()];
 		for (int i=0; i< activePathsVect.size(); i++){
 			activePaths[i] = activePathsVect.get(i);
-		}		
+		}				
 		
 		// create nested networks
 		//1 . create subnetwork for each path
