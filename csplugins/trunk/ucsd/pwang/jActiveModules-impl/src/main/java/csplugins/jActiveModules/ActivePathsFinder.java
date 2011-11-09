@@ -79,6 +79,7 @@ public class ActivePathsFinder extends AbstractTask {
 	
 	private Component[] activePaths = null;
 	 Vector<Component> activePathsVect;
+	 TaskMonitor taskMonitor = null;
 
 	/**
 	 * This is the only constructor for ActivePathsFinder. In order to find the
@@ -239,7 +240,7 @@ public class ActivePathsFinder extends AbstractTask {
 	}
 	
 	public void run(TaskMonitor taskMonitor) {
-		
+		this.taskMonitor = taskMonitor;
 		activePaths = findActivePaths();
 
 		for (int i=0; i< activePaths.length; i++){
@@ -293,12 +294,8 @@ public class ActivePathsFinder extends AbstractTask {
 //				progress.close();
 //			} // end of if ()
 			
-			
-			//this.insertTasksAfterCurrentTask(thread);
-			
-			ActivePathsTaskFactory factory = new ActivePathsTaskFactory(thread);
-			ServicesUtil.synchronousTaskManagerServiceRef.execute(factory);
-			
+						
+			thread.run(this.taskMonitor);
 			
 			logger.info("Finished simulated annealing run");
 			if (apfParams.getToQuench()) {
@@ -315,11 +312,12 @@ public class ActivePathsFinder extends AbstractTask {
 //					logger.error("Failed to rejoin Quenching Search Thread",e);
 //					return new Component[0];	
 //				}
-				//this.insertTasksAfterCurrentTask(thread_2);
 				
-				ActivePathsTaskFactory factory2 = new ActivePathsTaskFactory(thread_2);
-				ServicesUtil.synchronousTaskManagerServiceRef.execute(factory2);
+//				ActivePathsTaskFactory factory2 = new ActivePathsTaskFactory(thread_2);
+//				ServicesUtil.synchronousTaskManagerServiceRef.execute(factory2);
 				
+				thread_2.run(this.taskMonitor);
+
 				logger.info("Quenching run finished");
 
 			}
@@ -327,22 +325,11 @@ public class ActivePathsFinder extends AbstractTask {
 			// restoreNodes();
 		}
 
+		
 		Collections.sort(comps);
 
 
 		comps = filterResults(comps);
-		
-//		for (int i=0; i< comps.size(); i++){
-//			Component comp = (Component)comps.get(i);
-//			System.out.println("comp.getScore()="+ comp.getScore());
-//			String[] names =comp.getNodeNames();
-//			
-//			for(int j=0; j<names.length; j++){
-//				System.out.print(names[j] + " ");
-//			}	
-//			System.out.print( "\n");
-//		}
-
 		
 		/*
 		 * Finalize the display information
@@ -424,11 +411,7 @@ public class ActivePathsFinder extends AbstractTask {
 //		}
 		
 		
-		
 		int number_threads = apfParams.getMaxThreads();
-
-		System.out.println("runGreedySearch(): seedList.size()= "+ seedList.size());
-		System.out.println("runGreedySearch(): number_threads = "+ number_threads);
 
 		//		Vector threadVector = new Vector();
 		for (int i = 0; i < number_threads; i++) {
@@ -455,10 +438,6 @@ public class ActivePathsFinder extends AbstractTask {
 //		if (progressMonitor != null) {
 //			progressMonitor.close();
 //		}
-//		
-		
-//		System.out.println("runGreedySearch(): node2BestComponent.size()= "+ node2BestComponent.size());
-//		System.out.println("runGreedySearch(): nodes.length= = "+ nodes.length+ "\n");
-
+//				
 	}
 }
