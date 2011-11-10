@@ -241,6 +241,7 @@ public class ActivePathsFinder extends AbstractTask {
 	
 	public void run(TaskMonitor taskMonitor) {
 		this.taskMonitor = taskMonitor;
+
 		activePaths = findActivePaths();
 
 		for (int i=0; i< activePaths.length; i++){
@@ -255,13 +256,19 @@ public class ActivePathsFinder extends AbstractTask {
 	 */
 	private Component[] findActivePaths() {
 		setupScoring();
+
 		Vector comps;
 		if(apfParams.getGreedySearch()){
 		//if (apfParams.getSearchDepth() > 0) {
 			// this will read the parameters out of apfParams and
 			// store the result into bestComponnet			
 			logger.info("Starting greedy search");
+			this.taskMonitor.setStatusMessage("Starting greedy search...");
+
 			runGreedySearch();
+
+			this.taskMonitor.setStatusMessage("Greedy search finished.");
+
 			logger.info("Greedy search finished");
 
 			// after the call to run greedy search, each node is associated
@@ -272,6 +279,9 @@ public class ActivePathsFinder extends AbstractTask {
 
 		} else {			
 			logger.info("Starting simulated annealing");
+
+			this.taskMonitor.setStatusMessage("Starting simulated annealing...");
+			
 			Vector resultPaths = new Vector();
 //			MyProgressMonitor progress = null;
 //			if (parentFrame != null) {
@@ -297,8 +307,13 @@ public class ActivePathsFinder extends AbstractTask {
 						
 			thread.run(this.taskMonitor);
 			
+			this.taskMonitor.setStatusMessage("Finished simulated annealing run.");
+
 			logger.info("Finished simulated annealing run");
 			if (apfParams.getToQuench()) {
+
+				this.taskMonitor.setStatusMessage("Starting quenching run...");
+				
 				logger.info("Starting quenching run");
 				SortedVector oldPaths = new SortedVector(resultPaths);
 				resultPaths = new Vector();
@@ -317,6 +332,8 @@ public class ActivePathsFinder extends AbstractTask {
 //				ServicesUtil.synchronousTaskManagerServiceRef.execute(factory2);
 				
 				thread_2.run(this.taskMonitor);
+
+				this.taskMonitor.setStatusMessage("Quenching run finished");
 
 				logger.info("Quenching run finished");
 
@@ -341,6 +358,7 @@ public class ActivePathsFinder extends AbstractTask {
 		Component [] temp = new Component[0];
 		int size = Math.min(comps.size(), apfParams.getNumberOfPaths());
 		temp = (Component[]) comps.subList(0, size).toArray(temp);
+		
 		return temp;
 	}
 	

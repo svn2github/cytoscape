@@ -8,9 +8,7 @@
 //------------------------------------------------------------------------------
 package csplugins.jActiveModules;
 //------------------------------------------------------------------------------
-import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.event.CyEventHelper;
+
 import org.cytoscape.model.CyNode;
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,7 +19,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
@@ -29,39 +26,26 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
-import csplugins.jActiveModules.util.Scaler;
+//import csplugins.jActiveModules.util.Scaler;
 import csplugins.jActiveModules.util.ScalerFactory;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.property.CyProperty;
 //import cytoscape.data.Semantics;
-import org.cytoscape.task.creation.LoadVisualStyles;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.work.TaskManager;
 
-import csplugins.jActiveModules.util.SelectUtil;
-import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.model.CyRow;
 import java.util.Collection;
-import java.io.File;
+//import java.io.File;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import csplugins.jActiveModules.ServicesUtil;
@@ -94,15 +78,15 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 	protected static int resultsCount = 1;
 	protected ActiveModulesUI parentUI;
 	
-	private static int MAX_NETWORK_VIEWS; // = PropUtil.getInt(CytoscapeInit.getProperties(), "moduleNetworkViewCreationThreshold", 5);
+	private static int MAX_NETWORK_VIEWS =5; // = PropUtil.getInt(CytoscapeInit.getProperties(), "moduleNetworkViewCreationThreshold", 5);
 	private static int runCount = 0;	
 	
 	private static final URL vizmapPropsLocation = ActiveModulesUI.class.getResource("/jActiveModules_VS.props");
 	
 	private static final String VS_OVERVIEW_NAME = "jActiveModules Overview Style";
 	private static final String VS_MODULE_NAME = "jActiveModules Module Style";
-	private static  VisualStyle overviewVS;
-	private static  VisualStyle moduleVS;
+	private static  VisualStyle overviewVS = null;
+	private static  VisualStyle moduleVS = null;
 	
 	// This is common prefix for all finders.
 	private static final String MODULE_FINDER_PREFIX = "jActiveModules.";
@@ -113,15 +97,38 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 //	static {
 //		
 //		// Create visualStyles based on the definition in property files
-//		Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, vizmapPropsLocation);
+//		//Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, vizmapPropsLocation);
 //		//overviewVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VS_OVERVIEW_NAME);
 //		//moduleVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VS_MODULE_NAME);
+//		
+//		
+//		System.out.println("\n\nvizmapPropsLocation ="+vizmapPropsLocation+ "\n");
+//		System.out.println("\n\nvizmapPropsLocation.getFile() ="+vizmapPropsLocation.getFile()+ "\n");
+//		
+//		
+//		Iterator<VisualStyle> it = ServicesUtil.visualMappingManagerRef.getAllVisualStyles().iterator();
+//		while (it.hasNext()){
+//			VisualStyle vs = it.next();
+//			if (vs.getTitle().equalsIgnoreCase(VS_OVERVIEW_NAME)){
+//				overviewVS = vs;
+//			}
+//			if (vs.getTitle().equalsIgnoreCase(VS_MODULE_NAME)){
+//				moduleVS = vs;
+//			}
+//		}
+//		if (overviewVS == null && moduleVS == null){
+//			String filename = vizmapPropsLocation.getFile();
+//			File f = new File(filename);	
+//			
+//			System.out.println("f.getAbsolutePath() ="+f.getAbsolutePath() + "\tf.length = "+f.length()+ "\n");
+//			
+//			ServicesUtil.loadVizmapFileTaskFactory.loadStyles(f);
+//		}
 //	}
+	
 	private static boolean eventFired = false;
 	
-	private static CyLayoutAlgorithm layoutAlgorithm; // = CyLayouts.getLayout("force-directed");
-	
-	private static boolean visualStylesLoaded = false;
+	private static CyLayoutAlgorithm layoutAlgorithm = ServicesUtil.cyLayoutsServiceRef.getLayout("force-directed");
 	
 	// ----------------------------------------------------------------
 	public ActivePaths(CyNetwork cyNetwork, ActivePathFinderParameters apfParams, ActiveModulesUI parentUI) {
@@ -133,38 +140,11 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 		catch (Exception e){
 			MAX_NETWORK_VIEWS = 5;
 		}
-		layoutAlgorithm = ServicesUtil.cyLayoutsServiceRef.getLayout("force-directed");
+
 		//if (!eventFired){
 		//	this.cyEventHelperService.fireEvent();
 		//}
 
-//		Set<VisualStyle> visualStyles = this.visualMappingManager.getAllVisualStyles(); 
-
-		// Load jActiveModules defined Visual styles if not loaded yet
-//		Set<VisualStyle> visualStyles= null;
-//		if (!visualStylesLoaded){			
-//			File f = new File(vizmapPropsLocation.toString());
-//			visualStyles = this.loadVizmapFileTaskFactory.loadStyles(f);
-//			visualStylesLoaded = true;
-//		}
-//
-//		// Get the styles for overview and module
-//		Iterator<VisualStyle> it = visualStyles.iterator();
-//		while (it.hasNext()){
-//			VisualStyle vs = it.next();
-//			if (vs.getTitle().equalsIgnoreCase(VS_OVERVIEW_NAME)){
-//				overviewVS = vs;
-//			}
-//			if (vs.getTitle().equalsIgnoreCase(VS_MODULE_NAME)){
-//				moduleVS = vs;
-//			}
-//		}
-//			
-//		System.out.println("overviewVS = "+ overviewVS);
-//		System.out.println("moduleVS = "+ moduleVS);
-			
-		
-		//
 		if (cyNetwork == null || cyNetwork.getNodeCount() == 0) {
 			throw new IllegalArgumentException("Please select a network");
 		}
@@ -174,8 +154,8 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 		if (attrNames.length == 0) {
 			throw new RuntimeException("No expression data selected!");
 		}
-		menubar = ServicesUtil.cySwingApplicationServiceRef.getJMenuBar();
-		mainFrame = ServicesUtil.cySwingApplicationServiceRef.getJFrame(); //Cytoscape.getDesktop();
+//		menubar = ServicesUtil.cySwingApplicationServiceRef.getJMenuBar();
+//		mainFrame = ServicesUtil.cySwingApplicationServiceRef.getJFrame();
 		this.cyNetwork = cyNetwork;
 		this.parentUI = parentUI;
 		
@@ -190,6 +170,9 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 	}
 
 	public void run(TaskMonitor taskMonitor) {
+		
+		taskMonitor.setProgress(0.0);
+		taskMonitor.setStatusMessage("Searching active paths....");
 		
 	    System.gc();
 		//long start = System.currentTimeMillis();
@@ -212,6 +195,20 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 			activePaths[i] = activePathsVect.get(i);
 		}				
 		
+		
+		// for debug only
+//		System.out.println("activePaths.length ="+ activePaths.length);
+//		for (int i=0; i<activePaths.length; i++){
+//
+//			Component aComp = activePaths[i];
+//			System.out.println("\tactivePaths["+i+"].getDisplayNodes().size() ="+aComp.getDisplayNodes().size() + 
+//					"\tDisplayScores ="+aComp.getScore());
+//		}
+
+		taskMonitor.setProgress(0.4);
+		taskMonitor.setStatusMessage("Active paths found....");
+		taskMonitor.setStatusMessage("Create subnetwork for each path ...");
+
 		// create nested networks
 		//1 . create subnetwork for each path
 		CyNetwork[] subnetworks = createSubnetworks();
@@ -219,7 +216,9 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 		for (int i=0; i<subnetworks.length; i++){
 			ServicesUtil.cyNetworkManagerServiceRef.addNetwork(subnetworks[i]);			
 		}
-		
+
+		taskMonitor.setStatusMessage("Create an overview network for all nested network...");
+
 		//2. create an overview network for all nested network
 		final CyNetwork overview = ServicesUtil.cyNetworkFactoryServiceRef.getInstance();
 		overview.getCyRow().set("name", "jActiveModules Search Result "+ runCount++);
@@ -245,7 +244,10 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 		Set<CyEdge>  path_edges = getPathEdges(overview, path_nodes); //new HashSet<CyEdge>();
 		//final CyNetwork overview = Cytoscape.createNetwork(path_nodes, path_edges, "jActiveModules Search Result "+ runCount++, cyNetwork, false);
 
-		
+		taskMonitor.setProgress(0.7);
+
+		taskMonitor.setStatusMessage("Create edge attributes...");
+
 		//3. Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
 		
 		overview.getDefaultEdgeTable().createColumn("jActiveModules_nodeCount_min_two", Integer.class, false);
@@ -271,6 +273,9 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 			//cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), EDGE_SCORE, overlapScore);
 			aEdge.getCyRow().set(EDGE_SCORE, overlapScore);
 		}
+		taskMonitor.setProgress(0.8);
+
+		taskMonitor.setStatusMessage("Create a view for overview network...");
 
 		//4. Create a view for overview network and apply visual style
 		//Cytoscape.createNetworkView(overview, overview.getIdentifier(), tuning(), null);
@@ -283,6 +288,8 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 				
 //		this.visualMappingManager.setVisualStyle(overviewVS, newView);
 //		newView.updateView();
+
+		taskMonitor.setStatusMessage("Create views for top n modules...");
 
 		// Create view for top n modules
 		int n = -1;
@@ -307,6 +314,8 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 //				this.visualMappingManager.setVisualStyle(moduleVS, theView);
 //				theView.updateView();
 		 }
+		 
+			taskMonitor.setProgress(1.0);
 	}
 	
 
