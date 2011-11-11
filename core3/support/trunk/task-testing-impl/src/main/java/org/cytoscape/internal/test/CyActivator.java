@@ -17,6 +17,8 @@ import org.cytoscape.internal.test.tunables.TunablesTestTaskFactory;
 
 import org.cytoscape.application.swing.CyAction;
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.task.NetworkTaskFactory;
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 
 
 import org.osgi.framework.BundleContext;
@@ -37,6 +39,7 @@ public class CyActivator extends AbstractCyActivator {
 
 		CyApplicationManager cyApplicationManagerServiceRef = getService(bc,CyApplicationManager.class);
 		TaskManager taskManagerServiceRef = getService(bc,TaskManager.class);
+		CyRootNetworkFactory rootNetworkFactoryServiceRef = getService(bc,CyRootNetworkFactory.class);
 		
 		WaitAction waitAction = new WaitAction(cyApplicationManagerServiceRef,taskManagerServiceRef);
 		MultiTunableAction multiTunableAction = new MultiTunableAction(cyApplicationManagerServiceRef,taskManagerServiceRef);
@@ -45,6 +48,7 @@ public class CyActivator extends AbstractCyActivator {
 		TunablesTestTaskFactory3 tunablesTestTaskFactory3 = new TunablesTestTaskFactory3();
 		InfiniteTaskFactory infiniteTaskFactory = new InfiniteTaskFactory();
 		MultipleTaskFactory multipleTaskFactory = new MultipleTaskFactory();
+		SharedTableTaskFactory sharedTableTaskFactory = new SharedTableTaskFactory(rootNetworkFactoryServiceRef);
 		
 		registerService(bc,waitAction,CyAction.class, new Properties());
 		registerService(bc,multiTunableAction,CyAction.class, new Properties());
@@ -75,6 +79,11 @@ public class CyActivator extends AbstractCyActivator {
 		multipleTaskFactoryProps.setProperty("preferredMenu","Help");
 		multipleTaskFactoryProps.setProperty("title","Multiple Task Test...");
 		registerService(bc,multipleTaskFactory,TaskFactory.class, multipleTaskFactoryProps);
+
+		Properties sharedTableTaskFactoryProps = new Properties();
+		sharedTableTaskFactoryProps.setProperty("preferredMenu","Help");
+		sharedTableTaskFactoryProps.setProperty("title","Shared Table Test...");
+		registerService(bc,sharedTableTaskFactory,NetworkTaskFactory.class, sharedTableTaskFactoryProps);
 
 	}
 }
