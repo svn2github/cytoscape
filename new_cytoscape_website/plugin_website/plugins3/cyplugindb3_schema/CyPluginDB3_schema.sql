@@ -79,7 +79,8 @@ CREATE TABLE plugin_version (
 
 CREATE TABLE cy_version (
   cy_version_auto_id int(11) NOT NULL auto_increment,
-  cy_version char(30);
+  cy_version char(30),
+  PRIMARY KEY  (cy_version_auto_id)
 };
 
 CREATE TABLE usagelog (
