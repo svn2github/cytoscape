@@ -58,11 +58,11 @@ function validatePluginProps($pluginProps) {
 		<?php
 	}
 	else {
-		if (!preg_match('/^[0-9]+\.[0-9]+$/', $pluginProps['pluginVersion'])) {	
+		if (!preg_match('/^[0-9]+\.[0-9]+\.[0-9]$/', $pluginProps['pluginVersion'])) {	
 			$retVal = false;
 			
 ?>
-		<strong>Error in plugin.prop: plugin version must be double type, two numbers seperated by a dot (.).</strong><br>
+		<strong>Error in plugin.prop: plugin version must be three numbers seperated by a dot (.).</strong><br>
 		<?php
 
 		} 
