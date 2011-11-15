@@ -46,7 +46,7 @@ CREATE TABLE plugin_files (
 CREATE TABLE plugin_list (
   plugin_auto_id int(11) NOT NULL auto_increment,
   name varchar(100) NOT NULL,
-  unique_id	int,
+  unique_id int,
   description text,
   license text,
   license_required varchar(3) default NULL,
@@ -72,16 +72,16 @@ CREATE TABLE plugin_version (
   status varchar(20) default NULL,
   reference text,
   theme_only ENUM('yes', 'no') DEFAULT 'no',
-  download_count	int(11),  
+  download_count int(11),  
   sysdat date default NULL,
-  PRIMARY KEY  (version_auto_id)
+  PRIMARY KEY (version_auto_id)
 );
 
 CREATE TABLE cy_version (
   cy_version_auto_id int(11) NOT NULL auto_increment,
   cy_version char(30),
   PRIMARY KEY  (cy_version_auto_id)
-};
+);
 
 CREATE TABLE usagelog (
   log_auto_id int not null auto_increment,
