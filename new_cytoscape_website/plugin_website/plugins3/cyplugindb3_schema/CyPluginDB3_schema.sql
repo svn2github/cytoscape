@@ -1,5 +1,5 @@
-#DROP DATABASE IF EXISTS cyplugindb3;
-#CREATE DATABASE cyplugindb3;
+DROP DATABASE IF EXISTS cyplugindb3;
+CREATE DATABASE cyplugindb3;
 
 USE cyplugindb3;
 
@@ -60,8 +60,8 @@ CREATE TABLE plugin_version (
   version_auto_id int(11) NOT NULL auto_increment,
   plugin_id int(11) default NULL,
   plugin_file_id int(11) default NULL,
-  cy_version set('3.0','3.1','3.2','3.3') default NULL,
-  version double default '0.1',
+  cy_version varchar(99) default NULL,
+  version varchar(99) default '0.0.1',
   release_date date default NULL,
   release_note text,
   release_note_url varchar(100) default NULL,
@@ -76,6 +76,11 @@ CREATE TABLE plugin_version (
   sysdat date default NULL,
   PRIMARY KEY  (version_auto_id)
 );
+
+CREATE TABLE cy_version (
+  cy_version_auto_id int(11) NOT NULL auto_increment,
+  cy_version char(30);
+};
 
 CREATE TABLE usagelog (
   log_auto_id int not null auto_increment,
