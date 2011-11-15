@@ -3,7 +3,7 @@
 
 // These are the DBMS credentials and the database name
 $dbServer = "localhost";
-$dbName = "cyplugindb";
+$dbName = "cyplugindb3";
 $dbUser = "cytouser";
 $dbPass = "cytouser";
 $cytostaff = "cytostaff";
