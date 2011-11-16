@@ -13,7 +13,7 @@ use DBI;
 
 # constants
 use constant CYTOSCAPE_URL => "http://cytoscape.org";
-use constant DATABASE_NAME => "cyplugindb";
+use constant DATABASE_NAME => "cyplugindb3";
 use constant PLUGIN_DL_SCRIPT => "pluginjardownload.php";
 
 
@@ -48,7 +48,7 @@ usage("Help:") if ($Help);
 usage("ERROR: Missing required parameter:") if (!$BaseUrl || !$XmlFileLoc || !$UserName || !$PassWord);
 
 $Host = 'localhost' if (!$Host);
-my $XmlFile = $XmlFileLoc . "/plugins.xml";
+my $XmlFile = $XmlFileLoc . "/plugins3.xml";
 
 dbConnect();
 
