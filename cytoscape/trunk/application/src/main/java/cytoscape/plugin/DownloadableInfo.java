@@ -184,9 +184,7 @@ public abstract class DownloadableInfo {
 	 * @param objVersion
 	 *            Sets the version of this object.
 	 */
-	public void setObjectVersion(double objVersion)
-		throws NumberFormatException {
-		String Version = Double.toString(objVersion);
+	public void setObjectVersion(String Version) {
 		if (versionOk(Version, true)) {
 			this.objVersion = Version;
 		} else {

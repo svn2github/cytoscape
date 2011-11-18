@@ -56,8 +56,12 @@ public final class PluginVersionUtils {
 	}
 
 	// this just checks the downloadable object version and the cytoscape version
-	public static boolean versionOk(final String version, final boolean downloadObj) {
+	public static boolean versionOk(String version, final boolean downloadObj) {
 		final String pattern = downloadObj ? "^\\d+\\.\\d+$" : VALID_CYTOSCAPE_VERSION_PATTERN;
+
+		// Check to see if we've got a subversion number
+		if (version.indexOf('.') < 0)
+			version = version+".0";	// No, give it one
 		return version.matches(pattern);
 	}
 }
