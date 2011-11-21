@@ -21,9 +21,13 @@ public class PluginVersionUtilsTest extends TestCase {
 		assertTrue(PluginVersionUtils.versionOk("2.8.1-UPPER", false));
 	}
 
+/*
+ * This is no longer bad.  Version "2" get's interpreted as version 2.0
+ *
 	public void testBadCyVersion1() {
 		assertFalse(PluginVersionUtils.versionOk("2", false));
 	}
+ */
 
 	public void testBadCyVersion2() {
 		assertFalse(PluginVersionUtils.versionOk("X.Y.Z", false));
@@ -41,9 +45,13 @@ public class PluginVersionUtilsTest extends TestCase {
 		assertTrue(PluginVersionUtils.versionOk("2.8", true));
 	}
 
+/*
+ * This is no longer bad.  Version "2" get's interpreted as version 2.0
+ *
 	public void testBadPluginVersion1() {
 		assertFalse(PluginVersionUtils.versionOk("2", true));
 	}
+ */
 
 	public void testBadPluginVersion2() {
 		assertFalse(PluginVersionUtils.versionOk("X.Y", true));

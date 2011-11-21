@@ -147,7 +147,7 @@ public class DownloadableInfoTest extends TestCase {
 	 * Test method for {@link cytoscape.plugin.DownloadableInfo#setObjectVersion(double)}.
 	 */
 	public void testObjectVersion() {
-		di.setObjectVersion(1.3);
+		di.setObjectVersion("1.3");
 		assertEquals(di.getObjectVersion(), "1.3");
 	}
 
@@ -183,9 +183,9 @@ public class DownloadableInfoTest extends TestCase {
 	 */
 	public void testIsNewerObjectVersion() {
 		di = new InfoObj("123");
-		di.setObjectVersion(1.0);
+		di.setObjectVersion("1.0");
 		DownloadableInfo diNew = new InfoObj("123");
-		diNew.setObjectVersion(1.3);
+		diNew.setObjectVersion("1.3");
 		
 		assertTrue(di.isNewerObjectVersion(diNew));
 	}
@@ -249,7 +249,7 @@ public class DownloadableInfoTest extends TestCase {
 		assertTrue(di.equals(di2));
 
 		InfoObj di3 = new InfoObj();
-		di3.setObjectVersion(2.3);
+		di3.setObjectVersion("2.3");
 		assertFalse(di.equals(di3));
 	}
 	
@@ -266,7 +266,7 @@ public class DownloadableInfoTest extends TestCase {
 		}
 		
 		private void init() {
-			this.setObjectVersion(1.1);
+			this.setObjectVersion("1.1");
 			this.setDownloadableURL("http://foo.com/infoobj");
 		}
 		
