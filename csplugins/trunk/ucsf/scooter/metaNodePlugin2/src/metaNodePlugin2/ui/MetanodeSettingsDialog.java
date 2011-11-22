@@ -611,7 +611,7 @@ public class MetanodeSettingsDialog extends JDialog
 	 */
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
-		System.out.println("actionPerformed("+e+")");
+		// System.out.println("actionPerformed("+e+")");
 
 		if (command.equals("done")) {
 			updateSettings(true);
