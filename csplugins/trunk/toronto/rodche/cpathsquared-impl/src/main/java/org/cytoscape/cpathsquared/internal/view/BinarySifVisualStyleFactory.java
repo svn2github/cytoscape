@@ -104,7 +104,7 @@ public class BinarySifVisualStyleFactory {
 		// Complexes are Hexagons.
 		DiscreteMapping<String, NodeShape> function = (DiscreteMapping<String, NodeShape>) discreteFactory
 				.createVisualMappingFunction(
-						MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, String.class,
+						MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, String.class, null,
 						RichVisualLexicon.NODE_SHAPE);
 		function.putMapValue(COMPLEX, NodeShapeVisualProperty.HEXAGON);
 		style.addVisualMappingFunction(function);
@@ -118,7 +118,7 @@ public class BinarySifVisualStyleFactory {
 		Color lightBlue = new Color(153, 153, 255);
 		DiscreteMapping<String, Paint> function = (DiscreteMapping<String, Paint>) discreteFactory
 				.createVisualMappingFunction(
-						MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, String.class,
+						MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, String.class, null,
 						RichVisualLexicon.NODE_FILL_COLOR);
 		function.putMapValue(COMPLEX, lightBlue);
 		style.addVisualMappingFunction(function);
@@ -129,7 +129,7 @@ public class BinarySifVisualStyleFactory {
 		// to a particular node color
 		style.setDefaultValue(MinimalVisualLexicon.EDGE_PAINT, Color.BLACK);
 		DiscreteMapping<String, Paint> function = (DiscreteMapping<String, Paint>) discreteFactory
-				.createVisualMappingFunction(INTERACTION, String.class,
+				.createVisualMappingFunction(INTERACTION, String.class, null,
 						RichVisualLexicon.EDGE_PAINT);
 		
 		function.putMapValue(PARTICIPATES_CONVERSION,
@@ -181,7 +181,7 @@ public class BinarySifVisualStyleFactory {
 		// create pass through mapper for node labels
 		style.addVisualMappingFunction(passthroughFactory
 				.createVisualMappingFunction(
-						CyNode.NAME, String.class,
+						CyNode.NAME, String.class, null,
 						MinimalVisualLexicon.NODE_LABEL));
 	}
 }
