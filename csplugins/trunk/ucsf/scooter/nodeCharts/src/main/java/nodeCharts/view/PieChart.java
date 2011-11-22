@@ -179,7 +179,10 @@ public class PieChart implements NodeChartViewer {
 			Shape textShape = ViewUtils.getLabelShape(label, null, 0, 0, view);
 
 			// Now, position the label.  Put the label on the outer edge of the circle.
-			Point2D labelPosition = getLabelPosition(bbox, midpointAngle, 1.4);
+			Point2D labelPosition = getLabelPosition(bbox, midpointAngle, 1.7);
+
+			// System.out.println("label position = "+labelPosition);
+
 			// vals[1] = ViewUtils.getLabelCustomGraphic(label, null, 0, 0, labelPosition, tAlign, view);
 			textShape = ViewUtils.positionLabel(textShape, labelPosition, tAlign, 0.0, 0.0, 0.0);
 			if (textShape != null) {
@@ -201,11 +204,20 @@ public class PieChart implements NodeChartViewer {
 	// Return a point on the midpoint of the arc
 	private Point2D getLabelPosition(Rectangle2D bbox, double angle, double scale) {
 		double midpoint = Math.toRadians(360.0-angle);
-		double length = bbox.getWidth()/2; // Assumes width = height!
-		double x = Math.cos(midpoint)*length*scale + (bbox.getX()+bbox.getWidth()/2);
-		double y = Math.sin(midpoint)*length*scale + (bbox.getY()+bbox.getHeight()/2);
-
-		// System.out.println("getLabelPosition: bbox = "+bbox+", midpoint = "+angle+" arcpoint = ("+x+","+y+")");
+		double w = bbox.getWidth()/2*scale;
+		double h = bbox.getHeight()/2*scale;
+		double x, y;
+		// Special case 90 and 270
+		if (angle == 270.0) {
+			x = 0.0;
+			y = h;
+		} else if (angle == 90.0) {
+			x = 0.0;
+			y = -h;
+		} else {
+			x = Math.cos(midpoint)*w;
+			y = Math.sin(midpoint)*h;
+		}
 
 		return new Point2D.Double(x, y);
 	}

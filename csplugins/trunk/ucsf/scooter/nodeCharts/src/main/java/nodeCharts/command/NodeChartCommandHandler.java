@@ -315,7 +315,7 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 					 * are assigned to parent network (i.e., expanded) or to nested
 					 * networks, making former chart commands invalid.
 					 */
-					if (!((String) args.get("network")).equals(view.getNetwork().getTitle())){
+					if (args.containsKey("network") && !((String) args.get("network")).equals(view.getNetwork().getTitle())){
 						continue;
 					}
 					// Execute it

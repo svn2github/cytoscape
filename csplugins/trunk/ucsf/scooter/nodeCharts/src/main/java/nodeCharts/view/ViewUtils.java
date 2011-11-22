@@ -241,13 +241,13 @@ public class ViewUtils {
 		switch (tAlign) {
 		case ALIGN_CENTER_TOP:
 			// System.out.println("  Align = CENTER_TOP");
-			textStartX = pointX + textWidth/2;
-			textStartY = pointY + textHeight;
+			textStartX = pointX - textWidth/2;
+			textStartY = pointY - textHeight/2;
 			break;
 		case ALIGN_CENTER_BOTTOM:
 			// System.out.println("  Align = CENTER_BOTTOM");
-			textStartX = pointX + textWidth/2;
-			textStartY = pointY - textHeight;
+			textStartX = pointX - textWidth/2;
+			textStartY = pointY + textHeight;
 			break;
 		case ALIGN_RIGHT:
 			// System.out.println("  Align = RIGHT");

@@ -483,18 +483,28 @@ public class ValueUtils {
 
 	// This is like rainbow, but we alternate sides of the color wheel
 	private static List<Color> generateContrastingColors(int nColors) {
-		System.out.println("Generating contrasting colors");
 		List<Color> values = new ArrayList<Color>();
-		float divs = (float)nColors+((float)nColors)*0.2f;	// Add fuzz to avoid cycles
-		for (float i = 0.0f; i < (float)nColors; i += 1.0f) {
-			System.out.println("Color("+(i/divs)+","+1.0f+","+1.0f+")");
-			values.add(new Color(Color.HSBtoRGB(i/divs, 1.0f, 1.0f)));
+		// We need to special-case the situation where we only have two colors
+		if (nColors == 2) {
+			values.add(new Color(Color.HSBtoRGB(0.0f, 1.0f, 1.0f)));
+			values.add(new Color(Color.HSBtoRGB(0.5f, 1.0f, 1.0f)));
+			return values;
+		}
+
+		float divs = (float)nColors;
+		for (float i = 0.0f; i < divs; i += 1.0f) {
+			// System.out.println("HSBColor("+(i/divs)+","+1.0f+","+1.0f+")");
+			Color rgbColor = new Color(Color.HSBtoRGB(i/divs, 1.0f, 1.0f));
+			// System.out.println("RGBColor = "+rgbColor);
+			values.add(rgbColor);
 			i += 1.0f;
-			if (i >= (float)nColors) break;
-			float hue = (i/divs)+0.25f;
+			if (i >= divs) break;
+			float hue = (i/divs)+0.5f;	// This moves to the opposite side of the color wheel
 			if (hue >= 1.0f) hue = hue - 1.0f;
-			System.out.println("Color("+hue+","+1.0f+","+1.0f+")");
-			values.add(new Color(Color.HSBtoRGB(hue, 1.0f, 1.0f)));
+			// System.out.println("HSBColor("+hue+","+1.0f+","+1.0f+")");
+			rgbColor = new Color(Color.HSBtoRGB(hue, 1.0f, 1.0f));
+			// System.out.println("RGBColor = "+rgbColor);
+			values.add(rgbColor);
 		}
 		return values;
 	}
