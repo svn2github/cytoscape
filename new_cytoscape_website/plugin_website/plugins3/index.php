@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Cytoscape 2.x Plugins</title>
+<title>Cytoscape 3.x Plugins</title>
 <meta name="description" content="Cytoscape includes a flexible Plugin architecture that enables developers to add extra functionality beyond that provided in the core. Plugins also provide a convenient place for testing out new Cytoscape features. As more Plugins become available, they will be listed on this page, and posted to our cytoscape-announce mailing list. " />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
@@ -184,7 +184,7 @@
  
 	<h2>Old Plugins</h2>
     <p>
-  	We also maintain a list of older <a href="plugins2.php">Cytoscape 2.x plugins</a> and <a href="plugins1.php"> Cytoscape 1.x Plugins</a>
+  	We also maintain a list of older <a href="plugins2.php">Cytoscape 3.x plugins</a> and <a href="plugins1.php"> Cytoscape 1.x Plugins</a>
     </p>
     
 

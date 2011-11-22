@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Cytoscape 2.x Plugins</title>
+	<title>Cytoscape 3.x Plugins</title>
 	<link rel="stylesheet" type="text/css" media="screen" href="/cyto_web/css/cytoscape.css">
 	<link rel="shortcut icon" href="/cyto_web/images/cyto.ico">
 	<STYLE type="text/css">
@@ -13,7 +13,7 @@
 <body bgcolor="#ffffff">
 
 <div id="topbar">
-        <div class="title">Cytoscape 2.x Plugins Release Note</div>
+        <div class="title">Cytoscape 3.x Plugins Release Note</div>
 </div>
 
 <?php include "../nav.php"; ?>
