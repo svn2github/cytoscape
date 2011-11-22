@@ -49,7 +49,7 @@ function sendConfirmartionEmail($yourName, $email, $pluginName, $pluginDescripti
 	}
 
 
-	$body = $body. "\n\nAdmin URL: http://chianti.ucsd.edu/cyto_web/plugins/pluginadmin.php\n\n";
+	$body = $body. "\n\nAdmin URL: http://chianti.ucsd.edu/cyto_web/plugins3/pluginadmin.php\n\n";
 
 	if (mail($to, $subject, $body, $headers)) {
   		//echo("<p>notification e-mail was sent to staff!</p>");
