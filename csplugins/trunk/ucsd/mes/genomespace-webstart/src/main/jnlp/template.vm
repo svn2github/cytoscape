@@ -125,6 +125,8 @@
     <argument>csplugins.jActiveModules.ActiveModulesUI</argument>
     <argument>-p</argument>
     <argument>csplugins.mrsva.shortestpath.ShortestPathPlugin</argument>
+    <argument>-p</argument>
+    <argument>org.genemania.plugin.GeneManiaPlugin</argument>
   </application-desc>
 </jnlp>
 
