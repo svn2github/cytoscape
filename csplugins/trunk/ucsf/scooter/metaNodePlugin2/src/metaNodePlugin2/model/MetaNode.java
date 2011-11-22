@@ -90,6 +90,7 @@ public class MetaNode {
 	private boolean useNestedNetworks = false;
 	private String nodeChartAttribute = null;
 	private String chartType = null;
+	private String chartColorType = "contrasting";
 
 	private Map<CyEdge,CyEdge> metaEdges = new HashMap<CyEdge,CyEdge>();
 	private Map<CyNode,CyEdge> membershipEdges = null;
@@ -455,6 +456,24 @@ public class MetaNode {
 	 */
 	public String getChartType() {
 		return this.chartType;
+	}
+
+	/**
+	 * Sets the node chart color type
+	 *
+	 * @param chartColorType the chart color type
+	 */
+	public void setChartColorType(String chartColorType) {
+		this.chartColorType = chartColorType;
+	}
+
+	/**
+	 * Get the chart color type we're using
+	 *
+	 * @return chart color type
+	 */
+	public String getChartColorType() {
+		return this.chartColorType;
 	}
 
 	/**

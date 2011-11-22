@@ -39,12 +39,13 @@
 package metaNodePlugin2.ui;
 
 import metaNodePlugin2.MetaNodeGroupViewer;
-import metaNodePlugin2.model.MetaNode;
-import metaNodePlugin2.model.MetaNodeManager;
-import metaNodePlugin2.model.MetanodeProperties;
 import metaNodePlugin2.data.AttributeHandler;
 import metaNodePlugin2.data.AttributeHandlingType;
 import metaNodePlugin2.data.AttributeManager;
+import metaNodePlugin2.model.MetaNode;
+import metaNodePlugin2.model.MetaNodeManager;
+import metaNodePlugin2.model.MetanodeProperties;
+import metaNodePlugin2.view.NodeCharts;
 
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -91,12 +92,14 @@ import javax.swing.border.TitledBorder;
 public class MetanodeSettingsDialog extends JDialog 
                                     implements ActionListener, TunableListener, ComponentListener {
 
+	private static String[] colorTypes = {"contrasting", "rainbow", "modulated", "random"};
 	private MetanodeProperties metanodeProperties;
 	private Tunable typeString = null;
 	private Tunable typeList = null;
 	private Tunable attrList = null;
 	private Tunable nodeChartAttrList = null;
 	private Tunable nodeChartTypeList = null;
+	private Tunable nodeChartColorList = null;
 	private String[] attributeArray = null;
 	private List<Tunable>tunableEnablers = null;
 	private List<Tunable>nodeChartEnablers = null;
@@ -106,6 +109,7 @@ public class MetanodeSettingsDialog extends JDialog
   private boolean useNestedNetworks = false;
 	private double metanodeOpacity = 100.0;
 	private String chartType = null;
+	private String chartColorType = null;
 	private String nodeChartAttribute = null;
 	public MetaNodeGroupViewer groupViewer = null;
 	private AttributeManager defaultAttributeManager = null;
@@ -284,6 +288,8 @@ public class MetanodeSettingsDialog extends JDialog
 			}
 		}
 
+		// System.out.println("------------------------------------ enableHandling = "+enableHandling);
+
 		{
 			Tunable t = new Tunable("enableHandling",
 			                        "Enable Attribute Aggregation",
@@ -334,7 +340,7 @@ public class MetanodeSettingsDialog extends JDialog
 		// If we have nodeCharts, provide chart options for aggregated attributes
 		{
 			Tunable t = new Tunable("nodeChartsGroup", "Node Chart Options",
-			                        Tunable.GROUP, new Integer(2),
+			                        Tunable.GROUP, new Integer(4),
 		                          new Boolean(true), null, Tunable.COLLAPSABLE);
 			metanodeProperties.add(t);
 		 	t.setImmutable(true);
@@ -358,6 +364,23 @@ public class MetanodeSettingsDialog extends JDialog
 				metanodeProperties.add(nodeChartTypeList);
 				nodeChartTypeList.addTunableValueListener(this);
 				nodeChartTypeList.setImmutable(true);
+
+				// Get the color types
+				nodeChartColorList = new Tunable("chartColorType", "How to color chart",
+		 	 	                                 Tunable.LIST, new Integer(0),
+		 	 	                                 colorTypes, null, 0);
+				nodeChartEnablers.add(nodeChartColorList);
+				metanodeProperties.add(nodeChartColorList);
+				nodeChartColorList.addTunableValueListener(this);
+				nodeChartColorList.setImmutable(true);
+
+				// Allow the user to reset the label-color memory
+				t = new Tunable("resetColors", "Reset colors for this attribute",
+		 	 	                Tunable.BUTTON, "Reset colors",
+		 	 	                this, null, 0);
+				metanodeProperties.add(t);
+				t.setImmutable(true);
+				nodeChartEnablers.add(t);
 			}
 		}
 		updateSettings(true);
@@ -409,6 +432,12 @@ public class MetanodeSettingsDialog extends JDialog
 		if ((t != null) && (t.valueChanged() || force)) {
 			chartType = (String)getListValue(t);
 			metanodeProperties.setProperty(t.getName(), chartType);
+		}
+
+		t = metanodeProperties.get("chartColorType");
+		if ((t != null) && (t.valueChanged() || force)) {
+			chartColorType = (String)getListValue(t);
+			metanodeProperties.setProperty(t.getName(), chartColorType);
 		}
 
 		// For each default value, get the default and set it
@@ -582,6 +611,7 @@ public class MetanodeSettingsDialog extends JDialog
 	 */
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
+		System.out.println("actionPerformed("+e+")");
 
 		if (command.equals("done")) {
 			updateSettings(true);
@@ -644,6 +674,11 @@ public class MetanodeSettingsDialog extends JDialog
 			// Update defaults
 			updateDefaultSettings();
 			setVisible(false);
+		} else if (command.equals("resetColors")) {
+			if (nodeChartAttribute != null)
+				NodeCharts.resetNodeChartLabels(nodeChartAttribute);
+			else
+				NodeCharts.resetNodeChartLabels();
 		}
 	}
 
@@ -656,6 +691,7 @@ public class MetanodeSettingsDialog extends JDialog
   	this.useNestedNetworks = MetaNodeManager.getUseNestedNetworksDefault();
 		this.metanodeOpacity = MetaNodeManager.getExpandedOpacityDefault();
 		this.chartType = MetaNodeManager.getChartTypeDefault();
+		this.chartColorType = MetaNodeManager.getChartColorTypeDefault();
 		this.nodeChartAttribute = MetaNodeManager.getNodeChartAttributeDefault();
 		this.myAttributeManager = new AttributeManager(defaultAttributeManager);
   	this.enableHandling = myAttributeManager.getEnable();
@@ -669,7 +705,7 @@ public class MetanodeSettingsDialog extends JDialog
 		this.dontExpandEmpty = context.getDontExpandEmpty();
   	this.useNestedNetworks = context.getUseNestedNetworks();
 		this.metanodeOpacity = context.getMetaNodeOpacity();
-		this.chartType = context.getChartType();
+		this.chartColorType = context.getChartColorType();
 		this.nodeChartAttribute = context.getNodeChartAttribute();
 		this.myAttributeManager = new AttributeManager(context.getAttributeManager());
 		myAttributeManager.loadHandlerMappings(Cytoscape.getCurrentNetwork(), context);
@@ -682,6 +718,7 @@ public class MetanodeSettingsDialog extends JDialog
 		mn.setHideMetaNode(hideMetaNode);
 		mn.setMetaNodeOpacity(metanodeOpacity);
 		mn.setChartType(chartType);
+		mn.setChartColorType(chartColorType);
 		mn.setNodeChartAttribute(nodeChartAttribute);
 		mn.setAttributeManager(myAttributeManager);
 		myAttributeManager.updateAttributes(mn);
@@ -695,6 +732,7 @@ public class MetanodeSettingsDialog extends JDialog
 		MetaNodeManager.setExpandedOpacityDefault(metanodeOpacity);
 		MetaNodeManager.setNodeChartAttributeDefault(nodeChartAttribute);
 		MetaNodeManager.setChartTypeDefault(chartType);
+		MetaNodeManager.setChartColorTypeDefault(chartColorType);
 	}
 
 	private void updateTunableSettings() {
@@ -713,6 +751,8 @@ public class MetanodeSettingsDialog extends JDialog
 		t.setValue(nodeChartAttribute);
 		t = metanodeProperties.get("chartType");
 		t.setValue(chartType);
+		t = metanodeProperties.get("chartColorType");
+		t.setValue(chartColorType);
 
 		// Clear the tunables for overrides
 	}
@@ -734,6 +774,8 @@ public class MetanodeSettingsDialog extends JDialog
 			nodeChartAttribute = (String)getListValue(t);
 		} else if (t.getName().equals("chartType")) {
 			chartType = (String)getListValue(t);
+		} else if (t.getName().equals("chartColorType")) {
+			chartColorType = (String)getListValue(t);
 		} else if (t.getName().equals("attributeList")) {
 			String attributeWP = (String)getListValue(t);
 			if (attributeWP == null)

@@ -81,6 +81,8 @@ public class NodeCharts {
 
 	private static String VALUELIST = "valuelist";
 	private static String LABELLIST = "labellist";
+
+	private static Map<String, List<String>> attrLabelListMap = null;
 	
 	/**
 	 * This method calculates the values and labels and draws the 
@@ -98,6 +100,12 @@ public class NodeCharts {
 
 		if (nodeChartAttribute == null || chartType == null || chartType.equals(MetaNodeGroupViewer.NONODECHART)) return;
 
+		if (attrLabelListMap == null)
+			attrLabelListMap = new HashMap<String, List<String>>();
+
+		if (!attrLabelListMap.containsKey(nodeChartAttribute))
+			attrLabelListMap.put(nodeChartAttribute, new ArrayList<String>());
+
 		// Get the values from all of our children
 		CyGroup group = mn.getCyGroup();
 		List<CyNode> nodeList = group.getNodes();
@@ -114,7 +122,7 @@ public class NodeCharts {
 		// Create our argument map
 		Map<String, Object> args = new HashMap<String, Object>();
 		args.put("node", group.getGroupNode().getIdentifier());
-		args.put("colorlist", "contrasting");
+		args.put("colorlist", mn.getChartColorType());
 
 		// Depending on the attribute type -- do the right thing
 		switch (attributeType) {
@@ -132,6 +140,10 @@ public class NodeCharts {
 			default:
 		}
 
+		// System.out.println("Nodechart args: ");
+		// for (String arg: args.keySet()) {
+		// 	System.out.println("   "+arg+"="+args.get(arg));
+		// }
 		try {
 			// First, make sure we don't have any nodechart on the node
 			CyCommandResult result = CyCommandManager.execute("nodecharts", "clear", args);
@@ -140,6 +152,15 @@ public class NodeCharts {
 		} catch (CyCommandException cce) {
 			logger.warning("node chart command failed: "+cce.getMessage());
 		}
+	}
+
+	public static void resetNodeChartLabels() {
+		attrLabelListMap = new HashMap<String, List<String>>();
+	}
+
+	public static void resetNodeChartLabels(String attr) {
+		if (attrLabelListMap != null)
+			attrLabelListMap.put(attr, new ArrayList<String>());
 	}
 
 	/**
@@ -162,49 +183,64 @@ public class NodeCharts {
 	/**
 	 * This method is used to handle string attribute types
 	 */
-	private static void getStringLabelsAndValues(Map<String,Object>args, CyGroup group, CyAttributes nodeAttributes,
-	                                              String nodeChartAttribute, String chartType) {
-		Map<String, Integer> valueMap = new HashMap<String, Integer>();
+	private static void getStringLabelsAndValues(Map<String,Object>args, CyGroup group, 
+	                                             CyAttributes nodeAttributes,
+	                                             String nodeChartAttribute, String chartType) {
+		Map<String, Integer> valueMap = initializeHistogram(nodeChartAttribute);
 		for (CyNode node: group.getNodes()) {
 			if (nodeAttributes.hasAttribute(node.getIdentifier(), nodeChartAttribute)) {
 				String v = nodeAttributes.getAttribute(node.getIdentifier(), nodeChartAttribute).toString();
-				incrementHistogram(valueMap, v);
+				incrementHistogram(nodeChartAttribute, valueMap, v);
 			}
 		}
 
-		addHistoArgs(valueMap, args);
+		addHistoArgs(nodeChartAttribute, valueMap, args);
 	}
 
 	/**
 	 * This method is used to handle list attribute types
 	 */
-	private static void getHistogramLabelsAndValues(Map<String,Object>args, CyGroup group, CyAttributes nodeAttributes,
-	                                              String nodeChartAttribute, String chartType) {
-		Map<String, Integer> valueMap = new HashMap<String, Integer>();
+	private static void getHistogramLabelsAndValues(Map<String,Object>args, 
+	                                                CyGroup group, CyAttributes nodeAttributes,
+	                                                String nodeChartAttribute, String chartType) {
+		Map<String, Integer> valueMap = initializeHistogram(nodeChartAttribute);
 		for (CyNode node: group.getNodes()) {
 			if (nodeAttributes.hasAttribute(node.getIdentifier(), nodeChartAttribute)) {
 				List l = nodeAttributes.getListAttribute(node.getIdentifier(), nodeChartAttribute);
 				for (Object v: l) {
 					String label = v.toString();
-					incrementHistogram(valueMap, label);
+					incrementHistogram(nodeChartAttribute, valueMap, label);
 				}
 			}
 		}
-		addHistoArgs(valueMap, args);
+		addHistoArgs(nodeChartAttribute, valueMap, args);
 	}
 
-	private static void incrementHistogram(Map<String, Integer> map, String value) {
-		if (!map.containsKey(value))
+	private static Map<String, Integer> initializeHistogram(String nodeChartAttribute) {
+		Map<String, Integer> histo = new HashMap<String, Integer>();
+		for (String s: attrLabelListMap.get(nodeChartAttribute)) {
+			// System.out.println("Initializing value for "+s+" to 0");
+			histo.put(s, 0);
+		}
+		return histo;
+	}
+
+	private static void incrementHistogram(String nodeChartAttribute, 
+	                                       Map<String, Integer> map, String value) {
+		if (!map.containsKey(value)) {
 			map.put(value, new Integer(1));
-		else {
+			// System.out.println("Adding "+value+" to value map");
+			attrLabelListMap.get(nodeChartAttribute).add(value);
+		} else {
 			Integer count = map.get(value);
 			map.put(value, count+1);
 		}
 	}
 
-	private static void addHistoArgs(Map<String, Integer> map, Map<String, Object> args) {
+	private static void addHistoArgs(String nodeChartAttribute,
+	                                 Map<String, Integer> map, Map<String, Object> args) {
 		// Now, we've got the histogram, create the appropriate arrays
-		List<String>labels = new ArrayList<String>(map.keySet());
+		List<String>labels = attrLabelListMap.get(nodeChartAttribute);
 		List<Integer>values = new ArrayList<Integer>();
 		for (String label: labels) {
 			values.add(map.get(label));

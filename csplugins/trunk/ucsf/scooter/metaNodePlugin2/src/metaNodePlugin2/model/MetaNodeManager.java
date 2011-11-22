@@ -62,6 +62,7 @@ public class MetaNodeManager {
 	protected static boolean useNestedNetworksDefault = false;
 	protected static boolean dontExpandEmptyDefault = true;
 	protected static String chartTypeDefault = null;
+	protected static String chartColorTypeDefault = "contrasting";
 	protected static String nodeChartAttributeDefault = null;
 	protected static AttributeManager defaultAttributeManager = new AttributeManager();
 
@@ -136,6 +137,7 @@ public class MetaNodeManager {
 		mn.setHideMetaNode(hideMetanodeDefault);
 		mn.setMetaNodeOpacity(metanodeOpacityDefault);
 		mn.setChartType(chartTypeDefault);
+		mn.setChartColorType(chartColorTypeDefault);
 		mn.setNodeChartAttribute(nodeChartAttributeDefault);
 		mn.setAttributeManager(new AttributeManager(defaultAttributeManager));
 		mn.getAttributeManager().loadHandlerMappings(metaGroup.getNetwork(), mn);
@@ -345,6 +347,24 @@ public class MetaNodeManager {
 	 */
 	static public String getChartTypeDefault() {
 		return MetaNodeManager.chartTypeDefault;
+	}
+
+	/**
+	 * Sets the chart color type to use for node charting.
+	 *
+	 * @param chartColorType the chart color type to use for node charts
+	 */
+	static public void setChartColorTypeDefault(String chartColorType) {
+		MetaNodeManager.chartColorTypeDefault = chartColorType;
+	}
+
+	/**
+	 * Gets the node chart color type.
+	 *
+	 * @return the node chart color type
+	 */
+	static public String getChartColorTypeDefault() {
+		return MetaNodeManager.chartColorTypeDefault;
 	}
 
 	/**
