@@ -483,16 +483,18 @@ public class ValueUtils {
 
 	// This is like rainbow, but we alternate sides of the color wheel
 	private static List<Color> generateContrastingColors(int nColors) {
-		// System.out.println("Generating contrasting colors");
+		System.out.println("Generating contrasting colors");
 		List<Color> values = new ArrayList<Color>();
-		float divs = ((float)nColors)/2.0f;
+		float divs = (float)nColors+((float)nColors)*0.2f;	// Add fuzz to avoid cycles
 		for (float i = 0.0f; i < (float)nColors; i += 1.0f) {
-			// System.out.println("Color("+(i/divs)+","+1.0f+","+1.0f+")");
+			System.out.println("Color("+(i/divs)+","+1.0f+","+1.0f+")");
 			values.add(new Color(Color.HSBtoRGB(i/divs, 1.0f, 1.0f)));
 			i += 1.0f;
 			if (i >= (float)nColors) break;
-			// System.out.println("Color("+((i/divs)+0.5f)+","+1.0f+","+1.0f+")");
-			values.add(new Color(Color.HSBtoRGB((i/divs)+0.5f, 1.0f, 1.0f)));
+			float hue = (i/divs)+0.25f;
+			if (hue >= 1.0f) hue = hue - 1.0f;
+			System.out.println("Color("+hue+","+1.0f+","+1.0f+")");
+			values.add(new Color(Color.HSBtoRGB(hue, 1.0f, 1.0f)));
 		}
 		return values;
 	}

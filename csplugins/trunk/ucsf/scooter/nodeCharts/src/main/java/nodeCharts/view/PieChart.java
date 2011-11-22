@@ -123,6 +123,8 @@ public class PieChart implements NodeChartViewer {
 			String label = null;
 			if (labels != null && labels.size() > 0)
 				label = labels.get(slice);
+			if (values.get(slice) == 0.0) continue;
+			// System.out.println("Slice "+slice+" label: "+label+" value = "+values.get(slice)+" color = "+colors.get(slice));
 			CustomGraphic[] cg = createSlice(bbox, arcStart, values.get(slice), label, colors.get(slice), view);
 			cgList.add(cg[0]);
 			if (cg[1] != null)
