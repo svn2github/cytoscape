@@ -184,7 +184,7 @@
  
 	<h2>Old Plugins</h2>
     <p>
-  	We also maintain a list of older <a href="plugins2.php">Cytoscape 3.x plugins</a> and <a href="plugins1.php"> Cytoscape 1.x Plugins</a>
+  	We also maintain a list of older <a href="plugins2.php">Cytoscape 2.x plugins</a> and <a href="plugins1.php"> Cytoscape 1.x Plugins</a>
     </p>
     
 
