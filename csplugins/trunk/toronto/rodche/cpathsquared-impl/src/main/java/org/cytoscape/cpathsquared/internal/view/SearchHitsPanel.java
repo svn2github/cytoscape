@@ -51,7 +51,7 @@ implements CPathWebServiceListener, CytoPanelStateChangedListener
     private InteractionBundleModel interactionBundleModel;
     private PathwayTableModel pathwayTableModel;
     private JTextPane summaryTextPane;
-    private PhysicalEntityDetailsPanel peDetailsPanel;
+    private SearchHitDetailsPanel peDetailsPanel;
 	private JLayeredPane appLayeredPane;
     private HashMap <String, RecordList> parentRecordsMap;
 	private CytoPanelState cytoPanelState;
@@ -101,7 +101,7 @@ implements CPathWebServiceListener, CytoPanelStateChangedListener
         hitListPane.add(internalPanel, BorderLayout.CENTER);
 
         //  Create Search Details Panel
-        SearchDetailsPanel detailsPanel = factory
+        SearchHitNetworksPanel detailsPanel = factory
         	.createSearchDetailsPanel(interactionBundleModel, pathwayTableModel);
 
         //  Create the Split Pane

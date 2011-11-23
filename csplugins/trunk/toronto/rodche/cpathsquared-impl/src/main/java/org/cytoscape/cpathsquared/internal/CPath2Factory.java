@@ -17,9 +17,9 @@ import org.cytoscape.cpathsquared.internal.view.DownloadDetails;
 import org.cytoscape.cpathsquared.internal.view.InteractionBundleModel;
 import org.cytoscape.cpathsquared.internal.view.InteractionBundlePanel;
 import org.cytoscape.cpathsquared.internal.view.PathwayTableModel;
-import org.cytoscape.cpathsquared.internal.view.PhysicalEntityDetailsPanel;
+import org.cytoscape.cpathsquared.internal.view.SearchHitDetailsPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchBoxPanel;
-import org.cytoscape.cpathsquared.internal.view.SearchDetailsPanel;
+import org.cytoscape.cpathsquared.internal.view.SearchHitNetworksPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchHitsPanel;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.model.CyNetwork;
@@ -119,14 +119,14 @@ public class CPath2Factory {
 		return new InteractionBundlePanel(interactionBundleModel, dialog, this);
 	}
 
-	public PhysicalEntityDetailsPanel createPhysicalEntityDetailsPanel(SearchHitsPanel searchHitsPanel) {
-		return new PhysicalEntityDetailsPanel(searchHitsPanel, this);
+	public SearchHitDetailsPanel createPhysicalEntityDetailsPanel(SearchHitsPanel searchHitsPanel) {
+		return new SearchHitDetailsPanel(searchHitsPanel, this);
 	}
 
-	public SearchDetailsPanel createSearchDetailsPanel(
+	public SearchHitNetworksPanel createSearchDetailsPanel(
 			InteractionBundleModel interactionBundleModel,
 			PathwayTableModel pathwayTableModel) {
-		return new SearchDetailsPanel(interactionBundleModel, pathwayTableModel, this);
+		return new SearchHitNetworksPanel(interactionBundleModel, pathwayTableModel, this);
 	}
 
 	public CyNetworkManager getNetworkManager() {

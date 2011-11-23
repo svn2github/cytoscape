@@ -73,7 +73,7 @@ public class CPathSearchPanel extends JPanel implements CPathWebServiceListener 
         GradientHeader header = new GradientHeader("About");
 
         aboutPanel.add(header, BorderLayout.NORTH);
-        JTextPane textPane = PhysicalEntityDetailsPanel.createHtmlTextPane(factory.getOpenBrowser());
+        JTextPane textPane = SearchHitDetailsPanel.createHtmlTextPane(factory.getOpenBrowser());
         textPane.setText(CPathProperties.blurb);
         aboutPanel.add(textPane, BorderLayout.CENTER);
         return aboutPanel;

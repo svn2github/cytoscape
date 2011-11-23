@@ -26,7 +26,7 @@ import cpath.service.OutputFormat;
  *
  * @author Ethan Cerami.
  */
-public class SearchDetailsPanel extends JPanel {
+public class SearchHitNetworksPanel extends JPanel {
 	
     private CPath2Factory factory;
 
@@ -38,7 +38,7 @@ public class SearchDetailsPanel extends JPanel {
      * @param application 
      * @param taskManager 
      */
-    public SearchDetailsPanel(InteractionBundleModel interactionBundleModel,
+    public SearchHitNetworksPanel(InteractionBundleModel interactionBundleModel,
             PathwayTableModel pathwayTableModel, CPath2Factory factory) {
     	this.factory = factory;
         GradientHeader header = new GradientHeader("Step 3:  Select Network(s)");

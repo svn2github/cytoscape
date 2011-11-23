@@ -23,7 +23,7 @@ import org.cytoscape.util.swing.OpenBrowser;
  *
  * @author Ethan Cerami.
  */
-public class PhysicalEntityDetailsPanel extends JPanel implements MouseListener {
+public class SearchHitDetailsPanel extends JPanel implements MouseListener {
     private Document doc;
     private JTextPane textPane;
 	private SearchHitsPanel searchHitsPanel; // ref to parent
@@ -32,7 +32,7 @@ public class PhysicalEntityDetailsPanel extends JPanel implements MouseListener 
      * Constructor.
      * @param browser 
      */
-    public PhysicalEntityDetailsPanel(SearchHitsPanel searchHitsPanel, CPath2Factory factory) {
+    public SearchHitDetailsPanel(SearchHitsPanel searchHitsPanel, CPath2Factory factory) {
         this.setLayout(new BorderLayout());
 		this.searchHitsPanel = searchHitsPanel;
         textPane = createHtmlTextPane(factory.getOpenBrowser());
@@ -42,7 +42,6 @@ public class PhysicalEntityDetailsPanel extends JPanel implements MouseListener 
         GradientHeader header = new GradientHeader("Details");
 		// we become gradient header mouse listener - see comment below
 		header.addMouseListener(this);
-
         add (header, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
     }

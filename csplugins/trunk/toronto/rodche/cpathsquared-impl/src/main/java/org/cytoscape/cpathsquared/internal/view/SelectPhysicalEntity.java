@@ -49,15 +49,26 @@ public class SelectPhysicalEntity {
             html.append("<html>");
 
             html.append ("<h2>" + searchHit.getName() + "</h2>");
+            html.append ("<h3>Class: " + searchHit.getBiopaxClass() + "</h3>");
 
-            List<String> organism = searchHit.getOrganism();
-            if (organism != null && !organism.isEmpty()) {
-                html.append ("<H3>" + StringUtils.join(organism, ",") + "</H3>");
+            List<String> items = searchHit.getOrganism();
+            if (items != null && !items.isEmpty()) {
+                html.append ("<H3>Organisms:<br/>" + StringUtils.join(items, "<br/>") + "</H3>");
             }
 
+            items = searchHit.getPathway();
+            if (items != null && !items.isEmpty()) {
+                html.append ("<H3>Pathway URIs:<br/>" + StringUtils.join(items, "<br/>") + "</H3>");
+            }
+            
+            items = searchHit.getDataSource();
+            if (items != null && !items.isEmpty()) {
+                html.append ("<H3>Data sources:<br/>" + StringUtils.join(items, "<br/>") + "</H3>");
+            }
+            
             String primeExcerpt = searchHit.getExcerpt();
             if (primeExcerpt != null) {
-                html.append("<H4>Matching Excerpt(s):</H4>");
+                html.append("<H4>Matched in</H4>");
                 html.append("<span class='excerpt'>" + primeExcerpt + "</span><BR>") ;
             }
 
