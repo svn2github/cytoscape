@@ -1,4 +1,4 @@
-package org.cytoscape.work.swing;
+package org.cytoscape.work.internal.tunables;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
