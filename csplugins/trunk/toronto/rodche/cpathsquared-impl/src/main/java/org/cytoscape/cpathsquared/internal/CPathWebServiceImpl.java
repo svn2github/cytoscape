@@ -65,8 +65,8 @@ public class CPathWebServiceImpl implements CPathWebService {
     	if(LOGGER.isDebugEnabled())
     		LOGGER.debug("cPath2Url=" + client.getEndPointURL());
     	
-        client.setOrganisms(Collections.singleton(String.valueOf(ncbiTaxonomyId)));
-        //protocol.setCommand(CPathProtocol.COMMAND_SEARCH);
+        if(ncbiTaxonomyId > 0)
+        	client.setOrganisms(Collections.singleton(String.valueOf(ncbiTaxonomyId)));
         client.setType("PhysicalEntity");
 
         try {

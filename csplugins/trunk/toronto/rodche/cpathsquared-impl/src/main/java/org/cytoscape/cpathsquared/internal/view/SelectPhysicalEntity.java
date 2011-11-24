@@ -50,6 +50,9 @@ public class SelectPhysicalEntity {
 
             html.append ("<h2>" + searchHit.getName() + "</h2>");
             html.append ("<h3>Class: " + searchHit.getBiopaxClass() + "</h3>");
+            html.append ("<h3>URI: " + searchHit.getUri() + "</h3>");
+            if(searchHit.getActualHitUri() != null)
+            	html.append ("<h3>Child (actual) hit URI: " + searchHit.getActualHitUri() + "</h3>");
 
             List<String> items = searchHit.getOrganism();
             if (items != null && !items.isEmpty()) {
