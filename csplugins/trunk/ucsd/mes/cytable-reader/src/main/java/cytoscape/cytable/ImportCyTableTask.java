@@ -22,12 +22,12 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 
 
-class ImportCyTableTask implements Task {
+public class ImportCyTableTask implements Task {
 	private TaskMonitor taskMonitor;
 	private File[] files;
 	private String type;
 
-	ImportCyTableTask(File[] files, String type) {
+	public ImportCyTableTask(File[] files, String type) {
 		this.files = files;
 		this.type = type;
 	}
