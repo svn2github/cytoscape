@@ -55,12 +55,12 @@ public class LoadTableAttrsFromGenomeSpace extends CytoscapeAction {
 				return;
 
 			// Download the GenomeSpace file:
-			tempFile = File.createTempFile("temp", "cyattrs");
+			tempFile = File.createTempFile("temp", fileMetadata.getName());
 			dataManagerClient.downloadFile(fileMetadata, tempFile, true);
 
 			final ImportTextTableDialog dialog =
 				new ImportTextTableDialog(Cytoscape.getDesktop(), tempFile,
-							  fileMetadata.getName(),
+							  tempFile.toURI().toURL().toString(),
 							  ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
 			dialog.pack();
 			dialog.setLocationRelativeTo(Cytoscape.getDesktop());
