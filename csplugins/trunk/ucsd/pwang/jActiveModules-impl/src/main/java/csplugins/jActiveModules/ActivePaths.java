@@ -228,7 +228,7 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 			CyNode newNode = overview.addNode(); //Cytoscape.getCyNode(subnetworks[i].getTitle(), true);
 			newNode.getCyRow().set("name", subnetworks[i].getCyRow().get("name", String.class));
 			path_nodes.add(newNode);
-			newNode.setNetwork(subnetworks[i]);
+			newNode.setNetworkPointer(subnetworks[i]);
 			// create an attribute for this new node
 			//Cytoscape.getNodeAttributes().setAttribute(newNode.getIdentifier(), NODE_SCORE, new Double(activePaths[i].getScore()));
 			
@@ -258,11 +258,11 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 		Iterator it = path_edges.iterator();
 		while(it.hasNext()){
 			CyEdge aEdge = (CyEdge) it.next();
-			int NumberOfSharedNodes = getNumberOfSharedNodes((CyNetwork)aEdge.getSource().getNetwork(), 
-					(CyNetwork)aEdge.getTarget().getNetwork());
+			int NumberOfSharedNodes = getNumberOfSharedNodes((CyNetwork)aEdge.getSource().getNetworkPointer(), 
+					(CyNetwork)aEdge.getTarget().getNetworkPointer());
 			
-			int minNodeCount = Math.min(aEdge.getSource().getNetwork().getNodeCount(), 
-								aEdge.getTarget().getNetwork().getNodeCount());
+			int minNodeCount = Math.min(aEdge.getSource().getNetworkPointer().getNodeCount(), 
+								aEdge.getTarget().getNetworkPointer().getNodeCount());
 
 			//cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "jActiveModules_nodeCount_min_two", minNodeCount);
 			aEdge.getCyRow().set("jActiveModules_nodeCount_min_two", minNodeCount);
@@ -361,7 +361,7 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 		
 		HashSet[] hashSet = new HashSet[nodes.length];
 		for (int i=0; i< nodes.length; i++){
-			hashSet[i] = new HashSet<CyNode>(((CyNode)nodes[i]).getNetwork().getNodeList());
+			hashSet[i] = new HashSet<CyNode>(((CyNode)nodes[i]).getNetworkPointer().getNodeList());
 		}
 		
 		for (int i=0; i< nodes.length-1; i++){
