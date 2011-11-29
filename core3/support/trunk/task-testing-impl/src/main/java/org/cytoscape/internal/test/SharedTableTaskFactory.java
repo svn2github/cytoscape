@@ -4,13 +4,13 @@ package org.cytoscape.internal.test;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
-import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 
 
 public class SharedTableTaskFactory extends AbstractNetworkTaskFactory {
-	CyRootNetworkFactory rnf;
+	CyRootNetworkManager rnf;
 
-	public SharedTableTaskFactory(CyRootNetworkFactory rnf) { 
+	public SharedTableTaskFactory(CyRootNetworkManager rnf) { 
 		super();
 		this.rnf = rnf;
 	}

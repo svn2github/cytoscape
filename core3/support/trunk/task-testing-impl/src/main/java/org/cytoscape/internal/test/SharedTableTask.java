@@ -7,7 +7,7 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.task.AbstractNetworkTask;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
-import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.model.CyNetwork;
 
 public class SharedTableTask extends AbstractNetworkTask {
@@ -15,15 +15,15 @@ public class SharedTableTask extends AbstractNetworkTask {
 	@Tunable(description="new column name")
 	public String colName;
 
-	private CyRootNetworkFactory rnf;
+	private CyRootNetworkManager rnf;
 
-	public SharedTableTask(CyRootNetworkFactory rnf, CyNetwork net) {
+	public SharedTableTask(CyRootNetworkManager rnf, CyNetwork net) {
 		super(net);
 		this.rnf = rnf;
 	}
 
 	public void run(final TaskMonitor taskMonitor) throws Exception {
-		CyRootNetwork root = rnf.convert(network);	
+		CyRootNetwork root = rnf.getRootNetwork(network);	
 		root.getSharedNodeTable().createColumn(colName,String.class,false);
 	}
 }

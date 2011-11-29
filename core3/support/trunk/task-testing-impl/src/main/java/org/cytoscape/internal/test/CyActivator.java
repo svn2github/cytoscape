@@ -18,7 +18,7 @@ import org.cytoscape.internal.test.tunables.TunablesTestTaskFactory;
 import org.cytoscape.application.swing.CyAction;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.task.NetworkTaskFactory;
-import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 
 
 import org.osgi.framework.BundleContext;
@@ -39,7 +39,7 @@ public class CyActivator extends AbstractCyActivator {
 
 		CyApplicationManager cyApplicationManagerServiceRef = getService(bc,CyApplicationManager.class);
 		TaskManager taskManagerServiceRef = getService(bc,TaskManager.class);
-		CyRootNetworkFactory rootNetworkFactoryServiceRef = getService(bc,CyRootNetworkFactory.class);
+		CyRootNetworkManager rootNetworkFactoryServiceRef = getService(bc,CyRootNetworkManager.class);
 		
 		WaitAction waitAction = new WaitAction(cyApplicationManagerServiceRef,taskManagerServiceRef);
 		MultiTunableAction multiTunableAction = new MultiTunableAction(cyApplicationManagerServiceRef,taskManagerServiceRef);
