@@ -28,21 +28,16 @@
 package org.cytoscape.work.undo;
 
 
-import javax.swing.undo.UndoManager;
-import javax.swing.undo.UndoableEditSupport;
-
 
 /** 
- * A simple interface that provides access to a Swing Undo Service. 
+ * A simple interface that posts edits to the Cytoscape undo stack. 
+ * @CyAPI.Api.Interface
  */
 public interface UndoSupport {
-	/** Returns the <code>UndoManager</code> associated with this <code>UndoSupport</code> instance.
-	 * @return the <code>UndoManager</code> associated with this <code>UndoSupport</code> instance.
-	 */
-	UndoManager getUndoManager(); 
 
-	/** Returns the <code>UndoableEditSupport</code> associated with this <code>UndoSupport</code> instance.
-	 * @return the <code>UndoableEditSupport</code> associated with this <code>UndoSupport</code> instance.
+	/**
+	 * Posts the specified edit to the Cytoscape undo stack.
+	 * @param edit The edit to be added to the Cytoscape undo stack.
 	 */
-	UndoableEditSupport getUndoableEditSupport();
+	void postEdit(AbstractCyEdit edit);
 }

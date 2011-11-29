@@ -1,7 +1,7 @@
-/*
- File: SelectAllEdgesTask.java
 
- Copyright (c) 2006, 2010-2011, The Cytoscape Consortium (www.cytoscape.org)
+
+/*
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -27,38 +27,29 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.task.internal.select;
+package org.cytoscape.work.swing.undo;
 
-
-import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.undo.UndoSupport;
 
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEditSupport;
 
-public class SelectAllEdgesTask extends AbstractSelectTask {
-	private final UndoSupport undoSupport;
 
-	public SelectAllEdgesTask(final UndoSupport undoSupport, final CyNetwork net,
-	                          final CyNetworkViewManager networkViewManager,
-	                          final CyEventHelper eventHelper)
-	{
-		super(net, networkViewManager, eventHelper);
-		this.undoSupport = undoSupport;
-	}
+/** 
+ * In general, developers should NOT use this interface or the classes
+ * it provides access to to post edits and should use {@link UndoSupport} instead. 
+ * This interface is really only meant for those handling undo/redo requests 
+ * in a swing environment and this interface provides access to the necessary
+ * Swing Undo services to do so. 
+ */
+public interface SwingUndoSupport extends UndoSupport {
+	/** Returns the <code>UndoManager</code> associated with this <code>UndoSupport</code> instance.
+	 * @return the <code>UndoManager</code> associated with this <code>UndoSupport</code> instance.
+	 */
+	UndoManager getUndoManager(); 
 
-	public void run(TaskMonitor tm) {
-		tm.setProgress(0.0);
-		final CyNetworkView view = networkViewManager.getNetworkView(network.getSUID());
-		undoSupport.postEdit(
-			new SelectionEdit(eventHelper, "Select All Edges", network, view,
-			                  SelectionEdit.SelectionFilter.EDGES_ONLY));
-		tm.setProgress(0.3);
-		selectUtils.setSelectedEdges(network.getEdgeList(), true);
-		tm.setProgress(0.8);
-		updateView();
-		tm.setProgress(1.0);
-	}
+	/** Returns the <code>UndoableEditSupport</code> associated with this <code>UndoSupport</code> instance.
+	 * @return the <code>UndoableEditSupport</code> associated with this <code>UndoSupport</code> instance.
+	 */
+	UndoableEditSupport getUndoableEditSupport();
 }
