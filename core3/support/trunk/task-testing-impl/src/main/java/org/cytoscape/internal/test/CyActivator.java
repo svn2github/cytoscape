@@ -39,7 +39,7 @@ public class CyActivator extends AbstractCyActivator {
 
 		CyApplicationManager cyApplicationManagerServiceRef = getService(bc,CyApplicationManager.class);
 		TaskManager taskManagerServiceRef = getService(bc,TaskManager.class);
-		CyRootNetworkManager rootNetworkFactoryServiceRef = getService(bc,CyRootNetworkManager.class);
+		CyRootNetworkManager rootNetworkManagerServiceRef = getService(bc,CyRootNetworkManager.class);
 		
 		WaitAction waitAction = new WaitAction(cyApplicationManagerServiceRef,taskManagerServiceRef);
 		MultiTunableAction multiTunableAction = new MultiTunableAction(cyApplicationManagerServiceRef,taskManagerServiceRef);
@@ -48,7 +48,7 @@ public class CyActivator extends AbstractCyActivator {
 		TunablesTestTaskFactory3 tunablesTestTaskFactory3 = new TunablesTestTaskFactory3();
 		InfiniteTaskFactory infiniteTaskFactory = new InfiniteTaskFactory();
 		MultipleTaskFactory multipleTaskFactory = new MultipleTaskFactory();
-		SharedTableTaskFactory sharedTableTaskFactory = new SharedTableTaskFactory(rootNetworkFactoryServiceRef);
+		SharedTableTaskFactory sharedTableTaskFactory = new SharedTableTaskFactory(rootNetworkManagerServiceRef);
 		
 		registerService(bc,waitAction,CyAction.class, new Properties());
 		registerService(bc,multiTunableAction,CyAction.class, new Properties());
