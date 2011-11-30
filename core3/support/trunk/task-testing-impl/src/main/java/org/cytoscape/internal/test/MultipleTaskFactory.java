@@ -8,7 +8,7 @@ import org.cytoscape.work.TaskFactory;
 public class MultipleTaskFactory implements TaskFactory {
 	public MultipleTaskFactory() { }
 
-	public TaskIterator getTaskIterator() {
+	public TaskIterator createTaskIterator() {
 		return new TaskIterator(new SingleTask(true), new SingleTask(true), new SingleTask(false), new SingleTask(true));
 	}
 }

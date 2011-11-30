@@ -15,7 +15,7 @@ public class SharedTableTaskFactory extends AbstractNetworkTaskFactory {
 		this.rnf = rnf;
 	}
 
-	public TaskIterator getTaskIterator() {
+	public TaskIterator createTaskIterator() {
 		return new TaskIterator(new SharedTableTask(rnf,network)); 
 	}
 }

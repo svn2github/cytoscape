@@ -8,7 +8,7 @@ import org.cytoscape.work.TaskFactory;
 public class InfiniteTaskFactory implements TaskFactory {
 	public InfiniteTaskFactory() { }
 
-	public TaskIterator getTaskIterator() {
+	public TaskIterator createTaskIterator() {
 		return new TaskIterator(new InfiniteTask());
 	}
 }

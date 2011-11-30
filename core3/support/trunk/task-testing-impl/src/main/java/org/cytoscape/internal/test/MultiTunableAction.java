@@ -63,7 +63,7 @@ public class MultiTunableAction extends AbstractCyAction {
 	}
 
 	public class DummyTaskFactory implements TaskFactory {
-		public TaskIterator getTaskIterator() {
+		public TaskIterator createTaskIterator() {
 			return new TaskIterator( new DummyTask(), new DummyTask2() );
 		}
 	}

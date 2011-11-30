@@ -43,7 +43,7 @@ public class TunablesTestTaskFactory2 implements TaskFactory {
 	@Tunable(description="# of loops")
 	public int loopCount = 1;
 
-	public TaskIterator getTaskIterator() {
+	public TaskIterator createTaskIterator() {
 		return new TaskIterator(new TunablesTestTask2(inputFile, loopCount));
 	} 
 }

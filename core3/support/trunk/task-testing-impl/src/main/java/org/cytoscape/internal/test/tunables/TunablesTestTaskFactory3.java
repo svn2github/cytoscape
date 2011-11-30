@@ -35,7 +35,7 @@ import org.cytoscape.work.TaskIterator;
 
 
 public class TunablesTestTaskFactory3 implements TaskFactory {
-	public TaskIterator getTaskIterator() {
+	public TaskIterator createTaskIterator() {
 		return new TaskIterator(new TunablesTestTask3());
 	} 
 }

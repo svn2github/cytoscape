@@ -62,7 +62,7 @@ public class WaitAction extends AbstractCyAction {
 	}
 
 	private class DummyTaskFactory implements TaskFactory {
-		public TaskIterator getTaskIterator() {
+		public TaskIterator createTaskIterator() {
 			return new TaskIterator( new DummyTask() );
 		}
 	}
