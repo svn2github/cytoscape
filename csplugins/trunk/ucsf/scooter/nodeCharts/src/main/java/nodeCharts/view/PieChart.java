@@ -35,6 +35,7 @@ package nodeCharts.view;
 // System imports
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,8 @@ public class PieChart implements NodeChartViewer {
 	private static final String LABELSTYLE = "labelstyle";
 	private static final String LABELSIZE = "labelsize";
 	private static final String LABELOFFSET = "labeloffset";
+	private static final String SORTSLICES = "sortslices";
+	private static final String MINIMUMSLICE = "minimumslice";
 	private static final String ARCSTART = "arcstart";
 
 	public String getName() {
@@ -85,6 +88,11 @@ public class PieChart implements NodeChartViewer {
 		Map<String,String> options = new HashMap<String,String>();
 		options.put(COLORS,"");
 		options.put(ARCSTART,"0.0");
+		options.put(LABELFONT, "");
+		options.put(LABELSTYLE, "plain");
+		options.put(LABELSIZE, "8");
+		options.put(MINIMUMSLICE, "5.0");
+		options.put(SORTSLICES, "true");
 		return options;
 	}
 
@@ -93,6 +101,22 @@ public class PieChart implements NodeChartViewer {
 	                                                                               throws CyCommandException {
 		// Get our colors
 		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), values);
+
+		// Handle our options
+		double minimumSlice = 2.0;
+		if (args.containsKey(MINIMUMSLICE))
+			minimumSlice = ValueUtils.getDoubleValue(args.get(MINIMUMSLICE));
+
+		int labelSize = 4;
+		if (args.containsKey(LABELSIZE))
+			labelSize = ValueUtils.getIntegerValue(args.get(LABELSIZE));
+
+		boolean sortSlices = true;
+		if (args.containsKey(SORTSLICES))
+			sortSlices = ValueUtils.getBooleanValue(args.get(SORTSLICES));
+
+		if (sortSlices)
+			sortSlicesBySize(values, colors, labels, minimumSlice);
 
 		// Get our angular offset
 		double arcStart = 0.0;
@@ -125,7 +149,7 @@ public class PieChart implements NodeChartViewer {
 				label = labels.get(slice);
 			if (values.get(slice) == 0.0) continue;
 			// System.out.println("Slice "+slice+" label: "+label+" value = "+values.get(slice)+" color = "+colors.get(slice));
-			CustomGraphic[] cg = createSlice(bbox, arcStart, values.get(slice), label, colors.get(slice), view);
+			CustomGraphic[] cg = createSlice(bbox, arcStart, values.get(slice), label, colors.get(slice), view, labelSize);
 			cgList.add(cg[0]);
 			if (cg[1] != null)
 				labelList.add(cg[1]);
@@ -154,7 +178,7 @@ public class PieChart implements NodeChartViewer {
 	}
 
 	private CustomGraphic[] createSlice(Rectangle2D bbox, double arcStart, Double arc, String label, Color color,
-	                                    CyNetworkView view) {
+	                                    CyNetworkView view, int fontSize) {
 		CustomGraphic[] vals = new CustomGraphic[2];
 
 		// System.out.println("Creating arc from "+arcStart+" to "+(arc.doubleValue()+arcStart)+" with color: "+color);
@@ -176,7 +200,7 @@ public class PieChart implements NodeChartViewer {
 		vals[1] = null;
 		if (label != null) {
 			// create the label
-			Shape textShape = ViewUtils.getLabelShape(label, null, 0, 0, view);
+			Shape textShape = ViewUtils.getLabelShape(label, null, 0, fontSize, view);
 
 			// Now, position the label.  Put the label on the outer edge of the circle.
 			Point2D labelPosition = getLabelPosition(bbox, midpointAngle, 1.7);
@@ -237,4 +261,60 @@ public class PieChart implements NodeChartViewer {
 
 		return TextAlignment.ALIGN_LEFT;
 	}
+
+	private void sortSlicesBySize(List<Double>values, List<Color>colors, List<String>labels, double minimumSlice) {
+		Double[] valueArray = values.toArray(new Double[1]);
+		values.clear();
+		Color[] colorArray = colors.toArray(new Color[1]);
+		colors.clear();
+		String[] labelArray = labels.toArray(new String[1]);
+		labels.clear();
+		
+		Integer[] sortedIndex = new Integer[valueArray.length];
+		for (int i = 0; i < valueArray.length; i++) sortedIndex[i] = new Integer(i);
+		IndexComparator iCompare = new IndexComparator(valueArray);
+		Arrays.sort(sortedIndex, iCompare);
+
+		double otherValues = 0.0;
+		
+		// index now has the values in sorted order
+		for (int index = valueArray.length-1; index >= 0; index--) {
+			if (valueArray[sortedIndex[index]] >= minimumSlice) {
+				values.add(valueArray[sortedIndex[index]]);
+				colors.add(colorArray[sortedIndex[index]]);
+				labels.add(labelArray[sortedIndex[index]]);
+			} else {
+				otherValues = otherValues + valueArray[sortedIndex[index]];
+			}
+		}
+
+		if (otherValues > 0.0) {
+			values.add(otherValues);
+			colors.add(Color.LIGHT_GRAY);
+			labels.add("Other");
+		}
+	}
+
+  private class IndexComparator implements Comparator<Integer> {
+    Double[] data = null;
+    Integer[] intData = null;
+
+    public IndexComparator(Double[] data) { this.data = data; }
+
+    public IndexComparator(Integer[] data) { this.intData = data; }
+
+    public int compare(Integer o1, Integer o2) {
+      if (data != null) {
+        if (data[o1.intValue()] < data[o2.intValue()]) return -1;
+        if (data[o1.intValue()] > data[o2.intValue()]) return 1;
+        return 0;
+      } else if (intData != null) {
+        if (intData[o1.intValue()] < intData[o2.intValue()]) return -1;
+        if (intData[o1.intValue()] > intData[o2.intValue()]) return 1;
+        return 0;
+      }
+      return 0;
+    }
+	}
+
 }

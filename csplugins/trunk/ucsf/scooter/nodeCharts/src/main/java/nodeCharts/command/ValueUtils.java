@@ -224,6 +224,24 @@ public class ValueUtils {
 	}
 
 	/**
+ 	 * Return the integer equivalent of the input
+ 	 *
+ 	 * @param input an input value that is supposed to be a integer
+ 	 * @return the a integer value it represents
+ 	 * @throws NumberFormatException is the value is illegal
+ 	 */
+	public static int getIntegerValue(Object input) throws NumberFormatException {
+		if (input instanceof Integer)
+			return ((Integer)input).intValue();
+		else if (input instanceof Integer)
+			return ((Integer)input).intValue();
+		else if (input instanceof String)
+			return Integer.parseInt((String)input);
+		throw new NumberFormatException("input can not be converted to integer");
+	}
+
+
+	/**
  	 * Return the size specified by the user in the width and height fields of the Rectangle
  	 * The size can be either "sss" where "sss" will be both the height and the width or
  	 * "hhhxwww" where hhh is the height and www is the width.
