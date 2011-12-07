@@ -66,19 +66,9 @@
         </dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>biopax-impl</artifactId>
+			<artifactId>biopax-api</artifactId>
 			<version>${parent.version}</version>
 			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>paxtools-core</artifactId>
-					<groupId>cytoscape-temp</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>biopax-converter</artifactId>
-					<groupId>cytoscape-temp</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -94,11 +84,6 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-        	<groupId>org.biopax.paxtools</groupId>
-        	<artifactId>paxtools-core</artifactId>
-        	<version>4.0.1</version>
         </dependency>
         <dependency>
         	<groupId>pathwaycommons.cpath</groupId>
@@ -158,7 +143,7 @@
 						<Bundle-Activator>${bundle.namespace}.internal.CyActivator</Bundle-Activator>
 						<Export-Package>
 							!${bundle.namespace}.internal.*,
-							${bundle.namespace}.*;version="${pom.version}"
+							${bundle.namespace}.*;version="${project.version}"
 						</Export-Package>
 						<Private-Package>${bundle.namespace}.internal.*</Private-Package>
 						<Embed-Dependency>

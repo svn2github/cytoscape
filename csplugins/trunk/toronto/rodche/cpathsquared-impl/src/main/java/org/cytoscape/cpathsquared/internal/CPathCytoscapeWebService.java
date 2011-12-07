@@ -75,7 +75,7 @@ public class CPathCytoscapeWebService extends AbstractWebServiceClient
     }
     
     @Override
-    public TaskIterator getTaskIterator() {
+    public TaskIterator createTaskIterator() {
     	String query = "";
 		CPathNetworkImportTask task = factory.createCPathNetworkImportTask(query, webApi, OutputFormat.BINARY_SIF);
     	return new TaskIterator(task);

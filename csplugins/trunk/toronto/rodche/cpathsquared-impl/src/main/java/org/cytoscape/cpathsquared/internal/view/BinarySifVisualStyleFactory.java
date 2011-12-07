@@ -64,8 +64,7 @@ public class BinarySifVisualStyleFactory {
 	public VisualStyle getVisualStyle() {
 		synchronized (this) {
 			if (binarySifStyle == null) {
-				binarySifStyle = styleFactory
-						.getInstance(BINARY_SIF_VISUAL_STYLE);
+				binarySifStyle = styleFactory.createVisualStyle(BINARY_SIF_VISUAL_STYLE);
 
 				// set node opacity
 				binarySifStyle.setDefaultValue(

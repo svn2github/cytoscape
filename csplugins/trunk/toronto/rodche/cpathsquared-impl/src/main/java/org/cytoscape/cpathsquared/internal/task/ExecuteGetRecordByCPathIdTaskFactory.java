@@ -38,8 +38,9 @@ public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory {
 		this.mappingManager = mappingManager;
 	}
 
+
 	@Override
-	public TaskIterator getTaskIterator() {
+	public TaskIterator createTaskIterator() {
 		return new TaskIterator(new ExecuteGetRecordByCPathId(webApi, ids, format, networkTitle, cPathFactory, bpContainer, mapperFactory, networkListener, mappingManager));
 	}
 
