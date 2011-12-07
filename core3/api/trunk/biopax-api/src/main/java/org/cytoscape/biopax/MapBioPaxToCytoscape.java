@@ -1,7 +1,6 @@
 package org.cytoscape.biopax;
 
 import org.biopax.paxtools.model.BioPAXElement;
-import org.biopax.paxtools.model.Model;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;

@@ -52,19 +52,12 @@ import org.biopax.paxtools.model.level3.Level3Element;
 import org.biopax.paxtools.model.level3.Named;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.Provenance;
-import org.biopax.paxtools.model.level3.PublicationXref;
-import org.biopax.paxtools.model.level3.RelationshipTypeVocabulary;
-import org.biopax.paxtools.model.level3.RelationshipXref;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.XReferrable;
 import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.paxtools.util.ClassFilterSet;
-import org.cytoscape.biopax.internal.ExternalLink;
-import org.cytoscape.biopax.internal.MapBioPaxToCytoscapeImpl;
-import org.cytoscape.biopax.internal.util.ParentFinder;
+import org.cytoscape.biopax.MapBioPaxToCytoscape;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyTableUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -397,25 +390,6 @@ public class BioPaxUtil {
 		} else
 			return null;
 	}
-
-	
-	@Deprecated
-	public static <T extends Xref> List<ExternalLink> xrefToExternalLinks(BioPAXElement bpe, Class<T> xrefClass) {
-		
-		if(bpe instanceof XReferrable) {
-			List<ExternalLink> erefs = new ArrayList<ExternalLink>();
-			erefs.addAll(extractXrefs(new ClassFilterSet<Xref,T>(
-				((XReferrable)bpe).getXref(), xrefClass) ));
-			if(bpe instanceof SimplePhysicalEntity && 
-				((SimplePhysicalEntity)bpe).getEntityReference() != null)
-			{
-				erefs.addAll(extractXrefs(new ClassFilterSet<Xref,T>(
-					((SimplePhysicalEntity)bpe).getEntityReference().getXref(), xrefClass) ));
-			}
-			return erefs;
-		}
-		return new ArrayList<ExternalLink>();
-	}
 	
 	
 	public static <T extends Xref> List<T> getXRefs(BioPAXElement bpe, Class<T> xrefClass) {
@@ -431,52 +405,6 @@ public class BioPaxUtil {
 			return erefs;
 		}
 		return new ArrayList<T>();
-	}
-	
-
-	@Deprecated
-	private static List<ExternalLink> extractXrefs(Collection<? extends Xref> xrefs) {
-		List<ExternalLink> dbList = new ArrayList<ExternalLink>();
-
-		for (Xref x: xrefs) {		
-			String db = null;
-			String id = null;
-			String relType = null;
-			String title = null;
-			String year = null;
-			String author = null;
-			String url = null;
-			String source = null;
-			
-			db = x.getDb();
-			String ver = x.getIdVersion();
-			id = x.getId(); // + ((ver!=null) ? "_" + ver : "");
-			if(x instanceof RelationshipXref) {
-				RelationshipTypeVocabulary v = ((RelationshipXref)x).getRelationshipType();
-				if(v != null) relType = v.getTerm().toString();
-			}
-			if(x instanceof PublicationXref) {
-				PublicationXref px = (PublicationXref)x;
-				author = px.getAuthor().toString();
-				title = px.getTitle();
-				source = px.getSource().toString();
-				url =px.getUrl().toString();
-				year = px.getYear() + "";
-			}
-
-			if ((db != null) && (id != null)) {
-				ExternalLink link = new ExternalLink(db, id);
-				link.setAuthor(author);
-				link.setRelType(relType);
-				link.setTitle(title);
-				link.setYear(year);
-				link.setSource(source);
-				link.setUrl(url);
-				dbList.add(link);
-			}
-		}
-
-		return dbList;
 	}
 
 	
@@ -546,26 +474,6 @@ public class BioPaxUtil {
 			}
 		}
 		return coll;
-	}
-
-	
-	/**
-	 * Finds element's parents (CyNode names) in the collection.
-	 * 
-	 * Use with caution: this method can get computationally expensive or loop!
-	 * 
-	 * @param bpe
-	 * @param procs - candidates
-	 * @return
-	 */
-	public static Set<BioPAXElement> fetchParentNodeNames(BioPAXElement bpe, Set<? extends BioPAXElement> procs) {
-		Set<BioPAXElement> parents = new HashSet<BioPAXElement>();
-		ParentFinder parentFinder = new ParentFinder(SimpleEditorMap.L3);
-		for (BioPAXElement proc : procs) {
-			if(!parents.contains(proc) && parentFinder.isParentChild(proc, bpe))
-				parents.add(proc);
-		}
-		return parents;
 	}
 	
 
@@ -640,13 +548,13 @@ public class BioPaxUtil {
 	
 	public static boolean isBioPAXNetwork(CyNetwork cyNetwork) {
 		return Boolean.TRUE == cyNetwork.getCyRow()
-			.get(MapBioPaxToCytoscapeImpl.BIOPAX_NETWORK, Boolean.class);
+			.get(MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.class);
 	}
 	
 	
 	public static boolean isBiopaxSifNetwork(CyNetwork cyNetwork) {
 		return Boolean.TRUE == cyNetwork.getCyRow()
-			.get(MapBioPaxToCytoscapeImpl.BINARY_NETWORK, Boolean.class);
+			.get(MapBioPaxToCytoscape.BINARY_NETWORK, Boolean.class);
 	}
 	
 	
