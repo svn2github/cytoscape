@@ -81,6 +81,7 @@ public class NodeCharts {
 
 	private static String VALUELIST = "valuelist";
 	private static String LABELLIST = "labellist";
+	private static String SORTSLICES = "sortslices";
 
 	private static Map<String, List<String>> attrLabelListMap = null;
 	
@@ -247,6 +248,7 @@ public class NodeCharts {
 		}
 		args.put(VALUELIST, values);
 		args.put(LABELLIST, labels);
+		args.put(SORTSLICES, "true");
 	}
 
 }
