@@ -28,7 +28,7 @@ public class GetParentInteractionsTask implements Task {
 	private final CPath2Factory factory;
 
     public GetParentInteractionsTask (CyNetwork network, CyNode node, CPath2Factory factory) {
-        this.uri = node.getCyRow().get(MapBioPaxToCytoscape.BIOPAX_RDF_ID, String.class);
+        this.uri = network.getCyRow(node).get(MapBioPaxToCytoscape.BIOPAX_RDF_ID, String.class);
         this.node = node;
         this.network = network;
         this.factory = factory;
@@ -52,7 +52,7 @@ public class GetParentInteractionsTask implements Task {
             CySwingApplication application = factory.getCySwingApplication();
             JDialog dialog = new JDialog(application.getJFrame());
 
-            String nodeLabel = node.getCyRow().get(CyNode.NAME, String.class);
+            String nodeLabel = network.getCyRow(node).get(CyNode.NAME, String.class);
             if (nodeLabel != null) {
                 dialog.setTitle(nodeLabel);
             } else {

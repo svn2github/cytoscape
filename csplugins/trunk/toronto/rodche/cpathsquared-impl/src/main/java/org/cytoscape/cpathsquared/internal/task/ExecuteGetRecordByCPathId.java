@@ -212,13 +212,13 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	private void addLinksToCPathInstance(CyNetwork cyNetwork) {
 		String serverName = CPathProperties.serverName;
 		String serverURL = CPathProperties.cPathUrl;
-		CyRow row = cyNetwork.getCyRow();
+		CyRow row = cyNetwork.getCyRow(cyNetwork);
 		String cPathServerDetailsUrl = row.get(ExecuteGetRecordByCPathId.CPATH_SERVER_DETAILS_URL, String.class);
 		if (cPathServerDetailsUrl == null) {
-			AttributeUtil.set(cyNetwork, ExecuteGetRecordByCPathId.CPATH_SERVER_NAME_ATTRIBUTE, serverName,
-					String.class);
+			AttributeUtil.set(cyNetwork, cyNetwork, ExecuteGetRecordByCPathId.CPATH_SERVER_NAME_ATTRIBUTE,
+					serverName, String.class);
 			String url = serverURL.replaceFirst("webservice.do", "record2.do?id=");
-			AttributeUtil.set(cyNetwork, ExecuteGetRecordByCPathId.CPATH_SERVER_DETAILS_URL, url, String.class);
+			AttributeUtil.set(cyNetwork, cyNetwork, ExecuteGetRecordByCPathId.CPATH_SERVER_DETAILS_URL, url, String.class);
 		}
 	}
 
@@ -236,10 +236,10 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 		final CyNetwork cyNetwork = view.getModel();
 
 		// Set the Quick Find Default Index
-		AttributeUtil.set(cyNetwork, "quickfind.default_index", "biopax.node_label", String.class);
+		AttributeUtil.set(cyNetwork, cyNetwork, "quickfind.default_index", "biopax.node_label", String.class);
 
 		// Specify that this is a BINARY_NETWORK
-		AttributeUtil.set(cyNetwork, BinarySifVisualStyleFactory.BINARY_NETWORK, Boolean.TRUE, Boolean.class);
+		AttributeUtil.set(null, cyNetwork, BinarySifVisualStyleFactory.BINARY_NETWORK, Boolean.TRUE, Boolean.class);
 
 		// Get all node details.
 		getNodeDetails(cyNetwork, taskMonitor);
@@ -262,7 +262,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 					networkTitleWithUnderscores = networkTitleWithUnderscores.replaceAll(" ", "_");
 					CyNetworkNaming naming = cPathFactory.getCyNetworkNaming();
 					networkTitleWithUnderscores = naming.getSuggestedNetworkTitle(networkTitleWithUnderscores);
-					AttributeUtil.set(cyNetwork, CyNetwork.NAME, networkTitleWithUnderscores, String.class);
+					AttributeUtil.set(cyNetwork, cyNetwork, CyNetwork.NAME, networkTitleWithUnderscores, String.class);
 				}
 			});
 		} else {
@@ -276,7 +276,6 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 
 	//TODO may be remove this method
 	private void postProcessingBioPAX(final CyNetworkView view, TaskMonitor taskMonitor) {
-		final CyNetwork cyNetwork = view.getModel();
 		if (haltFlag == false) {
 			if (taskMonitor != null) {
 				taskMonitor.setStatusMessage("Creating Network View...");
@@ -309,7 +308,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 			Map<String, CyNode> nodes = new HashMap<String, CyNode>();
 			for (int j = 0; j < currentList.size(); j++) {
 				CyNode node = currentList.get(j);
-				String name = node.getCyRow().get(CyNode.NAME, String.class);
+				String name = cyNetwork.getCyRow(node).get(CyNode.NAME, String.class);
 				nodes.put(name, node);
 				ids[j] = name;
 			}
@@ -350,7 +349,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 		List<CyNode> currentList = new ArrayList<CyNode>();
 		int counter = 0;
 		for (CyNode node : cyNetwork.getNodeList()) {
-			CyRow row = node.getCyRow();
+			CyRow row = cyNetwork.getCyRow(node);
 			String label = row.get(CyNode.NAME, String.class);
 
 			// If we already have details on this node, skip it.
