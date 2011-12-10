@@ -14,7 +14,7 @@ public class CyActivator extends AbstractCyActivator {
 		
 		Properties properties = new Properties();
 		properties.put("title", "Sample Task");
-		properties.put("preferredMenu", "Plugins");
+		properties.put("preferredMenu", "Apps");
 		properties.put("enableFor", "network");
 		
 		registerService(context, taskFactory, NetworkTaskFactory.class, properties);

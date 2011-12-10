@@ -12,14 +12,14 @@ import org.cytoscape.application.CyApplicationManager;
 
 
 /**
- * Creates a new menu item under Plugins menu section.
+ * Creates a new menu item under Apps menu section.
  *
  */
 public class MenuAction extends AbstractCyAction {
 
 	public MenuAction(final CyApplicationManager applicationManager, final String menuTitle) {
 		super(menuTitle, applicationManager);
-		setPreferredMenu("Plugins");
+		setPreferredMenu("Apps");
 	}
 
 	public void actionPerformed(ActionEvent e) {
