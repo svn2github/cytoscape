@@ -28,37 +28,20 @@
 package org.cytoscape.model;
 
 
-import static org.junit.Assert.*;
-import org.junit.Test;
-
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
 
-import java.lang.RuntimeException;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.junit.Before;
+import org.junit.After;
 
 
-public abstract class AbstractIdentifiableTest {
-	protected CyNetwork net;
+public class CyTableEntryTest extends AbstractCyTableEntryTest {
+	@Before
+	public void setUp() {
+		net = TestCyNetworkFactory.getInstance();
+	}
 
-	@Test
-	public void testGetSUID() {
-		CyNode n1 = net.addNode();
-		assertTrue("suid >= 0", n1.getSUID() >= 0);
-
-		CyNode n2 = net.addNode();
-		assertTrue("suid >= 0", n2.getSUID() >= 0);
-
-		CyEdge e1 = net.addEdge(n1, n2, true);
-		assertTrue("suid >= 0", e1.getSUID() >= 0);
-
-		CyEdge e2 = net.addEdge(n1, n2, false);
-		assertTrue("suid >= 0", e2.getSUID() >= 0);
-
-		assertTrue("suid >= 0", net.getSUID() >= 0);
+	@After
+	public void tearDown() {
+		net = null;
 	}
 }
