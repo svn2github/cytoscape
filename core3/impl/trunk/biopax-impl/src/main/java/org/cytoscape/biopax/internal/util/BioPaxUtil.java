@@ -23,7 +23,7 @@
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA;
  ** or find it at http://www.fsf.org/ or http://www.gnu.org.
  **/
-package org.cytoscape.biopax.util;
+package org.cytoscape.biopax.internal.util;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -57,7 +57,7 @@ import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.XReferrable;
 import org.biopax.paxtools.model.level3.Xref;
 import org.biopax.paxtools.util.ClassFilterSet;
-import org.cytoscape.biopax.MapBioPaxToCytoscape;
+import org.cytoscape.biopax.BioPaxMapper;
 import org.cytoscape.model.CyNetwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +67,8 @@ import org.slf4j.LoggerFactory;
  * that also defines additional constants. 
  *
  * @author Ethan Cerami, Rex, Arman and Igor Rodchenkov
+ * 
+ * @CyAPI.Final.Class
  */
 public final class BioPaxUtil {
 	private static final Map<String,String> cellLocationMap;
@@ -549,13 +551,13 @@ public final class BioPaxUtil {
 	
 	public static boolean isBioPAXNetwork(CyNetwork cyNetwork) {
 		return Boolean.TRUE == cyNetwork.getRow(cyNetwork)
-			.get(MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.class);
+			.get(BioPaxMapper.BIOPAX_NETWORK, Boolean.class);
 	}
 	
 	
 	public static boolean isBiopaxSifNetwork(CyNetwork cyNetwork) {
 		return Boolean.TRUE == cyNetwork.getRow(cyNetwork)
-			.get(MapBioPaxToCytoscape.BINARY_NETWORK, Boolean.class);
+			.get(BioPaxMapper.BINARY_NETWORK, Boolean.class);
 	}
 	
 	
