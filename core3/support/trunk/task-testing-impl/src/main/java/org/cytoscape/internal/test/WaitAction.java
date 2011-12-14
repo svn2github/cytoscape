@@ -37,7 +37,6 @@ package org.cytoscape.internal.test;
 
 import java.awt.event.ActionEvent;
 
-import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.work.*;
 
@@ -49,8 +48,8 @@ public class WaitAction extends AbstractCyAction {
 	private final static long serialVersionUID = 1502339870257629L;
 
 	private TaskManager tm;
-	public WaitAction(CyApplicationManager appMgr, TaskManager tm) {
-		super("Wait Normal", appMgr );
+	public WaitAction(TaskManager tm) {
+		super("Wait Normal");
 		this.tm = tm;
 		setPreferredMenu("Help");
 	}

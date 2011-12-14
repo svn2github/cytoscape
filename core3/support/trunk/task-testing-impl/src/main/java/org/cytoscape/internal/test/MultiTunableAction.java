@@ -39,7 +39,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 
-import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.work.*;
 
@@ -51,8 +50,8 @@ public class MultiTunableAction extends AbstractCyAction {
 	private final static long serialVersionUID = 1502339870257629L;
 
 	private TaskManager tm;
-	public MultiTunableAction(CyApplicationManager appMgr, TaskManager tm) {
-		super("Multi Tunable Normal", appMgr );
+	public MultiTunableAction(TaskManager tm) {
+		super("Multi Tunable Normal");
 		this.tm = tm;
 		setPreferredMenu("Help");
 	}

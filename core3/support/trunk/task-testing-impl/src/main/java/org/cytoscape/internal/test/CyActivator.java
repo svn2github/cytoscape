@@ -4,7 +4,6 @@
 
 package org.cytoscape.internal.test;
 
-import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.work.TaskManager;
 
 import org.cytoscape.internal.test.MultipleTaskFactory;
@@ -37,12 +36,11 @@ public class CyActivator extends AbstractCyActivator {
 
 	public void start(BundleContext bc) {
 
-		CyApplicationManager cyApplicationManagerServiceRef = getService(bc,CyApplicationManager.class);
 		TaskManager taskManagerServiceRef = getService(bc,TaskManager.class);
 		CyRootNetworkManager rootNetworkManagerServiceRef = getService(bc,CyRootNetworkManager.class);
 		
-		WaitAction waitAction = new WaitAction(cyApplicationManagerServiceRef,taskManagerServiceRef);
-		MultiTunableAction multiTunableAction = new MultiTunableAction(cyApplicationManagerServiceRef,taskManagerServiceRef);
+		WaitAction waitAction = new WaitAction(taskManagerServiceRef);
+		MultiTunableAction multiTunableAction = new MultiTunableAction(taskManagerServiceRef);
 		TunablesTestTaskFactory tunablesTestTaskFactory = new TunablesTestTaskFactory();
 		TunablesTestTaskFactory2 tunablesTestTaskFactory2 = new TunablesTestTaskFactory2();
 		TunablesTestTaskFactory3 tunablesTestTaskFactory3 = new TunablesTestTaskFactory3();

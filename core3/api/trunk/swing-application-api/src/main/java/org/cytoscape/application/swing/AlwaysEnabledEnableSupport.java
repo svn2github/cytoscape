@@ -1,5 +1,6 @@
+
 /*
- File: PreferenceAction.java
+ File: MenuEnableSupport.java
 
  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -26,41 +27,49 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-package org.cytoscape.internal.actions;
+ */
+package org.cytoscape.application.swing;
+
+import org.cytoscape.work.swing.DynamicSubmenuListener;
+import javax.swing.Action;
+import javax.swing.JMenuItem;
+
+/**
+ * A class that allows the enabled state of an Action to be always enabled. 
+ * 
+ * @CyAPI.Final.Class
+ */
+public final class AlwaysEnabledEnableSupport extends AbstractEnableSupport {
 
 
-import java.awt.event.ActionEvent;
-
-import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.application.swing.AbstractCyAction;
-import org.cytoscape.internal.dialogs.BookmarkDialogImpl;
-import org.cytoscape.internal.dialogs.BookmarkDialogFactoryImpl;
-
-
-public class BookmarkAction extends AbstractCyAction {
-	private final static long serialVersionUID = 120233986993206L;
-	private CySwingApplication desktop;
-
-	private BookmarkDialogFactoryImpl bookmarkDialogFactory;
 	/**
-	 * Creates a new BookmarkAction object.
+	 * Constructor.
+	 * @param submenuListener The submenu listener whose enabled state will be updated.
 	 */
-	public BookmarkAction(CySwingApplication desktop, BookmarkDialogFactoryImpl bookmarkDialogFactory) {
-		super("Bookmarks...");
-		this.bookmarkDialogFactory = bookmarkDialogFactory;
-		setPreferredMenu("Edit.Preferences");
-		this.desktop = desktop;
+	public AlwaysEnabledEnableSupport(DynamicSubmenuListener submenuListener) {
+		super(submenuListener);
 	}
 
 	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param e
-	 *            DOCUMENT ME!
+	 * Constructor.
+	 * @param action The action whose enabled state will be updated.
 	 */
-	public void actionPerformed(ActionEvent e) {
-		final BookmarkDialogImpl bookmarkDialog = bookmarkDialogFactory.getBookmarkDialog(desktop.getJFrame());
-		bookmarkDialog.showDialog();
+	public AlwaysEnabledEnableSupport(Action action) {
+		super(action);
+	}
+
+	/**
+	 * Constructor.
+	 * @param menuItem The menuItem whose enabled state will be updated.
+	 */
+	public AlwaysEnabledEnableSupport(JMenuItem menuItem) {
+		super(menuItem);
+	}
+
+	/**
+	 * Always sets the enable state to true.
+	 */
+	public void updateEnableState() {
+		setEnabled( true );
 	}
 }
