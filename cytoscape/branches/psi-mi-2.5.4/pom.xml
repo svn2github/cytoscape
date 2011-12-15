@@ -87,6 +87,22 @@
                 <forceRegenerate>true</forceRegenerate>
               </configuration>
             </execution>
+            <execution>
+              <id>mi254</id>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+              <configuration>
+                <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+                <schemaIncludes>
+                  <include>MIF254.xsd</include>
+                </schemaIncludes>
+                <generatePackage>org.cytoscape.coreplugin.psi_mi.schema.mi254</generatePackage>
+                <verbose>true</verbose>
+                <removeOldOutput>false</removeOldOutput>
+                <forceRegenerate>true</forceRegenerate>
+              </configuration>
+            </execution>
           </executions>
        </plugin>
     </plugins>

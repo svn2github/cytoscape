@@ -38,7 +38,9 @@ import cytoscape.data.readers.AbstractGraphReader;
 
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
+import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiTwoFiveFourToInteractions;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiTwoFiveToInteractions;
+import org.cytoscape.coreplugin.psi_mi.data_mapper.Mapper;
 import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 
 import java.io.IOException;
@@ -85,14 +87,17 @@ public class PsiMiGraphReader extends AbstractGraphReader {
 			//  Pick one of two mappers
 			int level2 = xml.indexOf("level=\"2\"");
 
+			Mapper mapper;
 			if ((level2 > 0) && (level2 < 500)) {
-				MapPsiTwoFiveToInteractions mapper = new MapPsiTwoFiveToInteractions(xml,
-				                                                                     interactions);
-				mapper.doMapping();
+				if (xml.contains("http://psi.hupo.org/mi/mif")) {
+					mapper = new MapPsiTwoFiveFourToInteractions(xml, interactions);
+				} else {
+					mapper = new MapPsiTwoFiveToInteractions(xml, interactions);
+				}
 			} else {
-				MapPsiOneToInteractions mapper = new MapPsiOneToInteractions(xml, interactions);
-				mapper.doMapping();
+				mapper = new MapPsiOneToInteractions(xml, interactions);
 			}
+			mapper.doMapping();
 
 			//  Now Map to Cytocape Network Objects.
 			MapToCytoscape mapper2 = new MapToCytoscape(interactions, MapToCytoscape.SPOKE_VIEW);
@@ -101,7 +106,7 @@ public class PsiMiGraphReader extends AbstractGraphReader {
 			edgeIndices = mapper2.getEdgeIndices();
 		} catch (Throwable e) {
 			e.printStackTrace();
-			throw new IOException(e.getMessage());
+			throw new IOException(e);
 		}
 	}
 
