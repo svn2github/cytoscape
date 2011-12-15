@@ -579,8 +579,8 @@
 		<xs:annotation>
 			<xs:documentation>A interval on a sequence.</xs:documentation>
 		</xs:annotation>
-		<xs:attribute name="begin" type="xs:long" use="required"/>
-		<xs:attribute name="end" type="xs:long" use="required"/>
+		<xs:attribute name="begin" type="xs:unsignedLong" use="required"/>
+		<xs:attribute name="end" type="xs:unsignedLong" use="required"/>
 	</xs:complexType>
 	<xs:complexType name="baseLocationType">
 		<xs:annotation>
@@ -633,7 +633,7 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="positionType">
-		<xs:attribute name="position" type="xs:long" use="required"/>
+		<xs:attribute name="position" type="xs:unsignedLong" use="required"/>
 	</xs:complexType>
 	<!--Top level types-->
 	<xs:complexType name="availabilityType">

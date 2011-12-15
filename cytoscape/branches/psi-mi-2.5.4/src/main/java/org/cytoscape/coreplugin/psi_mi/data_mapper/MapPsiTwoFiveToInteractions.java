@@ -221,12 +221,14 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 			final List<Interactor> interactorList = new ArrayList<Interactor>();
 			Map interactorRoles = new HashMap();
 
-			for (int j = 0; j < pCount; j++) {
-				Interactor interactor = extractInteractorRefOrElement(pList, j);
+			for (ParticipantType participant : pList.getParticipant()) {
+				Interactor interactor = extractInteractorRefOrElement(participant);
+				if (interactor == null) {
+					continue;
+				}
 				log("Getting interactor:  " + interactor);
 				interactorList.add(interactor);
 
-				ParticipantType participant = pList.getParticipant().get(j);
 				ParticipantType.ExperimentalRoleList role = participant.getExperimentalRoleList();
 
 				if (role != null) {
@@ -328,11 +330,9 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	/**
 	 * Extracts Interactor From Reference or Element.
 	 */
-	private Interactor extractInteractorRefOrElement(InteractionElementType.ParticipantList pList,
-	                                                 int j) throws MapperException {
+	private Interactor extractInteractorRefOrElement(ParticipantType participant) throws MapperException {
 		Interactor interactor;
 		org.cytoscape.coreplugin.psi_mi.schema.mi25.InteractorElementType cInteractor = null;
-		ParticipantType participant = pList.getParticipant().get(j);
 		Integer ref = participant.getInteractorRef();
 
 		if (ref != null) {
@@ -526,6 +526,10 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	 * Extracts Single PSI Interactor.
 	 */
 	private Interactor createInteractor(InteractorElementType cProtein) throws MapperException {
+		if (cProtein == null) {
+			return null;
+		}
+		
 		Interactor interactor = new Interactor();
 		extractOrganismInfo(cProtein, interactor);
 		extractSequenceData(cProtein, interactor);
