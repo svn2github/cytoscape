@@ -16,7 +16,7 @@ CREATE TABLE bugs (
 
 
 CREATE TABLE reporter (
-  reporter_id int(11) default NULL,
+  reporter_auto_id int(11) default NULL,
   name varchar(150) default NULL,
   email varchar(90) default NULL,
   PRIMARY KEY  (reporter_auto_id)
