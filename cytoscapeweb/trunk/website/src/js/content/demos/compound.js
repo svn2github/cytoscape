@@ -108,7 +108,7 @@ $(function(){
     function clickNodeToAddEdge(evt) {
         if (_srcId != null) {
         	vis.removeListener("click", "nodes", clickNodeToAddEdge);
-        	var e = vis.addEdge({ source: _srcId, target: evt.target.data.id, }, true);
+        	var e = vis.addEdge({ source: _srcId, target: evt.target.data.id }, true);
         	_srcId = null;
         }
     }
