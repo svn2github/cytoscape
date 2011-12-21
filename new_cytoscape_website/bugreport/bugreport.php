@@ -40,16 +40,20 @@ if (($tried == NULL) && ($mode == 'edit')) {
 // database
 
 //include "formUserInput_remember.inc";
-$userInput = getFormWithUserInput($_POST, $_FILES);
-
+$userInput = getUserInputFromForm($_POST, $_FILES);
 
 //////////////////////// Form validation ////////////////////////
+$validated = isUserInputValid($userInput);
 
-$validated = true; //isFormValid();
-
-/////////////////////////////////  Form definition //////////////////////////
+/////////////////////// Form definition ////////////////////////
 if (!(($tried != NULL && $tried == 'yes') && $validated)) {
-	showForm($userInput);
+	?>	<div class="BugReport">
+	      <h2>Cytoscape Bug Report</h2>
+	<?php
+		showForm($userInput);
+	?>
+	    </div>
+	<?php 
 }
 else {
 	////////////////////////// form processing /////////////////////////
@@ -58,12 +62,12 @@ else {
 
 	// In case of edit, do updating
 	if ($mode == 'edit') {
-		//updateBug($connection, $bugReport);
+		updateBug($connection, $bugReport);
 	}
 
 	if ($mode == 'new') {
 		//process the data and Save the data into DB.
-		uploadNewBugReport($connection, $bugReport);
+		submitNewBug($connection, $bugReport);
 	} 
 }
 ?>
@@ -78,52 +82,127 @@ else {
 
 <?php 
 
+function isUserInputValid($userInput) {
+	if ($userInput == NULL){
+		return false;
+	}
+	
+	return true;
+}
+
+
+function updateBug($connection, $bugReport){
+	echo "<br>Entering updateBug() ....<br>";
+}
+
+
+function submitNewBug($connection, $bugReport){
+
+	echo "<br>Entering submitNewBug ...<br>";
+
+	
+	
+	
+	
+}
+
+
 function showForm($userInput) {
 	?>
-	<div class="BugReport">
-	      <h2>Cytoscape Bug Report</h2>
-	      <form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
-	<label for="tfName">Name</label>
-	          <input type="text" name="tfName" id="tfName" />
-	        <div>
-	          
-	        <div>
-	          <label for="tfEmail">Email</label>
-	          <input type="text" name="tfEmail" id="tfEmail" />
-	          * Optional, if you want feedback
-	        </div>
-	
-	        <div>
-	            <label for="taDescription">Problem Description</label>
-	        </div>
+      <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data" name="submitbug" id="form1">
+<label for="tfName">Name</label>
+                    <input name="tfName" type="text" id="tfName" value="<?php echo $userInput['name']; ?>" />
+        <div>   
 
-	        <div>
-	            <textarea name="taDescription" id="taDescription" cols="45" rows="5"></textarea>	
-	        </div>
-	
-	        <div>	
-	        Attachments (Session files, data files, screen-shots, etc.)
-	        </div>
-	          <label for="attachments">Attachment</label>
-	          <input type="file" name="attachments" id="attachments" />
-	        </div>
-	        <div>
-	        <input name="ufile[]" type="file" id="ufile[]" size="50" />
-	        </div>
-	        <div>
-	        <input type="submit" name="btnBubmit" id="btnSubmit" value="Submit" />
-	        </div>
-	      </form>
-	      
-	    </div>
+        <div>
+          
+          <label for="tfEmail">Email</label>
+          <input name="tfEmail" type="text" id="tfEmail" value="<?php echo $userInput['email']; ?>" />
+          
+          * Optional,
+          If you want feedback 
+          
+        </div>
+
+	<div>
+	  <label for="cyversion">Cytoscape version</label>
+	    <input name="tfCyversion" type="text" id="cyversion" value="<?php echo $userInput['cyversion']; ?>" />
+	</div>
+
+	<div>
+	  <label for="os">Operating system</label>
+	  <select name="cmbOS" id="os">
+	    <option  <?php if ($userInput['os'] == 'Windows') echo "selected=\"selected\""; ?> >Windows</option>
+	    <option <?php if ($userInput['os'] == 'Linux') echo "selected=\"selected\""; ?>>Linux</option>
+	    <option <?php if ($userInput['os'] == 'Mac') echo "selected=\"selected\""; ?>>Mac</option>
+	  </select>
+	</div>
+
+    <div>
+            <label for="taDescription">Problem Description</label>
+        </div>
+        <div>
+            <textarea name="taDescription" id="taDescription" cols="80" rows="10"><?php echo $userInput['description']; ?></textarea>
+        </div>
+
+        <div>
+
+        Attachments (Session files, data files, screen-shots, etc.)
+        </div>
+          <input type="file" name="attachments" id="attachments" />
+          
+        </div>
+        
+        <!-- 
+        <div>
+        <input name="ufile[]" type="file" id="ufile[]" size="50" />
+        </div>
+         -->
+         
+        <div>
+        <input name="tried" type="hidden" value="yes" />
+        </div>
+        <div>
+        <input type="submit" name="btnBubmit" id="btnSubmit" value="Submit" />
+        </div>
+      </form>
+
 
 	<?php 
 }
 
 
-function getFormWithUserInput($_POST, $_FILES){
-	return NULL;
+function getUserInputFromForm($_POST, $_FILES){
+	
+	$userInput = NULL;
+	
+	if (isset ($_POST['tfName'])) {
+		$userInput['name'] =$_POST['tfName']; 
+	}
+	
+	if (isset ($_POST['tfEmail'])) {
+		$userInput['email'] = addslashes($_POST['tfEmail']);
+	}
+	
+	if (isset ($_POST['tfCyversion'])) {
+		$userInput['cyversion'] = addslashes($_POST['tfCyversion']);
+	}
+	
+	if (isset ($_POST['cmbOS'])) {
+		$userInput['os'] = $_POST['cmbOS'];
+	}
+	
+	if (isset ($_POST['taDescription'])) {
+		$userInput['description'] = addslashes($_POST['taDescription']);
+	}	
+
+	if (isset ($_FILES['attachments'])) {
+		$userInput['attachedFiles'] = $_FILES['attachments'];
+	}
+	
+	return $userInput;
 }
+
 
 function getBugID($_GET, $_POST){
 	$bugid = NULL; // for edit mode only
