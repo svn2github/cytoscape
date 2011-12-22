@@ -40,7 +40,7 @@ if (($tried == NULL) && ($mode == 'edit')) {
 // database
 
 //include "formUserInput_remember.inc";
-$bugReport = getBugReportFromForm($_POST, $_FILES);
+$bugReport = getBugReportFromForm($_GET, $_POST, $_FILES, $_SERVER);
 
 //////////////////////// Form validation ////////////////////////
 $validated = isUserInputValid($bugReport);
@@ -173,7 +173,7 @@ function showForm($userInput) {
 	</div>
 
     <div>
-            <label for="taDescription">Problem Description</label>
+            <label for="taDescription">Problem description</label>
         </div>
         <div>
             <textarea name="taDescription" id="taDescription" cols="80" rows="10"><?php echo $userInput['description']; ?></textarea>
@@ -181,7 +181,7 @@ function showForm($userInput) {
 
         <div>
 
-        Attachments (Session files, data files, screen-shots, etc.)
+        Optional, Attachments (Session files, data files, screen-shots, etc.)
         </div>
           <input type="file" name="attachments" id="attachments" />
           
@@ -206,26 +206,32 @@ function showForm($userInput) {
 }
 
 
-function getBugReportFromForm($_POST, $_FILES){
+function getBugReportFromForm($_GET, $_POST, $_FILES, $_SERVER){
 	
 	$bugReport = NULL;
 	
 	if (isset ($_POST['tfName'])) {
 		$bugReport['name'] =$_POST['tfName']; 
 	}
-	
+
 	if (isset ($_POST['tfEmail'])) {
 		$bugReport['email'] = addslashes($_POST['tfEmail']);
+	}
+	
+	if (isset ($_GET['cyversion'])) {
+		$bugReport['cyversion'] = addslashes($_GET['cyversion']);
 	}
 	
 	if (isset ($_POST['tfCyversion'])) {
 		$bugReport['cyversion'] = addslashes($_POST['tfCyversion']);
 	}
 	
-	if (isset ($_POST['cmbOS'])) {
-		$bugReport['os'] = $_POST['cmbOS'];
-	}
 	
+//	if (isset ($_POST['cmbOS'])) {
+//		$bugReport['os'] = $_POST['cmbOS'];
+//	}
+	$bugReport['os'] = getOSFromUserAgent($_SERVER);
+		
 	if (isset ($_POST['taDescription'])) {
 		$bugReport['description'] = addslashes($_POST['taDescription']);
 	}	
@@ -235,6 +241,25 @@ function getBugReportFromForm($_POST, $_FILES){
 	}
 	
 	return $bugReport;
+}
+
+function getOSFromUserAgent($_SERVER){
+	
+	$os = "unknown";
+		
+	$userAgent = $_SERVER["HTTP_USER_AGENT"];
+	
+	if (strpos($userAgent, 'Linux') ? true : false){
+		$os = "Linux";
+	}
+	else if (strpos($userAgent, 'Macintosh') ? true : false){
+		$os = "Mac";
+	}
+	else if (strpos($userAgent, 'Windows') ? true : false){
+		$os = "Windows";	
+	}
+	
+	return $os;
 }
 
 
