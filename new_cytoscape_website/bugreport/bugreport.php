@@ -145,13 +145,13 @@ function showForm($userInput) {
 	?>
       <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data" name="submitbug" id="form1">
 <label for="tfName">Name</label>
-                    <input name="tfName" type="text" id="tfName" value="<?php echo $userInput['name']; ?>" />
+                    <input name="tfName" type="text" id="tfName" value="<?php if (isset($userInput['name'])) echo $userInput['name']; ?>" />
         <div>   
 
         <div>
           
           <label for="tfEmail">Email</label>
-          <input name="tfEmail" type="text" id="tfEmail" value="<?php echo $userInput['email']; ?>" />
+          <input name="tfEmail" type="text" id="tfEmail" value="<?php if (isset($userInput['email'])) echo $userInput['email']; ?>" />
           
           * Optional,
           If you want feedback 
@@ -176,7 +176,7 @@ function showForm($userInput) {
             <label for="taDescription">Problem description</label>
         </div>
         <div>
-            <textarea name="taDescription" id="taDescription" cols="80" rows="10"><?php echo $userInput['description']; ?></textarea>
+            <textarea name="taDescription" id="taDescription" cols="80" rows="10"><?php if (isset($userInput['description'])) echo $userInput['description']; ?></textarea>
         </div>
 
         <div>
