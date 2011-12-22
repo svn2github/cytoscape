@@ -40,17 +40,17 @@ if (($tried == NULL) && ($mode == 'edit')) {
 // database
 
 //include "formUserInput_remember.inc";
-$userInput = getUserInputFromForm($_POST, $_FILES);
+$bugReport = getBugReportFromForm($_POST, $_FILES);
 
 //////////////////////// Form validation ////////////////////////
-$validated = isUserInputValid($userInput);
+$validated = isUserInputValid($bugReport);
 
 /////////////////////// Form definition ////////////////////////
 if (!(($tried != NULL && $tried == 'yes') && $validated)) {
 	?>	<div class="BugReport">
 	      <h2>Cytoscape Bug Report</h2>
 	<?php
-		showForm($userInput);
+		showForm($bugReport);
 	?>
 	    </div>
 	<?php 
@@ -64,9 +64,9 @@ else {
 	if ($mode == 'edit') {
 		updateBug($connection, $bugReport);
 	}
-
+	
 	if ($mode == 'new') {
-		//process the data and Save the data into DB.
+		//process the data and Save the data into DB.		
 		submitNewBug($connection, $bugReport);
 	} 
 }
@@ -99,7 +99,41 @@ function updateBug($connection, $bugReport){
 function submitNewBug($connection, $bugReport){
 
 	echo "<br>Entering submitNewBug ...<br>";
+	
+	// Load attached files first
+	if ($bugReport['attachedFiles'] != NULL){
+		echo "<br>file attached ...<br>";
+		echo "<br>"+$bugReport['attachedFiles']['tmp_name']+"<br>";
+	}
+	else {
+		echo "<br>no file attached ...<br>";		
+	}
+		
+	// Check if the reporter already existed in table 'reporter'
+	$dbQuery = "SELECT reporter_auto_id FROM reporter WHERE email ='" .$bugReport['email']."'";
+	// Run the query
+	if (!($result = @ mysql_query($dbQuery, $connection)))
+		showerror();
 
+	$reporter_auto_id = null;
+	if (@ mysql_num_rows($result) != 0) {
+		// the reporter already existed
+			$the_row = @ mysql_fetch_array($result);
+			$reporter_auto_id = $the_row['reporter_auto_id'];
+	}
+
+	// the reporter is new, add it to DB
+	if ($reporter_auto_id == null){
+		// Insert a row into table reporter
+		$dbQuery = "INSERT INTO reporter (name, email) Values ('".$bugReport['name']."','".$bugReport['email']."')";		
+		// Run the query
+		if (!(@ mysql_query($dbQuery, $connection)))
+			showerror();
+		$reporter_auto_id = mysql_insert_id($connection);
+	}
+		
+	echo "<br>reporter_auto_id = ".$reporter_auto_id."<br>";
+	
 	
 	
 	
@@ -172,35 +206,35 @@ function showForm($userInput) {
 }
 
 
-function getUserInputFromForm($_POST, $_FILES){
+function getBugReportFromForm($_POST, $_FILES){
 	
-	$userInput = NULL;
+	$bugReport = NULL;
 	
 	if (isset ($_POST['tfName'])) {
-		$userInput['name'] =$_POST['tfName']; 
+		$bugReport['name'] =$_POST['tfName']; 
 	}
 	
 	if (isset ($_POST['tfEmail'])) {
-		$userInput['email'] = addslashes($_POST['tfEmail']);
+		$bugReport['email'] = addslashes($_POST['tfEmail']);
 	}
 	
 	if (isset ($_POST['tfCyversion'])) {
-		$userInput['cyversion'] = addslashes($_POST['tfCyversion']);
+		$bugReport['cyversion'] = addslashes($_POST['tfCyversion']);
 	}
 	
 	if (isset ($_POST['cmbOS'])) {
-		$userInput['os'] = $_POST['cmbOS'];
+		$bugReport['os'] = $_POST['cmbOS'];
 	}
 	
 	if (isset ($_POST['taDescription'])) {
-		$userInput['description'] = addslashes($_POST['taDescription']);
+		$bugReport['description'] = addslashes($_POST['taDescription']);
 	}	
 
 	if (isset ($_FILES['attachments'])) {
-		$userInput['attachedFiles'] = $_FILES['attachments'];
+		$bugReport['attachedFiles'] = $_FILES['attachments'];		
 	}
 	
-	return $userInput;
+	return $bugReport;
 }
 
 
