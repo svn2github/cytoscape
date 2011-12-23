@@ -97,25 +97,34 @@ function updateBug($connection, $bugReport){
 
 
 function submitNewBug($connection, $bugReport){
-
-	echo "<br>Entering submitNewBug ...<br>";
-	
-	// Load attached files first
-	if ($bugReport['attachedFiles'] != NULL){
-		echo "<br>file attached ...<br>";
-		echo "<br>"+$bugReport['attachedFiles']['tmp_name']+"<br>";
-	}
-	else {
-		echo "<br>no file attached ...<br>";		
-	}
 		
+	// Step 1: load attached file
+	$file_auto_id = null;
+	// Load attached files first
+	if ($bugReport['attachedFiles'] != NULL && $bugReport['attachedFiles']['name'] != NULL){
+				
+		$name = $bugReport['attachedFiles']['name'];
+		$type = $bugReport['attachedFiles']['type'];
+		$md5 = $bugReport['attachedFiles']['md5'];
+		$content = $bugReport['attachedFiles']['fileContent'];
+		
+		$dbQuery = "INSERT INTO attached_files VALUES ";
+		$dbQuery .= "(0, '$name', '$type', '$content', '$md5')";
+		// Run the query
+		if (!(@ mysql_query($dbQuery, $connection)))
+			showerror();
+
+		$file_auto_id = mysql_insert_id($connection);
+	}
+
+	// Step 2: get the reporter id
+	$reporter_auto_id = null;
 	// Check if the reporter already existed in table 'reporter'
 	$dbQuery = "SELECT reporter_auto_id FROM reporter WHERE email ='" .$bugReport['email']."'";
 	// Run the query
 	if (!($result = @ mysql_query($dbQuery, $connection)))
 		showerror();
 
-	$reporter_auto_id = null;
 	if (@ mysql_num_rows($result) != 0) {
 		// the reporter already existed
 			$the_row = @ mysql_fetch_array($result);
@@ -132,21 +141,47 @@ function submitNewBug($connection, $bugReport){
 		$reporter_auto_id = mysql_insert_id($connection);
 	}
 		
-	echo "<br>reporter_auto_id = ".$reporter_auto_id."<br>";
+	// Step 3: add a report to table "bugs"
+	$bug_auto_id = null;
 	
+	$cyversion = $bugReport['cyversion'];
+	$os = $bugReport['os'];
+	$description = $bugReport['description'];
 	
+	$dbQuery = "";
+	if ($reporter_auto_id == NULL){
+		$dbQuery = "INSERT INTO bugs (cyversion, os, description, sysdat) Values ('".
+		$dbQuery .= "'$cyversion',"."'$os',"."'$description'".",now())";	
+	}
+	else {
+		$dbQuery = "INSERT INTO bugs (reporter_id, cyversion, os, description, sysdat) Values (".
+		$dbQuery .= "$reporter_auto_id".","."'$cyversion',"."'$os',"."'$description'".",now())";	
+	}
 	
-	// Send e-mail notfication to staff after new bug is sunmitted
-	sendConfirmartionEmail($bugReport);	
+	// Run the query
+	if (!(@ mysql_query($dbQuery, $connection)))
+		showerror();
+	$bug_auto_id = mysql_insert_id($connection);
+	
+	// step 4: add file record to table "bug_file" if any
+	if ($file_auto_id != NULL){
+		$dbQuery = "INSERT INTO bug_file (bug_id, file_id) Values ($bug_auto_id, $file_auto_id)";
+	// Run the query
+	if (!(@ mysql_query($dbQuery, $connection)))
+		showerror();
+	}
+	
+	// Step 5: Send e-mail notfication to staff about the new bug submission
+	sendNotificationEmail($bugReport);	
 }
 
 
-function sendConfirmartionEmail($bugReport) {
+function sendNotificationEmail($bugReport) {
 		
 	include 'cytostaff_emails.inc';
 
 	$from = $cytostaff_emails[0];
-	$to = $email;// Author e-mail contact
+	$to = "";
 
 	for ($i=0; $i<count($cytostaff_emails); $i++){
          	$to = $to . $cytostaff_emails[$i] . " ";
@@ -157,18 +192,18 @@ function sendConfirmartionEmail($bugReport) {
 	$body = $bugReport['description'];
 	
 	?>
-	Thank you for submitting bug to Cytoscape, Cytoscape staff will review your report.
-	After your report is verified, Cytoscape staff will fix it in the next release of Cytoscape."
+	Thank you for submitting bug report to Cytoscape, Cytoscape staff will review your report.
+	After your report is verified, Cytoscape staff will fix it in the next release of Cytoscape.
 	Thank you again for making better Cytoscape. 
 	<?php
 	
-
 	$headers = "From: " . $from . "\r\n"; 
 
+	// Send e-mail to staff now
 	if (mail($to, $subject, $body, $headers)) {
-  		echo("<p>New bug report e-mail was sent to Cytostaff!</p>");
+  		//echo("<p>New bug report e-mail was sent to Cytostaff!</p>");
  	} else {
-  		echo("<p>Failed to send a notification e-mail...</p>");
+  		echo("<p>Failed to send a notification e-mail to cytostaff...</p>");
  	}	
 }
 
@@ -257,6 +292,7 @@ function getBugReportFromForm($_GET, $_POST, $_FILES, $_SERVER){
 		$bugReport['email'] = addslashes($_POST['tfEmail']);
 	}
 	
+	// Get cyversion from URL
 	if (isset ($_GET['cyversion'])) {
 		$bugReport['cyversion'] = addslashes($_GET['cyversion']);
 	}
@@ -264,11 +300,7 @@ function getBugReportFromForm($_GET, $_POST, $_FILES, $_SERVER){
 	if (isset ($_POST['tfCyversion'])) {
 		$bugReport['cyversion'] = addslashes($_POST['tfCyversion']);
 	}
-	
-	
-//	if (isset ($_POST['cmbOS'])) {
-//		$bugReport['os'] = $_POST['cmbOS'];
-//	}
+		
 	$bugReport['os'] = getOSFromUserAgent($_SERVER);
 		
 	if (isset ($_POST['taDescription'])) {
@@ -276,11 +308,24 @@ function getBugReportFromForm($_GET, $_POST, $_FILES, $_SERVER){
 	}	
 
 	if (isset ($_FILES['attachments'])) {
-		$bugReport['attachedFiles'] = $_FILES['attachments'];		
+		if ($_FILES['attachments']['name']!= NULL){ // a file is selected
+			$bugReport['attachedFiles']['name'] = $_FILES['attachments']['name'];		
+			$bugReport['attachedFiles']['type'] = $_FILES['attachments']['type'];
+
+			$bugReport['attachedFiles']['md5'] = md5_file($_FILES['attachments']['tmp_name']);;		
+			
+			// Get file content
+			$fileHandle = fopen($_FILES['attachments']['tmp_name'], "r");
+			$fileContent = fread($fileHandle, $_FILES['attachments']['size']);
+			$fileContent = addslashes($fileContent);
+			
+			$bugReport['attachedFiles']['fileContent'] = $fileContent;		
+		}
 	}
 	
 	return $bugReport;
 }
+
 
 function getOSFromUserAgent($_SERVER){
 	
