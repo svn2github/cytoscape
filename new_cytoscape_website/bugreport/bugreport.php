@@ -136,8 +136,40 @@ function submitNewBug($connection, $bugReport){
 	
 	
 	
+	// Send e-mail notfication to staff after new bug is sunmitted
+	sendConfirmartionEmail($bugReport);	
+}
+
+
+function sendConfirmartionEmail($bugReport) {
+		
+	include 'cytostaff_emails.inc';
+
+	$from = $cytostaff_emails[0];
+	$to = $email;// Author e-mail contact
+
+	for ($i=0; $i<count($cytostaff_emails); $i++){
+         	$to = $to . $cytostaff_emails[$i] . " ";
+	}
+		
+	$subject = "New bug submitted by ".$bugReport['name'];
 	
+	$body = $bugReport['description'];
 	
+	?>
+	Thank you for submitting bug to Cytoscape, Cytoscape staff will review your report.
+	After your report is verified, Cytoscape staff will fix it in the next release of Cytoscape."
+	Thank you again for making better Cytoscape. 
+	<?php
+	
+
+	$headers = "From: " . $from . "\r\n"; 
+
+	if (mail($to, $subject, $body, $headers)) {
+  		echo("<p>New bug report e-mail was sent to Cytostaff!</p>");
+ 	} else {
+  		echo("<p>Failed to send a notification e-mail...</p>");
+ 	}	
 }
 
 
@@ -160,9 +192,15 @@ function showForm($userInput) {
 
 	<div>
 	  <label for="cyversion">Cytoscape version</label>
-	    <input name="tfCyversion" type="text" id="cyversion" value="<?php echo $userInput['cyversion']; ?>" />
+	    <input name="tfCyversion" type="text" id="cyversion" value="<?php if (isset($userInput['cyversion'])) echo $userInput['cyversion']; ?>" />
 	</div>
 
+	<div>
+	  <label for="os">Operating system</label>
+	    <input name="tfOS" type="text" id="os" value="<?php if (isset($userInput['os'])) echo $userInput['os']; ?>" />
+	</div>
+
+<!-- 
 	<div>
 	  <label for="os">Operating system</label>
 	  <select name="cmbOS" id="os">
@@ -171,7 +209,8 @@ function showForm($userInput) {
 	    <option <?php if ($userInput['os'] == 'Mac') echo "selected=\"selected\""; ?>>Mac</option>
 	  </select>
 	</div>
-
+ -->
+ 
     <div>
             <label for="taDescription">Problem description</label>
         </div>
