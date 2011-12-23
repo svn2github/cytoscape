@@ -27,9 +27,10 @@ CREATE TABLE reporter (
 
 CREATE TABLE attached_files (
   file_auto_id int(11) NOT NULL auto_increment,
+  file_name varchar(100) NOT NULL,
+  file_type varchar(100) NOT NULL,
   file_data longblob,
-  file_name varchar(100) default NULL,
-  md5 varchar(40),
+  md5 varchar(40) Default NULL,
   PRIMARY KEY  (file_auto_id)
 );
 
