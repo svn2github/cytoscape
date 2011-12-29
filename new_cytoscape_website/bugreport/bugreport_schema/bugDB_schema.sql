@@ -8,6 +8,7 @@ CREATE TABLE bugs (
   reporter_id int(11) NOT NULL,
   cyversion varchar(20) NOT NULL,
   os varchar(15) NOT NULL,
+  subject varchar(150) default NULL,
   description text NOT NULL,
   remote_host varchar(60) default NULL,
   ip_address varchar(20) default NULL,
