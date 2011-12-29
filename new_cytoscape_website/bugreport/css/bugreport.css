@@ -1,0 +1,47 @@
+
+
+#bugreporttitle {
+	font:18px;
+	float:center;	
+}
+
+#tableheader {
+	border: 1px solid #000;	
+	}
+	
+.bugreportrow {
+	border: 1px solid #000;	
+	float: left;
+	
+	}
+	
+.id {
+	border: 1px solid #000;	
+	float: left;
+	}
+
+.name {
+	border: 1px solid #000;	
+	float: left;
+	}
+
+.date {
+	border: 1px solid #000;	
+	float: left;
+	}
+	
+.description {
+	border: 1px solid #000;	
+	float: left;
+	}
+	
+.delete {
+	border: 1px solid #000;	
+	float: left;
+	}
+
+.lastmodified {
+	border: 1px solid #000;	
+	float: left;
+	}
+	
