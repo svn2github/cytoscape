@@ -14,6 +14,7 @@ CREATE TABLE bugs (
   ip_address varchar(20) default NULL,
   sysdat date default NULL,
   editdat date default NULL,
+  status varchar(20) default 'new',
   PRIMARY KEY  (bug_auto_id)
 );
 
