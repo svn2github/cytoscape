@@ -10,17 +10,20 @@
 	$connection = getDBConnection('edit');// staff permission
 ?>
 <div id="bugreporttitle">
-Bug Report Administration
+   <h1>Bug Report Administration</h1>
 </div>
 
-<div id="tableheader"> 
+<div id="bugreport_tableheader"> 
 <div class="id">ID</div>
 <div class="name">Name</div>
+
 <div class="date">Date</div>
-<div class="description">Decription</div>
+<div class="description">Description</div>
+<div class="view">View</div>
 <div class="delete">Delete</div>
-<div class="lastmodified">Last Modified</div>
+<!-- <div class="lastmodified">Last Modified</div>  -->
 </div>
+
 
 <?php 
 	// Check if the reporter already existed in table 'reporter'
@@ -35,18 +38,29 @@ Bug Report Administration
 		{	    
 			$bug_auto_id = $_row['bug_auto_id'];			
 			$name = $_row['name'];
-			$date = $_row['date'];
+			$date = $_row['sysdat'];
 			$description = $_row['description'];
+			if (strlen($description) > 50){
+				$description = substr($description, 0, 49)."...";
+			}
+			
+			$delete = "<a href=\"bugreportdelete.php?bugid=".$bug_auto_id."\">Delete</a>";
+			$view = "<a href=\"bugreport.php?id=".$bug_auto_id."\">View</a>";
+			
 			$lastModified = $_row['editdat'];
 				
 			?>
 			<div class="bugreportrow">
 				<div class="id"><?php echo $bug_auto_id; ?></div>			
 				<div class="name"><?php echo $name; ?></div>
+				
 				<div class="date"><?php echo $date; ?></div>
 				<div class="description"><?php echo $description; ?></div>
-				<div class="delete"><?php echo "Delete"; ?></div>
+				<div class="view"><?php echo $view; ?></div>
+				<div class="delete"><?php echo $delete; ?></div>
+				<!-- 
 				<div class="lastmodified"><?php echo $lastModified; ?></div>	
+			 -->
 			</div>
 			<?php
 			
@@ -56,7 +70,7 @@ Bug Report Administration
 	}
 	
 ?>
-
+<div id="seperator"></div>
 <?php 
 	showPageTail();	
 	///////////////////// End of page ////////////////////////////////////
