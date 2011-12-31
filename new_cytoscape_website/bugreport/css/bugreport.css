@@ -2,46 +2,76 @@
 
 #bugreporttitle {
 	font:18px;
-	float:center;	
+	float:center;
+	margin: 20px;
+	margin-left: 200px;
+	margin-top: 30px;
+	
 }
 
-#tableheader {
-	border: 1px solid #000;	
+#bugreport_tableheader {
+	/*border: 1px solid #000;*/	
+	width: 90%;
+	float: left;
+	margin-left:10px;
 	}
 	
 .bugreportrow {
-	border: 1px solid #000;	
+	/*border: 1px solid #000;*/	
 	float: left;
-	
-	}
+	width: 90%;
+	margin-left:10px;
+}
 	
 .id {
 	border: 1px solid #000;	
 	float: left;
+	width: 80px;
 	}
 
 .name {
-	border: 1px solid #000;	
+	border: 1px solid #000;
 	float: left;
+	width: 150px;	
 	}
 
 .date {
 	border: 1px solid #000;	
 	float: left;
-	}
+	width: 100px;	
+	
+}
 	
 .description {
 	border: 1px solid #000;	
 	float: left;
+	width: 300px;	
+	
 	}
 	
 .delete {
 	border: 1px solid #000;	
 	float: left;
+	width: 50px;	
 	}
 
+.view {
+	border: 1px solid #000;	
+	float: left;
+	width: 50px;	
+	}
+
+
+/*
 .lastmodified {
 	border: 1px solid #000;	
 	float: left;
+	width: 80px;	
 	}
-	
+*/
+
+#seperator {
+	float: left;
+	width: 100%;
+	margin: 10px;	
+	}
