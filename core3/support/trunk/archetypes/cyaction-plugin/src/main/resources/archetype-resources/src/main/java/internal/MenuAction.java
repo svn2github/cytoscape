@@ -18,7 +18,7 @@ import org.cytoscape.application.CyApplicationManager;
 public class MenuAction extends AbstractCyAction {
 
 	public MenuAction(final CyApplicationManager applicationManager, final String menuTitle) {
-		super(menuTitle, applicationManager);
+		super(menuTitle, applicationManager, null);
 		setPreferredMenu("Apps");
 	}
 

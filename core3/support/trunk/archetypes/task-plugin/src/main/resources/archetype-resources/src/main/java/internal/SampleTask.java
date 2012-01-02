@@ -96,7 +96,7 @@ public class SampleTask extends AbstractNetworkTask {
 
 			// DO THE ACTUAL WORK!!!
 			// Set the selected attribute to true for the given node.
-			node.getCyRow().set("selected",true);
+			network.getRow(node).set("selected",true);
 
 
 			// Update the progress bar with the percent complete
