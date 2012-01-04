@@ -73,19 +73,26 @@ function deleteReportFromDB($bugid){
 		showerror();
     
    	// Get reporter_id for this bug report
-	$reporter_auto_id = null;
+	$reporter_id = null;
 	$query = "SELECT reporter_id FROM bugs WHERE bug_auto_id =$bugid";
 	// Run the query
 	if (!($result = @ mysql_query($query, $connection)))
 		showerror();
 
-	$reportCount = @ mysql_num_rows($result);
-	if ($reportCount == 1){
-		$_row = @ mysql_fetch_array($result);
-		$reporter_auto_id = $_row['reporter_id'];
+	$_row = @ mysql_fetch_array($result);
+	$reporter_id = $_row['reporter_id'];
 		
+
+	// Get the number of reports reported by this reporter
+	$query = "SELECT bug_auto_id FROM bugs WHERE reporter_id =$reporter_id";
+	// Run the query
+	if (!($result = @ mysql_query($query, $connection)))
+		showerror();
+	
+	$reportCount = @ mysql_num_rows($result);
+	if ($reportCount == 1){		
 		// delete the reporter because the reporter only report this bug
-    	$query = "delete from reporter where reporter_auto_id=$reporter_auto_id";
+    	$query = "delete from reporter where reporter_auto_id=$reporter_id";
 		// Run the query
 		if (!($result = @ mysql_query($query, $connection)))
 			showerror();
