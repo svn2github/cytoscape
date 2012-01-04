@@ -45,7 +45,7 @@
 			}
 			
 			$delete = "<a href=\"bugreportdelete.php?bugid=".$bug_auto_id."\">Delete</a>";
-			$view = "<a href=\"bugreport.php?id=".$bug_auto_id."\">View</a>";
+			$view = "<a href=\"bugreportview.php?bugid=".$bug_auto_id."\" target=\"_blank\">View</a>";
 			
 			$lastModified = $_row['editdat'];
 				
