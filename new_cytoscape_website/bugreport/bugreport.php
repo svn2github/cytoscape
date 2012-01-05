@@ -1,6 +1,5 @@
 <?php 
 	//include "logininfo.inc";
-
 	include "functions.php"; 
 ?>
 
@@ -155,15 +154,17 @@ function submitNewBug($connection, $bugReport){
 	$os = $bugReport['os'];
 	$subject = $bugReport['subject'];
 	$description = $bugReport['description'];
-	
+	$ip_address = $bugReport['ip_address'];
+	$remote_host = $bugReport['remote_host'];
+		
 	$dbQuery = "";
 	if ($reporter_auto_id == NULL){
-		$dbQuery = "INSERT INTO bugs (cyversion, os, subject, description, sysdat) Values ('".
-		$dbQuery .= "'$cyversion',"."'$os',"."'$subject',"."'$description'".",now())";	
+		$dbQuery = "INSERT INTO bugs (cyversion, os, subject, description,ip_address,remote_host,sysdat) Values ('".
+		$dbQuery .= "'$cyversion',"."'$os',"."'$subject',"."'$description',"."'$ip_address',"."'$remote_host'".",now())";	
 	}
 	else {
-		$dbQuery = "INSERT INTO bugs (reporter_id, cyversion, os,subject, description, sysdat) Values (".
-		$dbQuery .= "$reporter_auto_id".","."'$cyversion',"."'$os',"."'$subject',"."'$description'".",now())";	
+		$dbQuery = "INSERT INTO bugs (reporter_id, cyversion, os,subject, description, ip_address,remote_host,sysdat) Values (".
+		$dbQuery .= "$reporter_auto_id".","."'$cyversion',"."'$os',"."'$subject',"."'$description',"."'$ip_address',"."'$remote_host'".",now())";	
 	}
 	
 	// Run the query
@@ -341,6 +342,11 @@ function getBugReportFromForm($_GET, $_POST, $_FILES, $_SERVER){
 		}
 	}
 	
+	if (isset ($_SERVER['REMOTE_ADDR'])) {
+		$bugReport['ip_address'] = $_SERVER['REMOTE_ADDR'];
+		$bugReport['remote_host'] = gethostbyaddr($bugReport['ip_address']);
+	}	
+		
 	return $bugReport;
 }
 
