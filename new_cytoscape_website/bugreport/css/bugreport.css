@@ -75,3 +75,17 @@
 	width: 100%;
 	margin: 10px;	
 	}
+	
+	
+#view_title {
+	font-size: 24px;
+	margin-top:50px;
+	margin-left: 100px;
+	margin-bottom: 30px;
+}
+
+#view_name, #view_email,#view_date, #view_cyversion,#view_os, #view_description, #view_attachedfile {
+	margin-top:5px;
+	margin-left: 0px;
+	margin-bottom: 10px;	
+}
