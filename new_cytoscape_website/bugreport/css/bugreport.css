@@ -35,6 +35,51 @@
 	width: 150px;	
 	}
 
+#tfName {
+	width:200px;
+	margin-left:10px;
+	margin-top:10px;
+	margin-bottom:10px;
+	
+	}
+
+#tfEmail {
+	width:200px;
+	margin-left:10px;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+#tfOS {
+	width:200px;
+	margin-left:10px;
+	margin-top:10px;
+	margin-bottom:30px;
+	}
+
+#tfCyversion {
+	width:200px;
+	margin-left:10px;
+	margin-top:10px;
+	margin-bottom:10px;
+	
+	}
+	
+#taDescription {
+	width:800px;
+	height: 150px;
+	margin-left:10px;
+	margin-top:10px;
+	margin-bottom:30px;
+		
+	}
+
+#btnSubmit {
+	margin-left:400px;
+	margin-top:20px;
+	margin-bottom:10px;
+	}
+	
 .date {
 	border: 1px solid #000;	
 	float: left;
