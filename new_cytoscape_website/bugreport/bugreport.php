@@ -102,8 +102,35 @@ function updateBug($connection, $bugReport){
 }
 
 
+// This is a security check, restrict number of bugs a user can submit with a day
+function getReportCountToday($connection, $bugReport) {
+
+	$bugCount = 0;
+	
+	$ip = $bugReport['ip_address'];
+
+	$query = "Select bug_auto_id from bugs where ip_address='$ip'  and sysdat > DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
+	
+	// Run the query
+	if (!($result = @ mysql_query($query, $connection)))
+		showerror();
+				
+	$bugCount =mysql_num_rows($result);	
+
+	return $bugCount;
+}
+
+
 function submitNewBug($connection, $bugReport){
-		
+	
+	$bugCount = getReportCountToday($connection, $bugReport);
+	
+	if ($bugCount > 10){
+		echo "<br><br>Sorry, you report is rejected, because you can not report more than 10 bugs within 24 hours.<br><br>";
+	
+		return;
+	}
+	
 	// Step 1: load attached file
 	$file_auto_id = null;
 	// Load attached files first
@@ -236,12 +263,12 @@ function showForm($userInput) {
 
 	<div>
 	  <label for="cyversion">Cytoscape version</label>
-	    <input name="tfCyversion" type="text" id="cyversion" value="<?php if (isset($userInput['cyversion'])) echo $userInput['cyversion']; ?>" />
+	    <input name="tfCyversion" type="text" id="tfCyversion" value="<?php if (isset($userInput['cyversion'])) echo $userInput['cyversion']; ?>" />
 	</div>
 
 	<div>
 	  <label for="os">Operating system</label>
-	    <input name="tfOS" type="text" id="os" value="<?php if (isset($userInput['os'])) echo $userInput['os']; ?>" />
+	    <input name="tfOS" type="text" id="tfOS" value="<?php if (isset($userInput['os'])) echo $userInput['os']; ?>" />
 	</div>
 
 <!-- 
@@ -253,19 +280,19 @@ function showForm($userInput) {
 	    <option <?php if ($userInput['os'] == 'Mac') echo "selected=\"selected\""; ?>>Mac</option>
 	  </select>
 	</div>
- -->
  
  	<div>
 	  <label for="cysubject">Subject</label>
 	    <input name="tfSubject" type="text" id="cysubject" value="<?php if (isset($userInput['cysubject'])) echo $userInput['cysubject']; ?>" /> Optional
 	</div>
-
+-->
+ 
  
     <div>
             <label for="taDescription">Problem description</label>
         </div>
         <div>
-            <textarea name="taDescription" id="taDescription" cols="80" rows="10"><?php if (isset($userInput['description'])) echo $userInput['description']; ?></textarea>
+            <textarea name="taDescription" id="taDescription"><?php if (isset($userInput['description'])) echo $userInput['description']; ?></textarea>
         </div>
 
         <div>
@@ -321,6 +348,14 @@ function getBugReportFromForm($_GET, $_POST, $_FILES, $_SERVER){
 	}
 	
 	$bugReport['os'] = getOSFromUserAgent($_SERVER);
+	
+	if (isset ($_GET['os'])) {
+		$bugReport['os'] = addslashes($_GET['os']);
+	}
+	
+	if (isset ($_POST['os'])) {
+		$bugReport['os'] = addslashes($_POST['os']);
+	}
 		
 	if (isset ($_POST['taDescription'])) {
 		$bugReport['description'] = addslashes($_POST['taDescription']);
