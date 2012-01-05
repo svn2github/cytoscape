@@ -280,7 +280,7 @@ input[type=button].ui-state-default { cursor: pointer; }
 .ui-tabs-vertical .ui-tabs-panel { padding: 0.3em; float: right; width: 22em; overflow: auto; }
 
 #settings { padding: 0.25em 0.1em; }
-#settings .ui-tabs-vertical .ui-tabs-nav { height: 26em; }
+#settings .ui-tabs-vertical .ui-tabs-nav { height: 28em; }
 #settings table { margin: 0; }
 #settings td { border: 0px solid #CFCFCF; text-align: left; }
 #settings input[type="text"], #settings select { margin-bottom: 0.5em; width: 8.5em; }

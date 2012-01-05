@@ -304,6 +304,7 @@ $(function(){
         { id: "maxDistance", label: "Maximum distance",  value: 10000,  tip: "The maximum distance over which forces are exerted." },
         { id: "weightAttr",  label: "Weight Attribute",  value: "",  tip: "The name of the edge attribute that contains the weights." },
         { id: "weightNorm",  label: "Weight Normalization", value: ["linear","invlinear","log"],  tip: "How to interpret weight values." },
+        { id: "seed",        label: "Seed",       value: 0,      tip: "Seed for initial node positions." },
         { id: "iterations",  label: "Iterations",        value: 400,    tip: "The number of iterations to run the simulation." },
         { id: "maxTime",     label: "Maximum time",      value: 30000,  tip: "The maximum time to run the simulation, in milliseconds." },
         { id: "autoStabilize", label: "Auto stabilize",  value: true,   tip: "If checked, Cytoscape Web automatically tries to stabilize results that seems unstable after running the regular iterations." }
