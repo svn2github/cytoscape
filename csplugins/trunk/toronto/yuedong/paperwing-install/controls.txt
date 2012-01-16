@@ -1,0 +1,73 @@
+General functions
+=================
+
+(None listed yet)
+
+Performance adjustment functions
+================================
+
+(None listed yet)
+
+Network manipulation
+====================
+
+Node selection
+--------------
+-Hover the mouse cursor over an edge or node to cause it to turn BLUE.
+-Click on an edge or node to select it, turning it GREEN.
+
+Multiple selection
+------------------
+-Hold SHIFT and click on additional nodes/edges to select them.
+
+Drag selection
+--------------
+-Drag the mouse cursor to create a selection rectangle, selecting all nodes/edges
+	inside the rectangle upon mouse button release.
+
+Node, edge creation/deletion
+----------------------------
+J: Create an edge between selected nodes and the hovered (currently under the mouse cursor) node
+Delete: Deletes selected nodes/edges
+N: Create new node under mouse cursor
+
+Node dragging
+-------------
+-Hold CTRL and drag the mouse cursor to move all currently selected nodes alongside the mouse.
+
+Camera movement
+===============
+
+Movement
+--------
+
+W: Move camera up
+A: Move camera left
+S: Move camera down
+D: Move camera right
+E: Move camera forward
+Q: Move camera backwards
+
+Rotation
+--------
+
+Z: Roll camera clockwise
+X: Roll camera counter-clockwise
+
+Shift + Left/Right: Rotation about Y-axis
+Shift + Up/Down: Rotation about X-axis
+
+Note that currently, both these rotations rotate around axes that intersect a "target point". This point, located in front of the camera, is used as the centre of rotation. The mouse wheel can adjust the distance between the camera and the target point. Moving the target point close to the network centre will cause rotations to rotate the network about its centre. The target point moves with the camera.
+
+Arrow Keys: Turn camera
+
+Bird's eye view camera
+======================
+
+In Cytoscape, click on the "Network" tab on the left to see the bird's eye view.
+
+Movement:
+-Click or drag the mouse on the bird's eye view to move the main camera.
+-Move the main camera to move the rectangle in the bird's eye view depicting where the main camera currently is.
+
+

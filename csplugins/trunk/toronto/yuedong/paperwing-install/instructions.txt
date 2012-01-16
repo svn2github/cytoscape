@@ -1,0 +1,29 @@
+Description
+===========
+
+This installer will check out the latest build of Cytoscape, the latest build of the 3D renderer plugin (no official name yet, but it is currently dubbed "Wind"), and patch the Cytoscape build to accommodate the renderer plugin.
+
+Requirements
+============
+
+Maven 3 or later
+Bash
+
+Running Cytoscape with the renderer
+===================================
+
+1. Run download-and-install.sh to download and install the renderer.
+2. Run start.sh to start Cytoscape with the renderer.
+
+Camera controls, selection, node dragging
+=========================================
+
+Please see controls.txt
+
+Explanation of directories
+==========================
+
+bundles/paperwing-impl : source code for the renderer
+bundles/gui-distribution : a recent check-out of Cytoscape
+bundles/patches : patches that are needed to patch parts of the core for the renderer to run
+bundles/jogl_repacked : contains repackaged JOGL libraries
