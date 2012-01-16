@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    
+    <head>
+        <title>Cytoscape Web</title>
+        
+        <script type="text/javascript" src="js/AC_OETags.js"></script>
+        <script type="text/javascript" src="js/json2.js"></script>
+        <script type="text/javascript" src="js/cytoscapeweb.js"></script>
+        <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+        <script type="text/javascript"><!--
+
+            var d1, d2;
+            var div_id = "cytoscapeweb";
+            var vis;
+            
+            // options used for Cytoscape Web
+            var options = {
+                nodeTooltipsEnabled: true,
+                edgeTooltipsEnabled: true,
+                nodeTooltipsEnabled: true,
+                edgesMerged: false,
+                //mouseDownToDragDelay: -1,
+                visualStyle: {
+                    global: {
+                        backgroundColor: "#fefefe",
+                        tooltipDelay: 1000
+                    },
+                    nodes: {
+                        shape: "ELLIPSE",
+                        compoundShape: "ROUNDRECT",
+                        //color: "transparent",//{ defaultValue: "#cccccc", continuousMapper: { attrName: "weight", minValue: "#ffffff", maxValue: "#0b94b1" } },
+                        compoundColor: "transparent",//{ defaultValue: "#cccccc", continuousMapper: { attrName: "weight", minValue: "#ff00ff", maxValue: "#00ff00" } },
+                        opacity: 0.9,
+                        size: { defaultValue: 20, continuousMapper: { attrName: "weight",  minValue: 20, maxValue: 40 } },
+                        borderWidth: 2,
+                        borderColor: "#707070",
+                        //image: "http://chart.apis.google.com/chart?chs=300x300&cht=p&chd=e0:U-gh..bR",
+                        //compoundImage: "http://chart.apis.google.com/chart?chxr=0,0,160&chxt=x&chbh=a&chs=440x220&cht=bhs&chco=4D89F9,C6D9FD&chd=s:GflxYlS,fl9YSYS",
+                        labelFontSize: { defaultValue: 12, continuousMapper: { attrName: "weight",  minValue: 10, maxValue: 24 } },
+                        tooltipText: { customMapper: { functionName: "onNodeTooltip" } },
+                        selectionGlowOpacity: 0,
+                        selectionBorderColor: "ff0000",
+                        hoverBorderWidth: 4
+                    },
+                    edges: {
+                    	color: "#0b94b1",
+                        width: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 8 } },
+                        mergeWidth: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 8 } },
+                        mergeColor: "#0b94b1",
+                        opacity: 0.7,
+                        labelFontSize: 10,
+                        labelFontWeight: "bold",
+                        selectionGlowOpacity: 0,
+                        selectionColor: "ff0000",
+                        tooltipText: "${weight}"
+                     }
+                }   
+            };
+            
+            function showElapsedTime() {
+                d2 = new Date();
+                var elapsed = (d2.getTime() - d1.getTime()) / 1000;
+                $("#elapsedTime").html(elapsed + " seconds");
+            }
+
+            function draw(data) {
+            	$("input, select").attr("disabled", true);
+
+                if (data) {
+					var layout = { name: "ForceDirected" };
+
+                    if (data.indexOf("</graphml>") === -1 && data.indexOf("</graph>") > -1) { // XGMML...
+                    	layout = { name: "Preset", options: { fitToScreen: true } };
+                    } else { // GraphML or SIF
+                    	if ($("#layouts").val() !== "Preset") {
+                            layout = { name: $("#layouts").val(), options: { weightAttr: "weight", restLength: 50, autoStabilize: false } };
+                        }
+					}
+
+					options.layout = layout;
+                	options.network = data;
+                    options.nodeLabelsVisible = $("#showNodeLabels").is(":checked");
+                    options.edgeLabelsVisible = $("#showEdgeLabels").is(":checked");
+
+                	d1 = new Date();
+                	vis.draw(options);
+                } else {
+                    var url = "fixtures/" + $("#graphs").val();
+                    $.get(url, function(dt) {
+                        if (typeof dt !== "string") {
+                            if (window.ActiveXObject) {
+                                dt = dt.xml;
+                            } else {
+                                dt = (new XMLSerializer()).serializeToString(dt);
+                            }
+                        }
+                        draw(dt);
+                    });
+                }
+            }
+
+            var _srcId;
+            function clickNodeToAddEdge(evt) {
+                if (_srcId != null) {
+                	vis.removeListener("click", "nodes", clickNodeToAddEdge);
+                	var e = vis.addEdge({ source: _srcId, target: evt.target.data.id, weight: Math.random() }, true);
+                	_srcId = null;
+                }
+            }
+
+            $(document).ready(function() {
+                $("input").attr("disabled", true);
+
+                // init and draw
+                vis = new org.cytoscapeweb.Visualization(div_id);
+                
+                vis.ready(function() {
+                    showElapsedTime();
+
+                    var layout = vis.layout();
+                    $("#layouts").val(layout.name);
+                    $("input, select").attr("disabled", false);
+                    $("#updateVisualStyle").attr("disabled", true);
+                    $("#mergeEdges").attr("checked", vis.edgesMerged());
+                    $("#showNodeLabels").attr("checked", vis.nodeLabelsVisible());
+                    $("#showEdgeLabels").attr("checked", vis.edgeLabelsVisible());
+                    
+                    vis.addContextMenuItem("Delete node", "nodes", function(evt) {
+                        vis.removeNode(evt.target.data.id, true);
+                    })
+                    .addContextMenuItem("Delete edge", "edges", function(evt) {
+                        vis.removeEdge(evt.target.data.id, true);
+                    })
+                    .addContextMenuItem("Add new node", function(evt) {
+                        var x = evt.mouseX;
+                        var y = evt.mouseY;
+                        var parentId;
+                        if (evt.target != null && evt.target.group == "nodes") {
+                            parentId = evt.target.data.id;
+                            x = evt.target.x;
+                            y = evt.target.y;
+                            x += Math.random() * (evt.target.width/2) * (Math.round(x)%2==0 ? 1 : -1);
+                            y += Math.random() * (evt.target.height/2) * (Math.round(y)%2==0 ? 1 : -1);
+                        }
+                        var n = vis.addNode(x, y, { weight: Math.random(), parent: parentId }, true);
+                        n.data.label = n.data.id;
+                        vis.updateData([n]);
+                    })
+                    .addContextMenuItem("Add new edge", "nodes", function(evt) {
+                    	_srcId = evt.target.data.id;
+                        vis.removeListener("click", "nodes", clickNodeToAddEdge);
+                        vis.addListener("click", "nodes", clickNodeToAddEdge);
+                    })
+                    .addContextMenuItem("Set new weight", "nodes", function(evt) {
+                        var w = prompt('Enter new value for "weight"');
+                        vis.updateData([evt.target], { weight: w });
+                    })
+                    .addContextMenuItem("Delete selected", function(evt) {
+                        var items = vis.selected();
+                        if (items.length > 0) { vis.removeElements(items, true); }
+                    });
+                });
+                
+                vis.addListener("layout", function(evt) {
+                	showElapsedTime();
+                })
+                .addListener("dblclick", function(evt) {
+                	vis.addNode(evt.mouseX, evt.mouseY, { weight: Math.random() }, true);
+                })
+                .addListener("error", function(err) {
+					alert(err.value.msg);
+                });
+
+                // Register control liteners:
+                $("#layouts").change(function(evt) {
+                    d1 = new Date();
+                    vis.layout($("#layouts").val());
+                });
+                $("#graphs").change(function(evt) {
+                    draw();
+                });
+                $("#reapplyLayout").click(function(evt) {
+                    d1 = new Date();
+                    var layout = vis.layout();
+                    vis.layout(layout);
+                });
+                $("#mergeEdges").change(function(evt) {
+                    vis.edgesMerged($("#mergeEdges").is(":checked"));
+                });
+                $("#showNodeLabels").change(function(evt) {
+                    vis.nodeLabelsVisible($("#showNodeLabels").is(":checked"));
+                });
+                $("#showEdgeLabels").change(function(evt) {
+                    vis.edgeLabelsVisible($("#showEdgeLabels").is(":checked"));
+                });
+                $("#createGraph").click(function(evt) {
+                    var data = createData($("#nodesNumber").val(), $("#edgesNumber").val());
+                    draw(data);
+                });
+                $("#minNodeWeight, #minEdgeWeight").keydown(function(evt) {
+                    if (evt.which === 13) {
+                       var val = parseFloat($(this).val());
+                       var reapplyMappers = $("#reapplyMappers").is(":checked");
+                       val = isNaN(val) ? 0 : val;
+                       var gr = $(this).attr("id") === "minNodeWeight" ? "nodes" : "edges";
+                       vis.filter(gr, function(item) {
+                            return item.data.weight >= val;
+                       }, reapplyMappers);
+                       // Enable the update button when the filter did not update the view:
+                       $("#updateVisualStyle").attr("disabled", reapplyMappers);
+                    }
+                });
+                $("#updateVisualStyle").click(function(evt) {
+                    vis.visualStyle(options.visualStyle);
+                });
+                $("#toXGMML").click(function(evt) {
+                    alert(vis.xgmml());
+                });
+                $("#toGraphML").click(function(evt) {
+                    alert(vis.graphml());
+                });
+                $("#toSIF").click(function(evt) {
+                    alert(vis.sif());
+                });
+
+                draw();
+            });
+
+            function createData(nodesNumber, edgesNumber) {
+                var data = '<graphml>' +
+                           '<key attr.type="string" attr.name="label" for="all" id="label"/>' +
+                           '<key attr.type="double" attr.name="weight" for="all" id="weight"/>' +
+                           '<graph edgedefault="undirected">';
+
+                var i;
+                for (i = 1; i <= nodesNumber; i++) {
+                    data += '<node id="'+i+'">' +
+                            '<data key="weight">'+Math.random()+'</data>' +
+                            '<data key="label">Node '+i+'</data>' +
+                            '</node>';
+                }
+                if (nodesNumber > 1) {
+                    for (i = 1; i <= edgesNumber; i++) {
+                        var src = 0, tgt = 0;
+                        while (src <= 0) {
+                            src = Math.round(Math.random() * nodesNumber);
+                        }
+                        while (tgt <= 0 || tgt === src) {
+                            tgt = Math.round(Math.random() * nodesNumber);
+                        }
+                        
+                        data += '<edge id="'+i+'" source="'+src+'" target="'+tgt+'">' +
+                                '<data key="weight">'+Math.random()+'</data>' +
+                                '<data key="label">Edge '+i+'</data>' +
+                                '</edge>';
+                    }
+                }
+                           
+                data += '</graph></graphml>';
+
+                return data;
+            }
+        --></script>
+        
+        <style>
+            /* The Cytoscape Web container must have its dimensions set. */
+            html, body { padding: 0; margin: 0; text-align: center; font-family: sans-serif; }
+            h1, h2 { margin-top: 8px; }
+            label { color: #0b94b1; font-size: 14px; }
+            hr { border: #0b94b1 1px solid; }
+            .center { text-align: center; }
+            #header { width: 100%; height: 40px; padding: 4px 0; background-color: #0b94b1; color: #ffffff; }
+            #cytoscapeweb { height: 640px; border-right: 2px solid #0b94b1; border-bottom: 2px solid #0b94b1; margin: 0 auto 0 auto; }
+            #sidePanel { width: 120px; padding: 8px 20px 0 10px; vertical-align: top; text-align: left; }
+            #controls > div { margin: 8px 0; }
+            #graphs, #createGraph, #reapplyLayout, #updateVisualStyle { width: 164px; }
+            #nodesNumber, #edgesNumber { width: 80px; }
+        </style>
+    </head>
+    
+    <body>
+        <div id="header">
+            <h2>Cytoscape Web</h2>
+        </div>
+        <table width="100%" cellspacing="0">
+            <tr>
+                <td id="cytoscapeweb" width="*">
+                    Cytoscape Web will replace the contents of this div with your graph.
+                </td>
+                <td id="sidePanel">
+                    <div id="controls">
+                        <div>
+                            <label>Networks:</label>
+                            <select id="graphs" size="1">
+                                <option value="weighted1.graphml" selected="selected">Weighted 1</option>
+                                <option value="compound.graphml" selected="selected">Compound</option>
+                                <option value="galFiltered.xgmml">Gal Filtered</option>
+                                <option value="cpath_cytoscape.xgmml">CPath</option>
+                                <option value="node_label_anchor.xgmml">Nodes Label Anchor (XGMML)</option>
+                                <option value="arrow_curves.xgmml">CURVES</option>
+                                <option value="arrows.xgmml">Arrows</option>
+                                <option value="sample.cys">CYS</option>
+                                <option value="sample1.xml">Sample 1</option>
+                                <option value="sample2.xml">Sample 2</option>
+                                <option value="sample3.xml">Sample 3</option>
+                                <option value="sample4.xml">Sample 4</option>
+                                <option value="sample5.sif">Sample 5 (SIF)</option>
+                                <option value="sample6.graphml">Sample 6</option>
+                                <option value="fly50.xml">Fly 50</option>
+                                <option value="human50.xml">Human 50</option>
+                                <option value="human100.xml">Human 100</option>
+                                <option value="mouse100.xml">Mouse 100</option>
+                                <option value="worm20.xml">Worm 20</option>
+                                <option value="worm80.xml">Worm 80</option>
+                                <option value="yeast20.xml">Yeast 20</option>
+                                <option value="yeast100.xml">Yeast 100</option>
+                                <option value="interactions.sif">Interactions (SIF)</option>
+                                <option value="network_2.xgmml">XGMML</option>
+                                <option value="1000.xml">1K nodes | 2K edges</option>
+                                <option value="2000.xml">2K nodes | 3K edges</option>
+                                <option value="30K_edges.xml">1K nodes | 30K edges</option>
+                            </select>
+                            <br/><hr/>
+                            <label># Nodes:</label> <input id="nodesNumber" type="text"/><br/>
+                            <label># Edges:</label> <input id="edgesNumber" type="text"/><br/>
+                            <input type="button" id="createGraph" value="Draw"/>
+                        </div>
+                        <hr/>
+                        <div>
+                            <label>Layout:</label>
+                            <select id="layouts">
+                                <option value="ForceDirected" selected="selected">Force Directed</option>
+                                <option value="Circle">Circle</option>
+                                <option value="CompoundSpringEmbedder">CoSE</option>
+                                <option value="Radial">Radial</option>
+                                <option value="Tree">Tree</option>
+                                <option value="Preset">Preset</option>
+                            </select>
+                        </div>
+                        <div>
+                            <input type="button" id="reapplyLayout" value="Reapply"/>
+                        </div>
+                        <hr/>
+                        <div>
+                            <input type="checkbox" id="mergeEdges"/>
+                            <label for="mergeEdges">Merge edges</label>
+                        </div>
+                        <hr/>
+                        <div>
+                            <label>Labels:</label><br/>
+                            <input type="checkbox" id="showNodeLabels" checked="checked"/> <label for="showNodeLabels">Nodes</label>
+                            <input type="checkbox" id="showEdgeLabels"/> <label for="showNEdgeLabels">Edges</label>
+                        </div>
+                        <hr/>
+                        <div>
+                            <label>Filters</label><br/> <br/>
+                            <label>Min edge weight:</label> <input id="minEdgeWeight" type="text"/><br/>
+                            <label>Min node weight:</label> <input id="minNodeWeight" type="text"/><br/>
+                            <input type="checkbox" id="reapplyMappers" checked="checked"/> Reapply mappers<br/>
+                            <input type="button" id="updateVisualStyle" value="Update Visual Style"/>
+                        </div>
+                        <hr/>
+                        <div class="center">
+                            <input type="button" id="toXGMML" value="XGMML"/><input type="button" id="toGraphML" value="GraphML"/><input type="button" id="toSIF" value="SIF"/>
+                        </div>
+                        <hr/>
+                        <div>
+                            Elapsed time: <span id="elapsedTime">?</span>
+                        </div>
+                    </div>
+                </td>
+            <tr>
+        </table>
+
+        <ol id="data"></ol>
+        <p>
+            <a href="http://cytoscapeweb.cytoscape.org/">Cytoscape Web</a>
+            , &copy; 2010
+        </p>
+    </body>
+    
+</html>
