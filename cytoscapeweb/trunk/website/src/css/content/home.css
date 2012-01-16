@@ -6,8 +6,8 @@
 #side_links { float: right; width: 230px; }
 #side_links a { text-decoration: underline; }
 .link a { text-decoration: none !important; }
-.button { text-align: center; cursor: pointer; background: #097288 url("../../img/layout/button_blue.png") repeat-x top center; border: 1px solid #adadad; height: 36px; font-size: 1.25em; line-height: 36px; padding: 0 0.5em 0 0.5em; border-radius: 8px; -moz-border-radius: 8px; -webkit-border-radius: 8px; color: #ffffff; }
-#download_latest { background: #9a0b0b url("../../img/layout/big_red_button.png") top center repeat-x; }
+.button { text-align: center; cursor: pointer; background: #097288 url("../../img/layout/button_blue.png") repeat-x top center; border: 1px solid #0076A3; height: 36px; font-size: 1.25em; line-height: 36px; padding: 0 0.5em 0 0.5em; border-radius: 8px; -moz-border-radius: 8px; -webkit-border-radius: 8px; color: #ffffff; }
+#download_latest { background: #64991E url("../../img/layout/big_green_button.png") top center repeat-x; border: 1px solid #538312; }
 #download a { color: #ffffff; text-decoration: none; }
 #download { margin-bottom: 3em; }
 .link { margin-bottom: 2em; }

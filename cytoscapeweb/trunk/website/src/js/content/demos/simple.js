@@ -67,8 +67,6 @@ $(function(){
                 borderWidth: 2,
                 borderColor: "#707070",
                 labelFontColor: "#303030",
-                selectionGlowOpacity: 0,
-                selectionBorderColor: "ff0000",
                 hoverBorderWidth: 4
             },
             edges: {

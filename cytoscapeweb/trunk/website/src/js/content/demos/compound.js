@@ -64,8 +64,6 @@ $(function(){
                 compoundBorderColor: "#abcfd6",
                 compoundBorderWidth: 2,
                 labelFontColor: "#505050",
-                selectionGlowOpacity: 0,
-                selectionBorderColor: "ff0000",
                 hoverBorderWidth: 4
             },
             edges: {
@@ -76,8 +74,6 @@ $(function(){
                 opacity: 0.7,
                 labelFontSize: 10,
                 labelFontWeight: "bold",
-                selectionGlowOpacity: 0,
-                selectionColor: "ff0000",
                 tooltipText: "${weight}"
              }
         }   

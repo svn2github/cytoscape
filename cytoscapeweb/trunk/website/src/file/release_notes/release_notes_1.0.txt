@@ -1,0 +1,14 @@
+<p>
+    The Force Directed Layout now provides the <code>seed</code> option,
+    which can be used to make it deterministic.
+</p>
+<div class="relase_details">
+    <ul class="new_features">
+        <li><span class="bug_id">2611</span>: Deterministic Force Directed Layout.</li>
+    </ul>
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2606</span>: SVG Export: edges drawn over nodes.</li>
+        <li><span class="bug_id">2607</span>: PDF Export: edges drawn over nodes.</li>
+        <li><span class="bug_id">2613</span>: Repeated 'parent' DataFields when drawing network from GraphML.</li>
+    </ul>
+</div>

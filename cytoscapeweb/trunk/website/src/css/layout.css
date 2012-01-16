@@ -19,10 +19,10 @@ label { color: #0b94b1; }
 p { padding: 0.5em 0 0.5em 0; }
 input, button, textarea, select { resize: none; font-size: 100%; font-family: Helvetica, Arial, Verdana, sans-serif; border: 1px solid #c1c1c1; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; padding: 0.25em; }
 input:focus, button:focus, textarea:focus{ -moz-box-shadow: 0 0 5px #0b94b1; -webkit-box-shadow: 0 0 5px #0b94b1; box-shadow: 0 0 5px #0b94b1; }
-input[type=submit], button { color: #ffffff; cursor: pointer; background: #097288 url("../img/layout/button_blue.png") repeat-x top center; }
-input.emphasis, button.emphasis { background: #62977c url("../img/layout/button_green.png") repeat-x top center; }
+input[type=submit], button { color: #ffffff; cursor: pointer; background: #097288 url("../img/layout/button_blue.png") repeat-x top center; border: 1px solid #0076A3; }
+input.emphasis, button.emphasis { background: #62977c url("../img/layout/button_green.png") repeat-x top center; border: 1px solid #538312; }
 input[disabled], textarea:disabled { border-color: #f0f0f0; cursor: default; background-color: #f0f0f0; border-color: #f0f0f0; }
-input[type=submit][disabled], button[disabled] { background: #9c9c9c url("../img/layout/button.png") repeat-x top center; cursor: default; }
+input[type=submit][disabled], button[disabled] { background: #9c9c9c url("../img/layout/button.png") repeat-x top center; border: 1px solid #9a9a9a; cursor: default; }
 input[type=text].inactive, textarea.inactive { color: #707070; }
 .ui-validation-error { border-color: #ff0000 !important; background: #ffecec !important; }
 .ui-validation-error:focus { -moz-box-shadow: 0 0 5px #ff0000 !important; -webkit-box-shadow: 0 0 5px #ff0000 !important; box-shadow: 0 0 5px #ff0000 !important; }

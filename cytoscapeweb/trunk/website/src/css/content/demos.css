@@ -3,4 +3,4 @@
 #content .tools * + label { margin-left: 1em; }
 #main { width: 50%; position: relative; left: 50%; margin-left: -25%; padding: 3em 0; }
 #buttonp { text-align: center; font-size: 2em;  }
-#button { display: inline-block; background: #9a0b0b url("../../img/layout/big_red_button.png") top center repeat-x; }
+#button { display: inline-block; background: #9a0b0b url("../../img/layout/big_red_button.png") top center repeat-x; border: 1px solid #8b0000 }
