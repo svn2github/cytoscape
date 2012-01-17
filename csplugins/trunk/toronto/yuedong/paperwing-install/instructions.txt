@@ -15,13 +15,9 @@ Running Cytoscape with the renderer
 1. Run download-and-install.sh to download and install the renderer.
 2. Run start.sh to start Cytoscape with the renderer.
 
-NOTE: If you want to be able to run regular Cytoscape afterwards, you will need to do a mvn install on the unpatched versions of the following Cytoscape bundles:
+Note that the download and installation portion will take longer if you don't already have a copy of the Cytoscape core bundles in your Maven repository directory.
 
-presentation-impl
-swing-application-impl
-vizmap-gui-impl
-
-However, it seems that waiting until midnight will also remove the patched versions. But, a later version of the installer would hopefully remove the need to re-perform installing of the unlatched bundles.
+3. To undo the patches for running regular Cytoscape, run remove_patches.sh
 
 Camera controls, selection, node dragging
 =========================================
