@@ -84,6 +84,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	
 	private static final long serialVersionUID = 2986320083629749014L;
 	
+	private static final String MAC_OS_ID = "mac";
+	
 	protected long lastPluginRegistryUpdate;
 	protected int returnVal;
 
@@ -382,8 +384,17 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		statusBar.setBorder(new EmptyBorder(0, 7, 0, 7));
 		statusBar.setForeground(new Color(40, 40, 40));
 		panel.add(statusBar, BorderLayout.SOUTH);
-		setStatusBarMsg("Welcome to Cytoscape " + CytoscapeVersion.version
+		if(isMacOS())
+			setStatusBarMsg("Welcome to Cytoscape " + CytoscapeVersion.version
+		                + "              Right-click + drag or Control-Click + drag to ZOOM             Command-Click + drag to PAN");
+		else
+			setStatusBarMsg("Welcome to Cytoscape " + CytoscapeVersion.version
 		                + "              Right-click + drag to ZOOM             Middle-click + drag to PAN");
+	}
+	
+	private boolean isMacOS() {
+		String os = System.getProperty("os.name");
+		return os.regionMatches(true, 0, MAC_OS_ID, 0, MAC_OS_ID.length());
 	}
 
 	/**

@@ -332,13 +332,11 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	public void mouseExited(MouseEvent e) {
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
+	@Override
 	public void mousePressed(MouseEvent e) {
-		if ((e.getButton() == MouseEvent.BUTTON1) && !(isMacPlatform() && e.isControlDown())) { // on mac, mouse button1 click and control is simulate button 3 press
+		
+		e.getModifiersEx();
+		if ((e.getButton() == MouseEvent.BUTTON1) && !(isMacPlatform() && e.isControlDown()) && !(isMacPlatform() && e.isMetaDown())) { // on mac, mouse button1 click and control is simulate button 3 press
 			                                                                                    // It's too complicated to correctly handle both control and shift
 			                                                                                    // simultaneously.
 
@@ -563,13 +561,14 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			// Repaint after listener events are fired because listeners may change
 			// something in the graph view.
 			repaint();
-		} else if (e.getButton() == MouseEvent.BUTTON2) {
+		} else if (e.getButton() == MouseEvent.BUTTON2 || (isMacPlatform() && e.isMetaDown() && e.getButton() == MouseEvent.BUTTON1)) {
+			// PAN
 			//******** Save all node positions
 			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move");
 			m_currMouseButton = 2;
 			m_lastXMousePos = e.getX();
 			m_lastYMousePos = e.getY();
-		} else if ((e.getButton() == MouseEvent.BUTTON3) || (isMacPlatform() && e.isControlDown())) {
+		} else if ((e.getButton() == MouseEvent.BUTTON3) || (isMacPlatform() && e.isControlDown() && e.getButton() == MouseEvent.BUTTON1)) {
 			//******** Save all node positions
 			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move");
 			m_currMouseButton = 3;
@@ -584,11 +583,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		requestFocusInWindow();
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
+	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			if (m_currMouseButton == 1) {
@@ -747,21 +742,19 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
+
+	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (m_currMouseButton == 1) {
 			if (m_button1NodeDrag) {
-				if (this.isNodeMovementDisabled()) {
+				// Ignore if disabled.
+				if (this.isNodeMovementDisabled())
 					return;
-				}
-				//*****SAVE SELECTED NODE & EDGE POSITIONS******
-				if (m_undoable_edit == null) {
+				
+				// SAVE SELECTED NODE & EDGE POSITIONS
+				if (m_undoable_edit == null)
 					m_undoable_edit = new ViewChangeEdit(m_view, ViewChangeEdit.SavedObjs.SELECTED, "Move");
-				}
+
 				synchronized (m_lock) {
 					m_ptBuff[0] = m_lastXMousePos;
 					m_ptBuff[1] = m_lastYMousePos;
@@ -837,38 +830,47 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 			repaint();
 		} else if (m_currMouseButton == 2) {
-			double deltaX = e.getX() - m_lastXMousePos;
-			double deltaY = e.getY() - m_lastYMousePos;
-			m_lastXMousePos = e.getX();
-			m_lastYMousePos = e.getY();
-
-			synchronized (m_lock) {
-				m_xCenter -= (deltaX / m_scaleFactor);
-				m_yCenter -= (deltaY / m_scaleFactor);
-			}
-
-			m_view.m_viewportChanged = true;
-			repaint();
+			// Middle-Click: Pan
+			pan(e);
 		} else if (m_currMouseButton == 3) {
-			double deltaY = e.getY() - m_lastYMousePos;
-
-			synchronized (m_lock) {
-				m_lastXMousePos = e.getX();
-				m_lastYMousePos = e.getY();
-				m_scaleFactor *= Math.pow(2, -deltaY / 300.0d);
-			}
-
-			m_view.m_viewportChanged = true;
-			repaint();
+			// Right-click: Zoom
+			zoom(e);
 		}
 	}
+	
+	private void pan(final MouseEvent e) {
+		double deltaX = e.getX() - m_lastXMousePos;
+		double deltaY = e.getY() - m_lastYMousePos;
+		m_lastXMousePos = e.getX();
+		m_lastYMousePos = e.getY();
+		pan(deltaX, deltaY);
+	}
+	
+	private void pan(double deltaX, double deltaY) {
+		synchronized (m_lock) {
+			m_xCenter -= (deltaX / m_scaleFactor);
+			m_yCenter -= (deltaY / m_scaleFactor);
+		}
+		m_view.m_viewportChanged = true;
+		repaint();
+	}
+	
+	private void zoom(final MouseEvent e) {
+		double deltaY = e.getY() - m_lastYMousePos;
 
-	// AJK: 05/02/06 BEGIN
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
+		synchronized (m_lock) {
+			m_lastXMousePos = e.getX();
+			m_lastYMousePos = e.getY();
+			m_scaleFactor *= Math.pow(2, -deltaY / 300.0d);
+		}
+
+		m_view.m_viewportChanged = true;
+		repaint();
+	}
+
+	
+	
+	@Override
 	public void mouseMoved(MouseEvent e) {
 		NodeView nv = m_view.getPickedNodeView(e.getPoint());
 		boolean toolTipSet = false;
@@ -907,11 +909,25 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 			if (k.isShiftDown())
 				move = 10.0;
-
+			
+			final int[] selectedNodes = m_view.getSelectedNodeIndices();
+			
+			if(k.isControlDown()) {
+				// Pan
+				if (code == KeyEvent.VK_UP) {
+					pan(0, move);
+				} else if (code == KeyEvent.VK_DOWN) {
+					pan(0, -move);
+				} else if (code == KeyEvent.VK_LEFT) {
+					pan(-move, 0);
+				} else if (code == KeyEvent.VK_RIGHT) {
+					pan(move, 0);
+				}
+				return;
+			}
+			
 			if (m_view.m_nodeSelection) {
 				// move nodes
-				int[] selectedNodes = m_view.getSelectedNodeIndices();
-
 				for (int i = 0; i < selectedNodes.length; i++) {
 					DNodeView nv = ((DNodeView) m_view.getNodeView(selectedNodes[i]));
 					double xPos = nv.getXPosition();
