@@ -1467,8 +1467,16 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		if (e.getSource() instanceof JTableHeader){
 			final int index = getColumnModel().getColumnIndexAtX(e.getX());
 			if (index != -1){
-				int colWidth = getColumnModel().getColumn(index).getWidth();
-				this.columnWidthMap.put(this.getColumnName(index), new Integer(colWidth));				
+				// Save the column width for the adjusted column only
+//				int colWidth = getColumnModel().getColumn(index).getWidth();
+//				this.columnWidthMap.put(this.getColumnName(index), new Integer(colWidth));	
+
+				// Save the column widths for all the columns, 01/18/2011
+				int columnCount = getColumnModel().getColumnCount();
+				for (int i=0; i< columnCount; i++){
+					int columnWidth = getColumnModel().getColumn(i).getWidth();
+					this.columnWidthMap.put(this.getColumnName(i), new Integer(columnWidth));	
+				}
 			}
 		}
 	}
