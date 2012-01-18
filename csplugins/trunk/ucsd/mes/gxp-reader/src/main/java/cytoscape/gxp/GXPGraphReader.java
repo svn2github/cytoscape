@@ -75,15 +75,6 @@ import java.util.*;
 public class GXPGraphReader extends AbstractGraphReader implements GraphReader {
 	// node id from file -> node
 	private Map<String,CyNode> geneIdMap; 
-	private Map<String,CyNode> moduleIdMap; 
-	private Map<String,CyNode> regulatorIdMap; 
-
-	// module id from file -> list of nodes in module
-	private Map<String,List<CyNode>> moduleMap; 
-
-	// regulator id from file -> list of nodes in regulator
-	private Map<String,List<CyNode>> regulatorMap; 
-
 
 	private List<Integer> nodeIds;
 	private List<Integer> edgeIds;
@@ -129,8 +120,6 @@ public class GXPGraphReader extends AbstractGraphReader implements GraphReader {
 		edgeIds = new ArrayList<Integer>();
 
 		geneIdMap = new HashMap<String,CyNode>();
-		moduleIdMap = new HashMap<String,CyNode>();
-		regulatorIdMap = new HashMap<String,CyNode>();
 
 		try {
 
@@ -139,53 +128,31 @@ public class GXPGraphReader extends AbstractGraphReader implements GraphReader {
 			Document doc = builder.build(instream);
 
 			createGeneNodes( getTable(doc,"Genes") );
-			createModuleNodes( getTable(doc,"Modules") );
-			createRegulatorNodes( getTable(doc,"Regulators_Regulators") );
-			
-			createGeneModuleEdges( getTable(doc,"Genes_Modules") );
-			createModuleRegulatorEdges( getTable(doc, "Modules_Regulator") );
-
+			createRegulatorsRegulatorsEdges( getTable(doc,"Regulators_Regulators") );
 
 		} catch (JDOMException je) { 
 			throw new IOException("JDOM failure parsing file.",je); 
 		}
 	}
 
-	private void createModuleRegulatorEdges(Element moduleRegulators) {
-		for ( Object o : moduleRegulators.getChildren("Module_Regulator") ) {
-			Element moduleRegulator = (Element)o;
-			String moduleId = moduleRegulator.getAttributeValue("Module_Id");
-			String regId = moduleRegulator.getAttributeValue("Regulator_Id");
-			if ( moduleId == null || 
-			     regId == null || 
-			     !moduleIdMap.containsKey(moduleId) || 
-				 !regulatorIdMap.containsKey(regId) )
+	private void createRegulatorsRegulatorsEdges(Element regulatorsRegulators) {
+		for ( Object o : regulatorsRegulators.getChildren("Regulator_Gene") ) {
+			Element regulatorGene = (Element)o;
+			String regulatorId = regulatorGene.getAttributeValue("Regulator_Id");
+			String geneId = regulatorGene.getAttributeValue("Gene_Id");
+			if ( regulatorId == null || 
+			     geneId == null || 
+			     !geneIdMap.containsKey(regulatorId) || 
+				 !geneIdMap.containsKey(geneId) )
 				continue;
 
-			CyNode na = moduleIdMap.get(moduleId);
-			CyNode nb = regulatorIdMap.get(regId);
+			CyNode na = geneIdMap.get(regulatorId);
+			CyNode nb = geneIdMap.get(geneId);
 			CyEdge e = Cytoscape.getCyEdge(na,nb,Semantics.INTERACTION,"regulates",true,true);
 			edgeIds.add( e.getRootGraphIndex() );
 		}
 	}
 
-	private void createGeneModuleEdges(Element geneModules) {
-		for ( Object o : geneModules.getChildren("Gene_Module") ) {
-			Element geneModule = (Element)o;
-			String geneId = geneModule.getAttributeValue("Gene_Id");
-			String moduleId = geneModule.getAttributeValue("Module_Id");
-			if ( moduleId == null || 
-			     geneId == null || 
-			     !moduleIdMap.containsKey(moduleId) || 
-				 !geneIdMap.containsKey(geneId) )
-				continue;
-
-			CyNode na = moduleIdMap.get(moduleId);
-			CyNode nb = geneIdMap.get(geneId);
-			CyEdge e = Cytoscape.getCyEdge(na,nb,Semantics.INTERACTION,"contains",true,true);
-			edgeIds.add( e.getRootGraphIndex() );
-		}
-	}
 
 	private void createGeneNodes(Element genes) {
 		for ( Object o : genes.getChildren("Gene") ) {
@@ -193,30 +160,6 @@ public class GXPGraphReader extends AbstractGraphReader implements GraphReader {
 			CyNode node = Cytoscape.getCyNode(gene.getAttributeValue("ORF"),true);
 			String id = gene.getAttributeValue("Id");
 			geneIdMap.put(id,node);
-			nodeIds.add( node.getRootGraphIndex() );	
-		}
-	}
-
-	private void createModuleNodes(Element modules) {
-		for ( Object o : modules.getChildren("Module") ) {
-			Element module = (Element) o;
-			String id = module.getAttributeValue("Id");
-			CyNode node = Cytoscape.getCyNode(module.getAttributeValue("Name") + " - " + id,true);
-			moduleIdMap.put(id,node);
-			nodeIds.add( node.getRootGraphIndex() );	
-		}
-	}
-
-	private void createRegulatorNodes(Element regulators) {
-		for ( Object o : regulators.getChildren("Regulator_Gene") ) {
-			Element regulator = (Element) o;
-			String id = regulator.getAttributeValue("Regulator_Id");
-			CyNode node = Cytoscape.getCyNode("regulator: " + 
-			                                  regulator.getAttributeValue("Regulator_ORF") + " - " +
-			                                  regulator.getAttributeValue("Gene_Id") + " - " +
-			                                  regulator.getAttributeValue("Regulator") + " - " +
-			                                  regulator.getAttributeValue("Gene_ORF"), true);
-			regulatorIdMap.put(id,node);
 			nodeIds.add( node.getRootGraphIndex() );	
 		}
 	}
