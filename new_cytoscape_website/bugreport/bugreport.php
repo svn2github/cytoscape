@@ -102,7 +102,7 @@ function updateBug($connection, $bugReport){
 }
 
 
-// This is a security check, restrict number of bugs a user can submit with a day
+// This is a security check, restrict number of bugs a user can submit within a day
 function getReportCountToday($connection, $bugReport) {
 
 	$bugCount = 0;
@@ -225,7 +225,7 @@ function sendNotificationEmail($bugReport) {
 		
 	$subject = "New bug submitted by ".$bugReport['name'];
 	
-	$body = $bugReport['description'];
+	$body = $bugReport['description']."\n\nAdmin URL: http://chianti.ucsd.edu/cyto_web/bugreport/bugreportadmin.php";
 	
 	?>
 	Thank you for submitting bug report to Cytoscape, Cytoscape staff will review your report.
