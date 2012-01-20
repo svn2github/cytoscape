@@ -28,34 +28,12 @@
 package browser;
 
 
-import static browser.DataObjectType.EDGES;
 import static browser.DataObjectType.NETWORK;
-import static browser.DataObjectType.NODES;
-
-import browser.ui.CyAttributeBrowserTable;
-
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-
-import cytoscape.view.CyNetworkView;
-
-import cytoscape.visual.GlobalAppearanceCalculator;
-
-import giny.model.Edge;
 import giny.model.GraphObject;
-import giny.model.Node;
-
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
-import org.cytoscape.equations.Equation;
-
 import java.awt.Color;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,6 +43,16 @@ import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
+
+import org.cytoscape.equations.Equation;
+
+import browser.ui.CyAttributeBrowserTable;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.GlobalAppearanceCalculator;
 
 
 /**
@@ -76,9 +64,9 @@ import javax.swing.table.DefaultTableModel;
  * @author ruschein
  */
 public class DataTableModel extends DefaultTableModel implements SortTableModel {
-	/**
-	 *
-	 */
+	
+	private static final long serialVersionUID = -8721633060696752335L;
+	
 	public static final String LS = System.getProperty("line.separator");
 	private static final Boolean DEFAULT_FLAG = false;
 
@@ -225,12 +213,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 		return graphObjects;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param graph_objects DOCUMENT ME!
-	 * @param attributes DOCUMENT ME!
-	 */
+	
 	public void setTableData(List cellData, List<String> attributes) {
 		if (attributes != null)
 			this.attributeNames = attributes;

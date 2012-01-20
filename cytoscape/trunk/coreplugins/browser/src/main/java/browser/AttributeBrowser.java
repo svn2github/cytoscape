@@ -40,7 +40,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -92,19 +91,9 @@ public class AttributeBrowser implements TableColumnModelListener {
 	
 	public static final String ID = "ID";
 
-	/**
-	 * 
-	 */
+	
 	public static final String NETWORK_METADATA = "Network Metadata";
-
-	/**
-	 * 
-	 */
 	public static final Color DEFAULT_EDGE_COLOR = Color.RED;
-
-	/**
-	 * 
-	 */
 	public static final Color DEFAULT_NODE_COLOR = Color.YELLOW;
 
 	// Each Attribute Browser operates on one CytoscapeData object, and on
@@ -171,7 +160,7 @@ public class AttributeBrowser implements TableColumnModelListener {
 		// Create table model.
 		tableModel = makeModel();
 
-		attributeTable = new CyAttributeBrowserTable(tableModel, panelType);
+		attributeTable = new CyAttributeBrowserTable(tableModel, panelType, this);
 		attributeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 	
 		// Toolbar for selecting attributes and create new attribute.
@@ -205,10 +194,11 @@ public class AttributeBrowser implements TableColumnModelListener {
 		// Add main browser panel to CytoPanel 2 (SOUTH)
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
 		         .add(panelType.getDisplayName() + " Attribute Browser", mainPanel);
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setState(CytoPanelState.DOCK);
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setState(CytoPanelState.DOCK);		
 	}
 
 	void refresh() {
+		// TODO: is this correct?
 		tableModel.setTableData(null, null);
 	}
 
@@ -298,45 +288,22 @@ public class AttributeBrowser implements TableColumnModelListener {
 		tableModel.setTableData(null, orderedColumn);
 	}
 	
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param newModel DOCUMENT ME!
-	 */
+	
 	public void restoreColumnModel(TableColumnModel newModel) {
 		attributeTable.setColumnModel(newModel);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public TableColumnModel getColumnModel() {
 		return attributeTable.getColumnModel();
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void columnAdded(TableColumnModelEvent e) {
-	}
+	@Override
+	public void columnAdded(TableColumnModelEvent e) {}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void columnMarginChanged(ChangeEvent e) {
-	}
+	@Override
+	public void columnMarginChanged(ChangeEvent e) {}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
+	@Override
 	public void columnMoved(TableColumnModelEvent e) {
 		// Ignore if same
 		if (e.getFromIndex() == e.getToIndex())
@@ -344,32 +311,23 @@ public class AttributeBrowser implements TableColumnModelListener {
 
 		final int columnCount = attributeTable.getColumnCount();
 
-		//System.out.print("Ordered: " + e.getFromIndex() + " to " + e.getToIndex());
+		//System.out.println("Ordered: " + e.getFromIndex() + " to " + e.getToIndex());
 		orderedColumn.clear();
 
 		for (int i = 0; i < columnCount; i++) {
 			//System.out.print("[" + attributeTable.getColumnName(i) + "] ");
 			orderedColumn.add(attributeTable.getColumnName(i));
 		}
+		
+		// update child's column order
+		attributeBrowserToolBar.updateList(orderedColumn);
 
 		//System.out.println("");
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void columnRemoved(TableColumnModelEvent e) {
-		// TODO Auto-generated method stub
-	}
+	@Override
+	public void columnRemoved(TableColumnModelEvent e) {}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void columnSelectionChanged(ListSelectionEvent e) {
-		// TODO Auto-generated method stub
-	}
+	@Override
+	public void columnSelectionChanged(ListSelectionEvent e) {}
 }

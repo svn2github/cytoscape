@@ -104,12 +104,13 @@ import cytoscape.visual.VisualMappingManager;
 
 
 /**
- *  Based on JSortTable and completely rewritten by kono
+ *  Table for browser based on JSortTable
  */
-public class CyAttributeBrowserTable extends JTable implements MouseListener, ActionListener,
-                                                               PropertyChangeListener,
-                                                               SelectEventListener, MouseMotionListener
-{
+public class CyAttributeBrowserTable extends JTable implements MouseListener, ActionListener, PropertyChangeListener,
+		SelectEventListener, MouseMotionListener {
+
+	private static final long serialVersionUID = -6870984215180716506L;
+	
 	public static final int SELECTED_NODE = 1;
 	public static final int REV_SELECTED_NODE = 2;
 	public static final int SELECTED_EDGE = 3;
@@ -155,7 +156,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	private static final Font BORDER_FONT = new Font("Sans-serif", Font.BOLD, 12);
 
 	private HashMap<String, Integer> columnWidthMap = new HashMap<String, Integer>();
-
+	private final AttributeBrowser parent;
+	
 	// For turning off listener during session loading
 	private boolean ignore = false;
 
@@ -164,6 +166,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	 * to determine if we are running on Windows platform.
 	 */
 	static final String MAC_OS_ID = "mac";
+	
 	/**
 	 * Routine which determines if we are running on mac platform
 	 *
@@ -171,14 +174,14 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	 */
 	private boolean isMacPlatform() {
 		String os = System.getProperty("os.name");
-
 		return os.regionMatches(true, 0, MAC_OS_ID, 0, MAC_OS_ID.length());
 	}
 
 	protected static final String LS = System.getProperty("line.separator");
 
-	public CyAttributeBrowserTable(DataTableModel model, DataObjectType objectType) {
+	public CyAttributeBrowserTable(DataTableModel model, DataObjectType objectType, final AttributeBrowser parent) {
 		super(model);
+		this.parent = parent;
 		logger = CyLogger.getLogger(CyAttributeBrowserTable.class);
 		initSortHeader();
 
@@ -811,36 +814,19 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		return sortedColumnIndex;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
+	
 	public boolean isSortedColumnAscending() {
 		return sortedColumnAscending;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param event DOCUMENT ME!
-	 */
-	public void mouseReleased(MouseEvent event) {
-	}
+	
+	@Override
+	public void mouseReleased(MouseEvent event) {}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param event DOCUMENT ME!
-	 */
-	public void mousePressed(MouseEvent event) {
-	}
+	@Override
+	public void mousePressed(MouseEvent event) {}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param event DOCUMENT ME!
-	 */
+	@Override
 	public void mouseClicked(MouseEvent event) {
 		final int cursorType = getTableHeader().getCursor().getType();
 		if ((event.getButton() == MouseEvent.BUTTON1) && (cursorType != Cursor.E_RESIZE_CURSOR)
@@ -884,30 +870,14 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		}
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param event DOCUMENT ME!
-	 */
-	public void mouseEntered(MouseEvent event) {
-		
-	}
+	@Override
+	public void mouseEntered(MouseEvent event) {}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param event DOCUMENT ME!
-	 */
-	public void mouseExited(MouseEvent event) {
-	}
+	@Override
+	public void mouseExited(MouseEvent event) {}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param event DOCUMENT ME!
-	 */
+	@Override
 	public void actionPerformed(ActionEvent event) {
-		// TODO Auto-generated method stub
 		if (event.getActionCommand().compareTo("Copy") == 0) {
 			logger.debug("Cells copied to clipboard.");
 			copyToClipBoard();
@@ -1311,11 +1281,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 				currentNetwork.addSelectEventListener(this);
 
 				if (objectType == NODES) {
-					tableModel.setTableData(new ArrayList(Cytoscape.getCurrentNetwork()
-					                                               .getSelectedNodes()), null);
+					tableModel.setTableData(new ArrayList(Cytoscape.getCurrentNetwork().getSelectedNodes()), parent.getSelectedAttributes());
 				} else if (objectType == EDGES) {
-					tableModel.setTableData(new ArrayList(Cytoscape.getCurrentNetwork()
-					                                               .getSelectedEdges()), null);
+					tableModel.setTableData(new ArrayList(Cytoscape.getCurrentNetwork().getSelectedEdges()), parent.getSelectedAttributes());
 				} else {
 					// Network Attribute
 					tableModel.setTableData(null, null);
@@ -1380,50 +1348,40 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		}
 	}
 
+
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param arg0 DOCUMENT ME!
+	 * Will be called when node/edge selection state had been updated.
 	 */
+	@Override
 	public void onSelectEvent(SelectEvent event) {
 		if(this.objectType.equals(NETWORK))
 			return;
 		
 		if ((objectType == NODES)
-		    && ((event.getTargetType() == SelectEvent.SINGLE_NODE)
-		       || (event.getTargetType() == SelectEvent.NODE_SET))) {
-						
-			// node selection
+				&& ((event.getTargetType() == SelectEvent.SINGLE_NODE) || (event.getTargetType() == SelectEvent.NODE_SET))) {
+
+			// node selection updated
 			tableModel.setSelectedColor(CyAttributeBrowserTable.SELECTED_NODE);
 			tableModel.setSelectedColor(CyAttributeBrowserTable.REV_SELECTED_NODE);
 
-			tableModel.setTableData(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork()
-			                                                            .getSelectedNodes()), null);
+			tableModel.setTableData(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork().getSelectedNodes()), parent.getSelectedAttributes());
 		} else if ((objectType == EDGES)
-		           && ((event.getTargetType() == SelectEvent.SINGLE_EDGE)
-		               || (event.getTargetType() == SelectEvent.EDGE_SET)))
-		{
-			// edge selection
+				&& ((event.getTargetType() == SelectEvent.SINGLE_EDGE) || (event.getTargetType() == SelectEvent.EDGE_SET))) {
+			// edge selection updated
 			tableModel.setSelectedColor(CyAttributeBrowserTable.SELECTED_EDGE);
 			tableModel.setSelectedColor(CyAttributeBrowserTable.REV_SELECTED_EDGE);
-			tableModel.setTableData(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork()
-			                                                            .getSelectedEdges()), null);
+			tableModel.setTableData(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork().getSelectedEdges()), parent.getSelectedAttributes());
 		}
 
 		this.adjustColWidth();
-		//ColumnResizer.adjustColumnPreferredWidths(this);
-		
+
 		setSelectedColor(SELECTED_NODE);
 		setSelectedColor(REV_SELECTED_NODE);
 		setSelectedColor(SELECTED_EDGE);
 		setSelectedColor(REV_SELECTED_EDGE);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
+
 	public void editingStopped(ChangeEvent e) {
 		super.editingStopped(e);
 		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);

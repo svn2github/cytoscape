@@ -40,7 +40,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -810,7 +809,8 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 					public void mouseClicked(java.awt.event.MouseEvent e) {
 						updateList(attrModel.getAttributeNames());
 						try {
-							getUpdatedSelectedList();
+//							getUpdatedSelectedList();
+							updateSelectedColumn();
 							tableModel.setTableData(null, orderedCol);
 						} catch (Exception ex) {
 							attributeList.clearSelection();
@@ -835,7 +835,8 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 						final List<String> emptyList = new ArrayList<String>();
 						updateList(emptyList);
 						try {
-							getUpdatedSelectedList();
+//							getUpdatedSelectedList();
+							updateSelectedColumn();
 							tableModel.setTableData(null, orderedCol);
 						} catch (Exception ex) {
 							attributeList.clearSelection();
@@ -843,7 +844,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 					}
 				});
 		}
-
 		return unselectAllAttributesButton;
 	}
 
@@ -883,14 +883,13 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			attributeList.setModel(attrModel);
 			attributeList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			attributeList.addMouseListener(new MouseAdapter() {
-					public void mouseClicked(MouseEvent e) {
-						if (SwingUtilities.isRightMouseButton(e)) {
-							attributeSelectionPopupMenu.setVisible(false);
-						}
+				public void mouseClicked(MouseEvent e) {
+					if (SwingUtilities.isRightMouseButton(e)) {
+						attributeSelectionPopupMenu.setVisible(false);
 					}
-				});
+				}
+			});
 		}
-
 		return attributeList;
 	}
 
@@ -999,110 +998,39 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		tableModel.setTableData(null, orderedCol);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void popupMenuCanceled(PopupMenuEvent e) {
-		// TODO Auto-generated method stub
-	}
+	@Override
+	public void popupMenuCanceled(PopupMenuEvent e) {}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
+	@Override
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
 		// Update actual table
 		try {
-			getUpdatedSelectedList();
-
+			//getUpdatedSelectedList();
+			updateSelectedColumn();
 			tableModel.setTableData(null, orderedCol);
 		} catch (Exception ex) {
 			attributeList.clearSelection();
 		}
 	}
 	
-	public List<String> getUpdatedSelectedList() {
+	private void updateSelectedColumn() {
 		final Object[] selected = attributeList.getSelectedValues();
-				
-		orderedCol.remove("ID");
-		
-		// determine if orderedCol is ordered (drag and drop column may change the order)
-		boolean isColOrdered = true;
-		for (int i=0; i< orderedCol.size()-1; i++){
-			if (orderedCol.get(i).compareToIgnoreCase(orderedCol.get(i+1)) > 0){
-				isColOrdered = false;
-			}
-		}
-		
-		if (isColOrdered){
-			// The original columns are in order, leave as is 
-			orderedCol.clear();
-			for (Object colName : selected)
-				orderedCol.add(colName.toString());
-			return orderedCol;
-		}
-
-		// The original columns are out of order 		
-
-		// Determine the cols to be added
-		ArrayList<String> colsToBeAdded = new ArrayList<String>();
-		HashMap<String, String> hashMap_orig = new HashMap<String, String>();
-		
-		for (int i=0; i< orderedCol.size(); i++){
-			hashMap_orig.put(orderedCol.get(i), null);
-		}
-
-		for (Object colName : selected) {
-			if (!hashMap_orig.containsKey(colName.toString())){
-				colsToBeAdded.add(colName.toString());
-			}
-		}
-		
-		// Determine the cols to be deleted
-		HashMap<String, String> hashMap_new = new HashMap<String, String>();
-		ArrayList<String> colsToBeDeleted = new ArrayList<String>();
-
-		for (Object colName : selected) {
-			hashMap_new.put(colName.toString(), null);
-		}
-		
-		for (int i=0; i< orderedCol.size(); i++){
-			if (!hashMap_new.containsKey(orderedCol.get(i))){
-				colsToBeDeleted.add(orderedCol.get(i));
-			}			
-		}
-
-		// delete the cols to be deleted from orderedCol
-		for (int i=0; i< colsToBeDeleted.size(); i++){
-			orderedCol.remove(colsToBeDeleted.get(i));
-		}
-		
-		// Append the new columns to the end
-		for (int i=0; i< colsToBeAdded.size(); i++){
-			orderedCol.add(colsToBeAdded.get(i));
-		}
-		
-		return orderedCol;
+		final List<String> list = new ArrayList<String>();
+		for(final Object name: selected)
+			list.add(name.toString());
+		updateList(list);
 	}
 	
 	
 	public void updateList(List<String> newSelection) {
-		// We need to make sure we use a *copy* of the selection or when we remove
-		// attributes from the list in the table browser, we also remove them from the
-		// list that the popup dialog uses -- which we *definitely* don't want to do
-		orderedCol = new ArrayList<String>(newSelection);
+//		System.out.println("Update called.  new List: " + newSelection);
+//		System.out.println("Update called.  OLD List: " + orderedCol);
+		orderedCol = new ArrayList<String>();
+		for(String colName: newSelection)
+			orderedCol.add(colName);		
 		attributeList.setSelectedItems(orderedCol);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-		// Do nothing
-	}
+	@Override
+	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {}
 }
