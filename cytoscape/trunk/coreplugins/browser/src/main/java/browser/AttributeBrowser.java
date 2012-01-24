@@ -282,7 +282,7 @@ public class AttributeBrowser implements TableColumnModelListener {
 		return orderedColumn;
 	}
 	
-	public void setSelectedAttributes(List<String> selected) {
+	public void setSelectedAttributes(final List<String> selected) {
 		orderedColumn = selected;
 		attributeBrowserToolBar.updateList(selected);
 		tableModel.setTableData(null, orderedColumn);
@@ -320,7 +320,7 @@ public class AttributeBrowser implements TableColumnModelListener {
 		}
 		
 		// update child's column order
-		attributeBrowserToolBar.updateList(orderedColumn);
+		attributeBrowserToolBar.setOrderedColumnList(orderedColumn);
 
 		//System.out.println("");
 	}

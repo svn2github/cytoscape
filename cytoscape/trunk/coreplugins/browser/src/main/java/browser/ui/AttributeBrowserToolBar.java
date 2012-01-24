@@ -1005,7 +1005,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
 		// Update actual table
 		try {
-			//getUpdatedSelectedList();
 			updateSelectedColumn();
 			tableModel.setTableData(null, orderedCol);
 		} catch (Exception ex) {
@@ -1014,6 +1013,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	}
 	
 	private void updateSelectedColumn() {
+		
 		final Object[] selected = attributeList.getSelectedValues();
 		final List<String> list = new ArrayList<String>();
 		for(final Object name: selected)
@@ -1021,13 +1021,45 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		updateList(list);
 	}
 	
-	
+	public void setOrderedColumnList(final List<String> newSelection) {
+		orderedCol = new ArrayList<String>(newSelection);
+		attributeList.setSelectedItems(orderedCol);
+	}
 	public void updateList(List<String> newSelection) {
-//		System.out.println("Update called.  new List: " + newSelection);
-//		System.out.println("Update called.  OLD List: " + orderedCol);
-		orderedCol = new ArrayList<String>();
-		for(String colName: newSelection)
-			orderedCol.add(colName);		
+		//System.out.println("Update called.  new List: " + newSelection);
+		//System.out.println("Update called.  OLD List: " + orderedCol);
+		final List<String> tempList = new ArrayList<String>(orderedCol);
+		
+		// Special cases: original or new List is empty
+		if(orderedCol.size() == 0 || orderedCol.size() == 1) {
+			orderedCol = new ArrayList<String>(newSelection);
+			attributeList.setSelectedItems(orderedCol);
+			return;
+		} else if(newSelection.size() == 0) {
+			orderedCol = new ArrayList<String>();
+			attributeList.setSelectedItems(orderedCol);
+			return;
+		}
+			
+		// First, remove unnecessary column from the original ordered list
+		for(final String currentColName: orderedCol) {
+			if(currentColName.equals("ID") == false && newSelection.contains(currentColName) == false) {
+				//System.out.println("  Removed: " + currentColName);
+				tempList.remove(currentColName);
+			}
+		}
+		
+		// Then add the new column anames to the end of list
+		for(final String currentColName: newSelection) {
+			if(currentColName.equals("ID") == false && tempList.contains(currentColName) == false) {
+				//System.out.println("  Adding: " + currentColName);
+				tempList.add(currentColName);
+			}
+		}
+		
+		// Copy it to the sorted list
+		orderedCol = new ArrayList<String>(tempList);
+		//System.out.println("======> ORDERED: " + orderedCol);
 		attributeList.setSelectedItems(orderedCol);
 	}
 
