@@ -90,11 +90,11 @@ public class CheckBoxJList extends JList implements ListSelectionListener {
 		addListSelectionListener(this);
 	}
 	
-	public void setSelectedItems(List<String> selected) {
-		ListSelectionListener[] listeners = this.getListSelectionListeners();
-		for(ListSelectionListener l :listeners) {
+	public void setSelectedItems(final List<String> selected) {
+		final ListSelectionListener[] listeners = this.getListSelectionListeners();
+		for(ListSelectionListener l :listeners)
 			removeListSelectionListener(l);
-		}
+		
 		getSelectionModel().clearSelection();
 		selectionCache.clear();
 		

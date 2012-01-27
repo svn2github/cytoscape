@@ -68,28 +68,24 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 
 		combo.setRenderer(new Renderer());
 		combo.addPopupMenuListener(new PopupMenuListener() {
-				public void popupMenuCanceled(PopupMenuEvent e) {
-				}
+				public void popupMenuCanceled(PopupMenuEvent e) {}
 
-				public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-					
-					try {
-						if(combo.getSelectedItem() == null && combo.getItemCount() != 0) {
-							combo.setSelectedIndex(0);
-							CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
-	                                combo.getItemAt(0));
-						} else {
-							CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
-						                                                 combo.getSelectedItem());
-						}
-					} catch(Exception ex1) {
-						ex1.printStackTrace();
-						CyLogger.getLogger().warning("Combo Box property editor caught an error.", ex1);
-						
-						// TODO: update table view if crash?
-						return;
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+				try {
+					if (combo.getSelectedItem() == null && combo.getItemCount() != 0) {
+						combo.setSelectedIndex(0);
+						CyComboBoxPropertyEditor.this.firePropertyChange(oldValue, combo.getItemAt(0));
+					} else {
+						CyComboBoxPropertyEditor.this.firePropertyChange(oldValue, combo.getSelectedItem());
 					}
+				} catch (Exception ex1) {
+					ex1.printStackTrace();
+					CyLogger.getLogger().warning("Combo Box property editor caught an error.", ex1);
+
+					// TODO: update table view if crash?
+					return;
 				}
+			}
 
 				public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
 				}
@@ -105,26 +101,18 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 		combo.setSelectedIndex(-1);
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
+
+	@Override
 	public Object getValue() {
-		Object selected = ((JComboBox) editor).getSelectedItem();
+		final Object selected = ((JComboBox) editor).getSelectedItem();
 
 		if (selected instanceof Value)
 			return ((Value) selected).value;
 		else
-
 			return selected;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 */
+	@Override
 	public void setValue(Object value) {
 		JComboBox combo = (JComboBox) editor;
 		Object current = null;
@@ -143,11 +131,6 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 		((JComboBox) editor).setSelectedIndex(index);
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param values DOCUMENT ME!
-	 */
 	public void setAvailableValues(final Object[] values) {
 		final JComboBox cbox = ((JComboBox) editor);
 		

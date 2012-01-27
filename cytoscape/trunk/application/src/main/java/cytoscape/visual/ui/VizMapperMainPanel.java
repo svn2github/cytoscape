@@ -1588,12 +1588,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			editorWindowManager.remove(type);
 	}
 
-	/**
-	 * Handle propeaty change events.
-	 *
-	 * @param e
-	 *            DOCUMENT ME!
-	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent e) {
 		// Set ignore flag.
 		if (e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
@@ -1815,8 +1810,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			// If same, do nothing.
-			if (ctrAttrName.equals(mapping.getControllingAttributeName()))
+			if (ctrAttrName.equals(mapping.getControllingAttributeName())) {
 				return;
+			}
 
 			// Buffer current discrete mapping
 			if (mapping instanceof DiscreteMapping) {
@@ -1875,9 +1871,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			updateTableView();
 
 			// Finally, update graph view and focus.
-			// vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-			// Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
-
+			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+				}
+			});
 			return;
 		}
 
