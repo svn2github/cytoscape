@@ -28,34 +28,16 @@
 package org.cytoscape.task;
 
 
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.View;
-import org.cytoscape.model.CyEdge;
+
 
 /** 
  * Base class for all task factories that create tasks that need to be provisioned with an edge view
  *  and its associated network view.
  *  @CyAPI.Abstract.Class
  */
-public abstract class AbstractEdgeViewTaskFactory implements EdgeViewTaskFactory {
-	/** The network view passed into any task constructed by this factory. */
-	protected CyNetworkView netView; // TODO: should be renamed to networkView
-
-	/** The edge view passed into any task constructed by this factory. */
-	protected View<CyEdge> edgeView;
-
-	/** Provisions this task factory with the edge view and network view that it needs to construct tasks.
-	 *  @param edgeView  the edge view that will be passed into constructed tasks
-	 *  @param netView   the network view that will be passed into constructed tasks
-	 */
-	public void setEdgeView(final View<CyEdge> edgeView, final CyNetworkView netView) {
-		if ( edgeView == null )
-			throw new NullPointerException("EdgeView is null");
-		if ( netView == null )
-			throw new NullPointerException("CyNetworkView is null");
-
-		this.edgeView = edgeView;
-		this.netView = netView;
+public abstract class AbstractEdgeViewTaskFactory implements EdgeViewTaskFactory<EdgeViewTaskContext> {
+	@Override
+	public EdgeViewTaskContext createTaskContext() {
+		return new EdgeViewTaskContext();
 	}
-
 }

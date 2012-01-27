@@ -34,19 +34,9 @@ import org.cytoscape.model.CyTable;
  * Base class for all task factories that create tasks that need to be provisioned with a {@link CyTable}.
  * @CyAPI.Abstract.Class
  */
-public abstract class AbstractTableTaskFactory implements TableTaskFactory {
-	/** The table that will be passed into any Task constructor.
-	 */
-	protected CyTable table;
-
-	/** Provisions this factory with a table that will be used to construct tasks.
-	 *  @param table the {@link CyTable} to be passed into <code>Task</code> constructors; <b>must</b> not be null!
-	 */
-	public void setTable(final CyTable table) {
-		if (table == null)
-			throw new NullPointerException("CyTable is null");
-
-		this.table = table;
+public abstract class AbstractTableTaskFactory implements TableTaskFactory<TableTaskContext> {
+	@Override
+	public TableTaskContext createTaskContext() {
+		return new TableTaskContext();
 	}
-
 }

@@ -60,8 +60,8 @@ public class AbstractTaskManagerTest {
 		}
 
 		@Override
-		public void execute(TaskFactory factory) { }
-
+		public <TC> void execute(TaskFactory<TC> factory, TC taskContext) {};
+		
 		@Override
 		public T getConfiguration(TaskFactory tf) { return null; }
 	}

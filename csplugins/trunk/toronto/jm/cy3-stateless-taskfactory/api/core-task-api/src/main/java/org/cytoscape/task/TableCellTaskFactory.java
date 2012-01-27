@@ -29,7 +29,6 @@ package org.cytoscape.task;
 
 
 import org.cytoscape.work.TaskFactory;
-import org.cytoscape.model.CyColumn;
 
 
 /**
@@ -37,11 +36,5 @@ import org.cytoscape.model.CyColumn;
  * in question operates on the specified table entry identified by the column and primary key value.
  * @CyAPI.Spi.Interface
  */
-public interface TableCellTaskFactory extends TaskFactory {
-	/** Used to provision this factory with a {@link CyColumn} and a primary key that will be
-	 *  used to create tasks.
-	 *  @param column  a non-null CyColumn
-	 *  @param primaryKeyValue  a non-null primary key value
-	 */
-	public void setColumnAndPrimaryKey(final CyColumn column, final Object primaryKeyValue);
+public interface TableCellTaskFactory<C extends TableCellTaskContext> extends TaskFactory<C> {
 }

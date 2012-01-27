@@ -48,7 +48,7 @@ import org.junit.Test;
 public class AbstractTableTaskFactoryTest {
 	
 	private class TableTaskFactory extends AbstractTableTaskFactory {
-		public TaskIterator createTaskIterator() {
+		public TaskIterator createTaskIterator(TableTaskContext context) {
 			return null;
 		}
 	}
@@ -62,21 +62,24 @@ public class AbstractTableTaskFactoryTest {
 	
 	@Test(expected=NullPointerException.class)
 	public void testNullSetDataTable() throws Exception {
-		factory.setTable(null);
+		TableTaskContext context = factory.createTaskContext();
+		context.setTable(null);
 	}
 
 	@Test
 	public void testGoodSetDataTable() throws Exception {
-		factory.setTable(mock(CyTable.class));
-		assertNotNull( factory.table );
+		TableTaskContext context = factory.createTaskContext();
+		context.setTable(mock(CyTable.class));
+		assertNotNull( context.table );
 	}
 
 	@Test
 	public void testNotFinal() throws Exception {
-		factory.setTable(mock(CyTable.class));
-		CyTable t1 = factory.table;
-		factory.setTable(mock(CyTable.class));
-		CyTable t2 = factory.table;
+		TableTaskContext context = factory.createTaskContext();
+		context.setTable(mock(CyTable.class));
+		CyTable t1 = context.table;
+		context.setTable(mock(CyTable.class));
+		CyTable t2 = context.table;
 		assertFalse( (t1 == t2) );
 	}
 }

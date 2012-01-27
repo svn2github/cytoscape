@@ -34,18 +34,9 @@ import org.cytoscape.model.CyRow;
 /** Base class for all task factories that need to create tasks that have been provisioned with a {@link CyRow}. 
  * @CyAPI.Abstract.Class
  */
-public abstract class AbstractRowTaskFactory implements RowTaskFactory {
-	/** The CyRow that will be passed into any task that will be created by descendants of this class. */
-	protected CyRow row;
-
-	/** Used to provision this class with a {@link CyRow} that will be passed into any task
-	 *  constructed by this factory.
-	 *  @param row  a non-null CyRow
-	 */
-	public void setRow(CyRow row) {
-		if (row == null)
-			throw new NullPointerException("CyRow is null");
-
-		this.row = row;
+public abstract class AbstractRowTaskFactory implements RowTaskFactory<RowTaskContext> {
+	@Override
+	public RowTaskContext createTaskContext() {
+		return new RowTaskContext();
 	}
 }

@@ -36,21 +36,22 @@
 
 package org.cytoscape.task;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.Before;
-
-import org.cytoscape.model.CyNetwork;
-
-import org.cytoscape.work.TaskIterator;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
+
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
+import org.junit.Before;
+import org.junit.Test;
 
 public class AbstractNetworkCollectionTaskFactoryTest {
 	
 	private class NetworkCollectionTaskFactory extends AbstractNetworkCollectionTaskFactory {
-		public TaskIterator createTaskIterator() {
+		public TaskIterator createTaskIterator(NetworkCollectionTaskContext context) {
 			return null;
 		}
 	}
@@ -64,21 +65,24 @@ public class AbstractNetworkCollectionTaskFactoryTest {
 	
 	@Test(expected=NullPointerException.class)
 	public void testNullSetNetworkCollection() throws Exception {
-		factory.setNetworkCollection(null);
+		NetworkCollectionTaskContext context = factory.createTaskContext();
+		context.setNetworkCollection(null);
 	}
 
 	@Test
 	public void testGoodSetNetworkCollection() throws Exception {
-		factory.setNetworkCollection((Collection<CyNetwork>)mock(Collection.class));
-		assertNotNull( factory.networks );
+		NetworkCollectionTaskContext context = factory.createTaskContext();
+		context.setNetworkCollection((Collection<CyNetwork>)mock(Collection.class));
+		assertNotNull( context.networks );
 	}
 
 	@Test
 	public void testNotFinal() throws Exception {
-		factory.setNetworkCollection((Collection<CyNetwork>)mock(Collection.class));
-		Collection<CyNetwork> t1 = factory.networks;
-		factory.setNetworkCollection((Collection<CyNetwork>)mock(Collection.class));
-		Collection<CyNetwork> t2 = factory.networks;
+		NetworkCollectionTaskContext context = factory.createTaskContext();
+		context.setNetworkCollection((Collection<CyNetwork>)mock(Collection.class));
+		Collection<CyNetwork> t1 = context.networks;
+		context.setNetworkCollection((Collection<CyNetwork>)mock(Collection.class));
+		Collection<CyNetwork> t2 = context.networks;
 		assertFalse( (t1 == t2) );
 	}
 }

@@ -48,7 +48,7 @@ import org.cytoscape.work.TaskIterator;
 public class AbstractNetworkTaskFactoryTest {
 	
 	private class NetworkTaskFactory extends AbstractNetworkTaskFactory {
-		public TaskIterator createTaskIterator() {
+		public TaskIterator createTaskIterator(NetworkTaskContext context) {
 			return null;
 		}
 	}
@@ -62,21 +62,24 @@ public class AbstractNetworkTaskFactoryTest {
 	
 	@Test(expected=NullPointerException.class)
 	public void testNullSetNetwork() throws Exception {
-		factory.setNetwork(null);
+		NetworkTaskContext context = factory.createTaskContext();
+		context.setNetwork(null);
 	}
 
 	@Test
 	public void testGoodSetNetwork() throws Exception {
-		factory.setNetwork(mock(CyNetwork.class));
-		assertNotNull( factory.network );
+		NetworkTaskContext context = factory.createTaskContext();
+		context.setNetwork(mock(CyNetwork.class));
+		assertNotNull( context.network );
 	}
 
 	@Test
 	public void testNotFinal() throws Exception {
-		factory.setNetwork(mock(CyNetwork.class));
-		CyNetwork t1 = factory.network;
-		factory.setNetwork(mock(CyNetwork.class));
-		CyNetwork t2 = factory.network;
+		NetworkTaskContext context = factory.createTaskContext();
+		context.setNetwork(mock(CyNetwork.class));
+		CyNetwork t1 = context.network;
+		context.setNetwork(mock(CyNetwork.class));
+		CyNetwork t2 = context.network;
 		assertFalse( (t1 == t2) );
 	}
 }

@@ -36,21 +36,22 @@
 
 package org.cytoscape.task;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.Before;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.model.CyEdge;
-
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
+import org.junit.Before;
+import org.junit.Test;
 
 public class AbstractEdgeViewTaskFactoryTest {
 	
 	private class EdgeViewTaskFactory extends AbstractEdgeViewTaskFactory {
-		public TaskIterator createTaskIterator() {
+		public TaskIterator createTaskIterator(EdgeViewTaskContext context) {
 			return null;
 		}
 	}
@@ -64,36 +65,41 @@ public class AbstractEdgeViewTaskFactoryTest {
 	
 	@Test(expected=NullPointerException.class)
 	public void testNullSetEdgeView() throws Exception {
-		factory.setEdgeView(null,mock(CyNetworkView.class));
+		EdgeViewTaskContext context = factory.createTaskContext();
+		context.setEdgeView(null,mock(CyNetworkView.class));
 	}
 
 	@Test(expected=NullPointerException.class)
 	public void testNullSetNetworkView() throws Exception {
-		factory.setEdgeView((View<CyEdge>)mock(View.class),null);
+		EdgeViewTaskContext context = factory.createTaskContext();
+		context.setEdgeView((View<CyEdge>)mock(View.class),null);
 	}
 
 	@Test
 	public void testGoodSetEdgeView() throws Exception {
-		factory.setEdgeView((View<CyEdge>)mock(View.class),mock(CyNetworkView.class));
-		assertNotNull( factory.edgeView );
-		assertNotNull( factory.netView );
+		EdgeViewTaskContext context = factory.createTaskContext();
+		context.setEdgeView((View<CyEdge>)mock(View.class),mock(CyNetworkView.class));
+		assertNotNull( context.edgeView );
+		assertNotNull( context.networkView );
 	}
 
 	@Test
 	public void testEdgeViewNotFinal() throws Exception {
-		factory.setEdgeView((View<CyEdge>)mock(View.class),mock(CyNetworkView.class));
-		View<CyEdge> t1 = factory.edgeView;
-		factory.setEdgeView((View<CyEdge>)mock(View.class),mock(CyNetworkView.class));
-		View<CyEdge> t2 = factory.edgeView;
+		EdgeViewTaskContext context = factory.createTaskContext();
+		context.setEdgeView((View<CyEdge>)mock(View.class),mock(CyNetworkView.class));
+		View<CyEdge> t1 = context.edgeView;
+		context.setEdgeView((View<CyEdge>)mock(View.class),mock(CyNetworkView.class));
+		View<CyEdge> t2 = context.edgeView;
 		assertFalse( (t1 == t2) );
 	}
 
 	@Test
 	public void testNetworkViewNotFinal() throws Exception {
-		factory.setEdgeView((View<CyEdge>)mock(View.class),mock(CyNetworkView.class));
-		CyNetworkView t1 = factory.netView;
-		factory.setEdgeView((View<CyEdge>)mock(View.class),mock(CyNetworkView.class));
-		CyNetworkView t2 = factory.netView;
+		EdgeViewTaskContext context = factory.createTaskContext();
+		context.setEdgeView((View<CyEdge>)mock(View.class),mock(CyNetworkView.class));
+		CyNetworkView t1 = context.networkView;
+		context.setEdgeView((View<CyEdge>)mock(View.class),mock(CyNetworkView.class));
+		CyNetworkView t2 = context.networkView;
 		assertFalse( (t1 == t2) );
 	}
 }

@@ -48,7 +48,7 @@ import org.cytoscape.work.TaskIterator;
 public class AbstractNetworkViewTaskFactoryTest {
 	
 	private class NetworkViewTaskFactory extends AbstractNetworkViewTaskFactory {
-		public TaskIterator createTaskIterator() {
+		public TaskIterator createTaskIterator(NetworkViewTaskContext context) {
 			return null;
 		}
 	}
@@ -62,21 +62,24 @@ public class AbstractNetworkViewTaskFactoryTest {
 	
 	@Test(expected=NullPointerException.class)
 	public void testNullSetNetworkView() throws Exception {
-		factory.setNetworkView(null);
+		NetworkViewTaskContext context = factory.createTaskContext();
+		context.setNetworkView(null);
 	}
 
 	@Test
 	public void testGoodSetNetworkView() throws Exception {
-		factory.setNetworkView(mock(CyNetworkView.class));
-		assertNotNull( factory.view );
+		NetworkViewTaskContext context = factory.createTaskContext();
+		context.setNetworkView(mock(CyNetworkView.class));
+		assertNotNull( context.networkView );
 	}
 
 	@Test
 	public void testNotFinal() throws Exception {
-		factory.setNetworkView(mock(CyNetworkView.class));
-		CyNetworkView t1 = factory.view;
-		factory.setNetworkView(mock(CyNetworkView.class));
-		CyNetworkView t2 = factory.view;
+		NetworkViewTaskContext context = factory.createTaskContext();
+		context.setNetworkView(mock(CyNetworkView.class));
+		CyNetworkView t1 = context.networkView;
+		context.setNetworkView(mock(CyNetworkView.class));
+		CyNetworkView t2 = context.networkView;
 		assertFalse( (t1 == t2) );
 	}
 }

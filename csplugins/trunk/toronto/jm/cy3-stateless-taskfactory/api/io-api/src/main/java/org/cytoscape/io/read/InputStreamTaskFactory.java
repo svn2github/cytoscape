@@ -1,7 +1,6 @@
 
 package org.cytoscape.io.read;
 
-import java.io.InputStream;
 import org.cytoscape.io.CyFileFilterProvider;
 import org.cytoscape.work.TaskFactory;
 
@@ -10,13 +9,5 @@ import org.cytoscape.work.TaskFactory;
  * task factories.
  * @CyAPI.Spi.Interface
  */
-public interface InputStreamTaskFactory extends TaskFactory, CyFileFilterProvider {
-
-	/**
-	 * Sets the input stream that will be read by the Reader created from
-	 * this factory.
-	 * @param is The {@link java.io.InputStream} to be read.
-	 * @param inputName The name of the input. 
-	 */
-	void setInputStream(InputStream is, String inputName);
+public interface InputStreamTaskFactory<C extends InputStreamTaskContext> extends TaskFactory<C>, CyFileFilterProvider {
 }

@@ -23,5 +23,5 @@ public interface DialogTaskManager extends TaskManager<JDialog,Window> {
 	 * @param ignoreTaskFactoryTunables If true any tunables found in the
 	 * TaskFactory will be ignored and if false the tunables will be used.
 	 */
-	void execute(TaskFactory tf, boolean ignoreTaskFactoryTunables);
+	<TC> void execute(TaskFactory<TC> tf, TC taskContext, boolean ignoreTaskFactoryTunables);
 }

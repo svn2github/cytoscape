@@ -28,8 +28,6 @@
 package org.cytoscape.task;
 
 
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.model.CyColumn;
 
 
 /**
@@ -37,25 +35,9 @@ import org.cytoscape.model.CyColumn;
  * in question operates on the specified table entry identified by the column and primary key value.'
  * @CyAPI.Abstract.Class
  */
-abstract public class AbstractTableCellTaskFactory implements TableCellTaskFactory {
-	/** The {@link CyColumn} of the cell that will be used to provision tasks that are being created by descendants 
-	 * of this class. */
-	protected CyColumn column;
-	/** The primary key of the cell that will be used to provision tasks that are being created by descendants 
-	 * of this class. */
-	protected Object primaryKeyValue;
-
-	/** Used to provision this factory with a {@link CyColumn} and a primary key that will be
-	 *  used to create tasks.
-	 *  @param column  a non-null CyColumn
-	 *  @param primaryKeyValue  a non-null primary key value
-	 */
-	public void setColumnAndPrimaryKey(final CyColumn column, final Object primaryKeyValue) {
-		if (column == null)
-			throw new  NullPointerException("\"column\" parameter must *never* be null!");
-		this.column = column;
-		if (primaryKeyValue == null)
-			throw new NullPointerException("\"primaryKeyValue\" parameter must *never* be null!");
-		this.primaryKeyValue = primaryKeyValue;
+abstract public class AbstractTableCellTaskFactory implements TableCellTaskFactory<TableCellTaskContext> {
+	@Override
+	public TableCellTaskContext createTaskContext() {
+		return new TableCellTaskContext();
 	}
 }

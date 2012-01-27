@@ -50,7 +50,7 @@ import java.util.Collection;
 public class AbstractNetworkViewCollectionTaskFactoryTest {
 	
 	private class NetworkViewCollectionTaskFactory extends AbstractNetworkViewCollectionTaskFactory {
-		public TaskIterator createTaskIterator() {
+		public TaskIterator createTaskIterator(NetworkViewCollectionTaskContext context) {
 			return null;
 		}
 	}
@@ -64,21 +64,24 @@ public class AbstractNetworkViewCollectionTaskFactoryTest {
 	
 	@Test(expected=NullPointerException.class)
 	public void testNullSetNetworkViewCollection() throws Exception {
-		factory.setNetworkViewCollection(null);
+		NetworkViewCollectionTaskContext context = factory.createTaskContext();
+		context.setNetworkViewCollection(null);
 	}
 
 	@Test
 	public void testGoodSetNetworkViewCollection() throws Exception {
-		factory.setNetworkViewCollection((Collection<CyNetworkView>)mock(Collection.class));
-		assertNotNull( factory.networkViews );
+		NetworkViewCollectionTaskContext context = factory.createTaskContext();
+		context.setNetworkViewCollection((Collection<CyNetworkView>)mock(Collection.class));
+		assertNotNull( context.networkViews );
 	}
 
 	@Test
 	public void testNotFinal() throws Exception {
-		factory.setNetworkViewCollection((Collection<CyNetworkView>)mock(Collection.class));
-		Collection<CyNetworkView> t1 = factory.networkViews;
-		factory.setNetworkViewCollection((Collection<CyNetworkView>)mock(Collection.class));
-		Collection<CyNetworkView> t2 = factory.networkViews;
+		NetworkViewCollectionTaskContext context = factory.createTaskContext();
+		context.setNetworkViewCollection((Collection<CyNetworkView>)mock(Collection.class));
+		Collection<CyNetworkView> t1 = context.networkViews;
+		context.setNetworkViewCollection((Collection<CyNetworkView>)mock(Collection.class));
+		Collection<CyNetworkView> t2 = context.networkViews;
 		assertFalse( (t1 == t2) );
 	}
 }

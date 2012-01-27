@@ -29,7 +29,6 @@ package org.cytoscape.task;
 
 
 import org.cytoscape.work.TaskFactory;
-import org.cytoscape.model.CyColumn;
 
 
 /**
@@ -37,9 +36,5 @@ import org.cytoscape.model.CyColumn;
  * operates on the specified CyColumn. 
  * @CyAPI.Spi.Interface
  */
-public interface TableColumnTaskFactory extends TaskFactory {
-	/** Used to provision this factory with a {@link CyColumn} that will be used to create tasks.
-	 *  @param column a non-null CyColumn.
-	 */
-	public void setColumn(final CyColumn column);
+public interface TableColumnTaskFactory<C extends TableColumnTaskContext> extends TaskFactory<C> {
 }

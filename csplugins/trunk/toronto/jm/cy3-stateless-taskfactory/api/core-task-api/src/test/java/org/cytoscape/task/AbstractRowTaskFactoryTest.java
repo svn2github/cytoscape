@@ -48,7 +48,7 @@ import org.cytoscape.work.TaskIterator;
 public class AbstractRowTaskFactoryTest {
 	
 	private class RowTaskFactory extends AbstractRowTaskFactory {
-		public TaskIterator createTaskIterator() {
+		public TaskIterator createTaskIterator(RowTaskContext context) {
 			return null;
 		}
 	}
@@ -62,21 +62,24 @@ public class AbstractRowTaskFactoryTest {
 	
 	@Test(expected=NullPointerException.class)
 	public void testNullSetRow() throws Exception {
-		factory.setRow(null);
+		RowTaskContext context = factory.createTaskContext();
+		context.setRow(null);
 	}
 
 	@Test
 	public void testGoodSetRow() throws Exception {
-		factory.setRow(mock(CyRow.class));
-		assertNotNull( factory.row );
+		RowTaskContext context = factory.createTaskContext();
+		context.setRow(mock(CyRow.class));
+		assertNotNull( context.row );
 	}
 
 	@Test
 	public void testNotFinal() throws Exception {
-		factory.setRow(mock(CyRow.class));
-		CyRow t1 = factory.row;
-		factory.setRow(mock(CyRow.class));
-		CyRow t2 = factory.row;
+		RowTaskContext context = factory.createTaskContext();
+		context.setRow(mock(CyRow.class));
+		CyRow t1 = context.row;
+		context.setRow(mock(CyRow.class));
+		CyRow t2 = context.row;
 		assertFalse( (t1 == t2) );
 	}
 }

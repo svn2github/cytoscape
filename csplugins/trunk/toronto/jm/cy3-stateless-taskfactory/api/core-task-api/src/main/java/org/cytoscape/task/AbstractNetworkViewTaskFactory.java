@@ -30,23 +30,14 @@
 package org.cytoscape.task;
 
 
-import org.cytoscape.view.model.CyNetworkView;
 
 
 /** Base class for all task factories that need to create tasks that will be provisioned with a network view. 
  * @CyAPI.Abstract.Class
  */
-public abstract class AbstractNetworkViewTaskFactory implements NetworkViewTaskFactory {
-	/** The network view that will be passed into any tasks are are being created by descendants of this class. */
-	protected CyNetworkView view; // TODO: should be renamed to networkView
-
-	/** Provides this class and its descendants with the network view that will be passed into
-	 *  any tasks created by descendants of this class.
-	 *  @param view  must be a non-null network view
-	 */
-	public void setNetworkView(final CyNetworkView view) {
-		if ( view == null )
-			throw new NullPointerException("CyNetworkView is null");
-		this.view = view;
+public abstract class AbstractNetworkViewTaskFactory implements NetworkViewTaskFactory<NetworkViewTaskContext> {
+	@Override
+	public NetworkViewTaskContext createTaskContext() {
+		return new NetworkViewTaskContext();
 	}
 }
