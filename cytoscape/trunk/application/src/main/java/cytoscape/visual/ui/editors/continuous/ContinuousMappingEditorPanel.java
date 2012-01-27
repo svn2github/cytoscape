@@ -684,23 +684,30 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	}
 
 	protected void enableSpinner(int selectedIndex) {
-		final Class dataType = type.getDataType();
+		final Class<?> dataType = type.getDataType();
 		valueSpinner.setEnabled(true);
-		Thumb selectedThumb = slider.getModel().getThumbAt(selectedIndex);
-		Double newVal = ((selectedThumb.getPosition() / 100) * EditorValueRangeTracer.getTracer().getRange(type))
+		
+		final int count = slider.getModel().getThumbCount();
+//		for(int i=0; i<count; i++) {
+//			final Thumb<?> thumb = slider.getModel().getThumbAt(i);
+//			System.out.println(i + ": " + thumb.getPosition() + " = " + thumb.getObject());
+//		}
+		
+		final Thumb<?> selectedThumb = slider.getModel().getThumbAt(selectedIndex);
+		final Double newVal = ((selectedThumb.getPosition() / 100) * EditorValueRangeTracer.getTracer().getRange(type))
 				            + EditorValueRangeTracer.getTracer().getMin(type);
+		
 		valueSpinner.setValue(newVal);
 		updateMap();
 
-		if (dataType == Number.class) {
+		if (Number.class.isAssignableFrom(dataType)) {
 			propertySpinner.setEnabled(true);
-			BoundaryRangeValues rg = mapping.getPoint(selectedIndex-1).getRange();
-			propertySpinner.setValue(rg.equalValue);
+			final Number value = (Number) selectedThumb.getObject();
+			propertySpinner.setValue(value);
 		} else if (dataType == Color.class) {
 			colorButton.setEnabled(true);
 			setButtonColor((Color)selectedThumb.getObject());
 		}
-
 	}
 
 	protected void disableSpinner() {
