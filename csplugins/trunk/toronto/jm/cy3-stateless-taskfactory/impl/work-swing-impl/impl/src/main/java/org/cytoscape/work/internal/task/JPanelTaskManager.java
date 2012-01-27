@@ -47,8 +47,8 @@ public class JPanelTaskManager extends AbstractTaskManager<JPanel,JPanel> implem
 	}
 
 	@Override
-	public void execute(final TaskFactory factory) {
-		dtm.execute(factory,false);	
+	public <TC> void execute(TaskFactory<TC> factory, TC taskContext) {
+		dtm.execute(factory, taskContext, false);	
 	}
 }
 

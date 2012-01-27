@@ -48,14 +48,14 @@ public class SyncTaskManager extends AbstractTaskManager<Object, Map<String, Obj
 
 
 	@Override
-	public void execute(final TaskFactory factory) {
+	public <TC> void execute(TaskFactory<TC> factory, TC taskContext) {
 		final LoggingTaskMonitor taskMonitor = new LoggingTaskMonitor();
 		
 		try {
-			if ( !displayTunables(factory) )
+			if ( !displayTunables(taskContext) )
 				return;
 
-			TaskIterator taskIterator = factory.createTaskIterator();
+			TaskIterator taskIterator = factory.createTaskIterator(taskContext);
 
 			// now execute all subsequent tasks
 			while (taskIterator.hasNext()) {

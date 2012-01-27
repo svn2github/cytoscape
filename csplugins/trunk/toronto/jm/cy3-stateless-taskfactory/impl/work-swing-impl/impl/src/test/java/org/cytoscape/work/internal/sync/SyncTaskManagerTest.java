@@ -25,11 +25,15 @@ public class SyncTaskManagerTest {
 
 		TestTaskFactory tf = new TestTaskFactory();
 		
-		taskManager.execute(tf);
+		taskManager.execute(tf, tf.createTaskContext());
 	}
 
-	public class TestTaskFactory implements TaskFactory {
-		public TaskIterator createTaskIterator() { return new TaskIterator( new TestTask() ); }
+	public class TestTaskFactory implements TaskFactory<Object> {
+		public TaskIterator createTaskIterator(Object context) { return new TaskIterator( new TestTask() ); }
+		@Override
+		public Object createTaskContext() {
+			return new Object();
+		}
 	}
 
 	public class TestTask extends AbstractTask {

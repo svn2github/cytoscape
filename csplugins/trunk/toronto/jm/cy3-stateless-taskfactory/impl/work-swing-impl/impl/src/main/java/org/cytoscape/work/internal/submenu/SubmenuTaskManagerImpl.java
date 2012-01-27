@@ -1,15 +1,11 @@
 
 package org.cytoscape.work.internal.submenu;
 
-import org.cytoscape.work.TunableMutator;
 import org.cytoscape.work.AbstractTaskManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.swing.DialogTaskManager;
-import org.cytoscape.work.swing.SubmenuTaskManager;
 import org.cytoscape.work.swing.DynamicSubmenuListener;
-
-import javax.swing.event.MenuListener;
-import java.util.List;
+import org.cytoscape.work.swing.SubmenuTaskManager;
 
 public class SubmenuTaskManagerImpl extends AbstractTaskManager<DynamicSubmenuListener,Object> implements SubmenuTaskManager {
 	
@@ -27,7 +23,7 @@ public class SubmenuTaskManagerImpl extends AbstractTaskManager<DynamicSubmenuLi
 		return listener; 
 	}
 
-	public void execute(TaskFactory tf) {
-		dialogTaskManager.execute(tf,false);
+	public <TC> void execute(TaskFactory<TC> factory, TC taskContext) {
+		dialogTaskManager.execute(factory, taskContext, false);
 	}
 }
