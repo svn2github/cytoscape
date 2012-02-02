@@ -11,23 +11,25 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import org.biopax.paxtools.controller.ModelUtils;
+import org.biopax.paxtools.converter.OneTwoThree;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
+import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.EntityReference;
+import org.biopax.paxtools.model.level3.Named;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
-import org.cytoscape.biopax.BioPaxContainer;
-import org.cytoscape.biopax.MapBioPaxToCytoscape;
-import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
-import org.cytoscape.biopax.NetworkListener;
+import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.CPathException;
 import org.cytoscape.cpathsquared.internal.CPathProperties;
 import org.cytoscape.cpathsquared.internal.CPathWebService;
 import org.cytoscape.cpathsquared.internal.util.AttributeUtil;
+import org.cytoscape.cpathsquared.internal.util.BioPaxUtil;
 import org.cytoscape.cpathsquared.internal.util.EmptySetException;
-import org.cytoscape.cpathsquared.internal.view.BinarySifVisualStyleFactory;
+import org.cytoscape.cpathsquared.internal.util.NullTaskMonitor;
 import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -60,38 +62,27 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	private OutputFormat format;
 	private final static String CPATH_SERVER_NAME_ATTRIBUTE = "CPATH_SERVER_NAME";
 	private final static String CPATH_SERVER_DETAILS_URL = "CPATH_SERVER_DETAILS_URL";
-	private Logger logger = LoggerFactory.getLogger(ExecuteGetRecordByCPathId.class);
+	private static final Logger logger = LoggerFactory.getLogger(ExecuteGetRecordByCPathId.class);
 	private final CPath2Factory cPathFactory;
-	private final BioPaxContainer bpContainer;
-	private final MapBioPaxToCytoscapeFactory mapperFactory;
-	private final NetworkListener networkListener;
 	private final VisualMappingManager mappingManager;
 
 	/**.
 	 * Constructor.
 	 * 
-	 * @param webApi
-	 *            cPath Web API.
-	 * @param ids
-	 *            Array of cPath IDs.
-	 * @param format
-	 *            CPathResponseFormat Object.
-	 * @param networkTitle
-	 *            Tentative Network Title.
-	 * @param bpContainer
-	 * @param application
+	 * @param webApi cPath Web API.
+	 * @param ids Array of cPath IDs.
+	 * @param format Output Format.
+	 * @param networkTitle Tentative Network Title.
+	 * @param cPathFactory
+	 * @param mappingManager
 	 */
 	public ExecuteGetRecordByCPathId(CPathWebService webApi, String[] ids, OutputFormat format,
-			String networkTitle, CPath2Factory cPathFactory, BioPaxContainer bpContainer,
-			MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener, VisualMappingManager mappingManager) {
+			String networkTitle, CPath2Factory cPathFactory, VisualMappingManager mappingManager) {
 		this.webApi = webApi;
 		this.ids = ids;
 		this.format = format;
 		this.networkTitle = networkTitle;
 		this.cPathFactory = cPathFactory;
-		this.bpContainer = bpContainer;
-		this.mapperFactory = mapperFactory;
-		this.networkListener = networkListener;
 		this.mappingManager = mappingManager;
 	}
 
@@ -161,7 +152,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 			}
 
 			reader.run(taskMonitor);
-			final CyNetwork cyNetwork = reader.getCyNetworks()[0];
+			final CyNetwork cyNetwork = reader.getNetworks()[0];
             final CyNetworkView view = reader.buildCyNetworkView(cyNetwork);
 
             cPathFactory.getCyNetworkManager().addNetwork(cyNetwork);
@@ -212,7 +203,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	private void addLinksToCPathInstance(CyNetwork cyNetwork) {
 		String serverName = CPathProperties.serverName;
 		String serverURL = CPathProperties.cPathUrl;
-		CyRow row = cyNetwork.getCyRow(cyNetwork);
+		CyRow row = cyNetwork.getRow(cyNetwork);
 		String cPathServerDetailsUrl = row.get(ExecuteGetRecordByCPathId.CPATH_SERVER_DETAILS_URL, String.class);
 		if (cPathServerDetailsUrl == null) {
 			AttributeUtil.set(cyNetwork, cyNetwork, ExecuteGetRecordByCPathId.CPATH_SERVER_NAME_ATTRIBUTE,
@@ -231,15 +222,15 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	private void postProcessingBinarySif(final CyNetworkView view, TaskMonitor taskMonitor) {
 		// Init the node attribute meta data, e.g. description, visibility, etc.
 		// TODO: What happened to attribute descriptions?
-		// MapBioPaxToCytoscape.initAttributes(nodeAttributes);
+		// BioPaxMapper.initAttributes(nodeAttributes);
 
 		final CyNetwork cyNetwork = view.getModel();
 
 		// Set the Quick Find Default Index
-		AttributeUtil.set(cyNetwork, cyNetwork, "quickfind.default_index", "biopax.node_label", String.class);
+		AttributeUtil.set(cyNetwork, cyNetwork, "quickfind.default_index", CyNode.NAME, String.class);
 
 		// Specify that this is a BINARY_NETWORK
-		AttributeUtil.set(null, cyNetwork, BinarySifVisualStyleFactory.BINARY_NETWORK, Boolean.TRUE, Boolean.class);
+		AttributeUtil.set(cyNetwork, cyNetwork, "BIOPAX_NETWORK", Boolean.TRUE, Boolean.class);
 
 		// Get all node details.
 		getNodeDetails(cyNetwork, taskMonitor);
@@ -250,14 +241,11 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 				taskMonitor.setProgress(0);
 			}
 
-			VisualStyle visualStyle = cPathFactory
-					.getBinarySifVisualStyleUtil().getVisualStyle();
+			VisualStyle visualStyle = cPathFactory.getBinarySifVisualStyleUtil().getVisualStyle();
 			mappingManager.setVisualStyle(visualStyle, view);
-			networkListener.registerNetwork(view);
 
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					bpContainer.showLegend();
 					String networkTitleWithUnderscores = networkTitle.replaceAll(": ", "");
 					networkTitleWithUnderscores = networkTitleWithUnderscores.replaceAll(" ", "_");
 					CyNetworkNaming naming = cPathFactory.getCyNetworkNaming();
@@ -297,7 +285,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 		if (batchList.size() == 0) {
 			logger.info("Skipping node details.  Already have all the details new need.");
 		}
-		MapBioPaxToCytoscape mapBioPaxToCytoscape = mapperFactory.getInstance(null, taskMonitor);
+		
 		for (int i = 0; i < batchList.size(); i++) {
 			if (haltFlag == true) {
 				break;
@@ -308,22 +296,31 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 			Map<String, CyNode> nodes = new HashMap<String, CyNode>();
 			for (int j = 0; j < currentList.size(); j++) {
 				CyNode node = currentList.get(j);
-				String name = cyNetwork.getCyRow(node).get(CyNode.NAME, String.class);
+				String name = cyNetwork.getRow(node).get(CyNode.NAME, String.class);
 				nodes.put(name, node);
 				ids[j] = name;
 			}
 			try {
 				final String xml = webApi.getRecordsByIds(ids, OutputFormat.BIOPAX, new NullTaskMonitor());
 				Model model = new SimpleIOHandler().convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
-							
+				// convert L2 to L3 if required (L1 is converted to L2 always anyway - by the handler)
+				if(BioPAXLevel.L2.equals(model.getLevel())) { // 
+					model = (new OneTwoThree()).filter(model);
+				}
+				//normalize/infer properties: displayName, organism, dataSource
+				fixDisplayName(model);
+				ModelUtils mu = new ModelUtils(model);
+				mu.inferPropertyFromParent("dataSource");
+				mu.inferPropertyFromParent("organism");
 				//map biopax properties to Cy attributes for SIF nodes
 				for (BioPAXElement e : model.getObjects()) {
-					if(e instanceof EntityReference || e instanceof Complex 
-						|| e.getModelInterface().equals(PhysicalEntity.class)) 
+					if(e instanceof EntityReference 
+							|| e instanceof Complex 
+								|| e.getModelInterface().equals(PhysicalEntity.class)) 
 					{
 						CyNode node = nodes.get(e.getRDFId());
 						if(node != null)
-							mapBioPaxToCytoscape.createAttributesFromProperties(e, node, cyNetwork);
+							BioPaxUtil.createAttributesFromProperties(e, node, cyNetwork);
 						// - this will also update the 'name' attribute (to a biol. label)
 						else {
 							logger.debug("Oops: no node for " + e.getRDFId());
@@ -349,7 +346,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 		List<CyNode> currentList = new ArrayList<CyNode>();
 		int counter = 0;
 		for (CyNode node : cyNetwork.getNodeList()) {
-			CyRow row = cyNetwork.getCyRow(node);
+			CyRow row = cyNetwork.getRow(node);
 			String label = row.get(CyNode.NAME, String.class);
 
 			// If we already have details on this node, skip it.
@@ -369,15 +366,36 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 		return masterList;
 	}
 
-}
-
-class NullTaskMonitor implements TaskMonitor {
-	public void setProgress(double arg0) {
+	
+	private void fixDisplayName(Model model) {
+		if (logger.isInfoEnabled())
+			logger.info("Trying to auto-fix 'null' displayName...");
+		// where it's null, set to the shortest name if possible
+		for (Named e : model.getObjects(Named.class)) {
+			if (e.getDisplayName() == null) {
+				if (e.getStandardName() != null) {
+					e.setDisplayName(e.getStandardName());
+				} else if (!e.getName().isEmpty()) {
+					String dsp = e.getName().iterator().next();
+					for (String name : e.getName()) {
+						if (name.length() < dsp.length())
+							dsp = name;
+					}
+					e.setDisplayName(dsp);
+				}
+			}
+		}
+		// if required, set PE name to (already fixed) ER's name...
+		for(EntityReference er : model.getObjects(EntityReference.class)) {
+			for(SimplePhysicalEntity spe : er.getEntityReferenceOf()) {
+				if(spe.getDisplayName() == null || spe.getDisplayName().trim().length() == 0) {
+					if(er.getDisplayName() != null && er.getDisplayName().trim().length() > 0) {
+						spe.setDisplayName(er.getDisplayName());
+					}
+				}
+			}
+		}
 	}
+		
+}	
 
-	public void setStatusMessage(String arg0) {
-	}
-
-	public void setTitle(String arg0) {
-	}
-}

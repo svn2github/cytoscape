@@ -3,7 +3,6 @@ package org.cytoscape.cpathsquared.internal.task;
 import javax.swing.JDialog;
 
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.biopax.MapBioPaxToCytoscape;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.CPathException;
 import org.cytoscape.cpathsquared.internal.CPathWebService;
@@ -28,7 +27,7 @@ public class GetParentInteractionsTask implements Task {
 	private final CPath2Factory factory;
 
     public GetParentInteractionsTask (CyNetwork network, CyNode node, CPath2Factory factory) {
-        this.uri = network.getCyRow(node).get(MapBioPaxToCytoscape.BIOPAX_RDF_ID, String.class);
+        this.uri = network.getRow(node).get("uri", String.class);
         this.node = node;
         this.network = network;
         this.factory = factory;
@@ -52,7 +51,7 @@ public class GetParentInteractionsTask implements Task {
             CySwingApplication application = factory.getCySwingApplication();
             JDialog dialog = new JDialog(application.getJFrame());
 
-            String nodeLabel = network.getCyRow(node).get(CyNode.NAME, String.class);
+            String nodeLabel = network.getRow(node).get(CyNode.NAME, String.class);
             if (nodeLabel != null) {
                 dialog.setTitle(nodeLabel);
             } else {

@@ -41,13 +41,13 @@
 		interface="org.cytoscape.work.undo.UndoSupport" />
 
 	<osgi:reference id="bioPaxContainerRef"
-		interface="org.cytoscape.biopax.BioPaxContainer" />
+		interface="org.cytoscape.biopax.internal.BioPaxContainer" />
 	
 	<osgi:reference id="mapBioPaxToCytoscapeFactoryRef"
-		interface="org.cytoscape.biopax.MapBioPaxToCytoscapeFactory" />
+		interface="org.cytoscape.biopax.internal.BioPaxMapperFactory" />
 
 	<osgi:reference id="networkListenerRef"
-		interface="org.cytoscape.biopax.NetworkListener" />
+		interface="org.cytoscape.biopax.internal.BioPaxViewTracker" />
 
 	<osgi:reference id="visualMappingManagerRef"
 		interface="org.cytoscape.view.vizmap.VisualMappingManager"/>

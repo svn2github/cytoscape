@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.biopax.paxtools.io.pathwayCommons.PathwayCommons2Client;
-import org.biopax.paxtools.io.pathwayCommons.util.PathwayCommonsException;
 import org.biopax.paxtools.model.level3.BioSource;
 import org.cytoscape.cpathsquared.internal.util.EmptySetException;
 import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cpath.client.internal.PathwayCommons2Client;
+import cpath.client.internal.util.PathwayCommonsException;
 import cpath.service.OutputFormat;
 import cpath.service.jaxb.SearchResponse;
 

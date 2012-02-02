@@ -7,9 +7,6 @@ import javax.swing.JPanel;
 
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.biopax.BioPaxContainer;
-import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
-import org.cytoscape.biopax.NetworkListener;
 import org.cytoscape.cpathsquared.internal.task.CPathNetworkImportTask;
 import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
 import org.cytoscape.cpathsquared.internal.view.BinarySifVisualStyleFactory;
@@ -51,13 +48,10 @@ public class CPath2Factory {
 	private final CyNetworkFactory networkFactory;
 	private final CyLayoutAlgorithmManager layoutManager;
 	private final UndoSupport undoSupport;
-	private final BioPaxContainer bpContainer;
-	private final MapBioPaxToCytoscapeFactory mapperFactory;
-	private final NetworkListener networkListener;
 	private final BinarySifVisualStyleFactory binarySifVisualStyleUtil;
 	private final VisualMappingManager mappingManager;
 	
-	public CPath2Factory(CySwingApplication application, TaskManager taskManager, OpenBrowser openBrowser, CyNetworkManager networkManager, CyApplicationManager applicationManager, CyNetworkViewManager networkViewManager, CyNetworkReaderManager networkViewReaderManager, CyNetworkNaming naming, CyNetworkFactory networkFactory, CyLayoutAlgorithmManager layouts, UndoSupport undoSupport, BioPaxContainer bpContainer, MapBioPaxToCytoscapeFactory mapperFactory, NetworkListener networkListener, BinarySifVisualStyleFactory binarySifVisualStyleUtil, VisualMappingManager mappingManager) {
+	public CPath2Factory(CySwingApplication application, TaskManager taskManager, OpenBrowser openBrowser, CyNetworkManager networkManager, CyApplicationManager applicationManager, CyNetworkViewManager networkViewManager, CyNetworkReaderManager networkViewReaderManager, CyNetworkNaming naming, CyNetworkFactory networkFactory, CyLayoutAlgorithmManager layouts, UndoSupport undoSupport, BinarySifVisualStyleFactory binarySifVisualStyleUtil, VisualMappingManager mappingManager) {
 		this.application = application;
 		this.taskManager = taskManager;
 		this.openBrowser = openBrowser;
@@ -69,9 +63,6 @@ public class CPath2Factory {
 		this.layoutManager = layouts;
 		this.networkFactory = networkFactory;
 		this.undoSupport = undoSupport;
-		this.bpContainer = bpContainer;
-		this.mapperFactory = mapperFactory;
-		this.networkListener = networkListener;
 		this.binarySifVisualStyleUtil = binarySifVisualStyleUtil;
 		this.mappingManager = mappingManager;
 	}
@@ -79,8 +70,7 @@ public class CPath2Factory {
 	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(
 			CPathWebService webApi, String[] ids, OutputFormat format, String title) 
 	{
-		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, 
-			this, bpContainer, mapperFactory, networkListener, mappingManager);
+		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, this, mappingManager);
 	}
 
 	public SearchBoxPanel createSearchBoxPanel(CPathWebService webApi) {

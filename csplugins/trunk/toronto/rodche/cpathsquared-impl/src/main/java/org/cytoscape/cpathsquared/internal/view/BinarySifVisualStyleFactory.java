@@ -3,7 +3,7 @@ package org.cytoscape.cpathsquared.internal.view;
 import java.awt.Color;
 import java.awt.Paint;
 
-import org.cytoscape.biopax.MapBioPaxToCytoscape;
+import org.cytoscape.cpathsquared.internal.util.BioPaxUtil;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
@@ -103,7 +103,7 @@ public class BinarySifVisualStyleFactory {
 		// Complexes are Hexagons.
 		DiscreteMapping<String, NodeShape> function = (DiscreteMapping<String, NodeShape>) discreteFactory
 				.createVisualMappingFunction(
-						MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, String.class, null,
+						BioPaxUtil.BIOPAX_ENTITY_TYPE, String.class, null,
 						RichVisualLexicon.NODE_SHAPE);
 		function.putMapValue(COMPLEX, NodeShapeVisualProperty.HEXAGON);
 		style.addVisualMappingFunction(function);
@@ -117,7 +117,7 @@ public class BinarySifVisualStyleFactory {
 		Color lightBlue = new Color(153, 153, 255);
 		DiscreteMapping<String, Paint> function = (DiscreteMapping<String, Paint>) discreteFactory
 				.createVisualMappingFunction(
-						MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE, String.class, null,
+						BioPaxUtil.BIOPAX_ENTITY_TYPE, String.class, null,
 						RichVisualLexicon.NODE_FILL_COLOR);
 		function.putMapValue(COMPLEX, lightBlue);
 		style.addVisualMappingFunction(function);

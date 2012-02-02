@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.cytoscape.biopax.MapBioPaxToCytoscape;
+import org.cytoscape.cpathsquared.internal.util.BioPaxUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
@@ -28,7 +28,7 @@ public class ViewNetworkNeighborhoodTask implements Task {
     @Override
     public void run(TaskMonitor taskMonitor) throws Exception {
     	CyNetwork cyNetwork = networkView.getModel();
-        CyRow row = cyNetwork.getCyRow(cyNetwork);
+        CyRow row = cyNetwork.getRow(cyNetwork);
         // grab web services url from network attributes
         String webServicesURL = row.get("biopax.web_services_url", String.class);
         if (webServicesURL == null) {
@@ -43,9 +43,8 @@ public class ViewNetworkNeighborhoodTask implements Task {
 
         // generate menu url
         CyNode cyNode = nodeView.getModel();
-        CyRow nodeRow = cyNetwork.getCyRow(cyNode);
-        String biopaxID = nodeRow.get(MapBioPaxToCytoscape.BIOPAX_RDF_ID, String.class);
-        biopaxID = biopaxID.replace("CPATH-", "");
+        CyRow nodeRow = cyNetwork.getRow(cyNode);
+        String biopaxID = nodeRow.get(BioPaxUtil.BIOPAX_RDF_ID, String.class);
         String neighborhoodParam = "Neighborhood: " + nodeRow.get(CyNode.NAME, String.class);
 
         // encode some parts of the url
@@ -80,7 +79,7 @@ public class ViewNetworkNeighborhoodTask implements Task {
 		   return false;
 	   }
 	   
-	   Boolean value = cyNetwork.getCyRow(cyNetwork).get(MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.class);
+	   Boolean value = cyNetwork.getRow(cyNetwork).get(BioPaxUtil.BIOPAX_NETWORK, Boolean.class);
 	   if (value == null || !value) {
 		   return false;
 	   }

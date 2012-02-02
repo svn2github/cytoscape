@@ -5,14 +5,11 @@ import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.biopax.MapBioPaxToCytoscapeFactory;
 import org.cytoscape.session.CyNetworkNaming;
-import org.cytoscape.biopax.BioPaxContainer;
 import org.cytoscape.work.undo.UndoSupport;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
-import org.cytoscape.biopax.NetworkListener;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.io.read.CyNetworkReaderManager;
@@ -50,9 +47,6 @@ public class CyActivator extends AbstractCyActivator {
 		CyNetworkFactory cyNetworkFactoryRef = getService(bc,CyNetworkFactory.class);
 		CyLayoutAlgorithmManager cyLayoutsRef = getService(bc,CyLayoutAlgorithmManager.class);
 		UndoSupport undoSupportRef = getService(bc,UndoSupport.class);
-		BioPaxContainer bioPaxContainerRef = getService(bc,BioPaxContainer.class);
-		MapBioPaxToCytoscapeFactory mapBioPaxToCytoscapeFactoryRef = getService(bc,MapBioPaxToCytoscapeFactory.class);
-		NetworkListener networkListenerRef = getService(bc,NetworkListener.class);
 		VisualMappingManager visualMappingManagerRef = getService(bc,VisualMappingManager.class);
 		VisualStyleFactory visualStyleFactoryRef = getService(bc,VisualStyleFactory.class);
 		VisualMappingFunctionFactory discreteMappingFactoryRef = getService(bc,VisualMappingFunctionFactory.class,"(mapping.type=discrete)");
@@ -76,9 +70,6 @@ public class CyActivator extends AbstractCyActivator {
 				cyNetworkFactoryRef,
 				cyLayoutsRef,
 				undoSupportRef,
-				bioPaxContainerRef,
-				mapBioPaxToCytoscapeFactoryRef,
-				networkListenerRef,
 				binarySifVisualStyleUtil,
 				visualMappingManagerRef);
 		
