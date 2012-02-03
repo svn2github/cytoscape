@@ -66,6 +66,7 @@ import coreCommands.namespaces.node.ExportNodeAttributes;
 public class NodeNamespace extends AbstractGraphObjectHandler {
 
 	// Commands
+	private static String DELETE = "delete";
 	private static String DESELECT = "deselect";
 	private static String FIND = "find";
 	private static String GETATTR = "get attribute";
@@ -89,6 +90,10 @@ public class NodeNamespace extends AbstractGraphObjectHandler {
 		super(ns);
 
 		// Define our subcommands
+		addDescription(DELETE, "Delete a node or group of nodes.");
+		addArgument(DELETE, NODE);
+		addArgument(DELETE, NODELIST);
+
 		addDescription(DESELECT, "Deselect nodes.  If no node(s) are provided, all nodes are deselected");
 		addArgument(DESELECT, NODE);
 		addArgument(DESELECT, NODELIST);
@@ -174,6 +179,21 @@ public class NodeNamespace extends AbstractGraphObjectHandler {
 				result.addMessage("node: deselected all nodes");
 			} 
 
+			if (net == Cytoscape.getCurrentNetwork()) {
+				Cytoscape.getCurrentNetworkView().updateView();
+			}
+
+		// delete some ndoes
+		} else if (DELETE.equals(command)) {
+			CyNetwork net = getNetwork(command, args);
+			List<CyNode> nodeList = getNodeList(net, result, args);
+			if (nodeList == null)
+				throw new CyCommandException("node: nothing to delete");
+
+			for (CyNode node: nodeList) {
+				net.removeNode(node.getRootGraphIndex(), false);
+			}
+			result.addMessage("node: deleted "+nodeList.size()+" nodes");
 			if (net == Cytoscape.getCurrentNetwork()) {
 				Cytoscape.getCurrentNetworkView().updateView();
 			}

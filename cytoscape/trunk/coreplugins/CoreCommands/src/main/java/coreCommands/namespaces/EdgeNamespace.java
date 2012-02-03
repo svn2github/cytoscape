@@ -64,6 +64,7 @@ import coreCommands.namespaces.edge.ExportEdgeAttributes;
 public class EdgeNamespace extends AbstractGraphObjectHandler {
 
 	// Commands
+	private static String DELETE = "delete";
 	private static String DESELECT = "deselect";
 	private static String EXPORT = "export attributes";
 	private static String FIND = "find";
@@ -88,6 +89,10 @@ public class EdgeNamespace extends AbstractGraphObjectHandler {
 		super(ns);
 
 		// Define our subcommands
+		addDescription(DELETE, "Delete an edge or group of edges.");
+		addArgument(DELETE, EDGE);
+		addArgument(DELETE, EDGELIST);
+
 		addDescription(DESELECT, "Deselect edges.  If no edge(s) are provided, all edges are deselected");
 		addArgument(DESELECT, EDGE);
 		addArgument(DESELECT, EDGELIST);
@@ -170,6 +175,21 @@ public class EdgeNamespace extends AbstractGraphObjectHandler {
 				net.unselectAllEdges();
 				result.addMessage("edge: deselected all edges");
 			}
+			if (net == Cytoscape.getCurrentNetwork()) {
+				Cytoscape.getCurrentNetworkView().updateView();
+			}
+
+		// delete some edges
+		} else if (DELETE.equals(command)) {
+			CyNetwork net = getNetwork(command, args);
+			List<CyEdge> edgeList = getEdgeList(net, result, args);
+			if (edgeList == null)
+				throw new CyCommandException("edge: nothing to delete");
+
+			for (CyEdge edge: edgeList) {
+				net.removeEdge(edge.getRootGraphIndex(), false);
+			}
+			result.addMessage("edge: deleted "+edgeList.size()+" nodes");
 			if (net == Cytoscape.getCurrentNetwork()) {
 				Cytoscape.getCurrentNetworkView().updateView();
 			}
