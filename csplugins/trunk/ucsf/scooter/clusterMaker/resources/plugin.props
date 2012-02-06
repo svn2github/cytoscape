@@ -13,7 +13,7 @@ pluginName=clusterMaker
 pluginDescription=Cluster Nodes and/or Edges
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=1.10
+pluginVersion=1.11
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.8
@@ -31,4 +31,4 @@ projectURL=http://www.rbvi.ucsf.edu/cytoscape/cluster/clusterMaker.html
 pluginAuthorsIntsitutions=John "Scooter" Morris, Leonard Apeltsin:UCSF;Aaron Newman:UCSB;Jan Baumbach:Max Planck Institut fur Informatik;Tobias Wittkop:Buck Institute;Gang Su:University of Michigan;Gary Bader:University of Toronto
 
 # Date this plugin/plugin version was released
-releaseDate=April 10, 2011
+releaseDate=October 23, 2011

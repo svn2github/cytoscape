@@ -71,6 +71,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 	protected Integer[] rowOrder;
 	protected String weightAttributes[] = null;
 	protected int kMax = -1;
+	protected boolean initializeNearCenter = false;
 	private SilhouetteResult[] silhouetteResults = null;
 
 	protected boolean adjustDiagonals = false;
@@ -95,6 +96,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 	public void setUseSilhouette(boolean val) { useSilhouette = val; }
 	public void setKMax(int val) { kMax = val; }
 	public void setClusterInterface(AbstractClusterAlgorithm alg) { clusterAlgorithm = alg; }
+	public void setInitializeNearCenter(boolean val) { initializeNearCenter = val; }
 
 	/**
  	 * This method is called by all of the attribute cluster algorithms to update the
@@ -383,6 +385,57 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		logger.info(resultString);
 		return resultString;
 	}
+	
+	protected int[] chooseRandomElementsAsCenters(int nElements, int nClusters) {
+		int[] centers = new int[nClusters];
+
+		for (int i = 0; i < nClusters; i++) {
+			centers[i] = (int) Math.floor(Math.random() * nElements);
+		}
+		return centers;
+	}
+
+	protected int[] chooseCentralElementsAsCenters(int nElements, int nClusters, double[][] distances) {
+		int[] centers = new int[nClusters];
+		
+		// calculate normalized distances
+		double[][] normalized = new double[nElements][nElements];
+		for (int i = 0; i < nElements; i++) {
+			double sum = 0;
+			for (int j = 0; j < nElements; j++) {
+				double x = distances[i][j];
+				normalized[i][j] = x;
+				sum += x;
+			}
+			for (int j = 0; j < nElements; j++) {
+				normalized[i][j] /= sum;
+			}
+		}
+		
+		// sum the normalized distances across all rows
+		// setup key-value pairs with summed normalized distances as keys
+		// and element indices as values
+		KeyValuePair[] pairs = new KeyValuePair[nElements];
+		for (int i = 0; i < nElements; i++) {
+			pairs[i] = new KeyValuePair(0.0, i);
+			for (int j = 0; j < nElements; j++) {
+				pairs[i].key += normalized[i][j];
+			}
+		}
+		
+		// sort the summed normalized distances
+		// for choosing the elements that are closest overall to all other elements
+		Comparator<KeyValuePair> comparator = new KeyValuePairComparator();
+		Arrays.sort(pairs, comparator);
+		
+		// initialize the centers
+		for (int i = 0; i < nClusters; i++) {
+			centers[i] = pairs[i].value;
+			//System.out.println("i = " + i + ", center = " + centers[i]);
+		}
+		
+		return centers;
+	}
 
 	private void renumberClusters(int nClusters, int [] clusters) {
 		int[] clusterSizes = new int[nClusters];
@@ -408,17 +461,6 @@ public abstract class AbstractAttributeClusterAlgorithm {
 			clusters[row] = clusterIndex[clusters[row]];
 		}
 		
-	}
-
-	class SizeComparator implements Comparator <Integer> {
-		int[] sizeArray = null;
-		public SizeComparator(int[] a) { this.sizeArray = a; }
-
-		public int compare(Integer o1, Integer o2) {
-			if (sizeArray[o1] > sizeArray[o2]) return 1;
-			if (sizeArray[o1] < sizeArray[o2]) return -1;
-			return 0;
-		}
 	}
 
 	private void runThreadedSilhouette(int kMax, int nIterations, int nThreads, TaskMonitor saveMonitor) {
@@ -458,6 +500,39 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		if (clusterAlgorithm != null)
 			return clusterAlgorithm.halted();
 		return false;
+	}
+
+	// private class pairing key and and value
+	// abandon generic here and hard-code types, since arrays and generics do not work well in Java!
+	private class KeyValuePair {
+		public double key;
+		public int value;
+		
+		public KeyValuePair(double key, int value) {
+			this.key = key;
+			this.value = value;
+		}
+	}
+	
+	// private class comparator for sorting key-value pairs
+	private class KeyValuePairComparator implements Comparator<KeyValuePair> {
+		public int compare(KeyValuePair a, KeyValuePair b) {
+			if ((Double)a.key < (Double)b.key) {
+				return -1;
+			}
+			return 1;
+		}
+	}
+
+	private class SizeComparator implements Comparator <Integer> {
+		int[] sizeArray = null;
+		public SizeComparator(int[] a) { this.sizeArray = a; }
+
+		public int compare(Integer o1, Integer o2) {
+			if (sizeArray[o1] > sizeArray[o2]) return 1;
+			if (sizeArray[o1] < sizeArray[o2]) return -1;
+			return 0;
+		}
 	}
 
 	private class RunKMeans implements Runnable {

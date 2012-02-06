@@ -64,6 +64,7 @@ public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorith
 	protected boolean adjustDiagonals = false;
 	protected boolean zeroMissing = false;
 	protected boolean useSilhouette = false;
+	protected boolean initializeNearCenter = false;
 	protected int kMax = 0;
 	protected int kNumber = 0;
 	protected TaskMonitor monitor = null;
@@ -132,6 +133,11 @@ public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorith
 		                (Object)null, (Object)null, 0);
 		if (useSilhouette) t.setImmutable(true);
 		clusterProperties.add(t);
+
+		// Whether to initialize cluster centers by choosing the most central elements
+		clusterProperties.add(new Tunable("initializeNearCenter",
+				                          "Initialize cluster centers from most central elements",
+				                          Tunable.BOOLEAN, new Boolean(initializeNearCenter)));
 	}
 
 	protected void updateKTunables(boolean force) {
@@ -146,6 +152,11 @@ public abstract class AbstractAttributeClusterer extends AbstractClusterAlgorith
 		t = clusterProperties.get("kNumber");
 		if ((t != null) && (t.valueChanged() || force))
 			kNumber = ((Integer) t.getValue()).intValue();
+		
+		t = clusterProperties.get("initializeNearCenter");
+		if ((t != null) && (t.valueChanged() || force)) {
+			initializeNearCenter = ((Boolean) t.getValue()).booleanValue();
+		}
 	}
 
 	protected void updateKEstimates() {

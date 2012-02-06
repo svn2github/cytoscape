@@ -141,6 +141,13 @@ public class KMeansCluster extends AbstractAttributeClusterer {
 		clusterProperties.add(new Tunable("createGroups",
 		                                  "Create groups from clusters", 
 		                                  Tunable.BOOLEAN, new Boolean(createGroups)));
+		
+		/*
+		// Whether to initialize cluster centers by choosing the most central elements
+		clusterProperties.add(new Tunable("initializeNearCenter",
+				                          "Initialize cluster centers from most central elements",
+				                          Tunable.BOOLEAN, new Boolean(initializeNearCenter)));
+		*/
 
 		clusterProperties.initializeProperties();
 		updateSettings(true);
@@ -187,6 +194,13 @@ public class KMeansCluster extends AbstractAttributeClusterer {
 		if ((t != null) && (t.valueChanged() || force)) {
 			dataAttributes = (String) t.getValue();
 		}
+		
+		/*
+		t = clusterProperties.get("initializeNearCenter");
+		if ((t != null) && (t.valueChanged() || force)) {
+			initializeNearCenter = ((Boolean) t.getValue()).booleanValue();
+		}
+		*/
 	}
 
 	public void doCluster(TaskMonitor monitor) {
@@ -217,6 +231,7 @@ public class KMeansCluster extends AbstractAttributeClusterer {
 		algorithm.setDebug(debug);
 		algorithm.setUseSilhouette(useSilhouette);
 		algorithm.setKMax(kMax);
+		//algorithm.setInitializeNearCenter(initializeNearCenter);
 		algorithm.setClusterInterface(this);
 
 		String resultsString = "K-Means results:";

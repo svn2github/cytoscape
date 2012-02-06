@@ -131,18 +131,11 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 		                                  "Cluster attributes as well as nodes", 
 		                                  Tunable.BOOLEAN, new Boolean(clusterAttributes)));
 
-/*
-		// For expression data, we might want to exclude missing data
-		clusterProperties.add(new Tunable("ignoreMissing",
-		                                  "Ignore nodes with no data",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
-*/
-
 		// Whether or not to create groups
 		clusterProperties.add(new Tunable("createGroups",
 		                                  "Create groups from clusters", 
 		                                  Tunable.BOOLEAN, new Boolean(createGroups)));
-
+		
 		clusterProperties.initializeProperties();
 		updateSettings(true);
 	}
@@ -172,12 +165,6 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 		t = clusterProperties.get("selectedOnly");
 		if ((t != null) && (t.valueChanged() || force))
 			selectedOnly = ((Boolean) t.getValue()).booleanValue();
-
-/*
-		t = clusterProperties.get("ignoreMissing");
-		if ((t != null) && (t.valueChanged() || force))
-			ignoreMissing = ((Boolean) t.getValue()).booleanValue();
-*/
 
 		t = clusterProperties.get("createGroups");
 		if ((t != null) && (t.valueChanged() || force))
@@ -216,6 +203,7 @@ public class KMedoidCluster extends AbstractAttributeClusterer {
 		algorithm.setDebug(debug);
 		algorithm.setUseSilhouette(useSilhouette);
 		algorithm.setKMax(kMax);
+		algorithm.setInitializeNearCenter(initializeNearCenter);
 		algorithm.setClusterInterface(this);
 
 		String resultsString = "K-Medoid results:";

@@ -76,106 +76,6 @@ public class KCluster extends AbstractAttributeClusterAlgorithm {
 		resetAttributes();
 	}
 
-/*
-	public String cluster(int nClusters, int nIterations, boolean transpose) {
-		String keyword = "GENE";
-		if (transpose) keyword = "ARRY";
-
-		for (int att = 0; att < weightAttributes.length; att++)
-			if (debug)
-				logger.debug("Attribute: '"+weightAttributes[att]+"'");
-
-		if (monitor != null) 
-			monitor.setStatus("Creating distance matrix");
-
-		// Create the matrix
-		matrix = new Matrix(weightAttributes, transpose, ignoreMissing, selectedOnly);
-		logger.info("cluster matrix has "+matrix.nRows()+" rows");
-
-		// Create a weight vector of all ones (we don't use individual weighting, yet)
-		matrix.setUniformWeights();
-
-		if (monitor != null) 
-			monitor.setStatus("Clustering...");
-
-		if (useSilhouette) {
-			TaskMonitor saveMonitor = monitor;
-			monitor = null;
-
-			silhouetteResults = new SilhouetteResult[kMax];
-
-			int nThreads = Runtime.getRuntime().availableProcessors()-1;
-			if (nThreads > 1)
-				runThreadedSilhouette(kMax, nIterations, nThreads);
-			else
-				runLinearSilhouette(kMax, nIterations);
-
-			// Now get the results and find our best k
-			double maxSil = Double.MIN_VALUE;
-			for (int kEstimate = 2; kEstimate < kMax; kEstimate++) {
-				double sil = silhouetteResults[kEstimate].getAverageSilhouette();
-				// System.out.println("Average silhouette for "+kEstimate+" clusters is "+sil);
-				if (sil > maxSil) {
-					maxSil = sil;
-					nClusters = kEstimate;
-				}
-			}
-			monitor = saveMonitor;
-			// System.out.println("maxSil = "+maxSil+" nClusters = "+nClusters);
-		}
-
-		int[] clusters = new int[matrix.nRows()];
-		// Cluster
-		int ifound = kmeans(nClusters, nIterations, matrix, metric, clusters);
-
-		// OK, now run our silhouette on our final result
-		SilhouetteResult sResult = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
-		// System.out.println("Average silhouette = "+sResult.getAverageSilhouette());
-		// SilhouetteUtil.printSilhouette(sResult, clusters);
-
-		if (!interimRun) {
-			if (!matrix.isTransposed())
-				createGroups(nClusters, clusters);
-			rowOrder = matrix.indexSort(clusters, clusters.length);
-			// Update the network attributes
-			updateAttributes("kmeans");
-		}
-
-		return "Created "+nClusters+" clusters with average silhouette = "+sResult.getAverageSilhouette();
-	}
-
-	private void runThreadedSilhouette(int kMax, int nIterations, int nThreads) {
-		// Set up the thread pools
-		ExecutorService[] threadPools = new ExecutorService[nThreads];
-		for (int pool = 0; pool < threadPools.length; pool++)
-			threadPools[pool] = Executors.newFixedThreadPool(1);
-
-		// Dispatch a kmeans calculation to each pool
-		for (int kEstimate = 2; kEstimate < kMax; kEstimate++) {
-			int[] clusters = new int[matrix.nRows()];
-			Runnable r = new RunKMeans(matrix, clusters, kEstimate, nIterations);
-			threadPools[(kEstimate-2)%nThreads].submit(r);
-			// threadPools[0].submit(r);
-		}
-
-		// OK, now wait for each thread to complete
-		for (int pool = 0; pool < threadPools.length; pool++) {
-			threadPools[pool].shutdown();
-			try {
-				boolean result = threadPools[pool].awaitTermination(7, TimeUnit.DAYS);
-			} catch (Exception e) {}
-		}
-	}
-
-	private void runLinearSilhouette(int kMax, int nIterations) {
-		for (int kEstimate = 2; kEstimate < kMax; kEstimate++) {
-			int[] clusters = new int[matrix.nRows()];
-			int ifound = kmeans(kEstimate, nIterations, matrix, metric, clusters);
-			silhouetteResults[kEstimate] = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
-		}
-	}
-*/
-
 	// The kmeans implementation of a k-clusterer
 	public int kcluster(int nClusters, int nIterations, Matrix matrix, DistanceMetric metric, int[] clusterID) {
 		if (monitor != null)
@@ -221,8 +121,15 @@ public class KCluster extends AbstractAttributeClusterAlgorithm {
 			int period = 10;
 
 			// Randomly assign elements to clusters
-			if (nIterations != 0) randomAssign(nClusters, nelements, tclusterid);
-			// if (nIterations != 0) debugAssign(nClusters, nelements, tclusterid);
+			if (nIterations != 0) {
+				if (!initializeNearCenter) {
+					// Use the cluster 3.0 version to be consistent
+					randomAssign(nClusters, nelements, tclusterid);
+					// if (nIterations != 0) debugAssign(nClusters, nelements, tclusterid);
+				} else {
+					tclusterid = chooseCentralElementsAsCenters(nelements, nClusters, matrix.getDistanceMatrix(metric));
+				}
+			}
 
 			// Initialize
 			for (int i = 0; i < nClusters; i++) counts[i] = 0;
@@ -512,56 +419,6 @@ public class KCluster extends AbstractAttributeClusterAlgorithm {
 		}
 	}
 
-	/**
-	 * This routine returns a uniform random number between 0.0 and 1.0. Both 0.0
-	 * and 1.0 are excluded. This random number generator is described in:
-	 *
-	 * Pierre l'Ecuyer
-	 * Efficient and Portable Combined Random Number Generators
-	 * Communications of the ACM, Volume 31, Number 6, June 1988, pages 742-749,774.
-	 *
-	 * The first time this routine is called, it initializes the random number
-	 * generator using the current time. First, the current epoch time in seconds is
-	 * used as a seed for the random number generator in the C library. The first two
-	 * random numbers generated by this generator are used to initialize the random
-	 * number generator implemented in this routine.
-	 *
-	 * NOTE: how different is this from Java's Math.random() or Random.nextDouble()?
-	 *
-	 * @return A double-precison number between 0.0 and 1.0.
-	 */
-/*
-	private double uniform() {
-		int z;
-		int m1 = 2147483563;
-		int m2 = 2147483399;
-		double scale = 1.0/m1;
-
-		if (seed1==0 || seed2==0) // initialize 
-		{ 
-			Date date = new Date();
-			int initseed = (int) date.getTime();
-			Random r = new Random(initseed);
-			seed1 = r.nextInt();
-			seed2 = r.nextInt();
-		}
-
-		do
-		{ 
-			int k;
-			k = seed1/53668;
-			seed1 = 40014*(seed1-k*53668)-k*12211;
-			if (seed1 < 0) seed1+=m1;
-			k = seed2/52774;
-			seed2 = 40692*(seed2-k*52774)-k*3791;
-			if(seed2 < 0) seed2+=m2;
-			z = seed1-seed2;
-			if(z < 1) z+=(m1-1);
-		} while (z==m1); // To avoid returning 1.0
-
-		return z*scale;
-	}
-*/
 	private double uniform() {
 		if (random == null) {
 			// Date date = new Date();
@@ -572,27 +429,4 @@ public class KCluster extends AbstractAttributeClusterAlgorithm {
 		return random.nextDouble();
 	}
 
-/*
-	class RunKMeans implements Runnable {
-		Matrix matrix;
-		int[] clusters;
-		int kEstimate;
-		int nIterations;
-
-		public RunKMeans (Matrix matrix, int[] clusters, int k, int nIterations) {
-			this.matrix = matrix;
-			this.clusters = clusters;
-			this.kEstimate = k;
-			this.nIterations = nIterations;
-		}
-
-		public void run() {
-			int[] clusters = new int[matrix.nRows()];
-			int ifound = kmeans(kEstimate, nIterations, matrix, metric, clusters);
-			try {
-				silhouetteResults[kEstimate] = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
-			} catch (Exception e) { e.printStackTrace(); }
-		}
-	}
-*/
 }

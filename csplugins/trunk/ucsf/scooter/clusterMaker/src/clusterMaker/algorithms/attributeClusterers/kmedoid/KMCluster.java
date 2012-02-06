@@ -36,6 +36,7 @@ import java.awt.GridLayout;
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -75,44 +76,6 @@ public class KMCluster extends AbstractAttributeClusterAlgorithm {
 		resetAttributes();
 	}
 
-/*
-	public String cluster(int nClusters, int nIterations, boolean transpose) {
-		String keyword = "GENE";
-		if (transpose) keyword = "ARRY";
-		debug = true;
-
-		for (int att = 0; att < weightAttributes.length; att++)
-			if (debug)
-				logger.debug("Attribute: '"+weightAttributes[att]+"'");
-
-		if (monitor != null) 
-			monitor.setStatus("Creating distance matrix");
-
-		// Create the matrix
-		matrix = new Matrix(weightAttributes, transpose, ignoreMissing, selectedOnly);
-		logger.info("cluster matrix has "+matrix.nRows()+" rows");
-
-		// Create a weight vector of all ones (we don't use individual weighting, yet)
-		matrix.setUniformWeights();
-
-		int[] clusters = new int[matrix.nRows()];
-
-		if (monitor != null) 
-			monitor.setStatus("Clustering...");
-
-		// Cluster
-		int ifound = kmedoid(nClusters, nIterations, matrix, metric, clusters);
-		if (!interimRun) {
-			if (!matrix.isTransposed())
-				createGroups(nClusters, clusters);
-			rowOrder = matrix.indexSort(clusters, clusters.length);
-			updateAttributes("kmedoid");
-		}
-
-		return "Complete";
-	}
-*/
-
 	public int kcluster(int nClusters, int nIterations, Matrix matrix, DistanceMetric metric, int[] clusterId) {
 
 		if (monitor != null)
@@ -128,7 +91,12 @@ public class KMCluster extends AbstractAttributeClusterAlgorithm {
 			}
 		}
 
-		int[] centers = chooseRandomElementsAsCenters(matrix, nClusters);
+		int[] centers;
+		if (initializeNearCenter) {
+			centers = chooseCentralElementsAsCenters(matrix.nRows(), nClusters, distances);
+		} else {
+			centers = chooseRandomElementsAsCenters(matrix.nRows(), nClusters);
+		}
 		int[] oldCenters = null;
 		// outputCenters(centers);
 
@@ -144,15 +112,6 @@ public class KMCluster extends AbstractAttributeClusterAlgorithm {
 
 		// System.out.println("ifound = "+ifound+", error = "+error);
   	return 1;
-	}
-
-	private int[] chooseRandomElementsAsCenters(Matrix matrix, int nClusters) {
-		int[] centers = new int[nClusters];
-
-		for (int i = 0; i < nClusters; i++) {
-			centers[i] = (int) Math.floor(Math.random() * matrix.nRows());
-		}
-		return centers;
 	}
 
 	private void assignPointsToClosestCenter(int[] centers, double[][] distances, int[] clusterId) {
