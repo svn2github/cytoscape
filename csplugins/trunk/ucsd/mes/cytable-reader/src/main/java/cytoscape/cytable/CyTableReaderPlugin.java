@@ -16,11 +16,11 @@ public class CyTableReaderPlugin extends CytoscapePlugin {
 		Cytoscape.getDesktop().getCyMenus().addAction( new CyTableReaderAction("Node"));
 		Cytoscape.getDesktop().getCyMenus().addAction( new CyTableReaderAction("Edge"));
 
-		loadCmdLineTable(CytoscapeInit.getProperties().getProperty("node.cytable"),Cytoscape.getNodeAttributes());
-		loadCmdLineTable(CytoscapeInit.getProperties().getProperty("edge.cytable"),Cytoscape.getNodeAttributes());
+		loadCyTable(CytoscapeInit.getProperties().getProperty("node.cytable"),Cytoscape.getNodeAttributes());
+		loadCyTable(CytoscapeInit.getProperties().getProperty("edge.cytable"),Cytoscape.getNodeAttributes());
 	}
 
-	private void loadCmdLineTable(Object loadNow, CyAttributes attrs) {
+	public static void loadCyTable(Object loadNow, CyAttributes attrs) {
 		if ( loadNow == null )
 			return;
 
