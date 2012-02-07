@@ -2,6 +2,7 @@ package cytoscape.genomespace;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
+import org.genomespace.sws.SimpleWebServer; 
 
 
 /**
@@ -15,6 +16,12 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 	public GenomeSpacePlugin() {
 		// Properly initializes things.
 		super();
+
+		SimpleWebServer sws = new SimpleWebServer(12345);
+		sws.registerListener(new LoadNetworkFromURL());
+		sws.registerListener(new LoadCyTableFromURL("node.cytable",Cytoscape.getNodeAttributes()));
+		sws.registerListener(new LoadCyTableFromURL("edge.cytable",Cytoscape.getEdgeAttributes()));
+		sws.registerListener(new LoadSessionFromURL());
 
 		// This action represents the actual behavior of the plugin.
 		UploadFileToGenomeSpace uploadAction = new UploadFileToGenomeSpace();
@@ -61,5 +68,6 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 
 		LoginToGenomeSpace loginToGenomeSpace = new LoginToGenomeSpace();
 		Cytoscape.getDesktop().getCyMenus().addAction(loginToGenomeSpace);
+
 	}
 }	
