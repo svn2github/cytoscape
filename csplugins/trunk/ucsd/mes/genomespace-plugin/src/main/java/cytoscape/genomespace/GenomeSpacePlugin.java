@@ -22,6 +22,7 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 		sws.registerListener(new LoadCyTableFromURL("node.cytable",Cytoscape.getNodeAttributes()));
 		sws.registerListener(new LoadCyTableFromURL("edge.cytable",Cytoscape.getEdgeAttributes()));
 		sws.registerListener(new LoadSessionFromURL());
+		sws.start();
 
 		// This action represents the actual behavior of the plugin.
 		UploadFileToGenomeSpace uploadAction = new UploadFileToGenomeSpace();

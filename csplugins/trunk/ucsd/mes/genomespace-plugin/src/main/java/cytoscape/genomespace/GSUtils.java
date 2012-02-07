@@ -44,6 +44,7 @@ final class GSUtils {
 		if ( session != null && session.isLoggedIn() ) {
 			try { 
 				session.logout();
+				Cytoscape.getDesktop().setStatusBarMsg("Logged out of GenomeSpace");
 			} catch (Exception e) { }
 			session = null;
 		}
@@ -66,6 +67,7 @@ final class GSUtils {
 
 			try {
 				session.login(userName, password);
+				Cytoscape.getDesktop().setStatusBarMsg("Logged in to GenomeSpace as: " + userName);
 				return true;
 			} catch (final AuthorizationException e) {
 				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
