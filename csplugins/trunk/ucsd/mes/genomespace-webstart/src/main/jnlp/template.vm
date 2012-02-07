@@ -127,6 +127,8 @@
     <argument>csplugins.mrsva.shortestpath.ShortestPathPlugin</argument>
     <argument>-p</argument>
     <argument>org.genemania.plugin.GeneManiaPlugin</argument>
+    <argument>-p</argument>
+    <argument>org.reactome.cytoscape.ReactomeR3CytoscapePlugin</argument>
   </application-desc>
 </jnlp>
 

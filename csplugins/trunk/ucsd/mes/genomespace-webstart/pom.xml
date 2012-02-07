@@ -138,5 +138,10 @@
       <artifactId>genemania-cytoscape-plugin</artifactId>
       <version>2.2</version>
     </dependency>
+    <dependency>
+      <groupId>cytoscape-temp</groupId>
+      <artifactId>reactome</artifactId>
+      <version>1.0</version>
+    </dependency>
   </dependencies>
 </project>
