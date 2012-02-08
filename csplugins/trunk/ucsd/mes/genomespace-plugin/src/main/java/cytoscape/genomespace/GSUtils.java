@@ -25,6 +25,10 @@ final class GSUtils {
 
 	private static GsSession session = null;
 
+	public static synchronized boolean loggedInToGS() {
+		return (session != null && session.isLoggedIn()); 
+	}
+
 	public static synchronized GsSession getSession() {
 		if (session == null || !session.isLoggedIn()) {
 			try {

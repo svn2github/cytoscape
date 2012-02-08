@@ -3,6 +3,7 @@ package cytoscape.genomespace;
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import org.genomespace.sws.SimpleWebServer; 
+import javax.swing.JMenu; 
 
 
 /**
@@ -17,7 +18,7 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 		// Properly initializes things.
 		super();
 
-		SimpleWebServer sws = new SimpleWebServer(12345);
+		SimpleWebServer sws = new SimpleWebServer(60161);
 		sws.registerListener(new LoadNetworkFromURL());
 		sws.registerListener(new LoadCyTableFromURL("node.cytable",Cytoscape.getNodeAttributes()));
 		sws.registerListener(new LoadCyTableFromURL("edge.cytable",Cytoscape.getEdgeAttributes()));
@@ -70,5 +71,10 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 		LoginToGenomeSpace loginToGenomeSpace = new LoginToGenomeSpace();
 		Cytoscape.getDesktop().getCyMenus().addAction(loginToGenomeSpace);
 
+		JMenu gsMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.GenomeSpace");
+		LaunchToolMenu ltm = new LaunchToolMenu(gsMenu);
+		gsMenu.add(ltm);
+		
+		
 	}
 }	
