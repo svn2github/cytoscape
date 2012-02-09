@@ -30,6 +30,7 @@
   <update check="always" policy="always"/>
   <resources>
     <j2se version="$j2seVersion" 
+	      java-vm-args="-Dsun.lang.ClassLoader.allowArraySyntax=true"
 <?php 
    if($MAXHEAP == null || $MAXHEAP == "") {
      $MAXHEAP="1024M";
