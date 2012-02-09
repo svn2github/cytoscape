@@ -260,8 +260,7 @@ public class PluginManager {
 				removeWebstartInstalls();
 				trackerFileName = "track_webstart_plugins.xml";
 			} else {
-				tempDir = new File(CytoscapeInit.getConfigVersionDirectory(),
-						"plugins");
+				tempDir = new File(CytoscapeInit.getConfigVersionDirectory(), "plugins");
 			}
 		} else if (!tempDir.getAbsolutePath().endsWith("/plugins")) {
 			tempDir = new File(tempDir, "plugins");
@@ -831,6 +830,7 @@ public class PluginManager {
 			// cause Cytoscape to crash, which plugins should definitely not do.  
 			} catch (Throwable t) {
 				loadingErrors.add(new PluginException("problem loading plugin: "+currentPlugin,t));
+				t.printStackTrace();
 			}
 		}
 		// now load the plugins in the appropriate manner
@@ -873,15 +873,16 @@ public class PluginManager {
 		}
 
 		// the creation of the class loader automatically loads the plugins
-		classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-
-
-		// Note: For the case of websatart, we should use the following statement to get classLoader
-		// The URLs will be a list of URLs pointed to the jars at source website. This may solve the 
-		//Class not found exception, because webstart does not have access to the local jar files
-		// in the class path.
-		//classLoader = (URLClassLoader)this.getClass().getClassLoader();
-		
+		if ( usingWebstartManager() )
+			// Note: For the case of websatart, we should use the following statement to get classLoader
+			// The URLs will be a list of URLs pointed to the jars at source website. This may solve the 
+			//Class not found exception, because webstart does not have access to the local jar files
+			// in the class path.
+			classLoader = (URLClassLoader)this.getClass().getClassLoader();
+			//classLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader(); 
+		else
+			classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+	
 		
 		// iterate through the given jar files and find classes that are
 		// assignable from CytoscapePlugin
@@ -960,6 +961,7 @@ public class PluginManager {
 			// cause Cytoscape to crash, which plugins should definitely not do.  
 			} catch (Throwable t) {
 				loadingErrors.add(new PluginException("problem loading plugin URL: " + urls[i], t));
+				t.printStackTrace();
 			}
 		}
 	}
@@ -1011,7 +1013,12 @@ public class PluginManager {
 	 */
 	private Class getPluginClass(String name) throws ClassNotFoundException,
 			NoClassDefFoundError {
-		Class c = classLoader.loadClass(name);
+		Class c;
+		if ( usingWebstartManager() )
+			c = Class.forName(name,false,classLoader);
+		else
+			c = classLoader.loadClass(name);
+
 		if (CytoscapePlugin.class.isAssignableFrom(c))
 			return c;
 		else
@@ -1045,5 +1052,4 @@ public class PluginManager {
 		method.setAccessible(true);
 		method.invoke(ClassLoader.getSystemClassLoader(), new Object[] { url });
 	}
-
 }
