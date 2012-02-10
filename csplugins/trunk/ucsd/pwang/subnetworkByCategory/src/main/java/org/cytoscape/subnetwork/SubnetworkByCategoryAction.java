@@ -38,13 +38,20 @@ public class SubnetworkByCategoryAction extends CytoscapeAction {
 		public void actionPerformed(ActionEvent e) {
 
 			String attributeName = "Category";// this is the default attribute name			
-			// get attributeName from user
+			// get attributeName (Type String or int) from user
 			
 			
-			
-			//
-			CyNetwork net = Cytoscape.getCurrentNetwork();
+        	String[] attrNames = Cytoscape.getNodeAttributes().getAttributeNames();        	
 
+			ChooseCategoryAttributeDialog dlg = new ChooseCategoryAttributeDialog(Cytoscape.getDesktop(), true, attrNames);
+
+			dlg.setVisible(true);
+			
+			if (dlg.getSelectedAttribute() == null){
+				return;
+			}
+
+			CyNetwork net = Cytoscape.getCurrentNetwork();
 			
 			SubnetworkByCategory w = new SubnetworkByCategory();
 			
