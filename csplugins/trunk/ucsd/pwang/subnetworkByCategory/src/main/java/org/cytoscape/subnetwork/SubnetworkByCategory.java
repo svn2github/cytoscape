@@ -174,7 +174,7 @@ public class SubnetworkByCategory {
 	}
 
 	
-	//////
+	////// attribute type could be String or Integer
 	private HashMap getNodeCategoryMap(CyNetwork net, String attributeName){
 		HashMap categoryMap = new HashMap();
 		
@@ -185,12 +185,12 @@ public class SubnetworkByCategory {
 			CyNode node = (CyNode) Cytoscape.getRootGraph().getNode(nodeIndices[i]);
 			String nodeId = node.getIdentifier();
 			
-			if (attributes.getAttribute(nodeId, attributeName.toLowerCase()) == null){
-				continue;
+			String attValue = "unknown"; // default, if attrValue is null
+			
+			if (attributes.getAttribute(nodeId, attributeName) != null){
+				attValue = attributes.getAttribute(nodeId, attributeName).toString();	
 			}
-			
-			String attValue = attributes.getAttribute(nodeId, attributeName.toLowerCase()).toString();
-			
+						
 			if (categoryMap.containsKey(attValue.toLowerCase())){
 				Vector nodeVect = (Vector)categoryMap.get(attValue.toLowerCase());
 				nodeVect.add(node);
