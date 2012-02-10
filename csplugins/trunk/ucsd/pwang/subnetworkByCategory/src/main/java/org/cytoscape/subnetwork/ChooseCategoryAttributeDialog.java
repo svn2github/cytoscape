@@ -90,10 +90,6 @@ public class ChooseCategoryAttributeDialog extends javax.swing.JDialog {
     }// </editor-fold>
 
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    	
-    	System.out.println("The selected atrribute is "+ this.cmbAttributes.getSelectedItem());
-    	
     	this.dispose();
     }
 
