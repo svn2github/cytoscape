@@ -55,7 +55,7 @@ public class SubnetworkByCategoryAction extends CytoscapeAction {
 			
 			SubnetworkByCategory w = new SubnetworkByCategory();
 			
-			w.execute(net, attributeName);
+			w.execute(net, dlg.getSelectedAttribute());
 			
 		}
 }
