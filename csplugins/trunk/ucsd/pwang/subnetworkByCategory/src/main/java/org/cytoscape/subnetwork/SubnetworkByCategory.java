@@ -16,7 +16,7 @@ import cytoscape.data.Semantics;
 
 public class SubnetworkByCategory {
 	
-	public void execute(CyNetwork net, String attributeName){
+	public CyNetwork execute(CyNetwork net, String attributeName){
 		// 1. get the node list for each category
 		HashMap categoryMap = getNodeCategoryMap(net, attributeName);
 					
@@ -35,7 +35,9 @@ public class SubnetworkByCategory {
 		final CyNetwork overview = Cytoscape.createNetwork(overview_nodes, overview_edges, "Overview of category ", net, false);
 
 		// 4. Create a view for overview network
-		Cytoscape.createNetworkView(overview, overview.getTitle());				
+		Cytoscape.createNetworkView(overview, overview.getTitle());	
+		
+		return overview;
 	}
 	
 	
