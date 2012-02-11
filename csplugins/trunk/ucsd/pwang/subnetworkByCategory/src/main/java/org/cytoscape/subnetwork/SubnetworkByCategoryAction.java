@@ -20,7 +20,15 @@ public class SubnetworkByCategoryAction extends CytoscapeAction {
 		private static final long serialVersionUID = 123456789023451239L;
 
 		private static final URL vizmapPropsLocation = SubnetworkByCategoryAction.class.getResource("/subnetwork_overview_VS.props");
-		private VisualStyle overviewVS = null;
+		private static VisualStyle overviewVS;
+		
+		static {
+			// Create visualStyles based on the definition in property files
+	        if (vizmapPropsLocation != null){
+				Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, vizmapPropsLocation);
+				overviewVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle("subnetwork_overview");	        	
+	        }			
+		}
 		
 		public SubnetworkByCategoryAction() {
 			// Give your action a name here
@@ -30,21 +38,10 @@ public class SubnetworkByCategoryAction extends CytoscapeAction {
 			// to live in the Plugins menu, so choose whatever
 			// is appropriate!
 	        setPreferredMenu("Plugins");
-	        
-			// Create visualStyles based on the definition in property files
-	        if (vizmapPropsLocation != null){
-				Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, vizmapPropsLocation);
-				overviewVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle("subnetwork_overview");	        	
-	        }
-
 		}
 		
 		public void actionPerformed(ActionEvent e) {
 
-//			String attributeName = "Category";// this is the default attribute name			
-			// get attributeName (Type String or int) from user
-			
-			
         	String[] attrNames = Cytoscape.getNodeAttributes().getAttributeNames();        	
 
 			ChooseCategoryAttributeDialog dlg = new ChooseCategoryAttributeDialog(Cytoscape.getDesktop(), true, attrNames);
@@ -64,8 +61,8 @@ public class SubnetworkByCategoryAction extends CytoscapeAction {
 			
 			if (view != null){
 				//Apply VisualStyle
-				if (this.overviewVS != null){
-					view.setVisualStyle(this.overviewVS.getName());
+				if (overviewVS != null){
+					view.setVisualStyle(overviewVS.getName());
 					view.redrawGraph(false, true);					
 				}
 
