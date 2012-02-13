@@ -36,6 +36,13 @@ public interface ExternalRendererManager {
 	public List<String> getInstalledRenderers();
 	
 	/**
+	 * Return the number of currently installed renderers.
+	 * 
+	 * @return The number of currently installed renderers.
+	 */
+	public int getInstalledRendererCount();
+	
+	/**
 	 * Returns the installed {@link ExternalRenderer} associated with the given renderer ID, if there is one.
 	 * 
 	 * @param rendererID The renderer ID of the desired renderer.
