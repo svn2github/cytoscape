@@ -18,6 +18,20 @@ public interface RenderingEngineFactoryManager {
 	}
 	
 	/**
+	 * Returns the renderer ID of the default renderer. If there is only 1 renderer available, its ID will be returned as the default.
+	 * 
+	 * @return The renderer ID of the default renderer, which is the ID of the sole renderer if there is only one available.
+	 */
+	public String getDefaultRendererID();
+	
+	/**
+	 * Checks if at least one {@link RenderingEngineFactory} has been registered with the given renderer ID.
+	 * 
+	 * @return <code>true</code> if at least one {@link RenderingEngineFactory} has been registered with the given renderer ID, false otherwise.
+	 */
+	public boolean checkRendererIDAvailable(String rendererID);
+	
+	/**
 	 * Adds the given {@link RenderingEngineFactory} to the manager, associating it with the given renderer ID and the given renderer type.
 	 * 
 	 * @param renderingEngineFactory
