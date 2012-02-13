@@ -18,9 +18,11 @@ public interface RenderingEngineFactoryManager {
 	}
 	
 	/**
-	 * Returns the renderer ID of the default renderer. If there is only 1 renderer available, its ID will be returned as the default.
+	 * Returns the renderer ID of the default renderer. If there is only 1 renderer available, its ID will be returned as the default. If none are available,
+	 * returns <code>null</code>.
 	 * 
-	 * @return The renderer ID of the default renderer, which is the ID of the sole renderer if there is only one available.
+	 * @return The renderer ID of the default renderer, which is the ID of the sole renderer if there is only one available. If
+	 * none are available, returns <code>null</code>.
 	 */
 	public String getDefaultRendererID();
 	
@@ -42,7 +44,7 @@ public interface RenderingEngineFactoryManager {
 
 	/**
 	 * If one exists, returns the {@link RenderingEngineFactory} associated with the given renderer ID and renderer type. Otherwise,
-	 * returns null.
+	 * returns <code>null</code>.
 	 * 
 	 * @param rendererID The ID of the renderer, which is the renderer name.
 	 * @param rendererType The type of the renderer, such as bird's eye view or main, via the {@link RenderingEngineFactoryType} enumeration.
