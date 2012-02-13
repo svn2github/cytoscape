@@ -24,7 +24,7 @@ public interface RenderingEngineFactoryManager {
 	 * @param rendererID The ID of the renderer, which is the renderer name.
 	 * @param rendererType The type of the renderer, such as bird's eye view or main, via the {@link RenderingEngineFactoryType} enumeration.
 	 */
-	public void addRenderingEngineFactory(RenderingEngineFactory<?> renderingEngineFactory, String rendererID, RenderingEngineFactoryType rendererType);
+	public void addRenderingEngineFactory(final RenderingEngineFactory<?> renderingEngineFactory, String rendererID, RenderingEngineFactoryType rendererType);
 
 	/**
 	 * If one exists, returns the {@link RenderingEngineFactory} associated with the given renderer ID and renderer type. Otherwise,
@@ -41,7 +41,7 @@ public interface RenderingEngineFactoryManager {
 	 * 
 	 * @param renderingEngineFactory The {@link RenderingEngineFactory} to be removed.
 	 */
-	public void removeRenderingEngineFactory(RenderingEngineFactory<?> renderingEngineFactory);
+	public void removeRenderingEngineFactory(final RenderingEngineFactory<?> renderingEngineFactory);
 	
 	/**
 	 * Removes the {@link RenderingEngineFactory} associated with the given renderer ID and of the given renderer type, such as bird's eye view.
