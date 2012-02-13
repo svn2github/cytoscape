@@ -1,5 +1,7 @@
 package org.cytoscape.view.presentation;
 
+import java.util.List;
+
 /**
  * This interface represents a manager service for
  * {@link RenderingEngineFactory} objects. Renderer implementations should add
@@ -22,9 +24,25 @@ public interface RenderingEngineFactoryManager {
 	 * returns <code>null</code>.
 	 * 
 	 * @return The renderer ID of the default renderer, which is the ID of the sole renderer if there is only one available. If
-	 * none are available, returns <code>null</code>.
+	 * no {@link RenderingEngineFactory} objects are registered, returns <code>null</code>.
 	 */
 	public String getDefaultRendererID();
+	
+	/**
+	 * Returns modification-safe copy of a list containing the available renderer IDs.
+	 * 
+	 * @return A list, defensively copied, containing the available renderer IDs.
+	 */
+	public List getAvailableRendererIDs();
+	
+	/**
+	 * Attempts to set the current default renderer ID to the given renderer ID.
+	 * 
+	 * @param rendererID The ID of the new default renderer
+	 * @return A modification-safe copy of the new default renderer ID, or <code>null</code> if no {@link RenderingEngineFactory} was found
+	 * with the given renderer ID.
+	 */
+	public String setDefaultRenderer(String rendererID);
 	
 	/**
 	 * Checks if at least one {@link RenderingEngineFactory} has been registered with the given renderer ID.
