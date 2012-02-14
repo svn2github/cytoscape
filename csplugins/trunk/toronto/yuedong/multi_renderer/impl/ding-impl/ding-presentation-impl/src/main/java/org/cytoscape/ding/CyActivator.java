@@ -10,6 +10,7 @@ import org.cytoscape.ding.dependency.EdgePaintToArrowHeadPaintDependency;
 import org.cytoscape.ding.impl.AddEdgeNodeViewTaskFactoryImpl;
 import org.cytoscape.ding.impl.DVisualLexicon;
 import org.cytoscape.ding.impl.DingNavigationRenderingEngineFactory;
+import org.cytoscape.ding.impl.DingRenderer;
 import org.cytoscape.ding.impl.DingRenderingEngineFactory;
 import org.cytoscape.ding.impl.DingViewModelFactory;
 import org.cytoscape.ding.impl.ViewTaskFactoryListener;
@@ -44,6 +45,8 @@ import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener;
+import org.cytoscape.view.presentation.ExternalRenderer;
+import org.cytoscape.view.presentation.ExternalRendererManager;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
@@ -80,6 +83,9 @@ public class CyActivator extends AbstractCyActivator {
 		
 		CyNetworkFactory cyNetworkFactory = getService(bc,CyNetworkFactory.class);
 		
+		// Renderer manager
+		ExternalRendererManager rendererManagerServiceRef = getService(bc,ExternalRendererManager.class);
+		
 		DVisualLexicon dVisualLexicon = new DVisualLexicon(customGraphicsManagerServiceRef);
 		
 		ViewTaskFactoryListener vtfListener = new ViewTaskFactoryListener();
@@ -98,6 +104,10 @@ public class CyActivator extends AbstractCyActivator {
 		CustomGraphicsSizeDependency nodeCustomGraphicsSizeDependency = new CustomGraphicsSizeDependency();
 		DingViewModelFactory dingNetworkViewFactory = new DingViewModelFactory(cyDataTableFactoryServiceRef,cyRootNetworkFactoryServiceRef,undoSupportServiceRef,spacialIndex2DFactoryServiceRef,dVisualLexicon,dialogTaskManager,submenuTaskManager,cyServiceRegistrarRef,cyNetworkTableManagerServiceRef,cyEventHelperServiceRef, vtfListener,annotationFactoryManager);
 
+		// Renderer interface
+		DingRenderer dingRenderer = new DingRenderer(rendererManagerServiceRef, dVisualLexicon, dingRenderingEngineFactory, dingNavigationRenderingEngineFactory, dingNetworkViewFactory);
+		registerService(bc, dingRenderer, ExternalRenderer.class, new Properties());
+		
 		// Edge Bend editor
 		EdgeBendValueEditor edgeBendValueEditor = new EdgeBendValueEditor(cyNetworkFactory, dingNetworkViewFactory,dingRenderingEngineFactory);
 		EdgeBendEditor edgeBendEditor = new EdgeBendEditor(edgeBendValueEditor);
