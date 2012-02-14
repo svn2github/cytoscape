@@ -2,6 +2,7 @@ package org.cytoscape.view.presentation;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Draft manager class for installed {@link ExternalRenderer} or Cytoscape renderers.
@@ -9,62 +10,51 @@ import java.util.List;
 public interface ExternalRendererManager {
 	
 	/**
-	 * Installs a renderer and adds it to this manager.
+	 * Adds a renderer to this manager. There can be only one {@link ExternalRenderer} of a given type
+	 * registered to this manager.
 	 * 
-	 * @param ExternalRenderer The renderer to be installed.
+	 * @param ExternalRenderer The renderer to be added.
 	 */
-	public void installRenderer(ExternalRenderer externalRenderer);
+	void addRenderer(ExternalRenderer externalRenderer, Map<String, String> properties);
 	
 	/**
-	 * Uninstalls a renderer and removes it from this manager.
+	 * Removes a renderer from this manager.
 	 * 
-	 * @param externalRenderer The renderer to be installed.
+	 * @param externalRenderer The renderer to be removed.
 	 */
-	public void uninstallRenderer(ExternalRenderer externalRenderer);
+	void removeRenderer(ExternalRenderer externalRenderer, Map<String, String> properties);
 	
 	/**
-	 * Removes a renderer based on its renderer ID.
-	 * 
-	 * @param renderID The renderer ID of the renderer to be removed.
+	 * Removes an {@link ExternalRenderer} based on its class type which identifies that renderer.
 	 */
-	public void uninstallRenderer(String rendererID);
+	void removeRenderer(Class<? extends ExternalRenderer> rendererType);
 	
 	/**
-	 * Return a defensively copied {@link List} containing the list of installed renderers' IDs.
+	 * Return a collection of currently installed renderers.
 	 * 
-	 * @return A defensively copied list of the IDs of the currently installed renderers.
-	 */
-	public Collection<String> getInstalledRenderers();
+	 * @return A {@link Collection} of available renderers.
+	 */ 
+	Collection<ExternalRendererManager> getAvailableRenderers();
 	
 	/**
-	 * Return the number of currently installed renderers.
+	 * Returns the {@link ExternalRenderer} associated with the given renderer type, if there is one.
 	 * 
-	 * @return The number of currently installed renderers.
+	 * @return The {@link ExternalRenderer} associated with the given renderer type, or <code>null</code> if there is none.
 	 */
-	public int getInstalledRendererCount();
+	ExternalRenderer getRenderer(Class<? extends ExternalRenderer> rendererType);
 	
 	/**
-	 * Returns the installed {@link ExternalRenderer} associated with the given renderer ID, if there is one.
+	 * Sets the current renderer.
 	 * 
-	 * @param rendererID The renderer ID of the desired renderer.
-	 * @return The {@link ExternalRenderer} associated with the given renderer ID, or <code>null</code> if there is none.
+	 * @param rendererType The class type of the renderer desired to be set as the current renderer.
 	 */
-	public ExternalRenderer getRenderer(String rendererID);
+	void setCurrentRenderer(Class<? extends ExternalRenderer> rendererType);
 	
 	/**
-	 * Sets the ID used to look for the default renderer.
+	 * Returns the current {@link ExternalRenderer}. If there is only one renderer available, that
+	 * renderer is returned as current.
 	 * 
-	 * @param rendererID The ID of the renderer to be used as the default renderer.
-	 * @return The ID of the new default renderer, or <code>null</code> if there is no new default or if no renderer was found with the given renderer ID.
+	 * @return The current renderer, or <code>null</code> if none are available.
 	 */
-	public String setDefaultRendererID(String rendererID);
-	
-	
-	/**
-	 * Return the default renderer's renderer ID.
-	 * 
-	 * @return The ID of the default renderer, or null if there are no renderers installed. If there is only 1 renderer installed, the ID of that renderer
-	 * will be returned.
-	 */
-	public String getDefaultRendererID();	
+	ExternalRenderer getCurrentRenderer();
 }

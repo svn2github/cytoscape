@@ -13,51 +13,32 @@ import org.cytoscape.view.model.VisualLexicon;
 public interface ExternalRenderer {
 	
 	/**
-	 * An enumeration encoding rendering purposes that may be intended for certain {@link RenderingEngine} objects. For example,
-	 * this could be used to differentiate between a {@link RenderingEngine} that renders for the bird's eye view versus
-	 * a {@link RenderingEngine} that is designed for the main network view.
-	 */
-	enum RenderPurpose {
-		BIRDS_EYE_VIEW,
-		DETAIL_VIEW,
-		VISUAL_STYLE_PREVIEW
-	}
-	
-	/**
-	 * Return the renderer's ID. This ID is used to distinguish between different renderers.
+	 * Returns a human-readable form of the renderer's name
 	 * 
-	 * @return The renderer's ID
+	 * @return The renderer's name, in human-readable form
 	 */
-	public String getRendererID();
+	String getRendererName();
 	
 	/**
-	 * Return a {@link RenderingEngineFactory} object to be used for creating {@link RenderingEngine} objects with the given rendering purpose,
-	 * such as bird's eye view or detail view.
+	 * Returns a {@link RenderingEngineFactory} of the given type, if available.
+	 * 
+	 * @param <T> The type of the {@link RenderingEngineFactory}
+	 * @param type The {@link Class} object containing the type of the desired {@link RenderingEngineFactory}
+	 * @return A {@link RenderingEngineFactory} with the desired type if available, <code>null</code> otherwise.
 	 */
-	RenderingEngineFactory<?> getRenderingEngineFactory(RenderPurpose renderPurpose);
+	<T extends RenderingEngineFactory<?>> T getRenderingEngineFactory(Class<T> type);
 	
-	// Allow returning different CyNetworkView factories. This could be helpful for efficiency. For example, a bird's eye RenderingEngine may not
-	// need some visual properties of the main view.
 	/**
-	 * Return the {@link CyNetworkViewFactory} used for creating {@link CyNetworkView} objects for the given rendering purpose.
+	 * Returns the {@link CyNetworkViewFactory} for this renderer.
+	 * 
+	 * @return The {@link CyNetworkViewFactory} used by this renderer.
 	 */
-	CyNetworkViewFactory getNetworkViewFactory(RenderPurpose renderPurpose);
+	CyNetworkViewFactory getNetworkViewFactory();
 	
-	// Allow returning different VisualLexicons; a bird's eye RenderingEngine may not need some visual properties of the main view.
 	/**
-	 * Return the {@link VisualLexicon} for this renderer associated with the given rendering purpose.
+	 * Returns the {@link VisualLexicon} for this renderer.
+	 * 
+	 * @return The {@link VisualLexicon} used by this renderer.
 	 */
-	VisualLexicon getVisualLexicon(RenderPurpose renderPurpose);
-	
-	// Prepares the renderer to be removed.
-	/**
-	 * Notifies this renderer to release all its resources and prepare for removal. The renderer is allowed to become unuseable after this call,
-	 * and should at least fail safely if asked to render anything else onwards.
-	 */
-	public void dispose();
-	
-	// TODO: Determine how RenderingEngine instances will be obtained: via returning RenderingEngineFactory objects or directly
-	// creating RenderingEngine objects
-	
-	
+	VisualLexicon getVisualLexicon();
 }
