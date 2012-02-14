@@ -44,6 +44,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import org.cytoscape.io.webservice.WebServiceClientContext;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
@@ -112,8 +113,9 @@ public class NCBIGenePanel extends AttributeImportPanel {
 	@Override
 	protected void importAttributes() {
 		logger.debug("Import start.");
-		client.setQuery(new NCBIQuery(getCategory(), createIDSet()));
-		taskManager.execute(client);
+		WebServiceClientContext context = client.createTaskContext();
+		context.setQuery(new NCBIQuery(getCategory(), createIDSet()));
+		taskManager.execute(client, context);
 	}
 	
 	private Set<AnnotationCategory> getCategory() {

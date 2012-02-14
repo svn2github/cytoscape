@@ -1,20 +1,22 @@
 package org.cytoscape.io.webservice.biomart.task;
 
 import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class ImportAttributeListTaskFactory implements TaskFactory {
+public class ImportAttributeListTaskFactory extends AbstractTaskFactory {
 	
-	final ImportAttributeListTask task;
+	private String datasourceName;
+	private BiomartRestClient client;
 
 	public ImportAttributeListTaskFactory(final String datasourceName, final BiomartRestClient client) {
-		task = new ImportAttributeListTask(datasourceName, client);
+		this.datasourceName = datasourceName;
+		this.client = client;
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(task);
+	public TaskIterator createTaskIterator(Object context) {
+		return new TaskIterator(new ImportAttributeListTask(datasourceName, client));
 	}
 
 }

@@ -54,9 +54,10 @@ import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle;
 
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
-import org.cytoscape.io.webservice.SearchWebServiceClient;
 import org.cytoscape.io.webservice.WebServiceClient;
+import org.cytoscape.io.webservice.WebServiceClientContext;
 import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
@@ -134,7 +135,8 @@ public class UnifiedNetworkImportDialog extends JDialog {
 		
 		if (client instanceof WebServiceClient) {
 			WebServiceClient service = (WebServiceClient) client;
-			Container container = service.getQueryBuilderGUI();
+			WebServiceClientContext context = service.createTaskContext();
+			Container container = context.getQueryBuilderGUI();
 			if (container != null) {
 				serviceUIPanels.put(client, container);
 			}
@@ -440,8 +442,9 @@ public class UnifiedNetworkImportDialog extends JDialog {
 		}
 		
 		// Set query.  Just pass the text in the panel.
-		client.setQuery(this.queryTextPane.getText());
-		taskManager.execute(client);
+		WebServiceClientContext context = client.createTaskContext();
+		context.setQuery(this.queryTextPane.getText());
+		taskManager.execute(client, context);
 		
 	}
 
@@ -460,7 +463,7 @@ public class UnifiedNetworkImportDialog extends JDialog {
 		//AboutDialog.showDialog(clientName, icon, description);
 	}
 	
-	private final class ImportNetworkTaskFactory implements TaskFactory {
+	private final class ImportNetworkTaskFactory extends AbstractTaskFactory {
 
 		private final TaskFactory tFactory;
 		
@@ -469,9 +472,9 @@ public class UnifiedNetworkImportDialog extends JDialog {
 		}
 		
 		@Override
-		public TaskIterator createTaskIterator() {
+		public TaskIterator createTaskIterator(Object context) {
 			final TaskIterator itr = new TaskIterator();
-			itr.insertTasksAfter(new RegisterNetworkTask(), tFactory.createTaskIterator().next());
+			itr.insertTasksAfter(new RegisterNetworkTask(), tFactory.createTaskIterator(tFactory.createTaskContext()).next());
 			return itr;
 		}
 		

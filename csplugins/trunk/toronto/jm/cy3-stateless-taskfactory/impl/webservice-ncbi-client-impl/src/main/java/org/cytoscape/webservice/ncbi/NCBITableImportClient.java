@@ -1,16 +1,18 @@
 package org.cytoscape.webservice.ncbi;
 
 
+import java.awt.Container;
 import java.util.Set;
 
-import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.io.webservice.TableImportWebServiceClient;
+import org.cytoscape.io.webservice.WebServiceClientContext;
 import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.webservice.ncbi.task.ImportTableFromNCBITask;
 import org.cytoscape.work.TaskIterator;
 
@@ -40,10 +42,10 @@ public class NCBITableImportClient extends AbstractWebServiceClient implements T
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(WebServiceClientContext context) {
 		return new TaskIterator(
-			new ImportTableFromNCBITask(tableFactory, ((NCBIQuery) this.currentQuery).getIds(),
-			                            ((NCBIQuery) this.currentQuery).getCategory(),
+			new ImportTableFromNCBITask(tableFactory, ((NCBIQuery) context.getQuery()).getIds(),
+			                            ((NCBIQuery) context.getQuery()).getCategory(),
 			                            networkManager, applicationManager, tableManager,
 										cyRootNetworkFactory));
 	}

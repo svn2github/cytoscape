@@ -34,6 +34,7 @@
  */
 package org.cytoscape.io.webservice;
 
+import java.awt.Container;
 import java.net.URI;
 
 import org.cytoscape.work.TaskFactory;

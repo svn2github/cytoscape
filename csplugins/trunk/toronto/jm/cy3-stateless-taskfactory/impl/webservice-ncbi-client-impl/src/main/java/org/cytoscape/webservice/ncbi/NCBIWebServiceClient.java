@@ -1,11 +1,13 @@
 package org.cytoscape.webservice.ncbi;
 
 
+import java.awt.Container;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
 import org.cytoscape.io.webservice.SearchWebServiceClient;
+import org.cytoscape.io.webservice.WebServiceClientContext;
 import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -40,11 +42,11 @@ public class NCBIWebServiceClient extends AbstractWebServiceClient
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
-		if (currentQuery == null)
+	public TaskIterator createTaskIterator(WebServiceClientContext context) {
+		if (context.getQuery() == null)
 			throw new NullPointerException("Query object is null.");
 		else {
-			networkTask = new ImportNetworkFromGeneTask(this.currentQuery.toString(),
+			networkTask = new ImportNetworkFromGeneTask(context.getQuery().toString(),
 			                                            networkFactory, tableFactory,
 			                                            manager, tableManager);
 			return new TaskIterator(networkTask);

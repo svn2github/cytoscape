@@ -86,7 +86,7 @@ public class CytoscapeCPathWebService extends AbstractWebServiceClient
     
     @Override
     public WebServiceClientContext createTaskContext() {
-    	WebServiceClientContextImpl context = new WebServiceClientContextImpl();
+    	WebServiceClientContext context = super.createTaskContext();
     	context.setQueryBuilderGUI(mainPanel);
     	return context;
     }
@@ -128,6 +128,5 @@ public class CytoscapeCPathWebService extends AbstractWebServiceClient
         desc = desc.replaceAll("</span>", "</B>");
         return "<html><body>" + desc + "</body></html>";
 	}
-
 }
 

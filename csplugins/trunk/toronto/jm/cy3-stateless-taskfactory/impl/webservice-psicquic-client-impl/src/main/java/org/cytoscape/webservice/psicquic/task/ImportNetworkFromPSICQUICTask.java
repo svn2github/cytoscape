@@ -12,14 +12,13 @@ import javax.swing.JOptionPane;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.task.NetworkTaskContext;
 import org.cytoscape.task.NetworkTaskFactory;
 import org.cytoscape.webservice.psicquic.PSICQUICRestClient;
 import org.cytoscape.webservice.psicquic.PSICQUICRestClient.SearchMode;
 import org.cytoscape.webservice.psicquic.RegistryManager;
 import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskMonitor;
-import org.omg.CORBA.PRIVATE_MEMBER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,7 @@ public class ImportNetworkFromPSICQUICTask extends AbstractTask {
 	private final RegistryManager registryManager;
 	
 	// TaskFactory for creating view
-	private final NetworkTaskFactory createViewTaskFactory;
+	private final NetworkTaskFactory<NetworkTaskContext> createViewTaskFactory;
 
 	private String query;
 
@@ -47,7 +46,7 @@ public class ImportNetworkFromPSICQUICTask extends AbstractTask {
 	private volatile boolean canceled = false;
 	
 	public ImportNetworkFromPSICQUICTask(final String query, final PSICQUICRestClient client, final CyNetworkManager manager,
-			final RegistryManager registryManager, final Set<String> searchResult, final SearchMode mode, final NetworkTaskFactory createViewTaskFactory) {
+			final RegistryManager registryManager, final Set<String> searchResult, final SearchMode mode, final NetworkTaskFactory<NetworkTaskContext> createViewTaskFactory) {
 		this.client = client;
 		this.manager = manager;
 		this.registryManager = registryManager;
@@ -118,8 +117,9 @@ public class ImportNetworkFromPSICQUICTask extends AbstractTask {
 			if (retValue == JOptionPane.YES_OPTION) {
 				// Create View
 				for (final CyNetwork network : networks) {
-					createViewTaskFactory.setNetwork(network);
-					insertTasksAfterCurrentTask(createViewTaskFactory.createTaskIterator());
+					NetworkTaskContext context = createViewTaskFactory.createTaskContext();
+					context.setNetwork(network);
+					insertTasksAfterCurrentTask(createViewTaskFactory.createTaskIterator(context));
 				}
 			}
 		}

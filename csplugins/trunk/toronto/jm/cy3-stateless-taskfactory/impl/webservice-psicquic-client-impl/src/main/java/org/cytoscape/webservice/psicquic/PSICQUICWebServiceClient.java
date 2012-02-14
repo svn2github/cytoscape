@@ -1,6 +1,5 @@
 package org.cytoscape.webservice.psicquic;
 
-import java.awt.Container;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
 import org.cytoscape.io.webservice.SearchWebServiceClient;
+import org.cytoscape.io.webservice.WebServiceClientContext;
 import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -104,7 +104,16 @@ public class PSICQUICWebServiceClient extends AbstractWebServiceClient implement
 		logger.info("RegistryManager initialized in " + sec + " sec.");
 	}
 
-	public TaskIterator createTaskIterator() {
+	@Override
+	public WebServiceClientContext createTaskContext() {
+		WebServiceClientContext context = super.createTaskContext();
+		context.setQueryBuilderGUI(new PSICQUICSearchUI(networkManager, regManager, client, tManager, createViewTaskFactory, openBrowser));
+		return context;
+	}
+	
+	public TaskIterator createTaskIterator(WebServiceClientContext context) {
+		Object currentQuery = context.getQuery();
+		
 		if (regManager == null)
 			throw new NullPointerException("RegistryManager is null");
 
@@ -140,10 +149,5 @@ public class PSICQUICWebServiceClient extends AbstractWebServiceClient implement
 		public RegistryManager call() throws Exception {
 			return new RegistryManager();
 		}
-	}
-
-	@Override
-	public Container getQueryBuilderGUI() {
-		return new PSICQUICSearchUI(networkManager, regManager, client, tManager, createViewTaskFactory, openBrowser);
 	}
 }

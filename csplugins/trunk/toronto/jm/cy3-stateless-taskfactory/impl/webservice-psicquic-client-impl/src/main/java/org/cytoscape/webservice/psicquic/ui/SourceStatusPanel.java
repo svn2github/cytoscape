@@ -25,7 +25,7 @@ import org.cytoscape.webservice.psicquic.PSICQUICRestClient;
 import org.cytoscape.webservice.psicquic.PSICQUICRestClient.SearchMode;
 import org.cytoscape.webservice.psicquic.RegistryManager;
 import org.cytoscape.webservice.psicquic.task.ImportNetworkFromPSICQUICTask;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 
@@ -288,12 +288,13 @@ public class SourceStatusPanel extends JPanel {
 		final ImportNetworkFromPSICQUICTask networkTask = new ImportNetworkFromPSICQUICTask(query, client,
 				networkManager, manager, sourceURLs, mode, createViewTaskFactory);
 
-		taskManager.execute(new TaskFactory() {
+		AbstractTaskFactory factory = new AbstractTaskFactory() {
 			@Override
-			public TaskIterator createTaskIterator() {
+			public TaskIterator createTaskIterator(Object context) {
 				return new TaskIterator(networkTask);
 			}
-		});
+		};
+		taskManager.execute(factory, factory.createTaskContext());
 		
 		Window parentWindow = ((Window) getRootPane().getParent());
 		parentWindow.pack();

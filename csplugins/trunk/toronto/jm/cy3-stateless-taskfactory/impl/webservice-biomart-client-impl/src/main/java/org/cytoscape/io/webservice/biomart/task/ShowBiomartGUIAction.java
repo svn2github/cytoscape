@@ -10,6 +10,9 @@ import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.webservice.biomart.BiomartClient;
 import org.cytoscape.io.webservice.biomart.ui.BiomartAttrMappingPanel;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.work.AbstractTaskFactory;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.slf4j.Logger;
@@ -69,11 +72,13 @@ public class ShowBiomartGUIAction extends AbstractCyAction {
 	
 	
 	private void initDialog() {
-		
-		final BioMartTaskFactory tf = new BioMartTaskFactory(firstTask);
-		tf.createTaskIterator().insertTasksAfter(firstTask, showDialogTask);
-
+		final TaskFactory<Object> tf = new AbstractTaskFactory() {
+			@Override
+			public TaskIterator createTaskIterator(Object context) {
+				return new TaskIterator(firstTask, showDialogTask);
+			}
+		};
 		taskManager.setExecutionContext(app.getJFrame());
-		taskManager.execute(tf);
+		taskManager.execute(tf, tf.createTaskContext());
 	}
 }
