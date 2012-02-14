@@ -1,6 +1,7 @@
 package org.cytoscape.view.presentation;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
@@ -11,8 +12,11 @@ import org.cytoscape.view.model.VisualLexicon;
  */
 public interface ExternalRenderer {
 	
-	String rendererID = null;
-	
+	/**
+	 * An enumeration encoding rendering purposes that may be intended for certain {@link RenderingEngine} objects. For example,
+	 * this could be used to differentiate between a {@link RenderingEngine} that renders for the bird's eye view versus
+	 * a {@link RenderingEngine} that is designed for the main network view.
+	 */
 	enum RenderPurpose {
 		BIRDS_EYE_VIEW,
 		DETAIL_VIEW,
@@ -34,11 +38,22 @@ public interface ExternalRenderer {
 	
 	// Allow returning different CyNetworkView factories. This could be helpful for efficiency. For example, a bird's eye RenderingEngine may not
 	// need some visual properties of the main view.
+	/**
+	 * Return the {@link CyNetworkViewFactory} used for creating {@link CyNetworkView} objects for the given rendering purpose.
+	 */
 	CyNetworkViewFactory getNetworkViewFactory(RenderPurpose renderPurpose);
 	
 	// Allow returning different VisualLexicons; a bird's eye RenderingEngine may not need some visual properties of the main view.
+	/**
+	 * Return the {@link VisualLexicon} for this renderer associated with the given rendering purpose.
+	 */
 	VisualLexicon getVisualLexicon(RenderPurpose renderPurpose);
 	
+	// Prepares the renderer to be removed.
+	/**
+	 * Notifies this renderer to release all its resources and prepare for removal.
+	 */
+	public void dispose();
 	
 	// TODO: Determine how RenderingEngine instances will be obtained: via returning RenderingEngineFactory objects or directly
 	// creating RenderingEngine objects
