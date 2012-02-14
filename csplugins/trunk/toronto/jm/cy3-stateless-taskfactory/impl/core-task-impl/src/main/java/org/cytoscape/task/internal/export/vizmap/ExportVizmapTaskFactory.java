@@ -5,7 +5,7 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class ExportVizmapTaskFactory implements TaskFactory {
+public class ExportVizmapTaskFactory implements TaskFactory<Object> {
 
 	private final VizmapWriterManager writerManager;
 	private final VisualMappingManager vmMgr;
@@ -16,7 +16,12 @@ public class ExportVizmapTaskFactory implements TaskFactory {
 	}
 	
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(2,new VizmapWriter(writerManager, vmMgr));
+	}
+	
+	@Override
+	public Object createTaskContext() {
+		return new Object();
 	}
 }

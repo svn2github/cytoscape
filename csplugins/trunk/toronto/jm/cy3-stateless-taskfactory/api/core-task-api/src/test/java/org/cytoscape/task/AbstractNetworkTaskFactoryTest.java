@@ -70,16 +70,16 @@ public class AbstractNetworkTaskFactoryTest {
 	public void testGoodSetNetwork() throws Exception {
 		NetworkTaskContext context = factory.createTaskContext();
 		context.setNetwork(mock(CyNetwork.class));
-		assertNotNull( context.network );
+		assertNotNull( context.getNetwork() );
 	}
 
 	@Test
 	public void testNotFinal() throws Exception {
 		NetworkTaskContext context = factory.createTaskContext();
 		context.setNetwork(mock(CyNetwork.class));
-		CyNetwork t1 = context.network;
+		CyNetwork t1 = context.getNetwork();
 		context.setNetwork(mock(CyNetwork.class));
-		CyNetwork t2 = context.network;
+		CyNetwork t2 = context.getNetwork();
 		assertFalse( (t1 == t2) );
 	}
 }

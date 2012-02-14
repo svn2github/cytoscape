@@ -3,10 +3,10 @@ package org.cytoscape.view.vizmap.gui.internal.task;
 import java.awt.Component;
 
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class CreateLegendTaskFactory implements TaskFactory {
+public class CreateLegendTaskFactory extends AbstractTaskFactory {
 
 	private final SelectedVisualStyleManager manager;
 	private final Component parent;
@@ -18,7 +18,7 @@ public class CreateLegendTaskFactory implements TaskFactory {
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(new CreateLegendTask(manager, parent));
 	}
 

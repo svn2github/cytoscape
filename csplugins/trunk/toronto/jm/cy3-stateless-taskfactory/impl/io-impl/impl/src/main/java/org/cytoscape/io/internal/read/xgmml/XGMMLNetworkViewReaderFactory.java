@@ -31,6 +31,7 @@ import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.read.AbstractNetworkReaderFactory;
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
 import org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.presentation.RenderingEngineManager;
@@ -58,8 +59,8 @@ public class XGMMLNetworkViewReaderFactory extends AbstractNetworkReaderFactory 
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new XGMMLNetworkViewReader(inputStream, cyNetworkViewFactory, cyNetworkFactory,
+	public TaskIterator createTaskIterator(InputStreamTaskContext context) {
+		return new TaskIterator(new XGMMLNetworkViewReader(context, cyNetworkViewFactory, cyNetworkFactory,
 				renderingEngineMgr, readDataMgr, parser, unrecognizedVisualPropertyMgr));
 	}
 }

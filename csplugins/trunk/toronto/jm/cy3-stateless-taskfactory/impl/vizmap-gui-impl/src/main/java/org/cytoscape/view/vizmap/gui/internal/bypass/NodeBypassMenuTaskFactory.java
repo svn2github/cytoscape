@@ -4,6 +4,7 @@ import java.awt.Component;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.task.AbstractNodeViewTaskFactory;
+import org.cytoscape.task.NodeViewTaskContext;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
@@ -27,7 +28,7 @@ public class NodeBypassMenuTaskFactory extends AbstractNodeViewTaskFactory {
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new BypassTask<CyNode>(parent, editor, vp, nodeView, netView, selectedManager));
+	public TaskIterator createTaskIterator(NodeViewTaskContext context) {
+		return new TaskIterator(new BypassTask<CyNode>(parent, editor, vp, context.getNodeView(), context.getNetworkView(), selectedManager));
 	}
 }

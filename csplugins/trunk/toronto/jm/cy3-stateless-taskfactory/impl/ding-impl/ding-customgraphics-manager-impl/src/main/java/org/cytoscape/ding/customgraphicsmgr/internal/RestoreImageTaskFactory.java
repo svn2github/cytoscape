@@ -5,7 +5,7 @@ import java.io.File;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class RestoreImageTaskFactory implements TaskFactory {
+public class RestoreImageTaskFactory implements TaskFactory<Object> {
 	
 	private final File imageLocation;
 	private final CustomGraphicsManagerImpl manager;
@@ -16,9 +16,13 @@ public class RestoreImageTaskFactory implements TaskFactory {
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object context) {
 		
 		return new TaskIterator(new RestoreImageTask(imageLocation, manager));
 	}
 
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
 }

@@ -55,7 +55,7 @@ import java.util.Set;
 /**
  * Task to load a new network.
  */
-public class LoadNetworkURLTaskFactoryImpl implements TaskFactory, ImportNetworksTaskFactory {
+public class LoadNetworkURLTaskFactoryImpl implements TaskFactory<Object>, ImportNetworksTaskFactory {
 
 	private CyNetworkReaderManager mgr;
 	private CyNetworkManager netmgr;
@@ -85,7 +85,12 @@ public class LoadNetworkURLTaskFactoryImpl implements TaskFactory, ImportNetwork
 		this.syncTaskManager = syncTaskManager;
 	}
 
-	public TaskIterator createTaskIterator() {
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	public TaskIterator createTaskIterator(Object context) {
 		task = new LoadNetworkURLTask(mgr, netmgr, networkViewManager, props, cyNetworkNaming, streamUtil);
 		// Usually we need to create view, so expected number is 2.
 		return new TaskIterator(2, task);
@@ -98,7 +103,7 @@ public class LoadNetworkURLTaskFactoryImpl implements TaskFactory, ImportNetwork
 		m.put("url", url);
 		
 		syncTaskManager.setExecutionContext(m);
-		syncTaskManager.execute(this);
+		syncTaskManager.execute(this, createTaskContext());
 
 		final Set<CyNetwork> networks = new HashSet<CyNetwork>();
 		for(CyNetwork network: task.getCyNetworks())

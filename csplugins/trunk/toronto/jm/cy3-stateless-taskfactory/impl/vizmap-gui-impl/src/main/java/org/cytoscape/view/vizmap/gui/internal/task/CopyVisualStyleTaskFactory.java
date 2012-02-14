@@ -6,10 +6,10 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class CopyVisualStyleTaskFactory implements TaskFactory {
+public class CopyVisualStyleTaskFactory extends AbstractTaskFactory {
 
 	private final SelectedVisualStyleManager manager;
 	private final VizMapperUtil util;
@@ -30,7 +30,7 @@ public class CopyVisualStyleTaskFactory implements TaskFactory {
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(new CopyVisualStyleTask(vmm, factory, manager,
 				util, parent));
 	}

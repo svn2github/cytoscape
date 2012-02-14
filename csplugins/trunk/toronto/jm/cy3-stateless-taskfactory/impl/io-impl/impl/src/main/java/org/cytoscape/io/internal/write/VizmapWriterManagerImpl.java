@@ -42,6 +42,7 @@ import java.util.Set;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.write.CyWriter;
+import org.cytoscape.io.write.VizmapWriterContext;
 import org.cytoscape.io.write.VizmapWriterFactory;
 import org.cytoscape.io.write.VizmapWriterManager;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -59,13 +60,15 @@ public class VizmapWriterManagerImpl extends AbstractWriterManager<VizmapWriterF
 
 	@Override
 	public CyWriter getWriter(Set<VisualStyle> styles, CyFileFilter filter, OutputStream os) throws Exception {
-		VizmapWriterFactory vf = getMatchingFactory(filter, os);
+		VizmapWriterFactory vf = getMatchingFactory(filter);
 
         if (vf == null)
             throw new NullPointerException("Couldn't find matching factory for filter: " + filter);
         
-        vf.setVisualStyles(styles);
+        VizmapWriterContext context = vf.createTaskContext();
+        context.setOutputStream(os);
+        context.setVisualStyles(styles);
 
-        return vf.getWriterTask();
+        return vf.createWriterTask(context);
 	}
 }

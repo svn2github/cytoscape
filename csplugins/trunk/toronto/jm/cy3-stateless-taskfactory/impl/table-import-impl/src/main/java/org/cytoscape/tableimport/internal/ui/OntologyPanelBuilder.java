@@ -541,7 +541,7 @@ public class OntologyPanelBuilder {
 			                                           url.openStream(), ontologyName,
 			                                           tableFactory, gzipGAStream,
 			                                           annotationSource, tableManager);
-		taskManager.execute(taskFactory);
+		taskManager.execute(taskFactory, taskFactory.createTaskContext());
 	}
 
 	protected void importOntologyAndAnnotation() throws IOException {

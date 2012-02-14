@@ -1,22 +1,25 @@
 package org.cytoscape.app.internal;
 
 
+import org.cytoscape.app.CyAppAdapter;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class AppLoaderTaskFactory2 implements TaskFactory {
+public class AppLoaderTaskFactory2 implements TaskFactory<AppLoaderTask2Context> {
 	
-	private AppLoaderTask2 task = null;
-	 
-	AppLoaderTaskFactory2() {
+	private CyAppAdapter adapter;
+
+	AppLoaderTaskFactory2(CyAppAdapter adapter) {
+		this.adapter = adapter;
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(task);
+	public TaskIterator createTaskIterator(AppLoaderTask2Context context) {
+		return new TaskIterator(new AppLoaderTask2(context, adapter));
 	}
 	
-	public void setTask(AppLoaderTask2 task){
-		this.task = task;
+	@Override
+	public AppLoaderTask2Context createTaskContext() {
+		return new AppLoaderTask2Context();
 	}
 }

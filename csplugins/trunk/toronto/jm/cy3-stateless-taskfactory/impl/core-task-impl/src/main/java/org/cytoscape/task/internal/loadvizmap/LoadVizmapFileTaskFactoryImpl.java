@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.io.File;
 
 
-public class LoadVizmapFileTaskFactoryImpl implements TaskFactory, LoadVisualStyles {
+public class LoadVizmapFileTaskFactoryImpl implements TaskFactory<Object>, LoadVisualStyles {
 
 	private final VizmapReaderManager vizmapReaderMgr;
 	private final VisualMappingManager vmMgr;
@@ -29,7 +29,12 @@ public class LoadVizmapFileTaskFactoryImpl implements TaskFactory, LoadVisualSty
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	@Override
+	public TaskIterator createTaskIterator(Object context) {
 		task = new LoadVizmapFileTask(vizmapReaderMgr, vmMgr);
 		return new TaskIterator(2,task);
 	}
@@ -41,7 +46,7 @@ public class LoadVizmapFileTaskFactoryImpl implements TaskFactory, LoadVisualSty
 		m.put("file",f);
 
 		syncTaskManager.setExecutionContext(m);
-		syncTaskManager.execute(this);
+		syncTaskManager.execute(this, createTaskContext());
 
 		return task.getStyles();
 	}

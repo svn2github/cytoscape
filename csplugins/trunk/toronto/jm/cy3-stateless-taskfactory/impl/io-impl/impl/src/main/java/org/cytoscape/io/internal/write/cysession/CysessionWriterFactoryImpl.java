@@ -2,6 +2,7 @@ package org.cytoscape.io.internal.write.cysession;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.write.AbstractPropertyWriterFactory;
+import org.cytoscape.io.write.CyPropertyWriterContext;
 import org.cytoscape.io.write.CyWriter;
 
 public class CysessionWriterFactoryImpl extends AbstractPropertyWriterFactory {
@@ -11,7 +12,7 @@ public class CysessionWriterFactoryImpl extends AbstractPropertyWriterFactory {
 	}
 	
 	@Override
-	public CyWriter getWriterTask() {
-		return new CysessionWriterImpl(outputStream, props);
+	public CyWriter createWriterTask(CyPropertyWriterContext context) {
+		return new CysessionWriterImpl(context.getOutputStream(), context.getProperty());
 	}
 }

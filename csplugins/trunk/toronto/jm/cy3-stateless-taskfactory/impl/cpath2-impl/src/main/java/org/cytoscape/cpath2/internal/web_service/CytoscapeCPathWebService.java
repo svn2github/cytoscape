@@ -17,6 +17,8 @@ import org.cytoscape.cpath2.internal.view.TabUi;
 import org.cytoscape.cpath2.internal.view.cPathSearchPanel;
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
 import org.cytoscape.io.webservice.SearchWebServiceClient;
+import org.cytoscape.io.webservice.WebServiceClientContext;
+import org.cytoscape.io.webservice.WebServiceClientContextImpl;
 import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -71,11 +73,6 @@ public class CytoscapeCPathWebService extends AbstractWebServiceClient
     }
 
     @Override
-    public Container getQueryBuilderGUI() {
-    	return mainPanel;
-    }
-    
-    @Override
     public Set<CyNetwork> getNetworks() {
     	// TODO Auto-generated method stub
     	return null;
@@ -88,7 +85,14 @@ public class CytoscapeCPathWebService extends AbstractWebServiceClient
     }
     
     @Override
-    public TaskIterator createTaskIterator() {
+    public WebServiceClientContext createTaskContext() {
+    	WebServiceClientContextImpl context = new WebServiceClientContextImpl();
+    	context.setQueryBuilderGUI(mainPanel);
+    	return context;
+    }
+    
+    @Override
+    public TaskIterator createTaskIterator(WebServiceClientContext context) {
     	String query = "";
 		CPathResponseFormat format = CPathResponseFormat.BINARY_SIF;
 		CPathNetworkImportTask task = factory.createCPathNetworkImportTask(query, webApi, format);

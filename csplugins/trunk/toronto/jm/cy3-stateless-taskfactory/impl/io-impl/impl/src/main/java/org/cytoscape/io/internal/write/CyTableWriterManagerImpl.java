@@ -1,20 +1,20 @@
 package org.cytoscape.io.internal.write;
 
 
-import org.cytoscape.io.write.CyTableWriterManager;
-import org.cytoscape.io.write.CyTableWriterFactory;
-import org.cytoscape.io.write.CyWriter;
-import org.cytoscape.io.DataCategory;
-import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.model.CyTable;
-//import org.cytoscape.task.internal.io.CyTableWriter;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
+import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.DataCategory;
+import org.cytoscape.io.write.CyTableWriterContext;
+import org.cytoscape.io.write.CyTableWriterFactory;
+import org.cytoscape.io.write.CyTableWriterManager;
+import org.cytoscape.io.write.CyWriter;
+import org.cytoscape.model.CyTable;
 
-public class CyTableWriterManagerImpl extends AbstractWriterManager<CyTableWriterFactory> 
+
+public class CyTableWriterManagerImpl extends AbstractWriterManager<CyTableWriterFactory<CyTableWriterContext>> 
 	implements CyTableWriterManager {
 
 	public CyTableWriterManagerImpl() {
@@ -28,10 +28,13 @@ public class CyTableWriterManagerImpl extends AbstractWriterManager<CyTableWrite
 
 	@Override
 	public CyWriter getWriter(CyTable table, CyFileFilter filter, OutputStream os) throws Exception{
-		CyTableWriterFactory tf = getMatchingFactory(filter,os);
+		CyTableWriterFactory<CyTableWriterContext> tf = getMatchingFactory(filter);
+		CyTableWriterContext context = tf.createTaskContext();
+		
 		if ( tf == null )
 			throw new NullPointerException("Couldn't find matching factory for filter: " + filter);
-		tf.setTable(table);
-		return tf.getWriterTask();
+		context.setOutputStream(os);
+		context.setTable(table);
+		return tf.createWriterTask(context);
 	}
 }

@@ -29,20 +29,8 @@
 */
 package org.cytoscape.application.swing;
 
-import org.cytoscape.application.CyApplicationManager;
-
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-
-import org.cytoscape.view.model.CyNetworkView;
-
-import org.cytoscape.work.TaskFactoryPredicate;
-import org.cytoscape.work.TaskFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
@@ -51,8 +39,12 @@ import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.PopupMenuEvent;
 
-import java.net.URL;
-import java.net.MalformedURLException; 
+import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.work.TaskContextManager;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskFactoryPredicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -201,9 +193,9 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	 *            action should be enabled.
 	 */
 	public AbstractCyAction(final Map<String, String> configProps,
-	                        final TaskFactoryPredicate predicate) {
+	                        final TaskFactoryPredicate predicate, TaskContextManager contextManager) {
 		super(configProps.get("title"));
-		this.enabler = new TaskFactoryEnableSupport(this,predicate);
+		this.enabler = new TaskFactoryEnableSupport(this, predicate, contextManager);
 		
 		configFromProps( configProps );
 	}
@@ -239,10 +231,10 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	 */
 	public AbstractCyAction(final Map<String, String> configProps,
 	                        final CyApplicationManager applicationManager,
-	                        final TaskFactory factory) {
+	                        final TaskFactory factory, TaskContextManager contextManager) {
 		super(configProps.get("title"));
 		if ( factory instanceof TaskFactoryPredicate )
-			this.enabler = new TaskFactoryEnableSupport(this,(TaskFactoryPredicate)factory);
+			this.enabler = new TaskFactoryEnableSupport(this,(TaskFactoryPredicate)factory, contextManager);
 		else
 			this.enabler = new StringEnableSupport(this,configProps.get("enableFor"),applicationManager);
 		

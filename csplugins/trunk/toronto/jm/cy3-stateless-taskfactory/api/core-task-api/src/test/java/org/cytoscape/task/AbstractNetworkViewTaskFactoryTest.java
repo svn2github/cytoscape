@@ -70,16 +70,16 @@ public class AbstractNetworkViewTaskFactoryTest {
 	public void testGoodSetNetworkView() throws Exception {
 		NetworkViewTaskContext context = factory.createTaskContext();
 		context.setNetworkView(mock(CyNetworkView.class));
-		assertNotNull( context.networkView );
+		assertNotNull( context.getNetworkView() );
 	}
 
 	@Test
 	public void testNotFinal() throws Exception {
 		NetworkViewTaskContext context = factory.createTaskContext();
 		context.setNetworkView(mock(CyNetworkView.class));
-		CyNetworkView t1 = context.networkView;
+		CyNetworkView t1 = context.getNetworkView();
 		context.setNetworkView(mock(CyNetworkView.class));
-		CyNetworkView t2 = context.networkView;
+		CyNetworkView t2 = context.getNetworkView();
 		assertFalse( (t1 == t2) );
 	}
 }

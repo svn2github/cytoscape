@@ -32,6 +32,7 @@ package org.cytoscape.task.internal.creation;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
+import org.cytoscape.task.NetworkTaskContext;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
@@ -59,13 +60,13 @@ public class CreateNetworkViewTaskFactory extends AbstractNetworkTaskFactory {
 		this.eventHelper        = eventHelper;
 	}
 
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(NetworkTaskContext context) {
 		// Create visualization + layout (optional)
 		if (layouts == null)
-			return new TaskIterator(1, new CreateNetworkViewTask(undoSupport, network, viewFactory, networkViewManager,
+			return new TaskIterator(1, new CreateNetworkViewTask(undoSupport, context.getNetwork(), viewFactory, networkViewManager,
 					layouts, eventHelper));
 		else
-			return new TaskIterator(2, new CreateNetworkViewTask(undoSupport, network, viewFactory, networkViewManager,
+			return new TaskIterator(2, new CreateNetworkViewTask(undoSupport, context.getNetwork(), viewFactory, networkViewManager,
 					layouts, eventHelper));
 	}
 }

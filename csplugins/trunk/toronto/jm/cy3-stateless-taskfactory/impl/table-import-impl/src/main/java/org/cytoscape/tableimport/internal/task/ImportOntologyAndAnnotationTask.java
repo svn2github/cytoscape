@@ -3,10 +3,9 @@ package org.cytoscape.tableimport.internal.task;
 
 import java.io.InputStream;
 
-import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.io.read.InputStreamTaskFactory;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
@@ -21,16 +20,18 @@ import org.slf4j.LoggerFactory;
 public class ImportOntologyAndAnnotationTask extends AbstractTask {
 	private static final Logger logger = LoggerFactory.getLogger(ImportOntologyAndAnnotationTask.class);
 	
-	private final InputStreamTaskFactory factory;
+	private final InputStreamTaskFactory<InputStreamTaskContext> factory;
 	private final CyNetworkManager manager;
 	private final String ontologyDagName;
 	private final CyTableFactory tableFactory;
 	private final InputStream gaStream;
 	private final String gaTableName;
 	private final CyTableManager tableManager;
+
+	private InputStream inputStream;
 	
 	ImportOntologyAndAnnotationTask(final CyNetworkManager manager,
-	                                final InputStreamTaskFactory factory, final InputStream is,
+	                                final InputStreamTaskFactory<InputStreamTaskContext> factory, final InputStream is,
 	                                final String ontologyDagName,
 	                                final CyTableFactory tableFactory,
 	                                final InputStream gaStream, final String tableName,
@@ -45,13 +46,15 @@ public class ImportOntologyAndAnnotationTask extends AbstractTask {
 		this.gaTableName = tableName;
 		this.tableManager = tableManager;
 		
-		this.factory.setInputStream(is, ontologyDagName);
+		this.inputStream = is;
 	}
 	
 	@Override
 	public void run(TaskMonitor tm) throws Exception {
 		logger.debug("Start");
-		Task loadOBOTask = factory.createTaskIterator().next();
+		InputStreamTaskContext context = factory.createTaskContext();
+		context.setInputStream(inputStream, ontologyDagName);
+		Task loadOBOTask = factory.createTaskIterator(context).next();
 		
 		final GeneAssociationReader gaReader =
 			new GeneAssociationReader(tableFactory, ontologyDagName, gaStream,

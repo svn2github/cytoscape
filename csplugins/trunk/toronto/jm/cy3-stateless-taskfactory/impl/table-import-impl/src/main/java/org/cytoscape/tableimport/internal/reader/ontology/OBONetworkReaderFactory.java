@@ -1,24 +1,21 @@
 package org.cytoscape.tableimport.internal.reader.ontology;
 
-import java.io.InputStream;
-
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.read.InputStreamTaskContext;
+import org.cytoscape.io.read.InputStreamTaskContextImpl;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 
-public class OBONetworkReaderFactory implements InputStreamTaskFactory {
+public class OBONetworkReaderFactory implements InputStreamTaskFactory<InputStreamTaskContext> {
 
 	private final CyFileFilter filter;
 
 	protected final CyNetworkViewFactory cyNetworkViewFactory;
 	protected final CyNetworkFactory cyNetworkFactory;
-
-	protected InputStream inputStream;
-	protected String inputName;
 
 	private final CyEventHelper eventHelper;
 
@@ -29,21 +26,17 @@ public class OBONetworkReaderFactory implements InputStreamTaskFactory {
 		this.eventHelper = CytoscapeServices.cyEventHelper;
 	}
 
-	public void setInputStream(InputStream is, String in) {
-		if (is == null)
-			throw new NullPointerException("Input stream is null");
-		if (in == null)
-			throw new NullPointerException("Input stream name is null");
-		inputStream = is;
-		inputName = in;
-	}
-
 	public CyFileFilter getFileFilter() {
 		return filter;
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new OBOReader(inputName, inputStream, cyNetworkViewFactory, cyNetworkFactory, eventHelper));
+	public InputStreamTaskContext createTaskContext() {
+		return new InputStreamTaskContextImpl();
+	}
+	
+	@Override
+	public TaskIterator createTaskIterator(InputStreamTaskContext context) {
+		return new TaskIterator(new OBOReader(context.getInputName(), context.getInputStream(), cyNetworkViewFactory, cyNetworkFactory, eventHelper));
 	}
 }

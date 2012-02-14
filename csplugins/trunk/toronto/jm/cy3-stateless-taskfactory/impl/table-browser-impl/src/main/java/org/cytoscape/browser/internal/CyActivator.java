@@ -12,6 +12,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.CyNetworkTableManager;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.swing.DialogTaskManager;
 
 import org.cytoscape.browser.internal.AbstractTableBrowser;
@@ -47,7 +48,8 @@ public class CyActivator extends AbstractCyActivator {
 		
 		CyEventHelper cyEventHelperServiceRef = getService(bc,CyEventHelper.class);
 
-		PopupMenuHelper popupMenuHelper = new PopupMenuHelper(guiTaskManagerServiceRef);
+		TaskContextManager contextManager = getService(bc, TaskContextManager.class);
+		PopupMenuHelper popupMenuHelper = new PopupMenuHelper(guiTaskManagerServiceRef, contextManager);
 		
 		AbstractTableBrowser nodeTableBrowser = new DefaultTableBrowser("Node Table", CyNode.class, cyTableManagerServiceRef,cyNetworkTableManagerServiceRef,cyServiceRegistrarServiceRef,compilerServiceRef,openBrowserServiceRef,cyNetworkManagerServiceRef,deleteTableTaskFactoryService,guiTaskManagerServiceRef,popupMenuHelper,cyApplicationManagerServiceRef, cyEventHelperServiceRef);
 		AbstractTableBrowser edgeTableBrowser = new DefaultTableBrowser("Edge Table", CyEdge.class, cyTableManagerServiceRef,cyNetworkTableManagerServiceRef,cyServiceRegistrarServiceRef,compilerServiceRef,openBrowserServiceRef,cyNetworkManagerServiceRef,deleteTableTaskFactoryService,guiTaskManagerServiceRef,popupMenuHelper,cyApplicationManagerServiceRef, cyEventHelperServiceRef);

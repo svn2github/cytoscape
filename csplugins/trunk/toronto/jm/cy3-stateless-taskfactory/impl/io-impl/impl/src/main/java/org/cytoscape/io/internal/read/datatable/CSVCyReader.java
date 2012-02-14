@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.cytoscape.equations.Equation;
 import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.io.read.CyTableReader;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableFactory;
@@ -37,11 +38,11 @@ public class CSVCyReader implements CyTableReader {
 	private boolean isCanceled;
 	private CyTable table;
 
-	public CSVCyReader(final InputStream stream, final boolean readSchema,
+	public CSVCyReader(final InputStreamTaskContext context, final boolean readSchema,
 			   final boolean handleEquations, final CyTableFactory tableFactory,
 			   final EquationCompiler compiler, final CyTableManager tableManager)
 	{
-		this.stream          = stream;
+		this.stream          = context.getInputStream();
 		this.readSchema      = readSchema;
 		this.handleEquations = handleEquations;
 		this.tableFactory    = tableFactory;

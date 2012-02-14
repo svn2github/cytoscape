@@ -28,6 +28,7 @@
  */
 package org.cytoscape.app.internal.ui;
 
+import org.cytoscape.app.internal.AppManagerInquireTaskContext;
 import org.cytoscape.app.internal.Category;
 import org.cytoscape.app.internal.DownloadableInfo;
 import org.cytoscape.app.internal.Installable;
@@ -232,12 +233,11 @@ public class AppManageDialog extends javax.swing.JDialog implements
 	private void refreshAppTree(){
 		switchDownloadSites();
 				
-		Task task = new AppManagerInquireTask
-		(this.currentAppSiteURL, new UrlAction(this, this.currentAppSiteURL));
-		
-		AppManagerInquireTaskFactory _taskFactory = new AppManagerInquireTaskFactory(task);
-
-		this.guiTaskManagerServiceRef.execute(_taskFactory);
+		AppManagerInquireTaskFactory _taskFactory = new AppManagerInquireTaskFactory();
+		AppManagerInquireTaskContext context = _taskFactory.createTaskContext();
+		context.setUrl(currentAppSiteURL);
+		context.setAction(new UrlAction(this, this.currentAppSiteURL));
+		this.guiTaskManagerServiceRef.execute(_taskFactory, context);
 	}
 	
 	/*
@@ -1114,7 +1114,7 @@ public class AppManageDialog extends javax.swing.JDialog implements
 
                                                       
     private void btnSelectLocalAppActionPerformed(java.awt.event.ActionEvent evt) {
-        this.guiTaskManagerServiceRef.execute(this.appLoaderTaskFactory);
+        this.guiTaskManagerServiceRef.execute(appLoaderTaskFactory, appLoaderTaskFactory.createTaskContext());
     }                                                    
 
     private void btnDeleteSiteActionPerformed(java.awt.event.ActionEvent evt) {                                              
@@ -1225,13 +1225,12 @@ public class AppManageDialog extends javax.swing.JDialog implements
 	 */
 
 	private void createInstallTask(DownloadableInfo obj, TreeNode node) {
-		// Create Task
-		InstallTask task = new InstallTask(obj, node);
+		AppManagerInstallTaskFactory _taskFactory = new AppManagerInstallTaskFactory();
+		InstallTaskContext context = _taskFactory.createTaskContext();
+		context.setDownloadableInfo(obj);
+		this.guiTaskManagerServiceRef.execute(_taskFactory, context);
 
-		AppManagerInstallTaskFactory _taskFactory = new AppManagerInstallTaskFactory(task);
-		this.guiTaskManagerServiceRef.execute(_taskFactory);
-
-		DownloadableInfo info = task.getDownloadedApp();
+		DownloadableInfo info = context.getDownloadedApp();
 		if (info != null) {
 			updateCurrent(info);
 			cleanTree(node);
@@ -1241,14 +1240,35 @@ public class AppManageDialog extends javax.swing.JDialog implements
 	}
 
 	
-	private class AppManagerInstallTaskFactory implements TaskFactory {
-		Task task;
-		public AppManagerInstallTaskFactory(Task task){
-			this.task = task;
+	private class AppManagerInstallTaskFactory implements TaskFactory<InstallTaskContext> {
+		public TaskIterator createTaskIterator(InstallTaskContext context) {
+			return new TaskIterator(new InstallTask(context));
 		}
 		
-		public TaskIterator createTaskIterator() {
-			return new TaskIterator(task);
+		@Override
+		public InstallTaskContext createTaskContext() {
+			return new InstallTaskContext();
+		}
+	}
+	
+	private static class InstallTaskContext {
+		private DownloadableInfo info;
+		private DownloadableInfo downloadedInfo;
+		
+		public DownloadableInfo getDownloadableInfo() {
+			return info;
+		}
+		
+		public DownloadableInfo getDownloadedApp() {
+			return downloadedInfo;
+		}
+
+		public void setDownloadableInfo(DownloadableInfo info) {
+			this.info = info;
+		}
+		
+		public void setDownloadedApp(DownloadableInfo info) {
+			downloadedInfo = info;
 		}
 	}
 	
@@ -1286,25 +1306,24 @@ public class AppManageDialog extends javax.swing.JDialog implements
 
 	private class InstallTask implements Task {
 
-		private DownloadableInfo infoObj;
-
-		private TreeNode node;
-
-		public InstallTask(DownloadableInfo Info, TreeNode Node)
+		private InstallTaskContext context;
+		
+		public InstallTask(InstallTaskContext context)
 				throws java.lang.IllegalArgumentException {
 			String ErrorMsg = null;
+			DownloadableInfo Info = context.getDownloadableInfo();
 			if (Info == null) {
 				ErrorMsg = "DownloadableInfo object cannot be null\n";
 				throw new java.lang.IllegalArgumentException(ErrorMsg);
 			}
-			infoObj = Info;
-			node = Node;
+			this.context = context;
 		}
 
 		public void run(TaskMonitor taskMonitor) {
 			if (taskMonitor == null) {
 				throw new IllegalStateException("Task Monitor is not set.");
 			}
+			DownloadableInfo infoObj = context.getDownloadableInfo();
 			taskMonitor.setStatusMessage("Installing " + infoObj.getName() + " v"
 					+ infoObj.getObjectVersion());
 			//taskMonitor.setProgress(-1);
@@ -1314,6 +1333,7 @@ public class AppManageDialog extends javax.swing.JDialog implements
 			Installable ins = infoObj.getInstallable();
 			try {
 				infoObj = Mgr.download(infoObj, taskMonitor);
+				context.setDownloadedApp(infoObj);
 				taskMonitor.setStatusMessage(infoObj.getName() + " v"
 						+ infoObj.getObjectVersion() + " download complete.");
 
@@ -1342,22 +1362,25 @@ public class AppManageDialog extends javax.swing.JDialog implements
 				logger.warn("Failed to download "
 								+ infoObj.getName() + " from "
 								+ infoObj.getObjectUrl(), ioe);
-				infoObj = null;
+				context.setDownloadedApp(null);
 			} catch (ManagerException me) {
 				AppManageDialog.this.setError("Failed to install " + infoObj.toString());
 				logger.warn("Failed to install " + infoObj.toString(), me);
 				taskMonitor.setStatusMessage(me.getMessage());
 				infoObj = null;
+				context.setDownloadedApp(null);
 			} catch (AppException pe) {
 				AppManageDialog.this.setError("Failed to install " + infoObj.toString());
 				logger.warn("Failed to install " + infoObj.toString(), pe);
 				taskMonitor.setStatusMessage(pe.getMessage());
 				infoObj = null;
+				context.setDownloadedApp(null);
 			} catch (ClassNotFoundException cne) {
 				AppManageDialog.this.setError("Failed to install " + infoObj.toString());
 				logger.warn("Failed to install " + infoObj.toString(), cne);
 				taskMonitor.setStatusMessage(cne.getMessage());
 				infoObj = null;
+				context.setDownloadedApp(null);
 			} finally {
 				taskMonitor.setProgress(1.0);
 			}
@@ -1375,7 +1398,7 @@ public class AppManageDialog extends javax.swing.JDialog implements
 		}
 		
 		public DownloadableInfo getDownloadedApp() {
-			return infoObj;
+			return context.getDownloadableInfo();
 		}
 
 		public void halt() {
@@ -1388,6 +1411,7 @@ public class AppManageDialog extends javax.swing.JDialog implements
 		//}
 
 		public String getTitle() {
+			DownloadableInfo infoObj = context.getDownloadableInfo();
 			return "Installing Cytoscape " + infoObj.getType().name() + " '" + infoObj.getName() + "'";
 		}
 

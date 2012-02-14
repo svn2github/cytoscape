@@ -8,7 +8,7 @@ import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public class ConnectSelectedNodesTaskFactory implements TaskFactory {
+public class ConnectSelectedNodesTaskFactory implements TaskFactory<Object> {
 	private final UndoSupport undoSupport;
 	private final CyApplicationManager appManager;
 	private final CyEventHelper eventHelper;
@@ -23,10 +23,14 @@ public class ConnectSelectedNodesTaskFactory implements TaskFactory {
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(
 			new ConnectSelectedNodesTask(undoSupport, appManager.getCurrentNetwork(),
 			                             eventHelper));
 	}
 
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
 }

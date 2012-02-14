@@ -7,7 +7,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class MergeNetworkTaskFactory implements TaskFactory {
+public class MergeNetworkTaskFactory implements TaskFactory<Object> {
 	private final URL cpathURL;
 	private final CyNetwork cyNetwork;
 	private final CPath2Factory factory;
@@ -19,7 +19,12 @@ public class MergeNetworkTaskFactory implements TaskFactory {
 	}
 	
 	@Override
-	public TaskIterator createTaskIterator() {
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	@Override
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(new MergeNetworkTask(cpathURL, cyNetwork, factory));
 	}
 

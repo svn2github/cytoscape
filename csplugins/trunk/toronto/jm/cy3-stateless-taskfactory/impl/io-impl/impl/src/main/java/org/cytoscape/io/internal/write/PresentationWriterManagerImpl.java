@@ -1,6 +1,7 @@
 package org.cytoscape.io.internal.write;
 
 
+import org.cytoscape.io.write.PresentationWriterContext;
 import org.cytoscape.io.write.PresentationWriterManager;
 import org.cytoscape.io.write.PresentationWriterFactory;
 import org.cytoscape.io.write.CyWriter;
@@ -14,7 +15,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 
-public class PresentationWriterManagerImpl extends AbstractWriterManager<PresentationWriterFactory> 
+public class PresentationWriterManagerImpl extends AbstractWriterManager<PresentationWriterFactory<PresentationWriterContext>> 
 	implements PresentationWriterManager {
 
 	public PresentationWriterManagerImpl() {
@@ -26,10 +27,12 @@ public class PresentationWriterManagerImpl extends AbstractWriterManager<Present
 	}
 
 	public CyWriter getWriter(View<?> view, RenderingEngine<?> re, CyFileFilter filter, OutputStream os) throws Exception {
-		PresentationWriterFactory tf = getMatchingFactory(filter,os);
+		PresentationWriterFactory<PresentationWriterContext> tf = getMatchingFactory(filter);
+		PresentationWriterContext context = tf.createTaskContext();
 		if ( tf == null )
 			throw new NullPointerException("Couldn't find matching factory for filter: " + filter);
-		tf.setRenderingEngine(re);
-		return tf.getWriterTask();
+		context.setOutputStream(os);
+		context.setRenderingEngine(re);
+		return tf.createWriterTask(context);
 	}
 }

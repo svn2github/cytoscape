@@ -17,8 +17,9 @@ public class AppLoaderTaskFactoryTest {
 		final CyAppAdapter adapter = mock(CyAppAdapter.class);
 
 		AppLoaderTaskFactory factory = new AppLoaderTaskFactory(adapter);
+		AppLoaderTaskContext context = factory.createTaskContext();
 
-		TaskIterator ti = factory.createTaskIterator();
+		TaskIterator ti = factory.createTaskIterator(context);
 		assertNotNull(ti);
 
 		assertTrue(ti.hasNext());

@@ -32,6 +32,7 @@ package org.cytoscape.task.internal.hide;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.task.AbstractNetworkViewTaskFactory;
+import org.cytoscape.task.NetworkViewTaskContext;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -47,7 +48,7 @@ public class UnHideAllNodesTaskFactory extends AbstractNetworkViewTaskFactory {
 		this.eventHelper = eventHelper;
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new UnHideAllNodesTask(undoSupport, eventHelper, view));
+	public TaskIterator createTaskIterator(NetworkViewTaskContext context) {
+		return new TaskIterator(new UnHideAllNodesTask(undoSupport, eventHelper, context.getNetworkView()));
 	} 
 }

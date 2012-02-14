@@ -47,16 +47,12 @@ public class AppManagerInquireTask implements Task {
 
 	private AppInquireAction actionObj;
 
-	private TaskMonitor taskMonitor;
-
 	public AppManagerInquireTask(String Url, AppInquireAction Obj) {
-		url = Url;
-		actionObj = Obj;
 	}
 
-	public void setTaskMonitor(TaskMonitor monitor)
-			throws IllegalThreadStateException {
-		taskMonitor = monitor;
+	public AppManagerInquireTask(AppManagerInquireTaskContext context) {
+		url = context.getUrl();
+		actionObj = context.getAction();
 	}
 
 	public void halt() {

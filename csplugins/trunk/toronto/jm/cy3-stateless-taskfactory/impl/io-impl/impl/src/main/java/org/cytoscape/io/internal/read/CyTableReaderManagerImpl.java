@@ -3,10 +3,11 @@ package org.cytoscape.io.internal.read;
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.read.CyTableReader;
 import org.cytoscape.io.read.CyTableReaderManager;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.io.util.StreamUtil;
 
-public class CyTableReaderManagerImpl extends GenericReaderManager<InputStreamTaskFactory, CyTableReader> implements
+public class CyTableReaderManagerImpl extends GenericReaderManager<InputStreamTaskFactory<InputStreamTaskContext>, CyTableReader, InputStreamTaskContext> implements
 		CyTableReaderManager {
 
 	public CyTableReaderManagerImpl(final StreamUtil streamUtil) {

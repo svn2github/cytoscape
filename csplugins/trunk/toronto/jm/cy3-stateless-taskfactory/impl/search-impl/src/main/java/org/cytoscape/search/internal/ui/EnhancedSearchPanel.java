@@ -4,6 +4,7 @@ import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.search.internal.EnhancedSearch;
 import org.cytoscape.search.internal.SearchTaskFactory;
+import org.cytoscape.task.NetworkTaskContext;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.slf4j.Logger;
@@ -53,9 +54,11 @@ public class EnhancedSearchPanel extends javax.swing.JPanel {
 		if (currentNetwork != null) {
 			logger.debug("Target Network ID = " + currentNetwork.getSUID());
 
-			final SearchTaskFactory factory = new SearchTaskFactory(currentNetwork, searchMgr,
+			final SearchTaskFactory factory = new SearchTaskFactory(searchMgr,
 					queryStr, viewManager, appManager);
-			this.taskMgr.execute(factory);
+			NetworkTaskContext context = factory.createTaskContext();
+			context.setNetwork(currentNetwork);
+			this.taskMgr.execute(factory, context);
 		} else
 			logger.error("Could not find network for search");
 	}

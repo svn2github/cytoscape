@@ -38,9 +38,9 @@ import org.cytoscape.work.TaskFactory;
  * of {@link CyNetwork}s.
  * @CyAPI.Abstract.Class
  */
-public abstract class AbstractNetworkCollectionTaskFactory implements TaskFactory<NetworkCollectionTaskContext> {
+public abstract class AbstractNetworkCollectionTaskFactory implements NetworkCollectionTaskFactory<NetworkCollectionTaskContext> {
 	@Override
 	public NetworkCollectionTaskContext createTaskContext() {
-		return new NetworkCollectionTaskContext();
+		return new NetworkCollectionTaskContextImpl();
 	}
 }

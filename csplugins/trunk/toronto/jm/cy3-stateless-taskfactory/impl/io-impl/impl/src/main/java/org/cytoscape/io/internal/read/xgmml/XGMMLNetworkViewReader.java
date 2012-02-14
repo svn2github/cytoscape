@@ -27,11 +27,11 @@
  */
 package org.cytoscape.io.internal.read.xgmml;
 
-import java.io.InputStream;
 import java.util.Map;
 
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
 import org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
@@ -49,14 +49,14 @@ public class XGMMLNetworkViewReader extends AbstractXGMMLReader {
 
 	private boolean settingLockedVisualProperties;
 	
-	public XGMMLNetworkViewReader(final InputStream inputStream,
+	public XGMMLNetworkViewReader(final InputStreamTaskContext context,
 								  final CyNetworkViewFactory cyNetworkViewFactory,
 								  final CyNetworkFactory cyNetworkFactory,
 								  final RenderingEngineManager renderingEngineMgr,
 								  final ReadDataManager readDataMgr,
 								  final XGMMLParser parser,
 								  final UnrecognizedVisualPropertyManager unrecognizedVisualPropertyMgr) {
-		super(inputStream, cyNetworkViewFactory, cyNetworkFactory, renderingEngineMgr, readDataMgr, parser,
+		super(context.getInputStream(), cyNetworkViewFactory, cyNetworkFactory, renderingEngineMgr, readDataMgr, parser,
 				unrecognizedVisualPropertyMgr);
 	}
 

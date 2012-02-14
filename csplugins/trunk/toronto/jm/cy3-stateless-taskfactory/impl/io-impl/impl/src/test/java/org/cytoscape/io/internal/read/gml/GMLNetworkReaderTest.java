@@ -10,6 +10,8 @@ import java.io.FileInputStream;
 
 import org.cytoscape.io.internal.read.AbstractNetworkViewReaderTester;
 import org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager;
+import org.cytoscape.io.read.InputStreamTaskContext;
+import org.cytoscape.io.read.InputStreamTaskContextImpl;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
@@ -48,7 +50,9 @@ public class GMLNetworkReaderTest extends AbstractNetworkViewReaderTester {
 	@Test
 	public void testLoadGml() throws Exception {
 		File file = new File("src/test/resources/testData/gml/example1.gml");
-		GMLNetworkReader reader = new GMLNetworkReader(new FileInputStream(file), netFactory, viewFactory,
+		InputStreamTaskContext context = new InputStreamTaskContextImpl();
+		context.setInputStream(new FileInputStream(file), null);
+		GMLNetworkReader reader = new GMLNetworkReader(context, netFactory, viewFactory,
 													   renderingEngineManager, unrecognizedVisualPropertyMgr);
 		reader.run(taskMonitor);
 		

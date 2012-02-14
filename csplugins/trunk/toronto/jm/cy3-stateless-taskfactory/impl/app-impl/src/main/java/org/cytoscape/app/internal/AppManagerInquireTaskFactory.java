@@ -1,18 +1,17 @@
 package org.cytoscape.app.internal;
 
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class AppManagerInquireTaskFactory implements TaskFactory{
+public class AppManagerInquireTaskFactory implements TaskFactory<AppManagerInquireTaskContext>{
 
-	Task task;
-	public AppManagerInquireTaskFactory(Task task){
-		this.task = task;
+	public TaskIterator createTaskIterator(AppManagerInquireTaskContext context) {
+		return new TaskIterator(new AppManagerInquireTask(context));
 	}
 	
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(task);
+	@Override
+	public AppManagerInquireTaskContext createTaskContext() {
+		return new AppManagerInquireTaskContext();
 	}
 }

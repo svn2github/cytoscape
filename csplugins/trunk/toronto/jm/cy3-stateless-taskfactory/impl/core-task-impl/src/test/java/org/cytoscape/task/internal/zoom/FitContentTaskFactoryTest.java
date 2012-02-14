@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
+import org.cytoscape.task.NetworkViewTaskContext;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
@@ -22,9 +23,10 @@ public class FitContentTaskFactoryTest {
 		UndoSupport undoSupport = mock(UndoSupport.class);
 
 		FitContentTaskFactory factory = new FitContentTaskFactory(undoSupport);
-		factory.setNetworkView(view);
+		NetworkViewTaskContext context = factory.createTaskContext();
+		context.setNetworkView(view);
 		
-		TaskIterator ti = factory.createTaskIterator();
+		TaskIterator ti = factory.createTaskIterator(context);
 		assertNotNull(ti);
 		
 		assertTrue( ti.hasNext() );

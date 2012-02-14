@@ -6,8 +6,10 @@ import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.psi_mi.internal.data_mapper.PSIMI25EntryMapper;
+import org.cytoscape.task.NetworkViewTaskContext;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.view.layout.LayoutTaskContext;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.AbstractTask;
@@ -83,10 +85,11 @@ public class PSIMI25XMLNetworkViewReader extends AbstractTask implements CyNetwo
 	@Override
 	public CyNetworkView buildCyNetworkView(final CyNetwork network) {
 		final CyNetworkView view = networkViewFactory.createNetworkView(network);
-		final CyLayoutAlgorithm layout = layouts.getDefaultLayout();
-		layout.setNetworkView(view);
+		final CyLayoutAlgorithm<NetworkViewTaskContext> layout = layouts.getDefaultLayout();
+		NetworkViewTaskContext context = layout.createTaskContext();
+		context.setNetworkView(view);
 		// Force to run this task here to avoid concurrency problem.
-		TaskIterator itr = layout.createTaskIterator();
+		TaskIterator itr = layout.createTaskIterator(context);
 		Task nextTask = itr.next();
 		try {
 			nextTask.run(parentTaskMonitor);

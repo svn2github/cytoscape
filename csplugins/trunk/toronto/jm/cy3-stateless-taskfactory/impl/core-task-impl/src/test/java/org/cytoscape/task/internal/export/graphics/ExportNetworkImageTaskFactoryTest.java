@@ -12,6 +12,7 @@ import java.util.List;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.write.PresentationWriterManager;
+import org.cytoscape.task.NetworkViewTaskContext;
 import org.cytoscape.task.internal.export.ViewWriter;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.RenderingEngine;
@@ -44,9 +45,10 @@ public class ExportNetworkImageTaskFactoryTest {
 	public void testExportNetworkImageTaskFactory() throws Exception {
 		final ExportNetworkImageTaskFactory factory = new ExportNetworkImageTaskFactory(viewWriterMgr, applicationManager);
 		final CyNetworkView view = mock(CyNetworkView.class);
-		factory.setNetworkView(view);
+		NetworkViewTaskContext context = factory.createTaskContext();
+		context.setNetworkView(view);
 		
-		final TaskIterator itr = factory.createTaskIterator();
+		final TaskIterator itr = factory.createTaskIterator(context);
 		
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());

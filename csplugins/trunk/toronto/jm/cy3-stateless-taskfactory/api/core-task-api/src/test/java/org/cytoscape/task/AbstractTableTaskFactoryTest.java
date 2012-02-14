@@ -70,16 +70,16 @@ public class AbstractTableTaskFactoryTest {
 	public void testGoodSetDataTable() throws Exception {
 		TableTaskContext context = factory.createTaskContext();
 		context.setTable(mock(CyTable.class));
-		assertNotNull( context.table );
+		assertNotNull( context.getTable() );
 	}
 
 	@Test
 	public void testNotFinal() throws Exception {
 		TableTaskContext context = factory.createTaskContext();
 		context.setTable(mock(CyTable.class));
-		CyTable t1 = context.table;
+		CyTable t1 = context.getTable();
 		context.setTable(mock(CyTable.class));
-		CyTable t2 = context.table;
+		CyTable t2 = context.getTable();
 		assertFalse( (t1 == t2) );
 	}
 }

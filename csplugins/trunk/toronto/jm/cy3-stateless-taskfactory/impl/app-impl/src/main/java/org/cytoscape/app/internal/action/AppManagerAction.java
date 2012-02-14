@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.cytoscape.app.internal.AppManagerInquireTaskContext;
 import org.cytoscape.app.internal.DownloadableInfo;
 import org.cytoscape.app.internal.ManagerException;
 import org.cytoscape.app.internal.ManagerUtil;
@@ -162,11 +163,11 @@ public class AppManagerAction extends AbstractCyAction {
 
 		String DefaultTitle = "Cytoscape";
 		
-		Task task = new AppManagerInquireTask(this.DefaultAppUrl, new ManagerAction(dlg, DefaultTitle, this.DefaultAppUrl));
-
-		AppManagerInquireTaskFactory _taskFactory = new AppManagerInquireTaskFactory(task);
-
-		this.guiTaskManagerServiceRef.execute(_taskFactory);
+		AppManagerInquireTaskFactory _taskFactory = new AppManagerInquireTaskFactory();
+		AppManagerInquireTaskContext context = _taskFactory.createTaskContext();
+		context.setUrl(DefaultAppUrl);
+		context.setAction(new ManagerAction(dlg, DefaultTitle, this.DefaultAppUrl));
+		this.guiTaskManagerServiceRef.execute(_taskFactory, context);
 	}
 
 	private class ManagerAction extends AppInquireAction {

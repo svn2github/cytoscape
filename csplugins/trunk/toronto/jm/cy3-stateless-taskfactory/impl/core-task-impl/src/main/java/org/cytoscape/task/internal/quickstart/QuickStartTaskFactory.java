@@ -34,7 +34,7 @@ import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
 
 
-public class QuickStartTaskFactory implements TaskFactory {
+public class QuickStartTaskFactory implements TaskFactory<Object> {
 	
 	protected final ImportTaskUtil util;
 	protected final CyNetworkManager networkManager;
@@ -47,7 +47,12 @@ public class QuickStartTaskFactory implements TaskFactory {
 		this.subnetworkUtil = subnetworkUtil;
 	}
 
-	public TaskIterator createTaskIterator() {
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(3,new QuickStartTask(new QuickStartState(), util, networkManager, subnetworkUtil));
 	} 
 }

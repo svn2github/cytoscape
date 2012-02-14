@@ -44,7 +44,7 @@ import org.cytoscape.work.TaskIterator;
 /**
  * Task to load a new network.
  */
-public class LoadNetworkFileTaskFactoryImpl implements TaskFactory {
+public class LoadNetworkFileTaskFactoryImpl implements TaskFactory<Object> {
 
 	private CyNetworkReaderManager mgr;
 	private CyNetworkManager netmgr;
@@ -64,7 +64,12 @@ public class LoadNetworkFileTaskFactoryImpl implements TaskFactory {
 		this.cyNetworkNaming = cyNetworkNaming;
 	}
 	
-	public TaskIterator createTaskIterator() {
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	public TaskIterator createTaskIterator(Object context) {
 		// Load, visualize, and layout.
 		return new TaskIterator(3, new LoadNetworkFileTask(mgr, netmgr, networkViewManager, props, cyNetworkNaming));
 	}

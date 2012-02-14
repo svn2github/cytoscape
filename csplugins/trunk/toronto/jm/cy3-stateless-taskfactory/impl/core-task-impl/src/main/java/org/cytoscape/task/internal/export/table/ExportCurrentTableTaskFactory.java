@@ -4,6 +4,7 @@ import org.cytoscape.io.write.CyTableWriterManager;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.task.AbstractTableTaskFactory;
+import org.cytoscape.task.TableTaskContext;
 import org.cytoscape.work.TaskIterator;
 
 public class ExportCurrentTableTaskFactory extends AbstractTableTaskFactory {
@@ -19,7 +20,7 @@ public class ExportCurrentTableTaskFactory extends AbstractTableTaskFactory {
 	}
 	
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(TableTaskContext context) {
 		return new TaskIterator(new SelectExportTableTask(this.writerManager, this.cyTableManagerServiceRef, this.cyNetworkManagerServiceRef));
 	}
 }

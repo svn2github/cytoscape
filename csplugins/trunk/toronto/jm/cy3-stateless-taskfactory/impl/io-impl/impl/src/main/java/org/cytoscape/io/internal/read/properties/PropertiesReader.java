@@ -1,15 +1,15 @@
 package org.cytoscape.io.internal.read.properties;
 
-import java.io.InputStream;
 import java.util.Properties;
 
-import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.io.internal.read.AbstractPropertyReader;
+import org.cytoscape.io.read.InputStreamTaskContext;
+import org.cytoscape.work.TaskMonitor;
 
 public class PropertiesReader extends AbstractPropertyReader {
 
-	public PropertiesReader(InputStream inputStream) {
-		super(inputStream);
+	public PropertiesReader(InputStreamTaskContext context) {
+		super(context.getInputStream());
 	}
 
 	public void run(TaskMonitor tm) throws Exception {

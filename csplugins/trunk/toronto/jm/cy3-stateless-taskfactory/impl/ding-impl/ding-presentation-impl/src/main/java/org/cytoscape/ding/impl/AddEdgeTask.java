@@ -3,6 +3,7 @@ package org.cytoscape.ding.impl;
 
 import java.awt.datatransfer.Transferable;
 
+import org.cytoscape.dnd.DropNodeViewTaskContext;
 import org.cytoscape.dnd.DropUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -20,8 +21,8 @@ public class AddEdgeTask extends AbstractNodeViewTask {
 
 	private static final Logger logger = LoggerFactory.getLogger(AddEdgeTask.class);
 
-	public AddEdgeTask(View<CyNode> nv, CyNetworkView view, Transferable t) {
-		super(nv,view);
+	public AddEdgeTask(DropNodeViewTaskContext context, Transferable t) {
+		super(context.getNodeView(), context.getNetworkView());
 		this.t = t;
 	}
 

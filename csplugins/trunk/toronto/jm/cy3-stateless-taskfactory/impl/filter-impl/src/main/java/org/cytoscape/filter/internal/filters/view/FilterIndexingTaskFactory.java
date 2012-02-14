@@ -29,11 +29,11 @@ package org.cytoscape.filter.internal.filters.view;
 
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-final class FilterIndexingTaskFactory implements TaskFactory {
+final class FilterIndexingTaskFactory extends AbstractTaskFactory {
 	private final CyNetwork network;
 
 	FilterIndexingTaskFactory(final CyNetwork network) {
@@ -45,7 +45,7 @@ final class FilterIndexingTaskFactory implements TaskFactory {
 	 *  Note: Most factory's returned iterator only yields a single <code>Task</code>.
 	 */
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(new FilterIndexingTask(network));
 	}
 }

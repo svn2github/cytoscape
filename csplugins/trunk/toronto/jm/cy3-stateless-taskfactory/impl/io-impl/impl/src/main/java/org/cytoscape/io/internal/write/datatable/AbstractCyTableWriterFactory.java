@@ -1,15 +1,12 @@
 package org.cytoscape.io.internal.write.datatable;
 
-import java.io.OutputStream;
-
 import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.write.CyTableWriterContext;
 import org.cytoscape.io.write.CyTableWriterFactory;
-import org.cytoscape.model.CyTable;
+import org.cytoscape.work.TaskIterator;
 
-public abstract class AbstractCyTableWriterFactory implements CyTableWriterFactory {
+public abstract class AbstractCyTableWriterFactory implements CyTableWriterFactory<CyTableWriterContext> {
 
-	protected OutputStream outputStream;
-	protected CyTable table;
 	private CyFileFilter fileFilter;
 
 	protected AbstractCyTableWriterFactory(CyFileFilter fileFilter) {
@@ -17,18 +14,12 @@ public abstract class AbstractCyTableWriterFactory implements CyTableWriterFacto
 	}
 	
 	@Override
-	public void setOutputStream(OutputStream outputStream) {
-		this.outputStream = outputStream;
-	}
-
-	@Override
 	public CyFileFilter getFileFilter() {
 		return fileFilter;
 	}
-
+	
 	@Override
-	public void setTable(CyTable table) {
-		this.table = table;
+	public TaskIterator createTaskIterator(CyTableWriterContext context) {
+		return new TaskIterator(createWriterTask(context));
 	}
-
 }

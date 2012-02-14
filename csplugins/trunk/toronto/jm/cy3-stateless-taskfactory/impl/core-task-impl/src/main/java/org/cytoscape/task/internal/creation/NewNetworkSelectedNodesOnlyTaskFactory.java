@@ -36,6 +36,7 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
+import org.cytoscape.task.NetworkTaskContext;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -75,9 +76,9 @@ public class NewNetworkSelectedNodesOnlyTaskFactory extends AbstractNetworkTaskF
 		this.eventHelper        = eventHelper;
 	}
 
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(NetworkTaskContext context) {
 		return new TaskIterator(2,
-			new NewNetworkSelectedNodesOnlyTask(undoSupport, network, crnf, cnvf, netmgr,
+			new NewNetworkSelectedNodesOnlyTask(undoSupport, context.getNetwork(), crnf, cnvf, netmgr,
 			                                    networkViewManager, naming, vmm,
 			                                    appManager, eventHelper));
 	}

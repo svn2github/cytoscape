@@ -31,9 +31,9 @@ package org.cytoscape.task.internal.destruction;
 
 
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.task.AbstractNetworkCollectionTaskFactory;
+import org.cytoscape.task.NetworkCollectionTaskContext;
+import org.cytoscape.work.TaskIterator;
 
 
 public class DestroyNetworkTaskFactory extends AbstractNetworkCollectionTaskFactory {
@@ -44,7 +44,7 @@ public class DestroyNetworkTaskFactory extends AbstractNetworkCollectionTaskFact
 		this.netmgr = netmgr;
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new DestroyNetworkTask(networks, netmgr));
+	public TaskIterator createTaskIterator(NetworkCollectionTaskContext context) {
+		return new TaskIterator(new DestroyNetworkTask(context.getNetworkCollection(), netmgr));
 	} 
 }

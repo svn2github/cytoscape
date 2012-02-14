@@ -705,12 +705,10 @@ public class AppManager {
 //					e.printStackTrace();
 //				}
 				
-				AppLoaderTask2 task = new AppLoaderTask2(adapter);
-				task.setFile(new File(FileName));
-				
-				AppLoaderTaskFactory2 factory = new AppLoaderTaskFactory2();
-				factory.setTask(task);
-				this.guiTaskManagerServiceRef.execute(factory);				
+				AppLoaderTaskFactory2 factory = new AppLoaderTaskFactory2(adapter);
+				AppLoaderTask2Context context = factory.createTaskContext();
+				context.setFile(new File(FileName));
+				this.guiTaskManagerServiceRef.execute(factory, context);				
 			}
 		}
 		// don't need to register if we have the info object

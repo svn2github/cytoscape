@@ -4,11 +4,10 @@ import org.cytoscape.cpath2.internal.web_service.CPathWebService;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class ExecutePhysicalEntitySearchTaskFactory implements TaskFactory {
+public class ExecutePhysicalEntitySearchTaskFactory implements TaskFactory<Object> {
 	private final CPathWebService webApi;
 	private final String keyword;
 	private final int ncbiTaxonomyId;
-	private ExecutePhysicalEntitySearch task;
 	private ResultHandler result;
 
 	public ExecutePhysicalEntitySearchTaskFactory(CPathWebService webApi, String keyword, int ncbiTaxonomyId, ResultHandler result) {
@@ -19,8 +18,13 @@ public class ExecutePhysicalEntitySearchTaskFactory implements TaskFactory {
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
-		task = new ExecutePhysicalEntitySearch(webApi, keyword, ncbiTaxonomyId, result);
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	@Override
+	public TaskIterator createTaskIterator(Object context) {
+		ExecutePhysicalEntitySearch task = new ExecutePhysicalEntitySearch(webApi, keyword, ncbiTaxonomyId, result);
 		return new TaskIterator(task);
 	}
 

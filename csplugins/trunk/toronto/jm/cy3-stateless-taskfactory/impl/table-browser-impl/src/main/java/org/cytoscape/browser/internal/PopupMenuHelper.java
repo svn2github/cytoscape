@@ -29,27 +29,22 @@ package org.cytoscape.browser.internal;
 
 
 import java.awt.Component;
-import java.awt.Point;
-import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
-
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import org.cytoscape.model.CyColumn;
+import org.cytoscape.task.TableCellTaskContext;
 import org.cytoscape.task.TableCellTaskFactory;
+import org.cytoscape.task.TableColumnTaskContext;
 import org.cytoscape.task.TableColumnTaskFactory;
-import org.cytoscape.util.swing.JMenuTracker;
 import org.cytoscape.util.swing.GravityTracker;
 import org.cytoscape.util.swing.PopupMenuGravityTracker;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 
@@ -60,14 +55,16 @@ import org.cytoscape.work.TaskManager;
  */
 public class PopupMenuHelper {
 	private final TaskManager taskManager;
-	private final Map<TableCellTaskFactory, Map> tableCellFactoryMap;
-	private final Map<TableColumnTaskFactory, Map> tableColumnFactoryMap;
+	private final Map<TableCellTaskFactory<TableCellTaskContext>, Map> tableCellFactoryMap;
+	private final Map<TableColumnTaskFactory<TableColumnTaskContext>, Map> tableColumnFactoryMap;
+	private final TaskContextManager contextManager;
 
-	public PopupMenuHelper(final TaskManager taskManager) {
+	public PopupMenuHelper(final TaskManager taskManager, final TaskContextManager contextManager) {
 		this.taskManager = taskManager;
-
-		tableCellFactoryMap   = new HashMap<TableCellTaskFactory, Map>();
-		tableColumnFactoryMap = new HashMap<TableColumnTaskFactory, Map>();
+		this.contextManager = contextManager;
+		
+		tableCellFactoryMap   = new HashMap<TableCellTaskFactory<TableCellTaskContext>, Map>();
+		tableColumnFactoryMap = new HashMap<TableColumnTaskFactory<TableColumnTaskContext>, Map>();
 	}
 
 	public void createColumnHeaderMenu(final CyColumn column, final Component invoker, final int x,
@@ -79,9 +76,11 @@ public class PopupMenuHelper {
 		final JPopupMenu menu = new JPopupMenu();
 		final PopupMenuGravityTracker tracker = new PopupMenuGravityTracker(menu);
 
-		for (final Map.Entry<TableColumnTaskFactory, Map> mapEntry : tableColumnFactoryMap.entrySet()) {
-			mapEntry.getKey().setColumn(column);
-			createMenuItem(mapEntry.getKey(), tracker, mapEntry.getValue());
+		for (final Map.Entry<TableColumnTaskFactory<TableColumnTaskContext>, Map> mapEntry : tableColumnFactoryMap.entrySet()) {
+			TableColumnTaskFactory<TableColumnTaskContext> factory = mapEntry.getKey();
+			TableColumnTaskContext context = contextManager.getContext(factory);
+			context.setColumn(column);
+			createMenuItem(factory, tracker, mapEntry.getValue());
 		}
 
 		menu.show(invoker, x, y);
@@ -96,9 +95,11 @@ public class PopupMenuHelper {
 		final JPopupMenu menu = new JPopupMenu();
 		final PopupMenuGravityTracker tracker = new PopupMenuGravityTracker(menu);
 
-		for (final Map.Entry<TableCellTaskFactory, Map> mapEntry : tableCellFactoryMap.entrySet()) {
-			mapEntry.getKey().setColumnAndPrimaryKey(column, primaryKeyValue);
-			createMenuItem(mapEntry.getKey(), tracker, mapEntry.getValue());
+		for (final Map.Entry<TableCellTaskFactory<TableCellTaskContext>, Map> mapEntry : tableCellFactoryMap.entrySet()) {
+			TableCellTaskFactory<TableCellTaskContext> factory = mapEntry.getKey();
+			TableCellTaskContext context = contextManager.getContext(factory);
+			context.setColumnAndPrimaryKey(column, primaryKeyValue);
+			createMenuItem(factory, tracker, mapEntry.getValue());
 		}
 
 		menu.show(invoker, x, y);
@@ -124,24 +125,28 @@ public class PopupMenuHelper {
 					      final Map properties)
 	{
 		tableColumnFactoryMap.put(newFactory, properties);
+		contextManager.registerTaskFactory(newFactory);
 	}
 
 	public void removeTableColumnTaskFactory(final TableColumnTaskFactory factory,
 						 final Map properties)
 	{
 		tableColumnFactoryMap.remove(factory);
+		contextManager.unregisterTaskFactory(factory);
 	}
 
 	public void addTableCellTaskFactory(final TableCellTaskFactory newFactory,
 					    final Map properties)
 	{
 		tableCellFactoryMap.put(newFactory, properties);
+		contextManager.registerTaskFactory(newFactory);
 	}
 
 	public void removeTableCellTaskFactory(final TableCellTaskFactory factory,
 					       final Map properties)
 	{
 		tableCellFactoryMap.remove(factory);
+		contextManager.unregisterTaskFactory(factory);
 	}
 
 	/**
@@ -156,7 +161,7 @@ public class PopupMenuHelper {
 		}
 
 		public void actionPerformed(ActionEvent ae) {
-			taskManager.execute(tf);
+			taskManager.execute(tf, tf.createTaskContext());
 		}
 	}
 }

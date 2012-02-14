@@ -1,27 +1,25 @@
 package org.cytoscape.app.internal;
 
 
-import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.cytoscape.app.CyAppAdapter;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class AppLoaderTaskFactory implements TaskFactory {
+public class AppLoaderTaskFactory implements TaskFactory<AppLoaderTaskContext> {
 	
-	private final CyAppAdapter adapter;
-	 
-	// App Jar file URLs
-	public static final Set<URL> urls = new HashSet<URL>();
+	private CyAppAdapter adapter;
 
-	AppLoaderTaskFactory(final CyAppAdapter adapter) {
+	public AppLoaderTaskFactory(CyAppAdapter adapter) {
 		this.adapter = adapter;
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new AppLoaderTask(adapter, urls));
+	public TaskIterator createTaskIterator(AppLoaderTaskContext context) {
+		return new TaskIterator(new AppLoaderTask(context, adapter));
+	}
+	
+	@Override
+	public AppLoaderTaskContext createTaskContext() {
+		return new AppLoaderTaskContext();
 	}
 }

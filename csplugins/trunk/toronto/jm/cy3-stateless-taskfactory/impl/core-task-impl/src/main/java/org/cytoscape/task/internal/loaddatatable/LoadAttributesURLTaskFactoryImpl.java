@@ -2,12 +2,11 @@ package org.cytoscape.task.internal.loaddatatable;
 
 
 import org.cytoscape.io.read.CyTableReaderManager;
-import org.cytoscape.model.CyTableManager;
-import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
 
 
-public class LoadAttributesURLTaskFactoryImpl implements TaskFactory {
+public class LoadAttributesURLTaskFactoryImpl implements TaskFactory<Object> {
 	
 	private CyTableReaderManager mgr;
 	
@@ -15,7 +14,12 @@ public class LoadAttributesURLTaskFactoryImpl implements TaskFactory {
 		this.mgr = mgr;
 	}
 
-	public TaskIterator createTaskIterator() {
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(2, new LoadAttributesURLTask(mgr));
 	}
 }

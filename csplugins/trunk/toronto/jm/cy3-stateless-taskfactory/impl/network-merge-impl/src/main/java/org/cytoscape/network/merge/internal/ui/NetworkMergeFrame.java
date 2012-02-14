@@ -829,7 +829,7 @@ public class NetworkMergeFrame extends JFrame {
                                  this.inNetworkMergeCheckBox.isSelected());
                         
                         // Execute Task in New Thread; pop open JTask Dialog Box.
-                        taskManager.execute(nmTask);
+                        taskManager.execute(nmTask, nmTask.createTaskContext());
                         //TODO: HOW TO KNOW IF IT IS CANCELED?
                         //if (nmTask.isCancelled()) return; 
                        
@@ -838,7 +838,7 @@ public class NetworkMergeFrame extends JFrame {
                         // conflict handling task
                         if (!conflictCollector.isEmpty()) {
                                 HandleConflictsTaskFactory hcTask = new HandleConflictsTaskFactory(conflictCollector);
-                                taskManager.execute(hcTask);
+                                taskManager.execute(hcTask, hcTask.createTaskContext());
                         }
 
 //                }

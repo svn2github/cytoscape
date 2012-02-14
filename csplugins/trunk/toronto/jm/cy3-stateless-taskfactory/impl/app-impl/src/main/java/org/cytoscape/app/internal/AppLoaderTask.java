@@ -30,9 +30,9 @@ public class AppLoaderTask extends AbstractTask {
 	// If app developers want to avoid it, they need to try regular bundle app.
 	private final Set<URL> urls;
 	
-	AppLoaderTask(final CyAppAdapter adapter, final Set<URL> urls) {
+	AppLoaderTask(AppLoaderTaskContext context, CyAppAdapter adapter) {
 		this.adapter = adapter;
-		this.urls = urls;
+		this.urls = context.getUrls();
 	}
 
 	@Override

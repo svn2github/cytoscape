@@ -4,6 +4,7 @@ package org.cytoscape.task.internal.layout;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.task.AbstractNetworkViewTaskFactory;
+import org.cytoscape.task.NetworkViewTaskContext;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
@@ -28,8 +29,8 @@ public class ApplyPreferredLayoutTaskFactory extends AbstractNetworkViewTaskFact
 		this.props       = p.getProperties();
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(2, new ApplyPreferredLayoutTask(undoSupport, eventHelper, view,
+	public TaskIterator createTaskIterator(NetworkViewTaskContext context) {
+		return new TaskIterator(2, new ApplyPreferredLayoutTask(undoSupport, eventHelper, context.getNetworkView(),
 		                                                     layouts, props));
 	}
 }

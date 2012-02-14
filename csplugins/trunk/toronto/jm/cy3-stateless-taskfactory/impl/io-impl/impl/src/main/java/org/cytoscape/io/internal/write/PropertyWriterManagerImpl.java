@@ -1,6 +1,7 @@
 package org.cytoscape.io.internal.write;
 
 
+import org.cytoscape.io.write.CyPropertyWriterContext;
 import org.cytoscape.io.write.CyPropertyWriterManager;
 import org.cytoscape.io.write.CyPropertyWriterFactory;
 import org.cytoscape.io.write.CyWriter;
@@ -12,7 +13,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 
-public final class PropertyWriterManagerImpl extends AbstractWriterManager<CyPropertyWriterFactory> 
+public final class PropertyWriterManagerImpl extends AbstractWriterManager<CyPropertyWriterFactory<CyPropertyWriterContext>> 
 	implements CyPropertyWriterManager
 {
 	public PropertyWriterManagerImpl() {
@@ -24,11 +25,13 @@ public final class PropertyWriterManagerImpl extends AbstractWriterManager<CyPro
 	}
 
 	public CyWriter getWriter(Object property, CyFileFilter filter, OutputStream os) throws Exception {
-		CyPropertyWriterFactory tf = getMatchingFactory(filter,os);
+		CyPropertyWriterFactory<CyPropertyWriterContext> tf = getMatchingFactory(filter);
+		CyPropertyWriterContext context = tf.createTaskContext();
 		if (tf == null)
 			throw new NullPointerException("Couldn't find matching factory for filter: " + filter);
-		tf.setProperty(property);
-		return tf.getWriterTask();
+		context.setOutputStream(os);
+		context.setProperty(property);
+		return tf.createWriterTask(context);
 	}
 }
 

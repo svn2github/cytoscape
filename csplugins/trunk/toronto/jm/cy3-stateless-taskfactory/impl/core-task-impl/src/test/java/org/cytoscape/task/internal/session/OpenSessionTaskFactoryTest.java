@@ -26,7 +26,7 @@ public class OpenSessionTaskFactoryTest {
 		SynchronousTaskManager synchronousTaskManager = mock(SynchronousTaskManager.class);
 		OpenSessionTaskFactory factory = new OpenSessionTaskFactory(mgr, rmgr, appManager, tracker, synchronousTaskManager);
 		
-		TaskIterator ti = factory.createTaskIterator();
+		TaskIterator ti = factory.createTaskIterator(factory.createTaskContext());
 		assertNotNull(ti);
 		
 		assertTrue( ti.hasNext() );

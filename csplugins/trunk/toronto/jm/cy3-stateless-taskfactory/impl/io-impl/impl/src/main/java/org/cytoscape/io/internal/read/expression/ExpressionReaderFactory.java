@@ -3,6 +3,7 @@ package org.cytoscape.io.internal.read.expression;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.read.AbstractTableReaderFactory;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.work.TaskIterator;
@@ -16,7 +17,7 @@ public class ExpressionReaderFactory extends AbstractTableReaderFactory {
 	}
 	
 	@Override
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new ExpressionReader(inputStream, tableFactory, tableManager));
+	public TaskIterator createTaskIterator(InputStreamTaskContext context) {
+		return new TaskIterator(new ExpressionReader(context, tableFactory, tableManager));
 	}
 }

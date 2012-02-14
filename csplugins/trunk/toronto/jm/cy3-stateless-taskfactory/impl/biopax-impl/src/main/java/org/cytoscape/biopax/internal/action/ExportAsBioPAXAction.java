@@ -41,6 +41,7 @@ import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.biopax.internal.util.BioPaxUtil;
 import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.write.CyNetworkViewWriterContext;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.util.swing.FileChooserFilter;
 import org.cytoscape.util.swing.FileUtil;
@@ -105,10 +106,11 @@ public class ExportAsBioPAXAction extends AbstractCyAction {
 
 			ExportAsBioPAXTaskFactory taskFactory = new ExportAsBioPAXTaskFactory(fileName, bioPaxFilter);
 			try {
+				CyNetworkViewWriterContext context = taskFactory.createTaskContext();
 				FileOutputStream stream = new FileOutputStream(fileName);
-				taskFactory.setOutputStream(stream);
+				context.setOutputStream(stream);
 				try {
-					taskManager.execute(taskFactory);
+					taskManager.execute(taskFactory, context);
 				} finally {
 					stream.close();
 				}

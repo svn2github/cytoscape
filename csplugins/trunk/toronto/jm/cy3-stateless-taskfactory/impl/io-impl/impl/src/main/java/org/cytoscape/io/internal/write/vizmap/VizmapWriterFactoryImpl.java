@@ -34,22 +34,18 @@
  */
 package org.cytoscape.io.internal.write.vizmap;
 
-import java.io.OutputStream;
-import java.util.Set;
-
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.util.vizmap.VisualStyleSerializer;
 import org.cytoscape.io.write.CyWriter;
+import org.cytoscape.io.write.VizmapWriterContext;
+import org.cytoscape.io.write.VizmapWriterContextImpl;
 import org.cytoscape.io.write.VizmapWriterFactory;
-import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.work.TaskIterator;
 
 public class VizmapWriterFactoryImpl implements VizmapWriterFactory {
 
 	private final CyFileFilter fileFilter;
 	private final VisualStyleSerializer visualStyleSerializer;
-    private OutputStream outputStream;
-
-    protected Set<VisualStyle> visualStyles;
 
     public VizmapWriterFactoryImpl(CyFileFilter fileFilter, VisualStyleSerializer visualStyleSerializer) {
         this.fileFilter = fileFilter;
@@ -57,22 +53,22 @@ public class VizmapWriterFactoryImpl implements VizmapWriterFactory {
     }
 
     @Override
-    public CyWriter getWriterTask() {
-        return new VizmapWriterImpl(outputStream, visualStyleSerializer, visualStyles);
+    public VizmapWriterContext createTaskContext() {
+    	return new VizmapWriterContextImpl();
+    }
+    
+    @Override
+    public CyWriter createWriterTask(VizmapWriterContext context) {
+        return new VizmapWriterImpl(context.getOutputStream(), visualStyleSerializer, context.getVisualStyles());
     }
 
     @Override
-    public void setOutputStream(OutputStream os) {
-        this.outputStream = os;
+    public TaskIterator createTaskIterator(VizmapWriterContext context) {
+    	return new TaskIterator(createWriterTask(context));
     }
-
+    
     @Override
     public CyFileFilter getFileFilter() {
         return fileFilter;
     }
-
-	@Override
-	public void setVisualStyles(Set<VisualStyle> styles) {
-		this.visualStyles = styles;
-	}
 }

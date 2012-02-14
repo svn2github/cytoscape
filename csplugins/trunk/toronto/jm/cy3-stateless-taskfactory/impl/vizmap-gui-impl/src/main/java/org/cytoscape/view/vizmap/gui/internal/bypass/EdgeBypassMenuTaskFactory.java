@@ -4,6 +4,7 @@ import java.awt.Component;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.task.AbstractEdgeViewTaskFactory;
+import org.cytoscape.task.EdgeViewTaskContext;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
@@ -28,7 +29,7 @@ public class EdgeBypassMenuTaskFactory extends AbstractEdgeViewTaskFactory {
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new BypassTask<CyEdge>(parent, editor, vp, edgeView, netView, selectedManager));
+	public TaskIterator createTaskIterator(EdgeViewTaskContext context) {
+		return new TaskIterator(new BypassTask<CyEdge>(parent, editor, vp, context.getEdgeView(), context.getNetworkView(), selectedManager));
 	}
 }

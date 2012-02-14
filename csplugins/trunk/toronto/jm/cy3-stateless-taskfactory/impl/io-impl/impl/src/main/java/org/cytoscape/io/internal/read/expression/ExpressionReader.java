@@ -31,11 +31,8 @@ package org.cytoscape.io.internal.read.expression;
 
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,13 +41,13 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.cytoscape.io.internal.read.AbstractTableReader;
-import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.CyTableFactory;
-import org.cytoscape.model.CyTableManager;
+import org.cytoscape.io.read.InputStreamTaskContext;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.work.TaskMonitor;
 
 
@@ -160,10 +157,10 @@ public class ExpressionReader extends AbstractTableReader {
 	private CyTable table;
 	private final CyTableManager tableManager;
 
-	public ExpressionReader(final InputStream stream, final CyTableFactory tableFactory,
+	public ExpressionReader(final InputStreamTaskContext context, final CyTableFactory tableFactory,
 	                        final CyTableManager tableManager)
 	{
-		super(stream, tableFactory);
+		super(context.getInputStream(), tableFactory);
 		
 		this.tableManager = tableManager;
 		isCancelled = false;

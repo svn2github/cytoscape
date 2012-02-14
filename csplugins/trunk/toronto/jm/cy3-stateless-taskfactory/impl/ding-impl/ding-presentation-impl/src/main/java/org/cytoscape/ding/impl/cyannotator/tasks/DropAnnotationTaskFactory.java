@@ -1,20 +1,13 @@
 package org.cytoscape.ding.impl.cyannotator.tasks; 
 
 
-import java.awt.geom.Point2D;
-import java.awt.datatransfer.Transferable;
-
+import org.cytoscape.ding.impl.cyannotator.create.AnnotationFactory;
+import org.cytoscape.dnd.DropNetworkViewTaskContext;
 import org.cytoscape.dnd.DropNetworkViewTaskFactory;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.ding.impl.cyannotator.create.AnnotationFactory; 
 
 
-public class DropAnnotationTaskFactory implements DropNetworkViewTaskFactory {
-	private CyNetworkView view;
-	private Transferable t;
-	private Point2D javaPt;
-	private Point2D xformPt;
+public class DropAnnotationTaskFactory implements DropNetworkViewTaskFactory<DropNetworkViewTaskContext> {
 	private final BasicGraphicalEntity bge; 
 	private final AnnotationFactory annotationFactory;
 	
@@ -23,17 +16,12 @@ public class DropAnnotationTaskFactory implements DropNetworkViewTaskFactory {
 		this.annotationFactory = annotationFactory;
 	}
 
-	public void setNetworkView(CyNetworkView view) {
-		this.view = view;
+	public TaskIterator createTaskIterator(DropNetworkViewTaskContext context) {
+		return new TaskIterator(new DropAnnotationTask(context, bge, annotationFactory));
 	}
-
-	public void setDropInformation(Transferable t, Point2D javaPt, Point2D xformPt) {
-		this.t = t;
-		this.javaPt = javaPt;
-		this.xformPt = xformPt;
-	}
-
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new DropAnnotationTask(view, t, xformPt, bge, annotationFactory));
+	
+	@Override
+	public DropNetworkViewTaskContext createTaskContext() {
+		return new DropNetworkViewTaskContext();
 	}
 }

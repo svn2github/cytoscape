@@ -4,6 +4,7 @@ package org.cytoscape.ding.impl;
 import java.awt.datatransfer.Transferable;
 import java.awt.geom.Point2D;
 
+import org.cytoscape.dnd.DropNodeViewTaskContext;
 import org.cytoscape.dnd.DropNodeViewTaskFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
@@ -12,7 +13,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 
 
-public class AddEdgeNodeViewTaskFactoryImpl implements DropNodeViewTaskFactory {
+public class AddEdgeNodeViewTaskFactoryImpl implements DropNodeViewTaskFactory<DropNodeViewTaskContext> {
 	private View<CyNode> nv;
 	private CyNetworkView view;
 	private Point2D xformPt;
@@ -39,7 +40,12 @@ public class AddEdgeNodeViewTaskFactoryImpl implements DropNodeViewTaskFactory {
 		AddEdgeStateMonitor.setTransferable(view,t);
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new AddEdgeTask(nv, view, AddEdgeStateMonitor.getTransferable(view)));
+	public TaskIterator createTaskIterator(DropNodeViewTaskContext context) {
+		return new TaskIterator(new AddEdgeTask(context, AddEdgeStateMonitor.getTransferable(context.getNetworkView())));
+	}
+	
+	@Override
+	public DropNodeViewTaskContext createTaskContext() {
+		return new DropNodeViewTaskContext();
 	}
 }

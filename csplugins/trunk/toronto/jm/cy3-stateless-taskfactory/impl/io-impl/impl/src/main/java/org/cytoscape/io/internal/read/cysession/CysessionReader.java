@@ -6,6 +6,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.cytoscape.io.internal.read.AbstractPropertyReader;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.property.session.Cysession;
 import org.cytoscape.work.TaskMonitor;
 
@@ -13,8 +14,8 @@ public class CysessionReader extends AbstractPropertyReader {
 
 	private static final String CYSESSION_PACKAGE = Cysession.class.getPackage().getName();
 
-	public CysessionReader(InputStream is) {
-		super(is);
+	public CysessionReader(InputStreamTaskContext context) {
+		super(context.getInputStream());
 	}
 
 	public void run(TaskMonitor tm) throws Exception {

@@ -40,7 +40,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.creation.NewEmptyNetworkViewFactory;
 
-public class NewEmptyNetworkTaskFactory implements TaskFactory, NewEmptyNetworkViewFactory {
+public class NewEmptyNetworkTaskFactory implements TaskFactory<Object>, NewEmptyNetworkViewFactory {
 	private final CyNetworkFactory cnf;
 	private final CyNetworkViewFactory cnvf;
 	private final CyNetworkManager netmgr;
@@ -60,14 +60,19 @@ public class NewEmptyNetworkTaskFactory implements TaskFactory, NewEmptyNetworkV
 		this.syncTaskMgr = syncTaskMgr;
 	}
 
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object context) {
 		task = new NewEmptyNetworkTask(cnf, cnvf, netmgr, networkViewManager,namingUtil);
 		return new TaskIterator(task);
-	} 
+	}
+	
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
 
 	public CyNetworkView createNewEmptyNetworkView() {
 		// no tunables, so no need to set the execution context
-		syncTaskMgr.execute(this);	
+		syncTaskMgr.execute(this, createTaskContext());
 		return task.getView(); 
 	}
 }

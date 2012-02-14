@@ -37,6 +37,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.task.NetworkTaskContext;
 import org.cytoscape.task.NetworkTaskFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.Task;
@@ -124,9 +125,10 @@ public class AllFactoryTest {
 		executeTest(new SelectFromFileListTaskFactory(undoSupport, networkViewManager, eventHelper));
 	}
 
-	private void executeTest(NetworkTaskFactory ntf) {
-		ntf.setNetwork(net);
-		TaskIterator ti = ntf.createTaskIterator();
+	private void executeTest(NetworkTaskFactory<NetworkTaskContext> ntf) {
+		NetworkTaskContext context = ntf.createTaskContext();
+		context.setNetwork(net);
+		TaskIterator ti = ntf.createTaskIterator(context);
 		assertNotNull(ti);
 		assertTrue(ti.hasNext());
 		Task t = ti.next();

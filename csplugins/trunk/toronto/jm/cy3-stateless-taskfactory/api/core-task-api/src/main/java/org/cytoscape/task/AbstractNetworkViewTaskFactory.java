@@ -38,6 +38,6 @@ package org.cytoscape.task;
 public abstract class AbstractNetworkViewTaskFactory implements NetworkViewTaskFactory<NetworkViewTaskContext> {
 	@Override
 	public NetworkViewTaskContext createTaskContext() {
-		return new NetworkViewTaskContext();
+		return new NetworkViewTaskContextImpl();
 	}
 }

@@ -13,6 +13,7 @@ import javax.swing.tree.*;
 import javax.swing.table.*;
 
 import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
@@ -370,18 +371,19 @@ class AdvancedLogViewer {
 				return;
 
 			final File file = fileChooser.getSelectedFile();
-			taskManager.execute(new ExportTaskFactory(file));
+			ExportTaskFactory factory = new ExportTaskFactory(file);
+			taskManager.execute(factory, factory.createTaskContext());
 		}
 	}
 
-	class ExportTaskFactory implements TaskFactory {
+	class ExportTaskFactory extends AbstractTaskFactory {
 		private final File file;
 
 		ExportTaskFactory(final File file) {
 			this.file = file;
 		}
 
-		public TaskIterator createTaskIterator() {
+		public TaskIterator createTaskIterator(Object context) {
 			return new TaskIterator(new ExportTask(file));
 		}
 	}

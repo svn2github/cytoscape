@@ -11,6 +11,7 @@ import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.io.write.CyWriterFactory;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.util.swing.FileUtil;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableHandlerFactory;
 import org.cytoscape.work.TunableRecorder;
@@ -22,6 +23,7 @@ import org.cytoscape.work.internal.sync.SyncTunableHandlerFactory;
 import org.cytoscape.work.internal.sync.SyncTunableMutator;
 import org.cytoscape.work.internal.task.JDialogTaskManager;
 import org.cytoscape.work.internal.task.JPanelTaskManager;
+import org.cytoscape.work.internal.task.TaskContextManagerImpl;
 import org.cytoscape.work.internal.tunables.BooleanHandler;
 import org.cytoscape.work.internal.tunables.BoundedHandler;
 import org.cytoscape.work.internal.tunables.DoubleHandler;
@@ -115,6 +117,8 @@ public class CyActivator extends AbstractCyActivator {
 		SyncTunableHandlerFactory syncTunableHandlerFactory = new SyncTunableHandlerFactory();
 		SyncTaskManager syncTaskManager = new SyncTaskManager(syncTunableMutator);
 	
+		TaskContextManager contextManager = new TaskContextManagerImpl();
+		
 		Properties undoSupportProps = new Properties();
 		registerService(bc,undoSupport,UndoSupport.class, undoSupportProps);
 		registerService(bc,undoSupport,SwingUndoSupport.class, undoSupportProps);
@@ -144,6 +148,8 @@ public class CyActivator extends AbstractCyActivator {
 		registerService(bc,listMultipleSelectionHandlerFactory,GUITunableHandlerFactory.class, new Properties());
 		registerService(bc,fileHandlerFactory,GUITunableHandlerFactory.class, new Properties());
 		registerService(bc,urlHandlerFactory,GUITunableHandlerFactory.class, new Properties());
+		
+		registerService(bc,contextManager,TaskContextManager.class, new Properties());
 		
 		Properties syncFactoryProp = new Properties();
 		registerService(bc,syncTunableHandlerFactory, TunableHandlerFactory.class, syncFactoryProp);

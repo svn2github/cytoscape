@@ -11,13 +11,14 @@ import java.util.Set;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.DataCategory;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.work.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Task>  {
+public class GenericReaderManager<T extends InputStreamTaskFactory<C>, R extends Task, C extends InputStreamTaskContext>  {
 	
 	private static final Logger logger = LoggerFactory.getLogger( GenericReaderManager.class ); 
 	
@@ -89,8 +90,9 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 						stream = new BufferedInputStream(stream);
 					}
 					
-					factory.setInputStream(stream, inputName);
-					return (R) factory.createTaskIterator().next();
+					C context = factory.createTaskContext();
+					context.setInputStream(stream, inputName);
+					return (R) factory.createTaskIterator(context).next();
 				} catch (IOException e) {
 					logger.warn("Error opening stream to URI: " + uri.toString(), e);
 				}
@@ -116,8 +118,9 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 				// of the first 2KB rather than the stream itself. 
 				if (cff.accepts(CopyInputStream.copyKBytes(stream,1), category)) {
 					logger.debug("successfully matched READER " + factory);
-					factory.setInputStream(stream, inputName);
-					return (R)factory.createTaskIterator().next();	
+					C context = factory.createTaskContext();
+					context.setInputStream(stream, inputName);
+					return (R)factory.createTaskIterator(context).next();	
 				}
 			}
 		} catch (IOException ioe) {

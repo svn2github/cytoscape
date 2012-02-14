@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.task.NetworkTaskContext;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
@@ -26,9 +27,10 @@ public class EditNetworkTitleTaskFactoryTest {
 		UndoSupport undoSupport = mock(UndoSupport.class);
 
 		EditNetworkTitleTaskFactory factory = new EditNetworkTitleTaskFactory(undoSupport);
-		factory.setNetwork(net);
+		NetworkTaskContext context = factory.createTaskContext();
+		context.setNetwork(net);
 		
-		TaskIterator ti = factory.createTaskIterator();
+		TaskIterator ti = factory.createTaskIterator(context);
 		assertNotNull(ti);
 		
 		assertTrue( ti.hasNext() );

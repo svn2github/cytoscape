@@ -33,7 +33,7 @@ public class LoadAttributesURLTaskFactoryImplTest {
 
 		final LoadAttributesURLTaskFactoryImpl factory = new LoadAttributesURLTaskFactoryImpl(rmgr);
 		
-		final TaskIterator ti = factory.createTaskIterator();
+		final TaskIterator ti = factory.createTaskIterator(factory.createTaskContext());
 		assertNotNull(ti);
 		
 		assertTrue( ti.hasNext() );

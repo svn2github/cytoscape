@@ -27,19 +27,19 @@
  */
 package org.cytoscape.io.internal.read.session;
 
-import java.io.InputStream;
-
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.read.datatable.CSVCyReaderFactory;
 import org.cytoscape.io.internal.util.ReadCache;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyPropertyReaderManager;
+import org.cytoscape.io.read.InputStreamTaskContext;
+import org.cytoscape.io.read.InputStreamTaskContextImpl;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.io.read.VizmapReaderManager;
 import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.work.TaskIterator;
 
-public class Cy3SessionReaderFactoryImpl implements InputStreamTaskFactory {
+public class Cy3SessionReaderFactoryImpl implements InputStreamTaskFactory<InputStreamTaskContext> {
 
 	private final CyFileFilter filter;
 	private final ReadCache cache;
@@ -48,9 +48,6 @@ public class Cy3SessionReaderFactoryImpl implements InputStreamTaskFactory {
 	private final VizmapReaderManager vizmapReaderMgr;
 	private final CSVCyReaderFactory csvCyReaderFactory;
 	private final CyNetworkTableManager networkTableManager;
-
-	private InputStream inputStream;
-	private String inputName;
 
 	public Cy3SessionReaderFactoryImpl(final CyFileFilter filter,
 									   final ReadCache cache,
@@ -69,20 +66,18 @@ public class Cy3SessionReaderFactoryImpl implements InputStreamTaskFactory {
 	}
 
 	@Override
-	public void setInputStream(InputStream is, String in) {
-		if (is == null) throw new NullPointerException("Input stream is null");
-		inputStream = is;
-		inputName = in;
-	}
-
-	@Override
 	public CyFileFilter getFileFilter() {
 		return filter;
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new Cy3SessionReaderImpl(inputStream, cache, networkReaderMgr, propertyReaderMgr,
+	public TaskIterator createTaskIterator(InputStreamTaskContext context) {
+		return new TaskIterator(new Cy3SessionReaderImpl(context, cache, networkReaderMgr, propertyReaderMgr,
 				vizmapReaderMgr, csvCyReaderFactory, networkTableManager));
+	}
+	
+	@Override
+	public InputStreamTaskContext createTaskContext() {
+		return new InputStreamTaskContextImpl();
 	}
 }

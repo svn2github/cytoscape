@@ -32,6 +32,8 @@ package org.cytoscape.task.internal.hide;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.task.AbstractNetworkViewTaskFactory;
+import org.cytoscape.task.NetworkCollectionTaskContext;
+import org.cytoscape.task.NetworkViewTaskContext;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -47,7 +49,7 @@ public class HideSelectedNodesTaskFactory extends AbstractNetworkViewTaskFactory
 		this.eventHelper = eventHelper;
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new HideSelectedNodesTask(undoSupport, eventHelper, view));
+	public TaskIterator createTaskIterator(NetworkViewTaskContext context) {
+		return new TaskIterator(new HideSelectedNodesTask(undoSupport, eventHelper, context.getNetworkView()));
 	} 
 }

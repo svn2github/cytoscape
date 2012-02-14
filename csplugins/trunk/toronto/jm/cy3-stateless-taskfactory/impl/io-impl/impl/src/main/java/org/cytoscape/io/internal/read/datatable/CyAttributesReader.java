@@ -12,6 +12,7 @@ import java.util.StringTokenizer;
 
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.io.read.CyTableReader;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
@@ -80,7 +81,7 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 	
 	private static int nextTableNumber = 1;
 
-	public CyAttributesReader(final InputStream inputStream, final CyTableFactory tableFactory,
+	public CyAttributesReader(final InputStreamTaskContext context, final CyTableFactory tableFactory,
 				  final CyApplicationManager appMgr, final CyNetworkManager netMgr,
 				  final CyTableManager tableManager, final CyRootNetworkManager rootNetFact)
 	{
@@ -90,7 +91,7 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 		this.tableFactory = tableFactory;
 		this.appMgr = appMgr;
 		this.netMgr = netMgr;
-		this.inputStream = inputStream;
+		this.inputStream = context.getInputStream();
 		this.tableManager = tableManager;
 		this.rootNetFact = rootNetFact;
 

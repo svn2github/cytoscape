@@ -70,16 +70,16 @@ public class AbstractRowTaskFactoryTest {
 	public void testGoodSetRow() throws Exception {
 		RowTaskContext context = factory.createTaskContext();
 		context.setRow(mock(CyRow.class));
-		assertNotNull( context.row );
+		assertNotNull( context.getRow() );
 	}
 
 	@Test
 	public void testNotFinal() throws Exception {
 		RowTaskContext context = factory.createTaskContext();
 		context.setRow(mock(CyRow.class));
-		CyRow t1 = context.row;
+		CyRow t1 = context.getRow();
 		context.setRow(mock(CyRow.class));
-		CyRow t2 = context.row;
+		CyRow t2 = context.getRow();
 		assertFalse( (t1 == t2) );
 	}
 }

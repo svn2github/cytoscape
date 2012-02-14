@@ -34,6 +34,7 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
+import org.cytoscape.task.NetworkTaskContext;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -61,8 +62,8 @@ public class CloneNetworkTaskFactory extends AbstractNetworkTaskFactory {
 	this.eventHelper = eventHelper;
     }
 
-    public TaskIterator createTaskIterator() {
-	return new TaskIterator(new CloneNetworkTask(network, networkManager, networkViewManager, vmm, netFactory,
+    public TaskIterator createTaskIterator(NetworkTaskContext context) {
+	return new TaskIterator(new CloneNetworkTask(context.getNetwork(), networkManager, networkViewManager, vmm, netFactory,
 		netViewFactory, naming, eventHelper));
     }
 }

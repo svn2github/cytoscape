@@ -38,6 +38,6 @@ package org.cytoscape.task;
 abstract public class AbstractTableCellTaskFactory implements TableCellTaskFactory<TableCellTaskContext> {
 	@Override
 	public TableCellTaskContext createTaskContext() {
-		return new TableCellTaskContext();
+		return new TableCellTaskContextImpl();
 	}
 }

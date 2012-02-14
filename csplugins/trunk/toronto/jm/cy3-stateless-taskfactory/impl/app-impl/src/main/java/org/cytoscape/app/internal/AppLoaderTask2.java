@@ -11,7 +11,6 @@ import java.util.jar.JarFile;
 import org.cytoscape.app.CyAppAdapter;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,22 +20,19 @@ public class AppLoaderTask2 extends AbstractTask {
 	private static final Logger logger = LoggerFactory.getLogger( AppLoaderTask2.class );
 	private static final String APP_TAG = "Cytoscape-App";
 	
-	private  CyAppAdapter adapter;
+	private CyAppAdapter adapter;
 
 	private File filename;
 	
 	// All app URLs are saved here.  This means app conflict can happen in this ClassLoader.
 	// If app developers want to avoid it, they need to try regular bundle app.
-	private Set<URL> urls= AppLoaderTaskFactory.urls;
+	private Set<URL> urls= AppLoaderTaskContext.urls;
 
-	public AppLoaderTask2(CyAppAdapter adapter) {
+	public AppLoaderTask2(AppLoaderTask2Context context, CyAppAdapter adapter) {
 		this.adapter = adapter;
+		filename = context.getFile();
 	}
 
-	public void setFile(File filename){
-		this.filename = filename;
-	}
-	
 	@Override
 	public void run(TaskMonitor tm) throws Exception {
 		Object app = null;

@@ -6,13 +6,14 @@ import java.io.OutputStream;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.DataCategory;
+import org.cytoscape.io.write.CyNetworkViewWriterContext;
 import org.cytoscape.io.write.CyNetworkViewWriterFactory;
 import org.cytoscape.io.write.CyNetworkViewWriterManager;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 
-public class CyNetworkViewWriterManagerImpl extends AbstractWriterManager<CyNetworkViewWriterFactory> implements CyNetworkViewWriterManager {
+public class CyNetworkViewWriterManagerImpl extends AbstractWriterManager<CyNetworkViewWriterFactory<CyNetworkViewWriterContext>> implements CyNetworkViewWriterManager {
 	public CyNetworkViewWriterManagerImpl() {
 		super(DataCategory.NETWORK);		
 	}
@@ -24,12 +25,14 @@ public class CyNetworkViewWriterManagerImpl extends AbstractWriterManager<CyNetw
 
 	@Override
 	public CyWriter getWriter(CyNetworkView view, CyFileFilter filter, OutputStream os) throws Exception {
-		CyNetworkViewWriterFactory factory = getMatchingFactory(filter, os);
+		CyNetworkViewWriterFactory<CyNetworkViewWriterContext> factory = getMatchingFactory(filter);
 		if (factory == null) {
 			throw new NullPointerException("Couldn't find matching factory for filter: " + filter);
 		}
-		factory.setNetworkView(view);
-		return factory.getWriterTask();
+		CyNetworkViewWriterContext context = factory.createTaskContext();
+		context.setOutputStream(os);
+		context.setNetworkView(view);
+		return factory.createWriterTask(context);
 	}
 
 	@Override
@@ -40,11 +43,13 @@ public class CyNetworkViewWriterManagerImpl extends AbstractWriterManager<CyNetw
 
 	@Override
 	public CyWriter getWriter(CyNetwork network, CyFileFilter filter, OutputStream os) throws Exception {
-		CyNetworkViewWriterFactory factory = getMatchingFactory(filter, os);
+		CyNetworkViewWriterFactory<CyNetworkViewWriterContext> factory = getMatchingFactory(filter);
 		if (factory == null) {
 			throw new NullPointerException("Couldn't find matching factory for filter: " + filter);
 		}
-		factory.setNetwork(network);
-		return factory.getWriterTask();
+		CyNetworkViewWriterContext context = factory.createTaskContext();
+		context.setOutputStream(os);
+		context.setNetwork(network);
+		return factory.createWriterTask(context);
 	}
 }

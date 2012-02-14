@@ -30,6 +30,9 @@
 package org.cytoscape.view.layout;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.cytoscape.work.undo.UndoSupport;
 
 
@@ -77,5 +80,18 @@ abstract public class AbstractLayoutAlgorithm implements CyLayoutAlgorithm<Layou
 	 */
 	public String toString() {
 		return humanName;
+	}
+	
+	/**
+	 * This returns the list of "attributes" that are provided
+	 * by an algorithm for internal purposes.  For example,
+	 * an edge-weighted algorithm might seed the list of
+	 * attributes with "unweighted".  This should be overloaded
+	 * by algorithms that intend to return custom attributes.
+	 *
+	 * @return A (possibly empty) list of attributes
+	 */
+	public List<String> getInitialAttributeList() {
+		return new ArrayList<String>();
 	}
 }

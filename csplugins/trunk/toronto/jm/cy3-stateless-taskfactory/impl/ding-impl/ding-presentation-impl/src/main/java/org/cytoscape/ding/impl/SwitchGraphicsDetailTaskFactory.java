@@ -9,7 +9,7 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class SwitchGraphicsDetailTaskFactory implements TaskFactory {
+public class SwitchGraphicsDetailTaskFactory implements TaskFactory<Object> {
 	private final CyApplicationManager appManager;
 	private final CyProperty<Properties> defaultProps;
 
@@ -19,8 +19,13 @@ public class SwitchGraphicsDetailTaskFactory implements TaskFactory {
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(new SwitchGraphicsDetailTask(defaultProps, appManager));
+	}
+
+	@Override
+	public Object createTaskContext() {
+		return new Object();
 	}
 
 }

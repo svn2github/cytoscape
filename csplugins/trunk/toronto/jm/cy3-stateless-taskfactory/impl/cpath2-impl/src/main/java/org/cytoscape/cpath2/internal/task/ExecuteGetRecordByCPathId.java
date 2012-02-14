@@ -206,7 +206,8 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 
 			CyLayoutAlgorithmManager layoutManager = cPathFactory.getCyLayoutAlgorithmManager();
 			TaskFactory tf = layoutManager.getDefaultLayout();
-			TaskIterator ti = tf.createTaskIterator();
+			Object context = tf.createTaskContext();
+			TaskIterator ti = tf.createTaskIterator(context);
 			Task task = ti.next();
 			insertTasksAfterCurrentTask(task);
 

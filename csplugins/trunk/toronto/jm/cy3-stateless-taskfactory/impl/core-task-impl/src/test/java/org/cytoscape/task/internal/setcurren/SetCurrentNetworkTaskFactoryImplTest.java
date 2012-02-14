@@ -22,7 +22,7 @@ public class SetCurrentNetworkTaskFactoryImplTest {
 
 		SetCurrentNetworkTaskFactoryImpl factory = new SetCurrentNetworkTaskFactoryImpl(appMgr, netmgr);
 		
-		TaskIterator ti = factory.createTaskIterator();
+		TaskIterator ti = factory.createTaskIterator(factory.createTaskContext());
 		assertNotNull(ti);
 		
 		assertTrue( ti.hasNext() );

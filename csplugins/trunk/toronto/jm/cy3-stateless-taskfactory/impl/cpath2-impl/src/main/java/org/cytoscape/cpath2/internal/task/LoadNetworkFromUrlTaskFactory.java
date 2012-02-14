@@ -6,7 +6,7 @@ import org.cytoscape.cpath2.internal.CPath2Factory;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class LoadNetworkFromUrlTaskFactory implements TaskFactory {
+public class LoadNetworkFromUrlTaskFactory implements TaskFactory<Object> {
 
 	private URL url;
 	private CPath2Factory factory;
@@ -17,7 +17,12 @@ public class LoadNetworkFromUrlTaskFactory implements TaskFactory {
 	}
 	
 	@Override
-	public TaskIterator createTaskIterator() {
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	@Override
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(new LoadNetworkFromUrlTask(url, factory));
 	}
 

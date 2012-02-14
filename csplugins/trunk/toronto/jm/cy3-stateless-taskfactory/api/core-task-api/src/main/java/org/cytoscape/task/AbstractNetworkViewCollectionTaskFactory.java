@@ -38,6 +38,6 @@ import org.cytoscape.view.model.CyNetworkView;
 public abstract class AbstractNetworkViewCollectionTaskFactory implements NetworkViewCollectionTaskFactory<NetworkViewCollectionTaskContext> {
 	@Override
 	public NetworkViewCollectionTaskContext createTaskContext() {
-		return new NetworkViewCollectionTaskContext();
+		return new NetworkViewCollectionTaskContextImpl();
 	}
 }

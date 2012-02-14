@@ -16,6 +16,8 @@ import org.cytoscape.io.internal.read.AbstractNetworkViewReaderTester;
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
 import org.cytoscape.io.internal.util.ReadCache;
 import org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager;
+import org.cytoscape.io.read.InputStreamTaskContext;
+import org.cytoscape.io.read.InputStreamTaskContextImpl;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -72,7 +74,9 @@ public class XGMMLNetworkReaderTest extends AbstractNetworkViewReaderTester {
 		
 		ByteArrayInputStream is = new ByteArrayInputStream("".getBytes("UTF-8")); // TODO: use XGMML string or load from file
 
-		reader = new XGMMLNetworkReader(is, networkViewFactory, networkFactory, renderingEngineMgr, rootNetworkManager,
+		InputStreamTaskContext context = new InputStreamTaskContextImpl();
+		context.setInputStream(is, null);
+		reader = new XGMMLNetworkReader(context, networkViewFactory, networkFactory, renderingEngineMgr, rootNetworkManager,
 				readDataMgr, parser, unrecognizedVisualPropertyMgr);
 
 		CyTableManager tableMgr= mock(CyTableManager.class);
@@ -158,7 +162,10 @@ public class XGMMLNetworkReaderTest extends AbstractNetworkViewReaderTester {
 
 	private CyNetworkView[] getViews(String file) throws Exception {
 		File f = new File("./src/test/resources/testData/xgmml/" + file);
-		XGMMLNetworkReader snvp = new XGMMLNetworkReader(new FileInputStream(f), viewFactory, netFactory,
+		
+		InputStreamTaskContext context = new InputStreamTaskContextImpl();
+		context.setInputStream(new FileInputStream(f), null);
+		XGMMLNetworkReader snvp = new XGMMLNetworkReader(context, viewFactory, netFactory,
 				renderingEngineMgr, rootNetworkManager, readDataMgr, parser, unrecognizedVisualPropertyMgr);
 		snvp.run(taskMonitor);
 

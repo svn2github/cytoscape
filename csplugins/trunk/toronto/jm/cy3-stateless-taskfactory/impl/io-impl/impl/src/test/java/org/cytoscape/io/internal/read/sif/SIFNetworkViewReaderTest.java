@@ -1,6 +1,5 @@
 package org.cytoscape.io.internal.read.sif;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -9,9 +8,11 @@ import java.io.FileInputStream;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.io.internal.read.AbstractNetworkViewReaderTester;
+import org.cytoscape.io.read.InputStreamTaskContext;
+import org.cytoscape.io.read.InputStreamTaskContextImpl;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskIterator;
 import org.junit.Test;
@@ -84,7 +85,9 @@ public class SIFNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 	private  SIFNetworkReader readFile(String file) throws Exception {
 		File f = new File("./src/test/resources/testData/sif/" + file);
 		final CyEventHelper eventHelper = mock(CyEventHelper.class);
-		SIFNetworkReader snvp = new SIFNetworkReader(new FileInputStream(f), layouts, viewFactory, netFactory, eventHelper);
+		InputStreamTaskContext context = new InputStreamTaskContextImpl();
+		context.setInputStream(new FileInputStream(f), null);
+		SIFNetworkReader snvp = new SIFNetworkReader(context.getInputStream(), layouts, viewFactory, netFactory, eventHelper);
 		new TaskIterator(snvp);
 		snvp.run(taskMonitor);
 

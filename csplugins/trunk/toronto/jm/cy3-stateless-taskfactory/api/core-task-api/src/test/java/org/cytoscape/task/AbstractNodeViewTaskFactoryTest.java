@@ -78,17 +78,17 @@ public class AbstractNodeViewTaskFactoryTest {
 	public void testGoodSetNodeView() throws Exception {
 		NodeViewTaskContext context = factory.createTaskContext();
 		context.setNodeView((View<CyNode>)mock(View.class),mock(CyNetworkView.class));
-		assertNotNull( context.nodeView );
-		assertNotNull( context.netView );
+		assertNotNull( context.getNodeView() );
+		assertNotNull( context.getNetworkView());
 	}
 
 	@Test
 	public void testNodeViewNotFinal() throws Exception {
 		NodeViewTaskContext context = factory.createTaskContext();
 		context.setNodeView((View<CyNode>)mock(View.class),mock(CyNetworkView.class));
-		View<CyNode> t1 = context.nodeView;
+		View<CyNode> t1 = context.getNodeView();
 		context.setNodeView((View<CyNode>)mock(View.class),mock(CyNetworkView.class));
-		View<CyNode> t2 = context.nodeView;
+		View<CyNode> t2 = context.getNodeView();
 		assertFalse( (t1 == t2) );
 	}
 
@@ -96,9 +96,9 @@ public class AbstractNodeViewTaskFactoryTest {
 	public void testNetworkViewNotFinal() throws Exception {
 		NodeViewTaskContext context = factory.createTaskContext();
 		context.setNodeView((View<CyNode>)mock(View.class),mock(CyNetworkView.class));
-		CyNetworkView t1 = context.netView;
+		CyNetworkView t1 = context.getNetworkView();
 		context.setNodeView((View<CyNode>)mock(View.class),mock(CyNetworkView.class));
-		CyNetworkView t2 = context.netView;
+		CyNetworkView t2 = context.getNetworkView();
 		assertFalse( (t1 == t2) );
 	}
 }

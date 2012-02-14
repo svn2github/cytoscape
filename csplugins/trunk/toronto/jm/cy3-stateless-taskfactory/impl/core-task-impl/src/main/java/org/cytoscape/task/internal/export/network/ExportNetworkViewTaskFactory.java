@@ -2,6 +2,7 @@ package org.cytoscape.task.internal.export.network;
 
 import org.cytoscape.io.write.CyNetworkViewWriterManager;
 import org.cytoscape.task.AbstractNetworkViewTaskFactory;
+import org.cytoscape.task.NetworkViewTaskContext;
 import org.cytoscape.work.TaskIterator;
 
 public class ExportNetworkViewTaskFactory extends AbstractNetworkViewTaskFactory {
@@ -13,8 +14,8 @@ public class ExportNetworkViewTaskFactory extends AbstractNetworkViewTaskFactory
 	}
 	
 	@Override
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(2,new CyNetworkViewWriter(writerManager, view));
+	public TaskIterator createTaskIterator(NetworkViewTaskContext context) {
+		return new TaskIterator(2,new CyNetworkViewWriter(writerManager, context.getNetworkView()));
 	}
 
 }

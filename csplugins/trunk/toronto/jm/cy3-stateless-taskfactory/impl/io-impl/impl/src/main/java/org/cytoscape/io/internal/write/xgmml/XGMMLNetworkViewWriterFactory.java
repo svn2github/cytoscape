@@ -1,11 +1,17 @@
 package org.cytoscape.io.internal.write.xgmml;
 
+import java.io.OutputStream;
+
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager;
 import org.cytoscape.io.internal.write.AbstractCyNetworkViewWriterFactory;
+import org.cytoscape.io.write.CyNetworkViewWriterContext;
+import org.cytoscape.io.write.CyNetworkViewWriterContextImpl;
 import org.cytoscape.io.write.CyWriter;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.RenderingEngineManager;
 
 public class XGMMLNetworkViewWriterFactory extends AbstractCyNetworkViewWriterFactory {
@@ -28,7 +34,16 @@ public class XGMMLNetworkViewWriterFactory extends AbstractCyNetworkViewWriterFa
 	}
 
 	@Override
-    public CyWriter getWriterTask() {
+	public CyNetworkViewWriterContext createTaskContext() {
+		return new CyNetworkViewWriterContextImpl();
+	}
+	
+	@Override
+    public CyWriter createWriterTask(CyNetworkViewWriterContext context) {
+		CyNetwork network = context.getNetwork();
+		CyNetworkView view = context.getNetworkView();
+		OutputStream outputStream = context.getOutputStream();
+		
         if (view != null) {
         	return new XGMMLWriter(outputStream, renderingEngineManager, view, unrecognizedVisualPropertyMgr,
         			networkManager, rootNetworkManager);

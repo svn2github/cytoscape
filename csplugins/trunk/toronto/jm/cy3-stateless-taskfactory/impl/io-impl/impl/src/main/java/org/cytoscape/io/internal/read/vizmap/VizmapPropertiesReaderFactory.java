@@ -30,6 +30,7 @@ package org.cytoscape.io.internal.read.vizmap;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.read.AbstractPropertyReaderFactory;
 import org.cytoscape.io.internal.util.vizmap.VisualStyleSerializer;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.work.TaskIterator;
 
 
@@ -42,7 +43,7 @@ public class VizmapPropertiesReaderFactory extends AbstractPropertyReaderFactory
         this.visualStyleSerializer = visualStyleSerializer;
     }
 
-    public TaskIterator createTaskIterator() {
-        return new TaskIterator( new VizmapPropertiesReader(inputStream, visualStyleSerializer) );
+    public TaskIterator createTaskIterator(InputStreamTaskContext context) {
+        return new TaskIterator( new VizmapPropertiesReader(context, visualStyleSerializer) );
     }
 }

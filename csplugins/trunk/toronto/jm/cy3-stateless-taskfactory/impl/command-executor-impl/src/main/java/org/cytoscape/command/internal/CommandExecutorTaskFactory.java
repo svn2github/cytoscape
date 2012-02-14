@@ -33,7 +33,7 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class CommandExecutorTaskFactory implements TaskFactory {
+public class CommandExecutorTaskFactory implements TaskFactory<Object> {
 
 	private final CommandExecutorImpl cei;
 
@@ -41,7 +41,12 @@ public class CommandExecutorTaskFactory implements TaskFactory {
 		this.cei = cei;
 	}
 
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(new CommandExecutorTask(cei));
 	} 
+	
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
 }

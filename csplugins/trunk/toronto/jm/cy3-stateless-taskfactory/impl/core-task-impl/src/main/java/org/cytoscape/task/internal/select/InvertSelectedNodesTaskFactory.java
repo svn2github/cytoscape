@@ -32,8 +32,8 @@ package org.cytoscape.task.internal.select;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
+import org.cytoscape.task.NetworkTaskContext;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -52,8 +52,8 @@ public class InvertSelectedNodesTaskFactory extends AbstractNetworkTaskFactory {
 		this.eventHelper        = eventHelper;
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new InvertSelectedNodesTask(undoSupport, network,
+	public TaskIterator createTaskIterator(NetworkTaskContext context) {
+		return new TaskIterator(new InvertSelectedNodesTask(undoSupport, context.getNetwork(),
 		                                                    networkViewManager, eventHelper));
 	} 
 }

@@ -39,7 +39,7 @@ public class CPathNetworkImportTask implements Task {
 
         //  Create the task
         ExecuteGetRecordByCPathIdTaskFactory taskFactory = factory.createExecuteGetRecordByCPathIdTaskFactory(client, ids, format, CPathProperties.getInstance().getCPathServerName());
-        TaskIterator iterator = taskFactory.createTaskIterator();
+        TaskIterator iterator = taskFactory.createTaskIterator(taskFactory.createTaskContext());
         while (iterator.hasNext()) {
         	Task task = iterator.next();
             task.run(taskMonitor);

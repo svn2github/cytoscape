@@ -4,7 +4,7 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class SubnetworkBuilderTaskFactory implements TaskFactory {
+public class SubnetworkBuilderTaskFactory implements TaskFactory<Object> {
 
 	private final CyNetworkManager networkManager;
 	private final SubnetworkBuilderUtil util;
@@ -15,7 +15,12 @@ public class SubnetworkBuilderTaskFactory implements TaskFactory {
 		this.util = util;
 	}
 
-	public TaskIterator createTaskIterator() {
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(2,new SubnetworkBuilderTask(networkManager, util));
 	}
 }

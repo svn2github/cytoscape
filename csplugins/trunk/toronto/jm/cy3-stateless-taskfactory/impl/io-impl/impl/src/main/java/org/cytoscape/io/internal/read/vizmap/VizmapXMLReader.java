@@ -27,22 +27,21 @@
  */
 package org.cytoscape.io.internal.read.vizmap;
 
-import java.io.InputStream;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.cytoscape.io.internal.read.AbstractVizmapReader;
 import org.cytoscape.io.internal.util.vizmap.VisualStyleSerializer;
 import org.cytoscape.io.internal.util.vizmap.model.Vizmap;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.work.TaskMonitor;
 
 public class VizmapXMLReader extends AbstractVizmapReader {
 
     private static final String VIZMAP_PACKAGE = Vizmap.class.getPackage().getName();
 
-    public VizmapXMLReader(InputStream is, VisualStyleSerializer visualStyleSerializer) {
-        super(is, visualStyleSerializer);
+    public VizmapXMLReader(InputStreamTaskContext context, VisualStyleSerializer visualStyleSerializer) {
+        super(context.getInputStream(), visualStyleSerializer);
     }
 
     public void run(TaskMonitor tm) throws Exception {

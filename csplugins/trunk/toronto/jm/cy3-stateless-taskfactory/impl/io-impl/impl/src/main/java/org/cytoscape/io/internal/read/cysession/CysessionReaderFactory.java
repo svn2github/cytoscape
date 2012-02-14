@@ -30,6 +30,7 @@ package org.cytoscape.io.internal.read.cysession;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.read.AbstractPropertyReaderFactory;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.work.TaskIterator;
 
 
@@ -40,7 +41,7 @@ public class CysessionReaderFactory extends AbstractPropertyReaderFactory {
 		super(filter);
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator( new CysessionReader(inputStream) );
+	public TaskIterator createTaskIterator(InputStreamTaskContext context) {
+		return new TaskIterator( new CysessionReader(context) );
 	}
 }

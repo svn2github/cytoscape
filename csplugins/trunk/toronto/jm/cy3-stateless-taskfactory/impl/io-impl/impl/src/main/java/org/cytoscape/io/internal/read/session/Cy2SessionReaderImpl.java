@@ -63,6 +63,7 @@ import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyPropertyReader;
 import org.cytoscape.io.read.CyPropertyReaderManager;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.io.read.VizmapReader;
 import org.cytoscape.io.read.VizmapReaderManager;
 import org.cytoscape.model.CyEdge;
@@ -114,13 +115,13 @@ public class Cy2SessionReaderImpl extends AbstractSessionReader {
 
 	/**
 	 */
-	public Cy2SessionReaderImpl(final InputStream sourceInputStream,
+	public Cy2SessionReaderImpl(final InputStreamTaskContext context,
 								final ReadCache cache,
 								final CyNetworkReaderManager networkReaderMgr,
 								final CyPropertyReaderManager propertyReaderMgr,
 								final VizmapReaderManager vizmapReaderMgr,
 								final CyRootNetworkManager rootNetworkManager) {
-		super(sourceInputStream, cache);
+		super(context.getInputStream(), cache);
 		
 		if (networkReaderMgr == null)
 			throw new NullPointerException("network reader manager is null!");

@@ -1,10 +1,10 @@
 package org.cytoscape.biopax.internal;
 
-import java.io.InputStream;
-
 import org.cytoscape.biopax.internal.action.BioPaxViewTracker;
 import org.cytoscape.biopax.internal.util.BioPaxVisualStyleUtil;
 import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.read.InputStreamTaskContext;
+import org.cytoscape.io.read.InputStreamTaskContextImpl;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.session.CyNetworkNaming;
@@ -12,7 +12,7 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskIterator;
 
-public class BioPaxReaderTaskFactory implements InputStreamTaskFactory {
+public class BioPaxReaderTaskFactory implements InputStreamTaskFactory<InputStreamTaskContext> {
 
 	private final CyFileFilter filter;
 	private final CyNetworkFactory networkFactory;
@@ -20,8 +20,6 @@ public class BioPaxReaderTaskFactory implements InputStreamTaskFactory {
 	private final CyNetworkNaming naming;
 	private final BioPaxViewTracker networkTracker;
 
-	private InputStream inputStream;
-	private String inputName;
 	private VisualMappingManager mappingManager;
 	private BioPaxVisualStyleUtil bioPaxVisualStyleUtil;
 
@@ -35,13 +33,16 @@ public class BioPaxReaderTaskFactory implements InputStreamTaskFactory {
 		this.networkTracker = networkTracker;
 		this.mappingManager = mappingManager;
 		this.bioPaxVisualStyleUtil = bioPaxVisualStyleUtil;
-		this.inputName = "BioPAX_Network"; //default name fallback
 	}
 	
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(InputStreamTaskContext context) {
+		String inputName = context.getInputName();
+		if (inputName == null) {
+			inputName = "BioPAX_Network"; //default name fallback
+		}
 		BioPaxReaderTask task = new BioPaxReaderTask(
-				inputStream, inputName, networkFactory, viewFactory, naming, 
+				context.getInputStream(), inputName, networkFactory, viewFactory, naming, 
 				networkTracker, mappingManager, bioPaxVisualStyleUtil);
 		return new TaskIterator(task);
 	}
@@ -50,11 +51,9 @@ public class BioPaxReaderTaskFactory implements InputStreamTaskFactory {
 	public CyFileFilter getFileFilter() {
 		return filter;
 	}
-
+	
 	@Override
-	public void setInputStream(InputStream inputStream, String inputName) {
-		this.inputStream = inputStream;
-		this.inputName = inputName;
+	public InputStreamTaskContext createTaskContext() {
+		return new InputStreamTaskContextImpl();
 	}
-
 }

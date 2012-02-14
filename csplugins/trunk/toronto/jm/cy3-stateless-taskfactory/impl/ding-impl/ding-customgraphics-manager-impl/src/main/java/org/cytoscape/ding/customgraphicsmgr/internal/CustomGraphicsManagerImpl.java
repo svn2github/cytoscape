@@ -65,7 +65,7 @@ public final class CustomGraphicsManagerImpl implements CustomGraphicsManager, C
 
 		final RestoreImageTaskFactory taskFactory = new RestoreImageTaskFactory(imageHomeDirectory, this);
 
-		taskManager.execute(taskFactory);
+		taskManager.execute(taskFactory, taskFactory.createTaskContext());
 	}
 
 
@@ -214,7 +214,7 @@ public final class CustomGraphicsManagerImpl implements CustomGraphicsManager, C
 		try {
 
 			//FIXME how this section can wait until everything is done?
-			taskManager.execute(factory);
+			taskManager.execute(factory, factory.createTaskContext());
 		} catch (Exception e1) {
 			logger.error("Could not save images to disk.", e1);
 		}

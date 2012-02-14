@@ -31,22 +31,19 @@ package org.cytoscape.task.internal.session;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.io.read.CySessionReaderManager;
 import org.cytoscape.io.util.RecentlyOpenedTracker;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CySession;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.task.creation.LoadSession;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.SynchronousTaskManager;
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class OpenSessionTaskFactory implements TaskFactory, LoadSession {
+public class OpenSessionTaskFactory extends AbstractTaskFactory implements LoadSession {
 
 	private CySessionManager mgr;
 	private CySessionReaderManager rmgr;
@@ -68,7 +65,7 @@ public class OpenSessionTaskFactory implements TaskFactory, LoadSession {
 		this.syncTaskManager = syncTaskManager;
 	}
 
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object context) {
 		task = new OpenSessionTask(mgr, rmgr, appManager, tracker);
 		return new TaskIterator(2, task);
 	}
@@ -79,7 +76,7 @@ public class OpenSessionTaskFactory implements TaskFactory, LoadSession {
 		m.put("file", file);
 
 		syncTaskManager.setExecutionContext(m);
-		syncTaskManager.execute(this);
+		syncTaskManager.execute(this, createTaskContext());
 
 		return task.getCySession();
 	}

@@ -71,6 +71,7 @@ import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyPropertyReader;
 import org.cytoscape.io.read.CyPropertyReaderManager;
 import org.cytoscape.io.read.CyTableReader;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.io.read.VizmapReader;
 import org.cytoscape.io.read.VizmapReaderManager;
 import org.cytoscape.model.CyColumn;
@@ -116,14 +117,14 @@ public class Cy3SessionReaderImpl extends AbstractSessionReader {
 	private boolean networksExtracted;
 
 
-	public Cy3SessionReaderImpl(final InputStream sourceInputStream,
+	public Cy3SessionReaderImpl(final InputStreamTaskContext context,
 							    final ReadCache cache,
 							    final CyNetworkReaderManager networkReaderMgr,
 							    final CyPropertyReaderManager propertyReaderMgr,
 							    final VizmapReaderManager vizmapReaderMgr,
 							    final CSVCyReaderFactory csvCyReaderFactory,
 							    final CyNetworkTableManager networkTableManager) {
-		super(sourceInputStream, cache);
+		super(context.getInputStream(), cache);
 
 		if (networkReaderMgr == null) throw new NullPointerException("network reader manager is null!");
 		this.networkReaderMgr = networkReaderMgr;
@@ -223,8 +224,9 @@ public class Cy3SessionReaderImpl extends AbstractSessionReader {
 	}
 
 	private void extractTable(InputStream stream, String entryName) throws Exception {
-		csvCyReaderFactory.setInputStream(stream, entryName);
-		CyTableReader reader = (CyTableReader) csvCyReaderFactory.createTaskIterator().next();
+		InputStreamTaskContext context = csvCyReaderFactory.createTaskContext();
+		context.setInputStream(stream, entryName);
+		CyTableReader reader = (CyTableReader) csvCyReaderFactory.createTaskIterator(context).next();
 		reader.run(taskMonitor);
 
 		// Assume one table per entry

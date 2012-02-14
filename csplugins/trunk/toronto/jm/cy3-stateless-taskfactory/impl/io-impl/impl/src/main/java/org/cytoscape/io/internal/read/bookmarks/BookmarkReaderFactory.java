@@ -28,13 +28,10 @@
 package org.cytoscape.io.internal.read.bookmarks;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.work.TaskIterator;
-
 import org.cytoscape.io.internal.read.AbstractPropertyReaderFactory;
+import org.cytoscape.io.read.InputStreamTaskContext;
+import org.cytoscape.work.TaskIterator;
 
 
 public class BookmarkReaderFactory extends AbstractPropertyReaderFactory {
@@ -44,7 +41,7 @@ public class BookmarkReaderFactory extends AbstractPropertyReaderFactory {
 		super(filter);
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator( new BookmarkReader(inputStream) );
+	public TaskIterator createTaskIterator(InputStreamTaskContext context) {
+		return new TaskIterator( new BookmarkReader(context) );
 	}
 }

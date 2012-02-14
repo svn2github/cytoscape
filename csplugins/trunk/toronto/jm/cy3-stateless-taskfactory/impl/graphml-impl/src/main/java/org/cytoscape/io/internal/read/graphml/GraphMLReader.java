@@ -14,6 +14,7 @@ import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
+import org.cytoscape.task.NetworkViewTaskContext;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
@@ -98,11 +99,12 @@ public class GraphMLReader extends AbstractTask implements CyNetworkReader {
 	public CyNetworkView buildCyNetworkView(CyNetwork network) {
 		final CyNetworkView view = cyNetworkViewFactory.createNetworkView(network);
 
-		final CyLayoutAlgorithm layout = layouts.getDefaultLayout();
-		layout.setNetworkView(view);
+		final CyLayoutAlgorithm<NetworkViewTaskContext> layout = layouts.getDefaultLayout();
+		NetworkViewTaskContext context = layout.createTaskContext();
+		context.setNetworkView(view);
 		
 		// Force to run this task here to avoid concurrency problem.
-		TaskIterator itr = layout.createTaskIterator();
+		TaskIterator itr = layout.createTaskIterator(context);
 		Task nextTask = itr.next();
 		try {
 			nextTask.run(taskMonitor);

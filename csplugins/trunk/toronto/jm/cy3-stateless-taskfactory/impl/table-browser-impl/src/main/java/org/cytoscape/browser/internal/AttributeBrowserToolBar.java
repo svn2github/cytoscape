@@ -73,6 +73,7 @@ import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.task.TableTaskContext;
 import org.cytoscape.task.TableTaskFactory;
 import org.cytoscape.util.swing.CheckBoxJList;
 import org.cytoscape.work.swing.DialogTaskManager;
@@ -112,7 +113,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 	private AttributeListModel attrListModel;
 	private final EquationCompiler compiler;
-	private final TableTaskFactory deleteTableTaskFactoryService;
+	private final TableTaskFactory<TableTaskContext> deleteTableTaskFactoryService;
 	private final DialogTaskManager guiTaskManagerServiceRef;
 	
 	private final JToggleButton selectionModeButton;
@@ -733,8 +734,9 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			// if user selects yes delete the table
 			if (_confirmValue == JOptionPane.OK_OPTION)
 			{
-				deleteTableTaskFactoryService.setTable(table);
-				guiTaskManagerServiceRef.execute(deleteTableTaskFactoryService);
+				TableTaskContext context = deleteTableTaskFactoryService.createTaskContext();
+				context.setTable(table);
+				guiTaskManagerServiceRef.execute(deleteTableTaskFactoryService, context);
 				
 				//this.tableManager.deleteTable(table.getSUID());
 			}						

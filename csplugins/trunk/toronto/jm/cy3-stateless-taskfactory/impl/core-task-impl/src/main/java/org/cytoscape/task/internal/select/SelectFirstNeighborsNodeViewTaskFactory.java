@@ -31,6 +31,7 @@ package org.cytoscape.task.internal.select;
 
 import org.cytoscape.model.CyEdge.Type;
 import org.cytoscape.task.AbstractNodeViewTaskFactory;
+import org.cytoscape.task.NodeViewTaskContext;
 import org.cytoscape.work.TaskIterator;
 
 public class SelectFirstNeighborsNodeViewTaskFactory extends AbstractNodeViewTaskFactory {
@@ -42,7 +43,7 @@ public class SelectFirstNeighborsNodeViewTaskFactory extends AbstractNodeViewTas
 		this.direction = direction;
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new SelectFirstNeighborsNodeViewTask(nodeView, netView, direction));
+	public TaskIterator createTaskIterator(NodeViewTaskContext context) {
+		return new TaskIterator(new SelectFirstNeighborsNodeViewTask(context.getNodeView(), context.getNetworkView(), direction));
 	}
 }

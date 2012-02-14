@@ -34,7 +34,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.io.internal.read.AbstractNetworkReader;
@@ -44,6 +43,7 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.task.NetworkViewTaskContext;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
@@ -71,10 +71,10 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 	
 	private TaskMonitor parentTaskMonitor;
 
-	public SIFNetworkReader(InputStream is, CyLayoutAlgorithmManager layouts,
+	public SIFNetworkReader(InputStream inputStream, CyLayoutAlgorithmManager layouts,
 			CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory,
 			final CyEventHelper eventHelper) {
-		super(is, cyNetworkViewFactory, cyNetworkFactory);
+		super(inputStream, cyNetworkViewFactory, cyNetworkFactory);
 		this.layouts = layouts;
 		this.eventHelper = eventHelper;
 	}
@@ -190,11 +190,13 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 	public CyNetworkView buildCyNetworkView(CyNetwork network) {
 		final CyNetworkView view = cyNetworkViewFactory.createNetworkView(network);
 
-		final CyLayoutAlgorithm layout = layouts.getDefaultLayout();
-		layout.setNetworkView(view);
+		final CyLayoutAlgorithm<NetworkViewTaskContext> layout = layouts.getDefaultLayout();
+		NetworkViewTaskContext context = layout.createTaskContext();
+		context.setNetworkView(view);
 		
 		// Force to run this task here to avoid concurrency problem.
-		TaskIterator itr = layout.createTaskIterator();
+		layout.createTaskContext();
+		TaskIterator itr = layout.createTaskIterator(context);
 		Task nextTask = itr.next();
 		try {
 			nextTask.run(parentTaskMonitor);

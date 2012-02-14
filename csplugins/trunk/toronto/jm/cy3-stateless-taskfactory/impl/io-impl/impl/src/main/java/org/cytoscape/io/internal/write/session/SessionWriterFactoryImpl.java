@@ -1,16 +1,16 @@
 package org.cytoscape.io.internal.write.session;
 
-import java.io.OutputStream;
-
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.write.CyNetworkViewWriterManager;
 import org.cytoscape.io.write.CyPropertyWriterManager;
+import org.cytoscape.io.write.CySessionWriterContext;
+import org.cytoscape.io.write.CySessionWriterContextImpl;
 import org.cytoscape.io.write.CySessionWriterFactory;
 import org.cytoscape.io.write.CyTableWriterManager;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.io.write.VizmapWriterManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
-import org.cytoscape.session.CySession;
+import org.cytoscape.work.TaskIterator;
 
 public class SessionWriterFactoryImpl implements CySessionWriterFactory {
 	
@@ -26,9 +26,6 @@ public class SessionWriterFactoryImpl implements CySessionWriterFactory {
 	private final CyPropertyWriterManager propertyWriterMgr;
 	private final CyTableWriterManager tableWriterMgr;
 	private final VizmapWriterManager vizmapWriterMgr;
-
-	private OutputStream outputStream;
-	private CySession session;
 
 
 
@@ -57,27 +54,28 @@ public class SessionWriterFactoryImpl implements CySessionWriterFactory {
 		this.tableWriterMgr = tableWriterMgr;
 		this.vizmapWriterMgr = vizmapWriterMgr;
 	}
+
+	@Override
+	public CySessionWriterContext createTaskContext() {
+		return new CySessionWriterContextImpl();
+	}
 	
 	@Override
-	public CyWriter getWriterTask() {
-		return new SessionWriterImpl(outputStream, session, networkViewWriterMgr, rootNetworkManager,
+	public CyWriter createWriterTask(CySessionWriterContext context) {
+		return new SessionWriterImpl(context.getOutputStream(), context.getSession(), networkViewWriterMgr, rootNetworkManager,
 		                             propertyWriterMgr, tableWriterMgr, vizmapWriterMgr, xgmmlFilter,
 		                             bookmarksFilter, cysessionFilter, propertiesFilter,
 		                             tableFilter, vizmapFilter);
 	}
 
 	@Override
-	public void setOutputStream(OutputStream outputStream) {
-		this.outputStream = outputStream;
+	public TaskIterator createTaskIterator(CySessionWriterContext context) {
+		return new TaskIterator(createWriterTask(context));
 	}
-
+	
 	@Override
 	public CyFileFilter getFileFilter() {
 		return thisFilter;
 	}
 
-	@Override
-	public void setSession(CySession session) {
-		this.session = session;
-	}
 }

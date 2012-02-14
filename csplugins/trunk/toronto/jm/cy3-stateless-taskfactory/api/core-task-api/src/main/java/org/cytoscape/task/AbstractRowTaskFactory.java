@@ -37,6 +37,6 @@ import org.cytoscape.model.CyRow;
 public abstract class AbstractRowTaskFactory implements RowTaskFactory<RowTaskContext> {
 	@Override
 	public RowTaskContext createTaskContext() {
-		return new RowTaskContext();
+		return new RowTaskContextImpl();
 	}
 }

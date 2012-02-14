@@ -30,6 +30,7 @@ package org.cytoscape.task.internal.table;
 
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.task.AbstractTableCellTaskFactory;
+import org.cytoscape.task.TableCellTaskContext;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -42,7 +43,10 @@ public final class CopyValueToEntireColumnTaskFactory extends AbstractTableCellT
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(TableCellTaskContext context) {
+		CyColumn column = context.getColumn();
+		Object primaryKeyValue = context.getPrimaryKeyValue();
+		
 		if (column == null)
 			throw new IllegalStateException("\"column\" was not set!");
 		if (primaryKeyValue == null)

@@ -32,6 +32,7 @@ package org.cytoscape.task.internal.group;
 import org.cytoscape.group.CyGroupFactory;
 import org.cytoscape.group.CyGroupManager;
 import org.cytoscape.task.AbstractNetworkViewTaskFactory;
+import org.cytoscape.task.NetworkViewTaskContext;
 import org.cytoscape.work.TaskIterator;
 
 public class GroupNodesTaskFactory extends AbstractNetworkViewTaskFactory {
@@ -44,7 +45,7 @@ public class GroupNodesTaskFactory extends AbstractNetworkViewTaskFactory {
 		this.groupFactory = groupFactory;
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new GroupNodesTask(view, mgr, groupFactory));
+	public TaskIterator createTaskIterator(NetworkViewTaskContext context) {
+		return new TaskIterator(new GroupNodesTask(context.getNetworkView(), mgr, groupFactory));
 	}
 }

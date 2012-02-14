@@ -8,7 +8,7 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory {
+public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory<Object> {
 
 	private final CPathWebService webApi;
 	private final long[] ids;
@@ -31,7 +31,12 @@ public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory {
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	@Override
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(new ExecuteGetRecordByCPathId(webApi, ids, format, networkTitle, networkToMerge, cPathFactory, mappingManager));
 	}
 

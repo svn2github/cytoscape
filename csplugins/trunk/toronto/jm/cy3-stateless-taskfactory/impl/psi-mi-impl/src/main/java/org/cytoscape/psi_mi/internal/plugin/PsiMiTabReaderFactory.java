@@ -1,9 +1,10 @@
 package org.cytoscape.psi_mi.internal.plugin;
 
-import java.io.InputStream;
 import java.util.Properties;
 
 import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.read.InputStreamTaskContext;
+import org.cytoscape.io.read.InputStreamTaskContextImpl;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.property.CyProperty;
@@ -11,7 +12,7 @@ import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class PsiMiTabReaderFactory implements InputStreamTaskFactory {
+public class PsiMiTabReaderFactory implements InputStreamTaskFactory<InputStreamTaskContext> {
 
 	private final CyFileFilter filter;
 
@@ -21,9 +22,6 @@ public class PsiMiTabReaderFactory implements InputStreamTaskFactory {
 
 	private final CyProperty<Properties> prop;
 	
-	private InputStream inputStream;
-	private String inputName;
-
 	public PsiMiTabReaderFactory(
 			CyFileFilter filter,
 			CyNetworkViewFactory cyNetworkViewFactory,
@@ -36,8 +34,13 @@ public class PsiMiTabReaderFactory implements InputStreamTaskFactory {
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new PsiMiTabReader(inputStream,
+	public InputStreamTaskContext createTaskContext() {
+		return new InputStreamTaskContextImpl();
+	}
+	
+	@Override
+	public TaskIterator createTaskIterator(InputStreamTaskContext context) {
+		return new TaskIterator(new PsiMiTabReader(context.getInputStream(),
 				cyNetworkViewFactory, cyNetworkFactory, layouts, prop));
 	}
 
@@ -45,13 +48,4 @@ public class PsiMiTabReaderFactory implements InputStreamTaskFactory {
 	public CyFileFilter getFileFilter() {
 		return filter;
 	}
-
-	@Override
-	public void setInputStream(InputStream is, String in) {
-		if (is == null)
-			throw new NullPointerException("Input stream is null");
-		this.inputStream = is;
-		this.inputName = in;
-	}
-
 }

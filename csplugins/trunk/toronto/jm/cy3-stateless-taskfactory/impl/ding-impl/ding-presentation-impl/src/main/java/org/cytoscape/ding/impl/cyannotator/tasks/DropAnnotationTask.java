@@ -14,6 +14,7 @@ import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 
+import org.cytoscape.dnd.DropNetworkViewTaskContext;
 import org.cytoscape.dnd.DropUtil;
 import org.cytoscape.event.CyEventHelper;
 
@@ -39,10 +40,10 @@ public class DropAnnotationTask extends AbstractNetworkViewTask {
 	private static final Logger logger = LoggerFactory.getLogger(DropAnnotationTask.class);
 	
 	
-	public DropAnnotationTask(CyNetworkView view, Transferable t, Point2D location, BasicGraphicalEntity bge, AnnotationFactory annotationFactory) {
-		super(view);
-		this.t = t;
-		this.location = location;
+	public DropAnnotationTask(DropNetworkViewTaskContext context, BasicGraphicalEntity bge, AnnotationFactory annotationFactory) {
+		super(context.getNetworkView());
+		this.t = context.getTransferable();
+		this.location = context.getTransformedPoint();
 		this.bge = bge;
 		this.annotationFactory = annotationFactory;
 	}

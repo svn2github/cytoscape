@@ -38,6 +38,6 @@ package org.cytoscape.task;
 public abstract class AbstractEdgeViewTaskFactory implements EdgeViewTaskFactory<EdgeViewTaskContext> {
 	@Override
 	public EdgeViewTaskContext createTaskContext() {
-		return new EdgeViewTaskContext();
+		return new EdgeViewTaskContextImpl();
 	}
 }

@@ -26,7 +26,16 @@ class TFExecutor implements Executor {
 			// TODO
 			// At some point in the future, this code should be reorganized into
 			// a proper TaskManager - that's really what's happening here.
-			TaskIterator ti = tf.createTaskIterator();
+			Object context = tf.createTaskContext();
+			execute(args, context);
+		} catch (Exception e) {
+			logger.warn("Task failed to execute",e);
+		}
+	}
+
+	protected void execute(String args, Object context) {
+		try {
+			TaskIterator ti = tf.createTaskIterator(context);
 			while (ti.hasNext()) {
 				Task t = ti.next();
 				interceptor.setArgString(args);

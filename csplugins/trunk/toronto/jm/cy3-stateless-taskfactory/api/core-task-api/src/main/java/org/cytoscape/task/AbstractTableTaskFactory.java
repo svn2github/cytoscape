@@ -37,6 +37,6 @@ import org.cytoscape.model.CyTable;
 public abstract class AbstractTableTaskFactory implements TableTaskFactory<TableTaskContext> {
 	@Override
 	public TableTaskContext createTaskContext() {
-		return new TableTaskContext();
+		return new TableTaskContextImpl();
 	}
 }

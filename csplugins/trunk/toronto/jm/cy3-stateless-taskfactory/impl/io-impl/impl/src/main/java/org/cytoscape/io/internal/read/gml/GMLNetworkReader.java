@@ -27,7 +27,6 @@
  */
 package org.cytoscape.io.internal.read.gml;
 
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +38,7 @@ import java.util.Vector;
 
 import org.cytoscape.io.internal.read.AbstractNetworkReader;
 import org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager;
+import org.cytoscape.io.read.InputStreamTaskContext;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -164,12 +164,12 @@ public class GMLNetworkReader extends AbstractNetworkReader {
 	private CyNetworkView view;
 	private CyNetwork network;
 
-	public GMLNetworkReader(InputStream inputStream,
+	public GMLNetworkReader(InputStreamTaskContext context,
 							CyNetworkFactory networkFactory,
 							CyNetworkViewFactory viewFactory,
 							RenderingEngineManager renderingEngineManager,
 							UnrecognizedVisualPropertyManager unrecognizedVisualPropertyMgr) {
-		super(inputStream, viewFactory, networkFactory);
+		super(context.getInputStream(), viewFactory, networkFactory);
 		this.renderingEngineManager = renderingEngineManager;
 		this.unrecognizedVisualPropertyMgr = unrecognizedVisualPropertyMgr;
 

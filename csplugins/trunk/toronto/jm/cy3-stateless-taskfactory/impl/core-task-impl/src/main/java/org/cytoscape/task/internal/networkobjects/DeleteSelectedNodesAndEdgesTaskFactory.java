@@ -39,7 +39,7 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 
 
-public class DeleteSelectedNodesAndEdgesTaskFactory implements TaskFactory {
+public class DeleteSelectedNodesAndEdgesTaskFactory implements TaskFactory<Object> {
 	private final UndoSupport undoSupport;
 	private final CyApplicationManager applicationManager;
 	private final CyNetworkViewManager networkViewManager;
@@ -59,7 +59,12 @@ public class DeleteSelectedNodesAndEdgesTaskFactory implements TaskFactory {
 		this.eventHelper          = eventHelper;
 	}
 
-	public TaskIterator createTaskIterator() {
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(
 			new DeleteSelectedNodesAndEdgesTask(undoSupport, applicationManager,
 							    networkViewManager,

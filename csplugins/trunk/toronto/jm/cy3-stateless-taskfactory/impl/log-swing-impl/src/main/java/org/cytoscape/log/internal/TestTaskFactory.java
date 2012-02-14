@@ -1,19 +1,17 @@
 package org.cytoscape.log.internal;
 
 
+import org.apache.log4j.Logger;
 import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskMonitor;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
 
-
-public class TestTaskFactory implements TaskFactory {
+public class TestTaskFactory extends AbstractTaskFactory {
 	int i = 0;
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object context) {
 		Task task = new TestTask(i);
 		i = (i + 1) % 4;
 		return new TaskIterator(task);

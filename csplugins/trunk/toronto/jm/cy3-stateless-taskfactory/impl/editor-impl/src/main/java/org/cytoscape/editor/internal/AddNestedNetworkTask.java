@@ -18,6 +18,7 @@ import org.cytoscape.work.ProvidesTitle;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
+import org.cytoscape.dnd.DropNodeViewTaskContext;
 import org.cytoscape.dnd.DropUtil;
 
 import org.slf4j.Logger;
@@ -38,10 +39,9 @@ public class AddNestedNetworkTask extends AbstractNodeViewTask {
 		return "Choose Network for Node";
 	}
 	
-	public AddNestedNetworkTask(View<CyNode> nv, CyNetworkView view, CyNetworkManager mgr,
-	                            Transferable t) {
-		super(nv,view);
-		this.t = t;
+	public AddNestedNetworkTask(DropNodeViewTaskContext context, CyNetworkManager mgr) {
+		super(context.getNodeView(), context.getNetworkView());
+		this.t = context.getTransferable();
 		nestedNetwork = new ListSingleSelection<CyNetwork>(new ArrayList<CyNetwork>(mgr.getNetworkSet()));
 	}
 

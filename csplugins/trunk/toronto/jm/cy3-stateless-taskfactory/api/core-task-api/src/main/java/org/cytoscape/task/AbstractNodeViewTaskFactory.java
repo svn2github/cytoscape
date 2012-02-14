@@ -37,6 +37,6 @@ package org.cytoscape.task;
 public abstract class AbstractNodeViewTaskFactory implements NodeViewTaskFactory<NodeViewTaskContext> {
 	@Override
 	public NodeViewTaskContext createTaskContext() {
-		return new NodeViewTaskContext();
+		return new NodeViewTaskContextImpl();
 	}
 }
