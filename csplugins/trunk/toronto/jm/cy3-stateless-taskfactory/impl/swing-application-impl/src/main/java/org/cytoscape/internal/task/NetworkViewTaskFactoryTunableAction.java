@@ -33,23 +33,30 @@ import java.awt.event.ActionEvent;
 import java.util.Map;
 
 import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.task.NetworkViewTaskContext;
 import org.cytoscape.task.NetworkViewTaskFactory;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.swing.DialogTaskManager;
 
 public class NetworkViewTaskFactoryTunableAction extends
-		TaskFactoryTunableAction<NetworkViewTaskFactory> {
+		TaskFactoryTunableAction<NetworkViewTaskFactory<?>> {
 
 	private static final long serialVersionUID = -394071170939169420L;
 
 	public NetworkViewTaskFactoryTunableAction(
 			DialogTaskManager manager,
-			NetworkViewTaskFactory factory, @SuppressWarnings("rawtypes") Map serviceProps,
-			final CyApplicationManager applicationManager) {
-		super(manager, factory, serviceProps, applicationManager);
+			NetworkViewTaskFactory<?> factory, @SuppressWarnings("rawtypes") Map serviceProps,
+			final CyApplicationManager applicationManager, TaskContextManager contextManager) {
+		super(manager, factory, serviceProps, applicationManager, contextManager);
 	}
 
 	public void actionPerformed(ActionEvent a) {
-		factory.setNetworkView(applicationManager.getCurrentNetworkView());
+		NetworkViewTaskContext context = contextManager.getContext(factory);
+		if (context == null) {
+			contextManager.registerTaskFactory(factory);
+		}
+
+		context.setNetworkView(applicationManager.getCurrentNetworkView());
 		super.actionPerformed(a);
 	}
 }

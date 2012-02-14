@@ -52,7 +52,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -84,7 +83,6 @@ import org.cytoscape.model.events.RowsSetEvent;
 import org.cytoscape.model.events.RowsSetListener;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.property.session.Parent;
 import org.cytoscape.task.NetworkCollectionTaskFactory;
 import org.cytoscape.task.NetworkTaskFactory;
 import org.cytoscape.task.NetworkViewCollectionTaskFactory;
@@ -96,6 +94,7 @@ import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedEvent;
 import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.slf4j.Logger;
@@ -134,6 +133,8 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 
 	private final Map<Long, NetworkTreeNode> treeNodeMap;
 
+	private TaskContextManager contextManager;
+
 	/**
 	 * Constructor for the Network Panel.
 	 * 
@@ -141,7 +142,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	 */
 	public NetworkPanel(final CyApplicationManager applicationManager, final CyNetworkManager netmgr,
 			final CyNetworkViewManager networkViewManager, final BirdsEyeViewHandler bird,
-			final DialogTaskManager taskManager) {
+			final DialogTaskManager taskManager, TaskContextManager contextManager) {
 		super();
 
 		this.treeNodeMap = new HashMap<Long, NetworkTreeNode>();
@@ -149,6 +150,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 		this.netmgr = netmgr;
 		this.networkViewManager = networkViewManager;
 		this.taskManager = taskManager;
+		this.contextManager = contextManager;
 
 		root = new NetworkTreeNode("Network Root", null);
 		treeTableModel = new NetworkTreeTableModel(this, root);
@@ -237,7 +239,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
 
 	public void addTaskFactory(TaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
-		addFactory(factory, new TaskFactoryTunableAction(taskManager, factory, props, appManager));
+		addFactory(factory, new TaskFactoryTunableAction(taskManager, factory, props, appManager, contextManager));
 	}
 
 	public void removeTaskFactory(TaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
@@ -245,7 +247,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
 
 	public void addNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
-		addFactory(factory, new NetworkCollectionTaskFactoryTunableAction(taskManager, factory, props, appManager));
+		addFactory(factory, new NetworkCollectionTaskFactoryTunableAction(taskManager, factory, props, appManager, contextManager));
 	}
 
 	public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
@@ -253,7 +255,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
 
 	public void addNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
-		addFactory(factory, new NetworkViewCollectionTaskFactoryTunableAction(taskManager, factory, props, appManager));
+		addFactory(factory, new NetworkViewCollectionTaskFactoryTunableAction(taskManager, factory, props, appManager, contextManager));
 	}
 
 	public void removeNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
@@ -261,7 +263,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
 
 	public void addNetworkTaskFactory(NetworkTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
-		addFactory(factory, new NetworkTaskFactoryTunableAction(taskManager, factory, props, appManager));
+		addFactory(factory, new NetworkTaskFactoryTunableAction(taskManager, factory, props, appManager, contextManager));
 	}
 
 	public void removeNetworkTaskFactory(NetworkTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
@@ -269,7 +271,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
 
 	public void addNetworkViewTaskFactory(NetworkViewTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
-		addFactory(factory, new NetworkViewTaskFactoryTunableAction(taskManager, factory, props, appManager));
+		addFactory(factory, new NetworkViewTaskFactoryTunableAction(taskManager, factory, props, appManager, contextManager));
 	}
 
 	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {

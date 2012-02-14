@@ -35,6 +35,7 @@ import org.cytoscape.datasource.DataSource;
 import org.cytoscape.datasource.DataSourceManager;
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.task.NetworkTaskContext;
 import org.cytoscape.task.NetworkTaskFactory;
 import org.cytoscape.task.creation.ImportNetworksTaskFactory;
 import org.cytoscape.work.AbstractTask;
@@ -74,8 +75,8 @@ public class CreateNewNetworkPanel extends JPanel implements ActionListener {
 	private final BundleContext bc;
 
 	private final ImportNetworksTaskFactory importNetworkFromURLTF;
-	private final TaskFactory importNetworkFileTF;
-	private final NetworkTaskFactory createViewTaskFactory;
+	private final TaskFactory<?> importNetworkFileTF;
+	private final NetworkTaskFactory<? extends NetworkTaskContext> createViewTaskFactory;
 
 	private final DataSourceManager dsManager;
 	private final Map<String, String> dataSourceMap;
@@ -85,8 +86,8 @@ public class CreateNewNetworkPanel extends JPanel implements ActionListener {
 	private boolean firstSelection = false;
 
 	CreateNewNetworkPanel(Window parent, final BundleContext bc, final TaskManager guiTaskManager,
-			final TaskFactory importNetworkFileTF, final ImportNetworksTaskFactory loadTF,
-			final NetworkTaskFactory createViewTaskFactory, final CyApplicationConfiguration config,
+			final TaskFactory<?> importNetworkFileTF, final ImportNetworksTaskFactory loadTF,
+			final NetworkTaskFactory<? extends NetworkTaskContext> createViewTaskFactory, final CyApplicationConfiguration config,
 			final DataSourceManager dsManager, final Properties props) {
 		this.parent = parent;
 		this.bc = bc;
@@ -159,7 +160,7 @@ public class CreateNewNetworkPanel extends JPanel implements ActionListener {
 			public void mouseClicked(MouseEvent ev) {
 				// Load network from file.
 				parent.dispose();
-				guiTaskManager.execute(importNetworkFileTF);
+				guiTaskManager.execute(importNetworkFileTF, importNetworkFileTF.createTaskContext());
 			}
 		});
 		this.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10));
@@ -200,15 +201,19 @@ public class CreateNewNetworkPanel extends JPanel implements ActionListener {
 		final URL url = new URL(dataSourceMap.get(file));
 
 		parent.dispose();
-		guiTaskManager.execute(new TaskFactory() {
-
+		TaskFactory<Object> factory = new TaskFactory<Object>() {
 			@Override
-			public TaskIterator createTaskIterator() {
+			public Object createTaskContext() {
+				return new Object();
+			}
+			
+			@Override
+			public TaskIterator createTaskIterator(Object context) {
 				return new TaskIterator(2,
 						new CreateNetworkViewTask(url, importNetworkFromURLTF, createViewTaskFactory));
 			}
-		});
-
+		};
+		guiTaskManager.execute(factory, factory.createTaskContext());
 	}
 
 	private int getViewThreshold(final Properties props) {
@@ -226,12 +231,12 @@ public class CreateNewNetworkPanel extends JPanel implements ActionListener {
 	private final class CreateNetworkViewTask extends AbstractTask {
 
 		private final ImportNetworksTaskFactory loadNetworkFileTF;
-		private final NetworkTaskFactory createViewTaskFactory;
+		private final NetworkTaskFactory<? extends NetworkTaskContext> createViewTaskFactory;
 
 		private final URL url;
 
 		public CreateNetworkViewTask(final URL url, final ImportNetworksTaskFactory loadNetworkFileTF,
-				final NetworkTaskFactory createViewTaskFactory) {
+				final NetworkTaskFactory<? extends NetworkTaskContext> createViewTaskFactory) {
 			this.loadNetworkFileTF = loadNetworkFileTF;
 			this.createViewTaskFactory = createViewTaskFactory;
 			this.url = url;
@@ -251,9 +256,10 @@ public class CreateNewNetworkPanel extends JPanel implements ActionListener {
 				final int numGraphObjects = network.getNodeCount() + network.getEdgeCount();
 				if (numGraphObjects >= viewThreshold) {
 					// Force to create view.
-					createViewTaskFactory.setNetwork(network);
+					NetworkTaskContext context = createViewTaskFactory.createTaskContext();
+					context.setNetwork(network);
 					taskMonitor.setStatusMessage("Loading done.  Creating view for the network...");
-					insertTasksAfterCurrentTask(createViewTaskFactory.createTaskIterator());
+					insertTasksAfterCurrentTask(((TaskFactory<? super NetworkTaskContext>)createViewTaskFactory).createTaskIterator(context));
 				}
 			}
 		}

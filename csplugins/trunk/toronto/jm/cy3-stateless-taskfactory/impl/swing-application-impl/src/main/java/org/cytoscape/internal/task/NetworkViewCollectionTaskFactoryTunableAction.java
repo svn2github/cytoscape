@@ -29,29 +29,32 @@ package org.cytoscape.internal.task;
 
 
 import java.awt.event.ActionEvent;
-
 import java.util.Map;
 
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.swing.DialogTaskManager;
-
 import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.task.NetworkViewCollectionTaskContext;
 import org.cytoscape.task.NetworkViewCollectionTaskFactory;
+import org.cytoscape.work.TaskContextManager;
+import org.cytoscape.work.swing.DialogTaskManager;
 
 
 public class NetworkViewCollectionTaskFactoryTunableAction 
-	extends TaskFactoryTunableAction<NetworkViewCollectionTaskFactory> {
+	extends TaskFactoryTunableAction<NetworkViewCollectionTaskFactory<?>> {
 
 	public NetworkViewCollectionTaskFactoryTunableAction(DialogTaskManager manager, 
-							     NetworkViewCollectionTaskFactory factory, Map serviceProps,
-							     final CyApplicationManager applicationManager)
+							     NetworkViewCollectionTaskFactory<?> factory, Map serviceProps,
+							     final CyApplicationManager applicationManager, TaskContextManager contextManager)
 	{
-		super(manager, factory, serviceProps, applicationManager);
+		super(manager, factory, serviceProps, applicationManager, contextManager);
 	}
 
 	public void actionPerformed(ActionEvent a) {
-		factory.setNetworkViewCollection(applicationManager.getSelectedNetworkViews());
+		NetworkViewCollectionTaskContext context = contextManager.getContext(factory);
+		if (context == null) {
+			contextManager.registerTaskFactory(factory);
+		}
+
+		context.setNetworkViewCollection(applicationManager.getSelectedNetworkViews());
 		super.actionPerformed(a);
 	}
 }

@@ -36,21 +36,26 @@
 */
 package org.cytoscape.internal.layout.ui;
 
-import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayoutAlgorithm;
-import org.cytoscape.work.swing.SubmenuTaskManager;
-import org.cytoscape.work.swing.DynamicSubmenuListener;
-import org.cytoscape.work.undo.UndoSupport;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.JMenu;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.StringEnableSupport;
 import org.cytoscape.event.CyEventHelper;
-
-import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
-import java.util.*;
-
+import org.cytoscape.task.NetworkViewTaskContext;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.work.TaskContextManager;
+import org.cytoscape.work.swing.DynamicSubmenuListener;
+import org.cytoscape.work.swing.SubmenuTaskManager;
+import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,19 +68,21 @@ public class LayoutMenuPopulator {
 	private Map<CyLayoutAlgorithm,MenuListener> listenerMap = new HashMap<CyLayoutAlgorithm,MenuListener>();
 	private Set<JMenu> parentMenuSet = new HashSet<JMenu>();
 	private UndoSupport undo;
-	private CyEventHelper eventHelper; 
+	private CyEventHelper eventHelper;
+	private TaskContextManager contextManager;
 
 	private static final Logger logger = LoggerFactory.getLogger(LayoutMenuPopulator.class);
 
-	public LayoutMenuPopulator(CySwingApplication swingApp, CyApplicationManager appMgr, SubmenuTaskManager tm, UndoSupport undo, CyEventHelper eventHelper) {
+	public LayoutMenuPopulator(CySwingApplication swingApp, CyApplicationManager appMgr, SubmenuTaskManager tm, UndoSupport undo, CyEventHelper eventHelper, TaskContextManager contextManager) {
 		this.appMgr = appMgr;
 		this.tm = tm;
 		this.swingApp = swingApp;
 		this.undo = undo;
 		this.eventHelper = eventHelper;
+		this.contextManager = contextManager;
 	}
 
-	public void addLayout(CyLayoutAlgorithm layout, Map props) {
+	public void addLayout(CyLayoutAlgorithm<?> layout, Map props) {
 		String prefMenu = getPreferredMenu(props); 
 
 		String menuName = (String)props.get("title");
@@ -95,7 +102,8 @@ public class LayoutMenuPopulator {
 		submenu.setMenuTitle(menuName);
 
 		// now wrap it in a menulistener that sets the current network view for the layout
-		MenuListener ml = new NetworkViewMenuListener( submenu, appMgr, taskFactory, "networkAndView" );
+		contextManager.registerTaskFactory(taskFactory);
+		MenuListener ml = new NetworkViewMenuListener( submenu, appMgr, taskFactory, "networkAndView", contextManager );
 
 		JMenu parentMenu = swingApp.getJMenu(prefMenu);
 		parentMenu.addMenuListener(ml);

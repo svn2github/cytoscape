@@ -30,27 +30,34 @@
 package org.cytoscape.internal.layout.ui;
 
 
-import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.property.CyProperty;
-import org.cytoscape.view.layout.CyLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Properties;
 
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.swing.PanelTaskManager;
-
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.ListCellRenderer;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.lang.reflect.Field;
-import java.util.Set;
-import java.util.Properties;
+
+import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.task.NetworkViewTaskContext;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.work.swing.PanelTaskManager;
 
 
 /**
@@ -61,7 +68,7 @@ import java.util.Properties;
  */
 public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private final static long serialVersionUID = 1202339874277105L;
-	private CyLayoutAlgorithm currentLayout = null;
+	private CyLayoutAlgorithm<NetworkViewTaskContext> currentLayout = null;
 
 	// Dialog components
 	private JLabel titleLabel; // Our title
@@ -118,8 +125,9 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		if (command.equals("done"))
 			setVisible(false);
 		else if (command.equals("execute")) {
-			currentLayout.setNetworkView(appMgr.getCurrentNetworkView());
-			taskManager.execute(currentLayout);
+			NetworkViewTaskContext context = currentLayout.createTaskContext();
+			context.setNetworkView(appMgr.getCurrentNetworkView());
+			taskManager.execute(currentLayout, context);
 		} else {
 			// OK, initialize and display
 			initialize();

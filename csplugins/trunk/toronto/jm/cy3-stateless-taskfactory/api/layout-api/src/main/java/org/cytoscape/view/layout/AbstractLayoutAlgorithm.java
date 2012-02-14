@@ -31,7 +31,9 @@ package org.cytoscape.view.layout;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -40,7 +42,7 @@ import org.cytoscape.work.undo.UndoSupport;
  * The AbstractLayoutAlgorithm provides a basic implementation of a layout TaskFactory.
  * @CyAPI.Abstract.Class
  */
-abstract public class AbstractLayoutAlgorithm implements CyLayoutAlgorithm<LayoutTaskContext> {
+abstract public class AbstractLayoutAlgorithm<C extends LayoutContext> implements CyLayoutAlgorithm<C> {
 
 	/**
 	 * The UndoSupport object use for allowing undo of layouts.
@@ -48,7 +50,7 @@ abstract public class AbstractLayoutAlgorithm implements CyLayoutAlgorithm<Layou
 	protected final UndoSupport undo;
 //	private ViewChangeEdit undoableEdit;
 	
-	protected final boolean supportsSelectedOnly;
+	private final boolean supportsSelectedOnly;
 	private final String humanName;
 	private final String computerName;
 
@@ -93,5 +95,34 @@ abstract public class AbstractLayoutAlgorithm implements CyLayoutAlgorithm<Layou
 	 */
 	public List<String> getInitialAttributeList() {
 		return new ArrayList<String>();
+	}
+	
+	/**
+	 * Returns the types of node attributes supported by
+	 * this algorithm.  This should be overridden by the
+	 * specific algorithm.
+	 *
+	 * @return the list of supported attribute types, or null
+	 * if node attributes are not supported
+	 */
+	public Set<Class<?>> supportsNodeAttributes() {
+		return new HashSet<Class<?>>();
+	}
+
+	/**
+	 * Returns the types of edge attributes supported by
+	 * this algorithm.  This should be overridden by the
+	 * specific algorithm.
+	 *
+	 * @return the list of supported attribute types, or null
+	 * if edge attributes are not supported
+	 */
+	public Set<Class<?>> supportsEdgeAttributes() {
+		return new HashSet<Class<?>>();
+	}
+	
+	@Override
+	public boolean supportsSelectedOnly() {
+		return supportsSelectedOnly;
 	}
 }

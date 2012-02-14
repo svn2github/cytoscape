@@ -10,7 +10,7 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-final class PropertyWriterFactory implements TaskFactory {
+final class PropertyWriterFactory implements TaskFactory<Object> {
 	private final CyPropertyWriterManager writerManager;
 	private final CyProperty property;
 	private final File outputFile;
@@ -25,7 +25,12 @@ final class PropertyWriterFactory implements TaskFactory {
 		this.fileFilter    = fileFilter;
 	}
 
-	public TaskIterator createTaskIterator() {
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(
 			new PropertyWriter(writerManager, fileFilter, property, outputFile));
 	}

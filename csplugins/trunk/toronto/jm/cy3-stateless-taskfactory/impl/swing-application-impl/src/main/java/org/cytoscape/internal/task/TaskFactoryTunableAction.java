@@ -34,8 +34,8 @@ import java.util.Map;
 
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TaskFactoryPredicate;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,18 +50,22 @@ public class TaskFactoryTunableAction<T extends TaskFactory> extends AbstractCyA
     final protected DialogTaskManager manager;
 	final protected CyApplicationManager applicationManager;
 
+	final protected TaskContextManager contextManager;
+
     public TaskFactoryTunableAction(final DialogTaskManager manager, final T factory, final Map<String, String> serviceProps,
-	    final CyApplicationManager applicationManager) {
-	super(serviceProps, applicationManager, factory);
+	    final CyApplicationManager applicationManager, TaskContextManager contextManager) {
+	super(serviceProps, applicationManager, factory, contextManager);
 	this.manager = manager;
 	this.applicationManager = applicationManager;
 	this.factory = factory;
+	this.contextManager = contextManager;
     }
 
-    public void actionPerformed(ActionEvent a) {
+	@SuppressWarnings("unchecked")
+	public void actionPerformed(ActionEvent a) {
 	logger.debug("About to execute task from factory: " + factory.toString());
 	
 	// execute the task(s) in a separate thread
-	manager.execute(factory);
+	manager.execute(factory, contextManager.getContext(factory));
     }
 }

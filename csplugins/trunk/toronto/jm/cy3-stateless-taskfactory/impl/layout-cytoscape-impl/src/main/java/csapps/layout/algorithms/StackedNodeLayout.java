@@ -30,23 +30,10 @@ package csapps.layout.algorithms;
 
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.TunableValidator;
-import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public class StackedNodeLayout extends AbstractLayoutAlgorithm implements TunableValidator {
-	@Tunable(description="x_position")
-	public double x_position = 10.0;
-
-	@Tunable(description="y_start_position")
-	public double y_start_position = 10.0;
-
-	//@Tunable(description="nodes")
-	//public Collection nodes;
-
-
+public class StackedNodeLayout extends AbstractLayoutAlgorithm<StackedNodeLayoutContext> {
 	/**
 	 * Puts a collection of nodes into a "stack" layout. This means the nodes are
 	 * arranged in a line vertically, with each node overlapping with the previous.
@@ -55,11 +42,6 @@ public class StackedNodeLayout extends AbstractLayoutAlgorithm implements Tunabl
 	 * @param x_position the x position for the nodes
 	 * @param y_start_position the y starting position for the stack
 	 */
-
-	@Override // TODO
-	public ValidationState getValidationState(final Appendable errMsg) {
-		return ValidationState.OK;
-	}
 
 	/**
 	 * Creates a new StackedNodeLayout object.
@@ -72,8 +54,13 @@ public class StackedNodeLayout extends AbstractLayoutAlgorithm implements Tunabl
 		super(undoSupport, "stacked-node-layout", "Stacked Node Layout", true);
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new StackedNodeLayoutTask(networkView, getName(), selectedOnly, staticNodes,
-				x_position, y_start_position));
+	@Override
+	public StackedNodeLayoutContext createTaskContext() {
+		return new StackedNodeLayoutContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
+	}
+	
+	public TaskIterator createTaskIterator(StackedNodeLayoutContext context) {
+		return new TaskIterator(new StackedNodeLayoutTask(context.getNetworkView(), getName(), supportsSelectedOnly(), context.getStaticNodes(),
+				context.x_position, context.y_start_position));
 	}
 }

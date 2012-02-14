@@ -34,9 +34,14 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class HelpAboutTaskFactory implements TaskFactory {
+public class HelpAboutTaskFactory implements TaskFactory<Object> {
 
-	public TaskIterator createTaskIterator() {
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(new HelpAboutTask());
 	}
 }

@@ -16,7 +16,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
 
-public class LayoutTaskContext implements NetworkViewTaskContext {
+public class LayoutContextImpl implements NetworkViewTaskContext, LayoutContext {
 
 	private static final String ALL_NODES = " All Nodes";
 	private static final String SELECTED_NODES_ONLY = " Selected Nodes Only";
@@ -33,6 +33,9 @@ public class LayoutTaskContext implements NetworkViewTaskContext {
 	private String edgeAttribute = null;
 	private String nodeAttribute = null;
 	private Dimension currentSize = new Dimension(20, 20);
+
+	Set<Class<?>> nodeAttrTypes;
+	Set<Class<?>> edgeAttrTypes;
 
 	protected final boolean supportsSelectedOnly;
 
@@ -52,8 +55,10 @@ public class LayoutTaskContext implements NetworkViewTaskContext {
 	 */
 	protected boolean selectedOnly;
 	
-	public LayoutTaskContext(boolean supportsSelectedOnly) {
+	public LayoutContextImpl(boolean supportsSelectedOnly, Set<Class<?>> supportedNodeAttributeTypes, Set<Class<?>> supportedEdgeAttributeTypes) {
 		this.supportsSelectedOnly = supportsSelectedOnly;
+		this.nodeAttrTypes = supportedNodeAttributeTypes;
+		this.edgeAttrTypes = supportedEdgeAttributeTypes;
 	}
 	
 	/**
@@ -67,9 +72,6 @@ public class LayoutTaskContext implements NetworkViewTaskContext {
 	public ListSingleSelection<String> getSubmenuOptions() {
 
 		List<String> possibleValues = new ArrayList<String>();
-
-		Set<Class<?>> nodeAttrTypes = supportsNodeAttributes();
-		Set<Class<?>> edgeAttrTypes = supportsEdgeAttributes();
 
 		if ( nodeAttrTypes != null && !nodeAttrTypes.isEmpty() ) {
 	        for (final CyColumn column : network.getDefaultNodeTable().getColumns()) 
@@ -161,9 +163,9 @@ public class LayoutTaskContext implements NetworkViewTaskContext {
 	 * @param attributeName The name of the attribute
 	 */
 	public void setLayoutAttribute(String attributeName) {
-		if (supportsNodeAttributes().size() > 0) {
+		if (nodeAttrTypes.size() > 0) {
 			nodeAttribute = attributeName;
-		} else if (supportsEdgeAttributes().size() > 0) {
+		} else if (edgeAttrTypes.size() > 0) {
 			edgeAttribute = attributeName;
 		}
 	}
@@ -194,30 +196,6 @@ public class LayoutTaskContext implements NetworkViewTaskContext {
 	}
 	
 	/**
-	 * Returns the types of node attributes supported by
-	 * this algorithm.  This should be overridden by the
-	 * specific algorithm.
-	 *
-	 * @return the list of supported attribute types, or null
-	 * if node attributes are not supported
-	 */
-	public Set<Class<?>> supportsNodeAttributes() {
-		return new HashSet<Class<?>>();
-	}
-
-	/**
-	 * Returns the types of edge attributes supported by
-	 * this algorithm.  This should be overridden by the
-	 * specific algorithm.
-	 *
-	 * @return the list of supported attribute types, or null
-	 * if edge attributes are not supported
-	 */
-	public Set<Class<?>> supportsEdgeAttributes() {
-		return new HashSet<Class<?>>();
-	}
-	
-	/**
 	 * Indicates whether this algorithm supports applying the layout 
 	 * only to selected nodes.
 	 */
@@ -228,5 +206,18 @@ public class LayoutTaskContext implements NetworkViewTaskContext {
 	@Override
 	public CyNetworkView getNetworkView() {
 		return networkView;
+	}
+	
+	@Override
+	public List<String> getInitialAttributeList() {
+		return new ArrayList<String>();
+	}
+	
+	public boolean getSelectedOnly() {
+		return selectedOnly;
+	}
+
+	public Set<View<CyNode>> getStaticNodes() {
+		return staticNodes;
 	}
 }

@@ -42,9 +42,6 @@ package csapps.layout.algorithms.hierarchicalLayout;
 
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.TunableValidator;
-import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.undo.UndoSupport;
 
 
@@ -71,24 +68,7 @@ import org.cytoscape.work.undo.UndoSupport;
  * Steps 2 through 6 are performed by calls to methods in the class
  * {@link csapps.hierarchicallayout.Graph}
 */
-public class HierarchicalLayoutAlgorithm extends AbstractLayoutAlgorithm implements TunableValidator {
-	@Tunable(description="Horizontal spacing between nodes")
-	public int nodeHorizontalSpacing = 64;
-	@Tunable(description="Vertical spacing between nodes")
-	public int nodeVerticalSpacing = 32;
-	@Tunable(description="Component spacing")
-	public int componentSpacing = 64;
-	@Tunable(description="Band gap")
-	public int bandGap = 64;
-	@Tunable(description="Left edge margin")
-	public int leftEdge = 32;
-	@Tunable(description="Top edge margin")
-	public int topEdge = 32;
-	@Tunable(description="Right edge margin")
-	public int rightMargin = 7000;
-	@Tunable(description="layout selected nodes only")
-	public boolean selected_only = false;
-
+public class HierarchicalLayoutAlgorithm extends AbstractLayoutAlgorithm<HierarchicalLayoutContext> {
 	/**
 	 * Creates a new HierarchicalLayoutAlgorithm object.
 	 */
@@ -96,16 +76,16 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayoutAlgorithm impleme
 		super(undoSupport, "hierarchical", "Hierarchical Layout",true);		
 	}
 
-	@Override // TODO
-	public ValidationState getValidationState(final Appendable errMsg) {
-		return ValidationState.OK;
+	@Override
+	public HierarchicalLayoutContext createTaskContext() {
+		return new HierarchicalLayoutContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
 	
-	public TaskIterator createTaskIterator() {
-		if (selectedOnly)
-			initStaticNodes();
-		return new TaskIterator(new HierarchicalLayoutAlgorithmTask(networkView, getName(), selectedOnly, staticNodes,
-				nodeHorizontalSpacing, nodeVerticalSpacing, componentSpacing, bandGap,leftEdge, topEdge,
-				rightMargin, selected_only));
+	public TaskIterator createTaskIterator(HierarchicalLayoutContext context) {
+		if (context.getSelectedOnly())
+			context.initStaticNodes();
+		return new TaskIterator(new HierarchicalLayoutAlgorithmTask(context.getNetworkView(), getName(), context.getSelectedOnly(), context.getStaticNodes(),
+				context.nodeHorizontalSpacing, context.nodeVerticalSpacing, context.componentSpacing, context.bandGap, context.leftEdge, context.topEdge,
+				context.rightMargin, context.selected_only));
 	}
 }

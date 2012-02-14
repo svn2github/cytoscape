@@ -1,6 +1,7 @@
 package org.cytoscape.view.layout;
 
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -10,7 +11,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
 
-public class EdgeWeightedLayoutTaskContext extends LayoutTaskContext {
+public class EdgeWeightedLayoutTaskContext extends LayoutContextImpl {
 	private static final String groupName = "Edge Weight Settings";
 
 	/** A tunable for determining the edge attribute that contains the weights. */	
@@ -29,8 +30,8 @@ public class EdgeWeightedLayoutTaskContext extends LayoutTaskContext {
 	@Tunable(description="The maximum edge weight to consider",groups=groupName)
 	public double maxWeight = Double.MAX_VALUE;	
 
-	public EdgeWeightedLayoutTaskContext(boolean supportsSelectedOnly) {
-		super(supportsSelectedOnly);
+	public EdgeWeightedLayoutTaskContext(boolean supportsSelectedOnly, Set<Class<?>> supportedNodeAttrTypes, Set<Class<?>> supportedEdgeAttrTypes) {
+		super(supportsSelectedOnly, supportedNodeAttrTypes, supportedEdgeAttrTypes);
 	}
 	
     /**

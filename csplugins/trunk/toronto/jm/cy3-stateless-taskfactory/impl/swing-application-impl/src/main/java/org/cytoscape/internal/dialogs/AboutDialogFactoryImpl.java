@@ -39,7 +39,7 @@ import org.cytoscape.application.CyVersion;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class AboutDialogFactoryImpl implements TaskFactory {
+public class AboutDialogFactoryImpl implements TaskFactory<Object> {
 	private CyVersion version;
 
 	public AboutDialogFactoryImpl(CyVersion version) {
@@ -47,7 +47,12 @@ public class AboutDialogFactoryImpl implements TaskFactory {
 	}
 	
 	@Override
-	public TaskIterator createTaskIterator() {
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	@Override
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(new AboutDialogTask(version));
 	}
 }

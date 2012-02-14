@@ -30,31 +30,28 @@
 package org.cytoscape.internal.task;
 
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.Icon;
-import java.awt.Component;
 
 import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.application.swing.CytoPanel;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
-import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.swing.PanelTaskManager;
-import org.cytoscape.service.util.CyServiceRegistrar;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,10 +68,12 @@ public class CytoPanelTaskFactoryTunableAction extends AbstractCyAction {
 	private static class ExecuteButtonListener implements ActionListener {
 		final private TaskFactory factory;
 		final private PanelTaskManager manager;
+		final private TaskContextManager contextManager;
 
-		ExecuteButtonListener(final TaskFactory factory, final PanelTaskManager manager) {
+		ExecuteButtonListener(final TaskFactory factory, final PanelTaskManager manager, TaskContextManager contextManager) {
 			this.factory = factory;
 			this.manager = manager;
+			this.contextManager = contextManager;
 		}
 
 		public void actionPerformed(final ActionEvent event) {
@@ -102,7 +101,7 @@ public class CytoPanelTaskFactoryTunableAction extends AbstractCyAction {
 				}
 			}
 
-			manager.execute(factory);
+			manager.execute(factory, contextManager.getContext(factory));
 		}
 	}
 
@@ -113,13 +112,15 @@ public class CytoPanelTaskFactoryTunableAction extends AbstractCyAction {
 	final private Map<String, String> serviceProps;
 	final private CytoPanelName cytoPanelName;
 	final private CyServiceRegistrar registrar;
+	private TaskContextManager contextManager;
 	final private static Logger logger = LoggerFactory.getLogger(CytoPanelTaskFactoryTunableAction.class);
 
 	public CytoPanelTaskFactoryTunableAction(final TaskFactory factory, 
 	                                         final PanelTaskManager manager,
 	                                         final Map<String, String> serviceProps, 
 	                                         final CyApplicationManager appMgr,
-											 final CyServiceRegistrar registrar)
+											 final CyServiceRegistrar registrar,
+											 final TaskContextManager contextManager)
 	{
 		super(serviceProps, appMgr);
 
@@ -127,7 +128,8 @@ public class CytoPanelTaskFactoryTunableAction extends AbstractCyAction {
 		this.manager = manager;
 		this.serviceProps = serviceProps;
 		this.registrar = registrar;
-		this.cytoPanelName = getCytoPanelName(); 
+		this.cytoPanelName = getCytoPanelName();
+		this.contextManager = contextManager;
 	}
 
 	private CytoPanelName getCytoPanelName() {
@@ -204,7 +206,7 @@ public class CytoPanelTaskFactoryTunableAction extends AbstractCyAction {
 			outerPanel.add(innerPanel);
 
 			final JButton executeButton = new JButton("Execute");
-			executeButton.addActionListener(new ExecuteButtonListener(factory, manager));
+			executeButton.addActionListener(new ExecuteButtonListener(factory, manager, contextManager));
 			outerPanel.add(executeButton);
 	
 			final JButton closeButton = new JButton("Close");

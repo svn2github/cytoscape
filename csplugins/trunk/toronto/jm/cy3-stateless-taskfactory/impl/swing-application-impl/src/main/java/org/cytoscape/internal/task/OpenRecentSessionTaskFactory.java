@@ -19,7 +19,7 @@ import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OpenRecentSessionTaskFactory implements TaskFactory {
+public class OpenRecentSessionTaskFactory implements TaskFactory<Object> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(OpenRecentSessionTaskFactory.class);
 
@@ -30,6 +30,10 @@ public class OpenRecentSessionTaskFactory implements TaskFactory {
 	
 	private final URL targetSession;
 
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
 	
 	public OpenRecentSessionTaskFactory(final CySessionManager sessionManager, final CySessionReaderManager readerManager,
 			final CyApplicationManager appManager, final RecentlyOpenedTracker tracker, final URL targetSession) {
@@ -41,7 +45,7 @@ public class OpenRecentSessionTaskFactory implements TaskFactory {
 		this.targetSession = targetSession;
 	}
 
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object context) {
 		CySessionReader reader = null;
 		try {
 			reader = readerManager.getReader(targetSession.toURI(), targetSession.toString());

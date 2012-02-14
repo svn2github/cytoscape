@@ -84,12 +84,17 @@ public class OpenPanel extends JPanel {
 				public void mouseClicked(MouseEvent e) {
 					 try {
 						final File targetFile = new File(target.toURI());
-						taskManager.execute(new TaskFactory() {
+						TaskFactory<Object> factory = new TaskFactory<Object>() {
 							@Override
-							public TaskIterator createTaskIterator() {
+							public Object createTaskContext() {
+								return new Object();
+							}
+							@Override
+							public TaskIterator createTaskIterator(Object context) {
 								return new TaskIterator(new OpenSessionDirectTask(targetFile));
 							}
-						});
+						};
+						taskManager.execute(factory, factory.createTaskContext());
 					} catch (URISyntaxException e1) {
 						e1.printStackTrace();
 					}
@@ -108,7 +113,7 @@ public class OpenPanel extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				parent.dispose();
-				taskManager.execute(openSessionTaskFactory);
+				taskManager.execute(openSessionTaskFactory, openSessionTaskFactory.createTaskContext());
 			}
 		});
 

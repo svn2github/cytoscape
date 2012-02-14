@@ -35,7 +35,7 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class HelpContactHelpDeskTaskFactory implements TaskFactory {
+public class HelpContactHelpDeskTaskFactory implements TaskFactory<Object> {
 
 	private OpenBrowser openBrowser;
 
@@ -43,7 +43,12 @@ public class HelpContactHelpDeskTaskFactory implements TaskFactory {
 		this.openBrowser = openBrowser;
 	}
 
-	public TaskIterator createTaskIterator() {
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(new HelpContactHelpDeskTask(openBrowser));
 	} 
 }

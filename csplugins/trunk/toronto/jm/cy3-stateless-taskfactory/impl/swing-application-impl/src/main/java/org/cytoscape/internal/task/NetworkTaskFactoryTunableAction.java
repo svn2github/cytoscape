@@ -31,30 +31,31 @@ package org.cytoscape.internal.task;
 
 
 import java.awt.event.ActionEvent;
-
 import java.util.Map;
 
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.swing.DialogTaskManager;
-
 import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.task.NetworkTaskContext;
 import org.cytoscape.task.NetworkTaskFactory;
+import org.cytoscape.work.TaskContextManager;
+import org.cytoscape.work.swing.DialogTaskManager;
 
 
 public class NetworkTaskFactoryTunableAction 
-	extends TaskFactoryTunableAction<NetworkTaskFactory> {
+	extends TaskFactoryTunableAction<NetworkTaskFactory<?>> {
 
 	public NetworkTaskFactoryTunableAction(DialogTaskManager manager, 
-					       NetworkTaskFactory factory, Map serviceProps,
-					       final CyApplicationManager applicationManager)
+					       NetworkTaskFactory<?> factory, Map serviceProps,
+					       final CyApplicationManager applicationManager, TaskContextManager contextManager)
 	{
-		super(manager, factory, serviceProps, applicationManager);
+		super(manager, factory, serviceProps, applicationManager, contextManager);
 	}
 
 	public void actionPerformed(ActionEvent a) {
-		factory.setNetwork(applicationManager.getCurrentNetwork());
+		NetworkTaskContext context = contextManager.getContext(factory);
+		if (context == null) {
+			contextManager.registerTaskFactory(factory);
+		}
+		context.setNetwork(applicationManager.getCurrentNetwork());
 		super.actionPerformed(a);
 	}
 }

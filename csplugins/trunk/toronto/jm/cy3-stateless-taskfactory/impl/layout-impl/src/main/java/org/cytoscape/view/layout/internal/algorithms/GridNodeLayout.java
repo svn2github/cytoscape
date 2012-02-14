@@ -30,22 +30,9 @@
 package org.cytoscape.view.layout.internal.algorithms;
 
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyNetwork;
-
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.VisualProperty;
-
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.TunableValidator;
-import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.undo.UndoSupport;
 
 
@@ -53,13 +40,7 @@ import org.cytoscape.work.undo.UndoSupport;
  * The GridNodeLayout provides a very simple layout, suitable as
  * the default layout for Cytoscape data readers.
  */
-public class GridNodeLayout extends AbstractLayoutAlgorithm implements TunableValidator {
-	@Tunable(description="Vertical spacing between nodes")
-	public double nodeVerticalSpacing = 40.0;
-
-	@Tunable(description="Horizontal spacing between nodes")
-	public double nodeHorizontalSpacing = 80.0;
-
+public class GridNodeLayout extends AbstractLayoutAlgorithm<GridNodeLayoutContext> {
 	/**
 	 * Creates a new GridNodeLayout object.
 	 */
@@ -68,24 +49,19 @@ public class GridNodeLayout extends AbstractLayoutAlgorithm implements TunableVa
 	}
 
 	@Override
-	public ValidationState getValidationState(final Appendable errMsg) {
-		if (nodeVerticalSpacing != 30.0 )
-			return ValidationState.OK;
-		else {
-			try {
-				errMsg.append("This is a test : I don't want 30.0 for nodeVerticalSpacing value\nProvide something else!!!!");
-			} catch (IOException e) {
-				e.printStackTrace();
-				return ValidationState.INVALID;
-			}
-			return ValidationState.INVALID;
-		}
+	public GridNodeLayoutContext createTaskContext() {
+		return new GridNodeLayoutContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
-
-	public TaskIterator createTaskIterator() {
-		if (selectedOnly)
-			initStaticNodes();
-		return new TaskIterator(new GridNodeLayoutTask(networkView, getName(), selectedOnly, staticNodes,
-							       nodeVerticalSpacing, nodeHorizontalSpacing));
+	
+	@Override
+	public boolean supportsSelectedOnly() {
+		return true;
+	}
+	
+	public TaskIterator createTaskIterator(GridNodeLayoutContext context) {
+		if (context.supportsSelectedOnly())
+			context.initStaticNodes();
+		return new TaskIterator(new GridNodeLayoutTask(context.getNetworkView(), getName(), context.getSelectedOnly(), context.getStaticNodes(),
+							       context.nodeVerticalSpacing, context.nodeHorizontalSpacing));
 	}
 }

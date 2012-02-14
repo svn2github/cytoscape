@@ -36,7 +36,7 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class HelpContentsTaskFactory implements TaskFactory {
+public class HelpContentsTaskFactory implements TaskFactory<Object> {
 
 	private CyHelpBroker help;
 	private CySwingApplication app;
@@ -46,7 +46,12 @@ public class HelpContentsTaskFactory implements TaskFactory {
 		this.app = app;
 	}
 
-	public TaskIterator createTaskIterator() {
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(new HelpContentsTask(help, app));
 	} 
 }

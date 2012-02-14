@@ -36,17 +36,22 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class ArrangeTaskFactory implements TaskFactory {
+public class ArrangeTaskFactory implements TaskFactory<Object> {
 
 	private CytoscapeDesktop desk;
 	private Arrange arrange;
 
+	@Override
+	public Object createTaskContext() {
+		return new Object();
+	}
+	
 	public ArrangeTaskFactory(CytoscapeDesktop desk, Arrange arrange) {
 		this.desk = desk;
 		this.arrange = arrange;
 	}
 
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object context) {
 		return new TaskIterator(new ArrangeTask(desk, arrange));
 	} 
 }

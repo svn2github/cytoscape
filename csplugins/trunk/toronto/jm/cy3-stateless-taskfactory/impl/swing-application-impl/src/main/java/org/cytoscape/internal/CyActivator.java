@@ -116,6 +116,7 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.cytoscape.work.swing.PanelTaskManager;
@@ -141,6 +142,7 @@ public class CyActivator extends AbstractCyActivator {
 		TaskFactory importNetworkFileTF = getService(bc, TaskFactory.class, "(id=loadNetworkFileTaskFactory)");
 		NetworkTaskFactory createNetworkViewTaskFactory = getService(bc, NetworkTaskFactory.class, "(id=createNetworkViewTaskFactory)");
 		TaskFactory openSessionTaskFactory = getService(bc, TaskFactory.class, "(id=openSessionTaskFactory)");
+		TaskContextManager contextManager = getService(bc, TaskContextManager.class);
 		
 		DataSourceManager dsManagerServiceRef = getService(bc, DataSourceManager.class);
 		
@@ -211,7 +213,7 @@ public class CyActivator extends AbstractCyActivator {
 		NetworkPanel networkPanel = new NetworkPanel(cyApplicationManagerServiceRef,
 		                                             cyNetworkManagerServiceRef,
 		                                             cyNetworkViewManagerServiceRef,
-		                                             birdsEyeViewHandler, dialogTaskManagerServiceRef);
+		                                             birdsEyeViewHandler, dialogTaskManagerServiceRef, contextManager);
 		CytoscapeDesktop cytoscapeDesktop = new CytoscapeDesktop(cytoscapeMenus,
 		                                                         networkViewManager, networkPanel,
 		                                                         cytoscapeShutdownServiceRef,
@@ -230,12 +232,12 @@ public class CyActivator extends AbstractCyActivator {
 		                                                                  cyApplicationManagerServiceRef,
 		                                                                  submenuTaskManagerServiceRef,
 		                                                                  undoSupportServiceRef,
-		                                                                  cyEventHelperServiceRef);
+		                                                                  cyEventHelperServiceRef, contextManager);
 		CytoscapeMenuPopulator cytoscapeMenuPopulator = new CytoscapeMenuPopulator(cytoscapeDesktop,
 		                                                                           dialogTaskManagerServiceRef,
 		                                                                           panelTaskManagerServiceRef,
 		                                                                           cyApplicationManagerServiceRef,
-		                                                                           cyServiceRegistrarServiceRef);
+		                                                                           cyServiceRegistrarServiceRef, contextManager);
 		SettingsAction settingsAction = new SettingsAction(cyLayoutsServiceRef, cytoscapeDesktop,
 		                                                   cyApplicationManagerServiceRef,
 		                                                   panelTaskManagerServiceRef, cytoscapePropertiesServiceRef);

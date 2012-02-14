@@ -34,6 +34,8 @@ public class DownloadBiogridDataTask extends AbstractTask {
 	private static final Map<String, String> FILTER = new HashMap<String, String>();
 	private final Map<String, URL> sourceMap;
 
+	private DownloadBiogridDataTaskContext context;
+
 	static {
 		FILTER.put("Homo_sapiens", "BioGRID: Human Interactome");
 		FILTER.put("Saccharomyces_cerevisiae", "BioGRID: Yeast Interactome");
@@ -41,7 +43,8 @@ public class DownloadBiogridDataTask extends AbstractTask {
 		FILTER.put("Mus_musculus", "BioGRID: Mouse Interactome");
 	}
 
-	public DownloadBiogridDataTask(final File settingFileLocation, JComboBox fileList) {
+	public DownloadBiogridDataTask(DownloadBiogridDataTaskContext context, final File settingFileLocation, JComboBox fileList) {
+		this.context = context;
 		this.fileList = fileList;
 		fileList.addItem("Preparing files.  Please wait...");
 		fileList.setEnabled(false);
@@ -81,6 +84,7 @@ public class DownloadBiogridDataTask extends AbstractTask {
 			}
 		}
 
+		context.setSourceMap(sourceMap);
 		fileList.removeItemAt(0);
 		fileList.setEnabled(true);
 		taskMonitor.setProgress(1.0);
