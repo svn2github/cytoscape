@@ -2,11 +2,10 @@ package csapps.layout;
 
 
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
+import org.cytoscape.view.layout.LayoutContext;
+import org.cytoscape.view.layout.LayoutContextImpl;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TunableValidator;
-import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.undo.UndoSupport;
-
 import org.jgraph.plugins.layouts.AnnealingLayoutAlgorithm;
 import org.jgraph.plugins.layouts.CircleGraphLayout;
 import org.jgraph.plugins.layouts.GEMLayoutAlgorithm;
@@ -19,7 +18,7 @@ import org.jgraph.plugins.layouts.SugiyamaLayoutAlgorithm;
 import org.jgraph.plugins.layouts.TreeLayoutAlgorithm;
 
 
-public class JGraphLayoutWrapper extends AbstractLayoutAlgorithm implements TunableValidator {
+public class JGraphLayoutWrapper extends AbstractLayoutAlgorithm<LayoutContext> {
 	public static final int ANNEALING = 0;
 	public static final int MOEN = 1;
 	public static final int CIRCLE_GRAPH = 2;
@@ -87,14 +86,13 @@ public class JGraphLayoutWrapper extends AbstractLayoutAlgorithm implements Tuna
 		layoutSettings = layout.createSettings();
 	}
 
-	@Override //TODO how to validate the parameter values?
-	public ValidationState getValidationState(final Appendable errMsg) {		
-		return ValidationState.OK;
+	@Override
+	public LayoutContext createTaskContext() {
+		return new LayoutContextImpl(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
-
-	public TaskIterator createTaskIterator() {
-		
-		return new TaskIterator(new JGraphLayoutWrapperTask(networkView, getName(), selectedOnly, staticNodes,
+	
+	public TaskIterator createTaskIterator(LayoutContext context) {
+		return new TaskIterator(new JGraphLayoutWrapperTask(context.getNetworkView(), getName(), context.getSelectedOnly(), context.getStaticNodes(),
 				layout, layoutSettings));
 	}
 
