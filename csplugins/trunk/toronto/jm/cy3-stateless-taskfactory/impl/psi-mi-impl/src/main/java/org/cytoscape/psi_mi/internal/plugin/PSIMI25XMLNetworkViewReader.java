@@ -9,7 +9,7 @@ import org.cytoscape.psi_mi.internal.data_mapper.PSIMI25EntryMapper;
 import org.cytoscape.task.NetworkViewTaskContext;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
-import org.cytoscape.view.layout.LayoutTaskContext;
+import org.cytoscape.view.layout.LayoutContext;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.AbstractTask;
