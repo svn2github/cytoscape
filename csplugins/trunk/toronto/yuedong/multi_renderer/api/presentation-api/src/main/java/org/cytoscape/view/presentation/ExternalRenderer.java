@@ -51,7 +51,8 @@ public interface ExternalRenderer {
 	
 	// Prepares the renderer to be removed.
 	/**
-	 * Notifies this renderer to release all its resources and prepare for removal.
+	 * Notifies this renderer to release all its resources and prepare for removal. The renderer is allowed to become unuseable after this call,
+	 * and should at least fail safely if asked to render anything else onwards.
 	 */
 	public void dispose();
 	

@@ -1,5 +1,6 @@
 package org.cytoscape.view.presentation;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public interface ExternalRendererManager {
 	 * 
 	 * @return A defensively copied list of the IDs of the currently installed renderers.
 	 */
-	public List<String> getInstalledRenderers();
+	public Collection<String> getInstalledRenderers();
 	
 	/**
 	 * Return the number of currently installed renderers.
