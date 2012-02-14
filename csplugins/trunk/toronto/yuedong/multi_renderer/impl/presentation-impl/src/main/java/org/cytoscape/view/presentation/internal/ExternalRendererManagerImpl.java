@@ -34,9 +34,8 @@ public class ExternalRendererManagerImpl implements ExternalRendererManager {
 		
 		installedRenderers.put(externalRenderer.getRendererID(), externalRenderer);
 		
-		if (installedRenderers.size() == 1) {
-			defaultRendererID = new String(externalRenderer.getRendererID());
-		}
+		// If we only have 1 renderer, set it as the default
+		manageDefaultRenderer();
 	}
 
 	@Override
@@ -51,7 +50,8 @@ public class ExternalRendererManagerImpl implements ExternalRendererManager {
 	
 		installedRenderers.remove(externalRenderer.getRendererID());
 		
-		// TODO: Change default renderer ID if only 1 renderer left
+		// If we only have 1 renderer, set it as the default
+		manageDefaultRenderer();
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class ExternalRendererManagerImpl implements ExternalRendererManager {
 		// Let the renderer know
 		removed.dispose();
 	
-		installedRenderers.remove(rendererID);
+		manageDefaultRenderer();
 	}
 
 	@Override
@@ -102,5 +102,16 @@ public class ExternalRendererManagerImpl implements ExternalRendererManager {
 		return new String(defaultRendererID);
 		
 		// TODO: Check if necessary to return defensively copied Strings this way
+	}
+	
+	/**
+	 * Checks if there is only 1 renderer currently installed, and if so, sets it to be the default renderer
+	 */
+	private void manageDefaultRenderer() {
+		if (installedRenderers.size() == 1) {
+			for (String id : installedRenderers.keySet()) {
+				defaultRendererID = new String(id);
+			}
+		}
 	}
 }
