@@ -56,6 +56,7 @@ import org.cytoscape.application.events.SetCurrentNetworkEvent;
 import org.cytoscape.application.events.SetCurrentNetworkListener;
 import org.cytoscape.application.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.application.events.SetCurrentNetworkViewListener;
+import org.cytoscape.application.presentation.MainViewRenderingEngineFactory;
 import org.cytoscape.application.swing.CyHelpBroker;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableEntry;
@@ -69,6 +70,7 @@ import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.model.events.NetworkViewChangedEvent;
 import org.cytoscape.view.model.events.NetworkViewChangedListener;
 import org.cytoscape.view.model.events.ViewChangeRecord;
+import org.cytoscape.view.presentation.ExternalRendererManager;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
@@ -117,6 +119,8 @@ public class NetworkViewManager extends InternalFrameAdapter implements NetworkV
 	private final CyNetworkViewManager networkViewManager;
 	private final CyApplicationManager applicationManager;
 
+	private final ExternalRendererManager externalRendererManager;
+	
 	/**
 	 * Creates a new NetworkViewManager object.
 	 * 
@@ -124,7 +128,8 @@ public class NetworkViewManager extends InternalFrameAdapter implements NetworkV
 	 *            DOCUMENT ME!
 	 */
 	public NetworkViewManager(CyApplicationManager appMgr, CyNetworkViewManager netViewMgr,
-			CyProperty<Properties> cyProps, CyHelpBroker help) {
+			CyProperty<Properties> cyProps, CyHelpBroker help, 
+			ExternalRendererManager externalRendererManager) {
 
 		if (appMgr == null)
 			throw new NullPointerException("CyApplicationManager is null.");
@@ -138,6 +143,7 @@ public class NetworkViewManager extends InternalFrameAdapter implements NetworkV
 		this.props = cyProps.getProperties();
 
 		this.desktopPane = new JDesktopPane();
+		this.externalRendererManager = externalRendererManager;
 
 		// add Help hooks
 		help.getHelpBroker().enableHelp(desktopPane, "network-view-manager", null);
@@ -367,7 +373,18 @@ public class NetworkViewManager extends InternalFrameAdapter implements NetworkV
 
 		final long start = System.currentTimeMillis();
 		logger.debug("Rendering start: view model = " + view.getSUID());
-		final RenderingEngine<CyNetwork> renderingEngine = currentRenderingEngineFactory.createRenderingEngine(iframe, view);
+		
+		RenderingEngineFactory<CyNetwork> factory;
+		RenderingEngine<CyNetwork> renderingEngine = null;
+		
+		if (externalRendererManager.getCurrentRenderer() != null) {
+			factory = externalRendererManager.getCurrentRenderer().getRenderingEngineFactory(MainViewRenderingEngineFactory.class);
+			
+			if (factory != null) {
+				 renderingEngine = factory.createRenderingEngine(iframe, view);
+			}
+		}
+		
 		logger.debug("Rendering finished in " + (System.currentTimeMillis() - start) + " m sec.");
 		presentationMap.put(view, renderingEngine);
 
