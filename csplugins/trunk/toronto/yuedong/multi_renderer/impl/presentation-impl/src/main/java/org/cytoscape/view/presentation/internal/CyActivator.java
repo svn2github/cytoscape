@@ -3,6 +3,7 @@ package org.cytoscape.view.presentation.internal;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.presentation.internal.RenderingEngineManagerImpl;
+import org.cytoscape.view.presentation.ExternalRendererManager;
 import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.osgi.framework.BundleContext;
@@ -26,6 +27,12 @@ public class CyActivator extends AbstractCyActivator {
 
 		registerServiceListener(bc,renderingEngineManager,"addRenderingEngineFactory","removeRenderingEngineFactory",RenderingEngineFactory.class);
 
+		ExternalRendererManager externalRendererManager = new ExternalRendererManagerImpl();
+		Properties externalRendererManagerProps = new Properties();
+	    
+		// TODO: Check if service.type is correct property to set
+		externalRendererManagerProps.setProperty("service.type", "manager");
+	    registerService(bc, externalRendererManager, ExternalRendererManager.class, externalRendererManagerProps);	    
 	}
 }
 
