@@ -1,6 +1,7 @@
 package org.cytoscape.view.presentation.internal;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -17,100 +18,90 @@ import org.cytoscape.view.presentation.ExternalRendererManager;
  */
 public class ExternalRendererManagerImpl implements ExternalRendererManager {
 
-	private Map<String, ExternalRenderer> installedRenderers;
+	private Map<Class<? extends ExternalRenderer>, ExternalRenderer> renderers;
+	private Map<ExternalRenderer, Map<String, String>> properties;
 	
-	private String defaultRendererID;
-	
-	public ExternalRendererManagerImpl() {
-		installedRenderers = new HashMap<String, ExternalRenderer>();
-	}
+	private ExternalRenderer currentRenderer;
 	
 	@Override
-	public void installRenderer(ExternalRenderer externalRenderer) {
+	public void addRenderer(ExternalRenderer externalRenderer,
+			Map<String, String> properties) {
 		
-		if (externalRenderer == null) {
-			throw new NullPointerException("Cannot install a null renderer.");
+		// TODO: Throw exception if given renderer or properties is null
+		
+		Class<? extends ExternalRenderer> rendererClass = externalRenderer.getClass();
+		
+		if (renderers.containsKey(rendererClass)) {
+			throw new IllegalArgumentException("Already contains an ExternalRenderer with this class.");
 		}
 		
-		installedRenderers.put(externalRenderer.getRendererID(), externalRenderer);
+		renderers.put(rendererClass, externalRenderer);
 		
-		// If we only have 1 renderer, set it as the default
-		manageDefaultRenderer();
+		manageCurrentRenderer();
 	}
 
 	@Override
-	public void uninstallRenderer(ExternalRenderer externalRenderer) {
+	public void removeRenderer(ExternalRenderer externalRenderer,
+			Map<String, String> properties) {
 		
-		if (!installedRenderers.containsValue(externalRenderer)) {
-			throw new IllegalArgumentException("Provided renderer " + externalRenderer + " is not installed.");
+		if (!renderers.containsValue(externalRenderer)) {
+			throw new IllegalArgumentException("Given renderer is not in the manager.");
 		}
 		
-		// Let the renderer know
-		externalRenderer.dispose();
-	
-		installedRenderers.remove(externalRenderer.getRendererID());
+		Class<? extends ExternalRenderer> rendererClass = externalRenderer.getClass();
+		renderers.remove(rendererClass);
 		
-		// If we only have 1 renderer, set it as the default
-		manageDefaultRenderer();
+		manageCurrentRenderer();
 	}
 
 	@Override
-	public void uninstallRenderer(String rendererID) {
-		ExternalRenderer removed = installedRenderers.get(rendererID);
+	public void removeRenderer(Class<? extends ExternalRenderer> rendererType) {
 		
-		if (removed == null) {
-			throw new IllegalArgumentException("No renderer with given ID <" + rendererID + "> is installed.");
+		if (!renderers.containsKey(rendererType)) {
+			throw new IllegalArgumentException("No renderer in manager matches the given type.");
 		}
 		
-		// Let the renderer know
-		removed.dispose();
-	
-		manageDefaultRenderer();
+		renderers.remove(rendererType);
+		
+		manageCurrentRenderer();
 	}
 
 	@Override
-	public Collection<String> getInstalledRenderers() {
-		return installedRenderers.keySet();
+	public Collection<ExternalRenderer> getAvailableRenderers() {
+		return Collections.unmodifiableCollection(renderers.values());
 	}
 
 	@Override
-	public int getInstalledRendererCount() {
-		return installedRenderers.size();
+	public ExternalRenderer getRenderer(
+			Class<? extends ExternalRenderer> rendererType) {
+		return renderers.get(rendererType);
 	}
 
 	@Override
-	public ExternalRenderer getRenderer(String rendererID) {
-		return installedRenderers.get(rendererID);
-	}
-
-	@Override
-	public String setDefaultRendererID(String rendererID) {
-		if (!installedRenderers.containsKey(rendererID)) {
-			return null;
+	public void setCurrentRenderer(
+			Class<? extends ExternalRenderer> rendererType) {
+		
+		if (!renderers.containsKey(rendererType)) {
+			throw new IllegalArgumentException("No renderer in manager matches the given type.");
 		}
 		
-		defaultRendererID = new String(rendererID);
-		return new String(defaultRendererID);
+		currentRenderer = renderers.get(rendererType);
+		
+		manageCurrentRenderer();
 	}
 
 	@Override
-	public String getDefaultRendererID() {
-		if (installedRenderers.size() == 0) {
-			return null;
-		}
-		
-		return new String(defaultRendererID);
-		
-		// TODO: Check if necessary to return defensively copied Strings this way
+	public ExternalRenderer getCurrentRenderer() {
+		return currentRenderer;
 	}
 	
 	/**
-	 * Checks if there is only 1 renderer currently installed, and if so, sets it to be the default renderer
+	 * If there is only 1 renderer available, set it to be the current renderer
 	 */
-	private void manageDefaultRenderer() {
-		if (installedRenderers.size() == 1) {
-			for (String id : installedRenderers.keySet()) {
-				defaultRendererID = new String(id);
+	private void manageCurrentRenderer() {
+		if (renderers.size() == 1) {
+			for (ExternalRenderer renderer : renderers.values()) {
+				currentRenderer = renderer;
 			}
 		}
 	}
