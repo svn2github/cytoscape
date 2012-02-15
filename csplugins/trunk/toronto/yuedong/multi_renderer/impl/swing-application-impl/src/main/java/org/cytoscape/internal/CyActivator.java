@@ -116,6 +116,7 @@ import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.presentation.ExternalRendererManager;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskFactory;
@@ -169,12 +170,7 @@ public class CyActivator extends AbstractCyActivator {
 		DialogTaskManager dialogTaskManagerServiceRef = getService(bc, DialogTaskManager.class);
 		PanelTaskManager panelTaskManagerServiceRef = getService(bc, PanelTaskManager.class);
 		SubmenuTaskManager submenuTaskManagerServiceRef = getService(bc, SubmenuTaskManager.class);
-		RenderingEngineFactory dingRenderingEngineFactoryServiceRef = getService(bc,
-		                                                                         RenderingEngineFactory.class,
-		                                                                         "(id=ding)");
-		RenderingEngineFactory dingNavigationPresentationFactoryServiceRef = getService(bc,
-		                                                                                RenderingEngineFactory.class,
-		                                                                                "(id=dingNavigation)");
+
 		CyProperty bookmarkServiceRef = getService(bc, CyProperty.class,
 		                                           "(cyPropertyName=bookmarks)");
 		BookmarksUtil bookmarksUtilServiceRef = getService(bc, BookmarksUtil.class);
@@ -190,6 +186,8 @@ public class CyActivator extends AbstractCyActivator {
 		
 		VisualMappingManager visualMappingManagerServiceRef  = getService(bc, VisualMappingManager.class);
 
+		ExternalRendererManager externalRendererManagerServiceRef = getService(bc, ExternalRendererManager.class);
+		
 		UndoAction undoAction = new UndoAction(undoSupportServiceRef);
 		RedoAction redoAction = new RedoAction(undoSupportServiceRef);
 		ConfigDirPropertyWriter configDirPropertyWriter = new ConfigDirPropertyWriter(dialogTaskManagerServiceRef,
@@ -212,7 +210,7 @@ public class CyActivator extends AbstractCyActivator {
 		                                                               cyHelpBroker);
 		BirdsEyeViewHandler birdsEyeViewHandler = new BirdsEyeViewHandler(cyApplicationManagerServiceRef,
 		                                                                  networkViewManager,
-		                                                                  dingNavigationPresentationFactoryServiceRef);
+		                                                                  externalRendererManagerServiceRef);
 		NetworkPanel networkPanel = new NetworkPanel(cyApplicationManagerServiceRef,
 		                                             cyNetworkManagerServiceRef,
 		                                             cyNetworkViewManagerServiceRef,
