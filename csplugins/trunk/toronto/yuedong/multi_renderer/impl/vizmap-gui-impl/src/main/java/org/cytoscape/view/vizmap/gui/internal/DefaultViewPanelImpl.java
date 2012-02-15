@@ -78,7 +78,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	private static final int PADDING = 20;
 
 	// Dummy network and its view
-	private final RenderingEngine<CyNetwork> renderingEngine;
+	private RenderingEngine<CyNetwork> renderingEngine;
 	private final SelectedVisualStyleManager selectedManager;
 
 	// For padding.
@@ -95,7 +95,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	public DefaultViewPanelImpl(final CyNetworkFactory cyNetworkFactory,
 			final ExternalRendererManager externalRendererManager,
 			final SelectedVisualStyleManager selectedManager) {
-
+		
 		this.innerPanel = new JPanel();
 		this.innerPanel.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
 
@@ -114,6 +114,9 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 
 		this.selectedManager = selectedManager;
 
+		// TODO: Dummy network initialization should be done upon creation
+		// of a new network view or switching between network views.
+		
 		// Create dummy view.
 		final CyNetwork dummyNet = cyNetworkFactory.createNetworkWithPrivateTables();
 
@@ -168,11 +171,13 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 
 	
 	void updateView(final VisualStyle vs) {
-		final CyNetworkView viewModel = (CyNetworkView) renderingEngine.getViewModel();
-		vs.apply(viewModel);
-		this.innerPanel.setBackground((Color) vs.getDefaultValue(MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT));
-		// This is necessary to adjust the size of default image.
-		viewModel.fitContent();
+		if (renderingEngine != null) {
+			final CyNetworkView viewModel = (CyNetworkView) renderingEngine.getViewModel();
+			vs.apply(viewModel);
+			this.innerPanel.setBackground((Color) vs.getDefaultValue(MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT));
+			// This is necessary to adjust the size of default image.
+			viewModel.fitContent();
+		}
 	}
 	
 	void updateView() {
