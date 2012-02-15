@@ -51,7 +51,7 @@ import javax.swing.JPanel;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.events.SetCurrentRenderingEngineEvent;
 import org.cytoscape.application.events.SetCurrentRenderingEngineListener;
-import org.cytoscape.application.presentation.BirdsEyeViewRenderingEngineFactory;
+import org.cytoscape.application.swing.presentation.BirdsEyeViewRenderingEngineFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
