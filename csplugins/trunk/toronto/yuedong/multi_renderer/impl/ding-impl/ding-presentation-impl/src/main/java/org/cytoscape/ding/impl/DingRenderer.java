@@ -1,5 +1,7 @@
 package org.cytoscape.ding.impl;
 
+import java.util.HashMap;
+
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.ExternalRenderer;
@@ -8,62 +10,46 @@ import org.cytoscape.view.presentation.RenderingEngineFactory;
 
 public class DingRenderer implements ExternalRenderer {
 
-	private static final String RENDERER_ID = "org.cytoscape.ding";
+	private static final String READBLE_NAME = "Ding";
 	
 	private VisualLexicon visualLexicon;
 	private RenderingEngineFactory<?> mainRenderingEngineFactory;
 	private RenderingEngineFactory<?> birdEyeRenderingEngineFactory;
 	private CyNetworkViewFactory networkViewFactory;
 	
-	public DingRenderer(ExternalRendererManager rendererManager,
-			VisualLexicon dingVisualLexicon, 
-			RenderingEngineFactory<?> dingMainRenderingEngineFactory,
-			RenderingEngineFactory<?> dingBirdEyeRenderingEngineFactory,
-			CyNetworkViewFactory dingNetworkViewFactory) {
+	public DingRenderer(ExternalRendererManager externalRendererManager,
+			VisualLexicon visualLexicon,
+			RenderingEngineFactory<?> mainRenderingEngineFactory,
+			RenderingEngineFactory<?> birdEyeRenderingEngineFactory,
+			CyNetworkViewFactory networkViewFactory) {
 		
-		// Add this renderer to the manager
-		rendererManager.installRenderer(this);
+		externalRendererManager.addRenderer(this, new HashMap<String, String>());
 		
-		visualLexicon = dingVisualLexicon;
-		mainRenderingEngineFactory = dingMainRenderingEngineFactory;
-		birdEyeRenderingEngineFactory = dingBirdEyeRenderingEngineFactory;
-		networkViewFactory = dingNetworkViewFactory;
+		this.visualLexicon = visualLexicon;
+		this.mainRenderingEngineFactory = mainRenderingEngineFactory;
+		this.birdEyeRenderingEngineFactory = birdEyeRenderingEngineFactory;
+		this.networkViewFactory = networkViewFactory;
 	}
 	
 	@Override
-	public String getRendererID() {
-		return RENDERER_ID;
-	}
-
-	@Override
-	public RenderingEngineFactory<?> getRenderingEngineFactory(
-			RenderPurpose renderPurpose) {
+	public String getRendererName() {
 		
-		switch (renderPurpose) {
-			case BIRDS_EYE_VIEW:
-				return birdEyeRenderingEngineFactory;
-			case DETAIL_VIEW:
-				return mainRenderingEngineFactory;
-			case VISUAL_STYLE_PREVIEW:
-				return mainRenderingEngineFactory;
-			default:
-				return null;
-		}
+		return READBLE_NAME;
 	}
-
 	@Override
-	public CyNetworkViewFactory getNetworkViewFactory(
-			RenderPurpose renderPurpose) {
+	public <T extends RenderingEngineFactory<?>> T getRenderingEngineFactory(
+			Class<T> type) {
 		
-		// Ding currently uses the same CyNetworkViewFactory for all network views
+		return null;
+	}
+	@Override
+	public CyNetworkViewFactory getNetworkViewFactory() {
+		
 		return networkViewFactory;
 	}
-
 	@Override
-	public VisualLexicon getVisualLexicon(RenderPurpose renderPurpose) {
+	public VisualLexicon getVisualLexicon() {
 		
-		// Use the same visual lexicon for all rendering purposes
 		return visualLexicon;
 	}
-
 }
