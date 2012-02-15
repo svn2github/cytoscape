@@ -54,12 +54,15 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.presentation.ExternalRenderer;
+import org.cytoscape.view.presentation.ExternalRendererManager;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
+import org.cytoscape.view.vizmap.gui.presentation.VisualStylePreviewRenderingEngineFactory;
 
 /**
  * Container to embed the default presentation.
@@ -90,8 +93,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	 *            DOCUMENT ME!
 	 */
 	public DefaultViewPanelImpl(final CyNetworkFactory cyNetworkFactory,
-			final CyNetworkViewFactory cyNetworkViewFactory,
-			final RenderingEngineFactory<CyNetwork> presentationFactory,
+			final ExternalRendererManager externalRendererManager,
 			final SelectedVisualStyleManager selectedManager) {
 
 		this.innerPanel = new JPanel();
@@ -105,12 +107,6 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 		// Validate
 		if (cyNetworkFactory == null)
 			throw new NullPointerException("CyNetworkFactory is null.");
-
-		if (cyNetworkViewFactory == null)
-			throw new NullPointerException("CyNetworkViewFactory is null.");
-
-		if (presentationFactory == null)
-			throw new NullPointerException("RenderingEngineFactory is null.");
 
 		if (selectedManager == null)
 			throw new NullPointerException(
@@ -131,31 +127,42 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 		dummyNet.getRow(edge).set(CyTableEntry.NAME, "Source (interaction) Target");
 
 		dummyNet.getRow(dummyNet).set(CyTableEntry.NAME, "Default Appearance");
-		final CyNetworkView dummyview = cyNetworkViewFactory
-				.createNetworkView(dummyNet);
-
-		// Set node locations
-		dummyview.getNodeView(source).setVisualProperty(NODE_X_LOCATION, 0d);
-		dummyview.getNodeView(source).setVisualProperty(NODE_Y_LOCATION, 0d);
-		dummyview.getNodeView(target).setVisualProperty(NODE_X_LOCATION, 150d);
-		dummyview.getNodeView(target).setVisualProperty(NODE_Y_LOCATION, 20d);
-
-		final VisualStyle currentStyle = selectedManager.getCurrentVisualStyle();
-		currentStyle.apply(dummyview);
-
-		this.innerPanel.setBackground((Color) currentStyle.getDefaultValue(MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT));
-		// Render it in this panel
-		renderingEngine = presentationFactory
-				.createRenderingEngine(innerPanel, dummyview);
-		dummyview.fitContent();
 		
-		// Remove unnecessary mouse listeners.
-		final int compCount = innerPanel.getComponentCount();
-		for(int i=0; i<compCount; i++) {
-			final Component comp = innerPanel.getComponent(i);
-			final MouseListener[] listeners = comp.getMouseListeners();
-			for(MouseListener ml: listeners)
-				comp.removeMouseListener(ml);
+		ExternalRenderer renderer = externalRendererManager.getCurrentRenderer();
+		if (renderer != null) {
+		
+			CyNetworkViewFactory cyNetworkViewFactory = renderer.getNetworkViewFactory();
+			RenderingEngineFactory<CyNetwork> presentationFactory = renderer
+					.getRenderingEngineFactory(VisualStylePreviewRenderingEngineFactory.class);
+	
+			final CyNetworkView dummyview = cyNetworkViewFactory
+					.createNetworkView(dummyNet);
+	
+			// Set node locations
+			dummyview.getNodeView(source).setVisualProperty(NODE_X_LOCATION, 0d);
+			dummyview.getNodeView(source).setVisualProperty(NODE_Y_LOCATION, 0d);
+			dummyview.getNodeView(target).setVisualProperty(NODE_X_LOCATION, 150d);
+			dummyview.getNodeView(target).setVisualProperty(NODE_Y_LOCATION, 20d);
+	
+			final VisualStyle currentStyle = selectedManager.getCurrentVisualStyle();
+			currentStyle.apply(dummyview);
+	
+			this.innerPanel.setBackground((Color) currentStyle.getDefaultValue(MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT));
+			// Render it in this panel
+			if (presentationFactory != null) {
+				renderingEngine = presentationFactory
+						.createRenderingEngine(innerPanel, dummyview);
+			}
+			dummyview.fitContent();
+			
+			// Remove unnecessary mouse listeners.
+			final int compCount = innerPanel.getComponentCount();
+			for(int i=0; i<compCount; i++) {
+				final Component comp = innerPanel.getComponent(i);
+				final MouseListener[] listeners = comp.getMouseListeners();
+				for(MouseListener ml: listeners)
+					comp.removeMouseListener(ml);
+			}
 		}
 	}
 
