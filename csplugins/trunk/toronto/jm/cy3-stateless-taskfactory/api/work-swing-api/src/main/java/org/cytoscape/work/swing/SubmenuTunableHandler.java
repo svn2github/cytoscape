@@ -34,5 +34,5 @@ public interface SubmenuTunableHandler extends TunableHandler {
 	 * @param dtm The DialogTaskManager to be used to execute the TaskFactory.
 	 * @param tf The TaskFactory to be executed.
 	 */
-	public void setExecutionParams(DialogTaskManager dtm, TaskFactory tf);
+	public <C> void setExecutionParams(DialogTaskManager dtm, TaskFactory<C> tf, C context);
 }

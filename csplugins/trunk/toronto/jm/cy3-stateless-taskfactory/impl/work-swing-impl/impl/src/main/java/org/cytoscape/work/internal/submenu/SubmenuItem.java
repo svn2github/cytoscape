@@ -1,16 +1,14 @@
 
 package org.cytoscape.work.internal.submenu;
 
-import org.cytoscape.work.TunableMutator;
-import org.cytoscape.work.AbstractTaskManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JMenuItem;
+
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.cytoscape.work.swing.SubmenuTunableHandler;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 class SubmenuItem extends JMenuItem implements ActionListener {
 
@@ -18,18 +16,20 @@ class SubmenuItem extends JMenuItem implements ActionListener {
 	private final TaskFactory tf;
 	private final SubmenuTunableHandler handler;
 	private final String menuName;
+	private final Object context;
 
-	SubmenuItem(String menuName, SubmenuTunableHandler handler, DialogTaskManager dtm, TaskFactory tf) {
+	SubmenuItem(String menuName, SubmenuTunableHandler handler, DialogTaskManager dtm, TaskFactory tf, Object context) {
 		super(menuName);
 		this.menuName = menuName;
 		this.handler = handler;
 		this.dtm = dtm;
 		this.tf = tf;
+		this.context = context;
 		addActionListener(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		handler.chosenMenu(menuName);
-		dtm.execute(tf,false);
+		dtm.execute(tf, context, false);
 	}
 }

@@ -1,6 +1,7 @@
 package org.cytoscape.work.internal.submenu;
 
 import org.cytoscape.work.AbstractTunableHandler;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.swing.SubmenuTunableHandler; 
@@ -24,6 +25,8 @@ public class SubmenuTunableHandlerImpl extends AbstractTunableHandler implements
 	
 	private DialogTaskManager dtm; 
 	private TaskFactory tf;
+	private Object context;
+	
 	private static final Logger logger = LoggerFactory.getLogger(SubmenuTunableHandlerImpl.class);
 
 	public SubmenuTunableHandlerImpl(final Field field, final Object instance, final Tunable tunable) {
@@ -34,9 +37,10 @@ public class SubmenuTunableHandlerImpl extends AbstractTunableHandler implements
 		super(getter,setter,instance,tunable);
 	}
 
-	public void setExecutionParams(DialogTaskManager dtm, TaskFactory tf) {
+	public void setExecutionParams(DialogTaskManager dtm, TaskFactory tf, Object context) {
 		this.dtm = dtm;
 		this.tf = tf;
+		this.context = context;
 	}
 
 	public void handle() {
@@ -49,14 +53,14 @@ public class SubmenuTunableHandlerImpl extends AbstractTunableHandler implements
 			menuTitles = ((ListSingleSelection<String>)o).getPossibleValues();
 
 		if ( menuTitles.size() <= 0 ) {
-			menuItem = new SubmenuItem(null,this,dtm,tf);		
+			menuItem = new SubmenuItem(null,this,dtm,tf,context);		
 		} else if ( menuTitles.size() == 1 ) {
 			// assume the lone entry in the list is the title
-			menuItem = new SubmenuItem(menuTitles.get(0),this,dtm,tf);		
+			menuItem = new SubmenuItem(menuTitles.get(0),this,dtm,tf,context);		
 		} else {
 			menuItem = new JMenu((String) null);
 			for ( String title : menuTitles )
-				((JMenu)menuItem).add(new SubmenuItem(title,this,dtm,tf));
+				((JMenu)menuItem).add(new SubmenuItem(title,this,dtm,tf,context));
 		}
 
 		} catch (Exception e) { e.printStackTrace(); }

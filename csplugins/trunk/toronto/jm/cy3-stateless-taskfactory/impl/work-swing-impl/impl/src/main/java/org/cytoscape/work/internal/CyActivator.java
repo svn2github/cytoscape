@@ -78,7 +78,8 @@ public class CyActivator extends AbstractCyActivator {
 
 		JDialogTaskManager jDialogTaskManager = new JDialogTaskManager(jDialogTunableMutator);
 
-		SubmenuTunableMutator submenuTunableMutator = new SubmenuTunableMutator(jDialogTaskManager);
+		TaskContextManager contextManager = new TaskContextManagerImpl();
+		SubmenuTunableMutator submenuTunableMutator = new SubmenuTunableMutator(jDialogTaskManager, contextManager);
 
 		PanelTaskManager jPanelTaskManager = new JPanelTaskManager(jPanelTunableMutator, jDialogTaskManager);
 		SubmenuTaskManager submenuTaskManager = new SubmenuTaskManagerImpl(submenuTunableMutator,jDialogTaskManager);
@@ -117,8 +118,6 @@ public class CyActivator extends AbstractCyActivator {
 		SyncTunableHandlerFactory syncTunableHandlerFactory = new SyncTunableHandlerFactory();
 		SyncTaskManager syncTaskManager = new SyncTaskManager(syncTunableMutator);
 	
-		TaskContextManager contextManager = new TaskContextManagerImpl();
-		
 		Properties undoSupportProps = new Properties();
 		registerService(bc,undoSupport,UndoSupport.class, undoSupportProps);
 		registerService(bc,undoSupport,SwingUndoSupport.class, undoSupportProps);
