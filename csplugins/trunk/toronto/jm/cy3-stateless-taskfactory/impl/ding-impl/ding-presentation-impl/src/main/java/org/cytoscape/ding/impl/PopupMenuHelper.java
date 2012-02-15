@@ -35,7 +35,6 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBoxMenuItem;
@@ -61,6 +60,7 @@ import org.cytoscape.util.swing.GravityTracker;
 import org.cytoscape.util.swing.JMenuTracker;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskFactoryPredicate;
 import org.cytoscape.work.swing.DynamicSubmenuListener;
@@ -82,13 +82,12 @@ class PopupMenuHelper {
 	// the component we should create the popup menu on
 	private Component invoker;
 
-	private Map<TaskFactory, Object> contexts;
-	
-	PopupMenuHelper(DGraphView v, Component inv) {
+	private TaskContextManager contextManager;
+
+	PopupMenuHelper(DGraphView v, Component inv, TaskContextManager contextManager) {
 		m_view = v;
 		invoker = inv;
-		
-		contexts = new WeakHashMap<TaskFactory, Object>();
+		this.contextManager = contextManager;
 	}
 
 	/**
@@ -107,7 +106,7 @@ class PopupMenuHelper {
 				JMenuTracker tracker = new JMenuTracker(menu);
 
 				for ( EdgeViewTaskFactory<EdgeViewTaskContext> evtf : usableTFs ) {
-					EdgeViewTaskContext context = getContext(evtf);
+					EdgeViewTaskContext context = contextManager.getContext(evtf);
 					context.setEdgeView(ev,m_view);
 					createMenuItem(ev, menu, evtf, tracker, m_view.edgeViewTFs.get(evtf) );
 				}
@@ -117,7 +116,7 @@ class PopupMenuHelper {
 			// execute the task directly if only one factory exists
 			} else if ( usableTFs.size() == 1) {
 				EdgeViewTaskFactory<EdgeViewTaskContext> tf  = usableTFs.iterator().next();
-				EdgeViewTaskContext context = getContext(tf);
+				EdgeViewTaskContext context = contextManager.getContext(tf);
 				context.setEdgeView(ev,m_view);
 				executeTask(tf);
 			}
@@ -139,7 +138,7 @@ class PopupMenuHelper {
 				JMenuTracker tracker = new JMenuTracker(menu);
 
 				for ( DropNodeViewTaskFactory<DropNodeViewTaskContext> nvtf : usableTFs ) {
-					DropNodeViewTaskContext context = getContext(nvtf);
+					DropNodeViewTaskContext context = contextManager.getContext(nvtf);
 					context.setNodeView(nv,m_view);
 					context.setDropInformation(t,rawPt,xformPt);
 					createMenuItem(nv, menu, nvtf, tracker, m_view.dropNodeViewTFs.get( nvtf ));
@@ -150,7 +149,7 @@ class PopupMenuHelper {
 			// execute the task directly if only one factory exists
 			} else if ( usableTFs.size() == 1) {
 				DropNodeViewTaskFactory<DropNodeViewTaskContext> tf  = usableTFs.iterator().next();
-				DropNodeViewTaskContext context = getContext(tf);
+				DropNodeViewTaskContext context = contextManager.getContext(tf);
 				context.setNodeView(nv,m_view);
 				context.setDropInformation(t,rawPt,xformPt);
 				executeTask(tf);
@@ -173,7 +172,7 @@ class PopupMenuHelper {
 				JMenuTracker tracker = new JMenuTracker(menu);
 
 				for ( NodeViewTaskFactory<NodeViewTaskContext> nvtf : usableTFs ) {
-					NodeViewTaskContext context = nvtf.createTaskContext();
+					NodeViewTaskContext context = contextManager.getContext(nvtf);
 					context.setNodeView(nv, m_view);
 					createMenuItem(nv, menu, nvtf, tracker, m_view.nodeViewTFs.get( nvtf ));
 				}
@@ -184,7 +183,7 @@ class PopupMenuHelper {
 			// execute the task directly if only one factory exists
 			} else if ( usableTFs.size() == 1) {
 				NodeViewTaskFactory<NodeViewTaskContext> tf  = usableTFs.iterator().next();
-				NodeViewTaskContext context = tf.createTaskContext();
+				NodeViewTaskContext context = contextManager.getContext(tf);
 				context.setNodeView(nv, m_view);
 				executeTask(tf);
 			}
@@ -201,7 +200,7 @@ class PopupMenuHelper {
 			JPopupMenu menu = new JPopupMenu("Double Click Menu: empty");
 			JMenuTracker tracker = new JMenuTracker(menu);
 			for ( DropNetworkViewTaskFactory<DropNetworkViewTaskContext> nvtf : usableTFs ) {
-				DropNetworkViewTaskContext context = nvtf.createTaskContext();
+				DropNetworkViewTaskContext context = contextManager.getContext(nvtf);
 				context.setNetworkView(m_view);
 				context.setDropInformation(t,rawPt,xformPt);
 				createMenuItem(null, menu, nvtf, tracker, m_view.dropEmptySpaceTFs.get( nvtf ) );
@@ -210,7 +209,7 @@ class PopupMenuHelper {
 		// execute the task directly if only one factory exists
 		} else if ( usableTFs.size() == 1) {
 			DropNetworkViewTaskFactory<DropNetworkViewTaskContext> tf = usableTFs.iterator().next();
-			DropNetworkViewTaskContext context = tf.createTaskContext();
+			DropNetworkViewTaskContext context = contextManager.getContext(tf);
 			context.setNetworkView(m_view);
 			context.setDropInformation(t,rawPt,xformPt);
 			executeTask(tf);
@@ -226,7 +225,7 @@ class PopupMenuHelper {
 			final JPopupMenu menu = new JPopupMenu("Double Click Menu: empty");
 			final JMenuTracker tracker = new JMenuTracker(menu);
 			for ( NetworkViewTaskFactory<NetworkViewTaskContext> nvtf : usableTFs ) {
-				NetworkViewTaskContext context = nvtf.createTaskContext();
+				NetworkViewTaskContext context = contextManager.getContext(nvtf);
 				context.setNetworkView(m_view);
 				createMenuItem(null, menu, nvtf, tracker, m_view.emptySpaceTFs.get( nvtf ) );
 			}
@@ -234,7 +233,7 @@ class PopupMenuHelper {
 		// execute the task directly if only one factory exists
 		} else if ( usableTFs.size() == 1) {
 			NetworkViewTaskFactory<NetworkViewTaskContext> tf = usableTFs.iterator().next();
-			NetworkViewTaskContext context = tf.createTaskContext();
+			NetworkViewTaskContext context = contextManager.getContext(tf);
 			context.setNetworkView(m_view);
 			executeTask(tf);
 		}
@@ -342,9 +341,10 @@ class PopupMenuHelper {
 		else
 			item = new JMenuItem(action);
 
-		if ( tf instanceof TaskFactoryPredicate )
-			item.setEnabled( ((TaskFactoryPredicate)tf).isReady(getContext(tf)) );
-
+		if ( tf instanceof TaskFactoryPredicate ) {
+			Object context = contextManager.getContext(tf);
+			item.setEnabled( ((TaskFactoryPredicate)tf).isReady(context) );
+		}
 		item.setToolTipText(toolTipText);
 		return item;
 	}
@@ -388,16 +388,7 @@ class PopupMenuHelper {
 	 * A place to capture the common task execution behavior.
 	 */
 	private void executeTask(TaskFactory tf) {
-		m_view.manager.execute(tf, getContext(tf));
-		contexts.remove(tf);
-	}
-	
-	private <C> C getContext(TaskFactory<C> tf) {
-		C context = (C) contexts.get(tf);
-		if (context == null) {
-			context = tf.createTaskContext();
-			contexts.put(tf, context);
-		}
-		return context;
+		Object context = contextManager.getContext(tf);
+		m_view.manager.execute(tf, context);
 	}
 }

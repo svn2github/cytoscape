@@ -1,6 +1,8 @@
 package org.cytoscape.view;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.awt.BasicStroke;
@@ -11,14 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.cytoscape.ding.impl.cyannotator.create.AnnotationFactoryManager;
-import org.cytoscape.ding.DNodeShape;
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.customgraphics.CustomGraphicsManager;
 import org.cytoscape.ding.impl.DGraphView;
 import org.cytoscape.ding.impl.DNodeView;
 import org.cytoscape.ding.impl.DVisualLexicon;
+import org.cytoscape.ding.impl.cyannotator.create.AnnotationFactoryManager;
 import org.cytoscape.dnd.DropNetworkViewTaskFactory;
 import org.cytoscape.dnd.DropNodeViewTaskFactory;
 import org.cytoscape.event.CyEventHelper;
@@ -39,6 +40,7 @@ import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
 import org.cytoscape.view.presentation.property.values.NodeShape;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.cytoscape.work.swing.SubmenuTaskManager;
 import org.cytoscape.work.undo.UndoSupport;
@@ -89,6 +91,9 @@ public class DNodeViewTest {
 	@Mock
 	private AnnotationFactoryManager annMgr;
 	
+	@Mock
+	private TaskContextManager contextManager;
+	
 	private final TableTestSupport tableSupport = new TableTestSupport();
 	private final NetworkTestSupport netSupport = new NetworkTestSupport();
 
@@ -117,7 +122,7 @@ public class DNodeViewTest {
 		buildNetwork();
 		networkView = new DGraphView(network, dataFactory, cyRoot, undo, spacialFactory, lexicon,
 				nodeViewTFs, edgeViewTFs, emptySpaceTFs, dropNodeViewTFs, 
-				dropEmptySpaceTFs, manager, submenuTaskManager, eventHelper, tableMgr, annMgr);
+				dropEmptySpaceTFs, manager, submenuTaskManager, eventHelper, tableMgr, annMgr, contextManager);
 		
 		dnv1 = (DNodeView) networkView.getDNodeView(node1);
 		dnv2 = (DNodeView) networkView.getDNodeView(node2);

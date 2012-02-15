@@ -131,6 +131,7 @@ import org.cytoscape.view.model.events.FitSelectedEvent;
 import org.cytoscape.view.model.events.FitSelectedEventListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.cytoscape.work.swing.SubmenuTaskManager;
 import org.cytoscape.work.undo.UndoSupport;
@@ -408,10 +409,11 @@ public class DGraphView extends AbstractDViewModel<CyNetwork> implements CyNetwo
 			DialogTaskManager manager, SubmenuTaskManager menuTaskManager,
 			CyEventHelper eventHelper,
 			CyNetworkTableManager tableMgr,
-			AnnotationFactoryManager annMgr) {
+			AnnotationFactoryManager annMgr,
+			TaskContextManager contextManager) {
 		
 		this(view.getModel(), dataFactory, cyRoot, undo, spacialFactory, dingLexicon, nodeViewTFs, edgeViewTFs,
-				emptySpaceTFs, dropNodeViewTFs, dropEmptySpaceTFs, manager, menuTaskManager, eventHelper, tableMgr, annMgr);
+				emptySpaceTFs, dropNodeViewTFs, dropEmptySpaceTFs, manager, menuTaskManager, eventHelper, tableMgr, annMgr, contextManager);
 	}
 
 	
@@ -432,6 +434,7 @@ public class DGraphView extends AbstractDViewModel<CyNetwork> implements CyNetwo
 	 * @param manager
 	 * @param eventHelper
 	 * @param tableMgr
+	 * @param contextManager 
 	 */
 	public DGraphView(final CyNetwork model, CyTableFactory dataFactory,
 			CyRootNetworkManager cyRoot, UndoSupport undo,
@@ -445,7 +448,7 @@ public class DGraphView extends AbstractDViewModel<CyNetwork> implements CyNetwo
 			DialogTaskManager manager, SubmenuTaskManager menuTaskManager,
 			CyEventHelper cyEventHelper,
 			CyNetworkTableManager tableMgr,
-			AnnotationFactoryManager annMgr) {
+			AnnotationFactoryManager annMgr, TaskContextManager contextManager) {
 		super(model);
 		this.props = new Properties();
 		
@@ -486,7 +489,7 @@ public class DGraphView extends AbstractDViewModel<CyNetwork> implements CyNetwo
 		m_defaultNodeYMin = 0.0f;
 		m_defaultNodeXMax = m_defaultNodeXMin + DNodeView.DEFAULT_WIDTH;
 		m_defaultNodeYMax = m_defaultNodeYMin + DNodeView.DEFAULT_HEIGHT;
-		m_networkCanvas = new InnerCanvas(m_lock, this, undo);
+		m_networkCanvas = new InnerCanvas(m_lock, this, undo, contextManager);
 		m_backgroundCanvas = new ArbitraryGraphicsCanvas(model, this, m_networkCanvas, Color.white, true, true);
 		addViewportChangeListener(m_backgroundCanvas);
 		m_foregroundCanvas = new ArbitraryGraphicsCanvas(model, this, m_networkCanvas, Color.white, true, false);

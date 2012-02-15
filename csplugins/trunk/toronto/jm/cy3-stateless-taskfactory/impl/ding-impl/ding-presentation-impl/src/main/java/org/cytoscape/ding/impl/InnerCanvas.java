@@ -80,6 +80,7 @@ import org.cytoscape.util.intr.IntEnumerator;
 import org.cytoscape.util.intr.IntHash;
 import org.cytoscape.util.intr.IntStack;
 import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.undo.UndoSupport;
 
 /**
@@ -137,7 +138,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 	private final AddEdgeStateMonitor addEdgeMode;
 
-	InnerCanvas(Object lock, DGraphView view, UndoSupport undo) {
+	InnerCanvas(Object lock, DGraphView view, UndoSupport undo, TaskContextManager contextManager) {
 		super();
 		m_lock = lock;
 		m_view = view;
@@ -156,7 +157,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		addKeyListener(this);
 		setFocusable(true);
 		new DropTarget(this, DnDConstants.ACTION_COPY, this); 
-		popup = new PopupMenuHelper(m_view, this);
+		popup = new PopupMenuHelper(m_view, this, contextManager);
 
 		mousePressedDelegator = new MousePressedDelegator();
 		mouseReleasedDelegator = new MouseReleasedDelegator();

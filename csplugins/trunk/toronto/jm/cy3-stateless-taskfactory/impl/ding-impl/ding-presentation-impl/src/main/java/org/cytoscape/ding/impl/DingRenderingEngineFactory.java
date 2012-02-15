@@ -22,6 +22,7 @@ import org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.presentation.RenderingEngineManager;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.cytoscape.work.swing.SubmenuTaskManager;
 import org.cytoscape.work.undo.UndoSupport;
@@ -52,6 +53,8 @@ public class DingRenderingEngineFactory implements
 	private final CyEventHelper eventHelper;
 	
 	private ViewTaskFactoryListener vtfListener;
+
+	private final TaskContextManager contextManager;
 	
 	
 	public DingRenderingEngineFactory(CyTableFactory dataTableFactory,
@@ -64,7 +67,8 @@ public class DingRenderingEngineFactory implements
 			CyEventHelper eventHelper,
 			RenderingEngineManager renderingEngineManager,
 			ViewTaskFactoryListener vtfListener,
-			AnnotationFactoryManager annMgr) {
+			AnnotationFactoryManager annMgr,
+			TaskContextManager contextManager) {
 		
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkManager = rootNetworkManager;
@@ -80,6 +84,7 @@ public class DingRenderingEngineFactory implements
 		this.annMgr = annMgr;
 
 		this.vtfListener = vtfListener;
+		this.contextManager = contextManager;
 	}
 
 	/**
@@ -119,7 +124,7 @@ public class DingRenderingEngineFactory implements
 				dgv = new DGraphView(targetView, dataTableFactory,
 					rootNetworkManager, undo, spacialFactory, dingLexicon,
 					vtfListener.nodeViewTFs, vtfListener.edgeViewTFs, vtfListener.emptySpaceTFs, vtfListener.dropNodeViewTFs,
-					vtfListener.dropEmptySpaceTFs, dialogTaskManager, menuTaskManager, eventHelper, tableMgr, annMgr);
+					vtfListener.dropEmptySpaceTFs, dialogTaskManager, menuTaskManager, eventHelper, tableMgr, annMgr, contextManager);
 
 			logger.info("DGraphView created as a presentation for view model: "
 					+ targetView.getSUID());

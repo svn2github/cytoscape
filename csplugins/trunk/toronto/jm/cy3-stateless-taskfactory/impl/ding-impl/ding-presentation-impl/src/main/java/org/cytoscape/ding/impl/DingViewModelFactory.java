@@ -3,7 +3,6 @@ package org.cytoscape.ding.impl;
 import java.util.Properties;
 
 import org.cytoscape.ding.impl.cyannotator.create.AnnotationFactoryManager;
-
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkTableManager;
@@ -14,6 +13,7 @@ import org.cytoscape.spacial.SpacialIndex2DFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.cytoscape.work.swing.SubmenuTaskManager;
 import org.cytoscape.work.undo.UndoSupport;
@@ -38,12 +38,14 @@ public class DingViewModelFactory implements CyNetworkViewFactory {
 	private ViewTaskFactoryListener vtfListener;
 	private final AnnotationFactoryManager annMgr;
 
+	private final TaskContextManager contextManager;
+
 	public DingViewModelFactory(CyTableFactory dataTableFactory, CyRootNetworkManager rootNetworkManager,
 			UndoSupport undo, SpacialIndex2DFactory spacialFactory, VisualLexicon dingLexicon, 
 			DialogTaskManager dialogTaskManager, SubmenuTaskManager menuTaskManager,
 			CyServiceRegistrar registrar, CyNetworkTableManager tableMgr, CyEventHelper eventHelper, 
 			ViewTaskFactoryListener vtfListener,
-			AnnotationFactoryManager annMgr) {
+			AnnotationFactoryManager annMgr, TaskContextManager contextManager) {
 
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkManager = rootNetworkManager;
@@ -57,6 +59,7 @@ public class DingViewModelFactory implements CyNetworkViewFactory {
 		this.vtfListener = vtfListener;
 		this.annMgr = annMgr;
 		this.menuTaskManager = menuTaskManager;
+		this.contextManager = contextManager;
 	}
 
 	@Override
@@ -72,7 +75,7 @@ public class DingViewModelFactory implements CyNetworkViewFactory {
 
 		final DGraphView dgv = new DGraphView(network, dataTableFactory, rootNetworkManager, undo, spacialFactory, dingLexicon,
 				vtfListener.nodeViewTFs, vtfListener.edgeViewTFs, vtfListener.emptySpaceTFs, vtfListener.dropNodeViewTFs, 
-				vtfListener.dropEmptySpaceTFs, dialogTaskManager, menuTaskManager, eventHelper, tableMgr, annMgr);
+				vtfListener.dropEmptySpaceTFs, dialogTaskManager, menuTaskManager, eventHelper, tableMgr, annMgr, contextManager);
 
 		registrar.registerAllServices(dgv, new Properties());
 

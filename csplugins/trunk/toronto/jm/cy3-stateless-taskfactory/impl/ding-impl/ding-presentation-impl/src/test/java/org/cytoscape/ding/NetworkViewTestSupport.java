@@ -16,6 +16,7 @@ import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.spacial.internal.rtree.RTreeFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.cytoscape.work.swing.SubmenuTaskManager;
 import org.cytoscape.work.undo.UndoSupport;
@@ -42,7 +43,8 @@ public class NetworkViewTestSupport extends NetworkTestSupport {
 		                                       mock(CyNetworkTableManager.class),
 		                                       mock(CyEventHelper.class),
 		                                       mock(ViewTaskFactoryListener.class),
-											   mock(AnnotationFactoryManager.class));
+											   mock(AnnotationFactoryManager.class),
+											   mock(TaskContextManager.class));
 	}
 	
 	public CyNetworkView getNetworkView() {

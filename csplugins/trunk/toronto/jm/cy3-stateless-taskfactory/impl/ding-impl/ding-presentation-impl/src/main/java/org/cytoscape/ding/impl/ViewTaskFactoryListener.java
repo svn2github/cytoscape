@@ -9,6 +9,7 @@ import org.cytoscape.task.EdgeViewTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.work.TaskContextManager;
 
 public class ViewTaskFactoryListener {
 
@@ -18,16 +19,18 @@ public class ViewTaskFactoryListener {
 	final Map<NetworkViewTaskFactory, Map> emptySpaceTFs;
 	final Map<DropNodeViewTaskFactory, Map> dropNodeViewTFs;
 	final Map<DropNetworkViewTaskFactory, Map> dropEmptySpaceTFs;
+	
+	private final TaskContextManager contextManager;
 
 
-	public ViewTaskFactoryListener(){
+	public ViewTaskFactoryListener(TaskContextManager contextManager){
 		viewMap = new HashMap<CyNetworkView, DGraphView>();
 		nodeViewTFs = new HashMap<NodeViewTaskFactory, Map>();
 		edgeViewTFs = new HashMap<EdgeViewTaskFactory, Map>();
 		emptySpaceTFs = new HashMap<NetworkViewTaskFactory, Map>();
 		dropNodeViewTFs = new HashMap<DropNodeViewTaskFactory, Map>();
 		dropEmptySpaceTFs = new HashMap<DropNetworkViewTaskFactory, Map>();
-
+		this.contextManager = contextManager;
 	}
 
 	
@@ -36,6 +39,7 @@ public class ViewTaskFactoryListener {
 			return;
 
 		nodeViewTFs.put(nvtf, props);
+		contextManager.registerTaskFactory(nvtf);
 	}
 
 	public void removeNodeViewTaskFactory(NodeViewTaskFactory nvtf, Map props) {
@@ -43,6 +47,7 @@ public class ViewTaskFactoryListener {
 			return;
 
 		nodeViewTFs.remove(nvtf);
+		contextManager.unregisterTaskFactory(nvtf);
 	}
 
 	public void addEdgeViewTaskFactory(EdgeViewTaskFactory evtf, Map props) {
@@ -50,6 +55,7 @@ public class ViewTaskFactoryListener {
 			return;
 
 		edgeViewTFs.put(evtf, props);
+		contextManager.registerTaskFactory(evtf);
 	}
 
 	public void removeEdgeViewTaskFactory(EdgeViewTaskFactory evtf, Map props) {
@@ -57,6 +63,7 @@ public class ViewTaskFactoryListener {
 			return;
 
 		edgeViewTFs.remove(evtf);
+		contextManager.unregisterTaskFactory(evtf);
 	}
 
 	public void addNetworkViewTaskFactory(NetworkViewTaskFactory evtf, Map props) {
@@ -64,6 +71,7 @@ public class ViewTaskFactoryListener {
 			return;
 
 		emptySpaceTFs.put(evtf, props);
+		contextManager.registerTaskFactory(evtf);
 	}
 
 	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory evtf,
@@ -72,6 +80,7 @@ public class ViewTaskFactoryListener {
 			return;
 
 		emptySpaceTFs.remove(evtf);
+		contextManager.unregisterTaskFactory(evtf);
 	}
 
 	public void addDropNetworkViewTaskFactory(DropNetworkViewTaskFactory evtf,
@@ -80,6 +89,7 @@ public class ViewTaskFactoryListener {
 			return;
 
 		dropEmptySpaceTFs.put(evtf, props);
+		contextManager.registerTaskFactory(evtf);
 	}
 
 	public void removeDropNetworkViewTaskFactory(
@@ -88,6 +98,7 @@ public class ViewTaskFactoryListener {
 			return;
 
 		dropEmptySpaceTFs.remove(evtf);
+		contextManager.unregisterTaskFactory(evtf);
 	}
 
 	public void addDropNodeViewTaskFactory(DropNodeViewTaskFactory nvtf, Map props) {
@@ -95,6 +106,7 @@ public class ViewTaskFactoryListener {
 			return;
 
 		dropNodeViewTFs.put(nvtf, props);
+		contextManager.registerTaskFactory(nvtf);
 	}
 
 	public void removeDropNodeViewTaskFactory(DropNodeViewTaskFactory nvtf, Map props) {
@@ -102,6 +114,7 @@ public class ViewTaskFactoryListener {
 			return;
 
 		dropNodeViewTFs.remove(nvtf);
+		contextManager.unregisterTaskFactory(nvtf);
 	}
 
 }

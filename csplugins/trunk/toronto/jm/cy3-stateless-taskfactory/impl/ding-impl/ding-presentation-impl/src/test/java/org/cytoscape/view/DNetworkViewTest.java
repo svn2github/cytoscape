@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.cytoscape.ding.impl.cyannotator.create.AnnotationFactoryManager;
 import org.cytoscape.ding.impl.DGraphView;
+import org.cytoscape.ding.impl.cyannotator.create.AnnotationFactoryManager;
 import org.cytoscape.dnd.DropNetworkViewTaskFactory;
 import org.cytoscape.dnd.DropNodeViewTaskFactory;
 import org.cytoscape.event.CyEventHelper;
@@ -23,6 +23,7 @@ import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.view.model.AbstractCyNetworkViewTest;
 import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.work.TaskContextManager;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.cytoscape.work.swing.SubmenuTaskManager;
 import org.cytoscape.work.undo.UndoSupport;
@@ -63,6 +64,9 @@ public class DNetworkViewTest extends AbstractCyNetworkViewTest {
 	@Mock
 	private AnnotationFactoryManager annMgr;
 	
+	@Mock
+	private TaskContextManager contextManager;
+	
 	private final TableTestSupport tableSupport = new TableTestSupport();
 	private final NetworkTestSupport netSupport = new NetworkTestSupport();
 
@@ -78,7 +82,7 @@ public class DNetworkViewTest extends AbstractCyNetworkViewTest {
 		buildNetwork();
 		view = new DGraphView(network, dataFactory, cyRoot, undo, spacialFactory, dingLexicon,
 				nodeViewTFs, edgeViewTFs, emptySpaceTFs, dropNodeViewTFs, 
-				dropEmptySpaceTFs, manager, submenuTaskManager, eventHelper, tableMgr,annMgr);
+				dropEmptySpaceTFs, manager, submenuTaskManager, eventHelper, tableMgr,annMgr, contextManager);
 	}
 	
 	@Override

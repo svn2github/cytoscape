@@ -1,51 +1,24 @@
 package org.cytoscape.ding.impl; 
 
 
-import java.awt.datatransfer.Transferable;
-import java.awt.geom.Point2D;
-
-import org.cytoscape.dnd.DropNodeViewTaskContext;
 import org.cytoscape.dnd.DropNodeViewTaskFactory;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 
 
-public class AddEdgeNodeViewTaskFactoryImpl implements DropNodeViewTaskFactory<DropNodeViewTaskContext> {
-	private View<CyNode> nv;
-	private CyNetworkView view;
-	private Point2D xformPt;
-	private Point2D javaPt;
+public class AddEdgeNodeViewTaskFactoryImpl implements DropNodeViewTaskFactory<AddEdgeNodeViewTaskContext> {
 	private final CyNetworkManager netMgr;
 
 	public AddEdgeNodeViewTaskFactoryImpl(CyNetworkManager netMgr) {
 		this.netMgr = netMgr;
 	}
 
-	public void setNodeView(View<CyNode> nv, CyNetworkView view) {
-		this.view = view;
-		this.nv = nv;
-	}
-
-	public void setDropInformation(Transferable t, Point2D javaPt, Point2D xformPt) {
-		this.javaPt = javaPt;
-		this.xformPt = xformPt;
-
-		AddEdgeStateMonitor.setSourcePoint(view,javaPt);
-
-		// Because the transferable may be null, we leave that
-		// tracking to the AddEdgeStateMonitor.
-		AddEdgeStateMonitor.setTransferable(view,t);
-	}
-
-	public TaskIterator createTaskIterator(DropNodeViewTaskContext context) {
+	public TaskIterator createTaskIterator(AddEdgeNodeViewTaskContext context) {
 		return new TaskIterator(new AddEdgeTask(context, AddEdgeStateMonitor.getTransferable(context.getNetworkView())));
 	}
 	
 	@Override
-	public DropNodeViewTaskContext createTaskContext() {
-		return new DropNodeViewTaskContext();
+	public AddEdgeNodeViewTaskContext createTaskContext() {
+		return new AddEdgeNodeViewTaskContext();
 	}
 }
