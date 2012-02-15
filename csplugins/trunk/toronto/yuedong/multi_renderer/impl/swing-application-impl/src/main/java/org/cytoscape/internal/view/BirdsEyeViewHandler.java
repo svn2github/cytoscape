@@ -51,12 +51,16 @@ import javax.swing.JPanel;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.events.SetCurrentRenderingEngineEvent;
 import org.cytoscape.application.events.SetCurrentRenderingEngineListener;
+import org.cytoscape.application.presentation.BirdsEyeViewRenderingEngineFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.model.events.NetworkViewDestroyedEvent;
 import org.cytoscape.view.model.events.NetworkViewDestroyedListener;
+import org.cytoscape.view.presentation.ExternalRenderer;
+import org.cytoscape.view.presentation.ExternalRendererManager;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.slf4j.Logger;
@@ -75,8 +79,8 @@ public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 	private static final Color DEF_BACKGROUND_COLOR = Color.WHITE;
 
 	// BEV is just a special implementation of RenderingEngine.
-	private final RenderingEngineFactory<CyNetwork> bevFactory;
-
+	private final ExternalRendererManager externalRendererManager;
+	
 	private FrameListener frameListener = new FrameListener();
 
 	private final NetworkViewManager networkViewManager;
@@ -94,7 +98,7 @@ public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 	 */
 	public BirdsEyeViewHandler(final CyApplicationManager appManager,
 			final NetworkViewManager viewmgr,
-			final RenderingEngineFactory<CyNetwork> defaultFactory) {
+			final ExternalRendererManager externalRendererManager) {
 
 		this.appManager = appManager;
 		this.networkViewManager = viewmgr;
@@ -104,7 +108,7 @@ public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 		this.bevPanel.setSize(DEF_PANEL_SIZE);
 		this.bevPanel.setBackground(DEF_BACKGROUND_COLOR);
 
-		this.bevFactory = defaultFactory;
+		this.externalRendererManager = externalRendererManager;
 
 		final JDesktopPane desktopPane = viewmgr.getDesktopPane();
 		desktopPane.addComponentListener(new DesktopListener());
@@ -164,7 +168,10 @@ public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 				+ engine.getViewModel().getSUID());
 
 		bevPanel.removeAll();
-		bevFactory.createRenderingEngine(bevPanel, engine.getViewModel());
+
+		// TODO: Ensure that the bird's eye view is given a new view?
+		addRenderingEngine(bevPanel, engine.getViewModel());
+
 		setFocus();
 		bevPanel.repaint();
 	}
@@ -187,10 +194,34 @@ public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 		engine = newEngine;
 		logger.debug("Got BEV New Network view = " + engine.getViewModel());
 		bevPanel.removeAll();
-		bevFactory.createRenderingEngine(bevPanel, engine.getViewModel());
+		
+		// TODO: Ensure that the bird's eye view is given a new view?
+		addRenderingEngine(bevPanel, engine.getViewModel());
+	
 		setFocus();
 		bevPanel.repaint();
 		
 		logger.debug("======== BEV update done. =============");
+	}
+	
+	/**
+	 * Creates a {@link RenderingEngine} for the type {@link CyNetwork} and adds it to
+	 * the given container.
+	 * 
+	 * @param container The container for the {@link RenderingEngine}
+	 * @param viewModel The view model that the {@link RenderingEngine} will use to render
+	 */
+	private void addRenderingEngine(Container container, View<CyNetwork> viewModel) {
+		ExternalRenderer renderer = externalRendererManager.getCurrentRenderer();
+		RenderingEngineFactory<CyNetwork> factory;
+		
+		if (renderer != null) {
+			
+			factory = renderer.getRenderingEngineFactory(BirdsEyeViewRenderingEngineFactory.class);
+			
+			if (factory != null) {
+				factory.createRenderingEngine(container, viewModel);
+			}
+		}
 	}
 }
