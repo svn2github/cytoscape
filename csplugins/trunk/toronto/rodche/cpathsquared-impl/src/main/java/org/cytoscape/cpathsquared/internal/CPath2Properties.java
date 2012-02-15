@@ -9,7 +9,7 @@ import org.cytoscape.cpathsquared.internal.view.Organism;
  *
  * @author Ethan Cerami, Igor Rodchenkov
  */
-public class CPathProperties {
+public class CPath2Properties {
     /**
      * Download Networks in Full BioPAX Mode.
      */
@@ -42,7 +42,7 @@ public class CPathProperties {
     
     public static int downloadMode = DOWNLOAD_BINARY_SIF;
 
-    private CPathProperties () {
+    private CPath2Properties () {
         //  no-op; private constructor;
     }
 

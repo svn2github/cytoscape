@@ -10,8 +10,8 @@ import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cpath.client.internal.PathwayCommons2Client;
-import cpath.client.internal.util.PathwayCommonsException;
+import cpath.client.CPath2Client;
+import cpath.client.util.CPathException;
 import cpath.service.OutputFormat;
 import cpath.service.jaxb.SearchResponse;
 
@@ -20,18 +20,18 @@ import cpath.service.jaxb.SearchResponse;
  *
  * @author Ethan Cerami, Igor Rodchenkov
  */
-public class CPathWebServiceImpl implements CPathWebService {
-    private static ArrayList<CPathWebServiceListener> listeners = new ArrayList<CPathWebServiceListener>();
-    private static CPathWebService webApi;
-    private static final Logger LOGGER = LoggerFactory.getLogger(CPathWebServiceImpl.class);
+public class CPath2WebServiceImpl implements CPath2WebService {
+    private static ArrayList<CPath2WebServiceListener> listeners = new ArrayList<CPath2WebServiceListener>();
+    private static CPath2WebService webApi;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CPath2WebServiceImpl.class);
     
     /**
      * Gets a singleton instance of the cPath2 web service handler.
-     * @return CPathWebService Object.
+     * @return CPath2WebService Object.
      */
-    public static CPathWebService getInstance() {
+    public static CPath2WebService getInstance() {
         if (webApi == null) {
-            webApi = new CPathWebServiceImpl();
+            webApi = new CPath2WebServiceImpl();
         }
         return webApi;
     }
@@ -39,7 +39,7 @@ public class CPathWebServiceImpl implements CPathWebService {
     /**
      * Private Constructor.
      */
-    private CPathWebServiceImpl() {
+    private CPath2WebServiceImpl() {
     }
 
     /**
@@ -50,18 +50,18 @@ public class CPathWebServiceImpl implements CPathWebService {
      * @return
      */
     public SearchResponse searchPhysicalEntities(String keyword, int ncbiTaxonomyId,
-            TaskMonitor taskMonitor) throws CPathException, EmptySetException {
+            TaskMonitor taskMonitor) throws CPath2Exception, EmptySetException {
 
     	if(LOGGER.isDebugEnabled())
     		LOGGER.debug("searchPhysicalEntities: query=" + keyword);
     	
     	// Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            CPathWebServiceListener listener = listeners.get(i);
+            CPath2WebServiceListener listener = listeners.get(i);
             listener.searchInitiatedForPhysicalEntities(keyword, ncbiTaxonomyId);
         }
 
-        PathwayCommons2Client client = new PathwayCommons2Client();
+        CPath2Client client = CPath2Client.newInstance();
     	if(LOGGER.isDebugEnabled())
     		LOGGER.debug("cPath2Url=" + client.getEndPointURL());
     	
@@ -71,15 +71,15 @@ public class CPathWebServiceImpl implements CPathWebService {
 
         try {
         	//was: =protocol.connect(taskMonitor);
-        	SearchResponse res = (SearchResponse) client.findEntity(keyword); 
+        	SearchResponse res = (SearchResponse) client.search(keyword); 
 			// Notify all listeners of end
 			for (int i = listeners.size() - 1; i >= 0; i--) {
-				CPathWebServiceListener listener = listeners.get(i);
+				CPath2WebServiceListener listener = listeners.get(i);
 				listener.searchCompletedForPhysicalEntities(res);
 			}
 			return res;
-        } catch (PathwayCommonsException e) {
-			throw new CPathException(e.getError().getErrorCode(),
+        } catch (CPathException e) {
+			throw new CPath2Exception(e.getError().getErrorCode(),
 					e.toString());
 		}
     }
@@ -90,17 +90,17 @@ public class CPathWebServiceImpl implements CPathWebService {
      * @param id     Primary ID of Record.
      * @param taskMonitor   Task Monitor Object.
      * @return SummaryResponse Object.
-     * @throws CPathException       CPath Error.
+     * @throws CPath2Exception       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
     public SearchResponse getParentSummaries (String id, TaskMonitor taskMonitor)
-            throws CPathException, EmptySetException 
+            throws CPath2Exception, EmptySetException 
     {
     	SearchResponse response = new SearchResponse();
     	
         // Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            CPathWebServiceListener listener = listeners.get(i);
+            CPath2WebServiceListener listener = listeners.get(i);
             listener.requestInitiatedForParentSummaries(id);
         }
 
@@ -116,7 +116,7 @@ public class CPathWebServiceImpl implements CPathWebService {
 
         // Notify all listeners of end
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            CPathWebServiceListener listener = listeners.get(i);
+            CPath2WebServiceListener listener = listeners.get(i);
             listener.requestCompletedForParentSummaries(id, response);
         }
         
@@ -129,11 +129,11 @@ public class CPathWebServiceImpl implements CPathWebService {
      * @param format            CPathResponseFormat Object.
      * @param taskMonitor       Task Monitor Object.
      * @return BioPAX XML String.
-     * @throws CPathException       CPath Error.
+     * @throws CPath2Exception       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
     public String getRecordsByIds(String[] ids, OutputFormat format,
-            TaskMonitor taskMonitor) throws CPathException, EmptySetException 
+            TaskMonitor taskMonitor) throws CPath2Exception, EmptySetException 
     {
 //        protocol = new CPathProtocol();
 //        protocol.setCommand(CPathProtocol.COMMAND_GET);
@@ -167,27 +167,27 @@ public class CPathWebServiceImpl implements CPathWebService {
     /**
      * Registers a new listener.
      *
-     * @param listener CPathWebService Listener.
+     * @param listener CPath2WebService Listener.
      */
-    public void addApiListener(CPathWebServiceListener listener) {
+    public void addApiListener(CPath2WebServiceListener listener) {
         listeners.add(listener);
     }
 
     /**
      * Removes the specified listener.
      *
-     * @param listener CPathWebService Listener.
+     * @param listener CPath2WebService Listener.
      */
-    public void removeApiListener(CPathWebServiceListener listener) {
+    public void removeApiListener(CPath2WebServiceListener listener) {
         listeners.remove(listener);
     }
 
     /**
      * Gets the list of all registered listeners.
      *
-     * @return ArrayList of CPathWebServiceListener Objects.
+     * @return ArrayList of CPath2WebServiceListener Objects.
      */
-    public ArrayList<CPathWebServiceListener> getListeners() {
+    public ArrayList<CPath2WebServiceListener> getListeners() {
         return listeners;
     }
 }

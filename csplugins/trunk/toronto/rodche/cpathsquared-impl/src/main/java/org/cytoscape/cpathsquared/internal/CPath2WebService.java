@@ -16,7 +16,7 @@ import org.cytoscape.work.TaskMonitor;
  *
  * @author Ethan Cerami, Igor Rodchenkov
  */
-public interface CPathWebService {
+public interface CPath2WebService {
 
     /**
      * Searches for Physical Entities in cPath Instance.
@@ -29,11 +29,11 @@ public interface CPathWebService {
      * @param ncbiTaxonomyId Organism filter (-1 to to search all organisms).
      * @param taskMonitor    TaskMonitor Object (can be null);
      * @return SearchResponseType Object.
-     * @throws CPathException   CPath Connect Error.
+     * @throws CPath2Exception   CPath Connect Error.
      * @throws EmptySetException    No matches found to specified query.
      */
     public SearchResponse searchPhysicalEntities(String keyword, int ncbiTaxonomyId,
-            TaskMonitor taskMonitor) throws CPathException, EmptySetException;
+            TaskMonitor taskMonitor) throws CPath2Exception, EmptySetException;
 
     /**
      * Gets parent summaries for specified record.
@@ -46,11 +46,11 @@ public interface CPathWebService {
      * @param id     Primary ID of Record.
      * @param taskMonitor   Task Monitor Object.
      * @return parents (e.g., upstream nearest neighborhood...)
-     * @throws CPathException       CPath Error.
+     * @throws CPath2Exception       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
     public SearchResponse getParentSummaries (String id, TaskMonitor taskMonitor)
-            throws CPathException, EmptySetException;
+            throws CPath2Exception, EmptySetException;
 
     /**
      * Gets One or more records by primary ID.
@@ -61,11 +61,11 @@ public interface CPathWebService {
      * @param format            CPathResponseFormat.BIOPAX or CPathResponseFormat.BINARY_SIF.
      * @param taskMonitor       Task Monitor Object.
      * @return  BioPAX XML String or SIF String.
-     * @throws CPathException       CPath Error.
+     * @throws CPath2Exception       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
     public String getRecordsByIds(String[] ids, OutputFormat format, TaskMonitor taskMonitor)
-            throws CPathException, EmptySetException;
+            throws CPath2Exception, EmptySetException;
 
     /**
      * Gets a list of all Organisms currently available within the cPath instance.
@@ -82,21 +82,21 @@ public interface CPathWebService {
     /**
      * Registers a new listener.
      *
-     * @param listener CPathWebService Listener.
+     * @param listener CPath2WebService Listener.
      */
-    public void addApiListener(CPathWebServiceListener listener);
+    public void addApiListener(CPath2WebServiceListener listener);
 
     /**
      * Removes the specified listener.
      *
-     * @param listener CPathWebService Listener.
+     * @param listener CPath2WebService Listener.
      */
-    public void removeApiListener(CPathWebServiceListener listener);
+    public void removeApiListener(CPath2WebServiceListener listener);
 
     /**
      * Gets the list of all registered listeners.
      *
-     * @return ArrayList of CPathWebServiceListener Objects.
+     * @return ArrayList of CPath2WebServiceListener Objects.
      */
-    public ArrayList<CPathWebServiceListener> getListeners();
+    public ArrayList<CPath2WebServiceListener> getListeners();
 }

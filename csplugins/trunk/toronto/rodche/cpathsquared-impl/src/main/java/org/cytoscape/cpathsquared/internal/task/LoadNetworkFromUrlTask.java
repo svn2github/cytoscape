@@ -91,7 +91,7 @@ public class LoadNetworkFromUrlTask implements Task {
 			CyNetwork[] networks = reader.getNetworks();
 			CyNetwork cyNetwork = networks[0];
 
-			// TODO: Does CPath2 listen for this?
+			// TODO: Does CPath2Client listen for this?
 //			Object[] ret_val = new Object[2];
 //			ret_val[0] = cyNetwork;
 //			ret_val[1] = url.toString();

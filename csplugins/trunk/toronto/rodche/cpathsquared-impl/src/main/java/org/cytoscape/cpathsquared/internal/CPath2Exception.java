@@ -5,7 +5,7 @@ package org.cytoscape.cpathsquared.internal;
  *
  * @author Ethan Cerami.
  */
-public class CPathException extends Exception {
+public class CPath2Exception extends Exception {
     /**
      * Error:  Canceled by User.
      */
@@ -51,7 +51,7 @@ public class CPathException extends Exception {
      * @param errorCode Error Code.
 	 * @param t Root throwable.
 	 */
-	public CPathException(int errorCode, Throwable t) {
+	public CPath2Exception(int errorCode, Throwable t) {
         super(t);
         this.errorCode = errorCode;
         setErrorMessages(errorCode);
@@ -60,7 +60,7 @@ public class CPathException extends Exception {
         }
     }
 
-    public CPathException(int errorCode, String errorDetail) {
+    public CPath2Exception(int errorCode, String errorDetail) {
         this.errorCode = errorCode;
         setErrorMessages(errorCode);
         if (errorDetail != null) {

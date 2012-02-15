@@ -29,8 +29,8 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.CPathProperties;
-import org.cytoscape.cpathsquared.internal.CPathWebService;
+import org.cytoscape.cpathsquared.internal.CPath2Properties;
+import org.cytoscape.cpathsquared.internal.CPath2WebService;
 import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskFactory;
 import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskFactory.ResultHandler;
 
@@ -41,7 +41,7 @@ import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskF
  */
 public class SearchBoxPanel extends JPanel {
     private JButton searchButton;
-    private final CPathWebService webApi;
+    private final CPath2WebService webApi;
     private static final String ENTER_TEXT = "Enter Gene Name or ID";
     private PulsatingBorder pulsatingBorder;
     private JComboBox organismComboBox;
@@ -52,7 +52,7 @@ public class SearchBoxPanel extends JPanel {
      *
      * @param webApi CPath Web Service Object.
      */
-    public SearchBoxPanel(CPathWebService webApi, CPath2Factory factory) {
+    public SearchBoxPanel(CPath2WebService webApi, CPath2Factory factory) {
         this.webApi = webApi;
         this.factory = factory;
         
@@ -120,7 +120,7 @@ public class SearchBoxPanel extends JPanel {
         //  TODO Organism List is currently hard-coded; try get it from the server
         Vector organismList = new Vector();
         organismList.add(new Organism("All Organisms", -1));
-        organismList.addAll(CPathProperties.organismList);
+        organismList.addAll(CPath2Properties.organismList);
         DefaultComboBoxModel organismComboBoxModel = new DefaultComboBoxModel(organismList);
         JComboBox organismComboBox = new JComboBox(organismComboBoxModel);
         organismComboBox.setToolTipText("Select Organism");

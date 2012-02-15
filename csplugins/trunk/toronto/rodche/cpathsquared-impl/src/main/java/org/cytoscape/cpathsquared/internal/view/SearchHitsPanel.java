@@ -29,8 +29,8 @@ import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.application.swing.events.CytoPanelStateChangedEvent;
 import org.cytoscape.application.swing.events.CytoPanelStateChangedListener;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.CPathWebService;
-import org.cytoscape.cpathsquared.internal.CPathWebServiceListener;
+import org.cytoscape.cpathsquared.internal.CPath2WebService;
+import org.cytoscape.cpathsquared.internal.CPath2WebServiceListener;
 
 import cpath.service.jaxb.SearchHit;
 import cpath.service.jaxb.SearchResponse;
@@ -41,7 +41,7 @@ import cpath.service.jaxb.SearchResponse;
  * @author Ethan Cerami.
  */
 public class SearchHitsPanel extends JPanel 
-implements CPathWebServiceListener, CytoPanelStateChangedListener 
+implements CPath2WebServiceListener, CytoPanelStateChangedListener 
 {
     private DefaultListModel peListModel;
     private JList peList;
@@ -66,7 +66,7 @@ implements CPathWebServiceListener, CytoPanelStateChangedListener
      * @param factory					CPath2Factory
      */
     public SearchHitsPanel(InteractionBundleModel interactionBundleModel, 
-    		PathwayTableModel pathwayTableModel, CPathWebService webApi, 
+    		PathwayTableModel pathwayTableModel, CPath2WebService webApi, 
     		CPath2Factory factory) 
     {
     	this.factory = factory;

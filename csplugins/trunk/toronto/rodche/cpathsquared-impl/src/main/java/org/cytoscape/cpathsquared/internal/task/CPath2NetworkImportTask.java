@@ -1,22 +1,22 @@
 package org.cytoscape.cpathsquared.internal.task;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.CPathProperties;
-import org.cytoscape.cpathsquared.internal.CPathWebService;
+import org.cytoscape.cpathsquared.internal.CPath2Properties;
+import org.cytoscape.cpathsquared.internal.CPath2WebService;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 
 import cpath.service.OutputFormat;
 
-public class CPathNetworkImportTask implements Task {
+public class CPath2NetworkImportTask implements Task {
 
 	private final String query;
-	private final CPathWebService client;
+	private final CPath2WebService client;
 	private final OutputFormat format;
 	private final CPath2Factory factory;
 
-	public CPathNetworkImportTask(String query, CPathWebService client, OutputFormat format, CPath2Factory factory) {
+	public CPath2NetworkImportTask(String query, CPath2WebService client, OutputFormat format, CPath2Factory factory) {
 		this.query = query;
 		this.client = client;
 		this.format = format;
@@ -33,7 +33,7 @@ public class CPathNetworkImportTask implements Task {
 
         //  Create the task
         ExecuteGetRecordByCPathIdTaskFactory taskFactory = factory
-        	.createExecuteGetRecordByCPathIdTaskFactory(client, ids, format, CPathProperties.serverName);
+        	.createExecuteGetRecordByCPathIdTaskFactory(client, ids, format, CPath2Properties.serverName);
         TaskIterator iterator = taskFactory.createTaskIterator();
         while (iterator.hasNext()) {
         	Task task = iterator.next();

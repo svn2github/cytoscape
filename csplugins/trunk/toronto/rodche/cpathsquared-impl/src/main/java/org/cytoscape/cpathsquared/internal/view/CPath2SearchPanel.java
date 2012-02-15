@@ -9,9 +9,9 @@ import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.CPathProperties;
-import org.cytoscape.cpathsquared.internal.CPathWebService;
-import org.cytoscape.cpathsquared.internal.CPathWebServiceListener;
+import org.cytoscape.cpathsquared.internal.CPath2Properties;
+import org.cytoscape.cpathsquared.internal.CPath2WebService;
+import org.cytoscape.cpathsquared.internal.CPath2WebServiceListener;
 
 import cpath.service.jaxb.SearchResponse;
 
@@ -20,10 +20,10 @@ import cpath.service.jaxb.SearchResponse;
  *
  * @author Ethan Cerami.
  */
-public class CPathSearchPanel extends JPanel implements CPathWebServiceListener {
+public class CPath2SearchPanel extends JPanel implements CPath2WebServiceListener {
     protected InteractionBundleModel interactionBundleModel;
     protected PathwayTableModel pathwayTableModel;
-    protected CPathWebService webApi;
+    protected CPath2WebService webApi;
     private JPanel searchBoxPanel;
     private JPanel searchHitsPanel = null;
     private JPanel cards;
@@ -32,9 +32,9 @@ public class CPathSearchPanel extends JPanel implements CPathWebServiceListener 
     /**
      * Constructor.
      *
-     * @param webApi CPathWebService API.
+     * @param webApi CPath2WebService API.
      */
-    public CPathSearchPanel(CPathWebService webApi, CPath2Factory factory) {
+    public CPath2SearchPanel(CPath2WebService webApi, CPath2Factory factory) {
     	this.factory = factory;
     	
         //  Store the web API model
@@ -74,7 +74,7 @@ public class CPathSearchPanel extends JPanel implements CPathWebServiceListener 
 
         aboutPanel.add(header, BorderLayout.NORTH);
         JTextPane textPane = SearchHitDetailsPanel.createHtmlTextPane(factory.getOpenBrowser());
-        textPane.setText(CPathProperties.blurb);
+        textPane.setText(CPath2Properties.blurb);
         aboutPanel.add(textPane, BorderLayout.CENTER);
         return aboutPanel;
     }

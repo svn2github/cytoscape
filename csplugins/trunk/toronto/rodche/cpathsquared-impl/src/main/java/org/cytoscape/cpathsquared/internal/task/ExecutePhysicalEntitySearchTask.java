@@ -2,9 +2,9 @@ package org.cytoscape.cpathsquared.internal.task;
 
 import java.util.List;
 
-import org.cytoscape.cpathsquared.internal.CPathException;
-import org.cytoscape.cpathsquared.internal.CPathProperties;
-import org.cytoscape.cpathsquared.internal.CPathWebService;
+import org.cytoscape.cpathsquared.internal.CPath2Exception;
+import org.cytoscape.cpathsquared.internal.CPath2Properties;
+import org.cytoscape.cpathsquared.internal.CPath2WebService;
 import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskFactory.ResultHandler;
 import org.cytoscape.cpathsquared.internal.util.EmptySetException;
 import org.cytoscape.work.Task;
@@ -19,7 +19,7 @@ import cpath.service.jaxb.SearchResponse;
  * @author Ethan Cerami, Igor Rodchenkov
  */
 public class ExecutePhysicalEntitySearchTask implements Task {
-    private CPathWebService webApi;
+    private CPath2WebService webApi;
     private String keyword;
     private int ncbiTaxonomyId;
 	private ResultHandler result;
@@ -32,7 +32,7 @@ public class ExecutePhysicalEntitySearchTask implements Task {
      * @param ncbiTaxonomyId NCBI Taxonomy ID.
      * @param result 
      */
-    public ExecutePhysicalEntitySearchTask(CPathWebService webApi, String keyword,
+    public ExecutePhysicalEntitySearchTask(CPath2WebService webApi, String keyword,
             int ncbiTaxonomyId, ResultHandler result) {
         this.webApi = webApi;
         this.keyword = keyword;
@@ -53,7 +53,7 @@ public class ExecutePhysicalEntitySearchTask implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return "Searching " + CPathProperties.serverName + "...";
+        return "Searching " + CPath2Properties.serverName + "...";
     }
 
     /**
@@ -86,8 +86,8 @@ public class ExecutePhysicalEntitySearchTask implements Task {
                 taskMonitor.setProgress(progress);
             }
         } catch (EmptySetException e) {
-        } catch (CPathException e) {
-            if (e.getErrorCode() != CPathException.ERROR_CANCELED_BY_USER) {
+        } catch (CPath2Exception e) {
+            if (e.getErrorCode() != CPath2Exception.ERROR_CANCELED_BY_USER) {
             	throw e;
             }
         } catch (Throwable e) { // - helps with optional/unresolved runtime dependencies!

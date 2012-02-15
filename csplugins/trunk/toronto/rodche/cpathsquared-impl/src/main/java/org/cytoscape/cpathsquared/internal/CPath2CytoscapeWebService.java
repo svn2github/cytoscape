@@ -8,8 +8,8 @@ import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.cytoscape.cpathsquared.internal.task.CPathNetworkImportTask;
-import org.cytoscape.cpathsquared.internal.view.CPathSearchPanel;
+import org.cytoscape.cpathsquared.internal.task.CPath2NetworkImportTask;
+import org.cytoscape.cpathsquared.internal.view.CPath2SearchPanel;
 import org.cytoscape.cpathsquared.internal.view.GuiUtils;
 import org.cytoscape.cpathsquared.internal.view.TabUi;
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
@@ -26,13 +26,13 @@ import cpath.service.OutputFormat;
 /**
  * CPath Web Service, integrated into the Cytoscape Web Services Framework.
  */
-public class CPathCytoscapeWebService extends AbstractWebServiceClient 
+public class CPath2CytoscapeWebService extends AbstractWebServiceClient 
 	implements NetworkImportWebServiceClient, SearchWebServiceClient<Object> 
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CPathCytoscapeWebService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CPath2CytoscapeWebService.class);
 	
 	// Display name of this client.
-    private static final String DISPLAY_NAME = CPathProperties.serverName + " Client";
+    private static final String DISPLAY_NAME = CPath2Properties.serverName + " Client";
 
     /**
      * NCBI Taxonomy ID Filter.
@@ -55,7 +55,7 @@ public class CPathCytoscapeWebService extends AbstractWebServiceClient
 
 	private final CPath2Factory factory;
 
-	private CPathWebService webApi;
+	private CPath2WebService webApi;
 
     @Override
     public Container getQueryBuilderGUI() {
@@ -77,7 +77,7 @@ public class CPathCytoscapeWebService extends AbstractWebServiceClient
     @Override
     public TaskIterator createTaskIterator() {
     	String query = "";
-		CPathNetworkImportTask task = factory.createCPathNetworkImportTask(query, webApi, OutputFormat.BINARY_SIF);
+		CPath2NetworkImportTask task = factory.createCPathNetworkImportTask(query, webApi, OutputFormat.BINARY_SIF);
     	return new TaskIterator(task);
     }
     
@@ -85,16 +85,16 @@ public class CPathCytoscapeWebService extends AbstractWebServiceClient
      * Creates a new Web Services client.
      * @param factory 
      */
-    public CPathCytoscapeWebService(CPath2Factory factory) {
-    	super(CPathProperties.cPathUrl, DISPLAY_NAME, makeDescription());
+    public CPath2CytoscapeWebService(CPath2Factory factory) {
+    	super(CPath2Properties.cPathUrl, DISPLAY_NAME, makeDescription());
     	this.factory = factory;
 
         mainPanel = new JPanel();
         mainPanel.setPreferredSize(new Dimension (500,400));
         mainPanel.setLayout (new BorderLayout());
 
-        webApi = CPathWebServiceImpl.getInstance();
-        CPathSearchPanel cpathPanel = new CPathSearchPanel(webApi, factory);
+        webApi = CPath2WebServiceImpl.getInstance();
+        CPath2SearchPanel cpathPanel = new CPath2SearchPanel(webApi, factory);
 
         TabUi tabbedPane = TabUi.getInstance();
         tabbedPane.add("Search", cpathPanel);
@@ -104,11 +104,11 @@ public class CPathCytoscapeWebService extends AbstractWebServiceClient
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
         
     	if(LOGGER.isDebugEnabled())
-    		LOGGER.debug("CPathCytoscapeWebService created!");
+    		LOGGER.debug("CPath2CytoscapeWebService created!");
     }
 
     private static String makeDescription() {
-        String desc = CPathProperties.blurb;
+        String desc = CPath2Properties.blurb;
         desc = desc.replaceAll("<span class='bold'>", "<B>");
         desc = desc.replaceAll("</span>", "</B>");
         return "<html><body>" + desc + "</body></html>";

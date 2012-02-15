@@ -73,7 +73,7 @@ public class CyActivator extends AbstractCyActivator {
 				binarySifVisualStyleUtil,
 				visualMappingManagerRef);
 		
-		CPathCytoscapeWebService cPathWebService = new CPathCytoscapeWebService(cPath2Factory);
+		CPath2CytoscapeWebService cPathWebService = new CPath2CytoscapeWebService(cPath2Factory);
 		
 		registerAllServices(bc, cPathWebService, new Properties());
 	}

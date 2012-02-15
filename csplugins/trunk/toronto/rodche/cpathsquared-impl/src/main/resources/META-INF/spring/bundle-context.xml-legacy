@@ -35,7 +35,7 @@
 		<constructor-arg ref="visualMappingManagerRef" />
 	</bean>
 	
-	<bean id="cPathWebService" class="org.cytoscape.cpathsquared.internal.CPathCytoscapeWebService">
+	<bean id="cPathWebService" class="org.cytoscape.cpathsquared.internal.CPath2CytoscapeWebService">
 		<constructor-arg ref="cPath2Factory" />
 	</bean>
 	

@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.cpathsquared.internal.task.CPathNetworkImportTask;
+import org.cytoscape.cpathsquared.internal.task.CPath2NetworkImportTask;
 import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
 import org.cytoscape.cpathsquared.internal.view.BinarySifVisualStyleFactory;
 import org.cytoscape.cpathsquared.internal.view.DownloadDetails;
@@ -68,12 +68,12 @@ public class CPath2Factory {
 	}
 	
 	public ExecuteGetRecordByCPathIdTaskFactory createExecuteGetRecordByCPathIdTaskFactory(
-			CPathWebService webApi, String[] ids, OutputFormat format, String title) 
+			CPath2WebService webApi, String[] ids, OutputFormat format, String title) 
 	{
 		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, this, mappingManager);
 	}
 
-	public SearchBoxPanel createSearchBoxPanel(CPathWebService webApi) {
+	public SearchBoxPanel createSearchBoxPanel(CPath2WebService webApi) {
 		return new SearchBoxPanel(webApi, this);
 	}
 
@@ -83,7 +83,7 @@ public class CPath2Factory {
 
 	public SearchHitsPanel createSearchHitsPanel(
 			InteractionBundleModel interactionBundleModel,
-			PathwayTableModel pathwayTableModel, CPathWebService webApi) {
+			PathwayTableModel pathwayTableModel, CPath2WebService webApi) {
 		return new SearchHitsPanel(interactionBundleModel, pathwayTableModel, webApi, this);
 	}
 
@@ -147,8 +147,8 @@ public class CPath2Factory {
 		return undoSupport;
 	}
 
-	public CPathNetworkImportTask createCPathNetworkImportTask(String query, CPathWebService client, OutputFormat format) {
-		return new CPathNetworkImportTask(query, client, format, this);
+	public CPath2NetworkImportTask createCPathNetworkImportTask(String query, CPath2WebService client, OutputFormat format) {
+		return new CPath2NetworkImportTask(query, client, format, this);
 	}
 
 	public CyNetworkManager getCyNetworkManager() {

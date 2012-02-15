@@ -14,9 +14,9 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.CPathProperties;
-import org.cytoscape.cpathsquared.internal.CPathWebService;
-import org.cytoscape.cpathsquared.internal.CPathWebServiceImpl;
+import org.cytoscape.cpathsquared.internal.CPath2Properties;
+import org.cytoscape.cpathsquared.internal.CPath2WebService;
+import org.cytoscape.cpathsquared.internal.CPath2WebServiceImpl;
 import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
 
 import cpath.service.OutputFormat;
@@ -104,12 +104,12 @@ public class SearchHitNetworksPanel extends JPanel {
             String title = pathwayTableModel.getValueAt(rows[0], 0)
                     + " (" + pathwayTableModel.getValueAt(rows[0], 1) + ")";
 
-            CPathWebService webApi = CPathWebServiceImpl.getInstance();
+            CPath2WebService webApi = CPath2WebServiceImpl.getInstance();
             ExecuteGetRecordByCPathIdTaskFactory taskFactory;
 
             OutputFormat format;
             //TODO add EXTENDED_BINARY_SIF
-            if (CPathProperties.downloadMode == CPathProperties.DOWNLOAD_BIOPAX) {
+            if (CPath2Properties.downloadMode == CPath2Properties.DOWNLOAD_BIOPAX) {
                 format = OutputFormat.BIOPAX;
             } else {
                 format = OutputFormat.BINARY_SIF;

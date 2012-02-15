@@ -4,9 +4,9 @@ import javax.swing.JDialog;
 
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.CPathException;
-import org.cytoscape.cpathsquared.internal.CPathWebService;
-import org.cytoscape.cpathsquared.internal.CPathWebServiceImpl;
+import org.cytoscape.cpathsquared.internal.CPath2Exception;
+import org.cytoscape.cpathsquared.internal.CPath2WebService;
+import org.cytoscape.cpathsquared.internal.CPath2WebServiceImpl;
 import org.cytoscape.cpathsquared.internal.util.EmptySetException;
 import org.cytoscape.cpathsquared.internal.view.InteractionBundleModel;
 import org.cytoscape.cpathsquared.internal.view.InteractionBundlePanel;
@@ -20,7 +20,7 @@ import cpath.service.jaxb.SearchResponse;
 
 public class GetParentInteractionsTask implements Task {
     private String uri;
-    private CPathWebService webApi = CPathWebServiceImpl.getInstance();
+    private CPath2WebService webApi = CPath2WebServiceImpl.getInstance();
     private InteractionBundleModel interactionBundleModel;
 	private final CyNetwork network;
     private final CyNode node;
@@ -64,8 +64,8 @@ public class GetParentInteractionsTask implements Task {
             dialog.pack();
             dialog.setLocationRelativeTo(application.getJFrame());
             dialog.setVisible(true);
-        } catch (CPathException e) {
-            if (e.getErrorCode() != CPathException.ERROR_CANCELED_BY_USER) {
+        } catch (CPath2Exception e) {
+            if (e.getErrorCode() != CPath2Exception.ERROR_CANCELED_BY_USER) {
             	throw e;
             }
         } catch (EmptySetException e) {

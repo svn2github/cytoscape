@@ -23,9 +23,9 @@ import org.biopax.paxtools.model.level3.Named;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.CPathException;
-import org.cytoscape.cpathsquared.internal.CPathProperties;
-import org.cytoscape.cpathsquared.internal.CPathWebService;
+import org.cytoscape.cpathsquared.internal.CPath2Exception;
+import org.cytoscape.cpathsquared.internal.CPath2Properties;
+import org.cytoscape.cpathsquared.internal.CPath2WebService;
 import org.cytoscape.cpathsquared.internal.util.AttributeUtil;
 import org.cytoscape.cpathsquared.internal.util.BioPaxUtil;
 import org.cytoscape.cpathsquared.internal.util.EmptySetException;
@@ -55,7 +55,7 @@ import cpath.service.OutputFormat;
  * @author Ethan Cerami, Jason Montojo, Igor Rodchenkov.
  */
 public class ExecuteGetRecordByCPathId extends AbstractTask {
-	private CPathWebService webApi;
+	private CPath2WebService webApi;
 	private String ids[];
 	private String networkTitle;
 	private boolean haltFlag = false;
@@ -76,7 +76,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	 * @param cPathFactory
 	 * @param mappingManager
 	 */
-	public ExecuteGetRecordByCPathId(CPathWebService webApi, String[] ids, OutputFormat format,
+	public ExecuteGetRecordByCPathId(CPath2WebService webApi, String[] ids, OutputFormat format,
 			String networkTitle, CPath2Factory cPathFactory, VisualMappingManager mappingManager) {
 		this.webApi = webApi;
 		this.ids = ids;
@@ -100,7 +100,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	 * @return Task Title.
 	 */
 	public String getTitle() {
-		return "Retrieving " + networkTitle + " from " + CPathProperties.serverName + "...";
+		return "Retrieving " + networkTitle + " from " + CPath2Properties.serverName + "...";
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	 * @throws Exception
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		String title = "Retrieving " + networkTitle + " from " + CPathProperties.serverName
+		String title = "Retrieving " + networkTitle + " from " + CPath2Properties.serverName
 				+ "...";
 		taskMonitor.setTitle(title);
 		try {
@@ -187,8 +187,8 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 			throw new Exception("Failed to retrieve records.", e);
 		} catch (EmptySetException e) {
 			throw new Exception("No matches found for your request.  ", e);
-		} catch (CPathException e) {
-			if (e.getErrorCode() != CPathException.ERROR_CANCELED_BY_USER) {
+		} catch (CPath2Exception e) {
+			if (e.getErrorCode() != CPath2Exception.ERROR_CANCELED_BY_USER) {
 				throw e;
 			}
 		}
@@ -201,8 +201,8 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 	 *            CyNetwork.
 	 */
 	private void addLinksToCPathInstance(CyNetwork cyNetwork) {
-		String serverName = CPathProperties.serverName;
-		String serverURL = CPathProperties.cPathUrl;
+		String serverName = CPath2Properties.serverName;
+		String serverURL = CPath2Properties.cPathUrl;
 		CyRow row = cyNetwork.getRow(cyNetwork);
 		String cPathServerDetailsUrl = row.get(ExecuteGetRecordByCPathId.CPATH_SERVER_DETAILS_URL, String.class);
 		if (cPathServerDetailsUrl == null) {
@@ -334,7 +334,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 				}
 			} catch (EmptySetException e) {
 				e.printStackTrace();
-			} catch (CPathException e) {
+			} catch (CPath2Exception e) {
 				e.printStackTrace();
 			}
 		}
