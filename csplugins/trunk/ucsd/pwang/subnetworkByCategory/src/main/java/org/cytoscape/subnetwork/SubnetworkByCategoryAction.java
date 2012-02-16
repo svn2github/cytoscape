@@ -7,6 +7,7 @@ import java.net.URL;
 
 import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
+import cytoscape.data.CyAttributes;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.visual.VisualStyle;
 
@@ -52,11 +53,12 @@ public class SubnetworkByCategoryAction extends CytoscapeAction {
 				return;
 			}
 
-			CyNetwork net = Cytoscape.getCurrentNetwork();
+			CyNetwork parentNetwork = Cytoscape.getCurrentNetwork();
 			
 			SubnetworkByCategory w = new SubnetworkByCategory();
 			
-			CyNetwork overviewNetwork = w.execute(net, dlg.getSelectedAttribute());
+			CyNetwork overviewNetwork = w.execute(parentNetwork, dlg.getSelectedAttribute());
+			
 			CyNetworkView view = Cytoscape.getNetworkView(overviewNetwork.getIdentifier());
 			
 			if (view != null){
@@ -68,7 +70,7 @@ public class SubnetworkByCategoryAction extends CytoscapeAction {
 
 				// apply layout -- force-directed
 				CyLayoutAlgorithm alg = cytoscape.layout.CyLayouts.getLayout("force-directed");
-				view.applyLayout(alg);
+				view.applyLayout(alg);				
 			}
 		}
 }

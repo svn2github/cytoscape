@@ -16,14 +16,15 @@ import cytoscape.data.Semantics;
 
 public class SubnetworkByCategory {
 	
-	public CyNetwork execute(CyNetwork net, String attributeName){
+	public CyNetwork execute(CyNetwork parentNetwork, String attributeName){
 		// 1. get the node list for each category
-		HashMap categoryMap = getNodeCategoryMap(net, attributeName);
+		HashMap categoryMap = getNodeCategoryMap(parentNetwork, attributeName);
 					
 		// 2. create subnetwork for each category			
-		CyNetwork[] subnetworks = createSubnetworks(net, categoryMap);
+		CyNetwork[] subnetworks = createSubnetworks(parentNetwork, categoryMap);
 
 		//3. create an overview network for all nested network
+		CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 		Set overview_nodes = new HashSet();
 		for (int i=0; i< subnetworks.length; i++){
 			CyNode newNode =Cytoscape.getCyNode(subnetworks[i].getTitle(), true); 
@@ -31,9 +32,13 @@ public class SubnetworkByCategory {
 			overview_nodes.add(newNode);
 		}
 
-		Set  overview_edges = getOverviewEdges(net, overview_nodes);
-		final CyNetwork overview = Cytoscape.createNetwork(overview_nodes, overview_edges, "Overview of category ", net, false);
+		Set  overview_edges = getOverviewEdges(parentNetwork, overview_nodes);
+		final CyNetwork overview = Cytoscape.createNetwork(overview_nodes, overview_edges, SubnetworkByCategoryPlugin.overviewTitle, parentNetwork, false);
 
+		// add a network attribute for overview network
+		CyAttributes networkAttr = Cytoscape.getNetworkAttributes();
+		networkAttr.setAttribute(overview.getIdentifier(), "parentNetworkId", parentNetwork.getIdentifier());
+		
 		// 4. Create a view for overview network
 		Cytoscape.createNetworkView(overview, overview.getTitle());	
 		

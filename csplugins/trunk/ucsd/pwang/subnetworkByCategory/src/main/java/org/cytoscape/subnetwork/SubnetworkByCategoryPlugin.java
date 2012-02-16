@@ -13,6 +13,8 @@ import cytoscape.plugin.CytoscapePlugin;
  */
 public class SubnetworkByCategoryPlugin extends CytoscapePlugin {
 
+	public static String overviewTitle = "Overview of category";
+	
 	public SubnetworkByCategoryPlugin() {
 		// Properly initializes things.
 		super();
@@ -20,5 +22,7 @@ public class SubnetworkByCategoryPlugin extends CytoscapePlugin {
 		// This action represents the actual behavior of the plugin.
 		SubnetworkByCategoryAction action = new SubnetworkByCategoryAction();
 		Cytoscape.getDesktop().getCyMenus().addAction(action);
+		
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener( new NNTKNetworkListener() );
 	}
 }	
