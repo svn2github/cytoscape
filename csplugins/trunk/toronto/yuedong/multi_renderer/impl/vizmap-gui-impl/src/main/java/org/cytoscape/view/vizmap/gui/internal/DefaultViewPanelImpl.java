@@ -152,7 +152,9 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 	
 			this.innerPanel.setBackground((Color) currentStyle.getDefaultValue(MinimalVisualLexicon.NETWORK_BACKGROUND_PAINT));
 			// Render it in this panel
+			System.out.println("vizmap-gui-impl's DefaultViewPanelImpl: Getting factory from renderer manager ..");
 			if (presentationFactory != null) {
+				System.out.println("vizmap-gui-impl's DefaultViewPanelImpl: Got factory, creating RenderingEngine");
 				renderingEngine = presentationFactory
 						.createRenderingEngine(innerPanel, dummyview);
 			}
