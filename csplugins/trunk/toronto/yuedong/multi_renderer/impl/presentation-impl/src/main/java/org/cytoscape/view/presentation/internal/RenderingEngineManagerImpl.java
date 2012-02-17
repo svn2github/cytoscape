@@ -72,39 +72,39 @@ public class RenderingEngineManagerImpl implements RenderingEngineManager {
 	}
 	
 	
-	public void addRenderingEngineFactory(
-			final RenderingEngineFactory<?> factory, Map metadata) {
-		final Object idObject = metadata.get(FACTORY_ID_TAG);
-
-		if (idObject == null)
-			throw new IllegalArgumentException(
-					"Could not add factory: ID metadata is missing for RenderingEngineFactory.");
-
-		final String id = idObject.toString();
-
-		this.factoryMap.put(id, factory);
-		
-		// Register default lexicon
-		if(id.equals(DEFAULT_FACTORY_ID))
-			defaultLexicon = factory.getVisualLexicon();
-		
-		logger.debug("New engine registered: " + factory.getClass());
-	}
-
-	public void removeRenderingEngineFactory(
-			final RenderingEngineFactory<?> factory, Map metadata) {
-		final Object idObject = metadata.get(FACTORY_ID_TAG);
-
-		if (idObject == null)
-			throw new IllegalArgumentException(
-					"Could not remove factory: ID metadata is missing for RenderingEngineFactory.");
-
-		final String id = idObject.toString();
-
-		RenderingEngineFactory<?> toBeRemoved = this.factoryMap.remove(id);
-
-		toBeRemoved = null;
-
-	}
+//	public void addRenderingEngineFactory(
+//			final RenderingEngineFactory<?> factory, Map metadata) {
+//		final Object idObject = metadata.get(FACTORY_ID_TAG);
+//
+//		if (idObject == null)
+//			throw new IllegalArgumentException(
+//					"Could not add factory: ID metadata is missing for RenderingEngineFactory.");
+//
+//		final String id = idObject.toString();
+//
+//		this.factoryMap.put(id, factory);
+//		
+//		// Register default lexicon
+//		if(id.equals(DEFAULT_FACTORY_ID))
+//			defaultLexicon = factory.getVisualLexicon();
+//		
+//		logger.debug("New engine registered: " + factory.getClass());
+//	}
+//
+//	public void removeRenderingEngineFactory(
+//			final RenderingEngineFactory<?> factory, Map metadata) {
+//		final Object idObject = metadata.get(FACTORY_ID_TAG);
+//
+//		if (idObject == null)
+//			throw new IllegalArgumentException(
+//					"Could not remove factory: ID metadata is missing for RenderingEngineFactory.");
+//
+//		final String id = idObject.toString();
+//
+//		RenderingEngineFactory<?> toBeRemoved = this.factoryMap.remove(id);
+//
+//		toBeRemoved = null;
+//
+//	}
 
 }
