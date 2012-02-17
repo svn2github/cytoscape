@@ -44,15 +44,21 @@ public class DingRenderer implements ExternalRenderer {
 	public RenderingEngineFactory<?> getRenderingEngineFactory(
 			final Class<? extends RenderingEngineFactory<?>> type) {
 	
-		if (type == MainViewRenderingEngineFactory.class) {
+		System.out.println("DingRenderer.getRenderingEngineFactory called. Requested: " + type.toString());
+		
+		// Class comparisons are done by name as we can't guarantee that they are 
+		// loaded by the same class loader (hence the equals() method may not work)
+		if (type.getName().equals(MainViewRenderingEngineFactory.class.getName())) {
 			return mainRenderingEngineFactory;
-		} else if (type == BirdsEyeViewRenderingEngineFactory.class) {
+		} else if (type.getName().equals(BirdsEyeViewRenderingEngineFactory.class.getName())) {
 			return birdEyeRenderingEngineFactory;
-		} else if (type == VisualStylePreviewRenderingEngineFactory.class) {
+		} else if (type.getName().equals(VisualStylePreviewRenderingEngineFactory.class.getName())) {
 			
 			// Ding uses the default rendering engine factory for visual style previews
 			return mainRenderingEngineFactory;
 		}
+		
+		System.out.println("DingRenderer.getRenderingEngineFactory does not recognized type. Returning null.");
 		
 		return null;
 	}
