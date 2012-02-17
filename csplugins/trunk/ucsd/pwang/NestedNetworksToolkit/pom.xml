@@ -9,7 +9,7 @@
   </parent>
 
   
-  <artifactId>nestednetworkstoolkit</artifactId>
+  <artifactId>nested-networks-toolkit-plugin</artifactId>
   <packaging>jar</packaging>
   <name>NestedNetworksToolkit</name>
   
