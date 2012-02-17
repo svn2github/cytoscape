@@ -9,9 +9,9 @@
   </parent>
 
   
-  <artifactId>nested-networks-toolkit-plugin</artifactId>
+  <artifactId>nested-network-toolkit-plugin</artifactId>
   <packaging>jar</packaging>
-  <name>NestedNetworksToolkit</name>
+  <name>NestedNetworkToolkit</name>
   
   
   <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
