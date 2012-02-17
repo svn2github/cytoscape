@@ -217,7 +217,7 @@ public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 		
 		if (renderer != null) {
 			
-			factory = renderer.getRenderingEngineFactory(BirdsEyeViewRenderingEngineFactory.class);
+			factory = (RenderingEngineFactory<CyNetwork>) renderer.getRenderingEngineFactory(BirdsEyeViewRenderingEngineFactory.class);
 			
 			if (factory != null) {
 				factory.createRenderingEngine(container, viewModel);

@@ -1,6 +1,6 @@
 package org.cytoscape.view.presentation;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * This interface represents a manager service for
@@ -33,7 +33,7 @@ public interface RenderingEngineFactoryManager {
 	 * 
 	 * @return A list, defensively copied, containing the available renderer IDs.
 	 */
-	public List getAvailableRendererIDs();
+	public Collection<String> getAvailableRendererIDs();
 	
 	/**
 	 * Attempts to set the current default renderer ID to the given renderer ID.
@@ -56,19 +56,19 @@ public interface RenderingEngineFactoryManager {
 	 * 
 	 * @param renderingEngineFactory
 	 * @param rendererID The ID of the renderer, which is the renderer name.
-	 * @param rendererType The type of the renderer, such as bird's eye view or main, via the {@link RenderingEngineFactoryType} enumeration.
+	 * @param factoryType The type of the renderer, such as bird's eye view or main, via the {@link RenderingEngineFactoryType} enumeration.
 	 */
-	public void addRenderingEngineFactory(final RenderingEngineFactory<?> renderingEngineFactory, String rendererID, RenderingEngineFactoryType rendererType);
+	public void addRenderingEngineFactory(final RenderingEngineFactory<?> renderingEngineFactory, String rendererID, RenderingEngineFactoryType factoryType);
 
 	/**
 	 * If one exists, returns the {@link RenderingEngineFactory} associated with the given renderer ID and renderer type. Otherwise,
 	 * returns <code>null</code>.
 	 * 
 	 * @param rendererID The ID of the renderer, which is the renderer name.
-	 * @param rendererType The type of the renderer, such as bird's eye view or main, via the {@link RenderingEngineFactoryType} enumeration.
+	 * @param factoryType The type of the renderer, such as bird's eye view or main, via the {@link RenderingEngineFactoryType} enumeration.
 	 * @return The {@link RenderingEngineFactory} associated with the given renderer ID and renderer type, or null if none exist.
 	 */
-	public RenderingEngineFactory<?> getRenderingEngineFactory(String rendererID, RenderingEngineFactoryType rendererType);
+	public RenderingEngineFactory<?> getRenderingEngineFactory(String rendererID, RenderingEngineFactoryType factoryType);
 	
 	/**
 	 * Removes the given {@link RenderingEngineFactory} from the manager.
@@ -81,9 +81,9 @@ public interface RenderingEngineFactoryManager {
 	 * Removes the {@link RenderingEngineFactory} associated with the given renderer ID and of the given renderer type, such as bird's eye view.
 	 * 
 	 * @param rendererID The ID of the renderer, which is the renderer name.
-	 * @param rendererType The type of the renderer, such as bird's eye view or main, via the {@link RenderingEngineFactoryType} enumeration.
+	 * @param factoryType The type of the renderer, such as bird's eye view or main, via the {@link RenderingEngineFactoryType} enumeration.
 	 */
-	public void removeRenderingEngineFactory(String rendererID, RenderingEngineFactoryType rendererType);
+	public void removeRenderingEngineFactory(String rendererID, RenderingEngineFactoryType factoryType);
 	
 	/**
 	 * Removes all {@link RenderingEngineFactory} objects associated with the given rendererID.

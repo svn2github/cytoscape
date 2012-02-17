@@ -135,7 +135,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 		if (renderer != null) {
 		
 			CyNetworkViewFactory cyNetworkViewFactory = renderer.getNetworkViewFactory();
-			RenderingEngineFactory<CyNetwork> presentationFactory = renderer
+			RenderingEngineFactory<CyNetwork> presentationFactory = (RenderingEngineFactory<CyNetwork>) renderer
 					.getRenderingEngineFactory(VisualStylePreviewRenderingEngineFactory.class);
 	
 			final CyNetworkView dummyview = cyNetworkViewFactory

@@ -26,7 +26,7 @@ public interface ExternalRenderer {
 	 * @param type The {@link Class} object containing the type of the desired {@link RenderingEngineFactory}
 	 * @return A {@link RenderingEngineFactory} with the desired type if available, <code>null</code> otherwise.
 	 */
-	<T extends RenderingEngineFactory<?>> T getRenderingEngineFactory(Class<T> type);
+	RenderingEngineFactory<?> getRenderingEngineFactory(final Class<? extends RenderingEngineFactory<?>> type);
 	
 	/**
 	 * Returns the {@link CyNetworkViewFactory} for this renderer.

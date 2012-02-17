@@ -23,6 +23,11 @@ public class ExternalRendererManagerImpl implements ExternalRendererManager {
 	
 	private ExternalRenderer currentRenderer;
 	
+	public ExternalRendererManagerImpl() {
+		renderers = new HashMap<Class<? extends ExternalRenderer>, ExternalRenderer>();
+		currentRenderer = null;
+	}
+	
 	@Override
 	public void addRenderer(ExternalRenderer externalRenderer,
 			Map<String, String> properties) {

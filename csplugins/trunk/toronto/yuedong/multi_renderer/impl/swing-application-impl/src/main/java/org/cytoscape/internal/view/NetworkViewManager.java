@@ -377,11 +377,14 @@ public class NetworkViewManager extends InternalFrameAdapter implements NetworkV
 		RenderingEngineFactory<CyNetwork> factory;
 		RenderingEngine<CyNetwork> renderingEngine = null;
 		
+		System.out.println("NetworkViewManager: Getting renderer from renderer manager");
 		if (externalRendererManager.getCurrentRenderer() != null) {
-			factory = externalRendererManager.getCurrentRenderer().getRenderingEngineFactory(MainViewRenderingEngineFactory.class);
+			factory = (RenderingEngineFactory<CyNetwork>) externalRendererManager.getCurrentRenderer().getRenderingEngineFactory(MainViewRenderingEngineFactory.class);
+			System.out.println("NetworkViewManager: Got renderer, getting factory");
 			
 			if (factory != null) {
-				 renderingEngine = factory.createRenderingEngine(iframe, view);
+				System.out.println("NetworkViewManager: Got factory");
+				renderingEngine = factory.createRenderingEngine(iframe, view);
 			}
 		}
 		

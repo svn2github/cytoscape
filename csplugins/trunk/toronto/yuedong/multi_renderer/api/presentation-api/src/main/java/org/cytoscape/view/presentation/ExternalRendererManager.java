@@ -11,44 +11,44 @@ public interface ExternalRendererManager {
 	
 	/**
 	 * Adds a renderer to this manager. There can be only one {@link ExternalRenderer} of a given type
-	 * registered to this manager.
+	 * registered to this manager. 
 	 * 
 	 * @param ExternalRenderer The renderer to be added.
 	 */
-	void addRenderer(ExternalRenderer externalRenderer, Map<String, String> properties);
+	void addRenderer(final ExternalRenderer externalRenderer, Map<String, String> properties);
 	
 	/**
 	 * Removes a renderer from this manager.
 	 * 
 	 * @param externalRenderer The renderer to be removed.
 	 */
-	void removeRenderer(ExternalRenderer externalRenderer, Map<String, String> properties);
+	void removeRenderer(final ExternalRenderer externalRenderer, Map<String, String> properties);
 	
 	/**
 	 * Removes an {@link ExternalRenderer} based on its class type which identifies that renderer.
 	 */
-	void removeRenderer(Class<? extends ExternalRenderer> rendererType);
+	void removeRenderer(final Class<? extends ExternalRenderer> rendererType);
 	
 	/**
 	 * Return a collection of currently installed renderers.
 	 * 
 	 * @return A {@link Collection} of available renderers.
 	 */ 
-	Collection<ExternalRendererManager> getAvailableRenderers();
+	Collection<ExternalRenderer> getAvailableRenderers();
 	
 	/**
 	 * Returns the {@link ExternalRenderer} associated with the given renderer type, if there is one.
 	 * 
 	 * @return The {@link ExternalRenderer} associated with the given renderer type, or <code>null</code> if there is none.
 	 */
-	ExternalRenderer getRenderer(Class<? extends ExternalRenderer> rendererType);
+	ExternalRenderer getRenderer(final Class<? extends ExternalRenderer> rendererType);
 	
 	/**
 	 * Sets the current renderer.
 	 * 
 	 * @param rendererType The class type of the renderer desired to be set as the current renderer.
 	 */
-	void setCurrentRenderer(Class<? extends ExternalRenderer> rendererType);
+	void setCurrentRenderer(final Class<? extends ExternalRenderer> rendererType);
 	
 	/**
 	 * Returns the current {@link ExternalRenderer}. If there is only one renderer available, that
@@ -57,4 +57,9 @@ public interface ExternalRendererManager {
 	 * @return The current renderer, or <code>null</code> if none are available.
 	 */
 	ExternalRenderer getCurrentRenderer();
+	
+	// TODO:
+	// - Retrieving properties for a given renderer?
+	// - Use Properties class instead of Map<String, String> for properties?
+	// - Are properties needed for the remove method?
 }
