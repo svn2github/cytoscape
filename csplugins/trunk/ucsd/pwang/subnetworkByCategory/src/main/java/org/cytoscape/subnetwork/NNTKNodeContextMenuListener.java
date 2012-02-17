@@ -3,29 +3,15 @@ package org.cytoscape.subnetwork;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-
-import giny.model.Edge;
-import giny.model.Node;
-import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.NodeView;
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CyNode;
-import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
 import ding.view.NodeContextMenuListener;
+import javax.swing .MenuElement;
 
-import java.util.*;
-
-import java.io.*;
 
 public class NNTKNodeContextMenuListener implements NodeContextMenuListener
 {
@@ -38,14 +24,29 @@ public class NNTKNodeContextMenuListener implements NodeContextMenuListener
 
      public void addNodeContextMenuItems(NodeView nv, JPopupMenu menu)
      {
-
 	 	GraphView gv = nv.getGraphView();
 
          if (menu == null)
              return;
 
-	     final JMenu nntkMenu = new JMenu("Nested Network Toolkit");
-	
+         JMenu nntkMenu = null;
+         
+         // check if "Nested Network" already existed
+         MenuElement[] mElements = menu.getSubElements();
+         for (int i=0; i< mElements.length; i++){
+        	 if (mElements[i] instanceof JMenu){
+        		 JMenu m= (JMenu)mElements[i];
+        		 if (m.getText().equalsIgnoreCase("Nested Network")){
+        			 nntkMenu = m;
+        			 break;
+        		 }
+        	 }
+         }
+         
+         if (nntkMenu == null){
+    	     nntkMenu = new JMenu("Nested Network");
+         }
+         
 	     boolean selectedHasNested = false;
 	     
 	     for (Object n : gv.getSelectedNodes())
