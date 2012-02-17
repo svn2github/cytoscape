@@ -5,14 +5,10 @@ import giny.view.NodeView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
-
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.view.CyNetworkView;
@@ -25,23 +21,6 @@ public class DetailedViewLayout
 	
 	public static void layout(CyNetworkView view, CyNetworkView overview, Map<String,Set<Node>> module_nodes)
 	{
-		//Get values of Parent Module attribute
-//		CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
-//		Map<String,Set<Node>> module_nodes = new HashMap<String,Set<Node>>();
-//		for (int ni : view.getNetwork().getNodeIndicesArray())
-//		{
-//			String nodeID = view.getNetwork().getNode(ni).getIdentifier();
-//			String parent = nodeAttr.getAttribute(nodeID, "nestedNetworkId" /*VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME*/).toString();
-//			
-//			Set<Node> sset = module_nodes.get(parent);
-//			if (sset==null)
-//			{
-//				sset = new HashSet<Node>();
-//				sset.add(view.getNetwork().getNode(ni));
-//				module_nodes.put(parent, sset);
-//			}else sset.add(view.getNetwork().getNode(ni));
-//		}
-		
 		//For each parent module
 		CyLayoutAlgorithm fd = CyLayouts.getLayout("force-directed");
 		fd.setSelectedOnly(true);
