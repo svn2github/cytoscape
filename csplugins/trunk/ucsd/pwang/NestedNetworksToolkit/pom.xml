@@ -9,9 +9,9 @@
   </parent>
 
   
-  <artifactId>subnetworkbycategory</artifactId>
+  <artifactId>nestednetworkstoolkit</artifactId>
   <packaging>jar</packaging>
-  <name>SubnetworkByCategory</name>
+  <name>NestedNetworksToolkit</name>
   
   
   <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
