@@ -2,6 +2,7 @@ package org.cytoscape.view.presentation.internal;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.cytoscape.view.model.View;
@@ -16,7 +17,7 @@ public class RenderingEngineManagerImpl implements RenderingEngineManager {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RenderingEngineManagerImpl.class);
 
-	private final Map<View<?>, RenderingEngine<?>> renderingEngineMap;
+	private final Map<View<?>, Collection<RenderingEngine<?>>> renderingEngines;
 	
 	private static final String FACTORY_ID_TAG = "id";
 	private static final String DEFAULT_FACTORY_ID = "ding";
@@ -31,7 +32,7 @@ public class RenderingEngineManagerImpl implements RenderingEngineManager {
 	 * listens to Presentation events and update its map based on them.
 	 */
 	public RenderingEngineManagerImpl() {
-		this.renderingEngineMap = new HashMap<View<?>, RenderingEngine<?>>();
+		this.renderingEngines = new HashMap<View<?>, Collection<RenderingEngine<?>>>();
 		this.factoryMap = new HashMap<String, RenderingEngineFactory<?>>();
 	}
 
@@ -39,27 +40,47 @@ public class RenderingEngineManagerImpl implements RenderingEngineManager {
 	 * This method never returns null.
 	 */
 	@Override
-	public RenderingEngine<?> getRenderingEngine(final View<?> viewModel) {
-		return renderingEngineMap.get(viewModel);
+	public Collection<RenderingEngine<?>> getRenderingEngines(final View<?> viewModel) {
+		return renderingEngines.get(viewModel);
 	}
 
 	@Override
 	public Collection<RenderingEngine<?>> getAllRenderingEngines() {
-		return renderingEngineMap.values();
+		Collection<RenderingEngine<?>> result = new HashSet<RenderingEngine<?>>();
+		
+		for (Collection<RenderingEngine<?>> collection : renderingEngines.values()) {
+			result.addAll(collection);
+		}
+		
+		return result;
 	}
 	
 
 	@Override
 	public void addRenderingEngine(final RenderingEngine<?> renderingEngine) {
 		final View<?> viewModel = renderingEngine.getViewModel();
-		this.renderingEngineMap.put(viewModel, renderingEngine);
+		
+		Collection<RenderingEngine<?>> collection = renderingEngines.get(viewModel);
+		
+		if (collection == null) {
+			collection = new HashSet<RenderingEngine<?>>();
+			collection.add(renderingEngine);
+			renderingEngines.put(viewModel, collection);
+		} else {
+			collection.add(renderingEngine);
+		}
 	}
 	
 
 	@Override
 	public void removeRenderingEngine(RenderingEngine<?> renderingEngine) {
 		final View<?> viewModel = renderingEngine.getViewModel();
-		this.renderingEngineMap.remove(viewModel);
+		Collection<RenderingEngine<?>> collection = renderingEngines.get(viewModel);
+		collection.remove(renderingEngine);
+		
+		if (collection.isEmpty()) {
+			this.renderingEngines.remove(viewModel);
+		}
 	}
 	
 
@@ -72,39 +93,39 @@ public class RenderingEngineManagerImpl implements RenderingEngineManager {
 	}
 	
 	
-//	public void addRenderingEngineFactory(
-//			final RenderingEngineFactory<?> factory, Map metadata) {
-//		final Object idObject = metadata.get(FACTORY_ID_TAG);
-//
-//		if (idObject == null)
-//			throw new IllegalArgumentException(
-//					"Could not add factory: ID metadata is missing for RenderingEngineFactory.");
-//
-//		final String id = idObject.toString();
-//
-//		this.factoryMap.put(id, factory);
-//		
-//		// Register default lexicon
-//		if(id.equals(DEFAULT_FACTORY_ID))
-//			defaultLexicon = factory.getVisualLexicon();
-//		
-//		logger.debug("New engine registered: " + factory.getClass());
-//	}
-//
-//	public void removeRenderingEngineFactory(
-//			final RenderingEngineFactory<?> factory, Map metadata) {
-//		final Object idObject = metadata.get(FACTORY_ID_TAG);
-//
-//		if (idObject == null)
-//			throw new IllegalArgumentException(
-//					"Could not remove factory: ID metadata is missing for RenderingEngineFactory.");
-//
-//		final String id = idObject.toString();
-//
-//		RenderingEngineFactory<?> toBeRemoved = this.factoryMap.remove(id);
-//
-//		toBeRemoved = null;
-//
-//	}
+	public void addRenderingEngineFactory(
+			final RenderingEngineFactory<?> factory, Map metadata) {
+		final Object idObject = metadata.get(FACTORY_ID_TAG);
+
+		if (idObject == null)
+			throw new IllegalArgumentException(
+					"Could not add factory: ID metadata is missing for RenderingEngineFactory.");
+
+		final String id = idObject.toString();
+
+		this.factoryMap.put(id, factory);
+		
+		// Register default lexicon
+		if(id.equals(DEFAULT_FACTORY_ID))
+			defaultLexicon = factory.getVisualLexicon();
+		
+		logger.debug("New engine registered: " + factory.getClass());
+	}
+
+	public void removeRenderingEngineFactory(
+			final RenderingEngineFactory<?> factory, Map metadata) {
+		final Object idObject = metadata.get(FACTORY_ID_TAG);
+
+		if (idObject == null)
+			throw new IllegalArgumentException(
+					"Could not remove factory: ID metadata is missing for RenderingEngineFactory.");
+
+		final String id = idObject.toString();
+
+		RenderingEngineFactory<?> toBeRemoved = this.factoryMap.remove(id);
+
+		toBeRemoved = null;
+
+	}
 
 }

@@ -25,15 +25,14 @@ public interface RenderingEngineManager {
 	VisualLexicon getDefaultVisualLexicon();
 
 	/**
-	 * Get a rendering engine for the given view model.
-	 *
+	 * Get the set of rendering engines for the given view model.
+	 * 
 	 * @param viewModel
 	 *            View model for the presentation.
 	 * 
-	 * @return Rendering engine (presentation) for the given
-	 *         view model.
+	 * @return All rendering engines for the given view model.
 	 */
-	RenderingEngine<?> getRenderingEngine(final View<?> viewModel);
+	Collection<RenderingEngine<?>> getRenderingEngines(final View<?> viewModel);
 	
 	/**
 	 * Get all {@link RenderingEngine}s registered in this manager.
