@@ -14,7 +14,6 @@ import cpath.service.jaxb.SearchResponse;
  */
 public class RecordList {
     private SearchResponse response;
-    TreeMap<String, Integer> dataSourceMap = new TreeMap<String, Integer>();
     TreeMap<String, Integer> interactionTypeMap = new TreeMap<String, Integer>();
 
     /**
@@ -46,13 +45,6 @@ public class RecordList {
         return response;
     }
 
-    /**
-     * Gets catalog of data sources.
-     * @return Map<Data Source Name, # Records>
-     */
-    public TreeMap<String, Integer> getDataSourceMap() {
-        return dataSourceMap;
-    }
 
     /**
      * Gets catalog of entity sources.
@@ -66,23 +58,10 @@ public class RecordList {
         List<SearchHit> recordList = response.getSearchHit();
         if (recordList != null) {
             for (SearchHit record:  recordList) {
-                catalogDataSource(record.getDataSource());
                 catalogInteractionType(record);
                 //  TODO:  additional catalogs, as needed.
             }
         }
-    }
-
-    private void catalogDataSource(List<String> dataSources) {
-		for (String name : dataSources) {
-			Integer count = dataSourceMap.get(name);
-			if (count != null) {
-				count = count + 1;
-			} else {
-				count = 1;
-			}
-			dataSourceMap.put(name, count);
-		}
     }
 
     private void catalogInteractionType(SearchHit record) {

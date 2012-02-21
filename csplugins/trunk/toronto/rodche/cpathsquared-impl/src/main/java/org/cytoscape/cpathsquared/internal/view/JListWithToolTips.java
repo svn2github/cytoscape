@@ -43,16 +43,6 @@ public class JListWithToolTips extends JList {
 				html.append(organisms.toString());
 			}
 
-			// TODO Next, add synonyms
-//			for (String synonym : synList) {
-//				if (!synonym.equalsIgnoreCase(record.getName()))
-//					synBuffer.append("- " + synonym + "<BR>");
-//			}
-//			if (synBuffer.length() > 0) {
-//				html.append("<BR><BR>");
-//				html.append(synBuffer.toString());
-//			}
-
 			html.append("</td></tr></table>");
 			html.append("</html>");
 			return html.toString();

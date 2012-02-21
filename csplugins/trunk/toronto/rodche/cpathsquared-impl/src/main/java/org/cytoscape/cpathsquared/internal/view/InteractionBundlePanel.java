@@ -29,7 +29,6 @@ import javax.swing.tree.TreePath;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.filters.ChainedFilter;
-import org.cytoscape.cpathsquared.internal.filters.DataSourceFilter;
 import org.cytoscape.cpathsquared.internal.filters.EntityTypeFilter;
 
 import cpath.service.jaxb.SearchHit;
@@ -42,7 +41,6 @@ import cpath.service.jaxb.SearchHit;
 public class InteractionBundlePanel extends JPanel {
     private JLabel matchingInteractionsLabel;
     private InteractionBundleModel interactionBundleModel;
-    private CheckNode dataSourceFilter;
     private CheckNode interactionTypeFilter;
     private JButton retrieveButton;
     private JTreeWithCheckNodes tree;
@@ -98,11 +96,8 @@ public class InteractionBundlePanel extends JPanel {
      */
     public void expandAllNodes() {
         filterPanel.setCollapsed(false);
-        dataSourceFilter.setSelected(true);
         interactionTypeFilter.setSelected(true);
-        TreePath path = new TreePath(dataSourceFilter.getPath());
-        tree.expandPath(path);
-        path = new TreePath(interactionTypeFilter.getPath());
+        TreePath path = new TreePath(interactionTypeFilter.getPath());
         tree.expandPath(path);
     }
 
@@ -123,15 +118,9 @@ public class InteractionBundlePanel extends JPanel {
                     retrieveButton.setVisible(true);
                 }
 
-                TreeMap<String, Integer> dataSourceMap = recordList.getDataSourceMap();
                 TreeMap<String, Integer> entityTypeMap = recordList.getEntityTypeMap();
 
                 //  Store current expansion states
-                boolean dataSourceFilterExpanded = false;
-                if (dataSourceFilter != null) {
-                    TreePath path = new TreePath(dataSourceFilter.getPath());
-                    dataSourceFilterExpanded = tree.isExpanded(path);
-                }
                 boolean interactionTypeFilterExpanded = false;
                 if (interactionTypeFilter != null) {
                     TreePath path = new TreePath(interactionTypeFilter.getPath());
@@ -141,20 +130,7 @@ public class InteractionBundlePanel extends JPanel {
                 //  Remove all children
                 rootNode.removeAllChildren();
 
-                //  Create Data Source Filter
-                if (dataSourceMap.size() > 0) {
-                    dataSourceFilter = new CheckNode("Filter by Data Source");
-                    rootNode.add(dataSourceFilter);
-                    for (String key : dataSourceMap.keySet()) {
-                        CategoryCount categoryCount = new CategoryCount(key,
-                                dataSourceMap.get(key));
-                        CheckNode dataSourceNode = new CheckNode(categoryCount, false, true);
-                        dataSourceFilter.add(dataSourceNode);
-                    }
-                    dataSourceFilter.setSelected(true);
-                }
-
-                //  Create Entity Type Filter
+                 //  Create Entity Type Filter
                 if (entityTypeMap.size() > 0) {
                     interactionTypeFilter = new CheckNode("Filter by Interaction Type");
                     rootNode.add(interactionTypeFilter);
@@ -201,10 +177,6 @@ public class InteractionBundlePanel extends JPanel {
                 });
 
                 //  Restore expansion state.
-                if (dataSourceFilterExpanded) {
-                    TreePath path = new TreePath(dataSourceFilter.getPath());
-                    tree.expandPath(path);
-                }
                 if (interactionTypeFilterExpanded) {
                     TreePath path = new TreePath(interactionTypeFilter.getPath());
                     tree.expandPath(path);
@@ -241,30 +213,23 @@ public class InteractionBundlePanel extends JPanel {
     }
 
     private List<SearchHit> executeFilter() {
-        Set<String> dataSourceSet = new HashSet<String>();
         Set<String> entityTypeSet = new HashSet<String>();
-        int childCount = dataSourceFilter.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            CheckNode checkNode = (CheckNode) dataSourceFilter.getChildAt(i);
-            CategoryCount categoryCount = (CategoryCount) checkNode.getUserObject();
-            String dataSource = categoryCount.getCategoryName();
-            if (checkNode.isSelected()) {
-                dataSourceSet.add(dataSource);
-            }
-        }
-        childCount = interactionTypeFilter.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            CheckNode checkNode = (CheckNode) interactionTypeFilter.getChildAt(i);
-            CategoryCount categoryCount = (CategoryCount) checkNode.getUserObject();
-            String entityType = categoryCount.getCategoryName();
-            if (checkNode.isSelected()) {
-                entityTypeSet.add(entityType);
-            }
-        }
+        
+		if (interactionTypeFilter != null) {
+			int childCount = interactionTypeFilter.getChildCount();
+			for (int i = 0; i < childCount; i++) {
+				CheckNode checkNode = (CheckNode) interactionTypeFilter
+						.getChildAt(i);
+				CategoryCount categoryCount = (CategoryCount) checkNode
+						.getUserObject();
+				String entityType = categoryCount.getCategoryName();
+				if (checkNode.isSelected()) {
+					entityTypeSet.add(entityType);
+				}
+			}
+		}
         ChainedFilter chainedFilter = new ChainedFilter();
-        DataSourceFilter dataSourceFilter = new DataSourceFilter(dataSourceSet);
         EntityTypeFilter entityTypeFilter = new EntityTypeFilter(entityTypeSet);
-        chainedFilter.addFilter(dataSourceFilter);
         chainedFilter.addFilter(entityTypeFilter);
         List<SearchHit> passedRecordList;
         try {

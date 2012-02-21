@@ -147,7 +147,7 @@ implements CPath2WebServiceListener, CytoPanelStateChangedListener
             peListModel.setSize(searchHits.size());
             int i = 0;
             for (SearchHit searchHit : searchHits) {
-                peListModel.setElementAt(searchHit.toString(), i++);
+                peListModel.setElementAt(searchHit, i++);
             }
         } else {
             SwingUtilities.invokeLater(new Runnable(){
