@@ -21,7 +21,6 @@ import org.cytoscape.util.swing.OpenBrowser;
 /**
  * Summary Panel.
  *
- * @author Ethan Cerami.
  */
 public class DetailsPanel extends JPanel implements MouseListener {
     private Document doc;
@@ -32,10 +31,10 @@ public class DetailsPanel extends JPanel implements MouseListener {
      * Constructor.
      * @param browser 
      */
-    public DetailsPanel(SearchResultsPanel searchHitsPanel, CPath2Factory factory) {
+    public DetailsPanel(SearchResultsPanel searchHitsPanel) {
         this.setLayout(new BorderLayout());
 		this.searchHitsPanel = searchHitsPanel;
-        textPane = createHtmlTextPane(factory.getOpenBrowser());
+        textPane = createHtmlTextPane(CPath2Factory.getOpenBrowser());
         doc = textPane.getDocument();
         JScrollPane scrollPane = encloseInJScrollPane (textPane);
 

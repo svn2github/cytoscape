@@ -1,8 +1,7 @@
 package org.cytoscape.cpathsquared.internal.task;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.CPath2WebService;
-import org.cytoscape.cpathsquared.internal.CPath2WebServiceImpl;
+import org.cytoscape.cpathsquared.internal.CPath2;
 import org.cytoscape.cpathsquared.internal.view.ResultsModel;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -13,7 +12,6 @@ import org.cytoscape.work.TaskMonitor;
 //TODO needs much re-factoring...
 public class GetNodeNeighborsTask implements Task {
     private String uri;
-    private CPath2WebService webApi = CPath2WebServiceImpl.getInstance();
     private ResultsModel resultsModel;
 	private final CyNetwork network;
 	private final CPath2Factory factory;
@@ -26,7 +24,7 @@ public class GetNodeNeighborsTask implements Task {
 
     @Override
     public void cancel() {
-        webApi.abort();
+        //TODO
     }
     
     //TODO

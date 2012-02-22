@@ -22,10 +22,10 @@ import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.Named;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
+import org.cytoscape.cpathsquared.internal.CPath2;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.CPath2Exception;
 import org.cytoscape.cpathsquared.internal.CPath2Properties;
-import org.cytoscape.cpathsquared.internal.CPath2WebService;
 import org.cytoscape.cpathsquared.internal.util.AttributeUtil;
 import org.cytoscape.cpathsquared.internal.util.BioPaxUtil;
 import org.cytoscape.cpathsquared.internal.util.EmptySetException;
@@ -36,7 +36,6 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.Task;
@@ -51,45 +50,32 @@ import cpath.service.OutputFormat;
 /**
  * Controller for Executing a Get Record(s) by CPath ID(s) command.
  * 
- * @author Ethan Cerami, Jason Montojo, Igor Rodchenkov.
  */
-public class ExecuteGetRecordByCPathId extends AbstractTask {
-	private CPath2WebService webApi;
+public class ExecuteGetRecordByCPathIdTask extends AbstractTask {
 	private String ids[];
 	private String networkTitle;
 	private boolean haltFlag = false;
 	private OutputFormat format;
 	private final static String CPATH_SERVER_NAME_ATTRIBUTE = "CPATH_SERVER_NAME";
 	private final static String CPATH_SERVER_DETAILS_URL = "CPATH_SERVER_DETAILS_URL";
-	private static final Logger logger = LoggerFactory.getLogger(ExecuteGetRecordByCPathId.class);
-	private final CPath2Factory cPathFactory;
-	private final VisualMappingManager mappingManager;
+	private static final Logger logger = LoggerFactory.getLogger(ExecuteGetRecordByCPathIdTask.class);
 
 	/**.
 	 * Constructor.
-	 * 
-	 * @param webApi cPath Web API.
 	 * @param ids Array of cPath IDs.
 	 * @param format Output Format.
 	 * @param networkTitle Tentative Network Title.
-	 * @param cPathFactory
-	 * @param mappingManager
 	 */
-	public ExecuteGetRecordByCPathId(CPath2WebService webApi, String[] ids, OutputFormat format,
-			String networkTitle, CPath2Factory cPathFactory, VisualMappingManager mappingManager) {
-		this.webApi = webApi;
+	public ExecuteGetRecordByCPathIdTask(String[] ids, OutputFormat format, String networkTitle) {
 		this.ids = ids;
 		this.format = format;
 		this.networkTitle = networkTitle;
-		this.cPathFactory = cPathFactory;
-		this.mappingManager = mappingManager;
 	}
 
 	/**
 	 * Our implementation of Task.abort()
 	 */
 	public void cancel() {
-		webApi.abort();
 		haltFlag = true;
 	}
 
@@ -130,7 +116,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 			tmpFile.deleteOnExit();
 
 			// Get Data, and write to temp file.
-			String data = webApi.getRecordsByIds(ids, format);
+			String data = CPath2.getRecordsByIds(ids, format);
 			FileWriter writer = new FileWriter(tmpFile);
 			writer.write(data);
 			writer.close();
@@ -143,7 +129,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 				System.setProperty("biopax.network_view_title", networkTitle);
 			}
 
-			CyNetworkReader reader = cPathFactory.getCyNetworkViewReaderManager().getReader(tmpFile.toURI(),
+			CyNetworkReader reader = CPath2Factory.getCyNetworkViewReaderManager().getReader(tmpFile.toURI(),
 					tmpFile.getName());
 			if (taskMonitor != null) {
 				taskMonitor.setStatusMessage("Creating Cytoscape Network...");
@@ -154,11 +140,11 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 			final CyNetwork cyNetwork = reader.getNetworks()[0];
             final CyNetworkView view = reader.buildCyNetworkView(cyNetwork);
 
-            cPathFactory.getCyNetworkManager().addNetwork(cyNetwork);
-            cPathFactory.getCyNetworkViewManager().addNetworkView(view);
+            CPath2Factory.getCyNetworkManager().addNetwork(cyNetwork);
+            CPath2Factory.getCyNetworkViewManager().addNetworkView(view);
 
-			cPathFactory.getCyNetworkManager().addNetwork(cyNetwork);
-			cPathFactory.getCyNetworkViewManager().addNetworkView(view);
+            CPath2Factory.getCyNetworkManager().addNetwork(cyNetwork);
+            CPath2Factory.getCyNetworkViewManager().addNetworkView(view);
 
 			// Branch, based on download mode.
 			//TODO add EXTENDED_BINARY_SIF
@@ -176,7 +162,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 				taskMonitor.setProgress(1.0);
 			}
 
-			CyLayoutAlgorithmManager layoutManager = cPathFactory.getCyLayoutAlgorithmManager();
+			CyLayoutAlgorithmManager layoutManager = CPath2Factory.getCyLayoutAlgorithmManager();
 			TaskFactory tf = layoutManager.getDefaultLayout();
 			TaskIterator ti = tf.createTaskIterator();
 			Task task = ti.next();
@@ -203,12 +189,12 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 		String serverName = CPath2Properties.serverName;
 		String serverURL = CPath2Properties.cPathUrl;
 		CyRow row = cyNetwork.getRow(cyNetwork);
-		String cPathServerDetailsUrl = row.get(ExecuteGetRecordByCPathId.CPATH_SERVER_DETAILS_URL, String.class);
+		String cPathServerDetailsUrl = row.get(ExecuteGetRecordByCPathIdTask.CPATH_SERVER_DETAILS_URL, String.class);
 		if (cPathServerDetailsUrl == null) {
-			AttributeUtil.set(cyNetwork, cyNetwork, ExecuteGetRecordByCPathId.CPATH_SERVER_NAME_ATTRIBUTE,
+			AttributeUtil.set(cyNetwork, cyNetwork, ExecuteGetRecordByCPathIdTask.CPATH_SERVER_NAME_ATTRIBUTE,
 					serverName, String.class);
 			String url = serverURL.replaceFirst("webservice.do", "record2.do?id=");
-			AttributeUtil.set(cyNetwork, cyNetwork, ExecuteGetRecordByCPathId.CPATH_SERVER_DETAILS_URL, url, String.class);
+			AttributeUtil.set(cyNetwork, cyNetwork, ExecuteGetRecordByCPathIdTask.CPATH_SERVER_DETAILS_URL, url, String.class);
 		}
 	}
 
@@ -240,14 +226,14 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 				taskMonitor.setProgress(0);
 			}
 
-			VisualStyle visualStyle = cPathFactory.getBinarySifVisualStyleUtil().getVisualStyle();
-			mappingManager.setVisualStyle(visualStyle, view);
+			VisualStyle visualStyle = CPath2Factory.getBinarySifVisualStyleUtil().getVisualStyle();
+			CPath2Factory.getMappingManager().setVisualStyle(visualStyle, view);
 
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					String networkTitleWithUnderscores = networkTitle.replaceAll(": ", "");
 					networkTitleWithUnderscores = networkTitleWithUnderscores.replaceAll(" ", "_");
-					CyNetworkNaming naming = cPathFactory.getCyNetworkNaming();
+					CyNetworkNaming naming = CPath2Factory.getCyNetworkNaming();
 					networkTitleWithUnderscores = naming.getSuggestedNetworkTitle(networkTitleWithUnderscores);
 					AttributeUtil.set(cyNetwork, cyNetwork, CyNetwork.NAME, networkTitleWithUnderscores, String.class);
 				}
@@ -300,7 +286,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 				ids[j] = name;
 			}
 			try {
-				final String xml = webApi.getRecordsByIds(ids, OutputFormat.BIOPAX);
+				final String xml = CPath2.getRecordsByIds(ids, OutputFormat.BIOPAX);
 				Model model = new SimpleIOHandler().convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
 				// convert L2 to L3 if required (L1 is converted to L2 always anyway - by the handler)
 				if(BioPAXLevel.L2.equals(model.getLevel())) { // 
@@ -331,9 +317,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 				if (taskMonitor != null) {
 					taskMonitor.setProgress(percentComplete);
 				}
-			} catch (EmptySetException e) {
-				e.printStackTrace();
-			} catch (CPath2Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

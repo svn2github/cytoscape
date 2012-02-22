@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.biopax.paxtools.model.Model;
-import org.biopax.paxtools.model.level3.BioSource;
 import org.cytoscape.cpathsquared.internal.util.BioPaxUtil;
 import org.cytoscape.cpathsquared.internal.util.EmptySetException;
 import org.slf4j.Logger;
@@ -22,26 +21,16 @@ import cpath.service.jaxb.SearchResponse;
  * Class for accessing the cPath Web API.
  *
  */
-public final class CPath2WebServiceImpl implements CPath2WebService {
-    private static ArrayList<CPath2WebServiceListener> listeners = new ArrayList<CPath2WebServiceListener>();
-    private static CPath2WebService webApi;
-    private static final Logger LOGGER = LoggerFactory.getLogger(CPath2WebServiceImpl.class);
+public final class CPath2 {
+    private static ArrayList<CPath2Listener> listeners = new ArrayList<CPath2Listener>();
+    private static final Logger LOGGER = LoggerFactory.getLogger(CPath2.class);
     
-    /**
-     * Gets a singleton instance of the cPath2 web service handler.
-     * @return CPath2WebService Object.
-     */
-    public static CPath2WebService getInstance() {
-        if (webApi == null) {
-            webApi = new CPath2WebServiceImpl();
-        }
-        return webApi;
-    }
 
     /**
      * Private Constructor.
      */
-    private CPath2WebServiceImpl() {
+    private CPath2() {
+    	throw new AssertionError(); // non-instantiable
     }
 
     /**
@@ -51,16 +40,17 @@ public final class CPath2WebServiceImpl implements CPath2WebService {
      * @param organism TODO
      * @param datasource TODO
      * @return
+     * @throws CPathException 
      */
-    public SearchResponse search(String keyword, Set<String> organism,
-            Set<String> datasource) throws CPath2Exception, EmptySetException {
+    public static SearchResponse search(String keyword, Set<String> organism,
+            Set<String> datasource) throws CPathException {
 
     	if(LOGGER.isDebugEnabled())
     		LOGGER.debug("search: query=" + keyword);
     	
     	// Notify all listeners of start
         for (int i = listeners.size() - 1; i >= 0; i--) {
-            CPath2WebServiceListener listener = listeners.get(i);
+            CPath2Listener listener = listeners.get(i);
             listener.searchInitiated(keyword, organism, datasource);
         }
 
@@ -71,24 +61,18 @@ public final class CPath2WebServiceImpl implements CPath2WebService {
         if(organism != null)
         	client.setOrganisms(organism);
         
-        client.setType("Entity"); //TODO remove (this is temporary, for prototyping/tests only..)
+        client.setType("Entity"); //TODO make sure: we want Entity type hits only, because UtilityClass elements can be retrieved via sub-queries 
         
         if(datasource != null)
         	client.setDataSources(datasource);
 
-        try {
-        	//was: =protocol.connect(taskMonitor);
         	SearchResponse res = (SearchResponse) client.search(keyword); 
 			// Notify all listeners of end
 			for (int i = listeners.size() - 1; i >= 0; i--) {
-				CPath2WebServiceListener listener = listeners.get(i);
+				CPath2Listener listener = listeners.get(i);
 				listener.searchCompleted(res);
 			}
 			return res;
-        } catch (CPathException e) {
-			throw new CPath2Exception(e.getError().getErrorCode(),
-					e.toString());
-		}
     }
 
 
@@ -100,8 +84,7 @@ public final class CPath2WebServiceImpl implements CPath2WebService {
      * @throws CPath2Exception       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
-    public String getRecordsByIds(String[] ids, OutputFormat format) 
-    		throws CPath2Exception, EmptySetException 
+    public static String getRecordsByIds(String[] ids, OutputFormat format) 
     {
     	CPath2Client client = CPath2Client.newInstance();
         
@@ -114,47 +97,50 @@ public final class CPath2WebServiceImpl implements CPath2WebService {
         return baos.toString();
     }
 
+
+    //TODO
+    public static List<String> getOrganisms() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
     
-    /**
-     * Abort the Request.
-     */
-    public void abort() {
-        //TODO
+    //TODO
+    public static List<String> getDataSources() {
+        throw new UnsupportedOperationException("Not implemented.");
     }
-
-    /**
-     * Gets a list of all Organisms currently available within cPath instance.
-     *
-     * @return ArrayList of FilterBoxItem Type Objects.
-     */
-    public List<BioSource> getOrganismList() {
-        throw new UnsupportedOperationException("getOrganismList() is not yet implemented.");
-    }
-
+    
+    
     /**
      * Registers a new listener.
      *
-     * @param listener CPath2WebService Listener.
+     * @param listener CPath2 Listener.
      */
-    public void addApiListener(CPath2WebServiceListener listener) {
+    public static void addApiListener(CPath2Listener listener) {
         listeners.add(listener);
     }
 
     /**
      * Removes the specified listener.
      *
-     * @param listener CPath2WebService Listener.
+     * @param listener CPath2 Listener.
      */
-    public void removeApiListener(CPath2WebServiceListener listener) {
+    public static void removeApiListener(CPath2Listener listener) {
         listeners.remove(listener);
     }
 
     /**
      * Gets the list of all registered listeners.
      *
-     * @return ArrayList of CPath2WebServiceListener Objects.
+     * @return ArrayList of CPath2Listener Objects.
      */
-    public ArrayList<CPath2WebServiceListener> getListeners() {
+    public static ArrayList<CPath2Listener> getListeners() {
         return listeners;
     }
+
+
+	public static SearchResponse topPathways(String keyword, Set<String> organism,
+			Set<String> datasource) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

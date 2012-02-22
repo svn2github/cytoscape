@@ -17,7 +17,6 @@ import java.awt.event.ActionListener;
 /**
  * Graphical User Interface (GUI) Utiltities.
  *
- * @author Ethan Cerami
  */
 public class GuiUtils {
 

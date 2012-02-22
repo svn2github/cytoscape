@@ -15,7 +15,6 @@ import cpath.service.jaxb.SearchHit;
  * Based on sample code from:
  * http://www.roseindia.net/java/example/java/swing/TooltipTextOfList.shtml
  *
- * @author Ethan Cerami
  */
 public class JListWithToolTips extends JList {
 

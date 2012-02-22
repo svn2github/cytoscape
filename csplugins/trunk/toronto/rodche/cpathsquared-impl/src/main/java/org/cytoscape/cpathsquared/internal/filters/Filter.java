@@ -6,8 +6,6 @@ import cpath.service.jaxb.SearchHit;
 
 /**
  * Filter interface.
- *
- * @author Ethan Cerami
  */
 public interface Filter {
 

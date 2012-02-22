@@ -20,7 +20,6 @@ import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 /**
  * Binary SIF Visual Style.
  * 
- * @author Ethan Cerami, Igor Rodchenkov
  */
 public class BinarySifVisualStyleFactory {
 	public final static String BINARY_SIF_VISUAL_STYLE = "Binary_SIF_Version_1";

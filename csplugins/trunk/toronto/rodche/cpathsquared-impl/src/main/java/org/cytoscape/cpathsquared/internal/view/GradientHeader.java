@@ -3,12 +3,10 @@ package org.cytoscape.cpathsquared.internal.view;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.net.URL;
 
 /**
  * Gradient Header Panel.
  *
- * @author Ethan Cerami
  */
 public class GradientHeader extends JPanel {
 

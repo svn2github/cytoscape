@@ -20,6 +20,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -31,60 +32,59 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
+import org.cytoscape.cpathsquared.internal.task.ExecuteSearchTask;
+import org.cytoscape.cpathsquared.internal.task.ResultHandler;
+import org.cytoscape.work.TaskFactory;
 
-import org.cytoscape.cpathsquared.internal.CPath2WebService;
-import org.cytoscape.cpathsquared.internal.task.ExecuteSearchTaskFactory;
-import org.cytoscape.cpathsquared.internal.task.ExecuteSearchTaskFactory.ResultHandler;
 
 /**
  * Search Box Panel.
  *
- * @author Ethan Cerami, Igor Rodchenkov (refactoring)
  */
 public class SearchQueryPanel extends JPanel {
     private JButton searchButton;
-    private final CPath2WebService webApi;
     private static final String ENTER_TEXT = "Enter Gene Name or ID";
-    private PulsatingBorder pulsatingBorder;
-    private JList organismBox;
-    private JList dataSourceBox;
-	private final CPath2Factory factory;
-	
+    private final JList organismBox;
+    private final JList dataSourceBox;
+    private final JTextField searchField;
 	
     /**
      * Constructor.
-     *
-     * @param webApi CPath Web Service Object.
      */
-    public SearchQueryPanel(CPath2WebService webApi, CPath2Factory factory) {
-        this.webApi = webApi;
-        this.factory = factory;
-        
+    public SearchQueryPanel() {  
+    	this.organismBox = new JList();
+    	this.dataSourceBox = new JList();
+    	this.searchField = createSearchField();        
+    	
         GradientHeader header = new GradientHeader("Search");
         header.setAlignmentX(Component.LEFT_ALIGNMENT);
         BoxLayout boxLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
         setLayout(boxLayout);
-        add (header);
-        add (Box.createVerticalStrut(5));
+        add(header);
+        add(Box.createVerticalStrut(5));
 
         JPanel centerPanel = new JPanel();
         BoxLayout boxLayoutMain = new BoxLayout(centerPanel, BoxLayout.X_AXIS);
         centerPanel.setLayout(boxLayoutMain);
         centerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
-        final JTextField searchField = createSearchField();
-
-        pulsatingBorder = new PulsatingBorder (searchField);
+        // create query field, examples/label, and button
+        URL url = GradientHeader.class.getResource("resources/run_tool.gif");
+        ImageIcon icon = new ImageIcon(url);
+        searchButton = new JButton("Search");
+        searchButton.setToolTipText("Execute Search");
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                executeSearch(searchField.getText(), organismBox.getSelectedValues(), dataSourceBox.getSelectedValues());
+            }
+        });
+        searchButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        PulsatingBorder pulsatingBorder = new PulsatingBorder (searchField);
         searchField.setBorder (BorderFactory.createCompoundBorder(searchField.getBorder(),
                 pulsatingBorder));
-
-        organismBox = createOrganismBox();
-        dataSourceBox = createDataSourceBox();
-        
-        searchButton = createSearchButton(searchField);
-
         searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
-
+        
         JEditorPane label = new JEditorPane ("text/html", "Examples:  <a href='TP53'>TP53</a>, " +
                 "<a href='BRCA1'>BRCA1</a>, or <a href='SRY'>SRY</a>.");
         label.setEditable(false);
@@ -98,23 +98,28 @@ public class SearchQueryPanel extends JPanel {
                 }
             }
         });
-        
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         Font font = label.getFont();
         Font newFont = new Font (font.getFamily(), font.getStyle(), font.getSize()-2);
         label.setFont(newFont);
         label.setBorder(new EmptyBorder(5,3,3,3));
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);       
+        
         centerPanel.add(searchField);
-
-        organismBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-        centerPanel.add(new JScrollPane(organismBox));
+        centerPanel.add(createOrganismFilterBox());
+        centerPanel.add(createDataSourceFilterBox());
         
-        dataSourceBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-        centerPanel.add(new JScrollPane(dataSourceBox));
+        JButton clearButton = new JButton("Clear");
+        clearButton.setToolTipText("Clear");
+        clearButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                searchField.setText(null);
+                organismBox.clearSelection();
+                dataSourceBox.clearSelection();
+            }
+        });
         
-        searchButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        centerPanel.add(clearButton);
         centerPanel.add(searchButton);
 
         add(centerPanel);
@@ -122,36 +127,39 @@ public class SearchQueryPanel extends JPanel {
     }
 
 
-    private final JList createOrganismBox() {
-       	//TODO fill the lists dynamically (from the web service)
+    private final JComponent createOrganismFilterBox() {
+    	//TODO fill the lists dynamically (from the web service)
     	DefaultListModel organismBoxModel = new DefaultListModel();
-    	
-    	organismBoxModel.addElement(new FilterBoxItem("All Organisms", null));
     	organismBoxModel.addElement(new FilterBoxItem("Human", "urn:miriam:taxonomy:9606"));
         organismBoxModel.addElement(new FilterBoxItem("Mouse", "urn:miriam:taxonomy:10090"));
         organismBoxModel.addElement(new FilterBoxItem("Rat", "urn:miriam:taxonomy:10116"));
         organismBoxModel.addElement(new FilterBoxItem("S. cerevisiae", "urn:miriam:taxonomy:4932"));
-    	
-    	JList orgBox = new JList(organismBoxModel);
-        orgBox.setToolTipText("Select Organisms");
-        //orgBox.setMaximumSize(new Dimension(200, 9999));
-        return orgBox;
+    	organismBox.setModel(organismBoxModel);
+        organismBox.setToolTipText("Select Organisms");
+        organismBox.setMaximumSize(new Dimension(200, 9999));
+        organismBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JScrollPane scroll = new JScrollPane(organismBox);
+        scroll.setSize(100, 100);
+        
+        return scroll;
     }
     
-
-    private final JList createDataSourceBox() {
-       	//TODO fill the lists dynamically (from the web service)
+    private final JComponent createDataSourceFilterBox() {
+        //TODO fill the lists dynamically (from the web service)
         DefaultListModel dataSourceBoxModel = new DefaultListModel();
-        dataSourceBoxModel.addElement(new FilterBoxItem("All Datasources", null));
         dataSourceBoxModel.addElement(new FilterBoxItem("Reactome", "urn:miriam:reactome"));
         dataSourceBoxModel.addElement(new FilterBoxItem("NCI_Nature Curated", "urn:miriam:pid.pathway"));
-    	
-    	JList dsBox = new JList(dataSourceBoxModel);
-        dsBox.setToolTipText("Select Datasources");
-        //dsBox.setMaximumSize(new Dimension(200, 9999));
-        return dsBox;
+        dataSourceBox.setModel(dataSourceBoxModel);
+        dataSourceBox.setToolTipText("Select Datasources");
+        dataSourceBox.setMaximumSize(new Dimension(200, 9999));
+        dataSourceBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JScrollPane scroll = new JScrollPane(dataSourceBox);
+        scroll.setSize(100, 100);
+        
+        return scroll;
     }
-
+    
+    
     /**
      * Creates the Search Field and associated listener(s)
      *
@@ -181,27 +189,7 @@ public class SearchQueryPanel extends JPanel {
         });
         return searchField;
     }
-
-    /**
-     * Creates the Search Button and associated action listener.
-     *
-     * @param searchField JTextField searchField
-     * @return
-     */
-    private final JButton createSearchButton(final JTextField searchField) {
-        URL url = GradientHeader.class.getResource("resources/run_tool.gif");
-        ImageIcon icon = new ImageIcon(url);
-        searchButton = new JButton("Search");
-        searchButton.setToolTipText("Execute Search");
-        searchButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                executeSearch(searchField.getText(), 
-                		organismBox.getSelectedValues(), dataSourceBox.getSelectedValues());
-            }
-        });
-        return searchButton;
-    }
-
+    
     
     private final void executeSearch(final String keyword, final Object[] organism, final Object[] datasource) {
         
@@ -213,17 +201,17 @@ public class SearchQueryPanel extends JPanel {
         for(Object it : datasource)
         	datasources.add(((FilterBoxItem)it).getValue());
     	
-    	Window window = factory.getCySwingApplication().getJFrame();
+    	Window window = CPath2Factory.getCySwingApplication().getJFrame();
         if (keyword == null || keyword.trim().length() == 0
                 || keyword.startsWith(ENTER_TEXT)) {
             JOptionPane.showMessageDialog(window, "Please enter a Gene Name or ID.",
                     "Search Error", JOptionPane.ERROR_MESSAGE);
         } else {
-        	ResultHandler handler = new ResultHandler() {
+        	final ResultHandler handler = new ResultHandler() {
         		@Override
         		public void finished(int matchesFound) throws Exception {
                     if (matchesFound == 0) {
-                        JOptionPane.showMessageDialog(factory.getCySwingApplication().getJFrame(),
+                        JOptionPane.showMessageDialog(CPath2Factory.getCySwingApplication().getJFrame(),
                                 "No matches found for:  " + keyword + 
                                 "\nPlease try a different search term or filter.",
                                 "No matches found.",
@@ -231,9 +219,9 @@ public class SearchQueryPanel extends JPanel {
                     }
         		}
         	};
-            ExecuteSearchTaskFactory search = new ExecuteSearchTaskFactory
-                    (webApi, keyword.trim(), organisms, datasources, handler);
-            factory.getTaskManager().execute(search);
+            TaskFactory search = CPath2Factory.newTaskFactory(new ExecuteSearchTask(
+            		keyword.trim(), organisms, datasources, handler));
+            CPath2Factory.getTaskManager().execute(search);
         }
     }
 

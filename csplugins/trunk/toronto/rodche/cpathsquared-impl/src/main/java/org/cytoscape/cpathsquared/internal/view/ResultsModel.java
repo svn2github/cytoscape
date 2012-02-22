@@ -5,7 +5,6 @@ import java.util.Observable;
 /**
  * Contains information regarding the currently selected set of interaction bundles.
  *
- * @author Ethan Cerami
  */
 public class ResultsModel extends Observable {
     private RecordList recordList;

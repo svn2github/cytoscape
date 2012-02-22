@@ -21,8 +21,8 @@ import javax.swing.table.DefaultTableModel;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.CPath2Properties;
-import org.cytoscape.cpathsquared.internal.CPath2WebService;
-import org.cytoscape.cpathsquared.internal.CPath2WebServiceImpl;
+import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTask;
+import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 
 import cpath.service.OutputFormat;
@@ -31,20 +31,16 @@ import cpath.service.jaxb.SearchHit;
 /**
  * Download Details Frame.
  *
- * @author Ethan Cerami
  */
 public class DownloadDetails extends JDialog {
     private String ids[];
-    private final CPath2Factory factory;
     
     /**
      * Constructor.
      * @param passedRecordList      List of Records that Passed over Filter.
      * @param bpContainer 
      */
-    public DownloadDetails(List<SearchHit> passedRecordList, CPath2Factory factory) {    	
-        super();
-        this.factory = factory;
+    public DownloadDetails(List<SearchHit> passedRecordList) {    	
         this.setTitle("Retrieval Confirmation");
         this.setModal(true);
         Container contentPane = getContentPane();
@@ -94,7 +90,7 @@ public class DownloadDetails extends JDialog {
         panel.add(buttonPanel);
         contentPane.add(panel, BorderLayout.SOUTH);
         pack();
-        setLocationRelativeTo(factory.getCySwingApplication().getJFrame());
+        setLocationRelativeTo(CPath2Factory.getCySwingApplication().getJFrame());
     }
 
     /**
@@ -131,7 +127,6 @@ public class DownloadDetails extends JDialog {
      */
     public void downloadInteractions() {
         String networkTitle = "Network";
-        CPath2WebService webApi = CPath2WebServiceImpl.getInstance();
 
         OutputFormat format;
         //TODO EXTENDED_BINARY_SIF?
@@ -141,8 +136,10 @@ public class DownloadDetails extends JDialog {
             format = OutputFormat.BINARY_SIF;
         }
 
-        TaskManager taskManager = factory.getTaskManager();
-        taskManager.execute(factory.createExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, networkTitle));
+        TaskManager taskManager = CPath2Factory.getTaskManager();
+        TaskFactory taskFactory = CPath2Factory.newTaskFactory(
+        		new ExecuteGetRecordByCPathIdTask(ids, format, networkTitle));
+        taskManager.execute(taskFactory);
     }
 }
 

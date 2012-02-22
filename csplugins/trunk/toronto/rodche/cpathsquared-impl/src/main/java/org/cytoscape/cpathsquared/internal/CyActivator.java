@@ -58,7 +58,8 @@ public class CyActivator extends AbstractCyActivator {
 				discreteMappingFactoryRef,
 				passthroughMappingFactoryRef);
 		
-		CPath2Factory cPath2Factory = new CPath2Factory(
+		// initialize the internal "God" static factory
+		CPath2Factory.init(
 				cySwingApplicationRef,
 				taskManagerRef,
 				openBrowserRef,
@@ -73,7 +74,7 @@ public class CyActivator extends AbstractCyActivator {
 				binarySifVisualStyleUtil,
 				visualMappingManagerRef);
 		
-		CPath2CytoscapeWebService cPathWebService = new CPath2CytoscapeWebService(cPath2Factory);
+		CPath2CytoscapeWebService cPathWebService = new CPath2CytoscapeWebService();
 		
 		registerAllServices(bc, cPathWebService, new Properties());
 	}

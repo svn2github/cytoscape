@@ -7,8 +7,6 @@ import cpath.service.jaxb.SearchHit;
 
 /**
  * Chained Filter.
- *
- * @author Ethan Cerami, Igor Rodchenkov
  */
 public class ChainedFilter implements Filter {
     private ArrayList<Filter> filterList = new ArrayList<Filter>();

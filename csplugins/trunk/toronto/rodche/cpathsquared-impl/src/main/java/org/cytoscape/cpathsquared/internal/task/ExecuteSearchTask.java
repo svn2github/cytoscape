@@ -3,24 +3,20 @@ package org.cytoscape.cpathsquared.internal.task;
 import java.util.List;
 import java.util.Set;
 
-import org.cytoscape.cpathsquared.internal.CPath2Exception;
+import org.cytoscape.cpathsquared.internal.CPath2;
 import org.cytoscape.cpathsquared.internal.CPath2Properties;
-import org.cytoscape.cpathsquared.internal.CPath2WebService;
-import org.cytoscape.cpathsquared.internal.task.ExecuteSearchTaskFactory.ResultHandler;
-import org.cytoscape.cpathsquared.internal.util.EmptySetException;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
+import cpath.client.util.NoResultsFoundException;
 import cpath.service.jaxb.SearchHit;
 import cpath.service.jaxb.SearchResponse;
 
 /**
  * Controller for Executing a Search.
  *
- * @author Ethan Cerami, Igor Rodchenkov
  */
 public class ExecuteSearchTask implements Task {
-    private CPath2WebService webApi;
     private String keyword;
     private Set<String> organism;
     private Set<String> datasource;
@@ -28,16 +24,13 @@ public class ExecuteSearchTask implements Task {
 
     /**
      * Constructor.
-     *
-     * @param webApi         cPath Web Api.
      * @param keyword        Keyword
      * @param organism TODO
      * @param datasource TODO
      * @param result 
      */
-    public ExecuteSearchTask(CPath2WebService webApi, String keyword,
-            Set<String> organism, Set<String> datasource, ResultHandler result) {
-        this.webApi = webApi;
+    public ExecuteSearchTask(String keyword, Set<String> organism,
+            Set<String> datasource, ResultHandler result) {
         this.keyword = keyword;
         this.organism = organism;
         this.datasource = datasource;
@@ -48,7 +41,7 @@ public class ExecuteSearchTask implements Task {
      * Our implementation of Task.abort()
      */
     public void cancel() {
-        webApi.abort();
+        //TODO
     }
 
     /**
@@ -72,8 +65,7 @@ public class ExecuteSearchTask implements Task {
             taskMonitor.setStatusMessage("Executing Search");
 
             //  Execute the Search
-            SearchResponse searchResponse = webApi.search(keyword,
-                    organism, datasource);
+            SearchResponse searchResponse = CPath2.search(keyword, organism, datasource);
             List<SearchHit> searchHits = searchResponse.getSearchHit();
             numHits = searchHits.size();
             
@@ -84,17 +76,14 @@ public class ExecuteSearchTask implements Task {
 //            for (SearchHit hit:  searchHits) {
 //                taskMonitor.setStatusMessage("Retrieving details for:  " + hit.getName());
 //                try {
-//                    webApi.getParentSummaries(hit.getUri(), taskMonitor);
+//                    CPath2.getParentSummaries(hit.getUri(), taskMonitor);
 //                } catch (EmptySetException e) {
 //                }
 //                double progress = numRetrieved++ / (double) numHits;
 //                taskMonitor.setProgress(progress);
 //            }
-        } catch (EmptySetException e) {
-        } catch (CPath2Exception e) {
-            if (e.getErrorCode() != CPath2Exception.ERROR_CANCELED_BY_USER) {
-            	throw e;
-            }
+        } catch (NoResultsFoundException e) {
+			
         } catch (Throwable e) { // - helps with optional/unresolved runtime dependencies!
             	throw new RuntimeException(e);
         } finally {

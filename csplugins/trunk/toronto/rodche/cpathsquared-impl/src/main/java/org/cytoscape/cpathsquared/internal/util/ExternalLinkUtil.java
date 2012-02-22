@@ -37,8 +37,6 @@ import java.util.*;
 
 /**
  * Utility Class for Creating Links to External Databases.
- *
- * @author Ethan Cerami
  * 
  * TODO replace with Miriam (MiriamLink) or identifiers.org API
  */

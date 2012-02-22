@@ -10,7 +10,7 @@ import cpath.service.jaxb.SearchResponse;
  *
  * @author Ethan Cerami
  */
-public interface CPath2WebServiceListener {
+public interface CPath2Listener {
 
     /**
      * Indicates that someone has initiated a search for physical entities.

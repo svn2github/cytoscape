@@ -1,13 +1,9 @@
 package org.cytoscape.cpathsquared.internal;
 
-import java.util.ArrayList;
-
-import org.cytoscape.cpathsquared.internal.view.FilterBoxItem;
 
 /**
  * Contains cPath Specific Properties
  *
- * @author Ethan Cerami, Igor Rodchenkov
  */
 public class CPath2Properties {
     /**

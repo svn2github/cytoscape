@@ -1,15 +1,18 @@
 package org.cytoscape.cpathsquared.internal.view;
 
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import cpath.service.jaxb.SearchHit;
 import cpath.service.jaxb.SearchResponse;
 
 
-public final class RecordList {
-    private SearchResponse response;
-    TreeMap<String, Integer> typeMap = new TreeMap<String, Integer>();
+final class RecordList {
+    private SearchResponse response;   
+    private Map<String, Integer> typeMap = new TreeMap<String, Integer>();
+    private Map<String, Integer> organismMap = new TreeMap<String, Integer>();
+    private Map<String, Integer> dataSourceMap = new TreeMap<String, Integer>();
 
     /**
      * Constructor.
@@ -17,7 +20,7 @@ public final class RecordList {
      */
     public RecordList (SearchResponse response) {
         this.response = response;
-        catalogByType();
+        catalog();
     }
 
     /**
@@ -45,28 +48,54 @@ public final class RecordList {
      * Gets catalog of entity types.
      * @return Map<Entity Type, # Records>
      */
-    public TreeMap<String, Integer> getEntityTypeMap() {
+    public Map<String, Integer> getTypeMap() {
         return typeMap;
     }
 
-    private void catalogByType() {
+    public Map<String, Integer> getOrganismMap() {
+        return organismMap;
+    }
+    
+    public Map<String, Integer> getDataSourceMap() {
+        return dataSourceMap;
+    }
+    
+    
+    private void catalog() {
         List<SearchHit> recordList = response.getSearchHit();
         if (recordList != null) {
             for (SearchHit record:  recordList) {
-                catalogByType(record);
-                //  TODO:  additional catalogs, as needed.
+                catalog(record);
             }
         }
     }
 
-    private void catalogByType(SearchHit record) {
+    private void catalog(SearchHit record) {
         String type = record.getBiopaxClass();
         Integer count = typeMap.get(type);
         if (count != null) {
-            count = count + 1;
+        	typeMap.put(type, count + 1);
         } else {
-            count = 1;
+        	typeMap.put(type, 1);
         }
-        typeMap.put(type, count);
+        
+        
+        for(String org : record.getOrganism()) {
+        	Integer i = organismMap.get(org);
+            if (i != null) {
+                organismMap.put(org, i + 1);
+            } else {
+            	organismMap.put(org, 1);
+            }
+        }
+        
+        for(String ds : record.getDataSource()) {
+        	Integer i = dataSourceMap.get(ds);
+            if (i != null) {
+                dataSourceMap.put(ds, i + 1);
+            } else {
+            	dataSourceMap.put(ds, 1);
+            }
+        }
     }
 }

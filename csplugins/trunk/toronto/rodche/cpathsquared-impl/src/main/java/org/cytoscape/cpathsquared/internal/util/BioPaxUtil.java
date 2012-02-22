@@ -77,8 +77,6 @@ import org.slf4j.LoggerFactory;
 /**
  * BioPax Utility Class - is a BioPAX Model Adapter 
  * that also defines additional constants. 
- *
- * @author Ethan Cerami, Rex, Arman and Igor Rodchenkov
  * 
  * @CyAPI.Final.Class
  */

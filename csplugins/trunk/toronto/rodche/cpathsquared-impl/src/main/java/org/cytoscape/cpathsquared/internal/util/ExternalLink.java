@@ -35,7 +35,6 @@ package org.cytoscape.cpathsquared.internal.util;
 /**
  * Model Object for Encapsulating an External Link.
  *
- * @author Ethan Cerami
  */
 public class ExternalLink {
 	private String dbName;

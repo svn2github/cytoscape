@@ -16,6 +16,7 @@ import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
 import org.cytoscape.io.webservice.SearchWebServiceClient;
 import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +35,6 @@ public class CPath2CytoscapeWebService extends AbstractWebServiceClient
     private static final String DISPLAY_NAME = CPath2Properties.serverName + " Client";
 
     private JPanel mainPanel;
-
-	private final CPath2Factory factory;
-
-	private CPath2WebService webApi;
 
     @Override
     public Container getQueryBuilderGUI() {
@@ -59,24 +56,21 @@ public class CPath2CytoscapeWebService extends AbstractWebServiceClient
     @Override
     public TaskIterator createTaskIterator() {
     	String query = "";
-		CPath2NetworkImportTask task = factory.createCPathNetworkImportTask(query, webApi, OutputFormat.BINARY_SIF);
+		Task task = new CPath2NetworkImportTask(query, OutputFormat.BINARY_SIF);
     	return new TaskIterator(task);
     }
     
     /**
      * Creates a new Web Services client.
-     * @param factory 
      */
-    public CPath2CytoscapeWebService(CPath2Factory factory) {
+    public CPath2CytoscapeWebService() {
     	super(CPath2Properties.cPathUrl, DISPLAY_NAME, makeDescription());
-    	this.factory = factory;
 
         mainPanel = new JPanel();
         mainPanel.setPreferredSize(new Dimension (500,400));
         mainPanel.setLayout (new BorderLayout());
 
-        webApi = CPath2WebServiceImpl.getInstance();
-        CPath2SearchPanel cpathPanel = new CPath2SearchPanel(webApi, factory);
+        CPath2SearchPanel cpathPanel = new CPath2SearchPanel();
 
         TabUi tabbedPane = TabUi.getInstance();
         tabbedPane.add("Search", cpathPanel);

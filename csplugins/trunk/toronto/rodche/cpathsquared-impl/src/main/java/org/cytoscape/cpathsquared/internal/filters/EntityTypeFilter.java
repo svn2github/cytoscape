@@ -9,7 +9,6 @@ import cpath.service.jaxb.SearchHit;
 /**
  * EntityType Filter.
  *
- * @author Ethan Cerami, Igor Rodchenkov
  */
 public class EntityTypeFilter implements Filter {
     Set<String> entityTypeSet;
