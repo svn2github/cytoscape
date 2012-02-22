@@ -35,20 +35,16 @@ import cpath.service.jaxb.SearchHit;
  */
 public class DownloadDetails extends JDialog {
     private String ids[];
-    private String peName;
     private final CPath2Factory factory;
     
     /**
      * Constructor.
      * @param passedRecordList      List of Records that Passed over Filter.
-     * @param peName                Name of Physical Entity.
      * @param bpContainer 
      */
-    public DownloadDetails(List<SearchHit> passedRecordList, String peName, CPath2Factory factory) {    	
+    public DownloadDetails(List<SearchHit> passedRecordList, CPath2Factory factory) {    	
         super();
         this.factory = factory;
-        
-        this.peName = peName;
         this.setTitle("Retrieval Confirmation");
         this.setModal(true);
         Container contentPane = getContentPane();
@@ -134,7 +130,7 @@ public class DownloadDetails extends JDialog {
      * Downloads interaction bundles in a new thread.
      */
     public void downloadInteractions() {
-        String networkTitle = peName + ":  Network";
+        String networkTitle = "Network";
         CPath2WebService webApi = CPath2WebServiceImpl.getInstance();
 
         OutputFormat format;

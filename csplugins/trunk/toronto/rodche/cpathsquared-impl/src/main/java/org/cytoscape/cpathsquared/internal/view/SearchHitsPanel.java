@@ -2,219 +2,236 @@ package org.cytoscape.cpathsquared.internal.view;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Window;
-import java.util.HashMap;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Set;
+import java.util.TreeMap;
 
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JList;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.text.Document;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
-import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.application.swing.CytoPanel;
-import org.cytoscape.application.swing.CytoPanelName;
-import org.cytoscape.application.swing.CytoPanelState;
-import org.cytoscape.application.swing.events.CytoPanelStateChangedEvent;
-import org.cytoscape.application.swing.events.CytoPanelStateChangedListener;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.CPath2WebService;
-import org.cytoscape.cpathsquared.internal.CPath2WebServiceListener;
+import org.cytoscape.cpathsquared.internal.filters.ChainedFilter;
+import org.cytoscape.cpathsquared.internal.filters.EntityTypeFilter;
 
 import cpath.service.jaxb.SearchHit;
-import cpath.service.jaxb.SearchResponse;
 
-/**
- * Search Hits Panel.
- *
- * @author Ethan Cerami.
- */
-public class SearchHitsPanel extends JPanel 
-implements CPath2WebServiceListener, CytoPanelStateChangedListener 
-{
-    private DefaultListModel peListModel;
-    private JList peList;
-    private SearchResponse peSearchResponse;
-    private Document summaryDocument;
-    private String currentKeyword;
-    private InteractionBundleModel interactionBundleModel;
-    private PathwayTableModel pathwayTableModel;
-    private JTextPane summaryTextPane;
-    private SearchHitDetailsPanel peDetailsPanel;
-	private JLayeredPane appLayeredPane;
-    private HashMap <String, RecordList> parentRecordsMap;
-	private CytoPanelState cytoPanelState;
-    private JFrame detailsFrame;
+
+public class SearchHitsPanel extends JPanel {
+    private JLabel matchingItemsLabel;
+    private ResultsModel model;
+    private CheckNode typeFilter;
+    private JButton retrieveButton;
+    private JTreeWithCheckNodes tree;
+    private CollapsablePanel filterPanel;
+    private JDialog dialog;
 	private final CPath2Factory factory;
 
-    /**
-     * Constructor.
-     * @param interactionBundleModel    Interaction Table Model.
-     * @param pathwayTableModel         Pathway Table Model.
-     * @param webApi                    cPath Web API.
-     * @param factory					CPath2Factory
-     */
-    public SearchHitsPanel(InteractionBundleModel interactionBundleModel, 
-    		PathwayTableModel pathwayTableModel, CPath2WebService webApi, 
-    		CPath2Factory factory) 
-    {
-    	this.factory = factory;
-        this.interactionBundleModel = interactionBundleModel;
-        this.pathwayTableModel = pathwayTableModel;
-        CySwingApplication application = factory.getCySwingApplication();
-		appLayeredPane = application.getJFrame().getRootPane().getLayeredPane();
-        webApi.addApiListener(this);
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    public SearchHitsPanel(ResultsModel
+            interactionBundleModel, JDialog dialog, CPath2Factory factory) {
+        this(interactionBundleModel, factory);
+        this.dialog = dialog;
+    }
 
-        //  Create the Summary Panel, but don't show it yet
-        peDetailsPanel = factory.createPhysicalEntityDetailsPanel(this);
-        summaryDocument = peDetailsPanel.getDocument();
-        summaryTextPane = peDetailsPanel.getTextPane();
+    public SearchHitsPanel(ResultsModel
+            interactionBundleModel, CPath2Factory factory) {
+        this.factory = factory;
+        this.model = interactionBundleModel;
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        //  Create the Hit List
-        peListModel = new DefaultListModel();
-        peList = new JListWithToolTips(peListModel);
-        peList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        peList.setPrototypeCellValue("12345678901234567890");
+        matchingItemsLabel = new JLabel("Matching Interactions:  N/A");
+        matchingItemsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        Font font = matchingItemsLabel.getFont();
+        Font newFont = new Font(font.getFamily(), Font.BOLD, font.getSize());
+        matchingItemsLabel.setFont(newFont);
+        matchingItemsLabel.setBorder(new EmptyBorder(5, 10, 5, 5));
+        panel.add(matchingItemsLabel);
 
-        JPanel hitListPane = new JPanel();
-        hitListPane.setLayout(new BorderLayout());
-        JScrollPane hitListScrollPane = new JScrollPane(peList);
-        hitListScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-        GradientHeader header = new GradientHeader("Step 2:  Select");
-        header.setAlignmentX(Component.LEFT_ALIGNMENT);
-        hitListPane.add(header, BorderLayout.NORTH);
-        JSplitPane internalPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, hitListScrollPane,
-                peDetailsPanel);
-        internalPanel.setDividerLocation(100);
-        hitListPane.add(internalPanel, BorderLayout.CENTER);
+        final CheckNode rootNode = new CheckNode("All Filters");
+        tree = new JTreeWithCheckNodes(rootNode);
+        tree.setOpaque(false);
 
-        //  Create Search Details Panel
-        SearchHitNetworksPanel detailsPanel = factory
-        	.createSearchDetailsPanel(interactionBundleModel, pathwayTableModel);
+        filterPanel = new CollapsablePanel("Filters (Optional)");
+        filterPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        filterPanel.getContentPane().add(tree);
 
-        //  Create the Split Pane
-        JSplitPane splitPane = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT, 
-        	hitListPane, detailsPanel);
-        splitPane.setDividerLocation(200);
-        splitPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.add(splitPane);
-        createListener(interactionBundleModel, pathwayTableModel, summaryTextPane);
+        panel.add(filterPanel);
+        addObserver(interactionBundleModel, matchingItemsLabel, tree, rootNode);
 
-		// listener for cytopanel events
-		CytoPanel cytoPanel = application.getCytoPanel(CytoPanelName.EAST);
-		cytoPanelState = cytoPanel.getState();
+        JPanel footer = new JPanel();
+        footer.setAlignmentX(Component.LEFT_ALIGNMENT);
+        footer.setLayout(new FlowLayout(FlowLayout.LEFT));
+        createInteractionDownloadButton(footer);
+        panel.add(footer);
+        JScrollPane scrollPane = new JScrollPane(panel);
+
+        this.setLayout(new BorderLayout());
+        this.add(scrollPane, BorderLayout.CENTER);
     }
 
     /**
-     * Indicates that user has initiated a phsyical entity search.
-     *
-     * @param keyword        Keyword.
-     * @param ncbiTaxonomyId NCBI Taxonomy ID.
+     * Expands all Nodes.
      */
-    public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId) {
-        this.currentKeyword = keyword;
+    public void expandAllNodes() {
+        filterPanel.setCollapsed(false);
+        typeFilter.setSelected(true);
+        TreePath path = new TreePath(typeFilter.getPath());
+        tree.expandPath(path);
     }
 
-    /**
-     * Indicates that a search for physical entities has just completed.
-     *
-     * @param peSearchResponse PhysicalEntitySearchResponse Object.
-     */
-    public void searchCompletedForPhysicalEntities(final SearchResponse peSearchResponse) {
+    private void addObserver(final ResultsModel model,
+            final JLabel matchingInteractionsLabel, final JTreeWithCheckNodes tree,
+            final CheckNode rootNode) {
+        model.addObserver(new Observer() {
+            public void update(Observable observable, Object object) {
+                RecordList recordList = model.getRecordList();
+                matchingInteractionsLabel.setText("Matching Interactions:  "
+                        + recordList.getNumRecords());
 
-        if (!peSearchResponse.isEmpty()) {
-
-            //  Reset parent summary map
-            parentRecordsMap = new HashMap<String, RecordList>();
-            
-            //  store for later reference
-            this.peSearchResponse = peSearchResponse;
-
-            //  Populate the hit list
-            List<SearchHit> searchHits = peSearchResponse.getSearchHit();
-            peListModel.setSize(searchHits.size());
-            int i = 0;
-            for (SearchHit searchHit : searchHits) {
-                peListModel.setElementAt(searchHit, i++);
-            }
-        } else {
-            SwingUtilities.invokeLater(new Runnable(){
-                public void run() {
-                    Window window = SwingUtilities.getWindowAncestor(SearchHitsPanel.this);
-                    JOptionPane.showMessageDialog(window, "No matches found for:  "
-                        + currentKeyword + ".  Please try again.", "Search Results",
-                            JOptionPane.INFORMATION_MESSAGE);
+                if (recordList.getNumRecords() == 0) {
+                    filterPanel.setVisible(false);
+                    retrieveButton.setVisible(false);
+                } else {
+                    filterPanel.setVisible(true);
+                    retrieveButton.setVisible(true);
                 }
-            });
-        }
-    }
 
-    public void requestInitiatedForParentSummaries(String primaryId) {
-        //  Currently no-op
-    }
+                TreeMap<String, Integer> entityTypeMap = recordList.getEntityTypeMap();
 
-
-    public void requestCompletedForParentSummaries(String primaryId, SearchResponse summaryResponse) 
-    {
-        //  Store parent summaries for later reference
-
-        RecordList recordList = new RecordList(summaryResponse);
-        parentRecordsMap.put(primaryId, recordList);
-
-        //  If we have just received parent summaries for the first search hit, select it.
-        if (peSearchResponse != null) {
-            List <SearchHit> searchHits = peSearchResponse.getSearchHit();
-            if (!searchHits.isEmpty()) {
-            	SearchHit searchHit = searchHits.get(0);
-                if (primaryId == searchHit.getUri()) {
-                    peList.setSelectedIndex(0);
-                    SelectPhysicalEntity selectTask = new SelectPhysicalEntity(parentRecordsMap);
-                    selectTask.selectPhysicalEntity(peSearchResponse, 0,
-                            interactionBundleModel, pathwayTableModel, summaryDocument,
-                                                    summaryTextPane, appLayeredPane);
+                //  Store current expansion states
+                boolean interactionTypeFilterExpanded = false;
+                if (typeFilter != null) {
+                    TreePath path = new TreePath(typeFilter.getPath());
+                    interactionTypeFilterExpanded = tree.isExpanded(path);
                 }
-            }
-        }
-    }
 
-    /**
-     * Listen for list selection events.
-     *
-     * @param interactionBundleModel InteractionBundleModel.
-     * @param pathwayTableModel     PathwayTableModel.
-     */
-    private void createListener(final InteractionBundleModel interactionBundleModel,
-            final PathwayTableModel pathwayTableModel, final JTextPane textPane) {
-        peList.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                int selectedIndex = peList.getSelectedIndex();
-                //  Ignore the "unselect" event.
-                if (!listSelectionEvent.getValueIsAdjusting()) {
-                    if (selectedIndex >=0) {
-                        SelectPhysicalEntity selectTask = new SelectPhysicalEntity(parentRecordsMap);
-                        selectTask.selectPhysicalEntity(peSearchResponse, selectedIndex,
-                                interactionBundleModel, pathwayTableModel, summaryDocument,
-                                textPane, appLayeredPane);
+                //  Remove all children
+                rootNode.removeAllChildren();
+
+                 //  Create Entity Type Filter
+                if (entityTypeMap.size() > 0) {
+                    typeFilter = new CheckNode("Filter by Interaction Type");
+                    rootNode.add(typeFilter);
+                    for (String key : entityTypeMap.keySet()) {
+                        CategoryCount categoryCount = new CategoryCount(key,
+                                entityTypeMap.get(key));
+                        CheckNode dataSourceNode = new CheckNode(categoryCount, false, true);
+                        typeFilter.add(dataSourceNode);
                     }
+                }
+                DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
+                tree.setModel(treeModel);
+                treeModel.addTreeModelListener(new TreeModelListener() {
+
+                    /**
+                     * Respond to user check node selections.
+                     *
+                     * @param treeModelEvent Tree Model Event Object.
+                     */
+                    public void treeNodesChanged(TreeModelEvent treeModelEvent) {
+                        java.util.List<SearchHit> passedRecordList = executeFilter();
+                        if (passedRecordList != null) {
+                            matchingInteractionsLabel.setText("Matching Interactions:  "
+                                    + passedRecordList.size());
+                            if (passedRecordList.size() > 0) {
+                                retrieveButton.setEnabled(true);
+                            } else {
+                                retrieveButton.setEnabled(false);
+                            }
+                        }
+                    }
+
+                    public void treeNodesInserted(TreeModelEvent treeModelEvent) {
+                        //  no-op
+                    }
+
+                    public void treeNodesRemoved(TreeModelEvent treeModelEvent) {
+                        //  no-op
+                    }
+
+                    public void treeStructureChanged(TreeModelEvent treeModelEvent) {
+                        //  no-op
+                    }
+                });
+
+                //  Restore expansion state.
+                if (interactionTypeFilterExpanded) {
+                    TreePath path = new TreePath(typeFilter.getPath());
+                    tree.expandPath(path);
                 }
             }
         });
     }
 
-	@Override
-	public void handleEvent(CytoPanelStateChangedEvent e) {
-		cytoPanelState = e.getNewState();
-	}
+    private void createInteractionDownloadButton(JPanel footer) {
+        retrieveButton = new JButton("Retrieve Interactions");
+        retrieveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+                List<SearchHit> passedRecordList = executeFilter();
+                if (passedRecordList.size() == 0) {
+                    JOptionPane.showMessageDialog(factory.getCySwingApplication().getJFrame(),
+                            "Your current filter settings result in 0 matching interactions.  "
+                                    + "\nPlease check your filter settings and try again.",
+                            "No matches.", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    DownloadDetails detailsFrame = factory.createDownloadDetails(passedRecordList);
+                    if (dialog != null) {
+                            SwingUtilities.invokeLater(new Runnable() {
+                                public void run() {
+                                    dialog.dispose();
+                                }
+                            });
+                    }
+                    detailsFrame.setVisible(true);
+                }
+            }
+        });
+        footer.add(retrieveButton);
+    }
+
+    private List<SearchHit> executeFilter() {
+        Set<String> entityTypeSet = new HashSet<String>();
+        
+		if (typeFilter != null) {
+			int childCount = typeFilter.getChildCount();
+			for (int i = 0; i < childCount; i++) {
+				CheckNode checkNode = (CheckNode) typeFilter
+						.getChildAt(i);
+				CategoryCount categoryCount = (CategoryCount) checkNode
+						.getUserObject();
+				String entityType = categoryCount.getCategoryName();
+				if (checkNode.isSelected()) {
+					entityTypeSet.add(entityType);
+				}
+			}
+		}
+        ChainedFilter chainedFilter = new ChainedFilter();
+        EntityTypeFilter entityTypeFilter = new EntityTypeFilter(entityTypeSet);
+        chainedFilter.addFilter(entityTypeFilter);
+        List<SearchHit> passedRecordList;
+        try {
+            passedRecordList = chainedFilter.filter(model.getRecordList().getHits());
+        } catch (NullPointerException e) {
+            passedRecordList = null;
+        }
+        return passedRecordList;
+    }
 }

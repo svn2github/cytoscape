@@ -2,6 +2,7 @@ package org.cytoscape.cpathsquared.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.biopax.paxtools.model.level3.BioSource;
 
@@ -9,7 +10,6 @@ import cpath.service.OutputFormat;
 import cpath.service.jaxb.SearchResponse;
 
 import org.cytoscape.cpathsquared.internal.util.EmptySetException;
-import org.cytoscape.work.TaskMonitor;
 
 /**
  * Interface for accessing the cPath Web API.
@@ -26,32 +26,16 @@ public interface CPath2WebService {
      * which this entity participates. 
      *
      * @param keyword        Keyword to search for.
-     * @param ncbiTaxonomyId Organism filter (-1 to to search all organisms).
-     * @param taskMonitor    TaskMonitor Object (can be null);
+     * @param organism FilterBoxItem filter (-1 to to search all organisms).
+     * @param datasource FilterBoxItem filter (-1 to to search all datasources).
      * @return SearchResponseType Object.
      * @throws CPath2Exception   CPath Connect Error.
      * @throws EmptySetException    No matches found to specified query.
      */
-    public SearchResponse searchPhysicalEntities(String keyword, int ncbiTaxonomyId,
-            TaskMonitor taskMonitor) throws CPath2Exception, EmptySetException;
+    public SearchResponse search(String keyword, Set<String> organism,
+            Set<String> datasource) throws CPath2Exception, EmptySetException;
 
-    /**
-     * Gets parent summaries for specified record.
-     * For example, if primaryId refers to protein A, the "parent" records are all
-     * interactions in which protein A participates.  If primaryId refers to interaction X,
-     * the "parent" records are all parent interactions which control or modulate X.
-     * To retrieve the full record (instead of just the summary), you must extract the primary
-     * ID, and follow-up with a call to getRecordsByIds(). 
-     *
-     * @param id     Primary ID of Record.
-     * @param taskMonitor   Task Monitor Object.
-     * @return parents (e.g., upstream nearest neighborhood...)
-     * @throws CPath2Exception       CPath Error.
-     * @throws EmptySetException    Empty Set Error.
-     */
-    public SearchResponse getParentSummaries (String id, TaskMonitor taskMonitor)
-            throws CPath2Exception, EmptySetException;
-
+ 
     /**
      * Gets One or more records by primary ID.
      * You can obtain primary IDs for physical entities and/or pathways via the
@@ -59,18 +43,17 @@ public interface CPath2WebService {
      * 
      * @param ids               Array of Primary IDs.
      * @param format            CPathResponseFormat.BIOPAX or CPathResponseFormat.BINARY_SIF.
-     * @param taskMonitor       Task Monitor Object.
      * @return  BioPAX XML String or SIF String.
      * @throws CPath2Exception       CPath Error.
      * @throws EmptySetException    Empty Set Error.
      */
-    public String getRecordsByIds(String[] ids, OutputFormat format, TaskMonitor taskMonitor)
+    public String getRecordsByIds(String[] ids, OutputFormat format)
             throws CPath2Exception, EmptySetException;
 
     /**
      * Gets a list of all Organisms currently available within the cPath instance.
      *
-     * @return List of Organism (BioSource) Objects.
+     * @return List of FilterBoxItem (BioSource) Objects.
      */
     public List<BioSource> getOrganismList();
 

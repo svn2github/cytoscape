@@ -25,8 +25,6 @@
  **/
 package org.cytoscape.cpathsquared.internal.util;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -45,7 +43,7 @@ import org.biopax.paxtools.controller.ModelUtils;
 import org.biopax.paxtools.controller.ObjectPropertyEditor;
 import org.biopax.paxtools.controller.PropertyEditor;
 import org.biopax.paxtools.controller.SimpleEditorMap;
-import org.biopax.paxtools.converter.OneTwoThree;
+import org.biopax.paxtools.io.BioPAXIOHandler;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
@@ -87,6 +85,7 @@ import org.slf4j.LoggerFactory;
 public final class BioPaxUtil {
 	private static final Map<String,String> cellLocationMap;
 	private static final Map<String,String> chemModificationsMap;
+	private static final BioPAXIOHandler biopaxIO;
 	
 	public static final Logger log = LoggerFactory.getLogger(BioPaxUtil.class);
     
@@ -136,33 +135,34 @@ public final class BioPaxUtil {
 		chemModificationsMap.put("phosphorylation site", "P");
 		chemModificationsMap.put("proteolytic cleavage site", "PCS");
 		chemModificationsMap.put("sumoylation site", "S");
-		chemModificationsMap.put("ubiquitination site", "U");	
+		chemModificationsMap.put("ubiquitination site", "U");
+		
+		biopaxIO = new SimpleIOHandler();
+		((SimpleIOHandler)biopaxIO).mergeDuplicates(true); // a workaround (illegal) BioPAX data having duplicated rdf:ID...
 	}
 	
 
-	/**
-	 * Constructor.
-	 *
-	 * @param in BioPAX data file name.
-	 * @return BioPaxUtil new instance (containing the imported BioPAX data)
-	 * @throws FileNotFoundException 
-	 */
-	public static Model read(final InputStream in) throws FileNotFoundException {
-		Model model = null;
-		try {
-			SimpleIOHandler handler = new SimpleIOHandler();
-			handler.mergeDuplicates(true); // a workaround (illegal) BioPAX data having duplicated rdf:ID...
-			model =  handler.convertFromOWL(in);	
-			// immediately convert to BioPAX Level3 model
-			if(model != null && BioPAXLevel.L2.equals(model.getLevel())) {
-				model = new OneTwoThree().filter(model);
-			}
-		} catch (Exception e) {
-			log.warn("Import failed: " + e);
-		}
-		return model;
+
+	public static BioPAXIOHandler getBiopaxIO() {
+		return biopaxIO;
 	}
 
+
+// NOT required in this app
+//	public static Model read(final InputStream in) throws FileNotFoundException {
+//		Model model = null;
+//		try {
+//			model =  biopaxIO.convertFromOWL(in);	
+//			// immediately convert to BioPAX Level3 model
+//			if(model != null && BioPAXLevel.L2.equals(model.getLevel())) {
+//				model = new OneTwoThree().filter(model);
+//			}
+//		} catch (Exception e) {
+//			log.warn("Import failed: " + e);
+//		}
+//		return model;
+//	}
+	
 	
 	/**
 	 * Gets or infers the name of the node. 
@@ -326,7 +326,7 @@ public final class BioPaxUtil {
 	}
 
 	/**
-	 * Gets the Organism Name.
+	 * Gets the FilterBoxItem Name.
 	 *
 	 * @param bpe BioPAX element
 	 * @return organism field, or null if not available.

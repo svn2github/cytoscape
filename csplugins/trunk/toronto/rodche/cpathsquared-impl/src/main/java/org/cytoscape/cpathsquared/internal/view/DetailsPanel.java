@@ -23,16 +23,16 @@ import org.cytoscape.util.swing.OpenBrowser;
  *
  * @author Ethan Cerami.
  */
-public class SearchHitDetailsPanel extends JPanel implements MouseListener {
+public class DetailsPanel extends JPanel implements MouseListener {
     private Document doc;
     private JTextPane textPane;
-	private SearchHitsPanel searchHitsPanel; // ref to parent
+	private SearchResultsPanel searchHitsPanel; // ref to parent
 
     /**
      * Constructor.
      * @param browser 
      */
-    public SearchHitDetailsPanel(SearchHitsPanel searchHitsPanel, CPath2Factory factory) {
+    public DetailsPanel(SearchResultsPanel searchHitsPanel, CPath2Factory factory) {
         this.setLayout(new BorderLayout());
 		this.searchHitsPanel = searchHitsPanel;
         textPane = createHtmlTextPane(factory.getOpenBrowser());

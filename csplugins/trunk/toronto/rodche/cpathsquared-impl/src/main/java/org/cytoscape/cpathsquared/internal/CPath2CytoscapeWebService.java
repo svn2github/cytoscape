@@ -17,7 +17,6 @@ import org.cytoscape.io.webservice.SearchWebServiceClient;
 import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.Tunable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,23 +33,6 @@ public class CPath2CytoscapeWebService extends AbstractWebServiceClient
 	// Display name of this client.
     private static final String DISPLAY_NAME = CPath2Properties.serverName + " Client";
 
-    /**
-     * NCBI Taxonomy ID Filter.
-     */
-    public static final String NCBI_TAXONOMY_ID_FILTER = "ncbi_taxonomy_id_filter";
-
-    /**
-     * Response Format.
-     */
-    public static final String RESPONSE_FORMAT = "response_format";
-
-	@Tunable(description="Filter by Organism - NCBI Taxonomy ID")
-	Integer taxonomyId = -1; //TODO consider several values (logical 'OR')
-//	@Tunable(description="Filter by BioPAX Class")
-//	String biopaxType = null;
-//	@Tunable(description="Filter by Data Source")
-//	String dataSource = null; //TODO consider several values (logical 'OR')
-	
     private JPanel mainPanel;
 
 	private final CPath2Factory factory;

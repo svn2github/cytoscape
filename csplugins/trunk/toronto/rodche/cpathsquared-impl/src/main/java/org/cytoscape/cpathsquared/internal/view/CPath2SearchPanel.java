@@ -3,6 +3,7 @@ package org.cytoscape.cpathsquared.internal.view;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.util.Set;
 
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -21,42 +22,29 @@ import cpath.service.jaxb.SearchResponse;
  * @author Ethan Cerami.
  */
 public class CPath2SearchPanel extends JPanel implements CPath2WebServiceListener {
-    protected InteractionBundleModel interactionBundleModel;
-    protected PathwayTableModel pathwayTableModel;
-    protected CPath2WebService webApi;
-    private JPanel searchBoxPanel;
-    private JPanel searchHitsPanel = null;
+    private JPanel searchQueryPanel;
+    private JPanel searchResultsPanel;
     private JPanel cards;
-	private final CPath2Factory factory;
 
     /**
      * Constructor.
      *
      * @param webApi CPath2WebService API.
      */
-    public CPath2SearchPanel(CPath2WebService webApi, CPath2Factory factory) {
-    	this.factory = factory;
-    	
-        //  Store the web API model
-        this.webApi = webApi;
-
-        //  Create shared model classes
-        interactionBundleModel = new InteractionBundleModel();
-        pathwayTableModel = new PathwayTableModel();
+    public CPath2SearchPanel(CPath2WebService webApi, CPath2Factory factory) { 
 
         //  Create main Border Layout
         setLayout(new BorderLayout());
 
         //  Create North Panel:  Search Box
-        searchBoxPanel = factory.createSearchBoxPanel(webApi);
-        add(searchBoxPanel, BorderLayout.NORTH);
+        searchQueryPanel = factory.createSearchQueryPanel(webApi);
+        add(searchQueryPanel, BorderLayout.NORTH);
 
         cards = new JPanel(new CardLayout());
-        searchHitsPanel = createSearchResultsPanel();
+        searchResultsPanel = new SearchResultsPanel(webApi, factory);
 
-        JPanel aboutPanel = createAboutPanel();
-        cards.add (aboutPanel, "ABOUT");
-        cards.add(searchHitsPanel, "HITS");
+        cards.add (createAboutPanel(factory), "ABOUT");
+        cards.add(searchResultsPanel, "HITS");
         add(cards, BorderLayout.CENTER);
         webApi.addApiListener(this);
         this.setMinimumSize(new Dimension (300,40));
@@ -67,24 +55,24 @@ public class CPath2SearchPanel extends JPanel implements CPath2WebServiceListene
         cl.show(cards, "ABOUT");
     }
 
-    private JPanel createAboutPanel() {
+    private JPanel createAboutPanel(CPath2Factory factory) {
         JPanel aboutPanel = new JPanel();
         aboutPanel.setLayout(new BorderLayout());
         GradientHeader header = new GradientHeader("About");
 
         aboutPanel.add(header, BorderLayout.NORTH);
-        JTextPane textPane = SearchHitDetailsPanel.createHtmlTextPane(factory.getOpenBrowser());
+        JTextPane textPane = DetailsPanel.createHtmlTextPane(factory.getOpenBrowser());
         textPane.setText(CPath2Properties.blurb);
         aboutPanel.add(textPane, BorderLayout.CENTER);
         return aboutPanel;
     }
 
-    public void searchInitiatedForPhysicalEntities(String keyword, int ncbiTaxonomyId) {
+    public void searchInitiated(String keyword, Set<String> organism, Set<String> datasource) {
     }
 
-    public void searchCompletedForPhysicalEntities(SearchResponse peSearchResponse) {
+    public void searchCompleted(SearchResponse peSearchResponse) {
         if (!peSearchResponse.isEmpty()) {
-            if (!searchHitsPanel.isVisible()) {
+            if (!searchResultsPanel.isVisible()) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         CardLayout cl = (CardLayout)(cards.getLayout());
@@ -94,30 +82,12 @@ public class CPath2SearchPanel extends JPanel implements CPath2WebServiceListene
         }
     }
 
-    public void requestInitiatedForParentSummaries(String primaryId) {
-        //  Currently no-op
-    }
-
     /**
      * Initialize the Focus.  Can only be called after component has been
      * packed and displayed.
      */
     public void initFocus() {
-        searchBoxPanel.requestFocusInWindow();
+        searchQueryPanel.requestFocusInWindow();
     }
 
-    /**
-     * Creates the Search Results Split Pane.
-     *
-     * @return JSplitPane Object.
-     */
-    private JPanel createSearchResultsPanel() {
-        JPanel hitListPanel = factory.createSearchHitsPanel(this.interactionBundleModel,
-                this.pathwayTableModel, webApi);
-        return hitListPanel;
-    }
-
-	public void requestCompletedForParentSummaries(String primaryId,
-			SearchResponse parents) {
-	}
 }

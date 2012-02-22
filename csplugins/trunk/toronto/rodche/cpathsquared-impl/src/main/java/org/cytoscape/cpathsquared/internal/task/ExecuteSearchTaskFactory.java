@@ -1,26 +1,30 @@
 package org.cytoscape.cpathsquared.internal.task;
 
+import java.util.Set;
+
 import org.cytoscape.cpathsquared.internal.CPath2WebService;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class ExecutePhysicalEntitySearchTaskFactory implements TaskFactory {
+public class ExecuteSearchTaskFactory implements TaskFactory {
 	private final CPath2WebService webApi;
 	private final String keyword;
-	private final int ncbiTaxonomyId;
-	private ExecutePhysicalEntitySearchTask task;
+	private final Set<String> organism;
+	private final Set<String> datasource;
+	private ExecuteSearchTask task;
 	private ResultHandler result;
 
-	public ExecutePhysicalEntitySearchTaskFactory(CPath2WebService webApi, String keyword, int ncbiTaxonomyId, ResultHandler result) {
+	public ExecuteSearchTaskFactory(CPath2WebService webApi, String keyword, Set<String> organism, Set<String> datasource, ResultHandler result) {
 		this.webApi = webApi;
 		this.keyword = keyword;
-		this.ncbiTaxonomyId = ncbiTaxonomyId;
+		this.organism = organism;
+		this.datasource = datasource;
 		this.result = result;
 	}
 
 	@Override
 	public TaskIterator createTaskIterator() {
-		task = new ExecutePhysicalEntitySearchTask(webApi, keyword, ncbiTaxonomyId, result);
+		task = new ExecuteSearchTask(webApi, keyword, organism, datasource, result);
 		return new TaskIterator(task);
 	}
 

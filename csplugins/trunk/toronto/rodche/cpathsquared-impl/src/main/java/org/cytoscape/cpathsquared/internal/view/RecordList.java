@@ -7,14 +7,9 @@ import cpath.service.jaxb.SearchHit;
 import cpath.service.jaxb.SearchResponse;
 
 
-/**
- * List of BioPAX Records.
- *
- * @author Ethan Cerami.
- */
-public class RecordList {
+public final class RecordList {
     private SearchResponse response;
-    TreeMap<String, Integer> interactionTypeMap = new TreeMap<String, Integer>();
+    TreeMap<String, Integer> typeMap = new TreeMap<String, Integer>();
 
     /**
      * Constructor.
@@ -22,7 +17,7 @@ public class RecordList {
      */
     public RecordList (SearchResponse response) {
         this.response = response;
-        catalogInteractions();
+        catalogByType();
     }
 
     /**
@@ -38,40 +33,40 @@ public class RecordList {
     }
 
     /**
-     * Gets the Summary Response XML.
+     * Gets hits
      * @return 
      */
-    public SearchResponse getSummaryResponse() {
-        return response;
+    public List<SearchHit> getHits() {
+        return response.getSearchHit();
     }
 
 
     /**
-     * Gets catalog of entity sources.
+     * Gets catalog of entity types.
      * @return Map<Entity Type, # Records>
      */
     public TreeMap<String, Integer> getEntityTypeMap() {
-        return interactionTypeMap;
+        return typeMap;
     }
 
-    private void catalogInteractions() {
+    private void catalogByType() {
         List<SearchHit> recordList = response.getSearchHit();
         if (recordList != null) {
             for (SearchHit record:  recordList) {
-                catalogInteractionType(record);
+                catalogByType(record);
                 //  TODO:  additional catalogs, as needed.
             }
         }
     }
 
-    private void catalogInteractionType(SearchHit record) {
+    private void catalogByType(SearchHit record) {
         String type = record.getBiopaxClass();
-        Integer count = interactionTypeMap.get(type);
+        Integer count = typeMap.get(type);
         if (count != null) {
             count = count + 1;
         } else {
             count = 1;
         }
-        interactionTypeMap.put(type, count);
+        typeMap.put(type, count);
     }
 }

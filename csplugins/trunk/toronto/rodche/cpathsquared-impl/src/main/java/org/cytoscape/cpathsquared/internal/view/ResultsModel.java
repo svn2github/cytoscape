@@ -7,9 +7,8 @@ import java.util.Observable;
  *
  * @author Ethan Cerami
  */
-public class InteractionBundleModel extends Observable {
+public class ResultsModel extends Observable {
     private RecordList recordList;
-    private String physicalEntityName;
 
     /**
      * Sets the SummaryResponse Object.
@@ -29,19 +28,4 @@ public class InteractionBundleModel extends Observable {
         return recordList;
     }
 
-    /**
-     * Gets the Physical Entity Name.
-     * @return PE Name.
-     */
-    public String getPhysicalEntityName() {
-        return physicalEntityName;
-    }
-
-    /**
-     * Sets the Physical Entity Name.
-     * @param physicalEntityName PE Name.
-     */
-    public void setPhysicalEntityName(String physicalEntityName) {
-        this.physicalEntityName = physicalEntityName;
-    }
 }

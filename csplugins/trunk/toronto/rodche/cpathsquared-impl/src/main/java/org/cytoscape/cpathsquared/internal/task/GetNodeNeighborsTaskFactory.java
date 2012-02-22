@@ -6,11 +6,11 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.task.AbstractNodeViewTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-// TODO: Wire this in OSGi
-public class GetParentInteractionsTaskFactory extends AbstractNodeViewTaskFactory {
+// TODO: a lot of things (re-factoring), including - wire this in OSGi
+public class GetNodeNeighborsTaskFactory extends AbstractNodeViewTaskFactory {
 	private final CPath2Factory factory;
 
-	public GetParentInteractionsTaskFactory(CPath2Factory factory) {
+	public GetNodeNeighborsTaskFactory(CPath2Factory factory) {
 		this.factory = factory;
 	}
 	
@@ -18,6 +18,6 @@ public class GetParentInteractionsTaskFactory extends AbstractNodeViewTaskFactor
 	public TaskIterator createTaskIterator() {
 		CyNetwork network = netView.getModel();
 		CyNode node = nodeView.getModel();
-		return new TaskIterator(new GetParentInteractionsTask(network, node, factory));
+		return new TaskIterator(new GetNodeNeighborsTask(network, node, factory));
 	}	
 }

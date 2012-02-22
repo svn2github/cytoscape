@@ -29,7 +29,6 @@ import org.cytoscape.cpathsquared.internal.CPath2WebService;
 import org.cytoscape.cpathsquared.internal.util.AttributeUtil;
 import org.cytoscape.cpathsquared.internal.util.BioPaxUtil;
 import org.cytoscape.cpathsquared.internal.util.EmptySetException;
-import org.cytoscape.cpathsquared.internal.util.NullTaskMonitor;
 import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -131,7 +130,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 			tmpFile.deleteOnExit();
 
 			// Get Data, and write to temp file.
-			String data = webApi.getRecordsByIds(ids, format, taskMonitor);
+			String data = webApi.getRecordsByIds(ids, format);
 			FileWriter writer = new FileWriter(tmpFile);
 			writer.write(data);
 			writer.close();
@@ -301,7 +300,7 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 				ids[j] = name;
 			}
 			try {
-				final String xml = webApi.getRecordsByIds(ids, OutputFormat.BIOPAX, new NullTaskMonitor());
+				final String xml = webApi.getRecordsByIds(ids, OutputFormat.BIOPAX);
 				Model model = new SimpleIOHandler().convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
 				// convert L2 to L3 if required (L1 is converted to L2 always anyway - by the handler)
 				if(BioPAXLevel.L2.equals(model.getLevel())) { // 

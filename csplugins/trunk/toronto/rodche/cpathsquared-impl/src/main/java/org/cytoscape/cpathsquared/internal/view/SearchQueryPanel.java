@@ -11,52 +11,56 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.URL;
-import java.util.Vector;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.CPath2Properties;
+
 import org.cytoscape.cpathsquared.internal.CPath2WebService;
-import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskFactory;
-import org.cytoscape.cpathsquared.internal.task.ExecutePhysicalEntitySearchTaskFactory.ResultHandler;
+import org.cytoscape.cpathsquared.internal.task.ExecuteSearchTaskFactory;
+import org.cytoscape.cpathsquared.internal.task.ExecuteSearchTaskFactory.ResultHandler;
 
 /**
  * Search Box Panel.
  *
- * @author Ethan Cerami.
+ * @author Ethan Cerami, Igor Rodchenkov (refactoring)
  */
-public class SearchBoxPanel extends JPanel {
+public class SearchQueryPanel extends JPanel {
     private JButton searchButton;
     private final CPath2WebService webApi;
     private static final String ENTER_TEXT = "Enter Gene Name or ID";
     private PulsatingBorder pulsatingBorder;
-    private JComboBox organismComboBox;
+    private JList organismBox;
+    private JList dataSourceBox;
 	private final CPath2Factory factory;
+	
 	
     /**
      * Constructor.
      *
      * @param webApi CPath Web Service Object.
      */
-    public SearchBoxPanel(CPath2WebService webApi, CPath2Factory factory) {
+    public SearchQueryPanel(CPath2WebService webApi, CPath2Factory factory) {
         this.webApi = webApi;
         this.factory = factory;
         
-        GradientHeader header = new GradientHeader("Step 1:  Search");
+        GradientHeader header = new GradientHeader("Search");
         header.setAlignmentX(Component.LEFT_ALIGNMENT);
         BoxLayout boxLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
         setLayout(boxLayout);
@@ -74,7 +78,9 @@ public class SearchBoxPanel extends JPanel {
         searchField.setBorder (BorderFactory.createCompoundBorder(searchField.getBorder(),
                 pulsatingBorder));
 
-        organismComboBox = createOrganismComboBox();
+        organismBox = createOrganismBox();
+        dataSourceBox = createDataSourceBox();
+        
         searchButton = createSearchButton(searchField);
 
         searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -102,31 +108,48 @@ public class SearchBoxPanel extends JPanel {
 
         centerPanel.add(searchField);
 
-        organismComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        organismBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        centerPanel.add(new JScrollPane(organismBox));
+        
+        dataSourceBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        centerPanel.add(new JScrollPane(dataSourceBox));
+        
         searchButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        centerPanel.add(organismComboBox);
         centerPanel.add(searchButton);
 
         add(centerPanel);
         add(label);
     }
 
-    /**
-     * Creates the Organism Combo Box.
-     *
-     * @return JComboBox Object.
-     */
-    private JComboBox createOrganismComboBox() {
-        //  TODO Organism List is currently hard-coded; try get it from the server
-        Vector organismList = new Vector();
-        organismList.add(new Organism("All Organisms", -1));
-        organismList.addAll(CPath2Properties.organismList);
-        DefaultComboBoxModel organismComboBoxModel = new DefaultComboBoxModel(organismList);
-        JComboBox organismComboBox = new JComboBox(organismComboBoxModel);
-        organismComboBox.setToolTipText("Select Organism");
-        organismComboBox.setMaximumSize(new Dimension(200, 9999));
-        organismComboBox.setPrototypeDisplayValue("12345678901234567");
-        return organismComboBox;
+
+    private final JList createOrganismBox() {
+       	//TODO fill the lists dynamically (from the web service)
+    	DefaultListModel organismBoxModel = new DefaultListModel();
+    	
+    	organismBoxModel.addElement(new FilterBoxItem("All Organisms", null));
+    	organismBoxModel.addElement(new FilterBoxItem("Human", "urn:miriam:taxonomy:9606"));
+        organismBoxModel.addElement(new FilterBoxItem("Mouse", "urn:miriam:taxonomy:10090"));
+        organismBoxModel.addElement(new FilterBoxItem("Rat", "urn:miriam:taxonomy:10116"));
+        organismBoxModel.addElement(new FilterBoxItem("S. cerevisiae", "urn:miriam:taxonomy:4932"));
+    	
+    	JList orgBox = new JList(organismBoxModel);
+        orgBox.setToolTipText("Select Organisms");
+        //orgBox.setMaximumSize(new Dimension(200, 9999));
+        return orgBox;
+    }
+    
+
+    private final JList createDataSourceBox() {
+       	//TODO fill the lists dynamically (from the web service)
+        DefaultListModel dataSourceBoxModel = new DefaultListModel();
+        dataSourceBoxModel.addElement(new FilterBoxItem("All Datasources", null));
+        dataSourceBoxModel.addElement(new FilterBoxItem("Reactome", "urn:miriam:reactome"));
+        dataSourceBoxModel.addElement(new FilterBoxItem("NCI_Nature Curated", "urn:miriam:pid.pathway"));
+    	
+    	JList dsBox = new JList(dataSourceBoxModel);
+        dsBox.setToolTipText("Select Datasources");
+        //dsBox.setMaximumSize(new Dimension(200, 9999));
+        return dsBox;
     }
 
     /**
@@ -134,7 +157,7 @@ public class SearchBoxPanel extends JPanel {
      *
      * @return JTextField Object.
      */
-    private JTextField createSearchField() {
+    private final JTextField createSearchField() {
         final JTextField searchField = new JTextField(ENTER_TEXT.length());
         searchField.setText(ENTER_TEXT);
         searchField.setToolTipText(ENTER_TEXT);
@@ -151,9 +174,8 @@ public class SearchBoxPanel extends JPanel {
             public void keyPressed(KeyEvent e) {
                 int keyCode = e.getKeyCode();
                 if (keyCode == 10) {
-                    Organism organism = (Organism) organismComboBox.getSelectedItem();
-                    executeSearch(searchField.getText(), organism.getNcbiTaxonomyId(),
-                            organism.getSpeciesName());
+                    executeSearch(searchField.getText(), 
+                    		organismBox.getSelectedValues(), dataSourceBox.getSelectedValues());
                 }
             }
         });
@@ -166,23 +188,32 @@ public class SearchBoxPanel extends JPanel {
      * @param searchField JTextField searchField
      * @return
      */
-    private JButton createSearchButton(final JTextField searchField) {
+    private final JButton createSearchButton(final JTextField searchField) {
         URL url = GradientHeader.class.getResource("resources/run_tool.gif");
         ImageIcon icon = new ImageIcon(url);
         searchButton = new JButton("Search");
         searchButton.setToolTipText("Execute Search");
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                Organism organism = (Organism) organismComboBox.getSelectedItem();
-                executeSearch(searchField.getText(), organism.getNcbiTaxonomyId(),
-                        organism.getSpeciesName());
+                executeSearch(searchField.getText(), 
+                		organismBox.getSelectedValues(), dataSourceBox.getSelectedValues());
             }
         });
         return searchButton;
     }
 
-    private void executeSearch(final String keyword, int ncbiTaxonomyId, final String speciesName) {
-        Window window = factory.getCySwingApplication().getJFrame();
+    
+    private final void executeSearch(final String keyword, final Object[] organism, final Object[] datasource) {
+        
+        Set<String> organisms = new HashSet<String>();
+        for(Object it : organism)
+        	organisms.add(((FilterBoxItem)it).getValue());
+        
+    	Set<String> datasources = new HashSet<String>();
+        for(Object it : datasource)
+        	datasources.add(((FilterBoxItem)it).getValue());
+    	
+    	Window window = factory.getCySwingApplication().getJFrame();
         if (keyword == null || keyword.trim().length() == 0
                 || keyword.startsWith(ENTER_TEXT)) {
             JOptionPane.showMessageDialog(window, "Please enter a Gene Name or ID.",
@@ -193,23 +224,24 @@ public class SearchBoxPanel extends JPanel {
         		public void finished(int matchesFound) throws Exception {
                     if (matchesFound == 0) {
                         JOptionPane.showMessageDialog(factory.getCySwingApplication().getJFrame(),
-                                "No matches found for:  " + keyword + " [" + speciesName + "]" +
-                                "\nPlease try a different search term and/or organism filter.",
+                                "No matches found for:  " + keyword + 
+                                "\nPlease try a different search term or filter.",
                                 "No matches found.",
                                 JOptionPane.WARNING_MESSAGE);
                     }
         		}
         	};
-            ExecutePhysicalEntitySearchTaskFactory search = new ExecutePhysicalEntitySearchTaskFactory
-                    (webApi, keyword.trim(), ncbiTaxonomyId, handler);
+            ExecuteSearchTaskFactory search = new ExecuteSearchTaskFactory
+                    (webApi, keyword.trim(), organisms, datasources, handler);
             factory.getTaskManager().execute(search);
         }
     }
 
+    
     /**
      * Initializes Focus to the Search Button.
      */
-    public void initFocus() {
+    public final void initFocus() {
         searchButton.requestFocusInWindow();
     }
 }

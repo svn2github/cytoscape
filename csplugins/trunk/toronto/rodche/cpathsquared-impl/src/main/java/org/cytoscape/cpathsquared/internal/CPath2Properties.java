@@ -2,7 +2,7 @@ package org.cytoscape.cpathsquared.internal;
 
 import java.util.ArrayList;
 
-import org.cytoscape.cpathsquared.internal.view.Organism;
+import org.cytoscape.cpathsquared.internal.view.FilterBoxItem;
 
 /**
  * Contains cPath Specific Properties
@@ -38,19 +38,10 @@ public class CPath2Properties {
     
     public static String iconFileName = "pc.png";
     
-    public static ArrayList<Organism> organismList = new ArrayList<Organism>();
-    
     public static int downloadMode = DOWNLOAD_BINARY_SIF;
 
     private CPath2Properties () {
         //  no-op; private constructor;
-    }
-
-    static {
-        organismList.add(new Organism("Human", 9606));
-        organismList.add(new Organism("Mouse", 10090));
-        organismList.add(new Organism("Rat", 10116));
-        organismList.add(new Organism("S. cerevisiae", 4932));
     }
 
 }

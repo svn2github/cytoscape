@@ -11,13 +11,12 @@ import org.cytoscape.cpathsquared.internal.task.CPath2NetworkImportTask;
 import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTaskFactory;
 import org.cytoscape.cpathsquared.internal.view.BinarySifVisualStyleFactory;
 import org.cytoscape.cpathsquared.internal.view.DownloadDetails;
-import org.cytoscape.cpathsquared.internal.view.InteractionBundleModel;
-import org.cytoscape.cpathsquared.internal.view.InteractionBundlePanel;
-import org.cytoscape.cpathsquared.internal.view.PathwayTableModel;
-import org.cytoscape.cpathsquared.internal.view.SearchHitDetailsPanel;
-import org.cytoscape.cpathsquared.internal.view.SearchBoxPanel;
-import org.cytoscape.cpathsquared.internal.view.SearchHitNetworksPanel;
+import org.cytoscape.cpathsquared.internal.view.ResultsModel;
 import org.cytoscape.cpathsquared.internal.view.SearchHitsPanel;
+import org.cytoscape.cpathsquared.internal.view.DetailsPanel;
+import org.cytoscape.cpathsquared.internal.view.SearchQueryPanel;
+import org.cytoscape.cpathsquared.internal.view.SearchResultsPanel;
+import org.cytoscape.cpathsquared.internal.view.TopPathwaysPanel;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -32,11 +31,12 @@ import org.cytoscape.work.undo.UndoSupport;
 
 import cpath.service.OutputFormat;
 import cpath.service.jaxb.SearchHit;
+import cpath.service.jaxb.SearchResponse;
 
 // TODO: This is a "God" object.  Probably shouldn't exist, but it's better than having to
 //       propagate all of the injected dependencies throughout all the implementation classes.
 //       Lesser of two evils.
-public class CPath2Factory {
+public final class CPath2Factory {
 	private final CySwingApplication application;
 	private final TaskManager taskManager;
 	private final OpenBrowser openBrowser;
@@ -73,18 +73,12 @@ public class CPath2Factory {
 		return new ExecuteGetRecordByCPathIdTaskFactory(webApi, ids, format, title, this, mappingManager);
 	}
 
-	public SearchBoxPanel createSearchBoxPanel(CPath2WebService webApi) {
-		return new SearchBoxPanel(webApi, this);
+	public SearchQueryPanel createSearchQueryPanel(CPath2WebService webApi) {
+		return new SearchQueryPanel(webApi, this);
 	}
 
 	public OpenBrowser getOpenBrowser() {
 		return openBrowser;
-	}
-
-	public SearchHitsPanel createSearchHitsPanel(
-			InteractionBundleModel interactionBundleModel,
-			PathwayTableModel pathwayTableModel, CPath2WebService webApi) {
-		return new SearchHitsPanel(interactionBundleModel, pathwayTableModel, webApi, this);
 	}
 
 	public CySwingApplication getCySwingApplication() {
@@ -95,28 +89,27 @@ public class CPath2Factory {
 		return taskManager;
 	}
 
-	public DownloadDetails createDownloadDetails(List<SearchHit> passedRecordList, String physicalEntityName) {
-		return new DownloadDetails(passedRecordList, physicalEntityName, this);
+	public DownloadDetails createDownloadDetails(List<SearchHit> passedRecordList) {
+		return new DownloadDetails(passedRecordList, this);
 	}
 
-	public JPanel createInteractionBundlePanel(InteractionBundleModel interactionBundleModel) {
-		return new InteractionBundlePanel(interactionBundleModel, this);
+	public JPanel createSearchHitsPanel(ResultsModel model) {
+		return new SearchHitsPanel(model, this);
 	}
 
-	public InteractionBundlePanel createInteractionBundlePanel(
-			InteractionBundleModel interactionBundleModel, CyNetwork network,
+	public SearchHitsPanel createSearchHitsPanel(
+			ResultsModel interactionBundleModel, CyNetwork network,
 			JDialog dialog) {
-		return new InteractionBundlePanel(interactionBundleModel, dialog, this);
+		return new SearchHitsPanel(interactionBundleModel, dialog, this);
 	}
 
-	public SearchHitDetailsPanel createPhysicalEntityDetailsPanel(SearchHitsPanel searchHitsPanel) {
-		return new SearchHitDetailsPanel(searchHitsPanel, this);
+	
+	public JPanel createTopPathwaysPanel(SearchResponse topPathwaysResp, CPath2WebService webApi) {
+		return new TopPathwaysPanel(topPathwaysResp, this, webApi);
 	}
-
-	public SearchHitNetworksPanel createSearchDetailsPanel(
-			InteractionBundleModel interactionBundleModel,
-			PathwayTableModel pathwayTableModel) {
-		return new SearchHitNetworksPanel(interactionBundleModel, pathwayTableModel, this);
+	
+	public DetailsPanel createDetailsPanel(SearchResultsPanel searchHitsPanel) {
+		return new DetailsPanel(searchHitsPanel, this);
 	}
 
 	public CyNetworkManager getNetworkManager() {
