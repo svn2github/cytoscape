@@ -13,6 +13,7 @@ import org.cytoscape.internal.test.tunables.TunablesTestTaskFactory2;
 import org.cytoscape.internal.test.tunables.TunablesTestTaskFactory3;
 import org.cytoscape.internal.test.WaitAction;
 import org.cytoscape.internal.test.tunables.TunablesTestTaskFactory;
+import org.cytoscape.internal.test.tunables.ScootersTunableTaskFactory;
 
 import org.cytoscape.application.swing.CyAction;
 import org.cytoscape.work.TaskFactory;
@@ -47,6 +48,7 @@ public class CyActivator extends AbstractCyActivator {
 		InfiniteTaskFactory infiniteTaskFactory = new InfiniteTaskFactory();
 		MultipleTaskFactory multipleTaskFactory = new MultipleTaskFactory();
 		SharedTableTaskFactory sharedTableTaskFactory = new SharedTableTaskFactory(rootNetworkManagerServiceRef);
+		ScootersTunableTaskFactory scootersTunableTaskFactory =  new ScootersTunableTaskFactory();
 		
 		registerService(bc,waitAction,CyAction.class, new Properties());
 		registerService(bc,multiTunableAction,CyAction.class, new Properties());
@@ -83,6 +85,10 @@ public class CyActivator extends AbstractCyActivator {
 		sharedTableTaskFactoryProps.setProperty("title","Shared Table Test...");
 		registerService(bc,sharedTableTaskFactory,NetworkTaskFactory.class, sharedTableTaskFactoryProps);
 
+		Properties scootersTunableTaskFactoryProps = new Properties();
+		scootersTunableTaskFactoryProps.setProperty("preferredMenu","Help");
+		scootersTunableTaskFactoryProps.setProperty("title","Scooter's Tunable Test...");
+		registerService(bc,scootersTunableTaskFactory,TaskFactory.class, scootersTunableTaskFactoryProps);
 	}
 }
 
