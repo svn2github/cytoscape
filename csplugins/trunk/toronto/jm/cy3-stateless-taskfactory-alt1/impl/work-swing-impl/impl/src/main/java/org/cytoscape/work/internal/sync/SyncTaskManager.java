@@ -52,10 +52,11 @@ public class SyncTaskManager extends AbstractTaskManager<Object, Map<String, Obj
 		final LoggingTaskMonitor taskMonitor = new LoggingTaskMonitor();
 		
 		try {
-			if ( !displayTunables(factory) )
+			Object context = factory.createTunableContext();
+			if ( !displayTunables(context) )
 				return;
 
-			TaskIterator taskIterator = factory.createTaskIterator();
+			TaskIterator taskIterator = factory.createTaskIterator(context);
 
 			// now execute all subsequent tasks
 			while (taskIterator.hasNext()) {
@@ -75,6 +76,9 @@ public class SyncTaskManager extends AbstractTaskManager<Object, Map<String, Obj
 
 
 	private boolean displayTunables(final Object task) throws Exception {
+		if (task == null) {
+			return true;
+		}
 		boolean ret = syncTunableMutator.validateAndWriteBack(task);
 
 		for ( TunableRecorder ti : tunableRecorders ) 

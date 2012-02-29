@@ -28,9 +28,10 @@
 package org.cytoscape.task;
 
 
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.view.model.CyNetworkView;
 import java.util.Collection;
+
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.work.TaskIterator;
 
 
 /**
@@ -39,10 +40,12 @@ import java.util.Collection;
  * specified CyNetworks. 
  * @CyAPI.Spi.Interface
  */
-public interface NetworkViewCollectionTaskFactory extends TaskFactory {
+public interface NetworkViewCollectionTaskFactory<T> {
 	/** Provisions this factory with the collection of network views that will be passed into
 	 *  any task created by it.
 	 *  @param nets  a non-null collection of {@link CyNetworkView}s
 	 */
-	void setNetworkViewCollection(Collection<CyNetworkView> nets);
+	TaskIterator createTaskIterator(T tunableContext, Collection<CyNetworkView> nets);
+	
+	T createTunableContext();
 }

@@ -32,11 +32,11 @@ package org.cytoscape.internal.view.help;
 
 import org.cytoscape.application.swing.CyHelpBroker;
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.SimpleTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class HelpContentsTaskFactory implements TaskFactory {
+public class HelpContentsTaskFactory extends SimpleTaskFactory {
 
 	private CyHelpBroker help;
 	private CySwingApplication app;

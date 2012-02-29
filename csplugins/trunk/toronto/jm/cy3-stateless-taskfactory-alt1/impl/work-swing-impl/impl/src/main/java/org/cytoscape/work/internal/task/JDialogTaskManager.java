@@ -146,10 +146,11 @@ public class JDialogTaskManager extends AbstractTaskManager<JDialog,Window> impl
 		try {
 			dialogTunableMutator.setConfigurationContext(parent);
 
-			if ( displayFactoryTunables && !displayTunables(factory) )
+			Object context = factory.createTunableContext();
+			if ( displayFactoryTunables && !displayTunables(context) )
 				return;
 
-			taskIterator = factory.createTaskIterator();
+			taskIterator = factory.createTaskIterator(context);
 			taskMonitor.setExpectedNumTasks( taskIterator.getNumTasks() );
 
 			// Get the first task and display its tunables.  This is a bit of a hack.  
@@ -239,6 +240,10 @@ public class JDialogTaskManager extends AbstractTaskManager<JDialog,Window> impl
 	}
 
 	private boolean displayTunables(final Object task) throws Exception {
+		if (task == null) {
+			return true;
+		}
+		
 		boolean ret = dialogTunableMutator.validateAndWriteBack(task);
 
 		for ( TunableRecorder ti : tunableRecorders ) 

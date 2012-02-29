@@ -36,21 +36,25 @@
 */
 package org.cytoscape.internal.layout.ui;
 
-import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayoutAlgorithm;
-import org.cytoscape.work.swing.SubmenuTaskManager;
-import org.cytoscape.work.swing.DynamicSubmenuListener;
-import org.cytoscape.work.undo.UndoSupport;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.JMenu;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.StringEnableSupport;
 import org.cytoscape.event.CyEventHelper;
-
-import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
-import java.util.*;
-
+import org.cytoscape.internal.task.NetworkViewProvisioner;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.work.swing.DynamicSubmenuListener;
+import org.cytoscape.work.swing.SubmenuTaskManager;
+import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,13 +93,13 @@ public class LayoutMenuPopulator {
 		//       Implementors of CyLayoutAlgorithm would need to mimic that
 		//       somehow if they choose to implement from scratch.
 		UndoSupportTaskFactory taskFactory = new UndoSupportTaskFactory((AbstractLayoutAlgorithm) layout, undo, eventHelper);
-		
+		NetworkViewProvisioner provisioner = new NetworkViewProvisioner(taskFactory, appMgr);
 		// get the submenu listener from the task manager
-		DynamicSubmenuListener submenu = tm.getConfiguration(taskFactory);
+		DynamicSubmenuListener submenu = tm.getConfiguration(provisioner);
 		submenu.setMenuTitle(menuName);
 
 		// now wrap it in a menulistener that sets the current network view for the layout
-		MenuListener ml = new NetworkViewMenuListener( submenu, appMgr, taskFactory, "networkAndView" );
+		MenuListener ml = new NetworkViewMenuListener( submenu, appMgr, "networkAndView" );
 
 		JMenu parentMenu = swingApp.getJMenu(prefMenu);
 		parentMenu.addMenuListener(ml);

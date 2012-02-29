@@ -64,10 +64,10 @@ import org.cytoscape.application.events.SetCurrentNetworkListener;
 import org.cytoscape.application.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.application.events.SetCurrentNetworkViewListener;
 import org.cytoscape.application.swing.CyAction;
-import org.cytoscape.internal.task.NetworkCollectionTaskFactoryTunableAction;
-import org.cytoscape.internal.task.NetworkTaskFactoryTunableAction;
-import org.cytoscape.internal.task.NetworkViewCollectionTaskFactoryTunableAction;
-import org.cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
+import org.cytoscape.internal.task.NetworkCollectionProvisioner;
+import org.cytoscape.internal.task.NetworkProvisioner;
+import org.cytoscape.internal.task.NetworkViewCollectionProvisioner;
+import org.cytoscape.internal.task.NetworkViewProvisioner;
 import org.cytoscape.internal.task.TaskFactoryTunableAction;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
@@ -132,6 +132,8 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 
 	private final Map<Long, NetworkTreeNode> treeNodeMap;
 
+	private final Map<Object, TaskFactory> provisionerMap;
+	
 	/**
 	 * Constructor for the Network Panel.
 	 * 
@@ -143,6 +145,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 		super();
 
 		this.treeNodeMap = new HashMap<Long, NetworkTreeNode>();
+		this.provisionerMap = new HashMap<Object, TaskFactory>();
 		this.appManager = applicationManager;
 		this.netmgr = netmgr;
 		this.networkViewManager = networkViewManager;
@@ -244,35 +247,43 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
 
 	public void addNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
-		addFactory(factory, new NetworkCollectionTaskFactoryTunableAction(taskManager, factory, props, appManager));
+		TaskFactory provisioner = new NetworkCollectionProvisioner(factory, appManager);
+		provisionerMap.put(factory, provisioner);
+		addFactory(provisioner, new TaskFactoryTunableAction(taskManager, provisioner, props, appManager));
 	}
 
 	public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
-		removeFactory(factory);
+		removeFactory(provisionerMap.remove(factory));
 	}
 
 	public void addNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
-		addFactory(factory, new NetworkViewCollectionTaskFactoryTunableAction(taskManager, factory, props, appManager));
+		TaskFactory provisioner = new NetworkViewCollectionProvisioner(factory, appManager);
+		provisionerMap.put(factory, provisioner);
+		addFactory(provisioner, new TaskFactoryTunableAction(taskManager, provisioner, props, appManager));
 	}
 
 	public void removeNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
-		removeFactory(factory);
+		removeFactory(provisionerMap.remove(factory));
 	}
 
 	public void addNetworkTaskFactory(NetworkTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
-		addFactory(factory, new NetworkTaskFactoryTunableAction(taskManager, factory, props, appManager));
+		TaskFactory provisioner = new NetworkProvisioner(factory, appManager);
+		provisionerMap.put(factory, provisioner);
+		addFactory(provisioner, new TaskFactoryTunableAction(taskManager, provisioner, props, appManager));
 	}
 
 	public void removeNetworkTaskFactory(NetworkTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
-		removeFactory(factory);
+		removeFactory(provisionerMap.remove(factory));
 	}
 
-	public void addNetworkViewTaskFactory(NetworkViewTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
-		addFactory(factory, new NetworkViewTaskFactoryTunableAction(taskManager, factory, props, appManager));
+	public void addNetworkViewTaskFactory(final NetworkViewTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
+		TaskFactory provisioner = new NetworkViewProvisioner(factory, appManager);
+		provisionerMap.put(factory, provisioner);
+		addFactory(provisioner, new TaskFactoryTunableAction(taskManager, provisioner, props, appManager));
 	}
 
 	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
-		removeFactory(factory);
+		removeFactory(provisionerMap.remove(factory));
 	}
 
 	public void setNavigator(final Component comp) {

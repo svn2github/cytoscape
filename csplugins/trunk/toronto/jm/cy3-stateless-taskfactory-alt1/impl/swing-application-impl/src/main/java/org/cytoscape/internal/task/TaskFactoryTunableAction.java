@@ -35,22 +35,21 @@ import java.util.Map;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TaskFactoryPredicate;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TaskFactoryTunableAction<T extends TaskFactory> extends AbstractCyAction {
+public class TaskFactoryTunableAction extends AbstractCyAction {
 
     private static final long serialVersionUID = 8009915597814265396L;
 
     private final static Logger logger = LoggerFactory.getLogger(TaskFactoryTunableAction.class);
 
-    final protected T factory;
+    final protected TaskFactory factory;
     final protected DialogTaskManager manager;
 	final protected CyApplicationManager applicationManager;
 
-    public TaskFactoryTunableAction(final DialogTaskManager manager, final T factory, final Map<String, String> serviceProps,
+    public TaskFactoryTunableAction(final DialogTaskManager manager, final TaskFactory factory, final Map<String, String> serviceProps,
 	    final CyApplicationManager applicationManager) {
 	super(serviceProps, applicationManager, factory);
 	this.manager = manager;

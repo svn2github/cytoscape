@@ -14,12 +14,14 @@ package org.cytoscape.work;
  *  iterate over.
  *  @CyAPI.Spi.Interface 
  */
-public interface TaskFactory {
+public interface TaskFactory<T> {
 	/** 
 	 * Returns an iterator returning a sequence of <code>Task</code>s.
 	 * @return an iterator returning a sequence of <code>Task</code>s.
 	 *
 	 *  Note: Most factory's returned iterator only yields a single <code>Task</code>.
 	 */
-	TaskIterator createTaskIterator();
+	TaskIterator createTaskIterator(T tunableContext);
+	
+	T createTunableContext();
 }
