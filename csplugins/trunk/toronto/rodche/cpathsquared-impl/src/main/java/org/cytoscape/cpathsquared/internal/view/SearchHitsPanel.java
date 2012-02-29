@@ -141,7 +141,7 @@ public class SearchHitsPanel extends JPanel {
                 //  Remove all children
                 rootNode.removeAllChildren();
 
-                 //  Create Entity Type Filter
+                // Create Filters
                 if (typeMap.size() > 0) {
                     typeFilter = new CheckNode("Filter by BioPAX Type");
                     rootNode.add(typeFilter);
@@ -269,11 +269,8 @@ public class SearchHitsPanel extends JPanel {
         chainedFilter.addFilter(organismFilter);
         
         List<SearchHit> passedRecordList;
-        try {
-            passedRecordList = chainedFilter.filter(model.getRecordList().getHits());
-        } catch (NullPointerException e) {
-            passedRecordList = null;
-        }
+        passedRecordList = chainedFilter.filter(model.getRecordList().getHits());
+        
         return passedRecordList;
     }
     
@@ -298,6 +295,7 @@ public class SearchHitsPanel extends JPanel {
 //                            });
 //                    }
 //                    detailsFrame.setVisible(true);
+                	
                 	
                 	
                 }
