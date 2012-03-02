@@ -2,12 +2,11 @@ package org.cytoscape.task.internal.loaddatatable;
 
 
 import org.cytoscape.io.read.CyTableReaderManager;
-import org.cytoscape.model.CyTableManager;
+import org.cytoscape.work.SimpleTaskFactory;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskFactory;
 
 
-public class LoadAttributesURLTaskFactoryImpl implements TaskFactory {
+public class LoadAttributesURLTaskFactoryImpl extends SimpleTaskFactory {
 	
 	private CyTableReaderManager mgr;
 	

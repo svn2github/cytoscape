@@ -22,6 +22,10 @@ public interface TaskFactory<T> {
 	 *  Note: Most factory's returned iterator only yields a single <code>Task</code>.
 	 */
 	TaskIterator createTaskIterator(T tunableContext);
+	TaskIterator createTaskIterator();
+	
+	boolean isReady(T tunableContext);
+	boolean isReady();
 	
 	T createTunableContext();
 }

@@ -78,12 +78,13 @@ public class CytoPanelTaskFactoryTunableAction extends AbstractCyAction {
 		}
 
 		public void actionPerformed(final ActionEvent event) {
+			Object context = factory.createTunableContext();
 			// Perform input validation?
-			if (factory instanceof TunableValidator) {
+			if (context instanceof TunableValidator) {
 				final Appendable errMsg = new StringBuilder();
 				try {
 					final ValidationState validationState =
-						((TunableValidator)factory).getValidationState(errMsg);
+						((TunableValidator)context).getValidationState(errMsg);
 					if (validationState == ValidationState.INVALID) {
 						JOptionPane.showMessageDialog(new JFrame(), errMsg.toString(),
 									      "Input Validation Problem",
@@ -102,7 +103,7 @@ public class CytoPanelTaskFactoryTunableAction extends AbstractCyAction {
 				}
 			}
 
-			manager.execute(factory);
+			manager.execute(factory.createTaskIterator(context), context);
 		}
 	}
 

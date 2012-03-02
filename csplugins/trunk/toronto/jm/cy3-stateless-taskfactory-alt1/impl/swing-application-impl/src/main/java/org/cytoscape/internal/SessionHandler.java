@@ -125,7 +125,8 @@ public class SessionHandler implements CyShutdownListener, SessionLoadedListener
 		if (n == JOptionPane.NO_OPTION) {
 			return;
 		} else if (n == JOptionPane.YES_OPTION) {
-			syncTaskMgr.execute(saveTaskFactory);
+			Object context = saveTaskFactory.createTunableContext();
+			syncTaskMgr.execute(saveTaskFactory.createTaskIterator(context), context);
 			return;
 		} else {
 			e.abortShutdown("User canceled the shutdown request.");

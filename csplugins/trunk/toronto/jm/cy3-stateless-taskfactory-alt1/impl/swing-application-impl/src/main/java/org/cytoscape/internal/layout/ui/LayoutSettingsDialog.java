@@ -53,8 +53,8 @@ import javax.swing.border.TitledBorder;
 
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.internal.task.NetworkViewProvisioner;
 import org.cytoscape.property.CyProperty;
+import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.work.TaskFactory;
@@ -83,6 +83,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private CyApplicationManager appMgr;
 	private PanelTaskManager taskManager;
 	private CyProperty cytoscapePropertiesServiceRef;
+	private TaskFactoryProvisioner factoryProvisioner;
 
 	/**
 	 * Creates a new LayoutSettingsDialog object.
@@ -91,7 +92,8 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	                            final CySwingApplication desktop,
 	                            final CyApplicationManager appMgr,
 	                            final PanelTaskManager taskManager,
-	                            final CyProperty cytoscapePropertiesServiceRef)
+	                            final CyProperty cytoscapePropertiesServiceRef,
+	                            final TaskFactoryProvisioner factoryProvisioner)
 	{
 		super(desktop.getJFrame(), "Layout Settings", false);
 
@@ -104,6 +106,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		this.appMgr = appMgr;
 		this.taskManager = taskManager;
 		this.cytoscapePropertiesServiceRef = cytoscapePropertiesServiceRef;
+		this.factoryProvisioner = factoryProvisioner;
 		
 		Properties props = (Properties)this.cytoscapePropertiesServiceRef.getProperties();
 		
@@ -126,7 +129,8 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		if (command.equals("done"))
 			setVisible(false);
 		else if (command.equals("execute")) {
-			taskManager.execute(currentLayout);
+			Object context = currentLayout.createTunableContext();
+			taskManager.execute(currentLayout.createTaskIterator(context), context);
 		} else {
 			// OK, initialize and display
 			initialize();
@@ -351,8 +355,8 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			Object o = algorithmSelector.getSelectedItem();
 			// if it's a string, that means it's the instructions
 			if (!(o instanceof String)) {
-				final CyLayoutAlgorithm newLayout = (CyLayoutAlgorithm)o;
-				NetworkViewProvisioner provisioner = new NetworkViewProvisioner(newLayout, appMgr);
+				final CyLayoutAlgorithm<?> newLayout = (CyLayoutAlgorithm<?>)o;
+				TaskFactory<?> provisioner = factoryProvisioner.createFor(newLayout);
 				JPanel tunablePanel = taskManager.getConfiguration(provisioner);
 
 				if (tunablePanel == null){

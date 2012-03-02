@@ -30,12 +30,15 @@
 package org.cytoscape.task.internal.destruction;  
 
 
+import java.util.Collection;
+
+import org.cytoscape.task.SimpleNetworkViewCollectionTaskFactory;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.task.AbstractNetworkViewCollectionTaskFactory;
 
 
-public class DestroyNetworkViewTaskFactory extends AbstractNetworkViewCollectionTaskFactory {
+public class DestroyNetworkViewTaskFactory extends SimpleNetworkViewCollectionTaskFactory {
 	private CyNetworkViewManager networkViewManager;
 
 	public DestroyNetworkViewTaskFactory(final CyNetworkViewManager networkViewManager) {
@@ -43,7 +46,7 @@ public class DestroyNetworkViewTaskFactory extends AbstractNetworkViewCollection
 		this.networkViewManager = networkViewManager;
 	}
 
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Collection<CyNetworkView> networkViews) {
 		return new TaskIterator(new DestroyNetworkViewTask(networkViews, networkViewManager));
 	} 
 }

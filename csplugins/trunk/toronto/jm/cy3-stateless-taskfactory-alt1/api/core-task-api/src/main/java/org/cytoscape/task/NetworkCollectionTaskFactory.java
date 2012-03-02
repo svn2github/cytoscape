@@ -45,7 +45,9 @@ public interface NetworkCollectionTaskFactory<T> {
 	 *  created by it.
 	 *  @param nets  a non-null collection of {@link CyNetwork}s
 	 */
-	TaskIterator createTaskIterator(T tunableContext, Collection<CyNetwork> nets);
+	TaskIterator createTaskIterator(T tunableContext, Collection<CyNetwork> networks);
 	
+	boolean isReady(T tunableContext, Collection<CyNetwork> networks);
+
 	T createTunableContext();
 }

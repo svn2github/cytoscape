@@ -37,6 +37,7 @@ import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.task.TableCellTaskFactory;
 import org.cytoscape.task.TableColumnTaskFactory;
 import org.cytoscape.task.TableTaskFactory;
+import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.task.creation.LoadVisualStyles;
 import org.cytoscape.task.creation.NewEmptyNetworkViewFactory;
 import org.cytoscape.task.internal.creation.CloneNetworkTaskFactory;
@@ -230,6 +231,8 @@ public class CyActivator extends AbstractCyActivator {
 		GroupNodeContextTaskFactory collapseGroupTaskFactory = new GroupNodeContextTaskFactory(cyGroupManager, true);
 		GroupNodeContextTaskFactory expandGroupTaskFactory = new GroupNodeContextTaskFactory(cyGroupManager, false);
 		
+		TaskFactoryProvisionerImpl factoryProvisioner = new TaskFactoryProvisionerImpl(cyApplicationManagerServiceRef);
+		registerService(bc, factoryProvisioner, TaskFactoryProvisioner.class, new Properties());
 		
 		Properties loadNetworkFileTaskFactoryProps = new Properties();
 		loadNetworkFileTaskFactoryProps.setProperty("id","loadNetworkFileTaskFactory");

@@ -49,9 +49,10 @@ import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.StringEnableSupport;
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.internal.task.NetworkViewProvisioner;
+import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.swing.DynamicSubmenuListener;
 import org.cytoscape.work.swing.SubmenuTaskManager;
 import org.cytoscape.work.undo.UndoSupport;
@@ -67,19 +68,21 @@ public class LayoutMenuPopulator {
 	private Map<CyLayoutAlgorithm,MenuListener> listenerMap = new HashMap<CyLayoutAlgorithm,MenuListener>();
 	private Set<JMenu> parentMenuSet = new HashSet<JMenu>();
 	private UndoSupport undo;
-	private CyEventHelper eventHelper; 
+	private CyEventHelper eventHelper;
+	private TaskFactoryProvisioner factoryProvisioner;
 
 	private static final Logger logger = LoggerFactory.getLogger(LayoutMenuPopulator.class);
 
-	public LayoutMenuPopulator(CySwingApplication swingApp, CyApplicationManager appMgr, SubmenuTaskManager tm, UndoSupport undo, CyEventHelper eventHelper) {
+	public LayoutMenuPopulator(CySwingApplication swingApp, CyApplicationManager appMgr, SubmenuTaskManager tm, UndoSupport undo, CyEventHelper eventHelper, TaskFactoryProvisioner factoryProvisioner) {
 		this.appMgr = appMgr;
 		this.tm = tm;
 		this.swingApp = swingApp;
 		this.undo = undo;
 		this.eventHelper = eventHelper;
+		this.factoryProvisioner = factoryProvisioner;
 	}
 
-	public void addLayout(CyLayoutAlgorithm layout, Map props) {
+	public <T> void addLayout(CyLayoutAlgorithm<T> layout, Map props) {
 		String prefMenu = getPreferredMenu(props); 
 
 		String menuName = (String)props.get("title");
@@ -92,8 +95,8 @@ public class LayoutMenuPopulator {
 		//       That class provides submenu bits that the framework needs so
 		//       Implementors of CyLayoutAlgorithm would need to mimic that
 		//       somehow if they choose to implement from scratch.
-		UndoSupportTaskFactory taskFactory = new UndoSupportTaskFactory((AbstractLayoutAlgorithm) layout, undo, eventHelper);
-		NetworkViewProvisioner provisioner = new NetworkViewProvisioner(taskFactory, appMgr);
+		UndoSupportTaskFactory<?> taskFactory = new UndoSupportTaskFactory<T>((AbstractLayoutAlgorithm<T>) layout, undo, eventHelper);
+		TaskFactory<?> provisioner = factoryProvisioner.createFor(taskFactory);
 		// get the submenu listener from the task manager
 		DynamicSubmenuListener submenu = tm.getConfiguration(provisioner);
 		submenu.setMenuTitle(menuName);

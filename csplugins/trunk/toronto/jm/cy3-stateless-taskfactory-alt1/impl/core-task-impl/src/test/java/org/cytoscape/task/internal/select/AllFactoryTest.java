@@ -125,8 +125,7 @@ public class AllFactoryTest {
 	}
 
 	private void executeTest(NetworkTaskFactory ntf) {
-		ntf.setNetwork(net);
-		TaskIterator ti = ntf.createTaskIterator();
+		TaskIterator ti = ntf.createTaskIterator(ntf.createTunableContext(), net);
 		assertNotNull(ti);
 		assertTrue(ti.hasNext());
 		Task t = ti.next();

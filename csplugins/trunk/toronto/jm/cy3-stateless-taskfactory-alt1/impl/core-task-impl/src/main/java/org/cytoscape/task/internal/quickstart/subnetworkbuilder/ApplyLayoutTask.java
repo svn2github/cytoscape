@@ -21,9 +21,9 @@ public class ApplyLayoutTask extends AbstractTask {
 //	final CyLayoutAlgorithm layout = layouts.getLayout(CyLayoutAlgorithmManager.DEFAULT_LAYOUT_NAME);
 	final CyLayoutAlgorithm layout = layouts.getDefaultLayout();
 	taskMonitor.setProgress(0.1);
-	layout.setNetworkView(util.appManager.getCurrentNetworkView());
+	Object context = layout.createTunableContext();
 	taskMonitor.setProgress(0.2);
-	insertTasksAfterCurrentTask(layout.createTaskIterator());
+	insertTasksAfterCurrentTask(layout.createTaskIterator(context, util.appManager.getCurrentNetworkView()));
 	
 	taskMonitor.setProgress(1.0);
     }

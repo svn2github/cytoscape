@@ -29,7 +29,7 @@ public class SyncTaskManagerTest {
 
 		TestTaskFactory tf = new TestTaskFactory();
 		
-		taskManager.execute(tf);
+		taskManager.execute(tf.createTaskIterator());
 	}
 
 	public class TestTaskFactory extends SimpleTaskFactory {

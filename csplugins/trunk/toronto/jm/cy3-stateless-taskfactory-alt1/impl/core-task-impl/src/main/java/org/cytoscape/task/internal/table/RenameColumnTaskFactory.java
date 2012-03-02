@@ -28,18 +28,20 @@
 package org.cytoscape.task.internal.table;
 
 
+import org.cytoscape.model.CyColumn;
+import org.cytoscape.task.SimpleTableColumnTaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public final class RenameColumnTaskFactory extends AbstractTableColumnTaskFactory {
+public final class RenameColumnTaskFactory extends SimpleTableColumnTaskFactory {
 	private final UndoSupport undoSupport;
 
 	public RenameColumnTaskFactory(final UndoSupport undoSupport) {
 		this.undoSupport = undoSupport;
 	}
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(CyColumn column) {
 		if (column == null)
 			throw new IllegalStateException("you forgot to set the CyColumn on this task factory!");
 		return new TaskIterator(new RenameColumnTask(undoSupport, column));

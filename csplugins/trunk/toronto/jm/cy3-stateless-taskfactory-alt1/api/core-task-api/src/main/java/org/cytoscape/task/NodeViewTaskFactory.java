@@ -46,7 +46,9 @@ public interface NodeViewTaskFactory<T> {
 	 *  @param nodeView  a non-null node view
 	 *  @param netView   the non-null network view associated with the node view
 	 */
-	TaskIterator createTaskIterator(T tunableContext, View<CyNode> nodeView, CyNetworkView netView);
+	TaskIterator createTaskIterator(T tunableContext, View<CyNode> nodeView, CyNetworkView networkView);
+	
+	boolean isReady(T tunableContext, View<CyNode> nodeView, CyNetworkView networkView);
 	
 	T createTunableContext();
 }

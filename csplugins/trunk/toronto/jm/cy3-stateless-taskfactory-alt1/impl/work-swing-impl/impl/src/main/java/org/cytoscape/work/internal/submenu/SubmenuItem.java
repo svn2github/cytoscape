@@ -1,6 +1,7 @@
 
 package org.cytoscape.work.internal.submenu;
 
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TunableMutator;
 import org.cytoscape.work.AbstractTaskManager;
 import org.cytoscape.work.TaskFactory;
@@ -30,6 +31,8 @@ class SubmenuItem extends JMenuItem implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		handler.chosenMenu(menuName);
-		dtm.execute(tf,false);
+		Object context = tf.createTunableContext();
+		TaskIterator iterator = tf.createTaskIterator(context);
+		dtm.execute(iterator, context);
 	}
 }

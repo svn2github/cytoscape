@@ -8,14 +8,14 @@ import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
-public class UndoSupportTaskFactory extends AbstractLayoutAlgorithm {
+public class UndoSupportTaskFactory<T> extends AbstractLayoutAlgorithm<T> {
 	
-	private NetworkViewTaskFactory delegate;
+	private NetworkViewTaskFactory<T> delegate;
 	private UndoSupport undo;
 	private CyEventHelper eventHelper;
 	private String name;
 
-	public UndoSupportTaskFactory(AbstractLayoutAlgorithm delegate, UndoSupport undo, CyEventHelper eventHelper) {
+	public UndoSupportTaskFactory(AbstractLayoutAlgorithm<T> delegate, UndoSupport undo, CyEventHelper eventHelper) {
 		super(undo, delegate.getName(), delegate.toString(), delegate.supportsSelectedOnly());
 		this.name = delegate.toString();
 		this.undo = undo;
@@ -24,7 +24,7 @@ public class UndoSupportTaskFactory extends AbstractLayoutAlgorithm {
 	}
 	
 	@Override
-	public TaskIterator createTaskIterator(Object tunableContext, CyNetworkView networkView) {
+	public TaskIterator createTaskIterator(T tunableContext, CyNetworkView networkView) {
 		TaskIterator source = delegate.createTaskIterator(tunableContext, networkView);
 		Task[] tasks = new Task[source.getNumTasks() + 1];
 		tasks[0] = new UndoSupportTask(name, undo, eventHelper, networkView);
@@ -34,8 +34,12 @@ public class UndoSupportTaskFactory extends AbstractLayoutAlgorithm {
 		return new TaskIterator(tasks.length, tasks);
 	}
 	
+	public boolean isReady(T tunableContext, CyNetworkView networkView) {
+		return delegate.isReady(tunableContext, networkView);
+	}
+	
 	@Override
-	public Object createTunableContext() {
+	public T createTunableContext() {
 		return delegate.createTunableContext();
 	}
 }

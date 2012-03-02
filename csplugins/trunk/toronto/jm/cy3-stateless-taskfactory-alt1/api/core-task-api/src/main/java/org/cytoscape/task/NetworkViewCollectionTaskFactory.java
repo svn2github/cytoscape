@@ -45,7 +45,9 @@ public interface NetworkViewCollectionTaskFactory<T> {
 	 *  any task created by it.
 	 *  @param nets  a non-null collection of {@link CyNetworkView}s
 	 */
-	TaskIterator createTaskIterator(T tunableContext, Collection<CyNetworkView> nets);
+	TaskIterator createTaskIterator(T tunableContext, Collection<CyNetworkView> networkViews);
 	
+	boolean isReady(T tunableContext, Collection<CyNetworkView> networkViews);
+
 	T createTunableContext();
 }

@@ -130,27 +130,24 @@ public class JDialogTaskManager extends AbstractTaskManager<JDialog,Window> impl
 
 
 	@Override
-	public void execute(final TaskFactory factory) {
-		execute(factory, true);
+	public void execute(final TaskIterator iterator) {
+		execute(iterator, true);
 	}
 
 	/**
 	 * For users of this class.
 	 */
-	public void execute(final TaskFactory factory, boolean displayFactoryTunables) {
+	public void execute(final TaskIterator taskIterator, Object tunableContext) {
 		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(cancelExecutorService, parent);
 		
-		TaskIterator taskIterator;
 		final Task first; 
 
 		try {
 			dialogTunableMutator.setConfigurationContext(parent);
 
-			Object context = factory.createTunableContext();
-			if ( displayFactoryTunables && !displayTunables(context) )
+			if ( tunableContext != null && !displayTunables(tunableContext) )
 				return;
 
-			taskIterator = factory.createTaskIterator(context);
 			taskMonitor.setExpectedNumTasks( taskIterator.getNumTasks() );
 
 			// Get the first task and display its tunables.  This is a bit of a hack.  
@@ -161,7 +158,6 @@ public class JDialogTaskManager extends AbstractTaskManager<JDialog,Window> impl
 				return;
 
 		} catch (Exception exception) {
-			taskIterator = null;
 			logger.warn("Caught exception getting and validating task. ", exception);	
 			taskMonitor.showException(exception);
 			return;

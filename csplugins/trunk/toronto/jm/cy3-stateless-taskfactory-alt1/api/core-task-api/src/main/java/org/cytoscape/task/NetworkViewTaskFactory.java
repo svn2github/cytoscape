@@ -43,7 +43,9 @@ public interface NetworkViewTaskFactory<T> {
 	 *  created by it.
 	 *  @param netView  a non-null network view
 	 */
-	TaskIterator createTaskIterator(T tunableContext, CyNetworkView netView);
+	TaskIterator createTaskIterator(T tunableContext, CyNetworkView networkView);
 	
+	boolean isReady(T tunableContext, CyNetworkView networkView);
+
 	T createTunableContext();
 }

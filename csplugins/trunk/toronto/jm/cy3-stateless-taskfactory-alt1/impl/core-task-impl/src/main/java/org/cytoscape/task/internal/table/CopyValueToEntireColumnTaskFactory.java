@@ -29,12 +29,12 @@ package org.cytoscape.task.internal.table;
 
 
 import org.cytoscape.model.CyColumn;
-import org.cytoscape.task.AbstractTableCellTaskFactory;
+import org.cytoscape.task.SimpleTableCellTaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public final class CopyValueToEntireColumnTaskFactory extends AbstractTableCellTaskFactory {
+public final class CopyValueToEntireColumnTaskFactory extends SimpleTableCellTaskFactory {
 	private final UndoSupport undoSupport;
 
 	public CopyValueToEntireColumnTaskFactory(final UndoSupport undoSupport) {
@@ -42,7 +42,7 @@ public final class CopyValueToEntireColumnTaskFactory extends AbstractTableCellT
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(CyColumn column, Object primaryKeyValue) {
 		if (column == null)
 			throw new IllegalStateException("\"column\" was not set!");
 		if (primaryKeyValue == null)

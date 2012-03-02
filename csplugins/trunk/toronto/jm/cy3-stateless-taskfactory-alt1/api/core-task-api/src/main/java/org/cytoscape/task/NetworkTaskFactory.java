@@ -46,5 +46,7 @@ public interface NetworkTaskFactory<T> {
      */
     TaskIterator createTaskIterator(T tunableContext, CyNetwork network);
     
+    boolean isReady(T tunableContext, CyNetwork network);
+
     T createTunableContext();
 }

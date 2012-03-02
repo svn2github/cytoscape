@@ -30,13 +30,12 @@
 package org.cytoscape.task.internal.session; 
 
 
-import org.cytoscape.session.CySessionManager; 
-
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.session.CySessionManager;
+import org.cytoscape.work.SimpleTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class NewSessionTaskFactory implements TaskFactory {
+public class NewSessionTaskFactory extends SimpleTaskFactory {
 
 	private CySessionManager mgr;
 

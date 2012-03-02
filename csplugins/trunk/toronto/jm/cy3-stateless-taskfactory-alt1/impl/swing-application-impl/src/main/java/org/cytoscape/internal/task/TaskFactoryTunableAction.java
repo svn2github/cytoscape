@@ -61,6 +61,7 @@ public class TaskFactoryTunableAction extends AbstractCyAction {
 	logger.debug("About to execute task from factory: " + factory.toString());
 	
 	// execute the task(s) in a separate thread
-	manager.execute(factory);
+	Object context = factory.createTunableContext();
+	manager.execute(factory.createTaskIterator(context), context);
     }
 }

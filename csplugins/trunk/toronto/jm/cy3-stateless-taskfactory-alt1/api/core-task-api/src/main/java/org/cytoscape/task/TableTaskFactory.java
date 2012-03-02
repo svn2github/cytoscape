@@ -29,7 +29,6 @@ package org.cytoscape.task;
 
 
 import org.cytoscape.model.CyTable;
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
@@ -38,9 +37,13 @@ import org.cytoscape.work.TaskIterator;
  * operates on the specified CyTable. 
  * @CyAPI.Spi.Interface
  */
-public interface TableTaskFactory<T> extends TaskFactory<T> {
+public interface TableTaskFactory<T> {
 	/** Used to provision this factory with a {@link CyTable} that will be used to create tasks.
 	 *  @param table a non-null CyTable
 	 */
-	public TaskIterator createTaskIterator(T tunableContext, CyTable table);
+	TaskIterator createTaskIterator(T tunableContext, CyTable table);
+	
+	boolean isReady(T tunableContext, CyTable table);
+
+	T createTunableContext();
 }

@@ -5,11 +5,11 @@ import java.util.Properties;
 
 import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.property.CyProperty;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.SimpleTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class ProxySettingsTaskFactory implements TaskFactory {
+public class ProxySettingsTaskFactory extends SimpleTaskFactory {
 	
 	private final StreamUtil streamUtil;
 	private CyProperty<Properties> proxyProperties;

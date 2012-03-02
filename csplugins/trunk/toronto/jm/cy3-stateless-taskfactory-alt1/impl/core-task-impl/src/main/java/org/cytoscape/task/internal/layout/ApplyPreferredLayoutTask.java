@@ -85,8 +85,7 @@ public class ApplyPreferredLayoutTask extends AbstractNetworkViewTask {
 
 		if (layout != null) {
 			tm.setProgress(0.6);
-			layout.setNetworkView(view);
-			insertTasksAfterCurrentTask(layout.createTaskIterator());
+			insertTasksAfterCurrentTask(layout.createTaskIterator(layout.createTunableContext(), view));
 		} else {
 			throw new IllegalArgumentException("Couldn't find layout algorithm: " + pref);
 		}

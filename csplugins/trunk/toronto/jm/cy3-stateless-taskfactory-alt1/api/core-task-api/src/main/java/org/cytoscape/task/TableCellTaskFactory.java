@@ -45,5 +45,7 @@ public interface TableCellTaskFactory<T> {
 	 */
 	TaskIterator createTaskIterator(T tunableContext, final CyColumn column, final Object primaryKeyValue);
 	
+	boolean isReady(T tunableContext, final CyColumn column, final Object primaryKeyValue);
+
 	T createTunableContext();
 }

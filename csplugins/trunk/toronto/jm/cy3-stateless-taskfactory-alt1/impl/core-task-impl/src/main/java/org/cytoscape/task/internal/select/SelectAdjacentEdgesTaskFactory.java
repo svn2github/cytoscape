@@ -31,13 +31,14 @@ package org.cytoscape.task.internal.select;
 
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.task.AbstractNetworkTaskFactory;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.task.SimpleNetworkTaskFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public class SelectAdjacentEdgesTaskFactory extends AbstractNetworkTaskFactory {
+public class SelectAdjacentEdgesTaskFactory extends SimpleNetworkTaskFactory {
 	private final UndoSupport undoSupport;
 	private CyNetworkViewManager networkViewManager;
 	private final CyEventHelper eventHelper;
@@ -51,7 +52,7 @@ public class SelectAdjacentEdgesTaskFactory extends AbstractNetworkTaskFactory {
 		this.eventHelper        = eventHelper;
 	}
 
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(CyNetwork network) {
 		return new TaskIterator(new SelectAdjacentEdgesTask(undoSupport, network,
 		                                                    networkViewManager, eventHelper));
 	} 

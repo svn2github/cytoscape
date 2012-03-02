@@ -45,5 +45,7 @@ public interface RowTaskFactory<T> {
 	 */
 	TaskIterator createTaskIterator(T tunableContext, CyRow row);
 	
+	boolean isReady(T tunableContext, CyRow row);
+
 	T createTunableContext();
 }

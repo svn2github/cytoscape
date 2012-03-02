@@ -13,6 +13,14 @@ public abstract class SimpleTaskFactory implements TaskFactory<Object> {
 	public Object createTunableContext() {
 		return null;
 	}
-
-	protected abstract TaskIterator createTaskIterator();
+	
+	@Override
+	public boolean isReady() {
+		return true;
+	}
+	
+	@Override
+	public boolean isReady(Object tunableContext) {
+		return true;
+	}
 }
