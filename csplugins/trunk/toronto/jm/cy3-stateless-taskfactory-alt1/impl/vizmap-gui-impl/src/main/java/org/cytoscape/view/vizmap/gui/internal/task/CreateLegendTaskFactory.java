@@ -5,10 +5,10 @@ import java.awt.Component;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.SimpleTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class CreateLegendTaskFactory implements TaskFactory {
+public class CreateLegendTaskFactory extends SimpleTaskFactory {
 
 	private final SelectedVisualStyleManager manager;
 	private final CyApplicationManager appManager;

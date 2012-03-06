@@ -1,18 +1,17 @@
 package org.cytoscape.command.internal;
 
 
-import java.util.Properties;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.task.NetworkTaskFactory;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.command.internal.tunables.CommandTunableInterceptorImpl;
+import org.cytoscape.task.NetworkTaskFactory;
+import org.cytoscape.task.TaskFactoryProvisioner;
+import org.cytoscape.work.TaskFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CommandExecutorImpl {
 
@@ -24,8 +23,11 @@ public class CommandExecutorImpl {
 	private final CommandTunableInterceptorImpl interceptor = new CommandTunableInterceptorImpl(); 
 	private final CyApplicationManager appMgr;
 
-	public CommandExecutorImpl(CyApplicationManager appMgr) {
+	private final TaskFactoryProvisioner factoryProvisioner;
+	
+	public CommandExecutorImpl(CyApplicationManager appMgr, TaskFactoryProvisioner factoryProvisioner) {
 		this.appMgr = appMgr;
+		this.factoryProvisioner = factoryProvisioner;
 	}
 
 	public void addTaskFactory(TaskFactory tf, Map props) {
@@ -37,7 +39,7 @@ public class CommandExecutorImpl {
 	}
 
 	public void addNetworkTaskFactory(NetworkTaskFactory tf, Map props) {
-		addTF(new NTFExecutor(tf,interceptor,appMgr), props);
+		addTF(new TFExecutor(factoryProvisioner.createFor(tf), interceptor), props);
 	}
 
 	public void removeNetworkTaskFactory(NetworkTaskFactory tf, Map props) {

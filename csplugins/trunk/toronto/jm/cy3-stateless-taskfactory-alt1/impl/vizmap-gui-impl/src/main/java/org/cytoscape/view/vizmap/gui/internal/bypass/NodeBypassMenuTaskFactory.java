@@ -3,13 +3,15 @@ package org.cytoscape.view.vizmap.gui.internal.bypass;
 import java.awt.Component;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.task.AbstractNodeViewTaskFactory;
+import org.cytoscape.task.SimpleNodeViewTaskFactory;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
 import org.cytoscape.work.TaskIterator;
 
-public class NodeBypassMenuTaskFactory extends AbstractNodeViewTaskFactory {
+public class NodeBypassMenuTaskFactory extends SimpleNodeViewTaskFactory {
 
 	private final VisualProperty<?> vp;
 	private final ValueEditor<?> editor;
@@ -27,7 +29,7 @@ public class NodeBypassMenuTaskFactory extends AbstractNodeViewTaskFactory {
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(View<CyNode> nodeView, CyNetworkView netView) {
 		return new TaskIterator(new BypassTask<CyNode>(parent, editor, vp, nodeView, netView, selectedManager));
 	}
 }

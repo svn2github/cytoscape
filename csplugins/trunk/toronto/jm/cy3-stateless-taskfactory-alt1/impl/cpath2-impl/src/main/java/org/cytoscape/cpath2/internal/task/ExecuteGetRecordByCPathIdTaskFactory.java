@@ -5,10 +5,10 @@ import org.cytoscape.cpath2.internal.web_service.CPathResponseFormat;
 import org.cytoscape.cpath2.internal.web_service.CPathWebService;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.SimpleTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class ExecuteGetRecordByCPathIdTaskFactory implements TaskFactory {
+public class ExecuteGetRecordByCPathIdTaskFactory extends SimpleTaskFactory {
 
 	private final CPathWebService webApi;
 	private final long[] ids;

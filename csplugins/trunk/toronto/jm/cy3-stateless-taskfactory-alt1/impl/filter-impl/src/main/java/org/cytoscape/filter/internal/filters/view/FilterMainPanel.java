@@ -547,7 +547,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			return;
 
 		final CyNetwork network = currentView.getModel();
-		taskManager.execute(new FilterIndexingTaskFactory(network));
+		FilterIndexingTaskFactory taskFactory = new FilterIndexingTaskFactory(network);
+		taskManager.execute(taskFactory.createTaskIterator());
 
 		updateCMBAttributes();
 	}

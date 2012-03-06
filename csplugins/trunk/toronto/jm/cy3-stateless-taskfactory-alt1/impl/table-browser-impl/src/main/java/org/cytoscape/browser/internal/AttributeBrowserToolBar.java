@@ -733,8 +733,8 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			// if user selects yes delete the table
 			if (_confirmValue == JOptionPane.OK_OPTION)
 			{
-				deleteTableTaskFactoryService.setTable(table);
-				guiTaskManagerServiceRef.execute(deleteTableTaskFactoryService);
+				Object context = deleteTableTaskFactoryService.createTunableContext();
+				guiTaskManagerServiceRef.execute(deleteTableTaskFactoryService.createTaskIterator(context, table), context);
 				
 				//this.tableManager.deleteTable(table.getSUID());
 			}						

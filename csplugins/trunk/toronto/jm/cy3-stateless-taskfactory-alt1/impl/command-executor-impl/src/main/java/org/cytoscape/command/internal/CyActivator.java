@@ -4,21 +4,14 @@
 
 package org.cytoscape.command.internal;
 
-import org.cytoscape.application.CyApplicationManager;
-
-import org.cytoscape.command.internal.CommandExecutorImpl;
-import org.cytoscape.command.internal.CommandExecutorTaskFactory;
-
-import org.cytoscape.work.TaskFactory;
-
-import org.cytoscape.task.NetworkTaskFactory;
-import org.cytoscape.work.TaskFactory;
-
-import org.osgi.framework.BundleContext;
-
-import org.cytoscape.service.util.AbstractCyActivator;
-
 import java.util.Properties;
+
+import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.service.util.AbstractCyActivator;
+import org.cytoscape.task.NetworkTaskFactory;
+import org.cytoscape.task.TaskFactoryProvisioner;
+import org.cytoscape.work.TaskFactory;
+import org.osgi.framework.BundleContext;
 
 
 
@@ -32,7 +25,8 @@ public class CyActivator extends AbstractCyActivator {
 
 		CyApplicationManager cyApplicationManagerServiceRef = getService(bc,CyApplicationManager.class);
 		
-		CommandExecutorImpl commandExecutorImpl = new CommandExecutorImpl(cyApplicationManagerServiceRef);
+		TaskFactoryProvisioner factoryProvisioner = getService(bc, TaskFactoryProvisioner.class);
+		CommandExecutorImpl commandExecutorImpl = new CommandExecutorImpl(cyApplicationManagerServiceRef, factoryProvisioner);
 		CommandExecutorTaskFactory commandExecutorTaskFactory = new CommandExecutorTaskFactory(commandExecutorImpl);
 		
 		

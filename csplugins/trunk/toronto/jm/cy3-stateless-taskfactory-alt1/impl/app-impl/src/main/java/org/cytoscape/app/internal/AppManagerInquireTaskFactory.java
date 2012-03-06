@@ -1,11 +1,11 @@
 package org.cytoscape.app.internal;
 
+import org.cytoscape.work.SimpleTaskFactory;
 import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class AppManagerInquireTaskFactory implements TaskFactory{
+public class AppManagerInquireTaskFactory extends SimpleTaskFactory {
 
 	Task task;
 	public AppManagerInquireTaskFactory(Task task){

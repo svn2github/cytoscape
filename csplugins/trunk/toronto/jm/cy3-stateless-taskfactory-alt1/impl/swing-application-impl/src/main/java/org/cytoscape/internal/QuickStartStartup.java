@@ -23,7 +23,6 @@ public class QuickStartStartup implements CyStartListener {
 	
 	public void handleEvent(CyStartEvent e){
 		guiTaskManager.setExecutionContext(swingApp.getJFrame());
-		Object context = quickStartTaskFactory.createTunableContext();
-		guiTaskManager.execute(quickStartTaskFactory.createTaskIterator(context), context);
+		guiTaskManager.execute(quickStartTaskFactory.createTaskIterator());
 	}	
 }

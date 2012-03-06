@@ -40,6 +40,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.session.CyNetworkNaming;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -205,10 +206,8 @@ public class ExecuteGetRecordByCPathId extends AbstractTask {
 			}
 
 			CyLayoutAlgorithmManager layoutManager = cPathFactory.getCyLayoutAlgorithmManager();
-			TaskFactory tf = layoutManager.getDefaultLayout();
-			TaskIterator ti = tf.createTaskIterator();
-			Task task = ti.next();
-			insertTasksAfterCurrentTask(task);
+			CyLayoutAlgorithm layout = layoutManager.getDefaultLayout();
+			insertTasksAfterCurrentTask(layout.createTaskIterator(layout.createTunableContext(), view));
 
 		} catch (IOException e) {
 			throw new Exception("Failed to retrieve records.", e);

@@ -3,10 +3,10 @@ package org.cytoscape.view.vizmap.gui.internal.task;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.SimpleTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class CreateNewVisualStyleTaskFactory implements TaskFactory {
+public class CreateNewVisualStyleTaskFactory extends SimpleTaskFactory {
 	
 	private final VizMapperUtil vizMapperUtil;
 	private final VisualStyleFactory vsFactory;

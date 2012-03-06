@@ -62,12 +62,14 @@ public class PopupMenuHelper {
 	private final TaskManager taskManager;
 	private final Map<TableCellTaskFactory, Map> tableCellFactoryMap;
 	private final Map<TableColumnTaskFactory, Map> tableColumnFactoryMap;
+	private final StaticTaskFactoryProvisioner factoryProvisioner;
 
 	public PopupMenuHelper(final TaskManager taskManager) {
 		this.taskManager = taskManager;
 
 		tableCellFactoryMap   = new HashMap<TableCellTaskFactory, Map>();
 		tableColumnFactoryMap = new HashMap<TableColumnTaskFactory, Map>();
+		factoryProvisioner = new StaticTaskFactoryProvisioner();
 	}
 
 	public void createColumnHeaderMenu(final CyColumn column, final Component invoker, final int x,
@@ -80,8 +82,9 @@ public class PopupMenuHelper {
 		final PopupMenuGravityTracker tracker = new PopupMenuGravityTracker(menu);
 
 		for (final Map.Entry<TableColumnTaskFactory, Map> mapEntry : tableColumnFactoryMap.entrySet()) {
-			mapEntry.getKey().setColumn(column);
-			createMenuItem(mapEntry.getKey(), tracker, mapEntry.getValue());
+			TableColumnTaskFactory taskFactory = mapEntry.getKey();
+			TaskFactory provisioner = factoryProvisioner.createFor(taskFactory, column);
+			createMenuItem(provisioner, tracker, mapEntry.getValue());
 		}
 
 		menu.show(invoker, x, y);
@@ -97,8 +100,9 @@ public class PopupMenuHelper {
 		final PopupMenuGravityTracker tracker = new PopupMenuGravityTracker(menu);
 
 		for (final Map.Entry<TableCellTaskFactory, Map> mapEntry : tableCellFactoryMap.entrySet()) {
-			mapEntry.getKey().setColumnAndPrimaryKey(column, primaryKeyValue);
-			createMenuItem(mapEntry.getKey(), tracker, mapEntry.getValue());
+			TableCellTaskFactory taskFactory = mapEntry.getKey();
+			TaskFactory provisioner = factoryProvisioner.createFor(taskFactory, column, primaryKeyValue);
+			createMenuItem(provisioner, tracker, mapEntry.getValue());
 		}
 
 		menu.show(invoker, x, y);
@@ -116,7 +120,8 @@ public class PopupMenuHelper {
 		if (menuLabel == null)
 			menuLabel = "Unidentified Task: " + Integer.toString(tf.hashCode());
 
-		tracker.addMenuItem(new JMenuItem(new PopupAction(tf, menuLabel)),
+		Object tunableContext = tf.createTunableContext();
+		tracker.addMenuItem(new JMenuItem(new PopupAction(tf, tunableContext, menuLabel)),
 				    GravityTracker.USE_ALPHABETIC_ORDER);
 	}
 
@@ -149,14 +154,16 @@ public class PopupMenuHelper {
 	 */
 	private class PopupAction extends AbstractAction {
 		private final TaskFactory tf;
+		private final Object tunableContext;
 
-		PopupAction(final TaskFactory tf, final String menuLabel) {
+		PopupAction(final TaskFactory tf, Object tunableContext, final String menuLabel) {
 			super(menuLabel);
 			this.tf = tf;
+			this.tunableContext = tunableContext;
 		}
 
 		public void actionPerformed(ActionEvent ae) {
-			taskManager.execute(tf);
+			taskManager.execute(tf.createTaskIterator(tunableContext), tunableContext);
 		}
 	}
 }

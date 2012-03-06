@@ -29,11 +29,11 @@ package org.cytoscape.filter.internal.filters.view;
 
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.SimpleTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-final class FilterIndexingTaskFactory implements TaskFactory {
+final class FilterIndexingTaskFactory extends SimpleTaskFactory {
 	private final CyNetwork network;
 
 	FilterIndexingTaskFactory(final CyNetwork network) {

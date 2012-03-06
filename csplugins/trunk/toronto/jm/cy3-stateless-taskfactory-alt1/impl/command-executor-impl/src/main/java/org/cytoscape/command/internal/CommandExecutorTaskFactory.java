@@ -29,11 +29,11 @@
 package org.cytoscape.command.internal;
 
 
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.SimpleTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class CommandExecutorTaskFactory implements TaskFactory {
+public class CommandExecutorTaskFactory extends SimpleTaskFactory {
 
 	private final CommandExecutorImpl cei;
 
