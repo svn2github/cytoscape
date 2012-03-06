@@ -42,7 +42,7 @@ public class SyncTaskManager extends AbstractTaskManager<Object, Map<String, Obj
 
 
 	@Override 
-	public Object getConfiguration(TaskFactory tf) {
+	public Object getConfiguration(TaskFactory factory, Object context) {
 		throw new UnsupportedOperationException("There is no configuration available for a SyncrhonousTaskManager");	
 	}
 

@@ -83,7 +83,7 @@ public final class CustomGraphicsManagerImpl implements CustomGraphicsManager, C
 		this.isUsedCustomGraphics.put(NULL, false);
 
 		final RestoreImageTaskFactory taskFactory = new RestoreImageTaskFactory(imageHomeDirectory, this, eventHelper);
-		taskManager.execute(taskFactory);
+		taskManager.execute(taskFactory.createTaskIterator());
 	}
 
 	/**
@@ -236,7 +236,7 @@ public final class CustomGraphicsManagerImpl implements CustomGraphicsManager, C
 		try {
 
 			// FIXME how this section can wait until everything is done?
-			taskManager.execute(factory);
+			taskManager.execute(factory.createTaskIterator());
 		} catch (Exception e1) {
 			logger.error("Could not save images to disk.", e1);
 		}
@@ -253,7 +253,7 @@ public final class CustomGraphicsManagerImpl implements CustomGraphicsManager, C
 		final SaveGraphicsToSessionTaskFactory factory = new SaveGraphicsToSessionTaskFactory(imageHomeDirectory, this, e);
 
 		try {
-			taskManager.execute(factory);
+			taskManager.execute(factory.createTaskIterator());
 		} catch (Exception ex) {
 			logger.error("Could not save images to .", ex);
 		}
@@ -275,7 +275,7 @@ public final class CustomGraphicsManagerImpl implements CustomGraphicsManager, C
 					// get parent directory
 					final File parent = files.get(0).getParentFile();
 					final RestoreImageTaskFactory taskFactory = new RestoreImageTaskFactory(parent, this, eventHelper);
-					taskManager.execute(taskFactory);
+					taskManager.execute(taskFactory.createTaskIterator());
 				}
 			}
 		}

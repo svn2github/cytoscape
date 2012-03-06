@@ -95,10 +95,10 @@ public class LayoutMenuPopulator {
 		//       That class provides submenu bits that the framework needs so
 		//       Implementors of CyLayoutAlgorithm would need to mimic that
 		//       somehow if they choose to implement from scratch.
-		UndoSupportTaskFactory<?> taskFactory = new UndoSupportTaskFactory<T>((AbstractLayoutAlgorithm<T>) layout, undo, eventHelper);
-		TaskFactory<?> provisioner = factoryProvisioner.createFor(taskFactory);
+		UndoSupportTaskFactory<T> taskFactory = new UndoSupportTaskFactory<T>((AbstractLayoutAlgorithm<T>) layout, undo, eventHelper);
+		TaskFactory<T> provisioner = factoryProvisioner.createFor(taskFactory);
 		// get the submenu listener from the task manager
-		DynamicSubmenuListener submenu = tm.getConfiguration(provisioner);
+		DynamicSubmenuListener submenu = tm.getConfiguration(provisioner, provisioner.createTunableContext());
 		submenu.setMenuTitle(menuName);
 
 		// now wrap it in a menulistener that sets the current network view for the layout

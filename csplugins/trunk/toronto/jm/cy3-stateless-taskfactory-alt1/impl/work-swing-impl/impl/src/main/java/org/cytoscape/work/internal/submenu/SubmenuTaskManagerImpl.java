@@ -19,8 +19,8 @@ public class SubmenuTaskManagerImpl extends AbstractTaskManager<DynamicSubmenuLi
 		this.dialogTaskManager = dialogTaskManager;
 	}
 
-	public DynamicSubmenuListener getConfiguration(TaskFactory tf) {
-		SubmenuListener listener = new SubmenuListener(stm,tf);	
+	public DynamicSubmenuListener getConfiguration(TaskFactory factory, Object tunableContext) {
+		SubmenuListener listener = new SubmenuListener(stm, factory, tunableContext);	
 		return listener; 
 	}
 

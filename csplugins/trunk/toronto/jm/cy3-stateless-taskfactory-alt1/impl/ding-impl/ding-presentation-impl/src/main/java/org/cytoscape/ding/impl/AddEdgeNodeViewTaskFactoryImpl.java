@@ -12,34 +12,30 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 
 
-public class AddEdgeNodeViewTaskFactoryImpl implements DropNodeViewTaskFactory {
-	private View<CyNode> nv;
-	private CyNetworkView view;
-	private Point2D xformPt;
-	private Point2D javaPt;
+public class AddEdgeNodeViewTaskFactoryImpl implements DropNodeViewTaskFactory<Object> {
 	private final CyNetworkManager netMgr;
 
 	public AddEdgeNodeViewTaskFactoryImpl(CyNetworkManager netMgr) {
 		this.netMgr = netMgr;
 	}
 
-	public void setNodeView(View<CyNode> nv, CyNetworkView view) {
-		this.view = view;
-		this.nv = nv;
-	}
-
-	public void setDropInformation(Transferable t, Point2D javaPt, Point2D xformPt) {
-		this.javaPt = javaPt;
-		this.xformPt = xformPt;
-
+	public TaskIterator createTaskIterator(Object tunableContext, View<CyNode> nv, CyNetworkView view, Transferable t, Point2D javaPt, Point2D xformPt) {
 		AddEdgeStateMonitor.setSourcePoint(view,javaPt);
 
 		// Because the transferable may be null, we leave that
 		// tracking to the AddEdgeStateMonitor.
 		AddEdgeStateMonitor.setTransferable(view,t);
-	}
-
-	public TaskIterator createTaskIterator() {
+		
 		return new TaskIterator(new AddEdgeTask(nv, view, AddEdgeStateMonitor.getTransferable(view)));
+	}
+	
+	@Override
+	public boolean isReady(Object tunableContext, View<CyNode> nodeView, CyNetworkView networkView, Transferable t, Point2D javaPt, Point2D xformPt) {
+		return true;
+	}
+	
+	@Override
+	public Object createTunableContext() {
+		return null;
 	}
 }

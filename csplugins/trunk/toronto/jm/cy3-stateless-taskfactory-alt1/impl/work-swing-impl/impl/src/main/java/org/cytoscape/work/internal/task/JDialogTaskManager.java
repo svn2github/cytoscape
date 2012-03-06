@@ -124,14 +124,14 @@ public class JDialogTaskManager extends AbstractTaskManager<JDialog,Window> impl
 
 
 	@Override 
-	public JDialog getConfiguration(TaskFactory tf) {
+	public JDialog getConfiguration(TaskFactory factory, Object tunableContext) {
 		throw new UnsupportedOperationException("There is no configuration available for a DialogTaskManager");	
 	}
 
 
 	@Override
 	public void execute(final TaskIterator iterator) {
-		execute(iterator, true);
+		execute(iterator, null);
 	}
 
 	/**

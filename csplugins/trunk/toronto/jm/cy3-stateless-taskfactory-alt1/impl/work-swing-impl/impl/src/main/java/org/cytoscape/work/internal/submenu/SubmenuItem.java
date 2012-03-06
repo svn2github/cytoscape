@@ -1,17 +1,15 @@
 
 package org.cytoscape.work.internal.submenu;
 
-import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TunableMutator;
-import org.cytoscape.work.AbstractTaskManager;
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.swing.DialogTaskManager;
-import org.cytoscape.work.swing.SubmenuTunableHandler;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JMenuItem;
+
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.swing.DialogTaskManager;
+import org.cytoscape.work.swing.SubmenuTunableHandler;
 
 class SubmenuItem extends JMenuItem implements ActionListener {
 

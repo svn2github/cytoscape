@@ -30,31 +30,27 @@
 package org.cytoscape.internal.task;
 
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.Icon;
-import java.awt.Component;
 
 import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.application.swing.CytoPanel;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
-import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.swing.PanelTaskManager;
-import org.cytoscape.service.util.CyServiceRegistrar;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,6 +106,7 @@ public class CytoPanelTaskFactoryTunableAction extends AbstractCyAction {
 
 	final private static CytoPanelName DEFAULT_CYTOPANEL = CytoPanelName.WEST;
 	final private TaskFactory factory;
+	final private Object context;
 	final private PanelTaskManager manager;
 	final private Map<String, String> serviceProps;
 	final private CytoPanelName cytoPanelName;
@@ -129,6 +126,7 @@ public class CytoPanelTaskFactoryTunableAction extends AbstractCyAction {
 		this.serviceProps = serviceProps;
 		this.registrar = registrar;
 		this.cytoPanelName = getCytoPanelName(); 
+		this.context = factory.createTunableContext();
 	}
 
 	private CytoPanelName getCytoPanelName() {
@@ -150,7 +148,7 @@ public class CytoPanelTaskFactoryTunableAction extends AbstractCyAction {
 	 *  Creates a new CytoPanel component and adds it to a CytoPanel.
 	 */
 	public void actionPerformed(final ActionEvent a) {
-		final JPanel innerPanel = manager.getConfiguration(factory);
+		final JPanel innerPanel = manager.getConfiguration(factory, context);
 		if (innerPanel == null)
 			return;
 

@@ -70,6 +70,7 @@ import org.cytoscape.work.swing.PanelTaskManager;
 public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private final static long serialVersionUID = 1202339874277105L;
 	private TaskFactory currentLayout = null;
+	private Object currentTunableContext;
 
 	// Dialog components
 	private JLabel titleLabel; // Our title
@@ -129,8 +130,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		if (command.equals("done"))
 			setVisible(false);
 		else if (command.equals("execute")) {
-			Object context = currentLayout.createTunableContext();
-			taskManager.execute(currentLayout.createTaskIterator(context), context);
+			taskManager.execute(currentLayout.createTaskIterator(currentTunableContext), currentTunableContext);
 		} else {
 			// OK, initialize and display
 			initialize();
@@ -357,7 +357,8 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			if (!(o instanceof String)) {
 				final CyLayoutAlgorithm<?> newLayout = (CyLayoutAlgorithm<?>)o;
 				TaskFactory<?> provisioner = factoryProvisioner.createFor(newLayout);
-				JPanel tunablePanel = taskManager.getConfiguration(provisioner);
+				Object context = provisioner.createTunableContext();
+				JPanel tunablePanel = taskManager.getConfiguration(provisioner, context);
 
 				if (tunablePanel == null){
 					JOptionPane.showMessageDialog(LayoutSettingsDialog.this, "Can not change setting for this algorithm, because tunable info is not avialable!", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -368,6 +369,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 					algorithmPanel.add(tunablePanel);					
 				}
 				currentLayout = provisioner;
+				currentTunableContext = context;
 				LayoutSettingsDialog.this.pack();
 			}
 		}

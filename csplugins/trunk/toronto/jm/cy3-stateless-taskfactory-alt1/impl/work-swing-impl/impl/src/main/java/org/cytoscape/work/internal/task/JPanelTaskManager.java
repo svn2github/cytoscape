@@ -38,8 +38,8 @@ public class JPanelTaskManager extends AbstractTaskManager<JPanel,JPanel> implem
 	}
 
 	@Override 
-	public JPanel getConfiguration(TaskFactory tf) {
-		return panelTunableMutator.buildConfiguration(tf);
+	public JPanel getConfiguration(TaskFactory factory, Object tunableContext) {
+		return panelTunableMutator.buildConfiguration(tunableContext);
 	}
 
 	@Override
