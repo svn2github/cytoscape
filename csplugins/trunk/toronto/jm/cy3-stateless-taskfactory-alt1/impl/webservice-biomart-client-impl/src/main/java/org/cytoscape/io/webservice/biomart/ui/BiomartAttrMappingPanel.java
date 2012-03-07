@@ -53,7 +53,6 @@ import org.cytoscape.io.webservice.biomart.rest.Attribute;
 import org.cytoscape.io.webservice.biomart.rest.Dataset;
 import org.cytoscape.io.webservice.biomart.rest.Filter;
 import org.cytoscape.io.webservice.biomart.rest.XMLQueryBuilder;
-import org.cytoscape.io.webservice.biomart.task.BioMartTaskFactory;
 import org.cytoscape.io.webservice.biomart.task.ImportAttributeListTask;
 import org.cytoscape.io.webservice.biomart.task.ImportFilterTask;
 import org.cytoscape.io.webservice.biomart.task.LoadRepositoryResult;
@@ -65,7 +64,7 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.swing.DialogTaskManager;
 
@@ -203,16 +202,12 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 			final ImportAttributeListTask firstTask = new ImportAttributeListTask(
 					datasourceName, client.getRestClient());
 			final SetAttributeTask setAttrTask = new SetAttributeTask(firstTask);
-			final BioMartTaskFactory tf = new BioMartTaskFactory(firstTask);
-			tf.createTaskIterator().insertTasksAfter(firstTask, setAttrTask);
-			taskManager.execute(tf);
+			taskManager.execute(new TaskIterator(firstTask, setAttrTask));
 		} else if (type.equals(SourceType.FILTER)) {
 			final ImportFilterTask firstTask = new ImportFilterTask(
 					datasourceName, client.getRestClient());
 			final SetFilterTask setFilterTask = new SetFilterTask(firstTask);
-			final BioMartTaskFactory tf = new BioMartTaskFactory(firstTask);
-			tf.createTaskIterator().insertTasksAfter(firstTask, setFilterTask);
-			taskManager.execute(tf);
+			taskManager.execute(new TaskIterator(firstTask, setFilterTask));
 		}
 	}
 
@@ -323,7 +318,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	@Override
 	protected void importAttributes() {
 		//taskManager.setParent(parent);
-		taskManager.execute(client);
+		taskManager.execute(client.createTaskIterator(getTableImportQuery()));
 	}
 
 	public BiomartQuery getTableImportQuery() {

@@ -46,6 +46,7 @@ import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.work.TaskIterator;
+import org.osgi.framework.ServiceException;
 
 
 /**
@@ -107,14 +108,12 @@ public class BiomartClient extends AbstractWebServiceClient implements TableImpo
 	}
 
 	@Override
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(Object query) {
 		if (gui == null)
 			throw new IllegalStateException(
 					"Could not build query because Query Builder GUI is null.");
 
-		final BiomartQuery query = this.gui.getTableImportQuery();
-
-		importTask = new ImportTableTask(restClient, query, tableFactory, networkManager,
+		importTask = new ImportTableTask(restClient, (BiomartQuery) query, tableFactory, networkManager,
 		                                 applicationManager, app.getJFrame(), tableManager,
 										 cyRootNetworkFactory);
 

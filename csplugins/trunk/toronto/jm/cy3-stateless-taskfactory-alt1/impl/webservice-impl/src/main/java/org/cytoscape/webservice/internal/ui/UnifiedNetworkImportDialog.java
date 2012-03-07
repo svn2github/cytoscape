@@ -54,9 +54,9 @@ import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle;
 
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
-import org.cytoscape.io.webservice.SearchWebServiceClient;
 import org.cytoscape.io.webservice.WebServiceClient;
 import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.SimpleTaskFactory;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
@@ -440,8 +440,7 @@ public class UnifiedNetworkImportDialog extends JDialog {
 		}
 		
 		// Set query.  Just pass the text in the panel.
-		client.setQuery(this.queryTextPane.getText());
-		taskManager.execute(client);
+		taskManager.execute(client.createTaskIterator(queryTextPane.getText()));
 		
 	}
 
@@ -460,7 +459,7 @@ public class UnifiedNetworkImportDialog extends JDialog {
 		//AboutDialog.showDialog(clientName, icon, description);
 	}
 	
-	private final class ImportNetworkTaskFactory implements TaskFactory {
+	private final class ImportNetworkTaskFactory extends SimpleTaskFactory {
 
 		private final TaskFactory tFactory;
 		

@@ -7,11 +7,11 @@ import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.SimpleTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class ImportOntologyAndAnnotationTaskFactory implements TaskFactory {
+public class ImportOntologyAndAnnotationTaskFactory extends SimpleTaskFactory {
 	private final InputStreamTaskFactory factory;
 	private final InputStream is;
 	private final String ontologyDAGName;

@@ -70,7 +70,6 @@ import org.cytoscape.work.swing.PanelTaskManager;
 public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private final static long serialVersionUID = 1202339874277105L;
 	private TaskFactory currentLayout = null;
-	private Object currentTunableContext;
 
 	// Dialog components
 	private JLabel titleLabel; // Our title
@@ -130,7 +129,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		if (command.equals("done"))
 			setVisible(false);
 		else if (command.equals("execute")) {
-			taskManager.execute(currentLayout.createTaskIterator(currentTunableContext), currentTunableContext);
+			taskManager.execute(currentLayout.createTaskIterator());
 		} else {
 			// OK, initialize and display
 			initialize();
@@ -369,7 +368,6 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 					algorithmPanel.add(tunablePanel);					
 				}
 				currentLayout = provisioner;
-				currentTunableContext = context;
 				LayoutSettingsDialog.this.pack();
 			}
 		}

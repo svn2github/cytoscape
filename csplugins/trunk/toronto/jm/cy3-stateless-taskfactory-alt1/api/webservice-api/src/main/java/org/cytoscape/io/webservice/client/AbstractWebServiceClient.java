@@ -59,10 +59,8 @@ public abstract class AbstractWebServiceClient implements WebServiceClient {
 	private final String description;
 	
 	// By default, this is null.
-	protected final JPanel panel = null;
+	protected JPanel panel = null;
 	
-	protected Object currentQuery = null;
-
 
 	/**
 	 * Constructs this AbstractWebServiceClient.
@@ -108,8 +106,4 @@ public abstract class AbstractWebServiceClient implements WebServiceClient {
 		return panel;
 	}
 	
-	
-	@Override public void setQuery(Object query) {
-		this.currentQuery = query;
-	}
 }

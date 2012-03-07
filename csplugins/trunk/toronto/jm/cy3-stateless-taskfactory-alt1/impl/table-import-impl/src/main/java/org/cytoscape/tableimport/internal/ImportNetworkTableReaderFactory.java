@@ -43,14 +43,9 @@ public class ImportNetworkTableReaderFactory extends AbstractNetworkReaderFactor
 
 	}
 
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new ImportNetworkTableReaderTask(this.inputStream, fileFormat,
-		                                                         this.inputName, tableManager));
+	public TaskIterator createTaskIterator(InputStream inputStream, String inputName) {
+		return new TaskIterator(new ImportNetworkTableReaderTask(inputStream, fileFormat,
+		                                                         inputName, tableManager));
 	}
 
-	@Override
-	public void setInputStream(InputStream is, String inputName) {
-		this.inputStream = is;
-		this.inputName = inputName;
-	}
 }

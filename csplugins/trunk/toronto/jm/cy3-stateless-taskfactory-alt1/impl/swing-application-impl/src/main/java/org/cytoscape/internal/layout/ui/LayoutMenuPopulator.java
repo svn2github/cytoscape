@@ -51,6 +51,7 @@ import org.cytoscape.application.swing.StringEnableSupport;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithmContext;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.swing.DynamicSubmenuListener;
@@ -82,7 +83,7 @@ public class LayoutMenuPopulator {
 		this.factoryProvisioner = factoryProvisioner;
 	}
 
-	public <T> void addLayout(CyLayoutAlgorithm<T> layout, Map props) {
+	public <T extends AbstractLayoutAlgorithmContext> void addLayout(CyLayoutAlgorithm<T> layout, Map props) {
 		String prefMenu = getPreferredMenu(props); 
 
 		String menuName = (String)props.get("title");

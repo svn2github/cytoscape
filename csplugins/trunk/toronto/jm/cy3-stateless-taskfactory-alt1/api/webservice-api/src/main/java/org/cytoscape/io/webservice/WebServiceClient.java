@@ -37,10 +37,7 @@ package org.cytoscape.io.webservice;
 import java.awt.Container;
 import java.net.URI;
 
-import javax.swing.JPanel;
-
-import org.cytoscape.work.ProvidesGUI;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
 
 /**
  * Thin wrapper for SOAP/REST web service clients.
@@ -49,7 +46,7 @@ import org.cytoscape.work.TaskFactory;
  * 
  * @CyAPI.Spi.Interface
  */
-public interface WebServiceClient extends TaskFactory {
+public interface WebServiceClient {
 	
 	/**
 	 * Returns resource location of this service, i.e., service URL.
@@ -92,6 +89,6 @@ public interface WebServiceClient extends TaskFactory {
 	 * 
 	 * @param query query object.  This is client-dependent.
 	 */
-	void setQuery(Object query);
+	TaskIterator createTaskIterator(Object query);
 	
 }

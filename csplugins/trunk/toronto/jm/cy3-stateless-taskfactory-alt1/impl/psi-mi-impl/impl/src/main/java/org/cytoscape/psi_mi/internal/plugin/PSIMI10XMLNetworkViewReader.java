@@ -109,9 +109,8 @@ public class PSIMI10XMLNetworkViewReader extends AbstractTask implements CyNetwo
 	public CyNetworkView buildCyNetworkView(final CyNetwork network) {
 		final CyNetworkView view = networkViewFactory.createNetworkView(network);
 		final CyLayoutAlgorithm layout = layouts.getDefaultLayout();
-		layout.setNetworkView(view);
 		// Force to run this task here to avoid concurrency problem.
-		TaskIterator itr = layout.createTaskIterator();
+		TaskIterator itr = layout.createTaskIterator(null, view);
 		Task nextTask = itr.next();
 		try {
 			nextTask.run(parentTaskMonitor);

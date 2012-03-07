@@ -29,8 +29,7 @@ class SubmenuItem extends JMenuItem implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		handler.chosenMenu(menuName);
-		Object context = tf.createTunableContext();
-		TaskIterator iterator = tf.createTaskIterator(context);
-		dtm.execute(iterator, context);
+		TaskIterator iterator = tf.createTaskIterator();
+		dtm.execute(iterator);
 	}
 }

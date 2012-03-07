@@ -1,8 +1,8 @@
 
 package org.cytoscape.work.internal.submenu;
 
-import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import javax.swing.JMenuItem;
 
@@ -17,11 +17,11 @@ public class SubmenuTunableMutator extends AbstractTunableInterceptor<SubmenuTun
 	
 	private final DialogTaskManager dtm;
 
-	private final Map<Object, TaskFactory<?>> taskFactoriesByContext;
+	private final Map<Object, TaskFactory<? super Object>> taskFactoriesByContext;
 	
 	public SubmenuTunableMutator(DialogTaskManager dtm) {
 		this.dtm = dtm;
-		taskFactoriesByContext = new IdentityHashMap<Object, TaskFactory<?>>();
+		taskFactoriesByContext = new WeakHashMap<Object, TaskFactory<? super Object>>();
 	}
 
 	public void setConfigurationContext(Object o) {
@@ -29,8 +29,8 @@ public class SubmenuTunableMutator extends AbstractTunableInterceptor<SubmenuTun
 	}
 
 	public JMenuItem buildConfiguration(Object objectWithTunables) {
-		TaskFactory<?> tf = taskFactoriesByContext.get(objectWithTunables);
-		if (tf == null) {
+		TaskFactory<? super Object> tf = taskFactoriesByContext.get(objectWithTunables);
+		if (tf == null || ! tf.isReady(objectWithTunables)) {
 			return null;
 		}
 
@@ -47,12 +47,8 @@ public class SubmenuTunableMutator extends AbstractTunableInterceptor<SubmenuTun
 	 	return true;	
 	}
 
-	void registerTunableContext(TaskFactory<?> factory, Object tunableContext) {
+	void registerTunableContext(TaskFactory<? super Object> factory, Object tunableContext) {
 		taskFactoriesByContext.put(tunableContext, factory);
-	}
-	
-	void unregisterTunableContext(Object tunableContext) {
-		taskFactoriesByContext.remove(tunableContext);
 	}
 }
 

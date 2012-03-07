@@ -29,6 +29,7 @@ import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.junit.Before;
+import org.mockito.Mockito;
 
 public class AbstractNetworkViewReaderTester {
 	static class SimpleTask extends AbstractTask {
@@ -51,7 +52,7 @@ public class AbstractNetworkViewReaderTester {
 		taskMonitor = mock(TaskMonitor.class);
 
 		CyLayoutAlgorithm def = mock(CyLayoutAlgorithm.class);
-		when(def.createTaskIterator()).thenReturn(new TaskIterator(new SimpleTask()));
+		when(def.createTaskIterator(Mockito.any(), Mockito.any(CyNetworkView.class))).thenReturn(new TaskIterator(new SimpleTask()));
 
 		layouts = mock(CyLayoutAlgorithmManager.class);
 		when(layouts.getDefaultLayout()).thenReturn(def);

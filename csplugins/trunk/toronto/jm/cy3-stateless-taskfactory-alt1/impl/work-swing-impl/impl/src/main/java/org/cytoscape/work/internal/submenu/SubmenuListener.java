@@ -19,7 +19,7 @@ class SubmenuListener implements DynamicSubmenuListener {
 	private boolean enableState;
 	private Object tunableContext;
 
-	SubmenuListener(SubmenuTunableMutator stm, TaskFactory<?> tf, Object tunableContext) {
+	SubmenuListener(SubmenuTunableMutator stm, TaskFactory<? super Object> tf, Object tunableContext) {
 		this.stm = stm;
 		this.menuName = "None Specified";
 		this.enableState = true;
@@ -29,13 +29,11 @@ class SubmenuListener implements DynamicSubmenuListener {
 
 	@Override
 	public void popupMenuCanceled(PopupMenuEvent e) {
-		stm.unregisterTunableContext(tunableContext);
 		removePopupMenuItem((JPopupMenu)(e.getSource()));
 	}
 
 	@Override
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-		stm.unregisterTunableContext(tunableContext);
 		removePopupMenuItem((JPopupMenu)(e.getSource()));
 	}
 
@@ -53,13 +51,11 @@ class SubmenuListener implements DynamicSubmenuListener {
 
 	@Override
 	public void menuCanceled(MenuEvent e) { 
-		stm.unregisterTunableContext(tunableContext);
 		removeMenuItem((JMenu)(e.getSource()));
 	}
 
 	@Override
 	public void menuDeselected(MenuEvent e) { 
-		stm.unregisterTunableContext(tunableContext);
 		removeMenuItem((JMenu)(e.getSource()));
 	}
 

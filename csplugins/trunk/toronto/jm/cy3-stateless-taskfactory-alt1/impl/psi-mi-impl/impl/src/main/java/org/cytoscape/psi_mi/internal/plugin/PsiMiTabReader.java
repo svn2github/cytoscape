@@ -82,10 +82,9 @@ public class PsiMiTabReader extends AbstractTask implements CyNetworkReader {
 			pref = prop.getProperties().getProperty("preferredLayoutAlgorithm", pref);
 
 		final CyLayoutAlgorithm layout = layouts.getLayout(pref);
-		layout.setNetworkView(view);
 		
 		// Force to run this task here to avoid concurrency problem.
-		TaskIterator itr = layout.createTaskIterator();
+		TaskIterator itr = layout.createTaskIterator(null, view);
 		Task nextTask = itr.next();
 		try {
 			nextTask.run(parentTaskMonitor);

@@ -37,6 +37,8 @@ import java.util.Set;
 
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.TunableValidator.ValidationState;
 
 
 /**
@@ -124,6 +126,11 @@ abstract public class AbstractLayoutAlgorithm<T extends AbstractLayoutAlgorithmC
 	}
 
 	public boolean isReady(T tunableContext, CyNetworkView networkView) {
+		tunableContext.setNetworkView(networkView);
+		if (tunableContext instanceof TunableValidator) {
+			StringBuilder errors = new StringBuilder();
+			return ((TunableValidator) tunableContext).getValidationState(errors) == ValidationState.OK;
+		}
 		return true;
 	}
 	
