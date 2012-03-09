@@ -521,15 +521,17 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 			// Set range values
 			if (EditorValueRangeTracer.getTracer().getRange(type) == 0) {
 				final CountedIterator it = mhm.getObjectKeys(controllingAttrName);
-				Object key;
 				double maxValue = Double.NEGATIVE_INFINITY;
 				double minValue = Double.POSITIVE_INFINITY;
 
 				while (it.hasNext()) {
 					final String id = (String)it.next();
 					final Object attrValue = attrs.getAttribute(id, controllingAttrName);
-
+					if(attrValue == null)
+						continue;
+					
 					final double val;
+					
 					if (attrValue.getClass() == Double.class)
 						val = (Double)attrValue;
 					else if (attrValue.getClass() == Integer.class)
@@ -543,7 +545,6 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 					if (val < minValue)
 						minValue = val;
 				}
-
 				EditorValueRangeTracer.getTracer().setMax(type, maxValue);
 				EditorValueRangeTracer.getTracer().setMin(type, minValue);
 			}
