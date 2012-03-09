@@ -28,31 +28,14 @@
 package org.cytoscape.task;
 
 import org.cytoscape.model.CyColumn;
-import org.cytoscape.work.TaskIterator;
 
 /**
  * The assumption is that setColumn() will be called before getTask() and that the Task in question
  * operates on the specified CyColumn. 
  */
-abstract public class SimpleTableColumnTaskFactory implements TableColumnTaskFactory<Object> {
+abstract public class SimpleTableColumnTaskFactory implements TableColumnTaskFactory {
 	@Override
-	public final TaskIterator createTaskIterator(Object tunableContext, CyColumn column) {
-		return createTaskIterator(column);
-	}
-
-	@Override
-	public final boolean isReady(Object tunableContext, CyColumn column) {
-		return isReady(column);
-	}
-	
-	protected boolean isReady(CyColumn column) {
+	public boolean isReady(CyColumn column) {
 		return true;
 	}
-
-	@Override
-	public Object createTunableContext() {
-		return null;
-	}
-	
-	protected abstract TaskIterator createTaskIterator(CyColumn column);
 }

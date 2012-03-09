@@ -29,7 +29,6 @@ package org.cytoscape.task;
 
 
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
@@ -41,15 +40,13 @@ import org.cytoscape.work.TaskIterator;
  * specified View&lt;CyEdge&gt;.
  * @CyAPI.Spi.Interface
  */
-public interface EdgeViewTaskFactory<T> {
+public interface EdgeViewTaskFactory {
 	/** Used to provision this factory with the edge view and associated network view that will
 	 *  be used to create tasks.
 	 *  @param edgeView  a non-null edge view
 	 *  @param netView   a non-null network view associated with the edge view
 	 */
-	TaskIterator createTaskIterator(T tunableContext, View<CyEdge> edgeView, CyNetworkView netView);
+	TaskIterator createTaskIterator(View<CyEdge> edgeView, CyNetworkView netView);
 	
-	boolean isReady(T tunableContext, View<CyEdge> edgeView, CyNetworkView networkView);
-
-	T createTunableContext();
+	boolean isReady(View<CyEdge> edgeView, CyNetworkView networkView);
 }

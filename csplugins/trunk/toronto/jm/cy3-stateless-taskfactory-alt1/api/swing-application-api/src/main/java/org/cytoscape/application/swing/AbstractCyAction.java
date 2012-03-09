@@ -229,7 +229,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	 */
 	public AbstractCyAction(final Map<String, String> configProps,
 	                        final CyApplicationManager applicationManager,
-	                        final TaskFactory<?> factory) {
+	                        final TaskFactory factory) {
 		super(configProps.get("title"));
 		String enableFor = configProps.get("enableFor");
 		if ( enableFor == null )

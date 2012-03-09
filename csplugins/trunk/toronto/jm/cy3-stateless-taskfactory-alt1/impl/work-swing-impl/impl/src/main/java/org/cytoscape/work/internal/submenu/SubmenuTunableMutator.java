@@ -17,11 +17,11 @@ public class SubmenuTunableMutator extends AbstractTunableInterceptor<SubmenuTun
 	
 	private final DialogTaskManager dtm;
 
-	private final Map<Object, TaskFactory<? super Object>> taskFactoriesByContext;
+	private final Map<Object, TaskFactory> taskFactoriesByContext;
 	
 	public SubmenuTunableMutator(DialogTaskManager dtm) {
 		this.dtm = dtm;
-		taskFactoriesByContext = new WeakHashMap<Object, TaskFactory<? super Object>>();
+		taskFactoriesByContext = new WeakHashMap<Object, TaskFactory>();
 	}
 
 	public void setConfigurationContext(Object o) {
@@ -29,8 +29,8 @@ public class SubmenuTunableMutator extends AbstractTunableInterceptor<SubmenuTun
 	}
 
 	public JMenuItem buildConfiguration(Object objectWithTunables) {
-		TaskFactory<? super Object> tf = taskFactoriesByContext.get(objectWithTunables);
-		if (tf == null || ! tf.isReady(objectWithTunables)) {
+		TaskFactory tf = taskFactoriesByContext.get(objectWithTunables);
+		if (tf == null || ! tf.isReady()) {
 			return null;
 		}
 
@@ -47,7 +47,7 @@ public class SubmenuTunableMutator extends AbstractTunableInterceptor<SubmenuTun
 	 	return true;	
 	}
 
-	void registerTunableContext(TaskFactory<? super Object> factory, Object tunableContext) {
+	void registerTunableContext(TaskFactory factory, Object tunableContext) {
 		taskFactoriesByContext.put(tunableContext, factory);
 	}
 }

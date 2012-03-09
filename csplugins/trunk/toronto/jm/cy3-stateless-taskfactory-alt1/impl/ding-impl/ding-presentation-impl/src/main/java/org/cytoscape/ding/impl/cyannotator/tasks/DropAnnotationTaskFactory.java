@@ -10,7 +10,7 @@ import org.cytoscape.work.TaskIterator;
 import org.cytoscape.ding.impl.cyannotator.create.AnnotationFactory; 
 
 
-public class DropAnnotationTaskFactory implements DropNetworkViewTaskFactory<Object> {
+public class DropAnnotationTaskFactory implements DropNetworkViewTaskFactory {
 	private final BasicGraphicalEntity bge; 
 	private final AnnotationFactory annotationFactory;
 	
@@ -20,17 +20,12 @@ public class DropAnnotationTaskFactory implements DropNetworkViewTaskFactory<Obj
 	}
 
 	@Override
-	public TaskIterator createTaskIterator(Object tunableContext, CyNetworkView view, Transferable t, Point2D javaPt, Point2D xformPt) {
+	public TaskIterator createTaskIterator(CyNetworkView view, Transferable t, Point2D javaPt, Point2D xformPt) {
 		return new TaskIterator(new DropAnnotationTask(view, t, xformPt, bge, annotationFactory));
 	}
 	
 	@Override
-	public boolean isReady(Object tunableContext, CyNetworkView networkView, Transferable t, Point2D javaPt, Point2D xformPt) {
+	public boolean isReady(CyNetworkView networkView, Transferable t, Point2D javaPt, Point2D xformPt) {
 		return true;
-	}
-	
-	@Override
-	public Object createTunableContext() {
-		return null;
 	}
 }

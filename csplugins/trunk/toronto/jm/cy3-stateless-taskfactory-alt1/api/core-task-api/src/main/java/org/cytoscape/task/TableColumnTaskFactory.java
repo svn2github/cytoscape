@@ -37,13 +37,11 @@ import org.cytoscape.work.TaskIterator;
  * operates on the specified CyColumn. 
  * @CyAPI.Spi.Interface
  */
-public interface TableColumnTaskFactory<T> {
+public interface TableColumnTaskFactory {
 	/** Used to provision this factory with a {@link CyColumn} that will be used to create tasks.
 	 *  @param column a non-null CyColumn.
 	 */
-	TaskIterator createTaskIterator(T tunableContext, final CyColumn column);
+	TaskIterator createTaskIterator(final CyColumn column);
 	
-	boolean isReady(T tunableContext, final CyColumn column);
-
-	T createTunableContext();
+	boolean isReady(final CyColumn column);
 }

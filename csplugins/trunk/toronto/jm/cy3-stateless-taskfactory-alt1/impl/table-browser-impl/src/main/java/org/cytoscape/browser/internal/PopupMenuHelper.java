@@ -29,25 +29,17 @@ package org.cytoscape.browser.internal;
 
 
 import java.awt.Component;
-import java.awt.Point;
-import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
-
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.task.TableCellTaskFactory;
 import org.cytoscape.task.TableColumnTaskFactory;
-import org.cytoscape.util.swing.JMenuTracker;
 import org.cytoscape.util.swing.GravityTracker;
 import org.cytoscape.util.swing.PopupMenuGravityTracker;
 import org.cytoscape.work.TaskFactory;
@@ -120,8 +112,7 @@ public class PopupMenuHelper {
 		if (menuLabel == null)
 			menuLabel = "Unidentified Task: " + Integer.toString(tf.hashCode());
 
-		Object tunableContext = tf.createTunableContext();
-		tracker.addMenuItem(new JMenuItem(new PopupAction(tf, tunableContext, menuLabel)),
+		tracker.addMenuItem(new JMenuItem(new PopupAction(tf, menuLabel)),
 				    GravityTracker.USE_ALPHABETIC_ORDER);
 	}
 
@@ -154,16 +145,14 @@ public class PopupMenuHelper {
 	 */
 	private class PopupAction extends AbstractAction {
 		private final TaskFactory tf;
-		private final Object tunableContext;
 
-		PopupAction(final TaskFactory tf, Object tunableContext, final String menuLabel) {
+		PopupAction(final TaskFactory tf, final String menuLabel) {
 			super(menuLabel);
 			this.tf = tf;
-			this.tunableContext = tunableContext;
 		}
 
 		public void actionPerformed(ActionEvent ae) {
-			taskManager.execute(tf.createTaskIterator(tunableContext), tunableContext);
+			taskManager.execute(tf.createTaskIterator());
 		}
 	}
 }

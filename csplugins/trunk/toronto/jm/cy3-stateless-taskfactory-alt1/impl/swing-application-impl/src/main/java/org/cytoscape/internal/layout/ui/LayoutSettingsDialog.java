@@ -54,10 +54,13 @@ import javax.swing.border.TitledBorder;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.property.CyProperty;
+import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.swing.PanelTaskManager;
 
 
@@ -354,9 +357,13 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			Object o = algorithmSelector.getSelectedItem();
 			// if it's a string, that means it's the instructions
 			if (!(o instanceof String)) {
-				final CyLayoutAlgorithm<?> newLayout = (CyLayoutAlgorithm<?>)o;
-				TaskFactory<?> provisioner = factoryProvisioner.createFor(newLayout);
-				Object context = provisioner.createTunableContext();
+				final CyLayoutAlgorithm newLayout = (CyLayoutAlgorithm)o;
+				Object context = newLayout.createTunableContext();
+				TaskFactory provisioner = factoryProvisioner.createFor(wrapWithContext(newLayout, context));
+				if (!provisioner.isReady()) {
+					throw new IllegalArgumentException("Layout is not fully configured");
+				}
+				
 				JPanel tunablePanel = taskManager.getConfiguration(provisioner, context);
 
 				if (tunablePanel == null){
@@ -373,6 +380,20 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		}
 	}
 
+	private <T> NetworkViewTaskFactory wrapWithContext(final CyLayoutAlgorithm<T> layout, final T tunableContext) {
+		return new NetworkViewTaskFactory() {
+			@Override
+			public boolean isReady(CyNetworkView networkView) {
+				return layout.isReady(tunableContext, networkView);
+			}
+			
+			@Override
+			public TaskIterator createTaskIterator(CyNetworkView networkView) {
+				return layout.createTaskIterator(tunableContext, networkView);
+			}
+		};
+	}
+	
 	private class MyItemRenderer extends JLabel implements ListCellRenderer {
 		private final static long serialVersionUID = 1202339874266209L;
 		public MyItemRenderer() {

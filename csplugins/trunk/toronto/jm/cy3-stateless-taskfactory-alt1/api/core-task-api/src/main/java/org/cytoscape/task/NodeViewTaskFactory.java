@@ -40,15 +40,13 @@ import org.cytoscape.work.TaskIterator;
  * specified View&lt;CyNode&gt;.
  * @CyAPI.Spi.Interface
  */
-public interface NodeViewTaskFactory<T> {
+public interface NodeViewTaskFactory {
 	/** Provisions this factory with the node view and its associated network view, both of
 	 *  which will be passed into any task that will be created by this factory.
 	 *  @param nodeView  a non-null node view
 	 *  @param netView   the non-null network view associated with the node view
 	 */
-	TaskIterator createTaskIterator(T tunableContext, View<CyNode> nodeView, CyNetworkView networkView);
+	TaskIterator createTaskIterator(View<CyNode> nodeView, CyNetworkView networkView);
 	
-	boolean isReady(T tunableContext, View<CyNode> nodeView, CyNetworkView networkView);
-	
-	T createTunableContext();
+	boolean isReady(View<CyNode> nodeView, CyNetworkView networkView);
 }

@@ -12,14 +12,15 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 
 
-public class AddEdgeNodeViewTaskFactoryImpl implements DropNodeViewTaskFactory<Object> {
+public class AddEdgeNodeViewTaskFactoryImpl implements DropNodeViewTaskFactory {
 	private final CyNetworkManager netMgr;
 
 	public AddEdgeNodeViewTaskFactoryImpl(CyNetworkManager netMgr) {
 		this.netMgr = netMgr;
 	}
 
-	public TaskIterator createTaskIterator(Object tunableContext, View<CyNode> nv, CyNetworkView view, Transferable t, Point2D javaPt, Point2D xformPt) {
+	@Override
+	public TaskIterator createTaskIterator(View<CyNode> nv, CyNetworkView view, Transferable t, Point2D javaPt, Point2D xformPt) {
 		AddEdgeStateMonitor.setSourcePoint(view,javaPt);
 
 		// Because the transferable may be null, we leave that
@@ -30,12 +31,7 @@ public class AddEdgeNodeViewTaskFactoryImpl implements DropNodeViewTaskFactory<O
 	}
 	
 	@Override
-	public boolean isReady(Object tunableContext, View<CyNode> nodeView, CyNetworkView networkView, Transferable t, Point2D javaPt, Point2D xformPt) {
+	public boolean isReady(View<CyNode> nodeView, CyNetworkView networkView, Transferable t, Point2D javaPt, Point2D xformPt) {
 		return true;
-	}
-	
-	@Override
-	public Object createTunableContext() {
-		return null;
 	}
 }

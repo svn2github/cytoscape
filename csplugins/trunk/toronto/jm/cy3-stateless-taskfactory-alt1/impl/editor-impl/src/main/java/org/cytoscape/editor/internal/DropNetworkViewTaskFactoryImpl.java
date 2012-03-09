@@ -1,8 +1,8 @@
 package org.cytoscape.editor.internal;
 
 
-import java.awt.geom.Point2D;
 import java.awt.datatransfer.Transferable;
+import java.awt.geom.Point2D;
 
 import org.cytoscape.dnd.DropNetworkViewTaskFactory;
 import org.cytoscape.event.CyEventHelper;
@@ -12,7 +12,7 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskIterator;
 
 
-public class DropNetworkViewTaskFactoryImpl implements DropNetworkViewTaskFactory<Object> {
+public class DropNetworkViewTaskFactoryImpl implements DropNetworkViewTaskFactory {
 	private final CyEventHelper eh;
 	private final VisualMappingManager vmm;
 	final CyRootNetworkManager rnm;
@@ -23,16 +23,13 @@ public class DropNetworkViewTaskFactoryImpl implements DropNetworkViewTaskFactor
 		this.rnm = rnm;
 	}
 
-	public TaskIterator createTaskIterator(Object tunableContext, CyNetworkView view, Transferable t, Point2D javaPt, Point2D xformPt) {
+	@Override
+	public TaskIterator createTaskIterator(CyNetworkView view, Transferable t, Point2D javaPt, Point2D xformPt) {
 		return new TaskIterator(new DropNetworkViewTask(vmm, rnm, view, t, xformPt, eh));
 	}
 	
 	@Override
-	public boolean isReady(Object tunableContext, CyNetworkView networkView, Transferable t, Point2D javaPt, Point2D xformPt) {
+	public boolean isReady(CyNetworkView networkView, Transferable t, Point2D javaPt, Point2D xformPt) {
 		return true;
 	}
-	
-	public Object createTunableContext() {
-		return null;
-	};
 }

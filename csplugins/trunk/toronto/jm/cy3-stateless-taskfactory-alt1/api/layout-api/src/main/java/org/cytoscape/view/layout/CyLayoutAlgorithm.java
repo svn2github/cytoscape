@@ -33,13 +33,18 @@ package org.cytoscape.view.layout;
 import java.util.List;
 import java.util.Set;
 
-import org.cytoscape.task.NetworkViewTaskFactory;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.work.TaskIterator;
 
 /**
  * An extension of NetworkViewTaskFactory specific to layout algorithms.
  * @CyAPI.Spi.Interface
  */
-public interface CyLayoutAlgorithm<T> extends NetworkViewTaskFactory<T> {
+public interface CyLayoutAlgorithm<T> {
+	TaskIterator createTaskIterator(T tunableContext, CyNetworkView networkView);
+	boolean isReady(T tunableContext, CyNetworkView networkView);
+	T createTunableContext();
+	
 	/**
 	 * Tests to see if this layout supports doing a layout on a subset of the
 	 * nodes in this network view.

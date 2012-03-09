@@ -19,7 +19,7 @@ class SubmenuListener implements DynamicSubmenuListener {
 	private boolean enableState;
 	private Object tunableContext;
 
-	SubmenuListener(SubmenuTunableMutator stm, TaskFactory<? super Object> tf, Object tunableContext) {
+	SubmenuListener(SubmenuTunableMutator stm, TaskFactory tf, Object tunableContext) {
 		this.stm = stm;
 		this.menuName = "None Specified";
 		this.enableState = true;

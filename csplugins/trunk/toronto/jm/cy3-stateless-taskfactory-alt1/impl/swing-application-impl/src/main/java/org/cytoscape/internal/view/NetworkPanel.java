@@ -221,7 +221,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 		treeTable.addMouseListener(new PopupListener());
 	}
 
-	private void addFactory(TaskFactory<?> factory, CyAction action) {
+	private void addFactory(TaskFactory factory, CyAction action) {
 		final JMenuItem item = new JMenuItem(action);
 		popupMap.put(factory, item);
 		popupActions.put(factory, action);
@@ -238,51 +238,51 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 			popup.removePopupMenuListener(action);
 	}
 
-	public void addTaskFactory(TaskFactory<?> factory, @SuppressWarnings("rawtypes") Map props) {
+	public void addTaskFactory(TaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
 		addFactory(factory, new TaskFactoryTunableAction(taskManager, factory, props, appManager));
 	}
 
-	public void removeTaskFactory(TaskFactory<?> factory, @SuppressWarnings("rawtypes") Map props) {
+	public void removeTaskFactory(TaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
 		removeFactory(factory);
 	}
 
-	public void addNetworkCollectionTaskFactory(NetworkCollectionTaskFactory<?> factory, Map props) {
-		TaskFactory<?> provisioner = factoryProvisioner.createFor(factory);
+	public void addNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
+		TaskFactory provisioner = factoryProvisioner.createFor(factory);
 		provisionerMap.put(factory, provisioner);
 		addFactory(provisioner, new TaskFactoryTunableAction(taskManager, provisioner, props, appManager));
 	}
 
-	public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory<?> factory, Map props) {
+	public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
 		removeFactory(provisionerMap.remove(factory));
 	}
 
-	public void addNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory<?> factory, Map props) {
-		TaskFactory<?> provisioner = factoryProvisioner.createFor(factory);
+	public void addNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
+		TaskFactory provisioner = factoryProvisioner.createFor(factory);
 		provisionerMap.put(factory, provisioner);
 		addFactory(provisioner, new TaskFactoryTunableAction(taskManager, provisioner, props, appManager));
 	}
 
-	public void removeNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory<?> factory, Map props) {
+	public void removeNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
 		removeFactory(provisionerMap.remove(factory));
 	}
 
-	public void addNetworkTaskFactory(NetworkTaskFactory<?> factory, @SuppressWarnings("rawtypes") Map props) {
-		TaskFactory<?> provisioner = factoryProvisioner.createFor(factory);
+	public void addNetworkTaskFactory(NetworkTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
+		TaskFactory provisioner = factoryProvisioner.createFor(factory);
 		provisionerMap.put(factory, provisioner);
 		addFactory(provisioner, new TaskFactoryTunableAction(taskManager, provisioner, props, appManager));
 	}
 
-	public void removeNetworkTaskFactory(NetworkTaskFactory<?> factory, @SuppressWarnings("rawtypes") Map props) {
+	public void removeNetworkTaskFactory(NetworkTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
 		removeFactory(provisionerMap.remove(factory));
 	}
 
-	public void addNetworkViewTaskFactory(final NetworkViewTaskFactory<?> factory, @SuppressWarnings("rawtypes") Map props) {
-		TaskFactory<?> provisioner = factoryProvisioner.createFor(factory);
+	public void addNetworkViewTaskFactory(final NetworkViewTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
+		TaskFactory provisioner = factoryProvisioner.createFor(factory);
 		provisionerMap.put(factory, provisioner);
 		addFactory(provisioner, new TaskFactoryTunableAction(taskManager, provisioner, props, appManager));
 	}
 
-	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory<?> factory, @SuppressWarnings("rawtypes") Map props) {
+	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory, @SuppressWarnings("rawtypes") Map props) {
 		removeFactory(provisionerMap.remove(factory));
 	}
 

@@ -35,7 +35,7 @@ import org.cytoscape.work.TaskIterator;
  * the Task in question operates on the specified CyNetwork.
  * @CyAPI.Spi.Interface
  */
-public interface NetworkTaskFactory<T> {
+public interface NetworkTaskFactory {
 
     /**
      * Provisions this factory with the {@link CyNetwork} that will be passed
@@ -44,9 +44,7 @@ public interface NetworkTaskFactory<T> {
      * @param network
      *            a non-null {@link CyNetwork}
      */
-    TaskIterator createTaskIterator(T tunableContext, CyNetwork network);
+    TaskIterator createTaskIterator(CyNetwork network);
     
-    boolean isReady(T tunableContext, CyNetwork network);
-
-    T createTunableContext();
+    boolean isReady(CyNetwork network);
 }

@@ -37,15 +37,13 @@ import org.cytoscape.work.TaskIterator;
  * in question operates on the specified table entry identified by the column and primary key value.
  * @CyAPI.Spi.Interface
  */
-public interface TableCellTaskFactory<T> {
+public interface TableCellTaskFactory {
 	/** Used to provision this factory with a {@link CyColumn} and a primary key that will be
 	 *  used to create tasks.
 	 *  @param column  a non-null CyColumn
 	 *  @param primaryKeyValue  a non-null primary key value
 	 */
-	TaskIterator createTaskIterator(T tunableContext, final CyColumn column, final Object primaryKeyValue);
+	TaskIterator createTaskIterator(final CyColumn column, final Object primaryKeyValue);
 	
-	boolean isReady(T tunableContext, final CyColumn column, final Object primaryKeyValue);
-
-	T createTunableContext();
+	boolean isReady(final CyColumn column, final Object primaryKeyValue);
 }

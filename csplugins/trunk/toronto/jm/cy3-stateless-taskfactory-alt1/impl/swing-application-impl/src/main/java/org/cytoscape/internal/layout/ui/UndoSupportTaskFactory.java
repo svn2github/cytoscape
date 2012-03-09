@@ -1,7 +1,6 @@
 package org.cytoscape.internal.layout.ui;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithmContext;
 import org.cytoscape.view.model.CyNetworkView;
@@ -11,7 +10,7 @@ import org.cytoscape.work.undo.UndoSupport;
 
 public class UndoSupportTaskFactory<T extends AbstractLayoutAlgorithmContext> extends AbstractLayoutAlgorithm<T> {
 	
-	private NetworkViewTaskFactory<T> delegate;
+	private AbstractLayoutAlgorithm<T> delegate;
 	private UndoSupport undo;
 	private CyEventHelper eventHelper;
 	private String name;

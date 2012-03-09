@@ -13,7 +13,7 @@ import org.cytoscape.work.TaskIterator;
  * tasks to deal with drag and drop.
  * @CyAPI.Spi.Interface
  */
-public interface DropNetworkViewTaskFactory<T> {
+public interface DropNetworkViewTaskFactory {
 
 	/**
 	 * Sets the drop information for a TaskFactory. 
@@ -21,9 +21,7 @@ public interface DropNetworkViewTaskFactory<T> {
 	 * @param javaPt The raw Java point at which the object was dropped.
 	 * @param xformPt The drop point transformed into Cytoscape coordinates.
 	 */
-	TaskIterator createTaskIterator(T tunableContext, CyNetworkView networkView, Transferable t, Point2D javaPt, Point2D xformPt);
+	TaskIterator createTaskIterator(CyNetworkView networkView, Transferable t, Point2D javaPt, Point2D xformPt);
 	
-	boolean isReady(T tunableContext, CyNetworkView networkView, Transferable t, Point2D javaPt, Point2D xformPt);
-
-	T createTunableContext();
+	boolean isReady(CyNetworkView networkView, Transferable t, Point2D javaPt, Point2D xformPt);
 }

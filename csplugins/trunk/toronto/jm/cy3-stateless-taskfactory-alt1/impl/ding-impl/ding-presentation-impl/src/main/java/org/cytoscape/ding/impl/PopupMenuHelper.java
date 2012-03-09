@@ -100,7 +100,7 @@ class PopupMenuHelper {
 
 				for ( EdgeViewTaskFactory evtf : usableTFs ) {
 					TaskFactory provisioner = factoryProvisioner.createFor(evtf, ev, m_view);
-					createMenuItem(ev, menu, provisioner, tracker, m_view.edgeViewTFs.get(evtf) );
+					createMenuItem(ev, menu, provisioner, null, tracker, m_view.edgeViewTFs.get(evtf) );
 				}
 
 				menu.show(invoker, x, y);
@@ -108,8 +108,7 @@ class PopupMenuHelper {
 			// execute the task directly if only one factory exists
 			} else if ( usableTFs.size() == 1) {
 				EdgeViewTaskFactory tf  = usableTFs.iterator().next();
-				Object context = tf.createTunableContext();
-				m_view.manager.execute(tf.createTaskIterator(context, ev, m_view), context);
+				m_view.manager.execute(tf.createTaskIterator(ev, m_view));
 			}
 		}
 	}
@@ -130,7 +129,7 @@ class PopupMenuHelper {
 
 				for ( DropNodeViewTaskFactory nvtf : usableTFs ) {
 					TaskFactory provisioner = factoryProvisioner.createFor(nvtf, nv, m_view, t, rawPt, xformPt);
-					createMenuItem(nv, menu, provisioner, tracker, m_view.dropNodeViewTFs.get( nvtf ));
+					createMenuItem(nv, menu, provisioner, null, tracker, m_view.dropNodeViewTFs.get( nvtf ));
 				}
 
 				menu.show(invoker, (int)(rawPt.getX()), (int)(rawPt.getY()));
@@ -138,8 +137,7 @@ class PopupMenuHelper {
 			// execute the task directly if only one factory exists
 			} else if ( usableTFs.size() == 1) {
 				DropNodeViewTaskFactory tf  = usableTFs.iterator().next();
-				Object context = tf.createTunableContext();
-				m_view.manager.execute(tf.createTaskIterator(context, nv, m_view, t, rawPt, xformPt), context);
+				m_view.manager.execute(tf.createTaskIterator(nv, m_view, t, rawPt, xformPt));
 			}
 		}
 	}
@@ -159,8 +157,8 @@ class PopupMenuHelper {
 				JMenuTracker tracker = new JMenuTracker(menu);
 
 				for ( NodeViewTaskFactory nvtf : usableTFs ) {
-					TaskFactory<?> provisioner = factoryProvisioner.createFor(nvtf, nv, m_view);
-					createMenuItem(nv, menu, provisioner, tracker, m_view.nodeViewTFs.get( nvtf ));
+					TaskFactory provisioner = factoryProvisioner.createFor(nvtf, nv, m_view);
+					createMenuItem(nv, menu, provisioner, null, tracker, m_view.nodeViewTFs.get( nvtf ));
 				}
 
 				menu.show(invoker, x, y);
@@ -168,8 +166,7 @@ class PopupMenuHelper {
 			// execute the task directly if only one factory exists
 			} else if ( usableTFs.size() == 1) {
 				NodeViewTaskFactory tf  = usableTFs.iterator().next();
-				Object context = tf.createTunableContext();
-				m_view.manager.execute(tf.createTaskIterator(context, nv, m_view), context);
+				m_view.manager.execute(tf.createTaskIterator(nv, m_view));
 			}
 		}
 	}
@@ -185,14 +182,13 @@ class PopupMenuHelper {
 			JMenuTracker tracker = new JMenuTracker(menu);
 			for ( DropNetworkViewTaskFactory nvtf : usableTFs ) {
 				TaskFactory provisioner = factoryProvisioner.createFor(nvtf, m_view, t, rawPt, xformPt);
-				createMenuItem(null, menu, provisioner, tracker, m_view.dropEmptySpaceTFs.get( nvtf ) );
+				createMenuItem(null, menu, provisioner, null, tracker, m_view.dropEmptySpaceTFs.get( nvtf ) );
 			}
 			menu.show(invoker, (int)(rawPt.getX()), (int)(rawPt.getY()));
 		// execute the task directly if only one factory exists
 		} else if ( usableTFs.size() == 1) {
 			DropNetworkViewTaskFactory tf = usableTFs.iterator().next();
-			Object context = tf.createTunableContext();
-			m_view.manager.execute(tf.createTaskIterator(context, m_view, t, rawPt, xformPt), context);
+			m_view.manager.execute(tf.createTaskIterator(m_view, t, rawPt, xformPt));
 		}
 	}
 	/**
@@ -206,14 +202,13 @@ class PopupMenuHelper {
 			final JMenuTracker tracker = new JMenuTracker(menu);
 			for ( NetworkViewTaskFactory nvtf : usableTFs ) {
 				TaskFactory provisioner = factoryProvisioner.createFor(nvtf, m_view);
-				createMenuItem(null, menu, provisioner, tracker, m_view.emptySpaceTFs.get( nvtf ) );
+				createMenuItem(null, menu, provisioner, null, tracker, m_view.emptySpaceTFs.get( nvtf ) );
 			}
 			menu.show(invoker, x, y);
 		// execute the task directly if only one factory exists
 		} else if ( usableTFs.size() == 1) {
 			NetworkViewTaskFactory tf = usableTFs.iterator().next();
-			Object context = tf.createTunableContext();
-			m_view.manager.execute(tf.createTaskIterator(context, m_view), context);
+			m_view.manager.execute(tf.createTaskIterator(m_view));
 		}
 	}
 
@@ -222,21 +217,19 @@ class PopupMenuHelper {
 	 * "title" and "preferredMenu" keywords, depending on which are present
 	 * in the service properties.
 	 */
-	private void createMenuItem(View<?> view, JPopupMenu popup, TaskFactory tf,
+	private void createMenuItem(View<?> view, JPopupMenu popup, TaskFactory tf, Object tunableContext,
 	                            JMenuTracker tracker, Map props) {
 
 		String title = (String)(props.get("title"));
 		String pref = (String)(props.get("preferredMenu"));
 		String toolTip = (String) (props.get("tooltip"));
 
-		Object context = tf.createTunableContext();
-		
 		// check if the menus are created dynamically, and if so add the listener
 		final Object preferredTaskManager = props.get("preferredTaskManager");
 		if ( preferredTaskManager != null && preferredTaskManager.toString().equals("menu")) {
 			if ( title == null )
 				title = "Dynamic";
-			DynamicSubmenuListener submenu = m_view.menuTaskManager.getConfiguration(tf, context);
+			DynamicSubmenuListener submenu = m_view.menuTaskManager.getConfiguration(tf, tunableContext);
 	        submenu.setMenuTitle(title);
 			popup.addPopupMenuListener( submenu );
 			return;
@@ -279,11 +272,11 @@ class PopupMenuHelper {
 		// no title and no preferred menu
 		if ( title == null && pref == null ) {
 			title = "Unidentified Task: " + Integer.toString(tf.hashCode());
-			popup.add( createMenuItem(tf, context, title, useCheckBoxMenuItem, toolTip) );
+			popup.add( createMenuItem(tf, title, useCheckBoxMenuItem, toolTip) );
 
 		// title, but no preferred menu
 		} else if ( title != null && pref == null ) {
-			popup.add( createMenuItem(tf, context, title, useCheckBoxMenuItem, toolTip) );
+			popup.add( createMenuItem(tf, title, useCheckBoxMenuItem, toolTip) );
 
 		// no title, but preferred menu
 		} else if ( title == null && pref != null ) {
@@ -294,7 +287,7 @@ class PopupMenuHelper {
 				title = pref.substring(last + 1);
 				pref = pref.substring(0, last);
 				final GravityTracker gravityTracker = tracker.getGravityTracker(pref);
-				final JMenuItem item = createMenuItem(tf, context, title,useCheckBoxMenuItem, toolTip);
+				final JMenuItem item = createMenuItem(tf, title,useCheckBoxMenuItem, toolTip);
 				if (useCheckBoxMenuItem) {
 					final JCheckBoxMenuItem checkBox = (JCheckBoxMenuItem)item; 
 					checkBox.setSelected(isSelected);
@@ -303,25 +296,25 @@ class PopupMenuHelper {
 			// otherwise just use the preferred menu as the menuitem name
 			} else {
 				title = pref;
-				popup.add( createMenuItem(tf, context, title, useCheckBoxMenuItem, toolTip) );
+				popup.add( createMenuItem(tf, title, useCheckBoxMenuItem, toolTip) );
 			}
 
 		// title and preferred menu
 		} else {
 			final GravityTracker gravityTracker = tracker.getGravityTracker(pref);
-			gravityTracker.addMenuItem(createMenuItem(tf, context, title,useCheckBoxMenuItem, toolTip), ++largeValue);
+			gravityTracker.addMenuItem(createMenuItem(tf, title,useCheckBoxMenuItem, toolTip), ++largeValue);
 		}
 	}
 
-	private JMenuItem createMenuItem(TaskFactory tf, Object tunableContext, String title, boolean useCheckBoxMenuItem, String toolTipText) {
+	private JMenuItem createMenuItem(TaskFactory tf, String title, boolean useCheckBoxMenuItem, String toolTipText) {
 		JMenuItem item;
-		PopupAction action = new PopupAction(tf, tunableContext, title);
+		PopupAction action = new PopupAction(tf, title);
 		if ( useCheckBoxMenuItem )
 			item = new JCheckBoxMenuItem(action);
 		else
 			item = new JMenuItem(action);
 
-		item.setEnabled(tf.isReady(tunableContext));
+		item.setEnabled(tf.isReady());
 
 		item.setToolTipText(toolTipText);
 		return item;
@@ -352,15 +345,13 @@ class PopupMenuHelper {
 	 */
 	private class PopupAction extends AbstractAction {
 		TaskFactory tf;
-		Object tunableContext;
-		PopupAction(TaskFactory tf, Object context, String title) {
+		PopupAction(TaskFactory tf, String title) {
 			super( title );
 			this.tf = tf;
-			this.tunableContext = context;
 		}
 
 		public void actionPerformed(ActionEvent ae) {
-			m_view.manager.execute(tf.createTaskIterator(tunableContext), tunableContext);
+			m_view.manager.execute(tf.createTaskIterator());
 		}
 	}
 }

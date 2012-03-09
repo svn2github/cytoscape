@@ -38,14 +38,12 @@ import org.cytoscape.work.TaskIterator;
  * specified CyNetwork. 
  * @CyAPI.Spi.Interface
  */
-public interface RowTaskFactory<T> {
+public interface RowTaskFactory {
 	/** Provisions this factory with the {@link CyRow} that will be passed into any task created
 	 *  by it.
 	 *  @param row  a non-null CyRow
 	 */
-	TaskIterator createTaskIterator(T tunableContext, CyRow row);
+	TaskIterator createTaskIterator(CyRow row);
 	
-	boolean isReady(T tunableContext, CyRow row);
-
-	T createTunableContext();
+	boolean isReady(CyRow row);
 }

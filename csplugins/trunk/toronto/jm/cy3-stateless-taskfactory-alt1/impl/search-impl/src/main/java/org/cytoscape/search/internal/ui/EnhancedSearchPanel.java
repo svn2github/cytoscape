@@ -55,8 +55,7 @@ public class EnhancedSearchPanel extends javax.swing.JPanel {
 
 			final SearchTaskFactory factory = new SearchTaskFactory(searchMgr,
 					queryStr, viewManager, appManager);
-			Object context = factory.createTunableContext();
-			this.taskMgr.execute(factory.createTaskIterator(context, currentNetwork), context);
+			this.taskMgr.execute(factory.createTaskIterator(currentNetwork));
 		} else
 			logger.error("Could not find network for search");
 	}

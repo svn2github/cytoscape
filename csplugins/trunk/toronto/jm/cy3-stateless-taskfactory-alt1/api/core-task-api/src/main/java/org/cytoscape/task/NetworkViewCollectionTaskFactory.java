@@ -40,14 +40,12 @@ import org.cytoscape.work.TaskIterator;
  * specified CyNetworks. 
  * @CyAPI.Spi.Interface
  */
-public interface NetworkViewCollectionTaskFactory<T> {
+public interface NetworkViewCollectionTaskFactory {
 	/** Provisions this factory with the collection of network views that will be passed into
 	 *  any task created by it.
 	 *  @param nets  a non-null collection of {@link CyNetworkView}s
 	 */
-	TaskIterator createTaskIterator(T tunableContext, Collection<CyNetworkView> networkViews);
+	TaskIterator createTaskIterator(Collection<CyNetworkView> networkViews);
 	
-	boolean isReady(T tunableContext, Collection<CyNetworkView> networkViews);
-
-	T createTunableContext();
+	boolean isReady(Collection<CyNetworkView> networkViews);
 }

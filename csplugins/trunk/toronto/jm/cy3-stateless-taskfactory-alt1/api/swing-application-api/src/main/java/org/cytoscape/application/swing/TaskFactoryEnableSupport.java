@@ -44,7 +44,7 @@ import org.cytoscape.work.swing.DynamicSubmenuListener;
  */
 public final class TaskFactoryEnableSupport extends AbstractEnableSupport {
 
-	private final TaskFactory<?> tfp;
+	private final TaskFactory tfp;
 
 	/**
 	 * Constructor.
@@ -52,7 +52,7 @@ public final class TaskFactoryEnableSupport extends AbstractEnableSupport {
 	 * @param tfp The task factory enabler that indicates whether or not the submenu
 	 * listener should be enabled.
 	 */
-	public TaskFactoryEnableSupport(DynamicSubmenuListener submenuListener, TaskFactory<?> tfp) {
+	public TaskFactoryEnableSupport(DynamicSubmenuListener submenuListener, TaskFactory tfp) {
 		super(submenuListener);
 		this.tfp = tfp;
 	}
@@ -63,7 +63,7 @@ public final class TaskFactoryEnableSupport extends AbstractEnableSupport {
 	 * @param tfp The task factory enabler that indicates whether or not the action
 	 * should be enabled.
 	 */
-	public TaskFactoryEnableSupport(Action action, TaskFactory<?> tfp) {
+	public TaskFactoryEnableSupport(Action action, TaskFactory tfp) {
 		super(action);
 		this.tfp = tfp;
 	}
@@ -74,7 +74,7 @@ public final class TaskFactoryEnableSupport extends AbstractEnableSupport {
 	 * @param tfp The task factory enabler that indicates whether or not the menu item
 	 * should be enabled.
 	 */
-	public TaskFactoryEnableSupport(JMenuItem menuItem, TaskFactory<?> tfp) {
+	public TaskFactoryEnableSupport(JMenuItem menuItem, TaskFactory tfp) {
 		super(menuItem);
 		this.tfp = tfp;
 	}

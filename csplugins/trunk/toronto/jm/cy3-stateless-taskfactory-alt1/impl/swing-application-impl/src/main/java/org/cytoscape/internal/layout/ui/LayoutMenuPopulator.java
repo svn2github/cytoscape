@@ -49,11 +49,14 @@ import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.StringEnableSupport;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithmContext;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.swing.DynamicSubmenuListener;
 import org.cytoscape.work.swing.SubmenuTaskManager;
 import org.cytoscape.work.undo.UndoSupport;
@@ -97,9 +100,10 @@ public class LayoutMenuPopulator {
 		//       Implementors of CyLayoutAlgorithm would need to mimic that
 		//       somehow if they choose to implement from scratch.
 		UndoSupportTaskFactory<T> taskFactory = new UndoSupportTaskFactory<T>((AbstractLayoutAlgorithm<T>) layout, undo, eventHelper);
-		TaskFactory<T> provisioner = factoryProvisioner.createFor(taskFactory);
+		T context = taskFactory.createTunableContext();
+		TaskFactory provisioner = factoryProvisioner.createFor(wrapWithContext(taskFactory, context));
 		// get the submenu listener from the task manager
-		DynamicSubmenuListener submenu = tm.getConfiguration(provisioner, provisioner.createTunableContext());
+		DynamicSubmenuListener submenu = tm.getConfiguration(provisioner, context);
 		submenu.setMenuTitle(menuName);
 
 		// now wrap it in a menulistener that sets the current network view for the layout
@@ -117,6 +121,20 @@ public class LayoutMenuPopulator {
 		listenerMap.put(layout,ml);
 	}
 
+	private <T> NetworkViewTaskFactory wrapWithContext(final CyLayoutAlgorithm<T> layout, final T tunableContext) {
+		return new NetworkViewTaskFactory() {
+			@Override
+			public boolean isReady(CyNetworkView networkView) {
+				return layout.isReady(tunableContext, networkView);
+			}
+			
+			@Override
+			public TaskIterator createTaskIterator(CyNetworkView networkView) {
+				return layout.createTaskIterator(tunableContext, networkView);
+			}
+		};
+	}
+	
 	public void removeLayout(CyLayoutAlgorithm layout, Map props) {
 		String prefMenu = getPreferredMenu(props); 
 		

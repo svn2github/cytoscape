@@ -19,113 +19,76 @@ public class TaskFactoryProvisionerImpl implements TaskFactoryProvisioner {
 	}
 	
 	@Override
-	public <T> TaskFactory<T> createFor(final NetworkTaskFactory<T> factory) {
-		return new ProvisioningTaskFactory<T>() {
+	public  TaskFactory createFor(final NetworkTaskFactory factory) {
+		return new TaskFactory() {
 			@Override
-			public TaskIterator createTaskIterator(T tunableContext) {
-				return factory.createTaskIterator(tunableContext, applicationManager.getCurrentNetwork());
+			public TaskIterator createTaskIterator() {
+				return factory.createTaskIterator(applicationManager.getCurrentNetwork());
 			}
 			
 			@Override
-			public boolean isReady(T tunableContext) {
-				return factory.isReady(tunableContext, applicationManager.getCurrentNetwork());
-			}
-			
-			@Override
-			public T createTunableContext() {
-				return factory.createTunableContext();
+			public boolean isReady() {
+				return factory.isReady(applicationManager.getCurrentNetwork());
 			}
 		};
 	}
 
 	@Override
-	public <T> TaskFactory<T> createFor(final NetworkViewTaskFactory<T> factory) {
-		return new ProvisioningTaskFactory<T>() {
+	public  TaskFactory createFor(final NetworkViewTaskFactory factory) {
+		return new TaskFactory() {
 			@Override
-			public TaskIterator createTaskIterator(T tunableContext) {
-				return factory.createTaskIterator(tunableContext, applicationManager.getCurrentNetworkView());
+			public TaskIterator createTaskIterator() {
+				return factory.createTaskIterator(applicationManager.getCurrentNetworkView());
 			}
 			
 			@Override
-			public boolean isReady(T tunableContext) {
-				return factory.isReady(tunableContext, applicationManager.getCurrentNetworkView());
-			}
-			
-			@Override
-			public T createTunableContext() {
-				return factory.createTunableContext();
+			public boolean isReady() {
+				return factory.isReady(applicationManager.getCurrentNetworkView());
 			}
 		};
 	}
 
 	@Override
-	public <T> TaskFactory<T> createFor(final NetworkCollectionTaskFactory<T> factory) {
-		return new ProvisioningTaskFactory<T>() {
+	public  TaskFactory createFor(final NetworkCollectionTaskFactory factory) {
+		return new TaskFactory() {
 			@Override
-			public TaskIterator createTaskIterator(T tunableContext) {
-				return factory.createTaskIterator(tunableContext, applicationManager.getSelectedNetworks());
+			public TaskIterator createTaskIterator() {
+				return factory.createTaskIterator(applicationManager.getSelectedNetworks());
 			}
 			
 			@Override
-			public boolean isReady(T tunableContext) {
-				return factory.isReady(tunableContext, applicationManager.getSelectedNetworks());
-			}
-			
-			@Override
-			public T createTunableContext() {
-				return factory.createTunableContext();
+			public boolean isReady() {
+				return factory.isReady(applicationManager.getSelectedNetworks());
 			}
 		};
 	}
 
 	@Override
-	public <T> TaskFactory<T> createFor(final NetworkViewCollectionTaskFactory<T> factory) {
-		return new ProvisioningTaskFactory<T>() {
+	public  TaskFactory createFor(final NetworkViewCollectionTaskFactory factory) {
+		return new TaskFactory() {
 			@Override
-			public TaskIterator createTaskIterator(T tunableContext) {
-				return factory.createTaskIterator(tunableContext, applicationManager.getSelectedNetworkViews());
+			public TaskIterator createTaskIterator() {
+				return factory.createTaskIterator(applicationManager.getSelectedNetworkViews());
 			}
 			
 			@Override
-			public boolean isReady(T tunableContext) {
-				return factory.isReady(tunableContext, applicationManager.getSelectedNetworkViews());
-			}
-
-			@Override
-			public T createTunableContext() {
-				return factory.createTunableContext();
+			public boolean isReady() {
+				return factory.isReady(applicationManager.getSelectedNetworkViews());
 			}
 		};
 	}
 
 	@Override
-	public <T> TaskFactory<T> createFor(final TableTaskFactory<T> factory) {
-		return new ProvisioningTaskFactory<T>() {
-			public TaskIterator createTaskIterator(T tunableContext) {
-				return factory.createTaskIterator(tunableContext, applicationManager.getCurrentTable());
+	public  TaskFactory createFor(final TableTaskFactory factory) {
+		return new TaskFactory() {
+			public TaskIterator createTaskIterator() {
+				return factory.createTaskIterator(applicationManager.getCurrentTable());
 			}
 			
 			@Override
-			public boolean isReady(T tunableContext) {
-				return factory.isReady(tunableContext, applicationManager.getCurrentTable());
-			}
-			
-			@Override
-			public T createTunableContext() {
-				return factory.createTunableContext();
+			public boolean isReady() {
+				return factory.isReady(applicationManager.getCurrentTable());
 			}
 		};
-	}
-
-	private abstract class ProvisioningTaskFactory<T> implements TaskFactory<T> {
-		@Override
-		public TaskIterator createTaskIterator() {
-			return createTaskIterator(createTunableContext());
-		}
-		
-		@Override
-		public boolean isReady() {
-			return isReady(createTunableContext());
-		}
 	}
 }

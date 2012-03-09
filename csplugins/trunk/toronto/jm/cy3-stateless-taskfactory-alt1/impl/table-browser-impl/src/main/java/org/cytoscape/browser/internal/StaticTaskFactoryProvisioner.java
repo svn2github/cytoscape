@@ -10,52 +10,30 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 public class StaticTaskFactoryProvisioner {
-	public <T> TaskFactory<T> createFor(final TableCellTaskFactory<T> factory, final CyColumn column, final Object primaryKeyValue) {
+	public  TaskFactory createFor(final TableCellTaskFactory factory, final CyColumn column, final Object primaryKeyValue) {
 		final Reference<CyColumn> columnReference = new WeakReference<CyColumn>(column);
 		final Reference<Object> keyReference = new WeakReference<Object>(primaryKeyValue);
-		return new ProvisioningTaskFactory<T>() {
-			public TaskIterator createTaskIterator(T tunableContext) {
-				return factory.createTaskIterator(tunableContext, columnReference.get(), keyReference.get());
+		return new TaskFactory() {
+			public TaskIterator createTaskIterator() {
+				return factory.createTaskIterator(columnReference.get(), keyReference.get());
 			}
 			
-			public boolean isReady(T tunableContext) {
-				return factory.isReady(tunableContext, columnReference.get(), keyReference.get());
-			}
-			
-			@Override
-			public T createTunableContext() {
-				return factory.createTunableContext();
+			public boolean isReady() {
+				return factory.isReady(columnReference.get(), keyReference.get());
 			}
 		};
 	}
 	
-	public <T> TaskFactory<T> createFor(final TableColumnTaskFactory<T> factory, final CyColumn column) {
+	public  TaskFactory createFor(final TableColumnTaskFactory factory, final CyColumn column) {
 		final Reference<CyColumn> columnReference = new WeakReference<CyColumn>(column);
-		return new ProvisioningTaskFactory<T>() {
-			public TaskIterator createTaskIterator(T tunableContext) {
-				return factory.createTaskIterator(tunableContext, columnReference.get());
+		return new TaskFactory() {
+			public TaskIterator createTaskIterator() {
+				return factory.createTaskIterator(columnReference.get());
 			}
 			
-			public boolean isReady(T tunableContext) {
-				return factory.isReady(tunableContext, columnReference.get());
-			}
-			
-			@Override
-			public T createTunableContext() {
-				return factory.createTunableContext();
+			public boolean isReady() {
+				return factory.isReady(columnReference.get());
 			}
 		};
-	}
-
-	static abstract class ProvisioningTaskFactory<T> implements TaskFactory<T> {
-		@Override
-		public TaskIterator createTaskIterator() {
-			return createTaskIterator(null);
-		}
-		
-		@Override
-		public boolean isReady() {
-			return isReady(null);
-		}
 	}
 }
