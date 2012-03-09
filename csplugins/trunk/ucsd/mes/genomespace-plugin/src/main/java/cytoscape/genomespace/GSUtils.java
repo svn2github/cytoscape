@@ -18,6 +18,7 @@ import org.genomespace.client.exceptions.GSClientException;
 import org.genomespace.client.ui.GSLoginDialog;
 
 import org.genomespace.datamanager.core.GSFileMetadata;
+import org.genomespace.datamanager.core.GSDataFormat;
 
 
 final class GSUtils {
@@ -95,6 +96,17 @@ final class GSUtils {
 			nm.put(f.getName(), f);
 
 		return nm;
+	}
+
+	public static GSDataFormat findConversionFormat(Collection<GSDataFormat> availableFormats, String targetExt) {
+		if ( targetExt == null || targetExt.equals("") || availableFormats == null )
+			return null;
+
+		for ( GSDataFormat format : availableFormats ) 
+			if ( targetExt.equalsIgnoreCase( format.getFileExtension() ) )
+				return format;
+
+		return null;
 	}
 }
 

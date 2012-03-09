@@ -22,6 +22,7 @@ import org.genomespace.client.GsSession;
 import org.genomespace.client.User;
 import org.genomespace.client.ui.GSFileBrowserDialog;
 import org.genomespace.datamanager.core.GSFileMetadata;
+import org.genomespace.datamanager.core.GSDataFormat;
 
 
 public class LoadTableAttrsFromGenomeSpace extends CytoscapeAction {
@@ -54,9 +55,14 @@ public class LoadTableAttrsFromGenomeSpace extends CytoscapeAction {
 			if (fileMetadata == null)
 				return;
 
+			GSDataFormat dataFormat = fileMetadata.getDataFormat();
+            if ( fileMetadata.getDataFormat().getFileExtension().equalsIgnoreCase("gct") ||
+			     fileMetadata.getDataFormat().getFileExtension().equalsIgnoreCase("odf") )
+                dataFormat = GSUtils.findConversionFormat(fileMetadata.getAvailableDataFormats(), "attr");
+
 			// Download the GenomeSpace file:
 			tempFile = File.createTempFile("temp", fileMetadata.getName());
-			dataManagerClient.downloadFile(fileMetadata, tempFile, true);
+			dataManagerClient.downloadFile(fileMetadata, dataFormat, tempFile, true);
 
 			final ImportTextTableDialog dialog =
 				new ImportTextTableDialog(Cytoscape.getDesktop(), tempFile,

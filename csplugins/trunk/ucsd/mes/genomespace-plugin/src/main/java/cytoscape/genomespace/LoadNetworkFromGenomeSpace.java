@@ -22,6 +22,7 @@ import org.genomespace.client.DataManagerClient;
 import org.genomespace.client.GsSession;
 import org.genomespace.client.User;
 import org.genomespace.datamanager.core.GSFileMetadata;
+import org.genomespace.datamanager.core.GSDataFormat;
 
 
 public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
@@ -49,6 +50,8 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 			acceptableExtensions.add("sif");
 			acceptableExtensions.add("xgmml");
 			acceptableExtensions.add("gml");
+			acceptableExtensions.add("adj");
+			acceptableExtensions.add("gxp");
 			final GSFileBrowserDialog dialog =
 				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
 							acceptableExtensions,
@@ -56,10 +59,14 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 			final GSFileMetadata fileMetadata = dialog.getSelectedFileMetadata();
 			if (fileMetadata == null)
 				return;
+		
+			GSDataFormat dataFormat = fileMetadata.getDataFormat();
+			if ( fileMetadata.getDataFormat().getFileExtension().equalsIgnoreCase("adj") )
+				dataFormat = GSUtils.findConversionFormat(fileMetadata.getAvailableDataFormats(), "xgmml");
 
 			// Download the GenomeSpace file:
 			tempFile = File.createTempFile("temp", "cynetwork");
-			dataManagerClient.downloadFile(fileMetadata, tempFile, true);
+			dataManagerClient.downloadFile(fileMetadata, dataFormat, tempFile, true);
 
 			// Select the type of network reader:
 			final String origFileName = fileMetadata.getName();
