@@ -70,7 +70,7 @@ public class BioLayoutFRAlgorithm extends AbstractLayoutAlgorithm<BioLayoutFRCon
 	}
 	
 	@Override
-	public BioLayoutFRContext createTunableContext() {
+	public BioLayoutFRContext createLayoutContext() {
 		return new BioLayoutFRContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
 }

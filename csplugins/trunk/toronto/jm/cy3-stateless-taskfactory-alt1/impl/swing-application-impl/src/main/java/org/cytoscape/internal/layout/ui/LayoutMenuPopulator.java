@@ -54,6 +54,7 @@ import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithmContext;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutContext;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
@@ -100,7 +101,7 @@ public class LayoutMenuPopulator {
 		//       Implementors of CyLayoutAlgorithm would need to mimic that
 		//       somehow if they choose to implement from scratch.
 		UndoSupportTaskFactory<T> taskFactory = new UndoSupportTaskFactory<T>((AbstractLayoutAlgorithm<T>) layout, undo, eventHelper);
-		T context = taskFactory.createTunableContext();
+		T context = taskFactory.createLayoutContext();
 		TaskFactory provisioner = factoryProvisioner.createFor(wrapWithContext(taskFactory, context));
 		// get the submenu listener from the task manager
 		DynamicSubmenuListener submenu = tm.getConfiguration(provisioner, context);
@@ -121,16 +122,18 @@ public class LayoutMenuPopulator {
 		listenerMap.put(layout,ml);
 	}
 
-	private <T> NetworkViewTaskFactory wrapWithContext(final CyLayoutAlgorithm<T> layout, final T tunableContext) {
+	private <T extends CyLayoutContext> NetworkViewTaskFactory wrapWithContext(final CyLayoutAlgorithm<T> layout, final T tunableContext) {
 		return new NetworkViewTaskFactory() {
 			@Override
 			public boolean isReady(CyNetworkView networkView) {
-				return layout.isReady(tunableContext, networkView);
+				tunableContext.setNetworkView(networkView);
+				return layout.isReady(tunableContext);
 			}
 			
 			@Override
 			public TaskIterator createTaskIterator(CyNetworkView networkView) {
-				return layout.createTaskIterator(tunableContext, networkView);
+				tunableContext.setNetworkView(networkView);
+				return layout.createTaskIterator(tunableContext);
 			}
 		};
 	}

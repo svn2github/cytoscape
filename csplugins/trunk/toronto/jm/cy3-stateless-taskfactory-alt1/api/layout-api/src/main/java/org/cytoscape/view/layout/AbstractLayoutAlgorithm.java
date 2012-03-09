@@ -35,8 +35,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.TunableValidator.ValidationState;
 
@@ -45,7 +43,7 @@ import org.cytoscape.work.TunableValidator.ValidationState;
  * The AbstractLayoutAlgorithm provides a basic implementation of a layout TaskFactory.
  * @CyAPI.Abstract.Class
  */
-abstract public class AbstractLayoutAlgorithm<T extends AbstractLayoutAlgorithmContext> implements CyLayoutAlgorithm<T> {
+abstract public class AbstractLayoutAlgorithm<T extends CyLayoutContext> implements CyLayoutAlgorithm<T> {
 
 	private final boolean supportsSelectedOnly;
 	private final String humanName;
@@ -125,21 +123,15 @@ abstract public class AbstractLayoutAlgorithm<T extends AbstractLayoutAlgorithmC
 		return new ArrayList<String>();
 	}
 
-	public boolean isReady(T tunableContext, CyNetworkView networkView) {
-		tunableContext.setNetworkView(networkView);
+	@Override
+	public boolean isReady(T tunableContext) {
+		if (tunableContext.getNetworkView() == null) {
+			return false;
+		}
 		if (tunableContext instanceof TunableValidator) {
 			StringBuilder errors = new StringBuilder();
 			return ((TunableValidator) tunableContext).getValidationState(errors) == ValidationState.OK;
 		}
 		return true;
 	}
-	
-	public final TaskIterator createTaskIterator(T tunableContext, CyNetworkView networkView) {
-		tunableContext.setNetworkView(networkView);
-		if (tunableContext.useSelectedOnly())
-			tunableContext.initStaticNodes(networkView);
-		return createTaskIterator(tunableContext);
-	}
-
-	protected abstract TaskIterator createTaskIterator(T tunableContext);
 }

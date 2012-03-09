@@ -19,7 +19,7 @@ public class DegreeSortedCircleLayout extends AbstractLayoutAlgorithm<DegreeSort
 	}
 	
 	@Override
-	public DegreeSortedCircleContext createTunableContext() {
+	public DegreeSortedCircleContext createLayoutContext() {
 		return new DegreeSortedCircleContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
 }

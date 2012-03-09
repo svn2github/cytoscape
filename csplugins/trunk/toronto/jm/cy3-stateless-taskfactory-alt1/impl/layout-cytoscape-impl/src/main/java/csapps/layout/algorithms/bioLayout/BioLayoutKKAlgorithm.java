@@ -70,7 +70,7 @@ public class BioLayoutKKAlgorithm  extends AbstractLayoutAlgorithm<BioLayoutKKCo
 	}
 	
 	@Override
-	public BioLayoutKKContext createTunableContext() {
+	public BioLayoutKKContext createLayoutContext() {
 		return new BioLayoutKKContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
 }

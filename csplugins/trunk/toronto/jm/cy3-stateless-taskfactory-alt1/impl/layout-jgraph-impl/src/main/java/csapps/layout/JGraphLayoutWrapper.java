@@ -161,7 +161,7 @@ public class JGraphLayoutWrapper extends AbstractLayoutAlgorithm<AbstractLayoutA
 	}
 	
 	@Override
-	public AbstractLayoutAlgorithmContext createTunableContext() {
+	public AbstractLayoutAlgorithmContext createLayoutContext() {
 		return new AbstractLayoutAlgorithmContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
 }

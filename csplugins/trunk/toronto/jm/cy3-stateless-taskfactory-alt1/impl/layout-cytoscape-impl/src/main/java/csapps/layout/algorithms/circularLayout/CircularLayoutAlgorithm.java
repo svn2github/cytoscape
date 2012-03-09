@@ -20,7 +20,7 @@ public class CircularLayoutAlgorithm extends AbstractLayoutAlgorithm<CircularLay
 	}
 	
 	@Override
-	public CircularLayoutContext createTunableContext() {
+	public CircularLayoutContext createLayoutContext() {
 		return new CircularLayoutContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
 }

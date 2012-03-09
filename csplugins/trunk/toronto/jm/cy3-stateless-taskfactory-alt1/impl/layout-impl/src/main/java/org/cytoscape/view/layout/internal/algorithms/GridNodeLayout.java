@@ -52,7 +52,7 @@ public class GridNodeLayout extends AbstractLayoutAlgorithm<GridNodeLayoutContex
 	}
 	
 	@Override
-	public GridNodeLayoutContext createTunableContext() {
+	public GridNodeLayoutContext createLayoutContext() {
 		return new GridNodeLayoutContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
 }

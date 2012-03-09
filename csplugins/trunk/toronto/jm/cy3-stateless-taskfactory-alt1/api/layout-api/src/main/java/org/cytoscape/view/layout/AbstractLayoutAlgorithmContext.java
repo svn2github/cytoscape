@@ -15,7 +15,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
 
-public class AbstractLayoutAlgorithmContext {
+public class AbstractLayoutAlgorithmContext implements CyLayoutContext {
 
 	private static final String ALL_NODES = " All Nodes";
 	private static final String SELECTED_NODES_ONLY = " Selected Nodes Only";
@@ -145,6 +145,10 @@ public class AbstractLayoutAlgorithmContext {
 		node_count = Math.sqrt(node_count);
 		node_count *= 100;
 		currentSize = new Dimension((int) node_count, (int) node_count);
+		
+		if (useSelectedOnly()) {
+			initStaticNodes(networkView);
+		}
 	}
 	
 	public CyNetworkView getNetworkView() {

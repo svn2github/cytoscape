@@ -105,7 +105,7 @@ public class AttributeCircleLayout extends AbstractLayoutAlgorithm<AttributeCirc
 	}
 	
 	@Override
-	public AttributeCircleLayoutContext createTunableContext() {
+	public AttributeCircleLayoutContext createLayoutContext() {
 		return new AttributeCircleLayoutContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
 }

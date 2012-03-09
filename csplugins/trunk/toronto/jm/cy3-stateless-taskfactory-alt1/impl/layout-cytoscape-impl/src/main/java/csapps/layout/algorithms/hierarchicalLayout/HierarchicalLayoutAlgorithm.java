@@ -80,7 +80,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayoutAlgorithm<Hierarc
 	}
 	
 	@Override
-	public HierarchicalLayoutContext createTunableContext() {
+	public HierarchicalLayoutContext createLayoutContext() {
 		return new HierarchicalLayoutContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
 }

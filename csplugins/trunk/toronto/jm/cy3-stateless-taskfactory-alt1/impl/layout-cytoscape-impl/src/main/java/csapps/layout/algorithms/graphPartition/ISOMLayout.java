@@ -22,7 +22,7 @@ public class ISOMLayout extends AbstractLayoutAlgorithm<ISOMLayoutContext> {
 	}
 	
 	@Override
-	public ISOMLayoutContext createTunableContext() {
+	public ISOMLayoutContext createLayoutContext() {
 		return new ISOMLayoutContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
 }

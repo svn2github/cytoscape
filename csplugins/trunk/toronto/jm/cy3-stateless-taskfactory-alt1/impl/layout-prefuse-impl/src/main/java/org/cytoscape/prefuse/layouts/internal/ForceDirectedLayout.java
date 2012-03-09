@@ -41,7 +41,7 @@ public class ForceDirectedLayout extends AbstractLayoutAlgorithm<ForceDirectedLa
 	}
 	
 	@Override
-	public ForceDirectedLayoutContext createTunableContext() {
+	public ForceDirectedLayoutContext createLayoutContext() {
 		return new ForceDirectedLayoutContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
 }

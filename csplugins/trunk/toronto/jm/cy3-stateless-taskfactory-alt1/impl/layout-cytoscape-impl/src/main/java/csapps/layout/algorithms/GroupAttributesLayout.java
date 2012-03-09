@@ -85,7 +85,7 @@ public class GroupAttributesLayout extends AbstractLayoutAlgorithm<GroupAttribut
 	}
 
 	@Override
-	public GroupAttributesLayoutContext createTunableContext() {
+	public GroupAttributesLayoutContext createLayoutContext() {
 		return new GroupAttributesLayoutContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
 }

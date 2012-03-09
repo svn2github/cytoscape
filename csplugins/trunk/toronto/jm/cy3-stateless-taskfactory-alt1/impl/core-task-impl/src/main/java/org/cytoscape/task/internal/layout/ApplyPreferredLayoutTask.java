@@ -33,6 +33,7 @@ import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutContext;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -82,10 +83,11 @@ public class ApplyPreferredLayoutTask extends AbstractNetworkViewTask {
 			pref = props.getProperty("preferredLayoutAlgorithm", DEF_LAYOUT);
 		tm.setProgress(0.2d);
 		final CyLayoutAlgorithm layout = layouts.getLayout(pref);
-
 		if (layout != null) {
 			tm.setProgress(0.6);
-			insertTasksAfterCurrentTask(layout.createTaskIterator(layout.createTunableContext(), view));
+			CyLayoutContext context = layout.createLayoutContext();
+			context.setNetworkView(view);
+			insertTasksAfterCurrentTask(layout.createTaskIterator(context));
 		} else {
 			throw new IllegalArgumentException("Couldn't find layout algorithm: " + pref);
 		}

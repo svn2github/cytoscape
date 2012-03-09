@@ -49,7 +49,7 @@ public class StackedNodeLayout extends AbstractLayoutAlgorithm<StackedNodeLayout
 	}
 	
 	@Override
-	public StackedNodeLayoutContext createTunableContext() {
+	public StackedNodeLayoutContext createLayoutContext() {
 		return new StackedNodeLayoutContext(supportsSelectedOnly(), supportsNodeAttributes(), supportsEdgeAttributes());
 	}
 }

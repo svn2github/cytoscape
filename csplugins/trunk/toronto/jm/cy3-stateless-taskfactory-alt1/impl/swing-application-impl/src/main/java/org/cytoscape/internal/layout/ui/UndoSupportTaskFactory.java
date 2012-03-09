@@ -26,7 +26,7 @@ public class UndoSupportTaskFactory<T extends AbstractLayoutAlgorithmContext> ex
 	@Override
 	public TaskIterator createTaskIterator(T tunableContext) {
 		CyNetworkView networkView = tunableContext.getNetworkView();
-		TaskIterator source = delegate.createTaskIterator(tunableContext, networkView);
+		TaskIterator source = delegate.createTaskIterator(tunableContext);
 		Task[] tasks = new Task[source.getNumTasks() + 1];
 		tasks[0] = new UndoSupportTask(name, undo, eventHelper, networkView);
 		for (int i = 1; i < tasks.length; i++) {
@@ -35,12 +35,13 @@ public class UndoSupportTaskFactory<T extends AbstractLayoutAlgorithmContext> ex
 		return new TaskIterator(tasks.length, tasks);
 	}
 	
-	public boolean isReady(T tunableContext, CyNetworkView networkView) {
-		return delegate.isReady(tunableContext, networkView);
+	@Override
+	public boolean isReady(T tunableContext) {
+		return delegate.isReady(tunableContext);
 	}
 	
 	@Override
-	public T createTunableContext() {
-		return delegate.createTunableContext();
+	public T createLayoutContext() {
+		return delegate.createLayoutContext();
 	}
 }

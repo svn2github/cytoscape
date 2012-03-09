@@ -58,6 +58,7 @@ import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.view.layout.CyLayoutContext;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
@@ -358,7 +359,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			// if it's a string, that means it's the instructions
 			if (!(o instanceof String)) {
 				final CyLayoutAlgorithm newLayout = (CyLayoutAlgorithm)o;
-				Object context = newLayout.createTunableContext();
+				CyLayoutContext context = newLayout.createLayoutContext();
 				TaskFactory provisioner = factoryProvisioner.createFor(wrapWithContext(newLayout, context));
 				if (!provisioner.isReady()) {
 					throw new IllegalArgumentException("Layout is not fully configured");
@@ -380,16 +381,18 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		}
 	}
 
-	private <T> NetworkViewTaskFactory wrapWithContext(final CyLayoutAlgorithm<T> layout, final T tunableContext) {
+	private <T extends CyLayoutContext> NetworkViewTaskFactory wrapWithContext(final CyLayoutAlgorithm<T> layout, final T tunableContext) {
 		return new NetworkViewTaskFactory() {
 			@Override
 			public boolean isReady(CyNetworkView networkView) {
-				return layout.isReady(tunableContext, networkView);
+				tunableContext.setNetworkView(networkView);
+				return layout.isReady(tunableContext);
 			}
 			
 			@Override
 			public TaskIterator createTaskIterator(CyNetworkView networkView) {
-				return layout.createTaskIterator(tunableContext, networkView);
+				tunableContext.setNetworkView(networkView);
+				return layout.createTaskIterator(tunableContext);
 			}
 		};
 	}

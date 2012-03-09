@@ -2,6 +2,7 @@ package org.cytoscape.task.internal.quickstart.subnetworkbuilder;
 
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.view.layout.CyLayoutContext;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
@@ -21,9 +22,10 @@ public class ApplyLayoutTask extends AbstractTask {
 //	final CyLayoutAlgorithm layout = layouts.getLayout(CyLayoutAlgorithmManager.DEFAULT_LAYOUT_NAME);
 	final CyLayoutAlgorithm layout = layouts.getDefaultLayout();
 	taskMonitor.setProgress(0.1);
-	Object context = layout.createTunableContext();
+	CyLayoutContext context = layout.createLayoutContext();
+	context.setNetworkView(util.appManager.getCurrentNetworkView());
 	taskMonitor.setProgress(0.2);
-	insertTasksAfterCurrentTask(layout.createTaskIterator(context, util.appManager.getCurrentNetworkView()));
+	insertTasksAfterCurrentTask(layout.createTaskIterator(context));
 	
 	taskMonitor.setProgress(1.0);
     }
