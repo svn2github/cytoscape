@@ -32,11 +32,11 @@ package org.cytoscape.internal.view.help;
 
 import org.cytoscape.internal.view.CyDesktopManager.Arrange;
 import org.cytoscape.internal.view.CytoscapeDesktop;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class ArrangeTaskFactory extends SimpleTaskFactory {
+public class ArrangeTaskFactory extends AbstractTaskFactory {
 
 	private CytoscapeDesktop desk;
 	private Arrange arrange;

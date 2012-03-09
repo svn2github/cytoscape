@@ -2,12 +2,12 @@ package org.cytoscape.search.internal;
 
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.task.SimpleNetworkTaskFactory;
+import org.cytoscape.task.AbstractNetworkTaskFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskIterator;
 
 
-public class SearchTaskFactory extends SimpleNetworkTaskFactory {
+public class SearchTaskFactory extends AbstractNetworkTaskFactory {
 	private EnhancedSearch searchMgr;
 	private String query;
 	

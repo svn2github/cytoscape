@@ -4,10 +4,10 @@ import org.cytoscape.io.write.CyTableWriterManager;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.task.SimpleTableTaskFactory;
+import org.cytoscape.task.AbstractTableTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class ExportCurrentTableTaskFactory extends SimpleTableTaskFactory {
+public class ExportCurrentTableTaskFactory extends AbstractTableTaskFactory {
 
 	private final CyTableWriterManager writerManager;
 	private final CyTableManager cyTableManagerServiceRef;

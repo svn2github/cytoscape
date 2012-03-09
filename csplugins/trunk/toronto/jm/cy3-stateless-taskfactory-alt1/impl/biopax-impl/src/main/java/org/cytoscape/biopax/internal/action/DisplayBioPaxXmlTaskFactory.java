@@ -2,12 +2,12 @@ package org.cytoscape.biopax.internal.action;
 
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.task.SimpleNodeViewTaskFactory;
+import org.cytoscape.task.AbstractNodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 
-public class DisplayBioPaxXmlTaskFactory extends SimpleNodeViewTaskFactory {
+public class DisplayBioPaxXmlTaskFactory extends AbstractNodeViewTaskFactory {
 
 	private CySwingApplication cySwingApplication;
 

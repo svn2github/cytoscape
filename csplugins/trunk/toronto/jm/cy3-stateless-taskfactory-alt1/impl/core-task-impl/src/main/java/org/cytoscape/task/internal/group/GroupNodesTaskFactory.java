@@ -31,11 +31,11 @@ package org.cytoscape.task.internal.group;
 
 import org.cytoscape.group.CyGroupFactory;
 import org.cytoscape.group.CyGroupManager;
-import org.cytoscape.task.SimpleNetworkViewTaskFactory;
+import org.cytoscape.task.AbstractNetworkViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskIterator;
 
-public class GroupNodesTaskFactory extends SimpleNetworkViewTaskFactory {
+public class GroupNodesTaskFactory extends AbstractNetworkViewTaskFactory {
 	private CyGroupManager mgr;
 	private CyGroupFactory groupFactory;
 

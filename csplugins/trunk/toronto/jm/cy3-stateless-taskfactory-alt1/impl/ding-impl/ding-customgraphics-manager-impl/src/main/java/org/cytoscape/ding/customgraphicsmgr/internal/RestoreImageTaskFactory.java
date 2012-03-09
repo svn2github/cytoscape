@@ -3,10 +3,10 @@ package org.cytoscape.ding.customgraphicsmgr.internal;
 import java.io.File;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class RestoreImageTaskFactory extends SimpleTaskFactory {
+public class RestoreImageTaskFactory extends AbstractTaskFactory {
 	
 	private final File imageLocation;
 	private final CustomGraphicsManagerImpl manager;

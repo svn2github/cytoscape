@@ -6,11 +6,11 @@ import java.io.File;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.write.CyPropertyWriterManager;
 import org.cytoscape.property.CyProperty;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-final class PropertyWriterFactory extends SimpleTaskFactory {
+final class PropertyWriterFactory extends AbstractTaskFactory {
 	private final CyPropertyWriterManager writerManager;
 	private final CyProperty property;
 	private final File outputFile;

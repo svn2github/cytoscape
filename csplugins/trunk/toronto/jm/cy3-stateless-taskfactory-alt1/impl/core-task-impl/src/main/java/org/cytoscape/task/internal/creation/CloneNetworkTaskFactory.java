@@ -34,13 +34,13 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
-import org.cytoscape.task.SimpleNetworkTaskFactory;
+import org.cytoscape.task.AbstractNetworkTaskFactory;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskIterator;
 
-public class CloneNetworkTaskFactory extends SimpleNetworkTaskFactory {
+public class CloneNetworkTaskFactory extends AbstractNetworkTaskFactory {
     private final CyNetworkManager networkMgr;
     private final CyNetworkViewManager networkViewMgr;
     private final VisualMappingManager vmm;

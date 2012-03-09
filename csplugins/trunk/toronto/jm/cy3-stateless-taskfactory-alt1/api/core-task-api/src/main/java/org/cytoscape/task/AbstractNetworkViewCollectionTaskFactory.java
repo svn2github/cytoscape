@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.cytoscape.view.model.CyNetworkView;
 
-public abstract class SimpleNetworkViewCollectionTaskFactory implements NetworkViewCollectionTaskFactory {
+public abstract class AbstractNetworkViewCollectionTaskFactory implements NetworkViewCollectionTaskFactory {
 	@Override
 	public boolean isReady(Collection<CyNetworkView> networkViews) {
 		return true;

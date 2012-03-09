@@ -1,12 +1,12 @@
 package org.cytoscape.cpath2.internal;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.task.SimpleNodeViewTaskFactory;
+import org.cytoscape.task.AbstractNodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 
-public class ViewNetworkNeighborhoodTaskFactory extends SimpleNodeViewTaskFactory {
+public class ViewNetworkNeighborhoodTaskFactory extends AbstractNodeViewTaskFactory {
 	// TODO: Wire this up
 	
 	// TODO: This should be a service property

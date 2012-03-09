@@ -44,7 +44,7 @@ import org.cytoscape.property.CyProperty;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.creation.ImportNetworksTaskFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.SynchronousTaskManager;
 import org.cytoscape.work.TaskIterator;
 
@@ -52,7 +52,7 @@ import org.cytoscape.work.TaskIterator;
 /**
  * Task to load a new network.
  */
-public class LoadNetworkURLTaskFactoryImpl extends SimpleTaskFactory implements ImportNetworksTaskFactory {
+public class LoadNetworkURLTaskFactoryImpl extends AbstractTaskFactory implements ImportNetworksTaskFactory {
 
 	private CyNetworkReaderManager mgr;
 	private CyNetworkManager netmgr;

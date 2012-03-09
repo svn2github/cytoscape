@@ -9,12 +9,12 @@ import org.cytoscape.io.read.VizmapReaderManager;
 import org.cytoscape.task.creation.LoadVisualStyles;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.SynchronousTaskManager;
 import org.cytoscape.work.TaskIterator;
 
 
-public class LoadVizmapFileTaskFactoryImpl extends SimpleTaskFactory implements LoadVisualStyles {
+public class LoadVizmapFileTaskFactoryImpl extends AbstractTaskFactory implements LoadVisualStyles {
 
 	private final VizmapReaderManager vizmapReaderMgr;
 	private final VisualMappingManager vmMgr;

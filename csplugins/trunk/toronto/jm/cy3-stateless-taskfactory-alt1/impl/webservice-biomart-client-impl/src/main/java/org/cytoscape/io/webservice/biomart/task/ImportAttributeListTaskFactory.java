@@ -1,10 +1,10 @@
 package org.cytoscape.io.webservice.biomart.task;
 
 import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class ImportAttributeListTaskFactory extends SimpleTaskFactory {
+public class ImportAttributeListTaskFactory extends AbstractTaskFactory {
 	
 	final ImportAttributeListTask task;
 

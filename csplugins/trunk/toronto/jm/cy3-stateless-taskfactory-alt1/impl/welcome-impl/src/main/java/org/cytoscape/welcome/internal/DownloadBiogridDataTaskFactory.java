@@ -7,10 +7,10 @@ import java.util.Map;
 import javax.swing.JComboBox;
 
 import org.cytoscape.application.CyApplicationConfiguration;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class DownloadBiogridDataTaskFactory extends SimpleTaskFactory {
+public class DownloadBiogridDataTaskFactory extends AbstractTaskFactory {
 
 	private final JComboBox list;
 	

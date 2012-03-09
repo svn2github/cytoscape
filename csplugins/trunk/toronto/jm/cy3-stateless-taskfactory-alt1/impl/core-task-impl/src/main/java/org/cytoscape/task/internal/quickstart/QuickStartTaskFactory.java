@@ -30,11 +30,11 @@ package org.cytoscape.task.internal.quickstart;
 
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.task.internal.quickstart.subnetworkbuilder.SubnetworkBuilderUtil;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class QuickStartTaskFactory extends SimpleTaskFactory {
+public class QuickStartTaskFactory extends AbstractTaskFactory {
 	
 	protected final ImportTaskUtil util;
 	protected final CyNetworkManager networkManager;

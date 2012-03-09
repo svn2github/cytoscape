@@ -39,11 +39,11 @@ import org.cytoscape.io.util.RecentlyOpenedTracker;
 import org.cytoscape.session.CySession;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.task.creation.LoadSession;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.SynchronousTaskManager;
 import org.cytoscape.work.TaskIterator;
 
-public class OpenSessionTaskFactory extends SimpleTaskFactory implements LoadSession {
+public class OpenSessionTaskFactory extends AbstractTaskFactory implements LoadSession {
 
 	private CySessionManager mgr;
 	private CySessionReaderManager rmgr;

@@ -5,14 +5,14 @@ import java.util.Properties;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.property.CyProperty;
-import org.cytoscape.task.SimpleNetworkViewTaskFactory;
+import org.cytoscape.task.AbstractNetworkViewTaskFactory;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public class ApplyPreferredLayoutTaskFactory extends SimpleNetworkViewTaskFactory {
+public class ApplyPreferredLayoutTaskFactory extends AbstractNetworkViewTaskFactory {
 	private final UndoSupport undoSupport;
 	private final CyEventHelper eventHelper;
 	private final CyLayoutAlgorithmManager layouts;

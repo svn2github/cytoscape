@@ -30,11 +30,11 @@
 package org.cytoscape.internal.view.help;
 
 
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class HelpAboutTaskFactory extends SimpleTaskFactory {
+public class HelpAboutTaskFactory extends AbstractTaskFactory {
 
 	public TaskIterator createTaskIterator() {
 		return new TaskIterator(new HelpAboutTask());

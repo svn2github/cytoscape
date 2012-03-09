@@ -29,12 +29,12 @@ package org.cytoscape.task.internal.table;
 
 
 import org.cytoscape.model.CyColumn;
-import org.cytoscape.task.SimpleTableCellTaskFactory;
+import org.cytoscape.task.AbstractTableCellTaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public final class CopyValueToEntireColumnTaskFactory extends SimpleTableCellTaskFactory {
+public final class CopyValueToEntireColumnTaskFactory extends AbstractTableCellTaskFactory {
 	private final UndoSupport undoSupport;
 
 	public CopyValueToEntireColumnTaskFactory(final UndoSupport undoSupport) {

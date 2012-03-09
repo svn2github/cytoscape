@@ -2,14 +2,14 @@
 package org.cytoscape.network.merge.internal.task;
 
 import org.cytoscape.network.merge.internal.conflict.AttributeConflictCollector;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 /**
  *
  * @author jj
  */
-public class HandleConflictsTaskFactory extends SimpleTaskFactory {
+public class HandleConflictsTaskFactory extends AbstractTaskFactory {
     private AttributeConflictCollector conflictCollector;
 
     /**

@@ -34,11 +34,11 @@ import java.util.Collection;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.task.SimpleNetworkCollectionTaskFactory;
+import org.cytoscape.task.AbstractNetworkCollectionTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class DestroyNetworkTaskFactory extends SimpleNetworkCollectionTaskFactory {
+public class DestroyNetworkTaskFactory extends AbstractNetworkCollectionTaskFactory {
 	private CyNetworkManager netmgr;
 
 	public DestroyNetworkTaskFactory(CyNetworkManager netmgr) {

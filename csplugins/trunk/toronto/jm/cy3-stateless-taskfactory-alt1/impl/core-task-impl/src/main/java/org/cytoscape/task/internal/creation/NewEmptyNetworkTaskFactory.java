@@ -37,11 +37,11 @@ import org.cytoscape.task.creation.NewEmptyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.SynchronousTaskManager;
 import org.cytoscape.work.TaskIterator;
 
-public class NewEmptyNetworkTaskFactory extends SimpleTaskFactory implements NewEmptyNetworkViewFactory {
+public class NewEmptyNetworkTaskFactory extends AbstractTaskFactory implements NewEmptyNetworkViewFactory {
 	private final CyNetworkFactory cnf;
 	private final CyNetworkViewFactory cnvf;
 	private final CyNetworkManager netMgr;

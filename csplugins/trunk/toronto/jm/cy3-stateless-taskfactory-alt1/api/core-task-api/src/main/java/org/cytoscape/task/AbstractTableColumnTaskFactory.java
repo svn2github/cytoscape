@@ -33,7 +33,7 @@ import org.cytoscape.model.CyColumn;
  * The assumption is that setColumn() will be called before getTask() and that the Task in question
  * operates on the specified CyColumn. 
  */
-abstract public class SimpleTableColumnTaskFactory implements TableColumnTaskFactory {
+abstract public class AbstractTableColumnTaskFactory implements TableColumnTaskFactory {
 	@Override
 	public boolean isReady(CyColumn column) {
 		return true;

@@ -30,13 +30,13 @@
 package org.cytoscape.task.internal.zoom;  
 
 
-import org.cytoscape.task.SimpleNetworkViewTaskFactory;
+import org.cytoscape.task.AbstractNetworkViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public class FitContentTaskFactory extends SimpleNetworkViewTaskFactory {
+public class FitContentTaskFactory extends AbstractNetworkViewTaskFactory {
 	private final UndoSupport undoSupport;
 
 	public FitContentTaskFactory(final UndoSupport undoSupport) {

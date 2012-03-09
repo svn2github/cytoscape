@@ -70,7 +70,7 @@ import org.cytoscape.app.internal.action.AppManagerAction;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.property.bookmark.DataSource;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
@@ -1230,7 +1230,7 @@ public class AppManageDialog extends javax.swing.JDialog implements
 	}
 
 	
-	private class AppManagerInstallTaskFactory extends SimpleTaskFactory {
+	private class AppManagerInstallTaskFactory extends AbstractTaskFactory {
 		Task task;
 		public AppManagerInstallTaskFactory(Task task){
 			this.task = task;

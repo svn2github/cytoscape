@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService;
 
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
@@ -22,7 +22,7 @@ import org.ops4j.pax.logging.spi.PaxLoggingEvent;
 /**
  * @author Pasteur
  */
-public class ConsoleTaskFactory extends SimpleTaskFactory {
+public class ConsoleTaskFactory extends AbstractTaskFactory {
 	final BlockingQueue<PaxLoggingEvent> simpleQueue;
 	final BlockingQueue<PaxLoggingEvent> advancedQueue;
 	final ExecutorService service;

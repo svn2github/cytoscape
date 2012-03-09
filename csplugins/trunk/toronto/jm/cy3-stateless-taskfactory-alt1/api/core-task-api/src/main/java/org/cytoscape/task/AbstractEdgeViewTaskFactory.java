@@ -4,7 +4,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 
-public abstract class SimpleEdgeViewTaskFactory implements EdgeViewTaskFactory {
+public abstract class AbstractEdgeViewTaskFactory implements EdgeViewTaskFactory {
 	@Override
 	public boolean isReady(View<CyEdge> EdgeView, CyNetworkView networkView) {
 		return true;

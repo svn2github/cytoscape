@@ -31,11 +31,11 @@ package org.cytoscape.internal.view.help;
 
 
 import org.cytoscape.util.swing.OpenBrowser;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class HelpContactHelpDeskTaskFactory extends SimpleTaskFactory {
+public class HelpContactHelpDeskTaskFactory extends AbstractTaskFactory {
 
 	private OpenBrowser openBrowser;
 

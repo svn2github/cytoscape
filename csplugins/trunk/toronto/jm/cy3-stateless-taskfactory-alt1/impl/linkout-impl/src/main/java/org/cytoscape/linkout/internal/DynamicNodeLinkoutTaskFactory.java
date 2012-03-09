@@ -2,14 +2,14 @@ package org.cytoscape.linkout.internal;
 
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.task.SimpleNodeViewTaskFactory;
+import org.cytoscape.task.AbstractNodeViewTaskFactory;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 
 
-public class DynamicNodeLinkoutTaskFactory extends SimpleNodeViewTaskFactory {
+public class DynamicNodeLinkoutTaskFactory extends AbstractNodeViewTaskFactory {
 
 	private OpenBrowser browser;
 

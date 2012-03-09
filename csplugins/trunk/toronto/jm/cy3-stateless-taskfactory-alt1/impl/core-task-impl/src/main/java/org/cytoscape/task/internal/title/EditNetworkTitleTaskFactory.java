@@ -31,12 +31,12 @@ package org.cytoscape.task.internal.title;
 
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.task.SimpleNetworkTaskFactory;
+import org.cytoscape.task.AbstractNetworkTaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public class EditNetworkTitleTaskFactory extends SimpleNetworkTaskFactory {
+public class EditNetworkTitleTaskFactory extends AbstractNetworkTaskFactory {
 	private final UndoSupport undoSupport;
 
 	public EditNetworkTitleTaskFactory(final UndoSupport undoSupport) {

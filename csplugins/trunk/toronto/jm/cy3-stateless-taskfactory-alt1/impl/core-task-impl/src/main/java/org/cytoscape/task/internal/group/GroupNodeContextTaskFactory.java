@@ -34,12 +34,12 @@ import java.util.List;
 import org.cytoscape.group.CyGroup;
 import org.cytoscape.group.CyGroupManager;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.task.SimpleNodeViewTaskFactory;
+import org.cytoscape.task.AbstractNodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 
-public class GroupNodeContextTaskFactory extends SimpleNodeViewTaskFactory {
+public class GroupNodeContextTaskFactory extends AbstractNodeViewTaskFactory {
 	private CyGroupManager mgr;
 	private boolean collapse;
 

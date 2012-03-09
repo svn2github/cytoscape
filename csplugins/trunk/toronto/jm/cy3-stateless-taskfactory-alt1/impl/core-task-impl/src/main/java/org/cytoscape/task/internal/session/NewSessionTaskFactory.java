@@ -31,11 +31,11 @@ package org.cytoscape.task.internal.session;
 
 
 import org.cytoscape.session.CySessionManager;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class NewSessionTaskFactory extends SimpleTaskFactory {
+public class NewSessionTaskFactory extends AbstractTaskFactory {
 
 	private CySessionManager mgr;
 

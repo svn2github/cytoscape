@@ -2,10 +2,10 @@ package org.cytoscape.view.vizmap.gui.internal.task;
 
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class DeleteVisualStyleTaskFactory extends SimpleTaskFactory {
+public class DeleteVisualStyleTaskFactory extends AbstractTaskFactory {
 
 	private final VisualMappingManager vmm;
 	private final SelectedVisualStyleManager manager;

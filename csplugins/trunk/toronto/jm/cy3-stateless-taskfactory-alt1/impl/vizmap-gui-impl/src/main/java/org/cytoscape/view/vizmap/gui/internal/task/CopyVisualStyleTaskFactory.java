@@ -6,10 +6,10 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class CopyVisualStyleTaskFactory extends SimpleTaskFactory {
+public class CopyVisualStyleTaskFactory extends AbstractTaskFactory {
 
 	private final SelectedVisualStyleManager manager;
 	private final VizMapperUtil util;

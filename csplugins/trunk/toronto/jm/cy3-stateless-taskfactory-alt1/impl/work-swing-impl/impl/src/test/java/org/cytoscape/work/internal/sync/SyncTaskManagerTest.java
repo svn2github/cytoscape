@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
@@ -32,7 +32,7 @@ public class SyncTaskManagerTest {
 		taskManager.execute(tf.createTaskIterator());
 	}
 
-	public class TestTaskFactory extends SimpleTaskFactory {
+	public class TestTaskFactory extends AbstractTaskFactory {
 		public TaskIterator createTaskIterator() { return new TaskIterator( new TestTask() ); }
 	}
 

@@ -1,12 +1,12 @@
 package org.cytoscape.webservice.internal.task;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.task.SimpleNodeViewTaskFactory;
+import org.cytoscape.task.AbstractNodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 
-public class WebServiceNodeContextMenuTaskFactory extends SimpleNodeViewTaskFactory {
+public class WebServiceNodeContextMenuTaskFactory extends AbstractNodeViewTaskFactory {
 	
 	WebServiceNodeContextMenuTaskFactory() {
 		

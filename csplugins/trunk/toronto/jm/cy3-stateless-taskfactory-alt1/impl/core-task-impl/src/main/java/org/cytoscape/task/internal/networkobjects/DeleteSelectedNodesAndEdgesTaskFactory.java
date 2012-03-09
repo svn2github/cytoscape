@@ -34,12 +34,12 @@ import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-public class DeleteSelectedNodesAndEdgesTaskFactory extends SimpleTaskFactory {
+public class DeleteSelectedNodesAndEdgesTaskFactory extends AbstractTaskFactory {
 	private final UndoSupport undoSupport;
 	private final CyApplicationManager applicationManager;
 	private final CyNetworkViewManager networkViewManager;

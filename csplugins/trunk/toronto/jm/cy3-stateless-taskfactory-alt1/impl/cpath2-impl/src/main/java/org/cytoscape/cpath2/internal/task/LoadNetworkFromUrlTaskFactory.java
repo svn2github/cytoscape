@@ -3,10 +3,10 @@ package org.cytoscape.cpath2.internal.task;
 import java.net.URL;
 
 import org.cytoscape.cpath2.internal.CPath2Factory;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-public class LoadNetworkFromUrlTaskFactory extends SimpleTaskFactory {
+public class LoadNetworkFromUrlTaskFactory extends AbstractTaskFactory {
 
 	private URL url;
 	private CPath2Factory factory;

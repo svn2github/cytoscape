@@ -36,7 +36,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.SimpleTaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
@@ -397,7 +397,7 @@ class AdvancedLogViewer {
 		}
 	}
 
-	class ExportTaskFactory extends SimpleTaskFactory {
+	class ExportTaskFactory extends AbstractTaskFactory {
 		private final File file;
 
 		ExportTaskFactory(final File file) {
