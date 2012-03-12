@@ -40,7 +40,6 @@ import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.ProvidesGUI;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.TunableValidator.ValidationState;
 import org.cytoscape.work.util.BoundedDouble;
@@ -142,10 +141,4 @@ public class TunablesTestTask extends AbstractTask implements TunableValidator {
 		}
 	}
 
-//	@ProvidesGUI
-	public JPanel getGUI() {
-		final JPanel panel = new JPanel();
-		panel.add(new JLabel("Panel from an @ProvidesGUI-annotated class!"));
-		return panel;
-	}
 }

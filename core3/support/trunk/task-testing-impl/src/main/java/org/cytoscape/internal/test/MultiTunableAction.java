@@ -79,16 +79,11 @@ public class MultiTunableAction extends AbstractCyAction {
 
 	public class DummyTask2 extends AbstractTask {
 
-		@ProvidesGUI
-		public JPanel getGUI() {
-			JPanel jpanel = new JPanel();
-			jpanel.add( new JLabel("hello"));
-			return jpanel;
-		}
-
+		@Tunable(description="int value2")
+		public int value;
 		public void run(TaskMonitor taskMonitor) throws Exception {
 			Thread.sleep(1000);
-			System.out.println("dummy 2 executed ");
+			System.out.println("dummy 2 got value: " + value);
 			Thread.sleep(1000);
 		}
 	}
