@@ -64,6 +64,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.JLayeredPane;
 
+import org.cytoscape.ding.DVisualLexicon;
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.GraphViewChangeListener;
@@ -2948,19 +2949,16 @@ public class DGraphView extends AbstractDViewModel<CyNetwork> implements CyNetwo
 	public <T, V extends T> void setViewDefault(VisualProperty<? extends T> vp, V defaultValue) {
 		final Class<?> targetType = vp.getTargetDataType();
 		
-		// Filter some special cases here: In DING, there is no default W, H, and D.
+		// Filter some special cases here: In DING, there is no default W, H, and D.  Also, Custm Graphics should be applied for each view.
 		if (vp == BasicVisualLexicon.NODE_SIZE || vp == BasicVisualLexicon.NODE_WIDTH
 				|| vp == BasicVisualLexicon.NODE_HEIGHT) {
 			applyToAll(vp, defaultValue);
 			return;
 		}
-		// The following is a bit hacky, and we need to remove this when we refactor DING.
-		// Special case: Custom Graphics
+		
 		if((VisualProperty<?>)vp instanceof CustomGraphicsVisualProperty) {
-			if(defaultValue != NullCustomGraphics.getNullObject()) {
-				applyToAll(vp, defaultValue);
-				return;
-			}
+			applyToAll(vp, defaultValue);
+			return;
 		}
 		
 		if (vp != DVisualLexicon.NODE_LABEL_POSITION && defaultValue instanceof ObjectPosition) {

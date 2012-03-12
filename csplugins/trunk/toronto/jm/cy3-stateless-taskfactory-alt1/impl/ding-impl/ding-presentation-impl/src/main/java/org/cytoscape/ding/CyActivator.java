@@ -8,7 +8,6 @@ import org.cytoscape.ding.customgraphics.CustomGraphicsManager;
 import org.cytoscape.ding.dependency.CustomGraphicsSizeDependency;
 import org.cytoscape.ding.dependency.EdgePaintToArrowHeadPaintDependency;
 import org.cytoscape.ding.impl.AddEdgeNodeViewTaskFactoryImpl;
-import org.cytoscape.ding.impl.DVisualLexicon;
 import org.cytoscape.ding.impl.DingNavigationRenderingEngineFactory;
 import org.cytoscape.ding.impl.DingRenderingEngineFactory;
 import org.cytoscape.ding.impl.DingViewModelFactory;
@@ -24,6 +23,7 @@ import org.cytoscape.ding.impl.editor.EdgeBendEditor;
 import org.cytoscape.ding.impl.editor.EdgeBendPropertyEditor;
 import org.cytoscape.ding.impl.editor.EdgeBendValueEditor;
 import org.cytoscape.ding.impl.editor.ObjectPositionEditor;
+import org.cytoscape.ding.impl.HandleFactoryImpl;
 import org.cytoscape.dnd.DropNetworkViewTaskFactory;
 import org.cytoscape.dnd.DropNodeViewTaskFactory;
 import org.cytoscape.dnd.GraphicalEntity;
@@ -212,25 +212,11 @@ public class CyActivator extends AbstractCyActivator {
 		GraphicsDetailAction graphicsDetailAction = new GraphicsDetailAction(applicationManagerManagerServiceRef, dialogTaskManager,
 				 cyPropertyServiceRef);
 		registerAllServices(bc,graphicsDetailAction, new Properties());
+	
 		
-		
-//		// Debug:
-//		try {
-//			final ServiceReference[] refs = bc.getServiceReferences("org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor",
-//					null);
-//
-//			System.out.println("%%%%%% REFS in DING = " + refs);
-//			for (ServiceReference ref : refs) {
-//				final Object service = bc.getService(ref);
-//
-//				System.out.println("* serv = " + service);
-//			}
-//			
-//			System.out.println("---------------\n\n\n");
-//		} catch (InvalidSyntaxException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		HandleFactory handleFactory = new HandleFactoryImpl();
+		registerService(bc,handleFactory,HandleFactory.class,new Properties());
+
 	}
 }
 

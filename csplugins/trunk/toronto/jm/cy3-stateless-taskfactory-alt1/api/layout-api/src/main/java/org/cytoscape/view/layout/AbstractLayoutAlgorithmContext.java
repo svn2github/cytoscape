@@ -1,6 +1,5 @@
 package org.cytoscape.view.layout;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,7 +35,6 @@ public class AbstractLayoutAlgorithmContext implements CyLayoutContext {
 	
 	private String edgeAttribute = null;
 	private String nodeAttribute = null;
-	private Dimension currentSize = new Dimension(20, 20);
 	
 	private Set<Class<?>> supportedNodeAttributes;
 	private Set<Class<?>> supportedEdgeAttributes;
@@ -51,7 +49,7 @@ public class AbstractLayoutAlgorithmContext implements CyLayoutContext {
 	 * @return The list single selection object that specifies the submenu
 	 * names to be used for generating selection submenus. 
 	 */
-	@Tunable(description="Apply to")
+	@Tunable(description = "Apply to")
 	public ListSingleSelection<String> getSubmenuOptions() {
 
 		List<String> possibleValues = new ArrayList<String>();
@@ -59,79 +57,65 @@ public class AbstractLayoutAlgorithmContext implements CyLayoutContext {
 		Set<Class<?>> nodeAttrTypes = supportedNodeAttributes;
 		Set<Class<?>> edgeAttrTypes = supportedEdgeAttributes;
 
-		if ( nodeAttrTypes != null && !nodeAttrTypes.isEmpty() ) {
-	        for (final CyColumn column : network.getDefaultNodeTable().getColumns()) 
-	            if (nodeAttrTypes.contains(column.getType()))
+		if (nodeAttrTypes != null && !nodeAttrTypes.isEmpty()) {
+			for (final CyColumn column : network.getDefaultNodeTable().getColumns())
+				if (nodeAttrTypes.contains(column.getType()))
 					possibleValues.add(NODE_PREFIX + column.getName());
-		} else if ( edgeAttrTypes != null && !edgeAttrTypes.isEmpty() ) {
-	        for (final CyColumn column : network.getDefaultEdgeTable().getColumns()) 
-	            if (edgeAttrTypes.contains(column.getType()))
+		} else if (edgeAttrTypes != null && !edgeAttrTypes.isEmpty()) {
+			for (final CyColumn column : network.getDefaultEdgeTable().getColumns())
+				if (edgeAttrTypes.contains(column.getType()))
 					possibleValues.add(EDGE_PREFIX + column.getName());
 		}
-	
+
 		int numSelected = CyTableUtil.getNodesInState(network, CyNetwork.SELECTED, true).size();
 		if (supportsSelectedOnly && numSelected > 0) {
 
-			if ( possibleValues.isEmpty() ) {
+			if (possibleValues.isEmpty()) {
 				possibleValues.add(ALL_NODES);
 				possibleValues.add(SELECTED_NODES_ONLY);
 			} else {
 				List<String> newPossibleValues = new ArrayList<String>();
-				for ( String pv : possibleValues ) {
+				for (String pv : possibleValues) {
 					newPossibleValues.add(pv + ALL_NODES);
 					newPossibleValues.add(pv + SELECTED_NODES_ONLY);
-				}		
+				}
 				possibleValues = newPossibleValues;
 			}
-		} 
+		}
 
-//		if ( possibleValues.isEmpty() )
-//			possibleValues.add( humanName );
-		
-		submenuDef = new ListSingleSelection<String>( possibleValues );
+		submenuDef = new ListSingleSelection<String>(possibleValues);
 		if (possibleValues.size() > 0) {
 			submenuDef.setSelectedValue(possibleValues.get(0));
 		}
 		return submenuDef;
 	}
 
-	/**
-	 * This method is a no-op.  Don't use it.
-	 */	
-	public void setSubmenuOptions(ListSingleSelection<String> opts) {
-		// no-op
+	protected void configureLayoutFromSubmenuSelection() {
+		String selectedMenu = submenuDef.getSelectedValue();
+
+		if (selectedMenu == null || selectedMenu == "")
+			return;
+
+		setSelectedOnly(selectedMenu.endsWith(SELECTED_NODES_ONLY));
+
+		if (selectedMenu.endsWith(ALL_NODES))
+			selectedMenu = selectedMenu.replaceFirst(ALL_NODES, "");
+		if (selectedMenu.endsWith(SELECTED_NODES_ONLY))
+			selectedMenu = selectedMenu.replaceFirst(SELECTED_NODES_ONLY, "");
+
+		if (selectedMenu.startsWith(NODE_PREFIX))
+			selectedMenu = selectedMenu.replaceFirst(NODE_PREFIX, "");
+		if (selectedMenu.startsWith(EDGE_PREFIX))
+			selectedMenu = selectedMenu.replaceFirst(EDGE_PREFIX, "");
+
+		if (selectedMenu.length() > 0)
+			setLayoutAttribute(selectedMenu);
 	}
 
 	public AbstractLayoutAlgorithmContext(boolean supportsSelectedOnly, Set<Class<?>> supportedNodeAttributes, Set<Class<?>> supportedEdgeAttributes) {
 		this.supportsSelectedOnly = supportsSelectedOnly;
 		this.supportedNodeAttributes = supportedNodeAttributes;
 		this.supportedEdgeAttributes = supportedEdgeAttributes;
-	}
-	
-	/**
-	 *
-	 */
-	protected void configureLayoutFromSubmenuSelection() {
-		String selectedMenu = submenuDef.getSelectedValue(); 
-
-		if ( selectedMenu == null || selectedMenu == "" )
-			return;
-
-		setSelectedOnly( selectedMenu.endsWith(SELECTED_NODES_ONLY) );
-
-		if ( selectedMenu.endsWith( ALL_NODES ) ) 
-			selectedMenu = selectedMenu.replaceFirst( ALL_NODES, "" );
-		if ( selectedMenu.endsWith( SELECTED_NODES_ONLY ) ) 
-			selectedMenu = selectedMenu.replaceFirst( SELECTED_NODES_ONLY, "" );
-
-
-		if ( selectedMenu.startsWith( NODE_PREFIX ) ) 
-			selectedMenu = selectedMenu.replaceFirst( NODE_PREFIX, "" );
-		if ( selectedMenu.startsWith( EDGE_PREFIX ) ) 
-			selectedMenu = selectedMenu.replaceFirst( EDGE_PREFIX, "" );
-
-		if ( selectedMenu.length() > 0 )
-			setLayoutAttribute(selectedMenu);	
 	}
 	
 	/**
@@ -144,7 +128,6 @@ public class AbstractLayoutAlgorithmContext implements CyLayoutContext {
 		double node_count = (double) network.getNodeCount();
 		node_count = Math.sqrt(node_count);
 		node_count *= 100;
-		currentSize = new Dimension((int) node_count, (int) node_count);
 		
 		if (useSelectedOnly()) {
 			initStaticNodes(networkView);

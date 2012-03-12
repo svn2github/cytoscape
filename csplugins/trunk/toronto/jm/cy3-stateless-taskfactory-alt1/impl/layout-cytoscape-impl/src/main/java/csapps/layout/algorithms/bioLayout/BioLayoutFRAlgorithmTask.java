@@ -1,12 +1,12 @@
 package csapps.layout.algorithms.bioLayout;
 
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 
 import org.cytoscape.view.layout.LayoutEdge;
 import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.view.layout.LayoutPartition;
+import org.cytoscape.view.layout.LayoutPoint;
 
 
 public class BioLayoutFRAlgorithmTask extends BioLayoutAlgorithmTask {
@@ -105,7 +105,7 @@ public class BioLayoutFRAlgorithmTask extends BioLayoutAlgorithmTask {
 	public void layoutPartion(LayoutPartition partition) {
 		this.partition = partition;
 
-		Dimension initialLocation = null;
+		LayoutPoint initialLocation = null;
 
 		/* Get all of our profiles */
 		/*
@@ -136,9 +136,8 @@ public class BioLayoutFRAlgorithmTask extends BioLayoutAlgorithmTask {
 		}
 
 		// Figure out our starting point
-		if (selectedOnly) {
+		if (selectedOnly)
 			initialLocation = partition.getAverageLocation();
-		}
 
 		// Randomize our points, if any points lie
 		// outside of our bounds
@@ -206,9 +205,9 @@ public class BioLayoutFRAlgorithmTask extends BioLayoutAlgorithmTask {
 		if (selectedOnly) {
 			double xDelta = 0.0;
 			double yDelta = 0.0;
-			Dimension finalLocation = partition.getAverageLocation();
-			xDelta = finalLocation.getWidth() - initialLocation.getWidth();
-			yDelta = finalLocation.getHeight() - initialLocation.getHeight();
+			final LayoutPoint finalLocation = partition.getAverageLocation();
+			xDelta = finalLocation.getX() - initialLocation.getX();
+			yDelta = finalLocation.getY() - initialLocation.getY();
 
 			for (LayoutNode v: partition.getNodeList()) {
 				if (!v.isLocked()) {

@@ -53,6 +53,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 import org.cytoscape.ding.DNodeShape;
+import org.cytoscape.ding.DVisualLexicon;
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.Label;
@@ -73,7 +74,6 @@ import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
-import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 import org.cytoscape.view.presentation.property.values.LineType;
 import org.cytoscape.view.presentation.property.values.NodeShape;
 
@@ -554,6 +554,8 @@ public class DNodeView extends AbstractDViewModel<CyNode> implements NodeView, L
 			graphView.m_spacial.delete(m_inx);
 			graphView.m_spacial.insert(m_inx, xMin, yMin, xMax, yMax);
 			graphView.m_contentChanged = true;
+			setVisualProperty(BasicVisualLexicon.NODE_X_LOCATION,x);
+			setVisualProperty(BasicVisualLexicon.NODE_Y_LOCATION,y);
 		}
 	}
 
@@ -1247,14 +1249,12 @@ public class DNodeView extends AbstractDViewModel<CyNode> implements NodeView, L
 	}
 
 	private void applyCustomGraphics(final VisualProperty<?> vp, final CyCustomGraphics<CustomGraphic> customGraphics) {
-
 		Set<CustomGraphic> dCustomGraphicsSet = cgMap.get(vp);
 		if (dCustomGraphicsSet == null)
 			dCustomGraphicsSet = new HashSet<CustomGraphic>();
 
-		for (final CustomGraphic cg : dCustomGraphicsSet) {
+		for (final CustomGraphic cg : dCustomGraphicsSet)
 			removeCustomGraphic(cg);
-		}
 
 		dCustomGraphicsSet.clear();
 

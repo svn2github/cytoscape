@@ -28,7 +28,6 @@
 package org.cytoscape.prefuse.layouts.internal; 
 
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,6 +40,7 @@ import org.cytoscape.view.layout.EdgeWeighter;
 import org.cytoscape.view.layout.LayoutEdge;
 import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.view.layout.LayoutPartition;
+import org.cytoscape.view.layout.LayoutPoint;
 
 import prefuse.util.force.DragForce;
 import prefuse.util.force.ForceItem;
@@ -107,7 +107,7 @@ public class ForceDirectedLayoutTask extends AbstractPartitionLayoutTask {
 
 
 	public void layoutPartion(LayoutPartition part) {
-		Dimension initialLocation = null;
+		LayoutPoint initialLocation = null;
 		// System.out.println("layoutPartion: "+part.getEdgeList().size()+" edges");
 		// Calculate our edge weights
 		part.calculateEdgeWeights();
@@ -147,9 +147,8 @@ public class ForceDirectedLayoutTask extends AbstractPartitionLayoutTask {
 		}
 
 		// Figure out our starting point
-		if (selectedOnly) {
+		if (selectedOnly)
 			initialLocation = part.getAverageLocation();
-		}
 
 		// perform layout
 		long timestep = 1000L;
@@ -174,9 +173,9 @@ public class ForceDirectedLayoutTask extends AbstractPartitionLayoutTask {
 		if (selectedOnly) {
 			double xDelta = 0.0;
 			double yDelta = 0.0;
-			Dimension finalLocation = part.getAverageLocation();
-			xDelta = finalLocation.getWidth() - initialLocation.getWidth();
-			yDelta = finalLocation.getHeight() - initialLocation.getHeight();
+			final LayoutPoint finalLocation = part.getAverageLocation();
+			xDelta = finalLocation.getX() - initialLocation.getX();
+			yDelta = finalLocation.getY() - initialLocation.getY();
 			for (LayoutNode v: part.getNodeList()) {
 				if (!v.isLocked()) {
 					v.decrement(xDelta, yDelta);

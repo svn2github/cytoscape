@@ -93,6 +93,8 @@ import org.cytoscape.task.internal.setcurrent.SetCurrentNetworkTaskFactoryImpl;
 import org.cytoscape.task.internal.table.CopyValueToEntireColumnTaskFactory;
 import org.cytoscape.task.internal.table.DeleteColumnTaskFactory;
 import org.cytoscape.task.internal.table.DeleteTableTaskFactory;
+import org.cytoscape.task.internal.table.MapGlobalToLocalTableTask;
+import org.cytoscape.task.internal.table.MapGlobalToLocalTableTaskFactory;
 import org.cytoscape.task.internal.table.RenameColumnTaskFactory;
 import org.cytoscape.task.internal.title.EditNetworkTitleTaskFactory;
 import org.cytoscape.task.internal.zoom.FitContentTaskFactory;
@@ -210,7 +212,7 @@ public class CyActivator extends AbstractCyActivator {
 		SaveSessionTaskFactory saveSessionTaskFactory = new SaveSessionTaskFactory( sessionWriterManagerServiceRef, cySessionManagerServiceRef, recentlyOpenedTrackerServiceRef, cyEventHelperRef);
 		SaveSessionAsTaskFactory saveSessionAsTaskFactory = new SaveSessionAsTaskFactory( sessionWriterManagerServiceRef, cySessionManagerServiceRef, recentlyOpenedTrackerServiceRef, cyEventHelperRef);
 		ProxySettingsTaskFactory proxySettingsTaskFactory = new ProxySettingsTaskFactory(cyPropertyServiceRef, streamUtilRef);
-		EditNetworkTitleTaskFactory editNetworkTitleTaskFactory = new EditNetworkTitleTaskFactory(undoSupportServiceRef);
+		EditNetworkTitleTaskFactory editNetworkTitleTaskFactory = new EditNetworkTitleTaskFactory(undoSupportServiceRef, cyNetworkManagerServiceRef, cyNetworkNamingServiceRef);
 		CreateNetworkViewTaskFactory createNetworkViewTaskFactory = new CreateNetworkViewTaskFactory(undoSupportServiceRef,cyNetworkViewFactoryServiceRef,cyNetworkViewManagerServiceRef,cyLayoutsServiceRef,cyEventHelperRef);
 		ExportNetworkImageTaskFactory exportNetworkImageTaskFactory = new ExportNetworkImageTaskFactory(viewWriterManagerServiceRef,cyApplicationManagerServiceRef);
 		ExportNetworkViewTaskFactory exportNetworkViewTaskFactory = new ExportNetworkViewTaskFactory(networkViewWriterManagerServiceRef);
@@ -233,6 +235,18 @@ public class CyActivator extends AbstractCyActivator {
 		
 		TaskFactoryProvisionerImpl factoryProvisioner = new TaskFactoryProvisionerImpl(cyApplicationManagerServiceRef);
 		registerService(bc, factoryProvisioner, TaskFactoryProvisioner.class, new Properties());
+		
+		MapGlobalToLocalTableTaskFactory mapGlobal = new MapGlobalToLocalTableTaskFactory(cyTableManagerServiceRef, cyNetworkManagerServiceRef);
+		
+		Properties mapGlobalProps = new Properties();
+		mapGlobalProps.setProperty("id","mapGlobalToLocalTableTaskFactory");
+		mapGlobalProps.setProperty("preferredMenu","Tools");
+		mapGlobalProps.setProperty("accelerator","cmd m");
+		mapGlobalProps.setProperty("title", "Map Global Table to Local Table");
+		mapGlobalProps.setProperty("menuGravity","1.0");
+		mapGlobalProps.setProperty("toolBarGravity","3.0");
+		mapGlobalProps.setProperty("inToolBar","false");
+		registerAllServices(bc, mapGlobal, mapGlobalProps);
 		
 		Properties loadNetworkFileTaskFactoryProps = new Properties();
 		loadNetworkFileTaskFactoryProps.setProperty("id","loadNetworkFileTaskFactory");

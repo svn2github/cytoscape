@@ -1,4 +1,4 @@
-package org.cytoscape.task;
+	package org.cytoscape.task;
 
 
 import java.util.ArrayList;
@@ -35,14 +35,19 @@ public final class MapNetworkAttrTask extends AbstractTask {
 
 	private static final Logger logger = LoggerFactory.getLogger(MapNetworkAttrTask.class);
 
-	private static final String CURRENT_LOCAL = "Just the current network";
+	private static final String CURRENT_LOCAL = "Only to the current network";
 	private static final String CURRENT_SHARED = "All networks related to current network";
 	private static final String ALL_SHARED = "All networks";
-	private static final String INDEPENDENT = "None (make table independent)";
+	private static final String INDEPENDENT = "None (create Global Table w/o mapping)";
 
-	@Tunable(description="Would you like to map this table to:")
-	public ListSingleSelection<String> whichTable;
-
+	@Tunable(description = "Would you like to map this table to:")
+	public static final ListSingleSelection<String> whichTable = new ListSingleSelection<String>(CURRENT_SHARED,
+			CURRENT_LOCAL, ALL_SHARED, INDEPENDENT);
+	static {
+		// Default selected item is map to local.
+		whichTable.setSelectedValue(CURRENT_LOCAL);
+	}
+	
 	@ProvidesTitle
 	public String getTitle() {
 		return "Map Table";
@@ -77,8 +82,6 @@ public final class MapNetworkAttrTask extends AbstractTask {
 		this.applicationManager = applicationManager;
 		this.rootNetworkManager = rootNetworkManager;
 
-		this.whichTable = new ListSingleSelection<String>(CURRENT_SHARED, CURRENT_LOCAL, ALL_SHARED, INDEPENDENT);
-
 		if (type != CyNode.class && type != CyEdge.class)
 			throw new IllegalArgumentException("\"type\" must be CyNode.class or CyEdge.class!");
 	}
@@ -112,9 +115,8 @@ public final class MapNetworkAttrTask extends AbstractTask {
 		taskMonitor.setTitle("Mapping virtual columns");
 
 		final List<CyTable> targetTables = new ArrayList<CyTable>();
-		
 		final String selection = whichTable.getSelectedValue();
-
+		
 		if (selection.equals(CURRENT_LOCAL)) {
 			final CyNetwork currentNetwork = applicationManager.getCurrentNetwork();
 			targetTables.add(type == CyNode.class ? currentNetwork.getDefaultNodeTable()

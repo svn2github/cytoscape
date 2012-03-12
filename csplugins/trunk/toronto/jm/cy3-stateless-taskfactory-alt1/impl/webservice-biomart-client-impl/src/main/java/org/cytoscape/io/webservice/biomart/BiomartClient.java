@@ -39,7 +39,7 @@ import org.cytoscape.io.webservice.TableImportWebServiceClient;
 import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
 import org.cytoscape.io.webservice.biomart.task.ImportTableTask;
 import org.cytoscape.io.webservice.biomart.ui.BiomartAttrMappingPanel;
-import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
+import org.cytoscape.io.webservice.swing.AbstractWebServiceGUIClient;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableFactory;
@@ -53,10 +53,9 @@ import org.osgi.framework.ServiceException;
  * Biomart Web Service Client.
  * 
  */
-public class BiomartClient extends AbstractWebServiceClient implements TableImportWebServiceClient {
+public class BiomartClient extends AbstractWebServiceGUIClient implements TableImportWebServiceClient {
 	private final CyTableFactory tableFactory;
 	private final BiomartRestClient restClient;
-	private BiomartAttrMappingPanel gui;
 	private ImportTableTask importTask;
 	private final CyNetworkManager networkManager;
 	private final CyApplicationManager applicationManager;
@@ -75,7 +74,7 @@ public class BiomartClient extends AbstractWebServiceClient implements TableImpo
 	                     final CyNetworkManager networkManager,
 	                     final CyApplicationManager applicationManager,
 	                     final CySwingApplication app, final CyTableManager tableManager,
-						 final CyRootNetworkManager cyRootNetworkFactory)
+						 final CyRootNetworkManager cyRootNetworkFactory, final BiomartAttrMappingPanel gui)
 	{
 		super(restClient.getBaseURL(), displayName, description);
 
@@ -86,12 +85,10 @@ public class BiomartClient extends AbstractWebServiceClient implements TableImpo
 		this.app                  = app;
 		this.tableManager         = tableManager;
 		this.cyRootNetworkFactory = cyRootNetworkFactory;
+		
+		this.gui = gui;
 
 		// TODO: set optional parameters (Tunables?)
-	}
-
-	public void setGUI(final BiomartAttrMappingPanel gui) {
-		this.gui = gui;
 	}
 
 	public BiomartRestClient getRestClient() {

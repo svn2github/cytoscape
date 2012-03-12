@@ -41,9 +41,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.ding.DNodeShape;
+import org.cytoscape.ding.DVisualLexicon;
 import org.cytoscape.ding.Justification;
 import org.cytoscape.ding.Label;
-import org.cytoscape.ding.NodeView;
 import org.cytoscape.ding.ObjectPosition;
 import org.cytoscape.ding.Position;
 import org.cytoscape.ding.customgraphics.CyCustomGraphics;
@@ -52,7 +52,6 @@ import org.cytoscape.ding.impl.visualproperty.ObjectPositionVisualProperty;
 import org.cytoscape.graph.render.stateful.CustomGraphic;
 import org.cytoscape.graph.render.stateful.NodeDetails;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.util.intr.IntObjHash;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
 import org.cytoscape.view.presentation.property.values.NodeShape;

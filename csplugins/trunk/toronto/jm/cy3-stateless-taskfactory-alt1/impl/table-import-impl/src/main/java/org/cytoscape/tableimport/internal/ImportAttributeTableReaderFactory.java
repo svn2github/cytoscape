@@ -10,19 +10,19 @@ import org.cytoscape.work.TaskIterator;
 
 public class ImportAttributeTableReaderFactory extends AbstractTableReaderFactory {
 	private final static long serialVersionUID = 12023139869460898L;
-	private final String fileFormat;
 
 	/**
 	 * Creates a new ImportAttributeTableReaderFactory object.
 	 */
-	public ImportAttributeTableReaderFactory(CyFileFilter filter, String fileFormat)
+	public ImportAttributeTableReaderFactory(CyFileFilter filter)
 	{
 		super(filter, CytoscapeServices.cyTableFactory);
-		this.fileFormat = fileFormat;
+		
 	}
 
 	public TaskIterator createTaskIterator(InputStream inputStream, String inputName) {
+		String fileFormat = inputName.substring(inputName.lastIndexOf('.'));
 		return new TaskIterator(
-			new ImportAttributeTableReaderTask(inputStream, fileFormat, CytoscapeServices.cyTableManager));
+			new ImportAttributeTableReaderTask(inputStream, fileFormat, inputName, CytoscapeServices.cyTableManager));
 	}
 }

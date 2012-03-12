@@ -132,6 +132,8 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 
 	private final Map<Object, TaskFactory> provisionerMap;
 	
+	private boolean ignoreSetCurrentNetwork = true;
+
 	/**
 	 * Constructor for the Network Panel.
 	 * @param factoryProvisioner 
@@ -330,7 +332,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 		final NetworkTreeNode parentNode = (NetworkTreeNode) node.getParent();
 		node.removeFromParent();
 
-		if(parentNode.isLeaf()) {
+		if (parentNode.isLeaf()) {
 			// Remove from root node
 			parentNode.removeFromParent();
 		}
@@ -361,7 +363,6 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	}
 
 	// // Event handlers /////
-
 	
 	@Override
 	public void handleEvent(final NetworkAboutToBeDestroyedEvent nde) {
@@ -369,14 +370,17 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 			public void run() {
 				final CyNetwork net = nde.getNetwork();
 				logger.debug("Network about to be destroyed " + net.getSUID());
+				
+				ignoreSetCurrentNetwork = true;
 				removeNetwork(net.getSUID());
+				ignoreSetCurrentNetwork = false;
+				
 				nameTables.remove(net.getDefaultNetworkTable());
 				nodeEdgeTables.remove(net.getDefaultNodeTable());
 				nodeEdgeTables.remove(net.getDefaultEdgeTable());
 			}
 		});
 	}
-
 	
 	@Override
 	public void handleEvent(final NetworkAddedEvent e) {
@@ -385,7 +389,10 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 				final CyNetwork net = e.getNetwork();
 				logger.debug("Got NetworkAddedEvent.  Model ID = " + net.getSUID());
 		
+				ignoreSetCurrentNetwork = true;
 				addNetwork(net.getSUID());
+				ignoreSetCurrentNetwork = false;
+				
 				nameTables.put(net.getDefaultNetworkTable(), net);
 				nodeEdgeTables.put(net.getDefaultNodeTable(),net);
 				nodeEdgeTables.put(net.getDefaultEdgeTable(),net);
@@ -434,7 +441,9 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 				public void run() {
 					logger.debug("Got SetCurrentNetworkViewEvent.  View ID = " + e.getNetworkView().getSUID());
 					final long curr = e.getNetworkView().getModel().getSUID();
+					ignoreSetCurrentNetwork = true;
 					focusNetworkNode(curr);
+					ignoreSetCurrentNetwork = false;
 				}
 			});
 		}
@@ -456,7 +465,9 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 			SwingUtilities.invokeLater( new Runnable() {
 				public void run() {
 					logger.debug("Set current network " + cnet.getSUID());
+					ignoreSetCurrentNetwork = true;
 					focusNetworkNode(cnet.getSUID());
+					ignoreSetCurrentNetwork = false;
 				}
 			});
 		}
@@ -591,10 +602,10 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 		// This is a "network set" node.
 		if (net == null)
 			return;
-
+		
 		// No need to set the same network again. It should prevent infinite loops.
 		// Also check if the network still exists (it could have been removed by another thread).
-		if (netmgr.networkExists(net.getSUID()) && !net.equals(appManager.getCurrentNetwork())) {
+		if (!ignoreSetCurrentNetwork && netmgr.networkExists(net.getSUID()) && !net.equals(appManager.getCurrentNetwork())) {
 			appManager.setCurrentNetwork(net);
 		}
 

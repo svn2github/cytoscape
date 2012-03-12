@@ -32,7 +32,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map.Entry;
+import java.util.List;
+import java.util.Map;
 
 import org.cytoscape.filter.internal.widgets.autocomplete.index.GenericIndex;
 import org.cytoscape.filter.internal.widgets.autocomplete.index.Hit;
@@ -53,28 +54,26 @@ import org.cytoscape.work.TaskMonitor;
  *
  * @author Ethan Cerami.
  */
-class QuickFindImpl implements QuickFind {
-	private ArrayList listenerList = new ArrayList();
-	private HashMap networkMap = new HashMap();
+public class QuickFindImpl implements QuickFind {
+	
+	private final List<QuickFindListener> listenerList;
+	private final Map<CyNetwork, GenericIndex> networkMap;
+	
 	private int maxProgress;
 	private int currentProgress;
 	private static final boolean OUTPUT_PERFORMANCE_STATS = false;
 
-	/**
-	 * Creates a new QuickFindImpl object.
-	 *
-	 * @param nodeAttributes  DOCUMENT ME!
-	 * @param edgeAttributes  DOCUMENT ME!
-	 */
-	public QuickFindImpl() {
-	}
 
+	public QuickFindImpl() {
+		this.listenerList = new ArrayList<QuickFindListener>();
+		this.networkMap = new HashMap<CyNetwork, GenericIndex>();
+	}
+	
+	
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param network DOCUMENT ME!
-	 * @param taskMonitor DOCUMENT ME!
+	 * {@inheritDoc}
 	 */
+	@Override
 	public synchronized void addNetwork(CyNetwork network, TaskMonitor taskMonitor) {
 		// check args - short circuit if necessary
 		if (network.getNodeCount() == 0)
@@ -156,11 +155,7 @@ class QuickFindImpl implements QuickFind {
 		return true;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param network DOCUMENT ME!
-	 */
+	@Override
 	public synchronized void removeNetwork(CyNetwork network) {
 		networkMap.remove(networkMap);
 
@@ -171,35 +166,20 @@ class QuickFindImpl implements QuickFind {
 		}
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param network DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public synchronized GenericIndex getIndex(CyNetwork network) {
-		return (GenericIndex) networkMap.get(network);	
+	@Override
+	public synchronized GenericIndex getIndex(final CyNetwork network) {
+		return networkMap.get(network);	
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param cyNetwork DOCUMENT ME!
-	 * @param indexType DOCUMENT ME!
-	 * @param controllingAttribute DOCUMENT ME!
-	 * @param taskMonitor DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public synchronized GenericIndex reindexNetwork(CyNetwork cyNetwork, int indexType,
-	                                                String controllingAttribute,
-	                                                TaskMonitor taskMonitor)
-	{
+
+	@Override
+	public synchronized GenericIndex reindexNetwork(CyNetwork cyNetwork, int indexType, String controllingAttribute,
+			TaskMonitor taskMonitor) {
 		// If all the values for the controllingAttribute are NULL, return null
 		CyTable table;
 		if (indexType == QuickFind.INDEX_NODES) {
 			CyNode node = null;
+			//
 			if (!(cyNetwork.getNodeList() == null || cyNetwork.getNodeList().size() == 0)){
 				node = cyNetwork.getNodeList().iterator().next();
 			}

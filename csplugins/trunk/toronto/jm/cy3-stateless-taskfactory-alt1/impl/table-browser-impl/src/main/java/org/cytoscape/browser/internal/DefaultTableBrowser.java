@@ -26,6 +26,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
@@ -36,9 +37,12 @@ import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.task.TableTaskFactory;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.work.swing.DialogTaskManager;
+import org.cytoscape.model.events.TableAboutToBeDeletedEvent;
+import org.cytoscape.model.events.TableAboutToBeDeletedListener;
+
 
 public class DefaultTableBrowser extends AbstractTableBrowser implements SetCurrentNetworkListener,
-		NetworkAddedListener, NetworkAboutToBeDestroyedListener {
+		NetworkAddedListener, NetworkAboutToBeDestroyedListener, TableAboutToBeDeletedListener {
 
 	private static final long serialVersionUID = 627394119637512735L;
 
@@ -48,7 +52,7 @@ public class DefaultTableBrowser extends AbstractTableBrowser implements SetCurr
 	private final Class<? extends CyTableEntry> objType;
 
 	private boolean rowSelectionMode;
-	private boolean ignoreSetCurrentNetwork;
+	private boolean ignoreSetCurrentNetwork = true;
 	
 
 	public DefaultTableBrowser(String tabTitle, Class<? extends CyTableEntry> objType, CyTableManager tableManager,
@@ -131,7 +135,9 @@ public class DefaultTableBrowser extends AbstractTableBrowser implements SetCurr
 				final CyNetwork selectedNetwork = (CyNetwork) networkChooser.getSelectedItem();
 
 				if ((currentNetwork == null && selectedNetwork != null) || !currentNetwork.equals(selectedNetwork)) {
+					ignoreSetCurrentNetwork = true;
 					networkChooser.setSelectedItem(currentNetwork);
+					ignoreSetCurrentNetwork = false;
 				}
 			}
 		});
@@ -177,6 +183,14 @@ public class DefaultTableBrowser extends AbstractTableBrowser implements SetCurr
 		});
 	}
 	
+	
+	@Override
+	public void handleEvent(final TableAboutToBeDeletedEvent e) {
+		final CyTable cyTable = e.getTable();
+		DeleteTable(cyTable);
+	}
+	
+	
 	private static final class NetworkChooserCustomRenderer extends JLabel implements ListCellRenderer {
 
 		private static final long serialVersionUID = 7103666112352192698L;
@@ -192,11 +206,14 @@ public class DefaultTableBrowser extends AbstractTableBrowser implements SetCurr
 			
 			final CyNetwork network = (CyNetwork) item;
 			if(isSelected || hasFocus) {
-				setBackground(SELECTED_ITEM_BACKGROUND_COLOR);
+				this.setBackground(list.getSelectionBackground());				
+				this.setForeground(list.getSelectionForeground());
 			} else {
-				setBackground(Color.WHITE);
+				this.setBackground(list.getBackground());				
+				this.setForeground(list.getForeground());
 			}
 			
+			setOpaque(true);
 			this.setText(network.getRow(network).get(CyTableEntry.NAME, String.class));
 			return this;
 		}

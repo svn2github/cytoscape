@@ -43,12 +43,12 @@ import org.cytoscape.work.TunableValidator.ValidationState;
  * The AbstractLayoutAlgorithm provides a basic implementation of a layout TaskFactory.
  * @CyAPI.Abstract.Class
  */
-abstract public class AbstractLayoutAlgorithm<T extends CyLayoutContext> implements CyLayoutAlgorithm<T> {
+public abstract class AbstractLayoutAlgorithm<T extends CyLayoutContext> implements CyLayoutAlgorithm<T> {
 
 	private final boolean supportsSelectedOnly;
 	private final String humanName;
 	private final String computerName;
-
+	
 	/**
 	 * The Constructor.
 	 * @param undo the UndoSupport object used for allowing undo of layouts.
@@ -94,6 +94,7 @@ abstract public class AbstractLayoutAlgorithm<T extends CyLayoutContext> impleme
 	 * @return the list of supported attribute types, or null
 	 * if node attributes are not supported
 	 */
+	@Override
 	public Set<Class<?>> supportsNodeAttributes() {
 		return new HashSet<Class<?>>();
 	}
@@ -106,6 +107,7 @@ abstract public class AbstractLayoutAlgorithm<T extends CyLayoutContext> impleme
 	 * @return the list of supported attribute types, or null
 	 * if edge attributes are not supported
 	 */
+	@Override
 	public Set<Class<?>> supportsEdgeAttributes() {
 		return new HashSet<Class<?>>();
 	}
@@ -119,6 +121,7 @@ abstract public class AbstractLayoutAlgorithm<T extends CyLayoutContext> impleme
 	 *
 	 * @return A (possibly empty) list of attributes
 	 */
+	@Override
 	public List<String> getInitialAttributeList() {
 		return new ArrayList<String>();
 	}

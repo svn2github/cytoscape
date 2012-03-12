@@ -9,6 +9,7 @@ public abstract class AbstractTableReaderFactory extends SimpleInputStreamTaskFa
 
 	protected final CyTableFactory tableFactory;
 
+
 	public AbstractTableReaderFactory(CyFileFilter filter, CyTableFactory tableFactory) {
 		super(filter);
 		if (filter == null)
