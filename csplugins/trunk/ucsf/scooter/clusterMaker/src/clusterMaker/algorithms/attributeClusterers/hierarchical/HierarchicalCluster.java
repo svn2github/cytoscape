@@ -265,6 +265,9 @@ public class HierarchicalCluster extends AbstractAttributeClusterer {
 		// Cluster the nodes
 		algorithm.cluster(0, 0, false);
 
+		if (monitor != null)
+			monitor.setStatus("Done");
+
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
 	}
