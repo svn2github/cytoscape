@@ -5,6 +5,7 @@ package org.cytoscape.internal.test.tunables;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.ContainsTunables;
 import org.cytoscape.work.util.ListSingleSelection;
 
 
@@ -52,6 +53,9 @@ public class ScootersTunableTask extends AbstractTask {
 
 		return aggregationType;
 	}
+
+	@ContainsTunables
+	public JustTunables someSortOfConfigObject = new JustTunables();
 
 	public void setAggregationType(ListSingleSelection<String> input) {
 		// Ignore because ListSingleSelection is set in the handler and not here.
