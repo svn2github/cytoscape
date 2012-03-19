@@ -88,6 +88,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private PanelTaskManager taskManager;
 	private CyProperty cytoscapePropertiesServiceRef;
 	private TaskFactoryProvisioner factoryProvisioner;
+	private boolean initialized;
 
 	/**
 	 * Creates a new LayoutSettingsDialog object.
@@ -136,10 +137,17 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			taskManager.execute(currentLayout.createTaskIterator());
 		} else {
 			// OK, initialize and display
-			initialize();
-			setLocationRelativeTo(desktop.getJFrame());
-			setVisible(true);
-			this.pack();
+			if (isVisible()) {
+				requestFocus();
+			} else {
+				if (!initialized) {
+					initialize();
+					setLocationRelativeTo(desktop.getJFrame());
+					pack();
+				}
+				setVisible(true);
+				initialized = true;
+			}
 		}
 	}
 

@@ -32,7 +32,7 @@ import org.cytoscape.work.TaskMonitor;
 import org.junit.Before;
 import org.mockito.Mockito;
 
-public class AbstractNetworkViewReaderTester {
+public class AbstractNetworkReaderTest {
 	static class SimpleTask extends AbstractTask {
 		public void run(final TaskMonitor tm) {
 		}
@@ -52,9 +52,8 @@ public class AbstractNetworkViewReaderTester {
 	public void setUp() throws Exception {
 		taskMonitor = mock(TaskMonitor.class);
 
-		CyLayoutContext context = mock(CyLayoutContext.class);
-		
 		CyLayoutAlgorithm def = mock(CyLayoutAlgorithm.class);
+		CyLayoutContext context = mock(CyLayoutContext.class);
 		when(def.createLayoutContext()).thenReturn(context);
 		when(def.createTaskIterator(Mockito.any(CyLayoutContext.class))).thenReturn(new TaskIterator(new SimpleTask()));
 
@@ -65,12 +64,11 @@ public class AbstractNetworkViewReaderTester {
 		netFactory = nts.getNetworkFactory();
 
 		properties = new Properties();
-		CyProperty<Properties> cyProperties = new SimpleCyProperty<Properties>("Test", properties,Properties.class,  SavePolicy.DO_NOT_SAVE);		
+		CyProperty<Properties> cyProperties = new SimpleCyProperty<Properties>("Test", properties, Properties.class, SavePolicy.DO_NOT_SAVE);		
 		NetworkViewTestSupport nvts = new NetworkViewTestSupport();
 		setViewThreshold(DEF_THRESHOLD);
 		
 		viewFactory = nvts.getNetworkViewFactory();
-
 		readUtil = new ReadUtils(new StreamUtilImpl(cyProperties));
 	}
 

@@ -51,7 +51,7 @@ public class SettingsAction extends AbstractCyAction {
 	private CyProperty cytoscapePropertiesServiceRef;
 	private CyApplicationManager appMgr;
 
-	private TaskFactoryProvisioner factoryProvisioner;
+	private LayoutSettingsDialog settingsDialog;
 
 	public SettingsAction(final CyLayoutAlgorithmManager cyl, final CySwingApplication desk, final CyApplicationManager appMgr, 
 			final PanelTaskManager tm, CyProperty cytoscapePropertiesServiceRef, TaskFactoryProvisioner factoryProvisioner)
@@ -64,11 +64,11 @@ public class SettingsAction extends AbstractCyAction {
 		this.desk = desk;
 		this.tm = tm;
 		this.cytoscapePropertiesServiceRef = cytoscapePropertiesServiceRef;
-		this.factoryProvisioner = factoryProvisioner;
+		
+		settingsDialog = new LayoutSettingsDialog(cyl, desk, appMgr, tm, this.cytoscapePropertiesServiceRef, factoryProvisioner);
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog(cyl, desk, appMgr, tm, this.cytoscapePropertiesServiceRef, factoryProvisioner);
 		settingsDialog.actionPerformed(e);
 	}
 }

@@ -1,8 +1,8 @@
 package org.cytoscape.work;
 
 /**
- * A convenience class for task factories that don't have special
- * provisioning requirements.
+ * A TaskFactory that is always ready to produce a TaskIterator.
+ * @CyAPI.Abstract.Class
  */
 public abstract class AbstractTaskFactory implements TaskFactory {
 	@Override

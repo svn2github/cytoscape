@@ -28,6 +28,7 @@
 		<module>filter-impl</module>
 		<module>graphml-impl</module>
 		<module>group-impl</module>
+		<!--<module>group-data-impl</module>-->
 		<module>group-view-impl</module>
 		<module>io-impl</module>
 		<module>layout-cytoscape-impl</module>
@@ -63,6 +64,7 @@
 		<module>datasource-impl</module>
 		<module>datasource-biogrid-impl</module>
 		<module>welcome-impl</module>
+		<module>gui-cmdline-parser-impl</module>
     <module>scripting-impl</module>
   </modules>
 
@@ -121,6 +123,11 @@
 			<dependency>
 				<groupId>org.cytoscape</groupId>
 				<artifactId>group-api</artifactId>
+				<version>${cytoscape.api.version}</version> 
+			</dependency>
+			<dependency>
+				<groupId>org.cytoscape</groupId>
+				<artifactId>group-data-api</artifactId>
 				<version>${cytoscape.api.version}</version> 
 			</dependency>
 			<dependency>

@@ -56,7 +56,9 @@ import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.model.CyNetworkView;
@@ -93,16 +95,18 @@ public class BrowserTable extends JTable implements MouseListener, ActionListene
 	
 	private final CyApplicationManager applicationManager;
 	private final CyEventHelper eventHelper;
+	private final CyNetworkTableManager networkTableManager;
 
 	public BrowserTable(final OpenBrowser openBrowser, final EquationCompiler compiler,
 			final PopupMenuHelper popupMenuHelper, final CyApplicationManager applicationManager,
-			final CyEventHelper eventHelper) {
+			final CyEventHelper eventHelper, final CyNetworkTableManager networkTableManager) {
 		this.openBrowser     = openBrowser;
 		this.compiler        = compiler;
 		this.popupMenuHelper = popupMenuHelper;
 		this.updateColumnComparators = false;
 		this.applicationManager = applicationManager;
 		this.eventHelper = eventHelper;
+		this.networkTableManager = networkTableManager;
 
 		initHeader();
 		setCellSelectionEnabled(true);
@@ -142,7 +146,7 @@ public class BrowserTable extends JTable implements MouseListener, ActionListene
 
 		// Event handler. Define actions when mouse is clicked.
 		addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
+				public void mouseClicked(MouseEvent e) {					
 					final int column = getColumnModel().getColumnIndexAtX(e.getX());
 					final int row = e.getY() / getRowHeight();
 
@@ -192,7 +196,9 @@ public class BrowserTable extends JTable implements MouseListener, ActionListene
 							if (url != null)
 								openBrowser.openURL(url.toString());
 						}
+
 					}
+					
 				} // mouseClicked
 
 				@Override
@@ -209,13 +215,19 @@ public class BrowserTable extends JTable implements MouseListener, ActionListene
 	
 	
 	private void selectFromTable() {
+
 		final TableModel model = this.getModel();
 		if(model instanceof BrowserTableModel == false)
 			return;
 		
-		BrowserTableModel btModel = (BrowserTableModel) model;
+		final BrowserTableModel btModel = (BrowserTableModel) model;
+		
 		if(btModel.isShowAll() == false)
 			return;
+		
+		final CyTable table = btModel.getDataTable();
+		final CyColumn pKey = table.getPrimaryKey();
+		final String pKeyName = pKey.getName();
 		
 		final int[] rowsSelected = getSelectedRows();
 		if (rowsSelected.length == 0)
@@ -225,37 +237,38 @@ public class BrowserTable extends JTable implements MouseListener, ActionListene
 		
 		//TODO: performance tuning
 		final int columnCount = this.getColumnCount();
-		int colIdx;
-		for(colIdx=0; colIdx<columnCount; colIdx++) {
-			final String colName = this.getColumnName(colIdx);
-			if(colName.equals(CyTableEntry.SUID))
+		int targetColIdx;
+		for(targetColIdx = 0; targetColIdx<columnCount; targetColIdx++) {
+			final String colName = this.getColumnName(targetColIdx);
+			if(colName.equals(pKeyName))
 				break;
 		}
 		
 		final Set<CyRow> targetRows = new HashSet<CyRow>();
 		for(int i=0; i<selectedRowCount; i++) {
-			ValidatedObjectAndEditString selected = (ValidatedObjectAndEditString) this.getValueAt(rowsSelected[i], colIdx);
+			final ValidatedObjectAndEditString selected = (ValidatedObjectAndEditString) this.getValueAt(rowsSelected[i], targetColIdx);
 			targetRows.add(btModel.getRow(selected.getValidatedObject()));
 		}
-		// Clear selection
-		List<CyRow> allRows = btModel.getDataTable().getAllRows();
-		for(CyRow row: allRows) {
-			final Boolean val = row.get(CyNetwork.SELECTED, Boolean.class);
-			if(targetRows.contains(row)) {
-				System.out.println("=======> selected: " + row.get(CyTableEntry.NAME, String.class));
-				row.set(CyNetwork.SELECTED, true);
-				continue;
+
+		// Clear selection for non-global table
+		if (TableBrowserUtil.isGlobalTable(table, networkTableManager) == false) {
+			List<CyRow> allRows = btModel.getDataTable().getAllRows();
+			for (CyRow row : allRows) {
+				final Boolean val = row.get(CyNetwork.SELECTED, Boolean.class);
+				if (targetRows.contains(row)) {
+					row.set(CyNetwork.SELECTED, true);
+					continue;
+				}
+				
+				if (val != null && (val == true))
+					row.set(CyNetwork.SELECTED, false);
+
+				final CyNetworkView curView = applicationManager.getCurrentNetworkView();
+				if (curView != null) {
+					eventHelper.flushPayloadEvents();
+					curView.updateView();
+				}
 			}
-			if(val) {
-				System.out.println("=======> UNSELECTED: " + row.get(CyTableEntry.NAME, String.class));
-				row.set(CyNetwork.SELECTED, false);
-			}
-		}
-		
-		final CyNetworkView curView = applicationManager.getCurrentNetworkView();
-		if(curView != null) {
-			eventHelper.flushPayloadEvents();
-			curView.updateView();
 		}
 	}
 
@@ -346,6 +359,7 @@ public class BrowserTable extends JTable implements MouseListener, ActionListene
 	 *  Display elements in the list objects.
 	 */
 	public void showListContents(MouseEvent e) {
+		
 		final int column = this.getSelectedColumn();
 		final int row = this.getSelectedRow();
 

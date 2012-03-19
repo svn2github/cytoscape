@@ -2,6 +2,7 @@ package org.cytoscape.task.internal.export;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -29,7 +30,7 @@ public abstract class TunableAbstractCyWriter<T extends CyWriterManager> extends
 	 * processing.
 	 */
 	@Tunable(description = "Select the export file format")
-	public final ListSingleSelection<String> options;
+	public ListSingleSelection<String> options;
 
 	protected final String getExportFileFormat() {
 		return options.getSelectedValue();

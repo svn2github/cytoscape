@@ -41,7 +41,7 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 	private static final byte TYPE_STRING = 4;
 
 	private static enum TableType {
-		NODE("Node"), EDGE("Edge"), NETWORK("Network"), GLOBAL("Global");
+		NODE("Node"), EDGE("Edge"), NETWORK("Network"), GLOBAL("Global (Not associated with any networks)");
 
 		private final String name;
 
@@ -71,7 +71,7 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 	private final CyRootNetworkManager rootNetFact;
 
 	@Tunable(description = "Map table to:")
-	public final ListSingleSelection<TableType> dataTypeOptions;
+	public ListSingleSelection<TableType> dataTypeOptions;
 
 	@ProvidesTitle
 	public String getTitle() {
@@ -102,6 +102,7 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 			options.add(TableType.GLOBAL);
 
 		dataTypeOptions = new ListSingleSelection<TableType>(options);
+		dataTypeOptions.setSelectedValue(TableType.GLOBAL);
 	}
 
 	@Override

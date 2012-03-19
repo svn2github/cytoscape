@@ -10,6 +10,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
 
 import org.cytoscape.work.AbstractTaskManager;
 import org.cytoscape.work.Task;
@@ -145,8 +146,10 @@ public class JDialogTaskManager extends AbstractTaskManager<JDialog,Window> impl
 		try {
 			dialogTunableMutator.setConfigurationContext(parent);
 
-			if ( tunableContext != null && !displayTunables(tunableContext) )
+			if ( tunableContext != null && !displayTunables(tunableContext) ) {
+				taskMonitor.cancel();
 				return;
+			}
 
 			taskMonitor.setExpectedNumTasks( taskIterator.getNumTasks() );
 
@@ -154,8 +157,10 @@ public class JDialogTaskManager extends AbstractTaskManager<JDialog,Window> impl
 			// We do this outside of the thread so that the task monitor only gets
 			// displayed AFTER the first tunables dialog gets displayed.
 			first = taskIterator.next();
-			if (!displayTunables(first))
+			if (!displayTunables(first)) {
+				taskMonitor.cancel();
 				return;
+			}
 
 		} catch (Exception exception) {
 			logger.warn("Caught exception getting and validating task. ", exception);	
@@ -180,7 +185,12 @@ public class JDialogTaskManager extends AbstractTaskManager<JDialog,Window> impl
 			public void run() {
 				if (!(executorFuture.isDone() || executorFuture.isCancelled())) {
 					taskMonitor.setFuture(executorFuture);
-					taskMonitor.open();
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							taskMonitor.open();
+						}
+					});
 				}
 			}
 		};
@@ -215,8 +225,10 @@ public class JDialogTaskManager extends AbstractTaskManager<JDialog,Window> impl
 					final Task task = taskIterator.next();
 					taskMonitor.setTask(task);
 
-					if (!displayTunables(task))
+					if (!displayTunables(task)) {
+						taskMonitor.cancel();
 						return;
+					}
 
 					task.run(taskMonitor);
 

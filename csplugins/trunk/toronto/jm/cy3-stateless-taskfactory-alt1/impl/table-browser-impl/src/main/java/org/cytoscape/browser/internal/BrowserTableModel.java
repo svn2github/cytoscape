@@ -19,6 +19,7 @@ import org.cytoscape.equations.Equation;
 import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
@@ -43,6 +44,8 @@ public final class BrowserTableModel extends AbstractTableModel implements Colum
 	private final BrowserTable table;
 	private final CyTable dataTable;
 	private final EquationCompiler compiler;
+	
+	private final CyNetworkTableManager networkTableManager;
 
 	// If this is FALSE then we show all rows
 	private boolean regularViewMode;
@@ -55,11 +58,13 @@ public final class BrowserTableModel extends AbstractTableModel implements Colum
 	private int maxRowIndex;
 
 
-	public BrowserTableModel(final BrowserTable table, final CyTable dataTable, final EquationCompiler compiler) {
+	public BrowserTableModel(final BrowserTable table, final CyTable dataTable, final EquationCompiler compiler, final CyNetworkTableManager networkTableManager) {
 		this.table = table;
 		this.dataTable = dataTable;
 		this.compiler = compiler;
 		this.regularViewMode = false; 
+		this.networkTableManager = networkTableManager;
+		
 		initAttrNamesAndVisibilities();
 
 		// add each row to an array to allow fast lookup from an index
@@ -317,10 +322,12 @@ public final class BrowserTableModel extends AbstractTableModel implements Colum
 		} else {
 			table.clearSelection();
 			SwingUtilities.invokeLater(new Runnable() {
+
 				@Override
 				public void run() {
 					try {
-						bulkUpdate(rows);						
+						if(TableBrowserUtil.isGlobalTable(dataTable, networkTableManager) == false)
+							bulkUpdate(rows);						
 					}
 					catch (Exception e){
 						// do nothing, ignore this exception
@@ -365,7 +372,7 @@ public final class BrowserTableModel extends AbstractTableModel implements Colum
 	private void bulkUpdate(final Collection<RowSetRecord> rows) {
 		final int columnCount = table.getColumnCount();
 		int tablePKeyIndex = 0;
-		// Find SUID index.
+		// Find Primary key index.
 		for (int i = 0; i < columnCount; i++) {
 			final String colName = table.getColumnName(i);
 			if (colName.equals(CyTableEntry.SUID)) {
@@ -374,10 +381,18 @@ public final class BrowserTableModel extends AbstractTableModel implements Colum
 			}
 		}
 		
-		final Map<Long, Boolean> suidMap = new HashMap<Long, Boolean>();
+		final Map<Long, Boolean> suidMapSelected = new HashMap<Long, Boolean>();
+		final Map<Long, Boolean> suidMapUnselected = new HashMap<Long, Boolean>();
+
 		for(RowSetRecord rowSetRecord : rows) {
-			if(rowSetRecord.getColumn().equals(CyNetwork.SELECTED) && ((Boolean)rowSetRecord.getValue()) == true)
-				suidMap.put(rowSetRecord.getRow().get(CyTableEntry.SUID, Long.class), (Boolean) rowSetRecord.getValue());
+			if(rowSetRecord.getColumn().equals(CyNetwork.SELECTED)){
+				if(((Boolean)rowSetRecord.getValue()) == true){
+					suidMapSelected.put(rowSetRecord.getRow().get(CyTableEntry.SUID, Long.class), (Boolean) rowSetRecord.getValue());
+				}
+				else{
+					suidMapUnselected.put(rowSetRecord.getRow().get(CyTableEntry.SUID, Long.class), (Boolean) rowSetRecord.getValue());
+				}
+			}
 		}
 		
 		final int rowCount = table.getRowCount();
@@ -390,9 +405,14 @@ public final class BrowserTableModel extends AbstractTableModel implements Colum
 			} catch (NumberFormatException nfe) {
 				System.out.println("Error parsing long from table " + table.getName() + ": " + nfe.getMessage());
 			}
-			if(pk != null && suidMap.keySet().contains(pk)) {
-				table.addRowSelectionInterval(i, i);
-				table.addColumnSelectionInterval(0, table.getColumnCount() - 1);
+			if(pk != null) {
+				if (suidMapSelected.keySet().contains(pk)){
+					table.addRowSelectionInterval(i, i);
+					table.addColumnSelectionInterval(0, table.getColumnCount() - 1);
+				}else if (suidMapUnselected.keySet().contains(pk)){
+					table.removeRowSelectionInterval(i, i);
+				}
+				
 			}
 		}
 	}
@@ -400,6 +420,8 @@ public final class BrowserTableModel extends AbstractTableModel implements Colum
 	private void handleRowValueUpdate(final CyRow row, final String columnName, final Object newValue,
 			final Object newRawValue) {
 		if (regularViewMode && columnName.equals(CyNetwork.SELECTED)) {
+			System.out.println("in handle row value updated for selected");
+
 			fireTableDataChanged();
 		} 
 	}

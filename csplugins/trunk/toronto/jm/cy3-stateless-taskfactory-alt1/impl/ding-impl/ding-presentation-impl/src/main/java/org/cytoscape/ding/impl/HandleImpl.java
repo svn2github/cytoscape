@@ -18,9 +18,9 @@ public class HandleImpl implements Handle {
 	
 	private static final String DELIMITER =",";
 	
-	private Double cosTheta;
-	private Double sinTheta;
-	private Double ratio;
+	private Double cosTheta = 0.5d;
+	private Double sinTheta = 0.5d;
+	private Double ratio = 0.5;
 	
 	// Original handle location
 	private double x = 0;
@@ -36,6 +36,7 @@ public class HandleImpl implements Handle {
 	public Point2D calculateHandleLocation(final CyNetworkView graphView, final View<CyEdge> view) {
 		final CyNode source = view.getModel().getSource();
 		final CyNode target = view.getModel().getTarget();
+		
 		final View<CyNode> sourceView = graphView.getNodeView(source);
 		final View<CyNode> targetView = graphView.getNodeView(target);
 
@@ -133,6 +134,21 @@ public class HandleImpl implements Handle {
 		// Theta is the angle between v1 and v2
 		final double theta = Math.acos(cosTheta);
 		sinTheta = Math.sin(theta);
+		
+		// Check direction of rotation
+		final double slopeE = (tY-sY)/(tX-sX);
+		final double slopeH = (hY-sY)/(hX-sX);
+		if((sX<=tX && sY <= tY) || (sX>tX && sY > tY)) {
+			if(slopeE>=slopeH) {
+				cosTheta = Math.cos(-theta);
+				sinTheta = Math.sin(-theta);
+			}
+		} else {
+			if(slopeE<=slopeH) {
+				cosTheta = Math.cos(-theta);
+				sinTheta = Math.sin(-theta);
+			}
+		}
 
 //		System.out.println("** (Sx, Sy) = (" + sX + ", " + sY + ")");
 //		System.out.println("** (Tx, Ty) = (" + tX + ", " + tY + ")");

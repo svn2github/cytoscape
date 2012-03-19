@@ -47,6 +47,10 @@ import static org.cytoscape.internal.view.CyDesktopManager.Arrange.VERTICAL;
 
 import java.util.Properties;
 
+import org.cytoscape.internal.actions.CommandListAction;
+import org.cytoscape.internal.commands.ArgRecorder;
+import org.cytoscape.internal.commands.ArgHandlerFactory;
+import org.cytoscape.internal.commands.BasicArgHandlerFactory;
 import org.cytoscape.application.CyApplicationConfiguration;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.CyShutdown;
@@ -55,7 +59,6 @@ import org.cytoscape.application.events.SetCurrentNetworkViewListener;
 import org.cytoscape.application.swing.CyAction;
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.ToolBarComponent;
-import org.cytoscape.datasource.DataSourceManager;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.internal.actions.BookmarkAction;
 import org.cytoscape.internal.actions.CytoPanelAction;
@@ -92,17 +95,13 @@ import org.cytoscape.internal.view.help.HelpContactHelpDeskTaskFactory;
 import org.cytoscape.internal.view.help.HelpContentsTaskFactory;
 import org.cytoscape.io.read.CySessionReaderManager;
 import org.cytoscape.io.util.RecentlyOpenedTracker;
-import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.io.write.CyPropertyWriterManager;
-import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.events.NetworkDestroyedListener;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.service.util.CyServiceRegistrar;
-import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.session.events.SessionLoadedListener;
 import org.cytoscape.task.NetworkCollectionTaskFactory;
@@ -111,11 +110,9 @@ import org.cytoscape.task.NetworkViewCollectionTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.TableTaskFactory;
 import org.cytoscape.task.TaskFactoryProvisioner;
-import org.cytoscape.task.creation.ImportNetworksTaskFactory;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
-import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.events.NetworkViewDestroyedListener;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
@@ -401,6 +398,19 @@ public class CyActivator extends AbstractCyActivator {
 		                        CyProperty.class);
 		registerServiceListener(bc, layoutMenuPopulator, "addLayout", "removeLayout",
 		                        CyLayoutAlgorithm.class);
+
+		BasicArgHandlerFactory argHandlerFactory = new BasicArgHandlerFactory();
+		registerService(bc,argHandlerFactory,ArgHandlerFactory.class,new Properties());
+
+		ArgRecorder argRec = new ArgRecorder();
+        registerServiceListener(bc,argRec,"addTunableHandlerFactory","removeTunableHandlerFactory",ArgHandlerFactory.class);
+        CommandListAction cla = new CommandListAction(cytoscapeDesktop, argRec);
+        registerService(bc,cla,CyAction.class,new Properties());
+        registerServiceListener(bc,cla,"addTaskFactory","removeTaskFactory",TaskFactory.class);
+        registerServiceListener(bc,cla,"addNetworkTaskFactory","removeNetworkTaskFactory",NetworkTaskFactory.class);
+        registerServiceListener(bc,cla,"addNetworkViewTaskFactory","removeNetworkViewTaskFactory",NetworkViewTaskFactory.class);
+        registerServiceListener(bc,cla,"addTableTaskFactory","removeTableTaskFactory",TableTaskFactory.class);
+
 	}
 
 	private boolean isMac() {

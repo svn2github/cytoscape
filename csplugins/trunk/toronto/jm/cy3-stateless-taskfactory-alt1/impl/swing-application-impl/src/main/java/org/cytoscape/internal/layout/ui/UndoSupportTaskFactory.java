@@ -1,5 +1,8 @@
 package org.cytoscape.internal.layout.ui;
 
+import java.util.List;
+import java.util.Set;
+
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithmContext;
@@ -7,6 +10,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
+import org.cytoscape.work.util.ListSingleSelection;
 
 public class UndoSupportTaskFactory<T extends AbstractLayoutAlgorithmContext> extends AbstractLayoutAlgorithm<T> {
 	

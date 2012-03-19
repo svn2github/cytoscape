@@ -90,8 +90,12 @@ public class AbstractLayoutAlgorithmContext implements CyLayoutContext {
 		return submenuDef;
 	}
 
-	protected void configureLayoutFromSubmenuSelection() {
-		String selectedMenu = submenuDef.getSelectedValue();
+	public void setSubmenuOptions(ListSingleSelection<String> opts) {
+		configureLayoutFromSubmenuSelection(opts);
+	}
+
+	protected void configureLayoutFromSubmenuSelection(ListSingleSelection<String> opts) {
+		String selectedMenu = opts.getSelectedValue();
 
 		if (selectedMenu == null || selectedMenu == "")
 			return;
@@ -104,9 +108,9 @@ public class AbstractLayoutAlgorithmContext implements CyLayoutContext {
 			selectedMenu = selectedMenu.replaceFirst(SELECTED_NODES_ONLY, "");
 
 		if (selectedMenu.startsWith(NODE_PREFIX))
-			selectedMenu = selectedMenu.replaceFirst(NODE_PREFIX, "");
+			selectedMenu = selectedMenu.substring(NODE_PREFIX.length());
 		if (selectedMenu.startsWith(EDGE_PREFIX))
-			selectedMenu = selectedMenu.replaceFirst(EDGE_PREFIX, "");
+			selectedMenu = selectedMenu.substring(EDGE_PREFIX.length());
 
 		if (selectedMenu.length() > 0)
 			setLayoutAttribute(selectedMenu);

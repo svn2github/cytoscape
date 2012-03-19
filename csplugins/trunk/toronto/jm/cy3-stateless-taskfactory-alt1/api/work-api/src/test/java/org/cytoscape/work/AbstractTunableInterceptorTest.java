@@ -45,7 +45,6 @@ public class AbstractTunableInterceptorTest {
 	private AbstractTunableInterceptor interceptor;
 	private HasAnnotatedField hasAnnotatedField;
 	private HasAnnotatedSetterAndGetterMethods hasAnnotatedSetterAndGetterMethods;
-	private ProvidesGUIExample providesGUI;
 	
 	@Before
 	public void init() {
@@ -54,83 +53,91 @@ public class AbstractTunableInterceptorTest {
 		interceptor.addTunableHandlerFactory( new BasicTunableHandlerFactory(FakeTunableHandler.class,int.class,Integer.class),null);
 		hasAnnotatedField = new HasAnnotatedField();
 		hasAnnotatedSetterAndGetterMethods = new HasAnnotatedSetterAndGetterMethods();
-		providesGUI = new ProvidesGUIExample();
 		
 	}
 
 	@Test
 	public final void testLoadTunables() {
-		interceptor.loadTunables(hasAnnotatedField);
-		interceptor.loadTunables(hasAnnotatedSetterAndGetterMethods);
-		interceptor.loadTunables(providesGUI);
+		interceptor.getHandlers(hasAnnotatedField);
+		interceptor.getHandlers(hasAnnotatedSetterAndGetterMethods);
 	}
 
 	@Test
 	public final void testHasTunables() {
 		assertTrue("Should have found tunables!", interceptor.hasTunables(hasAnnotatedField));
 		assertTrue("Should have found tunables!", interceptor.hasTunables(hasAnnotatedSetterAndGetterMethods));
-		assertTrue("Should have found tunables!", interceptor.hasTunables(providesGUI));
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public final void testInvalidGetter() {
-		interceptor.loadTunables(new HasInvalidGetter());
+		interceptor.getHandlers(new HasInvalidGetter());
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public final void testInvalidGetterReturnType() {
-		interceptor.loadTunables(new HasInvalidGetterReturnType());
+		interceptor.getHandlers(new HasInvalidGetterReturnType());
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public final void testMisnamedGetter() {
-		interceptor.loadTunables(new HasMisnamedGetter());
+		interceptor.getHandlers(new HasMisnamedGetter());
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public final void testInvalidSetter() {
-		interceptor.loadTunables(new HasInvalidSetter());
+		interceptor.getHandlers(new HasInvalidSetter());
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public final void testInvalidAnnotatedType() {
-		interceptor.loadTunables(new HasInvalidAnotatedType());
+		interceptor.getHandlers(new HasInvalidAnotatedType());
 	}
 
-	@Test(expected=IllegalArgumentException.class)
-	public final void testInvalidProvidesGUIReturnType() {
-		interceptor.loadTunables(new HasInvalidProvidesGUIMethod());
-	}
-
-	@Test(expected=IllegalArgumentException.class)
-	public final void testInvalidProvidesGUIReturnType2() {
-		interceptor.loadTunables(new HasInvalidProvidesGUIMethod2());
-	}
-
-	@Test(expected=IllegalArgumentException.class)
-	public final void testInvalidProvidesGUIMethodWithArg() {
-		interceptor.loadTunables(new HasInvalidProvidesGUIMethodWithArg());
-	}
-
-	@Test(expected=IllegalArgumentException.class)
-	public final void testInvalidMultipleProvidesGUIMethods() {
-		interceptor.loadTunables(new Has2ProvidesGUIMethods());
-	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public final void testSetterAnnotatedInsteadOfGetter() {
-		interceptor.loadTunables(new SetterAnnotatedInsteadOfGetter());
+		interceptor.getHandlers(new SetterAnnotatedInsteadOfGetter());
 	}
 
 	@Test
 	public final void testInheritedField() {
 		assertTrue( interceptor.hasTunables( new ExtendedFieldClass() ) );
+		assertTrue( interceptor.getHandlers( new ExtendedFieldClass() ).size() > 0 );
 	}
 
 	@Test
 	public final void testInheritedMethod() {
 		assertTrue( interceptor.hasTunables( new ExtendedMethodClass() ) );
+		assertTrue( interceptor.getHandlers( new ExtendedMethodClass() ).size() > 0 );
 	}
+
+	@Test
+	public final void testJustContainsTunables() {
+		Object o = new ContainsTunablesClass();
+		assertTrue( interceptor.hasTunables( o ) );
+		assertTrue( interceptor.getHandlers(o).size() > 0 );
+	}
+
+	@Test
+	public final void testContainsTunablesAndTunables() {
+		Object o = new ContainsTunablesAndTunablesClass();
+		assertTrue( interceptor.hasTunables( o ) );
+		assertTrue( interceptor.getHandlers(o).size() > 1 );
+	}
+
+	@Test
+	public final void testContainsTunablesRecusion() {
+		Object o = new ContainsTunablesClass2();
+		assertTrue( interceptor.hasTunables( o ) );
+		assertTrue( interceptor.getHandlers(o).size() > 0 );
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public final void testContainsTunablesUninitialized() {
+		Object o = new UninitializedContainsTunablesClass();
+		interceptor.getHandlers(o);
+	}
+
 }
 
 class FakeTunableHandler extends AbstractTunableHandler {
@@ -143,25 +150,9 @@ class FakeTunableHandler extends AbstractTunableHandler {
 	public void handle() {}
 }
 
-
-//class SimpleHandlerFactory implements TunableHandlerFactory<AbstractTunableHandler> {
-//	public AbstractTunableHandler getHandler(final Field field, final Object instance, final Tunable tunable) {
-//		return new FakeTunableHandler(field, instance, tunable);
-//	}
-//
-//	public AbstractTunableHandler getHandler(final Method setter, final Method getter, final Object instance, final Tunable tunable) {
-//		return new FakeTunableHandler(setter, getter, instance, tunable);
-//	}
-//}
-
-
 class ConcreteTunableInterceptor extends AbstractTunableInterceptor {
 
 	public boolean validateAndWriteBackTunables(Object... objs) {
-		return true;
-	}
-
-	public boolean execUI(Object... obs) {
 		return true;
 	}
 }
@@ -207,30 +198,6 @@ class SetterAnnotatedInsteadOfGetter {
 }
 
 
-class HasInvalidProvidesGUIMethod {
-	@ProvidesGUI
-	public void badReturnType() { }
-}
-
-class HasInvalidProvidesGUIMethod2 {
-	@ProvidesGUI
-	public Double badReturnType() { return null; }
-}
-
-
-class HasInvalidProvidesGUIMethodWithArg {
-	@ProvidesGUI
-	public JPanel bad(int i) { return null; }
-}
-
-
-class Has2ProvidesGUIMethods {
-	@ProvidesGUI
-	public JPanel providesGUI1() { return null; }
-
-	@ProvidesGUI
-	public JPanel providesGUI2() { return null; }
-}
 
 class BaseFieldClass {
 	@Tunable
@@ -248,4 +215,34 @@ class BaseMethodClass {
 }
 
 class ExtendedMethodClass extends BaseMethodClass {
+}
+
+class ContainsTunablesClass {
+	@ContainsTunables
+	public BaseMethodClass bmc = new BaseMethodClass();
+}
+
+
+class ContainsTunablesClass2 {
+	@ContainsTunables
+	public ContainsTunablesClass ctc = new ContainsTunablesClass();
+}
+
+class ContainsTunablesAndTunablesClass {
+
+	@ContainsTunables
+	public BaseMethodClass bmc = new BaseMethodClass();
+
+	@Tunable
+	public int getXValue() { return 0; }
+
+	public void setXValue(int a) { };
+
+	@Tunable
+	public int yValue;
+}
+
+class UninitializedContainsTunablesClass {
+	@ContainsTunables
+	public BaseMethodClass bmc; 
 }

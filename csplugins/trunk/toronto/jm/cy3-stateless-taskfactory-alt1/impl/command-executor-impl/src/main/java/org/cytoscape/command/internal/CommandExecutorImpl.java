@@ -4,6 +4,8 @@ package org.cytoscape.command.internal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.command.internal.tunables.CommandTunableInterceptorImpl;
@@ -13,6 +15,10 @@ import org.cytoscape.work.TaskFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.cytoscape.task.NetworkViewTaskFactory;
+import org.cytoscape.task.TableTaskFactory;
+import org.cytoscape.work.TaskMonitor;
+
 public class CommandExecutorImpl {
 
 	private final static Logger logger = LoggerFactory.getLogger(CommandExecutorImpl.class);
@@ -20,14 +26,17 @@ public class CommandExecutorImpl {
 	private final Map<String, Map<String,Executor>> commandExecutorMap = 
 	                                             new HashMap<String,Map<String,Executor>>();
 
-	private final CommandTunableInterceptorImpl interceptor = new CommandTunableInterceptorImpl(); 
+	private final String commandRegex ="^(\\S+)\\s+(\\S+)(\\s+.+)?$";
+	private final Pattern commandPattern = Pattern.compile(commandRegex);
+	private final CommandTunableInterceptorImpl interceptor; 
 	private final CyApplicationManager appMgr;
 
 	private final TaskFactoryProvisioner factoryProvisioner;
 	
-	public CommandExecutorImpl(CyApplicationManager appMgr, TaskFactoryProvisioner factoryProvisioner) {
+	public CommandExecutorImpl(CyApplicationManager appMgr, CommandTunableInterceptorImpl interceptor, TaskFactoryProvisioner factoryProvisioner) {
 		this.appMgr = appMgr;
 		this.factoryProvisioner = factoryProvisioner;
+		this.interceptor = interceptor;
 	}
 
 	public void addTaskFactory(TaskFactory tf, Map props) {
@@ -43,6 +52,22 @@ public class CommandExecutorImpl {
 	}
 
 	public void removeNetworkTaskFactory(NetworkTaskFactory tf, Map props) {
+		removeTF(props);
+	}
+
+	public void addNetworkViewTaskFactory(NetworkViewTaskFactory tf, Map props) {
+		addTF(new TFExecutor(factoryProvisioner.createFor(tf),interceptor), props);
+	}
+
+	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory tf, Map props) {
+		removeTF(props);
+	}
+
+	public void addTableTaskFactory(TableTaskFactory tf, Map props) {
+		addTF(new TFExecutor(factoryProvisioner.createFor(tf),interceptor), props);
+	}
+
+	public void removeTableTaskFactory(TableTaskFactory tf, Map props) {
 		removeTF(props);
 	}
 
@@ -89,37 +114,40 @@ public class CommandExecutorImpl {
 		}
 	}
 
-	public void executeList(List<String> commandLines) {
-		try {
+	public void executeList(List<String> commandLines, TaskMonitor tm) throws Exception {
 
-			// begin iterating over the lines
-			for ( String line : commandLines ) { 
-				boolean finished = false;
-				
-				// match the namespace
-				for ( String namespace : commandExecutorMap.keySet() ) {
-					if ( finished ) return;
+		double size = (double)commandLines.size();
+		double count = 1.0;
 
-					String commLine = peel( line, namespace );
-					if ( commLine != null ) {
-						Map<String,Executor> commandMap = commandExecutorMap.get(namespace);
-						if ( commandMap != null ) {
+		// begin iterating over the lines
+		for ( String fullLine : commandLines ) { 
+			String line = fullLine.trim();
 
-							// now match and execute the command
-							for ( String command : commandMap.keySet() ) {
-								String args = peel( commLine, command );
-								if ( args != null ) {
-									commandMap.get(command).execute(args);
-									finished = true;
-									break;
-								}
-							}
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			logger.error("Command parsing error: ", e);
+			// ignore comments
+			if ( line.startsWith("#"))
+				continue;
+
+		  	Matcher m = commandPattern.matcher(line);
+			if ( !m.matches() )
+				throw new RuntimeException("command line (" + line + ") does not match pattern: namespace command [args ...]");
+			String all = m.group(0);
+			String namespace = m.group(1); 
+			String command = m.group(2); 
+			String args = m.group(3); 
+
+			Map<String,Executor> commandMap = commandExecutorMap.get(namespace);
+
+			if ( commandMap == null )
+				throw new RuntimeException("Failed to find command namespace: '" + namespace +"'");	
+
+			Executor ex = commandMap.get(command);
+
+			if ( ex == null )
+				throw new RuntimeException("Failed to find command: '" + command +"' (from namespace: " + namespace + ")");	
+			ex.execute(args);
+
+			tm.setProgress(count/size);
+			count += 1.0;
 		}
 	}
 }

@@ -34,8 +34,7 @@ public class SubmenuTunableMutator extends AbstractTunableInterceptor<SubmenuTun
 			return null;
 		}
 
-		Map<String,SubmenuTunableHandler> handlers = getHandlers(objectWithTunables);
-		for ( SubmenuTunableHandler handler : handlers.values() ) {
+		for ( SubmenuTunableHandler handler : getHandlers(objectWithTunables) ) {
 			handler.setExecutionParams(dtm,tf);
 			handler.handle();
 			return handler.getSubmenuItem();

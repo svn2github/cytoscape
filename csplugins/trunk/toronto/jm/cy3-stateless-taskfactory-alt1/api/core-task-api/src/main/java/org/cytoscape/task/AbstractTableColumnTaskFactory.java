@@ -30,8 +30,8 @@ package org.cytoscape.task;
 import org.cytoscape.model.CyColumn;
 
 /**
- * The assumption is that setColumn() will be called before getTask() and that the Task in question
- * operates on the specified CyColumn. 
+ * A TableColumnTaskFactory that is always ready to produce a TaskIterator.
+ * @CyAPI.Abstract.Class
  */
 abstract public class AbstractTableColumnTaskFactory implements TableColumnTaskFactory {
 	@Override
