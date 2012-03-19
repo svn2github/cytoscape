@@ -24,7 +24,6 @@
 		<module>cy-commons-cli</module>
 		<module>integration-test-support</module>
 		<module>launch-framework</module>
-		<module>samples</module>
 		<module>splash-updater-impl</module>
 		<module>taglets</module>
 		<module>task-testing-impl</module>
