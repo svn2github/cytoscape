@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.command.internal.tunables.CommandTunableInterceptorImpl;
 import org.cytoscape.task.NetworkTaskFactory;
-import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.work.TaskFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,11 +30,11 @@ public class CommandExecutorImpl {
 	private final CommandTunableInterceptorImpl interceptor; 
 	private final CyApplicationManager appMgr;
 
-	private final TaskFactoryProvisioner factoryProvisioner;
+	private final DynamicTaskFactoryProvisioner factoryProvisioner;
 	
-	public CommandExecutorImpl(CyApplicationManager appMgr, CommandTunableInterceptorImpl interceptor, TaskFactoryProvisioner factoryProvisioner) {
+	public CommandExecutorImpl(CyApplicationManager appMgr, CommandTunableInterceptorImpl interceptor) {
 		this.appMgr = appMgr;
-		this.factoryProvisioner = factoryProvisioner;
+		this.factoryProvisioner = new DynamicTaskFactoryProvisioner(appMgr);
 		this.interceptor = interceptor;
 	}
 

@@ -64,6 +64,7 @@ import org.cytoscape.application.events.SetCurrentNetworkListener;
 import org.cytoscape.application.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.application.events.SetCurrentNetworkViewListener;
 import org.cytoscape.application.swing.CyAction;
+import org.cytoscape.internal.task.DynamicTaskFactoryProvisioner;
 import org.cytoscape.internal.task.TaskFactoryTunableAction;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
@@ -82,7 +83,6 @@ import org.cytoscape.task.NetworkCollectionTaskFactory;
 import org.cytoscape.task.NetworkTaskFactory;
 import org.cytoscape.task.NetworkViewCollectionTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
-import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.util.swing.JTreeTable;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
@@ -120,7 +120,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	final CyNetworkViewManager networkViewManager;
 
 	private final DialogTaskManager taskManager;
-	private final TaskFactoryProvisioner factoryProvisioner;
+	private final DynamicTaskFactoryProvisioner factoryProvisioner;
 
 	private final JPopupMenu popup;
 	private final Map<TaskFactory, JMenuItem> popupMap;
@@ -142,7 +142,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 	 */
 	public NetworkPanel(final CyApplicationManager applicationManager, final CyNetworkManager netmgr,
 			final CyNetworkViewManager networkViewManager, final BirdsEyeViewHandler bird,
-			final DialogTaskManager taskManager, TaskFactoryProvisioner factoryProvisioner) {
+			final DialogTaskManager taskManager) {
 		super();
 
 		this.treeNodeMap = new HashMap<Long, NetworkTreeNode>();
@@ -151,7 +151,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener, SetCu
 		this.netmgr = netmgr;
 		this.networkViewManager = networkViewManager;
 		this.taskManager = taskManager;
-		this.factoryProvisioner = factoryProvisioner;
+		this.factoryProvisioner = new DynamicTaskFactoryProvisioner(appManager);
 
 		root = new NetworkTreeNode("Network Root", null);
 		treeTableModel = new NetworkTreeTableModel(this, root);

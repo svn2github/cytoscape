@@ -37,7 +37,6 @@ import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.task.TableCellTaskFactory;
 import org.cytoscape.task.TableColumnTaskFactory;
 import org.cytoscape.task.TableTaskFactory;
-import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.task.creation.LoadVisualStyles;
 import org.cytoscape.task.creation.NewEmptyNetworkViewFactory;
 import org.cytoscape.task.internal.creation.CloneNetworkTaskFactory;
@@ -93,7 +92,6 @@ import org.cytoscape.task.internal.setcurrent.SetCurrentNetworkTaskFactoryImpl;
 import org.cytoscape.task.internal.table.CopyValueToEntireColumnTaskFactory;
 import org.cytoscape.task.internal.table.DeleteColumnTaskFactory;
 import org.cytoscape.task.internal.table.DeleteTableTaskFactory;
-import org.cytoscape.task.internal.table.MapGlobalToLocalTableTask;
 import org.cytoscape.task.internal.table.MapGlobalToLocalTableTaskFactory;
 import org.cytoscape.task.internal.table.RenameColumnTaskFactory;
 import org.cytoscape.task.internal.title.EditNetworkTitleTaskFactory;
@@ -232,9 +230,6 @@ public class CyActivator extends AbstractCyActivator {
 		GroupNodesTaskFactory groupNodesTaskFactory = new GroupNodesTaskFactory(cyGroupManager, cyGroupFactory);
 		GroupNodeContextTaskFactory collapseGroupTaskFactory = new GroupNodeContextTaskFactory(cyGroupManager, true);
 		GroupNodeContextTaskFactory expandGroupTaskFactory = new GroupNodeContextTaskFactory(cyGroupManager, false);
-		
-		TaskFactoryProvisionerImpl factoryProvisioner = new TaskFactoryProvisionerImpl(cyApplicationManagerServiceRef);
-		registerService(bc, factoryProvisioner, TaskFactoryProvisioner.class, new Properties());
 		
 		MapGlobalToLocalTableTaskFactory mapGlobal = new MapGlobalToLocalTableTaskFactory(cyTableManagerServiceRef, cyNetworkManagerServiceRef);
 		

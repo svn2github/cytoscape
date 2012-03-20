@@ -53,9 +53,9 @@ import javax.swing.border.TitledBorder;
 
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.internal.task.DynamicTaskFactoryProvisioner;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.task.NetworkViewTaskFactory;
-import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.layout.CyLayoutContext;
@@ -87,7 +87,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private CyApplicationManager appMgr;
 	private PanelTaskManager taskManager;
 	private CyProperty cytoscapePropertiesServiceRef;
-	private TaskFactoryProvisioner factoryProvisioner;
+	private DynamicTaskFactoryProvisioner factoryProvisioner;
 	private boolean initialized;
 
 	/**
@@ -97,8 +97,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	                            final CySwingApplication desktop,
 	                            final CyApplicationManager appMgr,
 	                            final PanelTaskManager taskManager,
-	                            final CyProperty cytoscapePropertiesServiceRef,
-	                            final TaskFactoryProvisioner factoryProvisioner)
+	                            final CyProperty cytoscapePropertiesServiceRef)
 	{
 		super(desktop.getJFrame(), "Layout Settings", false);
 
@@ -111,7 +110,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		this.appMgr = appMgr;
 		this.taskManager = taskManager;
 		this.cytoscapePropertiesServiceRef = cytoscapePropertiesServiceRef;
-		this.factoryProvisioner = factoryProvisioner;
+		this.factoryProvisioner = new DynamicTaskFactoryProvisioner(appMgr);
 		
 		Properties props = (Properties)this.cytoscapePropertiesServiceRef.getProperties();
 		

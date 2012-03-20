@@ -34,11 +34,9 @@ import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.property.CyProperty;
-import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.work.swing.PanelTaskManager;
 
-import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 
 
@@ -54,7 +52,7 @@ public class SettingsAction extends AbstractCyAction {
 	private LayoutSettingsDialog settingsDialog;
 
 	public SettingsAction(final CyLayoutAlgorithmManager cyl, final CySwingApplication desk, final CyApplicationManager appMgr, 
-			final PanelTaskManager tm, CyProperty cytoscapePropertiesServiceRef, TaskFactoryProvisioner factoryProvisioner)
+			final PanelTaskManager tm, CyProperty cytoscapePropertiesServiceRef)
 	{
 		super("Settings...",appMgr,"networkAndView");
 		this.appMgr = appMgr;
@@ -65,7 +63,7 @@ public class SettingsAction extends AbstractCyAction {
 		this.tm = tm;
 		this.cytoscapePropertiesServiceRef = cytoscapePropertiesServiceRef;
 		
-		settingsDialog = new LayoutSettingsDialog(cyl, desk, appMgr, tm, this.cytoscapePropertiesServiceRef, factoryProvisioner);
+		settingsDialog = new LayoutSettingsDialog(cyl, desk, appMgr, tm, this.cytoscapePropertiesServiceRef);
 	}
 
 	public void actionPerformed(ActionEvent e) {

@@ -49,8 +49,8 @@ import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.StringEnableSupport;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.internal.task.DynamicTaskFactoryProvisioner;
 import org.cytoscape.task.NetworkViewTaskFactory;
-import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithmContext;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
@@ -74,17 +74,17 @@ public class LayoutMenuPopulator {
 	private Set<JMenu> parentMenuSet = new HashSet<JMenu>();
 	private UndoSupport undo;
 	private CyEventHelper eventHelper;
-	private TaskFactoryProvisioner factoryProvisioner;
+	private DynamicTaskFactoryProvisioner factoryProvisioner;
 
 	private static final Logger logger = LoggerFactory.getLogger(LayoutMenuPopulator.class);
 
-	public LayoutMenuPopulator(CySwingApplication swingApp, CyApplicationManager appMgr, SubmenuTaskManager tm, UndoSupport undo, CyEventHelper eventHelper, TaskFactoryProvisioner factoryProvisioner) {
+	public LayoutMenuPopulator(CySwingApplication swingApp, CyApplicationManager appMgr, SubmenuTaskManager tm, UndoSupport undo, CyEventHelper eventHelper) {
 		this.appMgr = appMgr;
 		this.tm = tm;
 		this.swingApp = swingApp;
 		this.undo = undo;
 		this.eventHelper = eventHelper;
-		this.factoryProvisioner = factoryProvisioner;
+		this.factoryProvisioner = new DynamicTaskFactoryProvisioner(appMgr);
 	}
 
 	public <T extends AbstractLayoutAlgorithmContext> void addLayout(CyLayoutAlgorithm<T> layout, Map props) {

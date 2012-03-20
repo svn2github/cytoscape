@@ -39,6 +39,7 @@ import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.internal.task.CytoPanelTaskFactoryTunableAction;
+import org.cytoscape.internal.task.DynamicTaskFactoryProvisioner;
 import org.cytoscape.internal.task.TaskFactoryTunableAction;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.task.NetworkCollectionTaskFactory;
@@ -46,7 +47,6 @@ import org.cytoscape.task.NetworkTaskFactory;
 import org.cytoscape.task.NetworkViewCollectionTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.TableTaskFactory;
-import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.cytoscape.work.swing.PanelTaskManager;
@@ -66,7 +66,7 @@ public class CytoscapeMenuPopulator {
 	final private DialogTaskManager dialogTaskManager;
 	final private CyApplicationManager appManager;
 	final private CyServiceRegistrar registrar;
-	final private TaskFactoryProvisioner factoryProvisioner;
+	final private DynamicTaskFactoryProvisioner factoryProvisioner;
 
 	final private Map<TaskFactory, CyAction> taskMap;
 	final private Map<Object, TaskFactory> provisionerMap;
@@ -78,14 +78,14 @@ public class CytoscapeMenuPopulator {
 	 */
 	public CytoscapeMenuPopulator(final CySwingApplication app, final DialogTaskManager dialogTaskManager,
 	                  final PanelTaskManager panelTaskManager,
-				      final CyApplicationManager appManager, final CyServiceRegistrar registrar, final TaskFactoryProvisioner factoryProvisioner)
+				      final CyApplicationManager appManager, final CyServiceRegistrar registrar)
 	{
 		this.app = app;
 		this.dialogTaskManager = dialogTaskManager;
 		this.panelTaskManager = panelTaskManager;
 		this.appManager = appManager;
 		this.registrar = registrar;
-		this.factoryProvisioner = factoryProvisioner;
+		this.factoryProvisioner = new DynamicTaskFactoryProvisioner(appManager);
 
 		taskMap = new HashMap<TaskFactory,CyAction>();
 		provisionerMap = new IdentityHashMap<Object, TaskFactory>();

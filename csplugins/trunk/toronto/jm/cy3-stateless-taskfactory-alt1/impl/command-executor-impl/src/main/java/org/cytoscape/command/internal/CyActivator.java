@@ -11,7 +11,6 @@ import org.cytoscape.command.internal.tunables.*;
 import org.cytoscape.work.TaskFactory;
 
 import org.cytoscape.task.NetworkTaskFactory;
-import org.cytoscape.task.TaskFactoryProvisioner;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.TableTaskFactory;
 import org.cytoscape.work.util.*;
@@ -32,8 +31,7 @@ public class CyActivator extends AbstractCyActivator {
 		CyApplicationManager cyApplicationManagerServiceRef = getService(bc,CyApplicationManager.class);
 		CommandTunableInterceptorImpl interceptor = new CommandTunableInterceptorImpl();
 		
-		TaskFactoryProvisioner factoryProvisioner = getService(bc, TaskFactoryProvisioner.class);
-		CommandExecutorImpl commandExecutorImpl = new CommandExecutorImpl(cyApplicationManagerServiceRef, interceptor, factoryProvisioner);
+		CommandExecutorImpl commandExecutorImpl = new CommandExecutorImpl(cyApplicationManagerServiceRef, interceptor);
 		CommandExecutorTaskFactory commandExecutorTaskFactory = new CommandExecutorTaskFactory(commandExecutorImpl);
 		
 		
