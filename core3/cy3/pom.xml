@@ -13,5 +13,6 @@
 		<module>impl</module>
 		<module>support</module>
 		<module>gui-distribution</module>
+		<module>samples</module>
 	</modules>
 </project> 
