@@ -1,11 +1,11 @@
 
 package org.cytoscape.internal.test;
 
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskFactory;
 
 
-public class InfiniteTaskFactory implements TaskFactory {
+public class InfiniteTaskFactory extends AbstractTaskFactory {
 	public InfiniteTaskFactory() { }
 
 	public TaskIterator createTaskIterator() {

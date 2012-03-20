@@ -25,27 +25,17 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.task.internal.table;
+package org.cytoscape.task;
 
-
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.model.CyColumn;
-import org.cytoscape.task.TableColumnTaskFactory;
-
 
 /**
- * The assumption is that setColumn() will be called before getTask() and that the Task in question
- * operates on the specified CyColumn. 
+ * A TableColumnTaskFactory that is always ready to produce a TaskIterator.
+ * @CyAPI.Abstract.Class
  */
 abstract public class AbstractTableColumnTaskFactory implements TableColumnTaskFactory {
-	protected CyColumn column;
-
-	/** Used to provision this factory with a {@param CyColumn} that will be used to create tasks.
-	 *  @param column a non-null CyColumn
-	 */
-	public void setColumn(final CyColumn column) {
-		if (column == null)
-			throw new NullPointerException("\"column\" parameter must *never* be null!");
-		this.column = column;
+	@Override
+	public boolean isReady(CyColumn column) {
+		return true;
 	}
 }

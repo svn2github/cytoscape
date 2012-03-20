@@ -30,11 +30,11 @@
 package org.cytoscape.internal.test.tunables;
 
 
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class TunablesTestTaskFactory implements TaskFactory {
+public class TunablesTestTaskFactory extends AbstractTaskFactory {
 	public TaskIterator createTaskIterator() {
 		return new TaskIterator(new TunablesTestTask());
 	} 

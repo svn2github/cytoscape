@@ -31,12 +31,13 @@ package org.cytoscape.internal.test.tunables;
 
 
 import java.io.File;
-import org.cytoscape.work.TaskFactory;
+
+import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 
 
-public class TunablesTestTaskFactory2 implements TaskFactory {
+public class TunablesTestTaskFactory2 extends AbstractTaskFactory {
 	@Tunable(description="input file",params="input=true")
 	public File inputFile;
 

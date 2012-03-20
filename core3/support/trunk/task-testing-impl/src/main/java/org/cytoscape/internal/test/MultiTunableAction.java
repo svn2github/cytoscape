@@ -58,10 +58,10 @@ public class MultiTunableAction extends AbstractCyAction {
 
 	public void actionPerformed(ActionEvent e) {
 		TaskFactory tf = new DummyTaskFactory();
-		tm.execute(tf);
+		tm.execute(tf.createTaskIterator());
 	}
 
-	public class DummyTaskFactory implements TaskFactory {
+	public class DummyTaskFactory extends AbstractTaskFactory {
 		public TaskIterator createTaskIterator() {
 			return new TaskIterator( new DummyTask(), new DummyTask2() );
 		}

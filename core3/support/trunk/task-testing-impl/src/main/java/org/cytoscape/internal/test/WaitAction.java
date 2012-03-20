@@ -56,11 +56,11 @@ public class WaitAction extends AbstractCyAction {
 
 	public void actionPerformed(ActionEvent e) {
 		TaskFactory tf = new DummyTaskFactory();
-		tm.execute(tf);
+		tm.execute(tf.createTaskIterator());
 		System.out.println("finished waiting");
 	}
 
-	private class DummyTaskFactory implements TaskFactory {
+	private class DummyTaskFactory extends AbstractTaskFactory {
 		public TaskIterator createTaskIterator() {
 			return new TaskIterator( new DummyTask() );
 		}
