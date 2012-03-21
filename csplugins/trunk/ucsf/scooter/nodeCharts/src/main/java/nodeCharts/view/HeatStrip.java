@@ -147,11 +147,19 @@ public class HeatStrip implements NodeChartViewer {
 
 			double h = (0.5 * height) * (val / max);
 
-			// Outline the bars for clarity
-			Rectangle2D outline = new Rectangle2D.Double(px1, py1, w, h);
-			cgList.add(new CustomGraphic(outline, new DefaultPaintFactory(Color.BLACK)));
+			if (w > 1) {
+				// Outline the bars for clarity if the bars are wide enough
+				Rectangle2D outline = new Rectangle2D.Double(px1, py1, w, h);
+				cgList.add(new CustomGraphic(outline, new DefaultPaintFactory(Color.BLACK)));
 
-			barArray[i] = new Rectangle2D.Double(px1+0.2, py1+0.2, w-0.2, h-0.2);
+				// Adjust the sizes to make room for the outline
+				px1 += 0.2;
+				py1 += 0.2;
+				w -= 0.2;
+				h -= 0.2;
+			}
+
+			barArray[i] = new Rectangle2D.Double(px1, py1, w, h);
 			// System.out.println ("Got rectangle from: " + px1 + "," + py1 + " of width " + w + " and height " + h);
 			maxY = Math.max(maxY, barArray[i].getMaxY());
 			
