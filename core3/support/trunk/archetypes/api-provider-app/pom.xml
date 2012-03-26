@@ -9,9 +9,9 @@
 	</parent>
 
 	<groupId>org.cytoscape.archetypes</groupId>
-	<artifactId>api-provider-plugin</artifactId>
+	<artifactId>api-provider-app</artifactId>
 	<packaging>maven-archetype</packaging>
-	<name>Cytoscape 3 Archetype - API Provider Plugin</name>
+	<name>Cytoscape 3 Archetype - API Provider App</name>
 
 	<build>
 		<plugins>

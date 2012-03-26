@@ -11,12 +11,12 @@
 	<groupId>org.cytoscape</groupId>
 	<artifactId>archetypes-parent</artifactId>
 	<packaging>pom</packaging>
-	<name>Cytoscape 3 Plugin Archetypes Parent</name>
+	<name>Cytoscape 3 App Archetypes Parent</name>
 
 	<modules>
-		<module>api-provider-plugin</module>
-		<module>task-plugin</module>
-		<module>cyaction-plugin</module>
+		<module>api-provider-app</module>
+		<module>task-app</module>
+		<module>cyaction-app</module>
 	</modules>
 
 	<repositories>

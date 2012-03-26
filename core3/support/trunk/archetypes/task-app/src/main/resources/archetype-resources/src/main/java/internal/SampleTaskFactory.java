@@ -27,7 +27,7 @@ public class SampleTaskFactory extends AbstractNetworkTaskFactory {
 	 * method is <i>assumed</i> to have already called the setNetwork() 
 	 * method which will set the "net" variable.
 	 */
-	public TaskIterator createTaskIterator() {
+	public TaskIterator createTaskIterator(CyNetwork network) {
 		return new TaskIterator( new SampleTask( network ) );
 	}
 }

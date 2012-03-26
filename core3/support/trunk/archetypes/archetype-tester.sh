@@ -23,9 +23,9 @@ function testArchetype {
 	cd ..
 }
 
-testArchetype api-provider-plugin
-testArchetype task-plugin
-testArchetype cyaction-plugin
+testArchetype api-provider-app
+testArchetype task-app
+testArchetype cyaction-app
 
 cd ..
 

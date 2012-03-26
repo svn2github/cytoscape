@@ -9,9 +9,9 @@
 	</parent>
 
 	<groupId>org.cytoscape.archetypes</groupId>
-	<artifactId>task-plugin</artifactId>
+	<artifactId>cyaction-app</artifactId>
 	<packaging>maven-archetype</packaging>
-	<name>Cytoscape 3 Archetype - Cytoscape Task Plugin</name>
+	<name>Cytoscape 3 Archetype - Creates CyAction (menu item) for desktop application</name>
 
 	<build>
 		<plugins>
