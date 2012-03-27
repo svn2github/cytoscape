@@ -1,0 +1,18 @@
+<p>
+    This is a minor release of Cytoscape Web which fixes some bugs and adds the <code>"ignoreLabels"</code> option to the
+    <code>nodes.compoundSize</code> visual property, so you can now choose whether or not
+    compound nodes should be sized to enclose the child labels.
+</p>
+<div class="relase_details">
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2633</span>: Misaligned labels when zoom changes.</li>
+        <li><span class="bug_id">2690</span>: Error when using double quotes in node/edge data fields.</li>
+        <li><span class="bug_id">2691</span>: Compound node bounds not updated after changing child labels.</li>
+        <li><span class="bug_id">2696</span>: Node image cropped if proportions are the same.</li>
+        <li><span class="bug_id">2697</span>: Compound node image not updated correctly when adding a child node.</li>
+        <li><span class="bug_id">2698</span>: CompoundSpringEmbedder: overlapping compound nodes when labels are too long.</li>
+    </ul>
+    <ul class="other_changes">
+        <li>The <code>nodes.compoundSize</code> visual property now accepts "auto" and "ignoreLabels" as values.</li>
+    </ul>
+</div>

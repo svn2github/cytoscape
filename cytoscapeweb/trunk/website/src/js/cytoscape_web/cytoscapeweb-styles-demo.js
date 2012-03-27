@@ -51,6 +51,7 @@ $(function(){
 			},
 			nodes: {
 				size: 40,
+				compoundSize: "ignoreLabels",
 				color: "#ff9999",
 				borderColor: "#666666",
 				borderWidth: 1.5,
