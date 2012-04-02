@@ -1,6 +1,7 @@
 package org.cytoscape.app.internal.manager;
 
 import java.io.File;
+import java.net.URL;
 
 import org.cytoscape.app.AbstractCyApp;
 
@@ -21,6 +22,31 @@ public class App {
 	 */
 	private String entryClassName;
 	
+	/**
+	 * The URL to the jar file containing the app.
+	 */
+	private URL jarURL;
+	
+	/**
+	 * A reference to the instance of the app's class that extends {@link AbstractCyApp}.
+	 */
+	private AbstractCyApp appInstance;
+	
+	/**
+	 * Whether this App object represents an app that has been checked to have valid packaging (such as containing
+	 * necessary tags in its manifest file) and contains valid fields, making it loadable by the {@link AppManager} service.
+	 */
+	private boolean appValidated;
+	
+	private AppStatus status;
+	
+	/**
+	 * An enumeration that indicates the status of a given app, such as whether it is installed or uninstalled.
+	 */
+	public enum AppStatus{
+		INSTALLED
+	}
+	
 	public App(String appName, String version, String authors, String description, File appFile, String entryClassName) {
 		this.appName = appName;
 		this.version = version;
@@ -28,6 +54,8 @@ public class App {
 		this.description = description;
 		this.appFile = appFile;
 		this.entryClassName = entryClassName;
+		
+		this.setAppValidated(false);
 	}
 	
 	public String getAppName() {
@@ -53,4 +81,39 @@ public class App {
 	public String getEntryClassName() {
 		return entryClassName;
 	}
+	
+	public URL getJarURL() {
+		return jarURL;
+	}
+
+	public AbstractCyApp getAppInstance() {
+		return appInstance;
+	}
+
+	public boolean isAppValidated() {
+		return appValidated;
+	}
+	
+	public AppStatus getStatus() {
+		return status;
+	}
+	
+	public void setAppFile(File appFile) {
+		this.appFile = appFile;
+	}
+	
+	public void setAppInstance(AbstractCyApp appInstance) {
+		this.appInstance = appInstance;
+	}
+
+	public void setAppValidated(boolean appValidated) {
+		this.appValidated = appValidated;
+	}
+
+	public void setStatus(AppStatus status) {
+		this.status = status;
+	}
+
+
+
 }
