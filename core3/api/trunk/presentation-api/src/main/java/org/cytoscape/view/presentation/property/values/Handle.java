@@ -1,4 +1,4 @@
-package org.cytoscape.ding;
+package org.cytoscape.view.presentation.property.values;
 
 import java.awt.geom.Point2D;
 
@@ -38,7 +38,8 @@ public interface Handle {
 	
 	/**
 	 * Create string representation of this object for parsing.
-	 * @return
+	 * 
+	 * @return String representation of this Handle.
 	 */
 	String getSerializableString();
 }

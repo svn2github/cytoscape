@@ -1,4 +1,4 @@
-package org.cytoscape.ding;
+package org.cytoscape.view.presentation.property.values;
 
 import java.util.List;
 
@@ -11,6 +11,7 @@ import java.util.List;
 public interface Bend {
 	
 	/**
+	 * Get List of all handles on this edge
 	 * 
 	 * @return All {@link Handle}s belong to this Bend.
 	 */
@@ -32,7 +33,7 @@ public interface Bend {
 	void removeHandleAt(final int handleIndex);
 	
 	/**
-	 * Remove all Handles in this Bend
+	 * Remove all Handles on this Bend
 	 */
 	void removeAllHandles();
 
@@ -48,7 +49,8 @@ public interface Bend {
 	
 	/**
 	 * Create string representation of this object for parsing.
-	 * @return
+	 * 
+	 * @return serializable string.
 	 */
 	String getSerializableString();
 }
