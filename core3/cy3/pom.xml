@@ -12,7 +12,7 @@
 		<module>api</module>
 		<module>impl</module>
 		<module>support</module>
-		<module>gui-distribution</module>
 		<module>samples</module>
+		<module>gui-distribution</module>
 	</modules>
 </project> 
