@@ -18,7 +18,7 @@ public class App {
 	private File appFile;
 	
 	/**
-	 * The name of the app's class that extends {@link AbstractCyApp} to be instantiated when the app is loaded.
+	 * The fully-qualified name of the app's class that extends {@link AbstractCyApp} to be instantiated when the app is loaded.
 	 */
 	private String entryClassName;
 	
@@ -38,6 +38,11 @@ public class App {
 	 */
 	private boolean appValidated;
 	
+	/**
+	 * Whether we've found the official name of the app as opposed to using an inferred name.
+	 */
+	private boolean officialNameObtained;
+	
 	private AppStatus status;
 	
 	/**
@@ -45,18 +50,22 @@ public class App {
 	 */
 	public enum AppStatus{
 		INSTALLED,
-		TO_BE_UNINSTALLED
+		TO_BE_UNINSTALLED,
 	}
 	
-	public App(String appName, String version, String authors, String description, File appFile, String entryClassName) {
+	public App() {
+		this("", "", "", "", null);
+	}
+	
+	public App(String appName, String version, String authors, String description, File appFile) {
 		this.appName = appName;
 		this.version = version;
 		this.authors = authors;
 		this.description = description;
 		this.appFile = appFile;
-		this.entryClassName = entryClassName;
 		
-		this.setAppValidated(false);
+		appValidated = false;
+		officialNameObtained = false;
 	}
 	
 	public String getAppName() {
@@ -95,12 +104,40 @@ public class App {
 		return appValidated;
 	}
 	
+	public boolean isOfficialNameObtained() {
+		return officialNameObtained;
+	}
+	
 	public AppStatus getStatus() {
 		return status;
 	}
 	
+	public void setAppName(String appName) {
+		this.appName = appName;
+	}
+	
+	public void setVersion(String version) {
+		this.version = version;
+	}
+	
+	public void setAuthors(String authors) {
+		this.authors = authors;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 	public void setAppFile(File appFile) {
 		this.appFile = appFile;
+	}
+	
+	public void setEntryClassName(String entryClassName) {
+		this.entryClassName = entryClassName;
+	}
+	
+	public void setJarURL(URL jarURL) {
+		this.jarURL = jarURL;
 	}
 	
 	public void setAppInstance(AbstractCyApp appInstance) {
@@ -111,9 +148,17 @@ public class App {
 		this.appValidated = appValidated;
 	}
 
+	public void setOfficialNameObtained(boolean officialNameObtained) {
+		this.officialNameObtained = officialNameObtained;
+	}
+	
 	public void setStatus(AppStatus status) {
 		this.status = status;
 	}
+
+
+
+
 
 
 

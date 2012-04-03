@@ -114,6 +114,13 @@
 			<groupId>org.cytoscape</groupId>
 			<artifactId>application-api</artifactId>
 		</dependency>
+		
+		<!-- dependencies for file copying and moving utilities -->
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.2</version>
+		</dependency>
 
 		<!-- dependencies needed for plugin manager -->
 		<dependency>

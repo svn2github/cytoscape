@@ -27,11 +27,7 @@ public class AppManager {
 	
 	/** Uninstalled apps are copied to this subdirectory under the local app storage directory. */
 	private static final String UNINSTALLED_APPS_DIRECTORY_NAME = "Uninstalled";
-	
-	/** The name of the key in the app jar's manifest file that indicates the fully-qualified name 
-	 * of the class to instantiate upon app installation. */
-	private static final String APP_CLASS_TAG = "Cytoscape-App";
-	
+		
 	private Set<App> installedApps;
 	private Set<App> toBeUninstalledApps;
 	private Set<App> uninstalledApps;
@@ -87,8 +83,7 @@ public class AppManager {
 			app.setAppFile(new File(getInstalledAppsPath() + File.separator + fileName));
 			
 		} catch (IOException e) {
-			
-			throw new AppCopyException();
+			throw new AppCopyException("Unable to copy file: " + e.getMessage());
 		}
 		
 		// TODO: Currently uses the CyAppAdapter's loader to load apps' classes. Is there reason to use a different one?
@@ -144,8 +139,10 @@ public class AppManager {
 	 * The app will only be uninstalled if it is currently installed.
 	 * 
 	 * @param app The app to be uninstalled.
+	 * @throws AppCopyException If there was an error while moving the app from the installed apps subdirectory
+	 * to the subdirectory containing currently uninstalled apps.
 	 */
-	public void uninstallApp(App app) {
+	public void uninstallApp(App app) throws AppCopyException {
 		// Check if the app is installed before attempting to uninstall.
 		if (app.getStatus() != AppStatus.INSTALLED) {
 			// If it is not installed, do not attempt to uninstall it.
@@ -166,7 +163,7 @@ public class AppManager {
 				try {
 					FileUtils.copyFileToDirectory(app.getAppFile(), new File(uninstalledAppsPath));
 				} catch (IOException e) {
-					throw new RuntimeException("Unable to copy file: " + e.getMessage());
+					throw new AppCopyException("Unable to copy file: " + e.getMessage());
 				}
 				
 				// Delete the source file after the copy operation
