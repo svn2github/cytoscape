@@ -44,7 +44,8 @@ public class App {
 	 * An enumeration that indicates the status of a given app, such as whether it is installed or uninstalled.
 	 */
 	public enum AppStatus{
-		INSTALLED
+		INSTALLED,
+		TO_BE_UNINSTALLED
 	}
 	
 	public App(String appName, String version, String authors, String description, File appFile, String entryClassName) {

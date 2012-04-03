@@ -162,8 +162,8 @@ public class AppManager {
 			if (appParentDirectory.getCanonicalPath().equals(
 					getInstalledAppsPath())) {
 				
+				// Use the Apache commons library to copy over the file, overwriting an existing file if needed.
 				try {
-					// Use the Apache commons library to move the file, overwriting an existing file if needed.
 					FileUtils.copyFileToDirectory(app.getAppFile(), new File(uninstalledAppsPath));
 				} catch (IOException e) {
 					throw new RuntimeException("Unable to copy file: " + e.getMessage());
@@ -173,6 +173,12 @@ public class AppManager {
 				String fileName = app.getAppFile().getName();
 				app.getAppFile().delete();
 				app.setAppFile(new File(uninstalledAppsPath + File.separator + fileName));
+				
+				// Simple apps require a Cytoscape restart to be uninstalled
+				app.setStatus(AppStatus.TO_BE_UNINSTALLED);
+				
+				installedApps.remove(app);
+				toBeUninstalledApps.add(app);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Unable to obtain path: " + e.getMessage());
