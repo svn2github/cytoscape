@@ -1,5 +1,6 @@
 package org.cytoscape.app.internal;
 
+import org.cytoscape.app.AbstractCyApp;
 import org.cytoscape.app.CyAppAdapter;
 import org.cytoscape.app.internal.CyAppAdapterImpl;
 import org.cytoscape.app.internal.AppLoaderTaskFactory;
@@ -35,6 +36,7 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.undo.UndoSupport;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.work.swing.SubmenuTaskManager;
@@ -52,6 +54,8 @@ import org.osgi.framework.BundleContext;
 import org.cytoscape.service.util.AbstractCyActivator;
 
 import java.util.Properties;
+
+import javax.swing.AbstractAction;
 
 
 
@@ -125,6 +129,11 @@ public class CyActivator extends AbstractCyActivator {
 		
 		registerService(bc,appLoaderTaskFactory,TaskFactory.class, new Properties());
 		registerAllServices(bc,appManagerAction, new Properties());
+		
+		// AbstractCyAction implementation for updated app manager
+		org.cytoscape.app.internal.AppManagerAction appManagerAction2 = new org.cytoscape.app.internal.AppManagerAction(cySwingApplicationRef);
+		registerService(bc, appManagerAction2, AbstractCyAction.class, new Properties());
+		registerService(bc, appManagerAction2, AbstractAction.class, new Properties());
 	}
 }
 
