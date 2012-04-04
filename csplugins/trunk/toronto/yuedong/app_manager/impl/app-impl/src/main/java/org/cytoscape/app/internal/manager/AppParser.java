@@ -23,7 +23,7 @@ public class AppParser {
 		App parsedApp = new App();
 		
 		if (!file.isFile()) {
-			throw new AppParsingException("Given file is not a file.");
+			throw new AppParsingException("The given file, " + file + ", is not a file.");
 		}
 		
 		// Attempt to parse the file as a jar file

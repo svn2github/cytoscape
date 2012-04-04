@@ -6,6 +6,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.JarFile;
@@ -14,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.cytoscape.app.AbstractCyApp;
 import org.cytoscape.app.CyAppAdapter;
 import org.cytoscape.app.internal.exception.AppCopyException;
+import org.cytoscape.app.internal.exception.AppParsingException;
 import org.cytoscape.app.internal.manager.App.AppStatus;
 import org.cytoscape.application.CyApplicationConfiguration;
 
@@ -22,15 +24,28 @@ import org.cytoscape.application.CyApplicationConfiguration;
  * also provides functionalities for installing and uninstalling apps.
  */
 public class AppManager {
+	/** Only files with these extensions are checked when looking for apps in a given subdirectory.
+	 */
+	private static final String[] APP_EXTENSIONS = {"jar"};
+	
 	/** Installed apps are copied to this subdirectory under the local app storage directory. */
-	private static final String INSTALLED_APPS_DIRECTORY_NAME = "Installed";
+	private static final String INSTALLED_APPS_DIRECTORY_NAME = "installed";
 	
 	/** Uninstalled apps are copied to this subdirectory under the local app storage directory. */
-	private static final String UNINSTALLED_APPS_DIRECTORY_NAME = "Uninstalled";
-		
+	private static final String UNINSTALLED_APPS_DIRECTORY_NAME = "uninstalled";
+	
+	/** This subdirectory in the local Cytoscape storage directory is used to store app data, as 
+	 * well as installed and uninstalled apps. */
+	private static final String APPS_DIRECTORY_NAME = "apps";
+	
 	private Set<App> installedApps;
 	private Set<App> toBeUninstalledApps;
 	private Set<App> uninstalledApps;
+	
+	/** An {@link AppParser} object used to parse File objects and possibly URLs into {@link App} objects
+	 * into a format we can more easily work with
+	 */
+	private AppParser appParser;
 	
 	/**
 	 * {@link CyApplicationConfiguration} service used to obtain the directories used to store the apps.
@@ -49,12 +64,39 @@ public class AppManager {
 		installedApps = new HashSet<App>();
 		toBeUninstalledApps = new HashSet<App>();
 		uninstalledApps = new HashSet<App>();
+		
+		appParser = new AppParser();
+		
+		initializeAppsDirectories();
+		
+		System.out.println("Installed apps path: " + getInstalledAppsPath());
+		System.out.println("Uninstalled apps path: " + getUninstalledAppsPath());
+		
+		try {
+			App app = appParser.parseApp(new File(getBaseAppPath().getCanonicalPath() + File.separator + "CytoscapeTestSimpleApp.jar"));
+			installApp(app);
+		} catch (AppParsingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (AppCopyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		/*
+		installAppsInDirectory(new File(getInstalledAppsPath()));
+		*/
 	}
 	
 	/**
 	 * Attempts to install an app. Makes a copy of the app file and places it in the directory 
-	 * used to hold all installed and uninstalled apps. Then, the app is created by instancing 
-	 * its class that extends {@link AbstractCyApp}.
+	 * used to hold all installed and uninstalled apps, if it was not already present there. Then, the 
+	 * app is created by instancing its class that extends {@link AbstractCyApp}.
 	 * 
 	 * Before the app is installed, it is checked if it contains valid packaging by its isAppValidated() method.
 	 * Apps that have not been validated are ignored.
@@ -75,13 +117,19 @@ public class AppManager {
 		
 		// Attempt to copy the app to the directory for installed apps.
 		try {
-			// Uses Apache Commons library; overwrites files with the same name.
-			FileUtils.copyFileToDirectory(app.getAppFile(), new File(getInstalledAppsPath()));
+			File installedAppsDirectory = new File(getInstalledAppsPath());
+			File appFile = app.getAppFile();
 			
-			// Update the app's path
-			String fileName = app.getAppFile().getName();
-			app.setAppFile(new File(getInstalledAppsPath() + File.separator + fileName));
-			
+			// Only perform the copy if the app was not already in the target directory
+			if (!FileUtils.directoryContains(installedAppsDirectory, appFile)) {
+				
+				// Uses Apache Commons library; overwrites files with the same name.
+				FileUtils.copyFileToDirectory(appFile, installedAppsDirectory);
+				
+				// Update the app's path
+				String fileName = app.getAppFile().getName();
+				app.setAppFile(new File(getInstalledAppsPath() + File.separator + fileName));
+			}
 		} catch (IOException e) {
 			throw new AppCopyException("Unable to copy file: " + e.getMessage());
 		}
@@ -195,8 +243,17 @@ public class AppManager {
 	 * @return The path of the root directory containing all installed and uninstalled apps.
 	 */
 	private File getBaseAppPath() {
+		File baseAppPath = null;
+		
 		// TODO: At time of writing, CyApplicationConfiguration always returns the home directory for directory location.
-		return applicationConfiguration.getConfigurationDirectoryLocation();
+		try {
+			baseAppPath = new File(applicationConfiguration.getConfigurationDirectoryLocation().getCanonicalPath() 
+					+ File.separator + APPS_DIRECTORY_NAME);
+		} catch (IOException e) {
+			throw new RuntimeException("Unabled to obtain canonical path for Cytoscape local storage directory: " + e.getMessage());
+		}
+		
+		return baseAppPath;
 	}
 	
 	/**
@@ -220,6 +277,78 @@ public class AppManager {
 			return getBaseAppPath().getCanonicalPath() + File.separator + UNINSTALLED_APPS_DIRECTORY_NAME;
 		} catch (IOException e) {
 			throw new RuntimeException("Unable to obtain canonical path for uninstalled apps directory: " + e.getMessage());
+		}
+	}
+	
+	private void installAppsInDirectory(File directory) {
+
+		// Obtain all files in the given directory with supported extensions, perform a non-recursive search
+		Collection<File> files = FileUtils.listFiles(directory, APP_EXTENSIONS, false); 
+		
+		Set<App> parsedApps = new HashSet<App>();
+		
+		App app;
+		for (File potentialApp : files) {
+			app = null;
+			try {
+				app = appParser.parseApp(potentialApp);
+			} catch (AppParsingException e) {
+				System.out.println("Failed to parse " + potentialApp + ", error: " + e.getMessage());
+			} finally {
+				if (app != null) {
+					parsedApps.add(app);
+					
+					System.out.println("App parsed: " + app);
+				}
+			}
+		}
+		
+		for (App parsedApp : parsedApps) {
+			try {
+				installApp(parsedApp);
+			} catch (AppCopyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		this.installedApps.addAll(parsedApps);
+		
+		for (App installedApp : this.installedApps) {
+			try {
+				uninstallApp(installedApp);
+			} catch (AppCopyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("Number of apps installed from directory: " + parsedApps.size());
+	}
+	
+	/**
+	 * Create app storage directories if they don't already exist.
+	 */
+	private void initializeAppsDirectories() {
+		boolean created = true;
+		
+		File appDirectory = getBaseAppPath();
+		if (!appDirectory.exists()) {
+			created = created && appDirectory.mkdir();
+		}
+		
+		File installedDirectory = new File(getInstalledAppsPath());
+		if (!installedDirectory.exists()) {
+			created = created && installedDirectory.mkdir();
+		}
+		
+		File uninstalledDirectory = new File(getUninstalledAppsPath());
+		if (!uninstalledDirectory.exists()) {
+			created = created && uninstalledDirectory.mkdir();
+		}
+		
+		if (!created) {
+			throw new RuntimeException("Failed to create local app storage directories.");
 		}
 	}
 }

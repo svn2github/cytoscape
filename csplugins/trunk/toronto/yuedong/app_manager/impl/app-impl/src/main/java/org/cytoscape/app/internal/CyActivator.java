@@ -117,6 +117,10 @@ public class CyActivator extends AbstractCyActivator {
 				cyApplicationConfigurationServiceRef);
 		StartupMostlyFinished startupMostlyFinished = new StartupMostlyFinished(cyEventHelperRef);
 		
+		// Attempt to instantiate new manager
+		org.cytoscape.app.internal.manager.AppManager appManager = new org.cytoscape.app.internal.manager.AppManager(
+				cyAppAdapter, cyApplicationConfigurationServiceRef);
+		
 		registerService(bc,cyAppAdapter,CyAppAdapter.class, new Properties());
 		
 		registerService(bc,appLoaderTaskFactory,TaskFactory.class, new Properties());

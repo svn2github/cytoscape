@@ -58,6 +58,7 @@ import org.cytoscape.app.internal.DownloadableInfo;
 import org.cytoscape.app.internal.ManagerException;
 import org.cytoscape.app.internal.ManagerUtil;
 import org.cytoscape.app.internal.ui.AppManageDialog;
+import org.cytoscape.app.internal.ui.AppManagerDialog;
 import org.cytoscape.application.CyApplicationConfiguration;
 import org.cytoscape.application.CyVersion;
 import org.cytoscape.application.swing.AbstractCyAction;
@@ -152,6 +153,11 @@ public class AppManagerAction extends AbstractCyAction implements SessionLoadedL
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
+		AppManagerDialog dialog = new AppManagerDialog();
+		dialog.setVisible(true);
+		
+		/*
 		AppManageDialog dlg = new AppManageDialog(desktop.getJFrame(), bookmarks, this.bookmarksUtil, 
 				this.dialogTaskManager, this.appLoaderTaskFactory);
 		
@@ -168,6 +174,7 @@ public class AppManagerAction extends AbstractCyAction implements SessionLoadedL
 
 		AppManagerInquireTaskFactory _taskFactory = new AppManagerInquireTaskFactory(task);
 		this.dialogTaskManager.execute(_taskFactory.createTaskIterator());
+		*/
 	}
 	
 	@Override
