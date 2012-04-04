@@ -45,7 +45,7 @@ public class ViewNetworkNeighborhoodTask implements Task {
         CyNode cyNode = nodeView.getModel();
         CyRow nodeRow = cyNetwork.getRow(cyNode);
         String biopaxID = nodeRow.get(BioPaxUtil.BIOPAX_RDF_ID, String.class);
-        String neighborhoodParam = "Neighborhood: " + nodeRow.get(CyNode.NAME, String.class);
+        String neighborhoodParam = "Neighborhood: " + nodeRow.get(CyNetwork.NAME, String.class);
 
         // encode some parts of the url
         try {

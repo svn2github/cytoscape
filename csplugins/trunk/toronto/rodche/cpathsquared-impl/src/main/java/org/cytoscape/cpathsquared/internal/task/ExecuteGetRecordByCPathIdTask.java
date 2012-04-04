@@ -34,7 +34,9 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.session.CyNetworkNaming;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.view.layout.CyLayoutContext;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
@@ -163,10 +165,10 @@ public class ExecuteGetRecordByCPathIdTask extends AbstractTask {
 			}
 
 			CyLayoutAlgorithmManager layoutManager = CPath2Factory.getCyLayoutAlgorithmManager();
-			TaskFactory tf = layoutManager.getDefaultLayout();
-			TaskIterator ti = tf.createTaskIterator();
-			Task task = ti.next();
-			insertTasksAfterCurrentTask(new Task[] {task});
+			CyLayoutAlgorithm<CyLayoutContext> layout = layoutManager.getDefaultLayout();
+			CyLayoutContext context = layout.createLayoutContext();
+			context.setNetworkView(view);
+			insertTasksAfterCurrentTask(layout.createTaskIterator(context));
 
 		} catch (IOException e) {
 			throw new Exception("Failed to retrieve records.", e);
@@ -212,7 +214,7 @@ public class ExecuteGetRecordByCPathIdTask extends AbstractTask {
 		final CyNetwork cyNetwork = view.getModel();
 
 		// Set the Quick Find Default Index
-		AttributeUtil.set(cyNetwork, cyNetwork, "quickfind.default_index", CyNode.NAME, String.class);
+		AttributeUtil.set(cyNetwork, cyNetwork, "quickfind.default_index", CyNetwork.NAME, String.class);
 
 		// Specify that this is a BINARY_NETWORK
 		AttributeUtil.set(cyNetwork, cyNetwork, "BIOPAX_NETWORK", Boolean.TRUE, Boolean.class);
@@ -281,7 +283,7 @@ public class ExecuteGetRecordByCPathIdTask extends AbstractTask {
 			Map<String, CyNode> nodes = new HashMap<String, CyNode>();
 			for (int j = 0; j < currentList.size(); j++) {
 				CyNode node = currentList.get(j);
-				String name = cyNetwork.getRow(node).get(CyNode.NAME, String.class);
+				String name = cyNetwork.getRow(node).get(CyNetwork.NAME, String.class);
 				nodes.put(name, node);
 				ids[j] = name;
 			}
@@ -330,7 +332,7 @@ public class ExecuteGetRecordByCPathIdTask extends AbstractTask {
 		int counter = 0;
 		for (CyNode node : cyNetwork.getNodeList()) {
 			CyRow row = cyNetwork.getRow(node);
-			String label = row.get(CyNode.NAME, String.class);
+			String label = row.get(CyNetwork.NAME, String.class);
 
 			// If we already have details on this node, skip it.
 			if (label == null) {

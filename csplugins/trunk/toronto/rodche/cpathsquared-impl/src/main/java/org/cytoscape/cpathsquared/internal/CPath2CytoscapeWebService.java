@@ -14,7 +14,7 @@ import org.cytoscape.cpathsquared.internal.view.GuiUtils;
 import org.cytoscape.cpathsquared.internal.view.TabUi;
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
 import org.cytoscape.io.webservice.SearchWebServiceClient;
-import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
+import org.cytoscape.io.webservice.swing.AbstractWebServiceGUIClient;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
@@ -26,8 +26,8 @@ import cpath.service.OutputFormat;
 /**
  * CPath Web Service, integrated into the Cytoscape Web Services Framework.
  */
-public class CPath2CytoscapeWebService extends AbstractWebServiceClient 
-	implements NetworkImportWebServiceClient, SearchWebServiceClient<Object> 
+public class CPath2CytoscapeWebService extends AbstractWebServiceGUIClient 
+	implements NetworkImportWebServiceClient, SearchWebServiceClient<Object>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CPath2CytoscapeWebService.class);
 	
@@ -54,9 +54,8 @@ public class CPath2CytoscapeWebService extends AbstractWebServiceClient
     }
     
     @Override
-    public TaskIterator createTaskIterator() {
-    	String query = "";
-		Task task = new CPath2NetworkImportTask(query, OutputFormat.BINARY_SIF);
+    public TaskIterator createTaskIterator(Object query) {
+		Task task = new CPath2NetworkImportTask((String) query, OutputFormat.BINARY_SIF);
     	return new TaskIterator(task);
     }
     

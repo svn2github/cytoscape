@@ -221,7 +221,7 @@ public class SearchQueryPanel extends JPanel {
         	};
             TaskFactory search = CPath2Factory.newTaskFactory(new ExecuteSearchTask(
             		keyword.trim(), organisms, datasources, handler));
-            CPath2Factory.getTaskManager().execute(search);
+            CPath2Factory.getTaskManager().execute(search.createTaskIterator());
         }
     }
 

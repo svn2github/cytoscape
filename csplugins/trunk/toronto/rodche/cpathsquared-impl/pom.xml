@@ -34,11 +34,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.cytoscape</groupId>
-            <artifactId>webservice-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
         	<groupId>org.cytoscape</groupId>
         	<artifactId>viewmodel-api</artifactId>
         	<scope>provided</scope>
@@ -69,6 +64,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>webservice-swing-api</artifactId>
+			<version>3.0.0-alpha8-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
@@ -91,9 +92,13 @@
         <dependency>
         	<groupId>org.biopax.paxtools</groupId>
         	<artifactId>paxtools-core</artifactId>
-        	<version>4.1.1</version>
+        	<version>4.1.4-SNAPSHOT</version>
         </dependency>
-        
+        <dependency>
+        	<groupId>org.biopax.paxtools</groupId>
+        	<artifactId>biopax-converter</artifactId>
+        	<version>4.1.4-SNAPSHOT</version>
+        </dependency>        
         <!-- Spring Dependencies to embed (temporary; must use/start Spring EBR bundles instead) -->
 		<dependency>
 			<groupId>org.springframework</groupId>

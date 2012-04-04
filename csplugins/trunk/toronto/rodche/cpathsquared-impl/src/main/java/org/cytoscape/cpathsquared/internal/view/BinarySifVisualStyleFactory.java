@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.Paint;
 
 import org.cytoscape.cpathsquared.internal.util.BioPaxUtil;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.presentation.property.ArrowShapeVisualProperty;
+import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
 import org.cytoscape.view.presentation.property.values.ArrowShape;
 import org.cytoscape.view.presentation.property.values.NodeShape;
@@ -172,9 +174,9 @@ public class BinarySifVisualStyleFactory {
 
 	
 	private void createNodeLabel(VisualStyle style) {
-		// create pass through mapper for node labels
+		// create pass through mapper for node labels	
 		style.addVisualMappingFunction(passthroughFactory
-				.createVisualMappingFunction(
-						CyNode.NAME, String.class, null, NODE_LABEL));
+				.createVisualMappingFunction(CyNetwork.NAME, String.class, null,
+						BasicVisualLexicon.NODE_LABEL));
 	}
 }

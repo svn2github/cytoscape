@@ -85,6 +85,11 @@ public final class CPath2Factory {
 			public TaskIterator createTaskIterator() {
 				return new TaskIterator(tasks);
 			}
+
+			@Override
+			public boolean isReady() {
+				return true; //TODO really? ;)
+			}
 		};
 	}
 	

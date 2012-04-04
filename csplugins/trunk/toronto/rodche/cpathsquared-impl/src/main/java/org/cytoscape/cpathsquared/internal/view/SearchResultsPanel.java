@@ -222,7 +222,7 @@ implements CPath2Listener, CytoPanelStateChangedListener
 
             TaskFactory taskFactory = CPath2Factory.newTaskFactory(new ExecuteGetRecordByCPathIdTask(
             		new String[]{internalId}, format, title));
-            CPath2Factory.getTaskManager().execute(taskFactory);
+            CPath2Factory.getTaskManager().execute(taskFactory.createTaskIterator());
             
         } catch (IndexOutOfBoundsException e) {
             //  Ignore TODO strange...

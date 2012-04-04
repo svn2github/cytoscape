@@ -37,7 +37,7 @@ public class CyActivator extends AbstractCyActivator {
 	public void start(BundleContext bc) {
 
 		CySwingApplication cySwingApplicationRef = getService(bc,CySwingApplication.class);
-		TaskManager taskManagerRef = getService(bc,TaskManager.class);
+		TaskManager<?,?> taskManagerRef = getService(bc,TaskManager.class);
 		OpenBrowser openBrowserRef = getService(bc,OpenBrowser.class);
 		CyNetworkManager cyNetworkManagerRef = getService(bc,CyNetworkManager.class);
 		CyApplicationManager cyApplicationManagerRef = getService(bc,CyApplicationManager.class);

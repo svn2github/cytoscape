@@ -136,10 +136,10 @@ public class DownloadDetails extends JDialog {
             format = OutputFormat.BINARY_SIF;
         }
 
-        TaskManager taskManager = CPath2Factory.getTaskManager();
+        TaskManager<?,?> taskManager = CPath2Factory.getTaskManager();
         TaskFactory taskFactory = CPath2Factory.newTaskFactory(
         		new ExecuteGetRecordByCPathIdTask(ids, format, networkTitle));
-        taskManager.execute(taskFactory);
+        taskManager.execute(taskFactory.createTaskIterator());
     }
 }
 
