@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 
 import org.cytoscape.application.swing.AbstractCyAction;
-import org.cytoscape.application.CyApplicationManager;
 
 
 /**
@@ -17,8 +16,8 @@ import org.cytoscape.application.CyApplicationManager;
  */
 public class MenuAction extends AbstractCyAction {
 
-	public MenuAction(final CyApplicationManager applicationManager, final String menuTitle) {
-		super(menuTitle, applicationManager, null);
+	public MenuAction(final String menuTitle) {
+		super(menuTitle);
 		setPreferredMenu("Apps");
 	}
 
