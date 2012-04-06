@@ -27,7 +27,23 @@ public class SubnetworkByCategory {
 		CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 		Set overview_nodes = new HashSet();
 		for (int i=0; i< subnetworks.length; i++){
-			CyNode newNode =Cytoscape.getCyNode(subnetworks[i].getTitle(), true); 
+			CyNode newNode =Cytoscape.getCyNode(subnetworks[i].getTitle(), true);
+
+			// MODIFIED			
+			// for each subnetwork: get the mean confidence score (sum up all confidence scores in the subnetwork and divide by the number of nodes)
+			// set the mean confidence score to the new metanode, so the vizmapper can color the node appropriately
+			int[] indices = subnetworks[i].getNodeIndicesArray();
+			double conf = 0;
+			for (int j = 0; j != indices.length; j++)
+			{
+				CyNode n = (CyNode) Cytoscape.getRootGraph().getNode(indices[j]);
+				conf += Cytoscape.getNodeAttributes().getDoubleAttribute(n.getIdentifier(), "confidence");
+			}
+			conf /= indices.length;
+			Cytoscape.getNodeAttributes().setAttribute(subnetworks[i].getTitle(), "confidence", conf);
+						
+			// MODIFIED
+			
 			newNode.setNestedNetwork(subnetworks[i]);
 			overview_nodes.add(newNode);
 		}
@@ -85,7 +101,12 @@ public class SubnetworkByCategory {
 		}
 		
 		//2.Build outgoing edge set for each subnetwork
-		HashSet[] outgoing_edgeSet = new HashSet[overview_nodeCount];			
+		HashSet[] outgoing_edgeSet = new HashSet[overview_nodeCount];
+		
+		// initialize the hashSet
+		for (int k=0; k<outgoing_edgeSet.length; k++ ){
+				outgoing_edgeSet[k] = new HashSet();
+		}
 		
 		// build edge set for parent network
 		//HashSet parentEdgeSet = new HashSet();
@@ -98,9 +119,6 @@ public class SubnetworkByCategory {
 			for (int k=0; k< overview_nodeCount; k++){
 				if (nodeSet[k].contains(edge.getSource()) && !nodeSet[k].contains(edge.getTarget()) ||
 					(!nodeSet[k].contains(edge.getSource()) && nodeSet[k].contains(edge.getTarget()))){
-					if (outgoing_edgeSet[k] == null){
-						outgoing_edgeSet[k] = new HashSet();
-					}
 					outgoing_edgeSet[k].add(edge);
 				}
 			}
