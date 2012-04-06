@@ -22,7 +22,10 @@
     <vendor>Cytoscape Consortium</vendor>
     <homepage href="http://cytoscape.org"/>
     <offline-allowed/>
-	<shortcut/>
+    <shortcut>
+      <desktop/>
+      <menu submenu="Cytoscape"/>
+    </shortcut>
   </information>
   <security>
      <all-permissions/>

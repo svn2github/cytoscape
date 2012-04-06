@@ -31,17 +31,25 @@ final class GSUtils {
 	}
 
 	public static synchronized GsSession getSession() {
-		if (session == null || !session.isLoggedIn()) {
+		if (session == null ) {
 			try {
 				// Session won't be logged after this because
 				// token parameter is null!
-				session = new GsSession(null);
+				session = new GsSession();
+			} catch (Exception e) {
+				throw new GSClientException("failed to create GenomeSpace session", e);
+			}
+		}
+
+		if (!session.isLoggedIn()) {
+			try {
 				if (!loginToGenomeSpace())
 					throw new GSClientException("failed to login!", null);
 			} catch (Exception e) {
 				throw new GSClientException("failed to login", e);
 			}
 		}
+
 		return session;
 	}
 
