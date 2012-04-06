@@ -5,11 +5,11 @@
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users
-pluginName=GXPReaderPlugin
+pluginName=CDBReaderPlugin
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=GXP Reader Plugin
+pluginDescription=CDB Reader Plugin
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=0.1
