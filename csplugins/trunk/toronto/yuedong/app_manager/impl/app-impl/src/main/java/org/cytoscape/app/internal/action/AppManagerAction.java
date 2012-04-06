@@ -154,8 +154,10 @@ public class AppManagerAction extends AbstractCyAction implements SessionLoadedL
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
+		/*
 		AppManagerDialog dialog = new AppManagerDialog(null, acceleratorSet);
 		dialog.setVisible(true);
+		*/
 		
 		/*
 		AppManageDialog dlg = new AppManageDialog(desktop.getJFrame(), bookmarks, this.bookmarksUtil, 

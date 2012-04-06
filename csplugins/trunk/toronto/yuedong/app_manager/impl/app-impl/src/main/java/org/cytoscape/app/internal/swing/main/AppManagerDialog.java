@@ -17,6 +17,11 @@ public class AppManagerDialog extends javax.swing.JDialog {
         initComponents();
         
         this.appManager = appManager;
+        
+        this.setLocationRelativeTo(parent);
+        this.setVisible(true);
+        
+        System.out.println("parent: " + parent);
     }
    
 

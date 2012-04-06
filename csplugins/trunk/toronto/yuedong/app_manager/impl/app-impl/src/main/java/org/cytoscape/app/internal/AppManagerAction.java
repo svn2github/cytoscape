@@ -27,9 +27,7 @@ public class AppManagerAction extends AbstractCyAction {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		AppManagerDialog appManagerDialog = new AppManagerDialog(swingApplication.getJFrame(), true);
-		
-		appManagerDialog.setVisible(true);
+		AppManagerDialog appManagerDialog = new AppManagerDialog(null, swingApplication.getJFrame(), true);
 	}
 
 }
