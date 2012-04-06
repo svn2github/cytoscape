@@ -72,7 +72,7 @@ import java.util.*;
 /**
  * @author  Mike Smoot
  */
-public class GXPGraphReader extends AbstractGraphReader implements GraphReader {
+public class CDBGraphReader extends AbstractGraphReader implements GraphReader {
 	// node id from file -> node
 	private Map<String,CyNode> geneIdMap; 
 
@@ -85,7 +85,7 @@ public class GXPGraphReader extends AbstractGraphReader implements GraphReader {
 	 *
 	 * @param filename  DOCUMENT ME!
 	 */
-	public GXPGraphReader(String filename) {
+	public CDBGraphReader(String filename) {
 		super(filename);
 		fileURL = null;
 	}
@@ -95,7 +95,7 @@ public class GXPGraphReader extends AbstractGraphReader implements GraphReader {
 	 *
 	 * @param url  DOCUMENT ME!
 	 */
-	public GXPGraphReader(URL url) {
+	public CDBGraphReader(URL url) {
 		super(null);
 		fileURL = url;
 		fileName = null;

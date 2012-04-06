@@ -46,26 +46,26 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class GXPFilter extends CyFileFilter {
+public class CDBFilter extends CyFileFilter {
 	/**
-	 * GXP Files are Graphs.
+	 * CDB Files are Graphs.
 	 */
 	private static String fileNature = ImportHandler.GRAPH_NATURE;
 
 	/**
 	 * File Extensions.
 	 */
-	private static String[] fileExtensions = { "gxp" };
+	private static String[] fileExtensions = { "cdb" };
 
 	/**
 	 * Filter Description.
 	 */
-	private static String description = "GXP files";
+	private static String description = "CDB files";
 
 	/**
 	 * Constructor.
 	 */
-	public GXPFilter() {
+	public CDBFilter() {
 		super(fileExtensions, description, fileNature);
 	}
 
@@ -76,6 +76,6 @@ public class GXPFilter extends CyFileFilter {
 	 * @return GraphReader Object.
 	 */
 	public GraphReader getReader(String fileName) {
-		return new GXPGraphReader(fileName);
+		return new CDBGraphReader(fileName);
 	}
 }

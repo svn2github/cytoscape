@@ -11,7 +11,7 @@
   <groupId>cytoscape</groupId>
   <artifactId>gxp-reader</artifactId>
   <packaging>jar</packaging>
-  <name>GXP Reader Plugin</name>
+  <name>CDB Reader Plugin</name>
 
   <build>
     <plugins>
@@ -33,7 +33,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Cytoscape-Plugin>cytoscape.gxp.GXPReaderPlugin</Cytoscape-Plugin>
+              <Cytoscape-Plugin>cytoscape.gxp.CDBReaderPlugin</Cytoscape-Plugin>
             </manifestEntries>
           </archive>
           <descriptors>
