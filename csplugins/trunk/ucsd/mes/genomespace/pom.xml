@@ -11,7 +11,7 @@
 	<modules>
 		<module>genomespace-libs-plugin</module>
 		<module>genomespace-plugin</module>
-		<module>gxp-reader</module>
+		<module>cdb-reader</module>
 		<module>cytable-reader</module>
 		<!-- webstart actually has a different parent (cytoscape-webstart)
 		     so we don't include it here!  It needs to be built separately.

@@ -9,7 +9,7 @@
   </parent>
 
   <groupId>cytoscape</groupId>
-  <artifactId>gxp-reader</artifactId>
+  <artifactId>cdb-reader</artifactId>
   <packaging>jar</packaging>
   <name>CDB Reader Plugin</name>
 
