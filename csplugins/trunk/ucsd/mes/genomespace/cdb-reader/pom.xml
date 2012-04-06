@@ -33,7 +33,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Cytoscape-Plugin>cytoscape.gxp.CDBReaderPlugin</Cytoscape-Plugin>
+              <Cytoscape-Plugin>cytoscape.cdb.CDBReaderPlugin</Cytoscape-Plugin>
             </manifestEntries>
           </archive>
           <descriptors>

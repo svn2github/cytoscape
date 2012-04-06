@@ -1,4 +1,4 @@
-package cytoscape.gxp;
+package cytoscape.cdb;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.ImportHandler;
