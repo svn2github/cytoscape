@@ -1,5 +1,7 @@
 package org.cytoscape.app.internal.swing.main;
 
+import org.cytoscape.app.internal.manager.AppManager;
+
 
 public class AppManagerDialog extends javax.swing.JDialog {
 
@@ -7,11 +9,16 @@ public class AppManagerDialog extends javax.swing.JDialog {
     private CurrentlyInstalledAppsPanel currentlyInstalledAppsPanel1;
     private InstallNewAppsPanel installNewAppsPanel1;
     private javax.swing.JTabbedPane mainTabbedPane;
+    
+    private AppManager appManager;
 	
-    public AppManagerDialog(java.awt.Frame parent, boolean modal) {
+    public AppManagerDialog(AppManager appManager, java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        this.appManager = appManager;
     }
+   
 
     private void initComponents() {
 
