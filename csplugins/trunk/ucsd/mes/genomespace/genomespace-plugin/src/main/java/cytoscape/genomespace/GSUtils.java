@@ -33,8 +33,6 @@ final class GSUtils {
 	public static synchronized GsSession getSession() {
 		if (session == null ) {
 			try {
-				// Session won't be logged after this because
-				// token parameter is null!
 				session = new GsSession();
 			} catch (Exception e) {
 				throw new GSClientException("failed to create GenomeSpace session", e);
