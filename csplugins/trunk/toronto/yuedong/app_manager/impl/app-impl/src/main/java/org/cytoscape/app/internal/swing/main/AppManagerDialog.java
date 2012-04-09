@@ -28,7 +28,7 @@ public class AppManagerDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         mainTabbedPane = new javax.swing.JTabbedPane();
-        installNewAppsPanel = new InstallNewAppsPanel();
+        installNewAppsPanel = new InstallNewAppsPanel(appManager);
         currentlyInstalledAppsPanel = new CurrentlyInstalledAppsPanel(appManager);
         checkForUpdatesPanel = new CheckForUpdatesPanel();
 

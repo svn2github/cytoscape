@@ -9,6 +9,12 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
+import org.cytoscape.app.internal.exception.AppCopyException;
+import org.cytoscape.app.internal.exception.AppParsingException;
+import org.cytoscape.app.internal.manager.App;
+import org.cytoscape.app.internal.manager.AppManager;
+import org.cytoscape.app.internal.manager.AppParser;
+
 public class InstallNewAppsPanel extends javax.swing.JPanel {
 
     private javax.swing.JButton installFromFileButton;
@@ -24,8 +30,12 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
 	
 	private JFileChooser fileChooser;
 	
-    public InstallNewAppsPanel() {
-        initComponents();
+	private AppManager appManager;
+	
+    public InstallNewAppsPanel(AppManager appManager) {
+        this.appManager = appManager;
+    	
+    	initComponents();
         
         setupFileChooser();
         setupResultsTable();
@@ -70,61 +80,6 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
         });
 
         resultsLabel.setText("Search Results:");
-        
-        TableModel tableModel = new TableModel() {
-
-        	private ArrayList<ArrayList<String>> data;
-        	
-			@Override
-			public void addTableModelListener(TableModelListener l) {
-			}
-
-			@Override
-			public Class<?> getColumnClass(int columnIndex) {
-				return String.class;
-			}
-
-			@Override
-			public int getColumnCount() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public String getColumnName(int columnIndex) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public int getRowCount() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public Object getValueAt(int rowIndex, int columnIndex) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public void removeTableModelListener(TableModelListener l) {
-			}
-
-			@Override
-			public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		};
         
         resultsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {},
@@ -204,7 +159,31 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
         	File[] files = fileChooser.getSelectedFiles();
         	
-        	System.out.println("Selected files: " + files);
+        	for (int index = 0; index < files.length; index++) {
+        		AppParser appParser = appManager.getAppParser();
+        		
+        		App app = null;
+        		
+        		// Attempt to parse each file as an App object
+        		try {
+					app = appParser.parseApp(files[index]);
+					
+				} catch (AppParsingException e) {
+					
+					// TODO: Replace System.out.println() messages with exception or a pop-up message box
+					System.out.println("Error parsing app: " + e.getMessage());
+				} finally {
+					
+					// Install the app if parsing was successful
+					if (app != null) {
+						try {
+							appManager.installApp(app);
+						} catch (AppCopyException e) {
+							System.out.println("Error copying app: " + e.getMessage());
+						}
+					}
+				}
+        	}
         }
     }
 
