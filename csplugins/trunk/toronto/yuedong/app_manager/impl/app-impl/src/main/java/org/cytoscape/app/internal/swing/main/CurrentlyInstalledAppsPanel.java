@@ -1,9 +1,13 @@
 package org.cytoscape.app.internal.swing.main;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.swing.table.DefaultTableModel;
 
-import org.cytoscape.app.internal.event.AppEvent;
-import org.cytoscape.app.internal.event.AppListener;
+import org.cytoscape.app.internal.event.AppsChangedEvent;
+import org.cytoscape.app.internal.event.AppsChangedListener;
+import org.cytoscape.app.internal.exception.AppCopyException;
 import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
 
@@ -21,7 +25,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     private javax.swing.JLabel showTypeLabel;
 	
     private AppManager appManager;
-    private AppListener appListener;
+    private AppsChangedListener appListener;
     
     public CurrentlyInstalledAppsPanel(AppManager appManager) {
         initComponents();
@@ -147,56 +151,75 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     }
 
     private void enableSelectedButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        Set<App> selectedApps = getSelectedApps();
+        
+        for (App app : selectedApps) {
+        	try {
+				appManager.installApp(app);
+			} catch (AppCopyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
     }
 
     private void disableSelectedButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+    	Set<App> selectedApps = getSelectedApps();
+        
+        for (App app : selectedApps) {
+        	try {
+				appManager.uninstallApp(app);
+			} catch (AppCopyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
     }
 
     private void showTypeComboxBoxActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
     
+    private Set<App> getSelectedApps() {
+        Set<App> selectedApps = new HashSet<App>();
+    	int[] selectedRows = appsAvailableTable.getSelectedRows();
+    	
+        for (int index = 0; index < selectedRows.length; index++) {
+        	App app = (App) appsAvailableTable.getModel().getValueAt(selectedRows[index], 0);
+        	
+        	selectedApps.add(app);
+        }
+    	
+    	return selectedApps;
+    }
+    
+    
     private void setupAppListener() {
-    	appListener = new AppListener() {
+    	appListener = new AppsChangedListener() {
 
 			@Override
-			public void appInstalled(AppEvent event) {
+			public void appsChanged(AppsChangedEvent event) {
 				
-				// Prepare to add a new row containing the app's data to the table
+				Set<App> selectedApps = getSelectedApps();
+				
+				// Clear table
 				DefaultTableModel tableModel = (DefaultTableModel) appsAvailableTable.getModel();
-				
-				App app = event.getApp();
-				tableModel.addRow(new Object[]{
-						app,
-						app.getAppName(),
-						app.getVersion(),
-						app.getAuthors(),
-						app.getDescription(),
-						app.getStatus()
-				});
-				
-				updateLabels();
-			}
-
-			@Override
-			public void appUninstalled(AppEvent event) {
-				
-				// Prepare to remove the row containing the app from the table
-				DefaultTableModel tableModel = (DefaultTableModel) appsAvailableTable.getModel();
-				
-				App app = event.getApp();
-				int rowToBeRemoved = -1;
-				for (int rowIndex = 0; rowIndex < tableModel.getRowCount(); rowIndex++) {
-					if (tableModel.getValueAt(rowIndex, 0) == app) {
-						rowToBeRemoved = rowIndex;
-					}
+				for (int rowIndex = tableModel.getRowCount() - 1; rowIndex >= 0; rowIndex--) {
+					tableModel.removeRow(rowIndex);
 				}
 				
-				tableModel.removeRow(rowToBeRemoved);
-				
+				// Re-populate table
+				populateTable();
+
+				// Update labels
 				updateLabels();
+
+				// Re-select previously selected apps
+				for (int rowIndex = 0; rowIndex < tableModel.getRowCount(); rowIndex++) {
+					if (selectedApps.contains(tableModel.getValueAt(rowIndex, 0))) {
+						appsAvailableTable.addRowSelectionInterval(rowIndex, rowIndex);
+					}
+				}
 			}
     	};
     	
@@ -204,9 +227,9 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     }
     
     private void populateTable() {
-    	System.out.println("populateTable() call, installed apps: " + appManager.getInstalledApps().size());
+    	System.out.println("populateTable() call, avilable apps: " + appManager.getAvailableApps().size());
     	
-    	for (App app : appManager.getInstalledApps()) {
+    	for (App app : appManager.getAvailableApps()) {
     		DefaultTableModel tableModel = (DefaultTableModel) appsAvailableTable.getModel();
     		
     		tableModel.addRow(new Object[]{
@@ -224,6 +247,6 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     
     private void updateLabels() {
     	appsInstalledCountLabel.setText(String.valueOf(appManager.getInstalledApps().size()));
-    	appsAvailableCountLabel.setText(String.valueOf(appManager.getInstalledApps().size()));
+    	appsAvailableCountLabel.setText(String.valueOf(appManager.getAvailableApps().size()));
     }
 }

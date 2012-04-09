@@ -60,7 +60,7 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
         searchLabel.setText("Search for Apps from the Web Store:");
 
         searchComboBox.setEditable(true);
-        searchComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        searchComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] {""}));
 
         searchButton.setText("Search");
         searchButton.addActionListener(new java.awt.event.ActionListener() {

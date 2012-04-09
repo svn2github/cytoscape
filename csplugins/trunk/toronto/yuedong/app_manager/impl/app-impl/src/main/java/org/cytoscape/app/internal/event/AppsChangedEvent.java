@@ -4,21 +4,15 @@ import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
 import org.cytoscape.event.AbstractCyEvent;
 
-public final class AppEvent {
+public final class AppsChangedEvent {
 
 	private AppManager source;
-	private App app;
 
-	public AppEvent(AppManager source, App app) {
+	public AppsChangedEvent(AppManager source) {
 		this.source = source;
-		this.app = app;
 	}
 	
 	public AppManager getSource() {
 		return source;
-	}
-	
-	public App getApp() {
-		return app;
 	}
 }

@@ -8,6 +8,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.cytoscape.app.internal.exception.AppParsingException;
+import org.cytoscape.app.internal.manager.App.AppType;
 
 /**
  * This class represents an app parser that is capable of parsing given {@link File}
@@ -34,14 +35,6 @@ public class AppParser {
 			throw new AppParsingException("Error parsing given file as a jar file: " + e.getMessage());
 		}
 		
-		// Obtain the URL of the jar file
-		URL jarURL = null;
-		try {
-			jarURL = file.toURI().toURL();
-		} catch (MalformedURLException e) {
-			throw new AppParsingException("Failed to obtain jar URL: " + e.getMessage());
-		}
-		
 		// Attempt to obtain manifest file from jar
 		Manifest manifest = null;
 		try {
@@ -61,9 +54,8 @@ public class AppParser {
 		
 		parsedApp.setAppFile(file);
 		parsedApp.setEntryClassName(entryClassName);
-		parsedApp.setJarURL(jarURL);
 		parsedApp.setAppValidated(true);
-		parsedApp.setSimpleApp(true);
+		parsedApp.setAppType(AppType.SIMPLE_APP);
 		
 		return parsedApp;
 	}

@@ -24,11 +24,6 @@ public class App {
 	private String entryClassName;
 	
 	/**
-	 * The URL to the jar file containing the app.
-	 */
-	private URL jarURL;
-	
-	/**
 	 * A reference to the instance of the app's class that extends {@link AbstractCyApp}.
 	 */
 	private AbstractCyApp appInstance;
@@ -45,9 +40,9 @@ public class App {
 	private boolean officialNameObtained;
 	
 	/**
-	 * Whether or not the app is a simple app as opposed to an OSGi bundle-based app.
+	 * The type of app, such as simple or OSGi bundle-based app
 	 */
-	private boolean isSimpleApp;
+	private AppType appType;
 	
 	private AppStatus status;
 	
@@ -71,6 +66,11 @@ public class App {
 		}
 	}
 	
+	public enum AppType {
+		SIMPLE_APP,
+		OSGI_APP;
+	}
+	
 	public App() {
 		this("", "", "", "", null);
 	}
@@ -84,6 +84,7 @@ public class App {
 		
 		appValidated = false;
 		officialNameObtained = false;
+		this.status = AppStatus.UNINSTALLED;
 	}
 	
 	public String getAppName() {
@@ -110,10 +111,6 @@ public class App {
 		return entryClassName;
 	}
 	
-	public URL getJarURL() {
-		return jarURL;
-	}
-
 	public AbstractCyApp getAppInstance() {
 		return appInstance;
 	}
@@ -126,8 +123,8 @@ public class App {
 		return officialNameObtained;
 	}
 	
-	public boolean isSimpleApp() {
-		return isSimpleApp;
+	public AppType getAppType() {
+		return appType;
 	}
 	
 	public AppStatus getStatus() {
@@ -158,10 +155,6 @@ public class App {
 		this.entryClassName = entryClassName;
 	}
 	
-	public void setJarURL(URL jarURL) {
-		this.jarURL = jarURL;
-	}
-	
 	public void setAppInstance(AbstractCyApp appInstance) {
 		this.appInstance = appInstance;
 	}
@@ -174,27 +167,11 @@ public class App {
 		this.officialNameObtained = officialNameObtained;
 	}
 	
-	public void setSimpleApp(boolean isSimpleApp) {
-		this.isSimpleApp = isSimpleApp;
+	public void setAppType(AppType appType) {
+		this.appType = appType;
 	}
 	
 	public void setStatus(AppStatus status) {
 		this.status = status;
 	}
-
-	@Override
-	public String toString() {
-		String result;
-		
-		result = "App: {name:" + appName + ", authors:" + authors + ", version:" + version + "}";
-		
-		return result;
-	}
-
-
-
-
-
-
-
 }
