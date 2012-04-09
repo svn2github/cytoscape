@@ -1,5 +1,12 @@
 package org.cytoscape.app.internal.swing.main;
 
+import javax.swing.table.DefaultTableModel;
+
+import org.cytoscape.app.internal.event.AppEvent;
+import org.cytoscape.app.internal.event.AppListener;
+import org.cytoscape.app.internal.manager.App;
+import org.cytoscape.app.internal.manager.AppManager;
+
 public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
 
     private javax.swing.JLabel appsAvailableCountLabel;
@@ -13,8 +20,16 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox showTypeComboxBox;
     private javax.swing.JLabel showTypeLabel;
 	
-    public CurrentlyInstalledAppsPanel() {
+    private AppManager appManager;
+    private AppListener appListener;
+    
+    public CurrentlyInstalledAppsPanel(AppManager appManager) {
         initComponents();
+        
+        this.appManager = appManager;
+        
+        setupAppListener();
+        populateTable();
     }
 
     private void initComponents() {
@@ -31,50 +46,19 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
         showTypeLabel = new javax.swing.JLabel();
 
         appsAvailableTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, "", null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
+            new Object [][] {},
             new String [] {
-                "Name", "Version", "Author", "Description", "Status"
+                "App", "Name", "Version", "Author", "Description", "Status"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
+			private static final long serialVersionUID = 572679933790969414L;
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
             }
         });
+        appsAvailableTable.removeColumn(appsAvailableTable.getColumn("App"));
+        
         jScrollPane2.setViewportView(appsAvailableTable);
 
         appsInstalledLabel.setText("Number of Apps Installed:");
@@ -99,7 +83,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
             }
         });
 
-        showTypeComboxBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All", "Item 2", "Item 3", "Item 4" }));
+        showTypeComboxBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All", "Installed", "Uninstalled"}));
         showTypeComboxBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showTypeComboxBoxActionPerformed(evt);
@@ -172,5 +156,74 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
 
     private void showTypeComboxBoxActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+    }
+    
+    private void setupAppListener() {
+    	appListener = new AppListener() {
+
+			@Override
+			public void appInstalled(AppEvent event) {
+				
+				// Prepare to add a new row containing the app's data to the table
+				DefaultTableModel tableModel = (DefaultTableModel) appsAvailableTable.getModel();
+				
+				App app = event.getApp();
+				tableModel.addRow(new Object[]{
+						app,
+						app.getAppName(),
+						app.getVersion(),
+						app.getAuthors(),
+						app.getDescription(),
+						app.getStatus()
+				});
+				
+				updateLabels();
+			}
+
+			@Override
+			public void appUninstalled(AppEvent event) {
+				
+				// Prepare to remove the row containing the app from the table
+				DefaultTableModel tableModel = (DefaultTableModel) appsAvailableTable.getModel();
+				
+				App app = event.getApp();
+				int rowToBeRemoved = -1;
+				for (int rowIndex = 0; rowIndex < tableModel.getRowCount(); rowIndex++) {
+					if (tableModel.getValueAt(rowIndex, 0) == app) {
+						rowToBeRemoved = rowIndex;
+					}
+				}
+				
+				tableModel.removeRow(rowToBeRemoved);
+				
+				updateLabels();
+			}
+    	};
+    	
+    	appManager.addAppListener(appListener);
+    }
+    
+    private void populateTable() {
+    	System.out.println("populateTable() call, installed apps: " + appManager.getInstalledApps().size());
+    	
+    	for (App app : appManager.getInstalledApps()) {
+    		DefaultTableModel tableModel = (DefaultTableModel) appsAvailableTable.getModel();
+    		
+    		tableModel.addRow(new Object[]{
+					app,
+					app.getAppName(),
+					app.getVersion(),
+					app.getAuthors(),
+					app.getDescription(),
+					app.getStatus()
+			});
+    	}
+    	
+    	updateLabels();
+    }
+    
+    private void updateLabels() {
+    	appsInstalledCountLabel.setText(String.valueOf(appManager.getInstalledApps().size()));
+    	appsAvailableCountLabel.setText(String.valueOf(appManager.getInstalledApps().size()));
     }
 }

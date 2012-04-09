@@ -127,42 +127,20 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
 		};
         
         resultsTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null},
-//                {null, null, null, null}
-            },
+            new Object [][] {},
             new String [] {
                 "Name", "Version", "Author", "Description"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        
         resultsScrollPane.setViewportView(resultsTable);
 
         installSelectedButton.setText("Install Selected Apps");

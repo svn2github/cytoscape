@@ -44,14 +44,31 @@ public class App {
 	 */
 	private boolean officialNameObtained;
 	
+	/**
+	 * Whether or not the app is a simple app as opposed to an OSGi bundle-based app.
+	 */
+	private boolean isSimpleApp;
+	
 	private AppStatus status;
 	
 	/**
 	 * An enumeration that indicates the status of a given app, such as whether it is installed or uninstalled.
 	 */
 	public enum AppStatus{
-		INSTALLED,
-		TO_BE_UNINSTALLED,
+		INSTALLED("Installed"),
+		TO_BE_UNINSTALLED("Uninstall on Restart"),
+		UNINSTALLED("Uninstalled");
+		
+		String readableStatus;
+		
+		private AppStatus(String readableStatus) {
+			this.readableStatus = readableStatus;
+		}
+		
+		@Override
+		public String toString() {
+			return readableStatus;
+		}
 	}
 	
 	public App() {
@@ -109,6 +126,10 @@ public class App {
 		return officialNameObtained;
 	}
 	
+	public boolean isSimpleApp() {
+		return isSimpleApp;
+	}
+	
 	public AppStatus getStatus() {
 		return status;
 	}
@@ -153,6 +174,10 @@ public class App {
 		this.officialNameObtained = officialNameObtained;
 	}
 	
+	public void setSimpleApp(boolean isSimpleApp) {
+		this.isSimpleApp = isSimpleApp;
+	}
+	
 	public void setStatus(AppStatus status) {
 		this.status = status;
 	}
@@ -165,6 +190,8 @@ public class App {
 		
 		return result;
 	}
+
+
 
 
 

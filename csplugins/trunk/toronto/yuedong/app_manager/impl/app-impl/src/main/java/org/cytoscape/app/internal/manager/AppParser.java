@@ -63,6 +63,7 @@ public class AppParser {
 		parsedApp.setEntryClassName(entryClassName);
 		parsedApp.setJarURL(jarURL);
 		parsedApp.setAppValidated(true);
+		parsedApp.setSimpleApp(true);
 		
 		return parsedApp;
 	}

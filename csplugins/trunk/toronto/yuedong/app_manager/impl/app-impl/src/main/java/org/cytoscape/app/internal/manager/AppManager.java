@@ -14,6 +14,8 @@ import java.util.jar.JarFile;
 import org.apache.commons.io.FileUtils;
 import org.cytoscape.app.AbstractCyApp;
 import org.cytoscape.app.CyAppAdapter;
+import org.cytoscape.app.internal.event.AppEvent;
+import org.cytoscape.app.internal.event.AppListener;
 import org.cytoscape.app.internal.exception.AppCopyException;
 import org.cytoscape.app.internal.exception.AppParsingException;
 import org.cytoscape.app.internal.manager.App.AppStatus;
@@ -41,6 +43,8 @@ public class AppManager {
 	private Set<App> installedApps;
 	private Set<App> toBeUninstalledApps;
 	private Set<App> uninstalledApps;
+	
+	private Set<AppListener> appListeners;
 	
 	/** An {@link AppParser} object used to parse File objects and possibly URLs into {@link App} objects
 	 * into a format we can more easily work with
@@ -72,6 +76,7 @@ public class AppManager {
 		System.out.println("Installed apps path: " + getInstalledAppsPath());
 		System.out.println("Uninstalled apps path: " + getUninstalledAppsPath());
 		
+		/*
 		try {
 			App app = appParser.parseApp(new File(getBaseAppPath().getCanonicalPath() + File.separator + "CytoscapeTestSimpleApp.jar"));
 			installApp(app);
@@ -85,12 +90,15 @@ public class AppManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
-		/*
-		installAppsInDirectory(new File(getInstalledAppsPath()));
 		*/
+		
+		this.appListeners = new HashSet<AppListener>();
+		
+		installAppsInDirectory(new File(getInstalledAppsPath()));
+	}
+	
+	public AppParser getAppParser() {
+		return appParser;
 	}
 	
 	/**
@@ -178,6 +186,12 @@ public class AppManager {
 		app.setStatus(AppStatus.INSTALLED);
 		
 		installedApps.add(app);
+		
+		// Let the listeners know that an app has been installed
+		for (AppListener appListener : appListeners) {
+			AppEvent appEvent = new AppEvent(this, app);
+			appListener.appInstalled(appEvent);
+		}
 	}
 	
 	/**
@@ -224,6 +238,12 @@ public class AppManager {
 				
 				installedApps.remove(app);
 				toBeUninstalledApps.add(app);
+				
+				// Let the listeners know that an app has been uninstalled
+				for (AppListener appListener : appListeners) {
+					AppEvent appEvent = new AppEvent(this, app);
+					appListener.appUninstalled(appEvent);
+				}
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Unable to obtain path: " + e.getMessage());
@@ -314,15 +334,6 @@ public class AppManager {
 		
 		this.installedApps.addAll(parsedApps);
 		
-		for (App installedApp : this.installedApps) {
-			try {
-				uninstallApp(installedApp);
-			} catch (AppCopyException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
 		System.out.println("Number of apps installed from directory: " + parsedApps.size());
 	}
 	
@@ -350,5 +361,17 @@ public class AppManager {
 		if (!created) {
 			throw new RuntimeException("Failed to create local app storage directories.");
 		}
+	}
+	
+	public void addAppListener(AppListener appListener) {
+		appListeners.add(appListener);
+	}
+	
+	public  void removeAppListener(AppListener appListener) {
+		appListeners.remove(appListener);
+	}
+	
+	public void installAppsFromDirectory() {
+		installAppsInDirectory(new File(getInstalledAppsPath()));
 	}
 }

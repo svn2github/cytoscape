@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import org.cytoscape.app.internal.swing.main.AppManagerDialog;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.app.internal.manager.AppManager;
 
 public class AppManagerAction extends AbstractCyAction {
 
@@ -16,18 +17,23 @@ public class AppManagerAction extends AbstractCyAction {
 	 */
 	private CySwingApplication swingApplication;
 	
-	public AppManagerAction(CySwingApplication swingApplication) {
+	private AppManager appManager;
+	
+	public AppManagerAction(AppManager appManager, CySwingApplication swingApplication) {
 		super("App Manager2");
 		
 		setPreferredMenu("Apps");
 		setMenuGravity(1.0f);
 		
+		this.appManager = appManager;
 		this.swingApplication = swingApplication;
+		
+		System.out.println("AppManager instance: " + appManager);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		AppManagerDialog appManagerDialog = new AppManagerDialog(null, swingApplication.getJFrame(), true);
+		AppManagerDialog appManagerDialog = new AppManagerDialog(appManager, swingApplication.getJFrame(), true);
 	}
 
 }
