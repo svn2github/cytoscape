@@ -17,11 +17,5 @@
 				<include>**/*.xml</include>
 			</includes>
 		</fileSet>
-		<fileSet encoding="UTF-8">
-			<directory></directory>
-			<includes>
-				<include>osgi.bnd</include>
-			</includes>
-		</fileSet>
 	</fileSets>
 </archetype-descriptor>

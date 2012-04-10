@@ -11,7 +11,7 @@
 	<groupId>org.cytoscape.archetypes</groupId>
 	<artifactId>api-provider-app</artifactId>
 	<packaging>maven-archetype</packaging>
-	<name>Cytoscape 3 Archetype - API Provider App</name>
+	<name>Cytoscape 3 Archetype - Creates an App providing public API</name>
 
 	<build>
 		<plugins>

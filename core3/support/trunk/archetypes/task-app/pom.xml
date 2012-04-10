@@ -11,7 +11,7 @@
 	<groupId>org.cytoscape.archetypes</groupId>
 	<artifactId>task-app</artifactId>
 	<packaging>maven-archetype</packaging>
-	<name>Cytoscape 3 Archetype - Cytoscape Task App</name>
+	<name>Cytoscape 3 Archetype - Creates an App with a Task</name>
 
 	<build>
 		<plugins>
