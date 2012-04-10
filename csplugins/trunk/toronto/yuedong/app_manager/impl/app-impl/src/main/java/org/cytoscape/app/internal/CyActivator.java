@@ -108,6 +108,10 @@ public class CyActivator extends AbstractCyActivator {
 		DataSourceManager dataSourceManager = getService(bc, DataSourceManager.class);
 		
 		CyAppAdapterImpl cyAppAdapter = new CyAppAdapterImpl(cyApplicationManagerRef,cyEventHelperRef,cyLayoutAlgorithmManagerRef,cyNetworkFactoryRef,cyNetworkManagerRef,cyNetworkViewFactoryRef,cyNetworkViewManagerRef,cyNetworkViewReaderManagerRef,cyNetworkViewWriterManagerRef,cyPropertyRef,cyPropertyReaderManagerRef,cyPropertyWriterManagerRef,cyRootNetworkFactoryRef,cyServiceRegistrarRef,cySessionManagerRef,cySessionReaderManagerRef,cySessionWriterManagerRef,cySwingApplicationRef,cyTableFactoryRef,cyTableManagerRef,cyTableReaderManagerRef,cytoscapeVersionService, dialogTaskManagerRef,panelTaskManagerRef,submenuTaskManagerRef,presentationWriterManagerRef,renderingEngineManagerRef,taskManagerRef,undoSupportRef, vmfFactoryC, vmfFactoryD, vmfFactoryP, visualMappingManagerRef,visualStyleFactoryRef, dataSourceManager);
+		
+		registerService(bc,cyAppAdapter,CyAppAdapter.class, new Properties());
+		
+		/*
 		AppLoaderTaskFactory appLoaderTaskFactory = new AppLoaderTaskFactory(cyAppAdapter);
 		AppManagerAction appManagerAction = new AppManagerAction(
 				cySwingApplicationRef,
@@ -121,12 +125,9 @@ public class CyActivator extends AbstractCyActivator {
 				cyApplicationConfigurationServiceRef);
 		StartupMostlyFinished startupMostlyFinished = new StartupMostlyFinished(cyEventHelperRef);
 		
-		
-		
-		registerService(bc,cyAppAdapter,CyAppAdapter.class, new Properties());
-		
 		registerService(bc,appLoaderTaskFactory,TaskFactory.class, new Properties());
 		registerAllServices(bc,appManagerAction, new Properties());
+		*/
 		
 		// Attempt to instantiate new manager
 		org.cytoscape.app.internal.manager.AppManager appManager = new org.cytoscape.app.internal.manager.AppManager(

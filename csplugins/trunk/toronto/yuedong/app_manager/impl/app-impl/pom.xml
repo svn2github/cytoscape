@@ -8,12 +8,12 @@
 	</parent>
 
 	<properties>
-		<bundle.symbolicName>org.cytoscape.app-impl</bundle.symbolicName>
+		<bundle.symbolicName>org.cytoscape.app2-impl</bundle.symbolicName>
 		<bundle.namespace>org.cytoscape.app.internal</bundle.namespace>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>app-impl</artifactId>
+	<artifactId>app2-impl</artifactId>
 
 	<name>${bundle.symbolicName}</name>
 

@@ -20,7 +20,7 @@ public class AppManagerAction extends AbstractCyAction {
 	private AppManager appManager;
 	
 	public AppManagerAction(AppManager appManager, CySwingApplication swingApplication) {
-		super("App Manager2");
+		super("App Manager 2");
 		
 		setPreferredMenu("Apps");
 		setMenuGravity(1.0f);
@@ -33,7 +33,7 @@ public class AppManagerAction extends AbstractCyAction {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		AppManagerDialog appManagerDialog = new AppManagerDialog(appManager, swingApplication.getJFrame(), true);
+		AppManagerDialog appManagerDialog = new AppManagerDialog(appManager, swingApplication.getJFrame(), false);
 	}
 
 }
