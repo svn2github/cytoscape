@@ -127,7 +127,7 @@ public class AppManager {
 			File appFile = app.getAppFile();
 			
 			// Only perform the copy if the app was not already in the target directory
-			if (!FileUtils.directoryContains(installedAppsDirectory, appFile)) {
+			if (appFile.getParentFile().getCanonicalPath() != installedAppsDirectory.getCanonicalPath()) {
 				
 				// Uses Apache Commons library; overwrites files with the same name.
 				FileUtils.copyFileToDirectory(appFile, installedAppsDirectory);

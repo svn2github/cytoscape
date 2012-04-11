@@ -116,10 +116,18 @@
 		</dependency>
 		
 		<!-- dependencies for file copying and moving utilities -->
+		<!-- commons-io 2.2 dependency
 		<dependency>
 			<groupId>cytoscape-temp</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.2</version>
+		</dependency>
+		-->
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.io</artifactId>
+			<version>1.4.0</version>
 		</dependency>
 
 		<!-- dependencies needed for plugin manager -->
