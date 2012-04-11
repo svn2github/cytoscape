@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.URL;
 
 import org.cytoscape.app.AbstractCyApp;
-import org.cytoscape.app.internal.AppVersionUtils;
 
 /**
  * This class represents an app, and contains all needed information about the app such as its name, version, 

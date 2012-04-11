@@ -9,7 +9,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
-import org.cytoscape.app.internal.exception.AppCopyException;
+import org.cytoscape.app.internal.exception.AppMoveException;
 import org.cytoscape.app.internal.exception.AppParsingException;
 import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
@@ -17,16 +17,17 @@ import org.cytoscape.app.internal.manager.AppParser;
 
 public class InstallNewAppsPanel extends javax.swing.JPanel {
 
-    private javax.swing.JButton installFromFileButton;
+	private javax.swing.JButton installFromFileButton;
     private javax.swing.JButton installFromURLButton;
     private javax.swing.JButton installSelectedButton;
+    private javax.swing.JSeparator installSeparator;
     private javax.swing.JLabel resultsLabel;
     private javax.swing.JScrollPane resultsScrollPane;
     private javax.swing.JTable resultsTable;
     private javax.swing.JButton searchButton;
     private javax.swing.JComboBox searchComboBox;
     private javax.swing.JLabel searchLabel;
-    private javax.swing.JSeparator searchSeparator;
+    private javax.swing.JButton viewOnWebStoreButton;
 	
 	private JFileChooser fileChooser;
 	
@@ -42,9 +43,9 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
     }
 
     private void initComponents() {
+
         installFromFileButton = new javax.swing.JButton();
         installFromURLButton = new javax.swing.JButton();
-        searchSeparator = new javax.swing.JSeparator();
         searchLabel = new javax.swing.JLabel();
         searchComboBox = new javax.swing.JComboBox();
         searchButton = new javax.swing.JButton();
@@ -52,25 +53,26 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
         resultsScrollPane = new javax.swing.JScrollPane();
         resultsTable = new javax.swing.JTable();
         installSelectedButton = new javax.swing.JButton();
+        installSeparator = new javax.swing.JSeparator();
+        viewOnWebStoreButton = new javax.swing.JButton();
 
-        installFromFileButton.setText("Install from External File ..");
+        installFromFileButton.setText("Install from External File");
         installFromFileButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 installFromFileButtonActionPerformed(evt);
             }
         });
 
-        installFromURLButton.setText("Install from URL ..");
+        installFromURLButton.setText("Install from URL");
         installFromURLButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 installFromURLButtonActionPerformed(evt);
             }
         });
 
-        searchLabel.setText("Search for Apps from the Web Store:");
+        searchLabel.setText("Search for Apps:");
 
         searchComboBox.setEditable(true);
-        searchComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] {""}));
 
         searchButton.setText("Search");
         searchButton.addActionListener(new java.awt.event.ActionListener() {
@@ -80,11 +82,13 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
         });
 
         resultsLabel.setText("Search Results:");
-        
+
         resultsTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {},
+            new Object [][] {
+
+            },
             new String [] {
-                "Name", "Version", "Author", "Description"
+                "Name", "Author", "Version", "Description"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -95,7 +99,7 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        
+        resultsTable.setShowGrid(false);
         resultsScrollPane.setViewportView(resultsTable);
 
         installSelectedButton.setText("Install Selected Apps");
@@ -105,21 +109,26 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
             }
         });
 
+        viewOnWebStoreButton.setText("View on Web Store");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(installSeparator)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(searchSeparator)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, resultsScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE)
+                    .add(resultsScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .add(installSelectedButton)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(viewOnWebStoreButton))
                             .add(installFromFileButton)
-                            .add(installSelectedButton)
-                            .add(resultsLabel)
                             .add(installFromURLButton)
+                            .add(resultsLabel)
                             .add(searchLabel)
                             .add(layout.createSequentialGroup()
                                 .add(searchComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 288, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -136,7 +145,7 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(installFromURLButton)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(searchSeparator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(installSeparator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(searchLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -146,9 +155,11 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(resultsLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(resultsScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                .add(resultsScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(installSelectedButton)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(installSelectedButton)
+                    .add(viewOnWebStoreButton))
                 .addContainerGap())
         );
     }
@@ -178,7 +189,7 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
 					if (app != null) {
 						try {
 							appManager.installApp(app);
-						} catch (AppCopyException e) {
+						} catch (AppMoveException e) {
 							System.out.println("Error copying app: " + e.getMessage());
 						}
 					}

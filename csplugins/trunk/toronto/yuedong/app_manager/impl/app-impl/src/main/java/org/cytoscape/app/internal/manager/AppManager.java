@@ -17,7 +17,7 @@ import org.cytoscape.app.AbstractCyApp;
 import org.cytoscape.app.CyAppAdapter;
 import org.cytoscape.app.internal.event.AppsChangedEvent;
 import org.cytoscape.app.internal.event.AppsChangedListener;
-import org.cytoscape.app.internal.exception.AppCopyException;
+import org.cytoscape.app.internal.exception.AppMoveException;
 import org.cytoscape.app.internal.exception.AppParsingException;
 import org.cytoscape.app.internal.manager.App.AppStatus;
 import org.cytoscape.app.internal.manager.App.AppType;
@@ -120,10 +120,10 @@ public class AppManager {
 	 * Apps that have not been validated are ignored. Also, apps that are already installed are left alone.
 	 * 
 	 * @param app The {@link App} object representing and providing information about the app to install
-	 * @throws AppCopyException If there was an IO-related error during the copy operation that prevents the app from 
+	 * @throws AppMoveException If there was an IO-related error during the copy operation that prevents the app from 
 	 * being successfully installed.
 	 */
-	public void installApp(App app) throws AppCopyException {
+	public void installApp(App app) throws AppMoveException {
 		
 		// Check if the app has been verified to contain proper packaging.
 		if (!app.isAppValidated()) {
@@ -162,7 +162,7 @@ public class AppManager {
 				app.setAppFile(new File(getInstalledAppsPath() + File.separator + fileName));
 			}
 		} catch (IOException e) {
-			throw new AppCopyException("Unable to copy file: " + e.getMessage());
+			throw new AppMoveException("Unable to copy file: " + e.getMessage());
 		}
 	
 		// Create an app instance only if one was not already created
@@ -244,10 +244,10 @@ public class AppManager {
 	 * The app will only be uninstalled if it is currently installed.
 	 * 
 	 * @param app The app to be uninstalled.
-	 * @throws AppCopyException If there was an error while moving the app from the installed apps subdirectory
+	 * @throws AppMoveException If there was an error while moving the app from the installed apps subdirectory
 	 * to the subdirectory containing currently uninstalled apps.
 	 */
-	public void uninstallApp(App app) throws AppCopyException {
+	public void uninstallApp(App app) throws AppMoveException {
 		System.out.println("uninstallApp call, app: " + app + " status: " + app.getStatus());
 		
 		// Check if the app is installed before attempting to uninstall.
@@ -270,7 +270,7 @@ public class AppManager {
 				try {
 					FileUtils.copyFileToDirectory(app.getAppFile(), new File(uninstalledAppsPath));
 				} catch (IOException e) {
-					throw new AppCopyException("Unable to copy file: " + e.getMessage());
+					throw new AppMoveException("Unable to copy file: " + e.getMessage());
 				}
 				
 				// Delete the source file after the copy operation
@@ -361,7 +361,7 @@ public class AppManager {
 		for (App parsedApp : parsedApps) {
 			try {
 				installApp(parsedApp);
-			} catch (AppCopyException e) {
+			} catch (AppMoveException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

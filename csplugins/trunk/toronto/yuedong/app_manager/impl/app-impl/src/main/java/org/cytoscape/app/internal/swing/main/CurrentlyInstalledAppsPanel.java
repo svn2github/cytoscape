@@ -7,20 +7,23 @@ import javax.swing.table.DefaultTableModel;
 
 import org.cytoscape.app.internal.event.AppsChangedEvent;
 import org.cytoscape.app.internal.event.AppsChangedListener;
-import org.cytoscape.app.internal.exception.AppCopyException;
+import org.cytoscape.app.internal.exception.AppMoveException;
 import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
 
 public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
 
-    private javax.swing.JLabel appsAvailableCountLabel;
+	private javax.swing.JLabel appsAvailableCountLabel;
     private javax.swing.JLabel appsAvailableLabel;
+    private javax.swing.JScrollPane appsAvailableScrollPane;
     private javax.swing.JTable appsAvailableTable;
     private javax.swing.JLabel appsInstalledCountLabel;
     private javax.swing.JLabel appsInstalledLabel;
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JScrollPane descriptionScrollPane;
+    private javax.swing.JTextArea descriptionTextArea;
     private javax.swing.JButton disableSelectedButton;
     private javax.swing.JButton enableSelectedButton;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JComboBox showTypeComboxBox;
     private javax.swing.JLabel showTypeLabel;
 	
@@ -38,7 +41,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
 
     private void initComponents() {
 
-        jScrollPane2 = new javax.swing.JScrollPane();
+        appsAvailableScrollPane = new javax.swing.JScrollPane();
         appsAvailableTable = new javax.swing.JTable();
         appsInstalledLabel = new javax.swing.JLabel();
         appsAvailableLabel = new javax.swing.JLabel();
@@ -48,22 +51,28 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
         disableSelectedButton = new javax.swing.JButton();
         showTypeComboxBox = new javax.swing.JComboBox();
         showTypeLabel = new javax.swing.JLabel();
+        descriptionLabel = new javax.swing.JLabel();
+        descriptionScrollPane = new javax.swing.JScrollPane();
+        descriptionTextArea = new javax.swing.JTextArea();
 
         appsAvailableTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {},
+            new Object [][] {
+
+            },
             new String [] {
-                "App", "Name", "Version", "Author", "Description", "Status"
+                "App", "Name", "Version", "Author", "Status"
             }
         ) {
-			private static final long serialVersionUID = 572679933790969414L;
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
 
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return false;
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         appsAvailableTable.removeColumn(appsAvailableTable.getColumn("App"));
-        
-        jScrollPane2.setViewportView(appsAvailableTable);
+        appsAvailableScrollPane.setViewportView(appsAvailableTable);
 
         appsInstalledLabel.setText("Number of Apps Installed:");
 
@@ -87,7 +96,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
             }
         });
 
-        showTypeComboxBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All", "Installed", "Uninstalled"}));
+        showTypeComboxBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All", "Installed", "Uninstalled" }));
         showTypeComboxBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showTypeComboxBoxActionPerformed(evt);
@@ -96,6 +105,12 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
 
         showTypeLabel.setText("Show:");
 
+        descriptionLabel.setText("App Description:");
+
+        descriptionTextArea.setEditable(false);
+        descriptionTextArea.setFocusable(false);
+        descriptionScrollPane.setViewportView(descriptionTextArea);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -103,7 +118,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                    .add(appsAvailableScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
@@ -121,8 +136,10 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
                             .add(layout.createSequentialGroup()
                                 .add(enableSelectedButton)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(disableSelectedButton)))
-                        .add(0, 0, Short.MAX_VALUE)))
+                                .add(disableSelectedButton))
+                            .add(descriptionLabel))
+                        .add(0, 0, Short.MAX_VALUE))
+                    .add(descriptionScrollPane))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -141,7 +158,11 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
                     .add(showTypeLabel)
                     .add(showTypeComboxBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
+                .add(appsAvailableScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(descriptionLabel)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(descriptionScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 96, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(enableSelectedButton)
@@ -156,7 +177,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
         for (App app : selectedApps) {
         	try {
 				appManager.installApp(app);
-			} catch (AppCopyException e) {
+			} catch (AppMoveException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -169,7 +190,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
         for (App app : selectedApps) {
         	try {
 				appManager.uninstallApp(app);
-			} catch (AppCopyException e) {
+			} catch (AppMoveException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -237,7 +258,6 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
 					app.getAppName(),
 					app.getVersion(),
 					app.getAuthors(),
-					app.getDescription(),
 					app.getStatus()
 			});
     	}
