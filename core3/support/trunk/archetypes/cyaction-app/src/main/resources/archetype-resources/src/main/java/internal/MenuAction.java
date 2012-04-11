@@ -16,9 +16,11 @@ import org.cytoscape.application.swing.AbstractCyAction;
  */
 public class MenuAction extends AbstractCyAction {
 
-	public MenuAction(final String menuTitle) {
-		super(menuTitle);
+	public MenuAction(CyApplicationManager cyApplicationManager, final String menuTitle) {
+		
+		super(menuTitle, cyApplicationManager, null, null);
 		setPreferredMenu("Apps");
+		
 	}
 
 	public void actionPerformed(ActionEvent e) {
