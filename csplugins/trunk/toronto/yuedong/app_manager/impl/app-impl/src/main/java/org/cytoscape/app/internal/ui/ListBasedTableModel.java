@@ -1,4 +1,4 @@
-package org.cytoscape.app.internal.swing;
+package org.cytoscape.app.internal.ui;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

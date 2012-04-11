@@ -115,7 +115,7 @@ public class CyActivator extends AbstractCyActivator {
 		registerService(bc, appManager, org.cytoscape.app.internal.manager.AppManager.class, new Properties());
 		
 		// AbstractCyAction implementation for updated app manager
-		org.cytoscape.app.internal.AppManagerAction appManagerAction2 = new org.cytoscape.app.internal.AppManagerAction(appManager, cySwingApplicationRef);;
+		org.cytoscape.app.internal.action.AppManagerAction appManagerAction2 = new org.cytoscape.app.internal.action.AppManagerAction(appManager, cySwingApplicationRef);;
 		registerService(bc, appManagerAction2, CyAction.class, new Properties());
 	}
 }

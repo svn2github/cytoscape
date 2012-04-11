@@ -7,7 +7,7 @@ import org.cytoscape.app.AbstractCyApp;
 
 /**
  * This class represents an app, and contains all needed information about the app such as its name, version, 
- * authors list, description, and file path.
+ * authors list, description, and file path (if present).
  */
 public class App {
 	
@@ -70,16 +70,12 @@ public class App {
 		OSGI_APP;
 	}
 	
-	public App() {
-		this("", "", "", "", null);
-	}
-	
-	public App(String appName, String version, String authors, String description, File appFile) {
-		this.appName = appName;
-		this.version = version;
-		this.authors = authors;
-		this.description = description;
-		this.appFile = appFile;
+	public App() {	
+		this.appName = "";
+		this.version = "";
+		this.authors = "";
+		this.description = "";
+		this.appFile = null;
 		
 		appValidated = false;
 		officialNameObtained = false;

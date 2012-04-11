@@ -5,17 +5,27 @@ import org.cytoscape.app.internal.manager.AppManager;
 import org.cytoscape.event.AbstractCyEvent;
 
 /**
- * An event used to notify AppsChangedListeners that an app has been added or removed, and that 
- * the listeners (such as UI components) should update their data to reflect the change.
+ * An event used by the {@link AppManager} to notify AppsChangedListeners that an app has 
+ * been added, removed, or changed and that the listeners (such as UI components) should 
+ * update their data to reflect the change.
  */
 public final class AppsChangedEvent {
 
+	/** The {@link AppManager} that created the event. */
 	private AppManager source;
 
+	/**
+	 * Create a new AppsChangedEvent.
+	 * @param source The {@link AppManager} creating the event.
+	 */
 	public AppsChangedEvent(AppManager source) {
 		this.source = source;
 	}
 	
+	/**
+	 * Find the source of the event.
+	 * @return The {@link AppManager} that triggered the event.
+	 */
 	public AppManager getSource() {
 		return source;
 	}

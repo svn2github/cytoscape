@@ -24,7 +24,7 @@ import org.cytoscape.app.internal.manager.App.AppType;
 import org.cytoscape.application.CyApplicationConfiguration;
 
 /**
- * This class represents an AppManager, which is capable of maintaining a list of all currently installed and available apps. The class
+ * This class represents an App Manager, which is capable of maintaining a list of all currently installed and available apps. The class
  * also provides functionalities for installing and uninstalling apps.
  */
 public class AppManager {
@@ -76,25 +76,6 @@ public class AppManager {
 		appParser = new AppParser();
 		
 		initializeAppsDirectories();
-		
-		System.out.println("Installed apps path: " + getInstalledAppsPath());
-		System.out.println("Uninstalled apps path: " + getUninstalledAppsPath());
-		
-		/*
-		try {
-			App app = appParser.parseApp(new File(getBaseAppPath().getCanonicalPath() + File.separator + "CytoscapeTestSimpleApp.jar"));
-			installApp(app);
-		} catch (AppParsingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (AppCopyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
 		
 		this.appListeners = new HashSet<AppsChangedListener>();
 		
@@ -153,7 +134,6 @@ public class AppManager {
 				
 				// If we copied it from the uninstalled apps directory, remove it from that directory
 				if (appFile.getParentFile().getCanonicalPath().equals(getUninstalledAppsPath())) {
-					System.out.println("Installed from uninstalled apps directory, deleting from uninstalled directory");
 					appFile.delete();
 				}
 				
@@ -175,7 +155,6 @@ public class AppManager {
 		}
 		
 		app.setStatus(AppStatus.INSTALLED);
-		System.out.println("App " + app + " status change: " + app.getStatus());
 		installedApps.add(app);
 		availableApps.add(app);
 		

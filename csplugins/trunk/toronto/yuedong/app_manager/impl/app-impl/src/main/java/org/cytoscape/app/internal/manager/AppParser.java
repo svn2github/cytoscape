@@ -20,6 +20,12 @@ public class AppParser {
 	 * of the class to instantiate upon app installation. */
 	private static final String APP_CLASS_TAG = "Cytoscape-App";
 	
+	/**
+	 * Attempt to parse a given {@link File} object as an {@link App} object.
+	 * @param file The file to use for parsing
+	 * @return An {@link App} object representing the given file if parsing was successful
+	 * @throws AppParsingException If there was an error during parsing, such as missing data from the manifest file
+	 */
 	public App parseApp(File file) throws AppParsingException {
 		App parsedApp = new App();
 		

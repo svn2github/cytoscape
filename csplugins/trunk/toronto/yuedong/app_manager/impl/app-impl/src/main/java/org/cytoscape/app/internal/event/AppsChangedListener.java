@@ -6,5 +6,9 @@ package org.cytoscape.app.internal.event;
  */
 public interface AppsChangedListener {
 	
+	/**
+	 * Notifies the listener that apps have been updated, or added/removed from the list of available apps.
+	 * @param event The {@link AppsChangedEvent} containing information about the app change event.
+	 */
 	public void appsChanged(AppsChangedEvent event);
 }
