@@ -1,105 +1,213 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
-		<groupId>org.cytoscape</groupId>
-		<artifactId>impl-parent</artifactId>
-		<version>3.0.0-alpha8-SNAPSHOT</version>
-	</parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<groupId>org.cytoscape</groupId>
 	<properties>
 		<bundle.namespace>org.cytoscape.cpathsquared</bundle.namespace>
-		<cytoscape.impl.version>3.0.0-alpha8-SNAPSHOT</cytoscape.impl.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bundle.symbolicName>org.cytoscape.cpathsquared-impl</bundle.symbolicName>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<bundle.symbolicName>org.cytoscape.cpathsquared-impl</bundle.symbolicName>
 	</properties>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>cpathsquared-impl</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
+
 	<packaging>bundle</packaging>
-    <scm>
-        <connection>scm:svn:http://chianti.ucsd.edu/svn/csplugins/trunk/toronto/rodche/cpathsquared-impl</connection>
-        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/csplugins/trunk/toronto/rodche/cpathsquared-impl</developerConnection>
-        <url>http://chianti.ucsd.edu/svn/csplugins/trunk/toronto/rodche/cpathsquared-impl</url>
-    </scm>
+
+	<scm>
+		<connection>scm:svn:http://chianti.ucsd.edu/svn/csplugins/trunk/toronto/rodche/cpathsquared-impl</connection>
+		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/csplugins/trunk/toronto/rodche/cpathsquared-impl</developerConnection>
+		<url>http://chianti.ucsd.edu/svn/csplugins/trunk/toronto/rodche/cpathsquared-impl</url>
+	</scm>
+
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<!-- Cytoscape requires Java 1.6 -->
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<optimize>true</optimize>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
+					<compilerArguments>
+						<Xmaxwarns>10000</Xmaxwarns>
+						<Xmaxerrs>10000</Xmaxerrs>
+					</compilerArguments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.7.1</version>
+				<configuration>
+					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+				</configuration>
+			</plugin>
+			<!-- Generates the OSGi metadata based on the osgi.bnd file. -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Bundle-Activator>${bundle.namespace}.internal.CyActivator</Bundle-Activator>
+						<Export-Package>${bundle.namespace}</Export-Package>
+						<Private-Package>${bundle.namespace}.internal.*</Private-Package>
+						<Embed-Dependency>
+							*;groupId=org.biopax.paxtools;type=!pom;inline=true;scope=compile|runtime,
+							*;artifactId=cpath-api;type=!pom;inline=true;scope=compile|runtime,
+							*;artifactId=cpath-client;type=!pom;inline=true;scope=compile|runtime,
+							*;groupId=org.springframework;type=!pom;inline=true;scope=runtime
+						</Embed-Dependency>
+						<Import-Package>*;resolution:=optional</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- Links to the Cytoscape Maven repositories. -->
+	<repositories>
+		<repository>
+			<id>cytoscape_snapshots</id>
+			<snapshots>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<name>Cytoscape Snapshots</name>
+			<url>http://code.cytoscape.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>cytoscape_releases</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+			</releases>
+			<name>Cytoscape Releases</name>
+			<url>http://code.cytoscape.org/nexus/content/repositories/releases/</url>
+		</repository>
+	</repositories>
+
+
+
+
+
 	<dependencies>
-        <dependency>
-            <groupId>org.cytoscape</groupId>
-            <artifactId>model-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.cytoscape</groupId>
-            <artifactId>io-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-        	<groupId>org.cytoscape</groupId>
-        	<artifactId>viewmodel-api</artifactId>
-        	<scope>provided</scope>
-        </dependency>
-        <dependency>
-        	<groupId>org.cytoscape</groupId>
-        	<artifactId>layout-api</artifactId>
-        	<scope>provided</scope>
-        </dependency>
-        <dependency>
-        	<groupId>org.cytoscape</groupId>
-        	<artifactId>presentation-api</artifactId>
-        	<scope>provided</scope>
-        </dependency>
-        <dependency>
-        	<groupId>org.cytoscape</groupId>
-        	<artifactId>swing-util-api</artifactId>
-        	<scope>provided</scope>
-        </dependency>
-        <dependency>
-        	<groupId>org.cytoscape</groupId>
-        	<artifactId>swing-application-api</artifactId>
-        	<scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>model-api</artifactId>
+			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>io-api</artifactId>
+			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>viewmodel-api</artifactId>
+			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>layout-api</artifactId>
+			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>presentation-api</artifactId>
+			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>swing-util-api</artifactId>
+			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>swing-application-api</artifactId>
+			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>vizmap-api</artifactId>
+			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>webservice-swing-api</artifactId>
-			<version>3.0.0-alpha8-SNAPSHOT</version>
+			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
+			<groupId>org.ops4j.pax.logging</groupId>
+			<artifactId>pax-logging-api</artifactId>
+			<version>1.5.2</version>
+			<scope>provided</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-        	<groupId>pathwaycommons.cpath</groupId>
-        	<artifactId>cpath-api</artifactId>
-        	<version>5.1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-        	<groupId>pathwaycommons.cpath</groupId>
-        	<artifactId>cpath-client</artifactId>
-        	<version>3.1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-        	<groupId>org.biopax.paxtools</groupId>
-        	<artifactId>paxtools-core</artifactId>
-        	<version>4.1.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-        	<groupId>org.biopax.paxtools</groupId>
-        	<artifactId>biopax-converter</artifactId>
-        	<version>4.1.4-SNAPSHOT</version>
-        </dependency>        
-        <!-- Spring Dependencies to embed (temporary; must use/start Spring EBR bundles instead) -->
+
+		<dependency>
+			<groupId>pathwaycommons.cpath</groupId>
+			<artifactId>cpath-api</artifactId>
+			<version>5.1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>pathwaycommons.cpath</groupId>
+			<artifactId>cpath-client</artifactId>
+			<version>3.1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.biopax.paxtools</groupId>
+			<artifactId>paxtools-core</artifactId>
+			<version>4.1.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.biopax.paxtools</groupId>
+			<artifactId>biopax-converter</artifactId>
+			<version>4.1.4-SNAPSHOT</version>
+		</dependency>
+		<!-- Spring Dependencies to embed (temporary; must use/start Spring EBR 
+			bundles instead) -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -131,34 +239,5 @@
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>${maven-bundle-plugin.version}</version>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-						<Bundle-Version>${project.version}</Bundle-Version>
-						<Bundle-Activator>${bundle.namespace}.internal.CyActivator</Bundle-Activator>
-						<Export-Package>
-							!${bundle.namespace}.internal.*,
-							${bundle.namespace}.*;version="${project.version}"
-						</Export-Package>
-						<Private-Package>${bundle.namespace}.internal.*</Private-Package>
-						<Embed-Dependency>
-						 	*;groupId=org.biopax.paxtools;type=!pom;inline=true;scope=compile|runtime,
-							*;artifactId=cpath-api;type=!pom;inline=true;scope=compile|runtime,
-							*;artifactId=cpath-client;type=!pom;inline=true;scope=compile|runtime,
-							*;groupId=org.springframework;type=!pom;inline=true;scope=runtime
-						</Embed-Dependency>
-						<Import-Package>*;resolution:=optional</Import-Package>
-					</instructions>
-				</configuration>
-			</plugin>			
-		</plugins>
-	</build>
+
 </project>
