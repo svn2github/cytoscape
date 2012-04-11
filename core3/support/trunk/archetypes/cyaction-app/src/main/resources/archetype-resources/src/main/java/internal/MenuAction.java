@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
 
+import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 
 
