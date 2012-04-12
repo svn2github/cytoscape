@@ -1,9 +1,10 @@
-package org.cytoscape.io.write;
+package org.cytoscape.task.internal.export;
 
 
 import java.io.File;
 
 import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.task.internal.export.AbstractCyWriter;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
