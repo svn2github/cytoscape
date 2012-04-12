@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.AbstractTableModel;
@@ -190,6 +191,9 @@ public class InstallNewAppsPanel extends javax.swing.JPanel {
 					
 					// TODO: Replace System.out.println() messages with exception or a pop-up message box
 					System.out.println("Error parsing app: " + e.getMessage());
+					
+					JOptionPane.showMessageDialog(this, "Error opening app: " + e.getMessage(),
+		                       "Error", JOptionPane.ERROR_MESSAGE);
 				} finally {
 					
 					// Install the app if parsing was successful

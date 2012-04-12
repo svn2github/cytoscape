@@ -78,7 +78,7 @@ public class AppManager {
 		initializeAppsDirectories();
 		
 		this.appListeners = new HashSet<AppsChangedListener>();
-		
+
 		// Install previously enabled apps
 		installAppsInDirectory(new File(getInstalledAppsPath()));
 		

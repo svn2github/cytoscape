@@ -3,6 +3,8 @@ package org.cytoscape.app.internal.ui;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import org.cytoscape.app.internal.event.AppsChangedEvent;
@@ -38,11 +40,12 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     private AppsChangedListener appListener;
     
     public CurrentlyInstalledAppsPanel(AppManager appManager) {
-        initComponents();
-        
-        this.appManager = appManager;
+    	this.appManager = appManager;
+    	
+    	initComponents();
         
         setupAppListener();
+        setupDescriptionListener();
         populateTable();
     }
 
@@ -289,5 +292,39 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     private void updateLabels() {
     	appsInstalledCountLabel.setText(String.valueOf(appManager.getInstalledApps().size()));
     	appsAvailableCountLabel.setText(String.valueOf(appManager.getAvailableApps().size()));
+    }
+    
+    /**
+     * Setup and register a listener to the table to listen for selection changed events in order to update the
+     * app description box
+     */
+    private void setupDescriptionListener() {
+    	appsAvailableTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				updateDescriptionBox();
+			}
+		});
+    }
+    
+    private void updateDescriptionBox() {
+    	Set<App> selectedApps = getSelectedApps();
+    	int numSelected = selectedApps.size();
+    	
+    	// If no apps are selected, clear the description box
+    	if (numSelected == 0) {
+    		descriptionTextArea.setText("");
+    		
+    	// If a single app is selected, show its app description
+    	} else if (numSelected == 1){
+    		App selectedApp = selectedApps.iterator().next();
+    		
+    		String text = "Store URL: " + selectedApp.getAppStoreURL();
+    		text += "\n";
+    		descriptionTextArea.setText(text);
+    	} else {
+    		descriptionTextArea.setText("");
+    	}
     }
 }

@@ -9,7 +9,7 @@ import org.cytoscape.app.AbstractCyApp;
  * This class represents an app, and contains all needed information about the app such as its name, version, 
  * authors list, description, and file path (if present).
  */
-public class App {
+public abstract class App {
 	
 	private String appName;
 	private String version;
@@ -21,6 +21,8 @@ public class App {
 	 * The fully-qualified name of the app's class that extends {@link AbstractCyApp} to be instantiated when the app is loaded.
 	 */
 	private String entryClassName;
+
+	private URL appStoreURL;
 	
 	/**
 	 * A reference to the instance of the app's class that extends {@link AbstractCyApp}.
@@ -106,6 +108,10 @@ public class App {
 		return entryClassName;
 	}
 	
+	public URL getAppStoreURL() {
+		return appStoreURL;
+	}
+	
 	public AbstractCyApp getAppInstance() {
 		return appInstance;
 	}
@@ -148,6 +154,10 @@ public class App {
 	
 	public void setEntryClassName(String entryClassName) {
 		this.entryClassName = entryClassName;
+	}
+	
+	public void setAppStoreURL(URL appStoreURL) {
+		this.appStoreURL = appStoreURL;
 	}
 	
 	public void setAppInstance(AbstractCyApp appInstance) {
