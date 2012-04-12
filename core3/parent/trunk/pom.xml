@@ -28,7 +28,7 @@
 		<maven-pax-plugin.version>1.5</maven-pax-plugin.version>
 		<maven-bundle-plugin.version>2.3.4</maven-bundle-plugin.version>
 		<maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
-		<maven-surefire-plugin.version>2.7.1</maven-surefire-plugin.version>
+		<maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
 		<maven-assembly-plugin.version>2.2</maven-assembly-plugin.version>
 		<maven-enforcer-plugin.version>1.0</maven-enforcer-plugin.version>
 		<maven-dependency-plugin.version>2.2</maven-dependency-plugin.version>
@@ -90,7 +90,7 @@
 					</links>
 					<footer>Cytoscape 3 Core API</footer>
 					<header>Cytoscape 3 Core API</header>
-					<bottom>Copyright 2010 - 2011 Cytoscape Consortium. All rights reserved.</bottom>
+					<bottom>Copyright 2012 Cytoscape Consortium. All rights reserved.</bottom>
 					<tagletArtifacts>
 						<tagletArtifact>
 							<groupId>org.cytoscape</groupId>
@@ -126,6 +126,15 @@
 					<preparationGoals>clean install</preparationGoals>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <argLine>-Xmx256m</argLine>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                </configuration>
+            </plugin>
 
 		</plugins>
 
@@ -316,100 +325,4 @@
 		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/parent/trunk</developerConnection>
 		<url>http://chianti.ucsd.edu/svn/core3/parent/trunk</url>
 	</scm>
-
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>taglist-maven-plugin</artifactId>
-				<version>2.2</version>
-				<configuration>
-					<tags>
-						<tag>TODO</tag>
-						<tag>FIXME</tag>
-						<tag>@todo</tag>
-						<tag>@deprecated</tag>
-						<tag>DOCUMENT ME</tag>
-					</tags>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-pmd-plugin</artifactId>
-				<version>1.10</version>
-				<configuration>
-					<linkXref>true</linkXref>
-					<sourceEncoding>utf-8</sourceEncoding>
-					<minimumTokens>100</minimumTokens>
-					<targetJdk>1.6</targetJdk>
-					<excludes>
-						<exclude>**/*Bean.java</exclude>
-						<exclude>**/generated/*.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.4</version>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jdepend-maven-plugin</artifactId>
-				<version>2.0-beta2</version>
-			</plugin>
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<excludePackageNames>*.impl</excludePackageNames>
-					<tagletArtifacts>
-						<tagletArtifact>
-							<groupId>org.cytoscape</groupId>
-							<artifactId>taglets</artifactId>
-							<version>3.0.0-alpha7-SNAPSHOT</version>
-						</tagletArtifact>
-					</tagletArtifacts>
-				</configuration>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>javadoc</report>
-							<!-- <report>test-javadoc</report> -->
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jxr-maven-plugin</artifactId>
-				<version>2.0-beta1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.7.1</version>
-				<configuration>
-					<argLine>-Xmx256m</argLine>
-					<redirectTestOutputToFile>true</redirectTestOutputToFile>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.7.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>2.3.1</version>
-				<configuration>
-					<threshold>Normal</threshold>
-					<xmlOutput>true</xmlOutput>
-					<xmlOutputDirectory>target/site</xmlOutputDirectory>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
-
 </project>
