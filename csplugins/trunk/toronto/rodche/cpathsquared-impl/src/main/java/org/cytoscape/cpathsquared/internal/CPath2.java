@@ -55,6 +55,7 @@ public final class CPath2 {
         }
 
         CPath2Client client = CPath2Client.newInstance();
+        client.setEndPointURL("http://awabi.cbio.mskcc.org/cpath2/");
     	if(LOGGER.isDebugEnabled())
     		LOGGER.debug("cPath2Url=" + client.getEndPointURL());
     	
