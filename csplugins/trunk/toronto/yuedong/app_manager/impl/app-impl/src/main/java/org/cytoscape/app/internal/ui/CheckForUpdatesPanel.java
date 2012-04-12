@@ -50,14 +50,14 @@ public class CheckForUpdatesPanel extends javax.swing.JPanel {
 
         updatesAvailableCountLabel.setText("0");
 
-        installSelectedButton.setText("Install Selected");
+        installSelectedButton.setText("Update Selected");
         installSelectedButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 installSelectedButtonActionPerformed(evt);
             }
         });
 
-        installAllTable.setText("Install All");
+        installAllTable.setText("Update All");
         installAllTable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 installAllTableActionPerformed(evt);
@@ -72,10 +72,7 @@ public class CheckForUpdatesPanel extends javax.swing.JPanel {
                 "App Name", "Version"
             }
         ) {
-            /** Serial version ID required by the Serializable class */
-			private static final long serialVersionUID = 5428723339522445073L;
-
-			boolean[] canEdit = new boolean [] {
+            boolean[] canEdit = new boolean [] {
                 false, false
             };
 

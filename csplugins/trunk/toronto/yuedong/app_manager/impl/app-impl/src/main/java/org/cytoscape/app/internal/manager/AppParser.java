@@ -8,7 +8,6 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.cytoscape.app.internal.exception.AppParsingException;
-import org.cytoscape.app.internal.manager.App.AppType;
 
 /**
  * This class represents an app parser that is capable of parsing given {@link File}
@@ -27,7 +26,7 @@ public class AppParser {
 	 * @throws AppParsingException If there was an error during parsing, such as missing data from the manifest file
 	 */
 	public App parseApp(File file) throws AppParsingException {
-		App parsedApp = new App();
+		App parsedApp = new SimpleApp();
 		
 		if (!file.isFile()) {
 			throw new AppParsingException("The given file, " + file + ", is not a file.");
@@ -61,7 +60,6 @@ public class AppParser {
 		parsedApp.setAppFile(file);
 		parsedApp.setEntryClassName(entryClassName);
 		parsedApp.setAppValidated(true);
-		parsedApp.setAppType(AppType.SIMPLE_APP);
 		
 		return parsedApp;
 	}

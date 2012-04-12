@@ -73,10 +73,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
                 "App", "Name", "Version", "Author", "Status"
             }
         ) {
-        	/** Long serial version identifier required by the Serializable class */
-			private static final long serialVersionUID = 919039586559362963L;
-			
-			boolean[] canEdit = new boolean [] {
+            boolean[] canEdit = new boolean [] {
                 false, false, false, false, false
             };
 
@@ -95,14 +92,14 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
 
         appsAvailableCountLabel.setText("0");
 
-        enableSelectedButton.setText("Enable Selected");
+        enableSelectedButton.setText("Reinstall");
         enableSelectedButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enableSelectedButtonActionPerformed(evt);
             }
         });
 
-        disableSelectedButton.setText("Disable Selected");
+        disableSelectedButton.setText("Uninstall");
         disableSelectedButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 disableSelectedButtonActionPerformed(evt);
@@ -118,7 +115,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
 
         showTypeLabel.setText("Show:");
 
-        descriptionLabel.setText("App Description:");
+        descriptionLabel.setText("App Information:");
 
         descriptionTextArea.setEditable(false);
         descriptionTextArea.setFocusable(false);
@@ -132,6 +129,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(appsAvailableScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
+                    .add(descriptionScrollPane)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
@@ -146,13 +144,12 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
                                 .add(showTypeLabel)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(showTypeComboxBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 165, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(descriptionLabel)
                             .add(layout.createSequentialGroup()
-                                .add(enableSelectedButton)
+                                .add(disableSelectedButton)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(disableSelectedButton))
-                            .add(descriptionLabel))
-                        .add(0, 0, Short.MAX_VALUE))
-                    .add(descriptionScrollPane))
+                                .add(enableSelectedButton)))
+                        .add(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -189,12 +186,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
         Set<App> selectedApps = getSelectedApps();
         
         for (App app : selectedApps) {
-        	try {
-				appManager.installApp(app);
-			} catch (AppMoveException e) {
-				// TODO Use logger to record error instead of printing stack trace
-				e.printStackTrace();
-			}
+			appManager.installApp(app);
         }
     }
 
@@ -203,12 +195,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     	Set<App> selectedApps = getSelectedApps();
         
         for (App app : selectedApps) {
-        	try {
-				appManager.uninstallApp(app);
-			} catch (AppMoveException e) {
-				// TODO Use logger to record error instead of printing stack trace
-				e.printStackTrace();
-			}
+			appManager.uninstallApp(app);
         }
     }
 
@@ -271,7 +258,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
      * Populate the table of apps by obtaining the list of currently available apps from the AppManager object.
      */
     private void populateTable() {
-    	for (App app : appManager.getAvailableApps()) {
+    	for (App app : appManager.getApps()) {
     		DefaultTableModel tableModel = (DefaultTableModel) appsAvailableTable.getModel();
     		
     		tableModel.addRow(new Object[]{
@@ -290,8 +277,8 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
      * Update the labels that display the number of currently installed and available apps.
      */
     private void updateLabels() {
-    	appsInstalledCountLabel.setText(String.valueOf(appManager.getInstalledApps().size()));
-    	appsAvailableCountLabel.setText(String.valueOf(appManager.getAvailableApps().size()));
+    	appsInstalledCountLabel.setText(String.valueOf(appManager.getApps().size()));
+    	appsAvailableCountLabel.setText(String.valueOf(appManager.getApps().size()));
     }
     
     /**

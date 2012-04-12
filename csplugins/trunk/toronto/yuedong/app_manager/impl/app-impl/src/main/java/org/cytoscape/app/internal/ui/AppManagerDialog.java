@@ -7,9 +7,10 @@ import org.cytoscape.app.internal.manager.AppManager;
  */
 public class AppManagerDialog extends javax.swing.JDialog {
 
-    private CheckForUpdatesPanel checkForUpdatesPanel;
-    private CurrentlyInstalledAppsPanel currentlyInstalledAppsPanel;
-    private InstallNewAppsPanel installNewAppsPanel;
+	private CheckForUpdatesPanel checkForUpdatesPanel1;
+    private CurrentlyInstalledAppsPanel currentlyInstalledAppsPanel1;
+    private InstallAppsPanel installAppsPanel2;
+    private InstallFromStorePanel installNewAppsPanel1;
     private javax.swing.JTabbedPane mainTabbedPane;
     
     private AppManager appManager;
@@ -29,16 +30,18 @@ public class AppManagerDialog extends javax.swing.JDialog {
 
     private void initComponents() {
 
-        mainTabbedPane = new javax.swing.JTabbedPane();
-        installNewAppsPanel = new InstallNewAppsPanel(appManager);
-        currentlyInstalledAppsPanel = new CurrentlyInstalledAppsPanel(appManager);
-        checkForUpdatesPanel = new CheckForUpdatesPanel();
+    	mainTabbedPane = new javax.swing.JTabbedPane();
+        installNewAppsPanel1 = new InstallFromStorePanel(appManager);
+        installAppsPanel2 = new InstallAppsPanel();
+        currentlyInstalledAppsPanel1 = new CurrentlyInstalledAppsPanel(appManager);
+        checkForUpdatesPanel1 = new CheckForUpdatesPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        mainTabbedPane.addTab("Install New Apps", installNewAppsPanel);
-        mainTabbedPane.addTab("Currently Installed", currentlyInstalledAppsPanel);
-        mainTabbedPane.addTab("Check for Updates", checkForUpdatesPanel);
+        mainTabbedPane.addTab("Install from App Store", installNewAppsPanel1);
+        mainTabbedPane.addTab("Install Directly", installAppsPanel2);
+        mainTabbedPane.addTab("Currently Installed", currentlyInstalledAppsPanel1);
+        mainTabbedPane.addTab("Check for Updates", checkForUpdatesPanel1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
