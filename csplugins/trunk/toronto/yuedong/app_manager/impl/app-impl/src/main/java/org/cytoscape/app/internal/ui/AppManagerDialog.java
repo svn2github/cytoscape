@@ -23,8 +23,6 @@ public class AppManagerDialog extends javax.swing.JDialog {
         
         this.setLocationRelativeTo(parent);
         this.setVisible(true);
-        
-        System.out.println("parent: " + parent);
     }
    
 
@@ -32,7 +30,7 @@ public class AppManagerDialog extends javax.swing.JDialog {
 
     	mainTabbedPane = new javax.swing.JTabbedPane();
         installNewAppsPanel1 = new InstallFromStorePanel(appManager);
-        installAppsPanel2 = new InstallAppsPanel();
+        installAppsPanel2 = new InstallAppsPanel(appManager);
         currentlyInstalledAppsPanel1 = new CurrentlyInstalledAppsPanel(appManager);
         checkForUpdatesPanel1 = new CheckForUpdatesPanel();
 

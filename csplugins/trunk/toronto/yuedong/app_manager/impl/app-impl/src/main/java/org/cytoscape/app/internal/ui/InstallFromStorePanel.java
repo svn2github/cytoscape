@@ -25,18 +25,18 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 	/** Long serial version identifier required by the Serializable class */
 	private static final long serialVersionUID = -4975281017724945506L;
 	
-	private javax.swing.JLabel descriptionLabel;
+	private javax.swing.JCheckBox appTagCheckBox;
+    private javax.swing.JCheckBox authorCheckBox;
+    private javax.swing.JCheckBox descriptionChekBox;
+    private javax.swing.JLabel descriptionLabel;
     private javax.swing.JScrollPane descriptionScrollPane;
     private javax.swing.JTextArea descriptionTextArea;
     private javax.swing.JButton installSelectedButton;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JCheckBox jCheckBox4;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JCheckBox nameCheckBox;
     private javax.swing.JLabel resultsLabel;
     private javax.swing.JScrollPane resultsScrollPane;
     private javax.swing.JTable resultsTable;
+    private javax.swing.JLabel searchAppsLabel;
     private javax.swing.JButton searchButton;
     private javax.swing.JComboBox searchComboBox;
     private javax.swing.JButton viewOnWebStoreButton;
@@ -63,11 +63,11 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
         resultsTable = new javax.swing.JTable();
         installSelectedButton = new javax.swing.JButton();
         viewOnWebStoreButton = new javax.swing.JButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jCheckBox3 = new javax.swing.JCheckBox();
-        jLabel1 = new javax.swing.JLabel();
-        jCheckBox4 = new javax.swing.JCheckBox();
+        nameCheckBox = new javax.swing.JCheckBox();
+        authorCheckBox = new javax.swing.JCheckBox();
+        appTagCheckBox = new javax.swing.JCheckBox();
+        searchAppsLabel = new javax.swing.JLabel();
+        descriptionChekBox = new javax.swing.JCheckBox();
         descriptionLabel = new javax.swing.JLabel();
         descriptionScrollPane = new javax.swing.JScrollPane();
         descriptionTextArea = new javax.swing.JTextArea();
@@ -111,16 +111,16 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 
         viewOnWebStoreButton.setText("View on Web Store");
 
-        jCheckBox1.setSelected(true);
-        jCheckBox1.setText("Name");
+        nameCheckBox.setSelected(true);
+        nameCheckBox.setText("Name");
 
-        jCheckBox2.setText("Author");
+        authorCheckBox.setText("Author");
 
-        jCheckBox3.setText("App Tags");
+        appTagCheckBox.setText("App Tags");
 
-        jLabel1.setText("Search for Apps:");
+        searchAppsLabel.setText("Search for Apps:");
 
-        jCheckBox4.setText("Description");
+        descriptionChekBox.setText("Description");
 
         descriptionLabel.setText("App Information:");
 
@@ -145,14 +145,14 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
                                 .add(viewOnWebStoreButton))
                             .add(resultsLabel)
                             .add(layout.createSequentialGroup()
-                                .add(jCheckBox1)
+                                .add(nameCheckBox)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jCheckBox2)
+                                .add(authorCheckBox)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jCheckBox3)
+                                .add(appTagCheckBox)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jCheckBox4))
-                            .add(jLabel1)
+                                .add(descriptionChekBox))
+                            .add(searchAppsLabel)
                             .add(layout.createSequentialGroup()
                                 .add(searchComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 288, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -165,13 +165,13 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jLabel1)
+                .add(searchAppsLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jCheckBox1)
-                    .add(jCheckBox2)
-                    .add(jCheckBox3)
-                    .add(jCheckBox4))
+                    .add(nameCheckBox)
+                    .add(authorCheckBox)
+                    .add(appTagCheckBox)
+                    .add(descriptionChekBox))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(searchComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)

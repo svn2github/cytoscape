@@ -26,7 +26,7 @@ public abstract class App {
 	 */
 	private String entryClassName;
 
-	private URL appStoreURL;
+	private URL appStoreUrl;
 	
 	/**
 	 * A reference to the instance of the app's class that extends {@link AbstractCyApp}.
@@ -134,8 +134,8 @@ public abstract class App {
 		return entryClassName;
 	}
 	
-	public URL getAppStoreURL() {
-		return appStoreURL;
+	public URL getAppStoreUrl() {
+		return appStoreUrl;
 	}
 	
 	public AbstractCyApp getAppInstance() {
@@ -178,8 +178,8 @@ public abstract class App {
 		this.entryClassName = entryClassName;
 	}
 	
-	public void setAppStoreURL(URL appStoreURL) {
-		this.appStoreURL = appStoreURL;
+	public void setAppStoreUrl(URL appStoreURL) {
+		this.appStoreUrl = appStoreURL;
 	}
 	
 	public void setAppInstance(AbstractCyApp appInstance) {

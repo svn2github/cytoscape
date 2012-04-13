@@ -3,6 +3,7 @@ package org.cytoscape.app.internal;
 import org.cytoscape.app.AbstractCyApp;
 import org.cytoscape.app.CyAppAdapter;
 import org.cytoscape.app.internal.CyAppAdapterImpl;
+import org.cytoscape.app.internal.net.WebQuerier;
 import org.cytoscape.application.CyVersion;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.application.CyApplicationConfiguration;
@@ -17,6 +18,7 @@ import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.datasource.DataSourceManager;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.io.write.PresentationWriterManager;
 import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
@@ -105,9 +107,10 @@ public class CyActivator extends AbstractCyActivator {
 		DataSourceManager dataSourceManager = getService(bc, DataSourceManager.class);
 		
 		CyAppAdapterImpl cyAppAdapter = new CyAppAdapterImpl(cyApplicationManagerRef,cyEventHelperRef,cyLayoutAlgorithmManagerRef,cyNetworkFactoryRef,cyNetworkManagerRef,cyNetworkViewFactoryRef,cyNetworkViewManagerRef,cyNetworkViewReaderManagerRef,cyNetworkViewWriterManagerRef,cyPropertyRef,cyPropertyReaderManagerRef,cyPropertyWriterManagerRef,cyRootNetworkFactoryRef,cyServiceRegistrarRef,cySessionManagerRef,cySessionReaderManagerRef,cySessionWriterManagerRef,cySwingApplicationRef,cyTableFactoryRef,cyTableManagerRef,cyTableReaderManagerRef,cytoscapeVersionService, dialogTaskManagerRef,panelTaskManagerRef,submenuTaskManagerRef,presentationWriterManagerRef,renderingEngineManagerRef,taskManagerRef,undoSupportRef, vmfFactoryC, vmfFactoryD, vmfFactoryP, visualMappingManagerRef,visualStyleFactoryRef, dataSourceManager);
-		
 		registerService(bc,cyAppAdapter,CyAppAdapter.class, new Properties());
 		
+		WebQuerier webQuerier = new WebQuerier(getService(bc, StreamUtil.class));
+		registerService(bc, webQuerier, WebQuerier.class, new Properties());
 		
 		// Attempt to instantiate new manager
 		org.cytoscape.app.internal.manager.AppManager appManager = new org.cytoscape.app.internal.manager.AppManager(

@@ -307,7 +307,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     	} else if (numSelected == 1){
     		App selectedApp = selectedApps.iterator().next();
     		
-    		String text = "Store URL: " + selectedApp.getAppStoreURL();
+    		String text = "Store URL: " + selectedApp.getAppStoreUrl();
     		text += "\n";
     		descriptionTextArea.setText(text);
     	} else {
