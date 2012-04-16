@@ -20,6 +20,9 @@ public class WebApp {
 	/** The URL to the icon used to represent the app */
 	private String iconUrl;
 
+	/** The URL to the app's page on the app store website */
+	private String appUrl;
+	
 	/** 
 	 * Obtain the app name that is used as a unique identifier on the app store website 
 	 * @return The unique representative name used by the app store website
@@ -60,6 +63,14 @@ public class WebApp {
 		return iconUrl;
 	}
 	
+	/**
+	 * Obtain the URL of the app's page on the app store webste
+	 * @return The URL to the app store page for this app
+	 */
+	public String getAppUrl() {
+		return appUrl;
+	}
+	
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
@@ -78,5 +89,9 @@ public class WebApp {
 
 	public void setIconUrl(String iconUrl) {
 		this.iconUrl = iconUrl;
+	}
+	
+	public void setAppUrl(String appUrl) {
+		this.appUrl = appUrl;
 	}
 }

@@ -5,10 +5,12 @@ import java.awt.event.ComponentListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.RowSorter;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -70,16 +72,11 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 				populateTable();
 			}
         });
-		
         
     }
 
     private void initComponents() {
-    	// Changes after NetBeans generation:
-    	// -Added hidden "Apps" column
-    	// -App information JTextArea wraps text horizontally, no longer uses horizontal scroll bar
-    	
-        searchComboBox = new javax.swing.JComboBox();
+    	searchComboBox = new javax.swing.JComboBox();
         searchButton = new javax.swing.JButton();
         resultsLabel = new javax.swing.JLabel();
         resultsScrollPane = new javax.swing.JScrollPane();
@@ -124,16 +121,18 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
         });
         resultsTable.setShowGrid(false);
         resultsScrollPane.setViewportView(resultsTable);
+        resultsTable.getColumnModel().getColumn(1).setPreferredWidth(190);
 
+        // Hide the "App" column which is used to provide a reference to the object providing data for that row
+        resultsTable.removeColumn(resultsTable.getColumn("App"));
+        
         installSelectedButton.setText("Install Selected");
         installSelectedButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 installSelectedButtonActionPerformed(evt);
             }
         });
-        // Hide the "App" column which is used to provide a reference to the object providing data for that row
-        resultsTable.removeColumn(resultsTable.getColumn("App"));
-        
+
         viewOnWebStoreButton.setText("View on Web Store");
 
         nameCheckBox.setSelected(true);
@@ -149,10 +148,12 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 
         descriptionLabel.setText("App Information:");
 
+        descriptionScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
         descriptionTextArea.setEditable(false);
-        descriptionTextArea.setFocusable(false);
+        descriptionTextArea.setLineWrap(true);
         descriptionTextArea.setWrapStyleWord(true);
-        descriptionScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        descriptionTextArea.setFocusable(false);
         descriptionScrollPane.setViewportView(descriptionTextArea);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -162,7 +163,7 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(resultsScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 657, Short.MAX_VALUE)
+                    .add(resultsScrollPane)
                     .add(descriptionScrollPane)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)

@@ -24,6 +24,9 @@ public class WebQuerier {
 	
 	private static final String APP_STORE_URL = "http://nrnb.org/cyappstore/";
 	
+	private static final String REQUEST_JSON_HEADER_KEY = "X-Requested-With";
+	private static final String REQUEST_JSON_HEADER_VALUE = "XMLHttpRequest";
+	
 	private StreamUtil streamUtil;
 	
 	/** A reference to the result obtained by the last successful query for all available app tags. */
@@ -71,7 +74,7 @@ public class WebQuerier {
 		String result = null;
 	
 		HttpURLConnection connection = (HttpURLConnection) streamUtil.getURLConnection(parsedUrl);
-		connection.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+		connection.setRequestProperty(REQUEST_JSON_HEADER_KEY, REQUEST_JSON_HEADER_VALUE);
 		connection.connect();
 		
 		InputStream inputStream = connection.getInputStream();
@@ -193,6 +196,7 @@ public class WebQuerier {
 				webApp.setDescription(jsonObject.get("description").toString());
 				webApp.setDetails(jsonObject.get("details").toString());
 				webApp.setIconUrl(jsonObject.get("icon_url").toString());
+				webApp.setAppUrl(APP_STORE_URL + "apps/" + appName);
 				result.add(webApp);
 
 			} catch (IOException e) {
