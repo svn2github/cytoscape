@@ -258,9 +258,9 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
      * Populate the table of apps by obtaining the list of currently available apps from the AppManager object.
      */
     private void populateTable() {
-    	for (App app : appManager.getApps()) {
-    		DefaultTableModel tableModel = (DefaultTableModel) appsAvailableTable.getModel();
-    		
+    	DefaultTableModel tableModel = (DefaultTableModel) appsAvailableTable.getModel();
+		
+    	for (App app : appManager.getApps()) {	
     		tableModel.addRow(new Object[]{
 					app,
 					app.getAppName(),

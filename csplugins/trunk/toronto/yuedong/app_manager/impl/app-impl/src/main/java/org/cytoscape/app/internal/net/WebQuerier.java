@@ -26,14 +26,30 @@ public class WebQuerier {
 	
 	private StreamUtil streamUtil;
 	
+	/** A reference to the result obtained by the last successful query for all available app tags. */
+	private Set<String> appTags;
+	
+	/** A reference to the result obtained by the last successful query for all app identifier names. */
+	private Set<String> appNames;
+	
+	/** 
+	 * A reference to the result obtained by the last successful query for information about all
+	 * available apps. 
+	 */
+	private Set<WebApp> apps;
+	
 	public WebQuerier(StreamUtil streamUtil) {
 		this.streamUtil = streamUtil;
 		
-		Set<String> appNames = getAllAppNames();
+		appTags = null;
+		appNames = null;
+		apps = null;
 		
-		for (String name : appNames) {
-			System.out.println(name);
-		}
+		/*
+		Set<WebApp> webApps = getAllApps();
+		
+		System.out.println("Apps found: " + webApps.size());
+		*/
 	}
 	
 	/**
@@ -71,6 +87,11 @@ public class WebQuerier {
 	 * @return The set of all available tag names
 	 */
 	public Set<String> getAllTags() {
+		// If we have a cached result from the previous query, use that one
+		if (appTags != null) {
+			return appTags;
+		}
+		
 		Set<String> tagNames = new HashSet<String>();
 		
 		try {
@@ -85,12 +106,6 @@ public class WebQuerier {
 //				System.out.println("Found tag url identifier: " + jsonObject.get("name"));
 			}
 			
-			/*
-			System.out.println("Parsed: " + jsonArray.toString());
-			System.out.println("Index 1: " + jsonArray.get(1));
-			System.out.println("Index 2: " + jsonArray.get(2));
-			*/
-			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,6 +115,8 @@ public class WebQuerier {
 			e.printStackTrace();
 		}
 		
+		// Cache the result of this query
+		appTags = tagNames;
 		return tagNames;
 	}
 	
@@ -110,6 +127,10 @@ public class WebQuerier {
 	 * @return The set of all unique app names available on the app store website.
 	 */
 	public Set<String> getAllAppNames() {
+		// If we have a cached result from the previous query, use that one
+		if (appNames != null) {
+			return appNames;
+		}
 		
 		Set<String> tagNames = getAllTags();
 		Set<String> appNames = new HashSet<String>();
@@ -118,8 +139,10 @@ public class WebQuerier {
 			String jsonResult = null;
 			
 			for (String tagName : tagNames) {
+				// Obtain app names from website
 				jsonResult = query(APP_STORE_URL + "apps/with_tag/" + tagName);
 				
+				// Parse JSON result
 				JSONArray jsonArray = new JSONArray(jsonResult);
 				
 				for (int i = 0; i < jsonArray.length(); i++) {
@@ -127,6 +150,7 @@ public class WebQuerier {
 					
 					appNames.add(jsonObject.getString("name"));
 				}
+				
 			}
 			
 		} catch (IOException e) {
@@ -138,6 +162,53 @@ public class WebQuerier {
 			e.printStackTrace();
 		}
 		
+		// Cache the result of this query
+		this.appNames = appNames;
 		return appNames;
+	}
+	
+	public Set<WebApp> getAllApps() {
+		// If we have a cached result from the previous query, use that one
+		if (apps != null) {
+			return apps;
+		}
+		
+		System.out.println("Obtaining apps from app store..");
+		
+		Set<WebApp> result = new HashSet<WebApp>();
+		Set<String> appNames = getAllAppNames();
+		
+		String jsonResult = null;
+		for (String appName : appNames) {
+			try {
+				// Obtain information about the app from the website
+				jsonResult = query(APP_STORE_URL + "apps/" + appName);
+				
+				// Parse the JSON result
+				JSONObject jsonObject = new JSONObject(jsonResult);
+				
+				WebApp webApp = new WebApp();
+				webApp.setName(jsonObject.get("name").toString());
+				webApp.setFullName(jsonObject.get("fullname").toString());
+				webApp.setDescription(jsonObject.get("description").toString());
+				webApp.setDetails(jsonObject.get("details").toString());
+				webApp.setIconUrl(jsonObject.get("icon_url").toString());
+				result.add(webApp);
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				System.out.println("Error parsing JSON: " + e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println(result.size() + " apps found from web store.");
+		
+		// Cache the result of this query
+		this.apps = result;
+		return result;
 	}
 }

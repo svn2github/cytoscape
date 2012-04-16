@@ -1,13 +1,22 @@
 package org.cytoscape.app.internal.ui;
 
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import org.cytoscape.app.internal.exception.AppMoveException;
@@ -15,6 +24,7 @@ import org.cytoscape.app.internal.exception.AppParsingException;
 import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
 import org.cytoscape.app.internal.manager.AppParser;
+import org.cytoscape.app.internal.net.WebApp;
 
 /**
  * This class represents the panel in the App Manager dialog's tab used for installing new apps.
@@ -47,15 +57,28 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 	
     public InstallFromStorePanel(AppManager appManager) {
         this.appManager = appManager;
-    	
     	initComponents();
         
         setupFileChooser();
         setupResultsTable();
+        setupDescriptionListener();
+        
+        SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				populateTable();
+			}
+        });
+		
+        
     }
 
     private void initComponents() {
-
+    	// Changes after NetBeans generation:
+    	// -Added hidden "Apps" column
+    	// -App information JTextArea wraps text horizontally, no longer uses horizontal scroll bar
+    	
         searchComboBox = new javax.swing.JComboBox();
         searchButton = new javax.swing.JButton();
         resultsLabel = new javax.swing.JLabel();
@@ -88,11 +111,11 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Name", "Author", "Version", "Rating", "Downloads"
+                "App", "Name", "Author", "Version", "Rating", "Downloads"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -108,7 +131,9 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
                 installSelectedButtonActionPerformed(evt);
             }
         });
-
+        // Hide the "App" column which is used to provide a reference to the object providing data for that row
+        resultsTable.removeColumn(resultsTable.getColumn("App"));
+        
         viewOnWebStoreButton.setText("View on Web Store");
 
         nameCheckBox.setSelected(true);
@@ -126,6 +151,8 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 
         descriptionTextArea.setEditable(false);
         descriptionTextArea.setFocusable(false);
+        descriptionTextArea.setWrapStyleWord(true);
+        descriptionScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         descriptionScrollPane.setViewportView(descriptionTextArea);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -268,5 +295,77 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 
     	// resultsTable.setDefaultEditor(null, null);
     	resultsTable.setOpaque(true);
+    }
+    
+    /**
+     * Populate the current table of results with the available apps from the web store.
+     */
+    private void populateTable() {
+    	Set<WebApp> apps = appManager.getWebQuerier().getAllApps();
+    	
+    	DefaultTableModel tableModel = (DefaultTableModel) resultsTable.getModel();
+    	
+    	// Table columns in order: "App", "Name", "Author", "Version", "Rating", "Downloads"
+    	for (WebApp app : apps) {
+    		tableModel.addRow(new Object[]{
+    				app,
+    				app.getFullName(),
+    				"",
+    				"",
+    				"",
+    				""
+    		});
+    	}
+    }
+    
+    /**
+     * Obtain the set of {@link WebApp} objects corresponding to currently selected entries in the table of apps
+     * @return A set of {@link WebApp} objects corresponding to selected apps in the table
+     */
+    private Set<WebApp> getSelectedApps() {
+        Set<WebApp> selectedApps = new HashSet<WebApp>();
+    	int[] selectedRows = resultsTable.getSelectedRows();
+    	
+        for (int index = 0; index < selectedRows.length; index++) {
+        	WebApp app = (WebApp) resultsTable.getModel().getValueAt(selectedRows[index], 0);
+        	
+        	selectedApps.add(app);
+        }
+    	
+    	return selectedApps;
+    }
+    
+    /**
+     * Setup and register a listener to the table to listen for selection changed events in order to update the
+     * app description box
+     */
+    private void setupDescriptionListener() {
+    	resultsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				updateDescriptionBox();
+			}
+		});
+    }
+    
+    private void updateDescriptionBox() {
+    	Set<WebApp> selectedApps = getSelectedApps();
+    	int numSelected = selectedApps.size();
+    	
+    	// If no apps are selected, clear the description box
+    	if (numSelected == 0) {
+    		descriptionTextArea.setText("");
+    		
+    	// If a single app is selected, show its app description
+    	} else if (numSelected == 1){
+    		WebApp selectedApp = selectedApps.iterator().next();
+    		
+    		String text = "App Description: " + selectedApp.getDescription();
+    		text += "\n";
+    		descriptionTextArea.setText(text);
+    	} else {
+    		descriptionTextArea.setText("");
+    	}
     }
 }

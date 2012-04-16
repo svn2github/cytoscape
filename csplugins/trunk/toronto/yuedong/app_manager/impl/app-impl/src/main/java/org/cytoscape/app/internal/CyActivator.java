@@ -105,16 +105,17 @@ public class CyActivator extends AbstractCyActivator {
 		VisualMappingFunctionFactory vmfFactoryP = getService(bc,VisualMappingFunctionFactory.class, "(mapping.type=passthrough)");
 
 		DataSourceManager dataSourceManager = getService(bc, DataSourceManager.class);
+		StreamUtil streamUtilServiceRef = getService(bc, StreamUtil.class);
 		
 		CyAppAdapterImpl cyAppAdapter = new CyAppAdapterImpl(cyApplicationManagerRef,cyEventHelperRef,cyLayoutAlgorithmManagerRef,cyNetworkFactoryRef,cyNetworkManagerRef,cyNetworkViewFactoryRef,cyNetworkViewManagerRef,cyNetworkViewReaderManagerRef,cyNetworkViewWriterManagerRef,cyPropertyRef,cyPropertyReaderManagerRef,cyPropertyWriterManagerRef,cyRootNetworkFactoryRef,cyServiceRegistrarRef,cySessionManagerRef,cySessionReaderManagerRef,cySessionWriterManagerRef,cySwingApplicationRef,cyTableFactoryRef,cyTableManagerRef,cyTableReaderManagerRef,cytoscapeVersionService, dialogTaskManagerRef,panelTaskManagerRef,submenuTaskManagerRef,presentationWriterManagerRef,renderingEngineManagerRef,taskManagerRef,undoSupportRef, vmfFactoryC, vmfFactoryD, vmfFactoryP, visualMappingManagerRef,visualStyleFactoryRef, dataSourceManager);
 		registerService(bc,cyAppAdapter,CyAppAdapter.class, new Properties());
 		
-		WebQuerier webQuerier = new WebQuerier(getService(bc, StreamUtil.class));
+		WebQuerier webQuerier = new WebQuerier(streamUtilServiceRef);
 		registerService(bc, webQuerier, WebQuerier.class, new Properties());
 		
 		// Attempt to instantiate new manager
 		org.cytoscape.app.internal.manager.AppManager appManager = new org.cytoscape.app.internal.manager.AppManager(
-				cyAppAdapter, cyApplicationConfigurationServiceRef);
+				cyAppAdapter, cyApplicationConfigurationServiceRef, webQuerier);
 		registerService(bc, appManager, org.cytoscape.app.internal.manager.AppManager.class, new Properties());
 		
 		// AbstractCyAction implementation for updated app manager

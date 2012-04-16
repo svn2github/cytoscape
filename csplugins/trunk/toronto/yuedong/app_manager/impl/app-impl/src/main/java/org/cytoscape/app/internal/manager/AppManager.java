@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.JarFile;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.io.FileUtils;
 import org.cytoscape.app.AbstractCyApp;
 import org.cytoscape.app.CyAppAdapter;
@@ -22,6 +24,7 @@ import org.cytoscape.app.internal.exception.AppMoveException;
 import org.cytoscape.app.internal.exception.AppParsingException;
 import org.cytoscape.app.internal.exception.AppUninstallException;
 import org.cytoscape.app.internal.manager.App.AppStatus;
+import org.cytoscape.app.internal.net.WebQuerier;
 import org.cytoscape.application.CyApplicationConfiguration;
 
 /**
@@ -54,6 +57,11 @@ public class AppManager {
 	private AppParser appParser;
 	
 	/**
+	 * A reference to the {@link WebQuerier} object used to make queries to the app store website.
+	 */
+	private WebQuerier webQuerier;
+	
+	/**
 	 * {@link CyApplicationConfiguration} service used to obtain the directories used to store the apps.
 	 */
 	private CyApplicationConfiguration applicationConfiguration;
@@ -63,9 +71,10 @@ public class AppManager {
 	 */
 	private CyAppAdapter appAdapter;
 	
-	public AppManager(CyAppAdapter appAdapter, CyApplicationConfiguration applicationConfiguration) {
+	public AppManager(CyAppAdapter appAdapter, CyApplicationConfiguration applicationConfiguration, final WebQuerier webQuerier) {
 		this.applicationConfiguration = applicationConfiguration;
 		this.appAdapter = appAdapter;
+		this.webQuerier = webQuerier;
 		
 		apps = new HashSet<App>();
 		
@@ -89,6 +98,10 @@ public class AppManager {
 	
 	public AppParser getAppParser() {
 		return appParser;
+	}
+	
+	public WebQuerier getWebQuerier() {
+		return webQuerier;
 	}
 	
 	/**
