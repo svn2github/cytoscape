@@ -6,6 +6,7 @@ import org.cytoscape.app.internal.manager.AppManager;
 import org.cytoscape.app.internal.ui.AppManagerDialog;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.util.swing.FileUtil;
 
 public class AppManagerAction extends AbstractCyAction {
 
@@ -22,7 +23,12 @@ public class AppManagerAction extends AbstractCyAction {
 	 */
 	private AppManager appManager;
 	
-	public AppManagerAction(AppManager appManager, CySwingApplication swingApplication) {
+	/**
+	 * A reference to the {@link FileUtil} OSGi service used for displaying a filechooser dialog
+	 */
+	private FileUtil fileUtil;
+	
+	public AppManagerAction(AppManager appManager, CySwingApplication swingApplication, FileUtil fileUtil) {
 		super("App Manager 2");
 		
 		setPreferredMenu("Apps");
@@ -30,12 +36,13 @@ public class AppManagerAction extends AbstractCyAction {
 		
 		this.appManager = appManager;
 		this.swingApplication = swingApplication;
+		this.fileUtil = fileUtil;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		// Create and display the App Manager dialog
-		AppManagerDialog appManagerDialog = new AppManagerDialog(appManager, swingApplication.getJFrame(), false);
+		AppManagerDialog appManagerDialog = new AppManagerDialog(appManager, fileUtil, swingApplication.getJFrame(), false);
 	}
 
 }

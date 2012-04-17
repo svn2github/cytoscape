@@ -1,15 +1,21 @@
 package org.cytoscape.app.internal.ui;
 
+import java.awt.Container;
 import java.io.File;
+import java.util.Collection;
+import java.util.LinkedList;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
+import org.apache.commons.io.FileUtils;
 import org.cytoscape.app.internal.exception.AppParsingException;
 import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
 import org.cytoscape.app.internal.manager.AppParser;
+import org.cytoscape.util.swing.FileChooserFilter;
+import org.cytoscape.util.swing.FileUtil;
 
 public class InstallAppsPanel extends javax.swing.JPanel {
 
@@ -21,14 +27,22 @@ public class InstallAppsPanel extends javax.swing.JPanel {
     private javax.swing.JButton installFromUrlButton;
 	
     private AppManager appManager;
+    private FileUtil fileUtil;
     private JFileChooser fileChooser;
     
     /**
-     * Creates new form InstallAppsPanel
+     * A reference to the parent of this panel used to create the filechooser dialog.
      */
-    public InstallAppsPanel(AppManager appManager) {
+    private Container parent;
+    
+    /**
+     * Creates new form InstallAppsPanel
+     * @param fileUtil 
+     */
+    public InstallAppsPanel(AppManager appManager, FileUtil fileUtil, Container parent) {
         this.appManager = appManager;
-    	
+    	this.fileUtil = fileUtil;
+    	this.parent = parent;
     	initComponents();
     	
     	setupFileChooser();
@@ -102,10 +116,19 @@ public class InstallAppsPanel extends javax.swing.JPanel {
     }
 
     private void installFromFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
-    	int returnValue = fileChooser.showOpenDialog(this);
-        
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-        	File[] files = fileChooser.getSelectedFiles();
+
+    	// Setup a the file filter for the open file dialog
+    	FileChooserFilter fileChooserFilter = new FileChooserFilter("Jar, Zip Files (*.jar, *.zip)",
+    			new String[]{"jar", "zip"});
+    	
+    	Collection<FileChooserFilter> fileChooserFilters = new LinkedList<FileChooserFilter>();
+    	fileChooserFilters.add(fileChooserFilter);
+    	
+    	// Show the dialog
+    	File[] files = fileUtil.getFiles(parent, 
+    			"Choose file(s)", FileUtil.LOAD, FileUtil.LAST_DIRECTORY, "Install", true, fileChooserFilters);
+    	
+        if (files != null) {
         	
         	for (int index = 0; index < files.length; index++) {
         		AppParser appParser = appManager.getAppParser();
@@ -121,7 +144,7 @@ public class InstallAppsPanel extends javax.swing.JPanel {
 					// TODO: Replace System.out.println() messages with exception or a pop-up message box
 					System.out.println("Error parsing app: " + e.getMessage());
 					
-					JOptionPane.showMessageDialog(this, "Error opening app: " + e.getMessage(),
+					JOptionPane.showMessageDialog(parent, "Error opening app: " + e.getMessage(),
 		                       "Error", JOptionPane.ERROR_MESSAGE);
 				} finally {
 					

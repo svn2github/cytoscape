@@ -3,6 +3,8 @@ package org.cytoscape.app.internal;
 import org.cytoscape.app.AbstractCyApp;
 import org.cytoscape.app.CyAppAdapter;
 import org.cytoscape.app.internal.CyAppAdapterImpl;
+import org.cytoscape.app.internal.action.AppManagerAction;
+import org.cytoscape.app.internal.manager.AppManager;
 import org.cytoscape.app.internal.net.WebQuerier;
 import org.cytoscape.application.CyVersion;
 import org.cytoscape.session.CySessionManager;
@@ -15,6 +17,7 @@ import org.cytoscape.io.read.CyTableReaderManager;
 import org.cytoscape.io.read.CyPropertyReaderManager;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.util.swing.FileUtil;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.datasource.DataSourceManager;
 import org.cytoscape.event.CyEventHelper;
@@ -64,7 +67,7 @@ public class CyActivator extends AbstractCyActivator {
 	}
 
 	public void start(BundleContext bc) {
-
+		
 		CyApplicationManager cyApplicationManagerRef = getService(bc,CyApplicationManager.class);
 		CyEventHelper cyEventHelperRef = getService(bc,CyEventHelper.class);
 		CyLayoutAlgorithmManager cyLayoutAlgorithmManagerRef = getService(bc,CyLayoutAlgorithmManager.class);
@@ -106,6 +109,7 @@ public class CyActivator extends AbstractCyActivator {
 
 		DataSourceManager dataSourceManager = getService(bc, DataSourceManager.class);
 		StreamUtil streamUtilServiceRef = getService(bc, StreamUtil.class);
+		FileUtil fileUtilServiceRef = getService(bc, FileUtil.class);
 		
 		CyAppAdapterImpl cyAppAdapter = new CyAppAdapterImpl(cyApplicationManagerRef,cyEventHelperRef,cyLayoutAlgorithmManagerRef,cyNetworkFactoryRef,cyNetworkManagerRef,cyNetworkViewFactoryRef,cyNetworkViewManagerRef,cyNetworkViewReaderManagerRef,cyNetworkViewWriterManagerRef,cyPropertyRef,cyPropertyReaderManagerRef,cyPropertyWriterManagerRef,cyRootNetworkFactoryRef,cyServiceRegistrarRef,cySessionManagerRef,cySessionReaderManagerRef,cySessionWriterManagerRef,cySwingApplicationRef,cyTableFactoryRef,cyTableManagerRef,cyTableReaderManagerRef,cytoscapeVersionService, dialogTaskManagerRef,panelTaskManagerRef,submenuTaskManagerRef,presentationWriterManagerRef,renderingEngineManagerRef,taskManagerRef,undoSupportRef, vmfFactoryC, vmfFactoryD, vmfFactoryP, visualMappingManagerRef,visualStyleFactoryRef, dataSourceManager);
 		registerService(bc,cyAppAdapter,CyAppAdapter.class, new Properties());
@@ -114,12 +118,12 @@ public class CyActivator extends AbstractCyActivator {
 		registerService(bc, webQuerier, WebQuerier.class, new Properties());
 		
 		// Attempt to instantiate new manager
-		org.cytoscape.app.internal.manager.AppManager appManager = new org.cytoscape.app.internal.manager.AppManager(
+		AppManager appManager = new AppManager(
 				cyAppAdapter, cyApplicationConfigurationServiceRef, webQuerier);
-		registerService(bc, appManager, org.cytoscape.app.internal.manager.AppManager.class, new Properties());
+		registerService(bc, appManager, AppManager.class, new Properties());
 		
 		// AbstractCyAction implementation for updated app manager
-		org.cytoscape.app.internal.action.AppManagerAction appManagerAction2 = new org.cytoscape.app.internal.action.AppManagerAction(appManager, cySwingApplicationRef);;
+		AppManagerAction appManagerAction2 = new AppManagerAction(appManager, cySwingApplicationRef, fileUtilServiceRef);
 		registerService(bc, appManagerAction2, CyAction.class, new Properties());
 	}
 }

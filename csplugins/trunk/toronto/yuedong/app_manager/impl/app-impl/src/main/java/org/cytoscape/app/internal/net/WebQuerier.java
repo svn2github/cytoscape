@@ -215,4 +215,27 @@ public class WebQuerier {
 		this.apps = result;
 		return result;
 	}
+	
+	public String getAppDescription(String appName) {
+		// Obtain information about the app from the website
+		String jsonResult = null;
+		JSONObject jsonObject = null;
+		
+		try {
+			jsonResult = query(APP_STORE_URL + "apps/" + appName);
+			
+			// Parse the JSON result
+			jsonObject = new JSONObject(jsonResult);
+			return jsonObject.get("description").toString();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Error parsing JSON: " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return "";
+	}
 }
