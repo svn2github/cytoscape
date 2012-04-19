@@ -1,4 +1,4 @@
-	package org.cytoscape.task;
+	package org.cytoscape.task.internal.table;
 
 
 import java.util.ArrayList;
@@ -16,6 +16,8 @@ import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
+import org.cytoscape.task.table.MapNetworkAttrTaskFactory.MappingType;
+import static org.cytoscape.task.table.MapNetworkAttrTaskFactory.MappingType.*;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.ProvidesTitle;
 import org.cytoscape.work.TaskMonitor;
@@ -35,18 +37,9 @@ public final class MapNetworkAttrTask extends AbstractTask {
 
 	private static final Logger logger = LoggerFactory.getLogger(MapNetworkAttrTask.class);
 
-	private static final String CURRENT_LOCAL = "Only to the current network";
-	private static final String CURRENT_SHARED = "All networks related to current network";
-	private static final String ALL_SHARED = "All networks";
-	private static final String INDEPENDENT = "None (create Global Table w/o mapping)";
-
 	@Tunable(description = "Would you like to map this table to:")
-	public static ListSingleSelection<String> whichTable = new ListSingleSelection<String>(CURRENT_SHARED,
-			CURRENT_LOCAL, ALL_SHARED, INDEPENDENT);
-	static {
-		// Default selected item is map to local.
-		whichTable.setSelectedValue(CURRENT_LOCAL);
-	}
+	public ListSingleSelection<String> whichTable = new ListSingleSelection<String>(CURRENT_SHARED.getDescription(),
+			CURRENT_LOCAL.getDescription(), ALL_SHARED.getDescription(), INDEPENDENT.getDescription());
 	
 	@ProvidesTitle
 	public String getTitle() {
@@ -81,6 +74,7 @@ public final class MapNetworkAttrTask extends AbstractTask {
 		this.networkManager     = networkManager;
 		this.applicationManager = applicationManager;
 		this.rootNetworkManager = rootNetworkManager;
+		whichTable.setSelectedValue(CURRENT_LOCAL.getDescription());
 
 		if (type != CyNode.class && type != CyEdge.class)
 			throw new IllegalArgumentException("\"type\" must be CyNode.class or CyEdge.class!");
@@ -115,7 +109,7 @@ public final class MapNetworkAttrTask extends AbstractTask {
 		taskMonitor.setTitle("Mapping virtual columns");
 
 		final List<CyTable> targetTables = new ArrayList<CyTable>();
-		final String selection = whichTable.getSelectedValue();
+		final MappingType selection = MappingType.fromDescription(whichTable.getSelectedValue());
 		
 		if (selection.equals(CURRENT_LOCAL)) {
 			final CyNetwork currentNetwork = applicationManager.getCurrentNetwork();
@@ -153,7 +147,6 @@ public final class MapNetworkAttrTask extends AbstractTask {
 
 		if (newGlobalTable.getPrimaryKey().getType() != String.class)
 			throw new IllegalStateException("The new table's primary key is not of type String!");
-		final String sourceTableJoinColumn = newGlobalTable.getPrimaryKey().getName();
 
 		for (final CyTable targetTable : targetTables) {
 			if (cancelled)
