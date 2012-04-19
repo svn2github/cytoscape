@@ -14,14 +14,17 @@ public class WebApp {
 	/** A short description of the app. */
 	private String description;
 	
-	/** Detailed information about thet app, formatted in Markdown */
+	/** Detailed information about the app, formatted in Markdown */
 	private String details;
 	
 	/** The URL to the icon used to represent the app */
 	private String iconUrl;
 
 	/** The URL to the app's page on the app store website */
-	private String appUrl;
+	private String appStoreUrl;
+	
+	/** The number of downloads recorded for this app */
+	private int downloadCount;
 	
 	/** 
 	 * Obtain the app name that is used as a unique identifier on the app store website 
@@ -64,11 +67,19 @@ public class WebApp {
 	}
 	
 	/**
-	 * Obtain the URL of the app's page on the app store webste
+	 * Obtain the URL of the app's page on the app store website
 	 * @return The URL to the app store page for this app
 	 */
-	public String getAppUrl() {
-		return appUrl;
+	public String getAppStoreUrl() {
+		return appStoreUrl;
+	}
+	
+	/**
+	 * Obtain the download count for this app that was obtained from the app store website
+	 * @return The download count for this app
+	 */
+	public int getDownloadCount() {
+		return downloadCount;
 	}
 	
 	public void setFullName(String fullName) {
@@ -91,7 +102,16 @@ public class WebApp {
 		this.iconUrl = iconUrl;
 	}
 	
-	public void setAppUrl(String appUrl) {
-		this.appUrl = appUrl;
+	public void setAppStoreUrl(String appStoreUrl) {
+		this.appStoreUrl = appStoreUrl;
 	}
+	
+	public void setDownloadCount(int downloadCount) {
+		this.downloadCount = downloadCount;
+	}
+	
+	@Override
+	public String toString() {
+		return fullName;
+	}	
 }

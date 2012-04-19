@@ -2,12 +2,12 @@ package org.cytoscape.app.internal.net;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -30,22 +30,61 @@ public class WebQuerier {
 	private StreamUtil streamUtil;
 	
 	/** A reference to the result obtained by the last successful query for all available app tags. */
-	private Set<String> appTags;
+	private Set<AppTag> appTags;
 	
-	/** A reference to the result obtained by the last successful query for all app identifier names. */
-	private Set<String> appNames;
-	
-	/** 
-	 * A reference to the result obtained by the last successful query for information about all
-	 * available apps. 
-	 */
+	/** A reference to the result obtained by the last successful query for all available apps. */
 	private Set<WebApp> apps;
+	
+	/**
+	 * A class that represents a tag used for apps, containing information about the tag
+	 * such as its unique name used on the app store website as well as its human-readable name.
+	 */
+	public class AppTag {
+		
+		/** A unique name of the tag used by the app store website as a tag identifier */
+		private String name;
+		
+		/** The name of the tag that is shown to the user */
+		private String fullName;
+		
+		/** The number of apps associated with this tag */
+		private int count;
+		
+		public AppTag() {
+		}
+		
+		/** Obtain the name of the tag, which is a unique name used by the app store website as an identifier */
+		public String getName() {
+			return name;
+		}
+		
+		/** Obtain the name of the tag that is shown to the user */
+		public String getFullName() {
+			return fullName;
+		}
+		
+		/** Obtain the number of apps known by the web store to be associated with this tag */
+		public int getCount() {
+			return count;
+		}
+		
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public void setFullName(String fullName) {
+			this.fullName = fullName;
+		}
+		
+		public void setCount(int count) {
+			this.count = count;
+		}
+	}
 	
 	public WebQuerier(StreamUtil streamUtil) {
 		this.streamUtil = streamUtil;
 		
 		appTags = null;
-		appNames = null;
 		apps = null;
 		
 		/*
@@ -89,23 +128,28 @@ public class WebQuerier {
 	 * Return the set of all tag names found on the app store. 
 	 * @return The set of all available tag names
 	 */
-	public Set<String> getAllTags() {
+	public Set<AppTag> getAllTags() {
 		// If we have a cached result from the previous query, use that one
 		if (appTags != null) {
 			return appTags;
 		}
 		
-		Set<String> tagNames = new HashSet<String>();
+		Set<AppTag> tags = new HashSet<AppTag>();
 		
 		try {
-			String jsonResult = query(APP_STORE_URL + "apps/");
+			String jsonResult = query(APP_STORE_URL + "apps/tags");
+			System.out.println("Tag request result: " + jsonResult);
 			
 			JSONArray jsonArray = new JSONArray(jsonResult);
 			
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = (JSONObject) jsonArray.get(i);
 				
-				tagNames.add(jsonObject.getString("name"));
+				AppTag appTag = new AppTag();
+				appTag.setName(jsonObject.get("name").toString());
+				appTag.setFullName(jsonObject.get("fullname").toString());
+				appTag.setCount(jsonObject.getInt("count"));
+				tags.add(appTag);
 //				System.out.println("Found tag url identifier: " + jsonObject.get("name"));
 			}
 			
@@ -119,55 +163,8 @@ public class WebQuerier {
 		}
 		
 		// Cache the result of this query
-		appTags = tagNames;
-		return tagNames;
-	}
-	
-	/**
-	 * Return the set of all unique app names available on the app store. These
-	 * names can be used to query for further app information about each app.
-	 * 
-	 * @return The set of all unique app names available on the app store website.
-	 */
-	public Set<String> getAllAppNames() {
-		// If we have a cached result from the previous query, use that one
-		if (appNames != null) {
-			return appNames;
-		}
-		
-		Set<String> tagNames = getAllTags();
-		Set<String> appNames = new HashSet<String>();
-
-		try {
-			String jsonResult = null;
-			
-			for (String tagName : tagNames) {
-				// Obtain app names from website
-				jsonResult = query(APP_STORE_URL + "apps/with_tag/" + tagName);
-				
-				// Parse JSON result
-				JSONArray jsonArray = new JSONArray(jsonResult);
-				
-				for (int i = 0; i < jsonArray.length(); i++) {
-					JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-					
-					appNames.add(jsonObject.getString("name"));
-				}
-				
-			}
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Error parsing JSON: " + e.getMessage());
-			e.printStackTrace();
-		}
-		
-		// Cache the result of this query
-		this.appNames = appNames;
-		return appNames;
+		appTags = tags;
+		return tags;
 	}
 	
 	public Set<WebApp> getAllApps() {
@@ -179,35 +176,38 @@ public class WebQuerier {
 		System.out.println("Obtaining apps from app store..");
 		
 		Set<WebApp> result = new HashSet<WebApp>();
-		Set<String> appNames = getAllAppNames();
 		
 		String jsonResult = null;
-		for (String appName : appNames) {
-			try {
-				// Obtain information about the app from the website
-				jsonResult = query(APP_STORE_URL + "apps/" + appName);
-				
-				// Parse the JSON result
-				JSONObject jsonObject = new JSONObject(jsonResult);
+		try {
+			// Obtain information about the app from the website
+			jsonResult = query(APP_STORE_URL + "apps/");
+			
+			// Parse the JSON result
+			JSONArray jsonArray = new JSONArray(jsonResult);
+			JSONObject jsonObject = null;
+			
+			for (int index = 0; index < jsonArray.length(); index++) {
+				jsonObject = jsonArray.getJSONObject(index);
 				
 				WebApp webApp = new WebApp();
 				webApp.setName(jsonObject.get("name").toString());
 				webApp.setFullName(jsonObject.get("fullname").toString());
 				webApp.setDescription(jsonObject.get("description").toString());
-				webApp.setDetails(jsonObject.get("details").toString());
 				webApp.setIconUrl(jsonObject.get("icon_url").toString());
-				webApp.setAppUrl(APP_STORE_URL + "apps/" + appName);
+				webApp.setDownloadCount(jsonObject.getInt("downloads"));
+				webApp.setAppStoreUrl(APP_STORE_URL + "apps/" + webApp.getName());
 				result.add(webApp);
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Error parsing JSON: " + e.getMessage());
-				e.printStackTrace();
 			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Error parsing JSON: " + e.getMessage());
+			e.printStackTrace();
 		}
+	
 		
 		System.out.println(result.size() + " apps found from web store.");
 		
@@ -237,5 +237,49 @@ public class WebQuerier {
 		}
 		
 		return "";
+	}
+	
+	public Set<WebApp> getAppsByTag(String tagName) {
+		Set<WebApp> webApps = getAllApps();
+		
+		// Construct a map used to quickly obtain references to WebApp objects given the app's name.
+		// The app's name is guaranteed to be unique by the app store website.
+		Map<String, WebApp> appMap = new HashMap<String, WebApp>();
+		for (WebApp webApp : webApps) {
+			appMap.put(webApp.getName(), webApp);
+		}
+		
+		Set<WebApp> result = new HashSet<WebApp>();
+		
+		// Query for apps that match the given tag
+		String jsonResult = null;
+		try {
+			// Obtain information about the app from the website
+			jsonResult = query(APP_STORE_URL + "apps/with_tag/" + tagName);
+			
+			// Parse the JSON result
+			JSONArray jsonArray = new JSONArray(jsonResult);
+			JSONObject jsonObject = null;
+			
+			for (int index = 0; index < jsonArray.length(); index++) {
+				jsonObject = jsonArray.getJSONObject(index);
+				
+				String appName = jsonObject.get("name").toString();
+
+				// Assume any app obtained by querying with the tag was
+				// already obtained by the query for all available apps
+				result.add(appMap.get(appName));
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Error parsing JSON: " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 }

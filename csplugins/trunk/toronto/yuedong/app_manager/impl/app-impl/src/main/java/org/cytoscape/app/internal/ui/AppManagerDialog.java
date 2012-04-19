@@ -11,7 +11,7 @@ public class AppManagerDialog extends javax.swing.JDialog {
 	private CheckForUpdatesPanel checkForUpdatesPanel1;
     private CurrentlyInstalledAppsPanel currentlyInstalledAppsPanel1;
     private InstallAppsPanel installAppsPanel2;
-    private InstallFromStorePanelOld installNewAppsPanel1;
+    private InstallFromStorePanel installNewAppsPanel1;
     private javax.swing.JTabbedPane mainTabbedPane;
     
     private AppManager appManager;
@@ -31,7 +31,7 @@ public class AppManagerDialog extends javax.swing.JDialog {
     private void initComponents() {
 
     	mainTabbedPane = new javax.swing.JTabbedPane();
-        installNewAppsPanel1 = new InstallFromStorePanelOld(appManager);
+        installNewAppsPanel1 = new InstallFromStorePanel(appManager);
         installAppsPanel2 = new InstallAppsPanel(appManager, fileUtil, this);
         currentlyInstalledAppsPanel1 = new CurrentlyInstalledAppsPanel(appManager);
         checkForUpdatesPanel1 = new CheckForUpdatesPanel();

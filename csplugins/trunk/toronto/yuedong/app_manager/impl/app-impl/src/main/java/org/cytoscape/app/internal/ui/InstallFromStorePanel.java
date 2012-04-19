@@ -16,6 +16,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelListener;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
@@ -23,6 +27,8 @@ import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import org.cytoscape.app.internal.exception.AppMoveException;
 import org.cytoscape.app.internal.exception.AppParsingException;
@@ -30,6 +36,7 @@ import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
 import org.cytoscape.app.internal.manager.AppParser;
 import org.cytoscape.app.internal.net.WebApp;
+import org.cytoscape.app.internal.net.WebQuerier;
 
 /**
  * This class represents the panel in the App Manager dialog's tab used for installing new apps.
@@ -63,6 +70,8 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     	initComponents();
         
         setupDescriptionListener();
+        
+        populateTree();
     }
 
     private void initComponents() {
@@ -194,11 +203,25 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
      * Populate the current tree of results with the available apps from the web store.
      */
     private void populateTree() {
-    	TreeModel treeModel = resultsTree.getModel();
+    	WebQuerier webQuerier = appManager.getWebQuerier();
     	
-    	DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+    	DefaultMutableTreeNode root = new DefaultMutableTreeNode("Available Apps (" + webQuerier.getAllApps().size() + ")");
     	
-    	// TODO: Query, populate tree
+    	// Obtain available tags
+    	Set<WebQuerier.AppTag> availableTags = webQuerier.getAllTags();
+    	
+    	for (WebQuerier.AppTag appTag : availableTags) {
+    		DefaultMutableTreeNode tagNode = new DefaultMutableTreeNode(appTag.getFullName() + " (" + appTag.getCount() + ")");
+    		
+    		// Obtain apps for the current tag
+    		Set<WebApp> tagApps = webQuerier.getAppsByTag(appTag.getName());
+    		
+    		for (WebApp tagApp : tagApps) {
+    			tagNode.add(new DefaultMutableTreeNode(tagApp));
+    		}
+    		
+    		root.add(tagNode);
+    	}
     	
     	resultsTree.setModel(new DefaultTreeModel(root));
     }
@@ -208,7 +231,23 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
      * @return A set of {@link WebApp} objects corresponding to selected apps in the tree
      */
     private Set<WebApp> getSelectedApps() {
-    	return null;
+    	TreePath[] selectedPaths = resultsTree.getSelectionPaths();
+    	Set<WebApp> selectedApps = new HashSet<WebApp>();
+    	
+    	for (int index = 0; index < selectedPaths.length; index++) {
+    		TreePath selectedPath = selectedPaths[index];
+    		
+    		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+    		Object selectedUserObject = selectedNode.getUserObject();
+    		
+    		// Selecting tag category nodes are also added to the set of selected paths; avoid
+    		// adding them as selected apps by making this check
+    		if (selectedUserObject instanceof WebApp) {
+    			selectedApps.add((WebApp) selectedUserObject);
+    		}
+    	}
+    	
+    	return selectedApps;
     }
     
     /**
@@ -216,6 +255,13 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
      * app description box
      */
     private void setupDescriptionListener() {
+    	resultsTree.addTreeSelectionListener(new TreeSelectionListener() {
+			
+			@Override
+			public void valueChanged(TreeSelectionEvent event) {
+				updateDescriptionBox();
+			}
+		});
     }
     
     private void updateDescriptionBox() {
@@ -224,17 +270,18 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     	
     	// If no apps are selected, clear the description box
     	if (numSelected == 0) {
-    		descriptionTextArea.setText("");
+    		descriptionTextArea.setText("App information is displayed here.");
     		
     	// If a single app is selected, show its app description
     	} else if (numSelected == 1){
     		WebApp selectedApp = selectedApps.iterator().next();
     		
-    		String text = "App Description: " + selectedApp.getDescription();
-    		text += "\n";
+    		String text = "<html><b>" + selectedApp.getFullName() + "</b></html>";
+    		text += "\n\n";
+    		text += selectedApp.getDescription();
     		descriptionTextArea.setText(text);
     	} else {
-    		descriptionTextArea.setText("");
+    		descriptionTextArea.setText(numSelected + " apps selected.");
     	}
     }
 }
