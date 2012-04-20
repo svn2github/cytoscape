@@ -344,6 +344,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		setVisible(true);
 		toFront();
 
+		// a trick to force macs to bring the window to the front
+		setAlwaysOnTop(true);
+		setAlwaysOnTop(false);
+
 		// sets the top level identifier for java help
 		CSH.setHelpIDString(this,"Cytoscape User Manual");
 	}
