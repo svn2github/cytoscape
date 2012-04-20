@@ -1,5 +1,10 @@
 package org.cytoscape.app.internal.net;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.cytoscape.app.internal.net.WebQuerier.AppTag;
+
 /**
  * This class is intended to be a container for information obtained about an app from the app store website.
  */
@@ -25,6 +30,13 @@ public class WebApp {
 	
 	/** The number of downloads recorded for this app */
 	private int downloadCount;
+	
+	/** The set of tags associated with this app, which can be useful for dividing apps into categories by tag */
+	private Set<AppTag> appTags;
+	
+	public WebApp() {
+		appTags = new HashSet<AppTag>();
+	}
 	
 	/** 
 	 * Obtain the app name that is used as a unique identifier on the app store website 
@@ -75,6 +87,14 @@ public class WebApp {
 	}
 	
 	/**
+	 * Return the set of tags, represented by {@link AppTag} objects, associated with this app.
+	 * @return The set of tags, represented by {@link AppTag} objects, associated with this app.
+	 */
+	public Set<AppTag> getAppTags() {
+		return appTags;
+	}
+	
+	/**
 	 * Obtain the download count for this app that was obtained from the app store website
 	 * @return The download count for this app
 	 */
@@ -110,8 +130,12 @@ public class WebApp {
 		this.downloadCount = downloadCount;
 	}
 	
+	public void setAppTags(Set<AppTag> appTags) {
+		this.appTags = appTags;
+	}
+	
 	@Override
 	public String toString() {
 		return fullName;
-	}	
+	}
 }

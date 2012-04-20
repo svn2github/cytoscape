@@ -8,8 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.swing.JFileChooser;
@@ -20,6 +23,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkEvent.EventType;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -44,6 +49,7 @@ import org.cytoscape.app.internal.exception.AppParsingException;
 import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
 import org.cytoscape.app.internal.manager.AppParser;
+import org.cytoscape.app.internal.net.ResultsFilterer;
 import org.cytoscape.app.internal.net.WebApp;
 import org.cytoscape.app.internal.net.WebQuerier;
 
@@ -58,13 +64,13 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 	
     private javax.swing.JScrollPane descriptionScrollPane;
     private javax.swing.JTextPane descriptionTextPane;
+    private javax.swing.JTextField filterTextField;
     private javax.swing.JButton installSelectedButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane resultsScrollPane;
     private javax.swing.JSplitPane resultsSplitPane;
     private javax.swing.JTree resultsTree;
     private javax.swing.JLabel searchAppsLabel;
-    private javax.swing.JComboBox searchComboBox;
     private javax.swing.JCheckBox showCompatibleCheckBox;
 	
 	private JFileChooser fileChooser;
@@ -75,15 +81,16 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
         this.appManager = appManager;
     	initComponents();
         
+    	addTagInformation();
+        populateTree(appManager.getWebQuerier().getAllApps());
+        
         setupDescriptionListener();
         setupHyperlinkListener();
-        
-        populateTree();
+        setupTextFieldListener();
     }
 
     private void initComponents() {
 
-        searchComboBox = new javax.swing.JComboBox();
         installSelectedButton = new javax.swing.JButton();
         searchAppsLabel = new javax.swing.JLabel();
         resultsSplitPane = new javax.swing.JSplitPane();
@@ -93,9 +100,8 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
         descriptionTextPane = new javax.swing.JTextPane();
         showCompatibleCheckBox = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
-
-        searchComboBox.setEditable(true);
-
+        filterTextField = new javax.swing.JTextField();
+        
         installSelectedButton.setText("Install Selected");
         installSelectedButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -105,7 +111,7 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 
         searchAppsLabel.setText("Filter Apps:");
 
-        resultsSplitPane.setDividerLocation(215);
+        resultsSplitPane.setDividerLocation(245);
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("JTree");
         resultsTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
@@ -140,19 +146,20 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
+                        .add(resultsSplitPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .add(filterTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 269, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                .add(showCompatibleCheckBox))
                             .add(layout.createSequentialGroup()
                                 .add(installSelectedButton)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jButton1))
-                            .add(searchAppsLabel)
-                            .add(layout.createSequentialGroup()
-                                .add(searchComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 269, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(showCompatibleCheckBox)))
-                        .add(0, 55, Short.MAX_VALUE))
-                    .add(resultsSplitPane))
-                .addContainerGap())
+                            .add(searchAppsLabel))
+                        .add(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -161,7 +168,7 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
                 .add(searchAppsLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(searchComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(filterTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(showCompatibleCheckBox))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(resultsSplitPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
@@ -177,6 +184,48 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }                                            
 
+    private void setupTextFieldListener() {
+        filterTextField.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				filterResults();
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				filterResults();
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				filterResults();
+			}
+		});
+    }
+    
+    private void filterResults() {
+        String text = filterTextField.getText();
+    	
+    	Set<WebApp> allApps = appManager.getWebQuerier().getAllApps();
+    	
+    	if (text != null && text.length() > 0) {
+    		ResultsFilterer filterer = new ResultsFilterer();
+    		
+    		populateTree(filterer.findMatches(text, allApps));
+    		
+    	} else {
+    		populateTree(allApps);
+    	}	
+    }
+    
+    private void searchComboBoxPropertyChange(java.beans.PropertyChangeEvent evt) {
+
+    }
+    
     private void installSelectedButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                      
         // TODO add your handling code here:
     }                                                     
@@ -192,7 +241,7 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     /**
      * Populate the current tree of results with the available apps from the web store.
      */
-    private void populateTree() {
+    private void populateTreeOld() {
     	WebQuerier webQuerier = appManager.getWebQuerier();
     	
     	DefaultMutableTreeNode root = new DefaultMutableTreeNode("Available Apps (" + webQuerier.getAllApps().size() + ")");
@@ -217,12 +266,65 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     	resultsTree.setModel(new DefaultTreeModel(root));
     }
     
+    // Populate the tree using a given set of WebApp objects.
+    private void populateTree(Set<WebApp> webApps) {
+    	WebQuerier webQuerier = appManager.getWebQuerier();
+    	
+    	// Assume given apps have been labelled with tags
+    	// Above assumption should be valid once web store is updated to provide tag information when requesting all apps
+    	
+    	DefaultMutableTreeNode root = new DefaultMutableTreeNode("Matches (" + webApps.size() + ")");
+    	
+    	// Obtain available tags
+    	Set<WebQuerier.AppTag> availableTags = webQuerier.getAllTags();
+    	
+    	// Construct a dictionary that maps each tag to a set containing all the apps associated with that tag
+    	// in order to produce the tree
+    	Map<WebQuerier.AppTag, Set<WebApp>> dividedApps = new HashMap<WebQuerier.AppTag, Set<WebApp>>();
+    	for (WebQuerier.AppTag appTag : availableTags) {
+    		dividedApps.put(appTag, new HashSet<WebApp>());
+    	}
+    	
+    	for (WebApp webApp : webApps) {
+    		// Add the app to the appropriate set(s) in the dictionary
+    		for (WebQuerier.AppTag appTag : webApp.getAppTags()) {
+    			dividedApps.get(appTag).add(webApp);
+    		}
+    	}
+    	
+    	for (Entry<WebQuerier.AppTag, Set<WebApp>> entry : dividedApps.entrySet()) {
+    		WebQuerier.AppTag appTag = entry.getKey();
+    		Set<WebApp> associatedApps = entry.getValue();
+    		
+    		if (associatedApps.size() > 0) {
+	    		DefaultMutableTreeNode tagNode = new DefaultMutableTreeNode(appTag.getFullName() + " (" + associatedApps.size() + ")");
+	    		
+	    		for (WebApp webApp : associatedApps) {
+	    			tagNode.add(new DefaultMutableTreeNode(webApp));
+	    		}
+	    		
+    			root.add(tagNode);
+    		}
+    	}
+    	
+    	resultsTree.setModel(new DefaultTreeModel(root));
+    	
+    	for (int index = resultsTree.getRowCount() - 1; index >= 0; index--) {
+    		resultsTree.expandRow(index);
+    	}
+    }
+    
     /**
      * Obtain the set of {@link WebApp} objects corresponding to currently selected entries in the tree of apps
      * @return A set of {@link WebApp} objects corresponding to selected apps in the tree
      */
     private Set<WebApp> getSelectedApps() {
     	TreePath[] selectedPaths = resultsTree.getSelectionPaths();
+    	if (selectedPaths == null) {
+    		// Return an empty set if no selections were found
+    		return new HashSet<WebApp>();
+    	}
+    	
     	Set<WebApp> selectedApps = new HashSet<WebApp>();
     	
     	for (int index = 0; index < selectedPaths.length; index++) {
@@ -275,6 +377,26 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 				}
 			}
 		});
+    }
+    
+    // Adds tag information to the set of available apps
+    private void addTagInformation() {
+    	WebQuerier webQuerier = appManager.getWebQuerier();
+    	Set<WebApp> webApps = webQuerier.getAllApps();
+    	
+    	// Obtain available tags
+    	Set<WebQuerier.AppTag> availableTags = webQuerier.getAllTags();
+    	
+    	for (WebQuerier.AppTag appTag : availableTags) {
+
+    		// Obtain apps for the current tag
+    		Set<WebApp> tagApps = webQuerier.getAppsByTag(appTag.getName());
+    		
+    		// Assume the set of apps returned is a subset of all available apps
+    		for (WebApp tagApp : tagApps) {
+    			tagApp.getAppTags().add(appTag);
+    		}
+    	}
     }
     
     private void updateDescriptionBox() {
