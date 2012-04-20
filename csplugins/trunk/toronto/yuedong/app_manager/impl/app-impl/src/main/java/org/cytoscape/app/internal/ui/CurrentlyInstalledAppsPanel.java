@@ -22,19 +22,14 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
 	/** Long serial version identifier required by the Serializable class */
 	private static final long serialVersionUID = 7096775814942183176L;
 	
-	private javax.swing.JLabel appsAvailableCountLabel;
-    private javax.swing.JLabel appsAvailableLabel;
     private javax.swing.JScrollPane appsAvailableScrollPane;
     private javax.swing.JTable appsAvailableTable;
-    private javax.swing.JLabel appsInstalledCountLabel;
     private javax.swing.JLabel appsInstalledLabel;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JScrollPane descriptionScrollPane;
     private javax.swing.JTextArea descriptionTextArea;
     private javax.swing.JButton disableSelectedButton;
-    private javax.swing.JButton enableSelectedButton;
-    private javax.swing.JComboBox showTypeComboxBox;
-    private javax.swing.JLabel showTypeLabel;
+    private javax.swing.JButton enableSelectedButton;;
 	
     private AppManager appManager;
     private AppsChangedListener appListener;
@@ -54,13 +49,8 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
         appsAvailableScrollPane = new javax.swing.JScrollPane();
         appsAvailableTable = new javax.swing.JTable();
         appsInstalledLabel = new javax.swing.JLabel();
-        appsAvailableLabel = new javax.swing.JLabel();
-        appsInstalledCountLabel = new javax.swing.JLabel();
-        appsAvailableCountLabel = new javax.swing.JLabel();
         enableSelectedButton = new javax.swing.JButton();
         disableSelectedButton = new javax.swing.JButton();
-        showTypeComboxBox = new javax.swing.JComboBox();
-        showTypeLabel = new javax.swing.JLabel();
         descriptionLabel = new javax.swing.JLabel();
         descriptionScrollPane = new javax.swing.JScrollPane();
         descriptionTextArea = new javax.swing.JTextArea();
@@ -70,7 +60,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
 
             },
             new String [] {
-                "App", "Name", "Version", "Author", "Status"
+                "App", "Name", "Author", "Version", "Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -81,16 +71,11 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        appsAvailableTable.removeColumn(appsAvailableTable.getColumn("App"));
         appsAvailableScrollPane.setViewportView(appsAvailableTable);
-
-        appsInstalledLabel.setText("Number of Apps Installed:");
-
-        appsAvailableLabel.setText("Apps available: ");
-
-        appsInstalledCountLabel.setText("0");
-
-        appsAvailableCountLabel.setText("0");
+        appsAvailableTable.getColumnModel().getColumn(1).setPreferredWidth(195);
+        appsAvailableTable.removeColumn(appsAvailableTable.getColumn("App"));
+        
+        appsInstalledLabel.setText("0 Apps installed.");
 
         enableSelectedButton.setText("Reinstall");
         enableSelectedButton.addActionListener(new java.awt.event.ActionListener() {
@@ -105,15 +90,6 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
                 disableSelectedButtonActionPerformed(evt);
             }
         });
-
-        showTypeComboxBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All", "Installed", "Uninstalled" }));
-        showTypeComboxBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showTypeComboxBoxActionPerformed(evt);
-            }
-        });
-
-        showTypeLabel.setText("Show:");
 
         descriptionLabel.setText("App Information:");
 
@@ -132,23 +108,12 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
                     .add(descriptionScrollPane)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .add(appsAvailableLabel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(appsAvailableCountLabel))
-                            .add(layout.createSequentialGroup()
-                                .add(appsInstalledLabel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(appsInstalledCountLabel))
-                            .add(layout.createSequentialGroup()
-                                .add(showTypeLabel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(showTypeComboxBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 165, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                             .add(descriptionLabel)
                             .add(layout.createSequentialGroup()
                                 .add(disableSelectedButton)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(enableSelectedButton)))
+                                .add(enableSelectedButton))
+                            .add(appsInstalledLabel))
                         .add(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -156,23 +121,13 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(appsInstalledLabel)
-                    .add(appsInstalledCountLabel))
+                .add(appsInstalledLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(appsAvailableLabel)
-                    .add(appsAvailableCountLabel))
+                .add(appsAvailableScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(showTypeLabel)
-                    .add(showTypeComboxBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(appsAvailableScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(descriptionLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(descriptionScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 96, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(descriptionScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(enableSelectedButton)
@@ -180,7 +135,8 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }
-
+        
+        
     private void enableSelectedButtonActionPerformed(java.awt.event.ActionEvent evt) {
     	// Obtain App objects corresponding to currently selected table entries
         Set<App> selectedApps = getSelectedApps();
@@ -277,8 +233,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
      * Update the labels that display the number of currently installed and available apps.
      */
     private void updateLabels() {
-    	appsInstalledCountLabel.setText(String.valueOf(appManager.getApps().size()));
-    	appsAvailableCountLabel.setText(String.valueOf(appManager.getApps().size()));
+    	appsInstalledLabel.setText(String.valueOf(appManager.getApps().size()) + " Apps installed.");
     }
     
     /**

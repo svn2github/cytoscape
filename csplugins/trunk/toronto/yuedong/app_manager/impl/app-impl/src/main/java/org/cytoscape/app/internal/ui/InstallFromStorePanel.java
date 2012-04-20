@@ -47,19 +47,16 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 	/** Long serial version identifier required by the Serializable class */
 	private static final long serialVersionUID = -1208176142084829272L;
 	
-	private javax.swing.JScrollPane descriptionScrollPane;
-    private javax.swing.JTextArea descriptionTextArea;
+    private javax.swing.JScrollPane descriptionScrollPane;
+    private javax.swing.JTextPane descriptionTextPane;
     private javax.swing.JButton installSelectedButton;
-    private javax.swing.JButton resetButton;
-    private javax.swing.JLabel resultsLabel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane resultsScrollPane;
     private javax.swing.JSplitPane resultsSplitPane;
     private javax.swing.JTree resultsTree;
     private javax.swing.JLabel searchAppsLabel;
-    private javax.swing.JButton searchButton;
     private javax.swing.JComboBox searchComboBox;
     private javax.swing.JCheckBox showCompatibleCheckBox;
-    private javax.swing.JButton viewOnWebStoreButton;
 	
 	private JFileChooser fileChooser;
 	
@@ -77,27 +74,17 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     private void initComponents() {
 
         searchComboBox = new javax.swing.JComboBox();
-        searchButton = new javax.swing.JButton();
         installSelectedButton = new javax.swing.JButton();
-        viewOnWebStoreButton = new javax.swing.JButton();
         searchAppsLabel = new javax.swing.JLabel();
         resultsSplitPane = new javax.swing.JSplitPane();
         resultsScrollPane = new javax.swing.JScrollPane();
         resultsTree = new javax.swing.JTree();
         descriptionScrollPane = new javax.swing.JScrollPane();
-        descriptionTextArea = new javax.swing.JTextArea();
+        descriptionTextPane = new javax.swing.JTextPane();
         showCompatibleCheckBox = new javax.swing.JCheckBox();
-        resetButton = new javax.swing.JButton();
-        resultsLabel = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         searchComboBox.setEditable(true);
-
-        searchButton.setText("Search");
-        searchButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchButtonActionPerformed(evt);
-            }
-        });
 
         installSelectedButton.setText("Install Selected");
         installSelectedButton.addActionListener(new java.awt.event.ActionListener() {
@@ -106,32 +93,56 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
             }
         });
 
-        viewOnWebStoreButton.setText("View on Web Store");
- 
-        searchAppsLabel.setText("Search by Keyword:");
+        searchAppsLabel.setText("Filter Apps:");
 
         resultsSplitPane.setDividerLocation(215);
 
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("JTree");
+        javax.swing.tree.DefaultMutableTreeNode treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("colors");
+        javax.swing.tree.DefaultMutableTreeNode treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("blue");
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("violet");
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("red");
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("yellow");
+        treeNode2.add(treeNode3);
+        treeNode1.add(treeNode2);
+        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("sports");
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("basketball");
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("soccer");
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("football");
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("hockey test");
+        treeNode2.add(treeNode3);
+        treeNode1.add(treeNode2);
+        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("food");
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("hot dogs");
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("pizza");
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("ravioli");
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("bananas");
+        treeNode2.add(treeNode3);
+        treeNode1.add(treeNode2);
+        resultsTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         resultsScrollPane.setViewportView(resultsTree);
 
         resultsSplitPane.setLeftComponent(resultsScrollPane);
 
-        descriptionScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-        descriptionTextArea.setColumns(20);
-        descriptionTextArea.setLineWrap(true);
-        descriptionTextArea.setRows(5);
-        descriptionTextArea.setText("App information is displayed here.");
-        descriptionTextArea.setWrapStyleWord(true);
-        descriptionScrollPane.setViewportView(descriptionTextArea);
+        descriptionTextPane.setContentType("text/html");
+        descriptionTextPane.setEditable(false);
+        descriptionTextPane.setText("<html>   <head>    </head>   <body>     <p style=\"margin-top: 0\"> App information is displayed here. <a href=\"http://www.w3schools.com/\">Test link</a>          </p>   </body> </html> ");
+        descriptionScrollPane.setViewportView(descriptionTextPane);
 
         resultsSplitPane.setRightComponent(descriptionScrollPane);
 
-        showCompatibleCheckBox.setText("Only Show Apps Known to be Compatible");
+        showCompatibleCheckBox.setText("Show only compatible apps");
 
-        resetButton.setText("Reset");
-
-        resultsLabel.setText("Search Results:");
+        jButton1.setText("Browse File");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -140,45 +151,36 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(resultsSplitPane)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
                                 .add(installSelectedButton)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(viewOnWebStoreButton))
+                                .add(jButton1))
                             .add(searchAppsLabel)
                             .add(layout.createSequentialGroup()
                                 .add(searchComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 269, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(searchButton)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(resetButton))
-                            .add(resultsLabel)
-                            .add(showCompatibleCheckBox))
-                        .add(0, 0, Short.MAX_VALUE)))
+                                .add(showCompatibleCheckBox)))
+                        .add(0, 55, Short.MAX_VALUE))
+                    .add(resultsSplitPane))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(searchAppsLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(searchComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(searchButton)
-                    .add(resetButton))
+                    .add(searchComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(showCompatibleCheckBox))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(showCompatibleCheckBox)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(resultsLabel)
+                .add(resultsSplitPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(resultsSplitPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(installSelectedButton)
-                    .add(viewOnWebStoreButton))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE, false)
+                    .add(installSelectedButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jButton1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }

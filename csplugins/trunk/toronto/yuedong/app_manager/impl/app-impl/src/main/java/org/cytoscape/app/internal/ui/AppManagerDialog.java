@@ -10,7 +10,6 @@ public class AppManagerDialog extends javax.swing.JDialog {
 
 	private CheckForUpdatesPanel checkForUpdatesPanel1;
     private CurrentlyInstalledAppsPanel currentlyInstalledAppsPanel1;
-    private InstallAppsPanel installAppsPanel2;
     private InstallFromStorePanel installNewAppsPanel1;
     private javax.swing.JTabbedPane mainTabbedPane;
     
@@ -32,14 +31,12 @@ public class AppManagerDialog extends javax.swing.JDialog {
 
     	mainTabbedPane = new javax.swing.JTabbedPane();
         installNewAppsPanel1 = new InstallFromStorePanel(appManager);
-        installAppsPanel2 = new InstallAppsPanel(appManager, fileUtil, this);
         currentlyInstalledAppsPanel1 = new CurrentlyInstalledAppsPanel(appManager);
         checkForUpdatesPanel1 = new CheckForUpdatesPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        mainTabbedPane.addTab("Install from App Store", installNewAppsPanel1);
-        mainTabbedPane.addTab("Install Directly", installAppsPanel2);
+        mainTabbedPane.addTab("Install Apps", installNewAppsPanel1);
         mainTabbedPane.addTab("Currently Installed", currentlyInstalledAppsPanel1);
         mainTabbedPane.addTab("Check for Updates", checkForUpdatesPanel1);
 

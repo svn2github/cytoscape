@@ -23,7 +23,6 @@ public class CheckForUpdatesPanel extends javax.swing.JPanel {
     private javax.swing.JButton installSelectedButton;
     private javax.swing.JLabel lastCheckForUpdatesLabel;
     private javax.swing.JLabel updateCheckTimeLabel;
-    private javax.swing.JLabel updatesAvailableCountLabel;
     private javax.swing.JLabel updatesAvailableLabel;
     private javax.swing.JScrollPane updatesScrollPane;
     private javax.swing.JTable updatesTable;
@@ -35,7 +34,6 @@ public class CheckForUpdatesPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         updatesAvailableLabel = new javax.swing.JLabel();
-        updatesAvailableCountLabel = new javax.swing.JLabel();
         installSelectedButton = new javax.swing.JButton();
         installAllTable = new javax.swing.JButton();
         updatesScrollPane = new javax.swing.JScrollPane();
@@ -46,9 +44,7 @@ public class CheckForUpdatesPanel extends javax.swing.JPanel {
         descriptionScrollPane = new javax.swing.JScrollPane();
         descriptionTextArea = new javax.swing.JTextArea();
 
-        updatesAvailableLabel.setText("Updates available:");
-
-        updatesAvailableCountLabel.setText("0");
+        updatesAvailableLabel.setText("0 updates available.");
 
         installSelectedButton.setText("Update Selected");
         installSelectedButton.addActionListener(new java.awt.event.ActionListener() {
@@ -88,9 +84,7 @@ public class CheckForUpdatesPanel extends javax.swing.JPanel {
 
         descriptionLabel.setText("Update Description:");
 
-        descriptionTextArea.setColumns(20);
         descriptionTextArea.setEditable(false);
-        descriptionTextArea.setRows(5);
         descriptionTextArea.setFocusable(false);
         descriptionScrollPane.setViewportView(descriptionTextArea);
 
@@ -101,30 +95,26 @@ public class CheckForUpdatesPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(updatesScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .add(updatesAvailableLabel)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(lastCheckForUpdatesLabel)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(updateCheckTimeLabel)
+                                .add(0, 0, Short.MAX_VALUE))
+                            .add(updatesScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
+                            .add(descriptionScrollPane))
+                        .addContainerGap())
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
                                 .add(installSelectedButton)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(installAllTable))
-                            .add(layout.createSequentialGroup()
-                                .add(lastCheckForUpdatesLabel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(updateCheckTimeLabel)))
-                        .add(0, 0, Short.MAX_VALUE))
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(descriptionScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(layout.createSequentialGroup()
-                                        .add(updatesAvailableLabel)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(updatesAvailableCountLabel))
-                                    .add(descriptionLabel))
-                                .add(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                            .add(descriptionLabel))
+                        .add(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -132,17 +122,14 @@ public class CheckForUpdatesPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(updatesAvailableLabel)
-                    .add(updatesAvailableCountLabel))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lastCheckForUpdatesLabel)
                     .add(updateCheckTimeLabel))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(updatesScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(updatesScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(descriptionLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 16, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(descriptionScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 96, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(descriptionScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(installSelectedButton)
