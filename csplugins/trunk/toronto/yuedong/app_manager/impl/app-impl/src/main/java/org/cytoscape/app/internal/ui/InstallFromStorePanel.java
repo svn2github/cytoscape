@@ -1,8 +1,12 @@
 package org.cytoscape.app.internal.ui;
 
+import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +17,10 @@ import javax.swing.JOptionPane;
 import javax.swing.RowSorter;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkEvent.EventType;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelListener;
@@ -24,6 +32,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.text.html.HTMLDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -67,6 +76,7 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     	initComponents();
         
         setupDescriptionListener();
+        setupHyperlinkListener();
         
         populateTree();
     }
@@ -98,36 +108,6 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
         resultsSplitPane.setDividerLocation(215);
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("JTree");
-        javax.swing.tree.DefaultMutableTreeNode treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("colors");
-        javax.swing.tree.DefaultMutableTreeNode treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("blue");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("violet");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("red");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("yellow");
-        treeNode2.add(treeNode3);
-        treeNode1.add(treeNode2);
-        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("sports");
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("basketball");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("soccer");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("football");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("hockey test");
-        treeNode2.add(treeNode3);
-        treeNode1.add(treeNode2);
-        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("food");
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("hot dogs");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("pizza");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("ravioli");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("bananas");
-        treeNode2.add(treeNode3);
-        treeNode1.add(treeNode2);
         resultsTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         resultsScrollPane.setViewportView(resultsTree);
 
@@ -135,7 +115,15 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 
         descriptionTextPane.setContentType("text/html");
         descriptionTextPane.setEditable(false);
+        
+        // Make the JTextPane render HTML using the default UI font
+        Font font = UIManager.getFont("Label.font");
+        String bodyRule = "body { font-family: " + font.getFamily() + "; " +
+                "font-size: " + font.getSize() + "pt; }";
+        ((HTMLDocument) descriptionTextPane.getDocument()).getStyleSheet().addRule(bodyRule);
+        
         descriptionTextPane.setText("<html>   <head>    </head>   <body>     <p style=\"margin-top: 0\"> App information is displayed here. <a href=\"http://www.w3schools.com/\">Test link</a>          </p>   </body> </html> ");
+        descriptionTextPane.setText("");
         descriptionScrollPane.setViewportView(descriptionTextPane);
 
         resultsSplitPane.setRightComponent(descriptionScrollPane);
@@ -216,6 +204,7 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     		DefaultMutableTreeNode tagNode = new DefaultMutableTreeNode(appTag.getFullName() + " (" + appTag.getCount() + ")");
     		
     		// Obtain apps for the current tag
+    		System.out.println("Getting apps for tag: " + appTag.getName());
     		Set<WebApp> tagApps = webQuerier.getAppsByTag(appTag.getName());
     		
     		for (WebApp tagApp : tagApps) {
@@ -266,14 +255,37 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 		});
     }
     
+    private void setupHyperlinkListener() {
+    	descriptionTextPane.addHyperlinkListener(new HyperlinkListener() {
+			
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent event) {
+				if (Desktop.isDesktopSupported() && event.getEventType() == EventType.ACTIVATED) {
+					Desktop desktop = Desktop.getDesktop();
+					
+					try {
+						desktop.browse(event.getURL().toURI());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (URISyntaxException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+    }
+    
     private void updateDescriptionBox() {
     	Set<WebApp> selectedApps = getSelectedApps();
     	int numSelected = selectedApps.size();
     	
     	// If no apps are selected, clear the description box
     	if (numSelected == 0) {
-    		descriptionTextArea.setText("App information is displayed here.");
-    		
+            descriptionTextPane.setText("<html> <head> TestHeader </head> <body>" +
+            		"<p style=\"margin-top: 0\"> App information is displayed here. </p> </body> </html> ");    
+            descriptionTextPane.setText("");
     	// If a single app is selected, show its app description
     	} else if (numSelected == 1){
     		WebApp selectedApp = selectedApps.iterator().next();
@@ -281,9 +293,24 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     		String text = "<html><b>" + selectedApp.getFullName() + "</b></html>";
     		text += "\n\n";
     		text += selectedApp.getDescription();
-    		descriptionTextArea.setText(text);
+    		
+    		text = "";
+    		text += "<html> <head> </head> <body>";
+    		text += "<p style=\"margin-top: 0\"> <a href=\"" + selectedApp.getAppStoreUrl() + "\">" + selectedApp.getAppStoreUrl() + "</a> </p>";
+    		text += "<p> <b>" + selectedApp.getFullName() + "</b> </p>";
+    		text += "<p>" + selectedApp.getDescription() + "</p>";
+    		text += "</body> </html>";
+    		descriptionTextPane.setText(text);
     	} else {
-    		descriptionTextArea.setText(numSelected + " apps selected.");
+    		String text = "<html> <head> </head> <body> <p style=\"margin-top: 0\">";
+    		text += numSelected + " apps selected: <br />";
+    		
+    		for (WebApp webApp : selectedApps) {
+    			text += "<br />" + webApp.getFullName();
+    		};
+    		text += "</p>";
+    		text += "</body> </html>";
+    		descriptionTextPane.setText(text);
     	}
     }
 }

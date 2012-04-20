@@ -11,6 +11,7 @@ import org.cytoscape.app.internal.event.AppsChangedEvent;
 import org.cytoscape.app.internal.event.AppsChangedListener;
 import org.cytoscape.app.internal.exception.AppMoveException;
 import org.cytoscape.app.internal.manager.App;
+import org.cytoscape.app.internal.manager.App.AppStatus;
 import org.cytoscape.app.internal.manager.AppManager;
 
 /**
@@ -233,7 +234,17 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
      * Update the labels that display the number of currently installed and available apps.
      */
     private void updateLabels() {
-    	appsInstalledLabel.setText(String.valueOf(appManager.getApps().size()) + " Apps installed.");
+    	int installedCount = 0;
+    	
+    	for (App app : appManager.getApps()) {
+    		// Simple apps require a restart to be completely uninstalled; count them as installed
+    		// until the restart
+    		if (app.getStatus() != AppStatus.UNINSTALLED) {
+    			installedCount++;
+    		}
+    	}
+    	
+    	appsInstalledLabel.setText(installedCount + " Apps installed.");
     }
     
     /**
@@ -262,7 +273,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     	} else if (numSelected == 1){
     		App selectedApp = selectedApps.iterator().next();
     		
-    		String text = "Store URL: " + selectedApp.getAppStoreUrl();
+    		String text = String.valueOf(selectedApp.getAppStoreUrl());
     		text += "\n";
     		descriptionTextArea.setText(text);
     	} else {
