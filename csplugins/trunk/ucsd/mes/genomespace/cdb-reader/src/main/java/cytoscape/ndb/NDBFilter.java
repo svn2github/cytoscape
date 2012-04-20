@@ -34,7 +34,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape.cdb;
+package cytoscape.ndb;
 
 import cytoscape.data.ImportHandler;
 
@@ -55,7 +55,7 @@ public class NDBFilter extends CyFileFilter {
 	/**
 	 * File Extensions.
 	 */
-	private static String[] fileExtensions = { "cdb" };
+	private static String[] fileExtensions = { "ndb" };
 
 	/**
 	 * Filter Description.
