@@ -1,15 +1,19 @@
 package org.cytoscape.app.internal.ui;
 
+import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -52,6 +56,8 @@ import org.cytoscape.app.internal.manager.AppParser;
 import org.cytoscape.app.internal.net.ResultsFilterer;
 import org.cytoscape.app.internal.net.WebApp;
 import org.cytoscape.app.internal.net.WebQuerier;
+import org.cytoscape.util.swing.FileChooserFilter;
+import org.cytoscape.util.swing.FileUtil;
 
 /**
  * This class represents the panel in the App Manager dialog's tab used for installing new apps.
@@ -76,9 +82,13 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 	private JFileChooser fileChooser;
 	
 	private AppManager appManager;
+	private FileUtil fileUtil;
+	private Container parent;
 	
-    public InstallFromStorePanel(AppManager appManager) {
+    public InstallFromStorePanel(AppManager appManager, FileUtil fileUtil, Container parent) {
         this.appManager = appManager;
+        this.fileUtil = fileUtil;
+        this.parent = parent;
     	initComponents();
         
     	addTagInformation();
@@ -137,6 +147,11 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
         showCompatibleCheckBox.setText("Show only compatible apps");
 
         jButton1.setText("Browse File");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        	public void actionPerformed(java.awt.event.ActionEvent evt) {
+        		browseButtonActionPerformed(evt);
+        	}
+        });
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -182,7 +197,48 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
         // TODO add your handling code here:
-    }                                            
+    }
+    
+    private void browseButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	// Setup a the file filter for the open file dialog
+    	FileChooserFilter fileChooserFilter = new FileChooserFilter("Jar, Zip Files (*.jar, *.zip)",
+    			new String[]{"jar", "zip"});
+    	
+    	Collection<FileChooserFilter> fileChooserFilters = new LinkedList<FileChooserFilter>();
+    	fileChooserFilters.add(fileChooserFilter);
+    	
+    	// Show the dialog
+    	File[] files = fileUtil.getFiles(parent, 
+    			"Choose file(s)", FileUtil.LOAD, FileUtil.LAST_DIRECTORY, "Install", true, fileChooserFilters);
+    	
+        if (files != null) {
+        	
+        	for (int index = 0; index < files.length; index++) {
+        		AppParser appParser = appManager.getAppParser();
+        		
+        		App app = null;
+        		
+        		// Attempt to parse each file as an App object
+        		try {
+					app = appParser.parseApp(files[index]);
+					
+				} catch (AppParsingException e) {
+					
+					// TODO: Replace System.out.println() messages with exception or a pop-up message box
+					System.out.println("Error parsing app: " + e.getMessage());
+					
+					JOptionPane.showMessageDialog(parent, "Error opening app: " + e.getMessage(),
+		                       "Error", JOptionPane.ERROR_MESSAGE);
+				} finally {
+					
+					// Install the app if parsing was successful
+					if (app != null) {
+						appManager.installApp(app);
+					}
+				}
+        	}
+        }
+    }
 
     private void setupTextFieldListener() {
         filterTextField.getDocument().addDocumentListener(new DocumentListener() {

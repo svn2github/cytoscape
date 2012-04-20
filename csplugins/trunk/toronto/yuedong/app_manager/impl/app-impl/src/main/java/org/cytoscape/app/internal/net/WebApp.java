@@ -34,6 +34,9 @@ public class WebApp {
 	/** The set of tags associated with this app, which can be useful for dividing apps into categories by tag */
 	private Set<AppTag> appTags;
 	
+	/** The version of Cytoscape that this app has been known to be compatible with */
+	private String compatibleCytoscapeVersion;
+	
 	public WebApp() {
 		appTags = new HashSet<AppTag>();
 	}
@@ -102,6 +105,14 @@ public class WebApp {
 		return downloadCount;
 	}
 	
+	/**
+	 * Return the version of Cytoscape that this app has been known to be compatible with
+	 * @return The latest version of Cytoscape that the app has been known to be compatible with
+	 */
+	public String getCompatibleCytoscapeVersion() {
+		return compatibleCytoscapeVersion;
+	}
+	
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
@@ -132,6 +143,10 @@ public class WebApp {
 	
 	public void setAppTags(Set<AppTag> appTags) {
 		this.appTags = appTags;
+	}
+	
+	public void setCompatibleCytoscapeVersion(String compatibleCytoscapeVersion) {
+		this.compatibleCytoscapeVersion = compatibleCytoscapeVersion;
 	}
 	
 	@Override
