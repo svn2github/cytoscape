@@ -112,7 +112,7 @@
     <argument>-p</argument>
     <argument>yfiles.YFilesLayoutPlugin</argument>
     <argument>-p</argument>
-    <argument>cytoscape.cdb.CDBReaderPlugin</argument>
+    <argument>cytoscape.ndb.NDBReaderPlugin</argument>
     <argument>-p</argument>
     <argument>cytoscape.cytable.CyTableReaderPlugin</argument>
     <argument>-p</argument>

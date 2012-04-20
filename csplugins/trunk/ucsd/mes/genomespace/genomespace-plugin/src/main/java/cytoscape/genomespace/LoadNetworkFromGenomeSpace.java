@@ -51,7 +51,7 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 			acceptableExtensions.add("xgmml");
 			acceptableExtensions.add("gml");
 			acceptableExtensions.add("adj");
-			acceptableExtensions.add("cdb");
+			acceptableExtensions.add("ndb");
 			final GSFileBrowserDialog dialog =
 				new GSFileBrowserDialog(Cytoscape.getDesktop(), dataManagerClient,
 							acceptableExtensions,
