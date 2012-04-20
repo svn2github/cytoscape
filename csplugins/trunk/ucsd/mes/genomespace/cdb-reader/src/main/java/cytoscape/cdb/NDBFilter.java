@@ -46,9 +46,9 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class CDBFilter extends CyFileFilter {
+public class NDBFilter extends CyFileFilter {
 	/**
-	 * CDB Files are Graphs.
+	 * NDB Files are Graphs.
 	 */
 	private static String fileNature = ImportHandler.GRAPH_NATURE;
 
@@ -60,12 +60,12 @@ public class CDBFilter extends CyFileFilter {
 	/**
 	 * Filter Description.
 	 */
-	private static String description = "CDB files";
+	private static String description = "NDB files";
 
 	/**
 	 * Constructor.
 	 */
-	public CDBFilter() {
+	public NDBFilter() {
 		super(fileExtensions, description, fileNature);
 	}
 
@@ -76,6 +76,6 @@ public class CDBFilter extends CyFileFilter {
 	 * @return GraphReader Object.
 	 */
 	public GraphReader getReader(String fileName) {
-		return new CDBGraphReader(fileName);
+		return new NDBGraphReader(fileName);
 	}
 }

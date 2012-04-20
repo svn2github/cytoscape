@@ -11,12 +11,12 @@ import cytoscape.plugin.CytoscapePlugin;
  * The actual functionality of your plugin can be in this class, but should 
  * probably be separated into separted classes that get instantiated here.
  */
-public class CDBReaderPlugin extends CytoscapePlugin {
+public class NDBReaderPlugin extends CytoscapePlugin {
 
-	public CDBReaderPlugin() {
+	public NDBReaderPlugin() {
 		super();
 		ImportHandler ih = Cytoscape.getImportHandler();
-		ih.addFilter(new CDBFilter());
+		ih.addFilter(new NDBFilter());
 	}
 }	
 

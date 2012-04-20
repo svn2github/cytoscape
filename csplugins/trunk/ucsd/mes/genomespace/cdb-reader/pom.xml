@@ -11,7 +11,7 @@
   <groupId>cytoscape</groupId>
   <artifactId>cdb-reader</artifactId>
   <packaging>jar</packaging>
-  <name>CDB Reader Plugin</name>
+  <name>NDB Reader Plugin</name>
 
   <build>
     <plugins>
@@ -33,7 +33,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Cytoscape-Plugin>cytoscape.cdb.CDBReaderPlugin</Cytoscape-Plugin>
+              <Cytoscape-Plugin>cytoscape.cdb.NDBReaderPlugin</Cytoscape-Plugin>
             </manifestEntries>
           </archive>
           <descriptors>
