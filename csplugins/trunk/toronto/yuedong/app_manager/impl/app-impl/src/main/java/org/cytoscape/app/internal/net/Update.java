@@ -16,14 +16,17 @@ public class Update {
 	/** The version of the new updated app */
 	private String updateVersion;
 
+	/** Obtain the {@link App}pp object that the update is associated with. */
 	public App getApp() {
 		return app;
 	}
 	
+	/** Obtain information about the update. */
 	public String getUpdateInformation() {
 		return updateInformation;
 	}
 	
+	/** Obtain the new version of the app once the update is applied. */
 	public String getUpdateVersion() {
 		return updateVersion;
 	}

@@ -28,6 +28,9 @@ public class AppManagerAction extends AbstractCyAction {
 	 */
 	private FileUtil fileUtil;
 	
+	/**
+	 * Creates and sets up the AbstractCyAction, placing an item into the menu.
+	 */
 	public AppManagerAction(AppManager appManager, CySwingApplication swingApplication, FileUtil fileUtil) {
 		super("App Manager 2");
 		
