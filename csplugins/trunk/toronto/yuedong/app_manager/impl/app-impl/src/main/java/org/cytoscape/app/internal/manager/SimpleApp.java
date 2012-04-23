@@ -1,23 +1,16 @@
 package org.cytoscape.app.internal.manager;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.apache.commons.io.FileUtils;
-import org.cytoscape.app.AbstractCyApp;
 import org.cytoscape.app.CyAppAdapter;
-import org.cytoscape.app.internal.event.AppsChangedEvent;
-import org.cytoscape.app.internal.event.AppsChangedListener;
 import org.cytoscape.app.internal.exception.AppInstallException;
 import org.cytoscape.app.internal.exception.AppInstanceException;
-import org.cytoscape.app.internal.exception.AppMoveException;
 import org.cytoscape.app.internal.exception.AppUninstallException;
-import org.cytoscape.app.internal.manager.App.AppStatus;
 
 public class SimpleApp extends App {
 

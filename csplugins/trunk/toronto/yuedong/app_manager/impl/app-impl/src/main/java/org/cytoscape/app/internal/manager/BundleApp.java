@@ -17,9 +17,9 @@ public class BundleApp extends App {
 			throws AppInstanceException {
 		
 		BundleContext bundleContext = null;
-		Bundle bundle;
+		Bundle bundle = null;
 		try {
-			bundle = bundleContext.installBundle(this.getAppFile().toURL().toString());
+			bundle = bundleContext.installBundle(this.getAppFile().toURI().toURL().toString());
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -27,6 +27,8 @@ public class BundleApp extends App {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return bundle;
 	}
 
 	@Override

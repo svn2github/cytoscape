@@ -19,7 +19,7 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.util.swing.FileUtil;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
-import org.cytoscape.datasource.DataSourceManager;
+import org.cytoscape.io.datasource.DataSourceManager;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.io.write.PresentationWriterManager;

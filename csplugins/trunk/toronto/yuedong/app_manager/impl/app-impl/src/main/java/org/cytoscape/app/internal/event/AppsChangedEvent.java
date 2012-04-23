@@ -1,8 +1,6 @@
 package org.cytoscape.app.internal.event;
 
-import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
-import org.cytoscape.event.AbstractCyEvent;
 
 /**
  * An event used by the {@link AppManager} to notify AppsChangedListeners that an app has 
