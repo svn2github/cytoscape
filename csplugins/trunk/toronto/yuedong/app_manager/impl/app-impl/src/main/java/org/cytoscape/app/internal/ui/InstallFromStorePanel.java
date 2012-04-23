@@ -118,7 +118,7 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
                 "font-size: " + font.getSize() + "pt; }";
         ((HTMLDocument) descriptionTextPane.getDocument()).getStyleSheet().addRule(bodyRule);
         
-        descriptionTextPane.setText("<html>   <head>    </head>   <body>     <p style=\"margin-top: 0\"> App information is displayed here. <a href=\"http://www.w3schools.com/\">Test link</a>          </p>   </body> </html> ");
+        descriptionTextPane.setText("<html> <head> </head> <body> <p style=\"margin-top: 0\"> App information is displayed here. <a href=\"http://www.w3schools.com/\">Test link</a>          </p>   </body> </html> ");
         descriptionTextPane.setText("");
         descriptionScrollPane.setViewportView(descriptionTextPane);
 
@@ -454,8 +454,17 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     		
     		text = "";
     		text += "<html> <head> </head> <body>";
+    		
+    		// App hyperlink to web store page
     		text += "<p style=\"margin-top: 0\"> <a href=\"" + selectedApp.getAppStoreUrl() + "\">" + selectedApp.getAppStoreUrl() + "</a> </p>";
+    		
+    		// App image
+    		// text += "<img src=\"" + selectedApp.getIconUrl() + "\" alt=\"" + selectedApp.getFullName() + "\"/>";
+    		
+    		// App name
     		text += "<p> <b>" + selectedApp.getFullName() + "</b> </p>";
+    		
+    		// App description
     		text += "<p>" + selectedApp.getDescription() + "</p>";
     		text += "</body> </html>";
     		descriptionTextPane.setText(text);

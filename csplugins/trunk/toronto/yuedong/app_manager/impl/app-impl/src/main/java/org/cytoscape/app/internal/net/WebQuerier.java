@@ -138,8 +138,7 @@ public class WebQuerier {
 		
 		try {
 			String jsonResult = query(APP_STORE_URL + "apps/tags");
-			System.out.println("Tag request result: " + jsonResult);
-			
+
 			JSONArray jsonArray = new JSONArray(jsonResult);
 			
 			for (int i = 0; i < jsonArray.length(); i++) {
