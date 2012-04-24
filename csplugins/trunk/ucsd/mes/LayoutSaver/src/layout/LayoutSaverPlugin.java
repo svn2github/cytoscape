@@ -51,9 +51,8 @@ public class LayoutSaverPlugin extends CytoscapePlugin {
 	 * Constructor 
 	 */
 	public LayoutSaverPlugin() {
-		Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new LayoutSaverAction());	
+		Cytoscape.getDesktop().getCyMenus().addAction(new LayoutSaverAction());	
 		CyLayouts.addLayout(new ApplySavedLayout(), "Cytoscape Layouts");
-		throw new Error("hello broken system");	
 	}
 
 	/**

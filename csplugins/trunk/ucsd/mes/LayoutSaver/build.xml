@@ -1,5 +1,5 @@
 
-<project name="LayoutSaver" default="all" basedir=".">
+<project name="LayoutSaver" default="all" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
@@ -16,11 +16,10 @@
     <property name="optimize" value="off"/>
     <property name="deprecation" value="on"/>
     <property name="fork" value="false"/>
+    <property name="cytoscape.version" value="2.8.2"/>
 
     <!-- Define the directories -->
     <property name="root.dir" value="."/>
-    <property name="cytoscape.dir" value="${root.dir}/../../../../cytoscape"/>
-    <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="lib.dir" value="${root.dir}/lib"/>
     <property name="src.dir" value="${root.dir}/src"/>
     <property name="tests.dir" value="${root.dir}/tests"/>
@@ -28,38 +27,25 @@
     <property name="javadoc.dir" value="${root.dir}/API"/>
     <property name="log.dir" value="${build.dir}/logs" />
     <property name="junit.report.dir" value="${log.dir}/junit-reports" />
+	<property name="resources.dir" value="${root.dir}/resources"/>
 
     <!-- Define the relevant files -->
     <property name="project.jar" value="${name}.jar"/>
     <property name="test.jar" value="${name}-tests.jar"/>
 
-    <!-- Define the class path - Defaults to everything in the lib.dir -->
+    <artifact:remoteRepository 
+       id="cytoscape_releases" 
+       url="http://code.cytoscape.org/nexus/content/repositories/releases/" />
+    <artifact:remoteRepository 
+       id="cytoscape_snapshots" 
+       url="http://code.cytoscape.org/nexus/content/repositories/snapshots/" />
+    <artifact:dependencies pathId="dependency.classpath">
+      <dependency groupId="cytoscape" 
+                  artifactId="application" 
+                  version="${cytoscape.version}"/>
+    </artifact:dependencies>
     <path id="project.class.path">
-      <fileset dir="${lib.dir}">
-        <include name="*.jar"/>
-      </fileset>
-      <fileset dir="${cytoscape.dir}">
-        <include name="*.jar"/>
-      </fileset>
-      <fileset dir="${cytoscape.lib.dir}">
-        <include name="*.jar"/>
-      </fileset>
-    </path>
-   
-    <!-- Define the junit class path - It needs to find what we just built --> 
-    <path id="junit.class.path" >
-      <fileset dir="${root.dir}">
-        <include name="*.jar"/>
-      </fileset>
-      <fileset dir="${lib.dir}">
-        <include name="*.jar"/>
-      </fileset>
-      <fileset dir="${cytoscape.dir}">
-        <include name="*.jar"/>
-      </fileset>
-      <fileset dir="${cytoscape.lib.dir}">
-        <include name="*.jar"/>
-      </fileset>
+      <path refid="dependency.classpath"/>
     </path>
 
     <!-- Make sure tests is in the right place -->
@@ -85,9 +71,6 @@
            deprecation="${deprecation}" 
            optimize="${optimize}"
            fork="${fork}">
-<!--
-       <compilerarg line="-Xlint:all -Xlint:-path"/>
--->
      </javac>
      <echo message="Successfully ran compile task!"/>
   </target>
@@ -104,6 +87,7 @@
         <include name="*.jar"/>
       </fileset>
     </unzip>
+	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/layout"/>
     <jar destfile="${project.jar}" >
       <fileset dir="${build.dir}"
                includes="**"/>

@@ -40,16 +40,18 @@ package layout;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
-import javax.swing.AbstractAction;
+import cytoscape.util.CytoscapeAction;
 import java.awt.event.ActionEvent;
+import javax.swing.event.MenuEvent;
 import java.util.Iterator;
 import giny.model.Node;
 import giny.view.NodeView;
 
-class LayoutSaverAction extends AbstractAction {
+class LayoutSaverAction extends CytoscapeAction {
 
 	LayoutSaverAction() {
-		super("Save Node Positions in Current Layout");
+		super("Save Node Positions");
+		setPreferredMenu("Layout");
 	}
 
     public static final String X_LOC = "saved_x_location";
@@ -70,4 +72,8 @@ class LayoutSaverAction extends AbstractAction {
 			nodeAttrs.setAttribute(n.getIdentifier(),Y_LOC,nv.getYPosition());
 		}
 	}
+
+    public void menuSelected(MenuEvent e) {
+	        enableForNetworkAndView();
+    }
 }
