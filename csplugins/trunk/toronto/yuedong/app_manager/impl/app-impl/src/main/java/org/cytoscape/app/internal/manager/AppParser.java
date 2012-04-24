@@ -13,9 +13,28 @@ import org.cytoscape.app.internal.exception.AppParsingException;
  * to verify the app.
  */
 public class AppParser {
-	/** The name of the key in the app jar's manifest file that indicates the fully-qualified name 
-	 * of the class to instantiate upon app installation. */
+	/** 
+	 * The name of the key in the app jar's manifest file that indicates the fully-qualified name 
+	 * of the class to instantiate upon app installation. 
+	 * */
 	private static final String APP_CLASS_TAG = "Cytoscape-App";
+	
+	/**
+	 * The name of the key in the app jar's manifest file indicating the human-readable
+	 * name of the app
+	 */
+	private static final String APP_READABLE_NAME_TAG = "Cytoscape-App-Name";
+	
+	/**
+	 * The name of the key in the app jar's manifest file indicating the version of the app
+	 * in the format major.minor.patch[-tag], eg. 3.0.0-SNAPSHOT or 1.2.3
+	 */
+	private static final String APP_VERSION_TAG = "Cytoscape-App-Version";
+	
+	/**
+	 * A regular a expression representing valid app versions, which are in the format major.minor.patch[-tag]
+	 */
+	private static final String APP_VERSION_TAG_REGEX = "(0|([1-9]+\\d*))\\.(\\d)+\\.(\\d)+(-.*)?";
 	
 	/**
 	 * Attempt to parse a given {@link File} object as an {@link App} object.
@@ -52,11 +71,25 @@ public class AppParser {
 			throw new AppParsingException("Jar is missing value for entry " + APP_CLASS_TAG + " in its manifest file.");
 		}
 		
-		// Attempt to guess the app's name
-		parsedApp.setAppName(file.getName()); // Use filename for now
+		// Obtain the human-readable name of the app
+		String readableName = manifest.getMainAttributes().getValue(APP_READABLE_NAME_TAG);
+		if (readableName == null || readableName.trim().length() == 0) {
+			throw new AppParsingException("Jar is missing value for entry " + APP_READABLE_NAME_TAG + " in its manifest file.");
+		}
+		
+		// Obtain the version of the app, in major.minor.patch[-tag] format, ie. 3.0.0-SNAPSHOT or 1.2.3
+		String appVersion = manifest.getMainAttributes().getValue(APP_VERSION_TAG);
+		if (appVersion == null || appVersion.trim().length() == 0) {
+			throw new AppParsingException("Jar is missing value for entry " + APP_VERSION_TAG + " in its manifiest file.");
+		} else if (!appVersion.matches(APP_VERSION_TAG_REGEX)) {
+			throw new AppParsingException("The app version specified in its manifest file under the key " + APP_VERSION_TAG
+					+ " was found to not match the format major.minor.patch[-tag], eg. 1.0.0 or 1.0.0-SNAPSHOT");
+		}
 		
 		parsedApp.setAppFile(file);
 		parsedApp.setEntryClassName(entryClassName);
+		parsedApp.setAppName(readableName);
+		parsedApp.setVersion(appVersion);
 		parsedApp.setAppValidated(true);
 		
 		return parsedApp;

@@ -40,6 +40,7 @@ public class CheckForUpdatesPanel extends javax.swing.JPanel {
         updatesAvailableLabel.setText("0 updates available.");
 
         installSelectedButton.setText("Update Selected");
+        installSelectedButton.setEnabled(false);
         installSelectedButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 installSelectedButtonActionPerformed(evt);
@@ -47,6 +48,7 @@ public class CheckForUpdatesPanel extends javax.swing.JPanel {
         });
 
         installAllTable.setText("Update All");
+        installAllTable.setEnabled(false);
         installAllTable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 installAllTableActionPerformed(evt);

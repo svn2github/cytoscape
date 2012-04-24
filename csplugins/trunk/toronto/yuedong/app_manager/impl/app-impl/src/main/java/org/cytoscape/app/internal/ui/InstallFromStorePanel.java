@@ -3,8 +3,11 @@ package org.cytoscape.app.internal.ui;
 import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Font;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,6 +19,7 @@ import java.util.Set;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkEvent.EventType;
@@ -38,6 +42,10 @@ import org.cytoscape.app.internal.net.WebApp;
 import org.cytoscape.app.internal.net.WebQuerier;
 import org.cytoscape.util.swing.FileChooserFilter;
 import org.cytoscape.util.swing.FileUtil;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TaskMonitor;
 
 /**
  * This class represents the panel in the App Manager dialog's tab used for installing new apps.
@@ -63,17 +71,70 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 	
 	private AppManager appManager;
 	private FileUtil fileUtil;
+	private TaskManager taskManager;
 	private Container parent;
 	
-    public InstallFromStorePanel(AppManager appManager, FileUtil fileUtil, Container parent) {
+    public InstallFromStorePanel(final AppManager appManager, FileUtil fileUtil, TaskManager taskManager, Container parent) {
         this.appManager = appManager;
         this.fileUtil = fileUtil;
+        this.taskManager = taskManager;
         this.parent = parent;
     	initComponents();
         
-    	addTagInformation();
+		taskManager.execute(new TaskIterator(new Task(){
+
+			// Obtain information for all available apps, then append tag information
+			@Override
+			public void run(TaskMonitor taskMonitor) throws Exception {
+				taskMonitor.setTitle("Obtaining Apps from App Store");
+				
+				WebQuerier webQuerier = appManager.getWebQuerier();
+		    	
+				taskMonitor.setStatusMessage("Getting available apps");
+				Set<WebApp> availableApps = webQuerier.getAllApps();
+				
+		    	// Obtain available tags
+		    	Set<WebQuerier.AppTag> availableTags = webQuerier.getAllTags();
+		    	
+		    	double progress = 0;
+		    	
+		    	for (WebQuerier.AppTag appTag : availableTags) {
+
+		    		taskMonitor.setStatusMessage("Getting apps for tag: " + appTag.getFullName());
+		    		progress += 1.0 / availableTags.size();
+		    		taskMonitor.setProgress(progress);
+		    		
+		    		// Obtain apps for the current tag
+		    		Set<WebApp> tagApps = webQuerier.getAppsByTag(appTag.getName());
+		    		
+		    		// Assume the set of apps returned is a subset of all available apps
+		    		for (WebApp tagApp : tagApps) {
+		    			tagApp.getAppTags().add(appTag);
+		    		}
+		    	}
+				
+				// Once the information is obtained, update the tree
+				SwingUtilities.invokeLater(new Runnable() {
+
+					@Override
+					public void run() {
+						populateTree(appManager.getWebQuerier().getAllApps());
+					}
+					
+				});
+			}
+
+			@Override
+			public void cancel() {
+			}
+			
+		}));
+    	
+		/*
+		addTagInformation();
         populateTree(appManager.getWebQuerier().getAllApps());
-        
+        */
+		
         setupDescriptionListener();
         setupHyperlinkListener();
         setupTextFieldListener();
@@ -103,7 +164,7 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 
         resultsSplitPane.setDividerLocation(245);
 
-        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("JTree");
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Available Apps (0)");
         resultsTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         resultsScrollPane.setViewportView(resultsTree);
 
@@ -417,22 +478,7 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     
     // Adds tag information to the set of available apps
     private void addTagInformation() {
-    	WebQuerier webQuerier = appManager.getWebQuerier();
-    	Set<WebApp> webApps = webQuerier.getAllApps();
     	
-    	// Obtain available tags
-    	Set<WebQuerier.AppTag> availableTags = webQuerier.getAllTags();
-    	
-    	for (WebQuerier.AppTag appTag : availableTags) {
-
-    		// Obtain apps for the current tag
-    		Set<WebApp> tagApps = webQuerier.getAppsByTag(appTag.getName());
-    		
-    		// Assume the set of apps returned is a subset of all available apps
-    		for (WebApp tagApp : tagApps) {
-    			tagApp.getAppTags().add(appTag);
-    		}
-    	}
     }
     
     private void updateDescriptionBox() {

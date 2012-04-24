@@ -78,6 +78,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
         appsInstalledLabel.setText("0 Apps installed.");
 
         enableSelectedButton.setText("Reinstall");
+        enableSelectedButton.setEnabled(false);
         enableSelectedButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enableSelectedButtonActionPerformed(evt);
@@ -85,6 +86,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
         });
 
         disableSelectedButton.setText("Uninstall");
+        disableSelectedButton.setEnabled(false);
         disableSelectedButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 disableSelectedButtonActionPerformed(evt);
@@ -142,8 +144,14 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
         Set<App> selectedApps = getSelectedApps();
         
         for (App app : selectedApps) {
-			appManager.installApp(app);
+        	// Only install apps that are not already installed
+        	if (app.getStatus() != AppStatus.INSTALLED) {
+        		appManager.installApp(app);
+        	}
         }
+        
+        enableSelectedButton.setEnabled(false);
+        disableSelectedButton.setEnabled(true);
     }
 
     private void disableSelectedButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -151,8 +159,14 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     	Set<App> selectedApps = getSelectedApps();
         
         for (App app : selectedApps) {
-			appManager.uninstallApp(app);
+        	// Only uninstall apps that are installed
+        	if (app.getStatus() == AppStatus.INSTALLED) {
+        		appManager.uninstallApp(app);
+        	}
         }
+        
+        disableSelectedButton.setEnabled(false);
+        enableSelectedButton.setEnabled(true);
     }
 
     private void showTypeComboxBoxActionPerformed(java.awt.event.ActionEvent evt) {
@@ -220,8 +234,8 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     		tableModel.addRow(new Object[]{
 					app,
 					app.getAppName(),
-					app.getVersion(),
 					app.getAuthors(),
+					app.getVersion(),
 					app.getStatus()
 			});
     	}
@@ -268,15 +282,54 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     	if (numSelected == 0) {
     		descriptionTextArea.setText("");
     		
+    		// Disable buttons
+    		enableSelectedButton.setEnabled(false);
+    		disableSelectedButton.setEnabled(false);
+    		
     	// If a single app is selected, show its app description
     	} else if (numSelected == 1){
     		App selectedApp = selectedApps.iterator().next();
     		
-    		String text = String.valueOf(selectedApp.getAppStoreUrl());
-    		text += "\n";
+    		String text = "App description not found.";
     		descriptionTextArea.setText(text);
+    		
+    		// Enable/disable the appropriate button
+    		if (selectedApp.getStatus() == AppStatus.INSTALLED) {
+    			enableSelectedButton.setEnabled(false);
+    			disableSelectedButton.setEnabled(true);
+    		} else {
+    			enableSelectedButton.setEnabled(true);
+    			disableSelectedButton.setEnabled(false);
+    		}
     	} else {
-    		descriptionTextArea.setText("");
+    		descriptionTextArea.setText(numSelected + " apps selected.");
+    		
+    		// Enable/disable the appropriate buttons
+    		boolean allInstalled = true;
+    		boolean allUninstalled = true;
+    		
+    		for (App selectedApp : selectedApps) {
+    			if (selectedApp.getStatus() == AppStatus.INSTALLED) {
+    				allUninstalled = false;
+    			}
+    			
+    			if (selectedApp.getStatus() != AppStatus.INSTALLED) {
+    				allInstalled = false;
+    			}
+    		}
+    		
+    		if (allInstalled) {
+    			enableSelectedButton.setEnabled(false);
+    			disableSelectedButton.setEnabled(true);
+    		} else if (allUninstalled) {
+    			enableSelectedButton.setEnabled(true);
+    			disableSelectedButton.setEnabled(false);
+    		} else {
+    			// If some of the selected apps are installed and some are uninstalled,
+    			// enable both buttons
+    			enableSelectedButton.setEnabled(true);
+    			disableSelectedButton.setEnabled(true);
+    		}
     	}
     }
 }
