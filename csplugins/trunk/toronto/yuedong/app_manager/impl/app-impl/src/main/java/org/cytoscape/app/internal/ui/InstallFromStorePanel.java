@@ -93,6 +93,10 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 				taskMonitor.setStatusMessage("Getting available apps");
 				Set<WebApp> availableApps = webQuerier.getAllApps();
 				
+				// Note: Code below not used because web store now returns tag information when
+				// returning all apps
+				
+				/* 
 		    	// Obtain available tags
 		    	Set<WebQuerier.AppTag> availableTags = webQuerier.getAllTags();
 		    	
@@ -112,6 +116,7 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 		    			tagApp.getAppTags().add(appTag);
 		    		}
 		    	}
+				*/
 				
 				// Once the information is obtained, update the tree
 				SwingUtilities.invokeLater(new Runnable() {
@@ -375,21 +380,39 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     	// Obtain available tags
     	Set<WebQuerier.AppTag> availableTags = webQuerier.getAllTags();
     	
+    	/*
+    	// Obtain apps for each tag and add them to the tree
+    	for (WebQuerier.AppTag appTag : availableTags) {
+    		Set<WebApp> associatedApps = webQuerier.getAppsByTag(appTag.getName());
+    		
+    		if (associatedApps.size() > 0) {
+	    		DefaultMutableTreeNode tagNode = new DefaultMutableTreeNode(appTag.getFullName() + " (" + associatedApps.size() + ")");
+	    		
+	    		for (WebApp webApp : associatedApps) {
+	    			tagNode.add(new DefaultMutableTreeNode(webApp));
+	    		}
+	    		
+    			root.add(tagNode);
+    		}
+    	}
+    	*/
+    
+    	
     	// Construct a dictionary that maps each tag to a set containing all the apps associated with that tag
     	// in order to produce the tree
-    	Map<WebQuerier.AppTag, Set<WebApp>> dividedApps = new HashMap<WebQuerier.AppTag, Set<WebApp>>();
+    	Map<WebQuerier.AppTag, Set<WebApp>> appsByTag = new HashMap<WebQuerier.AppTag, Set<WebApp>>();
     	for (WebQuerier.AppTag appTag : availableTags) {
-    		dividedApps.put(appTag, new HashSet<WebApp>());
+    		appsByTag.put(appTag, new HashSet<WebApp>());
     	}
     	
     	for (WebApp webApp : webApps) {
     		// Add the app to the appropriate set(s) in the dictionary
     		for (WebQuerier.AppTag appTag : webApp.getAppTags()) {
-    			dividedApps.get(appTag).add(webApp);
+    			appsByTag.get(appTag).add(webApp);
     		}
     	}
     	
-    	for (Entry<WebQuerier.AppTag, Set<WebApp>> entry : dividedApps.entrySet()) {
+    	for (Entry<WebQuerier.AppTag, Set<WebApp>> entry : appsByTag.entrySet()) {
     		WebQuerier.AppTag appTag = entry.getKey();
     		Set<WebApp> associatedApps = entry.getValue();
     		

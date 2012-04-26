@@ -22,18 +22,21 @@ import org.json.JSONObject;
  */
 public class WebQuerier {
 	
-	private static final String APP_STORE_URL = "http://nrnb.org/cyappstore/";
+	private static final String APP_STORE_URL = "http://apps.cytoscape.org/";
 	
 	private static final String REQUEST_JSON_HEADER_KEY = "X-Requested-With";
 	private static final String REQUEST_JSON_HEADER_VALUE = "XMLHttpRequest";
 	
 	private StreamUtil streamUtil;
 	
-	/** A reference to the result obtained by the last successful query for all available app tags. */
-	private Set<AppTag> appTags;
-	
 	/** A reference to the result obtained by the last successful query for all available apps. */
 	private Set<WebApp> apps;
+	
+	/** A reference to a map which keeps track of the known set of apps for each known tag */
+	private Map<String, Set<WebApp>> appsByTagName;
+	
+	/** A reference to the result obtained by the last successful query for all available app tags. */
+	private Map<String, AppTag> appTags;
 	
 	/**
 	 * A class that represents a tag used for apps, containing information about the tag
@@ -84,8 +87,9 @@ public class WebQuerier {
 	public WebQuerier(StreamUtil streamUtil) {
 		this.streamUtil = streamUtil;
 		
-		appTags = null;
 		apps = null;
+		appTags = new HashMap<String, AppTag>();
+		appsByTagName = new HashMap<String, Set<WebApp>>();
 		
 		/*
 		Set<WebApp> webApps = getAllApps();
@@ -129,41 +133,11 @@ public class WebQuerier {
 	 * @return The set of all available tag names
 	 */
 	public Set<AppTag> getAllTags() {
-		// If we have a cached result from the previous query, use that one
-		if (appTags != null) {
-			return appTags;
-		}
+		// Make a query for all apps if not done so; tag information for each app is returned
+		// by the web store and is used to build a set of all available tags
+		Set<WebApp> apps = getAllApps();
 		
-		Set<AppTag> tags = new HashSet<AppTag>();
-		
-		try {
-			String jsonResult = query(APP_STORE_URL + "apps/tags");
-
-			JSONArray jsonArray = new JSONArray(jsonResult);
-			
-			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-				
-				AppTag appTag = new AppTag();
-				appTag.setName(jsonObject.get("name").toString());
-				appTag.setFullName(jsonObject.get("fullname").toString());
-				appTag.setCount(jsonObject.getInt("count"));
-				tags.add(appTag);
-//				System.out.println("Found tag url identifier: " + jsonObject.get("name"));
-			}
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Error parsing JSON: " + e.getMessage());
-			e.printStackTrace();
-		}
-		
-		// Cache the result of this query
-		appTags = tags;
-		return tags;
+		return new HashSet(appTags.values());
 	}
 	
 	public Set<WebApp> getAllApps() {
@@ -195,9 +169,13 @@ public class WebQuerier {
 				webApp.setIconUrl(jsonObject.get("icon_url").toString());
 				webApp.setDownloadCount(jsonObject.getInt("downloads"));
 				webApp.setAppStoreUrl(APP_STORE_URL + "apps/" + webApp.getName());
+
+				// Obtain tags associated with this app
+				processAppTags(webApp, jsonObject);
+
 				result.add(webApp);
 			}
-
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -213,6 +191,39 @@ public class WebQuerier {
 		// Cache the result of this query
 		this.apps = result;
 		return result;
+	}
+	
+	private void processAppTags(WebApp webApp, JSONObject jsonObject) throws JSONException {
+		// Obtain tags associated with this app from the JSONObject representing the app data in JSON format obtained
+		// from the web store
+		
+		JSONArray appTagObjects = jsonObject.getJSONArray("tags");
+		
+		for (int index = 0; index < appTagObjects.length(); index++) {
+			JSONObject appTagObject = appTagObjects.getJSONObject(index);
+			
+			String appTagName = appTagObject.get("name").toString();
+			
+			AppTag appTag = appTags.get(appTagName);
+			
+			if (appTag == null) {
+				appTag = new AppTag();
+				appTag.setName(appTagName);
+				appTag.setFullName(appTagObject.get("fullname").toString());
+				appTag.setCount(0);
+				appTags.put(appTagName, appTag);
+			}
+			
+			webApp.getAppTags().add(appTag);
+			
+			// Add the app information for this tag to the map which keeps apps categorized by tag
+			if (appsByTagName.get(appTagName) == null) {
+				appsByTagName.put(appTagName, new HashSet<WebApp>());
+			}
+			
+			appsByTagName.get(appTagName).add(webApp);
+			appTag.setCount(appTag.getCount() + 1);
+		}
 	}
 	
 	public String getAppDescription(String appName) {
@@ -239,8 +250,13 @@ public class WebQuerier {
 	}
 	
 	public Set<WebApp> getAppsByTag(String tagName) {
+		// Query for apps (which includes tag information) if not done so
 		Set<WebApp> webApps = getAllApps();
 		
+		return appsByTagName.get(tagName);
+		
+		/*
+		 
 		// Construct a map used to quickly obtain references to WebApp objects given the app's name.
 		// The app's name is guaranteed to be unique by the app store website.
 		Map<String, WebApp> appMap = new HashMap<String, WebApp>();
@@ -280,5 +296,7 @@ public class WebQuerier {
 		}
 		
 		return result;
+		
+		*/
 	}
 }
