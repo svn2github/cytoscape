@@ -61,7 +61,8 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 				return;
 		
 			GSDataFormat dataFormat = fileMetadata.getDataFormat();
-			if ( fileMetadata.getDataFormat().getFileExtension().equalsIgnoreCase("adj") )
+			String ext = fileMetadata.getDataFormat().getFileExtension();
+			if ( ext != null && ext.equalsIgnoreCase("adj") )
 				dataFormat = GSUtils.findConversionFormat(fileMetadata.getAvailableDataFormats(), "xgmml");
 
 			// Download the GenomeSpace file:
