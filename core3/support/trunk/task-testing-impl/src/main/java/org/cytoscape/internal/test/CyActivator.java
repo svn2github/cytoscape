@@ -27,6 +27,7 @@ import org.cytoscape.service.util.AbstractCyActivator;
 
 import java.util.Properties;
 
+import static org.cytoscape.work.ServiceProperties.*;
 
 
 public class CyActivator extends AbstractCyActivator {
@@ -54,40 +55,40 @@ public class CyActivator extends AbstractCyActivator {
 		registerService(bc,multiTunableAction,CyAction.class, new Properties());
 
 		Properties tunablesTestTaskFactoryProps = new Properties();
-		tunablesTestTaskFactoryProps.setProperty("preferredMenu","Help");
-		tunablesTestTaskFactoryProps.setProperty("title","Tunable Task Test...");
+		tunablesTestTaskFactoryProps.setProperty(PREFERRED_MENU,"Help");
+		tunablesTestTaskFactoryProps.setProperty(TITLE,"Tunable Task Test...");
 		registerService(bc,tunablesTestTaskFactory,TaskFactory.class, tunablesTestTaskFactoryProps);
 
 		Properties tunablesTestTaskFactory2Props = new Properties();
 		tunablesTestTaskFactory2Props.setProperty("cytoPanelComponentTitle","Tunable Factory Test");
-		tunablesTestTaskFactory2Props.setProperty("preferredMenu","Help");
-		tunablesTestTaskFactory2Props.setProperty("title","Tunable Factory Test...");
+		tunablesTestTaskFactory2Props.setProperty(PREFERRED_MENU,"Help");
+		tunablesTestTaskFactory2Props.setProperty(TITLE,"Tunable Factory Test...");
 		registerService(bc,tunablesTestTaskFactory2,TaskFactory.class, tunablesTestTaskFactory2Props);
 
 		Properties tunablesTestTaskFactory3Props = new Properties();
 		tunablesTestTaskFactory3Props.setProperty("cytoPanelComponentTitle","Complex Tunable Test");
-		tunablesTestTaskFactory3Props.setProperty("preferredMenu","Help");
-		tunablesTestTaskFactory3Props.setProperty("title","Complex Tunable Test...");
+		tunablesTestTaskFactory3Props.setProperty(PREFERRED_MENU,"Help");
+		tunablesTestTaskFactory3Props.setProperty(TITLE,"Complex Tunable Test...");
 		registerService(bc,tunablesTestTaskFactory3,TaskFactory.class, tunablesTestTaskFactory3Props);
 
 		Properties infiniteTaskFactoryProps = new Properties();
-		infiniteTaskFactoryProps.setProperty("preferredMenu","Help");
-		infiniteTaskFactoryProps.setProperty("title","Infinite Test...");
+		infiniteTaskFactoryProps.setProperty(PREFERRED_MENU,"Help");
+		infiniteTaskFactoryProps.setProperty(TITLE,"Infinite Test...");
 		registerService(bc,infiniteTaskFactory,TaskFactory.class, infiniteTaskFactoryProps);
 
 		Properties multipleTaskFactoryProps = new Properties();
-		multipleTaskFactoryProps.setProperty("preferredMenu","Help");
-		multipleTaskFactoryProps.setProperty("title","Multiple Task Test...");
+		multipleTaskFactoryProps.setProperty(PREFERRED_MENU,"Help");
+		multipleTaskFactoryProps.setProperty(TITLE,"Multiple Task Test...");
 		registerService(bc,multipleTaskFactory,TaskFactory.class, multipleTaskFactoryProps);
 
 		Properties sharedTableTaskFactoryProps = new Properties();
-		sharedTableTaskFactoryProps.setProperty("preferredMenu","Help");
-		sharedTableTaskFactoryProps.setProperty("title","Shared Table Test...");
+		sharedTableTaskFactoryProps.setProperty(PREFERRED_MENU,"Help");
+		sharedTableTaskFactoryProps.setProperty(TITLE,"Shared Table Test...");
 		registerService(bc,sharedTableTaskFactory,NetworkTaskFactory.class, sharedTableTaskFactoryProps);
 
 		Properties scootersTunableTaskFactoryProps = new Properties();
-		scootersTunableTaskFactoryProps.setProperty("preferredMenu","Help");
-		scootersTunableTaskFactoryProps.setProperty("title","Scooter's Tunable Test...");
+		scootersTunableTaskFactoryProps.setProperty(PREFERRED_MENU,"Help");
+		scootersTunableTaskFactoryProps.setProperty(TITLE,"Scooter's Tunable Test...");
 		registerService(bc,scootersTunableTaskFactory,TaskFactory.class, scootersTunableTaskFactoryProps);
 	}
 }
