@@ -5,9 +5,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
@@ -38,6 +40,7 @@ import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.layout.CyLayoutContext;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.Task;
@@ -167,8 +170,8 @@ public class ExecuteGetRecordByCPathIdTask extends AbstractTask {
 			CyLayoutAlgorithmManager layoutManager = CPath2Factory.getCyLayoutAlgorithmManager();
 			CyLayoutAlgorithm<CyLayoutContext> layout = layoutManager.getDefaultLayout();
 			CyLayoutContext context = layout.createLayoutContext();
-			context.setNetworkView(view);
-			insertTasksAfterCurrentTask(layout.createTaskIterator(context));
+			Set<View<CyNode>> nodes = Collections.emptySet();
+			insertTasksAfterCurrentTask(layout.createTaskIterator(view, context, nodes));
 
 		} catch (IOException e) {
 			throw new Exception("Failed to retrieve records.", e);

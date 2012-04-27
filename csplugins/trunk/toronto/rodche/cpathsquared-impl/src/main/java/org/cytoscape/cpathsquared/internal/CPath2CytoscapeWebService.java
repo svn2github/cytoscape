@@ -3,7 +3,6 @@ package org.cytoscape.cpathsquared.internal;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.util.Set;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -15,7 +14,6 @@ import org.cytoscape.cpathsquared.internal.view.TabUi;
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
 import org.cytoscape.io.webservice.SearchWebServiceClient;
 import org.cytoscape.io.webservice.swing.AbstractWebServiceGUIClient;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
 import org.slf4j.Logger;
@@ -27,7 +25,7 @@ import cpath.service.OutputFormat;
  * CPath Web Service, integrated into the Cytoscape Web Services Framework.
  */
 public class CPath2CytoscapeWebService extends AbstractWebServiceGUIClient 
-	implements NetworkImportWebServiceClient, SearchWebServiceClient<Object>
+	implements NetworkImportWebServiceClient, SearchWebServiceClient
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CPath2CytoscapeWebService.class);
 	
@@ -41,17 +39,6 @@ public class CPath2CytoscapeWebService extends AbstractWebServiceGUIClient
     	return mainPanel;
     }
     
-    @Override
-    public Set<CyNetwork> getNetworks() {
-    	// TODO Auto-generated method stub
-    	return null;
-    }
-    
-    @Override
-    public Object getSearchResult() {
-    	// TODO Auto-generated method stub
-    	return null;
-    }
     
     @Override
     public TaskIterator createTaskIterator(Object query) {
