@@ -1,4 +1,4 @@
-package org.cytoscape.internal.layout.ui;
+package org.cytoscape.view.layout;
 
 
 import static org.cytoscape.view.presentation.property.BasicVisualLexicon.NODE_X_LOCATION;
@@ -13,16 +13,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.undo.AbstractCyEdit;
 
 
-/** An undoable edit that will undo and redo the zooming of a network view. */
-final class LayoutEdit extends AbstractCyEdit {
-	private final CyEventHelper eventHelper;
+/** 
+ * An undoable edit that will undo and redo of a layout algorithm applied to a network view. 
+ */
+public final class LayoutEdit extends AbstractCyEdit {
 	private final CyNetworkView view;
 	private List<NodeViewAndLocations> nodeViewsAndLocations;
 	private double networkScale;
@@ -30,19 +30,25 @@ final class LayoutEdit extends AbstractCyEdit {
 	private double networkCenterY;
 	private double networkCenterZ;
 
-	LayoutEdit(String name, final CyEventHelper eventHelper, final CyNetworkView view) {
+	/**
+	 * Constructor.
+	 * @param name The name that will appear in the undo menu.
+	 * @param view The view whose current position will be tracked.
+	 */
+	public LayoutEdit(String name, final CyNetworkView view) {
 		super(name);
 
-		this.eventHelper = eventHelper;
 		this.view        = view;
 
 		saveNodeViewsAndLocations();
 	}
 
+	@Override
 	public void redo() {
 		saveAndRestore();
 	}
-
+	
+	@Override
 	public void undo() {
 		saveAndRestore();
 	}
@@ -62,7 +68,6 @@ final class LayoutEdit extends AbstractCyEdit {
 		view.setVisualProperty(NETWORK_CENTER_Y_LOCATION, oldNetworkCenterY);
 		view.setVisualProperty(NETWORK_CENTER_Z_LOCATION, oldNetworkCenterZ);
 
-		eventHelper.flushPayloadEvents();
 		view.updateView();
 	}
 
