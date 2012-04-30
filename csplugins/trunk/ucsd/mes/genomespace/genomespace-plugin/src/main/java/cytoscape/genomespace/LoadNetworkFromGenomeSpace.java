@@ -61,27 +61,23 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 				return;
 		
 			GSDataFormat dataFormat = fileMetadata.getDataFormat();
-			String ext = fileMetadata.getDataFormat().getFileExtension();
+			if ( dataFormat == null )
+				throw new RuntimeException("file metadata has null data format");
+
+			String ext = dataFormat.getFileExtension();
 			if ( ext != null && ext.equalsIgnoreCase("adj") )
 				dataFormat = GSUtils.findConversionFormat(fileMetadata.getAvailableDataFormats(), "xgmml");
 
-			// Download the GenomeSpace file:
-			tempFile = File.createTempFile("temp", "cynetwork");
+			// Download the GenomeSpace file into a temp file
+			final String origFileName = fileMetadata.getName();
+			final String extension = GSUtils.getExtension(origFileName);
+			tempFile = File.createTempFile("temp", "." + extension);
 			dataManagerClient.downloadFile(fileMetadata, dataFormat, tempFile, true);
 
-			// Select the type of network reader:
-			final String origFileName = fileMetadata.getName();
-			final String extension = getExtension(origFileName);
-			final GraphReader reader;
-			if (extension.equals("sif"))
-				reader = new InteractionsReader(tempFile.getPath());
-			else if (extension.equals("gml"))
-				reader = new GMLReader(tempFile.getPath());
-			else
-				reader = new XGMMLReader(tempFile.getPath());
-
-			Cytoscape.createNetwork(reader, /* create_view */ true, /* parent = */ null)
-				.setTitle(getNetworkTitle(origFileName));
+			System.out.println("attempting to load origFileName: " + origFileName);
+			System.out.println("attempting to load extension: " + extension);
+			System.out.println("attempting to tmpfile: " + tempFile.getPath());
+			Cytoscape.createNetworkFromFile(tempFile.getPath()).setTitle(GSUtils.getNetworkTitle(origFileName));
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed", ex);
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
@@ -91,15 +87,5 @@ public class LoadNetworkFromGenomeSpace extends CytoscapeAction {
 			if (tempFile != null)
 				tempFile.delete();
 		}
-	}
-
-	private static String getExtension(final String fileName) {
-		final int lastDotPos = fileName.lastIndexOf('.');
-		return (lastDotPos == -1 ? fileName : fileName.substring(lastDotPos + 1)).toLowerCase();
-	}
-
-	private static String getNetworkTitle(final String fileName) {
-		final int lastDotPos = fileName.lastIndexOf('.');
-		return lastDotPos == -1 ? fileName : fileName.substring(0, lastDotPos);
 	}
 }

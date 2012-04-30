@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Collection;
 import javax.swing.JOptionPane;
 
+import org.genomespace.client.DataManagerClient;
 import org.genomespace.client.GsSession;
 import org.genomespace.client.User;
 import org.genomespace.client.exceptions.AuthorizationException;
@@ -19,6 +20,14 @@ import org.genomespace.client.ui.GSLoginDialog;
 
 import org.genomespace.datamanager.core.GSFileMetadata;
 import org.genomespace.datamanager.core.GSDataFormat;
+import org.genomespace.client.ConfigurationUrls;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
 
 
 final class GSUtils {
@@ -33,6 +42,8 @@ final class GSUtils {
 	public static synchronized GsSession getSession() {
 		if (session == null ) {
 			try {
+				String gsenv = CytoscapeInit.getProperties().getProperty("genomespace.environment","test").toString();
+				ConfigurationUrls.init(gsenv);
 				session = new GsSession();
 			} catch (Exception e) {
 				throw new GSClientException("failed to create GenomeSpace session", e);
@@ -64,8 +75,6 @@ final class GSUtils {
 	}
 
 	public static synchronized boolean loginToGenomeSpace() {
-		String gsenv = CytoscapeInit.getProperties().getProperty("genomespace.environment","test").toString();
-		org.genomespace.client.ConfigurationUrls.init(gsenv);
 		for (;;) {
 			final GSLoginDialog loginDialog =
 				new GSLoginDialog(null, Dialog.ModalityType.APPLICATION_MODAL);
@@ -113,6 +122,46 @@ final class GSUtils {
 				return format;
 
 		return null;
+	}
+
+	public static File downloadToTempFile(String urlString) {
+		InputStream is = null;
+		OutputStream os = null;
+		File tempFile = null;
+		try {
+			URL url = new URL(urlString);
+			DataManagerClient dmc = getSession().getDataManagerClient();
+			is = dmc.getInputStream(url);
+			tempFile = File.createTempFile("tempGS","." + getExtension(url.toString()));
+			os =new FileOutputStream(tempFile);
+			byte buf[] = new byte[1024];
+			int len;
+			while( (len = is.read(buf)) > 0 )
+				os.write(buf,0,len);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("failed to load url: " + urlString, e);
+		} finally {
+			try { 
+				if ( is != null )
+					is.close();
+				if ( os != null )
+					os.close();
+			} catch (IOException ioe) {
+				throw new IllegalArgumentException("couldn't even close streams", ioe);
+			}
+		}
+
+		return tempFile;
+	}
+
+	public static String getExtension(final String fileName) {
+		final int lastDotPos = fileName.lastIndexOf('.');
+		return (lastDotPos == -1 ? fileName : fileName.substring(lastDotPos + 1)).toLowerCase();
+	}
+
+	public static String getNetworkTitle(final String fileName) {
+		final int lastDotPos = fileName.lastIndexOf('.');
+		return lastDotPos == -1 ? fileName : fileName.substring(0, lastDotPos);
 	}
 }
 

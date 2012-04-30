@@ -9,6 +9,7 @@ import cytoscape.util.FileUtil;
 
 import java.net.URL;
 import java.io.File;
+import java.io.Reader;
 
 public class CyTableReaderPlugin extends CytoscapePlugin {
 
@@ -25,12 +26,16 @@ public class CyTableReaderPlugin extends CytoscapePlugin {
 			return;
 
 		try {
-			String name = loadNow.toString();
+			if ( loadNow instanceof Reader ) {
+					new CyTableReader( (Reader)loadNow, attrs ).read();
+			} else {
+				String name = loadNow.toString();
 
-			if ( name.matches(FileUtil.urlPattern) )
-				new CyTableReader( new URL(name), attrs ).read();
-			else
-				new CyTableReader( new File(name).toURL(), attrs ).read();
+				if ( name.matches(FileUtil.urlPattern) )
+					new CyTableReader( new URL(name), attrs ).read();
+				else
+					new CyTableReader( new File(name).toURL(), attrs ).read();
+			}
 
 		} catch (Exception e) {
 			CyLogger.getLogger(CyTableReaderPlugin.class).warn("failed to load table: " + loadNow);

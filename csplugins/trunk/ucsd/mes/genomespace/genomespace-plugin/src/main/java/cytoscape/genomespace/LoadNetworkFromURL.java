@@ -2,6 +2,7 @@ package cytoscape.genomespace;
 
 import java.net.URL;
 import java.util.Map;
+import java.io.File;
 
 import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
@@ -19,9 +20,8 @@ public class LoadNetworkFromURL implements GSLoadEventListener {
 			return;
 
 		try {
-
-			Cytoscape.createNetworkFromURL( new URL(netURL), true );
-
+			File tmp = GSUtils.downloadToTempFile(netURL);
+			Cytoscape.createNetworkFromFile(tmp.getPath()).setTitle(netURL);
 		} catch ( Exception e ) { e.printStackTrace(); }
 	}
 }

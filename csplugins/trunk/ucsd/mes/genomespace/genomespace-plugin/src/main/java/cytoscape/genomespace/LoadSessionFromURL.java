@@ -2,6 +2,7 @@ package cytoscape.genomespace;
 
 import java.io.File;
 import java.util.Map;
+import java.net.URL;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.URLUtil;
@@ -22,8 +23,7 @@ public class LoadSessionFromURL implements GSLoadEventListener {
             return;
 
 		try {
-			File tempFile = File.createTempFile("temp", "cysession");
-			URLUtil.download(sessionURL,tempFile,null);
+			File tempFile = GSUtils.downloadToTempFile(sessionURL); 
 			SessionLoader.loadSession(tempFile, sessionURL );
 		} catch ( Exception e ) { e.printStackTrace(); }
 	}

@@ -76,13 +76,4 @@ public class LoadTableNetworkFromGenomeSpace extends CytoscapeAction {
 		}
 	}
 
-	private static String getExtension(final String fileName) {
-		final int lastDotPos = fileName.lastIndexOf('.');
-		return (lastDotPos == -1 ? fileName : fileName.substring(lastDotPos)).toLowerCase();
-	}
-
-	private static String getNetworkTitle(final String fileName) {
-		final int lastDotPos = fileName.lastIndexOf('.');
-		return lastDotPos == -1 ? fileName : fileName.substring(0, lastDotPos);
-	}
 }

@@ -2,6 +2,9 @@
 package cytoscape.genomespace;
 
 import java.util.Map;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 import cytoscape.cytable.CyTableReaderPlugin;
 import cytoscape.logger.CyLogger;
@@ -31,9 +34,9 @@ public class LoadCyTableFromURL implements GSLoadEventListener {
 			return;
 
 		try {
-
-			CyTableReaderPlugin.loadCyTable( url, attrs );
-
+			InputStream is = GSUtils.getSession().getDataManagerClient().getInputStream(new URL(url));
+			InputStreamReader reader = new InputStreamReader(is);
+			CyTableReaderPlugin.loadCyTable( reader, attrs );
 		} catch ( Exception e ) { e.printStackTrace(); }
 	}
 }
