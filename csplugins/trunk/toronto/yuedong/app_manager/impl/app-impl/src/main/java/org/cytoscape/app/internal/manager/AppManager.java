@@ -3,8 +3,11 @@ package org.cytoscape.app.internal.manager;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Executors;
+
 import org.apache.commons.io.FileUtils;
 import org.cytoscape.app.AbstractCyApp;
 import org.cytoscape.app.CyAppAdapter;
@@ -15,6 +18,8 @@ import org.cytoscape.app.internal.exception.AppParsingException;
 import org.cytoscape.app.internal.exception.AppUninstallException;
 import org.cytoscape.app.internal.net.WebQuerier;
 import org.cytoscape.application.CyApplicationConfiguration;
+
+import org.cytoscape.app.internal.net.server.LocalHttpServer;
 
 /**
  * This class represents an App Manager, which is capable of maintaining a list of all currently installed and available apps. The class

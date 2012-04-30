@@ -125,9 +125,9 @@
 		-->
 				
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.io</artifactId>
-			<version>1.4.0</version>
+  	 		<groupId>org.apache.commons</groupId>
+ 		    <artifactId>com.springsource.org.apache.commons.io</artifactId>
+  			<version>1.4.0</version>
 		</dependency>
 
 		<!-- dependency for a freely available json parser (http://www.json.org/java/) -->
@@ -135,6 +135,13 @@
 			<groupId>cytoscape-temp</groupId>
 			<artifactId>simple-json-parser</artifactId>
 			<version>1.0-b20120413</version>
+		</dependency>
+		
+		<!-- dependency for Http server, uses the Apache HttpComponents library -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+  			<artifactId>httpcore</artifactId>
+ 		 	<version>4.1.3</version>
 		</dependency>
 
 		<!-- dependencies needed for plugin manager -->

@@ -66,12 +66,16 @@ import org.cytoscape.task.destroy.DeleteSelectedNodesAndEdgesTaskFactory;
 import org.cytoscape.task.destroy.DeleteTableTaskFactory;
 import org.cytoscape.task.destroy.DestroyNetworkTaskFactory;
 import org.cytoscape.task.destroy.DestroyNetworkViewTaskFactory;
+import org.cytoscape.task.edit.CollapseGroupTaskFactory;
 import org.cytoscape.task.edit.ConnectSelectedNodesTaskFactory;
 import org.cytoscape.task.edit.EditNetworkTitleTaskFactory;
+import org.cytoscape.task.edit.ExpandGroupTaskFactory;
 import org.cytoscape.task.edit.GroupNodesTaskFactory;
 import org.cytoscape.task.edit.MapGlobalToLocalTableTaskFactory;
 import org.cytoscape.task.edit.MapTableToNetworkTablesTaskFactory;
 import org.cytoscape.task.edit.RenameColumnTaskFactory;
+import org.cytoscape.task.edit.UnGroupNodesTaskFactory;
+import org.cytoscape.task.edit.UnGroupTaskFactory;
 import org.cytoscape.task.hide.HideSelectedEdgesTaskFactory;
 import org.cytoscape.task.hide.HideSelectedNodesTaskFactory;
 import org.cytoscape.task.hide.HideSelectedTaskFactory;
@@ -198,16 +202,10 @@ public class CyActivator extends AbstractCyActivator {
 		 NewNetworkSelectedNodesOnlyTaskFactory newNetworkSelectedNodesOnlyTaskFactory = getService(bc,NewNetworkSelectedNodesOnlyTaskFactory.class);
 		 DestroyNetworkTaskFactory destroyNetworkTaskFactory = getService(bc,DestroyNetworkTaskFactory.class);
 		 DestroyNetworkViewTaskFactory destroyNetworkViewTaskFactory = getService(bc,DestroyNetworkViewTaskFactory.class);
-		 NetworkViewTaskFactory zoomInTaskFactory = getService(bc,NetworkViewTaskFactory.class, "(title=Zoom In)");
-		 NetworkViewTaskFactory zoomOutTaskFactory = getService(bc,NetworkViewTaskFactory.class, "(title=Zoom Out)");
-		 NetworkViewTaskFactory fitSelectedTaskFactory = getService(bc,NetworkViewTaskFactory.class,"(title=Fit Selected)");
-		 NetworkViewTaskFactory fitContentTaskFactory = getService(bc,NetworkViewTaskFactory.class,"(title=Fit Content)");
 
 		 NewSessionTaskFactory newSessionTaskFactory = getService(bc,NewSessionTaskFactory.class);
 		 OpenSessionTaskFactory openSessionTaskFactory = getService(bc,OpenSessionTaskFactory.class);
-		 TaskFactory saveSessionTaskFactory = getService(bc,TaskFactory.class, "(command=save-session)");
-		 SaveSessionAsTaskFactory saveSessionAsTaskFactory = getService(bc,SaveSessionAsTaskFactory.class, "(command=save-session-as)");
-		 TaskFactory proxySettingsTaskFactory = getService(bc,TaskFactory.class, "(title=Proxy Settings...)");
+		 SaveSessionAsTaskFactory saveSessionAsTaskFactory = getService(bc,SaveSessionAsTaskFactory.class);
 		 EditNetworkTitleTaskFactory editNetworkTitleTaskFactory = getService(bc,EditNetworkTitleTaskFactory.class);
 		 CreateNetworkViewTaskFactory createNetworkViewTaskFactory = getService(bc,CreateNetworkViewTaskFactory.class);
 		 ExportNetworkImageTaskFactory exportNetworkImageTaskFactory = getService(bc,ExportNetworkImageTaskFactory.class);
@@ -217,7 +215,6 @@ public class CyActivator extends AbstractCyActivator {
 		 ApplyPreferredLayoutTaskFactory applyPreferredLayoutTaskFactory = getService(bc,ApplyPreferredLayoutTaskFactory.class);
 		 DeleteColumnTaskFactory deleteColumnTaskFactory = getService(bc,DeleteColumnTaskFactory.class);
 		 RenameColumnTaskFactory renameColumnTaskFactory = getService(bc,RenameColumnTaskFactory.class);
-		 TableCellTaskFactory copyValueToEntireColumnTaskFactory = getService(bc,TableCellTaskFactory.class,"(title=Copy to entire column)");
 		 DeleteTableTaskFactory deleteTableTaskFactory = getService(bc,DeleteTableTaskFactory.class);
 		 ExportVizmapTaskFactory exportVizmapTaskFactory = getService(bc,ExportVizmapTaskFactory.class);
 		
@@ -226,16 +223,16 @@ public class CyActivator extends AbstractCyActivator {
 		 ApplyVisualStyleTaskFactory applyVisualStyleTaskFactory = getService(bc,ApplyVisualStyleTaskFactory.class);
 		 MapTableToNetworkTablesTaskFactory mapNetworkAttrTaskFactory = getService(bc,MapTableToNetworkTablesTaskFactory.class);
 
-     	 GroupNodesTaskFactory groupNodesTaskFactory = getService(bc,GroupNodesTaskFactory.class,"(title=Group Nodes)");
-     	 NetworkViewTaskFactory unGroupTaskFactory= getService(bc,NetworkViewTaskFactory.class,"(title=Ungroup Nodes)");
-     	 NodeViewTaskFactory collapseGroupTaskFactory= getService(bc,NodeViewTaskFactory.class,"(title=Collapse Group)");
-     	 NodeViewTaskFactory expandGroupTaskFactory= getService(bc,NodeViewTaskFactory.class,"(title=Expand Group)");
-     	 NodeViewTaskFactory unGroupNodesTaskFactory= getService(bc,NodeViewTaskFactory.class,"(title=Ungroup Nodes)");
+     	 GroupNodesTaskFactory groupNodesTaskFactory = getService(bc,GroupNodesTaskFactory.class);
+     	 UnGroupTaskFactory unGroupTaskFactory= getService(bc,UnGroupTaskFactory.class);
+     	 CollapseGroupTaskFactory collapseGroupTaskFactory= getService(bc,CollapseGroupTaskFactory.class);
+     	 ExpandGroupTaskFactory expandGroupTaskFactory= getService(bc,ExpandGroupTaskFactory.class);
+     	 UnGroupNodesTaskFactory unGroupNodesTaskFactory= getService(bc,UnGroupNodesTaskFactory.class);
 
 		// End of core-task services
 		 
 		
-		CyAppAdapterImpl cyAppAdapter = new CyAppAdapterImpl(cyApplicationManagerRef,cyEventHelperRef,cyLayoutAlgorithmManagerRef,cyNetworkFactoryRef,cyNetworkManagerRef,cyNetworkViewFactoryRef,cyNetworkViewManagerRef,cyNetworkViewReaderManagerRef,cyNetworkViewWriterManagerRef,cyPropertyRef,cyPropertyReaderManagerRef,cyPropertyWriterManagerRef,cyRootNetworkFactoryRef,cyServiceRegistrarRef,cySessionManagerRef,cySessionReaderManagerRef,cySessionWriterManagerRef,cySwingApplicationRef,cyTableFactoryRef,cyTableManagerRef,cyTableReaderManagerRef,cytoscapeVersionService, dialogTaskManagerRef,panelTaskManagerRef,submenuTaskManagerRef,presentationWriterManagerRef,renderingEngineManagerRef,taskManagerRef,undoSupportRef, vmfFactoryC, vmfFactoryD, vmfFactoryP, visualMappingManagerRef,visualStyleFactoryRef, dataSourceManager,
+     	CyAppAdapterImpl cyAppAdapter = new CyAppAdapterImpl(cyApplicationManagerRef,cyEventHelperRef,cyLayoutAlgorithmManagerRef,cyNetworkFactoryRef,cyNetworkManagerRef,cyNetworkViewFactoryRef,cyNetworkViewManagerRef,cyNetworkViewReaderManagerRef,cyNetworkViewWriterManagerRef,cyPropertyRef,cyPropertyReaderManagerRef,cyPropertyWriterManagerRef,cyRootNetworkFactoryRef,cyServiceRegistrarRef,cySessionManagerRef,cySessionReaderManagerRef,cySessionWriterManagerRef,cySwingApplicationRef,cyTableFactoryRef,cyTableManagerRef,cyTableReaderManagerRef,cytoscapeVersionService, dialogTaskManagerRef,panelTaskManagerRef,submenuTaskManagerRef,presentationWriterManagerRef,renderingEngineManagerRef,taskManagerRef,undoSupportRef, vmfFactoryC, vmfFactoryD, vmfFactoryP, visualMappingManagerRef,visualStyleFactoryRef, dataSourceManager,
 				loadVizmapFileTaskFactory,
 				loadNetworkFileTaskFactory,
 				loadNetworkURLTaskFactory,
@@ -267,15 +264,9 @@ public class CyActivator extends AbstractCyActivator {
 				 newNetworkSelectedNodesOnlyTaskFactory,
 				 destroyNetworkTaskFactory,
 				 destroyNetworkViewTaskFactory,
-				 zoomInTaskFactory,
-				 zoomOutTaskFactory,
-				 fitSelectedTaskFactory,
-				 fitContentTaskFactory,
 				 newSessionTaskFactory,
 				 openSessionTaskFactory,
-				 saveSessionTaskFactory,
 				 saveSessionAsTaskFactory,
-				 proxySettingsTaskFactory,
 				 editNetworkTitleTaskFactory,
 				 createNetworkViewTaskFactory,
 				 exportNetworkImageTaskFactory,
@@ -285,7 +276,6 @@ public class CyActivator extends AbstractCyActivator {
 				 applyPreferredLayoutTaskFactory,
 				 deleteColumnTaskFactory,
 				 renameColumnTaskFactory,
-				 copyValueToEntireColumnTaskFactory,
 				 deleteTableTaskFactory,
 				 exportVizmapTaskFactory,
 				 connectSelectedNodesTaskFactory,
@@ -312,6 +302,8 @@ public class CyActivator extends AbstractCyActivator {
 		// AbstractCyAction implementation for updated app manager
 		AppManagerAction appManagerAction2 = new AppManagerAction(appManager, cySwingApplicationRef, fileUtilServiceRef, taskManagerRef);
 		registerService(bc, appManagerAction2, CyAction.class, new Properties());
+	
+		
 	}
 }
 
