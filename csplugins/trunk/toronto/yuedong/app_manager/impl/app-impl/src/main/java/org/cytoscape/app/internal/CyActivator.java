@@ -5,6 +5,8 @@ import org.cytoscape.app.internal.CyAppAdapterImpl;
 import org.cytoscape.app.internal.action.AppManagerAction;
 import org.cytoscape.app.internal.manager.AppManager;
 import org.cytoscape.app.internal.net.WebQuerier;
+import org.cytoscape.app.internal.net.server.LocalHttpServer;
+import org.cytoscape.app.internal.net.server.LocalHttpServer.Response;
 import org.cytoscape.application.CyVersion;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.application.CyApplicationConfiguration;
@@ -26,7 +28,10 @@ import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.io.read.CySessionReaderManager;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.io.write.CyPropertyWriterManager;
 import org.cytoscape.io.write.CySessionWriterManager;
@@ -109,6 +114,7 @@ import org.cytoscape.task.write.ExportVizmapTaskFactory;
 import org.cytoscape.task.write.SaveSessionAsTaskFactory;
 
 import java.util.Properties;
+import java.util.concurrent.Executors;
 
 
 
@@ -303,7 +309,31 @@ public class CyActivator extends AbstractCyActivator {
 		AppManagerAction appManagerAction2 = new AppManagerAction(appManager, cySwingApplicationRef, fileUtilServiceRef, taskManagerRef);
 		registerService(bc, appManagerAction2, CyAction.class, new Properties());
 	
+		Thread serverThread = new Thread() {
+			
+			private LocalHttpServer server;
+			
+			@Override
+			public void run() {
+				server = new LocalHttpServer(2608, Executors.newSingleThreadExecutor());
+				server.addGetResponder(new LocalHttpServer.GetResponder() {
+					public boolean canRespondTo(String url) {
+					    return true;
+					}
+
+					@Override
+					public LocalHttpServer.Response respond(String url) throws Exception {
+						return new LocalHttpServer.Response("sample response body for url: " + url + "\n", "application/json");
+					}
+				});
+				
+				server.run();
+			}
+		};
 		
+		serverThread.setDaemon(true);
+
+		Executors.newSingleThreadExecutor().execute(serverThread);
 	}
 }
 

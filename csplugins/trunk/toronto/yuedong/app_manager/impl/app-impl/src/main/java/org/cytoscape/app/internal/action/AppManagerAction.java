@@ -59,40 +59,6 @@ public class AppManagerAction extends AbstractCyAction {
 		this.swingApplication = swingApplication;
 		this.fileUtil = fileUtil;
 		this.taskManager = taskManager;
-				
-		taskManager.execute(new TaskIterator(new Task(){
-
-			// Obtain information for all available apps, then append tag information
-			@Override
-			public void run(TaskMonitor taskMonitor) throws Exception {
-				taskMonitor.setTitle("Starting local server");
-				
-				taskMonitor.setStatusMessage("Starting local server");
-				
-				server = new LocalHttpServer(2608, Executors.newSingleThreadExecutor());
-				server.addPostResponder(new LocalHttpServer.PostResponder() {
-					public boolean canRespondTo(String url) {
-					    return true;
-					}
-
-					public LocalHttpServer.Response respond(String url, String post) {
-					    System.out.println(post);
-					    System.out.println("received msg: " + post);
-					    
-					    return new LocalHttpServer.Response("test1", "application/json");
-					}
-				    });
-				
-				server.run();
-			}
-
-			@Override
-			public void cancel() {
-			}
-			
-		}));
-		
-		
 	}
 
 	@Override

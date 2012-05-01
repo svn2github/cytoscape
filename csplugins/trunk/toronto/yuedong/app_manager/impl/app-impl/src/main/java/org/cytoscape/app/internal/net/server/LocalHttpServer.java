@@ -161,38 +161,38 @@ public class LocalHttpServer implements Runnable {
     }
 
     public void run() {
-	// Create a server socket
-	ServerSocket serverSocket = null;
-	try {
-	    serverSocket = new ServerSocket(port, 0, InetAddress.getByName(null));
-	} catch (IOException e) {
-	    logger.error("Failed to create server socket", e);
-	    return;
-	}
-
-	logger.info("Server socket started on {}", String.format("%s:%d", serverSocket.getInetAddress().getHostAddress(), port));
-
-	// Keep servicing incoming connections until this thread is flagged as interrupted
-	while (!Thread.interrupted()) { // TODO: **interrupted is deprecated
-		
-	    // Create a new http server connection from the incoming socket
-	    DefaultHttpServerConnection connection = null;
-	    try {
-			final Socket socket = serverSocket.accept();
-			logger.info("Server socket received connection from {}", socket.getInetAddress().getHostAddress());
-			connection = new DefaultHttpServerConnection();
-			connection.bind(socket, params);
-	    } catch (IOException e) {
-			logger.error("Failed to initiate connection with client", e);
-			continue;
-	    }
-
-	    // Dispatch an incoming connection to ConnectionHandler
-	    final ConnectionHandler connectionHandler = new ConnectionHandler(service, connection);
-	    connectionHandlerExecutor.execute(connectionHandler);
-	}
-
-	logger.info("Server socket stopped");
+		// Create a server socket
+		ServerSocket serverSocket = null;
+		try {
+		    serverSocket = new ServerSocket(port, 0, InetAddress.getByName(null));
+		} catch (IOException e) {
+		    logger.error("Failed to create server socket", e);
+		    return;
+		}
+	
+		logger.info("Server socket started on {}", String.format("%s:%d", serverSocket.getInetAddress().getHostAddress(), port));
+	
+		// Keep servicing incoming connections until this thread is flagged as interrupted
+		while (!Thread.interrupted()) { // TODO: **interrupted is deprecated
+			
+		    // Create a new http server connection from the incoming socket
+		    DefaultHttpServerConnection connection = null;
+		    try {
+				final Socket socket = serverSocket.accept();
+				logger.info("Server socket received connection from {}", socket.getInetAddress().getHostAddress());
+				connection = new DefaultHttpServerConnection();
+				connection.bind(socket, params);
+		    } catch (IOException e) {
+				logger.error("Failed to initiate connection with client", e);
+				continue;
+		    }
+	
+		    // Dispatch an incoming connection to ConnectionHandler
+		    final ConnectionHandler connectionHandler = new ConnectionHandler(service, connection);
+		    connectionHandlerExecutor.execute(connectionHandler);
+		}
+	
+		logger.info("Server socket stopped");
     }
 
     /**
@@ -232,7 +232,7 @@ public class LocalHttpServer implements Runnable {
     }
 
     class RequestHandlerDispatcher implements HttpRequestHandler {
-		public void handle(final HttpRequest request, final HttpResponse httpresponse, final HttpContext context) throws HttpException {
+		public void handle(final HttpRequest request, final HttpResponse httpResponse, final HttpContext context) throws HttpException {
 	
 		    // decode the uri
 	
@@ -250,15 +250,14 @@ public class LocalHttpServer implements Runnable {
             System.out.println("Request received. Method: " + method);
 	            
 		    // loop thru responders and see if any of them produce a response
-	        System.out.println("Number of responders: " + getResponders.size());
-	            
 		    Response response = null;
 		    if (method.equals("get") || method.equals("head")) {
+		    	
+		    	System.out.println("Number of GET responders: " + getResponders.size());
 				for (final GetResponder getResponder : getResponders) {
 		
 				    // catch any exceptions emitted by the responder so our server thread doesn't prematurely terminate
 				    // and can send a coherent message back to the user
-					System.out.println("Attempting to use responder: " + getResponder.toString());
 				    try {
 						if (getResponder.canRespondTo(url)) {
 							System.out.println("Responder able to respond. Responding..");
@@ -266,85 +265,86 @@ public class LocalHttpServer implements Runnable {
 						    break;
 						}
 				    } catch (Exception e) {
-						setHttpResponseToInternalError(httpresponse, e);		
+						setHttpResponseToInternalError(httpResponse, e);		
 						return;
 				    }
 				}
 		    } else if (method.equals("post")) {
-	
-			// obtain the body of the post request
-	
-			String postBody = null;
-			if (request instanceof HttpEntityEnclosingRequest) {
-			    final HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
-			    try {
-			    	postBody = EntityUtils.toString(entity);
-			    } catch (IOException e) {
-			    	
-			    }
-			}
-	
-			for (final PostResponder postResponder : postResponders) {
-	
-			    // catch any exceptions emitted by the responder so our server thread doesn't prematurely terminate
-			    // and can send a coherent message back to the user
-	
-			    try {
-					if (postResponder.canRespondTo(uri)) {
-						System.out.println("Found responder. Responding..");
-					    response = postResponder.respond(url, postBody);
-					    break;
-					}
-			    } catch (Exception e) {
-			    	System.out.println("Found exception: " + e);
-					setHttpResponseToInternalError(httpresponse, e);		
-					return;
-			    }
-			}
+		
+				// obtain the body of the post request
+		
+				String postBody = null;
+				if (request instanceof HttpEntityEnclosingRequest) {
+				    final HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
+				    try {
+				    	postBody = EntityUtils.toString(entity);
+				    } catch (IOException e) {
+				    	
+				    }
+				}
+		
+				System.out.println("Number of POST responders: " + postResponders.size());
+				for (final PostResponder postResponder : postResponders) {
+		
+				    // catch any exceptions emitted by the responder so our server thread doesn't prematurely terminate
+				    // and can send a coherent message back to the user
+		
+				    try {
+						if (postResponder.canRespondTo(uri)) {
+							System.out.println("Found responder. Responding..");
+						    response = postResponder.respond(url, postBody);
+						    break;
+						}
+				    } catch (Exception e) {
+				    	System.out.println("Found exception: " + e);
+						setHttpResponseToInternalError(httpResponse, e);		
+						return;
+				    }
+				}
 		    } else {
 		    	// none of the http methods are valid, so issue an error to the client
 	            throw new MethodNotSupportedException(String.format("\"%s\" method not supported", method)); 
 		    }
 	
 		    if (response == null) {
-		    	setHttpResponseToError(httpresponse, HttpStatus.SC_NOT_FOUND, "Resource not found", null);
+		    	setHttpResponseToError(httpResponse, HttpStatus.SC_NOT_FOUND, "Resource not found", null);
 		    } else {
 		    	final String body = response.getBody();
 				if (body == null) {
-				    setHttpResponseToInternalError(httpresponse, "Responder \"%s\" returned null");
+				    setHttpResponseToInternalError(httpResponse, "Responder \"%s\" returned null");
 				} else {
-				    setHttpResponse(httpresponse, HttpStatus.SC_OK, body, response.getContentType());
-				    httpresponse.addHeader("Access-Control-Allow-Origin", "*");
+				    setHttpResponse(httpResponse, HttpStatus.SC_OK, body, response.getContentType());
+				    httpResponse.addHeader("Access-Control-Allow-Origin", "*");
 				}
 		    }
 		}
     }
 
-    private static void setHttpResponse(final HttpResponse httpresponse, final int code, final String msg, final String contentType) throws HttpException {
-		httpresponse.setStatusCode(code);
+    private static void setHttpResponse(final HttpResponse httpResponse, final int code, final String msg, final String contentType) throws HttpException {
+		httpResponse.setStatusCode(code);
 		try {
-		    httpresponse.setEntity(new StringEntity(msg, contentType, "UTF-8"));
+		    httpResponse.setEntity(new StringEntity(msg, contentType, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 		    throw new HttpException("failed to issue output to client", e);
 		}
     }
 
-    private static void setHttpResponseToError(final HttpResponse httpresponse, final int code, final String title, final String msg) throws HttpException {
-    	setHttpResponse(httpresponse, code, (msg == null ?
+    private static void setHttpResponseToError(final HttpResponse httpResponse, final int code, final String title, final String msg) throws HttpException {
+    	setHttpResponse(httpResponse, code, (msg == null ?
 					     String.format("<html><body><h1>%s</h1></body></html>", title) :
 					     String.format("<html><body><h1>%s</h1><pre>%s</pre></body></html>", title, msg)), "text/html");
     }
 
-    private void setHttpResponseToInternalError(final HttpResponse httpresponse, final String msg) throws HttpException {
+    private void setHttpResponseToInternalError(final HttpResponse httpResponse, final String msg) throws HttpException {
     	logger.warn("Failed to respond to client: {}", msg);
-    	setHttpResponseToError(httpresponse, HttpStatus.SC_INTERNAL_SERVER_ERROR, "Internal Error", msg);
+    	setHttpResponseToError(httpResponse, HttpStatus.SC_INTERNAL_SERVER_ERROR, "Internal Error", msg);
     }
 
-    private void setHttpResponseToInternalError(final HttpResponse httpresponse, final Throwable throwable) throws HttpException {
+    private void setHttpResponseToInternalError(final HttpResponse httpResponse, final Throwable throwable) throws HttpException {
 		logger.warn("Failed to respond to client", throwable);
 		final StringWriter stringWriter = new StringWriter();
 		throwable.printStackTrace(new PrintWriter(stringWriter));
 		final String stacktrace = stringWriter.toString();
-		setHttpResponseToError(httpresponse, HttpStatus.SC_INTERNAL_SERVER_ERROR, "Internal Error", stacktrace);
+		setHttpResponseToError(httpResponse, HttpStatus.SC_INTERNAL_SERVER_ERROR, "Internal Error", stacktrace);
     }
 }
