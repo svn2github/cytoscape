@@ -163,5 +163,19 @@ final class GSUtils {
 		final int lastDotPos = fileName.lastIndexOf('.');
 		return lastDotPos == -1 ? fileName : fileName.substring(0, lastDotPos);
 	}
+
+    // Returns the directory component of "path"
+    public static String dirName(final String path) {
+        final int lastSlashPos = path.lastIndexOf('/');
+        return path.substring(0, lastSlashPos + 1);
+    }
+
+
+    // Returns the basename component of "path"
+    public static String baseName(final String path) {
+        final int lastSlashPos = path.lastIndexOf('/');
+        return lastSlashPos == -1 ? path : path.substring(lastSlashPos + 1);
+    }
+
 }
 

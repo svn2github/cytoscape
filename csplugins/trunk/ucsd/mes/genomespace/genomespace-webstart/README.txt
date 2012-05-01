@@ -10,7 +10,7 @@ provide the jnlp file with a codebase.
 The actual command: 
 
 
-	mvn webstart:jnlp-inline -Dwebstart.url=http://chianti.ucsd.edu/genomespace
+	mvn clean webstart:jnlp-inline -Dwebstart.url=http://chianti.ucsd.edu/genomespace
 
 
 

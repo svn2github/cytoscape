@@ -18,7 +18,7 @@ import javax.swing.JRadioButton;
 final class NetworkTypeSelectionDialog extends JDialog {
 	private String networkType;
 	private final JRadioButton sifRadioButton;
-	private final JRadioButton nnfRadioButton;
+//	private final JRadioButton nnfRadioButton;
 	private final JRadioButton xgmmlRadioButton;
 	private final JRadioButton gmlRadioButton;
 	private final JButton okButton;
@@ -39,9 +39,9 @@ final class NetworkTypeSelectionDialog extends JDialog {
 		sifRadioButton = new JRadioButton("SIF", true);
 		group.add(sifRadioButton);
 		radioButtonPane.add(sifRadioButton);
-		nnfRadioButton = new JRadioButton("NNF");
-		group.add(nnfRadioButton);
-		radioButtonPane.add(nnfRadioButton);
+//		nnfRadioButton = new JRadioButton("NNF");
+//		group.add(nnfRadioButton);
+//		radioButtonPane.add(nnfRadioButton);
 		xgmmlRadioButton = new JRadioButton("XGMML");
 		group.add(xgmmlRadioButton);
 		radioButtonPane.add(xgmmlRadioButton);
@@ -58,8 +58,8 @@ final class NetworkTypeSelectionDialog extends JDialog {
 				public void actionPerformed(ActionEvent actionEvent) {
 					if (NetworkTypeSelectionDialog.this.sifRadioButton.isSelected())
 						NetworkTypeSelectionDialog.this.networkType = "SIF";
-					else if (NetworkTypeSelectionDialog.this.nnfRadioButton.isSelected())
-						NetworkTypeSelectionDialog.this.networkType = "NNF";
+//					else if (NetworkTypeSelectionDialog.this.nnfRadioButton.isSelected())
+//						NetworkTypeSelectionDialog.this.networkType = "NNF";
 					else if (NetworkTypeSelectionDialog.this.xgmmlRadioButton.isSelected())
 						NetworkTypeSelectionDialog.this.networkType = "XGMML";
 					else if (NetworkTypeSelectionDialog.this.gmlRadioButton.isSelected())

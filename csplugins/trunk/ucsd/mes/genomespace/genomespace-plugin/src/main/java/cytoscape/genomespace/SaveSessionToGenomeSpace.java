@@ -140,8 +140,7 @@ class SaveSessionTask implements Task {
 			taskMonitor.setPercentCompleted(20);
 			final File localFile = new File(localFileName);
 			uploadedFileMetadata =
-				dataManagerClient.uploadFile(localFile, dirName(uploadPath),
-							     baseName(uploadPath));
+				dataManagerClient.uploadFile(localFile, GSUtils.dirName(uploadPath), GSUtils.baseName(uploadPath));
 			localFile.delete();
 		} catch (Exception e) {
 			taskMonitor.setException(e, "Could not write session to the file: "
@@ -183,18 +182,5 @@ class SaveSessionTask implements Task {
 	 */
 	public String getTitle() {
 		return "Saving Cytoscape Session";
-	}
-
-	// Returns the directory component of "path"
-	private String dirName(final String path) {
-		final int lastSlashPos = path.lastIndexOf('/');
-		return path.substring(0, lastSlashPos + 1);
-	}
-
-
-	// Returns the basename component of "path"
-	private String baseName(final String path) {
-		final int lastSlashPos = path.lastIndexOf('/');
-		return lastSlashPos == -1 ? path : path.substring(lastSlashPos + 1);
 	}
 }
