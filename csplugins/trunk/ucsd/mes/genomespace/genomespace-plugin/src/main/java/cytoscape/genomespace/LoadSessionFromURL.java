@@ -17,6 +17,10 @@ public class LoadSessionFromURL implements GSLoadEventListener {
 	public void onLoadEvent(GSLoadEvent event) {
 		Map<String,String> params = event.getParameters();
 		String sessionURL = params.get("session");
+		loadSession(sessionURL);
+	}
+
+	public void loadSession(String sessionURL) {
 		if ( sessionURL == null )
 			return;
         if (!SessionLoader.destroyCurrentSession(Cytoscape.getDesktop()))

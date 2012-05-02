@@ -48,14 +48,14 @@
 <?php
 	# either load a session
     if($SESSION != null && $SESSION != "") {
-        print("	<argument>-s</argument>\n");
-        print("	<argument>$SESSION</argument>\n");
+        print("	<argument>-P</argument>\n");
+        print("	<argument>gs.session=$SESSION</argument>\n");
 	
 	# or load network and/or attributes
     } else {
 		if ($NETWORK != null && $NETWORK != "") {
-        	print("	<argument>-N</argument>\n");
-        	print("	<argument>$NETWORK</argument>\n");
+        	print("	<argument>-P</argument>\n");
+        	print("	<argument>gs.network=$NETWORK</argument>\n");
 		}
 		if ($NODETABLE != null && $NODETABLE != "") {
         	print("	<argument>-P</argument>\n");

@@ -27,9 +27,11 @@ public class LoadCyTableFromURL implements GSLoadEventListener {
 
 	public void onLoadEvent(GSLoadEvent event) {
 		Map<String,String> params = event.getParameters();
-
 		String url = params.get(key);
-		
+		loadTable(url);	
+	}
+
+	public void loadTable(String url) {
 		if ( url == null )
 			return;
 

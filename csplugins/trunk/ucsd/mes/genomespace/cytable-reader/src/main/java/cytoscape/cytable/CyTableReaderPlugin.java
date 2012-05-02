@@ -16,9 +16,6 @@ public class CyTableReaderPlugin extends CytoscapePlugin {
 	public CyTableReaderPlugin() {
 		Cytoscape.getDesktop().getCyMenus().addAction( new CyTableReaderAction("Node"));
 		Cytoscape.getDesktop().getCyMenus().addAction( new CyTableReaderAction("Edge"));
-
-		loadCyTable(CytoscapeInit.getProperties().getProperty("node.cytable"),Cytoscape.getNodeAttributes());
-		loadCyTable(CytoscapeInit.getProperties().getProperty("edge.cytable"),Cytoscape.getNodeAttributes());
 	}
 
 	public static void loadCyTable(Object loadNow, CyAttributes attrs) {

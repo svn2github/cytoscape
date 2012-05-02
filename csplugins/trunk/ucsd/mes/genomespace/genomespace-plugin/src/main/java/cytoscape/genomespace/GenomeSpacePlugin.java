@@ -2,6 +2,7 @@ package cytoscape.genomespace;
 
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.CytoscapeInit;
 import org.genomespace.sws.SimpleWebServer; 
 import javax.swing.JMenu; 
 
@@ -18,11 +19,17 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 		// Properly initializes things.
 		super();
 
+		// set up the URL loaders
+		LoadNetworkFromURL loadNetworkURL = new LoadNetworkFromURL();
+		LoadSessionFromURL loadSessionURL = new LoadSessionFromURL();
+		LoadCyTableFromURL loadNodeAttrURL = new LoadCyTableFromURL("node.cytable",Cytoscape.getNodeAttributes());
+		LoadCyTableFromURL loadEdgeAttrURL = new LoadCyTableFromURL("edge.cytable",Cytoscape.getEdgeAttributes());
+
 		SimpleWebServer sws = new SimpleWebServer(60161);
-		sws.registerListener(new LoadNetworkFromURL());
-		sws.registerListener(new LoadCyTableFromURL("node.cytable",Cytoscape.getNodeAttributes()));
-		sws.registerListener(new LoadCyTableFromURL("edge.cytable",Cytoscape.getEdgeAttributes()));
-		sws.registerListener(new LoadSessionFromURL());
+		sws.registerListener(loadNetworkURL);
+		sws.registerListener(loadNodeAttrURL);
+		sws.registerListener(loadEdgeAttrURL);
+		sws.registerListener(loadSessionURL);
 		sws.start();
 
 		// This action represents the actual behavior of the plugin.
@@ -75,6 +82,20 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 		LaunchToolMenu ltm = new LaunchToolMenu(gsMenu);
 		gsMenu.add(ltm);
 		
-		
+
+		// load any initial arguments
+		String sessionProp = CytoscapeInit.getProperties().getProperty("gs.session");
+		if ( sessionProp != null ) {
+			loadSessionURL.loadSession(sessionProp);
+		} else {
+			String networkProp = CytoscapeInit.getProperties().getProperty("gs.network");
+			loadNetworkURL.loadNetwork(networkProp);
+
+			String nodeTableProp = CytoscapeInit.getProperties().getProperty("node.cytable");
+			loadNodeAttrURL.loadTable(nodeTableProp);
+
+			String edgeTableProp = CytoscapeInit.getProperties().getProperty("edge.cytable");
+			loadEdgeAttrURL.loadTable(edgeTableProp);
+		}
 	}
-}	
+}

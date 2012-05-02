@@ -16,6 +16,10 @@ public class LoadNetworkFromURL implements GSLoadEventListener {
 	public void onLoadEvent(GSLoadEvent event) {
 		Map<String,String> params = event.getParameters();
 		String netURL = params.get("network");
+		loadNetwork(netURL);
+	}
+
+	public void loadNetwork(String netURL) {
 		if ( netURL == null )
 			return;
 
