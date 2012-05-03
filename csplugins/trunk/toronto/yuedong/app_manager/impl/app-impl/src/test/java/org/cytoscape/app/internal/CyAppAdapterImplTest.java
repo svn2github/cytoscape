@@ -19,11 +19,15 @@ import org.cytoscape.io.write.CyNetworkViewWriterManager;
 import org.cytoscape.io.write.CyPropertyWriterManager;
 import org.cytoscape.io.write.CySessionWriterManager;
 import org.cytoscape.io.write.PresentationWriterManager;
+import org.cytoscape.io.write.CyTableWriterManager;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
+import org.cytoscape.group.CyGroupFactory;
+import org.cytoscape.group.CyGroupManager;
+import org.cytoscape.group.data.CyGroupAggregationManager;
 //import org.cytoscape.app.CyAppAdapterTest;
 import org.cytoscape.app.CyAppAdapter;
 import org.cytoscape.property.CyProperty;
@@ -92,7 +96,6 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.cytoscape.work.swing.PanelTaskManager;
-import org.cytoscape.work.swing.SubmenuTaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 import org.junit.Before;
 
@@ -103,6 +106,9 @@ public class CyAppAdapterImplTest /*extends CyAppAdapterTest*/ {
 		CyAppAdapter adapter = new CyAppAdapterImpl( 
 			mock(CyApplicationManager.class),
 			mock(CyEventHelper.class),
+			mock(CyGroupAggregationManager.class),
+			mock(CyGroupFactory.class),
+			mock(CyGroupManager.class),
 			mock(CyLayoutAlgorithmManager.class),
 			mock(CyNetworkFactory.class),
 			mock(CyNetworkManager.class),
@@ -122,11 +128,10 @@ public class CyAppAdapterImplTest /*extends CyAppAdapterTest*/ {
 			mock(CyTableFactory.class),
 			mock(CyTableManager.class),
 			mock(CyTableReaderManager.class),
+			mock(CyTableWriterManager.class),
 			mock(CyVersion.class),
-//			mock(CyTableWriterManager.class),
 			mock(DialogTaskManager.class),
 			mock(PanelTaskManager.class),
-			mock(SubmenuTaskManager.class),
 			mock(PresentationWriterManager.class),
 			mock(RenderingEngineManager.class),
 			mock(TaskManager.class),

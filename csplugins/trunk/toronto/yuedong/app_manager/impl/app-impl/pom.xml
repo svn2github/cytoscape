@@ -107,7 +107,7 @@
 		<!-- dependencies needed to implement this code -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>app-api</artifactId>
+			<artifactId>swing-app-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -210,7 +210,7 @@
 
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>app-api</artifactId>
+			<artifactId>swing-app-api</artifactId>
 			<version>${project.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>

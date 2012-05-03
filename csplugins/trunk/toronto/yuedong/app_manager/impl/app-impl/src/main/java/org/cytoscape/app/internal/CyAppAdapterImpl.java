@@ -4,6 +4,7 @@ package org.cytoscape.app.internal;
 import java.util.Properties;
 import org.cytoscape.app.AbstractCyApp;
 import org.cytoscape.app.CyAppAdapter;
+import org.cytoscape.app.swing.CySwingAppAdapter;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.CyVersion;
 import org.cytoscape.application.swing.CyAction;
@@ -12,6 +13,9 @@ import org.cytoscape.application.swing.events.CytoPanelComponentSelectedEvent;
 import org.cytoscape.io.datasource.DataSourceManager;
 import org.cytoscape.equations.AbstractFunction;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.group.CyGroupFactory;
+import org.cytoscape.group.CyGroupManager;
+import org.cytoscape.group.data.CyGroupAggregationManager;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.io.read.CyNetworkReaderManager;
@@ -27,6 +31,7 @@ import org.cytoscape.io.write.CyNetworkViewWriterManager;
 import org.cytoscape.io.write.CyPropertyWriterManager;
 import org.cytoscape.io.write.CySessionWriterManager;
 import org.cytoscape.io.write.PresentationWriterManager;
+import org.cytoscape.io.write.CyTableWriterManager;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableFactory;
@@ -112,7 +117,6 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.swing.AbstractGUITunableHandler;
 import org.cytoscape.work.swing.DialogTaskManager;
 import org.cytoscape.work.swing.PanelTaskManager;
-import org.cytoscape.work.swing.SubmenuTaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.task.NetworkViewTaskFactory;
@@ -123,7 +127,7 @@ import org.cytoscape.work.TaskFactory;
 /**
  * An implementation of CyAppAdapter
  */
-public class CyAppAdapterImpl implements CyAppAdapter {
+public class CyAppAdapterImpl implements CySwingAppAdapter {
 
 	//
 	// Since there are a lot of fields, keep them
@@ -135,6 +139,9 @@ public class CyAppAdapterImpl implements CyAppAdapter {
 	//
 	private final CyApplicationManager cyApplicationManager;
 	private final CyEventHelper cyEventHelper;
+	private final CyGroupAggregationManager cyGroupAggregationManager;
+	private final CyGroupFactory cyGroupFactory;
+	private final CyGroupManager cyGroupManager;
 	private final CyLayoutAlgorithmManager cyLayoutAlgorithmManager;
 	private final CyNetworkFactory cyNetworkFactory;
 	private final CyNetworkManager cyNetworkManager;
@@ -155,10 +162,9 @@ public class CyAppAdapterImpl implements CyAppAdapter {
 	private final CyTableFactory cyTableFactory;
 	private final CyTableManager cyTableManager;
 	private final CyTableReaderManager cyTableReaderManager;
-//	private final CyTableWriterManager cyTableWriterManager;
+	private final CyTableWriterManager cyTableWriterManager;
 	private final DialogTaskManager dialogTaskManager;
 	private final PanelTaskManager panelTaskManager;
-	private final SubmenuTaskManager submenuTaskManager;
 	private final PresentationWriterManager presentationWriterManager;
 	private final RenderingEngineManager renderingEngineManager;
 	private final TaskManager taskManager;
@@ -280,6 +286,9 @@ public class CyAppAdapterImpl implements CyAppAdapter {
 	//
 	CyAppAdapterImpl( final CyApplicationManager cyApplicationManager,
 	                     final CyEventHelper cyEventHelper,
+	                     final CyGroupAggregationManager cyGroupAggregationManager,
+	                     final CyGroupFactory cyGroupFactory,
+	                     final CyGroupManager cyGroupManager,
 	                     final CyLayoutAlgorithmManager cyLayoutAlgorithmManager,
 	                     final CyNetworkFactory cyNetworkFactory,
 	                     final CyNetworkManager cyNetworkManager,
@@ -299,11 +308,10 @@ public class CyAppAdapterImpl implements CyAppAdapter {
 	                     final CyTableFactory cyTableFactory,
 	                     final CyTableManager cyTableManager,
 	                     final CyTableReaderManager cyTableReaderManager,
+	                     final CyTableWriterManager cyTableWriterManager,
 	                     final CyVersion cyVersion,
-//	                     final CyTableWriterManager cyTableWriterManager,
 	                     final DialogTaskManager dialogTaskManager,
 	                     final PanelTaskManager panelTaskManager,
-	                     final SubmenuTaskManager submenuTaskManager,
 	                     final PresentationWriterManager presentationWriterManager,
 	                     final RenderingEngineManager renderingEngineManager,
 	                     final TaskManager taskManager,
@@ -386,6 +394,9 @@ public class CyAppAdapterImpl implements CyAppAdapter {
 	{		
 		this.cyApplicationManager = cyApplicationManager;
 		this.cyEventHelper = cyEventHelper;
+		this.cyGroupAggregationManager = cyGroupAggregationManager;
+		this.cyGroupFactory = cyGroupFactory;
+		this.cyGroupManager = cyGroupManager;
 		this.cyLayoutAlgorithmManager = cyLayoutAlgorithmManager;
 		this.cyNetworkFactory = cyNetworkFactory;
 		this.cyNetworkManager = cyNetworkManager;
@@ -405,11 +416,10 @@ public class CyAppAdapterImpl implements CyAppAdapter {
 		this.cyTableFactory = cyTableFactory;
 		this.cyTableManager = cyTableManager;
 		this.cyTableReaderManager = cyTableReaderManager;
+		this.cyTableWriterManager = cyTableWriterManager;
 		this.cyVersion = cyVersion;
-//		this.cyTableWriterManager = cyTableWriterManager;
 		this.dialogTaskManager = dialogTaskManager;
 		this.panelTaskManager = panelTaskManager;
-		this.submenuTaskManager = submenuTaskManager;
 		this.presentationWriterManager = presentationWriterManager;
 		this.renderingEngineManager = renderingEngineManager;
 		this.taskManager = taskManager;
@@ -485,6 +495,9 @@ public class CyAppAdapterImpl implements CyAppAdapter {
 	// 
 	public CyApplicationManager getCyApplicationManager() { return cyApplicationManager; }
 	public CyEventHelper getCyEventHelper() { return cyEventHelper; } 
+	@Override public CyGroupAggregationManager getCyGroupAggregationManager() { return cyGroupAggregationManager; } 
+	@Override public CyGroupFactory getCyGroupFactory() { return cyGroupFactory; } 
+	@Override public CyGroupManager getCyGroupManager() { return cyGroupManager; } 
 	public CyLayoutAlgorithmManager getCyLayoutAlgorithmManager() { return cyLayoutAlgorithmManager; } 
 	public CyNetworkFactory getCyNetworkFactory() { return cyNetworkFactory; }
 	public CyNetworkManager getCyNetworkManager() { return cyNetworkManager; } 
@@ -504,11 +517,10 @@ public class CyAppAdapterImpl implements CyAppAdapter {
 	public CyTableFactory getCyTableFactory() { return cyTableFactory; } 
 	public CyTableManager getCyTableManager() { return cyTableManager; }
 	public CyTableReaderManager getCyTableReaderManager() { return cyTableReaderManager; }
+	public CyTableWriterManager getCyTableWriterManager() { return cyTableWriterManager; }
 	public CyVersion getCyVersion() { return cyVersion; }
-//	public CyTableWriterManager getCyTableWriterManager() { return cyTableWriterManager; }
 	public DialogTaskManager getDialogTaskManager() { return dialogTaskManager; }
 	public PanelTaskManager getPanelTaskManager() { return panelTaskManager; }
-	public SubmenuTaskManager getSubmenuTaskManager() { return submenuTaskManager; }
 	public PresentationWriterManager getPresentationWriterManager() { return presentationWriterManager; }
 	public RenderingEngineManager getRenderingEngineManager() { return renderingEngineManager; }
 	public TaskManager getTaskManager() { return taskManager; }
