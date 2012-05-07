@@ -248,7 +248,7 @@ public class LocalHttpServer implements Runnable {
 	
             final String method = request.getRequestLine().getMethod().toLowerCase();
             System.out.println("Request received. Method: " + method);
-	            
+	        
 		    // loop thru responders and see if any of them produce a response
 		    Response response = null;
 		    if (method.equals("get") || method.equals("head")) {
