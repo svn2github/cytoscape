@@ -32,6 +32,12 @@ public class AppParser {
 	private static final String APP_VERSION_TAG = "Cytoscape-App-Version";
 	
 	/**
+	 * The name of the key in the app jar's manifest file indicating the major versions of
+	 * Cytoscape that the app is known to be compatible with in comma-delimited form
+	 */
+	private static final String APP_COMPATIBLE_TAG = "Cytoscape-App-Works-With";
+	
+	/**
 	 * A regular a expression representing valid app versions, which are in the format major.minor.patch[-tag]
 	 */
 	private static final String APP_VERSION_TAG_REGEX = "(0|([1-9]+\\d*))\\.(\\d)+\\.(\\d)+(-.*)?";

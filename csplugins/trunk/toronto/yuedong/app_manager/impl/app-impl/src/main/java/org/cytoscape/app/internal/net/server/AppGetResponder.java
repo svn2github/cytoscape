@@ -1,0 +1,93 @@
+package org.cytoscape.app.internal.net.server;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.cytoscape.app.internal.manager.AppManager;
+import org.cytoscape.app.internal.net.server.LocalHttpServer.Response;
+
+/**
+ * This class is responsible for handling GET requests received by the local HTTP server.
+ */
+public class AppGetResponder implements LocalHttpServer.GetResponder{
+
+	private static final String STATUS_QUERY_URL = "status";
+	private static final String STATUS_QUERY_APP_NAME = "appname";
+	
+	private static final String INSTALL_QUERY_URL = "install";
+	private static final String INSTALL_QUERY_APP_NAME = "appname";
+	
+	private AppManager appManager;
+	
+	@Override
+	public boolean canRespondTo(String url) throws Exception {
+		return true;
+	}
+
+	@Override
+	public Response respond(String url) throws Exception {
+		Map<String, String> parsed = parseEncodedUrl(url);
+		
+		System.out.println("Request received. Url: " + url);
+		System.out.println("Url request prefix: " + getUrlRequestPrefix(url));
+		System.out.println("Parsed result of encoded url: " + parsed);
+		
+		LocalHttpServer.Response response = new LocalHttpServer.Response("test response", "text/plain");
+		
+		return response;
+	}
+	
+	public AppGetResponder(AppManager appManager) {
+		this.appManager = appManager;
+
+	}
+	
+	/**
+	 * Parses the parameters from an URL encoded in the application/x-www-form-urlencoded form, 
+	 * which is the default form. This method uses a simple parsing method, only scanning text after the last '?' symbol
+	 * and splitting with the '=' symbol. A more comprehensive (and possibly securer) parser can be found in the URLEncodedUtils 
+	 * class of the Apache HttpClient library.
+	 * 
+	 * @param url The encoded URL in String form
+	 * @return A map containing the encoded keys as keys and the corresponding encoded values as values.
+	 */
+	private Map<String, String> parseEncodedUrl(String url) {
+		Map<String, String> parameters = new HashMap<String, String>();
+		
+		int lastIndex = url.lastIndexOf("?");
+		
+		if (lastIndex != -1) {
+			String paramSubstring = url.substring(lastIndex + 1);
+			
+			String[] splitParameters = paramSubstring.split("&");
+			
+			
+			String key, value;
+			int equalSignIndex;
+			for (int i = 0; i < splitParameters.length; i++) {
+				equalSignIndex = splitParameters[i].indexOf('=');
+				
+				if (equalSignIndex != -1) {
+					key = splitParameters[i].substring(0, equalSignIndex);
+					value = splitParameters[i].substring(equalSignIndex + 1);
+					
+					parameters.put(key, value);
+				}
+			}
+		}
+		
+		return parameters;
+	}
+	
+	/**
+	 * Returns the request prefix for a URL encoded according to the application/x-www-form-urlencoded specification, ie.
+	 * returns "installed" for "http://127.0.0.1:2608/installed?appname=3d&version=1.0.0"
+	 */
+	private String getUrlRequestPrefix(String url) {
+		
+		// Use the last occurrence of the question mark
+		int lastIndex = url.lastIndexOf("?");
+		
+		return url.substring(url.indexOf("/"), lastIndex);
+	}
+}

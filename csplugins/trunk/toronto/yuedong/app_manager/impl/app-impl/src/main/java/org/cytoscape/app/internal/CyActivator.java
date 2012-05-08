@@ -5,6 +5,7 @@ import org.cytoscape.app.internal.CyAppAdapterImpl;
 import org.cytoscape.app.internal.action.AppManagerAction;
 import org.cytoscape.app.internal.manager.AppManager;
 import org.cytoscape.app.internal.net.WebQuerier;
+import org.cytoscape.app.internal.net.server.AppGetResponder;
 import org.cytoscape.app.internal.net.server.LocalHttpServer;
 import org.cytoscape.app.internal.net.server.LocalHttpServer.Response;
 import org.cytoscape.app.swing.CySwingAppAdapter;
@@ -346,7 +347,7 @@ public class CyActivator extends AbstractCyActivator {
 		registerService(bc, webQuerier, WebQuerier.class, new Properties());
 		
 		// Attempt to instantiate new manager
-		AppManager appManager = new AppManager(
+		final AppManager appManager = new AppManager(
 				cyAppAdapter, cyApplicationConfigurationServiceRef, webQuerier);
 		registerService(bc, appManager, AppManager.class, new Properties());
 		
@@ -361,16 +362,7 @@ public class CyActivator extends AbstractCyActivator {
 			@Override
 			public void run() {
 				server = new LocalHttpServer(2608, Executors.newSingleThreadExecutor());
-				server.addGetResponder(new LocalHttpServer.GetResponder() {
-					public boolean canRespondTo(String url) {
-					    return true;
-					}
-
-					@Override
-					public LocalHttpServer.Response respond(String url) throws Exception {
-						return new LocalHttpServer.Response("sample response body for url: " + url + "\n", "application/json");
-					}
-				});
+				server.addGetResponder(new AppGetResponder(appManager));
 				
 				server.run();
 			}
