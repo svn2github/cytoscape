@@ -1,0 +1,65 @@
+Cytoscape is a collaboration 
+between the University of 
+California San Diego,
+the University of Toronto, 
+the University of California 
+San Francisco, the Institute 
+for Systems Biology, Memorial 
+Sloan-Kettering Cancer Center
+the Institut Pasteur, and 
+Agilent Technologies.
+
+Cytoscape is organized under
+the auspices of the National
+Resource for Network Biology
+(NRNB).
+
+For more information, 
+please see:
+
+http://cytoscape.org
+http://nrnb.org
+
+Cytosape Developers, 
+past and present, 
+in alphabetical order: 
+
+Annette Adler
+Nada Amin
+Mark Anderson
+Iliana Avila-Campillo
+Gary Bader
+Hamid Bolouri
+Ethan Cerami
+Rowan Christmas
+Melissa Cline
+Mike Creech
+Paul Edlefsen
+Stephanie Fan
+Roza Ghamari
+Trey Ideker
+Liz Kain
+Larissa Kamenkovich
+Ryan Kelley
+Sarah Killcoyne
+Michael Kirby
+Brad Kohlenberg
+Allan Kuchinsky
+Nerius Landys
+Willem Ligtenberg
+Samad Lotia
+Andrew Markiel
+James McIninch
+Keiichiro Ono
+Owen Ozier
+David Reiss
+Chris Sander
+Paul Shannon
+Robert Sheridan
+Benno Shwikowski
+Mike Smoot
+James Taylor
+Aditya Vailaya
+Jonathan Wang
+Chris Workman
+
