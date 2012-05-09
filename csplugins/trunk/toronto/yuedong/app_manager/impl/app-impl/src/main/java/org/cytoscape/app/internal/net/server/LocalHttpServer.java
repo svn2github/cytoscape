@@ -173,7 +173,7 @@ public class LocalHttpServer implements Runnable {
 		logger.info("Server socket started on {}", String.format("%s:%d", serverSocket.getInetAddress().getHostAddress(), port));
 	
 		// Keep servicing incoming connections until this thread is flagged as interrupted
-		while (!Thread.interrupted()) { // TODO: **interrupted is deprecated
+		while (!Thread.interrupted()) { // TODO: **interrupted is deprecated?
 			
 		    // Create a new http server connection from the incoming socket
 		    DefaultHttpServerConnection connection = null;

@@ -3,6 +3,7 @@ package org.cytoscape.app.internal.net.server;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
 import org.cytoscape.app.internal.net.server.LocalHttpServer.Response;
 
@@ -16,6 +17,7 @@ public class AppGetResponder implements LocalHttpServer.GetResponder{
 	
 	private static final String INSTALL_QUERY_URL = "install";
 	private static final String INSTALL_QUERY_APP_NAME = "appname";
+	private static final String INSTALL_QUERY_APP_VERSION = "version";
 	
 	private AppManager appManager;
 	
@@ -31,9 +33,41 @@ public class AppGetResponder implements LocalHttpServer.GetResponder{
 		System.out.println("Request received. Url: " + url);
 		System.out.println("Url request prefix: " + getUrlRequestPrefix(url));
 		System.out.println("Parsed result of encoded url: " + parsed);
+
+		String responseBody = "Empty";
 		
-		LocalHttpServer.Response response = new LocalHttpServer.Response("test response", "text/plain");
+		String urlRequestPrefix = getUrlRequestPrefix(url);
 		
+		if (urlRequestPrefix.equalsIgnoreCase(STATUS_QUERY_URL)) {
+			String appName = parsed.get(STATUS_QUERY_APP_NAME);
+			boolean appFound = false;
+			
+			if (appName != null) {
+				// throw new Exception("Missing value for app name under the key \"" + STATUS_QUERY_APP_NAME + "\"");
+				for (App app : appManager.getApps()) {
+					if (app.getAppName().equalsIgnoreCase(appName)) {
+						responseBody = String.valueOf(app.getStatus());
+						appFound = true;
+					}
+				}
+				
+				if (!appFound) {
+					responseBody = "App \"" + appName + "\" not installed.";
+				}
+			}
+		} else if (urlRequestPrefix.equalsIgnoreCase(INSTALL_QUERY_URL)) {
+			String appName = parsed.get(INSTALL_QUERY_APP_NAME);
+			String version = parsed.get(INSTALL_QUERY_APP_VERSION);
+			
+			if (appName != null && version != null) {
+				// Use the WebQuerier to obtain the app from the app store using the app name and version
+				responseBody = "Will obtain \"" + appName + "\", version " + version;
+			}
+		}
+		
+		responseBody += "\n";
+		LocalHttpServer.Response response = new LocalHttpServer.Response(responseBody, "text/plain");
+
 		return response;
 	}
 	
@@ -88,6 +122,10 @@ public class AppGetResponder implements LocalHttpServer.GetResponder{
 		// Use the last occurrence of the question mark
 		int lastIndex = url.lastIndexOf("?");
 		
-		return url.substring(url.indexOf("/"), lastIndex);
+		if (lastIndex == -1) {
+			return url.substring(1);
+		} else { 
+			return url.substring(url.indexOf("/") + 1, lastIndex);
+		}
 	}
 }

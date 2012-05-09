@@ -38,9 +38,15 @@ public class AppParser {
 	private static final String APP_COMPATIBLE_TAG = "Cytoscape-App-Works-With";
 	
 	/**
-	 * A regular a expression representing valid app versions, which are in the format major.minor.patch[-tag]
+	 * A regular expression representing valid app versions, which are in the format major.minor.patch[-tag]
 	 */
 	private static final String APP_VERSION_TAG_REGEX = "(0|([1-9]+\\d*))\\.(\\d)+\\.(\\d)+(-.*)?";
+	
+	/**
+	 * A regular expression representing valid values for the entry containing the major versions of Cytoscape
+	 * that the app is known to work with in, in comma-delimited form.
+	 */
+	private static final String APP_COMPATIBLE_TAG_REGEX = "(\\d+\\s*)(,\\s*\\d+\\s*)*";
 	
 	/**
 	 * Attempt to parse a given {@link File} object as an {@link App} object.
@@ -50,6 +56,8 @@ public class AppParser {
 	 */
 	public App parseApp(File file) throws AppParsingException {
 		App parsedApp = new SimpleApp();
+		
+		System.out.println("Parsing: " + file.getPath());
 		
 		if (!file.isFile()) {
 			throw new AppParsingException("The given file, " + file + ", is not a file.");
@@ -69,6 +77,11 @@ public class AppParser {
 			manifest = jarFile.getManifest();
 		} catch (IOException e) {
 			throw new AppParsingException("Error obtaining manifest from app jar: " + e.getMessage());
+		}
+		
+		// Make sure the getManifest() call didn't return null
+		if (manifest == null) {
+			throw new AppParsingException("No manifest was found in the jar file.");
 		}
 		
 		// Obtain the fully-qualified name of the class to instantiate upon app installation
@@ -92,10 +105,20 @@ public class AppParser {
 					+ " was found to not match the format major.minor.patch[-tag], eg. 1.0.0 or 1.0.0-SNAPSHOT");
 		}
 		
+		String compatibleVersions = manifest.getMainAttributes().getValue(APP_COMPATIBLE_TAG);
+		if (compatibleVersions == null || compatibleVersions.trim().length() == 0) {
+			throw new AppParsingException("Jar is missing value for entry " + APP_COMPATIBLE_TAG + " in its manifest file.");
+		} else if (!appVersion.matches(APP_COMPATIBLE_TAG_REGEX)) {
+			throw new AppParsingException("The known compatible major versions of Cytoscape specified in the manifest under the"
+					+ " key " + APP_COMPATIBLE_TAG + " does not match the form of a comma-delimited list of integers with"
+					+ " variable amounts of whitespace around commas");
+		}
+		
 		parsedApp.setAppFile(file);
 		parsedApp.setEntryClassName(entryClassName);
 		parsedApp.setAppName(readableName);
 		parsedApp.setVersion(appVersion);
+		parsedApp.setCompatibleVersions(compatibleVersions);
 		parsedApp.setAppValidated(true);
 		
 		return parsedApp;

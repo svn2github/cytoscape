@@ -28,6 +28,11 @@ public abstract class App {
 	 */
 	private String entryClassName;
 
+	/**
+	 * The major versions of Cytoscape that the app is known to be compatible for, listed in comma-delimited form. Example: "2, 3"
+	 */
+	private String compatibleVersions;
+	
 	private URL appStoreUrl;
 	
 	/**
@@ -231,6 +236,23 @@ public abstract class App {
 		}
 	}
 	
+	/**
+	 * Checks if this app is known to be compatible with a given version of Cytoscape.
+	 * @param cytoscapeVersion The version of Cytoscape to be checked, in the form major.minor.patch[-tag].
+	 * @return <code>true</code> if this app is known to be compatible with the given version, or
+	 * <code>false</code> otherwise.
+	 */
+	public boolean isCompatible(String cytoscapeVersion) {
+		// Get the major version of Cytoscape
+		String majorVersion = cytoscapeVersion.substring(0, cytoscapeVersion.indexOf(".")).trim();
+		
+		if (compatibleVersions.matches("(.*,|^)\\s*(" + majorVersion + ")\\s*(,.*|$)")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public String getAppName() {
 		return appName;
 	}
@@ -253,6 +275,14 @@ public abstract class App {
 	
 	public String getEntryClassName() {
 		return entryClassName;
+	}
+	
+	/**
+	 * Return the major versions of Cytoscape the app is known to be compatible with, in comma-delimited form, eg. "2, 3"
+	 * @return The major versions of Cytoscape that the app is known to be compatible with
+	 */
+	public String getCompatibleVersions() {
+		return compatibleVersions;
 	}
 	
 	public URL getAppStoreUrl() {
@@ -297,6 +327,10 @@ public abstract class App {
 	
 	public void setEntryClassName(String entryClassName) {
 		this.entryClassName = entryClassName;
+	}
+	
+	public void setCompatibleVersions(String compatibleVersions) {
+		this.compatibleVersions = compatibleVersions;
 	}
 	
 	public void setAppStoreUrl(URL appStoreURL) {
