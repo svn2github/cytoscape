@@ -10,7 +10,7 @@
 	</parent>
 
 	<properties>
-		<cytoscape.api.version>3.0.0-beta1</cytoscape.api.version>
+		<cytoscape.api.version>3.0.0-beta2-SNAPSHOT</cytoscape.api.version>
 	</properties>
 
 	<artifactId>support-parent</artifactId>
