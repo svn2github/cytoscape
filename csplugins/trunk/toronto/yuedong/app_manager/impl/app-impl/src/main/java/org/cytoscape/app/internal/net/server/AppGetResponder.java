@@ -51,6 +51,8 @@ public class AppGetResponder implements LocalHttpServer.GetResponder{
 					}
 				}
 				
+				Map<String, String> statusData = new HashMap<String, String>();
+				
 				if (!appFound) {
 					responseBody = "App \"" + appName + "\" not installed.";
 				}

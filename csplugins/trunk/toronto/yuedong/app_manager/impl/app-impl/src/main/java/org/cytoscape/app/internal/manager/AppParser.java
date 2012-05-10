@@ -108,7 +108,7 @@ public class AppParser {
 		String compatibleVersions = manifest.getMainAttributes().getValue(APP_COMPATIBLE_TAG);
 		if (compatibleVersions == null || compatibleVersions.trim().length() == 0) {
 			throw new AppParsingException("Jar is missing value for entry " + APP_COMPATIBLE_TAG + " in its manifest file.");
-		} else if (!appVersion.matches(APP_COMPATIBLE_TAG_REGEX)) {
+		} else if (!compatibleVersions.matches(APP_COMPATIBLE_TAG_REGEX)) {
 			throw new AppParsingException("The known compatible major versions of Cytoscape specified in the manifest under the"
 					+ " key " + APP_COMPATIBLE_TAG + " does not match the form of a comma-delimited list of integers with"
 					+ " variable amounts of whitespace around commas");
