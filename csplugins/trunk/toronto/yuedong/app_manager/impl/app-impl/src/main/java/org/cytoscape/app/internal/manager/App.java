@@ -58,7 +58,7 @@ public abstract class App {
 	 */
 	public enum AppStatus{
 		INSTALLED("Installed"),
-		TO_BE_UNINSTALLED("Uninstall on Restart"),
+		TO_BE_UNINSTALLED("Uninstall-on-Restart"),
 		UNINSTALLED("Uninstalled");
 		
 		String readableStatus;

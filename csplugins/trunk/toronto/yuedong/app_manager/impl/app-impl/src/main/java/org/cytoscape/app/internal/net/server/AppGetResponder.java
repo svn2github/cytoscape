@@ -6,6 +6,7 @@ import java.util.Map;
 import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
 import org.cytoscape.app.internal.net.server.LocalHttpServer.Response;
+import org.json.JSONObject;
 
 /**
  * This class is responsible for handling GET requests received by the local HTTP server.
@@ -38,37 +39,60 @@ public class AppGetResponder implements LocalHttpServer.GetResponder{
 		
 		String urlRequestPrefix = getUrlRequestPrefix(url);
 		
+		
 		if (urlRequestPrefix.equalsIgnoreCase(STATUS_QUERY_URL)) {
 			String appName = parsed.get(STATUS_QUERY_APP_NAME);
 			boolean appFound = false;
 			
 			if (appName != null) {
+				
+				Map<String, String> statusData = new HashMap<String, String>();
+				String status = null;
+				String version = null;
+				
 				// throw new Exception("Missing value for app name under the key \"" + STATUS_QUERY_APP_NAME + "\"");
+				
+				// Searches web apps first. If not found, searches other apps using manifest name field.
 				for (App app : appManager.getApps()) {
 					if (app.getAppName().equalsIgnoreCase(appName)) {
-						responseBody = String.valueOf(app.getStatus());
-						appFound = true;
+						status = app.getStatus() == null? null : app.getStatus().toString().toLowerCase();
+						version = app.getVersion() == null? "null" : app.getVersion().toString();
 					}
 				}
 				
-				Map<String, String> statusData = new HashMap<String, String>();
+				statusData.put("request_name", appName); // web unique identifier
+				statusData.put("status", status);
+				statusData.put("version", version);
 				
-				if (!appFound) {
-					responseBody = "App \"" + appName + "\" not installed.";
-				}
+				JSONObject jsonObject = new JSONObject(statusData);
+				
+				responseBody = jsonObject.toString();
 			}
 		} else if (urlRequestPrefix.equalsIgnoreCase(INSTALL_QUERY_URL)) {
 			String appName = parsed.get(INSTALL_QUERY_APP_NAME);
 			String version = parsed.get(INSTALL_QUERY_APP_VERSION);
 			
+			// If version not available, get the latest version?
+			
 			if (appName != null && version != null) {
 				// Use the WebQuerier to obtain the app from the app store using the app name and version
 				responseBody = "Will obtain \"" + appName + "\", version " + version;
+				
+				Map<String, String> installResultData = new HashMap<String, String>();
+				
+				installResultData.put("name", appName);
+				installResultData.put("install_status", "empty");
+				
+				JSONObject jsonObject = new JSONObject(installResultData);
+				
+				responseBody = jsonObject.toString();
 			}
+			
+			
 		}
 		
 		responseBody += "\n";
-		LocalHttpServer.Response response = new LocalHttpServer.Response(responseBody, "text/plain");
+		LocalHttpServer.Response response = new LocalHttpServer.Response(responseBody, "application/json");
 
 		return response;
 	}

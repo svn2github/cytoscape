@@ -1,0 +1,48 @@
+Note: All responses are in JSON.
+
+
+Get App Status
+==============
+
+URL
+---
+
+GET  http://127.0.0.1:2608/status?appname=<app_name>
+
+Notes: App_name is the app store unique app name. For web-downloaded apps, it will be the same 
+as the Cytoscape-App-Name entry in the manifest. If no matches were found in web apps, we 
+will look for matches using only the Cytoscape-App-Name entry.
+
+Response
+--------
+
+{
+ "request_name": The app name requested by the app store
+ "status": installed, uninstall-on-restart, uninstalled, or not-found. Not found would 
+mean the app isn't found on the user's computer.
+ "version": The version of the app, as found in the Cytoscape-App-Version manifest entry.
+}
+
+Install an App
+==============
+
+URL
+---
+
+GET  http://127.0.0.1:2608/install?appname=<app_name>&version=<version>
+
+Response
+--------
+
+The server attempts to query the app from the app store. If no matches were found 
+for the version, or if the version information was absent, we will try to get the latest 
+version.
+
+Upon completion, the server sends the following:
+
+{
+ "app_name": The name of the install app
+ "install_status": The result of the installation. Values could be: success, 
+app-not-found, version-not-found.
+}
+
