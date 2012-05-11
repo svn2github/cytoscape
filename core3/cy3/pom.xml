@@ -13,6 +13,7 @@
 		<module>impl</module>
 		<module>support</module>
 		<module>samples</module>
+		<module>app-developer</module>
 		<module>gui-distribution</module>
 	</modules>
 </project> 
