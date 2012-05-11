@@ -96,13 +96,17 @@ function validatePluginProps($pluginProps) {
 
 	}
 	else {
-		if (!((strnatcasecmp($pluginProps['pluginCategory'], 'Core') == 0) ||
-		    (strnatcasecmp($pluginProps['pluginCategory'], 'Analysis') == 0) ||
-		    (strnatcasecmp($pluginProps['pluginCategory'], 'Network and Attribute I/O') == 0) ||
-		    (strnatcasecmp($pluginProps['pluginCategory'], 'Network Inference') == 0) ||
-		    (strnatcasecmp($pluginProps['pluginCategory'], 'Functional Enrichment') == 0) ||
-		    (strnatcasecmp($pluginProps['pluginCategory'], 'Communication/Scripting') == 0) ||
-		    (strnatcasecmp($pluginProps['pluginCategory'], 'Other') == 0)))
+		if (!((strnatcasecmp($pluginProps['pluginCategory'], 'Network generation') == 0) ||
+		    (strnatcasecmp($pluginProps['pluginCategory'], 'Online data import') == 0) ||
+		    (strnatcasecmp($pluginProps['pluginCategory'], 'Graph analysis') == 0) ||
+		    (strnatcasecmp($pluginProps['pluginCategory'], 'Clustering') == 0) ||
+		    (strnatcasecmp($pluginProps['pluginCategory'], 'Data visualization') == 0) ||
+		    (strnatcasecmp($pluginProps['pluginCategory'], 'Scripting') == 0) ||
+			(strnatcasecmp($pluginProps['pluginCategory'], 'Integrated analysis') == 0) ||
+			(strnatcasecmp($pluginProps['pluginCategory'], 'Interaction database') == 0) ||
+			(strnatcasecmp($pluginProps['pluginCategory'], 'Ontology analysis') == 0) ||
+			(strnatcasecmp($pluginProps['pluginCategory'], 'Utility') == 0) ||
+			(strnatcasecmp($pluginProps['pluginCategory'], 'Other') == 0)))
 		{
 			$retVal = false;
 			?>
