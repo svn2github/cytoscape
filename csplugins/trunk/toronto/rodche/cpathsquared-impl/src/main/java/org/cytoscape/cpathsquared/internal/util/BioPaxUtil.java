@@ -456,15 +456,13 @@ public final class BioPaxUtil {
 	public static String getName(Model model) {		
 		StringBuffer modelName = new StringBuffer();
 		
-		ModelUtils mu = new ModelUtils(model);
-		
-		Collection<Pathway> pws = mu.getRootElements(Pathway.class);
+		Collection<Pathway> pws = ModelUtils.getRootElements(model, Pathway.class);
 		for(Pathway pw: pws) {
 				modelName.append(" ").append(getNodeName(pw)); 
 		}
 		
 		if(modelName.length()==0) {
-			Collection<Interaction> itrs = mu.getRootElements(Interaction.class);
+			Collection<Interaction> itrs = ModelUtils.getRootElements(model, Interaction.class);
 			for(Interaction it: itrs) {
 				modelName.append(" ").append(getNodeName(it));
 			}	

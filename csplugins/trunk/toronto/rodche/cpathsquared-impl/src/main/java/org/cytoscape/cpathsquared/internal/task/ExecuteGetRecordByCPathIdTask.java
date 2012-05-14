@@ -5,11 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
@@ -297,9 +295,8 @@ public class ExecuteGetRecordByCPathIdTask extends AbstractTask {
 				}
 				//normalize/infer properties: displayName, organism, dataSource
 				fixDisplayName(model);
-				ModelUtils mu = new ModelUtils(model);
-				mu.inferPropertyFromParent("dataSource");
-				mu.inferPropertyFromParent("organism");
+				ModelUtils.inferPropertyFromParent(model, "dataSource");
+				ModelUtils.inferPropertyFromParent(model, "organism");
 				//map biopax properties to Cy attributes for SIF nodes
 				for (BioPAXElement e : model.getObjects()) {
 					if(e instanceof EntityReference 
