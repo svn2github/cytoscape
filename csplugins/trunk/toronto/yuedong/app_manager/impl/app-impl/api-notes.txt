@@ -20,7 +20,8 @@ Response
  "request_name": The app name requested by the app store
  "status": installed, uninstall-on-restart, uninstalled, or not-found. Not found would 
 mean the app isn't found on the user's computer.
- "version": The version of the app, as found in the Cytoscape-App-Version manifest entry.
+ "version": The version of the app, as found in the Cytoscape-App-Version manifest entry,
+or "not-found" if not available.
 }
 
 Install an App

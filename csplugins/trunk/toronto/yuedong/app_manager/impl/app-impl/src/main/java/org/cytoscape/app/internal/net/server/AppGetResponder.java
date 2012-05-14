@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
+import org.cytoscape.app.internal.net.WebApp;
 import org.cytoscape.app.internal.net.server.LocalHttpServer.Response;
 import org.json.JSONObject;
 
@@ -39,58 +40,72 @@ public class AppGetResponder implements LocalHttpServer.GetResponder{
 		
 		String urlRequestPrefix = getUrlRequestPrefix(url);
 		
-		
+		Map<String, String> responseData = new HashMap<String, String>();
 		if (urlRequestPrefix.equalsIgnoreCase(STATUS_QUERY_URL)) {
+			
 			String appName = parsed.get(STATUS_QUERY_APP_NAME);
 			boolean appFound = false;
 			
 			if (appName != null) {
 				
-				Map<String, String> statusData = new HashMap<String, String>();
-				String status = null;
-				String version = null;
+				String status = "not-found";
+				String version = "not-found";
 				
 				// throw new Exception("Missing value for app name under the key \"" + STATUS_QUERY_APP_NAME + "\"");
 				
 				// Searches web apps first. If not found, searches other apps using manifest name field.
 				for (App app : appManager.getApps()) {
 					if (app.getAppName().equalsIgnoreCase(appName)) {
-						status = app.getStatus() == null? null : app.getStatus().toString().toLowerCase();
-						version = app.getVersion() == null? "null" : app.getVersion().toString();
+						if (app.getStatus() != null) {
+							status = app.getStatus().toString().toLowerCase();
+						}
+						
+						if (app.getVersion() != null) {
+							version = app.getVersion();
+						}
 					}
 				}
 				
-				statusData.put("request_name", appName); // web unique identifier
-				statusData.put("status", status);
-				statusData.put("version", version);
-				
-				JSONObject jsonObject = new JSONObject(statusData);
-				
-				responseBody = jsonObject.toString();
+				responseData.put("request_name", appName); // web unique identifier
+				responseData.put("status", status);
+				responseData.put("version", version);
 			}
 		} else if (urlRequestPrefix.equalsIgnoreCase(INSTALL_QUERY_URL)) {
 			String appName = parsed.get(INSTALL_QUERY_APP_NAME);
 			String version = parsed.get(INSTALL_QUERY_APP_VERSION);
 			
-			// If version not available, get the latest version?
-			
 			if (appName != null && version != null) {
 				// Use the WebQuerier to obtain the app from the app store using the app name and version
 				responseBody = "Will obtain \"" + appName + "\", version " + version;
+
+				String installStatus = "app-not-found";
+				boolean appFoundInStore = false;
 				
-				Map<String, String> installResultData = new HashMap<String, String>();
+				// Check if the app is available on the app store
+				// TODO: Use a web query to do this?
 				
-				installResultData.put("name", appName);
-				installResultData.put("install_status", "empty");
+				for (WebApp webApp : appManager.getWebQuerier().getAllApps()) {
+					if (webApp.getName() == appName) {
+						appFoundInStore = true;
+						break;
+					}
+				}
 				
-				JSONObject jsonObject = new JSONObject(installResultData);
+				responseData.put("name", appName);
 				
-				responseBody = jsonObject.toString();
-			}
-			
-			
+				if (appFoundInStore) {
+					
+					// TODO: Look for the app on the app store
+					installStatus = "checking";
+				}
+				
+				responseData.put("install_status", installStatus);
+			}	
 		}
 		
+		JSONObject jsonObject = new JSONObject(responseData);
+
+		responseBody = jsonObject.toString();
 		responseBody += "\n";
 		LocalHttpServer.Response response = new LocalHttpServer.Response(responseBody, "application/json");
 
