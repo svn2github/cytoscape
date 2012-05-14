@@ -24,14 +24,16 @@
     <td><div align="right"><span class="style4">*</span>Category</div></td>
     <td><label>
       <select name="optCategory" id="optCategory" >
-
         <option <?php if ($category && $category == 'Please choose one') echo 'selected' ?>>Please choose one</option>	
-        <?php if ($mode == 'edit'){ echo '<option>Core</option>';} ?>
-        <option <?php if ($category && $category == 'Analysis') echo 'selected' ?>>Analysis</option>
-        <option <?php if ($category && $category == 'Network and Attribute I/O') echo 'selected' ?>>Network and Attribute I/O</option>
-        <option <?php if ($category && $category == 'Network Inference') echo 'selected' ?>>Network Inference</option>
-        <option <?php if ($category && $category == 'Functional Enrichment') echo 'selected' ?>>Functional Enrichment</option>
-        <option <?php if ($category && $category == 'Communication/Scripting') echo 'selected' ?>>Communication/Scripting</option>
+        <option <?php if ($category && $category == 'Network generation') echo 'selected' ?>>Network generation</option>
+        <option <?php if ($category && $category == 'Online data import') echo 'selected' ?>>Online data import</option>
+        <option <?php if ($category && $category == 'Clustering') echo 'selected' ?>>Clustering</option>
+        <option <?php if ($category && $category == 'Data visualization') echo 'selected' ?>>Data visualization</option>
+        <option <?php if ($category && $category == 'Scripting') echo 'selected' ?>>Scripting</option>        
+        <option <?php if ($category && $category == 'Integrated analysis') echo 'selected' ?>>Integrated analysis</option>
+        <option <?php if ($category && $category == 'Interaction database') echo 'selected' ?>>Interaction database</option>
+        <option <?php if ($category && $category == 'Ontology analysis') echo 'selected' ?>>Ontology analysis</option>
+        <option <?php if ($category && $category == 'Utility') echo 'Utility' ?>>Scripting</option>
 		<option <?php if ($category && $category == 'Other') echo 'selected' ?>>Other</option>
       </select>
     </label></td>
