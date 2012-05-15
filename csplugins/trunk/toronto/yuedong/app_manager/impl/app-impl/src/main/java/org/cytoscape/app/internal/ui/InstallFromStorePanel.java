@@ -1,5 +1,6 @@
 package org.cytoscape.app.internal.ui;
 
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Font;
@@ -19,6 +20,7 @@ import java.util.Set;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
@@ -30,9 +32,11 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import org.cytoscape.app.internal.exception.AppDownloadException;
 import org.cytoscape.app.internal.exception.AppParsingException;
 import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
@@ -285,6 +289,14 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
         	}
         }
     }
+    
+    /**
+     * Attempts to insert newlines into a given string such that each line has no 
+     * more than the specified number of characters.
+     */
+    private String splitIntoLines(String text, int charsPerLine) {
+    	return null;
+    }
 
     private void setupTextFieldListener() {
         filterTextField.getDocument().addDocumentListener(new DocumentListener() {
@@ -329,7 +341,18 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     }
     
     private void installSelectedButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                      
-        // TODO add your handling code here:
+        Set<WebApp> selectedApps = getSelectedApps();
+        WebQuerier webQuerier = appManager.getWebQuerier();
+        
+        for (WebApp webApp : selectedApps) {
+        	try {
+        		System.out.println("Download path: " + appManager.getDownloadedAppsPath());
+				webQuerier.downloadApp(webApp.getName(), new File(appManager.getDownloadedAppsPath()));
+			} catch (AppDownloadException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
     }                                                     
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -420,7 +443,9 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 	    		DefaultMutableTreeNode tagNode = new DefaultMutableTreeNode(appTag.getFullName() + " (" + associatedApps.size() + ")");
 	    		
 	    		for (WebApp webApp : associatedApps) {
-	    			tagNode.add(new DefaultMutableTreeNode(webApp));
+	    			DefaultMutableTreeNode appNode = new DefaultMutableTreeNode(webApp);
+	    			
+	    			tagNode.add(appNode);
 	    		}
 	    		
     			root.add(tagNode);
@@ -432,6 +457,28 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     	for (int index = resultsTree.getRowCount() - 1; index >= 0; index--) {
     		resultsTree.expandRow(index);
     	}
+    	
+    	/*
+    	resultsTree.setCellRenderer(new DefaultTreeCellRenderer() {
+			private static final long serialVersionUID = -2593107773334586019L;
+
+			@Override
+    		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
+    				boolean expanded, boolean leaf, int row, boolean hasFocus) {
+					
+    			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+    			
+    			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+    			
+    			if (node.getUserObject() instanceof WebApp) {
+    				setIcon(((WebApp) node.getUserObject()).getImageIcon());
+    			}
+    			
+    			return this;
+    		}
+    	});
+    	*/
+    	// resultsTree.setRowHeight(0);
     }
     
     /**
@@ -501,7 +548,6 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     
     // Adds tag information to the set of available apps
     private void addTagInformation() {
-    	
     }
     
     private void updateDescriptionBox() {
@@ -514,7 +560,7 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
             		"<p style=\"margin-top: 0\"> App information is displayed here. </p> </body> </html> ");    
             descriptionTextPane.setText("");
     	// If a single app is selected, show its app description
-    	} else if (numSelected == 1){
+    	} else if (numSelected == 1) {
     		WebApp selectedApp = selectedApps.iterator().next();
     		
     		String text = "<html><b>" + selectedApp.getFullName() + "</b></html>";
@@ -528,7 +574,7 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     		text += "<p style=\"margin-top: 0\"> <a href=\"" + selectedApp.getAppStoreUrl() + "\">" + selectedApp.getAppStoreUrl() + "</a> </p>";
     		
     		// App image
-    		// text += "<img src=\"" + selectedApp.getIconUrl() + "\" alt=\"" + selectedApp.getFullName() + "\"/>";
+    		// text += "<img border=\"0\" src=\"" + appManager.getWebQuerier().getAppStoreUrl() + selectedApp.getIconUrl() + "\" alt=\"" + selectedApp.getFullName() + "\"/>";
     		
     		// App name
     		text += "<p> <b>" + selectedApp.getFullName() + "</b> </p>";

@@ -31,7 +31,39 @@ public class AppManagerDialog extends javax.swing.JDialog {
     }
    
     private void initComponents() {
+    	mainTabbedPane = new javax.swing.JTabbedPane();
+        installNewAppsPanel1 = new InstallFromStorePanel(appManager, fileUtil, taskManager, this);
+        currentlyInstalledAppsPanel1 = new CurrentlyInstalledAppsPanel(appManager);
+        checkForUpdatesPanel1 = new CheckForUpdatesPanel();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        mainTabbedPane.addTab("Install from App Store", installNewAppsPanel1);
+        mainTabbedPane.addTab("Currently Installed", currentlyInstalledAppsPanel1);
+        mainTabbedPane.addTab("Check for Updates", checkForUpdatesPanel1);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(mainTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(mainTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        pack();
+        
+        /*
+        // Older code generated from NetBeans using an external Swing extension library to generate the layout
+         
     	mainTabbedPane = new javax.swing.JTabbedPane();
         installNewAppsPanel1 = new InstallFromStorePanel(appManager, fileUtil, taskManager, this);
         currentlyInstalledAppsPanel1 = new CurrentlyInstalledAppsPanel(appManager);
@@ -61,5 +93,6 @@ public class AppManagerDialog extends javax.swing.JDialog {
         );
         
         pack();
+        */
     }
 }

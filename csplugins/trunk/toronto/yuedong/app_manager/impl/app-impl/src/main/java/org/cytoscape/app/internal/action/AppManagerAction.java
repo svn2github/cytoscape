@@ -65,7 +65,7 @@ public class AppManagerAction extends AbstractCyAction {
 	public void actionPerformed(ActionEvent event) {
 				
 		// Create and display the App Manager dialog
-		AppManagerDialog appManagerDialog = new AppManagerDialog(appManager, fileUtil, taskManager, swingApplication.getJFrame(), false);
+		AppManagerDialog appManagerDialog = new AppManagerDialog(appManager, fileUtil, taskManager, swingApplication.getJFrame(), true);
 	}
 
 }

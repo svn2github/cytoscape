@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>impl-parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-alpha8-SNAPSHOT</version>
+		<version>3.0.0-alpha9-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -18,7 +18,6 @@
 	<name>${bundle.symbolicName}</name>
 
 	<packaging>bundle</packaging>
-
 
 	<build>
 		<resources>
@@ -108,7 +107,6 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-app-api</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -211,7 +209,6 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-app-api</artifactId>
-			<version>${project.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>

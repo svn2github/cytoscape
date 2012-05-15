@@ -3,6 +3,8 @@ package org.cytoscape.app.internal.net;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.ImageIcon;
+
 import org.cytoscape.app.internal.net.WebQuerier.AppTag;
 
 /**
@@ -36,6 +38,8 @@ public class WebApp {
 	
 	/** The version of Cytoscape that this app has been known to be compatible with */
 	private String compatibleCytoscapeVersion;
+	
+	private ImageIcon imageIcon;
 	
 	public WebApp() {
 		appTags = new HashSet<AppTag>();
@@ -97,6 +101,10 @@ public class WebApp {
 		return appTags;
 	}
 	
+	public ImageIcon getImageIcon() {
+		return imageIcon;
+	}
+	
 	/**
 	 * Obtain the download count for this app that was obtained from the app store website
 	 * @return The download count for this app
@@ -147,6 +155,10 @@ public class WebApp {
 	
 	public void setCompatibleCytoscapeVersion(String compatibleCytoscapeVersion) {
 		this.compatibleCytoscapeVersion = compatibleCytoscapeVersion;
+	}
+	
+	public void setImageIcon(ImageIcon imageIcon) {
+		this.imageIcon = imageIcon;
 	}
 	
 	@Override

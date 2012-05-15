@@ -36,6 +36,9 @@ public class AppManager {
 	/** Uninstalled apps are copied to this subdirectory under the local app storage directory. */
 	private static final String UNINSTALLED_APPS_DIRECTORY_NAME = "uninstalled";
 	
+	/** Apps are downloaded from the web store to this subdirectory under local app storage directory. */
+	private static final String DOWNLOADED_APPS_DIRECTORY_NAME = "download-temp";
+	
 	/** This subdirectory in the local Cytoscape storage directory is used to store app data, as 
 	 * well as installed and uninstalled apps. */
 	private static final String APPS_DIRECTORY_NAME = "3.0/apps";
@@ -222,6 +225,21 @@ public class AppManager {
 		}
 	}
 	
+	/**
+	 * Return the canonical path of the subdirectory in the local storage directory used to temporarily store
+	 * apps downloaded from the app store.
+	 * @return The canonical path of the subdirectory in the local storage directory temporarily
+	 * storing apps downloaded from the app store.
+	 */
+	public String getDownloadedAppsPath() {
+		try {
+			return getBaseAppPath().getCanonicalPath() + File.separator + DOWNLOADED_APPS_DIRECTORY_NAME;
+		} catch (IOException e) {
+			// TODO: Record in logger
+			return null;
+		}
+	}
+	
 	private void installAppsInDirectory(File directory) {
 
 		// Parse App objects from the given directory
@@ -286,6 +304,11 @@ public class AppManager {
 			created = created && uninstalledDirectory.mkdir();
 		}
 		
+		File downloadedDirectory = new File(getDownloadedAppsPath());
+		if (!downloadedDirectory.exists()) {
+			created = created && downloadedDirectory.mkdir();
+		}
+		
 		if (!created) {
 			throw new RuntimeException("Failed to create local app storage directories.");
 		}
@@ -299,6 +322,9 @@ public class AppManager {
 		appListeners.remove(appListener);
 	}
 	
+	/**
+	 * Install apps from the local storage directory containing previously installed apps.
+	 */
 	public void installAppsFromDirectory() {
 		installAppsInDirectory(new File(getInstalledAppsPath()));
 	}

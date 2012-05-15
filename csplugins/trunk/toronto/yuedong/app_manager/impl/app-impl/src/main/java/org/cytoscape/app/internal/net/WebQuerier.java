@@ -1,16 +1,23 @@
 package org.cytoscape.app.internal.net;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.ImageIcon;
+
 import org.apache.commons.io.IOUtils;
+import org.cytoscape.app.internal.exception.AppDownloadException;
 import org.cytoscape.io.util.StreamUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -128,6 +135,10 @@ public class WebQuerier {
 		return result;
 	}
 	
+	public String getAppStoreUrl() {
+		return APP_STORE_URL;
+	}
+	
 	/**
 	 * Return the set of all tag names found on the app store. 
 	 * @return The set of all available tag names
@@ -147,6 +158,7 @@ public class WebQuerier {
 		}
 		
 		System.out.println("Obtaining apps from app store..");
+		String iconUrlPrefix = APP_STORE_URL.substring(0, APP_STORE_URL.length() - 1);
 		
 		Set<WebApp> result = new HashSet<WebApp>();
 		
@@ -168,6 +180,8 @@ public class WebQuerier {
 				webApp.setDescription(jsonObject.get("description").toString());
 				webApp.setIconUrl(jsonObject.get("icon_url").toString());
 				webApp.setDownloadCount(jsonObject.getInt("downloads"));
+				// System.out.println("Obtaining ImageIcon: " + iconUrlPrefix + webApp.getIconUrl());
+				// webApp.setImageIcon(new ImageIcon(new URL(iconUrlPrefix + webApp.getIconUrl())));
 				webApp.setAppStoreUrl(APP_STORE_URL + "apps/" + webApp.getName());
 
 				// Obtain tags associated with this app
@@ -247,6 +261,72 @@ public class WebQuerier {
 		}
 		
 		return "";
+	}
+	
+	/**
+	 * Given the unique app name used by the app store, query the app store for the 
+	 * download URL and download the app to the given directory.
+	 * 
+	 * If a file with the same name exists in the directory, it is overwritten.
+	 * 
+	 * @param appName The unique app name used by the app store 
+	 */
+	public void downloadApp(String appName, File directory) throws AppDownloadException {
+		Set<WebApp> apps = getAllApps();
+		
+		boolean appFound = false;
+		for (WebApp webApp : apps) {
+			if (webApp.getName().equalsIgnoreCase(appName)) {
+				appFound = true;
+				break;
+			}
+		}
+		
+		if (appFound) {
+			String jsonResult;
+			try {
+				jsonResult = query(APP_STORE_URL + "apps/" + appName);
+
+				// System.out.println(jsonResult);
+				
+				JSONObject jsonObject = new JSONObject(jsonResult);
+				
+				JSONArray releases = jsonObject.getJSONArray("releases");
+				
+				System.out.println("Releases for " + appName + ": " + releases.length());
+				
+				for (int index = 0; index < releases.length(); index++) {
+					JSONObject release = releases.getJSONObject(index);
+				}
+				
+				String url = "http://apps.cytoscape.org/media/releases/CyTestSimpleApp1.jar";
+				
+				URL downloadUrl = new URL(url);
+				
+				ReadableByteChannel readableByteChannel = Channels.newChannel(downloadUrl.openStream());
+				
+				File outputFile = new File(directory.getCanonicalPath() + File.separator + "CyTestSimpleApp1d.jar");
+				
+				if (outputFile.exists()) {
+					outputFile.delete();
+				}
+				
+				outputFile.createNewFile();
+				
+			    FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+			    fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, 1 << 24);
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} else {
+			System.out.println("No app with name " + appName + " found.");
+		}
 	}
 	
 	public Set<WebApp> getAppsByTag(String tagName) {
