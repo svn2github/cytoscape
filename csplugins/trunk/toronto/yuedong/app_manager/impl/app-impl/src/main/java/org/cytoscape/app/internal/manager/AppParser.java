@@ -40,13 +40,13 @@ public class AppParser {
 	/**
 	 * A regular expression representing valid app versions, which are in the format major.minor.patch[-tag]
 	 */
-	private static final String APP_VERSION_TAG_REGEX = "(0|([1-9]+\\d*))\\.(\\d)+\\.(\\d)+(-.*)?";
+	private static final String APP_VERSION_TAG_REGEX = "(0|([1-9]+\\d*))(\\.\\d+)+(-.*)?";
 	
 	/**
 	 * A regular expression representing valid values for the entry containing the major versions of Cytoscape
 	 * that the app is known to work with in, in comma-delimited form.
 	 */
-	private static final String APP_COMPATIBLE_TAG_REGEX = "(\\d+\\s*)(,\\s*\\d+\\s*)*";
+	private static final String APP_COMPATIBLE_TAG_REGEX = "(\\d+(\\.\\d+)+\\s*)(,\\s*\\d+(\\.\\d+)+\\s*)*";
 	
 	/**
 	 * Attempt to parse a given {@link File} object as an {@link App} object.
@@ -106,6 +106,7 @@ public class AppParser {
 		}
 		
 		String compatibleVersions = manifest.getMainAttributes().getValue(APP_COMPATIBLE_TAG);
+		/*
 		if (compatibleVersions == null || compatibleVersions.trim().length() == 0) {
 			throw new AppParsingException("Jar is missing value for entry " + APP_COMPATIBLE_TAG + " in its manifest file.");
 		} else if (!compatibleVersions.matches(APP_COMPATIBLE_TAG_REGEX)) {
@@ -113,6 +114,7 @@ public class AppParser {
 					+ " key " + APP_COMPATIBLE_TAG + " does not match the form of a comma-delimited list of integers with"
 					+ " variable amounts of whitespace around commas");
 		}
+		*/
 		
 		parsedApp.setAppFile(file);
 		parsedApp.setEntryClassName(entryClassName);

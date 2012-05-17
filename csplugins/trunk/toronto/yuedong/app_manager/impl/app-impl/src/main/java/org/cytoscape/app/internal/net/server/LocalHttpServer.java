@@ -248,6 +248,14 @@ public class LocalHttpServer implements Runnable {
 	
             final String method = request.getRequestLine().getMethod().toLowerCase();
             System.out.println("Request received. Method: " + method);
+
+	    if (method.equals("options")) {
+		    httpResponse.addHeader("Access-Control-Allow-Origin", "*");
+		    httpResponse.addHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+		    httpResponse.addHeader("Access-Control-Max-Age", "1");
+		    httpResponse.addHeader("Access-Control-Allow-Headers", "origin, x-csrftoken, accept");
+		    return;
+	    }
 	        
 		    // loop thru responders and see if any of them produce a response
 		    Response response = null;

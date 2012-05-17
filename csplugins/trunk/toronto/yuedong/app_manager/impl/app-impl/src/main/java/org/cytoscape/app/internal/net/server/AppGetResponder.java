@@ -85,7 +85,7 @@ public class AppGetResponder implements LocalHttpServer.GetResponder{
 				// TODO: Use a web query to do this?
 				
 				for (WebApp webApp : appManager.getWebQuerier().getAllApps()) {
-					if (webApp.getName() == appName) {
+					if (webApp.getName().equals(appName)) {
 						appFoundInStore = true;
 						break;
 					}
