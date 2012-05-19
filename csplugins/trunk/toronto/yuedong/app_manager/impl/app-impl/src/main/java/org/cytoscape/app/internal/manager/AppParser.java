@@ -38,15 +38,17 @@ public class AppParser {
 	private static final String APP_COMPATIBLE_TAG = "Cytoscape-App-Works-With";
 	
 	/**
-	 * A regular expression representing valid app versions, which are in the format major.minor.patch[-tag]
+	 * A regular expression representing valid app versions, which are in the format major.minor[.patch][-tag],
+	 * eg. 3.0.0-SNAPSHOT, or 3.0.
 	 */
-	private static final String APP_VERSION_TAG_REGEX = "(0|([1-9]+\\d*))(\\.\\d+)+(-.*)?";
+	private static final String APP_VERSION_TAG_REGEX = "(0|([1-9]+\\d*))\\.(\\d)+(\\.(\\d)+)?(-.*)?";
 	
 	/**
 	 * A regular expression representing valid values for the entry containing the major versions of Cytoscape
-	 * that the app is known to work with in, in comma-delimited form.
+	 * that the app is known to work with in, in comma-delimited form. Examples that work are "3.0, 3.1"  or "2, 3.0".
+	 * Examples that do not match are "1.0b" and "v1, v2", as these contain non-digit characters.
 	 */
-	private static final String APP_COMPATIBLE_TAG_REGEX = "(\\d+(\\.\\d+)+\\s*)(,\\s*\\d+(\\.\\d+)+\\s*)*";
+	private static final String APP_COMPATIBLE_TAG_REGEX = "(\\d+(\\.\\d+)?\\s*)(,\\s*\\d+(\\.\\d+)?\\s*)*";
 	
 	/**
 	 * Attempt to parse a given {@link File} object as an {@link App} object.
