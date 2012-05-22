@@ -86,8 +86,8 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
         this.parent = parent;
     	initComponents();
         
-		taskManager.execute(new TaskIterator(new Task(){
-
+		taskManager.execute(new TaskIterator(new Task() {
+			
 			// Obtain information for all available apps, then append tag information
 			@Override
 			public void run(TaskMonitor taskMonitor) throws Exception {
@@ -347,34 +347,52 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
     }
     
     private void installSelectedButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                      
-        Set<WebApp> selectedApps = getSelectedApps();
-        WebQuerier webQuerier = appManager.getWebQuerier();
+        final Set<WebApp> selectedApps = getSelectedApps();
+        final WebQuerier webQuerier = appManager.getWebQuerier();
         
-        for (WebApp webApp : selectedApps) {
-        	try {
-        		System.out.println("Download path: " + appManager.getDownloadedAppsPath());
+        System.out.println("Download path: " + appManager.getDownloadedAppsPath());
+		
+		taskManager.execute(new TaskIterator(new Task() {
+
+			@Override
+			public void run(TaskMonitor taskMonitor) throws Exception {
+				taskMonitor.setTitle("Installing App from App Store");
 				
-        		// Download app
-        		File appFile = webQuerier.downloadApp(webApp.getName(), new File(appManager.getDownloadedAppsPath()));
+				double progress = 0;
+				double progressIncrement = 1.0 / selectedApps.size();
 				
-        		// Parse app
-        		App parsedApp = appManager.getAppParser().parseApp(appFile);
-        		
-        		// Install app
-				appManager.installApp(parsedApp);
-        		
-			} catch (AppDownloadException e) {
-				JOptionPane.showMessageDialog(parent, "Error downloading app: " + e.getMessage(),
-	                       "Error", JOptionPane.ERROR_MESSAGE);
-			} catch (AppParsingException e) {
-				JOptionPane.showMessageDialog(parent, "Error parsing app: " + e.getMessage(),
-	                       "Error", JOptionPane.ERROR_MESSAGE);
-			} catch (AppInstallException e) {
-				JOptionPane.showMessageDialog(parent, "Error installing app: " + e.getMessage(),
-	                       "Error", JOptionPane.ERROR_MESSAGE);
+				for (WebApp webApp : selectedApps) {
+					
+					taskMonitor.setStatusMessage("Installing app: " + webApp.getFullName());
+					
+					// Download app
+	        		File appFile = webQuerier.downloadApp(webApp.getName(), new File(appManager.getDownloadedAppsPath()));
+					
+	        		if (appFile != null) {
+		        		// Parse app
+		        		App parsedApp = appManager.getAppParser().parseApp(appFile);
+		        		
+		        		// Install app
+						appManager.installApp(parsedApp);
+	        		} else {
+	        			// Log error: no download links were found for app
+	        			System.out.println("Unable to find download url for: " + webApp.getFullName());
+	        		}
+	        		
+	        		progress += progressIncrement;
+	        		taskMonitor.setProgress(progress);
+				}
+				
+				
 			}
-        }
-    }     
+
+			@Override
+			public void cancel() {
+			}
+			
+		}));
+    }
+ 
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
