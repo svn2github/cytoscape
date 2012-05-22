@@ -62,7 +62,7 @@ public abstract class App {
 	 */
 	public enum AppStatus{
 		INSTALLED("Installed"),
-		TO_BE_UNINSTALLED("Uninstall-on-Restart"),
+		TO_BE_UNINSTALLED("Uninstall-on-restart"),
 		UNINSTALLED("Uninstalled");
 		
 		String readableStatus;
@@ -186,13 +186,8 @@ public abstract class App {
 					if (this.getAppName().equalsIgnoreCase(conflictingApp.getAppName())) {
 						
 						// Same filename, same app name found
-						// return;
-						
-						Collection<String> directoryPaths = new LinkedList<String>();
-						directoryPaths.add(installedAppsPath);
-						directoryPaths.add(uninstalledAppsPath);
-						
-						copyDestinationFileName = suggestFileName(directoryPaths, appFile.getName());
+						// Do nothing
+						return;
 						
 					} else {
 						

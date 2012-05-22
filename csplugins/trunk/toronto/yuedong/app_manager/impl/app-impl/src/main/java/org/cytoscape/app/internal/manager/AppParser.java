@@ -104,19 +104,17 @@ public class AppParser {
 			throw new AppParsingException("Jar is missing value for entry " + APP_VERSION_TAG + " in its manifiest file.");
 		} else if (!appVersion.matches(APP_VERSION_TAG_REGEX)) {
 			throw new AppParsingException("The app version specified in its manifest file under the key " + APP_VERSION_TAG
-					+ " was found to not match the format major.minor.patch[-tag], eg. 1.0.0 or 1.0.0-SNAPSHOT");
+					+ " was found to not match the format major.minor[.patch][-tag], eg. 2.1, 2.1-test, 3.0.0 or 3.0.0-SNAPSHOT");
 		}
 		
 		String compatibleVersions = manifest.getMainAttributes().getValue(APP_COMPATIBLE_TAG);
-		/*
 		if (compatibleVersions == null || compatibleVersions.trim().length() == 0) {
 			throw new AppParsingException("Jar is missing value for entry " + APP_COMPATIBLE_TAG + " in its manifest file.");
 		} else if (!compatibleVersions.matches(APP_COMPATIBLE_TAG_REGEX)) {
-			throw new AppParsingException("The known compatible major versions of Cytoscape specified in the manifest under the"
-					+ " key " + APP_COMPATIBLE_TAG + " does not match the form of a comma-delimited list of integers with"
-					+ " variable amounts of whitespace around commas");
+			throw new AppParsingException("The known compatible versions of Cytoscape specified in the manifest under the"
+					+ " key " + APP_COMPATIBLE_TAG + " does not match the form of a comma-delimited list of versions of the form"
+					+ " major[.minor] (eg. 1 or 1.0) with variable whitespace around versions");
 		}
-		*/
 		
 		parsedApp.setAppFile(file);
 		parsedApp.setEntryClassName(entryClassName);
