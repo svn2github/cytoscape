@@ -271,7 +271,7 @@ public class WebQuerier {
 	 * 
 	 * @param appName The unique app name used by the app store 
 	 */
-	public void downloadApp(String appName, File directory) throws AppDownloadException {
+	public File downloadApp(String appName, File directory) throws AppDownloadException {
 		Set<WebApp> apps = getAllApps();
 		
 		boolean appFound = false;
@@ -295,27 +295,40 @@ public class WebQuerier {
 				
 				System.out.println("Releases for " + appName + ": " + releases.length());
 				
+				String latestReleaseUrl = null;
+				String latestReleaseDate = null;
+				String releaseDate;
+				
 				for (int index = 0; index < releases.length(); index++) {
 					JSONObject release = releases.getJSONObject(index);
+				
+					releaseDate = release.getString("created_iso");
+					if (latestReleaseDate == null || releaseDate.compareToIgnoreCase(releaseDate) >= 0) {
+						latestReleaseUrl = APP_STORE_URL + release.getString("release_file_url");
+					}
 				}
 				
-				String url = "http://apps.cytoscape.org/media/releases/CyTestSimpleApp1.jar";
+				// String url = "http://apps.cytoscape.org/media/releases/CyTestSimpleApp1.jar";
 				
-				URL downloadUrl = new URL(url);
-				
-				ReadableByteChannel readableByteChannel = Channels.newChannel(downloadUrl.openStream());
-				
-				File outputFile = new File(directory.getCanonicalPath() + File.separator + "CyTestSimpleApp1d.jar");
-				
-				if (outputFile.exists()) {
-					outputFile.delete();
+				if (latestReleaseUrl != null) {
+					URL downloadUrl = new URL(latestReleaseUrl);
+					
+					ReadableByteChannel readableByteChannel = Channels.newChannel(downloadUrl.openStream());
+					
+					File outputFile = new File(directory.getCanonicalPath() + File.separator + appName + ".jar");
+					
+					if (outputFile.exists()) {
+						outputFile.delete();
+					}
+					
+					outputFile.createNewFile();
+					
+				    FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+				    fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, 1 << 24);
+				    
+				    return outputFile;
 				}
-				
-				outputFile.createNewFile();
-				
-			    FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-			    fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, 1 << 24);
-				
+			    
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -327,6 +340,8 @@ public class WebQuerier {
 		} else {
 			System.out.println("No app with name " + appName + " found.");
 		}
+		
+		return null;
 	}
 	
 	public Set<WebApp> getAppsByTag(String tagName) {

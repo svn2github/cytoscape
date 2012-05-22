@@ -37,6 +37,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import org.cytoscape.app.internal.exception.AppDownloadException;
+import org.cytoscape.app.internal.exception.AppInstallException;
 import org.cytoscape.app.internal.exception.AppParsingException;
 import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
@@ -283,7 +284,12 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 					
 					// Install the app if parsing was successful
 					if (app != null) {
-						appManager.installApp(app);
+						try {
+							appManager.installApp(app);
+						} catch (AppInstallException e) {
+							JOptionPane.showMessageDialog(parent, "Error installing app: " + e.getMessage(),
+				                       "Error", JOptionPane.ERROR_MESSAGE);
+						}
 					}
 				}
         	}
@@ -347,13 +353,28 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
         for (WebApp webApp : selectedApps) {
         	try {
         		System.out.println("Download path: " + appManager.getDownloadedAppsPath());
-				webQuerier.downloadApp(webApp.getName(), new File(appManager.getDownloadedAppsPath()));
+				
+        		// Download app
+        		File appFile = webQuerier.downloadApp(webApp.getName(), new File(appManager.getDownloadedAppsPath()));
+				
+        		// Parse app
+        		App parsedApp = appManager.getAppParser().parseApp(appFile);
+        		
+        		// Install app
+				appManager.installApp(parsedApp);
+        		
 			} catch (AppDownloadException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				JOptionPane.showMessageDialog(parent, "Error downloading app: " + e.getMessage(),
+	                       "Error", JOptionPane.ERROR_MESSAGE);
+			} catch (AppParsingException e) {
+				JOptionPane.showMessageDialog(parent, "Error parsing app: " + e.getMessage(),
+	                       "Error", JOptionPane.ERROR_MESSAGE);
+			} catch (AppInstallException e) {
+				JOptionPane.showMessageDialog(parent, "Error installing app: " + e.getMessage(),
+	                       "Error", JOptionPane.ERROR_MESSAGE);
 			}
         }
-    }                                                     
+    }     
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:

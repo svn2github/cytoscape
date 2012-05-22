@@ -1,8 +1,12 @@
 package org.cytoscape.app.internal.manager;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.cytoscape.app.AbstractCyApp;
@@ -154,11 +158,63 @@ public abstract class App {
 		try {
 			File appFile = this.getAppFile();
 			
+			// Make sure no app with the same filename and app name is already installed
+			File installedDirectoryTargetFile = new File(installedAppsPath + File.separator + appFile.getName());
+			File uninstalledDirectoryTargetFile = new File(uninstalledAppsPath + File.separator + appFile.getName());
+			
+			String copyDestinationFileName = appFile.getName();
+			
+			// Check for filename collisions in both the installed apps directory as well as the 
+			// uninstalled apps directory
+			if (installedDirectoryTargetFile.exists() || uninstalledDirectoryTargetFile.exists()) {
+				Set<App> registeredApps = appManager.getApps();
+				
+				// The app registered to the app manager that happens to have the same filename
+				App conflictingApp = null;
+				
+				for (App registeredApp : registeredApps) {
+					if (registeredApp.getAppFile().getName().equalsIgnoreCase(appFile.getName())) {
+						conflictingApp = registeredApp;
+					}
+				}
+				
+				// Only prevent the overwrite if the filename conflict is with an app registered
+				// to the app manager
+				if (conflictingApp != null) {
+					
+					// Check if the apps have the same name
+					if (this.getAppName().equalsIgnoreCase(conflictingApp.getAppName())) {
+						
+						// Same filename, same app name found
+						// return;
+						
+						Collection<String> directoryPaths = new LinkedList<String>();
+						directoryPaths.add(installedAppsPath);
+						directoryPaths.add(uninstalledAppsPath);
+						
+						copyDestinationFileName = suggestFileName(directoryPaths, appFile.getName());
+						
+					} else {
+						
+						// Same filename, different app name found
+						// Rename file
+						Collection<String> directoryPaths = new LinkedList<String>();
+						directoryPaths.add(installedAppsPath);
+						directoryPaths.add(uninstalledAppsPath);
+						
+						copyDestinationFileName = suggestFileName(directoryPaths, appFile.getName());
+					}
+					
+				}
+			}
+			
 			// Only perform the copy if the app was not already in the target directory
 			if (!appFile.getParentFile().getCanonicalPath().equals(installedAppsPath)) {
 				
 				// Uses Apache Commons library; overwrites files with the same name.
-				FileUtils.copyFileToDirectory(appFile, new File(installedAppsPath));
+				// FileUtils.copyFileToDirectory(appFile, new File(installedAppsPath));
+				
+				FileUtils.copyFile(appFile, new File(installedAppsPath + File.separator + copyDestinationFileName));
 				
 				// If we copied it from the uninstalled apps directory, remove it from that directory
 				if (appFile.getParentFile().getCanonicalPath().equals(uninstalledAppsPath)) {
@@ -166,8 +222,7 @@ public abstract class App {
 				}
 				
 				// Update the app's path
-				String fileName = this.getAppFile().getName();
-				this.setAppFile(new File(installedAppsPath + File.separator + fileName));
+				this.setAppFile(new File(installedAppsPath + File.separator + copyDestinationFileName));
 			}
 		} catch (IOException e) {
 			throw new AppInstallException("Unable to copy app file to installed apps directory: " + e.getMessage());
@@ -188,6 +243,59 @@ public abstract class App {
 		
 		this.setStatus(AppStatus.INSTALLED);
 		appManager.addApp(this);
+	}
+	
+	/**
+	 * Given a set of canonical directory paths, find a name for a given file that does not 
+	 * collide with names of files in any of the given directories.
+	 * 
+	 * For example, if the name file.txt is taken, this method will return file-2.txt. If the
+	 * latter is taken, it will return file-3.txt, and so on.
+	 * 
+	 * @param directoryPaths A collection of canonical directory paths used to check for files
+	 * that have colliding names
+	 * @param desiredFileName The desired name for the given file, used as a base to which the
+	 * number tag is added.
+	 * @return A new name of the file that does not collide with any non-directory file in the given
+	 * paths. If the given filename had no collisions, then an identical filename is returned.
+	 */
+	private String suggestFileName(Collection<String> directoryPaths, String desiredFileName) {
+		
+		int postfixNumber = 1;
+		boolean nameCollision = false;
+		File file;
+		
+		for (String directoryPath : directoryPaths) {
+			file = new File(directoryPath + File.separator + desiredFileName);
+			
+			nameCollision = nameCollision || (file.exists() && !file.isDirectory());
+		}
+		
+		String fileBaseName = desiredFileName;
+		String fileFullExtension = "";
+		int lastPeriodIndex = desiredFileName.lastIndexOf(".");
+		
+		if (lastPeriodIndex != -1) {
+			fileBaseName = desiredFileName.substring(0, lastPeriodIndex);
+			fileFullExtension = desiredFileName.substring(lastPeriodIndex, desiredFileName.length());
+		}
+		
+		String newFileName = desiredFileName;
+		
+		while(nameCollision) {
+			postfixNumber++;
+			nameCollision = false;
+			
+			for (String directoryPath : directoryPaths) {
+				// If the old name is basename.extension, then the new name is basename-postfixNumber.extension
+				newFileName = fileBaseName + "-" + postfixNumber + fileFullExtension;
+				file = new File(directoryPath + File.separator + newFileName);
+				
+				nameCollision = nameCollision || (file.exists() && !file.isDirectory());
+			}
+		}
+		
+		return newFileName;
 	}
 	
 	/**

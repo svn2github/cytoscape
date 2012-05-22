@@ -9,6 +9,8 @@ import javax.swing.table.DefaultTableModel;
 
 import org.cytoscape.app.internal.event.AppsChangedEvent;
 import org.cytoscape.app.internal.event.AppsChangedListener;
+import org.cytoscape.app.internal.exception.AppInstallException;
+import org.cytoscape.app.internal.exception.AppUninstallException;
 import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.App.AppStatus;
 import org.cytoscape.app.internal.manager.AppManager;
@@ -146,7 +148,12 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
         for (App app : selectedApps) {
         	// Only install apps that are not already installed
         	if (app.getStatus() != AppStatus.INSTALLED) {
-        		appManager.installApp(app);
+        		try {
+					appManager.installApp(app);
+				} catch (AppInstallException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         	}
         }
         
@@ -161,7 +168,12 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
         for (App app : selectedApps) {
         	// Only uninstall apps that are installed
         	if (app.getStatus() == AppStatus.INSTALLED) {
-        		appManager.uninstallApp(app);
+        		try {
+					appManager.uninstallApp(app);
+				} catch (AppUninstallException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         	}
         }
         

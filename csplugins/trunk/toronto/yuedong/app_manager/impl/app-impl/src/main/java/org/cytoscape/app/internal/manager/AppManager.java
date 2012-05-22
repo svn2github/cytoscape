@@ -107,6 +107,14 @@ public class AppManager {
 	 */
 	public void addApp(App app) {
 		apps.add(app);
+		
+		/*
+		// Let the listeners know that an app has changed
+		for (AppsChangedListener appListener : appListeners) {
+			AppsChangedEvent appEvent = new AppsChangedEvent(this);
+			appListener.appsChanged(appEvent);
+		}
+		*/
 	}
 	
 	/**
@@ -126,17 +134,12 @@ public class AppManager {
 	 * Apps that have not been validated are ignored. Also, apps that are already installed are left alone.
 	 * 
 	 * @param app The {@link App} object representing and providing information about the app to install
-	 * @throws AppMoveException If there was an IO-related error during the copy operation that prevents the app from 
-	 * being successfully installed.
+	 * @throws AppInstallException If there was an error while attempting to install the app such as being
+	 * unable to copy the app to the installed apps directory or to instance the app's entry point class
 	 */
-	public void installApp(App app) {
+	public void installApp(App app) throws AppInstallException {
 		
-		try {
-			app.install(this);
-		} catch (AppInstallException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		app.install(this);
 		
 		// Let the listeners know that an app has been installed
 		for (AppsChangedListener appListener : appListeners) {
@@ -152,17 +155,13 @@ public class AppManager {
 	 * The app will only be uninstalled if it is currently installed.
 	 * 
 	 * @param app The app to be uninstalled.
-	 * @throws AppMoveException If there was an error while moving the app from the installed apps subdirectory
-	 * to the subdirectory containing currently uninstalled apps.
+	 * @throws AppUninstallException If there was an error while attempting to uninstall the app such as
+	 * attempting to uninstall an app that isn't installed, or being unable to move the app to the uninstalled
+	 * apps directory
 	 */
-	public void uninstallApp(App app) {
+	public void uninstallApp(App app) throws AppUninstallException {
 		
-		try {
-			app.uninstall(this);
-		} catch (AppUninstallException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		app.uninstall(this);
 		
 		// Let the listeners know that an app has been uninstalled
 		for (AppsChangedListener appListener : appListeners) {
@@ -247,7 +246,11 @@ public class AppManager {
 		
 		// Install each app
 		for (App parsedApp : parsedApps) {
-			installApp(parsedApp);
+			try {
+				installApp(parsedApp);
+			} catch (AppInstallException e) {
+				System.out.println("Unable to install app: " + e.getMessage());
+			}
 		}
 		
 		System.out.println("Number of apps installed from directory: " + parsedApps.size());

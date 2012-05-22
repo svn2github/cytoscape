@@ -11,6 +11,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
+
+import org.cytoscape.app.internal.exception.AppInstallException;
 import org.cytoscape.app.internal.exception.AppParsingException;
 import org.cytoscape.app.internal.manager.App;
 import org.cytoscape.app.internal.manager.AppManager;
@@ -235,7 +237,12 @@ public class InstallFromStorePanelOld extends javax.swing.JPanel {
 					
 					// Install the app if parsing was successful
 					if (app != null) {
-						appManager.installApp(app);
+						try {
+							appManager.installApp(app);
+						} catch (AppInstallException e) {
+							JOptionPane.showMessageDialog(this, "Error installing app: " + e.getMessage(),
+				                       "Error", JOptionPane.ERROR_MESSAGE);
+						}
 					}
 				}
         	}
