@@ -103,7 +103,7 @@ public class AppGetResponder implements LocalHttpServer.GetResponder{
 					} else {
 						App app = appManager.getAppParser().parseApp(appFile);
 						
-						app.install(appManager);
+						appManager.installApp(app);
 						
 						installStatus = "success";
 					}

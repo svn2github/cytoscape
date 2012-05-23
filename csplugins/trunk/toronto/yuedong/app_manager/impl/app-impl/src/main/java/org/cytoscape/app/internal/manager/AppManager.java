@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.monitor.FileAlterationListener;
+import org.apache.commons.io.monitor.FileAlterationMonitor;
+import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.cytoscape.app.AbstractCyApp;
 import org.cytoscape.app.CyAppAdapter;
 import org.cytoscape.app.internal.event.AppsChangedEvent;
@@ -68,6 +71,8 @@ public class AppManager {
 	 */
 	private CyAppAdapter appAdapter;
 	
+	private FileAlterationMonitor fileAlterationMonitor;
+	
 	public AppManager(CyAppAdapter appAdapter, CyApplicationConfiguration applicationConfiguration, final WebQuerier webQuerier) {
 		this.applicationConfiguration = applicationConfiguration;
 		this.appAdapter = appAdapter;
@@ -87,6 +92,60 @@ public class AppManager {
 		// Load apps from the "uninstalled apps" directory
 		Set<App> uninstalledApps = obtainAppsFromDirectory(new File(getUninstalledAppsPath()));
 		apps.addAll(uninstalledApps);
+
+		// FileAlterationListener listener;
+		fileAlterationMonitor = new FileAlterationMonitor(600);
+		
+		FileAlterationObserver fileAlterationObserver = new FileAlterationObserver(getInstalledAppsPath());
+		try {
+			fileAlterationObserver.initialize();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		fileAlterationObserver.addListener(new FileAlterationListener() {
+			
+			@Override
+			public void onStop(FileAlterationObserver observer) {
+			}
+			
+			@Override
+			public void onStart(FileAlterationObserver observer) {
+			}
+			
+			@Override
+			public void onFileDelete(File file) {
+				System.out.println("File deleted");
+			}
+			
+			@Override
+			public void onFileCreate(File file) {
+				System.out.println("File created");
+			}
+			
+			@Override
+			public void onFileChange(File file) {
+				System.out.println("File changed");
+			}
+			
+			@Override
+			public void onDirectoryDelete(File directory) {
+				System.out.println("File changed");
+			}
+			
+			@Override
+			public void onDirectoryCreate(File directory) {
+				System.out.println("Directory created");
+			}
+			
+			@Override
+			public void onDirectoryChange(File directory) {
+				System.out.println("Directory changed");
+			}
+		});
+		
+		fileAlterationMonitor.addObserver(fileAlterationObserver);
+		
 	}
 	
 	public CyAppAdapter getAppAdapter() {

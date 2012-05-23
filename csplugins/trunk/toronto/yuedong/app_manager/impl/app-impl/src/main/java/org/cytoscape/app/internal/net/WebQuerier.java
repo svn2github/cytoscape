@@ -269,7 +269,9 @@ public class WebQuerier {
 	 * 
 	 * If a file with the same name exists in the directory, it is overwritten.
 	 * 
-	 * @param appName The unique app name used by the app store 
+	 * @param appName The unique app name used by the app store
+	 * @param version The desired version, or <code>null</code> to obtain the latest release
+	 * @param directory The directory used to store the downloaded file
 	 */
 	public File downloadApp(String appName, String version, File directory) throws AppDownloadException {
 		Set<WebApp> apps = getAllApps();

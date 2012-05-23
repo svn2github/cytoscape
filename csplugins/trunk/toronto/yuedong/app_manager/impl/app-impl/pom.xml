@@ -102,20 +102,20 @@
 		</dependency>
 		
 		<!-- dependencies for file copying and moving utilities -->
-		<!-- commons-io 2.2 dependency
-		<dependency>
-			<groupId>cytoscape-temp</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.2</version>
-		</dependency>
-		-->
-				
+		<!--
 		<dependency>
   	 		<groupId>org.apache.commons</groupId>
  		    <artifactId>com.springsource.org.apache.commons.io</artifactId>
   			<version>1.4.0</version>
 		</dependency>
-
+		-->
+		
+		<dependency>
+  			<groupId>commons-io</groupId>
+  			<artifactId>commons-io</artifactId>
+  			<version>2.1</version>
+		</dependency>
+		
 		<!-- dependency for a freely available json parser (http://www.json.org/java/) -->
 		<dependency>
 			<groupId>cytoscape-temp</groupId>
@@ -129,6 +129,15 @@
   			<artifactId>httpcore</artifactId>
  		 	<version>4.1.3</version>
 		</dependency>
+
+		<!-- dependency for a directory listener -->
+		<!--
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>jnotify</artifactId>
+			<version>0.94-b20120523</version>
+		</dependency>
+		-->
 
 		<!-- dependencies needed for plugin manager -->
 		<dependency>
