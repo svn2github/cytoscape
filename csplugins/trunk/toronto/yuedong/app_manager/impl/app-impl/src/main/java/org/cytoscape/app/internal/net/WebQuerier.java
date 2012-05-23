@@ -274,6 +274,7 @@ public class WebQuerier {
 	public File downloadApp(String appName, String version, File directory) throws AppDownloadException {
 		Set<WebApp> apps = getAllApps();
 		
+		// Check that the app was found in the app store's current list of apps
 		boolean appFound = false;
 		for (WebApp webApp : apps) {
 			if (webApp.getName().equalsIgnoreCase(appName)) {
@@ -285,11 +286,13 @@ public class WebQuerier {
 		if (appFound) {
 			try {
 
+				// Find the download url
 				String releaseUrl = getReleaseUrl(appName, version);
 				
 				if (releaseUrl != null) {
 					URL downloadUrl = new URL(releaseUrl);
 					
+					// Prepare to download
 					ReadableByteChannel readableByteChannel = Channels.newChannel(downloadUrl.openStream());
 					
 					File outputFile = new File(directory.getCanonicalPath() + File.separator + appName + ".jar");
@@ -319,6 +322,18 @@ public class WebQuerier {
 	}
 	
 	
+	/**
+	 * Obtain the release URL for a given app and version by querying the app store.
+	 * 
+	 * This method assumes that the appName parameter corresponds to the name of an
+	 * app available on the web store.
+	 * 
+	 * @param appName The name of the app whose release URL is to be looked for
+	 * @param version The desired version of the app, or <code>null</code> to obtain
+	 * the the latest release 
+	 * @return The download URL of the app, or <code>null</code> if no release was
+	 * available, or a release with the given version was not found.
+	 */
 	private String getReleaseUrl(String appName, String version) {
 		
 		try {
