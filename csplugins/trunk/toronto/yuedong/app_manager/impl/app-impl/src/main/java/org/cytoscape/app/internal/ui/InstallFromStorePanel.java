@@ -366,7 +366,7 @@ public class InstallFromStorePanel extends javax.swing.JPanel {
 					taskMonitor.setStatusMessage("Installing app: " + webApp.getFullName());
 					
 					// Download app
-	        		File appFile = webQuerier.downloadApp(webApp.getName(), new File(appManager.getDownloadedAppsPath()));
+	        		File appFile = webQuerier.downloadApp(webApp.getName(), null, new File(appManager.getDownloadedAppsPath()));
 					
 	        		if (appFile != null) {
 		        		// Parse app

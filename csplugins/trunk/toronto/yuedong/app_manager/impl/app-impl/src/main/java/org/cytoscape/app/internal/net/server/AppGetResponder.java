@@ -1,5 +1,6 @@
 package org.cytoscape.app.internal.net.server;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,12 +96,25 @@ public class AppGetResponder implements LocalHttpServer.GetResponder{
 				
 				if (appFoundInStore) {
 					
-					// TODO: Look for the app on the app store
-					installStatus = "checking";
+					File appFile = appManager.getWebQuerier().downloadApp(appName, version, new File(appManager.getDownloadedAppsPath()));
+					
+					if (appFile == null) {
+						installStatus = "version-not-found";
+					} else {
+						App app = appManager.getAppParser().parseApp(appFile);
+						
+						app.install(appManager);
+						
+						installStatus = "success";
+					}
+					
+					
 				}
 				
 				responseData.put("install_status", installStatus);
-			}	
+			} else if (version == null) {
+				responseData.put("install_status", "version-not-found");
+			}
 		}
 		
 		JSONObject jsonObject = new JSONObject(responseData);

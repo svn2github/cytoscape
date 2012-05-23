@@ -271,7 +271,7 @@ public class WebQuerier {
 	 * 
 	 * @param appName The unique app name used by the app store 
 	 */
-	public File downloadApp(String appName, File directory) throws AppDownloadException {
+	public File downloadApp(String appName, String version, File directory) throws AppDownloadException {
 		Set<WebApp> apps = getAllApps();
 		
 		boolean appFound = false;
@@ -283,35 +283,12 @@ public class WebQuerier {
 		}
 		
 		if (appFound) {
-			String jsonResult;
 			try {
-				jsonResult = query(APP_STORE_URL + "apps/" + appName);
 
-				// System.out.println(jsonResult);
+				String releaseUrl = getReleaseUrl(appName, version);
 				
-				JSONObject jsonObject = new JSONObject(jsonResult);
-				
-				JSONArray releases = jsonObject.getJSONArray("releases");
-				
-				System.out.println("Releases for " + appName + ": " + releases.length());
-				
-				String latestReleaseUrl = null;
-				String latestReleaseDate = null;
-				String releaseDate;
-				
-				for (int index = 0; index < releases.length(); index++) {
-					JSONObject release = releases.getJSONObject(index);
-				
-					releaseDate = release.getString("created_iso");
-					if (latestReleaseDate == null || releaseDate.compareToIgnoreCase(releaseDate) >= 0) {
-						latestReleaseUrl = APP_STORE_URL + release.getString("release_file_url");
-					}
-				}
-				
-				// String url = "http://apps.cytoscape.org/media/releases/CyTestSimpleApp1.jar";
-				
-				if (latestReleaseUrl != null) {
-					URL downloadUrl = new URL(latestReleaseUrl);
+				if (releaseUrl != null) {
+					URL downloadUrl = new URL(releaseUrl);
 					
 					ReadableByteChannel readableByteChannel = Channels.newChannel(downloadUrl.openStream());
 					
@@ -332,9 +309,6 @@ public class WebQuerier {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 			
 		} else {
@@ -343,6 +317,56 @@ public class WebQuerier {
 		
 		return null;
 	}
+	
+	
+	private String getReleaseUrl(String appName, String version) {
+		
+		try {
+			String jsonResult = query(APP_STORE_URL + "apps/" + appName);
+			
+			JSONObject jsonObject = new JSONObject(jsonResult);
+		
+			JSONArray releases = jsonObject.getJSONArray("releases");
+			
+			System.out.println("Releases for " + appName + ": " + releases.length());
+			
+			String latestReleaseUrl = null;
+			String latestReleaseDate = null;
+			String releaseDate;
+			
+			for (int index = 0; index < releases.length(); index++) {
+				JSONObject release = releases.getJSONObject(index);
+			
+				if (version != null) {
+					if (release.getString("version").equalsIgnoreCase(version)) {
+						latestReleaseUrl = APP_STORE_URL + release.getString("release_file_url");
+					}
+				} else {
+					// If version was null, look for the latest release
+					releaseDate = release.getString("created_iso");
+					if (latestReleaseDate == null || releaseDate.compareToIgnoreCase(latestReleaseDate) >= 0) {
+						latestReleaseUrl = APP_STORE_URL + release.getString("release_file_url");
+						latestReleaseDate = releaseDate;
+					}
+				}
+			}
+			
+			return latestReleaseUrl;
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		return null;
+		
+	}
+	
 	
 	public Set<WebApp> getAppsByTag(String tagName) {
 		// Query for apps (which includes tag information) if not done so
