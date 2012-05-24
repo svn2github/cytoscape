@@ -7,6 +7,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<bundle.symbolicName>org.cytoscape.cpathsquared-impl</bundle.symbolicName>
+		<cytoscape.version>3.0.0-beta1</cytoscape.version>
+		<spring.version>3.0.5.RELEASE</spring.version>
 	</properties>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>cpathsquared-impl</artifactId>
@@ -121,68 +123,65 @@
 	</repositories>
 
 
-
-
-
 	<dependencies>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
-			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<version>[${cytoscape.version}, 4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>io-api</artifactId>
-			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<version>[${cytoscape.version}, 4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-api</artifactId>
-			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<version>[${cytoscape.version}, 4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>layout-api</artifactId>
-			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<version>[${cytoscape.version}, 4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>presentation-api</artifactId>
-			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<version>[${cytoscape.version}, 4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-util-api</artifactId>
-			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<version>[${cytoscape.version}, 4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-application-api</artifactId>
-			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<version>[${cytoscape.version}, 4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>vizmap-api</artifactId>
-			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<version>[${cytoscape.version}, 4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>webservice-swing-api</artifactId>
-			<version>[3.0.0-alpha8-SNAPSHOT, 4.0.0)</version>
+			<version>[${cytoscape.version}, 4.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-api</artifactId>
-			<version>1.5.2</version>
+			<version>[1.5.2, 2.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -194,7 +193,7 @@
 		<dependency>
 			<groupId>pathwaycommons.cpath</groupId>
 			<artifactId>cpath-client</artifactId>
-			<version>3.1.0-SNAPSHOT</version>
+			<version>3.2.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.biopax.paxtools</groupId>
@@ -211,31 +210,31 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>${spring.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>${spring.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-oxm</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>${spring.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>${spring.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>${spring.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>

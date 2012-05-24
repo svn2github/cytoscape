@@ -10,19 +10,15 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
 
+import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,30 +27,32 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import org.cytoscape.cpathsquared.internal.CPath2;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.task.ExecuteSearchTask;
 import org.cytoscape.cpathsquared.internal.task.ResultHandler;
+import org.cytoscape.util.swing.CheckBoxJList;
 import org.cytoscape.work.TaskFactory;
 
+import java.util.*;
 
 /**
  * Search Box Panel.
  *
  */
 public class SearchQueryPanel extends JPanel {
-    private JButton searchButton;
     private static final String ENTER_TEXT = "Enter Gene Name or ID";
-    private final JList organismBox;
-    private final JList dataSourceBox;
+    private final CheckBoxJList organismList;
+    private final CheckBoxJList dataSourceList;
     private final JTextField searchField;
 	
     /**
      * Constructor.
      */
     public SearchQueryPanel() {  
-    	this.organismBox = new JList();
-    	this.dataSourceBox = new JList();
-    	this.searchField = createSearchField();        
+    	this.organismList = new CheckBoxJList();
+    	this.dataSourceList = new CheckBoxJList();
+    	this.searchField = createSearchField();
     	
         GradientHeader header = new GradientHeader("Search");
         header.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -63,19 +61,22 @@ public class SearchQueryPanel extends JPanel {
         add(header);
         add(Box.createVerticalStrut(5));
 
-        JPanel centerPanel = new JPanel();
-        BoxLayout boxLayoutMain = new BoxLayout(centerPanel, BoxLayout.X_AXIS);
-        centerPanel.setLayout(boxLayoutMain);
-        centerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JPanel queryPanel = new JPanel();
+        queryPanel.setLayout(new BoxLayout(queryPanel, BoxLayout.Y_AXIS));
+        queryPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        queryPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+        
+        JPanel queryFiltersPanel = new JPanel();
+        queryFiltersPanel.setLayout(new BoxLayout(queryFiltersPanel, BoxLayout.X_AXIS));
+        queryFiltersPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        queryFiltersPanel.setAlignmentY(Component.TOP_ALIGNMENT);
         
         // create query field, examples/label, and button
-        URL url = GradientHeader.class.getResource("resources/run_tool.gif");
-        ImageIcon icon = new ImageIcon(url);
-        searchButton = new JButton("Search");
+        JButton searchButton = new JButton("Search");
         searchButton.setToolTipText("Execute Search");
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                executeSearch(searchField.getText(), organismBox.getSelectedValues(), dataSourceBox.getSelectedValues());
+                executeSearch(searchField.getText(), organismList.getSelectedValues(), dataSourceList.getSelectedValues());
             }
         });
         searchButton.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -84,8 +85,10 @@ public class SearchQueryPanel extends JPanel {
         searchField.setBorder (BorderFactory.createCompoundBorder(searchField.getBorder(),
                 pulsatingBorder));
         searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        searchField.setMaximumSize(new Dimension(1000, 100));
         
-        JEditorPane label = new JEditorPane ("text/html", "Examples:  <a href='TP53'>TP53</a>, " +
+        JEditorPane label = new JEditorPane (
+        		"text/html", "Examples:  <a href='TP53'>TP53</a>, " +
                 "<a href='BRCA1'>BRCA1</a>, or <a href='SRY'>SRY</a>.");
         label.setEditable(false);
         label.setOpaque(false);
@@ -105,56 +108,43 @@ public class SearchQueryPanel extends JPanel {
         label.setBorder(new EmptyBorder(5,3,3,3));
         label.setAlignmentX(Component.LEFT_ALIGNMENT);       
         
-        centerPanel.add(searchField);
-        centerPanel.add(createOrganismFilterBox());
-        centerPanel.add(createDataSourceFilterBox());
-        
-        JButton clearButton = new JButton("Clear");
-        clearButton.setToolTipText("Clear");
-        clearButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                searchField.setText(null);
-                organismBox.clearSelection();
-                dataSourceBox.clearSelection();
-            }
-        });
-        
-        centerPanel.add(clearButton);
-        centerPanel.add(searchButton);
-
-        add(centerPanel);
-        add(label);
+      	queryPanel.add(searchField); 
+      	queryPanel.add(label);
+      	queryPanel.add(searchButton);
+      	queryFiltersPanel.add(queryPanel);
+      	queryFiltersPanel.add(createOrganismFilterBox());
+      	queryFiltersPanel.add(createDataSourceFilterBox());
+      	
+        add(queryFiltersPanel);
     }
 
 
-    private final JComponent createOrganismFilterBox() {
-    	//TODO fill the lists dynamically (from the web service)
-    	DefaultListModel organismBoxModel = new DefaultListModel();
-    	organismBoxModel.addElement(new FilterBoxItem("Human", "urn:miriam:taxonomy:9606"));
-        organismBoxModel.addElement(new FilterBoxItem("Mouse", "urn:miriam:taxonomy:10090"));
-        organismBoxModel.addElement(new FilterBoxItem("Rat", "urn:miriam:taxonomy:10116"));
-        organismBoxModel.addElement(new FilterBoxItem("S. cerevisiae", "urn:miriam:taxonomy:4932"));
-    	organismBox.setModel(organismBoxModel);
-        organismBox.setToolTipText("Select Organisms");
-        organismBox.setMaximumSize(new Dimension(200, 9999));
-        organismBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JScrollPane scroll = new JScrollPane(organismBox);
-        scroll.setSize(100, 100);
+    private final JComponent createOrganismFilterBox() {	
+    	SortedJListModel<FilterBoxItem> model = new SortedJListModel<FilterBoxItem>();
+    	Map<String,String> map = CPath2.getAvailableOrganisms();
+    	for(String o : map.keySet()) {
+    		model.addElement(new FilterBoxItem(map.get(o), o));
+    	}
+    	organismList.setModel(model);
+        organismList.setToolTipText("Select Organisms");
+        organismList.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JScrollPane scroll = new JScrollPane(organismList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         
         return scroll;
     }
     
     private final JComponent createDataSourceFilterBox() {
-        //TODO fill the lists dynamically (from the web service)
         DefaultListModel dataSourceBoxModel = new DefaultListModel();
-        dataSourceBoxModel.addElement(new FilterBoxItem("Reactome", "urn:miriam:reactome"));
-        dataSourceBoxModel.addElement(new FilterBoxItem("NCI_Nature Curated", "urn:miriam:pid.pathway"));
-        dataSourceBox.setModel(dataSourceBoxModel);
-        dataSourceBox.setToolTipText("Select Datasources");
-        dataSourceBox.setMaximumSize(new Dimension(200, 9999));
-        dataSourceBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JScrollPane scroll = new JScrollPane(dataSourceBox);
-        scroll.setSize(100, 100);
+        
+        Map<String,String> map = CPath2.getLoadedDataSources();
+    	for(String d : map.keySet()) {
+    		dataSourceBoxModel.addElement(new FilterBoxItem(map.get(d), d));
+    	}
+        
+        dataSourceList.setModel(dataSourceBoxModel);
+        dataSourceList.setToolTipText("Select Datasources");
+        dataSourceList.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JScrollPane scroll = new JScrollPane(dataSourceList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         
         return scroll;
     }
@@ -183,7 +173,7 @@ public class SearchQueryPanel extends JPanel {
                 int keyCode = e.getKeyCode();
                 if (keyCode == 10) {
                     executeSearch(searchField.getText(), 
-                    		organismBox.getSelectedValues(), dataSourceBox.getSelectedValues());
+                    		organismList.getSelectedValues(), dataSourceList.getSelectedValues());
                 }
             }
         });
@@ -224,12 +214,63 @@ public class SearchQueryPanel extends JPanel {
             CPath2Factory.getTaskManager().execute(search.createTaskIterator());
         }
     }
+   
+    static class SortedJListModel<E> extends AbstractListModel {
+		SortedSet<E> items;
 
-    
-    /**
-     * Initializes Focus to the Search Button.
-     */
-    public final void initFocus() {
-        searchButton.requestFocusInWindow();
-    }
+		public SortedJListModel() {
+			super();
+			items = new TreeSet<E>();
+		}
+
+		@Override
+		public Object getElementAt(int index) {
+			return items.toArray()[index];
+		}
+
+		@Override
+		public int getSize() {
+			return items.size();
+		}
+		
+		public void addAll(Object elements[]) {
+		    Collection c = Arrays.asList(elements);
+		    items.addAll(c);
+		    fireContentsChanged(this, 0, getSize());
+		}
+		
+		public void addElement(E o) {
+			items.add(o);
+			fireContentsChanged(this, 0, getSize());
+		}
+		
+		public boolean removeElement(Object element) {
+			boolean removed = items.remove(element);
+			if (removed) {
+				fireContentsChanged(this, 0, getSize());
+			}
+			return removed;
+		}
+
+		public void clear() {
+			items.clear();
+			fireContentsChanged(this, 0, getSize());
+		}
+
+		public boolean contains(Object element) {
+			return items.contains(element);
+		}
+
+		public Object firstElement() {
+			return items.first();
+		}
+
+		public Iterator iterator() {
+			return items.iterator();
+		}
+
+		public Object lastElement() {
+			return items.last();
+		}
+	}
 }

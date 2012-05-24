@@ -3,7 +3,7 @@ package org.cytoscape.cpathsquared.internal;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.biopax.paxtools.model.Model;
@@ -54,15 +54,16 @@ public final class CPath2 {
             listener.searchInitiated(keyword, organism, datasource);
         }
 
-        CPath2Client client = CPath2Client.newInstance();
-        client.setEndPointURL("http://awabi.cbio.mskcc.org/cpath2/");
+        CPath2Client client = newClient();
     	if(LOGGER.isDebugEnabled())
     		LOGGER.debug("cPath2Url=" + client.getEndPointURL());
     	
         if(organism != null)
         	client.setOrganisms(organism);
         
-        client.setType("Entity"); //TODO make sure: we want Entity type hits only, because UtilityClass elements can be retrieved via sub-queries 
+        //TODO design choice: search for interactions right away (cpath2 cool! index allows it) vs. get physical entities first (then get processes...)
+//        client.setType("PhysicalEntity");
+        client.setType("Interaction");
         
         if(datasource != null)
         	client.setDataSources(datasource);
@@ -76,8 +77,14 @@ public final class CPath2 {
 			return res;
     }
 
+    private static CPath2Client newClient() {
+        CPath2Client client = CPath2Client.newInstance();
+//        client.setEndPointURL("http://localhost:8080/cpath-web-service/");
+        client.setEndPointURL("http://awabi.cbio.mskcc.org/cpath2/");
+		return client;
+	}
 
-    /**
+	/**
      * Gets One or more records by Primary ID.
      * @param ids               Array of URIs.
      * @param format            Output format. TODO
@@ -87,10 +94,8 @@ public final class CPath2 {
      */
     public static String getRecordsByIds(String[] ids, OutputFormat format) 
     {
-    	CPath2Client client = CPath2Client.newInstance();
-        
     	//TODO client must return other formats, if requested
-    	Model res = client.get(Arrays.asList(ids));
+    	Model res = newClient().get(Arrays.asList(ids));
     	        
     	ByteArrayOutputStream baos = new ByteArrayOutputStream();
         BioPaxUtil.getBiopaxIO().convertToOWL(res, baos);
@@ -99,15 +104,13 @@ public final class CPath2 {
     }
 
 
-    //TODO
-    public static List<String> getOrganisms() {
-        throw new UnsupportedOperationException("Not implemented.");
+    public static Map<String, String> getAvailableOrganisms() {
+        return newClient().getValidOrganisms();
     }
 
     
-    //TODO
-    public static List<String> getDataSources() {
-        throw new UnsupportedOperationException("Not implemented.");
+    public static Map<String, String> getLoadedDataSources() {
+        return newClient().getValidDataSources();
     }
     
     
@@ -141,7 +144,6 @@ public final class CPath2 {
 
 	public static SearchResponse topPathways(String keyword, Set<String> organism,
 			Set<String> datasource) {
-		// TODO Auto-generated method stub
-		return null;
+		return newClient().getTopPathways();
 	}
 }

@@ -24,7 +24,8 @@ public final class SelectEntity {
             StringBuffer html = new StringBuffer();
             html.append("<html>");
 
-            html.append ("<h2>" + item.getName() + "</h2>");
+            if(item.getName() != null)
+            	html.append ("<h2>" + item.getName() + "</h2>");
             html.append ("<h3>Class: " + item.getBiopaxClass() + "</h3>");
             html.append ("<h3>URI: " + item.getUri() + "</h3>");
 

@@ -85,7 +85,7 @@ implements CPath2Listener, CytoPanelStateChangedListener
         header.setAlignmentX(Component.LEFT_ALIGNMENT);
         hitListPane.add(header, BorderLayout.NORTH);
         JSplitPane internalPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, hitListScrollPane, detailsPanel);
-        internalPanel.setDividerLocation(100);
+        internalPanel.setDividerLocation(200);
         hitListPane.add(internalPanel, BorderLayout.CENTER);
         
         //  Create search results extra filtering panel
@@ -104,7 +104,7 @@ implements CPath2Listener, CytoPanelStateChangedListener
         //  Create the Split Pane
         JSplitPane splitPane = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT, 
         	hitListPane, networksPanel);
-        splitPane.setDividerLocation(200);
+        splitPane.setDividerLocation(400);
         splitPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(splitPane);
 
@@ -181,8 +181,7 @@ implements CPath2Listener, CytoPanelStateChangedListener
                 //  Ignore the "unselect" event.
                 if (!listSelectionEvent.getValueIsAdjusting()) {
                     if (selectedIndex >=0) {
-                        SelectEntity selectTask = new SelectEntity();
-                        selectTask.selectItem(
+                    	(new SelectEntity()).selectItem(
                         		(SearchHit)resList.getModel().getElementAt(selectedIndex),
                                 summaryDocument, summaryTextPane, appLayeredPane);
                     }
@@ -206,27 +205,27 @@ implements CPath2Listener, CytoPanelStateChangedListener
      * @param pathwayModel     Pathway Model.
      */
     private final void downloadPathway(int[] rows, DefaultTableModel model) {
-        try {
-        	SearchHit hit = (SearchHit) model.getDataVector().get(rows[0]);
-        	String internalId = hit.getUri();
-            String title = model.getValueAt(rows[0], 0)
-                    + " (" + model.getValueAt(rows[0], 1) + ")";
+    	if(rows.length < 1) {
+    		return;
+    	}
+    	
+        int i= rows[0];
+    	SearchHit hit = (SearchHit) model.getDataVector().get(i);
+        String internalId = hit.getUri();
+        String title = model.getValueAt(i, 0)
+        	+ " (" + model.getValueAt(i, 1) + ")";
 
-            OutputFormat format;
-            //TODO add EXTENDED_BINARY_SIF
-            if (CPath2Properties.downloadMode == CPath2Properties.DOWNLOAD_BIOPAX) {
-                format = OutputFormat.BIOPAX;
-            } else {
-                format = OutputFormat.BINARY_SIF;
-            }
-
-            TaskFactory taskFactory = CPath2Factory.newTaskFactory(new ExecuteGetRecordByCPathIdTask(
-            		new String[]{internalId}, format, title));
-            CPath2Factory.getTaskManager().execute(taskFactory.createTaskIterator());
-            
-        } catch (IndexOutOfBoundsException e) {
-            //  Ignore TODO strange...
+        OutputFormat format;
+        //TODO add EXTENDED_BINARY_SIF
+        if (CPath2Properties.downloadMode == CPath2Properties.DOWNLOAD_BIOPAX) {
+        	format = OutputFormat.BIOPAX;
+        } else {
+            format = OutputFormat.BINARY_SIF;
         }
+
+        TaskFactory taskFactory = CPath2Factory.newTaskFactory(new ExecuteGetRecordByCPathIdTask(
+        	new String[]{internalId}, format, title));
+        CPath2Factory.getTaskManager().execute(taskFactory.createTaskIterator());
     }
     
 }
