@@ -63,7 +63,8 @@ public abstract class App {
 	public enum AppStatus{
 		INSTALLED("Installed"),
 		TO_BE_UNINSTALLED("Uninstall-on-restart"),
-		UNINSTALLED("Uninstalled");
+		UNINSTALLED("Uninstalled"),
+		UNDEFINED("Undefined");
 		
 		String readableStatus;
 		
@@ -171,9 +172,12 @@ public abstract class App {
 				
 				// The app registered to the app manager that happens to have the same filename
 				App conflictingApp = null;
+				File registeredAppFile;
 				
 				for (App registeredApp : registeredApps) {
-					if (registeredApp.getAppFile().getName().equalsIgnoreCase(appFile.getName())) {
+					registeredAppFile = registeredApp.getAppFile();
+					
+					if (registeredAppFile != null && registeredAppFile.getName().equalsIgnoreCase(appFile.getName())) {
 						conflictingApp = registeredApp;
 					}
 				}
@@ -186,8 +190,14 @@ public abstract class App {
 					if (this.getAppName().equalsIgnoreCase(conflictingApp.getAppName())) {
 						
 						// Same filename, same app name found
-						// Do nothing
-						return;
+						
+						// Forgive the collision if we are copying from the uninstalled apps directory
+						if (appFile.getParentFile().getCanonicalPath().equals(uninstalledAppsPath)) {
+							
+						} else {
+							// Skip installation, suspected that a copy of the app is already installed
+							return;
+						}
 						
 					} else {
 						
@@ -312,30 +322,35 @@ public abstract class App {
 			throw new AppUninstallException("App is not installed; cannot uninstall.");
 		}
 		
-		// Check if the app is inside the directory containing currently installed apps.
-		// If so, prepare to move it to the uninstalled directory.
-		File appParentDirectory = this.getAppFile().getParentFile();
-		try {
-			// Obtain the path of the "uninstalled apps" subdirectory.
-			String uninstalledAppsPath = appManager.getUninstalledAppsPath();
-			
-			if (appParentDirectory.getCanonicalPath().equals(
-					appManager.getInstalledAppsPath())) {
+		// For an installed app whose file has been moved or is no longer available, do not
+		// perform file moving. Instead, attempt to try to complete the uninstallation without 
+		// regard to app's file.
+		if (this.getAppFile() != null) {
+			// Check if the app is inside the directory containing currently installed apps.
+			// If so, prepare to move it to the uninstalled directory.
+			File appParentDirectory = this.getAppFile().getParentFile();
+			try {
+				// Obtain the path of the "uninstalled apps" subdirectory.
+				String uninstalledAppsPath = appManager.getUninstalledAppsPath();
 				
-				// Use the Apache commons library to copy over the file, overwriting existing files.
-				try {
-					FileUtils.copyFileToDirectory(this.getAppFile(), new File(uninstalledAppsPath));
-				} catch (IOException e) {
-					throw new AppUninstallException("Unable to move file: " + e.getMessage());
+				if (appParentDirectory.getCanonicalPath().equals(
+						appManager.getInstalledAppsPath())) {
+					
+					// Use the Apache commons library to copy over the file, overwriting existing files.
+					try {
+						FileUtils.copyFileToDirectory(this.getAppFile(), new File(uninstalledAppsPath));
+					} catch (IOException e) {
+						throw new AppUninstallException("Unable to move file: " + e.getMessage());
+					}
+					
+					// Delete the source file after the copy operation
+					String fileName = this.getAppFile().getName();
+					this.getAppFile().delete();
+					this.setAppFile(new File(uninstalledAppsPath + File.separator + fileName));				
 				}
-				
-				// Delete the source file after the copy operation
-				String fileName = this.getAppFile().getName();
-				this.getAppFile().delete();
-				this.setAppFile(new File(uninstalledAppsPath + File.separator + fileName));				
+			} catch (IOException e) {
+				throw new AppUninstallException("Unable to obtain path: " + e.getMessage());
 			}
-		} catch (IOException e) {
-			throw new AppUninstallException("Unable to obtain path: " + e.getMessage());
 		}
 	}
 	

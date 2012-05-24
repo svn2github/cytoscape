@@ -1,6 +1,7 @@
 package org.cytoscape.app.internal.manager;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
@@ -9,7 +10,9 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOCase;
 import org.apache.commons.io.monitor.FileAlterationListener;
+import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.cytoscape.app.AbstractCyApp;
@@ -19,6 +22,7 @@ import org.cytoscape.app.internal.event.AppsChangedListener;
 import org.cytoscape.app.internal.exception.AppInstallException;
 import org.cytoscape.app.internal.exception.AppParsingException;
 import org.cytoscape.app.internal.exception.AppUninstallException;
+import org.cytoscape.app.internal.manager.App.AppStatus;
 import org.cytoscape.app.internal.net.WebQuerier;
 import org.cytoscape.application.CyApplicationConfiguration;
 
@@ -73,6 +77,31 @@ public class AppManager {
 	
 	private FileAlterationMonitor fileAlterationMonitor;
 	
+	/**
+	 * A {@link FileFilter} that accepts only files in the first depth level of a given directory
+	 */
+	private class SingleLevelFileFilter implements FileFilter {
+
+		private File parentDirectory;
+		
+		public SingleLevelFileFilter(File parentDirectory) {
+			this.parentDirectory = parentDirectory;
+			
+		}
+		
+		@Override
+		public boolean accept(File pathName) {
+			if (!pathName.getParentFile().equals(parentDirectory)) {
+				return false;
+			} else if (pathName.isDirectory()) {
+				return false;
+			}
+			
+			return true;
+		}
+		
+	}
+	
 	public AppManager(CyAppAdapter appAdapter, CyApplicationConfiguration applicationConfiguration, final WebQuerier webQuerier) {
 		this.applicationConfiguration = applicationConfiguration;
 		this.appAdapter = appAdapter;
@@ -96,56 +125,136 @@ public class AppManager {
 		// FileAlterationListener listener;
 		fileAlterationMonitor = new FileAlterationMonitor(600);
 		
-		FileAlterationObserver fileAlterationObserver = new FileAlterationObserver(getInstalledAppsPath());
-		try {
-			fileAlterationObserver.initialize();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		fileAlterationObserver.addListener(new FileAlterationListener() {
-			
-			@Override
-			public void onStop(FileAlterationObserver observer) {
-			}
-			
-			@Override
-			public void onStart(FileAlterationObserver observer) {
-			}
-			
+		File installedAppsPath = new File(getInstalledAppsPath());
+		File uninstalledAppsPath = new File(getUninstalledAppsPath());
+		
+		FileAlterationObserver installAlterationObserver = new FileAlterationObserver(
+				installedAppsPath, new SingleLevelFileFilter(installedAppsPath), IOCase.SYSTEM);
+		FileAlterationObserver uninstallAlterationObserver = new FileAlterationObserver(
+				uninstalledAppsPath, new SingleLevelFileFilter(uninstalledAppsPath), IOCase.SYSTEM);
+		
+		installAlterationObserver.addListener(new FileAlterationListenerAdaptor() {
 			@Override
 			public void onFileDelete(File file) {
-				System.out.println("File deleted");
+				System.out.println("Install directory file deleted");
+				
+				try {
+					String canonicalPath = file.getCanonicalPath();
+					
+					for (App app : apps) {
+						File appFile = app.getAppFile();
+						
+						if (appFile != null 
+								&& appFile.getCanonicalPath().equals(canonicalPath)) {
+							// app.setStatus(AppStatus.TO_BE_UNINSTALLED);
+							
+							// TODO: call app.setFile(null), prevent re-installation of this app
+							// as the file has been moved
+							
+							app.setAppFile(null);
+							
+							try {
+								uninstallApp(app);
+							} catch (AppUninstallException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							
+							// fireAppsChangedEvent();
+						}
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 			@Override
 			public void onFileCreate(File file) {
-				System.out.println("File created");
+				System.out.println("Install directory file created");
+				
+				App parsedApp = null;
+				try {
+					parsedApp = appParser.parseApp(file);
+					installApp(parsedApp);
+					
+					System.out.println("Installed: " + parsedApp.getAppName());
+				} catch (AppParsingException e) {
+					System.out.println("Failed to parse: " + file.getName());
+				} catch (AppInstallException e) {
+					System.out.println("Failed to install: " + parsedApp.getAppName());
+				}
+			
 			}
 			
 			@Override
 			public void onFileChange(File file) {
-				System.out.println("File changed");
-			}
-			
-			@Override
-			public void onDirectoryDelete(File directory) {
-				System.out.println("File changed");
-			}
-			
-			@Override
-			public void onDirectoryCreate(File directory) {
-				System.out.println("Directory created");
-			}
-			
-			@Override
-			public void onDirectoryChange(File directory) {
-				System.out.println("Directory changed");
+				System.out.println("Install directory file changed");
 			}
 		});
 		
-		fileAlterationMonitor.addObserver(fileAlterationObserver);
+		uninstallAlterationObserver.addListener(new FileAlterationListenerAdaptor() {
+			@Override
+			public void onFileDelete(File file) {
+				System.out.println("Uninstall directory file deleted");
+				
+				try {
+					String canonicalPath = file.getCanonicalPath();
+					
+					Set<App> appsToBeRemoved = new HashSet<App>();
+					
+					for (App app : apps) {
+						File appFile = app.getAppFile();
+						
+						// If the app was uninstalled and was moved from the uninstalled apps
+						// directory, remove it from the app manager
+						if (appFile != null 
+								&& appFile.getCanonicalPath().equals(canonicalPath)
+								&& app.getStatus() == AppStatus.UNINSTALLED) {
+							appsToBeRemoved.add(app);
+						}
+						
+						// TODO: Currently keeps the app registered to the app manager
+						// if its state was about-to-uninstall, perhaps need to 
+						// disable app re-installing as the file is no longer there.
+						// Possibly do by calling app.setFile(null)
+					}
+					
+					for (App appToBeRemoved : appsToBeRemoved) {
+						removeApp(appToBeRemoved);
+					}
+					
+					if (appsToBeRemoved.size() > 0) {
+						fireAppsChangedEvent();	
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			@Override
+			public void onFileCreate(File file) {
+				// Do nothing if a file is added to the uninstalled apps directory
+			}
+			
+			@Override
+			public void onFileChange(File file) {
+				System.out.println("Uninstall directory file changed");
+			}
+		});
 		
+		
+		try {
+			installAlterationObserver.initialize();
+			uninstallAlterationObserver.initialize();
+			fileAlterationMonitor.addObserver(installAlterationObserver);
+			fileAlterationMonitor.addObserver(uninstallAlterationObserver);
+			fileAlterationMonitor.start();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public CyAppAdapter getAppAdapter() {
@@ -201,10 +310,7 @@ public class AppManager {
 		app.install(this);
 		
 		// Let the listeners know that an app has been installed
-		for (AppsChangedListener appListener : appListeners) {
-			AppsChangedEvent appEvent = new AppsChangedEvent(this);
-			appListener.appsChanged(appEvent);
-		}
+		fireAppsChangedEvent();
 	}
 	
 	/**
@@ -223,12 +329,16 @@ public class AppManager {
 		app.uninstall(this);
 		
 		// Let the listeners know that an app has been uninstalled
+		fireAppsChangedEvent();
+	}
+	
+	private void fireAppsChangedEvent() {
+		AppsChangedEvent appEvent = new AppsChangedEvent(this);
 		for (AppsChangedListener appListener : appListeners) {
-			AppsChangedEvent appEvent = new AppsChangedEvent(this);
 			appListener.appsChanged(appEvent);
 		}
 	}
-		
+	
 	/**
 	 * Return the set of all apps registered to this app manager.
 	 * @return The set of all apps registered to this app manager.

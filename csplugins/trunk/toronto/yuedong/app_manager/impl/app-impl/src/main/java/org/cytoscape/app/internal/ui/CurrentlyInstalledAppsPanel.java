@@ -3,8 +3,10 @@ package org.cytoscape.app.internal.ui;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 
 import org.cytoscape.app.internal.event.AppsChangedEvent;
@@ -193,7 +195,9 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     	int[] selectedRows = appsAvailableTable.getSelectedRows();
     	
         for (int index = 0; index < selectedRows.length; index++) {
-        	App app = (App) appsAvailableTable.getModel().getValueAt(selectedRows[index], 0);
+        	
+        	App app = (App) appsAvailableTable.getModel().getValueAt(
+        			appsAvailableTable.convertRowIndexToModel(selectedRows[index]), 0);
         	
         	selectedApps.add(app);
         }
@@ -210,26 +214,33 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
 			@Override
 			public void appsChanged(AppsChangedEvent event) {
 				
-				Set<App> selectedApps = getSelectedApps();
-				
-				// Clear table
-				DefaultTableModel tableModel = (DefaultTableModel) appsAvailableTable.getModel();
-				for (int rowIndex = tableModel.getRowCount() - 1; rowIndex >= 0; rowIndex--) {
-					tableModel.removeRow(rowIndex);
-				}
-				
-				// Re-populate table
-				populateTable();
+				SwingUtilities.invokeLater(new Runnable() {
 
-				// Update labels
-				updateLabels();
+					@Override
+					public void run() {
+						Set<App> selectedApps = getSelectedApps();
+						
+						// Clear table
+						DefaultTableModel tableModel = (DefaultTableModel) appsAvailableTable.getModel();
+						for (int rowIndex = tableModel.getRowCount() - 1; rowIndex >= 0; rowIndex--) {
+							tableModel.removeRow(rowIndex);
+						}
+						
+						// Re-populate table
+						populateTable();
+						
+						// Update labels
+						updateLabels();
 
-				// Re-select previously selected apps
-				for (int rowIndex = 0; rowIndex < tableModel.getRowCount(); rowIndex++) {
-					if (selectedApps.contains(tableModel.getValueAt(rowIndex, 0))) {
-						appsAvailableTable.addRowSelectionInterval(rowIndex, rowIndex);
+						// Re-select previously selected apps
+						for (int rowIndex = 0; rowIndex < tableModel.getRowCount(); rowIndex++) {
+							if (selectedApps.contains(tableModel.getValueAt(rowIndex, 0))) {
+								appsAvailableTable.addRowSelectionInterval(rowIndex, rowIndex);
+							}
+						}
 					}
-				}
+				});
+				
 			}
     	};
     	
