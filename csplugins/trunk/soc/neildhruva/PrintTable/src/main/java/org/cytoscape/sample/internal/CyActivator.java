@@ -11,16 +11,10 @@ import java.util.Properties;
 
 public class CyActivator extends AbstractCyActivator {
 
-	/*
-	 * Class constructor
-	 */
 	public CyActivator() {
 		super();
 	}
 
-	/*
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
 	public void start(BundleContext bc) {
 		
 		CyApplicationManager cyApplicationManagerService = getService(bc,CyApplicationManager.class);

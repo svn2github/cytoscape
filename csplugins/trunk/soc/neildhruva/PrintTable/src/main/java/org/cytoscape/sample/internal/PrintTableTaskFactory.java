@@ -8,7 +8,7 @@ public class PrintTableTaskFactory extends AbstractTaskFactory {
 	
 	private CyApplicationManager manager;
 	
-	/*
+	/**
 	 * Class constructor invoked by the <code>CyActivator</code> class
 	 * 
 	 *  @param manager an instance of <code>CyApplicationManager</code> that is used to manage the current network
@@ -17,7 +17,7 @@ public class PrintTableTaskFactory extends AbstractTaskFactory {
 		this.manager=manager;
 	}
 	
-	/*
+	/**
 	 * @see org.cytoscape.work.TaskFactory#createTaskIterator()
 	 */
 	public TaskIterator createTaskIterator(){
