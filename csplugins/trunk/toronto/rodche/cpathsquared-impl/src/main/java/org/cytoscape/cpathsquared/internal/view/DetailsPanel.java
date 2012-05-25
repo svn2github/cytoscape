@@ -1,8 +1,6 @@
 package org.cytoscape.cpathsquared.internal.view;
 
 import java.awt.BorderLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
@@ -22,36 +20,21 @@ import org.cytoscape.util.swing.OpenBrowser;
  * Summary Panel.
  *
  */
-public class DetailsPanel extends JPanel implements MouseListener {
+public class DetailsPanel extends JPanel {
     private Document doc;
     private JTextPane textPane;
-	private SearchResultsPanel searchHitsPanel; // ref to parent
 
     /**
      * Constructor.
      * @param browser 
      */
-    public DetailsPanel(SearchResultsPanel searchHitsPanel) {
+    public DetailsPanel() {
         this.setLayout(new BorderLayout());
-		this.searchHitsPanel = searchHitsPanel;
         textPane = createHtmlTextPane(CPath2Factory.getOpenBrowser());
         doc = textPane.getDocument();
         JScrollPane scrollPane = encloseInJScrollPane (textPane);
-
-        GradientHeader header = new GradientHeader("Details");
-		// we become gradient header mouse listener - see comment below
-		header.addMouseListener(this);
-        add (header, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
     }
-
-	// kill mouse events - fixes bug where user can 
-	// click on gradient header and select things underneath
-	public void mouseClicked(MouseEvent e) {}
-	public void mouseEntered(MouseEvent e) {}
-	public void mouseExited(MouseEvent e) {}
-	public void mousePressed(MouseEvent e) {}
-	public void mouseReleased(MouseEvent e) {}
 
     /**
      * Gets the summary document model.

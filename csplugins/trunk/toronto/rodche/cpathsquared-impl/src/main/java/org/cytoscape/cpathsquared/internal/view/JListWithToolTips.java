@@ -1,7 +1,6 @@
 package org.cytoscape.cpathsquared.internal.view;
 
 import java.awt.event.MouseEvent;
-import java.util.List;
 
 import javax.swing.JList;
 import javax.swing.ListModel;
@@ -28,27 +27,22 @@ public class JListWithToolTips extends JList {
      * @param mouseEvent Mouse Event.
      * @return Tool Tip.
      */
+    @Override
 	public String getToolTipText(MouseEvent mouseEvent) {
 		int index = locationToIndex(mouseEvent.getPoint());
 		if (-1 < index) {
 			SearchHit record = (SearchHit) getModel().getElementAt(index);
-			StringBuffer html = new StringBuffer();
-			html.append("<html>");
-			html.append("<table cellpadding=10><tr><td>");
-			html.append("<B>" + record.getName() + "</B>&nbsp;&nbsp;");
-
-			List<String> organisms = record.getOrganism();
-			if (!organisms.isEmpty()) {
-				html.append(organisms.toString());
-			}
-
-			html.append("</td></tr></table>");
-			html.append("</html>");
+			StringBuilder html = new StringBuilder();
+			html.append("<html><table cellpadding=10><tr><td>");
+			html.append("<B>").append(record.getBiopaxClass());
+			if(record.getName() != null)
+				html.append("&nbsp;").append(record.getName());
+			html.append("</B>&nbsp;");
+			html.append("</td></tr></table></html>");
 			return html.toString();
 		} else {
 			return null;
 		}
 	}
-
 
 }

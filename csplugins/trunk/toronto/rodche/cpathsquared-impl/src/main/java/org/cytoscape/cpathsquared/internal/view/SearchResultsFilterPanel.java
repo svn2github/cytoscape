@@ -2,7 +2,6 @@ package org.cytoscape.cpathsquared.internal.view;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,7 +33,7 @@ import org.cytoscape.cpathsquared.internal.filters.OrganismFilter;
 import cpath.service.jaxb.SearchHit;
 
 
-public class SearchHitsPanel extends JPanel {
+public class SearchResultsFilterPanel extends JPanel {
     private JLabel matchingItemsLabel;
     private ResultsModel model;
     private CheckNode typeFilter;
@@ -44,40 +43,33 @@ public class SearchHitsPanel extends JPanel {
     private CollapsablePanel filterTreePanel;
     private JButton applyButton;
 	
-	public SearchHitsPanel(ResultsModel resultsModel) {
+	public SearchResultsFilterPanel(ResultsModel resultsModel) {
         this.model = resultsModel;
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
+        
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        
         matchingItemsLabel = new JLabel("Matching entities:  N/A");
         matchingItemsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         Font font = matchingItemsLabel.getFont();
         Font newFont = new Font(font.getFamily(), Font.BOLD, font.getSize());
         matchingItemsLabel.setFont(newFont);
         matchingItemsLabel.setBorder(new EmptyBorder(5, 10, 5, 5));
-        panel.add(matchingItemsLabel);
+        add(matchingItemsLabel);
 
         final CheckNode rootNode = new CheckNode("All Filters");
         tree = new JTreeWithCheckNodes(rootNode);
         tree.setOpaque(false);
 
-        filterTreePanel = new CollapsablePanel("Filters (Optional)");
+        filterTreePanel = new CollapsablePanel("BioPAX Filters");
         filterTreePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         filterTreePanel.getContentPane().add(tree);
 
-        panel.add(filterTreePanel);
+        JScrollPane scrollPane = new JScrollPane(filterTreePanel);
+        add(scrollPane);
+        
         addObserver(resultsModel, matchingItemsLabel, tree, rootNode);
         
-        JPanel footer = new JPanel();
-        footer.setAlignmentX(Component.LEFT_ALIGNMENT);
-        footer.setLayout(new FlowLayout(FlowLayout.LEFT));
-        createDownloadButton(footer);
-        panel.add(footer);
-        
-        
-        JScrollPane scrollPane = new JScrollPane(panel);
-        this.setLayout(new BorderLayout());
-        this.add(scrollPane, BorderLayout.CENTER);
+        createApplyFiltersButton();
     }
 
     /**
@@ -143,7 +135,7 @@ public class SearchHitsPanel extends JPanel {
 
                 // Create Filters
                 if (typeMap.size() > 0) {
-                    typeFilter = new CheckNode("Filter by BioPAX Type");
+                    typeFilter = new CheckNode("by BioPAX Type");
                     rootNode.add(typeFilter);
                     for (String key : typeMap.keySet()) {
                         CategoryCount categoryCount = new CategoryCount(key, typeMap.get(key));
@@ -152,7 +144,7 @@ public class SearchHitsPanel extends JPanel {
                     }
                 }
                 if (organismMap.size() > 0) {
-                    organismFilter = new CheckNode("Filter by Organism");
+                    organismFilter = new CheckNode("by Organism");
                     rootNode.add(organismFilter);
                     for (String key : organismMap.keySet()) {
                         CategoryCount categoryCount = new CategoryCount(key, organismMap.get(key));
@@ -161,7 +153,7 @@ public class SearchHitsPanel extends JPanel {
                     }
                 }
                 if (dataSourceMap.size() > 0) {
-                	dataSourceFilter = new CheckNode("Filter by Datasource");
+                	dataSourceFilter = new CheckNode("by Datasource");
                     rootNode.add(dataSourceFilter);
                     for (String key : dataSourceMap.keySet()) {
                         CategoryCount categoryCount = new CategoryCount(key, dataSourceMap.get(key));
@@ -274,8 +266,8 @@ public class SearchHitsPanel extends JPanel {
         return passedRecordList;
     }
     
-    //TODO change this to reset the hits list in the left-top panel
-    private final void createDownloadButton(JPanel footer) {
+    //TODO must apply to the hits list!
+    private final void createApplyFiltersButton() {
         applyButton = new JButton("Apply Filter");
         applyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -295,12 +287,11 @@ public class SearchHitsPanel extends JPanel {
 //                            });
 //                    }
 //                    detailsFrame.setVisible(true);
-                	
-                	
-                	
+	
                 }
             }
         });
-        footer.add(applyButton);
+        
+        add(applyButton);
     }
 }

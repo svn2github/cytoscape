@@ -47,33 +47,61 @@ public class SearchResultsPanel extends JPanel
 implements CPath2Listener, CytoPanelStateChangedListener 
 {
     private JList resList;
+    private JList ppwList;
+    private JList molList;
 //    private HashMap <String, Map<String,String>> memberDetailsMap; //TODO map: search hits - participant/component names, xrefs, entity ref's ids, etc.
     private Document summaryDocument;
     private String currentKeyword;
     private ResultsModel resultsModel;
-    private ResultsModel topPathwaysModel;
     private JTextPane summaryTextPane;
     private DetailsPanel detailsPanel;
+    private JScrollPane ppwListScrollPane;
+    private JScrollPane molListScrollPane;
 	private JLayeredPane appLayeredPane;
-	private CytoPanelState cytoPanelState;
-    private JFrame detailsFrame;
+//	private CytoPanelState cytoPanelState;
 
 
 	public SearchResultsPanel() 
     {
-        this.resultsModel = new ResultsModel();
+        resultsModel = new ResultsModel();
         CySwingApplication application = CPath2Factory.getCySwingApplication();
 		appLayeredPane = application.getJFrame().getRootPane().getLayeredPane();
         // add this search/get events listener to the api
 		CPath2.addApiListener(this);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        //  Create the Details Panel
+        //  Create Info Panel (the first tab)
         detailsPanel = CPath2Factory.createDetailsPanel(this);
         summaryDocument = detailsPanel.getDocument();
         summaryTextPane = detailsPanel.getTextPane();
-
-        //  Create the hits list panel (to apply extra filters and choose from)
+        
+        //create parent pathways panel (the second tab)
+        ppwList = new JListWithToolTips(new DefaultListModel());
+        ppwList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        ppwList.setPrototypeCellValue("12345678901234567890");
+        JPanel ppwListPane = new JPanel();
+        ppwListPane.setLayout(new BorderLayout());
+        ppwListScrollPane = new JScrollPane(ppwList);
+        ppwListScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+        ppwListPane.add(ppwListScrollPane, BorderLayout.CENTER);
+        
+        //create participants (the third tab is about Entity References, Complexes, and Genes...)
+        molList = new JListWithToolTips(new DefaultListModel());
+        molList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        molList.setPrototypeCellValue("12345678901234567890");
+        JPanel molListPane = new JPanel();
+        molListPane.setLayout(new BorderLayout());
+        molListScrollPane = new JScrollPane(molList);
+        molListScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+        molListPane.add(molListScrollPane, BorderLayout.CENTER);
+        
+        // make tabs
+        JTabbedPane southPane = new JTabbedPane(); 
+        southPane.add("Summary", detailsPanel);
+        southPane.add("Parent Pathways", ppwListPane);
+        southPane.add("Molecules", molListPane);
+  
+        // search hits list
         resList = new JListWithToolTips(new DefaultListModel());
         resList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         resList.setPrototypeCellValue("12345678901234567890");
@@ -81,38 +109,28 @@ implements CPath2Listener, CytoPanelStateChangedListener
         hitListPane.setLayout(new BorderLayout());
         JScrollPane hitListScrollPane = new JScrollPane(resList);
         hitListScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-        GradientHeader header = new GradientHeader("Select from Search Results");
+        GradientHeader header = new GradientHeader("Hits");
         header.setAlignmentX(Component.LEFT_ALIGNMENT);
         hitListPane.add(header, BorderLayout.NORTH);
-        JSplitPane internalPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, hitListScrollPane, detailsPanel);
-        internalPanel.setDividerLocation(200);
-        hitListPane.add(internalPanel, BorderLayout.CENTER);
+        
+        JSplitPane vSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, hitListScrollPane, southPane);
+        vSplit.setDividerLocation(200);
+        hitListPane.add(vSplit, BorderLayout.CENTER);
         
         //  Create search results extra filtering panel
-        JPanel networksPanel = new JPanel();
-        networksPanel.setLayout(new BorderLayout());
-        networksPanel.add( new GradientHeader("Select"), BorderLayout.NORTH);
-        JTabbedPane tabbedPane = new JTabbedPane();
-        JPanel filterPanel = CPath2Factory.createFilterPanel(resultsModel);
-//        JPanel pathwayPanel = factory.createTopPathwaysPanel(CPath2Client.newInstance().getTopPathways(), CPath2);
-        Font font = tabbedPane.getFont();
-        tabbedPane.setFont(new Font(font.getFamily(), Font.PLAIN, font.getSize()-2));
-        tabbedPane.add("Extra Filters", filterPanel);
-        //TODO add more tabs: "networks by organism", "networks by datasource"
-        networksPanel.add(tabbedPane, BorderLayout.CENTER);
+        JPanel filterPanel = CPath2Factory.createSearchResultsFilterPanel(resultsModel);
 
         //  Create the Split Pane
-        JSplitPane splitPane = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT, 
-        	hitListPane, networksPanel);
-        splitPane.setDividerLocation(400);
-        splitPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.add(splitPane);
-
-        createSelectListener();
+        JSplitPane hSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, filterPanel, hitListPane);
+        hSplit.setDividerLocation(200);
+        hSplit.setAlignmentX(Component.LEFT_ALIGNMENT);
+        add(hSplit);
         
-		// listener for cytopanel events
-		CytoPanel cytoPanel = application.getCytoPanel(CytoPanelName.EAST);
-		cytoPanelState = cytoPanel.getState();
+        createSelectListener();
+                   
+//		// listener for cytopanel events
+//		CytoPanel cytoPanel = application.getCytoPanel(CytoPanelName.EAST);
+//		cytoPanelState = cytoPanel.getState();
     }
 
     /**
@@ -193,7 +211,7 @@ implements CPath2Listener, CytoPanelStateChangedListener
     
 	@Override
 	public void handleEvent(CytoPanelStateChangedEvent e) {
-		cytoPanelState = e.getNewState();
+//		cytoPanelState = e.getNewState();
 	}
 	
 	

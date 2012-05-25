@@ -17,7 +17,8 @@ import org.cytoscape.cpathsquared.internal.CPath2Listener;
 import cpath.service.jaxb.SearchResponse;
 
 /**
- * Main GUI Panel for Searching a cPath Instance.
+ * Main GUI Panel for Searching a cPath2 Instance 
+ * and Showing Results and Options.
  *
  */
 public class CPath2SearchPanel extends JPanel implements CPath2Listener {
@@ -40,7 +41,7 @@ public class CPath2SearchPanel extends JPanel implements CPath2Listener {
         cards = new JPanel(new CardLayout());
         searchResultsPanel = new SearchResultsPanel();
 
-        cards.add (createAboutPanel(), "ABOUT");
+//        cards.add (createAboutPanel(), "ABOUT");
         cards.add(searchResultsPanel, "HITS");
         add(cards, BorderLayout.CENTER);
         CPath2.addApiListener(this);
@@ -49,20 +50,21 @@ public class CPath2SearchPanel extends JPanel implements CPath2Listener {
 
     public void showAboutPanel() {
         CardLayout cl = (CardLayout)(cards.getLayout());
-        cl.show(cards, "ABOUT");
+//        cl.show(cards, "ABOUT");
+        cl.show(cards, "HITS");
     }
 
-    private JPanel createAboutPanel() {
-        JPanel aboutPanel = new JPanel();
-        aboutPanel.setLayout(new BorderLayout());
-        GradientHeader header = new GradientHeader("About");
-
-        aboutPanel.add(header, BorderLayout.NORTH);
-        JTextPane textPane = DetailsPanel.createHtmlTextPane(CPath2Factory.getOpenBrowser());
-        textPane.setText(CPath2Properties.blurb);
-        aboutPanel.add(textPane, BorderLayout.CENTER);
-        return aboutPanel;
-    }
+//    private JPanel createAboutPanel() {
+//        JPanel aboutPanel = new JPanel();
+//        aboutPanel.setLayout(new BorderLayout());
+//        GradientHeader header = new GradientHeader("About");
+//
+//        aboutPanel.add(header, BorderLayout.NORTH);
+//        JTextPane textPane = DetailsPanel.createHtmlTextPane(CPath2Factory.getOpenBrowser());
+//        textPane.setText(CPath2Properties.blurb);
+//        aboutPanel.add(textPane, BorderLayout.CENTER);
+//        return aboutPanel;
+//    }
 
     public void searchInitiated(String keyword, Set<String> organism, Set<String> datasource) {
     }

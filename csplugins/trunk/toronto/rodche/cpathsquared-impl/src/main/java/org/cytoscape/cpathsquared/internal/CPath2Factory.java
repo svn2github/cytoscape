@@ -9,7 +9,7 @@ import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.cpathsquared.internal.view.BinarySifVisualStyleFactory;
 import org.cytoscape.cpathsquared.internal.view.DownloadDetails;
 import org.cytoscape.cpathsquared.internal.view.ResultsModel;
-import org.cytoscape.cpathsquared.internal.view.SearchHitsPanel;
+import org.cytoscape.cpathsquared.internal.view.SearchResultsFilterPanel;
 import org.cytoscape.cpathsquared.internal.view.DetailsPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchQueryPanel;
 import org.cytoscape.cpathsquared.internal.view.SearchResultsPanel;
@@ -113,12 +113,12 @@ public final class CPath2Factory {
 		return new DownloadDetails(passedRecordList);
 	}
 
-	public static JPanel createFilterPanel(ResultsModel model) {
-		return new SearchHitsPanel(model);
+	public static JPanel createSearchResultsFilterPanel(ResultsModel model) {
+		return new SearchResultsFilterPanel(model);
 	}
 	
 	public static DetailsPanel createDetailsPanel(SearchResultsPanel searchHitsPanel) {
-		return new DetailsPanel(searchHitsPanel);
+		return new DetailsPanel();
 	}
 
 	public static CyNetworkManager getNetworkManager() {
