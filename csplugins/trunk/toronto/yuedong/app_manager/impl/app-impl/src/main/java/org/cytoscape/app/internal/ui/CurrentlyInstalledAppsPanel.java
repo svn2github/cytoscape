@@ -256,7 +256,7 @@ public class CurrentlyInstalledAppsPanel extends javax.swing.JPanel {
     	for (App app : appManager.getApps()) {	
     		tableModel.addRow(new Object[]{
 					app,
-					app.getAppName(),
+					app.getAppFile() != null ? app.getAppName() : app.getAppName() + " (File moved)",
 					app.getAuthors(),
 					app.getVersion(),
 					app.getStatus()

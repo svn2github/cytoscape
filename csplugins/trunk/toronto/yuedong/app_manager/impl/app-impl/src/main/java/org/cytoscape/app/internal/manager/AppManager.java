@@ -151,7 +151,8 @@ public class AppManager {
 							// TODO: call app.setFile(null), prevent re-installation of this app
 							// as the file has been moved
 							
-							app.setAppFile(null);
+							// app.setAppFile(null);
+							app.setAppFile(new File(getUninstalledAppsPath() + File.separator + appFile.getName()));
 							
 							try {
 								uninstallApp(app);
@@ -209,9 +210,15 @@ public class AppManager {
 						// If the app was uninstalled and was moved from the uninstalled apps
 						// directory, remove it from the app manager
 						if (appFile != null 
-								&& appFile.getCanonicalPath().equals(canonicalPath)
-								&& app.getStatus() == AppStatus.UNINSTALLED) {
-							appsToBeRemoved.add(app);
+								&& appFile.getCanonicalPath().equals(canonicalPath)) {
+							
+							//app.setAppFile(null);
+							app.setAppFile(new File(getInstalledAppsPath() + File.separator + appFile.getName()));
+							
+							if (app.getStatus() == AppStatus.UNINSTALLED) {
+								appsToBeRemoved.add(app);
+							}
+								
 						}
 						
 						// TODO: Currently keeps the app registered to the app manager
@@ -221,6 +228,8 @@ public class AppManager {
 					}
 					
 					for (App appToBeRemoved : appsToBeRemoved) {
+						System.out.println("Removing app: " + appToBeRemoved.getAppName());
+						
 						removeApp(appToBeRemoved);
 					}
 					
@@ -235,6 +244,28 @@ public class AppManager {
 			
 			@Override
 			public void onFileCreate(File file) {
+				try {
+					App parsedApp = appParser.parseApp(file);
+					
+					// If no installed app has the same name, register it and make it available
+					boolean nameConflict = false;
+					
+					for (App registeredApp : apps) {
+						if (registeredApp.getAppName().equalsIgnoreCase(parsedApp.getAppName())) {
+							nameConflict = true;
+							break;
+						}
+					}
+					
+					if (!nameConflict) {
+						addApp(parsedApp);
+						fireAppsChangedEvent();
+					}
+					
+				} catch (AppParsingException e) {
+				
+				}
+				
 				// Do nothing if a file is added to the uninstalled apps directory
 			}
 			

@@ -61,6 +61,10 @@ public class AppParser {
 		
 		System.out.println("Parsing: " + file.getPath());
 		
+		if (!file.exists()) {
+			throw new AppParsingException("No file with path: " + file.getAbsolutePath());
+		}
+		
 		if (!file.isFile()) {
 			throw new AppParsingException("The given file, " + file + ", is not a file.");
 		}

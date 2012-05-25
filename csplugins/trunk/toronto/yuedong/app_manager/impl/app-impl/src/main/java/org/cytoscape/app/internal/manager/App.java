@@ -63,8 +63,7 @@ public abstract class App {
 	public enum AppStatus{
 		INSTALLED("Installed"),
 		TO_BE_UNINSTALLED("Uninstall-on-restart"),
-		UNINSTALLED("Uninstalled"),
-		UNDEFINED("Undefined");
+		UNINSTALLED("Uninstalled");
 		
 		String readableStatus;
 		
@@ -151,6 +150,28 @@ public abstract class App {
 			throw new AppInstallException("This app has already been installed.");
 		}
 		
+		
+		for (App app : appManager.getApps()) {
+			if (this.heuristicEquals(app) && this != app) {
+				/*
+				System.out.println("Install aborted: heuristic finds app already installed");
+				System.out.println("conflict app status: " + app.getStatus());
+				System.out.println("conflict app name: " + app.getAppName());
+				System.out.println("conflict app file: " + app.getAppFile().getAbsolutePath());
+				System.out.println("conflict app: " + app);
+				System.out.println("this app file: " + getAppFile());
+				System.out.println("this app: " + this);
+				*/
+				
+				// If we already have an App object registered to the app manager
+				// that represents this app, re-use that app object
+				app.setAppFile(this.appFile);
+				appManager.installApp(app);
+				
+				return;
+			}
+		}
+		
 		// Obtain the paths to the local storage directories for holding installed and uninstalled apps.
 		String installedAppsPath = appManager.getInstalledAppsPath();
 		String uninstalledAppsPath = appManager.getUninstalledAppsPath();
@@ -158,6 +179,11 @@ public abstract class App {
 		// Attempt to copy the app to the directory for installed apps.
 		try {
 			File appFile = this.getAppFile();
+			
+			if (!appFile.exists()) {
+				System.out.println("Install aborted: file " + appFile.getCanonicalPath() + " does not exist");
+				return;
+			}
 			
 			// Make sure no app with the same filename and app name is already installed
 			File installedDirectoryTargetFile = new File(installedAppsPath + File.separator + appFile.getName());
@@ -194,9 +220,30 @@ public abstract class App {
 						// Forgive the collision if we are copying from the uninstalled apps directory
 						if (appFile.getParentFile().getCanonicalPath().equals(uninstalledAppsPath)) {
 							
+						// Forgive collision if other app is not installed
+						} else if (conflictingApp.getStatus() == AppStatus.UNINSTALLED) {
+						
+						// Ignore collisions with self
+						// } else if (conflictingApp.getAppFile().equals(appFile)) {
+							
 						} else {
+							/*
+							for (App app : appManager.getApps()) {
+								if (this.heuristicEquals(app) && this != app) {
+									System.out.println("Install aborted: heuristic finds app already installed");
+									System.out.println("conflict app status: " + app.getStatus());
+									System.out.println("conflict app name: " + app.getAppName());
+									
+									appManager.installApp(app);
+									
+									return;
+								}
+							}
+							*/
+							
 							// Skip installation, suspected that a copy of the app is already installed
-							return;
+							
+							// return;
 						}
 						
 					} else {
@@ -326,6 +373,13 @@ public abstract class App {
 		// perform file moving. Instead, attempt to try to complete the uninstallation without 
 		// regard to app's file.
 		if (this.getAppFile() != null) {
+			
+			if (!this.getAppFile().exists()) {
+				
+				// Skip file moving if the file has been moved
+				return;
+			}
+			
 			// Check if the app is inside the directory containing currently installed apps.
 			// If so, prepare to move it to the uninstalled directory.
 			File appParentDirectory = this.getAppFile().getParentFile();
@@ -369,6 +423,25 @@ public abstract class App {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * Uses heuristics to check if another App represents the same Cytoscape app as this App, 
+	 * ignoring filename differences.
+	 * 
+	 * @param other The app to compare against.
+	 * @return <code>true</code> if the apps are suspected to be the same Cytoscape app,
+	 * <code>false</code> otherwise.
+	 */
+	public boolean heuristicEquals(App other) {
+		
+		// Return false if different app names
+		if (appName.equalsIgnoreCase(other.appName)
+				&& version.equalsIgnoreCase(other.version)) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public String getAppName() {
