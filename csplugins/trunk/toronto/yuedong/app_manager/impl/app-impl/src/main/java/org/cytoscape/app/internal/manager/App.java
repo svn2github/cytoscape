@@ -166,7 +166,8 @@ public abstract class App {
 				// If we already have an App object registered to the app manager
 				// that represents this app, re-use that app object
 				app.setAppFile(this.appFile);
-				appManager.installApp(app);
+				app.install(appManager);
+				//appManager.installApp(app);
 				
 				return;
 			}

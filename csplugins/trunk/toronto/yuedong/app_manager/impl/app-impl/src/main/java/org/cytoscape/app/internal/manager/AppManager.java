@@ -122,7 +122,11 @@ public class AppManager {
 		Set<App> uninstalledApps = obtainAppsFromDirectory(new File(getUninstalledAppsPath()));
 		apps.addAll(uninstalledApps);
 
-		// FileAlterationListener listener;
+		setupAlterationMonitor();
+	}
+	
+	
+	private void setupAlterationMonitor() {
 		fileAlterationMonitor = new FileAlterationMonitor(600);
 		
 		File installedAppsPath = new File(getInstalledAppsPath());
