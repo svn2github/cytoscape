@@ -77,7 +77,8 @@ public final class CPath2 {
 			return res;
     }
 
-    private static CPath2Client newClient() {
+    
+    public static CPath2Client newClient() {
         CPath2Client client = CPath2Client.newInstance();
 //        client.setEndPointURL("http://localhost:8080/cpath-web-service/");
         client.setEndPointURL("http://awabi.cbio.mskcc.org/cpath2/");
@@ -94,9 +95,9 @@ public final class CPath2 {
      */
     public static String getRecordsByIds(String[] ids, OutputFormat format) 
     {
-    	//TODO client must return other formats, if requested
-    	Model res = newClient().get(Arrays.asList(ids));
-    	        
+    	//TODO client to return other formats as well
+    	CPath2Client cli = newClient();
+    	Model res = cli.get(Arrays.asList(ids));  
     	ByteArrayOutputStream baos = new ByteArrayOutputStream();
         BioPaxUtil.getBiopaxIO().convertToOWL(res, baos);
         

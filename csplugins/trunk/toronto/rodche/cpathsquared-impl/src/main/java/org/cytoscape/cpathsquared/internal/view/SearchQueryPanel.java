@@ -40,12 +40,13 @@ import java.util.*;
  * Search Box Panel.
  *
  */
-public class SearchQueryPanel extends JPanel {
+public final class SearchQueryPanel extends JPanel {
     private static final String ENTER_TEXT = "Enter Gene Name or ID";
     private final CheckBoxJList organismList;
     private final CheckBoxJList dataSourceList;
     private final JTextField searchField;
-	
+    
+   
     /**
      * Constructor.
      */
@@ -120,10 +121,10 @@ public class SearchQueryPanel extends JPanel {
 
 
     private final JComponent createOrganismFilterBox() {	
-    	SortedJListModel<FilterBoxItem> model = new SortedJListModel<FilterBoxItem>();
+    	SortedJListModel<NameValuePairListItem> model = new SortedJListModel<NameValuePairListItem>();
     	Map<String,String> map = CPath2.getAvailableOrganisms();
     	for(String o : map.keySet()) {
-    		model.addElement(new FilterBoxItem(map.get(o), o));
+    		model.addElement(new NameValuePairListItem(map.get(o), o));
     	}
     	organismList.setModel(model);
         organismList.setToolTipText("Select Organisms");
@@ -138,7 +139,7 @@ public class SearchQueryPanel extends JPanel {
         
         Map<String,String> map = CPath2.getLoadedDataSources();
     	for(String d : map.keySet()) {
-    		dataSourceBoxModel.addElement(new FilterBoxItem(map.get(d), d));
+    		dataSourceBoxModel.addElement(new NameValuePairListItem(map.get(d), d));
     	}
         
         dataSourceList.setModel(dataSourceBoxModel);
@@ -185,11 +186,11 @@ public class SearchQueryPanel extends JPanel {
         
         Set<String> organisms = new HashSet<String>();
         for(Object it : organism)
-        	organisms.add(((FilterBoxItem)it).getValue());
+        	organisms.add(((NameValuePairListItem)it).getValue());
         
     	Set<String> datasources = new HashSet<String>();
         for(Object it : datasource)
-        	datasources.add(((FilterBoxItem)it).getValue());
+        	datasources.add(((NameValuePairListItem)it).getValue());
     	
     	Window window = CPath2Factory.getCySwingApplication().getJFrame();
         if (keyword == null || keyword.trim().length() == 0

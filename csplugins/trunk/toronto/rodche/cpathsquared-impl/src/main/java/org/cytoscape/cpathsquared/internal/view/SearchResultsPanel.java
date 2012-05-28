@@ -2,14 +2,13 @@ package org.cytoscape.cpathsquared.internal.view;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.Window;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -18,19 +17,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.Document;
 
+import org.apache.commons.lang.StringUtils;
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.application.swing.CytoPanel;
-import org.cytoscape.application.swing.CytoPanelName;
-import org.cytoscape.application.swing.CytoPanelState;
-import org.cytoscape.application.swing.events.CytoPanelStateChangedEvent;
-import org.cytoscape.application.swing.events.CytoPanelStateChangedListener;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.CPath2Properties;
 import org.cytoscape.cpathsquared.internal.CPath2;
@@ -43,22 +38,22 @@ import cpath.service.jaxb.SearchHit;
 import cpath.service.jaxb.SearchResponse;
 
 
-public class SearchResultsPanel extends JPanel 
-implements CPath2Listener, CytoPanelStateChangedListener 
+public class SearchResultsPanel extends JPanel implements CPath2Listener 
 {
     private JList resList;
     private JList ppwList;
     private JList molList;
+    
 //    private HashMap <String, Map<String,String>> memberDetailsMap; //TODO map: search hits - participant/component names, xrefs, entity ref's ids, etc.
-    private Document summaryDocument;
     private String currentKeyword;
-    private ResultsModel resultsModel;
+    
+    private final ResultsModel resultsModel;
+    
     private JTextPane summaryTextPane;
     private DetailsPanel detailsPanel;
     private JScrollPane ppwListScrollPane;
     private JScrollPane molListScrollPane;
 	private JLayeredPane appLayeredPane;
-//	private CytoPanelState cytoPanelState;
 
 
 	public SearchResultsPanel() 
@@ -72,11 +67,10 @@ implements CPath2Listener, CytoPanelStateChangedListener
 
         //  Create Info Panel (the first tab)
         detailsPanel = CPath2Factory.createDetailsPanel(this);
-        summaryDocument = detailsPanel.getDocument();
         summaryTextPane = detailsPanel.getTextPane();
         
         //create parent pathways panel (the second tab)
-        ppwList = new JListWithToolTips(new DefaultListModel());
+        ppwList = new ToolTipsSearchHitsJList(new DefaultListModel());
         ppwList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         ppwList.setPrototypeCellValue("12345678901234567890");
         JPanel ppwListPane = new JPanel();
@@ -86,7 +80,7 @@ implements CPath2Listener, CytoPanelStateChangedListener
         ppwListPane.add(ppwListScrollPane, BorderLayout.CENTER);
         
         //create participants (the third tab is about Entity References, Complexes, and Genes...)
-        molList = new JListWithToolTips(new DefaultListModel());
+        molList = new ToolTipsSearchHitsJList(new DefaultListModel());
         molList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         molList.setPrototypeCellValue("12345678901234567890");
         JPanel molListPane = new JPanel();
@@ -102,7 +96,7 @@ implements CPath2Listener, CytoPanelStateChangedListener
         southPane.add("Molecules", molListPane);
   
         // search hits list
-        resList = new JListWithToolTips(new DefaultListModel());
+        resList = new ToolTipsSearchHitsJList(new DefaultListModel());
         resList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         resList.setPrototypeCellValue("12345678901234567890");
         JPanel hitListPane = new JPanel();
@@ -118,7 +112,8 @@ implements CPath2Listener, CytoPanelStateChangedListener
         hitListPane.add(vSplit, BorderLayout.CENTER);
         
         //  Create search results extra filtering panel
-        JPanel filterPanel = CPath2Factory.createSearchResultsFilterPanel(resultsModel);
+        SearchResultsFilterPanel filterPanel = 
+        	(SearchResultsFilterPanel) CPath2Factory.createSearchResultsFilterPanel(resultsModel, resList);
 
         //  Create the Split Pane
         JSplitPane hSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, filterPanel, hitListPane);
@@ -127,10 +122,6 @@ implements CPath2Listener, CytoPanelStateChangedListener
         add(hSplit);
         
         createSelectListener();
-                   
-//		// listener for cytopanel events
-//		CytoPanel cytoPanel = application.getCytoPanel(CytoPanelName.EAST);
-//		cytoPanelState = cytoPanel.getState();
     }
 
     /**
@@ -150,14 +141,9 @@ implements CPath2Listener, CytoPanelStateChangedListener
      * 
      */
     public void searchCompleted(final SearchResponse searchResponse) {
-
         if (!searchResponse.isEmpty()) {
-               
-            // set the all-results model - used for hits list filtering
-            resultsModel.setRecordList(new RecordList(searchResponse));
-
-            //  init/reset the hits list
-            updateHitsList(searchResponse);
+            resultsModel.setSearchResponse(searchResponse);
+            updateHitsList();
         } else {
             SwingUtilities.invokeLater(new Runnable(){
                 public void run() {
@@ -176,18 +162,16 @@ implements CPath2Listener, CytoPanelStateChangedListener
      * 
      * @param searchResponse
      */
-	public final void updateHitsList(final SearchResponse searchResponse) {
+	private final void updateHitsList() {
 		// init/reset the hits list
 		DefaultListModel listModel = (DefaultListModel) resList.getModel();
 		listModel.clear();
-
-		List<SearchHit> searchHits = searchResponse.getSearchHit();
+		List<SearchHit> searchHits = resultsModel.getSearchResponse().getSearchHit();
 		listModel.setSize(searchHits.size());
 		int i = 0;
 		for (SearchHit searchHit : searchHits) {
 			listModel.setElementAt(searchHit, i++);
 		}
-
 	}
     
 
@@ -199,9 +183,7 @@ implements CPath2Listener, CytoPanelStateChangedListener
                 //  Ignore the "unselect" event.
                 if (!listSelectionEvent.getValueIsAdjusting()) {
                     if (selectedIndex >=0) {
-                    	(new SelectEntity()).selectItem(
-                        		(SearchHit)resList.getModel().getElementAt(selectedIndex),
-                                summaryDocument, summaryTextPane, appLayeredPane);
+                    	selectHit((SearchHit)resList.getModel().getElementAt(selectedIndex));
                     }
                 }
             }
@@ -209,9 +191,66 @@ implements CPath2Listener, CytoPanelStateChangedListener
     }
 
     
-	@Override
-	public void handleEvent(CytoPanelStateChangedEvent e) {
-//		cytoPanelState = e.getNewState();
+	private void selectHit(SearchHit item) {
+		if (item == null) {
+			return;
+		}
+
+		// get/create and show hit's summary
+		String summary = resultsModel.summaryMap.get(item.getUri());
+		if (summary == null) {
+			StringBuilder html = new StringBuilder();
+			html.append("<html>");
+
+			if (item.getName() != null)
+				html.append("<h2>" + item.getName() + "</h2>");
+			html.append("<h3>Class: " + item.getBiopaxClass() + 
+				"</h3><h3>URI: " + item.getUri() + "</h3>");
+
+			List<String> items = item.getOrganism();
+			if (items != null && !items.isEmpty()) {
+				html.append("<H3>Organisms:<br/>"
+					+ StringUtils.join(items, "<br/>") + "</H3>");
+			}
+
+			items = item.getPathway();
+			if (items != null && !items.isEmpty()) {
+				html.append("<H3>Pathway URIs:<br/>"
+						+ StringUtils.join(items, "<br/>") + "</H3>");
+			}
+
+			items = item.getDataSource();
+			if (items != null && !items.isEmpty()) {
+				html.append("<H3>Data sources:<br/>"
+						+ StringUtils.join(items, "<br/>") + "</H3>");
+			}
+
+			String primeExcerpt = item.getExcerpt();
+			if (primeExcerpt != null) {
+				html.append("<H4>Matched in</H4>");
+				html.append("<span class='excerpt'>" + primeExcerpt
+						+ "</span><BR>");
+			}
+
+			// TODO add more details here
+
+			html.append("</html>");
+			summary = html.toString();
+			resultsModel.summaryMap.put(item.getUri(), summary);
+		}
+
+		summaryTextPane.setText(summary);
+		summaryTextPane.setCaretPosition(0);
+		appLayeredPane.repaint();
+
+		
+		
+		// TODO update pathways list
+		
+		
+
+		// TODO update mol. list
+
 	}
 	
 	
@@ -246,4 +285,55 @@ implements CPath2Listener, CytoPanelStateChangedListener
         CPath2Factory.getTaskManager().execute(taskFactory.createTaskIterator());
     }
     
+    
+    static class ToolTipsSearchHitsJList extends JList {
+
+        public ToolTipsSearchHitsJList(ListModel listModel) {
+            super(listModel);
+        }
+
+        @Override
+    	public String getToolTipText(MouseEvent mouseEvent) {
+    		int index = locationToIndex(mouseEvent.getPoint());
+    		if (-1 < index) {
+    			SearchHit record = (SearchHit) getModel().getElementAt(index);
+    			StringBuilder html = new StringBuilder();
+    			html.append("<html><table cellpadding=10><tr><td>");
+    			html.append("<B>").append(record.getBiopaxClass());
+    			if(!record.getDataSource().isEmpty())
+    				html.append("&nbsp;").append(record.getDataSource().toString());
+    			if(!record.getOrganism().isEmpty())
+    				html.append("&nbsp;").append(record.getOrganism().toString());
+    			html.append("</B>&nbsp;");
+    			html.append("</td></tr></table></html>");
+    			return html.toString();
+    		} else {
+    			return null;
+    		}
+    	}
+
+    }
+    
+    static class ToolTipsNameValuePairJList extends JList {
+
+        public ToolTipsNameValuePairJList(ListModel listModel) {
+            super(listModel);
+        }
+
+        @Override
+    	public String getToolTipText(MouseEvent mouseEvent) {
+    		int index = locationToIndex(mouseEvent.getPoint());
+    		if (-1 < index) {
+    			StringBuilder html = new StringBuilder();
+    			html.append("<html><table cellpadding=10><tr><td>");
+    			html.append("<B>").append("TODO");
+    			html.append("</B>&nbsp;");
+    			html.append("</td></tr></table></html>");
+    			return html.toString();
+    		} else {
+    			return null;
+    		}
+    	}
+
+    }
 }

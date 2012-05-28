@@ -19,7 +19,7 @@ public final class OrganismFilter implements Filter {
 	public List<SearchHit> filter(List<SearchHit> recordList) {
 		ArrayList<SearchHit> passedList = new ArrayList<SearchHit>();
 		for (SearchHit record : recordList) {
-			if (record.getOrganism() != null && !record.getOrganism().isEmpty()) 
+			if (!record.getOrganism().isEmpty()) 
 			{
 				//copy organisms to a new set
 				Set<String> o = new HashSet<String>(record.getOrganism());
@@ -27,6 +27,8 @@ public final class OrganismFilter implements Filter {
 				if (!o.isEmpty()) {
 					passedList.add(record);
 				}
+			} else {
+				passedList.add(record);
 			}
 		}
 		return passedList;

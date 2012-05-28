@@ -324,7 +324,7 @@ public final class BioPaxUtil {
 	}
 
 	/**
-	 * Gets the FilterBoxItem Name.
+	 * Gets the NameValuePairListItem Name.
 	 *
 	 * @param bpe BioPAX element
 	 * @return organism field, or null if not available.

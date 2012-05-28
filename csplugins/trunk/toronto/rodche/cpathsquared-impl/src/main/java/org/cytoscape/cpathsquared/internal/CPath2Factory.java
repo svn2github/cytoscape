@@ -2,6 +2,7 @@ package org.cytoscape.cpathsquared.internal;
 
 import java.util.List;
 
+import javax.swing.JList;
 import javax.swing.JPanel;
 
 import org.cytoscape.application.CyApplicationManager;
@@ -113,8 +114,8 @@ public final class CPath2Factory {
 		return new DownloadDetails(passedRecordList);
 	}
 
-	public static JPanel createSearchResultsFilterPanel(ResultsModel model) {
-		return new SearchResultsFilterPanel(model);
+	public static JPanel createSearchResultsFilterPanel(ResultsModel model, JList hits) {
+		return new SearchResultsFilterPanel(model, hits);
 	}
 	
 	public static DetailsPanel createDetailsPanel(SearchResultsPanel searchHitsPanel) {

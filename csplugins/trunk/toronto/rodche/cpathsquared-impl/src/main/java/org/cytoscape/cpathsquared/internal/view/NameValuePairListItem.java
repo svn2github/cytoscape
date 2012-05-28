@@ -1,12 +1,12 @@
 package org.cytoscape.cpathsquared.internal.view;
 
 
-public class FilterBoxItem implements Comparable<FilterBoxItem> {
+public class NameValuePairListItem implements Comparable<NameValuePairListItem> {
     private String name;
     private String value;
 
 
-    public FilterBoxItem (String name, String value) {
+    public NameValuePairListItem (String name, String value) {
         this.name = name;
         this.value = value;
     }
@@ -27,7 +27,7 @@ public class FilterBoxItem implements Comparable<FilterBoxItem> {
 
     //in order to order by name
 	@Override
-	public int compareTo(FilterBoxItem o) {
+	public int compareTo(NameValuePairListItem o) {
 		return this.name.compareTo(o.getName());
 	}
 }

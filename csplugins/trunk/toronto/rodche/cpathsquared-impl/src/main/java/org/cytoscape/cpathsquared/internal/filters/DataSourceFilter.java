@@ -19,7 +19,7 @@ public final class DataSourceFilter implements Filter {
 	public List<SearchHit> filter(List<SearchHit> recordList) {
 		ArrayList<SearchHit> passedList = new ArrayList<SearchHit>();
 		for (SearchHit record : recordList) {
-			if (record.getDataSource() != null && !record.getDataSource().isEmpty()) 
+			if (!record.getDataSource().isEmpty()) 
 			{
 				//copy datasources to a new set
 				Set<String> ds = new HashSet<String>(record.getDataSource());
@@ -27,6 +27,8 @@ public final class DataSourceFilter implements Filter {
 				if (!ds.isEmpty()) {
 					passedList.add(record);
 				}
+			} else {
+				passedList.add(record);
 			}
 		}
 		return passedList;
