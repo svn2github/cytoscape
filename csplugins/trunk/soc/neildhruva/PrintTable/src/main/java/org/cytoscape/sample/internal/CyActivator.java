@@ -1,6 +1,8 @@
 package org.cytoscape.sample.internal;
 
 import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.work.TaskFactory;
 
@@ -18,7 +20,10 @@ public class CyActivator extends AbstractCyActivator {
 	public void start(BundleContext bc) {
 		
 		CyApplicationManager cyApplicationManagerService = getService(bc,CyApplicationManager.class);
-		PrintTableTaskFactory printTableTaskFactory = new PrintTableTaskFactory(cyApplicationManagerService);
+		CySwingApplication cySwingApplicationService = getService(bc,CySwingApplication.class);
+		MyCytoPanel myCytoPanel = new MyCytoPanel();
+		
+		PrintTableTaskFactory printTableTaskFactory = new PrintTableTaskFactory(cyApplicationManagerService, cySwingApplicationService, myCytoPanel);
 		
 		Properties printTableTaskFactoryProps = new Properties();
 		printTableTaskFactoryProps.setProperty("preferredMenu","Apps");
@@ -26,6 +31,7 @@ public class CyActivator extends AbstractCyActivator {
 		printTableTaskFactoryProps.setProperty("title","Print Table");
 		
 		registerService(bc,printTableTaskFactory,TaskFactory.class, printTableTaskFactoryProps);
+		
+		registerService(bc,myCytoPanel,CytoPanelComponent.class, new Properties());
 	}
 }
-
