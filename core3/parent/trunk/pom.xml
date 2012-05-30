@@ -10,6 +10,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<cytoscape-support.version>3.0.0-alpha8-SNAPSHOT</cytoscape-support.version>
 
 		<spring.version>3.0.5.RELEASE</spring.version>
 		<spring.osgi.version>1.2.1</spring.osgi.version>
@@ -95,7 +97,7 @@
 						<tagletArtifact>
 							<groupId>org.cytoscape</groupId>
 							<artifactId>taglets</artifactId>
-							<version>3.0.0-alpha7-SNAPSHOT</version>
+							<version>${cytoscape-support.version}</version>
 						</tagletArtifact>
 					</tagletArtifacts>
 				</configuration>
