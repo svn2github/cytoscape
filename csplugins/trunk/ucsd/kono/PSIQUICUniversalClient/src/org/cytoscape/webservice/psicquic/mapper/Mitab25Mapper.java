@@ -22,6 +22,8 @@ public class Mitab25Mapper {
 
 	private static final CyLogger logger = CyLogger.getLogger();
 
+	public static final String PREDICTED_GENE_NAME = "predicted gene name";
+	
 	// Separator for multiple entries.
 	private static final String SEPARATOR = "\\|";
 	private static final String TAB = "\t";
@@ -38,18 +40,19 @@ public class Mitab25Mapper {
 	final CyAttributes nodeAttr;
 	final CyAttributes edgeAttr;
 	final CyAttributes networkAttr;
-	
+
 	private static final String INTERACTION = "interaction";
-	
+
 	// Reg.Ex for parsing entry
 	private final static Pattern miPttr = Pattern.compile("MI:\\d{4}");
 	private final static Pattern miNamePttr = Pattern.compile("\\(.+\\)");
-	
+
 	private final static Pattern lineSplitter = Pattern.compile(TAB);
 	private final static Pattern entrySplitter = Pattern.compile(SEPARATOR);
 	private final static Pattern dbSplitter = Pattern.compile(DB_ID);
 	private final static Pattern descriptionSpliter = Pattern.compile("\\(");
-
+	private final static Pattern ncbiPattern = Pattern.compile("^[A-Za-z].+");
+	private final static Pattern uniprotPattern = Pattern.compile("^[a-zA-Z]\\d.+");
 	// Attr Names
 	private static final String DETECTION_METHOD = ATTR_PREFIX + "interaction detection method";
 	private static final String INTERACTION_TYPE = ATTR_PREFIX + "interaction type";
@@ -62,6 +65,8 @@ public class Mitab25Mapper {
 	private static final String ENTREZ_GENE = "entrezgene/locuslink";
 	private static final String ENTREZ_GENE_SYN = "entrez gene/locuslink";
 
+	private static final String ENTREZ_GENE_ATTR_NAME = ATTR_PREFIX + ENTREZ_GENE;
+	private static final String UNIPROT_ATTR_NAME = ATTR_PREFIX + "uniprotkb";
 	private static final String CHEBI = "chebi";
 
 	private static final String INTERACTOR_TYPE = ATTR_PREFIX + "interactor type";
@@ -127,68 +132,71 @@ public class Mitab25Mapper {
 	}
 
 	private final void parseLine(final String line) throws Exception {
-			final String[] entry = lineSplitter.split(line);
+		final String[] entry = lineSplitter.split(line);
 
-			// Validate entry list.
-			if (entry == null || entry.length < COLUMN_COUNT)
-				return;
+		// Validate entry list.
+		if (entry == null || entry.length < COLUMN_COUNT)
+			return;
 
-			// Create nodes
-			final String[] sourceID = entrySplitter.split(entry[0]);
-			final String[] targetID = entrySplitter.split(entry[1]);
+		// Create nodes
+		final String[] sourceID = entrySplitter.split(entry[0]);
+		final String[] targetID = entrySplitter.split(entry[1]);
 
-			String[] keyIDPparts = dbSplitter.split(sourceID[0]);
-			final String firstSourceID = keyIDPparts[1];
-			final String firstSourceDB = keyIDPparts[0];
-			
-			keyIDPparts = dbSplitter.split(targetID[0]);
-			final String firstTargetID = keyIDPparts[1];
-			final String firstTargetDB = keyIDPparts[0];
-			
-			final CyNode source = Cytoscape.getCyNode(firstSourceID, true);
-			final CyNode target = Cytoscape.getCyNode(firstTargetID, true);
-			nodeAttr.setAttribute(source.getIdentifier(), ATTR_PREFIX + "primaryKey." + firstSourceDB, firstSourceID);
-			nodeAttr.setAttribute(target.getIdentifier(), ATTR_PREFIX + "primaryKey." + firstTargetDB, firstTargetID);
-			nodes.add(source);
-			nodes.add(target);
+		String[] keyIDPparts = dbSplitter.split(sourceID[0]);
+		final String firstSourceID = keyIDPparts[1];
+		final String firstSourceDB = keyIDPparts[0];
 
-			// Set type if not protein
-			if (source.getIdentifier().contains(CHEBI))
-				nodeAttr.setAttribute(source.getIdentifier(), INTERACTOR_TYPE, COMPOUND);
-			if (target.getIdentifier().contains(CHEBI))
-				nodeAttr.setAttribute(target.getIdentifier(), INTERACTOR_TYPE, COMPOUND);
+		keyIDPparts = dbSplitter.split(targetID[0]);
+		final String firstTargetID = keyIDPparts[1];
+		final String firstTargetDB = keyIDPparts[0];
 
-			// Aliases
-			setAliases(nodeAttr, source.getIdentifier(), sourceID);
-			setAliases(nodeAttr, target.getIdentifier(), targetID);
-			setAliases(nodeAttr, source.getIdentifier(), entrySplitter.split(entry[2]));
-			setAliases(nodeAttr, target.getIdentifier(), entrySplitter.split(entry[3]));
-			setAliases(nodeAttr, source.getIdentifier(), entrySplitter.split(entry[4]));
-			setAliases(nodeAttr, target.getIdentifier(), entrySplitter.split(entry[5]));
+		final CyNode source = Cytoscape.getCyNode(firstSourceID, true);
+		final CyNode target = Cytoscape.getCyNode(firstTargetID, true);
+		nodeAttr.setAttribute(source.getIdentifier(), ATTR_PREFIX + "primaryKey." + firstSourceDB, firstSourceID);
+		nodeAttr.setAttribute(target.getIdentifier(), ATTR_PREFIX + "primaryKey." + firstTargetDB, firstTargetID);
+		nodes.add(source);
+		nodes.add(target);
 
-			// Tax ID (pick first one only)
-			setTaxID(nodeAttr, source.getIdentifier(), entrySplitter.split(entry[9])[0]);
-			setTaxID(nodeAttr, target.getIdentifier(), entrySplitter.split(entry[10])[0]);
+		// Set type if not protein
+		if (source.getIdentifier().contains(CHEBI))
+			nodeAttr.setAttribute(source.getIdentifier(), INTERACTOR_TYPE, COMPOUND);
+		if (target.getIdentifier().contains(CHEBI))
+			nodeAttr.setAttribute(target.getIdentifier(), INTERACTOR_TYPE, COMPOUND);
 
-			final String[] sourceDB = entrySplitter.split(entry[12]);
-			final String[] interactionID = entrySplitter.split(entry[13]);
+		// Aliases
+		setAliases(nodeAttr, source.getIdentifier(), sourceID);
+		setAliases(nodeAttr, target.getIdentifier(), targetID);
+		setAliases(nodeAttr, source.getIdentifier(), entrySplitter.split(entry[2]));
+		setAliases(nodeAttr, target.getIdentifier(), entrySplitter.split(entry[3]));
+		setAliases(nodeAttr, source.getIdentifier(), entrySplitter.split(entry[4]));
+		setAliases(nodeAttr, target.getIdentifier(), entrySplitter.split(entry[5]));
 
-			final String[] edgeScores = entrySplitter.split(entry[14]);
+		// Tax ID (pick first one only)
+		setTaxID(nodeAttr, source.getIdentifier(), entrySplitter.split(entry[9])[0]);
+		setTaxID(nodeAttr, target.getIdentifier(), entrySplitter.split(entry[10])[0]);
 
-			final String[] detectionMethods = entrySplitter.split(entry[6]);
-			final String[] interactionType = entrySplitter.split(entry[11]);
-			final CyEdge e = Cytoscape.getCyEdge(source, target, INTERACTION, interactionID[0], true);
-			edges.add(e);
+		final String[] sourceDB = entrySplitter.split(entry[12]);
+		final String[] interactionID = entrySplitter.split(entry[13]);
 
-			setEdgeListAttribute(edgeAttr, e.getIdentifier(), interactionType, INTERACTION_TYPE);
-			setEdgeListAttribute(edgeAttr, e.getIdentifier(), detectionMethods, DETECTION_METHOD);
-			setEdgeListAttribute(edgeAttr, e.getIdentifier(), sourceDB, SOURCE_DB);
+		final String[] edgeScores = entrySplitter.split(entry[14]);
 
-			// Map scores
-			setEdgeScoreListAttribute(edgeAttr, e.getIdentifier(), edgeScores, EDGE_SCORE);
+		final String[] detectionMethods = entrySplitter.split(entry[6]);
+		final String[] interactionType = entrySplitter.split(entry[11]);
+		final CyEdge e = Cytoscape.getCyEdge(source, target, INTERACTION, interactionID[0], true);
+		edges.add(e);
 
-			edgeAttr.setAttribute(e.getIdentifier(), INTERACTION_ID, interactionID[0]);
-			setPublication(edgeAttr, e.getIdentifier(), entrySplitter.split(entry[8]), entrySplitter.split(entry[7]));
+		setEdgeListAttribute(edgeAttr, e.getIdentifier(), interactionType, INTERACTION_TYPE);
+		setEdgeListAttribute(edgeAttr, e.getIdentifier(), detectionMethods, DETECTION_METHOD);
+		setEdgeListAttribute(edgeAttr, e.getIdentifier(), sourceDB, SOURCE_DB);
+
+		// Map scores
+		setEdgeScoreListAttribute(edgeAttr, e.getIdentifier(), edgeScores, EDGE_SCORE);
+
+		edgeAttr.setAttribute(e.getIdentifier(), INTERACTION_ID, interactionID[0]);
+		setPublication(edgeAttr, e.getIdentifier(), entrySplitter.split(entry[8]), entrySplitter.split(entry[7]));
+
+		guessHumanReadableName(source);
+		guessHumanReadableName(target);
 	}
 
 	private void setTaxID(CyAttributes attr, String id, String value) {
@@ -258,10 +266,9 @@ public class Mitab25Mapper {
 		}
 	}
 
-
-	
 	/**
 	 * Create edge score attribute as Double
+	 * 
 	 * @param attr
 	 * @param id
 	 * @param scores
@@ -327,6 +334,45 @@ public class Mitab25Mapper {
 		}
 
 		return miName;
+	}
+
+	private void guessHumanReadableName(CyNode node) {
+		final String id = node.getIdentifier();
+		// try NCBI
+		final List<String> ncbiList = nodeAttr.getListAttribute(id, ENTREZ_GENE_ATTR_NAME);
+		String candidateString = null;
+		if (ncbiList != null) {
+			for (final String geneID : ncbiList) {
+				if (ncbiPattern.matcher(geneID).find()) {
+					candidateString = geneID;
+					break;
+				}
+			}
+			if (candidateString != null) {
+				nodeAttr.setAttribute(id, PREDICTED_GENE_NAME, candidateString);
+				return;
+			}
+		}
+		
+		// Try Uniprot
+		final List<String> uniprotList = nodeAttr.getListAttribute(id, UNIPROT_ATTR_NAME);
+		if (uniprotList != null) {
+			for (final String geneID : uniprotList) {
+				if (uniprotPattern.matcher(geneID).find() == false) {
+					candidateString = geneID;
+					break;
+				}
+			}
+			if (candidateString != null) {
+				nodeAttr.setAttribute(id, PREDICTED_GENE_NAME, candidateString);
+				return;
+			}
+		}
+
+		// TODO: try String
+		
+		// Give up.  Use primary key
+		nodeAttr.setAttribute(id, PREDICTED_GENE_NAME, node.getIdentifier());
 	}
 
 }
