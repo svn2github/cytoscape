@@ -14,7 +14,7 @@
 
 	<!--  ============ Compilation Control Options ======================= -->
 	<property name="compile.debug" value="true" />
-	<property name="compile.deprecation" value="true" />
+	<property name="compile.deprecation" value="false" />
 	<property name="compile.optimize" value="true" />
 	<property name="cytoscape.dir" value="../cytoscape" />
 
@@ -22,9 +22,6 @@
 	<path id="compile.classpath">
 		<fileset dir="${cytoscape.dir}">
 			<include name="cytoscape.jar" />
-		</fileset>
-		<fileset dir="${cytoscape.dir}/lib">
-			<include name="*.jar" />
 		</fileset>
 		<fileset dir="${basedir}/lib">
 			<include name="*.jar" />
@@ -40,7 +37,7 @@
 	<!-- ==================== Compile Target ==============================-->
 	<target name="compile" depends="prepare" description="Compiles all Java source files">
 		<mkdir dir="${build.dir}/classes" />
-		<javac srcdir="${src.dir}" source="1.5" target="1.5" 
+		<javac srcdir="${src.dir}" source="1.6" target="1.6" 
 			destdir="${build.dir}/classes" debug="${compile.debug}" 
 			deprecation="${compile.deprecation}" optimize="${compile.optimize}">
 			<classpath refid="compile.classpath" />
