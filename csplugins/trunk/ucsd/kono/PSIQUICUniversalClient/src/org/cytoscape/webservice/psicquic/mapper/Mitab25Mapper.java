@@ -17,8 +17,6 @@ import cytoscape.logger.CyLogger;
 /**
  * Map minimal set of information from MITAB25.
  * 
- * @author kono
- * 
  */
 public class Mitab25Mapper {
 
@@ -26,8 +24,12 @@ public class Mitab25Mapper {
 
 	// Separator for multiple entries.
 	private static final String SEPARATOR = "\\|";
-	private static final String ATTR_PREFIX = "PSI-MI-25.";
+	private static final String TAB = "\t";
+	private static final String DB_ID = "\\:";
+	private static final String DESCRIPTION = "(\\S?)";
+	private static final String ATTR_PREFIX = "PSIMI25.";
 
+	// PSIMI25 specification contains 15 columns.
 	private static final int COLUMN_COUNT = 15;
 
 	final Set<CyNode> nodes;
@@ -36,30 +38,32 @@ public class Mitab25Mapper {
 	final CyAttributes nodeAttr;
 	final CyAttributes edgeAttr;
 	final CyAttributes networkAttr;
-
+	
+	private static final String INTERACTION = "interaction";
+	
 	// Reg.Ex for parsing entry
 	private final static Pattern miPttr = Pattern.compile("MI:\\d{4}");
 	private final static Pattern miNamePttr = Pattern.compile("\\(.+\\)");
-
-	private static final String TAB = "\t";
-	private static final String INTERACTION = "interaction";
+	
+	private final static Pattern lineSplitter = Pattern.compile(TAB);
+	private final static Pattern entrySplitter = Pattern.compile(SEPARATOR);
+	private final static Pattern dbSplitter = Pattern.compile(DB_ID);
+	private final static Pattern descriptionSpliter = Pattern.compile("\\(");
 
 	// Attr Names
-	private static final String DETECTION_METHOD = ATTR_PREFIX
-			+ "interaction detection method";
-	private static final String INTERACTION_TYPE = ATTR_PREFIX
-			+ "interaction type";
+	private static final String DETECTION_METHOD = ATTR_PREFIX + "interaction detection method";
+	private static final String INTERACTION_TYPE = ATTR_PREFIX + "interaction type";
 	private static final String SOURCE_DB = ATTR_PREFIX + "source database";
 	private static final String INTERACTION_ID = ATTR_PREFIX + "Interaction ID";
-	private static final String EDGE_SCORE = ATTR_PREFIX + "confidence score";
+	private static final String EDGE_SCORE = ATTR_PREFIX + "Confidence Score";
 
 	// Stable IDs which maybe used for mapping later
 	private static final String UNIPROT = "uniprotkb";
 	private static final String ENTREZ_GENE = "entrezgene/locuslink";
 	private static final String ENTREZ_GENE_SYN = "entrez gene/locuslink";
-	
+
 	private static final String CHEBI = "chebi";
-	
+
 	private static final String INTERACTOR_TYPE = ATTR_PREFIX + "interactor type";
 	private static final String COMPOUND = "compound";
 
@@ -75,41 +79,33 @@ public class Mitab25Mapper {
 		networkAttr = Cytoscape.getNetworkAttributes();
 	}
 
-	public CyNetwork map(String mitab, String networkName,
-			CyNetwork parentNetwork) {
+	public CyNetwork map(String mitab, String networkName, CyNetwork parentNetwork) {
 
 		// Read the long string of MITAB
 		String[] lines = mitab.split("\n");
-
 		parse(lines);
+		lines = null;
 
 		// Create top attribues for important keys
 		List<String> currentAttr;
 		for (CyNode node : nodes) {
-			currentAttr = nodeAttr.getListAttribute(node.getIdentifier(),
-					ATTR_PREFIX + UNIPROT);
+			currentAttr = nodeAttr.getListAttribute(node.getIdentifier(), ATTR_PREFIX + UNIPROT);
 			if (currentAttr != null && currentAttr.size() != 0) {
-				nodeAttr.setAttribute(node.getIdentifier(), ATTR_PREFIX
-						+ UNIPROT + ".top", currentAttr.get(0));
+				nodeAttr.setAttribute(node.getIdentifier(), ATTR_PREFIX + UNIPROT + ".top", currentAttr.get(0));
 			}
-			currentAttr = nodeAttr.getListAttribute(node.getIdentifier(),
-					ATTR_PREFIX + ENTREZ_GENE);
+			currentAttr = nodeAttr.getListAttribute(node.getIdentifier(), ATTR_PREFIX + ENTREZ_GENE);
 			if (currentAttr != null && currentAttr.size() != 0) {
-				nodeAttr.setAttribute(node.getIdentifier(), ATTR_PREFIX
-						+ ENTREZ_GENE + ".top", currentAttr.get(0));
+				nodeAttr.setAttribute(node.getIdentifier(), ATTR_PREFIX + ENTREZ_GENE + ".top", currentAttr.get(0));
 			}
 
-			currentAttr = nodeAttr.getListAttribute(node.getIdentifier(),
-					ATTR_PREFIX + ENTREZ_GENE_SYN);
+			currentAttr = nodeAttr.getListAttribute(node.getIdentifier(), ATTR_PREFIX + ENTREZ_GENE_SYN);
 			if (currentAttr != null && currentAttr.size() != 0) {
-				nodeAttr.setAttribute(node.getIdentifier(), ATTR_PREFIX
-						+ ENTREZ_GENE + ".top", currentAttr.get(0));
+				nodeAttr.setAttribute(node.getIdentifier(), ATTR_PREFIX + ENTREZ_GENE + ".top", currentAttr.get(0));
 			}
 		}
 
 		if (edges.size() != 0) {
-			final CyNetwork network = Cytoscape.createNetwork(nodes, edges,
-					networkName, parentNetwork);
+			final CyNetwork network = Cytoscape.createNetwork(nodes, edges, networkName, parentNetwork);
 
 			nodes.clear();
 			edges.clear();
@@ -120,100 +116,79 @@ public class Mitab25Mapper {
 	}
 
 	private void parse(final String[] lines) {
-		String[] entry;
-		String[] sourceID;
-		String[] targetID;
-
-		String[] detectionMethods;
-		CyNode source;
-		CyNode target;
-		CyEdge e;
-
-		String[] sourceDB;
-		String[] interactionID;
-		String[] interactionType;
-
-		String[] edgeScore;
-
-		for (String line : lines) {
+		for (final String line : lines) {
 			try {
-				entry = line.split(TAB);
-
-				// Validate entry list.
-				if (entry == null || entry.length < COLUMN_COUNT)
-					continue;
-
-				sourceID = entry[0].split(SEPARATOR);
-				targetID = entry[1].split(SEPARATOR);
-
-				source = Cytoscape.getCyNode(sourceID[0], true);
-				target = Cytoscape.getCyNode(targetID[0], true);
-				nodes.add(source);
-				nodes.add(target);
-				
-				// Set type if not protein
-				if(source.getIdentifier().contains(CHEBI))
-					nodeAttr.setAttribute(source.getIdentifier(), INTERACTOR_TYPE, COMPOUND);
-				if(target.getIdentifier().contains(CHEBI))
-					nodeAttr.setAttribute(target.getIdentifier(), INTERACTOR_TYPE, COMPOUND);
-
-				// Aliases
-				setAliases(nodeAttr, source.getIdentifier(),
-						entry[0].split(SEPARATOR));
-				setAliases(nodeAttr, target.getIdentifier(),
-						entry[1].split(SEPARATOR));
-				setAliases(nodeAttr, source.getIdentifier(),
-						entry[2].split(SEPARATOR));
-				setAliases(nodeAttr, target.getIdentifier(),
-						entry[3].split(SEPARATOR));
-				setAliases(nodeAttr, source.getIdentifier(),
-						entry[4].split(SEPARATOR));
-				setAliases(nodeAttr, target.getIdentifier(),
-						entry[5].split(SEPARATOR));
-
-				// Tax ID (pick first one only)
-				setTaxID(nodeAttr, source.getIdentifier(),
-						entry[9].split(SEPARATOR)[0]);
-				setTaxID(nodeAttr, target.getIdentifier(),
-						entry[10].split(SEPARATOR)[0]);
-
-				sourceDB = entry[12].split(SEPARATOR);
-				interactionID = entry[13].split(SEPARATOR);
-
-				edgeScore = entry[14].split(SEPARATOR);
-
-				detectionMethods = entry[6].split(SEPARATOR);
-				interactionType = entry[11].split(SEPARATOR);
-				e = Cytoscape.getCyEdge(source, target, INTERACTION,
-						interactionID[0], true);
-				edges.add(e);
-
-				setEdgeListAttribute(edgeAttr, e.getIdentifier(),
-						interactionType, INTERACTION_TYPE);
-				setEdgeListAttribute(edgeAttr, e.getIdentifier(),
-						detectionMethods, DETECTION_METHOD);
-				setEdgeListAttribute(edgeAttr, e.getIdentifier(), sourceDB,
-						SOURCE_DB);
-				
-				// Map scores
-				setEdgeScoreListAttribute(edgeAttr, e.getIdentifier(), edgeScore,
-						EDGE_SCORE);
-
-				edgeAttr.setAttribute(e.getIdentifier(), INTERACTION_ID,
-						interactionID[0]);
-
-				setPublication(edgeAttr, e.getIdentifier(),
-						entry[8].split(SEPARATOR), entry[7].split(SEPARATOR));
+				parseLine(line);
 			} catch (Exception ex) {
-				logger.warn("Invalid entry line found: " + line, ex);
+				logger.warn("Failed parse line: " + line, ex);
 				continue;
 			}
-
 		}
 	}
 
-	private void setNetworkAttr(final CyNetwork net) {
+	private final void parseLine(final String line) throws Exception {
+			final String[] entry = lineSplitter.split(line);
 
+			// Validate entry list.
+			if (entry == null || entry.length < COLUMN_COUNT)
+				return;
+
+			// Create nodes
+			final String[] sourceID = entrySplitter.split(entry[0]);
+			final String[] targetID = entrySplitter.split(entry[1]);
+
+			String[] keyIDPparts = dbSplitter.split(sourceID[0]);
+			final String firstSourceID = keyIDPparts[1];
+			final String firstSourceDB = keyIDPparts[0];
+			
+			keyIDPparts = dbSplitter.split(targetID[0]);
+			final String firstTargetID = keyIDPparts[1];
+			final String firstTargetDB = keyIDPparts[0];
+			
+			final CyNode source = Cytoscape.getCyNode(firstSourceID, true);
+			final CyNode target = Cytoscape.getCyNode(firstTargetID, true);
+			nodeAttr.setAttribute(source.getIdentifier(), ATTR_PREFIX + "primaryKey." + firstSourceDB, firstSourceID);
+			nodeAttr.setAttribute(target.getIdentifier(), ATTR_PREFIX + "primaryKey." + firstTargetDB, firstTargetID);
+			nodes.add(source);
+			nodes.add(target);
+
+			// Set type if not protein
+			if (source.getIdentifier().contains(CHEBI))
+				nodeAttr.setAttribute(source.getIdentifier(), INTERACTOR_TYPE, COMPOUND);
+			if (target.getIdentifier().contains(CHEBI))
+				nodeAttr.setAttribute(target.getIdentifier(), INTERACTOR_TYPE, COMPOUND);
+
+			// Aliases
+			setAliases(nodeAttr, source.getIdentifier(), sourceID);
+			setAliases(nodeAttr, target.getIdentifier(), targetID);
+			setAliases(nodeAttr, source.getIdentifier(), entrySplitter.split(entry[2]));
+			setAliases(nodeAttr, target.getIdentifier(), entrySplitter.split(entry[3]));
+			setAliases(nodeAttr, source.getIdentifier(), entrySplitter.split(entry[4]));
+			setAliases(nodeAttr, target.getIdentifier(), entrySplitter.split(entry[5]));
+
+			// Tax ID (pick first one only)
+			setTaxID(nodeAttr, source.getIdentifier(), entrySplitter.split(entry[9])[0]);
+			setTaxID(nodeAttr, target.getIdentifier(), entrySplitter.split(entry[10])[0]);
+
+			final String[] sourceDB = entrySplitter.split(entry[12]);
+			final String[] interactionID = entrySplitter.split(entry[13]);
+
+			final String[] edgeScores = entrySplitter.split(entry[14]);
+
+			final String[] detectionMethods = entrySplitter.split(entry[6]);
+			final String[] interactionType = entrySplitter.split(entry[11]);
+			final CyEdge e = Cytoscape.getCyEdge(source, target, INTERACTION, interactionID[0], true);
+			edges.add(e);
+
+			setEdgeListAttribute(edgeAttr, e.getIdentifier(), interactionType, INTERACTION_TYPE);
+			setEdgeListAttribute(edgeAttr, e.getIdentifier(), detectionMethods, DETECTION_METHOD);
+			setEdgeListAttribute(edgeAttr, e.getIdentifier(), sourceDB, SOURCE_DB);
+
+			// Map scores
+			setEdgeScoreListAttribute(edgeAttr, e.getIdentifier(), edgeScores, EDGE_SCORE);
+
+			edgeAttr.setAttribute(e.getIdentifier(), INTERACTION_ID, interactionID[0]);
+			setPublication(edgeAttr, e.getIdentifier(), entrySplitter.split(entry[8]), entrySplitter.split(entry[7]));
 	}
 
 	private void setTaxID(CyAttributes attr, String id, String value) {
@@ -227,16 +202,14 @@ public class Mitab25Mapper {
 			if (matcher.find()) {
 				taxonName = matcher.group();
 				attr.setAttribute(id, attrName, buf[1].split("\\(")[0]);
-				attr.setAttribute(id, attrName + ".name",
-						taxonName.substring(1, taxonName.length() - 1));
+				attr.setAttribute(id, attrName + ".name", taxonName.substring(1, taxonName.length() - 1));
 			} else {
 				attr.setAttribute(id, attrName, buf[1]);
 			}
 		}
 	}
 
-	private void setPublication(CyAttributes attr, String id, String[] pubID,
-			String[] authors) {
+	private void setPublication(CyAttributes attr, String id, String[] pubID, String[] authors) {
 		String key = null;
 		String[] temp;
 
@@ -271,8 +244,7 @@ public class Mitab25Mapper {
 		}
 	}
 
-	private void setEdgeListAttribute(CyAttributes attr, String id,
-			String[] entry, String key) {
+	private void setEdgeListAttribute(CyAttributes attr, String id, String[] entry, String key) {
 
 		String value;
 		String name;
@@ -285,38 +257,36 @@ public class Mitab25Mapper {
 			listAttrMapper(attr, key + ".name", id, name);
 		}
 	}
+
+
 	
-	// Special case for edge scores
-	private void setEdgeScoreListAttribute(CyAttributes attr, String id,
-			String[] entry, String key) {
-
-		String scoreString;
-		String scoreType;
-
-		for (String val : entry) {
-			final String[] parts = val.split(":");
-			if(parts == null || parts.length != 2)
+	/**
+	 * Create edge score attribute as Double
+	 * @param attr
+	 * @param id
+	 * @param scores
+	 * @param prefix
+	 */
+	private void setEdgeScoreListAttribute(CyAttributes attr, String id, String[] scores, String prefix) {
+		for (final String scoreFullString : scores) {
+			final String[] parts = dbSplitter.split(scoreFullString);
+			if (parts == null || parts.length != 2)
 				continue;
-			
-			scoreString = parts[1];
-			scoreType = parts[0];
-		
+
+			final String scoreRaw = parts[1];
+			final String scoreString = descriptionSpliter.split(scoreRaw)[0];
+			final String db = parts[0];
+
 			try {
-				final Double score = Double.parseDouble(scoreString);
-				edgeAttr.setAttribute(id, key + "." + scoreType, score);
+				final double score = Double.parseDouble(scoreString);
+				edgeAttr.setAttribute(id, prefix + "." + db, score);
 			} catch (Exception e) {
-				if(scoreString != null && scoreString.trim().equals("") == false)
-					edgeAttr.setAttribute(id, key + "." + scoreType, scoreString);
-					
 				continue;
 			}
 		}
 	}
-	
-	
 
-	private void listAttrMapper(CyAttributes attr, String attrName, String id,
-			String value) {
+	private void listAttrMapper(CyAttributes attr, String attrName, String id, String value) {
 		List currentAttr;
 
 		currentAttr = attr.getListAttribute(id, attrName);
