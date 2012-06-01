@@ -10,9 +10,9 @@
 	</parent>
 	
 	<groupId>org.cytoscape.headless-distribution</groupId>
-	<artifactId>cytoscape</artifactId>
+	<artifactId>cytoscape-headless</artifactId>
 	<packaging>pom</packaging>
-	<name>Cytoscape Karaft Distribution</name>
+	<name>Cytoscape Headless Distribution</name>
 
 	<dependencies>
 		<dependency>
@@ -275,6 +275,10 @@
 						<replacement>
 							<token>MAIN=org.apache.karaf.main.Main</token>
 							<value>MAIN=org.cytoscape.launcher.internal.Launcher</value>
+						</replacement>
+						<replacement>
+							<token>OPTS="-Dkaraf.startLocalConsole=true -Dkaraf.startRemoteShell=true"</token>
+							<value>OPTS="-Dkaraf.startLocalConsole=false -Dkaraf.startRemoteShell=false"</value>
 						</replacement>
 					</replacements>
 				</configuration>

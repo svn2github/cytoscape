@@ -13,8 +13,8 @@
     </karaf>
     <cytoscape>
         <scripts>
-            <script>cytoscape.sh</script>
-            <script>cytoscape.bat</script>
+            <script>cytoscape-headless.sh</script>
+            <script>cytoscape-headless.bat</script>
         </scripts>
     </cytoscape>
 </config>

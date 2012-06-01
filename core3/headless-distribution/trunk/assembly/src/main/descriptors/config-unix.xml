@@ -12,7 +12,7 @@
     </karaf>
     <cytoscape>
         <scripts>
-            <script>cytoscape.sh</script>
+            <script>cytoscape-headless.sh</script>
         </scripts>
     </cytoscape>
 </config>
