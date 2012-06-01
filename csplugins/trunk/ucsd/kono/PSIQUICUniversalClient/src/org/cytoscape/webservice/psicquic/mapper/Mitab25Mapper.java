@@ -23,13 +23,13 @@ public class Mitab25Mapper {
 	private static final CyLogger logger = CyLogger.getLogger();
 
 	public static final String PREDICTED_GENE_NAME = "predicted gene name";
-	
+
 	// Separator for multiple entries.
 	private static final String SEPARATOR = "\\|";
 	private static final String TAB = "\t";
 	private static final String DB_ID = "\\:";
 	private static final String DESCRIPTION = "(\\S?)";
-	private static final String ATTR_PREFIX = "PSIMI25.";
+	public static final String ATTR_PREFIX = "PSIMI25.";
 
 	// PSIMI25 specification contains 15 columns.
 	private static final int COLUMN_COUNT = 15;
@@ -67,6 +67,9 @@ public class Mitab25Mapper {
 
 	private static final String ENTREZ_GENE_ATTR_NAME = ATTR_PREFIX + ENTREZ_GENE;
 	private static final String UNIPROT_ATTR_NAME = ATTR_PREFIX + "uniprotkb";
+	private static final String STRING_ATTR_NAME = ATTR_PREFIX + "string";
+	public static final String SPECIES_ATTR_NAME = ATTR_PREFIX + "taxid";
+	public static final String INTERACTION_TYPE_ATTR_NAME = ATTR_PREFIX + "interaction type.name";
 	private static final String CHEBI = "chebi";
 
 	private static final String INTERACTOR_TYPE = ATTR_PREFIX + "interactor type";
@@ -336,43 +339,51 @@ public class Mitab25Mapper {
 		return miName;
 	}
 
-	private void guessHumanReadableName(CyNode node) {
+	private void guessHumanReadableName(final CyNode node) {
 		final String id = node.getIdentifier();
+		boolean found = false;
+
+		// Special handler for STRING. This is a hack... Need some more smarter
+		// code in 3.
+		final List<String> stringList = nodeAttr.getListAttribute(id, STRING_ATTR_NAME);
+		if (stringList != null)
+			found = findHumanReadableName(id, stringList, ncbiPattern, true);
+		
+		if(found)
+			return;
 		// try NCBI
 		final List<String> ncbiList = nodeAttr.getListAttribute(id, ENTREZ_GENE_ATTR_NAME);
-		String candidateString = null;
-		if (ncbiList != null) {
-			for (final String geneID : ncbiList) {
-				if (ncbiPattern.matcher(geneID).find()) {
-					candidateString = geneID;
-					break;
-				}
-			}
-			if (candidateString != null) {
-				nodeAttr.setAttribute(id, PREDICTED_GENE_NAME, candidateString);
-				return;
-			}
-		}
+		if (ncbiList != null)
+			found = findHumanReadableName(id, ncbiList, ncbiPattern, true);
+
+		if(found)
+			return;
 		
 		// Try Uniprot
 		final List<String> uniprotList = nodeAttr.getListAttribute(id, UNIPROT_ATTR_NAME);
-		if (uniprotList != null) {
-			for (final String geneID : uniprotList) {
-				if (uniprotPattern.matcher(geneID).find() == false) {
-					candidateString = geneID;
-					break;
-				}
-			}
-			if (candidateString != null) {
-				nodeAttr.setAttribute(id, PREDICTED_GENE_NAME, candidateString);
-				return;
+		if (uniprotList != null)
+			found = findHumanReadableName(id, uniprotList, uniprotPattern, false);
+
+		if (found == false) {
+			// Give up. Use primary key
+			nodeAttr.setAttribute(id, PREDICTED_GENE_NAME, node.getIdentifier());
+		}
+	}
+
+	private boolean findHumanReadableName(final String id, final List<String> attrList, Pattern pattern, boolean exist) {
+		String candidateString = null;
+		for (final String geneID : attrList) {
+			if (pattern.matcher(geneID).find() == exist) {
+				candidateString = geneID;
+				break;
 			}
 		}
+		if (candidateString != null) {
+			nodeAttr.setAttribute(id, PREDICTED_GENE_NAME, candidateString);
+			return true;
+		}
 
-		// TODO: try String
-		
-		// Give up.  Use primary key
-		nodeAttr.setAttribute(id, PREDICTED_GENE_NAME, node.getIdentifier());
+		return false;
 	}
 
 }

@@ -298,7 +298,7 @@ public class PSICQUICUniversalClient extends WebServiceClientImplWithGUI<PSICQUI
 			nestedNode.setNestedNetwork(net);
 
 			Cytoscape.getNodeAttributes().setAttribute(nestedNode.getIdentifier(),
-					PSI25VisualStyleBuilder.ATTR_PREFIX + "interactor type", "nested");
+					Mitab25Mapper.ATTR_PREFIX + "interactor type", "nested");
 
 			parentNetwork.addNode(nestedNode);
 			parentNetwork.addEdge(Cytoscape.getCyEdge(nestedNode, centerNode, "interaction", "query_result", true));
