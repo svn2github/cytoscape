@@ -21,7 +21,6 @@ import cytoscape.visual.VisualStyle;
 import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
 import ding.view.ObjectPositionImpl;
 
@@ -35,9 +34,12 @@ public class PSI25VisualStyleBuilder {
 
 	// Presets
 	private static final Color NODE_COLOR = new Color(0xee, 0xee, 0xee);
+	private static final Color NODE_LABEL_COLOR = new Color(0x36, 0x36, 0x36);
+
 	private static final Color EDGE_COLOR = new Color(0x9c, 0x9c, 0x9c);
+	private static final int EDGE_OPACITY = 160;
 	private static final Color EDGE_LABEL_COLOR = new Color(0xA2, 0xB5, 0xCD);
-	private static final int EDGE_LABEL_OPACITY = 130;
+	private static final int EDGE_LABEL_OPACITY = 160;
 	private static final int EDGE_LABEL_SIZE = 9;
 
 	// Color presets for some model organisms
@@ -79,26 +81,14 @@ public class PSI25VisualStyleBuilder {
 		GlobalAppearanceCalculator gac = defStyle.getGlobalAppearanceCalculator();
 
 		// Default values
-		final int edgeOp = 110;
-		final Color nodeLineColor = new Color(40, 40, 40);
-		final Color nodeLabelColor = new Color(30, 30, 30);
-
-		final Color nodeCompoundColor = new Color(100, 100, 100);
-		final Color nodeNestedColor = Color.white;
-
-		final Color edgeColor = NODE_COLOR;
+		final Color nodeLineColor = new Color(46, 46, 46);
 		final Font nodeLabelFont = new Font("Helvetica", Font.PLAIN, 14);
-		// final Color nodeLabelColor = new Color(105,105,105);
 
+		// Network background
 		gac.setDefaultBackgroundColor(Color.white);
 
 		final PassThroughMapping m = new PassThroughMapping(String.class, Mitab25Mapper.PREDICTED_GENE_NAME);
 		final Calculator calc = new BasicCalculator(DEF_VS_NAME + "-" + "NodeLabelMapping", m, NODE_LABEL);
-		// PassThroughMapping me = new PassThroughMapping("", ATTR_PREFIX +
-		// "interaction type");
-		//
-		// EdgeCalculator calce = new EdgeCalculator(DEF_VS_NAME + "-"
-		// + "EdgeLabelMapping", me, null, EDGE_LABEL);
 		nac.setCalculator(calc);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FILL_COLOR, NODE_COLOR);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_SHAPE, NodeShape.RECT);
@@ -108,10 +98,9 @@ public class PSI25VisualStyleBuilder {
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_BORDER_COLOR, nodeLineColor);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_WIDTH, 25);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_HEIGHT, 15);
-		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LABEL_COLOR, nodeLabelColor);
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LABEL_COLOR, NODE_LABEL_COLOR);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FONT_FACE, nodeLabelFont);
 
-		// TODO: this is for 2.8.0
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LABEL_POSITION,
 				new ObjectPositionImpl(Position.SOUTH, Position.NORTH_WEST, Justification.JUSTIFY_CENTER, -7, 1.0));
 
@@ -133,51 +122,50 @@ public class PSI25VisualStyleBuilder {
 				VisualPropertyType.NODE_FILL_COLOR);
 		nac.setCalculator(nodeColorCalc);
 
-		DiscreteMapping nodeShapeMapping = new DiscreteMapping(NodeShape.RECT, Mitab25Mapper.ATTR_PREFIX + "interactor type",
-				ObjectMapping.NODE_MAPPING);
+		DiscreteMapping nodeShapeMapping = new DiscreteMapping(NodeShape.class, Mitab25Mapper.ATTR_PREFIX
+				+ "interactor type");
 		nodeShapeMapping.putMapValue("compound", NodeShape.ELLIPSE);
 		nodeShapeMapping.putMapValue("nested", NodeShape.ROUND_RECT);
 		final Calculator nodeShapeCalc = new BasicCalculator(DEF_VS_NAME + "-" + "NodeShapeMapping", nodeShapeMapping,
 				VisualPropertyType.NODE_SHAPE);
 		nac.setCalculator(nodeShapeCalc);
 
-		DiscreteMapping nodeWidthMapping = new DiscreteMapping(30, Mitab25Mapper.ATTR_PREFIX + "interactor type",
-				ObjectMapping.NODE_MAPPING);
+		DiscreteMapping nodeWidthMapping = new DiscreteMapping(Number.class, Mitab25Mapper.ATTR_PREFIX
+				+ "interactor type");
 		nodeWidthMapping.putMapValue("compound", 15);
 		nodeWidthMapping.putMapValue("nested", 100);
 		final Calculator nodeWidthCalc = new BasicCalculator(DEF_VS_NAME + "-" + "NodeWidthMapping", nodeWidthMapping,
 				VisualPropertyType.NODE_WIDTH);
 		nac.setCalculator(nodeWidthCalc);
-		DiscreteMapping nodeHeightMapping = new DiscreteMapping(30, Mitab25Mapper.ATTR_PREFIX + "interactor type",
-				ObjectMapping.NODE_MAPPING);
+		DiscreteMapping nodeHeightMapping = new DiscreteMapping(Number.class, Mitab25Mapper.ATTR_PREFIX
+				+ "interactor type");
 		nodeHeightMapping.putMapValue("compound", 15);
 		nodeHeightMapping.putMapValue("nested", 100);
 		final Calculator nodeHeightCalc = new BasicCalculator(DEF_VS_NAME + "-" + "NodeHeightMapping",
 				nodeHeightMapping, VisualPropertyType.NODE_HEIGHT);
 		nac.setCalculator(nodeHeightCalc);
 
-		final PassThroughMapping edgeLabelMapping = new PassThroughMapping(String.class, Mitab25Mapper.INTERACTION_TYPE_ATTR_NAME);
-		final Calculator edgeCalc = new BasicCalculator(DEF_VS_NAME + "-" + "EdgeLabelMapping", edgeLabelMapping, VisualPropertyType.EDGE_LABEL);
+		final PassThroughMapping edgeLabelMapping = new PassThroughMapping(String.class,
+				Mitab25Mapper.INTERACTION_TYPE_ATTR_NAME);
+		final Calculator edgeCalc = new BasicCalculator(DEF_VS_NAME + "-" + "EdgeLabelMapping", edgeLabelMapping,
+				VisualPropertyType.EDGE_LABEL);
 		eac.setCalculator(edgeCalc);
-		
+
 		// eac.setCalculator(calce);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_COLOR, EDGE_COLOR);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LABEL_COLOR, EDGE_LABEL_COLOR);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_FONT_SIZE, EDGE_LABEL_SIZE);
 
-		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_OPACITY, edgeOp);
-		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_SRCARROW_OPACITY, edgeOp);
-		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_TGTARROW_OPACITY, edgeOp);
+		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_OPACITY, EDGE_OPACITY);
+		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_SRCARROW_OPACITY, EDGE_OPACITY);
+		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_TGTARROW_OPACITY, EDGE_OPACITY);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LABEL_OPACITY, EDGE_LABEL_OPACITY);
 		eac.getDefaultAppearance().set(VisualPropertyType.EDGE_LINE_WIDTH, 1);
 
 		// Interaction Type mapping
-		DiscreteMapping lineStyle = new DiscreteMapping(LineStyle.SOLID, Mitab25Mapper.ATTR_PREFIX + "interaction type",
-				ObjectMapping.EDGE_MAPPING);
-		DiscreteMapping lineWidth = new DiscreteMapping(1.0, Mitab25Mapper.ATTR_PREFIX + "interaction type",
-				ObjectMapping.EDGE_MAPPING);
-		DiscreteMapping edgeColorMap = new DiscreteMapping(Color.black, Mitab25Mapper.ATTR_PREFIX + "interaction type",
-				ObjectMapping.EDGE_MAPPING);
+		DiscreteMapping lineStyle = new DiscreteMapping(LineStyle.class, Mitab25Mapper.ATTR_PREFIX + "interaction type");
+		DiscreteMapping lineWidth = new DiscreteMapping(Number.class, Mitab25Mapper.ATTR_PREFIX + "interaction type");
+		DiscreteMapping edgeColorMap = new DiscreteMapping(Color.class, Mitab25Mapper.ATTR_PREFIX + "interaction type");
 		generateInteractionTypeMap(lineStyle, lineWidth, edgeColorMap);
 
 		final Calculator lineStyleCalc = new BasicCalculator(DEF_VS_NAME + "-" + "EdgeLineStyleMapping", lineStyle,
