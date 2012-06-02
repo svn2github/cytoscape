@@ -7,10 +7,10 @@ import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.service.util.CyServiceRegistrar;
-import org.cytoscape.task.creation.LoadVisualStyles;
+import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
 //import org.cytoscape.task.creation.LoadVisualStylesFromFileFactory;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -36,11 +36,11 @@ public class ServicesUtil {
 	public static VisualMappingManager visualMappingManagerRef;
 	public static CyNetworkFactory cyNetworkFactoryServiceRef;
 
-	public static CyRootNetworkFactory cyRootNetworkFactory;
+	public static CyRootNetworkManager cyRootNetworkFactory;
 	public static CyNetworkViewFactory cyNetworkViewFactoryServiceRef;
 	public static CyLayoutAlgorithmManager cyLayoutsServiceRef;
 
-	public static LoadVisualStyles loadVizmapFileTaskFactory;
+	public static LoadVizmapFileTaskFactory loadVizmapFileTaskFactory;
 	
 	public static SynchronousTaskManager synchronousTaskManagerServiceRef;
 	

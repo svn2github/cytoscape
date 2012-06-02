@@ -49,6 +49,7 @@ import java.util.Collection;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import csplugins.jActiveModules.ServicesUtil;
+import java.io.File;
 
 
 //-----------------------------------------------------------------------------------
@@ -188,7 +189,7 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 		//activePaths = apf.findActivePaths();
 		   
 		ActivePathsTaskFactory factory = new ActivePathsTaskFactory(apf);
-		ServicesUtil.synchronousTaskManagerServiceRef.execute(factory);
+		ServicesUtil.synchronousTaskManagerServiceRef.execute(factory.createTaskIterator());
 				
 		activePaths = new Component[activePathsVect.size()];
 		for (int i=0; i< activePathsVect.size(); i++){
@@ -220,13 +221,13 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 		taskMonitor.setStatusMessage("Create an overview network for all nested network...");
 
 		//2. create an overview network for all nested network
-		final CyNetwork overview = ServicesUtil.cyNetworkFactoryServiceRef.getInstance();
-		overview.getCyRow().set("name", "jActiveModules Search Result "+ runCount++);
+		final CyNetwork overview = ServicesUtil.cyNetworkFactoryServiceRef.createNetwork();
+		overview.getRow(overview).set("name", "jActiveModules Search Result "+ runCount++);
 		
 		Set<CyNode>  path_nodes = new HashSet<CyNode>();
 		for (int i=0; i< subnetworks.length; i++){
 			CyNode newNode = overview.addNode(); //Cytoscape.getCyNode(subnetworks[i].getTitle(), true);
-			newNode.getCyRow().set("name", subnetworks[i].getCyRow().get("name", String.class));
+			overview.getRow(newNode).set("name", subnetworks[i].getRow(subnetworks[i]).get("name", String.class));
 			path_nodes.add(newNode);
 			newNode.setNetworkPointer(subnetworks[i]);
 			// create an attribute for this new node
@@ -235,7 +236,7 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 			if (overview.getDefaultNodeTable().getColumn(NODE_SCORE)== null){
 				overview.getDefaultNodeTable().createColumn(NODE_SCORE, Double.class, false);
 			}
-			newNode.getCyRow().set(NODE_SCORE, new Double(activePaths[i].getScore()));
+			overview.getRow(newNode).set(NODE_SCORE, new Double(activePaths[i].getScore()));
 		}
 
 		ServicesUtil.cyNetworkManagerServiceRef.addNetwork(overview);
@@ -265,13 +266,13 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 								aEdge.getTarget().getNetworkPointer().getNodeCount());
 
 			//cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "jActiveModules_nodeCount_min_two", minNodeCount);
-			aEdge.getCyRow().set("jActiveModules_nodeCount_min_two", minNodeCount);
+			overview.getRow(aEdge).set("jActiveModules_nodeCount_min_two", minNodeCount);
 			
 			//cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "jActiveModules_nodeOverlapCount", NumberOfSharedNodes);
-			aEdge.getCyRow().set("jActiveModules_nodeOverlapCount", NumberOfSharedNodes);
+			overview.getRow(aEdge).set("jActiveModules_nodeOverlapCount", NumberOfSharedNodes);
 			double overlapScore = (double)NumberOfSharedNodes/minNodeCount;
 			//cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), EDGE_SCORE, overlapScore);
-			aEdge.getCyRow().set(EDGE_SCORE, overlapScore);
+			overview.getRow(aEdge).set(EDGE_SCORE, overlapScore);
 		}
 		taskMonitor.setProgress(0.8);
 
@@ -279,12 +280,15 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 
 		//4. Create a view for overview network and apply visual style
 		//Cytoscape.createNetworkView(overview, overview.getIdentifier(), tuning(), null);
-		final CyNetworkView newView = ServicesUtil.cyNetworkViewFactoryServiceRef.getNetworkView(overview);
+		final CyNetworkView newView = ServicesUtil.cyNetworkViewFactoryServiceRef.createNetworkView(overview);
 		ServicesUtil.cyNetworkViewManagerServiceRef.addNetworkView(newView);
 		
 		// Apply layout for overview
-		layoutAlgorithm.setNetworkView(newView);
-		this.insertTasksAfterCurrentTask(layoutAlgorithm.getTaskIterator());
+//		layoutAlgorithm.setNetworkView(newView);
+//		this.insertTasksAfterCurrentTask(layoutAlgorithm.getTaskIterator());
+		Object context = layoutAlgorithm.getDefaultLayoutContext();
+		insertTasksAfterCurrentTask(layoutAlgorithm.createTaskIterator(newView, context, CyLayoutAlgorithm.ALL_NODE_VIEWS,""));
+
 				
 //		this.visualMappingManager.setVisualStyle(overviewVS, newView);
 //		newView.updateView();
@@ -305,11 +309,12 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 		 }
 
 		 for (int i=0; i<n; i++){
-				CyNetworkView theView = ServicesUtil.cyNetworkViewFactoryServiceRef.getNetworkView(subnetworks[i]);
+				CyNetworkView theView = ServicesUtil.cyNetworkViewFactoryServiceRef.createNetworkView(subnetworks[i]);
 				ServicesUtil.cyNetworkViewManagerServiceRef.addNetworkView(theView);
 								
-				layoutAlgorithm.setNetworkView(theView);
-				this.insertTasksAfterCurrentTask(layoutAlgorithm.getTaskIterator());				
+//				layoutAlgorithm.setNetworkView(theView);
+//				this.insertTasksAfterCurrentTask(layoutAlgorithm.getTaskIterator());
+				insertTasksAfterCurrentTask(layoutAlgorithm.createTaskIterator(theView, context, CyLayoutAlgorithm.ALL_NODE_VIEWS,""));
 
 //				this.visualMappingManager.setVisualStyle(moduleVS, theView);
 //				theView.updateView();
@@ -395,7 +400,7 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 
 		CySubNetwork[] subnetworks2 = new CySubNetwork[activePaths.length];
 		
-		CyRootNetwork rootNetwork = ServicesUtil.cyRootNetworkFactory.convert(cyNetwork);
+		CyRootNetwork rootNetwork = ServicesUtil.cyRootNetworkFactory.getRootNetwork(cyNetwork);
 		
 		for (int i = 0; i < activePaths.length; i++) {
 			Component thePath = activePaths[i];
@@ -421,7 +426,7 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 
 			//subnetworks[i] = Cytoscape.createNetwork(nodeSet, edgeSet, pathName, cyNetwork, false);
 			subnetworks2[i] = rootNetwork.addSubNetwork(nodeSet, edgeSet);
-			subnetworks2[i].getCyRow().set("name", pathName);
+			subnetworks2[i].getRow(subnetworks2[i]).set("name", pathName);
 			
 //			if(i < MAX_NETWORK_VIEWS) {
 //				//final CyNetworkView moduleView = Cytoscape.createNetworkView(subnetworks[i], subnetworks[i].getTitle(), tuning());
@@ -475,7 +480,7 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 		final Double[][] attribValues = new Double[attrNames.length][geneList.size()];
 		final Map<String, Integer> geneNameToIndexMap = new HashMap<String, Integer>();
 		for (int i = 0; i < geneList.size(); i++) {
-			final String geneName = geneList.get(i).getCyRow().get("name", String.class); //.getIdentifier();
+			final String geneName = this.cyNetwork.getRow(geneList.get(i)).get("name", String.class); //.getIdentifier();
 			
 			geneNameToIndexMap.put(geneName, new Integer(i));
 			for (int j = 0; j < attrNames.length; j++)
@@ -503,7 +508,7 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 			CyNode shuffle = shuffledList.get(i);
 
 			// If randomizing, you'll get p-values for a different gene. 
-			String canonicalName = shuffle.getCyRow().get("name", String.class); //.getIdentifier();
+			String canonicalName = this.cyNetwork.getRow(shuffle).get("name", String.class); //.getIdentifier();
 
 			double[] tempArray = new double[attrNames.length];
 			for (int j = 0; j < attrNames.length; j++) {
@@ -514,12 +519,12 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 					double sigValue = d.doubleValue();
 					if (sigValue < MIN_SIG) {
 						sigValue = MIN_SIG;
-						logger.warn("Warning: value for " + current.getCyRow().get("name", String.class)+ //.getIdentifier() + 
+						logger.warn("Warning: value for " + this.cyNetwork.getRow(current).get("name", String.class)+ //.getIdentifier() + 
 						                   " (" + canonicalName + ") adjusted to " + MIN_SIG);
 					} 
 					if (sigValue > MAX_SIG) {
 						sigValue = MAX_SIG;
-						logger.warn("Warning: value for " + current.getCyRow().get("name", String.class)+ //.getIdentifier() + 
+						logger.warn("Warning: value for " + this.cyNetwork.getRow(current).get("name", String.class)+ //.getIdentifier() + 
 						                   " (" + canonicalName + ") adjusted to " + MAX_SIG);
 					} 
 
@@ -663,18 +668,21 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 			Iterator<CyNode> it = this.cyNetwork.getNodeList().iterator();
 			while (it.hasNext()){
 				CyNode node = it.next();
-				node.getCyRow().set(CyNetwork.SELECTED, false);
+				this.cyNetwork.getRow(node).set(CyNetwork.SELECTED, false);
 			}
 		}
 		//filter.setSelectedNodes(activePath.getDisplayNodesGeneric(), true);
 		Iterator<CyNode> it2 = activePath.getDisplayNodesGeneric().iterator();
 		while (it2.hasNext()){
 			CyNode node2 = it2.next();
-			node2.getCyRow().set(CyNetwork.SELECTED, true);
+			this.cyNetwork.getRow(node2).set(CyNetwork.SELECTED, true);
 		}
 		
 		// cyNetwork.setFlaggedNodes(activePath.getNodes(),true);
-		ServicesUtil.cyNetworkViewManagerServiceRef.getNetworkView(ServicesUtil.cyApplicationManagerServiceRef.getCurrentNetwork().getSUID()).updateView(); 
+		
+		Collection<CyNetworkView> views = ServicesUtil.cyNetworkViewManagerServiceRef.getNetworkViews(ServicesUtil.cyApplicationManagerServiceRef.getCurrentNetwork());
+		Iterator<CyNetworkView> it = views.iterator();
+		it.next().updateView();
 		//Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 	}
 	// ------------------------------------------------------------------------------

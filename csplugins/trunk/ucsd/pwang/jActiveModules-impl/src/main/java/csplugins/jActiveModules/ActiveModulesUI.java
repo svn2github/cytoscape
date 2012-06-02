@@ -15,8 +15,8 @@ import csplugins.jActiveModules.data.ActivePathFinderParameters;
 import csplugins.jActiveModules.dialogs.ActivePathsParameterPanel;
 
 import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.application.events.CytoscapeStartEvent;
-import org.cytoscape.application.events.CytoscapeStartListener;
+import org.cytoscape.application.events.CyStartEvent;
+import org.cytoscape.application.events.CyStartListener;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.CytoPanel;
@@ -26,9 +26,9 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.property.CyProperty;
-import org.cytoscape.task.creation.LoadVisualStyles;
+//import org.cytoscape.task.creation.LoadVisualStyles;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
@@ -56,12 +56,12 @@ public class ActiveModulesUI extends AbstractCyAction { //implements CytoscapeSt
 	
 	private final CytoPanel cytoPanelWest;
 	private static final Logger logger = LoggerFactory.getLogger(ActiveModulesUI.class);
-	private CyHelpBrokerImpl cyHelpBroker = new CyHelpBrokerImpl();
+	//private CyHelpBrokerImpl cyHelpBroker = new CyHelpBrokerImpl();
 
 	
 	public ActiveModulesUI(ActivePathFinderParameters apfParams, ActivePathsParameterPanel mainPanel) {
 		
-		super("jActiveModules...", ServicesUtil.cyApplicationManagerServiceRef);
+		super("jActiveModules...", ServicesUtil.cyApplicationManagerServiceRef, "network", ServicesUtil.cyNetworkViewManagerServiceRef);
 		setPreferredMenu("Plugins.jActiveModules");
 		//setMenuGravity(2.0f);
 		
@@ -114,7 +114,7 @@ public class ActiveModulesUI extends AbstractCyAction { //implements CytoscapeSt
 		try {
 			helpSetURL = HelpSet.findHelpSet(classLoader, HELP_SET_NAME);
 			final HelpSet newHelpSet = new HelpSet(classLoader, helpSetURL);
-			cyHelpBroker.getHelpSet().add(newHelpSet);
+			//cyHelpBroker.getHelpSet().add(newHelpSet);
 		} catch (final Exception e) {
 			logger.warn("Could not find help set: \"" + HELP_SET_NAME + "!");
 		}
@@ -194,7 +194,7 @@ public class ActiveModulesUI extends AbstractCyAction { //implements CytoscapeSt
 //		t.start();
 		
 		ActivePathsTaskFactory factory = new ActivePathsTaskFactory(activePaths);
-		ServicesUtil.taskManagerServiceRef.execute(factory);
+		ServicesUtil.taskManagerServiceRef.execute(factory.createTaskIterator());
 	}
 
 	/**

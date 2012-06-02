@@ -69,8 +69,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 //import cytoscape.view.CyHelpBroker;
-import org.cytoscape.util.swing.NetworkSelectorPanel;
-
+import csplugins.jActiveModules.util.swing.NetworkSelectorPanel;
 import java.awt.Component;
 import javax.swing.table.TableColumn;
 import javax.swing.JComboBox;
@@ -178,7 +177,7 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener,
 	private NetworkSelectorPanel networkPanel;
 	
 	//private final CySwingApplication cySwingApplicationServiceRef;
-	private CyHelpBrokerImpl cyHelpBroker = new CyHelpBrokerImpl();
+	//private CyHelpBrokerImpl cyHelpBroker = new CyHelpBrokerImpl();
 	
 	// -----------------------------------------------------------------------------
 	public ActivePathsParameterPanel(ActivePathFinderParameters incomingApfParams,NetworkSelectorPanel networkSelectorPanel){

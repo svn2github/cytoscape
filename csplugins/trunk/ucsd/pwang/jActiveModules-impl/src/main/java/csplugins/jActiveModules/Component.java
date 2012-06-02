@@ -583,12 +583,14 @@ public class Component implements Comparable{
     }
   }
 
-  public String [] getNodeNames(){
+  public String [] getNodeNames(CyNetwork network){
     String [] result = new String[nodes.size()];
     Iterator it = displayNodes.iterator();
     for(int i=0;i<result.length;i++){
-      //result[i] = (String)Cytoscape.getNodeAttributeValue((Node)it.next(),Semantics.CANONICAL_NAME);
-      result[i] = ((CyNode)it.next()).getCyRow().get("name", String.class); //.getIdentifier();
+        //result[i] = (String)Cytoscape.getNodeAttributeValue((Node)it.next(),Semantics.CANONICAL_NAME);
+        //result[i] = ((CyNode)it.next()).getCyRow().get("name", String.class); //.getIdentifier();
+    	CyNode node = (CyNode)it.next();
+    	result[i] = network.getDefaultNodeTable().getRow(node).get("name", String.class);
     }
     return result;
 	
@@ -664,7 +666,7 @@ public class Component implements Comparable{
 			  CyNode current = (CyNode)nodeIt.next();
 			  tempComponent.addNode(current);
 			  double new_score = tempComponent.getScore();
-			  node2Increase.put(current.getIndex() /*.getRootGraphIndex()*/,new_score-previous_score);
+			  node2Increase.put(current.getSUID().intValue()/*.getRootGraphIndex()*/,new_score-previous_score);
 			  tempComponent.removeNode(current);
 		  }
 		  

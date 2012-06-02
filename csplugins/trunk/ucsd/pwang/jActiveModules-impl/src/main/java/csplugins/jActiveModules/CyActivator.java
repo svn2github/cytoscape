@@ -4,7 +4,7 @@ import org.cytoscape.work.SynchronousTaskManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -20,13 +20,11 @@ import org.cytoscape.application.swing.CyAction;
 
 import org.osgi.framework.BundleContext;
 import org.cytoscape.service.util.AbstractCyActivator;
-import org.cytoscape.task.creation.LoadVisualStyles;
-
+import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
 import java.util.Properties;
 import csplugins.jActiveModules.dialogs.ActivePathsParameterPanel;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
-import org.cytoscape.util.swing.NetworkSelectorPanel;
-import org.cytoscape.task.creation.LoadVisualStyles;
+import csplugins.jActiveModules.util.swing.NetworkSelectorPanel;
 
 public class CyActivator extends AbstractCyActivator {
 	public CyActivator() {
@@ -49,11 +47,11 @@ public class CyActivator extends AbstractCyActivator {
 		VisualMappingManager visualMappingManagerRef = getService(bc,VisualMappingManager.class);
 		CyNetworkFactory cyNetworkFactoryServiceRef = getService(bc,CyNetworkFactory.class);
 
-		CyRootNetworkFactory cyRootNetworkFactory = getService(bc,CyRootNetworkFactory.class);
+		CyRootNetworkManager cyRootNetworkFactory = getService(bc,CyRootNetworkManager.class);
 		CyNetworkViewFactory cyNetworkViewFactoryServiceRef = getService(bc,CyNetworkViewFactory.class);
 		CyLayoutAlgorithmManager cyLayoutsServiceRef = getService(bc,CyLayoutAlgorithmManager.class);
 
-		LoadVisualStyles loadVizmapFileTaskFactory =  getService(bc,LoadVisualStyles.class);
+		LoadVizmapFileTaskFactory loadVizmapFileTaskFactory =  getService(bc,LoadVizmapFileTaskFactory.class);
 		SynchronousTaskManager synchronousTaskManagerServiceRef = getService(bc,SynchronousTaskManager.class);
 
 		//

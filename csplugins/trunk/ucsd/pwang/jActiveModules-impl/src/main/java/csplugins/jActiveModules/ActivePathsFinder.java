@@ -440,7 +440,7 @@ public class ActivePathsFinder extends AbstractTask {
 			//gst.start();
 			//threadVector.add(gst);
 			ActivePathsTaskFactory factory = new ActivePathsTaskFactory(gst);
-			ServicesUtil.synchronousTaskManagerServiceRef.execute(factory);
+			ServicesUtil.synchronousTaskManagerServiceRef.execute(factory.createTaskIterator());
 		}
 
 //		// wait for the threads to finish
