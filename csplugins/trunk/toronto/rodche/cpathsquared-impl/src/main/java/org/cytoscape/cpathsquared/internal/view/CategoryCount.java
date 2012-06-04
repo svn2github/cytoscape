@@ -7,7 +7,7 @@ package org.cytoscape.cpathsquared.internal.view;
  * Time: 10:33:26 AM
  * To change this template use File | Settings | File Templates.
  */
-class CategoryCount {
+final class CategoryCount {
     private String categoryName;
     private int count;
 

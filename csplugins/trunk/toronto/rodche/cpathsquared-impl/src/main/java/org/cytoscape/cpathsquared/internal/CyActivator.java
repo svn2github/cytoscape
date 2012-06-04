@@ -27,8 +27,7 @@ import org.cytoscape.service.util.AbstractCyActivator;
 import java.util.Properties;
 
 
-
-public class CyActivator extends AbstractCyActivator {
+public final class CyActivator extends AbstractCyActivator {
 	public CyActivator() {
 		super();
 	}

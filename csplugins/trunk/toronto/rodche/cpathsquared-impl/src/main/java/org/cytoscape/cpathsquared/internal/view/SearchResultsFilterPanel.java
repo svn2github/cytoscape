@@ -2,12 +2,9 @@ package org.cytoscape.cpathsquared.internal.view;
 
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Set;
 
 import javax.swing.BoxLayout;
@@ -29,11 +26,12 @@ import org.cytoscape.cpathsquared.internal.filters.EntityTypeFilter;
 import org.cytoscape.cpathsquared.internal.filters.OrganismFilter;
 
 import cpath.service.jaxb.SearchHit;
+import cpath.service.jaxb.SearchResponse;
 
 
-public class SearchResultsFilterPanel extends JPanel implements Observer {
+final class SearchResultsFilterPanel extends JPanel {
     private final JLabel matchingItemsLabel;
-    private final ResultsModel model;
+    private final HitsFilterModel hitsFilterModel;
     private final JList hitsJList;
     private final CheckNode rootNode;
     private final CheckNode typeFilterNode;
@@ -43,8 +41,8 @@ public class SearchResultsFilterPanel extends JPanel implements Observer {
     private final CollapsablePanel filterTreePanel;
     private JButton downlodButton;
 	
-	public SearchResultsFilterPanel(ResultsModel resultsModel, JList hitsJList) {
-        this.model = resultsModel;
+	public SearchResultsFilterPanel(JList hitsJList) {
+        this.hitsFilterModel = new HitsFilterModel();
         this.hitsJList = hitsJList;
         
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -73,12 +71,14 @@ public class SearchResultsFilterPanel extends JPanel implements Observer {
 
         JScrollPane scrollPane = new JScrollPane(filterTreePanel);
         add(scrollPane);
-        
-        model.addObserver(this);
-        
-//        createDownloadButton();
     }
 
+	
+	public HitsFilterModel getModel() {
+		return hitsFilterModel;
+	}
+	
+	
     /**
      * Expands all Nodes.
      */
@@ -100,7 +100,8 @@ public class SearchResultsFilterPanel extends JPanel implements Observer {
     }
 
     
-    private List<SearchHit> executeFilter() {
+	private void applyFilter() {
+		
         ChainedFilter chainedFilter = new ChainedFilter();
         
 		Set<String> entityTypeSet = new HashSet<String>();
@@ -139,34 +140,30 @@ public class SearchResultsFilterPanel extends JPanel implements Observer {
 		DataSourceFilter dataSourceFilter = new DataSourceFilter(entityDataSourceSet);
 		chainedFilter.addFilter(dataSourceFilter);
 		
-        return chainedFilter.filter(model.getSearchResponse().getSearchHit());
-    }
-
-    
-	private void applyFilter() {
-        List<SearchHit> passedRecordList = executeFilter();
+		List<SearchHit> passedRecordList = chainedFilter
+        		.filter(hitsFilterModel.getSearchResponse().getSearchHit());
+		
         matchingItemsLabel.setText("Matching entities:  "
         		+ passedRecordList.size());
 		
    		DefaultListModel listModel = (DefaultListModel) hitsJList.getModel();
    		listModel.clear();
-   		listModel.setSize(passedRecordList.size());
-   		int i = 0;
-   		for (SearchHit searchHit : passedRecordList) {
-   			listModel.setElementAt(searchHit, i++);
-   		}
+		if (passedRecordList.size() > 0) {
+			for (SearchHit searchHit : passedRecordList) {
+				listModel.addElement(searchHit);
+			}
+		}
 	}
 
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void update(Observable o, Object arg) {
+	public void update(final SearchResponse searchResponse) {
+		
+		hitsFilterModel.setSearchResponse(searchResponse);
+		
         matchingItemsLabel.setText("Matching entities:  "
-                + model.getNumRecords());
+                + hitsFilterModel.getNumRecords());
 
-        if (model.getNumRecords() == 0) {
+        if (hitsFilterModel.getNumRecords() == 0) {
             filterTreePanel.setVisible(false);
         } else {
             filterTreePanel.setVisible(true);
@@ -175,22 +172,22 @@ public class SearchResultsFilterPanel extends JPanel implements Observer {
         //  Remove all children
         typeFilterNode.removeAllChildren();
         // Create Filter Nodes
-        for (String key : model.numHitsByTypeMap.keySet()) {
-            CategoryCount categoryCount = new CategoryCount(key, model.numHitsByTypeMap.get(key));
+        for (String key : hitsFilterModel.numHitsByTypeMap.keySet()) {
+            CategoryCount categoryCount = new CategoryCount(key, hitsFilterModel.numHitsByTypeMap.get(key));
             CheckNode typeNode = new CheckNode(categoryCount, false, true);
             typeFilterNode.add(typeNode);
         }
         
         organismFilterNode.removeAllChildren();
-        for (String key : model.numHitsByOrganismMap.keySet()) {
-            CategoryCount categoryCount = new CategoryCount(key, model.numHitsByOrganismMap.get(key));
+        for (String key : hitsFilterModel.numHitsByOrganismMap.keySet()) {
+            CategoryCount categoryCount = new CategoryCount(key, hitsFilterModel.numHitsByOrganismMap.get(key));
             CheckNode organismNode = new CheckNode(categoryCount, false, true);
             organismFilterNode.add(organismNode);
         }
         
         dataSourceFilterNode.removeAllChildren();
-        for (String key : model.numHitsByDatasourceMap.keySet()) {
-            CategoryCount categoryCount = new CategoryCount(key, model.numHitsByDatasourceMap.get(key));
+        for (String key : hitsFilterModel.numHitsByDatasourceMap.keySet()) {
+            CategoryCount categoryCount = new CategoryCount(key, hitsFilterModel.numHitsByDatasourceMap.get(key));
             CheckNode dataSourceNode = new CheckNode(categoryCount, false, true);
             dataSourceFilterNode.add(dataSourceNode);
         }
@@ -223,26 +220,35 @@ public class SearchResultsFilterPanel extends JPanel implements Observer {
         
         expandAllNodes();
 	}
-	
-	
     
-    //TODO 
-    private final void createDownloadButton() {
-        downlodButton = new JButton("Download");
-        downlodButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {               	
-//                    DownloadDetails detailsFrame = factory.createDownloadDetails(passedRecordList);
-//                    if (dialog != null) {
-//                            SwingUtilities.invokeLater(new Runnable() {
-//                                public void run() {
-//                                    dialog.dispose();
-//                                }
-//                            });
-//                    }
-//                    detailsFrame.setVisible(true);
-            }
-        });
-        
-        add(downlodButton);
-    }
+    
+	class ToolTipsSearchHitsJList extends JList {
+
+		public ToolTipsSearchHitsJList() {
+			super(new DefaultListModel());
+		}
+
+		@Override
+		public String getToolTipText(MouseEvent mouseEvent) {
+			int index = locationToIndex(mouseEvent.getPoint());
+			if (-1 < index) {
+				SearchHit record = (SearchHit) getModel().getElementAt(index);
+				StringBuilder html = new StringBuilder();
+				html.append("<html><table cellpadding=10><tr><td>");
+				html.append("<B>").append(record.getBiopaxClass());
+				if (!record.getDataSource().isEmpty())
+					html.append("&nbsp;").append(
+							record.getDataSource().toString());
+				if (!record.getOrganism().isEmpty())
+					html.append("&nbsp;").append(
+							record.getOrganism().toString());
+				html.append("</B>&nbsp;");
+				html.append("</td></tr></table></html>");
+				return html.toString();
+			} else {
+				return null;
+			}
+		}
+
+	}
 }

@@ -13,7 +13,7 @@ import java.util.Enumeration;
  * and, has since been modified. 
  *
  */
-public class CheckNode extends DefaultMutableTreeNode {
+final class CheckNode extends DefaultMutableTreeNode {
     public final static int SINGLE_SELECTION = 0;
     public final static int DIG_IN_SELECTION = 4;
     protected int selectionMode;

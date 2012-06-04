@@ -20,7 +20,7 @@ import org.cytoscape.util.swing.OpenBrowser;
  * Summary Panel.
  *
  */
-public class DetailsPanel extends JPanel {
+final class DetailsPanel extends JPanel {
     private Document doc;
     private JTextPane textPane;
 

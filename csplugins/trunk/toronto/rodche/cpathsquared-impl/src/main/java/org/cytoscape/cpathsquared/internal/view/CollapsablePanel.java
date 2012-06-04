@@ -13,7 +13,7 @@ import java.net.URL;
 /**
  * The user-triggered collapsable panel containing the component (trigger) in the titled border
  */
-public class CollapsablePanel extends JPanel {
+final class CollapsablePanel extends JPanel {
     //Border
     CollapsableTitledBorder border; // includes upper left component and line type
     Border collapsedBorderLine = BorderFactory.createEmptyBorder(2, 2, 2, 2); // no border

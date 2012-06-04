@@ -14,7 +14,7 @@ import java.net.URL;
  *
  * and, has since been modified.
 */
-public class CheckNodeRenderer implements TreeCellRenderer {
+final class CheckNodeRenderer implements TreeCellRenderer {
 
     /**
      * Gets the Tree Cell Renderer.

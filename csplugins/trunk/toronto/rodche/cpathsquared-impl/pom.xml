@@ -9,6 +9,7 @@
 		<bundle.symbolicName>org.cytoscape.cpathsquared-impl</bundle.symbolicName>
 		<cytoscape.version>3.0.0-beta1</cytoscape.version>
 		<spring.version>3.0.5.RELEASE</spring.version>
+		<osgi.api.version>4.2.0</osgi.api.version>
 	</properties>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>cpathsquared-impl</artifactId>
@@ -179,12 +180,22 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>service-api</artifactId>
+			<version>[${cytoscape.version}, 4.0.0)</version>
+			<scope>provided</scope>
+		</dependency>		
+		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-api</artifactId>
 			<version>[1.5.2, 2.0.0)</version>
 			<scope>provided</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>${osgi.api.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>pathwaycommons.cpath</groupId>
 			<artifactId>cpath-api</artifactId>

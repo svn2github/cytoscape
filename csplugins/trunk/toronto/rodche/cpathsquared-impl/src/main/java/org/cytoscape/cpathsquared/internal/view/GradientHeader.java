@@ -8,7 +8,7 @@ import java.awt.*;
  * Gradient Header Panel.
  *
  */
-public class GradientHeader extends JPanel {
+final class GradientHeader extends JPanel {
 
     /**
      * Constructor.

@@ -22,7 +22,6 @@ import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.Named;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
-import org.cytoscape.cpathsquared.internal.CPath2;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.CPath2Exception;
 import org.cytoscape.cpathsquared.internal.CPath2Properties;
@@ -118,7 +117,7 @@ public class ExecuteGetRecordByCPathIdTask extends AbstractTask {
 			tmpFile.deleteOnExit();
 
 			// Get Data, and write to temp file.
-			String data = CPath2.getRecordsByIds(ids, format);
+			String data = CPath2Factory.getRecordsByIds(ids, format);
 			FileWriter writer = new FileWriter(tmpFile);
 			writer.write(data);
 			writer.close();
@@ -287,7 +286,7 @@ public class ExecuteGetRecordByCPathIdTask extends AbstractTask {
 				ids[j] = name;
 			}
 			try {
-				final String xml = CPath2.getRecordsByIds(ids, OutputFormat.BIOPAX);
+				final String xml = CPath2Factory.getRecordsByIds(ids, OutputFormat.BIOPAX);
 				Model model = new SimpleIOHandler().convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
 				// convert L2 to L3 if required (L1 is converted to L2 always anyway - by the handler)
 				if(BioPAXLevel.L2.equals(model.getLevel())) { // 

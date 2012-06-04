@@ -47,7 +47,7 @@ import javax.swing.JPanel;
  *
  * @author Benjamin Gross
  */
-public class ModalPanel extends JPanel implements MouseListener {
+final class ModalPanel extends JPanel implements MouseListener {
 
 	/**
 	 * ref to color

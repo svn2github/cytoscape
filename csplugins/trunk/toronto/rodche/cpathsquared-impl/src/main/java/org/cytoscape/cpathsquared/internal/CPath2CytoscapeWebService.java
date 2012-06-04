@@ -1,16 +1,11 @@
 package org.cytoscape.cpathsquared.internal;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dimension;
 
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import org.cytoscape.cpathsquared.internal.task.CPath2NetworkImportTask;
-import org.cytoscape.cpathsquared.internal.view.CPath2SearchPanel;
 import org.cytoscape.cpathsquared.internal.view.GuiUtils;
-import org.cytoscape.cpathsquared.internal.view.TabUi;
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
 import org.cytoscape.io.webservice.SearchWebServiceClient;
 import org.cytoscape.io.webservice.swing.AbstractWebServiceGUIClient;
@@ -22,9 +17,9 @@ import org.slf4j.LoggerFactory;
 import cpath.service.OutputFormat;
 
 /**
- * CPath Web Service, integrated into the Cytoscape Web Services Framework.
+ * CPathSquared Web Service UI, integrated into the Cytoscape Web Services Framework.
  */
-public class CPath2CytoscapeWebService extends AbstractWebServiceGUIClient 
+public final class CPath2CytoscapeWebService extends AbstractWebServiceGUIClient 
 	implements NetworkImportWebServiceClient, SearchWebServiceClient
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CPath2CytoscapeWebService.class);
@@ -51,22 +46,11 @@ public class CPath2CytoscapeWebService extends AbstractWebServiceGUIClient
      */
     public CPath2CytoscapeWebService() {
     	super(CPath2Properties.cPathUrl, DISPLAY_NAME, makeDescription());
-
-        mainPanel = new JPanel();
-        mainPanel.setPreferredSize(new Dimension (500,400));
-        mainPanel.setLayout (new BorderLayout());
-
-        CPath2SearchPanel cpathPanel = new CPath2SearchPanel();
-
-        TabUi tabbedPane = TabUi.getInstance();
-        tabbedPane.add("Search", cpathPanel);
-
-        JScrollPane configPanel = GuiUtils.createConfigPanel();
-        tabbedPane.add("Options", configPanel);
-        mainPanel.add(tabbedPane, BorderLayout.CENTER);
+        
+    	mainPanel = GuiUtils.createUI();
         
     	if(LOGGER.isDebugEnabled())
-    		LOGGER.debug("CPath2CytoscapeWebService created!");
+    		LOGGER.debug("CPathSquared Web Service UI Created!");
     }
 
     private static String makeDescription() {

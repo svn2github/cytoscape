@@ -3,7 +3,7 @@ package org.cytoscape.cpathsquared.internal.task;
 import java.util.List;
 import java.util.Set;
 
-import org.cytoscape.cpathsquared.internal.CPath2;
+import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.CPath2Properties;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
@@ -21,20 +21,23 @@ public class ExecuteSearchTask implements Task {
     private Set<String> organism;
     private Set<String> datasource;
 	private ResultHandler result;
+	private String type;
 
     /**
      * Constructor.
-     * @param keyword        Keyword
-     * @param organism TODO
-     * @param datasource TODO
+     * @param keyword Keyword
+     * @param organism 
+     * @param datasource 
      * @param result 
+     * @param type 
      */
     public ExecuteSearchTask(String keyword, Set<String> organism,
-            Set<String> datasource, ResultHandler result) {
+            Set<String> datasource, ResultHandler result, String type) {
         this.keyword = keyword;
         this.organism = organism;
         this.datasource = datasource;
         this.result = result;
+        this.type = type;
     }
 
     /**
@@ -65,7 +68,7 @@ public class ExecuteSearchTask implements Task {
             taskMonitor.setStatusMessage("Executing Search");
 
             //  Execute the Search
-            SearchResponse searchResponse = CPath2.search(keyword, organism, datasource);
+            SearchResponse searchResponse = CPath2Factory.search(keyword, organism, datasource, type);
             List<SearchHit> searchHits = searchResponse.getSearchHit();
             numHits = searchHits.size();
             
@@ -83,9 +86,9 @@ public class ExecuteSearchTask implements Task {
 //                taskMonitor.setProgress(progress);
 //            }
         } catch (NoResultsFoundException e) {
-			
+			// ignore
         } catch (Throwable e) { // - helps with optional/unresolved runtime dependencies!
-            	throw new RuntimeException(e);
+            throw new RuntimeException(e);
         } finally {
             taskMonitor.setStatusMessage("Done");
             taskMonitor.setProgress(1);

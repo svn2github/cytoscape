@@ -5,7 +5,7 @@ package org.cytoscape.cpathsquared.internal;
  *
  * @author Ethan Cerami.
  */
-public class CPath2Exception extends Exception {
+public final class CPath2Exception extends Exception {
     /**
      * Error:  Canceled by User.
      */

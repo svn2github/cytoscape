@@ -16,7 +16,7 @@ import java.awt.event.MouseEvent;
  *
  * and, has since been modified.
  */
-public class JTreeWithCheckNodes extends JTree {
+final class JTreeWithCheckNodes extends JTree {
 
     /**
      * Constructor.

@@ -5,7 +5,6 @@ import java.awt.Paint;
 
 import org.cytoscape.cpathsquared.internal.util.BioPaxUtil;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
 import org.cytoscape.view.presentation.property.ArrowShapeVisualProperty;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
@@ -23,7 +22,7 @@ import static org.cytoscape.view.presentation.property.BasicVisualLexicon.*;
  * Binary SIF Visual Style.
  * 
  */
-public class BinarySifVisualStyleFactory {
+public final class BinarySifVisualStyleFactory {
 	public final static String BINARY_SIF_VISUAL_STYLE = "Binary_SIF_Version_1";
 	public final static String BINARY_NETWORK = "BINARY_NETWORK";
 	public final static String COMPONENT_OF = "COMPONENT_OF";

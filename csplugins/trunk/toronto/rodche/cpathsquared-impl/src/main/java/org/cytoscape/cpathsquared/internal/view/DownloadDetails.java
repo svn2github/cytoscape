@@ -32,7 +32,7 @@ import cpath.service.jaxb.SearchHit;
  * Download Details Frame.
  *
  */
-public class DownloadDetails extends JDialog {
+final class DownloadDetails extends JDialog {
     private String ids[];
     
     /**
@@ -45,8 +45,8 @@ public class DownloadDetails extends JDialog {
         this.setModal(true);
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
-        GradientHeader header = new GradientHeader("Confirm Retrieval: "+ passedRecordList.size()
-                + " records");
+        GradientHeader header = new GradientHeader("Confirm Retrieval: " 
+        		+ passedRecordList.size() + " records");
         contentPane.add(header, BorderLayout.NORTH);
 
         DefaultTableModel tableModel = new NonEditableTableModel();
@@ -128,13 +128,7 @@ public class DownloadDetails extends JDialog {
     public void downloadInteractions() {
         String networkTitle = "Network";
 
-        OutputFormat format;
-        //TODO EXTENDED_BINARY_SIF?
-        if (CPath2Properties.downloadMode == CPath2Properties.DOWNLOAD_BIOPAX) {
-            format = OutputFormat.BIOPAX;
-        } else {
-            format = OutputFormat.BINARY_SIF;
-        }
+        OutputFormat format = CPath2Properties.downloadMode;
 
         TaskManager<?,?> taskManager = CPath2Factory.getTaskManager();
         TaskFactory taskFactory = CPath2Factory.newTaskFactory(

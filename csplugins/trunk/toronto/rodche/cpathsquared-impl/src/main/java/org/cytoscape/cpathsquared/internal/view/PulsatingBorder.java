@@ -5,7 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public class PulsatingBorder implements Border {
+final class PulsatingBorder implements Border {
         private float thickness = 0.5f;
         private JComponent c;
 

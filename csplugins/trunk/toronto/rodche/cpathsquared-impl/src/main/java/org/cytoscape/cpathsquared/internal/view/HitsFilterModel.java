@@ -3,7 +3,6 @@ package org.cytoscape.cpathsquared.internal.view;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
 import java.util.TreeMap;
 
 import cpath.service.jaxb.SearchHit;
@@ -13,7 +12,7 @@ import cpath.service.jaxb.SearchResponse;
  * Contains information regarding the currently selected set of interaction bundles.
  *
  */
-public final class ResultsModel extends Observable {
+final class HitsFilterModel {
 
     private SearchResponse response;   
     
@@ -22,7 +21,6 @@ public final class ResultsModel extends Observable {
     Map<String, Integer> numHitsByDatasourceMap = new TreeMap<String, Integer>();
     
     // URI-to-HTML summary text map
-    Map<String, String> summaryMap = new HashMap<String, String>();
     Map<String, Collection<NameValuePairListItem>> pathwaysMap = new HashMap<String, Collection<NameValuePairListItem>>();    
     Map<String, Collection<NameValuePairListItem>> moleculesMap = new HashMap<String, Collection<NameValuePairListItem>>();
 
@@ -34,26 +32,6 @@ public final class ResultsModel extends Observable {
         }
     }
   
-    
-    /**
-     * Re-builds hit-to-type, hit-to-organism, hit-to-datasource, 
-     * etc. internal maps.
-     */
-	private void init() {
-		if (response != null && !response.isEmpty()) {
-			numHitsByTypeMap.clear();
-			numHitsByOrganismMap.clear();
-			numHitsByDatasourceMap.clear();
-			pathwaysMap.clear();
-			moleculesMap.clear();
-			summaryMap.clear();
-
-			for (SearchHit record : response.getSearchHit()) {
-				catalog(record);
-			}
-		}
-	}
-
     
     private void catalog(SearchHit record) {
         String type = record.getBiopaxClass();
@@ -83,18 +61,28 @@ public final class ResultsModel extends Observable {
         }
     }
     
-    
-    public void setSearchResponse (SearchResponse response) {
-        this.response = response;
-        init();
-        
-        this.setChanged();
-        this.notifyObservers();
-    }
+    /**
+     * Refresh the model and notify all observers about it's changed.
+     * 
+     * @param response
+     */
+	public void setSearchResponse(SearchResponse response) {
+		this.response = response;
+		numHitsByTypeMap.clear();
+		numHitsByOrganismMap.clear();
+		numHitsByDatasourceMap.clear();
+		pathwaysMap.clear();
+		moleculesMap.clear();
+
+		if(response != null)
+			for (SearchHit record : response.getSearchHit()) {
+				catalog(record);
+			}
+	}
 
     
     public SearchResponse getSearchResponse() {
         return response;
     }
-
+        
 }
