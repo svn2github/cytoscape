@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 //import csplugins.jActiveModules.util.Scaler;
 import csplugins.jActiveModules.util.ScalerFactory;
+import csplugins.jActiveModules.util.Util;
+
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
@@ -50,6 +52,9 @@ import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import csplugins.jActiveModules.ServicesUtil;
 import java.io.File;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 
 //-----------------------------------------------------------------------------------
@@ -95,37 +100,29 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 	
 	private static final String NODE_SCORE = MODULE_FINDER_PREFIX + "activepathScore";
 
-//	static {
-//		
-//		// Create visualStyles based on the definition in property files
-//		//Cytoscape.firePropertyChange(Cytoscape.VIZMAP_LOADED, null, vizmapPropsLocation);
-//		//overviewVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VS_OVERVIEW_NAME);
-//		//moduleVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VS_MODULE_NAME);
-//		
-//		
-//		System.out.println("\n\nvizmapPropsLocation ="+vizmapPropsLocation+ "\n");
-//		System.out.println("\n\nvizmapPropsLocation.getFile() ="+vizmapPropsLocation.getFile()+ "\n");
-//		
-//		
-//		Iterator<VisualStyle> it = ServicesUtil.visualMappingManagerRef.getAllVisualStyles().iterator();
-//		while (it.hasNext()){
-//			VisualStyle vs = it.next();
-//			if (vs.getTitle().equalsIgnoreCase(VS_OVERVIEW_NAME)){
-//				overviewVS = vs;
-//			}
-//			if (vs.getTitle().equalsIgnoreCase(VS_MODULE_NAME)){
-//				moduleVS = vs;
-//			}
-//		}
-//		if (overviewVS == null && moduleVS == null){
-//			String filename = vizmapPropsLocation.getFile();
-//			File f = new File(filename);	
-//			
-//			System.out.println("f.getAbsolutePath() ="+f.getAbsolutePath() + "\tf.length = "+f.length()+ "\n");
-//			
-//			ServicesUtil.loadVizmapFileTaskFactory.loadStyles(f);
-//		}
-//	}
+	static {
+		if (overviewVS == null && moduleVS == null){
+			// Create visualStyles based on the definition in property files
+			File f = Util.getFileFromFar("jActiveModules_VS.props");			
+			ServicesUtil.loadVizmapFileTaskFactory.loadStyles(f);
+		}
+		populateVS();
+	}
+	
+	private static void populateVS(){
+		
+		Iterator<VisualStyle> it = ServicesUtil.visualMappingManagerRef.getAllVisualStyles().iterator();
+		while (it.hasNext()){
+			VisualStyle vs = it.next();
+			if (vs.getTitle().equalsIgnoreCase(VS_OVERVIEW_NAME)){
+				overviewVS = vs;
+			}
+			if (vs.getTitle().equalsIgnoreCase(VS_MODULE_NAME)){
+				moduleVS = vs;
+			}
+		}
+	}
+	
 	
 	private static boolean eventFired = false;
 	
@@ -284,14 +281,11 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 		ServicesUtil.cyNetworkViewManagerServiceRef.addNetworkView(newView);
 		
 		// Apply layout for overview
-//		layoutAlgorithm.setNetworkView(newView);
-//		this.insertTasksAfterCurrentTask(layoutAlgorithm.getTaskIterator());
 		Object context = layoutAlgorithm.getDefaultLayoutContext();
 		insertTasksAfterCurrentTask(layoutAlgorithm.createTaskIterator(newView, context, CyLayoutAlgorithm.ALL_NODE_VIEWS,""));
-
-				
-//		this.visualMappingManager.setVisualStyle(overviewVS, newView);
-//		newView.updateView();
+			
+		ServicesUtil.visualMappingManagerRef.setVisualStyle(overviewVS, newView);
+		newView.updateView();
 
 		taskMonitor.setStatusMessage("Create views for top n modules...");
 
@@ -312,12 +306,10 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 				CyNetworkView theView = ServicesUtil.cyNetworkViewFactoryServiceRef.createNetworkView(subnetworks[i]);
 				ServicesUtil.cyNetworkViewManagerServiceRef.addNetworkView(theView);
 								
-//				layoutAlgorithm.setNetworkView(theView);
-//				this.insertTasksAfterCurrentTask(layoutAlgorithm.getTaskIterator());
 				insertTasksAfterCurrentTask(layoutAlgorithm.createTaskIterator(theView, context, CyLayoutAlgorithm.ALL_NODE_VIEWS,""));
 
-//				this.visualMappingManager.setVisualStyle(moduleVS, theView);
-//				theView.updateView();
+				ServicesUtil.visualMappingManagerRef.setVisualStyle(moduleVS, theView);
+				theView.updateView();
 		 }
 		 
 			taskMonitor.setProgress(1.0);
