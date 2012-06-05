@@ -17,6 +17,7 @@ do
     bnd wrap ${JAR}
 done
 
+rm pom.xml
 for BAR in */target/*.bar
 do
     ARTIFACT_ID=$(dirname $(dirname ${BAR}))

@@ -17,11 +17,9 @@ do
     bnd wrap ${JAR}
 done
 
-for BAR in */target/*.bar
-do
-    ARTIFACT_ID=$(dirname $(dirname ${BAR}))
-    mvn deploy:deploy-file -DgroupId=cytoscape-temp -DartifactId=${ARTIFACT_ID} -Dversion=${FREEHEP_VERSION} -Dpackaging=jar -Dfile=${BAR} -DrepositoryId=thirdparty -Durl=http://code.cytoscape.org/nexus/content/repositories/thirdparty/
-done
+ARTIFACT_ID=freehep-io
+BAR=target/freehep-io-${FREEHEP_VERSION}.bar
+mvn deploy:deploy-file -DgroupId=cytoscape-temp -DartifactId=${ARTIFACT_ID} -Dversion=${FREEHEP_VERSION} -Dpackaging=jar -Dfile=${BAR} -DrepositoryId=thirdparty -Durl=http://code.cytoscape.org/nexus/content/repositories/thirdparty/
 
 popd
 
