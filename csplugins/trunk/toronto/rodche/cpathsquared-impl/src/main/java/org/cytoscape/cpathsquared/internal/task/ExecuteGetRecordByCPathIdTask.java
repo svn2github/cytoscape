@@ -24,7 +24,6 @@ import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.cpathsquared.internal.CPath2Exception;
-import org.cytoscape.cpathsquared.internal.CPath2Properties;
 import org.cytoscape.cpathsquared.internal.util.AttributeUtil;
 import org.cytoscape.cpathsquared.internal.util.BioPaxUtil;
 import org.cytoscape.cpathsquared.internal.util.EmptySetException;
@@ -36,12 +35,8 @@ import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.View;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +81,7 @@ public class ExecuteGetRecordByCPathIdTask extends AbstractTask {
 	 * @return Task Title.
 	 */
 	public String getTitle() {
-		return "Retrieving " + networkTitle + " from " + CPath2Properties.serverName + "...";
+		return "Retrieving " + networkTitle + " from " + CPath2Factory.serverName + "...";
 	}
 
 	/**
@@ -95,7 +90,7 @@ public class ExecuteGetRecordByCPathIdTask extends AbstractTask {
 	 * @throws Exception
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		String title = "Retrieving " + networkTitle + " from " + CPath2Properties.serverName
+		String title = "Retrieving " + networkTitle + " from " + CPath2Factory.serverName
 				+ "...";
 		taskMonitor.setTitle(title);
 		try {
@@ -186,8 +181,8 @@ public class ExecuteGetRecordByCPathIdTask extends AbstractTask {
 	 *            CyNetwork.
 	 */
 	private void addLinksToCPathInstance(CyNetwork cyNetwork) {
-		String serverName = CPath2Properties.serverName;
-		String serverURL = CPath2Properties.cPathUrl;
+		String serverName = CPath2Factory.serverName;
+		String serverURL = CPath2Factory.cPathUrl;
 		CyRow row = cyNetwork.getRow(cyNetwork);
 		String cPathServerDetailsUrl = row.get(ExecuteGetRecordByCPathIdTask.CPATH_SERVER_DETAILS_URL, String.class);
 		if (cPathServerDetailsUrl == null) {
@@ -292,10 +287,6 @@ public class ExecuteGetRecordByCPathIdTask extends AbstractTask {
 				if(BioPAXLevel.L2.equals(model.getLevel())) { // 
 					model = (new OneTwoThree()).filter(model);
 				}
-				//normalize/infer properties: displayName, organism, dataSource
-				fixDisplayName(model);
-				ModelUtils.inferPropertyFromParent(model, "dataSource");
-				ModelUtils.inferPropertyFromParent(model, "organism");
 				//map biopax properties to Cy attributes for SIF nodes
 				for (BioPAXElement e : model.getObjects()) {
 					if(e instanceof EntityReference 

@@ -9,7 +9,6 @@ import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -29,7 +28,7 @@ import cpath.service.jaxb.SearchHit;
 import cpath.service.jaxb.SearchResponse;
 
 
-final class SearchResultsFilterPanel extends JPanel {
+final class HitsFilterPanel extends JPanel {
     private final JLabel matchingItemsLabel;
     private final HitsFilterModel hitsFilterModel;
     private final JList hitsJList;
@@ -39,15 +38,14 @@ final class SearchResultsFilterPanel extends JPanel {
     private final CheckNode organismFilterNode;
     private final JTreeWithCheckNodes tree;
     private final CollapsablePanel filterTreePanel;
-    private JButton downlodButton;
 	
-	public SearchResultsFilterPanel(JList hitsJList) {
+	public HitsFilterPanel(JList hitsJList) {
         this.hitsFilterModel = new HitsFilterModel();
         this.hitsJList = hitsJList;
         
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         
-        matchingItemsLabel = new JLabel("Matching entities:  N/A");
+        matchingItemsLabel = new JLabel("Listed: 0");
         matchingItemsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         Font font = matchingItemsLabel.getFont();
         Font newFont = new Font(font.getFamily(), Font.BOLD, font.getSize());
@@ -143,7 +141,7 @@ final class SearchResultsFilterPanel extends JPanel {
 		List<SearchHit> passedRecordList = chainedFilter
         		.filter(hitsFilterModel.getSearchResponse().getSearchHit());
 		
-        matchingItemsLabel.setText("Matching entities:  "
+        matchingItemsLabel.setText("Listed: "
         		+ passedRecordList.size());
 		
    		DefaultListModel listModel = (DefaultListModel) hitsJList.getModel();
@@ -156,13 +154,17 @@ final class SearchResultsFilterPanel extends JPanel {
 	}
 
 	
+	/**
+	 * Updates the filters tree from a new search results.
+	 * 
+	 * @param searchResponse
+	 */
 	public void update(final SearchResponse searchResponse) {
 		
 		hitsFilterModel.setSearchResponse(searchResponse);
+        matchingItemsLabel.setText("Listed: "
+        	+ searchResponse.getSearchHit().size());
 		
-        matchingItemsLabel.setText("Matching entities:  "
-                + hitsFilterModel.getNumRecords());
-
         if (hitsFilterModel.getNumRecords() == 0) {
             filterTreePanel.setVisible(false);
         } else {

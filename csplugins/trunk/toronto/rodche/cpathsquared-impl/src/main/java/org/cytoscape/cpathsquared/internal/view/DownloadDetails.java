@@ -20,7 +20,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.CPath2Properties;
 import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTask;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
@@ -128,7 +127,7 @@ final class DownloadDetails extends JDialog {
     public void downloadInteractions() {
         String networkTitle = "Network";
 
-        OutputFormat format = CPath2Properties.downloadMode;
+        OutputFormat format = CPath2Factory.downloadMode;
 
         TaskManager<?,?> taskManager = CPath2Factory.getTaskManager();
         TaskFactory taskFactory = CPath2Factory.newTaskFactory(

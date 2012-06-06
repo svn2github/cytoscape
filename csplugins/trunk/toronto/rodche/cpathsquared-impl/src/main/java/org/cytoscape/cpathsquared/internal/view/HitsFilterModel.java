@@ -1,7 +1,5 @@
 package org.cytoscape.cpathsquared.internal.view;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -16,13 +14,9 @@ final class HitsFilterModel {
 
     private SearchResponse response;   
     
-    Map<String, Integer> numHitsByTypeMap = new TreeMap<String, Integer>();
-    Map<String, Integer> numHitsByOrganismMap = new TreeMap<String, Integer>();
-    Map<String, Integer> numHitsByDatasourceMap = new TreeMap<String, Integer>();
-    
-    // URI-to-HTML summary text map
-    Map<String, Collection<NameValuePairListItem>> pathwaysMap = new HashMap<String, Collection<NameValuePairListItem>>();    
-    Map<String, Collection<NameValuePairListItem>> moleculesMap = new HashMap<String, Collection<NameValuePairListItem>>();
+    final Map<String, Integer> numHitsByTypeMap = new TreeMap<String, Integer>();
+    final Map<String, Integer> numHitsByOrganismMap = new TreeMap<String, Integer>();
+    final Map<String, Integer> numHitsByDatasourceMap = new TreeMap<String, Integer>();
 
     public int getNumRecords() {
         if (response != null && !response.isEmpty()) {
@@ -71,8 +65,6 @@ final class HitsFilterModel {
 		numHitsByTypeMap.clear();
 		numHitsByOrganismMap.clear();
 		numHitsByDatasourceMap.clear();
-		pathwaysMap.clear();
-		moleculesMap.clear();
 
 		if(response != null)
 			for (SearchHit record : response.getSearchHit()) {

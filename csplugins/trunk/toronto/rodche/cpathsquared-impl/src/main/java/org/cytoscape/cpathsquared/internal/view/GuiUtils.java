@@ -26,20 +26,18 @@ import javax.swing.table.DefaultTableModel;
 
 import org.apache.commons.lang.StringUtils;
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.CPath2Properties;
+import org.cytoscape.cpathsquared.internal.CPath2Factory.SearchFor;
 import org.cytoscape.cpathsquared.internal.task.ExecuteGetRecordByCPathIdTask;
 import org.cytoscape.work.TaskFactory;
 
 import cpath.service.OutputFormat;
 import cpath.service.jaxb.SearchHit;
 import cpath.service.jaxb.SearchResponse;
-import cpath.service.jaxb.TraverseEntry;
 import cpath.service.jaxb.TraverseResponse;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -59,7 +57,8 @@ public final class GuiUtils {
     private GuiUtils() {
 		throw new AssertionError("not instantiable");
 	}
-	
+
+    
 	/**
      * Creates a Titled Border with appropriate font settings.
      * @param title Title.
@@ -74,7 +73,7 @@ public final class GuiUtils {
         return border;
     }
     
-    static JScrollPane createOptionsPane() {
+    public static JScrollPane createOptionsPane() {
     	JPanel panel = new JPanel();
     	panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     	
@@ -83,7 +82,7 @@ public final class GuiUtils {
         button1.setSelected(true);
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                CPath2Properties.downloadMode = OutputFormat.BIOPAX;
+                CPath2Factory.downloadMode = OutputFormat.BIOPAX;
             }
         });
         JTextArea textArea1 = new JTextArea(3, 20);
@@ -102,7 +101,7 @@ public final class GuiUtils {
         final JRadioButton button2 = new JRadioButton("Download SIF");
         button2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                CPath2Properties.downloadMode = OutputFormat.BINARY_SIF;
+                CPath2Factory.downloadMode = OutputFormat.BINARY_SIF;
             }
         });
         JTextArea textArea2 = new JTextArea(3, 20);
@@ -146,46 +145,13 @@ public final class GuiUtils {
         return new JScrollPane(panel);
     }
     
-	static JPanel createSearchQueryPanel() {
-		return new SearchQueryPanel();
-	}
 	
 	public static JDialog createDownloadDetails(List<SearchHit> passedRecordList) {
 		return new DownloadDetails(passedRecordList);
 	}
 
-	
-	/**
-	 * Builds this Cytoscape App's Swing GUI.
-	 * 
-	 * @return
-	 */
-    public static JPanel createUI() { 
 
-    	JPanel topPathwaysPanel = createTopPathwaysPanel();
-    	
-    	JPanel searchQueryPanel = createSearchQueryPanel();
-    	JPanel searchResultsPanel = new SearchResultsPanel();
-        JSplitPane vSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, searchQueryPanel, searchResultsPanel);
-        vSplit.setDividerLocation(200);
-        
-        JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.add("Top Pathways", topPathwaysPanel);
-        tabbedPane.add("Search", vSplit);
-        tabbedPane.add("Options", createOptionsPane());
-        
-    	JPanel mainPanel = new JPanel();
-        mainPanel = new JPanel();
-        mainPanel.setPreferredSize(new Dimension (500,400));
-        mainPanel.setLayout (new BorderLayout());
-        mainPanel.add(tabbedPane, BorderLayout.CENTER);  
-        
-        searchQueryPanel.requestFocusInWindow();
-        
-        return mainPanel;
-    }
-
-	private static JPanel createTopPathwaysPanel() {
+	public static JPanel createTopPathwaysPanel() {
         final JPanel panel = new JPanel(); // to return
        
 //		CPath2.addApiListener(panel); // required if 
@@ -195,23 +161,23 @@ public final class GuiUtils {
         final DetailsPanel detailsPanel = new DetailsPanel();
         final JTextPane summaryTextPane = detailsPanel.getTextPane();
         
-        //create participants (the third tab is about Entity References, Complexes, and Genes...)
-        final JList molList = new JList(new DefaultListModel());
-        molList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        molList.setPrototypeCellValue("12345678901234567890");
-        JPanel molListPane = new JPanel();
-        molListPane.setLayout(new BorderLayout());
-        JScrollPane molListScrollPane = new JScrollPane(molList);
-        molListScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-        molListPane.add(molListScrollPane, BorderLayout.CENTER);
+//        //create participants (the third tab is about Entity References, Complexes, and Genes...)
+//        final JList mList = new JList(new DefaultListModel());
+//        mList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+//        mList.setPrototypeCellValue("12345678901234567890");
+//        JPanel mListPane = new JPanel();
+//        mListPane.setLayout(new BorderLayout());
+//        JScrollPane mListScrollPane = new JScrollPane(mList);
+//        mListScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+//        mListPane.add(mListScrollPane, BorderLayout.CENTER);
         
         // make (south) tabs
         JTabbedPane southPane = new JTabbedPane(); 
         southPane.add("Summary", detailsPanel);
-        southPane.add("Molecules", molListPane);
+//        southPane.add("Members", mListPane);
         
         //create top pathways panel (north)
-        //TODO if slow, - use a Task and a listener...
+        //TODO if slow, - wrap as a new Task and run...
         SearchResponse resp = CPath2Factory.newClient().getTopPathways();
         TopPathwaysJList tpwJList = new TopPathwaysJList();
 		DefaultListModel listModel = (DefaultListModel) tpwJList.getModel();
@@ -221,7 +187,7 @@ public final class GuiUtils {
 			listModel.addElement(searchHit);
 		
         //  Create off-line filtering panel
-        final SearchResultsFilterPanel filterPanel = new SearchResultsFilterPanel(tpwJList);
+        final HitsFilterPanel filterPanel = new HitsFilterPanel(tpwJList);
         filterPanel.update(resp);
         tpwJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         tpwJList.setPrototypeCellValue("12345678901234567890");
@@ -239,16 +205,16 @@ public final class GuiUtils {
                 		summaryTextPane.setText(summary);
                 		summaryTextPane.setCaretPosition(0);
                 		
-                		// TODO update mol. list in a Task...
-						DefaultListModel m = (DefaultListModel) molList.getModel();
-						m.clear();
-                		TraverseResponse tres = CPath2Factory.traverse(
-							"Pathway/pathwayComponent:Interaction/participant/displayName", 
-								Collections.singleton(item.getUri()));
-						if (tres != null)
-							if (!tres.getTraverseEntry().isEmpty())
-								for (String v : tres.getTraverseEntry().get(0).getValue())
-									m.addElement(v);
+                		// update members list
+//						DefaultListModel m = (DefaultListModel) mList.getModel();
+//						m.clear();
+//                		TraverseResponse tres = CPath2Factory.traverse(
+//                			"Pathway/pathwayComponent:Named/displayName",
+//								Collections.singleton(item.getUri()));
+//						if (tres != null)
+//							if (!tres.getTraverseEntry().isEmpty())
+//								for (String v : tres.getTraverseEntry().get(0).getValue())
+//									m.addElement(v);
 						
 //                		panel.repaint();
                     }
@@ -285,31 +251,44 @@ public final class GuiUtils {
 
 		if (item.getName() != null)
 			html.append("<h2>" + item.getName() + "</h2>");
-		html.append("<h3>Class: " + item.getBiopaxClass() + "</h3><h3>URI: "
+		html.append("<h3>Class: " + item.getBiopaxClass() + ", URI: "
 				+ item.getUri() + "</h3>");
-
-		List<String> items = item.getOrganism();
-		if (items != null && !items.isEmpty()) {
-			html.append("<H3>Organisms:<br/>"
-					+ StringUtils.join(items, "<br/>") + "</H3>");
-		}
-
-		items = item.getPathway();
-		if (items != null && !items.isEmpty()) {
-			html.append("<H3>Pathway URIs:<br/>"
-					+ StringUtils.join(items, "<br/>") + "</H3>");
-		}
-
-		items = item.getDataSource();
-		if (items != null && !items.isEmpty()) {
-			html.append("<H3>Data sources:<br/>"
-					+ StringUtils.join(items, "<br/>") + "</H3>");
-		}
 
 		String primeExcerpt = item.getExcerpt();
 		if (primeExcerpt != null) {
-			html.append("<H4>Matched in</H4>");
-			html.append("<span class='excerpt'>" + primeExcerpt + "</span><BR>");
+			html.append("<h4>Excerpt:</h4>");
+			html.append("<span class='excerpt'>" + primeExcerpt + "</span><br/>");
+		}
+		
+		List<String> items = item.getOrganism();
+		if (items != null && !items.isEmpty()) {
+			html.append("<h3>Organisms:</h3>"
+				+ StringUtils.join(items, "<br/>"));
+		}
+		
+		items = item.getDataSource();
+		if (items != null && !items.isEmpty()) {
+			html.append("<h3>Data sources:</h3>"
+				+ StringUtils.join(items, "<br/>"));
+		}
+
+		// add components/participants counts		
+		String path = null;
+		if("Pathway".equalsIgnoreCase(item.getBiopaxClass()))
+			path = "Pathway/pathwayComponent";
+		else if("Complex".equalsIgnoreCase(item.getBiopaxClass()))
+				path = "Complex/component";
+		else if(CPath2Factory.searchFor == SearchFor.INTERACTION)
+			path = "Interaction/participant";
+		else if(CPath2Factory.searchFor == SearchFor.PHYSICALENTITY)
+				path = "PhysicalEntity/memberPhysicalEntity";		
+		TraverseResponse members = CPath2Factory
+			.traverse(path + ":Named/displayName", Collections.singleton(item.getUri()));
+		if (members != null) {
+			List<String> values  = members.getTraverseEntry().get(0).getValue();
+			if (!values.isEmpty())
+				html.append("<h3>Contains " + values.size()
+					+ " members:</h3>" + StringUtils.join(values, "<br/>"));
 		}
 
 		// TODO add more details here
@@ -487,7 +466,7 @@ public final class GuiUtils {
         String title = model.getValueAt(i, 0)
         	+ " (" + model.getValueAt(i, 1) + ")";
 
-        OutputFormat format = CPath2Properties.downloadMode;
+        OutputFormat format = CPath2Factory.downloadMode;
 
         TaskFactory taskFactory = CPath2Factory.newTaskFactory(new ExecuteGetRecordByCPathIdTask(
         	new String[]{internalId}, format, title));
@@ -514,4 +493,9 @@ public final class GuiUtils {
         
         return downlodButton;
     }
+
+
+	public static JPanel createSearchPanel() {
+		return new SearchPanel();
+	}
 }

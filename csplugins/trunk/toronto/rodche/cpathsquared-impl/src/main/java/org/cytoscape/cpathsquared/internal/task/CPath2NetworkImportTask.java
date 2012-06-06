@@ -1,7 +1,7 @@
 package org.cytoscape.cpathsquared.internal.task;
 
 import org.cytoscape.cpathsquared.internal.CPath2Factory;
-import org.cytoscape.cpathsquared.internal.CPath2Properties;
+import org.cytoscape.cpathsquared.internal.CPath2Factory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
@@ -29,7 +29,7 @@ public class CPath2NetworkImportTask implements Task {
 
         //  Create the task
         TaskFactory taskFactory = CPath2Factory.newTaskFactory(
-        	new ExecuteGetRecordByCPathIdTask(ids, format, CPath2Properties.serverName));
+        	new ExecuteGetRecordByCPathIdTask(ids, format, CPath2Factory.serverName));
         TaskIterator iterator = taskFactory.createTaskIterator();
         while (iterator.hasNext()) {
         	Task task = iterator.next();

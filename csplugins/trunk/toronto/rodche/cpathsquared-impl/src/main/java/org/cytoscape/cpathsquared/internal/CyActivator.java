@@ -73,8 +73,12 @@ public final class CyActivator extends AbstractCyActivator {
 				binarySifVisualStyleUtil,
 				visualMappingManagerRef);
 		
-		CPath2CytoscapeWebService cPathWebService = new CPath2CytoscapeWebService();
+		// tmp hack
+		CPath2Factory.cPathUrl = "http://localhost:8080/cpath-web-service/";
+//      CPath2Factory.cPathUrl = "http://awabi.cbio.mskcc.org/cpath2/";	
 		
+		// register the service
+		CPath2CytoscapeWebService cPathWebService = new CPath2CytoscapeWebService();
 		registerAllServices(bc, cPathWebService, new Properties());
 	}
 }

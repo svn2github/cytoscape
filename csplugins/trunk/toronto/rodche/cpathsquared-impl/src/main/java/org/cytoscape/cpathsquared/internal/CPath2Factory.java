@@ -1,7 +1,6 @@
 package org.cytoscape.cpathsquared.internal;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -39,6 +38,9 @@ import cpath.service.jaxb.TraverseResponse;
 //       propagate all of the injected dependencies throughout all the implementation classes.
 //       Lesser of two evils.
 public final class CPath2Factory {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CPath2Factory.class);
+	
 	private static CySwingApplication application;
 	private static TaskManager taskManager;
 	private static OpenBrowser openBrowser;
@@ -53,10 +55,35 @@ public final class CPath2Factory {
 	private static BinarySifVisualStyleFactory binarySifVisualStyleUtil;
 	private static VisualMappingManager mappingManager;
 	
-    private static ArrayList<CPath2Listener> listeners = new ArrayList<CPath2Listener>();
-    private static final Logger LOGGER = LoggerFactory.getLogger(CPath2Factory.class);
+	public static final String JVM_PROPERTY_CPATH2_URL = "cPath2Url";
+	public static final String DEFAULT_CPATH2_URL = "http://www.pathwaycommons.org/pc2/";
 	
-	
+    public static String cPathUrl = System.getProperty(JVM_PROPERTY_CPATH2_URL, DEFAULT_CPATH2_URL);
+    
+    public static String serverName = "Pathway Commons (BioPAX L3)";
+    
+    public static String blurb = 
+    		"<span class='bold'>Pathway Commons</span> is a convenient point of access " +
+            "to biological pathway " +
+            "information collected from public pathway databases, which you can " +
+            "browse or search. <BR><BR>Pathways include biochemical reactions, complex " +
+            "assembly, transport and catalysis events, and physical interactions " +
+            "involving proteins, DNA, RNA, small molecules and complexes. Now using BioPAX Level3!";
+    
+    public static String iconToolTip  = "Import Pathway Data from Pathway Commons (cPathSquared web services, BioPAX L3)";
+    
+    public static String iconFileName = "pc.png";
+    
+    public static OutputFormat downloadMode = OutputFormat.BINARY_SIF;
+    
+    public static enum SearchFor {
+    	PATHWAY,
+    	INTERACTION,
+    	PHYSICALENTITY;
+    }
+
+    public static SearchFor searchFor = SearchFor.INTERACTION;    
+    
 	// non-instantiable static factory class
 	private CPath2Factory() {
 		throw new AssertionError();
@@ -155,10 +182,6 @@ public final class CPath2Factory {
 		return binarySifVisualStyleUtil;
 	}
 
-	public static CySwingApplication getApplication() {
-		return application;
-	}
-
 	public static CyApplicationManager getApplicationManager() {
 		return applicationManager;
 	}
@@ -186,56 +209,10 @@ public final class CPath2Factory {
 	public static VisualMappingManager getMappingManager() {
 		return mappingManager;
 	}
-
-	   /**
-     * Searches Physical Entities in cPath Instance.
-     *
-     * @param keyword        Keyword to search for.
-     * @param organism TODO
-     * @param datasource TODO
-     * @return
-     * @throws CPathException 
-     */
-    public static SearchResponse search(String keyword, Set<String> organism,
-            Set<String> datasource, String biopaxType) throws CPathException {
-
-    	if(LOGGER.isDebugEnabled())
-    		LOGGER.debug("search: query=" + keyword);
-    	
-    	// Notify all listeners of start
-        for (int i = listeners.size() - 1; i >= 0; i--) {
-            CPath2Listener listener = listeners.get(i);
-            listener.searchInitiated(keyword, organism, datasource);
-        }
-
-        CPath2Client client = newClient();
-    	if(LOGGER.isDebugEnabled())
-    		LOGGER.debug("cPath2Url=" + client.getEndPointURL());
-    	
-        if(organism != null)
-        	client.setOrganisms(organism);
-        
-        client.setType(biopaxType);
-        
-        if(datasource != null)
-        	client.setDataSources(datasource);
-        
-        	SearchResponse res = (SearchResponse) client.search(keyword); 
-        	
-			// Notify all listeners of end
-			for (int i = listeners.size() - 1; i >= 0; i--) {
-				CPath2Listener listener = listeners.get(i);
-				listener.searchCompleted(res);
-			}
-			
-			return res;
-    }
-
     
     public static CPath2Client newClient() {
         CPath2Client client = CPath2Client.newInstance();
-//        client.setEndPointURL("http://localhost:8080/cpath-web-service/");
-        client.setEndPointURL("http://awabi.cbio.mskcc.org/cpath2/");
+        client.setEndPointURL(cPathUrl);
 		return client;
 	}
 
@@ -265,34 +242,6 @@ public final class CPath2Factory {
     
     public static Map<String, String> getLoadedDataSources() {
         return newClient().getValidDataSources();
-    }
-    
-    
-    /**
-     * Registers a new listener.
-     *
-     * @param listener CPath2 Listener.
-     */
-    public static void addApiListener(CPath2Listener listener) {
-        listeners.add(listener);
-    }
-
-    /**
-     * Removes the specified listener.
-     *
-     * @param listener CPath2 Listener.
-     */
-    public static void removeApiListener(CPath2Listener listener) {
-        listeners.remove(listener);
-    }
-
-    /**
-     * Gets the list of all registered listeners.
-     *
-     * @return ArrayList of CPath2Listener Objects.
-     */
-    public static ArrayList<CPath2Listener> getListeners() {
-        return listeners;
     }
 
 
