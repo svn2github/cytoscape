@@ -17,11 +17,13 @@ public class CyActivator extends AbstractCyActivator {
 	public void start(BundleContext bc) {
 		
 		MyCytoPanel myCytoPanel = new MyCytoPanel();
-		TableEvents tableEvents =new TableEvents(myCytoPanel);
+		TableAddedEvent tableAddedEvent =new TableAddedEvent(myCytoPanel);
+		TableDestroyedEvent tableDestroyedEvent =new TableDestroyedEvent();
 		
 		registerService(bc,myCytoPanel,CytoPanelComponent.class, new Properties());
-		registerService(bc,tableEvents,NetworkAboutToBeDestroyedListener.class, new Properties());
-		registerService(bc,tableEvents,SetCurrentNetworkListener.class, new Properties());
+		registerService(bc,tableAddedEvent,SetCurrentNetworkListener.class, new Properties());
+		registerService(bc,tableDestroyedEvent,NetworkAboutToBeDestroyedListener.class, new Properties());
+		
 		
 	}
 }

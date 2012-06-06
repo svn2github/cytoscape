@@ -7,32 +7,25 @@ import javax.swing.JTable;
 import org.cytoscape.application.events.SetCurrentNetworkEvent;
 import org.cytoscape.application.events.SetCurrentNetworkListener;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
-import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 
-public class TableEvents implements NetworkAboutToBeDestroyedListener, SetCurrentNetworkListener{
+public class TableAddedEvent implements SetCurrentNetworkListener{
 
 	private MyCytoPanel myCytoPanel;
 	private JTable table;
 	private CyTable cytable;
 	private CreateTable createTable;
-	private HashMap<String, Serializable> panelComponentMap;
+	private static HashMap<String, Serializable> panelComponentMap;
 	private JCheckBox[] checkBoxArray;
 	private PanelComponents panelComponents;
 	private int tableColumnCount;
 	
-	TableEvents(MyCytoPanel myCytoPanel){
+	TableAddedEvent(MyCytoPanel myCytoPanel){
 		
 		this.myCytoPanel = myCytoPanel;
 		panelComponentMap = new HashMap<String, Serializable>();
 	}
 
-	@Override
-	public void handleEvent(NetworkAboutToBeDestroyedEvent e) {
-		
-		panelComponentMap.remove(e.getNetwork().getDefaultNodeTable().getTitle());
-	}
-
+	
 	@Override
 	public void handleEvent(SetCurrentNetworkEvent e) {
 		
@@ -44,6 +37,7 @@ public class TableEvents implements NetworkAboutToBeDestroyedListener, SetCurren
 				table = panelComponents.getTable();
 				checkBoxArray = panelComponents.getCheckBoxArray();
 			}else{
+				
 				createTable = new CreateTable(cytable);
 				table = createTable.setTableValues(createTable.getColumnVector(), cytable.getRowCount());
 				panelComponents = new PanelComponents(table);
@@ -57,5 +51,7 @@ public class TableEvents implements NetworkAboutToBeDestroyedListener, SetCurren
 		
 	}
 	
-	
+	public static HashMap<String, Serializable> getPanelComponentMap(){
+		return panelComponentMap;
+	}
 }
