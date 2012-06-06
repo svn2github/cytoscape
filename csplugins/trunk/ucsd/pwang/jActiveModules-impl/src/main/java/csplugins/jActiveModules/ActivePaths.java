@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import csplugins.jActiveModules.data.ActivePathFinderParameters;
 //import csplugins.jActiveModules.util.Scaler;
 import csplugins.jActiveModules.util.ScalerFactory;
-import csplugins.jActiveModules.util.Util;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -55,6 +54,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.InputStream;
 
 
 //-----------------------------------------------------------------------------------
@@ -86,9 +86,6 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 	
 	private static int MAX_NETWORK_VIEWS =5; // = PropUtil.getInt(CytoscapeInit.getProperties(), "moduleNetworkViewCreationThreshold", 5);
 	private static int runCount = 0;	
-	
-	private static final URL vizmapPropsLocation = ActiveModulesUI.class.getResource("/jActiveModules_VS.props");
-	
 	private static final String VS_OVERVIEW_NAME = "jActiveModules Overview Style";
 	private static final String VS_MODULE_NAME = "jActiveModules Module Style";
 	private static  VisualStyle overviewVS = null;
@@ -103,8 +100,8 @@ public class ActivePaths extends AbstractTask implements ActivePathViewer {
 	static {
 		if (overviewVS == null && moduleVS == null){
 			// Create visualStyles based on the definition in property files
-			File f = Util.getFileFromFar("jActiveModules_VS.props");			
-			ServicesUtil.loadVizmapFileTaskFactory.loadStyles(f);
+			InputStream is = ActiveModulesUI.class.getResourceAsStream("/jActiveModules_VS.props");
+			ServicesUtil.loadVizmapFileTaskFactory.loadStyles(is);
 		}
 		populateVS();
 	}
