@@ -214,9 +214,7 @@ public final class GuiUtils {
 //						if (tres != null)
 //							if (!tres.getTraverseEntry().isEmpty())
 //								for (String v : tres.getTraverseEntry().get(0).getValue())
-//									m.addElement(v);
-						
-//                		panel.repaint();
+//									m.addElement(v);						
                     }
                 }
             }
@@ -272,7 +270,7 @@ public final class GuiUtils {
 				+ StringUtils.join(items, "<br/>"));
 		}
 
-		// add components/participants counts		
+		// add about components/participants	
 		String path = null;
 		if("Pathway".equalsIgnoreCase(item.getBiopaxClass()))
 			path = "Pathway/pathwayComponent";
@@ -288,10 +286,8 @@ public final class GuiUtils {
 			List<String> values  = members.getTraverseEntry().get(0).getValue();
 			if (!values.isEmpty())
 				html.append("<h3>Contains " + values.size()
-					+ " members:</h3>" + StringUtils.join(values, "<br/>"));
+					+ " components/members (direct):</h3>" + StringUtils.join(values, "<br/>"));
 		}
-
-		// TODO add more details here
 
 		html.append("</html>");
 
