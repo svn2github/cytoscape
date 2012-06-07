@@ -13,7 +13,6 @@ public class TableAddedEvent implements SetCurrentNetworkListener{
 	private MyCytoPanel myCytoPanel;
 	private JTable table;
 	private CyTable cytable;
-	private CreateTable createTable;
 	private static HashMap<String, Serializable> panelComponentMap;
 	private JCheckBox[] checkBoxArray;
 	private PanelComponents panelComponents;
@@ -32,14 +31,14 @@ public class TableAddedEvent implements SetCurrentNetworkListener{
 		cytable = e.getNetwork().getDefaultNodeTable();
 		if(cytable!=null)
 		{
-			if(panelComponentMap.containsKey(cytable.getTitle())){	
+			if(panelComponentMap.containsKey(cytable.getTitle())) {	
+				
 				panelComponents = (PanelComponents) panelComponentMap.get(cytable.getTitle());
 				table = panelComponents.getTable();
 				checkBoxArray = panelComponents.getCheckBoxArray();
-			}else{
+			} else {
 				
-				createTable = new CreateTable(cytable);
-				table = createTable.setTableValues(createTable.getColumnVector(), cytable.getRowCount());
+				table = new JTable(new MyTableModel(cytable));
 				panelComponents = new PanelComponents(table);
 				checkBoxArray = panelComponents.initialiseCheckBoxArray();
 				panelComponentMap.put(cytable.getTitle(), panelComponents);
