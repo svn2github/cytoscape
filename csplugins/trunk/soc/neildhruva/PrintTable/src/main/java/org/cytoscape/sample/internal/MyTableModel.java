@@ -2,6 +2,7 @@ package org.cytoscape.sample.internal;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -87,10 +88,20 @@ public class MyTableModel extends AbstractTableModel {
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		return false;
 	}
-	/*
-	@Override
-	public void fireTableDataChanged(){
-		
+	
+	/**
+	 * Returns a vector of names of columns from the <code>CyTable</code> that are of the type Integer, Long or Double.
+	 * 
+	 * @return Vector containing names of columns that are of the type Integer, Long or Double.
+	 */
+	public Vector<String> getPlottableColumns() {
+		Vector<String> v = new Vector<String>();
+		for(int columnIndex=0; columnIndex < columnLength; columnIndex++){
+			if(getColumnClass(columnIndex).equals(Integer.class) || getColumnClass(columnIndex).equals(Double.class) || getColumnClass(columnIndex).equals(Long.class)) {
+				v.add(columnNames[columnIndex]);
+			}
+		}
+		return v;	
 	}
-*/
+	
 }
