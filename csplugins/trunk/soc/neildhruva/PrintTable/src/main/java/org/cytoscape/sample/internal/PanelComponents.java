@@ -9,11 +9,9 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-public class PanelComponents extends javax.swing.JFrame {
+public class PanelComponents {
 
-    private static final long serialVersionUID = 7013054990224843833L;
-	
-	private JTable table;
+    private JTable table;
 	private TableColumnModel tableColumnModel;
 	private HashMap<String, Serializable> hiddenColumnsColumn;
     private HashMap<String, Serializable> hiddenColumnsIndex;

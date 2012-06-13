@@ -51,7 +51,7 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
         layout = new GroupLayout(this);
         this.setLayout(layout);
         
-        initPanel();                                    
+        initPanel();
         this.revalidate();
 	}
 	
@@ -63,7 +63,7 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
 	public void initPanel(){
 		
 		GroupLayout.ParallelGroup checkBoxGroupHor = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        for(int i=0;i<tableColumnCount;i++){
+		for(int i=0;i<tableColumnCount;i++) {
         	checkBoxGroupHor.addComponent(checkBoxArray[i]);
         }
         
@@ -80,7 +80,9 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
         checkBoxGroupVert.addContainerGap();
         for(int i=0;i<tableColumnCount;i++){
         	checkBoxGroupVert.addComponent(checkBoxArray[i]);
-        	checkBoxGroupVert.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED);
+        	if(!(i==(tableColumnCount-1))) {
+        		checkBoxGroupVert.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED);
+        	}
         }
         checkBoxGroupVert.addContainerGap(192, Short.MAX_VALUE);
         

@@ -1,9 +1,9 @@
 package org.cytoscape.sample.internal;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
+
 import org.cytoscape.application.events.SetCurrentNetworkEvent;
 import org.cytoscape.application.events.SetCurrentNetworkListener;
 import org.cytoscape.model.CyTable;
@@ -13,7 +13,7 @@ public class TableAddedEvent implements SetCurrentNetworkListener{
 	private MyCytoPanel myCytoPanel;
 	private JTable table;
 	private CyTable cytable;
-	private static HashMap<String, Serializable> panelComponentMap;
+	private static HashMap<String, Object> panelComponentMap;
 	private JCheckBox[] checkBoxArray;
 	private PanelComponents panelComponents;
 	private int tableColumnCount;
@@ -21,7 +21,7 @@ public class TableAddedEvent implements SetCurrentNetworkListener{
 	TableAddedEvent(MyCytoPanel myCytoPanel){
 		
 		this.myCytoPanel = myCytoPanel;
-		panelComponentMap = new HashMap<String, Serializable>();
+		panelComponentMap = new HashMap<String, Object>();
 	}
 
 	
@@ -50,7 +50,7 @@ public class TableAddedEvent implements SetCurrentNetworkListener{
 		
 	}
 	
-	public static HashMap<String, Serializable> getPanelComponentMap(){
+	public static HashMap<String, Object> getPanelComponentMap(){
 		return panelComponentMap;
 	}
 }
