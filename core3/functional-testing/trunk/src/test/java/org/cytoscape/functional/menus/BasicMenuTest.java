@@ -37,6 +37,7 @@ import org.cytoscape.application.swing.CySwingApplication;
 
 import org.uispec4j.UISpec4J;
 import org.uispec4j.Window;
+import org.uispec4j.MenuItem;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
@@ -97,14 +98,104 @@ public class BasicMenuTest {
 	}
 
 	private void checkTopLevelMenus(Window mainWindow) {
-		assertNotNull(mainWindow.getMenuBar().getMenu("File"));
-		assertNotNull(mainWindow.getMenuBar().getMenu("Edit"));
-		assertNotNull(mainWindow.getMenuBar().getMenu("View"));
-		assertNotNull(mainWindow.getMenuBar().getMenu("Select"));
-		assertNotNull(mainWindow.getMenuBar().getMenu("Layout"));
-		assertNotNull(mainWindow.getMenuBar().getMenu("Apps"));
-		assertNotNull(mainWindow.getMenuBar().getMenu("Tools"));
-		assertNotNull(mainWindow.getMenuBar().getMenu("Help"));
+		checkFileMenus(   mainWindow.getMenuBar().getMenu("File"));
+		checkEditMenus(   mainWindow.getMenuBar().getMenu("Edit"));
+		checkViewMenus(   mainWindow.getMenuBar().getMenu("View"));
+		checkSelectMenus( mainWindow.getMenuBar().getMenu("Select"));
+		checkLayoutMenus( mainWindow.getMenuBar().getMenu("Layout"));
+		checkAppsMenus(   mainWindow.getMenuBar().getMenu("Apps"));
+		checkToolsMenus(  mainWindow.getMenuBar().getMenu("Tools"));
+		checkHelpMenus(   mainWindow.getMenuBar().getMenu("Help"));
     }
 
+	private void checkFileMenus(MenuItem fileMenu) {
+		assertNotNull(fileMenu);
+		assertNotNull(fileMenu.getSubMenu("Recent Session"));
+		assertNotNull(fileMenu.getSubMenu("New"));
+		assertNotNull(fileMenu.getSubMenu("Open"));
+		assertNotNull(fileMenu.getSubMenu("Save"));
+		assertNotNull(fileMenu.getSubMenu("Save As"));
+		assertNotNull(fileMenu.getSubMenu("Import"));
+		assertNotNull(fileMenu.getSubMenu("Export"));
+		assertNotNull(fileMenu.getSubMenu("Print Current Network..."));
+	}
+
+	private void checkEditMenus(MenuItem editMenu) {
+		assertNotNull(editMenu);
+		assertNotNull(editMenu.getSubMenu("Copy"));
+		assertNotNull(editMenu.getSubMenu("Cut"));
+		assertNotNull(editMenu.getSubMenu("Paste"));
+		assertNotNull(editMenu.getSubMenu("Undo"));
+		assertNotNull(editMenu.getSubMenu("Redo"));
+		assertNotNull(editMenu.getSubMenu("Create View"));
+		assertNotNull(editMenu.getSubMenu("Destroy View"));
+		assertNotNull(editMenu.getSubMenu("Destroy Network"));
+		assertNotNull(editMenu.getSubMenu("Remove Duplicated Edges"));
+		assertNotNull(editMenu.getSubMenu("Remove Self-Loops"));
+		assertNotNull(editMenu.getSubMenu("Delete Selected Nodes and Edges..."));
+		assertNotNull(editMenu.getSubMenu("Rename Network..."));
+		assertNotNull(editMenu.getSubMenu("Preferences"));
+		assertNotNull(editMenu.getSubMenu("Connect Selected Nodes"));
+	}
+
+	private void checkViewMenus(MenuItem viewMenu) {
+		assertNotNull(viewMenu);
+		assertNotNull(viewMenu.getSubMenu("Hide Control Panel"));
+		assertNotNull(viewMenu.getSubMenu("Hide Table Panel"));
+		assertNotNull(viewMenu.getSubMenu("Show Results Panel"));
+		assertNotNull(viewMenu.getSubMenu("Show Tool Panel"));
+		assertNotNull(viewMenu.getSubMenu("Show Graphics Details"));
+		assertNotNull(viewMenu.getSubMenu("Show All Visual Properties"));
+		assertNotNull(viewMenu.getSubMenu("Open Custom Graphics Manager"));
+		assertNotNull(viewMenu.getSubMenu("Arrange Network Windows"));
+	}
+
+	private void checkSelectMenus(MenuItem selectMenu) {
+		assertNotNull(selectMenu);
+		assertNotNull(selectMenu.getSubMenu("Nodes"));
+		assertNotNull(selectMenu.getSubMenu("Edges"));
+		assertNotNull(selectMenu.getSubMenu("Show all nodes and edges"));
+		assertNotNull(selectMenu.getSubMenu("Hide selected nodes and edges"));
+		assertNotNull(selectMenu.getSubMenu("Select all nodes and edges"));
+		assertNotNull(selectMenu.getSubMenu("Deselect all nodes and edges"));
+		assertNotNull(selectMenu.getSubMenu("Use Filters"));
+	}
+
+	private void checkLayoutMenus(MenuItem layoutMenu) {
+		assertNotNull(layoutMenu);
+		assertNotNull(layoutMenu.getSubMenu("Bundle Edges"));
+		assertNotNull(layoutMenu.getSubMenu("Rotate"));
+		assertNotNull(layoutMenu.getSubMenu("Scale"));
+		assertNotNull(layoutMenu.getSubMenu("Align and Distribute"));
+		assertNotNull(layoutMenu.getSubMenu("Settings..."));
+		assertNotNull(layoutMenu.getSubMenu("Apply Preferred Layout"));
+		assertNotNull(layoutMenu.getSubMenu("Cytoscape Layouts"));
+		assertNotNull(layoutMenu.getSubMenu("Prefuse Layouts"));
+		assertNotNull(layoutMenu.getSubMenu("yFiles Layouts"));
+	}
+
+	private void checkAppsMenus(MenuItem appsMenu) {
+		assertNotNull(appsMenu);
+		assertNotNull(appsMenu.getSubMenu("App Manager"));
+	}
+
+	private void checkToolsMenus(MenuItem toolsMenu) {
+		assertNotNull(toolsMenu);
+		assertNotNull(toolsMenu.getSubMenu("Network Analyzer"));
+		assertNotNull(toolsMenu.getSubMenu("Run script..."));
+		assertNotNull(toolsMenu.getSubMenu("SIF Interpreter"));
+		assertNotNull(toolsMenu.getSubMenu("Run Commands..."));
+		assertNotNull(toolsMenu.getSubMenu("List All Commands..."));
+		assertNotNull(toolsMenu.getSubMenu("Merge Networks"));
+	}
+
+	private void checkHelpMenus(MenuItem helpMenu) {
+		assertNotNull(helpMenu);
+		assertNotNull(helpMenu.getSubMenu("Contents..."));
+		assertNotNull(helpMenu.getSubMenu("About..."));
+		assertNotNull(helpMenu.getSubMenu("Contact Help Desk..."));
+		assertNotNull(helpMenu.getSubMenu("Report a Bug..."));
+		assertNotNull(helpMenu.getSubMenu("Log Console"));
+		assertNotNull(helpMenu.getSubMenu("Show Welcome Screen..."));
+	}
 }
