@@ -34,9 +34,14 @@ import org.openengsb.labs.paxexam.karaf.options.LogLevelOption.LogLevel;
 import org.openengsb.labs.paxexam.karaf.options.KarafDistributionConfigurationFilePutOption; 
 
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 
 import org.uispec4j.UISpec4J;
 import org.uispec4j.Window;
+import org.uispec4j.Trigger;
+import org.uispec4j.interception.WindowInterceptor; 
+import org.uispec4j.interception.WindowHandler; 
 import org.uispec4j.MenuItem;
 
 @RunWith(JUnit4TestRunner.class)
@@ -45,7 +50,13 @@ public class BasicMenuTest {
 
 	// Inject any other desired services in the same way.
 	@Inject
-	private CySwingApplication swingApp;
+	private CySwingApplication cySwingApplication;
+
+	@Inject
+	private CyNetworkManager cyNetworkManager;
+
+	@Inject
+	private CyNetworkViewManager cyNetworkViewManager;
 
     @Configuration
     public Option[] config() {
@@ -54,6 +65,8 @@ public class BasicMenuTest {
 
         return new Option[] {
             karafDistributionConfiguration("mvn:org.apache.karaf/apache-karaf/2.2.7/zip", "karaf", "2.2.7"),
+
+			systemProperty("hideWelcomeScreen").value("true"),
 
 			// These custom properties are the same as the custom properties 
 			// found in framework/etc/custom.properties and are needed to
@@ -91,24 +104,55 @@ public class BasicMenuTest {
 
     @Test
     public void test() throws Exception {
-        assertNotNull(swingApp);
-		Window mainWindow = new Window(swingApp.getJFrame());
-		checkTopLevelMenus(mainWindow);
+        assertNotNull(cySwingApplication);
+		Window mainWindow = new Window(cySwingApplication.getJFrame());
+		checkMenuExistence(mainWindow);
+		checkMenuFunctionality(mainWindow);
 		// more tests...
 	}
 
-	private void checkTopLevelMenus(Window mainWindow) {
-		checkFileMenus(   mainWindow.getMenuBar().getMenu("File"));
-		checkEditMenus(   mainWindow.getMenuBar().getMenu("Edit"));
-		checkViewMenus(   mainWindow.getMenuBar().getMenu("View"));
-		checkSelectMenus( mainWindow.getMenuBar().getMenu("Select"));
-		checkLayoutMenus( mainWindow.getMenuBar().getMenu("Layout"));
-		checkAppsMenus(   mainWindow.getMenuBar().getMenu("Apps"));
-		checkToolsMenus(  mainWindow.getMenuBar().getMenu("Tools"));
-		checkHelpMenus(   mainWindow.getMenuBar().getMenu("Help"));
+/*
+		//WindowInterceptor.init(new WelcomeScreenTrigger(mainWindow)).process( "Welcome to Cytoscape 3", new WelcomeScreenClose() ).run();
+	private class WelcomeScreenTrigger implements Trigger {
+		private Window main;
+		WelcomeScreenTrigger(Window main) { this.main = main; }
+		public void run() {
+			main.getMenuBar().getMenu("Help").getSubMenu("Show Welcome Screen...").click();
+		}
+	}
+
+	private class WelcomeScreenClose extends WindowHandler {
+		public Trigger process(Window window) {
+			return window.getButton("Close").triggerClick();
+		}
+	}
+	*/
+
+	private void checkMenuFunctionality(Window mainWindow) {
+		checkFileMenusFunctionality(mainWindow.getMenuBar().getMenu("File"));
+	}
+
+	private void checkFileMenusFunctionality(MenuItem fileMenu) {
+		int numNets = cyNetworkManager.getNetworkSet().size();	
+		int numViews = cyNetworkViewManager.getNetworkViewSet().size();	
+		fileMenu.getSubMenu("New").getSubMenu("Network").getSubMenu("Empty Network").click();
+		sleep(1000); // allow thread to complete
+		assertEquals( numNets + 1, cyNetworkManager.getNetworkSet().size());
+		assertEquals( numViews + 1, cyNetworkViewManager.getNetworkViewSet().size());
+	}
+
+	private void checkMenuExistence(Window mainWindow) {
+		checkFileMenusExistence(   mainWindow.getMenuBar().getMenu("File"));
+		checkEditMenusExistence(   mainWindow.getMenuBar().getMenu("Edit"));
+		checkViewMenusExistence(   mainWindow.getMenuBar().getMenu("View"));
+		checkSelectMenusExistence( mainWindow.getMenuBar().getMenu("Select"));
+		checkLayoutMenusExistence( mainWindow.getMenuBar().getMenu("Layout"));
+		checkAppsMenusExistence(   mainWindow.getMenuBar().getMenu("Apps"));
+		checkToolsMenusExistence(  mainWindow.getMenuBar().getMenu("Tools"));
+		checkHelpMenusExistence(   mainWindow.getMenuBar().getMenu("Help"));
     }
 
-	private void checkFileMenus(MenuItem fileMenu) {
+	private void checkFileMenusExistence(MenuItem fileMenu) {
 		assertNotNull(fileMenu);
 		assertNotNull(fileMenu.getSubMenu("Recent Session"));
 		assertNotNull(fileMenu.getSubMenu("New"));
@@ -120,7 +164,7 @@ public class BasicMenuTest {
 		assertNotNull(fileMenu.getSubMenu("Print Current Network..."));
 	}
 
-	private void checkEditMenus(MenuItem editMenu) {
+	private void checkEditMenusExistence(MenuItem editMenu) {
 		assertNotNull(editMenu);
 		assertNotNull(editMenu.getSubMenu("Copy"));
 		assertNotNull(editMenu.getSubMenu("Cut"));
@@ -138,7 +182,7 @@ public class BasicMenuTest {
 		assertNotNull(editMenu.getSubMenu("Connect Selected Nodes"));
 	}
 
-	private void checkViewMenus(MenuItem viewMenu) {
+	private void checkViewMenusExistence(MenuItem viewMenu) {
 		assertNotNull(viewMenu);
 		assertNotNull(viewMenu.getSubMenu("Hide Control Panel"));
 		assertNotNull(viewMenu.getSubMenu("Hide Table Panel"));
@@ -150,7 +194,7 @@ public class BasicMenuTest {
 		assertNotNull(viewMenu.getSubMenu("Arrange Network Windows"));
 	}
 
-	private void checkSelectMenus(MenuItem selectMenu) {
+	private void checkSelectMenusExistence(MenuItem selectMenu) {
 		assertNotNull(selectMenu);
 		assertNotNull(selectMenu.getSubMenu("Nodes"));
 		assertNotNull(selectMenu.getSubMenu("Edges"));
@@ -161,7 +205,7 @@ public class BasicMenuTest {
 		assertNotNull(selectMenu.getSubMenu("Use Filters"));
 	}
 
-	private void checkLayoutMenus(MenuItem layoutMenu) {
+	private void checkLayoutMenusExistence(MenuItem layoutMenu) {
 		assertNotNull(layoutMenu);
 		assertNotNull(layoutMenu.getSubMenu("Bundle Edges"));
 		assertNotNull(layoutMenu.getSubMenu("Rotate"));
@@ -174,12 +218,12 @@ public class BasicMenuTest {
 		assertNotNull(layoutMenu.getSubMenu("yFiles Layouts"));
 	}
 
-	private void checkAppsMenus(MenuItem appsMenu) {
+	private void checkAppsMenusExistence(MenuItem appsMenu) {
 		assertNotNull(appsMenu);
 		assertNotNull(appsMenu.getSubMenu("App Manager"));
 	}
 
-	private void checkToolsMenus(MenuItem toolsMenu) {
+	private void checkToolsMenusExistence(MenuItem toolsMenu) {
 		assertNotNull(toolsMenu);
 		assertNotNull(toolsMenu.getSubMenu("Network Analyzer"));
 		assertNotNull(toolsMenu.getSubMenu("Run script..."));
@@ -189,7 +233,7 @@ public class BasicMenuTest {
 		assertNotNull(toolsMenu.getSubMenu("Merge Networks"));
 	}
 
-	private void checkHelpMenus(MenuItem helpMenu) {
+	private void checkHelpMenusExistence(MenuItem helpMenu) {
 		assertNotNull(helpMenu);
 		assertNotNull(helpMenu.getSubMenu("Contents..."));
 		assertNotNull(helpMenu.getSubMenu("About..."));
@@ -197,5 +241,13 @@ public class BasicMenuTest {
 		assertNotNull(helpMenu.getSubMenu("Report a Bug..."));
 		assertNotNull(helpMenu.getSubMenu("Log Console"));
 		assertNotNull(helpMenu.getSubMenu("Show Welcome Screen..."));
+	}
+
+	private void sleep(int millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (Exception e) { 
+			throw new RuntimeException(e);
+		}
 	}
 }
