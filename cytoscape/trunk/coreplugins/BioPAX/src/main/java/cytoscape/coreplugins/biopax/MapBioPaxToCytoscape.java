@@ -27,6 +27,7 @@ import giny.view.NodeView;
 
 import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.PropertyEditor;
+import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.complex;
@@ -1171,7 +1172,7 @@ public class MapBioPaxToCytoscape {
             final CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
             
         	AbstractTraverser bpeAutoMapper = 
-        		new AbstractTraverser(BioPaxUtil.getEditorMap(model.getLevel())) {
+        		new AbstractTraverser(SimpleEditorMap.get(model.getLevel())) {
         		final CyLogger log = CyLogger.getLogger(AbstractTraverser.class);
         		
 				@Override

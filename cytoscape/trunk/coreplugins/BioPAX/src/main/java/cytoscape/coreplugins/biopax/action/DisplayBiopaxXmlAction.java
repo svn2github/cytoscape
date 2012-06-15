@@ -8,7 +8,8 @@ import java.io.StringWriter;
 
 import javax.swing.JOptionPane;
 
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
+import org.biopax.paxtools.io.BioPAXIOHandler;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 
@@ -39,8 +40,7 @@ public final class DisplayBiopaxXmlAction extends CytoscapeAction {
 		if (bpe != null) {
 			log.info("printing " + bpe + " OWL");
 			try {
-				SimpleExporter simpleExporter = new SimpleExporter(m.getLevel());
-				//TODO Fix: it prints '<:null' instead '<bp:' when using writeObject method!
+				SimpleIOHandler simpleExporter = new SimpleIOHandler(m.getLevel());
 				simpleExporter.writeObject(writer, bpe);
 			} catch (Exception e) {
 				log.error("Faild printing '" + nodeId + "' to OWL", e);

@@ -3,9 +3,9 @@ package cytoscape.coreplugins.biopax.util;
 import org.biopax.paxtools.controller.AbstractTraverser;
 import org.biopax.paxtools.controller.EditorMap;
 import org.biopax.paxtools.controller.PropertyEditor;
-import org.biopax.paxtools.controller.PropertyFilter;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
+import org.biopax.paxtools.util.Filter;
 
 /**
  * 
@@ -18,7 +18,8 @@ public final class ParentFinder extends AbstractTraverser {
 	private boolean found;
 	
 	public ParentFinder(EditorMap editorMap) {
-		super(editorMap, new PropertyFilter() {
+		super(editorMap, new Filter<PropertyEditor>() {
+			@Override
 			public boolean filter(PropertyEditor editor) {
 				return !editor.getProperty().equals("NEXT-STEP");
 			}
@@ -30,7 +31,7 @@ public final class ParentFinder extends AbstractTraverser {
 			PropertyEditor editor) {
 		// skip if already found or it's not a object property
 		if(!found && value instanceof BioPAXElement) {
-			if(getCurrentParentsList().contains(query)) { // it is added there right before the visit method call
+			if(getVisited().contains(query)) { // it is added there right before the visit method call
 				found = true;
 			} else {
 				// continue into the value's values:

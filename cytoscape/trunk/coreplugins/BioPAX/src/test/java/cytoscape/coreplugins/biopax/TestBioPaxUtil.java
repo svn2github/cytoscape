@@ -31,8 +31,6 @@
  **/
 package cytoscape.coreplugins.biopax;
 
-import java.util.Set;
-
 import junit.framework.TestCase;
 
 import org.biopax.paxtools.model.Model;

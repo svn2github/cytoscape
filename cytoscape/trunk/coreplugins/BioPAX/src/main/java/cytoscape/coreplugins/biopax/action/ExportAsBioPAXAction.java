@@ -43,8 +43,9 @@ import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 import java.io.*;
 
+import org.biopax.paxtools.io.BioPAXIOHandler;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.Model;
-import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 
 
 /**
@@ -131,7 +132,7 @@ class ExportAsBioPAXTask implements Task {
             if(bpModel == null || bpModelStr == null )
                 throw new IllegalArgumentException("Invalid/empty BioPAX model.");
 
-            SimpleExporter simpleExporter = new SimpleExporter(bpModel.getLevel());
+            BioPAXIOHandler simpleExporter = new SimpleIOHandler(bpModel.getLevel());
             simpleExporter.convertToOWL(bpModel, fOutput);
 
             fOutput.close();

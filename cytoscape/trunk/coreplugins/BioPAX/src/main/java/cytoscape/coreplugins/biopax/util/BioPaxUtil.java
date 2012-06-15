@@ -33,8 +33,8 @@ import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 
 import org.biopax.paxtools.controller.EditorMap;
-import org.biopax.paxtools.io.simpleIO.SimpleEditorMap;
-import org.biopax.paxtools.io.simpleIO.SimpleReader;
+import org.biopax.paxtools.controller.SimpleEditorMap;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
@@ -58,14 +58,11 @@ public class BioPaxUtil {
 	private static final Map<String,String> plainEnglishMap;
 	private static final Map<String,String> cellLocationMap;
 	private static final Map<String,String> chemModificationsMap;
-	private static final EditorMap editorMapLevel3;
-	private static final EditorMap editorMapLevel2;
 	
-	public static final CyLogger log = CyLogger.getLogger(BioPaxUtil.class);
+	public static final CyLogger log = CyLogger.getLogger(BioPaxUtil.class);	
 	
 	protected BioPaxUtil() {}
-	
-	
+		
     private static Map<String, Model> networkModelMap = new HashMap<String, Model>();
 
     public static final String BIOPAX_MODEL_STRING = "biopax.model.xml";
@@ -88,9 +85,6 @@ public class BioPaxUtil {
 	
 
 	static  {
-		editorMapLevel2 = new SimpleEditorMap();
-		editorMapLevel3 = new SimpleEditorMap(BioPAXLevel.L3);
-		
 		plainEnglishMap = new HashMap<String,String>();
 		// all keys are lower case!
 		plainEnglishMap.put("protein", "Protein");
@@ -168,13 +162,17 @@ public class BioPaxUtil {
 	 * @return BioPaxUtil new instance (containing the imported BioPAX data)
 	 * @throws FileNotFoundException 
 	 */
-	public static Model readFile(String in) throws FileNotFoundException {
+	public static Model readFile(final String in) throws FileNotFoundException {
 		Model model = null;
+
 		try {
-			model = (new SimpleReader()).convertFromOWL(new FileInputStream(in));
-		} catch (Exception e) {
+			SimpleIOHandler handler = new SimpleIOHandler();
+			handler.mergeDuplicates(true); // a workaround (illegal) BioPAX data											// having duplicated rdf:ID...
+			model = handler.convertFromOWL(new FileInputStream(in));
+		} catch (Throwable e) {
 			log.warn("Import failed: " + e);
 		}
+
 		return model;
 	}
 
@@ -559,16 +557,16 @@ public class BioPaxUtil {
 		if(bpe instanceof physicalEntityParticipant) {
 			return getUnificationXRefs(((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY());
 		} else if(bpe instanceof org.biopax.paxtools.model.level2.XReferrable) {
-			return extractXrefs(new ClassFilterSet<unificationXref>(
+			return extractXrefs(new ClassFilterSet<xref, unificationXref>(
 					((org.biopax.paxtools.model.level2.XReferrable)bpe).getXREF(),
 						unificationXref.class) );
 		} else if(bpe instanceof org.biopax.paxtools.model.level3.XReferrable) {
 			List<ExternalLink> erefs = new ArrayList<ExternalLink>();
-			erefs.addAll(extractXrefs(new ClassFilterSet<UnificationXref>(
+			erefs.addAll(extractXrefs(new ClassFilterSet<Xref, UnificationXref>(
 					((org.biopax.paxtools.model.level3.XReferrable)bpe).getXref(),
 					UnificationXref.class) ));
 			if(bpe instanceof SimplePhysicalEntity && ((SimplePhysicalEntity)bpe).getEntityReference() != null) {
-				erefs.addAll(extractXrefs(new ClassFilterSet<UnificationXref>(
+				erefs.addAll(extractXrefs(new ClassFilterSet<Xref, UnificationXref>(
 						((SimplePhysicalEntity)bpe).getEntityReference().getXref(),
 						UnificationXref.class) ));
 			}
@@ -588,16 +586,16 @@ public class BioPaxUtil {
 		if(bpe instanceof physicalEntityParticipant) {
 			return getRelationshipXRefs(((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY());
 		} else if(bpe instanceof org.biopax.paxtools.model.level2.XReferrable) {
-			return extractXrefs(new ClassFilterSet<relationshipXref>(
+			return extractXrefs(new ClassFilterSet<xref, relationshipXref>(
 					((org.biopax.paxtools.model.level2.XReferrable)bpe).getXREF(),
 						relationshipXref.class) );
 		} else if(bpe instanceof org.biopax.paxtools.model.level3.XReferrable) {
 			List<ExternalLink> erefs = new ArrayList<ExternalLink>();
-			erefs.addAll(extractXrefs(new ClassFilterSet<RelationshipXref>(
+			erefs.addAll(extractXrefs(new ClassFilterSet<Xref, RelationshipXref>(
 					((org.biopax.paxtools.model.level3.XReferrable)bpe).getXref(),
 					RelationshipXref.class) ));
 			if(bpe instanceof SimplePhysicalEntity && ((SimplePhysicalEntity)bpe).getEntityReference() != null) {
-				erefs.addAll(extractXrefs(new ClassFilterSet<RelationshipXref>(
+				erefs.addAll(extractXrefs(new ClassFilterSet<Xref, RelationshipXref>(
 						((SimplePhysicalEntity)bpe).getEntityReference().getXref(),
 						RelationshipXref.class) ));
 			}
@@ -618,16 +616,16 @@ public class BioPaxUtil {
 		if(bpe instanceof physicalEntityParticipant) {
 			return getPublicationXRefs(((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY());
 		} else if(bpe instanceof org.biopax.paxtools.model.level2.XReferrable) {
-			return extractXrefs(new ClassFilterSet<publicationXref>(
+			return extractXrefs(new ClassFilterSet<xref, publicationXref>(
 					((org.biopax.paxtools.model.level2.XReferrable)bpe).getXREF(),
 					publicationXref.class) );
 		} else if(bpe instanceof org.biopax.paxtools.model.level3.XReferrable) {
 			List<ExternalLink> erefs = new ArrayList<ExternalLink>();
-			erefs.addAll(extractXrefs(new ClassFilterSet<PublicationXref>(
+			erefs.addAll(extractXrefs(new ClassFilterSet<Xref, PublicationXref>(
 					((org.biopax.paxtools.model.level3.XReferrable)bpe).getXref(),
 					PublicationXref.class) ));
 			if(bpe instanceof SimplePhysicalEntity && ((SimplePhysicalEntity)bpe).getEntityReference() != null) {
-				erefs.addAll(extractXrefs(new ClassFilterSet<PublicationXref>(
+				erefs.addAll(extractXrefs(new ClassFilterSet<Xref, PublicationXref>(
 						((SimplePhysicalEntity)bpe).getEntityReference().getXref(),
 						PublicationXref.class) ));
 			}
@@ -723,16 +721,6 @@ public class BioPaxUtil {
 	}
 	
 	/**
-	 * Gets the BioPAX Classes to Property Editors Map (PaxTools)
-	 * 
-	 * @param bioPAXLevel
-	 * @return
-	 */
-	public static EditorMap getEditorMap(BioPAXLevel bioPAXLevel) {
-		return (bioPAXLevel == BioPAXLevel.L2) ? editorMapLevel2 : editorMapLevel3;
-	}
-	
-	/**
 	 * Gets the joint set of all known subclasses of the specified BioPAX types.
 	 * 
 	 * @param classes BioPAX (PaxTools Model Interfaces) Classes
@@ -743,9 +731,9 @@ public class BioPaxUtil {
 		
 		for (Class<? extends BioPAXElement> c : classes) {
 			if (Level3Element.class.isAssignableFrom(c)) {
-				subclasses.addAll(editorMapLevel3.getKnownSubClassesOf(c));
+				subclasses.addAll(SimpleEditorMap.L3.getKnownSubClassesOf(c));
 			} else {
-				subclasses.addAll(editorMapLevel2.getKnownSubClassesOf(c));
+				subclasses.addAll(SimpleEditorMap.L2.getKnownSubClassesOf(c));
 			}
 		}
 		
@@ -910,7 +898,7 @@ public class BioPaxUtil {
 	 */
 	public static Set<BioPAXElement> fetchParentNodeNames(BioPAXElement bpe, Set<? extends BioPAXElement> procs) {
 		Set<BioPAXElement> parents = new HashSet<BioPAXElement>();
-		EditorMap editorMap = (bpe instanceof Level2Element) ? editorMapLevel2 : editorMapLevel3;
+		EditorMap editorMap = (bpe instanceof Level2Element) ? SimpleEditorMap.L2 : SimpleEditorMap.L3;
 		ParentFinder parentFinder = new ParentFinder(editorMap);
 		for (BioPAXElement proc : procs) {
 			if(!parents.contains(proc) && parentFinder.isParentChild(proc, bpe))
