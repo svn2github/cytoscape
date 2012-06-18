@@ -17,6 +17,7 @@ public class TableAddedEvent implements SetCurrentNetworkListener{
 	private JCheckBox[] checkBoxArray;
 	private PanelComponents panelComponents;
 	private int tableColumnCount;
+	public static boolean networkDestroyed = false;
 	
 	TableAddedEvent(MyCytoPanel myCytoPanel){
 		
@@ -27,27 +28,29 @@ public class TableAddedEvent implements SetCurrentNetworkListener{
 	
 	@Override
 	public void handleEvent(SetCurrentNetworkEvent e) {
-		
-		cytable = e.getNetwork().getDefaultNodeTable();
-		if(cytable!=null)
-		{
-			if(panelComponentMap.containsKey(cytable.getTitle())) {	
-				
-				panelComponents = (PanelComponents) panelComponentMap.get(cytable.getTitle());
-				table = panelComponents.getTable();
-				checkBoxArray = panelComponents.getCheckBoxArray();
-			} else {
-				
-				table = new JTable(new MyTableModel(cytable));
-				panelComponents = new PanelComponents(table);
-				checkBoxArray = panelComponents.initialiseCheckBoxArray();
-				panelComponentMap.put(cytable.getTitle(), panelComponents);
-			}	
+		if(!networkDestroyed){	
+			cytable = e.getNetwork().getDefaultNodeTable();
+			if(cytable!=null)
+			{
+				if(panelComponentMap.containsKey(cytable.getTitle())) {	
+					
+					panelComponents = (PanelComponents) panelComponentMap.get(cytable.getTitle());
+					table = panelComponents.getTable();
+					checkBoxArray = panelComponents.getCheckBoxArray();
+				} else {
+					
+					table = new JTable(new MyTableModel(cytable));
+					panelComponents = new PanelComponents(table);
+					checkBoxArray = panelComponents.initialiseCheckBoxArray();
+					panelComponentMap.put(cytable.getTitle(), panelComponents);
+				}	
 			
-			tableColumnCount = panelComponents.getTableColumnCount();
-			myCytoPanel.initComponents(table, checkBoxArray, tableColumnCount);
+				tableColumnCount = panelComponents.getTableColumnCount();
+				myCytoPanel.initComponents(table, checkBoxArray, tableColumnCount);
+			}
+		} else {
+			networkDestroyed = false;
 		}
-		
 	}
 	
 	public static HashMap<String, Object> getPanelComponentMap(){
