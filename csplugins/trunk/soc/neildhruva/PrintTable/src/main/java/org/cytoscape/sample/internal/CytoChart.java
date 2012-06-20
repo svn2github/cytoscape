@@ -17,6 +17,11 @@ public class CytoChart {
 		dataset = new DefaultCategoryDataset();			
 	}
 	
+	/**
+	 * Creates a chart/graph and puts it in a chart panel.
+	 * 
+	 * @return The <code>ChartPanel</code> that contains the newly created chart.
+	 */
 	public ChartPanel createChart(){
 		dataset.setValue(6, "Profit", "Jane");
 		dataset.setValue(7, "Profit", "Tom");

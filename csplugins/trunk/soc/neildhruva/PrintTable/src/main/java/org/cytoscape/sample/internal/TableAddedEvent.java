@@ -28,6 +28,9 @@ public class TableAddedEvent implements SetCurrentNetworkListener{
 	
 	@Override
 	public void handleEvent(SetCurrentNetworkEvent e) {
+		//If this method was called immediately following a network destroyed event, which it by default does,
+		//then such a current network event should not be implemented because the pointer doesn't point to 
+		//a particular network at that time.
 		if(!networkDestroyed){	
 			cytable = e.getNetwork().getDefaultNodeTable();
 			if(cytable!=null)

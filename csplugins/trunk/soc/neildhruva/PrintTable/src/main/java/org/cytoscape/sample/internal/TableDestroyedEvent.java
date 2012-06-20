@@ -21,6 +21,12 @@ public class TableDestroyedEvent implements NetworkAboutToBeDestroyedListener{
 		panelComponentMap = TableAddedEvent.getPanelComponentMap();
 		panelComponentMap.remove(e.getNetwork().getDefaultNodeTable().getTitle());
 		
+		//Clear the Table View Panel
+		myCytoPanel.removeAll();
+		myCytoPanel.repaint();
+		
+		//Set networkDestroyed to true in order to keep from implementing the code in TableAddedEvent.java
 		TableAddedEvent.networkDestroyed = true;
+		
 	}
 }
