@@ -12,6 +12,7 @@ import javax.swing.LayoutStyle;
 
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
+import org.jfree.chart.ChartPanel;
 
 public class MyCytoPanel extends JPanel implements CytoPanelComponent {
 	
@@ -22,11 +23,13 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
     private JCheckBox[] checkBoxArray;
     private GroupLayout layout;
     private int tableColumnCount;
-	
+    private ChartPanel myChart;
+    private CytoChart cytoChart;
     
     public MyCytoPanel() {
 	
-		this.setVisible(true);	
+		this.setVisible(true);
+		
 	}
 
 	/**
@@ -40,6 +43,9 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
 		
 		if(this.table!=null)
 			this.removeAll();
+		
+		cytoChart = new CytoChart();
+		myChart = cytoChart.createChart();
 		
         this.table = jtable;
         this.checkBoxArray = checkBoxArray;
@@ -67,15 +73,17 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
         	checkBoxGroupHor.addComponent(checkBoxArray[i]);
         }
         
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 350, GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(checkBoxGroupHor)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE))
-        );
-        
+		layout.setHorizontalGroup(
+	            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+	            .addGroup(layout.createSequentialGroup()
+	                .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 260, GroupLayout.PREFERRED_SIZE)
+	                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+	                .addGroup(checkBoxGroupHor)
+	                .addGap(16, 16, 16)
+	                .addComponent(myChart, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+	                .addGap(35, 35, 35))
+	        );
+		
         SequentialGroup checkBoxGroupVert = layout.createSequentialGroup();
         checkBoxGroupVert.addContainerGap();
         for(int i=0;i<tableColumnCount;i++){
@@ -84,14 +92,17 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
         		checkBoxGroupVert.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED);
         	}
         }
-        checkBoxGroupVert.addContainerGap(192, Short.MAX_VALUE);
         
         layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-            .addGroup(checkBoxGroupVert)
-        );
-	}
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(myChart, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addGap(184, 184, 184))
+                .addGroup(checkBoxGroupVert
+                    .addContainerGap())
+            );
+     }
 
 	
 	public Component getComponent() {
