@@ -1,4 +1,4 @@
-package org.cytoscape.sample.internal;
+package org.cytoscape.cytobridge.rpc;
 
 /*
  * To change this template, choose Tools | Templates

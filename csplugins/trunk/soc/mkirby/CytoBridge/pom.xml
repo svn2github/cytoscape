@@ -2,15 +2,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<properties>
-		<bundle.symbolicName>sample03</bundle.symbolicName>
-		<bundle.namespace>org.cytoscape.sample.internal</bundle.namespace>
+		<bundle.symbolicName>CytoBridge</bundle.symbolicName>
+		<bundle.namespace>org.cytoscape.cytobridge</bundle.namespace>
 		<cytoscape.api.version>3.0.0-alpha8-SNAPSHOT</cytoscape.api.version>
 		
 		<maven-bundle-plugin.version>2.3.4</maven-bundle-plugin.version>
 		<osgi.api.version>4.2.0</osgi.api.version>
 	</properties>
 	
-	<groupId>org.cytoscape.sample</groupId>
+	<groupId>org.cytoscape.cytobridge</groupId>
 	<artifactId>CytoBridge</artifactId>
 	<packaging>bundle</packaging>
 	<name>${bundle.symbolicName}</name>
@@ -71,7 +71,11 @@
 			<artifactId>swing-application-api</artifactId>
 			<version>${cytoscape.api.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>core-task-api</artifactId>
+			<version>${cytoscape.api.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-api</artifactId>
@@ -91,10 +95,10 @@
 			<scope>provided</scope>
 		</dependency> 
 		<dependency>
-        	<groupId>xerces</groupId>
-        	<artifactId>xerces</artifactId>
-        	<version>1.2.3</version>
-      	</dependency>
+	<groupId>xerces</groupId>
+	<artifactId>xercesImpl</artifactId>
+	<version>2.10.0</version>
+</dependency>
 		<dependency>
 			<groupId>org.apache.xmlrpc</groupId>
 			<artifactId>xmlrpc-server</artifactId>

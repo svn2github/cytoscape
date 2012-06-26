@@ -1,4 +1,4 @@
-package org.cytoscape.sample.internal;
+package org.cytoscape.cytobridge.rpc;
 
 /*
 Copyright (c) 2010 Delft University of Technology (www.tudelft.nl)
@@ -27,25 +27,14 @@ Foundation,  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 USA.
 */
 
-import java.awt.Color;
 import java.lang.reflect.Method;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
-import javax.jws.WebParam;
-
-import javax.swing.JOptionPane;
-
 import org.apache.xmlrpc.XmlRpcException;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.cytoscape.cytobridge.NetworkManager;
+import org.cytoscape.task.create.NewEmptyNetworkViewFactory;
 
 /**
 * This class implements all the supported methods for the Cytoscape XMLRPC
@@ -57,11 +46,14 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 */
 public class CytoscapeRPCCallHandler {
 
+	private NetworkManager myManager;
+	
    /**
     * Constructs a CytoscapeRPCCallHandler.
     */
-   public CytoscapeRPCCallHandler() {
+   public CytoscapeRPCCallHandler(NetworkManager myManager) {
        System.out.println("Instanciating CytoscapeRPCCallHandler");
+       this.myManager = myManager;
    }
 
    /*************************************************************
@@ -74,9 +66,20 @@ public class CytoscapeRPCCallHandler {
     * @return The string "It works!".
     */
    
-   public String test() {
-	   System.out.println("Starting now!");
-       return "It works!";
+   public String test(Vector<String> nodes) {
+	   System.out.println("Got "+nodes.size()+" nodes!");
+       return "Thanks";
+   }
+   
+   public String pushNetwork(String name, Vector<Integer> nodes, Vector<Double> edgeFrom, Vector<Double> edgeTo) throws XmlRpcException {
+	   if (edgeFrom.size()!=edgeTo.size()) {
+		   throw new XmlRpcException("Edge Communication error!");
+	   }
+	   System.out.println("Got "+nodes.size()+" nodes.");
+	   
+	   myManager.pushNetwork(name, nodes, edgeFrom, edgeTo);
+	   
+	   return "Pushed to Cytoscape.";
    }
    
 

@@ -1,4 +1,4 @@
-package org.cytoscape.sample.internal;
+package org.cytoscape.cytobridge;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -8,13 +8,21 @@ import javax.swing.ImageIcon;
 import org.apache.xmlrpc.XmlRpcException;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.cytobridge.rpc.CytoscapeRPCServer;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.task.create.NewEmptyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
 
 public class CytoBridgeAction extends AbstractCyAction {
 
 	CytoscapeRPCServer xmlrpcServer = null;
 	private CySwingApplication desktopApp;
 	
-	public CytoBridgeAction(CySwingApplication desktopApp){
+	private NetworkManager myManager;
+	
+	public CytoBridgeAction(CySwingApplication desktopApp, NetworkManager myManager){
 		// Add a menu item -- Plugins->sample03
 		super("CytoBridge");
 		setPreferredMenu("Apps");
@@ -27,6 +35,7 @@ public class CytoBridgeAction extends AbstractCyAction {
 		//putValue(SMALL_ICON, smallIcon);
 		
 		this.desktopApp = desktopApp;
+		this.myManager = myManager;
 	}
 	
 	/**
@@ -73,7 +82,7 @@ public class CytoBridgeAction extends AbstractCyAction {
         try {
             System.out.println("XML-RPC Port: " + port);
             xmlrpcServer = new CytoscapeRPCServer(port, localOnly);
-            xmlrpcServer.startXmlServer();
+            xmlrpcServer.startXmlServer(myManager);
         }
         catch (XmlRpcException ex) {
             ex.printStackTrace();

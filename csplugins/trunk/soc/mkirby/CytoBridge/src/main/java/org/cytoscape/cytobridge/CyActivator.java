@@ -1,4 +1,4 @@
-package org.cytoscape.sample.internal;
+package org.cytoscape.cytobridge;
 
 /*
  Copyright (c) 2010 Delft University of Technology (www.tudelft.nl)
@@ -29,7 +29,12 @@ USA.
 
 import org.cytoscape.application.swing.CyAction;
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
+import org.cytoscape.task.create.NewEmptyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.osgi.framework.BundleContext;
 
 
@@ -51,8 +56,16 @@ public class CyActivator extends AbstractCyActivator{
 
 
 	public void start(BundleContext bc) {
+		CyNetworkFactory netFact = getService(bc,CyNetworkFactory.class);
+		CyNetworkManager netMan = getService(bc,CyNetworkManager.class);
+		CyNetworkViewFactory netViewFact = getService(bc,CyNetworkViewFactory.class);
+		CyNetworkViewManager netViewMan = getService(bc,CyNetworkViewManager.class);
+		
 		CySwingApplication cytoscapeDesktopService = getService(bc,CySwingApplication.class);
-		CytoBridgeAction cytoBridgeAction = new CytoBridgeAction(cytoscapeDesktopService);
+		
+		NetworkManager myManager = new NetworkManager(netFact, netViewFact, netMan, netViewMan);
+		
+		CytoBridgeAction cytoBridgeAction = new CytoBridgeAction(cytoscapeDesktopService, myManager);
 		registerService(bc,cytoBridgeAction,CyAction.class, new Properties());
 	}
 }

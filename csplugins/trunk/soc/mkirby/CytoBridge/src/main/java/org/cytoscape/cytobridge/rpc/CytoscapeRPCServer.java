@@ -1,4 +1,4 @@
-package org.cytoscape.sample.internal;
+package org.cytoscape.cytobridge.rpc;
 
 /*
 Copyright (c) 2010 Delft University of Technology (www.tudelft.nl)
@@ -31,6 +31,12 @@ import java.io.IOException;
 import org.apache.xmlrpc.*;
 import org.apache.xmlrpc.server.*;
 import org.apache.xmlrpc.webserver.*;
+import org.cytoscape.cytobridge.NetworkManager;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.task.create.NewEmptyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
 
 
 /**
@@ -65,7 +71,7 @@ public class CytoscapeRPCServer {
     * @throws XmlRpcException When the port can not be allocated.
     * @throws IOException
     */
-   public void startXmlServer() throws XmlRpcException, IOException{
+   public void startXmlServer(NetworkManager myManager) throws XmlRpcException, IOException{
        if(localOnly) {
            webServer.setParanoid(true);
            webServer.acceptClient("127.0.0.1");
@@ -74,6 +80,9 @@ public class CytoscapeRPCServer {
 
        xmlRpcServer = webServer.getXmlRpcServer();
        PropertyHandlerMapping phm = new PropertyHandlerMapping();
+       CytoscapeRPCCallHandler handler = new CytoscapeRPCCallHandler(myManager);
+       phm.setRequestProcessorFactoryFactory(new CytoBridgeRequestProcessorFactoryFactory(handler));
+       phm.setVoidMethodEnabled(true);
        phm.addHandler("Cytoscape", CytoscapeRPCCallHandler.class);
 
        xmlRpcServer.setHandlerMapping(phm);
