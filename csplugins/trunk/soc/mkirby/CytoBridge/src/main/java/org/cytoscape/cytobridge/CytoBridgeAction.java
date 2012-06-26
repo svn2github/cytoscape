@@ -9,11 +9,6 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.cytobridge.rpc.CytoscapeRPCServer;
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.task.create.NewEmptyNetworkViewFactory;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.CyNetworkViewManager;
 
 public class CytoBridgeAction extends AbstractCyAction {
 
@@ -27,12 +22,12 @@ public class CytoBridgeAction extends AbstractCyAction {
 		super("CytoBridge");
 		setPreferredMenu("Apps");
 
-		//ImageIcon icon = new ImageIcon(getClass().getResource("/images/tiger.jpg"));
-		//ImageIcon smallIcon = new ImageIcon(getClass().getResource("/images/tiger_small.jpg"));
+		ImageIcon icon = new ImageIcon(getClass().getResource("/images/bridge.png"));
+		ImageIcon smallIcon = new ImageIcon(getClass().getResource("/images/bridge_small.png"));
 
 		// Add image icons on tool-bar and menu item
-		//putValue(LARGE_ICON_KEY, icon);
-		//putValue(SMALL_ICON, smallIcon);
+		putValue(LARGE_ICON_KEY, icon);
+		putValue(SMALL_ICON, smallIcon);
 		
 		this.desktopApp = desktopApp;
 		this.myManager = myManager;
@@ -55,18 +50,16 @@ public class CytoBridgeAction extends AbstractCyAction {
 	
 	
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * Make sure the plugin shows up in the Cytoscape toolbar.
+	 * @return  True, since it should show up.
 	 */
 	public boolean isInToolBar() {
 		return true;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * Make sure the plugin shows up in the Cytoscape menubar.
+	 * @return  True, since it should show up.
 	 */
 	public boolean isInMenuBar() {
 		return true;

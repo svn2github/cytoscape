@@ -13,6 +13,9 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 
+/** Handles creating and updating Networks for CytoBridge.
+ * @author Michael Kirby
+ */
 public class NetworkManager {
 	
 	private CyNetworkFactory netFact;

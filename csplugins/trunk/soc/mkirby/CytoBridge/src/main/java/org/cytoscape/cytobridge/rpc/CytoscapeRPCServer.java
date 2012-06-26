@@ -32,11 +32,6 @@ import org.apache.xmlrpc.*;
 import org.apache.xmlrpc.server.*;
 import org.apache.xmlrpc.webserver.*;
 import org.cytoscape.cytobridge.NetworkManager;
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.task.create.NewEmptyNetworkViewFactory;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.CyNetworkViewManager;
 
 
 /**

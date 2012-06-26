@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.Vector;
 import org.apache.xmlrpc.XmlRpcException;
 import org.cytoscape.cytobridge.NetworkManager;
-import org.cytoscape.task.create.NewEmptyNetworkViewFactory;
 
 /**
 * This class implements all the supported methods for the Cytoscape XMLRPC
