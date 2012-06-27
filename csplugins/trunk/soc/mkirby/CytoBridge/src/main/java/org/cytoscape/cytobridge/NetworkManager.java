@@ -43,27 +43,29 @@ public class NetworkManager {
 			CyNetwork network = currentNets.get(netName).getNetwork();
 			CyNode node = network.addNode();
 			network.getRow(node).set(CyNetwork.NAME, "55");
+			currentNets.get(netName).getNodeMap().put(55, node);
 		} else {
 			System.out.println("Creating network "+netName);
 			CyNetwork network = netFact.createNetwork();
 			network.getRow(network).set(CyNetwork.NAME,netName);
 			
-			currentNets.put(netName, new NetworkSync(network));
-			
-			Map<String, CyNode> nMap = new HashMap<String, CyNode>();
+			HashMap<Integer, CyNode> nodeMap = new HashMap<Integer, CyNode>();
+			HashMap<Integer, CyEdge> edgeMap = new HashMap<Integer, CyEdge>();
+			currentNets.put(netName, new NetworkSync(network, nodeMap, edgeMap));
 			
 			for (Integer n : nodes) {
 				CyNode node = network.addNode();
 				network.getRow(node).set(CyNetwork.NAME, n+"");
-				nMap.put(n+"", node);
+				nodeMap.put(n, node);
 				System.out.println("Added node "+n);
 			}
 			System.out.println("Got nodes...");
 			for (int e=0; e<edgeFrom.size();e++) {
-				CyNode fromNode = nMap.get(edgeFrom.get(e).intValue()+"");
-				CyNode toNode = nMap.get(edgeTo.get(e).intValue()+"");
+				CyNode fromNode = nodeMap.get(edgeFrom.get(e).intValue());
+				CyNode toNode = nodeMap.get(edgeTo.get(e).intValue());
 				CyEdge edge = network.addEdge(fromNode, toNode, false);
 				network.getRow(edge).set(CyNetwork.NAME, e+"");
+				edgeMap.put(e, edge);
 			}
 			System.out.println("Got edges...");
 			
