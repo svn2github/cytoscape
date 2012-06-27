@@ -75,16 +75,6 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
         	checkBoxGroupHor.addComponent(checkBoxArray[i]);
         }
         
-		/*layout.setHorizontalGroup(
-	            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-	            .addGroup(layout.createSequentialGroup()
-	                .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 260, GroupLayout.PREFERRED_SIZE)
-	                .addGap(18, 18, 18)
-	                .addGroup(checkBoxGroupHor)
-	                .addContainerGap(246, Short.MAX_VALUE))
-	        );
-		*/
-		
 		layout.setHorizontalGroup(
 	            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 	            .addGroup(layout.createSequentialGroup()
@@ -96,17 +86,6 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
 	                .addGap(35, 35, 35))
 	        );
 		
-        /*layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 350, GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(checkBoxGroupHor)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
-                .addComponent(myChart, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addGap(88, 88, 88))
-        );*/
-        
         SequentialGroup checkBoxGroupVert = layout.createSequentialGroup();
         checkBoxGroupVert.addContainerGap();
         for(int i=0;i<tableColumnCount;i++){
@@ -115,13 +94,6 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
         		checkBoxGroupVert.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED);
         	}
         }
-        
-        /*layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                .addGroup(checkBoxGroupVert)
-            );
-        */
         
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
