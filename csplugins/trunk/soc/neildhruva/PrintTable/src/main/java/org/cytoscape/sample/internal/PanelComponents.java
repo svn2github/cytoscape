@@ -4,46 +4,69 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableFactory;
+
 public class PanelComponents {
 
     private JTable table;
 	private TableColumnModel tableColumnModel;
-	private HashMap<String, Serializable> hiddenColumnsColumn;
-    private HashMap<String, Serializable> hiddenColumnsIndex;
+	public static Map<String, Serializable> hiddenColumnsColumn;
+    public static Map<String, Serializable> hiddenColumnsIndex;
 	private JCheckBox[] checkBoxArray;
 	private int columnCount;
-	
+	public static CyTable myCyTable;
+	private List<Boolean> checkBoxState;
+	private Long networkSUID;
     
-    public PanelComponents(JTable table) {
+    public PanelComponents() {
+    	
+    }
     
-    	this.table = table;
-    	this.tableColumnModel = table.getColumnModel();
-    	this.columnCount = table.getColumnCount();
-    	this.hiddenColumnsColumn = new HashMap<String, Serializable>();
-        this.hiddenColumnsIndex = new HashMap<String, Serializable>();
+    static {
+    	hiddenColumnsColumn = new HashMap<String, Serializable>();
+        hiddenColumnsIndex = new HashMap<String, Serializable>();
     }
 
+    public void initCyTable(CyTableFactory tableFactory) {
+		if(myCyTable==null) {
+			myCyTable = tableFactory.createTable("MyCyTable", "SUID", Long.class, true, true);
+			myCyTable.createListColumn("States", Boolean.class, true);
+		}
+    }
+    
     /**
      * Initializes an array of checkboxes with column names of the table as titles and
-     * sets each checkbox selected by default. The checkboxes allows user to select/deselect
-     * a particular column.  
+     * sets each checkbox checked/unchecked corresponding to the Boolean values in which track hidden columns.
+     * The checkboxes allows user to check/uncheck a particular column.  
      * 
      * @return JCheckBox[] Array of checkboxes initialized with column names as titles
      */
-    public JCheckBox[] initialiseCheckBoxArray(){
+    public JCheckBox[] initCheckBoxArray(List<Boolean> checkBoxState, Long networkSUID, JTable table){
 		
+    	this.table = table;
+    	this.tableColumnModel = table.getColumnModel();
+    	this.columnCount = table.getColumnCount();
+    	this.checkBoxState = checkBoxState;
+    	this.networkSUID = networkSUID;
+    	
         checkBoxArray = new JCheckBox[columnCount];
         
         for(int i=0;i<columnCount;i++){
         	checkBoxArray[i] = new JCheckBox();
         	checkBoxArray[i].setText(table.getColumnName(i));
-        	checkBoxArray[i].setSelected(true);
+        	checkBoxArray[i].setSelected(checkBoxState.get(i));
+        	
         	final int j=i;
+        	
         	/* 
         	 * A listener is add to each checkbox so that when the corresponding
         	 * checkbox is clicked, the hideColumn and showColumn methods can be
@@ -62,6 +85,14 @@ public class PanelComponents {
         	});
         }
     
+        //hide all the columns that the user intends to hide in the JTable
+        for(int i=0;i<columnCount;i++){
+        	if(!checkBoxState.get(i)) {
+        		TableColumn column = tableColumnModel.getColumn(tableColumnModel.getColumnIndex(checkBoxArray[i].getText()));
+        		tableColumnModel.removeColumn(column);
+        	}
+        }
+        
         return checkBoxArray;
     }
     
@@ -72,13 +103,20 @@ public class PanelComponents {
      * @param columnName Name of the column that has to be hidden
      */
     public void hideColumn(String columnName) {
-        int index = tableColumnModel.getColumnIndex(columnName);
-        TableColumn column = tableColumnModel.getColumn(index);
+        int columnIndex = tableColumnModel.getColumnIndex(columnName);
+        TableColumn column = tableColumnModel.getColumn(columnIndex);
+        //appending column name with network SUID to uniquely identify the column
+        //of a given network
+        columnName+=networkSUID;
         //enter the columnName-column combination in the HashMap hiddenColumnsColumn
         hiddenColumnsColumn.put(columnName, column);
         //enter the columnName-index combination in the HashMap hiddenColumnsIndex
-        hiddenColumnsIndex.put(columnName, new Integer(index));
+        hiddenColumnsIndex.put(columnName, new Integer(columnIndex));
         tableColumnModel.removeColumn(column);
+        
+        checkBoxState.set(columnIndex, false);
+        myCyTable.getRow(networkSUID).set("States", checkBoxState);
+        
     }
 
     /**
@@ -88,8 +126,11 @@ public class PanelComponents {
      * @param columnName Name of the column that has to be made visible
      */
 	public void showColumn(String columnName) {
+		//appending column name with network SUID to uniquely identify the column
+        //of a given network
+		columnName+=networkSUID;
 		//o acquires the column corresponding to the column name
-        Object o = hiddenColumnsColumn.remove(columnName);
+		Object o = hiddenColumnsColumn.remove(columnName);
         if (o == null) {
             return;
         }
@@ -105,6 +146,9 @@ public class PanelComponents {
         if(columnIndex < lastColumn){
         	tableColumnModel.moveColumn(lastColumn, columnIndex);
         }
+        
+        checkBoxState.set(columnIndex, true);
+        myCyTable.getRow(networkSUID).set("States", checkBoxState);
     }
 	
 	/**

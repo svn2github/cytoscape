@@ -18,9 +18,8 @@ public class MyTableModel extends AbstractTableModel {
 	
 	public MyTableModel(CyTable cytable){
 		this.cytable = cytable;
-		this.columnLength =cytable.getColumns().size();
-		this.columnNames = new String[this.columnLength];
-		setColumnNames();
+		this.columnLength = setColumnCount();
+		this.columnNames = setColumnNames();
 	}
 	
 	@Override
@@ -54,16 +53,37 @@ public class MyTableModel extends AbstractTableModel {
 	}
 	
 	/**
-	 * Sets the names of columns from the <code>CyTable</code>
+	 * Sets the count of columns from the <code>CyTable</code>, excluding the ones that 
+	 * contain data in the form of a <code>List</code>.
 	 *
 	 */
-	public void setColumnNames() {
+	public int setColumnCount() {
 		Collection<CyColumn> cycolumns = (Collection<CyColumn>) cytable.getColumns(); 
 		int count=0;
 		for(CyColumn cycolumn : cycolumns){
-			 columnNames[count] = cycolumn.getName();
-			 count++;
+			 if(!cycolumn.getType().isInterface()) {
+				 count++;
+			 }
 		}	
+		return count;
+	}
+	
+	/**
+	 * Sets the names of columns from the <code>CyTable</code>. Only those columns that don't
+	 * contain <code>List</code> data are added to the array.
+	 *
+	 */
+	public String[] setColumnNames() {
+		String[] columnNameArray = new String [this.columnLength];
+		Collection<CyColumn> cycolumns = (Collection<CyColumn>) cytable.getColumns(); 
+		int count=0;
+		for(CyColumn cycolumn : cycolumns){
+			if(!cycolumn.getType().isInterface()){
+				columnNameArray[count] = cycolumn.getName();
+				count++;
+			}
+		}
+		return columnNameArray;	
 	}
 	
 	/**
