@@ -37,6 +37,9 @@ public class PanelComponents {
     }
 
     public void initCyTable(CyTableFactory tableFactory) {
+    	//myCyTable stores a network's SUID and a Boolean List that suggests whether a particular column of
+    	//the JTable is visible or hidden based on its true/false value. Each element in the list corresponds 
+    	//to a particular column in a network
 		if(myCyTable==null) {
 			myCyTable = tableFactory.createTable("MyCyTable", "SUID", Long.class, true, true);
 			myCyTable.createListColumn("States", Boolean.class, true);
