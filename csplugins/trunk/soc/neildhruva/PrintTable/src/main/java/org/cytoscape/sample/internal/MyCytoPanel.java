@@ -19,7 +19,6 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
 	private static final long serialVersionUID = 8292806967891823933L;
 
     private JScrollPane jScrollPane1;
-    private JTable table;
     private JCheckBox[] checkBoxArray;
     private GroupLayout layout;
     private int tableColumnCount;
@@ -27,9 +26,7 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
     private CytoChart cytoChart;
     
     public MyCytoPanel() {
-	
 		this.setVisible(true);
-		
 	}
 
 	/**
@@ -41,15 +38,12 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
 	 */
 	public void initComponents(JTable table, JCheckBox[] checkBoxArray, int tableColumnCount){
 		
-		//if(this.table!=null)
-		//	this.removeAll();
 		if(this.getComponents().length>0)
 			this.removeAll();
 		
 		cytoChart = new CytoChart();
 		myChart = cytoChart.createChart();
 		
-        this.table = table;
         this.checkBoxArray = checkBoxArray;
         this.tableColumnCount = tableColumnCount;
         
@@ -90,7 +84,7 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
         checkBoxGroupVert.addContainerGap();
         for(int i=0;i<tableColumnCount;i++){
         	checkBoxGroupVert.addComponent(checkBoxArray[i]);
-        	if(!(i==(tableColumnCount-1))) {
+        	if(i!=(tableColumnCount-1)) {
         		checkBoxGroupVert.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED);
         	}
         }
@@ -105,7 +99,6 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
                     .addContainerGap())
             );
      }
-
 	
 	public Component getComponent() {
 		return this;

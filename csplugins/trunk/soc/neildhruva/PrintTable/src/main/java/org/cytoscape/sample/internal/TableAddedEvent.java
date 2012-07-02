@@ -8,6 +8,8 @@ import javax.swing.JTable;
 
 import org.cytoscape.application.events.SetCurrentNetworkEvent;
 import org.cytoscape.application.events.SetCurrentNetworkListener;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableFactory;
@@ -22,12 +24,15 @@ public class TableAddedEvent implements SetCurrentNetworkListener{
 	private int tableColumnCount;
 	public static boolean networkDestroyed = false;
 	private List<Boolean> checkBoxState;
+	private List<String> columnNamesList;
+	private CyNetworkTableManager networkTableMgr;
+	private CyTableFactory tableFactory;
 	
-	TableAddedEvent(MyCytoPanel myCytoPanel, CyTableFactory tableFactory){
-		
+	TableAddedEvent(MyCytoPanel myCytoPanel, CyTableFactory tableFactory, CyNetworkTableManager networkTableMgr){
 		this.myCytoPanel = myCytoPanel;
-		this.panelComponents = new PanelComponents();
-		panelComponents.initCyTable(tableFactory);
+		this.networkTableMgr = networkTableMgr;
+		this.tableFactory = tableFactory;
+		this.panelComponents = new PanelComponents(myCytoPanel);
 	}
 
 	
@@ -51,17 +56,32 @@ public class TableAddedEvent implements SetCurrentNetworkListener{
 		table = new JTable(new MyTableModel(cytable));
 		tableColumnCount = table.getColumnCount();
 		
-		if(PanelComponents.myCyTable.rowExists(networkSUID)) {	
-			checkBoxState = PanelComponents.myCyTable.getRow(networkSUID).getList("States", Boolean.class);
-			checkBoxArray = panelComponents.initCheckBoxArray(checkBoxState, networkSUID, table);
+		CyTable myCyTable = networkTableMgr.getTable(e.getNetwork(), CyNetwork.class, "PrintTable");
+		
+		if(myCyTable!=null) {	
+			checkBoxArray = panelComponents.initCheckBoxArray(myCyTable, networkSUID, cytable);
 		} else {
+			//checkBoxState stores information on whether a given column of a network table is
+			//hidden or visible depending on the associated boolean value (true for visible)
 			checkBoxState = new ArrayList<Boolean>();
+			columnNamesList = new ArrayList<String>();
 			for(int i=0; i<tableColumnCount; i++) {
+				columnNamesList.add(table.getColumnName(i));
 				checkBoxState.add(true);
 			}
-			CyRow cyrow = PanelComponents.myCyTable.getRow(networkSUID);
+			
+			//if myCyTable is null, create a new CyTable and associate it with the current network.
+			myCyTable = tableFactory.createTable("PrintTabl", "SUID", Long.class, true, true);
+			myCyTable.createListColumn("Names", String.class, true);
+			myCyTable.createListColumn("States", Boolean.class, true);
+			
+			CyRow cyrow = myCyTable.getRow(networkSUID);
+			cyrow.set("Names", columnNamesList);
 			cyrow.set("States", checkBoxState);
-			checkBoxArray = panelComponents.initCheckBoxArray(checkBoxState, networkSUID, table);
+			
+			networkTableMgr.setTable(e.getNetwork(), CyNetwork.class, "PrintTable", myCyTable);
+			
+			checkBoxArray = panelComponents.initCheckBoxArray(myCyTable, networkSUID, cytable);
 		}	
 		
 		table = panelComponents.getTable();

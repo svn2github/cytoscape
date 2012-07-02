@@ -4,7 +4,7 @@
 	<properties>
 		<bundle.symbolicName>PrintTable</bundle.symbolicName>
 		<bundle.namespace>org.cytoscape.sample.internal</bundle.namespace>
-		<cytoscape.api.version>3.0.0-alpha8-SNAPSHOT</cytoscape.api.version>
+		<cytoscape.api.version>3.0.0-beta2-SNAPSHOT</cytoscape.api.version>
 		
 		<maven-bundle-plugin.version>2.3.4</maven-bundle-plugin.version>
 		<osgi.api.version>4.2.0</osgi.api.version>
@@ -15,7 +15,7 @@
 	<packaging>bundle</packaging>
 	<name>${bundle.symbolicName}</name>
 
-	<version>3.0.0-alpha8-SNAPSHOT</version>
+	<version>3.0.0-beta2-SNAPSHOT</version>
 
 	<build>
 		<plugins>
@@ -87,12 +87,12 @@
 		<dependency>
      		<groupId>jfree</groupId> 
      		<artifactId>jfreechart</artifactId>
-     		<version>1.0.14</version> 
+     		<version>1.0.13</version> 
     	</dependency>
     	<dependency>
      		<groupId>jfree</groupId> 
      		<artifactId>jcommon</artifactId>
-     		<version>1.0.17</version> 
+     		<version>1.0.16</version> 
     	</dependency>
   	</dependencies>
   

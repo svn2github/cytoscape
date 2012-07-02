@@ -100,5 +100,4 @@ public class MyTableModel extends AbstractTableModel {
 		}
 		return v;	
 	}
-	
 }
