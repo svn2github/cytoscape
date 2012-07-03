@@ -3,7 +3,7 @@
 </p>
 <div class="relase_details">
     <ul class="bug_fixes">
-        <li><span class="bug_id">2697</span>: Compound node image not updated correctly when adding a child node.</li>
+        <li><span class="bug_id">2703</span>: Node image does not show until mouse hover.</li>
         <li><span class="bug_id">2712</span>: Merged edges' data not updated after a new edge data field is added.</li>
     </ul>
 </div>
