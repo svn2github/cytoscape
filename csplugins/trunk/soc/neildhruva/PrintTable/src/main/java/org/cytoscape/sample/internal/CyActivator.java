@@ -22,8 +22,8 @@ public class CyActivator extends AbstractCyActivator {
 		CyNetworkTableManager cyNetworkTableManagerServiceRef = getService(bc, CyNetworkTableManager.class);
 		
 		MyCytoPanel myCytoPanel = new MyCytoPanel();
-		TableAddedEvent tableAddedEvent = new TableAddedEvent(myCytoPanel, cyDataTableFactoryServiceRef, cyNetworkTableManagerServiceRef);
-		TableDestroyedEvent tableDestroyedEvent = new TableDestroyedEvent(myCytoPanel);
+		EventTableAdded tableAddedEvent = new EventTableAdded(myCytoPanel, cyDataTableFactoryServiceRef, cyNetworkTableManagerServiceRef);
+		EventTableDestroyed tableDestroyedEvent = new EventTableDestroyed(myCytoPanel);
 		
 		registerService(bc,myCytoPanel,CytoPanelComponent.class, new Properties());
 		registerService(bc,tableAddedEvent,SetCurrentNetworkListener.class, new Properties());

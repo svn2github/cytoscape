@@ -14,25 +14,25 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableFactory;
 
-public class TableAddedEvent implements SetCurrentNetworkListener{
+public class EventTableAdded implements SetCurrentNetworkListener{
 
 	private MyCytoPanel myCytoPanel; 
 	private JTable table;
 	private CyTable cytable;
 	private JCheckBox[] checkBoxArray;
 	private PanelComponents panelComponents;
-	private int tableColumnCount;
+	private int columnCount;
 	public static boolean networkDestroyed = false;
 	private List<Boolean> checkBoxState;
 	private List<String> columnNamesList;
 	private CyNetworkTableManager networkTableMgr;
 	private CyTableFactory tableFactory;
 	
-	TableAddedEvent(MyCytoPanel myCytoPanel, CyTableFactory tableFactory, CyNetworkTableManager networkTableMgr){
+	EventTableAdded(MyCytoPanel myCytoPanel, CyTableFactory tableFactory, CyNetworkTableManager networkTableMgr){
 		this.myCytoPanel = myCytoPanel;
 		this.networkTableMgr = networkTableMgr;
 		this.tableFactory = tableFactory;
-		this.panelComponents = new PanelComponents(myCytoPanel);
+		this.panelComponents = new PanelComponents();
 	}
 
 	
@@ -54,7 +54,7 @@ public class TableAddedEvent implements SetCurrentNetworkListener{
 		
 		Long networkSUID = e.getNetwork().getSUID();
 		table = new JTable(new MyTableModel(cytable));
-		tableColumnCount = table.getColumnCount();
+		columnCount = table.getColumnCount();
 		
 		CyTable myCyTable = networkTableMgr.getTable(e.getNetwork(), CyNetwork.class, "PrintTable");
 		
@@ -65,7 +65,7 @@ public class TableAddedEvent implements SetCurrentNetworkListener{
 			//hidden or visible depending on the associated boolean value (true for visible)
 			checkBoxState = new ArrayList<Boolean>();
 			columnNamesList = new ArrayList<String>();
-			for(int i=0; i<tableColumnCount; i++) {
+			for(int i=0; i<columnCount; i++) {
 				columnNamesList.add(table.getColumnName(i));
 				checkBoxState.add(true);
 			}
@@ -85,6 +85,6 @@ public class TableAddedEvent implements SetCurrentNetworkListener{
 		}	
 		
 		table = panelComponents.getTable();
-		myCytoPanel.initComponents(table, checkBoxArray, tableColumnCount);		
+		myCytoPanel.initComponents(table, checkBoxArray, columnCount);		
 	}
 }

@@ -1,10 +1,13 @@
 package org.cytoscape.sample.internal;
 
 import java.awt.Component;
+import java.awt.GridLayout;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -26,6 +29,9 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
     private CytoChart cytoChart;
     
     public MyCytoPanel() {
+    	JLabel label = new JLabel("Please select/import a network");
+		this.setLayout(new GridLayout());
+		this.add(label);
 		this.setVisible(true);
 	}
 
@@ -105,14 +111,14 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
 	}
 	
 	/**
-	 * @return CytoPanelName Location of the CytoPanel
+	 * @return Location of the CytoPanel
 	 */
 	public CytoPanelName getCytoPanelName() {
 		return CytoPanelName.SOUTH;
 	}
 
 	/**
-	 * @return String Title of the CytoPanel
+	 * @return Title of the CytoPanel
 	 */
 	public String getTitle() {
 		return "Table View";

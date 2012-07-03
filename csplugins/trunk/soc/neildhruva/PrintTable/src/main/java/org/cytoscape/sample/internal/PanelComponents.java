@@ -22,23 +22,10 @@ public class PanelComponents {
 	private List<Boolean> checkBoxState;
 	private List<String> columnNamesList;
 	private Long networkSUID;
-	private CyTable cytable;
-	private MyCytoPanel myCytoPanel;
+	
+    public PanelComponents() {
     
-    public PanelComponents(MyCytoPanel myCytoPanel) {
-    	this.myCytoPanel = myCytoPanel;
     }
-    
-    /*public void initCyTable(CyTableFactory tableFactory) {
-    	//myCyTable stores a network's SUID and a Boolean List that suggests whether a particular column of
-    	//the JTable is visible or hidden based on its true/false value. Each element in the list corresponds 
-    	//to a particular column in a network
-		if(myCyTable==null) {
-			myCyTable = tableFactory.createTable("MyCyTable", "SUID", Long.class, true, true);
-			myCyTable.createListColumn("Names", String.class, true);
-			myCyTable.createListColumn("States", Boolean.class, true);
-		}
-    }*/
     
     /**
      * Initializes an array of checkboxes with column names of the table as titles and
@@ -50,7 +37,6 @@ public class PanelComponents {
     public JCheckBox[] initCheckBoxArray(CyTable myCyTable, Long networkSUID, CyTable cytable){
 		
     	this.myCyTable = myCyTable;
-    	this.cytable = cytable;
     	this.table = new JTable(new MyTableModel(cytable));
     	this.tableColumnModel = table.getColumnModel();
     	this.columnCount = table.getColumnCount();
@@ -102,7 +88,7 @@ public class PanelComponents {
     /**
      * Hides the column from the table view by removing it from the table column model.
      * 
-     * @param columnName Name of the column that has to be hidden
+     * @param columnName Name of the column that has to be hidden.
      */
     public void hideColumn(String columnName) {
         
@@ -118,32 +104,32 @@ public class PanelComponents {
     }
 
     /**
-     * Makes a column visible in the table view by refreshing the CytoPanel.
+     * Makes a column visible in the JTable.
      * 
-     * @param columnName Name of the column that has to be made visible
+     * @param columnName Name of the column that has to be made visible.
      */
 	public void showColumn(String columnName) {
 		
 		int columnIndex = columnNamesList.indexOf(columnName);
-        checkBoxState.set(columnIndex, true);
-        myCyTable.getRow(networkSUID).set("States", checkBoxState);
-        table = new JTable(new MyTableModel(cytable));
-        tableColumnModel = table.getColumnModel();
-        for(int i=0;i<columnCount;i++){
+		((MyTableModel) table.getModel()).fireTableStructureChanged();
+		
+		checkBoxState.set(columnIndex, true);
+		
+		/* after calling fireTableStructureChanged(), the entire JTable is refreshed. This is done because
+		 * table.getAutoCreateColumnsFromModel() is true. So now, all columns corresponding to unchecked 
+		 * checkboxes need to be hidden.
+		 */
+		for(int i=0;i<columnCount;i++) {
         	if(!checkBoxState.get(i)) {
-        		TableColumn column = tableColumnModel.getColumn(tableColumnModel.getColumnIndex(checkBoxArray[i].getText()));
-        		tableColumnModel.removeColumn(column);
+        		hideColumn(columnNamesList.get(i));
         	}
         }
-        
-        //refresh the CytoPanel
-        myCytoPanel.initComponents(table, checkBoxArray, columnCount);
     }
 	
 	/**
 	 * 
-	 * @return JCheckBox[] The modified checkbox array after the user has selected/deselected
-	 * 					   some checkboxes.
+	 * @return The modified checkbox array after the user has selected/deselected
+	 * 		   some checkboxes.
 	 */
 	public JCheckBox[] getCheckBoxArray(){
 		return this.checkBoxArray;
@@ -151,7 +137,7 @@ public class PanelComponents {
 	
 	/**
 	 * 
-	 * @return int The initial column count of the table.
+	 * @return The initial column count of the table.
 	 */
 	public int getTableColumnCount(){
 		return this.columnCount;
@@ -159,7 +145,7 @@ public class PanelComponents {
 	
 	/**
 	 * 
-	 * @return JTable The modified JTable after some rows have been made invisible.
+	 * @return The modified JTable after some rows have been made invisible.
 	 */
 	public JTable getTable(){
 		return this.table;
