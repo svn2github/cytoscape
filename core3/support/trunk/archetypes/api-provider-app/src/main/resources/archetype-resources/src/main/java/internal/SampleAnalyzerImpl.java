@@ -41,7 +41,7 @@ public class SampleAnalyzerImpl implements SampleAnalyzer {
 	public Collection<CyNode> analyzeNodes(CyNetwork n) {
 		// Check preconditions for your method. 
 		if ( n == null )
-			throw new NullPointerException("network is null!");
+			throw new NullPointerException("network is null.");
 
 		// Our "analysis" involves returning the first half of
 		// the nodes found in the network - hopefully you will

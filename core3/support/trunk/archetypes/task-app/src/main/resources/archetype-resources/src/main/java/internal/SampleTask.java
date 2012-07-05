@@ -31,7 +31,7 @@ public class SampleTask extends AbstractNetworkTask {
 	 * this field as "Tunable" you are indicating that the field
 	 * should be set by a Tunable handler and thus the user. 
 	 * This will happen before the run() method is called.  You 
-	 * don't need to write any code to set this value!  
+	 * don't need to write any code to set this value.  
 	 * <br/>
 	 * Tunable fields are appropriate for information that only the
 	 * user can provide, such as the name of a file to load.  On the

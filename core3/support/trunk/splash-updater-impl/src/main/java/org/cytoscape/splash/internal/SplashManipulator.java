@@ -39,7 +39,7 @@ public class SplashManipulator implements
 
     public void frameworkEvent(FrameworkEvent event) {
 		if ( event.getType() == FrameworkEvent.STARTED ) 
-			renderSplashFrame("OSGi finished!");
+			renderSplashFrame("OSGi finished.");
 	}
 
 //	public void onOsgiApplicationEvent(OsgiBundleApplicationContextEvent event) {

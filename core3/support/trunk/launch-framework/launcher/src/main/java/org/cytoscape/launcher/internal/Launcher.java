@@ -34,7 +34,7 @@ public class Launcher {
 		launch("org.apache.felix.framework.FrameworkFactory");
 	}
 
-	// Don't make this public!  This should be used interally only!
+	// Don't make this public.  This should be used interally only!
 	static String[] getArgs() {
 		if ( args == null )
 			return new String[0];

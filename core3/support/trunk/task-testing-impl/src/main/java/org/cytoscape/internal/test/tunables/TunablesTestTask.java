@@ -135,7 +135,7 @@ public class TunablesTestTask extends AbstractTask implements TunableValidator {
 			return ValidationState.OK;
 
 		try {
-			errMsg.append("Bad input (" + vt + "): \"valid\" expected!");
+			errMsg.append("Bad input (" + vt + "): \"valid\" expected.");
 		} finally {
 			return ValidationState.INVALID;
 		}
