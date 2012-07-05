@@ -88,7 +88,6 @@ public class CytoscapeRPCServer {
        serverConfig.setContentLengthOptional(false);
        
        webServer.start();
-       System.out.println("Starting now!");
    }
 
    /**

@@ -51,7 +51,6 @@ public class CytoscapeRPCCallHandler {
     * Constructs a CytoscapeRPCCallHandler.
     */
    public CytoscapeRPCCallHandler(NetworkManager myManager) {
-       System.out.println("Instanciating CytoscapeRPCCallHandler");
        this.myManager = myManager;
    }
 
@@ -72,12 +71,17 @@ public class CytoscapeRPCCallHandler {
    
    public String pushNetwork(String name, Vector<Integer> nodes, Vector<Double> edgeFrom, Vector<Double> edgeTo) throws XmlRpcException {
 	   if (edgeFrom.size()!=edgeTo.size()) {
-		   throw new XmlRpcException("Edge Communication error!");
+		   throw new XmlRpcException("ERROR: Edge mismatch!");
 	   }
 	   System.out.println("Got "+nodes.size()+" nodes.");
 	   
 	   myManager.pushNetwork(name, nodes, edgeFrom, edgeTo);
 	   
+	   return "Pushed to Cytoscape.";
+   }
+   
+   public String pushTables(String name, Vector<String> nheads, Vector<String> ndata, Vector<String> eheads, Vector<String> edata) {
+	   myManager.pushTables(name, nheads, ndata, eheads, edata);
 	   return "Pushed to Cytoscape.";
    }
    

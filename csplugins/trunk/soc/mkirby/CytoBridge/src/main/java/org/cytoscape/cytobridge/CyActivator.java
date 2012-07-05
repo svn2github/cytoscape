@@ -7,6 +7,8 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.model.events.AddedNodeViewsListener;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.osgi.framework.BundleContext;
 
 
@@ -31,6 +33,7 @@ public class CyActivator extends AbstractCyActivator{
 		CyNetworkManager netMan = getService(bc,CyNetworkManager.class);
 		CyNetworkViewFactory netViewFact = getService(bc,CyNetworkViewFactory.class);
 		CyNetworkViewManager netViewMan = getService(bc,CyNetworkViewManager.class);
+		VisualMappingManager visMan = getService(bc,VisualMappingManager.class);
 		
 		CySwingApplication cytoscapeDesktopService = getService(bc,CySwingApplication.class);
 		
@@ -40,5 +43,8 @@ public class CyActivator extends AbstractCyActivator{
 		//Create and register CytoBridge as a Service
 		CytoBridgeAction cytoBridgeAction = new CytoBridgeAction(cytoscapeDesktopService, myManager);
 		registerService(bc,cytoBridgeAction,CyAction.class, new Properties());
+		
+		NodeViewListener listen = new NodeViewListener(visMan);
+		registerService(bc,listen,AddedNodeViewsListener.class, new Properties());
 	}
 }
