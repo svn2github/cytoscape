@@ -53,10 +53,15 @@ public class BridgeDBUtils {
 	static final String BASE_URL = "http://webservice.bridgedb.org/";
 
 	static Map<String,String> resources = new HashMap<String,String>();
+	static Map<String,String[]> typeMap = new HashMap<String,String[]>();
 	static String selectedResource = null;
 	static boolean haveCyThesaurus = false;
+	static String[] speciesCache = null;
 
 	static public String[] getSpeciesList(CyLogger logger) {
+		if (speciesCache != null) 
+			return speciesCache;
+
 		List<String> speciesList = new ArrayList<String>();
 		try {
 			URL speciesURL = new URL(SPECIES_URL);
@@ -76,6 +81,8 @@ public class BridgeDBUtils {
 
 		String[] speciesArray = speciesList.toArray(new String[0]);
 		Arrays.sort(speciesArray);
+		speciesCache = speciesArray;
+
 		// System.out.println("Species: "+Arrays.toString(speciesArray));
 		return speciesArray;
 	}
@@ -84,6 +91,10 @@ public class BridgeDBUtils {
 		if (haveCyThesaurus) {
 			if (!resources.containsKey(species))
 				return null;
+
+			if (typeMap.containsKey(species))
+				return typeMap.get(species);
+
 			selectResource(resources.get(species));
 
 			try {
@@ -93,7 +104,6 @@ public class BridgeDBUtils {
 					Set<String> idTypes = (Set<String>) result.getResult();
 					String[] types = idTypes.toArray(new String[0]);
 					Arrays.sort(types);
-					// System.out.println("Types for "+species+": "+Arrays.toString(types));
 					return types;
 				}
 			} catch (Exception e) {
@@ -132,9 +142,10 @@ public class BridgeDBUtils {
 		Map<String,Object>args = new HashMap<String, Object>();
 		String connstring = "idmapper-bridgerest:"+BASE_URL+species;
 		args.put("connstring", connstring);
-		args.put("classpath", "org.bridgedb.webservice,bridgerest.BridgeRest");
+		args.put("classpath", "org.bridgedb.webservice.bridgerest.BridgeRest");
 		try {
-			CyCommandManager.execute("idmapping", "register resource", args);
+			// System.out.println("Registering resource "+connstring);
+			CyCommandResult result = CyCommandManager.execute("idmapping", "register resource", args);
 		} catch (Exception e) {}
 
 		resources.put(species, connstring);
@@ -151,7 +162,8 @@ public class BridgeDBUtils {
 		Map<String,Object>args = new HashMap<String, Object>();
 		args.put("connstring", connstring);
 		try {
-			CyCommandManager.execute("idmapping", "deselect resource", args);
+			// System.out.println("Deselecting resource "+connstring);
+			CyCommandResult result = CyCommandManager.execute("idmapping", "deselect resource", args);
 		} catch (Exception e) {}
 	}
 
@@ -162,7 +174,8 @@ public class BridgeDBUtils {
 		Map<String,Object>args = new HashMap<String, Object>();
 		args.put("connstring", connstring);
 		try {
-			CyCommandManager.execute("idmapping", "select resource", args);
+			// System.out.println("Selecting resource "+connstring);
+			CyCommandResult result = CyCommandManager.execute("idmapping", "select resource", args);
 		} catch (Exception e) {}
 
 		selectedResource = connstring;

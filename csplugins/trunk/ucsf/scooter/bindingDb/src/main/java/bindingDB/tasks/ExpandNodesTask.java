@@ -30,31 +30,43 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package bindingDB.actions;
+package bindingDB.tasks;
 
+import java.util.List;
 import java.util.Set;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
 
-// Cytoscape imports
 import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.command.CyCommandResult;
 import cytoscape.logger.CyLogger;
-import cytoscape.task.util.TaskManager;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
 
-import bindingDB.tasks.ExpandNodesTask;
+import bindingDB.commands.ExpandNodesCommand;
 
-public class ExpandNodesAction extends AbstractAction {
-	private CyLogger logger = null;
+public class ExpandNodesTask extends AbstractTask {
 
-	public ExpandNodesAction (CyLogger logger) {
-		super("Expand selected nodes");
+	public ExpandNodesTask(CyLogger logger) {
 		this.logger = logger;
 	}
 
-	public void actionPerformed (ActionEvent e)
-	{
-			ExpandNodesTask expand = new ExpandNodesTask(logger);
-			TaskManager.executeTask(expand, expand.getDefaultTaskConfig());
+	public String getTitle() {
+		return "Expanding Nodes";
+	}
+
+	public void run() {
+		setStatus("Expanding hits");
+		double complete = 0.0;
+		Set<CyNode> selectedNodes = (Set<CyNode>)Cytoscape.getCurrentNetwork().getSelectedNodes();
+		if (selectedNodes == null || selectedNodes.size() == 0)
+			selectedNodes = (Set<CyNode>)Cytoscape.getCurrentNetwork().nodesList();
+		double stepSize = (100.0)/selectedNodes.size();
+		for (CyNode node: selectedNodes) {
+			CyCommandResult result = ExpandNodesCommand.expandNodes(logger, node);
+			// logger.debug("Annotating "+node.getIdentifier());
+			complete += stepSize;
+			setPercentCompleted((int)complete);
+			if (canceled) break;
+		}
 	}
 }

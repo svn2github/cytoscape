@@ -51,6 +51,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.SwingWorker;
 
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
@@ -82,16 +83,20 @@ public class AnnotateNetworkDialog extends JDialog implements ActionListener {
 	JComboBox speciesList;
 	JSlider cutoffSlider;
 	JLabel speciesLabel;
-	JFrame busyDialog = null;
+
+	// Default species list
+	static final String[] defaultSpecies = {"Human"};
+	// Default type list
+	static final String[] defaultTypes = {"Uniprot/TrEMBL"};
+
+	static final String[] loadingString = {"Loading..."};
 
 	public AnnotateNetworkDialog(CyLogger logger) { 
 		super(Cytoscape.getDesktop(), "Annotate network"); 
 		this.logger = logger;
 
-		showBusyDialog();
 		haveCyThesaurus = BridgeDBUtils.haveCyThesaurus();
 		initComponents();
-		hideBusyDialog();
 		this.pack();
 		this.setSize(WIDTH, HEIGHT);
 	}
@@ -129,17 +134,18 @@ public class AnnotateNetworkDialog extends JDialog implements ActionListener {
 			attrPanel.add(typeLabel);
 			typeLabel.setBounds(LEFT, y, typeLabel.getPreferredSize().width, 25);
 
-			typeList = new JComboBox(getTypeList("Human"));
-			typeList.setSelectedItem("Uniprot/TrEMBL");
 			if (haveCyThesaurus) {
+				typeList = new JComboBox(getTypeList("Human"));
 				typeList.setToolTipText("If the attribute type is not Uniprot/TrEMBL, it will be converted");
 				typeList.addActionListener(this);
 			} else {
+				typeList = new JComboBox(defaultTypes);
+				typeList.setSelectedItem("Uniprot/TrEMBL");
 				typeList.setToolTipText("CyThesaurus is unavailable -- only Uniprot/TrEMBL is supported");
-				typeList.setEnabled(false);
 			}
+			typeList.setEnabled(false);
 			attrPanel.add(typeList);
-			typeList.setBounds(COLUMN1, y, typeList.getPreferredSize().width, 25);
+			typeList.setBounds(COLUMN1, y, 150, 25);
 		}
 
 		// Show the species.  This is only enabled if the Idenfier type is not Uniprot/trembl
@@ -210,23 +216,18 @@ public class AnnotateNetworkDialog extends JDialog implements ActionListener {
 			if (typeList.getSelectedItem().equals("Uniprot/TrEMBL")) {
 				speciesList.setEnabled(false);
 				speciesLabel.setEnabled(false);
+			} else if (typeList.getSelectedItem().equals("Guess")) {
+				// TODO: At some point, we need to add the guess type functionality....
 			} else {
 				speciesList.setEnabled(true);
 				speciesLabel.setEnabled(true);
 			}
 			return;
+
+		// Species changed?
 		} else if (e.getSource() == speciesList) {
-			showBusyDialog();
 			// We changed the species -- update typelist
-			String[] types = getTypeList((String)speciesList.getSelectedItem());
-			DefaultComboBoxModel model = (DefaultComboBoxModel)typeList.getModel();
-			typeList.removeActionListener(this);
-			model.removeAllElements();
-			for (String t: types) {
-				model.addElement(t);
-			}
-			typeList.addActionListener(this);
-			hideBusyDialog();
+			updateTypesList(getTypeList((String)speciesList.getSelectedItem()));
 			return;
 		}
 
@@ -276,16 +277,18 @@ public class AnnotateNetworkDialog extends JDialog implements ActionListener {
 		return attrList.toArray(new String[1]);
 	}
 
-	private String[] getTypeList(String species) {
-		String[] defaultType = {"Uniprot/TrEMBL"};
+	private String[] getTypeList(final String species) {
 		if (!haveCyThesaurus) {
-			return defaultType;
+			return defaultTypes;
 		}
 
-		String[] types = BridgeDBUtils.getSupportedTypes(logger, species);
-		if (types == null)
-			return defaultType;
-		return types;
+		TypesLoader loader = new TypesLoader(species);
+		loader.execute();
+
+		if (typeList != null)
+			typeList.setEnabled(false);
+
+		return loadingString;
 	}
 
 	private String[] getSpeciesList() {
@@ -297,22 +300,46 @@ public class AnnotateNetworkDialog extends JDialog implements ActionListener {
 		return species;
 	}
 
-	private void showBusyDialog() {
-		if (busyDialog == null)
-			initBusyDialog();
-		busyDialog.setVisible(true);
-	}
-	private void hideBusyDialog() {
-		if (busyDialog != null)
-			busyDialog.setVisible(false);
-	}
-	private void initBusyDialog() {
-		busyDialog = new JFrame("Working...");
-		JPanel contentPane = new JPanel(new BorderLayout());
-		JLabel label = new JLabel("Contacting BridgeDB...");
-		contentPane.add(label, BorderLayout.CENTER);
-		busyDialog.setContentPane(contentPane);
-		busyDialog.pack();
+	private void updateTypesList(String[] types) {
+		typeList.removeActionListener(this);
+		DefaultComboBoxModel model = (DefaultComboBoxModel)typeList.getModel();
+		model.removeAllElements();
+			
+		for (String t: types) {
+			model.addElement(t);
+			if (t.equals("Uniprot/TrEMBL")) {
+				typeList.setSelectedItem(t);
+			}
+		}
+		typeList.addActionListener(this);
 	}
 
+	class TypesLoader extends SwingWorker<String[], Void> {
+		String species;
+
+		public TypesLoader(String species) {
+			this.species = species;
+		}
+
+		@Override
+		public String[] doInBackground() {
+			return BridgeDBUtils.getSupportedTypes(logger, species);
+		}
+
+		@Override
+		public void done() {
+			String[] types = defaultTypes;
+			boolean gotResult = true;
+			try {
+				types = get();
+			} catch (InterruptedException ignore) {
+			} catch (java.util.concurrent.ExecutionException e) {
+				logger.error("Unable to load types for species "+species+": "+e.getMessage());
+				gotResult = false;
+			}
+
+			updateTypesList(types);
+			typeList.setEnabled(true);
+		}
+	}
 }
