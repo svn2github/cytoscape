@@ -104,6 +104,7 @@ public class MetanodeSettingsDialog extends JDialog
 	private List<Tunable>tunableEnablers = null;
 	private List<Tunable>nodeChartEnablers = null;
 	private boolean hideMetaNode = true;
+	private boolean createMembershipEdges = true;
 	private boolean dontExpandEmpty = true;
   private boolean enableHandling = false;
   private boolean useNestedNetworks = false;
@@ -262,6 +263,14 @@ public class MetanodeSettingsDialog extends JDialog
 				Tunable t = new Tunable("hideMetanodes",
 				                        "Hide metanodes when expanded",
 				                        Tunable.BOOLEAN, hideMetaNode, 0);
+				t.addTunableValueListener(this);
+				metanodeProperties.add(t);
+			}
+
+			{
+				Tunable t = new Tunable("createMembershipEdges",
+				                        "Create membership edges when the metanode isn't being hidden",
+				                        Tunable.BOOLEAN, createMembershipEdges, 0);
 				t.addTunableValueListener(this);
 				metanodeProperties.add(t);
 			}
@@ -726,6 +735,7 @@ public class MetanodeSettingsDialog extends JDialog
 
 	private void updateDefaultSettings() {
 		MetaNodeManager.setHideMetaNodeDefault(hideMetaNode);
+		MetaNodeManager.setCreateMembershipEdgesDefault(createMembershipEdges);
 		MetaNodeManager.setDefaultAttributeManager(myAttributeManager);
 		MetaNodeManager.setDontExpandEmptyDefault(dontExpandEmpty);
 		MetaNodeManager.setUseNestedNetworksDefault(useNestedNetworks);
@@ -741,6 +751,8 @@ public class MetanodeSettingsDialog extends JDialog
 		t.setValue(enableHandling);
 		t = metanodeProperties.get("hideMetanodes");
 		t.setValue(hideMetaNode);
+		t = metanodeProperties.get("createMembershipEdges");
+		t.setValue(createMembershipEdges);
 		t = metanodeProperties.get("dontExpandEmpty");
 		t.setValue(dontExpandEmpty);
 		t = metanodeProperties.get("useNestedNetworks");
@@ -760,6 +772,8 @@ public class MetanodeSettingsDialog extends JDialog
 	public void tunableChanged(Tunable t) {
 		if (t.getName().equals("hideMetanodes")) {
       hideMetaNode = ((Boolean) t.getValue()).booleanValue();
+		} else if (t.getName().equals("createMembershipEdges")) {
+			createMembershipEdges = ((Boolean) t.getValue()).booleanValue();
 		} else if (t.getName().equals("dontExpandEmpty")) {
       dontExpandEmpty = ((Boolean) t.getValue()).booleanValue();
 		} else if (t.getName().equals("useNestedNetworks")) {

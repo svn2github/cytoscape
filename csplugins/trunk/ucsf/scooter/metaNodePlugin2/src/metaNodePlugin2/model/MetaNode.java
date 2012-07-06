@@ -79,12 +79,14 @@ public class MetaNode {
 	public static final String CHILDREN_ATTR = "NumChildren";
 	public static final String DESCENDENTS_ATTR = "NumDescendents";
 	public static final String ISMETA_EDGE_ATTR = "__isMetaEdge";
+	public static final String SETTINGS_ATTR = "__metanodeSettings";
 
 	private CyLogger logger = null;
 	private CyGroup metaGroup = null;
 
 	private AttributeManager attributeManager = null;
 	private boolean hideMetanode = true;
+	private boolean createMembershipEdges = true;
 	private boolean dontExpandEmpty = true;
 	private double metanodeOpacity = 0.;
 	private boolean useNestedNetworks = false;
@@ -113,6 +115,14 @@ public class MetaNode {
 		// This method does most of the work.
 		updateMetaEdges(ignoreMetaEdges);
 
+		// Load any parameters we might have set
+		loadSettings();
+
+	}
+
+	protected boolean hasSavedSettings() {
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		return nodeAttributes.hasAttribute(getGroupNode().getIdentifier(), SETTINGS_ATTR);
 	}
 
 	public CyGroup getCyGroup() { return metaGroup; }
@@ -374,6 +384,7 @@ public class MetaNode {
 	 */
 	public void setUseNestedNetworks(boolean nestedNetwork) {
 		this.useNestedNetworks = nestedNetwork;
+		updateSettings();
 	}
 
 	/**
@@ -393,6 +404,7 @@ public class MetaNode {
 	 */
 	public void setDontExpandEmpty(boolean dontExpandEmpty) {
 		this.dontExpandEmpty = dontExpandEmpty;
+		updateSettings();
 	}
 
 	/**
@@ -411,6 +423,7 @@ public class MetaNode {
 	 */
 	public void setMetaNodeOpacity(double opacity) {
 		this.metanodeOpacity = opacity;
+		updateSettings();
 	}
 
 	/**
@@ -429,6 +442,7 @@ public class MetaNode {
 	 */
 	public void setNodeChartAttribute(String nodeChartAttribute) {
 		this.nodeChartAttribute = nodeChartAttribute;
+		updateSettings();
 	}
 
 	/**
@@ -447,6 +461,7 @@ public class MetaNode {
 	 */
 	public void setChartType(String chartType) {
 		this.chartType = chartType;
+		updateSettings();
 	}
 
 	/**
@@ -465,6 +480,7 @@ public class MetaNode {
 	 */
 	public void setChartColorType(String chartColorType) {
 		this.chartColorType = chartColorType;
+		updateSettings();
 	}
 
 	/**
@@ -477,23 +493,47 @@ public class MetaNode {
 	}
 
 	/**
-	 * Sets whether or not we hide the metnode when we expand the
+	 * Sets whether or not we hide the metanode when we expand the
 	 * network.
 	 *
 	 * @param hide if 'true' we hide the metanode upon expansion
 	 */
 	public void setHideMetaNode(boolean hide) {
 		this.hideMetanode = hide;
+		updateSettings();
 	}
 
 	/**
-	 * Returns 'true' if we hide the metnode when we expand the
+	 * Returns 'true' if we hide the metanode when we expand the
 	 * network.
 	 *
 	 * @return 'true' if we hide the metanode upon expansion
 	 */
 	public boolean getHideMetaNode() {
 		return this.hideMetanode;
+	}
+
+	/**
+	 * Sets whether or not we create membership edges if we're
+	 * not hiding the metanode.
+	 *
+	 * @param create if 'true' we create the edges
+	 */
+	public void setCreateMembershipEdges(boolean create) {
+		this.createMembershipEdges = create;
+		if (!create) {
+			membershipEdges = new HashMap<CyNode, CyEdge>();
+		}
+		updateSettings();
+	}
+
+	/**
+	 * Returns 'true' if we create the membership edges
+	 *
+	 * @return 'true' if we create membership edges
+	 */
+	public boolean getCreateMembershipEdges() {
+		return createMembershipEdges;
 	}
 
 	/**
@@ -753,9 +793,11 @@ public class MetaNode {
 
 	private void createMembershipEdges() {
 		membershipEdges = new HashMap<CyNode, CyEdge>();
-		for (CyNode node: metaGroup.getNodes()) {
-			CyEdge memberEdge = createEdge("member", metaGroup.getGroupName(), metaGroup.getGroupNode(), node);
-			membershipEdges.put(node, memberEdge);
+		if (createMembershipEdges) {
+			for (CyNode node: metaGroup.getNodes()) {
+				CyEdge memberEdge = createEdge("member", metaGroup.getGroupName(), metaGroup.getGroupNode(), node);
+				membershipEdges.put(node, memberEdge);
+			}
 		}
 	}
 
@@ -833,4 +875,55 @@ public class MetaNode {
 		return false;
 	}
 
+	/**
+ 	 * Update settings attributes for this metanode
+ 	 */
+	private void updateSettings() {
+		String settings = "";
+		settings += "hideMetanode="+hideMetanode;
+		settings += ";createMembershipEdges="+createMembershipEdges;
+		settings += ";dontExpandEmpty="+dontExpandEmpty;
+		settings += ";metanodeOpacity="+metanodeOpacity;
+		settings += ";useNestedNetworks="+useNestedNetworks;
+		if (nodeChartAttribute != null) {
+			settings += ";nodeChartAttribute="+nodeChartAttribute;
+			settings += ";chartType="+chartType;
+			settings += ";chartColorType="+chartColorType;
+		}
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		nodeAttributes.setAttribute(getGroupNode().getIdentifier(), SETTINGS_ATTR, settings);
+		nodeAttributes.setUserVisible(SETTINGS_ATTR, false);
+	}
+
+	/**
+ 	 * Load settings attributes for this metanode
+ 	 */
+	private void loadSettings() {
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		if (!nodeAttributes.hasAttribute(getGroupNode().getIdentifier(), SETTINGS_ATTR))
+			return;
+
+		String settings = nodeAttributes.getStringAttribute(getGroupNode().getIdentifier(), SETTINGS_ATTR);
+		String[] pairs = settings.split(";");
+		for (String pair: pairs) {
+			String[] nv = pair.split("=");
+			if (nv[0].equals("hideMetanode")) {
+				hideMetanode = Boolean.parseBoolean(nv[1]);
+			} else if (nv[0].equals("createMembershipEdges")) {
+				createMembershipEdges = Boolean.parseBoolean(nv[1]);
+			} else if (nv[0].equals("dontExpandEmpty")) {
+				dontExpandEmpty = Boolean.parseBoolean(nv[1]);
+			} else if (nv[0].equals("metanodeOpacity")) {
+				metanodeOpacity = Double.parseDouble(nv[1]);
+			} else if (nv[0].equals("useNestedNetworks")) {
+				useNestedNetworks = Boolean.parseBoolean(nv[1]);
+			} else if (nv[0].equals("nodeChartAttribute")) {
+				nodeChartAttribute = nv[1];
+			} else if (nv[0].equals("chartType")) {
+				chartType = nv[1];
+			} else if (nv[0].equals("chartColorType")) {
+				chartColorType = nv[1];
+			}
+		}
+	}
 }

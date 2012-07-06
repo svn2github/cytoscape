@@ -42,6 +42,7 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 
 import cytoscape.groups.CyGroup;
+import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
 import metaNodePlugin2.MetaNodePlugin2;
@@ -58,6 +59,7 @@ public class MetaNodeManager {
 	// Static variables
 	private static Map<CyNode,MetaNode> metaMap = new HashMap<CyNode, MetaNode>();
 	protected static boolean hideMetanodeDefault = true;
+	protected static boolean createMembershipEdgesDefault = true;
 	protected static double metanodeOpacityDefault = 100.0;
 	protected static boolean useNestedNetworksDefault = false;
 	protected static boolean dontExpandEmptyDefault = true;
@@ -129,16 +131,27 @@ public class MetaNodeManager {
 		if (metaGroup.getNetwork() == null) {
 			metaGroup.setNetwork(Cytoscape.getCurrentNetwork(), false);
 		}
+
+		
+		CyLogger logger = CyLogger.getLogger(MetaNodeManager.class);
+		logger.debug("Creating metanode for group "+metaGroup);
 		MetaNode mn = new MetaNode(metaGroup, ignoreMetaEdges);
+		logger.debug("...done");
 
 		metaMap.put(metaGroup.getGroupNode(), mn);
-		mn.setUseNestedNetworks(useNestedNetworksDefault);
-		mn.setDontExpandEmpty(dontExpandEmptyDefault);
-		mn.setHideMetaNode(hideMetanodeDefault);
-		mn.setMetaNodeOpacity(metanodeOpacityDefault);
-		mn.setChartType(chartTypeDefault);
-		mn.setChartColorType(chartColorTypeDefault);
-		mn.setNodeChartAttribute(nodeChartAttributeDefault);
+
+		// Do we have saved values?
+		if (!mn.hasSavedSettings()) {
+			// No, set the defaults
+			mn.setUseNestedNetworks(useNestedNetworksDefault);
+			mn.setDontExpandEmpty(dontExpandEmptyDefault);
+			mn.setHideMetaNode(hideMetanodeDefault);
+			mn.setCreateMembershipEdges(createMembershipEdgesDefault);
+			mn.setMetaNodeOpacity(metanodeOpacityDefault);
+			mn.setChartType(chartTypeDefault);
+			mn.setChartColorType(chartColorTypeDefault);
+			mn.setNodeChartAttribute(nodeChartAttributeDefault);
+		}
 		mn.setAttributeManager(new AttributeManager(defaultAttributeManager));
 		mn.getAttributeManager().loadHandlerMappings(metaGroup.getNetwork(), mn);
 		return mn;
@@ -249,6 +262,16 @@ public class MetaNodeManager {
 	}
 
 	/**
+	 * Sets whether or not we create membership edges when we're
+	 * leaving the metanode.
+	 *
+	 * @param create if 'true' we create membership edges
+	 */
+	static public void setCreateMembershipEdgesDefault(boolean create) {
+		MetaNodeManager.createMembershipEdgesDefault = create;
+	}
+
+	/**
 	 * Sets the opacity of a metanode if we don't hide on expansion.
 	 *
 	 * @param opacity the opacity (between 0 and 100)
@@ -274,6 +297,15 @@ public class MetaNodeManager {
 	 */
 	static public boolean getHideMetaNodeDefault() {
 		return MetaNodeManager.hideMetanodeDefault;
+	}
+
+	/**
+	 * Returns 'true' if we create membership edges.
+	 *
+	 * @param create if 'true' we create membership edges
+	 */
+	static public boolean getCreateMembershipEdgesDefault() {
+		return MetaNodeManager.createMembershipEdgesDefault;
 	}
 
 	/**
