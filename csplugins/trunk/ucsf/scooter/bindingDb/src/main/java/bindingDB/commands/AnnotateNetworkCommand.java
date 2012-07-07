@@ -145,9 +145,9 @@ public class AnnotateNetworkCommand {
 							// logger.debug("Found smiles "+data);
 							if (data.indexOf('|') >= 0 ) {
 								String[] d = data.split("\\|");  // Get rid of extra annotation
-								smilesList.add(d[0]);
+								smilesList.add(d[0].trim());
 							} else {
-								smilesList.add(data);
+								smilesList.add(data.trim());
 							}
 						} else if (element.getNodeName().equals("bdb:affinity_type")) {
 							// logger.debug("Found type "+data);
