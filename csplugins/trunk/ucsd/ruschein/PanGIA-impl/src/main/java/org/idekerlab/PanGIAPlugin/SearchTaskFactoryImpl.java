@@ -1,10 +1,10 @@
 package org.idekerlab.PanGIAPlugin;
 
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.AbstractTaskFactory;
 
 
-public class SearchTaskFactoryImpl implements TaskFactory {
+public class SearchTaskFactoryImpl extends AbstractTaskFactory { //implements TaskFactory {
 
 	private SearchTask task;
 	
@@ -13,7 +13,7 @@ public class SearchTaskFactoryImpl implements TaskFactory {
 	}
 
 	@Override
-	public TaskIterator getTaskIterator() {
+	public TaskIterator createTaskIterator() {
 		return new TaskIterator(task);
 	}
 }

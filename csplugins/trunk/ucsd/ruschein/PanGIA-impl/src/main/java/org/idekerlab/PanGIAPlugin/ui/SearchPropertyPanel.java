@@ -36,7 +36,7 @@ import org.idekerlab.PanGIAPlugin.utilities.CyCollapsiblePanel;
 //import com.lowagie.text.Font;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnCreatedListener;
-import org.cytoscape.util.swing.NetworkSelectorPanel;
+import org.idekerlab.PanGIAPlugin.ui.NetworkSelectorPanel;
 import java.util.Properties;
 import org.cytoscape.model.CyColumn;
 import java.util.Collection;
@@ -69,8 +69,8 @@ public class SearchPropertyPanel extends JPanel implements ColumnCreatedListener
 	/** Creates new form SearchPropertyPanel */
 	public SearchPropertyPanel(/*NetworkSelectorPanel physicalNetworkPanel, NetworkSelectorPanel geneticNetworkPanel*/) {
 
-		this.physicalNetworkPanel = physicalNetworkPanel;
-		this.geneticNetworkPanel = geneticNetworkPanel;
+		//this.physicalNetworkPanel = physicalNetworkPanel;
+		//this.geneticNetworkPanel = geneticNetworkPanel;
 		
 		initComponents(); // the main panel
 		initComponents2(); // parameter panel
@@ -919,7 +919,7 @@ public class SearchPropertyPanel extends JPanel implements ColumnCreatedListener
 		// Run search algorithm
 		SearchTask task = new SearchTask(parameters);
 		SearchTaskFactoryImpl factory = new SearchTaskFactoryImpl(task);
-		ServicesUtil.taskManagerServiceRef.execute(factory);
+		ServicesUtil.taskManagerServiceRef.execute(factory.createTaskIterator());
 	}
 
 
@@ -1230,7 +1230,7 @@ public class SearchPropertyPanel extends JPanel implements ColumnCreatedListener
 			Iterator<String> it = nodeAttrNames_phy.iterator();
 			while (it.hasNext()){
 				String name = it.next();
-				if (nodeAttrNames_gen.contains(name)){
+				if (nodeAttrNames_gen != null && nodeAttrNames_gen.contains(name)){
 					nodeAttrNames.add(name);
 				}
 			}			
@@ -1692,6 +1692,9 @@ public class SearchPropertyPanel extends JPanel implements ColumnCreatedListener
 	}
 	
 	public void handleEvent(ColumnCreatedEvent e){
+		
+//		System.out.println("\nSearchPropertyPanel.handleEvent: Got ColumnCreatedEvent...\n");
+		
 		updateAttributeLists();		
 	}
 }

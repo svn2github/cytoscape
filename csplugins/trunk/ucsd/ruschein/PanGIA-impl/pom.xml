@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.cytoscape</groupId>
 		<artifactId>impl-parent</artifactId>
-		<version>3.0.0-alpha8-SNAPSHOT</version>
+		<version>3.0.0-alpha9-SNAPSHOT</version>
 	</parent>
 	<properties>
 		<bundle.symbolicName>PanGIA-impl</bundle.symbolicName>
@@ -55,7 +55,7 @@
         </dependency>
         <dependency>
         	<groupId>org.cytoscape</groupId>
-        	<artifactId>plugin-api</artifactId>
+        	<artifactId>app-api</artifactId>
         </dependency>
         <dependency>
         	<groupId>org.cytoscape</groupId>

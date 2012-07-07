@@ -79,6 +79,8 @@ public class SearchTask extends AbstractTask {
 		final CyNetwork physicalInputNetwork = parameters.getPhysicalNetwork();
 		SFNetwork physicalNetwork = convertCyNetworkToSFNetwork(physicalInputNetwork, parameters.getNodeAttrName(), parameters.getPhysicalEdgeAttrName(), parameters.getPhysicalScalingMethod());
 
+		System.out.println("\n\nphysicalNetwork.numNodes()="+physicalNetwork.numNodes()+ "\n\n");
+		
 		final CyNetwork geneticInputNetwork = parameters.getGeneticNetwork();
 		SFNetwork geneticNetwork = convertCyNetworkToSFNetwork(geneticInputNetwork, parameters.getNodeAttrName(), parameters.getGeneticEdgeAttrName(), parameters.getGeneticScalingMethod());
 		
@@ -113,10 +115,10 @@ public class SearchTask extends AbstractTask {
 			while(it.hasNext()){
 				CyNode node = it.next();
 				
-				List<String> attList = node.getCyRow().get(parameters.getAnnotationAttrName(), List.class);
+				List<String> attList = geneticInputNetwork.getRow(node).get(parameters.getAnnotationAttrName(), List.class);
 				for (Object annot :attList)
 				{
-					HashMapUtil.updateMapSet(annot_node, annot.toString(), String.valueOf(node.getCyRow().get(parameters.getNodeAttrName(), List.class)));
+					HashMapUtil.updateMapSet(annot_node, annot.toString(), String.valueOf(geneticInputNetwork.getRow(node).get(parameters.getNodeAttrName(), List.class)));
 				}
 				
 			}
@@ -176,6 +178,9 @@ public class SearchTask extends AbstractTask {
 			System.out.println("Applying degree filter = "+degreeFilter);
 			TypedLinkNetwork<String,Float> ptlnet = physicalNetwork.asTypedLinkNetwork();
 			Set<String> gnodes = geneticNetwork.getNodes();
+			
+			System.out.println("\ngnodes.size()="+gnodes.size());
+			
 			physicalNetwork = new FloatHashNetwork(ptlnet.subNetwork(gnodes, degreeFilter));
 		}
 		
@@ -318,14 +323,16 @@ public class SearchTask extends AbstractTask {
 
 		PanGIAPlugin.setModuleLabels(parameters.getNodeAttrName());
 		
+		//
 		String networkName = "Module Overview Network";
-		final NestedNetworkCreator nnCreator = new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork, pNet, gNet, pValueThreshold, this.taskMonitor, 100.0f - COMPUTE_SIG_PERCENTAGE, module_name, networkName,isGNetSigned, parameters.getNodeAttrName(), parameters.getGeneticEdgeAttrName());
-
-		setStatus("Search finished!\n\n" + "Number of modules = " + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n" + HCSearch2.report(results));
+		final NestedNetworkCreator nnCreator = new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork, pNet, gNet, pValueThreshold, 100.0f - COMPUTE_SIG_PERCENTAGE, module_name, networkName,isGNetSigned, parameters.getNodeAttrName(), parameters.getGeneticEdgeAttrName());
+		this.insertTasksAfterCurrentTask(nnCreator);
+		
+//		setStatus("Search finished!\n\n" + "Number of modules = " + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n" + HCSearch2.report(results));
 
 		setPercentCompleted(100);
 				
-		PanGIAPlugin.output.put(nnCreator.getOverviewNetwork().getCyRow().get("name", String.class),new PanGIAOutput(nnCreator.getOverviewNetwork(), physicalInputNetwork, geneticInputNetwork,parameters.getNodeAttrName(),parameters.getPhysicalEdgeAttrName(),parameters.getGeneticEdgeAttrName(),isGNetSigned));
+//		PanGIAPlugin.output.put(nnCreator.getOverviewNetwork().getRow(nnCreator.getOverviewNetwork()).get("name", String.class),new PanGIAOutput(nnCreator.getOverviewNetwork(), physicalInputNetwork, geneticInputNetwork,parameters.getNodeAttrName(),parameters.getPhysicalEdgeAttrName(),parameters.getGeneticEdgeAttrName(),isGNetSigned));
 		
 		/*
 		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
@@ -345,7 +352,7 @@ public class SearchTask extends AbstractTask {
 		}*/
 		
 		//Generate report
-		if (!parameters.getReportPath().equals("")) generateReport(parameters.getReportPath(), networkName, pnetNodes1, pnetNodes2, pnetEdges1, pnetEdges2, geneticNetwork.numNodes(), geneticNetwork.numEdges(), trainingComplexes, physicalRegress, geneticRegress, annotMatches, results);
+//		if (!parameters.getReportPath().equals("")) generateReport(parameters.getReportPath(), networkName, pnetNodes1, pnetNodes2, pnetEdges1, pnetEdges2, geneticNetwork.numNodes(), geneticNetwork.numEdges(), trainingComplexes, physicalRegress, geneticRegress, annotMatches, results);
 		
 		System.out.println("Execution time: "+(System.nanoTime()-startTime)/1e9+" seconds");
 	}
@@ -498,7 +505,7 @@ public class SearchTask extends AbstractTask {
 		for (final CyEdge edge : startingEdges){
 //			if (nodeAttr.hasAttribute(edge.getSource().getCyRow().get("name", String.class), nodeAttrName) && nodeAttr.hasAttribute(edge.getTarget().getCyRow().get("name", String.class), nodeAttrName))
 //				netEdges.add(edge);			
-			if ( edge.getSource().getCyRow().getRaw(nodeAttrName) != null &&edge.getTarget().getCyRow().getRaw(nodeAttrName) != null) 
+			if ( inputNetwork.getRow(edge.getSource()).getRaw(nodeAttrName) != null && inputNetwork.getRow(edge.getTarget()).getRaw(nodeAttrName) != null) 
 				netEdges.add(edge);
 		}
 				
@@ -514,7 +521,7 @@ public class SearchTask extends AbstractTask {
 			float defaultScore = -(float)Math.log(netEdges.size()/((float)numNodes*(numNodes-1)/2.0f));
 			
 			for (final CyEdge edge : netEdges)
-				outputNetwork.add(edge.getSource().getCyRow().get("name", String.class), edge.getTarget().getCyRow().get("name", String.class), defaultScore);
+				outputNetwork.add(inputNetwork.getRow(edge.getSource()).get("name", String.class), inputNetwork.getRow(edge.getTarget()).get("name", String.class), defaultScore);
 		} else
 		{
 			// Validate that "numericAttrName" is a known numeric edge attribute.
@@ -529,7 +536,7 @@ public class SearchTask extends AbstractTask {
 			List<CyEdge> edges = new ArrayList<CyEdge>(netEdges.size());
 			for (CyEdge e : netEdges) {
 				//if (edgeAttributes.getAttribute(e.getCyRow().get("name", String.class), numericAttrName)!=null) edges.add(e);
-				if (e.getCyRow().isSet(numericAttrName)){
+				if (inputNetwork.getRow(e).isSet(numericAttrName)){
 					edges.add(e);
 				}
 			}
@@ -538,13 +545,13 @@ public class SearchTask extends AbstractTask {
 			final float[] edgeAttribValues = new float[edges.size()];
 			int edgeIndex = 0;
 			for (final CyEdge edge : edges) {
-				final String edgeID = edge.getCyRow().get("name", String.class);
+				final String edgeID = inputNetwork.getRow(edge).get("name", String.class);
 				if (edgeAttribType == Double.class) {
-					final Double attrValue = edge.getCyRow().get(numericAttrName,Double.class); //edgeAttributes.getDoubleAttribute(edgeID, numericAttrName);
+					final Double attrValue = inputNetwork.getRow(edge).get(numericAttrName,Double.class); //edgeAttributes.getDoubleAttribute(edgeID, numericAttrName);
 					if (attrValue != null) edgeAttribValues[edgeIndex] = (float)(double)attrValue;
 					
 				} else { // Assume we have an integer attribute.
-					final Integer attrValue = edge.getCyRow().get(numericAttrName, Integer.class); //edgeAttributes.getIntegerAttribute(edgeID, numericAttrName);
+					final Integer attrValue = inputNetwork.getRow(edge).get(numericAttrName, Integer.class); //edgeAttributes.getIntegerAttribute(edgeID, numericAttrName);
 					if (attrValue != null)
 						edgeAttribValues[edgeIndex] = (float)(int)attrValue;
 				}
@@ -560,8 +567,8 @@ public class SearchTask extends AbstractTask {
 			for (final CyEdge edge : edges) {
 				//final String edgeID = edge.getCyRow().get("name", String.class);
 				//if (edgeAttributes.getAttribute(edgeID, numericAttrName) != null)
-				if (edge.getCyRow().get(numericAttrName, Double.class) != null ||edge.getCyRow().get(numericAttrName, Integer.class) != null)
-					outputNetwork.add(edge.getSource().getCyRow().get("name", String.class), edge.getTarget().getCyRow().get("name", String.class), scaledEdgeAttribValues[edgeIndex]);
+				if (inputNetwork.getRow(edge).get(numericAttrName, Double.class) != null ||inputNetwork.getRow(edge).get(numericAttrName, Integer.class) != null)
+					outputNetwork.add(inputNetwork.getRow(edge.getSource()).get("name", String.class), inputNetwork.getRow(edge.getTarget()).get("name", String.class), scaledEdgeAttribValues[edgeIndex]);
 				++edgeIndex;
 			}
 		}
@@ -620,7 +627,7 @@ public class SearchTask extends AbstractTask {
 		b.add(networkName);
 		b.add("");
 		b.add("Physical network:");
-		b.add(parameters.getPhysicalNetwork().getCyRow().get("name", String.class));
+		b.add(parameters.getPhysicalNetwork().getRow(parameters.getPhysicalNetwork()).get("name", String.class));
 		boolean isBinary = parameters.getPhysicalEdgeAttrName() == null || parameters.getPhysicalEdgeAttrName().length() == 0;
 		if (isBinary) b.add(parameters.getPhysicalEdgeAttrName()+"  (binary)");
 		else b.add("Edge score: "+parameters.getPhysicalEdgeAttrName()+"  (numeric, scaling="+parameters.getPhysicalScalingMethod()+")");
@@ -631,7 +638,7 @@ public class SearchTask extends AbstractTask {
 		b.add("");
 		
 		b.add("Genetic network:");
-		b.add(parameters.getGeneticNetwork().getCyRow().get("name", String.class));
+		b.add(parameters.getGeneticNetwork().getRow(parameters.getGeneticNetwork()).get("name", String.class));
 		isBinary = parameters.getGeneticEdgeAttrName() == null || parameters.getGeneticEdgeAttrName().length() == 0;
 		if (isBinary) b.add(parameters.getGeneticEdgeAttrName()+"  (binary)");
 		else b.add("Edge score: "+parameters.getGeneticEdgeAttrName()+"  (numeric, scaling="+parameters.getGeneticScalingMethod()+")");
@@ -741,14 +748,14 @@ public class SearchTask extends AbstractTask {
 //			nodes.add(geneticNetwork.getNode(i).getIdentifier());		
 		Iterator<CyNode> nodeIt = geneticNetwork.getNodeList().iterator();
 		while (nodeIt.hasNext()){
-			nodes.add(nodeIt.next().getCyRow().get("name", String.class));
+			nodes.add(geneticNetwork.getRow(nodeIt.next()).get("name", String.class));
 		}
 		
 //		for (int i : physicalNetwork.getNodeIndicesArray())
 //			nodes.add(physicalNetwork.getNode(i).getCyRow().get("name", String.class));		
 		Iterator<CyNode> nodeIt2 = physicalNetwork.getNodeList().iterator();
 		while (nodeIt2.hasNext()){
-			nodes.add(nodeIt2.next().getCyRow().get("name", String.class));
+			nodes.add(physicalNetwork.getRow(nodeIt2.next()).get("name", String.class));
 		}
 		
 		int possible = nodes.size()*(nodes.size()-1)/2;

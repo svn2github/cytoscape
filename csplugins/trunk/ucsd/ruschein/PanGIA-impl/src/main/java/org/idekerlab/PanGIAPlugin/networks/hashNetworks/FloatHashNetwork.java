@@ -63,9 +63,9 @@ public class FloatHashNetwork extends SFNetwork implements Iterable<SFEdge> {
 		Iterator<CyEdge> edgeIt = network.getEdgeList().iterator();
 		while (edgeIt.hasNext()){
 			final CyEdge edge = edgeIt.next();
-			final Double attrValue = edge.getCyRow().get(edgeAttrName, Double.class);
+			final Double attrValue = network.getRow(edge).get(edgeAttrName, Double.class);
 			if (attrValue != null)
-				add(new UndirectedSFEdge(edge.getSource().getCyRow().get("name", String.class), edge.getTarget().getCyRow().get("name", String.class), 
+				add(new UndirectedSFEdge(network.getRow(edge.getSource()).get("name", String.class), network.getRow(edge.getTarget()).get("name", String.class), 
 					 attrValue.floatValue()));			
 		}	
 	}

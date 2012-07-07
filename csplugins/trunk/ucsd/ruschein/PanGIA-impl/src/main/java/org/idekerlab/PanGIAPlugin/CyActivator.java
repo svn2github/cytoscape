@@ -3,7 +3,7 @@ package org.idekerlab.PanGIAPlugin;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -43,7 +43,7 @@ public class CyActivator extends AbstractCyActivator {
 		VisualMappingManager visualMappingManagerRef = getService(bc,VisualMappingManager.class);
 		CyNetworkFactory cyNetworkFactoryServiceRef = getService(bc,CyNetworkFactory.class);
 
-		CyRootNetworkFactory cyRootNetworkFactory = getService(bc,CyRootNetworkFactory.class);
+		CyRootNetworkManager cyRootNetworkFactory = getService(bc,CyRootNetworkManager.class);
 		CyNetworkViewFactory cyNetworkViewFactoryServiceRef = getService(bc,CyNetworkViewFactory.class);
 		CyLayoutAlgorithmManager cyLayoutsServiceRef = getService(bc,CyLayoutAlgorithmManager.class);
 

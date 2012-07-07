@@ -15,6 +15,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
 import java.util.Set;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import java.util.Iterator;
 
 
 public class DetailedNetworkCreator
@@ -37,7 +38,7 @@ public class DetailedNetworkCreator
 		
 		VisualStyleObserver.setOverviewView(view);
 		
-		String netID = view.getModel().getCyRow().get("name", String.class);
+		String netID = view.getModel().getRow(view.getModel()).get("name", String.class);
 		
 		PanGIAOutput output = PanGIAPlugin.output.get(netID);
 		
@@ -56,20 +57,19 @@ public class DetailedNetworkCreator
 		if (nodes_selected2.size()<=3)
 		{
 			
-			title = nodes_selected2.get(0).getCyRow().get("name", String.class); //Cytoscape.getRootGraph().getNode(selected[0]).getIdentifier();
+			title = view.getModel().getRow(nodes_selected2.get(0)).get("name", String.class); //Cytoscape.getRootGraph().getNode(selected[0]).getIdentifier();
 			
 			for (int ni=1;ni<nodes_selected2.size();ni++)
-				title+=" | "+nodes_selected2.get(ni).getCyRow().get("name",String.class); //getIdentifier();
+				title+=" | "+view.getModel().getRow(nodes_selected2.get(ni)).get("name",String.class); //getIdentifier();
 		}
 		
 		String name = findNextAvailableNetworkName(title);
 		
-   	 	//CyNetwork detailedNetwork = Cytoscape.createNetwork(name,	/* create_view = */false);
-   	 	CyNetwork detailedNetwork = ServicesUtil.cyNetworkFactoryServiceRef.getInstance();
+   	 	CyNetwork detailedNetwork = ServicesUtil.cyNetworkFactoryServiceRef.createNetwork();
    	 	
    	 	CyTable networkAttr = detailedNetwork.getDefaultNetworkTable(); //Cytoscape.getNetworkAttributes();
 		//networkAttr.setAttribute(detailedNetwork.getIdentifier(), VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.DETAILED.name());
-		detailedNetwork.getCyRow().set(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.DETAILED.name());
+		detailedNetwork.getRow(detailedNetwork).set(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.DETAILED.name());
 		//networkAttr.createColumn(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, String.class, false);
 		
 		//networkAttr.setUserVisible(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, false);
@@ -182,25 +182,26 @@ public class DetailedNetworkCreator
 	
 	public static void goToNestedNetwork(CyNode n)
 	{
-		if (n.getNetwork() == null)
+		if (n.getNetworkPointer() == null)
             return;
 
-	    CyNetwork nestedNetwork = (CyNetwork)n.getNetwork();
+	    CyNetwork nestedNetwork = (CyNetwork)n.getNetworkPointer();
 	
-	    CyNetworkView theView = ServicesUtil.cyNetworkViewManagerServiceRef.getNetworkView(nestedNetwork.getSUID());
-	    //if (theView == null || theView.getIdentifier() == null)
-	    if (theView == null)
+	    Iterator<CyNetworkView> it = ServicesUtil.cyNetworkViewManagerServiceRef.getNetworkViews(nestedNetwork).iterator();
+	    
+	    if (!it.hasNext())
 	    {
-	    	theView = ServicesUtil.cyNetworkViewFactoryServiceRef.getNetworkView(nestedNetwork);
-
-	    	CyLayoutAlgorithm alg = ServicesUtil.cyLayoutsServiceRef.getLayout("force-directed");
-	    	alg.setNetworkView(theView);
-	    	ServicesUtil.taskManagerServiceRef.execute(alg);
-	    	theView.updateView();
+	    	CyNetworkView theView = ServicesUtil.cyNetworkViewFactoryServiceRef.createNetworkView(nestedNetwork);
+		    if (theView == null) {
+		    	CyLayoutAlgorithm alg = ServicesUtil.cyLayoutsServiceRef.getLayout("force-directed");
+		    	
+//				Object context = alg.getDefaultLayoutContext();
+//				insertTasksAfterCurrentTask(alg.createTaskIterator(theView, context, CyLayoutAlgorithm.ALL_NODE_VIEWS,""));
+//		    	theView.updateView();		    	
+		    }
 	    }
 
-	    //ServicesUtil.cySwingApplicationServiceRef.getJFrame().setf
-	    //Cytoscape.getDesktop().setFocus(nestedNetwork.getIdentifier());
+	    //ServicesUtil.cySwingApplicationServiceRef.getJFrame().setfocus
 	}
 	
 	private static String findNextAvailableNetworkName(final String initialPreference) {
@@ -224,7 +225,7 @@ public class DetailedNetworkCreator
 	private static CyNetwork getNetworkByTitle(final String networkTitle) {
 		Set<CyNetwork> networks = ServicesUtil.cyNetworkManagerServiceRef.getNetworkSet();
 		for (final CyNetwork network : networks) {
-			String title = network.getCyRow().get("name", String.class);
+			String title = network.getRow(network).get("name", String.class);
 			if (title.equals(networkTitle))
 				return network;
 		}

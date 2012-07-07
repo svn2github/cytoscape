@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
@@ -45,7 +45,7 @@ public class DynamicSupport {
     }
 
 	private Map<String,String> menuTitleActionMap = new HashMap<String,String>();
-	private CyTableEntry[] tableEntries;
+	private CyIdentifiable[] tableEntries;
 
 	private CyNetworkView netView;
 	private View<CyNode> nodeView;

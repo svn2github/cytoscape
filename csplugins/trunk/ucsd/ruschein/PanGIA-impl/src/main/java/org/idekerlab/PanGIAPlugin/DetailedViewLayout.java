@@ -18,7 +18,7 @@ import org.idekerlab.PanGIAPlugin.data.DoubleVector;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.presentation.property.MinimalVisualLexicon;
+import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 import java.util.Iterator;
 
 public class DetailedViewLayout
@@ -45,9 +45,9 @@ public class DetailedViewLayout
 		while (nodeIt.hasNext()){
 			CyNode node = nodeIt.next();
 		
-			String nodeID = node.getCyRow().get("name", String.class);
+			String nodeID = view.getModel().getRow(node).get("name", String.class);
 			//String parent = nodeAttr.getAttribute(nodeID, VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME).toString();
-			String parent = node.getCyRow().get(VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME, String.class);
+			String parent = view.getModel().getRow(node).get(VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME, String.class);
 						
 			Set<CyNode> sset = module_nodes.get(parent);
 			if (sset==null)
@@ -67,40 +67,40 @@ public class DetailedViewLayout
 		
 		
 		//For each parent module
-		CyLayoutAlgorithm fd = ServicesUtil.cyLayoutsServiceRef.getLayout("force-directed");
-		fd.setSelectedOnly(true);
-		for (Entry<String,Set<CyNode>> e : module_nodes.entrySet())
-		{
-			//Select all nodes with this attribute value
-			//view.getModel().unselectAllNodes();
-			Iterator<CyNode> it = view.getModel().getNodeList().iterator();
-			while (it.hasNext()){
-				it.next().getCyRow().set(CyNetwork.SELECTED, false);
-			}
-			
-			//view.getModel().setSelectedNodeState(e.getValue(), true);
-			Set<CyNode> nodeSet = e.getValue();
-			Iterator<CyNode> nodeSetIt= nodeSet.iterator();
-			while (nodeSetIt.hasNext()){
-				nodeSetIt.next().getCyRow().set(CyNetwork.SELECTED, true);
-			}
-			
-			//Perform force-directed layout of just the selected
-			
-			//fd.getSettings().updateValues();
-			//fd.updateSettings();
-			
-			fd.setNetworkView(view);
-			ServicesUtil.taskManagerServiceRef.execute(fd);
-			
-			view.updateView();
-		}
-		fd.setSelectedOnly(false);
+//		CyLayoutAlgorithm fd = ServicesUtil.cyLayoutsServiceRef.getLayout("force-directed");
+//		fd.setSelectedOnly(true);
+//		for (Entry<String,Set<CyNode>> e : module_nodes.entrySet())
+//		{
+//			//Select all nodes with this attribute value
+//			//view.getModel().unselectAllNodes();
+//			Iterator<CyNode> it = view.getModel().getNodeList().iterator();
+//			while (it.hasNext()){
+//				it.next().getCyRow().set(CyNetwork.SELECTED, false);
+//			}
+//			
+//			//view.getModel().setSelectedNodeState(e.getValue(), true);
+//			Set<CyNode> nodeSet = e.getValue();
+//			Iterator<CyNode> nodeSetIt= nodeSet.iterator();
+//			while (nodeSetIt.hasNext()){
+//				nodeSetIt.next().getCyRow().set(CyNetwork.SELECTED, true);
+//			}
+//			
+//			//Perform force-directed layout of just the selected
+//			
+//			//fd.getSettings().updateValues();
+//			//fd.updateSettings();
+//			
+//			fd.setNetworkView(view);
+//			ServicesUtil.taskManagerServiceRef.execute(fd);
+//			
+//			view.updateView();
+//		}
+//		fd.setSelectedOnly(false);
 		
 		//view.getModel().unselectAllNodes();
 		Iterator<CyNode> it = view.getModel().getNodeList().iterator();
 		while (it.hasNext()){
-			it.next().getCyRow().set(CyNetwork.SELECTED, false);
+			view.getModel().getRow(it.next()).set(CyNetwork.SELECTED, false);
 		}
 
 		
@@ -128,8 +128,8 @@ public class DetailedViewLayout
 			for (CyNode n : nodes)
 			{
 				View<CyNode> nv = view.getNodeView(n); 
-				double x = nv.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
-				double y= nv.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
+				double x = nv.getVisualProperty(BasicVisualLexicon.NODE_X_LOCATION);
+				double y= nv.getVisualProperty(BasicVisualLexicon.NODE_X_LOCATION);
 				
 				if (x<minX) minX = x;
 				else if (x>maxX) maxX = x;
@@ -158,7 +158,7 @@ public class DetailedViewLayout
 		
 		for (String mod : module_nodes.keySet())
 			for (Object n : overviewNodes)
-				if (((View<CyNode>)n).getModel().getCyRow().get("name", String.class).equals(mod))
+				if (overview.getModel().getRow((View<CyNode>)n).get("name", String.class).equals(mod))
 				{
 					module_overviewNode.put(mod, (View<CyNode>)n);
 					break;
@@ -187,8 +187,8 @@ public class DetailedViewLayout
 		for (int i=0;i<radius.length;i++)
 		{
 			View<CyNode> on = module_overviewNode.get(moduleList.get(i));
-			double x = on.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
-			double y= on.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
+			double x = on.getVisualProperty(BasicVisualLexicon.NODE_X_LOCATION);
+			double y= on.getVisualProperty(BasicVisualLexicon.NODE_X_LOCATION);
 			
 			newCenterX[i] = x;
 			newCenterY[i] = y;
@@ -260,14 +260,14 @@ public class DetailedViewLayout
 			{
 				View<CyNode> on = view.getNodeView(n);
 
-				double x = on.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
-				double y= on.getVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION);
+				double x = on.getVisualProperty(BasicVisualLexicon.NODE_X_LOCATION);
+				double y= on.getVisualProperty(BasicVisualLexicon.NODE_X_LOCATION);
 
 				x = x + shiftX[i];				
 				y = y+ shiftY[i];
 				
-				on.setVisualProperty(MinimalVisualLexicon.NODE_X_LOCATION, x);
-				on.setVisualProperty(MinimalVisualLexicon.NODE_Y_LOCATION, y);				
+				on.setVisualProperty(BasicVisualLexicon.NODE_X_LOCATION, x);
+				on.setVisualProperty(BasicVisualLexicon.NODE_Y_LOCATION, y);				
 			}
 		}
 		

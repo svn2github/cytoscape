@@ -74,8 +74,8 @@ public class PanGIAPlugin extends AbstractCyAction implements NetworkViewAddedLi
 	private SearchPropertyPanel searchPanel;
 	
 	public PanGIAPlugin(SearchPropertyPanel searchPanel) {
-		super(PLUGIN_NAME, ServicesUtil.cyApplicationManagerServiceRef);
-		this.setPreferredMenu("Plugins");
+		super(PLUGIN_NAME);
+		this.setPreferredMenu("Apps");
 		vsObserver = new VisualStyleObserver();
 		this.searchPanel = searchPanel;
 		cytoPanelWest = ServicesUtil.cySwingApplicationServiceRef.getCytoPanel(CytoPanelName.WEST);
@@ -130,16 +130,16 @@ public class PanGIAPlugin extends AbstractCyAction implements NetworkViewAddedLi
 	 *  Hook plugin help into the Cytoscape main help system:
 	 */
 	private void addHelp() {
-		final String HELP_SET_NAME = "/help/jhelpset";
-		final ClassLoader classLoader = PanGIAPlugin.class.getClassLoader();
-		URL helpSetURL;
-		try {
-			helpSetURL = HelpSet.findHelpSet(classLoader, HELP_SET_NAME);
-			final HelpSet newHelpSet = new HelpSet(classLoader, helpSetURL);
-			//CyHelpBroker.getHelpSet().add(newHelpSet);
-		} catch (final Exception e) {
-			System.err.println("PanGIA: Could not find help set: \"" + HELP_SET_NAME + "!");
-		}
+//		final String HELP_SET_NAME = "/help/jhelpset";
+//		final ClassLoader classLoader = PanGIAPlugin.class.getClassLoader();
+//		URL helpSetURL;
+//		try {
+//			helpSetURL = HelpSet.findHelpSet(classLoader, HELP_SET_NAME);
+//			final HelpSet newHelpSet = new HelpSet(classLoader, helpSetURL);
+//			//CyHelpBroker.getHelpSet().add(newHelpSet);
+//		} catch (final Exception e) {
+//			System.err.println("PanGIA: Could not find help set: \"" + HELP_SET_NAME + "!");
+//		}
 	}
 
 //	class PluginAction implements ActionListener {
@@ -179,9 +179,9 @@ public class PanGIAPlugin extends AbstractCyAction implements NetworkViewAddedLi
 			
 			for (Entry<String,PanGIAOutput> e : output.entrySet())
 			{
-				bw.write(e.getValue().getOverviewNetwork().getCyRow().get("name", String.class)+"\n");
-				bw.write(e.getValue().getOrigPhysNetwork().getCyRow().get("name", String.class)+"\n");
-				bw.write(e.getValue().getOrigGenNetwork().getCyRow().get("name", String.class)+"\n");
+				bw.write(e.getValue().getOverviewNetwork().getRow(e.getValue().getOverviewNetwork()).get("name", String.class)+"\n");
+				bw.write(e.getValue().getOrigPhysNetwork().getRow(e.getValue().getOrigPhysNetwork()).get("name", String.class)+"\n");
+				bw.write(e.getValue().getOrigGenNetwork().getRow(e.getValue().getOrigGenNetwork()).get("name", String.class)+"\n");
 				bw.write(e.getValue().getNodeAttrName()+"\n");
 				bw.write(e.getValue().getPhysEdgeAttrName()+"\n");
 				bw.write(e.getValue().getGenEdgeAttrName()+"\n");
@@ -247,7 +247,7 @@ public class PanGIAPlugin extends AbstractCyAction implements NetworkViewAddedLi
 	{
 		for (CyNetwork net : ServicesUtil.cyNetworkManagerServiceRef.getNetworkSet())
 		{
-			String title1 = net.getCyRow().get("name", String.class);
+			String title1 = net.getRow(net).get("name", String.class);
 			if (title1.equals(title)) return net;
 		}
 		return null;
