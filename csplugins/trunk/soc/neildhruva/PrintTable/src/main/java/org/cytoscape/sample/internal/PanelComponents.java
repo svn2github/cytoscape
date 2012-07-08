@@ -21,7 +21,6 @@ public class PanelComponents {
 	private CyTable myCyTable;
 	private List<Boolean> checkBoxState;
 	private List<String> columnNamesList;
-	private Long networkSUID;
 	
     public PanelComponents() {
     
@@ -34,18 +33,17 @@ public class PanelComponents {
      * 
      * @return JCheckBox[] Array of checkboxes initialized with column names as titles
      */
-    public JCheckBox[] initCheckBoxArray(CyTable myCyTable, Long networkSUID, CyTable cytable){
+    public JCheckBox[] initCheckBoxArray(CyTable myCyTable, CyTable cytable){
 		
     	this.myCyTable = myCyTable;
     	this.table = new JTable(new MyTableModel(cytable));
     	this.tableColumnModel = table.getColumnModel();
     	this.columnCount = table.getColumnCount();
-    	this.networkSUID = networkSUID;
     	
     	this.columnNamesList = new ArrayList<String>();
 		this.checkBoxState = new ArrayList<Boolean>();
-    	checkBoxState = myCyTable.getRow(networkSUID).getList("States", Boolean.class);
-    	columnNamesList = myCyTable.getRow(networkSUID).getList("Names", String.class);
+    	checkBoxState = myCyTable.getAllRows().get(0).getList("States", Boolean.class);
+    	columnNamesList = myCyTable.getAllRows().get(0).getList("Names", String.class);
     	
     	checkBoxArray = new JCheckBox[columnCount];
         
@@ -97,7 +95,7 @@ public class PanelComponents {
         
         columnIndex = columnNamesList.indexOf(columnName);
         checkBoxState.set(columnIndex, false);
-        myCyTable.getRow(networkSUID).set("States", checkBoxState);
+        myCyTable.getAllRows().get(0).set("States", checkBoxState);
         
         tableColumnModel.removeColumn(column);
         

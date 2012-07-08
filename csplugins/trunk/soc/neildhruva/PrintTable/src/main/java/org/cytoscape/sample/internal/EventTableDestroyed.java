@@ -25,9 +25,5 @@ public class EventTableDestroyed implements NetworkAboutToBeDestroyedListener{
 		myCytoPanel.setLayout(new GridLayout());
 		myCytoPanel.add(label);
 		myCytoPanel.revalidate();
-		
-		//Set networkDestroyed to true in order to keep from implementing the code in TableAddedEvent.java
-		EventTableAdded.networkDestroyed = true;
-		
 	}
 }
