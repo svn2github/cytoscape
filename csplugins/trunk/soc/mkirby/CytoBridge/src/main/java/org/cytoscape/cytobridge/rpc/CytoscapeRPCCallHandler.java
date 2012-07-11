@@ -69,20 +69,41 @@ public class CytoscapeRPCCallHandler {
        return "Thanks";
    }
    
-   public String pushNetwork(String name, Vector<Integer> nodes, Vector<Double> edgeFrom, Vector<Double> edgeTo) throws XmlRpcException {
+   public String pushNetwork(String name, Vector<Integer> nodes, Vector<Integer> edges, Vector<Integer> edgeFrom, Vector<Integer> edgeTo) throws XmlRpcException {
 	   if (edgeFrom.size()!=edgeTo.size()) {
 		   throw new XmlRpcException("ERROR: Edge mismatch!");
 	   }
 	   System.out.println("Got "+nodes.size()+" nodes.");
 	   
-	   myManager.pushNetwork(name, nodes, edgeFrom, edgeTo);
+	   try {
+		   myManager.pushNetwork(name, nodes, edges, edgeFrom, edgeTo);
+	   } catch (Exception e) {
+		   e.printStackTrace();
+	   }
 	   
 	   return "Pushed to Cytoscape.";
    }
    
-   public String pushTables(String name, Vector<String> nheads, Vector<String> ndata, Vector<String> eheads, Vector<String> edata) {
-	   myManager.pushTables(name, nheads, ndata, eheads, edata);
+   /*
+   public String pushTables(String name, Vector<String> gheads, Vector<String> gdata, Vector<String> nheads, Vector<Integer> nrids, Vector<String> ndata, Vector<String> eheads, Vector<Integer> erids, Vector<String> edata) {
+	   myManager.pushTables(name, gheads, gdata, nheads, nrids, ndata, eheads, erids, edata);
 	   return "Pushed to Cytoscape.";
+   }*/
+   
+   public void pushNetTable(String name, Vector<String> gheads, Vector<String> gdata) {
+	   myManager.pushNetTable(name, gheads, gdata);
+   }
+
+   public void pushNodeTable(String name, Vector<String> nheads, Vector<Integer> nrids, Vector<String> ndata) {
+	   myManager.pushNodeTable(name, nheads, nrids, ndata);
+   }
+   
+   public void pushEdgeTable(String name, Vector<String> eheads, Vector<Integer> erids, Vector<String> edata) {
+	   myManager.pushEdgeTable(name, eheads, erids, edata);
+   }
+   
+   public void pushTable(String name, Vector<String> heads, Vector<String> data) {
+	   myManager.pushTable(name, heads, data);
    }
    
 
