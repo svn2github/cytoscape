@@ -63,16 +63,7 @@ public class EventTableAdded implements SetCurrentNetworkListener{
 		//myCyTable is the custom CyTable created for this app and associated with each network.
 		CyTable myCyTable=null;
 		
-		CyTable tempCyTable;
-		String compareString = "PrintTable "+cytable.getTitle();
-		Iterator<CyTable> iterator = cyTableManager.getAllTables(true).iterator();
-		while(iterator.hasNext()) {
-			tempCyTable = iterator.next();
-			if(tempCyTable.getTitle().equals(compareString)){
-				myCyTable=tempCyTable;
-				break;
-			}
-		}
+		myCyTable = cyNetworkTableMgr.getTable(e.getNetwork(), CyNetwork.class, "PrintTable");
 		
 		if(myCyTable!=null) {
 			panelComponents.initCheckBoxArray(myCyTable, cytable);
