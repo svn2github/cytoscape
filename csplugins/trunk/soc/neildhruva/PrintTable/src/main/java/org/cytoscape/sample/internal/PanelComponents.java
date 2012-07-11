@@ -1,11 +1,14 @@
 package org.cytoscape.sample.internal;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -21,19 +24,36 @@ public class PanelComponents {
 	private CyTable myCyTable;
 	private List<Boolean> checkBoxState;
 	private List<String> columnNamesList;
+	private JComboBox chartTypeComboBox;
+	private MyCytoPanel myCytoPanel;
+	private String chartType;
 	
-    public PanelComponents() {
-    
+	public enum chartTypes {
+		BAR {
+		    public String toString() {
+		        return "Bar Chart";
+		    }
+		},
+		 
+		Line {
+		    public String toString() {
+		        return "Line Chart";
+		    }
+		}
+	}
+	
+	public PanelComponents(MyCytoPanel myCytoPanel) {
+	    this.myCytoPanel = myCytoPanel;
     }
-    
-    /**
+	
+	/**
      * Initializes an array of checkboxes with column names of the table as titles and
      * sets each checkbox checked/unchecked corresponding to the Boolean values in which track hidden columns.
      * The checkboxes allows user to check/uncheck a particular column.  
      * 
-     * @return JCheckBox[] Array of checkboxes initialized with column names as titles
      */
-    public JCheckBox[] initCheckBoxArray(CyTable myCyTable, CyTable cytable){
+    @SuppressWarnings("unchecked")
+	public void initCheckBoxArray(CyTable myCyTable, CyTable cytable){
 		
     	this.myCyTable = myCyTable;
     	this.table = new JTable(new MyTableModel(cytable));
@@ -80,7 +100,23 @@ public class PanelComponents {
         	}
         }
         
-        return checkBoxArray;
+        //initialize the JComboBox which selects the type of chart to be displayed
+        //every time it is changed, the graph changes as well
+        if(chartTypeComboBox==null) {
+        	chartTypeComboBox = new JComboBox(chartTypes.values());
+        	chartTypeComboBox.setSelectedItem("Bar Chart"); //by default
+        	
+        	chartTypeComboBox.addActionListener(new ActionListener () {
+        	    public void actionPerformed(ActionEvent e) {
+        	    	String chartType = ((JComboBox) e.getSource()).getSelectedItem().toString();
+        	    	myCytoPanel.setChartPanel(chartType);
+        	    	updateChartType(chartType);
+        	    }
+        	});
+        	
+        } else {
+        	chartTypeComboBox.getModel().setSelectedItem(myCyTable.getAllRows().get(0).get("ChartType", String.class));
+        }
     }
     
     /**
@@ -126,11 +162,29 @@ public class PanelComponents {
 	
 	/**
 	 * 
+	 * @param chartType
+	 */
+	public void updateChartType(String chartType) {
+		myCyTable.getAllRows().get(0).set("ChartType", chartType);
+		this.chartType = chartType;
+	}
+	
+	/**
+	 * 
 	 * @return The modified checkbox array after the user has selected/deselected
 	 * 		   some checkboxes.
 	 */
 	public JCheckBox[] getCheckBoxArray(){
 		return this.checkBoxArray;
+	}
+	
+	/**
+	 * 
+	 * @return The modified checkbox array after the user has selected/deselected
+	 * 		   some checkboxes.
+	 */
+	public JComboBox getComboBox(){
+		return this.chartTypeComboBox;
 	}
 	
 	/**
@@ -147,6 +201,14 @@ public class PanelComponents {
 	 */
 	public JTable getTable(){
 		return this.table;
+	}
+	
+	/**
+	 * 
+	 * @return The Chart type string.
+	 */
+	public String getChartType(){
+		return this.chartType;
 	}
 
 }
