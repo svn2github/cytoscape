@@ -1,6 +1,14 @@
 package org.cytoscape.sample.internal;
 
 import org.cytoscape.application.events.SetCurrentNetworkListener;
+import org.cytoscape.application.swing.CytoPanelComponent;
+import org.cytoscape.model.CyNetworkTableManager;
+import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
+import org.cytoscape.service.util.AbstractCyActivator;
+import org.osgi.framework.BundleContext;
+import java.util.Properties;
 
 
 public class CyActivator extends AbstractCyActivator {
