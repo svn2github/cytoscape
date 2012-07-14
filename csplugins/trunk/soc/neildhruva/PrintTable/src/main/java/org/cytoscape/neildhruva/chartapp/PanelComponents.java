@@ -1,4 +1,4 @@
-package org.cytoscape.sample.internal;
+package org.cytoscape.neildhruva.chartapp;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

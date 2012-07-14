@@ -1,4 +1,4 @@
-package org.cytoscape.sample.internal;
+package org.cytoscape.neildhruva.chartapp;
 
 import org.cytoscape.application.events.SetCurrentNetworkListener;
 import org.cytoscape.application.swing.CytoPanelComponent;

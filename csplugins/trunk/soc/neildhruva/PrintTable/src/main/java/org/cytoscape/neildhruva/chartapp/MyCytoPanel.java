@@ -1,4 +1,4 @@
-package org.cytoscape.sample.internal;
+package org.cytoscape.neildhruva.chartapp;
 
 import java.awt.Component;
 import java.awt.Dimension;

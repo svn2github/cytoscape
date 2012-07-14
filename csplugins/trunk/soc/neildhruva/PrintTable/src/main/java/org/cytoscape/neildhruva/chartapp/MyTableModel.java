@@ -1,4 +1,4 @@
-package org.cytoscape.sample.internal;
+package org.cytoscape.neildhruva.chartapp;
 
 import java.util.Collection;
 import java.util.Vector;
