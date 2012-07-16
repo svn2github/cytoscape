@@ -1,4 +1,4 @@
-package org.cytoscape.neildhruva.chartapp.impl;
+package org.cytoscape.neildhruva.chartapp.api;
 
 import javax.swing.JPanel;
 

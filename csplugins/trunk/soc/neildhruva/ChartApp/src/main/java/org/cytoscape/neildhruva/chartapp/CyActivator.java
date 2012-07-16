@@ -6,9 +6,11 @@ import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
-import org.cytoscape.neildhruva.chartapp.impl.ChartAppFactory;
+import org.cytoscape.neildhruva.chartapp.api.ChartAppFactory;
 import org.cytoscape.service.util.AbstractCyActivator;
+
 import org.osgi.framework.BundleContext;
+
 import java.util.Properties;
 
 

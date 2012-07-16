@@ -1,7 +1,6 @@
 package org.cytoscape.neildhruva.chartapp;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.SequentialGroup;
@@ -12,13 +11,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.LayoutStyle;
 
-import org.cytoscape.model.CyIdentifiable;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkTableManager;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableFactory;
-import org.cytoscape.model.CyTableManager;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 

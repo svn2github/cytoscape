@@ -1,23 +1,13 @@
 package org.cytoscape.neildhruva.chartapp;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 
 import org.cytoscape.application.events.SetCurrentNetworkEvent;
 import org.cytoscape.application.events.SetCurrentNetworkListener;
-import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkTableManager;
-import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableFactory;
-import org.cytoscape.model.CyTableManager;
-import org.cytoscape.neildhruva.chartapp.impl.ChartAppFactory;
+
+import org.cytoscape.neildhruva.chartapp.api.ChartAppFactory;
 
 public class EventTableAdded implements SetCurrentNetworkListener{
 

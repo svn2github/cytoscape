@@ -14,7 +14,8 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.neildhruva.chartapp.impl.ChartAppFactory;
+
+import org.cytoscape.neildhruva.chartapp.api.ChartAppFactory;
 
 public class ChartAppFactoryImpl implements ChartAppFactory {
 
