@@ -25,8 +25,7 @@ public class PanelComponents {
 	private List<Boolean> checkBoxState;
 	private List<String> columnNamesList;
 	private JComboBox chartTypeComboBox;
-	private MyCytoPanel myCytoPanel;
-	private String chartType;
+	private PanelLayout panelLayout;
 	
 	public enum chartTypes {
 		BAR {
@@ -35,25 +34,26 @@ public class PanelComponents {
 		    }
 		},
 		 
-		Line {
+		LINE {
 		    public String toString() {
 		        return "Line Chart";
 		    }
 		}
 	}
 	
-	public PanelComponents(MyCytoPanel myCytoPanel) {
-	    this.myCytoPanel = myCytoPanel;
+	public PanelComponents(PanelLayout panelLayout) {
+	    this.panelLayout = panelLayout;
     }
 	
 	/**
-     * Initializes an array of checkboxes with column names of the table as titles and
+	 * Initializes an array of checkboxes with column names of the table as titles and
      * sets each checkbox checked/unchecked corresponding to the Boolean values in which track hidden columns.
-     * The checkboxes allows user to check/uncheck a particular column.  
-     * 
-     */
+     * The checkboxes allows user to check/uncheck a particular column.
+	 * @param myCyTable The custom CyTable that stores information about hidden columns, type of chart and column names.
+	 * @param cytable The CyTable supplied by the user.
+	 */
     @SuppressWarnings("unchecked")
-	public void initCheckBoxArray(CyTable myCyTable, CyTable cytable){
+	public void initComponents(CyTable myCyTable, CyTable cytable){
 		
     	this.myCyTable = myCyTable;
     	this.table = new JTable(new MyTableModel(cytable));
@@ -109,7 +109,7 @@ public class PanelComponents {
         	chartTypeComboBox.addActionListener(new ActionListener () {
         	    public void actionPerformed(ActionEvent e) {
         	    	String chartType = ((JComboBox) e.getSource()).getSelectedItem().toString();
-        	    	myCytoPanel.setChartPanel(chartType);
+        	    	panelLayout.setChartPanel(chartType);
         	    	updateChartType(chartType);
         	    }
         	});
@@ -121,7 +121,6 @@ public class PanelComponents {
     
     /**
      * Hides the column from the table view by removing it from the table column model.
-     * 
      * @param columnName Name of the column that has to be hidden.
      */
     public void hideColumn(String columnName) {
@@ -139,7 +138,6 @@ public class PanelComponents {
 
     /**
      * Makes a column visible in the JTable.
-     * 
      * @param columnName Name of the column that has to be made visible.
      */
 	public void showColumn(String columnName) {
@@ -161,16 +159,14 @@ public class PanelComponents {
     }
 	
 	/**
-	 * 
-	 * @param chartType
+	 * Update the chart type in the custom CyTable attached to the network.
+	 * @param chartType One of the types of charts listed in {@link chartTypes}.
 	 */
 	public void updateChartType(String chartType) {
 		myCyTable.getAllRows().get(0).set("ChartType", chartType);
-		this.chartType = chartType;
 	}
 	
 	/**
-	 * 
 	 * @return The modified checkbox array after the user has selected/deselected
 	 * 		   some checkboxes.
 	 */
@@ -179,7 +175,6 @@ public class PanelComponents {
 	}
 	
 	/**
-	 * 
 	 * @return The modified checkbox array after the user has selected/deselected
 	 * 		   some checkboxes.
 	 */
@@ -188,27 +183,10 @@ public class PanelComponents {
 	}
 	
 	/**
-	 * 
-	 * @return The initial column count of the table.
-	 */
-	public int getTableColumnCount(){
-		return this.columnCount;
-	}
-	
-	/**
-	 * 
 	 * @return The modified JTable after some rows have been made invisible.
 	 */
 	public JTable getTable(){
 		return this.table;
 	}
 	
-	/**
-	 * 
-	 * @return The Chart type string.
-	 */
-	public String getChartType(){
-		return this.chartType;
-	}
-
 }
