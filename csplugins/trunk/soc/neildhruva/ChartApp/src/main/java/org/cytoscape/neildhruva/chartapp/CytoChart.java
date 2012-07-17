@@ -19,13 +19,6 @@ public class CytoChart {
     
 	public CytoChart(JTable table) {
 		
-		//print all the columns that can be plotted on a graph
-		MyTableModel myTableModel = (MyTableModel) table.getModel();
-		this.plottableColumns = myTableModel.getPlottableColumns();
-		for(int i=0;i<plottableColumns.size();i++){
-			System.out.println(plottableColumns.get(i));
-			
-		}
 	}
 	
 	/**

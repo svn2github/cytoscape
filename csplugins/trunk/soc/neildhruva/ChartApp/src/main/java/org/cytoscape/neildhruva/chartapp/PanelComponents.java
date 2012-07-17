@@ -67,7 +67,7 @@ public class PanelComponents {
     	columnNamesList = myCyTable.getAllRows().get(0).getList("Names", String.class);
     	
     	checkBoxArray = new JCheckBox[columnCount];
-        
+    	
         for(int i=0;i<columnCount;i++){
         	checkBoxArray[i] = new JCheckBox();
         	checkBoxArray[i].setText(table.getColumnName(i));

@@ -61,7 +61,10 @@ public class MyTableModel extends AbstractTableModel {
 		Collection<CyColumn> cycolumns = (Collection<CyColumn>) cytable.getColumns(); 
 		int count=0;
 		for(CyColumn cycolumn : cycolumns){
-			 if(!cycolumn.getType().isInterface()) {
+			if((cycolumn.getType().equals(Integer.class) || 
+				cycolumn.getType().equals(Double.class)  || 
+				cycolumn.getType().equals(Long.class))   &&
+				!cycolumn.getName().equals("SUID")) {
 				 count++;
 			 }
 		}	
@@ -78,26 +81,14 @@ public class MyTableModel extends AbstractTableModel {
 		Collection<CyColumn> cycolumns = (Collection<CyColumn>) cytable.getColumns(); 
 		int count=0;
 		for(CyColumn cycolumn : cycolumns){
-			if(!cycolumn.getType().isInterface()){
-				columnNameArray[count] = cycolumn.getName();
-				count++;
+			if((cycolumn.getType().equals(Integer.class) || 
+				cycolumn.getType().equals(Double.class)  || 
+				cycolumn.getType().equals(Long.class))   &&
+				!cycolumn.getName().equals("SUID")) {
+				columnNameArray[count++] = cycolumn.getName();
 			}
 		}
 		return columnNameArray;	
 	}
 	
-	/**
-	 * Returns a vector of names of columns from the <code>CyTable</code> that are of the type Integer, Long or Double.
-	 * 
-	 * @return Vector containing names of columns that are of the type Integer, Long or Double.
-	 */
-	public Vector<String> getPlottableColumns() {
-		Vector<String> v = new Vector<String>();
-		for(int columnIndex=0; columnIndex < columnLength; columnIndex++){
-			if(getColumnClass(columnIndex).equals(Integer.class) || getColumnClass(columnIndex).equals(Double.class) || getColumnClass(columnIndex).equals(Long.class)) {
-				v.add(columnNames[columnIndex]);
-			}
-		}
-		return v;	
-	}
 }

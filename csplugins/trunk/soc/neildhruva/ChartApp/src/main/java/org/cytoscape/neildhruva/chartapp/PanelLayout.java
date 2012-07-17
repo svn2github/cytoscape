@@ -1,11 +1,13 @@
 package org.cytoscape.neildhruva.chartapp;
 
 import java.awt.Dimension;
+import java.awt.GridLayout;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -47,7 +49,7 @@ public class PanelLayout {
 		jpanel.setPreferredSize(new Dimension(2000, 2000));
 		
 		this.checkBoxArray = checkBoxArray;
-        this.tableColumnCount =tableColumnCount;
+		this.tableColumnCount =tableColumnCount;
 		
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
@@ -56,18 +58,19 @@ public class PanelLayout {
 		myChart = new ChartPanel(chart);
 		myChart.setMouseWheelEnabled(true);
 		
-        jScrollPane1 = new JScrollPane();
-        jScrollPane1.setViewportView(table);
-        jScrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        jScrollPane1.setHorizontalScrollBarPolicy(JScrollPane .HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        
-        this.jComboBox1 = jComboBox1; 
-        
-        layout = new GroupLayout(jpanel);
-        jpanel.setLayout(layout);
-        
-        initPanel();
-		return jpanel;
+		jScrollPane1 = new JScrollPane();
+		jScrollPane1.setViewportView(table);
+		jScrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		jScrollPane1.setHorizontalScrollBarPolicy(JScrollPane .HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		this.jComboBox1 = jComboBox1; 
+		
+		layout = new GroupLayout(jpanel);
+		jpanel.setLayout(layout);
+			
+		initPanel();
+			
+        return jpanel;
         
 	}
 	
@@ -80,22 +83,7 @@ public class PanelLayout {
 		for(int i=0;i<tableColumnCount;i++) {
         	checkBoxGroupHor.addComponent(checkBoxArray[i]);
         }
-		checkBoxGroupHor.addComponent(jComboBox1);
 		
-		layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(6, 6, 6)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(checkBoxGroupHor)
-                            .addGap(81, 81, 81)
-                            .addComponent(myChart, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGap(98, 98, 98))
-        );
-        
         SequentialGroup checkBoxGroupVert = layout.createSequentialGroup();
         checkBoxGroupVert.addContainerGap();
         for(int i=0;i<tableColumnCount;i++){
@@ -104,6 +92,16 @@ public class PanelLayout {
         		checkBoxGroupVert.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED);
         	}
         }
+       
+        layout.setHorizontalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                		.addComponent(myChart, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(checkBoxGroupHor
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(443, 443, 443))
+        );
         
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -111,13 +109,26 @@ public class PanelLayout {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     	.addComponent(myChart, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addGroup(checkBoxGroupVert
-                            .addGap(18, 18, 18)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addContainerGap(183, Short.MAX_VALUE))
         );
-        
     }
+	
+	/**
+	 * When there are no plottable columns, this method is invoked.
+	 * @return <code>JPanel</code> containing a warning.
+	 */
+	public JPanel nullJPanel() {
+		
+		if(jpanel.getComponents().length>0)
+			jpanel.removeAll();
+		
+		JLabel label = new JLabel("No plottable columns. Please select/import another network");
+    	jpanel.setLayout(new GridLayout());
+		jpanel.add(label);
+		return jpanel;
+	}
 	
 	/**
 	 * Sets the new chart within the {@link ChartPanel}.
