@@ -9,6 +9,7 @@ import cytoscape.logger.CyLogger;
 
 import org.genomespace.sws.GSLoadEventListener;
 import org.genomespace.sws.GSLoadEvent;
+import org.genomespace.datamanager.core.GSDataFormat;
 
 public class LoadNetworkFromURL implements GSLoadEventListener {
 	private static final CyLogger logger = CyLogger.getLogger(LoadNetworkFromURL.class);
@@ -24,7 +25,13 @@ public class LoadNetworkFromURL implements GSLoadEventListener {
 			return;
 
 		try {
-			File tmp = GSUtils.downloadToTempFile(netURL);
+
+			final String ext = GSUtils.getExtension(netURL);
+            GSDataFormat dataFormat = null; 
+			if ( ext != null && ext.equalsIgnoreCase("adj") )
+				dataFormat = GSUtils.findConversionFormat(GSUtils.getSession().getDataManagerClient().listDataFormats(), "xgmml");
+
+			File tmp = GSUtils.downloadToTempFile(netURL,dataFormat);
 			Cytoscape.createNetworkFromFile(tmp.getPath()).setTitle(netURL);
 		} catch ( Exception e ) { e.printStackTrace(); }
 	}

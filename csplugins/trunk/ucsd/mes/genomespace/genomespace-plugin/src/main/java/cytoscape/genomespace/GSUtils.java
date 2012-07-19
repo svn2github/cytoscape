@@ -125,13 +125,22 @@ final class GSUtils {
 	}
 
 	public static File downloadToTempFile(String urlString) {
+		return downloadToTempFile(urlString,null);
+	}
+
+	public static File downloadToTempFile(String urlString, GSDataFormat format) {
 		InputStream is = null;
 		OutputStream os = null;
 		File tempFile = null;
 		try {
 			URL url = new URL(urlString);
 			DataManagerClient dmc = getSession().getDataManagerClient();
-			is = dmc.getInputStream(url);
+
+			if ( format == null )
+				is = dmc.getInputStream(url);
+			else
+				is = dmc.getInputStream(dmc.getFileUrl(url,format.getUrl()));
+
 			tempFile = File.createTempFile("tempGS","." + getExtension(url.toString()));
 			os =new FileOutputStream(tempFile);
 			byte buf[] = new byte[1024];
