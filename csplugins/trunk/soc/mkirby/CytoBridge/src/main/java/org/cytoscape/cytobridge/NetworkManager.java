@@ -170,7 +170,7 @@ public class NetworkManager {
 		try {
 			//Network Attributes
 			CyTable gtable = netSyn.getNetwork().getDefaultNetworkTable();
-			for (int g=0; g<gheads.size(); g++) {
+			for (int g=0; g<gheads.size()-1; g++) {
 				if (gtable.getColumn(gheads.get(g))==null) {
 					gtable.createColumn(gheads.get(g), String.class, true, "");
 				}
@@ -192,12 +192,12 @@ public class NetworkManager {
 		try {
 			//Node attributes
 			CyTable ntable = netSyn.getNetwork().getDefaultNodeTable();
-			for (int n=0; n<nheads.size(); n++) {
+			for (int n=0; n<nheads.size()-1; n++) {
 				if (ntable.getColumn(nheads.get(n))==null) {
 					ntable.createColumn(nheads.get(n), String.class, true, "");
 				}
-				for (int i=0; i<ndata.size()/nheads.size();i++) {
-					ntable.getRow(netSyn.getNodeMap().get(nrids.get(i)).getSUID()).set(nheads.get(n), ndata.get(i+(n*ndata.size()/nheads.size())));
+				for (int i=0; i<(ndata.size()-1)/(nheads.size()-1);i++) {
+					ntable.getRow(netSyn.getNodeMap().get(nrids.get(i)).getSUID()).set(nheads.get(n), ndata.get(i+(n*(ndata.size()-1)/(nheads.size()-1))));
 				}
 			}
 		} catch(Exception e) {
@@ -216,12 +216,12 @@ public class NetworkManager {
 		try {
 			//Edge Attributes
 			CyTable etable = netSyn.getNetwork().getDefaultEdgeTable();
-			for (int e=0; e<eheads.size(); e++) {
+			for (int e=0; e<eheads.size()-1; e++) {
 				if (etable.getColumn(eheads.get(e))==null) {
 					etable.createColumn(eheads.get(e), String.class, true, "");
 				}
-				for (int i=0; i<edata.size()/eheads.size();i++) {
-					etable.getRow(netSyn.getEdgeMap().get(erids.get(i)).getSUID()).set(eheads.get(e), edata.get(i+(e*edata.size()/eheads.size())));
+				for (int i=0; i<(edata.size()-1)/(eheads.size()-1);i++) {
+					etable.getRow(netSyn.getEdgeMap().get(erids.get(i)).getSUID()).set(eheads.get(e), edata.get(i+(e*(edata.size()-1)/(eheads.size()-1))));
 				}
 			}
 		} catch(Exception e) {
@@ -241,8 +241,8 @@ public class NetworkManager {
 			try {
 				for (int e=0; e<heads.size(); e++) {
 					table.createColumn(heads.get(e), String.class, true, "");
-					for (int i=0; i<data.size()/heads.size();i++) {
-						//table.getRow().set(heads.get(e), data.get(i+(e*data.size()/heads.size())));
+					for (int i=0; i<(data.size()-1)/(heads.size()-1);i++) {
+						//table.getRow().set(heads.get(e), data.get(i+(e*(data.size()-1)/(heads.size()-1))));
 					}
 				}
 			} catch(Exception e) {
