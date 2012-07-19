@@ -129,6 +129,7 @@ public class NDBGraphReader extends AbstractGraphReader implements GraphReader {
 
 			createGeneNodes( getTable(doc,"Genes") );
 			createRegulatorsRegulatorsEdges( getTable(doc,"Regulators_Regulators") );
+			createModuleNodeAttrs( getTable(doc,"Genes_Modules") );
 
 		} catch (JDOMException je) { 
 			throw new IOException("JDOM failure parsing file.",je); 
@@ -155,6 +156,16 @@ public class NDBGraphReader extends AbstractGraphReader implements GraphReader {
 		}
 	}
 
+	private void createModuleNodeAttrs(Element genes) {
+		for ( Object o : genes.getChildren("Gene_Module") ) {
+			Element geneModule = (Element) o;
+			String geneId = geneModule.getAttributeValue("Gene_Id");
+			String moduleId = geneModule.getAttributeValue("Module_Id");
+			CyNode n = geneIdMap.get(geneId);
+			if ( n != null ) 
+				Cytoscape.getNodeAttributes().setAttribute(n.getIdentifier(),"NDB Module ID",moduleId);
+		}
+	}
 
 	private void createGeneNodes(Element genes) {
 		for ( Object o : genes.getChildren("Gene") ) {
