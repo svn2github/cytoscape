@@ -140,6 +140,7 @@ public class NDBGraphReader extends AbstractGraphReader implements GraphReader {
 			Element regulatorGene = (Element)o;
 			String regulatorId = regulatorGene.getAttributeValue("Regulator_Id");
 			String geneId = regulatorGene.getAttributeValue("Gene_Id");
+			boolean regulator = parseBoolean(regulatorGene.getAttributeValue("Regulator"));
 			if ( regulatorId == null || 
 			     geneId == null || 
 			     !geneIdMap.containsKey(regulatorId) || 
@@ -149,6 +150,7 @@ public class NDBGraphReader extends AbstractGraphReader implements GraphReader {
 			CyNode na = geneIdMap.get(regulatorId);
 			CyNode nb = geneIdMap.get(geneId);
 			CyEdge e = Cytoscape.getCyEdge(na,nb,Semantics.INTERACTION,"regulates",true,true);
+			Cytoscape.getEdgeAttributes().setAttribute(e.getIdentifier(),"NDB Regulator",regulator);
 			edgeIds.add( e.getRootGraphIndex() );
 		}
 	}
@@ -207,5 +209,11 @@ public class NDBGraphReader extends AbstractGraphReader implements GraphReader {
 			edges[i] = edgeIds.get(i).intValue();
 
 		return edges;
+	}
+
+	private boolean parseBoolean(String s) {
+		if ( s == null )
+			return false;
+		return s.toLowerCase().equals("true");
 	}
 }
