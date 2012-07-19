@@ -14,7 +14,13 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.cytoscape.model.CyIdentifiable;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkTableManager;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.model.CyTableManager;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
@@ -23,23 +29,20 @@ public class PanelComponents {
     private JTable table;
 	private TableColumnModel tableColumnModel;
 	private JCheckBox[] checkBoxArray;
-	private int columnCount;
+	private int tableColumnCount;
 	private CyTable myCyTable;
 	private List<Boolean> checkBoxState;
 	private List<String> columnNamesList;
 	private JComboBox chartTypeComboBox;
-	private PanelLayout panelLayout;
 	private CytoChart cytoChart;
 	private JFreeChart chart;
 	private ChartPanel myChartPanel;
+	private CyTable cyTable;
+	private CyTableFactory tableFactory;
+	private CyNetworkTableManager cyNetworkTableMgr;
+	private CyTableManager cyTableManager;
 	
 	public enum chartTypes {
-		BAR {
-		    public String toString() {
-		        return "Bar Chart";
-		    }
-		},
-		 
 		LINE {
 		    public String toString() {
 		        return "Line Chart";
@@ -47,8 +50,13 @@ public class PanelComponents {
 		}
 	}
 	
-	public PanelComponents(PanelLayout panelLayout) {
-	    this.panelLayout = panelLayout;
+	public PanelComponents(CyTableFactory tableFactory,
+							CyNetworkTableManager cyNetworkTableMgr,
+							CyTableManager cyTableManager) {
+		
+		this.tableFactory = tableFactory;
+		this.cyNetworkTableMgr = cyNetworkTableMgr;
+		this.cyTableManager = cyTableManager;
     }
 	
 	/**
@@ -58,21 +66,66 @@ public class PanelComponents {
 	 * @param myCyTable The custom CyTable that stores information about hidden columns, type of chart and column names.
 	 * @param cytable The CyTable supplied by the user.
 	 */
-    public void initComponents(CyTable myCyTable, CyTable cytable){
+    public void initComponents(CyTable cyTable, CyNetwork currentNetwork, JTable table){
 		
-    	this.myCyTable = myCyTable;
-    	this.table = new JTable(new MyTableModel(cytable));
+    	this.myCyTable = cyNetworkTableMgr.getTable(currentNetwork, CyNetwork.class, "PrintTable "+cyTable.getTitle());;
+    	this.cyTable = cyTable;
+    	this.table = table;
     	this.tableColumnModel = table.getColumnModel();
-    	this.columnCount = table.getColumnCount();
+    	this.tableColumnCount = table.getColumnCount();
     	
     	this.columnNamesList = new ArrayList<String>();
 		this.checkBoxState = new ArrayList<Boolean>();
-    	checkBoxState = myCyTable.getAllRows().get(0).getList("States", Boolean.class);
-    	columnNamesList = myCyTable.getAllRows().get(0).getList("Names", String.class);
     	
-    	checkBoxArray = new JCheckBox[columnCount];
+		if(myCyTable!=null) {
+			checkBoxState = myCyTable.getAllRows().get(0).getList("States", Boolean.class);
+			columnNamesList = myCyTable.getAllRows().get(0).getList("Names", String.class);
+		} else {
+			
+			for(int i=0; i<tableColumnCount; i++) {
+				columnNamesList.add(table.getColumnName(i));
+				checkBoxState.add(false);
+			}
+			
+			//if myCyTable is null, create a new CyTable and associate it with the current network.
+			myCyTable = tableFactory.createTable("PrintTable "+cyTable.getTitle(), CyIdentifiable.SUID, Long.class, true, true);
+			myCyTable.createListColumn("Names", String.class, true);
+			myCyTable.createListColumn("States", Boolean.class, true);
+			myCyTable.createColumn("ChartType", String.class, true);
+		
+			//create a new row in myCyTable
+			CyRow cyrow = myCyTable.getRow(currentNetwork.getSUID());
+			cyrow.set("Names", columnNamesList);
+			cyrow.set("States", checkBoxState);
+			cyrow.set("ChartType", "Bar Chart"); //default value is "Bar Chart"
+		
+			//associate myCyTable with this network 
+			cyNetworkTableMgr.setTable(currentNetwork, CyNetwork.class, "PrintTable "+cyTable.getTitle(), myCyTable);
+			//add myCyTable to the CyTableManager in order to preserve it across sessions
+			cyTableManager.addTable(myCyTable);
+		}
+		
+		initCheckBoxArray();
+		
+		//hide all the columns that the user intends to hide in the JTable
+        for(int i=0;i<tableColumnCount;i++){
+        	if(!checkBoxState.get(i)) {
+        		TableColumn column = tableColumnModel.getColumn(tableColumnModel.getColumnIndex(columnNamesList.get(i)));
+        		tableColumnModel.removeColumn(column);
+        	}
+        }
+        
+        initJComboBox();
+        initChartPanel();
+    }
+    
+    /**
+     * Initializes the checkbox array containing column names.
+     */
+    public void  initCheckBoxArray() {
+    	checkBoxArray = new JCheckBox[tableColumnCount];
     	
-        for(int i=0;i<columnCount;i++) {
+        for(int i=0;i<tableColumnCount;i++) {
         	checkBoxArray[i] = new JCheckBox();
         	checkBoxArray[i].setText(table.getColumnName(i));
         	checkBoxArray[i].setSelected(checkBoxState.get(i));
@@ -91,28 +144,28 @@ public class PanelComponents {
 					}else{
 						showColumn(checkBoxArray[j].getText());
 					}
+					
+					refreshChartPanel("Line Chart");
+        	    	updateChartType("Line Chart");
 				}
         	});
         }
+    }
     
-        //hide all the columns that the user intends to hide in the JTable
-        for(int i=0;i<columnCount;i++){
-        	if(!checkBoxState.get(i)) {
-        		TableColumn column = tableColumnModel.getColumn(tableColumnModel.getColumnIndex(checkBoxArray[i].getText()));
-        		tableColumnModel.removeColumn(column);
-        	}
-        }
-        
-        //initialize the JComboBox which selects the type of chart to be displayed.
+    /**
+     * Initializes JComboBox containing the types of charts.
+     */
+    public void initJComboBox() {
+    	//initialize the JComboBox which selects the type of chart to be displayed.
         //every time it is changed, the graph changes as well
         if(chartTypeComboBox==null) {
         	chartTypeComboBox = new JComboBox(chartTypes.values());
-        	chartTypeComboBox.setSelectedItem("Bar Chart"); //by default
+        	chartTypeComboBox.setSelectedItem("Line Chart"); //by default
         	
         	chartTypeComboBox.addActionListener(new ActionListener () {
         	    public void actionPerformed(ActionEvent e) {
         	    	String chartType = ((JComboBox) e.getSource()).getSelectedItem().toString();
-        	    	panelLayout.refreshChartPanel(chartType);
+        	    	refreshChartPanel(chartType);
         	    	updateChartType(chartType);
         	    }
         	});
@@ -120,9 +173,14 @@ public class PanelComponents {
         } else {
         	chartTypeComboBox.getModel().setSelectedItem(myCyTable.getAllRows().get(0).get("ChartType", String.class));
         }
-        
-        //initialize the chart
-        this.cytoChart = new CytoChart(table);
+    }
+    
+    /**
+     * Initializes the Chart Panel which contains the chart.
+     */
+    public void initChartPanel() {
+    	//initialize the chart
+        this.cytoChart = new CytoChart(table, cyTable);
 		this.chart = cytoChart.createChart(chartTypeComboBox.getSelectedItem().toString());
 		this.myChartPanel = new ChartPanel(chart);
 		myChartPanel.setMouseWheelEnabled(true);
@@ -133,7 +191,7 @@ public class PanelComponents {
      * @param columnName Name of the column that has to be hidden.
      */
     public void hideColumn(String columnName) {
-        
+    	
     	int columnIndex = tableColumnModel.getColumnIndex(columnName);
         TableColumn column = tableColumnModel.getColumn(columnIndex);
         
@@ -142,7 +200,6 @@ public class PanelComponents {
         myCyTable.getAllRows().get(0).set("States", checkBoxState);
         
         tableColumnModel.removeColumn(column);
-        
     }
 
     /**
@@ -156,15 +213,15 @@ public class PanelComponents {
 		
 		checkBoxState.set(columnIndex, true);
 		
-		/* after calling fireTableStructureChanged(), the entire JTable is refreshed. This is done because
-		 * table.getAutoCreateColumnsFromModel() is true. So now, all columns corresponding to unchecked 
-		 * checkboxes need to be hidden.
-		 */
-		for(int i=0;i<columnCount;i++) {
+		//after calling fireTableStructureChanged(), the entire JTable is refreshed. This is done because
+		//table.getAutoCreateColumnsFromModel() is true. So now, all columns corresponding to unchecked 
+		//checkboxes need to be hidden.
+		for(int i=0;i<tableColumnCount;i++) {
         	if(!checkBoxState.get(i)) {
         		hideColumn(columnNamesList.get(i));
         	}
         }
+		
     }
 	
 	/**
@@ -205,4 +262,11 @@ public class PanelComponents {
 		return this.myChartPanel;
 	}
 	
+	/**
+	 * Sets the new chart within the {@link ChartPanel}.
+	 */
+	public void refreshChartPanel(String chartType) {
+		chart = cytoChart.createChart(chartType);
+		myChartPanel.setChart(chart); //this myChartPanel is the same ChartPanel that is displayed using PanelLayout.java
+	}
 }

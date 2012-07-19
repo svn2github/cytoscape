@@ -24,9 +24,7 @@ public class PanelLayout {
     private GroupLayout layout;
     private int tableColumnCount;
     private ChartPanel myChartPanel;
-    private CytoChart cytoChart;
     private JComboBox chartTypeComboBox;
-    private JFreeChart chart;
 	
     public PanelLayout () {
     		this.jpanel = new JPanel();
@@ -127,11 +125,4 @@ public class PanelLayout {
 		return jpanel;
 	}
 	
-	/**
-	 * Sets the new chart within the {@link ChartPanel}.
-	 */
-	public void refreshChartPanel(String chartType) {
-		chart = cytoChart.createChart(chartType);
-		myChartPanel.setChart(chart);
-	}
 }

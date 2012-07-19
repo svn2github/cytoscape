@@ -36,58 +36,24 @@ public class ChartAppFactoryImpl implements ChartAppFactory {
 		this.cyNetworkTableMgr = cyNetworkTableMgr;
 		this.cyTableManager = cyTableManager;
 		this.panelLayout = new PanelLayout();
-		this.panelComponents = new PanelComponents(panelLayout);
+		this.panelComponents = new PanelComponents(tableFactory, cyNetworkTableMgr, cyTableManager);
 	}
 	
 	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable) {
 		
-		final Long networkSUID = currentNetwork.getSUID();
+		System.out.println(currentNetwork.NAME+"------"+cyTable.getTitle());
 		JTable table = new JTable(new MyTableModel(cyTable));
 		tableColumnCount = table.getColumnCount();
 		
 		if(tableColumnCount>0) {
+			panelComponents.initComponents(cyTable, currentNetwork, table);
 			
-			//myCyTable is the custom CyTable created for this app and associated with each network.
-			CyTable myCyTable=null;
-			
-			myCyTable = cyNetworkTableMgr.getTable(currentNetwork, CyNetwork.class, "PrintTable "+cyTable.getTitle());
-			
-			if(myCyTable!=null) {
-				panelComponents.initComponents(myCyTable, cyTable);
-			} else {
-				//checkBoxState stores information on whether a given column of a network table is
-				//hidden or visible depending on the associated boolean value (true for visible)
-				ArrayList<Boolean> checkBoxState = new ArrayList<Boolean>();
-				ArrayList<String> columnNamesList = new ArrayList<String>();
-				for(int i=0; i<tableColumnCount; i++) {
-					columnNamesList.add(table.getColumnName(i));
-					checkBoxState.add(false);
-				}
-				
-				//if myCyTable is null, create a new CyTable and associate it with the current network.
-				myCyTable = tableFactory.createTable("PrintTable "+cyTable.getTitle(), CyIdentifiable.SUID, Long.class, true, true);
-				myCyTable.createListColumn("Names", String.class, true);
-				myCyTable.createListColumn("States", Boolean.class, true);
-				myCyTable.createColumn("ChartType", String.class, true);
-			
-				CyRow cyrow = myCyTable.getRow(networkSUID);
-				cyrow.set("Names", columnNamesList);
-				cyrow.set("States", checkBoxState);
-				cyrow.set("ChartType", "Bar Chart"); //default value is "Bar Chart"
-			
-				//associate myCyTable with this network 
-				cyNetworkTableMgr.setTable(currentNetwork, CyNetwork.class, "PrintTable "+cyTable.getTitle(), myCyTable);
-				//add myCyTable to the CyTableManager in order to preserve it across sessions
-				cyTableManager.addTable(myCyTable);
-			
-				panelComponents.initComponents(myCyTable, cyTable);
-			}	
-		
 			//get all components and send them to the panel layout class.
 			JComboBox chartTypeComboBox = panelComponents.getComboBox();
 			table = panelComponents.getTable();
 			JCheckBox[] checkBoxArray = panelComponents.getCheckBoxArray();
 			ChartPanel myChartPanel = panelComponents.getChartPanel();
+			
 			jpanel = panelLayout.initLayout(table, tableColumnCount, checkBoxArray, chartTypeComboBox, myChartPanel);
 			
 		} else {
