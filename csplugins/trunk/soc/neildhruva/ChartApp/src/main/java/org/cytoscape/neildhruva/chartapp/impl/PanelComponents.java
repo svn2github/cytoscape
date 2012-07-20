@@ -47,6 +47,11 @@ public class PanelComponents {
 		    public String toString() {
 		        return "Line Chart";
 		    }
+		},
+		HISTOGRAM {
+		    public String toString() {
+		        return "Histogram";
+		    }
 		}
 	}
 	
@@ -97,7 +102,7 @@ public class PanelComponents {
 			CyRow cyrow = myCyTable.getRow(currentNetwork.getSUID());
 			cyrow.set("Names", columnNamesList);
 			cyrow.set("States", checkBoxState);
-			cyrow.set("ChartType", "Bar Chart"); //default value is "Bar Chart"
+			cyrow.set("ChartType", "Line Chart"); //default value is "Line Chart"
 		
 			//associate myCyTable with this network 
 			cyNetworkTableMgr.setTable(currentNetwork, CyNetwork.class, "PrintTable "+cyTable.getTitle(), myCyTable);
@@ -145,8 +150,8 @@ public class PanelComponents {
 						showColumn(checkBoxArray[j].getText());
 					}
 					
-					refreshChartPanel("Line Chart");
-        	    	updateChartType("Line Chart");
+					refreshChartPanel(myCyTable.getAllRows().get(0).get("ChartType", String.class));
+        	    	updateChartType(myCyTable.getAllRows().get(0).get("ChartType", String.class));
 				}
         	});
         }

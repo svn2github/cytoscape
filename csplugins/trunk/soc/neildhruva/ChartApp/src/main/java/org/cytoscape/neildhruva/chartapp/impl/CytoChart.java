@@ -1,5 +1,6 @@
 package org.cytoscape.neildhruva.chartapp.impl;
 
+import java.util.Random;
 import java.util.Vector;
 
 import javax.swing.JTable;
@@ -10,6 +11,8 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.statistics.HistogramDataset;
+import org.jfree.data.statistics.HistogramType;
 
 public class CytoChart {
 
@@ -29,7 +32,11 @@ public class CytoChart {
 	 * @return The <code>ChartPanel</code> that contains the newly created chart.
 	 */
 	public JFreeChart createChart(String chartType){
-		return XYChart();
+		if(chartType.equals("Line Chart")){
+			return XYChart();
+		} else {
+			return plotHistogram();
+		}
 	}
 	
 	/**
@@ -37,7 +44,6 @@ public class CytoChart {
 	 * @return Chart containing the XY plot.
 	 */
 	public JFreeChart XYChart() {
-		
 		
 	    // create the dataset...
         final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -54,10 +60,9 @@ public class CytoChart {
         	}
         }
         
-        
         // create the chart...
         chart = ChartFactory.createLineChart(
-            "Line Chart Demo 1",       // chart title
+            cyTable.getTitle(),       // chart title
             "NAME",                    // domain axis label
             "Value",                   // range axis label
             dataset,                   // data
@@ -66,11 +71,34 @@ public class CytoChart {
             true,                      // tooltips
             false                      // urls
         );
-        
+        chart.getCategoryPlot().setNoDataMessage("Please select a column");
 		return chart;
-		
 	}
 	
 	
-	
+	/**
+	 * Creates a Histogram.
+	 * @return A <code>JFreeChart</code> containing the histogram.
+	 */
+	public JFreeChart plotHistogram() {
+		
+		double[] value = new double[100];
+	       Random generator = new Random();
+	       for (int i=1; i < 100; i++) {
+	       value[i] = generator.nextDouble();
+	           int number = 10;
+	       HistogramDataset dataset = new HistogramDataset();
+	       dataset.setType(HistogramType.RELATIVE_FREQUENCY);
+	       dataset.addSeries("Histogram",value,number);
+	       
+	       String plotTitle = "Sample Random Number Histogram"; 
+	       String xaxis = "number";
+	       String yaxis = "value"; 
+	       PlotOrientation orientation = PlotOrientation.VERTICAL; 
+	       chart = ChartFactory.createHistogram( plotTitle, xaxis, yaxis, 
+	    		   								 dataset, orientation, true, 
+	    		   								 true, false);
+		}
+	       return chart;
+	}
 }

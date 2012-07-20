@@ -14,7 +14,6 @@ import javax.swing.JTable;
 import javax.swing.LayoutStyle;
 
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
 
 public class PanelLayout {
 
