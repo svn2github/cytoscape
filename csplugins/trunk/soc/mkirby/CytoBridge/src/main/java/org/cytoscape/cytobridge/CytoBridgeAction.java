@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import org.apache.xmlrpc.XmlRpcException;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.cytobridge.json.MyJSON;
 import org.cytoscape.cytobridge.rpc.CytoscapeRPCServer;
 
 public class CytoBridgeAction extends AbstractCyAction {
@@ -15,7 +16,11 @@ public class CytoBridgeAction extends AbstractCyAction {
 	CytoscapeRPCServer xmlrpcServer = null;
 	private CySwingApplication desktopApp;
 	
+	private boolean started = false;
+	
 	private NetworkManager myManager;
+	
+	private Thread serverThread;
 	
 	public CytoBridgeAction(CySwingApplication desktopApp, NetworkManager myManager){
 		// Add a menu item -- Plugins->sample03
@@ -24,7 +29,7 @@ public class CytoBridgeAction extends AbstractCyAction {
 
 		ImageIcon icon = new ImageIcon(getClass().getResource("/images/bridge.png"));
 		ImageIcon smallIcon = new ImageIcon(getClass().getResource("/images/bridge_small.png"));
-
+		
 		// Add image icons on tool-bar and menu item
 		putValue(LARGE_ICON_KEY, icon);
 		putValue(SMALL_ICON, smallIcon);
@@ -40,11 +45,29 @@ public class CytoBridgeAction extends AbstractCyAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 
-		System.out.println("Loading CytoscapeRPCPlugin");
-
-        startXmlRpcService(9000, true);
-        System.out.println("Started CytoscapeRPC "
-                + "XML-RPC service on port " + 9000 + '.');
+		if (!started) {
+			ImageIcon icon = new ImageIcon(getClass().getResource("/images/bridge2.png"));
+	
+			// Add image icons on tool-bar and menu item
+			putValue(LARGE_ICON_KEY, icon);
+			
+			/*System.out.println("Loading CytoscapeRPCPlugin");
+	
+	        startXmlRpcService(9000, true);
+	        System.out.println("Started CytoscapeRPC "
+	                + "XML-RPC service on port " + 9000 + '.');
+	                */
+			if (serverThread == null) {
+				startJSONService();
+			}
+			started = true;
+		} else {
+			ImageIcon icon = new ImageIcon(getClass().getResource("/images/bridge.png"));
+			
+			// Add image icons on tool-bar and menu item
+			putValue(LARGE_ICON_KEY, icon);
+			started = false;
+		}
 
 	}
 	
@@ -86,5 +109,15 @@ public class CytoBridgeAction extends AbstractCyAction {
         catch(Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public final void startJSONService() {
+        MyJSON jsonServer = new MyJSON(myManager);
+        serverThread = new Thread(jsonServer);
+        serverThread.start();
+    }
+    
+    public final void stopJSONService() {
+    	serverThread.stop();
     }
 }
