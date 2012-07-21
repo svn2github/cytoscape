@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 	
 public class MyJSON implements Runnable{
 
+		private static final String PACKAGE = "org.cytoscape.cytobridge.json.";
+		
 		private NetworkManager myManager;
 	
 		public MyJSON(NetworkManager myManager) {
@@ -18,7 +20,7 @@ public class MyJSON implements Runnable{
 		
 		public void run() {
 			try {
-			/** True while this PostListener should listen. */
+			/** True while this should listen. */
 			boolean run = true;
 
 			// Try to connect to the port.
@@ -42,23 +44,22 @@ public class MyJSON implements Runnable{
 					System.exit(1);
 				}
 
-				System.out.println("waiting");
 				in = new BufferedReader(
 						new InputStreamReader(
 								clientSocket.getInputStream()));
-				System.out.println("waiting2");
+
 				String line;
 				Gson gson = new Gson();
 				while ((line = in.readLine()) != null) {
-					System.out.println("waiting3");
 					if (line.equals("die")) {
 						System.out.println("Got kill signal!");
 						run = false;
 						break;
 					}
+					Helper helper = gson.fromJson(line, Helper.class);
 					
-					Helper test = gson.fromJson(line,Helper.class);
-					myManager.pushNetwork(test.network_name, test.node_cytobridge_ids, test.edge_cytobridge_ids, test.edge_source_cytobridge_ids, test.edge_target_cytobridge_ids);
+					JSONCommand jcom = (JSONCommand)gson.fromJson(line,Class.forName(PACKAGE+helper.getName()));
+					jcom.run(myManager);
 				}
 			}
 
