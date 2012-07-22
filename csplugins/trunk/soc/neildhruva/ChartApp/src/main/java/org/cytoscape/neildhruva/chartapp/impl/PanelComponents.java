@@ -187,8 +187,11 @@ public class PanelComponents {
     	//initialize the chart
         this.cytoChart = new CytoChart(table, cyTable);
 		this.chart = cytoChart.createChart(chartTypeComboBox.getSelectedItem().toString());
-		this.myChartPanel = new ChartPanel(chart);
+		this.myChartPanel = new ChartPanel(chart, 700, 500, 500, 300,
+											1000, 800, true, true, true, true, true, true, true);
 		myChartPanel.setMouseWheelEnabled(true);
+		myChartPanel.setDomainZoomable(true);
+
     }
     
     /**

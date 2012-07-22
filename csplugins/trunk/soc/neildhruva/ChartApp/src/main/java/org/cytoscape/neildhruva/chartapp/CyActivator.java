@@ -6,10 +6,10 @@ import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
+import org.cytoscape.neildhruva.chartapp.app.EventTableAdded;
+import org.cytoscape.neildhruva.chartapp.app.EventTableDestroyed;
+import org.cytoscape.neildhruva.chartapp.app.MyCytoPanel;
 import org.cytoscape.neildhruva.chartapp.impl.ChartAppFactoryImpl;
-import org.cytoscape.neildhruva.chartapp.impl.EventTableAdded;
-import org.cytoscape.neildhruva.chartapp.impl.EventTableDestroyed;
-import org.cytoscape.neildhruva.chartapp.impl.MyCytoPanel;
 import org.cytoscape.service.util.AbstractCyActivator;
 
 import org.osgi.framework.BundleContext;
@@ -33,9 +33,7 @@ public class CyActivator extends AbstractCyActivator {
 		ChartAppFactoryImpl chartAppFactoryImpl = new ChartAppFactoryImpl(cyDataTableFactoryServiceRef, cyNetworkTableManagerServiceRef, cyTableManagerServiceRef); 
 		registerService(bc, chartAppFactoryImpl, ChartAppFactory.class, new Properties());
 		
-		ChartAppFactory chartAppFactory = getService(bc, ChartAppFactory.class);
-		
-		EventTableAdded eventTableAdded = new EventTableAdded(myCytoPanel, chartAppFactory);
+		EventTableAdded eventTableAdded = new EventTableAdded(myCytoPanel, chartAppFactoryImpl);
 		EventTableDestroyed eventTableDestroyed = new EventTableDestroyed(myCytoPanel);
 		
 		registerService(bc,myCytoPanel,CytoPanelComponent.class, new Properties());

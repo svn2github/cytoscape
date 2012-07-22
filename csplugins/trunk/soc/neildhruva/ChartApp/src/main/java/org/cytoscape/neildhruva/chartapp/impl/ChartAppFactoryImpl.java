@@ -11,6 +11,7 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.neildhruva.chartapp.ChartAppFactory;
+import org.cytoscape.neildhruva.chartapp.ChartAppFactory.AxisMode;
 
 import org.jfree.chart.ChartPanel;
 
@@ -27,11 +28,16 @@ public class ChartAppFactoryImpl implements ChartAppFactory {
 
 		this.panelLayout = new PanelLayout();
 		this.panelComponents = new PanelComponents(tableFactory, cyNetworkTableMgr, cyTableManager);
+		
+		if(cyNetworkTableMgr.getNetworkSet().iterator().hasNext())
+			System.out.println("YES");
 	}
 	
 	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable) {
-		
-	//	System.out.println(currentNetwork.NAME+"------"+cyTable.getTitle());
+		return createPanel(currentNetwork, cyTable, AxisMode.COLUMNS);
+	}
+	
+	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode) {
 		JTable table = new JTable(new MyTableModel(cyTable));
 		tableColumnCount = table.getColumnCount();
 		
@@ -52,6 +58,15 @@ public class ChartAppFactoryImpl implements ChartAppFactory {
 		
 		return jpanel;
 	}
-
-
+	
+	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width){
+		return jpanel;
+	}
+	
+	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width, String[] rows, String[] columns){
+		return jpanel;
+		
+	}
+	
+	
 }

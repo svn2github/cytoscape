@@ -1,4 +1,4 @@
-package org.cytoscape.neildhruva.chartapp.impl;
+package org.cytoscape.neildhruva.chartapp.app;
 
 import java.awt.Component;
 import java.awt.GridLayout;

@@ -2,6 +2,7 @@ package org.cytoscape.neildhruva.chartapp.impl;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.SequentialGroup;
