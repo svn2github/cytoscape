@@ -1,7 +1,7 @@
 #------------------------------
 #CytoBridge -------------------
 #Author: Michael Kirby --------
-#Depends On: iGraph, XMLRPC ---
+#Depends On: iGraph, rjson ----
 #------------------------------
 
 #Pushes the given iGraph to Cytoscape and returns the iGraph with extra CytoBridge
@@ -10,6 +10,11 @@
 #g: The iGraph to push.
 #tables: TRUE if push tables also, FALSE otherwise.
 pushNetwork <- function (name,g, tables=TRUE) {
+	isGN <- FALSE
+	if (class(g) == "graphNEL") {
+		g <- igraph.from.graphNEL(g)
+		isGN <- TRUE
+	}
 	if (!('cytobid' %in% list.graph.attributes(g))) {
 		cytob.suid <- 0
 		V(g)$cytobid <- seq(cytob.suid,cytob.suid+length(V(g))-1)
@@ -18,24 +23,25 @@ pushNetwork <- function (name,g, tables=TRUE) {
 		cytob.suid <- cytob.suid + length(E(g))-1
 		g <- set.graph.attribute(g, "cytobid", as.integer(cytob.suid))
 	} else {
-		cytob.suid <- get.graph.attribute(g, "cytobid")
-		for(n in 1:length(V(g))) {
-			if (is.na(get.vertex.attribute(g,'cytobid',n))) {
-				cytob.suid <- cytob.suid +  1
-				g <- set.vertex.attribute(g,'cytobid',n,as.integer(cytob.suid))
-			}
-		}
+		cytob.suid <<- get.graph.attribute(g, "cytobid")
 
-		for(e in 1:length(E(g))) {
-			if (is.na(get.edge.attribute(g,'cytobid',e))) {
-				cytob.suid <- cytob.suid +  1
-				g <- set.edge.attribute(g,'cytobid',e,as.integer(cytob.suid))
-			}
-		}
+		V(g)$cytobid <- lapply(V(g)$cytobid,testm)
+
+		E(g)$cytobid <- lapply(E(g)$cytobid,testm)
+
 		g <- set.graph.attribute(g, "cytobid", as.integer(cytob.suid))
 	}
-	xml.rpc('localhost:9000', 'Cytoscape.pushNetwork', name, get.vertex.attribute(g, 'cytobid'), get.edge.attribute(g, 'cytobid'),  get.vertex.attribute(g,"cytobid",get.edges(g,E(g))[,1]), get.vertex.attribute(g,"cytobid",get.edges(g,E(g))[,2]))
+
+	
+	socket <- make.socket("localhost", "4444")
+	on.exit(close.socket(socket))
+	system.time(write.socket(socket, toJSON(list(type="JSONNetwork", network_name=name, node_cytobridge_ids=get.vertex.attribute(g, 'cytobid'), edge_cytobridge_ids=get.edge.attribute(g, 'cytobid'),  edge_source_cytobridge_ids=get.vertex.attribute(g,"cytobid",get.edges(g,E(g))[,1]), edge_target_cytobridge_ids=get.vertex.attribute(g,"cytobid",get.edges(g,E(g))[,2])))))
+	close.socket(socket)
+
 	if (tables) { pushTables(name, g) }
+
+	if (isGN) { g <- igraph.to.graphNEL(g) }
+
 	g
 }
 
@@ -52,26 +58,50 @@ pushTables <- function (name,g, net=FALSE, node=FALSE, edge=FALSE) {
 		edge = TRUE
 	}
 	if (net) {
-		gdata <- c()
-		for(i in 1:length(list.graph.attributes(g))) {
-			gdata <- append(gdata, get.graph.attribute(g,list.graph.attributes(g)[i]))
-		}
-		xml.rpc('localhost:9000', 'Cytoscape.pushNetTable', name, as.vector(list.graph.attributes(g)), as.character(gdata))
+		pushNetworkTable(name, g)
 	}
 	if (node) {
-		vdata <- c()
-		for(v in 1:length(list.vertex.attributes(g))) {
-			vdata <- append(vdata, get.vertex.attribute(g,list.vertex.attributes(g)[v]))
-		}
-		xml.rpc('localhost:9000', 'Cytoscape.pushNodeTable', name, as.vector(list.vertex.attributes(g)), get.vertex.attribute(g, 'cytobid'), as.character(vdata))
+		pushNodeTable(name, g)
 	}
 	if (edge) {
-		edata <- c()
-		for(e in 1:length(list.edge.attributes(g))) {
-			edata <- append(edata, get.edge.attribute(g,list.edge.attributes(g)[e]))
-		}
-		xml.rpc('localhost:9000', 'Cytoscape.pushEdgeTable', name, as.vector(list.edge.attributes(g)), get.edge.attribute(g, 'cytobid'), as.character(edata))
+		pushEdgeTable(name, g)
 	}
+}
+
+pushNetworkTable <- function (name, g) {
+	gdata <- c()
+	for(i in 1:length(list.graph.attributes(g))) {
+		gdata <- append(gdata, get.graph.attribute(g,list.graph.attributes(g)[i]))		
+	}
+
+	socket <- make.socket("localhost", "4444")
+	on.exit(close.socket(socket))
+	system.time(write.socket(socket, toJSON(list(type="JSONNetworkTable", network_name=name, table_headings=as.vector(list.graph.attributes(g)), table_data=as.character(gdata)))))
+	close.socket(socket)
+}
+
+pushNodeTable <- function (name, g) {
+	vdata <- c()
+	for(v in 1:length(list.vertex.attributes(g))) {
+		vdata <- append(vdata, get.vertex.attribute(g,list.vertex.attributes(g)[v]))
+	}
+
+	socket <- make.socket("localhost", "4444")
+	on.exit(close.socket(socket))
+	system.time(write.socket(socket, toJSON(list(type="JSONNodeTable", network_name=name, table_headings=as.vector(list.vertex.attributes(g)), node_cytobridge_ids=get.vertex.attribute(g, 'cytobid'), table_data=as.character(vdata)))))
+	close.socket(socket)
+}
+
+pushEdgeTable <- function(name, g) {
+	edata <- c()
+	for(e in 1:length(list.edge.attributes(g))) {
+		edata <- append(edata, get.edge.attribute(g,list.edge.attributes(g)[e]))
+	}
+
+	socket <- make.socket("localhost", "4444")
+	on.exit(close.socket(socket))
+	system.time(write.socket(socket, toJSON(list(type="JSONEdgeTable", network_name=name, table_headings=as.vector(list.edge.attributes(g)), edge_cytobridge_ids=get.edge.attribute(g, 'cytobid'), table_data=as.character(edata)))))
+	close.socket(socket)
 }
 
 #Pushes the specified dataframe as a table to Cytoscape.
@@ -81,4 +111,15 @@ pushTable <- function (name, df) {
 		data <- append(data, as.vector(t(df[i])))
 	}
 	xml.rpc('localhost:9000', 'Cytoscape.pushTable', name, as.vector(names(df)), as.character(data))
+}
+
+
+
+testm <- function(x) {
+	if (is.na(x)) {
+		cytob.suid <<- cytob.suid +  1
+		as.integer(cytob.suid)
+	} else {
+		x
+	}
 }
