@@ -11,12 +11,16 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.neildhruva.chartapp.ChartAppFactory;
-import org.cytoscape.neildhruva.chartapp.ChartAppFactory.AxisMode;
+import org.cytoscape.neildhruva.chartapp.PanelManager;
 
 import org.jfree.chart.ChartPanel;
 
 public class ChartAppFactoryImpl implements ChartAppFactory {
 
+	private final AxisMode DEFAULT_MODE = AxisMode.COLUMNS;
+	private final int DEFAULT_HEIGHT = 600;
+	private final int DEFAULT_WIDTH = 800;
+	
 	private JPanel jpanel;
 	private int tableColumnCount;
 	private PanelComponents panelComponents;
@@ -28,21 +32,28 @@ public class ChartAppFactoryImpl implements ChartAppFactory {
 
 		this.panelLayout = new PanelLayout();
 		this.panelComponents = new PanelComponents(tableFactory, cyNetworkTableMgr, cyTableManager);
-		
-		if(cyNetworkTableMgr.getNetworkSet().iterator().hasNext())
-			System.out.println("YES");
 	}
 	
 	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable) {
-		return createPanel(currentNetwork, cyTable, AxisMode.COLUMNS);
+		return createPanel(currentNetwork, cyTable, DEFAULT_MODE, DEFAULT_HEIGHT, DEFAULT_WIDTH, null, null);
 	}
 	
 	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode) {
+		
+		return createPanel(currentNetwork, cyTable, mode, DEFAULT_HEIGHT, DEFAULT_WIDTH, null, null);
+	}
+	
+	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width){
+		return createPanel(currentNetwork, cyTable, mode, height, width, null, null);
+	}
+	
+	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width, String[] rows, String[] columns){
+		
 		JTable table = new JTable(new MyTableModel(cyTable));
 		tableColumnCount = table.getColumnCount();
 		
 		if(tableColumnCount>0) {
-			panelComponents.initComponents(cyTable, currentNetwork, table);
+			panelComponents.initComponents(cyTable, currentNetwork, table, mode);
 			
 			//get all components and send them to the panel layout class.
 			JComboBox chartTypeComboBox = panelComponents.getComboBox();
@@ -57,16 +68,11 @@ public class ChartAppFactoryImpl implements ChartAppFactory {
 		}
 		
 		return jpanel;
-	}
-	
-	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width){
-		return jpanel;
-	}
-	
-	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width, String[] rows, String[] columns){
-		return jpanel;
 		
 	}
 	
+	public PanelManager getPanelManager() {
+		return new PanelManagerImpl(panelComponents, panelLayout);
+	}
 	
 }

@@ -2,7 +2,6 @@ package org.cytoscape.neildhruva.chartapp.impl;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Rectangle;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.SequentialGroup;
@@ -10,7 +9,6 @@ import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.LayoutStyle;
 
@@ -18,9 +16,13 @@ import org.jfree.chart.ChartPanel;
 
 public class PanelLayout {
 
+	private final int MAX_HEIGHT = 1800;
+	private final int MAX_WIDTH = 1800;
+	private final int MIN_WIDTH = 0;
+	private final int MIN_HEIGHT = 0;
+	
 	private JPanel jpanel;
-	private JScrollPane jScrollPane1;
-    private JCheckBox[] checkBoxArray;
+	private JCheckBox[] checkBoxArray;
     private GroupLayout layout;
     private int tableColumnCount;
     private ChartPanel myChartPanel;
@@ -51,20 +53,13 @@ public class PanelLayout {
 		this.tableColumnCount = tableColumnCount;
 		this.myChartPanel = myChartPanel;
 		
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		
-		jScrollPane1 = new JScrollPane();
-		jScrollPane1.setViewportView(table);
-		jScrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		jScrollPane1.setHorizontalScrollBarPolicy(JScrollPane .HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
 		this.chartTypeComboBox = chartTypeComboBox; 
 		
 		layout = new GroupLayout(jpanel);
 		jpanel.setLayout(layout);
 			
 		initPanel();
-			
+		
         return jpanel;
         
 	}
@@ -122,7 +117,35 @@ public class PanelLayout {
 		JLabel label = new JLabel("No plottable columns. Please select/import another network");
     	jpanel.setLayout(new GridLayout());
 		jpanel.add(label);
+		
 		return jpanel;
 	}
 	
+	/**
+	 * Gets the <code>JPanel</code> containing the chart, checkboxes, JComboBox.
+	 * @return The <code>JPanel</code> containing the chart, checkboxes, JComboBox.
+	 */
+	public JPanel getJPanel() {
+		return jpanel;
+	}
+	
+	/**
+	 * Sets the width of the <code>ChartPanel</code>.
+	 * @param width The width of the <code>ChartPanel</code>.
+	 */
+	public void setWidth(int width) {
+		if(tableColumnCount>0 && width<=MAX_WIDTH && width>=MIN_WIDTH) {
+			myChartPanel.setPreferredSize(new Dimension(width, myChartPanel.getPreferredSize().height));
+		}
+	}
+	
+	/**
+	 * Sets the height of the <code>ChartPanel</code>.
+	 * @param height The height of the <code>ChartPanel</code>.
+	 */
+	public void setHeight(int height) {
+		if(tableColumnCount>0 && height<=MAX_HEIGHT && height>=MIN_HEIGHT) {
+			myChartPanel.setPreferredSize(new Dimension(myChartPanel.getPreferredSize().width, height));
+		}
+	}
 }

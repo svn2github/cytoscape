@@ -1,5 +1,7 @@
 package org.cytoscape.neildhruva.chartapp;
 
+import java.util.List;
+
 import javax.swing.JPanel;
 
 import org.cytoscape.model.CyTable;
@@ -36,7 +38,7 @@ public interface PanelManager {
 	 * Change the rows of <code>CyTable</code> to be displayed in the chart.
 	 * @param rows Canonical names associated with each row.
 	 */
-	public void setRows(String[] rows);
+	public void setRows(List<String> rows);
 	
 	/**
 	 * Change the columns of <code>CyTable</code> to be displayed in the chart.

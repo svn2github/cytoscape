@@ -30,7 +30,8 @@ public class CyActivator extends AbstractCyActivator {
 		CyTableManager cyTableManagerServiceRef = getService(bc,CyTableManager.class);
 		
 		MyCytoPanel myCytoPanel = new MyCytoPanel();
-		ChartAppFactoryImpl chartAppFactoryImpl = new ChartAppFactoryImpl(cyDataTableFactoryServiceRef, cyNetworkTableManagerServiceRef, cyTableManagerServiceRef); 
+		ChartAppFactoryImpl chartAppFactoryImpl = new ChartAppFactoryImpl(cyDataTableFactoryServiceRef, cyNetworkTableManagerServiceRef, cyTableManagerServiceRef);
+		
 		registerService(bc, chartAppFactoryImpl, ChartAppFactory.class, new Properties());
 		
 		EventTableAdded eventTableAdded = new EventTableAdded(myCytoPanel, chartAppFactoryImpl);

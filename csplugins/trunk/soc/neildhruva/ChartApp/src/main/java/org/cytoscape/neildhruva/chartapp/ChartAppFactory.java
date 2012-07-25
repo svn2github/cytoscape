@@ -62,4 +62,12 @@ public interface ChartAppFactory {
 	 */
 	JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width, String[] rows, String[] columns);
 
+	/**
+	 * Gets an instance of a PanelManager for the <code>JPanel</code> created.
+	 * @return An instance of the PanelManager.
+	 */
+	PanelManager getPanelManager();
+	
+	
+	
 }

@@ -1,11 +1,13 @@
 package org.cytoscape.neildhruva.chartapp.app;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
@@ -26,7 +28,9 @@ public class MyCytoPanel extends JPanel implements CytoPanelComponent {
      */
     public void setJPanel(JPanel jpanel) {
     	this.removeAll();
-    	this.add(jpanel);
+    	JScrollPane jsp = new JScrollPane(jpanel);
+    	jsp.setViewportView(jpanel);
+    	this.add(jsp);
     	this.revalidate();
     }
     

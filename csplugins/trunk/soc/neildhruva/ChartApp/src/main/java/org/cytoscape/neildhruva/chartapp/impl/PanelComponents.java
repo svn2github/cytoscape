@@ -1,5 +1,6 @@
 package org.cytoscape.neildhruva.chartapp.impl;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -21,11 +22,15 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.neildhruva.chartapp.ChartAppFactory.AxisMode;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
 public class PanelComponents {
 
+	private final int DEFAULT_WIDTH = 800;
+	private final int DEFAULT_HEIGHT = 600;
+	
     private JTable table;
 	private TableColumnModel tableColumnModel;
 	private JCheckBox[] checkBoxArray;
@@ -71,7 +76,7 @@ public class PanelComponents {
 	 * @param myCyTable The custom CyTable that stores information about hidden columns, type of chart and column names.
 	 * @param cytable The CyTable supplied by the user.
 	 */
-    public void initComponents(CyTable cyTable, CyNetwork currentNetwork, JTable table){
+    public void initComponents(CyTable cyTable, CyNetwork currentNetwork, JTable table, AxisMode mode){
 		
     	this.myCyTable = cyNetworkTableMgr.getTable(currentNetwork, CyNetwork.class, "PrintTable "+cyTable.getTitle());;
     	this.cyTable = cyTable;
@@ -121,7 +126,7 @@ public class PanelComponents {
         }
         
         initJComboBox();
-        initChartPanel();
+        initChartPanel(mode);
     }
     
     /**
@@ -183,15 +188,14 @@ public class PanelComponents {
     /**
      * Initializes the Chart Panel which contains the chart.
      */
-    public void initChartPanel() {
+    public void initChartPanel(AxisMode mode) {
     	//initialize the chart
-        this.cytoChart = new CytoChart(table, cyTable);
+        this.cytoChart = new CytoChart(table, cyTable, mode);
 		this.chart = cytoChart.createChart(chartTypeComboBox.getSelectedItem().toString());
-		this.myChartPanel = new ChartPanel(chart, 700, 500, 500, 300,
-											1000, 800, true, true, true, true, true, true, true);
+		this.myChartPanel = new ChartPanel(chart);
+		myChartPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 		myChartPanel.setMouseWheelEnabled(true);
-		myChartPanel.setDomainZoomable(true);
-
+		
     }
     
     /**
@@ -276,5 +280,13 @@ public class PanelComponents {
 	public void refreshChartPanel(String chartType) {
 		chart = cytoChart.createChart(chartType);
 		myChartPanel.setChart(chart); //this myChartPanel is the same ChartPanel that is displayed using PanelLayout.java
+	}
+	
+	/**
+	 * Sets rows of the <code>CyTable</code> displayed in the chart.
+	 * @param rows The rows to be displayed in the chart.
+	 */
+	public void setRows(List<String> rows) {
+		myChartPanel.setChart(cytoChart.setRows(rows));
 	}
 }
