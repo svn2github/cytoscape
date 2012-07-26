@@ -4,11 +4,13 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.neildhruva.chartapp.ChartAppFactory.AxisMode;
 import org.jfree.chart.ChartPanel;
 
-public interface PanelManager {
+public interface CytoChart {
 	
 	/**
 	 * Gets the <code>JPanel</code> that contains the chart and other components.
@@ -57,5 +59,30 @@ public interface PanelManager {
 	 * @param mode {@link AxisMode}
 	 */
 	public void setAxisMode(AxisMode mode);
+	
+	/**
+     * Hides the column from the chart.
+     * @param columnName Name of the column that has to be hidden.
+     */
+    public void removeColumn(String columnName);
+
+    /**
+     * Makes a column visible in the chart.
+     * @param columnName Name of the column that has to be made visible.
+     */
+	public void addColumn(String columnName);
+
+    /**
+     * Hides the row from the chart.
+     * @param rowName Canonical name of the row that has to be hidden.
+     */
+    public void removeRow(String rowName);
+
+    /**
+     * Makes a row visible in the chart.
+     * @param rowName Canonical name of the row that has to be made visible.
+     */
+	public void addRow(String rowName);
+
 	
 }

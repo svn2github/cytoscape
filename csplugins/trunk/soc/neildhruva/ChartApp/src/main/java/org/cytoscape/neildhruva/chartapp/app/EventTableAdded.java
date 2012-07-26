@@ -10,13 +10,14 @@ import org.cytoscape.application.events.SetCurrentNetworkListener;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.neildhruva.chartapp.ChartAppFactory;
-import org.cytoscape.neildhruva.chartapp.PanelManager;
+import org.cytoscape.neildhruva.chartapp.CytoChart;
 
 
 public class EventTableAdded implements SetCurrentNetworkListener{
 
 	private MyCytoPanel myCytoPanel; 
 	private ChartAppFactory chartAppFactory;
+	private JPanel jpanel;
 	
 	public EventTableAdded(MyCytoPanel myCytoPanel, ChartAppFactory chartAppFactory) {	
 		this.myCytoPanel = myCytoPanel;
@@ -35,11 +36,11 @@ public class EventTableAdded implements SetCurrentNetworkListener{
 		if(cyTable==null)
 			return;
 		
-		JPanel jpanel = chartAppFactory.createPanel(cyNetwork, cyTable);
+		CytoChart cytoChart = chartAppFactory.createChart(cyNetwork, cyTable);
+		this.jpanel = cytoChart.getJPanel();
 		myCytoPanel.setJPanel(jpanel);
-		PanelManager panelManager = chartAppFactory.getPanelManager();
 		
-		//demo code-----------------------
+		/*demo code-----------------------
 		List<String> rows = new ArrayList<String>();
 		rows.add("YJR060W");
 		rows.add("YLR264W");
@@ -47,7 +48,7 @@ public class EventTableAdded implements SetCurrentNetworkListener{
 		if(jpanel.getComponentCount()>1) {
 			panelManager.setRows(rows);
 		}
-		//--------------------------------
+		*/
 		
 		
 	}

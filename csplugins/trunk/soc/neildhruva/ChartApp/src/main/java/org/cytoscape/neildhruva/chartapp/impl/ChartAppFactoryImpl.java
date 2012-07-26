@@ -11,7 +11,7 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.neildhruva.chartapp.ChartAppFactory;
-import org.cytoscape.neildhruva.chartapp.PanelManager;
+import org.cytoscape.neildhruva.chartapp.CytoChart;
 
 import org.jfree.chart.ChartPanel;
 
@@ -21,58 +21,59 @@ public class ChartAppFactoryImpl implements ChartAppFactory {
 	private final int DEFAULT_HEIGHT = 600;
 	private final int DEFAULT_WIDTH = 800;
 	
+	private CyTableFactory tableFactory;
+	private CyNetworkTableManager cyNetworkTableManager;
+	private CyTableManager cyTableManager;
 	private JPanel jpanel;
-	private int tableColumnCount;
-	private PanelComponents panelComponents;
-	private PanelLayout panelLayout;
+	private ChartPanel myChartPanel=null;
 	
 	public ChartAppFactoryImpl(	CyTableFactory tableFactory,
-								CyNetworkTableManager cyNetworkTableMgr,
+								CyNetworkTableManager cyNetworkTableManager,
 								CyTableManager cyTableManager) {
 
-		this.panelLayout = new PanelLayout();
-		this.panelComponents = new PanelComponents(tableFactory, cyNetworkTableMgr, cyTableManager);
-	}
-	
-	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable) {
-		return createPanel(currentNetwork, cyTable, DEFAULT_MODE, DEFAULT_HEIGHT, DEFAULT_WIDTH, null, null);
-	}
-	
-	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode) {
+		this.tableFactory = tableFactory;
+		this.cyNetworkTableManager = cyNetworkTableManager;
+		this.cyTableManager = cyTableManager;
 		
-		return createPanel(currentNetwork, cyTable, mode, DEFAULT_HEIGHT, DEFAULT_WIDTH, null, null);
 	}
 	
-	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width){
-		return createPanel(currentNetwork, cyTable, mode, height, width, null, null);
+	public CytoChart createChart(CyNetwork currentNetwork, CyTable cyTable) {
+		return createChart(currentNetwork, cyTable, DEFAULT_MODE, DEFAULT_HEIGHT, DEFAULT_WIDTH, null, null);
 	}
 	
-	public JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width, String[] rows, String[] columns){
+	public CytoChart createChart(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode) {
+		return createChart(currentNetwork, cyTable, mode, DEFAULT_HEIGHT, DEFAULT_WIDTH, null, null);
+	}
+	
+	public CytoChart createChart(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width){
+		return createChart(currentNetwork, cyTable, mode, height, width, null, null);
+	}
+	
+	public CytoChart createChart(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width, String[] rows, String[] columns){
 		
-		JTable table = new JTable(new MyTableModel(cyTable));
-		tableColumnCount = table.getColumnCount();
+		PanelLayout panelLayout = new PanelLayout();
+		PanelComponents panelComponents = new PanelComponents(tableFactory, cyNetworkTableManager, cyTableManager);
+		
+		MyTableModel myTableModel = new MyTableModel(cyTable);
+		//tableColumnCount is the count of the plottable columns - int, long, double
+		int tableColumnCount = myTableModel.getColumnCount();
 		
 		if(tableColumnCount>0) {
-			panelComponents.initComponents(cyTable, currentNetwork, table, mode);
+			panelComponents.initComponents(cyTable, currentNetwork, mode, myTableModel);
 			
 			//get all components and send them to the panel layout class.
 			JComboBox chartTypeComboBox = panelComponents.getComboBox();
-			table = panelComponents.getTable();
 			JCheckBox[] checkBoxArray = panelComponents.getCheckBoxArray();
-			ChartPanel myChartPanel = panelComponents.getChartPanel();
+			this.myChartPanel = panelComponents.getChartPanel();
 			
-			jpanel = panelLayout.initLayout(table, tableColumnCount, checkBoxArray, chartTypeComboBox, myChartPanel);
+			jpanel = panelLayout.initLayout(tableColumnCount, checkBoxArray, chartTypeComboBox, myChartPanel);
 			
 		} else {
 			jpanel = panelLayout.nullJPanel();
 		}
 		
-		return jpanel;
-		
-	}
-	
-	public PanelManager getPanelManager() {
-		return new PanelManagerImpl(panelComponents, panelLayout);
+		CytoChart cytoChart = new CytoChartImpl(jpanel, myChartPanel, myTableModel, cyTable, mode, panelComponents, panelLayout);
+		return cytoChart;
 	}
 	
 }

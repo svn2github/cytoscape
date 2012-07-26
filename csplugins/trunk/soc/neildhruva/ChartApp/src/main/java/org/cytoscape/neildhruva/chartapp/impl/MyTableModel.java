@@ -1,7 +1,6 @@
 package org.cytoscape.neildhruva.chartapp.impl;
 
 import java.util.Collection;
-import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -53,8 +52,8 @@ public class MyTableModel extends AbstractTableModel {
 	}
 	
 	/**
-	 * Sets the count of columns from the <code>CyTable</code>, excluding the ones that 
-	 * contain data in the form of a <code>List</code>.
+	 * Sets the count of columns from the <code>CyTable</code>. Only those columns that contain
+	 * <code>Integer</code>, <code>Long</code> and <code>Double</code> data are added to the count.
 	 *
 	 */
 	public int setColumnCount() {
@@ -72,9 +71,8 @@ public class MyTableModel extends AbstractTableModel {
 	}
 	
 	/**
-	 * Sets the names of columns from the <code>CyTable</code>. Only those columns that don't
-	 * contain <code>List</code> data are added to the array.
-	 *
+	 * Sets the names of columns from the <code>CyTable</code>. Only those columns that contain
+	 * <code>Integer</code>, <code>Long</code> and <code>Double</code> data are added to the array.
 	 */
 	public String[] setColumnNames() {
 		String[] columnNameArray = new String [this.columnLength];

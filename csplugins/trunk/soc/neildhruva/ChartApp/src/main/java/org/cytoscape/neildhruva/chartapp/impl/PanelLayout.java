@@ -9,7 +9,6 @@ import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.LayoutStyle;
 
 import org.jfree.chart.ChartPanel;
@@ -40,14 +39,15 @@ public class PanelLayout {
 	 * @param checkBoxArray The JCheckBox[] array to be displayed in jpanel. 
 	 * @param chartTypeComboBox Used to select the type of chart.  
 	 */
-	public JPanel initLayout(JTable table, int tableColumnCount, JCheckBox[] checkBoxArray, JComboBox chartTypeComboBox,
+	public JPanel initLayout(int tableColumnCount, JCheckBox[] checkBoxArray, JComboBox chartTypeComboBox,
 							  ChartPanel myChartPanel){
 		
 		if(jpanel.getComponents().length>0)
 			jpanel.removeAll();
 		
 		jpanel.setBounds(0, 0, 2000, 2000);
-		jpanel.setPreferredSize(new Dimension(2000, 2000));
+		
+		jpanel.setPreferredSize(jpanel.getLayout().minimumLayoutSize(jpanel));
 		
 		this.checkBoxArray = checkBoxArray;
 		this.tableColumnCount = tableColumnCount;

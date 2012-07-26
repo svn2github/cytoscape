@@ -27,7 +27,7 @@ public interface ChartAppFactory {
 	 * @param cyTable The {@link CyTable} that contains values to be plotted on the {@link JFreeChart}
 	 * @return The {@link JPanel} consisting of the chart, checkboxes with column names etc.
 	 */
-	JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable);
+	CytoChart createChart(CyNetwork currentNetwork, CyTable cyTable);
 	
 	/**
 	 * Creates a {@link JPanel} consisting of a JFreeChart, checkboxes with column names etc.
@@ -36,7 +36,7 @@ public interface ChartAppFactory {
 	 * @param mode {@link AxisMode}
 	 * @return The {@link JPanel} consisting of the chart, checkboxes with column names etc.
 	 */
-	JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode);
+	CytoChart createChart(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode);
 	
 	/**
 	 * Creates a {@link JPanel} consisting of a JFreeChart, checkboxes with column names etc.
@@ -47,7 +47,7 @@ public interface ChartAppFactory {
 	 * @param width Width of the <code>ChartPanel</code>
 	 * @return
 	 */
-	JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width);
+	CytoChart createChart(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width);
 	
 	/**
 	 * Creates a {@link JPanel} consisting of a JFreeChart, checkboxes with column names etc.
@@ -60,14 +60,6 @@ public interface ChartAppFactory {
 	 * @param columns Names of columns to be plotted.
 	 * @return
 	 */
-	JPanel createPanel(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width, String[] rows, String[] columns);
+	CytoChart createChart(CyNetwork currentNetwork, CyTable cyTable, AxisMode mode, int height, int width, String[] rows, String[] columns);
 
-	/**
-	 * Gets an instance of a PanelManager for the <code>JPanel</code> created.
-	 * @return An instance of the PanelManager.
-	 */
-	PanelManager getPanelManager();
-	
-	
-	
 }
