@@ -321,7 +321,7 @@ $(function(){
         { id: "orientation",  label: "Orientation",   value: ["topToBottom","bottomToTop","leftToRight","rightToLeft"], tip: "The orientation of the layout." },
         { id: "depthSpace",   label: "Depth space",   value: 50, tip: "The space between depth levels in the tree." },
         { id: "breadthSpace", label: "Breadth space", value: 30, tip: "The space between siblings in the tree." },
-        { id: "subtreeSpace", label: "Angle width",   value: 5,  tip: "The space between different sub-trees." }
+        { id: "subtreeSpace", label: "Subtree space",   value: 5,  tip: "The space between different sub-trees." }
     ];
     layout_options["CompoundSpringEmbedder"] = [
 		{ id: "gravitation",                    label: "Gravitation",                       value: -50,   tip: "The gravitational constant. Negative values produce a repulsive force." },
