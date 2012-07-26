@@ -1,0 +1,51 @@
+package org.cytoscape.rest.internal.net.server;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.cytoscape.command.CommandExecutorTaskFactory;
+import org.cytoscape.work.SynchronousTaskManager;
+import org.cytoscape.rest.internal.net.server.LocalHttpServer.Response;
+import org.json.JSONObject;
+
+/**
+ * This class is responsible for handling POST requests received by the local HTTP server.
+ */
+public class FunctionGetResponder implements LocalHttpServer.PostResponder{
+
+	private final JSONFunctionExecutor functionExecutor;
+	
+	public FunctionGetResponder(JSONFunctionExecutor functionExecutor) {
+		this.functionExecutor = functionExecutor;
+	}
+
+	@Override
+	public boolean canRespondTo(String url) throws Exception {
+		return true;
+	}
+
+	@Override
+	public Response respond(String url, String body) throws Exception {
+		String[] full  = url.split("/");
+		int i = 0;
+		while (i<full.length) {
+			if (full[i].equals("cytoscape"))
+				break;
+			i++;
+		}
+
+		String namespace = full[++i];
+		String command = full[++i];
+		String args = "";
+		while (i<full.length-1) 
+			args = args + full[++i] + "/"; 
+		args = args.replaceAll("&"," ");
+	
+		JSONObject jsonObject = functionExecutor.execute(namespace,command,args); 
+
+		String responseBody = jsonObject.toString();
+		responseBody += "\n";
+		LocalHttpServer.Response response = new LocalHttpServer.Response(responseBody, "application/json");
+		return response;
+	}
+}
