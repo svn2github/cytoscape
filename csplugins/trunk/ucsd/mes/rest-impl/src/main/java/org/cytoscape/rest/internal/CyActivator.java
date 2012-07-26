@@ -1,6 +1,7 @@
 package org.cytoscape.rest.internal;
 
 import org.cytoscape.rest.internal.net.server.CommandPostResponder;
+import org.cytoscape.rest.internal.net.server.CommandGetResponder;
 import org.cytoscape.rest.internal.net.server.LocalHttpServer;
 import org.cytoscape.command.CommandExecutorTaskFactory;
 import org.cytoscape.work.SynchronousTaskManager;
@@ -30,6 +31,7 @@ public class CyActivator extends AbstractCyActivator {
 			public void run() {
 				server = new LocalHttpServer(2609, Executors.newSingleThreadExecutor());
 				server.addPostResponder(new CommandPostResponder(cetf,stm));
+				server.addGetResponder(new CommandGetResponder(cetf,stm));
 				server.run();
 			}
 		};
