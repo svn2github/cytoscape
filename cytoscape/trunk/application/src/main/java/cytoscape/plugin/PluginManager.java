@@ -904,8 +904,7 @@ public class PluginManager {
 				}
 
 				// try to get class name from the manifest file
-				String className = JarUtil.getPluginClass(jar.getName(),
-						PluginInfo.FileType.JAR);
+				String className = JarUtil.getManifestAttribute(jar.getManifest());
 
 				if (className != null) {
 					Class pc = getPluginClass(className);
