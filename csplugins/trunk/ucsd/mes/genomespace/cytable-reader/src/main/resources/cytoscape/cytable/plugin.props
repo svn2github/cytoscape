@@ -9,7 +9,7 @@ pluginName=CyTableReaderPlugin
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=CyTable Reader Plugin
+pluginDescription=CyTable attribute file format reader. 
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=0.1

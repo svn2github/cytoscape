@@ -9,7 +9,7 @@ pluginName=GenomeSpacePlugin
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=GenomeSpace Plugin
+pluginDescription=A plugin that enables communication with GenomeSpace.  Requires the GenomeSpace Libs plugin to work!
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=0.1
