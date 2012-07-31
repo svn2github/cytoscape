@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp codebase="$project.Url" href="$outputFile">
+  <information>
+    <title>Cytoscape</title>
+    <vendor>Cytoscape Consortium</vendor>
+    <homepage href="http://cytoscape.org"/>
+    <offline-allowed/>
+  </information>
+  <security>
+     <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="$j2seVersion"/>
+     $dependencies
+  </resources>
+  <application-desc main-class="$mainClass">
+  </application-desc>
+</jnlp>
+

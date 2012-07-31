@@ -13,6 +13,8 @@
 		<module>genomespace-plugin</module>
 		<module>ndb-reader</module>
 		<module>cytable-reader</module>
+		<module>weblaunch</module>
+		<module>weblaunch-webstart</module>
 		<!-- webstart actually has a different parent (cytoscape-webstart)
 		     so we don't include it here!  It needs to be built separately.
 		<module>genomespace-webstart</module>
