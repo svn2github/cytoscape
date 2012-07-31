@@ -28,7 +28,8 @@ if (!($tried)) {
 	}
 
 	// User confirmed to delete this bug report
-	deleteReportFromDB($bugid);
+	//deleteReportFromDB($bugid);
+	markReportStatusAsDeleted($bugid);
 
 	showPageHeader("Delete a bug report");
 	
@@ -40,6 +41,16 @@ if (!($tried)) {
 }
 
 ///////////////////// End of page ////////////////////////////////////
+
+function markReportStatusAsDeleted($bugid){
+
+	$connection = getDBConnection("edit");
+
+	$query = "Update bugs SET status = 'deleted' WHERE bug_auto_id =$bugid";
+	// Run the query
+	if (!($result = @ mysql_query($query, $connection)))
+		showerror();
+}
 
 
 function deleteReportFromDB($bugid){

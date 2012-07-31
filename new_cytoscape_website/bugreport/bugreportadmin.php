@@ -27,7 +27,7 @@
 
 <?php 
 	// Check if the reporter already existed in table 'reporter'
-	$dbQuery = "SELECT * FROM bugs,reporter where bugs.reporter_id = reporter.reporter_auto_id order by bug_auto_id";
+	$dbQuery = "SELECT * FROM bugs,reporter where bugs.reporter_id = reporter.reporter_auto_id and status = 'new' order by bug_auto_id";
 	// Run the query
 	if (!($result = @ mysql_query($dbQuery, $connection)))
 		showerror();
