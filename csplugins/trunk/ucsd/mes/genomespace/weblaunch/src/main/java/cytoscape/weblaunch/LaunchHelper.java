@@ -1,31 +1,28 @@
 package cytoscape.weblaunch;
 
 import java.awt.Desktop;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URISyntaxException;
-import java.net.MalformedURLException;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.event.HyperlinkListener;
-import javax.swing.event.HyperlinkEvent;
 import javax.swing.JFileChooser;
-import java.nio.channels.*;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.Channels;
 import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Properties;
 
 public class LaunchHelper {
+
 	private static String version = "Cytoscape_v2.8.3";
 	private static String installerURL = "http://www.cytoscape.org/download.html";
 
 	private static final String MAC = "mac os x";
 	private static final String WINDOWS = "windows";
+	private static final String PREFERRED_PATH = "preferred.path";
 
 	public static void main(String[] args) {
 
@@ -33,6 +30,48 @@ public class LaunchHelper {
 
 		String exe = getExecutable(os);
 		String path = getBestGuessPath(os);
+		path = validatePath(path, exe); 
+
+		if ( path == null )
+			return;
+
+		// OK, all systems go!
+
+		String[] plugins = downloadPlugins();
+		String[] command = createCommand(getFile(path,exe),plugins);
+
+		storePreferredPath(path);
+
+		launch(command);
+	}
+
+	private static void launch(final String[] command) {
+		try {
+			Runtime rt = Runtime.getRuntime();
+			Process p = rt.exec(command);
+			StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");
+			StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT");
+			errorGobbler.start();
+			outputGobbler.start();
+			int exitVal = p.waitFor();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null,
+							  "Error launching: " + command[0] + "\n\nCaused by\n" + e.getMessage(),
+							  "Could Not Launch Cytoscape",
+							  JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private static void storePreferredPath(String path) {
+		try {
+			Properties props = new Properties();
+			props.setProperty(PREFERRED_PATH,path);
+			props.store( new FileOutputStream( getPropsFile() ), "Properties for GenomeSpace");
+		} catch (IOException ioe) { ioe.printStackTrace(System.err); }
+	}
+
+	private static String validatePath(final String inpath, final String exe) {
+		String path = inpath;
 
 		if ( !executableExists(path,exe) ) {
 			File file = getDirectory();
@@ -52,35 +91,20 @@ public class LaunchHelper {
 				if (returnVal == JFileChooser.APPROVE_OPTION) 
 					path = fc.getSelectedFile().getAbsolutePath();
 			} else {
-				return;
+				return null;
 			}
 		}
 
-		String[] command = createCommand(getFile(path,exe),downloadPlugins());
-
-		try {
-			Runtime rt = Runtime.getRuntime();
-			Process p = rt.exec(command);
-			StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");
-			StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT");
-			errorGobbler.start();
-			outputGobbler.start();
-			int exitVal = p.waitFor();
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null,
-							  "Cannot launch "+exe+" in\n" + path,
-							  "Cannot Launch Executable",
-							  JOptionPane.ERROR_MESSAGE);
-		}
+		return path;
 	}
 
-	private static String[] createCommand(File f, String[] plugins) {
+	private static String[] createCommand(final File f, final String[] plugins) {
 		String[] command = new String[ (plugins.length * 2) + 1];
 		int i = 0;
 		command[i] = f.getAbsolutePath();
-		for ( String p : plugins ) {
+		for ( String plugin : plugins ) {
 			command[++i] = "-p";
-			command[++i] = p;
+			command[++i] = plugin;
 		}
 		return command;
 	}
@@ -94,14 +118,19 @@ public class LaunchHelper {
 			"http://chianti.ucsd.edu/cyto_web/plugins/pluginjardownload.php?id=493"  // NDB Reader
 		};
 
-		String[] filePaths = new String[urls.length];
-		for (int i = 0; i < urls.length; i++) { 
-			filePaths[i] = downloadURL(urls[i]).getAbsolutePath();	
+		List<String> filePaths = new ArrayList<String>(); 
+		for (String url : urls) { 
+			File f = downloadURL(url);
+			if ( f != null )
+				filePaths.add( f.getAbsolutePath() );
+			else
+				System.err.println("Couldn't download plugin URL: " + url);
 		}
-		return filePaths;
+
+		return filePaths.toArray(new String[filePaths.size()]);
 	}
 
-	private static File downloadURL(String u) {
+	private static File downloadURL(final String u) {
 		File f = null;
 		FileOutputStream fos = null; 
 		try {
@@ -112,26 +141,26 @@ public class LaunchHelper {
 			fos.getChannel().transferFrom(rbc, 0, 1 << 24);
 			fos.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace(System.err);
 		} finally {
 			if ( fos != null ) {
-				try { fos.close(); } catch (IOException ioe) { }
+				try { fos.close(); } catch (IOException ioe) { ioe.printStackTrace(System.err); }
 				fos = null;
 			}
 		}
 		return f;
 	}
 
-	private static boolean executableExists(String path, String exe) {
+	private static boolean executableExists(final String path, final String exe) {
 		File file = getFile(path,exe); 
 		return file.exists(); 
 	}
 
-	private static File getFile(String path, String exe) {
+	private static File getFile(final String path, final String exe) {
 		return new File(path + System.getProperty("file.separator") + exe);
 	}
 
-	private static String getExecutable(String os) {
+	private static String getExecutable(final String os) {
 		String exe; 
 		if (os.startsWith(WINDOWS))	
 			exe = "cytoscape.bat"; 
@@ -141,8 +170,11 @@ public class LaunchHelper {
 		return exe;
 	}
 
-	private static String getBestGuessPath(String os) {
-		String path;
+	private static String getBestGuessPath(final String os) {
+		String path = getPreferredPath();
+		if ( path != null )
+			return path;
+		
 		if (os.equals(MAC))  
 			path = "/Applications";
 		else						
@@ -151,7 +183,27 @@ public class LaunchHelper {
 		return path;
 	}
 
-	private static void openURL(String urlString) {
+	private static File getPropsFile() {
+		File f = new File( System.getProperty("user.home") + System.getProperty("file.separator") + 
+		                   ".cytoscape" +  System.getProperty("file.separator") + "genomespace-cytoscape.props" );
+		return f;
+	}
+
+	private static String getPreferredPath() {
+		try { 
+			File f = getPropsFile(); 
+			if ( !f.exists() )
+				return null;
+
+			Properties props = new Properties();
+			props.load( new FileInputStream(f) );
+			return props.getProperty(PREFERRED_PATH);
+
+		} catch (IOException ioe) { ioe.printStackTrace(System.err); }
+		return null;
+	}
+
+	private static void openURL(final String urlString) {
 		URL url = null; 
 
 		try {
@@ -185,20 +237,10 @@ public class LaunchHelper {
 	
 			URI uri = new URI(url.toString());
 			desktop.browse(uri);
-		} catch (URISyntaxException e) {
+		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null,
-							  "URISyntaxException: Failed to launch the link to installer:\n"+url,
-							  "Cannot Launch Link",
-							  JOptionPane.ERROR_MESSAGE);
-		} catch (MalformedURLException e) {
-			JOptionPane.showMessageDialog(null,
-							  "MalformedURLException: Failed to launch the link to installer:\n"+url,
-							  "Cannot Launch Link",
-							  JOptionPane.ERROR_MESSAGE);
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null,
-							  "IOException: Failed to launch the link to installer:\n"+url,
-							  "Cannot Launch Link",
+							  "Exception: Failed to launch the link to installer:\n"+url,
+							  "Could Not Open Link",
 							  JOptionPane.ERROR_MESSAGE);
 		}
 	}
