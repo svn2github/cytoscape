@@ -5,8 +5,11 @@ Cytoscape as a webstart. To generate things run:
 	mvn webstart:jnlp-inline -Dwebstart.url=http://example.com
 
 Note that the "-Dwebstart.url=http://example.com" argument is manadatory to 
-provide the jnlp file with a codebase.
+provide the jnlp file with a codebase.  
 
+The actual GenomeSpace command is:
+
+	mvn clean webstart:jnlp-inline -Dwebstart.url=http://chianti.ucsd.edu/genomespace
 
 If this is your first time using Webstart you must create a keystore:
 
