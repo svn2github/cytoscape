@@ -17,7 +17,16 @@ import java.util.Properties;
 
 public class LaunchHelper {
 
-	private static String version = "Cytoscape_v2.8.3";
+	private static String[] versions = new String[] {"Cytoscape_v2.8.3","Cytoscape_v2.8.2",
+	                                                 "Cytoscape_v2.8.1","Cytoscape_v2.8.0"};
+
+	private static String[] pluginUrls = new String[] { 
+			"http://chianti.ucsd.edu/cyto_web/plugins/pluginjardownload.php?id=496", // GenomeSpace libs
+			"http://chianti.ucsd.edu/cyto_web/plugins/pluginjardownload.php?id=495", // GenomeSpace
+			"http://chianti.ucsd.edu/cyto_web/plugins/pluginjardownload.php?id=494", // CyTable reader
+			"http://chianti.ucsd.edu/cyto_web/plugins/pluginjardownload.php?id=493"  // NDB Reader
+		};
+
 	private static String installerURL = "http://www.cytoscape.org/download.html";
 
 	private static final String MAC = "mac os x";
@@ -29,7 +38,7 @@ public class LaunchHelper {
 		String os = System.getProperty("os.name").toLowerCase();
 
 		String exe = getExecutable(os);
-		String path = getBestGuessPath(os);
+		String path = getBestGuessPath(os,exe);
 		path = validatePath(path, exe); 
 
 		if ( path == null )
@@ -74,7 +83,7 @@ public class LaunchHelper {
 		String path = inpath;
 
 		if ( !executableExists(path,exe) ) {
-			File file = getDirectory();
+			File file = getUserSelectedDirectory();
 			if ( file != null )
 				path = file.getAbsolutePath();
 		}
@@ -111,15 +120,8 @@ public class LaunchHelper {
 
 	private static String[] downloadPlugins() {
 
-		String[] urls = new String[] { 
-			"http://chianti.ucsd.edu/cyto_web/plugins/pluginjardownload.php?id=496", // GenomeSpace libs
-			"http://chianti.ucsd.edu/cyto_web/plugins/pluginjardownload.php?id=495", // GenomeSpace
-			"http://chianti.ucsd.edu/cyto_web/plugins/pluginjardownload.php?id=494", // CyTable reader
-			"http://chianti.ucsd.edu/cyto_web/plugins/pluginjardownload.php?id=493"  // NDB Reader
-		};
-
 		List<String> filePaths = new ArrayList<String>(); 
-		for (String url : urls) { 
+		for (String url : pluginUrls) { 
 			File f = downloadURL(url);
 			if ( f != null )
 				filePaths.add( f.getAbsolutePath() );
@@ -152,6 +154,8 @@ public class LaunchHelper {
 	}
 
 	private static boolean executableExists(final String path, final String exe) {
+		if ( path == null || exe == null )
+			return false;
 		File file = getFile(path,exe); 
 		return file.exists(); 
 	}
@@ -170,16 +174,25 @@ public class LaunchHelper {
 		return exe;
 	}
 
-	private static String getBestGuessPath(final String os) {
+	private static String getBestGuessPath(final String os, final String exe) {
 		String path = getPreferredPath();
 		if ( path != null )
 			return path;
-		
+	
 		if (os.equals(MAC))  
 			path = "/Applications";
 		else						
 			path = System.getProperty("user.home");
-		path += "/" + version;
+
+		// allow older versions of cytoscape 
+		for ( String version : versions ) {	
+			String npath = path + "/" + version;
+			if ( executableExists(npath,exe) ) {
+				path = npath;
+				break;	
+			} 
+		}
+				
 		return path;
 	}
 
@@ -245,7 +258,7 @@ public class LaunchHelper {
 		}
 	}
 
-	private static File getDirectory() {
+	private static File getUserSelectedDirectory() {
 		int res = JOptionPane.showConfirmDialog(null, "Is Cytoscape installed on this computer?", "Select Cytoscape Installation Directory", JOptionPane.YES_NO_OPTION);	
 
 		if ( res == JOptionPane.YES_OPTION ) {
