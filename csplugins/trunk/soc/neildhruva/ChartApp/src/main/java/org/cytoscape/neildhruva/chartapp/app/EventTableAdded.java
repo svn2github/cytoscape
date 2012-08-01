@@ -10,6 +10,7 @@ import org.cytoscape.application.events.SetCurrentNetworkListener;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.neildhruva.chartapp.ChartAppFactory;
+import org.cytoscape.neildhruva.chartapp.ChartAppFactory.AxisMode;
 import org.cytoscape.neildhruva.chartapp.CytoChart;
 
 
@@ -18,10 +19,13 @@ public class EventTableAdded implements SetCurrentNetworkListener{
 	private MyCytoPanel myCytoPanel; 
 	private ChartAppFactory chartAppFactory;
 	private JPanel jpanel;
+	private MyCytoPanel2 myCytoPanel2;
+	private JPanel jpanel2;
 	
-	public EventTableAdded(MyCytoPanel myCytoPanel, ChartAppFactory chartAppFactory) {	
+	public EventTableAdded(MyCytoPanel myCytoPanel, ChartAppFactory chartAppFactory, MyCytoPanel2 myCytoPanel2) {	
 		this.myCytoPanel = myCytoPanel;
 		this.chartAppFactory = chartAppFactory;
+		this.myCytoPanel2 = myCytoPanel2;
 	}
 
 	@Override
@@ -35,20 +39,27 @@ public class EventTableAdded implements SetCurrentNetworkListener{
 		final CyTable cyTable = e.getNetwork().getDefaultNodeTable();
 		if(cyTable==null)
 			return;
+		CytoChart cytoChart;
+		if(chartAppFactory.isChartSaved(cyTable, cyNetwork)) {
+			 cytoChart = chartAppFactory.getSavedChart(cyNetwork, cyTable);
+		} else {
+			List<String> rowNames = new ArrayList<String>();
+			rowNames.add("YJR060W");
+			rowNames.add("YLR264W");
+			rowNames.add("YDR309C");
+			//rowNames.add("YJR060W");
+			cytoChart = chartAppFactory.createChart(cyNetwork, cyTable, AxisMode.ROWS, 8, 8, rowNames, null);
+		}
 		
-		CytoChart cytoChart = chartAppFactory.createChart(cyNetwork, cyTable);
+		//TODO allow the user to name their cytochart
+		
 		this.jpanel = cytoChart.getJPanel();
 		myCytoPanel.setJPanel(jpanel);
 		
-		/*demo code-----------------------
-		List<String> rows = new ArrayList<String>();
-		rows.add("YJR060W");
-		rows.add("YLR264W");
-		rows.add("YDR309C");
-		if(jpanel.getComponentCount()>1) {
-			panelManager.setRows(rows);
-		}
-		*/
+		//cytoChart = chartAppFactory.createChart(cyNetwork, cyTable);
+		//this.jpanel2 = cytoChart.getJPanel();
+		//my2.setJPanel(jpanel);
+		
 		
 		
 	}

@@ -34,10 +34,10 @@ public class PanelLayout {
     
 	/**
 	 * Initializes the JTable and the JCheckBox[] array to be added to jpanel.
-	 * @param jtable The JTable to be displayed in jpanel.
 	 * @param tableColumnCount The initial column count of the JTable .
 	 * @param checkBoxArray The JCheckBox[] array to be displayed in jpanel. 
 	 * @param chartTypeComboBox Used to select the type of chart.  
+	 * @param myChartPanel The <code>ChartPanel</code> containing the chart.
 	 */
 	public JPanel initLayout(int tableColumnCount, JCheckBox[] checkBoxArray, JComboBox chartTypeComboBox,
 							  ChartPanel myChartPanel){
@@ -45,7 +45,7 @@ public class PanelLayout {
 		if(jpanel.getComponents().length>0)
 			jpanel.removeAll();
 		
-		jpanel.setBounds(0, 0, 2000, 2000);
+		//jpanel.setBounds(0, 0, 2000, 2000);
 		
 		jpanel.setPreferredSize(jpanel.getLayout().minimumLayoutSize(jpanel));
 		
@@ -65,7 +65,7 @@ public class PanelLayout {
 	}
 	
 	/**
-	 * Adds the JTable and the JCheckBox[] array to the layout of jpanel.
+	 * Adds the <code>JFreeChart</code> the <code>JCheckBox[]</code> and the <code>JComboBox</code> array to the layout of jpanel.
 	 */
 	public void initPanel(){
 		

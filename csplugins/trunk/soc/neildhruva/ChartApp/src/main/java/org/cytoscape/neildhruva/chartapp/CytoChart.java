@@ -83,6 +83,6 @@ public interface CytoChart {
      * @param rowName Canonical name of the row that has to be made visible.
      */
 	public void addRow(String rowName);
-
 	
+		
 }
