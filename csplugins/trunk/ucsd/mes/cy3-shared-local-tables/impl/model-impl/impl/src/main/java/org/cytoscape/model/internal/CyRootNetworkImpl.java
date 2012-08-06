@@ -108,9 +108,9 @@ public final class CyRootNetworkImpl extends DefaultTablesNetwork implements CyR
 		
 		createRootNetworkTables();
 		initTables(this, 
-		           (SharedTableFacade)(networkTableMgr.getTable(this, CyNetwork.class, "SHARED_ATTRS_FACADE")),
-		           (SharedTableFacade)(networkTableMgr.getTable(this, CyNode.class, "SHARED_ATTRS_FACADE")),
-				   (SharedTableFacade)(networkTableMgr.getTable(this, CyEdge.class, "SHARED_ATTRS_FACADE")) );
+		           (SharedTableFacade)(networkTableMgr.getTable(this, CyNetwork.class, CyRootNetwork.SHARED_DEFAULT_ATTRS)),
+		           (SharedTableFacade)(networkTableMgr.getTable(this, CyNode.class, CyRootNetwork.SHARED_DEFAULT_ATTRS)),
+				   (SharedTableFacade)(networkTableMgr.getTable(this, CyEdge.class, CyRootNetwork.SHARED_DEFAULT_ATTRS)) );
 
 		getRow(this).set(CyNetwork.NAME, "");
 
@@ -160,7 +160,7 @@ public final class CyRootNetworkImpl extends DefaultTablesNetwork implements CyR
 		final CyTable edgeSharedTable = new SharedTableFacade(rawEdgeSharedTable,this,CyEdge.class,networkTableMgr);
 
 		networkTableMgr.setTable(this, CyEdge.class, CyRootNetwork.SHARED_ATTRS, rawEdgeSharedTable);
-		networkTableMgr.setTable(this, CyEdge.class, "SHARED_ATTRS_FACADE", edgeSharedTable);
+		networkTableMgr.setTable(this, CyEdge.class, CyRootNetwork.SHARED_DEFAULT_ATTRS, edgeSharedTable);
 
 		edgeSharedTable.createColumn(CyRootNetwork.SHARED_NAME, String.class, true);
 		edgeSharedTable.createColumn(CyRootNetwork.SHARED_INTERACTION, String.class, true);
@@ -171,7 +171,7 @@ public final class CyRootNetworkImpl extends DefaultTablesNetwork implements CyR
 		final CyTable networkSharedTable = new SharedTableFacade(rawNetworkSharedTable,this,CyNetwork.class,networkTableMgr);
 
 		networkTableMgr.setTable(this, CyNetwork.class, CyRootNetwork.SHARED_ATTRS, rawNetworkSharedTable);
-		networkTableMgr.setTable(this, CyNetwork.class, "SHARED_ATTRS_FACADE", networkSharedTable);
+		networkTableMgr.setTable(this, CyNetwork.class, CyRootNetwork.SHARED_DEFAULT_ATTRS, networkSharedTable);
 		
 		networkSharedTable.createColumn(CyRootNetwork.SHARED_NAME, String.class, true);
 		
@@ -179,7 +179,7 @@ public final class CyRootNetworkImpl extends DefaultTablesNetwork implements CyR
 
 		final CyTable nodeSharedTable = new SharedTableFacade(rawNodeSharedTable,this,CyNode.class,networkTableMgr);
 		networkTableMgr.setTable(this, CyNode.class, CyRootNetwork.SHARED_ATTRS, rawNodeSharedTable);
-		networkTableMgr.setTable(this, CyNode.class, "SHARED_ATTRS_FACADE", nodeSharedTable);
+		networkTableMgr.setTable(this, CyNode.class, CyRootNetwork.SHARED_DEFAULT_ATTRS, nodeSharedTable);
 		
 		nodeSharedTable.createColumn(CyRootNetwork.SHARED_NAME, String.class, true);
 	}
@@ -288,10 +288,10 @@ public final class CyRootNetworkImpl extends DefaultTablesNetwork implements CyR
 		networkAddedListenerDelegator.addListener(sub);
 		
 		subNetworks.add(sub);
-		nameSetListener.addInterestedTables(sub.getDefaultNetworkTable(),networkTableMgr.getTable(this, CyNetwork.class, "SHARED_ATTRS_FACADE"));
-		nameSetListener.addInterestedTables(sub.getDefaultNodeTable(),networkTableMgr.getTable(this, CyNode.class, "SHARED_ATTRS_FACADE"));
-		nameSetListener.addInterestedTables(sub.getDefaultEdgeTable(),networkTableMgr.getTable(this, CyEdge.class, "SHARED_ATTRS_FACADE"));
-		interactionSetListener.addInterestedTables(sub.getDefaultEdgeTable(), networkTableMgr.getTable(this, CyEdge.class, "SHARED_ATTRS_FACADE"));
+		nameSetListener.addInterestedTables(sub.getDefaultNetworkTable(),networkTableMgr.getTable(this, CyNetwork.class, CyRootNetwork.SHARED_DEFAULT_ATTRS));
+		nameSetListener.addInterestedTables(sub.getDefaultNodeTable(),networkTableMgr.getTable(this, CyNode.class, CyRootNetwork.SHARED_DEFAULT_ATTRS));
+		nameSetListener.addInterestedTables(sub.getDefaultEdgeTable(),networkTableMgr.getTable(this, CyEdge.class, CyRootNetwork.SHARED_DEFAULT_ATTRS));
+		interactionSetListener.addInterestedTables(sub.getDefaultEdgeTable(), networkTableMgr.getTable(this, CyEdge.class, CyRootNetwork.SHARED_DEFAULT_ATTRS));
 
 		
 		return sub;
@@ -327,17 +327,17 @@ public final class CyRootNetworkImpl extends DefaultTablesNetwork implements CyR
 
 	@Override
 	public CyTable getSharedNetworkTable() {
-		return networkTableMgr.getTable(this, CyNetwork.class, "SHARED_ATTRS_FACADE"); 
+		return networkTableMgr.getTable(this, CyNetwork.class, CyRootNetwork.SHARED_DEFAULT_ATTRS); 
 	}
 
 	@Override
 	public CyTable getSharedNodeTable() {
-		return networkTableMgr.getTable(this, CyNode.class, "SHARED_ATTRS_FACADE"); 
+		return networkTableMgr.getTable(this, CyNode.class, CyRootNetwork.SHARED_DEFAULT_ATTRS); 
 	}
 
 	@Override
 	public CyTable getSharedEdgeTable() {
-		return networkTableMgr.getTable(this, CyEdge.class, "SHARED_ATTRS_FACADE"); 
+		return networkTableMgr.getTable(this, CyEdge.class, CyRootNetwork.SHARED_DEFAULT_ATTRS); 
 	}
 
 	@Override

@@ -40,16 +40,12 @@ import java.util.Set;
 import org.cytoscape.equations.Equation;
 import org.cytoscape.equations.Interpreter;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.SavePolicy;
 import org.cytoscape.model.SUIDFactory;
-import org.cytoscape.model.CyNetworkTableManager;
-import org.cytoscape.model.CyIdentifiable;
-import org.cytoscape.model.subnetwork.CyRootNetwork;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.VirtualColumnInfo;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
@@ -70,77 +66,57 @@ import org.slf4j.LoggerFactory;
 
 
 /**
+ * A facade class that provides a unified interface for a default table
+ * that has properties of both shared and local tables. All accessor methods
+ * query the local table.  All table metadata (public, mutability, etc.) is
+ * stored and accessed in the local table. All column creation methods create the columns
+ * on the shared table and then immediately create a virtual column of this
+ * new column in the local table.  All virtual column methods create virtual 
+ * columns in both the shared and local tables. 
  */
-public final class SharedTableFacade extends AbstractTableFacade implements CyTable {
+public final class LocalTableFacade extends AbstractTableFacade implements CyTable {
 	
-	private static final Logger logger = LoggerFactory.getLogger(SharedTableFacade.class);
-	private final CyTable shared; 
-	private final CyRootNetwork rootNetwork; 
-	private final Class<? extends CyIdentifiable> type;
-	private final CyNetworkTableManager netTableMgr;
+	
+	private static final Logger logger = LoggerFactory.getLogger(LocalTableFacade.class);
+	private final CyTable shared;
+	private final CyTable local;
 
-	public SharedTableFacade(CyTable shared, CyRootNetwork rootNetwork, Class<? extends CyIdentifiable> type, CyNetworkTableManager netTableMgr ) {
-		super(shared);
+	public LocalTableFacade(CyTable local, SharedTableFacade shared) {
+		super(local);
+		this.local = local;
 		this.shared = shared;
-		this.rootNetwork = rootNetwork;
-		this.type = type;
-		this.netTableMgr = netTableMgr;
+
+		// this adds virtual columns for any existing columns already in the shared table
+		local.addVirtualColumns(shared.getActualTable(), CyIdentifiable.SUID, true);
 	}
 
-	CyTable getActualTable() {
-		return shared;
+	CyTable getLocalTable() {
+		return local;
 	}
-
-	private List<CyTable> localTables() {
-		logger.debug("  - looking for local tables: ");
-		List<CyTable> tables = new ArrayList<CyTable>();
-		tables.add( netTableMgr.getTable( rootNetwork, type, CyNetwork.LOCAL_ATTRS ) );
-		for (CyNetwork sub : rootNetwork.getSubNetworkList()) {
-			logger.debug("  -- found subnetwork with local tables: " + sub.toString());
-			tables.add( netTableMgr.getTable( sub, type, CyNetwork.LOCAL_ATTRS ) );
-		}
-		return tables;
-	}
-
 
 	public <T> void createColumn(String columnName, Class<?extends T> type, boolean isImmutable) {
-		createColumn(columnName, type, isImmutable,null);
+		createColumn(columnName,type,isImmutable,null);
 	}
 
 	public <T> void createColumn(String columnName, Class<?extends T> type, boolean isImmutable, T defaultValue) {
-		logger.debug("adding real column: '" + columnName + "' to table: " + shared.getTitle());
-		shared.createColumn(columnName, type, isImmutable,defaultValue);
-		for ( CyTable local : localTables() ) {
-			if ( local == null ) {
-				logger.debug("NULL table!");
-				continue;
-			}
-				
-			logger.debug("adding virtual column: " + columnName + " to local table: " + local.getTitle());
-			local.addVirtualColumn(columnName,columnName,shared,CyIdentifiable.SUID,isImmutable);
-		}
+		logger.debug("delegating createColumn '" + columnName + "' from local " + local.getTitle() + " to shared: " + shared.getTitle());
+		shared.createColumn(columnName,type,isImmutable,defaultValue);
 	}
 
 	public <T> void createListColumn(String columnName, Class<T> listElementType, boolean isImmutable) {
-		createListColumn(columnName, listElementType, isImmutable,null);
+		createListColumn(columnName,listElementType,isImmutable,null);
 	}
 
 	public <T> void createListColumn(String columnName, Class<T> listElementType, boolean isImmutable, List<T> defaultValue ) {
-		shared.createListColumn(columnName, listElementType, isImmutable, defaultValue);
-		for ( CyTable local : localTables() ) 
-			local.addVirtualColumn(columnName,columnName,shared,CyIdentifiable.SUID,isImmutable);
+		shared.createListColumn(columnName,listElementType,isImmutable,defaultValue);
 	}
 
 	public String addVirtualColumn(String virtualColumn, String sourceColumn, CyTable sourceTable, String targetJoinKey, boolean isImmutable) {
-		//String ret = shared.addVirtualColumn(virtualColumn, sourceColumn, sourceTable, targetJoinKey, isImmutable);
-		for ( CyTable local : localTables() ) 
-			local.addVirtualColumn(virtualColumn, sourceColumn, sourceTable, targetJoinKey, isImmutable);
-		return virtualColumn;
+		String s = shared.addVirtualColumn(virtualColumn, sourceColumn, sourceTable, targetJoinKey, isImmutable);
+		return s;
 	}
 
 	public void addVirtualColumns(CyTable sourceTable, String targetJoinKey, boolean isImmutable) {
-	//	shared.addVirtualColumns(sourceTable, targetJoinKey, isImmutable);
-		for ( CyTable local : localTables() ) 
-			local.addVirtualColumns(sourceTable, targetJoinKey, isImmutable);
+		shared.addVirtualColumns(sourceTable, targetJoinKey, isImmutable);
 	}
 }

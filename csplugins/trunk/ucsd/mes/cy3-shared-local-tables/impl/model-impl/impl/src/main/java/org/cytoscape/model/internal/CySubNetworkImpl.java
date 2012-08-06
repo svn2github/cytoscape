@@ -90,9 +90,9 @@ public final class CySubNetworkImpl extends DefaultTablesNetwork implements CySu
 		this.savePolicy = savePolicy;
 		
 		initTables(this, 
-		           (SharedTableFacade)(networkTableMgr.getTable(parent, CyNetwork.class, "SHARED_ATTRS_FACADE")),
-		           (SharedTableFacade)(networkTableMgr.getTable(parent, CyNode.class, "SHARED_ATTRS_FACADE")),
-				   (SharedTableFacade)(networkTableMgr.getTable(parent, CyEdge.class, "SHARED_ATTRS_FACADE")) );
+		           (SharedTableFacade)(networkTableMgr.getTable(parent, CyNetwork.class, CyRootNetwork.SHARED_DEFAULT_ATTRS)),
+		           (SharedTableFacade)(networkTableMgr.getTable(parent, CyNode.class, CyRootNetwork.SHARED_DEFAULT_ATTRS)),
+				   (SharedTableFacade)(networkTableMgr.getTable(parent, CyEdge.class, CyRootNetwork.SHARED_DEFAULT_ATTRS)) );
 
 		fireAddedNodesAndEdgesEvents = false;		
 	}
