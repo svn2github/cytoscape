@@ -150,6 +150,7 @@ public final class LocalTableFacade implements CyTable {
 	}
 
 	public <T> void createListColumn(String columnName, Class<T> listElementType, boolean isImmutable, List<T> defaultValue ) {
+		logger.debug("delegating createListColumn '" + columnName + "' from local " + local.getTitle() + " to shared: " + shared.getTitle());
 		shared.createListColumn(columnName,listElementType,isImmutable,defaultValue);
 	}
 
