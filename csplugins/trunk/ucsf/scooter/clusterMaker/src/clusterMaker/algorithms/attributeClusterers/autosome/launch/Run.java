@@ -31,7 +31,7 @@ import java.io.*;
 import java.util.*;
 import clusterMaker.algorithms.attributeClusterers.autosome.mapping.som.*;
 import clusterMaker.algorithms.attributeClusterers.autosome.mapping.cartogram.*;
-import clusterMaker.algorithms.attributeClusterers.autosome.MSTEnsemble.Ensemble;
+import clusterMaker.algorithms.attributeClusterers.autosome.clustering.Ensemble;
 import clusterMaker.algorithms.attributeClusterers.autosome.clustering.mst.*;
 import java.text.*;
 import javax.swing.*;

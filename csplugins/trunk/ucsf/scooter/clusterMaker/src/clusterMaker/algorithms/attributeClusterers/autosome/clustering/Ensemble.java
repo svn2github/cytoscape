@@ -1,4 +1,4 @@
-package clusterMaker.algorithms.attributeClusterers.autosome.MSTEnsemble;
+package clusterMaker.algorithms.attributeClusterers.autosome.clustering;
 
 /*
 ***********************************************************************************************

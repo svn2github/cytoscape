@@ -53,8 +53,8 @@ import cytoscape.task.TaskMonitor;
 
 import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
-import clusterMaker.algorithms.attributeClusterers.silhouette.SilhouetteResult;
-import clusterMaker.algorithms.attributeClusterers.silhouette.SilhouetteUtil;
+import clusterMaker.algorithms.attributeClusterers.silhouette.SilhouetteCalculator;
+import clusterMaker.algorithms.attributeClusterers.silhouette.Silhouettes;
 
 /**
  * This abstract class is the base class for all of the attribute clusterers provided by
@@ -72,7 +72,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 	protected String weightAttributes[] = null;
 	protected int kMax = -1;
 	protected boolean initializeNearCenter = false;
-	private SilhouetteResult[] silhouetteResults = null;
+	private Silhouettes[] silhouetteResults = null;
 
 	protected boolean adjustDiagonals = false;
 	protected boolean debug = false;
@@ -330,7 +330,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 			TaskMonitor saveMonitor = monitor;
 			monitor = null;
 
-			silhouetteResults = new SilhouetteResult[kMax];
+			silhouetteResults = new Silhouettes[kMax];
 
 			int nThreads = Runtime.getRuntime().availableProcessors()-1;
 			if (nThreads > 1)
@@ -343,7 +343,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 			// Now get the results and find our best k
 			double maxSil = Double.MIN_VALUE;
 			for (int kEstimate = 2; kEstimate < kMax; kEstimate++) {
-				double sil = silhouetteResults[kEstimate].getAverageSilhouette();
+				double sil = silhouetteResults[kEstimate].getMean();
 				// System.out.println("Average silhouette for "+kEstimate+" clusters is "+sil);
 				if (sil > maxSil) {
 					maxSil = sil;
@@ -363,7 +363,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		if (halted()) return "Halted by user";
 
 		// OK, now run our silhouette on our final result
-		SilhouetteResult sResult = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
+		Silhouettes sResult = SilhouetteCalculator.calculate(matrix, metric, clusters);
 		// System.out.println("Average silhouette = "+sResult.getAverageSilhouette());
 		// SilhouetteUtil.printSilhouette(sResult, clusters);
 
@@ -381,7 +381,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		// Update the network attributes
 		updateAttributes(algorithm);
 
-		String resultString =  "Created "+nClusters+" clusters with average silhouette = "+sResult.getAverageSilhouette();
+		String resultString =  "Created "+nClusters+" clusters with average silhouette = "+sResult.getMean();
 		logger.info(resultString);
 		return resultString;
 	}
@@ -492,7 +492,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 			if (halted()) return;
 			if (saveMonitor != null) saveMonitor.setStatus("Getting silhouette with a k estimate of "+kEstimate);
 			int ifound = kcluster(kEstimate, nIterations, matrix, metric, clusters);
-			silhouetteResults[kEstimate] = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
+			silhouetteResults[kEstimate] = SilhouetteCalculator.calculate(matrix, metric, clusters);
 		}
 	}
 
@@ -556,7 +556,7 @@ public abstract class AbstractAttributeClusterAlgorithm {
 			if (saveMonitor != null) saveMonitor.setStatus("Getting silhouette with a k estimate of "+kEstimate);
 			int ifound = kcluster(kEstimate, nIterations, matrix, metric, clusters);
 			try {
-				silhouetteResults[kEstimate] = SilhouetteUtil.SilhouetteCalculator(matrix, metric, clusters);
+				silhouetteResults[kEstimate] = SilhouetteCalculator.calculate(matrix, metric, clusters);
 			} catch (Exception e) { e.printStackTrace(); }
 		}
 	}

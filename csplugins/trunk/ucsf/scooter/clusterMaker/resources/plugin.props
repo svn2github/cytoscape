@@ -28,7 +28,7 @@ projectURL=http://www.rbvi.ucsf.edu/cytoscape/cluster/clusterMaker.html
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=John "Scooter" Morris, Leonard Apeltsin:UCSF;Aaron Newman:UCSB;Jan Baumbach:Max Planck Institut fur Informatik;Tobias Wittkop:Buck Institute;Gang Su:University of Michigan;Gary Bader:University of Toronto
+pluginAuthorsIntsitutions=John "Scooter" Morris, Leonard Apeltsin:UCSF;Aaron Newman:UCSB;Jan Baumbach:Max Planck Institut fur Informatik;Tobias Wittkop:Buck Institute;Gang Su:University of Michigan;Gary Bader, David Shih:University of Toronto
 
 # Date this plugin/plugin version was released
 releaseDate=October 23, 2011

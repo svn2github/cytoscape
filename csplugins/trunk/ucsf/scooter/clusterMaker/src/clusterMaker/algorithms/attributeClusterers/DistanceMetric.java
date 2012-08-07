@@ -1,4 +1,3 @@
-/* vim: set ts=2: */
 /**
  * Copyright (c) 2008 The Regents of the University of California.
  * All rights reserved.
@@ -32,8 +31,9 @@
  */
 package clusterMaker.algorithms.attributeClusterers;
 
-import java.util.Arrays;
 import java.lang.Math;
+
+//FIXME EUCLIDEAN is actually EUCLIDEAN_SQUARED!!!
 
 public enum DistanceMetric {
 	VALUE_IS_CORRELATION("None -- attributes are correlations"),
@@ -56,7 +56,7 @@ public enum DistanceMetric {
 		return this.name;
 	}
 
-	public double getMetric(Matrix data1, Matrix data2, double[] weights,
+	public double getMetric(BaseMatrix data1, BaseMatrix data2, double[] weights,
 	                        int index1, int index2) {
 		switch (this) {
 			case EUCLIDEAN:
@@ -82,7 +82,7 @@ public enum DistanceMetric {
 	}
 
 	// Distance metric calculations
-	private static double euclidMetric(Matrix data1, Matrix data2, double[] weights, 
+	private static double euclidMetric(BaseMatrix data1, BaseMatrix data2, double[] weights, 
 	                            int index1, int index2) {
 		double result = 0.0;
 		double tweight = 0.0;
@@ -97,7 +97,7 @@ public enum DistanceMetric {
 		return (result/tweight);
 	}
 
-	private static double cityblockMetric(Matrix data1, Matrix data2, double[] weights, 
+	private static double cityblockMetric(BaseMatrix data1, BaseMatrix data2, double[] weights, 
 	                                      int index1, int index2) {
 		double result = 0.0;
 		double tweight = 0.0;
@@ -112,7 +112,7 @@ public enum DistanceMetric {
 		return (result/tweight);
 	}
 
-	private static double correlationMetric(Matrix data1, Matrix data2, double[] weights, 
+	private static double correlationMetric(BaseMatrix data1, BaseMatrix data2, double[] weights, 
 	                                        int index1, int index2) {
 		double result = 0.0;
 		double sum1 = 0.0;
@@ -143,7 +143,7 @@ public enum DistanceMetric {
 		return (1.0 - result);
 	}
 
-	private static double acorrelationMetric(Matrix data1, Matrix data2, double[] weights, 
+	private static double acorrelationMetric(BaseMatrix data1, BaseMatrix data2, double[] weights, 
 	                                         int index1, int index2) {
 		double result = 0.0;
 		double sum1 = 0.0;
@@ -174,7 +174,7 @@ public enum DistanceMetric {
 		return (1.0 - result);
 	}
 
-	private static double ucorrelationMetric(Matrix data1, Matrix data2, double[] weights, 
+	private static double ucorrelationMetric(BaseMatrix data1, BaseMatrix data2, double[] weights, 
 	                                         int index1, int index2) {
 		double result = 0.0;
 		double denom1 = 0.0;
@@ -199,7 +199,7 @@ public enum DistanceMetric {
 		return (1.0 - result);
 	}
 
-	private static double uacorrelationMetric(Matrix data1, Matrix data2, double[] weights, 
+	private static double uacorrelationMetric(BaseMatrix data1, BaseMatrix data2, double[] weights, 
 	                                          int index1, int index2) {
 		double result = 0.0;
 		double denom1 = 0.0;
@@ -224,7 +224,7 @@ public enum DistanceMetric {
 		return (1.0 - result);
 	}
 
-	private static double spearmanMetric(Matrix data1, Matrix data2, double[] weights, 
+	private static double spearmanMetric(BaseMatrix data1, BaseMatrix data2, double[] weights, 
 	                                     int index1, int index2) {
 		double result = 0.0;
 		double denom1 = 0.0;
@@ -256,7 +256,7 @@ public enum DistanceMetric {
 		return (1.0 - result);
 	}
 
-	private static double kendallMetric(Matrix data1, Matrix data2, double[] weights, 
+	private static double kendallMetric(BaseMatrix data1, BaseMatrix data2, double[] weights, 
 	                                    int index1, int index2) {
 		int con = 0;
 		int dis = 0;
