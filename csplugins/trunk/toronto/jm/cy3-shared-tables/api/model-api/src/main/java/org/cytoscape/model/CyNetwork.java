@@ -47,14 +47,25 @@ public interface CyNetwork extends CyIdentifiable, CyDisposable {
 	String SELECTED = "selected";
 
 	/**
-	 * The name of the default <b>public</b> 
+	 * The name of the local <b>public</b> 
 	 * CyTable that is created by default for CyNetworks, 
 	 * CyNodes, and CyEdges.  Other CyTables may also be associated with networks
 	 * -- see {@link CyTableManager} for more information.
 	 * The table should be referenced using this constant:
-	 * <code>CyNetwork.DEFAULT_ATTRS</code>.
+	 * <code>CyNetwork.LOCAL_ATTRS</code>.
 	 */
-	String DEFAULT_ATTRS = "USER";
+	String LOCAL_ATTRS = "LOCAL";
+
+	/**
+	 * The name of the <b>public</b> 
+	 * CyTable that is shared for CyNetworks, 
+	 * CyNodes, and CyEdges in the same {@link CyRootNetwork}.  
+	 * Other CyTables may also be associated with networks
+	 * -- see {@link CyTableManager} for more information.
+	 * The table should be referenced using this constant:
+	 * <code>CyNetwork.SHARED_ATTRS</code>.
+	 */
+	String SHARED_ATTRS = org.cytoscape.model.subnetwork.CyRootNetwork.SHARED_ATTRS;
 
 	/**
 	 * The name of the default <b>hidden</b> CyTable that is created 
@@ -278,26 +289,50 @@ public interface CyNetwork extends CyIdentifiable, CyDisposable {
 	/**
 	 * A convenience method returns the default attribute table for this network.
 	 * This is equivalent to 
-	 * <code>CyNetworkTableManager.getTableMap(this,CyNetwork.class,CyNetwork.DEFAULT_ATTRS);</code>
+	 * <code>CyNetworkTableManager.getTableMap(this,CyNetwork.class,CyNetwork.LOCAL_ATTRS);</code>
 	 * @return The default attribute table for this network.
 	 */
-	CyTable getDefaultNetworkTable();
+	CyTable getLocalNetworkTable();
 
 	/**
 	 * A convenience method returns the default attribute table for the nodes of this network.
 	 * This is equivalent to 
-	 * <code>CyNetworkTableManager.getTable(this,CyNode.class,CyNetwork.DEFAULT_ATTRS);</code>
+	 * <code>CyNetworkTableManager.getTable(this,CyNode.class,CyNetwork.LOCAL_ATTRS);</code>
 	 * @return The default attribute table for the nodes of this network.
 	 */
-	CyTable getDefaultNodeTable();
+	CyTable getLocalNodeTable();
 
 	/**
 	 * A convenience method returns the default attribute table for the edges of this network.
 	 * This is equivalent to 
-	 * <code>CyNetworkTableManager.getTableMap(this,CyEdge.class,CyNetwork.DEFAULT_ATTRS);</code>
+	 * <code>CyNetworkTableManager.getTableMap(this,CyEdge.class,CyNetwork.LOCAL_ATTRS);</code>
 	 * @return The default attribute table for the edges of this network.
 	 */
-	CyTable getDefaultEdgeTable();
+	CyTable getLocalEdgeTable();
+
+	/**
+	 * A convenience method returns the shared attribute table for this network.
+	 * This is equivalent to 
+	 * <code>CyNetworkTableManager.getTableMap(this,CyNetwork.class,CyNetwork.SHARED_ATTRS);</code>
+	 * @return The default attribute table for this network.
+	 */
+	CyTable getSharedNetworkTable();
+
+	/**
+	 * A convenience method returns the shared attribute table for the nodes of this network.
+	 * This is equivalent to 
+	 * <code>CyNetworkTableManager.getTable(this,CyNode.class,CyNetwork.SHARED_ATTRS);</code>
+	 * @return The default attribute table for the nodes of this network.
+	 */
+	CyTable getSharedNodeTable();
+
+	/**
+	 * A convenience method returns the shared attribute table for the edges of this network.
+	 * This is equivalent to 
+	 * <code>CyNetworkTableManager.getTableMap(this,CyEdge.class,CyNetwork.SHARED_ATTRS);</code>
+	 * @return The default attribute table for the edges of this network.
+	 */
+	CyTable getSharedEdgeTable();
 
 	/**
 	 * Returns the table with the specified namespace and type from this

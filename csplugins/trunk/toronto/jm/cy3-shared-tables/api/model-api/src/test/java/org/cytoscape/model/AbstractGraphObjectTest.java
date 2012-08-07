@@ -81,20 +81,20 @@ public abstract class AbstractGraphObjectTest {
 		// should be satisfied.  Don't test any other properties of CyRow.
 		// Leave that to the CyRow unit tests.
 		CyNode n1 = net.addNode();
-		assertNotNull("cyattrs exists", net.getRow(n1,"USER"));
-		assertTrue("cyattrs is CyRow", net.getRow(n1,"USER") instanceof CyRow);
+		assertNotNull("cyattrs exists", net.getRow(n1,"LOCAL"));
+		assertTrue("cyattrs is CyRow", net.getRow(n1,"LOCAL") instanceof CyRow);
 
 		CyNode n2 = net.addNode();
-		assertNotNull("cyattrs exists", net.getRow(n2,"USER"));
-		assertTrue("cyattrs is CyRow", net.getRow(n2,"USER") instanceof CyRow);
+		assertNotNull("cyattrs exists", net.getRow(n2,"LOCAL"));
+		assertTrue("cyattrs is CyRow", net.getRow(n2,"LOCAL") instanceof CyRow);
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
-		assertNotNull("cyattrs exists", net.getRow(e1,"USER"));
-		assertTrue("cyattrs is CyRow", net.getRow(e1,"USER") instanceof CyRow);
+		assertNotNull("cyattrs exists", net.getRow(e1,"LOCAL"));
+		assertTrue("cyattrs is CyRow", net.getRow(e1,"LOCAL") instanceof CyRow);
 
 		CyEdge e2 = net.addEdge(n1, n2, false);
-		assertNotNull("cyattrs exists", net.getRow(e2,"USER"));
-		assertTrue("cyattrs is CyRow", net.getRow(e2,"USER") instanceof CyRow);
+		assertNotNull("cyattrs exists", net.getRow(e2,"LOCAL"));
+		assertTrue("cyattrs is CyRow", net.getRow(e2,"LOCAL") instanceof CyRow);
 	}
 
 	@Test
@@ -102,7 +102,7 @@ public abstract class AbstractGraphObjectTest {
 		CyNode n1 = net.addNode();
 		assertNotNull("cyattrs exists", net.getRow(n1));
 		assertTrue("cyattrs is CyRow", net.getRow(n1) instanceof CyRow);
-		assertTrue("attrs equals getCyRow", net.getRow(n1).equals(net.getRow(n1,"USER")));
+		assertTrue("attrs equals getCyRow", net.getRow(n1).equals(net.getRow(n1,"LOCAL")));
 	}
 
 	@Test

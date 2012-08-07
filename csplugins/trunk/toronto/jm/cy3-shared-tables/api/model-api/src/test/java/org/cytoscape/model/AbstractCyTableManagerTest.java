@@ -55,7 +55,7 @@ public abstract class AbstractCyTableManagerTest {
 
 	@Test
 	public void testReset() {
-		mgr.addTable(goodNetwork.getDefaultNodeTable());
+		mgr.addTable(goodNetwork.getLocalNodeTable());
 		assertFalse(mgr.getAllTables(true).isEmpty());
 		mgr.reset();
 		assertTrue(mgr.getAllTables(true).isEmpty());
@@ -78,7 +78,7 @@ public abstract class AbstractCyTableManagerTest {
 		assertNotNull(mgr.getGlobalTables());
 
 		mgr.addTable(globalTable);
-		mgr.addTable(goodNetwork.getDefaultNodeTable());
+		mgr.addTable(goodNetwork.getLocalNodeTable());
 
 		assertEquals(1, mgr.getGlobalTables().size());
 		assertEquals(globalTable, mgr.getGlobalTables().iterator().next());
@@ -107,7 +107,7 @@ public abstract class AbstractCyTableManagerTest {
 		assertEquals(3, nodeTables.size());
 		assertEquals(3, edgeTables.size());
 
-		assertTrue(networkTables.contains(goodNetwork.getDefaultNetworkTable()));
+		assertTrue(networkTables.contains(goodNetwork.getLocalNetworkTable()));
 		final CyTable hidden = networkTableMgr.getTable(goodNetwork, CyNetwork.class, CyNetwork.HIDDEN_ATTRS);
 		assertTrue(networkTables.contains(hidden));
 	}

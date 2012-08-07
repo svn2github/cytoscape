@@ -77,7 +77,7 @@ public abstract class AbstractCyNetworkTableManagerTest {
 	private void checkTableMap(Map<String,CyTable> tableMap) {
 		// we should have at least the two default, but others may exist
 		assertTrue(tableMap.size() >= 2);
-		assertTrue(tableMap.keySet().contains(CyNetwork.DEFAULT_ATTRS));
+		assertTrue(tableMap.keySet().contains(CyNetwork.LOCAL_ATTRS));
 		assertTrue(tableMap.keySet().contains(CyNetwork.HIDDEN_ATTRS));
 	}
 	
@@ -119,7 +119,7 @@ public abstract class AbstractCyNetworkTableManagerTest {
 	public void testRemoveDefaultTables() throws Exception {
 		for (Class<? extends CyIdentifiable> type : new Class[] { CyNetwork.class, CyNode.class, CyEdge.class }) {
 			try {
-				mgr.removeTable(goodNetwork, type, CyNetwork.DEFAULT_ATTRS);
+				mgr.removeTable(goodNetwork, type, CyNetwork.LOCAL_ATTRS);
 				fail();
 			} catch (IllegalArgumentException e) {
 			}
@@ -130,7 +130,7 @@ public abstract class AbstractCyNetworkTableManagerTest {
 	public void testSetDefaultTables() throws Exception {
 		for (Class<? extends CyIdentifiable> type : new Class[] { CyNetwork.class, CyNode.class, CyEdge.class }) {
 			try {
-				mgr.setTable(goodNetwork, type, CyNetwork.DEFAULT_ATTRS, table1);
+				mgr.setTable(goodNetwork, type, CyNetwork.LOCAL_ATTRS, table1);
 				fail();
 			} catch (IllegalArgumentException e) {
 			}

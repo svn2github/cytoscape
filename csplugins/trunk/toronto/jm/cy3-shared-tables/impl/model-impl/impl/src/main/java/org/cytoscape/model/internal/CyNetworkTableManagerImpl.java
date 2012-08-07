@@ -59,8 +59,11 @@ public class CyNetworkTableManagerImpl implements CyNetworkTableManager {
 		
 		}
 
-		if (namespace.equals(CyNetwork.DEFAULT_ATTRS) && reference.get(CyNetwork.DEFAULT_ATTRS) != null)
-			throw new IllegalArgumentException("cannot overwrite default tables");
+		if (namespace.equals(CyNetwork.LOCAL_ATTRS) && reference.get(CyNetwork.LOCAL_ATTRS) != null)
+			throw new IllegalArgumentException("cannot overwrite local tables");
+
+		if (namespace.equals(CyNetwork.SHARED_ATTRS) && reference.get(CyNetwork.SHARED_ATTRS) != null)
+			throw new IllegalArgumentException("cannot overwrite shared tables");
 		
 		reference.put(namespace, table);
 	}
@@ -100,8 +103,12 @@ public class CyNetworkTableManagerImpl implements CyNetworkTableManager {
 			throw new IllegalArgumentException("namespace cannot be null");
 		}
 
-		if (namespace.equals(CyNetwork.DEFAULT_ATTRS)) {
-			throw new IllegalArgumentException("cannot remove default tables");
+		if (namespace.equals(CyNetwork.LOCAL_ATTRS)) {
+			throw new IllegalArgumentException("cannot remove local tables");
+		}
+
+		if (namespace.equals(CyNetwork.SHARED_ATTRS)) {
+			throw new IllegalArgumentException("cannot remove shared tables");
 		}
 		
 		Map<Class<? extends CyIdentifiable>, Map<String, CyTable>> byType = tables.get(network);

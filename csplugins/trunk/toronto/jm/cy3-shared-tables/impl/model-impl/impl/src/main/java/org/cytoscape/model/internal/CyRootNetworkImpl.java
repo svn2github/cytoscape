@@ -283,11 +283,11 @@ public final class CyRootNetworkImpl extends DefaultTablesNetwork implements CyR
 		CyTable nodeTable = networkTableMgr.getTable(this, CyNode.class, CyRootNetwork.SHARED_ATTRS);
 		CyTable edgeTable = networkTableMgr.getTable(this, CyEdge.class, CyRootNetwork.SHARED_ATTRS);
 		
-		linkDefaultTables(networkTable, sub.getDefaultNetworkTable());
-		linkDefaultTables(nodeTable, sub.getDefaultNodeTable());
-		linkDefaultTables(edgeTable, sub.getDefaultEdgeTable());
+		// linkDefaultTables(networkTable, sub.getDefaultNetworkTable());
+		// linkDefaultTables(nodeTable, sub.getDefaultNodeTable());
+		// linkDefaultTables(edgeTable, sub.getDefaultEdgeTable());
 		// Another listener tracks changes to the interaction column in local tables
-		interactionSetListener.addInterestedTables(sub.getDefaultEdgeTable(), edgeTable);
+		// interactionSetListener.addInterestedTables(sub.getDefaultEdgeTable(), edgeTable);
 		subNetworks.add(sub);
 		
 		return sub;

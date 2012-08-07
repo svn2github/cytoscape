@@ -38,7 +38,7 @@ public class NetworkNameSetListener implements RowsSetListener, NetworkAddedList
 	public void handleEvent(RowsSetEvent e) {
 		CyTable sourceTable = e.getSource();
 		
-		if (sourceTable.equals(rootNetwork.getDefaultNetworkTable())){	
+		if (sourceTable.equals(rootNetwork.getLocalNetworkTable())){	
 			updateRootNetworkTableNames(e.getPayloadCollection());
 		}
 		else{
@@ -51,11 +51,11 @@ public class NetworkNameSetListener implements RowsSetListener, NetworkAddedList
 	private void updateSubNetworkTableNames( Collection<RowSetRecord> payloadCollection, CyTable sourceTable) {
 		
 		for (CyNetwork net: rootNetwork.getSubNetworkList()){
-			if (sourceTable.equals(net.getDefaultNetworkTable())){
+			if (sourceTable.equals(net.getLocalNetworkTable())){
 				for ( RowSetRecord record :payloadCollection) {
 					// assume payload collection is for same column
 					final Object name = record.getValue();
-					setTablesName(name.toString() + " default ", net.getDefaultEdgeTable(), net.getDefaultNodeTable(), net.getDefaultNetworkTable());
+					setTablesName(name.toString() + " local ", net.getLocalEdgeTable(), net.getLocalNodeTable(), net.getLocalNetworkTable());
 					
 					return; //assuming that this even is fired only for a single row
 				}		
@@ -71,7 +71,7 @@ public class NetworkNameSetListener implements RowsSetListener, NetworkAddedList
 			// assume payload collection is for same column
 			final Object name = record.getValue();
 			setTablesName(name + " root shared ", rootNetwork.getSharedEdgeTable(), rootNetwork.getSharedNodeTable(), rootNetwork.getSharedNetworkTable());
-			setTablesName(name + " root default ", rootNetwork.getDefaultEdgeTable(), rootNetwork.getDefaultNodeTable(), rootNetwork.getDefaultNetworkTable());
+			setTablesName(name + " root local ", rootNetwork.getLocalEdgeTable(), rootNetwork.getLocalNodeTable(), rootNetwork.getLocalNetworkTable());
 			
 			return;
 		}
@@ -106,8 +106,8 @@ public class NetworkNameSetListener implements RowsSetListener, NetworkAddedList
 	
 	private void updateSubNetworkTableNames(CyNetwork net, String name){
 		
-		net.getDefaultEdgeTable().setTitle(name + " default edge");
-		net.getDefaultNetworkTable().setTitle(name + " default network");
-		net.getDefaultNodeTable().setTitle(name + " default node");
+		net.getLocalEdgeTable().setTitle(name + " local edge");
+		net.getLocalNetworkTable().setTitle(name + " local network");
+		net.getLocalNodeTable().setTitle(name + " local node");
 	}
 }

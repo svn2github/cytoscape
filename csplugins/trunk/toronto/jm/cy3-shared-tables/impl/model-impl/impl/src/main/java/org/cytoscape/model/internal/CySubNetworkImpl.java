@@ -190,6 +190,29 @@ public final class CySubNetworkImpl extends DefaultTablesNetwork implements CySu
 		return true;
 	}
 
+	@Override
+	public CyTable getSharedNetworkTable() {
+		return parent.getSharedNetworkTable();
+	}
+
+	@Override
+	public CyTable getSharedNodeTable() {
+		return parent.getSharedNodeTable();
+	}
+
+	@Override
+	public CyTable getSharedEdgeTable() {
+		return parent.getSharedEdgeTable();
+	}
+
+	@Override
+	public CyRow getRow(final CyIdentifiable entry, final String tableName) {
+		if (tableName.equals(CyNetwork.SHARED_ATTRS)) {
+			return parent.getRow(entry, tableName);
+		}
+		return super.getRow(entry, tableName);
+	}
+
 	/**
 	 * This method is called when an edge or a node is added to the networks
 	 * which is indeed a copy of another edge/node. Hence, it copies all of the
@@ -200,23 +223,13 @@ public final class CySubNetworkImpl extends DefaultTablesNetwork implements CySu
 	private void copyTableData(final CyIdentifiable graphObject) {
 		final String name = parent.getRow(graphObject).get(NAME, String.class);
 		final CyRow sharedTableRow = parent.getRow(graphObject, CyRootNetwork.SHARED_ATTRS);
-		final CyRow defaultTableRow = parent.getRow(graphObject);
+		final CyRow localTableRow = parent.getRow(graphObject);
 		final CyRow targetRow = this.getRow(graphObject);
-		// Step 1: Copy shared name as name of this new node
-		final String sharedName = sharedTableRow.get(CyRootNetwork.SHARED_NAME, String.class);
-		
-		if(sharedName != null)
-			targetRow.set(CyNetwork.NAME, sharedName);
-		else
-			targetRow.set(CyNetwork.NAME, name);
-		
-		// Step 2: Copy selection state
-		targetRow.set(CyNetwork.SELECTED, defaultTableRow.get(CyNetwork.SELECTED, Boolean.class));
-		
-		// Step 3: Copy Interaction if edge
+
+		targetRow.set(CyNetwork.NAME, sharedTableRow.get(CyRootNetwork.SHARED_NAME, String.class));
+		// targetRow.set(CyNetwork.SELECTED, localTableRow.get(CyNetwork.SELECTED, Boolean.class));
 		if(graphObject instanceof CyEdge) {
-			final String interaction = sharedTableRow.get(CyRootNetwork.SHARED_INTERACTION, String.class);
-			targetRow.set(CyEdge.INTERACTION, interaction);
+			targetRow.set(CyEdge.INTERACTION, sharedTableRow.get(CyRootNetwork.SHARED_INTERACTION, String.class));
 		}
 	}
 
@@ -286,27 +299,27 @@ public final class CySubNetworkImpl extends DefaultTablesNetwork implements CySu
 		for (final CyTable table : networkTableMgr.getTables(this, CyEdge.class).values())
 			tableMgr.addTable(table);
 
-		updateSharedNames( getDefaultNodeTable(), parent.getSharedNodeTable() );
-		updateSharedNames( getDefaultEdgeTable(), parent.getSharedEdgeTable() );
-		updateSharedInteractions(getDefaultEdgeTable(), parent.getSharedEdgeTable() );
-		updateSharedNames( getDefaultNetworkTable(), parent.getSharedNetworkTable() );
+		updateLocalNames( getLocalNodeTable(), parent.getSharedNodeTable() );
+		updateLocalNames( getLocalEdgeTable(), parent.getSharedEdgeTable() );
+		updateLocalInteractions(getLocalEdgeTable(), parent.getSharedEdgeTable() );
+		updateLocalNames( getLocalNetworkTable(), parent.getSharedNetworkTable() );
 	}
 
-	private void updateSharedNames(CyTable src, CyTable tgt) {
+	private void updateLocalNames(CyTable src, CyTable tgt) {
 		for (CyRow sr : src.getAllRows()) {
 			CyRow tr = tgt.getRow(sr.get(CyIdentifiable.SUID, Long.class));
 
-			if (tr.get(CyRootNetwork.SHARED_NAME, String.class) == null)
-				tr.set(CyRootNetwork.SHARED_NAME, sr.get(CyNetwork.NAME, String.class));
+			if (sr.get(CyNetwork.NAME, String.class) == null)
+				sr.set(CyNetwork.NAME, tr.get(CyRootNetwork.SHARED_NAME, String.class));
 		}
 	}
 
-	private void updateSharedInteractions(CyTable src, CyTable tgt) {
+	private void updateLocalInteractions(CyTable src, CyTable tgt) {
 		for (CyRow sr : src.getAllRows()) {
 			CyRow tr = tgt.getRow(sr.get(CyIdentifiable.SUID, Long.class));
 			
-			if (tr.get(CyRootNetwork.SHARED_INTERACTION, String.class) == null)
-				tr.set(CyRootNetwork.SHARED_INTERACTION, sr.get(CyEdge.INTERACTION, String.class));
+			if (sr.get(CyEdge.INTERACTION, String.class) == null)
+				sr.set(CyEdge.INTERACTION, tr.get(CyRootNetwork.SHARED_INTERACTION, String.class));
 		}
 	}
 	

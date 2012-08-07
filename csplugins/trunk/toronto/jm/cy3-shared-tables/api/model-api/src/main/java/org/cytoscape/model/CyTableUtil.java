@@ -45,50 +45,83 @@ public class CyTableUtil {
 
 	/**
 	 * A utility method that returns a list of nodes that have a boolean attribute
-	 * in the {@link CyNetwork#DEFAULT_ATTRS} namespace specified by columnName and are in 
-	 * the specified state.  If the attribute doesn't exist or is not of type 
+	 * in the {@link CyNetwork#SHARED_ATTRS} or {@link CyNetwork#LOCAL_ATTRS} namespaces 
+	 * specified by columnName and are in 
+	 * the specified state.  The {@link CyNetwork#LOCAL_ATTRS} namespace is searched first,
+	 * so will have precedence when the column exists in both tables.
+	 * If the column doesn't exist in either table, or is not of type 
 	 * Boolean an IllegalArgumentException will be thrown.
 	 * @param net The network to be queried.
 	 * @param columnName The name of the column to be tested.
 	 * @param state The state being queried. 
 	 * @return a list of nodes that have a boolean attribute in the 
-	 * {@link CyNetwork#DEFAULT_ATTRS} namespace specified by columnName and are in 
+	 * {@link CyNetwork#SHARED_ATTRS} or {@link CyNetwork@LOCAL_ATTRS} namespace specified by columnName and are in 
 	 * the specified state. 
 	 */
 	public static List<CyNode> getNodesInState(final CyNetwork net, final String columnName, final boolean state) {
 		if ( net == null )
 			throw new NullPointerException("network is null");
 		List<CyNode> ret = new ArrayList<CyNode>();
-		Collection<CyRow> rows = net.getDefaultNodeTable().getMatchingRows(columnName, state);
-		for (CyRow row : rows) {
-			CyNode node = net.getNode(row.get(CyTable.SUID, Long.class));
-			if (node != null)
-				ret.add(node);
+
+		// Start by looking in the local table
+		if(net.getLocalNodeTable().getColumn(columnName) != null) {
+			Collection<CyRow> rows = net.getLocalNodeTable().getMatchingRows(columnName, state);
+			for (CyRow row : rows) {
+				CyNode node = net.getNode(row.get(CyTable.SUID, Long.class));
+				if (node != null)
+					ret.add(node);
+			}
+		} else if(net.getSharedNodeTable().getColumn(columnName) != null) {
+			// Now look in the shared table
+			Collection<CyRow> rows = net.getSharedNodeTable().getMatchingRows(columnName, state);
+			for (CyRow row : rows) {
+				CyNode node = net.getNode(row.get(CyTable.SUID, Long.class));
+				if (node != null)
+					ret.add(node);
+			}
+		} else {
+			throw new IllegalArgumentException("No column '"+columnName+"' in either local or shared node table");
 		}
+
 		return ret;
 	}
 
 	/**
 	 * A utility method that returns a list of edges that have a boolean attribute
-	 * in the {@link CyNetwork#DEFAULT_ATTRS} namespace specified by columnName and are in 
-	 * the specified state.  If the attribute doesn't exist or is not of type 
+	 * in the {@link CyNetwork#SHARED_ATTRS} or {@link CyNetwork#LOCAL_ATTRS} namespaces 
+	 * specified by columnName and are in 
+	 * the specified state.  The {@link CyNetwork#LOCAL_ATTRS} namespace is searched first,
+	 * so will have precedence when the column exists in both tables.
+	 * If the column doesn't exist in either table, or is not of type 
 	 * Boolean an IllegalArgumentException will be thrown.
 	 * @param net The network to be queried.
 	 * @param columnName The name of the column to be tested.
 	 * @param state The state being queried. 
 	 * @return a list of edges that have a boolean attribute in the 
-	 * {@link CyNetwork#DEFAULT_ATTRS} namespace specified by columnName and are in 
-	 * the specified state. 
+	 * {@link CyNetwork#SHARED_ATTRS} or {@link CyNetwork@LOCAL_ATTRS} namespace specified by columnName and are in 
 	 */
 	public static List<CyEdge> getEdgesInState(final CyNetwork net, final String columnName, final boolean state) {
 		if ( net == null )
 			throw new NullPointerException("network is null");
 		List<CyEdge> ret = new ArrayList<CyEdge>();
-		Collection<CyRow> rows = net.getDefaultEdgeTable().getMatchingRows(columnName, state);
-		for (CyRow row : rows) {
-			CyEdge edge = net.getEdge(row.get(CyTable.SUID, Long.class));
-			if (edge != null)
-				ret.add(edge);
+		// Start by looking in the local table
+		if(net.getLocalEdgeTable().getColumn(columnName) != null) {
+			Collection<CyRow> rows = net.getLocalEdgeTable().getMatchingRows(columnName, state);
+			for (CyRow row : rows) {
+				CyEdge edge = net.getEdge(row.get(CyTable.SUID, Long.class));
+				if (edge != null)
+					ret.add(edge);
+			}
+		} else if(net.getSharedEdgeTable().getColumn(columnName) != null) {
+			// Now look in the shared table
+			Collection<CyRow> rows = net.getSharedEdgeTable().getMatchingRows(columnName, state);
+			for (CyRow row : rows) {
+				CyEdge edge = net.getEdge(row.get(CyTable.SUID, Long.class));
+				if (edge != null)
+					ret.add(edge);
+			}
+		} else {
+			throw new IllegalArgumentException("No column '"+columnName+"' in either local or shared edge table");
 		}
 		return ret;
 	}

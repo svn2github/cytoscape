@@ -663,7 +663,7 @@ public abstract class AbstractCyRootNetworkTest {
         assertNotNull(shared);
 		shared.createColumn("homer",String.class,false);
 		CySubNetwork sub = root.addSubNetwork();
-		assertNotNull( sub.getDefaultNetworkTable().getColumn("homer") );	
+		assertNotNull( sub.getSharedNetworkTable().getColumn("homer") );	
     }
 
     @Test
@@ -672,7 +672,7 @@ public abstract class AbstractCyRootNetworkTest {
         assertNotNull(shared);
 		shared.createColumn("homer",String.class,false);
 		CySubNetwork sub = root.addSubNetwork();
-		assertNotNull( sub.getDefaultNodeTable().getColumn("homer") );	
+		assertNotNull( sub.getSharedNodeTable().getColumn("homer") );	
     }
 
     @Test
@@ -681,7 +681,7 @@ public abstract class AbstractCyRootNetworkTest {
         assertNotNull(shared);
 		shared.createColumn("homer",String.class,false);
 		CySubNetwork sub = root.addSubNetwork();
-		assertNotNull( sub.getDefaultEdgeTable().getColumn("homer") );	
+		assertNotNull( sub.getSharedEdgeTable().getColumn("homer") );	
     }
 
     @Test

@@ -88,10 +88,10 @@ public class CyTableManagerTest extends AbstractCyTableManagerTest {
 
 	@Test
 	public void immutableTableTest() {
-		mgr.addTable(goodNetwork.getDefaultNodeTable());
+		mgr.addTable(goodNetwork.getLocalNodeTable());
 		boolean exceptionWasThrown = false;
 		try {
-			mgr.deleteTable(goodNetwork.getDefaultNodeTable().getSUID());
+			mgr.deleteTable(goodNetwork.getLocalNodeTable().getSUID());
 		} catch (IllegalArgumentException e) {
 			exceptionWasThrown = true;
 		}

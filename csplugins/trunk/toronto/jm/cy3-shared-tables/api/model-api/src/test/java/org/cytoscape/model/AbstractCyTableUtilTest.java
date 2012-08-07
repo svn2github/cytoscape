@@ -60,8 +60,8 @@ public abstract class AbstractCyTableUtilTest {
 		edge1 = net.addEdge(node1, node2, true);
 		edge2 = net.addEdge(node1, node2, true);
 		
-		net.getDefaultNodeTable().createColumn(columnName, Boolean.class, false);
-		net.getDefaultEdgeTable().createColumn(columnName, Boolean.class, false);
+		net.getLocalNodeTable().createColumn(columnName, Boolean.class, false);
+		net.getLocalEdgeTable().createColumn(columnName, Boolean.class, false);
 		
 		net.getRow(node1).set(columnName, true);
 		net.getRow(node2).set(columnName, false);

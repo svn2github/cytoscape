@@ -154,9 +154,9 @@ public class TestCyNetworkFactory {
 	}
 	
 	private void assertNetworkTablesVisibility(CyNetwork n, boolean isPublic) {
-		assertEquals(isPublic, n.getDefaultNetworkTable().isPublic());
-		assertEquals(isPublic, n.getDefaultNodeTable().isPublic());
-		assertEquals(isPublic, n.getDefaultEdgeTable().isPublic());
+		assertEquals(isPublic, n.getLocalNetworkTable().isPublic());
+		assertEquals(isPublic, n.getLocalNodeTable().isPublic());
+		assertEquals(isPublic, n.getLocalEdgeTable().isPublic());
 	}
 }
 

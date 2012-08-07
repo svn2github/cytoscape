@@ -74,16 +74,16 @@ abstract class DefaultTablesNetwork extends SimpleNetwork {
 		createEdgeTables(super.getSUID(), tableFactory, publicTables, tableSizeDeterminer);
 	}
 
-	public CyTable getDefaultNetworkTable() {
-		return networkTableManager.getTable(networkRef.get(), CyNetwork.class, CyNetwork.DEFAULT_ATTRS); 
+	public CyTable getLocalNetworkTable() {
+		return networkTableManager.getTable(networkRef.get(), CyNetwork.class, CyNetwork.LOCAL_ATTRS); 
 	}
 
-	public CyTable getDefaultNodeTable() {
-		return networkTableManager.getTable(networkRef.get(), CyNode.class, CyNetwork.DEFAULT_ATTRS); 
+	public CyTable getLocalNodeTable() {
+		return networkTableManager.getTable(networkRef.get(), CyNode.class, CyNetwork.LOCAL_ATTRS); 
 	}
 
-	public CyTable getDefaultEdgeTable() {
-		return networkTableManager.getTable(networkRef.get(), CyEdge.class, CyNetwork.DEFAULT_ATTRS); 
+	public CyTable getLocalEdgeTable() {
+		return networkTableManager.getTable(networkRef.get(), CyEdge.class, CyNetwork.LOCAL_ATTRS); 
 	}
 
 	public CyTable getTable(Class<? extends CyIdentifiable> type, String namespace) {
@@ -91,7 +91,7 @@ abstract class DefaultTablesNetwork extends SimpleNetwork {
 	}
 
 	public CyRow getRow(final CyIdentifiable entry) {
-		return getRow(entry, CyNetwork.DEFAULT_ATTRS);
+		return getRow(entry, CyNetwork.LOCAL_ATTRS);
 	}
 
 	public CyRow getRow(final CyIdentifiable entry, final String tableName) {
@@ -124,8 +124,8 @@ abstract class DefaultTablesNetwork extends SimpleNetwork {
 
 	private void createNetworkTables(long suidx, CyTableFactory tableFactory, boolean pubTables) {		
 		final CyTable defTable = tableFactory.createTable(suidx
-				+ " default network", CyIdentifiable.SUID, Long.class, pubTables, false, InitialTableSize.SMALL);
-		networkTableManager.setTable(networkRef.get(), CyNetwork.class, CyNetwork.DEFAULT_ATTRS, defTable);
+				+ " local network", CyIdentifiable.SUID, Long.class, pubTables, false, InitialTableSize.SMALL);
+		networkTableManager.setTable(networkRef.get(), CyNetwork.class, CyNetwork.LOCAL_ATTRS, defTable);
 		
 		final CyTable hiddenTable = tableFactory.createTable(suidx
 				+ " hidden network", CyIdentifiable.SUID, Long.class, false, false, InitialTableSize.SMALL);
@@ -137,8 +137,8 @@ abstract class DefaultTablesNetwork extends SimpleNetwork {
 
 	private void createNodeTables(long suidx, CyTableFactory tableFactory, boolean pubTables, int num) {
 		final CyTable defTable = tableFactory.createTable(suidx
-				+ " default node", CyIdentifiable.SUID, Long.class, pubTables, false, InitialTableSize.SMALL);
-		networkTableManager.setTable(networkRef.get(), CyNode.class, CyNetwork.DEFAULT_ATTRS, defTable);
+				+ " local node", CyIdentifiable.SUID, Long.class, pubTables, false, InitialTableSize.SMALL);
+		networkTableManager.setTable(networkRef.get(), CyNode.class, CyNetwork.LOCAL_ATTRS, defTable);
 		
 		final CyTable hiddenTable = tableFactory.createTable(suidx
 				+ " hidden node", CyIdentifiable.SUID, Long.class, false, false, InitialTableSize.SMALL);
@@ -149,9 +149,9 @@ abstract class DefaultTablesNetwork extends SimpleNetwork {
 	}
 
 	private void createEdgeTables(long suidx, CyTableFactory tableFactory, boolean pubTables, int num) {
-		final CyTable defTable = tableFactory.createTable(suidx + " default edge", CyIdentifiable.SUID, Long.class,
+		final CyTable defTable = tableFactory.createTable(suidx + " local edge", CyIdentifiable.SUID, Long.class,
 				pubTables, false, InitialTableSize.SMALL);
-		networkTableManager.setTable(networkRef.get(), CyEdge.class, CyNetwork.DEFAULT_ATTRS, defTable);
+		networkTableManager.setTable(networkRef.get(), CyEdge.class, CyNetwork.LOCAL_ATTRS, defTable);
 		
 		final CyTable hiddenTable = tableFactory.createTable(suidx
 				+ " hidden edge", CyIdentifiable.SUID, Long.class, false, false, InitialTableSize.SMALL);
