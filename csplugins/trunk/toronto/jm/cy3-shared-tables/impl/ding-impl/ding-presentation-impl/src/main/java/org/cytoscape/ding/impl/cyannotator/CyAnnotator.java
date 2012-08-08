@@ -107,7 +107,7 @@ public class CyAnnotator {
 		// System.out.println("Loading annotations");
 		CyNetwork network = view.getModel();
 		// Now, see if this network has any existing annotations
-		final CyTable networkAttributes = network.getDefaultNetworkTable();
+		final CyTable networkAttributes = network.getLocalNetworkTable();
 
 		// This should be in the HIDDEN_ATTRS namespace, but we can't get to it
 		// without a pointer to the CyNetworkTableManager
