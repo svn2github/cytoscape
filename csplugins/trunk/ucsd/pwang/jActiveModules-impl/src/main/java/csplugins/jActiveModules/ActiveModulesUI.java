@@ -62,7 +62,7 @@ public class ActiveModulesUI extends AbstractCyAction { //implements CytoscapeSt
 	public ActiveModulesUI(ActivePathFinderParameters apfParams, ActivePathsParameterPanel mainPanel) {
 		
 		super("jActiveModules...", ServicesUtil.cyApplicationManagerServiceRef, "network", ServicesUtil.cyNetworkViewManagerServiceRef);
-		setPreferredMenu("Plugins.jActiveModules");
+		setPreferredMenu("Apps");
 		//setMenuGravity(2.0f);
 		
 		this.mainPanel = mainPanel;
