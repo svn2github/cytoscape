@@ -30,13 +30,14 @@
 package org.cytoscape.application.swing;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.JMenuItem;
 
 import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.swing.DynamicSubmenuListener;
@@ -244,8 +245,8 @@ public final class ActionEnableSupport extends AbstractEnableSupport {
 			return;
 		}
 
-		setEnabled( ((curNetwork.getDefaultNodeTable().countMatchingRows(CyNetwork.SELECTED, true) > 0) ||
-		             (curNetwork.getDefaultEdgeTable().countMatchingRows(CyNetwork.SELECTED, true) > 0)) ); 
+		setEnabled( ((curNetwork.getTable(CyNode.class, CyNetwork.LOCAL_ATTRS).countMatchingRows(CyNetwork.SELECTED, true) > 0) ||
+		             (curNetwork.getTable(CyEdge.class, CyNetwork.LOCAL_ATTRS).countMatchingRows(CyNetwork.SELECTED, true) > 0)) ); 
 	}
 
 	/**
@@ -261,7 +262,7 @@ public final class ActionEnableSupport extends AbstractEnableSupport {
 			return;
 		}
 
-		setEnabled( (n.getDefaultNodeTable().countMatchingRows(CyNetwork.SELECTED, true) > 0) );
+		setEnabled( (n.getTable(CyNode.class, CyNetwork.LOCAL_ATTRS).countMatchingRows(CyNetwork.SELECTED, true) > 0) );
 	}
 
 	/**
@@ -277,7 +278,7 @@ public final class ActionEnableSupport extends AbstractEnableSupport {
 			return;
 		}
 
-		setEnabled( (n.getDefaultEdgeTable().countMatchingRows(CyNetwork.SELECTED, true) > 0) );
+		setEnabled( (n.getTable(CyEdge.class, CyNetwork.LOCAL_ATTRS).countMatchingRows(CyNetwork.SELECTED, true) > 0) );
 	}
 
 	/**
