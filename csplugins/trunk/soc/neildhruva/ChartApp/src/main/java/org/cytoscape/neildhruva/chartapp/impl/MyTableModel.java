@@ -1,9 +1,7 @@
 package org.cytoscape.neildhruva.chartapp.impl;
 
 import java.util.Collection;
-
 import javax.swing.table.AbstractTableModel;
-
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyTable;
 

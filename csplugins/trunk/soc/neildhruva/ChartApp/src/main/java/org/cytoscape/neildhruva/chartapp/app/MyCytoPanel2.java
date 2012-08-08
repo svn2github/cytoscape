@@ -1,7 +1,6 @@
 package org.cytoscape.neildhruva.chartapp.app;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.Icon;

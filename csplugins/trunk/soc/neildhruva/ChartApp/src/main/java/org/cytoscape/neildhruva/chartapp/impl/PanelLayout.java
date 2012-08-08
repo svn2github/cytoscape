@@ -1,8 +1,6 @@
 package org.cytoscape.neildhruva.chartapp.impl;
 
-import java.awt.Dimension;
 import java.awt.GridLayout;
-
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JComboBox;
@@ -10,16 +8,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
-
 import org.jfree.chart.ChartPanel;
 
 public class PanelLayout {
 
-	private final int MAX_HEIGHT = 1800;
-	private final int MAX_WIDTH = 1800;
-	private final int MIN_WIDTH = 0;
-	private final int MIN_HEIGHT = 0;
-	
 	private JPanel jpanel;
 	private JCheckBox[] checkBoxArray;
     private GroupLayout layout;
@@ -39,8 +31,8 @@ public class PanelLayout {
 	 * @param chartTypeComboBox Used to select the type of chart.  
 	 * @param myChartPanel The <code>ChartPanel</code> containing the chart.
 	 */
-	public JPanel initLayout(int tableColumnCount, JCheckBox[] checkBoxArray, JComboBox chartTypeComboBox,
-							  ChartPanel myChartPanel){
+	public JPanel initLayout(int tableColumnCount, JCheckBox[] checkBoxArray, 
+							 JComboBox chartTypeComboBox, ChartPanel myChartPanel) {
 		
 		if(jpanel.getComponents().length>0)
 			jpanel.removeAll();
@@ -59,7 +51,7 @@ public class PanelLayout {
 		jpanel.setLayout(layout);
 			
 		initPanel();
-		
+		jpanel.setName("NOT NULL");
         return jpanel;
         
 	}
@@ -85,23 +77,21 @@ public class PanelLayout {
        
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                		.addComponent(myChartPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addComponent(myChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 520, (Short.MAX_VALUE-10))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                     .addGroup(checkBoxGroupHor
-                        .addComponent(chartTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGap(443, 443, 443))
+                        .addComponent(chartTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        ))
         );
         
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    	.addComponent(myChartPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addGroup(checkBoxGroupVert
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(chartTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addContainerGap(183, Short.MAX_VALUE))
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(checkBoxGroupVert
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(chartTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(183, Short.MAX_VALUE))
+            .addComponent(myChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 311, (Short.MAX_VALUE-10))
         );
     }
 	
@@ -117,7 +107,7 @@ public class PanelLayout {
 		JLabel label = new JLabel("No plottable columns. Please select/import another network");
     	jpanel.setLayout(new GridLayout());
 		jpanel.add(label);
-		
+		jpanel.setName("NULL");
 		return jpanel;
 	}
 	
@@ -129,23 +119,4 @@ public class PanelLayout {
 		return jpanel;
 	}
 	
-	/**
-	 * Sets the width of the <code>ChartPanel</code>.
-	 * @param width The width of the <code>ChartPanel</code>.
-	 */
-	public void setWidth(int width) {
-		if(tableColumnCount>0 && width<=MAX_WIDTH && width>=MIN_WIDTH) {
-			myChartPanel.setPreferredSize(new Dimension(width, myChartPanel.getPreferredSize().height));
-		}
-	}
-	
-	/**
-	 * Sets the height of the <code>ChartPanel</code>.
-	 * @param height The height of the <code>ChartPanel</code>.
-	 */
-	public void setHeight(int height) {
-		if(tableColumnCount>0 && height<=MAX_HEIGHT && height>=MIN_HEIGHT) {
-			myChartPanel.setPreferredSize(new Dimension(myChartPanel.getPreferredSize().width, height));
-		}
-	}
 }

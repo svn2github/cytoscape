@@ -1,11 +1,7 @@
 package org.cytoscape.neildhruva.chartapp;
 
 import java.util.List;
-
 import javax.swing.JPanel;
-
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.neildhruva.chartapp.ChartAppFactory.AxisMode;
 import org.jfree.chart.ChartPanel;
@@ -25,28 +21,28 @@ public interface CytoChart {
 	public ChartPanel getChartPanel();
 	
 	/**
-	 * Sets the <code>ChartPanel</code> width
-	 * @param width
+	 * Gets the rows plotted in the chart.
+	 * @return Canonical names of rows plotted in the chart.
 	 */
-	public void setWidth(int width);
+	public List<String> getRows();
 	
 	/**
-	 * Sets the <code>ChartPanel</code> height
-	 * @param height Height of the 
+	 * Gets the columns plotted in the chart.
+	 * @return Names of columns plotted the chart.
 	 */
-	public void setHeight(int height);
+	public List<String> getColumns();
 	
 	/**
 	 * Change the rows of <code>CyTable</code> to be displayed in the chart.
 	 * @param rows Canonical names associated with each row.
 	 */
-	public void setRows(List<String> rows);
+	public void setRows(List<String> rowNames);
 	
 	/**
 	 * Change the columns of <code>CyTable</code> to be displayed in the chart.
 	 * @param columns Names of columns to be plotted.
 	 */
-	public void setColumns(String[] columns);
+	public void setColumns(List<String> columnNames);
 	
 	/**
 	 * Change the <code>CyTable</code> to be plotted on the chart.

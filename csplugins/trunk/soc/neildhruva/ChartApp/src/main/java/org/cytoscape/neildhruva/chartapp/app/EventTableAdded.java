@@ -1,31 +1,44 @@
 package org.cytoscape.neildhruva.chartapp.app;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-
 import javax.swing.JPanel;
-
 import org.cytoscape.application.events.SetCurrentNetworkEvent;
 import org.cytoscape.application.events.SetCurrentNetworkListener;
+import org.cytoscape.application.events.SetSelectedNetworksEvent;
+import org.cytoscape.application.events.SetSelectedNetworksListener;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableMetadata;
+import org.cytoscape.model.events.SetNetworkPointerEvent;
+import org.cytoscape.model.events.SetNetworkPointerListener;
+import org.cytoscape.model.events.TableAddedEvent;
+import org.cytoscape.model.events.TableAddedListener;
+import org.cytoscape.model.events.UnsetNetworkPointerEvent;
+import org.cytoscape.model.events.UnsetNetworkPointerListener;
 import org.cytoscape.neildhruva.chartapp.ChartAppFactory;
 import org.cytoscape.neildhruva.chartapp.ChartAppFactory.AxisMode;
 import org.cytoscape.neildhruva.chartapp.CytoChart;
+import org.cytoscape.session.events.SessionLoadedEvent;
+import org.cytoscape.session.events.SessionLoadedListener;
 
 
-public class EventTableAdded implements SetCurrentNetworkListener{
+public class EventTableAdded implements SetCurrentNetworkListener, TableAddedListener, SessionLoadedListener, UnsetNetworkPointerListener{
 
 	private MyCytoPanel myCytoPanel; 
 	private ChartAppFactory chartAppFactory;
 	private JPanel jpanel;
-	private MyCytoPanel2 myCytoPanel2;
-	private JPanel jpanel2;
+	private SelectedRowsIdentifier selectedRowsIdentifier;
+	private CytoChart cytoChart;
+	private CyTable cyTable;
 	
-	public EventTableAdded(MyCytoPanel myCytoPanel, ChartAppFactory chartAppFactory, MyCytoPanel2 myCytoPanel2) {	
+	public EventTableAdded(MyCytoPanel myCytoPanel, ChartAppFactory chartAppFactory, SelectedRowsIdentifier selectedRowsIdentifier) {	
 		this.myCytoPanel = myCytoPanel;
 		this.chartAppFactory = chartAppFactory;
-		this.myCytoPanel2 = myCytoPanel2;
+		
+		this.selectedRowsIdentifier = selectedRowsIdentifier;
+		this.cytoChart = null;
 	}
 
 	@Override
@@ -36,31 +49,50 @@ public class EventTableAdded implements SetCurrentNetworkListener{
 			return;
 		
 		//cyTable is the CyTable corresponding to the current node table
-		final CyTable cyTable = e.getNetwork().getDefaultNodeTable();
+		cyTable = e.getNetwork().getDefaultNodeTable();
 		if(cyTable==null)
 			return;
-		CytoChart cytoChart;
-		if(chartAppFactory.isChartSaved(cyTable, cyNetwork)) {
-			 cytoChart = chartAppFactory.getSavedChart(cyNetwork, cyTable);
+		
+		String chartName = null;
+		
+		if(chartAppFactory.isChartSaved(chartName, cyTable)) {
+			cytoChart = chartAppFactory.getSavedChart(chartName, cyTable);
 		} else {
-			List<String> rowNames = new ArrayList<String>();
-			rowNames.add("YJR060W");
-			rowNames.add("YLR264W");
-			rowNames.add("YDR309C");
-			//rowNames.add("YJR060W");
-			cytoChart = chartAppFactory.createChart(cyNetwork, cyTable, AxisMode.ROWS, 8, 8, rowNames, null);
+			cytoChart = chartAppFactory.createChart(chartName, cyTable, AxisMode.ROWS);			
 		}
 		
 		//TODO allow the user to name their cytochart
 		
+		//TODO what if the user installs the app after loading some tables?
 		this.jpanel = cytoChart.getJPanel();
 		myCytoPanel.setJPanel(jpanel);
+		if(!jpanel.getName().equals("NULL")) {
+			selectedRowsIdentifier.setCytoChart(cytoChart);
+		} else {
+			selectedRowsIdentifier.setCytoChart(null);
+		}
 		
-		//cytoChart = chartAppFactory.createChart(cyNetwork, cyTable);
-		//this.jpanel2 = cytoChart.getJPanel();
-		//my2.setJPanel(jpanel);
 		
+	}
+
+	@Override
+	public void handleEvent(TableAddedEvent e) {
+		//TODO use this in sync with SetCurrentNetworkEvent
 		
+	}
+
+	@Override
+	public void handleEvent(SessionLoadedEvent e) {
+		Iterator<CyTableMetadata> iterator = e.getLoadedSession().getTables().iterator();
+		while(iterator.hasNext()) {
+			System.out.println(iterator.next().getTable().getTitle());
+		}
+		//TODO use this to make ChartApp for all loaded networks
+	}
+
+	@Override
+	public void handleEvent(UnsetNetworkPointerEvent e) {
+		System.out.println(e.getNetwork().getDefaultNodeTable().getTitle());
 		
 	}
 }
