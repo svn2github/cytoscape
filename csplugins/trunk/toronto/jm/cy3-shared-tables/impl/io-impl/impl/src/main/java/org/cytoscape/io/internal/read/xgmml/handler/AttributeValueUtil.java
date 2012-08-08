@@ -46,6 +46,8 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.VirtualColumnInfo;
+import org.cytoscape.model.subnetwork.CyRootNetwork;
+import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -178,7 +180,6 @@ public class AttributeValueUtil {
     	final String hiddenStr = atts.getValue("cy:hidden");
     	final boolean isHidden = hiddenStr != null ? Boolean.parseBoolean(hiddenStr) : false;
         
-    	final String tableName = isHidden ? CyNetwork.HIDDEN_ATTRS : CyNetwork.DEFAULT_ATTRS;
 		final CyIdentifiable curElement = manager.getCurrentElement();
 		CyNetwork curNet = manager.getCurrentNetwork();
         
@@ -193,7 +194,20 @@ public class AttributeValueUtil {
 				curNet = manager.getRootNetwork();
 		}
 		
-		CyRow row = curNet.getRow(curElement, tableName);
+		CyRow row = null;
+		
+		if (isHidden) {
+			row = curNet.getRow(curElement, CyNetwork.HIDDEN_ATTRS);
+		} else {
+			// TODO: What are the rules here?
+			// Node/edge attributes are always shared, except "selected"?
+			// Network name must be local, right? What about other network attributes?
+			if (CyNetwork.SELECTED.equals(name) || (curElement instanceof CyNetwork))
+				row = curNet.getRow(curElement, CyNetwork.LOCAL_ATTRS);
+			else
+				row = curNet.getRow(curElement, CyNetwork.SHARED_ATTRS);
+		}
+		
 		CyTable table = row.getTable();
         CyColumn column = table.getColumn(name);
         
@@ -251,7 +265,7 @@ public class AttributeValueUtil {
 				break;
 			case REAL:
 				if (name != null) {
-					if (SUIDUpdater.isUpdatableSUIDColumn(name))
+					if (SUIDUpdater.isUpdatableSUIDColumnName(name))
 						setAttribute(row, name, Long.class, (Long) value);
 					else
 						setAttribute(row, name, Double.class, (Double) value);
@@ -276,9 +290,6 @@ public class AttributeValueUtil {
 				if (column != null && List.class.isAssignableFrom(column.getType()))
 					row.set(name, null);
 				
-				if (SUIDUpdater.isUpdatableSUIDColumn(name))
-            		manager.getSUIDUpdater().addSUIDColumn(row.getTable(), name);
-				
 				return ParseState.LIST_ATT;
 		}
 
@@ -299,9 +310,6 @@ public class AttributeValueUtil {
             
             if (value != null) {
             	row.set(name, value);
-            	
-            	if (SUIDUpdater.isUpdatableSUIDColumn(name))
-            		manager.getSUIDUpdater().addSUIDColumn(row.getTable(), name);
             }
         }
     }

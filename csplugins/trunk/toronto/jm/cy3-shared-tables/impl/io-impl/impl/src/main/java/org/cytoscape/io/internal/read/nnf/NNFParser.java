@@ -50,7 +50,7 @@ public class NNFParser {
 	private CyNetwork getNetworkByTitle(final String networkTitle) {
 		Set<CyNetwork> networks = this.cyNetworkManagerServiceRef.getNetworkSet();
 		for (final CyNetwork network : networks) {
-			String title = network.getDefaultNetworkTable().getRow(network).get(CyNetwork.NAME, String.class);
+			String title = network.getLocalNetworkTable().getRow(network).get(CyNetwork.NAME, String.class);
 			
 			if (title.equals(networkTitle))
 				return network;
@@ -100,7 +100,7 @@ public class NNFParser {
 		} else if (length == 4) {
 			CyNode source = null;
 			// Check if the source node already existed in the network			
-			Collection<CyRow> matchingRows = network.getDefaultNodeTable().getMatchingRows(CyNetwork.NAME, parts[1]);
+			Collection<CyRow> matchingRows = network.getLocalNodeTable().getMatchingRows(CyNetwork.NAME, parts[1]);
 			if (!matchingRows.isEmpty()){
 				// source node already existed, get it
 				CyRow row = matchingRows.iterator().next();
@@ -123,7 +123,7 @@ public class NNFParser {
 			CyNode target = null;
 			
 			// Check if the target already existed in the network
-			Collection<CyRow> matchingRows2 = network.getDefaultNodeTable().getMatchingRows(CyNetwork.NAME, parts[3]);
+			Collection<CyRow> matchingRows2 = network.getLocalNodeTable().getMatchingRows(CyNetwork.NAME, parts[3]);
 			if (!matchingRows2.isEmpty()){
 				// source node already existed, get it
 				CyRow row = matchingRows2.iterator().next();
@@ -166,7 +166,7 @@ public class NNFParser {
 		while (it.hasNext()){
 			CyNetwork network = networkMap.get(it.next());
 			
-			Collection<CyRow> matchingRows = network.getDefaultNodeTable().getMatchingRows(CyNetwork.NAME, nodeName);
+			Collection<CyRow> matchingRows = network.getLocalNodeTable().getMatchingRows(CyNetwork.NAME, nodeName);
 			if (matchingRows.isEmpty()){
 				continue;
 			}

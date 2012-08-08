@@ -41,7 +41,6 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyTable;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkView;
@@ -99,9 +98,6 @@ public class SIFNetworkReader extends AbstractNetworkReader {
 		Map<String, CyNode> nMap = new HashMap<String, CyNode>(10000);
 
 		CyNetwork network = cyNetworkFactory.createNetwork();
-		final CyTable nodeTable = network.getDefaultNodeTable();
-		final CyTable edgeTable = network.getDefaultEdgeTable();
-
 		tm.setProgress(0.1);
 		
 		// Generate bundled event to avoid too many events problem.

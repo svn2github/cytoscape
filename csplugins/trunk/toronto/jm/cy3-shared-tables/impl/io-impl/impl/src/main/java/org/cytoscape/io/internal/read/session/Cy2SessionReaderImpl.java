@@ -33,7 +33,7 @@ import static org.cytoscape.io.internal.util.session.SessionUtil.IMAGES_FOLDER;
 import static org.cytoscape.io.internal.util.session.SessionUtil.NETWORK_ROOT;
 import static org.cytoscape.io.internal.util.session.SessionUtil.VIZMAP_PROPS_FILE;
 import static org.cytoscape.io.internal.util.session.SessionUtil.XGMML_EXT;
-import static org.cytoscape.model.CyNetwork.DEFAULT_ATTRS;
+import static org.cytoscape.model.CyNetwork.LOCAL_ATTRS;
 import static org.cytoscape.model.CyNetwork.SELECTED;
 
 import java.io.BufferedInputStream;
@@ -328,9 +328,9 @@ public class Cy2SessionReaderImpl extends AbstractSessionReader {
 				List<Edge> selEdges = edgeSelectionLookup.get(netName);
 				
 				if (selNodes != null)
-					setBooleanNodeAttr(net, selNodes, SELECTED, DEFAULT_ATTRS);
+					setBooleanNodeAttr(net, selNodes, SELECTED, LOCAL_ATTRS);
 				if (selEdges != null)
-					setBooleanEdgeAttr(net, selEdges, SELECTED, DEFAULT_ATTRS);
+					setBooleanEdgeAttr(net, selEdges, SELECTED, LOCAL_ATTRS);
 				
 				networks.add(net);
 			

@@ -22,6 +22,7 @@ import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
@@ -44,6 +45,7 @@ public class GenericXGMMLReaderTest extends AbstractNetworkReaderTest {
 	CyNetworkViewFactory networkViewFactory;
 	CyNetworkFactory networkFactory;
 	CyRootNetworkManager rootNetworkMgr;
+	CyNetworkTableManager netTablMgr;
 	CyTableFactory tableFactory;
 	RenderingEngineManager renderingEngineMgr;
 	ReadDataManager readDataMgr;
@@ -70,8 +72,9 @@ public class GenericXGMMLReaderTest extends AbstractNetworkReaderTest {
 		
 		NetworkViewTestSupport networkViewTestSupport = new NetworkViewTestSupport();
 		networkViewFactory = networkViewTestSupport.getNetworkViewFactory();
+		netTablMgr = networkTestSupport.getNetworkTableManager();
 		
-		readCache = new ReadCache();
+		readCache = new ReadCache(netTablMgr);
 		suidUpdater = new SUIDUpdater();
 		readDataMgr = new ReadDataManager(readCache, suidUpdater, mock(EquationCompiler.class), networkFactory, rootNetworkMgr);
 		
@@ -98,7 +101,7 @@ public class GenericXGMMLReaderTest extends AbstractNetworkReaderTest {
 		List<CyNetworkView> views = getViews("listAtt.xgmml");
 		CyNetwork net = checkSingleNetwork(views, 0, 0);
 		// The column should not be created, because the List type is not known
-		assertNull(net.getDefaultNetworkTable().getColumn("empty_list"));
+		assertNull(net.getSharedNetworkTable().getColumn("empty_list"));
 	}
 	
 	@Test
@@ -123,19 +126,19 @@ public class GenericXGMMLReaderTest extends AbstractNetworkReaderTest {
 		CyNetwork net = checkSingleNetwork(views, 2, 1);
 		
 		// Test CyTables
-		CyTable defNetTbl = net.getDefaultNetworkTable();
+		CyTable defNetTbl = net.getLocalNetworkTable();
 		assertNotNull(defNetTbl.getColumn("test"));
 		CyTable hiddenNetTbl = net.getRow(net, HIDDEN_ATTRS).getTable();
 		assertNotNull(hiddenNetTbl.getColumn("_private_int"));
 		
-		CyTable defNodeTbl = net.getDefaultNodeTable();
+		CyTable defNodeTbl = net.getSharedNodeTable();
 		assertNotNull(defNodeTbl.getColumn("name"));
 		assertNotNull(defNodeTbl.getColumn("list_1"));
 		CyTable hiddenNodeTbl = net.getRow(net.getNodeList().get(0), HIDDEN_ATTRS).getTable();
 		assertNotNull(hiddenNodeTbl.getColumn("_private_str"));
 		assertNotNull(hiddenNodeTbl.getColumn("_private_list"));
 		
-		CyTable defEdgeTbl = net.getDefaultEdgeTable();
+		CyTable defEdgeTbl = net.getSharedEdgeTable();
 		assertNotNull(defEdgeTbl.getColumn("name"));
 		CyTable hiddenEdgeTbl = net.getRow(net.getEdgeList().get(0), HIDDEN_ATTRS).getTable();
 		assertNotNull(hiddenEdgeTbl.getColumn("_private_real"));
@@ -168,14 +171,14 @@ public class GenericXGMMLReaderTest extends AbstractNetworkReaderTest {
 		assertEquals(nodes.get(1).getSUID(), net.getRow(nodes.get(0), HIDDEN_ATTRS).get("other_node.SUID", Long.class));
 		assertEquals(nodes.get(0).getSUID(), net.getRow(nodes.get(1), HIDDEN_ATTRS).get("other_node.SUID", Long.class));
 		// User List att
-		List<Long> nodeAttList = net.getRow(nodes.get(1)).getList("edges.SUID", Long.class);
+		List<Long> nodeAttList = net.getRow(nodes.get(1), SHARED_ATTRS).getList("edges.SUID", Long.class);
 		assertEquals(2, nodeAttList.size());
 		assertTrue(nodeAttList.contains(edges.get(0).getSUID()));
 		assertTrue(nodeAttList.contains(edges.get(1).getSUID()));
 		
 		// Check edge attributes
-		assertEquals(edges.get(0).getSource().getSUID(), net.getRow(edges.get(0)).get("source_node.SUID", Long.class));
-		assertEquals(edges.get(1).getSource().getSUID(), net.getRow(edges.get(1)).get("source_node.SUID", Long.class));
+		assertEquals(edges.get(0).getSource().getSUID(), net.getRow(edges.get(0), SHARED_ATTRS).get("source_node.SUID", Long.class));
+		assertEquals(edges.get(1).getSource().getSUID(), net.getRow(edges.get(1), SHARED_ATTRS).get("source_node.SUID", Long.class));
 	}
 	
 	@Test
@@ -279,11 +282,11 @@ public class GenericXGMMLReaderTest extends AbstractNetworkReaderTest {
 	private void assertCustomColumnsAreMutable(CyNetwork net) {
 		// User or non-default columns should be immutable
 		CyTable[] tables = new CyTable[] {
-			net.getTable(CyNetwork.class, DEFAULT_ATTRS),
+			net.getTable(CyNetwork.class, LOCAL_ATTRS),
 			net.getTable(CyNetwork.class, HIDDEN_ATTRS),
-			net.getTable(CyNode.class, DEFAULT_ATTRS),
+			net.getTable(CyNode.class, LOCAL_ATTRS),
 			net.getTable(CyNode.class, HIDDEN_ATTRS),
-			net.getTable(CyEdge.class, DEFAULT_ATTRS),
+			net.getTable(CyEdge.class, LOCAL_ATTRS),
 			net.getTable(CyEdge.class, HIDDEN_ATTRS)
 		};
 		for (CyTable t : tables) {
@@ -304,7 +307,7 @@ public class GenericXGMMLReaderTest extends AbstractNetworkReaderTest {
 		int npCount = 0;
 		
 		for (CyNode n : net.getNodeList()) {
-			if (net.getRow(n, CyNetwork.HIDDEN_ATTRS).isSet("__groupState")) {
+			if (net.getRow(n, CyNetwork.HIDDEN_ATTRS).isSet(ReadDataManager.GROUP_STATE_ATTRIBUTE)) {
 				gn = n;
 				if (++npCount > 1) fail("There should be only one group node!");
 			} else { // The other nodes have no network pointer!
@@ -325,7 +328,7 @@ public class GenericXGMMLReaderTest extends AbstractNetworkReaderTest {
 		// Check external edges metadata (must be added by the reader!)
 		CyRootNetwork rootNet = rootNetworkMgr.getRootNetwork(np);
 		CyRow rnRow = rootNet.getRow(gn, HIDDEN_ATTRS);
-		List<String> extEdgeIds = rnRow.getList("__externalEdges", String.class);
+		List<String> extEdgeIds = rnRow.getList(ReadDataManager.EXTERNAL_EDGE_ATTRIBUTE, String.class);
 		
 		assertNotNull(extEdgeIds);
 		assertEquals(1, extEdgeIds.size());

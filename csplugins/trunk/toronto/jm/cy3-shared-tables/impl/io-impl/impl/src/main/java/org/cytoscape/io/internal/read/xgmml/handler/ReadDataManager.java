@@ -61,7 +61,10 @@ import org.xml.sax.Attributes;
 
 public class ReadDataManager {
 
-	protected final static String XLINK = "http://www.w3.org/1999/xlink";
+	public static final String GROUP_STATE_ATTRIBUTE = "__groupState";
+	public static final String EXTERNAL_EDGE_ATTRIBUTE = "__externalEdges.SUID";
+
+	protected static final String XLINK = "http://www.w3.org/1999/xlink";
 	
 	/* RDF Data */
 	protected String RDFDate;
@@ -497,18 +500,22 @@ public class ReadDataManager {
         			// Check for the group's metadata attribute
         			final CyRow grhRow = grNet.getRow(grNode, CyNetwork.HIDDEN_ATTRS);
         			
-        			if (grhRow.isSet("__groupState")) { // It's a group!
+        			if (grhRow.isSet(GROUP_STATE_ATTRIBUTE)) { // It's a group!
         				// Add extra metadata for external edges, so that the information is not lost
         				final CyRow rnRow = getRootNetwork().getRow(grNode, CyNetwork.HIDDEN_ATTRS);
         				
-        				if (rnRow.getTable().getColumn("__externalEdges") == null)
-        					rnRow.getTable().createListColumn("__externalEdges", String.class, false);
+        				if (rnRow.getTable().getColumn(EXTERNAL_EDGE_ATTRIBUTE) == null) {
+        					rnRow.getTable().createListColumn(EXTERNAL_EDGE_ATTRIBUTE, String.class, false);
+        					// These are already the new SUIDs. Let's tell the SUIDUpdater to ignore this column,
+        					// in order to prevent it from replacing the correct list by an empty one.
+        					suidUpdater.ignoreColumn(rnRow.getTable(), EXTERNAL_EDGE_ATTRIBUTE);
+        				}
         				
-        				extEdgeIds = rnRow.getList("__externalEdges", String.class);
+        				extEdgeIds = rnRow.getList(EXTERNAL_EDGE_ATTRIBUTE, String.class);
         						
         				if (extEdgeIds == null) {
         					extEdgeIds = new ArrayList<String>();
-        					rnRow.set("__externalEdges", extEdgeIds);
+        					rnRow.set(EXTERNAL_EDGE_ATTRIBUTE, extEdgeIds);
         				}
         			}
         		}
