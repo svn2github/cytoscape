@@ -201,26 +201,46 @@ public abstract class AbstractTableFacade implements CyTable {
 
 		@Override
 		public void set(String attributeName, Object value) {
+			if ( value != null && attributeName != null && attributeName.equals("edges.SUID") ) {
+				System.out.println("facade set (" + Long.toString(actualRow.get("SUID",Long.class)) + " - " + table.getTitle() + ") " + attributeName + " " + value.toString());
+				Thread.dumpStack();
+			}
 			actualRow.set(attributeName,value);
 		}
 
 		@Override
 		public <T> T get(String attributeName, Class<? extends T> c) {
+			if ( attributeName != null && c != null && attributeName.equals("edges.SUID")) {
+				System.out.println("facade GET (" + Long.toString(actualRow.get("SUID",Long.class)) + " - " + table.getTitle() + ") " + attributeName + " = " + (actualRow.get(attributeName, c)));
+				Thread.dumpStack();
+			}
 			return actualRow.get(attributeName, c);
 		}
 
 		@Override
 		public <T> T get(String attributeName, Class<? extends T> c, T defValue) {
+			if ( attributeName != null && c != null && attributeName.equals("edges.SUID")) {
+				System.out.println("facade GET (" + Long.toString(actualRow.get("SUID",Long.class)) + " - " + table.getTitle() + ") " + attributeName + " = " + (actualRow.get(attributeName, c, defValue)).toString());
+				Thread.dumpStack();
+			}
 			return actualRow.get(attributeName, c, defValue);
 		}
 
 		@Override
 		public <T> List<T> getList(String attributeName, Class<T> c) {
+			if ( attributeName != null && c != null && attributeName.equals("edges.SUID")) {
+				System.out.println("facade GET LIST (" + Long.toString(actualRow.get("SUID",Long.class)) + " - " + table.getTitle() + ") " + attributeName + " = " + (actualRow.getList(attributeName, c)).toString());
+				Thread.dumpStack();
+			}
 			return actualRow.getList(attributeName, c);
 		}
 
 		@Override
 		public <T> List<T> getList(String attributeName, Class<T> c, List<T> defValue) {
+			if ( attributeName != null && c != null && attributeName.equals("edges.SUID")) {
+				System.out.println("facade GET LIST (" + Long.toString(actualRow.get("SUID",Long.class)) + " - " + table.getTitle() + ") " + attributeName + " = " + (actualRow.getList(attributeName, c, defValue)).toString());
+				Thread.dumpStack();
+			}
 			return actualRow.getList( attributeName, c, defValue);
 		}
 

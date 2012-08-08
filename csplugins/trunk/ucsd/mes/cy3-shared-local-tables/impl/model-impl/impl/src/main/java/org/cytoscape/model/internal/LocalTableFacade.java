@@ -74,18 +74,17 @@ import org.slf4j.LoggerFactory;
  * new column in the local table.  All virtual column methods create virtual 
  * columns in both the shared and local tables. 
  */
-public final class LocalTableFacade implements CyTable {
+public final class LocalTableFacade extends AbstractTableFacade implements CyTable {
 	
 	
 	private static final Logger logger = LoggerFactory.getLogger(LocalTableFacade.class);
 	private final CyTable shared;
 	private final CyTable local;
-	private final Long suid;
 
 	public LocalTableFacade(CyTable local, SharedTableFacade shared) {
+		super(local);
 		this.local = local;
 		this.shared = shared;
-		this.suid = Long.valueOf(SUIDFactory.getNextSUID()); 
 
 		// this adds virtual columns for any existing columns already in the shared table
 		local.addVirtualColumns(shared.getActualTable(), CyIdentifiable.SUID, true);
@@ -93,47 +92,6 @@ public final class LocalTableFacade implements CyTable {
 
 	CyTable getLocalTable() {
 		return local;
-	}
-
-	public Long getSUID() {
-		return suid;	
-	}
-
-	public boolean isPublic() {
-		return local.isPublic();
-	}
-	
-	public void setPublic (boolean isPublic) {
-		local.setPublic(isPublic);	
-	}
-
-	public CyTable.Mutability getMutability() {
-		return local.getMutability();
-	}
-
-	public String getTitle() {
-		return local.getTitle();
-	}
-
-	public void setTitle(String title) {
-		local.setTitle(title);
-	}
-
-	public CyColumn getPrimaryKey() {
-		return local.getPrimaryKey();
-	}
-
-	public CyColumn getColumn(String columnName) {
-		return local.getColumn(columnName);
-	}
-
-	public Collection<CyColumn> getColumns() {
-		return local.getColumns();
-	}
-
-	public void deleteColumn(String columnName) {
-		local.deleteColumn(columnName);
-			
 	}
 
 	public <T> void createColumn(String columnName, Class<?extends T> type, boolean isImmutable) {
@@ -150,41 +108,8 @@ public final class LocalTableFacade implements CyTable {
 	}
 
 	public <T> void createListColumn(String columnName, Class<T> listElementType, boolean isImmutable, List<T> defaultValue ) {
-		logger.debug("delegating createListColumn '" + columnName + "' from local " + local.getTitle() + " to shared: " + shared.getTitle());
+		logger.debug("delegating create List Column '" + columnName + "' from local " + local.getTitle() + " to shared: " + shared.getTitle());
 		shared.createListColumn(columnName,listElementType,isImmutable,defaultValue);
-	}
-
-	public CyRow getRow(Object primaryKey) {
-		return local.getRow(primaryKey);
-	}
-
-	public boolean rowExists(Object primaryKey) {
-		return local.rowExists(primaryKey); 
-	}
-
-	public boolean deleteRows(Collection<?> primaryKeys) {
-		return local.deleteRows(primaryKeys); 
-	}
-
-	public List<CyRow> getAllRows() {
-		return local.getAllRows();	
-	}
-
-	public String getLastInternalError() {
-		return local.getLastInternalError();
-	}
-
-	public Collection<CyRow> getMatchingRows(String columnName, Object value) {
-	 	return local.getMatchingRows(columnName,value);	
-	}
-
-	public int countMatchingRows(String columnName, Object value) {
-		return local.countMatchingRows(columnName, value);
-
-	}
-
-	public int getRowCount() {
-		return local.getRowCount();	
 	}
 
 	public String addVirtualColumn(String virtualColumn, String sourceColumn, CyTable sourceTable, String targetJoinKey, boolean isImmutable) {
@@ -194,17 +119,5 @@ public final class LocalTableFacade implements CyTable {
 
 	public void addVirtualColumns(CyTable sourceTable, String targetJoinKey, boolean isImmutable) {
 		shared.addVirtualColumns(sourceTable, targetJoinKey, isImmutable);
-	}
-
-	public SavePolicy getSavePolicy() {
-		return local.getSavePolicy();
-	}
-
-	public void setSavePolicy(SavePolicy policy) {
-		local.setSavePolicy(policy);
-	}
-
-	public void swap(CyTable otherTable) {
-		local.swap(otherTable);	
 	}
 }

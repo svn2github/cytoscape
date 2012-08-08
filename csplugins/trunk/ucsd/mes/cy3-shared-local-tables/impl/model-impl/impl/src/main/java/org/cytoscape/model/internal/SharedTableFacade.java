@@ -126,9 +126,16 @@ public final class SharedTableFacade extends AbstractTableFacade implements CyTa
 	}
 
 	public <T> void createListColumn(String columnName, Class<T> listElementType, boolean isImmutable, List<T> defaultValue ) {
+		logger.debug("adding real List column: '" + columnName + "' to table: " + shared.getTitle());
 		shared.createListColumn(columnName, listElementType, isImmutable, defaultValue);
-		for ( CyTable local : localTables() ) 
+		for ( CyTable local : localTables() ) {
+			if ( local == null ) {
+				logger.debug("NULL table!");
+				continue;
+			}
+			logger.debug("adding virtual list column: " + columnName + " to local table: " + local.getTitle());
 			local.addVirtualColumn(columnName,columnName,shared,CyIdentifiable.SUID,isImmutable);
+		}
 	}
 
 	public String addVirtualColumn(String virtualColumn, String sourceColumn, CyTable sourceTable, String targetJoinKey, boolean isImmutable) {
