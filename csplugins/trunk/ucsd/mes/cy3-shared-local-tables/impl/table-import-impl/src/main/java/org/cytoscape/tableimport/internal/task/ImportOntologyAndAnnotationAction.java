@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.xml.bind.JAXBException;
 
-import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.model.CyNetworkManager;
@@ -22,10 +21,10 @@ import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.tableimport.internal.ui.ImportTablePanel;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
+import org.cytoscape.util.swing.FileUtil;
 import org.cytoscape.work.TaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class ImportOntologyAndAnnotationAction extends AbstractCyAction {
 	private static final long serialVersionUID = 3000065764000826333L;
@@ -42,20 +41,20 @@ public class ImportOntologyAndAnnotationAction extends AbstractCyAction {
 	private final CyNetworkManager manager;
 	private final CyTableFactory tableFactory;
 	private final CyTableManager tableManager;
+	private final FileUtil fileUtil;
 
-	public ImportOntologyAndAnnotationAction(final InputStreamTaskFactory factory)
-	{
+	public ImportOntologyAndAnnotationAction() {
 		super("Ontology and Annotation...");
 		setPreferredMenu("File.Import");
 
 		this.bookmarksProp = CytoscapeServices.bookmark;
-		this.bkUtil        = CytoscapeServices.bookmarksUtil;
-
-		this.taskManager  = CytoscapeServices.dialogTaskManager;
-		this.factory      = factory;
-		this.manager      = CytoscapeServices.cyNetworkManager;
+		this.bkUtil = CytoscapeServices.bookmarksUtil;
+		this.taskManager = CytoscapeServices.dialogTaskManager;
+		this.factory = CytoscapeServices.inputStreamTaskFactory;
+		this.manager = CytoscapeServices.cyNetworkManager;
 		this.tableFactory = CytoscapeServices.cyTableFactory;
 		this.tableManager = CytoscapeServices.cyTableManager;
+		this.fileUtil = CytoscapeServices.fileUtil;
 	}
 
 	@Override
@@ -63,10 +62,8 @@ public class ImportOntologyAndAnnotationAction extends AbstractCyAction {
 		final JDialog dialog = layout();
 
 		try {
-			ontologyPanel =
-				new ImportTablePanel(ImportTablePanel.ONTOLOGY_AND_ANNOTATION_IMPORT,
-				                     null, null, bookmarksProp, bkUtil, taskManager,
-				                     factory, manager, tableFactory, tableManager);
+			ontologyPanel = new ImportTablePanel(ImportTablePanel.ONTOLOGY_AND_ANNOTATION_IMPORT, null, null,
+					bookmarksProp, bkUtil, taskManager, factory, manager, tableFactory, tableManager, fileUtil);
 			dialog.add(ontologyPanel, BorderLayout.CENTER);
 			dialog.pack();
 			dialog.setLocationRelativeTo(null);

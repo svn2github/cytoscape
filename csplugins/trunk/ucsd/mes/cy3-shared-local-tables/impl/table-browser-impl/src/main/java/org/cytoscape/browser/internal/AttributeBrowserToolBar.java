@@ -632,7 +632,8 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	}
 
 	private String getAttribName(final int cellRow, final int cellColumn) {
-		return browserTableModel.getColumnName(cellColumn);
+		int colIndexModel = browserTableModel.getTable().convertColumnIndexToModel(cellColumn);
+		return browserTableModel.getColumnName( colIndexModel);
 	}
 
 	private JButton getDeleteButton() {
@@ -737,7 +738,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		final String[] attrArray = getAttributeArray();
 
 		final JFrame frame = (JFrame)SwingUtilities.getRoot(this);
-		final DeletionDialog dDialog = new DeletionDialog(frame, browserTableModel.getAttributes());
+		final DeletionDialog dDialog = new DeletionDialog(frame, browserTableModel.getAttributes(), browserTableModel);
 
 		dDialog.pack();
 		dDialog.setLocationRelativeTo(toolBar);
