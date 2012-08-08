@@ -45,7 +45,7 @@ public class VisualStyleTest extends AbstractVisualStyleTest {
 		node3 = network.addNode();
 
 		edge = network.addEdge(node1, node2, true);
-		CyTable nodeTable = network.getDefaultNodeTable();
+		CyTable nodeTable = network.getTable(CyNode.class, CyNetwork.LOCAL_ATTRS);
 		nodeTable.createColumn(attrName, String.class, true);
 		nodeTable.getRow(node1.getSUID()).set(attrName, "red");
 		nodeTable.getRow(node2.getSUID()).set(attrName, "green");
