@@ -61,9 +61,9 @@ public abstract class AbstractVisualStyleTest {
 		assertNotNull(networkView.getNodeView(node2));
 		assertNotNull(networkView.getNodeView(node3));
 		
-		assertEquals("red", networkView.getModel().getDefaultNodeTable().getRow(node1.getSUID()).get(attrName, String.class));
-		assertEquals("green", networkView.getModel().getDefaultNodeTable().getRow(node2.getSUID()).get(attrName, String.class));
-		assertEquals("foo", networkView.getModel().getDefaultNodeTable().getRow(node3.getSUID()).get(attrName, String.class));
+		assertEquals("red", networkView.getModel().getTable(CyNode.class, CyNetwork.LOCAL_ATTRS).getRow(node1.getSUID()).get(attrName, String.class));
+		assertEquals("green", networkView.getModel().getTable(CyNode.class, CyNetwork.LOCAL_ATTRS).getRow(node2.getSUID()).get(attrName, String.class));
+		assertEquals("foo", networkView.getModel().getTable(CyNode.class, CyNetwork.LOCAL_ATTRS).getRow(node3.getSUID()).get(attrName, String.class));
 
 		// Test title
 		assertEquals(originalTitle, style.getTitle());
