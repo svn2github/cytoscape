@@ -22,6 +22,7 @@ public class SUIDUpdater {
 	
 	private Map<Long/*old SUID*/, Long/*new SUID*/> suidMap;
 	private Set<CyTable> tables;
+	private Map<CyTable, Set<String>/*column names*/> ignoredColumns;
 	
 	public SUIDUpdater() {
 		init();
@@ -30,6 +31,7 @@ public class SUIDUpdater {
 	public void init() {
 		suidMap = new HashMap<Long, Long>();
 		tables = new HashSet<CyTable>();
+		ignoredColumns = new HashMap<CyTable, Set<String>>();
 	}
 	
 	public void addSUIDMapping(final Long oldSUID, final Long newSUID) {
@@ -46,6 +48,19 @@ public class SUIDUpdater {
 			tables.addAll(networkTables);
 	}
 	
+	public void ignoreColumn(final CyTable table, final String columnName) {
+		if (table != null && columnName != null) {
+			Set<String> names = ignoredColumns.get(table);
+		
+			if (names == null) {
+				names = new HashSet<String>();
+				ignoredColumns.put(table, names);
+			}
+			
+			names.add(columnName);
+		}
+	}
+	
 	public void updateSUIDColumns() {
 		final Set<CyColumn> updated = new HashSet<CyColumn>();
 	
@@ -54,6 +69,11 @@ public class SUIDUpdater {
 			
 			for (final CyColumn c : columns) {
 				if (isUpdatableSUIDColumn(c) && !updated.contains(c)) {
+					Set<String> ignoredNames = ignoredColumns.get(tbl);
+					
+					if (ignoredNames != null && ignoredNames.contains(c.getName()))
+						continue;
+						
 					updateRows(tbl, c);
 					updated.add(c);
 				}
