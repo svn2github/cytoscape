@@ -253,7 +253,7 @@ public class CySessionManagerImpl implements CySessionManager, SessionSavedListe
 			final Set<CyNetwork> networks = sess.getNetworks();
 
 			for (CyNetwork n : networks) {
-				final Boolean selected = n.getDefaultNetworkTable().getRow(n.getSUID())
+				final Boolean selected = n.getLocalNetworkTable().getRow(n.getSUID())
 						.get(CyNetwork.SELECTED, Boolean.class);
 				
 				if (Boolean.TRUE.equals(selected))
