@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.cytoscape.ding.NetworkViewTestSupport;
@@ -20,8 +21,10 @@ import org.cytoscape.io.internal.util.UnrecognizedVisualPropertyManager;
 import org.cytoscape.io.internal.util.session.SessionUtil;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
@@ -44,6 +47,7 @@ public class GenericXGMMLReaderTest extends AbstractNetworkReaderTest {
 	CyNetworkViewFactory networkViewFactory;
 	CyNetworkFactory networkFactory;
 	CyRootNetworkManager rootNetworkMgr;
+	CyNetworkTableManager netTablMgr;
 	CyTableFactory tableFactory;
 	RenderingEngineManager renderingEngineMgr;
 	ReadDataManager readDataMgr;
@@ -67,11 +71,12 @@ public class GenericXGMMLReaderTest extends AbstractNetworkReaderTest {
 		NetworkTestSupport networkTestSupport = new NetworkTestSupport();
 		networkFactory = networkTestSupport.getNetworkFactory();
 		rootNetworkMgr = networkTestSupport.getRootNetworkFactory();
+		netTablMgr = networkTestSupport.getNetworkTableManager();
 		
 		NetworkViewTestSupport networkViewTestSupport = new NetworkViewTestSupport();
 		networkViewFactory = networkViewTestSupport.getNetworkViewFactory();
 		
-		readCache = new ReadCache();
+		readCache = new ReadCache(netTablMgr);
 		suidUpdater = new SUIDUpdater();
 		readDataMgr = new ReadDataManager(readCache, suidUpdater, mock(EquationCompiler.class), networkFactory, rootNetworkMgr);
 		

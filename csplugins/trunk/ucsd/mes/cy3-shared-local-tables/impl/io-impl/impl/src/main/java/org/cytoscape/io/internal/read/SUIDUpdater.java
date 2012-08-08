@@ -1,12 +1,12 @@
 package org.cytoscape.io.internal.read;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyRow;
@@ -18,10 +18,10 @@ import org.cytoscape.model.CyTable;
  */
 public class SUIDUpdater {
 
-	private static final String SUID_COLUMN_SUFFIX = ".SUID";
+	public static final String SUID_COLUMN_SUFFIX = ".SUID";
 	
 	private Map<Long/*old SUID*/, Long/*new SUID*/> suidMap;
-	private Map<CyTable, Set<String>/*column names*/> suidColumnMap;
+	private Set<CyTable> tables;
 	
 	public SUIDUpdater() {
 		init();
@@ -29,7 +29,7 @@ public class SUIDUpdater {
 	
 	public void init() {
 		suidMap = new HashMap<Long, Long>();
-		suidColumnMap = new WeakHashMap<CyTable, Set<String>>();
+		tables = new HashSet<CyTable>();
 	}
 	
 	public void addSUIDMapping(final Long oldSUID, final Long newSUID) {
@@ -37,46 +37,57 @@ public class SUIDUpdater {
 			suidMap.put(oldSUID, newSUID);
 	}
 	
-	public Long getNewSUID(final Long oldSUID) {
-		return suidMap.get(oldSUID);
+	public void addTable(final CyTable table) {
+		tables.add(table);
 	}
 	
-	public void addSUIDColumn(final CyTable table, final String name) {
-		Set<String> columnNames = suidColumnMap.get(table);
-		
-		if (columnNames == null) {
-			columnNames = new HashSet<String>();
-			suidColumnMap.put(table, columnNames);
-		}
-		
-		columnNames.add(name);
+	public void addTables(final Set<CyTable> networkTables) {
+		if (networkTables != null)
+			tables.addAll(networkTables);
 	}
 	
 	public void updateSUIDColumns() {
-		for (final Map.Entry<CyTable, Set<String>> entry : suidColumnMap.entrySet()) {
-			final CyTable tbl = entry.getKey();
-			final Set<String> columnNames = entry.getValue();
+		final Set<CyColumn> updated = new HashSet<CyColumn>();
+	
+		for (final CyTable tbl : tables) {
+			final Collection<CyColumn> columns = tbl.getColumns();
 			
-			for (final String name : columnNames)
-				updateRows(tbl, name);
+			for (final CyColumn c : columns) {
+				if (isUpdatableSUIDColumn(c) && !updated.contains(c)) {
+					updateRows(tbl, c);
+					updated.add(c);
+				}
+			}
 		}
+	}
+	
+	public static boolean isUpdatableSUIDColumn(final CyColumn column) {
+		if (column != null
+				&& !column.isPrimaryKey()
+				&& !column.getVirtualColumnInfo().isVirtual()
+				&& (column.getType() == Long.class ||
+						(Collection.class.isAssignableFrom(column.getType()) &&
+								column.getListElementType() == Long.class)))
+			return isUpdatableSUIDColumnName(column.getName());
+		
+		return false;
+    }
+	
+	public static boolean isUpdatableSUIDColumnName(final String columnName) {
+		return columnName != null && columnName.endsWith(SUID_COLUMN_SUFFIX);
 	}
 	
 	public void dispose() {
 		init();
 	}
 	
-	public static boolean isUpdatableSUIDColumn(final String columnName) {
-    	return columnName != null && columnName.endsWith(SUID_COLUMN_SUFFIX);
-    }
-	
 	@Override
 	public String toString() {
-		return "SUIDUpdater{ suidMap=" + suidMap + ", suidColumnMap=" + suidColumnMap + " }";
+		return "SUIDUpdater{ suidMap=" + suidMap + ", tables=" + tables + " }";
 	}
-
-	private void updateRows(final CyTable tbl, final String columnName) {
-		final CyColumn column = tbl.getColumn(columnName);
+	
+	private void updateRows(final CyTable tbl, final CyColumn column) {
+		final String columnName = column.getName();
 		final Class<?> type = column.getType();
 		final Class<?> listType = column.getListElementType();
 		
@@ -105,5 +116,9 @@ public class SUIDUpdater {
 				}
 			}
 		}
+	}
+	
+	private Long getNewSUID(final Long oldSUID) {
+		return suidMap.get(oldSUID);
 	}
 }
