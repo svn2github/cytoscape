@@ -21,6 +21,9 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -91,10 +94,18 @@ public class LegendDialog extends JDialog {
 	private void createMappingLegends(final Collection<VisualMappingFunction<?, ?>> mappings, final JPanel legend) {
 		for (VisualMappingFunction<?, ?> map : mappings) {
 			final JPanel mappingLenegd;
+			
+			// Find Table
+			final String colName = map.getMappingColumnName();
+			final CyNetwork currentNetwork = appManager.getCurrentNetwork();
+			final CyTable table;
+			if(currentNetwork.getTable(CyNode.class, CyNetwork.LOCAL_ATTRS).getColumn(colName)!= null)
+				table = currentNetwork.getTable(CyNode.class, CyNetwork.LOCAL_ATTRS);
+			else
+				table=currentNetwork.getTable(CyNode.class, CyNetwork.SHARED_ATTRS);
 
 			if (map instanceof ContinuousMapping) {
-				mappingLenegd = new ContinuousMappingLegendPanel(visualStyle, (ContinuousMapping) map, appManager
-						.getCurrentNetwork().getDefaultNodeTable(), appManager, vmm);
+				mappingLenegd = new ContinuousMappingLegendPanel(visualStyle, (ContinuousMapping) map, table, appManager, vmm);
 			} else if (map instanceof DiscreteMapping) {
 				mappingLenegd = new DiscreteLegend((DiscreteMapping<?, ?>) map, appManager);
 			} else if (map instanceof DiscreteMapping) {

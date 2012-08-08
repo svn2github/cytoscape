@@ -62,9 +62,6 @@ public class ContinuousMappingLegendPanel extends JPanel {
 		this.vmm = vmm;
 		this.vp = mapping.getVisualProperty();
 
-		// this.points = points;
-		// this.type = vpt;
-
 		// Resize it when window size changed.
 		this.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {

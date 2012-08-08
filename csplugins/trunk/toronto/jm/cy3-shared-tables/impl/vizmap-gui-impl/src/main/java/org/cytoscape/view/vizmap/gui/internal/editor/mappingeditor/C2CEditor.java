@@ -29,7 +29,13 @@ public class C2CEditor<K extends Number, V extends Number> extends AbstractConti
 		@SuppressWarnings("unchecked")
 		Class<? extends CyIdentifiable> type = (Class<? extends CyIdentifiable>) mapping.getVisualProperty()
 				.getTargetDataType();
-		final CyTable attr = manager.getTable(appManager.getCurrentNetwork(), type, CyNetwork.DEFAULT_ATTRS);
-		this.editorPanel = new C2CMappingEditorPanel<K, V>(vmm.getCurrentVisualStyle(), mapping, attr, appManager, vmm);
+		
+		final String colName = mapping.getMappingColumnName();
+		final CyTable table;
+		if(currentNetwork.getTable(type, CyNetwork.LOCAL_ATTRS).getColumn(colName)!= null)
+			table = currentNetwork.getTable(type, CyNetwork.LOCAL_ATTRS);
+		else
+			table=currentNetwork.getTable(type, CyNetwork.SHARED_ATTRS);
+		this.editorPanel = new C2CMappingEditorPanel<K, V>(vmm.getCurrentVisualStyle(), mapping, table, appManager, vmm);
 	}
 }

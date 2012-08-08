@@ -34,8 +34,15 @@ public class GradientEditor extends AbstractContinuousMappingEditor<Double, Colo
 		@SuppressWarnings("unchecked")
 		Class<? extends CyIdentifiable> type = (Class<? extends CyIdentifiable>) mapping.getVisualProperty()
 				.getTargetDataType();
-		final CyTable attr = manager.getTable(appManager.getCurrentNetwork(), type, CyNetwork.DEFAULT_ATTRS);
-		this.editorPanel = new GradientEditorPanel(vmm.getCurrentVisualStyle(), mapping, attr, appManager,
+		
+		final String colName = mapping.getMappingColumnName();
+		final CyTable table;
+		if(currentNetwork.getTable(type, CyNetwork.LOCAL_ATTRS).getColumn(colName)!= null)
+			table = currentNetwork.getTable(type, CyNetwork.LOCAL_ATTRS);
+		else
+			table=currentNetwork.getTable(type, CyNetwork.SHARED_ATTRS);
+		
+		this.editorPanel = new GradientEditorPanel(vmm.getCurrentVisualStyle(), mapping, table, appManager,
 				editorManager.getValueEditor(Paint.class), vmm);
 	}
 }

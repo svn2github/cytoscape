@@ -200,12 +200,18 @@ public final class CellEditorEventHandler implements VizMapEventHandler {
 		 */
 		@SuppressWarnings("unchecked")
 		Class<? extends CyIdentifiable> type = (Class<? extends CyIdentifiable>) editor.getTargetObjectType();
-		final CyTable attrForTest = tableMgr.getTable(applicationManager.getCurrentNetwork(), type, CyNetwork.DEFAULT_ATTRS);
+//		final CyTable attrForTest = tableMgr.getTable(applicationManager.getCurrentNetwork(), type, CyNetwork.DEFAULT_ATTRS);
 
-		final CyColumn column = attrForTest.getColumn(ctrAttrName);
+		CyNetwork currentNetwork = applicationManager.getCurrentNetwork();
+		CyTable localTable = currentNetwork.getTable(type, CyNetwork.LOCAL_ATTRS);
+		CyTable sharedTable = currentNetwork.getTable(type, CyNetwork.SHARED_ATTRS);
+		CyColumn column = localTable.getColumn(ctrAttrName);
 		if (column == null)
+			column = sharedTable.getColumn(ctrAttrName);
+		
+		if(column == null)
 			return;
-
+		
 		final Class<K> dataType = (Class<K>) column.getType();
 
 		if (mapping == null) {
