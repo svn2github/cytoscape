@@ -117,11 +117,6 @@ public abstract class AbstractTableFacade implements CyTable {
 		return actual.getColumns();
 	}
 
-	public void deleteColumn(String columnName) {
-		actual.deleteColumn(columnName);
-			
-	}
-
 	public CyRow getRow(Object primaryKey) {
 		CyRow actualRow = actual.getRow(primaryKey);
 		if ( actualRow == null )

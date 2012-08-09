@@ -102,6 +102,20 @@ public final class SharedTableFacade extends AbstractTableFacade implements CyTa
 		return tables;
 	}
 
+	
+	public void deleteColumn(String columnName) {
+		for ( CyTable local : localTables() ) {
+			if ( local == null ) {
+				logger.debug("NULL table!");
+				continue;
+			}
+				
+			logger.debug("deleting virtual column: " + columnName + " from local table: " + local.getTitle());
+			local.deleteColumn(columnName);
+		}
+		logger.debug("deleting shared olumn: " + columnName + " from shared table: " + shared.getTitle());
+		shared.deleteColumn(columnName);
+	}
 
 	public <T> void createColumn(String columnName, Class<?extends T> type, boolean isImmutable) {
 		createColumn(columnName, type, isImmutable,null);
