@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 		
 	<properties>
-		<bundle.symbolicName>jActiveModules-impl</bundle.symbolicName>
+		<bundle.symbolicName>jActiveModules</bundle.symbolicName>
 		<bundle.namespace>csplugin.jActiveModules</bundle.namespace>
 		<cytoscape.api.version>3.0.0-beta3-SNAPSHOT</cytoscape.api.version>
 		<maven-bundle-plugin.version>2.3.4</maven-bundle-plugin.version>
@@ -16,7 +16,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>csplugin</groupId>
 	<artifactId>jActiveModules-impl</artifactId>
-	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
+	<name>${bundle.symbolicName}</name>
 	<packaging>bundle</packaging>
 
 	<dependencies>
