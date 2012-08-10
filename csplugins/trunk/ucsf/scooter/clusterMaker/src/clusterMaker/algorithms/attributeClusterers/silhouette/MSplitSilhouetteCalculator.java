@@ -131,6 +131,10 @@ public class MSplitSilhouetteCalculator {
 	}
 	
 	public static Clusters splitByMeanSplitSilhouette(Subsegregatable sseg, int K, int L) {
+		return splitByMeanSplitSilhouette(sseg, K, L, false);
+	}
+	
+	public static Clusters splitByMeanSplitSilhouette(Subsegregatable sseg, int K, int L, boolean forceSplit) {
 		Clusters split = null;
 		int m = sseg.size();
 		
@@ -140,9 +144,11 @@ public class MSplitSilhouetteCalculator {
 			K = m / 3;
 		}
 		
+		int minK = (forceSplit ? 2 : 1);
+		
 		// minimize the mean split silhouette
 		double avgSplitSil = Double.POSITIVE_INFINITY;
-		for (int k = 1; k <= K; k++) {
+		for (int k = minK; k <= K; k++) {
 			Clusters clusters = sseg.cluster(k);
 			double t = meanSplitSilhouette(sseg, clusters, L);
 			if (t < avgSplitSil) {
@@ -151,13 +157,19 @@ public class MSplitSilhouetteCalculator {
 			}
 		}
 		
-		if (split != null) {
-			split.setCost(avgSplitSil);
-		}
+		if (split == null) {
+			split = sseg.cluster(minK);
+		} 
+		split.setCost(avgSplitSil);
+		
 		return split;
 	}
 	
 	public static Clusters splitByMedianSplitSilhouette(Subsegregatable sseg, int K, int L) {
+		return splitByMedianSplitSilhouette(sseg, K, L, false);
+	}
+	
+	public static Clusters splitByMedianSplitSilhouette(Subsegregatable sseg, int K, int L, boolean forceSplit) {
 		Clusters split = null;
 		int m = sseg.size();
 		
@@ -167,9 +179,11 @@ public class MSplitSilhouetteCalculator {
 			K = m / 3;
 		}
 		
-		// minimize the mean split silhouette
+		int minK = (forceSplit ? 2 : 1);
+		
+		// minimize the median split silhouette
 		double avgSplitSil = Double.POSITIVE_INFINITY;
-		for (int k = 1; k <= K; k++) {
+		for (int k = minK; k <= K; k++) {
 			Clusters clusters = sseg.cluster(k);
 			double t = medianSplitSilhouette(sseg, clusters, L);
 			if (t < avgSplitSil) {
@@ -178,9 +192,11 @@ public class MSplitSilhouetteCalculator {
 			}
 		}
 		
-		if (split != null) {
-			split.setCost(avgSplitSil);
-		}
+		if (split == null) {
+			split = sseg.cluster(minK);
+		} 
+		split.setCost(avgSplitSil);
+		
 		return split;
 	}
 	

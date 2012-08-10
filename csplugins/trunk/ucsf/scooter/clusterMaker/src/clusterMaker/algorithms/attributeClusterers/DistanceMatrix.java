@@ -7,6 +7,7 @@ import clusterMaker.algorithms.attributeClusterers.DistanceMetric;
 
 /**
  * Distance matrix. Matrix of distances between data elements.
+ * Independent of Cytoscape.
  * @author djh.shih
  */
 public class DistanceMatrix {

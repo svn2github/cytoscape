@@ -359,8 +359,11 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		if (halted()) return "Halted by user";
 
 		// Cluster
-		int ifound = kcluster(nClusters, nIterations, matrix, metric, clusters);
+		int nClustersFound = kcluster(nClusters, nIterations, matrix, metric, clusters);
 		if (halted()) return "Halted by user";
+		
+		// TODO Change other algorithms s.t. the number of clusters found is returned
+		if (nClusters == 0) nClusters = nClustersFound;
 
 		// OK, now run our silhouette on our final result
 		Silhouettes sResult = SilhouetteCalculator.calculate(matrix, metric, clusters);
@@ -375,14 +378,24 @@ public abstract class AbstractAttributeClusterAlgorithm {
 		this isn't working...
 		renumberClusters(nClusters, clusters);
 	*/
+		// NB  HOPACH clusters should not be re-ordered
 
 		rowOrder = matrix.indexSort(clusters, clusters.length);
 		// System.out.println(Arrays.toString(rowOrder));
 		// Update the network attributes
 		updateAttributes(algorithm);
+		
+		// FIXME For HOPACH, nClusters is determined by the algorithm, and is neither estimated nor predefined... 
 
 		String resultString =  "Created "+nClusters+" clusters with average silhouette = "+sResult.getMean();
 		logger.info(resultString);
+		
+		String s = "Clusters: ";
+		for (int i = 0; i < clusters.length; ++i) {
+			s += clusters[i] + ", ";
+		}
+		logger.info(s);
+		
 		return resultString;
 	}
 	

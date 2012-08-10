@@ -92,7 +92,7 @@ public class HopachablePAMTest {
 		HopachablePAM pam = new HopachablePAM(mat, DistanceMetric.CITYBLOCK);
 		pam.setParameters(9, 9);
 		
-		Clusters c = pam.split();
+		Clusters c = pam.split(false);
 		
 		// check that data are split into expected number of clusters
 		assertEquals(c.getNumberOfClusters(), k);

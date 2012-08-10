@@ -13,6 +13,7 @@ import clusterMaker.algorithms.attributeClusterers.hopach.types.KClusterable;
  * Partitioning Around Medoids. Cluster data elements by aiming to minimize the average
  * dissimilarity of objects to their closest selected element (medoid).
  * Data elements are indexable.
+ * Independent of Cytoscape.
  * NB   This class is an implementation of the PAM algorithm described in the course notes
  *      at <www.cs.umb.edu/cs738/pam1.pdf> (accessed 2012-07-31).
  *      There appears to be different variants of the PAM algorithm varying in details
@@ -22,6 +23,7 @@ import clusterMaker.algorithms.attributeClusterers.hopach.types.KClusterable;
  *      The cluster results from current implementation can differ from the implementation 
  *      in R's cluster::pam. (See PAMTest for details.)
  * @author djh.shih
+ * @comment
  *
  */
 public class PAM implements KClusterable {
@@ -62,6 +64,8 @@ public class PAM implements KClusterable {
 	// required since Java's HashSet cannot use native types
 	Integer[] elements;
 	
+	int maxSwaps = 1000;
+	
 	public PAM(BaseMatrix data, DistanceMetric metric) {
 		this(data, metric, null, null);
 	}
@@ -95,11 +99,15 @@ public class PAM implements KClusterable {
 
 	@Override
 	public Clusters cluster(int k) {
-		if (size() == 0) {
+		int n = size();
+		if (n == 0) {
 			throw new IllegalArgumentException("No data elements are indexed.");
 		}
-		if (k >= size()) {
+		if (k > n) {
 			throw new IllegalArgumentException("Number of clusters must be less than the number of data elements.");
+		} else if (k == n) {
+			// build trivial single clusters
+			return new Clusters(k);
 		}
 		
 		this.nClusters = k;
@@ -239,12 +247,15 @@ public class PAM implements KClusterable {
 	 */
 	private void swapPhase() {
 		boolean notConverged = true;
+		boolean continueLoop = true;
+		int nSwaps = 0;
 		
-		while (notConverged) {
+		while (notConverged && continueLoop) {
 			notConverged = false;
+			continueLoop = false;
 	
 			Iterator<Integer> medIt = medoids.iterator();
-			while (medIt.hasNext()) {
+			while (medIt.hasNext() && continueLoop) {
 				int ii = medIt.next().intValue();
 				
 				Iterator<Integer> nonmedIt = nonmedoids.iterator();
@@ -287,9 +298,14 @@ public class PAM implements KClusterable {
 					if (change < 0) {
 						// distance to nearest medoid summed over all nonmedoids is improved: swap
 						swap(hh, ii);
-						// non-convergence if any swap occurs
-						notConverged = true;
 						//System.out.print("Swap " + hh + " and " + ii + " for change = " + change + "\n");
+						
+						// non-convergence if any swap occurs, up to a maximum number of swaps (to guard against swap cycles)
+						if (nSwaps++ < maxSwaps) {
+							notConverged = true;
+						} else {
+							continueLoop = false;
+						}
 						
 						// reset iterator
 						medIt = medoids.iterator();

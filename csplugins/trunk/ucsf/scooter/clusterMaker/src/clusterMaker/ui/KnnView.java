@@ -126,9 +126,13 @@ public class KnnView extends TreeView {
 		String netId = network.getIdentifier();
 		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE)) {
 			String type = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
-			if (!networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE).equals("kmeans") &&
-          !networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE).equals("kmedoid") &&
-			    !networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE).equals("autosome_heatmap"))
+			// TODO why is KnnView deciding which algorithms are visualizable, rather than having each algorithm decide whether itself is visualizable?
+			if (!type.equals("kmeans") &&
+				!type.equals("kmedoid") &&
+			    !type.equals("autosome_heatmap") &&
+			    !type.equals("PAM") &&
+			    !type.equals("HOPACH")
+			    )
 				return false;
 		}
 

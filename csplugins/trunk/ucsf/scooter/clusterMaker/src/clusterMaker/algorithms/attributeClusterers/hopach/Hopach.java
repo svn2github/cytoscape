@@ -9,6 +9,7 @@ import clusterMaker.algorithms.numeric.Numeric;
 
 /**
  * Hopach performs HOPACH using a Hopachable partitioner.
+ * Independent of Cytoscape.
  * @author djh.shih
  *
  */
@@ -27,10 +28,13 @@ public class Hopach {
 	ArrayList<Clusters> splits;
 	
 	// maximum number of partitioning levels
-	int maxLevel;
+	int maxLevel = 9;
 	
 	// minimum cost reduction
-	double minCostReduction;
+	double minCostReduction = 0;
+	
+	// whether to force split the initial level
+	boolean forceInitSplit = false;
 	
 	/*
 	 * Initial set of parameters implemented
@@ -43,13 +47,14 @@ public class Hopach {
 	 */
 	
 	public Hopach(Hopachable partitioner) {
-		this(partitioner, 9, 0);
+		this.partitioner = partitioner;
+		initialize();
 	}
 	
-	public Hopach(Hopachable partitioner, int maxLevel, int minCostReduction) {
-		this.partitioner = partitioner;
+	public void setParameters(int maxLevel, int minCostReduction, boolean forceInitSplit) {
 		this.maxLevel = maxLevel;
 		this.minCostReduction = minCostReduction;
+		this.forceInitSplit = forceInitSplit;
 		initialize();
 	}
 	
@@ -124,14 +129,14 @@ public class Hopach {
 	 * @return possibility of continuing split
 	 */
 	Clusters initLevel() {
-		Clusters split = partitioner.split();
+		Clusters split = partitioner.split(forceInitSplit);
 		sortInitLevel(split);
 		splits.set(0, split);
 		return split;
 	}
 	
 	/**
-	 * Attempt to collapse clusters in the specified level.
+	 * Attempt to collapse clusters at the specified level.
 	 * @param level
 	 */
 	Clusters collapse(int level) {
@@ -239,13 +244,18 @@ public class Hopach {
 			boolean rightNeighbour = j < nClusters - 1;
 			
 			int[] partition = partitions[i];
+			if (partition.length == 0) {
+				// partition is empty (partitioner returned fewer partitions than requested)
+				continue;
+			}
+			
 			int neighbourIndex = rightNeighbour ? i+1 : i-1;
 			
 			// split partition
 			// TODO cache sub-partitioner here and in MSS calculator
 			//      or, cache partition and split results
 			Hopachable sub = partitioner.subset(partition);
-			Clusters subsplit = sub.split();
+			Clusters subsplit = sub.split(false);
 			
 			int subk = subsplit.getNumberOfClusters();
 			
@@ -277,13 +287,10 @@ public class Hopach {
 			costs[i] = subsplit.getCost();
 			
 			// copy over new cluster index
-			int js = 0;
-			int jj;
-			for (jj = j; jj < j + sub.size(); ++jj) {
-				clusterIndex[jj] = subsplit.getClusterIndex(js++) + k;
+			for (int jj = 0; jj < sub.size(); ++jj) {
+				clusterIndex[ partition[jj] ] = subsplit.getClusterIndex(jj) + k;
 			}
-			j = jj;
-			
+			j += sub.size();
 			k += subk;
 			
 		}
@@ -323,7 +330,7 @@ public class Hopach {
 	 */
 	void sortInitLevel(Clusters split) {
 		if (split.getNumberOfClusters() <= 2) {
-			// order of 2 or fewer clusters cannot be optiimized
+			// order of 2 or fewer clusters cannot be optimized
 			return;
 		}
 		

@@ -52,8 +52,8 @@ public class HopachablePAM extends PAM implements Hopachable, Subsegregatable {
 	}
 	
 	@Override
-	public Clusters split() {
-		return MSplitSilhouetteCalculator.splitByMedianSplitSilhouette(this, maxK, maxL);
+	public Clusters split(boolean forceSplit) {
+		return MSplitSilhouetteCalculator.splitByMedianSplitSilhouette(this, maxK, maxL, forceSplit);
 	}
 
 	@Override

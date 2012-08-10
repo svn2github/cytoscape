@@ -12,7 +12,7 @@ public interface Hopachable extends Subsegregatable {
 	// Split elements into partitions
 	// A class implementing Hopachable is free to choose the best k, and can use simply choose k = argmin_k MSS
 	//   by calling a separately provided functions to calculate min MSS
-	Clusters split();
+	Clusters split(boolean forceSplit);
 	
 	// Return a matrix with distances from each element to each cluster
 	double[][] segregations(Clusters clusters);

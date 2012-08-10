@@ -7,6 +7,7 @@ import clusterMaker.algorithms.attributeClusterers.pam.HopachablePAM;
 /**
  * HopachPAM is a specialized a specialized Hopach algorithm that uses the 
  * PAM partitioner (Hopach-PAM).
+ * Independent of Cytoscape.
  * @author djh.shih
  *
  */

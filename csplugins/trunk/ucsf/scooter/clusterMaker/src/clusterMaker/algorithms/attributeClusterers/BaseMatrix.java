@@ -37,6 +37,7 @@ import java.util.List;
 
 /**
  *  BaseMatrix is a basic numeric matrix.
+ *  Independent of Cytoscape.
  */
 public class BaseMatrix {
 	protected int nRows;

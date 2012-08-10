@@ -9,6 +9,23 @@ import clusterMaker.algorithms.attributeClusterers.Clusters;
 import clusterMaker.algorithms.attributeClusterers.DistanceMetric;
 
 public class PAMTest {
+	
+	@Test
+	public void testSingletonCluster() {
+		Double[] data = {
+			.9, .9
+		};
+		int k = 1;
+		
+		int[] ans = {0};
+		
+		BaseMatrix mat = new BaseMatrix(0, 2, data);
+		PAM pam = new PAM(mat, DistanceMetric.CITYBLOCK);
+		
+		Clusters c = pam.cluster(k);
+		
+		assertEquals(c.getNumberOfClusters(), k);
+	}
 
 	@Test
 	public void testCluster() {

@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 /**
  * Clusters store clustering results.
+ * Independent of Cytoscape.
  * @author djh.shih
  *
  */
@@ -29,6 +30,21 @@ public class Clusters {
 	
 	public Clusters(int[] assignments, double cost) {
 		init(assignments, cost);
+	}
+	
+	/**
+	 * Special constructor for building singleton clusters.
+	 * @param k number of singleton clusters
+	 */
+	public Clusters(int k) {
+		int[] t = new int[k];
+		for (int i = 0; i < k; ++i) {
+			t[i] = k;
+		}
+		this.index = t;
+		this.orderedLabels = Arrays.copyOf(t, t.length);
+		this.k = k;
+		this.cost = 0.0;
 	}
 	
 	/**
