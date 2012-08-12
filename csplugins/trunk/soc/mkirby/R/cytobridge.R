@@ -1,7 +1,7 @@
 #------------------------------
 #CytoBridge -------------------
 #Author: Michael Kirby --------
-#Depends On: iGraph, rjson ----
+#Depends On: iGraph, rjson, Rcurl ----
 #------------------------------
 
 #Pushes the given iGraph to Cytoscape and returns the iGraph with extra CytoBridge
@@ -25,18 +25,14 @@ pushNetwork <- function (name,g, tables=TRUE) {
 	} else {
 		cytob.suid <<- get.graph.attribute(g, "cytobid")
 
-		V(g)$cytobid <- lapply(V(g)$cytobid,testm)
+		V(g)$cytobid <- lapply(V(g)$cytobid,idUpdate)
 
-		E(g)$cytobid <- lapply(E(g)$cytobid,testm)
+		E(g)$cytobid <- lapply(E(g)$cytobid,idUpdate)
 
 		g <- set.graph.attribute(g, "cytobid", as.integer(cytob.suid))
 	}
 
-	
-	socket <- make.socket("localhost", "4444")
-	on.exit(close.socket(socket))
-	system.time(write.socket(socket, toJSON(list(type="JSONNetwork", network_name=name, node_cytobridge_ids=get.vertex.attribute(g, 'cytobid'), edge_cytobridge_ids=get.edge.attribute(g, 'cytobid'),  edge_source_cytobridge_ids=get.vertex.attribute(g,"cytobid",get.edges(g,E(g))[,1]), edge_target_cytobridge_ids=get.vertex.attribute(g,"cytobid",get.edges(g,E(g))[,2])))))
-	close.socket(socket)
+	postForm("http://127.0.0.1:2609/cytobridge/JSONNetwork/",data=toJSON(list(network_name=name, node_cytobridge_ids=get.vertex.attribute(g, 'cytobid'), edge_cytobridge_ids=get.edge.attribute(g, 'cytobid'),  edge_source_cytobridge_ids=get.vertex.attribute(g,"cytobid",get.edges(g,E(g))[,1]), edge_target_cytobridge_ids=get.vertex.attribute(g,"cytobid",get.edges(g,E(g))[,2]))), style="post")
 
 	if (tables) { pushTables(name, g) }
 
@@ -68,58 +64,84 @@ pushTables <- function (name,g, net=FALSE, node=FALSE, edge=FALSE) {
 	}
 }
 
+#Pushes the specified graphs Network Table/Attributes.
 pushNetworkTable <- function (name, g) {
 	gdata <- c()
+	gtypes <- c()
 	for(i in 1:length(list.graph.attributes(g))) {
-		gdata <- append(gdata, get.graph.attribute(g,list.graph.attributes(g)[i]))		
+		temp <- get.graph.attribute(g,list.graph.attributes(g)[i])
+		gdata <- append(gdata, temp)	
+		gtypes <- append(gtypes, type(temp))	
 	}
 
-	socket <- make.socket("localhost", "4444")
-	on.exit(close.socket(socket))
-	system.time(write.socket(socket, toJSON(list(type="JSONNetworkTable", network_name=name, table_headings=as.vector(list.graph.attributes(g)), table_data=as.character(gdata)))))
-	close.socket(socket)
+	postForm("http://127.0.0.1:2609/cytobridge/JSONNetworkTable/", data=toJSON(list(network_name=name, table_headings=dummy(list.graph.attributes(g)), table_types=dummy(gtypes), table_data=as.character(dummy(gdata)))),style="post")
 }
 
+#Pushes the specified graphs Node Table/Attributes.
 pushNodeTable <- function (name, g) {
 	vdata <- c()
+	vtypes <- c()
 	for(v in 1:length(list.vertex.attributes(g))) {
-		vdata <- append(vdata, get.vertex.attribute(g,list.vertex.attributes(g)[v]))
+		temp <- get.vertex.attribute(g,list.vertex.attributes(g)[v])
+		vdata <- append(vdata, temp)
+		vtypes <- append(vtypes,type(unlist(temp)))
 	}
 
-	socket <- make.socket("localhost", "4444")
-	on.exit(close.socket(socket))
-	system.time(write.socket(socket, toJSON(list(type="JSONNodeTable", network_name=name, table_headings=as.vector(list.vertex.attributes(g)), node_cytobridge_ids=get.vertex.attribute(g, 'cytobid'), table_data=as.character(vdata)))))
-	close.socket(socket)
+	postForm("http://127.0.0.1:2609/cytobridge/JSONNodeTable/", data=toJSON(list(network_name=name, table_headings=dummy(list.vertex.attributes(g)), table_types=dummy(vtypes), node_cytobridge_ids=dummy(get.vertex.attribute(g, 'cytobid')), table_data=as.character(dummy(vdata)))),style="post")
 }
 
+#Pushes the specified graphs Edge Table/Attributes.
 pushEdgeTable <- function(name, g) {
 	edata <- c()
+	etypes <- c()
 	for(e in 1:length(list.edge.attributes(g))) {
-		edata <- append(edata, get.edge.attribute(g,list.edge.attributes(g)[e]))
+		temp <- get.edge.attribute(g,list.edge.attributes(g)[e])
+		edata <- append(edata, temp)
+		etypes <- append(etypes,type(unlist(temp)))
 	}
 
-	socket <- make.socket("localhost", "4444")
-	on.exit(close.socket(socket))
-	system.time(write.socket(socket, toJSON(list(type="JSONEdgeTable", network_name=name, table_headings=as.vector(list.edge.attributes(g)), edge_cytobridge_ids=get.edge.attribute(g, 'cytobid'), table_data=as.character(edata)))))
-	close.socket(socket)
+	postForm("http://127.0.0.1:2609/cytobridge/JSONEdgeTable/", data=toJSON(list(network_name=name, table_headings=dummy(list.edge.attributes(g)), table_types=dummy(etypes), edge_cytobridge_ids=dummy(get.edge.attribute(g, 'cytobid')), table_data=as.character(dummy(edata)))),style="post")
 }
 
 #Pushes the specified dataframe as a table to Cytoscape.
 pushTable <- function (name, df) {	
 	data <- c()
-	for(i in 1:length(names(df))) {
-		data <- append(data, as.vector(t(df[i])))
+	types <- c()
+	for(i in names(df)) {
+		temp <- df[[i]]
+		data <- append(data, temp)
+		types <- append(types,type(temp))
 	}
-	xml.rpc('localhost:9000', 'Cytoscape.pushTable', name, as.vector(names(df)), as.character(data))
+	postForm("http://127.0.0.1:2609/cytobridge/JSONTable/", data=toJSON(list(table_name=name, table_headings=dummy(names(df)), table_types=dummy(types), row_ids=dummy(row.names(df)), table_data=as.character(dummy(data)))), style="post")
+	df
 }
 
+#Helper function to append one extra element to a list (since singleton wouldn't be list)
+dummy <- function(l) {
+	append(l,0)
+}
 
-
-testm <- function(x) {
+#Helper Function to update a list with CytoBIDs (if unspecified)
+idUpdate <- function(x) {
 	if (is.na(x)) {
 		cytob.suid <<- cytob.suid +  1
 		as.integer(cytob.suid)
 	} else {
 		x
+	}
+}
+
+#Helper Function to return the Java appropriate type of the R Data
+type <- function(l) {
+	if (is.logical(l)) {
+		"Boolean"
+	} else if (is.numeric(l)) {
+		if (all.equal(as.integer(l),l)==TRUE) {
+			"Integer"
+		} else {
+			"Double"
+		}
+	} else {
+		"String"
 	}
 }
