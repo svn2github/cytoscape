@@ -105,7 +105,7 @@ public class PanelComponents {
 			}
 		}
 		if(rowNames==null) {
-			rowNamesList = (ArrayList<String>) cyTable.getColumn(CyNetwork.NAME).getValues(String.class);
+			rowNamesList = new ArrayList<String>();
 		} else {
 			for(String rowName : rowNames) {
 				if(cyTable.getColumn(CyNetwork.NAME).getValues(String.class).contains(rowName)) {

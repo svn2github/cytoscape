@@ -44,13 +44,13 @@ public class SelectedRowsIdentifier implements ColumnCreatedListener, ColumnDele
 			value = row.get(CyNetwork.SELECTED, Boolean.class);
 			
 			if(rowName!=null && !rowName.contains(" ") && value!=null && value) {
-				setRowsList.add(rowName);
+				cytoChart.addRow(rowName);
 			}
 			if(rowName!=null && !rowName.contains(" ") && value!=null && !value) {
-				setRowsList.remove(rowName);
+				cytoChart.removeRow(rowName);
 			}
 		}
-		cytoChart.setRows(setRowsList);
+		
 	}
 	
 	@Override
@@ -79,6 +79,11 @@ public class SelectedRowsIdentifier implements ColumnCreatedListener, ColumnDele
 	
 	public void setCytoChart(CytoChart cytoChart) {
 		this.cytoChart = cytoChart;
+		if(cytoChart!=null) {
+			this.setRowsList = cytoChart.getRows();
+		} else {
+			this.setRowsList = new ArrayList<String>();
+		}
 	}
 
 }

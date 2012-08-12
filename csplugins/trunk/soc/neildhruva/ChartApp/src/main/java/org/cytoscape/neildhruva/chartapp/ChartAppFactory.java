@@ -1,8 +1,11 @@
 package org.cytoscape.neildhruva.chartapp;
 
 import java.util.List;
+import java.util.Set;
+
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableMetadata;
 
 public interface ChartAppFactory {
 	
@@ -60,15 +63,15 @@ public interface ChartAppFactory {
 	 * Gets the chart saved across sessions.
 	 * @param chartName Name of the chart.
 	 * @param cyTable The <code>CyTable</code> which is plotted in the chart.
+	 * @param cyTableMetadata The list of CyTableMetadata obtained when a session is loaded.
 	 * @return The {@link CytoChart}.
 	 */
-	CytoChart getSavedChart(String chartName, CyTable cyTable);
+	CytoChart getSavedChart(String chartName, CyTable cyTable, Set<CyTableMetadata> cyTableMetadata);
 	
 	/**
-	 * Checks of the chart corresponding to the {@link CyTable} and the {@link CyNetwork} is saved.
-	 * @param chartName Name of the chart.
-	 * @param cyTable The {@link CyTable} which is plotted in the chart.
-	 * @return Whether or not the chart corresponding to the {@link CyTable} and the {@link CyNetwork} is saved.
+	 * Deletes the custom table that stores information for the CytoChart, and effectively deletes the chart.
+	 * @param chartName The name of the CytoChart, the custom table of which is to be deleted.
+	 * @param cyTable The CyTable to which the chart is attached. 
 	 */
-	Boolean isChartSaved(String chartName, CyTable cyTable);
+	void deleteCytoChart(String chartName, CyTable cyTable);
 }

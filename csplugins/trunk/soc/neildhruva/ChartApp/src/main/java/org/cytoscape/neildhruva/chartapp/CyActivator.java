@@ -31,7 +31,7 @@ public class CyActivator extends AbstractCyActivator {
 		ChartAppFactoryImpl chartAppFactoryImpl = new ChartAppFactoryImpl(cyDataTableFactoryServiceRef, cyTableManagerServiceRef);
 		
 		SelectedRowsIdentifier selectedRowsIdentifier = new SelectedRowsIdentifier();
-		EventTableDestroyed eventTableDestroyed = new EventTableDestroyed(myCytoPanel, cyTableManagerServiceRef);
+		EventTableDestroyed eventTableDestroyed = new EventTableDestroyed(myCytoPanel, chartAppFactoryImpl);
 		EventTableAdded eventTableAdded = new EventTableAdded(myCytoPanel, chartAppFactoryImpl, selectedRowsIdentifier);
 		
 		registerService(bc, chartAppFactoryImpl, ChartAppFactory.class, new Properties());

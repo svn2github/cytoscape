@@ -1,22 +1,17 @@
 package org.cytoscape.neildhruva.chartapp.app;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
 import javax.swing.JPanel;
 import org.cytoscape.application.events.SetCurrentNetworkEvent;
 import org.cytoscape.application.events.SetCurrentNetworkListener;
-import org.cytoscape.application.events.SetSelectedNetworksEvent;
-import org.cytoscape.application.events.SetSelectedNetworksListener;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableMetadata;
-import org.cytoscape.model.events.SetNetworkPointerEvent;
-import org.cytoscape.model.events.SetNetworkPointerListener;
 import org.cytoscape.model.events.TableAddedEvent;
 import org.cytoscape.model.events.TableAddedListener;
-import org.cytoscape.model.events.UnsetNetworkPointerEvent;
-import org.cytoscape.model.events.UnsetNetworkPointerListener;
 import org.cytoscape.neildhruva.chartapp.ChartAppFactory;
 import org.cytoscape.neildhruva.chartapp.ChartAppFactory.AxisMode;
 import org.cytoscape.neildhruva.chartapp.CytoChart;
@@ -24,7 +19,7 @@ import org.cytoscape.session.events.SessionLoadedEvent;
 import org.cytoscape.session.events.SessionLoadedListener;
 
 
-public class EventTableAdded implements SetCurrentNetworkListener, TableAddedListener, SessionLoadedListener, UnsetNetworkPointerListener{
+public class EventTableAdded implements SetCurrentNetworkListener, TableAddedListener, SessionLoadedListener{
 
 	private MyCytoPanel myCytoPanel; 
 	private ChartAppFactory chartAppFactory;
@@ -53,11 +48,31 @@ public class EventTableAdded implements SetCurrentNetworkListener, TableAddedLis
 		if(cyTable==null)
 			return;
 		
-		String chartName = null;
+		generateCytoChart(null);
+	}
+
+	@Override
+	public void handleEvent(TableAddedEvent e) {
+		//TODO use this in sync with SetCurrentNetworkEvent
+	}
+
+	@Override
+	public void handleEvent(SessionLoadedEvent e) {
+		Set<CyTableMetadata> cyTableMetadata = e.getLoadedSession().getTables();
+		generateCytoChart(cyTableMetadata);
+	}
+	
+	/**
+	 * Generates CytoChart depending on whether a new CyTable was added or was it loaded in a session.
+	 * @param cyTableMetadata The <code>Set</code> of all <code>CyTableMetadata</code> stored across session. 
+	 */
+	private void generateCytoChart(Set<CyTableMetadata> cyTableMetadata) {
 		
-		if(chartAppFactory.isChartSaved(chartName, cyTable)) {
-			cytoChart = chartAppFactory.getSavedChart(chartName, cyTable);
-		} else {
+		String chartName = "";
+		cytoChart = null;
+		
+		cytoChart = chartAppFactory.getSavedChart(chartName, cyTable, cyTableMetadata);
+		if(cytoChart==null) {
 			cytoChart = chartAppFactory.createChart(chartName, cyTable, AxisMode.ROWS);			
 		}
 		
@@ -71,28 +86,6 @@ public class EventTableAdded implements SetCurrentNetworkListener, TableAddedLis
 		} else {
 			selectedRowsIdentifier.setCytoChart(null);
 		}
-		
-		
-	}
 
-	@Override
-	public void handleEvent(TableAddedEvent e) {
-		//TODO use this in sync with SetCurrentNetworkEvent
-		
-	}
-
-	@Override
-	public void handleEvent(SessionLoadedEvent e) {
-		Iterator<CyTableMetadata> iterator = e.getLoadedSession().getTables().iterator();
-		while(iterator.hasNext()) {
-			System.out.println(iterator.next().getTable().getTitle());
-		}
-		//TODO use this to make ChartApp for all loaded networks
-	}
-
-	@Override
-	public void handleEvent(UnsetNetworkPointerEvent e) {
-		System.out.println(e.getNetwork().getDefaultNodeTable().getTitle());
-		
-	}
+	} 
 }
