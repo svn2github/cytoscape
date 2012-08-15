@@ -6,7 +6,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import org.cytoscape.model.CyIdentifiable;
@@ -17,33 +16,32 @@ import org.cytoscape.model.SavePolicy;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.neildhruva.chartapp.ChartAppFactory.AxisMode;
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.statistics.HistogramDataset;
-import org.jfree.data.statistics.HistogramType;
 
 public class PanelComponents {
 
 	private JCheckBox[] checkBoxArray;
 	private int tableColumnCount;
-	private CyTable myCyTable;
+	private CyTable myCyTable = null;
 	private List<Boolean> checkBoxState;
 	private List<String> columnNamesList;
 	private List<String> rowNamesList;
 	private JComboBox chartTypeComboBox;
 	private JFreeChart chart;
-	private ChartPanel myChartPanel;
+	private ChartPanel myChartPanel = null;
 	private CyTable cyTable;
 	private CyTableFactory tableFactory;
 	private CyTableManager cyTableManager;
 	private MyTableModel myTableModel;
 	private AxisMode mode;
 	private DefaultCategoryDataset lineChartDataset;
+	private ChartGenerator chartGenerator;
+	private int tableRowCount;
+	private PanelLayout panelLayout;
 	
-	public enum chartTypes {
+	public enum ChartTypes {
 		LINE {
 		    public String toString() {
 		        return "Line Chart";
@@ -53,14 +51,21 @@ public class PanelComponents {
 		    public String toString() {
 		        return "Histogram";
 		    }
+		},
+		TIMESERIES {
+			public String toString() {
+				return "Time Series";
+			}
 		}
+		
 	}
 	
-	public PanelComponents(CyTableFactory tableFactory, 
-						   CyTableManager cyTableManager) {
+	public PanelComponents(CyTableFactory tableFactory, CyTableManager cyTableManager, PanelLayout panelLayout) {
 		
 		this.tableFactory = tableFactory;
 		this.cyTableManager = cyTableManager;
+		this.panelLayout = panelLayout;
+		this.chartGenerator = new ChartGenerator();
     }
 	
 	/**
@@ -76,7 +81,7 @@ public class PanelComponents {
 	 * @param columnNames The names of <code>CyColumns</code> to be plotted in the chart.
 	 */
 	public void initComponents(CyTable cyTable, AxisMode mode, MyTableModel myTableModel, 
-    						   List<String> rowNames, List<String> columnNames) {
+    						   List<String> rowNames, List<String> columnNames, String chartType) {
 		
 		
 		
@@ -87,36 +92,73 @@ public class PanelComponents {
     	
     	this.columnNamesList = new ArrayList<String>();
 		this.checkBoxState = new ArrayList<Boolean>();
-		this.rowNamesList = new ArrayList<String>();
+		this.rowNamesList = new ArrayList<String>(cyTable.getRowCount());
     	
-		if(columnNames==null) {
-			for(int i=0; i<tableColumnCount; i++) {
-				columnNamesList.add(myTableModel.getColumnName(i));
-				checkBoxState.add(false);
-			}
-		} else {
-			for(int i=0; i<tableColumnCount; i++) {
-				String columnName = myTableModel.getColumnName(i);
-				columnNamesList.add(columnName);
-				if(columnNames.contains(columnName)) { 
-					checkBoxState.add(true);
-				}else
+		if(mode.equals(AxisMode.ROWS)) {
+			if(columnNames==null) {
+				for(int i=0; i<tableColumnCount; i++) {
+					columnNamesList.add(myTableModel.getColumnName(i));
 					checkBoxState.add(false);
-			}
-		}
-		if(rowNames==null) {
-			rowNamesList = new ArrayList<String>();
-		} else {
-			for(String rowName : rowNames) {
-				if(cyTable.getColumn(CyNetwork.NAME).getValues(String.class).contains(rowName)) {
-					rowNamesList.add(rowName);
 				}
+			} else {
+				for(int i=0; i<tableColumnCount; i++) {
+					String columnName = myTableModel.getColumnName(i);
+					columnNamesList.add(columnName);
+					if(columnNames.contains(columnName)) { 
+						checkBoxState.add(true);
+					}else
+						checkBoxState.add(false);
+				}
+			}
+			if(rowNames==null) {
+				rowNamesList = new ArrayList<String>();
+			} else {
+				for(String rowName : rowNames) {
+					if(cyTable.getColumn(CyNetwork.NAME).getValues(String.class).contains(rowName)) {
+						rowNamesList.add(rowName);
+					}
+				}
+				
+			}
+		
+		} else {
+			rowNamesList = myTableModel.getPlottableRows();
+			tableRowCount = rowNamesList.size();
+			
+			if(columnNames==null) {
+				for(int i=0; i<tableColumnCount; i++) {
+					columnNamesList.add(myTableModel.getColumnName(i));
+				}
+			} else {
+				for(String columnName : columnNames) {
+					if(cyTable.getColumn(columnName)!=null)
+						columnNamesList.add(columnName);
+				}
+			}
+			
+			if(rowNames==null) {
+				for(int i=0; i<tableRowCount; i++) {
+					checkBoxState.add(false);
+				}
+			} else {
+				for(String rowName : rowNamesList) {
+					if(rowNames.contains(rowName)) {
+						checkBoxState.add(true);
+					} else {
+						checkBoxState.add(false);
+					}
+				}
+				
 			}
 			
 		}
 		
+		if(myCyTable!=null) {
+			cyTableManager.deleteTable(myCyTable.getSUID());
+		}
+		
 		myCyTable = tableFactory.createTable("CytoChart "+cyTable.getTitle(), CyIdentifiable.SUID, Long.class, true, true);
-		myCyTable.createListColumn("Names", String.class, true);
+		myCyTable.createListColumn("Names", String.class, true); //Column Names
 		myCyTable.createListColumn("States", Boolean.class, true);
 		myCyTable.createListColumn("RowNames", String.class, true);
 		myCyTable.createColumn("ChartType", String.class, true);
@@ -127,7 +169,10 @@ public class PanelComponents {
 		cyrow.set("Names", columnNamesList);
 		cyrow.set("RowNames", rowNamesList);
 		cyrow.set("States", checkBoxState);
-		cyrow.set("ChartType", "Line Chart"); //default value is "Line Chart"
+		if(chartType==null) {
+			chartType = "Line Chart";
+		}
+		cyrow.set("ChartType", chartType); //default value is "Line Chart"
 		cyrow.set("AxisMode", mode.toString());
 		
 		//add myCyTable to the CyTableManager in order to preserve it across sessions
@@ -162,6 +207,9 @@ public class PanelComponents {
 		columnNamesList = myCyTable.getAllRows().get(0).getList("Names", String.class);
 		rowNamesList = myCyTable.getAllRows().get(0).getList("RowNames", String.class);
 		String modeString = myCyTable.getAllRows().get(0).get("AxisMode", String.class);
+		String chartType = myCyTable.getAllRows().get(0).get("ChartType", String.class);
+		
+		this.tableRowCount = rowNamesList.size();
 		
 		if(modeString.equals(AxisMode.ROWS.toString())) {
 			mode = AxisMode.ROWS;
@@ -179,32 +227,62 @@ public class PanelComponents {
      * Initializes the checkbox array containing column names.
      */
     public void  initCheckBoxArray() {
-    	checkBoxArray = new JCheckBox[tableColumnCount];
     	
-        for(int i=0;i<tableColumnCount;i++) {
-        	checkBoxArray[i] = new JCheckBox();
-        	checkBoxArray[i].setText(myTableModel.getColumnName(i));
-        	checkBoxArray[i].setSelected(checkBoxState.get(i));
-        	
-        	final int j=i;
-        	
-        	//A listener is add to each checkbox so that when the corresponding
-        	//checkbox is clicked, the removeColumn() and addColumn() methods can be
-        	//invoked.
-        	checkBoxArray[i].addItemListener(new ItemListener() {
-				
-        		@Override
-				public void itemStateChanged(ItemEvent arg0) {
-					if(!checkBoxArray[j].isSelected()){
-						removeColumn(checkBoxArray[j].getText());
-					}else{
-						addColumn(checkBoxArray[j].getText());
+    	if(mode.equals(AxisMode.ROWS)) {
+	    	
+    		checkBoxArray = new JCheckBox[tableColumnCount];
+	    	
+	        for(int i=0;i<tableColumnCount;i++) {
+	        	checkBoxArray[i] = new JCheckBox();
+	        	checkBoxArray[i].setText(myTableModel.getColumnName(i));
+	        	checkBoxArray[i].setSelected(checkBoxState.get(i));
+	        	
+	        	final int j=i;
+	        	
+	        	//A listener is add to each checkbox so that when the corresponding
+	        	//checkbox is clicked, the removeColumn() and addColumn() methods can be
+	        	//invoked.
+	        	checkBoxArray[i].addItemListener(new ItemListener() {
+					
+	        		@Override
+					public void itemStateChanged(ItemEvent arg0) {
+						if(!checkBoxArray[j].isSelected()){
+							removeColumn(checkBoxArray[j].getText());
+						}else{
+							addColumn(checkBoxArray[j].getText());
+						}
 					}
-				}
-        	});
-        }
+	        	});
+	        }
+	        
+    	} else {
+    		
+    		checkBoxArray = new JCheckBox[tableRowCount];
+    		
+	        for(int i=0;i<tableRowCount;i++) {
+	        	checkBoxArray[i] = new JCheckBox();
+	        	checkBoxArray[i].setText(rowNamesList.get(i));
+	        	checkBoxArray[i].setSelected(checkBoxState.get(i));
+	        	
+	        	final int j=i;
+	        	
+	        	//A listener is add to each checkbox so that when the corresponding
+	        	//checkbox is clicked, the removeColumn() and addColumn() methods can be
+	        	//invoked.
+	        	checkBoxArray[i].addItemListener(new ItemListener() {
+					
+	        		@Override
+					public void itemStateChanged(ItemEvent arg0) {
+						if(!checkBoxArray[j].isSelected()){
+							removeRow(checkBoxArray[j].getText());
+						}else{
+							addRow(checkBoxArray[j].getText());
+						}
+					}
+	        	});
+	        }
+    	}
         
-        //TODO Code for AxisMode.COLUMNS
     }
     
     /**
@@ -214,13 +292,16 @@ public class PanelComponents {
     	//initialize the JComboBox which selects the type of chart to be displayed.
         //every time it is changed, the graph changes as well
         if(chartTypeComboBox==null) {
-        	chartTypeComboBox = new JComboBox(chartTypes.values());
-        	chartTypeComboBox.setSelectedItem("Line Chart"); //by default
-        	
+        	chartTypeComboBox = new JComboBox(ChartTypes.values());
+        	if(mode.equals(AxisMode.ROWS)) {
+        		chartTypeComboBox.setSelectedItem("Line Chart");
+        	} else {
+        		chartTypeComboBox.setSelectedItem("Time Series");
+        	}
         	chartTypeComboBox.addActionListener(new ActionListener () {
         	    public void actionPerformed(ActionEvent e) {
         	    	String chartType = ((JComboBox) e.getSource()).getSelectedItem().toString();
-        	    	refreshChartPanel(chartType);
+        	    	resetChartPanel(chartType);
         	    	updateChartType(chartType);
         	    }
         	});
@@ -236,89 +317,20 @@ public class PanelComponents {
      */
     public void initChartPanel(AxisMode mode) {
     	
-    	//initialize the chart
-        this.chart = generateChart(chartTypeComboBox.getSelectedItem().toString());
-		this.myChartPanel = new ChartPanel(chart);
-		myChartPanel.setPreferredSize(myChartPanel.getPreferredSize());
-		//new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT)
-		myChartPanel.setMouseWheelEnabled(true);
-    			
+    	chartGenerator.setParameters(checkBoxState, columnNamesList, rowNamesList, mode, cyTable);
+    	this.chart = chartGenerator.generateChart(chartTypeComboBox.getSelectedItem().toString());
+		if(myChartPanel==null) {
+			myChartPanel = new ChartPanel(chart);
+			myChartPanel.setPreferredSize(myChartPanel.getPreferredSize());
+			myChartPanel.setMouseWheelEnabled(true);
+		} else {
+			myChartPanel.setChart(chart);
+		}
+		lineChartDataset = (DefaultCategoryDataset) chartGenerator.getDataset();
+				
     }
     
-    /**
-	 * Creates a chart/graph and puts it in a chart panel.
-	 * @param chartType The type of chart to be created.
-	 * @return The newly created chart.
-	 */
-	public JFreeChart generateChart(String chartType){
-		if(chartType.equals("Line Chart")){
-			
-		    // create the dataset...
-	        this.lineChartDataset = new DefaultCategoryDataset();
-	        
-	        List<String> columnNames = new ArrayList<String>();
-	        int count = checkBoxState.size();
-	        for(int i=0;i<count;i++) {
-	        	if(checkBoxState.get(i)) {
-	        		columnNames.add(columnNamesList.get(i));
-	        	}
-	        }
-	        
-	        int columnCount = columnNames.size();
-	        CyRow singleRow;
-	        if(mode.equals(AxisMode.ROWS)) {
-	        	for(int i=0; i<columnCount; i++) {
-	        		String columnName = columnNames.get(i);
-	        		for(String rowName : rowNamesList) {
-	        			singleRow = cyTable.getAllRows().get(cyTable.getColumn(CyNetwork.NAME).getValues(String.class).indexOf(rowName));
-	        			lineChartDataset.addValue(singleRow.get(columnName, Number.class),       //y-axis 
-	        							 columnName, 									    //label for the line
-	        						     singleRow.get(CyNetwork.NAME, String.class));  //x-axis		
-	        		}
-	        	}
-	        } else {
-	        	
-	        	//TODO: write code for AxisMode.COLUMNS
-	        	
-	        }
-	  
-	        // create the chart...
-	        chart = ChartFactory.createLineChart(
-	            cyTable.getTitle(),       // chart title
-	            "NAME",                    // domain axis label
-	            "Value",                   // range axis label
-	            lineChartDataset,                   // data
-	            PlotOrientation.VERTICAL,  // orientation
-	            true,                      // include legend
-	            true,                      // tooltips
-	            false                      // urls
-	        );
-	        
-	        
-		} else {
-			double[] value = new double[100];
-		       Random generator = new Random();
-		       for (int i=1; i < 100; i++) {
-		       value[i] = generator.nextDouble();
-		           int number = 10;
-		       HistogramDataset dataset = new HistogramDataset();
-		       dataset.setType(HistogramType.RELATIVE_FREQUENCY);
-		       dataset.addSeries("Histogram",value,number);
-		       
-		       String plotTitle = "Sample Random Number Histogram"; 
-		       String xaxis = "number";
-		       String yaxis = "value"; 
-		       PlotOrientation orientation = PlotOrientation.VERTICAL; 
-		       chart = ChartFactory.createHistogram( plotTitle, xaxis, yaxis, 
-		    		   								 dataset, orientation, true, 
-		    		   								 true, false);
-			}
-		
-			
-		}
-		return chart;
-	}
-	
+    
 	/**
      * Hides the column from the chart.
      * @param columnName Name of the column that has to be hidden.
@@ -328,18 +340,27 @@ public class PanelComponents {
     	if(!(columnNamesList.contains(columnName))) 
 			return;
     	
-    	checkBoxState.set(columnNamesList.indexOf(columnName), false);
-        myCyTable.getAllRows().get(0).set("States", checkBoxState);
+    	if(mode.equals(AxisMode.ROWS)) {
+	    	checkBoxState.set(columnNamesList.indexOf(columnName), false);
+	        myCyTable.getAllRows().get(0).set("States", checkBoxState);
+	        for(String rowName : rowNamesList) {
+				lineChartDataset.removeValue(columnName, 						   //label for the line
+											 rowName);								//x-axis
+	        }
+	        
+    	} else {
+    		columnNamesList.remove(columnName);
+    		int rowCount = rowNamesList.size();
+			for(int i=0;i<rowCount;i++) {
+				if(checkBoxState.get(i)) {
+					lineChartDataset.removeValue(rowNamesList.get(i),	//label for the line
+						     					 columnName); 			//x-axis
+					
+				}
+			}
+    		
+    	}
         
-        CyRow singleRow;
-        for(String rowName : rowNamesList) {
-			singleRow = cyTable.getAllRows().get(cyTable.getColumn(CyNetwork.NAME).getValues(String.class).indexOf(rowName));
-			lineChartDataset.removeValue(columnName, 						   //label for the line
-				                singleRow.get(CyNetwork.NAME, String.class));  //x-axis		
-		
-		}
-
-        //TODO Code for AxisMode.COLUMNS
     }
 
     /**
@@ -348,22 +369,41 @@ public class PanelComponents {
      */
 	public void addColumn(String columnName) {
 		
-		if(!(columnNamesList.contains(columnName))) 
-			return;
-		
-		checkBoxState.set(columnNamesList.indexOf(columnName), true);
-		myCyTable.getAllRows().get(0).set("States", checkBoxState);
-		
-	    CyRow singleRow;
-        for(String rowName : rowNamesList) {
-			singleRow = cyTable.getAllRows().get(cyTable.getColumn(CyNetwork.NAME).getValues(String.class).indexOf(rowName));
-			lineChartDataset.addValue(singleRow.get(columnName, Number.class),       //y-axis 
-							 columnName, 									    //label for the line
-						     singleRow.get(CyNetwork.NAME, String.class));  //x-axis		
+		if(mode.equals(AxisMode.ROWS)) {
+			if(!(columnNamesList.contains(columnName))) 
+				return;
+			
+			checkBoxState.set(columnNamesList.indexOf(columnName), true);
+			myCyTable.getAllRows().get(0).set("States", checkBoxState);
+			
+		    CyRow singleRow;
+	        for(String rowName : rowNamesList) {
+				singleRow = cyTable.getAllRows().get(cyTable.getColumn(CyNetwork.NAME).getValues(String.class).indexOf(rowName));
+				lineChartDataset.addValue(singleRow.get(columnName, Number.class),       //y-axis 
+								 columnName, 									    //label for the line
+							     singleRow.get(CyNetwork.NAME, String.class));  //x-axis		
+			}
+	        
+		} else {
+			
+			columnNamesList.add(columnName);
+			
+		    int rowCount = rowNamesList.size();
+			String rowName;
+			CyRow cyrow;
+			for(int i=0;i<rowCount;i++) {
+				if(checkBoxState.get(i)) {
+					rowName = rowNamesList.get(i);
+					cyrow = cyTable.getAllRows().get(cyTable.getColumn(CyNetwork.NAME).getValues(String.class).indexOf(rowName));
+					lineChartDataset.addValue(cyrow.get(columnName, Number.class),      //y-axis 
+							 rowName, 									    		    //label for the line
+						     columnName); 			   									//x-axis
+					
+				}
+			}
 		}
-	
         
-        //TODO Code for AxisMode.COLUMNS
+        
 	}
 
     /**
@@ -376,10 +416,8 @@ public class PanelComponents {
     	if(!(cyTable.getColumn(CyNetwork.NAME).getValues(String.class).contains(rowName))) 
    			return;
     	
-    	rowNamesList.remove(rowName);
-    	
 		if(mode.equals(AxisMode.ROWS)) {
-    		
+			rowNamesList.remove(rowName);	
     		int columnCount = columnNamesList.size();
 			String columnName;
 			for(int i=0;i<columnCount;i++) {
@@ -390,10 +428,17 @@ public class PanelComponents {
 					
 				}
 			}
-					
     				
     	} else {
-    		//TODO Code for AxisMode.COLUMNS
+    		if(!rowNamesList.contains(rowName))
+    			return;
+    		
+    		checkBoxState.set(rowNamesList.indexOf(rowName), false);
+	        myCyTable.getAllRows().get(0).set("States", checkBoxState);
+	        for(String columnName : columnNamesList) {
+				lineChartDataset.removeValue(rowName, 						   //label for the line
+											 columnName);								//x-axis
+	        }
     	}
     
     }
@@ -408,10 +453,8 @@ public class PanelComponents {
 		if(!(cyTable.getColumn(CyNetwork.NAME).getValues(String.class).contains(rowName))) 
 			return;
 		
-		rowNamesList.add(rowName);
-		
 		if(mode.equals(AxisMode.ROWS)) {
-			
+			rowNamesList.add(rowName);
 			CyRow cyrow = cyTable.getAllRows().get(cyTable.getColumn(CyNetwork.NAME).getValues(String.class).indexOf(rowName));
 			int columnCount = columnNamesList.size();
 			String columnName;
@@ -427,7 +470,23 @@ public class PanelComponents {
 				
 			
 		} else {
-			//TODO write code for mode=AxisMode.COLUMNS
+			if(!rowNamesList.contains(rowName))
+    			return;
+    		
+			if(!(rowNamesList.contains(rowName))) 
+				return;
+			
+			checkBoxState.set(rowNamesList.indexOf(rowName), true);
+			myCyTable.getAllRows().get(0).set("States", checkBoxState);
+			String columnName;
+		    CyRow singleRow = cyTable.getAllRows().get(cyTable.getColumn(CyNetwork.NAME).getValues(String.class).indexOf(rowName));
+		    for(int i=0; i<tableColumnCount; i++) {
+    			columnName = columnNamesList.get(i);
+    			lineChartDataset.addValue(singleRow.get(columnName, Number.class),   //y-axis 
+    							 rowName,		    								 //label for the line
+    							 columnName);  										 //x-axis		
+    		}
+	        
 		}
 		
 	}
@@ -435,7 +494,6 @@ public class PanelComponents {
 	/**
 	 * Sets rows of the <code>CyTable</code> displayed in the chart.
 	 * @param rows The <code>List</code> of Canonical names of rows to be displayed in the chart.
-	 * @return 
 	 */
 	public void setRows(List<String> rowNames) {
 		
@@ -474,6 +532,20 @@ public class PanelComponents {
 				removeColumn(columnName);
 			}
 		}
+	}
+	
+	/**
+	 * Returns the number of checkboxes created.
+	 * @return The number of checkboxes created.
+	 */
+	public int getCheckBoxCount() {
+		if(myCyTable.getAllRows().get(0).get("ChartType", String.class).equals("Line Chart")) {
+			return tableColumnCount;
+		} else if(myCyTable.getAllRows().get(0).get("ChartType", String.class).equals("Time Series")) {
+			return tableRowCount;
+		} 
+		
+		return 0;
 	}
 	
 	/**
@@ -540,9 +612,24 @@ public class PanelComponents {
 	/**
 	 * Sets the new chart within the {@link ChartPanel}.
 	 */
-	public void refreshChartPanel(String chartType) {
-		chart = generateChart(chartType);
-		myChartPanel.setChart(chart); //this myChartPanel is the same ChartPanel that is displayed using PanelLayout.java
+	public void resetChartPanel(String chartType) {
+		
+		/*TODO Better way to associate ChartType to AxisMode; not with an IF statement as below
+		 * ->Below works because default is "Line Chart" and AxisMode.ROWS
+		 * Probably move this method to another class
+		 */ 
+		if(chartType.equals("Line Chart")) {
+			mode = AxisMode.ROWS;
+		} else if(chartType.equals("Time Series")) {
+			mode = AxisMode.COLUMNS;
+		}
+		myCyTable.getAllRows().get(0).set("AxisMode", mode.toString());
+		
+		MyTableModel myTableModel = new MyTableModel(cyTable);
+		
+		initComponents(cyTable, mode, myTableModel, null, null, chartType);
+		panelLayout.initLayout(getCheckBoxCount(), checkBoxArray, chartTypeComboBox, myChartPanel);
+		//myChartPanel.setChart(chart); //this myChartPanel is the same ChartPanel that is displayed using PanelLayout.java
 	}
 
 }

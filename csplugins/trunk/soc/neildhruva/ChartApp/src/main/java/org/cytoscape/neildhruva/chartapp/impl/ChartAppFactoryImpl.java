@@ -44,7 +44,7 @@ public class ChartAppFactoryImpl implements ChartAppFactory {
 	public CytoChart createChart(String chartName, CyTable cyTable, AxisMode mode, List<String> rows, List<String> columns){
 		
 		PanelLayout panelLayout = new PanelLayout();
-		PanelComponents panelComponents = new PanelComponents(tableFactory, cyTableManager);
+		PanelComponents panelComponents = new PanelComponents(tableFactory, cyTableManager, panelLayout);
 		
 		MyTableModel myTableModel = new MyTableModel(cyTable);
 		//tableColumnCount is the count of the plottable columns - int, long, double
@@ -52,14 +52,15 @@ public class ChartAppFactoryImpl implements ChartAppFactory {
 		
 		ChartPanel myChartPanel = null;
 		if(tableColumnCount>0) {
-			panelComponents.initComponents(cyTable, mode, myTableModel, rows, columns);
+			panelComponents.initComponents(cyTable, mode, myTableModel, rows, columns, null);
 			
 			//get all components and send them to the panel layout class.
 			JComboBox chartTypeComboBox = panelComponents.getComboBox();
 			JCheckBox[] checkBoxArray = panelComponents.getCheckBoxArray();
 			myChartPanel  = panelComponents.getChartPanel();
+			int checkBoxCount = panelComponents.getCheckBoxCount();
 			
-			jpanel = panelLayout.initLayout(tableColumnCount, checkBoxArray, chartTypeComboBox, myChartPanel);
+			jpanel = panelLayout.initLayout(checkBoxCount, checkBoxArray, chartTypeComboBox, myChartPanel);
 			
 		} else {
 			jpanel = panelLayout.nullJPanel();
@@ -125,12 +126,10 @@ public class ChartAppFactoryImpl implements ChartAppFactory {
 			return null;
 		} else {
 			PanelLayout panelLayout = new PanelLayout();
-			PanelComponents panelComponents = new PanelComponents(tableFactory, cyTableManager);
+			PanelComponents panelComponents = new PanelComponents(tableFactory, cyTableManager, panelLayout);
 		
 			MyTableModel myTableModel = new MyTableModel(cyTable);
 			
-			//tableColumnCount is the count of the plottable columns - int, long, double
-			int tableColumnCount = myTableModel.getColumnCount();
 			panelComponents.reInitComponents(cyTable, myCyTable, myTableModel);
 			
 			//get all components and send them to the panel layout class.
@@ -138,8 +137,9 @@ public class ChartAppFactoryImpl implements ChartAppFactory {
 			JCheckBox[] checkBoxArray = panelComponents.getCheckBoxArray();
 			ChartPanel myChartPanel = panelComponents.getChartPanel();
 			AxisMode mode = panelComponents.getAxisMode();
+			int checkBoxCount = panelComponents.getCheckBoxCount(); 
 			
-			jpanel = panelLayout.initLayout(tableColumnCount, checkBoxArray, chartTypeComboBox, myChartPanel);
+			jpanel = panelLayout.initLayout(checkBoxCount, checkBoxArray, chartTypeComboBox, myChartPanel);
 		
 			CytoChart cytoChart = new CytoChartImpl(jpanel, myChartPanel, myTableModel, cyTable, mode, panelComponents, panelLayout);
 			return cytoChart;

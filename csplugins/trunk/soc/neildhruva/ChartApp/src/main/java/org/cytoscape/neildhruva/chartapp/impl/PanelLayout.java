@@ -15,9 +15,9 @@ public class PanelLayout {
 	private JPanel jpanel;
 	private JCheckBox[] checkBoxArray;
     private GroupLayout layout;
-    private int tableColumnCount;
     private ChartPanel myChartPanel;
     private JComboBox chartTypeComboBox;
+	private int checkBoxCount;
 	
     public PanelLayout () {
     		this.jpanel = new JPanel();
@@ -31,7 +31,7 @@ public class PanelLayout {
 	 * @param chartTypeComboBox Used to select the type of chart.  
 	 * @param myChartPanel The <code>ChartPanel</code> containing the chart.
 	 */
-	public JPanel initLayout(int tableColumnCount, JCheckBox[] checkBoxArray, 
+	public JPanel initLayout(int checkBoxCount, JCheckBox[] checkBoxArray, 
 							 JComboBox chartTypeComboBox, ChartPanel myChartPanel) {
 		
 		if(jpanel.getComponents().length>0)
@@ -42,7 +42,7 @@ public class PanelLayout {
 		jpanel.setPreferredSize(jpanel.getLayout().minimumLayoutSize(jpanel));
 		
 		this.checkBoxArray = checkBoxArray;
-		this.tableColumnCount = tableColumnCount;
+		this.checkBoxCount = checkBoxCount;
 		this.myChartPanel = myChartPanel;
 		
 		this.chartTypeComboBox = chartTypeComboBox; 
@@ -51,6 +51,7 @@ public class PanelLayout {
 		jpanel.setLayout(layout);
 			
 		initPanel();
+		System.out.println(chartTypeComboBox.getSelectedItem());
 		jpanel.setName("NOT NULL");
         return jpanel;
         
@@ -62,15 +63,15 @@ public class PanelLayout {
 	public void initPanel(){
 		
 		GroupLayout.ParallelGroup checkBoxGroupHor = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-		for(int i=0;i<tableColumnCount;i++) {
+		for(int i=0;i<checkBoxCount;i++) {
         	checkBoxGroupHor.addComponent(checkBoxArray[i]);
         }
 		
         SequentialGroup checkBoxGroupVert = layout.createSequentialGroup();
         checkBoxGroupVert.addContainerGap();
-        for(int i=0;i<tableColumnCount;i++){
+        for(int i=0;i<checkBoxCount;i++){
         	checkBoxGroupVert.addComponent(checkBoxArray[i]);
-        	if(i!=(tableColumnCount-1)) {
+        	if(i!=(checkBoxCount-1)) {
         		checkBoxGroupVert.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED);
         	}
         }
