@@ -169,8 +169,10 @@ public class PanelComponents {
 		cyrow.set("Names", columnNamesList);
 		cyrow.set("RowNames", rowNamesList);
 		cyrow.set("States", checkBoxState);
-		if(chartType==null) {
+		if(mode.equals(AxisMode.ROWS)) {
 			chartType = "Line Chart";
+		} else {
+			chartType = "Time Series";
 		}
 		cyrow.set("ChartType", chartType); //default value is "Line Chart"
 		cyrow.set("AxisMode", mode.toString());
@@ -207,7 +209,6 @@ public class PanelComponents {
 		columnNamesList = myCyTable.getAllRows().get(0).getList("Names", String.class);
 		rowNamesList = myCyTable.getAllRows().get(0).getList("RowNames", String.class);
 		String modeString = myCyTable.getAllRows().get(0).get("AxisMode", String.class);
-		String chartType = myCyTable.getAllRows().get(0).get("ChartType", String.class);
 		
 		this.tableRowCount = rowNamesList.size();
 		
@@ -216,7 +217,24 @@ public class PanelComponents {
 		} else {
 			mode = AxisMode.COLUMNS;
 		}
-			
+		
+		if(tableColumnCount!=columnNamesList.size()) {
+			if(mode.equals(AxisMode.ROWS)) {
+				for(int i=0; i<tableColumnCount; i++) {
+					if(columnNamesList.contains(myTableModel.getColumnName(i))) {
+						columnNamesList.add(myTableModel.getColumnName(i));
+						checkBoxState.add(false);
+					}
+				}
+			} else {
+				for(int i=0; i<tableColumnCount; i++) {
+					if(columnNamesList.contains(myTableModel.getColumnName(i))) {
+						columnNamesList.add(myTableModel.getColumnName(i));
+					}
+				}
+			}
+		}
+		
 		initCheckBoxArray();
 		initJComboBox();
         initChartPanel(mode);
@@ -294,9 +312,10 @@ public class PanelComponents {
         if(chartTypeComboBox==null) {
         	chartTypeComboBox = new JComboBox(ChartTypes.values());
         	if(mode.equals(AxisMode.ROWS)) {
-        		chartTypeComboBox.setSelectedItem("Line Chart");
+        		chartTypeComboBox.setSelectedItem(ChartTypes.LINE);
         	} else {
-        		chartTypeComboBox.setSelectedItem("Time Series");
+        		chartTypeComboBox.setSelectedItem(ChartTypes.TIMESERIES);
+        		//TODO: improve this code
         	}
         	chartTypeComboBox.addActionListener(new ActionListener () {
         	    public void actionPerformed(ActionEvent e) {
@@ -308,7 +327,9 @@ public class PanelComponents {
         	
         } else {
         	chartTypeComboBox.getModel().setSelectedItem(myCyTable.getAllRows().get(0).get("ChartType", String.class));
+        	
         }
+        
     }
     
     /**

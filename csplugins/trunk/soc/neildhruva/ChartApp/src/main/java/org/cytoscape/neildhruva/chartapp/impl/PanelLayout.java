@@ -51,7 +51,6 @@ public class PanelLayout {
 		jpanel.setLayout(layout);
 			
 		initPanel();
-		System.out.println(chartTypeComboBox.getSelectedItem());
 		jpanel.setName("NOT NULL");
         return jpanel;
         
