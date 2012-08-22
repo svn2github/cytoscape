@@ -102,7 +102,9 @@ $themeOnly = NULL;
 if (($tried == NULL) && ($mode == 'edit')) {
 
   ?>
-<a href="pluginInfoEdit.php?versionid=<?php echo $versionID; ?>">Edit plugin info</a>
+<a href="pluginInfoEdit.php?versionid=<?php echo $versionID; ?>">Edit plugin info</a>&nbsp;&nbsp;&nbsp;
+<a href="sendApprovalEmailForm.php?versionid=<?php echo $versionID; ?>">Send approval e-mail</a>
+
 <?php
 
 
