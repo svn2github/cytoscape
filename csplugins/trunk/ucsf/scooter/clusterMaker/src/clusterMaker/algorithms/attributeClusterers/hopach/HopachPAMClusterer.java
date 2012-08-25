@@ -10,10 +10,18 @@ import cytoscape.task.TaskMonitor;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.attributeClusterers.AbstractAttributeClusterer;
 import clusterMaker.algorithms.attributeClusterers.BaseMatrix;
+import clusterMaker.algorithms.attributeClusterers.hopach.types.SplitCost;
+import clusterMaker.algorithms.numeric.SummaryMethod;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.KnnView;
 
 public class HopachPAMClusterer extends AbstractAttributeClusterer {
+	
+	SplitCost splitCost;
+	SummaryMethod summaryMethod;
+	int maxLevel, K, L;
+	double minCostReduction;
+	boolean forceInitSplit;
 	
 	public HopachPAMClusterer() {
 		logger = CyLogger.getLogger(HopachPAMClusterer.class);
@@ -30,6 +38,68 @@ public class HopachPAMClusterer extends AbstractAttributeClusterer {
 				"Distance Metric",
 				Tunable.LIST, new Integer(0),
 				(Object)BaseMatrix.distanceTypes, null, 0
+			)
+		);
+		
+		clusterProperties.add(
+			new Tunable(
+				"splitCost",
+				"Split cost type",
+				Tunable.LIST, new Integer(0),
+				(Object)SplitCost.values(), null, 0
+			)
+		);
+		
+		clusterProperties.add(
+			new Tunable(
+				"summaryMethod",
+				"Value summarization method",
+				Tunable.LIST, new Integer(0),
+				(Object)SummaryMethod.values(), null, 0
+			)
+		);
+		
+		clusterProperties.add(
+			new Tunable(
+				"maxLevel",
+				"Maximum number of splitting level",
+				Tunable.INTEGER, new Integer(9),
+				1, null, 0
+			)
+		);
+		
+		clusterProperties.add(
+			new Tunable(
+				"K",
+				"Maximum number of clusters at each level",
+				Tunable.INTEGER, new Integer(9),
+				1, null, 0
+			)
+		);
+		
+		clusterProperties.add(
+			new Tunable(
+				"L",
+				"Maximum number of subclusters at each level",
+				Tunable.INTEGER, new Integer(9),
+				1, null, 0
+			)
+		);
+		
+		clusterProperties.add(
+			new Tunable(
+				"forceInitSplit",
+				"Force splitting at initial level",
+				Tunable.BOOLEAN, new Boolean(false)
+			)
+		);
+		
+		clusterProperties.add(
+			new Tunable(
+				"minCostReduction",
+				"Minimum cost reduction for collapse",
+				Tunable.DOUBLE, new Double(0.0),
+				0.0, null, 0
 			)
 		);
 		
@@ -93,6 +163,41 @@ public class HopachPAMClusterer extends AbstractAttributeClusterer {
 		t = clusterProperties.get("dMetric");
 		if ((t != null) && (t.valueChanged() || force)) {
 			distanceMetric = BaseMatrix.distanceTypes[((Integer) t.getValue()).intValue()];
+		}
+		
+		t = clusterProperties.get("splitCost");
+		if ((t != null) && (t.valueChanged() || force)) {
+			splitCost = SplitCost.values()[((Integer) t.getValue()).intValue()];
+		}
+		
+		t = clusterProperties.get("summaryMethod");
+		if ((t != null) && (t.valueChanged() || force)) {
+			summaryMethod = SummaryMethod.values()[((Integer) t.getValue()).intValue()];
+		}
+		
+		t = clusterProperties.get("maxLevel");
+		if ((t != null) && (t.valueChanged() || force)) {
+			maxLevel = ((Integer) t.getValue()).intValue();
+		}
+		
+		t = clusterProperties.get("K");
+		if ((t != null) && (t.valueChanged() || force)) {
+			K = ((Integer) t.getValue()).intValue();
+		}
+		
+		t = clusterProperties.get("L");
+		if ((t != null) && (t.valueChanged() || force)) {
+			L = ((Integer) t.getValue()).intValue();
+		}
+		
+		t = clusterProperties.get("forceInitSplit");
+		if ((t != null) && (t.valueChanged() || force)) {
+			forceInitSplit = ((Boolean) t.getValue()).booleanValue();
+		}
+		
+		t = clusterProperties.get("minCostReduction");
+		if ((t != null) && (t.valueChanged() || force)) {
+			minCostReduction = ((Double) t.getValue()).doubleValue();
 		}
 		
 		t = clusterProperties.get("clusterAttributes");
@@ -170,8 +275,8 @@ public class HopachPAMClusterer extends AbstractAttributeClusterer {
 		algo.setSelectedOnly(selectedOnly);
 		algo.setDebug(debug);
 		algo.setUseSilhouette(useSilhouette);
-		algo.setKMax(kMax);
 		algo.setClusterInterface(this);
+		algo.setParameters(splitCost, summaryMethod, maxLevel, K, L, forceInitSplit, minCostReduction);
 		
 		String resultsString = getName() + " results:";
 		

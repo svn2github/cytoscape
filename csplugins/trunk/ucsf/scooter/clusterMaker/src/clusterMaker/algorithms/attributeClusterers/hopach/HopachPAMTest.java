@@ -56,7 +56,10 @@ public class HopachPAMTest {
 			.0, .0,
 			.02, .02,
 		};
-		int[] ans = {0, 0, 0, 1, 1, 1, 1, 1, 1, 1};
+		// median
+		//int[] ans = {0, 0, 0, 1, 1, 1, 1, 1, 1, 1};
+		// mean
+		int[] ans = {0, 0, 0, 1, 1, 1, 2, 2, 2, 2};
 		
 		BaseMatrix mat = new BaseMatrix(0, 2, data);
 		HopachPAM h = new HopachPAM(mat, DistanceMetric.CITYBLOCK);

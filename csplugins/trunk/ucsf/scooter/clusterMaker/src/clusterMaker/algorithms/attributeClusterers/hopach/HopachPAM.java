@@ -17,4 +17,8 @@ public class HopachPAM extends Hopach {
 		super(new HopachablePAM(data, metric));
 	}
 	
+	public HopachPAM(HopachablePAM p) {
+		super(p);
+	}
+	
 }

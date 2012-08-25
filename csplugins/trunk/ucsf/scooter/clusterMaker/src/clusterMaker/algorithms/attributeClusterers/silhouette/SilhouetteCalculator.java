@@ -168,7 +168,7 @@ public class SilhouetteCalculator {
 		
 		return sils;
 	}
-
+	
 	/**
 	 * This method prints out the silhouette profile for a given result.  In typical silhouette display,
 	 * the values are organized by cluster with the silhouette values ranked largest to smallest.

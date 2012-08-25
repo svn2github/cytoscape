@@ -8,6 +8,8 @@ import clusterMaker.algorithms.attributeClusterers.BaseMatrix;
 import clusterMaker.algorithms.attributeClusterers.Clusters;
 import clusterMaker.algorithms.attributeClusterers.DistanceMetric;
 import clusterMaker.algorithms.attributeClusterers.hopach.types.Hopachable;
+import clusterMaker.algorithms.attributeClusterers.hopach.types.SplitCost;
+import clusterMaker.algorithms.numeric.MedianSummarizer;
 
 public class HopachablePAMTest {
 
@@ -90,7 +92,7 @@ public class HopachablePAMTest {
 		
 		BaseMatrix mat = new BaseMatrix(0, 2, data);
 		HopachablePAM pam = new HopachablePAM(mat, DistanceMetric.CITYBLOCK);
-		pam.setParameters(9, 9);
+		pam.setParameters(9, 9, SplitCost.AVERAGE_SPLIT_SILHOUETTE, new MedianSummarizer());
 		
 		Clusters c = pam.split(false);
 		

@@ -322,5 +322,5 @@ public class Numeric {
 		}
 		System.out.println();
 	}
-
+	
 }

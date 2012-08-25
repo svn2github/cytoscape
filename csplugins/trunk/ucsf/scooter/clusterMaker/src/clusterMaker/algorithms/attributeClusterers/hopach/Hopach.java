@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import clusterMaker.algorithms.attributeClusterers.Clusters;
 import clusterMaker.algorithms.attributeClusterers.hopach.types.Hopachable;
 import clusterMaker.algorithms.numeric.Numeric;
-
+import clusterMaker.algorithms.numeric.PrimitiveSummarizer;
+import clusterMaker.algorithms.numeric.PrimitiveMeanSummarizer;
 
 /**
  * Hopach performs HOPACH using a Hopachable partitioner.
@@ -36,6 +37,9 @@ public class Hopach {
 	// whether to force split the initial level
 	boolean forceInitSplit = false;
 	
+	// summarizes array of values
+	PrimitiveSummarizer psummarizer = new PrimitiveMeanSummarizer();
+	
 	/*
 	 * Initial set of parameters implemented
 	 * clusters = best
@@ -51,10 +55,11 @@ public class Hopach {
 		initialize();
 	}
 	
-	public void setParameters(int maxLevel, int minCostReduction, boolean forceInitSplit) {
+	public void setParameters(int maxLevel, double minCostReduction, boolean forceInitSplit, PrimitiveSummarizer psummarizer) {
 		this.maxLevel = maxLevel;
 		this.minCostReduction = minCostReduction;
 		this.forceInitSplit = forceInitSplit;
+		this.psummarizer = psummarizer;
 		initialize();
 	}
 	
@@ -75,6 +80,10 @@ public class Hopach {
 		System.out.println();
 		
 		// TODO print linkage tree
+	}
+	
+	public Hopachable getPartitioner() {
+		return partitioner;
 	}
 	
 	void initialize() {
@@ -112,7 +121,7 @@ public class Hopach {
 			++level;
 			
 			// break if max level exceeded, or splitting has converged
-			if (level > maxLevel || nextLevel(level)) {
+			if (level >= maxLevel || nextLevel(level)) {
 				// last split is ignored, since it did not do anything
 				break;
 			}
@@ -211,7 +220,6 @@ public class Hopach {
 	
 	/**
 	 * Attempt to split the next level.
-	 * TODO option to use different summarization of cost?
 	 * @param level next level to split
 	 * @return convergence
 	 */
@@ -296,7 +304,7 @@ public class Hopach {
 		}
 		
 		// store results for new level
-		Clusters newSplit = new Clusters(clusterIndex, k, Numeric.mean(costs));
+		Clusters newSplit = new Clusters(clusterIndex, k, psummarizer.summarize(costs));
 		// NB  now the orderedLabels store trivial labels...
 		this.split = newSplit;
 		this.splits.set(level, newSplit);

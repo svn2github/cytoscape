@@ -3,6 +3,7 @@ package clusterMaker.algorithms.attributeClusterers.silhouette;
 import java.util.ArrayList;
 
 import clusterMaker.algorithms.numeric.Numeric;
+import clusterMaker.algorithms.numeric.Summarizer;
 
 /**
  *
@@ -87,6 +88,11 @@ public class Silhouettes {
 	public double getMedian()
 	{
 		return Numeric.median(silhouetteValues.toArray(new Double[silhouetteValues.size()]));
+	}
+	
+	public double getAverage(Summarizer summarizer)
+	{
+		return summarizer.summarize(silhouetteValues.toArray(new Double[silhouetteValues.size()]));
 	}
 	
 }
