@@ -1,7 +1,9 @@
-package org.cytoscape.equations;
+package org.cytoscape.equations.internal;
 
 
 import static org.junit.Assert.*;
+
+import org.cytoscape.equations.internal.StringList;
 import org.junit.Test;
 
 

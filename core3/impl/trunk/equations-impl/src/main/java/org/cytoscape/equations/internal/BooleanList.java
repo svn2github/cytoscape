@@ -1,5 +1,5 @@
 /*
-  File: DoubleList.java
+  File: BooleanList.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -27,26 +27,26 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.equations;
+package org.cytoscape.equations.internal;
 
 
 import java.util.ArrayList;
 
 /**
- * An convenience implementation of ArrayList&lt;Double&gt; that
+ * An convenience implementation of ArrayList&lt;Boolean&gt; that
  * allows for strong type checking.
  * @CyAPI.Final.Class
  */
-public final class DoubleList extends ArrayList<Double> {
-	public static final long serialVersionUID = 9241560324069182L;
+public final class BooleanList extends ArrayList<Boolean> {
+	public static final long serialVersionUID = -39245160342061982L;
 
 	/**
 	 * Constructor.
-	 * @param doubles The values that will initially comprise this list.
+	 * @param booleans The values that will initially comprise this list.
 	 */
-	public DoubleList(final double... doubles) {
-		ensureCapacity(doubles.length);
-		for (final double d : doubles)
-			add(d);
+	public BooleanList(final boolean... booleans) {
+		ensureCapacity(booleans.length);
+		for (final boolean b : booleans)
+			add(b);
 	}
 }
