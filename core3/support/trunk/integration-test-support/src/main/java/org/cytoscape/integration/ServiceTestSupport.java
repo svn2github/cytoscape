@@ -1,20 +1,15 @@
 package org.cytoscape.integration; 
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
-import static org.ops4j.pax.exam.CoreOptions.*;
-import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.*;
-import org.junit.Test;
-import org.junit.Before;
-import org.ops4j.pax.exam.Inject;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
-import java.util.Properties;
+import static org.easymock.EasyMock.createMock;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.util.Dictionary;
+import java.util.Properties;
+
+import org.ops4j.pax.exam.Inject;
+import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * A Pax Exam support class that provides methods useful for verifying 

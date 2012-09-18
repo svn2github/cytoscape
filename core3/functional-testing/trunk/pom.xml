@@ -15,11 +15,6 @@
 	<version>3.0.0-alpha9-SNAPSHOT</version>
 	<name>Cytoscape Functional Testing</name>
 	<packaging>jar</packaging>	
-
-	<properties>
-		<cytoscape.api.version>3.0.0-beta3-SNAPSHOT</cytoscape.api.version>
-		<cytoscape.support.version>3.0.0-alpha8-SNAPSHOT</cytoscape.support.version>
-	</properties>
 	
 	<build>
 		<plugins>
@@ -38,8 +33,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
 
 	<dependencies>
 		<dependency>

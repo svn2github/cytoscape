@@ -1,11 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>org.cytoscape</groupId>
 		<artifactId>archetypes-parent</artifactId>
-		<version>3.0.0-alpha9-SNAPSHOT</version>
+		<version> 3.0.0-alpha9-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.cytoscape.archetypes</groupId>
@@ -13,24 +14,4 @@
 	<packaging>maven-archetype</packaging>
 	<name>Cytoscape 3 Archetype - Creates a CyAction (menu item) for desktop application</name>
 
-	<build>
-		<plugins>
-			<!-- The point of this code is to use the archetype we just created and 
-				use it to generate a project and then build the project, which will test 
-				that our archetype still works. <plugin> <groupId>org.apache.maven.plugins</groupId> 
-				<artifactId>maven-invoker-plugin</artifactId> <executions> <execution> <id>integration-test</id> 
-				<goals> <goal>install</goal> <goal>run</goal> </goals> </execution> </executions> 
-				<configuration> <cloneProjectsTo>${project.build.directory}/it/projects</cloneProjectsTo> 
-				<goals> <goal>org.apache.maven.plugins:maven-archetype-plugin:generate</goal> 
-				</goals> <localRepositoryPath>${project.build.directory}/it/repo</localRepositoryPath> 
-				<pomIncludes> <pomInclude>*</pomInclude> </pomIncludes> <projectsDirectory>${basedir}/src/it/projects</projectsDirectory> 
-				<postBuildHookScript>verify.bsh</postBuildHookScript> <properties> <archetypeArtifactId>${project.artifactId}</archetypeArtifactId> 
-				<archetypeGroupId>${project.groupId}</archetypeGroupId> <archetypeRepository>local</archetypeRepository> 
-				<archetypeVersion>${project.version}</archetypeVersion> <goals>verify</goals> 
-				<interactiveMode>false</interactiveMode> </properties> <streamLogs>true</streamLogs> 
-				</configuration> </plugin> <plugin> <artifactId>maven-clean-plugin</artifactId> 
-				<version>2.4.1</version> <executions> <execution> <id>auto-clean</id> <phase>initialize</phase> 
-				<goals> <goal>clean</goal> </goals> </execution> </executions> </plugin> -->
-		</plugins>
-	</build>
 </project>

@@ -1,66 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.cytoscape</groupId>
-    <artifactId>launch-framework</artifactId>
-    <version>3.0.0-alpha9-SNAPSHOT</version>
-  </parent>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cytoscape</groupId>
+		<artifactId>launch-framework</artifactId>
+		<version>3.0.0-alpha9-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>launcher</artifactId>
-  <name>Launcher</name>
+	<artifactId>launcher</artifactId>
+	<name>Launcher</name>
 
-  <packaging>jar</packaging>
+	<packaging>jar</packaging>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-          <archive>
-            <manifest>
-              <mainClass>org.cytoscape.launcher.internal.Launcher</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-assembly</id> 
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>org.cytoscape.launcher.internal.Launcher</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
-  <dependencies>
-    <!-- The launcher code should only depend on the OSGi API. -->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <version>4.2.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <!-- This is for launching the command line bundle. -->
-    <dependency>
-      <groupId>org.cytoscape</groupId>
-      <artifactId>cmdline</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <!-- This is to get the the felix framework into the bundle. -->
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.framework</artifactId>
-      <version>3.0.1</version>
-    </dependency>
+	<dependencies>
+		<!-- The launcher code should only depend on the OSGi API. -->
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- This is for launching the command line bundle. -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>cmdline</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- This is to get the the felix framework into the bundle. -->
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.framework</artifactId>
+			<version>3.0.1</version>
+		</dependency>
 
-  </dependencies>
+	</dependencies>
 
 </project>

@@ -1,26 +1,32 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>parent</artifactId>
-	<packaging>pom</packaging>
 	<version>3.0.0-beta3-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>Basic Cytoscape POM Configuration</name>
 
-
 	<properties>
+		<!-- Text encoding.  We need to use UTF-8 for EVERYTHING. -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
-		<spring.version>3.0.5.RELEASE</spring.version>
-		<spring.osgi.version>1.2.1</spring.osgi.version>
+
+		<!-- For unit testing -->
 		<junit.version>4.8.2</junit.version>
 		<mockito.version>1.8.5</mockito.version>
+
+		<!-- Felix OSGi framework version -->
 		<felix.version>3.0.1</felix.version>
+
+		<!-- OSGi framework version -->
 		<osgi.api.version>4.2.0</osgi.api.version>
 
+		<!-- PAX Exam version. This is for integration testing -->
 		<pax.exam.version>1.2.2</pax.exam.version>
-		<maven-paxexam-plugin.version>1.2.4</maven-paxexam-plugin.version>
 
+		<!-- Maven Plugin versions -->
+		<maven-paxexam-plugin.version>1.2.4</maven-paxexam-plugin.version>
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<maven-javadoc-plugin.version>2.8</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
@@ -35,10 +41,16 @@
 		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
 		<maven-replacer-plugin.version>1.3.9</maven-replacer-plugin.version>
 
+		<!-- Source Code Repository URLs -->
 		<scm.connection.root>scm:svn:http://chianti.ucsd.edu/svn/core3</scm.connection.root>
 		<scm.dev.connection.root>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3</scm.dev.connection.root>
 		<scm.url.root>http://chianti.ucsd.edu/svn/core3</scm.url.root>
-
+		
+		
+		<!-- Child Cytoscape module versions -->
+		<cytoscape.api.version>3.0.0-beta3-SNAPSHOT</cytoscape.api.version>
+		<cytoscape.impl.version>3.0.0-alpha10-SNAPSHOT</cytoscape.impl.version>
+		<cytoscape.support.version>3.0.0-alpha9-SNAPSHOT</cytoscape.support.version>
 	</properties>
 
 	<distributionManagement>
@@ -81,12 +93,12 @@
 				<version>${maven-javadoc-plugin.version}</version>
 				<configuration>
 					<skip>false</skip>
-					<encoding>UTF-8</encoding>
+					<encoding>${project.build.sourceEncoding}</encoding>
 					<locale>en</locale>
 					<javadocVersion>1.6</javadocVersion>
 					<links>
-						<link>http://download.oracle.com/javase/6/docs/api/</link>
-						<link>http://code.cytoscape.org/javadoc/</link>
+						<link>http://docs.oracle.com/javase/6/docs/api/</link>
+						<link>http://code.cytoscape.org/jenkins/job/cytoscape-3-javadoc/javadoc/</link>
 					</links>
 					<footer>Cytoscape 3 Core API</footer>
 					<header>Cytoscape 3 Core API</header>
@@ -126,18 +138,16 @@
 					<preparationGoals>clean install</preparationGoals>
 				</configuration>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <argLine>-Xmx256m</argLine>
-                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                </configuration>
-            </plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+				<configuration>
+					<argLine>-Xmx256m</argLine>
+					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+				</configuration>
+			</plugin>
 		</plugins>
-
 
 		<!-- this is the preferred method of deployment transport mechanism -->
 		<extensions>
@@ -147,7 +157,6 @@
 				<version>1.0-beta-2</version>
 			</extension>
 		</extensions>
-
 	</build>
 
 	<!-- these items don't exist in the typical public maven repos; we could 
@@ -209,16 +218,16 @@
 			<url>http://code.cytoscape.org/nexus/content/repositories/biopax-snapshot/</url>
 		</repository>
 		<repository>
-			<id>ops4j-release</id> 
-			<snapshots> 
-				<enabled>false</enabled> 
-			</snapshots> 
-			<releases> 
-				<enabled>true</enabled> 
-			</releases> 
-			<name>Cytoscape Ops4j Release Mirror</name> 
-			<url>http://code.cytoscape.org/nexus/content/repositories/ops4j-release/</url> 
-		</repository> 
+			<id>ops4j-release</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Cytoscape Ops4j Release Mirror</name>
+			<url>http://code.cytoscape.org/nexus/content/repositories/ops4j-release/</url>
+		</repository>
 		<repository>
 			<id>spring-osgi</id>
 			<name>Cytoscape Spring OSGi Release Mirror</name>
@@ -228,7 +237,7 @@
 			<id>spring-osgi-snapshots</id>
 			<name>Cytoscape Spring OSGi External Mirror</name>
 			<url>http://code.cytoscape.org/nexus/content/repositories/spring-osgi-external/</url>
-		</repository>	
+		</repository>
 		<repository>
 			<id>itextpdf.com</id>
 			<name>Maven Repository for iText</name>
@@ -245,17 +254,17 @@
 			<url>http://code.cytoscape.org/nexus/content/repositories/zodiac-milestone/</url>
 		</repository>
 		<repository>
-			<id>sonatype-oss</id> 
-			<snapshots> 
-				<enabled>false</enabled> 
-			</snapshots> 
-			<releases> 
-				<enabled>true</enabled> 
-			</releases> 
-			<name>Sonatype OSS Release Mirror</name> 
-			<url>http://code.cytoscape.org/nexus/content/repositories/sonatype-oss/</url> 
+			<id>sonatype-oss</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Sonatype OSS Release Mirror</name>
+			<url>http://code.cytoscape.org/nexus/content/repositories/sonatype-oss/</url>
 		</repository>
-		
+
 		<!-- For PSI-MI Library -->
 		<repository>
 			<id>ebi-repo</id>

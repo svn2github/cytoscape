@@ -1,10 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.cytoscape</groupId>
 	<artifactId>project</artifactId>
 	<packaging>pom</packaging>
-	<version>3.0.0-alpha1-SNAPSHOT</version>
+	
+	<!-- This version number should be same as parent (for consistency) -->
+	<version>3.0.0-beta3-SNAPSHOT</version>
+	
 	<name>Cytoscape Project POM</name>
 
 	<modules>
