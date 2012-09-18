@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -8,45 +9,13 @@
 		<version>3.0.0-beta3-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
-	
+
 	<groupId>org.cytoscape.headless-distribution</groupId>
 	<artifactId>parent</artifactId>
-	<version>3.0.0-M4-SNAPSHOT</version>
+	<version>3.0.0-M6-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	
+
 	<name>Cytoscape Headless Distribution</name>
-
-	<properties>
-		<cytoscape.api.version>3.0.0-beta3-SNAPSHOT</cytoscape.api.version>
-		<cytoscape.impl.version>3.0.0-alpha9-SNAPSHOT</cytoscape.impl.version>
-		<cytoscape.support.version>3.0.0-alpha8-SNAPSHOT</cytoscape.support.version>
-		<karaf.version>2.2.7</karaf.version>
-	</properties>
-
-	<repositories>
-		<repository>
-			<id>cytoscape_snapshots</id>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<name>Cytoscape Snapshots</name>
-			<url>http://code.cytoscape.org/nexus/content/repositories/snapshots/</url>
-		</repository>
-		<repository>
-			<id>cytoscape_releases</id>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<name>Cytoscape Releases</name>
-			<url>http://code.cytoscape.org/nexus/content/repositories/releases/</url>
-		</repository>
-	</repositories>
 
 	<build>
 		<plugins>
@@ -74,14 +43,14 @@
 							<id>copy-dependencies</id>
 							<phase>package</phase>
 							<goals>
-							<goal>copy-dependencies</goal>
+								<goal>copy-dependencies</goal>
 							</goals>
 							<configuration>
-							<outputDirectory>${project.build.directory}/bundles</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-							<excludeTransitive>true</excludeTransitive>
+								<outputDirectory>${project.build.directory}/bundles</outputDirectory>
+								<overWriteReleases>false</overWriteReleases>
+								<overWriteSnapshots>true</overWriteSnapshots>
+								<overWriteIfNewer>true</overWriteIfNewer>
+								<excludeTransitive>true</excludeTransitive>
 							</configuration>
 						</execution>
 					</executions>
@@ -89,7 +58,7 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	
+
 	<profiles>
 		<profile>
 			<id>all</id>

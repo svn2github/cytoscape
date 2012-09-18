@@ -21,6 +21,9 @@
 
 		<!-- OSGi framework version -->
 		<osgi.api.version>4.2.0</osgi.api.version>
+		
+		<!-- Karaf framework version.  Used by both GUI/Headless -->
+		<karaf.version>2.2.9</karaf.version>
 
 		<!-- PAX Exam version. This is for integration testing -->
 		<pax.exam.version>1.2.2</pax.exam.version>
@@ -47,7 +50,7 @@
 		<scm.url.root>http://chianti.ucsd.edu/svn/core3</scm.url.root>
 		
 		
-		<!-- Child Cytoscape module versions -->
+		<!-- Sub module versions -->
 		<cytoscape.api.version>3.0.0-beta3-SNAPSHOT</cytoscape.api.version>
 		<cytoscape.impl.version>3.0.0-alpha10-SNAPSHOT</cytoscape.impl.version>
 		<cytoscape.support.version>3.0.0-alpha9-SNAPSHOT</cytoscape.support.version>
@@ -80,7 +83,6 @@
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 					<compilerArguments>
-						<!-- <compilerArgument>-Xlint:all -Xlint:-path</compilerArgument> -->
 						<Xmaxwarns>10000</Xmaxwarns>
 						<Xmaxerrs>10000</Xmaxerrs>
 					</compilerArguments>
