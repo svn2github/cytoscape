@@ -68,7 +68,7 @@ public class ScootersTunableTask extends AbstractTask {
 	}
 
 	public void run(final TaskMonitor taskMonitor) throws Exception {
-		System.out.println("selected attribute: " + attrSelection.getSelectedValue());
+		System.out.println("selected column: " + attrSelection.getSelectedValue());
 		System.out.println("selected agg type: " + aggregationType.getSelectedValue());
 	}
 }
