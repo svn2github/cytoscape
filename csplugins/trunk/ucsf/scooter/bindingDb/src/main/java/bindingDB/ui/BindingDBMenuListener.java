@@ -47,6 +47,7 @@ import cytoscape.CyNetwork;
 import cytoscape.logger.CyLogger;
 
 import bindingDB.actions.AnnotateNetworkAction;
+import bindingDB.actions.AnnotateSelectedNodesAction;
 import bindingDB.actions.ColorNetworkAction;
 import bindingDB.actions.ExpandNodesAction;
 import bindingDB.actions.AboutAction;
@@ -73,6 +74,11 @@ public class BindingDBMenuListener implements MenuListener {
 		// We can always annotate
 		JMenuItem annotate = new JMenuItem(new AnnotateNetworkAction(logger));
 		m.add(annotate);
+
+		JMenuItem annotateSelected = new JMenuItem(new AnnotateSelectedNodesAction(logger));
+		if (Cytoscape.getCurrentNetwork().getSelectedNodes().size() == 0)
+			annotateSelected.setEnabled(false);
+		m.add(annotateSelected);
 
 		JMenuItem color = new JMenuItem(new ColorNetworkAction(logger));
 		if (!isAnnotated(Cytoscape.getCurrentNetwork()))

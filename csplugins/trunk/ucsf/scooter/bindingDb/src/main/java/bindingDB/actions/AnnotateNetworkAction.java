@@ -62,7 +62,7 @@ public class AnnotateNetworkAction extends AbstractAction {
 
 	class CreateDialog implements Runnable {
 		public void run() {
-			AnnotateNetworkDialog dialog = new AnnotateNetworkDialog(logger);
+			AnnotateNetworkDialog dialog = new AnnotateNetworkDialog(logger, false);
 			dialog.setVisible(true);
 		}
 	}

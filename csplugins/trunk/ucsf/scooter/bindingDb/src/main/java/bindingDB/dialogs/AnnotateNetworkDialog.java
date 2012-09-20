@@ -78,6 +78,8 @@ public class AnnotateNetworkDialog extends JDialog implements ActionListener {
 
 	private boolean haveCyThesaurus = false;
 
+	private boolean selectedOnly = false;
+
 	JComboBox typeList;
 	JComboBox idList;
 	JComboBox speciesList;
@@ -91,9 +93,10 @@ public class AnnotateNetworkDialog extends JDialog implements ActionListener {
 
 	static final String[] loadingString = {"Loading..."};
 
-	public AnnotateNetworkDialog(CyLogger logger) { 
+	public AnnotateNetworkDialog(CyLogger logger, boolean selectedOnly) { 
 		super(Cytoscape.getDesktop(), "Annotate network"); 
 		this.logger = logger;
+		this.selectedOnly = selectedOnly;
 
 		haveCyThesaurus = BridgeDBUtils.haveCyThesaurus();
 		initComponents();
@@ -243,12 +246,12 @@ public class AnnotateNetworkDialog extends JDialog implements ActionListener {
 
 			if (!type.equals("Uniprot/TrEMBL")) {
 				// Translate identifiers if we have CyThesaurus
-				AnnotateNetworkTask annotate = new AnnotateNetworkTask("Uniprot/TrEMBL", cutoff, logger);
+				AnnotateNetworkTask annotate = new AnnotateNetworkTask("Uniprot/TrEMBL", cutoff, logger, selectedOnly);
 				TranslateIdentifiersTask translate = new TranslateIdentifiersTask(annotate, type, id, logger);
 				TaskManager.executeTask(translate, translate.getDefaultTaskConfig());
 			} else {
 				// Annotate the network
-				AnnotateNetworkTask annotate = new AnnotateNetworkTask(id, cutoff, logger);
+				AnnotateNetworkTask annotate = new AnnotateNetworkTask(id, cutoff, logger, selectedOnly);
 				TaskManager.executeTask(annotate, annotate.getDefaultTaskConfig());
 			}
 			dispose();

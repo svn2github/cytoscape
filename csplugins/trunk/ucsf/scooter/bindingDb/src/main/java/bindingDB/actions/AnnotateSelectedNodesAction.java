@@ -30,54 +30,40 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package bindingDB.tasks;
+package bindingDB.actions;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
+import javax.swing.SwingUtilities;
 
+// Cytoscape imports
 import cytoscape.Cytoscape;
-import cytoscape.CyNode;
-import cytoscape.command.CyCommandResult;
+import cytoscape.CyNetwork;
 import cytoscape.logger.CyLogger;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
 
-import bindingDB.commands.AnnotateNetworkCommand;
+import bindingDB.dialogs.AnnotateNetworkDialog;
 
-public class AnnotateNetworkTask extends AbstractTask {
-	String identifier = null;
-	double cutoff = 10.0;
-	double offset = 0.0;
-	boolean selectedOnly = false;
+public class AnnotateSelectedNodesAction extends AbstractAction {
+	private CyLogger logger = null;
 
-	public AnnotateNetworkTask(String id, double cutoff, CyLogger logger, boolean selectedOnly) {
+	public AnnotateSelectedNodesAction(CyLogger logger) { 
+		super("Annotate selected nodes..."); 
 		this.logger = logger;
-		this.identifier = id;
-		this.cutoff = cutoff;
-		this.selectedOnly = selectedOnly;
 	}
 
-	public String getTitle() {
-		return "Annotating Network";
+	public void actionPerformed (ActionEvent e)
+	{
+		// Bring up dialog.  Dialog should include:
+		//	 o options for selecting appropriate Uniprot ID.
+		//	 o options for translating a column to Uniprot
+		SwingUtilities.invokeLater(new CreateDialog());
 	}
 
-	public void setOffset(double offset) {
-		this.offset = offset;
-	}
-
-	public void run() {
-		setStatus("Adding BindingDB annotations to the network");
-		double complete = offset; // The starting point for our % complete
-		double stepSize = (100.0-offset)/Cytoscape.getCurrentNetwork().getNodeCount();
-		Collection<CyNode> nodeList = (Collection<CyNode>)Cytoscape.getCurrentNetwork().nodesList();
-		if (selectedOnly)
-			nodeList = Cytoscape.getCurrentNetwork().getSelectedNodes();
-		for (CyNode node: nodeList) {
-			// logger.debug("Annotating "+node.getIdentifier());
-			CyCommandResult result = AnnotateNetworkCommand.annotateNetwork(logger, node, identifier, cutoff);
-			complete += stepSize;
-			setPercentCompleted((int)complete);
-			if (canceled) break;
+	class CreateDialog implements Runnable {
+		public void run() {
+			AnnotateNetworkDialog dialog = new AnnotateNetworkDialog(logger, true);
+			dialog.setVisible(true);
 		}
 	}
 }
