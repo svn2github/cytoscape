@@ -2,25 +2,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
-		<artifactId>api-parent</artifactId>
+		<artifactId>impl-parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-beta3-SNAPSHOT</version>
+		<version>3.0.0-alpha10-SNAPSHOT</version>
 	</parent>
 
 	<properties>
-		<bundle.symbolicName>org.cytoscape.vizmap-gui-api</bundle.symbolicName>
-		<bundle.namespace>org.cytoscape.view.vizmap.gui</bundle.namespace>
+		<bundle.symbolicName>org.cytoscape.vizmap-gui-core-impl</bundle.symbolicName>
+		<bundle.namespace>org.cytoscape.view.vizmap.gui.core</bundle.namespace>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>vizmap-gui-api</artifactId>
+	<artifactId>vizmap-gui-core-impl</artifactId>
 
-	<name>Cytoscape VizMap GUI API (${project.artifactId})</name>
+    <name>Cytoscape VizMap GUI Core Impl (${project.artifactId})</name>
 
 	<packaging>bundle</packaging>
 
+
 	<repositories>
-		<!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
 		<repository>
 			<id>cytoscape_snapshots</id>
 			<snapshots>
@@ -32,7 +32,6 @@
 			<name>Cytoscape Snapshots</name>
 			<url>http://code.cytoscape.org/nexus/content/repositories/snapshots/</url>
 		</repository>
-		<!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
 		<repository>
 			<id>cytoscape_releases</id>
 			<snapshots>
@@ -57,8 +56,9 @@
 					<instructions>
 						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Export-Package>!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${project.version}"</Export-Package>
-						<Private-Package>${bundle.namespace}.internal.*</Private-Package>
+						<Export-Package>!${bundle.namespace}.*</Export-Package>
+						<Private-Package>${bundle.namespace}.*</Private-Package>
+						<Bundle-Activator>${bundle.namespace}.internal.CyActivator</Bundle-Activator>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -66,30 +66,26 @@
 	</build>
 
 	<dependencies>
+
 		<!-- Cytoscape Dependency -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>vizmap-api</artifactId>
-			<version>${project.version}</version>
+			<artifactId>vizmap-gui-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>presentation-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		
-		<!-- for testing -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>l2fprod-common-sheet</artifactId>
+			<version>7.3</version>
 		</dependency>
 		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<scope>test</scope>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>l2fprod-common-shared</artifactId>
+			<version>7.3</version>
+		</dependency>
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>l2fprod-common-fontchooser</artifactId>
+			<version>7.3</version>
 		</dependency>
 	</dependencies>
-
-
 </project>
