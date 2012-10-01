@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>parent</artifactId>
-	<version>3.0.0-beta4-SNAPSHOT</version>
+	<version>3.0.0-beta3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Basic Cytoscape POM Configuration</name>
 
@@ -50,9 +50,9 @@
 		
 		
 		<!-- Sub module versions -->
-		<cytoscape.api.version>3.0.0-beta3-SNAPSHOT</cytoscape.api.version>
-		<cytoscape.impl.version>3.0.0-alpha10-SNAPSHOT</cytoscape.impl.version>
-		<cytoscape.support.version>3.0.0-alpha9-SNAPSHOT</cytoscape.support.version>
+		<cytoscape.api.version>3.0.0-beta3</cytoscape.api.version>
+		<cytoscape.impl.version>3.0.0-beta1</cytoscape.impl.version>
+		<cytoscape.support.version>3.0.0-beta1</cytoscape.support.version>
 	</properties>
 
 	<distributionManagement>
@@ -108,7 +108,7 @@
 						<tagletArtifact>
 							<groupId>org.cytoscape</groupId>
 							<artifactId>taglets</artifactId>
-							<version>3.0.0-alpha7</version>
+							<version>3.0.0-beta1</version>
 						</tagletArtifact>
 					</tagletArtifacts>
 				</configuration>
