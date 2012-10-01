@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>support-parent</artifactId>
-	<version>3.0.0-beta2-SNAPSHOT</version>
+	<version>3.0.0-beta1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Cytoscape Support Parent Project POM</name>
 
