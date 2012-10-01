@@ -14,6 +14,10 @@
 	<packaging>pom</packaging>
 	<name>Cytoscape Support Parent Project POM</name>
 
+	<properties>
+		<cytoscape.api.version>3.0.0-beta3</cytoscape.api.version>
+	</properties>
+
 	<modules>
 		<module>archetypes</module>
 		<module>cy-commons-cli</module>
