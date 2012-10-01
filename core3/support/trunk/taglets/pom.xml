@@ -105,6 +105,13 @@
 					<footer>Cytoscape 3 Core API</footer>
 					<header>Cytoscape 3 Core API</header>
 					<bottom>Copyright 2010 Cytoscape Consortium. All rights reserved.</bottom>
+					<tagletArtifacts>
+						<tagletArtifact>
+							<groupId>org.cytoscape</groupId>
+							<artifactId>taglets</artifactId>
+							<version>3.0.0-beta1</version>
+						</tagletArtifact>
+					</tagletArtifacts>
 				</configuration>
 				<executions>
 					<execution>
