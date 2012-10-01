@@ -30,11 +30,12 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package edu.ucsf.rbvi.enhancedcg.internal.charts.bar;
+package edu.ucsf.rbvi.enhancedcg.internal.charts.heatstrip;
 
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.LinearGradientPaint;
 import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -50,13 +51,16 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.cytoscape.view.presentation.customgraphics.PaintedShape;
 import edu.ucsf.rbvi.enhancedcg.internal.charts.ViewUtils;
 
-public class BarLayer implements PaintedShape {
+public class HeatStripLayer implements PaintedShape {
 	private boolean labelLayer = false;
 	private String label;
-	private Color color;
+	private Color[] colorScale;
 	private int fontSize;
 	protected Rectangle2D bounds;
 	private double value;
@@ -65,11 +69,13 @@ public class BarLayer implements PaintedShape {
 	private int bar;
 	private int nBars;
 	private int separation;
+	float[] dist = {0.0f, 0.5f, 1.0f};
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public BarLayer(int bar, int nbars, int separation, double value, 
-	                double minValue, double maxValue, Color color) {
+	public HeatStripLayer(int bar, int nbars, int separation, double value, 
+	                double minValue, double maxValue, Color[] colorScale) {
 		labelLayer = false;
-		this.color = color;
+		this.colorScale = colorScale;
 		this.bar = bar;
 		this.nBars = nbars;
 		this.separation = separation;
@@ -79,7 +85,7 @@ public class BarLayer implements PaintedShape {
 		bounds = new Rectangle2D.Double(0, 0, 100, 50);
 	}
 
-	public BarLayer(int bar, int nbars, int separation, double minValue, double maxValue,
+	public HeatStripLayer(int bar, int nbars, int separation, double minValue, double maxValue,
 	                String label, int fontSize) {
 		labelLayer = true;
 		this.bar = bar;
@@ -87,18 +93,21 @@ public class BarLayer implements PaintedShape {
 		this.separation = separation;
 		this.label = label;
 		this.fontSize = fontSize;
-		this.color = Color.BLACK;
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		bounds = new Rectangle2D.Double(0, 0, 100, 50);
 	}
 
 	public Paint getPaint() {
-		return color;
+		if (labelLayer)
+			return Color.BLACK;
+		return createGradPaint();
 	}
 
 	public Paint getPaint(Rectangle2D bounds) {
-		return color;
+		if (labelLayer)
+			return Color.BLACK;
+		return createGradPaint();
 	}
 
 	public Shape getShape() {
@@ -124,34 +133,33 @@ public class BarLayer implements PaintedShape {
 		return bounds;
 	}
 
-	public BarLayer transform(AffineTransform xform) {
+	public HeatStripLayer transform(AffineTransform xform) {
 		Shape newBounds = xform.createTransformedShape(bounds);
-		BarLayer bl;
+		HeatStripLayer bl;
 		if (labelLayer)
-			bl = new BarLayer(bar, nBars, separation, minValue, maxValue, label, fontSize);
+			bl = new HeatStripLayer(bar, nBars, separation, minValue, maxValue, label, fontSize);
 		else 
-			bl = new BarLayer(bar, nBars, separation, value, minValue, maxValue, color);
+			bl = new HeatStripLayer(bar, nBars, separation, value, minValue, maxValue, colorScale);
 		bl.bounds = newBounds.getBounds2D();
 		return bl;
 	}
 
 	private Shape barShape() {
-		// System.out.println("sliceShape: bounds = "+bounds);
-		Shape barShape = getBar(value);
+		Shape strip = getHeatStrip(value);
 
 		// If this is our first bar, draw our axes
 		if (bar == 0) {
 			Area axes = getAxes();
-			axes.add(new Area(barShape));
+			axes.add(new Area(strip));
 			return axes;
 		}
-		return barShape;
 
+		return strip;
 	}
 
 	private Shape labelShape() {
 		// Get a bar that's in the right position and the maximum height
-		Rectangle2D bar = getBar(minValue);
+		Rectangle2D bar = getHeatStrip(minValue);
 
 		ViewUtils.TextAlignment tAlign = ViewUtils.TextAlignment.ALIGN_LEFT;
 		Point2D labelPosition = new Point2D.Double(bar.getCenterX(), bar.getMaxY()+fontSize/2);
@@ -168,7 +176,7 @@ public class BarLayer implements PaintedShape {
 		return textShape;
 	}
 
-	private Rectangle2D getBar(double val) {
+	private Rectangle2D getHeatStrip(double val) {
 		double x = bounds.getX()-bounds.getWidth()/2;
 		double y = bounds.getY()-bounds.getHeight()/2;
 		double width = bounds.getWidth();
@@ -197,12 +205,20 @@ public class BarLayer implements PaintedShape {
 		return new Rectangle2D.Double(px1, py1, sliceSize, h);
 	}
 
+	private Paint createGradPaint() {
+		double x = bounds.getX()-bounds.getWidth()/2;
+		double y = bounds.getY()-bounds.getHeight()/2;
+		double width = bounds.getWidth();
+		double height = bounds.getHeight();
+		return new LinearGradientPaint((float)x, (float)(y+height), (float)x, (float)y, dist, colorScale);
+	}
+
 	private Area getAxes() {
 		// At this point, make it simple -- a line at 0.0
-		Rectangle2D firstBar = getBar(0.0);
+		Rectangle2D firstBar = getHeatStrip(0.0);
 		int saveBar = bar;
 		bar = nBars-1;
-		Rectangle2D lastBar = getBar(0.0);
+		Rectangle2D lastBar = getHeatStrip(0.0);
 		bar = saveBar;
 
 		Path2D xAxes = new Path2D.Double();
@@ -210,6 +226,7 @@ public class BarLayer implements PaintedShape {
 		xAxes.lineTo(lastBar.getX()+lastBar.getWidth(), lastBar.getY());
 		BasicStroke stroke = new BasicStroke(0.5f/2.0f);
 		return new Area(stroke.createStrokedShape(xAxes));
+
 	}
 
 }

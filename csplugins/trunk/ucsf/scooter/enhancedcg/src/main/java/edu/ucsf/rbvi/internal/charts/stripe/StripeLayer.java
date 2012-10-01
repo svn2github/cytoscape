@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package edu.ucsf.rbvi.enhancedcg.internal.charts.bar;
+package edu.ucsf.rbvi.enhancedcg.internal.charts.stripe;
 
 
 import java.awt.BasicStroke;
@@ -41,8 +41,6 @@ import java.awt.Shape;
 import java.awt.Stroke;
 
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
-import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -53,43 +51,30 @@ import java.util.List;
 import org.cytoscape.view.presentation.customgraphics.PaintedShape;
 import edu.ucsf.rbvi.enhancedcg.internal.charts.ViewUtils;
 
-public class BarLayer implements PaintedShape {
+public class StripeLayer implements PaintedShape {
 	private boolean labelLayer = false;
 	private String label;
 	private Color color;
 	private int fontSize;
 	protected Rectangle2D bounds;
-	private double value;
-	private double maxValue;
-	private double minValue;
-	private int bar;
-	private int nBars;
-	private int separation;
+	private int stripe;
+	private int nStripes;
 
-	public BarLayer(int bar, int nbars, int separation, double value, 
-	                double minValue, double maxValue, Color color) {
+	public StripeLayer(int stripe, int nStripes, Color color) {
 		labelLayer = false;
 		this.color = color;
-		this.bar = bar;
-		this.nBars = nbars;
-		this.separation = separation;
-		this.value = value;
-		this.minValue = minValue;
-		this.maxValue = maxValue;
+		this.stripe = stripe;
+		this.nStripes = nStripes;
 		bounds = new Rectangle2D.Double(0, 0, 100, 50);
 	}
 
-	public BarLayer(int bar, int nbars, int separation, double minValue, double maxValue,
-	                String label, int fontSize) {
+	public StripeLayer(int stripe, int nStripes, String label, int fontSize) {
 		labelLayer = true;
-		this.bar = bar;
-		this.nBars = nbars;
-		this.separation = separation;
+		this.stripe = stripe;
+		this.nStripes = nStripes;
 		this.label = label;
 		this.fontSize = fontSize;
 		this.color = Color.BLACK;
-		this.minValue = minValue;
-		this.maxValue = maxValue;
 		bounds = new Rectangle2D.Double(0, 0, 100, 50);
 	}
 
@@ -106,13 +91,13 @@ public class BarLayer implements PaintedShape {
 		if (labelLayer)
 			return labelShape();
 		else
-			return barShape();
+			return stripeShape();
 	}
 
 	public Stroke getStroke() {
 		// We only stroke the slice
 		if (!labelLayer)
-			return new BasicStroke(0.5f);
+			return new BasicStroke(0.1f);
 		return null;
 	}
 
@@ -124,92 +109,33 @@ public class BarLayer implements PaintedShape {
 		return bounds;
 	}
 
-	public BarLayer transform(AffineTransform xform) {
+	public StripeLayer transform(AffineTransform xform) {
 		Shape newBounds = xform.createTransformedShape(bounds);
-		BarLayer bl;
+		StripeLayer bl;
 		if (labelLayer)
-			bl = new BarLayer(bar, nBars, separation, minValue, maxValue, label, fontSize);
+			bl = new StripeLayer(stripe, nStripes, label, fontSize);
 		else 
-			bl = new BarLayer(bar, nBars, separation, value, minValue, maxValue, color);
+			bl = new StripeLayer(stripe, nStripes, color);
 		bl.bounds = newBounds.getBounds2D();
 		return bl;
 	}
 
-	private Shape barShape() {
+	private Shape stripeShape() {
 		// System.out.println("sliceShape: bounds = "+bounds);
-		Shape barShape = getBar(value);
-
-		// If this is our first bar, draw our axes
-		if (bar == 0) {
-			Area axes = getAxes();
-			axes.add(new Area(barShape));
-			return axes;
-		}
-		return barShape;
-
+		return getStripe(stripe, nStripes);
 	}
 
 	private Shape labelShape() {
-		// Get a bar that's in the right position and the maximum height
-		Rectangle2D bar = getBar(minValue);
-
-		ViewUtils.TextAlignment tAlign = ViewUtils.TextAlignment.ALIGN_LEFT;
-		Point2D labelPosition = new Point2D.Double(bar.getCenterX(), bar.getMaxY()+fontSize/2);
-
-		Shape textShape = ViewUtils.getLabelShape(label, null, 0, fontSize);
-
-		double maxHeight = bar.getWidth();
-
-		textShape = ViewUtils.positionLabel(textShape, labelPosition, tAlign, maxHeight, 0.0, 70.0);
-		if (textShape == null) {
-			return null;
-		}
-
-		return textShape;
+		return null;
 	}
 
-	private Rectangle2D getBar(double val) {
+	private Rectangle2D getStripe(int stripe, int nStripes) {
 		double x = bounds.getX()-bounds.getWidth()/2;
 		double y = bounds.getY()-bounds.getHeight()/2;
 		double width = bounds.getWidth();
 		double height = bounds.getHeight();
-
-		double yMid = y + (0.5 * height);
-		double sliceSize = (width / nBars) - (nBars * separation) + separation; // only have n-1 separators
-
-		double min = minValue;
-		double max = maxValue;
-
-		if (Math.abs(max) > Math.abs(min))
-			min = -1.0 * max;
-		else
-			max = -1.0 * min;
-
-		double px1 = x + bar*width/nBars;
-		double py1 = y + (0.5 * height);
-
-		if (val > 0.0)
-			py1 = py1 - ((0.5 * height) * (val / max));
-		else
-			val = -val;
-
-		double h = (0.5 * height) * (val/max);
-		return new Rectangle2D.Double(px1, py1, sliceSize, h);
-	}
-
-	private Area getAxes() {
-		// At this point, make it simple -- a line at 0.0
-		Rectangle2D firstBar = getBar(0.0);
-		int saveBar = bar;
-		bar = nBars-1;
-		Rectangle2D lastBar = getBar(0.0);
-		bar = saveBar;
-
-		Path2D xAxes = new Path2D.Double();
-		xAxes.moveTo(firstBar.getX(), firstBar.getY());
-		xAxes.lineTo(lastBar.getX()+lastBar.getWidth(), lastBar.getY());
-		BasicStroke stroke = new BasicStroke(0.5f/2.0f);
-		return new Area(stroke.createStrokedShape(xAxes));
+		// Create the stripe
+		return new Rectangle2D.Double((x + (stripe * width/nStripes)), y, width/nStripes, height);
 	}
 
 }
