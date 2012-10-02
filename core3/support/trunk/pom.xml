@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-beta3</version>
+		<version>3.0.0-beta4-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 
@@ -15,7 +15,7 @@
 	<name>Cytoscape Support Parent Project POM</name>
 
 	<properties>
-		<cytoscape.api.version>3.0.0-beta3</cytoscape.api.version>
+		<cytoscape.api.version>3.0.0-beta4-SNAPSHOT</cytoscape.api.version>
 	</properties>
 
 	<modules>
