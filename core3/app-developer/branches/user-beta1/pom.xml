@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape.app-developer</groupId>
 	<artifactId>cytoscape</artifactId>
-	<version>3.0.0-beta1-SNAPSHOT</version>
+	<version>3.0.0-beta1</version>
 
 	<properties>
 		<cytoscape.api.version>3.0.0-beta3</cytoscape.api.version>
