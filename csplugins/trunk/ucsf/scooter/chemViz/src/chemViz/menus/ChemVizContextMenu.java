@@ -56,6 +56,7 @@ import cytoscape.data.CyAttributes;
 
 import chemViz.model.Compound;
 import chemViz.model.Compound.AttriType;
+import chemViz.tasks.CreateCompoundsTask;
 import chemViz.ui.ChemInfoSettingsDialog;
 
 /**
@@ -118,11 +119,13 @@ public class ChemVizContextMenu implements NodeContextMenuListener, EdgeContextM
 		if (context instanceof EdgeView) {
 			new DepictionMenus(m, systemProperties, settingsDialog, (EdgeView) context);
 			new AttributesMenu(m, systemProperties, settingsDialog, (EdgeView) context);
+			new StructureMenus(m, systemProperties, settingsDialog, (EdgeView) context);
 			updateLinkOut(((EdgeView)context).getEdge());
 		} else {
 			new DepictionMenus(m, systemProperties, settingsDialog, (NodeView) context);
 			new NodeGraphicsMenus(m, systemProperties, settingsDialog, (NodeView) context);
 			new AttributesMenu(m, systemProperties, settingsDialog, (NodeView) context);
+			new StructureMenus(m, systemProperties, settingsDialog, (NodeView) context);
 			updateLinkOut(((NodeView)context).getNode());
 		}
 		new SimilarityMenu(m, systemProperties, settingsDialog);
@@ -148,10 +151,12 @@ public class ChemVizContextMenu implements NodeContextMenuListener, EdgeContextM
 			type = "edge";
 		}
 
-		// Only get the loaded compounds so our popup menus don't get really slow
-		List<Compound> cList = Compound.getCompounds(go, attributes,
-                                                 settingsDialog.getCompoundAttributes(type,AttriType.smiles),
-                                                 settingsDialog.getCompoundAttributes(type,AttriType.inchi), true);
+		// This little bit of strangeness is to avoid duplicating bunch of code to handle
+		// the creation of compounds that's already in AbstractCompoundTask.  Here, we
+		// create a task, but just execute the run method directly (synchronously)...
+		CreateCompoundsTask t = new CreateCompoundsTask(go, attributes, settingsDialog);
+		t.run();
+		List<Compound> cList = t.getCompoundList();
 
 		Properties cytoProps = CytoscapeInit.getProperties();
 		if (cList == null || cList.size() == 0) {

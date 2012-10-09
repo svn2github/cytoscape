@@ -43,6 +43,18 @@ chemViz.menu.createattributes.thisNode=for this node
 chemViz.menu.createattributes.allNodes=for all nodes
 chemViz.menu.createattributes.selectedNodes=for selected nodes
 chemViz.menu.settings=Settings...
+chemViz.menu.clearstructures=Clear compounds
+chemViz.menu.clearstructures.thisEdge=for this edge
+chemViz.menu.clearstructures.selectedEdges=for selected edges
+chemViz.menu.clearstructures.thisNode=for this node
+chemViz.menu.clearstructures.all=for all nodes and edges
+chemViz.menu.clearstructures.selectedNodes=for selected nodes
+chemViz.menu.reloadstructures=Reload compounds
+chemViz.menu.reloadstructures.thisEdge=for this edge
+chemViz.menu.reloadstructures.selectedEdges=for selected edges
+chemViz.menu.reloadstructures.thisNode=for this node
+chemViz.menu.reloadstructures.all=for all nodes and edges
+chemViz.menu.reloadstructures.selectedNodes=for selected nodes
 
 ##
 # 2D Structure Depictor Messages

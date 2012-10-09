@@ -78,7 +78,7 @@ import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
-import org.openscience.cdk.fingerprint.Fingerprinter;
+import org.openscience.cdk.fingerprint.IFingerprinter;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.inchi.InChIGenerator;
@@ -167,6 +167,7 @@ public class Compound {
 	// Class variables
 	static private HashMap<GraphObject, List<Compound>> compoundMap;
 	static private CyLogger logger = CyLogger.getLogger(Compound.class);
+	static private Fingerprinter fingerprinter = Fingerprinter.CDK;
 	static private DescriptorType[] descriptorTypes = {
 		DescriptorType.IMAGE, DescriptorType.ATTRIBUTE, DescriptorType.IDENTIFIER, DescriptorType.WEIGHT,
 		DescriptorType.MASS,
@@ -179,72 +180,15 @@ public class Compound {
 		DescriptorType.WEINERPATH,DescriptorType.WEINERPOL
 	};
 
-	/********************************************************************************************************************* 
-	 *                                                Class (static) methods                                             *
-	 ********************************************************************************************************************/ 
-
-	/**
- 	 * Returns all of the Compounds for a list of graph objects (Nodes or Edges) based on the SMILES
- 	 * and InChI attributes.
- 	 *
- 	 * @param goSet the Collection of graph objects we're looking at
- 	 * @param attributes the appropriate set of attributes (nodeAttributes or edgeAttributes)
- 	 * @param sList the list of attributes that contain SMILES strings
- 	 * @param iList the list of attributes that contain InChI strings
- 	 * @return the list of compounds.  If the compounds have not already been created, they are created
- 	 *         as a byproduct of this method.
- 	 */
-	static public List<Compound> getCompounds(Collection<GraphObject> goSet, CyAttributes attributes, 
-	                                          List<String> sList, List<String> iList) {
-		List<Compound> cList = new ArrayList();
-		for (GraphObject go: goSet)
-			cList.addAll(getCompounds(go, attributes, sList, iList, false));
-
-		return cList;
-	}
-
-	/**
- 	 * Returns all of the Compounds for a single graph object (Node or Edge) based on the SMILES
- 	 * and InChI attributes.
- 	 *
- 	 * @param go the graph object we're looking at
- 	 * @param attributes the appropriate set of attributes (nodeAttributes or edgeAttributes)
- 	 * @param sList the list of attributes that contain SMILES strings
- 	 * @param iList the list of attributes that contain InChI strings
- 	 * @param noStructures if 'true', the structures are fetched in the background
- 	 * @return the list of compounds.  If the compounds have not already been created, they are created
- 	 *         as a byproduct of this method.
- 	 */
-	static public List<Compound> getCompounds(GraphObject go, CyAttributes attributes, 
-	                                          List<String> sList, List<String> iList, 
-	                                          boolean noStructures) {
-		if ((sList == null || sList.size() == 0) 
-		    && (iList == null || iList.size() == 0))
-			return null;
-		
-		List<Compound> cList = new ArrayList();
-
-		// Get the compound list from each attribute
-		for (String attr: sList) {
-			cList.addAll(getCompounds(go, attributes, attr, AttriType.smiles, noStructures));
-		}
-
-		for (String attr: iList) {
-			cList.addAll(getCompounds(go, attributes, attr, AttriType.inchi, noStructures));
-		}
-
-		return cList;
-	}
-
-	/**
- 	 * Returns the compound that matches the passed arguments or null if no such compound exists.
- 	 *
- 	 * @param go the graph object we're looking at
- 	 * @param attr the attribute that contains the compound descriptor
- 	 * @param molString the compound descriptor
- 	 * @param type the type of the attribute (smiles or inchi)
- 	 * @return the compound that matched or 'null' if no such compound exists.
- 	 */
+  /**
+	 * Returns the compound that matches the passed arguments or null if no such compound exists.
+	 *
+	 * @param go the graph object we're looking at
+	 * @param attr the attribute that contains the compound descriptor
+	 * @param molString the compound descriptor
+	 * @param type the type of the attribute (smiles or inchi)
+	 * @return the compound that matched or 'null' if no such compound exists.
+	 */
 	static public Compound getCompound(GraphObject go, String attr, String molString, AttriType type) {
 		if (compoundMap == null) return null;
 
@@ -260,119 +204,41 @@ public class Compound {
 	}
 
 	/**
- 	 * Returns the list of attributes that might contain compound descriptors and are
- 	 * used by any of the passed graph objects.
+ 	 * Static method to set the fingerprinter to use.
  	 *
- 	 * @param goList the list of graph objects we're looking at
- 	 * @param attributes the appropriate set of attributes (nodeAttributes or edgeAttributes)
- 	 * @param attrList the entire list of compound attributes
- 	 * @return the list of attributes that are in the attrList and used by objects in the goList
+ 	 * @param fp the Fingerprinter we want to use
  	 */
-	static public List<String> findAttributes(Collection<GraphObject> goList, CyAttributes attributes, 
-	                                          List<String> attrList) {
-
-		// Now get the names of all of the object attributes
-		String[] attrNames = attributes.getAttributeNames();
-
-		// Now see if any of the attributes are in our list
-		ArrayList<String>attrsFound = new ArrayList();
-		for (int i = 0; i < attrNames.length; i++) {
-			if (attrList.contains(attrNames[i])) {
-				attrsFound.add(attrNames[i]);
-			}
-		}
-
-		if (attrsFound.size() == 0)
-			return null;
-
-		if (goList == null)
-			return attrsFound;
-
-		// We we know all of the attributes we're interested in -- see if these objects have any of them
-		ArrayList<String>hasAttrs = new ArrayList();
-		for (GraphObject go: goList) {
-			for (String attribute: attrsFound) {
-				if (attributes.hasAttribute(go.getIdentifier(),attribute)) {
-					hasAttrs.add(attribute);
-				}
-			}
-		}
-
-		if (hasAttrs.size() > 0)
-			return hasAttrs;
-
-		return null;
+	static public void setFingerprinter(Fingerprinter fp) {
+		fingerprinter = fp;
 	}
 
 	static public List<DescriptorType> getDescriptorList() {
 		return Arrays.asList(descriptorTypes);
 	}
 
-	/**
- 	 * Returns all of the Compounds for a single graph object (Node or Edge) based on the designated
- 	 * attribute of the specific type
- 	 *
- 	 * @param go the graph object we're looking at
- 	 * @param attributes the appropriate set of attributes (nodeAttributes or edgeAttributes)
- 	 * @param attr the attribute that contains the compound descriptor
- 	 * @param type the type of the attribute (smiles or inchi)
- 	 * @param noStructures if 'true', the structures are fetched in the background
- 	 * @return the list of compounds.  If the compounds have not already been created, they are created
- 	 *         as a byproduct of this method.
- 	 */
-	static private List<Compound> getCompounds(GraphObject go, CyAttributes attributes, 
-	                                           String attr, AttriType type,
-	                                           boolean noStructures) {
-		byte atype = attributes.getType(attr);
-		List<Compound> cList = new ArrayList();
-			
-		if (!attributes.hasAttribute(go.getIdentifier(), attr)) 
-			return cList;
-		if (atype == CyAttributes.TYPE_STRING) {
-			String cstring = attributes.getStringAttribute(go.getIdentifier(), attr);
-			cList.addAll(getCompounds(go, attr, cstring, type, noStructures));
-		} else if (atype == CyAttributes.TYPE_SIMPLE_LIST) {
-			List<String> stringList = attributes.getListAttribute(go.getIdentifier(), attr);
-			for (String cstring: stringList)
-				cList.addAll(getCompounds(go, attr, cstring, type, noStructures));
+	static public void clearStructures(GraphObject object) {
+		if (object == null) {
+			compoundMap = null;
+		} else {
+			if (compoundMap.containsKey(object)) {
+				compoundMap.remove(object);
+			}
 		}
-		return cList;
 	}
 
-	/**
- 	 * Returns all of the Compounds for a single graph object (Node or Edge) based on the designated
- 	 * attribute of the specific type
- 	 *
- 	 * @param go the graph object we're looking at
- 	 * @param attr the attribute that contains the compound descriptor
- 	 * @param compundString the compound descriptor
- 	 * @param type the type of the attribute (smiles or inchi)
- 	 * @param noStructures if 'true', the structures are fetched in the background
- 	 * @return the list of compounds.  If the compounds have not already been created, they are created
- 	 *         as a byproduct of this method.
- 	 */
-	static private List<Compound> getCompounds(GraphObject go, String attr, 
-	                                           String compoundString, AttriType type,
-	                                           boolean noStructures) {
-		List<Compound> cList = new ArrayList();
-
-		String[] cstrings = null;
-
-		if (type == AttriType.smiles) {
-			cstrings = compoundString.split(",");
-		} else {
-			cstrings = new String[1];
-			cstrings[0] = compoundString;
+	static public void reloadStructures(GraphObject object) {
+		if (object == null) {
+			for (List<Compound> cList: compoundMap.values()) {
+				for (Compound c: cList) {
+					c.createStructure();
+				}
+			}
+		} else if (compoundMap.containsKey(object)) {
+			List<Compound> cList = compoundMap.get(object);
+			for (Compound c: cList) {
+				c.createStructure();
+			}
 		}
-
-		for (int i = 0; i < cstrings.length; i++) {
-			Compound c = getCompound(go, attr, cstrings[i], type);
-			if (c == null)
-				c = new Compound(go, attr, cstrings[i], type, noStructures);
-
-			cList.add(c);
-		}
-		return cList;
 	}
 
 	/********************************************************************************************************************* 
@@ -390,6 +256,7 @@ public class Compound {
 	private IMolecule iMolecule;
 	private IMolecule iMolecule3D;
 	private BitSet fingerPrint;
+	private IFingerprinter fp;
 	private int lastImageWidth = -1;
 	private int lastImageHeight = -1;
 	private	boolean	lastImageFailed = false;
@@ -411,12 +278,6 @@ public class Compound {
 		this.attribute = attribute;
 		this.moleculeString = mstring.trim();
 		this.attrType = attrType;
-		this.renderedImage = null;
-		this.laidOut = false;
-		this.iMolecule = null;
-		this.iMolecule3D = null;
-		this.fingerPrint = null;
-		this.smilesStr = null;
 
 		List<Compound> mapList = null;
 		if (Compound.compoundMap == null) 
@@ -429,14 +290,25 @@ public class Compound {
 		}
 		mapList.add(this);
 		Compound.compoundMap.put(source, mapList);
+		createStructure();
+	}
+
+	public void createStructure() {
+		this.renderedImage = null;
+		this.laidOut = false;
+		this.iMolecule = null;
+		this.iMolecule3D = null;
+		this.smilesStr = null;
+		this.fp = Compound.fingerprinter.getFingerprinter();
+		this.fingerPrint = null;
 
 		if (attrType == AttriType.inchi) {
 			// Convert to smiles 
 			this.smilesStr = convertInchiToSmiles(moleculeString);
 		} else {
-			if (mstring != null && mstring.length() > 0) {
+			if (moleculeString != null && moleculeString.length() > 0) {
 				// Strip any blanks in the string
-				this.smilesStr = mstring.replaceAll(" ", "");
+				this.smilesStr = moleculeString.replaceAll(" ", "");
 			}
 		}
 
@@ -446,8 +318,7 @@ public class Compound {
 		logger.debug("smiles string = "+smilesStr);
 
 		// Create the CDK Molecule object
-		SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder
-						.getInstance());
+		SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
 		try {
 			iMolecule = sp.parseSmiles(this.smilesStr);
 		} catch (InvalidSmilesException e) {
@@ -464,14 +335,11 @@ public class Compound {
 			CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(iMolecule.getBuilder());
 			adder.addImplicitHydrogens(iMolecule);
 
-			// Get our fingerprint
-			Fingerprinter fp = new Fingerprinter();
 			// Do we need to do the addh here?
 			fingerPrint = fp.getFingerprint(addh(iMolecule));
 		} catch (CDKException e1) {
 			fingerPrint = null;
 		}
-
 	}
 
 	/**

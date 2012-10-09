@@ -187,18 +187,6 @@ abstract public class AbstractCompoundTask implements Task {
 		return cList;
 	}
 
-	/**
- 	 * Returns all of the Compounds for a single graph object (Node or Edge) based on the designated
- 	 * attribute of the specific type
- 	 *
- 	 * @param go the graph object we're looking at
- 	 * @param attr the attribute that contains the compound descriptor
- 	 * @param compundString the compound descriptor
- 	 * @param type the type of the attribute (smiles or inchi)
- 	 * @param noStructures if 'true', the structures are fetched in the background
- 	 * @return the list of compounds.  If the compounds have not already been created, they are created
- 	 *         as a byproduct of this method.
- 	 */
 	protected List<Compound> getCompounds(GraphObject go, String attr, 
 	                                      String compoundString, AttriType type,
 	                                      boolean noStructures) {
@@ -232,6 +220,10 @@ abstract public class AbstractCompoundTask implements Task {
 		if (monitor == null || totalObjects == 0) return;
 		monitor.setPercentCompleted((int)(((double)objectCount/(double)totalObjects) * 100.0));
 		objectCount++;
+	}
+
+	protected void setStatus(String status) {
+		if (monitor != null) monitor.setStatus(status);
 	}
 
 	private boolean done() {

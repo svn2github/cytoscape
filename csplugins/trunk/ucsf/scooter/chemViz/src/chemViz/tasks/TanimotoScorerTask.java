@@ -66,7 +66,7 @@ import chemViz.ui.ChemInfoSettingsDialog;
  * between each of them, storing the results in attributes or by creating edges
  * in a new network.
  */
-public class TanimotoScorerTask implements Task {
+public class TanimotoScorerTask extends AbstractCompoundTask {
 	List<GraphObject> selection;
 	ChemInfoSettingsDialog settingsDialog;
 	TaskMonitor monitor;
@@ -84,14 +84,6 @@ public class TanimotoScorerTask implements Task {
 		this.selection = new ArrayList(selection);
 		this.settingsDialog = dialog;
 		this.createNewNetwork = newNetwork;
-	}
-
-	public void halt() {
-		canceled = true;
-	};
-
-	public void setTaskMonitor(TaskMonitor monitor) {
-		this.monitor = monitor;
 	}
 
 	public String getTitle() {
@@ -114,7 +106,10 @@ public class TanimotoScorerTask implements Task {
 		if (settingsDialog != null)
 			tcCutoff = settingsDialog.getTcCutoff();
 
-		setPercentComplete(0);
+		objectCount = 0;
+		totalObjects = selection.size();
+
+		updateMonitor();
 
 		if (createNewNetwork) {
 		// Create a new network if we're supposed to
@@ -124,16 +119,14 @@ public class TanimotoScorerTask implements Task {
 			vs = Cytoscape.getVisualMappingManager().getVisualStyle();
 		}
 
-		double count = 0;
-		int selectionCount = selection.size();
-		for (int index1 = 0; index1 < selectionCount; index1++) {
+		for (int index1 = 0; index1 < totalObjects; index1++) {
 			CyNode node1 = (CyNode)selection.get(index1);
 			if (canceled) break;
 			setStatus("Calculating tanimoto coefficients for "+node1.getIdentifier());
 			// System.out.println("Calculating tanimoto coefficients for "+node1.getIdentifier());
-			List<Compound> cList1 = Compound.getCompounds(node1, attributes, 
-																										settingsDialog.getCompoundAttributes("node",AttriType.smiles),
-																										settingsDialog.getCompoundAttributes("node",AttriType.inchi), true);
+			List<Compound> cList1 = getCompounds(node1, attributes, 
+																					 settingsDialog.getCompoundAttributes("node",AttriType.smiles),
+																					 settingsDialog.getCompoundAttributes("node",AttriType.inchi), true);
 			if (cList1 == null || cList1.size() == 0)
 				continue;
 
@@ -144,9 +137,9 @@ public class TanimotoScorerTask implements Task {
 				if (node2 == node1 && cList1.size() <= 1) 
 					continue;
 
-				List<Compound> cList2 = Compound.getCompounds(node2, attributes, 
-																											settingsDialog.getCompoundAttributes("node",AttriType.smiles),
-																											settingsDialog.getCompoundAttributes("node",AttriType.inchi), true);
+				List<Compound> cList2 = getCompounds(node2, attributes, 
+																						 settingsDialog.getCompoundAttributes("node",AttriType.smiles),
+																						 settingsDialog.getCompoundAttributes("node",AttriType.inchi), true);
 				if (cList2 == null || cList2.size() == 0)
 					continue;
 
@@ -203,8 +196,8 @@ public class TanimotoScorerTask implements Task {
 				newv.setXPosition(orig.getXPosition());
 				newv.setYPosition(orig.getYPosition());
 			}
-			count++;
-			setPercentComplete((count/selection.size())*100);
+			objectCount++;
+			updateMonitor();
 		}
 
 		if (createNewNetwork) {
@@ -214,27 +207,4 @@ public class TanimotoScorerTask implements Task {
 		}
 
 	}
-
-	public JTaskConfig getDefaultTaskConfig() {
-		JTaskConfig result = new JTaskConfig();
-
-		result.displayCancelButton(true);
-		result.displayCloseButton(false);
-		result.displayStatus(true);
-		result.displayTimeElapsed(false);
-		result.setAutoDispose(true);
-		result.setModal(false);
-		result.setOwner(Cytoscape.getDesktop());
-
-		return result;
-	}
-
-	private void setStatus(String status) {
-		if (monitor != null) monitor.setStatus(status);
-	}
-
-	private void setPercentComplete(double pct) {
-		if (monitor != null) monitor.setPercentCompleted((int)pct);
-	}
-
 }

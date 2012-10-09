@@ -35,8 +35,10 @@
 
 package chemViz.ui;
 
+import chemViz.model.Compound;
 import chemViz.model.Compound.AttriType;
 import chemViz.model.ChemInfoProperties;
+import chemViz.model.Fingerprinter;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyEdge;
@@ -97,6 +99,10 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	                                                          DepictionPositions.BOTTOMCENTER, DepictionPositions.BOTTOMLEFT,
 	                                                          DepictionPositions.BOTTOMRIGHT,DepictionPositions.MIDDLERIGHT,
 	                                                          DepictionPositions.MIDDLELEFT};
+	private static final Fingerprinter fingerprintList[] = {Fingerprinter.CDK, Fingerprinter.ESTATE, Fingerprinter.EXTENDED, 
+	                                                        Fingerprinter.GRAPHONLY, Fingerprinter.HYBRIDIZATION, 
+	                                                        Fingerprinter.KLEKOTAROTH, Fingerprinter.MACCS, 
+	                                                        Fingerprinter.PUBCHEM, Fingerprinter.SUBSTRUCTURE};
 	private static List<String> smilesAttributes = null;
 	private static List<String> inCHIAttributes = null;
 	private static List<String> possibleAttributes = null;
@@ -106,6 +112,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	private double tcCutoff = 0.25;
 	private boolean showHyd = false;
 	private int labelPositionIndex = 0;
+	private int fingerPrinterIndex = 0;	// By default, CDK
 	private int nodeStructureSize = 100;
 	private String labelAttribute = "ID";
 
@@ -195,6 +202,15 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		t = properties.get("inChiAttributes");
 		if ((t != null) && (t.valueChanged() || force)) {
 			inCHIAttributes = getListFromTunable((Object [])t.getLowerBound(), (String)t.getValue());
+		}
+
+		t = properties.get("fingerprints");
+		if ((t != null) && (t.valueChanged() || force)) {
+			int fpIndex = ((Integer)t.getValue()).intValue();
+			if (fpIndex != fingerPrinterIndex) {
+				fingerPrinterIndex = fpIndex;
+				Compound.setFingerprinter(fingerprintList[fingerPrinterIndex]);
+			}
 		}
 
 		t = properties.get("maxCompounds");
@@ -310,6 +326,10 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		return positionList[labelPositionIndex].labelPosition();
 	}
 
+	public Fingerprinter getFingerprinter() {
+		return fingerprintList[fingerPrinterIndex];
+	}
+
 	public String getLabelAttribute() {
 		return labelAttribute;
 	}
@@ -351,7 +371,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	}
 
 	private void initializeProperties() {
-		Tunable t = new Tunable("group1","", Tunable.GROUP, new Integer(2));
+		Tunable t = new Tunable("group1","", Tunable.GROUP, new Integer(3));
 		properties.add(t);
 
 		properties.add(new Tunable("maxCompunds",
@@ -362,6 +382,10 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		                "Minimum tanimoto value to consider for edge creation",
 		                Tunable.DOUBLE, new Double(0.25)));
 
+		properties.add( new Tunable("fingerPrinter",
+		                "Fingerprint algorithm to use",
+		                Tunable.LIST, new Integer(fingerPrinterIndex),
+		                (Object)fingerprintList, null, 0));
 /*
 		t = new Tunable("showHyd",
 		                "Show hydrogens explicitly"
@@ -396,7 +420,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		                Tunable.LIST, inCHIDefaults,
 		                (Object)possibleAttributes.toArray(), inCHIDefaults, Tunable.MULTISELECT));
 
-		properties.add(new Tunable("presentationGroup2", "Depiction options", Tunable.GROUP, new Integer(3)));
+		properties.add(new Tunable("presentationGroup3", "Depiction options", Tunable.GROUP, new Integer(3)));
 
 		properties.add(new Tunable("nodeStructureSize",
                    "Size of 2D node depiction as a % of node size",
