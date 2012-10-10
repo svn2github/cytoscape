@@ -133,34 +133,37 @@ import giny.model.GraphObject;
 public class Compound {
 	public enum AttriType { smiles, inchi };
 	public enum DescriptorType {
-		IMAGE ("2D Image", Compound.class),
-		ATTRIBUTE ("Attribute", String.class),
-		IDENTIFIER ("Molecular String", String.class),
-		WEIGHT ("Molecular Wt.", Double.class),
-		ALOGP ("ALogP", Double.class),
-		ALOGP2 ("ALogP2", Double.class),
-		AMR ("Molar refractivity", Double.class),
-		HBONDACCEPTOR ("HBond Acceptors", Integer.class),
-		HBONDDONOR ("HBond Donors", Integer.class),
-		LOBMAX ("Length over Breadth Max", Double.class),
-		LOBMIN ("Length over Breadth Min", Double.class),
-		RBONDS ("Rotatable Bonds Count", Integer.class),
-		RULEOFFIVE ("Rule of Five Failures", Double.class),
-		TPSA ("Topological Polar Surface Area", Double.class),
-		WEINERPATH ("Wiener Path", Double.class),
-		WEINERPOL ("Wiener Polarity", Double.class),
-		MASS ("Exact Mass", Double.class);
+		IMAGE ("2D Image", "image", Compound.class),
+		ATTRIBUTE ("Attribute", "attribute", String.class),
+		IDENTIFIER ("Molecular String", "molstring", String.class),
+		WEIGHT ("Molecular Wt.", "weight", Double.class),
+		ALOGP ("ALogP", "alogp", Double.class),
+		ALOGP2 ("ALogP2", "alogp2", Double.class),
+		AMR ("Molar refractivity", "refractivity", Double.class),
+		HBONDACCEPTOR ("HBond Acceptors", "acceptors", Integer.class),
+		HBONDDONOR ("HBond Donors", "donors", Integer.class),
+		LOBMAX ("Length over Breadth Max", "lobmax", Double.class),
+		LOBMIN ("Length over Breadth Min", "lobmin", Double.class),
+		RBONDS ("Rotatable Bonds Count", "rotbonds", Integer.class),
+		RULEOFFIVE ("Rule of Five Failures", "roff", Double.class),
+		TPSA ("Topological Polar Surface Area", "polarsurface", Double.class),
+		WEINERPATH ("Wiener Path", "wienerpath", Double.class),
+		WEINERPOL ("Wiener Polarity", "weinerpolarity", Double.class),
+		MASS ("Exact Mass", "mass", Double.class);
 
 		private String name;
 		private Class classType;
 		private int columnCount;
+		private String shortName;
 
-		DescriptorType(String name, Class classType) {
+		DescriptorType(String name, String shortName, Class classType) {
 			this.name = name;
+			this.shortName = shortName;
 			this.classType = classType;
 		}
 
 		public String toString() { return this.name; }
+		public String getShortName() { return this.shortName; }
 		public Class getClassType() { return this.classType; }
 	}
 

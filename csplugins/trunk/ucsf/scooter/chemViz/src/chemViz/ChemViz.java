@@ -52,6 +52,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import ding.view.DGraphView;
 
+import chemViz.commands.ChemVizCommandHandler;
 import chemViz.menus.ChemVizMenu;
 import chemViz.menus.ChemVizContextMenu;
 import chemViz.tasks.CreateNodeGraphicsTask;
@@ -117,6 +118,9 @@ public class ChemViz extends CytoscapePlugin implements PropertyChangeListener {
 			logger.error("Unable to setup network listeners: "+ccex.getMessage(), ccex);
 			return;
 		}
+
+		// Finally, register our commands
+		new ChemVizCommandHandler(settingsDialog);
 	}
 
 	/**
