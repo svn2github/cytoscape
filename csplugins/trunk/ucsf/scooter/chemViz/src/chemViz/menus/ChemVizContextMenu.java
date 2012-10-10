@@ -35,6 +35,7 @@
 
 package chemViz.menus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -54,9 +55,9 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 
+import chemViz.commands.ValueUtils;
 import chemViz.model.Compound;
 import chemViz.model.Compound.AttriType;
-import chemViz.tasks.CreateCompoundsTask;
 import chemViz.ui.ChemInfoSettingsDialog;
 
 /**
@@ -151,12 +152,9 @@ public class ChemVizContextMenu implements NodeContextMenuListener, EdgeContextM
 			type = "edge";
 		}
 
-		// This little bit of strangeness is to avoid duplicating bunch of code to handle
-		// the creation of compounds that's already in AbstractCompoundTask.  Here, we
-		// create a task, but just execute the run method directly (synchronously)...
-		CreateCompoundsTask t = new CreateCompoundsTask(go, attributes, settingsDialog);
-		t.run();
-		List<Compound> cList = t.getCompoundList();
+		List<Compound> cList = ValueUtils.getCompounds(go, attributes, 
+				   													               settingsDialog.getCompoundAttributes(type,AttriType.smiles),
+					   														           settingsDialog.getCompoundAttributes(type,AttriType.inchi), false);
 
 		Properties cytoProps = CytoscapeInit.getProperties();
 		if (cList == null || cList.size() == 0) {

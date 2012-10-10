@@ -35,13 +35,17 @@ package chemViz.commands;
 import java.lang.RuntimeException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 // Cytoscape imports
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -60,7 +64,10 @@ import giny.model.GraphObject;
 // chemViz imports
 import chemViz.model.ChemInfoProperties;
 import chemViz.model.Compound;
+import chemViz.model.Compound.AttriType;
 import chemViz.model.Compound.DescriptorType;
+import chemViz.tasks.CreatePopupTask;
+import chemViz.tasks.CreateCompoundTableTask;
 import chemViz.ui.ChemInfoSettingsDialog;
 
 enum Command {
@@ -72,22 +79,25 @@ enum Command {
 	          "nodelist"),
 	CLOSESTRUCTURES("close structures",
 	                "Close the 2D structure grid",
-	                ""),
+	                "dialog"),
 	CLOSETABLE("close table",
 	           "Close the structure table",
-	           ""),
+	           "dialog"),
 	GETDESC("get descriptors",
 	        "Return chemical descriptors for nodes or edges",
 	        "attribute|descriptors|edge|edgelist|network=current|node|nodelist|smiles"),
+	LISTDESC("list descriptors",
+	         "Return the list of available chemical descriptors",
+	         ""),
 	REMOVE("remove",
 	       "Remove 2D structures from nodes",
 				 "nodelist|node"),
 	SHOWSTRUCTURES("show structures",
 	               "Popup the 2D structures for a node/edge or group of nodes/edges",
-	               "node|nodelist|edge|edgelist"),
+	               "node|nodelist|edge|edgelist|labelattribute"),
 	SHOWTABLE("show table",
 	          "Show the structure table for a node/edge or group of nodes/edges",
-	          "edge|edgelist|node|nodelist|descriptors|attributes"),
+	          "edge|edgelist|node|nodelist|columnlist"),
 	SETPARAM("set parameter",
 	         "Set chemViz parameters",
 	         "fingerprinter=CDK|smilesAttributes|inchiAttributes|nodeSize=100|position=Centered|imageLabel");
@@ -113,21 +123,40 @@ enum Command {
  * Inner class to handle CyCommands
  */
 public class ChemVizCommandHandler extends AbstractCommandHandler {
-	ChemInfoProperties props;
+	static final String ALL = "all";
 	static final String ATTRIBUTE = "attribute";
+	static final String COLUMNLIST = "columnlist";
 	static final String CURRENT = "current";
+	static final String DIALOG = "dialog";
 	static final String DESCRIPTORS = "descriptors";
 	static final String EDGE = "edge";
 	static final String EDGELIST = "edgelist";
+	static final String INCHI = "inchi";
+	static final String LABELATTRIBUTE = "labelattribute";
 	static final String NETWORK = "network";
 	static final String NODE = "node";
 	static final String NODELIST = "nodelist";
+	static final String SELECTED = "selected";
 	static final String SMILES = "smiles";
+
+	private ChemInfoProperties props;
+	private ChemInfoSettingsDialog dialog;
+	
+	// Dialogs that we may want to dispose of...
+	static Map<Integer, CreatePopupTask> popupTasks = null;
+	static int popupTaskCount = 0;
+	static Map<Integer, CreateCompoundTableTask> tableTasks = null; 
+	static int tableTaskCount = 0;
 
 	public ChemVizCommandHandler (ChemInfoSettingsDialog settingsDialog) {
 		super(CyCommandManager.reserveNamespace("chemViz"));
 
 		props = settingsDialog.getProperties();
+		dialog = settingsDialog;
+
+		for (Command command: Command.values()) {
+			addCommand(command.getCommand(), command.getDescription(), command.getArgString());
+		}
 	}
 
 	public CyCommandResult execute(String command, Collection<Tunable>args)
@@ -146,21 +175,36 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 		}
 
 		// Pull out common args
-		List<GraphObject> gObjList = getGraphObjectList(command, args);
+		List<GraphObject> gObjList = ValueUtils.getGraphObjectList(command, args);
+		String objectType = "node";	
+		if (gObjList != null && (gObjList.get(0) instanceof CyEdge))
+			objectType = "edge";	
 
-		String smiles = null;
-		if (args.containsKey(SMILES))
-			smiles = args.get(SMILES).toString();
+		String mstring = null;
+		AttriType mtype = AttriType.smiles;
+		if (args.containsKey(SMILES)) {
+			mstring = args.get(SMILES).toString();
+		} else if (args.containsKey(INCHI)) {
+			mstring = args.get(INCHI).toString();
+			mtype = AttriType.inchi;
+		}
 
-		String attribute = null;
-		if (args.containsKey(ATTRIBUTE))
-			attribute = args.get(ATTRIBUTE).toString();
+		List<String> smilesAttrList = null;
+		List<String> inchiAttrList = null;
+
+		if (args.containsKey(ATTRIBUTE)) {
+			smilesAttrList.add(args.get(ATTRIBUTE).toString());
+			inchiAttrList.add(args.get(ATTRIBUTE).toString());
+		} else {
+			smilesAttrList = dialog.getCompoundAttributes(objectType,AttriType.smiles);
+			inchiAttrList = dialog.getCompoundAttributes(objectType,AttriType.inchi);
+		}
 
 		// Main command cascade
 
 		//	ATTACH("attach",
 		//	       "Attach 2D structures to nodes",
-		//				 "nodelist|node|attribute|smiles"),
+		//				 "nodelist|node|attribute|inchi|smiles"),
 		if (Command.ATTACH.equals(command)) {
 
 		//	CALCULATE("calculate similarity",
@@ -169,29 +213,71 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 		} else if (Command.CALCULATE.equals(command)) {
 
 		//	CLOSESTRUCTURES("close structures",
-		//	                "Close the 2D structure grid",
-		//	                ""),
+		//	                "Close the 2D structure grid(s)",
+		//	                "dialog"),
 		} else if (Command.CLOSESTRUCTURES.equals(command)) {
+			if (popupTasks != null && popupTasks.size() > 0) {
+				Set<Integer> dialogNumbers = getDialogNumbers(popupTasks.keySet(), args);
+
+				for (Integer index: dialogNumbers) {
+					if (popupTasks.containsKey(index)) {
+						CreatePopupTask popup = popupTasks.get(index);
+						popup.closePopup();
+						popupTasks.remove(index);
+					}
+				}
+			}
 
 		//	CLOSETABLE("close table",
 		//	           "Close the structure table",
 		//	           ""),
 		} else if (Command.CLOSETABLE.equals(command)) {
+			if (tableTasks != null && tableTasks.size() > 0) {
+				Set<Integer> dialogNumbers = getDialogNumbers(tableTasks.keySet(), args);
+
+				for (Integer index: dialogNumbers) {
+					if (tableTasks.containsKey(index)) {
+						CreateCompoundTableTask table = tableTasks.get(index);
+						table.closePopup();
+						tableTasks.remove(index);
+					}
+				}
+			}
+
+		//	LISTDESC("list descriptors",
+		//	         "Return the list of available chemical descriptors",
+		//	         ""),
+		} else if (Command.LISTDESC.equals(command)) {
+			List<DescriptorType> descriptors = ValueUtils.getDescriptors(command, "all");
+			List<String> descStrings = new ArrayList<String>();
+			result.addMessage("Available descriptors: ");
+			for (DescriptorType type: descriptors) {
+				String shortName = type.getShortName();
+				if (shortName.equals("image")) continue;
+
+				String name = type.toString();
+				result.addMessage(shortName+": "+name);
+				descStrings.add(shortName);
+			}
+			result.addResult("descriptors", descStrings);
 
 		//	GETDESC("get descriptors",
 		//	        "Return chemical descriptors for a node",
-		//	        "descriptors|node|nodelist|smiles"),
+		//	        "edge|edgelist|descriptors|inchi|node|nodelist|inchi|smiles"),
 		} else if (Command.GETDESC.equals(command)) {
-			if (gObjList != null && smiles != null) 
-				throw new RuntimeException("chemviz "+command+": can't have both smiles string and nodes");
+			if (gObjList != null && mstring != null) 
+				throw new RuntimeException("chemviz "+command+": can't have both smiles/inchi string and nodes/edges");
+			if (gObjList == null && mstring == null) 
+				throw new RuntimeException("chemviz "+command+": must have one of smiles/inchi string or nodes/edges");
 
 			if (!args.containsKey(DESCRIPTORS))
 				throw new RuntimeException("chemviz "+command+": descriptor list must be specified");
-			List<DescriptorType> descriptors = getDescriptors(command, args.get(DESCRIPTORS).toString());
+			List<DescriptorType> descriptors = ValueUtils.getDescriptors(command, args.get(DESCRIPTORS).toString());
 
-			List<Compound> compoundList = getCompounds(gObjList, smiles, attribute);
+			List<Compound> compoundList = ValueUtils.getCompounds(gObjList, mstring, mtype, smilesAttrList, inchiAttrList);
 			for (Compound compound: compoundList) {
 				for (DescriptorType type: descriptors) {
+					if (type.getShortName().equals("image")) continue;
 					result.addResult(compound.toString()+":"+type.getShortName(), compound.getDescriptor(type));
 					result.addMessage("Compound "+compound.toString()+" "+type.toString()+" = "+compound.getDescriptor(type).toString());
 				}
@@ -204,16 +290,59 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 		
 		//	SHOWSTRUCTURES("show structures",
 		//	               "Popup the 2D structures for a node or group of nodes",
-		//	               "node|nodelist"),
+		//	               "node|nodelist|edge|edgelist"),
 		} else if (Command.SHOWSTRUCTURES.equals(command)) {
-		
+			if (gObjList == null)
+				throw new RuntimeException("chemviz "+command+": node/edge or nodelist/edgelist required");
+
+			String labelAttribute = null;
+			if (args.containsKey(LABELATTRIBUTE))
+				labelAttribute = args.get(LABELATTRIBUTE).toString();
+
+  		CreatePopupTask loader = new CreatePopupTask(gObjList, dialog, labelAttribute, dialog.getMaxCompounds());
+			TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
+
+			if (popupTasks == null) popupTasks = new HashMap<Integer, CreatePopupTask>();
+			result.addMessage("Showing structures: dialog #"+popupTaskCount);
+			popupTasks.put(popupTaskCount++, loader);
+			
 		//	SHOWTABLE("show table",
-		//	          "Show the structure table for a node or group of nodes",
-		//	          "node|nodelist|descriptors|attributes"),
+		//	          "Show the structure table for a node/edge or group of nodes/edges",
+		//	          "edge|edgelist|node|nodelist|columnlist"),
 		} else if (Command.SHOWTABLE.equals(command)) {
+			if (gObjList == null)
+				throw new RuntimeException("chemviz "+command+": node/edge or nodelist/edgelist required");
+
+			List<String> columnList = null;
+			if (args.containsKey(COLUMNLIST)) {
+				String[] columnSpecs = ((String)args.get(COLUMNLIST)).split(",");
+				columnList = Arrays.asList(columnSpecs);
+			}
+			CreateCompoundTableTask loader = new CreateCompoundTableTask(gObjList, dialog, dialog.getMaxCompounds(), columnList);
+			TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
+
+			if (tableTasks == null) tableTasks = new HashMap<Integer, CreateCompoundTableTask>();
+			result.addMessage("Showing structure table: dialog #"+tableTaskCount);
+			tableTasks.put(tableTaskCount++, loader);
 		}
 		
 		return result;
+	}
+
+	private Set<Integer> getDialogNumbers(Set<Integer> dialogNumbers, Map<String, Object> args) {
+		if (args.containsKey(DIALOG)) {
+			Set<Integer> dn = new HashSet<Integer>();
+			
+			String dNumber = ((String)args.get(DIALOG)).trim();
+			if (!dNumber.equals(ALL)) {
+				String[] dList = dNumber.split(",");
+				for (String d: dList) {
+					dn.add(new Integer(d.trim()));
+				}
+				return dn;
+			}
+		}
+		return dialogNumbers;
 	}
 
 	private void addCommand(String command, String description, String argString) {
@@ -236,87 +365,6 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 		}
 	}
 
-	private List<GraphObject> getGraphObjectList(String command, Map<String,Object> args) {
-		if (!args.containsKey(NODE) && !args.containsKey(NODELIST) &&
-		    !args.containsKey(EDGE) && !args.containsKey(EDGE))
-			return null;
-
-		if (args.containsKey(NODE) && args.containsKey(NODELIST))
-			throw new RuntimeException("chemviz "+command+": can't have both 'node' and 'nodeList'");
-
-		if (args.containsKey(EDGE) && args.containsKey(EDGELIST))
-			throw new RuntimeException("chemviz "+command+": can't have both 'edge' and 'edgeList'");
-
-		CyNetwork network = Cytoscape.getCurrentNetwork();
-
-		if (args.containsKey(NETWORK)) {
-			String netName = args.get(NETWORK).toString();
-			if (!netName.equals(CURRENT) && Cytoscape.getNetwork(netName) != null)
-				network = Cytoscape.getNetwork(netName);
-		}
-
-		List<GraphObject> objList = new ArrayList<GraphObject>();
-		if (args.containsKey(NODE)) {
-			objList.add(getNode(command, args.get(NODE).toString()));
-		} else if (args.containsKey(NODELIST)) {
-			String nodes = args.get(NODELIST).toString();
-			if (nodes == null || nodes.length() == 0) return null;
-			String[] nodeArray  = nodes.split(",");
-			for (String str: nodeArray)
-				objList.add(getNode(command, str.trim()));
-		} else if (args.containsKey(EDGE)) {
-			objList.add(getEdge(command, args.get(EDGE).toString()));
-		} else if (args.containsKey(EDGELIST)) {
-			String edges = args.get(EDGELIST).toString();
-			if (edges == null || edges.length() == 0) return null;
-			String[] edgeArray  = edges.split(",");
-			for (String str: edgeArray)
-				objList.add(getEdge(command, str.trim()));
-		}
-		return objList;
-	}
-
-	private GraphObject getNode(String command, String nodeID) {
-		if (Cytoscape.getCyNode(nodeID, false) != null)
-			return (GraphObject)Cytoscape.getCyNode(nodeID, false);
-
-		if (Cytoscape.getCyNode(nodeID) != null)
-			return (GraphObject)Cytoscape.getCyNode(nodeID);
-
-		throw new RuntimeException("chemviz "+command+": can't find node '"+nodeID+"'");
-	}
-
-	private GraphObject getEdge(String command, String edgeID) {
-		throw new RuntimeException("chemviz "+command+": edge support isn't implemented yet");
-	}
-
-	private List<DescriptorType> getDescriptors(String command, String desc) {
-		if (desc == null || desc.length() == 0) 
-			throw new RuntimeException("chemviz "+command+": descriptors list cannot be empty");
-
-		List<DescriptorType> fullList = Compound.getDescriptorList();
-		List<DescriptorType> resultList = new ArrayList<DescriptorType>();
-
-		String[] descArray = desc.split(",");
-		for (String descriptor: descArray) {
-			if (getDescriptor(fullList,descriptor.trim()) == null)
-				throw new RuntimeException("chemviz "+command+": descriptor '"+descriptor+"' isn't supported");
-			resultList.add(getDescriptor(fullList,descriptor.trim()));
-		}
-		return resultList;
-	}
-
-	private DescriptorType getDescriptor(List<DescriptorType> fullList, String desc) {
-		for (DescriptorType type: fullList)
-			if (type.getShortName().equals(desc))
-				return type;
-		return null;
-	}
-
-	private List<Compound> getCompounds(List<GraphObject> objList, String smiles, String attribute) {
-		return null;
-	}
-
 	private void addArguments(String command) {
 		if (props == null) {
 			addArgument(command);
@@ -334,48 +382,4 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 				addArgument(command, t.getName());
 		}
 	}
-
-	private void setTunables(ChemInfoProperties props, Collection<Tunable>args) throws Exception {
-		// Set the Tunables
-		for (Tunable t: args) {
-			if (props.get(t.getName()) != null) {
-				Tunable target = props.get(t.getName());
-				Object value = t.getValue();
-				try {
-					if ((target.getType() == Tunable.LIST) &&
-					    (t.getType() == Tunable.STRING)) {
-						setListTunable(target, value.toString());
-					} else {
-						target.setValue(value.toString());
-					}
-					target.updateValueListeners();
-				} catch (Exception e) {
-					throw new Exception("Unable to parse value for "+
-					                    t.getName()+": "+value.toString());
-				}
-			}
-		}
-	}
-
-	private void setListTunable(Tunable listTunable, String value) {
-		Object[] optionList = (Object [])listTunable.getLowerBound();
-		String[] inputList = value.split(",");
-		String v = "";
-		Integer first = null;
-		for (int i = 0; i < inputList.length; i++) {
-			for (int j = 0; j < optionList.length; j++) {
-				if (optionList[j].toString().equals(inputList[i])) {
-					v = v+","+j;
-					if (first == null) first = new Integer(j);
-				}
-			}
-		}
-		v = v.substring(1);
-		if (listTunable.checkFlag(Tunable.MULTISELECT)) {
-			listTunable.setValue(v);
-		} else {
-			listTunable.setValue(first);
-		}
-	}
-
 }

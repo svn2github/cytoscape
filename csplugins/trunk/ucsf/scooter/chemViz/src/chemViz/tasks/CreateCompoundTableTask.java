@@ -59,6 +59,8 @@ import chemViz.ui.CompoundTable;
 public class CreateCompoundTableTask extends AbstractCompoundTask {
 	Collection<GraphObject> selection;
 	ChemInfoSettingsDialog settingsDialog;
+	CompoundTable	compoundTable = null;
+	List<String> columnList = null;
 
 	/**
  	 * Creates the task.
@@ -72,6 +74,16 @@ public class CreateCompoundTableTask extends AbstractCompoundTask {
 		this.canceled = false;
 		this.maxCompounds = maxCompounds;
 		this.compoundCount = 0;
+	}
+
+	public CreateCompoundTableTask(Collection<GraphObject> selection, ChemInfoSettingsDialog dialog, 
+	                               int maxCompounds, List<String> columnList) {
+		this.selection = selection;
+		this.settingsDialog = dialog;
+		this.canceled = false;
+		this.maxCompounds = maxCompounds;
+		this.compoundCount = 0;
+		this.columnList = columnList;
 	}
 
 	public String getTitle() {
@@ -101,7 +113,14 @@ public class CreateCompoundTableTask extends AbstractCompoundTask {
 				   															settingsDialog.getCompoundAttributes(type,AttriType.smiles),
 					   														settingsDialog.getCompoundAttributes(type,AttriType.inchi));
 		if (cList.size() > 0 && !canceled) {
-			CompoundTable cTable = new CompoundTable(cList);
+			compoundTable = new CompoundTable(cList, columnList);
+		}
+	}
+
+	public void closePopup() {
+		if (compoundTable != null) {
+			compoundTable.dispose();
+			compoundTable = null;
 		}
 	}
 

@@ -83,6 +83,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
@@ -104,6 +105,7 @@ import cytoscape.data.SelectEventListener;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
+import chemViz.commands.ValueUtils;
 import chemViz.model.ChemInfoTableModel;
 import chemViz.model.Compound;
 import chemViz.model.Compound.DescriptorType;
@@ -136,7 +138,7 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 	private	List<CompoundColumn> columns;
 	private	List<Compound> compoundList;
 
-	public CompoundTable (List<Compound> compoundList) {
+	public CompoundTable (List<Compound> compoundList, List<String> columnList) {
 		super(Cytoscape.getDesktop());
 		network = Cytoscape.getCurrentNetwork();
 		networkView = Cytoscape.getCurrentNetworkView();
@@ -145,8 +147,47 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.rowMap = new HashMap();
 
-		// See if we have any table attributes stored
-		columns = TableAttributeHandler.getAttributes(Cytoscape.getCurrentNetwork());
+		GraphObject obj = compoundList.get(0).getSource();
+		String objType = "node.";
+		CyAttributes attributes = Cytoscape.getNodeAttributes();
+
+		if (obj instanceof CyEdge) {
+			objType = "edge.";
+			attributes = Cytoscape.getEdgeAttributes();
+		}
+
+		if (columnList != null && columnList.size() > 0) {
+			columns = new ArrayList<CompoundColumn>();
+			for (String s: columnList) {
+				String[] tokens = s.trim().split("[:;]");
+				if (tokens.length != 3 && tokens.length != 2)
+					throw new RuntimeException("Illegal column specification: "+s);
+				if (tokens[0].equalsIgnoreCase("descriptor") || tokens[0].equalsIgnoreCase("desc")) {
+					DescriptorType type = ValueUtils.getDescriptor(Compound.getDescriptorList(),tokens[1]);
+					int columnWidth = -1;
+					if (tokens.length == 3) columnWidth = Integer.parseInt(tokens[2]);
+					columns.add(new CompoundColumn(type, columnWidth));
+				} else if (tokens[0].equalsIgnoreCase("attribute") || tokens[0].equalsIgnoreCase("attr")) {
+					String attribute = tokens[1];
+					byte type = CyAttributes.TYPE_STRING;
+					if (!attribute.equals("ID")) {
+						type = attributes.getType(attribute);
+						if (type == CyAttributes.TYPE_UNDEFINED)
+							continue;
+					}
+					int columnWidth = -1;
+					if (tokens.length == 3) columnWidth = Integer.parseInt(tokens[2]);
+
+					if (attribute.equals("ID"))
+						columns.add(new CompoundColumn("ID", "", CyAttributes.TYPE_STRING, columnWidth));
+					else
+						columns.add(new CompoundColumn(attribute, objType, type, columnWidth));
+				}
+			}
+		} else {
+			// See if we have any table attributes stored
+			columns = TableAttributeHandler.getAttributes(Cytoscape.getCurrentNetwork());
+		}
 
 		// Create the table
 		initTable();
@@ -312,6 +353,9 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 		} else if (e.getActionCommand().equals("export")) {
 			// Get the file name
 			JFileChooser chooser = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(
+			        "Text file formats", "txt", "tsv");
+			chooser.setFileFilter(filter);
 			chooser.setDialogTitle("Export Table to File");
 			int returnVal = chooser.showSaveDialog(this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -339,10 +383,16 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 			int row = sorter.modelIndex(viewRow);
 			Compound cmpd = compoundList.get(row);
 			for (int viewCol = 0; viewCol < columns.size(); viewCol++) {
-				if (viewCol > 0)
-					writer.write("\t");
 				int col = table.convertColumnIndexToModel(viewCol);
-				columns.get(col).output(writer, cmpd);
+				CompoundColumn c = columns.get(col);
+
+				// warning -- if the image column is the first column, then we'll get a
+				// leading tab
+				if (c.getColumnType() != ColumnType.DESCRIPTOR || c.getDescriptor() != DescriptorType.IMAGE) {
+					if (viewCol > 0)
+						writer.write("\t");
+					c.output(writer, cmpd);
+				}
 			}
 			writer.write("\n");
 		}

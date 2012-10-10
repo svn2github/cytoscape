@@ -262,6 +262,7 @@ public class Compound {
 	private IFingerprinter fp;
 	private int lastImageWidth = -1;
 	private int lastImageHeight = -1;
+	private int index = 0;
 	private	boolean	lastImageFailed = false;
 	private DescriptorEngine descriptorEngine = null;
 
@@ -291,6 +292,7 @@ public class Compound {
 		} else {
 			mapList = new ArrayList();
 		}
+		this.index = mapList.size();
 		mapList.add(this);
 		Compound.compoundMap.put(source, mapList);
 		createStructure();
@@ -417,6 +419,13 @@ public class Compound {
  	 */
 	public int compareTo(Compound o) {
 		return this.getSmiles().compareTo(o.getSmiles());
+	}
+
+	public String toString() {
+		if (source == null)
+			return maxString(moleculeString, 10);
+
+		return source.getIdentifier()+" ("+attribute+") ["+index+"]";
 	}
 
 	/**
@@ -784,4 +793,9 @@ public class Compound {
 		return bufferedImage;
 	}
 
+	private String maxString(String str, int max) {
+		if (str.length() <= max) return str;
+
+		return str.substring(0,max-3)+"...";
+	}
 }

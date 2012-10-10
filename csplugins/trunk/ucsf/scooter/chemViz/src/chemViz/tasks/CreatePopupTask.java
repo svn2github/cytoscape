@@ -62,6 +62,7 @@ public class CreatePopupTask extends AbstractCompoundTask {
 	List<GraphObject> objectList;
 	ChemInfoSettingsDialog dialog;
 	String labelAttribute;
+	CompoundPopup	compoundPopup = null;
 
 	/**
  	 * Creates the task.
@@ -83,6 +84,7 @@ public class CreatePopupTask extends AbstractCompoundTask {
 		this.maxCompounds = maxCompounds;
 		this.compoundCount = 0;
 		this.labelAttribute = dialog.getLabelAttribute();
+		this.compoundPopup = null;
 	}
 
 	/**
@@ -91,13 +93,18 @@ public class CreatePopupTask extends AbstractCompoundTask {
  	 * @param objects the graph objects that we're creating the popup for
  	 * @param dialog the settings dialog, which we use to pull the attribute names that contain the compound descriptors
  	 */
-  public CreatePopupTask(List<GraphObject>selection, ChemInfoSettingsDialog dialog, int maxCompounds) {
+  public CreatePopupTask(List<GraphObject>selection, ChemInfoSettingsDialog dialog, String labelAttribute, int maxCompounds) {
 		this.objectList = selection;
 		this.dialog = dialog;
 		this.canceled = false;
 		this.maxCompounds = maxCompounds;
 		this.compoundCount = 0;
-		this.labelAttribute = dialog.getLabelAttribute();
+		if (labelAttribute == null)
+			this.labelAttribute = dialog.getLabelAttribute();
+		else
+			this.labelAttribute = labelAttribute;
+
+		this.compoundPopup = null;
 	}
 
 	public String getTitle() {
@@ -126,13 +133,20 @@ public class CreatePopupTask extends AbstractCompoundTask {
                                         dialog.getCompoundAttributes(type,AttriType.inchi));
 		if (cList.size() > 0 && !canceled) {
 			if (objectList.size() == 1) {
-				CompoundPopup popup = new CompoundPopup(cList, objectList, null);
+				compoundPopup = new CompoundPopup(cList, objectList, null);
 			} else {
 				if (labelAttribute.equals("ID"))
-					new CompoundPopup(cList, objectList, type+".ID");
+					compoundPopup = new CompoundPopup(cList, objectList, type+".ID");
 				else
-					new CompoundPopup(cList, objectList, labelAttribute);
+					compoundPopup = new CompoundPopup(cList, objectList, labelAttribute);
 			}
+		}
+	}
+
+	public void closePopup() {
+		if (compoundPopup != null) {
+			compoundPopup.dispose();
+			compoundPopup = null;
 		}
 	}
 }
