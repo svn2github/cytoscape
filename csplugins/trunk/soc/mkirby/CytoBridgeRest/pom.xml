@@ -1,23 +1,26 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<properties>
 		<bundle.symbolicName>CytoBridgeRest</bundle.symbolicName>
 		<bundle.namespace>org.cytoscape.rest.internal</bundle.namespace>
-		<cytoscape.api.version>3.0.0-alpha8-SNAPSHOT</cytoscape.api.version>
-		
+
+		<!-- Cytoscape Module Versions: This should be release version -->
+		<cytoscape.api.version>3.0.0-beta3</cytoscape.api.version>
+
 		<maven-bundle-plugin.version>2.3.4</maven-bundle-plugin.version>
 		<osgi.api.version>4.2.0</osgi.api.version>
 	</properties>
-	
+
 	<groupId>org.cytoscape.rest.internal</groupId>
 	<artifactId>CytoBridgeRest</artifactId>
 	<packaging>bundle</packaging>
 	<name>${bundle.symbolicName}</name>
 
-	<version>0.0.1</version>
-  
-  	<repositories>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<repositories>
 		<repository>
 			<id>cytoscape_snapshots</id>
 			<snapshots>
@@ -64,8 +67,8 @@
 			</plugin>
 		</plugins>
 	</build>
-    
-  	<dependencies>
+
+	<dependencies>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-application-api</artifactId>
@@ -87,9 +90,9 @@
 			<version>${cytoscape.api.version}</version>
 			<scope>provided</scope>
 		</dependency>
-			<dependency>
+		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>command-executor-impl</artifactId>
+			<artifactId>service-api</artifactId>
 			<version>${cytoscape.api.version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -98,35 +101,22 @@
 			<artifactId>org.osgi.core</artifactId>
 			<version>${osgi.api.version}</version>
 			<scope>provided</scope>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.2.2</version>
 		</dependency>
 		<dependency>
-	<groupId>xerces</groupId>
-	<artifactId>xercesImpl</artifactId>
-	<version>2.10.0</version>
-</dependency>
-		<dependency>
-			<groupId>org.apache.xmlrpc</groupId>
-			<artifactId>xmlrpc-server</artifactId>
-			<version>3.1.3</version>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.2.1</version>
 		</dependency>
 		<dependency>
-	<groupId>org.apache.httpcomponents</groupId>
-	<artifactId>httpclient</artifactId>
-	<version>4.2.1</version>
-</dependency>
-<dependency>
-	<groupId>org.slf4j</groupId>
-	<artifactId>slf4j-api</artifactId>
-	<version>1.6.6</version>
-</dependency>
-            
-            
-            
-    </dependencies>
-  
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+	</dependencies>
+
 </project>
