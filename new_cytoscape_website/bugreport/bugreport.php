@@ -223,7 +223,7 @@ function sendNotificationEmail($bugReport) {
          	$to = $to . $cytostaff_emails[$i] . " ";
 	}
 		
-	$subject = "New bug submitted by ".$bugReport['name'];
+	$subject = "[cytoweb-bug] New bug submitted by ".$bugReport['name'];
 	
 	$body = $bugReport['description']."\n\nAdmin URL: http://chianti.ucsd.edu/cyto_web/bugreport/bugreportadmin.php";
 	
