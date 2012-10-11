@@ -35,6 +35,7 @@
 
 package chemViz.menus;
 
+import giny.model.GraphObject;
 import giny.model.Node;
 import giny.view.NodeView;
 
@@ -187,7 +188,7 @@ public class NodeGraphicsMenus extends ChemVizAbstractMenu implements ActionList
 		
 		if (cmd.equals("chemViz.menu.nodegraphics.thisNode")) {
 			// Bring up the popup-style of depiction
-			List<Node>nl = new ArrayList();
+			List<GraphObject>nl = new ArrayList();
 			nl.add(nodeContext.getNode());
 			addNodeGraphics(nl, settingsDialog);
 		} else if (cmd.equals("chemViz.menu.nodegraphics.selectedNodes")) {
@@ -197,14 +198,14 @@ public class NodeGraphicsMenus extends ChemVizAbstractMenu implements ActionList
 			addNodeGraphics(Cytoscape.getCurrentNetwork().nodesList(), settingsDialog);
 		} else if (cmd.equals("chemViz.menu.clearnodegraphics.thisNode")) {
 			// Bring up the popup-style of depiction
-			List<Node>nl = new ArrayList();
+			List<GraphObject>nl = new ArrayList();
 			nl.add(nodeContext.getNode());
 			removeNodeGraphics(nl, settingsDialog);
 		} else if (cmd.equals("chemViz.menu.clearnodegraphics.selectedNodes")) {
 			// Bring up the compound table
 			removeNodeGraphics(Cytoscape.getCurrentNetwork().getSelectedNodes(), settingsDialog);
 		} else if (cmd.equals("chemViz.menu.clearnodegraphics.allNodes")) {
-			removeNodeGraphics((List<Node>)null, settingsDialog);
+			removeNodeGraphics((List<GraphObject>)null, settingsDialog);
 		}
 	}
 	
@@ -214,7 +215,7 @@ public class NodeGraphicsMenus extends ChemVizAbstractMenu implements ActionList
  	 * @param selection the nodes we're going to pull the compounds from
  	 * @param dialog the settings dialog
  	 */
-	private void addNodeGraphics(Collection<Node>selection, ChemInfoSettingsDialog dialog) {
+	private void addNodeGraphics(Collection<GraphObject>selection, ChemInfoSettingsDialog dialog) {
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		CreateNodeGraphicsTask loader = null;
 		loader = CreateNodeGraphicsTask.getCustomGraphicsTask(view);
@@ -234,7 +235,7 @@ public class NodeGraphicsMenus extends ChemVizAbstractMenu implements ActionList
  	 * all custom graphics are cleared
  	 * @param dialog the settings dialog
  	 */
-	private void removeNodeGraphics(Collection<Node>selection, ChemInfoSettingsDialog dialog) {
+	private void removeNodeGraphics(Collection<GraphObject>selection, ChemInfoSettingsDialog dialog) {
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		CreateNodeGraphicsTask loader = null;
 		loader = CreateNodeGraphicsTask.getCustomGraphicsTask(view);

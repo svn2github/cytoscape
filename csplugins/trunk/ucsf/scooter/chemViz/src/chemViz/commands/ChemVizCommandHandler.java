@@ -58,6 +58,7 @@ import cytoscape.command.CyCommandResult;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.task.util.TaskManager;
+import cytoscape.view.CyNetworkView;
 
 import giny.model.GraphObject;
 
@@ -68,12 +69,13 @@ import chemViz.model.Compound.AttriType;
 import chemViz.model.Compound.DescriptorType;
 import chemViz.tasks.CreatePopupTask;
 import chemViz.tasks.CreateCompoundTableTask;
+import chemViz.tasks.CreateNodeGraphicsTask;
 import chemViz.ui.ChemInfoSettingsDialog;
 
 enum Command {
 	ATTACH("attach",
 	       "Attach 2D structures to nodes",
-				 "nodelist|node|attribute|smiles"),
+				 "network|nodelist|node|inchiattribute|smilesattribute|inchi|smiles"),
 	CALCULATE("calculate similarity",
 	          "Create a similarity network for the current nodes",
 	          "nodelist"),
@@ -85,13 +87,13 @@ enum Command {
 	           "dialog"),
 	GETDESC("get descriptors",
 	        "Return chemical descriptors for nodes or edges",
-	        "attribute|descriptors|edge|edgelist|network=current|node|nodelist|smiles"),
+	        "inchiattribute|smilesattribute|descriptors|edge|edgelist|network=current|node|nodelist|inchi|smiles"),
 	LISTDESC("list descriptors",
 	         "Return the list of available chemical descriptors",
 	         ""),
 	REMOVE("remove",
 	       "Remove 2D structures from nodes",
-				 "nodelist|node"),
+				 "network|nodelist|node"),
 	SHOWSTRUCTURES("show structures",
 	               "Popup the 2D structures for a node/edge or group of nodes/edges",
 	               "node|nodelist|edge|edgelist|labelattribute"),
@@ -124,7 +126,6 @@ enum Command {
  */
 public class ChemVizCommandHandler extends AbstractCommandHandler {
 	static final String ALL = "all";
-	static final String ATTRIBUTE = "attribute";
 	static final String COLUMNLIST = "columnlist";
 	static final String CURRENT = "current";
 	static final String DIALOG = "dialog";
@@ -132,12 +133,14 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 	static final String EDGE = "edge";
 	static final String EDGELIST = "edgelist";
 	static final String INCHI = "inchi";
+	static final String INCHIATTRIBUTE = "inchiattribute";
 	static final String LABELATTRIBUTE = "labelattribute";
 	static final String NETWORK = "network";
 	static final String NODE = "node";
 	static final String NODELIST = "nodelist";
 	static final String SELECTED = "selected";
 	static final String SMILES = "smiles";
+	static final String SMILESATTRIBUTE = "smilesattribute";
 
 	private ChemInfoProperties props;
 	private ChemInfoSettingsDialog dialog;
@@ -192,20 +195,37 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 		List<String> smilesAttrList = null;
 		List<String> inchiAttrList = null;
 
-		if (args.containsKey(ATTRIBUTE)) {
-			smilesAttrList.add(args.get(ATTRIBUTE).toString());
-			inchiAttrList.add(args.get(ATTRIBUTE).toString());
+		if (args.containsKey(INCHIATTRIBUTE)) {
+			inchiAttrList.add(args.get(INCHIATTRIBUTE).toString());
+		} else {
+			inchiAttrList = dialog.getCompoundAttributes(objectType,AttriType.inchi);
+		}
+
+		if (args.containsKey(SMILESATTRIBUTE)) {
+			smilesAttrList.add(args.get(SMILESATTRIBUTE).toString());
 		} else {
 			smilesAttrList = dialog.getCompoundAttributes(objectType,AttriType.smiles);
-			inchiAttrList = dialog.getCompoundAttributes(objectType,AttriType.inchi);
 		}
 
 		// Main command cascade
 
 		//	ATTACH("attach",
 		//	       "Attach 2D structures to nodes",
-		//				 "nodelist|node|attribute|inchi|smiles"),
+		//				 "network|nodelist|node|inchiattribute|smilesattribute|inchi|smiles"),
 		if (Command.ATTACH.equals(command)) {
+			if (gObjList == null) 
+				throw new RuntimeException("chemviz "+command+": must provide node or nodelist");
+			if (gObjList == null && mstring == null) 
+				throw new RuntimeException("chemviz "+command+": must have one of smiles/inchi string or nodes");
+
+			List<Compound> compoundList = ValueUtils.getCompounds(gObjList, mstring, mtype, smilesAttrList, inchiAttrList);
+
+			// Get the network view
+			CyNetworkView view = Cytoscape.getNetworkView(ValueUtils.getNetwork(args).getIdentifier());
+
+			// Do it!
+			CreateNodeGraphicsTask cngTask = new CreateNodeGraphicsTask(compoundList, view, dialog, false);
+			TaskManager.executeTask(cngTask, cngTask.getDefaultTaskConfig());
 
 		//	CALCULATE("calculate similarity",
 		//	          "Create a similarity network for the current nodes",
@@ -285,7 +305,7 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 		
 		//	REMOVE("remove",
 		//	       "Remove 2D structures from nodes",
-		//				 "nodelist|node"),
+		//				 "network|nodelist|node"),
 		} else if (Command.REMOVE.equals(command)) {
 		
 		//	SHOWSTRUCTURES("show structures",

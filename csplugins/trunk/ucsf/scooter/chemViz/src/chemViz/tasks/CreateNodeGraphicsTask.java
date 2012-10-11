@@ -81,6 +81,8 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 	private static HashMap<CyNetworkView, CreateNodeGraphicsTask> customGraphicsMap = new HashMap();
 	private static final String CustomGraphicsAttribute = "__has2DGraphics";
 	Collection<GraphObject> nodeSelection;
+	List<Compound> compoundList;
+	CyNetworkView view;
 	ChemInfoSettingsDialog settingsDialog;
 	HashMap<NodeView, Compound> viewMap = null;
 	HashMap<NodeView, CustomGraphic> graphMap = null;
@@ -108,9 +110,9 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		return v.booleanValue();
 	}
 
-	public static List<Node> getCustomGraphicsNodes(CyNetworkView view) {
+	public static List<GraphObject> getCustomGraphicsNodes(CyNetworkView view) {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		List<Node> nList = new ArrayList();
+		List<GraphObject> nList = new ArrayList();
 		for (Object obj: view.getNetwork().nodesList()) {
 			Node node = (Node)obj;
 			if (nodeAttributes.hasAttribute(node.getIdentifier(), CustomGraphicsAttribute) &&
@@ -133,14 +135,29 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
  	 * @param selection the group of graph objects that should be included in the table
  	 * @param dialog the settings dialog, which we use to pull the attribute names that contain the compound descriptors
  	 */
-	public CreateNodeGraphicsTask(Collection nodeSelection, 
+	public CreateNodeGraphicsTask(Collection<GraphObject> nodeSelection, 
 	                              ChemInfoSettingsDialog settingsDialog, boolean remove) {
 		this.nodeSelection = nodeSelection;
 		this.canceled = false;
 		this.compoundCount = 0;
 		this.settingsDialog = settingsDialog;
 		this.removeCustomGraphics = remove;
-		customGraphicsMap.put(Cytoscape.getCurrentNetworkView(), this);
+		this.view = Cytoscape.getCurrentNetworkView();
+		customGraphicsMap.put(view, this);
+	}
+
+	public CreateNodeGraphicsTask(List<Compound> compoundList,  CyNetworkView view,
+	                              ChemInfoSettingsDialog settingsDialog, boolean remove) {
+		this.compoundList = compoundList;
+		this.nodeSelection = new ArrayList<GraphObject>();
+		for (Compound c: compoundList) {
+			nodeSelection.add(c.getSource());
+		}
+		this.canceled = false;
+		this.compoundCount = 0;
+		this.settingsDialog = settingsDialog;
+		this.removeCustomGraphics = remove;
+		customGraphicsMap.put(view, this);
 	}
 
 	public String getTitle() {
@@ -198,7 +215,6 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 	public void run() {
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		if (monitor != null)
 			monitor.setPercentCompleted(0);
 
@@ -228,11 +244,15 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 			return;
 		}
 
-		totalObjects = nodeSelection.size();
 		objectCount = 0;
-		List<Compound>cList = getCompounds(nodeSelection, nodeAttributes,
-					   							             settingsDialog.getCompoundAttributes("node",AttriType.smiles),
-						   						             settingsDialog.getCompoundAttributes("node",AttriType.inchi));
+		List<Compound>cList = compoundList;
+		if (cList == null) {
+			cList = getCompounds(nodeSelection, nodeAttributes,
+					   							 settingsDialog.getCompoundAttributes("node",AttriType.smiles),
+						   						 settingsDialog.getCompoundAttributes("node",AttriType.inchi));
+		}
+
+		totalObjects = cList.size();
 
 		if (viewMap == null)
 			viewMap = new HashMap();

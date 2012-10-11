@@ -51,6 +51,7 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import ding.view.DGraphView;
+import giny.model.GraphObject;
 
 import chemViz.commands.ChemVizCommandHandler;
 import chemViz.menus.ChemVizMenu;
@@ -144,7 +145,7 @@ public class ChemViz extends CytoscapePlugin implements PropertyChangeListener {
 		view.addEdgeContextMenuListener(new ChemVizContextMenu(systemProps, settingsDialog));
 		// Check to see if this view has custom graphics
 		if (CreateNodeGraphicsTask.hasCustomGraphics(view.getNetwork())) {
-			List<Node> selection = 
+			List<GraphObject> selection = 
 			  CreateNodeGraphicsTask.getCustomGraphicsNodes(view);
 
 			CreateNodeGraphicsTask loader = null;

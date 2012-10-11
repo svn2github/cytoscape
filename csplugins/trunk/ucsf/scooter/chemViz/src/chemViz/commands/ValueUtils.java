@@ -92,6 +92,16 @@ public class ValueUtils {
 		if (args.containsKey(EDGE) && args.containsKey(EDGELIST))
 			throw new RuntimeException("chemviz "+command+": can't have both 'edge' and 'edgeList'");
 
+		CyNetwork network = getNetwork(args);
+
+		// OK, nodes or edges?
+		if (args.containsKey(NODE) || args.containsKey(NODELIST))
+			return getNodeList(command, args, network);
+		else 
+			return getEdgeList(command, args, network);
+	}
+
+	static public CyNetwork getNetwork(Map<String,Object> args) {
 		// Get the network
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		if (args.containsKey(NETWORK)) {
@@ -99,12 +109,7 @@ public class ValueUtils {
 			if (!netName.equals(CURRENT) && Cytoscape.getNetwork(netName) != null)
 				network = Cytoscape.getNetwork(netName);
 		}
-
-		// OK, nodes or edges?
-		if (args.containsKey(NODE) || args.containsKey(NODELIST))
-			return getNodeList(command, args, network);
-		else 
-			return getEdgeList(command, args, network);
+		return network;
 	}
 
 	static public List<GraphObject> getNodeList(String command, Map<String,Object> args, CyNetwork network) {
