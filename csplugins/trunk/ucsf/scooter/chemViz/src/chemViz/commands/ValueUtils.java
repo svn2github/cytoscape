@@ -122,6 +122,8 @@ public class ValueUtils {
 			// Special case for "selected" nodes
 			if (nodes.equals(SELECTED)) {
 				objList.addAll(network.getSelectedNodes());
+			} else if (nodes.equals(ALL)) {
+				objList.addAll(network.nodesList());
 			} else {
 				String[] nodeArray  = nodes.split(",");
 				for (String str: nodeArray)
@@ -141,6 +143,8 @@ public class ValueUtils {
 			// Special case for "selected" nodes
 			if (edges.equals(SELECTED)) {
 				objList.addAll(network.getSelectedEdges());
+			} else if (edges.equals(ALL)) {
+				objList.addAll(network.edgesList());
 			} else {
 				String[] edgeArray  = edges.split(",");
 				for (String str: edgeArray)
@@ -207,8 +211,17 @@ public class ValueUtils {
 
 		// Handle special case of a bare smiles string
 		if (mstring != null) {
-			Compound c = new Compound(null, null, mstring, type, false);
-			compoundList.add(c);
+			if (objList == null || objList.size() == 0) {
+				Compound c = new Compound(null, null, mstring, type, false);
+				compoundList.add(c);
+			} else {
+				for (GraphObject obj: objList) {
+					if (obj instanceof CyNode)
+						compoundList.add(new Compound(obj, null, mstring, type, false));
+					else
+						compoundList.add(new Compound(obj, null, mstring, type, false));
+				}
+			}
 			return compoundList;
 		}
 

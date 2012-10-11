@@ -69,6 +69,7 @@ import chemViz.model.Compound.AttriType;
 import chemViz.model.Compound.DescriptorType;
 import chemViz.tasks.CreatePopupTask;
 import chemViz.tasks.CreateCompoundTableTask;
+import chemViz.tasks.CreateMCSSTask;
 import chemViz.tasks.CreateNodeGraphicsTask;
 import chemViz.ui.ChemInfoSettingsDialog;
 
@@ -91,12 +92,15 @@ enum Command {
 	LISTDESC("list descriptors",
 	         "Return the list of available chemical descriptors",
 	         ""),
+	MCSS("mcss",
+	    "Calculate the maximum common substructure of a node or group of nodes",
+	    "edge|edgelist|node|nodelist|showresult=false"),
 	REMOVE("remove",
 	       "Remove 2D structures from nodes",
 				 "network|nodelist|node"),
 	SHOWSTRUCTURES("show structures",
 	               "Popup the 2D structures for a node/edge or group of nodes/edges",
-	               "node|nodelist|edge|edgelist|labelattribute"),
+	               "node|nodelist|edge|edgelist|labelattribute|smiles|inchi"),
 	SHOWTABLE("show table",
 	          "Show the structure table for a node/edge or group of nodes/edges",
 	          "edge|edgelist|node|nodelist|columnlist"),
@@ -139,6 +143,7 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 	static final String NODE = "node";
 	static final String NODELIST = "nodelist";
 	static final String SELECTED = "selected";
+	static final String SHOWRESULT = "showresult";
 	static final String SMILES = "smiles";
 	static final String SMILESATTRIBUTE = "smilesattribute";
 
@@ -224,8 +229,23 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 			CyNetworkView view = Cytoscape.getNetworkView(ValueUtils.getNetwork(args).getIdentifier());
 
 			// Do it!
-			CreateNodeGraphicsTask cngTask = new CreateNodeGraphicsTask(compoundList, view, dialog, false);
+			CreateNodeGraphicsTask cngTask = CreateNodeGraphicsTask.getCustomGraphicsTask(view);
+			if (cngTask != null) {
+				cngTask.setCompoundList(compoundList);
+				cngTask.setRemove(false);
+			} else
+				cngTask = new CreateNodeGraphicsTask(compoundList, view, dialog, false);
+
 			TaskManager.executeTask(cngTask, cngTask.getDefaultTaskConfig());
+
+			Map<GraphObject, Compound> map = new HashMap<GraphObject, Compound>();
+			for (Compound c: compoundList) {
+				if (!map.containsKey(c.getSource())) {
+					map.put(c.getSource(), c);
+					result.addMessage("Added compound '"+c+"' to node '"+c.getSource()+"'");
+				}
+			}
+
 
 		//	CALCULATE("calculate similarity",
 		//	          "Create a similarity network for the current nodes",
@@ -303,23 +323,89 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 				}
 			}
 		
+		//	MCSS("mcss",
+		//	    "Calculate the maximum common substructure of a node or group of nodes",
+		//	    "edge|edgelist|node|nodelist|showresult=false"),
+		} else if (Command.MCSS.equals(command)) {
+			if (gObjList == null) 
+				throw new RuntimeException("chemviz "+command+": must specify node/edge or nodelist/edgelist");
+
+			List<Compound> compoundList = ValueUtils.getCompounds(gObjList, mstring, mtype, smilesAttrList, inchiAttrList);
+			CyAttributes attributes = Cytoscape.getNodeAttributes();
+			if (gObjList != null && (gObjList.get(0) instanceof CyEdge))
+				attributes = Cytoscape.getEdgeAttributes();
+
+			boolean showresult = false;
+			if (args.containsKey(SHOWRESULT)) {
+				showresult = Boolean.parseBoolean(args.get(SHOWRESULT).toString());
+			}
+
+			CreateMCSSTask mcssTask = new CreateMCSSTask(gObjList, attributes, dialog);
+			TaskManager.executeTask(mcssTask, mcssTask.getDefaultTaskConfig());
+
+			try {
+				while(!mcssTask.isDone()) {
+					Thread.currentThread().sleep(100);
+				}
+			} catch (Exception e) {}
+
+			String mcss = mcssTask.getMCSSSmiles();
+			result.addMessage("MCSS = "+mcss);
+			result.addResult("MCSS",mcss);
+			if (showresult) {
+				String label = "MCSS = "+mcss;
+				List<Compound> mcssList = ValueUtils.getCompounds(null, mcss, AttriType.smiles, null, null);
+				CreatePopupTask loader = new CreatePopupTask(mcssList, null, dialog, label, dialog.getMaxCompounds());
+				TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
+
+				if (popupTasks == null) popupTasks = new HashMap<Integer, CreatePopupTask>();
+				result.addMessage("Showing structures: dialog #"+popupTaskCount);
+				popupTasks.put(popupTaskCount++, loader);
+			}
+
 		//	REMOVE("remove",
 		//	       "Remove 2D structures from nodes",
 		//				 "network|nodelist|node"),
 		} else if (Command.REMOVE.equals(command)) {
+			if (gObjList == null) 
+				throw new RuntimeException("chemviz "+command+": must provide node or nodelist");
+
+			// Get the network view
+			CyNetworkView view = Cytoscape.getNetworkView(ValueUtils.getNetwork(args).getIdentifier());
+
+			// Do it!
+			CreateNodeGraphicsTask cngTask = CreateNodeGraphicsTask.getCustomGraphicsTask(view);
+			if (cngTask != null) {
+				cngTask.setSelection(gObjList);
+				cngTask.setRemove(true);
+			} else
+				cngTask = new CreateNodeGraphicsTask(gObjList, dialog, true);
+
+			TaskManager.executeTask(cngTask, cngTask.getDefaultTaskConfig());
+			for (GraphObject obj: gObjList)
+				result.addMessage("Removed graphics from node '"+obj+"'");
 		
 		//	SHOWSTRUCTURES("show structures",
 		//	               "Popup the 2D structures for a node or group of nodes",
-		//	               "node|nodelist|edge|edgelist"),
+		//	               "node|nodelist|edge|edgelist|labelattribute|smiles|inchi"),
 		} else if (Command.SHOWSTRUCTURES.equals(command)) {
-			if (gObjList == null)
-				throw new RuntimeException("chemviz "+command+": node/edge or nodelist/edgelist required");
+			if (gObjList != null && mstring != null) 
+				throw new RuntimeException("chemviz "+command+": can't have both smiles/inchi string and nodes/edges");
+			if (gObjList == null && mstring == null) 
+				throw new RuntimeException("chemviz "+command+": must have one of smiles/inchi string or nodes/edges");
 
 			String labelAttribute = null;
 			if (args.containsKey(LABELATTRIBUTE))
 				labelAttribute = args.get(LABELATTRIBUTE).toString();
 
-  		CreatePopupTask loader = new CreatePopupTask(gObjList, dialog, labelAttribute, dialog.getMaxCompounds());
+			CreatePopupTask loader = null;
+			if (mstring != null) {
+				List<Compound> compoundList = ValueUtils.getCompounds(gObjList, mstring, mtype, smilesAttrList, inchiAttrList);
+  			loader = new CreatePopupTask(compoundList, null, dialog, labelAttribute, dialog.getMaxCompounds());
+			} else {
+				List<Compound> compoundList = ValueUtils.getCompounds(gObjList, mstring, mtype, smilesAttrList, inchiAttrList);
+  			loader = new CreatePopupTask(null, gObjList, dialog, labelAttribute, dialog.getMaxCompounds());
+			}
 			TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
 
 			if (popupTasks == null) popupTasks = new HashMap<Integer, CreatePopupTask>();

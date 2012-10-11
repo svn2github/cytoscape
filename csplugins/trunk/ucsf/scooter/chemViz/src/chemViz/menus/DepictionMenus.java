@@ -252,7 +252,7 @@ public class DepictionMenus extends ChemVizAbstractMenu implements ActionListene
  	 * @param dialog the settings dialog
  	 */
 	private void createPopup(Collection<GraphObject>selection, ChemInfoSettingsDialog dialog) {
-    CreatePopupTask loader = new CreatePopupTask(new ArrayList(selection), dialog, null, dialog.getMaxCompounds());
+    CreatePopupTask loader = new CreatePopupTask(null, new ArrayList(selection), dialog, null, dialog.getMaxCompounds());
 		TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
 	}
 

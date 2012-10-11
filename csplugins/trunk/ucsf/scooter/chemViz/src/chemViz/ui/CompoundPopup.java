@@ -77,29 +77,39 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 
 	public CompoundPopup(List<Compound> compoundList, List<GraphObject> objectList, String labelAttribute) {
 		super(Cytoscape.getDesktop());
-		GraphObject go = objectList.get(0);
+
 		this.compoundList = compoundList;
 		this.imageMap = new HashMap();
 		this.labelAttribute = labelAttribute;
-		if (go instanceof CyNode) {
-			if (objectList.size() == 1) {
-				setTitle("2D Structures for Node "+((CyNode)go).getIdentifier());
-			} else {
-				setTitle("2D Structures for Selected Nodes");
-			}
-		} else  {
-			if (objectList.size() == 1) {
-				setTitle("2D Structures for Edge "+((CyEdge)go).getIdentifier());
-			} else {
-				setTitle("2D Structures for Selected Edges");
-			}
-		}
+
+		if (objectList != null && objectList.size() > 0) 
+			setTitle(getObjectTitle(objectList));
+		else
+			setTitle("2D Structures");
+
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBackground(Color.BLACK);
 
 		addImages(400);
 		pack();
 		setVisible(true);
+	}
+
+	private String getObjectTitle(List<GraphObject> objectList) {
+		GraphObject go = objectList.get(0);
+		if (go instanceof CyNode) {
+			if (objectList.size() == 1) {
+				return("2D Structures for Node "+((CyNode)go).getIdentifier());
+			} else {
+				return("2D Structures for Selected Nodes");
+			}
+		} else  {
+			if (objectList.size() == 1) {
+				return("2D Structures for Edge "+((CyEdge)go).getIdentifier());
+			} else {
+				return("2D Structures for Selected Edges");
+			}
+		}
 	}
 
 	public void componentHidden(ComponentEvent e) {}
@@ -140,7 +150,7 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 			attributes = Cytoscape.getEdgeAttributes();
 			labelAttribute = labelAttribute.substring(5);
 		} else
-			labelAttribute = null;
+			attributes = null;
 
 		for (Compound compound: compoundList) {
 			// Get the image
@@ -149,9 +159,12 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 			if (labelAttribute == null) {
 				label = new JLabel(new ImageIcon(img));
 			} else {
-				Object textLabel = attributes.getAttribute(compound.getSource().getIdentifier(),labelAttribute);
-				if (textLabel == null)
-					textLabel = compound.getSource().getIdentifier();
+				String textLabel = labelAttribute;
+				if (attributes != null) {
+					textLabel = attributes.getAttribute(compound.getSource().getIdentifier(),labelAttribute).toString();
+					if (textLabel == null)
+						textLabel = compound.getSource().getIdentifier();
+				}
 				label = new JLabel(textLabel.toString(), new ImageIcon(img), JLabel.CENTER);
 				label.setVerticalTextPosition(JLabel.BOTTOM);
 				label.setHorizontalTextPosition(JLabel.CENTER);

@@ -78,7 +78,7 @@ import chemViz.ui.ChemInfoSettingsDialog;
 public class CreateNodeGraphicsTask extends AbstractCompoundTask 
                                     implements ActionListener, ViewportChangeListener {
 
-	private static HashMap<CyNetworkView, CreateNodeGraphicsTask> customGraphicsMap = new HashMap();
+	private static HashMap<CyNetworkView, CreateNodeGraphicsTask> customGraphicsMap = new HashMap<CyNetworkView, CreateNodeGraphicsTask>();
 	private static final String CustomGraphicsAttribute = "__has2DGraphics";
 	Collection<GraphObject> nodeSelection;
 	List<Compound> compoundList;
@@ -148,15 +148,12 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 
 	public CreateNodeGraphicsTask(List<Compound> compoundList,  CyNetworkView view,
 	                              ChemInfoSettingsDialog settingsDialog, boolean remove) {
-		this.compoundList = compoundList;
-		this.nodeSelection = new ArrayList<GraphObject>();
-		for (Compound c: compoundList) {
-			nodeSelection.add(c.getSource());
-		}
+		setCompoundList(compoundList);
 		this.canceled = false;
 		this.compoundCount = 0;
 		this.settingsDialog = settingsDialog;
 		this.removeCustomGraphics = remove;
+		this.view = view;
 		customGraphicsMap.put(view, this);
 	}
 
@@ -166,6 +163,13 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 
 	public void setSelection(Collection selection) {
 		this.nodeSelection = selection;
+	}
+
+	public void setCompoundList(List<Compound> compoundList) {
+		this.compoundList = compoundList;
+		this.nodeSelection = new ArrayList<GraphObject>();
+		for (Compound c: compoundList)
+			nodeSelection.add(c.getSource());
 	}
 
 	public void setRemove(boolean remove) {
@@ -183,30 +187,6 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 
 	public void viewportChanged(int w, int h, double xCenter, double yCenter, double scale) {
 		zoom = scale;
-/*
-		// System.out.println("viewport: size="+w+"x"+h+", center = "+xCenter+", "+yCenter+" scale = "+scale);
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
-		double lastScale = zoom;
-		boolean needUpdate = false;
-
-		zoom = scale;
-
-		for (NodeView nv: viewMap.keySet()) {
-			// Future -- only update nodes within the viewport
-			if (!inViewport(nv, w, h, xCenter, yCenter, scale))
-				continue;
-			CustomGraphic cg = graphMap.get(nv);
-			((DNodeView)nv).removeCustomGraphic(cg);
-			cg = drawImage(nv,viewMap.get(nv));
-			if (cg == null)
-				graphMap.remove(nv);
-			else {
-				graphMap.put(nv, cg);
-				needUpdate = true;
-			}
-		}
-		if (needUpdate) view.updateView();
-*/
 	}
 
 	/**
