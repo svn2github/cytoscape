@@ -161,8 +161,10 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 			} else {
 				String textLabel = labelAttribute;
 				if (attributes != null) {
-					textLabel = attributes.getAttribute(compound.getSource().getIdentifier(),labelAttribute).toString();
-					if (textLabel == null)
+					Object lbl = attributes.getAttribute(compound.getSource().getIdentifier(),labelAttribute);
+					if (lbl != null)
+						textLabel = lbl.toString();
+					else
 						textLabel = compound.getSource().getIdentifier();
 				}
 				label = new JLabel(textLabel.toString(), new ImageIcon(img), JLabel.CENTER);

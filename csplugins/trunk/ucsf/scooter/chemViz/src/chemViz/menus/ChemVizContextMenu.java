@@ -121,12 +121,13 @@ public class ChemVizContextMenu implements NodeContextMenuListener, EdgeContextM
 			new DepictionMenus(m, systemProperties, settingsDialog, (EdgeView) context);
 			new AttributesMenu(m, systemProperties, settingsDialog, (EdgeView) context);
 			new StructureMenus(m, systemProperties, settingsDialog, (EdgeView) context);
+			new MCSSMenus(m, systemProperties, settingsDialog, (EdgeView) context);
 			updateLinkOut(((EdgeView)context).getEdge());
 		} else {
 			new DepictionMenus(m, systemProperties, settingsDialog, (NodeView) context);
 			new NodeGraphicsMenus(m, systemProperties, settingsDialog, (NodeView) context);
 			new AttributesMenu(m, systemProperties, settingsDialog, (NodeView) context);
-			new StructureMenus(m, systemProperties, settingsDialog, (NodeView) context);
+			new MCSSMenus(m, systemProperties, settingsDialog, (NodeView) context);
 			updateLinkOut(((NodeView)context).getNode());
 		}
 		new SimilarityMenu(m, systemProperties, settingsDialog);

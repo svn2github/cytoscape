@@ -340,7 +340,7 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 				showresult = Boolean.parseBoolean(args.get(SHOWRESULT).toString());
 			}
 
-			CreateMCSSTask mcssTask = new CreateMCSSTask(gObjList, attributes, dialog);
+			CreateMCSSTask mcssTask = new CreateMCSSTask(gObjList, attributes, dialog, false);
 			TaskManager.executeTask(mcssTask, mcssTask.getDefaultTaskConfig());
 
 			try {
@@ -355,7 +355,7 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 			if (showresult) {
 				String label = "MCSS = "+mcss;
 				List<Compound> mcssList = ValueUtils.getCompounds(null, mcss, AttriType.smiles, null, null);
-				CreatePopupTask loader = new CreatePopupTask(mcssList, null, dialog, label, dialog.getMaxCompounds());
+				CreatePopupTask loader = new CreatePopupTask(mcssList, null, dialog, label, 1);
 				TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
 
 				if (popupTasks == null) popupTasks = new HashMap<Integer, CreatePopupTask>();

@@ -45,8 +45,9 @@ import giny.view.NodeView;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.task.Task;
+import cytoscape.task.util.TaskManager;
 
+import chemViz.commands.ValueUtils;
 import chemViz.model.Compound;
 import chemViz.model.Compound.AttriType;
 import chemViz.ui.ChemInfoSettingsDialog;
@@ -72,13 +73,15 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 	CyAttributes attributes;
 	List<Compound> compoundList;
 	IMolecule mcss = null;
+	boolean showResult = false;
 	boolean calculationComplete = false;
 
 	/**
  	 * Creates the task.
  	 *
  	 */
-  public CreateMCSSTask(List<GraphObject> gObjList, CyAttributes attributes, ChemInfoSettingsDialog dialog) {
+  public CreateMCSSTask(List<GraphObject> gObjList, CyAttributes attributes, 
+	                      ChemInfoSettingsDialog dialog, boolean showResult) {
 		this.objectList = gObjList;
 		
 		if (gObjList.get(0) instanceof CyNode)
@@ -88,6 +91,7 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 		this.dialog = dialog;
 		this.canceled = false;
 		this.attributes = attributes;
+		this.showResult = showResult;
 	}
 
 	public String getTitle() {
@@ -120,6 +124,13 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 			}
 		} catch (CDKException e) {}
 		calculationComplete = true;	
+		if (showResult) {
+			String mcssSmiles = getMCSSSmiles();
+			String label = "MCSS = "+mcssSmiles;
+			List<Compound> mcssList = ValueUtils.getCompounds(null, mcssSmiles, AttriType.smiles, null, null);
+			CreatePopupTask loader = new CreatePopupTask(mcssList, null, dialog, label, 1);
+			TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
+		}
 	}
 
 	private IMolecule maximumStructure(List<IAtomContainer> mcsslist) {

@@ -55,6 +55,11 @@ chemViz.menu.reloadstructures.selectedEdges=for selected edges
 chemViz.menu.reloadstructures.thisNode=for this node
 chemViz.menu.reloadstructures.all=for all nodes and edges
 chemViz.menu.reloadstructures.selectedNodes=for selected nodes
+chemViz.menu.showmcss=Show Maximum Common Substructure (MCSS)
+chemViz.menu.showmcss.thisEdge=for this edge
+chemViz.menu.showmcss.selectedEdges=for selected edges
+chemViz.menu.showmcss.thisNode=for this node
+chemViz.menu.showmcss.selectedNodes=for selected nodes
 
 ##
 # 2D Structure Depictor Messages
