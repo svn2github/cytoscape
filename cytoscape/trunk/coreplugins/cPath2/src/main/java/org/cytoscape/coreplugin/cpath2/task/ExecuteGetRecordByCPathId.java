@@ -15,7 +15,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.VisualMappingManager;
 
-import org.biopax.paxtools.io.simpleIO.SimpleReader;
+import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.physicalEntity;
@@ -431,7 +431,7 @@ public class ExecuteGetRecordByCPathId implements Task {
                         new NullTaskMonitor());
                 //StringReader reader = new StringReader(xml);
                 //BioPaxUtil bpUtil = new BioPaxUtil(reader, new NullTaskMonitor());
-                Model model = (new SimpleReader())
+                Model model = (new SimpleIOHandler())
                 	.convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
                 //ArrayList peList = bpUtil.getPhysicalEntityList();
                 //Namespace ns = Namespace.getNamespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");

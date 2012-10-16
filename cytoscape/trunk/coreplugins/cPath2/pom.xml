@@ -39,9 +39,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>cytoscape-temp</groupId>
+      <groupId>cytoscape.coreplugins</groupId>
       <artifactId>biopax</artifactId>
-      <version>1.0</version>
+      <version>${project.version}</version>
 	  <scope>provided</scope> <!-- don't include biopax in jar-with-dependencies -->
     </dependency>
     <dependency>
