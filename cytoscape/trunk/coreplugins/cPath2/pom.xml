@@ -9,7 +9,7 @@
   <artifactId>cpath2</artifactId>
   <packaging>jar</packaging>
 
-  <name>cPath2</name>
+  <name>Pathway Commons plugin</name>
 
     <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
     <repositories>
@@ -70,7 +70,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Cytoscape-Plugin>org.cytoscape.coreplugin.cpath.plugin.CPathPlugIn</Cytoscape-Plugin>
+              <Cytoscape-Plugin>org.cytoscape.coreplugin.cpath2.plugin.CPathPlugIn2</Cytoscape-Plugin>
             </manifestEntries>
           </archive>
         </configuration>

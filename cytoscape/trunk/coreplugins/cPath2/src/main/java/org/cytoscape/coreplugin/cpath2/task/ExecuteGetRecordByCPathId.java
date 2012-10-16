@@ -247,6 +247,8 @@ public class ExecuteGetRecordByCPathId implements Task {
         //  Specify that this is a BINARY_NETWORK
         Cytoscape.getNetworkAttributes().setAttribute(cyNetwork.getIdentifier(),
                 BinarySifVisualStyleUtil.BINARY_NETWORK, Boolean.TRUE);
+        Cytoscape.getNetworkAttributes().setAttribute(cyNetwork.getIdentifier(),
+                MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE);
 
         //  Get all node details.
         getNodeDetails(cyNetwork, nodeAttributes);
@@ -433,17 +435,10 @@ public class ExecuteGetRecordByCPathId implements Task {
                 //BioPaxUtil bpUtil = new BioPaxUtil(reader, new NullTaskMonitor());
                 Model model = (new SimpleIOHandler())
                 	.convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
-                //ArrayList peList = bpUtil.getPhysicalEntityList();
-                //Namespace ns = Namespace.getNamespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-                //for (int j=0; j<peList.size(); j++) {
                 for(BioPAXElement pe: BioPaxUtil.getObjects(model, physicalEntity.class, PhysicalEntity.class)) {
-                    //Element element = (Element) peList.get(j);
-                    //String id = element.getAttributeValue("ID", ns);
-                	String id = BioPaxUtil.getLocalPartRdfId(pe);
-                    if (id != null) {
-                        id = id.replaceAll("CPATH-", "");
-                        MapBioPaxToCytoscape.mapNodeAttribute(pe, model, id);
-                    }
+                	String id = pe.getRDFId();
+                    id = id.replaceAll(model.getXmlBase()+"CPATH-", "");
+                    MapBioPaxToCytoscape.mapNodeAttribute(pe, model, id);
                 }
                 int percentComplete = (int) (100.0 * (i / (double) batchList.size()));
                 if (taskMonitor != null) {
