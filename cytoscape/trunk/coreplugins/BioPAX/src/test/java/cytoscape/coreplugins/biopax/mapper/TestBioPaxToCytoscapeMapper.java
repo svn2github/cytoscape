@@ -117,8 +117,9 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 
 		while (nodeIterator.hasNext()) {
 			CyNode node = (CyNode) nodeIterator.next();
-
-			if (node.getIdentifier().endsWith("CPATH-126")) {
+			String uri = Cytoscape.getNodeAttributes()
+	                  .getStringAttribute(node.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_RDF_ID);
+			if (uri.endsWith("CPATH-126")) {
 				targetNodeIndex = node.getRootGraphIndex();
 			}
 		}
@@ -181,8 +182,9 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 
 		while (nodeIterator.hasNext()) {
 			CyNode node = (CyNode) nodeIterator.next();
-
-			if (node.getIdentifier().endsWith("physicalInteraction1")) {
+			String uri = Cytoscape.getNodeAttributes()
+	                  .getStringAttribute(node.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_RDF_ID);
+			if (uri.endsWith("physicalInteraction1")) {
 				targetNodeIndex = node.getRootGraphIndex();
 			}
 		}
@@ -215,8 +217,9 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		int nodeCount = cyNetwork.getNodeCount();
 		assertEquals(12, nodeCount);
 
-		//  This HashMap contains a list of expected node identifiers.
-		// correction: these are identifier's part (real id now begins with hash code)
+		//  This HashMap contains all expected nodes.
+		//  But node identifier is now a auto-generated md5hex digest; 
+		//  so it's easier to test here by using biopax.rdfid values instead)
 		Map<String, Integer> nodeMap = new HashMap<String, Integer>();
 		nodeMap.put("protein45", new Integer(0));
 		nodeMap.put("protein32", new Integer(0));
@@ -226,7 +229,6 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		nodeMap.put("smallMolecule27", new Integer(0));
 		nodeMap.put("smallMolecule39", new Integer(0));
 		nodeMap.put("smallMolecule99", new Integer(0));
-
 		//  These represent interaction nodes
 		nodeMap.put("catalysis43", new Integer(0));
 		nodeMap.put("biochemicalReaction6", new Integer(0));
@@ -239,9 +241,10 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		while (nodeIterator.hasNext()) {
 			CyNode node = (CyNode) nodeIterator.next();
 			String id = node.getIdentifier();
-
+			String uri = Cytoscape.getNodeAttributes()
+	                  .getStringAttribute(id, MapBioPaxToCytoscape.BIOPAX_RDF_ID);
 			//  Test a specific node label
-			if (id.endsWith("smallMolecule99")) {
+			if (uri.endsWith("smallMolecule99")) {
 				String label = Cytoscape.getNodeAttributes()
 				                  .getStringAttribute(id, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
 				assertEquals("Mg2+", label);
@@ -249,7 +252,9 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 
 			String found = null;
 			for(String key : nodeMap.keySet()) {
-				if(id.endsWith(key)) {
+				uri = Cytoscape.getNodeAttributes()
+						.getStringAttribute(id, MapBioPaxToCytoscape.BIOPAX_RDF_ID);
+				if(uri.endsWith(key)) {
 					found = key;
 					break;
 				}
@@ -287,8 +292,9 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 
 		while (nodeIterator.hasNext()) {
 			CyNode node = (CyNode) nodeIterator.next();
-
-			if (node.getIdentifier().endsWith("biochemicalReaction37")) {
+			String uri = Cytoscape.getNodeAttributes()
+	                  .getStringAttribute(node.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_RDF_ID);
+			if (uri.endsWith("biochemicalReaction37")) {
 				targetNodeIndex = node.getRootGraphIndex();
 			}
 		}

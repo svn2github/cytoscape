@@ -33,6 +33,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 
 import org.biopax.paxtools.controller.EditorMap;
+import org.biopax.paxtools.controller.ModelUtils;
 import org.biopax.paxtools.controller.SimpleEditorMap;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
@@ -245,21 +246,20 @@ public class BioPaxUtil {
 			return getTheShortestString(names);
 		}
 
-		return getLocalPartRdfId(bpe);
+		return fixPepRdfId(bpe);
 	}
 	
 	
+	/**
+	 * Generates a unique CyNode identifier
+	 */
 	public static String generateId(BioPAXElement bpe) {
-		String id = (bpe instanceof physicalEntityParticipant 
-				&& ((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY()!=null)
-					? ((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY().getRDFId() 
-					: bpe.getRDFId();
-		return Cytoscape.getCurrentNetwork().getIdentifier().hashCode() + 
-				"" + id.hashCode() + "-" + getLocalPartRdfId(bpe);
+		String id = fixPepRdfId(bpe);
+		return ModelUtils.md5hex(Cytoscape.getCurrentNetwork().getIdentifier() + id);
 	}
 
 	
-	public static String getLocalPartRdfId(BioPAXElement bpe) {
+	private static String fixPepRdfId(BioPAXElement bpe) {
 		if(bpe == null) return "";
 		
 		// also fix pEPs
@@ -268,7 +268,7 @@ public class BioPaxUtil {
 					? ((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY().getRDFId() 
 					: bpe.getRDFId();
 					
-		return id.replaceFirst("^.+#", "");
+		return id;
 	}
 	
 	// get the shortest string
