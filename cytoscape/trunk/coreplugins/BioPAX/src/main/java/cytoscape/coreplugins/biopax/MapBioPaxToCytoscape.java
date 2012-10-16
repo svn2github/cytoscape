@@ -405,9 +405,6 @@ public class MapBioPaxToCytoscape {
 			//  Add New Interaction Node to Network
 			nodeList.add(interactionNode);
 
-			//  Set Node Identifier
-			//interactionNode.setIdentifier(id);
-
 			//  set node attributes
 			setBasicNodeAttributes(interactionNode, itr, null);
 
