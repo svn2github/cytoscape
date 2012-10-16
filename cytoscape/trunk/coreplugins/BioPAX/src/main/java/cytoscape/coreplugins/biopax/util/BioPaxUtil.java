@@ -1010,18 +1010,12 @@ public class BioPaxUtil {
 	}
 	
 	public static boolean isBioPAXNetwork(CyNetwork cyNetwork) {
-		// get the network attributes
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 		String networkID = cyNetwork.getIdentifier();
-		
-		// BioPAX network (having interaction nodes)
 		Boolean b1 = networkAttributes
 			.getBooleanAttribute(networkID, MapBioPaxToCytoscape.BIOPAX_NETWORK);
-		// BioPAX network that was converted to SIF (TODO mapping to the simplified SIF network currently is not done)
-        // Bgg fix: disable exporting SIF networks (read from PC web service) for now
-		Boolean b2 = false; //networkAttributes.getBooleanAttribute(networkID, MapBioPaxToCytoscape.BINARY_NETWORK);
 
-        return (b1 != null && b1) || (b2 != null && b2);
+        return (b1 != null) && b1;
 	}
 	
 }

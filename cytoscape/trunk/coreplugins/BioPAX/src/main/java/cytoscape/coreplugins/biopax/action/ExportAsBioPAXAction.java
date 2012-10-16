@@ -103,7 +103,8 @@ public class ExportAsBioPAXAction extends CytoscapeAction {
     public void menuSelected(MenuEvent e) {
         CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
 
-        if( BioPaxUtil.isBioPAXNetwork(cyNetwork) )
+        if( BioPaxUtil.isBioPAXNetwork(cyNetwork) 
+        		&& BioPaxUtil.getNetworkModelMap().containsKey(cyNetwork.getIdentifier()))
             enableForNetwork();
         else
             setEnabled(false);
