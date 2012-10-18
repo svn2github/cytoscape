@@ -35,6 +35,17 @@
             <name>Cytoscape Releases</name>
             <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
         </repository>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>cytoscape_biopax_release</id>
+			<name>Cytoscape BioPAX Release Mirror</name>
+			<url>http://code.cytoscape.org/nexus/content/repositories/biopax-release/</url>
+		</repository>
     </repositories>
 
   <build>
