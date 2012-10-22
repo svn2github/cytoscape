@@ -41,6 +41,7 @@ import cytoscape.view.CyNetworkView;
 import ding.view.NodeContextMenuListener;
 import giny.view.NodeView;
 import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
+import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.coreplugins.biopax.util.BioPaxVisualStyleUtil;
 
 import javax.swing.*;
@@ -78,7 +79,7 @@ public class NetworkListener implements PropertyChangeListener, NodeContextMenuL
 
         if (event.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
             CyNetwork cyNetwork = (CyNetwork) ((Object[]) event.getNewValue())[0];
-            if (cyNetwork != null && isBioPaxNetwork(cyNetwork)) {
+            if (cyNetwork != null && BioPaxUtil.isBioPaxNetwork(cyNetwork)) {
                 // setup the context menu
                 CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
                 if (view != null) view.addNodeContextMenuListener(this);
@@ -170,28 +171,4 @@ public class NetworkListener implements PropertyChangeListener, NodeContextMenuL
         return false;
     }
 
-    /*
-      * Method determines if given network is a biopax network.
-      *
-      * @param cyNetwork CyNetwork
-      * @return boolean if any network views that we have created remain.
-      */
-    private boolean isBioPaxNetwork(CyNetwork cyNetwork) {
-
-        // get the network attributes
-        CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-
-        // get cyNetwork id
-        String networkID = cyNetwork.getIdentifier();
-
-        // is the biopax network attribute true ?
-        Boolean b = networkAttributes.getBooleanAttribute(networkID,
-                MapBioPaxToCytoscape.BIOPAX_NETWORK);
-
-        // outta here
-        if (b == null) {
-            return false;
-        }
-        return b;
-    }
 }

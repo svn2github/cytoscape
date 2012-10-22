@@ -15,10 +15,13 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.VisualMappingManager;
 
+import org.biopax.paxtools.converter.OneTwoThree;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
+import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
-import org.biopax.paxtools.model.level2.physicalEntity;
+import org.biopax.paxtools.model.level3.Complex;
+import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
 import org.cytoscape.coreplugin.cpath2.web_service.*;
@@ -242,7 +245,7 @@ public class ExecuteGetRecordByCPathId implements Task {
 
         //  Set the Quick Find Default Index
         Cytoscape.getNetworkAttributes().setAttribute(cyNetwork.getIdentifier(),
-                "quickfind.default_index", "biopax.node_label");
+                "quickfind.default_index", BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
 
         //  Specify that this is a BINARY_NETWORK
         Cytoscape.getNetworkAttributes().setAttribute(cyNetwork.getIdentifier(),
@@ -349,12 +352,12 @@ public class ExecuteGetRecordByCPathId implements Task {
 
     private void mergeNetworks(CyNetwork cyNetwork) {
         taskMonitor.setStatus("Merging Network...");
-        List nodeList = cyNetwork.nodesList();
+        List<CyNode> nodeList = cyNetwork.nodesList();
         for (int i = 0; i < nodeList.size(); i++) {
             CyNode node = (CyNode) nodeList.get(i);
             mergedNetwork.addNode(node);
         }
-        List edgeList = cyNetwork.edgesList();
+        List<CyEdge> edgeList = cyNetwork.edgesList();
         for (int i = 0; i < edgeList.size(); i++) {
             CyEdge edge = (CyEdge) edgeList.get(i);
             mergedNetwork.addEdge(edge);
@@ -413,7 +416,7 @@ public class ExecuteGetRecordByCPathId implements Task {
             taskMonitor.setStatus("Retrieving node details...");
             taskMonitor.setPercentCompleted(0);
         }
-        ArrayList batchList = createBatchArray(cyNetwork);
+        List<List<CyNode>> batchList = createBatchArray(cyNetwork);
         if (batchList.size()==0) {
 						logger.info ("Skipping node details.  Already have all the details new need.");
         }
@@ -421,7 +424,7 @@ public class ExecuteGetRecordByCPathId implements Task {
             if (haltFlag == true) {
                 break;
             }
-            ArrayList currentList = (ArrayList) batchList.get(i);
+            List<CyNode> currentList = (List<CyNode>) batchList.get(i);
             logger.debug ("Getting node details, batch:  " + i);
             long ids[] = new long [currentList.size()];
             for (int j=0; j<currentList.size(); j++) {
@@ -429,16 +432,20 @@ public class ExecuteGetRecordByCPathId implements Task {
                 ids[j] = Long.valueOf(node.getIdentifier());
             }
             try {
-                String xml = webApi.getRecordsByIds(ids, CPathResponseFormat.BIOPAX,
-                        new NullTaskMonitor());
-                //StringReader reader = new StringReader(xml);
-                //BioPaxUtil bpUtil = new BioPaxUtil(reader, new NullTaskMonitor());
+                String xml = webApi.getRecordsByIds(ids, CPathResponseFormat.BIOPAX, new NullTaskMonitor());
                 Model model = (new SimpleIOHandler())
                 	.convertFromOWL(new ByteArrayInputStream(xml.getBytes()));
-                for(BioPAXElement pe: BioPaxUtil.getObjects(model, physicalEntity.class, PhysicalEntity.class)) {
-                	String id = pe.getRDFId();
-                    id = id.replaceAll(model.getXmlBase()+"CPATH-", "");
-                    MapBioPaxToCytoscape.mapNodeAttribute(pe, model, id);
+        		if(model != null && BioPAXLevel.L2.equals(model.getLevel())) {
+        			model = new OneTwoThree().filter(model);
+        		}
+                for(BioPAXElement e: model.getObjects()) {
+                	if(e instanceof EntityReference 
+                		|| e instanceof Complex 
+							|| e.getModelInterface().equals(PhysicalEntity.class)) {
+						String cpathId = e.getRDFId()
+							.replaceFirst(model.getXmlBase()+"CPATH-", "");
+						MapBioPaxToCytoscape.mapNodeAttribute(e, model, cpathId);
+                	}
                 }
                 int percentComplete = (int) (100.0 * (i / (double) batchList.size()));
                 if (taskMonitor != null) {
@@ -452,15 +459,15 @@ public class ExecuteGetRecordByCPathId implements Task {
         }
     }
 
-    private ArrayList createBatchArray(CyNetwork cyNetwork) {
+    private List<List<CyNode>> createBatchArray(CyNetwork cyNetwork) {
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
         int max_ids_per_request = 50;
-        ArrayList masterList = new ArrayList();
-        ArrayList currentList = new ArrayList();
-        Iterator nodeIterator = cyNetwork.nodesIterator();
+        List<List<CyNode>> masterList = new ArrayList<List<CyNode>>();
+        List<CyNode> currentList = new ArrayList<CyNode>();
+        Iterator<CyNode> nodeIterator = cyNetwork.nodesIterator();
         int counter = 0;
         while (nodeIterator.hasNext()) {
-            CyNode node = (CyNode) nodeIterator.next();
+            CyNode node = nodeIterator.next();
             String label = nodeAttributes.getStringAttribute(node.getIdentifier(),
                     BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
 
@@ -471,13 +478,14 @@ public class ExecuteGetRecordByCPathId implements Task {
             }
             if (counter > max_ids_per_request) {
                 masterList.add(currentList);
-                currentList = new ArrayList();
+                currentList = new ArrayList<CyNode>();
                 counter = 0;
             }
         }
         if (currentList.size() > 0) {
             masterList.add(currentList);
         }
+        
         return masterList;
     }
 
