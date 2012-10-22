@@ -43,10 +43,6 @@ import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 import java.io.*;
 
-import org.biopax.paxtools.io.BioPAXIOHandler;
-import org.biopax.paxtools.io.SimpleIOHandler;
-import org.biopax.paxtools.model.Model;
-
 
 /**
  * This is currently an experimental feature.
@@ -102,9 +98,8 @@ public class ExportAsBioPAXAction extends CytoscapeAction {
 
     public void menuSelected(MenuEvent e) {
         CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-
-        if( BioPaxUtil.isBioPAXNetwork(cyNetwork) 
-        		&& BioPaxUtil.getNetworkModelMap().containsKey(cyNetwork.getIdentifier()))
+        
+        if( BioPaxUtil.isBioPaxNetwork(cyNetwork) )
             enableForNetwork();
         else
             setEnabled(false);
@@ -122,21 +117,16 @@ class ExportAsBioPAXTask implements Task {
     public void run() {
 		taskMonitor.setStatus("Exporting BioPAX...");
 		CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
-        Model bpModel = BioPaxUtil.getNetworkModel(currentNetwork.getIdentifier());
         CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
         String bpModelStr = (String) networkAttributes
-        	.getAttribute(currentNetwork.getIdentifier(),
-        		BioPaxUtil.BIOPAX_MODEL_STRING);
+        	.getAttribute(currentNetwork.getIdentifier(), BioPaxUtil.BIOPAX_DATA);
         try {
-            FileOutputStream fOutput = new FileOutputStream(fileName);
+            if(bpModelStr == null )
+                throw new IllegalArgumentException("Invalid/empty BioPAX data.");
 
-            if(bpModel == null || bpModelStr == null )
-                throw new IllegalArgumentException("Invalid/empty BioPAX model.");
-
-            BioPAXIOHandler simpleExporter = new SimpleIOHandler(bpModel.getLevel());
-            simpleExporter.convertToOWL(bpModel, fOutput);
-
-            fOutput.close();
+            Writer w = new OutputStreamWriter(new FileOutputStream(fileName));
+            w.write(bpModelStr);
+            w.close();
 
 			Object[] ret_val = new Object[3];
 			ret_val[0] = currentNetwork;
@@ -162,6 +152,6 @@ class ExportAsBioPAXTask implements Task {
 	}
 
 	public String getTitle() {
-		return "Saving BioPAX Network";
+		return "Saving BioPAX data (not modified)";
 	}
 }

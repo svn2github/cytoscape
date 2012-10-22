@@ -35,15 +35,13 @@ import junit.framework.TestCase;
 
 import cytoscape.coreplugins.biopax.BioPaxFilter;
 
-import java.io.File;
-
 
 /**
  * Tests the BioPax Import Wrapper, which integrates BioPax with the Cytoscape ImportHandler.
  *
  * @author Ethan Cerami.
  */
-public class TestBioPaxImportWrapper extends TestCase {
+public class TestBioPaxFilter extends TestCase {
 	/**
 	 * Tests the BioPaxFilter class.
 	 */
@@ -51,11 +49,11 @@ public class TestBioPaxImportWrapper extends TestCase {
 		BioPaxFilter filter = new BioPaxFilter();
 
 		//  This should be accepted
-		boolean acceptFlag = filter.accept(new File("src/test/resources/biopax_sample1.owl"));
+		boolean acceptFlag = filter.accept(getClass().getResource("/biopax_sample1.owl").getFile());
 		assertEquals(true, acceptFlag);
 
 		//  This should be rejected
-		acceptFlag = filter.accept(new File("src/test/resources/psi_sample1.xml"));
+		acceptFlag = filter.accept(getClass().getResource("/psi_sample1.xml").getFile());
 		assertEquals(false, acceptFlag);
 	}
 }

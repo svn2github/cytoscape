@@ -23,8 +23,11 @@ import cytoscape.visual.VisualStyle;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.logger.CyLogger;
 
+import org.biopax.paxtools.converter.OneTwoThree;
+import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -94,12 +97,18 @@ public class BioPaxGraphReader implements GraphReader {
 	public void read() throws IOException {
 
 		if(model == null && fileName != null) { // import new data
-			model = BioPaxUtil.readFile(fileName);
+			model = BioPaxUtil.read(new FileInputStream(fileName));
 		}
 		
 		if(model == null) {
 			log.error("Failed to read BioPAX model");
 			return;
+		}
+		
+		// immediately convert to BioPAX Level3 model
+		if(model != null && BioPAXLevel.L2.equals(model.getLevel())) {
+			log.info("Converting to BioPAX Level3 model internally... ");
+			model = new OneTwoThree().filter(model);
 		}
 		
 		log.info("Model contains " + model.getObjects().size()
@@ -229,8 +238,7 @@ public class BioPaxGraphReader implements GraphReader {
 			});
 
 		//  Set default Quick Find Index
-		networkAttributes.setAttribute(cyNetwork.getIdentifier(), "quickfind.default_index",
-		                               MapBioPaxToCytoscape.BIOPAX_SHORT_NAME);
+		networkAttributes.setAttribute(cyNetwork.getIdentifier(), "quickfind.default_index", Semantics.CANONICAL_NAME);
 
 		// set url to pathway commons -
 		// used for pathway commons context menus
@@ -247,16 +255,13 @@ public class BioPaxGraphReader implements GraphReader {
 		String dataSources = System.getProperty("biopax.data_sources");
 		if (dataSources != null && dataSources.length() > 0) {
 			networkAttributes.setAttribute(cyNetwork.getIdentifier(),
-										   "biopax.data_sources",
-										   dataSources);
+					"biopax.data_sources", dataSources);
 			System.setProperty("biopax.data_sources", "");
 		}
 
 		// associate the new network with its model
-		BioPaxUtil.addNetworkModel(cyNetwork.getIdentifier(), model);
 		String modelString = (fileName!=null) ? fileName : "";
-		Cytoscape.getNetworkAttributes().setAttribute(
-				networkId, BioPaxUtil.BIOPAX_MODEL_STRING,	modelString);
+		Cytoscape.getNetworkAttributes().setAttribute(networkId, BioPaxUtil.BIOPAX_DATA,	modelString);
 		
 		//  Set-up the BioPax Visual Style
 		VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();

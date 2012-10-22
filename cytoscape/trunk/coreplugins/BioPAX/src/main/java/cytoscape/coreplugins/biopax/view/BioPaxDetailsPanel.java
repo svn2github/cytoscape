@@ -38,14 +38,16 @@ import cytoscape.coreplugins.biopax.MapBioPaxToCytoscape;
 import cytoscape.coreplugins.biopax.action.LaunchExternalBrowser;
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import cytoscape.logger.CyLogger;
 
-import org.biopax.paxtools.model.level2.physicalEntity;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 
 import java.awt.*;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -76,7 +78,6 @@ public class BioPaxDetailsPanel extends JPanel {
 	 * Constructor.
 	 */
 	public BioPaxDetailsPanel() {
-		JLabel label = new JLabel();
 		textPane = new JTextPane();
 
 		//  Set Editor Kit that is capable of handling long words
@@ -126,9 +127,9 @@ public class BioPaxDetailsPanel extends JPanel {
 	 */
 	public void resetText() {
 		StringBuffer temp = new StringBuffer();
-		temp.append("<HTML><BODY>");
+		temp.append("<html><body>");
 		temp.append("Select a node to view details...");
-		temp.append("</BODY></HTML>");
+		temp.append("</body></html>");
 		textPane.setText(temp.toString());
 	}
 
@@ -139,9 +140,9 @@ public class BioPaxDetailsPanel extends JPanel {
 	 */
 	public void resetText(String text) {
 		StringBuffer temp = new StringBuffer();
-		temp.append("<HTML><BODY>");
+		temp.append("<html><body>");
 		temp.append(text);
-		temp.append("</BODY></HTML>");
+		temp.append("</body></html>");
 		textPane.setText(temp.toString());
 	}
 
@@ -153,52 +154,57 @@ public class BioPaxDetailsPanel extends JPanel {
 	public void showDetails(String nodeID) {
         String stringRef;
 
-		StringBuffer buf = new StringBuffer("<HTML>");
+		StringBuffer buf = new StringBuffer("<html><body>");
 
         // name, shortname
-        stringRef = nodeAttributes.getStringAttribute(nodeID, MapBioPaxToCytoscape.BIOPAX_NAME);
+        stringRef = nodeAttributes.getStringAttribute(nodeID, Semantics.CANONICAL_NAME);
 
-        String shortName = nodeAttributes.getStringAttribute(nodeID,
-            MapBioPaxToCytoscape.BIOPAX_SHORT_NAME);
-
+        String shortName = nodeAttributes.getStringAttribute(nodeID, "displayName");
         if ((shortName != null) && (shortName.length() > 0)) {
-                buf.append("<h2>" + shortName + "</h2>");
+                buf.append("<h2>").append(shortName).append("</h2>");
         } else if (stringRef != null && stringRef.length() > 0) {
-            buf.append("<h2>" + stringRef + "</h2>");
+            buf.append("<h2>").append(stringRef).append("</h2>");
         }
 
-        addType(nodeID, buf);
+        String type = nodeAttributes.getStringAttribute(nodeID, MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE);
+        buf.append("<h3>").append(type).append("</h3>");
 
         // organism
-        stringRef = nodeAttributes.getStringAttribute(nodeID, MapBioPaxToCytoscape.BIOPAX_ORGANISM_NAME);
+        stringRef = null;
+        stringRef = nodeAttributes.getStringAttribute(nodeID, "entityReference/organism/displayName");
+        if(stringRef == null)
+        	stringRef = nodeAttributes.getStringAttribute(nodeID, "entityReference/organism/standardName");
+        if(stringRef == null)
+        	stringRef = nodeAttributes.getStringAttribute(nodeID, "organism/displayName");
+        if(stringRef == null)
+        	stringRef = nodeAttributes.getStringAttribute(nodeID, "organism/standardName");
         if (stringRef != null) {
-            buf.append("<h3>" + stringRef + "</h3>");
+            buf.append("<h4>").append(stringRef).append("</h4>");
         }
 
         //  Add (optional) cPath Link
         addCPathLink(nodeID, buf);
 
         // synonyms
-        addAttributeList(nodeID, MapBioPaxToCytoscape.BIOPAX_SYNONYMS, "Synonyms:", buf);
+        addAttributeList(nodeID, "name;entityReference/name", buf, "Synonyms:");
         
 		// cellular location
-		addAttributeList(nodeID, MapBioPaxToCytoscape.BIOPAX_CELLULAR_LOCATIONS,
-		                 "Cellular Location(s):", buf);
+        stringRef = null;
+        stringRef = nodeAttributes.getStringAttribute(nodeID, "cellularLocation");
+        if (stringRef != null) {
+           buf.append("<h4>").append("Cellular Location: ").append(stringRef).append("</h4>");
+        }		
+//        addAttributeList(nodeID, MapBioPaxToCytoscape.BIOPAX_CELLULAR_LOCATIONS, buf, "Cellular Location: ");
 
 		// chemical modification
-		addAttributeList(nodeID, MapBioPaxToCytoscape.BIOPAX_CHEMICAL_MODIFICATIONS_LIST,
-		                 "Chemical Modifications:", buf);
+		addAttributeList(nodeID, MapBioPaxToCytoscape.BIOPAX_CHEMICAL_MODIFICATIONS_LIST, buf, "Chemical Modifications:");
 
 		// links
 		addLinks(nodeID, buf);
 
-		buf.append("</BODY></HTML>");
+		buf.append("</body></html>");
 		textPane.setText(buf.toString());
 		textPane.setCaretPosition(0);
-
-		//  If the containing parent is a BioPaxDetailsWindow, show it.
-		//  This only applies in Cytoscape 2.1 and local testing
-		Container parent = this.getTopLevelAncestor();
     }
 
     private void addCPathLink(String nodeID, StringBuffer buf) {
@@ -211,70 +217,50 @@ public class BioPaxDetailsPanel extends JPanel {
         if (serverName != null && serverDetailsUrl != null) {
             String type = nodeAttributes.getStringAttribute(nodeID,
                     MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE);
-            if (BioPaxUtil.getSubclassNames(physicalEntity.class, PhysicalEntity.class).contains(type)) {
+            if (BioPaxUtil.getSubclassNames(PhysicalEntity.class).contains(type)) {
                 String url = serverDetailsUrl + nodeID;
                 buf.append ("<h3><A href='" + url + "'>" + serverName + ": " + nodeID + "</A>");
             }
         }
     }
 
-    private void addType(String nodeID, StringBuffer buf) {
-        String type = nodeAttributes.getStringAttribute(nodeID, MapBioPaxToCytoscape.BIOPAX_ENTITY_TYPE);
-        buf.append("<h3>" + type + "</h3>");
-    }
 
     private void addLinks(String nodeID, StringBuffer buf) {
-		String xrefs1 = nodeAttributes.getStringAttribute(nodeID,
-            MapBioPaxToCytoscape.BIOPAX_UNIFICATION_REFERENCES);
-        String xrefs2 = nodeAttributes.getStringAttribute(nodeID,
-            MapBioPaxToCytoscape.BIOPAX_RELATIONSHIP_REFERENCES);
-
-		if (xrefs1 != null || xrefs2 != null) {
-			appendHeader("Links:", buf);
-            buf.append("<UL>");
-            if (xrefs1 != null) {
-                appendData(xrefs1, buf, false);
-            }
-            if (xrefs2 != null) {
-                appendData(xrefs2, buf, false);
-            }
-            addIHOPLinks(nodeID, buf);
-            buf.append("</UL>");
-        }
+		addAttributeList(nodeID, MapBioPaxToCytoscape.BIOPAX_UNIFICATION_REFERENCES 
+				+ ";" + MapBioPaxToCytoscape.BIOPAX_RELATIONSHIP_REFERENCES, buf, "Links:");
+		addAttributeList(nodeID, MapBioPaxToCytoscape.BIOPAX_PUBLICATION_REFERENCES, buf, "Publications:");
+         
+        addIHOPLinks(nodeID, buf);
 	}
 
-	private void addAttributeList(String nodeID, String attribute, String label, StringBuffer buf) {
-		StringBuffer displayString = new StringBuffer();
-		List list = nodeAttributes.getListAttribute(nodeID, attribute);
+	private void addAttributeList(String nodeID, String attributes, StringBuffer buf, String label) 
+	{
+		StringBuilder displayString = new StringBuilder();
 
-        if (list != null) {
-            int len = list.size();
-            boolean tooMany = false;
-            if (len > 7) {
-                len = 7;
-                tooMany = true;
-            }
-            for (int lc = 0; lc < len; lc++) {
-				String listItem = (String) list.get(lc);
-
-				if ((listItem != null) && (listItem.length() > 0)) {
-					String plainEnglish = BioPaxUtil.getTypeInPlainEnglish(listItem);
-                    displayString.append("<LI> - " + plainEnglish);
-                    displayString.append("</LI>"); 
-				}
+		Set<String> set = new TreeSet<String>();
+		for (String attribute : attributes.split(";")) {
+			@SuppressWarnings("unchecked")
+			List<String> list = nodeAttributes.getListAttribute(nodeID,
+					attribute);
+			if (list != null)
+				set.addAll(list);
+		}
+		
+		for (String listItem : set) {
+			if (listItem != null && listItem.length() > 0) {
+				displayString.append("<li> - " + listItem);
+				displayString.append("</li>");
 			}
-            if (tooMany) {
-                displayString.append("<LI>  ...</LI>");
-            }
-        }
+		}
 
-        // do we have a string to display ?
+		// do we have a string to display ?
 		if (displayString.length() > 0) {
-			appendHeader(label, buf);
-            buf.append ("<UL>");
-            appendData(displayString.toString(), buf, false);
-            buf.append ("</UL>");
-        }
+			if(label != null)
+				appendHeader(label, buf);
+			buf.append("<ul>");
+			appendData(displayString.toString(), buf, false);
+			buf.append("</ul>");
+		}
 	}
 
 	private void appendHeader(String header, StringBuffer buf) {
@@ -286,7 +272,7 @@ public class BioPaxDetailsPanel extends JPanel {
 	private void appendData(String data, StringBuffer buf, boolean appendBr) {
 		buf.append(data);
 		if (appendBr) {
-			buf.append("<BR>");
+			buf.append("<br/>");
 		}
 	}
 

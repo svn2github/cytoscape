@@ -103,7 +103,6 @@ public class NetworkListener implements PropertyChangeListener {
 		if (event.getPropertyName() == Cytoscape.NETWORK_CREATED) {
 			networkCreatedEvent(event);
 		} else if (event.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
-			networkDestroyed((String) event.getNewValue());
 			relevantEventFlag = true;
 		} else if (event.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
 			relevantEventFlag = true;
@@ -119,7 +118,7 @@ public class NetworkListener implements PropertyChangeListener {
             CySessionUtil.setSessionReadingInProgress(true);
         }
 
-		if (relevantEventFlag && !networkViewsRemain()) {
+		if (relevantEventFlag) {
 			onZeroNetworkViewsRemain();
 		}
 	}
@@ -129,7 +128,6 @@ public class NetworkListener implements PropertyChangeListener {
 	 */
 	private void networkCreatedEvent(PropertyChangeEvent event) {
 		// get the network
-		/* (why was that?)
 		CyNetwork cyNetwork = null;
 		Object newValue = event.getNewValue();
 
@@ -142,10 +140,9 @@ public class NetworkListener implements PropertyChangeListener {
 			cyNetwork = Cytoscape.getNetwork(networkID);
 		}
 		
-		if(cyNetwork != null && BioPaxUtil.isBioPAXNetwork(cyNetwork)) {
+		if(cyNetwork != null && BioPaxUtil.isBioPaxNetwork(cyNetwork)) {
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_CREATED, null, cyNetwork);
 		}
-		*/
 		
 		bpPanel.resetText();
 		
@@ -174,48 +171,13 @@ public class NetworkListener implements PropertyChangeListener {
 		if (networkId != null) {
 			// update bpPanel accordingly
             if (!sessionLoaded) {
-            	if (BioPaxUtil.getNetworkModelMap().containsKey(networkId)) {
-                    bpPanel.resetText();
-                } else {
-                    bpPanel.resetText("Node details are not provided for"
-                                      + " the currently selected network.");
-                }
+            	bpPanel.resetText();
             }
             
             // due to quirky-ness in event model, we could get here without registering network
             // check if this is a biopax network
-            if (BioPaxUtil.isBioPAXNetwork(cyNetwork) 
-            		&& !BioPaxUtil.getNetworkModelMap().containsKey(networkId)) {
-            	registerNetwork(cyNetwork);
-            }
+           	registerNetwork(cyNetwork);
         }
-	}
-
-	/*
-	* Removes CyNetwork from our list if it has just been destroyed.
-	*
-	* @param networkID the ID of the CyNetwork just destroyed.
-	*/
-	private void networkDestroyed(String networkID) {
-		// destroy the corresponding model
-		BioPaxUtil.removeNetworkModel(networkID);
-	}
-
-	/*
-	* Determines if any network views we have created remains.
-	*
-	 * @return boolean if any network views that we have created remain.
-	*/
-	private boolean networkViewsRemain() {
-		// interate through our network list checking if their views exists
-		for (String id : BioPaxUtil.getNetworkModelMap().keySet()) {
-			// get the network view via id
-			CyNetworkView cyNetworkView = Cytoscape.getNetworkView(id);
-			if (cyNetworkView != null) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**

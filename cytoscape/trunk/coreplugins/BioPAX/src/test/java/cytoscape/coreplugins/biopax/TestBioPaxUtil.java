@@ -31,12 +31,14 @@
  **/
 package cytoscape.coreplugins.biopax;
 
+import java.io.FileInputStream;
+
 import junit.framework.TestCase;
 
 import org.biopax.paxtools.model.Model;
-import org.biopax.paxtools.model.level2.interaction;
-import org.biopax.paxtools.model.level2.pathway;
-import org.biopax.paxtools.model.level2.physicalEntity;
+import org.biopax.paxtools.model.level3.Interaction;
+import org.biopax.paxtools.model.level3.Pathway;
+import org.biopax.paxtools.model.level3.PhysicalEntity;
 
 import cytoscape.coreplugins.biopax.util.BioPaxUtil;
 
@@ -53,25 +55,12 @@ public class TestBioPaxUtil extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testUtil() throws Exception {
-		Model model = BioPaxUtil.readFile("src/test/resources/biopax_sample1.owl");
+		Model model = BioPaxUtil.read(new FileInputStream(getClass().getResource("/biopax_sample1.owl").getFile()));
 		// Validate Number of Entities
 		assertNotNull(model);
-		assertEquals(8, model.getObjects(physicalEntity.class).size());
-		assertEquals(4, model.getObjects(interaction.class).size());
-		assertEquals(1, model.getObjects(pathway.class).size());
-		/* TODO re-factor because BioPaxUtil.getParentPathwayName is removed
-		String pathways = BioPaxUtil.getParentPathwayName(
-				model.getByID("http://www.biopax.org/examples/simple-demo-pathway#catalysis43"), model)
-				.toString();
-		System.out.println("PARENT PROCESSes NAMES: " + pathways);
-		
-		assertTrue(pathways.contains("glycolysis"));
-		
-		pathways = BioPaxUtil.getParentPathwayName(
-				model.getByID("http://www.biopax.org/examples/simple-demo-pathway#protein45"), model)
-				.toString();
-		assertTrue(pathways.contains("glycolysis"));
-		*/
+		assertEquals(8, model.getObjects(PhysicalEntity.class).size());
+		assertEquals(4, model.getObjects(Interaction.class).size());
+		assertEquals(1, model.getObjects(Pathway.class).size());
 	}
 
 	/**

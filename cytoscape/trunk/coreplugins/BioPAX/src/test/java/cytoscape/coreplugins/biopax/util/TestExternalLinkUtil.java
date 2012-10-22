@@ -31,11 +31,8 @@
  **/
 package cytoscape.coreplugins.biopax.util;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-import cytoscape.coreplugins.biopax.ExternalLink;
 
 import java.util.ArrayList;
 
@@ -46,25 +43,6 @@ import java.util.ArrayList;
  * @author Ethan Cerami.
  */
 public class TestExternalLinkUtil extends TestCase {
-	/**
-	 * Test bootstrap
-	 *
-	 * @return Test
-	 */
-	public static Test suite() {
-		// Will dynamically add all methods as tests that begin with 'test'
-		// and have no arguments:
-		return new TestSuite(TestExternalLinkUtil.class);
-	}
-
-	/**
-	 * Test main
-	 *
-	 * @param args String[]
-	 */
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(suite());
-	}
 
 	/**
 	 * Tests External Database Links.

@@ -11,30 +11,41 @@
 
   <name>BioPAX</name>
 
-    <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
-    <repositories>
-        <repository>
-            <id>cytoscape_snapshots</id>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <name>Cytoscape Snapshots</name>
-            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>cytoscape_releases</id>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <name>Cytoscape Releases</name>
-            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
-        </repository>
+	<!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
+	<repositories>
+		<repository>
+			<id>cytoscape_snapshots</id>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<name>Cytoscape Snapshots</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>cytoscape_releases</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Cytoscape Releases</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+		</repository>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>cytoscape_thirdparty</id>
+			<name>Cytoscape Third Party</name>
+			<url>http://code.cytoscape.org/nexus/content/repositories/thirdparty/</url>
+		</repository>
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -46,7 +57,7 @@
 			<name>Cytoscape BioPAX Release Mirror</name>
 			<url>http://code.cytoscape.org/nexus/content/repositories/biopax-release/</url>
 		</repository>
-    </repositories>
+	</repositories>
 
   <build>
     <plugins>
@@ -78,15 +89,38 @@
 		<dependency>
 			<groupId>org.biopax.paxtools</groupId>
 			<artifactId>paxtools-core</artifactId>
-			<version>4.1.5b</version>
+			<version>${paxtools.version}</version>
 		</dependency>
+		<dependency>
+        	<groupId>org.biopax.paxtools</groupId>
+        	<artifactId>biopax-converter</artifactId>
+        	<version>${paxtools.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>stax2-api</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>cytoscape-temp</groupId> -->
+<!-- 			<artifactId>staxmate</artifactId> -->
+<!-- 			<version>2.0.0</version> -->
+<!-- 		</dependency> -->
+        <dependency>
+            <groupId>cytoscape-temp</groupId>
+            <artifactId>woodstox-core-lgpl</artifactId>
+            <version>4.0.5</version>
+        </dependency>		
 	</dependencies>
 
+	<properties>
+		<paxtools.version>4.1.5b2</paxtools.version>
+	</properties>
 </project>
 

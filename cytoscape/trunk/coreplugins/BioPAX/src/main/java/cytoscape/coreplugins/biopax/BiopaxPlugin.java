@@ -48,16 +48,6 @@ public class BiopaxPlugin extends CytoscapePlugin {
 	
 	protected static final CyLogger log = CyLogger.getLogger(BiopaxPlugin.class);
 	
-	/**
-	 * Version Major Number.
-	 */
-	public static final int VERSION_MAJOR_NUM = 0;
-
-	/**
-	 * Version Minor Number.
-	 */
-	public static final int VERSION_MINOR_NUM = 7;
-
     /**
      * Name of Plugin.
      */

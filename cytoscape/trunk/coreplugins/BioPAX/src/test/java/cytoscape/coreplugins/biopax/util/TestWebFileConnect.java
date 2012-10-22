@@ -31,10 +31,10 @@
  **/
 package cytoscape.coreplugins.biopax.util;
 
+import java.io.File;
+
 import junit.framework.TestCase;
 
-
-import java.io.File;
 
 
 /**
@@ -49,7 +49,7 @@ public class TestWebFileConnect extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testFileConnect() throws Exception {
-		String str = WebFileConnect.retrieveDocument(new File("src/test/resources/biopax_sample1.owl"));
+		String str = WebFileConnect.retrieveDocument(new File(getClass().getResource("/biopax_sample1.owl").getFile()));
 		assertTrue(str.startsWith("<?xml version=\"1.0\""));
 	}
 
