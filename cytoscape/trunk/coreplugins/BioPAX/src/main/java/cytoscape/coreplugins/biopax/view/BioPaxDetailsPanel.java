@@ -186,7 +186,7 @@ public class BioPaxDetailsPanel extends JPanel {
         addCPathLink(nodeID, buf);
 
         // synonyms
-        addAttributeList(nodeID, "name;entityReference/name", buf, "Synonyms:");
+        addAttributeList(nodeID, "name;entityReference/name;memberPhysicalEntity/name;memberEntityReference/name", buf, "Synonyms:");
         
 		// cellular location
         stringRef = null;

@@ -570,7 +570,6 @@ public class MapBioPaxToCytoscape {
     					Class c = editor.getRange();
     					String prop = editor.getProperty();
     					if( Entity.class.isAssignableFrom(c)
-//    						|| "name".equals(prop) //display/standard name is enough
     						|| Stoichiometry.class.isAssignableFrom(c)
     						|| "nextStep".equals(prop) 
     						) {	
