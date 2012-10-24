@@ -13,8 +13,6 @@ import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.startlevel.StartLevel;
 
 public class SplashManipulator implements
 	BundleListener,
@@ -32,8 +30,6 @@ public class SplashManipulator implements
     	resolved = new HashSet<Long>();
     	started = new HashSet<Long>();
     	
-    	applyStartLevelHack();
-    	
     	for (Bundle bundle : context.getBundles()) {
     		long id = bundle.getBundleId();
     		resolved.add(id);
@@ -48,15 +44,6 @@ public class SplashManipulator implements
         	g = splash.createGraphics();
 		renderSplashFrame("Cytoscape Starting...");
 		font = new Font(Font.MONOSPACED,Font.PLAIN,12);
-	}
-
-    private void applyStartLevelHack() {
-    	// See ticket #1494.  This hack needs to remain in place until Karaf
-    	// is patched.
-    	ServiceReference reference = context.getServiceReference(StartLevel.class.getName());
-    	StartLevel level = (StartLevel) context.getService(reference);
-    	level.setStartLevel(200);
-    	context.ungetService(reference);
 	}
 
 	public void bundleChanged(BundleEvent event) {
