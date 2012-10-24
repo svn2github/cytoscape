@@ -1,6 +1,6 @@
 <?php
 //CytoStaff who will receive e-mail notification if a bug is entered
-$cytostaff_emails[0] = "plwang@bioeng.ucsd.edu";
-//$cytostaff_emails[1] = "msmoot@ucsd.edu";
-//$cytostaff_emails[2] = "kono@ucsd.edu";
+// Note: [0] is used in  the mail "from", [1] is used in the mail "to"
+$cytostaff_emails[0] = "penwangXXXX_AT_gmail.com";
+$cytostaff_emails[1] = "cytostaff_AT_googlegroups.com";
 ?>

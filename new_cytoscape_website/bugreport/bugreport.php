@@ -219,7 +219,7 @@ function sendNotificationEmail($bugReport) {
 	$from = $cytostaff_emails[0];
 	$to = "";
 
-	for ($i=0; $i<count($cytostaff_emails); $i++){
+	for ($i=1; $i<count($cytostaff_emails); $i++){
          	$to = $to . $cytostaff_emails[$i] . " ";
 	}
 		
