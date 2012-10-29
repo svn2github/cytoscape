@@ -7,6 +7,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,10 +20,12 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.cytoscape.application.CyVersion;
 import org.cytoscape.diagnostics.PerformanceDetails;
 import org.cytoscape.diagnostics.SystemDetails;
 import org.cytoscape.work.AbstractTask;
@@ -30,7 +36,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 public class GeneratePerformanceReportTaskFactory implements TaskFactory {
+	private static final String REPORT_HOST = "code.cytoscape.org";
 	private BundleContext context;
+	boolean reportSent;
 
 	public GeneratePerformanceReportTaskFactory(BundleContext context) {
 		this.context = context;
@@ -58,7 +66,7 @@ public class GeneratePerformanceReportTaskFactory implements TaskFactory {
 		});
 	}
 	
-	JDialog createDialog(String report) {
+	JDialog createDialog(final String report) {
 		final JDialog dialog = new JDialog();
 		dialog.setTitle("Performance Report");
 		
@@ -67,10 +75,17 @@ public class GeneratePerformanceReportTaskFactory implements TaskFactory {
 		
 		JLabel preambleLabel = new JLabel("<html>This app creates an anonymized report about Cytoscape's start-up performance on your system.  You can opt to send the details below to the Cytoscape development team so they can improve the quality and responsiveness of this product.");
 		
-		JButton sendButton = new JButton("Submit Report");
+		final JButton sendButton = new JButton("Submit Report");
+		sendButton.setEnabled(!reportSent);
 		sendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				// TODO: Implement this
+				if (sendReport(report)) {
+					JOptionPane.showMessageDialog(dialog, "Thank you for sending us your report!  Your feedback will help us improve future versions of Cytoscape.", "Submit Report", JOptionPane.INFORMATION_MESSAGE);
+					reportSent = true;
+					sendButton.setEnabled(false);
+				} else {
+					JOptionPane.showMessageDialog(dialog, "We are currently experiencing problems submitting your report.  Please try again later.", "Submit Report", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 
@@ -95,6 +110,44 @@ public class GeneratePerformanceReportTaskFactory implements TaskFactory {
 		contents.add(buttonPanel, new GridBagConstraints(0, row++, 1, 1, 0, 0, GridBagConstraints.LAST_LINE_END, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 		
 		return dialog;
+	}
+
+	protected boolean sendReport(String report) {
+		String version = getVersion();
+		try {
+			return sendReport(REPORT_HOST, version, report);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	private String getVersion() {
+		ServiceReference reference = context.getServiceReference(CyVersion.class.getName());
+		if (reference == null) {
+			return null;
+		}
+		CyVersion version = (CyVersion) context.getService(reference);
+		try {
+			return version.getVersion();
+		} finally {
+			context.ungetService(reference);
+		}
+	}
+
+	boolean sendReport(String host, String version, String report) throws IOException {
+		URL url = new URL(String.format("http://%s/log-performance/%s", host, version));
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setDoOutput(true);
+		connection.setRequestMethod("PUT");
+		PrintWriter writer = new PrintWriter(connection.getOutputStream());
+		try {
+			writer.write(report);
+		} finally {
+			writer.close();
+		}		
+		connection.connect();
+		return connection.getResponseCode() == 200;
 	}
 
 	String buildReport(SystemDetails systemDetails, PerformanceDetails performanceDetails) {
