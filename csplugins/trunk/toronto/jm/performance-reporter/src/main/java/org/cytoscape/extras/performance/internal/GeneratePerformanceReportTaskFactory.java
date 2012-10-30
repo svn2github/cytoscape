@@ -28,6 +28,7 @@ import javax.swing.JTextArea;
 import org.cytoscape.application.CyVersion;
 import org.cytoscape.diagnostics.PerformanceDetails;
 import org.cytoscape.diagnostics.SystemDetails;
+import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
@@ -50,11 +51,12 @@ public class GeneratePerformanceReportTaskFactory implements TaskFactory {
 			public void run(TaskMonitor taskMonitor) throws Exception {
 				ServicePool pool = new ServicePool(context);
 				try {
+					StreamUtil streamUtil = pool.getService(StreamUtil.class);
 					PerformanceDetails performanceDetails = pool.getService(PerformanceDetails.class);
 					SystemDetails systemDetails = pool.getService(SystemDetails.class);
 					String report = buildReport(systemDetails, performanceDetails);
 					
-					JDialog dialog = createDialog(report);
+					JDialog dialog = createDialog(report, streamUtil);
 					dialog.setLocationByPlatform(true);
 					dialog.setSize(800, 600);
 					dialog.setVisible(true);
@@ -66,7 +68,7 @@ public class GeneratePerformanceReportTaskFactory implements TaskFactory {
 		});
 	}
 	
-	JDialog createDialog(final String report) {
+	JDialog createDialog(final String report, final StreamUtil streamUtil) {
 		final JDialog dialog = new JDialog();
 		dialog.setTitle("Performance Report");
 		
@@ -79,7 +81,7 @@ public class GeneratePerformanceReportTaskFactory implements TaskFactory {
 		sendButton.setEnabled(!reportSent);
 		sendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				if (sendReport(report)) {
+				if (sendReport(report, streamUtil)) {
 					JOptionPane.showMessageDialog(dialog, "Thank you for sending us your report!  Your feedback will help us improve future versions of Cytoscape.", "Submit Report", JOptionPane.INFORMATION_MESSAGE);
 					reportSent = true;
 					sendButton.setEnabled(false);
@@ -112,10 +114,10 @@ public class GeneratePerformanceReportTaskFactory implements TaskFactory {
 		return dialog;
 	}
 
-	protected boolean sendReport(String report) {
+	protected boolean sendReport(String report, StreamUtil streamUtil) {
 		String version = getVersion();
 		try {
-			return sendReport(REPORT_HOST, version, report);
+			return sendReport(REPORT_HOST, version, report, streamUtil);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -135,9 +137,9 @@ public class GeneratePerformanceReportTaskFactory implements TaskFactory {
 		}
 	}
 
-	boolean sendReport(String host, String version, String report) throws IOException {
+	boolean sendReport(String host, String version, String report, StreamUtil streamUtil) throws IOException {
 		URL url = new URL(String.format("http://%s/log-performance/%s", host, version));
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		HttpURLConnection connection = (HttpURLConnection) streamUtil.getURLConnection(url);
 		connection.setDoOutput(true);
 		connection.setRequestMethod("PUT");
 		PrintWriter writer = new PrintWriter(connection.getOutputStream());
