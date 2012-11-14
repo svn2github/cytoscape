@@ -233,13 +233,13 @@ public class Compound {
 		if (object == null) {
 			for (List<Compound> cList: compoundMap.values()) {
 				for (Compound c: cList) {
-					c.createStructure();
+					c.createStructure(null);
 				}
 			}
 		} else if (compoundMap.containsKey(object)) {
 			List<Compound> cList = compoundMap.get(object);
 			for (Compound c: cList) {
-				c.createStructure();
+				c.createStructure(null);
 			}
 		}
 	}
@@ -267,8 +267,10 @@ public class Compound {
 	private DescriptorEngine descriptorEngine = null;
 
 	/**
- 	 * The constructor is called from the various static getCompound methods to create a compound and store it in
- 	 * the compound map.
+ 	 * The constructor is creates a compound and stores it in
+ 	 * the compound map.  As a byproduct of the compound creation,
+ 	 * the CDK iMolecule is also created.  This form of the constructor
+ 	 * assumes that the compound is connected to a node or edge.
  	 *
  	 * @param source the graph object that holds this compound
  	 * @param attribute the attribute that has the compound string
@@ -277,6 +279,21 @@ public class Compound {
  	 * @param noStructures if 'true' get the structures on a separate thread
  	 */
 	public Compound(GraphObject source, String attribute, String mstring, 
+	                AttriType attrType, boolean noStructures) {
+		this(source, attribute, mstring, null, attrType, noStructures);
+	}
+
+	/**
+ 	 * This alternative form of the constructor is called when we've calculated an IMolecule internally and it
+ 	 * bypasses the creation.
+ 	 *
+ 	 * @param source the graph object that holds this compound
+ 	 * @param attribute the attribute that has the compound string
+ 	 * @param mstring the compound descriptor itself
+ 	 * @param attrType the type of the compound descriptor (inchi or smiles)
+ 	 * @param noStructures if 'true' get the structures on a separate thread
+ 	 */
+	public Compound(GraphObject source, String attribute, String mstring, IMolecule molecule,
 	                AttriType attrType, boolean noStructures) {
 		this.source = source;
 		this.attribute = attribute;
@@ -295,13 +312,14 @@ public class Compound {
 		this.index = mapList.size();
 		mapList.add(this);
 		Compound.compoundMap.put(source, mapList);
-		createStructure();
+		createStructure(molecule);
 	}
 
-	public void createStructure() {
+
+	public void createStructure(IMolecule molecule) {
 		this.renderedImage = null;
 		this.laidOut = false;
-		this.iMolecule = null;
+		this.iMolecule = molecule;
 		this.iMolecule3D = null;
 		this.smilesStr = null;
 		this.fp = Compound.fingerprinter.getFingerprinter();
@@ -322,14 +340,16 @@ public class Compound {
 
 		logger.debug("smiles string = "+smilesStr);
 
-		// Create the CDK Molecule object
-		SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
-		try {
-			iMolecule = sp.parseSmiles(this.smilesStr);
-		} catch (InvalidSmilesException e) {
-			iMolecule = null;
-			logger.warning("Unable to parse SMILES: "+smilesStr+" for "+source.getIdentifier()+": "+e.getMessage());
-			return;
+		if (this.iMolecule == null) {
+			// Create the CDK Molecule object
+			SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
+			try {
+				iMolecule = sp.parseSmiles(this.smilesStr);
+			} catch (InvalidSmilesException e) {
+				iMolecule = null;
+				logger.warning("Unable to parse SMILES: "+smilesStr+" for "+source.getIdentifier()+": "+e.getMessage());
+				return;
+			}
 		}
 
 		// At this point, we should have an IMolecule

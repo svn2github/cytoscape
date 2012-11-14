@@ -196,7 +196,7 @@ public class TanimotoScorerTask extends AbstractCompoundTask {
 				newv.setXPosition(orig.getXPosition());
 				newv.setYPosition(orig.getYPosition());
 			}
-			objectCount++;
+
 			updateMonitor();
 		}
 

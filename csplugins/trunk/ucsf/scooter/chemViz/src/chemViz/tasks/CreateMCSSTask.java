@@ -54,6 +54,7 @@ import chemViz.ui.ChemInfoSettingsDialog;
 import chemViz.ui.CompoundPopup;
 
 import org.openscience.cdk.Molecule;
+import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
@@ -122,12 +123,18 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 				mcss = maximumStructure(overlap);
 				if (mcss == null) break;
 			}
-		} catch (CDKException e) {}
+		} catch (CDKException e) {
+			System.out.println("CDKException: "+e);
+		}
+
 		calculationComplete = true;	
 		if (showResult) {
 			String mcssSmiles = getMCSSSmiles();
 			String label = "MCSS = "+mcssSmiles;
-			List<Compound> mcssList = ValueUtils.getCompounds(null, mcssSmiles, AttriType.smiles, null, null);
+			// List<Compound> mcssList = ValueUtils.getCompounds(null, mcssSmiles, AttriType.smiles, null, null);
+			Compound c = new Compound(null, null, mcssSmiles, mcss, AttriType.smiles, false);
+			List<Compound> mcssList = new ArrayList<Compound>();
+			mcssList.add(c);
 			CreatePopupTask loader = new CreatePopupTask(mcssList, null, dialog, label, 1);
 			TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
 		}

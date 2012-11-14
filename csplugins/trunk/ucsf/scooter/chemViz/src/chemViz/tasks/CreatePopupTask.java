@@ -95,7 +95,8 @@ public class CreatePopupTask extends AbstractCompoundTask {
  	 * @param objects the graph objects that we're creating the popup for
  	 * @param dialog the settings dialog, which we use to pull the attribute names that contain the compound descriptors
  	 */
-  public CreatePopupTask(List<Compound> compoundList, List<GraphObject>selection, ChemInfoSettingsDialog dialog, String labelAttribute, int maxCompounds) {
+  public CreatePopupTask(List<Compound> compoundList, List<GraphObject>selection, 
+	                       ChemInfoSettingsDialog dialog, String labelAttribute, int maxCompounds) {
 		this.objectList = selection;
 		this.compoundList = compoundList;
 		this.dialog = dialog;

@@ -380,7 +380,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 
 		properties.add(new Tunable("tcCutoff",
 		                "Minimum tanimoto value to consider for edge creation",
-		                Tunable.DOUBLE, new Double(0.25)));
+		                Tunable.DOUBLE, new Double(0.75)));
 
 		properties.add( new Tunable("fingerPrinter",
 		                "Fingerprint algorithm to use",

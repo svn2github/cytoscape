@@ -184,20 +184,19 @@ public class MCSSMenus extends ChemVizAbstractMenu implements ActionListener {
 		GraphObject obj = null;
 		List<GraphObject> gObjList = new ArrayList<GraphObject>();
 		CyAttributes attributes = null;
-		if (context instanceof NodeView) {
-			obj = ((NodeView)context).getNode();
+
+		if (cmd.equals("chemViz.menu.showmcss.thisNode") && (context instanceof NodeView)) {
+			gObjList.add(((NodeView)context).getNode());
 			attributes = Cytoscape.getNodeAttributes();
-		} else {
-			obj = ((EdgeView)context).getEdge();
+		} else if (cmd.equals("chemViz.menu.showmcss.thisEdge") && (context instanceof EdgeView)) {
+			gObjList.add(((EdgeView)context).getEdge());
 			attributes = Cytoscape.getEdgeAttributes();
-		}
-		
-		if (cmd.equals("chemViz.menu.showmcss.thisNode") || cmd.equals("chemViz.menu.showmcss.thisEdge")) {
-			gObjList.add(obj);
 		} else if (cmd.equals("chemViz.menu.showmcss.selectedNodes")) {
 			gObjList.addAll(Cytoscape.getCurrentNetwork().getSelectedNodes());
+			attributes = Cytoscape.getNodeAttributes();
 		} else if (cmd.equals("chemViz.menu.showmcss.selectedEdges")) {
 			gObjList.addAll(Cytoscape.getCurrentNetwork().getSelectedEdges());
+			attributes = Cytoscape.getEdgeAttributes();
 		} 
 
 		CreateMCSSTask task = new CreateMCSSTask(gObjList, attributes, settingsDialog, true);

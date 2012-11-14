@@ -73,12 +73,12 @@ public class SimilarityMenu extends ChemVizAbstractMenu implements ActionListene
 		menu.add(simMenu);
 		Set<GraphObject> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
 		if (selectedNodes != null && selectedNodes.size() > 1) {
-			JMenu tanMenu = new JMenu(systemProps.getProperty("chemViz.menu.similarity.tanimoto"));
-			tanMenu.add(buildMenuItem("chemViz.menu.similarity.tanimoto.allNodes",
+			// JMenu tanMenu = new JMenu(systemProps.getProperty("chemViz.menu.similarity.tanimoto"));
+			simMenu.add(buildMenuItem("chemViz.menu.similarity.tanimoto.allNodes",
 			                          "chemViz.menu.similarity.tanimoto.allNodes"));
-			tanMenu.add(buildMenuItem("chemViz.menu.similarity.tanimoto.selectedNodes",
+			simMenu.add(buildMenuItem("chemViz.menu.similarity.tanimoto.selectedNodes",
 			                          "chemViz.menu.similarity.tanimoto.selectedNodes"));
-			simMenu.add(tanMenu);
+			// simMenu.add(tanMenu);
 		} else {
 			JMenuItem tanimoto = buildMenuItem("chemViz.menu.similarity.tanimoto",
 				"chemViz.menu.similarity.tanimoto.allNodes");
@@ -109,7 +109,7 @@ public class SimilarityMenu extends ChemVizAbstractMenu implements ActionListene
  	 * @param newNetwork if 'true' a new network is created and 
  	 */
 	private void createScoreTable(Collection<GraphObject>selection, ChemInfoSettingsDialog dialog, boolean newNetwork) {
-		System.out.println("Creating score table");
+		// System.out.println("Creating score table");
 		TanimotoScorerTask scorer = new TanimotoScorerTask(selection, dialog, newNetwork);
 		TaskManager.executeTask(scorer, scorer.getDefaultTaskConfig());
 	}
