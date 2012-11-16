@@ -330,7 +330,7 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		// Replace this with Shape renderer!
 		// TexturePaint tp = new MyPaint(nv, cmpd, new Rectangle2D.Double(x,y,width,height));
 		List<CustomGraphic> cgList = cmpd.depictWithCDK(x, y, width, height, 
-		                                                null, (CyNetworkView)nv.getGraphView());
+		                                                null, nv);
 		for (CustomGraphic cg: cgList)
 			((DNodeView)nv).addCustomGraphic(cg);
 

@@ -69,7 +69,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.util.URLUtil;
-import cytoscape.view.CyNetworkView;
+import giny.view.NodeView;
 
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemModel;
@@ -743,15 +743,17 @@ public class Compound {
 	}
 
 	public List<CustomGraphic> depictWithCDK(double x, double y, double width, double height, 
-	                                         Color background, CyNetworkView view) {
+	                                         Color background, NodeView view) {
 		if (iMolecule == null || width == 0.0 || height == 0.0) {
 			return null;
 		}
 
+		double boxSize = 300.0;
+
 		AtomContainerRenderer renderer = getRenderer(background);
-		double scale = Math.min(width/100.0, height/100.0);
+		double scale = Math.min(width/boxSize, height/boxSize);
 		Rectangle2D bbox = new Rectangle2D.Double(x/scale,y/scale,width/scale,height/scale);
-		renderer.setup(iMolecule, new Rectangle((int)100, (int)100));
+		renderer.setup(iMolecule, new Rectangle((int)boxSize, (int)boxSize));
 		CustomGraphicsVisitor cgV = new CustomGraphicsVisitor(view, scale);
 		renderer.paint(iMolecule, cgV, bbox, true);
 		return cgV.getCustomGraphics();
