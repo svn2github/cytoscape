@@ -35,6 +35,7 @@
 
 package chemViz.tasks;
 
+import java.awt.Color;
 import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -85,7 +86,7 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 	CyNetworkView view;
 	ChemInfoSettingsDialog settingsDialog;
 	HashMap<NodeView, Compound> viewMap = null;
-	HashMap<NodeView, CustomGraphic> graphMap = null;
+	HashMap<NodeView, List<CustomGraphic>> graphMap = null;
 	private boolean removeCustomGraphics = false;
 	double zoom = 0.0;
 	double lastX = 0.0;
@@ -206,8 +207,9 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 				updateMonitor();
 				if (nodeSelection == null || nodeSelection.contains(nv.getNode())) {
 					// System.out.println("Removing cg for "+nv.getNode().getIdentifier());
-					CustomGraphic cg = graphMap.get(nv);
-					((DNodeView)nv).removeCustomGraphic(cg);
+					List<CustomGraphic> cglist = graphMap.get(nv);
+					for(CustomGraphic cg: cglist)
+						((DNodeView)nv).removeCustomGraphic(cg);
 					nodeAttributes.deleteAttribute(nv.getNode().getIdentifier(), 
 					                               CustomGraphicsAttribute); 
 					graphMap.remove(nv);
@@ -227,18 +229,20 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		objectCount = 0;
 		List<Compound>cList = compoundList;
 		if (cList == null) {
+			totalObjects = nodeSelection.size();
 			cList = getCompounds(nodeSelection, nodeAttributes,
 					   							 settingsDialog.getCompoundAttributes("node",AttriType.smiles),
 						   						 settingsDialog.getCompoundAttributes("node",AttriType.inchi));
 		}
 
+		objectCount = 0;
 		totalObjects = cList.size();
 
 		if (viewMap == null)
 			viewMap = new HashMap();
 
 		if (graphMap == null)
-			graphMap = new HashMap();
+			graphMap = new HashMap<NodeView, List<CustomGraphic>>();
 
 		zoom = view.getZoom();
 
@@ -254,11 +258,11 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 			// Have we already seen it?
 			if (viewMap.containsKey(nv)) continue;
 
-			CustomGraphic cg = drawImage(nv, compound);
-			if (cg == null) continue;
+			List<CustomGraphic> cglist = drawImage(nv, compound);
+			if (cglist == null) continue;
 
 			viewMap.put(nv, compound);
-			graphMap.put(nv, cg);
+			graphMap.put(nv, cglist);
 
 			// Update our node attribute
 			nodeAttributes.setAttribute(nv.getNode().getIdentifier(), 
@@ -278,7 +282,7 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		networkAttributes.setUserVisible(CustomGraphicsAttribute, false);
 	}
 
-	private CustomGraphic drawImage(NodeView nv, Compound cmpd) {
+	private List<CustomGraphic> drawImage(NodeView nv, Compound cmpd) {
 		// Get our scale factor
 		int scale = settingsDialog.getNodeStructureSize();
 		// Get our anchor
@@ -323,11 +327,19 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 			x = 0.0; y = 0.0;
 		}
 
-		TexturePaint tp = new MyPaint(nv, cmpd, new Rectangle2D.Double(x,y,width,height));
+		// Replace this with Shape renderer!
+		// TexturePaint tp = new MyPaint(nv, cmpd, new Rectangle2D.Double(x,y,width,height));
+		List<CustomGraphic> cgList = cmpd.depictWithCDK(x, y, width, height, 
+		                                                null, (CyNetworkView)nv.getGraphView());
+		for (CustomGraphic cg: cgList)
+			((DNodeView)nv).addCustomGraphic(cg);
 
+/*
 		// Add it to the view
 		return ((DNodeView)nv).addCustomGraphic(new Rectangle2D.Double(x,y,width,height), tp, 
 		                                        anchor);
+*/
+		return cgList;
 	}
 
 	private boolean inViewport(NodeView nv, int width, int height, 
@@ -355,6 +367,7 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		return true;
 	}
 
+/*
 	class MyPaint extends TexturePaint {
 		InnerCanvas canvas = null;
 		DGraphView view = null;
@@ -383,5 +396,6 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 			}
 		}
 	}
+*/
 
 }

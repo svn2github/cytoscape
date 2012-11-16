@@ -51,10 +51,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import giny.model.GraphObject;
 import giny.view.EdgeView;
@@ -116,18 +119,26 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 	public void componentMoved(ComponentEvent e) {}
 	public void componentShown(ComponentEvent e) {}
 	public void componentResized(ComponentEvent e) {
-		JLabel labelComponent = (JLabel)e.getComponent();
+		if (!(e.getComponent() instanceof JPanel))
+			return;
+
+		JPanel panel = (JPanel)e.getComponent();
+		Component[] components = panel.getComponents();
+
+		// If we have two components, component 0 is the image and
+		// component 1 is the label
+		JLabel labelComponent = (JLabel)components[0];
+
 		// Get our new width
-		int width = labelComponent.getWidth();
-		int height = labelComponent.getHeight();
-		String label = labelComponent.getText();
-		if (label != null && label.length() > 0)
-			height = height - LABEL_HEIGHT;
-		// Is it in our map?
-		if (imageMap.containsKey(labelComponent)) {
-			Image img = imageMap.get(labelComponent).getImage(width,height, Color.WHITE);
-			if (img != null)
+		int width = panel.getWidth();
+		int height = panel.getHeight();
+
+		if (imageMap.containsKey(panel)) {
+			Image img = imageMap.get(panel).getImage(width,height-LABEL_HEIGHT, Color.WHITE);
+			if (img != null) {
 				labelComponent.setIcon(new ImageIcon(img));
+				labelComponent.setSize(width, height-LABEL_HEIGHT);
+			}
 		}
 	}
 
@@ -155,10 +166,14 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 		for (Compound compound: compoundList) {
 			// Get the image
 			Image img = compound.getImage(width/nCols, width/nCols-LABEL_HEIGHT, Color.WHITE);
-			JLabel label;
-			if (labelAttribute == null) {
-				label = new JLabel(new ImageIcon(img));
-			} else {
+			JPanel panel = new JPanel();
+			BoxLayout bl = new BoxLayout(panel, BoxLayout.Y_AXIS);
+			panel.setLayout(bl);
+
+			JLabel label = new JLabel(new ImageIcon(img));
+			panel.add(label);
+			// label.setLocation(0, 0);
+			if (labelAttribute != null) {
 				String textLabel = labelAttribute;
 				if (attributes != null) {
 					Object lbl = attributes.getAttribute(compound.getSource().getIdentifier(),labelAttribute);
@@ -167,16 +182,21 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 					else
 						textLabel = compound.getSource().getIdentifier();
 				}
-				label = new JLabel(textLabel.toString(), new ImageIcon(img), JLabel.CENTER);
-				label.setVerticalTextPosition(JLabel.BOTTOM);
-				label.setHorizontalTextPosition(JLabel.CENTER);
+				JTextField tf = new JTextField(textLabel.toString());
+				tf.setHorizontalAlignment(JTextField.CENTER);
+				tf.setEditable(false);
+				tf.setBorder(null);
+				panel.add(tf);
+				tf.setSize(width/nCols, LABEL_HEIGHT);
+				// tf.setLocation(width/nCols, width/nCols-LABEL_HEIGHT);
 			}
-			label.setBackground(Color.WHITE);
-			label.setOpaque(true);
-			label.setBorder(BorderFactory.createEtchedBorder());
-			label.addComponentListener(this);
-			imageMap.put(label, compound);
-			add (label);
+			panel.setBackground(Color.WHITE);
+			panel.setOpaque(true);
+			panel.setBorder(BorderFactory.createEtchedBorder());
+			panel.addComponentListener(this);
+			imageMap.put(panel, compound);
+			panel.setSize(width/nCols, width/nCols);
+			add (panel);
 		}
 	}
 }

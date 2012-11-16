@@ -130,7 +130,7 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 		calculationComplete = true;	
 		if (showResult) {
 			String mcssSmiles = getMCSSSmiles();
-			String label = "MCSS = "+mcssSmiles;
+			String label = mcssSmiles;
 			// List<Compound> mcssList = ValueUtils.getCompounds(null, mcssSmiles, AttriType.smiles, null, null);
 			Compound c = new Compound(null, null, mcssSmiles, mcss, AttriType.smiles, false);
 			List<Compound> mcssList = new ArrayList<Compound>();

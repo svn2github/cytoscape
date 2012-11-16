@@ -84,6 +84,9 @@ public class TableAttributeHandler {
 			columns.add(new CompoundColumn(DescriptorType.ATTRIBUTE, -1));
 			columns.add(new CompoundColumn(DescriptorType.IDENTIFIER, -1));
 			columns.add(new CompoundColumn(DescriptorType.WEIGHT, -1));
+			columns.add(new CompoundColumn(DescriptorType.ALOGP, -1));
+			columns.add(new CompoundColumn(DescriptorType.HBONDACCEPTOR, -1));
+			columns.add(new CompoundColumn(DescriptorType.HBONDDONOR, -1));
 			columns.add(new CompoundColumn(DescriptorType.IMAGE, DEFAULT_IMAGE_SIZE));
 		}
 		return columns;

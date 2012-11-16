@@ -99,17 +99,17 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	                                                          DepictionPositions.BOTTOMCENTER, DepictionPositions.BOTTOMLEFT,
 	                                                          DepictionPositions.BOTTOMRIGHT,DepictionPositions.MIDDLERIGHT,
 	                                                          DepictionPositions.MIDDLELEFT};
-	private static final Fingerprinter fingerprintList[] = {Fingerprinter.CDK, Fingerprinter.ESTATE, Fingerprinter.EXTENDED, 
+	private static final Fingerprinter fingerprintList[] = {Fingerprinter.PUBCHEM, Fingerprinter.MACCS,
+	                                                        Fingerprinter.CDK, Fingerprinter.ESTATE, Fingerprinter.EXTENDED, 
 	                                                        Fingerprinter.GRAPHONLY, Fingerprinter.HYBRIDIZATION, 
-	                                                        Fingerprinter.KLEKOTAROTH, Fingerprinter.MACCS, 
-	                                                        Fingerprinter.PUBCHEM, Fingerprinter.SUBSTRUCTURE};
+	                                                        Fingerprinter.KLEKOTAROTH, Fingerprinter.SUBSTRUCTURE};
 	private static List<String> smilesAttributes = null;
 	private static List<String> inCHIAttributes = null;
 	private static List<String> possibleAttributes = null;
 	private ChemInfoProperties properties;
 	private JPanel tunablePanel;
 	private int maxCompounds = 0;
-	private double tcCutoff = 0.25;
+	private double tcCutoff = 0.50;
 	private boolean showHyd = false;
 	private int labelPositionIndex = 0;
 	private int fingerPrinterIndex = 0;	// By default, CDK
@@ -380,7 +380,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 
 		properties.add(new Tunable("tcCutoff",
 		                "Minimum tanimoto value to consider for edge creation",
-		                Tunable.DOUBLE, new Double(0.75)));
+		                Tunable.DOUBLE, new Double(0.50)));
 
 		properties.add( new Tunable("fingerPrinter",
 		                "Fingerprint algorithm to use",

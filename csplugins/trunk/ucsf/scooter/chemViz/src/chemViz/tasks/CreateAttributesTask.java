@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import giny.model.GraphObject;
 import giny.model.Node;
@@ -78,7 +79,7 @@ public class CreateAttributesTask extends AbstractCompoundTask implements Action
  	 * @param dialog the settings dialog, which we use to pull the attribute names that contain the compound descriptors
  	 */
 	public CreateAttributesTask(Collection nodeSelection, Collection edgeSelection,
-	                           DescriptorType descriptor, ChemInfoSettingsDialog settingsDialog) {
+	                            DescriptorType descriptor, ChemInfoSettingsDialog settingsDialog) {
 		this.nodeSelection = nodeSelection;
 		this.edgeSelection = edgeSelection;
 		this.canceled = false;
@@ -137,7 +138,7 @@ public class CreateAttributesTask extends AbstractCompoundTask implements Action
 
 		if (cList == null || cList.size() == 0) return;
 
-		HashMap<GraphObject, List<Object>> valueMap = new HashMap();
+		HashMap<GraphObject, List<Object>> valueMap = new HashMap<GraphObject, List<Object>>();
 
 		if (monitor != null)
 			monitor.setStatus("Calculating descriptors for "+type+"s");
@@ -145,19 +146,7 @@ public class CreateAttributesTask extends AbstractCompoundTask implements Action
 		// Second, calculate the descriptors
 		for (Compound compound: cList) {
 			if (canceled) return;
-
-			Object result = compound.getDescriptor(descriptor);
-			if (result == null) continue;
-			GraphObject source = compound.getSource();
-			if (!valueMap.containsKey(source))
-				valueMap.put(source, new ArrayList());
-			else {
-				needList = true;
-			}
-
-			List<Object> vL = valueMap.get(source);
-			vL.add(result);
-			valueMap.put(source, vL);
+			needList = addDescriptor(valueMap, compound, descriptor);
 		}
 
 		if (monitor != null)
@@ -180,6 +169,24 @@ public class CreateAttributesTask extends AbstractCompoundTask implements Action
 					attributes.setAttribute(gObject.getIdentifier(), attributeName, obj.toString());
 			}
 		}
+	}
+
+	private boolean addDescriptor(Map<GraphObject, List<Object>> valueMap, Compound compound, 
+	                              DescriptorType descriptor) {
+		boolean needList = false;
+		Object result = compound.getDescriptor(descriptor);
+		if (result == null) return false;
+		GraphObject source = compound.getSource();
+		if (!valueMap.containsKey(source)) {
+			valueMap.put(source, new ArrayList());
+		} else {
+			needList = true;
+		}
+
+		List<Object> vL = valueMap.get(source);
+		vL.add(result);
+		valueMap.put(source, vL);
+		return needList;
 	}
 
 }

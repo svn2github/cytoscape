@@ -67,8 +67,11 @@ import javax.imageio.ImageIO;
 import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
+import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.util.URLUtil;
+import cytoscape.view.CyNetworkView;
 
+import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.MoleculeSet;
@@ -87,11 +90,14 @@ import org.openscience.cdk.inchi.InChIToStructure;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.interfaces.IAtomType.Hybridization;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IIsotope;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.interfaces.IRing;
+import org.openscience.cdk.interfaces.IRingSet;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
 import org.openscience.cdk.modeling.builder3d.TemplateHandler3D;
@@ -104,6 +110,7 @@ import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.visitor.AWTDrawVisitor;
+import org.openscience.cdk.ringsearch.SSSRFinder;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.qsar.*;
@@ -142,6 +149,7 @@ public class Compound {
 		AMR ("Molar refractivity", "refractivity", Double.class),
 		HBONDACCEPTOR ("HBond Acceptors", "acceptors", Integer.class),
 		HBONDDONOR ("HBond Donors", "donors", Integer.class),
+		LIPINSKI ("Lipinski parameters", "lipinski", List.class),
 		LOBMAX ("Length over Breadth Max", "lobmax", Double.class),
 		LOBMIN ("Length over Breadth Min", "lobmin", Double.class),
 		RBONDS ("Rotatable Bonds Count", "rotbonds", Integer.class),
@@ -149,7 +157,10 @@ public class Compound {
 		TPSA ("Topological Polar Surface Area", "polarsurface", Double.class),
 		WEINERPATH ("Wiener Path", "wienerpath", Double.class),
 		WEINERPOL ("Wiener Polarity", "weinerpolarity", Double.class),
-		MASS ("Exact Mass", "mass", Double.class);
+		MASS ("Exact Mass", "mass", Double.class),
+		RINGCOUNT ("Ring count", "nrings", Integer.class),
+		AROMATICRINGSCOUNT ("Aromatic ring count", "naromatic", Integer.class),
+		HEAVYATOMCOUNT ("Heavy atom count", "nheavy", Integer.class);
 
 		private String name;
 		private Class classType;
@@ -170,16 +181,18 @@ public class Compound {
 	// Class variables
 	static private HashMap<GraphObject, List<Compound>> compoundMap;
 	static private CyLogger logger = CyLogger.getLogger(Compound.class);
-	static private Fingerprinter fingerprinter = Fingerprinter.CDK;
+	static private Fingerprinter fingerprinter = Fingerprinter.PUBCHEM;
 	static private DescriptorType[] descriptorTypes = {
 		DescriptorType.IMAGE, DescriptorType.ATTRIBUTE, DescriptorType.IDENTIFIER, DescriptorType.WEIGHT,
 		DescriptorType.MASS,
 		DescriptorType.ALOGP,DescriptorType.ALOGP2,DescriptorType.AMR,
 		DescriptorType.HBONDACCEPTOR,DescriptorType.HBONDDONOR,
+		// DescriptorType.LIPINSKI,
 		// Exclude the LengthOverBreadth Descriptors until CDK gets better ring templates
-		// DescriptorType.LOBMAX,DescriptorType.LOBMIN,
+		DescriptorType.LOBMAX,DescriptorType.LOBMIN,
 		DescriptorType.RBONDS,DescriptorType.RULEOFFIVE,
 		DescriptorType.TPSA,
+		DescriptorType.RINGCOUNT, DescriptorType.AROMATICRINGSCOUNT,
 		DescriptorType.WEINERPATH,DescriptorType.WEINERPOL
 	};
 
@@ -244,9 +257,9 @@ public class Compound {
 		}
 	}
 
-	/********************************************************************************************************************* 
-	 *                                                Instance methods                                                   *
-	 ********************************************************************************************************************/ 
+	/************************************************************************************* 
+	 *                             Instance methods                                      *
+	 *************************************************************************************/ 
 
 	// Instance variables
 	private GraphObject source;
@@ -518,6 +531,16 @@ public class Compound {
 					IntegerResult retval = (IntegerResult)(descriptor.calculate(iMolecule).getValue());
 					return retval.intValue();
 				}
+			case LIPINSKI:
+				{
+					if (iMolecule == null) return null;
+					List<Object> lip = new ArrayList<Object>();
+					lip.add(getDescriptor(DescriptorType.WEIGHT));
+					lip.add(getDescriptor(DescriptorType.ALOGP));
+					lip.add(getDescriptor(DescriptorType.HBONDACCEPTOR));
+					lip.add(getDescriptor(DescriptorType.HBONDDONOR));
+					return lip;
+				}
 			case LOBMAX:
 			case LOBMIN:
 				{
@@ -560,6 +583,45 @@ public class Compound {
 					IMolecularDescriptor descriptor = new TPSADescriptor();
 					DoubleResult retval = (DoubleResult)(descriptor.calculate(iMolecule).getValue());
 					return retval.doubleValue();
+				}
+			case RINGCOUNT:
+			case AROMATICRINGSCOUNT:
+				{
+					if (iMolecule == null) return null;
+					SSSRFinder finder = new SSSRFinder(iMolecule);
+					IRingSet ringSet = finder.findSSSR();
+					if (type == DescriptorType.RINGCOUNT)
+						return new Integer(ringSet.getAtomContainerCount());
+
+					// We have the number of rings, now we want to restrict
+					// the ring set to aromatic rings only
+					Iterator<IAtomContainer> i = ringSet.atomContainers().iterator();
+					while (i.hasNext()) {
+						IRing r = (IRing) i.next();
+						if (r.getAtomCount() > 8) {
+							i.remove();
+						} else {
+							for (IAtom a: r.atoms()) {
+								Hybridization h = a.getHybridization();
+								if (h == CDKConstants.UNSET
+								    || !(h == Hybridization.SP2
+								    || h == Hybridization.PLANAR3)) {
+									i.remove();
+									break;
+								}
+							}
+						}
+					}
+					return new Integer(ringSet.getAtomContainerCount());
+				}
+			case HEAVYATOMCOUNT:
+				{
+					int heavyAtomCount = 0;
+					for (int i = 0; i < iMolecule.getAtomCount(); i++) {
+						if (!(iMolecule.getAtom(i).getSymbol()).equals("H"))
+							heavyAtomCount++;
+					}
+					return new Integer(heavyAtomCount);
 				}
 		}
 		return null;
@@ -637,14 +699,65 @@ public class Compound {
 	}
 
 	public Image depictWithCDK(int width, int height, Color background) {
-		BufferedImage bufferedImage = null;
-
 		// System.out.println("depictWithCDK("+width+","+height+")");
 
 		if (iMolecule == null || width == 0 || height == 0) {
 			return blankImage(iMolecule, width, height);
 		}
 
+		int renderWidth = width;
+		if (renderWidth < 200) renderWidth = 200;
+		int renderHeight = height;
+		if (renderHeight < 200) renderHeight = 200;
+
+		BufferedImage bufferedImage = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = bufferedImage.createGraphics();
+
+		g2d.setColor(background);
+		g2d.setBackground(background);
+		g2d.fillRect(0,0,width,height);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		AtomContainerRenderer renderer = getRenderer(background);
+		if (renderer == null)
+			return null;
+
+		Rectangle2D bbox = new Rectangle2D.Double(0,0,renderWidth,renderHeight);
+		renderer.setup(iMolecule, new Rectangle(renderWidth, renderHeight));
+		renderer.paint(iMolecule, new AWTDrawVisitor(g2d), bbox, true);
+
+		if (renderWidth != width || renderHeight != height) {
+			AffineTransform tx = new AffineTransform();
+			if (width < height) {
+				tx.scale((double)width/(double)renderWidth, (double)width/(double)renderWidth);
+				// return bufferedImage.getScaledInstance(width, width, java.awt.Image.SCALE_SMOOTH);
+			} else {
+				tx.scale((double)height/(double)renderHeight, (double)height/(double)renderHeight);
+				// return bufferedImage.getScaledInstance(height, height, java.awt.Image.SCALE_SMOOTH);
+			}
+
+			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+			bufferedImage = op.filter(bufferedImage, null);
+		}
+		return bufferedImage;
+	}
+
+	public List<CustomGraphic> depictWithCDK(double x, double y, double width, double height, 
+	                                         Color background, CyNetworkView view) {
+		if (iMolecule == null || width == 0.0 || height == 0.0) {
+			return null;
+		}
+
+		AtomContainerRenderer renderer = getRenderer(background);
+		double scale = Math.min(width/100.0, height/100.0);
+		Rectangle2D bbox = new Rectangle2D.Double(x/scale,y/scale,width/scale,height/scale);
+		renderer.setup(iMolecule, new Rectangle((int)100, (int)100));
+		CustomGraphicsVisitor cgV = new CustomGraphicsVisitor(view, scale);
+		renderer.paint(iMolecule, cgV, bbox, true);
+		return cgV.getCustomGraphics();
+	}
+
+	private AtomContainerRenderer getRenderer(Color background) {
 		try {
 			if (!laidOut) {
 				// Is the structure connected?
@@ -687,41 +800,11 @@ public class Compound {
 			model.set(RingGenerator.BondWidth.class, 2.0);
 			model.set(BasicAtomGenerator.ColorByType.class, true);
 			model.set(BasicAtomGenerator.ShowExplicitHydrogens.class, true);
-			
-			int renderWidth = width;
-			if (renderWidth < 200) renderWidth = 200;
-			int renderHeight = height;
-			if (renderHeight < 200) renderHeight = 200;
-			Rectangle2D bbox = new Rectangle2D.Double(0,0,renderWidth,renderHeight);
-			renderer.setup(iMolecule, new Rectangle(renderWidth, renderHeight));
-
-			bufferedImage = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D graphics = bufferedImage.createGraphics();
-			graphics.setColor(background);
-			graphics.setBackground(background);
-			graphics.fillRect(0,0,renderWidth,renderHeight);
-			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-			renderer.paint(iMolecule, new AWTDrawVisitor(graphics), bbox, true);
-
-			if (renderWidth != width || renderHeight != height) {
-				AffineTransform tx = new AffineTransform();
-				if (width < height) {
-					tx.scale((double)width/(double)renderWidth, (double)width/(double)renderWidth);
-					// return bufferedImage.getScaledInstance(width, width, java.awt.Image.SCALE_SMOOTH);
-				} else {
-					tx.scale((double)height/(double)renderHeight, (double)height/(double)renderHeight);
-					// return bufferedImage.getScaledInstance(height, height, java.awt.Image.SCALE_SMOOTH);
-				}
-
-				AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-				bufferedImage = op.filter(bufferedImage, null);
-			}
+			return renderer;
 		} catch (Exception e) {
 			logger.warning("Unable to depict molecule for "+source.getIdentifier()+" with CDK depiction: "+e.getMessage(), e);
+			return null;
 		}
-
-		return bufferedImage;
 	}
 
 	private IMolecule addh(IMolecule mol) {

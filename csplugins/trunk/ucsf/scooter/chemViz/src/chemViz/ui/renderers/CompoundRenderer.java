@@ -93,7 +93,7 @@ public class CompoundRenderer implements TableCellRenderer {
 		int width = clm.getPreferredWidth();
 		if (width != table.getRowHeight())
 			table.setRowHeight(width); // Note, this will trigger a repaint!
-		Image resizedImage = c.getImage(width,width);
+		Image resizedImage = c.getImage(width,width,adaptee.getBackground());
 		JLabel l;
 		if (resizedImage != null)
 			l = new JLabel(new ImageIcon(resizedImage));
