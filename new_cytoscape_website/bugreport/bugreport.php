@@ -73,7 +73,8 @@ else {
 	
 	if ($mode == 'new') {
 		//process the data and Save the data into DB.		
-		submitNewBug($connection, $bugReport);
+		$submitResult1 = submitNewBug($connection, $bugReport);
+		submitNewBug2Remine( $bugReport, $submitResult1);
 	} 
 }
 ?>
@@ -85,8 +86,40 @@ else {
 
 
 
-
 <?php 
+
+function submitNewBug2Remine( $bugReport, $submitResult) {
+	// Save the bug report in a tmp file 'newBug.jason' in jason format
+	$myFile = "_newBug.json";
+	$fh = fopen($myFile, 'w') or die("can't open file");
+	
+	$description = '\\nOS: '.$bugReport['os'].'\nCytoscape version: '.$bugReport['cyversion'].'\\n\\n'.$bugReport['description'];
+	
+	if ($submitResult != null){
+		$description = $description."\n\nAttached file is at ".$submitResult."\n\n";
+	}
+
+	$description = $description.'\\n\\n\\nReported by: '.$bugReport['name'].'\nE-mail: '.$bugReport['email'];
+		
+	$json = 	
+		"{
+				\"issue\": {
+				\"project_id\": \"cytoscape3\",
+				\"subject\": \"".$bugReport['cysubject']."\",
+				\"description\": \"".$description."\"
+				}
+		}";	
+	
+		
+	fwrite($fh, $json);
+		
+	fclose($fh);
+	
+	// submit the new bug to redmine (Cytosape bug tracker)
+	system("./run_curl.sh > _reportOutput.txt");
+}
+
+
 
 function isUserInputValid($userInput) {
 	if ($userInput == NULL){
@@ -125,8 +158,8 @@ function submitNewBug($connection, $bugReport){
 	
 	$bugCount = getReportCountToday($connection, $bugReport);
 	
-	if ($bugCount > 10){
-		echo "<br><br>Sorry, you report is rejected, because you can not report more than 10 bugs within 24 hours.<br><br>";
+	if ($bugCount > 50){
+		echo "<br><br>Sorry, you report is rejected, because you can not report more than 50 bugs within 24 hours.<br><br>";
 	
 		return;
 	}
@@ -209,6 +242,15 @@ function submitNewBug($connection, $bugReport){
 	
 	// Step 5: Send e-mail notfication to staff about the new bug submission
 	sendNotificationEmail($bugReport);	
+	
+	// If this bug report contains attachment, return a URL to access the bug 
+	$retValue = "";
+	if ($file_auto_id != null){
+		// There are attachment in this bug report
+		$retValue = "http://chianti.ucsd.edu/cyto_web/bugreport/bugreportview.php?bugid=".$bug_auto_id;
+	}
+	
+	return $retValue;
 }
 
 
@@ -280,12 +322,12 @@ function showForm($userInput) {
 	    <option <?php if ($userInput['os'] == 'Mac') echo "selected=\"selected\""; ?>>Mac</option>
 	  </select>
 	</div>
- 
+ -->
  	<div>
 	  <label for="cysubject">Subject</label>
 	    <input name="tfSubject" type="text" id="cysubject" value="<?php if (isset($userInput['cysubject'])) echo $userInput['cysubject']; ?>" /> Optional
 	</div>
--->
+
  
  
     <div>
