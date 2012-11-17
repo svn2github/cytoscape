@@ -72,6 +72,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -115,6 +116,8 @@ import chemViz.model.TableSorter;
 
 import chemViz.ui.renderers.CompoundRenderer;
 import chemViz.ui.renderers.StringRenderer;
+
+import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 
 public class CompoundTable extends JDialog implements ListSelectionListener,
                                                       SelectEventListener,
@@ -269,6 +272,13 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 		buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 
 		{
+			JButton searchButton = new JButton("Search Table using SMARTS...");
+			searchButton.addActionListener(this);
+			searchButton.setActionCommand("search");
+			// exportButton.setEnabled(false);
+			buttonBox.add(searchButton);
+		}
+		{
 			JButton exportButton = new JButton("Export Table...");
 			exportButton.addActionListener(this);
 			exportButton.setActionCommand("export");
@@ -373,6 +383,35 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 				((JTable)table).print();
 			} catch (Exception ePrint) {
 				logger.error("Unable to print table: "+ePrint.getMessage(), ePrint);
+			}
+		} else if (e.getActionCommand().equals("search")) {
+			String smartsQuery = JOptionPane.showInputDialog(this, "", "Enter SMARTS query string", JOptionPane.PLAIN_MESSAGE);
+			if (smartsQuery == null || smartsQuery.length() < 2) return;
+
+			List<Compound> matches = new ArrayList<Compound>();
+			try {
+				SMARTSQueryTool queryTool = new SMARTSQueryTool(smartsQuery);
+				for (Compound compound: compoundList) {
+					boolean status = queryTool.matches(compound.getIMolecule());
+					if (status && queryTool.countMatches() > 0)
+						matches.add(compound);
+				}
+			} catch (Exception cdkException) {
+				JOptionPane.showConfirmDialog(this, "CDK Exception: "+cdkException.getMessage(), "CDK Error", 
+				                              JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			// Clear our current selection
+			table.clearSelection();
+
+			for (Compound compound: matches) {
+				// get the row number
+				int rowNumber = compoundList.indexOf(compound);
+				// Convert to view row
+				int viewRow = sorter.viewIndex(rowNumber);
+				// Select it
+				table.addRowSelectionInterval(viewRow,viewRow);
 			}
 		}
 	}

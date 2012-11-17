@@ -159,14 +159,7 @@ public class CreateAttributesTask extends AbstractCompoundTask implements Action
 				attributes.setListAttribute(gObject.getIdentifier(), attributeName, valueMap.get(gObject));
 			} else {
 				Object obj = valueMap.get(gObject).get(0);
-				if (obj instanceof Double)
-					attributes.setAttribute(gObject.getIdentifier(), attributeName, (Double)obj);
-				else if (obj instanceof Integer)
-					attributes.setAttribute(gObject.getIdentifier(), attributeName, (Integer)obj);
-				else if (obj instanceof Boolean)
-					attributes.setAttribute(gObject.getIdentifier(), attributeName, (Boolean)obj);
-				else
-					attributes.setAttribute(gObject.getIdentifier(), attributeName, obj.toString());
+				setAttribute(gObject.getIdentifier(), attributeName, attributes, obj);
 			}
 		}
 	}
@@ -187,6 +180,22 @@ public class CreateAttributesTask extends AbstractCompoundTask implements Action
 		vL.add(result);
 		valueMap.put(source, vL);
 		return needList;
+	}
+
+	private void setAttribute(String identifier, String attributeName, CyAttributes attributes, Object obj) {
+		if (obj instanceof Double)
+			attributes.setAttribute(identifier, attributeName, (Double)obj);
+		else if (obj instanceof Integer)
+			attributes.setAttribute(identifier, attributeName, (Integer)obj);
+		else if (obj instanceof Boolean)
+			attributes.setAttribute(identifier, attributeName, (Boolean)obj);
+		else if (obj instanceof Map) {
+			Map<DescriptorType, Object> typeMap = (Map<DescriptorType,Object>)obj;
+			for (DescriptorType type: typeMap.keySet()) {
+				setAttribute(identifier, type.toString(), attributes, typeMap.get(type));
+			}
+		} else
+			attributes.setAttribute(identifier, attributeName, obj.toString());
 	}
 
 }

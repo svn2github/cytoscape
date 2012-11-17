@@ -144,23 +144,26 @@ public class Compound {
 		ATTRIBUTE ("Attribute", "attribute", String.class),
 		IDENTIFIER ("Molecular String", "molstring", String.class),
 		WEIGHT ("Molecular Wt.", "weight", Double.class),
+		LIPINSKI ("Lipinski parameters", "lipinski", Map.class),
+		SDF ("SDF parameters", "sdf", Map.class),
 		ALOGP ("ALogP", "alogp", Double.class),
 		ALOGP2 ("ALogP2", "alogp2", Double.class),
-		AMR ("Molar refractivity", "refractivity", Double.class),
+		AROMATICRINGSCOUNT ("Aromatic ring count", "naromatic", Integer.class),
+		MASS ("Exact Mass", "mass", Double.class),
+		HEAVYATOMCOUNT ("Heavy atom count", "nheavy", Integer.class),
 		HBONDACCEPTOR ("HBond Acceptors", "acceptors", Integer.class),
 		HBONDDONOR ("HBond Donors", "donors", Integer.class),
-		LIPINSKI ("Lipinski parameters", "lipinski", List.class),
 		LOBMAX ("Length over Breadth Max", "lobmax", Double.class),
 		LOBMIN ("Length over Breadth Min", "lobmin", Double.class),
+		AMR ("Molar refractivity", "refractivity", Double.class),
+		RINGCOUNT ("Ring count", "nrings", Integer.class),
 		RBONDS ("Rotatable Bonds Count", "rotbonds", Integer.class),
 		RULEOFFIVE ("Rule of Five Failures", "roff", Double.class),
 		TPSA ("Topological Polar Surface Area", "polarsurface", Double.class),
 		WEINERPATH ("Wiener Path", "wienerpath", Double.class),
 		WEINERPOL ("Wiener Polarity", "weinerpolarity", Double.class),
-		MASS ("Exact Mass", "mass", Double.class),
-		RINGCOUNT ("Ring count", "nrings", Integer.class),
-		AROMATICRINGSCOUNT ("Aromatic ring count", "naromatic", Integer.class),
-		HEAVYATOMCOUNT ("Heavy atom count", "nheavy", Integer.class);
+		XLOGP ("XLogP", "xlogp", Double.class),
+		ZAGREBINDEX ("Zagreb Index", "zagrebindex", Double.class);
 
 		private String name;
 		private Class classType;
@@ -187,13 +190,20 @@ public class Compound {
 		DescriptorType.MASS,
 		DescriptorType.ALOGP,DescriptorType.ALOGP2,DescriptorType.AMR,
 		DescriptorType.HBONDACCEPTOR,DescriptorType.HBONDDONOR,
-		// DescriptorType.LIPINSKI,
+		DescriptorType.LIPINSKI,
 		// Exclude the LengthOverBreadth Descriptors until CDK gets better ring templates
 		DescriptorType.LOBMAX,DescriptorType.LOBMIN,
 		DescriptorType.RBONDS,DescriptorType.RULEOFFIVE,
-		DescriptorType.TPSA,
+		DescriptorType.SDF, DescriptorType.TPSA,
 		DescriptorType.RINGCOUNT, DescriptorType.AROMATICRINGSCOUNT,
 		DescriptorType.WEINERPATH,DescriptorType.WEINERPOL
+	};
+
+	static private DescriptorType[] SDFTypes = {
+		DescriptorType.XLOGP, DescriptorType.TPSA, DescriptorType.ZAGREBINDEX
+	};
+	static private DescriptorType[] LipinskiTypes = {
+		DescriptorType.WEIGHT, DescriptorType.ALOGP, DescriptorType.HBONDACCEPTOR, DescriptorType.HBONDDONOR
 	};
 
   /**
@@ -230,6 +240,16 @@ public class Compound {
 
 	static public List<DescriptorType> getDescriptorList() {
 		return Arrays.asList(descriptorTypes);
+	}
+
+	static public DescriptorType[] getComboList(DescriptorType type) {
+		if (type.getClassType() != Map.class) return null;
+		if (type.equals(DescriptorType.LIPINSKI))
+			return LipinskiTypes;
+		if (type.equals(DescriptorType.SDF))
+			return SDFTypes;
+
+		return null;
 	}
 
 	static public void clearStructures(GraphObject object) {
@@ -534,11 +554,10 @@ public class Compound {
 			case LIPINSKI:
 				{
 					if (iMolecule == null) return null;
-					List<Object> lip = new ArrayList<Object>();
-					lip.add(getDescriptor(DescriptorType.WEIGHT));
-					lip.add(getDescriptor(DescriptorType.ALOGP));
-					lip.add(getDescriptor(DescriptorType.HBONDACCEPTOR));
-					lip.add(getDescriptor(DescriptorType.HBONDDONOR));
+					Map<DescriptorType, Object> lip = new HashMap<DescriptorType,Object>();
+					for (DescriptorType subType: LipinskiTypes) {
+						lip.put(subType, getDescriptor(subType));
+					}
 					return lip;
 				}
 			case LOBMAX:
@@ -576,6 +595,15 @@ public class Compound {
 					IMolecularDescriptor descriptor = new RotatableBondsCountDescriptor();
 					IntegerResult retval = (IntegerResult)(descriptor.calculate(iMolecule).getValue());
 					return retval.intValue();
+				}
+			case SDF:
+				{
+					if (iMolecule == null) return null;
+					Map<DescriptorType, Object> lip = new HashMap<DescriptorType,Object>();
+					for (DescriptorType subType: SDFTypes) {
+						lip.put(subType, getDescriptor(subType));
+					}
+					return lip;
 				}
 			case TPSA:
 				{
@@ -622,6 +650,24 @@ public class Compound {
 							heavyAtomCount++;
 					}
 					return new Integer(heavyAtomCount);
+				}
+			case XLOGP:
+				{
+					if (iMolecule == null) return null;
+					try {
+						IMolecularDescriptor descriptor = new XLogPDescriptor();
+						Object[] params = {new Boolean(true), new Boolean(false)};
+						descriptor.setParameters(params);
+						DoubleResult retval = (DoubleResult)(descriptor.calculate(addh(iMolecule)).getValue());
+						return retval.doubleValue();
+					} catch (CDKException e) { return null; }
+				}
+			case ZAGREBINDEX:
+				{
+					if (iMolecule == null) return null;
+					IMolecularDescriptor descriptor = new ZagrebIndexDescriptor();
+					DoubleResult retval = (DoubleResult)(descriptor.calculate(iMolecule).getValue());
+					return retval.doubleValue();
 				}
 		}
 		return null;

@@ -190,6 +190,7 @@ class TableMouseAdapter extends MouseAdapter implements ActionListener {
 	class AddMenu extends JMenuItem implements ActionListener {
 		int column;
 		CompoundColumn newColumn;
+		DescriptorType descType;
 		
 		AddMenu(String name, int column) {
 			this(name, "", column, CyAttributes.TYPE_STRING);
@@ -199,18 +200,25 @@ class TableMouseAdapter extends MouseAdapter implements ActionListener {
 			super(prefix+name);
 			this.newColumn = new CompoundColumn(name, prefix, type, -1);
 			this.column = column;
+			this.descType = null;
 			addActionListener(this);
 		}
 	
 		AddMenu(DescriptorType descriptor, int column) {
 			super(descriptor.toString());
-			this.newColumn = new CompoundColumn(descriptor, -1);
+			this.descType = descriptor;
+			if (descriptor.getClassType() != Map.class)
+				this.newColumn = new CompoundColumn(descriptor, -1);
 			this.column = column;
 			addActionListener(this);
 		}
 	
 		public void actionPerformed(ActionEvent e) {
-			tableModel.addColumn(column, newColumn);
+			if (newColumn != null)
+				tableModel.addColumn(column, newColumn);
+
+			for (DescriptorType type: Compound.getComboList(descType))
+				tableModel.addColumn(column, new CompoundColumn(type, -1));
 		}
 	}
 }
