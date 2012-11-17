@@ -96,7 +96,7 @@ function submitNewBug2Remine( $bugReport, $submitResult) {
 	$description = '\\nOS: '.$bugReport['os'].'\nCytoscape version: '.$bugReport['cyversion'].'\\n\\n'.$bugReport['description'];
 	
 	if ($submitResult != null){
-		$description = $description."\n\nAttached file is at ".$submitResult."\n\n";
+		$description = $description."\\n\\n\\nAttached file is at ".$submitResult."\\n\\n\\n";
 	}
 
 	$description = $description.'\\n\\n\\nReported by: '.$bugReport['name'].'\nE-mail: '.$bugReport['email'];
@@ -325,7 +325,7 @@ function showForm($userInput) {
  -->
  	<div>
 	  <label for="cysubject">Subject</label>
-	    <input name="tfSubject" type="text" id="cysubject" value="<?php if (isset($userInput['cysubject'])) echo $userInput['cysubject']; ?>" /> Optional
+	    <input name="tfSubject" type="text" id="cysubject" value="<?php if (isset($userInput['cysubject'])) echo $userInput['cysubject']; ?>" />
 	</div>
 
  
