@@ -94,7 +94,7 @@ enum Command {
 	         ""),
 	MCSS("mcss",
 	    "Calculate the maximum common substructure of a node or group of nodes",
-	    "edge|edgelist|node|nodelist|showresult=false"),
+	    "edge|edgelist|node|nodelist|showresult=false|creategroup=false"),
 	REMOVE("remove",
 	       "Remove 2D structures from nodes",
 				 "network|nodelist|node"),
@@ -131,6 +131,7 @@ enum Command {
 public class ChemVizCommandHandler extends AbstractCommandHandler {
 	static final String ALL = "all";
 	static final String COLUMNLIST = "columnlist";
+	static final String CREATEGROUP = "creategroup";
 	static final String CURRENT = "current";
 	static final String DIALOG = "dialog";
 	static final String DESCRIPTORS = "descriptors";
@@ -340,7 +341,12 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 				showresult = Boolean.parseBoolean(args.get(SHOWRESULT).toString());
 			}
 
-			CreateMCSSTask mcssTask = new CreateMCSSTask(gObjList, attributes, dialog, false);
+			boolean createGroup = false;
+			if (args.containsKey(CREATEGROUP)) {
+				createGroup = Boolean.parseBoolean(args.get(CREATEGROUP).toString());
+			}
+
+			CreateMCSSTask mcssTask = new CreateMCSSTask(gObjList, attributes, dialog, false, createGroup);
 			TaskManager.executeTask(mcssTask, mcssTask.getDefaultTaskConfig());
 
 			try {

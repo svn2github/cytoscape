@@ -43,7 +43,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Properties;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.swing.JMenu;
@@ -73,32 +73,20 @@ public class StructureMenus extends ChemVizAbstractMenu implements ActionListene
  	 * This is the main constructor, which will be called by Cytoscape's Plugin Manager.
  	 * Add our listeners and create the main menu.
  	 */
-	public StructureMenus(JMenu menu, Properties systemProps, 
-	       ChemInfoSettingsDialog settingsDialog, Object context) {
-		super(systemProps, settingsDialog);
+	public StructureMenus(JMenu menu, ChemInfoSettingsDialog settingsDialog, Object context) {
+		super(settingsDialog);
 
 		this.context = context;
-		JMenu clear = new JMenu(systemProps.getProperty("chemViz.menu.clearstructures"));
 		if (context == null) {
-			addEdgeStructureMenus(clear, "chemViz.menu.clearstructures", null);
-			addNodeStructureMenus(clear, "chemViz.menu.clearstructures", null);
+			JMenu clear = new JMenu("Clear cached fingerprints");
+			addNodeStructureMenus(clear, null);
+			addEdgeStructureMenus(clear, null);
+			menu.add(clear);
 		} else if (context instanceof NodeView) {
-			addNodeStructureMenus(clear, "chemViz.menu.clearstructures", (NodeView)context);
+			addNodeStructureMenus(menu, (NodeView)context);
 		} else {
-			addEdgeStructureMenus(clear, "chemViz.menu.clearstructures", (EdgeView)context);
+			addEdgeStructureMenus(menu, (EdgeView)context);
 		}
-		menu.add(clear);
-
-		JMenu reload = new JMenu(systemProps.getProperty("chemViz.menu.reloadstructures"));
-		if (context == null) {
-			addEdgeStructureMenus(reload, "chemViz.menu.reloadstructures", null);
-			addNodeStructureMenus(reload, "chemViz.menu.reloadstructures", null);
-		} else if (context instanceof NodeView) {
-			addNodeStructureMenus(reload, "chemViz.menu.reloadstructures", (NodeView)context);
-		} else {
-			addEdgeStructureMenus(reload, "chemViz.menu.reloadstructures", (EdgeView)context);
-		}
-		menu.add(reload);
 	}
 
 	/**
@@ -107,14 +95,15 @@ public class StructureMenus extends ChemVizAbstractMenu implements ActionListene
 	 * @param menu the menu we're going add our items to
 	 * @param edgeContext the EdgeView this menu is for
 	 */
-	private void addEdgeStructureMenus(JMenu menu, String prefix, EdgeView edgeContext) {
+	private void addEdgeStructureMenus(JMenu menu, EdgeView edgeContext) {
 		// Check and see if we have any edge attributes
 		Collection<CyEdge> selectedEdges = Cytoscape.getCurrentNetwork().getSelectedEdges();
 
 		if (edgeContext == null) {
 			// Populating main menu
+			menu.add(buildMenuItem("for all edges", "clearAllEdges"));
 			if (selectedEdges != null && selectedEdges.size() > 0) {
-				JMenuItem item2 = buildMenuItem(prefix+".selectedEdges", prefix+".selectedEdges");
+				JMenuItem item2 = buildMenuItem("for selected edges", "clearSelectedEdges");
 				if (!settingsDialog.hasEdgeCompounds(selectedEdges)) {
 					item2.setEnabled(false);
 				}
@@ -123,20 +112,15 @@ public class StructureMenus extends ChemVizAbstractMenu implements ActionListene
 			return;
 		}
 
-		menu.add(buildMenuItem(prefix+".thisEdge",
-		                         prefix+".thisEdge"));
+		if (selectedEdges == null) 
+			selectedEdges = new ArrayList<CyEdge>(Collections.singletonList((CyEdge)edgeContext));
 
-		if (selectedEdges == null) selectedEdges = new ArrayList();
-
-		if (!selectedEdges.contains(edgeContext.getEdge()))
-			selectedEdges.add((CyEdge)edgeContext.getEdge());
-
-		menu.add(buildMenuItem(prefix+".selectedEdges",
-		                         prefix+".selectedEdges"));
+		JMenuItem selMenu = buildMenuItem("Clear cached fingerprints for selected edges", "clearSelectedEdges");
 
 		if (!settingsDialog.hasEdgeCompounds(selectedEdges)) {
-			menu.setEnabled(false);
+			selMenu.setEnabled(false);
 		}
+		menu.add(selMenu);
 		return;
 	}
 
@@ -146,40 +130,34 @@ public class StructureMenus extends ChemVizAbstractMenu implements ActionListene
 	 * @param menu the menu we're going add our items to
 	 * @param nodeContext the NodeView this menu is for
 	 */
-	private void addNodeStructureMenus(JMenu menu, String prefix, NodeView nodeContext) {
+	private void addNodeStructureMenus(JMenu menu, NodeView nodeContext) {
 		// Check and see if we have any node attributes
 		Collection<CyNode> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
 
 		if (nodeContext == null) {
 			// Populating main menu
-			JMenuItem item = buildMenuItem(prefix+".all", prefix+".all");
-			if (!settingsDialog.hasNodeCompounds(null))
-				item.setEnabled(false);
-
-			menu.add(item);
+			menu.add(buildMenuItem("for all nodes", "clearAllNodes"));
 			if (selectedNodes != null && selectedNodes.size() > 0) {
-				JMenuItem item2 = buildMenuItem(prefix+".selectedNodes", prefix+".selectedNodes");
-				if (!settingsDialog.hasNodeCompounds(selectedNodes))
+				JMenuItem item2 = buildMenuItem("for selected nodes", "clearSelectedNodes");
+				if (!settingsDialog.hasNodeCompounds(selectedNodes)) {
 					item2.setEnabled(false);
+				}
 				menu.add(item2);
 			}
 			return;
 		}
 
-		// Populating popup menu
-		menu.add(buildMenuItem(prefix+".thisNode", prefix+".thisNode"));
+		if (selectedNodes == null) 
+			selectedNodes = new ArrayList<CyNode>(Collections.singletonList((CyNode)nodeContext));
 
-		if (selectedNodes == null) selectedNodes = new ArrayList();
-
-		if (!selectedNodes.contains(nodeContext.getNode()))
-			selectedNodes.add((CyNode)nodeContext.getNode());
-
-		menu.add(buildMenuItem(prefix+".selectedNodes", prefix+".selectedNodes"));
+		JMenuItem selMenu = buildMenuItem("Clear cached fingerprints for selected nodes", "clearSelectedNodes");
 
 		if (!settingsDialog.hasNodeCompounds(selectedNodes)) {
-			menu.setEnabled(false);
+			selMenu.setEnabled(false);
 		}
+		menu.add(selMenu);
 		return;
+
 	}
 
 	/*
@@ -190,35 +168,19 @@ public class StructureMenus extends ChemVizAbstractMenu implements ActionListene
 	public void actionPerformed(ActionEvent evt) {
 		String cmd = evt.getActionCommand();
 		GraphObject obj = null;
-		if (context instanceof NodeView)
-			obj = ((NodeView)context).getNode();
-		else
-			obj = ((EdgeView)context).getEdge();
 		
-		if (cmd.equals("chemViz.menu.clearstructures.thisNode")) {
-			Compound.clearStructures(obj);
-		} else if (cmd.equals("chemViz.menu.clearstructures.selectedNodes")) {
+		if (cmd.equals("clearSelectedNodes")) {
 			Set<CyNode> nodes = (Set<CyNode>)Cytoscape.getCurrentNetwork().getSelectedNodes();
 			for (CyNode node: nodes) Compound.clearStructures(node);
-		} else if (cmd.equals("chemViz.menu.clearstructures.all")) {
-			Compound.clearStructures(null);
-		} else if (cmd.equals("chemViz.menu.clearstructures.thisEdge")) {
-			Compound.clearStructures(obj);
-		} else if (cmd.equals("chemViz.menu.clearstructures.selectedEdges")) {
+		} else if (cmd.equals("clearAllNodes")) {
+			Collection<CyNode> nodes = (Collection<CyNode>)Cytoscape.getCurrentNetwork().nodesList();
+			for (CyNode node: nodes) Compound.clearStructures(node);
+		} else if (cmd.equals("cleanSelectedEdges")) {
 			Set<CyEdge> edges = (Set<CyEdge>)Cytoscape.getCurrentNetwork().getSelectedEdges();
 			for (CyEdge edge: edges) Compound.clearStructures(edge);
-		} else if (cmd.equals("chemViz.menu.reloadstructures.thisNode")) {
-			Compound.reloadStructures(obj);
-		} else if (cmd.equals("chemViz.menu.reloadstructures.selectedNodes")) {
-			Set<CyNode> nodes = (Set<CyNode>)Cytoscape.getCurrentNetwork().getSelectedNodes();
-			for (CyNode node: nodes) Compound.reloadStructures(node);
-		} else if (cmd.equals("chemViz.menu.reloadstructures.all")) {
-			Compound.reloadStructures(null);
-		} else if (cmd.equals("chemViz.menu.reloadstructures.thisEdge")) {
-			Compound.reloadStructures(obj);
-		} else if (cmd.equals("chemViz.menu.reloadstructures.selectedEdges")) {
-			Set<CyEdge> edges = (Set<CyEdge>)Cytoscape.getCurrentNetwork().getSelectedEdges();
-			for (CyEdge edge: edges) Compound.reloadStructures(edge);
+		} else if (cmd.equals("clearAllEdges")) {
+			Collection<CyEdge> edges = (Collection<CyEdge>)Cytoscape.getCurrentNetwork().edgesList();
+			for (CyEdge edge: edges) Compound.clearStructures(edge);
 		} 
 	}
 }

@@ -38,8 +38,6 @@ package chemViz.menus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.util.Properties;
-
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
@@ -49,16 +47,13 @@ import chemViz.ui.ChemInfoSettingsDialog;
  * This plugin adds cheminformatics tools to Cytoscape.
  */
 abstract public class ChemVizAbstractMenu implements ActionListener {
-	
-	protected Properties systemProps = null;
 	protected ChemInfoSettingsDialog settingsDialog = null;
 
 	/**
  	 * This is the main constructor, which will be called by Cytoscape's Plugin Manager.
  	 * Add our listeners and create the main menu.
  	 */
-	public ChemVizAbstractMenu(Properties sysProps, ChemInfoSettingsDialog dialog) {
-		systemProps = sysProps;
+	public ChemVizAbstractMenu(ChemInfoSettingsDialog dialog) {
 		settingsDialog = dialog;
 	}
 		
@@ -70,7 +65,7 @@ abstract public class ChemVizAbstractMenu implements ActionListener {
 	 * @return
 	 */
 	protected JMenuItem buildMenuItem(String label, String command) {
-		JMenuItem item = new JMenuItem(systemProps.getProperty(label));
+		JMenuItem item = new JMenuItem(label);
 		item.setActionCommand(command);
 		item.addActionListener(this);
 		return item;

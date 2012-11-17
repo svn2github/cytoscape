@@ -39,8 +39,8 @@ import java.awt.event.ActionEvent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -67,20 +67,20 @@ public class AttributesMenu extends ChemVizAbstractMenu {
  	 * This is the main constructor, which will be called by Cytoscape's Plugin Manager.
  	 * Add our listeners and create the main menu.
  	 */
-	public AttributesMenu(JMenu menu, Properties systemProps, ChemInfoSettingsDialog settingsDialog,
+	public AttributesMenu(JMenu menu, ChemInfoSettingsDialog settingsDialog,
 	                       Object context) {
-		super(systemProps, settingsDialog);
+		super(settingsDialog);
 
-		JMenu create = new JMenu(systemProps.getProperty("chemViz.menu.createattributes"));
 		if (context == null) {
+			JMenu create = new JMenu("Create attributes from compound descriptors");
 			addEdgeAttributesMenus(create, null);
 			addNodeAttributesMenus(create, null);
+			menu.add(create);
 		} else if (context instanceof NodeView) {
-			addNodeAttributesMenus(create, (NodeView)context);
+			addNodeAttributesMenus(menu, (NodeView)context);
 		} else {
-			addEdgeAttributesMenus(create, (EdgeView)context);
+			addEdgeAttributesMenus(menu, (EdgeView)context);
 		}
-		menu.add(create);
 	}
 
 	private void addNodeAttributesMenus(JMenu menu, NodeView nodeContext) {
@@ -89,13 +89,13 @@ public class AttributesMenu extends ChemVizAbstractMenu {
 
 		if (nodeContext == null) {
 			// Populating main menu
-			JMenu create = new JMenu(systemProps.getProperty("chemViz.menu.createattributes.allNodes"));
+			JMenu create = new JMenu("for all nodes");
 			addDescriptors(create, Cytoscape.getCurrentNetwork().nodesList(), null);
 			if (!settingsDialog.hasNodeCompounds(null))
 				create.setEnabled(false);
 			menu.add(create);
 			if (selectedNodes != null && selectedNodes.size() > 0) {
-				create = new JMenu(systemProps.getProperty("chemViz.menu.createattributes.selectedNodes"));
+				create = new JMenu("for selected nodes");
 				addDescriptors(create, selectedNodes, null);
 				if (!settingsDialog.hasNodeCompounds(selectedNodes))
 					create.setEnabled(false);
@@ -104,32 +104,16 @@ public class AttributesMenu extends ChemVizAbstractMenu {
 			return;
 		}
 
-		JMenu create = new JMenu(systemProps.getProperty("chemViz.menu.createattributes"));
-
 		// Populating popup menu
-		JMenu thisNodeMenu = new JMenu(systemProps.getProperty("chemViz.menu.createattributes.thisNode"));
-		List<CyNode> thisNode = new ArrayList<CyNode>();
-		thisNode.add((CyNode)nodeContext.getNode());
-		addDescriptors(thisNodeMenu, thisNode, null);
-		if (!settingsDialog.hasNodeCompounds(thisNode)) {
-			thisNodeMenu.setEnabled(false);
+		JMenu nodeMenu = new JMenu("Create node attributes");
+		if (selectedNodes.size() == 0) {
+			selectedNodes = Collections.singletonList((CyNode)nodeContext.getNode());
 		}
-		create.add(thisNodeMenu);
-
-		if (selectedNodes.size() > 1) {
-			JMenu selectedMenu = new JMenu(systemProps.getProperty("chemViz.menu.createattributes.selectedNodes"));
-			addDescriptors(selectedMenu, selectedNodes, null);
-			if (!settingsDialog.hasNodeCompounds(selectedNodes)) {
-				selectedMenu.setEnabled(false);
-			}
-			create.add(selectedMenu);
+		addDescriptors(nodeMenu, selectedNodes, null);
+		if (!settingsDialog.hasNodeCompounds(selectedNodes)) {
+			nodeMenu.setEnabled(false);
 		}
-
-		menu.add(create);
-
-		if (!selectedNodes.contains(nodeContext.getNode()))
-			selectedNodes.add((CyNode)nodeContext.getNode());
-
+		menu.add(nodeMenu);
 		return;
 	}
 
@@ -139,13 +123,13 @@ public class AttributesMenu extends ChemVizAbstractMenu {
 
 		if (edgeContext == null) {
 			// Populating main menu
-			JMenu create = new JMenu(systemProps.getProperty("chemViz.menu.createattributes.allEdges"));
-			addDescriptors(create, null, Cytoscape.getCurrentNetwork().edgesList());
+			JMenu create = new JMenu("for all edges");
+			addDescriptors(create, Cytoscape.getCurrentNetwork().edgesList(), null);
 			if (!settingsDialog.hasEdgeCompounds(null))
 				create.setEnabled(false);
 			menu.add(create);
 			if (selectedEdges != null && selectedEdges.size() > 0) {
-				create = new JMenu(systemProps.getProperty("chemViz.menu.createattributes.selectedEdges"));
+				create = new JMenu("for selected edges");
 				addDescriptors(create, null, selectedEdges);
 				if (!settingsDialog.hasEdgeCompounds(selectedEdges))
 					create.setEnabled(false);
@@ -155,29 +139,15 @@ public class AttributesMenu extends ChemVizAbstractMenu {
 		}
 
 		// Populating popup menu
-		JMenu create = new JMenu(systemProps.getProperty("chemViz.menu.createattributes"));
-		JMenu thisEdgeMenu = new JMenu(systemProps.getProperty("chemViz.menu.createattributes.thisEdge"));
-		List<CyEdge> thisEdge = new ArrayList<CyEdge>();
-		thisEdge.add((CyEdge)edgeContext.getEdge());
-		addDescriptors(thisEdgeMenu, null, thisEdge);
-		if (!settingsDialog.hasEdgeCompounds(thisEdge)) {
-			thisEdgeMenu.setEnabled(false);
+		JMenu edgeMenu = new JMenu("Create edge attributes");
+		if (selectedEdges.size() == 0) {
+			selectedEdges = Collections.singletonList((CyEdge)edgeContext.getEdge());
 		}
-		create.add(thisEdgeMenu);
-
-		if (selectedEdges.size() > 1) {
-			JMenu selectedMenu = new JMenu(systemProps.getProperty("chemViz.menu.createattributes.selectedEdges"));
-			addDescriptors(selectedMenu, null, selectedEdges);
-			if (!settingsDialog.hasEdgeCompounds(selectedEdges)) {
-				selectedMenu.setEnabled(false);
-			}
-			create.add(selectedMenu);
+		addDescriptors(edgeMenu, null, selectedEdges);
+		if (!settingsDialog.hasEdgeCompounds(selectedEdges)) {
+			edgeMenu.setEnabled(false);
 		}
-		menu.add(create);
-
-		if (!selectedEdges.contains(edgeContext.getEdge()))
-			selectedEdges.add((CyEdge)edgeContext.getEdge());
-
+		menu.add(edgeMenu);
 		return;
 	}
 

@@ -36,6 +36,7 @@
 package chemViz.tasks;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import giny.model.GraphObject;
@@ -45,6 +46,8 @@ import giny.view.NodeView;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
 import cytoscape.task.util.TaskManager;
 
 import chemViz.commands.ValueUtils;
@@ -75,6 +78,7 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 	List<Compound> compoundList;
 	IMolecule mcss = null;
 	boolean showResult = false;
+	boolean createGroup = false;
 	boolean calculationComplete = false;
 
 	/**
@@ -82,7 +86,7 @@ public class CreateMCSSTask extends AbstractCompoundTask {
  	 *
  	 */
   public CreateMCSSTask(List<GraphObject> gObjList, CyAttributes attributes, 
-	                      ChemInfoSettingsDialog dialog, boolean showResult) {
+	                      ChemInfoSettingsDialog dialog, boolean showResult, boolean createGroup) {
 		this.objectList = gObjList;
 		
 		if (gObjList.get(0) instanceof CyNode)
@@ -93,6 +97,7 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 		this.canceled = false;
 		this.attributes = attributes;
 		this.showResult = showResult;
+		this.createGroup = createGroup;
 	}
 
 	public String getTitle() {
@@ -105,6 +110,7 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 
 	public String getMCSSSmiles() {
 		SmilesGenerator g = new SmilesGenerator();
+		g.setUseAromaticityFlag(true);
 		return g.createSMILES(mcss);
 	}
 
@@ -137,6 +143,62 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 			mcssList.add(c);
 			CreatePopupTask loader = new CreatePopupTask(mcssList, null, dialog, label, 1);
 			TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
+		}
+
+		if (createGroup) {
+			List<CyNode> nodeList = new ArrayList<CyNode>();
+			HashSet<CyGroup> groupSet = null;
+			String groupName = "";
+			boolean newGroup = false;
+
+			// Only create a new group if the nodes aren't already in a group
+			for (GraphObject obj: objectList) {
+				if (!(obj instanceof CyNode)) {
+					// System.out.println("obj "+obj.toString()+" is not a node");
+					return;
+				}
+
+				CyNode node = (CyNode) obj;
+				nodeList.add(node);
+				groupName += ","+node.getIdentifier();
+
+				if (newGroup)
+					continue;
+
+				List<CyGroup> myGroups = node.getGroups();
+				if (myGroups != null && myGroups.size() > 0) {
+					if (groupSet == null) {
+						groupSet = new HashSet<CyGroup>(myGroups);
+					} else {
+						groupSet.retainAll(myGroups);
+						if (groupSet.size() == 0)
+							newGroup = true;
+					}
+				} else {
+					newGroup = true;
+				}
+			}
+
+			// System.out.println("newGroup = "+newGroup+" nodeList.size() = "+nodeList.size());
+
+			CyGroup group = null;
+			String smilesString = getMCSSSmiles();
+
+			if (!newGroup) {
+				// All nodes already are part of at least one group
+				group = groupSet.iterator().next(); // Get the first group
+			} else {
+				if (groupName.length() > 16)
+					groupName = groupName.substring(0,16)+"...";
+				group = CyGroupManager.createGroup("MCSS of ["+groupName.substring(1)+"]", nodeList, "metaNode", Cytoscape.getCurrentNetwork());
+				CyGroupManager.notifyCreateGroup(group);
+			}
+			group.setState(2); // Collapse it?
+
+			CyNode node = group.getGroupNode();
+			String attribute = compoundList.get(0).getAttribute(); // get the attribute
+			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+			nodeAttributes.setAttribute(node.getIdentifier(), attribute, getMCSSSmiles());
 		}
 	}
 

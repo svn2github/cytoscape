@@ -66,7 +66,6 @@ public class ChemViz extends CytoscapePlugin implements PropertyChangeListener {
 	
 	static public CyLogger logger = CyLogger.getLogger(ChemViz.class);
 
-	private Properties systemProps = null;
 	private ChemInfoSettingsDialog settingsDialog = null; 
 	private boolean sessionLock = false;
 	
@@ -75,24 +74,12 @@ public class ChemViz extends CytoscapePlugin implements PropertyChangeListener {
  	 * Add our listeners and create the main menu.
  	 */
 	public ChemViz() {
-
-		// Loading properties
-		systemProps = new Properties();
-		try {
-			systemProps.load(this.getClass().getResourceAsStream(
-					"chemViz.props"));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error("Unable to load properties: "+e.getMessage(), e);
-			return;
-		}
-
 		try {
 			settingsDialog = new ChemInfoSettingsDialog();
 
 			JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getOperationsMenu();
-			JMenu menu = new JMenu(systemProps.getProperty("chemViz.menu"));
-			menu.addMenuListener(new ChemVizMenu(systemProps, settingsDialog));
+			JMenu menu = new JMenu("Cheminformatics Tools");
+			menu.addMenuListener(new ChemVizMenu(settingsDialog));
 			pluginMenu.add(menu);
 		
 		} catch (Exception e) {
@@ -111,9 +98,9 @@ public class ChemViz extends CytoscapePlugin implements PropertyChangeListener {
 			         .addPropertyChangeListener(Integer.toString(Cytoscape.SESSION_OPENED), this);
 
 			((DGraphView) Cytoscape.getCurrentNetworkView())
-					.addNodeContextMenuListener(new ChemVizContextMenu(systemProps, settingsDialog));
+					.addNodeContextMenuListener(new ChemVizContextMenu(settingsDialog));
 			((DGraphView) Cytoscape.getCurrentNetworkView())
-					.addEdgeContextMenuListener(new ChemVizContextMenu(systemProps, settingsDialog));
+					.addEdgeContextMenuListener(new ChemVizContextMenu(settingsDialog));
 
 		} catch (ClassCastException ccex) {
 			logger.error("Unable to setup network listeners: "+ccex.getMessage(), ccex);
@@ -141,8 +128,8 @@ public class ChemViz extends CytoscapePlugin implements PropertyChangeListener {
 
 	private void updateNetworkView(CyNetworkView view) {
 		// Add menu to the context dialog
-		view.addNodeContextMenuListener(new ChemVizContextMenu(systemProps, settingsDialog));
-		view.addEdgeContextMenuListener(new ChemVizContextMenu(systemProps, settingsDialog));
+		view.addNodeContextMenuListener(new ChemVizContextMenu(settingsDialog));
+		view.addEdgeContextMenuListener(new ChemVizContextMenu(settingsDialog));
 		// Check to see if this view has custom graphics
 		if (CreateNodeGraphicsTask.hasCustomGraphics(view.getNetwork())) {
 			List<GraphObject> selection = 

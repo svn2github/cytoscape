@@ -40,7 +40,6 @@ import giny.model.GraphObject;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.JMenu;
@@ -65,24 +64,16 @@ public class SimilarityMenu extends ChemVizAbstractMenu implements ActionListene
  	 * This is the main constructor, which will be called by Cytoscape's Plugin Manager.
  	 * Add our listeners and create the main menu.
  	 */
-	public SimilarityMenu(JMenu menu, Properties systemProps, ChemInfoSettingsDialog settingsDialog) {
-		super(systemProps, settingsDialog);
+	public SimilarityMenu(JMenu menu, ChemInfoSettingsDialog settingsDialog) {
+		super(settingsDialog);
 
-		JMenu simMenu = new JMenu(systemProps
-				.getProperty("chemViz.menu.similarity"));
+		JMenu simMenu = new JMenu("Create similarity network");
 		menu.add(simMenu);
+		simMenu.add(buildMenuItem("for all nodes", "allNodeSimilarity"));
+
 		Set<GraphObject> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
 		if (selectedNodes != null && selectedNodes.size() > 1) {
-			// JMenu tanMenu = new JMenu(systemProps.getProperty("chemViz.menu.similarity.tanimoto"));
-			simMenu.add(buildMenuItem("chemViz.menu.similarity.tanimoto.allNodes",
-			                          "chemViz.menu.similarity.tanimoto.allNodes"));
-			simMenu.add(buildMenuItem("chemViz.menu.similarity.tanimoto.selectedNodes",
-			                          "chemViz.menu.similarity.tanimoto.selectedNodes"));
-			// simMenu.add(tanMenu);
-		} else {
-			JMenuItem tanimoto = buildMenuItem("chemViz.menu.similarity.tanimoto",
-				"chemViz.menu.similarity.tanimoto.allNodes");
-			simMenu.add(tanimoto);
+			simMenu.add(buildMenuItem("for selected nodes", "selectedNodeSimilarity"));
 		}
 	}
 
@@ -94,9 +85,9 @@ public class SimilarityMenu extends ChemVizAbstractMenu implements ActionListene
 	public void actionPerformed(ActionEvent evt) {
 		String cmd = evt.getActionCommand();
 		
-		if (cmd.equals("chemViz.menu.similarity.tanimoto.selectedNodes")) {
-			createScoreTable(Cytoscape.getCurrentNetwork().getSelectedNodes(), settingsDialog, false);
-		} else if (cmd.equals("chemViz.menu.similarity.tanimoto.allNodes")) {
+		if (cmd.equals("selectedNodeSimilarity")) {
+			createScoreTable(Cytoscape.getCurrentNetwork().getSelectedNodes(), settingsDialog, true);
+		} else if (cmd.equals("allNodeSimilarity")) {
 			createScoreTable((Collection<GraphObject>)Cytoscape.getCurrentNetwork().nodesList(), settingsDialog, true);
 		}
 	}

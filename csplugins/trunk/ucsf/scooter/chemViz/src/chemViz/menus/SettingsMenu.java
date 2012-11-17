@@ -38,8 +38,6 @@ package chemViz.menus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.util.Properties;
-
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
@@ -55,11 +53,11 @@ public class SettingsMenu extends ChemVizAbstractMenu implements ActionListener 
  	 * This is the main constructor, which will be called by Cytoscape's Plugin Manager.
  	 * Add our listeners and create the main menu.
  	 */
-	public SettingsMenu(JMenu menu, Properties systemProps, ChemInfoSettingsDialog settingsDialog) {
-		super(systemProps, settingsDialog);
+	public SettingsMenu(JMenu menu, ChemInfoSettingsDialog settingsDialog) {
+		super(settingsDialog);
 
 		menu.add(new JSeparator());
-		menu.add(buildMenuItem("chemViz.menu.settings","chemViz.menu.settings"));
+		menu.add(buildMenuItem("Settings...", "settings"));
 	}
 
 	/*

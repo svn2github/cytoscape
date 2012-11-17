@@ -43,8 +43,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.JMenu;
@@ -75,21 +75,21 @@ public class MCSSMenus extends ChemVizAbstractMenu implements ActionListener {
  	 * This is the main constructor, which will be called by Cytoscape's Plugin Manager.
  	 * Add our listeners and create the main menu.
  	 */
-	public MCSSMenus(JMenu menu, Properties systemProps, 
-	       ChemInfoSettingsDialog settingsDialog, Object context) {
-		super(systemProps, settingsDialog);
+	public MCSSMenus(JMenu menu, ChemInfoSettingsDialog settingsDialog, Object context) {
+		super(settingsDialog);
 
 		this.context = context;
-		JMenu clear = new JMenu(systemProps.getProperty("chemViz.menu.showmcss"));
+
 		if (context == null) {
-			addEdgeMCSSMenus(clear, "chemViz.menu.showmcss", null);
-			addNodeMCSSMenus(clear, "chemViz.menu.showmcss", null);
+			JMenu mcss = new JMenu("Calculate Maximum Common SubStructure (MCSS)");
+			addNodeMCSSMenus(mcss, null);
+			addEdgeMCSSMenus(mcss, null);
+			menu.add(mcss);
 		} else if (context instanceof NodeView) {
-			addNodeMCSSMenus(clear, "chemViz.menu.showmcss", (NodeView)context);
+			addNodeMCSSMenus(menu, (NodeView)context);
 		} else {
-			addEdgeMCSSMenus(clear, "chemViz.menu.showmcss", (EdgeView)context);
+			addEdgeMCSSMenus(menu, (EdgeView)context);
 		}
-		menu.add(clear);
 
 	}
 
@@ -99,14 +99,16 @@ public class MCSSMenus extends ChemVizAbstractMenu implements ActionListener {
 	 * @param menu the menu we're going add our items to
 	 * @param edgeContext the EdgeView this menu is for
 	 */
-	private void addEdgeMCSSMenus(JMenu menu, String prefix, EdgeView edgeContext) {
+	private void addEdgeMCSSMenus(JMenu menu, EdgeView edgeContext) {
 		// Check and see if we have any edge attributes
 		Collection<CyEdge> selectedEdges = Cytoscape.getCurrentNetwork().getSelectedEdges();
 
 		if (edgeContext == null) {
 			// Populating main menu
+			JMenuItem item = buildMenuItem("of all edges", "allEdges");
+			menu.add(item);
 			if (selectedEdges != null && selectedEdges.size() > 0) {
-				JMenuItem item2 = buildMenuItem(prefix+".selectedEdges", prefix+".selectedEdges");
+				JMenuItem item2 = buildMenuItem("of selected edges", "selectedEdges");
 				if (!settingsDialog.hasEdgeCompounds(selectedEdges)) {
 					item2.setEnabled(false);
 				}
@@ -115,20 +117,14 @@ public class MCSSMenus extends ChemVizAbstractMenu implements ActionListener {
 			return;
 		}
 
-		menu.add(buildMenuItem(prefix+".thisEdge",
-		                         prefix+".thisEdge"));
-
-		if (selectedEdges == null) selectedEdges = new ArrayList();
-
-		if (!selectedEdges.contains(edgeContext.getEdge()))
-			selectedEdges.add((CyEdge)edgeContext.getEdge());
-
-		menu.add(buildMenuItem(prefix+".selectedEdges",
-		                         prefix+".selectedEdges"));
+		JMenuItem item = buildMenuItem("Show Maximum Common SubStructure of selected edges", "selectedEdges");
+		if (selectedEdges == null) 
+			selectedEdges = new ArrayList<CyEdge>(Collections.singletonList((CyEdge)edgeContext));
 
 		if (!settingsDialog.hasEdgeCompounds(selectedEdges)) {
-			menu.setEnabled(false);
+			item.setEnabled(false);
 		}
+		menu.add(item);
 		return;
 	}
 
@@ -138,38 +134,36 @@ public class MCSSMenus extends ChemVizAbstractMenu implements ActionListener {
 	 * @param menu the menu we're going add our items to
 	 * @param nodeContext the NodeView this menu is for
 	 */
-	private void addNodeMCSSMenus(JMenu menu, String prefix, NodeView nodeContext) {
+	private void addNodeMCSSMenus(JMenu menu, NodeView nodeContext) {
 		// Check and see if we have any node attributes
 		Collection<CyNode> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
 
 		if (nodeContext == null) {
-			// Populating main menu
-			JMenuItem item = buildMenuItem(prefix+".all", prefix+".all");
-			if (!settingsDialog.hasNodeCompounds(null))
-				item.setEnabled(false);
-
+			JMenuItem item = buildMenuItem("of all nodes", "allNodes");
 			menu.add(item);
 			if (selectedNodes != null && selectedNodes.size() > 0) {
-				JMenuItem item2 = buildMenuItem(prefix+".selectedNodes", prefix+".selectedNodes");
-				if (!settingsDialog.hasNodeCompounds(selectedNodes))
+				JMenuItem item2 = buildMenuItem("of selected nodes", "selectedNodes");
+				if (!settingsDialog.hasNodeCompounds(selectedNodes)) {
 					item2.setEnabled(false);
+				}
 				menu.add(item2);
 			}
 			return;
 		}
 
 		// Populating popup menu
-		menu.add(buildMenuItem(prefix+".thisNode", prefix+".thisNode"));
-
-		if (selectedNodes == null) selectedNodes = new ArrayList();
-
-		if (!selectedNodes.contains(nodeContext.getNode()))
-			selectedNodes.add((CyNode)nodeContext.getNode());
-
-		menu.add(buildMenuItem(prefix+".selectedNodes", prefix+".selectedNodes"));
+		JMenuItem item = buildMenuItem("Show Maximum Common SubStructure of selected nodes", "selectedNodes");
+		if (selectedNodes == null) 
+			selectedNodes = new ArrayList<CyNode>(Collections.singletonList((CyNode)nodeContext));
 
 		if (!settingsDialog.hasNodeCompounds(selectedNodes)) {
-			menu.setEnabled(false);
+			item.setEnabled(false);
+		}
+		menu.add(item);
+
+		if (selectedNodes.size() > 1 && settingsDialog.hasNodeCompounds(selectedNodes)) {
+			item = buildMenuItem("Create MCSS group from selected nodes", "selectedNodesGroup");
+			menu.add(item);
 		}
 		return;
 	}
@@ -184,22 +178,29 @@ public class MCSSMenus extends ChemVizAbstractMenu implements ActionListener {
 		GraphObject obj = null;
 		List<GraphObject> gObjList = new ArrayList<GraphObject>();
 		CyAttributes attributes = null;
+		boolean showResult = true;
+		boolean createGroup = false;
 
-		if (cmd.equals("chemViz.menu.showmcss.thisNode") && (context instanceof NodeView)) {
-			gObjList.add(((NodeView)context).getNode());
-			attributes = Cytoscape.getNodeAttributes();
-		} else if (cmd.equals("chemViz.menu.showmcss.thisEdge") && (context instanceof EdgeView)) {
-			gObjList.add(((EdgeView)context).getEdge());
-			attributes = Cytoscape.getEdgeAttributes();
-		} else if (cmd.equals("chemViz.menu.showmcss.selectedNodes")) {
+		if (cmd.equals("selectedNodes")) {
 			gObjList.addAll(Cytoscape.getCurrentNetwork().getSelectedNodes());
 			attributes = Cytoscape.getNodeAttributes();
-		} else if (cmd.equals("chemViz.menu.showmcss.selectedEdges")) {
+		} else if (cmd.equals("allNodes")) {
+			gObjList.addAll(Cytoscape.getCurrentNetwork().nodesList());
+			attributes = Cytoscape.getNodeAttributes();
+		} else if (cmd.equals("selectedEdges")) {
 			gObjList.addAll(Cytoscape.getCurrentNetwork().getSelectedEdges());
 			attributes = Cytoscape.getEdgeAttributes();
-		} 
+		} else if (cmd.equals("allEdges")) {
+			gObjList.addAll(Cytoscape.getCurrentNetwork().edgesList());
+			attributes = Cytoscape.getEdgeAttributes();
+		} else if (cmd.equals("selectedNodesGroup")) {
+			gObjList.addAll(Cytoscape.getCurrentNetwork().getSelectedNodes());
+			attributes = Cytoscape.getNodeAttributes();
+			showResult = false;
+			createGroup = true;
+		}
 
-		CreateMCSSTask task = new CreateMCSSTask(gObjList, attributes, settingsDialog, true);
+		CreateMCSSTask task = new CreateMCSSTask(gObjList, attributes, settingsDialog, showResult, createGroup);
 		TaskManager.executeTask(task, task.getDefaultTaskConfig());
 	}
 }

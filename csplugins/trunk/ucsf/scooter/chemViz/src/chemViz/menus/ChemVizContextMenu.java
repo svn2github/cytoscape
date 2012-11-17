@@ -72,15 +72,13 @@ public class ChemVizContextMenu implements NodeContextMenuListener, EdgeContextM
 	static private String cebiURL = "http://www.ebi.ac.uk/";
 	static private String cebiSearch = cebiURL+"chebi/searchFreeText.do?searchString=";
 
-	private Properties systemProperties;
 	private ChemInfoSettingsDialog settingsDialog;
 	
 	/**
  	 * This is the main constructor, which will be called by Cytoscape's Plugin Manager.
  	 * Add our listeners and create the main menu.
  	 */
-	public ChemVizContextMenu(Properties systemProperties, ChemInfoSettingsDialog settingsDialog) {
-		this.systemProperties = systemProperties;
+	public ChemVizContextMenu(ChemInfoSettingsDialog settingsDialog) {
 		this.settingsDialog = settingsDialog;
 	}
 
@@ -96,7 +94,7 @@ public class ChemVizContextMenu implements NodeContextMenuListener, EdgeContextM
 		if (pmenu == null) {
 			pmenu = new JPopupMenu();
 		}
-		JMenu menu = new JMenu(systemProperties.getProperty("chemViz.menu"));
+		JMenu menu = new JMenu("Cheminformatics tools");
 		pmenu.add(buildPopupMenu(menu, nodeView));
 	}
 
@@ -112,26 +110,26 @@ public class ChemVizContextMenu implements NodeContextMenuListener, EdgeContextM
 		if (pmenu == null) {
 			pmenu = new JPopupMenu();
 		}
-		JMenu menu = new JMenu(systemProperties.getProperty("chemViz.menu"));
+		JMenu menu = new JMenu("Cheminformatics tools");
 		pmenu.add(buildPopupMenu(menu, edgeView));
 	}
 
 	private JMenu buildPopupMenu(JMenu m, Object context) {
 		if (context instanceof EdgeView) {
-			new DepictionMenus(m, systemProperties, settingsDialog, (EdgeView) context);
-			new AttributesMenu(m, systemProperties, settingsDialog, (EdgeView) context);
-			new StructureMenus(m, systemProperties, settingsDialog, (EdgeView) context);
-			new MCSSMenus(m, systemProperties, settingsDialog, (EdgeView) context);
+			new DepictionMenus(m, settingsDialog, (EdgeView) context);
+			new AttributesMenu(m, settingsDialog, (EdgeView) context);
+			new StructureMenus(m, settingsDialog, (EdgeView) context);
+			new MCSSMenus(m, settingsDialog, (EdgeView) context);
 			updateLinkOut(((EdgeView)context).getEdge());
 		} else {
-			new DepictionMenus(m, systemProperties, settingsDialog, (NodeView) context);
-			new NodeGraphicsMenus(m, systemProperties, settingsDialog, (NodeView) context);
-			new AttributesMenu(m, systemProperties, settingsDialog, (NodeView) context);
-			new MCSSMenus(m, systemProperties, settingsDialog, (NodeView) context);
+			new DepictionMenus(m, settingsDialog, (NodeView) context);
+			new AttributesMenu(m, settingsDialog, (NodeView) context);
+			new StructureMenus(m, settingsDialog, (NodeView) context);
+			new MCSSMenus(m, settingsDialog, (NodeView) context);
 			updateLinkOut(((NodeView)context).getNode());
 		}
-		new SimilarityMenu(m, systemProperties, settingsDialog);
-		new SettingsMenu(m, systemProperties, settingsDialog);
+		new SimilarityMenu(m, settingsDialog);
+		new SettingsMenu(m, settingsDialog);
 		return m;
 	}
 

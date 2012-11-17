@@ -37,8 +37,6 @@ package chemViz.menus;
 
 import java.awt.Component;
 
-import java.util.Properties;
-
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.event.MenuEvent;
@@ -54,16 +52,13 @@ import chemViz.ui.ChemInfoSettingsDialog;
  * This plugin adds cheminformatics tools to Cytoscape.
  */
 public class ChemVizMenu implements MenuListener {
-	
-	private Properties systemProps = null;
 	private ChemInfoSettingsDialog settingsDialog = null;
 	
 	/**
  	 * This is the main constructor, which will be called by Cytoscape's Plugin Manager.
  	 * Add our listeners and create the main menu.
  	 */
-	public ChemVizMenu(Properties systemProperties, ChemInfoSettingsDialog settingsDialog) {
-		this.systemProps = systemProperties;
+	public ChemVizMenu(ChemInfoSettingsDialog settingsDialog) {
 		this.settingsDialog = settingsDialog;
 	}
 
@@ -93,13 +88,11 @@ public class ChemVizMenu implements MenuListener {
 		// remove the current entries
 		Component[] subMenus = m.getMenuComponents();
 		for (int i = 0; i < subMenus.length; i++) { m.remove(subMenus[i]); }
-		new DepictionMenus(m, systemProps, settingsDialog, null);
-		new NodeGraphicsMenus(m, systemProps, settingsDialog, null);
-		new SimilarityMenu(m, systemProps, settingsDialog);
-		new AttributesMenu(m, systemProps, settingsDialog, null);
-		new StructureMenus(m, systemProps, settingsDialog, null);
-		new MCSSMenus(m, systemProps, settingsDialog, null);
-		new SettingsMenu(m, systemProps, settingsDialog);
+		new DepictionMenus(m, settingsDialog, null);
+		new AttributesMenu(m, settingsDialog, null);
+		new StructureMenus(m, settingsDialog, null);
+		new MCSSMenus(m, settingsDialog, null);
+		new SimilarityMenu(m, settingsDialog);
+		new SettingsMenu(m, settingsDialog);
 	}
-
 }

@@ -217,7 +217,7 @@ public class CustomGraphicsVisitor implements IDrawVisitor {
 	}
 
 	private void visit(PathElement path) {
-		System.out.println("PathElement");
+		// System.out.println("PathElement");
 		Path2D pathShape = new Path2D.Double();
 		for (int i = 1; i < path.points.size(); i++) {
 			Point2d point1 = path.points.get(i-1);
@@ -235,7 +235,7 @@ public class CustomGraphicsVisitor implements IDrawVisitor {
 	}
 
 	private void visit(GeneralPath path) {
-		System.out.println("GeneralPathElement");
+		// System.out.println("GeneralPathElement");
 		java.awt.geom.GeneralPath generalPath = new java.awt.geom.GeneralPath();
 		generalPath.append( getPathIterator(path, transform), false);
 
@@ -294,7 +294,7 @@ public class CustomGraphicsVisitor implements IDrawVisitor {
 	}
 
 	private void visit(TextElement textElement) {
-		System.out.println("TextElement");
+		// System.out.println("TextElement");
 		Font font = fontManager.getFont();
 		FontRenderContext frc = getViewFontRenderContext(networkView);
 		TextLayout tl = new TextLayout(textElement.text, font, frc);
@@ -310,7 +310,7 @@ public class CustomGraphicsVisitor implements IDrawVisitor {
 	}
 
 	private void visit(TextGroupElement textGroup) {
-		System.out.println("TextGroupElement");
+		// System.out.println("TextGroupElement");
 		Font font = fontManager.getFont();
 		FontRenderContext frc = getViewFontRenderContext(networkView);
 		TextLayout tl = new TextLayout(textGroup.text, font, frc);
@@ -391,7 +391,7 @@ public class CustomGraphicsVisitor implements IDrawVisitor {
 	}
 
 	private void visit(ArrowElement line) {
-		System.out.println("ArrowElement");
+		// System.out.println("ArrowElement");
 		double scale = rendererModel.getParameter(Scale.class).getValue();
 
 		int w = (int) (line.width * scale);
@@ -429,7 +429,7 @@ public class CustomGraphicsVisitor implements IDrawVisitor {
 	}
 
 	private void visit(WedgeLineElement wedge) {
-		System.out.println("WedgeElement");
+		// System.out.println("WedgeElement");
 		// make the vector normal to the wedge axis
 		Vector2d normal =
 		     new Vector2d(wedge.firstPointY - wedge.secondPointY, wedge.secondPointX - wedge.firstPointX);
