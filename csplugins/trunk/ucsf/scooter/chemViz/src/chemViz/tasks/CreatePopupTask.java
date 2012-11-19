@@ -64,6 +64,7 @@ public class CreatePopupTask extends AbstractCompoundTask {
 	ChemInfoSettingsDialog dialog;
 	String labelAttribute;
 	CompoundPopup	compoundPopup = null;
+	String dialogTitle = null;
 
 	/**
  	 * Creates the task.
@@ -115,6 +116,10 @@ public class CreatePopupTask extends AbstractCompoundTask {
 		return "Creating 2D Images";
 	}
 
+	public void setDialogTitle(String title) {
+		this.dialogTitle = title;
+	}
+
 	/**
  	 * Runs the task -- this will get all of the compounds, fetching the images (if necessary) and creates the popup.
  	 */
@@ -139,12 +144,12 @@ public class CreatePopupTask extends AbstractCompoundTask {
 		}
 		if (compoundList.size() > 0 && !canceled) {
 			if (objectList != null && objectList.size() == 1) {
-				compoundPopup = new CompoundPopup(compoundList, objectList, null);
+				compoundPopup = new CompoundPopup(compoundList, objectList, null, dialogTitle);
 			} else {
 				if (labelAttribute.equals("ID"))
-					compoundPopup = new CompoundPopup(compoundList, objectList, type+".ID");
+					compoundPopup = new CompoundPopup(compoundList, objectList, type+".ID", dialogTitle);
 				else
-					compoundPopup = new CompoundPopup(compoundList, objectList, labelAttribute);
+					compoundPopup = new CompoundPopup(compoundList, objectList, labelAttribute, dialogTitle);
 			}
 		}
 	}

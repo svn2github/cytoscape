@@ -142,6 +142,7 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 			List<Compound> mcssList = new ArrayList<Compound>();
 			mcssList.add(c);
 			CreatePopupTask loader = new CreatePopupTask(mcssList, null, dialog, label, 1);
+			loader.setDialogTitle("Maximum Common SubStructure");
 			TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
 		}
 

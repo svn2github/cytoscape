@@ -80,6 +80,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
@@ -235,6 +236,8 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 		MouseAdapter mouseAdapter = new TableMouseAdapter(table, tableModel, sorter);
 		tableHeader = table.getTableHeader();
 		tableHeader.addMouseListener(mouseAdapter);
+		TableCellRenderer renderer = tableHeader.getDefaultRenderer();
+		((DefaultTableCellRenderer)renderer).setHorizontalAlignment(SwingConstants.CENTER);
 		sorter.setTableHeader(tableHeader);
 
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);

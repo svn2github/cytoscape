@@ -78,17 +78,22 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 	private String labelAttribute;
 	private static final int LABEL_HEIGHT = 20;
 
-	public CompoundPopup(List<Compound> compoundList, List<GraphObject> objectList, String labelAttribute) {
+	public CompoundPopup(List<Compound> compoundList, List<GraphObject> objectList, String labelAttribute,
+	                     String dialogTitle) {
 		super(Cytoscape.getDesktop());
 
 		this.compoundList = compoundList;
 		this.imageMap = new HashMap();
 		this.labelAttribute = labelAttribute;
 
-		if (objectList != null && objectList.size() > 0) 
-			setTitle(getObjectTitle(objectList));
-		else
-			setTitle("2D Structures");
+		if (dialogTitle == null) {
+			if (objectList != null && objectList.size() > 0) 
+				setTitle(getObjectTitle(objectList));
+			else
+				setTitle("2D Structures");
+		} else {
+			setTitle(dialogTitle);
+		}
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBackground(Color.BLACK);
