@@ -108,16 +108,9 @@ public class TanimotoScorerTask extends AbstractCompoundTask {
 
 		objectCount = 0;
 		totalObjects = selection.size();
+		List<CyEdge> edgeList = new ArrayList<CyEdge>();
 
 		updateMonitor();
-
-		if (createNewNetwork) {
-		// Create a new network if we're supposed to
-			newNet = Cytoscape.createNetwork(selection, new ArrayList(), origNetwork.getTitle()+" copy",
-																 origNetwork, true); 
-			newNetworkView = Cytoscape.getNetworkView(newNet.getIdentifier());
-			vs = Cytoscape.getVisualMappingManager().getVisualStyle();
-		}
 
 		for (int index1 = 0; index1 < totalObjects; index1++) {
 			CyNode node1 = (CyNode)selection.get(index1);
@@ -171,7 +164,7 @@ public class TanimotoScorerTask extends AbstractCompoundTask {
 					// System.out.print("   Creating and edge between "+node1.getIdentifier()+" and "+node2.getIdentifier());
 					edge = Cytoscape.getCyEdge(node1, node2, "interaction", "similarity", true, true);
 					// Add it to our new network
-					newNet.addEdge(edge);
+					edgeList.add(edge);
 					// System.out.println("...done");
 				} else {
 					// Otherwise, get the edges connecting these nodes (if any)
@@ -190,17 +183,24 @@ public class TanimotoScorerTask extends AbstractCompoundTask {
 				}
 			}
 
-			if (createNewNetwork) {
-				NodeView orig = origNetworkView.getNodeView(node1);
-				NodeView newv = newNetworkView.getNodeView(node1);
-				newv.setXPosition(orig.getXPosition());
-				newv.setYPosition(orig.getYPosition());
-			}
-
 			updateMonitor();
 		}
 
 		if (createNewNetwork) {
+		// Create a new network if we're supposed to
+			newNet = Cytoscape.createNetwork(selection, edgeList, origNetwork.getTitle()+" copy",
+																 origNetwork, true); 
+			newNetworkView = Cytoscape.getNetworkView(newNet.getIdentifier());
+			vs = Cytoscape.getVisualMappingManager().getVisualStyle();
+
+			for (GraphObject go: selection) {
+				CyNode node = (CyNode)go;
+				NodeView orig = origNetworkView.getNodeView(node);
+				NodeView newv = newNetworkView.getNodeView(node);
+				newv.setXPosition(orig.getXPosition());
+				newv.setYPosition(orig.getYPosition());
+			}
+
 			// All done -- create and update the view
 			newNetworkView.fitContent();
 			newNetworkView.setVisualStyle(vs.getName());

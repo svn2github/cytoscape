@@ -155,10 +155,10 @@ public class Compound {
 		HBONDDONOR ("HBond Donors", "donors", Integer.class),
 		LOBMAX ("Length over Breadth Max", "lobmax", Double.class),
 		LOBMIN ("Length over Breadth Min", "lobmin", Double.class),
+		RULEOFFIVE ("Lipinski's Rule of Five Failures", "roff", Double.class),
 		AMR ("Molar refractivity", "refractivity", Double.class),
 		RINGCOUNT ("Ring count", "nrings", Integer.class),
 		RBONDS ("Rotatable Bonds Count", "rotbonds", Integer.class),
-		RULEOFFIVE ("Rule of Five Failures", "roff", Double.class),
 		TPSA ("Topological Polar Surface Area", "polarsurface", Double.class),
 		WEINERPATH ("Wiener Path", "wienerpath", Double.class),
 		WEINERPOL ("Wiener Polarity", "weinerpolarity", Double.class),
@@ -186,17 +186,26 @@ public class Compound {
 	static private CyLogger logger = CyLogger.getLogger(Compound.class);
 	static private Fingerprinter fingerprinter = Fingerprinter.PUBCHEM;
 	static private DescriptorType[] descriptorTypes = {
-		DescriptorType.IMAGE, DescriptorType.ATTRIBUTE, DescriptorType.IDENTIFIER, DescriptorType.WEIGHT,
+		DescriptorType.IMAGE, DescriptorType.ATTRIBUTE, DescriptorType.IDENTIFIER, 
+		DescriptorType.LIPINSKI, DescriptorType.SDF,
+		DescriptorType.ALOGP,
+		DescriptorType.ALOGP2,
+		DescriptorType.AROMATICRINGSCOUNT,
 		DescriptorType.MASS,
-		DescriptorType.ALOGP,DescriptorType.ALOGP2,DescriptorType.AMR,
-		DescriptorType.HBONDACCEPTOR,DescriptorType.HBONDDONOR,
-		DescriptorType.LIPINSKI,
-		// Exclude the LengthOverBreadth Descriptors until CDK gets better ring templates
-		DescriptorType.LOBMAX,DescriptorType.LOBMIN,
-		DescriptorType.RBONDS,DescriptorType.RULEOFFIVE,
-		DescriptorType.SDF, DescriptorType.TPSA,
-		DescriptorType.RINGCOUNT, DescriptorType.AROMATICRINGSCOUNT,
-		DescriptorType.WEINERPATH,DescriptorType.WEINERPOL
+		DescriptorType.HEAVYATOMCOUNT,
+		DescriptorType.HBONDACCEPTOR,
+		DescriptorType.HBONDDONOR,
+		DescriptorType.LOBMAX,
+		DescriptorType.LOBMIN,
+		DescriptorType.RULEOFFIVE,
+		DescriptorType.AMR,
+		DescriptorType.WEIGHT, 
+		DescriptorType.RINGCOUNT,
+		DescriptorType.RBONDS,
+		DescriptorType.TPSA,
+		DescriptorType.WEINERPATH,
+		DescriptorType.WEINERPOL,
+		DescriptorType.XLOGP
 	};
 
 	static private DescriptorType[] SDFTypes = {
