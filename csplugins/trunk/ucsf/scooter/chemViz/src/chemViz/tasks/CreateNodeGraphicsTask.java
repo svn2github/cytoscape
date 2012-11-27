@@ -232,7 +232,8 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 			totalObjects = nodeSelection.size();
 			cList = getCompounds(nodeSelection, nodeAttributes,
 					   							 settingsDialog.getCompoundAttributes("node",AttriType.smiles),
-						   						 settingsDialog.getCompoundAttributes("node",AttriType.inchi));
+						   						 settingsDialog.getCompoundAttributes("node",AttriType.inchi),
+		                       settingsDialog.getMaxThreads());
 		}
 
 		objectCount = 0;

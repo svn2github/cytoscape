@@ -111,7 +111,8 @@ public class CreateCompoundTableTask extends AbstractCompoundTask {
 
 		List<Compound> cList = getCompounds(selection, attributes, 
 				   															settingsDialog.getCompoundAttributes(type,AttriType.smiles),
-					   														settingsDialog.getCompoundAttributes(type,AttriType.inchi));
+					   														settingsDialog.getCompoundAttributes(type,AttriType.inchi), 
+		                                    settingsDialog.getMaxThreads());
 		if (cList.size() > 0 && !canceled) {
 			compoundTable = new CompoundTable(cList, columnList);
 		}

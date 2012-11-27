@@ -28,6 +28,8 @@
 
 package chemViz.model;
 
+import java.lang.reflect.Constructor;
+
 import org.openscience.cdk.fingerprint.EStateFingerprinter;
 import org.openscience.cdk.fingerprint.ExtendedFingerprinter;
 import org.openscience.cdk.fingerprint.GraphOnlyFingerprinter;
@@ -39,20 +41,31 @@ import org.openscience.cdk.fingerprint.PubchemFingerprinter;
 import org.openscience.cdk.fingerprint.SubstructureFingerprinter;
 
 public enum Fingerprinter {
-	CDK("CDK", new org.openscience.cdk.fingerprint.Fingerprinter()),
-	ESTATE("E-State", new EStateFingerprinter()),
-	EXTENDED("Extended CDK", new ExtendedFingerprinter()),
-	GRAPHONLY("Graph Only", new GraphOnlyFingerprinter()),
-	HYBRIDIZATION("Hybridization", new HybridizationFingerprinter()),
-	KLEKOTAROTH("Klekota & Roth", new KlekotaRothFingerprinter()),
-	MACCS("MACCS", new MACCSFingerprinter()),
-	PUBCHEM("Pubchem", new PubchemFingerprinter()),
-	SUBSTRUCTURE("Substructure bitset", new SubstructureFingerprinter());
+	CDK("CDK", org.openscience.cdk.fingerprint.Fingerprinter.class),
+	ESTATE("E-State", EStateFingerprinter.class),
+	EXTENDED("Extended CDK", ExtendedFingerprinter.class),
+	GRAPHONLY("Graph Only", GraphOnlyFingerprinter.class),
+	HYBRIDIZATION("Hybridization", HybridizationFingerprinter.class),
+	KLEKOTAROTH("Klekota & Roth", KlekotaRothFingerprinter.class),
+	MACCS("MACCS", MACCSFingerprinter.class),
+	PUBCHEM("Pubchem", PubchemFingerprinter.class),
+	SUBSTRUCTURE("Substructure bitset", SubstructureFingerprinter.class);
 
   private String name;
-  private IFingerprinter fingerprinter;
-  private Fingerprinter(String str, IFingerprinter fp) { name=str; fingerprinter = fp;}
+  private Class fingerprinter;
+  private Fingerprinter(String str, Class fp) { name=str; fingerprinter = fp;}
   public String toString() { return name; }
   public String getName() { return name; }
-  public IFingerprinter getFingerprinter() { return fingerprinter; }
+  public IFingerprinter getFingerprinter() { 
+		IFingerprinter i; 
+		try {
+			Constructor<IFingerprinter> c = fingerprinter.getConstructor();
+			i = c.newInstance(); 
+		} catch (Exception e) {
+			System.err.println("Unable to create fingerprinter instance for "+name);
+			e.printStackTrace();
+			return null;
+		}
+		return i;
+	}
 }

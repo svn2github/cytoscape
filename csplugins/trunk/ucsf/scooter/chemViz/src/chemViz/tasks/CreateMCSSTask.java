@@ -120,7 +120,7 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 	public void run() {
 		compoundList = getCompounds(objectList, attributes,
                                 dialog.getCompoundAttributes(type,AttriType.smiles),
-                                dialog.getCompoundAttributes(type,AttriType.inchi));
+                                dialog.getCompoundAttributes(type,AttriType.inchi), dialog.getMaxThreads());
 
 		mcss = compoundList.get(0).getIMolecule();
 		try {
@@ -138,7 +138,7 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 			String mcssSmiles = getMCSSSmiles();
 			String label = mcssSmiles;
 			// List<Compound> mcssList = ValueUtils.getCompounds(null, mcssSmiles, AttriType.smiles, null, null);
-			Compound c = new Compound(null, null, mcssSmiles, mcss, AttriType.smiles, false);
+			Compound c = new Compound(null, null, mcssSmiles, mcss, AttriType.smiles);
 			List<Compound> mcssList = new ArrayList<Compound>();
 			mcssList.add(c);
 			CreatePopupTask loader = new CreatePopupTask(mcssList, null, dialog, label, 1);

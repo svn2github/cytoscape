@@ -140,7 +140,8 @@ public class CreatePopupTask extends AbstractCompoundTask {
 
 			compoundList = getCompounds(objectList, attributes,
   	                              dialog.getCompoundAttributes(type,AttriType.smiles),
-  	                              dialog.getCompoundAttributes(type,AttriType.inchi));
+  	                              dialog.getCompoundAttributes(type,AttriType.inchi),
+		                              dialog.getMaxThreads());
 		}
 		if (compoundList.size() > 0 && !canceled) {
 			if (objectList != null && objectList.size() == 1) {

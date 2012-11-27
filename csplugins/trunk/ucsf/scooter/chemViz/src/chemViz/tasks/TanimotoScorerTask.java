@@ -119,7 +119,7 @@ public class TanimotoScorerTask extends AbstractCompoundTask {
 			// System.out.println("Calculating tanimoto coefficients for "+node1.getIdentifier());
 			List<Compound> cList1 = getCompounds(node1, attributes, 
 																					 settingsDialog.getCompoundAttributes("node",AttriType.smiles),
-																					 settingsDialog.getCompoundAttributes("node",AttriType.inchi), true);
+																					 settingsDialog.getCompoundAttributes("node",AttriType.inchi), null);
 			if (cList1 == null || cList1.size() == 0)
 				continue;
 
@@ -132,7 +132,7 @@ public class TanimotoScorerTask extends AbstractCompoundTask {
 
 				List<Compound> cList2 = getCompounds(node2, attributes, 
 																						 settingsDialog.getCompoundAttributes("node",AttriType.smiles),
-																						 settingsDialog.getCompoundAttributes("node",AttriType.inchi), true);
+																						 settingsDialog.getCompoundAttributes("node",AttriType.inchi), null);
 				if (cList2 == null || cList2.size() == 0)
 					continue;
 

@@ -64,6 +64,7 @@ import chemViz.model.ChemInfoProperties;
 import chemViz.model.Compound;
 import chemViz.model.Compound.AttriType;
 import chemViz.model.Compound.DescriptorType;
+import chemViz.tasks.GetCompoundTask;
 
 /**
  * Inner class to handle CyCommands
@@ -208,18 +209,19 @@ public class ValueUtils {
 	static public List<Compound> getCompounds(List<GraphObject> objList, String mstring, AttriType type, 
 	                                          List<String> sList, List<String> iList) {
 		List<Compound> compoundList = new ArrayList<Compound>();
+		List<GetCompoundTask> threadList = new ArrayList<GetCompoundTask>();
 
 		// Handle special case of a bare smiles string
 		if (mstring != null) {
 			if (objList == null || objList.size() == 0) {
-				Compound c = new Compound(null, null, mstring, type, false);
+				Compound c = new Compound(null, null, mstring, type);
 				compoundList.add(c);
 			} else {
 				for (GraphObject obj: objList) {
 					if (obj instanceof CyNode)
-						compoundList.add(new Compound(obj, null, mstring, type, false));
+						compoundList.add(new Compound(obj, null, mstring, type));
 					else
-						compoundList.add(new Compound(obj, null, mstring, type, false));
+						compoundList.add(new Compound(obj, null, mstring, type));
 				}
 			}
 			return compoundList;
@@ -227,10 +229,12 @@ public class ValueUtils {
 
 		for (GraphObject obj: objList) {
 			if (obj instanceof CyNode)
-				compoundList.addAll(getCompounds(obj, Cytoscape.getNodeAttributes(), sList, iList, false));
+				compoundList.addAll(getCompounds(obj, Cytoscape.getNodeAttributes(), sList, iList, threadList));
 			else
-				compoundList.addAll(getCompounds(obj, Cytoscape.getEdgeAttributes(), sList, iList, false));
+				compoundList.addAll(getCompounds(obj, Cytoscape.getEdgeAttributes(), sList, iList, threadList));
 		}
+
+		compoundList.addAll(GetCompoundTask.runThreads(0, threadList));
 
 		return compoundList;
 	}
@@ -243,13 +247,12 @@ public class ValueUtils {
  	 * @param attributes the appropriate set of attributes (nodeAttributes or edgeAttributes)
  	 * @param sList the list of attributes that contain SMILES strings
  	 * @param iList the list of attributes that contain InChI strings
- 	 * @param noStructures if 'true', the structures are fetched in the background
  	 * @return the list of compounds.  If the compounds have not already been created, they are created
  	 *         as a byproduct of this method.
  	 */
 	public static List<Compound> getCompounds(GraphObject go, CyAttributes attributes, 
-	                                          List<String> sList, List<String> iList, 
-	                                          boolean noStructures) {
+	                                          List<String> sList, List<String> iList,
+	                                          List<GetCompoundTask> threadList) {
 		if ((sList == null || sList.size() == 0) 
 		    && (iList == null || iList.size() == 0))
 			return null;
@@ -258,11 +261,11 @@ public class ValueUtils {
 
 		// Get the compound list from each attribute
 		for (String attr: sList) {
-			cList.addAll(getCompounds(go, attributes, attr, AttriType.smiles, noStructures));
+			cList.addAll(getCompounds(go, attributes, attr, AttriType.smiles, threadList));
 		}
 
 		for (String attr: iList) {
-			cList.addAll(getCompounds(go, attributes, attr, AttriType.inchi, noStructures));
+			cList.addAll(getCompounds(go, attributes, attr, AttriType.inchi, threadList));
 		}
 
 		return cList;
@@ -276,13 +279,12 @@ public class ValueUtils {
  	 * @param attributes the appropriate set of attributes (nodeAttributes or edgeAttributes)
  	 * @param attr the attribute that contains the compound descriptor
  	 * @param type the type of the attribute (smiles or inchi)
- 	 * @param noStructures if 'true', the structures are fetched in the background
  	 * @return the list of compounds.  If the compounds have not already been created, they are created
  	 *         as a byproduct of this method.
  	 */
 	public static List<Compound> getCompounds(GraphObject go, CyAttributes attributes, 
-	                                          String attr, AttriType type,
-	                                          boolean noStructures) {
+	                                          String attr, AttriType type, 
+	                                          List<GetCompoundTask> threadList) {
 		byte atype = attributes.getType(attr);
 		List<Compound> cList = new ArrayList();
 			
@@ -290,11 +292,11 @@ public class ValueUtils {
 			return cList;
 		if (atype == CyAttributes.TYPE_STRING) {
 			String cstring = attributes.getStringAttribute(go.getIdentifier(), attr);
-			cList.addAll(getCompounds(go, attr, cstring, type, noStructures));
+			cList.addAll(getCompounds(go, attr, cstring, type, threadList));
 		} else if (atype == CyAttributes.TYPE_SIMPLE_LIST) {
 			List<String> stringList = attributes.getListAttribute(go.getIdentifier(), attr);
 			for (String cstring: stringList) {
-				cList.addAll(getCompounds(go, attr, cstring, type, noStructures));
+				cList.addAll(getCompounds(go, attr, cstring, type, threadList));
 			}
 		}
 		return cList;
@@ -302,7 +304,7 @@ public class ValueUtils {
 
 	public static List<Compound> getCompounds(GraphObject go, String attr, 
 	                                          String compoundString, AttriType type,
-	                                          boolean noStructures) {
+	                                          List<GetCompoundTask> threadList) {
 		List<Compound> cList = new ArrayList();
 
 		String[] cstrings = null;
@@ -317,8 +319,13 @@ public class ValueUtils {
 		for (int i = 0; i < cstrings.length; i++) {
 
 			Compound c = Compound.getCompound(go, attr, cstrings[i], type);
-			if (c == null)
-				c = new Compound(go, attr, cstrings[i], type, noStructures);
+			if (c == null) {
+				if (threadList != null) {
+					threadList.add(new GetCompoundTask(go, attr, cstrings[i], type));
+					continue;
+				}
+				c = new Compound(go, attr, cstrings[i], type);
+			}
 
 			cList.add(c);
 				return cList;

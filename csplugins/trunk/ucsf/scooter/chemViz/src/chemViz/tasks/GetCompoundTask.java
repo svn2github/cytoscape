@@ -36,63 +36,71 @@
 package chemViz.tasks;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import giny.model.GraphObject;
-import giny.view.EdgeView;
-import giny.view.NodeView;
-
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.task.Task;
 
 import chemViz.model.Compound;
 import chemViz.model.Compound.AttriType;
-import chemViz.ui.ChemInfoSettingsDialog;
-import chemViz.ui.CompoundPopup;
 
 
-/**
- * The CreateCompoundsTask fetches all of the compounds defined by the
- * object passed in its constructor and provides some methods to allow
- * the caller to fetch the compounds when the task is complete.
- */
-public class CreateCompoundsTask extends AbstractCompoundTask {
-	List<GraphObject> objectList;
-	ChemInfoSettingsDialog dialog;
-	String type;
-	CyAttributes attributes;
-	List<Compound> compoundList;
+public class GetCompoundTask implements Callable<Compound> {
+	private GraphObject go;
+	private String attr;
+	private String cstring;
+	private AttriType type;
+	private Compound result = null;
+	static List<Compound> threadResultsList = null;
 
-	/**
- 	 * Creates the task.
- 	 *
- 	 */
-  public CreateCompoundsTask(GraphObject object, CyAttributes attributes, ChemInfoSettingsDialog dialog) {
-		this.objectList = new ArrayList();
-		objectList.add(object);
-		if (object instanceof CyNode)
-			type = "node";
+	static public List<Compound> runThreads(int maxThreads, List<GetCompoundTask> getList) {
+		if (getList == null || getList.size() == 0) 
+			return new ArrayList<Compound>();
+
+		int nThreads = Runtime.getRuntime().availableProcessors()-1;
+		if (maxThreads > 0)
+			nThreads = maxThreads;
+
+		// System.out.println("Getting "+getList.size()+" compounds using "+nThreads+" threads");
+
+		ExecutorService threadPool = Executors.newFixedThreadPool(nThreads);
+		threadResultsList = Collections.synchronizedList(new ArrayList<Compound>(getList.size()));
+		List<Future<Compound>> results = new ArrayList<Future<Compound>>();
+
+		try {
+			results = threadPool.invokeAll(getList);
+		} catch (Exception e) {
+			System.out.println("Execution exception: "+e);
+			e.printStackTrace();
+		}
+
+		return threadResultsList;
+	}
+
+
+	public GetCompoundTask(GraphObject go, String attr, String cstring, AttriType type) {
+		this.go = go;
+		this.attr = attr;
+		this.cstring = cstring;
+		this.type = type;
+	}
+
+	public Compound call() {
+		result = new Compound(go, attr, cstring, type);
+		threadResultsList.add(result);
+		return result;
+	}
+
+	public Compound get() { 
+		if (result == null) 
+			return call();
 		else
-			type = "edge";
-		this.dialog = dialog;
-		this.canceled = false;
-		this.attributes = attributes;
+			return result; 
 	}
 
-	public String getTitle() {
-		return "Creating Compounds";
-	}
-
-	/**
- 	 * Runs the task -- this will get all of the compounds, fetching the images (if necessary) and creates the popup.
- 	 */
-	public void run() {
-		compoundList = getCompounds(objectList, attributes,
-                                dialog.getCompoundAttributes(type,AttriType.smiles),
-                                dialog.getCompoundAttributes(type,AttriType.inchi), dialog.getMaxThreads());
-	}
-
-	public List<Compound>getCompoundList() { return compoundList; }
 }

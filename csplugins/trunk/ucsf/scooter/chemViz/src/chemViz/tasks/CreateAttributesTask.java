@@ -134,7 +134,8 @@ public class CreateAttributesTask extends AbstractCompoundTask implements Action
 		
 		List<Compound>cList = getCompounds(selection, attributes, 
 					   							             settingsDialog.getCompoundAttributes(type,AttriType.smiles),
-						   						             settingsDialog.getCompoundAttributes(type,AttriType.inchi));
+						   						             settingsDialog.getCompoundAttributes(type,AttriType.inchi), 
+		                                   settingsDialog.getMaxThreads());
 
 		if (cList == null || cList.size() == 0) return;
 

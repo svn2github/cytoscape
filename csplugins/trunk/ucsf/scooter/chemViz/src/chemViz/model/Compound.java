@@ -59,6 +59,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -143,12 +144,12 @@ public class Compound {
 		IMAGE ("2D Image", "image", Compound.class),
 		ATTRIBUTE ("Attribute", "attribute", String.class),
 		IDENTIFIER ("Molecular String", "molstring", String.class),
-		WEIGHT ("Molecular Wt.", "weight", Double.class),
 		LIPINSKI ("Lipinski parameters", "lipinski", Map.class),
 		SDF ("SDF parameters", "sdf", Map.class),
 		ALOGP ("ALogP", "alogp", Double.class),
 		ALOGP2 ("ALogP2", "alogp2", Double.class),
 		AROMATICRINGSCOUNT ("Aromatic ring count", "naromatic", Integer.class),
+		ATOMICCOMP ("Atomic composition", "atomiccomp", Double.class),
 		MASS ("Exact Mass", "mass", Double.class),
 		HEAVYATOMCOUNT ("Heavy atom count", "nheavy", Integer.class),
 		HBONDACCEPTOR ("HBond Acceptors", "acceptors", Integer.class),
@@ -157,9 +158,11 @@ public class Compound {
 		LOBMIN ("Length over Breadth Min", "lobmin", Double.class),
 		RULEOFFIVE ("Lipinski's Rule of Five Failures", "roff", Double.class),
 		AMR ("Molar refractivity", "refractivity", Double.class),
+		WEIGHT ("Molecular Wt.", "weight", Double.class),
 		RINGCOUNT ("Ring count", "nrings", Integer.class),
 		RBONDS ("Rotatable Bonds Count", "rotbonds", Integer.class),
 		TPSA ("Topological Polar Surface Area", "polarsurface", Double.class),
+		TBONDS ("Total Number of Bonds", "totbonds", Integer.class),
 		WEINERPATH ("Wiener Path", "wienerpath", Double.class),
 		WEINERPOL ("Wiener Polarity", "weinerpolarity", Double.class),
 		XLOGP ("XLogP", "xlogp", Double.class),
@@ -182,7 +185,7 @@ public class Compound {
 	}
 
 	// Class variables
-	static private HashMap<GraphObject, List<Compound>> compoundMap;
+	static private ConcurrentHashMap<GraphObject, List<Compound>> compoundMap;
 	static private CyLogger logger = CyLogger.getLogger(Compound.class);
 	static private Fingerprinter fingerprinter = Fingerprinter.PUBCHEM;
 	static private DescriptorType[] descriptorTypes = {
@@ -191,6 +194,7 @@ public class Compound {
 		DescriptorType.ALOGP,
 		DescriptorType.ALOGP2,
 		DescriptorType.AROMATICRINGSCOUNT,
+		DescriptorType.ATOMICCOMP,
 		DescriptorType.MASS,
 		DescriptorType.HEAVYATOMCOUNT,
 		DescriptorType.HBONDACCEPTOR,
@@ -203,6 +207,7 @@ public class Compound {
 		DescriptorType.RINGCOUNT,
 		DescriptorType.RBONDS,
 		DescriptorType.TPSA,
+		DescriptorType.TBONDS,
 		DescriptorType.WEINERPATH,
 		DescriptorType.WEINERPOL,
 		DescriptorType.XLOGP
@@ -318,11 +323,10 @@ public class Compound {
  	 * @param attribute the attribute that has the compound string
  	 * @param mstring the compound descriptor itself
  	 * @param attrType the type of the compound descriptor (inchi or smiles)
- 	 * @param noStructures if 'true' get the structures on a separate thread
  	 */
 	public Compound(GraphObject source, String attribute, String mstring, 
-	                AttriType attrType, boolean noStructures) {
-		this(source, attribute, mstring, null, attrType, noStructures);
+	                AttriType attrType) {
+		this(source, attribute, mstring, null, attrType);
 	}
 
 	/**
@@ -333,10 +337,9 @@ public class Compound {
  	 * @param attribute the attribute that has the compound string
  	 * @param mstring the compound descriptor itself
  	 * @param attrType the type of the compound descriptor (inchi or smiles)
- 	 * @param noStructures if 'true' get the structures on a separate thread
  	 */
 	public Compound(GraphObject source, String attribute, String mstring, IMolecule molecule,
-	                AttriType attrType, boolean noStructures) {
+	                AttriType attrType) {
 		this.source = source;
 		this.attribute = attribute;
 		this.moleculeString = mstring.trim();
@@ -344,7 +347,7 @@ public class Compound {
 
 		List<Compound> mapList = null;
 		if (Compound.compoundMap == null) 
-			Compound.compoundMap = new HashMap();
+			Compound.compoundMap = new ConcurrentHashMap<GraphObject, List<Compound>>();
 
 		if (Compound.compoundMap.containsKey(source)) {
 			mapList = Compound.compoundMap.get(source);
@@ -605,6 +608,13 @@ public class Compound {
 					IntegerResult retval = (IntegerResult)(descriptor.calculate(iMolecule).getValue());
 					return retval.intValue();
 				}
+			case TBONDS:
+				{
+					if (iMolecule == null) return null;
+					IMolecularDescriptor descriptor = new BondCountDescriptor();
+					IntegerResult retval = (IntegerResult)(descriptor.calculate(iMolecule).getValue());
+					return retval.intValue();
+				}
 			case SDF:
 				{
 					if (iMolecule == null) return null;
@@ -677,6 +687,26 @@ public class Compound {
 					IMolecularDescriptor descriptor = new ZagrebIndexDescriptor();
 					DoubleResult retval = (DoubleResult)(descriptor.calculate(iMolecule).getValue());
 					return retval.doubleValue();
+				}
+			case ATOMICCOMP:
+				{
+					int totalAtoms = 0;
+					int polarAtoms = 0;
+					for (IAtom a: iMolecule.atoms()) {
+						String symbol = a.getSymbol();
+						if (symbol.equals("N")) {
+							polarAtoms++;
+						} else if (symbol.equals("C")) {
+							totalAtoms++;
+						} else if (symbol.equals("O")) {
+							polarAtoms++;
+						} else if (symbol.equals("P")) {
+							polarAtoms++;
+						} else if (symbol.equals("S")) {
+							polarAtoms++;
+						}
+					}
+					return new Double((double)polarAtoms/(double)(polarAtoms+totalAtoms));
 				}
 		}
 		return null;

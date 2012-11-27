@@ -153,7 +153,7 @@ public class ChemVizContextMenu implements NodeContextMenuListener, EdgeContextM
 
 		List<Compound> cList = ValueUtils.getCompounds(go, attributes, 
 				   													               settingsDialog.getCompoundAttributes(type,AttriType.smiles),
-					   														           settingsDialog.getCompoundAttributes(type,AttriType.inchi), false);
+					   														           settingsDialog.getCompoundAttributes(type,AttriType.inchi), null);
 
 		Properties cytoProps = CytoscapeInit.getProperties();
 		if (cList == null || cList.size() == 0) {

@@ -37,7 +37,13 @@ package chemViz.tasks;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import giny.model.GraphObject;
 import giny.view.EdgeView;
@@ -63,6 +69,7 @@ abstract public class AbstractCompoundTask implements Task {
 	boolean canceled = false;
 	int maxCompounds = 0;
 	int compoundCount = 0;
+	List<Compound> threadResultsList = null;
 
 	// These are used for our progress meeter
 	int totalObjects = 0;
@@ -108,13 +115,21 @@ abstract public class AbstractCompoundTask implements Task {
  	 *         as a byproduct of this method.
  	 */
 	protected List<Compound> getCompounds(Collection<GraphObject> goSet, CyAttributes attributes, 
-	                                      List<String> sList, List<String> iList) {
-		List<Compound> cList = new ArrayList();
+	                                      List<String> sList, List<String> iList, int maxThreads) {
+
+		List<GetCompoundTask> threadList = null;
+
+		if (maxThreads != 1)
+			threadList = new ArrayList<GetCompoundTask>();
+
+		List<Compound> cList = new ArrayList<Compound>();
 		for (GraphObject go: goSet) {
 			if (done()) break;
 			updateMonitor();
-			cList.addAll(getCompounds(go, attributes, sList, iList, false));
+			cList.addAll(getCompounds(go, attributes, sList, iList, threadList));
 		}
+
+		cList.addAll(GetCompoundTask.runThreads(maxThreads, threadList));
 
 		return cList;
 	}
@@ -127,13 +142,12 @@ abstract public class AbstractCompoundTask implements Task {
  	 * @param attributes the appropriate set of attributes (nodeAttributes or edgeAttributes)
  	 * @param sList the list of attributes that contain SMILES strings
  	 * @param iList the list of attributes that contain InChI strings
- 	 * @param noStructures if 'true', the structures are fetched in the background
  	 * @return the list of compounds.  If the compounds have not already been created, they are created
  	 *         as a byproduct of this method.
  	 */
 	protected List<Compound> getCompounds(GraphObject go, CyAttributes attributes, 
 	                                      List<String> sList, List<String> iList, 
-	                                      boolean noStructures) {
+	                                      List<GetCompoundTask> threadList) {
 		if ((sList == null || sList.size() == 0) 
 		    && (iList == null || iList.size() == 0))
 			return null;
@@ -143,12 +157,12 @@ abstract public class AbstractCompoundTask implements Task {
 		// Get the compound list from each attribute
 		for (String attr: sList) {
 			if (done()) break;
-			cList.addAll(getCompounds(go, attributes, attr, AttriType.smiles, noStructures));
+			cList.addAll(getCompounds(go, attributes, attr, AttriType.smiles, threadList));
 		}
 
 		for (String attr: iList) {
 			if (done()) break;
-			cList.addAll(getCompounds(go, attributes, attr, AttriType.inchi, noStructures));
+			cList.addAll(getCompounds(go, attributes, attr, AttriType.inchi, threadList));
 		}
 
 		return cList;
@@ -162,13 +176,12 @@ abstract public class AbstractCompoundTask implements Task {
  	 * @param attributes the appropriate set of attributes (nodeAttributes or edgeAttributes)
  	 * @param attr the attribute that contains the compound descriptor
  	 * @param type the type of the attribute (smiles or inchi)
- 	 * @param noStructures if 'true', the structures are fetched in the background
  	 * @return the list of compounds.  If the compounds have not already been created, they are created
  	 *         as a byproduct of this method.
  	 */
 	protected List<Compound> getCompounds(GraphObject go, CyAttributes attributes, 
 	                                      String attr, AttriType type,
-	                                      boolean noStructures) {
+	                                      List<GetCompoundTask> threadList) {
 		byte atype = attributes.getType(attr);
 		List<Compound> cList = new ArrayList();
 			
@@ -176,11 +189,11 @@ abstract public class AbstractCompoundTask implements Task {
 			return cList;
 		if (atype == CyAttributes.TYPE_STRING) {
 			String cstring = attributes.getStringAttribute(go.getIdentifier(), attr);
-			cList.addAll(getCompounds(go, attr, cstring, type, noStructures));
+			cList.addAll(getCompounds(go, attr, cstring, type, threadList));
 		} else if (atype == CyAttributes.TYPE_SIMPLE_LIST) {
 			List<String> stringList = attributes.getListAttribute(go.getIdentifier(), attr);
 			for (String cstring: stringList) {
-				cList.addAll(getCompounds(go, attr, cstring, type, noStructures));
+				cList.addAll(getCompounds(go, attr, cstring, type, threadList));
 				if (done()) break;
 			}
 		}
@@ -189,7 +202,7 @@ abstract public class AbstractCompoundTask implements Task {
 
 	protected List<Compound> getCompounds(GraphObject go, String attr, 
 	                                      String compoundString, AttriType type,
-	                                      boolean noStructures) {
+	                                      List<GetCompoundTask> threadList) {
 		List<Compound> cList = new ArrayList();
 
 		String[] cstrings = null;
@@ -202,10 +215,15 @@ abstract public class AbstractCompoundTask implements Task {
 		}
 
 		for (int i = 0; i < cstrings.length; i++) {
-
 			Compound c = Compound.getCompound(go, attr, cstrings[i], type);
-			if (c == null)
-				c = new Compound(go, attr, cstrings[i], type, noStructures);
+			if (c == null) {
+				if (threadList != null) {
+					threadList.add(new GetCompoundTask(go, attr, cstrings[i], type));
+					continue;
+				} 
+
+				c = new Compound(go, attr, cstrings[i], type);
+			} 
 
 			cList.add(c);
 			compoundCount++;

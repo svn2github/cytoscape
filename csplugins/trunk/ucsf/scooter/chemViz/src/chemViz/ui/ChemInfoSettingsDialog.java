@@ -110,6 +110,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	private JPanel tunablePanel;
 	private int maxCompounds = 0;
 	private double tcCutoff = 0.50;
+	private int maxThreads = 0;
 	private boolean showHyd = false;
 	private int labelPositionIndex = 0;
 	private int fingerPrinterIndex = 0;	// By default, CDK
@@ -223,6 +224,11 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 			tcCutoff = ((Double) t.getValue()).doubleValue();
 		}
 
+		t = properties.get("maxThreads");
+		if ((t != null) && (t.valueChanged() || force)) {
+			maxThreads = ((Integer) t.getValue()).intValue();
+		}
+
 		t = properties.get("nodeStructureSize");
 		if ((t != null) && (t.valueChanged() || force)) {
 			nodeStructureSize = ((Integer)t.getValue()).intValue();
@@ -314,6 +320,10 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		return tcCutoff;
 	}
 
+	public int getMaxThreads() {
+		return maxThreads;
+	}
+
 	public boolean showHydrogens() {
 		return showHyd;
 	}
@@ -371,7 +381,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 	}
 
 	private void initializeProperties() {
-		Tunable t = new Tunable("group1","", Tunable.GROUP, new Integer(3));
+		Tunable t = new Tunable("group1","", Tunable.GROUP, new Integer(4));
 		properties.add(t);
 
 		properties.add(new Tunable("maxCompunds",
@@ -386,6 +396,11 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 		                "Fingerprint algorithm to use",
 		                Tunable.LIST, new Integer(fingerPrinterIndex),
 		                (Object)fingerprintList, null, 0));
+
+		properties.add( new Tunable("maxThreads",
+		                "Maximum number of threads to use",
+		                Tunable.INTEGER, new Integer(0),
+		                (Object)fingerprintList, null, 0));
 /*
 		t = new Tunable("showHyd",
 		                "Show hydrogens explicitly"
@@ -398,7 +413,7 @@ public class ChemInfoSettingsDialog extends JDialog implements ActionListener, P
 
 		properties.add(new Tunable("attributeGroup",
 		                "Attribute Settings",
-		                Tunable.GROUP, new Integer(3)));
+		                Tunable.GROUP, new Integer(2)));
 
 		properties.add( new Tunable("attributeGroup1",
 		                "SMILES Attributes",
