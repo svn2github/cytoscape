@@ -75,26 +75,17 @@ public class LayoutNamespace extends AbstractCommandHandler {
 		addDescription(DEFAULT, "Layout the current network with the default layout");
 		addArgument(DEFAULT);
 
-		// Get the list of layouts from the layout manager
-		for (CyLayoutAlgorithm alg: CyLayouts.getAllLayouts()) {
-			String layout = alg.getName();
-			addDescription(layout, alg.toString());
-			LayoutProperties props = alg.getSettings();
-			if (props == null) {
-				addArgument(layout);
-				continue;
-			}
-			for (Tunable t: props.getTunables())
-				addArgument(layout, t);
-		}
+		updateLayouts();
 	}
 
 	public CyCommandResult execute(String command, Collection<Tunable>args) throws CyCommandException {
+		updateLayouts();
 		return execute(command, createKVMap(args));
 	}
 
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
+		updateLayouts();
 
 		List<Tunable> tL = new ArrayList();
 		if (args == null || args.size() == 0) {
@@ -174,5 +165,20 @@ public class LayoutNamespace extends AbstractCommandHandler {
 	public static CyCommandHandler register(String namespace) throws RuntimeException {
 		// Get the namespace
 		return new LayoutNamespace(CyCommandManager.reserveNamespace(namespace));
+	}
+
+	private void updateLayouts() {
+		// Get the list of layouts from the layout manager
+		for (CyLayoutAlgorithm alg: CyLayouts.getAllLayouts()) {
+			String layout = alg.getName();
+			addDescription(layout, alg.toString());
+			LayoutProperties props = alg.getSettings();
+			if (props == null) {
+				addArgument(layout);
+				continue;
+			}
+			for (Tunable t: props.getTunables())
+				addArgument(layout, t);
+		}
 	}
 }
