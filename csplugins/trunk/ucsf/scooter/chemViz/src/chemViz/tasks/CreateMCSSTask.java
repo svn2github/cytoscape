@@ -36,8 +36,12 @@
 package chemViz.tasks;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 import giny.model.GraphObject;
 import giny.view.EdgeView;
@@ -118,19 +122,21 @@ public class CreateMCSSTask extends AbstractCompoundTask {
  	 * Runs the task -- this will get all of the compounds, fetching the images (if necessary) and creates the popup.
  	 */
 	public void run() {
+		int maxThreads = dialog.getMaxThreads();
 		compoundList = getCompounds(objectList, attributes,
                                 dialog.getCompoundAttributes(type,AttriType.smiles),
-                                dialog.getCompoundAttributes(type,AttriType.inchi), dialog.getMaxThreads());
+                                dialog.getCompoundAttributes(type,AttriType.inchi), maxThreads);
 
-		mcss = compoundList.get(0).getIMolecule();
-		try {
-			for (int index = 1; index < compoundList.size(); index++) {
-				List<IAtomContainer> overlap = UniversalIsomorphismTester.getOverlaps(mcss, compoundList.get(index).getIMolecule());
-				mcss = maximumStructure(overlap);
-				if (mcss == null) break;
-			}
-		} catch (CDKException e) {
-			System.out.println("CDKException: "+e);
+		int nThreads = Runtime.getRuntime().availableProcessors()-1;
+		if (maxThreads > 0) nThreads = maxThreads;
+
+		List<IAtomContainer> mcssList = Collections.synchronizedList(new ArrayList<IAtomContainer>(compoundList.size()));
+		for (Compound c: compoundList) {
+			mcssList.add(c.getIMolecule());
+		}
+
+		while (mcssList.size() > 1) {
+			mcssList = calculateMCSS(mcssList, nThreads);
 		}
 
 		calculationComplete = true;	
@@ -139,9 +145,9 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 			String label = mcssSmiles;
 			// List<Compound> mcssList = ValueUtils.getCompounds(null, mcssSmiles, AttriType.smiles, null, null);
 			Compound c = new Compound(null, null, mcssSmiles, mcss, AttriType.smiles);
-			List<Compound> mcssList = new ArrayList<Compound>();
-			mcssList.add(c);
-			CreatePopupTask loader = new CreatePopupTask(mcssList, null, dialog, label, 1);
+			List<Compound> mcssList2 = new ArrayList<Compound>();
+			mcssList2.add(c);
+			CreatePopupTask loader = new CreatePopupTask(mcssList2, null, dialog, label, 1);
 			loader.setDialogTitle("Maximum Common SubStructure");
 			TaskManager.executeTask(loader, loader.getDefaultTaskConfig());
 		}
@@ -203,18 +209,79 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 		}
 	}
 
-	private IMolecule maximumStructure(List<IAtomContainer> mcsslist) {
-		int maxmcss = -99999999;
-		IAtomContainer maxac = null;
-		if (mcsslist == null || mcsslist.size() == 0) return null;
-		for (IAtomContainer a: mcsslist) {
-			if (a.getAtomCount() > maxmcss) {
-				maxmcss = a.getAtomCount();
-				maxac = a;
+	public List<Compound>getCompoundList() { return compoundList; }
+
+
+	private List<IAtomContainer> calculateMCSS(List<IAtomContainer>mcssList, int nThreads) {
+		List<IAtomContainer> newMCSSList = Collections.synchronizedList(new ArrayList<IAtomContainer>(nThreads));
+		List<GetMCSSTask> taskList = new ArrayList<GetMCSSTask>();
+
+		if (nThreads == 1) {
+			GetMCSSTask task = new GetMCSSTask(mcssList, newMCSSList);
+			task.call();
+		} else {
+			int step = mcssList.size()/nThreads;
+			for (int i = 0; i < mcssList.size(); i=i+step) {
+				int endPoint = i+step;
+				if (endPoint > mcssList.size())
+					endPoint = mcssList.size();
+				taskList.add(new GetMCSSTask(mcssList.subList(i, endPoint), newMCSSList));
+			}
+
+			ExecutorService threadPool = Executors.newFixedThreadPool(nThreads);
+			try {
+				threadPool.invokeAll(taskList);
+			} catch (Exception e) {
+				System.out.println("Execution exception: "+e);
+				e.printStackTrace();
 			}
 		}
-		return new Molecule(maxac);
+		return newMCSSList;
 	}
 
-	public List<Compound>getCompoundList() { return compoundList; }
+	private class GetMCSSTask implements Callable <IAtomContainer> {
+		List<IAtomContainer> mcssList;
+		List<IAtomContainer> resultsList;
+		IAtomContainer mcss = null;
+
+		public GetMCSSTask(List<IAtomContainer>mcssList, List<IAtomContainer>resultsList) {
+			this.mcssList = mcssList;
+			this.resultsList = resultsList;
+		}
+
+		public IAtomContainer call() {
+			mcss = mcssList.get(0);
+			try {
+				for (int index = 1; index < mcssList.size(); index++) {
+					List<IAtomContainer> overlap = UniversalIsomorphismTester.getOverlaps(mcss, mcssList.get(index));
+					mcss = maximumStructure(overlap);
+					if (mcss == null) break;
+				}
+			} catch (CDKException e) {
+				System.out.println("CDKException: "+e);
+			}
+			resultsList.add(mcss);
+			return mcss;
+		}
+	
+		private IMolecule maximumStructure(List<IAtomContainer> mcsslist) {
+			int maxmcss = -99999999;
+			IAtomContainer maxac = null;
+			if (mcsslist == null || mcsslist.size() == 0) return null;
+			for (IAtomContainer a: mcsslist) {
+				if (a.getAtomCount() > maxmcss) {
+					maxmcss = a.getAtomCount();
+					maxac = a;
+				}
+			}
+			return new Molecule(maxac);
+		}
+
+		public IAtomContainer get() { 
+			if (mcss == null) 
+				return call();
+			else
+				return mcss; 
+		}
+	}
 }

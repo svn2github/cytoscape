@@ -70,10 +70,9 @@ public class GetCompoundTask implements Callable<Compound> {
 
 		ExecutorService threadPool = Executors.newFixedThreadPool(nThreads);
 		threadResultsList = Collections.synchronizedList(new ArrayList<Compound>(getList.size()));
-		List<Future<Compound>> results = new ArrayList<Future<Compound>>();
 
 		try {
-			results = threadPool.invokeAll(getList);
+			threadPool.invokeAll(getList);
 		} catch (Exception e) {
 			System.out.println("Execution exception: "+e);
 			e.printStackTrace();
