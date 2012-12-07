@@ -37,8 +37,14 @@ package chemViz.tasks;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import giny.model.GraphObject;
 import giny.view.EdgeView;
@@ -49,6 +55,7 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -72,6 +79,7 @@ public class TanimotoScorerTask extends AbstractCompoundTask {
 	TaskMonitor monitor;
 	boolean createNewNetwork = false;
 	boolean canceled = false;
+	static private CyLogger logger = CyLogger.getLogger(TanimotoScorerTask.class);
 
 	/**
  	 * Creates the task.
@@ -108,86 +116,56 @@ public class TanimotoScorerTask extends AbstractCompoundTask {
 
 		objectCount = 0;
 		totalObjects = selection.size();
-		List<CyEdge> edgeList = new ArrayList<CyEdge>();
+		List<CyEdge> edgeList = Collections.synchronizedList(new ArrayList<CyEdge>());
 
 		updateMonitor();
+
+		List<CalculateTanimotoTask> taskList = new ArrayList<CalculateTanimotoTask>();
 
 		for (int index1 = 0; index1 < totalObjects; index1++) {
 			CyNode node1 = (CyNode)selection.get(index1);
 			if (canceled) break;
 			setStatus("Calculating tanimoto coefficients for "+node1.getIdentifier());
-			// System.out.println("Calculating tanimoto coefficients for "+node1.getIdentifier());
-			List<Compound> cList1 = getCompounds(node1, attributes, 
-																					 settingsDialog.getCompoundAttributes("node",AttriType.smiles),
-																					 settingsDialog.getCompoundAttributes("node",AttriType.inchi), null);
-			if (cList1 == null || cList1.size() == 0)
-				continue;
 
 			for (int index2 = 0; index2 < index1; index2++) {
 				if (canceled) break;
 				CyNode node2 = (CyNode)selection.get(index2);
 
-				if (node2 == node1 && cList1.size() <= 1) 
+				if (node2 == node1)
 					continue;
 
-				List<Compound> cList2 = getCompounds(node2, attributes, 
-																						 settingsDialog.getCompoundAttributes("node",AttriType.smiles),
-																						 settingsDialog.getCompoundAttributes("node",AttriType.inchi), null);
-				if (cList2 == null || cList2.size() == 0)
-					continue;
-
-				int nScores = cList1.size()*cList2.size();
-				double maxScore = -1;
-				double minScore = 10000000;
-				double averageScore = 0;
-				for (Compound compound1: cList1) {
-					if (compound1 == null) continue;
-					for (Compound compound2: cList2) {
-						if (canceled) break;
-						if (compound2 == null) continue;
-
-						// System.out.print("   Calculating tc for "+node1.getIdentifier()+" vs. "+node2.getIdentifier());
-						CDKTanimotoScore scorer = new CDKTanimotoScore(compound1, compound2);
-						double score = scorer.calculateSimilarity();
-						// System.out.println("...done");
-						averageScore = averageScore + score/nScores;
-						if (score > maxScore) maxScore = score;
-						if (score < minScore) minScore = score;
-					}
-				}
-
-				// Create the edge if we're supposed to
-				CyEdge edge = null;
-				if (createNewNetwork) {
-					if (averageScore <= tcCutoff)
-						continue;
-					// System.out.print("   Creating and edge between "+node1.getIdentifier()+" and "+node2.getIdentifier());
-					edge = Cytoscape.getCyEdge(node1, node2, "interaction", "similarity", true, true);
-					// Add it to our new network
-					edgeList.add(edge);
-					// System.out.println("...done");
-				} else {
-					// Otherwise, get the edges connecting these nodes (if any)
-					int[] node_indices = {node1.getRootGraphIndex(), node2.getRootGraphIndex()};
-					int[] edge_indices = origNetwork.getConnectingEdgeIndicesArray(node_indices);
-					if (edge_indices == null || edge_indices.length == 0) continue;
-					edge = (CyEdge)origNetwork.getEdge(edge_indices[0]);
-				}
-
-				if (nScores > 1) {
-					edgeAttributes.setAttribute(edge.getIdentifier(), "AverageTanimotoSimilarity", Double.valueOf(averageScore));
-					edgeAttributes.setAttribute(edge.getIdentifier(), "MaxTanimotoSimilarity", Double.valueOf(maxScore));
-					edgeAttributes.setAttribute(edge.getIdentifier(), "MinTanimotoSimilarity", Double.valueOf(minScore));
-				} else {
-					edgeAttributes.setAttribute(edge.getIdentifier(), "TanimotoSimilarity", Double.valueOf(averageScore));
-				}
+				taskList.add(new CalculateTanimotoTask(origNetwork, node1, node2, tcCutoff));
 			}
+		}
 
-			updateMonitor();
+		int nThreads = Runtime.getRuntime().availableProcessors()-1;
+		int maxThreads = settingsDialog.getMaxThreads();
+		if (maxThreads > 0)
+			nThreads = maxThreads;
+
+		ExecutorService threadPool = Executors.newFixedThreadPool(nThreads);
+
+		try {
+			List<Future<CyEdge>> futures = threadPool.invokeAll(taskList);
+			// System.out.println("invokeAll completes");
+			for (Future<CyEdge> future: futures) {
+				CyEdge edge = future.get();
+				if (edge != null)
+					edgeList.add(edge);
+			}
+		} catch (Exception e) {
+			logger.warning("Thread execution exception: "+e);
 		}
 
 		if (createNewNetwork) {
-		// Create a new network if we're supposed to
+			// Create a new network if we're supposed to
+			/* System.out.println("Creating "+origNetwork.getTitle()+" copy");
+			System.out.println("Have "+selection.size()+" nodes and "+edgeList.size()+" edges");
+			System.out.println("Nodes: ");
+			for (GraphObject node: selection)  System.out.println("    "+node);
+			System.out.println("Edges: ");
+			for (CyEdge edge: edgeList)  System.out.println("    "+edge);
+			*/
 			newNet = Cytoscape.createNetwork(selection, edgeList, origNetwork.getTitle()+" copy",
 																 origNetwork, true); 
 			newNetworkView = Cytoscape.getNetworkView(newNet.getIdentifier());
@@ -206,5 +184,85 @@ public class TanimotoScorerTask extends AbstractCompoundTask {
 			newNetworkView.setVisualStyle(vs.getName());
 		}
 
+	}
+
+	class CalculateTanimotoTask implements Callable <CyEdge> {
+		CyNode node1;
+		CyNode node2;
+		CyNetwork origNetwork;
+		double tcCutoff = 0.25;
+		CyEdge newEdge = null;
+
+		public CalculateTanimotoTask(CyNetwork network, CyNode node1, CyNode node2, double tcCutoff) {
+			this.node1 = node1;
+			this.node2 = node2;
+			this.origNetwork = network;
+			this.tcCutoff = tcCutoff;
+		}
+
+		public CyEdge call() {
+			CyAttributes attributes = Cytoscape.getNodeAttributes();
+			CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+
+			List<Compound> cList1 = getCompounds(node1, attributes, 
+																					 settingsDialog.getCompoundAttributes("node",AttriType.smiles),
+																					 settingsDialog.getCompoundAttributes("node",AttriType.inchi), null);
+			if (cList1 == null) return null;
+
+			List<Compound> cList2 = getCompounds(node2, attributes, 
+																					 settingsDialog.getCompoundAttributes("node",AttriType.smiles),
+																					 settingsDialog.getCompoundAttributes("node",AttriType.inchi), null);
+			if (cList2 == null) return null;
+
+			int nScores = cList1.size()*cList2.size();
+			double maxScore = -1;
+			double minScore = 10000000;
+			double averageScore = 0;
+			for (Compound compound1: cList1) {
+				if (compound1 == null) return null;
+				for (Compound compound2: cList2) {
+					if (canceled) break;
+					if (compound2 == null) return null;
+
+					CDKTanimotoScore scorer = new CDKTanimotoScore(compound1, compound2);
+					double score = scorer.calculateSimilarity();
+					averageScore = averageScore + score/nScores;
+					if (score > maxScore) maxScore = score;
+					if (score < minScore) minScore = score;
+				}
+			}
+
+			// Create the edge if we're supposed to
+			CyEdge edge = null;
+			if (createNewNetwork) {
+				if (averageScore <= tcCutoff)
+					return null;
+				// System.out.print("   Creating and edge between "+node1.getIdentifier()+" and "+node2.getIdentifier());
+				edge = Cytoscape.getCyEdge(node1, node2, "interaction", "similarity", true, true);
+				// System.out.println("...done");
+			} else {
+				// Otherwise, get the edges connecting these nodes (if any)
+				int[] node_indices = {node1.getRootGraphIndex(), node2.getRootGraphIndex()};
+				int[] edge_indices = origNetwork.getConnectingEdgeIndicesArray(node_indices);
+				if (edge_indices == null || edge_indices.length == 0) return null;
+				edge = (CyEdge)origNetwork.getEdge(edge_indices[0]);
+			}
+
+			if (nScores > 1) {
+				edgeAttributes.setAttribute(edge.getIdentifier(), "AverageTanimotoSimilarity", Double.valueOf(averageScore));
+				edgeAttributes.setAttribute(edge.getIdentifier(), "MaxTanimotoSimilarity", Double.valueOf(maxScore));
+				edgeAttributes.setAttribute(edge.getIdentifier(), "MinTanimotoSimilarity", Double.valueOf(minScore));
+			} else {
+				edgeAttributes.setAttribute(edge.getIdentifier(), "TanimotoSimilarity", Double.valueOf(averageScore));
+			}
+
+			newEdge = edge;
+
+			return edge;
+		}
+
+		CyEdge get() {
+			return newEdge;
+		}
 	}
 }

@@ -33,8 +33,11 @@ public class CDKTanimotoScore extends SimilarityScore {
 			try {
 				score = Tanimoto.calculate(fp1, fp2);
 			} catch (Exception e) {
+				System.err.println("Tanimoto calculation failed: "+e);
 				score = 0.0;
 			}
+		} else {
+			System.err.println("Null fingerprint!");
 		}
 		if (score == Double.MIN_VALUE) score = 0.0;
 

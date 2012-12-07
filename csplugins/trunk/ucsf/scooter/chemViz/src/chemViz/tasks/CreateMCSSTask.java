@@ -52,6 +52,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
+import cytoscape.logger.CyLogger;
 import cytoscape.task.util.TaskManager;
 
 import chemViz.commands.ValueUtils;
@@ -84,6 +85,7 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 	boolean showResult = false;
 	boolean createGroup = false;
 	boolean calculationComplete = false;
+	private static CyLogger logger = CyLogger.getLogger(CreateMCSSTask.class);
 
 	/**
  	 * Creates the task.
@@ -135,9 +137,12 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 			mcssList.add(c.getIMolecule());
 		}
 
+		int pass = 0;
 		while (mcssList.size() > 1) {
 			mcssList = calculateMCSS(mcssList, nThreads);
+			pass++;
 		}
+		mcss = (IMolecule)mcssList.get(0);
 
 		calculationComplete = true;	
 		if (showResult) {
@@ -220,7 +225,8 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 			GetMCSSTask task = new GetMCSSTask(mcssList, newMCSSList);
 			task.call();
 		} else {
-			int step = mcssList.size()/nThreads;
+			int step = (int)Math.ceil((double)mcssList.size()/(double)nThreads);
+			if (step < 2) step = 2; // Can't have a step size of less than 2
 			for (int i = 0; i < mcssList.size(); i=i+step) {
 				int endPoint = i+step;
 				if (endPoint > mcssList.size())
@@ -232,8 +238,7 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 			try {
 				threadPool.invokeAll(taskList);
 			} catch (Exception e) {
-				System.out.println("Execution exception: "+e);
-				e.printStackTrace();
+				logger.warning("Execution exception: "+e);
 			}
 		}
 		return newMCSSList;

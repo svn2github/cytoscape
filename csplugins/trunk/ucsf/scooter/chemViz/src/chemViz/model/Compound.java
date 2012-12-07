@@ -53,6 +53,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -185,6 +186,11 @@ public class Compound {
 	}
 
 	// Class variables
+	public static long totalTime = 0L;
+	public static long totalFPTime = 0L;
+	public static long totalSMILESTime = 0L;
+	public static long totalGetFPTime = 0L;
+
 	static private ConcurrentHashMap<GraphObject, List<Compound>> compoundMap;
 	static private CyLogger logger = CyLogger.getLogger(Compound.class);
 	static private Fingerprinter fingerprinter = Fingerprinter.PUBCHEM;
@@ -345,23 +351,27 @@ public class Compound {
 		this.moleculeString = mstring.trim();
 		this.attrType = attrType;
 
-		List<Compound> mapList = null;
-		if (Compound.compoundMap == null) 
-			Compound.compoundMap = new ConcurrentHashMap<GraphObject, List<Compound>>();
+		if (source != null) {
+			List<Compound> mapList = null;
+			if (Compound.compoundMap == null) 
+				Compound.compoundMap = new ConcurrentHashMap<GraphObject, List<Compound>>();
 
-		if (Compound.compoundMap.containsKey(source)) {
-			mapList = Compound.compoundMap.get(source);
-		} else {
-			mapList = new ArrayList();
+			if (Compound.compoundMap.containsKey(source)) {
+				mapList = Compound.compoundMap.get(source);
+			} else {
+				mapList = new ArrayList();
+			}
+			this.index = mapList.size();
+			mapList.add(this);
+			Compound.compoundMap.put(source, mapList);
 		}
-		this.index = mapList.size();
-		mapList.add(this);
-		Compound.compoundMap.put(source, mapList);
 		createStructure(molecule);
 	}
 
 
 	public void createStructure(IMolecule molecule) {
+		long startTime = Calendar.getInstance().getTimeInMillis();
+
 		this.renderedImage = null;
 		this.laidOut = false;
 		this.iMolecule = molecule;
@@ -369,6 +379,8 @@ public class Compound {
 		this.smilesStr = null;
 		this.fp = Compound.fingerprinter.getFingerprinter();
 		this.fingerPrint = null;
+		long fpTime = Calendar.getInstance().getTimeInMillis();
+		totalFPTime += fpTime-startTime;
 
 		if (attrType == AttriType.inchi) {
 			// Convert to smiles 
@@ -397,6 +409,9 @@ public class Compound {
 			}
 		}
 
+		long smilesTime = Calendar.getInstance().getTimeInMillis();
+		totalSMILESTime += smilesTime-fpTime;
+
 		// At this point, we should have an IMolecule
 		try { 
 			CDKHueckelAromaticityDetector.detectAromaticity(iMolecule);
@@ -405,11 +420,17 @@ public class Compound {
 			CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(iMolecule.getBuilder());
 			adder.addImplicitHydrogens(iMolecule);
 
-			// Do we need to do the addh here?
-			fingerPrint = fp.getFingerprint(addh(iMolecule));
+			// Don't calculate the fingerprint here -- this is *very* expensive
+			// fingerPrint = fp.getFingerprint(addh(iMolecule));
+			fingerPrint = null;
 		} catch (CDKException e1) {
 			fingerPrint = null;
 		}
+
+		long getFPTime = Calendar.getInstance().getTimeInMillis();
+		totalGetFPTime += getFPTime-smilesTime;
+
+		totalTime += getFPTime-startTime;
 	}
 
 	/**
@@ -463,6 +484,15 @@ public class Compound {
  	 * @return the fingerprint for this compound
  	 */
 	public BitSet getFingerprint() {
+		if (fingerPrint == null) {
+			try {
+				synchronized (fp) {
+					fingerPrint = fp.getFingerprint(addh(iMolecule));
+				}
+			} catch (Exception e) {
+				logger.warning("Error calculating fingerprint: "+e);
+			}
+		}
 		return fingerPrint;
 	}
 	

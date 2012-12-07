@@ -28,6 +28,8 @@
 
 package chemViz.model;
 
+import cytoscape.logger.CyLogger;
+
 import java.lang.reflect.Constructor;
 
 import org.openscience.cdk.fingerprint.EStateFingerprinter;
@@ -57,13 +59,13 @@ public enum Fingerprinter {
   public String toString() { return name; }
   public String getName() { return name; }
   public IFingerprinter getFingerprinter() { 
+		CyLogger logger = CyLogger.getLogger(Fingerprinter.class);
 		IFingerprinter i; 
 		try {
 			Constructor<IFingerprinter> c = fingerprinter.getConstructor();
 			i = c.newInstance(); 
 		} catch (Exception e) {
-			System.err.println("Unable to create fingerprinter instance for "+name);
-			e.printStackTrace();
+			logger.warning("Unable to create fingerprinter instance for "+e);
 			return null;
 		}
 		return i;

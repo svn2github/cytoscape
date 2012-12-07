@@ -36,6 +36,7 @@
 package chemViz.tasks;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -59,8 +60,10 @@ public class GetCompoundTask implements Callable<Compound> {
 	static List<Compound> threadResultsList = null;
 
 	static public List<Compound> runThreads(int maxThreads, List<GetCompoundTask> getList) {
+		List<Compound> results = new ArrayList<Compound>();
+		
 		if (getList == null || getList.size() == 0) 
-			return new ArrayList<Compound>();
+			return results;
 
 		int nThreads = Runtime.getRuntime().availableProcessors()-1;
 		if (maxThreads > 0)
@@ -69,29 +72,30 @@ public class GetCompoundTask implements Callable<Compound> {
 		// System.out.println("Getting "+getList.size()+" compounds using "+nThreads+" threads");
 
 		ExecutorService threadPool = Executors.newFixedThreadPool(nThreads);
-		threadResultsList = Collections.synchronizedList(new ArrayList<Compound>(getList.size()));
 
 		try {
-			threadPool.invokeAll(getList);
+			List<Future<Compound>> futures = threadPool.invokeAll(getList);
+			for (Future<Compound> future: futures)
+				results.add(future.get());
 		} catch (Exception e) {
 			System.out.println("Execution exception: "+e);
 			e.printStackTrace();
 		}
 
-		return threadResultsList;
+		return results;
 	}
-
 
 	public GetCompoundTask(GraphObject go, String attr, String cstring, AttriType type) {
 		this.go = go;
 		this.attr = attr;
 		this.cstring = cstring;
 		this.type = type;
+		this.result = null;
 	}
 
 	public Compound call() {
+		// System.out.println("Thread "+Thread.currentThread()+" fetching "+go+"["+attr+"]");
 		result = new Compound(go, attr, cstring, type);
-		threadResultsList.add(result);
 		return result;
 	}
 
