@@ -3,12 +3,13 @@
 	<parent>
 		<artifactId>support-parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-beta2-SNAPSHOT</version>
+		<version>3.0.0</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>launch-framework</artifactId>
+  <version>3.0.0-beta2-SNAPSHOT</version>
 
 	<name>Cytoscape Launch Framework</name>
 
@@ -63,4 +64,10 @@
 		<module>launcher</module>
 		<module>startlevel-assembly</module>
 	</modules>
+
+  <scm>
+    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/support/branches/3.0.0-release/launch-framework</connection>
+    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/support/branches/3.0.0-release/launch-framework</developerConnection>
+    <url>http://chianti.ucsd.edu/svn/core3/support/branches/3.0.0-release/launch-framework</url>
+  </scm>
 </project>
