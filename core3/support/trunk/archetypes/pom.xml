@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>org.cytoscape</groupId>
 		<artifactId>support-parent</artifactId>
-		<version>3.0.0</version>
+		<version>3.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>archetypes-parent</artifactId>
-  <version>3.0.0</version>
+  <version>3.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Cytoscape 3 App Archetypes Parent</name>
 
