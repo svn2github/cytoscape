@@ -14,7 +14,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>task-testing-impl</artifactId>
-  <version>3.0.0-beta2-SNAPSHOT</version>
+  <version>3.0.1-SNAPSHOT</version>
 	<name>Tasks for Testing</name>
 	<packaging>bundle</packaging>
 
@@ -96,10 +96,4 @@
 			<version>${osgi.api.version}</version>
 		</dependency>
 	</dependencies>
-
-  <scm>
-    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/support/branches/3.0.0-release/task-testing-impl</connection>
-    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/support/branches/3.0.0-release/task-testing-impl</developerConnection>
-    <url>http://chianti.ucsd.edu/svn/core3/support/branches/3.0.0-release/task-testing-impl</url>
-  </scm>
 </project>

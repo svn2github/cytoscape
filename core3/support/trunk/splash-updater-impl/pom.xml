@@ -15,7 +15,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>splash-updater-impl</artifactId>
-  <version>3.0.0-beta2-SNAPSHOT</version>
+  <version>3.0.1-SNAPSHOT</version>
 
 	<name>Splash Updater</name>
 
@@ -79,11 +79,4 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-
-
-  <scm>
-    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/support/branches/3.0.0-release/splash-updater-impl</connection>
-    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/support/branches/3.0.0-release/splash-updater-impl</developerConnection>
-    <url>http://chianti.ucsd.edu/svn/core3/support/branches/3.0.0-release/splash-updater-impl</url>
-  </scm>
 </project>

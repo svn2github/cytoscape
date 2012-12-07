@@ -14,7 +14,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>integration-test-support</artifactId>
-  <version>3.0.0-beta2-SNAPSHOT</version>
+  <version>3.0.1-SNAPSHOT</version>
 
 	<name>${bundle.symbolicName}</name>
 
@@ -92,10 +92,4 @@
 			<version>3.0</version>
 		</dependency>
 	</dependencies>
-
-  <scm>
-    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/support/branches/3.0.0-release/integration-test-support</connection>
-    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/support/branches/3.0.0-release/integration-test-support</developerConnection>
-    <url>http://chianti.ucsd.edu/svn/core3/support/branches/3.0.0-release/integration-test-support</url>
-  </scm>
 </project>
