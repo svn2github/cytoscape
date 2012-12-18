@@ -491,6 +491,7 @@ public class Compound {
 				}
 			} catch (Exception e) {
 				logger.warning("Error calculating fingerprint: "+e);
+				e.printStackTrace();
 			}
 		}
 		return fingerPrint;
@@ -967,10 +968,10 @@ public class Compound {
 				return null;
 			}
 
-			iMolecule = new Molecule(intostruct.getAtomContainer());
+			IMolecule molecule = new Molecule(intostruct.getAtomContainer());
 			// Use the molecule to create a SMILES string
 			SmilesGenerator sg = new SmilesGenerator();
-			return sg.createSMILES(iMolecule);
+			return sg.createSMILES(molecule);
 		} catch (Exception e) {
 			logger.warning("Structure generation failed: " + e.getMessage(), e);
 			return null;

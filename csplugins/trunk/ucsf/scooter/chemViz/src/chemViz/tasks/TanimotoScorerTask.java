@@ -114,18 +114,32 @@ public class TanimotoScorerTask extends AbstractCompoundTask {
 		if (settingsDialog != null)
 			tcCutoff = settingsDialog.getTcCutoff();
 
+		int nThreads = Runtime.getRuntime().availableProcessors()-1;
+		int maxThreads = settingsDialog.getMaxThreads();
+		if (maxThreads > 0)
+			nThreads = maxThreads;
+
 		objectCount = 0;
 		totalObjects = selection.size();
 		List<CyEdge> edgeList = Collections.synchronizedList(new ArrayList<CyEdge>());
 
-		updateMonitor();
+		if (nThreads == 1)
+			updateMonitor();
+
+		// To avoid concurrancy issues, we need to split this up into two parts.  First,
+		// create the structures for all of our compounds
+		List<Compound> compounds = getCompounds(selection, Cytoscape.getNodeAttributes(), 
+																					  settingsDialog.getCompoundAttributes("node",AttriType.smiles),
+																					  settingsDialog.getCompoundAttributes("node",AttriType.inchi), maxThreads);
 
 		List<CalculateTanimotoTask> taskList = new ArrayList<CalculateTanimotoTask>();
 
 		for (int index1 = 0; index1 < totalObjects; index1++) {
 			CyNode node1 = (CyNode)selection.get(index1);
 			if (canceled) break;
-			setStatus("Calculating tanimoto coefficients for "+node1.getIdentifier());
+
+			if (nThreads == 1)
+				setStatus("Calculating similarities for "+node1);
 
 			for (int index2 = 0; index2 < index1; index2++) {
 				if (canceled) break;
@@ -134,14 +148,15 @@ public class TanimotoScorerTask extends AbstractCompoundTask {
 				if (node2 == node1)
 					continue;
 
-				taskList.add(new CalculateTanimotoTask(origNetwork, node1, node2, tcCutoff));
+				CalculateTanimotoTask task = new CalculateTanimotoTask(origNetwork, node1, node2, tcCutoff);
+				if (nThreads == 1) {
+					task.call();
+				} else {
+					taskList.add(task);
+				}
 			}
 		}
 
-		int nThreads = Runtime.getRuntime().availableProcessors()-1;
-		int maxThreads = settingsDialog.getMaxThreads();
-		if (maxThreads > 0)
-			nThreads = maxThreads;
 
 		ExecutorService threadPool = Executors.newFixedThreadPool(nThreads);
 
