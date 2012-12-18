@@ -109,6 +109,11 @@ public class ChemViz extends CytoscapePlugin implements PropertyChangeListener {
 
 		// Finally, register our commands
 		new ChemVizCommandHandler(settingsDialog);
+
+		// This is a workaround for the System properties getting messed up on the Mac
+		for (String key: System.getProperties().stringPropertyNames()) {
+			System.setProperty(key, System.getProperty(key));
+		}
 	}
 
 	/**
