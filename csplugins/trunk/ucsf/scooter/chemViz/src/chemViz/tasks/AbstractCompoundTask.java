@@ -127,7 +127,8 @@ abstract public class AbstractCompoundTask implements Task {
 		List<Compound> cList = new ArrayList<Compound>();
 		for (GraphObject go: goSet) {
 			if (done()) break;
-			updateMonitor();
+			if (maxThreads == 1)
+				updateMonitor();
 			cList.addAll(getCompounds(go, attributes, sList, iList, threadList));
 		}
 

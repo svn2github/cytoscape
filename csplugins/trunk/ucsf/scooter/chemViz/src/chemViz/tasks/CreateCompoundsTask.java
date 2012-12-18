@@ -91,7 +91,8 @@ public class CreateCompoundsTask extends AbstractCompoundTask {
 	public void run() {
 		compoundList = getCompounds(objectList, attributes,
                                 dialog.getCompoundAttributes(type,AttriType.smiles),
-                                dialog.getCompoundAttributes(type,AttriType.inchi), dialog.getMaxThreads());
+                                dialog.getCompoundAttributes(type,AttriType.inchi), 
+		                            dialog.getMaxThreads());
 	}
 
 	public List<Compound>getCompoundList() { return compoundList; }
