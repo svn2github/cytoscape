@@ -75,6 +75,10 @@ else {
 		//process the data and Save the data into DB.		
 		$submitResult1 = submitNewBug($connection, $bugReport);
 		submitNewBug2Remine( $bugReport, $submitResult1);
+		
+		$bug_id_redmine = getBugID_redmine(); 
+		
+		sendNotificationEmail($bugReport, $bug_id_redmine);
 	} 
 }
 ?>
@@ -87,6 +91,14 @@ else {
 
 
 <?php 
+
+
+function getBugID_redmine() {
+	$str = file_get_contents("_reportOutput.txt");
+	$obj = json_decode($str);
+	return $obj->{'issue'}->{'id'};
+}
+
 
 function submitNewBug2Remine( $bugReport, $submitResult) {
 	// Save the bug report in a tmp file 'newBug.jason' in jason format
@@ -241,7 +253,7 @@ function submitNewBug($connection, $bugReport){
 	}
 	
 	// Step 5: Send e-mail notfication to staff about the new bug submission
-	sendNotificationEmail($bugReport);	
+	//sendNotificationEmail($bugReport);	
 	
 	// If this bug report contains attachment, return a URL to access the bug 
 	$retValue = "";
@@ -254,7 +266,7 @@ function submitNewBug($connection, $bugReport){
 }
 
 
-function sendNotificationEmail($bugReport) {
+function sendNotificationEmail($bugReport, $bug_id_redmine) {
 		
 	include 'cytostaff_emails.inc';
 
@@ -267,7 +279,12 @@ function sendNotificationEmail($bugReport) {
 		
 	$subject = "[cytoweb-bug] New bug submitted by ".$bugReport['name'];
 	
-	$body = $bugReport['description']."\n\nAdmin URL: http://chianti.ucsd.edu/cyto_web/bugreport/bugreportadmin.php";
+	$prefix  = "\n\n******* Do NOT reply to this email. This is notification only e-mail to cytostaff. ******\n".
+				" Here is the contact info of the reporter: name: ".$bugReport['name'].", e-mail: ".$bugReport['email']."\n\n";
+	
+	//$body = $prefix.$bugReport['description']."\n\nAdmin URL: http://chianti.ucsd.edu/cyto_web/bugreport/bugreportadmin.php";
+	
+	$body = $prefix.$bugReport['description']."\n\nBug URL: http://code.cytoscape.org/redmine/issues/".$bug_id_redmine;
 	
 	?>
 	Thank you for submitting bug report to Cytoscape, Cytoscape staff will review your report.
