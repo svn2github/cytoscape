@@ -42,6 +42,7 @@ import java.util.Properties;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 
 import ding.view.NodeContextMenuListener;
 import ding.view.EdgeContextMenuListener;
@@ -117,17 +118,24 @@ public class ChemVizContextMenu implements NodeContextMenuListener, EdgeContextM
 	private JMenu buildPopupMenu(JMenu m, Object context) {
 		if (context instanceof EdgeView) {
 			new DepictionMenus(m, settingsDialog, (EdgeView) context);
+			m.add(new JSeparator());
 			new AttributesMenu(m, settingsDialog, (EdgeView) context);
 			new StructureMenus(m, settingsDialog, (EdgeView) context);
+			m.add(new JSeparator());
+			new SearchMenu(m, settingsDialog, (EdgeView) context);
 			new MCSSMenus(m, settingsDialog, (EdgeView) context);
 			updateLinkOut(((EdgeView)context).getEdge());
 		} else {
 			new DepictionMenus(m, settingsDialog, (NodeView) context);
+			m.add(new JSeparator());
 			new AttributesMenu(m, settingsDialog, (NodeView) context);
 			new StructureMenus(m, settingsDialog, (NodeView) context);
+			m.add(new JSeparator());
+			new SearchMenu(m, settingsDialog, (NodeView) context);
 			new MCSSMenus(m, settingsDialog, (NodeView) context);
 			updateLinkOut(((NodeView)context).getNode());
 		}
+		m.add(new JSeparator());
 		new SimilarityMenu(m, settingsDialog);
 		new SettingsMenu(m, settingsDialog);
 		return m;

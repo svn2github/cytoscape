@@ -92,6 +92,7 @@ public class ChemVizMenu implements MenuListener {
 		new AttributesMenu(m, settingsDialog, null);
 		new StructureMenus(m, settingsDialog, null);
 		new MCSSMenus(m, settingsDialog, null);
+		new SearchMenu(m, settingsDialog, null);
 		new SimilarityMenu(m, settingsDialog);
 		new SettingsMenu(m, settingsDialog);
 	}
