@@ -284,7 +284,7 @@ function sendNotificationEmail($bugReport, $bug_id_redmine) {
 	
 	//$body = $prefix.$bugReport['description']."\n\nAdmin URL: http://chianti.ucsd.edu/cyto_web/bugreport/bugreportadmin.php";
 	
-	$body = $prefix.$bugReport['description']."\n\nBug URL: http://code.cytoscape.org/redmine/issues/".$bug_id_redmine;
+	$body = $prefix.stripslashes($bugReport['description'])."\n\nBug URL: http://code.cytoscape.org/redmine/issues/".$bug_id_redmine;
 	
 	?>
 	Thank you for submitting bug report to Cytoscape, Cytoscape staff will review your report.
