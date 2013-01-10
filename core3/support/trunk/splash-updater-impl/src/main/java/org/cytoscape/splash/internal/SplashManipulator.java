@@ -7,6 +7,8 @@ import java.awt.SplashScreen;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -66,8 +68,18 @@ public class SplashManipulator implements
 		}
 	}
 
-    private synchronized void renderSplashFrame(String message) {
-		if ( g == null || splash == null || !splash.isVisible() )
+    private synchronized void renderSplashFrame(final String message) {
+    	if (!SwingUtilities.isEventDispatchThread()) {
+    		SwingUtilities.invokeLater(new Runnable() {
+    			@Override
+    			public void run() {
+    				renderSplashFrame(message);
+    			}
+    		});
+    		return;
+    	}
+    	
+		if ( g == null || splash == null || !splash.isVisible())
 			return;
         g.setColor(Color.WHITE);
         g.fillRect(20,300,800,40);
