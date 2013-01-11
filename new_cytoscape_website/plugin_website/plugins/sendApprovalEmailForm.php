@@ -73,7 +73,8 @@ else {
 }
 
 $message .= "We are pleased to inform you that your plugin ".$pluginName . " has been accepted by Cytoscape web site. It should be now ".
-		"available through the Plugin Manager of Cytoscape. It will also be listed in the Cytoscape App store web site at http://apps.cytoscape.org/\n\nThanks,\n\nCytostaff"
+		"available through the Plugin Manager of Cytoscape. It will also be listed in the Cytoscape App store web site at http://apps.cytoscape.org . ".
+		"Please note that the App store is hosted in a different server, so there will be a delay one day or more for your app to be available in App store\n\nThanks,\n\nCytostaff"
 
 ?>
 
