@@ -6,6 +6,13 @@
 
 <?php
 
+// check black list of IP address
+$isIPInBlackList = isIPAddressInBlackList();
+
+if ($isIPInBlackList){
+	return;
+}
+
 // mode = 'new', Data is submited by user
 // mode = 'edit', Cytostaff edit the data in bugs DB
 $mode = 'new'; // by default it is 'new'
@@ -72,6 +79,12 @@ else {
 	}
 	
 	if ($mode == 'new') {
+		
+		// check if the email is in black list
+		if (isEmailInBlackList($bugReport['email'])) {
+			return;
+		}
+		
 		//process the data and Save the data into DB.		
 		$submitResult1 = submitNewBug($connection, $bugReport);
 		submitNewBug2Remine( $bugReport, $submitResult1);
@@ -91,6 +104,35 @@ else {
 
 
 <?php 
+
+function isEmailInBlackList($email) {
+
+	$file_handle = fopen("_blacklist_email.txt", "r");
+	while (!feof($file_handle)) {
+		$line = trim(fgets($file_handle));
+
+		if(strcasecmp($email, $line) == 0){
+			return true;
+		}
+	}
+	fclose($file_handle);
+	return false;
+}
+
+function isIPAddressInBlackList(){
+	
+	$remote_ip_address= trim($_SERVER['REMOTE_ADDR']);
+		
+	$file_handle = fopen("_blacklist_ip.txt", "r");
+	while (!feof($file_handle)) {
+		$line = trim(fgets($file_handle));		
+		if(strcasecmp($remote_ip_address, $line) == 0){
+			return true;
+		}
+	}
+	fclose($file_handle);
+	return false;
+}
 
 
 function getBugID_redmine() {
@@ -138,7 +180,11 @@ function isUserInputValid($userInput) {
 		return false;
 	}
 	
-	return true;
+	if ($userInput['cyversion'] != null and strpos($userInput['cyversion'],'3.0') !== false){
+		return true;
+	}
+	echo "Please correct Cytoscape version<br />";
+	return false;
 }
 
 
