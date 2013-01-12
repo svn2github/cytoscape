@@ -183,7 +183,6 @@ function isUserInputValid($userInput) {
 	if ($userInput['cyversion'] != null and strpos($userInput['cyversion'],'3.0') !== false){
 		return true;
 	}
-	echo "Please correct Cytoscape version<br />";
 	return false;
 }
 
