@@ -131,17 +131,17 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>service-api</artifactId>
-			<version>[3.0.0-alpha7,4.0)</version>
+			<version>3.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
-			<version>[3.0.0-alpha7,4.0)</version>
+			<version>3.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-api</artifactId>
-			<version>[3.0.0-alpha7,4.0)</version>
+			<version>3.0.0</version>
 		</dependency>
 
 	</dependencies>
