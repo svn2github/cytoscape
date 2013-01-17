@@ -89,16 +89,16 @@ public class ChemInfoSettings implements SetCurrentNetworkListener, ColumnCreate
 		getListSingleSelection(Arrays.asList(fingerprintList), Fingerprinter.PUBCHEM);
 
 	@Tunable(description="Maximum number of threads to use", groups=" ")
-	int maxThreads = 0;
+	public int maxThreads = 0;
 
-	@Tunable(description="Attributes that contain SMILES strings", groups={"Attribute Settings", "SMILES Attributes"})
+	@Tunable(groups={"Attribute Settings", "SMILES Attributes"})
 	public ListMultipleSelection<String> smilesAttributes = null;
 
 	@Tunable(description="Attributes that contain InCHI strings", groups={"Attribute Settings", "InCHI Attributes"})
 	public ListMultipleSelection<String> inChiAttributes =  null;
 
 	@Tunable(description="Size of 2D node depiction as a % of node size", groups="Depiction options")
-	int nodeStructureSize = 100; 
+	public int nodeStructureSize = 100; 
 
 	@Tunable(description="Attribute to use for image labels", groups="Depiction options")
 	public ListSingleSelection<String> labelAttribute = null;

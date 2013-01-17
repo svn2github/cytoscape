@@ -32,6 +32,8 @@ import javax.vecmath.Vector2d;
 import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.customgraphics.CyCustomGraphics;
 import org.cytoscape.view.presentation.customgraphics.CustomGraphicLayer;
 import org.cytoscape.view.presentation.customgraphics.PaintedShape;
@@ -94,8 +96,8 @@ public class ChemVizCustomGraphics implements CyCustomGraphics<PaintedShape> {
 	public float getFitRatio() {return fitRatio;}
 	public int getHeight() { return height; }
 	public Long getIdentifier() {return id;}
-	public List<PaintedShape> getLayers(CyNetwork network, CyIdentifiable grObject) {
-		if (!(grObject instanceof CyNode))
+	public List<PaintedShape> getLayers(CyNetworkView networkView, View grView) {
+		if (!(grView.getModel() instanceof CyNode))
 			return null;
 		// Set offsets
 		// System.out.println("Molecule = "+compound.getMolecule());
