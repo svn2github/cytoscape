@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 
 import org.cytoscape.view.presentation.customgraphics.CyCustomGraphics;
 import org.cytoscape.view.presentation.customgraphics.CyCustomGraphicsFactory;
@@ -45,7 +48,8 @@ public abstract class AbstractEnhancedCustomGraphics<T extends CustomGraphicLaye
 	public void setHeight(final int height) { this.height = height; }
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
-	public List<T> getLayers(CyNetwork network, CyIdentifiable node) { return layers; }
+	@Override
+	public List<T> getLayers(CyNetworkView networkView, View nodeView) { return layers; }
 	public String getDisplayName() { return displayName; }
 	public void setDisplayName(final String displayName) {
 		this.displayName = displayName;

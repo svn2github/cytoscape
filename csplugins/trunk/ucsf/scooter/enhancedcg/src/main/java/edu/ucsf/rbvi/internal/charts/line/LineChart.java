@@ -53,6 +53,8 @@ import java.awt.geom.Rectangle2D;
 import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 
 import edu.ucsf.rbvi.enhancedcg.internal.charts.AbstractChartCustomGraphics;
 
@@ -102,12 +104,13 @@ public class LineChart extends AbstractChartCustomGraphics<LineLayer> {
 	public Image getRenderedImage() { return null; }
 
 	@Override 
-	public List<LineLayer> getLayers(CyNetwork network, CyIdentifiable node) { 
+	public List<LineLayer> getLayers(CyNetworkView networkView, View nodeView) { 
+		CyNetwork network = networkView.getModel();
+		if (!(nodeView.getModel() instanceof CyNode))
+				return null;
+		CyNode node = (CyNode)nodeView.getModel();
 		// Create all of our pie slices. Each slice becomes a layer
 		if (attributes != null && attributes.size() > 0) {
-			if (!(node instanceof CyNode))
-				return null;
-
 			values = getDataFromAttributes (network, (CyNode)node, attributes, labels);
 			colorList = convertInputToColor(colorString, values);
 		}
