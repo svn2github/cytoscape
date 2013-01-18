@@ -96,9 +96,7 @@ public class ChemVizCustomGraphics implements CyCustomGraphics<PaintedShape> {
 	public float getFitRatio() {return fitRatio;}
 	public int getHeight() { return height; }
 	public Long getIdentifier() {return id;}
-	public List<PaintedShape> getLayers(CyNetworkView networkView, View grView) {
-		if (!(grView.getModel() instanceof CyNode))
-			return null;
+	public List<PaintedShape> getLayers(CyNetworkView networkView, View<? extends CyIdentifiable> grView) {
 		// Set offsets
 		// System.out.println("Molecule = "+compound.getMolecule());
 		return ViewUtils.createShapes((double)(-width)/2.0, (double)(-height)/2.0, (double)width, (double)height, 
