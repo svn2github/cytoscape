@@ -120,7 +120,7 @@ public class HeatStripChart extends AbstractChartCustomGraphics<HeatStripLayer> 
 	public Image getRenderedImage() { return null; }
 
 	@Override 
-	public List<HeatStripLayer> getLayers(CyNetworkView networkView, View nodeView) { 
+	public List<HeatStripLayer> getLayers(CyNetworkView networkView, View<? extends CyIdentifiable> nodeView) { 
 		CyNetwork network = networkView.getModel();
 		if (!(nodeView.getModel() instanceof CyNode))
 				return null;

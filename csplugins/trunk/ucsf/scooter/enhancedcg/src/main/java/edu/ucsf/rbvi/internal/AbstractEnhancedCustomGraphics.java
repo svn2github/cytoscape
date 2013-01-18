@@ -24,8 +24,8 @@ import org.cytoscape.view.presentation.customgraphics.CyCustomGraphics;
 import org.cytoscape.view.presentation.customgraphics.CyCustomGraphicsFactory;
 import org.cytoscape.view.presentation.customgraphics.CustomGraphicLayer;
 
-public abstract class AbstractEnhancedCustomGraphics<T extends CustomGraphicLayer> 
-                                                   implements CyCustomGraphics {
+public abstract class AbstractEnhancedCustomGraphics <T extends CustomGraphicLayer>
+                implements CyCustomGraphics <T> {
 
 	protected Long id = null;
 	protected float fitRatio = 0.9f;
@@ -48,8 +48,7 @@ public abstract class AbstractEnhancedCustomGraphics<T extends CustomGraphicLaye
 	public void setHeight(final int height) { this.height = height; }
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
-	@Override
-	public List<T> getLayers(CyNetworkView networkView, View nodeView) { return layers; }
+	public List<T> getLayers(CyNetworkView networkView, View<? extends CyIdentifiable> nodeView) { return layers; }
 	public String getDisplayName() { return displayName; }
 	public void setDisplayName(final String displayName) {
 		this.displayName = displayName;

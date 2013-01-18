@@ -18,11 +18,13 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 
+import org.cytoscape.view.presentation.customgraphics.CustomGraphicLayer;
 import org.cytoscape.view.presentation.customgraphics.PaintedShape;
 
 import edu.ucsf.rbvi.enhancedcg.internal.AbstractEnhancedCustomGraphics;
 
-abstract public class AbstractChartCustomGraphics<T extends PaintedShape> extends AbstractEnhancedCustomGraphics {
+abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer> 
+                extends AbstractEnhancedCustomGraphics<T> {
 	// Standard command strings
 	public static final String ALL = "all";
 	public static final String ATTRIBUTELIST = "attributelist";

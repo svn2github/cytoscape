@@ -2,11 +2,12 @@ package edu.ucsf.rbvi.enhancedcg.internal.gradients.radial;
 
 import java.net.URL;
 
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.presentation.customgraphics.CyCustomGraphics;
 import org.cytoscape.view.presentation.customgraphics.CyCustomGraphicsFactory;
 import org.cytoscape.view.presentation.customgraphics.CustomGraphicLayer;
 
-public class RadialGradientCGFactory implements CyCustomGraphicsFactory {
+public class RadialGradientCGFactory implements CyCustomGraphicsFactory<RadialGradientLayer> {
 	private static final Class<? extends CyCustomGraphics> TARGET_CLASS = RadialGradientCustomGraphics.class;
 
 	public RadialGradientCGFactory() {

@@ -52,7 +52,6 @@ import java.awt.geom.Rectangle2D;
 // Cytoscape imports
 import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 

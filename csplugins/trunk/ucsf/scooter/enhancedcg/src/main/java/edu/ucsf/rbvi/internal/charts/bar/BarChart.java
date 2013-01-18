@@ -104,7 +104,7 @@ public class BarChart extends AbstractChartCustomGraphics<BarLayer> {
 	public Image getRenderedImage() { return null; }
 
 	@Override 
-	public List<BarLayer> getLayers(CyNetworkView networkView, View nodeView) { 
+	public List<BarLayer> getLayers(CyNetworkView networkView, View<? extends CyIdentifiable> nodeView) { 
 		CyNetwork network = networkView.getModel();
 		if (!(nodeView.getModel() instanceof CyNode))
 			return null;

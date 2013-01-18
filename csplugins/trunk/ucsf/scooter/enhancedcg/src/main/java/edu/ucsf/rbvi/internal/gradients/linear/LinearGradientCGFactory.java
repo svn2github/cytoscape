@@ -2,11 +2,12 @@ package edu.ucsf.rbvi.enhancedcg.internal.gradients.linear;
 
 import java.net.URL;
 
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.presentation.customgraphics.CyCustomGraphics;
 import org.cytoscape.view.presentation.customgraphics.CyCustomGraphicsFactory;
 import org.cytoscape.view.presentation.customgraphics.CustomGraphicLayer;
 
-public class LinearGradientCGFactory implements CyCustomGraphicsFactory {
+public class LinearGradientCGFactory implements CyCustomGraphicsFactory <LinearGradientLayer> {
 	private static final Class<? extends CyCustomGraphics> TARGET_CLASS = LinearGradientCustomGraphics.class;
 
 	public LinearGradientCGFactory() {

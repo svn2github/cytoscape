@@ -21,7 +21,7 @@ import org.cytoscape.view.presentation.customgraphics.CustomGraphicLayer;
 
 import edu.ucsf.rbvi.enhancedcg.internal.AbstractEnhancedCustomGraphics;
 
-public class RadialGradientCustomGraphics extends AbstractEnhancedCustomGraphics <RadialGradientLayer>{
+public class RadialGradientCustomGraphics extends AbstractEnhancedCustomGraphics <RadialGradientLayer> {
 
 	// Parse the input string, which is always of the form:
 	// 	radgrad: center="x,y" radius="r" stoplist="r,g,b,a,stop|r,g,b,a,stop|r,g,b,a,stop"
