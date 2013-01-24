@@ -143,6 +143,32 @@
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.3</version>
+				<configuration>
+					<verbose>false</verbose>
+					<addSvnKeyWords>true</addSvnKeyWords>
+					<organizationName>The Cytoscape Consortium</organizationName>
+					<inceptionYear>2013</inceptionYear>
+					<licenseName>lgpl_v2_1</licenseName>
+					
+					<failOnMissingHeader>true</failOnMissingHeader>
+					<ignoreTag>%% Ignore-License</ignoreTag>
+					<roots>
+						<root>src/main/java</root>
+						<root>src/test</root>
+						<root>target/generated-sources</root>
+					</roots>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
+					<excludes>
+						<exclude>**/package-info.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 		</plugins>
 
 		<!-- this is the preferred method of deployment transport mechanism -->
