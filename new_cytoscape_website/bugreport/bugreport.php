@@ -226,7 +226,7 @@ function submitNewBug($connection, $bugReport){
 	// Load attached files first
 	if ($bugReport['attachedFiles'] != NULL && $bugReport['attachedFiles']['name'] != NULL){
 				
-		$name = $bugReport['attachedFiles']['name'];
+		$name = mysql_real_escape_string($bugReport['attachedFiles']['name']);
 		$type = $bugReport['attachedFiles']['type'];
 		$md5 = $bugReport['attachedFiles']['md5'];
 		$content = $bugReport['attachedFiles']['fileContent'];
@@ -243,7 +243,7 @@ function submitNewBug($connection, $bugReport){
 	// Step 2: get the reporter id
 	$reporter_auto_id = null;
 	// Check if the reporter already existed in table 'reporter'
-	$dbQuery = "SELECT reporter_auto_id FROM reporter WHERE email ='" .$bugReport['email']."'";
+	$dbQuery = "SELECT reporter_auto_id FROM reporter WHERE email ='" .mysql_real_escape_string($bugReport['email'])."'";
 	// Run the query
 	if (!($result = @ mysql_query($dbQuery, $connection)))
 		showerror();
@@ -257,7 +257,7 @@ function submitNewBug($connection, $bugReport){
 	// the reporter is new, add it to DB
 	if ($reporter_auto_id == null){
 		// Insert a row into table reporter
-		$dbQuery = "INSERT INTO reporter (name, email) Values ('".$bugReport['name']."','".$bugReport['email']."')";		
+		$dbQuery = "INSERT INTO reporter (name, email) Values ('".mysql_real_escape_string($bugReport['name'])."','".mysql_real_escape_string($bugReport['email'])."')";		
 		// Run the query
 		if (!(@ mysql_query($dbQuery, $connection)))
 			showerror();
@@ -267,10 +267,10 @@ function submitNewBug($connection, $bugReport){
 	// Step 3: add a report to table "bugs"
 	$bug_auto_id = null;
 	
-	$cyversion = $bugReport['cyversion'];
-	$os = $bugReport['os'];
-	$subject = $bugReport['subject'];
-	$description = $bugReport['description'];
+	$cyversion = mysql_real_escape_string($bugReport['cyversion']);
+	$os = mysql_real_escape_string($bugReport['os']);
+	$subject = mysql_real_escape_string($bugReport['subject']);
+	$description = mysql_real_escape_string($bugReport['description']);
 	$ip_address = $bugReport['ip_address'];
 	$remote_host = $bugReport['remote_host'];
 		
