@@ -3,7 +3,7 @@
 <?php
 include 'functions.php';
 
-$bugid = getBugID($_GET, $_POST);
+$bugid = mysql_real_escape_string(getBugID($_GET, $_POST));
 
 $deleteAction = NULL;
 if (isset ($_POST['delete'])) {

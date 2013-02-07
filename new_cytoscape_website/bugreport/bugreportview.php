@@ -6,7 +6,7 @@
 
 $bugid = null;
 if (isset ($_GET['bugid'])) {
-		$bugid = ($_GET['bugid']);
+		$bugid = mysql_real_escape_string(($_GET['bugid']));
 }
 else {
 	exit("BugID unknow!");
