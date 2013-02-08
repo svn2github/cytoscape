@@ -153,7 +153,7 @@ else {
 	//echo "Form is validated, process the data<br>";
 
 	// Get the category_id
-	$query = 'SELECT category_id FROM categories WHERE name = "' . $pluginProps['pluginCategory'] . '"';
+	$query = 'SELECT category_id FROM categories WHERE name = "' . mysql_real_escape_string($pluginProps['pluginCategory']) . '"';
 	// Run the query
 	if (!($result = @ mysql_query($query, $connection)))
 		showerror();

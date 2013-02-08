@@ -135,7 +135,7 @@ function getPluginVersionID($connection, $pluginData) {
 		// Get plugin_version_id based on the plugin -- 'category'', 'name' and 'version'	
 
 		// Get the category_id
-		$query = 'SELECT category_id FROM categories WHERE name = "' . $pluginData['category'] . '"';
+		$query = 'SELECT category_id FROM categories WHERE name = "' . mysql_real_escape_string($pluginData['category']) . '"';
 		// Run the query
 		if (!($result = @ mysql_query($query, $connection)))
 			showerror();
@@ -151,7 +151,7 @@ function getPluginVersionID($connection, $pluginData) {
 		//
 		$query = 'SELECT version_auto_id FROM plugin_list,plugin_version WHERE plugin_list.category_id ='.$category_id.
 				' and plugin_list.plugin_auto_id = plugin_version.plugin_id '.
-				'and plugin_list.name ="'.$pluginData['name'].'" and plugin_version.version = '.$pluginData['version'];
+				'and plugin_list.name ="'.mysql_real_escape_string($pluginData['name']).'" and plugin_version.version = '.mysql_real_escape_string($pluginData['version']);
 
 		//Run the query
 		if (!($result = @ mysql_query($query, $connection)))
@@ -192,8 +192,8 @@ function validateThemeData($connection, $themeData) {
 
 function getThemeVersionID($connection, $themeData) {
 		$query = 'SELECT version_auto_id FROM theme_list, theme_version WHERE theme_list.theme_auto_id = theme_version.theme_id ' .
-				' and theme_list.name = "' . $themeData['name'] .'"' .
-				' and theme_version.version = ' . $themeData['version'];
+				' and theme_list.name = "' . mysql_real_escape_string($themeData['name']) .'"' .
+				' and theme_version.version = ' . mysql_real_escape_string($themeData['version']);
 								
 		// Run the query
 		if (!($result = @ mysql_query($query, $connection)))
@@ -229,7 +229,7 @@ function saveThemeToDB($connection, $themeData) {
 
 	//Check if there is an old version of this theme in DB
 	$dbQuery = 'SELECT theme_auto_id FROM theme_list ' .
-		'         WHERE name = "' . $themeData['name'] . '"';
+		'         WHERE name = "' . mysql_real_escape_string($themeData['name']) . '"';
 
 	// Run the query
 	if (!($result = @ mysql_query($dbQuery, $connection)))
@@ -249,7 +249,7 @@ function saveThemeToDB($connection, $themeData) {
 
 			// Update the table "theme_list"  
 			$dbQuery = 'UPDATE theme_list ' .
-			'SET description = "' . addslashes($themeData['description']) . '" ' .
+			'SET description = "' . mysql_real_escape_string(addslashes($themeData['description'])) . '" ' .
 			'WHERE theme_auto_id = ' . $theme_auto_id;
 			
 			// Run the query
@@ -264,7 +264,7 @@ function saveThemeToDB($connection, $themeData) {
 			$theme_unique_id = getThemeUniqueID($connection);
 			
 			$dbQuery = 'INSERT INTO theme_list VALUES ' .
-			'(0, "' . $themeData['name'] . '", ' . $theme_unique_id . ', "' . addslashes($themeData['description']). '",now())';
+			'(0, "' . mysql_real_escape_string($themeData['name']) . '", ' . $theme_unique_id . ', "' . mysql_real_escape_string(addslashes($themeData['description'])). '",now())';
 
 			// Run the query
 			if (!($result = @ mysql_query($dbQuery, $connection)))
@@ -275,7 +275,7 @@ function saveThemeToDB($connection, $themeData) {
 
 	// Insert a row into table plugin_version
 	$dbQuery = 'INSERT INTO theme_version VALUES (0, ' . $theme_auto_id .
-		',\'' . $themeData['cyVersion'] . '\',' .$themeData['version'] . ',\'' . $themeData['releaseDate'] .'\',\'public\',now())';
+		',\'' . mysql_real_escape_string($themeData['cyVersion']) . '\',' .mysql_real_escape_string($themeData['version']) . ',\'' . mysql_real_escape_string($themeData['releaseDate']) .'\',\'public\',now())';
 	
 	//echo "query = ",$dbQuery,'<br>';	
 	// Run the query

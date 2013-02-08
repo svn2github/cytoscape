@@ -83,9 +83,9 @@ $i = 0;
 foreach ( $searchArray as $searchWord )
 {
     if ( $i == 0 )
-        $wordSQL .= "word='" . $searchWord  ."' ";
+        $wordSQL .= "word='" . mysql_real_escape_string($searchWord)  ."' ";
     else
-        $wordSQL .= " OR word='" . $searchWord ."' ";
+        $wordSQL .= " OR word='" . mysql_real_escape_string($searchWord) ."' ";
     $i++;
 }
 

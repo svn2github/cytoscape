@@ -153,7 +153,7 @@ else
 	//exit("Exit before processing");	
 	
 		// Get the category_id
-		$query = 'SELECT category_id FROM categories WHERE name = "' . $category . '"';
+		$query = 'SELECT category_id FROM categories WHERE name = "' . mysql_real_escape_string($category) . '"';
 		// Run the query
 		if (!($result = @ mysql_query($query, $connection)))
 			showerror();
@@ -171,20 +171,20 @@ else
 		
 		// For table plugin_list
 		$query1_prefix = 'update plugin_list set ';
-		$query1_suffix = ' where plugin_auto_id = '.$db_plugin_id;
+		$query1_suffix = ' where plugin_auto_id = '.mysql_real_escape_string($db_plugin_id);
 
 		$query1 = $query1_prefix;
 		if ($name != $db_name) { // plugin name
-			$query1 .='name ="'.$name.'",';
+			$query1 .='name ="'.mysql_real_escape_string($name).'",';
 		} 
 		if ($description != $db_description) {
-			$query1 .='description ="'.$description.'",';
+			$query1 .='description ="'.mysql_real_escape_string($description).'",';
 		}
 		if ($projectURL != $db_projectURL) {
-			$query1 .='project_url ="'.$projectURL.'",';
+			$query1 .='project_url ="'.mysql_real_escape_string($projectURL).'",';
 		}
 		if ($category_id != $db_categoryID) {
-			$query1 .='category_id ='.$category_id.',';
+			$query1 .='category_id ='.mysql_real_escape_string($category_id).',';
 		}
 		if ($query1 != $query1_prefix) {
 			$query1 .='sysdat ='.'now()';		
@@ -198,19 +198,19 @@ else
 
 		// query to update table plugin_version
 		$query2_prefix = 'update plugin_version set ';
-		$query2_suffix = ' where version_auto_id = '.$versionID;
+		$query2_suffix = ' where version_auto_id = '.mysql_real_escape_string($versionID);
 
 		$query2 = $query2_prefix;
 
 		// Check plugin_file_id???
 		if ($version != $db_version) { // plugin version
-			$query2 .='version ="'.$version.'",';
+			$query2 .='version ="'.mysql_real_escape_string($version).'",';
 		}
 		if ($releaseDate != $db_releaseDate) {
-			$query2 .='release_date ="'.$releaseDate.'",';
+			$query2 .='release_date ="'.mysql_real_escape_string($releaseDate).'",';
 		}
 		if ($cyVersion != $db_cyVersion) {
-			$query2 .='cy_version ="'.$cyVersion.'",';
+			$query2 .='cy_version ="'.mysql_real_escape_string($cyVersion).'",';
 		}
 				
 		if ($query2 != $query2_prefix) {
@@ -228,11 +228,11 @@ else
 
 		// delete the existing authors
 		for ($i = 0; $i < count($db_author_ids); $i++) {
-			$query = 'delete from plugin_author where author_id ='.$db_author_ids[$i];
+			$query = 'delete from plugin_author where author_id ='.mysql_real_escape_string($db_author_ids[$i]);
 			// Run the query
 			if (!(@ mysql_query($query, $connection)))
 				showerror();
-			$query = 'delete from authors where author_auto_id ='.$db_author_ids[$i];
+			$query = 'delete from authors where author_auto_id ='.mysql_real_escape_string($db_author_ids[$i]);
 			// Run the query
 			if (!(@ mysql_query($query, $connection)))
 				showerror();
@@ -241,7 +241,7 @@ else
 		// Add new authors into tables
 		for ($i = 0; $i < count($names); $i++) {
 			if (!(empty($names[$i]) && empty($emails[$i]) && empty($affiliations[$i]) && empty($affiliationURLs[$i]))) {
-				$query = 'INSERT INTO authors VALUES (0, "' . $names[$i] . '", "' . $emails[$i] . '","' . $affiliations[$i] . '","' . $affiliationURLs[$i] . '")';
+				$query = 'INSERT INTO authors VALUES (0, "' .mysql_real_escape_string($names[$i]) . '", "' . mysql_real_escape_string($emails[$i]) . '","' . mysql_real_escape_string($affiliations[$i]) . '","' . mysql_real_escape_string($affiliationURLs[$i]) . '")';
 
 				// Run the query
 				if (!(@ mysql_query($query, $connection)))
@@ -250,7 +250,7 @@ else
 				$author_auto_id = mysql_insert_id($connection);
 				$authorship_seq = $i;
 			
-				$query = 'INSERT INTO plugin_author VALUES (' . $versionID . ', ' . $author_auto_id . ',' . $authorship_seq . ')';
+				$query = 'INSERT INTO plugin_author VALUES (' . mysql_real_escape_string($versionID) . ', ' . mysql_real_escape_string($author_auto_id) . ',' . mysql_real_escape_string($authorship_seq) . ')';
 
 				// Run the query
 				if (!(@ mysql_query($query, $connection)))

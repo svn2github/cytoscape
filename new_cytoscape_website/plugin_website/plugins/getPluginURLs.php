@@ -19,6 +19,8 @@ if (!mysql_select_db($dbName, $connection))
 // Generate plugin external URLs in  XML format 
 function getPluginURLs($connection, $name){
 	
+	$name = mysql_real_escape_string($name);
+	
 	$returnResult='<plugin>';
 	$returnResult .= '<pluginName>'.$name.'</pluginName>';
 	

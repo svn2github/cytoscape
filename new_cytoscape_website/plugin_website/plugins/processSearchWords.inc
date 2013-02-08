@@ -2,6 +2,9 @@
 
 // update two tables 'description_word' and 'description_work_link' for a plugin deletion
 function deleteWords($connection, $plugin_id) {
+	
+	$plugin_id = mysql_real_escape_string($plugin_id);
+	
 	// get the list of words for the plugin in table 'description_word_link'
 	$dbQuery = "select word_id from description_word_link where plugin_id = $plugin_id";
 	// Run the query
@@ -57,6 +60,8 @@ function deleteWords($connection, $plugin_id) {
 // Process the descriptiopn text for a plugin and populate two tables
 // 'description_words' and 'description_word_link'
 function addWords($connection, $plugin_id){
+	
+	$plugin_id = mysql_real_escape_string($plugin_id);
 	
 	//Get the description of this plugin
 	$IndexText = getPluginDescription($connection, $plugin_id); 
@@ -132,7 +137,7 @@ function addWords($connection, $plugin_id){
 		
 		// Store word in table 'description_words' if it does not exist.
 		if (strlen($indexWord) != 0){
-			$word_id = storeWord($connection, $indexWord);		
+			$word_id = mysql_real_escape_string(storeWord($connection, $indexWord));		
 		}
 	
 		if ($word_id == -1){
@@ -156,7 +161,7 @@ function addWords($connection, $plugin_id){
 
 function getPluginDescription($connection, $pluginID) {
 	$description = "";
-	$dbQuery = "select description from plugin_list where plugin_auto_id =".$pluginID;	
+	$dbQuery = "select description from plugin_list where plugin_auto_id =".mysql_real_escape_string($pluginID);	
 	// Run the query
 	if (!($result = @ mysql_query($dbQuery, $connection)))
 		showerror();
@@ -174,6 +179,8 @@ function getPluginDescription($connection, $pluginID) {
 function storeWord($connection, $word) {
 	$word_id = -1;
 
+	$word = mysql_real_escape_string($word);
+	
 	$dbQuery = "select * from description_words where word ='$word'";	
 	// Run the query
 	if (!($result = @ mysql_query($dbQuery, $connection)))

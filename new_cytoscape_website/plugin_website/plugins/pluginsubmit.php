@@ -239,7 +239,7 @@ else
 
 
 		// Get the category_id
-		$query = 'SELECT category_id FROM categories WHERE name = "' . $pluginProps['pluginCategory'] . '"';
+		$query = 'SELECT category_id FROM categories WHERE name = "' . mysql_real_escape_string($pluginProps['pluginCategory']) . '"';
 		// Run the query
 		if (!($result = @ mysql_query($query, $connection)))
 			showerror();
@@ -261,26 +261,26 @@ else
 
 		// For table plugin_list
 		$query1_prefix = 'update plugin_list set ';
-		$query1_suffix = ' where plugin_auto_id = ' . $db_plugin_id;
+		$query1_suffix = ' where plugin_auto_id = ' . mysql_real_escape_string($db_plugin_id);
 
 		$query1 = $query1_prefix;
 		if ($pluginProps['pluginName'] != $db_name) {
-			$query1 .= 'name ="' . $pluginProps['pluginName'] . '",';
+			$query1 .= 'name ="' . mysql_real_escape_string($pluginProps['pluginName']) . '",';
 		}
 		if ($pluginProps['pluginDescription'] != $db_description) {
-			$query1 .= 'description ="' . $pluginProps['pluginDescription'] . '",';
+			$query1 .= 'description ="' . mysql_real_escape_string($pluginProps['pluginDescription']) . '",';
 		}
 		if ($license != $db_license) {
-			$query1 .= 'license ="' . $license . '",';
+			$query1 .= 'license ="' . mysql_real_escape_string($license) . '",';
 		}
 		if ($license_required != $db_license_required) {
-			$query1 .= 'license_required ="' . $license_required . '",';
+			$query1 .= 'license_required ="' . mysql_real_escape_string($license_required) . '",';
 		}
 		if ($pluginProps['projectURL'] != $db_projectURL) {
-			$query1 .= 'project_url ="' . $pluginProps['projectURL'] . '",';
+			$query1 .= 'project_url ="' . mysql_real_escape_string($pluginProps['projectURL']) . '",';
 		}
 		if ($category_id != $db_categoryID) {
-			$query1 .= 'category_id =' . $category_id . ',';
+			$query1 .= 'category_id =' . mysql_real_escape_string($category_id) . ',';
 		}
 		if ($query1 != $query1_prefix) {
 			$query1 .= 'sysdat =' . 'now()';
@@ -294,37 +294,37 @@ else
 
 		// query to update table plugin_version
 		$query2_prefix = 'update plugin_version set ';
-		$query2_suffix = ' where version_auto_id = ' . $versionID;
+		$query2_suffix = ' where version_auto_id = ' . mysql_real_escape_string($versionID);
 
 		$query2 = $query2_prefix;
 
 		// Check plugin_file_id???		
 		if ($pluginProps['pluginVersion'] != $db_version) { // plugin version
-			$query2 .= 'version ="' . $pluginProps['pluginVersion'] . '",';
+			$query2 .= 'version ="' . mysql_real_escape_string($pluginProps['pluginVersion']) . '",';
 		}
 		if ($pluginProps['releaseDate'] != $db_releaseDate) {
-			$query2 .= 'release_date ="' . $pluginProps['releaseDate'] . '",';
+			$query2 .= 'release_date ="' . mysql_real_escape_string($pluginProps['releaseDate']) . '",';
 		}
 		if ($pluginProps['themeOnly'] != $db_themeOnly) {
-			$query2 .= 'theme_only ="' . $pluginProps['themeOnly'] . '",';
+			$query2 .= 'theme_only ="' . mysql_real_escape_string($pluginProps['themeOnly']) . '",';
 		}
 		if ($releaseNote != $db_releaseNote) {
-			$query2 .= 'release_note ="' . $releaseNote . '",';
+			$query2 .= 'release_note ="' . mysql_real_escape_string($releaseNote) . '",';
 		}
 		if ($releaseNoteURL != $db_releaseNoteURL) {
-			$query2 .= 'release_note_url ="' . $releaseNoteURL . '",';
+			$query2 .= 'release_note_url ="' . mysql_real_escape_string($releaseNoteURL) . '",';
 		}
 		if ($comment != $db_comment) {
-			$query2 .= 'comment ="' . $comment . '",';
+			$query2 .= 'comment ="' . mysql_real_escape_string($comment) . '",';
 		}
 		//if ($jarURL != $db_jarURL) {
 		//	$query2 .='jar_url ="'.$jarURL.'",';
 		//}
 		if ($sourceURL != $db_sourceURL) {
-			$query2 .= 'source_url ="' . $sourceURL . '",';
+			$query2 .= 'source_url ="' . mysql_real_escape_string($sourceURL) . '",';
 		}
 		if ($pluginProps['cytoscapeVersion'] != $db_cyVersion) {
-			$query2 .= 'cy_version ="' . $pluginProps['cytoscapeVersion'] . '",';
+			$query2 .= 'cy_version ="' . mysql_real_escape_string($pluginProps['cytoscapeVersion']) . '",';
 		}
 
 		//Determine the status based on what button is clicked
@@ -361,7 +361,7 @@ else
 		if ($fileUpload['name'] != NULL) { // A file is selected
 			$md5 = md5_file($fileUpload['tmp_name']);
 			$fileUpload_type = $fileUpload['type'];
-			$fileUpload_name = $fileUpload['name'];
+			$fileUpload_name = mysql_real_escape_string($fileUpload['name']);
 
 			$fileHandle = fopen($fileUpload['tmp_name'], "r");
 			$fileContent = fread($fileHandle, $fileUpload['size']);
@@ -383,11 +383,11 @@ else
 
 		// delete the existing authors
 		for ($i = 0; $i < count($db_author_ids); $i++) {
-			$query = 'delete from plugin_author where author_id =' . $db_author_ids[$i];
+			$query = 'delete from plugin_author where author_id =' . mysql_real_escape_string($db_author_ids[$i]);
 			// Run the query
 			if (!(@ mysql_query($query, $connection)))
 				showerror();
-			$query = 'delete from authors where author_auto_id =' . $db_author_ids[$i];
+			$query = 'delete from authors where author_auto_id =' . mysql_real_escape_string($db_author_ids[$i]);
 			// Run the query
 			if (!(@ mysql_query($query, $connection)))
 				showerror();
@@ -396,7 +396,7 @@ else
 		// Add new authors into tables
 		for ($i = 0; $i < count($pluginProps['pluginAuthorsInstitutions']['names']); $i++) {
 
-			$query = 'INSERT INTO authors VALUES (0, "' . addslashes($pluginProps['pluginAuthorsInstitutions']['names'][$i]) . '", "' . NULL . '","' . $pluginProps['pluginAuthorsInstitutions']['insts'][$i] . '","' . NULL . '")';
+			$query = 'INSERT INTO authors VALUES (0, "' . mysql_real_escape_string(addslashes($pluginProps['pluginAuthorsInstitutions']['names'][$i])) . '", "' . NULL . '","' . mysql_real_escape_string($pluginProps['pluginAuthorsInstitutions']['insts'][$i]) . '","' . NULL . '")';
 
 			// Run the query
 			if (!(@ mysql_query($query, $connection)))
@@ -405,7 +405,7 @@ else
 			$author_auto_id = mysql_insert_id($connection);
 			$authorship_seq = $i;
 
-			$query = 'INSERT INTO plugin_author VALUES (' . $versionID . ', ' . $author_auto_id . ',' . $authorship_seq . ')';
+			$query = 'INSERT INTO plugin_author VALUES (' . mysql_real_escape_string($versionID) . ', ' . mysql_real_escape_string($author_auto_id) . ',' . mysql_real_escape_string($authorship_seq) . ')';
 
 			// Run the query
 			if (!(@ mysql_query($query, $connection)))
@@ -414,15 +414,15 @@ else
 
 		// query to update table contacts
 		$query5_prefix = 'update contacts set ';
-		$query5_suffix = ' where plugin_version_id = ' . $versionID;
+		$query5_suffix = ' where plugin_version_id = ' . mysql_real_escape_string($versionID);
 
 		$query5 = $query5_prefix;
 
 		if ($contactName != $db_contactName) {
-			$query5 .= 'name ="' . $contactName . '",';
+			$query5 .= 'name ="' . mysql_real_escape_string($contactName) . '",';
 		}
 		if ($contactEmail != $db_contactEmail) {
-			$query5 .= 'email ="' . $contactEmail . '",';
+			$query5 .= 'email ="' . mysql_real_escape_string($contactEmail) . '",';
 		}
 
 		if ($query5 != $query5_prefix) {

@@ -54,7 +54,7 @@ $to = $toEmail;
 //	$to = $to . $cytostaff_emails[0] . " ";
 //}
 
-$headers = "From: plwang@bioeng.ucsd.edu\r\n";
+$headers = "From: plwang@bioeng.ucsd.edu\r\nBCC: samad.lotia@gmail.com idekerlab.bdemchak@gmail.com";
 //$subject = "[] ".$subject;
 
 //mail("YourEmail", $subject, $message, $from);

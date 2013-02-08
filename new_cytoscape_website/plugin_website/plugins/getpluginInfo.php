@@ -2,7 +2,7 @@
 function getPluginFileSize($connection, $plugin_file_id) {
 
 	$query = 'SELECT length(file_data) as pluginFileSize FROM plugin_files ' .
-		'WHERE plugin_file_auto_id = ' . $plugin_file_id;
+		'WHERE plugin_file_auto_id = ' . mysql_real_escape_string($plugin_file_id);
 
         // Run the query
         if (!($PluginFileInfo = @ mysql_query($query, $connection)))
@@ -31,7 +31,7 @@ function getAuthorInfo($connection, $plugin_version_id) {
 	// A plugin may be released by more than one institution, more than one author at
 	// each institution
 
-	$query = 'SELECT * FROM authors, plugin_author WHERE plugin_author.plugin_version_id =' . $plugin_version_id .
+	$query = 'SELECT * FROM authors, plugin_author WHERE plugin_author.plugin_version_id =' . mysql_real_escape_string($plugin_version_id) .
 	' and plugin_author.author_id = authors.author_auto_id ORDER BY authorship_seq';
 
 	// Run the query
@@ -87,7 +87,7 @@ function getPluginInfoPage($connection, $pluginList_row) {
 
 	//Get info for all versions of the given plugin (one plugin may have more than one version)
 	$query = 'SELECT * FROM plugin_version' .
-	' WHERE  plugin_id = ' . $pluginList_row['plugin_auto_id'].' and status = "published"';
+	' WHERE  plugin_id = ' . mysql_real_escape_string($pluginList_row['plugin_auto_id']).' and status = "published"';
 
 	// Run the query
 	if (!($allVersionInfo = @ mysql_query($query, $connection)))
