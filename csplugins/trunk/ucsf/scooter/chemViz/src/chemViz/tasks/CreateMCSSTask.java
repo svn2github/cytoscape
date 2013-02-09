@@ -230,8 +230,6 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 
 	private List<IAtomContainer> calculateMCSS(List<IAtomContainer>mcssList, int nThreads) {
 		List<IAtomContainer> newMCSSList = Collections.synchronizedList(new ArrayList<IAtomContainer>(nThreads));
-		List<GetMCSSTask> taskList = new ArrayList<GetMCSSTask>();
-		System.out.println("calculateMCSS with "+mcssList.size()+" structures and "+nThreads+" threads");
 		int taskNumber = 0;
 
 		if (nThreads == 1) {
@@ -248,7 +246,6 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 				if (endPoint > mcssList.size())
 					endPoint = mcssList.size();
 				List<IAtomContainer> subList = new ArrayList<IAtomContainer>(mcssList.subList(i, endPoint));
-				System.out.println("Adding "+subList.size()+"["+i+","+endPoint+"] structures to task list");
 				if (subList.size() > 1)
 					futureList.add(threadPool.submit(new GetMCSSTask(subList, null, taskNumber++)));
 				else
@@ -297,7 +294,7 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 		}
 
 		public synchronized IAtomContainer call() {
-			System.out.println("Calling MCSSTask "+taskNumber+" with "+mcssList.size()+" items");
+			// System.out.println("Calling MCSSTask "+taskNumber+" with "+mcssList.size()+" items");
 			long startTime = Calendar.getInstance().getTimeInMillis();
 			innerMcss = AtomContainerManipulator.removeHydrogens(mcssList.get(0));
 
@@ -307,26 +304,20 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 					comparison.setBondSensitiveTimeOut(0.5); // Increase timeout to 30 seconds
 					IAtomContainer target = AtomContainerManipulator.removeHydrogens(mcssList.get(index));
 					try {
-						System.out.println("mcss for task "+taskNumber+" has "+innerMcss.getAtomCount()+" atoms, and "+innerMcss.getBondCount()+" bonds");
-						System.out.println("target for task "+taskNumber+" has "+target.getAtomCount()+" atoms, and "+target.getBondCount()+" bonds");
-						System.out.println("comparison for task "+taskNumber+" is "+comparison);
+						// System.out.println("mcss for task "+taskNumber+" has "+innerMcss.getAtomCount()+" atoms, and "+innerMcss.getBondCount()+" bonds");
+						// System.out.println("target for task "+taskNumber+" has "+target.getAtomCount()+" atoms, and "+target.getBondCount()+" bonds");
+						// System.out.println("comparison for task "+taskNumber+" is "+comparison);
 						comparison.init(innerMcss, target, true, true);
 						// comparison.setChemFilters(true, true, true);
 						innerMcss = getMCSS(comparison);
 					} catch (CDKException e) {
-						System.out.println("CDKException: "+e);
-						e.printStackTrace();
 						logger.warning("CDKException: "+e);
 					} catch (Exception e) {
-						System.out.println("Exception: "+e);
-						e.printStackTrace();
-						System.out.println("target has "+target.getAtomCount()+" atoms");
-						System.out.println("mcss has "+innerMcss.getAtomCount()+" atoms");
 						logger.warning("Exception: "+e);
 					}
 
 					long endCalcTime = Calendar.getInstance().getTimeInMillis();
-					System.out.println("Task "+taskNumber+" index "+index+" took "+(endCalcTime-calcTime)+"ms");
+					// System.out.println("Task "+taskNumber+" index "+index+" took "+(endCalcTime-calcTime)+"ms");
 					calcTime = endCalcTime;
 					if (innerMcss == null || canceled) break;
 				}
@@ -346,7 +337,6 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 				IAtomContainer match = getMatchedSubgraph(mol1, mapping);
 				matchList.add(match);
 			}
-			System.out.println("Found "+matchList.size()+" fragments");
 			return maximumStructure(matchList);
 		}
 
