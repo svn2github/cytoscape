@@ -36,12 +36,16 @@
 package chemViz.tasks;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import giny.model.GraphObject;
 import giny.view.EdgeView;
@@ -64,10 +68,14 @@ import chemViz.ui.CompoundPopup;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
+// import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 import org.openscience.cdk.smiles.SmilesGenerator;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import org.openscience.cdk.smsd.Isomorphism;
+import org.openscience.cdk.smsd.interfaces.Algorithm;
 
 
 /**
@@ -140,9 +148,12 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 		int pass = 0;
 		while (mcssList.size() > 1) {
 			mcssList = calculateMCSS(mcssList, nThreads);
+			System.out.println("calculateMCSS returns "+mcssList.size()+" structures");
 			pass++;
+			if (canceled) break;
 		}
-		mcss = (IMolecule)mcssList.get(0);
+		if (mcssList.size() == 1)
+			mcss = (IMolecule)mcssList.get(0);
 
 		calculationComplete = true;	
 		if (showResult) {
@@ -220,26 +231,54 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 	private List<IAtomContainer> calculateMCSS(List<IAtomContainer>mcssList, int nThreads) {
 		List<IAtomContainer> newMCSSList = Collections.synchronizedList(new ArrayList<IAtomContainer>(nThreads));
 		List<GetMCSSTask> taskList = new ArrayList<GetMCSSTask>();
+		System.out.println("calculateMCSS with "+mcssList.size()+" structures and "+nThreads+" threads");
+		int taskNumber = 0;
 
 		if (nThreads == 1) {
-			GetMCSSTask task = new GetMCSSTask(mcssList, newMCSSList);
+			GetMCSSTask task = new GetMCSSTask(mcssList, newMCSSList, 1);
 			task.call();
+			return newMCSSList;
 		} else {
+			List<Future<IAtomContainer>> futureList = new ArrayList<Future<IAtomContainer>>();
+			ExecutorService threadPool = Executors.newFixedThreadPool(nThreads);
 			int step = (int)Math.ceil((double)mcssList.size()/(double)nThreads);
 			if (step < 2) step = 2; // Can't have a step size of less than 2
 			for (int i = 0; i < mcssList.size(); i=i+step) {
 				int endPoint = i+step;
 				if (endPoint > mcssList.size())
 					endPoint = mcssList.size();
-				taskList.add(new GetMCSSTask(mcssList.subList(i, endPoint), newMCSSList));
+				List<IAtomContainer> subList = new ArrayList<IAtomContainer>(mcssList.subList(i, endPoint));
+				System.out.println("Adding "+subList.size()+"["+i+","+endPoint+"] structures to task list");
+				if (subList.size() > 1)
+					futureList.add(threadPool.submit(new GetMCSSTask(subList, null, taskNumber++)));
+				else
+					newMCSSList.add(subList.get(0));
 			}
 
+			for (Future<IAtomContainer> container: futureList) {
+				if (container == null) continue;
+				try {
+					IAtomContainer f = container.get();
+					if (f != null)
+						newMCSSList.add(container.get());
+				} catch (Exception e) {
+					logger.warning("Execution exception: "+e);
+					System.out.println("Execution exception: "+e);
+					e.printStackTrace();
+				}
+			}
+
+			threadPool.shutdown();
+
+/*
 			ExecutorService threadPool = Executors.newFixedThreadPool(nThreads);
 			try {
 				threadPool.invokeAll(taskList);
 			} catch (Exception e) {
 				logger.warning("Execution exception: "+e);
+				System.out.println("Execution exception: "+e);
 			}
+*/
 		}
 		return newMCSSList;
 	}
@@ -247,31 +286,90 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 	private class GetMCSSTask implements Callable <IAtomContainer> {
 		List<IAtomContainer> mcssList;
 		List<IAtomContainer> resultsList;
-		IAtomContainer mcss = null;
+		int taskNumber = 0;
+		IAtomContainer innerMcss = null;
 
-		public GetMCSSTask(List<IAtomContainer>mcssList, List<IAtomContainer>resultsList) {
+		public GetMCSSTask(List<IAtomContainer>mcssList, List<IAtomContainer>resultsList, int taskNumber) {
 			this.mcssList = mcssList;
 			this.resultsList = resultsList;
+			this.taskNumber = taskNumber;
+			mcss = null;
 		}
 
-		public IAtomContainer call() {
-			mcss = mcssList.get(0);
-			try {
+		public synchronized IAtomContainer call() {
+			System.out.println("Calling MCSSTask "+taskNumber+" with "+mcssList.size()+" items");
+			long startTime = Calendar.getInstance().getTimeInMillis();
+			innerMcss = AtomContainerManipulator.removeHydrogens(mcssList.get(0));
+
+				long calcTime = startTime;
 				for (int index = 1; index < mcssList.size(); index++) {
-					List<IAtomContainer> overlap = UniversalIsomorphismTester.getOverlaps(mcss, mcssList.get(index));
-					mcss = maximumStructure(overlap);
-					if (mcss == null) break;
+					Isomorphism comparison = new Isomorphism(Algorithm.DEFAULT, true);
+					comparison.setBondSensitiveTimeOut(0.5); // Increase timeout to 30 seconds
+					IAtomContainer target = AtomContainerManipulator.removeHydrogens(mcssList.get(index));
+					try {
+						System.out.println("mcss for task "+taskNumber+" has "+innerMcss.getAtomCount()+" atoms, and "+innerMcss.getBondCount()+" bonds");
+						System.out.println("target for task "+taskNumber+" has "+target.getAtomCount()+" atoms, and "+target.getBondCount()+" bonds");
+						System.out.println("comparison for task "+taskNumber+" is "+comparison);
+						comparison.init(innerMcss, target, true, true);
+						// comparison.setChemFilters(true, true, true);
+						innerMcss = getMCSS(comparison);
+					} catch (CDKException e) {
+						System.out.println("CDKException: "+e);
+						e.printStackTrace();
+						logger.warning("CDKException: "+e);
+					} catch (Exception e) {
+						System.out.println("Exception: "+e);
+						e.printStackTrace();
+						System.out.println("target has "+target.getAtomCount()+" atoms");
+						System.out.println("mcss has "+innerMcss.getAtomCount()+" atoms");
+						logger.warning("Exception: "+e);
+					}
+
+					long endCalcTime = Calendar.getInstance().getTimeInMillis();
+					System.out.println("Task "+taskNumber+" index "+index+" took "+(endCalcTime-calcTime)+"ms");
+					calcTime = endCalcTime;
+					if (innerMcss == null || canceled) break;
 				}
-			} catch (CDKException e) {
-				System.out.println("CDKException: "+e);
-			}
-			resultsList.add(mcss);
-			return mcss;
+			if (resultsList != null)
+				resultsList.add(innerMcss);
+			long endTime = Calendar.getInstance().getTimeInMillis();
+			System.out.println("Done: task "+taskNumber+" took "+(endTime-startTime)+"ms");
+			return innerMcss;
 		}
+
+		private synchronized IMolecule getMCSS(Isomorphism comparison) {
+			// if (comparison.getAllAtomMapping() == null) return null;
+			List<IAtomContainer> matchList = new ArrayList<IAtomContainer>();
+			IAtomContainer mol1 = comparison.getReactantMolecule();
+			// IAtomContainer mol2 = comparison.getProductMolecule();
+			for (Map<IAtom,IAtom> mapping: comparison.getAllAtomMapping()) {
+				IAtomContainer match = getMatchedSubgraph(mol1, mapping);
+				matchList.add(match);
+			}
+			System.out.println("Found "+matchList.size()+" fragments");
+			return maximumStructure(matchList);
+		}
+
+		private synchronized IAtomContainer getMatchedSubgraph(IAtomContainer container, Map<IAtom, IAtom> matches) {
+			IAtomContainer needle = container.getBuilder().newInstance(IAtomContainer.class, container);
+			// Every atom in our structure that *doesn't* have an entry in the matches map should be removed
+			List<IAtom> atomListToBeRemoved = new ArrayList<IAtom>();
+			for (IAtom containerAtom : container.atoms()) {
+				if (!matches.containsKey(containerAtom)) {
+					int index = container.getAtomNumber(containerAtom);
+					atomListToBeRemoved.add(needle.getAtom(index));
+				}
+			}
+			for (IAtom removeAtom : atomListToBeRemoved) {
+				needle.removeAtomAndConnectedElectronContainers(removeAtom);
+			}
+			return needle;
+    }
 	
-		private IMolecule maximumStructure(List<IAtomContainer> mcsslist) {
+		private synchronized IMolecule maximumStructure(List<IAtomContainer> mcsslist) {
 			int maxmcss = -99999999;
 			IAtomContainer maxac = null;
+			int fragment = 1;
 			if (mcsslist == null || mcsslist.size() == 0) return null;
 			for (IAtomContainer a: mcsslist) {
 				if (a.getAtomCount() > maxmcss) {
@@ -283,10 +381,10 @@ public class CreateMCSSTask extends AbstractCompoundTask {
 		}
 
 		public IAtomContainer get() { 
-			if (mcss == null) 
+			if (innerMcss == null)
 				return call();
 			else
-				return mcss; 
+				return innerMcss;
 		}
 	}
 }

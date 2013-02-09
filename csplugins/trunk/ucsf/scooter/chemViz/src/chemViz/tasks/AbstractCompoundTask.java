@@ -135,12 +135,14 @@ abstract public class AbstractCompoundTask implements Task {
 		if (threadList != null && threadList.size() > 0)
 			cList.addAll(GetCompoundTask.runThreads(maxThreads, threadList));
 
+		/*
 		long endTime = Calendar.getInstance().getTimeInMillis();
 		System.out.println("getCompounds took: "+(endTime-startTime)+"ms total");
 		System.out.println(" createStructure took: "+Compound.totalTime+"ms");
 		System.out.println("  getFingerprint took: "+Compound.totalFPTime+"ms");
 		System.out.println("  SMILES parsing took: "+Compound.totalSMILESTime+"ms");
 		System.out.println("  creating the fingerprint took: "+Compound.totalGetFPTime+"ms");
+		*/
 
 		return cList;
 	}
