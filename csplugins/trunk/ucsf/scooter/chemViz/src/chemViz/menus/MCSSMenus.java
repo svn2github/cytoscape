@@ -81,7 +81,7 @@ public class MCSSMenus extends ChemVizAbstractMenu implements ActionListener {
 		this.context = context;
 
 		if (context == null) {
-			JMenu mcss = new JMenu("Calculate Maximum Common SubStructure (MCSS)");
+			JMenu mcss = new JMenu("Show Maximum Common SubStructure (MCSS)");
 			addNodeMCSSMenus(mcss, null);
 			addEdgeMCSSMenus(mcss, null);
 			menu.add(mcss);
