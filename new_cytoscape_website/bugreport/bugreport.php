@@ -159,8 +159,8 @@ function submitNewBug2Remine( $bugReport, $submitResult) {
 		"{
 				\"issue\": {
 				\"project_id\": \"cytoscape3\",
-				\"subject\": \"".$bugReport['cysubject']."\",
-				\"description\": \"".$description."\"
+				\"subject\": \"".clean_unwanted_characters($bugReport['cysubject'])."\",
+				\"description\": \"".clean_unwanted_characters($description)."\"
 				}
 		}";	
 	
@@ -173,6 +173,20 @@ function submitNewBug2Remine( $bugReport, $submitResult) {
 	system("./run_curl.sh > _reportOutput.txt");
 }
 
+
+// To prevent JSON injection attack
+function clean_unwanted_characters($oneStr){
+	$cleaned_str = str_ireplace("\"", "/", $oneStr);
+	$cleaned_str = str_ireplace("\\", "/", $cleaned_str);
+	$cleaned_str = str_ireplace("\\b", " ", $cleaned_str);
+	$cleaned_str = str_ireplace("\\f", " / ", $cleaned_str);
+	$cleaned_str = str_ireplace("\\r", " / ", $cleaned_str);
+	$cleaned_str = str_ireplace("\t", "  ", $cleaned_str);
+	$cleaned_str = str_ireplace("\\u", " ", $cleaned_str);
+	$cleaned_str = str_ireplace("</", "<\/", $cleaned_str);
+
+	return $cleaned_str;
+}
 
 
 function isUserInputValid($userInput) {
