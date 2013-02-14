@@ -117,7 +117,7 @@ public class SearchMenu extends ChemVizAbstractMenu implements ActionListener {
 			return;
 		}
 
-		JMenuItem item = buildMenuItem("Search selected edges", "selectedEdges");
+		JMenuItem item = buildMenuItem("Search selected edges using SMARTS", "selectedEdges");
 		if (selectedEdges == null) 
 			selectedEdges = new ArrayList<CyEdge>(Collections.singletonList((CyEdge)edgeContext));
 
@@ -152,7 +152,7 @@ public class SearchMenu extends ChemVizAbstractMenu implements ActionListener {
 		}
 
 		// Populating popup menu
-		JMenuItem item = buildMenuItem("Search selected nodes", "selectedNodes");
+		JMenuItem item = buildMenuItem("Search selected nodes using SMARTS", "selectedNodes");
 		if (selectedNodes == null) 
 			selectedNodes = new ArrayList<CyNode>(Collections.singletonList((CyNode)nodeContext));
 
