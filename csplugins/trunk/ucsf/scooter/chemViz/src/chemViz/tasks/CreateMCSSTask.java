@@ -183,6 +183,7 @@ public class CreateMCSSTask extends AbstractCompoundTask implements TaskUpdater 
 
 		long endCalcTime = Calendar.getInstance().getTimeInMillis();
 		setStatus("Done. Total time: "+(endCalcTime-startTime)+"ms");
+		logger.debug("Done. Total time: "+(endCalcTime-startTime)+"ms");
 
 		calculationComplete = true;	
 		if (showResult) {

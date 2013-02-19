@@ -106,6 +106,8 @@ final public class MCSSThread implements Callable<List<IAtomContainer>> {
         }
 
         long endTime = Calendar.getInstance().getTimeInMillis();
+				if (updater != null) updater.logException(MCSSThread.class.getName(), Level.FINE, 
+                                                  "Done: task " + taskNumber + " took " + (endTime - startTime) + "ms", null);
 //        System.out.print("Done: task " + taskNumber + " took " + (endTime - startTime) + "ms");
 //        System.out.println(" and mcss has " + querySeed.getAtomCount() + " atoms, and " + querySeed.getBondCount() + " bonds");
         return resultsList;
