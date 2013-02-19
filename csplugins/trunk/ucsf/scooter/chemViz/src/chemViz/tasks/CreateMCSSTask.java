@@ -167,7 +167,8 @@ public class CreateMCSSTask extends AbstractCompoundTask implements TaskUpdater 
 
 		List<IAtomContainer> mcssList = Collections.synchronizedList(new ArrayList<IAtomContainer>(compoundList.size()));
 		for (Compound c: compoundList) {
-			mcssList.add(c.getIAtomContainer());
+			if (c.getIAtomContainer() != null)
+				mcssList.add(c.getIAtomContainer());
 		}
 
 		int pass = 0;

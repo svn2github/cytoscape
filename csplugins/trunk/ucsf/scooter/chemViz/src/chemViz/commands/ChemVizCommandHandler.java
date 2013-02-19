@@ -71,6 +71,7 @@ import chemViz.tasks.CreatePopupTask;
 import chemViz.tasks.CreateCompoundTableTask;
 import chemViz.tasks.CreateMCSSTask;
 import chemViz.tasks.CreateNodeGraphicsTask;
+import chemViz.tasks.SMARTSSearchTask;
 import chemViz.ui.ChemInfoSettingsDialog;
 
 enum Command {
@@ -98,6 +99,9 @@ enum Command {
 	REMOVE("remove",
 	       "Remove 2D structures from nodes",
 				 "network|nodelist|node"),
+	SEARCHSTRUCTURES("search structures",
+	               "Search the designated structures using SMARTS",
+	               "node|nodelist|edge|edgelist|smarts|smiles|inchi|columnlist"),
 	SHOWSTRUCTURES("show structures",
 	               "Popup the 2D structures for a node/edge or group of nodes/edges",
 	               "node|nodelist|edge|edgelist|labelattribute|smiles|inchi"),
@@ -145,6 +149,7 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 	static final String NODELIST = "nodelist";
 	static final String SELECTED = "selected";
 	static final String SHOWRESULT = "showresult";
+	static final String SMARTS = "smarts";
 	static final String SMILES = "smiles";
 	static final String SMILESATTRIBUTE = "smilesattribute";
 
@@ -347,7 +352,7 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 			}
 
 			CreateMCSSTask mcssTask = new CreateMCSSTask(gObjList, attributes, dialog, false, createGroup);
-			TaskManager.executeTask(mcssTask, mcssTask.getDefaultTaskConfig());
+			TaskManager.executeTask(mcssTask, null);
 
 			try {
 				while(!mcssTask.isDone()) {
@@ -390,6 +395,34 @@ public class ChemVizCommandHandler extends AbstractCommandHandler {
 			TaskManager.executeTask(cngTask, cngTask.getDefaultTaskConfig());
 			for (GraphObject obj: gObjList)
 				result.addMessage("Removed graphics from node '"+obj+"'");
+
+		// SEARCHSTRUCTURES("search structures",
+		//                "Search the designated structures using SMARTS",
+		//                "node|nodelist|edge|edgelist|smarts|smiles|inchi|columnlist"),
+		} else if (Command.SEARCHSTRUCTURES.equals(command)) {
+			if (gObjList == null) 
+				throw new RuntimeException("chemviz "+command+": must specify node/edge or nodelist/edgelist");
+
+			if (!args.containsKey(SMARTS))
+				throw new RuntimeException("chemviz "+command+": must specify SMARTS string");
+
+			String smarts = (String)args.get(SMARTS);
+
+			List<Compound> compoundList = ValueUtils.getCompounds(gObjList, mstring, mtype, smilesAttrList, inchiAttrList);
+			CyAttributes attributes = Cytoscape.getNodeAttributes();
+			if (gObjList != null && (gObjList.get(0) instanceof CyEdge))
+				attributes = Cytoscape.getEdgeAttributes();
+
+			List<String> columnList = null;
+			if (args.containsKey(COLUMNLIST)) {
+				String[] columnSpecs = ((String)args.get(COLUMNLIST)).split(",");
+				columnList = Arrays.asList(columnSpecs);
+			}
+
+			SMARTSSearchTask searchTask = 
+				new SMARTSSearchTask(smarts, gObjList, attributes, dialog, 0, columnList);
+			TaskManager.executeTask(searchTask, searchTask.getDefaultTaskConfig());
+			result.addMessage("Showing structures matching: "+smarts);
 		
 		//	SHOWSTRUCTURES("show structures",
 		//	               "Popup the 2D structures for a node or group of nodes",

@@ -118,6 +118,7 @@ public class SMARTSSearchTask extends AbstractCompoundTask {
 			try {
 				SMARTSQueryTool queryTool = new SMARTSQueryTool(searchString);
 				for (Compound compound: cList) {
+					if (compound.getIAtomContainer() == null) continue;
 					boolean status = queryTool.matches(compound.getIAtomContainer());
 					if (status && queryTool.countMatches() > 0)
 						matches.add(compound);
