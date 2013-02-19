@@ -103,8 +103,8 @@
   =====================================================================
   -->
   <target name="jar" depends="compile" description="makes a jar for Cytoscape under development">
-    <mkdir dir="${build.dir}/classes/lib"/>
-    <unzip dest="${build.dir}/classes/lib/">
+    <mkdir dir="${build.dir}/lib"/>
+    <unzip dest="${build.dir}/lib/">
       <fileset dir="${lib.dir}">
         <include name="*.jar"/>
       </fileset>
@@ -118,7 +118,7 @@
         <attribute name="Cytoscape-Plugin" value="chemViz.ChemViz" />
       </manifest>
       <fileset dir="${build.dir}/classes" />
-      <fileset dir="${build.dir}/classes/lib"/>
+      <fileset dir="${build.dir}/lib" />
     </jar>
   </target>
 

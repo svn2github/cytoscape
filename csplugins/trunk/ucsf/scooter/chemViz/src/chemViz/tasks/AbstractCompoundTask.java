@@ -247,13 +247,13 @@ abstract public class AbstractCompoundTask implements Task {
 		return cList;
 	}
 
-	protected void updateMonitor() {
+	protected synchronized void updateMonitor() {
 		if (monitor == null || totalObjects == 0) return;
 		monitor.setPercentCompleted((int)(((double)objectCount/(double)totalObjects) * 100.0));
 		objectCount++;
 	}
 
-	protected void setStatus(String status) {
+	protected synchronized void setStatus(String status) {
 		if (monitor != null) monitor.setStatus(status);
 	}
 

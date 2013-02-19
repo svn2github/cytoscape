@@ -73,10 +73,9 @@ import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.util.URLUtil;
 import giny.view.NodeView;
 
+import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.ChemModel;
-import org.openscience.cdk.Molecule;
-import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.IsotopeFactory;
@@ -91,13 +90,12 @@ import org.openscience.cdk.inchi.InChIGeneratorFactory;
 import org.openscience.cdk.inchi.InChIToStructure;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IAtomType.Hybridization;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IIsotope;
 import org.openscience.cdk.interfaces.IMolecularFormula;
-import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IRing;
 import org.openscience.cdk.interfaces.IRingSet;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
@@ -135,7 +133,7 @@ import giny.model.GraphObject;
  * could have multiple Compounds, either by having multiple attributes that contain compound descriptors or
  * by having a single attribute that contains multiple descriptors (e.g. comma-separated SMILES strings).  The
  * creation of a Compound results in the building of a cached 2D image for that compound, as well as the creation
- * of the CDK IMolecule, which is used for conversion from InChI to SMILES, for calculation of the molecular weight,
+ * of the CDK IAtomContainer, which is used for conversion from InChI to SMILES, for calculation of the molecular weight,
  * and for the calculation of Tanimoto coefficients.
  */
 
@@ -309,8 +307,8 @@ public class Compound {
 	protected Image renderedImage;
 	protected boolean laidOut;
 	private AttriType attrType;
-	private IMolecule iMolecule;
-	private IMolecule iMolecule3D;
+	private IAtomContainer iMolecule;
+	private IAtomContainer iMolecule3D;
 	private BitSet fingerPrint;
 	private IFingerprinter fp;
 	private int lastImageWidth = -1;
@@ -336,7 +334,7 @@ public class Compound {
 	}
 
 	/**
- 	 * This alternative form of the constructor is called when we've calculated an IMolecule internally and it
+ 	 * This alternative form of the constructor is called when we've calculated an IAtomContainer internally and it
  	 * bypasses the creation.
  	 *
  	 * @param source the graph object that holds this compound
@@ -344,7 +342,7 @@ public class Compound {
  	 * @param mstring the compound descriptor itself
  	 * @param attrType the type of the compound descriptor (inchi or smiles)
  	 */
-	public Compound(GraphObject source, String attribute, String mstring, IMolecule molecule,
+	public Compound(GraphObject source, String attribute, String mstring, IAtomContainer molecule,
 	                AttriType attrType) {
 		this.source = source;
 		this.attribute = attribute;
@@ -369,7 +367,7 @@ public class Compound {
 	}
 
 
-	public void createStructure(IMolecule molecule) {
+	public void createStructure(IAtomContainer molecule) {
 		long startTime = Calendar.getInstance().getTimeInMillis();
 
 		this.renderedImage = null;
@@ -412,7 +410,7 @@ public class Compound {
 		long smilesTime = Calendar.getInstance().getTimeInMillis();
 		totalSMILESTime += smilesTime-fpTime;
 
-		// At this point, we should have an IMolecule
+		// At this point, we should have an IAtomContainer
 		try { 
 			CDKHueckelAromaticityDetector.detectAromaticity(iMolecule);
 
@@ -470,11 +468,11 @@ public class Compound {
 	}
 
 	/**
- 	 * Return the CDK IMolecule for this compound
+ 	 * Return the CDK IAtomContainer for this compound
  	 *
- 	 * @return the IMolecule for this compound
+ 	 * @return the IAtomContainer for this compound
  	 */
-	public IMolecule getIMolecule() {
+	public IAtomContainer getIAtomContainer() {
 		return iMolecule;
 	}
 
@@ -487,7 +485,7 @@ public class Compound {
 		if (fingerPrint == null) {
 			try {
 				synchronized (fp) {
-					fingerPrint = fp.getFingerprint(addh(iMolecule));
+					fingerPrint = fp.getBitFingerprint(addh(iMolecule)).asBitSet();
 				}
 			} catch (Exception e) {
 				logger.warning("Error calculating fingerprint: "+e);
@@ -881,11 +879,11 @@ public class Compound {
 				// Is the structure connected?
 				if (!ConnectivityChecker.isConnected(iMolecule)) {
 					// No, for now, find the largest component and use that exclusively
-					IMoleculeSet molSet = ConnectivityChecker.partitionIntoMolecules(iMolecule);
-					IMolecule largest = molSet.getMolecule(0);
-					for (int i = 0; i < molSet.getMoleculeCount(); i++) {
-						if (molSet.getMolecule(i).getAtomCount() > largest.getAtomCount())
-							largest = molSet.getMolecule(i);
+					IAtomContainerSet molSet = ConnectivityChecker.partitionIntoMolecules(iMolecule);
+					IAtomContainer largest = molSet.getAtomContainer(0);
+					for (int i = 0; i < molSet.getAtomContainerCount(); i++) {
+						if (molSet.getAtomContainer(i).getAtomCount() > largest.getAtomCount())
+							largest = molSet.getAtomContainer(i);
 					}
 					iMolecule = largest;
 				}
@@ -925,10 +923,10 @@ public class Compound {
 		}
 	}
 
-	private IMolecule addh(IMolecule mol) {
-		IMolecule molH;
+	private IAtomContainer addh(IAtomContainer mol) {
+		IAtomContainer molH;
 		try {
-			molH = (IMolecule)mol.clone();
+			molH = (IAtomContainer)mol.clone();
 		} catch (Exception e) {
 			return mol;
 		}
@@ -968,7 +966,7 @@ public class Compound {
 				return null;
 			}
 
-			IMolecule molecule = new Molecule(intostruct.getAtomContainer());
+			IAtomContainer molecule = new AtomContainer(intostruct.getAtomContainer());
 			// Use the molecule to create a SMILES string
 			SmilesGenerator sg = new SmilesGenerator();
 			return sg.createSMILES(molecule);
@@ -979,7 +977,7 @@ public class Compound {
 
 	}
 
-	private Image blankImage(IMolecule mol, int width, int height) {
+	private Image blankImage(IAtomContainer mol, int width, int height) {
 		final String noImage = "Image Unavailable";
 
 		if (width == 0 || height == 0)

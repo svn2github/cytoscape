@@ -395,7 +395,7 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 			try {
 				SMARTSQueryTool queryTool = new SMARTSQueryTool(smartsQuery);
 				for (Compound compound: compoundList) {
-					boolean status = queryTool.matches(compound.getIMolecule());
+					boolean status = queryTool.matches(compound.getIAtomContainer());
 					if (status && queryTool.countMatches() > 0)
 						matches.add(compound);
 				}
