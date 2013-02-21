@@ -403,7 +403,14 @@ public class Compound {
 			} catch (InvalidSmilesException e) {
 				iMolecule = null;
 				logger.warning("Unable to parse SMILES: "+smilesStr+" for "+source.getIdentifier()+": "+e.getMessage());
-				return;
+				// Something's a little flakey with the SmilesParser in 1.5.1, so try again
+				sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
+				try {
+					iMolecule = sp.parseSmiles(this.smilesStr);
+				} catch (InvalidSmilesException e2) {
+					// No reason to tell the user again
+					return;
+				}
 			}
 		}
 
