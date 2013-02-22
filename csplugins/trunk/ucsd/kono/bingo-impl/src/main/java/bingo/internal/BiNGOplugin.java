@@ -56,6 +56,8 @@ import bingo.internal.ui.SettingsPanel;
  * 
  * Updated by Keiichiro Ono for Cytoscape 3
  * 
+ * Note: this class is NOT used, it was used as simple App only. 		
+ * 
  * ******************************************************************
  */
 
@@ -73,39 +75,8 @@ public class BiNGOplugin extends AbstractCySwingApp {
 	public BiNGOplugin(final CySwingAppAdapter adapter) {
 		super(adapter);
 
-		adapter.getCySwingApplication().addAction(new bingopluginAction(adapter));
+		adapter.getCySwingApplication().addAction(new BingoPluginAction(adapter));
 		String cwd = System.getProperty(CURRENT_WORKING_DIRECTORY);
-		bingoDir = new File(cwd, "plugins").toString();
-	}
-
-	private final class bingopluginAction extends AbstractCyAction {
-
-		private static final long serialVersionUID = 4190390703299860130L;
-
-		// The constructor sets the text that should appear on the menu item.
-		public bingopluginAction(final CySwingAppAdapter adapter) {
-			super(MENU_NAME);//, adapter.getCyApplicationManager());
-			setPreferredMenu(MENU_CATEGORY);
-		}
-
-		/**
-		 * This method opens the bingo settingspanel upon selection of the menu
-		 * item and opens the settingspanel for bingo.
-		 * 
-		 * @param event
-		 *            event triggered when bingo menu item clicked.
-		 */
-		public void actionPerformed(ActionEvent event) {
-			final JFrame window = new JFrame(WINDOW_TITLE);
-			final SettingsPanel settingsPanel = new SettingsPanel(bingoDir, (CySwingAppAdapter)adapter);
-			window.getContentPane().add(settingsPanel);
-			window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			window.pack();
-
-			// Cytoscape Main Window
-			final JFrame desktop = ((CySwingAppAdapter)adapter).getCySwingApplication().getJFrame();
-			window.setLocationRelativeTo(desktop);
-			window.setVisible(true);
-		}
+		bingoDir = new File(cwd, "plugins").toString();		
 	}
 }
