@@ -120,10 +120,13 @@ public class BingoParameters {
 	}
 
 	public InputStream JarReader(String name) throws IOException {
-		URL url = getClass().getResource("/" + name);
-		JarURLConnection juc = (JarURLConnection) url.openConnection();
-		JarFile jarFile = juc.getJarFile();
-		InputStream is = jarFile.getInputStream(jarFile.getJarEntry(name));
+//		URL url = getClass().getResource("/props/" + name);
+//		JarURLConnection juc = (JarURLConnection) url.openConnection();
+//		JarFile jarFile = juc.getJarFile();
+//		InputStream is = jarFile.getInputStream(jarFile.getJarEntry(name));
+		
+		InputStream is = getClass().getResourceAsStream("/props/" + name);
+		
 		return is;
 	}
 
