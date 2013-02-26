@@ -1,0 +1,11 @@
+<p>
+    This is a maintenance release of Cytoscape Web which fixes a few bugs.
+</p>
+<div class="relase_details">
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2733</span>: Visual property "compoundTooltipText" does not work.</li>
+        <li><span class="bug_id">2754</span>: Some nodes are shown in incorrect position.</li>
+        <li><span class="bug_id">2766</span>: Error when importing XGMML files with XLinks.</li>
+        <li><span class="bug_id">2782</span>: Child nodes are drawn under edges.</li>
+    </ul>
+</div>
