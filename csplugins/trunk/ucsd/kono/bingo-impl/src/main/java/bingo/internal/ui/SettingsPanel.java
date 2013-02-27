@@ -228,6 +228,7 @@ public class SettingsPanel extends JPanel {
 	String namespace_label = "Select namespace:";
 	String ec_label = "Discard the following evidence codes:";
 	
+	private final CySwingAppAdapter adapter;
 
 	/**
 	 * This constructor creates the panel with its swing-components.
@@ -235,6 +236,7 @@ public class SettingsPanel extends JPanel {
 	public SettingsPanel(final String bingoDir, final CySwingAppAdapter adapter) {
 		super();
 		this.bingoDir = bingoDir;
+		this.adapter= adapter;
 
 		// Create a new bingo parameter set
 		try {
@@ -419,7 +421,7 @@ public class SettingsPanel extends JPanel {
 
 		// JTextField.
 		alphaField = new JTextField(bingo_props.getProperty("signif_def"));
-		nameField = new JTextField();
+		nameField = new JTextField("Test");
 
 		// OverUnderPanel
 		overUnderPanel = new OverUnderPanel();
@@ -468,7 +470,7 @@ public class SettingsPanel extends JPanel {
 		// the bingo-button to start the calculations.
 		bingoButton = new JButton("Start bingo");
 		bingoButton.setMnemonic(KeyEvent.VK_B);
-		//bingoButton.addActionListener(new SettingsPanelActionListener(params, this, adapter));
+		bingoButton.addActionListener(new SettingsPanelActionListener(params, this, adapter));
 	}
 
 	public TextOrGraphPanel getTextOrGraphPanel() {

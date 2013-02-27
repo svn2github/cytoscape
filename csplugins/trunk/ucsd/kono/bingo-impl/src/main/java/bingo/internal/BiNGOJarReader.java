@@ -66,12 +66,14 @@ public class BiNGOJarReader {
 		// null
 		// reference then we'll fall back to the class loader that loaded this
 		// class
-		URL url = getClass().getResource("/" + filename);
-		JarURLConnection juc = (JarURLConnection) url.openConnection();
-		JarFile jarFile = juc.getJarFile();
-		InputStream is = jarFile.getInputStream(jarFile.getJarEntry(filename));
-		reader = new InputStreamReader(is);
+//		URL url = getClass().getResource("/" + filename);
+//		JarURLConnection juc = (JarURLConnection) url.openConnection();
+//		JarFile jarFile = juc.getJarFile();
+//		InputStream is = jarFile.getInputStream(jarFile.getJarEntry(filename));
+		
+		InputStream is = getClass().getResourceAsStream("/data/"+filename);
 
+		reader = new InputStreamReader(is);
 	}
 	
 	

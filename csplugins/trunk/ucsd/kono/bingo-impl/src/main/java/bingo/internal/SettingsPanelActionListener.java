@@ -315,8 +315,8 @@ public class SettingsPanelActionListener implements ActionListener {
 		}
 	}
 
-	private String openResourceFile(String name) {
-		return getClass().getResource("/" + name).toString();
+	private String openResourceFile(String name) {	
+		return getClass().getResource("/data/"+name).toString();
 	}
 
 	public Set<String> conformize(Set<String> selection, Set<String> allNodes) {
@@ -354,7 +354,7 @@ public class SettingsPanelActionListener implements ActionListener {
 		final Set<CyNetwork> networkSet = adapter.getCyNetworkManager().getNetworkSet();
 		for (final CyNetwork network : networkSet) {
 			//final String title = network.getCyRow().get(CyNetwork.NAME, String.class);
-			final String title = network.getDefaultNetworkTable().getRow(network).get(CyNetwork.NAME, String.class);
+			final String title = network.getDefaultNetworkTable().getRow(network.getSUID()).get(CyNetwork.NAME, String.class);
 			
 			if (params.getCluster_name().equals(title)) {
 				JOptionPane.showMessageDialog(settingsPanel,
@@ -383,7 +383,7 @@ public class SettingsPanelActionListener implements ActionListener {
 				final List<CyNode> nodes = network.getNodeList();
 				for (CyNode node: nodes) {
 					//if (node.getCyRow().get(CyNetwork.SELECTED, Boolean.class) == true) {
-					if (network.getDefaultNodeTable().getRow(node).get(CyNetwork.SELECTED, Boolean.class) == true) {
+					if (network.getDefaultNodeTable().getRow(node.getSUID()).get(CyNetwork.SELECTED, Boolean.class) == true) {
 						selectedFound = true;
 						break;
 					}
@@ -595,9 +595,9 @@ public class SettingsPanelActionListener implements ActionListener {
 		// should be called again
 		if (params.getStatus() == false) {
 			AnnotationParser annParser = params.initializeAnnotationParser();
-			//TaskManager taskManager = adapter.getTaskManager();
-			System.out.println("Calling annotation parser...");
-			//taskManager.execute(new GenericTaskFactory(annParser));
+//			TaskManager taskManager = adapter.getTaskManager();
+			System.out.println("\nCalling annotation parser...");
+//			taskManager.execute(new GenericTaskFactory(annParser).createTaskIterator());
 			try {
 				annParser.calculate();
 			} catch (IOException e) {
@@ -643,12 +643,12 @@ public class SettingsPanelActionListener implements ActionListener {
 		final List<CyNode> nodes = network.getNodeList();
 		for (CyNode node: nodes) {
 			//if (node.getCyRow().get(CyNetwork.SELECTED, Boolean.class) == false)
-			if (network.getDefaultNodeTable().getRow(node).get(CyNetwork.SELECTED, Boolean.class) == false)
+			if (network.getDefaultNodeTable().getRow(node.getSUID()).get(CyNetwork.SELECTED, Boolean.class) == false)
 				continue;
 
 			// gets the canonical name of the given node from the attributes object
 			//final String canonicalName = node.getCyRow().get(CyNetwork.NAME, String.class);
-			final String canonicalName = network.getDefaultNodeTable().getRow(node).get(CyNetwork.NAME, String.class);
+			final String canonicalName = network.getDefaultNodeTable().getRow(node.getSUID()).get(CyNetwork.NAME, String.class);
 			
 //			String canonicalName = node.getIdentifier().toUpperCase();
 			if (canonicalName != null && canonicalName.length() != 0 && !canonicalNameVector.contains(canonicalName)) {

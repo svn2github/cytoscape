@@ -74,6 +74,11 @@ public class BiNGOOntologyFlatFileReader {
 
 	public BiNGOOntologyFlatFileReader(String filename) throws IllegalArgumentException, IOException, Exception {
 		this.filename = filename;
+		
+		if (filename.startsWith("bundle:")){
+			filename = filename.replaceFirst("bundle:", "jar:");
+		}
+		
 		try {
 			if (filename.trim().startsWith("jar:")) {
 				BiNGOJarReader reader = new BiNGOJarReader(filename);

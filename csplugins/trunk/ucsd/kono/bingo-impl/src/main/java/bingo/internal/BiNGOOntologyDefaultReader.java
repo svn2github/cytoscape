@@ -76,6 +76,11 @@ public class BiNGOOntologyDefaultReader {
 			IOException, Exception {
 		this.filename = filename;
 		this.synonymHash = synonymHash;
+		
+		if (filename.startsWith("bundle:")){
+			filename = filename.replaceFirst("bundle:", "jar:");
+		}
+		
 		try {
 			if (filename.trim().startsWith("jar:")) {
 				BiNGOJarReader reader = new BiNGOJarReader(filename);
