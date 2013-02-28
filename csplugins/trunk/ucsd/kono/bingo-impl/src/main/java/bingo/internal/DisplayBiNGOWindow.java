@@ -302,7 +302,7 @@ public class DisplayBiNGOWindow {
 		final CyNetworkFactory networkFactory = adapter.getCyNetworkFactory();
 		final CyNetwork network = networkFactory.createNetwork();
 		//network.getCyRow().set(CyNetwork.NAME, clusterName);
-		network.getDefaultNetworkTable().getRow(network).set(CyNetwork.NAME, clusterName);
+		network.getDefaultNetworkTable().getRow(network.getSUID()).set(CyNetwork.NAME, clusterName);
 		// CyNetwork network = Cytoscape.createNetwork(clusterName);
 
 		for (final Integer termID : set) {
@@ -349,7 +349,7 @@ public class DisplayBiNGOWindow {
 			if (node1 == null) {
 				node1 = network.addNode();
 				//node1.getCyRow().set(CyNetwork.NAME, firstTermId);
-				network.getDefaultNodeTable().getRow(node1).set(CyNetwork.NAME, firstTermId);
+				network.getDefaultNodeTable().getRow(node1.getSUID()).set(CyNetwork.NAME, firstTermId);
 				
 				nodeMap.put(firstTermId, node1);
 			}
@@ -362,16 +362,16 @@ public class DisplayBiNGOWindow {
 				if (node2 == null) {
 					node2 = network.addNode();
 					//node2.getCyRow().set(CyNetwork.NAME, secondTermId);
-					network.getDefaultNodeTable().getRow(node2).set(CyNetwork.NAME, secondTermId);
+					network.getDefaultNodeTable().getRow(node2.getSUID()).set(CyNetwork.NAME, secondTermId);
 					
 					nodeMap.put(secondTermId, node2);
 				}
 
 				final CyEdge edge = network.addEdge(node1, node2, true);
 				//edge.getCyRow().set(CyEdge.INTERACTION, "pp");
-				network.getDefaultEdgeTable().getRow(edge).set(CyEdge.INTERACTION, "pp");
+				network.getDefaultEdgeTable().getRow(edge.getSUID()).set(CyEdge.INTERACTION, "pp");
 				//edge.getCyRow().set(CyNetwork.NAME, firstTermId + " (pp) " + secondTermId);
-				network.getDefaultEdgeTable().getRow(edge).set(CyNetwork.NAME, firstTermId + " (pp) " + secondTermId);
+				network.getDefaultEdgeTable().getRow(edge.getSUID()).set(CyNetwork.NAME, firstTermId + " (pp) " + secondTermId);
 			}
 		}
 		nodeMap.clear();
