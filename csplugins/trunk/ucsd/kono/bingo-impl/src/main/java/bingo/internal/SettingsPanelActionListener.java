@@ -596,7 +596,7 @@ public class SettingsPanelActionListener implements ActionListener {
 		if (params.getStatus() == false) {
 			AnnotationParser annParser = params.initializeAnnotationParser();
 //			TaskManager taskManager = adapter.getTaskManager();
-			System.out.println("\nCalling annotation parser...");
+//			System.out.println("\nCalling annotation parser...");
 //			taskManager.execute(new GenericTaskFactory(annParser).createTaskIterator());
 			try {
 				annParser.calculate();
@@ -607,7 +607,7 @@ public class SettingsPanelActionListener implements ActionListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("Calling annotation parser...DONE!!");
+//			System.out.println("Calling annotation parser...DONE!!");
 			if (annParser.getStatus()) {
 				params.setAnnotation(annParser.getAnnotation());
 				params.setOntology(annParser.getOntology());

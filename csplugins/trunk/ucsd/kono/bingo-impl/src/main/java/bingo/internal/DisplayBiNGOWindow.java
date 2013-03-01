@@ -78,7 +78,7 @@ import bingo.internal.ui.ColorPanel;
 
 public class DisplayBiNGOWindow {
 
-	private static final String[] NODE_COL_NAMES = { "pValue", "adjustedPValue", "x", "X", "n", "N", "description",
+	private static final String[] NODE_COL_NAMES = { "pValue", "adjustedPValue", "xx", "X", "nn", "N", "description",
 			"nodeFillColor", "nodeSize", "nodeType", "nodeFontSize" };
 
 	/**
@@ -272,7 +272,7 @@ public class DisplayBiNGOWindow {
 			
 			taskMonitor.setProgress(1.0);
 			taskMonitor.setStatusMessage("Network view successfully create for:  "
-					+ network.getDefaultNetworkTable().getRow(network));
+					+ network.getDefaultNetworkTable().getRow(network.getSUID()));
 		}
 	}
 
@@ -508,12 +508,12 @@ public class DisplayBiNGOWindow {
 			//node.getCyRow().set("nodeType_" + clusterName, shape);
 			//node.getCyRow().set("nodeFontSize_" + clusterName, 14);
 			
-			CyRow row = network.getDefaultNodeTable().getRow(node); 			
+			CyRow row = network.getDefaultNodeTable().getRow(node.getSUID()); 			
 			row.set("pValue_" + clusterName, pValue);
 			row.set("adjustedPValue_" + clusterName, adj_pValue);
-			row.set("x_" + clusterName, smallX);
+			row.set("xx_" + clusterName, smallX);
 			row.set("X_" + clusterName, bigX);
-			row.set("n_" + clusterName, smallN);
+			row.set("nn_" + clusterName, smallN);
 			row.set("N_" + clusterName, bigN);
 			row.set("description_" + clusterName, description);
 			row.set("nodeFillColor_" + clusterName, color);
@@ -549,7 +549,7 @@ public class DisplayBiNGOWindow {
 		final List<CyEdge> edgeList = network.getEdgeList();
 		for (final CyEdge edge : edgeList) {
 			//edge.getCyRow().set("edgeType_" + clusterName, "black");
-			network.getDefaultEdgeTable().getRow(edge).set("edgeType_" + clusterName, "black");
+			network.getDefaultEdgeTable().getRow(edge.getSUID()).set("edgeType_" + clusterName, "black");
 		}
 	}
 }
