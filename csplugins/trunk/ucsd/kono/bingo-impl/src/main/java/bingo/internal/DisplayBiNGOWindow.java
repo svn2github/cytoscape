@@ -416,7 +416,7 @@ public class DisplayBiNGOWindow {
 		final List<CyNode> nodeList = network.getNodeList();
 		for (final CyNode node : nodeList) {
 			//String termID = node.getCyRow().get(CyNetwork.NAME, String.class);
-			String termID =  network.getDefaultNodeTable().getRow(node).get(CyNetwork.NAME, String.class);
+			String termID =  network.getDefaultNodeTable().getRow(node.getSUID()).get(CyNetwork.NAME, String.class);
 			String shape;
 			String description;
 			String pValue;
