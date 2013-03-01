@@ -58,7 +58,7 @@ import bingo.internal.ontology.OntologyTerm;
  * *************************************************************
  */
 
-public class AnnotationParser {
+public class AnnotationParser  {
 
 	/**
 	 * constant string for the loadcorrect of the filechooser.
@@ -124,7 +124,7 @@ public class AnnotationParser {
 	}
 
 	private String openResourceFile(String name) {
-		return getClass().getResource("/" + name).toString();
+		return getClass().getResource("/data/" + name).toString();
 	}
 
 	/**
@@ -263,7 +263,7 @@ public class AnnotationParser {
 	 * 
 	 * @return string string with either loadcorrect or a parsing error.
 	 */
-	public String setCustomAnnotation() {
+	private String setCustomAnnotation() {
 
 		String fileString = params.getAnnotationFile();
 		annotation = null;
@@ -325,7 +325,7 @@ public class AnnotationParser {
 	 * 
 	 * @return string string with either loadcorrect or a parsing error.
 	 */
-	public String setDefaultAnnotation() {
+	private String setDefaultAnnotation() {
 
 		String fileString = params.getAnnotationFile();
 		annotation = null;
@@ -360,7 +360,7 @@ public class AnnotationParser {
 	 * 
 	 * @return string string with either loadcorrect or a parsing error.
 	 */
-	public String setCustomOntology() {
+	private String setCustomOntology() {
 
 		String fileString = params.getOntologyFile();
 		String namespace = params.getNameSpace();
@@ -412,7 +412,7 @@ public class AnnotationParser {
 	 * @return string string with either loadcorrect or a parsing error.
 	 */
 
-	public String setDefaultOntology(Map synonymHash) {
+	private String setDefaultOntology(Map synonymHash) {
 
 		String fileString = params.getOntologyFile().toString();
 		ontology = null;
@@ -440,11 +440,11 @@ public class AnnotationParser {
 	 * 
 	 * @return string string with either loadcorrect or a parsing error.
 	 */
-	public String setFullOntology() {
+	private String setFullOntology() {
 		fullOntology = null;
 		synonymHash = null;
 		String resultString = "";
-
+		
 		if (params.getOntologyFile().endsWith(".obo")) {
 			// read full ontology.
 			try {
@@ -489,7 +489,7 @@ public class AnnotationParser {
 
 	}
 
-	public void checkOntology(Ontology ontology) throws IOException {
+	private void checkOntology(Ontology ontology) throws IOException {
 		HashMap ontMap = ontology.getTerms();
 		Iterator it = ontMap.keySet().iterator();
 		while (it.hasNext()) {
@@ -506,7 +506,7 @@ public class AnnotationParser {
 	 * @throws InterruptedException
 	 */
 
-	public Annotation remap(Annotation annotation, Ontology ontology, Set<String> genes) throws InterruptedException {
+	private Annotation remap(Annotation annotation, Ontology ontology, Set<String> genes) throws InterruptedException {
 		Annotation parsedAnnotation = new Annotation(annotation.getSpecies(), annotation.getType(),
 				annotation.getCurator());
 		HashMap annMap = annotation.getMap();
@@ -570,7 +570,7 @@ public class AnnotationParser {
 	 * @throws InterruptedException
 	 */
 
-	public Annotation customRemap(Annotation annotation, Ontology ontology, Set<String> genes)
+	private Annotation customRemap(Annotation annotation, Ontology ontology, Set<String> genes)
 			throws InterruptedException {
 		Annotation parsedAnnotation = new Annotation(annotation.getSpecies(), annotation.getType(),
 				annotation.getCurator());
@@ -631,7 +631,7 @@ public class AnnotationParser {
 	 * method for recursing through tree to root
 	 */
 
-	public void up(String node, int id, Annotation parsedAnnotation, Ontology ontology, Ontology flOntology) {
+	private void up(String node, int id, Annotation parsedAnnotation, Ontology ontology, Ontology flOntology) {
 		OntologyTerm child = flOntology.getTerm(id);
 		int[] parents = child.getParentsAndContainers();
 		for (int t = 0; t < parents.length; t++) {
@@ -653,7 +653,7 @@ public class AnnotationParser {
 	 * @throws IOException
 	 */
 
-	public void up_go(int startID, int id, Ontology ontology) throws IOException {
+	private void up_go(int startID, int id, Ontology ontology) throws IOException {
 		OntologyTerm child = ontology.getTerm(id);
 		int[] parents = child.getParentsAndContainers();
 		for (int t = 0; t < parents.length; t++) {
@@ -685,7 +685,7 @@ public class AnnotationParser {
 		return ontology;
 	}
 
-	public Map getAlias() {
+	public Map getAlias() {		
 		return alias;
 	}
 
@@ -696,7 +696,7 @@ public class AnnotationParser {
 	public boolean getOrphans() {
 		return orphansFound;
 	}
-
+	
 	/**
 	 * @return the parser status : true if OK, false if something's wrong
 	 */
