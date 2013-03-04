@@ -63,20 +63,22 @@ import bingo.internal.ui.SettingsPanel;
 
 public class BiNGOplugin extends AbstractCySwingApp {
 
-	private static final String CURRENT_WORKING_DIRECTORY = "user.dir";
-	private static final String MENU_NAME = "Start bingo Plugin";
-	private static final String MENU_CATEGORY = "Tools";
-	
-	private static final String WINDOW_TITLE = "bingo Settings";
-
-
-	private String bingoDir;
+//	private static final String CURRENT_WORKING_DIRECTORY = "user.dir";
+//	private static final String MENU_NAME = "Start bingo Plugin";
+//	private static final String MENU_CATEGORY = "Tools";
+//	
+//	private static final String WINDOW_TITLE = "bingo Settings";
+//
+//
+//	private String bingoDir;
 
 	public BiNGOplugin(final CySwingAppAdapter adapter) {
 		super(adapter);
 
-		adapter.getCySwingApplication().addAction(new BingoPluginAction(adapter));
-		String cwd = System.getProperty(CURRENT_WORKING_DIRECTORY);
-		bingoDir = new File(cwd, "plugins").toString();		
+//		//Note: this class is NOT used, it was used as simple App only. 		
+
+//		adapter.getCySwingApplication().addAction(new BingoPluginAction(adapter));
+//		String cwd = System.getProperty(CURRENT_WORKING_DIRECTORY);
+//		bingoDir = new File(cwd, "plugins").toString();		
 	}
 }

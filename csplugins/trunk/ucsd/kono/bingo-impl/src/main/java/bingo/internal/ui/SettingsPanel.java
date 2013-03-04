@@ -52,6 +52,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.cytoscape.app.swing.CySwingAppAdapter;
+import org.cytoscape.util.swing.OpenBrowser;
 
 import bingo.internal.BingoAlgorithm;
 import bingo.internal.BingoParameters;
@@ -229,14 +230,16 @@ public class SettingsPanel extends JPanel {
 	String ec_label = "Discard the following evidence codes:";
 	
 	private final CySwingAppAdapter adapter;
+	private final OpenBrowser openBrowserService;
 
 	/**
 	 * This constructor creates the panel with its swing-components.
 	 */
-	public SettingsPanel(final String bingoDir, final CySwingAppAdapter adapter) {
+	public SettingsPanel(final String bingoDir, final CySwingAppAdapter adapter, OpenBrowser openBrowserService) {
 		super();
 		this.bingoDir = bingoDir;
 		this.adapter= adapter;
+		this.openBrowserService = openBrowserService;
 
 		// Create a new bingo parameter set
 		try {
@@ -404,7 +407,7 @@ public class SettingsPanel extends JPanel {
 
 		helpButton = new JButton("Help");
 		helpButton.setMnemonic(KeyEvent.VK_H);
-		helpButton.addActionListener(new HelpButtonActionListener(this));
+		helpButton.addActionListener(new HelpButtonActionListener(this, openBrowserService));
 
 		saveSettingsButton = new JButton("Save settings as default");
 		saveSettingsButton.setMnemonic(KeyEvent.VK_S);

@@ -36,6 +36,9 @@ package bingo.internal;
 
 import javax.swing.*;
 
+import org.cytoscape.app.swing.CySwingAppAdapter;
+import org.cytoscape.util.swing.OpenBrowser;
+
 import bingo.internal.ui.SettingsPanel;
 
 
@@ -61,13 +64,17 @@ public class HelpButtonActionListener implements ActionListener {
     FIELD.
     --------------------------------------------------------------*/
     private SettingsPanel settingsPanel;
+    //private final CySwingAppAdapter adapter;
+    private final OpenBrowser openBrowserService;
 
     /*--------------------------------------------------------------
        CONSTRUCTOR.
     --------------------------------------------------------------*/
 
-    public HelpButtonActionListener(SettingsPanel settingsPanel) {
+    public HelpButtonActionListener(SettingsPanel settingsPanel, OpenBrowser openBrowserService) {
         this.settingsPanel = settingsPanel;
+        //this.adapter = adapter;
+        this.openBrowserService = openBrowserService;
 
     }
 
@@ -85,13 +92,15 @@ public class HelpButtonActionListener implements ActionListener {
         /*JOptionPane.showMessageDialog(settingsPanel,
                                           "For help, see website \n" +
                                           "http://www.psb.ugent.be/cbd/papers/bingo");*/
-        try {
-            //Browser link = new Browser() ;
-            Browser.init();
-            Browser.displayURL("http://www.psb.ugent.be/cbd/papers/bingo");
-        }
-        catch (IOException ee) {
-            JOptionPane.showMessageDialog(settingsPanel, "Could not open website :" + ee);
-        }
+//        try {
+//            //Browser link = new Browser() ;
+//            Browser.init();
+//            Browser.displayURL("http://www.psb.ugent.be/cbd/papers/bingo");
+//        }
+//        catch (IOException ee) {
+//            JOptionPane.showMessageDialog(settingsPanel, "Could not open website :" + ee);
+//        }
+       	this.openBrowserService.openURL("http://www.psb.ugent.be/cbd/papers/BiNGO");
+        
     }
 }

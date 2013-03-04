@@ -80,7 +80,7 @@ public class ZSelectNodes implements ActionListener {
 			final List<CyNode> nodes = model.getNodeList();
 			for (final CyNode node : nodes){
 				//node.getCyRow().set(CyNetwork.SELECTED, false);
-				model.getDefaultNodeTable().getRow(node).set(CyNetwork.SELECTED, false);
+				model.getDefaultNodeTable().getRow(node.getSUID()).set(CyNetwork.SELECTED, false);
 				
 			}
 			final Set<CyNode> selectedNodesSet = new HashSet<CyNode>();
@@ -93,7 +93,7 @@ public class ZSelectNodes implements ActionListener {
 					
 					final CyNode node = nodeView.getModel();
 					//final String nodeName = node.getCyRow().get(CyNetwork.NAME, String.class);
-					final String nodeName = currentNetwork.getDefaultNodeTable().getRow(node).get(CyNetwork.NAME, String.class);
+					final String nodeName = currentNetwork.getDefaultNodeTable().getRow(node.getSUID()).get(CyNetwork.NAME, String.class);
 					
 					Set identifiers = alias.get(nodeName);
 					if (identifiers != null) {
@@ -122,7 +122,7 @@ public class ZSelectNodes implements ActionListener {
 
 				for(final CyNode node: selectedNodesSet){
 					//node.getCyRow().set(CyNetwork.SELECTED, true);
-					currentNetwork.getDefaultNodeTable().getRow(node).set(CyNetwork.SELECTED, true);
+					currentNetwork.getDefaultNodeTable().getRow(node.getSUID()).set(CyNetwork.SELECTED, true);
 				}
 
 				adapter.getCyEventHelper().flushPayloadEvents();

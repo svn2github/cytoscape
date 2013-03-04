@@ -777,7 +777,7 @@ public class SettingsPanelActionListener implements ActionListener {
 		for (CyNode node: nodes) {
 			// gets the canonical name of the given node from the attributes object
 			//String canonicalName = node.getCyRow().get(CyNetwork.NAME, String.class);
-			String canonicalName = network.getDefaultNodeTable().getRow(node).get(CyNetwork.NAME, String.class);
+			String canonicalName = network.getDefaultNodeTable().getRow(node.getSUID()).get(CyNetwork.NAME, String.class);
 			
 			if (canonicalName != null && (canonicalName.length() != 0) && !canonicalNameVector.contains(canonicalName)) {
 				if (mapNames.contains(params.getAlias().get(canonicalName))) {

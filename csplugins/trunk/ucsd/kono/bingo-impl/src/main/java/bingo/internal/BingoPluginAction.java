@@ -5,6 +5,8 @@ import java.io.File;
 import javax.swing.JFrame;
 import org.cytoscape.app.swing.CySwingAppAdapter;
 import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.util.swing.OpenBrowser;
+
 import bingo.internal.ui.SettingsPanel;
 
 
@@ -15,13 +17,15 @@ public class BingoPluginAction extends AbstractCyAction {
 	private static final String MENU_CATEGORY = "Tools";
 	private static final String WINDOW_TITLE = "bingo Settings";
 	private final CySwingAppAdapter adapter;
+	private final OpenBrowser openBrowserService;
 	private String bingoDir;
 	private static final long serialVersionUID = 4190390703299860130L;
 
 	// The constructor sets the text that should appear on the menu item.
-	public BingoPluginAction(final CySwingAppAdapter adapter) {
+	public BingoPluginAction(final CySwingAppAdapter adapter, final OpenBrowser openBrowserService) {
 		super(MENU_NAME);
 		this.adapter = adapter;
+		this.openBrowserService = openBrowserService;
 		setPreferredMenu(MENU_CATEGORY);
 		
 		String cwd = System.getProperty(CURRENT_WORKING_DIRECTORY);
@@ -37,7 +41,7 @@ public class BingoPluginAction extends AbstractCyAction {
 	 */
 	public void actionPerformed(ActionEvent event) {
 		final JFrame window = new JFrame(WINDOW_TITLE);
-		final SettingsPanel settingsPanel = new SettingsPanel(bingoDir, (CySwingAppAdapter)adapter);
+		final SettingsPanel settingsPanel = new SettingsPanel(bingoDir, (CySwingAppAdapter)adapter, openBrowserService);
 		window.getContentPane().add(settingsPanel);
 		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		window.pack();
