@@ -424,7 +424,7 @@ public class SettingsPanel extends JPanel {
 
 		// JTextField.
 		alphaField = new JTextField(bingo_props.getProperty("signif_def"));
-		nameField = new JTextField("Test");
+		nameField = new JTextField("");
 
 		// OverUnderPanel
 		overUnderPanel = new OverUnderPanel();
