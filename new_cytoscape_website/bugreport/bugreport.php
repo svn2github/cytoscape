@@ -90,6 +90,8 @@ else {
 		submitNewBug2Remine( $bugReport, $submitResult1);
 		
 		$bug_id_redmine = getBugID_redmine(); 
+
+		addReporter2BugWatch($bug_id_redmine, $bugReport['email']);
 		
 		sendNotificationEmail($bugReport, $bug_id_redmine);
 	} 
@@ -104,6 +106,21 @@ else {
 
 
 <?php 
+
+function addReporter2BugWatch($bug_id_redmine, $reporterEmail){
+
+	$url = "http://code.cytoscape.org/redmine/issues/".$bug_id_redmine."/add_cc?email=".$reporterEmail."&key=e0ea356348ee0786edd64a56bb3a87eb8a07b082";
+
+	$ch = curl_init($url);
+	$fp = fopen("_addReporter2bugWatch.txt", "w");
+
+	curl_setopt($ch, CURLOPT_FILE, $fp);
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+
+	curl_exec($ch);
+	curl_close($ch);
+	fclose($fp);
+}
 
 function isEmailInBlackList($email) {
 
@@ -153,7 +170,7 @@ function submitNewBug2Remine( $bugReport, $submitResult) {
 		$description = $description."\\n\\n\\nAttached file is at ".$submitResult."\\n\\n\\n";
 	}
 
-	$description = $description.'\\n\\n\\nReported by: '.$bugReport['name'].'\nE-mail: '.$bugReport['email'];
+	$description = $description.'\\n\\n\\nReported by: '.$bugReport['name']; //.'\nE-mail: '.$bugReport['email'];
 		
 	$json = 	
 		"{
@@ -176,16 +193,17 @@ function submitNewBug2Remine( $bugReport, $submitResult) {
 
 // To prevent JSON injection attack
 function clean_unwanted_characters($oneStr){
-	$cleaned_str = str_ireplace("\"", "/", $oneStr);
-	$cleaned_str = str_ireplace("\\", "/", $cleaned_str);
-	$cleaned_str = str_ireplace("\\b", " ", $cleaned_str);
-	$cleaned_str = str_ireplace("\\f", " / ", $cleaned_str);
-	$cleaned_str = str_ireplace("\\r", " / ", $cleaned_str);
-	$cleaned_str = str_ireplace("\t", "  ", $cleaned_str);
-	$cleaned_str = str_ireplace("\\u", " ", $cleaned_str);
-	$cleaned_str = str_ireplace("</", "<\/", $cleaned_str);
-
+	$cleaned_str = $oneStr;
+// 	$cleaned_str = str_ireplace("\"", "/", $oneStr);
+// 	$cleaned_str = str_ireplace("\\", "/", $cleaned_str);
+// 	$cleaned_str = str_ireplace("\\b", " ", $cleaned_str);
+// 	$cleaned_str = str_ireplace("\\f", " / ", $cleaned_str);
+// 	$cleaned_str = str_ireplace("\\r", " / ", $cleaned_str);
+// 	$cleaned_str = str_ireplace("\t", "  ", $cleaned_str);
+// 	$cleaned_str = str_ireplace("\\u", " ", $cleaned_str);
+// 	$cleaned_str = str_ireplace("</", "<\/", $cleaned_str);
 	return $cleaned_str;
+
 }
 
 
