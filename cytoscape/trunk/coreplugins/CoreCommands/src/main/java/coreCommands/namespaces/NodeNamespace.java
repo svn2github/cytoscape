@@ -155,10 +155,13 @@ public class NodeNamespace extends AbstractGraphObjectHandler {
 		} else if (SELECT.equals(command)) {
 			CyNetwork net = getNetwork(command, args);
 			List<CyNode> nodeList = getNodeList(net, result, args);
-			if (nodeList == null)
-				throw new CyCommandException("node: nothing to select");
-			net.setSelectedNodeState(nodeList, true);
-			result.addMessage("node: selected "+nodeList.size()+" nodes");
+			if (nodeList == null) {
+				net.selectAllNodes();
+				result.addMessage("node: selected all nodes");
+			} else {
+				net.setSelectedNodeState(nodeList, true);
+				result.addMessage("node: selected "+nodeList.size()+" nodes");
+			}
 			if (net == Cytoscape.getCurrentNetwork()) {
 				Cytoscape.getCurrentNetworkView().updateView();
 			}
@@ -166,18 +169,14 @@ public class NodeNamespace extends AbstractGraphObjectHandler {
 		// de-select some ndoes
 		} else if (DESELECT.equals(command)) {
 			CyNetwork net = getNetwork(command, args);
-			try {
-				List<CyNode> nodeList = getNodeList(net, result, args);
-				if (nodeList == null)
-					throw new CyCommandException("node: nothing to deselect");
-
-				net.setSelectedNodeState(nodeList, false);
-				result.addMessage("node: deselected "+nodeList.size()+" nodes");
-			} catch (CyCommandException e) {
-				// deselect everything
+			List<CyNode> nodeList = getNodeList(net, result, args);
+			if (nodeList == null) {
 				net.unselectAllNodes();
 				result.addMessage("node: deselected all nodes");
-			} 
+			} else {
+				net.setSelectedNodeState(nodeList, false);
+				result.addMessage("node: deselected "+nodeList.size()+" nodes");
+			}
 
 			if (net == Cytoscape.getCurrentNetwork()) {
 				Cytoscape.getCurrentNetworkView().updateView();
