@@ -69,9 +69,9 @@ import chemViz.ui.CompoundPopup;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.smiles.SmilesGenerator;
 
-import tools.mcss.JobType;
-import tools.mcss.MCSS;
-import tools.mcss.TaskUpdater;
+import org.openscience.smsd.mcss.JobType;
+import org.openscience.smsd.mcss.MCSS;
+import org.openscience.smsd.mcss.TaskUpdater;
 
 /**
  * The CreateCompoundsTask fetches all of the compounds defined by the
@@ -165,22 +165,16 @@ public class CreateMCSSTask extends AbstractCompoundTask implements TaskUpdater 
 		int nThreads = Runtime.getRuntime().availableProcessors()-1;
 		if (maxThreads > 0) nThreads = maxThreads;
 
-		List<IAtomContainer> mcssList = Collections.synchronizedList(new ArrayList<IAtomContainer>(compoundList.size()));
+		List<IAtomContainer> targetList = Collections.synchronizedList(new ArrayList<IAtomContainer>(compoundList.size()));
 		for (Compound c: compoundList) {
 			if (c.getIAtomContainer() != null)
-				mcssList.add(c.getIAtomContainer());
+				targetList.add(c.getIAtomContainer());
 		}
 
-		int pass = 0;
-		while (mcssList.size() > 1) {
-			MCSS mcssJob = new MCSS(mcssList, JobType.MCS, this, nThreads);
-			mcssList = mcssJob.getCalculateMCSS();
-			// System.out.println("calculateMCSS returns "+mcssList.size()+" structures");
-			pass++;
-			if (canceled) break;
-		}
-		if (mcssList.size() == 1)
-			mcss = (IAtomContainer)mcssList.get(0);
+		MCSS mcssJob = new MCSS(targetList, JobType.SINGLE, this, nThreads);
+		Collection<IAtomContainer> calculatedMCSS = mcssJob.getCalculateMCSS();
+		if (calculatedMCSS != null && calculatedMCSS.size() == 1)
+			mcss = calculatedMCSS.iterator().next();
 
 		long endCalcTime = Calendar.getInstance().getTimeInMillis();
 		setStatus("Done. Total time: "+(endCalcTime-startTime)+"ms");
