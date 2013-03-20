@@ -20,9 +20,9 @@ $mode = 'new'; // by default it is 'new'
 // If bugid is provided through URL, it is in edit mode
 $bugid = getBugID($_GET, $_POST);
 
-if ($bugid != NULL && $bugid != 0) {
-	$mode = 'edit';
-}
+// if ($bugid != NULL && $bugid != 0) {
+// 	$mode = 'edit';
+// }
 
 $pageTitle = getPageTitle($mode);
 
@@ -44,9 +44,9 @@ $connection = getDBConnection($mode);
 $bugReport = NULL;
 
 // Case for 'edit', pull data out of DB for the given bugID
-if (($tried == NULL) && ($mode == 'edit')) {
-	$bugReport = getBugReport($connection);	
-}
+// if (($tried == NULL) && ($mode == 'edit')) {
+// 	$bugReport = getBugReport($connection);	
+// }
 
 // Remember the form data. If form validation failed, these data will
 // be used to fill the refreshed form. If pass, they will be saved into
@@ -74,25 +74,26 @@ else {
 	// if mode = 'Edit', update the bug info in bugs DB
 
 	// In case of edit, do updating
-	if ($mode == 'edit') {
-		updateBug($connection, $bugReport);
-	}
+// 	if ($mode == 'edit') {
+// 		updateBug($connection, $bugReport);
+// 	}
 	
 	if ($mode == 'new') {
 		
 		// check if the email is in black list
-		if (isEmailInBlackList($bugReport['email'])) {
-			return;
-		}
+// 		if (isEmailInBlackList($bugReport['email'])) {
+// 			return;
+// 		}
 		
 		//process the data and Save the data into DB.		
-		$submitResult1 = submitNewBug($connection, $bugReport);
-		submitNewBug2Remine( $bugReport, $submitResult1);
+		//$submitResult1 = submitNewBug($connection, $bugReport);
+		//submitNewBug2Remine( $bugReport, $submitResult1);
 		
+		$attachedFileURL = loadAttachment2DB($connection, $bugReport);
+				
+		submitNewBug2Remine( $bugReport, $attachedFileURL);		
 		$bug_id_redmine = getBugID_redmine(); 
-
-		addReporter2BugWatch($bug_id_redmine, $bugReport['email']);
-		
+		addReporter2BugWatch($bug_id_redmine, $bugReport['email']);		
 		sendNotificationEmail($bugReport, $bug_id_redmine);
 	} 
 }
@@ -104,8 +105,40 @@ else {
 ?>
 
 
-
 <?php 
+
+function loadAttachment2DB($connection, $bugReport){
+	$attachedFileURL = null;
+
+	// load attached file
+	$file_auto_id = null;
+
+	if ($bugReport['attachedFiles'] != NULL && $bugReport['attachedFiles']['name'] != NULL){
+
+		$name = mysql_real_escape_string($bugReport['attachedFiles']['name']);
+		$type = $bugReport['attachedFiles']['type'];
+		$md5 = $bugReport['attachedFiles']['md5'];
+		$content = $bugReport['attachedFiles']['fileContent'];
+
+		$dbQuery = "INSERT INTO attached_files VALUES ";
+		$dbQuery .= "(0, '$name', '$type', '$content', '$md5')";
+		// Run the query
+		if (!(@ mysql_query($dbQuery, $connection)))
+			showerror();
+
+		$file_auto_id = mysql_insert_id($connection);
+	}
+
+	if ($file_auto_id != null){
+		// There are attachment in this bug report
+		$attachedFileURL = "http://chianti.ucsd.edu/cyto_web/bugreport/attachedFiledownload.php?file_id=".$file_auto_id;
+	}
+
+	return $attachedFileURL;
+}
+
+
+
 
 function addReporter2BugWatch($bug_id_redmine, $reporterEmail){
 
@@ -122,19 +155,19 @@ function addReporter2BugWatch($bug_id_redmine, $reporterEmail){
 	fclose($fp);
 }
 
-function isEmailInBlackList($email) {
+// function isEmailInBlackList($email) {
 
-	$file_handle = fopen("_blacklist_email.txt", "r");
-	while (!feof($file_handle)) {
-		$line = trim(fgets($file_handle));
+// 	$file_handle = fopen("_blacklist_email.txt", "r");
+// 	while (!feof($file_handle)) {
+// 		$line = trim(fgets($file_handle));
 
-		if(strcasecmp($email, $line) == 0){
-			return true;
-		}
-	}
-	fclose($file_handle);
-	return false;
-}
+// 		if(strcasecmp($email, $line) == 0){
+// 			return true;
+// 		}
+// 	}
+// 	fclose($file_handle);
+// 	return false;
+// }
 
 function isIPAddressInBlackList(){
 	
@@ -219,128 +252,128 @@ function isUserInputValid($userInput) {
 }
 
 
-function updateBug($connection, $bugReport){
-	echo "<br>Entering updateBug() ....<br>";
-}
+// function updateBug($connection, $bugReport){
+// 	echo "<br>Entering updateBug() ....<br>";
+// }
 
 
 // This is a security check, restrict number of bugs a user can submit within a day
-function getReportCountToday($connection, $bugReport) {
+// function getReportCountToday($connection, $bugReport) {
 
-	$bugCount = 0;
+// 	$bugCount = 0;
 	
-	$ip = $bugReport['ip_address'];
+// 	$ip = $bugReport['ip_address'];
 
-	$query = "Select bug_auto_id from bugs where ip_address='$ip'  and sysdat > DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
+// 	$query = "Select bug_auto_id from bugs where ip_address='$ip'  and sysdat > DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
 	
-	// Run the query
-	if (!($result = @ mysql_query($query, $connection)))
-		showerror();
+// 	// Run the query
+// 	if (!($result = @ mysql_query($query, $connection)))
+// 		showerror();
 				
-	$bugCount =mysql_num_rows($result);	
+// 	$bugCount =mysql_num_rows($result);	
 
-	return $bugCount;
-}
+// 	return $bugCount;
+// }
 
 
-function submitNewBug($connection, $bugReport){
+// function submitNewBug($connection, $bugReport){
 	
-	$bugCount = getReportCountToday($connection, $bugReport);
+// 	$bugCount = getReportCountToday($connection, $bugReport);
 	
-	if ($bugCount > 50){
-		echo "<br><br>Sorry, you report is rejected, because you can not report more than 50 bugs within 24 hours.<br><br>";
+// 	if ($bugCount > 50){
+// 		echo "<br><br>Sorry, you report is rejected, because you can not report more than 50 bugs within 24 hours.<br><br>";
 	
-		return;
-	}
+// 		return;
+// 	}
 	
-	// Step 1: load attached file
-	$file_auto_id = null;
-	// Load attached files first
-	if ($bugReport['attachedFiles'] != NULL && $bugReport['attachedFiles']['name'] != NULL){
+// 	// Step 1: load attached file
+// 	$file_auto_id = null;
+// 	// Load attached files first
+// 	if ($bugReport['attachedFiles'] != NULL && $bugReport['attachedFiles']['name'] != NULL){
 				
-		$name = mysql_real_escape_string($bugReport['attachedFiles']['name']);
-		$type = $bugReport['attachedFiles']['type'];
-		$md5 = $bugReport['attachedFiles']['md5'];
-		$content = $bugReport['attachedFiles']['fileContent'];
+// 		$name = mysql_real_escape_string($bugReport['attachedFiles']['name']);
+// 		$type = $bugReport['attachedFiles']['type'];
+// 		$md5 = $bugReport['attachedFiles']['md5'];
+// 		$content = $bugReport['attachedFiles']['fileContent'];
 		
-		$dbQuery = "INSERT INTO attached_files VALUES ";
-		$dbQuery .= "(0, '$name', '$type', '$content', '$md5')";
-		// Run the query
-		if (!(@ mysql_query($dbQuery, $connection)))
-			showerror();
+// 		$dbQuery = "INSERT INTO attached_files VALUES ";
+// 		$dbQuery .= "(0, '$name', '$type', '$content', '$md5')";
+// 		// Run the query
+// 		if (!(@ mysql_query($dbQuery, $connection)))
+// 			showerror();
 
-		$file_auto_id = mysql_insert_id($connection);
-	}
+// 		$file_auto_id = mysql_insert_id($connection);
+// 	}
 
-	// Step 2: get the reporter id
-	$reporter_auto_id = null;
-	// Check if the reporter already existed in table 'reporter'
-	$dbQuery = "SELECT reporter_auto_id FROM reporter WHERE email ='" .mysql_real_escape_string($bugReport['email'])."'";
-	// Run the query
-	if (!($result = @ mysql_query($dbQuery, $connection)))
-		showerror();
+// 	// Step 2: get the reporter id
+// 	$reporter_auto_id = null;
+// 	// Check if the reporter already existed in table 'reporter'
+// 	$dbQuery = "SELECT reporter_auto_id FROM reporter WHERE email ='" .mysql_real_escape_string($bugReport['email'])."'";
+// 	// Run the query
+// 	if (!($result = @ mysql_query($dbQuery, $connection)))
+// 		showerror();
 
-	if (@ mysql_num_rows($result) != 0) {
-		// the reporter already existed
-			$the_row = @ mysql_fetch_array($result);
-			$reporter_auto_id = $the_row['reporter_auto_id'];
-	}
+// 	if (@ mysql_num_rows($result) != 0) {
+// 		// the reporter already existed
+// 			$the_row = @ mysql_fetch_array($result);
+// 			$reporter_auto_id = $the_row['reporter_auto_id'];
+// 	}
 
-	// the reporter is new, add it to DB
-	if ($reporter_auto_id == null){
-		// Insert a row into table reporter
-		$dbQuery = "INSERT INTO reporter (name, email) Values ('".mysql_real_escape_string($bugReport['name'])."','".mysql_real_escape_string($bugReport['email'])."')";		
-		// Run the query
-		if (!(@ mysql_query($dbQuery, $connection)))
-			showerror();
-		$reporter_auto_id = mysql_insert_id($connection);
-	}
+// 	// the reporter is new, add it to DB
+// 	if ($reporter_auto_id == null){
+// 		// Insert a row into table reporter
+// 		$dbQuery = "INSERT INTO reporter (name, email) Values ('".mysql_real_escape_string($bugReport['name'])."','".mysql_real_escape_string($bugReport['email'])."')";		
+// 		// Run the query
+// 		if (!(@ mysql_query($dbQuery, $connection)))
+// 			showerror();
+// 		$reporter_auto_id = mysql_insert_id($connection);
+// 	}
 		
-	// Step 3: add a report to table "bugs"
-	$bug_auto_id = null;
+// 	// Step 3: add a report to table "bugs"
+// 	$bug_auto_id = null;
 	
-	$cyversion = mysql_real_escape_string($bugReport['cyversion']);
-	$os = mysql_real_escape_string($bugReport['os']);
-	$subject = mysql_real_escape_string($bugReport['subject']);
-	$description = mysql_real_escape_string($bugReport['description']);
-	$ip_address = $bugReport['ip_address'];
-	$remote_host = $bugReport['remote_host'];
+// 	$cyversion = mysql_real_escape_string($bugReport['cyversion']);
+// 	$os = mysql_real_escape_string($bugReport['os']);
+// 	$subject = mysql_real_escape_string($bugReport['subject']);
+// 	$description = mysql_real_escape_string($bugReport['description']);
+// 	$ip_address = $bugReport['ip_address'];
+// 	$remote_host = $bugReport['remote_host'];
 		
-	$dbQuery = "";
-	if ($reporter_auto_id == NULL){
-		$dbQuery = "INSERT INTO bugs (cyversion, os, subject, description,ip_address,remote_host,sysdat) Values ('".
-		$dbQuery .= "'$cyversion',"."'$os',"."'$subject',"."'$description',"."'$ip_address',"."'$remote_host'".",now())";	
-	}
-	else {
-		$dbQuery = "INSERT INTO bugs (reporter_id, cyversion, os,subject, description, ip_address,remote_host,sysdat) Values (".
-		$dbQuery .= "$reporter_auto_id".","."'$cyversion',"."'$os',"."'$subject',"."'$description',"."'$ip_address',"."'$remote_host'".",now())";	
-	}
+// 	$dbQuery = "";
+// 	if ($reporter_auto_id == NULL){
+// 		$dbQuery = "INSERT INTO bugs (cyversion, os, subject, description,ip_address,remote_host,sysdat) Values ('".
+// 		$dbQuery .= "'$cyversion',"."'$os',"."'$subject',"."'$description',"."'$ip_address',"."'$remote_host'".",now())";	
+// 	}
+// 	else {
+// 		$dbQuery = "INSERT INTO bugs (reporter_id, cyversion, os,subject, description, ip_address,remote_host,sysdat) Values (".
+// 		$dbQuery .= "$reporter_auto_id".","."'$cyversion',"."'$os',"."'$subject',"."'$description',"."'$ip_address',"."'$remote_host'".",now())";	
+// 	}
 	
-	// Run the query
-	if (!(@ mysql_query($dbQuery, $connection)))
-		showerror();
-	$bug_auto_id = mysql_insert_id($connection);
+// 	// Run the query
+// 	if (!(@ mysql_query($dbQuery, $connection)))
+// 		showerror();
+// 	$bug_auto_id = mysql_insert_id($connection);
 	
-	// step 4: add file record to table "bug_file" if any
-	if ($file_auto_id != NULL){
-		$dbQuery = "INSERT INTO bug_file (bug_id, file_id) Values ($bug_auto_id, $file_auto_id)";
-	// Run the query
-	if (!(@ mysql_query($dbQuery, $connection)))
-		showerror();
-	}
+// 	// step 4: add file record to table "bug_file" if any
+// 	if ($file_auto_id != NULL){
+// 		$dbQuery = "INSERT INTO bug_file (bug_id, file_id) Values ($bug_auto_id, $file_auto_id)";
+// 	// Run the query
+// 	if (!(@ mysql_query($dbQuery, $connection)))
+// 		showerror();
+// 	}
 	
-	// Step 5: Send e-mail notfication to staff about the new bug submission
-	//sendNotificationEmail($bugReport);	
+// 	// Step 5: Send e-mail notfication to staff about the new bug submission
+// 	//sendNotificationEmail($bugReport);	
 	
-	// If this bug report contains attachment, return a URL to access the bug 
-	$retValue = "";
-	if ($file_auto_id != null){
-		// There are attachment in this bug report
-		$retValue = "http://chianti.ucsd.edu/cyto_web/bugreport/bugreportview.php?bugid=".$bug_auto_id;
-	}
+// 	// If this bug report contains attachment, return a URL to access the bug 
+// 	$retValue = "";
+// 	if ($file_auto_id != null){
+// 		// There are attachment in this bug report
+// 		$retValue = "http://chianti.ucsd.edu/cyto_web/bugreport/bugreportview.php?bugid=".$bug_auto_id;
+// 	}
 	
-	return $retValue;
-}
+// 	return $retValue;
+// }
 
 
 function sendNotificationEmail($bugReport, $bug_id_redmine) {
