@@ -1,0 +1,14 @@
+Dependencies that need to be installed:
+
+BWA
+Samtools
+Picard
+GATK
+VarScan
+Breakdancer
+Annovar
+CHASM
+VEST
+
+Circos
+
