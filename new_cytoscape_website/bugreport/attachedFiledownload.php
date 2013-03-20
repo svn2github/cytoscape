@@ -15,13 +15,17 @@ $connection = getDBConnection(NULL);// user permission
 $query = "SELECT * FROM attached_files ".
 			"WHERE file_auto_id = $file_id";
 
-echo "<br>".$query."<br>";
 // Run the query
 if (!($result = @ mysql_query($query,$connection)))
 	showerror();
 
 if (mysql_num_rows($result) == 1) {
 	$fileName = @ mysql_result($result, 0, "file_name");
+	
+	// If space in file name, the downloaded file may lose file extension
+	// replace white spaces in file name with underscore
+	$fileName = Str_replace(" ","_", $fileName);
+	
 	$fileType = @ mysql_result($result, 0, "file_type");
 	$fileContent = @ mysql_result($result, 0, "file_data");
 
