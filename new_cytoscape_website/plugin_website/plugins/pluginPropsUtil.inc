@@ -392,7 +392,9 @@ function validateManifestFile($zipFileName) {
 						}	
 					}
 				}
-				break;
+				if ($retValue == true){
+					break;
+				}
 			}
 		} //while loop
 		zip_close($zip);
