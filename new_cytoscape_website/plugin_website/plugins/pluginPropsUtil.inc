@@ -405,9 +405,9 @@ function validateManifestFile($zipFileName) {
 
 	$version = getJavaVersion($zipFileName, $pluginClassName);
 
-	if ($version > 49){ // 49 is the jdk version (java platform version 1.5)
-		$javaVersion_tooHigh = true;
-	}
+// 	if ($version > 49){ // 49 is the jdk version (java platform version 1.5)
+// 		$javaVersion_tooHigh = true;
+// 	}
 
 	if ($retValue == false && $javaVersion_tooHigh == false) {
 	?>
