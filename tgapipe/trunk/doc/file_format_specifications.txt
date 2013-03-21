@@ -1,0 +1,15 @@
+FASTQ Format:
+
+
+Bam Format:
+
+
+VCF Format:
+http://vcftools.sourceforge.net/specs.html
+
+TCGA MAF Format:
+https://wiki.nci.nih.gov/display/TCGA/Mutation+Annotation+Format+(MAF)+Specification
+
+
+Wig Format:
+http://genome.ucsc.edu/goldenPath/help/wiggle.html
