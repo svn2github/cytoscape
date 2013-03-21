@@ -1,0 +1,32 @@
+#! /usr/bin/env python
+
+import sys, os
+myBinDir = os.path.normpath(os.path.dirname(sys.argv[0]))
+sys.path.append(myBinDir + "/../src")
+
+from illumina.vcfTools import VCFReader
+#from strelka.strelkaTools import VCFReader
+from annovar.annovarTools import AnnovarSummaryReader
+
+def main():
+
+	QualDict = {}
+	for vcf in VCFReader(sys.argv[1]):
+		if vcf.isVariant:
+			for var in vcf.vars:
+				altNuc = "-" if var.altNuc in [".","-"] else var.altNuc
+				var.uid = vcf.chrom +"_"+vcf.pos+"_"+var.refNuc+"_"+altNuc
+				QualDict[var.uid] = vcf.qual
+	i = 0
+	for var in AnnovarSummaryReader(sys.argv[2]):
+		varqual = QualDict.get(var.uid)
+		if varqual == None:
+			raise Exception("No quality information for this variant in the specified vcf")
+		var.addAnnotation("Qvalue",varqual,1)
+		if i == 0:
+			var.printHeader=True
+		print var
+		i+=1
+
+if __name__ == "__main__":
+	main()

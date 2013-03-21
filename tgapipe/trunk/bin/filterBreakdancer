@@ -1,0 +1,38 @@
+#! /usr/bin/env python
+
+"""
+Usage: ./filterBreakdancer breakdancer.out DGV.indels 
+"""
+
+import sys, os
+myBinDir = os.path.normpath(os.path.dirname(sys.argv[0]))
+sys.path.append(myBinDir + "/../src")
+
+from breakdancer.breakdancer import BDReader
+from breakdancer.dgvtools import DGVTable
+
+def main():
+
+    dgv = DGVTable(sys.argv[2]) # Point to DGV variant file
+    
+    for bdvar in BDReader(sys.argv[1]):
+        if bdvar.type in ["CTX"]:
+            print bdvar
+            continue
+        start = str(min(bdvar.pos1, bdvar.pos2))
+        end = str(max(bdvar.pos1, bdvar.pos2))
+        if len(dgv.overlaps(bdvar.chr1, start, end)) == 0:
+            bdvar.DGVstatus = "novel"
+        elif len(dgv.matches(bdvar.chr1, start, end)) == 0:
+            bdvar.DGVstatus = "overlaps"
+            bdvar.DGVtype = ",".join([x.VariationType for x in dgv.overlaps(bdvar.chr1, start, end)])
+        else:
+            bdvar.DGVstats = "matches"
+            bdvar.DGVtype = ",".join([x.VariationType for x in dgv.matches(bdvar.chr1, start, end)])
+        print bdvar
+
+
+if __name__ == "__main__":
+    main()
+
+

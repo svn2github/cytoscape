@@ -1,0 +1,40 @@
+#! /usr/bin/env python
+
+"""
+Tabulate base substitutions based on flanking bases and substition
+arg 1 = file with mutations
+arg 2 = dbversion
+"""
+
+import sys,os
+myBinDir = os.path.normpath(os.path.dirname(sys.argv[0]))
+sys.path.append(myBinDir + "/../src")
+
+from seqTools.seqTools import SeqReader, StrattonSpectrum
+from strelka.strelkaTools import VCFReader
+
+def main():
+
+    seqFetcher = SeqReader(sys.argv[2])
+    somaticSpectrum = StrattonSpectrum()
+    #somaticSpectrum = Spectrum()
+
+    for var in VCFReader(sys.argv[1]):
+        if var.isVariant:
+            for subst in var.vars:
+                if subst.altNuc == ".":
+                    continue
+                l, r = seqFetcher.getFlanking(subst.chrom, subst.start, subst.end)
+                somaticSpectrum.addSubst(l,r,subst.refNuc,subst.altNuc)
+
+    #somaticSpectrum.reportNcount()
+    print somaticSpectrum
+    counts = somaticSpectrum.getSubstCounts()
+    for count in counts.keys():
+        sys.stderr.write(count +"\t"+ str(counts.get(count)) + "\n")
+    
+
+
+
+if __name__ == "__main__":
+    main()

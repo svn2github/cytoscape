@@ -1,0 +1,291 @@
+#! /usr/bin/env python
+
+import sys, os
+import subprocess
+myBinDir = os.path.normpath(os.path.dirname(sys.argv[0]))
+
+# Built in libraries
+from optparse import OptionParser
+from strelka.strelkaTools import VCFReader
+#from illumina.vcfTools import VCFReader
+
+# Vars
+codon_dict = {"ATG":"M", "GCT":"A", "GCC":"A", "GCA":"A", "GCG":"A", "TGT":"C", "TGC":"C", "GAT":"D", "GAC":"D", "GAA":"E", "GAG":"E", "TTT":"F", "TTC":"F", "GGT":"G", "GGC":"G", "GGA":"G", "GGG":"G", "CAT":"H", "CAC":"H", "ATT":"I", "ATC":"I", "ATA":"I", "AAA":"K", "AAG":"K", "TTA":"L", "TTG":"L", "CTT":"L", "CTC":"L", "CTA":"L", "CTG":"L", "AAT":"N", "AAC":"N", "CCT":"P", "CCC":"P", "CCA":"P", "CCG":"P", "CAA":"Q", "CAG":"Q", "TCT":"S", "TCC":"S", "TCA":"S", "TCG":"S", "AGT":"S", "AGC":"S", "ACT":"T", "ACC":"T", "ACA":"T", "ACG":"T", "CGT":"R", "CGC":"R", "CGA":"R", "CGG":"R", "AGA":"R", "AGG":"R", "GTT":"V", "GTC":"V", "GTA":"V", "GTG":"V", "TGG":"W", "TAT":"Y", "TAC":"Y", "TGA":"*", "TAA":"*", "TAG":"*","AUG":"M", "GCU":"A", "GCC":"A", "GCA":"A", "GCG":"A", "UGU":"C", "UGC":"C", "GAU":"D", "GAC":"D", "GAA":"E", "GAG":"E", "UUU":"F", "UUC":"F", "GGU":"G", "GGC":"G", "GGA":"G", "GGG":"G", "CAU":"H", "CAC":"H", "AUU":"I", "AUC":"I", "AUA":"I", "AAA":"K", "AAG":"K", "UUA":"L", "UUG":"L", "CUU":"L", "CUC":"L", "CUA":"L", "CUG":"L", "AAU":"N", "AAC":"N", "CCU":"P", "CCC":"P", "CCA":"P", "CCG":"P", "CAA":"Q", "CAG":"Q", "UCU":"S", "UCC":"S", "UCA":"S", "UCG":"S", "AGU":"S", "AGC":"S", "ACU":"T", "ACC":"T", "ACA":"T", "ACG":"T", "CGU":"R", "CGC":"R", "CGA":"R", "CGG":"R", "AGA":"R", "AGG":"R", "GUU":"V", "GUC":"V", "GUA":"V", "GUG":"V", "UGG":"W", "UAU":"Y", "UAC":"Y", "UGA":"*", "UAA":"*", "UAG":"*"}
+
+# Location of 2bit file (From UCSC Human Genome Browser)
+Twobit_dict = {"hg19":"~/Data/gbdb/hg19/hg19.2bit","hg18":"~/Data/gbdb/hg18/hg18.2bit","37":"~/Data/gbdb/hg19/hg19.2bit","36":"~/Data/gbdb/hg18/hg18.2bit","37.1":"~/Data/gbdb/hg19/hg19.2bit","36.1":"~/Data/gbdb/hg18/hg18.2bit","GRCh37":"~/Data/gbdb/hg19/hg19.2bit"}
+
+# Mutations in these genes are not included in passenger rate table construction because they are most likely drivers
+mountains = ["TP53","KRAS","SMAD4","NF1","RB1","CDKN2A","PIK3CA","PTEN"] # Add or remove genes based on tumor type?
+
+chromList = ["chr1","chr2","chr3","chr4","chr5","chr6","chr7","chr8","chr9","chr10","chr11","chr12","chr13","chr14","chr15","chr16","chr17","chr18","chr19","chr20","chr21","chr22","chrX","chrY"]
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class CmdOpts(object):
+    usage="""%prog [options] -f file with genomic information -p pseudocount -r 
+
+    -r If this flag is used, the DNA bases will be assumed to be on the declared strand. Otherwise all bases are assumed to be on the forward strand
+
+    Build context tables from MAF files. Only nonsynonyous single nucleotide variants are considered.
+    """
+    def __init__(self):
+        parser = OptionParser(usage=CmdOpts.usage)
+        parser.add_option("-f", "--fname", dest="filename",
+                          help="""Input filename""")
+        parser.add_option("-p", "--pseudo", dest="pseudocount",
+                          default="0", help="""Generate bed output for variants?""")
+        parser.add_option("-r", "--rev", action="store_true", dest="reverse",
+                          default=False, help="""Get context on declared instead of on forward strand""")
+        (opts, args) = parser.parse_args()
+
+        if not opts.filename:
+            parser.error("Incorrect input args")
+        
+        self.__dict__.update(opts.__dict__)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class ContextTbl(object):
+    """Store context specific background base substitution rates and format for CHASM classifier training"""
+    index2context = {"1":"C*CpG","2":"CpG*","3":"TpC*","4":"G*pA","5":"A","6":"C","7":"G","8":"T"}
+    context2index = {"C*CpG":"1","CpG*":"2","TpC*":"3","G*pA":"4","A":"5","C":"6","G":"7","T":"8"}
+    baseIndex = {"A":0,"C":1,"G":2,"T":3}
+    
+    def __init__(self, pseudocount=0):
+        """Set all non-synonynous base change categories to psuedocount """
+        p = float(pseudocount)
+        self.freqsByContext= {"1":[p,0,p,p],"2":[p,p,0,p],"3":[p,0,p,p],"4":[p,p,0,p],"5":[0,p,p,p],"6":[p,0,p,p],"7":[p,p,0,p],"8":[p,p,p,0]}
+        self.varCount = 24*p
+
+    def __getSubstCountByContext(self, context, baseIndex):
+        """Expects context as an integer"""
+        return self.freqsByContext.get(str(context))[baseIndex]
+
+    def __setSubstCountByContext(self, context, baseIndex, varCount):
+        """Convert counts to frequencies """
+        count = self.__getSubstCountByContext(context, baseIndex)
+        if count != 0:
+            self.freqsByContext[context][baseIndex] = count/float(varCount)
+
+    def addVariant(self, context, baseTo):
+        """Add a count to context->BaseTo"""
+        if self.__isValid(context,baseTo):
+            self.freqsByContext[context][ContextTbl.baseIndex.get(baseTo)] += 1
+            self.varCount += 1
+
+    def __isValid(self, context, baseTo):
+        val = True
+        if context in [1,3,6] and baseTo == "C":
+            val = False
+        elif context in [2,4,7] and baseTo == "G":
+            val = False
+        elif context == 5 and baseTo == "A":
+            val = False
+        elif context == 8 and baseTo == "T":
+            val = False
+        return val
+
+    def normalize(self):
+        """Divide each field by the total counts in the table """
+        for i in xrange(8):
+            for j in xrange(4):
+                self.__setSubstCountByContext(str(i+1), j, self.varCount)
+        sys.stderr.write("Normalized by total number observed nonsynonymous events = " + str(int(self.varCount)) + "\n")
+
+    def __repr__(self):
+        """Output table in correct format for CHASM"""
+        header = "\tC*pG\tCpG*\tTpC*\tG*pA\tA\tC\tG\tT"
+        Aline = "->A\t" + "\t".join([str(self.freqsByContext.get("1")[0]), str(self.freqsByContext.get("2")[0]), str(self.freqsByContext.get("3")[0]), str(self.freqsByContext.get("4")[0]), str(self.freqsByContext.get("5")[0]), str(self.freqsByContext.get("6")[0]), str(self.freqsByContext.get("7")[0]), str(self.freqsByContext.get("8")[0])])
+        Cline = "->C\t" + "\t".join([str(self.freqsByContext.get("1")[1]), str(self.freqsByContext.get("2")[1]), str(self.freqsByContext.get("3")[1]), str(self.freqsByContext.get("4")[1]), str(self.freqsByContext.get("5")[1]), str(self.freqsByContext.get("6")[1]), str(self.freqsByContext.get("7")[1]), str(self.freqsByContext.get("8")[1])])
+        Gline = "->G\t" + "\t".join([str(self.freqsByContext.get("1")[2]), str(self.freqsByContext.get("2")[2]), str(self.freqsByContext.get("3")[2]), str(self.freqsByContext.get("4")[2]), str(self.freqsByContext.get("5")[2]), str(self.freqsByContext.get("6")[2]), str(self.freqsByContext.get("7")[2]), str(self.freqsByContext.get("8")[2])])
+        Tline = "->T\t" + "\t".join([str(self.freqsByContext.get("1")[3]), str(self.freqsByContext.get("2")[3]), str(self.freqsByContext.get("3")[3]), str(self.freqsByContext.get("4")[3]), str(self.freqsByContext.get("5")[3]), str(self.freqsByContext.get("6")[3]), str(self.freqsByContext.get("7")[3]), str(self.freqsByContext.get("8")[3])])
+        text = [header, Aline, Cline, Gline, Tline]
+        return "\n".join(text)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class TSVReader(object):
+    """Read a tab delimited file. Generate a Variant object for each row of the file"""
+    def __init__(self, filename):
+        self.fh = file(filename,'r')
+        header = self.fh.readline() # Comment if input file has no header line
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        while True:
+            line = self.fh.readline()
+            if line == "":
+                self.fh.close()
+                raise StopIteration
+            line = line[:-1]
+            return Variant(line.split("\t"))
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class Variant(object):
+    """
+    Stores one row of input file. May need to alter field definitions to match input file.
+    """
+    complement = {"A":"T","T":"A","G":"C","C":"G"}
+    index = 1
+
+    def __init__(self, row):
+        self.index = Variant.index
+        Variant.index += 1
+	self.gene = row[0]
+        self.db = row[3]
+	self.chrom = row[4]
+        if not self.chrom.startswith("chr"):
+            self.chrom = "chr" + self.chrom
+	self.startpos = row[5]
+        self.endpos = row[6]
+        self.startpos = str(int(self.startpos)-1) if int(self.startpos) == int(self.endpos) else self.startpos
+        self.leftpos = str(int(self.startpos)-1)
+        self.rightpos = str(int(self.endpos)+1)
+        self.baseStrand = row[7]
+        self.varclass = row[8].upper()
+        self.vartype = row[9].upper()
+	self.refBase = row[10]
+	self.altBase1 = row[11]
+        self.altBase2 = row[12]
+        self.altBase = self.altBase1 if self.altBase1 != self.refBase else self.altBase2
+        self.sampleID = row[15][:12]
+        self.valid = row[24].upper()
+        self.somatic = row[25].upper()
+        self.context = ""
+        self.fwdSeq = ""
+        self.type = None
+        self.error = False
+        #self.__process()
+
+    def process(self, rev):
+        """ """
+        self.fwdSeq = self.__getSeq() 
+        self.__checkSeq()
+        self.context = self.__getContext(rev)
+        if rev==True and self.strand == "-":
+            self.altBase = Variant.complement.get(self.altBase) # If gene is on negative strand, altBase should also be reported on the negative strand - by TCGA/ICGC convention SNVs are reported on the positive strand
+                
+    def __checkSeq(self):
+        """Check for strand and sequence agreement """
+        if self.strand == "Unknown": 
+            if self.fwdSeq[1] == self.refBase:
+                self.strand = "+"
+            elif self.__reverseComplement(self.fwdSeq[1]) == self.refBase:
+                self.strand = "-"
+            else:
+                self.error = True
+                sys.stderr.write("Base does not match forward or reverse strand for " + str(self.index)+ "\n")
+        if self.strand not in ["-","+"]:
+            self.error = True
+            sys.stderr.write("Strand Exception on row " + str(self.index) + "\n")
+        if self.fwdSeq[1] != self.refBase:
+            self.error = True
+            sys.stderr.write(str(self.index) + " forward strand base "+self.fwdSeq[1]+" retrieved by twoBitToFa at "+self.chrom+":"+str(int(self.leftpos)+1) +" does not match forward strand base "+self.refBase+" reported\n")            
+            
+    def __getContext(self, rev):
+        """Get context 1-8 that represents the refbase
+        ########################################################################################################################
+        # Contexts are numbered and prioritized as follows: 
+        # C in CpG -> 1
+        # G in CpG -> 2
+        # C in TpC -> 3
+        # G in GpA -> 4
+        # A -> 5
+        # C -> 6
+        # G -> 7
+        # T -> 8
+        """
+        context = ""
+        DNAseq = self.fwdSeq
+        if len(DNAseq) > 3:
+            sys.stderr.write("Flanking sequence error!\n")
+            sys.exit(1)
+        if rev == True and self.strand == "-":
+            DNAseq = self.__reverseComplement(DNAseq)
+        if DNAseq[1] == "C":
+            if DNAseq[2] == "G":
+                context = "1"
+            elif DNAseq[0] == "T":
+                context = "3"
+            else:
+                context = "6"
+        elif DNAseq[1] == "G":
+            if DNAseq[0] == "C":
+                context = "2"
+            elif DNAseq[2] == "A":
+                context = "4"
+            else:
+                context = "7"
+        elif DNAseq[1] == "A":
+            context = "5"
+        elif DNAseq[1] == "T":
+            context = "8"
+        return context
+        
+    def __reverseComplement(self, seq):
+        """Function to reverse complement DNA sequence"""
+        seq = list(seq)
+        seq.reverse()
+        rcseq = []
+        for i in xrange(len(seq)):
+            rcseq.append(Variant.complement.get(seq[i]))
+        return "".join(rcseq)
+
+    def __repr__(self):
+        return "\t".join([self.chrom, self.startpos, self.endpos, self.tsID+"_"+self.aaSubst+"_"+self.nucSubst, "0", self.tsStrand])
+
+    def __getSeq(self):
+        TwobitLoc = Twobit_dict.get(self.db)
+        cmd = "~/programs/kent/bin/x86_64/twoBitToFa " +TwobitLoc+ ":" + self.chrom + ":" + self.leftpos + "-" + self.rightpos + " stdout"
+        p = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        r = p.stdout.read()        
+        if r.find("\n") == -1:
+            sys.stderr.write(cmd + "\n")
+            sys.stderr.write(r + "\n")
+        return r.split("\n")[1].upper()
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+def main():
+
+    # Parse commandline
+    opts = CmdOpts()
+
+    # Initialize context table
+    contextTbl = ContextTbl(opts.pseudocount)
+
+    strandDict= {}
+    f = file(myBinDir + "/hugoStrandDict",'r')
+    fdata = f.readlines()
+    f.close()
+    for line in fdata:
+        row = line.strip().split("\t")
+        strandDict[row[0]] = row[1]
+
+    VarList = [] # Track variants to avoid duplicates
+    # Loop over variants
+    for var in VCFReader(opts.filename):
+        # Ideally want strand on which transcript occurs
+        # but if it's not available just use positive strand
+        var.strand = strandDict.get(var.gene)
+        if var.strand == None:
+            var.strand = "+"
+        # Don't support mitochondrial or non canonical chormosomes
+        if var.chrom not in chromList:#== "chrMT" or var.chrom.startswith("chrG"):
+            continue
+        # Only use somatic mutations (what about unknown or LOH??)
+        if var.somatic != "SOMATIC":
+            continue
+        if (var.sampleID,var.chrom,var.startpos,var.refBase,var.altBase) not in VarList:
+            VarList.append((var.sampleID,var.chrom,var.startpos,var.refBase,var.altBase))
+            if var.vartype == "SNP":
+                if var.varclass in ["MISSENSE","MISSENSE_MUTATION","NONSENSE","NONSENSE_MUTATION","NONSTOP","NONSTOP_MUTATION"]:
+                    var.process(opts.reverse)
+                    if var.gene not in mountains and var.error == False:
+                        contextTbl.addVariant(var.context, var.altBase)
+
+    # Output normalized context table
+    contextTbl.normalize() # Comment this line to print counts instead of frequencies
+    print contextTbl
+
+if __name__ == "__main__":
+    main()

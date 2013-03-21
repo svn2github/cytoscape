@@ -1,0 +1,39 @@
+#! /usr/bin/env python
+
+import sys,os
+myBinDir = os.path.normpath(os.path.dirname(sys.argv[0]))
+sys.path.append(myBinDir + "/../src")
+
+from strelka.strelkaTools import VCFReader
+
+chrlist = ["chr1","chr2","chr3","chr4","chr5","chr6","chr7","chr8","chr9","chr10","chr11","chr12","chr13","chr14","chr15","chr16","chr17","chr18","chr19","chr20","chr21","chr22","chrX","chrY","chrM"]
+
+def main():
+
+    varByChrom = {"chr1":[],"chr2":[],"chr3":[],"chr4":[],"chr5":[],"chr6":[],"chr7":[],"chr8":[],"chr9":[],"chr10":[],"chr11":[],"chr12":[],"chr13":[],"chr14":[],"chr15":[],"chr16":[],"chr17":[],"chr18":[],"chr19":[],"chr20":[],"chr21":[],"chr22":[],"chrX":[],"chrY":[],"chrM":[]}
+    for var in VCFReader(sys.argv[1]):
+        if var.isVariant:
+            varByChrom[var.chrom].append(var)
+
+    distByChrom = {"chr1":[0],"chr2":[0],"chr3":[0],"chr4":[0],"chr5":[0],"chr6":[0],"chr7":[0],"chr8":[0],"chr9":[0],"chr10":[0],"chr11":[0],"chr12":[0],"chr13":[0],"chr14":[0],"chr15":[0],"chr16":[0],"chr17":[0],"chr18":[0],"chr19":[0],"chr20":[0],"chr21":[0],"chr22":[0],"chrX":[0],"chrY":[0],"chrM":[0]}
+    distStr = []
+    chrStr = []
+    for chrom in chrlist:
+        vars = varByChrom.get(chrom)
+        sortedvars = sorted(vars, key=lambda x: int(x.start), reverse=False)
+        distvec = distByChrom.get(chrom)
+        for var in sortedvars:
+            distvec.append(int(var.start) - distvec[-1])
+            print str(int(var.start) - distvec[-1])
+            chrStr.append(chrom)
+            sys.stderr.write(chrom + "\n")
+            distStr.append(str(int(var.start) - distvec[-1]))
+        #print "\t".join([chrom, "\t".join(map(str, distvec))])
+    #print "\t".join(distStr)     
+    #print "\t".join(chrStr)
+        
+    
+
+
+if __name__ == "__main__":
+    main()

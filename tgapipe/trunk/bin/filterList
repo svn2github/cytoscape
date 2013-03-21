@@ -1,0 +1,213 @@
+#! /usr/bin/env python
+
+import sys, os
+myBinDir = os.path.normpath(os.path.dirname(sys.argv[0]))
+sys.path.append(myBinDir + "/../src")
+
+from annovar.annovarTools import AnnovarSummaryReader
+from optparse import OptionParser
+
+# Vars
+cgc = ["ABL1","ABL2","ACSL3","AF15Q14","AF1Q","AF3p21","AF5q31","AKAP9","AKT1","AKT2","ALDH2","ALK","ALO17","APC","ARHGEF12","ARHH","ARID1A","ARID2","ARNT","ASPSCR1","ASXL1","ATF1","ATIC","ATM","ATRX","BAP1","BCL10","BCL11A","BCL11B","BCL2","BCL3","BCL5","BCL6","BCL7A","BCL9","BCOR","BCR","BHD","BIRC3","BLM","BMPR1A","BRAF","BRCA1","BRCA2","BRD3","BRD4","BRIP1","BTG1","BUB1B","C12orf9","C15orf21","C15orf55","C16orf75","C2orf44","CAMTA1","CANT1","CARD11","CARS","CBFA2T1","CBFA2T3","CBFB","CBL","CBLB","CBLC","CCDC6","CCNB1IP1","CCND1","CCND2","CCND3","CCNE1","CD273","CD274","CD74","CD79A","CD79B","CDH1","CDH11","CDK12","CDK4","CDK6","CDKN2A ","CDKN2a(p14)","CDKN2C","CDX2","CEBPA","CEP1","CHCHD7","CHEK2","CHIC2","CHN1","CIC","CIITA","CLTC","CLTCL1","CMKOR1","COL1A1","COPEB","COX6C","CREB1","CREB3L1","CREB3L2","CREBBP","CRLF2","CRTC3","CTNNB1","CYLD","D10S170","DAXX","DDB2","DDIT3","DDX10","DDX5","DDX6","DEK","DICER1","DNM2","DNMT3A","DUX4","EBF1","ECT2L","EGFR","EIF4A2","ELF4","ELK4","ELKS","ELL","ELN","EML4","EP300","EPS15","ERBB2","ERCC2","ERCC3","ERCC4","ERCC5","ERG","ETV1","ETV4","ETV5","ETV6","EVI1","EWSR1","EXT1","EXT2","EZH2","EZR","FACL6","FAM22A","FAM22B","FAM46C","FANCA","FANCC","FANCD2","FANCE","FANCF","FANCG","FBXO11","FBXW7","FCGR2B","FEV","FGFR1","FGFR1OP","FGFR2","FGFR3","FH","FHIT","FIP1L1","FLI1","FLJ27352","FLT3","FNBP1","FOXL2","FOXO1A","FOXO3A","FOXP1","FSTL3","FUBP1","FUS","FVT1","GAS7","GATA1","GATA2","GATA3","GMPS","GNA11","GNAQ","GNAS","GOLGA5","GOPC","GPC3","GPHN","GRAF","H3F3A","HCMOGT-1","HEAB","HERPUD1","HEY1","HIP1","HIST1H4I","HLF","HLXB9","HMGA1","HMGA2","HNRNPA2B1","HOOK3","HOXA11","HOXA13","HOXA9","HOXC11","HOXC13","HOXD11","HOXD13","HRAS","HRPT2","HSPCA","HSPCB","IDH1","IDH2","IGH@","IGK@","IGL@","IKZF1","IL2","IL21R","IL6ST","IL7R","IRF4","IRTA1","ITK","JAK1","JAK2","JAK3","JAZF1","JUN","KDM5A","KDM5C","KDM6A","KDR","KIAA1549","KIF5B","KIT","KLK2","KRAS","KTN1","LAF4","LASP1","LCK","LCP1","LCX","LHFP","LIFR","LMO1","LMO2","LPP","LRIG3","LYL1","MADH4","MAF","MAFB","MALT1","MAML2","MAP2K4","MDM2","MDM4","MDS1","MDS2","MECT1","MED12","MEN1","MET","MITF","MKL1","MLF1","MLH1","MLL","MLL2","MLL3","MLLT1","MLLT10","MLLT2","MLLT3","MLLT4","MLLT6","MLLT7","MN1","MPL","MSF","MSH2","MSH6","MSI2","MSN","MTCP1","MUC1","MUTYH","MYB","MYC","MYCL1","MYCN","MYD88","MYH11","MYH9","MYST4","NACA","NBS1","NCOA1","NCOA2","NCOA4","NDRG1","NF1","NF2","NFE2L2","NFIB","NFKB2","NIN","NKX2-1","NONO","NOTCH1","NOTCH2","NPM1","NR4A3","NRAS","NSD1","NTRK1","NTRK3","NUMA1","NUP214","NUP98","OLIG2","OMD","P2RY8","PAFAH1B2","PALB2","PAX3","PAX5","PAX7","PAX8","PBRM1","PBX1","PCM1","PCSK7","PDE4DIP","PDGFB","PDGFRA","PDGFRB","PER1","PHF6","PHOX2B","PICALM","PIK3CA","PIK3R1","PIM1","PLAG1","PML","PMS1","PMS2","PMX1","PNUTL1","POU2AF1","POU5F1","PPARG","PPP2R1A","PRCC","PRDM1","PRDM16","PRF1","PRKAR1A","PRO1073","PSIP2","PTCH","PTEN","PTPN11","RAB5EP","RAD51L1","RAF1","RALGDS","RANBP17","RAP1GDS1","RARA","RB1","RBM15","RECQL4","REL","RET","ROS1","RPL22","RPN1","RUNDC2A","RUNX1","RUNXBP2","SBDS","SDC4","SDH5","SDHB","SDHC","SDHD","SEPT6","SET","SETD2","SF3B1","SFPQ","SFRS3","SH3GL1","SIL","SLC34A2","SLC45A3","SMARCA4","SMARCB1","SMO","SOCS1","SOX2","SRGAP3","SRSF2","SS18","SS18L1","SSH3BP1","SSX1","SSX2","SSX4","STK11","STL","SUFU","SUZ12","SYK","TAF15","TAL1","TAL2","TCEA1","TCF1","TCF12","TCF3","TCF7L2","TCL1A","TCL6","TET2","TFE3","TFEB","TFG","TFPT","TFRC","THRAP3","TIF1","TLX1","TLX3","TMPRSS2","TNFAIP3","TNFRSF14","TNFRSF17","TNFRSF6","TOP1","TP53","TPM3","TPM4","TPR","TRA@","TRB@","TRD@","TRIM27","TRIM33","TRIP11","TSC1","TSC2","TSHR","TTL","U2AF1","USP6","VHL","VTI1A","WAS","WHSC1","WHSC1L1","WIF1","WRN","WT1","WTX","WWTR1","XPA","XPC","XPO1","YWHAE","ZNF145","ZNF198","ZNF278","ZNF331","ZNF384","ZNF521","ZNF9","ZRSR2"]
+
+kinome = ["TTBK2","TTBK1","TSSK4","TSSK3","TSSK2","TSSK1","TRRAP","TRKC","TRKB","TRKA","TRIO","TRB3","TRB2","TRB1","TRAD","TNK1","TLK2","TLK1","TIF1G","TIF1B","TIF1A","TIE2","TIE1","TGFBR2","TGFBR1","TESK2","TESK1","TEC","TBK1","TBCK","TAK1","TAF1L","TAF1","SYK","SURTK106","TAO1","TAO2","TAO3","STLK6","STLK5","STLK3","STK33","SSTK","SRPK2","SRPK1","SRM","SRC","SPEG","SNRK","SMMLCK","SMG1","SLOB","SLK","SKMLCK","SIK","SGK496","SGK495","SGK494","SGK493","SGK424","SGK396","SGK307","SGK3","SGK288","SGK269","SGK223","SGK2","SGK196","SGK110","SGK085","SGK071","SGK069","SGK1","SCYL3","SCYL2","SCYL1","SBK","RYK","RSKL2","RSKL1","RSK4","RSK3","RSK2","RSK1","ROS","ROR2","ROR1","RON","ROCK2","ROCK1","RNASEL","RIPK3","RIPK2","RIPK1","RIOK3","RIOK2","RIOK1","RHOK","RET","RAF1","QSK","QIK","PYK2","WNK4","WNK3","PSKH2","PSKH1","PRPK","PRP4","PRKY","PRKX","PAK6","PAK5","PAK4","NEK7","NEK6","NEK5","NEK4","MLK4","PLK4","PLK3","PLK2","PLK1","PKR","PKN3","PKN2","PKN1","PKG2","PKG1","PKD3","PKD1","PKD2","PKCZ","PKCT","PKCI","PKCG","PKCH","PKCE","PKCD","PKCB","PKCA","PKACG","PKACB","PKACA","PITSLRE","PINK1","PIM3","PIM2","PIM1","PIK3R4","PHKG2","PFTAIRE2","PHKG1","PFTAIRE1","PEK","PDK1","PDHK4","PDHK3","PDHK2","PDHK1","PDGFRB","PDGFRA","PCTAIRE3","PCTAIRE2","PCTAIRE1","PBK","PASK","PAK3","PAK2","PAK1","P70S6KB","P70S6K","P38G","P38D","P38B","P38A","OSR1","OBSCN","NUAK2","NUAK1","NRBP2","NRBP1","NLK","NIM1","NIK","NEK9","NEK8","NEK3","NEK2","NEK11","NEK10","NEK1","NDR2","NDR1","MYT1","MYO3B","MYO3A","MUSK","MST4","MST3","MST2","MST1","MSSK1","MSK2","MSK1","MRCKB","MRCKA","MPSK1","MOS","MOK","MNK2","MNK1","MLKL","MLK3","MLK1","MLK2","MISR2","MET","MER","MELK","MASTL","MAST4","MAST3","MAST2","MAST1","MARK4","MARK3","MARK2","MARK1","MAPKAPK5","MAPKAPK3","MAPKAPK2","MAP3K8","MAP3K7","MAP3K6","MAP3K5","MAP3K4","MAP3K3","MAP3K2","MAP3K1","MAP2K7","MAP2K6","MAP2K5","MAP2K4","MAP2K3","MAP2K2","MAP2K1","MAK","LZK","LYN","LTK","LRRK2","LRRK1","LOK","LMR3","LMR2","LMR1","LKB1","LIMK2","LIMK1","LCK","LATS2","LATS1","KSR2","KSR1","KIT","KIS","KHS2","KHS1","KDR","JNK3","JNK2","JNK1","JAK3","JAK2","JAK1","ITK","IRR","IRE2","IRE1","IRAK4","IRAK3","IRAK2","IRAK1","INSR","ILK","IKKE","IKKB","IKKA","IGF1R","ICK","HUNK","HSER","HRI","HPK1","HIPK4","HIPK3","HIPK2","HIPK1","HH498","HCK","HASPIN","H11","GSK3B","GSK3A","GPRK7","GPRK6","GPRK5","GPRK4","GCN2","GCK","GAK","G11","FYN","FUSED","FRK","FRAP","FMS","FLT4","FLT3","FLT1","FGR","FGFR4","FGFR3","FGFR2","FGFR1","FES","FER","FASTK","FAK","ERK7","ERK5","ERK4","ERK3","ERK2","ERK1","ERBB4","ERBB3","ERBB2","EPHB6","EPHB4","EPHB3","EPHB2","EPHB1","EPHA8","EPHA7","EPHA6","EPHA5","EPHA4","EPHA3","EPHA2","EPHA10","EPHA1","EGFR","EEF2K","DYRK4","DYRK3","DYRK2","DYRK1B","DYRK1A","DRAK2","DRAK1","DMPK2","HGK","DNAPK","DMPK1","DLK","DDR2","DDR1","DAPK3","DAPK2","DAPK1","CYGF","CYGD","CTK","CSK","CRK7","CRIK","COT","CLK4","CLK3","CLK2","CLK1","CLIK1L","CLIK1","CK2A2","CK2A1","CK1G3","CK1G2","CK1G1","CK1E","CK1D","CK1A2","CK1A","CHK2","CHK1","CHED","CHAK2","CHAK1","CDKL5","CDKL4","CDKL3","CDKL2","CDKL1","CDK9","CDK8","CDK7","CDK6","CDK5","CDK4","CDK3","CDK2","CDK11","CDK10","CDC7","CDC2","CCRK","CCK4","CASK","CAMLCK","CAMKK2","CAMKK1","CAMK4","CAMK2G","CAMK2D","CAMK2B","CAMK2A","CAMK1G","CAMK1D","CAMK1B","CAMK1A","BUBR1","BUB1","BTK","BRSK2","BRSK1","BRK","BRDT","BRD4","BRD3","BRD2","BRAF","BMX","BMPR2","BMPR1B","BMPR1A","BLK","BIKE","BCR","BCKDK","NRK","MINK","TNIK","BARK2","BARK1","AXL","AURC","AURB","AURA","ATR","ATM","ABL2","ARAF","ANPB","ANPA","ANKRD3","AMPKA2","AMPKA1","ALPHAK3","ALPHAK2","ALPHAK1","ALK7","ALK4","ALK2","ALK1","ALK","AKT3","AKT2","AKT1","ADCK5","ADCK4","ADCK3","ADCK2","ADCK1","ACTR2B","ACTR2","ACK","ABL1","AAK1","TTK","TTN","TXK","TYK2","TYRO3","ULK1","ULK2","ULK3","ULK4","VACAMKL","VRK1","VRK2","VRK3","WEE1","WEE1B","WNK1","WNK2","YANK1","YANK2","YANK3","YES","YSK1","ZAK","ZAP70","DCLK3","DCLK2","DCLK1"]
+
+class CmdOpts(object):
+    usage = """%prog [options] -f filename -a afthresh -g genelist
+    
+    """
+    def __init__(self):
+       parser = OptionParser(usage=CmdOpts.usage)
+       parser.add_option("-f", "--file", dest="filename",
+                         help="""Path to tab-delimited file with mutations""")
+       parser.add_option("-a","--afthresh",dest="afthresh",
+                          default="1",help="""Filter out common variants""")
+       parser.add_option("-g","--genelist",dest="genelist",
+                         help="""Store information about possibly affected genes""")
+       parser.add_option("-d","--discards",dest="discardfile",
+                         help="""Store discards""")
+       (opts, args) = parser.parse_args()
+       if not opts.filename:
+          parser.error("Please specify file with variants to filter")
+          
+       self.__dict__.update(opts.__dict__)
+
+def worst(vartypes):
+   vtype = None
+   if "splicing" in vartypes:
+      vtype = "splicing"
+   elif "exonic" in vartypes:
+      vtype = "exonic"
+   elif "UTR5" in vartypes:
+      vtype = "UTR5"
+   elif "UTR3" in vartypes:
+      vtype = "UTR3"
+   elif "intronic" in vartypes:
+      vtype = "intronic"
+   elif "upstream" in vartypes:
+      vtype = "upstream"
+   elif "downstreap" in vartypes:
+      vtype = "downstream"
+   elif "intergenic" in vartypes:
+      vtype = "intergenic"
+   else:
+      raise Exception("Extend to support new combination:" + ";".join(vartypes))
+   return vtype
+
+def main():
+   
+   opts = CmdOpts()
+
+   keepers = []
+   discards = []
+   for var in AnnovarSummaryReader(opts.filename):
+      # Drop anything in a segmental duplication (likely to be an error)
+      # unless it is a regeion reported to be conserved
+      segdup = var.annotations.get("segdup")
+      if segdup not in [None, ""]:
+         cons = var.annotations.get("mce46way")
+         if cons not in [None,""]:
+             keepers.append(var)
+             continue
+         discards.append(var)
+         continue
+      # Filter on allele frequency
+      okg = var.annotations.get("1000g2012apr_eur")
+      okg = 0 if okg in [None,""] else float(okg)
+      esp = var.annotations.get("esp6500_all")
+      esp = 0 if esp in [None,""] else float(esp)
+      if max(okg,esp) > float(opts.afthresh):
+         discards.append(var)
+         continue
+      # Determine keepers based functional effect / proximity to known CAN-genes
+      varInfo = var.annotations.get("variant_function")
+      vartype = varInfo.split("=")[0]
+      geneinfo = "=".join(varInfo.split("=")[1:])
+      if vartype != "intergenic" and geneinfo.find(",") != -1:
+         geneinfo = geneinfo.split(",")
+      else:
+         geneinfo = [geneinfo]
+      if vartype.find(";") != -1:
+         vartype = worst(vartype.split(";"))
+      if vartype == "exonic":
+         keepers.append(var)
+         continue
+      elif vartype == "splicing":
+         keepers.append(var)
+         continue
+      elif vartype == "UTR3":
+         keepers.append(var)
+         continue
+      elif vartype == "UTR5":
+         keepers.append(var)
+         continue
+      elif vartype == "upstream":
+         geneinfo = [x for x in geneinfo if x in cgc+kinome]
+         if len(geneinfo) > 0:# in cgc or geneinfo in kinome:
+            keepers.append(var)
+            continue
+      elif vartype == "downstream":
+         geneinfo = [x for x in geneinfo if x in cgc+kinome]
+         if len(geneinfo) > 0:
+         #if geneinfo in cgc or geneinfo in kinome:
+            keepers.append(var)
+            continue
+      elif vartype == "intronic":
+         geneinfo = [x for x in geneinfo if x in cgc+kinome]
+         if len(geneinfo) > 0:
+         #if geneinfo in cgc or geneinfo in kinome:
+            keepers.append(var)
+            continue
+      elif vartype == "intergenic":
+         left, right = geneinfo[0].split(",")
+         leftdist = left.split("=")[-1][:-1]
+         rightdist = right.split("=")[-1][:-1]
+         leftdist = int(leftdist) if leftdist != "NONE" else 100000
+         rightdist = int(rightdist) if rightdist != "NONE" else 100000
+         left = left[:left.find("(")]
+         right = right[:right.find("(")]
+         if right in cgc + kinome and rightdist < 2000:
+            keepers.append(var)
+            continue
+         if left in cgc + kinome and leftdist < 2000:
+            keepers.append(var)
+            continue
+      elif vartype == "ncRNA_exonic":
+         geneinfo = [x for x in geneinfo if x in cgc+kinome]
+         if len(geneinfo) > 0:
+         #if geneinfo in cgc or geneinfo in kinome:
+            keepers.append(var)
+            continue
+      elif vartype == "ncRNA_intronic":
+         geneinfo = [x for x in geneinfo if x in cgc+kinome]
+         if len(geneinfo) > 0:
+         #if geneinfo in cgc or geneinfo in kinome:
+            keepers.append(var)
+            continue
+      # Keep variants in highly conserved regions
+      cons = var.annotations.get("mce46way")
+      if cons not in [None,""]:
+         keepers.append(var)
+         continue
+      tfbs = var.annotations.get("tfbs")
+      # Keep variants possibly affecting transcription factor
+      # binding of key genes
+      if tfbs not in [None,""]:
+         gene = tfbs.split("$")[1].split("_")[0]
+         if gene in cgc + kinome:
+            keepers.append(var)
+            continue
+      discards.append(var)
+
+   i = 0
+   for var in keepers:
+      if i == 0:
+         var.printHeader = True
+      print var
+      i += 1
+
+   if opts.genelist:
+      genefile = file(opts.genelist,'w')
+      genelist = []
+      for var in keepers:
+         varInfo = var.annotations.get("variant_function")
+         vartype = varInfo.split("=")[0]
+         geneinfo = "=".join(varInfo.split("=")[1:])
+         if vartype != "intergenic" and geneinfo.find(",") != -1:
+            geneinfo = geneinfo.split(",")
+         elif vartype == "intergenic":
+            geneinfo = [geneinfo]
+            left, right = geneinfo[0].split(",")
+            leftdist = left.split("=")[-1][:-1]
+            rightdist = right.split("=")[-1][:-1]
+            leftdist = int(leftdist) if leftdist != "NONE" else 100000
+            rightdist = int(rightdist) if rightdist != "NONE" else 100000
+            left = left[:left.find("(")]
+            right = right[:right.find("(")]
+            geneinfo = []
+            if leftdist < 2000:
+               geneinfo.append(left)
+            if rightdist < 2000:
+               geneinfo.append(right)
+         else:
+            if geneinfo.find(";") != -1:
+               geneinfo = geneinfo.split(";")
+            else:
+               geneinfo = [geneinfo]
+         genes = [x for x in geneinfo if x not in genelist]
+         genelist += genes
+      print >> genefile, "\n".join(genelist)
+      genefile.close()
+
+   if opts.discardfile:
+      outfile = file(opts.discardfile,'w')
+      i=0
+      for var in discards:
+         if i == 0:
+            var.printHeader = True
+         print >> outfile, var
+         i += 1
+      outfile.close()
+
+if __name__ == "__main__":
+   main()

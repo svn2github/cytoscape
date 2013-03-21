@@ -1,0 +1,61 @@
+#! /usr/bin/env python
+
+"""
+Usage:
+ ./compare2Strelka Illumina.vcf Strelka.vcf > common.out 2> different.out
+"""
+
+import sys, os
+myBinDir = os.path.normpath(os.path.dirname(sys.argv[0]))
+sys.path.append(myBinDir + "/../src")
+
+from strelka.strelkaTools import VCFReader as VCFReaderStr
+from illumina.vcfTools import VCFReader as VCFReaderIll
+
+class VarTable(object):
+
+    def __init__(self, filename, filetype):
+        self.varsByUid = {}
+        if filetype == "strelka":
+            for var in VCFReaderStr(filename):
+                if var.isVariant:
+                    self.__addVar(var)
+        elif filetype == "illumina":
+            for var in VCFReaderIll(filename, "standard"):
+                if var.isVariant:
+                    self.__addVar(var)
+
+    def __addVar(self, var):
+        """Match on reference position"""
+        uid = var.chrom +"_"+var.pos+"_"+var.refNuc
+        self.varsByUid[uid] = var
+
+    def getVars(self):
+        return self.varsByUid.keys()
+
+    def getVar(self, varID):
+        return self.varsByUid.get(varID)
+
+    def hasVar(self, varID):
+        return self.varsByUid.has_key(varID)
+
+def main():
+    
+    illTable = VarTable(sys.argv[1], "illumina")
+    strTable = VarTable(sys.argv[2], "strelka")
+    
+    illVars = illTable.getVars()
+    
+    for varID in illVars:
+        if strTable.hasVar(varID):
+            formatted = var.formatForSnvGet()
+            print formatted
+        else:
+            var = illTable.getVar(varID)
+            sys.stderr.write(varID + "/"+ var.altNuc +"\n")
+        
+
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,45 @@
+#! /usr/bin/env python
+
+"""
+Loads file 1 into a dictionary. Entries from file 2 that are in file 1 are printed to .common while entries if file 2 that are not in file 1 are printed to .different
+
+To get somatics based on difference between vcfs, file 1 should be normal and file 2 should be tumor.
+"""
+
+import sys, os
+myBinDir = os.path.normpath(os.path.dirname(sys.argv[0]))
+
+f1 = file(sys.argv[1],'r')
+f1data = f1.readlines()
+f1.close()
+
+varByUid = {}
+for line in f1data:
+   if line.startswith("#"):
+      continue
+   row = line.rstrip().split("\t")
+   UID = "_".join([row[0],row[1],row[3],row[4]])
+   varByUid[UID] = row
+
+outdir = sys.argv[3]
+outdir = outdir + "/" if not outdir.endswith("/") else outdir
+commonfile = file(outdir + "SNVs.common",'w') 
+difffile = file(outdir + "SNVs.different",'w') 
+
+f2 = file(sys.argv[2],'r')
+f2data = f2.readlines()
+f2.close()
+
+for line in f2data:
+   if line.startswith("#"):
+      print >> commonfile, line.rstrip()
+      print >> difffile, line.rstrip()
+      continue
+   row = line.rstrip().split("\t")
+   UID = "_".join([row[0],row[1],row[3],row[4]])
+   if varByUid.has_key(UID):
+      print >> commonfile, "\t".join(row)
+   else:
+      print >> difffile, "\t".join(row)
+commonfile.close()
+difffile.close()
