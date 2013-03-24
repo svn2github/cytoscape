@@ -106,6 +106,9 @@ public class SearchMenu extends ChemVizAbstractMenu implements ActionListener {
 		if (edgeContext == null) {
 			// Populating main menu
 			JMenuItem item = buildMenuItem("all edges", "allEdges");
+			if (!settingsDialog.hasEdgeCompounds(null))
+				item.setEnabled(false);
+			menu.add(item);
 			menu.add(item);
 			if (selectedEdges != null && selectedEdges.size() > 0) {
 				JMenuItem item2 = buildMenuItem("selected edges", "selectedEdges");
@@ -140,6 +143,8 @@ public class SearchMenu extends ChemVizAbstractMenu implements ActionListener {
 
 		if (nodeContext == null) {
 			JMenuItem item = buildMenuItem("all nodes", "allNodes");
+			if (!settingsDialog.hasNodeCompounds(null))
+				item.setEnabled(false);
 			menu.add(item);
 			if (selectedNodes != null && selectedNodes.size() > 0) {
 				JMenuItem item2 = buildMenuItem("selected nodes", "selectedNodes");

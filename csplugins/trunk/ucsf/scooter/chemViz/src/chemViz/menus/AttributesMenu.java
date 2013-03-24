@@ -73,8 +73,8 @@ public class AttributesMenu extends ChemVizAbstractMenu {
 
 		if (context == null) {
 			JMenu create = new JMenu("Create attributes from compound descriptors");
-			addEdgeAttributesMenus(create, null);
 			addNodeAttributesMenus(create, null);
+			addEdgeAttributesMenus(create, null);
 			menu.add(create);
 		} else if (context instanceof NodeView) {
 			addNodeAttributesMenus(menu, (NodeView)context);

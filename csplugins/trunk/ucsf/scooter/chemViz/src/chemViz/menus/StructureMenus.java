@@ -101,7 +101,10 @@ public class StructureMenus extends ChemVizAbstractMenu implements ActionListene
 
 		if (edgeContext == null) {
 			// Populating main menu
-			menu.add(buildMenuItem("for all edges", "clearAllEdges"));
+			JMenuItem item = buildMenuItem("for all edges", "clearAllEdges");
+			if (!settingsDialog.hasEdgeCompounds(null))
+				item.setEnabled(false);
+			menu.add(item);
 			if (selectedEdges != null && selectedEdges.size() > 0) {
 				JMenuItem item2 = buildMenuItem("for selected edges", "clearSelectedEdges");
 				if (!settingsDialog.hasEdgeCompounds(selectedEdges)) {
@@ -136,7 +139,10 @@ public class StructureMenus extends ChemVizAbstractMenu implements ActionListene
 
 		if (nodeContext == null) {
 			// Populating main menu
-			menu.add(buildMenuItem("for all nodes", "clearAllNodes"));
+			JMenuItem item = buildMenuItem("for all nodes", "clearAllNodes");
+			if (!settingsDialog.hasNodeCompounds(null))
+				item.setEnabled(false);
+			menu.add(item);
 			if (selectedNodes != null && selectedNodes.size() > 0) {
 				JMenuItem item2 = buildMenuItem("for selected nodes", "clearSelectedNodes");
 				if (!settingsDialog.hasNodeCompounds(selectedNodes)) {

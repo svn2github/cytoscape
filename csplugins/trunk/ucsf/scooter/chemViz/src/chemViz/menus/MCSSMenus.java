@@ -106,6 +106,8 @@ public class MCSSMenus extends ChemVizAbstractMenu implements ActionListener {
 		if (edgeContext == null) {
 			// Populating main menu
 			JMenuItem item = buildMenuItem("of all edges", "allEdges");
+			if (!settingsDialog.hasEdgeCompounds(null))
+				item.setEnabled(false);
 			menu.add(item);
 			if (selectedEdges != null && selectedEdges.size() > 0) {
 				JMenuItem item2 = buildMenuItem("of selected edges", "selectedEdges");
@@ -140,6 +142,8 @@ public class MCSSMenus extends ChemVizAbstractMenu implements ActionListener {
 
 		if (nodeContext == null) {
 			JMenuItem item = buildMenuItem("of all nodes", "allNodes");
+			if (!settingsDialog.hasNodeCompounds(null))
+				item.setEnabled(false);
 			menu.add(item);
 			if (selectedNodes != null && selectedNodes.size() > 0) {
 				JMenuItem item2 = buildMenuItem("of selected nodes", "selectedNodes");

@@ -69,7 +69,10 @@ public class SimilarityMenu extends ChemVizAbstractMenu implements ActionListene
 
 		JMenu simMenu = new JMenu("Create similarity network");
 		menu.add(simMenu);
-		simMenu.add(buildMenuItem("for all nodes", "allNodeSimilarity"));
+		JMenuItem item = buildMenuItem("for all nodes", "allNodeSimilarity");
+		if (!settingsDialog.hasNodeCompounds(null))
+			item.setEnabled(false);
+		simMenu.add(item);
 
 		Set<GraphObject> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
 		if (selectedNodes != null && selectedNodes.size() > 1) {
