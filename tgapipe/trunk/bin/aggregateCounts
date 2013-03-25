@@ -1,0 +1,72 @@
+#! /usr/bin/env python
+
+import sys, os
+
+class TripletReader(object):
+   
+   def __init__(self, filename):
+      self.fh = file(filename,'r')
+      
+   def __iter__(self):
+      return self
+
+   def next(self):
+      while True:
+         line = self.fh.readline()
+         if line == "":
+            self.fh.close()
+            raise StopIteration
+         line = line[:-1]
+         return Triplet(line.split(" = "))
+
+class Triplet(object):
+
+   def __init__(self, row):
+      self.bases = row[0]
+      self.count = int(row[1])
+
+class TripletTable(object):
+   
+   bases = ["A","C","G","T"]
+   rcDict = {"A":"T","T":"A","C":"G","G":"C"}
+   
+   def __init__(self):
+      categories = ["".join([x,y,z]) for x in TripletTable.bases for y in TripletTable.bases for z in TripletTable.bases]
+      self.spectrum = dict([[x,0] for x in categories])
+
+   def addCounts(self, filename):
+      for triplet in TripletReader(filename):
+         self.spectrum[triplet.bases] += triplet.count
+
+   def addCountsSS(self, filename):
+      """If mutations are grouped into 6 categories (rather than 12) - i.e. strand is ignored"""
+      for triplet in TripletReader(filename):
+         if triplet.bases[1] in ["A","G"]:
+            triplet.bases = self.__reverseComplement(triplet.bases)
+         self.spectrum[triplet.bases] += triplet.count
+
+   def __reverseComplement(self, seq):
+      seq = list(seq)
+      seq.reverse()
+      for i in xrange(len(seq)):
+         seq[i] = TripletTable.rcDict.get(seq[i])
+      return "".join(seq)
+
+   def __repr__(self):
+      return "\n".join([x +"\t" + str(self.spectrum.get(x)) for x in self.spectrum.keys()])
+
+def main():
+   
+   tt = TripletTable()
+   
+   tripletfiles = os.listdir(".")
+   tripletfiles = [x for x in tripletfiles if x.split(".")[-1][:3] == "chr"]
+
+   for filename in tripletfiles:
+      tt.addCountsSS(filename)
+   
+   print tt
+
+
+if __name__ == "__main__":
+   main()
