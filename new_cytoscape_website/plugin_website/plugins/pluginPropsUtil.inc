@@ -110,7 +110,7 @@ function validatePluginProps($pluginProps) {
 		{
 			$retVal = false;
 			?>
-		<strong>Error in plugin.prop: pluginCategory must be one of the categories listed at <a href = "http://cytoscape.org/plugins25/index.php">Cytoscape plugin web site</a>.</strong><br>
+		<strong>Error in plugin.prop: pluginCategory must be one of the categories listed at <a href = "http://apps.cytoscape.org">Cytoscape app web site</a>.</strong><br>
 		<?php
 			
 		}
