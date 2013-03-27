@@ -135,8 +135,14 @@ public class PieChart extends AbstractChartCustomGraphics<PieLayer> {
 
 		// Create all of our pie slices. Each slice becomes a layer
 		if (attributes != null && attributes.size() > 0) {
-			values = getDataFromAttributes (network, (CyNode)node, attributes, labels);
-			colorList = convertInputToColor(colorString, values);
+			if (values == null || values.size() == 0) {
+				values = getDataFromAttributes (network, (CyNode)node, attributes, labels);
+				colorList = convertInputToColor(colorString, values);
+			} else {
+				// If we already have values, we must want to use the attributes to map our colors
+				List<Double>attrValues = getDataFromAttributes (network, (CyNode)node, attributes, labels);
+				colorList = convertInputToColor(colorString, attrValues);
+			}
 		}
 
 		values = convertData(values);

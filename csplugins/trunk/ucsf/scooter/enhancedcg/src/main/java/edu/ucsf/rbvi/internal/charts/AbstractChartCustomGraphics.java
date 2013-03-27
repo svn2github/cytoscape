@@ -34,6 +34,7 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 	public static final String LIST = "list";
 	public static final String NETWORK = "network";
 	public static final String POSITION = "position";
+	public static final String RANGE = "range";
 	public static final String SCALE = "scale";
 	public static final String SIZE = "size";
 	public static final String SHOWLABELS = "showlabels";
@@ -42,6 +43,8 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 	protected List<Double> values = null;
 	protected List<String> labels = null;
 	protected List<String> attributes = null;
+	protected double rangeMax = 0.0;
+	protected double rangeMin = 0.0;
 
 	protected void populateValues(Map<String, String> args) {
 		values = null;
@@ -65,6 +68,16 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 		if (args.containsKey(SCALE)) {
 			try {
 				scale = getDoubleValue(args.get(SCALE));
+			} catch (NumberFormatException e) {
+				return;
+			}
+		}
+
+		if (args.containsKey(RANGE)) {
+			String split[] = args.get(RANGE).split(",");
+			try {
+				rangeMin = getDoubleValue(split[0]);
+				rangeMax = getDoubleValue(split[1]);
 			} catch (NumberFormatException e) {
 				return;
 			}
@@ -354,6 +367,8 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 	public List<Color> convertInputToColor(String input, List<Double>values)  {
 		int nColors = values.size();
 
+		System.out.println("nColors = "+nColors);
+
 		if (input == null) {
 			// give the default: contrasting colors
 			return generateContrastingColors(nColors);
@@ -402,17 +417,40 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 		Color up = upDownColors.get(0);
 		Color down = upDownColors.get(1);
 		Color zero = upDownColors.get(2);
+		System.out.println("up color = "+up);
+		System.out.println("down color = "+down);
+		System.out.println("zero color = "+zero);
 
 		List<Color> results = new ArrayList<Color>(values.size());
 		for (Double v: values) {
-			if (v < EPSILON) 
-				results.add(down);
-			else if (v > EPSILON)
-				results.add(up);
+			double vn = normalize(v, rangeMin, rangeMax);
+			System.out.println("Value = "+v+", Normalized value = "+vn);
+			if (vn < (-EPSILON)) 
+				results.add(scaleColor(-vn, zero, down));
+			else if (vn > EPSILON)
+				results.add(scaleColor(vn, zero, up));
 			else
 				results.add(zero);
 		}
 		return results;
+	}
+
+	private Color scaleColor(double v, Color zero, Color c) {
+		if (rangeMin == 0.0 && rangeMax == 0.0) return c;
+
+		// We want to scale our color to be between "zero" and "c"
+		int b = (int)(Math.abs(c.getBlue()-zero.getBlue())*v);
+		int r = (int)(Math.abs(c.getRed()-zero.getRed())*v);
+		int g = (int)(Math.abs(c.getGreen()-zero.getGreen())*v);
+		return new Color(r, g, b);
+	}
+
+	private double normalize(double v, double rangeMin, double rangeMax) {
+		if (rangeMin == 0.0 && rangeMax == 0.0) return v;
+		double range = rangeMax-rangeMin;
+		double val = (v-rangeMin)/range;
+		// Now val is between 0 and 1
+		return (val*2-1.0); // Now val is between -1 and 1
 	}
 
 	private List<Color> parseColorKeyword(String input, int nColors)  {
