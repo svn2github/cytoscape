@@ -52,6 +52,7 @@ import chemViz.model.Compound.AttriType;
 import chemViz.ui.ChemInfoSettingsDialog;
 import chemViz.ui.CompoundTable;
 
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 
 /**
@@ -116,7 +117,8 @@ public class SMARTSSearchTask extends AbstractCompoundTask {
 		if (cList.size() > 0 && !canceled) {
 			List<Compound> matches = new ArrayList<Compound>();
 			try {
-				SMARTSQueryTool queryTool = new SMARTSQueryTool(searchString);
+				SMARTSQueryTool queryTool = 
+					new SMARTSQueryTool(searchString, SilentChemObjectBuilder.getInstance());
 				for (Compound compound: cList) {
 					if (compound.getIAtomContainer() == null) continue;
 					boolean status = queryTool.matches(compound.getIAtomContainer());

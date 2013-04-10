@@ -118,6 +118,7 @@ import chemViz.model.TableSorter;
 import chemViz.ui.renderers.CompoundRenderer;
 import chemViz.ui.renderers.StringRenderer;
 
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.smarts.SMARTSQueryTool;
 
 public class CompoundTable extends JDialog implements ListSelectionListener,
@@ -393,7 +394,8 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 
 			List<Compound> matches = new ArrayList<Compound>();
 			try {
-				SMARTSQueryTool queryTool = new SMARTSQueryTool(smartsQuery);
+				SMARTSQueryTool queryTool = 
+					new SMARTSQueryTool(smartsQuery, SilentChemObjectBuilder.getInstance());
 				for (Compound compound: compoundList) {
 					boolean status = queryTool.matches(compound.getIAtomContainer());
 					if (status && queryTool.countMatches() > 0)

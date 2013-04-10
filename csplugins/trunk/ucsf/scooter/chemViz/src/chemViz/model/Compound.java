@@ -79,7 +79,6 @@ import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.IsotopeFactory;
-import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.fingerprint.IFingerprinter;
@@ -111,6 +110,7 @@ import org.openscience.cdk.renderer.generators.RingGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.visitor.AWTDrawVisitor;
 import org.openscience.cdk.ringsearch.SSSRFinder;
+import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.qsar.*;
@@ -397,14 +397,14 @@ public class Compound {
 
 		if (this.iMolecule == null) {
 			// Create the CDK Molecule object
-			SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
+			SmilesParser sp = new SmilesParser(SilentChemObjectBuilder.getInstance());
 			try {
 				iMolecule = sp.parseSmiles(this.smilesStr);
 			} catch (InvalidSmilesException e) {
 				iMolecule = null;
 				logger.warning("Unable to parse SMILES: "+smilesStr+" for "+source.getIdentifier()+": "+e.getMessage());
 				// Something's a little flakey with the SmilesParser in 1.5.1, so try again
-				sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
+				sp = new SmilesParser(SilentChemObjectBuilder.getInstance());
 				try {
 					iMolecule = sp.parseSmiles(this.smilesStr);
 				} catch (InvalidSmilesException e2) {
@@ -961,7 +961,7 @@ public class Compound {
 
 			logger.debug("Getting structure for: "+inchi);
 
-			InChIToStructure intostruct = factory.getInChIToStructure(inchi, DefaultChemObjectBuilder.getInstance());
+			InChIToStructure intostruct = factory.getInChIToStructure(inchi, SilentChemObjectBuilder.getInstance());
 
 			// Get the structure
 			INCHI_RET ret = intostruct.getReturnStatus();
