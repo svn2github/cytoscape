@@ -221,7 +221,7 @@ public class Compound {
 		DescriptorType.XLOGP, DescriptorType.TPSA, DescriptorType.ZAGREBINDEX
 	};
 	static private DescriptorType[] LipinskiTypes = {
-		DescriptorType.WEIGHT, DescriptorType.ALOGP, DescriptorType.HBONDACCEPTOR, DescriptorType.HBONDDONOR
+		DescriptorType.WEIGHT, DescriptorType.XLOGP, DescriptorType.HBONDACCEPTOR, DescriptorType.HBONDDONOR
 	};
 
   /**
