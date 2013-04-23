@@ -367,7 +367,7 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 	public List<Color> convertInputToColor(String input, List<Double>values)  {
 		int nColors = values.size();
 
-		System.out.println("nColors = "+nColors);
+		// System.out.println("nColors = "+nColors);
 
 		if (input == null) {
 			// give the default: contrasting colors
@@ -417,14 +417,17 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 		Color up = upDownColors.get(0);
 		Color down = upDownColors.get(1);
 		Color zero = upDownColors.get(2);
-		System.out.println("up color = "+up);
-		System.out.println("down color = "+down);
-		System.out.println("zero color = "+zero);
+		// System.out.println("up color = "+up);
+		// System.out.println("down color = "+down);
+		// System.out.println("zero color = "+zero);
 
+		// System.out.println("values.size() = "+values.size());
 		List<Color> results = new ArrayList<Color>(values.size());
 		for (Double v: values) {
+			// System.out.println("Looking at value "+v);
+			if (v == null) return null;
 			double vn = normalize(v, rangeMin, rangeMax);
-			System.out.println("Value = "+v+", Normalized value = "+vn);
+			// System.out.println("Value = "+v+", Normalized value = "+vn);
 			if (vn < (-EPSILON)) 
 				results.add(scaleColor(-vn, zero, down));
 			else if (vn > EPSILON)
@@ -449,7 +452,12 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 		if (rangeMin == 0.0 && rangeMax == 0.0) return v;
 		double range = rangeMax-rangeMin;
 		double val = (v-rangeMin)/range;
-		// Now val is between 0 and 1
+		// Now make sure val is between 0 and 1
+		if (val < 0.0) 
+			val = 0.0;
+		if (val > 1.0)
+			val = 1.0;
+
 		return (val*2-1.0); // Now val is between -1 and 1
 	}
 

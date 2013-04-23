@@ -142,6 +142,7 @@ public class PieChart extends AbstractChartCustomGraphics<PieLayer> {
 				// If we already have values, we must want to use the attributes to map our colors
 				List<Double>attrValues = getDataFromAttributes (network, (CyNode)node, attributes, labels);
 				colorList = convertInputToColor(colorString, attrValues);
+				if (colorList == null) return null;
 			}
 		}
 
