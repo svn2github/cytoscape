@@ -15,14 +15,15 @@ function showPageHeader($pageTitle) {
 	    <script type="text/javascript" 
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 	    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
-	    <script type="text/javascript" src="http://cytoscape.org/js/menu_generator.js"></script>
+	    <script type="text/javascript" src="http://chianti.ucsd.edu/cyto_web/bugreport/js/menu_generator.js"></script>
 	    
 	    </head>
 	
 	    <body>
 	<div id="container">
+	
 	<script src="http://cytoscape.org/js/header.js"></script>
-
+    
 <?php 
 }
 
