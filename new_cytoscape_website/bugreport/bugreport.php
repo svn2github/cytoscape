@@ -18,7 +18,7 @@ if ($isIPInBlackList){
 $mode = 'new'; // by default it is 'new'
 
 // If bugid is provided through URL, it is in edit mode
-$bugid = getBugID($_GET, $_POST);
+$bugid = mysql_real_escape_string(getBugID($_GET, $_POST));
 
 // if ($bugid != NULL && $bugid != 0) {
 // 	$mode = 'edit';
@@ -584,7 +584,7 @@ function getBugID($_GET, $_POST){
 	if (isset ($_POST['bugid'])) { // hidden field
 		$bugid = ($_POST['bugid']);
 	}
-	return $bugid;	
+	return mysql_real_escape_string($bugid);	
 }
 
 
