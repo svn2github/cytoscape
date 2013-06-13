@@ -144,14 +144,14 @@ public class BarChart extends AbstractChartCustomGraphics<BarLayer> {
 			if (values.get(bar) == 0.0) continue;
 
 			// Create the slice
-			BarLayer bl = new BarLayer(bar, nBars, separation, values.get(bar), minValue, maxValue, 
+			BarLayer bl = new BarLayer(bar, nBars, separation, values.get(bar), minValue, maxValue, ybase,
 			                           colorList.get(bar));
 			if (bl == null) continue;
 			layers.add(bl);
 
 			if (label != null) {
 				// Now, create the label
-				BarLayer labelLayer = new BarLayer(bar, nBars, separation, minValue, maxValue, 
+				BarLayer labelLayer = new BarLayer(bar, nBars, separation, minValue, maxValue, ybase,
 			                                     label, labelSize);
 				if (labelLayer != null)
 					labelList.add(labelLayer);

@@ -28,6 +28,7 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 	// Standard command strings
 	public static final String ALL = "all";
 	public static final String ATTRIBUTELIST = "attributelist";
+	public static final String YBASE = "ybase";
 	public static final String CLEAR = "clear";
 	public static final String CURRENT = "current";
 	public static final String LABELS = "labellist";
@@ -45,6 +46,7 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 	protected List<String> attributes = null;
 	protected double rangeMax = 0.0;
 	protected double rangeMin = 0.0;
+	protected	double ybase = 0.5;
 
 	protected void populateValues(Map<String, String> args) {
 		values = null;
@@ -98,6 +100,13 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 			String sizeString = (String) args.get(SIZE);
 			size = getSize(sizeString);
 		} 
+
+		// Get the base of the chart
+		if (args.containsKey(YBASE)) {
+			String yb = (String) args.get(YBASE);
+			if (yb.equalsIgnoreCase("bottom"))
+				ybase = 1.0;
+		}
 
 		if (!showLabels)
 			labels = null;
