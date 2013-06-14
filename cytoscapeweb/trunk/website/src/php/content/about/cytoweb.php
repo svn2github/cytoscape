@@ -37,7 +37,7 @@ The data provided to Cytoscape Web in GeneMANIA is unique to every user query, a
 modified with each new query. The rendering speed of Cytoscape Web allows for dynamic user
 interaction.</p>
 
-<p><a id="link_irefweb" href="http://wodaklab.org/netility/network/show/id/180156" rel="external">iRefWeb</a> is an interface to a relational database containing the latest build
+<p><a id="link_irefweb" href="http://wodaklab.org/iRefWeb/" rel="external">iRefWeb</a> is an interface to a relational database containing the latest build
 of the interaction Reference Index (iRefIndex) which integrates protein interaction data from ten different interaction databases: 
 BioGRID, BIND, CORUM, DIP, HPRD, INTACT, MINT, MPPI, MPACT and OPHID.</p>
 

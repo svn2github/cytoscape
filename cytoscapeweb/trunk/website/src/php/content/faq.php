@@ -52,7 +52,7 @@
 		<p class="question">What network formats does Cytoscape Web support?</p>
 		<p class="answer">Cytoscape Web supports
 		<a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" >GraphML</a>,
-		<a href="http://www.cs.rpi.edu/~puninj/XGMML/" >XGMML</a>, and
+		<a href="http://cgi5.cs.rpi.edu/research/groups/pb/punin/public_html/XGMML/" >XGMML</a>, and
 		<a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" >SIF</a>.</p>
 		
 		<p class="question">My favourite network format isn't supported?  What can I do?</p>
@@ -85,7 +85,7 @@
 		<p class="question">What formats can I export the network to?</p>
 		<p class="answer">PDF, PNG, 
 		<a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" >GraphML</a>,
-		<a href="http://www.cs.rpi.edu/~puninj/XGMML/" >XGMML</a>, and
+		<a href="http://cgi5.cs.rpi.edu/research/groups/pb/punin/public_html/XGMML/" >XGMML</a>, and
 		<a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" >SIF</a> are supported.</p>
 	
 		<p class="question">How do I make a node edge link to somewhere?</p>

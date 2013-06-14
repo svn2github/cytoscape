@@ -1,0 +1,9 @@
+<p>
+    This minor release fixes a bug that prevented loops (edges that connect a node to itself) 
+    from being rendered.
+</p>
+<div class="relase_details">
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2786</span>: Target/Source cannot be same node for an edge.</li>
+    </ul>
+</div>
