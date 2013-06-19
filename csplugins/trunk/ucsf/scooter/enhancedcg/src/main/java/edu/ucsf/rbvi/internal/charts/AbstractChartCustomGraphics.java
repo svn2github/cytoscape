@@ -47,6 +47,7 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 	protected double rangeMax = 0.0;
 	protected double rangeMin = 0.0;
 	protected	double ybase = 0.5;
+	protected boolean normalized = false;
 
 	protected void populateValues(Map<String, String> args) {
 		values = null;
@@ -186,6 +187,12 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 					values.add(Double.valueOf(s));
 				}
 			}
+		}
+
+		// Finally, if we have user-supplied ranges, normalize
+		if (rangeMax != 0.0 || rangeMin != 0.0) {
+			values = normalize(values, rangeMax, rangeMin);
+			normalized = true;
 		}
 		if (labels != null && labels.size() == 0)
 			labels.addAll(attributeList);
@@ -435,7 +442,9 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 		for (Double v: values) {
 			// System.out.println("Looking at value "+v);
 			if (v == null) return null;
-			double vn = normalize(v, rangeMin, rangeMax);
+			double vn = v;
+			if (!normalized)
+				vn = normalize(v, rangeMin, rangeMax);
 			// System.out.println("Value = "+v+", Normalized value = "+vn);
 			if (vn < (-EPSILON)) 
 				results.add(scaleColor(-vn, zero, down));
@@ -454,6 +463,7 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 		int b = (int)(Math.abs(c.getBlue()-zero.getBlue())*v);
 		int r = (int)(Math.abs(c.getRed()-zero.getRed())*v);
 		int g = (int)(Math.abs(c.getGreen()-zero.getGreen())*v);
+		// System.out.println("scaleColor: v = "+v+" r="+r+" g="+g+" b="+b);
 		return new Color(r, g, b);
 	}
 
@@ -468,6 +478,18 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 			val = 1.0;
 
 		return (val*2-1.0); // Now val is between -1 and 1
+	}
+
+	private List<Double> normalize(List<Double> vList, double rangeMin, double rangeMax) {
+		// System.out.println("Normalize list");
+		for (int i = 0; i < vList.size(); i++) {
+			Double v = vList.get(i);
+			Double vn = normalize(v, rangeMin, rangeMax);
+			// System.out.println("Value = "+v+", Normalized value = "+vn);
+			vList.set(i, vn);
+		}
+		// System.out.println("Normalize list..done");
+		return vList;
 	}
 
 	private List<Color> parseColorKeyword(String input, int nColors)  {

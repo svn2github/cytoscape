@@ -131,9 +131,14 @@ public class BarChart extends AbstractChartCustomGraphics<BarLayer> {
 
 		double minValue = 0.000001;
 		double maxValue = -minValue;
-		for (double val: values) {
-			minValue = Math.min(minValue, val);
-			maxValue = Math.max(maxValue, val);
+		if (normalized) {
+			minValue = -1.0;
+			maxValue = 1.0;
+		} else {
+			for (double val: values) {
+				minValue = Math.min(minValue, val);
+				maxValue = Math.max(maxValue, val);
+			}
 		}
 			
 		int nBars = values.size();
