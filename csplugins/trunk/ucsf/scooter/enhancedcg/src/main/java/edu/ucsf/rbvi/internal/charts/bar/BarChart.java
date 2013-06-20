@@ -113,7 +113,6 @@ public class BarChart extends AbstractChartCustomGraphics<BarLayer> {
 
 		// Create all of our pie slices. Each slice becomes a layer
 		if (attributes != null && attributes.size() > 0) {
-
 			values = getDataFromAttributes (network, node, attributes, labels);
 			colorList = convertInputToColor(colorString, values);
 		}

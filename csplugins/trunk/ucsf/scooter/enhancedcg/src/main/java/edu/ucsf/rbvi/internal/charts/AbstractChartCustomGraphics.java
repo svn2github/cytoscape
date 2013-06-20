@@ -191,7 +191,7 @@ abstract public class AbstractChartCustomGraphics<T extends CustomGraphicLayer>
 
 		// Finally, if we have user-supplied ranges, normalize
 		if (rangeMax != 0.0 || rangeMin != 0.0) {
-			values = normalize(values, rangeMax, rangeMin);
+			values = normalize(values, rangeMin, rangeMax);
 			normalized = true;
 		}
 		if (labels != null && labels.size() == 0)
