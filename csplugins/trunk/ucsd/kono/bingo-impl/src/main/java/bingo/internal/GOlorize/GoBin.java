@@ -99,7 +99,7 @@ public class GoBin extends javax.swing.JFrame {
 
 	public GoBin(bingo.internal.ui.SettingsPanel settingsPanel, CyNetworkView networkView, final CySwingAppAdapter adapter) {
 		this.adapter = adapter;
-		this.setTitle("bingo output");
+		this.setTitle("BiNGO output");
 		this.settingsPanel = settingsPanel;
 		this.networkView = networkView;
 		this.jTabbedPane = new javax.swing.JTabbedPane();

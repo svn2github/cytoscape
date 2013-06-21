@@ -257,7 +257,7 @@ public class SettingsPanel extends JPanel {
 		setPreferredSize(new Dimension(DIM_WIDTH, DIM_HEIGHT));
 		setOpaque(false);
 		// create border.
-		setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "bingo settings", 0, 0,
+		setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "BiNGO settings", 0, 0,
 				new Font("bingo settings", Font.BOLD, 16), Color.black));
 
 		// Layout with GridBagLayout.
@@ -471,7 +471,7 @@ public class SettingsPanel extends JPanel {
 		dataPanel = new SaveResultsPanel("Data", this, bingoDir);
 
 		// the bingo-button to start the calculations.
-		bingoButton = new JButton("Start bingo");
+		bingoButton = new JButton("Start BiNGO");
 		bingoButton.setMnemonic(KeyEvent.VK_B);
 		bingoButton.addActionListener(new SettingsPanelActionListener(params, this, adapter));
 	}

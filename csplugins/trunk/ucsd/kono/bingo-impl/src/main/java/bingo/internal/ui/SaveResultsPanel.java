@@ -159,7 +159,7 @@ public class SaveResultsPanel extends JPanel implements ItemListener, ActionList
         checkBox.addItemListener(this);
 
         // JButton
-        saveFileButton = new JButton("Save bingo " + sort + " file in : ");
+        saveFileButton = new JButton("Save BiNGO " + sort + " file in : ");
         saveFileButton.setEnabled(false);
         saveFileButton.addActionListener(this);
 

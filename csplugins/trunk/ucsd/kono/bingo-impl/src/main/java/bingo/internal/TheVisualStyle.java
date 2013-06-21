@@ -53,6 +53,8 @@ import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
 import org.cytoscape.app.swing.CySwingAppAdapter;
+import org.cytoscape.view.vizmap.VisualPropertyDependency;
+import java.util.Set;
 
 /**
  * *****************************************************************
@@ -160,6 +162,15 @@ public class TheVisualStyle {
 			nodeWidthMapping.addPoint(s, brVals);
 			nodeHeightMapping.addPoint(s, brVals);
 		}
+		
+		// Set node size unLock
+		Set<VisualPropertyDependency<?>> deps = style.getAllVisualPropertyDependencies();
+		for (VisualPropertyDependency<?> dep : deps) {
+			final String depName = dep.getIdString();
+			if (depName.equals("nodeSizeLocked"))
+				dep.setDependency(false);
+		}
+
 	}
 
 	public VisualStyle createVisualStyle(final CyNetwork network) {
