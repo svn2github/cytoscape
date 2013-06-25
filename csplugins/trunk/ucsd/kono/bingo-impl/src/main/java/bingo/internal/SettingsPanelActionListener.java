@@ -971,13 +971,19 @@ public class SettingsPanelActionListener implements ActionListener {
 			Map mapBigX = null;
 			Map mapBigN = null;
 
+			tm.setProgress(0.01);
+						
 			BingoAlgorithm algorithm = new BingoAlgorithm(params);
 			CalculateTestTask test = algorithm.calculate_distribution(tm);
 			test.calculate();
-			
+
+			tm.setProgress(0.05);
+
 			testMap = test.getTestMap();
 			CalculateCorrectionTask correction = algorithm.calculate_corrections(testMap);
-			
+
+			tm.setProgress(0.08);
+
 			if ((correction != null) && (!params.getTest().equals(NONE))) {
 				correction.calculate();
 				correctionMap = correction.getCorrectionMap();
@@ -989,6 +995,8 @@ public class SettingsPanelActionListener implements ActionListener {
 
 			DisplayBiNGOWindow display;
 			CreateBiNGOFile file;
+
+			tm.setProgress(0.15);
 
 			if (params.getVisualization().equals(VIZSTRING)) {
 				display = new DisplayBiNGOWindow(testMap, correctionMap, mapSmallX, mapSmallN, mapBigX, mapBigN, params
@@ -1009,6 +1017,8 @@ public class SettingsPanelActionListener implements ActionListener {
 			if (params.getOntologyFile() == null) {
 				params.setOntologyFile("Cytoscape loaded ontology: " + params.getOntology().toString());
 			}
+
+			tm.setProgress(0.6);
 
 			goBin.createResultTab(testMap, correctionMap, mapSmallX, mapSmallN, mapBigX, mapBigN, params.getSignificance()
 					.toString(), params.getAnnotation(), params.getAlias(), params.getOntology(), params
@@ -1033,6 +1043,8 @@ public class SettingsPanelActionListener implements ActionListener {
 					file2.makeFile();
 				}
 			}
+			
+			tm.setProgress(0.99);
 		}
 		
 	}
