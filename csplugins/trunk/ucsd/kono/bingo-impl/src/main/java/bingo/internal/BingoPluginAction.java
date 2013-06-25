@@ -28,8 +28,10 @@ public class BingoPluginAction extends AbstractCyAction {
 		this.openBrowserService = openBrowserService;
 		setPreferredMenu(MENU_CATEGORY);
 		
-		String cwd = System.getProperty(CURRENT_WORKING_DIRECTORY);
-		bingoDir = new File(cwd, "plugins").toString();
+		//String cwd = System.getProperty(CURRENT_WORKING_DIRECTORY);
+		String cwd =   System.getProperty("user.home");
+
+		bingoDir = new File(cwd, adapter.getCoreProperties().DEFAULT_PROPS_CONFIG_DIR+"/3/apps/installed").toString();
 	}
 
 	/**
