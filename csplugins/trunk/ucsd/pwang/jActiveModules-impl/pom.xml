@@ -4,14 +4,14 @@
 	<properties>
 		<bundle.symbolicName>jActiveModules</bundle.symbolicName>
 		<bundle.namespace>csplugin.jActiveModules</bundle.namespace>
-		<cytoscape.api.version>3.0.0-beta3-SNAPSHOT</cytoscape.api.version>
+		<cytoscape.api.version>3.0.1</cytoscape.api.version>
 		<maven-bundle-plugin.version>2.3.4</maven-bundle-plugin.version>
 		<osgi.api.version>4.2.0</osgi.api.version>
 		<junit.version>4.8.2</junit.version>
 		<mockito.version>1.8.5</mockito.version>
 	</properties>
 
-	<version>1.6</version>
+	<version>1.8</version>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>csplugin</groupId>

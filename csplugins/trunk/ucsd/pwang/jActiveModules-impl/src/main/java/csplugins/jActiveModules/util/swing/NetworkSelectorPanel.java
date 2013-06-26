@@ -92,7 +92,10 @@ public final class NetworkSelectorPanel extends JPanel implements NetworkAddedLi
 	 * @param e The network added event.
 	 */
 	public void handleEvent(NetworkAddedEvent e){
-		updateNetworkList();
+		CyNetwork net = e.getNetwork();
+		String title = net.getRow(net).get("name", String.class);
+		((DefaultComboBoxModel)networkComboBox.getModel()).addElement(title); 
+		
 	}
 
 	/**

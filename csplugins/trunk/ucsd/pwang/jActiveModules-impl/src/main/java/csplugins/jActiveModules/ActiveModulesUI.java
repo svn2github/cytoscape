@@ -114,7 +114,7 @@ public class ActiveModulesUI extends AbstractCyAction { //implements CytoscapeSt
 		try {
 			helpSetURL = HelpSet.findHelpSet(classLoader, HELP_SET_NAME);
 			final HelpSet newHelpSet = new HelpSet(classLoader, helpSetURL);
-			//cyHelpBroker.getHelpSet().add(newHelpSet);
+			ServicesUtil.cyHelpBrokerServiceRef.getHelpSet().add(newHelpSet);
 		} catch (final Exception e) {
 			logger.warn("Could not find help set: \"" + HELP_SET_NAME + "!");
 		}

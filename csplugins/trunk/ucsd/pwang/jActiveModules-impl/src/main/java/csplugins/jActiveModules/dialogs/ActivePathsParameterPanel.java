@@ -201,8 +201,14 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener,
 		initComponents();
 
 		populateAttributeTable(this.getDataVect());
-		
+
+		// HelpDoc is in Cytoscape help system
+		helpButton.setVisible(false);
 		createHelpDialog();
+		
+		// We do not need this button
+		dismissButton.setVisible(false);
+		
 		addButtonEventListeners();
 		
 		/////
@@ -1761,7 +1767,7 @@ public class ActivePathsParameterPanel extends JPanel implements ItemListener,
 	
 	@Override
 	public void handleEvent(ColumnCreatedEvent e) {
-		updateAttributePanel();
+		//updateAttributePanel();
 	}
 
 	public void handleEvent(CytoPanelComponentSelectedEvent e){

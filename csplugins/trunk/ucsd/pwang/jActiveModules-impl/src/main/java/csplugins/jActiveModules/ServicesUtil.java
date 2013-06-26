@@ -3,6 +3,7 @@ package csplugins.jActiveModules;
 import java.util.Properties;
 
 import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.application.swing.CyHelpBroker;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkFactory;
@@ -43,5 +44,5 @@ public class ServicesUtil {
 	public static LoadVizmapFileTaskFactory loadVizmapFileTaskFactory;
 	
 	public static SynchronousTaskManager synchronousTaskManagerServiceRef;
-	
+	public static CyHelpBroker cyHelpBrokerServiceRef;
 }

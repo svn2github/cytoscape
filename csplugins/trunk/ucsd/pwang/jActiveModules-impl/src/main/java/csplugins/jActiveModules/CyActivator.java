@@ -12,6 +12,7 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.application.swing.CyHelpBroker;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.application.swing.CytoPanelComponent;
@@ -54,6 +55,8 @@ public class CyActivator extends AbstractCyActivator {
 		LoadVizmapFileTaskFactory loadVizmapFileTaskFactory =  getService(bc,LoadVizmapFileTaskFactory.class);
 		SynchronousTaskManager synchronousTaskManagerServiceRef = getService(bc,SynchronousTaskManager.class);
 
+		CyHelpBroker cyHelpBroker = getService(bc, CyHelpBroker.class);
+
 		//
 		ServicesUtil.cySwingApplicationServiceRef = cySwingApplicationServiceRef;
 		ServicesUtil.cyApplicationManagerServiceRef = cyApplicationManagerServiceRef;
@@ -70,6 +73,7 @@ public class CyActivator extends AbstractCyActivator {
 		ServicesUtil.cyLayoutsServiceRef = cyLayoutsServiceRef;
 		ServicesUtil.loadVizmapFileTaskFactory = loadVizmapFileTaskFactory;
 		ServicesUtil.synchronousTaskManagerServiceRef = synchronousTaskManagerServiceRef;
+		ServicesUtil.cyHelpBrokerServiceRef = cyHelpBroker;
 
 		//
 		
