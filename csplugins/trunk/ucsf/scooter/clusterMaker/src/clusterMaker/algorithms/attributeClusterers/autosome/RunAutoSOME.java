@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010 The Regents of the University of California.
+ * Copyright (c) 2013 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,9 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * 
+ * File last modified 06-25-13 by Aaron M. Newman, Ph.D.
  *
  */
 package clusterMaker.algorithms.attributeClusterers.autosome;
@@ -146,8 +149,17 @@ public class RunAutoSOME {
 				logger.error("Must have an attribute list to use for cluster weighting");
 			return null;
 		}
+                
+                if ((Cytoscape.getCurrentNetwork().getSelectedNodes().isEmpty() && selectedOnly)) {
+			if (monitor != null) {
+				logger.warning("Must select nodes from network if 'use selected nodes only' option is true");
+				monitor.setException(null, "Error: no nodes selected from network");
+			} else
+				logger.error("Must select nodes from network if 'use selected nodes only' option is true");
+			return null;
+		}
 
-		// Get our attributes we're going to use for the cluster
+		// Get the attributes we're going to use for the cluster
 		String attributeArray[] = getAttributeArray(dataAttributes);
 
                 Settings s = new Settings();
@@ -185,6 +197,7 @@ public class RunAutoSOME {
 		EdgeWeightConverter converter = converters.get(0);
                 DistanceMatrix dm = new DistanceMatrix(dataAttributes, selectedOnly, converter);
                 nodes = dm.getNodes();
+                
                 //edges = dm.getEdges();
 
                 s.input = new dataItem[matrix.nRows()];
@@ -206,6 +219,10 @@ public class RunAutoSOME {
                     for(int l = 0; l < f.length; l++) {
                         if(k==0) {
                             s.columnHeaders[l+1] = matrix.getColLabel(l);
+                            s.columnHeaders[l+1] = s.columnHeaders[l+1].replace("\"","");
+                            s.columnHeaders[l+1] = s.columnHeaders[l+1].replace(",","");
+                            
+                            //System.out.println(s.columnHeaders[l+1]);
                         }
                         //System.out.println(matrix.getValue(k,l).floatValue());
                         if(matrix.getValue(k,l)!=null) f[l] = matrix.getValue(k,l).floatValue();
@@ -219,6 +236,33 @@ public class RunAutoSOME {
                 }
 
                 if(s.FCNrows && s.distMatrix) s = transpose(s);
+                
+                
+                if(s.input == null){
+                   
+			monitor.setException(null, "Insufficient data for clustering (1 or less rows or columns)");
+                        logger.warning("Insufficient data for clustering (1 or less rows or columns)");
+			return null;
+		
+                }else if(s.input.length<2){
+                    
+                    monitor.setException(null, "Insufficient data for clustering (1 or less rows or columns)");
+                    logger.warning("Insufficient data for clustering (1 or less rows or columns)");
+                    return null;
+                    
+                }else if(s.input[0].getValues()==null){
+                    
+                    monitor.setException(null, "Insufficient data for clustering (1 or less rows or columns)");
+                    logger.warning("Insufficient data for clustering (1 or less rows or columns)");
+                    return null;
+                    
+                }else if(s.input[0].getValues().length<2){
+                    
+                    monitor.setException(null, "Insufficient data for clustering (1 or less rows or columns)");
+                    logger.warning( "Insufficient data for clustering (1 or less rows or columns)");
+		    return null;
+                    
+                }
 
                 autRun = new Run();
                 cr = autRun.runAutoSOMEBasic(s, monitor);
@@ -230,7 +274,6 @@ public class RunAutoSOME {
 
                 monitor.setStatus("Assigning nodes to clusters");
                 clusterCount = cr.c.length;
-
                 Map<NodeCluster, NodeCluster> cMap = (!s.distMatrix) ? getNodeClusters(cr, key, matrix, s) : getNodeClustersFCN(cr, matrix, s);
 
 		if (canceled) {
@@ -273,7 +316,7 @@ public class RunAutoSOME {
                     for(int j = 0; j < cr.c[i].ids.size(); j++){
                         int dataID = cr.c[i].ids.get(j).intValue();
                         int nodeDataID = key.get(matrix.getRowLabels()[dataID]).intValue();
-                        CyNode cn = nodes.get(nodeDataID);
+                        CyNode cn = nodes.get(nodeDataID);                        
                         nc.add(cn);
                         attrList.add(nodes.get(nodeDataID).getIdentifier()+"\t"+i);
                         nodeOrderList.add(nodes.get(nodeDataID).getIdentifier());
@@ -300,7 +343,7 @@ public class RunAutoSOME {
 
             storeNodes = new HashMap<String, CyNode>();
             storeClust = new HashMap<String, String>();
-            int currClust=0;
+            int currClust=-1;
             NodeCluster nc = new NodeCluster();
 
             Map<String, CyNode> storeOrigNodes = new HashMap<String, CyNode>();
@@ -319,17 +362,29 @@ public class RunAutoSOME {
             for(int i = 0; i < cr.fcn_nodes.length; i++){
     
                         String[] fcn = cr.fcn_nodes[i];
+
                         if(currClust != Integer.valueOf(fcn[1])){
                             if(nc.size()>0)  cMap.put(nc,nc);
                             nc = new NodeCluster();
                             currClust = Integer.valueOf(fcn[1]);
                             nc.setClusterNumber(currClust);
+                            //System.out.println(currClust+"\t"+nc.getClusterNumber());
                         }
           
-                        CyNode cn = Cytoscape.getCyNode(fcn[0], true);
+                        String temp = fcn[0];
+                        
+                        //System.out.println(temp);
+                        
+                        String[] tokens = temp.split("_");
+                        StringBuilder sb = new StringBuilder();
+                        for(int j = 0; j < tokens.length-1; j++) sb.append(tokens[j]+"_");
+                        temp = sb.substring(0,sb.length()-1);
+          
+                        CyNode cn = Cytoscape.getCyNode(temp, true);
 
                         nodeOrderList.add(cn.getIdentifier());
                         attrList.add(cn.getIdentifier()+"\t"+currClust);
+                        //System.out.println("*\t"+cn.getIdentifier()+"\t"+currClust);
 
                         if(s.FCNrows){
                                 CyNode orig = (CyNode) storeOrigNodes.get(fcn[2]);

@@ -1,6 +1,6 @@
 /* vim: set ts=2: */
 /**
- * Copyright (c) 2008 The Regents of the University of California.
+ * Copyright (c) 2013 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,9 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * 
+ * File last modified 06-25-13 by Aaron M. Newman, Ph.D.
  *
  */
 package clusterMaker.algorithms.attributeClusterers.autosome;
@@ -123,8 +126,9 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 	private CyLogger logger = null;
 	private RunAutoSOME runAutoSOME = null;
 
-	private Tunable logscaling, unitVar, medCent, sumSqr, ensembleRuns, fcnInput, fcnDM, fillMV, mxedges;
-
+	private Tunable logscaling, unitVar, medCent, sumSqr, ensembleRuns, fcnInput, fcnDM, fillMV, mxedges, data_output;
+        private String last_output = "false";
+        
 	private List<NodeCluster> nodeCluster;
 
 	private List<String>attrList;
@@ -186,7 +190,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 						  Tunable.LIST, "",
 						  (Object)attributeArray, (Object)null, Tunable.MULTISELECT));
 
-		clusterProperties.add(new Tunable("selectedOnly", "Only use selected nodes for clustering",
+		clusterProperties.add(new Tunable("selectedOnly", "Only use selected nodes (in network) for clustering",
 						  Tunable.BOOLEAN, new Boolean(selectedNodes)));
 
 		Tunable ign = new Tunable("ignoreMissing", "Ignore nodes/edges with no data",
@@ -262,7 +266,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		fillMV = new Tunable("fillMV", "Missing value handling",
 						  Tunable.LIST, 0,
 						  new Object[]{"Row Mean", "Row Median", "Column Mean", "Column Median"}, (Object)null, 0);
-		if (ignoreMissing) fillMV.setImmutable(true);
+		//if (ignoreMissing) fillMV.setImmutable(true);
 		clusterProperties.add(fillMV);
 
 
@@ -309,10 +313,10 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 	  clusterProperties.add(new Tunable("tunables_panel4",
 	                                    "Data Output",
 	                                    Tunable.GROUP, new Integer(2)));
-
-		Tunable data_output = new Tunable("cluster_output",
+                                      
+		data_output = new Tunable("cluster_output",
 						  "Choose Visualization",
-						  Tunable.LIST, new Integer(cluster_output),
+						  Tunable.LIST, 0,
 						  new Object[]{"Network", "Heatmap"}, (Object)null, 0);
 		data_output.addTunableValueListener(this);
 		clusterProperties.add(data_output);
@@ -497,6 +501,14 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		this.monitor = monitor;
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		String networkID = network.getIdentifier();
+               
+                //got back to parent to cluster again
+                if(networkID.contains("--AutoSOME")){
+                    String[] tokens = networkID.split("--AutoSOME");
+                    networkID = tokens[0];
+                    Cytoscape.setCurrentNetwork(networkID);
+                    network = Cytoscape.getCurrentNetwork();
+                } 
 
 		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -582,6 +594,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		for (int i = 0; i < names.length; i++) {
 			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING ||
 			    attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER) {
+                                if(names[i].contains("--AutoSOME")) continue;
 				attributeList.add(prefix+names[i]);
 			}
 		}
@@ -592,7 +605,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		// Create the list by combining node and edge attributes into a single list
 		List<String> attributeList = new ArrayList<String>();
 		getAttributesList(attributeList, Cytoscape.getNodeAttributes(),"node.");
-		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(),"edge.");
+		//getAttributesList(attributeList, Cytoscape.getEdgeAttributes(),"edge.");
 		String[] attrArray = attributeList.toArray(attributeArray);
 		if (attrArray.length > 1)
 			Arrays.sort(attrArray);
@@ -603,6 +616,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		updateSettings(false);
 
 		Tunable t = clusterProperties.get("norm_mode");
+                if(t.valueChanged()){
 		switch(Integer.valueOf((t.getValue().toString()))){
 		    case 1:
 			logscaling.setValue(Boolean.FALSE);
@@ -622,9 +636,10 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 			medCent.setValue(1);
 			sumSqr.setValue(3);
 			break;
-		}
-
+		}}
+/*
 		t = clusterProperties.get("mode");
+                if(t.valueChanged()){
 		int c = Integer.valueOf((t.getValue().toString()));
 		switch (c){
 		    case 0:
@@ -636,7 +651,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		    case 2:
 			ensembleRuns.setValue(20);
 		    break;
-		}
+		}}*/
 
 		t = clusterProperties.get("enableFCN");
 		String s = t.getValue().toString();
@@ -644,19 +659,22 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		    fcnInput.setImmutable(false);
 		    fcnDM.setImmutable(false);
 		    mxedges.setImmutable(false);
+                    if(last_output.equals("false")) data_output.setValue("Network");
 		}else{
 		    fcnInput.setImmutable(true);
 		    fcnDM.setImmutable(true);
 		    mxedges.setImmutable(true);
+                    if(last_output.equals("true")) data_output.setValue("Heatmap");
 		}
+                last_output = s;
 
 		t = clusterProperties.get("ignoreMissing");
 		ignoreMissing = ((Boolean) t.getValue()).booleanValue();
-		if (ignoreMissing) 
+		/*if (ignoreMissing) 
 			fillMV.setImmutable(true);
 		else
 			fillMV.setImmutable(false);
-
+*/
 	}
 
 	public void actionPerformed(ActionEvent e){
@@ -701,7 +719,33 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 
 		//Cytoscape.
 		// Create the new network
-		CyNetwork net = Cytoscape.createNetwork(currentNetwork.getTitle()+"--clustered",currentNetwork,false);
+                
+                //increment id so results can be saved.
+                String title = currentNetwork.getTitle();
+                if(title.contains("--AutoSOME")){
+                    String[] tokens = title.split("--AutoSOME");
+                    title = tokens[0];
+                }
+                Set<CyNetwork> nets = Cytoscape.getNetworkSet();
+                //System.out.println(title);
+                int maxitor = 0;
+                String first = "";
+                for(CyNetwork cnet : nets){
+                    //System.out.println("###\t"+cnet.getTitle());
+                    String tit = cnet.getTitle();
+                    if(tit.contains("--AutoSOME")){
+                    String[] tokens = tit.split("--AutoSOME");
+                    first = tokens[0];
+                    int itor = Integer.valueOf(tokens[1]);
+                    if(itor>maxitor) maxitor = itor;
+                    }
+                }
+                if(maxitor>0) {maxitor++; title = title.concat("--AutoSOME"+maxitor);}
+                else title = title.concat("--AutoSOME1");
+                
+		CyNetwork net = Cytoscape.createNetwork(title,currentNetwork,false);
+                net.setIdentifier(title);
+                //System.out.println(net.getIdentifier()+"\t"+currentNetwork.getIdentifier());
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 
@@ -722,7 +766,15 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 				if(!ids.containsKey(cluster)) ids.put(cluster,cluster);
 				net.addNode(cn);
 				nodeAttributes.setAttribute(cn.getIdentifier(), Cytoscape.getCurrentNetwork().getIdentifier()+"_FCN_Cluster", new Integer(cluster));
-				String nodeLabel = cn.getIdentifier().split("_")[0];
+				String temp = cn.getIdentifier();
+                                //System.out.println(temp+"\t"+cluster);
+                                String nodeLabel = temp;
+                                if(temp.contains("_")){
+                                    String[] tokens = temp.split("_");
+                                    StringBuilder sb = new StringBuilder();
+                                    for(int j = 0; j < tokens.length-1; j++) sb.append(tokens[j]+"_");
+                                    temp = sb.substring(0,sb.length()-1);
+                                }
 				nodeAttributes.setAttribute(cn.getIdentifier(), "SAMPLE_NAME", nodeLabel);
 			//}
 			}
@@ -748,7 +800,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 			//alg.setLayoutAttribute("CONFIDENCE");
 			List<Tunable> h = alg.getSettings().getTunables();
 			for(Tunable t: h) {
-
+                            //System.out.println(t.getName());
 				if(t.getName().equals("edge_attribute")){
 					t.setValue("CONFIDENCE");
 					t.valueChanged();
@@ -759,6 +811,14 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 				}
 				if(t.getName().equals("min_weight")){
 					t.setValue(new Double(-0.5));
+					t.valueChanged();
+				}
+                                if(t.getName().equals("defaultSpringCoefficient")){
+					t.setValue(new Double(5E-6));
+					t.valueChanged();
+				}
+                                if(t.getName().equals("deterministic")){
+					t.setValue(true);
 					t.valueChanged();
 				}
 			// System.out.println(t.getName()+" "+t.getValue().toString());
@@ -789,8 +849,8 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		netAttr.setListAttribute(netID, ClusterMaker.CLUSTER_NODE_ATTRIBUTE, attrList);
 		netAttr.setListAttribute(netID, ClusterMaker.ARRAY_ORDER_ATTRIBUTE, attrOrderList);
 		netAttr.setListAttribute(netID, ClusterMaker.NODE_ORDER_ATTRIBUTE, nodeOrderList);
-		Cytoscape.setCurrentNetwork(net.getIdentifier());
-		Cytoscape.setCurrentNetworkView(view.getIdentifier());
+		//Cytoscape.setCurrentNetwork(net.getIdentifier());
+		Cytoscape.setCurrentNetwork(net.getTitle());
 		return;
 	}
 
@@ -851,7 +911,11 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 
 		// Discrete Mapping - set node border color
 		nodeAppCalc.getDefaultAppearance().set(VisualPropertyType.NODE_BORDER_COLOR, Color.BLACK);
+                //set node line width
+                nodeAppCalc.getDefaultAppearance().set(VisualPropertyType.NODE_LINE_WIDTH, 2.5);
 
+                
+                
 		//set edge width
 		ContinuousMapping contMapping = new ContinuousMapping(new Double(0),ObjectMapping.EDGE_MAPPING);
 
@@ -859,7 +923,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		Interpolator numTonum = new LinearNumberToNumberInterpolator();
 		contMapping.setInterpolator(numTonum);
 		BoundaryRangeValues bv0 = new BoundaryRangeValues(.5, .5, .5);
-		BoundaryRangeValues bv1 = new BoundaryRangeValues(10, 10, 10);
+		BoundaryRangeValues bv1 = new BoundaryRangeValues(20, 20, 20);
 		// BoundaryRangeValues bv2 = new BoundaryRangeValues(.5, .5, .5);
 		contMapping.addPoint(-.5, bv0);
 		contMapping.addPoint(.5, bv1);
@@ -873,11 +937,30 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		numTonum = new LinearNumberToNumberInterpolator();
 		contMapping.setInterpolator(numTonum);
 		bv0 = new BoundaryRangeValues(.5, .5, .5);
-		bv1 = new BoundaryRangeValues(150, 150, 150);
+		bv1 = new BoundaryRangeValues(200, 200, 200);
 		// BoundaryRangeValues bv2 = new BoundaryRangeValues(.5, .5, .5);
 		contMapping.addPoint(-.5, bv0);
 		contMapping.addPoint(.5, bv1);
 		Calculator opacityCalculator = new BasicCalculator("Edge Opacity Calculator", contMapping, VisualPropertyType.EDGE_OPACITY);
+		edgeAppCalc.setCalculator(opacityCalculator);
+
+                
+                //set node color gradient
+                VisualPropertyType type = VisualPropertyType.EDGE_COLOR;
+                Object defaultObj = type.getDefault(Cytoscape.getVisualMappingManager().getVisualStyle());
+		contMapping = new ContinuousMapping(defaultObj,ObjectMapping.EDGE_MAPPING);
+
+		contMapping.setControllingAttributeName("CONFIDENCE", Cytoscape.getCurrentNetwork(), false);
+		numTonum = new LinearNumberToColorInterpolator();
+		contMapping.setInterpolator(numTonum);
+                Color red = Color.RED;
+                Color blue = Color.BLUE;
+		bv0 = new BoundaryRangeValues(red, red, red);
+		bv1 = new BoundaryRangeValues(blue, blue, blue);
+		// BoundaryRangeValues bv2 = new BoundaryRangeValues(.5, .5, .5);
+		contMapping.addPoint(-.5, bv0);
+		contMapping.addPoint(0, bv1);
+		opacityCalculator = new BasicCalculator("Edge Color Calculator", contMapping, VisualPropertyType.EDGE_COLOR);
 		edgeAppCalc.setCalculator(opacityCalculator);
 
 
