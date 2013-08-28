@@ -421,7 +421,7 @@ public class ValueUtils {
 		else if (input.equals(CONTRASTING))
 			return generateContrastingColors(nColors);
 		else {
-			String [] colorArray = null;
+			String [] colorArray = new String[1];
 			colorArray[0] = input;
 			List<Color> colors = parseColorList(colorArray);
 			return colors;

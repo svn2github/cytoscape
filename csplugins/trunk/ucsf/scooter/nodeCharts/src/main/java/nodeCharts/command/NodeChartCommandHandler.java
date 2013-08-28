@@ -252,13 +252,23 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 			if (values == null || values.size() == 0)
 				continue;
 
-			Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, size, view, pos, scale);
-			List<CustomGraphic> cgList = viewer.getCustomGraphics(args, values, labels, bbox, view);
-			ViewUtils.addCustomGraphics(cgList, node, view);
+			try {
+				// System.out.println("Creating bounding box");
+				Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, size, view, pos, scale);
+				// System.out.println("Creating custom graphics");
+				List<CustomGraphic> cgList = viewer.getCustomGraphics(args, values, labels, bbox, view);
+				// System.out.println("Adding custom graphics");
+				ViewUtils.addCustomGraphics(cgList, node, view);
 			result.addMessage("Created "+viewer.getName()+" chart for node "+node.getIdentifier());
 			// If we succeeded, serialize the command and save it in the appropriate nodeAttribute
 			if (saveCommand)
 				saveChart(node, command, args);
+			} catch (CyCommandException cce) { 
+				throw cce; 
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new RuntimeException("Exception creating chart: "+e.getMessage());
+			}
 		}
 		return result;
 	}

@@ -99,38 +99,45 @@ public class PieChart implements NodeChartViewer {
 	public List<CustomGraphic> getCustomGraphics(Map<String, Object>args, List<Double> values, List<String> labels,
 	                                             Rectangle2D bbox, CyNetworkView view) 
 	                                                                               throws CyCommandException {
+		// System.out.println("Getting pie custom graphics");
 		// Get our colors
 		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), values);
+
+		// System.out.println("Got colors");
 
 		// Handle our options
 		double minimumSlice = 2.0;
 		if (args.containsKey(MINIMUMSLICE))
 			minimumSlice = ValueUtils.getDoubleValue(args.get(MINIMUMSLICE));
 
+		// System.out.println("Got minimum slice");
+
 		int labelSize = 4;
 		if (args.containsKey(LABELSIZE))
 			labelSize = ValueUtils.getIntegerValue(args.get(LABELSIZE));
 
+		// System.out.println("Got label size");
 		boolean sortSlices = true;
 		if (args.containsKey(SORTSLICES))
 			sortSlices = ValueUtils.getBooleanValue(args.get(SORTSLICES));
-
-		if (sortSlices)
-			sortSlicesBySize(values, colors, labels, minimumSlice);
 
 		// Get our angular offset
 		double arcStart = 0.0;
 		Object startObj = args.get(ARCSTART);
 		if (startObj != null) {
+			// System.out.println("Getting arc start");
 			try {
 				arcStart = ValueUtils.getDoubleValue(startObj);
 			} catch (NumberFormatException e) {
+				// System.out.println("Number format exception");
 				throw new CyCommandException("arcstart must be a number: "+e.getMessage());
 			}
 		}
+		// System.out.println("Got options");
 
 		// Convert our data from values to increments
 		values= convertData(values);
+		// System.out.println("Got values");
 
 		// Sanity check
 		if (labels != null && labels.size() > 0 && 
@@ -138,6 +145,10 @@ public class PieChart implements NodeChartViewer {
 		     labels.size() != colors.size()))
 			throw new CyCommandException("number of labels ("+labels.size()+"), values ("+
 			                             values.size()+"), and colors ("+colors.size()+") don't match");
+		// System.out.println("Sanity check OK");
+
+		if (sortSlices)
+			sortSlicesBySize(values, colors, labels, minimumSlice);
 
 		int nSlices = values.size();
 		List<CustomGraphic> cgList = new ArrayList<CustomGraphic>();
@@ -263,12 +274,17 @@ public class PieChart implements NodeChartViewer {
 	}
 
 	private void sortSlicesBySize(List<Double>values, List<Color>colors, List<String>labels, double minimumSlice) {
+		boolean haveLabels = false;
 		Double[] valueArray = values.toArray(new Double[1]);
 		values.clear();
 		Color[] colorArray = colors.toArray(new Color[1]);
 		colors.clear();
-		String[] labelArray = labels.toArray(new String[1]);
-		labels.clear();
+		String[] labelArray = null;
+		if (labels != null && labels.size() > 0) {
+			labelArray = labels.toArray(new String[1]);
+			labels.clear();
+			haveLabels = true;
+		}
 		
 		Integer[] sortedIndex = new Integer[valueArray.length];
 		for (int i = 0; i < valueArray.length; i++) sortedIndex[i] = new Integer(i);
@@ -282,7 +298,8 @@ public class PieChart implements NodeChartViewer {
 			if (valueArray[sortedIndex[index]] >= minimumSlice) {
 				values.add(valueArray[sortedIndex[index]]);
 				colors.add(colorArray[sortedIndex[index]]);
-				labels.add(labelArray[sortedIndex[index]]);
+				if (haveLabels)
+					labels.add(labelArray[sortedIndex[index]]);
 			} else {
 				otherValues = otherValues + valueArray[sortedIndex[index]];
 			}
@@ -291,7 +308,8 @@ public class PieChart implements NodeChartViewer {
 		if (otherValues > 0.0) {
 			values.add(otherValues);
 			colors.add(Color.LIGHT_GRAY);
-			labels.add("Other");
+			if (haveLabels)
+				labels.add("Other");
 		}
 	}
 
