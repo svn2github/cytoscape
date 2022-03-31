@@ -11,7 +11,7 @@
   <properties>
     <bundle.symbolicName>command</bundle.symbolicName>
     <bundle.namespace>command</bundle.namespace>
-    <spring.maven.artifact.version>2.5.4</spring.maven.artifact.version>
+    <spring.maven.artifact.version>5.3.18</spring.maven.artifact.version>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
